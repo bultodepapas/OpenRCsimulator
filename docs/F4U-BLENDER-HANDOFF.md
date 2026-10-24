@@ -2,7 +2,7 @@
 
 2026-10-24 · Revision 4 · To the F4U Corsair model author · Two requests: **A**, a fuselage correction for every delivered livery, and **B**, a new detail tier **g2** derived from master **R59**
 
-**Status:** revision 4 is open. Revision 3 (g1.3) was delivered and accepted on 2026-10-22 ([review](research/f4u-corsair/F4U-04/README.md#g13-accepted-2026-10-22)). Sections 0–13 below remain the base specification; revision 4 states what changes.
+**Status 2026-10-24:** revision 4 is delivered. A arrived as g1.24 and is accepted. B arrived as g2.0 and is accepted in substance ([review](research/f4u-corsair/F4U-19/README.md)). **The next delivery, g2.1, is specified in the [g2.1 request](F4U-G2-1-REQUEST.md).** Revision 3 (g1.3) was delivered and accepted on 2026-10-22 ([review](research/f4u-corsair/F4U-04/README.md#g13-accepted-2026-10-22)). Sections 0–13 below remain the base specification; revision 4 states what changes.
 
 ## Revision 4: fuselage fix and a g2 detail tier
 
@@ -145,6 +145,10 @@ Where to spend and where to save, part by part:
 2. `python research/f4u-corsair/F4U-04/preflight_glb.py export/aircraft.glb --profile f4u-g2` must pass.
 3. Include the deviation report (B6) and a preview sheet with back-face culling on, from the B2 views: the Home three-quarter view, the orbit at 1.7 m around the nose, cockpit, main gear and tail, the chase view, and a view from below. Show the gear down and up, the flaps at 50° and the wings folded.
 4. Our acceptance is our preflight, the model contract (`verify_f4u.gd`) and a side-by-side render against g1 in our bench ([F4U-18](research/f4u-corsair/F4U-18/README.md#bench)).
+
+#### B9 Review of g2.0 and what g2.1 changes
+
+Reviewed 2026-10-24 ([F4U-19](research/f4u-corsair/F4U-19/README.md)). A is accepted as g1.24 and B is accepted in substance as g2.0. Everything the author must change for the next delivery is in the [g2.1 request](F4U-G2-1-REQUEST.md).
 
 ## 0 Review of g1.2 and what g1.3 changes
 

@@ -1,0 +1,95 @@
+{
+  "format": "openrc-ai-solver-rebind v1",
+  "date": "2026-10-24",
+  "accepted_before": {
+    "solver_sha256": "eab5dcbcb428036f0572620100f6fb7d5f21f540c01aae5582d4cbc8fc8e5fd1",
+    "rev": "a92a3192c28d46dbf767464869be5654fe351fec"
+  },
+  "current_solver_sha256": "83b06513433deb78d7e1d2938493b7c0d3edc9cc8066453c22cf1d26c6738f1c",
+  "head": "4f64d030d094ff0e9e3887f3c68868d228fcfa2d",
+  "solver_tree_committed": true,
+  "changed_sources": [
+    "app/physics/AGENTS.md",
+    "app/physics/trim.gd",
+    "app/sim/AGENTS.md",
+    "app/sim/launch_trim_cache.gd"
+  ],
+  "candidate_aircraft": "app/data/aircraft/jensen_ugly_stik_60.json",
+  "identical": true,
+  "tapes": [
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-04-R2\\baseline\\seed-20261020-crossing-right-ai.orfl",
+      "orfl_sha256": "fa7ef3fac64bb2ae4035a98a6963711e7c7d59957efd47b27aca4c460b94c132",
+      "rows": 2439,
+      "base_csv_sha256": "a74ff0c883de188ef4f04932ebaf0d988a3c938ee2d0b8e61755bab4cd1dcf02",
+      "head_csv_sha256": "a74ff0c883de188ef4f04932ebaf0d988a3c938ee2d0b8e61755bab4cd1dcf02",
+      "identical": true
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-04-R2\\baseline\\seed-20261020-crossing-right-player-coupled.orfl",
+      "orfl_sha256": "5a74097741564e859cf86559f4802121877aa1fc80bb4c4524d9f6c5cca0ac1e",
+      "rows": 2439,
+      "base_csv_sha256": "dad274292fda6894e6faa06a096eb81d7c27579c4a924818394b2f06d86d9727",
+      "head_csv_sha256": "dad274292fda6894e6faa06a096eb81d7c27579c4a924818394b2f06d86d9727",
+      "identical": true
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-04-R2\\baseline\\seed-20261020-crossing-right-player-exogenous.orfl",
+      "orfl_sha256": "0ab055ac39b92781c5bc628563d58f308b9095cc8f0e1ec597e93d333a19a87e",
+      "rows": 2881,
+      "base_csv_sha256": "be8f58fb8c837ab7d9e7abe6a42a58ad460e30df279ba086142ae9243bef1d71",
+      "head_csv_sha256": "be8f58fb8c837ab7d9e7abe6a42a58ad460e30df279ba086142ae9243bef1d71",
+      "identical": true
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-04-R2\\baseline\\seed-20261021-crossing-left-ai.orfl",
+      "orfl_sha256": "b0fa4edf1ccd2f43f9570f9e55539ca2a7834c73d57556cb29e3162e63a102ec",
+      "rows": 2423,
+      "base_csv_sha256": "c649ce72ba241972a90fb494591415a1cb26ed8703a9013c53dddea598ab2786",
+      "head_csv_sha256": "c649ce72ba241972a90fb494591415a1cb26ed8703a9013c53dddea598ab2786",
+      "identical": true
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-04-R2\\baseline\\seed-20261021-crossing-left-player-coupled.orfl",
+      "orfl_sha256": "01639c19dc412f163fe8533eba18488bd8e594bae10500cc2b82dd5421259822",
+      "rows": 2423,
+      "base_csv_sha256": "289d5197c05b21883f3641bfecb03a87884b16736989b66d2304247364adde25",
+      "head_csv_sha256": "289d5197c05b21883f3641bfecb03a87884b16736989b66d2304247364adde25",
+      "identical": true
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-04-R2\\baseline\\seed-20261021-crossing-left-player-exogenous.orfl",
+      "orfl_sha256": "e4acdf8cbb67cb88fc929dbe209c8823bc928eea1541c7f18e1468c20bb0c157",
+      "rows": 2881,
+      "base_csv_sha256": "46cc0b73dd67f91a36f6beb20ddd90224c3978b5f1fe168a9c39dd04fa506223",
+      "head_csv_sha256": "46cc0b73dd67f91a36f6beb20ddd90224c3978b5f1fe168a9c39dd04fa506223",
+      "identical": true
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-04-R1\\baseline\\parallel-two-threats-ai.orfl",
+      "orfl_sha256": "46ba99d1d41efce6c43e8aeb986d7c506bd830582808bccf77850cc153da44e7",
+      "rows": 996,
+      "base_csv_sha256": "3bf740b12c137bf991beb224a79204f1e5912fd6da666872cdd4191f19f82a18",
+      "head_csv_sha256": "3bf740b12c137bf991beb224a79204f1e5912fd6da666872cdd4191f19f82a18",
+      "identical": true
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-04-R1\\baseline\\parallel-two-threats-peer.orfl",
+      "orfl_sha256": "7cd5f5631e340b5d8e6496b623a29989370c3fff402fac07c9426edc7a5b68f9",
+      "rows": 996,
+      "base_csv_sha256": "375bbcc13287b972181f0291c5571f1b49fb6e2fed46307ceddb15ddd7b9b1e8",
+      "head_csv_sha256": "375bbcc13287b972181f0291c5571f1b49fb6e2fed46307ceddb15ddd7b9b1e8",
+      "identical": true
+    },
+    {
+      "tape": "docs\\research\\ai-companions\\AFC-04-R1\\baseline\\parallel-two-threats-player.orfl",
+      "orfl_sha256": "506e65cdd01b27c6b2b587343386ce3e78b9e8592394b42eb748495a76aabc4f",
+      "rows": 996,
+      "base_csv_sha256": "1abf8683f2bbe83693bb7f3d933bfeb375a22b8146269ca5ea9e31084f96917f",
+      "head_csv_sha256": "1abf8683f2bbe83693bb7f3d933bfeb375a22b8146269ca5ea9e31084f96917f",
+      "identical": true
+    }
+  ],
+  "method": "Candidate replays of the retained tapes on two disposable copies differing only in the solver directories (accepted rev vs current tree); CSV bytes compared.",
+  "limits": "Parity on these tapes only; not exact replay, not a new qualification, not physical validation."
+}

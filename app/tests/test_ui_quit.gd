@@ -16,9 +16,13 @@ var ui: RefCounted
 
 class QuitProbeAppRoot extends "res://app_root.gd":
 	var quit_requests := 0
+	var extra_recorder: RefCounted
 
 	func _request_app_quit() -> void:
 		quit_requests += 1
+
+	func _quit_recorders() -> Array[RefCounted]:
+		return [extra_recorder] if extra_recorder != null else super._quit_recorders()
 
 
 class ScratchRecorder extends "res://sim/recorder.gd":
@@ -108,10 +112,38 @@ func _check_home_route(initial_auto_accept: bool) -> void:
 		if handler.get_object() == app and handler.get_method() == "quit_app":
 			policy_connected = true
 	_check("Home Quit is wired to the AppRoot quit policy", policy_connected)
+	# A real window close propagates to Settings too; only AppRoot may commit it.
+	app.open_settings()
+	await ui.settle()
+	var settings: Node = app.screens.get_screen("settings")
+	settings._volume_changed(0.61)
+	var cancels_before: int = app.menu_audio.cue_count(&"cancel")
+	var backs_before: int = app.menu_audio.cue_count(&"back")
+	app.extra_recorder = AlwaysFailRecorder.new()
+	app.propagate_notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
+	await ui.settle()
+	var recovery := app.get("_trace_recovery_dialog") as ConfirmationDialog
+	_check("failed window close preserves Settings and its unsaved preview",
+		recovery != null and app.screens.is_top("settings")
+		and is_equal_approx(settings._draft.menu_volume, 0.61)
+		and is_equal_approx(app.menu_audio.get_volume(), 0.61) and app.quit_requests == 0)
+	_check("window close does not queue premature Back or Revert feedback",
+		app.menu_audio.cue_count(&"cancel") == cancels_before and app.menu_audio.cue_count(&"back") == backs_before)
+	if recovery != null:
+		recovery.confirmed.emit() # Stay
+	await ui.settle()
+	_check("Stay returns to the unchanged Settings draft",
+		app.screens.top() == settings and is_equal_approx(settings._draft.menu_volume, 0.61)
+		and app.quit_requests == 0)
+	app._trace_recovery.discard(app.extra_recorder)
+	app.extra_recorder = null
+	settings.close()
+	await ui.settle()
 	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
 	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
 	await process_frame
 	_check("same-frame Window close requests coalesce on Home", app.quit_requests == 1, str(app.quit_requests))
+	_check("committed Quit emits one closing cue", app.menu_audio.cue_count(&"quit") == 1)
 	await ui.close_app(app)
 	_check("AppRoot restores the host close policy after Home removal", auto_accept_quit == initial_auto_accept)
 	_remove_prefs(HOME_PREFS)

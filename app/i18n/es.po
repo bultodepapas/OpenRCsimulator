@@ -5662,6 +5662,139 @@ msgstr "Mueve el eje seleccionado"
 msgid "invalid axis sample"
 msgstr "Lectura del eje no válida"
 
+
+msgid "Preparing resources"
+msgstr "Preparando recursos"
+
+msgid "Checking landscape"
+msgstr "Comprobando escenario"
+
+msgid "Preparing aircraft"
+msgstr "Preparando avión"
+
+msgid "Building landscape"
+msgstr "Construyendo escenario"
+
+msgid "Preparing aircraft lighting"
+msgstr "Preparando luces del avión"
+
+msgid "Preparing instruments"
+msgstr "Preparando instrumentos"
+
+msgid "Checking flight"
+msgstr "Comprobando vuelo"
+
+msgid "Preparing effects"
+msgstr "Preparando efectos"
+
+msgid "Preparing sound"
+msgstr "Preparando sonido"
+
+msgid "Preparing companions"
+msgstr "Preparando compañeros de vuelo"
+
+msgid "Finishing flight"
+msgstr "Finalizando preparación"
+
+msgid "Cancelling…"
+msgstr "Cancelando…"
+
+msgid "Flight preparation cancelled."
+msgstr "Preparación del vuelo cancelada."
+
+msgid "Flight scene could not be loaded."
+msgstr "No se pudo cargar la escena de vuelo."
+
+msgid "Runway"
+msgstr "Pista"
+
+msgid "Airborne"
+msgstr "En el aire"
+
+msgid "Preparing world"
+msgstr "Preparando entorno"
+
+msgid "Preparing sky"
+msgstr "Preparando cielo"
+
+msgid "Preparing field lighting"
+msgstr "Preparando iluminación del campo"
+
+msgid "Finalizing world"
+msgstr "Finalizando entorno"
+
+msgid "Field ground"
+msgstr "Preparando terreno"
+
+msgid "Field trees"
+msgstr "Preparando árboles"
+
+msgid "Flight cues"
+msgstr "Preparando referencias de vuelo"
+
+msgid "Field scenery"
+msgstr "Preparando objetos del campo"
+
+msgid "Near grass"
+msgstr "Preparando hierba cercana"
+
+msgid "Distant ridges"
+msgstr "Preparando montañas lejanas"
+
+msgid "Countryside"
+msgstr "Preparando paisaje"
+
+msgid "Projected shadows"
+msgstr "Preparando sombras"
+
+msgid "Attaching landscape"
+msgstr "Montando escenario"
+
+msgid "Flight preparation did not produce a valid session."
+msgstr "La preparación no produjo una sesión de vuelo válida."
+
+msgid "Flight cue shadows"
+msgstr "Preparando sombras de las referencias"
+
+msgid "Resolving field scenery"
+msgstr "Comprobando objetos del campo"
+
+msgid "Building field scenery"
+msgstr "Construyendo objetos del campo"
+
+msgid "Building field lake"
+msgstr "Construyendo lago"
+
+msgid "Preparing field vegetation"
+msgstr "Preparando vegetación del campo"
+
+msgid "Preparing flight model"
+msgstr "Preparando modelo de vuelo"
+
+msgid "Preparing contacts"
+msgstr "Preparando superficies de contacto"
+
+msgid "Preparing start"
+msgstr "Preparando posición inicial"
+
+msgid "Preparing effects resources"
+msgstr "Cargando recursos de efectos"
+
+msgid "Preparing safety resources"
+msgstr "Cargando recursos de incidentes"
+
+msgid "Preparing sound resources"
+msgstr "Cargando recursos de sonido"
+
+msgid "Preparing instrument resources"
+msgstr "Cargando recursos de instrumentos"
+
+msgid "Preparing companion resources"
+msgstr "Cargando recursos de compañeros"
+
+msgid "Preparing flight scene"
+msgstr "Cargando escena de vuelo"
+
 msgid "Birds"
 msgstr "Pájaros"
 

@@ -1,0 +1,22 @@
+# hitch at frame 5058: 925.5 ms; scene/resource construction
+# 92 lines over 668 ms (frames 5058..5058); largest gaps:
+    288 ms  43.1 %  after: Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+                   next:  Loading resource: res://assets/ui/instruments/speed.svg remapped: res://assets/ui/instruments/speed.
+    125 ms  18.7 %  after: Completed load for: 'res://assets/ui/instruments/engine.svg' remapped 'res://assets/ui/instruments/e
+                   next:  aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+     39 ms   5.8 %  after: aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+                   next:  Loading resource: res://assets/audio/soundscape/airframe.wav remapped: res://assets/audio/soundscape
+      4 ms   0.6 %  after: Completed load for: 'res://assets/audio/soundscape/recorded/wind_low.wav' remapped 'res://assets/aud
+                   next:  Loading resource: res://assets/audio/soundscape/recorded/wind_high.wav remapped: res://assets/audio/
+      4 ms   0.6 %  after: Loading resource: res://.godot/imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample remapped
+                   next:  Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundsc
+      4 ms   0.6 %  after: Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundsc
+                   next:  Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/
+      4 ms   0.6 %  after: Loading resource: res://assets/audio/soundscape/wildlife/crow_03.wav remapped: res://assets/audio/so
+                   next:  Loading resource: res://.godot/imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample remapped
+      3 ms   0.4 %  after: Completed load for: 'res://assets/ui/instruments/speed.svg' remapped 'res://assets/ui/instruments/sp
+                   next:  Loading resource: res://assets/ui/instruments/height.svg remapped: res://assets/ui/instruments/heigh
+      3 ms   0.4 %  after: Completed load for: 'res://assets/ui/instruments/height.svg' remapped 'res://assets/ui/instruments/h
+                   next:  Loading resource: res://assets/ui/instruments/power.svg remapped: res://assets/ui/instruments/power.
+      3 ms   0.4 %  after: Loading resource: res://.godot/imported/power.svg-96a357793d7883dbe338d5760103bdb2.ctex remapped: re
+                   next:  Completed load for: 'res://assets/ui/instruments/power.svg' remapped 'res://assets/ui/instruments/po

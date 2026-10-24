@@ -12,7 +12,7 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 class CandidateFlight extends Main:
 	var refuse_world: bool = false
 	func _build_world() -> bool:
-		var built: bool = super._build_world()
+		var built: bool = await super._build_world()
 		if built and refuse_world:
 			startup_error = "Injected failure after World.build"
 			return false

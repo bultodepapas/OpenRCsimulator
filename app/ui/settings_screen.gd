@@ -16,6 +16,7 @@ signal presentation_reverted
 signal language_changed(language: String)
 signal route_requested(route: String, from: Control)
 signal sound_preview_requested
+signal feedback_requested(cue: StringName)
 signal graphics_restart_requested(profile: String)
 
 const DISPLAY_TEST_SECONDS := 15
@@ -23,6 +24,7 @@ const LANGUAGE_CODES: Array[String] = ["en", "es"]
 const SCALE_CHOICES: Array[int] = [100, 125, 150, 175, 200]
 
 var display_preferences: DisplayPreferences
+var window_close_managed := false # AppRoot owns save/recovery decisions before closing this route.
 var _surface: Control
 var _saved: Dictionary
 var _draft: Dictionary
@@ -88,7 +90,7 @@ func _process(_delta: float) -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST and not window_close_managed:
 		close()
 	elif what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_refresh_translated_text()
@@ -529,12 +531,14 @@ func keep_changes() -> void:
 	var err: Error = display_preferences.save(_draft)
 	if err != OK:
 		_set_status("save_error", err)
+		feedback_requested.emit(&"reject")
 		return
 	_saved = _draft.duplicate(true)
 	_trial_deadline_msec = 0
 	_set_status("saved")
 	_sync_action_buttons()
 	presentation_committed.emit()
+	feedback_requested.emit(&"saved")
 
 
 func _revert() -> void:
@@ -546,6 +550,7 @@ func _revert() -> void:
 	call_deferred("_refresh_shared_theme")
 	_sync_controls()
 	_set_status("reverted")
+	feedback_requested.emit(&"cancel")
 
 
 func close() -> void:

@@ -58,6 +58,7 @@ HANDOFF_FIXTURE = '''extends "{probe}"
 
 class MockApp extends Node:
 	var flight: Node
+	var _loading_active := false
 
 class MockHome extends Node:
 	var fly_button: Button
@@ -75,6 +76,8 @@ class MockFlight extends Node:
 
 func _run() -> void:
 	var passed := await _deferred_success()
+	if passed:
+		passed = await _staged_success()
 	if passed:
 		passed = await _rejected_launch()
 	if passed:
@@ -154,6 +157,32 @@ func _rejected_launch() -> bool:
 	var checked := _check_case(ok, "rejected launch", str(result))
 	await _discard_app(app)
 	return checked
+
+
+func _staged_success() -> bool:
+	var route := _route()
+	var app: MockApp = route[0]
+	var home: MockHome = route[1]
+	app._loading_active = true
+	var flight := MockFlight.new() # The candidate exists before its session is ready.
+	app.add_child(flight)
+	app.flight = flight
+	app.remove_child(home)
+	_finish_staged_fixture(app, flight)
+	var result: Dictionary = await _wait_for_flight(app, home, 4)
+	var checked := _check_case(result.get("ok", false) and not app._loading_active,
+		"staged success with detached Home and incomplete candidate", str(result))
+	home.free()
+	await _discard_app(app)
+	return checked
+
+
+func _finish_staged_fixture(app: MockApp, flight: MockFlight) -> void:
+	await process_frame
+	await process_frame
+	flight.session = MockSession.new()
+	flight.add_child(flight.session)
+	app._loading_active = false
 
 
 func _cancelled_launch() -> bool:

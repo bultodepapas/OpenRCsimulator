@@ -1,0 +1,8 @@
+{
+  "byte_identical": true,
+  "baseline_size": 784,
+  "candidate_size": 784,
+  "baseline_sha256": "105610a95322c2d1ef1e32e3ebfe2719c254a1ef90e1bd4ab581bfdad1b17d07",
+  "candidate_sha256": "105610a95322c2d1ef1e32e3ebfe2719c254a1ef90e1bd4ab581bfdad1b17d07",
+  "trim_source_after_sha256": "bfaf4786391239fe65d65c505c499073d89f8b648d6bf20768bf963373328ee0"
+}

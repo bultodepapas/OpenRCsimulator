@@ -37,6 +37,8 @@ static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dict
 	var throttle := x[2] if mode == "level" else 0.0
 	var rpm := _rpm(throttle, s, mode, model, rho, engine_charge_ratio)
 	var result: Dictionary = Dynamics.evaluate(s, model, _deflections(x), rpm, rho, M.v3(0, 0, 0), g)
+	if Propulsion.is_electric(model.propulsion):
+		result["rpm"] = rpm
 	# A session may freeze its launch inventory for a static trim query. The original
 	# geometry stays at O; only the force moment and derivative move to the live CM.
 	if model.has("trim_mass_properties"):
@@ -216,7 +218,8 @@ static func _solve_electric_from(mode: String, V: float, model: Dictionary, g: f
 			xp[k] += direction * h
 			if mode == "level" and k == 2 and (xp[k] < 0.0 or xp[k] > 1.0):
 				return _numerical_failure("electric trim duty reached its [0,1] boundary", mode, V, iterations)
-			var perturbed: Dictionary = _evaluate_electric(xp, mode, V, model, g, rho)
+			var perturbed: Dictionary = _evaluate_electric_perturbation(
+				x, xp, evaluation, mode, V, model, g, rho)
 			if not perturbed.get("ok", false):
 				return _numerical_failure("electric trim source equilibrium at a Jacobian probe: " + str(perturbed.get("message", "failed")), mode, V, iterations)
 			var rp: PackedFloat64Array = _residual_from_evaluation(perturbed)
@@ -261,22 +264,44 @@ static func _solve_electric_from(mode: String, V: float, model: Dictionary, g: f
 
 
 static func _evaluate_electric(x: PackedFloat64Array, mode: String, V: float, model: Dictionary,
-		g: float, rho: float) -> Dictionary:
+		g: float, rho: float, reused_rpm := NAN) -> Dictionary:
 	var gamma: float = 0.0 if mode == "level" else x[2]
 	var state: PackedFloat64Array = state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3])
 	var throttle: float = x[2] if mode == "level" else 0.0
 	var rpm: float = 0.0
 	if mode == "level":
-		var velocity: PackedFloat64Array = M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2])
-		var u: float = M.dot(velocity, Propulsion.axis(model.propulsion))
-		var operating_point: Dictionary = Propulsion.steady_operating_point(throttle, u, model.propulsion, rho)
-		if not operating_point.get("ok", false):
-			return {ok = false, message = str(operating_point.get("message", "no stable electric equilibrium")), operating_point = operating_point}
-		rpm = float(operating_point.rpm)
+		if is_finite(float(reused_rpm)):
+			rpm = float(reused_rpm)
+		else:
+			var velocity: PackedFloat64Array = M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2])
+			var u: float = M.dot(velocity, Propulsion.axis(model.propulsion))
+			var operating_point: Dictionary = Propulsion.steady_operating_point(throttle, u, model.propulsion, rho)
+			if not operating_point.get("ok", false):
+				return {ok = false, message = str(operating_point.get("message", "no stable electric equilibrium")), operating_point = operating_point}
+			rpm = float(operating_point.rpm)
 	var result: Dictionary = Dynamics.evaluate(state, model, _deflections(x), rpm, rho, M.v3(0, 0, 0), g)
 	result["ok"] = true
 	result["rpm"] = rpm
 	return result
+
+
+## A level trim's equilibrium RPM depends on alpha, duty, sideslip, speed, propeller and density.
+## Elevator, aileron and rudder perturbations leave those inputs unchanged, so their Jacobian probes
+## reuse the current equilibrium while evaluating the changed aerodynamic controls normally.
+static func _evaluate_electric_perturbation(base_x: PackedFloat64Array, perturbed_x: PackedFloat64Array,
+		base_evaluation: Dictionary, mode: String, V: float, model: Dictionary, g: float, rho: float) -> Dictionary:
+	var reused_rpm: float = NAN
+	if _same_electric_steady_point_inputs(base_x, perturbed_x, mode) \
+			and base_evaluation.get("ok", false) and base_evaluation.has("rpm") \
+			and is_finite(float(base_evaluation.rpm)):
+		reused_rpm = float(base_evaluation.rpm)
+	return _evaluate_electric(perturbed_x, mode, V, model, g, rho, reused_rpm)
+
+
+static func _same_electric_steady_point_inputs(base_x: PackedFloat64Array, candidate_x: PackedFloat64Array,
+		mode: String) -> bool:
+	return mode == "level" and base_x.size() == N and candidate_x.size() == N \
+		and base_x[0] == candidate_x[0] and base_x[2] == candidate_x[2] and base_x[3] == candidate_x[3]
 
 
 static func _residual_from_evaluation(evaluation: Dictionary) -> PackedFloat64Array:
@@ -288,7 +313,7 @@ static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: Stri
 	var gamma := 0.0 if mode == "level" else x[2]
 	var throttle := x[2] if mode == "level" else 0.0
 	var e := _evaluate(x, mode, V, model, g, rho, engine_charge_ratio)
-	var rpm := _rpm(throttle, e.state, mode, model, rho, engine_charge_ratio)
+	var rpm: float = float(e.rpm) if Propulsion.is_electric(model.propulsion) else _rpm(throttle, e.state, mode, model, rho, engine_charge_ratio)
 	var thrust: float = e.propulsion_loads[0]
 	var result: Dictionary = {
 		ok = ok, message = message, mode = mode, V = V,

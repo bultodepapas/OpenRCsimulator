@@ -1,0 +1,125 @@
+{
+  "session": "tmp/debug-bridge/20261024-175735-47870",
+  "viewport": [
+    1920,
+    1080
+  ],
+  "locale_inspected": [
+    "en",
+    "es"
+  ],
+  "screenshots_ignored": [
+    "shots/shot-42612-001.png",
+    "shots/shot-42612-002.png"
+  ],
+  "cancel": "real Cancel button restored Home with Fly focus and no flight",
+  "source": "debug bridge command receipts; times are AppRoot accepted-to-draw/ready, not input hardware latency",
+  "flights": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "kind": "first",
+      "feedback_usec": 9815,
+      "total_usec": 3672498
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "kind": "warm Spanish",
+      "feedback_usec": 9622,
+      "total_usec": 1676872
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "kind": "immediate Fly after selection",
+      "feedback_usec": 16348,
+      "total_usec": 2190321
+    },
+    {
+      "status": "ready",
+      "phases": [
+        {
+          "stage": "Preparing resources",
+          "work_usec": 2251
+        },
+        {
+          "stage": "Preparing flight scene",
+          "work_usec": 4544
+        },
+        {
+          "stage": "Checking landscape",
+          "work_usec": 734
+        },
+        {
+          "stage": "Preparing aircraft",
+          "work_usec": 60892
+        },
+        {
+          "stage": "Preparing world",
+          "work_usec": 894
+        },
+        {
+          "stage": "Building landscape",
+          "work_usec": 1164
+        },
+        {
+          "stage": "Preparing sky",
+          "work_usec": 9501
+        },
+        {
+          "stage": "Preparing field lighting",
+          "work_usec": 15
+        },
+        {
+          "stage": "Finalizing world",
+          "work_usec": 37
+        },
+        {
+          "stage": "Preparing aircraft lighting",
+          "work_usec": 66934
+        },
+        {
+          "stage": "Preparing instruments",
+          "work_usec": 128803
+        },
+        {
+          "stage": "Checking flight",
+          "work_usec": 20738294
+        },
+        {
+          "stage": "Preparing flight model",
+          "work_usec": 18387
+        },
+        {
+          "stage": "Preparing contacts",
+          "work_usec": 3292
+        },
+        {
+          "stage": "Preparing start",
+          "work_usec": 49432
+        },
+        {
+          "stage": "Preparing effects",
+          "work_usec": 32
+        },
+        {
+          "stage": "Preparing sound",
+          "work_usec": 149380
+        },
+        {
+          "stage": "Finishing flight",
+          "work_usec": 19593
+        }
+      ],
+      "aircraft": "turbo-lumber-evolution",
+      "landscape": "green_paradise",
+      "accepted_usec": 95997798,
+      "surface_prepare_usec": 2122,
+      "feedback_usec": 7748,
+      "total_usec": 21387176
+    }
+  ],
+  "shutdown": {
+    "crash": null,
+    "leaked_objects": 0
+  },
+  "script_engine_errors": 0
+}

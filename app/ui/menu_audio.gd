@@ -10,6 +10,7 @@ const MAX_VOICES := 2
 const RANGE_DEBOUNCE_MS := 220
 const NAVIGATION_DEBOUNCE_MS := 140
 const PRESS_DEBOUNCE_MS := 90
+const TAIL_FADE_SECONDS := 0.018
 
 const STREAM_BY_CUE: Dictionary = {
 	&"focus": preload("res://assets/ui/audio/navigation.ogg"),
@@ -20,6 +21,14 @@ const STREAM_BY_CUE: Dictionary = {
 	&"accept": preload("res://assets/ui/audio/accept.ogg"),
 	&"back": preload("res://assets/ui/audio/back.ogg"),
 	&"reject": preload("res://assets/ui/audio/reject.ogg"),
+	&"open": preload("res://assets/ui/audio/open.ogg"),
+	&"pause": preload("res://assets/ui/audio/pause.ogg"),
+	&"resume": preload("res://assets/ui/audio/resume.ogg"),
+	&"restart": preload("res://assets/ui/audio/restart.ogg"),
+	&"exit": preload("res://assets/ui/audio/exit.ogg"),
+	&"quit": preload("res://assets/ui/audio/exit.ogg"),
+	&"cancel": preload("res://assets/ui/audio/back.ogg"),
+	&"saved": preload("res://assets/ui/audio/accept.ogg"),
 }
 
 const GAIN_BY_CUE: Dictionary = {
@@ -31,25 +40,54 @@ const GAIN_BY_CUE: Dictionary = {
 	&"accept": 0.48,
 	&"back": 0.40,
 	&"reject": 0.28,
+	&"open": 0.25,
+	&"pause": 0.30,
+	&"resume": 0.34,
+	&"restart": 0.28,
+	&"exit": 0.32,
+	&"quit": 0.34,
+	&"cancel": 0.28,
+	&"saved": 0.32,
 }
 
-# The seven licensed clips share a small pitch vocabulary. Repeated navigation
-# moves through it, while decisions keep stable, recognizable contours.
-const NAVIGATION_PITCHES: Array[float] = [0.94, 1.0, 1.12, 1.06, 0.98]
-const PRESS_PITCHES: Array[float] = [1.0, 1.035, 0.975]
+# Natural wood/soft impacts from Kenney Impact Sounds. Alternate real takes;
+# small downward pitch offsets preserve the material instead of making a tune.
+const NAVIGATION_STREAMS: Array[AudioStream] = [
+	preload("res://assets/ui/audio/navigation.ogg"),
+	preload("res://assets/ui/audio/navigation_2.ogg"),
+	preload("res://assets/ui/audio/navigation_3.ogg"),
+]
+const NAVIGATION_PITCHES: Array[float] = [0.96, 0.99, 0.97, 1.0, 0.98]
+const PRESS_PITCHES: Array[float] = [1.0, 0.98, 0.96]
 const CUE_PITCH: Dictionary = {
-	&"select": 1.08,
-	&"change": 1.04,
-	&"accept": 1.12,
-	&"back": 0.88,
-	&"reject": 0.78,
+	&"select": 1.0,
+	&"change": 1.0,
+	&"accept": 1.0,
+	&"back": 0.96,
+	&"reject": 0.92,
+	&"open": 1.0,
+	&"pause": 1.0,
+	&"resume": 1.0,
+	&"restart": 0.97,
+	&"exit": 1.0,
+	&"quit": 0.94,
+	&"cancel": 1.0,
+	&"saved": 1.0,
+}
+
+# A concrete outcome wins over incidental screen mounts in the same action.
+# Lower-priority cues in later frames remain valid (e.g. Back after an error).
+const SEMANTIC_PRIORITY: Dictionary = {
+	&"open": 1, &"pause": 1, &"back": 1,
+	&"accept": 2, &"resume": 2, &"cancel": 2, &"saved": 2,
+	&"restart": 3, &"exit": 3, &"reject": 4, &"quit": 5,
 }
 
 const NAVIGATION_ACTIONS: PackedStringArray = [
 	"ui_up", "ui_down", "ui_left", "ui_right", "ui_focus_next", "ui_focus_prev",
 ]
 const RANGE_ACTIONS: PackedStringArray = [
-	"ui_up", "ui_down", "ui_left", "ui_right", "ui_home", "ui_end", "ui_page_up", "ui_page_down",
+	"ui_home", "ui_end", "ui_page_up", "ui_page_down",
 ]
 const EXCLUDED_GROUPS: PackedStringArray = ["flight_only", "flight_input"]
 
@@ -62,10 +100,10 @@ var _dropped_voice_count: int = 0
 var _navigation_step := 0
 var _press_step := 0
 var _voice_started_ms: Array[int] = []
+var _voice_fades: Array[Tween] = []
 
 var _observed_screens: Dictionary = {}
 var _observed_controls: Dictionary = {}
-var _control_screen_ids: Dictionary = {}
 var _last_automatic_ms: Dictionary = {}
 var _last_semantic_frame: int = -1
 var _last_semantic_cue: StringName = &""
@@ -100,6 +138,7 @@ func _ready() -> void:
 		_voices.append(player)
 		_voice_cues.append(&"")
 		_voice_started_ms.append(0)
+		_voice_fades.append(null)
 	set_volume(_volume)
 
 
@@ -107,19 +146,53 @@ func set_top_screen_provider(provider: Callable) -> void:
 	_top_screen_provider = provider
 
 
-## Connects once to controls already built inside a menu screen. Call this after adding
-## each screen to the tree. Flight views should not be passed to this method.
+func _exit_tree() -> void:
+	if get_tree().node_added.is_connected(_on_node_added):
+		get_tree().node_added.disconnect(_on_node_added)
+	for control_id: int in _observed_controls.keys():
+		_on_control_tree_exiting(control_id)
+	for screen_id: int in _observed_screens.keys():
+		var screen := instance_from_id(screen_id) as Control
+		var callback := Callable(self, "_on_screen_tree_exiting").bind(screen_id)
+		if screen != null and screen.tree_exiting.is_connected(callback):
+			screen.tree_exiting.disconnect(callback)
+	_observed_screens.clear()
+
+
+## Observes a mounted menu, including controls added or reparented later.
+## Flight views should not be passed to this method.
 func observe(screen: Control) -> int:
 	if screen == null or not is_instance_valid(screen) or not screen.is_inside_tree():
 		return 0
 	var screen_id := screen.get_instance_id()
-	if _observed_screens.has(screen_id):
-		return 0
-	_observed_screens[screen_id] = weakref(screen)
+	_observed_screens[screen_id] = true
+	if not get_tree().node_added.is_connected(_on_node_added):
+		get_tree().node_added.connect(_on_node_added)
 	var exiting := Callable(self, "_on_screen_tree_exiting").bind(screen_id)
 	if not screen.tree_exiting.is_connected(exiting):
 		screen.tree_exiting.connect(exiting)
 	return _observe_subtree(screen, screen)
+
+
+func _on_node_added(node: Node) -> void:
+	if node is Control:
+		# node_added precedes _ready: wait until focus/mouse properties are configured.
+		_observe_added_control.call_deferred(node.get_instance_id())
+
+
+func _observe_added_control(control_id: int) -> void:
+	if not is_inside_tree():
+		return
+	var control := instance_from_id(control_id) as Control
+	if control == null or not control.is_inside_tree() or control.is_queued_for_deletion():
+		return
+	var ancestor: Node = control
+	while ancestor != null:
+		if _observed_screens.has(ancestor.get_instance_id()):
+			if not _is_excluded(control, ancestor as Control):
+				_connect_control(control, ancestor as Control)
+			return
+		ancestor = ancestor.get_parent()
 
 
 ## Emits a semantic cue such as `&"accept"`, `&"back"`, or `&"reject"`.
@@ -128,9 +201,10 @@ func observe(screen: Control) -> int:
 func play(cue: StringName, source: Object = null) -> bool:
 	if not STREAM_BY_CUE.has(cue):
 		return false
-	if cue == &"accept" or cue == &"back" or cue == &"reject":
-		if _last_semantic_frame == Engine.get_process_frames() and _last_semantic_cue == cue:
-			return false # one transition may mount several nested surfaces in the same frame
+	if _is_semantic_cue(cue):
+		if _last_semantic_frame == Engine.get_process_frames():
+			if _last_semantic_cue == cue or int(SEMANTIC_PRIORITY[_last_semantic_cue]) > int(SEMANTIC_PRIORITY[cue]):
+				return false
 		_last_semantic_frame = Engine.get_process_frames()
 		_last_semantic_cue = cue
 	return _request_cue(cue, source)
@@ -142,8 +216,10 @@ func set_volume(normalized: float) -> void:
 		return
 	_volume = clampf(normalized, 0.0, 1.0)
 	for voice_index: int in range(_voices.size()):
-		_update_voice_volume(voice_index)
+		if _voice_fades[voice_index] == null:
+			_update_voice_volume(voice_index)
 		if _volume <= 0.0:
+			_cancel_fade(voice_index)
 			_voices[voice_index].stop()
 
 
@@ -157,6 +233,19 @@ func cue_count(cue: StringName) -> int:
 
 func dropped_voice_count() -> int:
 	return _dropped_voice_count
+
+
+## Bounded native tail after a committed Quit. Silent/test routes close immediately.
+## Called only after play("quit"), never before the user's save/discard decisions.
+func shutdown_delay() -> float:
+	var master := AudioServer.get_bus_index(&"Master")
+	if _volume <= 0.0 or AudioServer.get_driver_name() == "Dummy" \
+		or AudioServer.is_bus_mute(master) or AudioServer.get_bus_volume_db(master) <= -60.0:
+		return 0.0
+	for index: int in range(_voices.size()):
+		if _voice_cues[index] == &"quit" and _voices[index].playing:
+			return minf(_voices[index].stream.get_length() / _voices[index].pitch_scale + 0.06, 0.5)
+	return 0.0
 
 
 func _observe_subtree(node: Node, screen: Control) -> int:
@@ -176,41 +265,38 @@ func _connect_control(control: Control, screen: Control) -> bool:
 	var control_id := control.get_instance_id()
 	if _observed_controls.has(control_id):
 		return false
-	var connected := false
+	var connections: Array[Dictionary] = []
 	if control.focus_mode != Control.FOCUS_NONE:
-		var focus_callback := Callable(self, "_on_control_focused").bind(control, screen)
-		if not control.focus_entered.is_connected(focus_callback):
-			control.focus_entered.connect(focus_callback)
-		connected = true
+		_connect_control_signal(control, &"focus_entered", &"_on_control_focused", screen, connections)
 	var pointer_target := control is BaseButton or control is Range
 	if pointer_target and control.mouse_filter != Control.MOUSE_FILTER_IGNORE:
-		var hover_callback := Callable(self, "_on_control_hovered").bind(control, screen)
-		if not control.mouse_entered.is_connected(hover_callback):
-			control.mouse_entered.connect(hover_callback)
-		connected = true
+		_connect_control_signal(control, &"mouse_entered", &"_on_control_hovered", screen, connections)
 	if control is BaseButton:
-		var press_callback := Callable(self, "_on_button_pressed").bind(control, screen)
-		if not (control as BaseButton).pressed.is_connected(press_callback):
-			(control as BaseButton).pressed.connect(press_callback)
-		connected = true
+		_connect_control_signal(control, &"pressed", &"_on_button_pressed", screen, connections)
 	if control is OptionButton:
-		var selection_callback := Callable(self, "_on_option_selected").bind(control, screen)
-		if not (control as OptionButton).item_selected.is_connected(selection_callback):
-			(control as OptionButton).item_selected.connect(selection_callback)
-		connected = true
+		_connect_control_signal(control, &"item_selected", &"_on_option_selected", screen, connections)
 	if control is Range:
-		var range_callback := Callable(self, "_on_range_changed").bind(control, screen)
-		if not (control as Range).value_changed.is_connected(range_callback):
-			(control as Range).value_changed.connect(range_callback)
-		connected = true
-	if not connected:
+		_connect_control_signal(control, &"value_changed", &"_on_range_changed", screen, connections)
+	if connections.is_empty():
 		return false
-	_observed_controls[control_id] = weakref(control)
-	_control_screen_ids[control_id] = screen.get_instance_id()
+	# Property names are structural; values remain live (e.g. a slider becoming read-only).
+	var checks: Array[StringName] = []
+	for property_info: Dictionary in control.get_property_list():
+		var property_name := StringName(property_info.get("name", ""))
+		if property_name == &"editable" or property_name == &"disabled":
+			checks.append(property_name)
 	var exiting_callback := Callable(self, "_on_control_tree_exiting").bind(control_id)
-	if not control.tree_exiting.is_connected(exiting_callback):
-		control.tree_exiting.connect(exiting_callback)
+	control.tree_exiting.connect(exiting_callback)
+	connections.append({event_signal = control.tree_exiting, callback = exiting_callback})
+	_observed_controls[control_id] = {checks = checks, connections = connections}
 	return true
+
+
+func _connect_control_signal(control: Control, signal_name: StringName, handler: StringName,
+		screen: Control, connections: Array[Dictionary]) -> void:
+	var callback := Callable(self, handler).bind(control, screen)
+	control.connect(signal_name, callback)
+	connections.append({event_signal = Signal(control, signal_name), callback = callback})
 
 
 func _is_excluded(node: Node, screen: Control) -> bool:
@@ -273,7 +359,7 @@ func _range_was_user_adjusted(range_control: Range) -> bool:
 		return false
 	if _current_input_kind == &"pointer_button" or _current_input_kind == &"pointer_drag" or _current_input_kind == &"pointer_wheel":
 		return range_control.get_global_rect().has_point(_pointer_position)
-	if _current_input_kind != &"navigation":
+	if _current_input_kind != &"navigation" and _current_input_kind != &"range":
 		return false
 	var focus_owner := get_viewport().gui_get_focus_owner()
 	if focus_owner == null or (focus_owner != range_control and not range_control.is_ancestor_of(focus_owner)):
@@ -289,12 +375,15 @@ func _play_automatic(cue: StringName, control: Control, screen: Control, debounc
 			return false
 	var source_id := control.get_instance_id()
 	var shared_cue := &"navigation" if cue == &"focus" or cue == &"hover" else cue
-	var key := "%d:%s" % [source_id, String(shared_cue)]
+	var previous: Dictionary = _last_automatic_ms.get(source_id, {})
 	var now_ms := Time.get_ticks_msec()
-	if now_ms - int(_last_automatic_ms.get(key, -1000000)) < debounce_ms:
+	if now_ms - int(previous.get(shared_cue, -1000000)) < debounce_ms:
 		return false
-	_last_automatic_ms[key] = now_ms
-	return _request_cue(cue, control)
+	if not _request_cue(cue, control):
+		return false
+	previous[shared_cue] = now_ms
+	_last_automatic_ms[source_id] = previous
+	return true
 
 
 func _is_eligible(control: Control, screen: Control) -> bool:
@@ -312,10 +401,10 @@ func _is_eligible(control: Control, screen: Control) -> bool:
 			return false
 	else:
 		return false
-	if control is BaseButton and (control as BaseButton).disabled:
+	var observed: Dictionary = _observed_controls.get(control.get_instance_id(), {})
+	if observed.is_empty():
 		return false
-	for property_info: Dictionary in control.get_property_list():
-		var property_name := StringName(property_info.get("name", ""))
+	for property_name: StringName in observed.checks:
 		if property_name == &"editable" and not bool(control.get(property_name)):
 			return false
 		if property_name == &"disabled" and bool(control.get(property_name)):
@@ -325,8 +414,14 @@ func _is_eligible(control: Control, screen: Control) -> bool:
 
 func _request_cue(cue: StringName, source: Object = null) -> bool:
 	var stream: AudioStream = STREAM_BY_CUE.get(cue)
-	if stream == null:
+	if stream == null or _voices.is_empty():
 		return false
+	# Browsing never talks over the outcome the pilot is trying to understand.
+	if not _is_semantic_cue(cue):
+		for index: int in range(_voices.size()):
+			if _voices[index].playing and _is_semantic_cue(_voice_cues[index]):
+				_dropped_voice_count += 1
+				return false
 	var available_voice := -1
 	for voice_index: int in range(_voices.size()):
 		if not _voices[voice_index].playing:
@@ -349,7 +444,13 @@ func _request_cue(cue: StringName, source: Object = null) -> bool:
 		_dropped_voice_count += 1
 		return false
 	var player := _voices[available_voice]
-	player.stream = stream
+	_cancel_fade(available_voice)
+	if _is_semantic_cue(cue):
+		for index: int in range(_voices.size()):
+			if index != available_voice and _voices[index].playing:
+				_retire_voice(index)
+	player.stream = NAVIGATION_STREAMS[_navigation_step % NAVIGATION_STREAMS.size()] \
+		if cue == &"focus" or cue == &"hover" else stream
 	player.pitch_scale = _pitch_for(cue)
 	_voice_cues[available_voice] = cue
 	_voice_started_ms[available_voice] = Time.get_ticks_msec()
@@ -375,7 +476,24 @@ func _pitch_for(cue: StringName) -> float:
 
 
 func _is_semantic_cue(cue: StringName) -> bool:
-	return cue == &"accept" or cue == &"back" or cue == &"reject"
+	return SEMANTIC_PRIORITY.has(cue)
+
+
+func _cancel_fade(index: int) -> void:
+	if _voice_fades[index] != null:
+		_voice_fades[index].kill()
+		_voice_fades[index] = null
+
+
+func _retire_voice(index: int) -> void:
+	_cancel_fade(index)
+	var fade := create_tween()
+	fade.set_ignore_time_scale(true)
+	_voice_fades[index] = fade
+	fade.tween_property(_voices[index], "volume_db", -80.0, TAIL_FADE_SECONDS)
+	fade.tween_callback(func() -> void:
+		_voices[index].stop()
+		_voice_fades[index] = null)
 
 
 func _update_voice_volume(voice_index: int) -> void:
@@ -409,6 +527,9 @@ func _input(event: InputEvent) -> void:
 	if _event_matches_actions(event, NAVIGATION_ACTIONS):
 		_current_input_frame = frame
 		_current_input_kind = &"navigation"
+	elif _event_matches_actions(event, RANGE_ACTIONS):
+		_current_input_frame = frame
+		_current_input_kind = &"range"
 
 
 func _event_matches_actions(event: InputEvent, actions: PackedStringArray) -> bool:
@@ -420,11 +541,15 @@ func _event_matches_actions(event: InputEvent, actions: PackedStringArray) -> bo
 
 func _on_screen_tree_exiting(screen_id: int) -> void:
 	_observed_screens.erase(screen_id)
+	if _observed_screens.is_empty() and get_tree().node_added.is_connected(_on_node_added):
+		get_tree().node_added.disconnect(_on_node_added)
 
 
 func _on_control_tree_exiting(control_id: int) -> void:
+	var observed: Dictionary = _observed_controls.get(control_id, {})
+	for connection: Dictionary in observed.get("connections", []):
+		var control_signal: Signal = connection.event_signal
+		if control_signal.is_connected(connection.callback):
+			control_signal.disconnect(connection.callback)
 	_observed_controls.erase(control_id)
-	_control_screen_ids.erase(control_id)
-	for key: Variant in _last_automatic_ms.keys():
-		if String(key).begins_with("%d:" % control_id):
-			_last_automatic_ms.erase(key)
+	_last_automatic_ms.erase(control_id)

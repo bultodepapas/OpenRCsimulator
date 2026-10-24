@@ -48,7 +48,7 @@ func _run() -> void:
 	var settings: CanvasLayer = app.screens.get_screen("settings") as CanvasLayer
 	await ui.settle()
 	_check("Home Settings button opens the Settings screen", settings != null and app.screens.is_top("settings"))
-	_check("opening Settings emits one accept and no automatic press", app.menu_audio.cue_count(&"accept") == 1
+	_check("opening Settings emits one open and no automatic press", app.menu_audio.cue_count(&"open") == 1
 		and app.menu_audio.cue_count(&"press") == 0)
 	settings._category_buttons[2].grab_focus()
 	await ui.tap(KEY_ENTER)
@@ -66,6 +66,26 @@ func _run() -> void:
 	settings._revert_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("Revert restores live menu volume", is_equal_approx(app.menu_audio.get_volume(), DisplayPreferences.DEFAULTS.menu_volume))
+	_check("reverting previews has cancellation feedback", app.menu_audio.cue_count(&"cancel") == 1)
+	# A failed disk transaction must never sound like a successful Keep.
+	settings._volume_changed(0.55)
+	app.display_preferences.writable = false
+	await process_frame
+	var rejected_before: int = app.menu_audio.cue_count(&"reject")
+	var saved_before: int = app.menu_audio.cue_count(&"saved")
+	settings.keep_changes()
+	_check("failed Keep sounds an error and leaves the preview unsaved",
+		app.menu_audio.cue_count(&"reject") == rejected_before + 1
+		and app.menu_audio.cue_count(&"saved") == saved_before and settings._draft != settings._saved)
+	app.display_preferences.writable = true
+	await process_frame
+	settings.keep_changes()
+	_check("successful retry sounds saved only after persistence",
+		app.menu_audio.cue_count(&"saved") == saved_before + 1
+		and is_equal_approx(DisplayPreferences.load_from(PREFS + ".display").menu_volume, 0.55))
+	await process_frame
+	settings._volume_changed(DisplayPreferences.DEFAULTS.menu_volume)
+	settings.keep_changes()
 	# AUD-12b: the game volume drives the Master bus live, through the real app presentation path.
 	var master_bus: int = AudioServer.get_bus_index(&"Master")
 	settings._master_slider.grab_focus()
@@ -234,12 +254,12 @@ func _run() -> void:
 	await _wait(0.2)
 	_check("closing Settings returns to Pause without resuming or advancing ticks",
 		app.screens.is_top("pause") and session.sim.tick == held_tick and session.holds.has("menu") and session.sim.paused)
-	var accepted_before: int = app.menu_audio.cue_count(&"accept")
+	var accepted_before: int = app.menu_audio.cue_count(&"resume")
 	var backs_before: int = app.menu_audio.cue_count(&"back")
 	app.continue_flight()
 	await ui.settle()
-	_check("Resume emits acceptance and releases only through the explicit action", app.screens.top() == null
-		and not session.sim.paused and app.menu_audio.cue_count(&"accept") == accepted_before + 1
+	_check("Resume emits its own cue and releases only through the explicit action", app.screens.top() == null
+		and not session.sim.paused and app.menu_audio.cue_count(&"resume") == accepted_before + 1
 		and app.menu_audio.cue_count(&"back") == backs_before)
 
 	await ui.close_app(app)

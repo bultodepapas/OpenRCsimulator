@@ -1,5 +1,50 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-34c-R1 — Home/Fly loading audit, 2026-10-24
+
+[Native 1080p audit and measurements](UI-34c-R1/README.md): first Stik Fly blocks one frame for 4.67 s; five warm repeats have a 1.73 s median maximum frame. The existing loading probe separately records 4.64 s to the first draw (paused), then 2.04/2.33 s on active warm draws. Audited button feedback, cache boundaries, rejected preloading and source-tree limits are explicit. This audit contains no runtime changes or screenshots.
+
+## UI-34c-R2/R3/R4 — Home/Fly implementation, 2026-10-24
+
+[Implementation and verification](UI-34c-R2/README.md): owned EN/ES loading surface, rendered acknowledgement, cancellation/rollback, shared World/Field stages, selected-resource handoff and bounded exact trim reuse. Native 1080p samples, 20-cycle lifecycle results, software parity and focused checks are retained with explicit limits. The [execution plan](../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a) keeps unresolved cold-loading and package qualification gates open.
+
+## UI-22-R11 — bounded work and equivalent shader output, 2026-10-24
+
+The owner requested efficiency, simpler ownership and clearer interaction logic. This pass preserves the existing material and nominal animation timings while removing redundant work. Baseline source was captured from `b8d251803db93a69484743ed6562bc4cdbdc1156` before editing.
+
+- Pointer events update one pending destination; a deferred flush creates one replacement tween for the burst. It reads the latest position, skips a no-op destination and cannot restart cancelled work after suspension or a material-role change.
+- The controller caches its Button/primary role, connects pointer input only where consumed, omits unused panel-energy and secondary-press channels, and centralizes valid-tween replacement. Settlement is idempotent; no new frame-processing loop was introduced.
+- Shader contour/lighting calculations are scoped to panels and enabled primary glass. Inactive/disabled secondary actions use the neutral path; unused sweeps and pointer lighting are skipped. The pointer Gaussian uses squared distance directly.
+- Review also found two focus edge cases: pointer exit now centers the light when keyboard/gamepad focus remains, and switching material kind re-engages a still-focused/hovered action. Native geometry, input and focus ownership are unchanged.
+
+Measured results on Windows / NVIDIA RTX 3090 / OpenGL Compatibility:
+
+| Check | Before | After |
+| --- | ---: | ---: |
+| Distinct pointer Tween instances for 200 synchronous target changes | 200 | 1 |
+| Final pointer target in that burst | (0.697, 0.25) | (0.697, 0.25) |
+| Shader comparison: 108 paired cases, 3,640,320 RGB pixels | Baseline | 0 differing pixels; maximum channel error 0 |
+
+The shader comparison uses equal SubViewports and uniforms for three material kinds, six interaction states, black/white backdrops and three surface sizes. Both versions render in the same process. It establishes equality for those sampled states, not every possible input. The allocation result is a burst test, not a frame-rate or whole-application memory benchmark; no FPS gain or performance qualification is claimed.
+
+Checked-runner verification: `test_ui_crystal.gd` passed 43 native and 36 headless assertions; `test_ui_home.gd` and `test_ui_settings_integration.gd` passed. Regression coverage now bounds pointer allocation, checks pending-work cancellation after a frame, validates focus recentering and live role changes, and retains rendered contrast, reduced motion, native activation and teardown gates. A read-only review checked pending-pointer and settlement invariants. Local source snapshots, benchmark scripts, parity probe and checked logs live under ignored `tmp/ui-r11-efficiency/`; no images or new dependencies were added to the repository.
+
+## UI-22-R10 — hover, focus and activation feedback, 2026-10-24
+
+The owner requested better pointer, controller-navigation and selection feedback while retaining R9's thin glass. Supported standard Button subclasses now use interruptible state-color transitions, with a separate neutral shader branch for secondary actions. Native focus/selection markers, glyphs, activation, layout and hit areas retain ownership. Primary glass adds pointer-local edge light; hover and focus acquisition share one sweep. Native activation has a bounded rim pulse, separate from press/release shading so a cancelled click never confirms. [Current timings and behavior](../../MENU-REDESIGN-PLAN.md#color-and-surfaces).
+
+Implementation uses the existing [Button styles](https://docs.godotengine.org/en/4.7/classes/class_button.html), [BaseButton signals](https://docs.godotengine.org/en/4.7/classes/class_basebutton.html) and [node-bound Tween cancellation](https://docs.godotengine.org/en/4.7/classes/class_tween.html). One tween owns each animated parameter; interruption starts at its current value. No new assets, dependencies, automatic shader clock or per-frame effect processing were added. Destructive actions keep a red response. A read-only review identified invisible-surface animation, which was fixed by settling unsupported/flat styles and gating animation on visibility; the follow-up found no remaining concrete defect.
+
+Checked-runner passes in `tmp/ui-r10-checks/`:
+
+- `test_ui_crystal.gd`: 38 native assertions and 31 headless assertions. New coverage sends native mouse/key/selected-gamepad events for pointer tracking, duplicate hover/focus suppression, click cancellation, one activation, D-pad navigation and toggle selection. It also covers interrupted color fades, all-channel reduced motion, suspension, custom/flat styles and teardown. Existing rendered text/focus contrast over white still passes.
+- `test_ui_home.gd` and `test_ui_settings_integration.gd`: routing, language/text-scale behavior, live preferences, nested menus and focus restoration passed.
+- `test_controller_sections.gd`: 105/105 checks, including selected-device navigation and rejection of another controller. These are injected native input events, not a physical-controller hardware qualification.
+
+Native Windows / NVIDIA RTX 3090 / OpenGL Compatibility captures were inspected at 1920×1080: focused primary action, pointer at both sides, held/cancelled press, secondary navigation, Settings toggles, reduced motion, opaque glass and the native option popup. Successful session `tmp/debug-bridge/20261024-171812-47870/` had no engine/script/shader errors and stopped with no crash or leaked objects. An initial launch encountered newly added parallel audio assets without an import cache; the existing import command completed and the next launch succeeded. Settings previews were discarded; the isolated profile's Spanish language was restored. Full-suite and performance qualification remain outside this check.
+
+Screenshots and reproducible bridge scripts are ignored under `tmp/ui-r10-interaction-captures/`; none are committed or shipped.
+
 ## UI-22-R9 — ten thinner glass variants, 2026-10-24
 
 The owner requested ten combinations with thinner edges, more transparency and fewer effects. All ten were applied to the real Home Fly button through the debug bridge and captured at 1920×1080 in rest and settled hover states. A local HTML comparison shows the original screenshot regions at 1:1 scale and links to the complete captures. Background materials were unchanged. The experiment used the same dark body color/opacity across interaction states to isolate the optical controls; production retains its separate hover/pressed colors and slightly higher opacities.

@@ -1,0 +1,22 @@
+{
+	"captures": [
+		{
+			"error": 0,
+			"name": "quit-tail",
+			"nonzero": 31840,
+			"peak": 0.107025146484375,
+			"rate": 48000,
+			"rms": 0.00845235500351575,
+			"seconds": 0.597333333333333
+		}
+	],
+	"cues": [],
+	"driver": "WASAPI",
+	"ok": true,
+	"quit_tail": {
+		"calls": 1,
+		"elapsed_ms": 606,
+		"input_locked": true,
+		"waited": true
+	}
+}

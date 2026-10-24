@@ -114,8 +114,9 @@ func _check_solver_and_cache(cache: Variant, arguments: Array) -> void:
 	var cold: Dictionary = _call_cache(cache, arguments)
 	_check("cold Stik result equals raw result byte-for-byte", var_to_bytes(cold) == raw_bytes)
 	var after_cold: Dictionary = cache.stats()
-	_check("first call is a miss and retains one bounded key",
+	_check("first call is a miss and retains one of two bounded keys",
 		after_cold.misses == 1 and after_cold.hits == 0 and after_cold.has_entry
+			and after_cold.entries == 1 and after_cold.entry_limit == 2
 			and after_cold.retained_key_bytes <= after_cold.retained_key_limit_bytes)
 	var retained_base_key_bytes: int = int(after_cold.retained_key_bytes)
 
@@ -186,7 +187,7 @@ func _check_solver_and_cache(cache: Variant, arguments: Array) -> void:
 	_check("base entry still hits after both bypasses", var_to_bytes(base_after_bypasses) == raw_bytes
 		and cache.stats().hits == 4)
 
-	# Alter an unused model identity field: raw trim stays successful, while the complete tuple gets a new slot.
+	# Alter an unused model identity field: raw trim stays successful, while the exact complete tuple gets a second entry.
 	var replacement: Array = arguments.duplicate(true)
 	var replacement_model: Dictionary = arguments[3].duplicate(true)
 	replacement_model["id"] = str(replacement_model.get("id", AIRCRAFT_ID)) + "-cache-replacement"
@@ -199,21 +200,134 @@ func _check_solver_and_cache(cache: Variant, arguments: Array) -> void:
 		var replacement_cold: Dictionary = _call_cache(cache, replacement)
 		_check("different full-model tuple is a successful cold miss",
 			var_to_bytes(replacement_cold) == var_to_bytes(replacement_raw)
-			and cache.stats().misses == misses_before_replacement + 1)
+			and cache.stats().misses == misses_before_replacement + 1
+			and cache.stats().entries == 2 and cache.stats().entry_limit == 2)
 		var replacement_hit: Dictionary = _call_cache(cache, replacement)
-		_check("replacement tuple hits its one retained entry",
+		_check("replacement tuple hits its exact retained entry",
 			var_to_bytes(replacement_hit) == var_to_bytes(replacement_raw)
 			and cache.stats().hits == 5)
 		var misses_before_base_again: int = int(cache.stats().misses)
 		var base_again: Dictionary = _call_cache(cache, arguments)
-		_check("one-entry cache replaced the previous tuple",
+		_check("two-entry cache still hits the original exact tuple",
 			var_to_bytes(base_again) == raw_bytes
-			and cache.stats().misses == misses_before_base_again + 1)
+			and cache.stats().misses == misses_before_base_again
+			and cache.stats().hits == 6 and cache.stats().entries == 2)
+
+		# A failure cannot replace or evict either successful entry.
+		var two_entry_invalid: Array = arguments.duplicate(true)
+		two_entry_invalid[1] = -1.0
+		var misses_before_two_entry_failure: int = int(cache.stats().misses)
+		var hits_before_two_entry_failure: int = int(cache.stats().hits)
+		var invalid_a: Dictionary = _call_cache(cache, two_entry_invalid)
+		var invalid_b: Dictionary = _call_cache(cache, two_entry_invalid)
+		_check("two-entry failures are recomputed and not cached",
+			not invalid_a.get("ok", true) and not invalid_b.get("ok", true)
+			and cache.stats().misses == misses_before_two_entry_failure + 2
+			and cache.stats().hits == hits_before_two_entry_failure
+			and cache.stats().entries == 2)
+		var base_after_failures: Dictionary = _call_cache(cache, arguments)
+		var replacement_after_failures: Dictionary = _call_cache(cache, replacement)
+		_check("failures preserve both successful deep-copied entries",
+			var_to_bytes(base_after_failures) == raw_bytes
+			and var_to_bytes(replacement_after_failures) == var_to_bytes(replacement_raw)
+			and cache.stats().entries == 2)
+		# Make A most recently used and B least recently used before adding C.
+		var base_lru_touch: Dictionary = _call_cache(cache, arguments)
+		_check("exact A hit refreshes LRU order", var_to_bytes(base_lru_touch) == raw_bytes)
+
+		var third: Array = arguments.duplicate(true)
+		var third_model: Dictionary = arguments[3].duplicate(true)
+		third_model["id"] = str(third_model.get("id", AIRCRAFT_ID)) + "-cache-third"
+		third[3] = third_model
+		var third_raw: Dictionary = _call_solver(third)
+		_check("third distinct full-model tuple is a successful raw solve", third_raw.get("ok", false),
+			str(third_raw.get("message", "")))
+		if third_raw.get("ok", false):
+			var misses_before_third: int = int(cache.stats().misses)
+			var third_cold: Dictionary = _call_cache(cache, third)
+			_check("third tuple inserts while retention remains exactly bounded at two",
+				var_to_bytes(third_cold) == var_to_bytes(third_raw)
+				and cache.stats().misses == misses_before_third + 1
+				and cache.stats().entries == 2 and cache.stats().entry_limit == 2
+				and cache.stats().retained_key_bytes <= cache.stats().retained_key_limit_bytes)
+		var hits_before_base_after_third: int = int(cache.stats().hits)
+		var misses_before_base_after_third: int = int(cache.stats().misses)
+		var base_after_third: Dictionary = _call_cache(cache, arguments)
+		_check("LRU eviction keeps recently used A after C inserts",
+			var_to_bytes(base_after_third) == raw_bytes
+			and cache.stats().hits == hits_before_base_after_third + 1
+			and cache.stats().misses == misses_before_base_after_third)
+		var misses_before_evicted: int = int(cache.stats().misses)
+		var replacement_after_eviction: Dictionary = _call_cache(cache, replacement)
+		_check("least-recently-used B is evicted and exact reuse becomes a miss",
+			var_to_bytes(replacement_after_eviction) == var_to_bytes(replacement_raw)
+			and cache.stats().misses == misses_before_evicted + 1
+			and cache.stats().entries == 2)
 	var final_stats: Dictionary = cache.stats()
-	_check("retention remains one bounded entry", final_stats.has_entry
+	_check("retention remains two-entry and aggregate-byte bounded", final_stats.has_entry
+		and final_stats.entries <= final_stats.entry_limit and final_stats.entry_limit == 2
 		and final_stats.retained_key_bytes <= final_stats.retained_key_limit_bytes)
+	cache.clear()
+	var cleared_stats: Dictionary = cache.stats()
+	_check("clear invalidates both entries and resets cache statistics",
+		not cleared_stats.has_entry and cleared_stats.entries == 0
+		and cleared_stats.retained_key_bytes == 0 and cleared_stats.hits == 0
+		and cleared_stats.misses == 0 and cleared_stats.bypasses == 0)
+	var after_clear: Dictionary = _call_cache(cache, arguments)
+	_check("exact tuple after clear is a cold miss again",
+		var_to_bytes(after_clear) == raw_bytes and cache.stats().misses == 1
+		and cache.stats().hits == 0 and cache.stats().entries == 1)
+	_check_aggregate_key_byte_budget(arguments)
 	print("Stik trim-cache fixture: %d checks, %d failures; stats=%s" % [
 		checks, failures, str(cache.stats())])
+
+
+func _check_aggregate_key_byte_budget(arguments: Array) -> void:
+	var cache := Cache.new()
+	var payload_size: int = int(cache.MAX_RETAINED_KEY_BYTES * 0.6)
+	var padded_a: Array = arguments.duplicate(true)
+	var model_a: Dictionary = arguments[3].duplicate(true)
+	var payload_a := PackedByteArray()
+	payload_a.resize(payload_size)
+	model_a["cache_probe_payload"] = payload_a
+	model_a["cache_probe_id"] = "aggregate-budget-a"
+	padded_a[3] = model_a
+	var padded_b: Array = arguments.duplicate(true)
+	var model_b: Dictionary = arguments[3].duplicate(true)
+	var payload_b := PackedByteArray()
+	payload_b.resize(payload_size)
+	model_b["cache_probe_payload"] = payload_b
+	model_b["cache_probe_id"] = "aggregate-budget-b"
+	padded_b[3] = model_b
+	var encoded_a: Dictionary = cache._encode_arguments(padded_a)
+	var encoded_b: Dictionary = cache._encode_arguments(padded_b)
+	var key_a: PackedByteArray = encoded_a.key if encoded_a.get("ok", false) else PackedByteArray()
+	var key_b: PackedByteArray = encoded_b.key if encoded_b.get("ok", false) else PackedByteArray()
+	_check("two individually admissible exact keys exceed the aggregate byte budget",
+		encoded_a.get("ok", false) and encoded_b.get("ok", false)
+		and key_a.size() <= cache.MAX_RETAINED_KEY_BYTES
+		and key_b.size() <= cache.MAX_RETAINED_KEY_BYTES
+		and key_a.size() + key_b.size() > cache.MAX_RETAINED_KEY_BYTES,
+		"key bytes=%d+%d cap=%d" % [key_a.size(), key_b.size(), cache.MAX_RETAINED_KEY_BYTES])
+	var result_a: Dictionary = _call_cache(cache, padded_a)
+	var result_b: Dictionary = _call_cache(cache, padded_b)
+	_check("byte-budget insertion retains only the newest key after aggregate overflow",
+		result_a.get("ok", false) and result_b.get("ok", false)
+		and cache.stats().entries == 1 and cache.stats().entry_limit == 2
+		and cache.stats().retained_key_bytes == key_b.size()
+		and cache.stats().retained_key_bytes <= cache.stats().retained_key_limit_bytes)
+	var hits_before_b: int = int(cache.stats().hits)
+	var cached_b: Dictionary = _call_cache(cache, padded_b)
+	_check("aggregate-byte eviction keeps the newest exact key reusable",
+		var_to_bytes(cached_b) == var_to_bytes(result_b)
+		and cache.stats().hits == hits_before_b + 1)
+	var misses_before_a: int = int(cache.stats().misses)
+	var recomputed_a: Dictionary = _call_cache(cache, padded_a)
+	_check("aggregate-byte cap evicts the older admissible key",
+		var_to_bytes(recomputed_a) == var_to_bytes(result_a)
+		and cache.stats().misses == misses_before_a + 1
+		and cache.stats().entries == 1
+		and cache.stats().retained_key_bytes == key_a.size())
 
 
 func _call_solver(arguments: Array) -> Dictionary:

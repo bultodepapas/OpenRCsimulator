@@ -1,0 +1,1039 @@
+{
+  "scope": "UI-28 menu audio engineering review, 2026-10-24",
+  "routing_tests": [
+    {
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_menu_audio.gd"
+      ],
+      "started_utc": "2026-10-24T22:32:52.557464+00:00",
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 0.875,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": []
+    },
+    {
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_settings_ui.gd"
+      ],
+      "started_utc": "2026-10-24T22:32:53.609944+00:00",
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 6.906,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": []
+    },
+    {
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_settings_integration.gd"
+      ],
+      "started_utc": "2026-10-24T22:33:00.705771+00:00",
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 14.657,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": []
+    },
+    {
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_pause.gd"
+      ],
+      "started_utc": "2026-10-24T22:33:15.552109+00:00",
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 38.5,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": []
+    },
+    {
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_quit.gd"
+      ],
+      "started_utc": "2026-10-24T22:32:12.696571+00:00",
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 16.89,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": []
+    }
+  ],
+  "native_before_deadline": {
+    "checked_runner": {
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "WASAPI",
+        "--max-fps",
+        "120",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tools/audio/menu_probe.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/menu-audio-review/native-2026-10-24"
+      ],
+      "started_utc": "2026-10-24T22:34:16.261248+00:00",
+      "ok": false,
+      "reason": "process_exit",
+      "elapsed_seconds": 32.328,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": []
+    },
+    "mixer": {
+      "captures": [
+        {
+          "error": 0,
+          "name": "menu-35",
+          "nonzero": 430314,
+          "peak": 0.147308349609375,
+          "rate": 48000,
+          "rms": 0.00772590460786807,
+          "seconds": 8.288,
+          "tail_silence_ms": 176.0
+        },
+        {
+          "error": 0,
+          "name": "menu-100",
+          "nonzero": 433914,
+          "peak": 0.420928955078125,
+          "rate": 48000,
+          "rms": 0.0220941850275512,
+          "seconds": 8.23466666666667,
+          "tail_silence_ms": 164.979166666667
+        },
+        {
+          "error": 0,
+          "name": "menu-0",
+          "nonzero": 0,
+          "peak": 0.0,
+          "rate": 48000,
+          "rms": 0.0,
+          "seconds": 8.21333333333333,
+          "tail_silence_ms": 8213.33333333333
+        },
+        {
+          "error": 0,
+          "name": "quit-tail-1",
+          "nonzero": 30304,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0115472130117111,
+          "seconds": 0.32,
+          "tail_silence_ms": 0.0
+        },
+        {
+          "error": 0,
+          "name": "quit-tail-0",
+          "nonzero": 31840,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0103985044219669,
+          "seconds": 0.394666666666667,
+          "tail_silence_ms": 58.6666666666667
+        },
+        {
+          "error": 0,
+          "name": "quit-tail-16",
+          "nonzero": 31840,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0103985044219669,
+          "seconds": 0.394666666666667,
+          "tail_silence_ms": 58.6666666666667
+        }
+      ],
+      "cues": [
+        {
+          "accepted": true,
+          "cue": "focus",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "hover",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "press",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "select",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "change",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "open",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "back",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "pause",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "resume",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "accept",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "saved",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "cancel",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "restart",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "reject",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "exit",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "quit",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "focus",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "hover",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "press",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "select",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "change",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "open",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "back",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "pause",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "resume",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "accept",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "saved",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "cancel",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "restart",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "reject",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "exit",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "quit",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "focus",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "hover",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "press",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "select",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "change",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "open",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "back",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "pause",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "resume",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "accept",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "saved",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "cancel",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "restart",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "reject",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "exit",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "quit",
+          "level": 0.0
+        }
+      ],
+      "driver": "WASAPI",
+      "ok": false,
+      "quit_tails": [
+        {
+          "calls": 1,
+          "elapsed_ms": 326,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "time_scale": 1.0,
+          "waited": true
+        },
+        {
+          "calls": 1,
+          "elapsed_ms": 392,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "time_scale": 0.0,
+          "waited": true
+        },
+        {
+          "calls": 1,
+          "elapsed_ms": 391,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "time_scale": 16.0,
+          "waited": true
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Routing suites and final native capture passed through the checked runner. Concurrent landscape staging caused one intermediate compile failure; that rejected run is retained separately.",
+    "No frame-rate, hardware latency, physical validation or subjective listening claim."
+  ],
+  "native_intermediate_compile_failure": {
+    "checked_runner": {
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "WASAPI",
+        "--max-fps",
+        "120",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tools/audio/menu_probe.gd",
+        "--",
+        "--quit-only",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/menu-audio-review/native-deadline-2026-10-24"
+      ],
+      "started_utc": "2026-10-24T22:35:38.268745+00:00",
+      "ok": false,
+      "reason": "engine_error",
+      "elapsed_seconds": 8.578,
+      "counts": {
+        "error": 7,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 3,
+          "message": "Parse Error: Static function \"build_staged()\" not found in base \"res://render/field.gd\".",
+          "context": [
+            "   at: GDScript::reload (res://landscapes/club_field/landscape.gd:16)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 5,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "   at: GDScript::reload (res://landscapes/catalog.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 7,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "   at: GDScript::reload (res://app_state/preferences.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 9,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "   at: GDScript::reload (res://ui/home.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 11,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "   at: GDScript::reload (res://app_root.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 13,
+          "message": "Compile Error: Failed to compile depended scripts.",
+          "context": [
+            "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tools/audio/menu_probe.gd:0)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 15,
+          "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tools/audio/menu_probe.gd\" with error \"Compilation failed\".",
+          "context": [
+            "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)",
+            "Menu native audio: {\"captures\":[{\"error\":0,\"name\":\"quit-tail-1-stall-0\",\"nonzero\":31840,\"peak\":0.107025146484375,\"rate\":48000,\"rms\":0.0102607698053078,\"seconds\":0.405333333333333,\"tail_silence_ms\":69.3333333333333},{\"error\":0,\"name\":\"quit-tail-1-stall-100\",\"nonzero\":31840,\"peak\":0.107025146484375,\"rate\":48000,\"rms\":0.0103985044219669,\"seconds\":0.394666666666667,\"tail_silence_ms\":58.6666666666667},{\"error\":0,\"name\":\"quit-tail-0-stall-0\",\"nonzero\":31840,\"peak\":0.107025146484375,\"rate\":48000,\"rms\":0.0102607698053078,\"seconds\":0.405333333333333,\"tail_silence_ms\":69.3333333333333},{\"error\":0,\"name\":\"quit-tail-16-stall-0\",\"nonzero\":31840,\"peak\":0.107025146484375,\"rate\":48000,\"rms\":0.0102607698053078,\"seconds\":0.405333333333333,\"tail_silence_ms\":69.3333333333333}],\"cues\":[],\"driver\":\"WASAPI\",\"ok\":true,\"quit_tails\":[{\"calls\":1,\"elapsed_ms\":400,\"expected_ms\":393.019743150903,\"input_locked\":true,\"pre_quit_stall_ms\":0,\"time_scale\":1.0,\"waited\":true},{\"calls\":1,\"elapsed_ms\":400,\"expected_ms\":393.0"
+          ]
+        }
+      ]
+    },
+    "mixer": {
+      "captures": [
+        {
+          "error": 0,
+          "name": "quit-tail-1-stall-0",
+          "nonzero": 31840,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0102607698053078,
+          "seconds": 0.405333333333333,
+          "tail_silence_ms": 69.3333333333333
+        },
+        {
+          "error": 0,
+          "name": "quit-tail-1-stall-100",
+          "nonzero": 31840,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0103985044219669,
+          "seconds": 0.394666666666667,
+          "tail_silence_ms": 58.6666666666667
+        },
+        {
+          "error": 0,
+          "name": "quit-tail-0-stall-0",
+          "nonzero": 31840,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0102607698053078,
+          "seconds": 0.405333333333333,
+          "tail_silence_ms": 69.3333333333333
+        },
+        {
+          "error": 0,
+          "name": "quit-tail-16-stall-0",
+          "nonzero": 31840,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0102607698053078,
+          "seconds": 0.405333333333333,
+          "tail_silence_ms": 69.3333333333333
+        }
+      ],
+      "cues": [],
+      "driver": "WASAPI",
+      "ok": true,
+      "quit_tails": [
+        {
+          "calls": 1,
+          "elapsed_ms": 400,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "pre_quit_stall_ms": 0,
+          "time_scale": 1.0,
+          "waited": true
+        },
+        {
+          "calls": 1,
+          "elapsed_ms": 400,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "pre_quit_stall_ms": 100,
+          "time_scale": 1.0,
+          "waited": true
+        },
+        {
+          "calls": 1,
+          "elapsed_ms": 399,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "pre_quit_stall_ms": 0,
+          "time_scale": 0.0,
+          "waited": true
+        },
+        {
+          "calls": 1,
+          "elapsed_ms": 399,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "pre_quit_stall_ms": 0,
+          "time_scale": 16.0,
+          "waited": true
+        }
+      ]
+    }
+  },
+  "native_after_deadline": {
+    "checked_runner": {
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "WASAPI",
+        "--max-fps",
+        "120",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tools/audio/menu_probe.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/menu-audio-review/native-final-2026-10-24"
+      ],
+      "started_utc": "2026-10-24T22:38:42.970995+00:00",
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 33.344,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": []
+    },
+    "mixer": {
+      "captures": [
+        {
+          "error": 0,
+          "name": "menu-35",
+          "nonzero": 430314,
+          "peak": 0.147308349609375,
+          "rate": 48000,
+          "rms": 0.00772590460786807,
+          "seconds": 8.288,
+          "tail_silence_ms": 176.0
+        },
+        {
+          "error": 0,
+          "name": "menu-100",
+          "nonzero": 433914,
+          "peak": 0.420928955078125,
+          "rate": 48000,
+          "rms": 0.0220941850275512,
+          "seconds": 8.23466666666667,
+          "tail_silence_ms": 164.979166666667
+        },
+        {
+          "error": 0,
+          "name": "menu-0",
+          "nonzero": 0,
+          "peak": 0.0,
+          "rate": 48000,
+          "rms": 0.0,
+          "seconds": 8.23466666666667,
+          "tail_silence_ms": 8234.66666666667
+        },
+        {
+          "error": 0,
+          "name": "quit-tail-1-stall-0",
+          "nonzero": 31840,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0103985044219669,
+          "seconds": 0.394666666666667,
+          "tail_silence_ms": 58.6666666666667
+        },
+        {
+          "error": 0,
+          "name": "quit-tail-1-stall-100",
+          "nonzero": 31840,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0102607698053078,
+          "seconds": 0.405333333333333,
+          "tail_silence_ms": 69.3333333333333
+        },
+        {
+          "error": 0,
+          "name": "quit-tail-0-stall-0",
+          "nonzero": 31840,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0103985044219669,
+          "seconds": 0.394666666666667,
+          "tail_silence_ms": 58.6666666666667
+        },
+        {
+          "error": 0,
+          "name": "quit-tail-16-stall-0",
+          "nonzero": 31840,
+          "peak": 0.107025146484375,
+          "rate": 48000,
+          "rms": 0.0103985044219669,
+          "seconds": 0.394666666666667,
+          "tail_silence_ms": 58.6666666666667
+        }
+      ],
+      "cues": [
+        {
+          "accepted": true,
+          "cue": "focus",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "hover",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "press",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "select",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "change",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "open",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "back",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "pause",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "resume",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "accept",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "saved",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "cancel",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "restart",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "reject",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "exit",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "quit",
+          "level": 0.35
+        },
+        {
+          "accepted": true,
+          "cue": "focus",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "hover",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "press",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "select",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "change",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "open",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "back",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "pause",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "resume",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "accept",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "saved",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "cancel",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "restart",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "reject",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "exit",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "quit",
+          "level": 1.0
+        },
+        {
+          "accepted": true,
+          "cue": "focus",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "hover",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "press",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "select",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "change",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "open",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "back",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "pause",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "resume",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "accept",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "saved",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "cancel",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "restart",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "reject",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "exit",
+          "level": 0.0
+        },
+        {
+          "accepted": true,
+          "cue": "quit",
+          "level": 0.0
+        }
+      ],
+      "driver": "WASAPI",
+      "ok": true,
+      "quit_tails": [
+        {
+          "calls": 1,
+          "elapsed_ms": 400,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "pre_quit_stall_ms": 0,
+          "time_scale": 1.0,
+          "waited": true
+        },
+        {
+          "calls": 1,
+          "elapsed_ms": 400,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "pre_quit_stall_ms": 100,
+          "time_scale": 1.0,
+          "waited": true
+        },
+        {
+          "calls": 1,
+          "elapsed_ms": 400,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "pre_quit_stall_ms": 0,
+          "time_scale": 0.0,
+          "waited": true
+        },
+        {
+          "calls": 1,
+          "elapsed_ms": 399,
+          "expected_ms": 393.019743150903,
+          "input_locked": true,
+          "pre_quit_stall_ms": 0,
+          "time_scale": 16.0,
+          "waited": true
+        }
+      ]
+    }
+  }
+}

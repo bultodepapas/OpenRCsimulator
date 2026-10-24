@@ -153,6 +153,7 @@ func _run() -> void:
 	button.pressed.emit()
 	await process_frame
 	_check("an eligible active button requests press audio", service.cue_count(&"press") == press_count_before + 1)
+	await _check_dynamic_controls(service, screen_a, screen_b)
 	press_count_before = service.cue_count(&"press")
 
 	host.remove_child(screen_a)
@@ -179,6 +180,8 @@ func _run() -> void:
 	_check("semantic cues remain observable after route closure", service.play(&"reject"))
 	_check("semantic cue counters reflect logical requests", service.cue_count(&"back") == 1
 		and service.cue_count(&"reject") == 1)
+	_check("an error cannot be followed by a false same-action confirmation", not service.play(&"accept"))
+	await process_frame
 	var accepts_before: int = service.cue_count(&"accept")
 	service.play(&"accept")
 	service.play(&"accept") # an accepted launch can mount a controller-readiness Pause in the same frame
@@ -195,22 +198,98 @@ func _run() -> void:
 	service.set_volume(0.35)
 	service.play(&"focus")
 	var first_focus_pitch: float = service._voices[0].pitch_scale
+	var first_focus_stream: AudioStream = service._voices[0].stream
 	service._voices[0].stop()
 	service.play(&"focus")
-	_check("successive navigation cues have bounded tonal variation",
+	_check("successive navigation cues use different natural takes with gentle pitch variation",
 		service._voices[0].pitch_scale != first_focus_pitch
-		and service._voices[0].pitch_scale >= 0.9 and service._voices[0].pitch_scale <= 1.12)
+		and service._voices[0].stream != first_focus_stream
+		and service._voices[0].pitch_scale >= 0.9 and service._voices[0].pitch_scale <= 1.0)
 	service._voices[0].stop()
 	service._voices[1].stop()
+	await process_frame
 	var dropped_before: int = service.dropped_voice_count()
-	service.play(&"accept")
-	service.play(&"back")
+	_check("two successive outcomes occupy the bounded voice pool", service.play(&"accept") and service.play(&"restart"))
 	var rejection_played: bool = service.play(&"reject")
 	_check("a fresh decision replaces an older tail when both voices are busy",
 		rejection_played and service.dropped_voice_count() == dropped_before
-		and service._voices.any(func(voice: AudioStreamPlayer) -> bool: return is_equal_approx(voice.pitch_scale, 0.78)),
+		and service._voices.any(func(voice: AudioStreamPlayer) -> bool: return voice.stream == MenuAudioService.STREAM_BY_CUE[&"reject"]),
 		"played=%s dropped=%d before=%d pitches=%s/%s" % [str(rejection_played), service.dropped_voice_count(),
 			dropped_before, str(service._voices[0].pitch_scale), str(service._voices[1].pitch_scale)])
+	_check("incidental hover cannot mask a decision", not service.play(&"hover"))
+	_check("screen mounts cannot override a same-action error", not service.play(&"open"))
+	var original_time_scale := Engine.time_scale
+	Engine.time_scale = 0.0
+	await create_timer(0.04, true, false, true).timeout
+	_check("replaced semantic tail fades out without stopping the newest cue",
+		service._voices.filter(func(voice: AudioStreamPlayer) -> bool: return voice.playing).size() == 1)
+	Engine.time_scale = original_time_scale
+	service.set_volume(0.0)
+	_check("muted Quit adds no shutdown delay", service.play(&"quit") and service.shutdown_delay() == 0.0)
 
 	host.queue_free()
 	await create_timer(0.1).timeout # allow the audio mixer to release the stopped playback before process teardown
+
+
+func _check_dynamic_controls(service: MenuAudio, screen_a: Control, screen_b: Control) -> void:
+	var controls_before: int = service._observed_controls.size()
+	var debounce_before: int = service._last_automatic_ms.size()
+	service.observe(screen_b)
+	var button := Button.new()
+	screen_a.add_child(button)
+	await process_frame
+	await process_frame
+	var presses_before := service.cue_count(&"press")
+	button.pressed.emit()
+	await process_frame
+	_check("a button added after screen mount receives automatic audio",
+		service.cue_count(&"press") == presses_before + 1)
+	for target: Control in [screen_b, screen_a, screen_b, screen_a]:
+		button.reparent(target)
+		_top_surface = target
+		await process_frame
+		await process_frame
+		presses_before = service.cue_count(&"press")
+		button.pressed.emit()
+		await process_frame
+		_check("reparented controls sound once on their new active surface",
+			service.cue_count(&"press") == presses_before + 1)
+	var audio_connections := 0
+	for connection: Dictionary in button.pressed.get_connections():
+		if connection.callable.get_object() == service:
+			audio_connections += 1
+	_check("reparenting releases obsolete signal bindings", audio_connections == 1)
+
+	var slider := HSlider.new()
+	screen_a.add_child(slider)
+	var excluded := VBoxContainer.new()
+	excluded.set_meta("menu_audio_exclude", true)
+	var excluded_button := Button.new()
+	excluded.add_child(excluded_button)
+	screen_a.add_child(excluded)
+	await process_frame
+	await process_frame
+	_check("dynamically added excluded subtrees remain silent",
+		not service._observed_controls.has(excluded_button.get_instance_id()))
+	slider.grab_focus()
+	var end_key := InputEventAction.new()
+	end_key.action = &"ui_end"
+	end_key.pressed = true
+	service._input(end_key)
+	var changes_before := service.cue_count(&"change")
+	slider.editable = false
+	slider.value = 20.0
+	_check("cached property discovery still reads live editable state",
+		service.cue_count(&"change") == changes_before)
+	slider.editable = true
+	slider.value = 40.0
+	_check("End/Home range navigation can request feedback after re-enabling editing",
+		service.cue_count(&"change") == changes_before + 1)
+	button.queue_free()
+	slider.queue_free()
+	excluded.queue_free()
+	await process_frame
+	await process_frame
+	_check("dynamic control removal releases bindings and debounce state",
+		service._observed_controls.size() == controls_before
+		and service._last_automatic_ms.size() == debounce_before)

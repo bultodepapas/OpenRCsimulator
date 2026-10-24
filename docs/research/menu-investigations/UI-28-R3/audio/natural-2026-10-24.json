@@ -1,0 +1,289 @@
+{
+	"captures": [
+		{
+			"error": 0,
+			"name": "menu-35",
+			"nonzero": 430314,
+			"peak": 0.147308349609375,
+			"rate": 48000,
+			"rms": 0.00776094290375991,
+			"seconds": 8.21333333333333
+		},
+		{
+			"error": 0,
+			"name": "menu-100",
+			"nonzero": 433914,
+			"peak": 0.420928955078125,
+			"rate": 48000,
+			"rms": 0.0221805469920699,
+			"seconds": 8.17066666666667
+		},
+		{
+			"error": 0,
+			"name": "menu-0",
+			"nonzero": 0,
+			"peak": 0.0,
+			"rate": 48000,
+			"rms": 0.0,
+			"seconds": 8.16
+		},
+		{
+			"error": 0,
+			"name": "quit-tail",
+			"nonzero": 31840,
+			"peak": 0.107025146484375,
+			"rate": 48000,
+			"rms": 0.00877142331874632,
+			"seconds": 0.554666666666667
+		}
+	],
+	"cues": [
+		{
+			"accepted": true,
+			"cue": "focus",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "hover",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "press",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "select",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "change",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "open",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "back",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "pause",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "resume",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "accept",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "saved",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "cancel",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "restart",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "reject",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "exit",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "quit",
+			"level": 0.35
+		},
+		{
+			"accepted": true,
+			"cue": "focus",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "hover",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "press",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "select",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "change",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "open",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "back",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "pause",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "resume",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "accept",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "saved",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "cancel",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "restart",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "reject",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "exit",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "quit",
+			"level": 1.0
+		},
+		{
+			"accepted": true,
+			"cue": "focus",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "hover",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "press",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "select",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "change",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "open",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "back",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "pause",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "resume",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "accept",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "saved",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "cancel",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "restart",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "reject",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "exit",
+			"level": 0.0
+		},
+		{
+			"accepted": true,
+			"cue": "quit",
+			"level": 0.0
+		}
+	],
+	"driver": "WASAPI",
+	"ok": true,
+	"quit_tail": {
+		"calls": 1,
+		"elapsed_ms": 565,
+		"waited": true
+	}
+}

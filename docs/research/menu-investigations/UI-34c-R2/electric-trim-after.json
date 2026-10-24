@@ -1,0 +1,26 @@
+{
+  "purpose": "post-change exact Turbo Lumber 0.5-throttle trim candidate",
+  "date": "2026-10-24",
+  "engine": "Godot 4.7.2 stable",
+  "setup_ms": 12623.031,
+  "baseline_setup_ms": 22068.697,
+  "elapsed_reduction_ms": 9445.666,
+  "elapsed_reduction_pct": 42.8,
+  "result_bytes": 784,
+  "result_sha256": "105610a95322c2d1ef1e32e3ebfe2719c254a1ef90e1bd4ab581bfdad1b17d07",
+  "result_byte_identical_to_baseline": true,
+  "source_trim_gd_sha256": "bfaf4786391239fe65d65c505c499073d89f8b648d6bf20768bf963373328ee0",
+  "focused_test_sha256": "3120ab88a38dbefd2840fccf0aefa6df365e0aaac6df86297d39b5157ead203a",
+  "aircraft_data_sha256": "c645e3213a6f8b718ea96f1891ace859764a670f7db489d98527e50817d3586d",
+  "candidate_result_file": "tmp/trim_electric_reuse_pack_candidate.bin",
+  "parity_report": "tmp/trim_electric_reuse_parity_report.json",
+  "runner_dir": "tmp/godot-checks/electric-trim-reuse-pack-candidate-20261024",
+  "trim": {
+    "speed_mps": 17.8732536101192,
+    "throttle": 0.49999999877859,
+    "rpm": 5859.68017468271,
+    "iterations": 50,
+    "search_iterations": 8,
+    "residual": 2.7869E-10
+  }
+}

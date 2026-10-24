@@ -1,5 +1,23 @@
 # UI-28-R3 — menu feedback and flow refinement
 
+## 2026-10-24 — natural feedback follow-up
+
+The owner's listening feedback replaces the electronic Interface Sounds palette with fourteen unmodified wood/soft-impact clips from Kenney Impact Sounds 1.0 (CC0). Navigation rotates three takes with small downward pitch variation. [Current source hashes, license and interaction contract](../../../../assets/ui-audio/README.md).
+
+The service distinguishes open, pause, resume, restart, activity exit, committed quit, saved, cancel and rejection. Failed restart, failed Settings persistence and failed trace recovery report rejection before any success/exit cue. Same-action incidental sounds yield to outcomes; replaced tails fade over 18 ms within the existing two-voice budget. Quit keeps its native tail for at most 500 ms after all recording/draft decisions, blocking further input; muted/Dummy routes quit immediately.
+
+`test_menu_audio`, `test_ui_settings_integration`, `test_ui_pause` and `test_ui_quit` pass through the checked runner. They exercise actual input, successful/rejected restart, failed-save retry, Stay/Discard, nested Workshop/trace quit guards and repeated Home/flight cleanup. The existing aircraft inertia warning remains unrelated.
+
+The [WASAPI report](audio/natural-2026-10-24.json) records all sixteen logical cues at 48 kHz: peak 0.14731 at 35%, 0.42093 at 100%, and zero nonzero PCM samples at mute. The [final closing-tail check](audio/natural-quit-2026-10-24.json) observes one deferred quit, locked input and nonzero tail output. Reproduce with [tools/audio/menu_probe.gd](../../../../tools/audio/README.md#menu-feedback); WAVs are kept outside Git. These are mixer/routing checks; speaker listening remains subjective. The original evidence below describes the earlier palette.
+
+### Engineering review, 2026-10-24
+
+Property discovery now runs once per observed control, while disabled/editable values remain live. Debounce uses per-control dictionaries: removal erases one entry instead of scanning all keys for every departing control. The service releases its own signal bindings on departure and observes dynamically added/reparented menu controls. This fixes silent rebuilt navigation and stale callbacks without polling the tree each frame. Home/End/Page adjustments also reach range feedback. The two-player budget is unchanged; no FPS improvement is claimed.
+
+Quit now uses an absolute wall-clock deadline. A timer following simulation speed could stall at time scale zero; even a time-scale-independent timer consumed earlier frame work in the native probe and quit at 326 ms against a 393 ms requested tail, truncating output. Voice fades ignore simulation speed. AppRoot owns window-close decisions for managed Settings so failed trace recovery and Stay preserve the unsaved preview instead of prematurely reverting/closing it.
+
+The [review evidence](audio/review-2026-10-24.json) retains five passing checked suites (`test_menu_audio`, `test_settings_ui`, `test_ui_settings_integration`, `test_ui_pause`, `test_ui_quit`) and the before/after native measurements. The probe now stops capture at the actual quit callback and checks its timestamp and trailing silence. The final native run also passes through the checked runner: all four mixer cases reached Quit in 399–400 ms with 58.7–69.3 ms of trailing silence, covering normal speed, time scales 0/16, and a completed 100 ms main-thread stall immediately before Quit. Sequence peaks remain 0.14731/0.42093 at 35%/100%; mute is digitally silent. An intermediate run rejected during concurrent landscape compilation is retained separately and is not counted as a pass.
+
 2026-10-15. Implemented in `app/`, following the [revision 7 plan](../../../MENU-REDESIGN-PLAN.md). This is a local-source result, not an exported-release or human usability acceptance claim.
 
 ## Delivered behavior

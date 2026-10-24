@@ -1,5 +1,17 @@
 # Soundscape tools
 
+## Menu feedback
+
+UI-28 uses downloaded CC0 wood and soft impacts. [Source mapping and interaction contract](../../assets/ui-audio/README.md) own the bank. `menu_probe.gd` records the native mixer at 35%, 100% and mute, then exercises the actual committed-Quit tail at time scales 1, 0 and 16 with a test quit callback. It also inserts 100 ms of completed main-thread work immediately before one Quit to detect frame-delta contamination. It requires a new output directory and rejects Dummy. The WAV order is listed in the report's `cues` array. It checks sequence output, mute and headroom; logical cue acceptance does not establish individual cue audibility. Quit captures stop at the production quit seam and require one callback, locked input, elapsed wall time within −20/+120 ms of the requested delay and at least 15 ms of trailing digital silence. These qualify mixer timing, not hardware output latency or speaker preference. `--quit-only` skips the three cue sequences.
+
+```sh
+python tools/godot/run_checked.py --timeout 90 -- godot --display-driver headless --audio-driver WASAPI --path app --script /absolute/repo/tools/audio/menu_probe.gd -- --out=/absolute/new/output/menu
+```
+
+Focused routing checks: `test_menu_audio.gd`, `test_ui_settings_integration.gd`, `test_ui_pause.gd` and `test_ui_quit.gd`, through the checked runner with `--audio-driver Dummy`.
+
+## Flight soundscape
+
 2026-10-11 · **Status: implemented.** Scope and results: [AUDIO-PLAN](../../docs/AUDIO-PLAN.md), [AUD-04](../../docs/research/audio/AUD-04/README.md), [AUD-05 wildlife](../../docs/research/audio/AUD-05/README.md). Godot is pinned to the repository's 4.7.2 binary; Python generator/checker dependency is `numpy==2.4.6`.
 
 Run from the repository root. Replace `godot` below with the pinned binary. Windows native output uses WASAPI. Bare `--headless` selects Dummy; explicitly request a native driver and verify the report's actual driver. The capture matrix uses `--display-driver headless --audio-driver WASAPI` for audio without graphics; the Windows profiler uses `--headless` followed by the explicit WASAPI override.

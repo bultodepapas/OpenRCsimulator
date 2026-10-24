@@ -1,0 +1,1679 @@
+{
+  "date": "2026-10-24",
+  "scope": "Exploratory native source-tree audit, not a frozen A/B or exported-package qualification",
+  "source_identity_limit": "Concurrent UI/audio edits and import refresh; inspected-source hashes below were captured after the runs and do not certify every byte loaded at process start.",
+  "cpu": "AMD Ryzen 9 5900X 12-Core",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "617.42",
+  "engine": "4.7.2-stable official ed1daf0bf",
+  "renderer": "gl_compatibility",
+  "viewport": [
+    1920,
+    1080
+  ],
+  "debug_run": "tmp/debug-bridge/20261024-171235-47870",
+  "failed_preimport_run": "tmp/debug-bridge/20261024-171211-47870",
+  "debug_configuration": {
+    "verbose": true,
+    "audio": "WASAPI",
+    "vsync": "enabled",
+    "max_fps": 0,
+    "msaa_3d": 2,
+    "profile": "isolated",
+    "default_time": "evening",
+    "weather_speed_mps": 1.5,
+    "weather_from_deg": 90
+  },
+  "debug_frame_results": {
+    "green-flight-frames.json": {
+      "frames": 71,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 8.25,
+      "hitches": [
+        {
+          "frame": 5058,
+          "ms": 925.5,
+          "threshold_ms": 50.0,
+          "physics_ticks": 2,
+          "deltas": {
+            "objects": 3134.0,
+            "nodes": 796.0,
+            "resources": 39.0,
+            "orphans": 429.0,
+            "static_memory_mib": 43.74
+          },
+          "causes": [
+            "scene/resource construction"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [
+            "Loading resource: res://main.tscn remapped: res://main.tscn",
+            "Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1",
+            "Loading resource: res://assets/ui/instruments/speed.svg remapped: res://assets/ui/instruments/speed.svg",
+            "Loading resource: res://.godot/imported/speed.svg-5a8199725c72836ccca1ec059fa504f5.ctex remapped: res://.godot/imported/speed.svg-5a8199725c72836ccca1ec059fa504",
+            "Completed load for: 'res://assets/ui/instruments/speed.svg' remapped 'res://assets/ui/instruments/speed.svg' at thread -1",
+            "Loading resource: res://assets/ui/instruments/height.svg remapped: res://assets/ui/instruments/height.svg",
+            "Loading resource: res://.godot/imported/height.svg-3b128b34c45e41aea741b0ea3adb8eab.ctex remapped: res://.godot/imported/height.svg-3b128b34c45e41aea741b0ea3adb",
+            "Completed load for: 'res://assets/ui/instruments/height.svg' remapped 'res://assets/ui/instruments/height.svg' at thread -1"
+          ],
+          "process_ms": 8.72,
+          "physics_ms": 0.1,
+          "tick": 0
+        },
+        {
+          "frame": 5059,
+          "ms": 73.2,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -1185.0,
+            "nodes": 11.0,
+            "orphans": -429.0,
+            "static_memory_mib": -15.02
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 8.72,
+          "physics_ms": 0.1,
+          "tick": 12
+        }
+      ],
+      "hitch_total": 2,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 22.2,
+      "p50_ms": 8.24,
+      "p95_ms": 13.22,
+      "p99_ms": 925.47,
+      "max_ms": 925.47,
+      "fps_mean": 45.1,
+      "fps_1pct_low": 1.1
+    },
+    "green-state.json": {
+      "frame": 5126,
+      "fps": 19.0,
+      "time_scale": 1.0,
+      "tree_paused": false,
+      "log_seq": 2061,
+      "route": "flight",
+      "screens": [],
+      "focus": "",
+      "sticks_override": {},
+      "log_counts": {
+        "info": 1966,
+        "event": 95
+      },
+      "realtime_factor": -1.0,
+      "bridge_usec": 46.62705520004997,
+      "flight": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "tick": 148,
+        "time_s": 0.6166666666666667,
+        "paused": false,
+        "fault": "",
+        "pause_reason": "",
+        "holds": [],
+        "crashed": false,
+        "radio_connected": false,
+        "commands": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.49999999945363965
+        },
+        "raw": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "position_ned_m": [
+          59.998045217636715,
+          -28.332622446142906,
+          -29.97957139605912
+        ],
+        "height_m": 29.97957139605912,
+        "velocity_body_mps": [
+          18.900767885130108,
+          0.07443798438344303,
+          0.5385995336580475
+        ],
+        "speed_mps": 18.90858686202492,
+        "attitude_deg": {
+          "roll": 0.19625637120772535,
+          "pitch": 1.6088152382255319,
+          "heading": 89.84412850218769
+        },
+        "rates_body_degps": [
+          0.7660125080802037,
+          -0.017601324452614107,
+          -0.7256069720511836
+        ]
+      },
+      "snapshot_frame": 5126,
+      "snapshot_age_ms": 25
+    },
+    "jet-flight-frames.json": {
+      "frames": 61,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 29.05,
+      "hitches": [
+        {
+          "frame": 4661,
+          "ms": 140.6,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2246.0,
+            "nodes": 12.0,
+            "orphans": -945.0,
+            "static_memory_mib": -56.02
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 448.52,
+          "physics_ms": 0.07,
+          "tick": 12
+        },
+        {
+          "frame": 4662,
+          "ms": 78.2,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2.0,
+            "static_memory_mib": 0.19
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 24
+        },
+        {
+          "frame": 4663,
+          "ms": 74.3,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": 1.0,
+            "static_memory_mib": 0.01
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 36
+        },
+        {
+          "frame": 4664,
+          "ms": 83.10000000000001,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2.0,
+            "static_memory_mib": 0.0
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 48
+        },
+        {
+          "frame": 4665,
+          "ms": 77.0,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.01
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 60
+        },
+        {
+          "frame": 4666,
+          "ms": 72.4,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.01
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 72
+        },
+        {
+          "frame": 4667,
+          "ms": 71.7,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.01
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 84
+        },
+        {
+          "frame": 4668,
+          "ms": 72.7,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": -0.04
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 96
+        },
+        {
+          "frame": 4669,
+          "ms": 84.2,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.0
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 108
+        },
+        {
+          "frame": 4670,
+          "ms": 75.2,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": 2.0,
+            "static_memory_mib": 0.01
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 120
+        },
+        {
+          "frame": 4671,
+          "ms": 81.7,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.0
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 132
+        },
+        {
+          "frame": 4672,
+          "ms": 80.60000000000001,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.01
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 144
+        },
+        {
+          "frame": 4673,
+          "ms": 78.9,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.0
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 2993.98,
+          "physics_ms": 4.74,
+          "tick": 156
+        },
+        {
+          "frame": 4674,
+          "ms": 78.80000000000001,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.01
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 29.92,
+          "physics_ms": 7.41,
+          "tick": 168
+        },
+        {
+          "frame": 4675,
+          "ms": 85.2,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.0
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 29.92,
+          "physics_ms": 7.41,
+          "tick": 180
+        },
+        {
+          "frame": 4676,
+          "ms": 73.8,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.01
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 29.92,
+          "physics_ms": 7.41,
+          "tick": 192
+        },
+        {
+          "frame": 4677,
+          "ms": 76.10000000000001,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2.0,
+            "static_memory_mib": 0.0
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 29.92,
+          "physics_ms": 7.41,
+          "tick": 204
+        },
+        {
+          "frame": 4678,
+          "ms": 63.1,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.0
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 29.92,
+          "physics_ms": 7.41,
+          "tick": 216
+        },
+        {
+          "frame": 4679,
+          "ms": 56.900000000000006,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "static_memory_mib": 0.01
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 29.92,
+          "physics_ms": 7.41,
+          "tick": 228
+        },
+        {
+          "frame": 4694,
+          "ms": 50.300000000000004,
+          "threshold_ms": 50.0,
+          "physics_ticks": 11,
+          "deltas": {
+            "static_memory_mib": 0.0
+          },
+          "causes": [],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 29.92,
+          "physics_ms": 7.41,
+          "tick": 352
+        }
+      ],
+      "hitch_total": 21,
+      "physics_catch_up_frames": 21,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 84.82000000000001,
+      "p50_ms": 29.05,
+      "p95_ms": 84.15,
+      "p99_ms": 2911.89,
+      "max_ms": 2911.89,
+      "fps_mean": 11.8,
+      "fps_1pct_low": 0.30000000000000004
+    },
+    "jet-preview-frames.json": {
+      "frames": 130,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 8.33,
+      "hitches": [
+        {
+          "frame": 4528,
+          "ms": 120.30000000000001,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": 17.0,
+            "static_memory_mib": 0.36
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "home",
+          "screens": [
+            "home"
+          ],
+          "log": [],
+          "process_ms": 10.0,
+          "physics_ms": 0.09
+        }
+      ],
+      "hitch_total": 1,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 9.05,
+      "p50_ms": 8.32,
+      "p95_ms": 9.68,
+      "p99_ms": 12.540000000000001,
+      "max_ms": 120.25,
+      "fps_mean": 110.5,
+      "fps_1pct_low": 8.3
+    },
+    "jet-state.json": {
+      "frame": 4700,
+      "fps": 21.0,
+      "time_scale": 1.0,
+      "tree_paused": false,
+      "log_seq": 1878,
+      "route": "flight",
+      "screens": [],
+      "focus": "",
+      "sticks_override": {},
+      "log_counts": {
+        "info": 1794,
+        "event": 84
+      },
+      "realtime_factor": 0.8658008658008659,
+      "bridge_usec": 112.44142658899085,
+      "flight": {
+        "aircraft": "sebart-avanti-s-a200-p100rx",
+        "tick": 424,
+        "time_s": 1.7666666666666666,
+        "paused": false,
+        "fault": "",
+        "pause_reason": "",
+        "holds": [],
+        "crashed": false,
+        "radio_connected": false,
+        "commands": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "raw": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "position_ned_m": [
+          14.999974000431212,
+          -46.999287373665894,
+          -0.2173631400198363
+        ],
+        "height_m": 0.2173631400198363,
+        "velocity_body_mps": [
+          5.274191434813246e-05,
+          -4.345325098209221e-05,
+          8.719577842788092e-05
+        ],
+        "speed_mps": 0.00011078356523267584,
+        "attitude_deg": {
+          "roll": -0.06937331913688116,
+          "pitch": -0.1678463916242379,
+          "heading": 90.011289774711
+        },
+        "rates_body_degps": [
+          0.00024980034192014324,
+          -0.006363699194076539,
+          -0.0010103159987177443
+        ]
+      },
+      "snapshot_frame": 4700,
+      "snapshot_age_ms": 10
+    },
+    "stik-first-frames.json": {
+      "frames": 30,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 8.33,
+      "hitches": [
+        {
+          "frame": 2132,
+          "ms": 4669.1,
+          "threshold_ms": 50.0,
+          "physics_ticks": 2,
+          "deltas": {
+            "objects": 4382.0,
+            "nodes": 826.0,
+            "resources": 153.0,
+            "orphans": 862.0,
+            "static_memory_mib": 122.94
+          },
+          "causes": [
+            "scene/resource construction"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [
+            "Loading resource: res://main.tscn remapped: res://main.tscn",
+            "Loading resource: res://main.gd remapped: res://main.gd",
+            "Loading resource: res://assets/crash/smoke.png remapped: res://assets/crash/smoke.png",
+            "Loading resource: res://.godot/imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.ctex remapped: res://.godot/imported/smoke.png-3b719d9bcffc7f00302b7968245033",
+            "Completed load for: 'res://assets/crash/smoke.png' remapped 'res://assets/crash/smoke.png' at thread -1",
+            "Loading resource: res://render/smoke/process.gdshader remapped: res://render/smoke/process.gdshader",
+            "Completed load for: 'res://render/smoke/process.gdshader' remapped 'res://render/smoke/process.gdshader' at thread -1",
+            "Loading resource: res://assets/audio/landing_gear/hard_roll.wav remapped: res://assets/audio/landing_gear/hard_roll.wav"
+          ],
+          "process_ms": 8.44,
+          "physics_ms": 0.06,
+          "tick": 0
+        },
+        {
+          "frame": 2133,
+          "ms": 301.5,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2125.0,
+            "nodes": 11.0,
+            "orphans": -862.0,
+            "static_memory_mib": -54.67
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 8.44,
+          "physics_ms": 0.06,
+          "tick": 12
+        },
+        {
+          "frame": 2134,
+          "ms": 71.4,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -4.0,
+            "static_memory_mib": 0.2
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 4935.79,
+          "physics_ms": 2.91,
+          "tick": 24
+        }
+      ],
+      "hitch_total": 3,
+      "physics_catch_up_frames": 2,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 176.71,
+      "p50_ms": 8.34,
+      "p95_ms": 301.51,
+      "p99_ms": 4669.11,
+      "max_ms": 4669.11,
+      "fps_mean": 5.7,
+      "fps_1pct_low": 0.2
+    },
+    "stik-home-1.json": {
+      "frames": 57,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 15.120000000000001,
+      "hitches": [
+        {
+          "frame": 2703,
+          "ms": 937.3000000000001,
+          "threshold_ms": 72.3,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2095.0,
+            "nodes": -837.0,
+            "resources": -39.0,
+            "static_memory_mib": -41.78
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)",
+            "scene/resource construction"
+          ],
+          "route": "home",
+          "screens": [
+            "home"
+          ],
+          "log": [
+            "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb"
+          ],
+          "process_ms": 14.06,
+          "physics_ms": 3.12
+        }
+      ],
+      "hitch_total": 1,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 31.69,
+      "p50_ms": 13.01,
+      "p95_ms": 28.740000000000002,
+      "p99_ms": 937.29,
+      "max_ms": 937.29,
+      "fps_mean": 31.6,
+      "fps_1pct_low": 1.1
+    },
+    "stik-home-2.json": {
+      "frames": 61,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 15.91,
+      "hitches": [
+        {
+          "frame": 2848,
+          "ms": 946.9000000000001,
+          "threshold_ms": 79.5,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -1958.0,
+            "nodes": -813.0,
+            "resources": -39.0,
+            "static_memory_mib": -39.43
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)",
+            "scene/resource construction"
+          ],
+          "route": "home",
+          "screens": [
+            "home"
+          ],
+          "log": [
+            "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb"
+          ],
+          "process_ms": 15.69,
+          "physics_ms": 2.82
+        }
+      ],
+      "hitch_total": 1,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 32.69,
+      "p50_ms": 15.85,
+      "p95_ms": 30.01,
+      "p99_ms": 946.9300000000001,
+      "max_ms": 946.9300000000001,
+      "fps_mean": 30.6,
+      "fps_1pct_low": 1.1
+    },
+    "stik-home-3.json": {
+      "frames": 49,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 12.81,
+      "hitches": [
+        {
+          "frame": 2985,
+          "ms": 945.2,
+          "threshold_ms": 90.10000000000001,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -1958.0,
+            "nodes": -813.0,
+            "resources": -39.0,
+            "static_memory_mib": -39.37
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)",
+            "scene/resource construction"
+          ],
+          "route": "home",
+          "screens": [
+            "home"
+          ],
+          "log": [
+            "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb"
+          ],
+          "process_ms": 16.580000000000002,
+          "physics_ms": 3.5300000000000002
+        }
+      ],
+      "hitch_total": 1,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 35.84,
+      "p50_ms": 12.5,
+      "p95_ms": 33.87,
+      "p99_ms": 945.1700000000001,
+      "max_ms": 945.1700000000001,
+      "fps_mean": 27.900000000000002,
+      "fps_1pct_low": 1.1
+    },
+    "stik-home-4.json": {
+      "frames": 58,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 8.67,
+      "hitches": [
+        {
+          "frame": 3126,
+          "ms": 931.6,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -1956.0,
+            "nodes": -813.0,
+            "resources": -39.0,
+            "static_memory_mib": -39.410000000000004
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)",
+            "scene/resource construction"
+          ],
+          "route": "home",
+          "screens": [
+            "home"
+          ],
+          "log": [
+            "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb"
+          ],
+          "process_ms": 8.36,
+          "physics_ms": 2.59
+        }
+      ],
+      "hitch_total": 1,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 25.66,
+      "p50_ms": 8.11,
+      "p95_ms": 16.8,
+      "p99_ms": 931.5500000000001,
+      "max_ms": 931.5500000000001,
+      "fps_mean": 39.0,
+      "fps_1pct_low": 1.1
+    },
+    "stik-home-5.json": {
+      "frames": 37,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 19.09,
+      "hitches": [
+        {
+          "frame": 3254,
+          "ms": 1454.5,
+          "threshold_ms": 94.10000000000001,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -1958.0,
+            "nodes": -813.0,
+            "resources": -39.0,
+            "static_memory_mib": -39.35
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)",
+            "scene/resource construction"
+          ],
+          "route": "home",
+          "screens": [
+            "home"
+          ],
+          "log": [
+            "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb"
+          ],
+          "process_ms": 16.17,
+          "physics_ms": 2.98
+        }
+      ],
+      "hitch_total": 1,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 55.97,
+      "p50_ms": 17.81,
+      "p95_ms": 42.04,
+      "p99_ms": 1454.47,
+      "max_ms": 1454.47,
+      "fps_mean": 17.900000000000002,
+      "fps_1pct_low": 0.7000000000000001
+    },
+    "stik-state-1.json": {
+      "frame": 2813,
+      "fps": 7.0,
+      "time_scale": 1.0,
+      "tree_paused": false,
+      "log_seq": 805,
+      "route": "flight",
+      "screens": [],
+      "focus": "",
+      "sticks_override": {},
+      "log_counts": {
+        "info": 787,
+        "event": 18
+      },
+      "realtime_factor": -1.0,
+      "bridge_usec": 55.23306850980109,
+      "flight": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "tick": 170,
+        "time_s": 0.7083333333333334,
+        "paused": false,
+        "fault": "",
+        "pause_reason": "",
+        "holds": [],
+        "crashed": false,
+        "radio_connected": false,
+        "commands": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "raw": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "position_ned_m": [
+          15.00024814796516,
+          -46.99315018345231,
+          -0.2336341213207094
+        ],
+        "height_m": 0.2336341213207094,
+        "velocity_body_mps": [
+          -0.00020775913472655943,
+          0.0005682975919441813,
+          -0.00013883362500513016
+        ],
+        "speed_mps": 0.0006208065612603889,
+        "attitude_deg": {
+          "roll": -0.19967130717980935,
+          "pitch": -1.9768579727031919,
+          "heading": 90.00730689561165
+        },
+        "rates_body_degps": [
+          0.09972903337169424,
+          0.02987271214402184,
+          -0.02008688256735961
+        ]
+      },
+      "snapshot_frame": 2813,
+      "snapshot_age_ms": 14
+    },
+    "stik-state-2.json": {
+      "frame": 2960,
+      "fps": 2.0,
+      "time_scale": 1.0,
+      "tree_paused": false,
+      "log_seq": 1008,
+      "route": "flight",
+      "screens": [],
+      "focus": "",
+      "sticks_override": {},
+      "log_counts": {
+        "info": 981,
+        "event": 27
+      },
+      "realtime_factor": -1.0,
+      "bridge_usec": 50.236982001031755,
+      "flight": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "tick": 151,
+        "time_s": 0.6291666666666667,
+        "paused": false,
+        "fault": "",
+        "pause_reason": "",
+        "holds": [],
+        "crashed": false,
+        "radio_connected": false,
+        "commands": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "raw": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "position_ned_m": [
+          15.000302410218609,
+          -46.99312772855576,
+          -0.2336309634717257
+        ],
+        "height_m": 0.2336309634717257,
+        "velocity_body_mps": [
+          -0.0003472772771772759,
+          0.0007507994081290621,
+          -0.00023815191131940555
+        ],
+        "speed_mps": 0.0008608237864718299,
+        "attitude_deg": {
+          "roll": -0.20959710448089874,
+          "pitch": -1.980307901281591,
+          "heading": 90.00926688206339
+        },
+        "rates_body_degps": [
+          0.13944813103189885,
+          0.04790356234558575,
+          -0.026984182099172856
+        ]
+      },
+      "snapshot_frame": 2960,
+      "snapshot_age_ms": 60
+    },
+    "stik-state-3.json": {
+      "frame": 3100,
+      "fps": 9.0,
+      "time_scale": 1.0,
+      "tree_paused": false,
+      "log_seq": 1211,
+      "route": "flight",
+      "screens": [],
+      "focus": "",
+      "sticks_override": {},
+      "log_counts": {
+        "info": 1175,
+        "event": 36
+      },
+      "realtime_factor": -1.0,
+      "bridge_usec": 53.05335343886948,
+      "flight": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "tick": 146,
+        "time_s": 0.6083333333333333,
+        "paused": false,
+        "fault": "",
+        "pause_reason": "",
+        "holds": [],
+        "crashed": false,
+        "radio_connected": false,
+        "commands": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "raw": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "position_ned_m": [
+          15.000317981008726,
+          -46.993120494969205,
+          -0.23362528853680395
+        ],
+        "height_m": 0.23362528853680395,
+        "velocity_body_mps": [
+          -0.00036451462839212303,
+          0.000747190928461823,
+          -0.0002716902021698306
+        ],
+        "speed_mps": 0.0008746317875783911,
+        "attitude_deg": {
+          "roll": -0.2125168677768156,
+          "pitch": -1.9813480116618205,
+          "heading": 90.00982680110285
+        },
+        "rates_body_degps": [
+          0.13944261423570542,
+          0.052357832044818454,
+          -0.026491845410043215
+        ]
+      },
+      "snapshot_frame": 3100,
+      "snapshot_age_ms": 30
+    },
+    "stik-state-4.json": {
+      "frame": 3240,
+      "fps": 61.0,
+      "time_scale": 1.0,
+      "tree_paused": false,
+      "log_seq": 1414,
+      "route": "flight",
+      "screens": [],
+      "focus": "",
+      "sticks_override": {},
+      "log_counts": {
+        "info": 1369,
+        "event": 45
+      },
+      "realtime_factor": -1.0,
+      "bridge_usec": 57.50091129618345,
+      "flight": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "tick": 171,
+        "time_s": 0.7125,
+        "paused": false,
+        "fault": "",
+        "pause_reason": "",
+        "holds": [],
+        "crashed": false,
+        "radio_connected": false,
+        "commands": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "raw": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "position_ned_m": [
+          15.0002458212128,
+          -46.993151011945194,
+          -0.23363481876808634
+        ],
+        "height_m": 0.23363481876808634,
+        "velocity_body_mps": [
+          -0.0002006246268307838,
+          0.0005501295212311974,
+          -0.00018113220467399837
+        ],
+        "speed_mps": 0.0006129450273810213,
+        "attitude_deg": {
+          "roll": -0.19926027445244715,
+          "pitch": -1.9767384865372213,
+          "heading": 90.00722417943179
+        },
+        "rates_body_degps": [
+          0.0963427420233826,
+          0.027534185566807274,
+          -0.01942836460413305
+        ]
+      },
+      "snapshot_frame": 3240,
+      "snapshot_age_ms": 9
+    },
+    "stik-state-5.json": {
+      "frame": 3355,
+      "fps": 74.0,
+      "time_scale": 1.0,
+      "tree_paused": false,
+      "log_seq": 1617,
+      "route": "flight",
+      "screens": [],
+      "focus": "",
+      "sticks_override": {},
+      "log_counts": {
+        "info": 1563,
+        "event": 54
+      },
+      "realtime_factor": -1.0,
+      "bridge_usec": 58.43553229188347,
+      "flight": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "tick": 141,
+        "time_s": 0.5875,
+        "paused": false,
+        "fault": "",
+        "pause_reason": "",
+        "holds": [],
+        "crashed": false,
+        "radio_connected": false,
+        "commands": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "raw": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "position_ned_m": [
+          15.000333308271033,
+          -46.993112967459545,
+          -0.23361903883972804
+        ],
+        "height_m": 0.23361903883972804,
+        "velocity_body_mps": [
+          -0.0003799052452814296,
+          0.0007258545464336735,
+          -0.00030749004670372476
+        ],
+        "speed_mps": 0.0008750673955716988,
+        "attitude_deg": {
+          "roll": -0.2153871750981989,
+          "pitch": -1.9824895788223986,
+          "heading": 90.01036792074774
+        },
+        "rates_body_degps": [
+          0.13340998958864683,
+          0.0572630951444138,
+          -0.024923599584923514
+        ]
+      },
+      "snapshot_frame": 3355,
+      "snapshot_age_ms": 30
+    },
+    "stik-warm-1.json": {
+      "frames": 44,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 8.34,
+      "hitches": [
+        {
+          "frame": 2789,
+          "ms": 1699.7,
+          "threshold_ms": 50.0,
+          "physics_ticks": 2,
+          "deltas": {
+            "objects": 4097.0,
+            "nodes": 802.0,
+            "resources": 39.0,
+            "orphans": 862.0,
+            "static_memory_mib": 99.26
+          },
+          "causes": [
+            "scene/resource construction"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [
+            "Loading resource: res://main.tscn remapped: res://main.tscn",
+            "Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1",
+            "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba"
+          ],
+          "process_ms": 16.23,
+          "physics_ms": 0.15,
+          "tick": 0
+        },
+        {
+          "frame": 2790,
+          "ms": 80.10000000000001,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2127.0,
+            "nodes": 11.0,
+            "orphans": -862.0,
+            "static_memory_mib": -55.21
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 16.23,
+          "physics_ms": 0.15,
+          "tick": 12
+        }
+      ],
+      "hitch_total": 2,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 55.93,
+      "p50_ms": 8.370000000000001,
+      "p95_ms": 36.51,
+      "p99_ms": 1699.72,
+      "max_ms": 1699.72,
+      "fps_mean": 17.900000000000002,
+      "fps_1pct_low": 0.6000000000000001
+    },
+    "stik-warm-2.json": {
+      "frames": 47,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 8.39,
+      "hitches": [
+        {
+          "frame": 2933,
+          "ms": 1734.4,
+          "threshold_ms": 50.0,
+          "physics_ticks": 2,
+          "deltas": {
+            "objects": 4097.0,
+            "nodes": 802.0,
+            "resources": 39.0,
+            "orphans": 862.0,
+            "static_memory_mib": 99.26
+          },
+          "causes": [
+            "scene/resource construction"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [
+            "Loading resource: res://main.tscn remapped: res://main.tscn",
+            "Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1",
+            "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba"
+          ],
+          "process_ms": 18.67,
+          "physics_ms": 0.14,
+          "tick": 0
+        },
+        {
+          "frame": 2934,
+          "ms": 77.4,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2127.0,
+            "nodes": 11.0,
+            "orphans": -862.0,
+            "static_memory_mib": -55.21
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 18.67,
+          "physics_ms": 0.14,
+          "tick": 12
+        }
+      ],
+      "hitch_total": 2,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 52.29,
+      "p50_ms": 8.48,
+      "p95_ms": 32.67,
+      "p99_ms": 1734.42,
+      "max_ms": 1734.42,
+      "fps_mean": 19.1,
+      "fps_1pct_low": 0.6000000000000001
+    },
+    "stik-warm-3.json": {
+      "frames": 47,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 13.36,
+      "hitches": [
+        {
+          "frame": 3067,
+          "ms": 1823.3000000000002,
+          "threshold_ms": 50.0,
+          "physics_ticks": 3,
+          "deltas": {
+            "objects": 4097.0,
+            "nodes": 802.0,
+            "resources": 39.0,
+            "orphans": 862.0,
+            "static_memory_mib": 99.22
+          },
+          "causes": [
+            "scene/resource construction"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [
+            "Loading resource: res://main.tscn remapped: res://main.tscn",
+            "Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1",
+            "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba"
+          ],
+          "process_ms": 944.3100000000001,
+          "physics_ms": 2.63,
+          "tick": 0
+        },
+        {
+          "frame": 3068,
+          "ms": 80.7,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2127.0,
+            "nodes": 11.0,
+            "orphans": -862.0,
+            "static_memory_mib": -54.870000000000005
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 944.3100000000001,
+          "physics_ms": 2.63,
+          "tick": 12
+        }
+      ],
+      "hitch_total": 2,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 52.75,
+      "p50_ms": 13.48,
+      "p95_ms": 34.54,
+      "p99_ms": 1823.25,
+      "max_ms": 1823.25,
+      "fps_mean": 19.0,
+      "fps_1pct_low": 0.5
+    },
+    "stik-warm-4.json": {
+      "frames": 40,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 8.370000000000001,
+      "hitches": [
+        {
+          "frame": 3217,
+          "ms": 1806.7,
+          "threshold_ms": 50.0,
+          "physics_ticks": 2,
+          "deltas": {
+            "objects": 4097.0,
+            "nodes": 802.0,
+            "resources": 39.0,
+            "orphans": 862.0,
+            "static_memory_mib": 99.26
+          },
+          "causes": [
+            "scene/resource construction"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [
+            "Loading resource: res://main.tscn remapped: res://main.tscn",
+            "Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1",
+            "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba"
+          ],
+          "process_ms": 9.290000000000001,
+          "physics_ms": 0.05,
+          "tick": 0
+        },
+        {
+          "frame": 3218,
+          "ms": 81.9,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2127.0,
+            "nodes": 11.0,
+            "orphans": -862.0,
+            "static_memory_mib": -55.21
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 9.290000000000001,
+          "physics_ms": 0.05,
+          "tick": 12
+        }
+      ],
+      "hitch_total": 2,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 63.82,
+      "p50_ms": 8.51,
+      "p95_ms": 36.42,
+      "p99_ms": 1806.67,
+      "max_ms": 1806.67,
+      "fps_mean": 15.700000000000001,
+      "fps_1pct_low": 0.6000000000000001
+    },
+    "stik-warm-5.json": {
+      "frames": 43,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 8.43,
+      "hitches": [
+        {
+          "frame": 3332,
+          "ms": 1728.7,
+          "threshold_ms": 50.0,
+          "physics_ticks": 2,
+          "deltas": {
+            "objects": 4097.0,
+            "nodes": 802.0,
+            "resources": 39.0,
+            "orphans": 862.0,
+            "static_memory_mib": 99.26
+          },
+          "causes": [
+            "scene/resource construction"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [
+            "Loading resource: res://main.tscn remapped: res://main.tscn",
+            "Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1",
+            "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba",
+            "Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1",
+            "Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb",
+            "Loading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba"
+          ],
+          "process_ms": 23.64,
+          "physics_ms": 0.04,
+          "tick": 0
+        },
+        {
+          "frame": 3333,
+          "ms": 80.7,
+          "threshold_ms": 50.0,
+          "physics_ticks": 12,
+          "deltas": {
+            "objects": -2127.0,
+            "nodes": 11.0,
+            "orphans": -862.0,
+            "static_memory_mib": -54.92
+          },
+          "causes": [
+            "physics catch-up (12 ticks, the per-frame maximum)"
+          ],
+          "route": "flight",
+          "screens": [],
+          "log": [],
+          "process_ms": 23.64,
+          "physics_ms": 0.04,
+          "tick": 12
+        }
+      ],
+      "hitch_total": 2,
+      "physics_catch_up_frames": 1,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 56.04,
+      "p50_ms": 8.51,
+      "p95_ms": 36.03,
+      "p99_ms": 1728.68,
+      "max_ms": 1728.68,
+      "fps_mean": 17.8,
+      "fps_1pct_low": 0.6000000000000001
+    },
+    "stop.json": {
+      "stopped": true,
+      "pid": 43048,
+      "crash": null,
+      "leaked_objects": 0
+    }
+  },
+  "warm_stik_max_frame_median_ms": 1734.42,
+  "home_return_max_frame_median_ms": 945.1700000000001,
+  "inspected_source_sha256": {
+    "app/app_root.gd": "c6fed43efde4e8372cfacef225c4105500fad784eea9150d73d377eb8a95a1a9",
+    "app/ui/home.gd": "5111a0bb6c9e84c575b4a39bd895070ab515e5e16a210f5c6581b077d82a3c52",
+    "app/main.gd": "e33ad8b0841c53b655cb906506dcf0371454ff3e7a0ee3b515cbad639aef9732",
+    "app/ui/home_scene.gd": "12af55f665b6b15c87a268bf18f39b1eb4f1f1f3084d5dd5c7f4e269a9403c03",
+    "app/ui/home_preview_resources.gd": "5095a4655dc08c543c006dc001cfae94a4a0a4d6cc15f9f4495757f01f27c76f",
+    "app/sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+    "app/render/world/world.gd": "e2b9f028ba41c3157ccceb06c45c24af61d8241f6ea83aed8cbbf4b5911cc596",
+    "research/performance/loading_probe.gd": "6021a86267271bab9c720c454a13f1686d6cba11d06d00cb201c9bcc467acc97"
+  },
+  "start_worktree_diff_sha256": "c1f47bd10b24a5d707e8801800b1d9f33680efc69ac1acb330aa328bdd499480",
+  "initial_head": "9038a6494ad3088f818f9f2f7521f3f5c9e7119e",
+  "head_at_evidence_collection": "914ba5674f2f0088946cfd44be9d6aba180cf10b"
+}
