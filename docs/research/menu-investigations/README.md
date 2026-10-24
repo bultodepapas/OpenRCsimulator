@@ -1,5 +1,15 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-22-R8 — rounded glass wall and offset reflections, 2026-10-24
+
+The owner requested further experimentation against the same fluorescent-glass photographs. Starting from `c62e7348`, two native material candidates were inspected: a broad rounded wall (its soft edge remained too uniform), then an offset rear contour and curved face reflections. The selected refinement strengthens the green body slightly, reduces the exterior halo and uses a sharper grazing catch over the broad wall. The displaced contour follows the overlapping rims in the supplied bowls. These are art-direction judgments, not measured similarity or physical refraction. [Current material specification](../../MENU-REDESIGN-PLAN.md#color-and-surfaces).
+
+Primary actions have a 12-pixel radius, separate purer green emission, 86/88/92% normal/hover/pressed interior alpha and a constrained text-well brightness. Native three-pixel side brackets sit nine pixels inside the button, beyond the luminous wall; this replaces the complete pale frame that visually obscured the material. Black panels remain neutral and skip the additional wall/reflection calculations. Disabled actions, opaque mode, finite motion and live reduced-motion cancellation retain their contracts. No new asset, runtime dependency or continuous animation was introduced.
+
+Checked-runner passes: `test_ui_scale.gd`, `test_ui_home.gd` and all 22 native assertions in `test_ui_crystal.gd`. The rendered check now samples a grid across the text area over white and checks the actual glass under both focus brackets, in addition to rim brightness, contrast bounds, lifecycle and preference checks. Native Spanish Home and Settings at 1920×1080 were inspected for rest, focus, hover, opaque panels and reduced motion. All three debug sessions stopped without crashes or leaked objects; their logs had no engine/script/shader errors. A read-only regression review found no concrete issue. No full-suite run, target-hardware performance qualification or human visual acceptance is claimed.
+
+Ignored evidence: candidate A `tmp/debug-bridge/20261024-162338-47870/`, candidate B `tmp/debug-bridge/20261024-162550-47870/`, selected material `tmp/debug-bridge/20261024-162829-47870/`, material snapshots `tmp/glass-r8-experiments/` and checked logs `tmp/glass-r8-checks/`. No screenshots are committed or shipped.
+
 ## UI-22-R7 — fluorescent glass from owner references, 2026-10-24
 
 The owner supplied three photographs of intensely green fluorescent glass: dark transparent interiors, saturated luminous rims, layered edges and narrow reflections. The implementation transfers these material cues to primary actions while retaining neutral black menu backgrounds. This is a visual interpretation, not a physical glass/fluorescence simulation. The photos were inspected in the conversation and are not copied into the repository. [Current palette and behavior](../../MENU-REDESIGN-PLAN.md#color-and-surfaces).

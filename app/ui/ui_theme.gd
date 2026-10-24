@@ -9,6 +9,7 @@ const TEXT := Color("#F2F2F2")
 const TEXT_2 := Color("#C4C4C4")
 const FOCUS := Color("#66FF16")
 const CRYSTAL := Color("#C4FFB3")
+const GLASS_EMISSION := Color("#3DFF0A")
 const SURFACE_LIGHT := Color("#F0F0F0")
 const EDGE := Color("#606060")
 const BUTTON := {
@@ -18,9 +19,9 @@ const BUTTON := {
 	disabled = Color("#292929"),
 }
 const PRIMARY := {
-	normal = Color("#08290F", 0.92),
-	hover = Color("#0B3A14", 0.94),
-	pressed = Color("#061E0B", 0.96),
+	normal = Color("#08290F", 0.86),
+	hover = Color("#0B3A14", 0.88),
+	pressed = Color("#061E0B", 0.92),
 	disabled = Color("#242A24"),
 }
 const PRIMARY_TEXT := Color("#E4FFDA")
@@ -197,19 +198,21 @@ static func _primary_button(theme: Theme, type: String, font_size: int) -> void:
 	_button(theme, type, PRIMARY, FOCUS, 1, font_size, PRIMARY_TEXT, DISABLED_TEXT)
 	for state in ["normal", "hover", "pressed", "disabled"]:
 		var box := theme.get_stylebox(state, type) as StyleBoxFlat
-		box.border_color = Color(FOCUS, 0.30 if state == "pressed" else 0.42) if state != "disabled" else EDGE
+		box.border_color = Color(GLASS_EMISSION, 0.20 if state == "pressed" else 0.28) if state != "disabled" else EDGE
 		box.border_width_top = 1
 		box.border_blend = true
-		box.set_corner_radius_all(9)
+		box.set_corner_radius_all(12)
 		if opaque_panels: box.bg_color.a = 1.0
 		if state != "disabled":
-			box.shadow_color = Color(FOCUS, 0.24 if state == "hover" else 0.12)
-			box.shadow_size = 12 if state == "hover" else (3 if state == "pressed" else 7)
-	# Pale focus sits inside the dark glass, separated from the fluorescent outer lip.
+			box.shadow_color = Color(GLASS_EMISSION, 0.16 if state == "hover" else 0.10)
+			box.shadow_size = 8 if state == "hover" else (3 if state == "pressed" else 6)
+	# Native side brackets sit inside the dark well, clear of the luminous wall and label ink.
 	var focus := theme.get_stylebox("focus", "Button").duplicate() as StyleBoxFlat
 	focus.border_color = CRYSTAL
-	focus.set_expand_margin_all(-4.0)
-	focus.set_corner_radius_all(5)
+	focus.set_expand_margin_all(-9.0)
+	focus.set_corner_radius_all(3)
+	focus.border_width_top = 0
+	focus.border_width_bottom = 0
 	theme.set_stylebox("focus", type, focus)
 	for state in ["icon_normal_color", "icon_hover_color", "icon_pressed_color", "icon_focus_color", "icon_disabled_color"]:
 		theme.set_color(state, type, DISABLED_TEXT if state == "icon_disabled_color" else PRIMARY_TEXT)

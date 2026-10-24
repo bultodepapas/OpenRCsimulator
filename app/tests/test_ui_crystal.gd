@@ -52,12 +52,12 @@ func _run() -> void:
 	_check("panel underlay fills the whole panel outside its content margins", panel_effect._glass.size == panel.size)
 	_check("effects have no frame or physics processing loop", not effect.is_processing() and not effect.is_physics_processing()
 		and not panel_effect.is_processing())
-	_check("focus remains a native visible outline", not button.get_theme_stylebox("focus").draw_center
-		and button.get_theme_stylebox("focus").border_width_left == UiTheme.FOCUS_WIDTH)
-	# Brightest text-well upper bound: hover body + reflection + peak interior sweep.
-	# Edge fluorescence ends before the content; alpha is checked over white AND black.
-	var brightest := Color(UiTheme.PRIMARY.hover.r + 0.112, UiTheme.PRIMARY.hover.g + 0.112,
-		UiTheme.PRIMARY.hover.b + 0.112, UiTheme.PRIMARY.normal.a)
+	_check("focus remains a native visible pair of brackets", not button.get_theme_stylebox("focus").draw_center
+		and button.get_theme_stylebox("focus").border_width_left == UiTheme.FOCUS_WIDTH
+		and button.get_theme_stylebox("focus").border_width_right == UiTheme.FOCUS_WIDTH)
+	# The shader caps light in the text well, including the moving reflection.
+	# Alpha is checked over white AND black; the native check samples actual pixels.
+	var brightest := Color(0.10, 0.30, 0.10, UiTheme.PRIMARY.normal.a)
 	_check("light text meets 4.5:1 at the brightest translucent glass interior", UiTheme.contrast(UiTheme.PRIMARY_TEXT, brightest) >= 4.5)
 	if DisplayServer.get_name() != "headless":
 		# Read the actual shader result against the most demanding bright backdrop.
@@ -77,6 +77,15 @@ func _run() -> void:
 		var center := rendered.get_pixelv(origin + Vector2i(160, 28))
 		var rim := rendered.get_pixelv(origin + Vector2i(160, 2))
 		_check("rendered glass center keeps light text readable over white", UiTheme.contrast(UiTheme.PRIMARY_TEXT, center) >= 4.5)
+		var worst_contrast := INF
+		for x in range(14, 307, 12):
+			for y in range(11, 46, 3):
+				worst_contrast = minf(worst_contrast, UiTheme.contrast(UiTheme.PRIMARY_TEXT, rendered.get_pixelv(origin + Vector2i(x, y))))
+		_check("the rendered text area stays readable across the glass reflections", worst_contrast >= 4.5)
+		var focus_color: Color = button.get_theme_stylebox("focus").border_color
+		_check("native focus brackets contrast with the actual glass beneath them",
+			UiTheme.contrast(focus_color, rendered.get_pixelv(origin + Vector2i(10, 28))) >= 3.0
+			and UiTheme.contrast(focus_color, rendered.get_pixelv(origin + Vector2i(309, 28))) >= 3.0)
 		_check("rendered green fluorescence is concentrated at the lip", rim.g > center.g + 0.15 and rim.g > rim.r * 1.4)
 		button.text = "Continue"
 		backdrop.queue_free()

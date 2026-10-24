@@ -970,3 +970,7 @@ Twenty source investigations favor controlled hierarchy and material detail over
 
 Follow the owner's photographic references by moving primary actions from a filled lime gradient to dark translucent green with concentrated fluorescent contours and fine reflections. Use light text on the dark interior, separate dark ink for bright toggle/check marks, and a pale native inset focus. Keep black neutral panels and bounded event-driven motion. Preserve readability over bright backdrops and apply opaque mode to the new translucent buttons too. [Reference interpretation and rendered verification](research/menu-investigations/README.md#ui-22-r7--fluorescent-glass-from-owner-references-2026-10-24).
 
+### 2026-10-24 — Shape a glass wall instead of a uniform luminous frame (UI-22-R8)
+
+The next native comparison favors a broad rounded wall with thin grazing catches, an offset rear contour and curved internal reflections. Reduce the external halo, increase interior transparency and cap the text area's brightness. Use native inset side brackets for focus so the upper/lower material remains visible. Keep neutral panels on a separate shader branch. [Experiments and rendered contrast checks](research/menu-investigations/README.md#ui-22-r8--rounded-glass-wall-and-offset-reflections-2026-10-24).
+

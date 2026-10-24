@@ -103,7 +103,7 @@ func _rebuild_styles() -> void:
 	_updating = false
 	_uniform(&"primary", 1.0 if _target is Button else 0.0)
 	_uniform(&"crystal_color", UiTheme.CRYSTAL if _target is Button else UiTheme.SURFACE_LIGHT)
-	_uniform(&"emission_color", UiTheme.FOCUS if _target is Button else UiTheme.SURFACE_LIGHT)
+	_uniform(&"emission_color", UiTheme.GLASS_EMISSION if _target is Button else UiTheme.SURFACE_LIGHT)
 	_sync_state()
 
 
