@@ -1,0 +1,77 @@
+{
+  "id": "veteran_cap",
+  "notes": "Older club member: fedora, white t-shirt and jeans, cloth shoes. (The CC0 newsboy cap ships without a material line.)",
+  "macros": {
+    "gender": 1.0,
+    "age": 0.82,
+    "muscle": 0.42,
+    "weight": 0.66,
+    "height": 0.45,
+    "race": {
+      "caucasian": 1.0,
+      "african": 0.0,
+      "asian": 0.0
+    }
+  },
+  "proxy": "male1591.proxy",
+  "skin": "old_caucasian_male.mhmat",
+  "assets": [
+    [
+      "eyes",
+      "low-poly.mhclo",
+      "Eyes"
+    ],
+    [
+      "eyebrows",
+      "eyebrow005.mhclo",
+      "Eyebrows"
+    ],
+    [
+      "hair",
+      "short03.mhclo",
+      "Hair"
+    ],
+    [
+      "clothes",
+      "fedora01.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "male_casualsuit06.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "toigo_mj_cloth_shoes.mhclo",
+      "Clothes"
+    ]
+  ],
+  "image_max_edge": {
+    "skins": 1024,
+    "clothes": 512,
+    "hair": 512,
+    "eyes": 256,
+    "other": 256
+  },
+  "height": "natural",
+  "decimate": {
+    "male1591": 0.62,
+    "female1605": 0.62,
+    "polo": 0.5,
+    "cargo": 0.75,
+    "shorts": 0.7,
+    "t-shirt": 0.6,
+    "worksuit": 0.6,
+    "casualsuit": 0.55,
+    "boots": 0.25,
+    "shoes": 0.35,
+    "flats": 0.45,
+    "short0": 0.3,
+    "ponytail": 0.3,
+    "cap": 0.5,
+    "beard": 0.4,
+    "glasses": 0.35,
+    "fedora": 0.5
+  }
+}

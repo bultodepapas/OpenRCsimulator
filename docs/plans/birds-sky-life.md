@@ -1,12 +1,12 @@
 # Birds: species, behaviour and sky life
 
-2026-10-24 · Revision 3 · **Planning draft** · Step prefix: **SC-BIRD** (Scenery subtrack; not yet in the [registry](../README.md#tracks-plans-and-step-ids)) · Gate: **SC**
+2026-10-24 · Revision 5 · **Implementation plan** · Step prefix: **SC-BIRD** (Scenery subtrack; not yet in the [registry](../README.md#tracks-plans-and-step-ids)) · Gate: **SC**
 
-**Status:** proposal; nothing is implemented. Owner decisions D1–D12 (§10) are open. Revision 2 added the [web survey](../research/scenery-investigations/06-birds-sky-life-survey.md). Revision 3 adds the [SC-BIRD-00 resource audit](../research/scenery-investigations/SC-BIRD-00/README.md): 298 verified local files (models, CC0 silhouettes, 92 sounds, CC0 GPS/3D tracks, papers, MIT code), measured kettle and swallow numbers, and a Compatibility/web VAT plugin for the near tier.
+**Status:** two slices implemented 2026-10-24. First: a griffon vulture kettle, red kites and barn swallows replace SC-20's flock ([SC-BIRD-01…05](../research/scenery-implementation/SC-BIRD-01-05/README.md)). Second: the director (true sun, morning/evening, clouds, detail), birds that arrive and leave on `sim_clock` instead of popping, one topology per group, and white storks and an evening swift party ([SC-BIRD-08](../research/scenery-implementation/SC-BIRD-08/README.md)). Owner decisions D1–D12 (§10) and Gate SC remain open. Revision 2 added the [web survey](../research/scenery-investigations/06-birds-sky-life-survey.md); revision 3 the [SC-BIRD-00 resource audit](../research/scenery-investigations/SC-BIRD-00/README.md).
 
-**Owner:** Scenery and field life ([SCENERY-PLAN](../SCENERY-PLAN.md)), which owns today's SC-20 flock. Coordination: VQ/LU (scene budget, Scene detail preset, aerial perspective), FW/TOD (sun, sky, calendar, weather), M5 (wind, future spatial thermals), AUD (calls, engine loudness), UI (preference), NR (optional events), CR/physics (bird strike, only if D4 is accepted).
+**Owner:** Scenery and field life ([SCENERY-PLAN](../SCENERY-PLAN.md)). Coordination: VQ/LU (scene budget, Scene detail preset, aerial perspective), FW/TOD (sun, sky, calendar, weather), M5 (wind, future spatial thermals), AUD (calls, engine loudness), UI (preference), NR (optional events), CR/physics (bird strike, only if D4 is accepted).
 
-**Proposed ownership:** `app/scenery/birds*.gd|gdshader` (existing), new `app/scenery/birds/`, `app/data/scenery/birds/`, `tools/scenery/birds/`, `app/tests/test_birds_*.gd`, evidence in `docs/research/scenery-implementation/SC-BIRD-*/`. Shared hooks stay with their owners.
+**Owns:** `app/scenery/birds.gd`, `app/scenery/birds/`, `app/data/scenery/birds/`, `app/tests/test_birds.gd`, `tools/scenery/capture_birds.gd`, `tools/scenery/check_birds.py`, evidence in `docs/research/scenery-implementation/SC-BIRD-*/`. Hooks in `app/scenery/scenery.gd` (build and `commit_lighting`).
 
 ## 1. Goal
 
@@ -14,16 +14,18 @@ Make the sky above the field feel alive and believable: species with real silhou
 
 Non-goals: skinned animals everywhere, an ornithology simulator, birds that change flight physics by default.
 
-## 2. Current baseline (SC-20)
+## 2. Current implementation
 
 | Fact | Where |
 | --- | --- |
-| 12 identical "V" birds, 2 triangles, 0.9 m span, black albedo | [birds.gd](../../app/scenery/birds.gd) |
-| One analytic loop (radius 140 m, 128 s lap) at 32 m, NE of the pilot; 4 Hz flap in the vertex shader | [birds.gdshader](../../app/scenery/birds.gdshader) |
-| Stateless: position and flap depend only on `sim_clock` (wraps at 1024 s; frequencies are k/1024 Hz) | [shader_clock.gd](../../app/render/shader_clock.gd) |
-| `INSTANCE_CUSTOM` already works in Compatibility (with `use_colors` set) | [birds.gd](../../app/scenery/birds.gd) |
+| 5 species (griffon vulture, white stork, red kite, barn swallow, common swift) and 5 flocks (9 + 6 in one mixed kettle, 2, 10, 12 birds) as validated `openrc-birds v1` data | [birds.json](../../app/data/scenery/birds/birds.json), [bird_data.gd](../../app/scenery/birds/bird_data.gd) |
+| Closed arc-line circuits (rotational symmetry), float64 reference, periods 1024/k s | [bird_tracks.gd](../../app/scenery/birds/bird_tracks.gd) |
+| True-size parametric silhouettes, one topology per group (35 soaring / 21 small triangles), each species' shape in CUSTOM0..3 | [bird_planform.gd](../../app/scenery/birds/bird_planform.gd) |
+| Shader on `sim_clock`: circuits, bank from lateral acceleration, flap/hand/fold/tail rig, species colours, arrivals and departures | [sky_birds.gdshader](../../app/scenery/birds/sky_birds.gdshader) |
+| Director: true solar elevation, morning/afternoon, cloud cover, detail tier; only birds out or on their way are drawn; at most 805 primitives / 2 draws all day | [bird_director.gd](../../app/scenery/birds/bird_director.gd), [birds.gd](../../app/scenery/birds.gd), [birds_runtime.gd](../../app/scenery/birds/birds_runtime.gd), [scenery.gd](../../app/scenery/scenery.gd) |
 | On in the Home launch profile; off in reference captures (`OPENRC_SCENERY_BIRDS=off`) | [scenery.gd](../../app/scenery/scenery.gd), [capture.sh](../../app/capture.sh) |
-| Budget `scenery_Birds`: 1,000 primitives / 2 draws per view class | [scene_budget.json](../../tools/scenery/scene_budget.json) |
+| Budget `scenery_Birds`: 1,000 primitives / 2 draws per view class (unchanged) | [scene_budget.json](../../tools/scenery/scene_budget.json) |
+| Checks: 283-check unit test; 1080p capture checker at noon and evening (position vs CPU reference, byte repeats) | [test_birds.gd](../../app/tests/test_birds.gd), [check_birds.py](../../tools/scenery/check_birds.py) |
 | A calendar date exists (`{year, month, day, hour}` for sun and moon), so seasons are possible | [lunar.gd](../../app/render/world/lunar.gd), [moon_config.gd](../../app/environment/moon_config.gd) |
 | Wind presets are uniform; "Updraft" is a uniform vertical gust, not a spatial thermal | [wind_config.gd](../../app/physics/wind_config.gd) |
 
@@ -79,7 +81,7 @@ Real bird–model interactions (anecdotal but repeated): gulls and swallows circ
 | Tier | When | Representation | Cost |
 | --- | --- | --- | --- |
 | **T0 speck** | < 4 px | **3 triangles** (body keel + two wings; three.js birds layout), wing tips flap, species tint | One MultiMesh, 1 draw for all specks |
-| **T1 silhouette** | 4–40 px | **Parametric planform mesh** per species, 16–48 triangles, from our generator: span, aspect, arm/hand split, finger count and depth, tail shape (forked, wedge, fan, square), neck/legs. Joint weights in vertex colour | One MultiMesh per species group, ≤ 6 draws |
+| **T1 silhouette** | 4–40 px | **Parametric planform mesh** per species, 16–48 triangles, from our generator: span, aspect, arm/hand split, finger count and depth, tail shape (forked, wedge, square). One topology per group: each species' shape and rig weights in CUSTOM0..3 (implemented) | One MultiMesh per group, 2 draws |
 | **T2 near** (optional, D5) | > 40 px (kestrel, swallow, auto-zoom) | Downloaded animated models: CC0 raven and pigeon (adopt), Quaternius eagle (D10), CC-BY stork/gull/vulture/kestrel from Sketchfab (D11). Played either by the shader rig or by the MIT antzGames VAT plugin (Godot 4.7, Compatibility and HTML builds, < 8192 vertices) | ≤ 8 instances |
 
 Free animated models exist for some species ([SC-BIRD-00 §1](../research/scenery-investigations/SC-BIRD-00/README.md#1--3d-models-40-files)), but none can be downloaded without a login for griffon vulture, kites, swift, swallow, heron or starling. The generator is therefore required, and it is built from the CC0 PhyloPic planforms and the CC BY raptor silhouette plate ([§2](../research/scenery-investigations/SC-BIRD-00/README.md#2--flight-silhouettes-113-files)). Tier switches use `visibility_range` hysteresis or vertex collapse in the shader. Flipbook billboards, octahedral impostors and skinning are rejected ([survey §7](../research/scenery-investigations/06-birds-sky-life-survey.md#7--alternatives-considered)).
@@ -166,14 +168,14 @@ Under 1 % of the pilot class limit (1,307,000 primitives / 360 draws), but the p
 | ID | Work | Proof / status |
 | --- | --- | --- |
 | SC-BIRD-00 | Register prefix; source audit: spans, wingbeats, climb rates, model/silhouette/audio licences and hashes, tracks, code | Sources gathered 2026-10-24: [audit](../research/scenery-investigations/SC-BIRD-00/README.md), [manifest](../research/scenery-investigations/SC-BIRD-00/sources.json) (298 files, hashes verified). Open: registry row, D10–D12, listening pass |
-| SC-BIRD-01 | Compatibility spike: 3-triangle T0 MultiMesh, `INSTANCE_CUSTOM`, `visible_instance_count`, vertex `texelFetch` of an RGBA16F texture; native opengl3 **and web** | Byte-identical repeat captures; draw/primitive counts; F1 decision · pending |
-| SC-BIRD-02 | Species data schema (`app/data/scenery/birds/`) and validator: planform, mass, gaits (mass rule), k/1024 Hz frequencies, colours, habitats, calendar and time windows | Unit test rejects invalid data · pending |
-| SC-BIRD-03 | Parametric silhouette generator (T0/T1) with joint weights | Owner overlay on reference photos; triangle test · pending |
-| SC-BIRD-04 | Shader rig, six gaits, speed-linked flap | Fixed-clock contact sheet per gait; phase unit test · pending |
-| SC-BIRD-05 | Analytic behaviours: kettles (leader/followers, mean-wind drift), kestrel by wind, kite quartering, stork skein, heron, gulls, swallows, swifts; terrain/tree clearance | Path tests (period divides 1024 s, clearance, exclusion cone); kettle radius, period, bank and climb inside the measured vulture/stork/kite ranges · pending |
+| SC-BIRD-01 | Compatibility spike: MultiMesh, `INSTANCE_CUSTOM`, uniform arrays; `visible_instance_count`; vertex `texelFetch` of an RGBA16F texture; native opengl3 **and web** | **Native part delivered:** 1080p capture, byte-identical repeats in and across processes. Open: web export, `visible_instance_count`, texture fetch (needed only by SC-BIRD-06), F1 decision |
+| SC-BIRD-02 | Species data schema (`app/data/scenery/birds/`) and validator: planform, mass, gaits, k/1024 Hz frequencies, colours, activity | **Delivered** for 3 species (20 rejected mutations). Open: habitat tags, calendar windows, the Tobalske mass rule for gaits |
+| SC-BIRD-03 | Parametric silhouette generator with joint weights | **Delivered** (T1, 19–34 triangles; keel and leading-edge strip). Open: owner overlay on the PhyloPic planforms; a separate T0 speck tier |
+| SC-BIRD-04 | Shader rig and gaits | **Delivered:** flap with hand lag and upstroke fold, flap-glide bursts, soaring dihedral and tip curl, tail twist with bank. Open: hover, bounding, speed-linked flap rate, per-gait contact sheet |
+| SC-BIRD-05 | Analytic behaviours: kettles, kestrel, kite quartering, stork skein, heron, gulls, swallows, swifts; terrain/tree clearance | **Delivered** for the vulture/stork mixed kettle, red kite, swallows and an evening swift party: closure, tangency, 1024 s repeat, measured speed/bank/radius/turn time/climb/height limits, flight-box and pilot clearance (departures included). Open: mean-wind drift, stork leader/followers, kestrel hover, heron, gulls, the exclusion cone (SC-BIRD-09) |
 | SC-BIRD-06 | Murmuration: baked tool (or F1), seasonal dusk window, roost dive | Generator hash; loop-seam test; dusk capture · pending |
 | SC-BIRD-07 | Looks: aerial perspective, ground bounce, backlit rim, species colour | Noon/sunset captures against sky · pending |
-| SC-BIRD-08 | Ecology director: calendar, time, weather, habitat tags, detail preset | Schedule unit test; per-landscape capture · pending |
+| SC-BIRD-08 | Ecology director: calendar, time, weather, habitat tags, detail preset | **Partly delivered:** true sun, morning/evening, cloud cover, detail tier; smooth arrivals and departures; budget proven all day. Open: seasons (D9), rain/storms (needs a weather input), habitat tags per landscape |
 | SC-BIRD-09 | Readability guard and pixel LOD with auto-zoom | No bird inside the cone over a recorded flight; auto-zoom capture · pending |
 | SC-BIRD-10 | Audio with AUD at the same positions: CC0/CC BY recordings from SC-BIRD-00 §3 (kite, buzzard, kestrel, stork clatter, swifts, swallows, gulls, corvids, pigeons, murmuration rush, wing flaps); synthesis only for gaps (vulture, clean wing clap) | Listening pass, lossless originals (D12), attribution list; AUD bench · pending (AUD owner) |
 | SC-BIRD-11 | T2 near tier from downloaded models (D5, D10, D11), rig or VAT | Provenance record; close-up capture · pending |
@@ -183,7 +185,7 @@ Under 1 % of the pilot class limit (1,307,000 primitives / 360 draws), but the p
 | SC-BIRD-15 | Budget revision and Gate SC flight judgement at 1080p, then ≥ 1440p, then 720p | `attribute_views.gd`; owner flight notes · pending |
 | SC-BIRD-16 | Ground birds on runway grass and roofs: pecking idle, flush on approach (engine C), resettle later (D8) | Taxi capture; flush/resettle test · pending |
 
-Recommended first slice: **00 → 01 → 02 → 03 → 04 → 05** with three species (vulture kettle, kite, swallows). Second slice: **06 + 08** (murmuration and the calendar). Third: **12 + 16** (reactive and ground birds).
+Two slices are in place (00 → 05, then 08 with storks and swifts). Next: the owner's Gate SC look and D1–D12, then **09** (exclusion cone and pixel LOD), **06** (murmuration, needs the vertex texture spike), and **12 + 16** (reactive and ground birds).
 
 ## 10. Owner decisions
 

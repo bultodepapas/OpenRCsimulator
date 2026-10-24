@@ -336,5 +336,150 @@
       "content": "{\"default\": 3}",
       "status": "A cleanup attempt was rejected by the environment; the file remains. No further removal was attempted. Later authoring runs used isolated Blender user directories."
     }
+  },
+  "sc_hum_02_merged_runtime": {
+    "step": "SC-HUM-02",
+    "observed_on": "2026-10-24",
+    "pipeline": [
+      "tools/scenery/population/generate_people.py (unchanged; Linux run reproduces the LU-21 meshes, see SC-HUM-00)",
+      "tools/scenery/population/merge_people_atlas.py",
+      "tools/scenery/population/package_population.py"
+    ],
+    "toolchain": {
+      "blender": "5.2.2 LTS (linux-x64, release SHA-256 verified)",
+      "mpfb": "2.0.18"
+    },
+    "result": "Each pose is one mesh, one material and one draw surface (people: 19 -> 3 draw surfaces, triangles unchanged). Diffuse atlas 2112x2112 and normal atlas 1056x1056 are shared by all three poses; imported VRAM-compressed with mipmaps.",
+    "merged_exports": {
+      "standing": {
+        "gltf_sha256": "14eb5a8f8b6eabe760e5ef057140db63eb184e6296763b242e222c52c682ae8e",
+        "bin_sha256": "51fa77e59641d293e7783205f9b5df475e64d350e37afd47408f3a4cc0fed970"
+      },
+      "seated": {
+        "gltf_sha256": "a8a1accd8cc1fa2965b6103addbfbca37cbbb277eee3b8c16d0cfe6ce1d30fc3",
+        "bin_sha256": "5bd20de3650c8d8114f3bd646c45b77017ef29bc701d5fcda0523a266721ec6c"
+      },
+      "pilot": {
+        "gltf_sha256": "8d43e80e27efcbc6b1c98dfa3f5c254cafb1c47ddc5764736176c6ca259fba31",
+        "bin_sha256": "7e4efff24a174dd5e7eeef73b279ab71643ca9386b47242b74f52e57fcf38dd5"
+      }
+    },
+    "runtime_textures": [
+      {
+        "file": "textures/29796c1fe799a561b1737d7bc32c6f3b92f15c08bf8cb9eaf5c3f536e76d4018.png",
+        "sha256": "29796c1fe799a561b1737d7bc32c6f3b92f15c08bf8cb9eaf5c3f536e76d4018"
+      },
+      {
+        "file": "textures/0c6489795fe9f22b03ec411b96cf943a8bae9d204d59fa78b8d157da4e5628ec.png",
+        "sha256": "0c6489795fe9f22b03ec411b96cf943a8bae9d204d59fa78b8d157da4e5628ec"
+      }
+    ],
+    "retired_runtime_textures": [
+      "10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03",
+      "3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6",
+      "a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7",
+      "b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90",
+      "d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826",
+      "e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a",
+      "efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0"
+    ],
+    "evidence": "docs/research/scenery-implementation/SC-HUM-02/README.md"
+  },
+  "sc_hum_07_outfits": {
+    "step": "SC-HUM-07",
+    "observed_on": "2026-10-24",
+    "pipeline": [
+      "tools/scenery/population/generate_people.py --outfit tools/scenery/population/outfits/<id>.json",
+      "tools/scenery/population/merge_people_atlas.py -- --shared <dir> people <all outfit poses> (sources sorted by file name; reproducible byte for byte)",
+      "tools/scenery/population/package_population.py"
+    ],
+    "outfit_specs_sha256": {
+      "casual_jacket.json": "a015bb9f59ba462b94a65c3f0b49d5c1c43de18050691a1f407c91594f556964",
+      "casual_shirt.json": "4380746f76c54527b219ed457e2b5783512820bdca7db85f261df546b27b0d2c",
+      "mechanic_overalls.json": "07708338db9bbb90af538bcccd94fc6ca992237823483583621a5d8a1f486f5f",
+      "pilot_polo.json": "6d8b5d9f42e9d5f2c00906ce3f88729a7f0193f23028c1f1e816ae993ee81b6b",
+      "veteran_cap.json": "a3bb636fe282c15120c40f0de4b8683d9d791a714864b17013dc94e942f091d0",
+      "woman_tee.json": "1c992889c167dfcb58fe540a9029df1423abe93cf4651644939ed56768daa63d"
+    },
+    "poses": {
+      "pilot": [
+        "pilot_polo",
+        "veteran_cap"
+      ],
+      "standing": [
+        "casual_shirt",
+        "woman_tee",
+        "casual_jacket",
+        "mechanic_overalls"
+      ],
+      "sitting": [
+        "woman_tee (callharvey3d_sittingnatural, poses01)",
+        "veteran_cap (anrico_sitting03)"
+      ],
+      "working": [
+        "mechanic_overalls",
+        "casual_shirt",
+        "woman_tee (SC-HUM-06: standing02 with a 7\u00b0+7\u00b0 spine lean, 26\u00b0 head/neck tilt and IK hands at 0.94 m)"
+      ]
+    },
+    "additional_cc0_archives": {
+      "pants01": {
+        "url": "https://files.makehumancommunity.org/asset_packs/pants01/pants01_cc0.zip",
+        "catalog": "https://static.makehumancommunity.org/assets/assetpacks/pants01.html",
+        "sha256": "e4e0ec60db34f279be291a83cfd7b342a7c5cf09bb7676682a5f39f4f6ac4ad9",
+        "bytes": 21908723,
+        "license": "CC0-1.0",
+        "evidence": "catalog per-asset CC0 and 'license CC0' in each used .mhclo"
+      },
+      "glasses01": {
+        "url": "https://files.makehumancommunity.org/asset_packs/glasses01/glasses01_cc0.zip",
+        "catalog": "https://static.makehumancommunity.org/assets/assetpacks/glasses01.html",
+        "sha256": "f215c58e09e31b7ee568c814067cb47704cee6da1f6fc01cffb8e9fca37bafdd",
+        "bytes": 5782729,
+        "license": "CC0-1.0",
+        "evidence": "catalog per-asset CC0 and 'license CC0' in each used .mhclo"
+      },
+      "shirts01": {
+        "url": "https://files.makehumancommunity.org/asset_packs/shirts01/shirts01_cc0.zip",
+        "catalog": "https://static.makehumancommunity.org/assets/assetpacks/shirts01.html",
+        "sha256": "a5a723b0e84a109bb190fcfeac7f1de4138d875da3e30fe5b3340eac9f38bcd3",
+        "bytes": 24479483,
+        "license": "CC0-1.0",
+        "evidence": "catalog per-asset CC0 and 'license CC0' in each used .mhclo"
+      },
+      "shoes01": {
+        "url": "https://files.makehumancommunity.org/asset_packs/shoes01/shoes01_cc0.zip",
+        "catalog": "https://static.makehumancommunity.org/assets/assetpacks/shoes01.html",
+        "sha256": "ded3f70428505eabbf1f6d7b5f61196a7366ef20757103d276ad0ed336c35ada",
+        "bytes": 82953569,
+        "license": "CC0-1.0",
+        "evidence": "catalog per-asset CC0 and 'license CC0' in each used .mhclo"
+      },
+      "bodyparts05": {
+        "url": "https://files.makehumancommunity.org/asset_packs/bodyparts05/bodyparts05_cc0.zip",
+        "catalog": "https://static.makehumancommunity.org/assets/assetpacks/bodyparts05.html",
+        "sha256": "262bba42246f85b2a91f493dd920296b258a3b4544eb495c91c4d08e57c528fd",
+        "bytes": 6616507,
+        "license": "CC0-1.0",
+        "evidence": "catalog per-asset CC0 and 'license CC0' in each used .mhclo"
+      }
+    },
+    "also_uses_pinned_archives": [
+      "makehuman_system_assets",
+      "poses01"
+    ],
+    "excluded": {
+      "toigo_maga_hat (hats01)": "political slogan",
+      "jujube_newsboy_cap (hats01)": "no material line in its .mhclo",
+      "female/male casualsuit with the MakeHuman logo": "branding",
+      "toigo_flats": "25,920 triangles after decimation"
+    },
+    "runtime": "app/assets/scenery/population/people/: eight GLBs, one 2720x4064 diffuse and one 1360x2032 normal atlas (VRAM-compressed, mipmaps)",
+    "retires": "SC-HUM-02 standing/sitting/pilot GLBs and their atlas (the LU-21 person stays reproducible from the default recipe)",
+    "evidence": "docs/research/scenery-implementation/SC-HUM-07/README.md; work poses: docs/research/scenery-implementation/SC-HUM-06/README.md",
+    "runtime_textures": [
+      "1d43206c4610c39a9bb155e3e7cceefc4ec08495c2d753945feae082ef955aa8.png",
+      "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png"
+    ]
   }
 }

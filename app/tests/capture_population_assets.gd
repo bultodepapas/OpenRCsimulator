@@ -39,13 +39,18 @@ func _run() -> void:
 	camera.current = true
 	var report := {engine = Engine.get_version_info(), adapter = RenderingServer.get_video_adapter_name(),
 		renderer = "gl_compatibility", width = root.size.x, height = root.size.y, assets = {}, motion = {}}
-	for id: String in ["car_sedan", "car_hatch", "car_suv", "person_standing", "person_sitting", "person_pilot"]:
-		var asset: String = Population.ASSETS[id]
+	# Cars by catalog id; people by every SC-HUM-07 outfit variant ("<pose>/<outfit>").
+	var subjects: Array = [["car_sedan", "sedan"], ["car_hatch", "hatch"], ["car_suv", "crossover"]]
+	for key: String in Population.human_assets():
+		subjects.append(["person_" + Population.pose_of(key), key])
+	for subject: Array in subjects:
+		var id: String = subject[0]
+		var asset: String = subject[1]
 		if args.has("assets") and not str(args.assets).split(",").has(asset):
 			continue
 		var source: Dictionary = Population._source(asset)
 		var batches := {}
-		Population.queue(batches, id, Transform3D.IDENTITY, 42, source.bounds.size)
+		Population.queue_asset(batches, asset, id, Transform3D.IDENTITY, 42, source.bounds.size)
 		var population := Population.build(batches)
 		world.add_child(population)
 		var distances := {}
@@ -53,7 +58,7 @@ func _run() -> void:
 			camera.look_at_from_position(Vector3(distance * 0.35, 1.6, -distance), Vector3(0.0, source.bounds.size.y * 0.5, 0.0))
 			Clock.update(0.0)
 			await _settle()
-			var filename := "%s_%dm.png" % [asset, int(distance)]
+			var filename := "%s_%dm.png" % [asset.replace("/", "_"), int(distance)]
 			root.get_texture().get_image().save_png(out.path_join(filename))
 			distances[str(int(distance))] = {image = filename,
 				draws = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
@@ -64,11 +69,14 @@ func _run() -> void:
 			for node: MultiMeshInstance3D in population.get_children():
 				node.multimesh.set_instance_custom_data(0, Color(0.2, 1.0, 0.3, 0.0))
 			var hashes := {}
-			for entry: Array in [["start", 0.0], ["moving", 7.0], ["paused", 7.0], ["reset", 0.0], ["wrapped", 1024.0]]:
-				Clock.update(float(entry[1]))
+			# SC-HUM-08: the same instants with wind exercise the shirt-hem flutter (zero wind = exact rest).
+			var windy := Vector3(6.0, 0.0, 0.0)
+			for entry: Array in [["start", 0.0], ["moving", 7.0], ["paused", 7.0], ["reset", 0.0], ["wrapped", 1024.0],
+					["wind", 7.0, windy], ["wind_held", 7.0, windy], ["wind_later", 7.3, windy], ["calm_again", 7.0]]:
+				Clock.update(float(entry[1]), entry[2] if entry.size() > 2 else Vector3.ZERO)
 				await _settle()
 				var img := root.get_texture().get_image()
-				var file := "%s_%s.png" % [asset, entry[0]]
+				var file := "%s_%s.png" % [asset.replace("/", "_"), entry[0]]
 				img.save_png(out.path_join(file))
 				var hash := HashingContext.new()
 				hash.start(HashingContext.HASH_SHA256)
@@ -76,7 +84,8 @@ func _run() -> void:
 				hashes[entry[0]] = hash.finish().hex_encode()
 			report.motion[asset] = {hashes = hashes, changed = hashes.start != hashes.moving,
 				pause_equal = hashes.moving == hashes.paused, reset_equal = hashes.start == hashes.reset,
-				wrap_equal = hashes.start == hashes.wrapped}
+				wrap_equal = hashes.start == hashes.wrapped, wind_changes = hashes.wind != hashes.moving,
+				wind_repeatable = hashes.wind == hashes.wind_held, calm_restored = hashes.calm_again == hashes.moving}
 		population.free()
 	var file := FileAccess.open(out.path_join("report.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "  "))

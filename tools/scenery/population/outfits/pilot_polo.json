@@ -1,0 +1,81 @@
+{
+  "id": "pilot_polo",
+  "notes": "Experienced pilot: polo shirt, cargo pants, ankle boots, dark glasses.",
+  "macros": {
+    "gender": 1.0,
+    "age": 0.62,
+    "muscle": 0.5,
+    "weight": 0.58,
+    "height": 0.42,
+    "race": {
+      "caucasian": 0.9,
+      "african": 0.05,
+      "asian": 0.05
+    }
+  },
+  "proxy": "male1591.proxy",
+  "skin": "middleage_caucasian_male.mhmat",
+  "assets": [
+    [
+      "eyes",
+      "low-poly.mhclo",
+      "Eyes"
+    ],
+    [
+      "eyebrows",
+      "eyebrow002.mhclo",
+      "Eyebrows"
+    ],
+    [
+      "hair",
+      "short02.mhclo",
+      "Hair"
+    ],
+    [
+      "clothes",
+      "namuhekam_male_polo_shirt.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "cortu_cargo_pants.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "toigo_ankle_boots_male.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "frankyaye_glasses_library_male.mhclo",
+      "Clothes"
+    ]
+  ],
+  "image_max_edge": {
+    "skins": 1024,
+    "clothes": 512,
+    "hair": 512,
+    "eyes": 256,
+    "other": 256
+  },
+  "height": "natural",
+  "decimate": {
+    "male1591": 0.62,
+    "female1605": 0.62,
+    "polo": 0.5,
+    "cargo": 0.75,
+    "shorts": 0.7,
+    "t-shirt": 0.6,
+    "worksuit": 0.6,
+    "casualsuit": 0.6,
+    "boots": 0.25,
+    "shoes": 0.35,
+    "flats": 0.45,
+    "short0": 0.3,
+    "ponytail": 0.3,
+    "cap": 0.5,
+    "beard": 0.4,
+    "glasses": 0.35
+  }
+}

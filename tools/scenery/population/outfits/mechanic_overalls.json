@@ -1,0 +1,71 @@
+{
+  "id": "mechanic_overalls",
+  "notes": "Pits mechanic: denim work overalls over a t-shirt, work shoes.",
+  "macros": {
+    "gender": 1.0,
+    "age": 0.42,
+    "muscle": 0.62,
+    "weight": 0.55,
+    "height": 0.45,
+    "race": {
+      "african": 1.0,
+      "caucasian": 0.0,
+      "asian": 0.0
+    }
+  },
+  "proxy": "male1591.proxy",
+  "skin": "young_african_male.mhmat",
+  "assets": [
+    [
+      "eyes",
+      "low-poly.mhclo",
+      "Eyes"
+    ],
+    [
+      "eyebrows",
+      "eyebrow003.mhclo",
+      "Eyebrows"
+    ],
+    [
+      "hair",
+      "short04.mhclo",
+      "Hair"
+    ],
+    [
+      "clothes",
+      "male_worksuit01.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "shoes02.mhclo",
+      "Clothes"
+    ]
+  ],
+  "image_max_edge": {
+    "skins": 512,
+    "clothes": 512,
+    "hair": 512,
+    "eyes": 256,
+    "other": 256
+  },
+  "height": "natural",
+  "decimate": {
+    "male1591": 0.62,
+    "female1605": 0.62,
+    "polo": 0.5,
+    "cargo": 0.75,
+    "shorts": 0.7,
+    "t-shirt": 0.6,
+    "worksuit": 0.6,
+    "casualsuit": 0.6,
+    "boots": 0.25,
+    "shoes": 0.35,
+    "flats": 0.45,
+    "short0": 0.3,
+    "ponytail": 0.3,
+    "cap": 0.5,
+    "beard": 0.4,
+    "glasses": 0.35
+  }
+}

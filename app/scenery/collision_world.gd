@@ -188,7 +188,7 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
 				else:
 					_add_box(proxies, "equipment:%s:%02d:%s" % [group_id, index, prefab], "equipment", prefab,
 						"hard_terminal", north, east, size.x, size.y, size.z, heading)
-			elif prefab in ["person_pilot", "person_standing", "person_sitting"]:
+			elif prefab in ["person_pilot", "person_standing", "person_sitting", "person_working"]:
 				var foot_height := SupportSurfaces.height_at(north, east, support_surfaces)
 				if prefab == "person_sitting":
 					foot_height += SupportSurfaces.SEATED_OFFSET_M

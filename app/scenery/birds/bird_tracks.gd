@@ -11,6 +11,10 @@ const CLOCK_S := 1024.0
 const MAX_TIME_SCALE_CHANGE := 0.08
 const CLOSE_TOLERANCE_M := 1e-6
 const SAMPLE_STEP_S := 0.25
+const MIN_SPEED := 2.0 # m/s; slower is hovering, not a circuit (a kestrel's hover will be its own behaviour)
+const MAX_SPEED := 40.0 # m/s; swift dives reach ~23 m/s (Hedrick et al. 2018)
+const MIN_SEGMENT_S := 0.05
+const MAX_CLIMB_RATE := 10.0 # m/s
 
 
 ## Returns {ok, errors, track: {segments, period, time_scale, bbox_min, bbox_max, length}}.
@@ -60,7 +64,7 @@ static func compile(motif: Variant, repeats: int, heading: float, anchor: String
 	var gap := Vector2(x - x0, y - y0).length()
 	var turn_error := absf(_wrap_angle(h - heading))
 	if gap > CLOSE_TOLERANCE_M * maxf(1.0, length) or turn_error > 1e-9:
-		errors.append("circuit does not close (gap %.6f m, heading %.3g rad): the motif's net turn must be 360/%d deg" % [
+		errors.append("circuit does not close (gap %.6f m, heading %.6f rad): the motif's net turn must be 360/%d deg" % [
 			gap, turn_error, repeats])
 	if absf(z) > 1e-9:
 		errors.append("circuit does not close vertically (net climb %.6f m)" % z)
@@ -164,20 +168,22 @@ static func _part(i: int, raw: Variant, errors: Array[String]) -> Dictionary:
 	if d.has("speed") == d.has("duration"):
 		errors.append("segment %d needs exactly one of speed or duration" % i)
 		return {}
-	var duration: float = float(d.duration) if d.has("duration") else 0.0
-	if d.has("speed"):
-		if not _positive(d.speed) or float(d.speed) > 40.0:
-			errors.append("segment %d: speed must be in (0, 40] m/s" % i)
-			return {}
-		duration = length / float(d.speed)
-	elif not _positive(d.duration):
-		errors.append("segment %d: duration must be positive" % i)
+	var given: Variant = d.get("speed", d.get("duration"))
+	if not _positive(given):
+		errors.append("segment %d: speed or duration must be a positive number" % i)
 		return {}
-	var climb: float = float(d.get("climb", 0.0)) if _number(d.get("climb", 0.0)) else NAN
-	if not is_finite(climb):
-		errors.append("segment %d: climb must be a number" % i)
+	var duration: float = length / float(given) if d.has("speed") else float(given)
+	var speed: float = length / duration
+	# The same limits whichever was given, so a short duration cannot hide an impossible speed.
+	if duration < MIN_SEGMENT_S or speed < MIN_SPEED or speed > MAX_SPEED:
+		errors.append("segment %d: %.3f m/s over %.3f s, outside [%s, %s] m/s or shorter than %s s" % [
+			i, speed, duration, MIN_SPEED, MAX_SPEED, MIN_SEGMENT_S])
 		return {}
-	return {length = length, kappa = kappa, duration = duration, climb = climb}
+	var climb: Variant = d.get("climb", 0.0)
+	if not _number(climb) or absf(float(climb)) / duration > MAX_CLIMB_RATE:
+		errors.append("segment %d: climb must be a number with a rate within %s m/s" % [i, MAX_CLIMB_RATE])
+		return {}
+	return {length = length, kappa = kappa, duration = duration, climb = float(climb)}
 
 
 ## End [x, y, heading] after `s` metres from (x, y, h) with curvature kappa.

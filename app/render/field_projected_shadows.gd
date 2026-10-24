@@ -124,7 +124,8 @@ static func population_cell_owners(cells: Array[MeshInstance3D], population: Nod
 			continue
 		var placements: Array = child.get_meta("placements", [])
 		for i in placements.size():
-			var id := "%s:%d" % [asset, i]
+			# SC-HUM-07: outfit variants share a pose; the asset key keeps each person unique.
+			var id := "%s:%d" % [str(child.get_meta("asset_key", asset)), i]
 			if seen.has(id):
 				continue
 			seen[id] = true
@@ -186,7 +187,7 @@ static func collect_cell_shape(cell: MeshInstance3D, population: Node3D, pilot_x
 			var placement: Dictionary = placements[i]
 			var placement_xf: Transform3D = placement.get("transform", Transform3D.IDENTITY)
 			var pos := placement_xf.origin
-			var placement_id := "%s:%d" % [source_asset, i]
+			var placement_id := "%s:%d" % [str(child.get_meta("asset_key", source_asset)), i]
 			var owner: Vector2i = owner_by_placement.get(placement_id, Scenery._cell(-pos.z, pos.x))
 			if owner != cell_key or Vector2(pos.x, pos.z).distance_to(pilot_xz) > max_range_m:
 				continue

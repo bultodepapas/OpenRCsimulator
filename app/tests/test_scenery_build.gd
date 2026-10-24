@@ -265,16 +265,33 @@ func _test_catalog_sizes() -> void:
 				for v: Vector3 in part_kit.verts:
 					box = box.expand(v + part.pivot)
 		var want: Vector3 = spec.size
-		if id.begins_with("person_"):
-			# These production IDs now render the imported posed mesh; legacy
-			# procedural body proportions have their separate population regression.
-			box = Population._source(Population.ASSETS[id]).bounds
 		var tol := 0.3 if spec.get("variable", false) else 0.1
-		var ok := true
-		for i in 3:
-			if absf(box.size[i] - want[i]) > maxf(tol * want[i], 0.1):
-				ok = false
-		_check("%s size %.2f × %.2f × %.2f m matches the catalog %s" % [id, box.size.x, box.size.y, box.size.z, want], ok)
+		var boxes := {id: box}
+		if id.begins_with("person_"):
+			# These production IDs render imported posed meshes: every SC-HUM-07 outfit variant of
+			# the pose must match the catalog. Legacy procedural proportions have their own regression.
+			boxes.clear()
+			for key: String in Population.human_assets():
+				if Population.pose_of(key) == str(Population.ASSETS[id]):
+					var source: Dictionary = Population._source(key)
+					_check("%s variant %s loads" % [id, key], source.has("bounds"))
+					if source.has("bounds"):
+						boxes[key] = source.bounds
+		for label: String in boxes:
+			var variant_box: AABB = boxes[label]
+			var ok := true
+			for i in 3:
+				if "/" in label:
+					# Natural-size outfit variants render at min(1, envelope fit) (Population.build): the
+					# drawn size must fit the collision envelope (plan §4.5), the cap must stay a small
+					# correction, and the person must not be implausibly smaller than the envelope.
+					var fit: float = minf(1.0, minf(want.x / variant_box.size.x, minf(want.y / variant_box.size.y, want.z / variant_box.size.z)))
+					var drawn: float = variant_box.size[i] * fit
+					if drawn > want[i] + 0.025 or drawn < 0.75 * want[i] or fit < 0.92:
+						ok = false
+				elif absf(variant_box.size[i] - want[i]) > maxf(tol * want[i], 0.1):
+					ok = false
+			_check("%s size %.2f × %.2f × %.2f m matches the catalog %s" % [label, variant_box.size.x, variant_box.size.y, variant_box.size.z, want], ok)
 		_check("%s has evidence (kind and source)" % id, ["borrowed", "estimated", "manual", "measured"].has(spec.kind) and not str(spec.source).is_empty())
 
 

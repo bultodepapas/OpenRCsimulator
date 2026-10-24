@@ -11,6 +11,8 @@ const FORMAT := "openrc-birds v1"
 const KINDS: Array[String] = ["measured", "estimated", "derived", "borrowed", "manual"]
 const GROUPS: Array[String] = ["soaring", "small"]
 const TAIL_SHAPES: Array[String] = ["square", "forked", "wedge"]
+const PERIODS: Array[String] = ["day", "evening"] # evening: afternoon only (screaming parties before sunset)
+const DEPARTURES: Array[String] = ["away", "climb"] # how a bird leaves when its species stops flying
 const MAX_SPECIES_PER_GROUP := 4
 const MAX_TRACKS_PER_GROUP := 8
 const MAX_SEGMENTS_PER_GROUP := 48
@@ -31,6 +33,9 @@ const GAIT_FIELDS := [
 	["tip_curl", "deg", -30.0, 30.0], ["fold", "1", 0.0, 0.6], ["tail_twist", "1", 0.0, 2.0],
 	["tail_wobble", "deg", 0.0, 20.0],
 ]
+const ACTIVITY_FIELDS := [["sun_min", "deg", -10.0, 45.0]]
+const ACTIVITY_OPTIONAL := [["sun_max", "deg", -5.0, 90.0, 90.0], ["clouds_max", "1", 0.2, 1.0, 1.0]]
+const DEPARTURE_FIELDS := [["distance", "m", 50.0, 1000.0], ["duration", "s", 10.0, 300.0]]
 const FLOCK_FIELDS := [["base_height", "m", 0.1, 400.0], ["spread_time", "s", 0.0, 1024.0],
 	["spread_height", "m", 0.0, 50.0], ["heading", "deg", -360.0, 360.0]]
 
@@ -131,8 +136,29 @@ static func _species(id: String, raw: Variant, errors: Array[String]) -> Diction
 	if typeof(d.get("activity")) != TYPE_DICTIONARY:
 		errors.append("species '%s': activity missing" % id)
 	else:
-		_fields(activity, d.activity, [["sun_min", "deg", -10.0, 45.0]], "species '%s' activity" % id, errors)
+		var where := "species '%s' activity" % id
+		_fields(activity, d.activity, ACTIVITY_FIELDS, where, errors)
+		for spec: Array in ACTIVITY_OPTIONAL:
+			activity[spec[0]] = spec[4]
+			if d.activity.has(spec[0]):
+				_fields(activity, d.activity, [spec.slice(0, 4)], where, errors)
+		var period: String = str(d.activity.get("period", ""))
+		if not PERIODS.has(period):
+			errors.append("%s: period must be one of %s" % [where, PERIODS])
+		activity.period = period
+		if activity.has("sun_min") and float(activity.sun_max) < float(activity.sun_min) + 4.0:
+			errors.append(where + ": sun_max must be at least 4 deg above sun_min")
 	out.activity = activity
+	var departure: Dictionary = {}
+	if typeof(d.get("departure")) != TYPE_DICTIONARY:
+		errors.append("species '%s': departure missing" % id)
+	else:
+		_fields(departure, d.departure, DEPARTURE_FIELDS, "species '%s' departure" % id, errors)
+		var mode: String = str(d.departure.get("mode", ""))
+		if not DEPARTURES.has(mode):
+			errors.append("species '%s' departure: mode must be one of %s" % [id, DEPARTURES])
+		departure.mode = mode
+	out.departure = departure
 	return out if errors.size() == before else {}
 
 
@@ -177,8 +203,12 @@ static func _flock(i: int, raw: Variant, species: Dictionary, errors: Array[Stri
 			errors.append(where + ": spread_offset out of [0, 100] m")
 		elif o != null:
 			out.spread_offset = float(o)
-	out.rotate_instances = bool(d.get("rotate_instances", false))
-	out.mirror_instances = bool(d.get("mirror_instances", false))
+	for key: String in ["rotate_instances", "mirror_instances"]:
+		var flag: Variant = d.get(key, false)
+		if typeof(flag) != TYPE_BOOL:
+			errors.append(where + ": %s must be true or false" % key)
+			flag = false
+		out[key] = flag
 	var anchor: String = str(d.get("anchor", ""))
 	if not BirdTracks.ANCHORS.has(anchor):
 		errors.append(where + ": anchor must be one of %s" % [BirdTracks.ANCHORS])

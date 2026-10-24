@@ -1,0 +1,76 @@
+{
+  "id": "casual_shirt",
+  "notes": "Younger spectator: striped shirt, jeans, stubble.",
+  "macros": {
+    "gender": 1.0,
+    "age": 0.36,
+    "muscle": 0.55,
+    "weight": 0.46,
+    "height": 0.6,
+    "race": {
+      "caucasian": 0.6,
+      "african": 0.25,
+      "asian": 0.15
+    }
+  },
+  "proxy": "male1591.proxy",
+  "skin": "young_caucasian_male2.mhmat",
+  "assets": [
+    [
+      "eyes",
+      "low-poly.mhclo",
+      "Eyes"
+    ],
+    [
+      "eyebrows",
+      "eyebrow007.mhclo",
+      "Eyebrows"
+    ],
+    [
+      "hair",
+      "short02.mhclo",
+      "Hair"
+    ],
+    [
+      "clothes",
+      "male_casualsuit03.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "shoes05.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "wdg_scruffy_beard.mhclo",
+      "Clothes"
+    ]
+  ],
+  "image_max_edge": {
+    "skins": 512,
+    "clothes": 512,
+    "hair": 512,
+    "eyes": 256,
+    "other": 256
+  },
+  "height": "natural",
+  "decimate": {
+    "male1591": 0.62,
+    "female1605": 0.62,
+    "polo": 0.5,
+    "cargo": 0.75,
+    "shorts": 0.7,
+    "t-shirt": 0.6,
+    "worksuit": 0.6,
+    "casualsuit": 0.6,
+    "boots": 0.25,
+    "shoes": 0.35,
+    "flats": 0.45,
+    "short0": 0.3,
+    "ponytail": 0.3,
+    "cap": 0.5,
+    "beard": 0.4,
+    "glasses": 0.35
+  }
+}

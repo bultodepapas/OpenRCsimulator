@@ -16,8 +16,14 @@ const RATE_LIMIT_RAD_S: float = 4.5
 const PITCH_DOWN_LIMIT_RAD: float = -0.26
 ## Beyond the yaw limit plus this margin the target is behind the person: return to rest.
 const REAR_GATE_MARGIN_RAD: float = 0.35
+## Leaving the rear gate needs the yaw back inside limit + this share of the margin (hysteresis).
+const REAR_GATE_EXIT_SHARE: float = 0.4
+## Coming back into range needs the distance below this share of the range (hysteresis).
+const RANGE_EXIT_SHARE: float = 0.9
 ## Velocity estimate smoothing for the anticipation lead (s).
 const VELOCITY_TIME_CONSTANT_S: float = 0.2
+## A target moving faster than this between samples has been replaced (restart, roster change).
+const MAX_PLAUSIBLE_SPEED_MPS: float = 200.0
 ## Shader encoding: INSTANCE_CUSTOM.w = yaw / PI, instance COLOR.a = 0.5 + pitch / PI.
 const ENCODE_EPSILON: float = 1.0e-4
 ## SC-HUM-05 crash glance: after a seeded startle delay, spectators and pits members look at the
@@ -52,6 +58,7 @@ var _mover := PackedFloat64Array()
 var _rest_yaw := PackedFloat64Array()
 var _rest_pitch := PackedFloat64Array()
 var _reaction_s := PackedFloat64Array()
+var _baked_pitch := PackedFloat64Array()
 var _pivot := PackedVector3Array()
 var _to_local: Array[Basis] = []
 # Head state.
@@ -62,6 +69,8 @@ var _pitch_rate := PackedFloat64Array()
 var _goal_yaw := PackedFloat64Array()
 var _goal_pitch := PackedFloat64Array()
 var _tracking := PackedByteArray()
+var _behind := PackedByteArray()
+var _out_of_range := PackedByteArray()
 
 
 ## Builds the model from Population.build() metadata, or returns null when the population has no people.
@@ -104,6 +113,7 @@ func configure(people: Array, nodes: Dictionary) -> void:
 	_rest_yaw.resize(count)
 	_rest_pitch.resize(count)
 	_reaction_s.resize(count)
+	_baked_pitch.resize(count)
 	_pivot.resize(count)
 	_yaw.resize(count)
 	_pitch.resize(count)
@@ -112,6 +122,8 @@ func configure(people: Array, nodes: Dictionary) -> void:
 	_goal_yaw.resize(count)
 	_goal_pitch.resize(count)
 	_tracking.resize(count)
+	_behind.resize(count)
+	_out_of_range.resize(count)
 	for i in count:
 		var person: Dictionary = _people[i]
 		_coupled[i] = 1 if bool(person.coupled) else 0
@@ -126,6 +138,7 @@ func configure(people: Array, nodes: Dictionary) -> void:
 		_rest_yaw[i] = person.rest_yaw
 		_rest_pitch[i] = person.rest_pitch
 		_reaction_s[i] = person.reaction_s
+		_baked_pitch[i] = float(person.get("baked_pitch", 0.0))
 		_pivot[i] = person.pivot
 	_rest_heads()
 	_dirty = true
@@ -147,6 +160,12 @@ static func _params(role: String, seed: int) -> Dictionary:
 	}
 	if coupled:
 		params.merge({dead_zone = 0.0, omega = 7.0 + 2.0 * h.call(306), lead_s = 0.15 + 0.10 * h.call(307), range_m = INF}, true)
+	elif role == "worker":
+		# SC-HUM-06: busy at the pit table, head baked looking down at the work (about 30°). Only a low,
+		# near pass or a crash lifts it; the baked tilt is compensated when they do look.
+		params.merge({dead_zone = deg_to_rad(28.0 + 10.0 * h.call(306)), omega = 4.0 + 1.5 * h.call(307),
+			lead_s = 0.05 + 0.05 * h.call(308), range_m = 45.0 + 35.0 * h.call(309), baked_pitch = deg_to_rad(-30.0),
+			rest_pitch = 0.0}, true)
 	elif role == "pits":
 		params.merge({dead_zone = deg_to_rad(18.0 + 10.0 * h.call(306)), omega = 4.5 + 2.0 * h.call(307),
 			lead_s = 0.05 + 0.10 * h.call(308), range_m = 70.0 + 60.0 * h.call(309)}, true)
@@ -182,12 +201,16 @@ func _rest_heads() -> void:
 		_goal_yaw[i] = _rest_yaw[i]
 		_goal_pitch[i] = _rest_pitch[i]
 		_tracking[i] = 0
+		_behind[i] = 0
+		_out_of_range[i] = 0
 
 
 ## Restart at time_s with the player's aircraft at `target` (render space) and the companions at
 ## `companions` (render-space Vector3, or null for an absent slot). `alert` is true while the
 ## player's aircraft is crashed. Heads return to rest.
 func reset(time_s: float, target: Vector3, companions: Array = [], alert: bool = false) -> void:
+	if not is_finite(time_s):
+		return
 	_epoch_time_s = time_s
 	_last_observed_time_s = time_s
 	_step_index = 0
@@ -204,7 +227,9 @@ func reset(time_s: float, target: Vector3, companions: Array = [], alert: bool =
 ## Advance to time_s with the aircraft positions (render space, see reset). Repeated timestamps are
 ## ignored; a backward jump (restart, checkpoint restore) resets, as the windsock does.
 func update_to(time_s: float, target: Vector3, companions: Array = [], alert: bool = false) -> void:
-	if not _initialized or not is_finite(time_s) or time_s < _last_observed_time_s - 1.0e-12:
+	if not is_finite(time_s):
+		return
+	if not _initialized or time_s < _last_observed_time_s - 1.0e-12:
 		reset(time_s, target, companions, alert)
 		return
 	var elapsed: float = time_s - _last_observed_time_s
@@ -237,7 +262,8 @@ func _set_targets(player: Vector3, companions: Array, elapsed: float) -> void:
 		var entry: Dictionary = _targets[index] if _targets[index] is Dictionary and not _targets[index].is_empty() else {valid = false}
 		if not value is Vector3 or not (value as Vector3).is_finite():
 			entry.valid = false
-		elif not bool(entry.valid):
+		elif not bool(entry.valid) or (elapsed > 0.0 and \
+				((value as Vector3) - (entry.previous as Vector3)).length() > MAX_PLAUSIBLE_SPEED_MPS * elapsed):
 			entry = {valid = true, position = value, previous = value, velocity = Vector3.ZERO}
 		else:
 			if elapsed > 0.0:
@@ -299,23 +325,38 @@ func _desired(i: int, alerted: bool = false) -> Vector2:
 		return rest
 	var aim: Vector3 = (target.position as Vector3) + (target.velocity as Vector3) * _lead_s[i]
 	var offset: Vector3 = aim - _pivot[i]
-	if not alerted and offset.length() > _range_m[i]:
-		return rest
+	if not alerted:
+		var distance: float = offset.length()
+		if _out_of_range[i] != 0:
+			if distance < _range_m[i] * RANGE_EXIT_SHARE:
+				_out_of_range[i] = 0
+		elif distance > _range_m[i]:
+			_out_of_range[i] = 1
+		if _out_of_range[i] != 0:
+			return rest
 	var local: Vector3 = _to_local[i] * offset
 	var horizontal: float = Vector2(local.x, local.z).length()
 	if horizontal < 1.0e-6 and absf(local.y) < 1.0e-6:
 		return rest
 	var yaw: float = atan2(-local.x, -local.z)
 	var limit: float = _yaw_limit[i]
-	if absf(yaw) > limit + REAR_GATE_MARGIN_RAD:
+	if _behind[i] != 0:
+		if absf(yaw) < limit + REAR_GATE_MARGIN_RAD * REAR_GATE_EXIT_SHARE:
+			_behind[i] = 0
+	elif absf(yaw) > limit + REAR_GATE_MARGIN_RAD:
+		_behind[i] = 1
+	if _behind[i] != 0:
 		return rest
-	var pitch: float = atan2(local.y, horizontal)
+	# The work pose already looks down: the shader pitch is relative to that baked tilt.
+	var pitch: float = atan2(local.y, horizontal) - _baked_pitch[i]
 	return Vector2(clampf(yaw, -limit, limit), clampf(pitch, PITCH_DOWN_LIMIT_RAD, _pitch_up_limit[i]))
 
 
 ## Write the current head angles to the MultiMesh instances. Cheap when nothing changed.
+## Nothing is written before the first simulation tick, so Home, captures and scripted routes keep
+## the exact rest geometry (zero head angles).
 func apply() -> void:
-	if not _dirty:
+	if not _dirty or not _initialized:
 		return
 	_dirty = false
 	for i in _people.size():

@@ -1,0 +1,76 @@
+{
+  "id": "casual_jacket",
+  "notes": "Spectator in a light jacket and jeans, reading glasses.",
+  "macros": {
+    "gender": 1.0,
+    "age": 0.55,
+    "muscle": 0.45,
+    "weight": 0.5,
+    "height": 0.52,
+    "race": {
+      "asian": 1.0,
+      "african": 0.0,
+      "caucasian": 0.0
+    }
+  },
+  "proxy": "male1591.proxy",
+  "skin": "middleage_asian_male.mhmat",
+  "assets": [
+    [
+      "eyes",
+      "low-poly.mhclo",
+      "Eyes"
+    ],
+    [
+      "eyebrows",
+      "eyebrow004.mhclo",
+      "Eyebrows"
+    ],
+    [
+      "hair",
+      "short01.mhclo",
+      "Hair"
+    ],
+    [
+      "clothes",
+      "male_casualsuit05.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "shoes01.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "kwnet_at_optical_glasses.mhclo",
+      "Clothes"
+    ]
+  ],
+  "image_max_edge": {
+    "skins": 512,
+    "clothes": 512,
+    "hair": 512,
+    "eyes": 256,
+    "other": 256
+  },
+  "height": "natural",
+  "decimate": {
+    "male1591": 0.62,
+    "female1605": 0.62,
+    "polo": 0.5,
+    "cargo": 0.75,
+    "shorts": 0.7,
+    "t-shirt": 0.6,
+    "worksuit": 0.6,
+    "casualsuit": 0.42,
+    "boots": 0.25,
+    "shoes": 0.35,
+    "flats": 0.45,
+    "short0": 0.3,
+    "ponytail": 0.3,
+    "cap": 0.5,
+    "beard": 0.4,
+    "glasses": 0.15
+  }
+}

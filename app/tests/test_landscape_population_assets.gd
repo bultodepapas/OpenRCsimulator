@@ -13,7 +13,7 @@ const ShaderClock = preload("res://render/shader_clock.gd")
 const CAR_ASSETS := ["sedan", "hatch", "crossover"]
 const HUMAN_ASSETS := ["standing", "sitting", "pilot"]
 const EXPECTED_CAR_IDS := ["car_sedan", "car_hatch", "car_suv", "car_sport"]
-const EXPECTED_HUMAN_IDS := ["person_standing", "person_sitting", "person_pilot"]
+const EXPECTED_HUMAN_IDS := ["person_standing", "person_sitting", "person_pilot", "person_working"]
 const CAR_TRIANGLE_LIMIT := 30000
 const HUMAN_TRIANGLE_LIMIT := 8000
 
@@ -32,7 +32,10 @@ func _initialize() -> void:
 	ShaderClock.register()
 	_test_catalog_mapping()
 	var source_assets := {}
-	for asset: String in Population.ASSETS.values():
+	for asset: String in CAR_ASSETS:
+		source_assets[asset] = true
+	# SC-HUM-07: every shipped outfit variant ("<pose>/<outfit>") is a separate source asset.
+	for asset: String in Population.human_assets():
 		source_assets[asset] = true
 	for asset: String in source_assets:
 		_test_source_asset(asset)
@@ -136,7 +139,10 @@ func _inspect_mesh_data(asset: String, parts: Array[Dictionary]) -> void:
 
 
 func _test_source_asset(asset: String) -> void:
-	var path := Population.DIR + asset + ".glb"
+	var path := Population.asset_path(asset)
+	if "/" in asset:
+		# Outfit variants are declared in Population.OUTFITS; a declared but missing file is a defect.
+		_check("%s outfit variant is shipped" % asset, ResourceLoader.exists(path), path)
 	if not ResourceLoader.exists(path):
 		print("skip source audit; asset is not staged yet: ", path)
 		return
@@ -159,7 +165,7 @@ func _test_source_asset(asset: String) -> void:
 
 
 func _human_texture_paths(asset: String) -> Dictionary:
-	if not ResourceLoader.exists(Population.DIR + asset + ".glb"):
+	if not ResourceLoader.exists(Population.asset_path(asset)):
 		return {}
 	var source: Dictionary = Population._source(asset)
 	var paths: Dictionary = {}
@@ -179,14 +185,14 @@ func _human_texture_paths(asset: String) -> Dictionary:
 
 func _test_shared_human_textures() -> void:
 	var all_paths: Array[Dictionary] = []
-	for asset: String in HUMAN_ASSETS:
+	for asset: String in Population.human_assets():
 		var paths := _human_texture_paths(asset)
 		if paths.is_empty():
 			print("skip shared-texture audit; pose asset is not staged yet: ", asset)
 			return
 		_check("%s resolves shared shader textures" % asset, not paths.is_empty())
 		all_paths.append(paths)
-	if all_paths.size() != HUMAN_ASSETS.size():
+	if all_paths.size() != Population.human_assets().size():
 		_check("standing, sitting, and pilot assets share PBR textures", false, "missing human texture set")
 		return
 	var common := all_paths[0].duplicate()
@@ -237,10 +243,11 @@ func _test_production_batches(field: Dictionary, scenery: Dictionary) -> void:
 	_check("production batches all 24 placed vehicles and people",
 		int(stats.get("population", -1)) == 24 and int(population.get_meta("instances", -1)) == 24,
 		"stats=%s metadata=%s" % [stats.get("population", -1), population.get_meta("instances", -1)])
-	_check("the three car styles and all three person assets are batched",
-		expected.by_asset.size() == 6 and ["sedan", "hatch", "crossover", "standing", "sitting", "pilot"].all(
+	_check("the three car styles and all four person poses are batched",
+		expected.by_asset.size() == 7 and ["sedan", "hatch", "crossover", "standing", "sitting", "pilot", "working"].all(
 			func(asset: String) -> bool: return expected.by_asset.has(asset)), str(expected.by_asset))
 	var observed_counts: Dictionary = {}
+	var variant_counts: Dictionary = {}
 	var fit_boxes: Dictionary = {}
 	var expected_sizes: Dictionary = {}
 	var population_triangles := 0
@@ -252,15 +259,17 @@ func _test_production_batches(field: Dictionary, scenery: Dictionary) -> void:
 		if batch == null or batch.multimesh == null or batch.multimesh.mesh == null:
 			continue
 		var asset := str(batch.get_meta("source_asset", ""))
+		var asset_key := str(batch.get_meta("asset_key", asset))
 		var placements: Array = batch.get_meta("placements", [])
 		_check("%s uses one shared mesh per part with no node script" % batch.name,
 			batch.get_script() == null and not batch.is_processing()
 			and batch.multimesh.instance_count == placements.size(),
 			"instances=%d placements=%d" % [batch.multimesh.instance_count, placements.size()])
-		if not observed_counts.has(asset):
-			observed_counts[asset] = placements.size()
-		elif int(observed_counts[asset]) != placements.size():
-			_check("%s parts share the same placement list" % asset, false)
+		if not variant_counts.has(asset_key):
+			variant_counts[asset_key] = placements.size()
+			observed_counts[asset] = int(observed_counts.get(asset, 0)) + placements.size()
+		elif int(variant_counts[asset_key]) != placements.size():
+			_check("%s parts share the same placement list" % asset_key, false)
 		population_triangles += _triangle_count(batch.multimesh.mesh) * batch.multimesh.instance_count
 		if can_read_fit_bounds:
 			var mesh_box: AABB = batch.multimesh.mesh.get_aabb()
@@ -269,7 +278,7 @@ func _test_production_batches(field: Dictionary, scenery: Dictionary) -> void:
 				var placement_xf: Transform3D = placement.transform
 				var fitted_part: Transform3D = placement_xf.affine_inverse() * batch.multimesh.get_instance_transform(i)
 				var local_box: AABB = fitted_part * mesh_box
-				var key := "%s:%d" % [asset, i]
+				var key := "%s:%d" % [asset_key, i]
 				if fit_boxes.has(key):
 					var prior_box: AABB = fit_boxes[key]
 					fit_boxes[key] = prior_box.merge(local_box)
@@ -288,7 +297,7 @@ func _test_production_batches(field: Dictionary, scenery: Dictionary) -> void:
 		for key: String in fit_boxes:
 			var box: AABB = fit_boxes[key]
 			var target: Vector3 = expected_sizes[key]
-			var asset := key.get_slice(":", 0)
+			var asset := Population.pose_of(key.get_slice(":", 0))
 			var error := maxf(maxf(absf(box.size.x - target.x), absf(box.size.y - target.y)), absf(box.size.z - target.z))
 			if CAR_ASSETS.has(asset):
 				_check("%s fitted mesh bounds match its catalog collision envelope" % key,

@@ -564,7 +564,9 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	if opts.get("audio", false):
 		root.add_child(Ambience.player())
 	if opts.get("birds", false):
-		root.add_child(Birds.flock(Vector2(pilot.x, pilot.y)))
+		var birds: Node3D = Birds.build(lighting, str(opts.get("quality", "high")))
+		if birds != null:
+			root.add_child(birds)
 	timing["meshes"] = (Time.get_ticks_usec() - m0) / 1000.0
 	stats.timing_ms = timing
 	stats.cells = keys.size()
@@ -673,6 +675,7 @@ static func commit_lighting(field_node: Node3D, prepared: Dictionary) -> bool:
 	root.set_meta("directional_shadow_signature", prepared.get("signature", {}))
 	root.set_meta("directional_shadow_strength", float(prepared.get("strength", tint.a)))
 	root.set_meta("damage_lighting", prepared.lighting)
+	Birds.apply_lighting(root.get_node_or_null(Birds.NODE_NAME), prepared.lighting)
 	return true
 
 

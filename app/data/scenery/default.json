@@ -286,15 +286,29 @@
    "prefab": "person_standing",
    "placements": {
     "value": [
-     [-19.0, -38.5, 160],
-     [-18.75, -25.5, 20],
-     [-18.5, 25.0, 340],
      [-19.25, 37.5, 200],
      [-16.75, -33.0, 0]
     ],
     "unit": "m, m, deg",
     "kind": "estimated",
     "source": "Club members in the pits"
+   }
+  },
+  {
+   "id": "pits-workers",
+   "type": "instances",
+   "zone": "pits",
+   "collides": false,
+   "prefab": "person_working",
+   "placements": {
+    "value": [
+     [-19.5, -42.5, 180],
+     [-19.5, -38.5, 180],
+     [-19.5, 19.5, 180]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "Club members preparing models at the pit tables"
    }
   },
   {
