@@ -91,10 +91,27 @@ func configure(people: Array, nodes: Dictionary) -> void:
 		_people.append(person)
 		_to_local.append((person.basis as Basis).inverse())
 	var count := _people.size()
-	for array: Variant in [_coupled, _slot, _omega, _dead_zone, _lead_s, _range_m, _yaw_limit, _pitch_up_limit,
-			_mover, _rest_yaw, _rest_pitch, _reaction_s, _pivot, _yaw, _pitch, _yaw_rate, _pitch_rate,
-			_goal_yaw, _goal_pitch, _tracking]:
-		array.resize(count)
+	# Packed arrays are values in GDScript: resize each member directly.
+	_coupled.resize(count)
+	_slot.resize(count)
+	_omega.resize(count)
+	_dead_zone.resize(count)
+	_lead_s.resize(count)
+	_range_m.resize(count)
+	_yaw_limit.resize(count)
+	_pitch_up_limit.resize(count)
+	_mover.resize(count)
+	_rest_yaw.resize(count)
+	_rest_pitch.resize(count)
+	_reaction_s.resize(count)
+	_pivot.resize(count)
+	_yaw.resize(count)
+	_pitch.resize(count)
+	_yaw_rate.resize(count)
+	_pitch_rate.resize(count)
+	_goal_yaw.resize(count)
+	_goal_pitch.resize(count)
+	_tracking.resize(count)
 	for i in count:
 		var person: Dictionary = _people[i]
 		_coupled[i] = 1 if bool(person.coupled) else 0
