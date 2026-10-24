@@ -20,17 +20,17 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "55fd266b29997dc7813b1d5b9a41bd2598f43eb48af8180f833c3db808611690",
+    "sha256": "7da750eda06f0c5299479b36fc0921b024f12559f822068e4fb49cee2453c93b",
     "hash_mode": "lf_text"
   },
   "geometry": {
     "script": "res://aircraft/f4u_corsair_geometry.gd",
     "source": {
       "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
-      "sha256": "ecff035e5d8dae45b329dd8f2d808e307d4eb317f70b45551a1ffc1970e248aa",
+      "sha256": "0962b00cf16fe679f82160f8ca8a30251e048a4a865e3937e43e6c24e00fd2fd",
       "hash_mode": "lf_text"
     },
-    "revision": "g1.3-c69151b3c96c",
+    "revision": "g1.13-03d66d8dc142",
     "datum_source": {
       "model_z_le": {
         "value": 0.0
@@ -42,10 +42,10 @@
   },
   "asset": {
     "kind": "imported_glb",
-    "identity": "F4U Corsair g1.3 game model (author delivery derived from master R59)",
-    "revision": "g1.3-c69151b3c96c",
+    "identity": "F4U Corsair g1.13 game model (author delivery derived from master R59)",
+    "revision": "g1.13-03d66d8dc142",
     "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
-    "sha256": "c69151b3c96c53ff957d046c53600204598be854c10850e4bdda22ab333f464e"
+    "sha256": "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8"
   },
   "bindings": {
     "controls": {
@@ -165,39 +165,45 @@
   "authoring_sources": [
     {
       "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
-      "sha256": "ecff035e5d8dae45b329dd8f2d808e307d4eb317f70b45551a1ffc1970e248aa",
+      "sha256": "0962b00cf16fe679f82160f8ca8a30251e048a4a865e3937e43e6c24e00fd2fd",
       "hash_mode": "lf_text",
       "role": "geometry"
     },
     {
       "path": "assets/aircraft/f4u-corsair-250/source-manifest.json",
-      "sha256": "506765dd569182a0705fab6e175ef429fa3a61e327e16ae2124770c8dad14509",
+      "sha256": "d7989c2318097e41d0c20a520acc01153b194e660b9293f3d45f67e19de1e31b",
       "hash_mode": "lf_text",
       "role": "asset_identity"
     },
     {
       "path": "assets/aircraft/f4u-corsair-250/gear-samples.json",
-      "sha256": "829b40c8a1dcabbae901a037f6ebe52e155535b1528b15d07534bd2c752f66c5",
+      "sha256": "d613322954738d2b45e0076ef2fc0fbe0b490df62834923ff445d50252b4061a",
       "hash_mode": "lf_text",
       "role": "gear_samples"
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/wing-fold-r59.json",
+      "sha256": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89",
+      "hash_mode": "lf_text",
+      "role": "wing_fold"
     }
   ],
   "dependencies": [
     {
       "path": "res://aircraft/f4u_corsair_geometry.gd",
-      "sha256": "f090d2523bc00aff54c0cc13c57b39498e59498a93870c6c5a23f9de6cbf69f7",
+      "sha256": "2d5387eeacdc290439af28eb8184a71a054ad22bba7c55ced429ee81963b46d9",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
     },
     {
       "path": "res://aircraft/imported_model.gd",
-      "sha256": "13b5be8e0c10abe02848a70e0b647489c0ae6c4b83c0a3bc2a98b377df1de2d9",
+      "sha256": "ba2d204a26be371fc76bcb3869294f1c1f1550cb127c0e40b7c91c41f67e3c1a",
       "hash_mode": "lf_text",
       "role": "builder"
     },
     {
       "path": "res://aircraft/imported_model_contract.gd",
-      "sha256": "eb1bcf44ad54e01a086aadd97439b4292a2bef0f33e9af15c8e0c4eec510f308",
+      "sha256": "ad12591682d45b38bd27f01425b52963cc9bc66413cd88ce6b2c6242f33c75db",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -215,7 +221,7 @@
     },
     {
       "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
-      "sha256": "c69151b3c96c53ff957d046c53600204598be854c10850e4bdda22ab333f464e",
+      "sha256": "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8",
       "hash_mode": "raw",
       "role": "imported_asset"
     },
@@ -238,6 +244,16 @@
     "material_grow": [],
     "retraction": {
       "geometry_ref": "gear"
-    }
+    },
+    "folds": [
+      {
+        "key": "wing_fold_left",
+        "geometry_ref": "folds.left"
+      },
+      {
+        "key": "wing_fold_right",
+        "geometry_ref": "folds.right"
+      }
+    ]
   }
 }

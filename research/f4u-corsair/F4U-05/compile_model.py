@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[3]
 ASSET_DIR = ROOT / "assets/aircraft/f4u-corsair-250"
 MANIFEST = ASSET_DIR / "source-manifest.json"
 SAMPLES = ASSET_DIR / "gear-samples.json"
+WING_FOLD = ASSET_DIR / "wing-fold-r59.json"
 RUNTIME_GLB = ROOT / "app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
 OUT_JSON = ASSET_DIR / "model-geometry.json"
 OUT_GD = ROOT / "app/aircraft/f4u_corsair_geometry.gd"
@@ -160,6 +161,38 @@ def compile_model():
                  "kind": "glow_prop", "pump": True,
                  "source": f"{manifest['delivery_revision']} metadata landmark 'R43 | Escape unido -1 2' (left middle stack exit); direction estimated outboard, down and aft"}]
 
+    # F4U-17: R59's wing fold (extract_wing_fold.py) in the model frame. The game model has no fold pivot: each outer
+    # panel is its crash section (panel mesh, aileron hinge, outer flap hinge) directly under the root, which the
+    # builder folds in place, so node paths and paint targets stay unchanged.
+    fold_src = json.loads(WING_FOLD.read_text(encoding="utf-8"))
+    assert fold_src["source"]["sha256"] == meta["master_sha256"], "wing-fold-r59.json was not read from the delivery's master"
+    d0, scale = meta["D0_r59_m"], meta["scale_factor"]
+
+    def r59_to_model(p):
+        return [scale * p[1], scale * (p[2] - d0[2]), scale * (p[0] - d0[0])]
+
+    sections = {n["name"]: n.get("extras", {}).get("openrc_section") for n in gltf["nodes"]}
+    lamps = meta["landmarks_blender_m"]["detail_lenses_and_exhaust_exits"]
+    folds = {}
+    for side, record in sorted(fold_src["sides"].items()):
+        members = sorted(n for n, section in sections.items() if section == f"wing_{side}" and parent.get(n) == ROOT_NODE)
+        assert members == sorted([f"wing_{side}_fixed", f"aileron_{side}_hinge", f"flap_{side}_3_hinge"]), members
+        assert max(record["check_folded_light_error_m"], record["check_folded_basis_error"]) < 1e-5, "R59 fold check failed"
+        lx, ly, lz = lamps["Luz de posicion R8 | " + ("izquierda" if side == "left" else "derecha")]
+        lamp_gap = math.dist(r59_to_model(record["light"]), [lx, lz, -ly])
+        assert lamp_gap < 0.005, f"{side} navigation lamp: R59 mapped {lamp_gap:.4f} m from the delivered landmark"
+        ax, ay, az = record["axis"]
+        folds[side] = {"members": members, "pivot": [round(v, 9) for v in r59_to_model(record["pivot"])],
+                       "axis": [round(v, 9) for v in (ay, az, ax)], "sign": record["sign"],
+                       "max_angle_deg": fold_src["max_angle_deg"], "lock_release_fraction": record["lock_release_fraction"],
+                       "travel_fraction": record["travel_fraction"], "time_s": 8.0,
+                       "time_source": "estimated: one hydraulic fold or spread cycle of an RC Corsair (the CARF kit's optional wing fold); R59's rig carries no timing",
+                       "navigation_lamp_check_m": round(lamp_gap, 6),
+                       "check_lamp_spread": [round(v, 9) for v in r59_to_model(record["light"])],
+                       "check_lamp_folded": [round(v, 9) for v in r59_to_model(record["light_folded"])],
+                       "source": f"R59 {fold_src['source']['sha256'][:12]} R51 pivot and CONTROL ALAS angulo_maximo "
+                                 f"(assets/aircraft/f4u-corsair-250/wing-fold-r59.json), mapped by D0 and the 1:4.5 scale"}
+
     data = {
         "schema": "openrc-f4u-model v1",
         "catalog_id": manifest["catalog_id"],
@@ -172,12 +205,14 @@ def compile_model():
         "datum": {"origin": "D0: symmetry plane x wing-root leading-edge station x thrust-axis height (delivery request section 4)",
                   "physics_le_frame": "[x_aft, y_right, z_up] = [z, x, y]"},
         "inputs": {"glb_sha256": keys["glb"]["sha256"], "metadata_sha256": keys["metadata"]["sha256"],
-                   "blend_sha256": keys["blend"]["sha256"], "gear_samples_sha256": hashlib.sha256(SAMPLES.read_bytes()).hexdigest()},
+                   "blend_sha256": keys["blend"]["sha256"], "gear_samples_sha256": hashlib.sha256(SAMPLES.read_bytes()).hexdigest(),
+                   "wing_fold_sha256": hashlib.sha256(WING_FOLD.read_bytes()).hexdigest()},
         "dimensions": {"span_m": meta["span_m"], "length_m": meta["length_m"], "propeller_diameter_m": meta["propeller_diameter_m"],
                        "scale_factor": meta["scale_factor"]},
         "articulations": articulations,
         "thrust": thrust,
         "exhausts": exhausts,
+        "folds": folds,
         "gear": {
             "version": 1,
             "bindings": bindings,

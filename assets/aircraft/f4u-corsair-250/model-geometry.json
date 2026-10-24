@@ -19,7 +19,8 @@
   "glb_sha256": "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8",
   "metadata_sha256": "c3f2e6af575a531f32993a5eda09980bf2ce29bf4cec065519ca66efd86b45db",
   "blend_sha256": "c2137fb3e363f26b447fca5cae2f118835e198ae609b66d731cc597693be00fc",
-  "gear_samples_sha256": "d613322954738d2b45e0076ef2fc0fbe0b490df62834923ff445d50252b4061a"
+  "gear_samples_sha256": "d613322954738d2b45e0076ef2fc0fbe0b490df62834923ff445d50252b4061a",
+  "wing_fold_sha256": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89"
  },
  "dimensions": {
   "span_m": 2.7777703603108725,
@@ -450,6 +451,78 @@
    "source": "g1.13 metadata landmark 'R43 | Escape unido -1 2' (left middle stack exit); direction estimated outboard, down and aft"
   }
  ],
+ "folds": {
+  "left": {
+   "members": [
+    "aileron_left_hinge",
+    "flap_left_3_hinge",
+    "wing_left_fixed"
+   ],
+   "pivot": [
+    -0.560000049,
+    -0.141093757,
+    0.121330261
+   ],
+   "axis": [
+    0.0,
+    0.21486178,
+    0.976644456
+   ],
+   "sign": -1,
+   "max_angle_deg": 112.0,
+   "lock_release_fraction": 0.12,
+   "travel_fraction": 0.82,
+   "time_s": 8.0,
+   "time_source": "estimated: one hydraulic fold or spread cycle of an RC Corsair (the CARF kit's optional wing fold); R59's rig carries no timing",
+   "navigation_lamp_check_m": 1e-06,
+   "check_lamp_spread": [
+    -1.311111238,
+    -0.011690617,
+    0.122339884
+   ],
+   "check_lamp_folded": [
+    -0.161651704,
+    0.499087016,
+    0.009968758
+   ],
+   "source": "R59 94edd59b44f5 R51 pivot and CONTROL ALAS angulo_maximo (assets/aircraft/f4u-corsair-250/wing-fold-r59.json), mapped by D0 and the 1:4.5 scale"
+  },
+  "right": {
+   "members": [
+    "aileron_right_hinge",
+    "flap_right_3_hinge",
+    "wing_right_fixed"
+   ],
+   "pivot": [
+    0.560000049,
+    -0.141093757,
+    0.121330261
+   ],
+   "axis": [
+    0.0,
+    0.21486178,
+    0.976644456
+   ],
+   "sign": 1,
+   "max_angle_deg": 112.0,
+   "lock_release_fraction": 0.12,
+   "travel_fraction": 0.82,
+   "time_s": 8.0,
+   "time_source": "estimated: one hydraulic fold or spread cycle of an RC Corsair (the CARF kit's optional wing fold); R59's rig carries no timing",
+   "navigation_lamp_check_m": 1e-06,
+   "check_lamp_spread": [
+    1.311111238,
+    -0.011690617,
+    0.122339884
+   ],
+   "check_lamp_folded": [
+    0.161651704,
+    0.499087016,
+    0.009968758
+   ],
+   "source": "R59 94edd59b44f5 R51 pivot and CONTROL ALAS angulo_maximo (assets/aircraft/f4u-corsair-250/wing-fold-r59.json), mapped by D0 and the 1:4.5 scale"
+  }
+ },
  "gear": {
   "version": 1,
   "bindings": {

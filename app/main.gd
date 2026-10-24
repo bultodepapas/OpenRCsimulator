@@ -310,6 +310,10 @@ var _profile_last_wash := Vector3.ZERO
 var _profile_presented_wash := Vector3.ZERO
 var _smoke: EngineSmoke
 var _smoke_key_on := false
+## F4U-17: wing-fold mechanism state (0 spread and locked, 1 folded) and its target. Presentation only; while not
+## spread and locked the session holds the throttle at idle.
+var _wing_fold := 0.0
+var _wing_fold_target := 0.0
 var _smoke_assignment: SmokeAssignment
 var _smoke_assignment_was_paused := false
 var _last_render_pose: Dictionary = {}
@@ -938,6 +942,7 @@ func _process(delta: float) -> void:
 		_clear_wheel_brake()
 		return
 	var dt := minf(delta, 0.1) # a stalled window must not jump the propeller or the scripted circle
+	_advance_wing_fold(dt)
 	if _frametimes_active:
 		if not _frametimes_clock_primed:
 			_frametimes_last_usec = Time.get_ticks_usec()
@@ -1136,6 +1141,8 @@ func _update_hud(telemetry_visible: bool = true, performance_visible: bool = tru
 				lines.append(tr("Flaps above estimated speed limit: %.0f m/s EAS") % flap_limit)
 		else:
 			lines.append(tr("Flaps are unavailable on this aircraft."))
+		if AirplaneBuilder.has_folds(_airplane):
+			lines.append(_wing_fold_line())
 		if not session.weather_is_calm():
 			var wind: PackedFloat64Array = session.wind_at(session.sim.time())
 			lines.append(_weather_hud_line(s, wind))
@@ -1411,6 +1418,52 @@ func _request_flaps_action(action: String) -> bool:
 	return false
 
 
+## F4U-17: fold or spread the wings, only stopped on the wheels. The throttle stays at idle until spread and locked.
+func _toggle_wing_fold() -> void:
+	if session == null or session.sim.paused:
+		return
+	if not AirplaneBuilder.has_folds(_airplane):
+		_note = tr("Wings do not fold on this aircraft.")
+		return
+	if not _stopped_on_wheels():
+		_note = tr("Wings fold only on the ground, stopped.")
+		return
+	_wing_fold_target = 0.0 if _wing_fold_target > 0.5 else 1.0
+	_note = tr("Wings folding") if _wing_fold_target > 0.5 else tr("Wings spreading")
+
+
+func _stopped_on_wheels() -> bool:
+	var s: PackedFloat64Array = session.sim.state
+	var on_wheels := false
+	for compression: float in session.gear_compressions(s):
+		on_wheels = on_wheels or compression > 0.0
+	return on_wheels and session.crash.is_empty() and Vector3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]).length() < 0.5
+
+
+func _advance_wing_fold(dt: float) -> void:
+	if session == null or not AirplaneBuilder.has_folds(_airplane):
+		return
+	if not session.sim.paused and _wing_fold != _wing_fold_target:
+		var longest := 0.0
+		for fold: Dictionary in _airplane.folds.values():
+			longest = maxf(longest, float(fold.get("time_s", 0.0)))
+		_wing_fold = move_toward(_wing_fold, _wing_fold_target, dt / (longest if longest > 0.0 else 8.0))
+	session.set_throttle_hold("wing_fold", _wing_fold > 0.0 or _wing_fold_target > 0.0)
+
+
+func _wing_fold_line() -> String:
+	var line: String
+	if _wing_fold <= 0.0 and _wing_fold_target <= 0.0:
+		line = tr("Wings: spread  [O] fold")
+	elif _wing_fold >= 1.0 and _wing_fold_target >= 1.0:
+		line = tr("Wings: folded  [O] spread")
+	else:
+		line = (tr("Wings: folding %d%%") if _wing_fold_target > 0.5 else tr("Wings: spreading %d%%")) % roundi(100.0 * _wing_fold)
+	if session.throttle_holds.has("wing_fold"):
+		line += " — " + tr("throttle held at idle")
+	return line
+
+
 func _step_flaps(direction: int) -> void:
 	if session == null or session.sim.paused:
 		return
@@ -1530,6 +1583,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 			KEY_F:
 				_step_flaps(-1 if event.shift_pressed else 1)
+				get_viewport().set_input_as_handled()
+			KEY_O:
+				_toggle_wing_fold()
 				get_viewport().set_input_as_handled()
 			KEY_N:
 				controller_action("rates_toggle")
@@ -2226,6 +2282,9 @@ func _on_resetting() -> void:
 			or session.weather_configuration() != flight_scenario.weather_config):
 		_forget_scenario() # developer reload/environment replacement is no longer the accepted random draw
 	_smoke_key_on = false
+	_wing_fold = 0.0
+	_wing_fold_target = 0.0
+	session.set_throttle_hold("wing_fold", false)
 	_reset_profile_smoke()
 	if _smoke != null:
 		_smoke.reset()
@@ -2474,6 +2533,11 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	if session != null and session.flaps_available():
 		var flap_state: Dictionary = session.flap_state()
 		AirplaneBuilder.apply_flaps(_airplane, float(flap_state.get("angle_deg", 0.0)))
+	if AirplaneBuilder.has_folds(_airplane):
+		var fractions := {}
+		for key: String in _airplane.folds:
+			fractions[key] = _wing_fold
+		AirplaneBuilder.apply_folds(_airplane, fractions)
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	# FW-MOON-03: field-world time passes no lighting dictionary; its strength fades the moon's shadow with the phase.
 	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \

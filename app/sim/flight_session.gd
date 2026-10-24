@@ -516,6 +516,9 @@ const EXTERNAL_SPAWN_MAX_HEADING_RAD := 1000000.0
 ## moves it). Tests, golden flights and the technical route keep the reference trim (trim_throttle NAN).
 const CRUISE_TRIM_THROTTLE := 0.5
 const PowerTrim := preload("res://physics/cruise_trim.gd")
+const LaunchTrimCache := preload("res://sim/launch_trim_cache.gd")
+## One detached successful trim survives Home/session replacement; every solver input is keyed exactly.
+static var _launch_trim_cache := LaunchTrimCache.new()
 ## Menu hint from accepted data. The selected field, equilibrium and clearance are checked on each launch.
 static func runway_aircraft_supported(aircraft_id: String) -> bool:
 	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
@@ -568,7 +571,7 @@ func _selected_airborne_trim(model: Dictionary, down_m: float = -30.0) -> Dictio
 	# Search bounds limit this opt-in policy; they do not prescribe a flight speed.
 	# D6e-R3: the level speed at half throttle lies between 1.3 and 2.0 times the slow start speed across the fleet
 	# (Timber 1.25, Ventage Jet 1.92); the bound leaves room for a thinner atmosphere without reaching the solver's limit.
-	var t: Dictionary = PowerTrim.solve_level_at_throttle(speed, target, minf(PowerTrim.MAX_SEARCH_SPEED_MPS, 2.5 * speed), model, sim.gravity, model.controls.throw_rad, density, charge)
+	var t: Dictionary = _launch_trim_cache.solve_level_at_throttle(speed, target, minf(PowerTrim.MAX_SEARCH_SPEED_MPS, 2.5 * speed), model, sim.gravity, model.controls.throw_rad, density, charge)
 	if t.ok:
 		t.state = Scenarios.Trim.state_for(t.V, t.alpha, t.gamma, PI / 2.0, M.v3(60.0, -40.0, -30.0), t.beta)
 	return t
@@ -721,6 +724,9 @@ var persist_full_controller_profile := Callable()
 var _controller_lost := false
 var _pending_controller_start := -1.0
 var controller_cut_held := false
+## F4U-17: presentation interlocks by name ("wing_fold") that hold the throttle at idle while set. They act where
+## commands become solver inputs, so recordings carry the held throttle and replay exactly.
+var throttle_holds := {}
 ## The calibration wizard while it runs, else null.
 var calibration: RefCounted = null
 ## Source enable, stored with accepted simulation modes. Glow/electric shafts can coast or windmill
@@ -2837,9 +2843,17 @@ func throws_deg() -> Dictionary:
 	return aircraft.model.controls.throw_deg if aircraft.get("ok", false) else {}
 
 
+## F4U-17: set or release a named throttle hold (see throttle_holds).
+func set_throttle_hold(reason: String, active: bool) -> void:
+	if active:
+		throttle_holds[reason] = true
+	else:
+		throttle_holds.erase(reason)
+
+
 func _inputs() -> PackedFloat64Array:
 	var f := flown_commands()
-	var values := PackedFloat64Array([f.roll, f.pitch, f.yaw, f.throttle])
+	var values := PackedFloat64Array([f.roll, f.pitch, f.yaw, 0.0 if not throttle_holds.is_empty() else f.throttle])
 	if gear_is_retractable():
 		values.append(1.0 if _gear_requested_down else 0.0)
 		values.append(_wheel_brake_demand)

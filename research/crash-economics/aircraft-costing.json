@@ -996,7 +996,7 @@
       ],
       "notes": "Independent coverage of every physical inventory row of the 1/4.5 F4U Corsair (F4U-11). Known priced-part subtotal is $1,067.88: ten $103.39 SA-1230SG+ control-servo proxies and two $16.99 HS-311 throttle/choke-servo proxies. The Moki S250 alone lists at $4,610.00 (CARF, 2026-10-22, not entered). This is not a complete-build purchase amount.",
       "dossier": {
-        "expected_source_sha256": "69816c7ea728e2d69f4586fba91a7ba0787745385fe5a8fb5b943af0d6d63fc9",
+        "expected_source_sha256": "ee97e6e40fc3a2e46c5de20d0c43eaf52d0520d430bf77275005db4ae35de016",
         "lines": [
           {
             "id": "engine_moki_s250",

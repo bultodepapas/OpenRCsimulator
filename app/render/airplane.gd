@@ -206,6 +206,18 @@ static func apply_flaps(airplane: Dictionary, degrees: float) -> void:
 		builder.call("set_flaps", airplane, degrees)
 
 
+## F4U-17: the aircraft's fold groups (folding wings), or none.
+static func has_folds(airplane: Dictionary) -> bool:
+	return not airplane.get("folds", {}).is_empty()
+
+
+## Present a fold mechanism state per fold group (0 spread and locked, 1 folded); see imported_model.apply_folds.
+static func apply_folds(airplane: Dictionary, fractions: Dictionary) -> void:
+	var builder: Script = airplane.get("_model_builder")
+	if has_folds(airplane) and builder != null and builder.has_method("apply_folds"):
+		builder.call("apply_folds", airplane, fractions)
+
+
 ## The inverse of Commands.hinge_rotations(): trailing-edge deflections in degrees (up for ailerons/elevator,
 ## right for the rudder), as Commands.surface_deflections_deg() gives them.
 static func surface_degrees(rotations: Dictionary) -> Dictionary:

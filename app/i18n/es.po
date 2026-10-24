@@ -5100,3 +5100,33 @@ msgstr "GPU no reconocida"
 
 msgid "no GPU reported"
 msgstr "sin GPU informada"
+
+msgid "Wings do not fold on this aircraft."
+msgstr "Las alas de este avión no se pliegan."
+
+msgid "Wings fold only on the ground, stopped."
+msgstr "Las alas solo se pliegan en tierra y con el avión detenido."
+
+msgid "Wings folding"
+msgstr "Plegando las alas"
+
+msgid "Wings spreading"
+msgstr "Desplegando las alas"
+
+msgid "Wings: spread  [O] fold"
+msgstr "Alas: desplegadas  [O] plegar"
+
+msgid "Wings: folded  [O] spread"
+msgstr "Alas: plegadas  [O] desplegar"
+
+msgid "Wings: folding %d%%"
+msgstr "Alas: plegando %d%%"
+
+msgid "Wings: spreading %d%%"
+msgstr "Alas: desplegando %d%%"
+
+msgid "throttle held at idle"
+msgstr "acelerador retenido en ralentí"
+
+msgid "Fold / spread folding wings (on the ground, stopped)"
+msgstr "Plegar / desplegar alas plegables (en tierra, detenido)"

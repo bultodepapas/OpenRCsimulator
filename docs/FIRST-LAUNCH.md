@@ -53,6 +53,7 @@ Home also offers two separate experimental activities, each with its own control
 | K · Enter | Start calibration · advance its step |
 | F · Shift+F | Move equipped aircraft's flaps: next / previous |
 | G / B | Toggle retractable gear / hold its wheel brakes |
+| O | Fold or spread folding wings (F4U Corsair), on the ground and stopped; the throttle stays at idle until spread and locked |
 | H | Toggle available smoke with keyboard controls |
 | J · Enter | Assign the active radio's smoke AUX · advance its step |
 | T | Start / save a flight trace |

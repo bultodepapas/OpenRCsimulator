@@ -225,3 +225,79 @@ as explicit limitations.
 checkpoint hashes and raw artifact identities, including adverse and rejected runs.
 Raw evidence and temporary captures remain under `tmp/game-engineering-round3/`;
 no images were added to Git.
+
+## Fourth engineering pass
+
+Baseline `2e449beedcdaa4aea38a48b8c075acdef175d796`. Two retained changes:
+
+- `main.gd` validates failure/weather options before constructing the world.
+  Invalid failure probability and unknown weather rejection measured **21.034 ms**
+  and **16.704 ms**, versus **2,578.869 ms** and **1,509.200 ms** in the native
+  baseline. These are synchronous Main startup observations on a shared host,
+  not a controlled speedup qualification; baseline resolution/FPS arguments
+  were malformed and the startup fixtures retained shutdown texture errors.
+  Concrete session weather/fuel setup still runs later; this does not eliminate
+  every possible late startup rejection.
+- `sim/launch_trim_cache.gd`, called by `FlightSession`, retains one successful
+  raw cruise-trim result across session replacement. Every solver argument,
+  including the complete recomputed model, density and charge, is keyed by exact
+  bytes. Stored and returned results are detached; unsupported inputs bypass
+  the cache and failed solves are never cached. One key is capped at 1 MiB.
+  Two interleaved cold/cached GP Extra Home-to-flight pairs measured
+  **11.952 / 2.148 seconds** and **11.210 / 1.676 seconds**, including input and
+  settling overhead. Warm runs recorded a cache hit with no additional miss.
+  Partial-fuel/custom-atmosphere startup can solve two different configurations
+  and thrash this deliberately small cache; universal warm-start speedup is not
+  claimed. The solver equations, controls and rendering quality are unchanged.
+
+Native 1920×1080 gameplay passed **98 checks** without engine diagnostics:
+Avanti and GP Extra, keyboard flight, camera changes, restart, pause/settings,
+VSync preview/revert, rejected starts and repeated Home/flight transitions.
+Captured views were inspected; inherited aircraft appearance, radio overlay and
+archived accident-report state are not pristine visual baselines. These were
+engine-parsed keyboard events, not a human pilot or physical latency measurement.
+The native startup fixture passed 30 assertions but still reported the two known
+GLES3 shutdown texture leaks. A Sky lifetime experiment had a material-clearing
+confound; no rendering workaround was retained.
+
+Fresh baseline and candidate processes, using the same resource paths and data,
+produced byte-identical complete session and simulation checkpoints at ticks
+zero and 480 for six cases: Avanti full/quarter fuel, Stik glow half fuel, GP Extra
+half-power, custom atmosphere, and explicitly seeded failure selection. The
+candidate's cold and warm sessions also matched exactly (68 checks). Each case
+repeated the baseline's frozen raw float64 input vector for 480 manual simulation
+steps; this is bounded software regression evidence, not physical validation.
+Earlier harness failures are retained as adverse evidence, not acceptance runs.
+Independent headless regressions passed 34 cache checks (including exact key
+changes, mutation isolation and bypasses), 67 fuel checks, 29 startup checks and
+all four existing golden flights, without engine diagnostics. Baseline capture
+metadata failed to hash its scratch runner/common helper; those files were later
+corrected, so their post-run hashes do not identify the original capture fixtures.
+The baseline production Main/FlightSession hashes were recorded correctly.
+
+Final native Avanti profiling used 10 seconds of warmup and 60 seconds of sampling
+at 1920×1080, GLES3, VSync on and the virtual 60 Hz display. It observed 3,585 frames,
+**59.75 FPS**, p50/p95/p99 **16.660 / 18.440 / 22.280 ms**, versus baseline
+**16.650 / 17.883 / 19.608 ms**. Peak process RSS was **1,252.9 MiB**, versus
+**1,252.3 MiB**. External crash tests overlapped the final profile; host CPU averaged
+31.0%, versus 14.6% baseline. These runs do not establish a causal steady-state FPS,
+frame-pacing or memory improvement or regression.
+
+Concurrent F4U work was preserved. Exact regression and final profiling use an
+isolated `b95d9001` checkout plus this pass's explicit candidate; evolving shared
+Main/FlightSession wing-fold changes require separate combined-tree qualification.
+The Linux suite remains unavailable (`Wsl/Service/CreateInstance/E_FAIL`); the
+float64 guard passed, while the existing `mass_inventory.gd` bare-`pow` guard
+failure predates this pass. Physical latency, other platforms and sustained
+long-session leak freedom remain unqualified.
+
+Evidence Auditor confirmed the scoped correctness claims and rejected causal
+performance claims from these shared-host runs. Good Enemy found no blocking
+correctness issue in the cache or early preflight, reviewed the recorded checks
+without rerunning them, and retained the baseline helper-identity gap and separate
+combined-tree qualification requirement. No additional production changes were
+requested by that review.
+
+[Fourth-pass receipt](round4-receipt.json) records source identities, checked
+commands, raw measurement/checkpoint identities and adverse runs. Temporary
+captures remain outside Git under `tmp/game-engineering-round4/`.

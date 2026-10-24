@@ -1,0 +1,386 @@
+{
+ "path": "assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13/export/aircraft_super57.glb",
+ "profile": "f4u-g1",
+ "ok": true,
+ "failures": [],
+ "warnings": [],
+ "counts": {
+  "nodes": 80,
+  "mesh_nodes": 44,
+  "triangles": 99729,
+  "surfaces": 57,
+  "materials": 13,
+  "images": 8
+ },
+ "bounds_m": {
+  "low": [
+   -1.388889,
+   -0.242272,
+   -0.587142
+  ],
+  "high": [
+   1.388882,
+   0.528654,
+   1.793976
+  ],
+  "span_x": 2.777771,
+  "length_z": 2.381118,
+  "lowest_up_by_section": {
+   "canopy": 0.152959,
+   "core": -0.167333,
+   "engine": -0.168299,
+   "gear": -0.237259,
+   "horizontal_tail": 0.074101,
+   "propeller": -0.242272,
+   "vertical_tail": 0.081922,
+   "wing_center": -0.234625,
+   "wing_left": -0.205568,
+   "wing_right": -0.205568
+  }
+ },
+ "sections": [
+  "canopy",
+  "core",
+  "engine",
+  "gear",
+  "horizontal_tail",
+  "propeller",
+  "vertical_tail",
+  "wing_center",
+  "wing_left",
+  "wing_right"
+ ],
+ "extensions_used": [],
+ "meshes": [
+  {
+   "node": "aileron_left",
+   "triangles": 1700,
+   "surfaces": 1,
+   "section": "wing_left"
+  },
+  {
+   "node": "aileron_right",
+   "triangles": 1700,
+   "surfaces": 1,
+   "section": "wing_right"
+  },
+  {
+   "node": "canopy_frame",
+   "triangles": 848,
+   "surfaces": 1,
+   "section": "canopy"
+  },
+  {
+   "node": "canopy_glass",
+   "triangles": 1200,
+   "surfaces": 1,
+   "section": "canopy"
+  },
+  {
+   "node": "cockpit_interior",
+   "triangles": 2722,
+   "surfaces": 1,
+   "section": "core"
+  },
+  {
+   "node": "core_details",
+   "triangles": 140,
+   "surfaces": 1,
+   "section": "core"
+  },
+  {
+   "node": "cowl",
+   "triangles": 5000,
+   "surfaces": 1,
+   "section": "engine"
+  },
+  {
+   "node": "elevator",
+   "triangles": 2200,
+   "surfaces": 1,
+   "section": "horizontal_tail"
+  },
+  {
+   "node": "engine_face",
+   "triangles": 4000,
+   "surfaces": 1,
+   "section": "engine"
+  },
+  {
+   "node": "exhaust_stacks",
+   "triangles": 1600,
+   "surfaces": 1,
+   "section": "engine"
+  },
+  {
+   "node": "fin_fixed",
+   "triangles": 1500,
+   "surfaces": 1,
+   "section": "vertical_tail"
+  },
+  {
+   "node": "flap_left_1",
+   "triangles": 1100,
+   "surfaces": 1,
+   "section": "wing_center"
+  },
+  {
+   "node": "flap_left_2",
+   "triangles": 1100,
+   "surfaces": 1,
+   "section": "wing_center"
+  },
+  {
+   "node": "flap_left_3",
+   "triangles": 1100,
+   "surfaces": 1,
+   "section": "wing_left"
+  },
+  {
+   "node": "flap_right_1",
+   "triangles": 1100,
+   "surfaces": 1,
+   "section": "wing_center"
+  },
+  {
+   "node": "flap_right_2",
+   "triangles": 1100,
+   "surfaces": 1,
+   "section": "wing_center"
+  },
+  {
+   "node": "flap_right_3",
+   "triangles": 1100,
+   "surfaces": 1,
+   "section": "wing_right"
+  },
+  {
+   "node": "fuselage_core",
+   "triangles": 8000,
+   "surfaces": 1,
+   "section": "core"
+  },
+  {
+   "node": "gear_wheel_tail",
+   "triangles": 3320,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_tail_fork",
+   "triangles": 304,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_tail_strut",
+   "triangles": 124,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_front_mesh_left",
+   "triangles": 1358,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_front_mesh_right",
+   "triangles": 1414,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_inner_mesh_left",
+   "triangles": 1418,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_inner_mesh_right",
+   "triangles": 1426,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_outer_mesh_left",
+   "triangles": 1744,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_outer_mesh_right",
+   "triangles": 1750,
+   "surfaces": 2,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_tail_mesh_left_1",
+   "triangles": 588,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_tail_mesh_left_2",
+   "triangles": 648,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_tail_mesh_right_1",
+   "triangles": 604,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_tail_mesh_right_2",
+   "triangles": 668,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_lower_left",
+   "triangles": 750,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_wheel_left",
+   "triangles": 5752,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_strut_left",
+   "triangles": 750,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_lower_right",
+   "triangles": 750,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_wheel_right",
+   "triangles": 5752,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_strut_right",
+   "triangles": 750,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "rudder",
+   "triangles": 2200,
+   "surfaces": 1,
+   "section": "vertical_tail"
+  },
+  {
+   "node": "stabilizer_fixed",
+   "triangles": 2500,
+   "surfaces": 1,
+   "section": "horizontal_tail"
+  },
+  {
+   "node": "propeller_rotor",
+   "triangles": 5400,
+   "surfaces": 2,
+   "section": "propeller"
+  },
+  {
+   "node": "windshield_glass",
+   "triangles": 550,
+   "surfaces": 1,
+   "section": "core"
+  },
+  {
+   "node": "wing_center_fixed",
+   "triangles": 11599,
+   "surfaces": 2,
+   "section": "wing_center"
+  },
+  {
+   "node": "wing_left_fixed",
+   "triangles": 5200,
+   "surfaces": 4,
+   "section": "wing_left"
+  },
+  {
+   "node": "wing_right_fixed",
+   "triangles": 5200,
+   "surfaces": 3,
+   "section": "wing_right"
+  }
+ ],
+ "images": [
+  {
+   "name": "basecolor",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "orm",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "basecolor",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "orm",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "normal",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "basecolor",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "orm",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "propeller_basecolor",
+   "mime": "image/png",
+   "size": [
+    1024,
+    256
+   ]
+  }
+ ]
+}

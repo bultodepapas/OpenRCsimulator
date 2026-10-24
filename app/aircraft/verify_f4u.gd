@@ -1,5 +1,5 @@
 # F4U-12 contract checks for the F4U Corsair 1/4.5 imported model (headless).
-# Proves that the scene Godot imports is the frozen g1.3 asset (hash, counts, section tags, pivots against the delivered
+# Proves that the scene Godot imports is the frozen g1.13 asset (hash, counts, section tags, pivots against the delivered
 # metadata), that the production registry builds it, and that surfaces, flaps, propeller, sampled gear, oleo compression,
 # exhaust anchor and paint slots behave as the session expects. Run: godot --headless --path app --script res://aircraft/verify_f4u.gd
 extends SceneTree
@@ -13,7 +13,7 @@ const WreckController := preload("res://render/crash/wreck.gd")
 const GLB_PATH := "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
 const DATA_PATH := "res://data/aircraft/f4u_corsair_250.json"
 const ID := "f4u-corsair-250"
-const EXPECTED_SHA256 := "c69151b3c96c53ff957d046c53600204598be854c10850e4bdda22ab333f464e"
+const EXPECTED_SHA256 := "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8"
 const SECTIONS := ["core", "wing_left", "wing_right", "wing_center", "horizontal_tail", "vertical_tail", "engine", "propeller", "gear", "canopy"]
 var checks := 0
 var failures := 0
@@ -57,12 +57,47 @@ func _run() -> void:
 	quit(1 if failures else 0)
 
 
+## F4U-17: each outer panel (panel, aileron, outer flap) folds in place about R59's hinge; the runtime rotation must
+## carry R59's spread navigation lamp to Blender's own folded evaluation of it, and controls must ride on the panel.
+func _fold_checks(model: Dictionary) -> void:
+	var folds: Dictionary = model.get("folds", {})
+	_check("two fold groups of three outer-panel nodes each", folds.size() == 2 and folds.values().all(func(f: Dictionary) -> bool: return f.members.size() == 3))
+	if folds.size() != 2: return
+	var worst := 0.0
+	for side: String in ["left", "right"]:
+		var record: Dictionary = Geometry.DATA.folds[side]
+		Importer.apply_folds(model, {"wing_fold_" + side: 1.0})
+		var fold: Dictionary = folds["wing_fold_" + side]
+		worst = maxf(worst, (fold.transform * _v(record.check_lamp_spread)).distance_to(_v(record.check_lamp_folded)))
+	_check("full fold (112 deg) carries each navigation lamp to R59's folded evaluation", worst < 1e-5, "%.7f m" % worst)
+	var left: Dictionary = folds.wing_fold_left
+	Importer.apply_folds(model, {"wing_fold_left": 0.12, "wing_fold_right": 0.12})
+	var released: float = left.degrees
+	Importer.apply_folds(model, {"wing_fold_left": 0.53, "wing_fold_right": 0.53})
+	_check("the locks release over the first 12 %, then the panel turns linearly", released == 0.0 and absf(left.degrees - 56.0) < 1e-6, "%.3f, %.3f deg" % [released, left.degrees])
+	Importer.apply_folds(model, {"wing_fold_left": 1.0, "wing_fold_right": 1.0})
+	var aileron: Dictionary = model.hinges.aileron_left
+	Importer.apply_surfaces(model, {"aileron_left": 10.0})
+	var on_panel: bool = (left.transform.affine_inverse() * aileron.node.transform).is_equal_approx(Transform3D(aileron.unfolded_basis, aileron.pivot))
+	Importer.apply_folds(model, {"wing_fold_left": 0.0, "wing_fold_right": 0.0})
+	var unfolded: bool = aileron.node.transform.is_equal_approx(Transform3D(aileron.unfolded_basis, aileron.pivot))
+	Importer.apply_surfaces(model, {})
+	var rest_error := 0.0
+	for fold: Dictionary in folds.values():
+		for member: Dictionary in fold.members:
+			rest_error = maxf(rest_error, (member.node.transform.origin - member.rest.origin).length())
+			for axis in 3:
+				rest_error = maxf(rest_error, (member.node.transform.basis[axis] - member.rest.basis[axis]).length())
+	_check("an aileron deflected while folded rides on its panel and keeps its deflection when spread", on_panel and unfolded)
+	_check("spreading with neutral controls restores every outer-panel node to its delivered rest", rest_error < 1e-6, "%.8f" % rest_error)
+
+
 ## The imported scene is the frozen delivery: bytes, node set, sections and the counts the author reported.
 func _asset() -> void:
 	var context := HashingContext.new()
 	context.start(HashingContext.HASH_SHA256)
 	context.update(FileAccess.get_file_as_bytes(GLB_PATH))
-	_check("runtime GLB is the accepted g1.3 aircraft.glb", context.finish().hex_encode() == EXPECTED_SHA256 and Geometry.DATA.inputs.glb_sha256 == EXPECTED_SHA256)
+	_check("runtime GLB is the accepted g1.13 aircraft.glb", context.finish().hex_encode() == EXPECTED_SHA256 and Geometry.DATA.inputs.glb_sha256 == EXPECTED_SHA256)
 	var scene: Node3D = (load(GLB_PATH) as PackedScene).instantiate()
 	var meshes := scene.find_children("*", "MeshInstance3D", true, false)
 	var triangles := 0
@@ -76,7 +111,7 @@ func _asset() -> void:
 		var section := str((mesh.get_meta("extras", {}) as Dictionary).get("openrc_section", "")) if mesh.has_meta("extras") else ""
 		if section.is_empty(): untagged.append(mesh.name)
 		elif not SECTIONS.has(section): invalid.append(mesh.name)
-	_check("44 meshes, 54 surfaces, 90,861 triangles as delivered", meshes.size() == 44 and surfaces == 54 and triangles == 90861, "%d meshes, %d surfaces, %d triangles" % [meshes.size(), surfaces, triangles])
+	_check("44 meshes, 57 surfaces, 99,729 triangles as delivered", meshes.size() == 44 and surfaces == 57 and triangles == 99729, "%d meshes, %d surfaces, %d triangles" % [meshes.size(), surfaces, triangles])
 	_check("every mesh carries a valid openrc_section", untagged.is_empty() and invalid.is_empty(), "untagged %s, invalid %s" % [str(untagged), str(invalid)])
 	var worst := 0.0
 	for name: String in Geometry.DATA.articulations:
@@ -123,7 +158,8 @@ func _built_model() -> void:
 	var at_80: float = angle.call()
 	Importer.set_flaps(model, 0.0)
 	_check("flap hinges turn 30.000 deg for 30 and clamp at the 50 deg envelope", absf(at_30 - 30.0) < 0.01 and absf(at_80 - 50.0) < 0.01, "%.3f, %.3f" % [at_30, at_80])
-	# The hinge ranges are the author's g1.3 clearance sweep (all clear); the flown throws must stay inside them.
+	# The hinge ranges are the author's g1.3 clearance sweep (all clear; g1.13 keeps the g1.3 mesh outside the gear,
+	# doors and paint); the flown throws must stay inside them.
 	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
 	var throws: Dictionary = data.controls.max_throw
 	var outside := []
@@ -133,6 +169,7 @@ func _built_model() -> void:
 		if low < float(model.hinges[role].range_deg[0]) or limit > float(model.hinges[role].range_deg[1]):
 			outside.append(role)
 	_check("full throws (13.5, 11.2, 25.9 deg) and 30 deg flaps lie inside the swept clearance envelopes", outside.is_empty(), str(outside))
+	_fold_checks(model)
 	var rig: Dictionary = model.gear_retraction
 	var worst := 0.0
 	for extension: float in [0.0, 0.5, 1.0]:

@@ -1,0 +1,46 @@
+{
+	"checks": [
+		{
+			"detail": "",
+			"label": "the Corsair binds two wing folds",
+			"ok": true
+		},
+		{
+			"detail": "Wings fold only on the ground, stopped.",
+			"label": "folding is refused in the air",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "runway start: on the wheels and stopped",
+			"ok": true
+		},
+		{
+			"detail": "command 1.00, solver 0.00",
+			"label": "full throttle commanded while folding reaches the solver as idle",
+			"ok": true
+		},
+		{
+			"detail": "112.0 deg in 8.6 s",
+			"label": "both panels fold to 112 deg",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "the airplane stays put with the throttle held",
+			"ok": true
+		},
+		{
+			"detail": "Wings: folded  [O] spread — throttle held at idle",
+			"label": "the HUD reports the fold and the hold",
+			"ok": true
+		},
+		{
+			"detail": "0.0 deg, solver throttle 1.00",
+			"label": "spreading returns to 0 deg and releases the throttle",
+			"ok": true
+		}
+	],
+	"failures": 0,
+	"format": "F4U-17 fold check v1"
+}
