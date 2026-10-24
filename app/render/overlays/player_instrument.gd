@@ -100,6 +100,7 @@ func _init(instrument_id: String) -> void:
 	handle.mouse_exited.connect(func() -> void: _header_hovered = false; _highlight(dragging))
 	visibility_changed.connect(_cancel_drag)
 	close_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	(body.get_parent() as VBoxContainer).add_theme_constant_override("separation", 8)
 	close_button.flat = false
 	close_button.add_theme_font_size_override("font_size", 18)
 	for state: String in ["normal", "hover", "pressed"]:
@@ -123,6 +124,7 @@ func _init(instrument_id: String) -> void:
 	unit_label = text_label("", 14, ACCENT)
 	unit_label.name = "Unit"
 	unit_label.size_flags_vertical = Control.SIZE_SHRINK_END
+	unit_label.custom_minimum_size.y = 32
 	unit_label.add_theme_constant_override("outline_size", 0)
 	reading.add_child(unit_label)
 	subtitle = text_label("", 12, MUTED)
@@ -251,6 +253,7 @@ func _fit_content() -> void:
 
 func _apply_density() -> void:
 	value_label.add_theme_font_size_override("font_size", 36 if _compact else 52)
+	unit_label.custom_minimum_size.y = 26 if _compact else 32
 	_style.content_margin_bottom = 10 if _compact else 16
 	body.add_theme_constant_override("separation", 3 if _compact else 6)
 	graphic.visible = id != "trims" and not _compact

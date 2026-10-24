@@ -32,6 +32,7 @@ func _run() -> void:
 	_test_speed_extrema(manager)
 	_test_missing_numbers(manager)
 	_test_energy(manager)
+	await _test_zero_speed_graph(manager)
 	await _test_extended_instruments(manager)
 	await _test_widget_interaction(manager)
 	await _test_responsive_layout(manager)
@@ -111,6 +112,17 @@ func _test_energy(manager: CanvasLayer) -> void:
 	_check("Power prefers a valid radio battery reading", manager.frames.power.value_label.text == "100"
 		and manager.frames.power.unit_label.text == "%" and manager.frames.power.left_caption.text == "PACK VOLTAGE"
 		and manager.frames.power.left_value.text == "12.4 V", manager.frames.power.left_value.text)
+
+
+func _test_zero_speed_graph(manager: CanvasLayer) -> void:
+	manager.reset_flight()
+	for i in 3:
+		manager.refresh_numbers(_snapshot(i * 0.1, 0.0))
+		await process_frame
+		await process_frame
+	_check("idle aircraft draws a zero-speed trend without losing samples", manager.frames.speed._samples.size() == 3)
+	_check("instrument icons are available offline for every widget", Settings.PLAYER_IDS.all(func(id: String) -> bool:
+		return manager.frames[id]._header_icon.texture != null))
 
 
 func _test_extended_instruments(manager: CanvasLayer) -> void:
