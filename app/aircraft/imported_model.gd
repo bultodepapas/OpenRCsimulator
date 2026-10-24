@@ -344,12 +344,14 @@ static func _bind_fold(root: Node3D, nodes: Dictionary, record: Dictionary, hing
 		if parent == null or not relative(root, parent).is_equal_approx(Transform3D.IDENTITY):
 			errors.append("Fold member's parent must be at the model frame: " + str(name))
 			continue
-		var hinge := {}
+		# A member names its hinge by key: a hinge refers to its fold, so a direct reference back would be a
+		# Dictionary cycle that outlives the model.
+		var hinge_key := ""
 		for key: String in hinges:
 			if hinges[key].node == node:
-				hinge = hinges[key]
-				hinge.fold = fold
-		fold.members.append({node = node, rest = node.transform, hinge = hinge})
+				hinge_key = key
+				hinges[key].fold = fold
+		fold.members.append({node = node, rest = node.transform, hinge_key = hinge_key})
 	return fold
 
 
@@ -371,7 +373,7 @@ static func apply_folds(model: Dictionary, fractions: Dictionary) -> void:
 		fold.transform = Transform3D(Basis(), fold.pivot) * Transform3D(Basis(fold.axis, deg_to_rad(fold.sign * degrees)), Vector3.ZERO) \
 			* Transform3D(Basis(), -fold.pivot)
 		for member: Dictionary in fold.members:
-			var hinge: Dictionary = member.hinge
+			var hinge: Dictionary = model.hinges.get(member.hinge_key, {})
 			member.node.transform = fold.transform * (Transform3D(hinge.get("unfolded_basis", hinge.rest), hinge.pivot) if not hinge.is_empty() else member.rest)
 
 

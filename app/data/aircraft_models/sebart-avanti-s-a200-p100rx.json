@@ -167,7 +167,7 @@
     },
     {
       "path": "res://aircraft/imported_model.gd",
-      "sha256": "d1a5fcaa30a163c88ca81e3b25bebdc3673f3739c2d89bf113200133cecd6de4",
+      "sha256": "a31ae82e9781fa48302a56a358e5d911dc1d3adde04d8990115180110c5f66a5",
       "hash_mode": "lf_text",
       "role": "builder"
     },
