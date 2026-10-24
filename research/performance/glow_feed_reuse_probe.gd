@@ -251,10 +251,14 @@ func _diff(a: Variant,b: Variant,path: String) -> String:
 	if a is PackedFloat64Array: return "" if a.to_byte_array()==b.to_byte_array() else path+" float64 bytes differ"
 	if a is PackedFloat32Array or a is PackedInt32Array or a is PackedInt64Array or a is PackedByteArray or a is PackedStringArray:
 		return "" if var_to_bytes(a)==var_to_bytes(b) else path+" packed bytes differ"
-	if typeof(a)==TYPE_FLOAT: return "" if var_to_bytes(a)==var_to_bytes(b) else path+" float bytes differ"
+	if typeof(a)==TYPE_FLOAT:
+		return "" if PackedFloat64Array([a]).to_byte_array()==PackedFloat64Array([b]).to_byte_array() else path+" float bytes differ"
 	return "" if a==b else path+" values differ"
 func _float_control() -> bool:
-	var a: Dictionary={"nan":NAN,"zero":0.0,"negative_zero":-0.0,"packed":PackedFloat64Array([NAN,0.0,-0.0])}
+	# Construct the sign bit at runtime; constant folding/Variant serialization
+	# can canonicalize a literal -0.0 before this comparator is exercised.
+	var negative_zero: float=PackedByteArray([0,0,0,0,0,0,0,128]).decode_double(0)
+	var a: Dictionary={"nan":NAN,"zero":0.0,"negative_zero":negative_zero,"packed":PackedFloat64Array([NAN,0.0,negative_zero])}
 	var b:=a.duplicate(true); var c:=a.duplicate(true); c.negative_zero=0.0
 	return _diff(a,b,"$control").is_empty() and not _diff(a,c,"$control").is_empty()
 func _bench(pr: Callable,pc: Callable,er: Callable,ec: Callable,ro: Node,co: Node,s: Dictionary) -> Dictionary:
