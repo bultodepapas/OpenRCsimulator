@@ -179,6 +179,8 @@ func _run() -> void:
 	_check("semantic cues remain observable after route closure", service.play(&"reject"))
 	_check("semantic cue counters reflect logical requests", service.cue_count(&"back") == 1
 		and service.cue_count(&"reject") == 1)
+	_check("an error cannot be followed by a false same-action confirmation", not service.play(&"accept"))
+	await process_frame
 	var accepts_before: int = service.cue_count(&"accept")
 	service.play(&"accept")
 	service.play(&"accept") # an accepted launch can mount a controller-readiness Pause in the same frame
@@ -195,22 +197,31 @@ func _run() -> void:
 	service.set_volume(0.35)
 	service.play(&"focus")
 	var first_focus_pitch: float = service._voices[0].pitch_scale
+	var first_focus_stream: AudioStream = service._voices[0].stream
 	service._voices[0].stop()
 	service.play(&"focus")
-	_check("successive navigation cues have bounded tonal variation",
+	_check("successive navigation cues use different natural takes with gentle pitch variation",
 		service._voices[0].pitch_scale != first_focus_pitch
-		and service._voices[0].pitch_scale >= 0.9 and service._voices[0].pitch_scale <= 1.12)
+		and service._voices[0].stream != first_focus_stream
+		and service._voices[0].pitch_scale >= 0.9 and service._voices[0].pitch_scale <= 1.0)
 	service._voices[0].stop()
 	service._voices[1].stop()
+	await process_frame
 	var dropped_before: int = service.dropped_voice_count()
-	service.play(&"accept")
-	service.play(&"back")
+	_check("two successive outcomes occupy the bounded voice pool", service.play(&"accept") and service.play(&"restart"))
 	var rejection_played: bool = service.play(&"reject")
 	_check("a fresh decision replaces an older tail when both voices are busy",
 		rejection_played and service.dropped_voice_count() == dropped_before
-		and service._voices.any(func(voice: AudioStreamPlayer) -> bool: return is_equal_approx(voice.pitch_scale, 0.78)),
+		and service._voices.any(func(voice: AudioStreamPlayer) -> bool: return voice.stream == MenuAudioService.STREAM_BY_CUE[&"reject"]),
 		"played=%s dropped=%d before=%d pitches=%s/%s" % [str(rejection_played), service.dropped_voice_count(),
 			dropped_before, str(service._voices[0].pitch_scale), str(service._voices[1].pitch_scale)])
+	_check("incidental hover cannot mask a decision", not service.play(&"hover"))
+	_check("screen mounts cannot override a same-action error", not service.play(&"open"))
+	await create_timer(0.04).timeout
+	_check("replaced semantic tail fades out without stopping the newest cue",
+		service._voices.filter(func(voice: AudioStreamPlayer) -> bool: return voice.playing).size() == 1)
+	service.set_volume(0.0)
+	_check("muted Quit adds no shutdown delay", service.play(&"quit") and service.shutdown_delay() == 0.0)
 
 	host.queue_free()
 	await create_timer(0.1).timeout # allow the audio mixer to release the stopped playback before process teardown

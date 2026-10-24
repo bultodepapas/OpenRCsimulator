@@ -10,6 +10,7 @@ const MAX_VOICES := 2
 const RANGE_DEBOUNCE_MS := 220
 const NAVIGATION_DEBOUNCE_MS := 140
 const PRESS_DEBOUNCE_MS := 90
+const TAIL_FADE_SECONDS := 0.018
 
 const STREAM_BY_CUE: Dictionary = {
 	&"focus": preload("res://assets/ui/audio/navigation.ogg"),
@@ -20,6 +21,14 @@ const STREAM_BY_CUE: Dictionary = {
 	&"accept": preload("res://assets/ui/audio/accept.ogg"),
 	&"back": preload("res://assets/ui/audio/back.ogg"),
 	&"reject": preload("res://assets/ui/audio/reject.ogg"),
+	&"open": preload("res://assets/ui/audio/open.ogg"),
+	&"pause": preload("res://assets/ui/audio/pause.ogg"),
+	&"resume": preload("res://assets/ui/audio/resume.ogg"),
+	&"restart": preload("res://assets/ui/audio/restart.ogg"),
+	&"exit": preload("res://assets/ui/audio/exit.ogg"),
+	&"quit": preload("res://assets/ui/audio/exit.ogg"),
+	&"cancel": preload("res://assets/ui/audio/back.ogg"),
+	&"saved": preload("res://assets/ui/audio/accept.ogg"),
 }
 
 const GAIN_BY_CUE: Dictionary = {
@@ -31,18 +40,47 @@ const GAIN_BY_CUE: Dictionary = {
 	&"accept": 0.48,
 	&"back": 0.40,
 	&"reject": 0.28,
+	&"open": 0.25,
+	&"pause": 0.30,
+	&"resume": 0.34,
+	&"restart": 0.28,
+	&"exit": 0.32,
+	&"quit": 0.34,
+	&"cancel": 0.28,
+	&"saved": 0.32,
 }
 
-# The seven licensed clips share a small pitch vocabulary. Repeated navigation
-# moves through it, while decisions keep stable, recognizable contours.
-const NAVIGATION_PITCHES: Array[float] = [0.94, 1.0, 1.12, 1.06, 0.98]
-const PRESS_PITCHES: Array[float] = [1.0, 1.035, 0.975]
+# Natural wood/soft impacts from Kenney Impact Sounds. Alternate real takes;
+# small downward pitch offsets preserve the material instead of making a tune.
+const NAVIGATION_STREAMS: Array[AudioStream] = [
+	preload("res://assets/ui/audio/navigation.ogg"),
+	preload("res://assets/ui/audio/navigation_2.ogg"),
+	preload("res://assets/ui/audio/navigation_3.ogg"),
+]
+const NAVIGATION_PITCHES: Array[float] = [0.96, 0.99, 0.97, 1.0, 0.98]
+const PRESS_PITCHES: Array[float] = [1.0, 0.98, 0.96]
 const CUE_PITCH: Dictionary = {
-	&"select": 1.08,
-	&"change": 1.04,
-	&"accept": 1.12,
-	&"back": 0.88,
-	&"reject": 0.78,
+	&"select": 1.0,
+	&"change": 1.0,
+	&"accept": 1.0,
+	&"back": 0.96,
+	&"reject": 0.92,
+	&"open": 1.0,
+	&"pause": 1.0,
+	&"resume": 1.0,
+	&"restart": 0.97,
+	&"exit": 1.0,
+	&"quit": 0.94,
+	&"cancel": 1.0,
+	&"saved": 1.0,
+}
+
+# A concrete outcome wins over incidental screen mounts in the same action.
+# Lower-priority cues in later frames remain valid (e.g. Back after an error).
+const SEMANTIC_PRIORITY: Dictionary = {
+	&"open": 1, &"pause": 1, &"back": 1,
+	&"accept": 2, &"resume": 2, &"cancel": 2, &"saved": 2,
+	&"restart": 3, &"exit": 3, &"reject": 4, &"quit": 5,
 }
 
 const NAVIGATION_ACTIONS: PackedStringArray = [
@@ -62,6 +100,7 @@ var _dropped_voice_count: int = 0
 var _navigation_step := 0
 var _press_step := 0
 var _voice_started_ms: Array[int] = []
+var _voice_fades: Array[Tween] = []
 
 var _observed_screens: Dictionary = {}
 var _observed_controls: Dictionary = {}
@@ -100,6 +139,7 @@ func _ready() -> void:
 		_voices.append(player)
 		_voice_cues.append(&"")
 		_voice_started_ms.append(0)
+		_voice_fades.append(null)
 	set_volume(_volume)
 
 
@@ -128,9 +168,10 @@ func observe(screen: Control) -> int:
 func play(cue: StringName, source: Object = null) -> bool:
 	if not STREAM_BY_CUE.has(cue):
 		return false
-	if cue == &"accept" or cue == &"back" or cue == &"reject":
-		if _last_semantic_frame == Engine.get_process_frames() and _last_semantic_cue == cue:
-			return false # one transition may mount several nested surfaces in the same frame
+	if _is_semantic_cue(cue):
+		if _last_semantic_frame == Engine.get_process_frames():
+			if _last_semantic_cue == cue or int(SEMANTIC_PRIORITY[_last_semantic_cue]) > int(SEMANTIC_PRIORITY[cue]):
+				return false
 		_last_semantic_frame = Engine.get_process_frames()
 		_last_semantic_cue = cue
 	return _request_cue(cue, source)
@@ -142,8 +183,10 @@ func set_volume(normalized: float) -> void:
 		return
 	_volume = clampf(normalized, 0.0, 1.0)
 	for voice_index: int in range(_voices.size()):
-		_update_voice_volume(voice_index)
+		if _voice_fades[voice_index] == null:
+			_update_voice_volume(voice_index)
 		if _volume <= 0.0:
+			_cancel_fade(voice_index)
 			_voices[voice_index].stop()
 
 
@@ -157,6 +200,19 @@ func cue_count(cue: StringName) -> int:
 
 func dropped_voice_count() -> int:
 	return _dropped_voice_count
+
+
+## Bounded native tail after a committed Quit. Silent/test routes close immediately.
+## Called only after play("quit"), never before the user's save/discard decisions.
+func shutdown_delay() -> float:
+	var master := AudioServer.get_bus_index(&"Master")
+	if _volume <= 0.0 or AudioServer.get_driver_name() == "Dummy" \
+		or AudioServer.is_bus_mute(master) or AudioServer.get_bus_volume_db(master) <= -60.0:
+		return 0.0
+	for index: int in range(_voices.size()):
+		if _voice_cues[index] == &"quit" and _voices[index].playing:
+			return minf(_voices[index].stream.get_length() / _voices[index].pitch_scale + 0.06, 0.5)
+	return 0.0
 
 
 func _observe_subtree(node: Node, screen: Control) -> int:
@@ -325,8 +381,14 @@ func _is_eligible(control: Control, screen: Control) -> bool:
 
 func _request_cue(cue: StringName, source: Object = null) -> bool:
 	var stream: AudioStream = STREAM_BY_CUE.get(cue)
-	if stream == null:
+	if stream == null or _voices.is_empty():
 		return false
+	# Browsing never talks over the outcome the pilot is trying to understand.
+	if not _is_semantic_cue(cue):
+		for index: int in range(_voices.size()):
+			if _voices[index].playing and _is_semantic_cue(_voice_cues[index]):
+				_dropped_voice_count += 1
+				return false
 	var available_voice := -1
 	for voice_index: int in range(_voices.size()):
 		if not _voices[voice_index].playing:
@@ -349,7 +411,13 @@ func _request_cue(cue: StringName, source: Object = null) -> bool:
 		_dropped_voice_count += 1
 		return false
 	var player := _voices[available_voice]
-	player.stream = stream
+	_cancel_fade(available_voice)
+	if _is_semantic_cue(cue):
+		for index: int in range(_voices.size()):
+			if index != available_voice and _voices[index].playing:
+				_retire_voice(index)
+	player.stream = NAVIGATION_STREAMS[_navigation_step % NAVIGATION_STREAMS.size()] \
+		if cue == &"focus" or cue == &"hover" else stream
 	player.pitch_scale = _pitch_for(cue)
 	_voice_cues[available_voice] = cue
 	_voice_started_ms[available_voice] = Time.get_ticks_msec()
@@ -375,7 +443,23 @@ func _pitch_for(cue: StringName) -> float:
 
 
 func _is_semantic_cue(cue: StringName) -> bool:
-	return cue == &"accept" or cue == &"back" or cue == &"reject"
+	return SEMANTIC_PRIORITY.has(cue)
+
+
+func _cancel_fade(index: int) -> void:
+	if _voice_fades[index] != null:
+		_voice_fades[index].kill()
+		_voice_fades[index] = null
+
+
+func _retire_voice(index: int) -> void:
+	_cancel_fade(index)
+	var fade := create_tween()
+	_voice_fades[index] = fade
+	fade.tween_property(_voices[index], "volume_db", -80.0, TAIL_FADE_SECONDS)
+	fade.tween_callback(func() -> void:
+		_voices[index].stop()
+		_voice_fades[index] = null)
 
 
 func _update_voice_volume(voice_index: int) -> void:

@@ -1,4 +1,4 @@
-## UI-22-R4: decorative crystal underlay. Native controls retain text, focus, input and layout.
+## UI-22-R10: shared state transitions beneath native text, focus, input and layout.
 extends Node2D
 
 const UiTheme := preload("res://ui/ui_theme.gd")
@@ -16,13 +16,19 @@ var _updating := false
 var _energy_tween: Tween
 var _shine_tween: Tween
 var _press_tween: Tween
+var _color_tween: Tween
+var _pointer_tween: Tween
+var _confirm_tween: Tween
 var _uniforms: Dictionary = {}
+var _base_goal := Color.TRANSPARENT
+var _pointer_goal := Vector2(0.5, 0.5)
+var _engaged := false
 
 
 static func attach(target: Control) -> void:
 	if target.get_node_or_null("CrystalSurface") != null:
 		return
-	if not (target is Button and target.theme_type_variation in PRIMARY_TYPES) \
+	if not target is Button \
 		and not (target is PanelContainer and target.theme_type_variation in PANEL_TYPES):
 		return
 	var effect := new() as Node2D
@@ -58,6 +64,8 @@ func _ready() -> void:
 		_target.focus_exited.connect(_release)
 		_target.button_down.connect(_press.bind(true))
 		_target.button_up.connect(_press.bind(false))
+		_target.pressed.connect(_confirm)
+		_target.gui_input.connect(_pointer_input)
 	_rebuild_styles()
 	_resize()
 	set_process(false)
@@ -92,7 +100,9 @@ func _rebuild_styles() -> void:
 			_skins.erase(key)
 			continue
 		var source := _target.get_theme_stylebox(key) as StyleBoxFlat
-		if source == null:
+		if source == null or not source.draw_center:
+			_sources.erase(key)
+			_skins.erase(key)
 			continue
 		_sources[key] = source
 		var skin := source.duplicate() as StyleBoxFlat
@@ -101,36 +111,70 @@ func _rebuild_styles() -> void:
 		_target.add_theme_stylebox_override(key, skin)
 	_target.end_bulk_theme_override()
 	_updating = false
-	_uniform(&"primary", 1.0 if _target is Button else 0.0)
-	_uniform(&"crystal_color", UiTheme.CRYSTAL if _target is Button else UiTheme.SURFACE_LIGHT)
-	_uniform(&"emission_color", UiTheme.GLASS_EMISSION if _target is Button else UiTheme.SURFACE_LIGHT)
-	_sync_state()
+	var primary := _target is Button and _target.theme_type_variation in PRIMARY_TYPES
+	_uniform(&"primary", 1.0 if primary else (-1.0 if _target is Button else 0.0))
+	_uniform(&"crystal_color", UiTheme.CRYSTAL if primary else UiTheme.SURFACE_LIGHT)
+	var accent := UiTheme.ERROR if _target.theme_type_variation == &"DestructiveButton" else UiTheme.FOCUS
+	_uniform(&"emission_color", UiTheme.GLASS_EMISSION if primary else (accent if _target is Button else UiTheme.SURFACE_LIGHT))
+	_sync_state(false)
 
 
-func _sync_state() -> void:
+func _sync_state(animate := true) -> void:
 	if _updating or _material == null:
 		return
 	var key: StringName = STATES[_target.get_draw_mode()] if _target is Button else &"panel"
+	# Respect flat buttons and screen-owned styles before applying focus parity.
+	var supported := _skins.has(key)
+	if _target is Button and _target.flat and key in [&"normal", &"disabled"]:
+		supported = false
+	if _target is Button and key == &"normal" and _target.has_focus() and _skins.has(&"hover"):
+		key = &"hover"
 	var source := _sources.get(key) as StyleBoxFlat
-	_glass.visible = source != null and _skins.has(key)
+	_glass.visible = source != null and supported
+	if not _glass.visible:
+		_settle()
 	if source == null:
 		return
-	_uniform(&"base_color", source.bg_color)
+	_fade_base(source.bg_color, animate)
 	_uniform(&"corner_radius", float(source.corner_radius_top_left))
 	_uniform(&"disabled", 1.0 if _target is Button and _target.disabled else 0.0)
 	if _target is Button and _target.disabled:
 		_settle()
 
 
+func _fade_base(color: Color, animate: bool) -> void:
+	if animate and _base_goal == color and _uniforms.has(&"base_color"):
+		return
+	_base_goal = color
+	if _color_tween != null: _color_tween.kill()
+	if not animate or not _can_animate() or not _uniforms.has(&"base_color"):
+		_uniform(&"base_color", color)
+		return
+	_color_tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_color_tween.tween_method(_color, _uniforms[&"base_color"], color, 0.14)
+
+
+func _color(value: Color) -> void:
+	if not _can_animate():
+		_settle()
+		return
+	_uniform(&"base_color", value)
+
+
 func _can_animate() -> bool:
-	return is_inside_tree() and _target.is_visible_in_tree() and not UiTheme.reduced_motion \
+	return is_inside_tree() and _target.is_visible_in_tree() and _glass.visible and not UiTheme.reduced_motion \
 		and not (_target is Button and _target.disabled)
 
 
 func _engage() -> void:
+	_sync_state()
 	if not _can_animate():
 		_settle()
 		return
+	if _engaged:
+		return # Mouse entry and focus acquisition are one engagement, not two sweeps.
+	_engaged = true
+	if _target is Button and not _target.is_hovered(): _point_to(Vector2(0.5, 0.5))
 	if _energy_tween != null: _energy_tween.kill()
 	_energy_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_energy_tween.tween_method(_energy, float(_uniforms.get(&"energy", 0.0)), 1.0, 0.18)
@@ -140,10 +184,12 @@ func _engage() -> void:
 
 
 func _release() -> void:
+	if _target.has_focus() or _target.is_hovered():
+		return
+	_engaged = false
+	_sync_state()
 	if not _can_animate():
 		_settle()
-		return
-	if _target.has_focus() or _target.is_hovered():
 		return
 	if _energy_tween != null: _energy_tween.kill()
 	_energy_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -151,12 +197,53 @@ func _release() -> void:
 
 
 func _press(down: bool) -> void:
+	_sync_state()
 	if not _can_animate():
 		_settle()
 		return
 	if _press_tween != null: _press_tween.kill()
 	_press_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	_press_tween.tween_method(_depth, float(_uniforms.get(&"press_depth", 0.0)), 1.0 if down else 0.0, 0.09 if down else 0.18)
+	_press_tween.tween_method(_depth, float(_uniforms.get(&"press_depth", 0.0)), 1.0 if down else 0.0, 0.08 if down else 0.14)
+
+
+func _pointer_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and _target.is_hovered() and _target.theme_type_variation in PRIMARY_TYPES:
+		_point_to((event.position / _target.size.max(Vector2.ONE)).clamp(Vector2.ZERO, Vector2.ONE))
+
+
+func _point_to(position: Vector2) -> void:
+	if not _can_animate() or _pointer_goal.is_equal_approx(position):
+		return
+	_pointer_goal = position
+	if _pointer_tween != null: _pointer_tween.kill()
+	_pointer_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_pointer_tween.tween_method(_pointer, _uniforms.get(&"pointer_uv", Vector2(0.5, 0.5)), position, 0.12)
+
+
+func _pointer(value: Vector2) -> void:
+	if not _can_animate():
+		_settle()
+		return
+	_uniform(&"pointer_uv", value)
+
+
+func _confirm() -> void:
+	# Only native activation confirms: releasing a cancelled press does not.
+	_sync_state()
+	if not _can_animate():
+		_settle()
+		return
+	if _confirm_tween != null: _confirm_tween.kill()
+	_confirm_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_confirm_tween.tween_method(_confirmation, float(_uniforms.get(&"confirmation", 0.0)), 1.0, 0.06)
+	_confirm_tween.tween_method(_confirmation, 1.0, 0.0, 0.24)
+
+
+func _confirmation(value: float) -> void:
+	if not _can_animate():
+		_settle()
+		return
+	_uniform(&"confirmation", value)
 
 
 func _energy(value: float) -> void:
@@ -188,8 +275,13 @@ func _visibility_changed() -> void:
 
 
 func _settle() -> void:
-	for tween in [_energy_tween, _shine_tween, _press_tween]:
+	for tween in [_energy_tween, _shine_tween, _press_tween, _color_tween, _pointer_tween, _confirm_tween]:
 		if tween != null: tween.kill()
+	_engaged = false
+	_pointer_goal = Vector2(0.5, 0.5)
+	_uniform(&"base_color", _base_goal)
+	_uniform(&"pointer_uv", _pointer_goal)
+	_uniform(&"confirmation", 0.0)
 	_uniform(&"energy", 0.0)
 	_uniform(&"shine_progress", -1.0)
 	_uniform(&"press_depth", 0.0)

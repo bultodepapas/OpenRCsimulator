@@ -1,7 +1,7 @@
 shader_type canvas_item;
 render_mode unshaded;
 
-// UI-22-R9. Adapted from sentinelcmd's CC0 Liquid Glass UI (rounded mask/edge)
+// UI-22-R10. Adapted from sentinelcmd's CC0 Liquid Glass UI (rounded mask/edge)
 // and DimensionAlmios' MIT Shine Sweep (projected glint). See LICENSE.txt.
 // Explicit event-driven progress; no wall clock, screen copy or background blur.
 uniform vec2 rect_size = vec2(320.0, 56.0);
@@ -14,6 +14,8 @@ uniform float energy = 0.0;
 uniform float shine_progress = -1.0;
 uniform float press_depth = 0.0;
 uniform float disabled = 0.0;
+uniform vec2 pointer_uv = vec2(0.5);
+uniform float confirmation = 0.0;
 // Independent optical controls: thin glass can retain a bright, restrained rim.
 uniform float edge_width : hint_range(0.2, 1.0) = 0.52;
 uniform float edge_strength : hint_range(0.0, 1.2) = 0.82;
@@ -61,7 +63,13 @@ void fragment() {
 	float shine = mix(soft, hard, 0.24);
 	vec3 body = base_color.rgb;
 	float opacity = base_color.a;
-	if (primary < 0.5) {
+	if (primary < -0.5) {
+		// Secondary actions keep their native neutral fill. Feedback stays on the rim.
+		float lip = 1.0 - smoothstep(1.0, 2.5, depth);
+		float response = disabled < 0.5 ? energy * shine * 0.10 + confirmation * 0.22 : 0.0;
+		body = mix(body, emission_color.rgb, lip * response);
+		opacity = max(opacity, lip * response);
+	} else if (primary < 0.5) {
 		// Neutral panels bypass the extra fluorescent-wall/reflection work.
 		float bevel = 1.0 - smoothstep(1.0, 2.5, depth);
 		float edge_light = bevel * (0.12 + key_light * 0.64 + return_light * 0.24);
@@ -103,7 +111,10 @@ void fragment() {
 		fluorescence *= 1.0 - press_depth * 0.22;
 		body += emission_color.rgb * fluorescence * edge_strength;
 		body += crystal_color.rgb * outer_catch * pow(key_light * key_falloff, 3.0) * 0.12 * edge_strength;
-		body += mix(crystal_color.rgb, emission_color.rgb, 0.72) * shine * (0.012 + bevel * 0.44) * glint_strength;
+		body += mix(crystal_color.rgb, emission_color.rgb, 0.72) * shine * energy * (0.012 + bevel * 0.44) * glint_strength;
+		// A small reflected catch follows the pointer; keyboard/gamepad light is centered.
+		float pointer_light = exp(-pow(length((UV - pointer_uv) * vec2(1.0, 0.45)) / 0.22, 2.0));
+		body += emission_color.rgb * bevel * (pointer_light * energy * 0.10 + confirmation * 0.18);
 		// Protect the text well while retaining a broad luminous wall outside it.
 		body = mix(body, min(body, vec3(0.10, 0.30, 0.10)), smoothstep(7.0, 10.0, depth));
 		opacity = mix(base_color.a, 1.0, bevel);

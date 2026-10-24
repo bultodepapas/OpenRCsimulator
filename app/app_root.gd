@@ -81,6 +81,7 @@ var _auto_accept_quit_tree: SceneTree
 var _auto_accept_quit_before_root := true
 var _wm_close_pending := false
 var _exit_request_active := false
+var _quit_audio_pending := false
 var _exit_request_kind := ""
 var _exit_request_commit := Callable()
 var _exit_request_recorders: Array[RefCounted] = []
@@ -239,10 +240,10 @@ func _ready() -> void:
 	screens.surface_opened.connect(func(surface: Control, id: String, feedback: bool) -> void:
 		menu_audio.observe(surface)
 		if feedback and id != "home":
-			menu_audio.play(&"accept"))
+			menu_audio.play(&"pause" if id == "pause" else &"open"))
 	screens.surface_closed.connect(func(id: String, restoring_focus: bool) -> void:
-		if restoring_focus and id != "home":
-			menu_audio.play(&"accept" if id == "pause" else &"back"))
+		if restoring_focus and id not in ["home", "pause"]:
+			menu_audio.play(&"back"))
 	_apply_presentation(display_preferences.config)
 	controllers = ControllerService.new()
 	controllers.allow_automatic_selection = func() -> bool:
@@ -443,6 +444,7 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 func end_ground_vehicle() -> void:
 	if ground_vehicle == null:
 		return
+	_menu_feedback(&"exit")
 	remove_child(ground_vehicle)
 	ground_vehicle.queue_free()
 	ground_vehicle = null
@@ -461,6 +463,8 @@ func set_language(code: String) -> void:
 	TranslationServer.set_locale(code)
 	preferences.language = code
 	var err := Preferences.save_to(preferences_path, preferences)
+	if err != OK:
+		_menu_feedback(&"reject")
 	if home != null:
 		home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
 
@@ -508,6 +512,7 @@ func _livery_for(id: String) -> String:
 ## a later successful save clears only its own error.
 func _report_selection_save(err: Error) -> void:
 	if err != OK:
+		_menu_feedback(&"reject")
 		_selection_save_failed = true
 		home.set_note(tr("Could not save settings (error %d).") % err)
 	elif _selection_save_failed:
@@ -527,6 +532,8 @@ func _connect_home_preview(scene: Node3D) -> void:
 func _on_home_preview_state(id: String, state: String, scene: Node3D) -> void:
 	if scene == home_scene and home != null and home.aircraft_id == id:
 		home.set_preview_state(state)
+		if state == "failed":
+			_menu_feedback(&"reject")
 
 
 ## Preview the launch choice; only a successful Fly remembers it.
@@ -831,6 +838,7 @@ func open_settings(from: Control = null) -> void:
 	settings.presentation_reverted.connect(func() -> void: _restore_display_window_state(window_checkpoint))
 	settings.language_changed.connect(set_language)
 	settings.sound_preview_requested.connect(func() -> void: menu_audio.play(&"accept"))
+	settings.feedback_requested.connect(_menu_feedback)
 	settings.closed.connect(func() -> void:
 		if screens.is_top("settings"): screens.pop())
 	settings.route_requested.connect(func(route: String, opener: Control) -> void:
@@ -1459,24 +1467,29 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	var chosen_start: Variant = payload.get("start_choice", "airborne")
 	if typeof(chosen_start) != TYPE_STRING or chosen_start not in ["airborne", "runway"]:
 		editor.set_note(tr("Choose an airborne or runway trial start."))
+		_menu_feedback(&"reject")
 		return
 	var trial: Dictionary = load("res://workshop/trial.gd").freeze(payload)
 	if not trial.get("ok", false):
 		editor.set_note("; ".join(trial.get("errors", [])))
+		_menu_feedback(&"reject")
 		return
 	var base_id: String = str(payload.get("base_id", ""))
 	if not Catalog.can_fly(base_id):
 		editor.set_note(tr("The source aircraft is not available in this catalog."))
+		_menu_feedback(&"reject")
 		return
 	var selected_field: Dictionary = FieldLoader.load_from(field_path)
 	if not selected_field.get("ok", false):
 		editor.set_note("; ".join(PackedStringArray(selected_field.get("errors", []))))
+		_menu_feedback(&"reject")
 		return
 	var selected_weather: Dictionary = flight.weather_config.duplicate(true) if flight != null \
 		else preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
 	var qualified: Dictionary = preload("res://workshop/start_qualification.gd").qualify(trial, selected_field.field, selected_weather, chosen_start)
 	if not qualified.get("ok", false) or not qualified.get("available", false):
 		editor.set_note(str(qualified.get("reason", "The selected trial start is unavailable.")))
+		_menu_feedback(&"reject")
 		return
 	# Suspend, but retain the old world and recorder until the complete new flight passes startup.
 	var previous: Node = flight
@@ -1523,6 +1536,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 			_workshop_home_detached = false
 			_rebuild_home_scene()
 		editor.set_note(tr("Could not start flight: %s") % reason)
+		_menu_feedback(&"reject")
 		return
 	_workshop_previous_flight = previous
 	_workshop_previous_sky_transport = previous_sky_transport
@@ -1543,6 +1557,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	flight._note = tr("Experimental Workshop trial · Esc opens Pause · Return to Workshop is on Pause")
 	_attach_calibration_card(flight)
 	# UI-31 (UI-30 PS-3): attaching a selected controller pauses the session; launch it like a Home flight.
+	_menu_feedback(&"accept")
 	if controllers != null and controllers.registry.selected_device_id("flight") >= 0:
 		_finish_controller_launch.call_deferred(flight.session)
 
@@ -1554,6 +1569,7 @@ func _return_to_workshop() -> void:
 
 
 func _commit_return_to_workshop() -> void:
+	_menu_feedback(&"exit")
 	screens.clear()
 	screens.set_session(null)
 	if flight.recorder != null:
@@ -2057,6 +2073,7 @@ func _rebuild_home_scene() -> bool:
 		previous.camera.make_current()
 		if home != null:
 			home.set_note(tr("Could not update Home lighting; the previous view remains active."))
+		_menu_feedback(&"reject")
 		return false
 	home_scene = replacement
 	_connect_home_preview(home_scene)
@@ -2075,6 +2092,7 @@ func set_landscape(id: String) -> void:
 	var checked: Dictionary = FieldLoader.load_from(path)
 	if not checked.ok:
 		home.set_note("; ".join(checked.errors))
+		_menu_feedback(&"reject")
 		return
 	var old_id: String = landscape_id
 	var old_path: String = field_path
@@ -2102,17 +2120,21 @@ func continue_flight() -> void:
 		return
 	var session: Node = flight.session
 	if not session.is_flyable():
+		_menu_feedback(&"reject")
 		return # nothing to go back to: the menu stays, Continue is disabled and says why
 	if controllers != null and (session._controller_lost or (session.radio.connected and not session.radio.armed)):
 		pause_menu.set_note(pause_menu.status_text(flight.session))
 		pause_menu.focus_controller_recovery()
+		_menu_feedback(&"reject")
 		return
 	# UI-31 (UI-30 PS-4): closing Pause while another hold remains would leave a frozen flight without a menu.
 	if session.holds.keys().any(func(reason: Variant) -> bool: return str(reason) != "menu"):
 		pause_menu.set_note(tr("Close the other open window before continuing."))
+		_menu_feedback(&"reject")
 		return
 	_close_pause()
 	session.resume()
+	_menu_feedback(&"resume")
 
 
 ## Keyboard, controller and accident-report restarts use the same shell transaction.
@@ -2143,7 +2165,9 @@ func _commit_restart_flight() -> void:
 	if not session.start_error.is_empty() or not session.is_flyable():
 		pause_menu.refresh()
 		pause_menu.set_note(tr("Could not restart flight: %s") % (session.start_error if not session.start_error.is_empty() else session.pause_reason))
+		_menu_feedback(&"reject")
 		return
+	_menu_feedback(&"restart")
 	if controllers != null and session.radio.connected and not helicopter_route:
 		# Refresh readiness after reset without advancing the flight or incremental throttle.
 		session._poll_controller(false)
@@ -2193,7 +2217,7 @@ func end_flight() -> void:
 
 
 func _commit_end_flight() -> void:
-	_menu_feedback(&"back")
+	_menu_feedback(&"exit")
 	var last_failure_status: Dictionary = {}
 	var session: Node = flight.get("session")
 	if session != null and session.has_method("failure_status"):
@@ -2214,9 +2238,28 @@ func _commit_end_flight() -> void:
 
 
 func quit_app() -> void:
-	if not is_inside_tree():
+	if not is_inside_tree() or _quit_audio_pending:
 		return
-	_begin_exit_request("quit", _quit_recorders(), Callable(self, "_request_app_quit"), true)
+	_begin_exit_request("quit", _quit_recorders(), Callable(self, "_commit_app_quit"), true)
+
+
+func _commit_app_quit() -> void:
+	if _quit_audio_pending:
+		return
+	_menu_feedback(&"quit")
+	var delay: float = menu_audio.shutdown_delay() if is_instance_valid(menu_audio) else 0.0
+	if delay > 0.0:
+		_quit_audio_pending = true
+		# Decisions and recording recovery have already completed. Freeze the last
+		# visible screen during the short closing tail so a second action cannot launch.
+		for child: Node in get_children():
+			if child != menu_audio:
+				child.process_mode = Node.PROCESS_MODE_DISABLED
+		set_process_input(false)
+		set_process_unhandled_input(false)
+		await get_tree().create_timer(delay).timeout
+		if not is_inside_tree(): return
+	_request_app_quit()
 
 
 func _request_app_quit() -> void:
@@ -2231,7 +2274,7 @@ func _close_pause() -> void:
 
 
 func _begin_exit_request(kind: String, recorders: Array, commit: Callable, guard_workshop := false) -> void:
-	if _exit_request_active:
+	if _exit_request_active or _quit_audio_pending:
 		return
 	if kind == "quit":
 		for editor: Node in _workshop_editors():
@@ -2370,6 +2413,7 @@ func _advance_trace_exit() -> void:
 
 
 func _show_trace_recovery_dialog(error_code: int) -> void:
+	_menu_feedback(&"reject")
 	var dialog := ConfirmationDialog.new()
 	dialog.title = tr("Trace not saved")
 	var recovery_message := tr("The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay.") % error_code
@@ -2457,6 +2501,8 @@ func _finish_exit_request() -> void:
 
 
 func _cancel_exit_request() -> void:
+	if _exit_request_active:
+		_menu_feedback(&"cancel")
 	_clear_exit_request()
 
 

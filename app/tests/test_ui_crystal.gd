@@ -4,6 +4,8 @@ extends SceneTree
 const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
+const UiDriver := preload("res://tests/ui_driver.gd")
+const UiInput := preload("res://ui/ui_input.gd")
 var _failed := 0
 
 
@@ -136,5 +138,118 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	_check("screen teardown releases all decorative tweens", get_processed_tweens().is_empty())
+	await _interaction_checks()
 	print("Crystal UI: %d failed" % _failed)
 	quit(1 if _failed else 0)
+
+
+func _move_pointer(position: Vector2) -> void:
+	var event := InputEventMouseMotion.new()
+	event.position = position
+	event.global_position = position
+	Input.parse_input_event(event)
+	await process_frame
+	await process_frame
+
+
+func _mouse_button(position: Vector2, down: bool) -> void:
+	var event := InputEventMouseButton.new()
+	event.position = position
+	event.global_position = position
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = down
+	Input.parse_input_event(event)
+	await process_frame
+	await process_frame
+
+
+func _interaction_checks() -> void:
+	InputMap.load_from_project_settings()
+	UiInput.set_gamepad(UiDriver.FAKE_DEVICE)
+	var driver := UiDriver.new(self)
+	var screen := Screen.new()
+	screen.size = Vector2(root.size)
+	screen.theme = UiTheme.build()
+	root.add_child(screen)
+	var action := Widgets.button("Action", "PrimaryButton", "Action")
+	action.position = Vector2(50, 100)
+	action.size = Vector2(320, 56)
+	screen.add_child(action)
+	var choice := Widgets.button("Select", "HomeNav", "Choice")
+	choice.position = Vector2(400, 100)
+	choice.size = Vector2(320, 56)
+	choice.toggle_mode = true
+	screen.add_child(choice)
+	action.focus_neighbor_right = choice.get_path()
+	choice.focus_neighbor_left = action.get_path()
+	var activations := [0]
+	action.pressed.connect(func() -> void: activations[0] += 1)
+	screen.open()
+	await driver.settle()
+	var effect: Node = action.get_node("CrystalSurface")
+	var choice_effect: Node = choice.get_node("CrystalSurface")
+	var original := action.get_rect()
+	await _move_pointer(Vector2(80, 110))
+	_check("pointer entry engages the actual native button", action.is_hovered() and effect._engaged)
+	_check("pointer position drives a local glass reflection", effect._pointer_goal.x < 0.2 and effect._pointer_goal.y < 0.3)
+	var sweep: Tween = effect._shine_tween
+	await _mouse_button(Vector2(80, 110), true)
+	_check("click focus does not restart an existing hover sweep", action.has_focus() and effect._shine_tween == sweep)
+	await _move_pointer(Vector2(1000, 800))
+	await _mouse_button(Vector2(1000, 800), false)
+	_check("a cancelled press does not activate or play confirmation", activations[0] == 0 and effect._confirm_tween == null)
+	await driver.tap(KEY_ENTER)
+	_check("keyboard acceptance confirms exactly one native activation", activations[0] == 1 and effect._confirm_tween != null)
+	effect._confirm_tween.custom_step(0.4)
+	_check("confirmation returns to rest without a loop", not effect._confirm_tween.is_running()
+		and is_zero_approx(float(effect._uniforms[&"confirmation"])))
+	await driver.joy_button(JOY_BUTTON_DPAD_RIGHT)
+	_check("selected gamepad moves focus and lights a secondary action", choice.has_focus() and choice_effect._engaged
+		and choice_effect._base_goal == choice_effect._sources[&"hover"].bg_color)
+	_check("secondary actions keep neutral material and native geometry", choice_effect._material.get_shader_parameter("primary") == -1.0
+		and action.get_rect() == original and choice.size == Vector2(320, 56))
+	await driver.joy_button(JOY_BUTTON_A)
+	_check("gamepad selection retains the native toggle and confirms", choice.button_pressed and choice_effect._confirm_tween != null
+		and choice.get_theme_stylebox("pressed").border_color == UiTheme.FOCUS)
+	await driver.joy_button(JOY_BUTTON_DPAD_LEFT)
+	_check("rapid navigation releases the old focus without moving controls", action.has_focus() and not choice_effect._engaged
+		and action.get_rect() == original)
+	effect._point_to(Vector2(0.9, 0.2))
+	effect._confirm()
+	UiTheme.reduced_motion = true
+	for tween in get_processed_tweens():
+		if tween.is_running(): tween.custom_step(0.016)
+	_check("live reduced motion settles color, pointer and activation together", get_processed_tweens().all(func(tween: Tween) -> bool: return not tween.is_running())
+		and effect._uniforms[&"pointer_uv"] == Vector2(0.5, 0.5) and effect._uniforms[&"confirmation"] == 0.0
+		and effect._uniforms[&"base_color"] == effect._base_goal)
+	UiTheme.reduced_motion = false
+	# Reversible interruption must preserve the current color, not jump to either endpoint.
+	effect._fade_base(Color(0.1, 0.2, 0.1, 0.8), true)
+	effect._color_tween.pause()
+	effect._color_tween.custom_step(0.04)
+	var middle: Color = effect._uniforms[&"base_color"]
+	effect._fade_base(Color(0.02, 0.08, 0.02, 0.76), true)
+	_check("interrupting a color transition starts from its current value", effect._uniforms[&"base_color"] == middle)
+	effect._point_to(Vector2(0.1, 0.8))
+	effect._confirm()
+	screen.set_active(false)
+	_check("suspension settles every interaction channel", effect._uniforms[&"confirmation"] == 0.0
+		and not effect._color_tween.is_running() and not effect._pointer_tween.is_running() and not effect._confirm_tween.is_running())
+	screen.set_active(true)
+	var custom := StyleBoxFlat.new()
+	custom.bg_color = Color.DARK_RED
+	action.add_theme_stylebox_override("normal", custom)
+	action.release_focus()
+	await driver.settle()
+	effect._engage()
+	_check("screen-owned surfaces neither get replaced nor run hidden effects", action.get_theme_stylebox("normal") == custom
+		and not effect._glass.visible and not effect._engaged and not effect._shine_tween.is_running())
+	choice.flat = true
+	choice.set_pressed_no_signal(false)
+	choice.release_focus()
+	choice_effect._sync_state()
+	_check("flat idle buttons keep their empty native background", not choice_effect._glass.visible)
+	screen.queue_free()
+	await driver.settle()
+	UiInput.isolate_joypads()
+	_check("extended interaction teardown leaves no active tweens", get_processed_tweens().is_empty())
