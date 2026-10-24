@@ -332,17 +332,6 @@ func _init() -> void:
 	aircraft_preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	aircraft_preview_label.visible = false
 	flight_card_lines.add_child(aircraft_preview_label)
-	livery_button = _button("", "HomeChoice")
-	livery_button.name = "LiveryChoice"
-	Widgets.mark_row(livery_button, "cycle")
-	livery_button.custom_minimum_size.y = 36
-	livery_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	livery_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	livery_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	livery_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); livery names are proper names
-	livery_button.visible = false
-	livery_button.pressed.connect(_cycle_livery)
-	flight_card_lines.add_child(livery_button)
 	start_button = _button("", "HomeChoice")
 	start_button.name = "StartChoice"
 	Widgets.mark_row(start_button, "cycle")
@@ -486,6 +475,19 @@ func _init() -> void:
 	catalog_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	catalog_intro.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	aircraft_page.add_child(catalog_intro)
+	# F4U-16: the selected aircraft's paint scheme, above the list so it never needs scrolling. The Flight card and
+	# its details have no spare height at 1280x720 or 1920x1080 (test_ui_home).
+	livery_button = _button("", "HomeChoice")
+	livery_button.name = "LiveryChoice"
+	Widgets.mark_row(livery_button, "cycle")
+	livery_button.custom_minimum_size.y = 40
+	livery_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	livery_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	livery_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	livery_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); livery names are proper names
+	livery_button.visible = false
+	livery_button.pressed.connect(_cycle_livery)
+	aircraft_page.add_child(livery_button)
 	# UI-34c (UI-30 AS-5): the catalog shows the same preview state as the Flight card.
 	_catalog_preview_label = _label("", "SecondaryLabel")
 	_catalog_preview_label.name = "CatalogPreviewState"
@@ -1223,7 +1225,7 @@ func _update_livery() -> void:
 	if not livery_button.visible:
 		return
 	var shown: Dictionary = _livery_choices[_livery_index()]
-	livery_button.text = tr("Paint: %s") % shown.label
+	livery_button.text = tr("Paint (%s): %s") % [tr(Catalog.short_name(aircraft_id)), shown.label]
 	livery_button.tooltip_text = tr("Paint scheme for this aircraft. Every scheme flies the same model.")
 
 

@@ -1,0 +1,14 @@
+wrote stik_assembled           25504 near / 10952 far /  8388 distant tris, 29 surfaces, pitch -0.52 deg, wheel spread 0.000 m, 1.52 x 0.44 x 1.33 m
+wrote stik_service             21650 near /  9000 far /  7096 distant tris, 27 surfaces, pitch 0.00 deg, wheel spread 0.000 m, 0.56 x 0.27 x 1.30 m
+wrote extra_assembled          19470 near /  4890 far /  1604 distant tris, 15 surfaces, pitch 10.86 deg, wheel spread 0.000 m, 1.62 x 0.38 x 1.36 m
+wrote p51_assembled            29683 near /  7513 far /  2863 distant tris, 29 surfaces, pitch 12.23 deg, wheel spread 0.000 m, 2.82 x 0.95 x 2.42 m
+wrote avanti_assembled         20474 near / 11202 far / 10094 distant tris, 24 surfaces, pitch 0.05 deg, wheel spread 0.000 m, 2.00 x 0.81 x 2.24 m
+wrote timber_assembled         17902 near /  4136 far /  3214 distant tris, 16 surfaces, pitch 9.82 deg, wheel spread 0.000 m, 1.55 x 0.43 x 1.13 m
+
+--check:
+ok   res://assets/scenery/aircraft/stik_assembled.res: 25504 triangles, 29 PBR surfaces, 6 collision parts
+ok   res://assets/scenery/aircraft/stik_service.res: 21650 triangles, 27 PBR surfaces, 4 collision parts
+ok   res://assets/scenery/aircraft/extra_assembled.res: 19470 triangles, 15 PBR surfaces, 6 collision parts
+ok   res://assets/scenery/aircraft/p51_assembled.res: 29683 triangles, 29 PBR surfaces, 6 collision parts
+ok   res://assets/scenery/aircraft/avanti_assembled.res: 20474 triangles, 24 PBR surfaces, 5 collision parts
+ok   res://assets/scenery/aircraft/timber_assembled.res: 17902 triangles, 16 PBR surfaces, 6 collision parts

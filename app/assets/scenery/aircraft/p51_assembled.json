@@ -118,8 +118,8 @@
 	"source_identity": {
 		"manifest": {
 			"path": "res://data/aircraft_models/p51d-mustang-120.json",
-			"sha256": "c7d2d98d45a178d085c419c4dbac864ac532c15421aa006fed330ffb6a39784c",
-			"pinned_sha256": "c7d2d98d45a178d085c419c4dbac864ac532c15421aa006fed330ffb6a39784c",
+			"sha256": "25581bcb59f148cb30b28e0fe6e24ce3ba4f5c8f2da94a583947fcea4e51c94f",
+			"pinned_sha256": "25581bcb59f148cb30b28e0fe6e24ce3ba4f5c8f2da94a583947fcea4e51c94f",
 			"matches_pin": true
 		},
 		"builder": {
@@ -142,8 +142,8 @@
 		},
 		"airplane_snapshot_builder": {
 			"path": "res://render/airplane.gd",
-			"sha256": "4845c1985b25b3ab69d685b0000d353b4a028eed6430bb715ed40bd9f07948be",
-			"pinned_sha256": "4845c1985b25b3ab69d685b0000d353b4a028eed6430bb715ed40bd9f07948be",
+			"sha256": "c4ab99076ada552ce26b6a9d74346073d0a227d5cc272e23bc73a461426cc1ed",
+			"pinned_sha256": "c4ab99076ada552ce26b6a9d74346073d0a227d5cc272e23bc73a461426cc1ed",
 			"matches_pin": true
 		},
 		"baker": {

@@ -62,7 +62,7 @@ The catalog has eight airplane configurations; the Workshop filters out the sepa
 
 Runway qualification currently succeeds for all eight default fixed-wing configurations. The tested Stik configurations at 35%, 150%, 200% and 225% are refused for runway starts while remaining available airborne. At the new extremes, 10% constant-wing-loading passes the tested runway start; 10% geometric and both 500% mass policies refuse runway and remain available airborne. These are software start-qualification results, not physical-flight acceptance; half-power airborne starts are not currently available in the Workshop.
 
-Presentation bindings cover five authored visual families. Solid paint regions and source/show smoke endpoints are model-authored; short EN/ES registration text is registered for the Stik, Extra 300S and Timber. The current paint controls are solid fills; no broad whole-model repaint is inferred from a family name. The v2 customization companion pins its seven presentation source files and Godot 4.7.2 through a separate presentation proof package, leaving physical model-manifest identity independent of cosmetic source changes. Smoke profiles support up to eight palette colors, up to eight seconds for relevant duration/lifetime controls, and a total 768-particle profile-renderer allocation; these are implementation bounds, not measured performance guarantees.
+Presentation bindings cover six authored visual families. Solid paint regions and source/show smoke endpoints are model-authored; short EN/ES registration text is registered for the Stik, Extra 300S, Timber and Corsair. The current paint controls are solid fills; no broad whole-model repaint is inferred from a family name. The v2 customization companion pins its seven presentation source files and Godot 4.7.2 through a separate presentation proof package, leaving physical model-manifest identity independent of cosmetic source changes. Smoke profiles support up to eight palette colors, up to eight seconds for relevant duration/lifetime controls, and a total 768-particle profile-renderer allocation; these are implementation bounds, not measured performance guarantees.
 
 The current generated visual coverage is exact and intentionally limited:
 
@@ -73,8 +73,9 @@ The current generated visual coverage is exact and intentionally limited:
 | `p51d-mustang-120` | body, wing, wing_tip, tail | No | paired show wing tips, show tail, physical source exhaust |
 | `sebart-avanti-s-a200-p100rx` | body, wing, tail | No | paired show wing tips, show tail |
 | `turbo-lumber-evolution` | body, wing, wing_tip, tail | Yes | paired show wing tips, show tail |
+| `f4u-corsair-250` | body, wing, wing_tip, tail | Yes | paired show wing tips, show tail, physical source exhaust |
 
-These are visual-family bindings, not a claim that all eight fixed-wing catalog configurations have separate authored families. Slots absent from a family's generated companion are unavailable.
+These are visual-family bindings, not a claim that all eight fixed-wing catalog configurations have separate authored families. Slots absent from a family's generated companion are unavailable. A family's delivered paint schemes (the Corsair's five, F4U-16) are chosen on Home; the Workshop's preview, appearance profiles and trials use the default paint, because the slots target its surfaces.
 
 Descriptor freshness is a separate launch gate. The [interface verification](research/aircraft-editor/AE-08b-09/README.md) reruns the generators and focused suites against the current fixtures. Earlier compiler/legacy-trial failures remain in their dated diagnostic report; passing software checks do not establish fleet acceptance. Fuel software and physical acceptance stay with the [fuel-mass plan](plans/fuel-mass-balance.md).
 

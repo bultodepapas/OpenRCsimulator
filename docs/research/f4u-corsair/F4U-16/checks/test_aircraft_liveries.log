@@ -1,0 +1,76 @@
+ok   the Corsair manifest describes
+ok   five liveries in the author's order, default first
+ok   the first livery is the default asset
+ok   menus list the five schemes with the author's names
+ok   a one-paint family lists no schemes
+ok   resolve: a non-default scheme stays, default and stale ones are the default paint
+ok   manifest rejects liveries with one livery
+ok   manifest rejects liveries with nine liveries
+ok   manifest rejects liveries with duplicate id
+ok   manifest rejects liveries with invalid id
+ok   manifest rejects liveries with empty label
+ok   manifest rejects liveries with control character in label
+ok   manifest rejects liveries with long label
+ok   manifest rejects liveries with duplicate path
+ok   manifest rejects liveries with path outside aircraft assets
+ok   manifest rejects liveries with parent path
+ok   manifest rejects liveries with not a GLB
+ok   manifest rejects liveries with bad hash
+ok   manifest rejects liveries with bad import hash
+ok   manifest rejects liveries with unknown field
+ok   manifest rejects liveries with missing field
+ok   manifest rejects liveries with default not first
+ok   manifest rejects liveries with not an array
+ok   a version 1 manifest cannot declare liveries
+ok   no id selects the default asset
+ok   a delivered livery verifies on use
+ok   an unknown livery is refused
+ok   a one-paint model refuses any livery
+ok   a GLB that differs from its pin is refused
+ok   an import sidecar that differs from its pin is refused
+ok   (no id) builds through the production adapter
+ok   (no id) carries its livery and GLB identity
+ok   (no id) keeps every binding: hinges, gear rig, folds, propeller
+ok   (no id) passes the derived model check
+ok   midnight builds through the production adapter
+ok   midnight carries its livery and GLB identity
+ok   midnight keeps every binding: hinges, gear rig, folds, propeller
+ok   midnight passes the derived model check
+ok   the explicit default paints like no id
+ok   scarlet builds through the production adapter
+ok   scarlet carries its livery and GLB identity
+ok   scarlet keeps every binding: hinges, gear rig, folds, propeller
+ok   scarlet passes the derived model check
+ok   scarlet paints the fuselage differently from the default
+ok   splash builds through the production adapter
+ok   splash carries its livery and GLB identity
+ok   splash keeps every binding: hinges, gear rig, folds, propeller
+ok   splash passes the derived model check
+ok   splash paints the fuselage differently from the default
+ok   spectrum builds through the production adapter
+ok   spectrum carries its livery and GLB identity
+ok   spectrum keeps every binding: hinges, gear rig, folds, propeller
+ok   spectrum passes the derived model check
+ok   spectrum paints the fuselage differently from the default
+ok   blueangels builds through the production adapter
+ok   blueangels carries its livery and GLB identity
+ok   blueangels keeps every binding: hinges, gear rig, folds, propeller
+ok   blueangels passes the derived model check
+ok   blueangels paints the fuselage differently from the default
+ok   a root naming an unknown livery fails the derived check
+ok   a root whose GLB is not its livery's fails the derived check
+ok   the importer refuses an unknown livery
+ok   fresh preferences choose no paint scheme
+ok   a paint scheme saves
+ok   and loads back for its aircraft
+ok   save refuses { "unknown-aircraft": "scarlet" }
+ok   save refuses { "f4u-corsair-250": "Blue Angels" }
+ok   save refuses { "f4u-corsair-250": 3 }
+ok   load drops unknown aircraft and malformed IDs
+ok   Home shows no paint row for a one-paint aircraft
+ok   Home shows the Corsair's saved scheme
+ok   the row requests the next scheme
+ok   the last scheme cycles back to the default paint
+ok   choosing the default shows it with no livery ID
+ok   a stale saved scheme shows the default paint
+Aircraft liveries: 75 checks, 0 failures

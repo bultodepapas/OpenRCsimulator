@@ -301,3 +301,67 @@ requested by that review.
 [Fourth-pass receipt](round4-receipt.json) records source identities, checked
 commands, raw measurement/checkpoint identities and adverse runs. Temporary
 captures remain outside Git under `tmp/game-engineering-round4/`.
+
+## Fifth engineering pass
+
+Fixed native GLES3 Sky retirement in `render/world/world.gd` and
+`render/world/sky_retirement.gd`. Destroying an undrawn Sky, or clearing its
+material immediately before destruction, reproduced two leaked radiance textures
+on Godot 4.7.2 / RTX 3090. The six matched 256-radiance probes measured
+**699,048 bytes** retained in Godot's texture accounting for both pre-draw cases
+and the drawn/material-cleared case; drawn/no-clear and both one-frame-retained
+cases returned to baseline. This is engine accounting, not measured physical VRAM.
+The [pinned GLES3 implementation](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/rasterizer_scene_gles3.cpp)
+provides the dirty-Sky queue mechanism behind that observed lifetime dependency.
+
+World destruction and flow replacement now retain only the retiring Sky through
+`frame_post_draw`, with an alternate release on scene-tree shutdown. Distinct
+callback receivers handle simultaneous retirements. Environment resources still
+release immediately; detaching/reparenting a live world preserves its resources.
+No Sky material is cleared and no shader, quality setting, physics calculation or
+aircraft input path is changed.
+
+The same native Main startup fixture went from **30 passing assertions plus two
+GLES3 leak errors** to **30 passing assertions and zero errors**. Eight native
+lifecycle cycles passed **42 checks**, returning tracked texture memory and
+signal connections to baseline each cycle. Headless lifecycle passed **34 checks**;
+native quit-pending and rendering-disabled shutdown checks also passed, including
+two distinct pending Skies and both materials. Independent
+world-context checks passed **37 native / 37 headless**, including replacement,
+successor-world isolation and Workshop-style restoration. All **four golden
+flights** passed. Failed static-callback and early test-fixture iterations remain
+in the evidence rather than being counted as acceptance.
+
+Native 1920×1080 gameplay passed **98 checks** with zero engine diagnostics:
+Avanti and GP Extra, engine-parsed keyboard flight, cameras, restart, settings,
+VSync preview/revert, rejected starts and repeated Home transitions. Avanti
+captures were compared with the baseline; inherited appearance and diagnostic
+overlays remain, so this is bounded visual inspection, not a pristine pixel
+baseline. External Home UI edits overlapped that batch; the World/helper hashes
+were stable. A subsequent original-fixture rerun failed seven checks with Avanti
+paused at tick zero and the Pause menu visible; it is retained as adverse evidence.
+Focus loss is a plausible cause from the application path, not a logged fact for
+that run.
+
+A final scratch QA fixture logged Window focus signals and used the normal Escape
+action to resume only after an observed focus loss during launch with Pause
+visible. That run observed the Avanti focus loss, resumed successfully and passed
+all **98 checks**, with zero engine diagnostics and no source changes during the
+batch. Physics advance, roll/throttle input, camera changes and pause/settings
+checks remained intact. This is explicit recovery during functional QA, not a
+change to application focus handling or a claim that the earlier failed run passed.
+
+No FPS, frame-pacing, physical latency or general leak-freedom improvement is
+claimed. Other renderers/platforms and sustained long sessions remain unqualified.
+External commit `81ffe92e` included this pass's code alongside unrelated F4U work;
+per-file hashes identify the tested implementation across shared HEAD changes.
+[Fifth-pass receipt](round5-receipt.json) records commands, source identities and
+raw artifact hashes. Captures remain outside Git.
+
+Evidence Auditor and final Good Enemy found no blocking lifetime defect. Good
+Enemy independently inspected the code and recorded evidence, including distinct
+owner/flow Skies and shutdown without a draw; it did not rerun tests. Its material
+limitations are the tested Windows/GLES3 configuration, tracked rather than
+physical texture memory, and unqualified long-session behavior. The earlier
+paused-flight QA failure remains recorded alongside the explicit focus-recovery
+pass.

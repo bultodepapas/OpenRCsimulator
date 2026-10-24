@@ -3784,6 +3784,13 @@ msgstr "Combustible: %d %% del depósito"
 msgid "Start fill of the engine's tank. Fuel burns in flight: the airplane gets lighter and its balance moves aft as the tank empties."
 msgstr "Llenado inicial del depósito del motor. El combustible se consume en vuelo: el avión se aligera y su centro de gravedad se desplaza hacia atrás a medida que el depósito se vacía."
 
+# F4U-16: paint scheme selection. Scheme names are proper names and stay untranslated.
+msgid "Paint (%s): %s"
+msgstr "Pintura (%s): %s"
+
+msgid "Paint scheme for this aircraft. Every scheme flies the same model."
+msgstr "Esquema de pintura de este avión. Todos los esquemas vuelan con el mismo modelo."
+
 # L23: landscape selection.
 msgid "Landscape: %s"
 msgstr "Paisaje: %s"

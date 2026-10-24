@@ -31,6 +31,8 @@ blender -b -Y --factory-startup F4U_Corsair_R59.blend --python research/f4u-cors
 | Controls reference | `test_controls_reference.gd` passes with the O key | — |
 | Regression over the shared importer, session and flight scene | 24 suites, 0 failures: model manifests, render contract, catalog, Avanti handling and keyboard, controller actions and integration, end-to-end input, flaps, flight log (3,247 checks, exact replay), rates, retracts (three suites), crash wreck and integration, UI, Workshop (two suites), customization, night kit, Timber ground, startup cleanup | — |
 
+**Correction (F4U-16, same day):** the fold binding kept a two-way reference between each hinge record and its fold, so every Corsair build leaked those records; [checks/verify_f4u.log](checks/verify_f4u.log) ends with the resulting exit-time allocator error, which the shared test runner counts as a failure. Fold members now name their hinge by key; `verify_f4u.gd` passes 33/33 with no engine error ([F4U-16](../F4U-16/README.md)).
+
 ## Limits
 
 - The fold is visual. Folded wings do not change the physics; the throttle hold keeps the airplane from flying folded.
