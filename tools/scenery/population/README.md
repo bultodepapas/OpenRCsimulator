@@ -22,7 +22,16 @@ blender --background --factory-startup --python tools/scenery/population/generat
 python tools/scenery/population/package_population.py /your/temporary/output/person_standing.gltf /your/staged/assets/standing.glb
 ```
 
-Repeat with `--pose seated` → `person_seated.gltf` → `sitting.glb`, and `--pose pilot` → `person_pilot.gltf` → `pilot.glb`. Default poses are the vendored CC0 BVHs. An optional `--pose-file` is an authoring override: review its license and update the source/hash manifest before distributing its output. The frozen meshes were imported/rendered and audited; the relocated parameterized recipe has static validation only.
+Repeat with `--pose seated` → `person_seated.gltf` → `sitting.glb`, and `--pose pilot` → `person_pilot.gltf` → `pilot.glb`.
+
+Since SC-HUM-02 the shipped people are merged before packaging: one mesh, one atlas material and one draw per pose ([evidence](../../../docs/research/scenery-implementation/SC-HUM-02/README.md)).
+
+```text
+blender --background --factory-startup --python tools/scenery/population/merge_people_atlas.py -- /your/temporary/output/person_standing.gltf /your/merged/person_standing.gltf
+python tools/scenery/population/package_population.py /your/merged/person_standing.gltf /your/staged/assets/standing.glb
+```
+
+Set the two atlas textures' import to VRAM compressed with mipmaps (`compress/mode=2`, `mipmaps/generate=true`; `compress/normal_map=1` for the normal atlas), then update the human entries of `RUNTIME_MANIFEST.json`. Default poses are the vendored CC0 BVHs. An optional `--pose-file` is an authoring override: review its license and update the source/hash manifest before distributing its output. The frozen meshes were imported/rendered and audited. On 2026-10-24 the parameterized recipe regenerated all three poses on Linux within float noise of the frozen meshes (same topology and indices, ≤2.8 µm, ≤8 × 10⁻⁶ UV); only the primitive-built pilot transmitter changes vertex order and UVs ([SC-HUM-00](../../../docs/research/scenery-implementation/SC-HUM-00/README.md), which also gives the Linux setup). Prefer the `files.makehumancommunity.org` mirror; `files2` was about 50× slower.
 
 The packager preserves exact PNG/JPEG bytes and writes shared `textures/<sha256>` files plus a `.source.json` record. It accepts the selected one-buffer Blender glTF/GLB exports, not arbitrary glTF extensions, remote images or data URIs. Preserve those output records in the source manifest; ship only referenced textures and import settings. Check a fresh Godot import, native 5/15/40 m views, fitted bounds, source licensing and scene budgets before replacing a frozen asset.
 

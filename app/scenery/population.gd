@@ -10,6 +10,10 @@ const ASSETS := {
 	"person_standing": "standing", "person_sitting": "sitting", "person_pilot": "pilot",
 }
 const DIR := "res://assets/scenery/population/"
+## SC-HUM-02 merged people (tools/scenery/population/merge_people_atlas.py): UV2.x shading class.
+const MERGED_MATERIAL := "Human.atlas"
+const CLASS_EYES := 3
+const CLASS_FLAT := 4
 const SHIRT_TINTS: Array[Color] = [Color("#66829b"), Color("#a88966"), Color("#628071"), Color("#ad6b58"), Color("#b4b0a0"), Color("#606c7f")]
 static var _cache: Dictionary = {}
 
@@ -89,7 +93,8 @@ static func build(batches: Dictionary) -> Node3D:
 			var node := MultiMeshInstance3D.new()
 			node.name = "%s_%d" % [asset, part_index]
 			node.multimesh = mm
-			node.custom_aabb = combined.grow(0.02 if human else 0.0)
+			# People: room for the head and neck turning up to ±75° (SC-HUM-03) as well as the sway.
+			node.custom_aabb = combined.grow(0.15 if human else 0.0)
 			node.visibility_range_end = 1200.0
 			node.visibility_range_end_margin = 40.0
 			node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -217,6 +222,8 @@ static func _person_material(original: StandardMaterial3D, asset: String) -> Sha
 	material.set_shader_parameter("normal_strength", original.normal_scale)
 	material.set_shader_parameter("fabric", "casualsuit" in original.resource_name.to_lower())
 	material.set_shader_parameter("skin", original.resource_name.ends_with(".body"))
+	# SC-HUM-02: one atlas material per pose; UV2 carries the per-part shading class and roughness.
+	material.set_shader_parameter("merged", original.resource_name == MERGED_MATERIAL)
 	material.set_shader_parameter("shirt_start", 0.53 if asset == "sitting" else 0.90)
 	return material
 
@@ -225,33 +232,41 @@ static func _person_material(original: StandardMaterial3D, asset: String) -> Sha
 ## no authored head weights. The eye proxy gives the eye height; the cranium above it gives the
 ## yaw axis. Below the band and outside the radius (shoulders, hands, transmitter) nothing moves.
 static func head_rig(parts: Array[Dictionary]) -> Dictionary:
-	var eye_y := NAN
-	var top := -INF
+	# Separate LU-21 parts are recognised by name; SC-HUM-02 merged poses by their UV2 class.
+	var body := PackedVector3Array()
+	var eye_low := INF
+	var eye_high := -INF
 	for part: Dictionary in parts:
-		if "transmitter" in str(part.name).to_lower():
-			continue
-		var box: AABB = (part.transform as Transform3D) * (part.mesh as Mesh).get_aabb()
-		top = maxf(top, box.end.y)
-		if "low-poly" in str(part.name).to_lower():
-			eye_y = box.get_center().y
-	if not is_finite(top):
-		return {}
-	if not is_finite(eye_y):
-		eye_y = top - 0.12
-	var sum := Vector2.ZERO
-	var count := 0
-	for part: Dictionary in parts:
-		if "transmitter" in str(part.name).to_lower():
+		var name := str(part.name).to_lower()
+		if "transmitter" in name:
 			continue
 		var xf: Transform3D = part.transform
 		var mesh: Mesh = part.mesh
 		for surface in mesh.get_surface_count():
-			var vertices: PackedVector3Array = mesh.surface_get_arrays(surface)[Mesh.ARRAY_VERTEX]
-			for vertex: Vector3 in vertices:
-				var v := xf * vertex
-				if v.y > eye_y:
-					sum += Vector2(v.x, v.z)
-					count += 1
+			var arrays: Array = mesh.surface_get_arrays(surface)
+			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+			var classes: Variant = arrays[Mesh.ARRAY_TEX_UV2]
+			for index in vertices.size():
+				var shading: int = int(round((classes as PackedVector2Array)[index].x)) if classes is PackedVector2Array else -1
+				if shading == CLASS_FLAT:
+					continue
+				var v := xf * vertices[index]
+				body.append(v)
+				if "low-poly" in name or shading == CLASS_EYES:
+					eye_low = minf(eye_low, v.y)
+					eye_high = maxf(eye_high, v.y)
+	if body.is_empty():
+		return {}
+	var top := -INF
+	for v: Vector3 in body:
+		top = maxf(top, v.y)
+	var eye_y: float = (eye_low + eye_high) * 0.5 if is_finite(eye_low) else top - 0.12
+	var sum := Vector2.ZERO
+	var count := 0
+	for v: Vector3 in body:
+		if v.y > eye_y:
+			sum += Vector2(v.x, v.z)
+			count += 1
 	if count == 0:
 		return {}
 	var axis := sum / float(count)
@@ -266,6 +281,16 @@ static func head_weight(head: Dictionary, vertex: Vector3) -> float:
 	var pivot: Vector3 = head.pivot
 	var r := Vector2(vertex.x - pivot.x, vertex.z - pivot.z).length()
 	return smoothstep(band.x, band.y, vertex.y) * (1.0 - smoothstep(radius.x, radius.y, r))
+
+
+## CPU mirror of the shader's head rotation (pitch about X, then yaw about Y, around the pivot).
+static func head_rotate(head: Dictionary, vertex: Vector3, yaw: float, pitch: float) -> Vector3:
+	var w := head_weight(head, vertex)
+	if w <= 0.0:
+		return vertex
+	var pivot: Vector3 = head.pivot
+	var rotated := (vertex - pivot).rotated(Vector3.RIGHT, pitch * w).rotated(Vector3.UP, yaw * w)
+	return pivot + rotated
 
 
 static func _set_head_parameters(part: Dictionary, head: Dictionary) -> void:

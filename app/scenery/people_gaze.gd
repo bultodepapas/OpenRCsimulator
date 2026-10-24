@@ -16,8 +16,14 @@ const RATE_LIMIT_RAD_S: float = 4.5
 const PITCH_DOWN_LIMIT_RAD: float = -0.26
 ## Beyond the yaw limit plus this margin the target is behind the person: return to rest.
 const REAR_GATE_MARGIN_RAD: float = 0.35
+## Leaving the rear gate needs the yaw back inside limit + this share of the margin (hysteresis).
+const REAR_GATE_EXIT_SHARE: float = 0.4
+## Coming back into range needs the distance below this share of the range (hysteresis).
+const RANGE_EXIT_SHARE: float = 0.9
 ## Velocity estimate smoothing for the anticipation lead (s).
 const VELOCITY_TIME_CONSTANT_S: float = 0.2
+## A target moving faster than this between samples has been replaced (restart, roster change).
+const MAX_PLAUSIBLE_SPEED_MPS: float = 200.0
 ## Shader encoding: INSTANCE_CUSTOM.w = yaw / PI, instance COLOR.a = 0.5 + pitch / PI.
 const ENCODE_EPSILON: float = 1.0e-4
 ## SC-HUM-05 crash glance: after a seeded startle delay, spectators and pits members look at the
@@ -62,6 +68,8 @@ var _pitch_rate := PackedFloat64Array()
 var _goal_yaw := PackedFloat64Array()
 var _goal_pitch := PackedFloat64Array()
 var _tracking := PackedByteArray()
+var _behind := PackedByteArray()
+var _out_of_range := PackedByteArray()
 
 
 ## Builds the model from Population.build() metadata, or returns null when the population has no people.
@@ -112,6 +120,8 @@ func configure(people: Array, nodes: Dictionary) -> void:
 	_goal_yaw.resize(count)
 	_goal_pitch.resize(count)
 	_tracking.resize(count)
+	_behind.resize(count)
+	_out_of_range.resize(count)
 	for i in count:
 		var person: Dictionary = _people[i]
 		_coupled[i] = 1 if bool(person.coupled) else 0
@@ -182,12 +192,16 @@ func _rest_heads() -> void:
 		_goal_yaw[i] = _rest_yaw[i]
 		_goal_pitch[i] = _rest_pitch[i]
 		_tracking[i] = 0
+		_behind[i] = 0
+		_out_of_range[i] = 0
 
 
 ## Restart at time_s with the player's aircraft at `target` (render space) and the companions at
 ## `companions` (render-space Vector3, or null for an absent slot). `alert` is true while the
 ## player's aircraft is crashed. Heads return to rest.
 func reset(time_s: float, target: Vector3, companions: Array = [], alert: bool = false) -> void:
+	if not is_finite(time_s):
+		return
 	_epoch_time_s = time_s
 	_last_observed_time_s = time_s
 	_step_index = 0
@@ -204,7 +218,9 @@ func reset(time_s: float, target: Vector3, companions: Array = [], alert: bool =
 ## Advance to time_s with the aircraft positions (render space, see reset). Repeated timestamps are
 ## ignored; a backward jump (restart, checkpoint restore) resets, as the windsock does.
 func update_to(time_s: float, target: Vector3, companions: Array = [], alert: bool = false) -> void:
-	if not _initialized or not is_finite(time_s) or time_s < _last_observed_time_s - 1.0e-12:
+	if not is_finite(time_s):
+		return
+	if not _initialized or time_s < _last_observed_time_s - 1.0e-12:
 		reset(time_s, target, companions, alert)
 		return
 	var elapsed: float = time_s - _last_observed_time_s
@@ -237,7 +253,8 @@ func _set_targets(player: Vector3, companions: Array, elapsed: float) -> void:
 		var entry: Dictionary = _targets[index] if _targets[index] is Dictionary and not _targets[index].is_empty() else {valid = false}
 		if not value is Vector3 or not (value as Vector3).is_finite():
 			entry.valid = false
-		elif not bool(entry.valid):
+		elif not bool(entry.valid) or (elapsed > 0.0 and \
+				((value as Vector3) - (entry.previous as Vector3)).length() > MAX_PLAUSIBLE_SPEED_MPS * elapsed):
 			entry = {valid = true, position = value, previous = value, velocity = Vector3.ZERO}
 		else:
 			if elapsed > 0.0:
@@ -299,23 +316,37 @@ func _desired(i: int, alerted: bool = false) -> Vector2:
 		return rest
 	var aim: Vector3 = (target.position as Vector3) + (target.velocity as Vector3) * _lead_s[i]
 	var offset: Vector3 = aim - _pivot[i]
-	if not alerted and offset.length() > _range_m[i]:
-		return rest
+	if not alerted:
+		var distance: float = offset.length()
+		if _out_of_range[i] != 0:
+			if distance < _range_m[i] * RANGE_EXIT_SHARE:
+				_out_of_range[i] = 0
+		elif distance > _range_m[i]:
+			_out_of_range[i] = 1
+		if _out_of_range[i] != 0:
+			return rest
 	var local: Vector3 = _to_local[i] * offset
 	var horizontal: float = Vector2(local.x, local.z).length()
 	if horizontal < 1.0e-6 and absf(local.y) < 1.0e-6:
 		return rest
 	var yaw: float = atan2(-local.x, -local.z)
 	var limit: float = _yaw_limit[i]
-	if absf(yaw) > limit + REAR_GATE_MARGIN_RAD:
+	if _behind[i] != 0:
+		if absf(yaw) < limit + REAR_GATE_MARGIN_RAD * REAR_GATE_EXIT_SHARE:
+			_behind[i] = 0
+	elif absf(yaw) > limit + REAR_GATE_MARGIN_RAD:
+		_behind[i] = 1
+	if _behind[i] != 0:
 		return rest
 	var pitch: float = atan2(local.y, horizontal)
 	return Vector2(clampf(yaw, -limit, limit), clampf(pitch, PITCH_DOWN_LIMIT_RAD, _pitch_up_limit[i]))
 
 
 ## Write the current head angles to the MultiMesh instances. Cheap when nothing changed.
+## Nothing is written before the first simulation tick, so Home, captures and scripted routes keep
+## the exact rest geometry (zero head angles).
 func apply() -> void:
-	if not _dirty:
+	if not _dirty or not _initialized:
 		return
 	_dirty = false
 	for i in _people.size():

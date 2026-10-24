@@ -66,6 +66,7 @@ Captures on the dev VM and CI use Xvfb with Mesa llvmpipe (software OpenGL, `gl_
 | Projected shadows | `tools/shadows/vq04a_verify.py` (not in `capture.sh`) | [tools/shadows](../../tools/shadows/README.md) |
 | Sky, stars, time progression | `tools/world/parity.sh` (not in `capture.sh`) | [tools/world](../../tools/world/README.md) |
 | Scenery placement and capture | `tools/scenery/scenario.sh` | [tools/scenery](../../tools/scenery/README.md) |
+| Birds (position vs CPU reference, byte repeats) | `tools/scenery/check_birds.py` (not in `capture.sh`) | [tools/scenery](../../tools/scenery/README.md) |
 | Engine smoke | standalone project `tools/smoke/` | [tools/smoke](../../tools/smoke/README.md) |
 | Audio generation and packs | — | [tools/audio](../../tools/audio/README.md) |
 | Gallery and README media | `tools/readme/` | [media workflow](../media/README.md) |

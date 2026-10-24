@@ -6,7 +6,7 @@ Status: **implemented, software-verified, 2026-10-24.** Owner: Scenery and field
 
 When the player's aircraft crashes, every spectator, veranda visitor and pits member reacts after a seeded startle delay (0.2–0.8 s). For 8 s their usual range limit is lifted and their dead zone shrinks to a quarter, so they look at the wreck. Afterwards the normal rules resume. Flight-line pilots stay coupled to their own aircraft. People facing away keep their rear gate, because the plan does not turn bodies.
 
-A crash pauses the simulation, so no tick reaches the head state. While the player is crashed, [main.gd](../../../../app/main.gd) advances the head state on the crash director's presentation clock: crash time plus the frame time accumulated since (`dt` capped at 0.1 s, as the director uses). A restart sends time backwards, which resets every head. Scripted routes are unchanged.
+A crash pauses the simulation, so no tick reaches the head state. While the player is crashed, [main.gd](../../../../app/main.gd) advances the head state on the crash director's presentation clock: crash time plus the frame time accumulated since (`dt` capped at 0.1 s, as the director uses). Like the director's aftermath, this clock stops while a menu or other hold is open (repair after the [independent review](../SC-HUM-03/README.md#independent-review-2026-10-24)). A restart sends time backwards, which resets every head. Scripted routes are unchanged.
 
 | Part | File |
 | --- | --- |

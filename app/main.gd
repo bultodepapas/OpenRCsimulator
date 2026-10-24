@@ -957,6 +957,8 @@ func _advance_people_after_crash(dt: float) -> void:
 	if session.crash.is_empty() or _scripted:
 		_people_crash_clock_s = 0.0
 		return
+	if not session.holds.is_empty():
+		return # menus hold the aftermath, as the crash director does
 	_people_crash_clock_s += maxf(0.0, dt)
 	var s: PackedFloat64Array = session.sim.state
 	FieldBuilder.advance_people(_field_node, session.sim.time() + _people_crash_clock_s, [s[0], s[1], s[2]], false,

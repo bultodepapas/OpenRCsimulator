@@ -36,6 +36,11 @@ func _initialize() -> void:
 	_test_reset_and_repeats()
 	_test_companion_pilots()
 	_test_crash_glance()
+	for asset: String in HUMAN_ASSETS:
+		_test_shader_mirror(asset)
+	_test_rotated_person()
+	_test_teleport_and_nonfinite()
+	_test_gate_hysteresis()
 	_test_default_scenery()
 	print("people gaze: %s" % ("PASS" if _failures == 0 else "FAIL (%d)" % _failures))
 	quit(1 if _failures > 0 else 0)
@@ -57,33 +62,62 @@ func _test_head_mask(asset: String) -> void:
 		return
 	var head: Dictionary = source.head
 	var pivot: Vector3 = head.pivot
-	_check("%s pivot below the eyes" % asset, pivot.y < float(head.eye_y) and pivot.y > float(head.eye_y) - 0.12, str(head))
+	var eye_y: float = head.eye_y
+	_check("%s pivot below the eyes" % asset, pivot.y < eye_y and pivot.y > eye_y - 0.12, str(head))
 	for part: Dictionary in source.parts:
-		var name := str(part.name).to_lower()
-		_check("%s part transform is identity rotation" % asset, (part.transform as Transform3D).basis.is_equal_approx(Basis.IDENTITY), name)
-		var weights := PackedFloat32Array()
-		for v: Vector3 in _vertices(part):
-			weights.append(Population.head_weight(head, v))
+		_check("%s part transform is identity rotation" % asset, (part.transform as Transform3D).basis.is_equal_approx(Basis.IDENTITY), str(part.name))
+	# Works for LU-21 separate parts (by name) and SC-HUM-02 merged poses (by UV2 class).
+	var groups := _classified_vertices(source)
+	var stats := func(points: PackedVector3Array, filter: Callable) -> Vector3i:
+		var total := 0
 		var full := 0
 		var any := 0
-		for w: float in weights:
+		for v: Vector3 in points:
+			if not filter.call(v):
+				continue
+			var w := Population.head_weight(head, v)
+			total += 1
 			full += 1 if w > 0.99 else 0
 			any += 1 if w > 0.0 else 0
-		if "low-poly" in name or "eyebrow" in name:
-			_check("%s %s turns rigidly" % [asset, name], full == weights.size(), "%d/%d" % [full, weights.size()])
-		elif "short01" in name:
-			_check("%s hair mostly rigid" % asset, full >= int(0.9 * weights.size()), "%d/%d" % [full, weights.size()])
-		elif "shoes" in name or "transmitter" in name:
-			_check("%s %s never moves" % [asset, name], any == 0, "%d moved" % any)
-		elif "casualsuit" in name:
-			# Only the collar may follow the neck.
-			_check("%s clothing barely moves" % asset, any <= int(0.06 * weights.size()), "%d/%d" % [any, weights.size()])
-		elif "male1591" in name:
-			var low := 0
-			for v: Vector3 in _vertices(part):
-				if v.y < (head.band as Vector2).x and Population.head_weight(head, v) > 0.0:
-					low += 1
-			_check("%s body below the neck band is fixed" % asset, low == 0, "%d" % low)
+		return Vector3i(total, full, any)
+	var all := func(_v: Vector3) -> bool: return true
+	var eyes: Vector3i = stats.call(groups.get(Population.CLASS_EYES, PackedVector3Array()), all)
+	_check("%s eyes turn rigidly" % asset, eyes.x > 0 and eyes.y == eyes.x, str(eyes))
+	var crown: Vector3i = stats.call(groups.get(2, PackedVector3Array()), func(v: Vector3) -> bool: return v.y > eye_y)
+	_check("%s hair and brows above the eyes are mostly rigid" % asset, crown.x > 0 and crown.y >= int(0.9 * crown.x), str(crown))
+	var feet: Vector3i = stats.call(groups.get(2, PackedVector3Array()), func(v: Vector3) -> bool: return v.y < 0.4)
+	_check("%s shoes never move" % asset, feet.x > 0 and feet.z == 0, str(feet))
+	if groups.has(Population.CLASS_FLAT):
+		var radio: Vector3i = stats.call(groups[Population.CLASS_FLAT], all)
+		_check("%s transmitter never moves" % asset, radio.z == 0, str(radio))
+	var cloth: Vector3i = stats.call(groups.get(1, PackedVector3Array()), all)
+	# Only the collar may follow the neck.
+	_check("%s clothing barely moves" % asset, cloth.x > 0 and cloth.z <= int(0.06 * cloth.x), str(cloth))
+	var low_skin: Vector3i = stats.call(groups.get(0, PackedVector3Array()), func(v: Vector3) -> bool: return v.y < (head.band as Vector2).x)
+	_check("%s body below the neck band is fixed" % asset, low_skin.x > 0 and low_skin.z == 0, str(low_skin))
+
+
+## Vertices by shading class: 0 skin, 1 fabric, 2 plain (hair, brows, shoes), 3 eyes, 4 flat transmitter.
+func _classified_vertices(source: Dictionary) -> Dictionary:
+	var by_name := {"male1591": 0, "casualsuit": 1, "eyebrow": 2, "short01": 2, "shoes": 2, "low-poly": 3, "transmitter": 4}
+	var groups := {}
+	for part: Dictionary in source.parts:
+		var name := str(part.name).to_lower()
+		var named := -1
+		for key: String in by_name:
+			if key in name:
+				named = by_name[key]
+		var mesh: Mesh = part.mesh
+		for surface in mesh.get_surface_count():
+			var arrays: Array = mesh.surface_get_arrays(surface)
+			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+			var uv2: Variant = arrays[Mesh.ARRAY_TEX_UV2]
+			for i in vertices.size():
+				var shading: int = int(round((uv2 as PackedVector2Array)[i].x)) if uv2 is PackedVector2Array else named
+				if not groups.has(shading):
+					groups[shading] = PackedVector3Array()
+				groups[shading].append((part.transform as Transform3D) * vertices[i])
+	return groups
 
 
 func _person(role: String, seed: int, pivot := Vector3(0.0, 1.55, 0.0)) -> Dictionary:
@@ -161,6 +195,8 @@ func _test_rear_gate_and_range() -> void:
 	# Beyond the yaw limit but inside the rear-gate margin: the head clamps at its limit.
 	var side_yaw: float = float(params.yaw_limit) + PeopleGaze.REAR_GATE_MARGIN_RAD * 0.5
 	var side := Vector3(-sin(side_yaw) * 30.0, 1.55, -cos(side_yaw) * 30.0)
+	# Start from in front: coming back from behind needs the exit threshold (hysteresis, tested below).
+	model.reset(3.0, Vector3(0.0, 1.55, -30.0))
 	_run(model, func(_t: float) -> Vector3: return side, 3.0, 1.0 / 240.0, 3.0)
 	_check("a target past the limit clamps the yaw", absf(model.head_angles(0).x - float(params.yaw_limit) * float(params.mover)) < deg_to_rad(1.0),
 		str(rad_to_deg(model.head_angles(0).x)))
@@ -278,6 +314,83 @@ func _test_crash_glance() -> void:
 	# A restart (time back to zero, no crash) resets everything.
 	model.update_to(0.0, wreck, [], false)
 	_check("restart clears the alert", model.head_angles(0).distance_to(rest) < 1.0e-6)
+
+
+## The CPU mirror of the shader turns the real eyes by the encoded yaw/pitch: a sign error between
+## PeopleGaze's angles and the shader's matrices would fail here.
+func _test_shader_mirror(asset: String) -> void:
+	var source: Dictionary = Population._source(asset)
+	var head: Dictionary = source.head
+	var eyes: PackedVector3Array = _classified_vertices(source).get(Population.CLASS_EYES, PackedVector3Array())
+	var centroid := func(points: PackedVector3Array) -> Vector3:
+		var sum := Vector3.ZERO
+		for p: Vector3 in points:
+			sum += p
+		return sum / float(points.size())
+	var angles := func(points: PackedVector3Array) -> Vector2:
+		var d: Vector3 = centroid.call(points) - (head.pivot as Vector3)
+		return Vector2(atan2(-d.x, -d.z), atan2(d.y, Vector2(d.x, d.z).length()))
+	var before: Vector2 = angles.call(eyes)
+	var turned := PackedVector3Array()
+	var raised := PackedVector3Array()
+	for v: Vector3 in eyes:
+		turned.append(Population.head_rotate(head, v, 0.6, 0.0))
+		raised.append(Population.head_rotate(head, v, 0.0, 0.3))
+	var yaw_delta: float = (angles.call(turned) as Vector2).x - before.x
+	var pitch_delta: float = (angles.call(raised) as Vector2).y - before.y
+	_check("%s mirror: positive yaw turns the face to its left" % asset, absf(yaw_delta - 0.6) < 0.03, "%.3f" % yaw_delta)
+	_check("%s mirror: positive pitch raises the face" % asset, pitch_delta > 0.15, "%.3f" % pitch_delta)
+
+
+## A person facing east (heading 90°): the inverse placement transform maps the target correctly.
+func _test_rotated_person() -> void:
+	var person := _person("pilot", 51)
+	person.basis = Basis(Vector3.UP, -PI * 0.5) # local −Z (forward) → world +X (east)
+	var forward: Vector3 = (person.basis as Basis) * Vector3(0, 0, -1)
+	var left: Vector3 = (person.basis as Basis) * Vector3(-1, 0, 0)
+	_check("rotated fixture faces east", forward.distance_to(Vector3(1, 0, 0)) < 1.0e-6, str(forward))
+	var model: RefCounted = PeopleGaze.new()
+	model.configure([person], {})
+	var target: Vector3 = (person.pivot as Vector3) + (forward + left) * 30.0
+	model.reset(0.0, target)
+	_run(model, func(_t: float) -> Vector3: return target, 3.0)
+	var p := PeopleGaze._params("pilot", 51)
+	_check("rotated person looks 45° to its left", absf(model.head_angles(0).x - deg_to_rad(45.0) * float(p.mover)) < deg_to_rad(1.0), str(rad_to_deg(model.head_angles(0).x)))
+
+
+func _test_teleport_and_nonfinite() -> void:
+	var model: RefCounted = PeopleGaze.new()
+	model.configure([_person("pilot", 61)], {})
+	var a := Vector3(-30.0, 20.0, -60.0)
+	model.reset(0.0, a, [a])
+	model.update_to(1.0 / 240.0, a, [a + Vector3(200.0, 0.0, 0.0)]) # restart: a new companion launch point
+	var speed: float = (model._targets[1].velocity as Vector3).length()
+	_check("a teleported target restarts without a velocity spike", speed < 1.0, str(speed))
+	var held: Vector2 = model.head_angles(0)
+	model.update_to(NAN, a)
+	model.update_to(INF, a)
+	_check("non-finite times are ignored", model.head_angles(0) == held)
+	model.update_to(1.0, a)
+	_check("the model keeps advancing after a non-finite time", model.simulated_time_s > 0.9, str(model.simulated_time_s))
+
+
+## A target hovering around the rear gate must not sweep a coupled pilot's head back and forth.
+func _test_gate_hysteresis() -> void:
+	var model: RefCounted = PeopleGaze.new()
+	model.configure([_person("pilot", 71)], {})
+	var p := PeopleGaze._params("pilot", 71)
+	var gate: float = float(p.yaw_limit) + PeopleGaze.REAR_GATE_MARGIN_RAD
+	var hover := func(t: float) -> Vector3:
+		var yaw: float = gate + deg_to_rad(3.0) * sin(TAU * 0.5 * t)
+		return Vector3(-sin(yaw) * 40.0, 10.0, -cos(yaw) * 40.0)
+	model.reset(0.0, hover.call(0.0))
+	var series := _run(model, hover, 10.0)
+	var low := INF
+	var high := -INF
+	for i in range(series.size() / 2, series.size()):
+		low = minf(low, (series[i] as Vector2).x)
+		high = maxf(high, (series[i] as Vector2).x)
+	_check("no head sweeps while the target hovers at the rear gate", high - low < deg_to_rad(10.0), "%.1f° swing" % rad_to_deg(high - low))
 
 
 func _test_default_scenery() -> void:

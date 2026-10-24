@@ -177,8 +177,12 @@ static func _flock(i: int, raw: Variant, species: Dictionary, errors: Array[Stri
 			errors.append(where + ": spread_offset out of [0, 100] m")
 		elif o != null:
 			out.spread_offset = float(o)
-	out.rotate_instances = bool(d.get("rotate_instances", false))
-	out.mirror_instances = bool(d.get("mirror_instances", false))
+	for key: String in ["rotate_instances", "mirror_instances"]:
+		var flag: Variant = d.get(key, false)
+		if typeof(flag) != TYPE_BOOL:
+			errors.append(where + ": %s must be true or false" % key)
+			flag = false
+		out[key] = flag
 	var anchor: String = str(d.get("anchor", ""))
 	if not BirdTracks.ANCHORS.has(anchor):
 		errors.append(where + ": anchor must be one of %s" % [BirdTracks.ANCHORS])

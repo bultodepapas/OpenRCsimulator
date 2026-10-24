@@ -14,6 +14,9 @@ uniform float roughness_value = 0.85;
 uniform bool fabric = false;
 uniform bool skin = false;
 uniform float shirt_start = 0.90;
+// SC-HUM-02 merged pose: one atlas material; UV2.x is the shading class (0 skin, 1 fabric, 2 plain,
+// 3 eyes, 4 flat) and UV2.y the roughness, replacing the per-part fabric/skin/roughness uniforms.
+uniform bool merged = false;
 // SC-HUM-03 head aim: Population.head_rig() supplies the neck pivot and weight band per pose;
 // PeopleGaze writes yaw to INSTANCE_CUSTOM.w (yaw / PI) and pitch to COLOR.a (0.5 + pitch / PI).
 uniform bool head_enabled = false;
@@ -33,11 +36,17 @@ void vertex() {
 	shirt_weight = smoothstep(shirt_start, shirt_start + 0.12, VERTEX.y);
 	shirt_tint = vertex_color_to_linear(COLOR.rgb);
 	skin_tone = INSTANCE_CUSTOM.z;
-	if (head_enabled) {
+	float head_w = 0.0;
+	if (head_enabled && (INSTANCE_CUSTOM.w != 0.0 || COLOR.a != 0.5)) {
+		head_w = smoothstep(head_band.x, head_band.y, VERTEX.y)
+			* (1.0 - smoothstep(head_radius.x, head_radius.y, length(VERTEX.xz - head_pivot.xz)));
+	}
+	// Untouched vertices (rest heads, w = 0) keep their exact geometry.
+	if (head_w > 0.0) {
 		// Rotate each vertex by angle × weight (a position mix() would shrink the neck), pitch about
 		// local X then yaw about Y; the faces look along local -Z. Normals follow the same rotation.
-		float w = smoothstep(head_band.x, head_band.y, VERTEX.y)
-			* (1.0 - smoothstep(head_radius.x, head_radius.y, length(VERTEX.xz - head_pivot.xz)));
+		// Population.head_rotate() is the CPU mirror used by tests.
+		float w = head_w;
 		float yaw = INSTANCE_CUSTOM.w * PI * w;
 		float pitch = (COLOR.a - 0.5) * PI * w;
 		float cp = cos(pitch);
@@ -58,16 +67,17 @@ void vertex() {
 void fragment() {
 	vec4 texel = has_texture ? texture(base_texture, UV) : vec4(1.0);
 	ALBEDO = base_color.rgb * texel.rgb;
-	if (fabric) {
+	float shading = merged ? floor(UV2.x + 0.5) : -1.0;
+	if (fabric || shading == 1.0) {
 		float detail = dot(ALBEDO, vec3(0.2126, 0.7152, 0.0722));
 		ALBEDO = mix(ALBEDO, detail * shirt_tint * 2.2, shirt_weight);
 	}
-	if (skin) {
+	if (skin || shading == 0.0) {
 		ALBEDO *= mix(vec3(1.0), vec3(0.58, 0.42, 0.32), skin_tone);
 	}
 	ALPHA = base_color.a * texel.a;
 	ALPHA_SCISSOR_THRESHOLD = 0.5;
-	ROUGHNESS = roughness_value;
+	ROUGHNESS = merged ? UV2.y : roughness_value;
 	METALLIC = 0.0;
 	SPECULAR = 0.22;
 	if (has_normal) {

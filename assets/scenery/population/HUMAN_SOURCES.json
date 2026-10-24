@@ -336,5 +336,53 @@
       "content": "{\"default\": 3}",
       "status": "A cleanup attempt was rejected by the environment; the file remains. No further removal was attempted. Later authoring runs used isolated Blender user directories."
     }
+  },
+  "sc_hum_02_merged_runtime": {
+    "step": "SC-HUM-02",
+    "observed_on": "2026-10-24",
+    "pipeline": [
+      "tools/scenery/population/generate_people.py (unchanged; Linux run reproduces the LU-21 meshes, see SC-HUM-00)",
+      "tools/scenery/population/merge_people_atlas.py",
+      "tools/scenery/population/package_population.py"
+    ],
+    "toolchain": {
+      "blender": "5.2.2 LTS (linux-x64, release SHA-256 verified)",
+      "mpfb": "2.0.18"
+    },
+    "result": "Each pose is one mesh, one material and one draw surface (people: 19 -> 3 draw surfaces, triangles unchanged). Diffuse atlas 2112x2112 and normal atlas 1056x1056 are shared by all three poses; imported VRAM-compressed with mipmaps.",
+    "merged_exports": {
+      "standing": {
+        "gltf_sha256": "14eb5a8f8b6eabe760e5ef057140db63eb184e6296763b242e222c52c682ae8e",
+        "bin_sha256": "51fa77e59641d293e7783205f9b5df475e64d350e37afd47408f3a4cc0fed970"
+      },
+      "seated": {
+        "gltf_sha256": "a8a1accd8cc1fa2965b6103addbfbca37cbbb277eee3b8c16d0cfe6ce1d30fc3",
+        "bin_sha256": "5bd20de3650c8d8114f3bd646c45b77017ef29bc701d5fcda0523a266721ec6c"
+      },
+      "pilot": {
+        "gltf_sha256": "8d43e80e27efcbc6b1c98dfa3f5c254cafb1c47ddc5764736176c6ca259fba31",
+        "bin_sha256": "7e4efff24a174dd5e7eeef73b279ab71643ca9386b47242b74f52e57fcf38dd5"
+      }
+    },
+    "runtime_textures": [
+      {
+        "file": "textures/29796c1fe799a561b1737d7bc32c6f3b92f15c08bf8cb9eaf5c3f536e76d4018.png",
+        "sha256": "29796c1fe799a561b1737d7bc32c6f3b92f15c08bf8cb9eaf5c3f536e76d4018"
+      },
+      {
+        "file": "textures/0c6489795fe9f22b03ec411b96cf943a8bae9d204d59fa78b8d157da4e5628ec.png",
+        "sha256": "0c6489795fe9f22b03ec411b96cf943a8bae9d204d59fa78b8d157da4e5628ec"
+      }
+    ],
+    "retired_runtime_textures": [
+      "10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03",
+      "3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6",
+      "a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7",
+      "b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90",
+      "d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826",
+      "e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a",
+      "efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0"
+    ],
+    "evidence": "docs/research/scenery-implementation/SC-HUM-02/README.md"
   }
 }

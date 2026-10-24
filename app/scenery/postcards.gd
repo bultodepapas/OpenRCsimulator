@@ -23,7 +23,7 @@ const VIEWS := {
 	"car_park": {eye = [-30.0, 8.0, -3.0], at = [-39.0, -12.0, -0.5], fov = 45.0, note = "The car row, gravel and trees"},
 	"aerial_overview": {eye = [140.0, 160.0, -140.0], at = [-20.0, 0.0, 0.0], fov = 50.0, note = "Raised overview (contact shadows, G-1 interim)"},
 	"fleet_close": {eye = [-11.5, -33.0, -1.8], at = [-18.0, -31.0, -0.4], fov = 50.0, note = "The parked fleet under the west shelter"},
-	"birds_watch": {eye = [0.0, 0.0, -1.7], at = [420.0, -260.0, -32.0], fov = 20.7, note = "Toward the optional flock (--scenery_birds=on)"},
+	"birds_watch": {eye = [0.0, 0.0, -1.7], at = [420.0, -260.0, -32.0], fov = 20.7, note = "Toward the vulture kettle over thermal A (birds-sky-life plan)"},
 	"top_140": {eye = [120.0, -90.0, -140.0], at = [120.5, -90.0, 0.0], fov = 50.0, note = "Straight down from 140 m, off the runway: ground repetition (report 01 metric)"},
 	"top_140_b": {eye = [-100.0, 110.0, -140.0], at = [-99.5, 110.0, 0.0], fov = 50.0, note = "A second top view for the repetition metric"},
 	"top_140_c": {eye = [130.0, 120.0, -140.0], at = [130.5, 120.0, 0.0], fov = 50.0, note = "A third top view for the repetition metric"},
