@@ -93,10 +93,13 @@ class DebugctlTests(unittest.TestCase):
         os.environ.pop("OPENRC_DEBUG_TOKEN", None)
         self.tmp = tempfile.TemporaryDirectory()
         self.saved_current = debugctl.CURRENT
+        self.saved_sessions = debugctl.SESSIONS
         debugctl.CURRENT = Path(self.tmp.name) / "current.json"
+        debugctl.SESSIONS = Path(self.tmp.name) / "sessions"
 
     def tearDown(self) -> None:
         debugctl.CURRENT = self.saved_current
+        debugctl.SESSIONS = self.saved_sessions
         self.tmp.cleanup()
         self.bridge.close()
         os.environ.clear()
@@ -280,6 +283,23 @@ class DebugctlTests(unittest.TestCase):
         self.assertIn('path="A/X', joined)  # ambiguous labels are addressed by path
         for line in runs[0]:
             debugctl.split_line(line)  # every generated line reads back
+
+    def test_port_claims_are_exclusive_and_stale_claims_are_taken_over(self) -> None:
+        with socket.create_server(("127.0.0.1", 0)) as unused:
+            free = unused.getsockname()[1]
+        self.assertEqual(debugctl.reserve_port(free), free)  # claimed by this live process
+        self.assertIsNone(debugctl.reserve_port(free))  # a second agent cannot take it
+        claim = debugctl.SESSIONS / f"{free}.json"
+        claim.write_text(json.dumps({"port": free, "launcher_pid": 999999999, "pid": 999999998}))
+        self.assertEqual(debugctl.reserve_port(free), free)  # its processes are gone: taken over
+        self.assertIsNone(debugctl.reserve_port(self.bridge.port))  # something already listens there
+
+    def test_commands_follow_the_session_of_their_port(self) -> None:
+        debugctl.SESSIONS.mkdir(parents=True)
+        (debugctl.SESSIONS / f"{self.bridge.port}.json").write_text(json.dumps({"port": self.bridge.port, "token": "mine"}))
+        debugctl.CURRENT.write_text(json.dumps({"port": self.bridge.port + 7, "token": "someone-else"}))  # another agent's launch
+        self.run_cli("ping")
+        self.assertEqual(self.bridge.requests[-1]["token"], "mine")
 
 
 if __name__ == "__main__":

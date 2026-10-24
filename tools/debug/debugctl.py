@@ -41,14 +41,31 @@ from pathlib import Path
 DEFAULT_PORT = 47870
 REPO = Path(__file__).resolve().parents[2]
 RUNS = REPO / "tmp" / "debug-bridge"
-CURRENT = RUNS / "current.json"
+CURRENT = RUNS / "current.json"  # the last launch on this machine (any agent): the default target
+SESSIONS = RUNS / "sessions"  # one 0600 file per live session, by port, holding its token and process ids
 
 
 class Refused(Exception):
     """The bridge answered ok=false."""
 
 
+def session_for(port_number: int) -> dict:
+    try:
+        return json.loads((SESSIONS / f"{port_number}.json").read_text())
+    except (OSError, ValueError):
+        return {}
+
+
 def current_session() -> dict:
+    """The session the commands address: OPENRC_DEBUG_BRIDGE's port, else the last launch."""
+    explicit = env_port()
+    if explicit is not None:
+        return session_for(explicit)
+    pointer = current_pointer()
+    return session_for(int(pointer["port"])) or pointer if pointer.get("port") else {}
+
+
+def current_pointer() -> dict:
     try:
         return json.loads(CURRENT.read_text())
     except (OSError, ValueError):
@@ -62,15 +79,17 @@ def env_port() -> int | None:
 
 
 def port() -> int:
-    return env_port() or int(current_session().get("port", DEFAULT_PORT))
+    return env_port() or int(current_pointer().get("port", DEFAULT_PORT))
 
 
-def token() -> str:
-    """OPENRC_DEBUG_TOKEN, else the secret the last launch generated for its port."""
-    session = current_session()
+def token(port_number: int | None = None) -> str:
+    """OPENRC_DEBUG_TOKEN, else the secret of the session on that port (by default the addressed one). Never the
+    last launch's: another agent's concurrent launch may have replaced it."""
     if os.environ.get("OPENRC_DEBUG_TOKEN"):
         return os.environ["OPENRC_DEBUG_TOKEN"]
-    return session.get("token", "") if int(session.get("port", 0)) == port() else ""
+    target = port_number or port()
+    session = session_for(target) or current_pointer()
+    return session.get("token", "") if int(session.get("port", 0)) == target else ""
 
 
 def parse_value(text: str):
@@ -101,7 +120,7 @@ def parse_args(items: list[str]) -> dict:
 
 def request(cmd: str, args: dict | None = None, timeout: float = 900.0, to_port: int | None = None) -> dict:
     payload = {"id": 1, "cmd": cmd, **(args or {})}
-    secret = token()
+    secret = token(to_port)
     if secret:
         payload["token"] = secret
     with socket.create_connection(("127.0.0.1", to_port or port()), timeout=timeout) as conn:
@@ -209,14 +228,10 @@ def launch(argv: list[str]) -> int:
     for i, arg in enumerate(argv):
         if arg in options and i + 1 < len(argv):
             options[arg] = argv[i + 1]
-    if options["--port"]:
-        chosen = int(options["--port"])
-    elif env_port():
-        chosen = env_port()
-    else:
-        chosen = DEFAULT_PORT if port_free(DEFAULT_PORT) else free_port()
-    if not port_free(chosen):
-        print(f"port {chosen} is in use (another app?): `debugctl.py stop` it or pass --port", file=sys.stderr)
+    explicit_port = int(options["--port"]) if options["--port"] else env_port()
+    chosen = reserve_port(explicit_port)
+    if chosen is None:
+        print(f"port {explicit_port} is in use or has a live session: stop it or pass another --port", file=sys.stderr)
         return 2
     stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     out = Path(options["--out"]).resolve() if options["--out"] else RUNS / f"{stamp}-{chosen}"
@@ -261,7 +276,6 @@ def launch(argv: list[str]) -> int:
         profile.mkdir(parents=True, exist_ok=True)
         env["XDG_DATA_HOME"] = str(profile)  # Linux/BSD
         env["APPDATA"] = str(profile)  # Windows; macOS keeps ~/Library (use --real-profile knowingly there)
-    explicit_port = bool(options["--port"] or env_port())
     for attempt in range(2):
         env["OPENRC_DEBUG_BRIDGE"] = str(chosen)
         with open(out / "engine.log", "wb") as engine_log:
@@ -271,28 +285,64 @@ def launch(argv: list[str]) -> int:
                    "profile": str(profile) if profile else "real", "command": command, "attempt": attempt + 1}
         (out / "launch.json").write_text(json.dumps(session, indent=2) + "\n")
         session["token"] = secret
-        write_private(CURRENT, session)  # before waiting, so ready/status/stop --force can find this session
+        write_private(SESSIONS / f"{chosen}.json", session)  # before waiting: status/stop --force can find it
+        write_private(CURRENT, session)
         try:
             ready = wait_ready(float(options["--timeout"]), process, chosen, out / "engine.log")
             break
         except PortTaken:
             kill_group(process.pid)
-            CURRENT.unlink(missing_ok=True)
+            forget_session(chosen, process.pid)
             if explicit_port or attempt == 1:
                 print(f"port {chosen} is taken; the launched app was stopped (pass another --port)", file=sys.stderr)
                 return 2
-            chosen = free_port()  # the default port was still being released: retry once elsewhere
+            chosen = reserve_port(None)  # the default port was still being released: retry once elsewhere
         except (RuntimeError, TimeoutError, KeyboardInterrupt) as error:
             kill_group(process.pid)  # never leave a 2-3 GB engine behind
-            CURRENT.unlink(missing_ok=True)
+            forget_session(chosen, process.pid)
             print(f"{error or 'interrupted'}; the launched app was stopped; see {out / 'engine.log'}", file=sys.stderr)
             tail(out / "engine.log")
             return 2
     session["pid"] = ready["result"]["pid"]
+    write_private(SESSIONS / f"{chosen}.json", session)
     write_private(CURRENT, session)
     shown = {k: v for k, v in session.items() if k not in ("command", "token")}
     print(json.dumps({"ok": True, **shown, **ready["result"]}))
     return 0
+
+
+def reserve_port(explicit: int | None) -> int | None:
+    """Claim a port for a new session with an exclusive file create, so two agents launching at the same moment
+    never share one. A stale claim (its processes are gone) is taken over."""
+    SESSIONS.mkdir(parents=True, exist_ok=True)
+    candidates = [explicit] if explicit else [DEFAULT_PORT] + [free_port() for _ in range(5)]
+    for candidate in candidates:
+        claim = SESSIONS / f"{candidate}.json"
+        holder = session_for(candidate)
+        if holder and (alive(holder.get("pid")) or alive(holder.get("launcher_pid"))):
+            continue
+        claim.unlink(missing_ok=True)
+        try:
+            descriptor = os.open(claim, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            continue  # another agent claimed it a moment ago
+        with os.fdopen(descriptor, "w") as handle:
+            handle.write(json.dumps({"port": candidate, "launcher_pid": os.getpid(), "claimed": True}) + "\n")
+        if port_free(candidate):
+            return candidate
+        claim.unlink(missing_ok=True)  # something else listens there
+    return None
+
+
+def forget_session(port_number: int, launcher_pid: int | None = None) -> None:
+    """Remove a session's files, only if they still describe that launch (another agent may own the port now)."""
+    claim = SESSIONS / f"{port_number}.json"
+    holder = session_for(port_number)
+    if launcher_pid is None or holder.get("launcher_pid") in (launcher_pid, None):
+        claim.unlink(missing_ok=True)
+    pointer = current_pointer()
+    if pointer.get("port") == port_number and (launcher_pid is None or pointer.get("launcher_pid") == launcher_pid):
+        CURRENT.unlink(missing_ok=True)
 
 
 def write_private(path: Path, value: dict) -> None:
@@ -330,14 +380,20 @@ def tail(path: Path, lines: int = 15) -> None:
 def clean(argv: list[str]) -> int:
     keep = int(argv[argv.index("--keep") + 1]) if "--keep" in argv else 3
     live = current_session().get("out") if alive(current_session().get("pid")) else None
-    runs = sorted((p for p in RUNS.glob("*") if p.is_dir()), key=lambda p: p.stat().st_mtime, reverse=True)
+    runs = sorted((p for p in RUNS.glob("*") if p.is_dir() and p != SESSIONS), key=lambda p: p.stat().st_mtime, reverse=True)
     removed = 0
     for run in runs[keep:]:
         if str(run) == live or not (run / "launch.json").exists():
             continue  # only folders this tool created, and never the running session's
         shutil.rmtree(run)
         removed += 1
-    print(json.dumps({"removed": removed, "kept": len(runs) - removed}))
+    stale = 0
+    for claim in SESSIONS.glob("*.json") if SESSIONS.exists() else []:
+        holder = session_for(int(claim.stem)) if claim.stem.isdigit() else {}
+        if not (alive(holder.get("pid")) or alive(holder.get("launcher_pid"))):
+            claim.unlink(missing_ok=True)
+            stale += 1
+    print(json.dumps({"removed": removed, "kept": len(runs) - removed, "stale_sessions": stale}))
     return 0
 
 
@@ -381,8 +437,8 @@ def stop(argv: list[str]) -> int:
     if alive(pid):
         print(f"debugctl: pid {pid} still running; use stop --force", file=sys.stderr)
         return 1
-    if session and str(session.get("port")) == str(port()):
-        CURRENT.unlink(missing_ok=True)
+    if session:
+        forget_session(int(session.get("port", port())), session.get("launcher_pid"))
     report = exit_report(Path(session["out"]) / "engine.log") if session.get("out") else {}
     print(json.dumps({"stopped": True, "pid": pid, **report}))
     return 1 if report.get("crash") else 0
