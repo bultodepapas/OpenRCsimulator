@@ -1,0 +1,46 @@
+fly start=airborne
+wait seconds=4
+eval expr="[flight._rig.view, flight._camera.fov, flight._camera.global_position.distance_to(flight._airplane.root.global_position), flight.get_viewport().get_visible_rect().size]"
+screenshot format=jpg max_width=960
+frames reset=true
+key name=2
+wait seconds=3
+frames
+screenshot format=jpg max_width=960
+key name=5
+wait seconds=2
+eval expr="flight._rig.drag(Vector2(300, -60))"
+wait seconds=1
+screenshot format=jpg max_width=960
+key name=C
+wait seconds=2
+screenshot format=jpg max_width=960
+key name=1
+wait seconds=1
+key name=Equal
+key name=Equal
+key name=Equal
+key name=Equal
+wait seconds=1
+eval expr="[flight._rig.pilot_zoom, flight._camera.fov]"
+key name=Backspace
+key name=5
+sticks pitch=-1 throttle=1 for_s=6
+wait until="not flight.session.crash.is_empty()" timeout_s=60
+wait seconds=3
+eval expr="[flight._rig.view, flight._camera.global_position, flight._camera.fov]"
+eval expr="flight._crash_director.wreck._core_body.global_position.distance_to(flight._crash_director._impact_point)"
+eval expr="flight._camera.unproject_position(flight._crash_director.wreck._core_body.global_position)"
+key name=C
+wait seconds=1
+eval expr="flight._rig.view"
+press text="Inspect wreck"
+wait seconds=1
+eval expr="flight._rig.drag(Vector2(500, 0))"
+wait seconds=1
+eval expr="[flight._rig.orbit.azimuth_deg, flight._camera.global_position, flight._camera.unproject_position(flight._crash_director.wreck._core_body.global_position)]"
+screenshot format=jpg max_width=960
+key name=1
+wait seconds=1
+eval expr="flight._camera.unproject_position(flight._crash_director.wreck._core_body.global_position)"
+logs --summary

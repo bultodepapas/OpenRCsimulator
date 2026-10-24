@@ -146,6 +146,20 @@ func _test_tracks(loaded: Dictionary) -> void:
 			for t: float in [0.0, 3.7, period * 0.5, 811.3]:
 				gap = maxf(gap, _pos(track, t).distance_to(_pos(track, t + 1024.0)))
 			_check(name + ": repeats every 1024 s", gap < 1e-6, str(gap))
+			var lo := Vector3(INF, INF, INF)
+			var hi := Vector3(-INF, -INF, -INF)
+			var sample := 0.0
+			while sample < period:
+				var q: Vector3 = _pos(track, sample)
+				lo = lo.min(q)
+				hi = hi.max(q)
+				sample += 0.05
+			var box_lo: Vector3 = track.bbox_min
+			var box_hi: Vector3 = track.bbox_max
+			_check(name + ": exact bounds hold every sampled position and are tight (within 0.1 m)",
+				(lo - box_lo).x >= -1e-3 and (lo - box_lo).y >= -1e-3 and (lo - box_lo).z >= -1e-3 \
+				and (box_hi - hi).x >= -1e-3 and (box_hi - hi).y >= -1e-3 and (box_hi - hi).z >= -1e-3 \
+				and (lo - box_lo).length() < 0.1 and (box_hi - hi).length() < 0.1, "%s..%s vs %s..%s" % [box_lo, box_hi, lo, hi])
 			var joints: Dictionary = _joints(track)
 			_check(name + ": continuous and tangent at every joint (sampled on both sides)",
 				joints.gap < 1e-4 and joints.turn < 1e-3, "gap %.7f m, turn %.7f rad" % [joints.gap, joints.turn])

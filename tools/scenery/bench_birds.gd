@@ -3,7 +3,9 @@
 ## for 0 and K copies, alternating rounds to cancel drift. llvmpipe numbers compare versions on one machine only;
 ## they do not qualify any GPU.
 ##   xvfb-run -a -s '-screen 0 1920x1080x24' godot --path app --rendering-driver opengl3 --resolution 1920x1080 \
-##     --script $PWD/tools/scenery/bench_birds.gd -- [--copies=20] [--frames=120] [--rounds=3]
+##     --script $PWD/tools/scenery/bench_birds.gd -- [--copies=20] [--frames=120] [--rounds=3] [--shader=<file>] [--deindex]
+## --shader replaces the birds' shader with another version's source and --deindex expands the indexed mesh, so an
+## older variant can be measured in the same process and conditions (same tables and instance data).
 extends SceneTree
 
 const Birds = preload("res://scenery/birds.gd")
@@ -43,8 +45,17 @@ func _run() -> void:
 	# Toward the kettle (birds_watch), wide enough to hold the kettle and the kites.
 	cam.look_at_from_position(Frames.ned_to_render([0.0, 0.0, -1.7]), Frames.ned_to_render([420.0, -260.0, -60.0]), Vector3.UP)
 	var layers: Array[Node3D] = []
+	var override: Shader = null
+	if _args.has("shader"):
+		override = Shader.new()
+		override.code = FileAccess.get_file_as_string(str(_args.shader))
 	for i: int in copies:
 		var b: Node3D = Birds.build({sun_elevation_deg = 45.0, sun_azimuth_deg = 180.0})
+		for node: MultiMeshInstance3D in b.get_meta("bird_groups"):
+			if override != null:
+				(node.material_override as ShaderMaterial).shader = override
+			if _args.has("deindex"):
+				node.multimesh.mesh = _deindexed(node.multimesh.mesh)
 		b.visible = false
 		root.add_child(b)
 		layers.append(b)
@@ -70,3 +81,31 @@ func _run() -> void:
 	print("BIRD BENCH copies=%d drawn_primitives=%d frame_ms without=%.3f with=%.3f delta=%.3f per_copy_us=%.1f rounds=%s" % [
 		copies, drawn, without, with_birds, with_birds - without, (with_birds - without) * 1000.0 / maxf(copies, 1), str(results)])
 	quit()
+
+
+static func _deindexed(mesh: ArrayMesh) -> ArrayMesh:
+	var arrays: Array = mesh.surface_get_arrays(0)
+	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	var out := []
+	out.resize(Mesh.ARRAY_MAX)
+	var flags := 0
+	for kind: int in [Mesh.ARRAY_VERTEX, Mesh.ARRAY_NORMAL, Mesh.ARRAY_TEX_UV]:
+		var src: Variant = arrays[kind]
+		var dst: Variant = src.duplicate()
+		dst.resize(indices.size())
+		for i: int in indices.size():
+			dst[i] = src[indices[i]]
+		out[kind] = dst
+	for slot: int in 4:
+		var src: PackedFloat32Array = arrays[Mesh.ARRAY_CUSTOM0 + slot]
+		var dst := PackedFloat32Array()
+		dst.resize(indices.size() * 4)
+		for i: int in indices.size():
+			for c: int in 4:
+				dst[i * 4 + c] = src[indices[i] * 4 + c]
+		out[Mesh.ARRAY_CUSTOM0 + slot] = dst
+		flags |= Mesh.ARRAY_CUSTOM_RGBA_FLOAT << (Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT + slot * Mesh.ARRAY_FORMAT_CUSTOM_BITS)
+	var result := ArrayMesh.new()
+	result.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, out, [], {}, flags)
+	return result
+

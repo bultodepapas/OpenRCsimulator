@@ -10,7 +10,6 @@ const ANCHORS: Array[String] = ["centre", "first_arc_centre"]
 const CLOCK_S := 1024.0
 const MAX_TIME_SCALE_CHANGE := 0.08
 const CLOSE_TOLERANCE_M := 1e-6
-const SAMPLE_STEP_S := 0.25
 const MIN_SPEED := 2.0 # m/s; slower is hovering, not a circuit (a kestrel's hover will be its own behaviour)
 const MAX_SPEED := 40.0 # m/s; swift dives reach ~23 m/s (Hedrick et al. 2018)
 const MIN_SEGMENT_S := 0.25 # so the shader's +-0.8 s bank window spans at most 8 segments
@@ -237,15 +236,27 @@ static func _advance(x: float, y: float, h: float, kappa: float, s: float) -> Ar
 	return [x + (sin(h2) - sin(h)) / kappa, y - (cos(h2) - cos(h)) / kappa, h2]
 
 
+## Exact bounds: each segment's ends, plus, on an arc, every point where the heading crosses a multiple of 90 deg
+## (where x or y is extreme). Height is linear within a segment, so its ends bound it.
 static func _bounds(track: Dictionary) -> Array[Vector3]:
 	var lo := Vector3(INF, INF, INF)
 	var hi := Vector3(-INF, -INF, -INF)
-	var steps: int = int(ceil(float(track.period) / SAMPLE_STEP_S))
-	for j: int in steps + 1:
-		var p: Array[float] = evaluate(track, j * SAMPLE_STEP_S)
-		var v := Vector3(p[0], p[1], p[2])
-		lo = lo.min(v)
-		hi = hi.max(v)
+	for s: Dictionary in track.segments:
+		var length: float = float(s.v) * float(s.duration)
+		var along: Array[float] = [0.0, length]
+		var kappa: float = s.kappa
+		if kappa != 0.0:
+			var h0: float = s.h
+			var h1: float = h0 + kappa * length
+			var k_lo: int = ceili(minf(h0, h1) / (PI * 0.5))
+			var k_hi: int = floori(maxf(h0, h1) / (PI * 0.5))
+			for k: int in range(k_lo, k_hi + 1):
+				along.append((k * PI * 0.5 - h0) / kappa)
+		for d: float in along:
+			var p: Array[float] = _advance(s.x, s.y, s.h, kappa, d)
+			var v := Vector3(p[0], p[1], float(s.z) + float(s.vz) * d / float(s.v))
+			lo = lo.min(v)
+			hi = hi.max(v)
 	return [lo, hi]
 
 

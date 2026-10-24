@@ -11,7 +11,7 @@ The camera core is sound. Views read the same interpolated 240 Hz pose the aircr
 1. The pilot auto-zoom is defined in absolute pixels, so the aircraft's on-screen size depends on the resolution. Wherever the law is active at both resolutions, the aircraft at 4K is half its 1080p size on the same monitor (F1).
 2. The chase misses the plan's own smoothness budget: 11 cm frame-rate dependence in a turn (budget 1 cm) and a 0.5 s framing slide every time the view is entered (F2, F3).
 3. No camera setting exists: no FOV, default view, zoom strength, sensitivity or persistence (F6).
-4. Crash views, the helicopter and the RC truck bypass or duplicate the rig, and so lose its fixes (F5, F9).
+4. After a crash, every view except the pilot's aims at the impact point, not at the wreck. In the live run, "Inspect wreck" showed empty grass and the orbit could not turn (F5). The helicopter and the RC truck duplicate the rig and lose its fixes (F9).
 5. Most of the plan's views and pilot aids (zoom laws, natural FOV, magnifier, fly-by, FPV, field cameras, transitions, listener policy) remain unbuilt.
 
 ## Method
@@ -23,7 +23,7 @@ The camera core is sound. Views read the same interpolated 240 Hz pose the aircr
 | Behaviour probes | [probe_views.gd](../../../../research/camera-views/audit-2026-10-24/probe_views.gd): synthetic loop, hammerhead, 60° turn, crab, overhead and low passes, auto-zoom by resolution | §Measurements |
 | Candidate laws | [probe_candidates.gd](../../../../research/camera-views/audit-2026-10-24/probe_candidates.gd): fixed sub-steps, state velocity, heading feed-forward, pilot screen-roll cap. A re-implementation without changes matches production exactly | §Measurements |
 | Frame pacing | [probe_jitter_fix.gd](../../../../research/camera-views/audit-2026-10-24/probe_jitter_fix.gd): presented (interpolated) time vs wall clock with `physics_jitter_fix` 0.5 and 0 | F7 |
-| Live app | LIVE-PLACEHOLDER | LIVE-RESULT-PLACEHOLDER |
+| Live app | Debug bridge at 1920×1080 under Xvfb (llvmpipe, about 1 fps): airborne Stik; pilot, chase, orbit and close-up views; manual zoom; a dive into the ground in orbit view; "Inspect wreck"; camera keys and controller actions; clean stop | Law confirmed live; F5 raised to High; F19 found. Clean exit (no crash, 0 leaked objects). Screenshots kept outside git |
 | External survey | Two read-only research passes (RC/flight sims, real cameras, comfort, camera design; Godot engine, add-ons, effects). They extend the [2026-10-13 survey](../../../plans/camera-views.md#10-external-evidence) | §External survey |
 
 Probe commands are in each script header. They write nothing.
@@ -38,7 +38,7 @@ Severity: **High** = visible defect on the primary target (1080p) or above; **Me
 | F2 | Medium | **Chase is frame-rate dependent beyond the plan budget.** Matched-time camera position differs by 11.1 cm between 30 and 144 fps in a 60° turn and 4.4 cm in a 60 m circle (the plan's jitter case); the plan's frame-rate budget is ≤ 1 cm (§7). The spring is exact only for a constant goal; the goal moves within each frame | `probe_views` and `probe_candidates` | Fixed 1/240 s sub-steps with the target interpolated inside the frame: 3 mm and 1 mm (CAM-24) |
 | F3 | Medium | **Chase entry slide.** Every entry into chase (C, 2, restart, `--view=chase`) starts the look-ahead from zero velocity. The aircraft then slides from −1.3° to −6.7° on screen over 0.5 s, with second differences up to 5.4 px at 1080p | `probe_views` (all four manoeuvres) | Prime and drive the velocity from the simulation state: `sim.interpolated()` already returns it. Transient 0 (CAM-24) |
 | F4 | Medium | **Overhead pass flips the horizon.** Outside the 2026-10-23 pole fix, world-up `look_at` spins the picture about the view axis at up to 2388°/s (40° in one 60 fps frame) for a pass 0.5 m beside the zenith, and 706°/s at 2 m. Gaze rate stays ≤ 78°/s | `probe_views` overhead passes | Optional screen-roll rate cap. 180°/s gives ≤ 195°/s, exact aim and ≤ 29° transient horizon tilt; the pilot judges it in CAM-22 (CAM-28) |
-| F5 | Medium | **Crash view bypasses the rig.** After an impact, `director.aim` overwrites chase, orbit and close-up with a fixed world offset (impact + (5, 3.2, 6) m, FOV 58°). The offset has no terrain, obstacle or water check, is a hard cut, and stops the orbit from turning around the wreck. The helicopter route instead feeds the wreck to the rig, so the two routes behave differently | `main.gd` `_process`, `director.gd` `aim`, `helicopter_main.gd` | CAM-03 `request_focus`. First slice: orbit retargets the wreck, and the director's offset gets a clearance check (CAM-27) |
+| F5 | **High** | **"Inspect wreck" can show an empty field.** After an impact, `director.aim` overwrites chase, orbit and close-up with a fixed world offset (impact + (5, 3.2, 6) m, FOV 58°) aimed at the **impact point**, not at the wreck. In the live run the Stik's wreck core slid 15.9 m and projected at x = −540 px, off screen. After "Inspect wreck" the orbit showed only grass, and dragging changed the orbit azimuth but not the camera. The pilot view kept the wreck in frame. The offset also has no terrain, obstacle or water check and is a hard cut. The helicopter route feeds the wreck to the rig instead, so the two routes differ | Live run (below); `main.gd` `_process`, `director.gd` `aim`, `helicopter_main.gd` | CAM-03 `request_focus` on the wreck core. First slice: the orbit retargets the wreck core and stays controllable, and the director's view gets clearance (CAM-27) |
 | F6 | Medium | **No camera settings.** FOV, default view, auto-zoom on/off and strength, chase distance, orbit sensitivity/invert and comfort options are all missing, and nothing persists. Every flight starts in the pilot view with auto-zoom on. XAG 117 and the Game Accessibility Guidelines ask for an adjustable FOV, sensitivity, and a way to disable automatic camera motion | `preferences.gd`, `settings_screen.gd` have no camera keys | CAM-17 (existing), scoped by this audit |
 | F7 | Low–Medium | **`physics_jitter_fix` is left at its default 0.5 although the flight interpolates.** Presentation uses `Engine.get_physics_interpolation_fraction()`, and Godot's documentation asks for 0 with any interpolation. At 50 fps (4.8 ticks per frame) the presented-time error against the wall clock was 0.37–0.50 ms RMS with 0.5 and 0.12–0.20 ms with 0 in three repeats. At 75 and 144 fps the VM noise dominated. Presented time always equals Godot's `delta` exactly | `probe_jitter_fix` | Set it to 0 after an A/B with the jitter metric on the target machine (CAM-25, main line owns `project.godot`) |
 | F8 | Medium | **Depth precision.** The flight uses near 0.1 m and far 21 km in every view; the RC truck uses near **0.01 m**. With Compatibility's 24-bit buffer (reverse-Z gains nothing there), the depth step is ≈ z²/(near·2²⁴): 0.6 m at 1 km for the flight and 6 m at 1 km for the truck. CAM-02b (pilot near 0.5 m) is still open | Table below; `ground_scene.gd` | CAM-02b, plus per-view near planes and the truck (CAM-26) |
@@ -52,6 +52,7 @@ Severity: **High** = visible defect on the primary target (1080p) or above; **Me
 | F16 | Low | **Gamepad camera control is minimal.** Zoom moves one step per press, there is no hold-to-zoom and no analog look or orbit, and no transmitter switch is available (D9) | `controller_actions.gd` | CAM-17 bindings |
 | F17 | Info | **Frame order.** `World.update` (eye adaptation from camera pitch) runs before `_render_pose`, so it reads the previous frame's camera. The adaptation filter is slow, so this is negligible today. Any new camera consumer must run after the rig (FlightAudio and the lake reflection use priority 100) | `main.gd` `_process` | Document the order contract in the rig (CAM-24) |
 | F18 | Info | **Base FOV is wide.** 50° vertical against an orthoscopic ≈ 31° for a 27-inch 16:9 monitor at 60 cm. Inside 58 m at 1080p the aircraft shows at 0.6× its real angular size. D11 is still pending | Auto-zoom table | CAM-07 natural FOV preset and FOV setting (CAM-17) |
+| F19 | Low | **The crash text promises a key that is blocked.** The crash description ends "[C] Change view", but the accident-report card swallows every key except Escape and R until "Inspect wreck" minimizes it (`accident_report.gd` `_unhandled_input`, intended). Controller camera actions do get through. Live: C and 1 left the view unchanged; `camera_pilot` changed it | Live run | Crash and UI tracks: align the text with the card, or let camera keys through |
 
 Rechecked and found correct: interpolation (lerp position, shortest-path nlerp attitude, rates from the current state); one pose source for the aircraft and every view; exact damper and spring; finite bases at the poles; chase teleport snap; pause freezing; ordering of audio and lake reflection after the rig; trace identity (CAM-01-10 evidence). The rig costs 9 µs per frame for the chase on the VM, including the probe's trajectory.
 
@@ -97,6 +98,20 @@ The 6° floor equals a ≈ 229 mm full-frame lens (research pass 1, derived).
 | 2 m | 78°/s | 706°/s | 195°/s, tilt ≤ 19° | 110°/s, tilt ≤ 40° |
 | 5 m | 76°/s | 286°/s | — | — |
 | Low pass 8 m in front, 1.5 m high, 30 m/s | 215°/s | 215°/s | — | — |
+
+### Live run (F1, F5, F19)
+
+Debug bridge, 1920×1080, Home → Fly airborne (Ugly Stik 60), then the [scenario](#reproduce-the-live-run). Values are read from the running app.
+
+| Moment | Reading | Observation |
+| --- | --- | --- |
+| Pilot view, 71.5 m away, 30 m high | FOV 41.9° | Matches the 30 px law for a 1.52 m span. The frame shows only sky: no ground or horizon reference (CAM-06/06b) |
+| Four zoom-in steps | `pilot_zoom` 0.5, FOV 23.8° | As designed |
+| First switch to chase | One 2.8 s frame against 0.87 s typical | Inconclusive at 1 fps on llvmpipe; recheck on the target (CAM-31) |
+| Dive into the ground in orbit view | Camera at impact + (5, 3.2, 6) m, FOV 58° | Director override (F5) |
+| Wreck after the slide | Core 15.9 m from the impact point; screen x = −540 px in orbit and chase, (841, 554) in pilot | Wreck off screen in every non-pilot view |
+| "Inspect wreck", orbit, drag 500 px | Azimuth 89.2° → 69.8°; camera position unchanged | Orbit not controllable; empty field on screen |
+| Accident card open, keys C and 1 | View unchanged; controller `camera_pilot` works | F19 |
 
 ### Depth step in the Compatibility renderer (F8)
 
@@ -193,7 +208,7 @@ Added to the [plan](../../../plans/camera-views.md#8-steps) as proposed rows. Ea
 | CAM-24 | Chase smoothness: velocity from the simulation state (prime and drive), fixed ≤ 1/240 s sub-steps with the target interpolated inside the frame, optional heading feed-forward; document the frame-order contract for camera consumers | `test_camera_views` gains the turn, loop and hammerhead tapes: ∣30 − 144 fps∣ ≤ 1 cm, entry transient 0, rig ≤ 50 µs |
 | CAM-25 | `physics_jitter_fix = 0` (main line owns `project.godot`) | A/B with the CAM-21 jitter metric at 60/144 Hz, V-Sync on and off, on the target machine; traces byte-identical |
 | CAM-26 | One camera input router and a per-vehicle camera profile in data (span, default zoom, near/far) for the airplane, helicopter and truck routes; truck near plane ≥ 0.05 m | `test_camera_route` per route (Shift+C, Backspace, wheel `factor`, reset on restart); truck before/after captures |
-| CAM-27 | First crash-focus slice of CAM-03: the orbit retargets the wreck; the director's non-pilot view gets a terrain, obstacle and water clearance and a short blend | `test_crash_pose` unchanged for the pilot view; new clearance checks; wreck orbit capture |
+| CAM-27 | First crash-focus slice of CAM-03: non-pilot views frame the wreck core, not the impact point; the orbit retargets it and stays controllable; the director's view gets a terrain, obstacle and water clearance and a short blend | `test_crash_pose` unchanged for the pilot view; the live scenario below shows the wreck on screen after "Inspect wreck" in orbit, chase and close-up; clearance checks |
 | CAM-28 | Pilot overhead option: screen-roll rate cap, off by default until CAM-22 | Probe numbers reproduced in a test; the pilot rates it |
 | CAM-29 | Orbit and controller polish: damped rotation and dolly, captured cursor while dragging, sensitivity and invert settings, controller look and hold-to-zoom | `test_camera_views` continuity; `test_camera_route` for mouse and controller |
 | CAM-30 | Field-videographer view: ground tripod with a telephoto (2.3–10° vertical), damped operator pan-tilt, FlightGear-style re-placement, optional 3–9 Hz handheld jitter (off in comfort mode), shutter-aware propeller disc | Placement never inside terrain or obstacles over a recorded circuit; captures; comfort mode removes the jitter; cost |
@@ -214,6 +229,19 @@ How the survey refines existing steps:
 | CAM-17 | XAG 117 block: FOV (labelled vertical, with a natural-FOV helper), automatic-motion off, per-axis sensitivity and invert, chase distance, camera-motion intensity 0–100 %; comfort defaults in replays |
 | CAM-18 | Aircraft-only magnifier through a `SubViewport` cull mask (PicaSim), which removes most of the second-render cost; the full-scene inset stays the expensive option |
 | Later, no step yet | Trauma shake that reaches each camera after distance/343 s (never in the pilot view); two-target framing for companions; X-Plane "linear spot" and Quick Looks; sky-grid overlay (HUD track); split screen |
+
+## Reproduce the live run
+
+From the repository root, on a machine with no other rendered Godot app:
+
+```sh
+D="python3 tools/debug/debugctl.py"
+$D launch                                   # 1920×1080; note the port it prints
+OPENRC_DEBUG_BRIDGE=<port> $D run research/camera-views/audit-2026-10-24/live_scenario.txt
+OPENRC_DEBUG_BRIDGE=<port> $D stop
+```
+
+Screenshots go to the run folder under `tmp/debug-bridge/`. A relative `screenshot path=` resolves against `app/`, which git does not ignore, so pass an absolute path or none. The wreck's slide distance varies from run to run.
 
 ## Limits
 
