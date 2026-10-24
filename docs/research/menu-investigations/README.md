@@ -1,5 +1,11 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-22-R5 — neutral black glass, lime actions, 2026-10-24
+
+Owner refinement: keep radioactive green on buttons and selection accents, with neutral black translucent backgrounds. Panel/card/secondary-control fills, borders, shadows and text are now neutral grays. Crystal panel reflections use `SURFACE_LIGHT`; primary buttons retain `CRYSTAL` and the existing motion. Opacity preferences and transparency amounts are unchanged. The [current palette](../../MENU-REDESIGN-PLAN.md#color-and-surfaces) owns the tokens.
+
+Checked-runner passes: `test_ui_scale.gd` and `test_ui_crystal.gd` (15 assertions). Native Windows / RTX 3090 / Compatibility Home and Settings captures were inspected at 1920×1080 through the debug bridge, with no engine/script/shader errors and no crash or leaked objects at exit. Local evidence: ignored `tmp/neutral-glass-checks/` and `tmp/debug-bridge/20261024-152943-47870/`. No image assets or animation behavior changed.
+
 ## UI-22-R4 — crystal lighting and finite motion, 2026-10-24
 
 The follow-up owner request adds glass, shadow and motion to the lime theme. The [current guide](../../MENU-REDESIGN-PLAN.md#color-and-surfaces) owns behavior. The implementation reuses free shader techniques rather than introducing a UI library or texture pack.

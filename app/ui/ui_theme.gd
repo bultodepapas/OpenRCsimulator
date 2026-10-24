@@ -2,19 +2,20 @@
 # Font sizes are logical pixels at 1920x1080; UiScale selects a compact type set for smaller viewports.
 extends RefCounted
 
-const PANEL := Color("#101C18")
-const SIDEBAR := Color("#101C18", 0.92)
-const CARD := Color("#1A2B24")
-const TEXT := Color("#F0F6EB")
-const TEXT_2 := Color("#BACBBF")
+const PANEL := Color("#111111")
+const SIDEBAR := Color("#111111", 0.92)
+const CARD := Color("#202020")
+const TEXT := Color("#F2F2F2")
+const TEXT_2 := Color("#C4C4C4")
 const FOCUS := Color("#B6FF43")
 const CRYSTAL := Color("#E3FFC2")
-const EDGE := Color("#526A5D")
+const SURFACE_LIGHT := Color("#F0F0F0")
+const EDGE := Color("#606060")
 const BUTTON := {
-	normal = Color("#263B30"),
-	hover = Color("#344D3C"),
-	pressed = Color("#1B2C22"),
-	disabled = Color("#28362E"),
+	normal = Color("#292929"),
+	hover = Color("#363636"),
+	pressed = Color("#1D1D1D"),
+	disabled = Color("#292929"),
 }
 const PRIMARY := {
 	normal = FOCUS,
@@ -22,7 +23,7 @@ const PRIMARY := {
 	pressed = Color("#91DE32"),
 	disabled = Color("#78935A"),
 }
-const PRIMARY_TEXT := Color("#101C18")
+const PRIMARY_TEXT := Color("#111111")
 const DANGER := {
 	normal = Color("#8E3735"),
 	hover = Color("#A44340"),
@@ -31,8 +32,8 @@ const DANGER := {
 }
 const DESTRUCTIVE := DANGER
 const ERROR := Color("#F08D83")
-const DISABLED_TEXT := Color("#A8B8AC")
-const KEYCAP := { bg = Color("#22372B"), edge = Color("#667F6C") }
+const DISABLED_TEXT := Color("#B0B0B0")
+const KEYCAP := { bg = Color("#252525"), edge = Color("#717171") }
 
 const SIZE := {
 	brand = 48,
@@ -78,8 +79,8 @@ static func build() -> Theme:
 	theme.set_type_variation("Card", "PanelContainer")
 	var card := _box(CARD, 18)
 	card.set_border_width_all(1)
-	card.border_color = Color(CRYSTAL, 0.28)
-	card.shadow_color = Color(0.0, 0.02, 0.01, 0.24)
+	card.border_color = Color(SURFACE_LIGHT, 0.22)
+	card.shadow_color = Color(0, 0, 0, 0.24)
 	card.shadow_size = 8
 	card.shadow_offset = Vector2(0, 3)
 	theme.set_stylebox("panel", "Card", card)
@@ -244,7 +245,7 @@ static func _controls(theme: Theme) -> void:
 	theme.set_stylebox("panel", "TabContainer", _box(PANEL, 12))
 	# A visible full track makes a slider's range readable even at low volume.
 	for item: String in ["slider", "grabber_area", "grabber_area_highlight"]:
-		var track := _box(Color("#647C6B") if item == "slider" else (CRYSTAL if item == "grabber_area_highlight" else FOCUS), 0)
+		var track := _box(Color("#707070") if item == "slider" else (CRYSTAL if item == "grabber_area_highlight" else FOCUS), 0)
 		track.content_margin_top = 2.0
 		track.content_margin_bottom = 2.0
 		track.set_corner_radius_all(2)
@@ -329,8 +330,8 @@ static func _settings(theme: Theme) -> void:
 	panel.content_margin_top = 20
 	panel.content_margin_bottom = 20
 	panel.set_border_width_all(1)
-	panel.border_color = Color(CRYSTAL, 0.30)
-	panel.shadow_color = Color(0.0, 0.02, 0.01, 0.42)
+	panel.border_color = Color(SURFACE_LIGHT, 0.24)
+	panel.shadow_color = Color(0, 0, 0, 0.42)
 	panel.shadow_size = 24
 	panel.shadow_offset = Vector2(0, 8)
 	theme.set_stylebox("panel", "SettingsPanel", panel)

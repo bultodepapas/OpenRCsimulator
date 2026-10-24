@@ -102,7 +102,7 @@ func _rebuild_styles() -> void:
 	_target.end_bulk_theme_override()
 	_updating = false
 	_uniform(&"primary", 1.0 if _target is Button else 0.0)
-	_uniform(&"crystal_color", UiTheme.CRYSTAL)
+	_uniform(&"crystal_color", UiTheme.CRYSTAL if _target is Button else UiTheme.SURFACE_LIGHT)
 	_sync_state()
 
 

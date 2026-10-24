@@ -1,6 +1,6 @@
 # OpenRC Simulator — cinematic menu and experience redesign
 
-**Revision 11 · 2026-10-24 · Owner: product shell · UI-20…29; audit repairs UI-31…38 in [§11](#11-ui-30-audit-repairs).**
+**Revision 12 · 2026-10-24 · Owner: product shell · UI-20…29; audit repairs UI-31…38 in [§11](#11-ui-30-audit-repairs).**
 
 **Status: core redesign implemented; extended acceptance remains open.** The grounded Home composition, bounded navigation, 1920×1080 reference scaling, lime/graphite theme, compact Pause, Settings and Conditions refinements are now in source. [UI-22–26-R2 evidence](research/menu-investigations/UI-25-R2/README.md) records the native EN/ES 720p–4K matrix and behavior checks for the earlier palette. This revision retains the wider design targets below; thumbnails, optional effects, release packages and human visual acceptance are not implicitly complete.
 
@@ -33,7 +33,7 @@ No flight-model tuning, aircraft-geometry edits, new gameplay modes, recording c
 | Long weather/time descriptions on Home | Show an operational summary; put specifications, limitations and advanced controls in explicit destinations. Keep blocking reasons visible. |
 | Layout tests pass while the owner rejects the result | Require native visual review with concrete composition gates, separately from functional verification. |
 
-**Visual thesis:** a believable RC club photographed with care, framed by green graphite translucent surfaces, pale white type and a luminous radioactive lime selection/action accent with restrained crystal edges.
+**Visual thesis:** a believable RC club photographed with care, framed by neutral black translucent surfaces, pale white type and a luminous radioactive lime selection/action accent with restrained crystal edges.
 
 **Content plan:** world and aircraft first; compact activity navigation; selected aircraft and next-flight summary; one primary action; detail on request.
 
@@ -139,7 +139,7 @@ A bounded reflection-probe experiment must account for the existing lake and two
 
 ### Color and surfaces
 
-UI-22-R3 replaces the amber accent with graphite `#101C18`, pale white `#F0F6EB`, secondary gray-green `#BACBBF`, radioactive lime `#B6FF43` and crystal highlights `#E3FFC2`. Primary actions share a pale beveled edge, a bounded lime halo that brightens on hover, and a dark inset keyboard/gamepad focus outline. Toggles, checks, sliders and navigation use the same tokens. Red remains reserved for destructive/error states; operational warning colors retain their meaning.
+UI-22-R3 replaces the amber accent with radioactive lime `#B6FF43` and crystal highlights `#E3FFC2`. UI-22-R5 refines the owner's direction: neutral black `#111111` panels, charcoal `#202020` cards, white `#F2F2F2` text and secondary gray `#C4C4C4`. Panel reflections, borders and shadows are neutral; the existing translucency and opaque-panel preference are preserved. Primary actions retain their green glass, pale beveled edge, bounded hover halo and dark inset keyboard/gamepad focus outline. Toggles, checks, sliders and selected navigation retain the lime accent. Red remains reserved for destructive/error states; operational warning colors retain their meaning.
 
 UI-22-R4 adds a shader underlay to primary buttons, Cards, sidebars and Settings panels: layered glass lighting, a finite 720 ms specular sweep on focus/hover or panel appearance, and 90/180 ms press/release shading. The shared `Widgets.button()` factory covers dynamically created primary actions; `Screen.open()` decorates existing panels and directly created primary buttons. Native text, focus, shadows and layout remain above the noninteractive underlay. Effects and the screen entrance cancel when hidden or detached, and settle on the next animation update if reduced motion is enabled. Event-driven tweens stop at rest; there is no effect `_process`, automatic shader clock, screen copy, background blur or new runtime dependency. Screen-specific style overrides retain ownership. The shader adapts freely available CC0/MIT code, with its notice included by every desktop export preset.
 

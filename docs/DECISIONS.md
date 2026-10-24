@@ -958,3 +958,7 @@ Replace the previous amber direction at the owner's request with luminous lime o
 
 Adapt free CC0/MIT shader techniques for primary actions and selected panel surfaces. Keep glass below native text/focus, outside container layout and pointer input. Drive brief reflections and press shading with finite node-bound tweens; hidden screens cancel them and live reduced motion settles them. Use analytic lighting without screen sampling, recurring pulses or a new UI framework. Keep upstream notices in the desktop export filters. [Sources, tradeoffs and checks](research/menu-investigations/README.md#ui-22-r4--crystal-lighting-and-finite-motion-2026-10-24).
 
+### 2026-10-24 — Neutral black backgrounds with lime accents (UI-22-R5)
+
+Refine the palette at the owner's request: keep green crystal buttons and selection accents, while backgrounds, panel reflections and shadows use neutral black/gray. Preserve the existing translucency, opaque-panel option and motion. [Palette and verification](research/menu-investigations/README.md#ui-22-r5--neutral-black-glass-lime-actions-2026-10-24).
+
