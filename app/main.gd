@@ -76,6 +76,7 @@ signal pause_requested
 signal restart_requested
 ## The player changed the flight overlays (X, [F2], [F3]); Home saves them (docs/plans/flight-overlays.md).
 signal overlay_settings_changed(settings: Dictionary)
+signal latency_marker_changed(enabled: bool)
 signal scenario_changed(scenario: Dictionary)
 
 ## Data path is injectable before entering the tree; normal routes use the packaged default.
@@ -737,6 +738,8 @@ func _ready() -> void:
 		latency_patch.threshold = latency_options.threshold
 		latency_patch.left_side = _overlays != null # HUD: the overlays hold the right-hand side
 		add_child(latency_patch)
+		latency_marker_enabled = true
+		latency_patch.closed.connect(func() -> void: set_latency_marker_enabled(false))
 	recorder = Recorder.new(session.sim, session.electrical_state, session.mass_properties)
 	session.resetting.connect(_on_resetting)
 	if str(args.get("soundscape", "on")) == "legacy" and session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
@@ -1767,9 +1770,24 @@ func set_overlays_visible(on: bool) -> void:
 			n.visible = on
 	var latency_marker := get_node_or_null("LatencyPatch") as CanvasLayer
 	if latency_marker != null:
-		latency_marker.visible = on
+		latency_marker.visible = on and latency_marker_enabled
 	if _flight_log_label != null: # UI-31 (UI-30 PS-10): its layer 25 would otherwise draw over every menu
 		(_flight_log_label.get_parent() as CanvasLayer).visible = on
+
+
+## Optional camera target. Closing it persists independently of pause/menu visibility.
+func set_latency_marker_enabled(on: bool) -> void:
+	latency_marker_enabled = on
+	var patch := get_node_or_null("LatencyPatch") as CanvasLayer
+	if on and patch == null:
+		patch = LatencyPatch.new()
+		patch.session = session
+		patch.left_side = _overlays != null
+		patch.closed.connect(func() -> void: set_latency_marker_enabled(false))
+		add_child(patch)
+	if patch != null:
+		patch.visible = on and _failure_overlays_visible
+	latency_marker_changed.emit(on)
 
 
 ## Called by the Home launch transaction, after the real model/session have accepted their inputs.

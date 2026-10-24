@@ -6,6 +6,7 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -72,6 +73,31 @@ class Repin(unittest.TestCase):
             path = self.profile(Path(directory), json.dumps({"solver": {"sha256": "c" * 64}, "note": OLD}))
             with self.assertRaises(rebind.SetupError):
                 rebind.repin_profile(path, OLD, NEW)
+
+
+class Workspace(unittest.TestCase):
+    def test_selected_workspace_is_isolated_and_cleaned_after_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            parent = Path(directory) / "external-drive" / "rebind"
+            parent.mkdir(parents=True)
+            sentinel = parent / "existing.txt"
+            sentinel.write_text("preserve")
+            created = []
+
+            def fail_build(workspace, _revision, _directories):
+                self.assertEqual(workspace.parent, parent.resolve())
+                self.assertTrue(workspace.is_dir())
+                (workspace / "partial.txt").write_text("partial copy")
+                created.append(workspace)
+                raise rebind.SetupError("fixture copy failed")
+
+            qualification = {"accepted": {"rev": "fixture"}, "solver_directories": []}
+            with patch.object(rebind, "build_baseline", side_effect=fail_build):
+                with self.assertRaisesRegex(rebind.SetupError, "fixture copy failed"):
+                    rebind.compare("godot", qualification, 1, False, parent)
+            self.assertEqual(len(created), 1)
+            self.assertFalse(created[0].exists())
+            self.assertEqual(sentinel.read_text(), "preserve")
 
 
 class CheckedInQualification(unittest.TestCase):

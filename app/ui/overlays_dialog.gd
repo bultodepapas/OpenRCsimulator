@@ -31,9 +31,10 @@ var _syncing := false
 var _screen: Control
 var _switch_grid: GridContainer
 var _picker_rows: Array[BoxContainer] = []
+var latency_switch: CheckBox
 
 
-func _init(overlay_manager: CanvasLayer) -> void:
+func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	name = "OverlaysDialog"
 	layer = LAYER
 	manager = overlay_manager
@@ -92,6 +93,16 @@ func _init(overlay_manager: CanvasLayer) -> void:
 				_sync())
 		grid.add_child(box)
 		switches[id] = box
+	if flight != null and flight.has_method("set_latency_marker_enabled"):
+		latency_switch = CheckBox.new()
+		latency_switch.name = "LatencyMarker"
+		latency_switch.text = tr("Latency camera marker")
+		latency_switch.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		latency_switch.button_pressed = flight.latency_marker_enabled
+		latency_switch.toggled.connect(flight.set_latency_marker_enabled)
+		column.add_child(latency_switch)
+		column.add_child(Widgets.label(tr("For filming stick-to-screen delay. White means the raw axis is at or above the threshold; this does not display milliseconds."), "SecondaryLabel", true, false))
+	manager.settings_changed.connect(func(_settings: Dictionary) -> void: _sync())
 
 	units_picker = _picker(column, tr("Units"), "Units")
 	for system: String in Settings.Units.SYSTEMS:

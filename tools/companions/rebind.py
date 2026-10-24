@@ -159,11 +159,13 @@ def repin_profile(profile: Path, old: str, new: str) -> None:
     profile.write_text(text.replace(old, new), encoding="utf-8")
 
 
-def compare(godot: str, qualification: dict, jobs: int, keep: bool) -> tuple[list[dict], str]:
+def compare(godot: str, qualification: dict, jobs: int, keep: bool,
+            workspace_root: Path | None = None) -> tuple[list[dict], str]:
     accepted = qualification["accepted"]
     directories = qualification["solver_directories"]
-    (ROOT / "tmp").mkdir(exist_ok=True)
-    workspace = Path(tempfile.mkdtemp(prefix="companion-rebind-", dir=ROOT / "tmp"))
+    parent = (workspace_root if workspace_root is not None else ROOT / "tmp").resolve()
+    parent.mkdir(parents=True, exist_ok=True)
+    workspace = Path(tempfile.mkdtemp(prefix="companion-rebind-", dir=parent))
     try:
         base = build_baseline(workspace, accepted["rev"], directories)
         base_identity = solver_identity(godot, base / "app")
@@ -203,6 +205,8 @@ def main() -> int:
     parser.add_argument("--jobs", type=int, default=max(1, min(6, (os.cpu_count() or 2) // 2)))
     parser.add_argument("--report", type=Path, help="also write the full JSON report to this new file")
     parser.add_argument("--keep", action="store_true", help="keep the disposable copies under tmp/")
+    parser.add_argument("--workspace-root", type=Path,
+                        help="parent for disposable project copies (default: repository tmp/)")
     args = parser.parse_args()
     try:
         qualification = json.loads(QUALIFICATION.read_text(encoding="utf-8"))
@@ -218,7 +222,7 @@ def main() -> int:
             return 0
         print(f"Solver identity changed: accepted {pinned[:8]} -> current {current[:8]}. "
               f"Replaying {len(qualification['tapes'])} tapes on both sides...", flush=True)
-        results, workspace = compare(godot, qualification, args.jobs, args.keep)
+        results, workspace = compare(godot, qualification, args.jobs, args.keep, args.workspace_root)
     except (SetupError, OSError, KeyError, ValueError, subprocess.TimeoutExpired) as error:
         print(f"rebind: setup error: {error}", file=sys.stderr)
         return 2

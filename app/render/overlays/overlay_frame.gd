@@ -60,13 +60,13 @@ static func close_x(on_press: Callable) -> Button:
 	button.flat = true
 	button.focus_mode = Control.FOCUS_NONE
 	button.tooltip_text = "Close"
-	button.custom_minimum_size = Vector2(24, 22)
+	button.custom_minimum_size = Vector2(28, 28)
 	button.add_theme_font_size_override("font_size", 18)
 	button.add_theme_color_override("font_color", UiTheme.TEXT_2)
 	button.add_theme_color_override("font_hover_color", UiTheme.TEXT)
 	for state in ["normal", "hover", "pressed", "focus"]:
 		var box := StyleBoxFlat.new()
-		box.bg_color = Color(UiTheme.BUTTON.hover, 0.0 if state == "normal" else 0.9)
+		box.bg_color = Color(UiTheme.BUTTON.hover, 0.55 if state == "normal" else 0.9)
 		box.set_corner_radius_all(4)
 		button.add_theme_stylebox_override(state, box)
 	button.pressed.connect(on_press)

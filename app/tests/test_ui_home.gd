@@ -361,8 +361,8 @@ func _run() -> void:
 	_check("Fly saves the selected default runway start", FileAccess.file_exists(PREFS) and saved.start_choice == "runway")
 	_check("fresh Home flight uses gentle turbulent wind", saved.weather_config == Preferences.DEFAULTS.weather_config
 		and app.flight.session.weather_configuration() == saved.weather_config)
-	_check("fresh Home flight has passing evening and latency diagnostics", saved.time_of_day == "evening"
-		and app.flight._field_world_lighting and app.flight.get_node_or_null("LatencyPatch") != null)
+	_check("fresh Home flight keeps evening lighting and camera diagnostics off", saved.time_of_day == "evening"
+		and app.flight._field_world_lighting and not saved.latency_marker and app.flight.get_node_or_null("LatencyPatch") == null)
 	await ui.close_app(app)
 	for path in [PREFS, PREFS + ".bad"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))

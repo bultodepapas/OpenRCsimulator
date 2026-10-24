@@ -7,7 +7,7 @@
 
 ## 1. What exists
 
-Home flights show eight independent overlays on one `CanvasLayer` (`render/overlays/overlay_manager.gd`). Each has a title and an × that closes only that overlay; the × never takes keyboard focus.
+Home flights provide nine independent overlays on one `CanvasLayer` (`render/overlays/overlay_manager.gd`). Each has a title and an × that closes only that overlay; the × never takes keyboard focus. Diagnostics docks beside the control guide and below active warning chips to keep their headers accessible.
 
 | ID | Overlay | Anchor | Content |
 | --- | --- | --- | --- |
@@ -32,7 +32,7 @@ Rules the implementation keeps:
 - Numbers come from 64-bit state in `telemetry.gd` (pure): load factor = −F<sub>z,body</sub>/(m·g) from `sim.last_loads` (gravity excluded); height above ground from `GroundTerrain.sample` on the session's own surface table. No session accessor was added.
 - Units (`units.gd`): metric km/h·m·m/s, imperial mph·ft·ft/min, SI m/s·m; "auto" = imperial for English, metric otherwise (D3). Exact factors 0.44704 m/s and 0.3048 m.
 - Numbers refresh at 10 Hz; sticks every frame.
-- Other flight layers keep clear of the Pilot preset: the first-flight hint sits bottom centre and the Home latency marker beside the controls guide, below wrapped warnings (HUD-11-R2).
+- The first-flight hint sits bottom centre. The optional latency camera marker is off by default, has its own close button and saved switch in Flight overlays, and stops sampling while hidden. It sits beside the controls guide when enabled; see the [camera protocol and controls](../FIRST-LAUNCH.md#8-film-stick-to-screen-latency-f6a).
 
 ### Warning triggers
 

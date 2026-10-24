@@ -20,6 +20,8 @@ python3 tools/companions/rebind.py --accept   # re-pin and write a receipt
 
 The tool replays the [retained tapes](qualification.json) in candidate mode on two disposable copies under `tmp/`. The copies differ only in the solver directories: the accepted revision and the current tree. Byte-identical CSVs re-pin the profile, update `qualification.json` and write a receipt under [AFC-02/rebinds](../../docs/research/ai-companions/AFC-02/rebinds/). Commit all three together. A run takes about a minute.
 
+Use `--workspace-root D:/OpenRCsimulator-evidence/rebind` when the repository drive lacks space for the project copy. Each run creates its own directory there; `--keep` retains it for inspection.
+
 | Exit | Meaning |
 | --- | --- |
 | 0 | Already current, or every tape identical (re-pinned with `--accept`) |

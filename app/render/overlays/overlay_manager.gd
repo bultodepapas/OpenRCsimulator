@@ -105,6 +105,25 @@ func _build() -> void:
 	var controls := ControlsGuide.new()
 	_place(controls, Control.PRESET_TOP_LEFT)
 	_place(BatteryPanel.new(), Control.PRESET_CENTER_RIGHT) # docked by _dock_battery()
+	# Reflow only when layout changes, never once per simulation tick.
+	for id: String in ["controls", "diagnostics", "warnings"]:
+		frames[id].resized.connect(_dock_diagnostics)
+		frames[id].visibility_changed.connect(_dock_diagnostics)
+	root.resized.connect(_dock_diagnostics)
+
+
+## Keep the guide and diagnostic header independently readable and clickable.
+func _dock_diagnostics() -> void:
+	var panel: Control = frames.diagnostics
+	var x := MARGIN
+	var y := MARGIN
+	if frames.controls.visible:
+		x += frames.controls.size.x + MARGIN
+	if frames.warnings.visible:
+		y += frames.warnings.size.y + MARGIN
+	# Narrow-window fallback keeps the close button on screen.
+	x = minf(x, maxf(MARGIN, root.size.x - panel.size.x - MARGIN))
+	panel.position = Vector2(x, y)
 
 
 func _place(overlay: Control, preset: Control.LayoutPreset) -> void:

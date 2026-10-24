@@ -146,9 +146,15 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	for control: Node in _patch.find_children("*", "Control", true, false):
-		check("overlay ignores mouse: " + control.name, control.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+		if control != _patch.close_button:
+			check("overlay ignores mouse: " + control.name, control.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	check("close button never takes flight keyboard focus", _patch.close_button.focus_mode == Control.FOCUS_NONE)
 	check("marker is a visible square", _patch.marker.size == Vector2(Patch.SIZE, Patch.SIZE))
 	check("marker %s is inside viewport %s" % [_patch.marker.get_global_rect(), root.get_visible_rect()], root.get_visible_rect().encloses(_patch.marker.get_global_rect()))
+	_patch.close_button.pressed.emit()
+	check("closing stops the hidden marker's physics callback", not _patch.visible and not _patch.is_physics_processing())
+	_patch.visible = true
+	check("reopening resumes sampling immediately", _patch.is_physics_processing() and _patch.marker.color == Color.BLACK)
 	_patch.free()
 	_session.free()
 	_reference.free()

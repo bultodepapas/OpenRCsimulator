@@ -760,6 +760,10 @@ func start_flight(request: Dictionary = {}) -> void:
 			flight.restart_requested.connect(_request_flight_restart)
 		if has_home:
 			flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
+			if flight.has_signal("latency_marker_changed"):
+				flight.latency_marker_changed.connect(func(on: bool) -> void:
+					preferences.latency_marker = on
+					Preferences.save_to(preferences_path, preferences))
 			if flight.has_signal("scenario_changed"):
 				flight.scenario_changed.connect(_on_scenario_changed)
 		_keyboard_reader = flight.session.read_raw
@@ -1598,7 +1602,7 @@ func _exit_tree() -> void:
 func open_overlays(from: Control = null) -> void:
 	if not screens.is_top("pause") or flight == null or flight.get("_overlays") == null:
 		return
-	var dialog := OverlaysDialog.new(flight.get("_overlays"))
+	var dialog := OverlaysDialog.new(flight.get("_overlays"), flight)
 	dialog.closed.connect(close_overlays)
 	if screens.push("overlays", dialog, from if from != null else pause_menu.overlays_button):
 		# The player sees each switch act on the paused picture; the suspended pause column steps aside so the
