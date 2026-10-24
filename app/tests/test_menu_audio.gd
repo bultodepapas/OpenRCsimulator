@@ -153,6 +153,7 @@ func _run() -> void:
 	button.pressed.emit()
 	await process_frame
 	_check("an eligible active button requests press audio", service.cue_count(&"press") == press_count_before + 1)
+	await _check_dynamic_controls(service, screen_a, screen_b)
 	press_count_before = service.cue_count(&"press")
 
 	host.remove_child(screen_a)
@@ -217,11 +218,78 @@ func _run() -> void:
 			dropped_before, str(service._voices[0].pitch_scale), str(service._voices[1].pitch_scale)])
 	_check("incidental hover cannot mask a decision", not service.play(&"hover"))
 	_check("screen mounts cannot override a same-action error", not service.play(&"open"))
-	await create_timer(0.04).timeout
+	var original_time_scale := Engine.time_scale
+	Engine.time_scale = 0.0
+	await create_timer(0.04, true, false, true).timeout
 	_check("replaced semantic tail fades out without stopping the newest cue",
 		service._voices.filter(func(voice: AudioStreamPlayer) -> bool: return voice.playing).size() == 1)
+	Engine.time_scale = original_time_scale
 	service.set_volume(0.0)
 	_check("muted Quit adds no shutdown delay", service.play(&"quit") and service.shutdown_delay() == 0.0)
 
 	host.queue_free()
 	await create_timer(0.1).timeout # allow the audio mixer to release the stopped playback before process teardown
+
+
+func _check_dynamic_controls(service: MenuAudio, screen_a: Control, screen_b: Control) -> void:
+	var controls_before: int = service._observed_controls.size()
+	var debounce_before: int = service._last_automatic_ms.size()
+	service.observe(screen_b)
+	var button := Button.new()
+	screen_a.add_child(button)
+	await process_frame
+	await process_frame
+	var presses_before := service.cue_count(&"press")
+	button.pressed.emit()
+	await process_frame
+	_check("a button added after screen mount receives automatic audio",
+		service.cue_count(&"press") == presses_before + 1)
+	for target: Control in [screen_b, screen_a, screen_b, screen_a]:
+		button.reparent(target)
+		_top_surface = target
+		await process_frame
+		await process_frame
+		presses_before = service.cue_count(&"press")
+		button.pressed.emit()
+		await process_frame
+		_check("reparented controls sound once on their new active surface",
+			service.cue_count(&"press") == presses_before + 1)
+	var audio_connections := 0
+	for connection: Dictionary in button.pressed.get_connections():
+		if connection.callable.get_object() == service:
+			audio_connections += 1
+	_check("reparenting releases obsolete signal bindings", audio_connections == 1)
+
+	var slider := HSlider.new()
+	screen_a.add_child(slider)
+	var excluded := VBoxContainer.new()
+	excluded.set_meta("menu_audio_exclude", true)
+	var excluded_button := Button.new()
+	excluded.add_child(excluded_button)
+	screen_a.add_child(excluded)
+	await process_frame
+	await process_frame
+	_check("dynamically added excluded subtrees remain silent",
+		not service._observed_controls.has(excluded_button.get_instance_id()))
+	slider.grab_focus()
+	var end_key := InputEventAction.new()
+	end_key.action = &"ui_end"
+	end_key.pressed = true
+	service._input(end_key)
+	var changes_before := service.cue_count(&"change")
+	slider.editable = false
+	slider.value = 20.0
+	_check("cached property discovery still reads live editable state",
+		service.cue_count(&"change") == changes_before)
+	slider.editable = true
+	slider.value = 40.0
+	_check("End/Home range navigation can request feedback after re-enabling editing",
+		service.cue_count(&"change") == changes_before + 1)
+	button.queue_free()
+	slider.queue_free()
+	excluded.queue_free()
+	await process_frame
+	await process_frame
+	_check("dynamic control removal releases bindings and debounce state",
+		service._observed_controls.size() == controls_before
+		and service._last_automatic_ms.size() == debounce_before)

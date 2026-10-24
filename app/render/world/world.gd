@@ -264,7 +264,102 @@ static func _restore_flow_context(raw: Dictionary) -> Dictionary:
 ## A nonempty `lighting` snapshot selects the TOD renderer and clears field-world flow.
 ## Returns {environment, world_environment, field (null when replaced), field_build_ms, sun, conditions, sky (time-of-day state or {})}.
 static func build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}, lighting: Dictionary = {}, night_options: Dictionary = {}) -> Dictionary:
-	_night_options = resolve_night_options(night_options)
+	var context := _new_build_context(parent, field, build_field, conditions, lighting, night_options)
+	var stage_started := Time.get_ticks_usec()
+	_build_environment_stage(context)
+	_record_construction_span(context, "environment", stage_started)
+	stage_started = Time.get_ticks_usec()
+	_build_field_stage(context)
+	_record_construction_span(context, "field", stage_started)
+	stage_started = Time.get_ticks_usec()
+	_build_sky_stage(context)
+	_record_construction_span(context, "sky_lights", stage_started)
+	stage_started = Time.get_ticks_usec()
+	_build_airfield_stage(context)
+	_record_construction_span(context, "airfield", stage_started)
+	stage_started = Time.get_ticks_usec()
+	_finalize_build_stage(context)
+	_record_construction_span(context, "finalize", stage_started)
+	return _build_result(context)
+
+
+## Stages the same ordered build as build(). Checkpoints happen before each phase, so a caller can
+## draw its loading surface and cancel before the next phase starts. The callback may itself be async.
+## Partial nodes remain children of `parent`; callers own cancellation cleanup.
+## An async field callback may return {field_build_ms: <synchronous work ms>, cancelled: bool} so its
+## synchronous construction time remains separate from `field_work_ms`, which includes its waits.
+static func build_staged(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {},
+		lighting: Dictionary = {}, night_options: Dictionary = {}, checkpoint: Callable = Callable()) -> Dictionary:
+	var context := _new_build_context(parent, field, build_field, conditions, lighting, night_options)
+	var stage_started: int
+	if not await _build_checkpoint(checkpoint, "Preparing world"):
+		return _cancelled_build_result(context, "Preparing world")
+	stage_started = Time.get_ticks_usec()
+	_build_environment_stage(context)
+	_record_construction_span(context, "environment", stage_started)
+
+	if not await _build_checkpoint(checkpoint, "Building landscape"):
+		return _cancelled_build_result(context, "Building landscape")
+	stage_started = Time.get_ticks_usec()
+	var field_continues: bool = await _build_field_stage_async(context)
+	_record_construction_span(context, "field", stage_started)
+	if not field_continues:
+		return _cancelled_build_result(context, "Building landscape")
+
+	if not await _build_checkpoint(checkpoint, "Preparing sky"):
+		return _cancelled_build_result(context, "Preparing sky")
+	stage_started = Time.get_ticks_usec()
+	_build_sky_stage(context)
+	_record_construction_span(context, "sky_lights", stage_started)
+
+	if not await _build_checkpoint(checkpoint, "Preparing field lighting"):
+		return _cancelled_build_result(context, "Preparing field lighting")
+	stage_started = Time.get_ticks_usec()
+	_build_airfield_stage(context)
+	_record_construction_span(context, "airfield", stage_started)
+
+	if not await _build_checkpoint(checkpoint, "Finalizing world"):
+		return _cancelled_build_result(context, "Finalizing world")
+	stage_started = Time.get_ticks_usec()
+	_finalize_build_stage(context)
+	_record_construction_span(context, "finalize", stage_started)
+	var result := _build_result(context)
+	result["cancelled"] = false
+	return result
+
+
+static func _new_build_context(parent: Node, field: Dictionary, build_field: Callable, conditions: Dictionary,
+		lighting: Dictionary, night_options: Dictionary) -> Dictionary:
+	return {
+		"parent": parent,
+		"field": field,
+		"build_field": build_field,
+		"conditions": conditions,
+		"lighting": lighting,
+		"night_options": night_options,
+		"flowing": false,
+		"lights": {},
+		"upgraded_lights": false,
+		"world_environment": null,
+		"environment": null,
+		"field_node": null,
+		"field_build_ms": 0.0,
+		"field_work_ms": 0.0,
+		"sun": null,
+		"storm_bank": null,
+		"stars": null,
+		"lights_node": null,
+		"airfield_lighting": null,
+		"construction_spans": {},
+	}
+
+
+static func _build_environment_stage(context: Dictionary) -> void:
+	var parent: Node = context.parent
+	var field: Dictionary = context.field
+	var lighting: Dictionary = context.lighting
+	var conditions: Dictionary = context.conditions
+	_night_options = resolve_night_options(context.night_options)
 	_night_profile = str(_night_options.field_lighting)
 	_night_owner = weakref(parent)
 	_night_helper = null
@@ -321,21 +416,68 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	parent.add_child(world_environment)
 	if LandscapeOptions.enabled():
 		SunGlare.attach(parent, environment)
+	context.conditions = conditions
+	context.flowing = flowing
+	context.lights = lights
+	context.upgraded_lights = upgraded_lights
+	context.world_environment = world_environment
+	context.environment = environment
 
-	var field_node: Node3D = null
-	var t0 := Time.get_ticks_usec()
+
+static func _build_field_stage(context: Dictionary) -> void:
+	var started: int = Time.get_ticks_usec()
+	var build_field: Callable = context.build_field
 	if build_field.is_valid():
 		build_field.call()
 	else:
-		field_node = FieldBuilder.build(field, lighting)
-	var field_build_ms := (Time.get_ticks_usec() - t0) / 1000.0
-	if field_node != null:
-		parent.add_child(field_node)
+		var field_node: Node3D = FieldBuilder.build(context.field, context.lighting)
+		context.field_node = field_node
+		if field_node != null:
+			context.parent.add_child(field_node)
+	_finish_field_stage(context, started, (Time.get_ticks_usec() - started) / 1000.0)
+
+
+static func _build_field_stage_async(context: Dictionary) -> bool:
+	var started: int = Time.get_ticks_usec()
+	var build_field: Callable = context.build_field
+	var callback_result: Variant = null
+	if build_field.is_valid():
+		callback_result = await build_field.call()
+	else:
+		var field_node: Node3D = FieldBuilder.build(context.field, context.lighting)
+		context.field_node = field_node
+		if field_node != null:
+			context.parent.add_child(field_node)
+	var elapsed_ms := (Time.get_ticks_usec() - started) / 1000.0
+	var synchronous_ms := elapsed_ms
+	if callback_result is Dictionary and _finite_number(callback_result.get("field_build_ms", NAN)):
+		synchronous_ms = maxf(float(callback_result.field_build_ms), 0.0)
+	_finish_field_stage(context, started, synchronous_ms, elapsed_ms)
+	return not (callback_result is Dictionary and bool(callback_result.get("cancelled", false)))
+
+
+static func _finish_field_stage(context: Dictionary, started_usec: int, synchronous_ms: float,
+		wall_ms: float = -1.0) -> void:
+	if wall_ms < 0.0:
+		wall_ms = (Time.get_ticks_usec() - started_usec) / 1000.0
+	context.field_build_ms = synchronous_ms
+	context.field_work_ms = wall_ms
+	var environment: Environment = context.environment
+	var field_node: Node3D = context.field_node
 	# A custom field builder attaches its own Field node (the production flight seam).
-	var wind_field: Node3D = field_node if field_node != null else parent.get_node_or_null("Field") as Node3D
+	var wind_field: Node3D = field_node if field_node != null else context.parent.get_node_or_null("Field") as Node3D
 	if wind_field != null:
 		environment.set_meta("fw_wind_field", weakref(wind_field))
 
+
+static func _build_sky_stage(context: Dictionary) -> void:
+	var parent: Node = context.parent
+	var lighting: Dictionary = context.lighting
+	var conditions: Dictionary = context.conditions
+	var flowing: bool = context.flowing
+	var lights: Dictionary = context.lights
+	var upgraded_lights: bool = context.upgraded_lights
+	var environment: Environment = context.environment
 	var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws the sun disc from this light
 	var storm_bank := StormBank.new()
 	storm_bank.name = "StormBank"
@@ -356,6 +498,20 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	if lights_node != null and not upgraded_lights:
 		_night_legacy_lights = weakref(lights_node)
 		lights_node.visible = _legacy_lights_enabled(float(Atmosphere.state.get("sun_elevation_deg", 90.0)))
+	context.sun = sun
+	context.storm_bank = storm_bank
+	context.stars = stars
+	context.lights_node = lights_node
+
+
+static func _build_airfield_stage(context: Dictionary) -> void:
+	var parent: Node = context.parent
+	var field: Dictionary = context.field
+	var lighting: Dictionary = context.lighting
+	var lights: Dictionary = context.lights
+	var upgraded_lights: bool = context.upgraded_lights
+	var environment: Environment = context.environment
+	var lights_node: Node3D = context.lights_node
 	var airfield_lighting: Node3D = null
 	if upgraded_lights:
 		var scenery := {}
@@ -392,6 +548,18 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		fire.configure(bool(_night_options.campfire), environment, SNAPSHOT_LOCAL_LIGHT_GAIN if not lighting.is_empty() else 1.0)
 		_night_fire = weakref(fire)
 		environment.set_meta("fw_night_fire", _night_fire)
+	context.airfield_lighting = airfield_lighting
+
+
+static func _finalize_build_stage(context: Dictionary) -> void:
+	var parent: Node = context.parent
+	var conditions: Dictionary = context.conditions
+	var environment: Environment = context.environment
+	var sun: DirectionalLight3D = context.sun
+	var stars: Node3D = context.stars
+	var lights_node: Node3D = context.lights_node
+	var airfield_lighting: Node3D = context.airfield_lighting
+	var flowing: bool = context.flowing
 	parent.set_meta("night_options", _night_options.duplicate())
 	if conditions.time_of_day:
 		_live = {environment = weakref(environment), sun = weakref(sun), parent = weakref(parent),
@@ -400,10 +568,48 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		_flow = {when = conditions.when.duplicate(), time_scale = float(conditions.time_scale), step = 0,
 			environment = environment, sun = sun, stars = stars, lights_node = lights_node,
 			materials = haze_materials(parent), tonemapper = Atmosphere.state.tonemapper,
-			start_lst = float(Atmosphere.state.lst_deg), latitude = float(conditions.when.latitude_deg), upgraded_lights = upgraded_lights,
+			start_lst = float(Atmosphere.state.lst_deg), latitude = float(conditions.when.latitude_deg), upgraded_lights = context.upgraded_lights,
 			airfield_lighting = airfield_lighting}
-	return {environment = environment, world_environment = world_environment, field = field_node, field_build_ms = field_build_ms, sun = sun,
-		conditions = conditions, sky = Atmosphere.state, night_options = _night_options.duplicate()}
+
+
+static func _build_result(context: Dictionary) -> Dictionary:
+	return {
+		environment = context.environment,
+		world_environment = context.world_environment,
+		field = context.field_node,
+		field_build_ms = context.field_build_ms,
+		field_work_ms = context.field_work_ms,
+		sun = context.sun,
+		conditions = context.conditions,
+		sky = Atmosphere.state,
+		night_options = _night_options.duplicate(),
+		construction_spans = (context.construction_spans as Dictionary).duplicate(),
+	}
+
+
+static func _record_construction_span(context: Dictionary, name: String, started_usec: int) -> void:
+	(context.construction_spans as Dictionary)[name] = (Time.get_ticks_usec() - started_usec) / 1000.0
+
+
+static func _build_checkpoint(checkpoint: Callable, stage: String) -> bool:
+	if not checkpoint.is_valid():
+		return true
+	var keep_going: Variant = await checkpoint.call(stage)
+	return keep_going is bool and keep_going
+
+
+static func _cancelled_build_result(context: Dictionary, stage: String) -> Dictionary:
+	return {
+		cancelled = true,
+		cancelled_at = stage,
+		field_build_ms = context.field_build_ms,
+		field_work_ms = context.field_work_ms,
+		construction_spans = (context.construction_spans as Dictionary).duplicate(),
+	}
+
+
+static func _finite_number(value: Variant) -> bool:
+	return (typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT) and is_finite(float(value))
 
 
 ## Independent presentation choices: explicit build options win over technical CLI defaults.

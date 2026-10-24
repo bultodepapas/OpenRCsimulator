@@ -30,6 +30,8 @@ The upstream `License.txt` is retained beside this file. Fourteen unmodified OGG
 
 Opening, pausing, resuming, restarting, leaving an activity and quitting have explicit cues. Successful Keep uses `saved`; Revert/Stay use `cancel`; failed launch/restart/save/trace recovery use `reject`. Outcomes suppress incidental presses and screen mounts from the same action. Two voices remain the limit; obsolete tails fade over 18 ms and navigation waits for semantic feedback to finish.
 
-Quit sounds only after draft/trace decisions finish. Native audible output waits for its short closing tail, capped at 500 ms; muted and Dummy routes close immediately. Technical flight routes keep menu audio absent.
+Quit sounds only after draft/trace decisions finish. Native audible output waits for its short closing tail, capped at 500 ms; this wait and the voice fades use wall time independently of simulation speed. Muted and Dummy routes close immediately. Window-close recovery preserves the open Settings draft when the user stays. Technical flight routes keep menu audio absent.
+
+Observed menus include controls added or reparented after mounting. Eligibility reads live disabled/editable values from property names cached at registration. Signal bindings and per-control debounce entries are released when controls leave the tree. Home/End/Page keys receive the same range feedback as directional adjustments.
 
 Reproduce the asset bank by copying the table's source files, preserving bytes, then importing with the pinned Godot editor. [Native output probe](../../tools/audio/README.md#menu-feedback) records all cues at default/maximum/muted levels and checks the production closing-tail transaction. Earlier UI-28-R3 evidence describes the superseded Interface Sounds bank.

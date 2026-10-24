@@ -2,7 +2,7 @@
 
 ## Menu feedback
 
-UI-28 uses downloaded CC0 wood and soft impacts. [Source mapping and interaction contract](../../assets/ui-audio/README.md) own the bank. `menu_probe.gd` records the native mixer at 35%, 100% and mute, then exercises the actual committed-Quit tail with a test quit callback. It requires a new output directory and rejects Dummy. The WAV order is listed in the report's `cues` array. It checks nonzero output, mute, headroom and one deferred quit; speaker preference remains a listening judgment.
+UI-28 uses downloaded CC0 wood and soft impacts. [Source mapping and interaction contract](../../assets/ui-audio/README.md) own the bank. `menu_probe.gd` records the native mixer at 35%, 100% and mute, then exercises the actual committed-Quit tail at time scales 1, 0 and 16 with a test quit callback. It requires a new output directory and rejects Dummy. The WAV order is listed in the report's `cues` array. It checks sequence output, mute and headroom; logical cue acceptance does not establish individual cue audibility. Quit captures stop at the production quit seam and require one callback, locked input, elapsed wall time within −20/+120 ms of the requested delay and at least 15 ms of trailing digital silence. These qualify mixer timing, not hardware output latency or speaker preference. `--quit-only` skips the three cue sequences.
 
 ```sh
 python tools/godot/run_checked.py --timeout 90 -- godot --display-driver headless --audio-driver WASAPI --path app --script /absolute/repo/tools/audio/menu_probe.gd -- --out=/absolute/new/output/menu

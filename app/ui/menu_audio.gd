@@ -87,7 +87,7 @@ const NAVIGATION_ACTIONS: PackedStringArray = [
 	"ui_up", "ui_down", "ui_left", "ui_right", "ui_focus_next", "ui_focus_prev",
 ]
 const RANGE_ACTIONS: PackedStringArray = [
-	"ui_up", "ui_down", "ui_left", "ui_right", "ui_home", "ui_end", "ui_page_up", "ui_page_down",
+	"ui_home", "ui_end", "ui_page_up", "ui_page_down",
 ]
 const EXCLUDED_GROUPS: PackedStringArray = ["flight_only", "flight_input"]
 
@@ -146,6 +146,19 @@ func set_top_screen_provider(provider: Callable) -> void:
 	_top_screen_provider = provider
 
 
+func _exit_tree() -> void:
+	if get_tree().node_added.is_connected(_on_node_added):
+		get_tree().node_added.disconnect(_on_node_added)
+	for control_id: int in _observed_controls.keys():
+		_on_control_tree_exiting(control_id)
+	for screen_id: int in _observed_screens.keys():
+		var screen := instance_from_id(screen_id) as Control
+		var callback := Callable(self, "_on_screen_tree_exiting").bind(screen_id)
+		if screen != null and screen.tree_exiting.is_connected(callback):
+			screen.tree_exiting.disconnect(callback)
+	_observed_screens.clear()
+
+
 ## Observes a mounted menu, including controls added or reparented later.
 ## Flight views should not be passed to this method.
 func observe(screen: Control) -> int:
@@ -168,6 +181,8 @@ func _on_node_added(node: Node) -> void:
 
 
 func _observe_added_control(control_id: int) -> void:
+	if not is_inside_tree():
+		return
 	var control := instance_from_id(control_id) as Control
 	if control == null or not control.is_inside_tree() or control.is_queued_for_deletion():
 		return
@@ -272,7 +287,7 @@ func _connect_control(control: Control, screen: Control) -> bool:
 			checks.append(property_name)
 	var exiting_callback := Callable(self, "_on_control_tree_exiting").bind(control_id)
 	control.tree_exiting.connect(exiting_callback)
-	connections.append({signal = control.tree_exiting, callback = exiting_callback})
+	connections.append({event_signal = control.tree_exiting, callback = exiting_callback})
 	_observed_controls[control_id] = {checks = checks, connections = connections}
 	return true
 
@@ -281,7 +296,7 @@ func _connect_control_signal(control: Control, signal_name: StringName, handler:
 		screen: Control, connections: Array[Dictionary]) -> void:
 	var callback := Callable(self, handler).bind(control, screen)
 	control.connect(signal_name, callback)
-	connections.append({signal = Signal(control, signal_name), callback = callback})
+	connections.append({event_signal = Signal(control, signal_name), callback = callback})
 
 
 func _is_excluded(node: Node, screen: Control) -> bool:
@@ -533,7 +548,7 @@ func _on_screen_tree_exiting(screen_id: int) -> void:
 func _on_control_tree_exiting(control_id: int) -> void:
 	var observed: Dictionary = _observed_controls.get(control_id, {})
 	for connection: Dictionary in observed.get("connections", []):
-		var control_signal: Signal = connection.signal
+		var control_signal: Signal = connection.event_signal
 		if control_signal.is_connected(connection.callback):
 			control_signal.disconnect(connection.callback)
 	_observed_controls.erase(control_id)

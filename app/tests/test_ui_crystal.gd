@@ -54,6 +54,7 @@ func _run() -> void:
 	_check("panel underlay fills the whole panel outside its content margins", panel_effect._glass.size == panel.size)
 	_check("effects have no frame or physics processing loop", not effect.is_processing() and not effect.is_physics_processing()
 		and not panel_effect.is_processing())
+	_check("panels animate their reflection without unused button energy", panel_effect._energy_tween == null)
 	_check("focus remains a native visible pair of brackets", not button.get_theme_stylebox("focus").draw_center
 		and button.get_theme_stylebox("focus").border_width_left == UiTheme.FOCUS_WIDTH
 		and button.get_theme_stylebox("focus").border_width_right == UiTheme.FOCUS_WIDTH)
@@ -196,6 +197,8 @@ func _interaction_checks() -> void:
 	await _mouse_button(Vector2(80, 110), true)
 	_check("click focus does not restart an existing hover sweep", action.has_focus() and effect._shine_tween == sweep)
 	await _move_pointer(Vector2(1000, 800))
+	_check("leaving a focused button centers its gamepad/keyboard reflection", action.has_focus()
+		and effect._pointer_goal == Vector2(0.5, 0.5))
 	await _mouse_button(Vector2(1000, 800), false)
 	_check("a cancelled press does not activate or play confirmation", activations[0] == 0 and effect._confirm_tween == null)
 	await driver.tap(KEY_ENTER)
@@ -211,6 +214,8 @@ func _interaction_checks() -> void:
 	await driver.joy_button(JOY_BUTTON_A)
 	_check("gamepad selection retains the native toggle and confirms", choice.button_pressed and choice_effect._confirm_tween != null
 		and choice.get_theme_stylebox("pressed").border_color == UiTheme.FOCUS)
+	_check("secondary selection does not allocate unused press shading", choice_effect._press_tween == null
+		and not choice.gui_input.is_connected(Callable(choice_effect, "_pointer_input")))
 	await driver.joy_button(JOY_BUTTON_DPAD_LEFT)
 	_check("rapid navigation releases the old focus without moving controls", action.has_focus() and not choice_effect._engaged
 		and action.get_rect() == original)
@@ -223,6 +228,17 @@ func _interaction_checks() -> void:
 		and effect._uniforms[&"pointer_uv"] == Vector2(0.5, 0.5) and effect._uniforms[&"confirmation"] == 0.0
 		and effect._uniforms[&"base_color"] == effect._base_goal)
 	UiTheme.reduced_motion = false
+	var old_pointer_id: int = effect._pointer_tween.get_instance_id()
+	var new_pointer_ids := {}
+	for i in 200:
+		effect._point_to(Vector2(0.1 + i * 0.003, 0.25))
+		if effect._pointer_tween.get_instance_id() != old_pointer_id:
+			new_pointer_ids[effect._pointer_tween.get_instance_id()] = true
+	await driver.settle()
+	if effect._pointer_tween.get_instance_id() != old_pointer_id:
+		new_pointer_ids[effect._pointer_tween.get_instance_id()] = true
+	_check("a burst of 200 pointer targets allocates one replacement and keeps the newest", new_pointer_ids.size() == 1
+		and effect._pointer_goal.is_equal_approx(Vector2(0.697, 0.25)))
 	# Reversible interruption must preserve the current color, not jump to either endpoint.
 	effect._fade_base(Color(0.1, 0.2, 0.1, 0.8), true)
 	effect._color_tween.pause()
@@ -233,9 +249,20 @@ func _interaction_checks() -> void:
 	effect._point_to(Vector2(0.1, 0.8))
 	effect._confirm()
 	screen.set_active(false)
+	await driver.settle()
 	_check("suspension settles every interaction channel", effect._uniforms[&"confirmation"] == 0.0
-		and not effect._color_tween.is_running() and not effect._pointer_tween.is_running() and not effect._confirm_tween.is_running())
+		and not effect._color_tween.is_running() and not effect._pointer_tween.is_running() and not effect._confirm_tween.is_running()
+		and not effect._pointer_pending and effect._pointer_goal == Vector2(0.5, 0.5))
 	screen.set_active(true)
+	choice.grab_focus()
+	choice.theme_type_variation = &"PrimaryButton"
+	await driver.settle()
+	choice_effect._point_to(Vector2(0.9, 0.9))
+	choice.theme_type_variation = &"HomeNav"
+	await driver.settle()
+	_check("changing material kind retains focus feedback and cancels unused pointer work", not choice_effect._is_primary and choice_effect._engaged
+		and not choice_effect._pointer_pending and not choice.gui_input.is_connected(Callable(choice_effect, "_pointer_input"))
+		and (choice_effect._pointer_tween == null or not choice_effect._pointer_tween.is_running()))
 	var custom := StyleBoxFlat.new()
 	custom.bg_color = Color.DARK_RED
 	action.add_theme_stylebox_override("normal", custom)

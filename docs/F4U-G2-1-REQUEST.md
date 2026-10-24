@@ -1,0 +1,103 @@
+# F4U Corsair g2.1: request to the model author
+
+2026-10-24 · OpenRC Simulator team · Base specification: [Blender delivery request](F4U-BLENDER-HANDOFF.md), sections 3–7 and 9–12 and revision 4 (B1–B8). Review behind this request: [F4U-19](research/f4u-corsair/F4U-19/README.md).
+
+## Summary
+
+g1.24 is accepted. g2.0 is accepted in substance. It passes our preflight, keeps the g1 rig and wheel contacts exactly, costs no measurable frame time, and its engine, cockpit, intakes, gear links and baked seams are a clear step up.
+
+Deliver **g2.1: g2.0 plus the changes below, and nothing else.** F1–F4 are required. I1 is wanted, but must not delay F1–F4.
+
+## Keep unchanged
+
+- All 82 nodes: names, parents, `openrc_section` tags and rest transforms (within 1 × 10⁻⁵).
+- `GearRetract`: its carriers and 101 poses. Export at frame 100 with the gear stowed; the native file opens at frame 0.
+- Wheel radii, axles and ground contacts: tyre diameters 188.30 mm (main) and 77.78 mm (tail).
+- Scale 1:4.5, span 2.7778 m, every skin facing outward.
+- The airframe UVs and the Naval 308 airframe paint.
+- Limits: 300,000–350,000 triangles as target, 450,000 at most, 70 surfaces, 16 materials and 30 MB per GLB.
+
+## Required
+
+### F1 Propeller blade paint
+
+**Problem.** The yellow tip is a separate material (`blade_tip`) assigned to whole triangles of the blade mesh. Its edge follows those triangles, so it shows as irregular slivers, on one face only. The blades have no texture, so g1's decals (the circular logo and the stencil marks) are gone. Your `previews/nose_close.png` shows it.
+
+**Do:**
+
+1. Give the blades one material with a base-colour texture on a blade UV, like g1's `propeller_basecolor` (1024 × 256 is enough). Delete `blade_tip`.
+2. Paint each blade black, with a yellow tip band of g1's width on both faces, its edge straight and square to the blade axis. Put the circular logo and the stencil marks on both faces, at g1's positions.
+3. Make the three blades identical.
+
+**Check:** a close preview of one blade tip, both faces. The band's edge is straight with no steps.
+
+### F2 Wheels
+
+**Problem.** The g2.0 wheels have plain colours only (`tyre_finish`, `gear_finish`, no textures): smooth tyres and a simple disc rim, at 1,664 triangles per main wheel. g1, since g1.8, has grooved tyres, open rims with bolts, caps and valves, and the gear atlas, at 5,752.
+
+**Do:** use the g1.24 wheel meshes (`gear_wheel_left`, `gear_wheel_right`, `gear_wheel_tail`) and their gear atlas in g2.1, unchanged. They have the same radius, axle and contact. If they do not fit g2's hubs or links, rebuild to the same level instead:
+
+- 3,000–5,000 triangles per main wheel and 1,500–2,500 for the tail wheel;
+- tread grooves in the geometry;
+- bolts and valves in the texture.
+
+Keep g2's torque links and retraction links.
+
+**Check:** a close-up of a main wheel and of the tail wheel beside g1.24. Contacts unchanged within 0.01 mm.
+
+### F3 Triangle balance
+
+| Mesh | g2.0 | g2.1 |
+| --- | ---: | ---: |
+| `propeller_rotor` | 35,811 | 12,000–18,000 |
+| `canopy_glass` | 6,431 | about 3,000 |
+| `engine_face` | 13,940 | 20,000–30,000, using the triangles freed above (optional) |
+
+Reduce the flat faces of the blades and the flat panels of the glass. Keep the blade outlines, the hub silhouette and the canopy outline exact.
+
+### F4 One AO texture
+
+The `ao` image equals the red channel of `g2_R59_ao-g2_Naval308_orm`, pixel for pixel. glTF reads occlusion from the red channel. Point the occlusion of `cockpit`, `alloy`, `engine_dark`, `gear_inner_coat` and the new blade material at the ORM image, and remove `ao`. This saves one 2048² map in every livery.
+
+## Wanted
+
+### I1 Shading dents
+
+**Problem.** Without the normal map, the fuselage, canopy and cowl show small dents. The baked map hides most of them, but faint blotches remain below the canopy in direct light. Share of neighbouring triangles meeting at more than 10°:
+
+| Mesh | R59 | g1.24 | g2.0 |
+| --- | ---: | ---: | ---: |
+| `fuselage_core` | 2.7 % | 9.2 % | 23.7 % |
+| `canopy_glass` | 2.4 % | 11.2 % | 26.1 % |
+| `cowl` | 1.1 % | 16.2 % | 22.9 % |
+
+**Do:** relax the dented vertices, or re-project them onto R59's skin, then re-bake the normal and AO maps.
+
+**Check:** under 10 % on all three meshes, measured with `research/f4u-corsair/F4U-18/glb_shading.py` (column `dihedral >10°`).
+
+## Before you deliver
+
+Run these from the repository root (`C:\DEVELOPMENT\OpenRCsimulator`) and put the outputs in `checks/`:
+
+```sh
+python research/f4u-corsair/F4U-04/preflight_glb.py <g2_1>/export/aircraft.glb --profile f4u-g2
+python research/f4u-corsair/F4U-18/glb_orientation.py <g2_1>/export/aircraft.glb
+python research/f4u-corsair/F4U-18/glb_shading.py <g2_1>/export/aircraft.glb fuselage_core canopy_glass cowl
+```
+
+- The preflight passes with no warnings, and `fuselage_core`'s outward share is at least 0.8.
+- Your verifier, rig and clearance audit, and deviation report pass as they did for g2.0.
+- Render Eevee previews with back-face culling on: a blade tip (both faces), the main and tail wheels beside g1.24, the nose at 1.5 m and a three-quarter view.
+
+## Package
+
+- Folder `f4u_corsair/g2_1/`, with the same layout as g2.0.
+- `CHANGELOG.md` gets one entry listing exactly F1–F4 and I1 if done.
+- `README.md` figures and `metadata.json` are current; `SHA256SUMS.txt` covers every file.
+- Naval 308 only. The owner will send the list of other liveries (at most eight) separately; do not start them yet.
+
+## How we accept g2.1
+
+1. The three checks above.
+2. A side-by-side render against g1.24 and g2.0 from the F4U-18 bench cameras.
+3. Integration into the simulator: freeze, model compile, `verify_f4u.gd`, the liveries suite, and the retract, flap and fold checks in the production scene.

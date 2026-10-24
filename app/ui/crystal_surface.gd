@@ -116,7 +116,10 @@ func _rebuild_styles() -> void:
 		_target.add_theme_stylebox_override(key, skin)
 	_target.end_bulk_theme_override()
 	_updating = false
+	var was_primary := _is_primary
 	_is_primary = _button != null and _target.theme_type_variation in PRIMARY_TYPES
+	if was_primary != _is_primary:
+		_settle() # Do not carry pending input or unused channels into another material kind.
 	# Secondary controls have no pointer-local lighting and need no GUI-input listener.
 	if _is_primary and not _target.gui_input.is_connected(_pointer_input):
 		_target.gui_input.connect(_pointer_input)
@@ -127,6 +130,8 @@ func _rebuild_styles() -> void:
 	var accent := UiTheme.ERROR if _target.theme_type_variation == &"DestructiveButton" else UiTheme.FOCUS
 	_uniform(&"emission_color", UiTheme.GLASS_EMISSION if _is_primary else (accent if _button != null else UiTheme.SURFACE_LIGHT))
 	_sync_state(false)
+	if was_primary != _is_primary and _button != null and (_button.has_focus() or _button.is_hovered()):
+		_engage()
 
 
 func _sync_state(animate := true) -> void:
@@ -156,7 +161,7 @@ func _fade_base(color: Color, animate: bool) -> void:
 	if animate and _base_goal == color and _uniforms.has(&"base_color"):
 		return
 	_base_goal = color
-	if not animate or not _can_animate() or not _uniforms.has(&"base_color"):
+	if not animate or not _can_animate() or not _uniforms.has(&"base_color") or _uniforms[&"base_color"] == color:
 		if _color_tween != null and _color_tween.is_valid(): _color_tween.kill()
 		_uniform(&"base_color", color)
 		return
@@ -236,7 +241,7 @@ func _pointer_input(event: InputEvent) -> void:
 
 
 func _point_to(position: Vector2) -> void:
-	if not _can_animate() or _pointer_goal.is_equal_approx(position):
+	if not _is_primary or not _can_animate() or _pointer_goal.is_equal_approx(position):
 		return
 	_pointer_goal = position
 	_settled = false
@@ -253,8 +258,12 @@ func _flush_pointer() -> void:
 	if not _can_animate():
 		_settle()
 		return
+	var current: Vector2 = _uniforms.get(&"pointer_uv", POINTER_CENTER)
+	if current.is_equal_approx(_pointer_goal):
+		if _pointer_tween != null and _pointer_tween.is_valid(): _pointer_tween.kill()
+		return
 	_pointer_tween = _replace_tween(_pointer_tween)
-	_pointer_tween.tween_method(_pointer, _uniforms.get(&"pointer_uv", POINTER_CENTER), _pointer_goal, 0.12)
+	_pointer_tween.tween_method(_pointer, current, _pointer_goal, 0.12)
 
 
 func _pointer(value: Vector2) -> void:
