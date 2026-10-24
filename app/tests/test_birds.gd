@@ -30,7 +30,8 @@ const SAMPLE_S := 0.5
 const JOINT_PROBE_S := 1e-3
 const SUN_PER_TRANSITION_DEG := 1.0 # the sun moves <= 0.63 deg during the longest (150 s) transition
 
-# Measured ranges (SC-BIRD-00 section 4): speed (m/s), bank (deg), world height of every bird (m), circling.
+# Measured ranges (SC-BIRD-00 section 4): speed (m/s), bank (deg), world height of every bird (m), circling; roll
+# (deg per 0.05 s, default 2.5): swallows reach 4.4 g in turns (Warrick et al. 2016) and flick from bank to bank.
 const LIMITS := {
 	"vulture_kettle": {speed = [8.0, 14.5], bank = [16.0, 35.0], height = [85.0, 160.0], circle_radius = [16.0, 30.0],
 		turn_period = [10.0, 19.5], climb = [0.04, 2.08]},
@@ -38,8 +39,8 @@ const LIMITS := {
 		turn_period = [10.98, 16.32], climb = [0.04, 2.52]},
 	"kite_quartering": {speed = [5.5, 9.0], bank = [0.0, 27.0], height = [TREE_TOP_M + 8.0, 70.0],
 		circle_radius = [8.1, 16.0], turn_period = [8.0, 16.0], climb = [0.09, 2.0]},
-	"swallow_coursing": {speed = [6.0, 12.5], bank = [0.0, 60.0], height = [0.25, 4.1]},
-	"swift_party": {speed = [7.0, 12.5], bank = [0.0, 60.0], height = [CLUB_TREE_TOP_M + 5.0, 40.0]},
+	"swallow_coursing": {speed = [6.0, 12.5], bank = [0.0, 60.0], height = [0.25, 4.1], roll = 10.0},
+	"swift_party": {speed = [7.0, 12.5], bank = [0.0, 60.0], height = [CLUB_TREE_TOP_M + 5.0, 40.0], roll = 10.0},
 }
 
 var _failures := 0
@@ -154,6 +155,25 @@ func _test_tracks(loaded: Dictionary) -> void:
 			_check(name + ": bank in the measured range %s" % [lim.bank],
 				stats.bank_max <= lim.bank[1] and (not lim.has("circle_radius") or stats.circle_bank_min >= lim.bank[0]),
 				"circles %.1f, max %.1f" % [stats.circle_bank_min, stats.bank_max])
+			# Bank: exact inside a long arc (the true lateral acceleration, not the second difference's chord-shortened
+			# value) and rolled smoothly across every joint.
+			var interior := 0.0
+			for s: Dictionary in track.segments:
+				if float(s.duration) > 2.0 * BirdTracks.BANK_STEP_S + 0.2:
+					var mid: float = float(s.t) + float(s.duration) * 0.5
+					var exact: float = atan2(float(s.kappa) * float(s.v) * float(s.v), 9.81)
+					interior = maxf(interior, absf(BirdTracks.kinematics(track, mid).bank - exact))
+			var roll := 0.0
+			var previous_bank: float = BirdTracks.kinematics(track, 0.0).bank
+			var u := 0.05
+			while u <= float(track.period):
+				var bank_now: float = BirdTracks.kinematics(track, u).bank
+				roll = maxf(roll, rad_to_deg(absf(bank_now - previous_bank)))
+				previous_bank = bank_now
+				u += 0.05
+			var roll_limit: float = lim.get("roll", 2.5) # deg per 0.05 s: soarers roll slowly, swallows and swifts flick
+			_check(name + ": bank exact inside arcs and rolled smoothly across joints (max %.2f of %.1f deg per 0.05 s)" % [
+				roll, roll_limit], interior < 1e-9 and roll <= roll_limit, "interior error %.9f rad" % interior)
 			if lim.has("circle_radius"):
 				var circles: Array = _circles(track)
 				var ok := not circles.is_empty()
@@ -319,14 +339,18 @@ func _test_planforms(loaded: Dictionary) -> void:
 		_check("%s: every species shares one topology (%d triangles)" % [group, builds[0].triangles], same)
 		var mesh: ArrayMesh = BirdPlanform.group_mesh(builds)
 		var arrays: Array = mesh.surface_get_arrays(0)
-		var shapes_ok := true
+		var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+		var shapes_ok: bool = indices.size() == builds[0].vertices.size()
 		for slot: int in BirdPlanform.MAX_SPECIES:
 			var custom: PackedFloat32Array = arrays[Mesh.ARRAY_CUSTOM0 + slot]
-			var b: Dictionary = builds[mini(slot, builds.size() - 1)] if slot < builds.size() else builds[0]
+			var b: Dictionary = builds[slot] if slot < builds.size() else builds[0]
 			for i: int in b.vertices.size():
-				shapes_ok = shapes_ok and Vector3(custom[i * 4], custom[i * 4 + 1], custom[i * 4 + 2]) == b.vertices[i] \
-					and custom[i * 4 + 3] == b.weights[i]
-		_check("%s: CUSTOM0..3 carry each species' shape and rig weights" % group, shapes_ok)
+				var j: int = indices[i]
+				shapes_ok = shapes_ok and Vector3(custom[j * 4], custom[j * 4 + 1], custom[j * 4 + 2]) == b.vertices[i] \
+					and custom[j * 4 + 3] == b.weights[i] and (arrays[Mesh.ARRAY_TEX_UV][j] as Vector2).y == builds[0].shades[i]
+		var unique: int = (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size()
+		_check("%s: indexed mesh, every corner keeps each species' shape, rig weights and shade (%d vertices for %d corners)" % [
+			group, unique, indices.size()], shapes_ok and unique < indices.size())
 
 
 func _snapshot(local_hour: float) -> Dictionary:
@@ -568,6 +592,16 @@ func _check_shader_tables(node: MultiMeshInstance3D) -> void:
 			t += 1.7
 	_check("%s: float32 shader tables within 5 cm of the float64 tracks over 0-2048 s" % node.name, worst < 0.05,
 		"%.4f m" % worst)
+	var worst_lateral := 0.0
+	for ti: int in tracks.size():
+		var t := 0.0
+		while t < 1024.0:
+			var tt: float = fposmod(t, float(tracks[ti].period))
+			worst_lateral = maxf(worst_lateral, absf(BirdTracks.lateral_acceleration(tracks[ti], tt) \
+				- _shader_lateral(packed, ti, tt)))
+			t += 0.37
+	_check("%s: the shader's smoothed lateral acceleration matches the float64 reference (%.5f m/s2)" % [node.name,
+		worst_lateral], worst_lateral < 0.01)
 
 
 ## Every per-species uniform holds that species' data (a list of packed arrays would fill copies and leave zeros).
@@ -587,17 +621,57 @@ func _check_species_uniforms(node: MultiMeshInstance3D) -> void:
 	_check("%s: colour, gait, departure and rig uniforms hold each species' data" % node.name, ok)
 
 
-## GDScript copy of sky_birds.gdshader track_pos() (float32 tables, same branch structure).
+## GDScript copy of sky_birds.gdshader track_segment(): the repeat directly, then its motif (float32 tables).
+func _shader_segment(packed: Dictionary, info: Vector4, tt: float) -> int:
+	var repeats: int = int(info.w + 0.5)
+	var motif: int = int(info.y + 0.5) / repeats
+	var base: int = int(info.x + 0.5) + mini(int(tt / (info.z / float(repeats))), repeats - 1) * motif
+	var index: int = base
+	for i: int in range(1, 16):
+		if i >= motif or packed.seg_a[base + i].w > tt:
+			break
+		index = base + i
+	return index
+
+
+## GDScript copy of sky_birds.gdshader smoothed_lateral() (float32 tables, same loop).
+func _shader_lateral(packed: Dictionary, track: int, tt: float) -> float:
+	var info: Vector4 = packed.track_info[track]
+	var first: int = int(info.x + 0.5)
+	var count: int = int(info.y + 0.5)
+	var period: float = info.z
+	var h: float = BirdTracks.BANK_STEP_S
+	var w0: float = tt - h
+	var w1: float = tt + h
+	var offset: float = -period if w0 < 0.0 else 0.0
+	var index: int = _shader_segment(packed, info, w0 - offset)
+	var lateral := 0.0
+	for k: int in 8:
+		var last: int = first + count - 1
+		var start: float = packed.seg_a[index].w + offset
+		var end: float = (packed.seg_a[index + 1].w if index < last else period) + offset
+		var b: Vector4 = packed.seg_b[index]
+		var lo: float = maxf(start, w0)
+		var hi: float = minf(end, w1)
+		if hi > lo:
+			lateral += b.x * b.y * b.y * (BirdTracks._kernel_cdf(hi - tt) - BirdTracks._kernel_cdf(lo - tt))
+		if end >= w1:
+			break
+		if index == last:
+			index = first
+			offset += period
+		else:
+			index += 1
+	return lateral
+
+
+## GDScript copy of sky_birds.gdshader segment lookup and segment_pos() (float32 tables, same branch structure).
 func _shader_track_pos(packed: Dictionary, track: int, t: float) -> Vector3:
 	var info: Vector4 = packed.track_info[track]
 	var first: int = int(info.x + 0.5)
 	var count: int = int(info.y + 0.5)
 	var tt: float = fposmod(t, info.z)
-	var index: int = first
-	for i: int in range(1, BirdData.MAX_SEGMENTS_PER_GROUP):
-		if i >= count or packed.seg_a[first + i].w > tt:
-			break
-		index = first + i
+	var index: int = _shader_segment(packed, info, tt)
 	var a: Vector4 = packed.seg_a[index]
 	var b: Vector4 = packed.seg_b[index]
 	var d: float = tt - a.w

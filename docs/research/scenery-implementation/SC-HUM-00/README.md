@@ -1,6 +1,6 @@
 # SC-HUM-00 — Baseline: authoring toolchain and sources
 
-Status: **partial, 2026-10-24.** The authoring toolchain and source intake are verified. The scene-budget re-baseline, the camera census and the reference photo board are still open. Plan: [field people plan](../../../plans/field-people.md).
+Status: **done except the reference photo board, 2026-10-24.** Toolchain, source intake, camera census and the scene-budget re-baseline (after SC-HUM-02…08) are complete. Plan: [field people plan](../../../plans/field-people.md).
 
 ## Toolchain (local, untracked under `.tools/`)
 
@@ -65,7 +65,20 @@ Consequences for the plan:
 - In flight, the **flight-line pilots are the only people seen at readable size**. The auto zoom makes their heads larger than the plan's 50° estimate (17–20 px). Their transmitters (SC-HUM-01) and faces matter most.
 - Pits, workers and spectators are behind the pilot. In the flight cameras they are a few pixels tall. Their detail serves ground, taxi, Home and trailer views, not flight.
 
+## Scene budget after SC-HUM-02…08 (2026-10-24)
+
+`OPENRC_SCENE_DETAIL=high tools/scenery/budget.sh` (1280×720 qualification viewport, llvmpipe; the guard's own convention). [Summary](budget/summary-high.md), [JSON](budget/summary-high.json). Compared with the previous High run ([L8a-R1](../../visual-quality-implementation/L8a-R1/budget/summary-720.md)):
+
+| Measure | Before | After |
+| --- | ---: | ---: |
+| `scenery_Population` draws, pilot / ground / aerial | 49 / 49 / 49 | **40 / 41 / 41** |
+| `scenery_Population` drawn primitives, pilot max | 272,487 | 254,803 |
+| Pilot-view total draws, worst view (limit 360) | 350 | 342 |
+| Renderer texture estimate | 473 MiB | 471 MiB |
+| `scene_budget.json` | pass | **all limits pass** |
+
+Six different people, with mipmapped VRAM-compressed atlases, cost no more texture memory than LU-21's single uncompressed person set, and free about 8–9 draws in every view class. The whole-scene totals also include other tracks' concurrent changes, so the population line is the attributable figure.
+
 ## Open in this step
 
-- Scene budget per preset with `tools/scenery/budget.sh`.
 - Reference photo board for the owner's silhouette overlay.
