@@ -20,7 +20,8 @@ Use this order for planning, optimization and acceptance evidence. A 720p viewpo
 - To inspect or drive a running app (state, live log, menus, keys, sticks, pause/step, screenshots, hitches, leaks,
   watchpoints, UI fuzzing), use the [debug bridge](tools/debug/README.md) instead of ad-hoc probes or mouse automation.
   `python3 tools/debug/debugctl.py smoke` is the one-command regression pass for the running app.
-- Agent skills: `openrc-tools` (which tool for which task) and `openrc-debug` (the running app), in `.claude/skills/`
+- Agent skills: `openrc-tools` (which tool for which task), `openrc-debug` (the running app) and `openrc-blender`
+  (Blender work, before the vendored blender-skills pack; [tools/blender](tools/blender/README.md)), in `.claude/skills/`
   and `.agents/skills/`.
 
 ## Start here

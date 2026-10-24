@@ -3,6 +3,7 @@
 #   - a Z toggle or manual zoom never jumps the FOV and settles on the law; Backspace returns to it;
 #   - chase: settled pose, frame-rate independence, circle/vertical/tail-slide/terrain/teleport cases;
 #   - CAM-24: chase frame-rate independence in a bank and a loop (sub-steps), no slide after entry (state velocity);
+#   - CAM-02b: each view's near plane (pilot 0.5 m, chase and close-up 0.25 m, orbit shrinking near the airframe);
 #   - CAM-27: after a crash the orbit, chase and close-up look at the wreck; the orbit still turns; pilot untouched;
 #   - orbit: starts where the previous view was, clamps, keeps clear of the ground.
 # Run: godot --headless --path . --script res://tests/test_camera_views.gd
@@ -67,6 +68,7 @@ func _run() -> void:
 	_pilot_fov_reference()
 	_pilot_zoom()
 	_cycle()
+	_near_planes()
 	_chase()
 	_chase_smoothness()
 	_orbit()
@@ -196,6 +198,28 @@ func _cycle() -> void:
 	_check("unknown view refused", not rig.set_view("cockpit") and rig.view == "closeup")
 	_check("names keep the historical panel text", rig.view_name() == "close-up" and CameraRig.NAMES.pilot == "pilot")
 	cam.queue_free()
+
+
+func _near_planes() -> void:
+	var cam := _camera()
+	var rig := CameraRig.new(cam, SPAN)
+	var target := Vector3(0, 30, -80)
+	var airplane := Transform3D(_level(0.0), target)
+	var seen := {}
+	for view: String in ["pilot", "chase", "closeup", "orbit"]:
+		rig.set_view(view)
+		rig.update(target, airplane, _level(0.0), 1.0 / 60.0, false, _flat)
+		seen[view] = cam.near
+	_check("CAM-02b near planes: pilot 0.5, chase 0.25, close-up 0.25, orbit 0.25 at its default distance",
+		is_equal_approx(seen.pilot, 0.5) and is_equal_approx(seen.chase, 0.25) and is_equal_approx(seen.closeup, 0.25)
+		and is_equal_approx(seen.orbit, 0.25), str(seen))
+	rig.orbit.distance = OrbitView.MIN_SPANS * SPAN
+	rig.update(target, airplane, _level(0.0), 1.0 / 60.0, false, _flat)
+	_check("CAM-02b orbit at its closest: 5 cm near plane (a wing tip can be ~0.2 m away)", is_equal_approx(cam.near, CameraRig.ORBIT_NEAR_MIN), "%.3f" % cam.near)
+	rig.look = Vector2(90.0, 10.0)
+	rig.update(target, airplane, _level(0.0), 1.0 / 60.0, false, _flat)
+	_check("CAM-02b landscape look views use the pilot's near plane", is_equal_approx(cam.near, 0.5))
+	cam.free()
 
 
 func _chase() -> void:

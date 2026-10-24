@@ -27,6 +27,13 @@ const CHASE_ZOOM_MAX := 4.0
 const FOV_JUMP_HALF_LIFE := 0.15
 const PILOT_FOV_MIN := 1.0
 const PILOT_FOV_MAX := 120.0
+## CAM-02b: near plane per view (m). Compatibility's 24-bit depth step grows as z²/near (0.6 m at 1 km with 0.1 m),
+## so each view takes the largest near plane its closest geometry allows. Pilot: the nearest surface is the station
+## barrier, 1.11 m from the eye (CAM-02b probe), still 0.52 m deep at the widest manual zoom. Chase and close-up stay
+## ≥ 1 m from the airframe. The orbit can come within centimetres of a wing tip, so its near plane shrinks with distance.
+const NEAR_M := { pilot = 0.5, chase = 0.25, closeup = 0.25 }
+const ORBIT_NEAR_MIN := 0.05
+const ORBIT_NEAR_MAX := 0.25
 ## CAM-27: the close-up's view of a wreck (the crash director's former fixed framing, now kept on the wreck itself).
 const WRECK_CLOSEUP_OFFSET := Vector3(5.0, 3.2, 6.0)
 const WRECK_CLOSEUP_FOV := 58.0
@@ -146,6 +153,7 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 	# SUN-04: the pilot's eyes see the sun as an eye (veil, afterimage); the other views are camera lenses (flares).
 	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or not is_nan(look.x) else "lens")
 	_orbit_entry_eye = Vector3.INF
+	camera.near = near_plane()
 	if not is_nan(look.x):
 		PilotCamera.look(camera, look.x, look.y, look_height)
 		return
@@ -190,6 +198,14 @@ func focus(point: Vector3, ground_y: Callable) -> void:
 				eye.y = maxf(eye.y, (y if is_finite(y) else 0.0) + WRECK_CLEARANCE_M)
 			camera.transform = Transform3D(CameraMath.look_basis(eye, point), eye)
 			camera.fov = WRECK_CLOSEUP_FOV
+
+
+## The current view's near plane (m); the landscape look views stand at the pilot's eye.
+func near_plane() -> float:
+	if view == "orbit" and is_nan(look.x):
+		# Half the gap between the camera and a sphere of 0.7 span around the CG: 0.25 m at the default two spans.
+		return clampf(0.5 * (orbit.distance - 0.7 * _span), ORBIT_NEAR_MIN, ORBIT_NEAR_MAX)
+	return float(NEAR_M.get(view if is_nan(look.x) else "pilot", NEAR_M.pilot))
 
 
 func evidence() -> Dictionary:

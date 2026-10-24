@@ -25,5 +25,15 @@ The agent client starts `mcp-server.sh` itself after you approve the project ser
 - On this GPU-less VM, `get_screenshot_of_window_as_image` returns a black image under Xvfb. `render_thumbnail_to_path` and `render_viewport_to_path` work. They write into Blender's temporary folder (`/tmp/blender_*/blender_mcp/`) whatever path is passed.
 - Verified end to end with the MCP Python client: 26 tools listed; `execute_blender_code` and `get_objects_summary` on the Radiolink T12D delivery; a thumbnail render under `--gui`.
 - **Security:** the server runs any Python an agent sends, with your user rights and no guard (Blender Lab's warning). It listens on localhost only. Run it on this development VM; stop the bridge when you are done.
+- `--gui` runs Blender under `xvfb-run`; stopping the wrapper can leave Blender listening. Check with `ss -ltn | grep 9876` and stop the Blender process by its PID.
+- Agent code runs in a weak sandbox that blocks only quitting Blender and resetting preferences; `result` must be a dict.
 - Use one bridge per port. To run another, set `BLENDER_MCP_PORT` for both the bridge and the `.mcp.json` entry.
 - The people generators (`tools/scenery/population/`) keep their own isolated profile in `.tools/sc-hum-authoring/` and do not use MCP.
+
+## Skills
+
+Agents get Blender craft from the [blender-skills](https://github.com/arjun988/blender-skills) pack (MIT, © blender-skills contributors). It is pinned at commit `8f778d2405a214b508d4c7d80742be8e43acdd52` (v1.3.0, 2026-07-10) and copied unmodified into `.claude/skills/` (Claude Code) and `.agents/skills/` (Codex). That is 94 skills plus their shared `references/`, with the licence in `blender-skills-LICENSE.txt`. Start with `blender-director`.
+
+The pack targets the community `ahujasid/blender-mcp` server. The project skill [openrc-blender](../../.claude/skills/openrc-blender/SKILL.md) adapts it to the official server and this VM, and adds the repository rules (immutable deliveries, generator-only assets, no committed images). It wins on conflict.
+
+To update the pack, clone the new commit and copy its `.claude/skills/*` over both folders. Review the diff for instructions that conflict with the project rules, and update the commit above.
