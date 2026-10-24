@@ -6,8 +6,10 @@ const Units := preload("res://render/overlays/units.gd")
 
 ## BAT-15: "battery" is O9; it shows only when the aircraft has a dynamic battery.
 const CLASSIC_IDS := ["airspeed_dial", "attitude", "altimeter", "heading", "variometer"]
-const IDS := ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls", "battery", "speed", "height", "power", "weather", "fuel", "trims", "engine", "airspeed_dial", "attitude", "altimeter", "heading", "variometer"]
-const PLAYER_IDS := ["speed", "height", "power", "weather", "fuel", "trims", "engine", "airspeed_dial", "attitude", "altimeter", "heading", "variometer"]
+const IDS := ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls", "battery", "speed", "height", "power", "weather", "fuel", "trims", "engine", "airspeed_dial", "attitude", "altimeter", "heading", "variometer", "pilot_radar", "wind_track", "cruise_efficiency", "maneuver", "glide", "flight_summary"]
+const NAVIGATION_IDS := ["pilot_radar", "wind_track", "cruise_efficiency"]
+const TRAINING_IDS := ["maneuver", "glide", "flight_summary"]
+const PLAYER_IDS := ["speed", "height", "power", "weather", "fuel", "trims", "engine", "airspeed_dial", "attitude", "altimeter", "heading", "variometer", "pilot_radar", "wind_track", "cruise_efficiency", "maneuver", "glide", "flight_summary"]
 const WIDGET_SIZES := ["small", "normal", "large"]
 const WIDGET_SIZE_SCALES := {"small": 0.85, "normal": 1.0, "large": 1.2}
 const DEFAULT_WIDGET_SIZE := "normal"
@@ -16,7 +18,7 @@ const DEFAULT_WIDGET_OPACITY := 0.94
 const WIDGET_OPACITY_MIN := 0.80
 const WIDGET_OPACITY_MAX := 1.0
 const DEFAULT_WIDGET_COMPACT := false
-const PRESET_ORDER := ["off", "pilot", "full", "developer", "player", "instruments", "cockpit"]
+const PRESET_ORDER := ["off", "pilot", "full", "developer", "player", "instruments", "cockpit", "navigation", "training"]
 const PRESETS := {
 	off = [],
 	pilot = ["flight", "transmitter", "warnings", "wind", "controls", "battery"],
@@ -25,6 +27,8 @@ const PRESETS := {
 	player = ["warnings", "speed", "height", "power", "weather"],
 	instruments = ["warnings", "speed", "height", "power", "weather", "fuel", "trims", "engine"],
 	cockpit = ["warnings", "airspeed_dial", "attitude", "altimeter", "heading", "variometer"],
+	navigation = ["warnings", "pilot_radar", "wind_track", "cruise_efficiency"],
+	training = ["warnings", "maneuver", "glide", "flight_summary"],
 }
 const DEVELOPER := ["diagnostics", "performance"]
 const RADIO_MODELS := ["jeti_ds24_ii", "radiolink_t16d"]

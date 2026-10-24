@@ -7,6 +7,7 @@ const DEFAULT_PLAYER_POSITIONS := {
 	"speed": Vector2(0, 1), "height": Vector2(1, 1), "power": Vector2(0, 0), "weather": Vector2(1, 0),
 	"fuel": Vector2(0, 0.5), "trims": Vector2(0.5, 0.82), "engine": Vector2(1, 0.53),
 }
+const MODERN_IDS := ["speed", "height", "power", "weather", "fuel", "trims", "engine"]
 const CORE_IDS := ["speed", "height", "power", "weather"]
 
 var _checks := 0
@@ -121,7 +122,7 @@ func _test_zero_speed_graph(manager: CanvasLayer) -> void:
 		await process_frame
 		await process_frame
 	_check("idle aircraft draws a zero-speed trend without losing samples", manager.frames.speed._samples.size() == 3)
-	_check("instrument icons are available offline for every widget", Settings.PLAYER_IDS.all(func(id: String) -> bool:
+	_check("instrument icons are available offline for every widget", MODERN_IDS.all(func(id: String) -> bool:
 		return manager.frames[id]._header_icon.texture != null))
 
 
@@ -136,7 +137,7 @@ func _test_extended_instruments(manager: CanvasLayer) -> void:
 	manager.refresh_numbers(sample)
 	await process_frame
 	await process_frame
-	_check("all instruments preset enables seven player widgets", Settings.PLAYER_IDS.all(func(id: String) -> bool: return manager.frames[id].visible))
+	_check("all instruments preset enables seven player widgets", MODERN_IDS.all(func(id: String) -> bool: return manager.frames[id].visible))
 	_check("fuel displays accepted tank percentage volume and mass", manager.frames.fuel.value_label.text == "37"
 		and manager.frames.fuel.left_value.text == "185 mL" and manager.frames.fuel.right_value.text == "150 g")
 	_check("trim display preserves axis signs and fractions of full travel", manager.frames.trims._trim_labels[0].text == "+3.5%"
@@ -224,9 +225,9 @@ func _test_extended_instruments(manager: CanvasLayer) -> void:
 
 
 func _widgets_separate(manager: CanvasLayer) -> bool:
-	for i in Settings.PLAYER_IDS.size():
-		for j in range(i + 1, Settings.PLAYER_IDS.size()):
-			if manager.frames[Settings.PLAYER_IDS[i]].get_global_rect().intersects(manager.frames[Settings.PLAYER_IDS[j]].get_global_rect()):
+	for i in MODERN_IDS.size():
+		for j in range(i + 1, MODERN_IDS.size()):
+			if manager.frames[MODERN_IDS[i]].get_global_rect().intersects(manager.frames[MODERN_IDS[j]].get_global_rect()):
 				return false
 	return true
 
@@ -249,7 +250,7 @@ func _test_widget_interaction(manager: CanvasLayer) -> void:
 		_check("saved coordinates match the dragged widget's normalized location",
 			(widget.normalized_position() - persisted).length() < 0.01)
 
-	for id: String in Settings.PLAYER_IDS:
+	for id: String in MODERN_IDS:
 		var frame: Control = manager.frames[id]
 		var close_position: Vector2 = frame.close_button.get_global_rect().get_center()
 		_click(close_position)
@@ -328,7 +329,7 @@ func _test_dialog(manager: CanvasLayer) -> void:
 	lock.set_pressed_no_signal(true)
 	lock.toggled.emit(true)
 	_check("dialog lock switch updates widget lock state", manager.settings.get("layout_locked", false)
-		and Settings.PLAYER_IDS.all(func(id: String) -> bool: return manager.frames[id].layout_locked))
+		and MODERN_IDS.all(func(id: String) -> bool: return manager.frames[id].layout_locked))
 	lock.set_pressed_no_signal(false)
 	lock.toggled.emit(false)
 	_check("dialog unlock switch releases the layout", not manager.settings.get("layout_locked", false))
@@ -383,7 +384,7 @@ func _snapshot(time_s: float, airspeed: float) -> Dictionary:
 
 func _widgets_in_bounds(manager: CanvasLayer, size: Vector2i) -> bool:
 	var screen := Rect2(Vector2.ZERO, Vector2(size))
-	for id: String in Settings.PLAYER_IDS:
+	for id: String in MODERN_IDS:
 		var rect: Rect2 = manager.frames[id].get_global_rect()
 		if not screen.encloses(rect) or rect.position.x < 11.0 or rect.position.y < 11.0:
 			return false
@@ -392,7 +393,7 @@ func _widgets_in_bounds(manager: CanvasLayer, size: Vector2i) -> bool:
 
 func _saved_positions_match(manager: CanvasLayer) -> bool:
 	var saved: Dictionary = manager.settings.get("positions", {})
-	for id: String in Settings.PLAYER_IDS:
+	for id: String in MODERN_IDS:
 		var expected: Vector2 = DEFAULT_PLAYER_POSITIONS[id]
 		if saved.has(id):
 			expected = Vector2(saved[id][0], saved[id][1])
@@ -402,7 +403,7 @@ func _saved_positions_match(manager: CanvasLayer) -> bool:
 
 
 func _default_positions_match(manager: CanvasLayer) -> bool:
-	for id: String in Settings.PLAYER_IDS:
+	for id: String in MODERN_IDS:
 		if (manager.frames[id].normalized_position() - DEFAULT_PLAYER_POSITIONS[id]).length() >= 0.01:
 			return false
 	return true
@@ -410,7 +411,7 @@ func _default_positions_match(manager: CanvasLayer) -> bool:
 
 func _widget_rects(manager: CanvasLayer) -> String:
 	var parts := PackedStringArray()
-	for id: String in Settings.PLAYER_IDS:
+	for id: String in MODERN_IDS:
 		parts.append("%s %s" % [id, manager.frames[id].get_global_rect()])
 	return "; ".join(parts)
 

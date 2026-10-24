@@ -61,7 +61,7 @@ Home also offers two separate experimental activities, each with its own control
 | T | Start / save a flight trace |
 | F10 / F11 | Start/stop flight log / mark a maneuver while recording |
 | F3 | Toggle developer overlays |
-| F2 | Cycle flight overlays: off / pilot / full / developer / player / all instruments |
+| F2 | Cycle flight overlays: off / pilot / full / developer / player / all instruments / classic cockpit |
 | F5 | Reload the aircraft data file |
 
 Gear, brake, flap, smoke and glow shortcuts are limited to aircraft with those systems. Keys refer to physical QWERTY positions; in-game Help shows your keyboard's labels. At startup and on Home, a connected controller is selected automatically; with no devices, flight uses the keyboard. Controller settings can override that choice.
@@ -124,6 +124,11 @@ On supported Stik, P-51D and stock Ventage Jet configurations, **J** opens a sep
 
 ## 4. Settings and flight options
 
+The **Flight overlays** dialog has five sections: **Modern**, **Classic**, **Navigation**, **Appearance** and **Other overlays**.
+Preset and Units stay above the scrolling section, and Done stays below it. Use Appearance for widget size,
+background, compact density, position lock and layout reset. Tabs support mouse and keyboard navigation; changing
+a section does not change your flight layout. Developer overlays and transmitter options are under Other overlays.
+
 **Settings.** Home pins Fly and utility actions; scroll for Workshop, practice and RC cars. Settings (Home or Pause) covers windowed/borderless display, themed text size, opaque panels, reduced motion, language, sound, Controls and Help/About. Game and menu-cue volume preview live. Display previews revert after 15 seconds unless kept; Back discards unkept display changes, while language saves immediately. Preferences are separate from aircraft and controller profiles.
 
 Current source adds **Settings → Graphics**: unlimited or 30/60/90/120/144/165/240 FPS,
@@ -158,6 +163,32 @@ Fresh Home preferences select Club field, gentle wind/gusts/turbulence, **Evenin
 **Player instruments.** Pause → Session options → Flight overlays → **Use player layout** enables four instruments: airspeed with recent trend, flight maximum and ground speed; height above terrain with climb/sink, pilot distance and flight time; battery estimate or finite fuel remaining; and wind speed, direction **from** which it blows (north up), and vertical air. The maximum uses 10 Hz samples and resets with the flight. Energy shows unavailable when the aircraft has no supported finite-energy reading. Drag each title to move it; × closes it. Individual switches reopen instruments, **Lock widget positions** prevents dragging, and **Reset widget positions** restores the four corners. Positions and visibility persist across launches; saved positions adapt to the viewport. Existing Pilot layouts remain unchanged.
 
 Select **All instruments** to add **Fuel tank**, **Trims** and **Engine**, or enable them individually. Fuel shows accepted remaining percentage, mL and fuel mass in grams, with reserve warnings (including estimated reserves). Trims show signed aileron, elevator and rudder offsets as percentages of full travel, not degrees. Engine shows RPM, the simulation throttle command, and the aircraft's flight load in g. Unsupported readings remain unavailable. **Size** offers Small/Normal/Large; **Background** adjusts only the panel, preserving text opacity; **Compact instruments** reduces spacing and hides supplementary graphs while keeping values, warnings and trim bars. These choices save with the layout. At 720p, prefer compact instruments when showing all seven; arbitrary dragged layouts may overlap.
+
+**Classic cockpit.** Select this preset in Flight overlays, or **Use cockpit layout**, for five optional round instruments: true airspeed, artificial horizon, altimeter, true heading and vertical speed. Individual switches allow mixing them with modern widgets. Drag the headers, close with ×, or use the shared size, background and position-lock options. Compact mode keeps the dials and numerical readout visible. The default 1080p layout raises the central horizon above bottom-centre notices. On narrow windows, show fewer dials or reposition them; custom layouts may overlap.
+
+The horizon shows pitch and bank, including inverted flight. The altimeter reads height above the simulation datum, with a separate AGL readout; its long and short hands indicate hundreds and thousands of the selected unit. This is not a pressure altimeter. TAS is true airspeed, heading is true rather than magnetic, and the vario shows instantaneous vertical speed. A clipped needle is marked **Scale exceeded**, while its numerical value remains available. Missing telemetry suppresses the needle/horizon instead of implying zero.
+
+**RC navigation.** In the Navigation section, choose **Use RC navigation layout**, or enable its three widgets
+individually. Pilot radar shows horizontal distance and aircraft position relative to the pilot, north up, with an
+automatic range and recent position trail. Its centre is the pilot, not a recorded launch point. Wind & drift shows
+ground track minus nose heading (positive to the right), plus heading-relative head/tailwind and wind blowing to
+the left/right. Track is unavailable below 1 m/s. Cruise efficiency shows sampled electrical consumption per
+ground distance in Wh/km or Wh/mi, power and a trend. It needs finite battery telemetry and at least two seconds
+at 3 m/s or faster, using up to the last ten seconds. It measures consumption, not remaining range or return-home
+reserve. Slow flight, missing readings, long sampling gaps and flight resets clear the estimate. Closing this
+widget stops its sampling; reopening starts a fresh window. All three support dragging, ×, saved positions,
+locking and shared size/background controls. Compact mode retains their navigation diagrams.
+
+**Training instruments.** The Navigation tab also offers **Use training layout** and three individual switches.
+Maneuver meter shows signed body-axis load factor, bank, angle of attack, and sampled minimum/maximum load.
+Its -4…+8 g arc clips with a **Scale exceeded** message while preserving the numerical value; it is not a
+structural-limit warning. Glide monitor shows instantaneous vertical speed and a recent history. Its ground
+glide ratio is horizontal ground speed divided by sink, shown only at >=3 m/s, <=5% throttle, <=20° bank and
+more than 0.2 m/s descent. This is wind-dependent and is not aerodynamic L/D or an energy-compensated vario.
+Flight summary shows simulation time since reset (including ground time), sampled maximum airspeed/AGL,
+integrated ground-track distance and load extrema. Asterisked distance excludes missing or long sampling
+intervals. Statistics continue while the widgets are closed and clear on flight reset. All three share the existing
+drag, ×, lock, saved placement and appearance controls; compact mode keeps diagrams visible.
 
 **Battery (experimental).** Turbo Lumber Evolution uses a finite pack by default; **More flight details → Battery** selects ideal constant voltage. The pack sags under load, recovers at idle, warms and triggers 50% ESC power at low cells (**LVC · land now**). The overlay shows voltage, cell readings, current, power, temperature, mAh used and remaining percentage estimated from mAh, not true charge. Direct routes also use the pack; add `--battery=ideal` for constant voltage. [Plan](plans/battery-realism.md).
 

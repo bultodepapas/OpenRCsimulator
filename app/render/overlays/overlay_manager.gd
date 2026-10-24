@@ -19,7 +19,11 @@ const BatteryPanel := preload("res://render/overlays/battery_panel.gd")
 const BatterySensors := preload("res://render/overlays/battery_sensors.gd")
 const PlayerInstrument := preload("res://render/overlays/player_instrument.gd")
 const ClassicInstrument := preload("res://render/overlays/classic_instrument.gd")
-const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 1), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1)}
+const NavigationInstrument := preload("res://render/overlays/navigation_instrument.gd")
+const NavigationData := preload("res://render/overlays/navigation_data.gd")
+const TrainingInstrument := preload("res://render/overlays/training_instrument.gd")
+const FlightMetrics := preload("res://render/overlays/flight_metrics.gd")
+const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 0.82), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1), pilot_radar = Vector2(0, 1), wind_track = Vector2(1, 1), cruise_efficiency = Vector2(1, 0), maneuver = Vector2(0, 1), glide = Vector2(1, 1), flight_summary = Vector2(1, 0)}
 const FUEL_RESERVE_WARNING_STREAM: AudioStream = preload("res://assets/ui/audio/reject.ogg")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.
@@ -61,6 +65,10 @@ var peak_airspeed := NAN
 var _peak_time := -INF
 var _battery_reading := {}
 var _player_theme: Theme
+var _settings_applied := false
+var _player_layout_pending := false
+var navigation_data := NavigationData.new()
+var flight_metrics := FlightMetrics.new()
 
 
 func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> void:
@@ -118,12 +126,20 @@ func _build() -> void:
 	_place(controls, Control.PRESET_TOP_LEFT)
 	_place(BatteryPanel.new(), Control.PRESET_CENTER_RIGHT) # docked by _dock_battery()
 	for id: String in PLAYER_POSITIONS:
-		var widget: Control = ClassicInstrument.new(id) if id in Settings.CLASSIC_IDS else PlayerInstrument.new(id)
+		var widget: Control
+		if id in Settings.NAVIGATION_IDS:
+			widget = NavigationInstrument.new(id)
+		elif id in Settings.TRAINING_IDS:
+			widget = TrainingInstrument.new(id)
+		elif id in Settings.CLASSIC_IDS:
+			widget = ClassicInstrument.new(id)
+		else:
+			widget = PlayerInstrument.new(id)
 		widget.theme = _player_theme
 		_place(widget, Control.PRESET_TOP_LEFT)
 		widget.moved.connect(_save_widget_position)
-		widget.resized.connect(_layout_player_widgets)
-	root.resized.connect(_layout_player_widgets)
+		widget.resized.connect(_queue_player_layout)
+	root.resized.connect(_queue_player_layout)
 	# Reflow only when layout changes, never once per simulation tick.
 	for id: String in ["controls", "diagnostics", "warnings"]:
 		frames[id].resized.connect(_dock_diagnostics)
@@ -131,7 +147,18 @@ func _build() -> void:
 	root.resized.connect(_dock_diagnostics)
 
 
+func _queue_player_layout() -> void:
+	if _player_layout_pending: return
+	_player_layout_pending = true
+	_flush_player_layout.call_deferred()
+
+
+func _flush_player_layout() -> void:
+	if _player_layout_pending: _layout_player_widgets()
+
+
 func _layout_player_widgets() -> void:
+	_player_layout_pending = false
 	var positions: Dictionary = settings.get("positions", {})
 	for id: String in PLAYER_POSITIONS:
 		if not frames.has(id): continue
@@ -173,6 +200,8 @@ func reset_flight() -> void:
 	peak_airspeed = NAN
 	_peak_time = -INF
 	battery_sensors.reset()
+	navigation_data.reset()
+	flight_metrics.reset()
 	_battery_reading = {}
 	_fuel_state_known = false
 	_since_text = INF
@@ -216,25 +245,43 @@ func _place(overlay: Control, preset: Control.LayoutPreset) -> void:
 	frames[overlay.get("id")] = overlay
 
 
-## Replaces the settings (validated); `announce` emits settings_changed.
+## Applies changed settings only. A no-op neither redraws widgets nor asks the owner to save again.
 func apply(value: Variant, announce := true) -> void:
-	settings = Settings.validate(value)
-	frames.transmitter.set_radio_model(settings.radio_model)
-	for id: String in IDS:
-		var on: bool = settings.visible.has(id)
-		if id == "warnings":
-			frames[id].visible = on and not _warning_codes.is_empty()
-		elif id == "battery":
-			frames[id].visible = on and _has_battery
-		else:
-			frames[id].visible = on
-	frames.battery.set_detailed(Settings.battery_detailed(settings))
-	for id: String in PLAYER_POSITIONS:
-		frames[id].set_locked(bool(settings.get("layout_locked", false)))
-		frames[id].set_appearance(str(settings.get("widget_size", "normal")), float(settings.get("widget_opacity", 0.94)), bool(settings.get("widget_compact", false)))
-	_layout_player_widgets()
-	_dock_battery()
-	_since_text = INF # show the new choice at once
+	var next := Settings.validate(value)
+	if _settings_applied and next == settings: return
+	var first := not _settings_applied
+	var previous := settings
+	settings = next
+	_settings_applied = true
+	var visibility_changed: bool = first or previous.visible != settings.visible
+	var appearance_changed := first or ["widget_size", "widget_opacity", "widget_compact"].any(
+		func(key: String) -> bool: return previous.get(key) != settings.get(key))
+	var layout_changed := first or ["positions", "widget_size", "widget_compact"].any(
+		func(key: String) -> bool: return previous.get(key) != settings.get(key))
+	var lock_changed: bool = first or previous.get("layout_locked", false) != settings.get("layout_locked", false)
+	if first or previous.radio_model != settings.radio_model:
+		frames.transmitter.set_radio_model(settings.radio_model)
+	if visibility_changed:
+		for id: String in IDS:
+			var on: bool = settings.visible.has(id)
+			if id == "warnings":
+				frames[id].visible = on and not _warning_codes.is_empty()
+			elif id == "battery":
+				frames[id].visible = on and _has_battery
+			else:
+				frames[id].visible = on
+		if not frames.cruise_efficiency.visible: navigation_data.reset()
+	if first or Settings.battery_detailed(previous) != Settings.battery_detailed(settings):
+		frames.battery.set_detailed(Settings.battery_detailed(settings))
+	if lock_changed or appearance_changed:
+		for id: String in PLAYER_POSITIONS:
+			if lock_changed: frames[id].set_locked(bool(settings.get("layout_locked", false)))
+			if appearance_changed:
+				frames[id].set_appearance(str(settings.get("widget_size", "normal")), float(settings.get("widget_opacity", 0.94)), bool(settings.get("widget_compact", false)))
+	if layout_changed or visibility_changed: _layout_player_widgets()
+	if visibility_changed: _dock_battery()
+	if visibility_changed or previous.units != settings.units or previous.stick_mode != settings.stick_mode:
+		_since_text = INF # changed readings/newly opened instruments refresh at once
 	if announce:
 		settings_changed.emit(settings.duplicate(true))
 
@@ -323,6 +370,8 @@ func refresh_numbers(snap: Dictionary) -> void:
 		peak_airspeed = speed if is_nan(peak_airspeed) else maxf(peak_airspeed, speed)
 		_peak_time = sample_time
 	_since_text = 0.0 # this refresh also satisfies a rewind/reset's pending refresh
+	# Constant-size aggregates keep the flight summary complete while its widgets are closed.
+	var metrics := flight_metrics.update(_last_telemetry)
 	var mass_sample: Dictionary = snap.get("mass_sample", {})
 	_update_fuel_warning(mass_sample, bool(snap.get("paused", false)))
 	var system := unit_system()
@@ -339,10 +388,22 @@ func refresh_numbers(snap: Dictionary) -> void:
 		frames.controls.refresh(snap.get("control_guide", {}))
 	_warning_codes = snap.get("warnings", PackedStringArray())
 	_refresh_battery(snap.get("battery", {}), system)
+	var cruise := {}
+	if visible and frames.cruise_efficiency.visible:
+		cruise = navigation_data.update(_last_telemetry, _battery_reading)
+	elif not frames.cruise_efficiency.visible:
+		# Menus temporarily hide the layer while simulation time is paused; preserve that window.
+		# Only closing/disabling the actual widget discards its samples.
+		navigation_data.reset()
 	if visible:
 		for id: String in PLAYER_POSITIONS:
 			if frames[id].visible:
-				frames[id].refresh(_last_telemetry, system, peak_airspeed, _battery_reading, mass_sample, snap.get("trims", {}), float(snap.get("rpm", NAN)))
+				if id in Settings.NAVIGATION_IDS:
+					frames[id].refresh_navigation(_last_telemetry, system, _battery_reading, cruise)
+				elif id in Settings.TRAINING_IDS:
+					frames[id].refresh_training(_last_telemetry, system, peak_airspeed, metrics)
+				else:
+					frames[id].refresh(_last_telemetry, system, peak_airspeed, _battery_reading, mass_sample, snap.get("trims", {}), float(snap.get("rpm", NAN)))
 	frames.warnings.visible = frames.warnings.refresh(_warning_codes) and is_overlay_visible("warnings")
 
 

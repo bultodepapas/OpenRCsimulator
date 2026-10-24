@@ -31,22 +31,37 @@ static func compute(state: PackedFloat64Array, wind_ned: PackedFloat64Array, air
 	var v_ned := M.q_rotate(q, M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]))
 	var euler := M.q_to_euler(q)
 	var pilot: Array = ctx.get("pilot_ned", [0.0, 0.0, 0.0])
-	var dn: float = state[RB.POS] - float(pilot[0])
-	var de: float = state[RB.POS + 1] - float(pilot[1])
+	var pilot_north: float = state[RB.POS] - float(pilot[0])
+	var pilot_east: float = state[RB.POS + 1] - float(pilot[1])
 	var dd: float = state[RB.POS + 2] - float(pilot[2])
 	var loads: PackedFloat64Array = ctx.get("last_loads", PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]))
 	var weight: float = float(ctx.get("mass", 1.0)) * float(ctx.get("gravity", 9.80665))
+	var ground_speed: float = M.sqrt_(v_ned[0] * v_ned[0] + v_ned[1] * v_ned[1])
+	var heading_deg: float = fposmod(rad_to_deg(euler[0]), 360.0)
+	var ground_course_deg: float = fposmod(rad_to_deg(M.atan2_(v_ned[1], v_ned[0])), 360.0) \
+		if ground_speed >= 1.0 else NAN
+	var drift_deg: float = fposmod(ground_course_deg - heading_deg + 180.0, 360.0) - 180.0 \
+		if is_finite(ground_course_deg) else NAN
+	var forward_north: float = M.cos_(euler[0])
+	var forward_east: float = M.sin_(euler[0])
 	var wind_h := M.sqrt_(wind_ned[0] * wind_ned[0] + wind_ned[1] * wind_ned[1])
 	return {
 		airspeed = float(air.V),
-		ground_speed = M.sqrt_(v_ned[0] * v_ned[0] + v_ned[1] * v_ned[1]),
+		ground_speed = ground_speed,
+		ground_course_deg = ground_course_deg,
 		vertical_speed = -v_ned[2],
 		height_datum = -state[RB.POS + 2],
 		height_agl = -state[RB.POS + 2] - float(ctx.get("terrain_up", 0.0)),
-		distance_pilot = M.sqrt_(dn * dn + de * de + dd * dd),
+		pilot_north_m = pilot_north,
+		pilot_east_m = pilot_east,
+		distance_pilot = M.sqrt_(pilot_north * pilot_north + pilot_east * pilot_east + dd * dd),
 		alpha_deg = rad_to_deg(float(air.alpha)),
 		beta_deg = rad_to_deg(float(air.beta)),
-		heading_deg = fposmod(rad_to_deg(euler[0]), 360.0),
+		heading_deg = heading_deg,
+		drift_deg = drift_deg,
+		headwind_mps = -(wind_ned[0] * forward_north + wind_ned[1] * forward_east),
+		# Positive crosswind follows the aircraft's right side in the horizontal N/E plane.
+		crosswind_mps = -wind_ned[0] * forward_east + wind_ned[1] * forward_north,
 		pitch_deg = rad_to_deg(euler[1]),
 		bank_deg = rad_to_deg(euler[2]),
 		# Load factor: specific force along body −z over g; 1 in level flight, 1/cos φ in a steady level turn.

@@ -101,6 +101,32 @@ HUD-13-R1 appearance options apply to player instruments only: sizes 85/100/120%
 
 HUD-13-R2 adds a consistent icon/header strip, visible drag grip and rounded close target, a fine amber header rule, subtle static edge/shadow treatment and inset secondary readings. The whole header drags, except the close button. Gauges use ruled percentage rails, a finer compass rose, signed trim markers and a shaded recent-speed plot whose newest sample stays at the right edge. Units align with the main reading; compact mode keeps the same visual hierarchy. Cached shapes and ordinary Godot drawing keep the existing event-driven/10 Hz behavior; there are no new frame callbacks, blur shaders or ornamental animations.
 
+HUD-13-R3 adds the opt-in **Classic cockpit** preset and five individually selectable analog instruments: `airspeed_dial`, `attitude`, `altimeter`, `heading`, `variometer`. They subclass the existing player widget frame for dragging, closing, scaling, opacity and persistence. The modern seven-instrument preset and legacy defaults stay unchanged. Five dial panels fit at 1080p at all three sizes; the central horizon is raised above notices. Compact mode shrinks the dial and hides its supplementary footer, retaining its numerical readout.
+
+HUD-13-R4 refines both families with recessed secondary readings, icon surrounds, outlined close hover states and a visible locked-position symbol. Modern graphs gain faint time divisions and a restrained line halo; level rails gain finer subdivisions. Classic dials gain layered bevels, recessed fasteners, shaded/faceted needles, sharper hubs, 5° pitch-ladder subdivisions and a framed digital readout. Static details retain cached drawing, and lock feedback invalidates on changes only. Classic panels fit their current minimum content height after telemetry initialization so their dial rows stay aligned.
+
+HUD-13-R5 separates configuration into Modern, Classic, Appearance and Other overlays. Preset, Units, tabs and Done stay outside the scrolling page. Hidden pages cannot capture focus; tab changes preserve settings. Short labels and a clamped 900×800 dialog expose all seven modern switches at 1080p. Settings application skips identical validated values and updates only affected visibility, style, lock or layout work. Resize bursts and content-fit requests are coalesced; style/position changes preserve telemetry cadence. The attitude widget owns a reusable 96-point circle rather than rebuilding it during every draw. Focused checks measure saves, layout passes, static/foreground redraws and cache equivalence; these reductions do not establish a whole-game FPS improvement.
+
+HUD-13-R6 adds the opt-in **RC navigation** preset and Navigation settings page: `pilot_radar`, `wind_track` and
+`cruise_efficiency`. They reuse player frame placement, close, lock and appearance controls. Radar uses horizontal
+aircraft-minus-pilot offsets, a north-up automatic scale and a bounded recent trail. Drift compares ground course
+with true heading; wind components are relative to horizontal nose heading. Electrical efficiency integrates
+shared battery sensor power/current and ground speed over a rolling ten-second window, requiring two seconds at
+3 m/s or faster. Unknown sensors, slow flight, gaps and resets invalidate it; it never estimates remaining range
+or reads true SOC. Hidden efficiency stops sampling, histories are bounded, and static diagram faces remain
+cached. The original modern/classic presets remain unchanged. Other research concepts remain proposals.
+
+HUD-13-R7 adds the opt-in **Training** preset with `maneuver`, `glide`, and `flight_summary`. Its controls sit below
+Navigation on the same page; a clamped 900×860 dialog fits all six switches in Spanish at the 1080p/default-text
+target. The maneuver arc shows signed body-axis load and sampled extrema, with bank/AoA context. Glide shows
+vertical speed, bounded history and a guarded instantaneous ground glide ratio; it does not infer aerodynamic
+L/D, total-energy compensation or thermal centering. Constant-size flight aggregates keep distance and maxima
+while widgets are closed, with a partial-distance flag for missing intervals. No automatic landing detection or
+separate flight recorder is added. Existing presets and the flight kernel remain unchanged. See the
+[training evidence](../research/flight-overlays/HUD-01-10/README.md#training-instruments-2026-10-24-hud-13-r7).
+
+The presentation reads existing telemetry only: TAS, pitch/bank, height above datum plus AGL, true heading and instantaneous vertical speed. No pressure setting, magnetic correction, pitot system, calibrated airspeed arcs, gyro dynamics or slip-ball indication is implied. Fixed needle scales mark overflow without discarding the numeric reading; missing values suppress the indication. The horizon clips the ground half-plane to a disc and handles inverted/vertical attitudes without a shader. Static faces have their own cached draw commands; only visible, changed values redraw the foreground at the existing 10 Hz rate. Unit/language changes invalidate the face. Research, source applicability and verification live in the [HUD-13-R3 evidence](../research/flight-overlays/HUD-01-10/README.md#classic-cockpit-2026-10-24-hud-13-r3).
+
 See the [player instructions](../FIRST-LAUNCH.md#4-settings-and-flight-options) and [verification](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13). Layout bounds are checked at 1080p, 1440p, 4K and the 720p fallback; native visual review is at 1080p. This does not qualify GPU performance or pilot readability on other hardware.
 
 References: [EdgeTX widgets](https://manual.edgetx.org/v2.10/color-radios/screen-settings/widgets), [flight extrema](https://manual.edgetx.org/v2.10/color-radios/model-settings/telemetry/common-telemetry-sensors), and [Godot Control input](https://docs.godotengine.org/en/stable/classes/class_control.html). The design adopts configurable sensor widgets and flight-scoped maxima; it retains this simulator's existing charge-estimation policy rather than inferring percentage from voltage.

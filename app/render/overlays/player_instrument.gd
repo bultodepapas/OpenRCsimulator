@@ -47,6 +47,8 @@ var _footer_style: StyleBoxFlat
 var _gauge_track: StyleBoxFlat
 var _gauge_fill: StyleBoxFlat
 var _header_hovered := false
+var _icon_style: StyleBoxFlat
+var _fit_pending := false
 
 
 func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void:
@@ -68,7 +70,12 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	add_theme_stylebox_override("panel", _style)
 	draw.connect(_draw_chrome)
 	resized.connect(queue_redraw)
-	_footer_style = _surface_style(Color("263744", 0.58), 8)
+	_footer_style = _surface_style(Color("0a141e", 0.62), 8)
+	_footer_style.border_color = Color("627888", 0.18)
+	_footer_style.border_width_top = 1
+	_icon_style = _surface_style(Color(ACCENT, 0.07), 6)
+	_icon_style.border_color = Color(ACCENT, 0.13)
+	_icon_style.set_border_width_all(1)
 	_gauge_track = _surface_style(Color("0b141d", 0.8), 4)
 	_gauge_track.border_color = Color(TRACK, 0.8)
 	_gauge_track.set_border_width_all(1)
@@ -106,6 +113,8 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	close_button.add_theme_font_size_override("font_size", 18)
 	for state: String in ["normal", "hover", "pressed"]:
 		var close_style := _surface_style(Color("283b48", 0.75) if state == "normal" else Color(ACCENT, 0.18 if state == "hover" else 0.3), 8)
+		close_style.set_border_width_all(1)
+		close_style.border_color = Color(ACCENT, 0.38) if state != "normal" else Color(MUTED, 0.08)
 		close_button.add_theme_stylebox_override(state, close_style)
 	close_button.add_theme_color_override("font_hover_color", ACCENT)
 	_grip = Control.new()
@@ -196,6 +205,9 @@ func _draw_chrome() -> void:
 	draw_line(Vector2(18, 1), Vector2(size.x - 18, 1), Color("93a9b8", 0.22), 1, true)
 	draw_line(Vector2(16, 44), Vector2(size.x - 16, 44), Color(TRACK, 0.62), 1)
 	draw_line(Vector2(16, 44), Vector2(42, 44), Color(ACCENT, 0.8), 2)
+	if _header_icon != null:
+		var icon_origin := (get_global_transform().affine_inverse() * _header_icon.get_global_transform()).origin
+		draw_style_box(_icon_style, Rect2(icon_origin - Vector2(4, 4), _header_icon.size + Vector2(8, 8)))
 	if _footer != null and _footer.is_visible_in_tree():
 		var box := Rect2(_footer.position - Vector2(8, 5), _footer.size + Vector2(16, 10))
 		box.position = (get_global_transform().affine_inverse() * _footer.get_global_transform()).origin - Vector2(8, 5)
@@ -206,6 +218,11 @@ func _draw_chrome() -> void:
 
 func _draw_grip() -> void:
 	var color := Color(ACCENT, 0.9) if _header_hovered and not layout_locked else Color(MUTED, 0.35)
+	if layout_locked:
+		_grip.draw_arc(Vector2(6, 12), 3, PI, TAU, 12, Color(MUTED, 0.7), 1.2, true)
+		_grip.draw_rect(Rect2(2, 12, 8, 7), Color(MUTED, 0.7), false, 1)
+		_grip.draw_line(Vector2(6, 14), Vector2(6, 17), MUTED, 1)
+		return
 	for row in 3:
 		for column in 2:
 			_grip.draw_circle(Vector2(3 + column * 4, 9 + row * 4), 0.9, color)
@@ -240,16 +257,24 @@ func set_appearance(size_name: String, opacity: float, compact: bool) -> void:
 	if scale != next_scale:
 		_finish_drag()
 		scale = next_scale
-	_style.bg_color = Color(SURFACE, clampf(opacity, 0.80, 1.0))
+	var background := Color(SURFACE, clampf(opacity, 0.80, 1.0))
+	if _style.bg_color != background: _style.bg_color = background
 	if _compact != compact:
 		_compact = compact
 		_apply_density()
 		# Containers can grow automatically, but need an explicit shrink after hiding details.
-		_fit_content.call_deferred()
+		_queue_content_fit()
+
+
+func _queue_content_fit() -> void:
+	if _fit_pending: return
+	_fit_pending = true
+	_fit_content.call_deferred()
 
 
 func _fit_content() -> void:
-	reset_size()
+	_fit_pending = false
+	if not size.is_equal_approx(get_combined_minimum_size()): reset_size()
 
 
 func _apply_density() -> void:
@@ -269,11 +294,14 @@ func _ready() -> void:
 
 
 func set_locked(on: bool) -> void:
+	var changed := layout_locked != on
 	layout_locked = on
 	if on:
 		_finish_drag()
 	handle.mouse_default_cursor_shape = Control.CURSOR_ARROW if on else Control.CURSOR_MOVE
 	handle.tooltip_text = tr("Widget position locked") if on else tr("Drag to move · positions are saved")
+	if changed:
+		_highlight(_header_hovered)
 
 
 func _handle_input(event: InputEvent) -> void:
@@ -501,6 +529,9 @@ func _draw_instrument() -> void:
 	var h := graphic.size.y
 	match id:
 		"speed":
+			for i in range(1, 5):
+				var x := w * i / 5.0
+				graphic.draw_line(Vector2(x, 5), Vector2(x, h - 18), Color(TRACK, 0.3), 1)
 			for i in 3:
 				graphic.draw_line(Vector2(0, 5 + i * 17), Vector2(w, 5 + i * 17), Color(TRACK, 0.7), 1)
 			_graphic_text(tr("RECENT"), Vector2(0, h - 1), MUTED, 9)
@@ -519,7 +550,8 @@ func _draw_instrument() -> void:
 				area.append(Vector2(points[-1].x, h - 16))
 				area.append(Vector2(points[0].x, h - 16))
 				graphic.draw_colored_polygon(area, Color(ACCENT, 0.08))
-				graphic.draw_polyline(points, ACCENT, 2.0, true)
+				graphic.draw_polyline(points, Color(ACCENT, 0.12), 5.0, true)
+				graphic.draw_polyline(points, ACCENT, 1.5, true)
 			graphic.draw_circle(points[-1], 5, Color(ACCENT, 0.16), true, -1, true)
 			graphic.draw_circle(points[-1], 2.5, INK, true, -1, true)
 		"power":
@@ -547,6 +579,8 @@ func _draw_instrument() -> void:
 			graphic.draw_circle(c, r - 8, Color("0b141d", 0.6), true, -1, true)
 			graphic.draw_arc(c, r - 8, 0, TAU, 64, Color(TRACK, 0.65), 1, true)
 			graphic.draw_arc(c, r + 2, 0, TAU, 64, Color(TRACK, 0.5), 1, true)
+			for axis: Vector2 in [Vector2.RIGHT, Vector2.DOWN]:
+				graphic.draw_line(c - axis * (r - 12), c + axis * (r - 12), Color(TRACK, 0.35), 1, true)
 			for i in 36:
 				var direction := Vector2(sin(i * TAU / 36), -cos(i * TAU / 36))
 				graphic.draw_line(c + direction * (r - (7 if i % 9 == 0 else 3)), c + direction * r, ACCENT if i == 0 else (MUTED if i % 9 == 0 else TRACK), 1, true)
@@ -591,11 +625,12 @@ func _draw_level_bar(segmented: bool) -> void:
 		else:
 			if fill > 0.002:
 				graphic.draw_style_box(_gauge_fill, Rect2(3, 9, (w - 6) * fill, 8))
+				graphic.draw_line(Vector2(4, 10), Vector2(3 + (w - 6) * fill, 10), Color(INK, 0.25), 1)
 			var x := 3 + (w - 6) * fill
 			graphic.draw_line(Vector2(x, 5), Vector2(x, 21), INK, 2, true)
-	for i in 5:
-		var x := 3 + (w - 6) * i / 4.0
-		graphic.draw_line(Vector2(x, 23), Vector2(x, 26 if i % 2 == 0 else 25), Color(MUTED, 0.55), 1)
+	for i in 21:
+		var x := 3 + (w - 6) * i / 20.0
+		graphic.draw_line(Vector2(x, 23), Vector2(x, 27 if i % 5 == 0 else 24), Color(MUTED, 0.65 if i % 5 == 0 else 0.25), 1)
 	_graphic_text("0", Vector2(1, 38), MUTED, 9)
 	_graphic_text("50", Vector2(w / 2, 38), MUTED, 9, HORIZONTAL_ALIGNMENT_CENTER)
 	_graphic_text("100%", Vector2(w - 1, 38), MUTED, 9, HORIZONTAL_ALIGNMENT_RIGHT)

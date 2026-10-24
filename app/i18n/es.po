@@ -770,7 +770,7 @@ msgid "Airspeed"
 msgstr "Velocidad aire"
 
 msgid "Airspeed dial"
-msgstr "Indicador de velocidad"
+msgstr "Velocímetro"
 
 msgid "Artificial horizon"
 msgstr "Horizonte artificial"
@@ -782,7 +782,10 @@ msgid "Heading indicator"
 msgstr "Indicador de rumbo"
 
 msgid "Vertical speed indicator"
-msgstr "Indicador de velocidad vertical"
+msgstr "Variómetro"
+
+msgid "Nose pitch"
+msgstr "Cabeceo"
 
 msgid "Bank"
 msgstr "Alabeo"
@@ -801,6 +804,9 @@ msgstr "Ascenso / descenso"
 
 msgid "Scale exceeded"
 msgstr "Escala superada"
+
+msgid "Dial range"
+msgstr "Escala"
 
 msgid "No attitude data"
 msgstr "Sin datos de actitud"
@@ -833,6 +839,165 @@ msgstr "Cabina clásica"
 
 msgid "Use cockpit layout"
 msgstr "Usar diseño de cabina"
+
+msgid "Navigation"
+msgstr "Navegación"
+
+msgid "RC navigation"
+msgstr "Navegación RC"
+
+msgid "Use RC navigation layout"
+msgstr "Usar diseño de navegación RC"
+
+msgid "The RC navigation layout shows a north-up pilot radar, wind and drift, and cruise efficiency."
+msgstr "El diseño de navegación RC muestra un radar del piloto con el norte arriba, el viento y la deriva, y la eficiencia de crucero."
+
+msgid "Pilot radar"
+msgstr "Radar del piloto"
+
+msgid "Wind & drift"
+msgstr "Viento y deriva"
+
+msgid "Cruise efficiency"
+msgstr "Eficiencia de crucero"
+
+msgid "Training"
+msgstr "Entrenamiento"
+
+msgid "Use training layout"
+msgstr "Usar diseño de entrenamiento"
+
+msgid "Maneuver meter"
+msgstr "Medidor de maniobra"
+
+msgid "Glide monitor"
+msgstr "Monitor de planeo"
+
+msgid "Flight summary"
+msgstr "Resumen del vuelo"
+
+msgid "Body-axis load factor, not total acceleration. Flight extrema are sampled at 10 Hz."
+msgstr "Factor de carga en el eje vertical del avión, no aceleración total. Los extremos del vuelo se muestrean a 10 Hz."
+
+msgid "Vertical speed history. Ground glide is distance over height lost, not aerodynamic L/D."
+msgstr "Historial de velocidad vertical. Relación entre distancia horizontal sobre el suelo y altura perdida; no es L/D aerodinámico."
+
+msgid "Sampled statistics since flight reset, including time on the ground. Distance follows the ground track."
+msgstr "Estadísticas muestreadas desde el reinicio del vuelo, incluido el tiempo en tierra. La distancia sigue la trayectoria sobre el suelo."
+
+msgid "MIN LOAD"
+msgstr "CARGA MÍN."
+
+msgid "MAX LOAD"
+msgstr "CARGA MÁX."
+
+msgid "Low throttle · ground glide"
+msgstr "Planeo relativo al suelo"
+
+msgid "Reduce throttle to measure glide"
+msgstr "Reduce el gas para medir el planeo"
+
+msgid "Level the wings to measure glide"
+msgstr "Nivela las alas para medir planeo"
+
+msgid "Too slow to measure glide"
+msgstr "Demasiado lento para medir planeo"
+
+msgid "No descent to measure"
+msgstr "Sin descenso para medir"
+
+msgid "Glide data unavailable"
+msgstr "Datos de planeo no disponibles"
+
+msgid "GROUND GLIDE"
+msgstr "PLANEO / SUELO"
+
+msgid "This flight · sampled statistics"
+msgstr "Este vuelo · datos muestreados"
+
+msgid "* Distance excludes missing samples"
+msgstr "* Distancia omite datos ausentes"
+
+msgid "MAX AIRSPEED"
+msgstr "VEL. AIRE MÁX."
+
+msgid "MAX AGL"
+msgstr "ALT. AGL MÁX."
+
+msgid "BODY LOAD"
+msgstr "FACTOR DE CARGA"
+
+msgid "TRACK DISTANCE"
+msgstr "DIST. RECORRIDA"
+
+msgid "LOAD MIN / MAX"
+msgstr "CARGA MÍN./MÁX."
+
+msgid "North-up · aircraft position relative to the pilot"
+msgstr "Norte arriba · posición del avión respecto al piloto"
+
+msgid "White: nose heading · amber: ground track"
+msgstr "Blanco: rumbo del morro · ámbar: trayectoria sobre el suelo"
+
+msgid "Rolling consumption per ground distance; not remaining range"
+msgstr "Consumo móvil por distancia sobre el suelo; no indica la autonomía restante"
+
+msgid "Pilot at centre · north up"
+msgstr "Piloto en el centro · norte arriba"
+
+msgid "Position unavailable"
+msgstr "Posición no disponible"
+
+msgid "RANGE RING"
+msgstr "ANILLO DE DISTANCIA"
+
+msgid "Horizontal distance to the pilot, not the launch point"
+msgstr "Distancia horizontal al piloto, no al punto de despegue"
+
+msgid "Track"
+msgstr "Trayectoria"
+
+msgid "Track unavailable below 1 m/s"
+msgstr "Trayectoria no disponible por debajo de 1 m/s"
+
+msgid "Ground track unavailable"
+msgstr "Trayectoria no disponible"
+
+msgid "Ground speed unavailable"
+msgstr "Velocidad sobre el suelo no disponible"
+
+msgid "HEADWIND"
+msgstr "VIENTO DE FRENTE"
+
+msgid "TAILWIND"
+msgstr "VIENTO DE COLA"
+
+msgid "WIND TO RIGHT"
+msgstr "HACIA DERECHA"
+
+msgid "WIND TO LEFT"
+msgstr "HACIA IZQUIERDA"
+
+msgid "Ground track minus nose heading; positive is right"
+msgstr "Trayectoria sobre el suelo menos rumbo del morro; positivo hacia la derecha"
+
+msgid "10 s rolling window · lower uses less"
+msgstr "Media de 10 s · menos es mejor"
+
+msgid "Collecting cruise data"
+msgstr "Recopilando datos de crucero"
+
+msgid "Cruise above 3 m/s to measure"
+msgstr "Vuela a más de 3 m/s para medir"
+
+msgid "Electric power telemetry unavailable"
+msgstr "Sin telemetría eléctrica"
+
+msgid "POWER"
+msgstr "POTENCIA"
+
+msgid "NOSE"
+msgstr "MORRO"
 
 msgid "Small"
 msgstr "Pequeño"
@@ -1178,11 +1343,23 @@ msgstr "Jugador"
 msgid "Player instruments"
 msgstr "Instrumentos del jugador"
 
+msgid "Modern"
+msgstr "Modernos"
+
+msgid "Classic"
+msgstr "Clásicos"
+
 msgid "Use player layout"
 msgstr "Usar diseño de jugador"
 
 msgid "Drag an instrument header during flight to move it. Close with ×; reopen it here."
 msgstr "Arrastra el encabezado de un instrumento para moverlo durante el vuelo. Ciérralo con × y vuelve a abrirlo aquí."
+
+msgid "Drag a header in flight to move an instrument."
+msgstr "Arrastra un encabezado en vuelo para mover el instrumento."
+
+msgid "F2 cycles presets; F3 shows developer overlays."
+msgstr "F2 cambia de conjunto; F3 muestra los indicadores de desarrollo."
 
 msgid "Lock widget positions"
 msgstr "Bloquear posiciones de los widgets"
@@ -1192,6 +1369,9 @@ msgstr "Restablecer posiciones de los widgets"
 
 msgid "Other overlays & diagnostics"
 msgstr "Otros indicadores y diagnósticos"
+
+msgid "Other overlays"
+msgstr "Otros indicadores"
 
 msgid "Warnings"
 msgstr "Avisos"
