@@ -179,6 +179,10 @@ python3 "$HERE/../tools/repo/check_large_files.py"
 echo "== LU-34-R1 scene budget report counts every instance of instanced LOD meshes"
 python3 "$HERE/../tools/scenery/test_attribution_report.py"
 
+echo "== SC-HUM-07 field-people outfits, shipped variants and manifests agree; scenery layout matches its generator"
+python3 "$HERE/../tools/scenery/population/test_outfits.py"
+python3 "$HERE/../tools/scenery/place.py" --check
+
 echo "== L11a offline grass placement matches committed offsets"
 python3 "$HERE/../tools/grass/place.py" --check
 python3 "$HERE/../tools/grass/test_place.py"

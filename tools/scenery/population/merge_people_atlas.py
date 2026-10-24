@@ -115,9 +115,10 @@ def pack(sizes, order, width):
     return places, height
 
 
-def layout(sizes, order):
-    """Deterministic smallest-area width (ties: closest to square). A single pose keeps the SC-HUM-02
-    width (two 1024 columns). Returns {key: (x, y)} of each content origin and the atlas size."""
+def layout(sizes, order, search_width=True):
+    """Deterministic smallest-area width (ties: closest to square), no edge above MAX_ATLAS_EDGE.
+    Without search_width the SC-HUM-02 single-pose width (two 1024 columns) is kept.
+    Returns {key: (x, y)} of each content origin and the atlas size."""
     widest = max(w for w, _ in sizes.values())
     base = max(1024, widest) * 2 + 4 * GUTTER
     best = None
@@ -131,8 +132,8 @@ def layout(sizes, order):
         score = (max(w4, h4) > MAX_ATLAS_EDGE, w4 * h4, abs(w4 - h4))
         if best is None or score < best[0]:
             best = (score, places, w4, h4)
-        if len(sizes) <= 12:
-            break  # single-pose atlases: keep the SC-HUM-02 layout exactly
+        if not search_width:
+            break
     return best[1], best[2], best[3]
 
 
@@ -193,7 +194,7 @@ def read_parts(source, regions, order):
     return parts
 
 
-def merge_many(pairs, atlas_dir, atlas_stem):
+def merge_many(pairs, atlas_dir, atlas_stem, search_width=True):
     """Merge each (source, output) pose into one mesh; all poses share one diffuse and one normal atlas."""
     regions, order, posed = {}, {}, []
     for source, output in pairs:
@@ -205,7 +206,7 @@ def merge_many(pairs, atlas_dir, atlas_stem):
     for colour in sorted(swatch_colours):
         sizes[('s', colour)] = (SWATCH, SWATCH)
         order[('s', colour)] = len(order)
-    places, width, height = layout(sizes, order)
+    places, width, height = layout(sizes, order, search_width)
     atlas = numpy.zeros((height, width, 4), dtype=numpy.uint8)
     for key, (x, y) in places.items():
         if isinstance(key, tuple):
@@ -242,7 +243,7 @@ def merge_many(pairs, atlas_dir, atlas_stem):
 
 def merge(source, output):
     """Single pose with its own atlas next to it (the SC-HUM-02 form)."""
-    merge_many([(source, output)], output.parent, output.stem)
+    merge_many([(source, output)], output.parent, output.stem, search_width=False)
 
 
 def write_pose(source, output, parts, places, sizes, width, height, atlas_rel, atlas_stem):

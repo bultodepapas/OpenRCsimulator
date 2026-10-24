@@ -46,15 +46,9 @@ func _initialize() -> void:
 	quit(1 if _failures > 0 else 0)
 
 
-## Shipped outfit variants (SC-HUM-07), else the LU-21 poses.
+## Every shipped outfit variant (SC-HUM-07); a missing one fails the population asset test.
 func _human_assets() -> Array[String]:
-	var keys: Array[String] = []
-	for key: String in Population.human_assets():
-		if ResourceLoader.exists(Population.asset_path(key)):
-			keys.append(key)
-	if keys.is_empty():
-		keys.assign(["standing", "sitting", "pilot"])
-	return keys
+	return Population.human_assets()
 
 
 func _vertices(part: Dictionary) -> PackedVector3Array:
