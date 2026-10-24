@@ -38,11 +38,13 @@ Object.assign(websiteCopy, {
   "partnerVisit": "Visit the manufacturer ↗",
   "partnersNote": "Permissions have specific scopes. They do not imply financial sponsorship or validation of our physical models.",
   "partnerMoreTitle": "More participating brands",
+  "flywingLogoScope": "Exterior model permission; integration pending.",
+  "revocLogoScope": "Community support with approved logo and link.",
   "flywingScope": "Aircraft names and simplified exterior models; integration pending.",
   "gemfanScope": "Propeller names and simplified 3D representations; integration pending.",
   "kontronikScope": "Recreated propulsion products and name; integration pending.",
   "leomotionScope": "Selected products; renders require approval before publication.",
-  "communityThanks": "REVOC Custom approved a community-supporter acknowledgment. Aloft Hobbies shared the project on its forum and offered knowledge and feedback."
+  "communityThanks": "Aloft Hobbies shared the project on its forum and offered knowledge and feedback."
 });
 
 Object.assign(websiteCopy, {alongside:'MANUFACTURERS ALONG FOR THE FLIGHT', alliesCopy:'Real products.<br> New possibilities in the simulator.', alliesLink:'Meet our partners ↗'});

@@ -98,12 +98,14 @@ Additional manufacturers have granted limited permissions for future representat
 
 | Manufacturer | Authorized scope and current status |
 | --- | --- |
-| [FLYWING](https://www.flywingrc.com/) | Product names, simplified exterior models and real color schemes for the free simulator; attribution is permitted on the README and website. Models are pending. The permission has separate asset, disclaimer and revocation terms. |
+| [<img src="site/assets/brands/flywing/flywing-logo.png" alt="FLYWING" width="180">](https://flywingrc.com/) | Product names, simplified exterior models and real color schemes for the free simulator; attribution is permitted on the README and website. Models are pending. The permission has separate asset, disclaimer and revocation terms. |
 | [GEMFAN](https://www.gemfanhobby.com/) | Names and simplified 3D representations of its propeller ranges, with credit and product links. Integration is pending. |
 | [KONTRONIK](https://www.kontronik.com/) | Independently recreated product models and the KONTRONIK name. Integration is pending; logos and original CAD are not covered. |
 | [Leomotion Drives](https://www.leomotiondrives.com/) | Selected products under their official names. Any model using its name or branding requires render approval before publication; integration is pending. |
 
-[REVOC Custom](https://www.revoc.eu/) has agreed to a community-supporter acknowledgment and website link. [Aloft Hobbies](https://alofthobbies.com/) has shared the project in its forum and offered knowledge and feedback. These acknowledgments do not grant product-representation rights or promise financial or material support. [Permission and correspondence summary](site/BRANDS.md).
+[<img src="site/assets/brands/revoc/revoc-custom-logo.png" alt="REVOC Custom" width="180">](https://shop.revoc.eu/)
+
+REVOC Custom has agreed to a community-supporter acknowledgment and website link. [Aloft Hobbies](https://alofthobbies.com/) has shared the project in its forum and offered knowledge and feedback. These acknowledgments do not grant product-representation rights or promise financial or material support. [Permission and correspondence summary](site/BRANDS.md).
 
 ## Develop and contribute
 
