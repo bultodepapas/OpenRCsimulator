@@ -160,11 +160,9 @@ func _avoidance_velocity(
 		base_air_north: float,
 		base_air_east: float,
 		traffic: Array) -> Dictionary:
-	# This branch is deliberately the production implementation, preserving the
-	# original controller path exactly when no moving traffic is present.
+	# Missing traffic preserves any held turn; otherwise use the base guidance.
 	if traffic.is_empty():
-		_release_held_maneuver_if_clear()
-		return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
+		return _clear_traffic_response(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
 
 	var own_air_north: float = own_velocity[0] - _planning_wind[0]
 	var own_air_east: float = own_velocity[1] - _planning_wind[1]
@@ -180,8 +178,7 @@ func _avoidance_velocity(
 	var nominal_bank: float = clampf(_direction * atan2(_target_speed_mps * _target_speed_mps, G * _radius_m), -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
 	var threats: Array[Dictionary] = _prepare_threats(traffic, own_velocity)
 	if threats.is_empty():
-		_release_held_maneuver_if_clear()
-		return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
+		return _clear_traffic_response(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
 
 	var clearance: float = _planning_clearance_m
 	if not is_finite(clearance):
@@ -190,7 +187,9 @@ func _avoidance_velocity(
 		nominal_bank, nominal_bank, clearance, threats)
 	# Clear traffic with no held turn returns the unchanged nominal response.
 	# Candidate scores are pure; the original later branch returned this packet.
-	if not _has_held_maneuver and float(baseline.score) >= 0.0:
+	# Terrain recovery runs independently in the base controller. Its common
+	# candidate penalty must not manufacture or prolong a traffic conflict.
+	if not _has_held_maneuver and float(baseline.traffic_margin_m) >= 0.0:
 		return _unmodified_traffic_response(base_air_north, base_air_east)
 	var best_bank: float = nominal_bank
 	var best_score: float = float(baseline.score)
@@ -213,7 +212,7 @@ func _avoidance_velocity(
 	if _has_held_maneuver:
 		var held_result: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
 			nominal_bank, _held_bank_rad, clearance, threats)
-		var baseline_clear: bool = float(baseline.score) >= RELEASE_EXTRA_CLEARANCE_M
+		var baseline_clear: bool = float(baseline.traffic_margin_m) >= RELEASE_EXTRA_CLEARANCE_M
 		if baseline_clear:
 			if _clear_since_tick < 0:
 				_clear_since_tick = _planning_tick
@@ -230,7 +229,7 @@ func _avoidance_velocity(
 		else:
 			best_bank = _held_bank_rad
 	else:
-		if float(baseline.score) >= 0.0:
+		if float(baseline.traffic_margin_m) >= 0.0:
 			return _unmodified_traffic_response(base_air_north, base_air_east)
 		_set_held_maneuver(best_bank, _planning_tick + HOLD_TIME_TICKS, "conflict")
 		_clear_since_tick = -1
@@ -256,8 +255,10 @@ func _avoidance_velocity(
 		"clear_since_tick": _clear_since_tick if _has_held_maneuver else -1,
 		"selected_bank_is_held": _has_held_maneuver and is_equal_approx(best_bank, _held_bank_rad),
 		"baseline_score_m": float(baseline.score),
+		"baseline_traffic_margin_m": float(baseline.traffic_margin_m),
 		"best_candidate_adjusted_score_m": best_score,
 		"selected_score_m": float(selected_prediction.score),
+		"selected_traffic_margin_m": float(selected_prediction.traffic_margin_m),
 		"selected_player_min_m": _finite_diagnostic(selected_prediction.minimum_player_distance_m),
 		"selected_peer_min_m": _finite_diagnostic(selected_prediction.minimum_peer_distance_m),
 		"selected_terrain_margin_m": float(selected_prediction.terrain_margin_m),
@@ -400,7 +401,7 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
 			minimum_by_threat[threat_index] = minf(minimum_by_threat[threat_index], distance)
 			if include_trace:
 				distance_traces[threat_index][sample_index] = distance
-	var worst_margin: float = minimum_terrain_margin
+	var traffic_margin: float = INF
 	var minimum_player_distance: float = INF
 	var minimum_peer_distance: float = INF
 	for threat_index in threats.size():
@@ -409,11 +410,14 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
 		var margin: float = separation - float(threat.required_separation_m)
 		if bool(threat.is_player):
 			minimum_player_distance = minf(minimum_player_distance, separation)
-			worst_margin = minf(worst_margin, margin * 1.2)
+			traffic_margin = minf(traffic_margin, margin * 1.2)
 		else:
 			minimum_peer_distance = minf(minimum_peer_distance, separation)
-			worst_margin = minf(worst_margin, margin)
-	var result := {"score": worst_margin, "terrain_margin_m": minimum_terrain_margin,
+			traffic_margin = minf(traffic_margin, margin)
+	# Retain the conservative combined score for ranking and diagnostics. A
+	# negative terrain margin still means combined feasibility is unresolved.
+	var result := {"score": minf(minimum_terrain_margin, traffic_margin),
+		"traffic_margin_m": traffic_margin, "terrain_margin_m": minimum_terrain_margin,
 		"minimum_player_distance_m": minimum_player_distance,
 		"minimum_peer_distance_m": minimum_peer_distance}
 	if include_trace:
@@ -435,6 +439,23 @@ func _bank_response(base_air_north: float, base_air_east: float,
 func _unmodified_traffic_response(base_air_north: float, base_air_east: float) -> Dictionary:
 	return {"active": false, "air_north": base_air_north,
 		"air_east": base_air_east, "altitude_delta": 0.0}
+
+
+func _clear_traffic_response(state: PackedFloat64Array, attitude: PackedFloat64Array,
+		own_velocity: PackedFloat64Array, base_air_north: float, base_air_east: float,
+		traffic: Array) -> Dictionary:
+	_release_held_maneuver_if_clear()
+	# Missing observations start the clear dwell; they do not cancel a held turn.
+	# Preserve the reachable predictor's low-speed fallback on this path too.
+	if _has_held_maneuver:
+		var air_north: float = own_velocity[0] - _planning_wind[0]
+		var air_east: float = own_velocity[1] - _planning_wind[1]
+		var air_speed: float = AvoidanceMath.sqrt_(air_north * air_north + air_east * air_east)
+		if is_finite(air_speed) and air_speed >= 3.0:
+			var nominal_bank: float = clampf(_direction * atan2(_target_speed_mps * _target_speed_mps,
+				G * _radius_m), -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+			return _bank_response(base_air_north, base_air_east, nominal_bank, _held_bank_rad)
+	return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
 
 
 func _release_held_maneuver_if_clear() -> void:

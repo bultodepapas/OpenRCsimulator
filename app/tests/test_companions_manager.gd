@@ -416,6 +416,8 @@ func _run_manager_gate(field: Dictionary, world: Dictionary, damage_proxy: Dicti
 
 
 func _initialize() -> void:
+	# AFC-02-R3: a logic suite; tests/test_companions_profiles.gd alone gates the pinned solver identity.
+	preload("res://ai/companions/profile_loader.gd").accept_current_solver_for_tests()
 	call_deferred("_run")
 
 

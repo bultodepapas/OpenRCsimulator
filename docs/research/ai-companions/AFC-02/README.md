@@ -291,3 +291,17 @@ the Stik wheel rows are unchanged. All nine retained tapes replayed in
 candidate mode with `complete=true` and byte-identical CSVs. Profile and test
 now pin `69bf5c78…`. This is parity on these tapes, not exact replay or a
 scope expansion.
+
+## Re-bind gate and tool (AFC-02-R3), 2026-10-24
+
+The solver pin now has one gate, `tests/test_companions_profiles.gd`; the other
+companion suites test logic on the current identity (editor builds only).
+[`tools/companions/rebind.py`](../../../../tools/companions/README.md)
+automates the A/B above: it replays the nine retained tapes on the accepted and
+current solver and re-pins only when every CSV is identical. Receipts are in
+[rebinds/](rebinds/). Candidate replays now adopt the current
+`wheel_profiles.json` file identity but still refuse a change to the Stik's own
+wheel profile. Negative checks: a disposable 0.1 % density mutation in
+`physics/aero.gd` changed all nine tapes (up to 0.68 N, exit 1, nothing
+re-pinned); a disposable Stik wheel-row change made replay refuse the
+checkpoint.

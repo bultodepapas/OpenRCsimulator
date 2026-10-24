@@ -25,6 +25,8 @@ var _world: Dictionary = {}
 
 
 func _initialize() -> void:
+	# AFC-02-R3: a logic suite; tests/test_companions_profiles.gd alone gates the pinned solver identity.
+	preload("res://ai/companions/profile_loader.gd").accept_current_solver_for_tests()
 	_temp_root = ProjectSettings.globalize_path("res://../tmp/afc02-companions-record-%d" % Time.get_ticks_usec())
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--out="):

@@ -126,6 +126,13 @@ func _refuse(message: String) -> Dictionary:
 
 
 func observation() -> Dictionary:
+	# Stopped aircraft remain visible at their last position. Their stored flight
+	# velocity/bank is no longer world motion and must not drive traffic forecasts.
+	if not failure.is_empty() or not session.crash.is_empty():
+		return {id = "companion-%d" % slot_id, slot = slot_id, is_player = false,
+			position_ned = session.sim.state.slice(0, 3),
+			velocity_ned = PackedFloat64Array([0.0, 0.0, 0.0]),
+			wind_ned = PackedFloat64Array([0.0, 0.0, 0.0])}
 	var state: PackedFloat64Array = session.sim.state.duplicate()
 	var wind: PackedFloat64Array = session.wind_at(session.sim.time())
 	return {id = "companion-%d" % slot_id, slot = slot_id, state = state,

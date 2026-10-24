@@ -1,0 +1,543 @@
+{
+  "format": "openrc-companion-behavior-verification v1",
+  "baseline_commit": "cb43600c96e4ddae6ee1e8a7b3335a14cb81e442",
+  "verification_head": "9e38b457ecdf47872abb57cc54fa97bf17beefe6",
+  "engine": "Godot 4.7.2 stable Linux x86_64",
+  "source_sha256": {
+    "app/ai/companions/agent.gd": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+    "app/ai/companions/pilot.gd": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+    "app/tests/test_companions_traffic_lifecycle.gd": "80e498064cafbd4abf7257518721e09e10158e27e98ddc2d34a9dad4adfdf6f5",
+    "research/ai-companions/traffic_lifecycle_flight_probe.gd": "a979f4f2f39bb983606a5eb63b13725d5c9aaea666c29e62eeb32e7b392bd3f3"
+  },
+  "solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+  "raw_artifact_root": "/tmp/openrc-ai",
+  "production_admission": false,
+  "profile_owner": "Separate user agent; live controller pin is not modified by this work.",
+  "matrix": {
+    "checks": 148,
+    "failures": 0,
+    "weather": [
+      "calm",
+      "gentle-practice"
+    ],
+    "populations": [
+      1,
+      2,
+      3
+    ],
+    "seconds_per_case": 120,
+    "comparisons": {
+      "scenario_metrics.csv": {
+        "baseline_sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f",
+        "candidate_sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f",
+        "byte_equal": true
+      },
+      "flight_samples_1hz.csv": {
+        "baseline_sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2",
+        "candidate_sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2",
+        "byte_equal": true
+      }
+    }
+  },
+  "stopped_peer": {
+    "45": {
+      "report_path": "/tmp/openrc-ai/flight-test/canonical-45m-run001/report.json",
+      "report_sha256": "81a8b1c2dd54ea70a77a6b6fb8eb23b41e4b7633385c4b25799b7ef1f38fb2bf",
+      "baseline_min_center_distance_m": 10.6669002381167,
+      "candidate_min_center_distance_m": 12.3739254246581,
+      "ticks": 2880,
+      "production_admission": false
+    },
+    "60": {
+      "report_path": "/tmp/openrc-ai/flight-test/canonical-60m-run001/report.json",
+      "report_sha256": "f008edf9d55205fbdcfbe67042a0d3b0862dba955fb81f7bf44e7f91ee3cba7b",
+      "baseline_min_center_distance_m": 19.3377222039212,
+      "candidate_min_center_distance_m": 22.4015289710243,
+      "ticks": 2880,
+      "production_admission": false
+    }
+  },
+  "exact_replays": [
+    {
+      "report": "/tmp/openrc-ai/flight-test/replay-45m-baseline-ai/replay.json",
+      "sha256": "536b338a2bd761a4f233d77b3a42654aade7ab9b0b226064d6dc6f97e9ef18a4",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "first_tick": 0,
+      "final_tick": 2880
+    },
+    {
+      "report": "/tmp/openrc-ai/flight-test/replay-45m-baseline-peer/replay.json",
+      "sha256": "68b1008db4a075d544c102d1ec99011e8c3ed863355a5987192ee06343837814",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "first_tick": 0,
+      "final_tick": 0
+    },
+    {
+      "report": "/tmp/openrc-ai/flight-test/replay-45m-candidate-ai/replay.json",
+      "sha256": "4a406b1527a97496fe281a63b7915ddb1935419c237ecb075955130448a87526",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "first_tick": 0,
+      "final_tick": 2880
+    },
+    {
+      "report": "/tmp/openrc-ai/flight-test/replay-45m-candidate-peer/replay.json",
+      "sha256": "7c331ff7afd9280e7d986c494fedda9f5525363b69cd80995afe26e0bddb1caf",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "first_tick": 0,
+      "final_tick": 0
+    },
+    {
+      "report": "/tmp/openrc-ai/flight-test/replay-60m-baseline-ai/replay.json",
+      "sha256": "d3775f0843d6bc5ad93be98b7c64a1d062a1c3dfdccaf69876fb9e4820034a57",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "first_tick": 0,
+      "final_tick": 2880
+    },
+    {
+      "report": "/tmp/openrc-ai/flight-test/replay-60m-baseline-peer/replay.json",
+      "sha256": "1199f70f90b7bad62aeddbf815f622b9eb515218d1031fe468a02d7cf9176c1c",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "first_tick": 0,
+      "final_tick": 0
+    },
+    {
+      "report": "/tmp/openrc-ai/flight-test/replay-60m-candidate-ai/replay.json",
+      "sha256": "cbea6d2cb8280de2ce5a33b43b5b21aa216fef36f8afd61769fb254ea486c40c",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "first_tick": 0,
+      "final_tick": 2880
+    },
+    {
+      "report": "/tmp/openrc-ai/flight-test/replay-60m-candidate-peer/replay.json",
+      "sha256": "704ac3f3afaeb5cebbc5ae918801b3c3b5a8c38e628cd113b8da296695be48ad",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "first_tick": 0,
+      "final_tick": 0
+    }
+  ],
+  "crossing_replays": [
+    {
+      "path": "/tmp/openrc-ai/final-encounters/seed-20261020-crossing-right-ai.orfl",
+      "exit": 0,
+      "report": "/tmp/openrc-ai/final-replays/seed-20261020-crossing-right-ai/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "baseline_csv_equal": true
+    },
+    {
+      "path": "/tmp/openrc-ai/final-encounters/seed-20261020-crossing-right-player-coupled.orfl",
+      "exit": 0,
+      "report": "/tmp/openrc-ai/final-replays/seed-20261020-crossing-right-player-coupled/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "baseline_csv_equal": true
+    },
+    {
+      "path": "/tmp/openrc-ai/final-encounters/seed-20261020-crossing-right-player-exogenous.orfl",
+      "exit": 0,
+      "report": "/tmp/openrc-ai/final-replays/seed-20261020-crossing-right-player-exogenous/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "baseline_csv_equal": true
+    },
+    {
+      "path": "/tmp/openrc-ai/final-encounters/seed-20261021-crossing-left-ai.orfl",
+      "exit": 0,
+      "report": "/tmp/openrc-ai/final-replays/seed-20261021-crossing-left-ai/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "baseline_csv_equal": true
+    },
+    {
+      "path": "/tmp/openrc-ai/final-encounters/seed-20261021-crossing-left-player-coupled.orfl",
+      "exit": 0,
+      "report": "/tmp/openrc-ai/final-replays/seed-20261021-crossing-left-player-coupled/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "baseline_csv_equal": true
+    },
+    {
+      "path": "/tmp/openrc-ai/final-encounters/seed-20261021-crossing-left-player-exogenous.orfl",
+      "exit": 0,
+      "report": "/tmp/openrc-ai/final-replays/seed-20261021-crossing-left-player-exogenous/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "status": "ok",
+      "baseline_csv_equal": true
+    }
+  ],
+  "limits": [
+    "Stopped-peer distance is center separation, not hull clearance; 45 m case misses 15 m target.",
+    "Replays verify logged physics/input trajectories, not AI decision replay.",
+    "Lightweight 1080p research rendering on llvmpipe does not qualify Main, frame rate or hardware.",
+    "No aircraft-aircraft physical contacts implemented; no physical realism claim."
+  ],
+  "integration": {
+    "scope": "Disposable candidate-controller profile fixture; not shared production admission. Missing authoring assets and newly merged fixture script links repaired before final lifecycle/presentation/shell runs.",
+    "suites": {
+      "manager": {
+        "checks": 53,
+        "report": "/tmp/openrc-ai/integration-checks/manager-head-9e38b457-ivio8pc2/report.json",
+        "report_sha256": "5be32328d817bc0a7e0c69f52b8d10ab0fcf975f0dee959fc5f8acec9100ed0d",
+        "ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "observation": {
+        "checks": 21,
+        "report": "/tmp/openrc-ai/integration-checks/observation-head-9e38b457-9vppasu5/report.json",
+        "report_sha256": "e7d22a717ff26d88a704bfbcc77545c2c6a7e38fba7cc94e514560e5f2028fe1",
+        "ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "record": {
+        "checks": 156,
+        "report": "/tmp/openrc-ai/integration-checks/record-head-9e38b457-brxn8fvx/report.json",
+        "report_sha256": "9879e1eeeb8bc6a518b8b8c52499906a2bc040928042ee3acc99046d27c13c7a",
+        "ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "lifecycle": {
+        "checks": 653,
+        "report": "/tmp/openrc-ai/integration-checks/lifecycle-fixed-fixture-9e38b457-o1_ds7u0/report.json",
+        "report_sha256": "a95bee39f997dc00aaabf9abc218ffb7d30205a2e77c5c24293afb9d3978e467",
+        "ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "presentation": {
+        "checks": 13,
+        "report": "/tmp/openrc-ai/integration-checks/presentation-fixed-9e38b457-8fqkyfz4/report.json",
+        "report_sha256": "bb85d0d64535793cd164036578c9791dd64b47891fb36b6843854be69881331f",
+        "ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "shell": {
+        "checks": 49,
+        "report": "/tmp/openrc-ai/integration-checks/shell-fixed-9e38b457-x8hq__5i/report.json",
+        "report_sha256": "75e1a87121499171daa1557c4ab29ef79e63a89358b42691e6e0113e615a4fa6",
+        "ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      }
+    }
+  },
+  "performance": {
+    "raw_report": "/tmp/openrc-ai/performance/stopped-observation-abba.json",
+    "raw_report_sha256": "ecbdd0d6b05989571ecd962cecc9514bf4f8059d2998fa1377b4c4017f44ed35",
+    "checks": {
+      "failed": 0,
+      "total": 13
+    },
+    "complete": true,
+    "source_identity": {
+      "air_data_sha256": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b",
+      "baseline_agent_sha256": "005c5cffbd7bdfd82b549a5be0777b26ba0fd7411bfbdf4a9ddd96b1a0135a72",
+      "candidate_agent_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+      "collision_setup_sha256": "49c409796bfefc7e1da71ff47140999ce6e58e230c0cafbe8f2bef234c0c68bb",
+      "environment_sha256": "db4c90cbbbf8d7f8b31485f6a9fb0ebae278e8b12314623022f795867034b148",
+      "field_loader_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "flight_session_sha256": "e2a6b02e160b9c4d76f726f4a294fa83c67507a0b271c63bce143fd06c7e9833",
+      "lake_loader_sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+      "observation_airdata_sha256": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+      "pilot_sha256": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+      "probe_sha256": "c89918cf6147510078a196f6c94492ce6cc3afa67d0fb77e7da1f00f3b309f2a",
+      "simulation_sha256": "0c2414d0c0b3ed459d7d6e6dd8a1d7fed187e16251d09faf318b582addd26305",
+      "wind_field_sha256": "ccb2e2bf1edd8b741ff206cbf47b0f6fa38071f47e852ab20b407f94ea6bd1d8"
+    },
+    "method": "Each active/stopped slot uses ABBA blocks: baseline, candidate, candidate, baseline. Timer reads and snapshot/state parity checks are outside each block. The timed loop includes dynamic call dispatch and block-loop overhead, with no per-call diagnostics. Each sample is a block-mean microseconds per call; percentiles describe block means.",
+    "scope": "Observation function only. Baseline and candidate share each exact FlightSession; active output must be byte-equal. Stopped candidate output is checked for fresh position and zero velocity/wind, then its predicted trajectory is checked outside timing. No planner or whole-flight performance claim.",
+    "measured_abba_rounds": 64,
+    "calls_per_block": 512,
+    "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+    "interference": "Pinned to CPU11; unrelated external Godot shell process remained alive with affinity0-11. Not isolated hardware or frame pacing qualification.",
+    "cases": [
+      {
+        "condition": "active",
+        "count": 1,
+        "slot": 0,
+        "correctness_ok": true,
+        "baseline": {
+          "mean_usec_per_call": 19.5808868408203,
+          "p50_block_mean_usec_per_call": 19.033203125,
+          "p95_block_mean_usec_per_call": 23.173828125,
+          "p99_block_mean_usec_per_call": 30.01953125,
+          "samples": 128
+        },
+        "candidate": {
+          "mean_usec_per_call": 19.9056549072266,
+          "p50_block_mean_usec_per_call": 19.486328125,
+          "p95_block_mean_usec_per_call": 22.888671875,
+          "p99_block_mean_usec_per_call": 24.650390625,
+          "samples": 128
+        }
+      },
+      {
+        "condition": "stopped",
+        "count": 1,
+        "slot": 0,
+        "correctness_ok": true,
+        "baseline": {
+          "mean_usec_per_call": 19.6393127441406,
+          "p50_block_mean_usec_per_call": 19.09375,
+          "p95_block_mean_usec_per_call": 23.259765625,
+          "p99_block_mean_usec_per_call": 26.2578125,
+          "samples": 128
+        },
+        "candidate": {
+          "mean_usec_per_call": 2.16072082519531,
+          "p50_block_mean_usec_per_call": 2.068359375,
+          "p95_block_mean_usec_per_call": 2.583984375,
+          "p99_block_mean_usec_per_call": 3.400390625,
+          "samples": 128
+        }
+      },
+      {
+        "condition": "active",
+        "count": 3,
+        "slot": 0,
+        "correctness_ok": true,
+        "baseline": {
+          "mean_usec_per_call": 19.2927398681641,
+          "p50_block_mean_usec_per_call": 18.798828125,
+          "p95_block_mean_usec_per_call": 21.8046875,
+          "p99_block_mean_usec_per_call": 27.41796875,
+          "samples": 128
+        },
+        "candidate": {
+          "mean_usec_per_call": 19.6036682128906,
+          "p50_block_mean_usec_per_call": 19.123046875,
+          "p95_block_mean_usec_per_call": 21.84375,
+          "p99_block_mean_usec_per_call": 28.134765625,
+          "samples": 128
+        }
+      },
+      {
+        "condition": "stopped",
+        "count": 3,
+        "slot": 0,
+        "correctness_ok": true,
+        "baseline": {
+          "mean_usec_per_call": 19.5634307861328,
+          "p50_block_mean_usec_per_call": 18.943359375,
+          "p95_block_mean_usec_per_call": 24.62890625,
+          "p99_block_mean_usec_per_call": 31.64453125,
+          "samples": 128
+        },
+        "candidate": {
+          "mean_usec_per_call": 2.204345703125,
+          "p50_block_mean_usec_per_call": 2.060546875,
+          "p95_block_mean_usec_per_call": 2.982421875,
+          "p99_block_mean_usec_per_call": 3.728515625,
+          "samples": 128
+        }
+      },
+      {
+        "condition": "active",
+        "count": 3,
+        "slot": 1,
+        "correctness_ok": true,
+        "baseline": {
+          "mean_usec_per_call": 19.3171234130859,
+          "p50_block_mean_usec_per_call": 18.77734375,
+          "p95_block_mean_usec_per_call": 22.568359375,
+          "p99_block_mean_usec_per_call": 23.845703125,
+          "samples": 128
+        },
+        "candidate": {
+          "mean_usec_per_call": 20.1184539794922,
+          "p50_block_mean_usec_per_call": 19.767578125,
+          "p95_block_mean_usec_per_call": 23.1796875,
+          "p99_block_mean_usec_per_call": 27.12109375,
+          "samples": 128
+        }
+      },
+      {
+        "condition": "stopped",
+        "count": 3,
+        "slot": 1,
+        "correctness_ok": true,
+        "baseline": {
+          "mean_usec_per_call": 18.9920043945312,
+          "p50_block_mean_usec_per_call": 18.6484375,
+          "p95_block_mean_usec_per_call": 21.70703125,
+          "p99_block_mean_usec_per_call": 23.798828125,
+          "samples": 128
+        },
+        "candidate": {
+          "mean_usec_per_call": 2.12901306152344,
+          "p50_block_mean_usec_per_call": 2.04296875,
+          "p95_block_mean_usec_per_call": 2.517578125,
+          "p99_block_mean_usec_per_call": 3.33203125,
+          "samples": 128
+        }
+      },
+      {
+        "condition": "active",
+        "count": 3,
+        "slot": 2,
+        "correctness_ok": true,
+        "baseline": {
+          "mean_usec_per_call": 19.3058166503906,
+          "p50_block_mean_usec_per_call": 18.6953125,
+          "p95_block_mean_usec_per_call": 23.380859375,
+          "p99_block_mean_usec_per_call": 27.505859375,
+          "samples": 128
+        },
+        "candidate": {
+          "mean_usec_per_call": 19.9448089599609,
+          "p50_block_mean_usec_per_call": 19.46484375,
+          "p95_block_mean_usec_per_call": 23.822265625,
+          "p99_block_mean_usec_per_call": 27.158203125,
+          "samples": 128
+        }
+      },
+      {
+        "condition": "stopped",
+        "count": 3,
+        "slot": 2,
+        "correctness_ok": true,
+        "baseline": {
+          "mean_usec_per_call": 19.1580047607422,
+          "p50_block_mean_usec_per_call": 18.69140625,
+          "p95_block_mean_usec_per_call": 22.0546875,
+          "p99_block_mean_usec_per_call": 27.1171875,
+          "samples": 128
+        },
+        "candidate": {
+          "mean_usec_per_call": 2.12867736816406,
+          "p50_block_mean_usec_per_call": 2.04296875,
+          "p95_block_mean_usec_per_call": 2.619140625,
+          "p99_block_mean_usec_per_call": 3.3125,
+          "samples": 128
+        }
+      }
+    ]
+  },
+  "focused_final_refresh": [
+    {
+      "report": "/tmp/openrc-ai/final-focused-refresh/test_companions_clearance-f140z1dn/report.json",
+      "sha256": "234ea7b1952eaf901ad55d24782ceb3d613f305b190d28f6edce1108854db807",
+      "ok": true,
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_clearance.gd"
+      ],
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "/tmp/openrc-ai/final-focused-refresh/test_companions_encounters-ar5avha1/report.json",
+      "sha256": "5c3e980441d481ba4a0fe809da3b44050919ad6cf019308650152e800b7f91d3",
+      "ok": true,
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_encounters.gd"
+      ],
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "/tmp/openrc-ai/final-focused-refresh/test_companions_pilot-jhv1_6xx/report.json",
+      "sha256": "e2996d642fd9c04523df555942467d2ef2d558f1401c8861c6dc80d2ada15ee4",
+      "ok": true,
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_pilot.gd"
+      ],
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "/tmp/openrc-ai/final-focused-refresh/test_companions_session-e23a902q/report.json",
+      "sha256": "6c34a940a206fa1f7b8d86a0c0944b246099baca7ffa60ce6b04cbcfde9a11c9",
+      "ok": true,
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_session.gd"
+      ],
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "good_enemy": {
+    "verdict": "Good idea, with existing production admission constraint.",
+    "independent_lifecycle_checks": 40,
+    "failures": 0,
+    "new_runtime_blockers_found": 0,
+    "constraints": [
+      "Live controller profile update belongs to separate qualification owner.",
+      "45 m fixture misses 15 m center separation; no hull-clearance guarantee.",
+      "Future traffic index must accept stopped positional observations."
+    ]
+  },
+  "live_controller_sha256_at_handoff": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024"
+}

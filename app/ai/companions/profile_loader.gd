@@ -49,6 +49,18 @@ const QUALIFIED_START_MODES := ["airborne"]
 const UNQUALIFIED_MODES := ["ground", "takeoff", "runway", "landing"]
 const EVIDENCE_PATH := "docs/research/ai-companions/pilot/README.md"
 const QUALIFIED_SCENARIOS := ["calm", "gentle-practice"]
+const REBIND_HINT := "run python3 tools/companions/rebind.py"
+
+# AFC-02-R3: suites that test companion logic, not its qualification, may accept the current solver identity, so
+# a physics/sim edit fails one gate (tests/test_companions_profiles.gd) instead of every companion suite.
+static var _accept_current_solver := false
+
+
+## Test-only: accept the current solver identity instead of the pinned one. Editor builds only; an exported game
+## always enforces the pin. Returns whether the override is active.
+static func accept_current_solver_for_tests() -> bool:
+	_accept_current_solver = OS.has_feature("editor")
+	return _accept_current_solver
 
 
 ## Read and validate one profile pair for a launch. `collision_world` is reserved for a
@@ -200,8 +212,10 @@ static func validate_profile_data(
 	var current_solver_identity: Dictionary = current_solver_qualification_identity()
 	if not current_solver_identity.get("ok", false):
 		errors.append_array(current_solver_identity.get("errors", PackedStringArray()))
-	elif not solver_sha.is_empty() and solver_sha != str(current_solver_identity.get("sha256", "")):
-		errors.append("solver.sha256: current normalized physics and simulation sources do not match this profile")
+	elif not solver_sha.is_empty() and solver_sha != str(current_solver_identity.get("sha256", "")) \
+			and not _accept_current_solver:
+		errors.append("solver.sha256: current normalized physics and simulation sources do not match this profile; "
+			+ REBIND_HINT)
 	var raw_solver_identity: String = FlightLog.solver_identity()
 	if raw_solver_identity == "unavailable-export":
 		errors.append("solver: raw source identity is unavailable in this export; qualification is open")

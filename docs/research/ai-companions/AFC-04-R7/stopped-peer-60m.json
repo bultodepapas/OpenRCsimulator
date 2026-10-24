@@ -1,0 +1,158 @@
+{
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"baseline": {
+		"agent_source": "/tmp/openrc-ai/baseline-source/agent.gd",
+		"agent_source_sha256": "005c5cffbd7bdfd82b549a5be0777b26ba0fd7411bfbdf4a9ddd96b1a0135a72",
+		"ai_final_state_sha256": "863b378ff4af772c8ef50d499f4b11e5fdf6422f2370c43fcef193e259d09d28",
+		"complete": true,
+		"failure": "",
+		"first_held_maneuver_tick": 608,
+		"flight_logs": {
+			"ai": {
+				"path": "/tmp/openrc-ai/flight-test/canonical-60m-run001/baseline/ai.orfl",
+				"rows": 2881,
+				"sha256": "d18c4d499616281b7a910f0c0ae25a3bbb2dd5f7c600b29e5de54cd70a68cab5",
+				"stop_error": 0
+			},
+			"stopped_peer": {
+				"path": "/tmp/openrc-ai/flight-test/canonical-60m-run001/baseline/stopped-peer.orfl",
+				"rows": 1,
+				"sha256": "cba9af9e99ccb08b8cebcb9566eae665cd40fce8c828fd77adf6f92ed2c98244",
+				"stop_error": 0
+			}
+		},
+		"held_maneuver_plan_samples": 224,
+		"initial_center_distance_m": 60.0,
+		"min_ai_agl_m": 34.5673388843611,
+		"min_center_distance_m": 19.3377222039212,
+		"min_horizontal_center_distance_m": 19.336403080092,
+		"min_vertical_center_separation_m": 0.000000000207016626063705,
+		"peak_abs_bank_deg": 21.9425561716948,
+		"peer_observation": {
+			"airspeed_m_s": 15.0,
+			"ground_clearance_m": 35.000682125863,
+			"id": "companion-1",
+			"is_player": false,
+			"slot": 1,
+			"state": [
+				277.186708527511,
+				62.3445154735686,
+				-35.0,
+				14.9597607724656,
+				-0.0317175140981406,
+				1.09752067401851,
+				0.696083203488957,
+				-0.026267000056044,
+				0.0254997550735326,
+				0.717027182901595,
+				0.0,
+				0.0,
+				0.0
+			],
+			"trim": {},
+			"turbulence_rms_m_s": [],
+			"wind_ned": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		"peer_state_tick": 0,
+		"peer_state_unchanged_during_ai_flight": true,
+		"pilot_source": "/tmp/openrc-ai/baseline-source/pilot.gd",
+		"pilot_source_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+		"requested_ticks": 2880,
+		"ticks": 2880
+	},
+	"candidate": {
+		"agent_source": "res://ai/companions/agent.gd",
+		"agent_source_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+		"ai_final_state_sha256": "7aa4a53c453aa9c5542d6cc1bd403d000d21ca517a0eccd4aac4005e0314d0d8",
+		"complete": true,
+		"failure": "",
+		"first_held_maneuver_tick": 0,
+		"flight_logs": {
+			"ai": {
+				"path": "/tmp/openrc-ai/flight-test/canonical-60m-run001/candidate/ai.orfl",
+				"rows": 2881,
+				"sha256": "a958ec2d891722a1ab2e30e195d52a5cdce785094f737cea1a53abc1db8a3db7",
+				"stop_error": 0
+			},
+			"stopped_peer": {
+				"path": "/tmp/openrc-ai/flight-test/canonical-60m-run001/candidate/stopped-peer.orfl",
+				"rows": 1,
+				"sha256": "71c3fe062128bda1256bde5ab04e99ff481481bc7e1b8efb9051fe473a504a50",
+				"stop_error": 0
+			}
+		},
+		"held_maneuver_plan_samples": 348,
+		"initial_center_distance_m": 60.0,
+		"min_ai_agl_m": 34.3265776649393,
+		"min_center_distance_m": 22.4015289710243,
+		"min_horizontal_center_distance_m": 22.3986039580971,
+		"min_vertical_center_separation_m": 0.00000000102104280585991,
+		"peak_abs_bank_deg": 26.1764213656387,
+		"peer_observation": {
+			"id": "companion-1",
+			"is_player": false,
+			"position_ned": [
+				277.186708527511,
+				62.3445154735686,
+				-35.0
+			],
+			"slot": 1,
+			"velocity_ned": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"wind_ned": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		"peer_state_tick": 0,
+		"peer_state_unchanged_during_ai_flight": true,
+		"pilot_source": "res://ai/companions/pilot.gd",
+		"pilot_source_sha256": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+		"requested_ticks": 2880,
+		"ticks": 2880
+	},
+	"candidate_minus_baseline_min_center_distance_m": 3.06380676710304,
+	"engine": "4.7.2-stable (official)",
+	"field_id": "default",
+	"flight_seconds": 12,
+	"format": "openrc-stopped-peer-flight-probe v1",
+	"identity": {
+		"aircraft_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+		"aircraft_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+		"baseline_agent_path": "/tmp/openrc-ai/baseline-source/agent.gd",
+		"baseline_agent_sha256": "005c5cffbd7bdfd82b549a5be0777b26ba0fd7411bfbdf4a9ddd96b1a0135a72",
+		"baseline_pilot_path": "/tmp/openrc-ai/baseline-source/pilot.gd",
+		"baseline_pilot_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+		"candidate_agent_path": "res://ai/companions/agent.gd",
+		"candidate_agent_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+		"candidate_pilot_path": "res://ai/companions/pilot.gd",
+		"candidate_pilot_sha256": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+		"field_path": "res://data/fields/default.json",
+		"field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+		"lake_path": "res://data/fields/lake.json",
+		"lake_sha256": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+		"probe_path": "res://../research/ai-companions/traffic_lifecycle_flight_probe.gd",
+		"probe_sha256": "a979f4f2f39bb983606a5eb63b13725d5c9aaea666c29e62eeb32e7b392bd3f3"
+	},
+	"physics_hz": 240,
+	"production_admission": false,
+	"purpose": "Research-only A/B of a stopped FlightSession peer; not an admitted production companion flight or physical validation.",
+	"runs_complete": true,
+	"scenario": {
+		"actual_metric": "AI-to-peer FlightSession 3D center distance sampled every accepted AI tick; not hull clearance",
+		"peer_heading": "same as the AI initial course",
+		"peer_initial_ahead_m": 60.0,
+		"peer_state": "real trimmed FlightSession spawned at the tick-zero reset boundary, then stopped before its first accepted tick by a research fixture failure flag",
+		"peer_velocity_in_frozen_state_m_s": 15.0
+	},
+	"seed": 20261020,
+	"weather": "calm"
+}

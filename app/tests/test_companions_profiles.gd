@@ -37,6 +37,14 @@ func _run() -> void:
 		return
 	_aircraft_identity = aircraft.input_identity.duplicate(true)
 	_normalized_field = loaded_field.field.duplicate(true)
+	# AFC-02-R3 qualification gate: the only companion suite that enforces the pinned solver identity.
+	var gate: Dictionary = Loader.current_solver_qualification_identity()
+	var pinned: String = str(_profile(AIRCRAFT_PROFILE_PATH).get("solver", {}).get("sha256", ""))
+	var current: String = str(gate.get("sha256", ""))
+	var stale_detail: String = "pinned %s, current %s: physics changed since the last qualification; %s" \
+		% [pinned.left(8), current.left(8), Loader.REBIND_HINT]
+	_check("companion qualification pins the current physics/sim/failures identity",
+		gate.get("ok", false) and pinned == current, "" if pinned == current else stale_detail)
 
 	var result: Dictionary = Loader.load_profile(AIRCRAFT_ID, aircraft.input_identity, loaded_field.field)
 	_check("current Stik and Club profiles validate", result.get("ok", false), str(result.get("errors", [])))
@@ -67,8 +75,8 @@ func _run() -> void:
 	var solver_identity: Dictionary = Loader.current_solver_qualification_identity()
 	_check("solver qualification pins strict UTF-8/LF identity separately from FlightLog raw identity",
 		solver_identity.get("ok", false) \
-		and solver_identity.get("source_count", 0) == 133 \
-		and solver_identity.get("sha256", "") == "69bf5c78c4bab72460a7f31f0caf7f70b21051233089fae8d99a09429ffc7290" \
+		and solver_identity.get("source_count", 0) > 0 \
+		and solver_identity.get("sha256", "") == result.profile.solver.sha256 \
 		and result.profile.solver.normalization == "utf8-lf" \
 		and result.identity.solver_normalization == "utf8-lf" \
 		and result.identity.solver_qualification_sha256 == solver_identity.sha256 \

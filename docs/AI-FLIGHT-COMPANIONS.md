@@ -9,6 +9,12 @@ Follow-up evidence: [qualified profiles](research/ai-companions/AFC-02/README.md
 [moving-encounter failures and selection repair](research/ai-companions/AFC-04-R1/README.md),
 [avoidance clearance repair](research/ai-companions/AFC-04-R2/README.md), and
 [sound, labels and accessible controls](research/ai-companions/AFC-05-R1/README.md).
+The [stopped-traffic and maneuver-continuity repair](research/ai-companions/AFC-04-R7/README.md)
+corrects frozen-aircraft forecasts and preserves held avoidance through observation
+gaps. Its candidate verification is separate from source-profile admission.
+The [terrain/traffic separation repair](research/ai-companions/AFC-04-R8/README.md)
+prevents low terrain clearance from creating or prolonging an avoidance maneuver
+when traffic is clear; terrain recovery and candidate-turn ranking remain separate.
 The [fresh Windows checkout receipt](research/ai-companions/AFC-02/controller-dependency-checkout/verification.json)
 records 1,200 successful script parses and all 16 companion regression groups;
 its source snapshot and checkout corrections are explicit.
@@ -232,8 +238,9 @@ The current controller predicts eight seconds at 0.25-second intervals using
 air-relative banked turns plus wind displacement. It scores eleven bank choices
 from −25° to +25° plus the nominal turn against all prepared threats. A 0.9-second
 reaction allowance, 0.75-second bank-response ramp, two-second minimum hold and
-one-second clear interval limit late reactions and oscillation. No-traffic circuit
-commands remain in the unchanged base. Invalid/low-speed predictions retain the
+one-second clear interval limit late reactions and oscillation. Missing observations
+preserve an already-held maneuver until its hold and clear dwell expire; otherwise
+no-traffic circuit commands remain in the unchanged base. Invalid/low-speed predictions retain the
 legacy response. These are approximate forecasts; the predicted vertical rate is
 held only over the reaction interval, and neither model-error bounds nor arbitrary
 player maneuvers are qualified. Diagnostic traces are optional, bounded and off by
