@@ -3,7 +3,8 @@
 # eval, UI listing and press by label, slider values, the sticks override on the keyboard seam (including a seam
 # re-installed behind its back), exact pause/step and wait; tick sampling, assert, find/get/set/call, performance
 # counters, state-change events; select by item text (OptionButton, TabBar, PopupMenu), key modifiers, dialogs on top
-# of the UI scope (internal OK/Cancel buttons), close, mouse clicks, methods, shortcuts and controller actions. The real app routes (fly/home/restart/view/record) are checked in
+# of the UI scope (internal OK/Cancel buttons), close, mouse clicks, methods, shortcuts and controller actions; and the
+# network thread answering ping/state/logs while the main thread is blocked in a slow frame. The real app routes (fly/home/restart/view/record) are checked in
 # tools/debug/README.md.
 # Run: godot --headless --path . --script res://tests/test_debug_bridge.gd
 extends SceneTree
@@ -124,6 +125,8 @@ func _run() -> void:
 	await _step(flight.session)
 	await _tools(bridge, flight)
 	await _everything(bridge, app, ui)
+	await _threaded()
+	await _stale_snapshot(bridge)
 	bridge.queue_free()
 	await process_frame
 	print("debug bridge: %d failed" % _failures if _failures > 0 else "all debug bridge checks passed")
@@ -369,6 +372,54 @@ func _everything(bridge: Node, app: Node, ui: Container) -> void:
 	target.queue_free()
 	dialog.queue_free()
 	popup.queue_free()
+
+
+func _threaded() -> void:
+	await process_frame # the snapshot is published while clients are active
+	await process_frame
+	var results := {}
+	var worker := Thread.new()
+	worker.start(func() -> void:
+		var started := Time.get_ticks_msec()
+		for cmd: String in ["ping", "state", "logs"]:
+			results[cmd] = _blocking_call(JSON.stringify({cmd = cmd, since = 0}))
+		results.ms = Time.get_ticks_msec() - started)
+	OS.delay_msec(800) # a slow frame: the main thread cannot run any command meanwhile
+	var finished_during_block := not worker.is_alive()
+	worker.wait_to_finish()
+	_check("the network thread answers ping, state and logs during a blocked frame", finished_during_block
+		and results.ping.get("ok", false) and results.logs.get("ok", false)
+		and results.state.get("result", {}).has("snapshot_frame") and int(results.ms) < 700, str(results).left(400))
+
+
+
+func _stale_snapshot(bridge: Node) -> void:
+	bridge._last_request_ms = -bridge.SNAPSHOT_IDLE_MS # idle: the main thread stops publishing snapshots
+	for i in 3:
+		await process_frame
+	var state: Dictionary = await _call({cmd = "state"})
+	_check("an old snapshot is never served: the main thread answers instead", state.ok
+		and not state.result.has("snapshot_frame") and state.result.frame >= Engine.get_process_frames() - 1, str(state).left(200))
+
+## A plain blocking client for a worker thread (the main-thread helper awaits frames).
+static func _blocking_call(line: String) -> Dictionary:
+	var peer := StreamPeerTCP.new()
+	peer.connect_to_host("127.0.0.1", PORT)
+	var deadline := Time.get_ticks_msec() + 2000
+	while peer.get_status() != StreamPeerTCP.STATUS_CONNECTED and Time.get_ticks_msec() < deadline:
+		OS.delay_msec(1)
+		peer.poll()
+	peer.put_data((line + "\n").to_utf8_buffer())
+	var buffer := PackedByteArray()
+	while buffer.find(10) < 0 and Time.get_ticks_msec() < deadline:
+		OS.delay_msec(1)
+		peer.poll()
+		var available := peer.get_available_bytes()
+		if available > 0:
+			buffer.append_array(peer.get_partial_data(available)[1])
+	peer.disconnect_from_host()
+	var reply: Variant = JSON.parse_string(buffer.get_string_from_utf8()) if buffer.find(10) >= 0 else null
+	return reply if reply is Dictionary else {ok = false, error = "no reply"}
 
 func _call(payload: Dictionary) -> Dictionary:
 	return await _raw_line(JSON.stringify(payload))
