@@ -17,6 +17,8 @@ const EAST_MAX := 6500.0
 const NORTH_MIN := 1600.0
 const NORTH_MAX := 8600.0
 static var _heights := PackedFloat32Array()
+# CPU geometry only; every world still owns its mesh and lighting material.
+static var _geometry: Array[Array] = []
 
 static func height_at(north: float, east: float) -> float:
 	if _heights.is_empty() and not _load_profile():
@@ -48,6 +50,7 @@ static func _load_profile() -> bool:
 			return false
 		values.append(float(value))
 	_heights = values
+	_geometry.clear()
 	return true
 
 static func build(lighting: Dictionary = {}) -> Node3D:
@@ -64,29 +67,7 @@ static func build(lighting: Dictionary = {}) -> Node3D:
 	Atmosphere.update_ground_material(material, lighting)
 	root.set_meta("lighting_material", material)
 	for chunk in 4:
-		var vertices := PackedVector3Array()
-		var normals := PackedVector3Array()
-		var indices := PackedInt32Array()
-		for row in ROWS + 1:
-			var north := lerpf(NORTH_MIN, NORTH_MAX, float(row) / ROWS)
-			for column in COLUMNS / 4 + 1:
-				var east := lerpf(EAST_MIN, EAST_MAX, float(chunk * (COLUMNS / 4) + column) / COLUMNS)
-				var h := height_at(north, east)
-				var dn := (height_at(north + 5.0, east) - height_at(north - 5.0, east)) / 10.0
-				var de := (height_at(north, east + 5.0) - height_at(north, east - 5.0)) / 10.0
-				vertices.append(Vector3(east, h + 0.02, -north))
-				normals.append(Vector3(-de, 1.0, dn).normalized())
-		for row in ROWS:
-			for column in COLUMNS / 4:
-				var a: int = row * (COLUMNS / 4 + 1) + column
-				var b: int = a + COLUMNS / 4 + 1
-				# Godot front faces are clockwise when viewed from above.
-				indices.append_array(PackedInt32Array([a, b, a + 1, b, b + 1, a + 1]))
-		var arrays := []
-		arrays.resize(Mesh.ARRAY_MAX)
-		arrays[Mesh.ARRAY_VERTEX] = vertices
-		arrays[Mesh.ARRAY_NORMAL] = normals
-		arrays[Mesh.ARRAY_INDEX] = indices
+		var arrays := _chunk_geometry(chunk)
 		var mesh := ArrayMesh.new()
 		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 		mesh.surface_set_material(0, material)
@@ -98,3 +79,33 @@ static func build(lighting: Dictionary = {}) -> Node3D:
 	root.set_meta("triangles", COLUMNS * ROWS * 2)
 	root.set_meta("kind", "SRTM-derived, rotated/scaled visual backdrop; not surveyed field terrain")
 	return root
+
+
+static func _chunk_geometry(chunk: int) -> Array:
+	if chunk < _geometry.size():
+		return _geometry[chunk]
+	var vertices := PackedVector3Array()
+	var normals := PackedVector3Array()
+	var indices := PackedInt32Array()
+	for row in ROWS + 1:
+		var north := lerpf(NORTH_MIN, NORTH_MAX, float(row) / ROWS)
+		for column in COLUMNS / 4 + 1:
+			var east := lerpf(EAST_MIN, EAST_MAX, float(chunk * (COLUMNS / 4) + column) / COLUMNS)
+			var h := height_at(north, east)
+			var dn := (height_at(north + 5.0, east) - height_at(north - 5.0, east)) / 10.0
+			var de := (height_at(north, east + 5.0) - height_at(north, east - 5.0)) / 10.0
+			vertices.append(Vector3(east, h + 0.02, -north))
+			normals.append(Vector3(-de, 1.0, dn).normalized())
+	for row in ROWS:
+		for column in COLUMNS / 4:
+			var a: int = row * (COLUMNS / 4 + 1) + column
+			var b: int = a + COLUMNS / 4 + 1
+			# Godot front faces are clockwise when viewed from above.
+			indices.append_array(PackedInt32Array([a, b, a + 1, b, b + 1, a + 1]))
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_INDEX] = indices
+	_geometry.append(arrays)
+	return arrays

@@ -1,5 +1,10 @@
 # FUEL-04 — One fixed-datum resource kernel (2026-10-19)
 
+**FUEL-04-R1, 2026-10-23:** [reference-inertia numerical repair and independent audit](../../physics-audit-2026-10-23/README.md)
+screens raw inversion before assertions and reuses scaled inversion for extreme
+finite tensors. Ordinary historical equality checks and isolated fuel-flight
+comparisons pass; the full-suite/environment and conditioning limits are explicit.
+
 **Later clarification 2026-10-19:** this evidence describes the original FUEL-04 snapshot. The prediction below that empty-tank balancing would make the solver datum dry was not implemented. The datum remains the authored reference inventory CG; `plan_cg` is a separate balance target. See the [unified standard](../../../plans/fuel-mass-balance.md) and [FUEL-00-R1 review](../FUEL-00-R1/README.md).
 
 Evidence for step FUEL-04 of the [fuel, mass and balance plan](../../../plans/fuel-mass-balance.md). This closes F07 (two mass kernels for one law) and sets the datum rule of D2. Every existing trajectory is bit-identical.

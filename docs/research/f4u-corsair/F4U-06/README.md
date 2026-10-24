@@ -22,7 +22,7 @@ Measured 2026-10-21 for the [F4U plan](../../../F4U-PLAN.md); re-extracted at 1/
 | Thickness ratio | 17–19 % inboard of y = 1.6 m, ≈14 % at y = 2–4 m, 13.4 % at y = 5 m, 8–9.5 % near the tip | NACA 23018 root, 23009 tip | Consistent |
 | Inner gull panel | Chord midline falls ≈21° from the fuselage side (y ≈ 0.7 m) to the knee at y ≈ 1.8 m | Not recovered | To check against drawings |
 | Outer panel dihedral | +10.0° (fit over y = 2.9–5.6 m) | Not recovered (OCR) | To check |
-| Wing incidence | ≈0° at the root, rising to +0.5–0.9° outboard (wash-in relative to the root frame); isolated 2° values where flap and aileron pieces define the trailing edge | Not recovered | R59 is a visual reconstruction; prefer a documented value |
+| Wing incidence | ≈0° at the root, rising to +0.5–0.9° outboard (wash-in relative to the root frame); isolated 2° values where flap and aileron pieces define the trailing edge | AN 01-45HA-1 (F4U-1 pilot's handbook), Appendix I p. 64: +2°, thrust line to wing chord line | F4U-07 uses the handbook's +2° as the mean (2026-10-23); R59's twist stays in the strip offsets |
 | Stabilizer incidence, dihedral | 0.0°, −0.3° | 1.25° incidence (NACA RM A7C05; reference line not stated) | Open |
 | Fin offset | 0° | 2° left | R59 omits it; the physics can apply it without a visual change |
 

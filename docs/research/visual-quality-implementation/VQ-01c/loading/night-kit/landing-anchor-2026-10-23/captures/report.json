@@ -1,0 +1,25 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"cases": [
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"exact": true,
+			"height": 1080,
+			"width": 1920
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"exact": true,
+			"height": 1080,
+			"width": 1920
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"exact": true,
+			"height": 1080,
+			"width": 1920
+		}
+	],
+	"ok": true,
+	"renderer": "gl_compatibility"
+}

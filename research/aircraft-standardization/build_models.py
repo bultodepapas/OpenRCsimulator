@@ -142,8 +142,22 @@ def _validate_construction(construction: Any, bindings: dict[str, Any], label: s
         construction,
         {"version", "hinge_axis", "rotor", "gear", "material_grow"},
         f"{label}.construction",
-        {"retraction"},
+        {"retraction", "folds"},
     )
+    if "folds" in construction:
+        # F4U-17: one or two in-place fold groups, each a unique key and a dotted geometry reference.
+        folds = construction["folds"]
+        if not isinstance(folds, list) or not 1 <= len(folds) <= 2:
+            raise ModelManifestError(f"{label}.construction.folds must be an array of one or two fold groups")
+        keys: set[str] = set()
+        for index, fold in enumerate(folds):
+            fold = _check_keys(fold, {"key", "geometry_ref"}, f"{label}.construction.folds[{index}]")
+            _safe_node_name(fold["key"], f"{label}.construction.folds[{index}].key")
+            if fold["key"] in keys:
+                raise ModelManifestError(f"{label}.construction.folds[{index}].key repeats {fold['key']}")
+            keys.add(fold["key"])
+            if not isinstance(fold["geometry_ref"], str) or re.fullmatch(r"[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*", fold["geometry_ref"]) is None:
+                raise ModelManifestError(f"{label}.construction.folds[{index}].geometry_ref must be a dotted source reference")
     if type(construction["version"]) is not int or construction["version"] != 1:
         raise ModelManifestError(f"{label}.construction.version must be integer 1")
     if construction["hinge_axis"] != "+X":

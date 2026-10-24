@@ -1,0 +1,83 @@
+{
+  "passed": true,
+  "checks": {
+    "paint_body_basecolor": {
+      "passed": true,
+      "detail": null
+    },
+    "paint_body_orm": {
+      "passed": true,
+      "detail": null
+    },
+    "paint_wing_basecolor": {
+      "passed": true,
+      "detail": null
+    },
+    "paint_wing_orm": {
+      "passed": true,
+      "detail": null
+    },
+    "paint_wing_tip_basecolor": {
+      "passed": true,
+      "detail": null
+    },
+    "paint_wing_tip_orm": {
+      "passed": true,
+      "detail": null
+    },
+    "paint_tail_basecolor": {
+      "passed": true,
+      "detail": null
+    },
+    "paint_tail_orm": {
+      "passed": true,
+      "detail": null
+    },
+    "blueangels_interior_identity": {
+      "passed": true,
+      "detail": null
+    },
+    "propeller_texture_packed": {
+      "passed": true,
+      "detail": null
+    },
+    "existing_blade_UV_used": {
+      "passed": true,
+      "detail": null
+    },
+    "spinner_component_only": {
+      "passed": true,
+      "detail": 561
+    },
+    "spinner_material_only_on_propeller": {
+      "passed": true,
+      "detail": null
+    },
+    "runtime_node_hierarchy_and_transforms_unchanged": {
+      "passed": true,
+      "detail": null
+    },
+    "runtime_counts": {
+      "passed": true,
+      "detail": {
+        "triangles": 99729,
+        "surfaces": 58,
+        "materials": 14,
+        "images": 8
+      }
+    },
+    "geometry_and_UV0_identical": {
+      "passed": true,
+      "detail": "6bc8add2a1497a8807b42d04f2b4221b1bea025425de91addcd2cd46bb85283c"
+    },
+    "all_UV_layers_identical": {
+      "passed": true,
+      "detail": "c262c5371e1d1f9146400a1334b65e1e5ab21fff89927cf36a2946729dc77ecf"
+    },
+    "all_101_poses_and_hierarchy_identical": {
+      "passed": true,
+      "detail": "e98fee2b0a4d9ed8058942938c0791ee9cd54296cc0391c7746a3ac8d11bb0a5"
+    }
+  },
+  "errors": []
+}

@@ -10,6 +10,7 @@ const REFERENCE_RADIUS := 0.0381
 const STRIDE := 6
 const STICK_SPEED := 0.02
 const SLIP_REFERENCE_SPEED := 1.0 # m/s: converts the load-limited slip slope to N/(m/s).
+const ROLLING_LAW := "wheel-positive-terrain-excess-v2"
 
 
 static func surface_at(table: PackedFloat64Array, north: float, east: float) -> int:
@@ -88,10 +89,12 @@ static func coefficients(gear: Dictionary, c: Dictionary, surfaces: PackedFloat6
 	if not surfaces.is_empty():
 		index = surface_at(surfaces, p[0], p[1])
 		mu *= surfaces[index + 4]
-		# The aircraft base Crr already accounts for its main-wheel size. Scale only the
-		# vegetation excess for smaller tires relative to that aircraft, avoiding double counting.
+		# The aircraft base Crr already accounts for its main-wheel size. Scale only
+		# positive vegetation excess for smaller tires. A smoother surface directly
+		# scales Crr; extrapolating a negative excess can create propulsive resistance.
 		var radius: float = c.get("wheel_radius", REFERENCE_RADIUS)
-		rolling *= 1.0 + (surfaces[index + 5] - 1.0) * M.sqrt_(float(gear.get("rolling_reference_radius", REFERENCE_RADIUS)) / radius)
+		var factor: float = surfaces[index + 5]
+		rolling *= factor if factor < 1.0 else 1.0 + (factor - 1.0) * M.sqrt_(float(gear.get("rolling_reference_radius", REFERENCE_RADIUS)) / radius)
 	return PackedFloat64Array([mu, rolling, float(index)])
 
 

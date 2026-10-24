@@ -52,3 +52,39 @@ app/test.sh
 - Nothing here validates any vehicle physically.
 
 Commit message: `SF-00…02: VehicleModel contract; fixed-wing and rotorcraft sessions install models; 10/10 vehicle fingerprints byte-identical, 27-check contract test`
+
+## SF-01-R1 — Reject an inactive joint evaluator (2026-10-23)
+
+At `e76a72f5`, a model with `stage` returning `Fx = 1 N`, mass `1 kg`, zero gravity
+and no continuous block passed installation/reset, then advanced a tick without
+calling `stage`. The default body-only callback supplied zero force: `u` stayed
+zero instead of increasing by `1/240 m/s`. This is a contract defect, not an
+observed defect in a catalog aircraft. Joint stages require a continuous block;
+body-only models use `loads`.
+
+The kernel now refuses an empty continuous layout with a joint evaluator, or a
+missing body-only loads callback, before reset, restore or stepping. Installation
+still permits a model whose live layout has not yet been supplied. The regression
+also checks a valid joint evaluator's force and four RK stages, and callback
+mutation after reset. No force law, aircraft data or golden flight changed.
+
+Native Windows Godot `4.7.2.stable.official.ed1daf0bf` verification:
+
+- Eight focused suites pass **411 checks**: vehicle-model contract (36), simulation
+  (11), event protocol (46), contact substeps (13), continuous state (42), RK stage
+  time (22), checkpoints (92) and checkpoint integrity (149).
+- All **1,224 GDScript files** outside caches/captures pass the checked native
+  `--check-only --script` invocation, matching the canonical script's parse scope.
+- `fingerprint_vehicles.gd` with its default schedule gives **22/22 complete,
+  fault-free, byte-identical trajectories** before/after: nine fixed-wing aircraft
+  with normal/cut variants, three helicopter starts and one ground vehicle. Both
+  JSON reports have SHA-256
+  `8f29725c78fad266f8fed461ee07387a3f7738de0192996743a37a6da75ec2d2`.
+- The canonical `app/test.sh` attempt under WSL stopped before running checks
+  because this Windows checkout has CRLF shell scripts (`set: pipefail: invalid
+  option name`). The focused results do not establish a full-suite pass.
+
+Reproduce with the [checked Godot runner](../../../../tools/godot/README.md), the
+eight named `app/tests/test_*.gd` suites and
+`res://tests/fingerprint_vehicles.gd -- --output=<new-json-path>`. These are software
+contract and same-host equivalence results, not physical validation.

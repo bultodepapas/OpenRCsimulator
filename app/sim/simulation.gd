@@ -412,6 +412,10 @@ func _loads_are_valid(candidate: Variant) -> bool:
 
 
 func _configuration_is_valid() -> bool:
+	# Joint stages require a continuous block. Never silently discard that evaluator
+	# in favour of the body-only loads callback (whose default returns zero loads).
+	if continuous.is_empty() and (model.stage.is_valid() or not model.loads.is_valid()):
+		return false
 	if model.post_tick.is_valid() and model.post_tick_joint.is_valid():
 		return false
 	if model.substeps.is_valid() and model.substeps_joint.is_valid():

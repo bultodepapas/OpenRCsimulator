@@ -1,0 +1,39 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   runtime GLB is the accepted g1.13 aircraft.glb
+ok   44 meshes, 57 surfaces, 99,729 triangles as delivered (44 meshes, 57 surfaces, 99729 triangles)
+ok   every mesh carries a valid openrc_section (untagged [], invalid [])
+ok   all eleven articulation rests match the compiled geometry (0.0000000 m)
+ok   registry accepts the checked-in manifest ([])
+ok   shared importer builds the scene ([])
+ok   registry accepts the built model (hinges, rotor, gear, asset, crash sections) ([])
+ok   ten control hinges, three flap panels per side
+ok   aileron_left +10 app degrees moves the trailing edge up and returns (0.0174 m)
+ok   aileron_right +10 app degrees moves the trailing edge up and returns (0.0177 m)
+ok   elevator +10 app degrees moves the trailing edge up and returns (0.0210 m)
+ok   rudder +10 app degrees moves the trailing edge right and returns (0.0410 m)
+ok   flap hinges turn 30.000 deg for 30 and clamp at the 50 deg envelope (30.000, 50.000)
+ok   full throws (13.5, 11.2, 25.9 deg) and 30 deg flaps lie inside the swept clearance envelopes ([])
+ok   two fold groups of three outer-panel nodes each
+ok   full fold (112 deg) carries each navigation lamp to R59's folded evaluation (0.0000001 m)
+ok   the locks release over the first 12 %, then the panel turns linearly (0.000, 56.000 deg)
+ok   an aileron deflected while folded rides on its panel and keeps its deflection when spread
+ok   spreading with neutral controls restores every outer-panel node to its delivered rest (0.00000000)
+ok   wheel centres follow the sampled GearRetract stowed, in transit and down (0.0000002 m)
+ok   0.01 m of oleo compression raises the main wheel 0.01 m from the down sample
+ok   render/airplane.gd builds the catalog aircraft
+ok   the visual propeller is drawn at the physical 30 in diameter (0.7620 m)
+ok   one gasoline exhaust anchor at the left middle stack
+ok   four paint slots, one registration slot and the smoke slots resolve (["format", "version", "source_proof_version", "visual_family", "model_manifest_sha256", "paint_slots", "marking_slots", "smoke_slots", "presentation_engine_version", "presentation_sources", "slots_sha256"])
+ok   left physics contact is the rendered wheel bottom (F4U-08) (0.0000004 m)
+ok   right physics contact is the rendered wheel bottom (F4U-08) (0.0000004 m)
+ok   tail physics contact is the rendered wheel bottom (F4U-08) (0.0000006 m)
+ok   the wreck prepares a mesh twin
+ok   the wreck exposes all ten crash sections (["core", "wing_left", "wing_right", "wing_center", "engine", "propeller", "horizontal_tail", "vertical_tail", "gear", "canopy"])
+ok   a C3 left_wing hit releases exactly ["wing_left"] (["wing_left"])
+ok   a C3 right_wing hit releases exactly ["wing_right"] (["wing_right"])
+ok   a C3 spinner hit releases exactly ["canopy", "engine", "propeller"] (["canopy", "engine", "propeller"])
+F4U-12 Corsair imported model g1.13-03d66d8dc142: 33 checks, 0 failures
+PASS F4U-12 33 checks
+ERROR: Pages in use exist at exit in PagedAllocator: N12VariantPools12BucketMediumE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)

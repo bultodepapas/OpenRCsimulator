@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Stik data loads with landing gear  []
+ok   one contact: F_z = −110 N exactly  [0.0, 0.0, -110.0, 0.0, 33.0, 0.0]
+ok   one contact: nose-up moment 33 N·m, no roll or yaw  [0.0, 0.0, -110.0, 0.0, 33.0, 0.0]
+ok   rebounding faster than the spring pushes: no force (a damper never pulls the wheel down)
+ok   in the air: nothing (an empty array, not zeros)
+ok   compression reported ≤ 0 in the air, > 0 on the ground
+ok   collapse past the travel
+ok   rolled right on the ground: rolling moment restores (Mx < 0)  [0.0, -2.06815672284311, -20.6125826681504, -2.48754441086944, -0.81061898192552, 0.08133318973774]
+ok   nose-down on the nose wheel only: nose-up moment (My > 0)  [-0.34564970275361, 0.0, -1.70514351638413, 0.0, 0.33244141608001, 0.0]
+ok   drop test: no simulation fault
+ok   drop test: mechanical energy never gains more than 1e-6 J in a tick  max gain 0.0 J
+ok   drop test: at rest after 6 s  0.00000561009619 m/s, 0.00001819072881 rad/s
+ok   drop test: the wheels carry the weight (|F| = m·g, no net moment)  [-0.4753477832751, 0.00000938237479, -28.226024353841, 0.00000269994945, -0.00006561832254, -0.00000006581777]
+ok   drop test: all three wheels compressed, mean sag within 30 % of static_sag 0.018 m  [0.01732287420052, 0.01732283248255, 0.02006464396119]
+ok   drop test: rests within 1° of level (the nose leg carries its 27 % share)  pitch -0.97° roll -0.00°
+ok   h vs h/2 after 1 s of bouncing: altitude within 1 mm, attitude within 1e-3, sink within 1 cm/s  Δz 0.00000042752357 m, Δq 0.00005888262432, Δw 0.00000236205901 m/s (h2 ticks 480)
+ok   normal force only: horizontal drift is integration error, ≤ 0.1 mm at h and ≥ 8× smaller at h/2 or ≥ 16× at h/4 (or below the floor)  north 0.0000001350614 m at h, 0.00000002757008 m at h/2, 0.00000000116777 m at h/4
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   in the air the session's loads are bit-identical to the air-only evaluator
+ok   a trimmed start has no wheel on the ground
+ok   dropped from 0.35 m: lands, no crash, at rest on three wheels  crashes 0, speed 0.000 m/s, compressions [0.01729852902369, 0.01730220620738, 0.02012168333047]
+CRASH at 3.0 m/s (sink 3.2 m/s, landing gear travel limit (nose)) - restarting
+ok   dropped from 2.0 m: nose gear travel limit (crash, restart)  crashes 1, why 'landing gear travel limit (nose)', sink 3.2 m/s
+ok   inverted at 0.20 m: still a hull crash (fin)
+22 checks, 0 failed

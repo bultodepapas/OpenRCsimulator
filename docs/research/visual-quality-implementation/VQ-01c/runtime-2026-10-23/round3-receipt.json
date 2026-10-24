@@ -1,0 +1,1312 @@
+{
+  "format": "openrc-engineering-round3-receipt v1",
+  "baseline_commit": "11bd41d313e87ae4d1a649608751563031ea3b85",
+  "retained_changes": [
+    "Free and clear unparented FlightSession on failure/weather startup rejection.",
+    "Reject unusable finite fuel before parenting instead of silently flying with the existing full fill.",
+    "Persistent startup/rollback/orphan regression test."
+  ],
+  "sources": [
+    {
+      "path": "app/main.gd",
+      "sha256": "2bd7dc4a080f633af6953e39a5173801f4c73e0a7d69a563689dd0a2c6efd5ae"
+    },
+    {
+      "path": "app/render/shader_clock.gd",
+      "sha256": "decd507dca3d2783e3cf7a80790e93d1b4772ae6727a67d59611c974e6ee2550"
+    },
+    {
+      "path": "app/tests/test_main_startup_cleanup.gd",
+      "sha256": "a2ac880e82d5774f6d0d502d80462c6ce1a02bafdf0683e6c8c243e56cf5013e"
+    },
+    {
+      "path": "app/tests/test_main_startup_cleanup.gd.uid",
+      "sha256": "bfa1640ecaff0cba4e3454d055c517060302eb5a6797e649532d7db32adbdf7b"
+    }
+  ],
+  "exact_checkpoints": {
+    "baseline_source_sha256": "1bd24c7e69da7e7daa794040fd312aafa7c60d17247f2e4a4568ce4dc1085c05",
+    "candidate_source_sha256": "2bd7dc4a080f633af6953e39a5173801f4c73e0a7d69a563689dd0a2c6efd5ae",
+    "cases": [
+      {
+        "baseline": {
+          "final_session_sha256": "bf37a6a0f50382d41eb27b8a8d13062df1e35a8815b30218768dcb5bdb602677",
+          "final_sim_sha256": "c951f760e8609dd392ff7a8817cf58dd1a54b6199eb01aa3b5e49c0b5d912e20",
+          "final_tick": 480,
+          "final_valid": true,
+          "fuel_remaining_480_kg": 2.58882074279789,
+          "fuel_remaining_zero_kg": 2.59256,
+          "fuel_start_fill": 1.0,
+          "glow_active": false,
+          "initial_inputs": [
+            0.0,
+            0.100195602564569,
+            0.0,
+            0.0907110674010201,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "initial_session_sha256": "80d21665ee69f3fa53a19ef2e060111803291d08707bb5de50e0fd83654b738c",
+          "initial_sim_sha256": "d732e97e7d2122e5654e7570d11f40855f56134a83b3ac475b3a4f5e630c77c8",
+          "initial_tick": 0,
+          "initial_valid": true,
+          "input_tape_sha256": "481b3295ca836261eafaace2ea471a3e95063fbf29eeef5674d27c28bd254a6c",
+          "inputs_match_tape": true,
+          "ok": true,
+          "physics_error": "",
+          "startup_error": "",
+          "variant": "baseline"
+        },
+        "candidate": {
+          "final_session_sha256": "bf37a6a0f50382d41eb27b8a8d13062df1e35a8815b30218768dcb5bdb602677",
+          "final_sim_sha256": "c951f760e8609dd392ff7a8817cf58dd1a54b6199eb01aa3b5e49c0b5d912e20",
+          "final_tick": 480,
+          "final_valid": true,
+          "fuel_remaining_480_kg": 2.58882074279789,
+          "fuel_remaining_zero_kg": 2.59256,
+          "fuel_start_fill": 1.0,
+          "glow_active": false,
+          "initial_inputs": [
+            0.0,
+            0.100195602564569,
+            0.0,
+            0.0907110674010201,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "initial_session_sha256": "80d21665ee69f3fa53a19ef2e060111803291d08707bb5de50e0fd83654b738c",
+          "initial_sim_sha256": "d732e97e7d2122e5654e7570d11f40855f56134a83b3ac475b3a4f5e630c77c8",
+          "initial_tick": 0,
+          "initial_valid": true,
+          "input_tape_sha256": "481b3295ca836261eafaace2ea471a3e95063fbf29eeef5674d27c28bd254a6c",
+          "inputs_match_tape": true,
+          "ok": true,
+          "physics_error": "",
+          "startup_error": "",
+          "variant": "candidate"
+        },
+        "name": "avanti_full",
+        "ok": true,
+        "policy_ok": true,
+        "tick_480_equal": true,
+        "tick_zero_equal": true
+      },
+      {
+        "baseline": {
+          "final_session_sha256": "1d0efef79cf1691284ce66470bf4333d71f208991b3bd9a4d2d7140a1cf79c6e",
+          "final_sim_sha256": "35a2b75df8b31c5bfc3a355c4c3f1d85161a20d807018f8e92471ad2ce219279",
+          "final_tick": 480,
+          "final_valid": true,
+          "fuel_remaining_480_kg": 0.644498862316743,
+          "fuel_remaining_zero_kg": 0.64814,
+          "fuel_start_fill": 0.25,
+          "glow_active": false,
+          "initial_inputs": [
+            0.0,
+            0.0622994762465786,
+            0.0,
+            0.0828771313859121,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "initial_session_sha256": "25ddf8642c1cccc2c49ca36f901ff3e8ccdb53ddf7c5bb8d6be6dd977234b792",
+          "initial_sim_sha256": "2dca59c5caef23517d7825b9505ff1f440dfa7a3561f2b7b75060f19aa33fd6f",
+          "initial_tick": 0,
+          "initial_valid": true,
+          "input_tape_sha256": "8b16d092b385e5e04985debc49facb2ddcf5049cff83c847af9cfae7c4fd2a06",
+          "inputs_match_tape": true,
+          "ok": true,
+          "physics_error": "",
+          "startup_error": "",
+          "variant": "baseline"
+        },
+        "candidate": {
+          "final_session_sha256": "1d0efef79cf1691284ce66470bf4333d71f208991b3bd9a4d2d7140a1cf79c6e",
+          "final_sim_sha256": "35a2b75df8b31c5bfc3a355c4c3f1d85161a20d807018f8e92471ad2ce219279",
+          "final_tick": 480,
+          "final_valid": true,
+          "fuel_remaining_480_kg": 0.644498862316743,
+          "fuel_remaining_zero_kg": 0.64814,
+          "fuel_start_fill": 0.25,
+          "glow_active": false,
+          "initial_inputs": [
+            0.0,
+            0.0622994762465786,
+            0.0,
+            0.0828771313859121,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "initial_session_sha256": "25ddf8642c1cccc2c49ca36f901ff3e8ccdb53ddf7c5bb8d6be6dd977234b792",
+          "initial_sim_sha256": "2dca59c5caef23517d7825b9505ff1f440dfa7a3561f2b7b75060f19aa33fd6f",
+          "initial_tick": 0,
+          "initial_valid": true,
+          "input_tape_sha256": "8b16d092b385e5e04985debc49facb2ddcf5049cff83c847af9cfae7c4fd2a06",
+          "inputs_match_tape": true,
+          "ok": true,
+          "physics_error": "",
+          "startup_error": "",
+          "variant": "candidate"
+        },
+        "name": "avanti_quarter",
+        "ok": true,
+        "policy_ok": true,
+        "tick_480_equal": true,
+        "tick_zero_equal": true
+      },
+      {
+        "baseline": {
+          "final_session_sha256": "d71a896f0bd4630cdbf127966bd1d4a3b4314f9715fac0fb37d15ff300e790c0",
+          "final_sim_sha256": "6c1a1f91a1cd3d97520db948800e54535bbc3c630c7e67e43214d07cbdc82e92",
+          "final_tick": 480,
+          "final_valid": true,
+          "fuel_remaining_480_kg": 0.149725276894001,
+          "fuel_remaining_zero_kg": 0.149961,
+          "fuel_start_fill": 0.5,
+          "glow_active": true,
+          "initial_inputs": [
+            0.0174038220982792,
+            0.0727865994206043,
+            0.0156921122212998,
+            0.199443886394663
+          ],
+          "initial_session_sha256": "35e9539b4f1492da938ed2084ab1259863aa076090d515a419717edc5924d7db",
+          "initial_sim_sha256": "97101a1adf5003c9d63877c4ce0f5b7c5395de92e544b224dbcd2085ef799298",
+          "initial_tick": 0,
+          "initial_valid": true,
+          "input_tape_sha256": "ef0ca98e0ed54a35323db27321ecbb4fffdedab7c25ff8bf778ff5747d246633",
+          "inputs_match_tape": true,
+          "ok": true,
+          "physics_error": "",
+          "startup_error": "",
+          "variant": "baseline"
+        },
+        "candidate": {
+          "final_session_sha256": "d71a896f0bd4630cdbf127966bd1d4a3b4314f9715fac0fb37d15ff300e790c0",
+          "final_sim_sha256": "6c1a1f91a1cd3d97520db948800e54535bbc3c630c7e67e43214d07cbdc82e92",
+          "final_tick": 480,
+          "final_valid": true,
+          "fuel_remaining_480_kg": 0.149725276894001,
+          "fuel_remaining_zero_kg": 0.149961,
+          "fuel_start_fill": 0.5,
+          "glow_active": true,
+          "initial_inputs": [
+            0.0174038220982792,
+            0.0727865994206043,
+            0.0156921122212998,
+            0.199443886394663
+          ],
+          "initial_session_sha256": "35e9539b4f1492da938ed2084ab1259863aa076090d515a419717edc5924d7db",
+          "initial_sim_sha256": "97101a1adf5003c9d63877c4ce0f5b7c5395de92e544b224dbcd2085ef799298",
+          "initial_tick": 0,
+          "initial_valid": true,
+          "input_tape_sha256": "ef0ca98e0ed54a35323db27321ecbb4fffdedab7c25ff8bf778ff5747d246633",
+          "inputs_match_tape": true,
+          "ok": true,
+          "physics_error": "",
+          "startup_error": "",
+          "variant": "candidate"
+        },
+        "name": "stik_glow_half",
+        "ok": true,
+        "policy_ok": true,
+        "tick_480_equal": true,
+        "tick_zero_equal": true
+      }
+    ],
+    "checks": 15,
+    "complete": true,
+    "failures": 0,
+    "format": "openrc-main-exact-checkpoints v1",
+    "input_tape_policy": "capture baseline tick-zero sim.inputs; require candidate tick-zero equality; repeat unchanged for 480 manual Simulation.step() calls",
+    "manual_ticks": 480,
+    "os_controller_polling": false,
+    "passed_cases": 3,
+    "user_preference_input": false
+  },
+  "rejected_experiment": {
+    "change": "Skip identical ShaderClock global writes",
+    "decision": "Reverted; actual static-call timing did not establish a worthwhile gameplay benefit.",
+    "actual_static_cpu_us_per_update": {
+      "active_baseline": 0.44066,
+      "active_guarded": 0.46758,
+      "paused_baseline": 0.4213,
+      "paused_guarded": 0.31614
+    },
+    "limitations": "Shared host with external F4U test; setter-loop timings, not FPS/GPU. Native shader parity 29/29 passed."
+  },
+  "limitations": [
+    "Final flight shared the host with external F4U work; no clean FPS improvement claim.",
+    "Native rejected-start fixture passes assertions but reports two pre-existing GLES3 texture leaks of 349524 bytes each; ownership unresolved.",
+    "Screen 0 is a virtual 1080p/60Hz display. No physical input-to-photon or scanout qualification.",
+    "Gameplay uses engine-parsed key events, not human pilot acceptance; captures retain some existing presentation state.",
+    "Canonical Linux suite unavailable: WSL CreateInstance E_FAIL. Native focused checks are separate evidence.",
+    "Concurrent F4U changes are unrelated and preserved. Source hashes identify scoped changes, not a clean working tree.",
+    "Failed exploratory harness runs remain in the inventory and are not successful validation."
+  ],
+  "checked_runs": [
+    {
+      "path": "tmp/game-engineering-round3/benchmark/final-avanti-sharedhost-20261023/final-avanti-sharedhost-60s-t5qme2tv/report.json",
+      "sha256": "7020d3d5796b63f6175686630253aa36029a0985f763cdc8478fe6155ab5c757",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--max-fps",
+        "0",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/native-keyboard/keyboard_flight.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx",
+        "--start=airborne_half_power",
+        "--view=pilot",
+        "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round3\\benchmark\\final-avanti-sharedhost-20261023\\frames.json",
+        "--warmup=10",
+        "--t=60"
+      ],
+      "started_utc": "2026-10-23T19:48:46.078356+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 81.344,
+      "log_sha256": "9d2656f6c26ad7f0289ffde7018e36a61c41bc959e9bb90b533db29e97d0f7b3",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140816-current/checks/native-1080p-baseline-6x55q_ky/report.json",
+      "sha256": "fe065671c4b7793d7a15acedc585f8b7a05fb5a32ed6300fc729ee36cbb64410",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/native-keyboard/keyboard_flight.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx",
+        "--start=airborne_half_power",
+        "--view=pilot",
+        "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round3\\benchmark\\native-1080p-20261023-140816-current\\frames.json",
+        "--warmup=10",
+        "--t=60"
+      ],
+      "started_utc": "2026-10-23T19:08:18.940318+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.969,
+      "log_sha256": "f29fcfeed293736ae0450c7d911a64c4487e2fc856f7675f2725f00ed5d13e89",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140919-success/checks/native-1080p-baseline-eqp95mpt/report.json",
+      "sha256": "fa7c9861a098900796452076ed6cf0eb0b5ebedf496f97f93d42bd7ff47b25c9",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-07\\planar-lake-2026-10-22\\native-keyboard\\keyboard_flight.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx",
+        "--start=airborne_half_power",
+        "--view=pilot",
+        "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round3\\benchmark\\native-1080p-20261023-140919-success\\frames.json",
+        "--warmup=10",
+        "--t=60"
+      ],
+      "started_utc": "2026-10-23T19:09:21.411101+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 81.703,
+      "log_sha256": "a930c5ba73a2027e75f81ca5ef0899cfd0a2d7a153b91996831fc3a36ab1f405",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/cpu/native-avanti-diagnostic/checks/godot-6fd7rhzo/report.json",
+      "sha256": "748a132a927195753e56666a1107be6fe9125fe16e84e6e0fb17f7abf9467c25",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--max-fps",
+        "0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-07\\planar-lake-2026-10-22\\native-keyboard\\keyboard_flight.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx",
+        "--start=airborne_half_power",
+        "--view=pilot",
+        "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round3\\cpu\\native-avanti-diagnostic\\frames.json",
+        "--warmup=10",
+        "--t=60",
+        "--frame-diagnostics",
+        "--frametimes-max-frames=60000"
+      ],
+      "started_utc": "2026-10-23T19:14:17.302492+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 82.141,
+      "log_sha256": "dbdf184c454c1028a7fb48bf2a53002fe5fdcd2901a15ddf59ed437735f29130",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/cpu/smoke-probe-run/checks/godot-lkp36d13/report.json",
+      "sha256": "a0d7db0453ba7e1b4ff3def94cbeb20e8ece965a9c6005f1695a98ddb885bed7",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--max-fps",
+        "0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round3\\cpu\\smoke_probe_runner.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx",
+        "--start=airborne_half_power",
+        "--view=pilot"
+      ],
+      "started_utc": "2026-10-23T19:20:23.403090+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 31.891,
+      "log_sha256": "7d3e93fd9505c14e8aa5fafc8f4ed46ce14a7c795ecd430463aa4e8ec45163a9",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/good-enemy/main-startup-cleanup-bx666ej6/report.json",
+      "sha256": "0a9262ad01e3a8ad94ec18d16b90821b7fb0cbe156523b405c0b5c64e0f29810",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "res://tests/test_main_startup_cleanup.gd"
+      ],
+      "started_utc": "2026-10-23T19:55:41.477135+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 26.641,
+      "log_sha256": "bbca16f3a3c11100cb89a24b18cfd947b0813f08bf0ed9ccc019593d2b2c268e",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/gpu/checks/godot-t2q9lijn/report.json",
+      "sha256": "df4dd9ef654a4adc7b626ec52c0f1a704adfb594b567a7b98b27c0ebc6e2a216",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round3\\gpu\\shader_clock_guard_microbench.gd"
+      ],
+      "started_utc": "2026-10-23T19:25:02.823486+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.329,
+      "log_sha256": "33c8ab425cfdc594f1142a0425752591ded6adabee637388ccc605dd12895452",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/gpu/checks2/godot-wzp96vqk/report.json",
+      "sha256": "22eb10a337e8c5ec9dc6decbea2ddc5333346ff6bc4356ae32c76b13391615f1",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round3\\gpu\\shader_clock_guard_microbench.gd"
+      ],
+      "started_utc": "2026-10-23T19:25:14.177432+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 2.156,
+      "log_sha256": "005a69313a883c0660c634a0cc0ae1fdd266bea2d55960af07992410ad6537b6",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/gpu/final-shader-clock-guard-20261023/shader-clock-guard-final-g0uwbye7/report.json",
+      "sha256": "bcd2195e2a505cf052358fa2f2e88a3af28fa811395713ed4237cf50dc0753e8",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--max-fps",
+        "0",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/gpu/shader_clock_guard_microbench.gd"
+      ],
+      "started_utc": "2026-10-23T19:46:59.721581+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 2.016,
+      "log_sha256": "7de2788bb5ff0aacc5d52aed9bf779ade9c4a8692269e3c2462d8f8107927d70",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-4z819313/report.json",
+      "sha256": "80010ba94c9fe48b01433471cc56a7f161c0cc7dba40a0edd17f66d981b0e187",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/app/tests/test_main_startup_cleanup.gd",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080"
+      ],
+      "started_utc": "2026-10-23T19:35:37.988149+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "engine_error",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 24.594,
+      "log_sha256": "d2c4d80fc87d0505489e7f863f41e4c285e2a096613442f5fd9f1d88234bfbe7",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-6n9rzur2/report.json",
+      "sha256": "ce6659dbf0ebb5938e048bffd4872373fa4705641e881b5f14b07c4986c72b0d",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/app/tests/test_main_startup_cleanup.gd",
+        "--check-only"
+      ],
+      "started_utc": "2026-10-23T19:41:21.635584+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.937,
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-73kq7pn5/report.json",
+      "sha256": "858615841bd126d2e13618bed6ffacd43fd380a064c82d1ac1f8d65ff085a872",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/app/tests/test_main_startup_cleanup.gd"
+      ],
+      "started_utc": "2026-10-23T19:45:38.860681+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 26.531,
+      "log_sha256": "bbca16f3a3c11100cb89a24b18cfd947b0813f08bf0ed9ccc019593d2b2c268e",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-_f9hsjlv/report.json",
+      "sha256": "2f9a8129eb6b201083ccba98e688847f6bebe902f144a78f5756872d4b041e83",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/native_gameplay_round3.gd",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080"
+      ],
+      "started_utc": "2026-10-23T19:44:01.958255+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 36.329,
+      "log_sha256": "07ff54070afc5a492b197e0ed893d713b2ee44507f1aa946406e3d4049c43102",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-b19ptyh0/report.json",
+      "sha256": "bed838b3cb0ad6f3e12dc8d0a3a00a40c4a069e6bc864c056aa81dc2c9032224",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/test_main_startup_cleanup.gd",
+        "--check-only"
+      ],
+      "started_utc": "2026-10-23T19:29:26.775278+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.343,
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-ep_kctlo/report.json",
+      "sha256": "55a5073b190389c0dd0501a34e723a7f349bda36fe023f3a23d610948ff886f5",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/control_approot_home.gd",
+        "--check-only"
+      ],
+      "started_utc": "2026-10-23T19:30:52.225969+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.312,
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-evcxqp9e/report.json",
+      "sha256": "fe1b62cdc93273106a634ab388c90fdd6c8ec6cbf4640e5f2434b22bef1896fd",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/native_gameplay_round3.gd",
+        "--check-only"
+      ],
+      "started_utc": "2026-10-23T19:41:28.158440+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.593,
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-fpnov7t_/report.json",
+      "sha256": "a2bb8c11dd46efff462cced039390f78dccfad9f9eb0cb9bff3dd98b6f5bc238",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/control_main_world_lifecycle.gd",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--",
+        "--qa-case=valid-drawn"
+      ],
+      "started_utc": "2026-10-23T19:33:56.213838+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 10.203,
+      "log_sha256": "67f29aa19b6ead446dea5884ec1331d70dea646117318af8e4620cdd0374fb43",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-jc9ev5ej/report.json",
+      "sha256": "7f7f895eff6db554fee7e0f5887de80618eecf9011d64169e21ccb4ae3b9501a",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/control_main_world_lifecycle.gd",
+        "--check-only"
+      ],
+      "started_utc": "2026-10-23T19:33:46.050068+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.562,
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-mfa3rgcr/report.json",
+      "sha256": "159ba0a8fc657b1d2994699a660589d135d623663599da2a66e8d1b5672bea41",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/native_gameplay_round3.gd",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080"
+      ],
+      "started_utc": "2026-10-23T19:41:58.246365+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 34.313,
+      "log_sha256": "9ec95e1086eac18df2eabc2c05ef39c117b0ff06d7d1e7197978f5fb67ff7658",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-o66xsu9h/report.json",
+      "sha256": "018f4ca190299097061113299adedfc9943ceaa366c8f890baba1c61c2f2b6d4",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/app/tests/test_main_startup_cleanup.gd",
+        "--check-only"
+      ],
+      "started_utc": "2026-10-23T19:35:28.504777+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.766,
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-odev1p4z/report.json",
+      "sha256": "ebd27e865367466cceeaefcf7078164575c672bc8ff03d0027b6f67572fde40e",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/test_main_startup_cleanup.gd",
+        "--check-only"
+      ],
+      "started_utc": "2026-10-23T19:29:02.923120+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.453,
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-p9k345dd/report.json",
+      "sha256": "47568c31a5b99e347eecabf2a42b7e1c422545de688b5a558bc136891328e419",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/control_approot_home.gd",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080"
+      ],
+      "started_utc": "2026-10-23T19:31:02.010359+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 10.281,
+      "log_sha256": "7a2701a8f5dc6acf81d560fd08f589694448b77ea843915350b8f1f74e03f93d",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-qza0h94i/report.json",
+      "sha256": "c49f0d522500d07f27a3fb6e39683c07da94a3e287eec6ff5c882ae2e0c54aef",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/app/tests/test_main_startup_cleanup.gd",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080"
+      ],
+      "started_utc": "2026-10-23T19:29:44.026181+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "engine_error",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 24.359,
+      "log_sha256": "d2c4d80fc87d0505489e7f863f41e4c285e2a096613442f5fd9f1d88234bfbe7",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-ras1wf4x/report.json",
+      "sha256": "e0f870bb036c3d054f04c55ddd1387a07939a5520bdebb2264eaf44517a52853",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/control_main_world_lifecycle.gd",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--",
+        "--qa-case=refused-one-frame"
+      ],
+      "started_utc": "2026-10-23T19:34:33.446060+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "engine_error",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.125,
+      "log_sha256": "22ce1027781f7f93e1952eb776d8cc9caa57dfa5892a3f30978429cebacbb343",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/godot-udcoop_0/report.json",
+      "sha256": "a4631c5e3fd6962b134223298c923f53975437657cbf2e61c6486a34bb166c00",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/native_gameplay_round3.gd",
+        "--check-only"
+      ],
+      "started_utc": "2026-10-23T19:43:54.247588+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.657,
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/round3-baseline-main-csyfrt9j/report.json",
+      "sha256": "366fbdaa92fd5eec998e6ba109a2275509c90de02fcc3cc639c71682e39f5daf",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/baseline_main_regressions.gd"
+      ],
+      "started_utc": "2026-10-23T19:18:50.701730+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "counts": {
+        "error": 5,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.031,
+      "log_sha256": "e90d5fe24f9305f46f2823f513dbac3b151a13d90c46baca067ebf2850786293",
+      "missing_required_text": [
+        "ROUND3_BASELINE_COMPLETE"
+      ]
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checked/round3-baseline-main-srsle7bm/report.json",
+      "sha256": "1407e6b456017c107110bd0957db045761c8029c27496a370edd8a06c3799e93",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/baseline_main_regressions.gd"
+      ],
+      "started_utc": "2026-10-23T19:19:00.515660+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 15.64,
+      "log_sha256": "8c58ce2b737c7a6fddff964fb2c8f9706294c83f7a4a57bdf3d8136f8d5cf8ed",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checks/exact-main-tick-checkpoints-1imvst68/report.json",
+      "sha256": "378e0813e8e9520e461d63486672e14e23e8a291a2660a2fe30b031bfee7757f",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/exact_main_tick_checkpoints.gd"
+      ],
+      "started_utc": "2026-10-23T19:38:19.384000+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.922,
+      "log_sha256": "d56f3f828c1fe63e38b307060a1136631340a269ab5e6eb83de8b693fa7acb49",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checks/exact-main-tick-checkpoints-apflqvjp/report.json",
+      "sha256": "fb3932e0d8ffddddf2d4b7803c9e925ab4aa48767ea83d6ba862f62bb084e0a9",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "tmp/game-engineering-round3/qa/exact_main_tick_checkpoints.gd"
+      ],
+      "started_utc": "2026-10-23T19:37:26.947396+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.204,
+      "log_sha256": "7837420f7d7845674291dfc56e6251e3dd4f0c120cb1782bbc5aadbe2c75dae9",
+      "missing_required_text": [
+        "EXACT_MAIN_CHECKPOINTS"
+      ]
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checks/exact-main-tick-checkpoints-debug-nyehp40z/report.json",
+      "sha256": "e215c24ffb43e4451d498c6949bdce6dc99647138a2493c28feee76cff9c31ef",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/exact_main_tick_checkpoints.gd"
+      ],
+      "started_utc": "2026-10-23T19:38:06.954899+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.922,
+      "log_sha256": "d56f3f828c1fe63e38b307060a1136631340a269ab5e6eb83de8b693fa7acb49",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checks/exact-main-tick-checkpoints-v944lzps/report.json",
+      "sha256": "aa185315c0caa9a13a94f16890870895a587963704040d1a141aa23659fd3b86",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/exact_main_tick_checkpoints.gd"
+      ],
+      "started_utc": "2026-10-23T19:37:29.796733+00:00",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.75,
+      "log_sha256": "172921fd8de8e6fe5a9ffe958c483197052d0f5e1786cc52c5c5034598a2ab49",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checks/exact-main-tick-checkpoints-x99zhbfr/report.json",
+      "sha256": "13c4af1580ad168f2eacc33f0ddadce97ab944f1b4a87cd7c65c00161f418b48",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round3/qa/exact_main_tick_checkpoints.gd"
+      ],
+      "started_utc": "2026-10-23T19:38:38.172347+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 24.406,
+      "log_sha256": "69fa7b6df7ea9890d53e8ea52561d7506042139137e484b907c6c79998b6be6e",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checks/test-fuel-start-fill-nyuszrjt/report.json",
+      "sha256": "ca291e8b50222fa07573aaa384b5064cc3f9d0b0077738b31c2cd234713ebe76",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_fuel_start_fill.gd"
+      ],
+      "started_utc": "2026-10-23T19:39:19.294317+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 15.172,
+      "log_sha256": "74e2642cc898ff591f4423ac020b5301b5284834f7a5d3f6394dac9e7eac5d4f",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checks/test-golden-flights-n3mv50n8/report.json",
+      "sha256": "a94ea0eed2dfde6e0459d45936e9e20b5c476833af5d591b2600fd145abffbb7",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_golden.gd"
+      ],
+      "started_utc": "2026-10-23T19:39:37.051369+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.547,
+      "log_sha256": "1cb52c8d6be1e486f10bc083655130d0686330e203ea62de9ee15f8c5f9c6737",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/checks/test-shader-clock-moweqkio/report.json",
+      "sha256": "281a575228ded939358812230aa2614f4efba7a575bce1c9975438e4b599e750",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shader_clock.gd"
+      ],
+      "started_utc": "2026-10-23T19:39:16.532783+00:00",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.203,
+      "log_sha256": "f8e846c8cca73ea05b35499ceee917f3be9a51d918527f62b7cac8ab4a6dfc90",
+      "missing_required_text": []
+    }
+  ],
+  "raw_artifacts": [
+    {
+      "path": "tmp/game-engineering-round3/benchmark/final-avanti-sharedhost-20261023/final-avanti-sharedhost-60s-t5qme2tv/resources.json",
+      "sha256": "d28fb522aa919afbe1797f64046cbce89db1162d4ba0cf684466136bf99af2ba"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/final-avanti-sharedhost-20261023/frames.json",
+      "sha256": "d49ef46dce7882244c1fa2958baa2a84ab92b817891121c1d2d7393a1efcd5d8"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/final-avanti-sharedhost-20261023/host-telemetry.jsonl",
+      "sha256": "2dc07c100178ac3b5997b86f7cdfcd2c20961784a90e4a3c2b887cff76a89a6b"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/final-avanti-sharedhost-20261023/manifest.json",
+      "sha256": "1faafd93fc41f100e50f4199a17f33c0387851007f740ca5af27f73839d66df6"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140636/host-telemetry.jsonl",
+      "sha256": "ff7c2e2f537a956226e4ca9afe178a04b280f065b5b762b576c038acdfdd56e4"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140816-current/checks/native-1080p-baseline-6x55q_ky/resources.json",
+      "sha256": "d1f4ad17ee9006fd6ba369752d48efee9642ce6967d8cbc4a307a5d762cb355d"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140816-current/cpu-counters.csv",
+      "sha256": "64332d86ab6c30e52e38c508c614d464f4d59851118b62479ddfac5d9625b24a"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140816-current/host-telemetry.jsonl",
+      "sha256": "369f206116d5fbb9192f9ce5871160c9a73549f290c8f56b3467d6b7be5cfb63"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140919-success/checks/native-1080p-baseline-eqp95mpt/resources.json",
+      "sha256": "4efae51bc7945437c7a2dd7523c77ae4f3456216f8d6177a9b9950a635912b25"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140919-success/cpu-counters.csv",
+      "sha256": "1d2bf79599e738a0d7833f9db9a6ebe71dea6c7123c4ba725ac55c1de6ef4d0c"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140919-success/diagnosis.json",
+      "sha256": "78b0505839ba12f67c4a400f5bcdadec76797ebc4cb06ce3deef11182b0b4d38"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140919-success/frames.json",
+      "sha256": "3e0047b58bae462e03c0f020fd4b1e7bf9ffcc7ccf5a53433878749760a0fadc"
+    },
+    {
+      "path": "tmp/game-engineering-round3/benchmark/native-1080p-20261023-140919-success/host-telemetry.jsonl",
+      "sha256": "af3c9dd40741898decc7bcc4b94b8212b9bc7c24cd2e8d6a4e8e5f94f292437d"
+    },
+    {
+      "path": "tmp/game-engineering-round3/cpu/native-avanti-diagnostic/diagnosis.json",
+      "sha256": "b66762aca7d92b95cf828d77a699eb528698b05ff18b0c9295feae291bf72fdf"
+    },
+    {
+      "path": "tmp/game-engineering-round3/cpu/native-avanti-diagnostic/frames.json",
+      "sha256": "5b65d3277083e568eda5ec0cbc90b072d0188906265f9006c20dadc84403290f"
+    },
+    {
+      "path": "tmp/game-engineering-round3/cpu/smoke-timing.json",
+      "sha256": "b66dea7c565d476f7b3c54043cb546cce5e3bd75eb9e13ea6a373f27586cc54c"
+    },
+    {
+      "path": "tmp/game-engineering-round3/cpu/smoke_probe_main.gd",
+      "sha256": "0d2b3dc6ef25de63a52155f008262b365b0c7b8e8bb44208a0dba9a41047ad76"
+    },
+    {
+      "path": "tmp/game-engineering-round3/cpu/smoke_probe_runner.gd",
+      "sha256": "b95a2bedb8f478e6dc3ae0b3f306285b866534b27ef93a3a587b88a85ee057eb"
+    },
+    {
+      "path": "tmp/game-engineering-round3/gpu/final-shader-clock-guard-20261023/shader-clock-guard-final-g0uwbye7/metadata.json",
+      "sha256": "f749722a6ce4143b78cf98c0283d6540b2ba58bb699f47ade958b620932eac1e"
+    },
+    {
+      "path": "tmp/game-engineering-round3/gpu/shader_clock_guard_microbench.gd",
+      "sha256": "3a619d4f333bd85102f6d63808f98283648636a5980eac4ba563d86484c55c77"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/baseline_main_regressions.gd",
+      "sha256": "c67536a49499ef26133964e2f33f9208c7f0c050d5b9e10e0afbee74f0cfa86f"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/control_approot_home.gd",
+      "sha256": "dcd54b50e240c0bacc20c7d2f0bb9a83e003291afb7fb16d8a0e955fda43eb5c"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/control_main_world_lifecycle.gd",
+      "sha256": "eae5fbc301ad2c5d76c896fa024b71e166c3618fecca24a9d1dc28dbb9a34d65"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/exact_main_tick_checkpoints.gd",
+      "sha256": "d21dd076481176bfb56a9fe9e4dbec3d612b50c2893ac8a744aa9d05d7ef16ec"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/exact_main_tick_checkpoints.json",
+      "sha256": "14bc2ad1e08fdc76b6a27fc77d74687689839b50296f316cd256cf61fa8a434f"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/native-captures/avanti_airborne.png",
+      "sha256": "9a96964525ef475ef7534d43b7fcde9e591ddb8b8c87c85aee8a14e39580bc1e"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/native-captures/avanti_pause.png",
+      "sha256": "d4a79ef097a1b18885a1e6d8453f0e3c1a6661f0383d3401846e7f8b951a88ee"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/native-captures/home.png",
+      "sha256": "3ec4227dd33b9a649b0638e479367546ab6baac85b9f1ae8b74f6f9da496fe8e"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/native-captures/home_settings.png",
+      "sha256": "226c72358bdbe86cc48840f12a66534f7c00e3a26b55275857a6813b9c2d57d7"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/native-captures/pause_settings_graphics.png",
+      "sha256": "191d31432037b1ed14ad7e2c13ac56acb11cb67d9e6e416151449b95e157f2d7"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/native-captures/pause_settings_graphics_vsync_preview.png",
+      "sha256": "f4796786ed8d9071c14ea42a9eade66077d47495fd589378af3d2ddeff3e154c"
+    },
+    {
+      "path": "tmp/game-engineering-round3/qa/native_gameplay_round3.gd",
+      "sha256": "5f959ef5ba93c0080ca5e5ff6bd078732ff5eb360672f85bbd98d6fb066e24a8"
+    },
+    {
+      "path": "tmp/game-engineering-round3/reference/main_baseline.gd",
+      "sha256": "1bd24c7e69da7e7daa794040fd312aafa7c60d17247f2e4a4568ce4dc1085c05"
+    },
+    {
+      "path": "tmp/game-engineering-round3/reference/shader_clock_baseline.gd",
+      "sha256": "decd507dca3d2783e3cf7a80790e93d1b4772ae6727a67d59611c974e6ee2550"
+    },
+    {
+      "path": "tmp/game-engineering-round3/reference/shader_clock_rejected_candidate.gd",
+      "sha256": "329e363f68e25c69d57ee1ec726548de4750e1b63e2f8743dabb8f8c03828396"
+    }
+  ]
+}

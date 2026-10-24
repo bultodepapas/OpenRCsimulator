@@ -1,0 +1,52 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   stik_glow_55ax_2t.json installation prepares the shared reference (fixed-datum-reference-state-resources-v1) 
+ok   stik_glow_55ax_2t.json new kernel equals the historical FuelMass bit for bit at six fuel levels 0 mismatches
+ok   stik_glow_55ax_2t.json excess fuel stays refused while capacity equals the authored load 
+ok   stik_glow_61fx_2t.json installation prepares the shared reference (fixed-datum-reference-state-resources-v1) 
+ok   stik_glow_61fx_2t.json new kernel equals the historical FuelMass bit for bit at six fuel levels 0 mismatches
+ok   stik_glow_61fx_2t.json excess fuel stays refused while capacity equals the authored load 
+ok   stik_glow_fs64v_4t.json installation prepares the shared reference (fixed-datum-reference-state-resources-v1) 
+ok   stik_glow_fs64v_4t.json new kernel equals the historical FuelMass bit for bit at six fuel levels 0 mismatches
+ok   stik_glow_fs64v_4t.json excess fuel stays refused while capacity equals the authored load 
+ok   dry-up inventory evaluates the authored state  
+ok   reference form prepares two resources 
+ok   reference form agrees with the dry-up form for two resources (≤ 1e-12) worst 0.0
+ok   a fill above the authored amount adds mass and moves the CG toward that tank 
+ok   amounts above capacity, negative or not finite are refused 
+ok   valid single tank prepares 
+ok   prepare refuses resources heavier than the aircraft 
+ok   prepare refuses no resources 
+ok   prepare refuses five inertia entries 
+ok   prepare refuses duplicate ids 
+ok   prepare refuses reference above capacity 
+ok   prepare refuses negative size 
+ok   prepare refuses non-finite center 
+ok   prepare refuses empty id 
+ok   reference inverse accepts finite physical scale 1 
+ok   accepted reference inverse has six entries 
+ok   reference inverse identity residual <= 1e-12 at scale 1 
+ok   reference inverse accepts finite physical scale 1e+150 
+ok   accepted reference inverse has six entries 
+ok   reference inverse identity residual <= 1e-12 at scale 1e+150 
+ok   reference inverse accepts finite physical scale 1e-150 
+ok   accepted reference inverse has six entries 
+ok   reference inverse identity residual <= 1e-12 at scale 1e-150 
+ok   reference inverse accepts finite physical scale 1.0000000000000001e+200 
+ok   accepted reference inverse has six entries 
+ok   reference inverse identity residual <= 1e-12 at scale 1.0000000000000001e+200 
+ok   reference inverse accepts finite physical scale 1e-200 
+ok   accepted reference inverse has six entries 
+ok   reference inverse identity residual <= 1e-12 at scale 1e-200 
+ok   reference inverse accepts finite physical scale 1e-105 
+ok   accepted reference inverse has six entries 
+ok   reference inverse identity residual <= 1e-12 at scale 1e-105 
+ok   unrepresentable-inverse fixture has nonzero subnormal inertia 
+ok   reference inverse refuses singular, indefinite or unrepresentable inverse 
+ok   reference inverse refuses singular, indefinite or unrepresentable inverse 
+ok   reference inverse refuses singular, indefinite or unrepresentable inverse 
+ok   reference inverse refuses singular, indefinite or unrepresentable inverse 
+ok   body plus ejected fuel conserves momentum through a 30 s burn (|ΔP| 0.00000091702656 kg·m/s of ~14 at 240 Hz) 
+ok   the residual is RK4 integration error: halving dt divides it by 16.0003129002559 (> 8) 
+ok   without the datum correction the error is a law error: 0.12281199543933, unchanged by halving dt (0.1228114601825) 
+FUEL-04 fixed-datum resources: 49 checks, 0 failed

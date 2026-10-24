@@ -1,0 +1,27 @@
+{
+  "card": "ft-card-v5",
+  "commit": "11bd41d313e87ae4d1a649608751563031ea3b85",
+  "dirty_paths": [
+    "app/data/aircraft/f4u_corsair_250.json",
+    "app/data/economy/catalog.json",
+    "app/data/workshop/f4u-corsair-250.json",
+    "app/main.gd",
+    "app/render/shader_clock.gd",
+    "app/tests/test_main_startup_cleanup.gd",
+    "app/tests/test_main_startup_cleanup.gd.uid"
+  ],
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "app": "app",
+  "only": null,
+  "aircraft": {
+    "f4u-corsair-250": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 796.9,
+      "valid_tests": 34,
+      "tests": 40,
+      "data_file": "data/aircraft/f4u_corsair_250.json",
+      "data_sha256": "69816c7ea728e2d69f4586fba91a7ba0787745385fe5a8fb5b943af0d6d63fc9"
+    }
+  }
+}

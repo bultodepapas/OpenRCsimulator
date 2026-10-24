@@ -1,0 +1,70 @@
+{
+  "cases": [
+    {
+      "brake": 0.0,
+      "case": "50 % power, normal-rate elevator",
+      "crashed": "",
+      "elevator_stick": 0.798,
+      "end_speed_mps": 14.22,
+      "least_pitch_deg": 13.62,
+      "liftoff_speed_mps": 14.22,
+      "liftoff_t_s": 3.06,
+      "ok": true,
+      "tail_lift_speed_mps": 12.34,
+      "tail_lift_t_s": 2.78,
+      "tail_lifted": true,
+      "three_point_pitch_deg": 15.25,
+      "throttle": 0.5
+    },
+    {
+      "brake": 0.0,
+      "case": "full power, normal-rate elevator",
+      "crashed": "",
+      "elevator_stick": 0.798,
+      "end_speed_mps": 14.13,
+      "least_pitch_deg": 13.77,
+      "liftoff_speed_mps": 14.13,
+      "liftoff_t_s": 2.84,
+      "ok": true,
+      "tail_lift_speed_mps": 12.27,
+      "tail_lift_t_s": 2.6,
+      "tail_lifted": true,
+      "three_point_pitch_deg": 15.25,
+      "throttle": 1.0
+    },
+    {
+      "brake": 0.0,
+      "case": "full power, full elevator throw",
+      "crash_t_s": 3.35,
+      "crashed": "CRASH at 17.6 m/s (sink -0.3 m/s, airframe contact (hull point 3), point speed 17.8 m/s at detected tick) - [R] restart",
+      "elevator_stick": 1.0,
+      "end_speed_mps": 17.61,
+      "least_pitch_deg": 12.71,
+      "ok": true,
+      "tail_lift_speed_mps": 13.51,
+      "tail_lift_t_s": 2.76,
+      "tail_lifted": true,
+      "three_point_pitch_deg": 15.25,
+      "throttle": 1.0
+    },
+    {
+      "brake": 1.0,
+      "case": "full-power run-up on the brakes, normal-rate elevator",
+      "crashed": "",
+      "elevator_stick": 0.798,
+      "end_speed_mps": 13.97,
+      "least_pitch_deg": 13.18,
+      "liftoff_speed_mps": 13.97,
+      "liftoff_t_s": 2.94,
+      "ok": true,
+      "tail_lift_speed_mps": 10.41,
+      "tail_lift_t_s": 2.45,
+      "tail_lifted": true,
+      "three_point_pitch_deg": 15.25,
+      "throttle": 1.0
+    }
+  ],
+  "data": "res://data/aircraft/f4u_corsair_250.json",
+  "format": "F4U-12 ground handling v1",
+  "normal_rate_elevator": 0.79839
+}

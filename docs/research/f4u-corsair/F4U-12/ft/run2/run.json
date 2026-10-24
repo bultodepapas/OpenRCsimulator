@@ -1,0 +1,22 @@
+{
+  "card": "ft-card-v5",
+  "commit": "c0fe45fd2141e87f9bb3c1a3233ab715977bd9c3",
+  "dirty_paths": [
+    "app/render/pilot_camera.gd",
+    "app/tests/test_camera_views.gd"
+  ],
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "app": "app",
+  "only": null,
+  "aircraft": {
+    "f4u-corsair-250": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 896.3,
+      "valid_tests": 33,
+      "tests": 40,
+      "data_file": "data/aircraft/f4u_corsair_250.json",
+      "data_sha256": "4780a4a4bc7d05fabb571e8ceff166671a1f5e239ba2c3fc75822df7e4c59d03"
+    }
+  }
+}

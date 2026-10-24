@@ -2,13 +2,15 @@
 
 Status: implementation integrated, 2026-10-11. Numerical verification is recorded below; independent RC calibration, pilot acceptance and the 500 µs target-machine budget remain open.
 
+2026-10-23 follow-up: [GP-02-R1 smooth-surface rolling correction](../GP-02/rolling-2026-10-23/README.md) repairs negative resistance on small wheels. The measurements below retain their original date and configuration.
+
 ## Delivered model
 
 The Stik, Extra and P-51 now integrate a separate rim-speed state for every wheel alongside the existing 240 Hz RK4 flight state. Each stage samples the field under each wheel, resolves the spring/damper reaction against the local terrain normal, and computes rolling resistance, longitudinal slip/spin-up and lateral grip separately. The combined tangential force is bounded by available tire grip. Wheel angular acceleration contributes the opposite body moment. Lift reduces contact load through the existing motion equations; an airborne wheel contributes no ground force and retains its spin. Throttle does not apply a brake or set a target speed.
 
 Static anchors require small axle velocity and tire slip. Touchdown and contact loss use the same terrain as suspension compression and travel-limit detection. The existing six-degree-of-freedom equations produce weight transfer, tail lift, rotation, skid and asymmetric yaw. Aerodynamic and propulsion equations, generated geometry and aircraft mass/CG/inertia were preserved. The Avanti remains explicitly gear-up, without invented wheel contacts.
 
-The authored wheel profiles distinguish wheel sizes and rotating inertia. Stik and Extra declare no brakes; P-51 brake equipment is unspecified and therefore applies zero torque. A separate bounded brake command exists in the force API and is tested with synthetic hardware; no current aircraft receives automatic braking or a new UI input.
+At the original GP-05 integration, the wheel profiles distinguished wheel sizes and rotating inertia but all production brakes were disabled. P-51 and Avanti now have declared brake hardware and a session brake input; see their current aircraft guides. The loaded-contact-only brake approximation remains below.
 
 | Aircraft | Mass, kg | Main / secondary radius, mm | Main / secondary spring, N/m | Main / secondary damping, Ns/m | Secondary steering |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -95,11 +97,11 @@ Across both pairs, the new complete three-wheel contact evaluation medians were 
 4. Adjust `app/data/ground/wheel_profiles.json` only for wheel radius, rotating inertia, slip relaxation and sourced brake hardware. Keep `{value, unit, kind, source}` labels honest. Relaxation must satisfy the loader's 240 Hz stability bound; changing wheel inertia requires rerunning spin-up, energy and takeoff oracles.
 5. Tune steering/slip after longitudinal losses. Validate both directions, one-wheel edges, wheel versus three-point touchdowns, tail-up behavior and crosswind corrections separately for each aircraft.
 
-The rolling law uses `Crr_aircraft * [1 + (surface_factor - 1) * sqrt(R_max_aircraft / R_wheel)]`. Existing aircraft Crr already accounts for main-wheel size; scaling again against a global Stik wheel radius double-counts that effect and altered P-51 idle behavior. The current factors 2.5/5/7.5 and base Crr 0.04/0.04/0.03 are inherited estimates. The six-value surface table currently also uses those classes to choose relief amplitude: independent soil-height tuning requires separating the material identifier first.
+For `surface_factor >= 1`, the rolling law uses `Crr_aircraft * [1 + (surface_factor - 1) * sqrt(R_max_aircraft / R_wheel)]`. Below 1 it uses `Crr_aircraft * surface_factor`: only positive vegetation excess receives the size correction. Existing aircraft Crr already accounts for main-wheel size; scaling again against a global Stik wheel radius double-counts that effect. The factors and base coefficients remain estimates. The six-value surface table also uses rolling factors to choose relief amplitude: independent soil-height tuning requires separating the material identifier first.
 
 ## Remaining limits
 
-Independent real-aircraft rollout, drop, spin-up and taxi measurements were not supplied. The present acceptance is numerical, with physical and pilot gates open. There is no free-caster shimmy, wheel gyroscopic coupling, unsprung multibody leg, deforming tire/soil, wet-grass model, retract actuation or independent brake input. Brake torque in the present API acts only during loaded contact; all production profiles are unbraked. Avanti ground operation needs model-owner deployed-gear/equipment work. Large terrain slopes/hills are not made collidable by this millimeter-relief implementation.
+Independent real-aircraft rollout, drop, spin-up and taxi measurements were not supplied. The present acceptance is numerical, with physical and pilot gates open. There is no free-caster shimmy, wheel gyroscopic coupling, unsprung multibody leg, deforming tire/soil or wet-grass model. Brake torque still acts only during loaded contact with grip: braking a freely spinning airborne wheel is unsupported even on the now-braked production aircraft. A repair must account for axle orientation and the equal body reaction, including retract motion; the current retraction contract supplies point paths, not axle orientations. Large terrain slopes/hills are not made collidable by this millimeter-relief implementation.
 
 The visual probe also records an inherited 5 mm wheel-center/contact-reference offset on the Stik; Extra/P-51 mappings are approximately exact. Model geometry was preserved. The renderer steers about its model pivot rather than the local terrain normal, so millimeter-scale visual differences remain on bumps. See the [39-check visual probe and captures](../GP-03/README.md#integrated-visual-gear-check).
 

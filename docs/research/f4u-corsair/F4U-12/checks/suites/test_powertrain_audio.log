@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AUD-15 bank layer gasoline/gasoline_low.wav: 59535 frames at 44100 Hz, 1.350 s, fmt=1 stereo=false bytes=119070/119198 loop_end=59535 guarded=true
+AUD-15 bank layer gasoline/gasoline_high.wav: 44100 frames at 44100 Hz, 1.000 s, fmt=1 stereo=false bytes=88200/88328 loop_end=44100 guarded=true
+AUD-15 bank layer electric/electric_quad.wav: 396000 frames at 48000 Hz, 8.250 s, fmt=1 stereo=false bytes=792000/792128 loop_end=396000 guarded=true
+AUD-15 bank layer turbine/turbine_designed.wav: 485100 frames at 44100 Hz, 11.000 s, fmt=1 stereo=false bytes=970200/970328 loop_end=485100 guarded=true
+AUD-15 bank layer rotor/rotor_low.wav: 168000 frames at 48000 Hz, 3.500 s, fmt=1 stereo=false bytes=336000/336128 loop_end=168000 guarded=true
+AUD-15 bank layer rotor/rotor_high.wav: 192000 frames at 48000 Hz, 4.000 s, fmt=1 stereo=false bytes=384000/384128 loop_end=192000 guarded=true
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+AUD-15 powertrain checks: 45, failed: 0
+WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

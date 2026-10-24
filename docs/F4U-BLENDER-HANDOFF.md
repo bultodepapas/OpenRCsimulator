@@ -225,7 +225,7 @@ Export glTF 2.0 binary, Y-up, selected collection `EXPORT_aircraft` only, with C
 
 ## 11 Rights and provenance
 
-- `LICENSE.txt` states authorship and the asset terms the owner chooses. Terms left "not set" block public distribution.
+- `LICENSE.txt` states authorship. The model is the project's own work and needs no licence ([owner decision F4U-13](DECISIONS.md), 2026-10-23).
 - List every reference used for R59 and g1: the Royal RC F4U-1D plan, the CARF Corsair manual, photographs, museum and archive sources. Say which were only consulted and which were traced or digitized.
 - Remove packed plan scans and reference photographs from the game `.blend` and GLB. They may stay in the master.
 - All paint and textures in g1 are original or carry their own compatible licence and attribution.
@@ -257,5 +257,5 @@ We will import g1.3 with Godot 4.7.2, verify `extras`, poses and landmarks, bind
 - [Model and package contract](AIRCRAFT_CONTRACT.md#model-and-package-contract): imported-model construction, retraction rig and `gltf_extras` crash sections.
 - [Ventage Jet asset guide](../assets/aircraft/avanti-s-a200/README.md): the sampled-retraction precedent.
 - [Aircraft Workshop](AIRCRAFT-WORKSHOP.md): current paint slots and registration markings.
-- [Aircraft licensing guide](AIRCRAFT-LICENSING.md): Corsair row and warbird guidance.
+- [Aircraft licensing guide](AIRCRAFT-LICENSING.md): Corsair row.
 - R59 review scripts: [inspect_blend.py](../research/f4u-corsair/F4U-00/inspect_blend.py) and [measure_neutral.py](../research/f4u-corsair/F4U-00/measure_neutral.py).

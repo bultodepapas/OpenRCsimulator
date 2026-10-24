@@ -1,0 +1,63 @@
+
+FT f4u-corsair-250: 21.50 kg, S 1.441 m2, start 23.0 m/s, CL_max 1.16 -> Vs estimate 14.4 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.075,"first_untrimmable_mps":54.05,"points":33,"slowest_trim_mps":16.1}
+FT stall_power_off          valid {"altitude_lost_m":37.6,"bank_in_first_second_deg":-74.6,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.52,"max_bank_in_recovery_deg":74.6,"ratio_to_cl_max_estimate":1.029,"recovery_time_s":3.58,"stall_alpha_deg":16.4,"stall_speed_mps":14.79,"wing_drop":"left"}
+FT vmax                     valid {"height_error_end_m":0.02,"height_error_run_m":2.36,"initial_acceleration_mps2":2.63,"max_level_speed_kmh":223.5,"max_level_speed_mps":62.09,"rpm_at_max":5725,"time_plus_10_mps_s":2.65,"time_plus_5_mps_s":1.54,"time_to_90_percent_s":14.17}
+FT modes                    valid {}
+FT aero_sweep               valid {"cy_at_beta20":-0.1456,"cy_max_beta_le_30":0.2237,"cy_oracle_at_beta20":-0.1334,"knife_edge_cy_needed_at_0_8vmax":0.0969,"knife_edge_side_force_margin":2.31,"local_weight_full_at_alpha_deg":15.0,"local_weight_full_at_beta_deg":15.0,"trim_alpha_deg":3.68}
+   note: with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)
+FT stall_power_on           valid {"altitude_lost_m":28.7,"bank_in_first_second_deg":-133.0,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.91,"max_bank_in_recovery_deg":141.7,"ratio_to_cl_max_estimate":0.797,"recovery_time_s":4.25,"stall_alpha_deg":12.4,"stall_speed_mps":11.47,"wing_drop":"left"}
+FT throttle_response        valid {"rpm_full":4639,"rpm_idle_end":2741,"rpm_trimmed":2200,"speed_gain_in_6_s_mps":21.22,"spool_down_90_10_s":3.6,"spool_up_10_90_s":4.4}
+FT hands_off                valid {"bank_10_s_deg":-0.9,"bank_30_s_deg":1.1,"bank_after_aileron_pulse_deg":3.1,"heading_change_10_s_deg":1.0,"heading_change_30_s_deg":8.5,"height_change_10_s_m":-0.92,"height_change_30_s_m":0.33,"phugoid_period_s":13.75,"reached_floor_s":null,"speed_change_10_s_mps":0.72,"speed_change_30_s_mps":-0.05}
+FT climb                    valid {"best":{"case":"2.0Vs","path_angle_deg":34.8,"pitch_deg":35.0,"rpm":4019,"speed_mps":29.56,"vertical_speed_mps":16.89,"vs_factor":2.0}}
+FT glide                    valid {"best":{"case":"1.3Vs","glide_ratio":10.28,"path_angle_deg":-5.6,"pitch_deg":1.0,"rpm":1458,"speed_mps":19.23,"vertical_speed_mps":-1.86,"vs_factor":1.3}}
+FT roll_rate                valid {}
+FT pitch_pull               valid {}
+FT loop                     valid {"alpha_target_deg":11.4,"entry_speed_mps":49.67,"heading_change_deg":3.7,"height_change_m":32.3,"loop_height_m":100.4,"loop_time_s":6.55,"max_load_factor_g":9.26,"max_sideslip_deg":4.4,"min_speed_mps":38.29}
+FT turn_60                  valid {}
+FT rudder_step              valid {}
+FT knife_edge               INVALID {}
+   note: right 100 %: bank 92.3°, vertical speed -0.84 m/s, rudder saturated 0 % 
+   note: left 100 %: bank -92.1°, vertical speed -0.53 m/s, rudder saturated 0 % 
+FT knife_edge_full_rudder   valid {}
+FT inverted                 valid {"alpha_deg":-5.5,"elevator_servo":-0.317,"elevator_stick":-0.317,"speed_mps":37.37,"throttle":0.256,"upright_throttle":0.232,"vertical_speed_mps":-0.23}
+FT spin                     valid {}
+   note: left spin not recovered 
+FT takeoff                  valid {"ground_roll_m":29.2,"liftoff_speed_mps":20.43,"liftoff_speed_vs":1.38,"max_heading_error_deg":3.3,"max_rudder_stick":0.25,"rotation_attitude_deg":8.0,"rudder_free_heading_change_3_s_deg":1.9,"time_to_liftoff_s":3.8}
+FT landing                  valid {"approach_speed_mps":19.23,"bounced":false,"flare_height_m":1.34476233881329,"max_heading_error_deg":1.0,"rollout_m":122.3,"rollout_time_s":11.69,"touchdown_past_threshold_m":21.1,"touchdown_pitch_deg":5.2,"touchdown_sink_mps":0.42,"touchdown_speed_mps":18.47,"touchdown_speed_vs":1.25}
+FT inverted_speeds          INVALID {}
+   note: start: inverted hold not achieved: |bank| 147.1°, vertical speed -11.26 m/s 
+FT inverted_turn            INVALID {}
+   note: left: bank -134.5°, vertical speed 2.45 m/s 
+FT immelmann                valid {"alpha_target_deg":11.4,"entry_speed_mps":49.67,"exit_bank_deg":-2.0,"exit_speed_mps":52.12,"half_loop_time_s":4.29,"half_roll_time_s":1.51,"heading_error_deg":-33.7,"height_gain_m":79.3,"max_load_factor_g":4.5,"max_sideslip_deg":4.0,"top_speed_mps":39.13,"top_speed_vs":2.64}
+FT split_s                  valid {"alpha_target_deg":11.4,"entry_speed_mps":23.0,"exit_bank_deg":4.9,"exit_speed_mps":44.0,"half_roll_time_s":7.32,"heading_error_deg":41.0,"height_lost_m":185.7,"height_lost_to_level_m":185.4,"max_load_factor_g":5.94,"max_sideslip_deg":21.0,"max_speed_mps":44.94,"time_to_level_s":10.5}
+FT outside_loop             INVALID {"alpha_target_deg":-12.7,"entry_speed_mps":37.25,"heading_change_deg":37.6,"height_change_m":-152.8,"loop_depth_m":152.8,"loop_time_s":7.95,"max_sideslip_deg":23.5,"max_speed_mps":47.82,"min_load_factor_g":-4.32,"min_speed_mps":36.93}
+   note: sideslip above 10°: rolling departure, not a clean loop
+FT slow_roll                valid {}
+FT point_roll               valid {}
+FT snap_roll                INVALID {}
+   note: right snap: levelled, exit bank -62.6° 
+   note: left snap: autorotation ended 356° short of the finish (autorotation ended)
+FT stall_turn               INVALID {}
+   note: right_0.35Vs: no up-line, not recovered 
+   note: left_0.35Vs: no up-line, not recovered 
+   note: right_0.6Vs: no up-line, not recovered 
+   note: left_0.6Vs: no up-line, not recovered 
+FT engine_cut_climb         valid {}
+FT glide_turn               valid {"least_height_lost_180_m":29.4,"least_height_per_180_bank_deg":45.0}
+FT stall_turning            valid {}
+FT stall_cross_controlled   valid {}
+FT stall_held               valid {}
+FT stall_inverted           valid {"altitude_lost_m":73.9,"break_kind":"elevator limit (mush)","ratio_to_upright_vs":1.999,"recovery_time_s":3.57,"roll_off_in_1_s_deg":-54.8,"stall_alpha_deg":-11.7,"stall_speed_mps":29.57}
+FT spin_inverted            valid {}
+FT dead_stick_landing       valid {"approach_max_speed_mps":20.71,"approach_min_speed_mps":18.06,"bounced":false,"engine_out":"source off","flare_height_m":2.81,"glide_path_deg":7.8,"glide_ratio":7.32,"glide_sink_mps":2.81,"glide_speed_mps":20.72,"rollout_m":90.8,"start_distance_to_threshold_m":209.5,"touchdown_past_aim_m":23.3,"touchdown_past_threshold_m":33.3,"touchdown_pitch_deg":5.2,"touchdown_sink_mps":0.77,"touchdown_speed_mps":18.06,"touchdown_speed_vs":1.22}
+FT go_around                valid {}
+FT power_step               valid {"height_change_10_s_100pct_m":150.5,"height_change_10_s_50pct_m":112.3,"inverted_at_100pct_s":10.88,"inverted_at_50pct_s":null,"path_angle_end_100pct_deg":19.2,"path_angle_end_50pct_deg":43.4}
+   note: 75pct: past inverted at 10.88 s with the elevator at its trim
+   note: 100pct: past inverted at 10.88 s with the elevator at its trim
+FT report: tmp\f4u-ft3/f4u-corsair-250/profile.md
+WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
+   at: _stringify (core/io/json.cpp:86)
+   GDScript backtrace (most recent call first):
+       [0] _run (research/flight-test/flight_test.gd:180)
+       [1] _initialize (research/flight-test/flight_test.gd:115)

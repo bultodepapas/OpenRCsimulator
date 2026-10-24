@@ -19,7 +19,10 @@ class CandidateFlight extends Main:
 		return built
 class TestApp extends AppRoot:
 	var refuse_world: bool = false
+	var refuse_creation: bool = false
 	func _create_flight(_aircraft_id: String = "") -> Node:
+		if refuse_creation:
+			return null
 		var candidate := CandidateFlight.new()
 		candidate.refuse_world = refuse_world
 		return candidate
@@ -91,6 +94,20 @@ func _run() -> void:
 	await ui.settle()
 	check("cancel restores focus to Home action", app.natural_random_screen == null and ui.focus_name() == "NaturalRandom")
 	await _press(app.home.natural_random_button)
+	var retained_briefing: CanvasLayer = app.natural_random_screen
+	var retained_draft: Dictionary = retained_briefing.get("_scenario").duplicate(true)
+	var retained_draws: int = draws[0]
+	app.refuse_creation = true
+	await _press(app.natural_random_screen.fly_button)
+	check("null flight creation retains the attached briefing and Home", app.flight == null
+		and app.natural_random_screen == retained_briefing and retained_briefing.is_inside_tree()
+		and app.screens.is_top("natural_random") and app.home_scene.is_inside_tree())
+	check("null creation displays its error without rerolling the draft", retained_briefing.error_label.visible
+		and retained_briefing.error_label.text.contains("Could not start flight")
+		and retained_briefing.get("_scenario") == retained_draft and draws[0] == retained_draws)
+	check("null creation preserves normal preferences", app.preferences == normal
+		and FileAccess.get_file_as_bytes(_prefs_path) == saved_bytes)
+	app.refuse_creation = false
 	app.refuse_world = true
 	await _press(app.natural_random_screen.fly_button)
 	check("late launch failure keeps the briefing and Home", app.flight == null and app.home != null and app.natural_random_screen != null)

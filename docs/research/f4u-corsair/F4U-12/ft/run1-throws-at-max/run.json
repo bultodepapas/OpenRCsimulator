@@ -1,0 +1,19 @@
+{
+  "card": "ft-card-v5",
+  "commit": "16b82bcb5897025c0fdcb23823552112604234d7",
+  "dirty_paths": [],
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "app": "app",
+  "only": null,
+  "aircraft": {
+    "f4u-corsair-250": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 800.3,
+      "valid_tests": 29,
+      "tests": 40,
+      "data_file": "data/aircraft/f4u_corsair_250.json",
+      "data_sha256": "cee5e2efbc674d060440c053fd8c6ee2bee2cef9820e2d3c09adc0ea350e4005"
+    }
+  }
+}

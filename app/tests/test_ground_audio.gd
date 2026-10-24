@@ -4,6 +4,7 @@ const GroundAudio := preload("res://audio/ground_audio.gd")
 const GroundModel := preload("res://audio/ground_audio_model.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const Ground := preload("res://physics/ground_contact.gd")
 
 var _checks: int = 0
 var _failures: int = 0
@@ -49,8 +50,11 @@ func _test_real_session_snapshot() -> void:
 	var before_state: PackedFloat64Array = session.sim.state.duplicate()
 	var before_aux: PackedFloat64Array = session.sim.aux.duplicate()
 	var before_continuous: PackedFloat64Array = session.sim.continuous.duplicate()
-	var contacts: Array[Dictionary] = GroundModel.snapshot_contacts(session, {surfaces = []})
 	var gear: Dictionary = session.current_landing_gear()
+	_check("airborne start is well above landing-gear reach in the flat test field",
+		-session.sim.state[RB.POS + 2] > float(gear.get("reach", 0.0)) + 1.0)
+	var gear_before_airborne: Dictionary = gear.duplicate(true)
+	var contacts: Array[Dictionary] = GroundModel.snapshot_contacts(session, {surfaces = []})
 	_check("real FlightSession snapshot returns one row per installed contact", contacts.size() == gear.get("contacts", []).size(),
 		"rows=%d contacts=%d" % [contacts.size(), gear.get("contacts", []).size()])
 	var row_shape_ok: bool = true
@@ -64,6 +68,22 @@ func _test_real_session_snapshot() -> void:
 	_check("spawn snapshot does not invent wheel loading in the airborne start",
 		contacts.is_empty() or contacts.all(func(c: Dictionary) -> bool: return float(c.normal_force_n) == 0.0),
 		"normal forces=%s" % str(contacts.map(func(c: Dictionary) -> float: return float(c.normal_force_n))))
+	_check("airborne audio fallback leaves nested landing gear data unchanged", gear == gear_before_airborne)
+	var loaded_state: PackedFloat64Array = session.sim.state.duplicate()
+	var compression_before: PackedFloat64Array = Ground.compressions(loaded_state, gear)
+	var highest_contact: float = -INF
+	for compression: float in compression_before:
+		highest_contact = maxf(highest_contact, compression)
+	if not compression_before.is_empty():
+		loaded_state[RB.POS + 2] += 0.02 - highest_contact
+		session.sim.state = loaded_state
+		var gear_before_loaded: Dictionary = gear.duplicate(true)
+		var loaded_contacts: Array[Dictionary] = GroundModel.snapshot_contacts(session, {surfaces = []})
+		_check("loaded audio snapshot reports force at a gear contact",
+			loaded_contacts.any(func(c: Dictionary) -> bool: return float(c.normal_force_n) > 0.0))
+		_check("loaded audio snapshot leaves nested landing gear data unchanged", gear == gear_before_loaded)
+	else:
+		_check("loaded audio snapshot has contact compression samples", false)
 	root.remove_child(session)
 	session.free()
 

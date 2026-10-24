@@ -30,6 +30,7 @@ func _initialize() -> void:
 	_bit_identity()
 	_two_resources()
 	_refusals()
+	_reference_inverse_limits()
 	_momentum()
 	print("FUEL-04 fixed-datum resources: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed > 0 else 0)
@@ -260,3 +261,41 @@ func _with(base: Dictionary, key: String, value: Variant) -> Dictionary:
 	var out: Dictionary = base.duplicate(true)
 	out[key] = value
 	return out
+
+
+func _reference_inverse_limits() -> void:
+	var zero := PackedFloat64Array([0.0, 0.0, 0.0])
+	var resource := {id = "point", reference_mass_kg = 0.0, capacity_mass_kg = 0.0,
+		center_body_m = zero, size_body_m = zero}
+	# A well-conditioned physical tensor with nonzero products of inertia.
+	# J * (J^-1 * e_i) = e_i supplies an independent oracle on every axis.
+	for magnitude: float in [1.0, 1.0e150, 1.0e-150, 1.0e200, 1.0e-200, 1.0e-105]:
+		var tensor := PackedFloat64Array([1.0, 1.25, 1.5, 0.1, -0.05, 0.075])
+		for i in 6:
+			tensor[i] *= magnitude
+		var prepared: Dictionary = MassInventory.prepare_reference(1.0, tensor, [resource])
+		var result: Dictionary = MassInventory.evaluate_reference(prepared, PackedFloat64Array([0.0]))
+		_check("reference inverse accepts finite physical scale %s" % String.num_scientific(magnitude), result.ok)
+		if not result.ok:
+			continue
+		_check("accepted reference inverse has six entries", result.inverse.size() == 6)
+		if result.inverse.size() != 6:
+			continue
+		var worst := 0.0
+		for axis in 3:
+			var basis := zero.duplicate()
+			basis[axis] = 1.0
+			var product: PackedFloat64Array = RB.inertia_mul(tensor, RB.inertia_mul(result.inverse, basis))
+			for i in 3:
+				worst = maxf(worst, absf(product[i] - basis[i])) if is_finite(product[i]) else INF
+		_check("reference inverse identity residual <= 1e-12 at scale %s" % String.num_scientific(magnitude), worst <= 1.0e-12)
+	var subnormal: float = pow(2.0, -1030.0)
+	_check("unrepresentable-inverse fixture has nonzero subnormal inertia", subnormal > 0.0 and not is_finite(1.0 / subnormal))
+	for tensor: PackedFloat64Array in [
+		PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
+		PackedFloat64Array([1.0, 1.0, 0.0, 0.0, 0.0, 0.0]),
+		PackedFloat64Array([1.0, 1.0, -1.0, 0.0, 0.0, 0.0]),
+		PackedFloat64Array([subnormal, subnormal, subnormal, 0.0, 0.0, 0.0])]:
+		var prepared: Dictionary = MassInventory.prepare_reference(1.0, tensor, [resource])
+		var result: Dictionary = MassInventory.evaluate_reference(prepared, PackedFloat64Array([0.0]))
+		_check("reference inverse refuses singular, indefinite or unrepresentable inverse", not result.ok)

@@ -97,6 +97,10 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) ->
 		errors.append_array(retract.errors)
 		for role: String in retract.get("gear", {}):
 			if not bindings.gear.keys.has(role): errors.append("Gear rig wheel has no manifest binding: " + role)
+	var folds := {}
+	for binding: Dictionary in config.get("folds", []):
+		var fold := _bind_fold(root, nodes, _record(data, binding.geometry_ref, errors), hinges, errors)
+		if not fold.is_empty(): folds[binding.key] = fold
 	if not errors.is_empty():
 		root.free()
 		return _failure(errors)
@@ -133,7 +137,7 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) ->
 			gear[bindings.gear.keys[role]] = retract.gear[role]
 	return {ok = true, errors = PackedStringArray(), model = {
 		root = root, propeller = propeller, hinges = hinges, gear = gear,
-		gear_retraction = retract.get("rig", {}),
+		gear_retraction = retract.get("rig", {}), folds = folds,
 		has_propeller = bindings.rotor.present, data = data, aircraft_id = manifest.family_id,
 		model_manifest = manifest.duplicate(true)}}
 
@@ -282,7 +286,78 @@ static func _reparent(pivot: Node3D, parent: Node3D, mount: Node3D, exposed: Nod
 
 
 static func _set_hinge(hinge: Dictionary, degrees: float) -> void:
-	hinge.node.basis = hinge.rest if degrees == 0.0 else Basis(hinge.axis, deg_to_rad(degrees)) * hinge.rest
+	var basis: Basis = hinge.rest if degrees == 0.0 else Basis(hinge.axis, deg_to_rad(degrees)) * hinge.rest
+	var fold: Dictionary = hinge.get("fold", {})
+	if fold.is_empty():
+		hinge.node.basis = basis
+		return
+	# A hinge on a folding panel turns in the panel's frame: the fold carries its pivot too.
+	hinge.unfolded_basis = basis
+	hinge.node.transform = fold.transform * Transform3D(basis, hinge.pivot)
+
+
+## F4U-17: a fold group turns rigid members at the model frame (a panel and the hinges it carries) about one fixed axis,
+## in place, so node paths, paint targets and crash sections are unchanged. Presentation only.
+static func _bind_fold(root: Node3D, nodes: Dictionary, record: Dictionary, hinges: Dictionary, errors: PackedStringArray) -> Dictionary:
+	var members: Variant = record.get("members")
+	var limit: Variant = record.get("max_angle_deg")
+	var sign: Variant = record.get("sign")
+	if not members is Array or members.is_empty() or not _vector(record.get("pivot")) or not _vector(record.get("axis")) \
+			or not _number(limit) or float(limit) <= 0.0 or float(limit) > 180.0 or not _number(sign) or absf(float(sign)) != 1.0:
+		errors.append("Fold record needs members, a pivot, an axis, a sign and a 0-180 degree limit.")
+		return {}
+	var axis := _v3(record.axis)
+	if absf(axis.length() - 1.0) > 1e-6:
+		errors.append("Fold axis must be a unit vector.")
+		return {}
+	var release: Variant = record.get("lock_release_fraction", 0.0)
+	var travel: Variant = record.get("travel_fraction", 1.0)
+	if not _number(release) or not _number(travel) or float(release) < 0.0 or float(travel) <= 0.0 or float(release) + float(travel) > 1.0:
+		errors.append("Fold lock release and travel must divide the mechanism's 0-1 range.")
+		return {}
+	var time: Variant = record.get("time_s", 0.0)
+	if not _number(time) or float(time) < 0.0:
+		errors.append("Fold cycle time must be a finite, non-negative number of seconds.")
+		return {}
+	var fold := {pivot = _v3(record.pivot), axis = axis, sign = float(sign), max_deg = float(limit),
+		release = float(release), travel = float(travel), time_s = float(time), degrees = 0.0, transform = Transform3D.IDENTITY, members = []}
+	for name: Variant in members:
+		var node := _unique(nodes, str(name), errors)
+		if node == null: continue
+		# The fold transform is in the model frame: each member's parent must sit at it (the GLB's own root).
+		var parent := node.get_parent() as Node3D
+		if parent == null or not relative(root, parent).is_equal_approx(Transform3D.IDENTITY):
+			errors.append("Fold member's parent must be at the model frame: " + str(name))
+			continue
+		var hinge := {}
+		for key: String in hinges:
+			if hinges[key].node == node:
+				hinge = hinges[key]
+				hinge.fold = fold
+		fold.members.append({node = node, rest = node.transform, hinge = hinge})
+	return fold
+
+
+## Fold angle of a mechanism state q (0 spread and locked, 1 folded): the locks release over the first part of the
+## travel, then the panel turns linearly to its limit (R59's law).
+static func fold_degrees(fold: Dictionary, q: float) -> float:
+	return fold.max_deg * clampf((q - fold.release) / fold.travel, 0.0, 1.0)
+
+
+## Fold pose per fold key from its mechanism state q in 0-1; unchanged folds are not rewritten.
+static func apply_folds(model: Dictionary, fractions: Dictionary) -> void:
+	for key: String in model.get("folds", {}):
+		var fold: Dictionary = model.folds[key]
+		var q := float(fractions.get(key, 0.0))
+		if not is_finite(q): continue
+		var degrees := fold_degrees(fold, q)
+		if degrees == fold.degrees: continue
+		fold.degrees = degrees
+		fold.transform = Transform3D(Basis(), fold.pivot) * Transform3D(Basis(fold.axis, deg_to_rad(fold.sign * degrees)), Vector3.ZERO) \
+			* Transform3D(Basis(), -fold.pivot)
+		for member: Dictionary in fold.members:
+			var hinge: Dictionary = member.hinge
+			member.node.transform = fold.transform * (Transform3D(hinge.get("unfolded_basis", hinge.rest), hinge.pivot) if not hinge.is_empty() else member.rest)
 
 
 static func apply_surfaces(model: Dictionary, surfaces_deg: Dictionary) -> void:

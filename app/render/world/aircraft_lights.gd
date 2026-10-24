@@ -632,13 +632,15 @@ static func attach(root: Node3D) -> Node3D:
 	var landing := SpotLight3D.new()
 	landing.name = "landing_light"
 	# In the left wing's leading edge, below the skin: the beam clears the propeller disc it used to light up.
-	var piece := wing_piece(tris, -LANDING_SPAN * half)
 	if anchors.has("landing"):
 		landing.position = anchors.landing.position
-	elif piece.is_empty():
-		landing.position = Vector3(0.0, (left.centre.y + right.centre.y) / 2.0, minf(left.leading_z, right.leading_z))
 	else:
-		landing.position = Vector3(-LANDING_SPAN * half, float(piece[2]) - 0.003, float(piece[0]) + 0.01)
+		# Authored seats need no fallback triangle scan.
+		var piece := wing_piece(tris, -LANDING_SPAN * half)
+		if piece.is_empty():
+			landing.position = Vector3(0.0, (left.centre.y + right.centre.y) / 2.0, minf(left.leading_z, right.leading_z))
+		else:
+			landing.position = Vector3(-LANDING_SPAN * half, float(piece[2]) - 0.003, float(piece[0]) + 0.01)
 	var lamp_ahead := Vector3.ZERO if anchors.has("landing") else Vector3(0, 0, -0.012) # an anchor is the lens face itself
 	kit.add_child(_anchored(sprite("landing_lamp", Color("#fff4e0"), landing.position + lamp_ahead, NAV_SIZE_M), anchors, "landing"))
 	_anchored(landing, anchors, "landing")

@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "revision": "g1.13",
+  "counts": {
+    "triangles": 99729,
+    "surfaces": 58,
+    "materials": 14,
+    "images": 8
+  },
+  "five_complete_liveries": true,
+  "preserved_byte_for_byte": {
+    "textures/liveries/midnight": true,
+    "textures/liveries/scarlet": true,
+    "textures/liveries/splash": true,
+    "textures/liveries/spectrum": true,
+    "textures/liveries/three_tone": true,
+    "textures/gear": true,
+    "textures/interiors": true,
+    "source/aircraft_game.blend": true,
+    "source/aircraft_super57.blend": true,
+    "source/aircraft_splash.blend": true,
+    "source/aircraft_spectrum.blend": true,
+    "export/aircraft.glb": true,
+    "export/aircraft_super57.glb": true,
+    "export/aircraft_splash.glb": true,
+    "export/aircraft_spectrum.glb": true
+  },
+  "previous_release_and_R59_intact": true,
+  "geometry_all_UV_sets_and_101_poses_unchanged": true,
+  "isolated_packed_source_reexport_identical": true,
+  "runtime_GLB_reimported_and_rendered": true,
+  "exterior_layers": 8,
+  "interior_layers": 4,
+  "limitations": "Blue Angels-inspired concept, not a historical Corsair reconstruction or exact paint-chip match. Fine edges limited by the 2048 atlas. No new Godot run or continuous physical collision simulation."
+}

@@ -26,6 +26,7 @@ func _initialize() -> void:
 	_contract_shape()
 	_kernel_installation()
 	_declared_layout()
+	_active_evaluator_guards()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -85,6 +86,50 @@ func _kernel_installation() -> void:
 	var snapshot: Dictionary = sim.checkpoint()
 	_check("checkpoint with five inputs restores", not snapshot.is_empty() and sim.can_restore_checkpoint(snapshot))
 	sim.free()
+
+
+func _active_evaluator_guards() -> void:
+	var sim := Sim.new()
+	var model := VehicleModel.new()
+	var calls := [0]
+	model.stage = func(_body: PackedFloat64Array, extra: PackedFloat64Array, _t: float) -> Dictionary:
+		calls[0] += 1
+		var derivative := PackedFloat64Array()
+		derivative.resize(extra.size())
+		return {loads = PackedFloat64Array([1.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
+			derivative = derivative, rotor_momentum = M.v3(0.0, 0.0, 0.0)}
+	_check("joint model installs before its live layout is known", sim.set_model(model))
+	for size in [-1, 0]:
+		model.continuous_size = size
+		var candidate := sim.prepare_reset(_level_state())
+		_check("empty joint layout is refused before a zero-load fallback (%d)" % size,
+			not candidate.ok and calls[0] == 0)
+	# The same evaluator is supported once it has a continuous block.
+	model.continuous_size = 1
+	sim.continuous = PackedFloat64Array([0.0])
+	sim.gravity = 0.0
+	_check("joint evaluator with a continuous block resets", sim.reset(_level_state()))
+	sim.step()
+	_check("supported joint evaluator applies its force at all four RK stages",
+		sim.fault_reason.is_empty() and calls[0] == 5 and absf(sim.state[RB.VEL] - (15.0 + sim.dt())) < 1e-12)
+	sim.free()
+
+	# Mutable callbacks must also be guarded at restore and step, not only installation.
+	for missing_loads in [false, true]:
+		sim = Sim.new()
+		_check("body-only model resets before callback mutation", sim.reset(_level_state()))
+		var snapshot := sim.checkpoint()
+		if missing_loads:
+			sim.model.loads = Callable()
+		else:
+			sim.model.stage = model.stage
+		_check("restore refuses an unusable active evaluator (%s)" % missing_loads,
+			not sim.can_restore_checkpoint(snapshot) and not sim.restore_checkpoint(snapshot))
+		sim.step()
+		_check("invalid evaluator faults without advancing the body (%s)" % missing_loads,
+			not sim.fault_reason.is_empty() and sim.tick == 0
+			and sim.state.to_byte_array() == snapshot.state.to_byte_array())
+		sim.free()
 
 
 func _declared_layout() -> void:

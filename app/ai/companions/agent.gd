@@ -168,8 +168,9 @@ func advance() -> bool:
 func render(delta: float, frozen: bool) -> void:
 	if view.is_empty():
 		return
-	var stopped: bool = frozen or not failure.is_empty() or not session.crash.is_empty()
-	var state: PackedFloat64Array = session.sim.interpolated(Engine.get_physics_interpolation_fraction())
+	var stopped: bool = frozen or session.sim.paused or not failure.is_empty() or not session.crash.is_empty()
+	var fraction: float = 1.0 if stopped else Engine.get_physics_interpolation_fraction()
+	var state: PackedFloat64Array = session.sim.interpolated(fraction)
 	var pose: Vector3 = Frames.ned_to_render([state[0], state[1], state[2]])
 	view.root.transform = Frames.root_transform(Frames.quat_to_render(state.slice(6, 10)), pose, _cg_model)
 	if _traffic_label != null:

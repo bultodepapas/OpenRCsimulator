@@ -1,0 +1,644 @@
+{
+  "format": "openrc-deep-audit-verification v1",
+  "date": "2026-10-23",
+  "base_commit": "e76a72f5b25f1787564ec8c34056428fa2cafe5a",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "source_changes": {
+    "app/physics/mass_inventory.gd": "eaedf0bdfa0e23b2ede0b4e35020a345aa1d82ae53e422873a25ca8f68d1e77a",
+    "app/tests/test_fuel_mass_reference.gd": "bdc2d8c9c7ce91a5e43ffafe6fb22c5ad7935663aea61c37ee41ea55bf176efb"
+  },
+  "baseline_dirty_source_paths": [
+    "app/render/world/aircraft_lights.gd",
+    "app/sim/simulation.gd",
+    "app/sim/vehicle_model.gd",
+    "app/tests/test_sf_vehicle_model.gd"
+  ],
+  "independent_regression": {
+    "programs": 7,
+    "checks": 325,
+    "failed": 0,
+    "suites": [
+      {
+        "report": "regression/fuel-mass-reference-final-independent-sbwo694k/report.json",
+        "checks": 49,
+        "completion_lines": [
+          "FUEL-04 fixed-datum resources: 49 checks, 0 failed"
+        ],
+        "report_sha256": "3175ebc7de22575758dd51cce3f43150d33b2e9b2b3160334b5741fdd78eae5c",
+        "log_sha256": "efec83f318ed24afccf8125a29732aeb185458bb7b6d550f220aa8ac44b83aa3"
+      },
+      {
+        "report": "regression/test_mass_inventory-1dpeam4u/report.json",
+        "checks": 65,
+        "completion_lines": [
+          "R05-A mass inventory geometry: 65 checks, 0 failed"
+        ],
+        "report_sha256": "f41bfb83a83d4c520353f0e134085bddbde713c51a9f63943a53e1175b8e8694",
+        "log_sha256": "9d6454b5ff7efa142f941fc3d5f201c90f32416d8054fef7ad3a5cbd60c87f70"
+      },
+      {
+        "report": "regression/test_glow_flight_physics-liojera4/report.json",
+        "checks": 110,
+        "completion_lines": [
+          "glow flight physics: 110 checks, 0 failed"
+        ],
+        "report_sha256": "5abac7ca396faaf1f4f7a40dc9d123503362a75a6e3da2c32f584fb501f2a3c5",
+        "log_sha256": "e3226b74f3dae67bd94383d9bf6771cbcbaf159d645539404221fd30348cae4e"
+      },
+      {
+        "report": "regression/test_dynamic_mass_contact-9sqz7e0u/report.json",
+        "checks": 38,
+        "completion_lines": [
+          "R05-B draft: 38 checks, 0 failures"
+        ],
+        "report_sha256": "e9dafef077eda54f550877c9b42320814932b37d85e549c13df6cafcdd24bc5b",
+        "log_sha256": "ebe23814ef9e4eb606de890c9acc7a9810f151c97f0f01dba2b62166dfd419bb"
+      },
+      {
+        "report": "regression/test_fuel_live_mass-6p50yr0k/report.json",
+        "checks": 13,
+        "completion_lines": [
+          "FUEL-06 live mass: 13 checks, 0 failed"
+        ],
+        "report_sha256": "ebfe998ea474c544bbcc137ec97fbdfc9da2268d5b8f9f4123466c5216e7de60",
+        "log_sha256": "94d4a49f97452fd638974c044c67001884dbda9cfbdb5bef02eabf969f7e0267"
+      },
+      {
+        "report": "regression/test_dynamic_mass_contact_boundary-ykifomo3/report.json",
+        "checks": 12,
+        "completion_lines": [
+          "R05-B independent review fixture: 12 checks, 0 failures"
+        ],
+        "report_sha256": "3e02aedc76322783324543d77752d0546a55910585bd86c3e45982cf5c7adaf9",
+        "log_sha256": "d25a5c5c3b855be2c4d49e980c4880d659916339aadc5f8058f3057cd5b92070"
+      },
+      {
+        "report": "regression/test_dynamic_mass_contact_session-ei8sszut/report.json",
+        "checks": 38,
+        "completion_lines": [
+          "R05-B FlightSession integration review: 38 checks, 0 failures"
+        ],
+        "report_sha256": "64d5751cbb213ee69a8e664deb1bda6aea86b6b57e1cdd46717d1585ee86310a",
+        "log_sha256": "d9ee5e56e792b56c3ab61f1727f6f843e1d699347b24c8c7f911891b674b387c"
+      }
+    ]
+  },
+  "native_parse": {
+    "scripts": 1224,
+    "failed": 0,
+    "report": "native-parse.json",
+    "changed_after_initial_parse": [
+      "tests/test_fuel_mass_reference.gd"
+    ],
+    "final_recheck": "checks/native-parse-final-fuel-reference-tc7apzl0/report.json",
+    "final_recheck_sha256": "bdc2d8c9c7ce91a5e43ffafe6fb22c5ad7935663aea61c37ee41ea55bf176efb",
+    "inventory_sha256": "19d8301270ece7c1f4854a28f2c1425325b6993258e4200fc8e8c0d16e4c2eb2",
+    "inventory_retention": "Local retained bundle; per-script logs are not committed."
+  },
+  "flight_comparison": [
+    {
+      "name": "jet-normal-pitch-negative",
+      "baseline_log_sha256": "22f5ac4fa592af0a5cc001bc30f40f891dd5014b7d42ecc9a6effa5133952397",
+      "aircraft_input_sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
+      "baseline_solver_sha256": "3fc1a2345a5c024e6b2dd232f0ad75ff62aa571a71d18c9d3ef0c6fff175c4b1",
+      "candidate_solver_sha256": "13b8d848df6df2cab646374c03a93f9651e240dfa634209ff77c7b52ff95df10",
+      "exact_complete": true,
+      "exact_solver_changed": false,
+      "candidate_complete": true,
+      "candidate_solver_changed": true,
+      "rows": 1441,
+      "first_divergence": null
+    },
+    {
+      "name": "jet-normal-pitch-positive",
+      "baseline_log_sha256": "dc383a018090b12fdf30352f56f7af852833c830c5d67dc333ee96a82958615b",
+      "aircraft_input_sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
+      "baseline_solver_sha256": "3fc1a2345a5c024e6b2dd232f0ad75ff62aa571a71d18c9d3ef0c6fff175c4b1",
+      "candidate_solver_sha256": "13b8d848df6df2cab646374c03a93f9651e240dfa634209ff77c7b52ff95df10",
+      "exact_complete": true,
+      "exact_solver_changed": false,
+      "candidate_complete": true,
+      "candidate_solver_changed": true,
+      "rows": 1441,
+      "first_divergence": null
+    },
+    {
+      "name": "stik-normal-pitch-negative",
+      "baseline_log_sha256": "d7aaddc7e390697cd2dbb581579a195191ece9bf380f9e9976e175642cf5262b",
+      "aircraft_input_sha256": "d89b83c76da8356b39893ca3073656a3d3c8af1d761bce587e54ce707ec3fbc3",
+      "baseline_solver_sha256": "3fc1a2345a5c024e6b2dd232f0ad75ff62aa571a71d18c9d3ef0c6fff175c4b1",
+      "candidate_solver_sha256": "13b8d848df6df2cab646374c03a93f9651e240dfa634209ff77c7b52ff95df10",
+      "exact_complete": true,
+      "exact_solver_changed": false,
+      "candidate_complete": true,
+      "candidate_solver_changed": true,
+      "rows": 1441,
+      "first_divergence": null
+    },
+    {
+      "name": "stik-normal-pitch-positive",
+      "baseline_log_sha256": "96d224a050cbec8c5f8522712dcb82535fe6c8ace574462ff9f420347c799993",
+      "aircraft_input_sha256": "d89b83c76da8356b39893ca3073656a3d3c8af1d761bce587e54ce707ec3fbc3",
+      "baseline_solver_sha256": "3fc1a2345a5c024e6b2dd232f0ad75ff62aa571a71d18c9d3ef0c6fff175c4b1",
+      "candidate_solver_sha256": "13b8d848df6df2cab646374c03a93f9651e240dfa634209ff77c7b52ff95df10",
+      "exact_complete": true,
+      "exact_solver_changed": false,
+      "candidate_complete": true,
+      "candidate_solver_changed": true,
+      "rows": 1441,
+      "first_divergence": null
+    }
+  ],
+  "canonical_full_suite": {
+    "status": "not_run",
+    "reason": "WSL startup failed before execution: Wsl/Service/CreateInstance/E_FAIL; code 6, failure step 2. Simple retry also failed."
+  },
+  "limitations": [
+    "Software verification is not physical validation.",
+    "Four six-second pulse tapes do not qualify the entire flight envelope.",
+    "Scripted cards ran in the shared working tree and are not the isolated correction experiment.",
+    "Hover, harrier, torque roll, crosswind and hardware pilot acceptance were not tested.",
+    "Arbitrarily ill-conditioned inertia remains outside this repair.",
+    "Reverse-flow body-side force extrapolation remains open."
+  ],
+  "rejected_or_superseded": [
+    "checks/isolated-fuel-baseline-vefr8vu2: missing imported resources; its .orfl files are excluded.",
+    "checks/reference-inverse-regression-fixed-um_on4i0: initial decimal threshold parsed as zero; rejected.",
+    "expected-failures/: baseline reproduction failures, not accepted validation.",
+    "regression/original-diagonal-probe-q1k7ckut: relative scratch path failed; absolute-path rerun retained.",
+    "reference_inverse_regression.gd: precursor fixture; final integrated test adds explicit nonzero subnormal construction.",
+    "regression/test_fuel_mass_reference-bsmuui06: older 48-check run superseded by final 49-check run."
+  ],
+  "checked_runner_reports": [
+    {
+      "path": "checks/baseline-catalog-pulses-oh2jo120/report.json",
+      "label": "baseline-catalog-pulses",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/baseline-rigid-body-rvilyj7v/report.json",
+      "label": "baseline-rigid-body",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/baseline-test_integrator-614kg34s/report.json",
+      "label": "baseline-test_integrator",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/baseline-test_rotor_coupling-mcel__v5/report.json",
+      "label": "baseline-test_rotor_coupling",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/fuel-mass-reference-final-9xgkv5ru/report.json",
+      "label": "fuel-mass-reference-final",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/fuel-mass-reference-integrated-72ptunh5/report.json",
+      "label": "fuel-mass-reference-integrated",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/isolated-baseline-import-l0mkgfwl/report.json",
+      "label": "isolated-baseline-import",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 8
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/isolated-fuel-baseline-imported-0q26cbtb/report.json",
+      "label": "isolated-fuel-baseline-imported",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/isolated-fuel-baseline-vefr8vu2/report.json",
+      "label": "isolated-fuel-baseline",
+      "ok": false,
+      "reason": "engine_error",
+      "counts": {
+        "error": 61,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/jet-normal-pitch-negative-candidate-z5jamnt4/report.json",
+      "label": "jet-normal-pitch-negative-candidate",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/jet-normal-pitch-negative-exact-2y797ccr/report.json",
+      "label": "jet-normal-pitch-negative-exact",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/jet-normal-pitch-positive-candidate-gmvmrfr5/report.json",
+      "label": "jet-normal-pitch-positive-candidate",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/jet-normal-pitch-positive-exact-2i4jtmnf/report.json",
+      "label": "jet-normal-pitch-positive-exact",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/native-parse-final-fuel-reference-tc7apzl0/report.json",
+      "label": "native-parse-final-fuel-reference",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/reference-inverse-regression-fixed-um_on4i0/report.json",
+      "label": "reference-inverse-regression-fixed",
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/reference-inverse-regression-fixed-v2-mwkdb60i/report.json",
+      "label": "reference-inverse-regression-fixed-v2",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/stik-normal-pitch-negative-candidate-w8q09fhx/report.json",
+      "label": "stik-normal-pitch-negative-candidate",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/stik-normal-pitch-negative-exact-na_fsgc8/report.json",
+      "label": "stik-normal-pitch-negative-exact",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/stik-normal-pitch-positive-candidate-j0djohyw/report.json",
+      "label": "stik-normal-pitch-positive-candidate",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "checks/stik-normal-pitch-positive-exact-si9d_fci/report.json",
+      "label": "stik-normal-pitch-positive-exact",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "controls/godot-g0qpuxiq/report.json",
+      "label": "godot",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "controls/godot-r35qb75q/report.json",
+      "label": "godot",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "controls/godot-ykogg7ja/report.json",
+      "label": "godot",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "expected-failures/reference-inverse-baseline-expected-failure-ypc0exqp/report.json",
+      "label": "reference-inverse-baseline-expected-failure",
+      "ok": false,
+      "reason": "engine_error",
+      "counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "expected-failures/reference-inverse-regression-baseline-0po6ejou/report.json",
+      "label": "reference-inverse-regression-baseline",
+      "ok": false,
+      "reason": "engine_error",
+      "counts": {
+        "error": 4,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "expected-failures/reference-inverse-regression-baseline-complete-qnv207p7/report.json",
+      "label": "reference-inverse-regression-baseline-complete",
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 7,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/anisotropic-spd-probe-rzen42bp/report.json",
+      "label": "anisotropic-spd-probe",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/fuel-mass-reference-final-independent-sbwo694k/report.json",
+      "label": "fuel-mass-reference-final-independent",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/original-diagonal-probe-absolute-t0zrpdox/report.json",
+      "label": "original-diagonal-probe-absolute",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/original-diagonal-probe-baseline-qguj0ti9/report.json",
+      "label": "original-diagonal-probe-baseline",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/original-diagonal-probe-q1k7ckut/report.json",
+      "label": "original-diagonal-probe",
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/original-diagonal-probe-readable-26k7_7me/report.json",
+      "label": "original-diagonal-probe-readable",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/original-diagonal-probe-verbose-fz4d10bd/report.json",
+      "label": "original-diagonal-probe-verbose",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/test_dynamic_mass_contact-9sqz7e0u/report.json",
+      "label": "test_dynamic_mass_contact",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/test_dynamic_mass_contact_boundary-ykifomo3/report.json",
+      "label": "test_dynamic_mass_contact_boundary",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/test_dynamic_mass_contact_session-ei8sszut/report.json",
+      "label": "test_dynamic_mass_contact_session",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/test_fuel_live_mass-6p50yr0k/report.json",
+      "label": "test_fuel_live_mass",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/test_fuel_mass_reference-bsmuui06/report.json",
+      "label": "test_fuel_mass_reference",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/test_glow_flight_physics-liojera4/report.json",
+      "label": "test_glow_flight_physics",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    },
+    {
+      "path": "regression/test_mass_inventory-1dpeam4u/report.json",
+      "label": "test_mass_inventory",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true
+    }
+  ],
+  "retention": {
+    "local_bundle": "tmp/deep-audit-2026-10-23/retained-bundle/evidence.zip",
+    "bundle_sha256": "818d0011ca257439df17ef2655a5002ac37dc36311168ce493f029e248901280",
+    "note": "The full bundle and raw runs are local generated evidence, not committed files. Retained report paths without a local docs counterpart are archive member names."
+  },
+  "retention_checks": {
+    "fresh_clone_base_commit": "e76a72f5b25f1787564ec8c34056428fa2cafe5a",
+    "baseline_patch_applies_to_fresh_clone_index": true,
+    "full_bundle_ignored_in_fresh_clone": true,
+    "reproducer_parse": [
+      {
+        "label": "retained-literal_probe.gd",
+        "ok": true,
+        "report_sha256": "f860072da135d166e6503390f49f0e67b480744cf3302e40058b7329e6d098ca",
+        "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+      },
+      {
+        "label": "retained-record_reference_pulses.gd",
+        "ok": true,
+        "report_sha256": "28a31b35099a1714558b80ff304ee1e1c8dda2ec874f5b701974313a3e2a4b3a",
+        "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+      },
+      {
+        "label": "retained-reference_inverse_probe.gd",
+        "ok": true,
+        "report_sha256": "2f88290553c07bf0fc5e17424b1ef315d35ae956df3257ec55b020806256559e",
+        "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+      }
+    ]
+  }
+}

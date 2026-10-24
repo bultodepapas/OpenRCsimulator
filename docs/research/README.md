@@ -34,6 +34,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 - [PT1h release-readiness audit](release-readiness/PT1h/README.md) reconciles code, documents and rc6 evidence; [tool workflows](../TOOLS.md) lists current commands and measurement limits.
 - [Project technical audit](project-audit-2026-10-06/README.md) reviews physics, runtime, tests, export and roadmap at its recorded commit. Its recommendations are planning input, not proof that issues are fixed.
 - [Physics audit, 2026-10-14](physics-audit-2026-10-14/README.md) retains the original findings, source/run identities and remediation evidence. Read its dated results alongside the current physics guides; collection does not imply finding closure.
+- [Physics audit, 2026-10-23](physics-audit-2026-10-23/README.md): eleven independent specialist reviews, FUEL-04-R1 reference-inertia repair, isolated replay comparison, scripted flight observations and an open reverse-flow applicability finding.
 - [Documentation audit, 2026-10-06](documentation-audit-2026-10-06.md) preserves the earlier navigation and consistency findings; the [documentation map](../README.md) owns current roles and track boundaries.
 - [Graveacre asset workflow review](graveacre-ai-workflow-2026-10-09.md) records primary links, access limits and practical asset-pipeline findings.
 

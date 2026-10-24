@@ -1,0 +1,292 @@
+[
+  {
+    "test": "ground_contact",
+    "exit_code": 0,
+    "summary": [
+      "22 checks, 0 failed"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "ground_contact",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ground_contact.gd"
+    ]
+  },
+  {
+    "test": "ground_friction",
+    "exit_code": 0,
+    "summary": [
+      "26 checks, 0 failed"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "ground_friction",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ground_friction.gd"
+    ]
+  },
+  {
+    "test": "ground_stiction",
+    "exit_code": 0,
+    "summary": [
+      "25 checks, 0 failed"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "ground_stiction",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ground_stiction.gd"
+    ]
+  },
+  {
+    "test": "ground_terrain",
+    "exit_code": 0,
+    "summary": [
+      "ok   failed renderer consolidation leaves terrain surface uniforms unchanged  before=[<null>, <null>, <null>] after=[<null>, <null>, <null>]",
+      "21 checks, 0 failed"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "ground_terrain",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ground_terrain.gd"
+    ]
+  },
+  {
+    "test": "lake_ground_contact",
+    "exit_code": 0,
+    "summary": [
+      "ok   gear collapse checks bed support",
+      "all lake ground contact checks passed"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "lake_ground_contact",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_lake_ground_contact.gd"
+    ]
+  },
+  {
+    "test": "retractable_gear_ground",
+    "exit_code": 0,
+    "summary": [
+      "26 checks, 0 failed"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "retractable_gear_ground",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_retractable_gear_ground.gd"
+    ]
+  },
+  {
+    "test": "timber_ground",
+    "exit_code": 0,
+    "summary": [
+      "TT-11 Timber ground: 23 checks, 0 failed"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "timber_ground",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_timber_ground.gd"
+    ]
+  },
+  {
+    "test": "takeoff_roll",
+    "exit_code": 0,
+    "summary": [
+      "8 checks, 0 failed"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "takeoff_roll",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_takeoff_roll.gd"
+    ]
+  },
+  {
+    "test": "checkpoint",
+    "exit_code": 0,
+    "summary": [
+      "H8 checkpoints: 92 checks, 0 failed"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "checkpoint",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_checkpoint.gd"
+    ]
+  },
+  {
+    "test": "trace_metadata",
+    "exit_code": 0,
+    "summary": [
+      "C7-R2 / DATA-3: 411 checks, 0 failed"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "trace_metadata",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_trace_metadata.gd"
+    ]
+  },
+  {
+    "test": "flight_log",
+    "exit_code": 0,
+    "summary": [
+      "FL-04 flight logs: 3247 checks, 0 failures; C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-ground-audit-20261023/candidate-logs"
+    ],
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/godot/run_checked.py",
+      "--label",
+      "flight_log",
+      "--timeout",
+      "240",
+      "--out-dir",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-ground-audit-20261023\\checks",
+      "--",
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_flight_log.gd",
+      "--",
+      "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-ground-audit-20261023/candidate-logs"
+    ]
+  }
+]

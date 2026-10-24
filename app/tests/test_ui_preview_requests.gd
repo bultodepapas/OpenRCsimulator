@@ -21,6 +21,9 @@ class RejectedFlight:
 class RejectingApp:
 	extends "res://app_root.gd"
 	func _create_flight(_aircraft_id: String = "") -> Node: return RejectedFlight.new()
+class NullFlightApp:
+	extends "res://app_root.gd"
+	func _create_flight(_aircraft_id: String = "") -> Node: return null
 var checks := 0
 var failures := 0
 func _initialize() -> void: _run.call_deferred()
@@ -123,6 +126,20 @@ func _run() -> void:
 	_check("restored preview matches card without stale loading state", rejected.home_scene.airplane.aircraft_id == JET and not rejected.home.aircraft_preview_label.visible)
 	_check("preview restoration preserves launch failure message", rejected.home.note_label.text.contains("Intentional startup rejection"))
 	await ui.close_app(rejected)
+	var null_flight := NullFlightApp.new()
+	null_flight.user_args = PackedStringArray()
+	null_flight.preferences_path = PREFS
+	root.add_child(null_flight)
+	await _frames()
+	var retained_home: Node = null_flight.home
+	var retained_scene: Node3D = null_flight.home_scene
+	null_flight.start_flight()
+	_check("null flight factory leaves Home attached and usable", null_flight.flight == null
+		and null_flight.home == retained_home and retained_home.is_inside_tree()
+		and null_flight.screens.is_top("home"))
+	_check("null flight error stays visible without detaching HomeScene", null_flight.home_scene == retained_scene
+		and retained_scene.is_inside_tree() and retained_home.note_label.text.contains("Could not start flight"))
+	await ui.close_app(null_flight)
 	TranslationServer.set_locale("en")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("Preview requests: %d checks, %d failed" % [checks, failures])

@@ -4,8 +4,8 @@
   "price_date": "2026-10-20",
   "generated_from": {
     "price_catalog_sha256": "4fccd282d03a85a2bdb855bb3a04d2ae8513fb8cd8bad5ced92c75b706c4b2fa",
-    "aircraft_costing_sha256": "e3a2864b08a01c9a9664ffb6b91c68855fcb9bd3aa5a368f80e851c8a11e4263",
-    "aircraft_catalog_sha256": "d315d0afd212642777e193d89d2447f01c643d3b9717def19b5cb678b071de1d",
+    "aircraft_costing_sha256": "a0ca5476e18704352d4269268691864dd4a503f33cf54ebf92efb8af2aacd542",
+    "aircraft_catalog_sha256": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "8b31bbc4358c239b29667069f8cdc8a0ef673ed59b713f50aee9b16fff6b8d21"
   },
@@ -5115,7 +5115,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "f4u-corsair-250",
-      "source_sha256": "4780a4a4bc7d05fabb571e8ceff166671a1f5e239ba2c3fc75822df7e4c59d03",
+      "source_sha256": "ee97e6e40fc3a2e46c5de20d0c43eaf52d0520d430bf77275005db4ae35de016",
       "currency": "USD",
       "price_date": "2026-10-20",
       "valuation_kind": "independent_partial_inventory_costing",

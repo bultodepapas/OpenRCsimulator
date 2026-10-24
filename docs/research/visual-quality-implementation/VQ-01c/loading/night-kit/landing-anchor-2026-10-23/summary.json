@@ -1,0 +1,260 @@
+{
+  "scope": "Complete night-kit construction; model build/render/parity/cleanup excluded. Not Home-ready time or FPS.",
+  "processes": 5,
+  "pairs_per_process_per_family": 6,
+  "warm_pairs_per_variant_per_family": 25,
+  "families": [
+    {
+      "aircraft": "f4u-corsair-250",
+      "per_process": [
+        {
+          "process": 1,
+          "reference_ms": 138.309,
+          "candidate_ms": 139.143
+        },
+        {
+          "process": 2,
+          "reference_ms": 140.209,
+          "candidate_ms": 142.289
+        },
+        {
+          "process": 3,
+          "reference_ms": 149.098,
+          "candidate_ms": 144.538
+        },
+        {
+          "process": 4,
+          "reference_ms": 142.438,
+          "candidate_ms": 142.642
+        },
+        {
+          "process": 5,
+          "reference_ms": 139.361,
+          "candidate_ms": 137.797
+        }
+      ],
+      "first": {
+        "reference_ms": 140.535,
+        "candidate_ms": 141.94,
+        "reduction_ms": -1.4050000000000011,
+        "reduction_percent": -0.9997509517202129
+      },
+      "warm": {
+        "reference_ms": 141.27,
+        "candidate_ms": 142.052,
+        "reduction_ms": -0.7819999999999823,
+        "reduction_percent": -0.5535499398315157
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "per_process": [
+        {
+          "process": 1,
+          "reference_ms": 40.518,
+          "candidate_ms": 40.424
+        },
+        {
+          "process": 2,
+          "reference_ms": 38.84,
+          "candidate_ms": 39.107
+        },
+        {
+          "process": 3,
+          "reference_ms": 39.514,
+          "candidate_ms": 39.639
+        },
+        {
+          "process": 4,
+          "reference_ms": 40.389,
+          "candidate_ms": 40.635
+        },
+        {
+          "process": 5,
+          "reference_ms": 38.681,
+          "candidate_ms": 38.996
+        }
+      ],
+      "first": {
+        "reference_ms": 40.784,
+        "candidate_ms": 40.824,
+        "reduction_ms": -0.03999999999999915,
+        "reduction_percent": -0.09807767752059422
+      },
+      "warm": {
+        "reference_ms": 39.502,
+        "candidate_ms": 39.835,
+        "reduction_ms": -0.3329999999999984,
+        "reduction_percent": -0.8429952913776477
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "per_process": [
+        {
+          "process": 1,
+          "reference_ms": 84.285,
+          "candidate_ms": 83.466
+        },
+        {
+          "process": 2,
+          "reference_ms": 83.102,
+          "candidate_ms": 84.246
+        },
+        {
+          "process": 3,
+          "reference_ms": 83.406,
+          "candidate_ms": 84.374
+        },
+        {
+          "process": 4,
+          "reference_ms": 87.025,
+          "candidate_ms": 89.412
+        },
+        {
+          "process": 5,
+          "reference_ms": 83.981,
+          "candidate_ms": 82.641
+        }
+      ],
+      "first": {
+        "reference_ms": 87.029,
+        "candidate_ms": 86.288,
+        "reduction_ms": 0.7409999999999997,
+        "reduction_percent": 0.8514403244895377
+      },
+      "warm": {
+        "reference_ms": 84.061,
+        "candidate_ms": 84.342,
+        "reduction_ms": -0.2809999999999917,
+        "reduction_percent": -0.334281057803252
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "per_process": [
+        {
+          "process": 1,
+          "reference_ms": 93.905,
+          "candidate_ms": 87.018
+        },
+        {
+          "process": 2,
+          "reference_ms": 89.798,
+          "candidate_ms": 83.895
+        },
+        {
+          "process": 3,
+          "reference_ms": 89.856,
+          "candidate_ms": 85.49
+        },
+        {
+          "process": 4,
+          "reference_ms": 92.227,
+          "candidate_ms": 89.779
+        },
+        {
+          "process": 5,
+          "reference_ms": 88.87,
+          "candidate_ms": 83.736
+        }
+      ],
+      "first": {
+        "reference_ms": 90.047,
+        "candidate_ms": 85.47,
+        "reduction_ms": 4.576999999999998,
+        "reduction_percent": 5.082901151620819
+      },
+      "warm": {
+        "reference_ms": 90.528,
+        "candidate_ms": 86.177,
+        "reduction_ms": 4.350999999999999,
+        "reduction_percent": 4.806247790738776
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "per_process": [
+        {
+          "process": 1,
+          "reference_ms": 202.317,
+          "candidate_ms": 208.268
+        },
+        {
+          "process": 2,
+          "reference_ms": 202.158,
+          "candidate_ms": 201.148
+        },
+        {
+          "process": 3,
+          "reference_ms": 205.103,
+          "candidate_ms": 215.293
+        },
+        {
+          "process": 4,
+          "reference_ms": 200.541,
+          "candidate_ms": 204.536
+        },
+        {
+          "process": 5,
+          "reference_ms": 199.91,
+          "candidate_ms": 198.601
+        }
+      ],
+      "first": {
+        "reference_ms": 200.387,
+        "candidate_ms": 202.911,
+        "reduction_ms": -2.524000000000001,
+        "reduction_percent": -1.2595627460863235
+      },
+      "warm": {
+        "reference_ms": 201.873,
+        "candidate_ms": 203.62,
+        "reduction_ms": -1.747000000000014,
+        "reduction_percent": -0.8653955704824391
+      }
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "per_process": [
+        {
+          "process": 1,
+          "reference_ms": 68.251,
+          "candidate_ms": 62.105
+        },
+        {
+          "process": 2,
+          "reference_ms": 73.305,
+          "candidate_ms": 67.162
+        },
+        {
+          "process": 3,
+          "reference_ms": 69.206,
+          "candidate_ms": 65.034
+        },
+        {
+          "process": 4,
+          "reference_ms": 67.275,
+          "candidate_ms": 62.744
+        },
+        {
+          "process": 5,
+          "reference_ms": 67.406,
+          "candidate_ms": 61.399
+        }
+      ],
+      "first": {
+        "reference_ms": 67.841,
+        "candidate_ms": 62.228,
+        "reduction_ms": 5.612999999999992,
+        "reduction_percent": 8.273757757108523
+      },
+      "warm": {
+        "reference_ms": 68.843,
+        "candidate_ms": 62.83,
+        "reduction_ms": 6.013000000000005,
+        "reduction_percent": 8.734366602268938
+      }
+    }
+  ]
+}

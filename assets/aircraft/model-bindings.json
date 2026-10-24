@@ -774,6 +774,10 @@
         {
           "path": "assets/aircraft/f4u-corsair-250/gear-samples.json",
           "role": "gear_samples"
+        },
+        {
+          "path": "assets/aircraft/f4u-corsair-250/wing-fold-r59.json",
+          "role": "wing_fold"
         }
       ],
       "construction": {
@@ -788,7 +792,17 @@
         "material_grow": [],
         "retraction": {
           "geometry_ref": "gear"
-        }
+        },
+        "folds": [
+          {
+            "key": "wing_fold_left",
+            "geometry_ref": "folds.left"
+          },
+          {
+            "key": "wing_fold_right",
+            "geometry_ref": "folds.right"
+          }
+        ]
       }
     }
   ]

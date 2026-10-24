@@ -1,0 +1,104 @@
+{
+  "format": "openrc-evidence-retention v1",
+  "full_bundle": {
+    "path": "tmp/deep-audit-2026-10-23/retained-bundle/evidence.zip",
+    "retention": "ignored local output; not included in a fresh checkout",
+    "sha256": "818d0011ca257439df17ef2655a5002ac37dc36311168ce493f029e248901280",
+    "bytes": 15261862,
+    "members": 3881,
+    "full_manifest_sha256": "3bd53d42c450233b4159a3a5acf0301aa4e19d0ee0c26e06aed44a1165b4726e",
+    "full_verification_sha256": "b478c816e704b1722084b5662187a037ffe6ac46ea948fb8602b0c860febb3d3"
+  },
+  "files": [
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-candidate/jet-normal-pitch-negative/comparison.json",
+      "bytes": 1439,
+      "sha256": "70f52c5ea036886c193083bf71fd03d14f63c5e53b9b99b769d97fbc034a9ae7"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-candidate/jet-normal-pitch-negative/replay.json",
+      "bytes": 7905,
+      "sha256": "87434fdb956c01539557b4bc02021dc7904ebe16c553350067268fd67bc610af"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-candidate/jet-normal-pitch-positive/comparison.json",
+      "bytes": 1439,
+      "sha256": "70f52c5ea036886c193083bf71fd03d14f63c5e53b9b99b769d97fbc034a9ae7"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-candidate/jet-normal-pitch-positive/replay.json",
+      "bytes": 7904,
+      "sha256": "e633f2f3210e9243350be5d4b1e0e2d69171d3d6426e948991c87b4be79d2f04"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-candidate/stik-normal-pitch-negative/comparison.json",
+      "bytes": 1439,
+      "sha256": "70f52c5ea036886c193083bf71fd03d14f63c5e53b9b99b769d97fbc034a9ae7"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-candidate/stik-normal-pitch-negative/replay.json",
+      "bytes": 12433,
+      "sha256": "afcef7f9858d07c53f11a1123fdcad51c78ed7138e6100023502bdeea83e71ed"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-candidate/stik-normal-pitch-positive/comparison.json",
+      "bytes": 1439,
+      "sha256": "70f52c5ea036886c193083bf71fd03d14f63c5e53b9b99b769d97fbc034a9ae7"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-candidate/stik-normal-pitch-positive/replay.json",
+      "bytes": 12432,
+      "sha256": "e2a2c48aec79c73d70be0c9f69d8cb3bb9cb6b6b3063f82a53905f8120fb9049"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-exact/jet-normal-pitch-negative/replay.json",
+      "bytes": 7675,
+      "sha256": "a9350822a5e7ba23c4b452cf9c0a021ba6c88a2c41c82c8da8b5b89db6450e83"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-exact/jet-normal-pitch-positive/replay.json",
+      "bytes": 7674,
+      "sha256": "f532196c9a77b04700255d52806d975c3c3ad4ff95a7824c7c26dfaef2123122"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-exact/stik-normal-pitch-negative/replay.json",
+      "bytes": 12206,
+      "sha256": "5f32f20e797d09ea6f5e58e6e9096f9ead8a224312ab60bdb98a76b70e6179d7"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/fuel-exact/stik-normal-pitch-positive/replay.json",
+      "bytes": 12205,
+      "sha256": "62d2f52257ccce8cdcd071585876b45bc42ba74c8a0414176ff0ebf7a0d319d6"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/reverse-flow-component.json",
+      "bytes": 1205,
+      "sha256": "7e9c851f4f036a74d6f637e5f6623b778dcc1442ec59f1ad1649bd3b320f91af"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-23/verification.json",
+      "bytes": 21072,
+      "sha256": "e58b1e9bf139cdc329f2b9f36d1350e36047707bf1d80afd72eb2eebc305e22c"
+    },
+    {
+      "path": "research/physics-audit-2026-10-23/baseline-source.patch",
+      "bytes": 4974,
+      "sha256": "966e1409cda496fc65cbdb7f6f3d4e52a7fc5809be4c9ad1b2b4d50ec74c668a"
+    },
+    {
+      "path": "research/physics-audit-2026-10-23/literal_probe.gd",
+      "bytes": 282,
+      "sha256": "a4411a7146679998940e80a239b810d8adbb35c64a313878d174f0658d0dce6a"
+    },
+    {
+      "path": "research/physics-audit-2026-10-23/record_reference_pulses.gd",
+      "bytes": 6072,
+      "sha256": "7380a632557ebfa83bffec9098ea68e2082320defa0e387d0c70a9113fcdcbe0"
+    },
+    {
+      "path": "research/physics-audit-2026-10-23/reference_inverse_probe.gd",
+      "bytes": 2046,
+      "sha256": "1c352cf1c45e8620b34118f9b3b35c15b2ed1ee8734527f973347185a659df2d"
+    }
+  ]
+}

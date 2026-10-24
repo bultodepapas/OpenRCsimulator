@@ -12,7 +12,7 @@ Researched 2026-10-21 for the [F4U plan](../../../F4U-PLAN.md). This is dated ev
 | Mean aerodynamic chord | 94.00 in (2.388 m) | NACA RM A7C05; WR L-440 model 2.85 ft × 2.75 = 7.84 ft agrees |
 | Root / tip chord | 105.00 in / 71.38 in | NACA RM A7C05 (OCR); the tip value is probably a theoretical tip, not the rounded tip |
 | Wing sections | NACA 23018 root, NACA 23009 tip | NACA RM A7C05 table; [UIUC airfoil usage guide](https://m-selig.ae.illinois.edu/ads/aircraft.html) "Vought V-166 F4U". The same guide lists 23015 root for the Goodyear FG-1, F2G and Brewster F3A; treat root thickness 15–18 % as uncertain |
-| Outer-panel dihedral, root incidence | Values lost in OCR ("8.5" appears near the sweepback line) | NACA RM A7C05; measure from g1 instead |
+| Outer-panel dihedral, root incidence | Dihedral lost in OCR ("8.5" appears near the sweepback line); wing incidence +2°, thrust line to wing chord line | Dihedral: NACA RM A7C05, measure from g1 instead. Incidence: AN 01-45HA-1 (F4U-1 pilot's handbook, [vmfa251.org](https://www.vmfa251.org/pdffiles/Corsair%20Manual.pdf)), Appendix I p. 64 |
 | Horizontal tail | 55.9 sq ft total, span 16.5 ft, stabilizer incidence 1.25°; elevator 21.9 sq ft aft of hinge, 5.4 sq ft balance | NACA RM A7C05 (F4U-4) |
 | Vertical tail | 22.00 sq ft total; fin 7.34 sq ft, **fin offset 2° left**; rudder 13.0 sq ft aft of hinge, 1.66 sq ft balance | NACA RM A7C05 (F4U-4) |
 | Ailerons | 18.1 sq ft both, aft of hinge; span 7.48 ft each; balance tabs 0.56 sq ft; trim tab left only 0.74 sq ft | NACA RM A7C05. R59 also models a left-only trim tab |
@@ -51,7 +51,7 @@ Cross-checks with the FokkeRC kit: its 2,052 mm length is within 1.1 % of the pu
 
 | Topic | Source | Value used |
 | --- | --- | --- |
-| Section maximum lift and slope at model Reynolds numbers | [NACA TR 586](https://ntrs.nasa.gov/citations/19930091662), Table I (OCR layer; rows identified by the 23012's α₀ −1.2° and Cm −0.007 to −0.010 signature; recheck against the page image) | 23012 cl_max 1.19 / 1.28 / 1.41 at effective Re 0.45 / 0.87 / 1.76 million; slope ≈0.096/deg; 23015 α₀ −1.1°, Cm −0.008. XFOIL (Ncrit 9) runs about 16 % high on cl_max and 20 % high on slope at these Reynolds numbers |
+| Section maximum lift and slope at model Reynolds numbers | [NACA TR 586](https://ntrs.nasa.gov/citations/19930091662), Table I, report pp. 39–40, checked against the page images 2026-10-23 ([recheck](../F4U-07/tr586-recheck-2026-10-23/README.md)) | 23012 cl_max 1.19 / 1.28 / 1.41 at effective Re 0.449 / 0.884 / 1.760 million; slope ≈0.096/deg; 23015 α₀ −1.1°, Cm −0.008. XFOIL (Ncrit 9) runs about 16 % high on cl_max and 20 % high on slope at these Reynolds numbers |
 | Thickness trends of the 230 series | [NACA TR 610](https://ntrs.nasa.gov/citations/19930091685) | Slope falls slightly with thickness; cl_max peaks near 12–13 % thickness, so the 9–11 % outer sections should stall earlier than the clamped model |
 | Slotted flaps | [NACA TR 664](https://ntrs.nasa.gov/citations/19930091739); Roskam Part VI Figs. 8.17, 8.31–8.34 as digitized by [FAST-GA](https://fast-ga.readthedocs.io/en/stable/_modules/fastga/models/aerodynamics/components/figure_digitization.html) | TR 664: 23012 with the 0.2566c flap 2-h reaches cl_max 2.86 at Re 8 million, increment nearly Reynolds-independent; Roskam's chain gives 1.19 on that flap against TR 664's ≈1.1 |
 | Corsair setups | [Black Horse BH64 manual](https://www.lindinger.at/media/f2/5a/bd/1602008047/9774576_EN_Manual.pdf) (2.28 m), [Seagull FG-1D manual](https://www.skyraccoon.com/assets/pdf/Corsair-F4U-Goodyear-FG-1D_4444.pdf) (2.21 m), Phoenix PMMA1845 (1.8 m) | CG 128 / 120 / 110 mm behind the root leading edge; throws and flap settings in mm (Black Horse: measured at each surface's widest point) |
@@ -80,6 +80,6 @@ The Moki manual's two static points agree within 13 % in torque on the Mejzlik c
 
 No F4U sideslip derivatives were found in NTRS beyond RM A7C05's figures (RM SL7E20 covers store drag and buffet only). Transferring the P-51's flight-calibrated body-yaw ratio (3.6 × DATCOM) would make the Corsair directionally unstable, against RM A7C05's measured stability over ±15°, so it is not used.
 
-## Rights notes
+## Rights
 
-The [licensing guide](../../../AIRCRAFT-LICENSING.md) classifies the Corsair as a conditional historical replica and records licensing activity for the name. R59 lists the Royal RC F4U-1D plan and the CARF manual among its references and packs two plan scans; the g1 request asks for their removal and a reference list. Kit plans are reference material only; no kit drawing, CAD or artwork is imported.
+No licence is required ([owner decision F4U-13](../../../DECISIONS.md), 2026-10-23). R59 lists the Royal RC F4U-1D plan and the CARF manual among its references and packs two plan scans; the g1 request asks for their removal and a reference list. Kit plans are reference material only; no kit drawing, CAD or artwork is imported.

@@ -1,0 +1,33 @@
+{
+  "method": "Direct evaluation of the implemented optional body Fy terms only; not total force/moment work. No runtime aero change.",
+  "velocity_body_mps": [
+    -19.920859456280976,
+    1.7431148549531632,
+    0.34771989523528024
+  ],
+  "rho_kg_m3": 1.225,
+  "cases": [
+    {
+      "aircraft": "gp-extra-300s-60",
+      "file": "app/data/aircraft/gp_extra_300s_60.json",
+      "sha256": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
+      "S_m2": 0.479999,
+      "CYbeta_per_rad": -0.12419,
+      "A_cross_m2": 0.156741,
+      "attached_lateral_power_W": 2.210004368705379,
+      "crossflow_lateral_power_W": -0.5184897441961387,
+      "net_component_lateral_power_W": 1.6915146245092405
+    },
+    {
+      "aircraft": "f4u-corsair-250",
+      "file": "app/data/aircraft/f4u_corsair_250.json",
+      "sha256": "4780a4a4bc7d05fabb571e8ceff166671a1f5e239ba2c3fc75822df7e4c59d03",
+      "S_m2": 1.440571,
+      "CYbeta_per_rad": -0.193182,
+      "A_cross_m2": 0.556039,
+      "attached_lateral_power_W": 10.317334195332446,
+      "crossflow_lateral_power_W": -1.8393433681874989,
+      "net_component_lateral_power_W": 8.477990827144946
+    }
+  ]
+}

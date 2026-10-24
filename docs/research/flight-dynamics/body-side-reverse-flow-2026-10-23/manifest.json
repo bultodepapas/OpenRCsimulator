@@ -1,0 +1,2499 @@
+{
+  "format": "openrc-evidence-manifest v1",
+  "step": "D10-R3-R1",
+  "member_paths_relative_to": "evidence.zip root",
+  "files": [
+    {
+      "path": "adversarial/assessment.md",
+      "bytes": 3609,
+      "sha256": "ed7de641d74b0205d99c2c90f6c9dfcf6f5e15e3e0ec923706254af0c56399c1"
+    },
+    {
+      "path": "adversarial/checks/direct-run-record.json",
+      "bytes": 1089,
+      "sha256": "f274191e346749375d55326cdd2a0b2ea6a69881cacfdc5b4bc5e3ff2ec4e03e"
+    },
+    {
+      "path": "adversarial/checks/tool-output.log",
+      "bytes": 3013,
+      "sha256": "32042fd649495e8a762b60fa0aeaf64d0ab75b5872f7fbca6d140239a839d81a"
+    },
+    {
+      "path": "aero.before.gd",
+      "bytes": 50896,
+      "sha256": "efccc6baf1a88fc24487d6766db05c6634da047de70bd55b9a115aed0adf5531"
+    },
+    {
+      "path": "aero.candidate.gd",
+      "bytes": 51091,
+      "sha256": "a53cd75c27bf9fc90e786b4542f77ccb63e5a53882b51c02f9fead6a5b4caf15"
+    },
+    {
+      "path": "baseline-identity.json",
+      "bytes": 419175,
+      "sha256": "bdc95d166158c2dab2b44952ff7ecc40ad05c424520612b4a1f76ba482a419da"
+    },
+    {
+      "path": "baseline-source/app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "bytes": 1466,
+      "sha256": "1b085955010380d6f77c15b7e9f57ef35d2fe01f2e20122802eb8269d602d0c3"
+    },
+    {
+      "path": "baseline-source/app/data/ai/companions/fields/club-default.json",
+      "bytes": 3356,
+      "sha256": "597421d39975438ba69cb1c93ea424d1044ac91ffc8ab23fe5cb8381fcaa96c9"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
+      "bytes": 53682,
+      "sha256": "c645e3213a6f8b718ea96f1891ace859764a670f7db489d98527e50817d3586d"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/f4u_corsair_250.json",
+      "bytes": 104991,
+      "sha256": "4780a4a4bc7d05fabb571e8ceff166671a1f5e239ba2c3fc75822df7e4c59d03"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/gp_extra_300s_60.json",
+      "bytes": 71718,
+      "sha256": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/hx700_electric_3d_experimental.json",
+      "bytes": 22321,
+      "sha256": "6805ea966fbcd07111d89743946b4dd7a46d58ad6057085c15bb21cfd0e0731e"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/jensen_ugly_stik_60.json",
+      "bytes": 60211,
+      "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/p51d_mustang_120.json",
+      "bytes": 112692,
+      "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/sebart_avanti_s_a200.json",
+      "bytes": 110438,
+      "sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/stik_glow_55ax_2t.json",
+      "bytes": 59139,
+      "sha256": "d89b83c76da8356b39893ca3073656a3d3c8af1d761bce587e54ce707ec3fbc3"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+      "bytes": 59126,
+      "sha256": "02ca95d22c2098af0cc1ae6bddba63f6fe6a95d4a1297650d77becd618e2e9a7"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/stik_glow_61fx_2t.json",
+      "bytes": 59185,
+      "sha256": "c29f86fa72b89cd7f46206da875f28632229e5892c2db60a692959f472a73f6a"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/stik_glow_fs64v_4t.json",
+      "bytes": 59140,
+      "sha256": "2ffecf15df53f55876756fb47213714a536dfd28a0b432863bdb34fc4eeee796"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+      "bytes": 59110,
+      "sha256": "ff8be94c0a6eb58e75cc179e75e3419b947b4339e5ae6d03a13f03136b6523f6"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/synthetic_stik_electric_4s.json",
+      "bytes": 52602,
+      "sha256": "35c8d84f41f376a3d8f809ddd2880fe32cdce53ddee0346b53651c5369af5387"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/synthetic_stik_electric_4s_battery.json",
+      "bytes": 54662,
+      "sha256": "d56135fad5b600d182ccd5e675339f58a5a042e0d1cc1485f94283a3f89d4c28"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/synthetic_stik_electric_6s.json",
+      "bytes": 52573,
+      "sha256": "5f57c9cd88c54153100364e7e50986415c42aa4dd8a4c70c2110e33810be879e"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/synthetic_stik_electric_6s_battery.json",
+      "bytes": 54635,
+      "sha256": "934250b5ce2a206e61121e73be083bd38ab4e1f30304c9fde886010cdb048b23"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/turbo_lumber_evolution.json",
+      "bytes": 50249,
+      "sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft/xcell_60_research.json",
+      "bytes": 20672,
+      "sha256": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft_customization.json",
+      "bytes": 52342,
+      "sha256": "dc743e11a5ade73fe6bdc9b4ee1062ac3548dd49d0aa2303aa5ef3b3bb1f9842"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft_models/f4u-corsair-250.json",
+      "bytes": 7082,
+      "sha256": "891899aa5fde40b6d3c54b037d98ccf36089977a6a4c80ea78e890c42fdb21f7"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft_models/gp-extra-300s-60.json",
+      "bytes": 4009,
+      "sha256": "79f7a304c5226188a9ba87d46fe15a3183e9341439f2b5317f79e67c278b1cfd"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft_models/jensen-das-ugly-stik-60.json",
+      "bytes": 4887,
+      "sha256": "48f8feb37bfe30baa5bb633343001b30b9181bcb5420bd53f1b082724e90e676"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft_models/p51d-mustang-120.json",
+      "bytes": 4198,
+      "sha256": "a326e49d3ab8914a8b1e2cf63fc9d0fa8fbff9c4595230aa02aca1b4f90d087f"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json",
+      "bytes": 6063,
+      "sha256": "570977b6e137003c0f6cdd3d73500ec80e0a26920e5f56a3ff5cc3c73f8a09c1"
+    },
+    {
+      "path": "baseline-source/app/data/aircraft_models/turbo-lumber-evolution.json",
+      "bytes": 7200,
+      "sha256": "cfdb6299f412200db543e1ed7233a7e0b1ce96aa3baa4f656636c6027f283b38"
+    },
+    {
+      "path": "baseline-source/app/data/batteries/cells/liion-lg-hg2-kollmeyer-v1.json",
+      "bytes": 26606,
+      "sha256": "1a65da8c45affeefa4e075b9cae01a0f45875d269c280042aa12af9fa627129c"
+    },
+    {
+      "path": "baseline-source/app/data/batteries/cells/lipo-bak503562-galeotti-v1.json",
+      "bytes": 24511,
+      "sha256": "d291e8222c4664b44179e04c60efa8a14f372bb211f51c78856d1c7420c86633"
+    },
+    {
+      "path": "baseline-source/app/data/batteries/packs/liion-4s1p-3000-hg2.json",
+      "bytes": 2975,
+      "sha256": "5a2f33dd7843f3cf7e5b6133e10cebd331a0d8d2b45977fb0b5c5425b4077afe"
+    },
+    {
+      "path": "baseline-source/app/data/batteries/packs/liion-4s2p-6000-hg2.json",
+      "bytes": 2976,
+      "sha256": "8e8f7ae2175f56299bcdb793873085d7e5bfa7ec5dbe5e2ed8b3220e90a606a4"
+    },
+    {
+      "path": "baseline-source/app/data/batteries/packs/lipo-3s1p-2200-25c-class.json",
+      "bytes": 3458,
+      "sha256": "5d972f35595220bcf201fc7429a174c04028802636e45e4d28ab140d5340ba23"
+    },
+    {
+      "path": "baseline-source/app/data/batteries/packs/lipo-4s1p-2200-30c-class.json",
+      "bytes": 3457,
+      "sha256": "81a549b020e795d1f60085560dc2630090795f16256fcf732469d524ac8ebf42"
+    },
+    {
+      "path": "baseline-source/app/data/batteries/packs/lipo-4s1p-3200-30c-class.json",
+      "bytes": 3230,
+      "sha256": "cdf90adb42613419665d7a6976c94a8b937abb4984c366610181026be9c20b09"
+    },
+    {
+      "path": "baseline-source/app/data/batteries/packs/lipo-4s1p-5000-30c-class.json",
+      "bytes": 3454,
+      "sha256": "78d3c4b0eba0af115a650840efd70c4f4afa7d54fb073cea2181e9550cbadd2e"
+    },
+    {
+      "path": "baseline-source/app/data/batteries/packs/lipo-6s1p-2200-30c-class.json",
+      "bytes": 3457,
+      "sha256": "b7d674e377282b9f4d4907f03b0453a466d98a6f61cdd09d5e85945c11adb495"
+    },
+    {
+      "path": "baseline-source/app/data/batteries/packs/lipo-6s1p-5000-30c-class.json",
+      "bytes": 3455,
+      "sha256": "c930ba3bf6283b03b4e2d99471b73e6994670ad2a6322d6ed46701b7acbd5cf9"
+    },
+    {
+      "path": "baseline-source/app/data/economy/catalog.json",
+      "bytes": 302099,
+      "sha256": "b1f181029b5142dd5e41f310361235c8dd459d7a3e3c998bf4c8265a6014e3b9"
+    },
+    {
+      "path": "baseline-source/app/data/economy/repair-recipes.json",
+      "bytes": 6232,
+      "sha256": "ef1061301e658fca9c1609cd726fc58dd8967a2ba7505df75b196acfe0f50b02"
+    },
+    {
+      "path": "baseline-source/app/data/field_loader.gd",
+      "bytes": 60929,
+      "sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1"
+    },
+    {
+      "path": "baseline-source/app/data/fields/default.json",
+      "bytes": 159198,
+      "sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d"
+    },
+    {
+      "path": "baseline-source/app/data/fields/grass.json",
+      "bytes": 139756,
+      "sha256": "916bb15fefd84da6d354e4ad1f9480f01c0391f1e799f592a53c3ee504161d52"
+    },
+    {
+      "path": "baseline-source/app/data/fields/horizon.json",
+      "bytes": 164688,
+      "sha256": "922c2a6ca5825d06e2d6bebab16fbc21bad5f75f4d9ccbbdd18cfbb343b4ca40"
+    },
+    {
+      "path": "baseline-source/app/data/fields/lake.json",
+      "bytes": 1570,
+      "sha256": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74"
+    },
+    {
+      "path": "baseline-source/app/data/fields/lights.json",
+      "bytes": 19296,
+      "sha256": "00fd9baaa4e956f963191bd89af52f4ee6a87cf7065401bd0d4b6092239c0607"
+    },
+    {
+      "path": "baseline-source/app/data/fields/mountains.json",
+      "bytes": 93377,
+      "sha256": "6021d86d9e87e136455ff7e4253f190a129ace187185fb7b71c66aec16f2efb8"
+    },
+    {
+      "path": "baseline-source/app/data/fuels/openrc-fuel-registry.json",
+      "bytes": 5563,
+      "sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1"
+    },
+    {
+      "path": "baseline-source/app/data/glow/extra_61fx_2t.json",
+      "bytes": 8245,
+      "sha256": "84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8"
+    },
+    {
+      "path": "baseline-source/app/data/glow/openrc-glow-engine-v1.schema.json",
+      "bytes": 45896,
+      "sha256": "cb19a66c457c87c4092be9bd86be33f0781712aef6a1bbcf3412eb0ceb1cb0fc"
+    },
+    {
+      "path": "baseline-source/app/data/glow/os_fs_64v_candidate.json",
+      "bytes": 9386,
+      "sha256": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39"
+    },
+    {
+      "path": "baseline-source/app/data/glow/os_max_55ax_candidate.json",
+      "bytes": 8889,
+      "sha256": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258"
+    },
+    {
+      "path": "baseline-source/app/data/glow/os_max_61fx_candidate.json",
+      "bytes": 10190,
+      "sha256": "5e6fec165cf5b5a122a9dc1672436dac5004714cc3534cb075e94aad86ef4df4"
+    },
+    {
+      "path": "baseline-source/app/data/glow/os_max_61fx_installed_candidate.json",
+      "bytes": 11107,
+      "sha256": "462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e"
+    },
+    {
+      "path": "baseline-source/app/data/glow/profile_contract.json",
+      "bytes": 5102,
+      "sha256": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38"
+    },
+    {
+      "path": "baseline-source/app/data/glow/stik_55ax_2t.json",
+      "bytes": 8594,
+      "sha256": "0da0ff8f8dcaf8e877009819916a2c84f62863afafc130f4b4b0811a5aa0814d"
+    },
+    {
+      "path": "baseline-source/app/data/glow/stik_55ax_2t_apc_13x6.json",
+      "bytes": 8583,
+      "sha256": "eb54135e02036286ea78d5fc8f96bed1b4f58c9aab2aa811377db39dbc08db86"
+    },
+    {
+      "path": "baseline-source/app/data/glow/stik_61fx_2t.json",
+      "bytes": 8700,
+      "sha256": "03d8412fa7dd579b4853264d3987a164a7c34cb558332f621ae90c98fe035c0e"
+    },
+    {
+      "path": "baseline-source/app/data/glow/stik_fs64v_4t.json",
+      "bytes": 8896,
+      "sha256": "d143392e35da1149c58d06e9f5b45afeaaba0140f2fba52efd3367d4a940657e"
+    },
+    {
+      "path": "baseline-source/app/data/glow/stik_fs64v_4t_apc_13x6.json",
+      "bytes": 8811,
+      "sha256": "18745638156c3981313d6d38fc5b56ce6b87f872aad1d7fe93b9c3eebdabe619"
+    },
+    {
+      "path": "baseline-source/app/data/ground/surface_friction.json",
+      "bytes": 2621,
+      "sha256": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586"
+    },
+    {
+      "path": "baseline-source/app/data/ground/wheel_profiles.json",
+      "bytes": 36367,
+      "sha256": "9033e8661fd38f2f5ba9dd9d022a51d059d170a56dc58d7948abe5a46111dc3c"
+    },
+    {
+      "path": "baseline-source/app/data/ground_vehicle/airfield_track.json",
+      "bytes": 3353,
+      "sha256": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81"
+    },
+    {
+      "path": "baseline-source/app/data/ground_vehicle/practice.json",
+      "bytes": 25258,
+      "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5"
+    },
+    {
+      "path": "baseline-source/app/data/lake_loader.gd",
+      "bytes": 18729,
+      "sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6"
+    },
+    {
+      "path": "baseline-source/app/data/scenarios/natural_random_v1.json",
+      "bytes": 3306,
+      "sha256": "4299dd30599e352de5d7e8002bf36781be63ea626dc5f53a9d291c8d226763d0"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/countryside.json",
+      "bytes": 1010098,
+      "sha256": "164963e486bafeee2113be0eade504ad48b918615ae211b6978605ce316cbe25"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/default.json",
+      "bytes": 33873,
+      "sha256": "f871d9917cdd7d240c173651b6a75a2083c1363006c4546e24ae7b0bf2b4264e"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/hill_settlements.json",
+      "bytes": 7554,
+      "sha256": "6c973ef75f63aac64a3a3ca1fe7f5343630b29a188feb22c51c7c9603bfaf128"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/models/car_hatch.json",
+      "bytes": 33339,
+      "sha256": "c43e80445c9c7db8c7c7a8465b213e77a3f7d230a7ace05db0b27435ae92baa0"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/models/car_sedan.json",
+      "bytes": 30836,
+      "sha256": "2a399fc4972f9e6929fb6305901347fad230d150661804d453efaf6bd86d613e"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/models/car_sport.json",
+      "bytes": 32857,
+      "sha256": "9fac663b3d7e78a7a318311a1618a46cc2e8ed6479560acc920eddbad35bfce4"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/models/car_suv.json",
+      "bytes": 34928,
+      "sha256": "2bffbe060c5b80a365091361aaf04a5ebe3d3d971c73c0a441de9b7717ccf295"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/models/cow.json",
+      "bytes": 16427,
+      "sha256": "111f356acbcb08a5a2dd6e8014e86163175df963cb70944f6882eaeb5ebbf1a1"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/models/fleet_avanti.json",
+      "bytes": 43293,
+      "sha256": "5e4d7d9bc4c7ee561dfb0ffad5478b8954552d7fc244f41d18057321b25b3bec"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/models/fleet_extra.json",
+      "bytes": 51780,
+      "sha256": "80afd7e94d33436f2ecec4567917a9235202fd847b59e948a5b823653d6d58f8"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/models/fleet_p51.json",
+      "bytes": 62611,
+      "sha256": "7e2c94a4553961faeaf2c70eb6ba5cfe39927f97b683c0e701ab52e131cbf4d3"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/models/fleet_stik.json",
+      "bytes": 95915,
+      "sha256": "cc951075d79dc53afb76f3eccd2cca507411e807f15166fbe66311645a023949"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/models/sheep.json",
+      "bytes": 12300,
+      "sha256": "610ea5934ee3f698d6e5e4ead4ab5974851db654da79de9c1130724ccce68575"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/power_cable.json",
+      "bytes": 8494,
+      "sha256": "b29026e81fae6a77b51bd4900d9442ff657b11f31f37c672fd23f03e47289a13"
+    },
+    {
+      "path": "baseline-source/app/data/scenery/power_insulator.json",
+      "bytes": 23303,
+      "sha256": "25a9a403893a04f8e21b8b9810b00225a620e5acf9188b66489659cbb8b6275b"
+    },
+    {
+      "path": "baseline-source/app/data/schema/aircraft-contract-v2.json",
+      "bytes": 32708,
+      "sha256": "fa490171880caee68cd63ea0e440be92fc9dedd83f4595a8a2a5845c7c5efdbe"
+    },
+    {
+      "path": "baseline-source/app/data/schema/aircraft-modules-v1.json",
+      "bytes": 14756,
+      "sha256": "da499734b5462f1174b16db8f955b2644b8e0af5225bb3bdf4338bad5bb04442"
+    },
+    {
+      "path": "baseline-source/app/data/schema/glow-installation-v2.schema.json",
+      "bytes": 33980,
+      "sha256": "33f2666d1af2a7bf9855f03912ac5022662d2b0a826e2006a746caa61c687032"
+    },
+    {
+      "path": "baseline-source/app/data/schema/openrc-aircraft-model-v1.schema.json",
+      "bytes": 9220,
+      "sha256": "69cf03dd54a9e57778980f65667438de500b1922ca109ce3fed0a5e82fb8bc44"
+    },
+    {
+      "path": "baseline-source/app/data/schema/openrc-aircraft-v1.schema.json",
+      "bytes": 118889,
+      "sha256": "1eed5f0b2895de10aeaee842b7cd47c4c34a0455f0036bb763519a3c9e4a5d86"
+    },
+    {
+      "path": "baseline-source/app/data/schema/openrc-aircraft-v2.schema.json",
+      "bytes": 173335,
+      "sha256": "5d514a2bcf8cfe140696fb18aaba7e2dafd41eef20cbfa2523ab2b297934ad15"
+    },
+    {
+      "path": "baseline-source/app/data/schema/openrc-rotorcraft-v2.schema.json",
+      "bytes": 100285,
+      "sha256": "0a2d849f51fd1759efeb3999dfc3a26330a9bdd3c87fd4be0676d3c18a8ddb75"
+    },
+    {
+      "path": "baseline-source/app/data/sky/sky_table.json",
+      "bytes": 88569,
+      "sha256": "9cd5aee60d7a8e56eed24f504ce03f203abd26991ea7ab07c8f2d3888fee0f9c"
+    },
+    {
+      "path": "baseline-source/app/data/sky/stars.json",
+      "bytes": 114389,
+      "sha256": "67f966951d25ca585eda973af4894b78ce8a08da3a2463dacd3a7afa4b91f023"
+    },
+    {
+      "path": "baseline-source/app/data/sky/weather_presets.json",
+      "bytes": 8300,
+      "sha256": "236bacc5315e801be514c3d08b29164e00395346647f524ec19dd2be76f2c754"
+    },
+    {
+      "path": "baseline-source/app/data/vehicles/ground/monster_car_2.json",
+      "bytes": 22898,
+      "sha256": "088a71ccd4988e72a0947a860460d8195463cb3fbff7462033ea0031c713564c"
+    },
+    {
+      "path": "baseline-source/app/data/vehicles/ground/mt8_bisonte.json",
+      "bytes": 16669,
+      "sha256": "795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96"
+    },
+    {
+      "path": "baseline-source/app/data/woodland_edges.json",
+      "bytes": 64706,
+      "sha256": "cd594d94d9fb3a3ffd5361c785323323b9bf7315aa5cb9fde1e089c73fb8fc03"
+    },
+    {
+      "path": "baseline-source/app/data/workshop/f4u-corsair-250.json",
+      "bytes": 2249,
+      "sha256": "9c1f08e5d7203ad41ffac1d038cf0a550e72e4a029f884e7d21c75e6f9083880"
+    },
+    {
+      "path": "baseline-source/app/data/workshop/gp-extra-300s-60.json",
+      "bytes": 1669,
+      "sha256": "4e7a82e677e265360b326a58de2098efc2f4f86936c179cc7926eb041772be9d"
+    },
+    {
+      "path": "baseline-source/app/data/workshop/jensen-das-ugly-stik-60.json",
+      "bytes": 1678,
+      "sha256": "2a9df39a87e23bf304c68b9face99cbb050da1b65fc62791f602dcdf657e7094"
+    },
+    {
+      "path": "baseline-source/app/data/workshop/p51d-mustang-120.json",
+      "bytes": 2205,
+      "sha256": "cbc2e57942b6b0a9d1b18bf5e5d2ca56adc64879d35a433e0cbab3d9cc704d66"
+    },
+    {
+      "path": "baseline-source/app/data/workshop/sebart-avanti-s-a200-p100rx.json",
+      "bytes": 2602,
+      "sha256": "3a7ce7549b1a66572f6659634c1f3c9a251381410e4bc99298f9750ce7f6b8e5"
+    },
+    {
+      "path": "baseline-source/app/data/workshop/stik-glow-55ax-2t.json",
+      "bytes": 1701,
+      "sha256": "9346466a2a2037db8404e27242714ce0cdc6a5b095f6fe54e9e62fdd46d29a2a"
+    },
+    {
+      "path": "baseline-source/app/data/workshop/stik-glow-61fx-2t.json",
+      "bytes": 1701,
+      "sha256": "30cd2324f1d9032de3071552155b729a6901038a1b104ed2a85656a54bc87067"
+    },
+    {
+      "path": "baseline-source/app/data/workshop/stik-glow-fs64v-4t.json",
+      "bytes": 1702,
+      "sha256": "069f73d03eac2c90d9be67e0f5f18f1ac6168575c152402ff5c88b219665c5a4"
+    },
+    {
+      "path": "baseline-source/app/data/workshop/turbo-lumber-evolution.json",
+      "bytes": 1255,
+      "sha256": "b164e16471a668b5229238590b506ebc4f526fce6a6f5a9ea2c6978050baa44c"
+    },
+    {
+      "path": "baseline-source/app/failures/catalog.gd",
+      "bytes": 8762,
+      "sha256": "1126203bbdfd8352931d231b6b63e6f1307052a7bcd582523705d2352da5e60c"
+    },
+    {
+      "path": "baseline-source/app/failures/config.gd",
+      "bytes": 1996,
+      "sha256": "b989737c5c41853838ec3e71de3d65dbb78f5a72157529d43709871a3a3e7c1b"
+    },
+    {
+      "path": "baseline-source/app/failures/runtime.gd",
+      "bytes": 26441,
+      "sha256": "e92c61f83612dcf8f42963c7b5fd8e22606ffc79c86fa182885666e1c8e4b873"
+    },
+    {
+      "path": "baseline-source/app/input/commands.gd",
+      "bytes": 5971,
+      "sha256": "4e8de330e95d0c4f4b5f9202ffc186db2cc9f20ef6c3a75ae1b6a70bce258315"
+    },
+    {
+      "path": "baseline-source/app/input/controller_actions.gd",
+      "bytes": 27206,
+      "sha256": "06e2265968415bc16c7a43b0488f2c656959165af0d846e817c0501815c48fee"
+    },
+    {
+      "path": "baseline-source/app/input/controller_profile.gd",
+      "bytes": 24302,
+      "sha256": "90ea1249497a12b9756509071bf602e288b4dffcee40e0ec8fd8dabc59900ed7"
+    },
+    {
+      "path": "baseline-source/app/input/controller_profile_store.gd",
+      "bytes": 16287,
+      "sha256": "76dc5220b73fd09869620622c6571dd66b51cd2d4a62f5143bc95ded42e33458"
+    },
+    {
+      "path": "baseline-source/app/input/controller_registry.gd",
+      "bytes": 10504,
+      "sha256": "dd23383bd040a87c2c269ab3696de0fab947df93f11f912039678297e5284511"
+    },
+    {
+      "path": "baseline-source/app/input/controller_service.gd",
+      "bytes": 25321,
+      "sha256": "36a932a145795112909e1e0bf04fe0eb75f6cad9b1e34b3ad52303f780700087"
+    },
+    {
+      "path": "baseline-source/app/input/ground_vehicle_input.gd",
+      "bytes": 4854,
+      "sha256": "55764f9d082fa645320417ea7b9cee098ccf259e66a1dcc3e7b9f25b31075428"
+    },
+    {
+      "path": "baseline-source/app/input/input_report.gd",
+      "bytes": 6288,
+      "sha256": "f8fe3bc9ee4bc5da10848213daa4acf84246c43e503154d39796f6617932b47f"
+    },
+    {
+      "path": "baseline-source/app/input/input_report_data.gd",
+      "bytes": 6582,
+      "sha256": "aa6740f041084e357f92cc0d4963c03de328f5a8cad4b532939eb134b52a8d1a"
+    },
+    {
+      "path": "baseline-source/app/input/jeti_radio.gd",
+      "bytes": 5699,
+      "sha256": "4af27e19a3dc32792f4f85087aff84b508b3b1d00861ffc7882d438af6fa80ef"
+    },
+    {
+      "path": "baseline-source/app/input/keyboard.gd",
+      "bytes": 504,
+      "sha256": "1ab15c7b1d523f7ecd216ea7339707217d2ca243ee51972211f23a0302148c76"
+    },
+    {
+      "path": "baseline-source/app/input/latency_patch.gd",
+      "bytes": 5054,
+      "sha256": "2d9d85784e38bdece27641eea0a1f54cea720c0eb8c7276f1984022b65f61969"
+    },
+    {
+      "path": "baseline-source/app/input/rc_calibration.gd",
+      "bytes": 10297,
+      "sha256": "6f0eac083c6eb207784e1198ce5bab1d80970b9812d177757506aa087021758c"
+    },
+    {
+      "path": "baseline-source/app/input/rc_input.gd",
+      "bytes": 22598,
+      "sha256": "0b03f1e38520d954d49d5da0410711555fb1c2f41c89481804b04a8c8e873678"
+    },
+    {
+      "path": "baseline-source/app/input/smoke_aux.gd",
+      "bytes": 10808,
+      "sha256": "a871defb386b5d6ef2983157c21838a0adbb14b0f3b95035c725e5173f9fc5dd"
+    },
+    {
+      "path": "baseline-source/app/physics/aero.gd",
+      "bytes": 50896,
+      "sha256": "efccc6baf1a88fc24487d6766db05c6634da047de70bd55b9a115aed0adf5531"
+    },
+    {
+      "path": "baseline-source/app/physics/air_data.gd",
+      "bytes": 1784,
+      "sha256": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2"
+    },
+    {
+      "path": "baseline-source/app/physics/aircraft_contact_contract.gd",
+      "bytes": 35274,
+      "sha256": "84a46a225b368b8a40bb37e5f3b5714b822983f054ae0480f791ef46c20a5734"
+    },
+    {
+      "path": "baseline-source/app/physics/aircraft_contract.gd",
+      "bytes": 18748,
+      "sha256": "b80151fa8588f9d4d2dfbaf75eaf6f930679b02f92b5e05769f24d8098b3dd36"
+    },
+    {
+      "path": "baseline-source/app/physics/aircraft_data.gd",
+      "bytes": 141590,
+      "sha256": "8e49ea5ad704eba76c79dcd892053cefbe96f821079b14c560c5caa50b93c7dd"
+    },
+    {
+      "path": "baseline-source/app/physics/aircraft_modules.gd",
+      "bytes": 17350,
+      "sha256": "c9bc118fdcb9b749e37be2a9a1afbfbd63caf9a987303a3c3fb0af393decefd1"
+    },
+    {
+      "path": "baseline-source/app/physics/atmosphere.gd",
+      "bytes": 8311,
+      "sha256": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369"
+    },
+    {
+      "path": "baseline-source/app/physics/battery/battery_data.gd",
+      "bytes": 16188,
+      "sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b"
+    },
+    {
+      "path": "baseline-source/app/physics/battery/esc_supervisor.gd",
+      "bytes": 5408,
+      "sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5"
+    },
+    {
+      "path": "baseline-source/app/physics/battery/pack_ecm.gd",
+      "bytes": 12802,
+      "sha256": "5fc20700f028d214e8e97caade261c910cdc8ee560e983cb57074077ae44ddda"
+    },
+    {
+      "path": "baseline-source/app/physics/control_actuators.gd",
+      "bytes": 1902,
+      "sha256": "1bfa36515ad25280fe6c4b4dcb5efa2c87014be02e2f0f2378986f1a7ff71e6d"
+    },
+    {
+      "path": "baseline-source/app/physics/control_surfaces.gd",
+      "bytes": 3223,
+      "sha256": "c13215f7186aa827eb4a47e198d3fee04509631e585453fbf69850b3bc50aa93"
+    },
+    {
+      "path": "baseline-source/app/physics/cruise_trim.gd",
+      "bytes": 10231,
+      "sha256": "50c227cd7d5d57b96cc84f8f7ce6d37666c2e90907f90bda25577443cfd81213"
+    },
+    {
+      "path": "baseline-source/app/physics/dynamics.gd",
+      "bytes": 7474,
+      "sha256": "4d98ba744d487b2663788d5e2d525ca4f8ea29e10c884daec1188986f1122426"
+    },
+    {
+      "path": "baseline-source/app/physics/effective_mass.gd",
+      "bytes": 8286,
+      "sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc"
+    },
+    {
+      "path": "baseline-source/app/physics/electric_battery_step.gd",
+      "bytes": 13792,
+      "sha256": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044"
+    },
+    {
+      "path": "baseline-source/app/physics/electric_motor.gd",
+      "bytes": 4926,
+      "sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8"
+    },
+    {
+      "path": "baseline-source/app/physics/electric_stop.gd",
+      "bytes": 1347,
+      "sha256": "24fb4cdaccb1b34c1e76e4ee4bff75581ae231ccd643b4989d2b52db29a1bf7b"
+    },
+    {
+      "path": "baseline-source/app/physics/electric_supply.gd",
+      "bytes": 15485,
+      "sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977"
+    },
+    {
+      "path": "baseline-source/app/physics/event_bracket.gd",
+      "bytes": 1381,
+      "sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf"
+    },
+    {
+      "path": "baseline-source/app/physics/event_step.gd",
+      "bytes": 7092,
+      "sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85"
+    },
+    {
+      "path": "baseline-source/app/physics/fixed_datum_body.gd",
+      "bytes": 1634,
+      "sha256": "3cfcf98c4a83f7973ee2e57be0ed3c51cd172afe60dd13f24f7a190a3b276c59"
+    },
+    {
+      "path": "baseline-source/app/physics/flaps.gd",
+      "bytes": 1222,
+      "sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9"
+    },
+    {
+      "path": "baseline-source/app/physics/flight_modes.gd",
+      "bytes": 6330,
+      "sha256": "f38479967502a8735598c9a03e1c641f7809542e497c655bd5d3458b2406e7d1"
+    },
+    {
+      "path": "baseline-source/app/physics/fuel_properties.gd",
+      "bytes": 8955,
+      "sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4"
+    },
+    {
+      "path": "baseline-source/app/physics/generalized_coordinates.gd",
+      "bytes": 9692,
+      "sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/carburetor.gd",
+      "bytes": 8089,
+      "sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/flight.gd",
+      "bytes": 47872,
+      "sha256": "a45772b2d2091e55d78a2e5ecf253c774956711f4b0fa7c53e911959df8d5e37"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/four_stroke.gd",
+      "bytes": 16957,
+      "sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/fuel_feed.gd",
+      "bytes": 16262,
+      "sha256": "343cbfa7b1f651ac60635ac873e122a3fd99524e634e7712b57ef90e3b04b6f4"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/fuel_mass.gd",
+      "bytes": 4600,
+      "sha256": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/installation.gd",
+      "bytes": 37764,
+      "sha256": "0b1531329e804be0fa4bd78629e6d1c254c35453006065428621cfbaa91c74bc"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/lifecycle.gd",
+      "bytes": 35620,
+      "sha256": "a2fe9b02aa06acf61ed8534fc6d89e1244e1c96c30ba9c4df271f06805569d14"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/operating_point.gd",
+      "bytes": 3334,
+      "sha256": "092f415233a6a3154fffe68269fd5ebcca285b1e73f69bc5d39b0b6f5fbc7228"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/profile.gd",
+      "bytes": 11485,
+      "sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/propeller.gd",
+      "bytes": 7754,
+      "sha256": "fd6785d513962daa30ca5994f126ddfbf94e21466394b8482737e3d7428799a1"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/source.gd",
+      "bytes": 9738,
+      "sha256": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/thermal.gd",
+      "bytes": 5345,
+      "sha256": "46aab9a1c172e3bfc7b2a18402b635e9faa02462b9f38af70a0cc85edfae1bd8"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/two_stroke.gd",
+      "bytes": 16115,
+      "sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6"
+    },
+    {
+      "path": "baseline-source/app/physics/glow/vibration.gd",
+      "bytes": 10471,
+      "sha256": "d36c8159cca6a79aebea17676917b6e68b409fbc0028471f8a8071d9ac547a11"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_contact.gd",
+      "bytes": 26327,
+      "sha256": "f4652ecad0b4aba5beae918a0242d4506213b3e30e019b4a9eafc73d442c0025"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_effect.gd",
+      "bytes": 4776,
+      "sha256": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_start.gd",
+      "bytes": 48130,
+      "sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_surfaces.gd",
+      "bytes": 4721,
+      "sha256": "abe57e2426179ea70d5fcc0d76bc4789b68fc6ed1598b031963cde68e5625536"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_terrain.gd",
+      "bytes": 11642,
+      "sha256": "47da45a9b106040518ede9c71924d05451f1d57b63ffea19219ba74abb58f01a"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/airfield_course.gd",
+      "bytes": 21553,
+      "sha256": "7b444694cbb27f79fa87cf8f6ebace8877bceaa94559648a43826b16eb867b1e"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/airfield_track.gd",
+      "bytes": 10877,
+      "sha256": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/course.gd",
+      "bytes": 24662,
+      "sha256": "313b43fe7e4816c54d4647c21644a2337640e1510536dcaaa95794f884bf0ca6"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/four_corner.gd",
+      "bytes": 16070,
+      "sha256": "cb86d370d047c1e6c5f55c4b1b3815181a17d16dc4785d79847357a7a9f04436"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/nitro_dynamics.gd",
+      "bytes": 21400,
+      "sha256": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/quarter_car.gd",
+      "bytes": 6244,
+      "sha256": "5a141caa4dba4628990df398f98043469f2868cc6dc959fb7f252c2943f56605"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/support_bench_data.gd",
+      "bytes": 7354,
+      "sha256": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/suspension_bench_data.gd",
+      "bytes": 4501,
+      "sha256": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/vehicle_damage.gd",
+      "bytes": 21629,
+      "sha256": "682a41701ec516f55cf8250f0ef6755efdddb5ad77538f8cc7b62fc725f0ae56"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/vehicle_data.gd",
+      "bytes": 31154,
+      "sha256": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/vehicle_dynamics.gd",
+      "bytes": 103839,
+      "sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_vehicle/vehicle_environment.gd",
+      "bytes": 6680,
+      "sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"
+    },
+    {
+      "path": "baseline-source/app/physics/ground_wheels.gd",
+      "bytes": 12197,
+      "sha256": "c9762a7f94b96bbd8e47f1891dc7d77946cb41d33665b67009edba295f36d658"
+    },
+    {
+      "path": "baseline-source/app/physics/hull_contact.gd",
+      "bytes": 36787,
+      "sha256": "a80584d3636ac162d502cdaad585d3d9eb5965767260227c567f740d361b9c98"
+    },
+    {
+      "path": "baseline-source/app/physics/hull_crossing.gd",
+      "bytes": 6933,
+      "sha256": "c57cc1d92885a0957fbad6ad6b885bd6f017621cea8044a16aacf134e69c93b1"
+    },
+    {
+      "path": "baseline-source/app/physics/impact_snapshot.gd",
+      "bytes": 5933,
+      "sha256": "606c9f7ab59974f548504abfc302804bb47e673c82a3e5560258371c0b2f0807"
+    },
+    {
+      "path": "baseline-source/app/physics/integrator.gd",
+      "bytes": 2366,
+      "sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83"
+    },
+    {
+      "path": "baseline-source/app/physics/lake_surface.gd",
+      "bytes": 36235,
+      "sha256": "8c3f51ce336ca7ad674cc77ec8af8d697aa254f77ac9ae28e814ed860ba68152"
+    },
+    {
+      "path": "baseline-source/app/physics/linearize.gd",
+      "bytes": 4610,
+      "sha256": "f7bb02f2b625317e1db7daa456adc6140cb8ddd2fe9ea07b3756c176634bd0cd"
+    },
+    {
+      "path": "baseline-source/app/physics/liquid_fuel.gd",
+      "bytes": 9673,
+      "sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a"
+    },
+    {
+      "path": "baseline-source/app/physics/mass_inventory.gd",
+      "bytes": 25113,
+      "sha256": "eaedf0bdfa0e23b2ede0b4e35020a345aa1d82ae53e422873a25ca8f68d1e77a"
+    },
+    {
+      "path": "baseline-source/app/physics/math3d.gd",
+      "bytes": 5005,
+      "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+    },
+    {
+      "path": "baseline-source/app/physics/multirotor/airframe.gd",
+      "bytes": 647,
+      "sha256": "15c3e15747a45e971796f67f8d0a17548f5e925788e67e9250bc7b65aa9893bf"
+    },
+    {
+      "path": "baseline-source/app/physics/multirotor/plant.gd",
+      "bytes": 6595,
+      "sha256": "5000405eb2babca0912fa1e0ace3ecc5365f66bf05293b6a9cb7f78d31b6437c"
+    },
+    {
+      "path": "baseline-source/app/physics/multirotor/powertrain.gd",
+      "bytes": 1093,
+      "sha256": "57906c99708bf8cf03f967efafaebf23141d60510d9580b0ef23728a31444125"
+    },
+    {
+      "path": "baseline-source/app/physics/multirotor/rotor.gd",
+      "bytes": 2432,
+      "sha256": "4b36fdb9ecb392046c283527567288c981c32dd254722f13e74f8bb442a32bbf"
+    },
+    {
+      "path": "baseline-source/app/physics/physical_identity.gd",
+      "bytes": 6400,
+      "sha256": "45784e2c21d4d82c45e3fc68a141546304af185278f37280fd9691bc603414be"
+    },
+    {
+      "path": "baseline-source/app/physics/propulsion.gd",
+      "bytes": 35164,
+      "sha256": "37694d4530cadbec13900ff04df051237240f77d95a51d12c7e21c36f4a40124"
+    },
+    {
+      "path": "baseline-source/app/physics/resource_event_step.gd",
+      "bytes": 18153,
+      "sha256": "f19951bf468ad3c9f45197c7427600922c555ffcb0d8b3fb622c1c02aab819f7"
+    },
+    {
+      "path": "baseline-source/app/physics/retractable_gear.gd",
+      "bytes": 3517,
+      "sha256": "5de7a013900104aee80186ab0935e4340a752f85ef00fe6e8c04008789d84f83"
+    },
+    {
+      "path": "baseline-source/app/physics/rigid_body.gd",
+      "bytes": 5582,
+      "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+    },
+    {
+      "path": "baseline-source/app/physics/rotor_coupling.gd",
+      "bytes": 4658,
+      "sha256": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/aerodynamic_stage.gd",
+      "bytes": 9643,
+      "sha256": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/airframe.gd",
+      "bytes": 14340,
+      "sha256": "3b621913524ddf502b801f794c84c13366ce777dd4dca9efc28d340781078832"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/drive.gd",
+      "bytes": 6197,
+      "sha256": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/dynamic_inflow.gd",
+      "bytes": 2539,
+      "sha256": "cf5f381cf4f1a4de4efe844e9c3a4b1c4f6d1a780973f768431940fccb02b975"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/electronics.gd",
+      "bytes": 20085,
+      "sha256": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/flight_dynamics.gd",
+      "bytes": 22339,
+      "sha256": "5ba3df0b9ea867a615a8d93e53a5a3ce207559d26f17867e5667cb3d8de26514"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/geared_coupling.gd",
+      "bytes": 7868,
+      "sha256": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/ground_start.gd",
+      "bytes": 14540,
+      "sha256": "4c65de9104610526d0aa1fec0e6480fd8b5b9b967a7dbeaa51a0468a58bdd92b"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/hx700_flex_bench.gd",
+      "bytes": 3701,
+      "sha256": "26a14fbc18feded9abbd710c53ce589d9c98d0e8ef6c128f00fb0317449dcfef"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/impact_detector.gd",
+      "bytes": 56732,
+      "sha256": "9f2bda0bea24955765251b04a6e5f98d48b4321596d9c18bdac66a70b48fb5f6"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/inflow.gd",
+      "bytes": 8880,
+      "sha256": "8b33aaf47d5515f8074d1041b1749b21860e3c008c4744ba72c4570b38c8a29d"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/lifecycle.gd",
+      "bytes": 2780,
+      "sha256": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/main_rotor.gd",
+      "bytes": 20208,
+      "sha256": "7387c530f86e1e8a1ef0c33d42e0f3f1796d0df52b43ff1ef8e6c70a7a5c8b87"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/main_rotor_stage.gd",
+      "bytes": 6825,
+      "sha256": "c94e0951df0400b71d8ef33c5e53007d11f2cdb8b6c97fa692f6c8ad81ac921d"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/performance_context.gd",
+      "bytes": 3683,
+      "sha256": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/simulation_step_adapter.gd",
+      "bytes": 8393,
+      "sha256": "88c852f1d5eb6fd066efbffffa3ac42d6cf2e9fa4464579dbe1c420ed6f8c81c"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/skid_contact.gd",
+      "bytes": 11593,
+      "sha256": "9207684b706216dadf5e83e66b4bce00793a6978b7b0938f3cecc3460d9e1adc"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/swash.gd",
+      "bytes": 13419,
+      "sha256": "f8f8aaacb7c1592ae2fce4e1d96b5868693501edd18a4b2ebdf0c845c8003944"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/tail_rotor.gd",
+      "bytes": 17396,
+      "sha256": "bddf7219cfe66250d0f8744496f371cb7981f4dc67b1bae4382322b321993357"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft/trim.gd",
+      "bytes": 13283,
+      "sha256": "7013bcd37be312dc30656b59dfdd6b487a7fc8f0f23fc89ba19b5f1e60992c9c"
+    },
+    {
+      "path": "baseline-source/app/physics/rotorcraft_data.gd",
+      "bytes": 12545,
+      "sha256": "248884bb77039fcf7d3485b7b2dac59c1b441dcbc30de51f1a7197cd0779bffe"
+    },
+    {
+      "path": "baseline-source/app/physics/slipstream.gd",
+      "bytes": 30803,
+      "sha256": "a151f7d11bfd14ccc6a024b67c7851682495c7263d422d755d58de2c8bbe53cf"
+    },
+    {
+      "path": "baseline-source/app/physics/swirl_loads.gd",
+      "bytes": 17614,
+      "sha256": "2303bfcb6bdd33810b6db052ed581111bc7b3dda6fb69bb8b6cb0b32afb83dcf"
+    },
+    {
+      "path": "baseline-source/app/physics/trim.gd",
+      "bytes": 20775,
+      "sha256": "8a8d32ef0d0a1152b062b0630f8fa1b1699951a59904ad41bfcc26ec345cafd1"
+    },
+    {
+      "path": "baseline-source/app/physics/turbine.gd",
+      "bytes": 10683,
+      "sha256": "a7577b8d2ddfe7daec69cf2992e8c566688f5b6c89cf6461c5b462abeb1ca702"
+    },
+    {
+      "path": "baseline-source/app/physics/wash_transport.gd",
+      "bytes": 2239,
+      "sha256": "2814d3d640997d1ac62b9c45c32d4ff632c29f37a113f263a0f2bca9ed86b67d"
+    },
+    {
+      "path": "baseline-source/app/physics/wheel_profiles.gd",
+      "bytes": 12316,
+      "sha256": "b9c8995eea9eb500f6c776694c5d607a894493506b7fe4ad66487ed9a17becb5"
+    },
+    {
+      "path": "baseline-source/app/physics/wind_config.gd",
+      "bytes": 12178,
+      "sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5"
+    },
+    {
+      "path": "baseline-source/app/physics/wind_field.gd",
+      "bytes": 5602,
+      "sha256": "db80f80b47dbec99a93e7392de339e63e435b8a9fcfa67f750fa8dbb0a3dec4a"
+    },
+    {
+      "path": "baseline-source/app/physics/wind_turbulence.gd",
+      "bytes": 6755,
+      "sha256": "edc55a08df419f50e28b9ec7f4dc83f8f2b58a795658c8485ae1a9384c52e270"
+    },
+    {
+      "path": "baseline-source/app/physics/wing_polar.gd",
+      "bytes": 5401,
+      "sha256": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be"
+    },
+    {
+      "path": "baseline-source/app/project.godot",
+      "bytes": 2198,
+      "sha256": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0"
+    },
+    {
+      "path": "baseline-source/app/sim/aircraft_contact_events.gd",
+      "bytes": 22591,
+      "sha256": "76532d5d4879a781abacc87298ccff9f6a1b0615499b64e52079064aa7110d90"
+    },
+    {
+      "path": "baseline-source/app/sim/aircraft_propulsion_runtime.gd",
+      "bytes": 10679,
+      "sha256": "9fce4984366708ce7433e6501460dbf479deb9960f1839082541cb86c8e10444"
+    },
+    {
+      "path": "baseline-source/app/sim/checkpoint_json.gd",
+      "bytes": 1751,
+      "sha256": "145bd071bb19d3e1c4f65bce79471bdf926dc4f28dd41b2503f0302f988f50fc"
+    },
+    {
+      "path": "baseline-source/app/sim/environment.gd",
+      "bytes": 4465,
+      "sha256": "14f172a6179ec8c0537850d1b8c0bf79e554a910ca6079a1089f6e15fad4c2b0"
+    },
+    {
+      "path": "baseline-source/app/sim/flight_log.gd",
+      "bytes": 12285,
+      "sha256": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d"
+    },
+    {
+      "path": "baseline-source/app/sim/flight_session.gd",
+      "bytes": 240448,
+      "sha256": "710f58eda2b901aff77f4302c923e75d713a034de68d36f00079b515155af88b"
+    },
+    {
+      "path": "baseline-source/app/sim/fuel_sample.gd",
+      "bytes": 5774,
+      "sha256": "5b35b612ba1f4c3258916327586cbf8683dd7669b5886236d0366cc04e2cb5cd"
+    },
+    {
+      "path": "baseline-source/app/sim/ground_vehicle/session.gd",
+      "bytes": 97917,
+      "sha256": "a81cb2d3974ce574552eff2f99e107d1e7fd5989a1ffe6ca77c035a466e3f1bc"
+    },
+    {
+      "path": "baseline-source/app/sim/helicopter_flight_session.gd",
+      "bytes": 38073,
+      "sha256": "9dbe8ae8853be819993064ee7fea9a1e0926d2e28dc8c74d288a5a25fb66cf0c"
+    },
+    {
+      "path": "baseline-source/app/sim/lake_collision.gd",
+      "bytes": 29609,
+      "sha256": "33bf35155a0b539f2137f7425e96d3f35314382d388f1ede212812d77b6d5e36"
+    },
+    {
+      "path": "baseline-source/app/sim/landing_maneuver.gd",
+      "bytes": 3054,
+      "sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db"
+    },
+    {
+      "path": "baseline-source/app/sim/liquid_fuel_flight.gd",
+      "bytes": 7623,
+      "sha256": "0d085daaf8e0ebd5e61d7b1db3e056afbd6312de9d4d20d190d4a0047a241ff3"
+    },
+    {
+      "path": "baseline-source/app/sim/maneuvers.gd",
+      "bytes": 6860,
+      "sha256": "bb72f1c2bf57647071291ee97076fd549d530519c97165e729d99ab057b8813f"
+    },
+    {
+      "path": "baseline-source/app/sim/recorder.gd",
+      "bytes": 2122,
+      "sha256": "55615078511e22538789bc22e0c18a3ad36bb3117c867fe1916c1e273e9c2c16"
+    },
+    {
+      "path": "baseline-source/app/sim/rotorcraft_recorder.gd",
+      "bytes": 4740,
+      "sha256": "3fc951fc8c341c3f6c47febf70eae34b2cd8be011c05d7e7bd55b86f9e5b287d"
+    },
+    {
+      "path": "baseline-source/app/sim/scenarios.gd",
+      "bytes": 1945,
+      "sha256": "ed4dcebae1ec5b11368160fbbb064cec1a6fd84916ac5011797267cf5db074bc"
+    },
+    {
+      "path": "baseline-source/app/sim/scenery_collision.gd",
+      "bytes": 35900,
+      "sha256": "c5750fca165bd3549bdfbfe37ede2c3c20e6439b3682a34488e8904dda67dbcb"
+    },
+    {
+      "path": "baseline-source/app/sim/scenery_damage.gd",
+      "bytes": 1260,
+      "sha256": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48"
+    },
+    {
+      "path": "baseline-source/app/sim/scripted.gd",
+      "bytes": 617,
+      "sha256": "540537392f683002b43172314fe0596e8be9d38829584a3796f9f3e47fcd1801"
+    },
+    {
+      "path": "baseline-source/app/sim/simulation.gd",
+      "bytes": 33875,
+      "sha256": "75331be06118bbf82042429a0c1835eaf27a84ea2ee1ab4fc905f8f1ccfe552c"
+    },
+    {
+      "path": "baseline-source/app/sim/trace.gd",
+      "bytes": 86529,
+      "sha256": "3cebba7f662f092692c78893c7317cc7abdd19bc10931506327351fb8f6da1e4"
+    },
+    {
+      "path": "baseline-source/app/sim/vehicle_model.gd",
+      "bytes": 9333,
+      "sha256": "cb4b7c13ea60a3bb04b6721b0cdb0b75e4b4b275ddc1a4b619fbd2d4566e03a0"
+    },
+    {
+      "path": "body_side_regression.gd",
+      "bytes": 12088,
+      "sha256": "f01df794cbed0a61bc2883de5a634a9d67862a91285ec29ba97469d17d7db678"
+    },
+    {
+      "path": "bug-hunter/force-budget-probe-r1-6qqenox4/engine.log",
+      "bytes": 6907,
+      "sha256": "6d90892e555c73a57d63c3f1b91408dd3738008e1fd7b403d984d1d378890654"
+    },
+    {
+      "path": "bug-hunter/force-budget-probe-r1-6qqenox4/report.json",
+      "bytes": 1236,
+      "sha256": "5fd8f9ca03fa3661bdbdff4aabc7b9ebf402e346d34d6c9460bf54995a9066bb"
+    },
+    {
+      "path": "bug-hunter/force_budget_probe.gd",
+      "bytes": 4108,
+      "sha256": "29703b9b4c3d6bf5a95c17d5f6cc8179d44edfc8e35c0db93dd51f3958f4810c"
+    },
+    {
+      "path": "bug-hunter/glow_reverse_probe_clean.gd",
+      "bytes": 3263,
+      "sha256": "11c59a3b8127d538794466e28ec34259540f56ba5e2e35d163dd2a90f6fcd03f"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/README.md",
+      "bytes": 3226,
+      "sha256": "bc518ba9b92c60871d32fb01fda0948781e2ddc2e0f100f6f07aabcccd52ea9f"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/baseline-instrumentation.patch",
+      "bytes": 15185,
+      "sha256": "fc210633a1f1da3298de1caf66f67d9ff9c499a576dc5e3fad29fe200fa41d60"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/baseline/checked/long-tail-baseline-p1waz44a/engine.log",
+      "bytes": 13449,
+      "sha256": "63a658e663c6ad5608b50d9ffb9938d922263d5ed64538be01c63566ec1b7336"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/baseline/checked/long-tail-baseline-p1waz44a/report.json",
+      "bytes": 7676,
+      "sha256": "36d5e72ba54eaeb68d6a9e96635337c33f91b18b7d9c4ae5848520433468ddd0"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/baseline/extra-tail-u0-240-bughunter-metrics.csv",
+      "bytes": 151149,
+      "sha256": "7b9f1f646d5267594b25d79a83c661a49d7c09c956e130c6b3b7ef9fbe51fe46"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/baseline/extra-tail-u0-240-bughunter.orfl",
+      "bytes": 298984,
+      "sha256": "a3b9ab59c40cfe199c6f4944e162c569edb8d138ef31298077795ba70722c992"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/baseline/refinement-results.json",
+      "bytes": 2913,
+      "sha256": "8d69c3c0e773ee81d38ac26ed58cc96edeb98893d634f1f9c6742b245603d0eb"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/candidate-instrumentation.patch",
+      "bytes": 15191,
+      "sha256": "7bb4de8b210379d197225ca8033e4eb97d672ddfcd2de0be3a1a7e54cfe7999b"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/collect_diffs.py",
+      "bytes": 992,
+      "sha256": "6b0537a4bbc039cfecec8de7ab3cacc207fafbcb95ee27cdc3daca7a6b3ec041"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/instrument_sources.py",
+      "bytes": 13552,
+      "sha256": "00ffc982a20ec30c2ebd0aa8c041e8d02865df6e1b118c797ff714d634a1ab6c"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/long_tail_direct.gd",
+      "bytes": 10423,
+      "sha256": "38ab43b83149f63b0e333e7b22d2c146334577b79772d318babeb67b8096dae0"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched-baseline/checked/long-tail-baseline-matched-ptmp8tsw/engine.log",
+      "bytes": 3211,
+      "sha256": "25194cf336a6b8b5f03864ab38d4b8a31d69b80eda2ae6678b07754f80596476"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched-baseline/checked/long-tail-baseline-matched-ptmp8tsw/report.json",
+      "bytes": 1632,
+      "sha256": "68dc4a59466dfce599e372177b0d3c195c3bf08793b7dd98b7c69a2ace902cd5"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched-baseline/extra-tail-u0-240-matched-metrics.csv",
+      "bytes": 175231,
+      "sha256": "7bfcc80a7bdf6223a3c6e91e6fd848bb7ab439934bb33864140f3c852074b9cb"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched-baseline/extra-tail-u0-240-matched.orfl",
+      "bytes": 298984,
+      "sha256": "c90d05de3089e93bc82a1f35e35a4d7bbaa0332128508e59e5f0ed2389361a16"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched-baseline/refinement-results.json",
+      "bytes": 3934,
+      "sha256": "7652d24eaaf435f7d806c34465211a62874ec40a918a845e850d0919f7bcffea"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched-candidate/checked/long-tail-candidate-matched-t9fvag_1/engine.log",
+      "bytes": 3217,
+      "sha256": "af6102575b0072aa30fa4b054a4c14cdc2add922e1a314645405d5e88acf0ecc"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched-candidate/checked/long-tail-candidate-matched-t9fvag_1/report.json",
+      "bytes": 1639,
+      "sha256": "9a2f382032a317b3a54a2efb820da5ed0d4d31a5c70a98fdbd61822f4b22ada3"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched-candidate/extra-tail-u0-240-matched-metrics.csv",
+      "bytes": 175250,
+      "sha256": "85ead5746a0e37f646a2de569653f5ff740118d0b20e0e79d2db818c2dcf7c5e"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched-candidate/extra-tail-u0-240-matched.orfl",
+      "bytes": 298984,
+      "sha256": "b9e5c97baee2f3f46dbe8bd588f7300fd002c3325a6d4d2c896a862e58562c8c"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched-candidate/refinement-results.json",
+      "bytes": 3933,
+      "sha256": "55c86fc3b7feff97d1378ecdd23223e52c3c1997dee610a5750a38c49993da19"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/matched_comparison.json",
+      "bytes": 8899,
+      "sha256": "844bcded34d6e10e2a014bf435f847890d2eef36477c88b8c2905ad231ccc1d8"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/prepare_long_tail.ps1",
+      "bytes": 1427,
+      "sha256": "1b3f75768f370e774f9cf2c9ca0c2e4c9ead78b9b7b4fd996e8edb61419a6fb4"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/run_probes.ps1",
+      "bytes": 1207,
+      "sha256": "07c489950c73d3cee5200f265cfa8a3d504f4bafbef114ee601fe09732311f16"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/source-identities.json",
+      "bytes": 728,
+      "sha256": "b2337d46850889d06fd92295b3283dfe4ce614d23165056529c591e932b6958a"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/source-variant.diff",
+      "bytes": 2810,
+      "sha256": "cc312a5adb23df1b7654a4d5d18f393055572027de8f81cb4c9683e5a57aad6d"
+    },
+    {
+      "path": "bug-hunter/long-tail/evidence/summarize_matched.py",
+      "bytes": 6173,
+      "sha256": "e570db0012a5cf4228fc7ed17137350f836c84d11b18d51f8471a54a542924ee"
+    },
+    {
+      "path": "candidate-source/app/physics/aero.gd",
+      "bytes": 51091,
+      "sha256": "a53cd75c27bf9fc90e786b4542f77ccb63e5a53882b51c02f9fead6a5b4caf15"
+    },
+    {
+      "path": "checks/baseline-body-side-bx7bbvj0/engine.log",
+      "bytes": 1246,
+      "sha256": "ec30e41c40e53b5949efa2333d2d86ac70b2b07160449739eb50a6d31ac0e19b"
+    },
+    {
+      "path": "checks/baseline-body-side-bx7bbvj0/report.json",
+      "bytes": 1240,
+      "sha256": "c529866c535cb7a08ed252079f3ff54181cce6ca6df478cccdfef59e43822952"
+    },
+    {
+      "path": "checks/candidate-parse-dybb2ibz/engine.log",
+      "bytes": 75,
+      "sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+    },
+    {
+      "path": "checks/candidate-parse-dybb2ibz/report.json",
+      "bytes": 1251,
+      "sha256": "4776803c51e7a50049517b222fd39205339298be26097a29e57e1c558fa14458"
+    },
+    {
+      "path": "checks/force-budget-candidate-49vng29v/engine.log",
+      "bytes": 6922,
+      "sha256": "ea618fd48e37048e0477425c6d7d16997e1a62299755cb207778632540c53e7d"
+    },
+    {
+      "path": "checks/force-budget-candidate-49vng29v/report.json",
+      "bytes": 1268,
+      "sha256": "9039ef0d9cb9c5de320d93a940e120c7e55028837e339ffe71526df383d79bfe"
+    },
+    {
+      "path": "checks/stopped-glow-domain-clean-f7_t1zj7/engine.log",
+      "bytes": 6302,
+      "sha256": "b188aa34f7fe401e646262fbdbc6bc5322b3e09b52abd7555042e5658aa5f1a0"
+    },
+    {
+      "path": "checks/stopped-glow-domain-clean-f7_t1zj7/report.json",
+      "bytes": 1375,
+      "sha256": "e9d222c31cf06117858798123e752605c8593c00ffac4198adaa27fd39dea78e"
+    },
+    {
+      "path": "controls/godot-checks/control_actuators-mnkfg0qm/engine.log",
+      "bytes": 153,
+      "sha256": "2eb83a2b721ca4f67023a824360697c5caa17cd0a6b918dbb570db99a0abb176"
+    },
+    {
+      "path": "controls/godot-checks/control_actuators-mnkfg0qm/report.json",
+      "bytes": 1286,
+      "sha256": "87c4d24f77d07a8c1fd5e2fe7250bbb82a721285f966ed1c56aef6582621b122"
+    },
+    {
+      "path": "controls/godot-checks/godot-2fj1aix3/engine.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "controls/godot-checks/godot-2fj1aix3/report.json",
+      "bytes": 1333,
+      "sha256": "fbd11bebec5ddcf673c2242fc3174716a2943cd82d69f2c5df00dd1d64e3189c"
+    },
+    {
+      "path": "controls/godot-checks/godot-c9gfycb2/engine.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "controls/godot-checks/godot-c9gfycb2/report.json",
+      "bytes": 1271,
+      "sha256": "22afa932022d1204bb07dd1b9b2db12f060a1501396fea1a1196eec401667214"
+    },
+    {
+      "path": "controls/godot-checks/rates-x1e8thf2/engine.log",
+      "bytes": 3452,
+      "sha256": "afa086398bceb6fa3354cdd2f22e0df2c0b349f742750d06db8e5fe1ce1561d8"
+    },
+    {
+      "path": "controls/godot-checks/rates-x1e8thf2/report.json",
+      "bytes": 1239,
+      "sha256": "42e3f9403052a7f1468f9b4c722f367cd26836c67e987892acd354686ac6a7f0"
+    },
+    {
+      "path": "controls/godot-checks/rc_input-a7qqf93a/engine.log",
+      "bytes": 96,
+      "sha256": "8d7a230155e95773252a289e9fd02db6d808662c097f6ddda53a6aa94e8ed151"
+    },
+    {
+      "path": "controls/godot-checks/rc_input-a7qqf93a/report.json",
+      "bytes": 1249,
+      "sha256": "94e094fa392b33ba359922f4a9dd293b8ef2af0a72691e1da4bbffacddc25476"
+    },
+    {
+      "path": "controls/godot-checks/servo-xw0y2b38/engine.log",
+      "bytes": 189,
+      "sha256": "ea87f4bda4bd7a952877b2cb77a1f00ace089c49b48c178c10a2a4554c81b002"
+    },
+    {
+      "path": "controls/godot-checks/servo-xw0y2b38/report.json",
+      "bytes": 1238,
+      "sha256": "76d1ec82776aac64757afa93ccc4aaa3bd65792958cb7d29efd1497f3e722c41"
+    },
+    {
+      "path": "controls/rate-switch-test/switch.orfl",
+      "bytes": 121960,
+      "sha256": "26936a0c875e938b608161b9605be493b8aa31d1e63f673cf7ba7e6626850f5e"
+    },
+    {
+      "path": "current-test/test_body_side_force.gd",
+      "bytes": 12185,
+      "sha256": "a4a64482e093c4aa2040f59392a5e54242348ad16cd9aee4036e1dfe109dbc55"
+    },
+    {
+      "path": "expected-failures/reverse-regression-before-r2-8368_4qa/engine.log",
+      "bytes": 3048,
+      "sha256": "1cd5e4f44be5c30a77596a2b53c5ffc57c9442ba4c4de71adf2bd9c08a9c5622"
+    },
+    {
+      "path": "expected-failures/reverse-regression-before-r2-8368_4qa/report.json",
+      "bytes": 1353,
+      "sha256": "63415aa9739534ae2dc7d65a84d56b88b613f19daaf0e162685bc430350192b9"
+    },
+    {
+      "path": "flight/baseline-v2/extra-forward-pitch-pulse-metrics.csv",
+      "bytes": 310414,
+      "sha256": "e695af1ad25cf4a962ab477e4c24baaaf9cce38aed239c84826d78a05438827f"
+    },
+    {
+      "path": "flight/baseline-v2/extra-forward-pitch-pulse.orfl",
+      "bytes": 512868,
+      "sha256": "44ebbf5562ed7f858ad24f6b50edb5b0b3927f9a0e099d0e771229465530f013"
+    },
+    {
+      "path": "flight/baseline-v2/extra-nose-up-tail-first-metrics.csv",
+      "bytes": 78426,
+      "sha256": "87d46ae691aa9607c38ec5a316c986d932dfac2553d615e66ffb210c86617dd0"
+    },
+    {
+      "path": "flight/baseline-v2/extra-nose-up-tail-first.orfl",
+      "bytes": 174884,
+      "sha256": "cc5a7f01b0edc89f3c1cd78cab9ee0527ca821ba8012f75f67759f9695b8a122"
+    },
+    {
+      "path": "flight/baseline-v2/f4u-reverse-beta5-metrics.csv",
+      "bytes": 301588,
+      "sha256": "b613c12e2afaa5f4f9851d961370b6a42ed922f258b0aedf938d6c00a822b78b"
+    },
+    {
+      "path": "flight/baseline-v2/f4u-reverse-beta5.orfl",
+      "bytes": 457568,
+      "sha256": "173f65dc3776d80bcd0207b586b56b6679eede88690a6adebcf215e191fbe31a"
+    },
+    {
+      "path": "flight/baseline-v2/session-results.json",
+      "bytes": 5881,
+      "sha256": "8d8d080a7ad629bd12f629ebe2c2deb3e678a525cdf81e6d750a0e5fef3432bc"
+    },
+    {
+      "path": "flight/baseline/extra-forward-pitch-pulse-metrics.csv",
+      "bytes": 310414,
+      "sha256": "e695af1ad25cf4a962ab477e4c24baaaf9cce38aed239c84826d78a05438827f"
+    },
+    {
+      "path": "flight/baseline/extra-forward-pitch-pulse.orfl",
+      "bytes": 512868,
+      "sha256": "6305c3a82211a0eb5c3d0fc1202a4996fae923d81bea1fb3d455b87eb3667fc2"
+    },
+    {
+      "path": "flight/baseline/extra-nose-up-tail-first-metrics.csv",
+      "bytes": 169205,
+      "sha256": "e76c909a5dbb56b9338756ae15ec469fa7662370585010e93b5cd42025858fa9"
+    },
+    {
+      "path": "flight/baseline/extra-nose-up-tail-first.orfl",
+      "bytes": 303600,
+      "sha256": "d2ddac52da308bcdddf78e9b207f88fd4dab4ed2f0d58651eef3874f8b231406"
+    },
+    {
+      "path": "flight/baseline/f4u-reverse-beta5-metrics.csv",
+      "bytes": 301538,
+      "sha256": "fd0a66b1d95010a411a7dc1619251b00f5820aa485420082fe6deef2bc87808f"
+    },
+    {
+      "path": "flight/baseline/f4u-reverse-beta5.orfl",
+      "bytes": 457504,
+      "sha256": "ae5bd414b39ac91f2720893dd03cf7bd39ac3cce5c21fa5ded520270daf00166"
+    },
+    {
+      "path": "flight/baseline/session-results.json",
+      "bytes": 5926,
+      "sha256": "9ea7e78e4beb6fb4badb8062337db98a65e903b814cf167e3a72546941e60742"
+    },
+    {
+      "path": "flight/candidate-long-v2/extended-2s/checked/candidate-tail-first-2s-s_2d3fqu/engine.log",
+      "bytes": 840,
+      "sha256": "63231c74ed938c3eafa3c8965251b0b693c831cf9162f1c3c0c4258eadaa3fdc"
+    },
+    {
+      "path": "flight/candidate-long-v2/extended-2s/checked/candidate-tail-first-2s-s_2d3fqu/report.json",
+      "bytes": 1685,
+      "sha256": "28fd309b9287ef41cfc793b6fbbb52b3d03b7e89e4b997ce9c8d0f3df23d1f4d"
+    },
+    {
+      "path": "flight/candidate-long-v2/extended-2s/exact-prefix/checked/candidate-tail-2s-prefix-exact-_bt7c5xi/engine.log",
+      "bytes": 389,
+      "sha256": "0ad00ea1cb316f7d7b8b66cd92316fc1cab182657dced58355fd7acbce239e21"
+    },
+    {
+      "path": "flight/candidate-long-v2/extended-2s/exact-prefix/checked/candidate-tail-2s-prefix-exact-_bt7c5xi/report.json",
+      "bytes": 2061,
+      "sha256": "839315fef0e00e01c735aa6c03bf88f7d0c6a778c408ca77bed29cd90f01699f"
+    },
+    {
+      "path": "flight/candidate-long-v2/extended-2s/exact-prefix/exact-report.json",
+      "bytes": 11004,
+      "sha256": "d28e6c09e66e04ccb3acc3711869dabf899a4886e026171c56386d753de7ba60"
+    },
+    {
+      "path": "flight/candidate-long-v2/extended-2s/exact-prefix/exact.csv",
+      "bytes": 228435,
+      "sha256": "fa54cc4a8b6fa6684ec2f2d2de20364e6823416069e28ece5035ff6a0076e748"
+    },
+    {
+      "path": "flight/candidate-long-v2/extended-2s/extra-tail-u0-240-long-metrics.csv",
+      "bytes": 149893,
+      "sha256": "a4f994aa1944b133a98704da4c08862d3c06a3f76132aadb48e5db9a342fbd21"
+    },
+    {
+      "path": "flight/candidate-long-v2/extended-2s/extra-tail-u0-240-long.orfl",
+      "bytes": 298984,
+      "sha256": "7aa3b594c24ce2ca44a3c8541411e5c0d5ac4b066cf8fcc120db04a1cbae9243"
+    },
+    {
+      "path": "flight/candidate-long-v2/extended-2s/refinement-results.json",
+      "bytes": 1746,
+      "sha256": "b2ff23999d5ba157663bf7ab462ef0c74d168208952690c68bf917e151ae6eb0"
+    },
+    {
+      "path": "flight/candidate-long-v2/replay-retained-baseline/candidate-report.json",
+      "bytes": 11150,
+      "sha256": "7c7e4f6352126f8d6f7c72cff452e116f757a1afe37d1c7607c5453bd4f0aa12"
+    },
+    {
+      "path": "flight/candidate-long-v2/replay-retained-baseline/candidate.csv",
+      "bytes": 233318,
+      "sha256": "18fd483e687d33a08eca05f3058d5cf64edc5b0636753878dd5b91866bcac344"
+    },
+    {
+      "path": "flight/candidate-long-v2/replay-retained-baseline/checked/retained-long-tail-candidate-_2cuvnc0/engine.log",
+      "bytes": 393,
+      "sha256": "da697ae6f3851464d9786b1d7a631d675f3de245724c9119ec29a87054371ac6"
+    },
+    {
+      "path": "flight/candidate-long-v2/replay-retained-baseline/checked/retained-long-tail-candidate-_2cuvnc0/report.json",
+      "bytes": 2100,
+      "sha256": "c378053c72fd72ac30c9199d7ffbb844a40b0b6647448ee73ee003bae7ce0b6a"
+    },
+    {
+      "path": "flight/candidate-v2/extra-forward-pitch-pulse/candidate-report.json",
+      "bytes": 12004,
+      "sha256": "1b080f97f8c01a616c31773fe92948662b3d52d36e8af84f1de43681a24d5476"
+    },
+    {
+      "path": "flight/candidate-v2/extra-forward-pitch-pulse/candidate.csv",
+      "bytes": 517885,
+      "sha256": "cf00533d285c4b44675f2537c5912da25c5dc331e36363163033ef655efecf52"
+    },
+    {
+      "path": "flight/candidate-v2/extra-forward-pitch-pulse/checked/extra-forward-pitch-pulse-candidate-f455wfe8/engine.log",
+      "bytes": 393,
+      "sha256": "bddc28e1936e2d5898057c59b4b1e2c77f34a71a6c4009bc2c3d5e46b9dbf04f"
+    },
+    {
+      "path": "flight/candidate-v2/extra-forward-pitch-pulse/checked/extra-forward-pitch-pulse-candidate-f455wfe8/report.json",
+      "bytes": 2109,
+      "sha256": "51ba2eed820fa0d02536363fa616b211a02102ba5aba81feb1a1369bfa7cfc8c"
+    },
+    {
+      "path": "flight/candidate-v2/extra-forward-pitch-pulse/comparison.json",
+      "bytes": 1439,
+      "sha256": "617555314c25c75f136aead59e2c91f2f9b324b9c935aa388ded30daa466b54b"
+    },
+    {
+      "path": "flight/candidate-v2/extra-nose-up-tail-first/candidate-report.json",
+      "bytes": 11217,
+      "sha256": "2a56023f7aefbc370fcb9cd445af1e210fdf900593ca1821af07a1e0084fe8ae"
+    },
+    {
+      "path": "flight/candidate-v2/extra-nose-up-tail-first/candidate.csv",
+      "bytes": 108688,
+      "sha256": "8d2eb81dadb8c102f645fb085ce4adac8e218b7688aea9a187963ef009284273"
+    },
+    {
+      "path": "flight/candidate-v2/extra-nose-up-tail-first/checked/extra-nose-up-tail-first-candidate-f68e0msh/engine.log",
+      "bytes": 393,
+      "sha256": "5dde5d30962d31983799cd89bc6a5bf60f302f86993ee99d11fc5a769c7cf96f"
+    },
+    {
+      "path": "flight/candidate-v2/extra-nose-up-tail-first/checked/extra-nose-up-tail-first-candidate-f68e0msh/report.json",
+      "bytes": 2101,
+      "sha256": "b0cc24f1a8fe8a8c87e969deb29061687c2274ddc884208a05cb4939c155262f"
+    },
+    {
+      "path": "flight/candidate-v2/extra-nose-up-tail-first/comparison.json",
+      "bytes": 2437,
+      "sha256": "18d2825a12c079ba11caf7d59d2aa24762bfb2e858ac582c4d3feef969a386ef"
+    },
+    {
+      "path": "flight/candidate-v2/f4u-reverse-beta5/candidate-report.json",
+      "bytes": 8028,
+      "sha256": "92248743530b875b59f5c4f1f1e191b65fbbf887869b9bb11e2cd58a5851a310"
+    },
+    {
+      "path": "flight/candidate-v2/f4u-reverse-beta5/candidate.csv",
+      "bytes": 393234,
+      "sha256": "def5afd672fcc8bd5e138400e8f987b147157368211346598d6f00c8f1f25f7a"
+    },
+    {
+      "path": "flight/candidate-v2/f4u-reverse-beta5/checked/f4u-reverse-beta5-candidate-xojjffp0/engine.log",
+      "bytes": 117,
+      "sha256": "387852c2b99b584338284ebbb04d393219955df9abc14d81eb49f146bcd84902"
+    },
+    {
+      "path": "flight/candidate-v2/f4u-reverse-beta5/checked/f4u-reverse-beta5-candidate-xojjffp0/report.json",
+      "bytes": 2044,
+      "sha256": "223b21b2c955c0daaabf3d49b9aa71171b1e2ec5df772f77155e27aef0d06db4"
+    },
+    {
+      "path": "flight/candidate-v2/f4u-reverse-beta5/comparison.json",
+      "bytes": 2402,
+      "sha256": "26726733a8cf07937f48b24c6833b327b8cb8325dfbda5145aa28ea0f61bb795"
+    },
+    {
+      "path": "flight/checked-orfl-pair-v1/inspect-long-tail-checkpoints-7jtpzbj3/engine.log",
+      "bytes": 9493,
+      "sha256": "913734c346de73e1803422c4af3b7ce35690d636681aa15de27b43cface7c256"
+    },
+    {
+      "path": "flight/checked-orfl-pair-v1/inspect-long-tail-checkpoints-7jtpzbj3/report.json",
+      "bytes": 1804,
+      "sha256": "518af224a5320fcc16988ff4bc8f331fdc85c1e5858569df34a38004ae19e473"
+    },
+    {
+      "path": "flight/checked-refinement-v2/candidate-tail-refinement-v2-rt8q1sf7/engine.log",
+      "bytes": 534,
+      "sha256": "0d0cb709bd142528cffe5f4706c3241b98542babd73db6ff8ad4dec81c0d1439"
+    },
+    {
+      "path": "flight/checked-refinement-v2/candidate-tail-refinement-v2-rt8q1sf7/report.json",
+      "bytes": 2462,
+      "sha256": "2933b8fe68604e0ad0958ff1b326438a313c952aee9c473b1b252f64cf23e264"
+    },
+    {
+      "path": "flight/checked-refinement-v2b/candidate-tail-refinement-v2-osbf0e9_/engine.log",
+      "bytes": 1953,
+      "sha256": "58ffd0628b54d82994468446c4c79e16ec22d873aaec5d2e99294f83577e8c30"
+    },
+    {
+      "path": "flight/checked-refinement-v2b/candidate-tail-refinement-v2-osbf0e9_/report.json",
+      "bytes": 1661,
+      "sha256": "137947248fb287cde3bd22df8b39ab1940d734f44e23c887e3da31b1646c6bf2"
+    },
+    {
+      "path": "flight/checked-v2/reverse-flow-baseline-v2-ot1s_o_h/engine.log",
+      "bytes": 2248,
+      "sha256": "dfde99e7afce6f62fba8269dd10606a33fe15d7fdee0815c8fa8a58948a5915a"
+    },
+    {
+      "path": "flight/checked-v2/reverse-flow-baseline-v2-ot1s_o_h/report.json",
+      "bytes": 1681,
+      "sha256": "7c06cf578bb11f976abded5bf92a0212ffa45d38a9b603d98ee6c0e689a8fca2"
+    },
+    {
+      "path": "flight/compare_refinement_endpoints.py",
+      "bytes": 1148,
+      "sha256": "f1b42f66d9e919df0d279be0843bfde579ad36db0bf388c282b5ee5f857f2cb3"
+    },
+    {
+      "path": "flight/diagnose_extra_reverse.gd",
+      "bytes": 2274,
+      "sha256": "53023bf1ca7308a0e9e79d488a7955978e915562f997662fbf07c318b36a1e12"
+    },
+    {
+      "path": "flight/exact-v2/extra-forward-pitch-pulse/checked/extra-forward-pitch-pulse-exact-55dlm5sq/engine.log",
+      "bytes": 389,
+      "sha256": "eda9e992b98b3203eca7692cf81c09533171026d1a5bce9df2a046f5ff86583b"
+    },
+    {
+      "path": "flight/exact-v2/extra-forward-pitch-pulse/checked/extra-forward-pitch-pulse-exact-55dlm5sq/report.json",
+      "bytes": 1932,
+      "sha256": "d7517bcd75d2e2ee82347ac989fc6829188f0dc22ace1c14a84092748d3d4717"
+    },
+    {
+      "path": "flight/exact-v2/extra-forward-pitch-pulse/exact-report.json",
+      "bytes": 11769,
+      "sha256": "4b068680facaa3069dd22b423f93191ea9584ee11da710c758651af32bcaa902"
+    },
+    {
+      "path": "flight/exact-v2/extra-forward-pitch-pulse/exact.csv",
+      "bytes": 517885,
+      "sha256": "cf00533d285c4b44675f2537c5912da25c5dc331e36363163033ef655efecf52"
+    },
+    {
+      "path": "flight/exact-v2/extra-nose-up-tail-first/checked/extra-nose-up-tail-first-exact-ry9w4h_p/engine.log",
+      "bytes": 389,
+      "sha256": "0a0661536f14db62d2e404e7827f0b935bdb1d2aa802b7859dbdf3601f2a3644"
+    },
+    {
+      "path": "flight/exact-v2/extra-nose-up-tail-first/checked/extra-nose-up-tail-first-exact-ry9w4h_p/report.json",
+      "bytes": 1924,
+      "sha256": "46c5c44324fc0bbbd13a0cc04b685e490e75847f3feb1cb936d92bde58ceeb35"
+    },
+    {
+      "path": "flight/exact-v2/extra-nose-up-tail-first/exact-report.json",
+      "bytes": 10982,
+      "sha256": "662d9c47a66f808ab35d07c5a6afb50217f3d2359a3583ba278ee510949f31e8"
+    },
+    {
+      "path": "flight/exact-v2/extra-nose-up-tail-first/exact.csv",
+      "bytes": 108692,
+      "sha256": "81052a35fcb4340088853d60137c01a9875bb9f00f27aa0ce78643278d6e6331"
+    },
+    {
+      "path": "flight/exact-v2/f4u-reverse-beta5/checked/f4u-reverse-beta5-exact-ikl1wa1d/engine.log",
+      "bytes": 113,
+      "sha256": "dbbfe6942e06d7c6f97004e6824145c9616bbdfe667d91f94429f53de6cee563"
+    },
+    {
+      "path": "flight/exact-v2/f4u-reverse-beta5/checked/f4u-reverse-beta5-exact-ikl1wa1d/report.json",
+      "bytes": 1868,
+      "sha256": "309f38357030f3783df2e336fd7a0d646a0523187dac10305373d9350850df04"
+    },
+    {
+      "path": "flight/exact-v2/f4u-reverse-beta5/exact-report.json",
+      "bytes": 7794,
+      "sha256": "3a201607eaca7c50247aa4cbc7e0f0b91720609df0c4c9e1c875f6166ca0f842"
+    },
+    {
+      "path": "flight/exact-v2/f4u-reverse-beta5/exact.csv",
+      "bytes": 393414,
+      "sha256": "c13581a549c870f509b40306b1d340255013334c2dd8ad08df1726edb10f11b2"
+    },
+    {
+      "path": "flight/flight_log_cli_rate.gd",
+      "bytes": 18714,
+      "sha256": "4de787be59a4b58e39c1a13014724ed9ac020368cd04e25cebaab7a98204dcf7"
+    },
+    {
+      "path": "flight/inspect_orfl_pair.gd",
+      "bytes": 7785,
+      "sha256": "d38baa6a71a89f7eaf67dda7964bcc9011d4843f364149e31556c12a418aecfa"
+    },
+    {
+      "path": "flight/record_controlled_cases.gd",
+      "bytes": 11434,
+      "sha256": "b222ed82c44c733f5b8890e86ade1918d0b891c1568de8b2def47f66c979aa17"
+    },
+    {
+      "path": "flight/record_tail_refinement.gd",
+      "bytes": 8929,
+      "sha256": "3ae7328cacc0b8c5d00a6fb42a4aef2e764a822dfb291947f2b2a06b1431153e"
+    },
+    {
+      "path": "flight/refinement-v2/endpoint-sensitivity.json",
+      "bytes": 812,
+      "sha256": "1f0f72d72d2c2982b65dcad0baea8dd1446dce1647435df256fd2abfe81b53d9"
+    },
+    {
+      "path": "flight/refinement-v2/exact-240/checked/extra-tail-u0-240-exact-hsbju9cs/engine.log",
+      "bytes": 389,
+      "sha256": "0a0661536f14db62d2e404e7827f0b935bdb1d2aa802b7859dbdf3601f2a3644"
+    },
+    {
+      "path": "flight/refinement-v2/exact-240/checked/extra-tail-u0-240-exact-hsbju9cs/report.json",
+      "bytes": 1938,
+      "sha256": "85161c35c0586c8e739600f07a713e3cd95464f4ef9c02bdf05175f094950ab3"
+    },
+    {
+      "path": "flight/refinement-v2/exact-240/exact-report.json",
+      "bytes": 10969,
+      "sha256": "5f8a8b572e9189804ce94688378fde4aa09fd5563e673013ecfb6a93f4afce6b"
+    },
+    {
+      "path": "flight/refinement-v2/exact-240/exact.csv",
+      "bytes": 108688,
+      "sha256": "8d2eb81dadb8c102f645fb085ce4adac8e218b7688aea9a187963ef009284273"
+    },
+    {
+      "path": "flight/refinement-v2/exact-480/checked/extra-tail-u0-480-exact-rsan76ls/engine.log",
+      "bytes": 389,
+      "sha256": "cf10e4fce6b5fdc3ee4a4cc3a9dca0059dfc5bf41adb6339e02def5ba8beb49a"
+    },
+    {
+      "path": "flight/refinement-v2/exact-480/checked/extra-tail-u0-480-exact-rsan76ls/report.json",
+      "bytes": 1938,
+      "sha256": "690befe02e7e6add94d47afe011a59192ab23ba31bd306af229911573dba2334"
+    },
+    {
+      "path": "flight/refinement-v2/exact-480/exact-report.json",
+      "bytes": 10972,
+      "sha256": "540f58f79e98ddc99bc489a29a894da60e5dc54cd489cd42cfd30aee87575084"
+    },
+    {
+      "path": "flight/refinement-v2/exact-480/exact.csv",
+      "bytes": 216227,
+      "sha256": "37fc97036a97211b946c5fabeee58b2179aa9a3059558f753ee71d1cbf8aea60"
+    },
+    {
+      "path": "flight/refinement-v2/exact-960/checked/extra-tail-u0-960-exact-jd5zkb6o/engine.log",
+      "bytes": 389,
+      "sha256": "eda9e992b98b3203eca7692cf81c09533171026d1a5bce9df2a046f5ff86583b"
+    },
+    {
+      "path": "flight/refinement-v2/exact-960/checked/extra-tail-u0-960-exact-jd5zkb6o/report.json",
+      "bytes": 1938,
+      "sha256": "e041df49d1347e6d112d76715710b61add6e730eceba0bb34acc3ba839bcbcb7"
+    },
+    {
+      "path": "flight/refinement-v2/exact-960/exact-report.json",
+      "bytes": 10972,
+      "sha256": "e88883580a8b27677c03cfa88315f8826ad2ec958739243612f11ddc501e92a0"
+    },
+    {
+      "path": "flight/refinement-v2/exact-960/exact.csv",
+      "bytes": 431311,
+      "sha256": "985efe6ad2e645899c7543870266087bf0455809063bfc1da610364f38bb24d7"
+    },
+    {
+      "path": "flight/refinement-v2/extra-tail-u0-240-metrics.csv",
+      "bytes": 70932,
+      "sha256": "4e60af8527b55cfb18e65ecdc2d1519902fe7a2520779ea733d51a362cec8690"
+    },
+    {
+      "path": "flight/refinement-v2/extra-tail-u0-240.orfl",
+      "bytes": 174868,
+      "sha256": "26a1ca27f443141e00ed7efd734881261b1cf754b7cc831e998e896d1c960494"
+    },
+    {
+      "path": "flight/refinement-v2/extra-tail-u0-480-metrics.csv",
+      "bytes": 141742,
+      "sha256": "c36969de4ac68037c5a982739dbd5f0d11c73c30a30d2fc10b2a88eb877cf5bd"
+    },
+    {
+      "path": "flight/refinement-v2/extra-tail-u0-480.orfl",
+      "bytes": 287304,
+      "sha256": "9dc971e4f5067ff64aac6b24462c8bf1700e834232b6438c8e1d528e6aebc936"
+    },
+    {
+      "path": "flight/refinement-v2/extra-tail-u0-960-metrics.csv",
+      "bytes": 283266,
+      "sha256": "7a067169a5dd998f97a7c422c305a5da5b8de4b4811f561f977bbbad772af8ff"
+    },
+    {
+      "path": "flight/refinement-v2/extra-tail-u0-960.orfl",
+      "bytes": 512060,
+      "sha256": "e14506014b9dd5d09c3e416dfe9ccfd316a09744442b34000461c6bae112da4a"
+    },
+    {
+      "path": "flight/refinement-v2/refinement-results.json",
+      "bytes": 3928,
+      "sha256": "8a9fa4a843cd54b95478a84c738e4d67421dd06d0b4f362b1b3173dc0773dc97"
+    },
+    {
+      "path": "force-budget-comparison.json",
+      "bytes": 6810,
+      "sha256": "bcb12aa337b1e78ca12a010cca4fba899d357e9ace627b66320b14c42ca253bd"
+    },
+    {
+      "path": "implementation.patch",
+      "bytes": 8507,
+      "sha256": "6d70dced652b40162a769e0fd662e1098ec40d937353a214baa1a9a7ea05d7b8"
+    },
+    {
+      "path": "isolated-change.json",
+      "bytes": 239,
+      "sha256": "0098954daad2d94a3d28947d53461ee55a89e36645b0968a5e83ec7be3fcada7"
+    },
+    {
+      "path": "numerical/gravity_stage_convergence.py",
+      "bytes": 1771,
+      "sha256": "2dd27c9576b233c824f442bdbf8127e032dfb17f80825fff82c31d012a3f3118"
+    },
+    {
+      "path": "numerical/stage_rotation_convergence.py",
+      "bytes": 3216,
+      "sha256": "ca0ffa18a70b14eca7f30556b5c6fbf6c715dd487c91ed49cad08e69b42b3bed"
+    },
+    {
+      "path": "package_evidence.py",
+      "bytes": 6027,
+      "sha256": "3c756d3ea87137fe96ad878fd243224565317e874dfc20bcdd60848e163638f4"
+    },
+    {
+      "path": "performance/README.md",
+      "bytes": 5660,
+      "sha256": "e4578284f05c7527b2f5cc981e288cb15265de180313ef56bde4be8bbbdb98da"
+    },
+    {
+      "path": "performance/native/baseline-extra-fullscreen/baseline-frames.json",
+      "bytes": 553357,
+      "sha256": "0c3588303ff9eabe84cb0b3a25bf5a09b230eadaabd571b812130400c97784e9"
+    },
+    {
+      "path": "performance/native/baseline-extra-fullscreen/checked/baseline-extra-fullscreen-1080p-moi6navl/engine.log",
+      "bytes": 901,
+      "sha256": "515d10e40482590134ad83fb72bc097ce474f486a3045a6eacb04dea6a0d7ae7"
+    },
+    {
+      "path": "performance/native/baseline-extra-fullscreen/checked/baseline-extra-fullscreen-1080p-moi6navl/report.json",
+      "bytes": 2060,
+      "sha256": "13b5d29733682167378033eb7ab908c157b09e7c2691ecd0ea2ca3111d8ddaf1"
+    },
+    {
+      "path": "performance/native/baseline-extra-fullscreen/diagnosis.json",
+      "bytes": 20895,
+      "sha256": "3a8793fa36162fad8f654b5b91e5227b418289797af58f96178155f07a1c8897"
+    },
+    {
+      "path": "performance/native/baseline-extra/baseline-frames.json",
+      "bytes": 553406,
+      "sha256": "40baf3338c23f532bbc16c63ed36fbbc68125c92a31b628951f59d09d2e67e75"
+    },
+    {
+      "path": "performance/native/baseline-extra/checked/baseline-extra-1080p-5_hbyiqr/engine.log",
+      "bytes": 757,
+      "sha256": "cc309d971bab613c18b697ab7ac5730eda0c6833d3763b4c0c6d28dcd278778a"
+    },
+    {
+      "path": "performance/native/baseline-extra/checked/baseline-extra-1080p-5_hbyiqr/report.json",
+      "bytes": 1717,
+      "sha256": "1c572e124342827d32ede012769fa299a1a78f6581d1f6e697587fab94f496ff"
+    },
+    {
+      "path": "performance/native/baseline-r2/baseline-frames.json",
+      "bytes": 553849,
+      "sha256": "1b98fa18d9e772e0723df7c786ae6a25dac4ede6380a928c1de9c66eb005f859"
+    },
+    {
+      "path": "performance/native/baseline-r2/checked/baseline-1080p-r2-ryp6iaws/engine.log",
+      "bytes": 705,
+      "sha256": "330f8712103146d2d06e30a297648ab9b0bde99189498faa4148160be1ddf1e0"
+    },
+    {
+      "path": "performance/native/baseline-r2/checked/baseline-1080p-r2-ryp6iaws/report.json",
+      "bytes": 1938,
+      "sha256": "c7deebc55c072ce898285d6279a93adae8ccf0f71c377e1c9e6166df4d30b3ee"
+    },
+    {
+      "path": "performance/native/baseline/checked/baseline-1080p-5f3mty8s/engine.log",
+      "bytes": 843,
+      "sha256": "62a1e77b5c738dd7c07c992f90a4b0ae36c2cf33867ac1512c95f966f46c2199"
+    },
+    {
+      "path": "performance/native/baseline/checked/baseline-1080p-5f3mty8s/report.json",
+      "bytes": 2229,
+      "sha256": "a6efe3bf5275dabe7d3a36b6d2d88bbc387015da8e6a92229c6eac487a4712a8"
+    },
+    {
+      "path": "performance/native/candidate-extra-fullscreen/candidate-frames.json",
+      "bytes": 544212,
+      "sha256": "aab16cb661bc22acde111870168554425290d7b05f39e2099c344303f0ee6eee"
+    },
+    {
+      "path": "performance/native/candidate-extra-fullscreen/checked/candidate-extra-fullscreen-1080p-706qpvcc/engine.log",
+      "bytes": 770,
+      "sha256": "bc1fc5131485ad28739e187b0a3cb28855a2975b7177f1b76614434b40f52839"
+    },
+    {
+      "path": "performance/native/candidate-extra-fullscreen/checked/candidate-extra-fullscreen-1080p-706qpvcc/report.json",
+      "bytes": 1793,
+      "sha256": "e19f6ad62e8d8e02d0164453761e7330319077e57d867bef793487fac990adf1"
+    },
+    {
+      "path": "performance/native/candidate-extra-fullscreen/diagnosis.json",
+      "bytes": 20510,
+      "sha256": "70ff310f00fdca445d3bd93da97e1f7ae893da4f68733635dd393a8469b0fd76"
+    },
+    {
+      "path": "performance/paired/accepted1-baseline/checked/accepted1-baseline-b0hj1nbi/engine.log",
+      "bytes": 410,
+      "sha256": "742c2044e42527d44f532ac01d76c7338cb637c09cb949083e1ce138e4f231e0"
+    },
+    {
+      "path": "performance/paired/accepted1-baseline/checked/accepted1-baseline-b0hj1nbi/report.json",
+      "bytes": 1621,
+      "sha256": "e6e0b27886ed8ab6ce21955641b0e25b1cb5f9ef61fe22fb08815b9dfa27c80b"
+    },
+    {
+      "path": "performance/paired/accepted1-baseline/physics-step.json",
+      "bytes": 75206,
+      "sha256": "7f3bb15af9395a37577125f63e9abac248342389737268d530137509db3a9552"
+    },
+    {
+      "path": "performance/paired/accepted1-candidate/checked/accepted1-candidate-l_xrmsww/engine.log",
+      "bytes": 410,
+      "sha256": "742c2044e42527d44f532ac01d76c7338cb637c09cb949083e1ce138e4f231e0"
+    },
+    {
+      "path": "performance/paired/accepted1-candidate/checked/accepted1-candidate-l_xrmsww/report.json",
+      "bytes": 1629,
+      "sha256": "a26c92c8d83a5033cf0c32d0a0678e1dd5110c7e8f211afb8da562da5b36e6d5"
+    },
+    {
+      "path": "performance/paired/accepted1-candidate/physics-step.json",
+      "bytes": 75206,
+      "sha256": "bcb4b354cfda03bbc091b18ae02bb5be9b2dc829143bac0c495078750e63ef64"
+    },
+    {
+      "path": "performance/paired/accepted2-baseline/checked/accepted2-baseline-em1v89z7/engine.log",
+      "bytes": 410,
+      "sha256": "742c2044e42527d44f532ac01d76c7338cb637c09cb949083e1ce138e4f231e0"
+    },
+    {
+      "path": "performance/paired/accepted2-baseline/checked/accepted2-baseline-em1v89z7/report.json",
+      "bytes": 1621,
+      "sha256": "e785f301cf69347ece499c5baa7a39bbcc417e947b5e76b187734d65dd2b9587"
+    },
+    {
+      "path": "performance/paired/accepted2-baseline/physics-step.json",
+      "bytes": 75206,
+      "sha256": "3b40bda87957c855c08058f1e88d83dc0b62f9242e87384c296e7431781dc2f1"
+    },
+    {
+      "path": "performance/paired/accepted2-candidate/checked/accepted2-candidate-8v9xgz71/engine.log",
+      "bytes": 410,
+      "sha256": "742c2044e42527d44f532ac01d76c7338cb637c09cb949083e1ce138e4f231e0"
+    },
+    {
+      "path": "performance/paired/accepted2-candidate/checked/accepted2-candidate-8v9xgz71/report.json",
+      "bytes": 1629,
+      "sha256": "75d29116cb45c1bb204d4e7cfd252b971cb6bbea6d96889c30c6b1f9dd7ea184"
+    },
+    {
+      "path": "performance/paired/accepted2-candidate/physics-step.json",
+      "bytes": 75206,
+      "sha256": "35669280f741f1ceac151ae7aa5eb11bd47547104d3a81a535a889a8bf7d01b6"
+    },
+    {
+      "path": "performance/paired/accepted3-baseline/checked/accepted3-baseline-2ees3d96/engine.log",
+      "bytes": 410,
+      "sha256": "742c2044e42527d44f532ac01d76c7338cb637c09cb949083e1ce138e4f231e0"
+    },
+    {
+      "path": "performance/paired/accepted3-baseline/checked/accepted3-baseline-2ees3d96/report.json",
+      "bytes": 1622,
+      "sha256": "0f6fbc3b1ef232523dfd03574983c7097614125de5811749ad1def9e4cea99fa"
+    },
+    {
+      "path": "performance/paired/accepted3-baseline/physics-step.json",
+      "bytes": 75206,
+      "sha256": "620a645727f020ee62f331a44c6f0ee5480608aeb22a89f427ceed334ef39e80"
+    },
+    {
+      "path": "performance/paired/accepted3-candidate/checked/accepted3-candidate-063ege23/engine.log",
+      "bytes": 410,
+      "sha256": "742c2044e42527d44f532ac01d76c7338cb637c09cb949083e1ce138e4f231e0"
+    },
+    {
+      "path": "performance/paired/accepted3-candidate/checked/accepted3-candidate-063ege23/report.json",
+      "bytes": 1629,
+      "sha256": "6efcf2c2d1f1d3b7a0746be88f632c7a088f04f7ad57464ebad35a60728ca669"
+    },
+    {
+      "path": "performance/paired/accepted3-candidate/physics-step.json",
+      "bytes": 75206,
+      "sha256": "91086be246527e03beeeb9a712ef326aba76589093b0db2da446402523c9f4b7"
+    },
+    {
+      "path": "performance/paired/pair1-baseline/checked/pair1-baseline-93ntv2kc/engine.log",
+      "bytes": 410,
+      "sha256": "742c2044e42527d44f532ac01d76c7338cb637c09cb949083e1ce138e4f231e0"
+    },
+    {
+      "path": "performance/paired/pair1-baseline/checked/pair1-baseline-93ntv2kc/report.json",
+      "bytes": 1600,
+      "sha256": "e84a617bc9f6a4b69017c7253c079d0224ef30ebbfa9f2a76996d62fdb428862"
+    },
+    {
+      "path": "performance/paired/pair1-baseline/physics-step.json",
+      "bytes": 291210,
+      "sha256": "32ef2a2a3d5f749614025c58d9690812ce014b44d88040a116543f438f92e7d9"
+    },
+    {
+      "path": "performance/paired/pair1-candidate/checked/pair1-candidate-5qr62v0f/engine.log",
+      "bytes": 410,
+      "sha256": "742c2044e42527d44f532ac01d76c7338cb637c09cb949083e1ce138e4f231e0"
+    },
+    {
+      "path": "performance/paired/pair1-candidate/checked/pair1-candidate-5qr62v0f/report.json",
+      "bytes": 1607,
+      "sha256": "83812fcbf6d72b9dee0d1e588499a74cbbc7de30643aa6a32848271c07bcc7ea"
+    },
+    {
+      "path": "performance/paired/pair1-candidate/physics-step.json",
+      "bytes": 291212,
+      "sha256": "bed34792a3751e8d2ca516c6e3bb91613ccbee04f91d8be9024138b005967c2d"
+    },
+    {
+      "path": "performance/paired/summary.json",
+      "bytes": 17378,
+      "sha256": "7b8d7a85412ad8bff97d2e9027d7d1764ccafcd1d5f1dd2ac21d3236b914cba2"
+    },
+    {
+      "path": "performance/physics_step_probe.gd",
+      "bytes": 9863,
+      "sha256": "50b215e7afff13a41dac6c5cf169ca47ef3d4b9215df983d26bd739da83782b0"
+    },
+    {
+      "path": "performance/servo/baseline/checked/baseline-servo-464xwcy9/engine.log",
+      "bytes": 189,
+      "sha256": "ea87f4bda4bd7a952877b2cb77a1f00ace089c49b48c178c10a2a4554c81b002"
+    },
+    {
+      "path": "performance/servo/baseline/checked/baseline-servo-464xwcy9/report.json",
+      "bytes": 1333,
+      "sha256": "220d607f6007d1dff7988c525b9fc933903bd7af8c983973c5372101dc9ebeac"
+    },
+    {
+      "path": "performance/servo/candidate/checked/candidate-servo-xekgo3v2/engine.log",
+      "bytes": 189,
+      "sha256": "ea87f4bda4bd7a952877b2cb77a1f00ace089c49b48c178c10a2a4554c81b002"
+    },
+    {
+      "path": "performance/servo/candidate/checked/candidate-servo-xekgo3v2/report.json",
+      "bytes": 1339,
+      "sha256": "e1aaa5e4032a0e9c1316d429509b9ada981b9c2b626275b267a6f5abc109aff0"
+    },
+    {
+      "path": "performance/smoke/checked/candidate-smoke-3z3a25y4/engine.log",
+      "bytes": 10806,
+      "sha256": "df92a9c886ec6041dcf39a1faacf90e9d174f55156d1c607e8d8d78f8fa5afa0"
+    },
+    {
+      "path": "performance/smoke/checked/candidate-smoke-3z3a25y4/report.json",
+      "bytes": 7647,
+      "sha256": "433adfbde3d7b9b8088962630a7d515a8c4b9e94965fa6622fd8ae0205af2ade"
+    },
+    {
+      "path": "performance/smoke/physics-step.json",
+      "bytes": 5201,
+      "sha256": "d5084be03650ec86aca5b348d8598d4769e2990b206bfa5f0a3dd3438d4ebe15"
+    },
+    {
+      "path": "performance/smoke2/checked/candidate-smoke-p_rdkfel/engine.log",
+      "bytes": 410,
+      "sha256": "742c2044e42527d44f532ac01d76c7338cb637c09cb949083e1ce138e4f231e0"
+    },
+    {
+      "path": "performance/smoke2/checked/candidate-smoke-p_rdkfel/report.json",
+      "bytes": 1551,
+      "sha256": "af6227b5632ad52bb463474f93ee8a41b857bd307e6290d4822a8b0945fbf45f"
+    },
+    {
+      "path": "performance/smoke2/physics-step.json",
+      "bytes": 5201,
+      "sha256": "3d2042afdb3a1183bff8dbe93b2050b32f1f31add141f931a637372918ee021f"
+    },
+    {
+      "path": "pre-existing.patch",
+      "bytes": 35959,
+      "sha256": "9d9a0d6279dfaa4b9e1fdd748c73755a48071b7f707f8383ee06cd33fb3b223d"
+    },
+    {
+      "path": "regression/checks/test_aero/engine.log",
+      "bytes": 96,
+      "sha256": "6d91f5c1a5d7949406c71f23b78fae0119ec6ae0856528be94fa339ebd1375a2"
+    },
+    {
+      "path": "regression/checks/test_aero/report.json",
+      "bytes": 1093,
+      "sha256": "06e8dbe80aae16666cdb7feb02cc74221f87b1d2187bf4d73762d02bc3395ed7"
+    },
+    {
+      "path": "regression/checks/test_aero_continuity/engine.log",
+      "bytes": 342,
+      "sha256": "f349268c1954280f2a3e03a0feab063ac26ab4289b0254f6225b8389f15c4b84"
+    },
+    {
+      "path": "regression/checks/test_aero_continuity/report.json",
+      "bytes": 1105,
+      "sha256": "5af0539e928d1ad58209f8da8f5ddc4b5d4b8a8b95aaa56a3987eb49ffc3215c"
+    },
+    {
+      "path": "regression/checks/test_aero_flow/engine.log",
+      "bytes": 2281,
+      "sha256": "162eec10810912851cb6f201513179a88482fc4920bfe53d0eeaf535c2822185"
+    },
+    {
+      "path": "regression/checks/test_aero_flow/report.json",
+      "bytes": 1101,
+      "sha256": "8fd3f9ea60aa5f2da623b34e4ebdaf56fafc37a4abf4d81480b5bbbbf14bf8ba"
+    },
+    {
+      "path": "regression/checks/test_attached_flow/engine.log",
+      "bytes": 1153,
+      "sha256": "6fd73770ea5c1b8a2655a272e652af82adee7b4655c9e19432d966d3a7306a1b"
+    },
+    {
+      "path": "regression/checks/test_attached_flow/report.json",
+      "bytes": 1104,
+      "sha256": "7ca39fae742ec9d13044f262c91faffa8f10d64d818800d563950b53ba2328e9"
+    },
+    {
+      "path": "regression/checks/test_body_side_force/engine.log",
+      "bytes": 3040,
+      "sha256": "9aa4b34c0d88a8dd5d29941a841c56247d8912edae27a1bdac464e4dd568b5bb"
+    },
+    {
+      "path": "regression/checks/test_body_side_force/report.json",
+      "bytes": 1105,
+      "sha256": "7dc7c7a147b920c88fa8b198f24d5821e025026e17b05830079d343d37d0716b"
+    },
+    {
+      "path": "regression/checks/test_checkpoint/engine.log",
+      "bytes": 1396,
+      "sha256": "9acf49fb36ae06b9000ce8e4412dee3d19e7de1023c0ef20202975fc02bfe662"
+    },
+    {
+      "path": "regression/checks/test_checkpoint/report.json",
+      "bytes": 1100,
+      "sha256": "3d92d86b4f081942b912deaee4c284878247f16676cb1ce1ab549e0413eb41a5"
+    },
+    {
+      "path": "regression/checks/test_checkpoint_integrity/engine.log",
+      "bytes": 125,
+      "sha256": "7398dc50b50320d6818c5d94ac21ca353b99ad64d121cbd9b8c8e9db5c8225a0"
+    },
+    {
+      "path": "regression/checks/test_checkpoint_integrity/report.json",
+      "bytes": 1110,
+      "sha256": "9dcac2e7728a0f257999f186e016ed929e3b9967414ce78fc4ff534593497dfa"
+    },
+    {
+      "path": "regression/checks/test_envelope/engine.log",
+      "bytes": 1865,
+      "sha256": "1c20472831f9d502e65b629572e6c9abe3e2d74dd5c334fb04cda44bd29669cc"
+    },
+    {
+      "path": "regression/checks/test_envelope/report.json",
+      "bytes": 1099,
+      "sha256": "e6ff2f46cca0e0747986fec95b028607eea1b63fb706697bb35e10ff6e2f4cca"
+    },
+    {
+      "path": "regression/checks/test_extra_handling/engine.log",
+      "bytes": 1876,
+      "sha256": "ba3a992d7c98706336f7c58e61f046e429a3f82541d5824e6aed66d12f71820a"
+    },
+    {
+      "path": "regression/checks/test_extra_handling/report.json",
+      "bytes": 1106,
+      "sha256": "9b432dd2a6713904d14a8e65981b83e9f7b148874881ddc1e97ce72eee37b329"
+    },
+    {
+      "path": "regression/checks/test_extra_post_stall/engine.log",
+      "bytes": 724,
+      "sha256": "b758ed6e4238c9dbe5cb4e534c19652e39b5f04953a323b408aa06dfc28a0ccb"
+    },
+    {
+      "path": "regression/checks/test_extra_post_stall/report.json",
+      "bytes": 1106,
+      "sha256": "72d652164c4c80f062e2d25a9ca3d45767a40c22bb5796284b8ec23fe1795be7"
+    },
+    {
+      "path": "regression/checks/test_golden/engine.log",
+      "bytes": 1073,
+      "sha256": "1cb52c8d6be1e486f10bc083655130d0686330e203ea62de9ee15f8c5f9c6737"
+    },
+    {
+      "path": "regression/checks/test_golden/report.json",
+      "bytes": 1097,
+      "sha256": "efe1a7ea76b6e8ee8cb9f561bd8c739e3876242574fa949f2054b6007dd7d92e"
+    },
+    {
+      "path": "regression/checks/test_rigid_body/engine.log",
+      "bytes": 96,
+      "sha256": "0031727be256966f8bc84665dddc13e92038f38258565d0ba8444d6074bcfe3a"
+    },
+    {
+      "path": "regression/checks/test_rigid_body/report.json",
+      "bytes": 1099,
+      "sha256": "c7c35b22f9ff67045bbd2f136e1d5a18d7c6d882cef7ccd8af56e5c4d22e316b"
+    },
+    {
+      "path": "regression/checks/test_stall_solver/engine.log",
+      "bytes": 105,
+      "sha256": "9d2fb5461fc20c0d9280042862d6ff7c1e8d14a2c4aae816eb72ec5fb327e06c"
+    },
+    {
+      "path": "regression/checks/test_stall_solver/report.json",
+      "bytes": 1102,
+      "sha256": "f55d4310417c70d166057d2f50e5492adc9ecb5a72bdc49e057d82f16d75d515"
+    },
+    {
+      "path": "regression/checks/test_wing_body_roll/engine.log",
+      "bytes": 1432,
+      "sha256": "b475007d15d0614db4fc7b48ef373dacc3cfd5539f9e59d15e191a20e6790c93"
+    },
+    {
+      "path": "regression/checks/test_wing_body_roll/report.json",
+      "bytes": 1105,
+      "sha256": "92705c443993ec7368af4c764e4e3c79d6c45cddff2ff1ac0908211635733a63"
+    },
+    {
+      "path": "regression/checks/test_wing_polar/engine.log",
+      "bytes": 111,
+      "sha256": "6ca4f8a29e29f0edb24070aa1cde9057de0a77a5809b8a1ecfdd3a5611326402"
+    },
+    {
+      "path": "regression/checks/test_wing_polar/report.json",
+      "bytes": 1100,
+      "sha256": "a7fb53ed24e3443276ba84825ed32ea2f11383334ddf7ad3dae281fc3e10a560"
+    },
+    {
+      "path": "regression/checks/test_wing_polar_session/engine.log",
+      "bytes": 470,
+      "sha256": "d78d9ac60277e9bad5110149ba319577e8c6da8d32785cf31ac9a70aa7408776"
+    },
+    {
+      "path": "regression/checks/test_wing_polar_session/report.json",
+      "bytes": 1108,
+      "sha256": "d89f44ecab8926ac3471c594aef76510a37e67e1ec747a251746689859c79323"
+    },
+    {
+      "path": "regression/manifest.json",
+      "bytes": 20226,
+      "sha256": "01719fd0828958d62000b3ca64f42e197901745a759d98b16a57b6a0a374a522"
+    },
+    {
+      "path": "reviewed-manifest.json",
+      "bytes": 96663,
+      "sha256": "059168686783d6180c7627b355fe2c9396145b9d0c9d3feae92119aee2c8d6f4"
+    },
+    {
+      "path": "test_body_side_force.before.gd",
+      "bytes": 7739,
+      "sha256": "726f928afa77a429f1ba882c08a17fdb7282e72d049efa12b8de474a8e06e421"
+    }
+  ],
+  "archive_sha256": "06a6b87746db3ef4d211ef8706f2f8811f30d194157ac2cc15c90a62aef39f73",
+  "archive_bytes": 5699058,
+  "adversarial_reviewed_archive_sha256": "62fd3a79e7a41c7e2c3d05fefa390627829443bddc4b2b7fec9a638ad61807df",
+  "changed_reviewed_members": [
+    "package_evidence.py"
+  ],
+  "review_extension": "Review artifacts appended; only the packaging script changed among earlier members."
+}

@@ -1,0 +1,106 @@
+--- a/app/render/world/aircraft_lights.gd
++++ b/app/render/world/aircraft_lights.gd
+@@ -632,13 +632,15 @@
+ 	var landing := SpotLight3D.new()
+ 	landing.name = "landing_light"
+ 	# In the left wing's leading edge, below the skin: the beam clears the propeller disc it used to light up.
+-	var piece := wing_piece(tris, -LANDING_SPAN * half)
+ 	if anchors.has("landing"):
+ 		landing.position = anchors.landing.position
+-	elif piece.is_empty():
+-		landing.position = Vector3(0.0, (left.centre.y + right.centre.y) / 2.0, minf(left.leading_z, right.leading_z))
+ 	else:
+-		landing.position = Vector3(-LANDING_SPAN * half, float(piece[2]) - 0.003, float(piece[0]) + 0.01)
++		# Authored seats need no fallback triangle scan.
++		var piece := wing_piece(tris, -LANDING_SPAN * half)
++		if piece.is_empty():
++			landing.position = Vector3(0.0, (left.centre.y + right.centre.y) / 2.0, minf(left.leading_z, right.leading_z))
++		else:
++			landing.position = Vector3(-LANDING_SPAN * half, float(piece[2]) - 0.003, float(piece[0]) + 0.01)
+ 	var lamp_ahead := Vector3.ZERO if anchors.has("landing") else Vector3(0, 0, -0.012) # an anchor is the lens face itself
+ 	kit.add_child(_anchored(sprite("landing_lamp", Color("#fff4e0"), landing.position + lamp_ahead, NAV_SIZE_M), anchors, "landing"))
+ 	_anchored(landing, anchors, "landing")
+--- a/app/sim/simulation.gd
++++ b/app/sim/simulation.gd
+@@ -412,6 +412,10 @@
+ 
+ 
+ func _configuration_is_valid() -> bool:
++	# Joint stages require a continuous block. Never silently discard that evaluator
++	# in favour of the body-only loads callback (whose default returns zero loads).
++	if continuous.is_empty() and (model.stage.is_valid() or not model.loads.is_valid()):
++		return false
+ 	if model.post_tick.is_valid() and model.post_tick_joint.is_valid():
+ 		return false
+ 	if model.substeps.is_valid() and model.substeps_joint.is_valid():
+--- a/app/sim/vehicle_model.gd
++++ b/app/sim/vehicle_model.gd
+@@ -26,6 +26,7 @@
+ ## [, body_derivative: float64[13]][, stage_context: Dictionary]}: one joint evaluation per RK stage.
+ ## `stage_context` is opaque to the kernel and is passed only to `substeps_joint` for this tick's k1 result.
+ ## A body_derivative is a qualified open-system law (finite fuel mass/CG) replacing RigidBody.derivative for that stage.
++## Requires a nonempty continuous block at reset/restore/step; body-only models use `loads`.
+ var stage: Callable
+ ## Split route when `stage` is unset and continuous state exists:
+ ## block_loads(body, continuous, t) -> float64[6]; block_derivative(body, continuous, t) -> float64[continuous].
+--- a/app/tests/test_sf_vehicle_model.gd
++++ b/app/tests/test_sf_vehicle_model.gd
+@@ -26,6 +26,7 @@
+ 	_contract_shape()
+ 	_kernel_installation()
+ 	_declared_layout()
++	_active_evaluator_guards()
+ 	print("%d checks, %d failed" % [_count, _failures])
+ 	quit(1 if _failures > 0 else 0)
+ 
+@@ -87,6 +88,50 @@
+ 	sim.free()
+ 
+ 
++func _active_evaluator_guards() -> void:
++	var sim := Sim.new()
++	var model := VehicleModel.new()
++	var calls := [0]
++	model.stage = func(_body: PackedFloat64Array, extra: PackedFloat64Array, _t: float) -> Dictionary:
++		calls[0] += 1
++		var derivative := PackedFloat64Array()
++		derivative.resize(extra.size())
++		return {loads = PackedFloat64Array([1.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
++			derivative = derivative, rotor_momentum = M.v3(0.0, 0.0, 0.0)}
++	_check("joint model installs before its live layout is known", sim.set_model(model))
++	for size in [-1, 0]:
++		model.continuous_size = size
++		var candidate := sim.prepare_reset(_level_state())
++		_check("empty joint layout is refused before a zero-load fallback (%d)" % size,
++			not candidate.ok and calls[0] == 0)
++	# The same evaluator is supported once it has a continuous block.
++	model.continuous_size = 1
++	sim.continuous = PackedFloat64Array([0.0])
++	sim.gravity = 0.0
++	_check("joint evaluator with a continuous block resets", sim.reset(_level_state()))
++	sim.step()
++	_check("supported joint evaluator applies its force at all four RK stages",
++		sim.fault_reason.is_empty() and calls[0] == 5 and absf(sim.state[RB.VEL] - (15.0 + sim.dt())) < 1e-12)
++	sim.free()
++
++	# Mutable callbacks must also be guarded at restore and step, not only installation.
++	for missing_loads in [false, true]:
++		sim = Sim.new()
++		_check("body-only model resets before callback mutation", sim.reset(_level_state()))
++		var snapshot := sim.checkpoint()
++		if missing_loads:
++			sim.model.loads = Callable()
++		else:
++			sim.model.stage = model.stage
++		_check("restore refuses an unusable active evaluator (%s)" % missing_loads,
++			not sim.can_restore_checkpoint(snapshot) and not sim.restore_checkpoint(snapshot))
++		sim.step()
++		_check("invalid evaluator faults without advancing the body (%s)" % missing_loads,
++			not sim.fault_reason.is_empty() and sim.tick == 0
++			and sim.state.to_byte_array() == snapshot.state.to_byte_array())
++		sim.free()
++
++
+ func _declared_layout() -> void:
+ 	var sim: Node = Sim.new()
+ 	root.add_child(sim)

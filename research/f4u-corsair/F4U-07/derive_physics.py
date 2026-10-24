@@ -157,7 +157,10 @@ qc = lambda y: at(y, les) + 0.25 * chord(y)
 hc = lambda y: at(y, les) + 0.5 * chord(y)
 sweep_hc = note("reference", "half-chord sweep (deg)", math.degrees(math.atan2(hc(0.8 * semi) - hc(0.2 * semi), 0.6 * semi)), "measured, 20-80 % semi-span")
 sweep_hc = math.radians(sweep_hc)
-i_w = note("aero", "mean wing incidence (deg)", math.degrees(2 / S_r59 * integral(lambda y: chord(y) * at(y, incs))), "chord-weighted, median-filtered R59 station incidence relative to the thrust line; no primary source (NACA OCR lost it)")
+# The R59 visual master models the wing at about 0 deg to the thrust line; the pilot's handbook gives the incidence.
+# R59's station-to-station twist stays in the strip offsets (zero mean).
+i_w_r59 = math.degrees(2 / S_r59 * integral(lambda y: chord(y) * at(y, incs)))
+i_w = note("aero", "mean wing incidence (deg)", FULL["wing_incidence_deg"], f"AN 01-45HA-1 Appendix I p. 64: +2 deg, thrust line to wing chord line; the R59 visual master's chord-weighted station incidence is {i_w_r59:.3f} deg")
 i_w = math.radians(i_w)
 tc_mean = 2 / S_r59 * integral(lambda y: chord(y) * at(y, tcs))
 note("aero", "chord-weighted thickness ratio", tc_mean, "measured sections (NACA 23018 root to 23009 tip)")
@@ -771,6 +774,13 @@ flap_kappa = note("flaps", "stall shift fraction", min(1.0, max(0.0, 1 - sum(_ra
 tr664 = slotted_dclmax(12.0, 0.2566, 40.0)
 note("flaps", "method check: Roskam slotted dClmax for TR 664's flap (t/c 12 %, c_f/c 0.2566, 40 deg)", tr664,
      f"NACA TR 664 measured about 1.1 (2.86 against a plain 23012 near 1.75); difference {100 * (tr664 / 1.11 - 1):+.0f} %")
+# Advisory only (HUD), as the P-51: the full-size flaps-down restricted speed at the model's landing setting, mapped at
+# equal lift coefficient; the same aerodynamic operating point, not a structural limit of the model.
+_rs = FULL["flap_restricted_speed_kt"]
+_flap_kt = _rs["at_50_deg"] + (_rs["at_20_deg"] - _rs["at_50_deg"]) * (50.0 - flap_settings["landing"]) / 30.0
+_cl_placard = FULL["chart_light_gross_weight_lb"] * LB * G0 / (0.5 * RHO * (_flap_kt * 0.514444) ** 2 * FULL["wing_area_ft2"] * FT2)
+flap_vmax = note("flaps", "flap speed advisory (m/s EAS)", math.sqrt(2 * mass * G0 / (RHO * S * _cl_placard)),
+                 f"{_flap_kt:.0f} kt restricted speed at {flap_settings['landing']:.0f} deg, CL {_cl_placard:.3f} at 10,000 lb")
 flaps = {
     "max_angle_deg": q(flap_settings["landing"], "deg", "manual", f"CARF manual: at most 30 deg on approach (useful {KS['flaps_deg']['useful_max']:.0f}, mechanical {KS['flaps_deg']['max']:.0f}); full-size slotted flap 50 deg (NACA WR L-440)"),
     "takeoff_angle_deg": q(flap_settings["take_off"], "deg", "manual", "CARF manual: do not take off with flaps deployed"),
@@ -779,7 +789,7 @@ flaps = {
     "hinge_fraction": q(1 - cf_f, "1", "derived", D("1 - flap chord fraction from the NACA flap area")),
     "extension_time": q(2.5, "s", "estimated", "slowed RC flap servo, as the P-51"),
     "retraction_time": q(2.5, "s", "estimated", "as extension"),
-    "max_speed_mps": q(float(V_start), "m/s", "estimated", D("advisory: the start speed (1.6 Vs clean); no full-size or kit placard found")),
+    "max_speed_mps": q(flap_vmax, "m/s", "derived", D(f"advisory: AN 01-45HA-1's flaps-down restricted speed at the model's {flap_settings['landing']:.0f} deg ({_flap_kt:.0f} kt IAS, linear between 130 kt at 50 deg and 200 kt at 20 deg) at equal CL {_cl_placard:.3f}, at the handbook's lightest charted gross weight (10,000 lb); not a simulation clamp")),
     "elevator_mix_per_flap_fraction": q(0.0, "1", "estimated", "neither the CARF manual nor the three smaller Corsair manuals list a flap-elevator mix"),
     "effective_angle_limit_deg": q(flap_limit, "deg", "derived", D("single-slotted fit to Roskam Part VI Fig. 8.17 (FAST-GA digitization), with aerodynamic_gain")),
     "profile_drag_coefficient": q(flap_cd, "1", "derived", D("Raymer eq. 12.61 divided by aerodynamic_gain")),

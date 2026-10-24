@@ -1,0 +1,133 @@
+{
+  "head": "e76a72f5b25f1787564ec8c34056428fa2cafe5a",
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1920x1080",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\native-1.json"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1920x1080",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\native-2.json",
+      "--reverse"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1920x1080",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\native-3.json"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1920x1080",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\native-4.json",
+      "--reverse"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1920x1080",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landing-anchor-20261023\\native-5.json"
+    ]
+  ],
+  "sha256": {
+    "reference.gd": "50b17e5d8122cbc388e9b89db04f3de3e507c75b618981677b9c6dd1c34468cd",
+    "candidate.gd": "05211cc430f2d655933404c1337c0f3f26a2e7100f28051bea24062d24294d43",
+    "compare.gd": "138e4636f7fa8dc1c5d8b314413e1eea3165e3cd7f4c7da1fab40036e94385ad"
+  },
+  "scope": "Native complete-kit construction only, not Home readiness/frame pacing; geometry timing removed from existing fixture.",
+  "integrated_runtime_sha256": "7f23593dcb629135c5a4ce0da696195d26e3d84327a1d65e91a939328791b482",
+  "status_at_retention": [
+    " M app/render/world/aircraft_lights.gd",
+    " M assets/aircraft/f4u-corsair-250/README.md",
+    " M docs/F4U-PLAN.md",
+    " M docs/LEARNINGS.md",
+    " M docs/research/f4u-corsair/F4U-07/README.md",
+    " M docs/research/ground-physics/GP-02/README.md",
+    "?? docs/research/f4u-corsair/F4U-12/README.md",
+    "?? docs/research/f4u-corsair/F4U-12/candidate-gp02r1-comparison.json",
+    "?? docs/research/f4u-corsair/F4U-12/candidate-gp02r1.json",
+    "?? docs/research/ground-physics/GP-02/rolling-2026-10-23/",
+    "?? docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/landing-anchor-2026-10-23/"
+  ],
+  "host": {
+    "cpu": "AMD Ryzen9 5900X",
+    "gpu": "RTX3090",
+    "driver": "617.42",
+    "godot": "4.7.2-stable ed1daf0bf",
+    "os": "Windows"
+  },
+  "images": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "retained": "captures/jensen-das-ugly-stik-60-candidate.png",
+      "reference_sha256": "2a16abcaa22ba666886418390fb7f5753dc0e51c001ffc02fd872fafd350a8ef",
+      "candidate_sha256": "2a16abcaa22ba666886418390fb7f5753dc0e51c001ffc02fd872fafd350a8ef",
+      "duplicate_reference_discarded": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "retained": "captures/p51d-mustang-120-candidate.png",
+      "reference_sha256": "8fd4e946d90e39d5d37f52209bb0082cbc9becd05ff39cf22adfb44690ec4488",
+      "candidate_sha256": "8fd4e946d90e39d5d37f52209bb0082cbc9becd05ff39cf22adfb44690ec4488",
+      "duplicate_reference_discarded": true
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "retained": "captures/turbo-lumber-evolution-candidate.png",
+      "reference_sha256": "4d7f83a96d564e9585d4403d0e18d8e4ba463f7f73953cbbd0a5683513ce0235",
+      "candidate_sha256": "4d7f83a96d564e9585d4403d0e18d8e4ba463f7f73953cbbd0a5683513ce0235",
+      "duplicate_reference_discarded": true
+    }
+  ],
+  "capture_script_sha256": "2e6aade5b716cea89377d4f7cbd8c52cceec2554194fad4ccacb2a227ee03abc"
+}

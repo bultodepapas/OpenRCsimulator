@@ -1,0 +1,16 @@
+{
+  "baseline_head": "f929372c",
+  "observed_head": "e76a72f5b25f1787564ec8c34056428fa2cafe5a",
+  "source_sha256": {
+    "app/physics/ground_wheels.gd": "c9762a7f94b96bbd8e47f1891dc7d77946cb41d33665b67009edba295f36d658",
+    "app/physics/ground_contact.gd": "f4652ecad0b4aba5beae918a0242d4506213b3e30e019b4a9eafc73d442c0025",
+    "app/sim/flight_session.gd": "710f58eda2b901aff77f4302c923e75d713a034de68d36f00079b515155af88b",
+    "app/tests/test_ground_physics.gd": "6277c7963f84a4b2be1234bd71072d205f09ca0c0c4b58190e130d80e845af4c",
+    "app/tests/test_wheel_session.gd": "852f9430301a57e63532b0f0316165c834606773c56350e7c6221c398309540f",
+    "app/data/ground/wheel_profiles.json": "9033e8661fd38f2f5ba9dd9d022a51d059d170a56dc58d7948abe5a46111dc3c",
+    "app/data/aircraft/turbo_lumber_evolution.json": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf"
+  },
+  "baseline_orfl_sha256": "2916b169cd9d220d2f63b9f2b88189aa4f9f83d476cae00c0e7b9686dd3b21b2",
+  "float64_guard": "passed: no forbidden native math types in physics/sim code",
+  "airborne_csv_byte_identical": true
+}

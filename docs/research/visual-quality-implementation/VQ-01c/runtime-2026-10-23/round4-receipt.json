@@ -1,0 +1,1322 @@
+{
+  "format": "openrc-round4-engineering-receipt-v1",
+  "baseline_commit": "2e449beedcdaa4aea38a48b8c075acdef175d796",
+  "current_commit": "b95d9001eadd38b375266184c2ac85da7b8f70c9",
+  "sources": [
+    {
+      "path": "app/main.gd",
+      "sha256": "5d88fe0a903b131cba996d11caae24aee3f14af4bd22aa9ba04ff9ea84a0dbb2",
+      "bytes": 153638
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+      "bytes": 241186
+    },
+    {
+      "path": "app/sim/launch_trim_cache.gd",
+      "sha256": "3a61bddb6c88bc3fb129432ef211480ee7402130a76eb39cf70a72b69907a9d2",
+      "bytes": 4287
+    },
+    {
+      "path": "app/tests/test_main_startup_cleanup.gd",
+      "sha256": "183b21a74498910ade0abcfd384876c9bc5678592c728d613092d800336e7d9b",
+      "bytes": 9401
+    },
+    {
+      "path": "app/tests/test_launch_trim_cache.gd",
+      "sha256": "856aa9c042464e4e2c2b043b5dc1d6a715f3f7e938950df3b25a0f4e71338a1f",
+      "bytes": 11685
+    }
+  ],
+  "reference_sources": [
+    {
+      "path": "tmp/game-engineering-round4/reference/flight_session_baseline.gd",
+      "sha256": "710f58eda2b901aff77f4302c923e75d713a034de68d36f00079b515155af88b",
+      "bytes": 240448
+    },
+    {
+      "path": "tmp/game-engineering-round4/reference/flight_session_cache_candidate.gd",
+      "sha256": "f7525b21f00dfc3d38c0f0177df20cfab9213ab0c6461b94609b3e4fc0bda398",
+      "bytes": 240683
+    },
+    {
+      "path": "tmp/game-engineering-round4/reference/flight_session_cache_parse.gd",
+      "sha256": "4fc8464a9dcfe0943edc66ef973bb12c83742ab7f7018cc729cf5bba3c603404",
+      "bytes": 240752
+    },
+    {
+      "path": "tmp/game-engineering-round4/reference/launch_trim_cache_candidate.gd",
+      "sha256": "3a61bddb6c88bc3fb129432ef211480ee7402130a76eb39cf70a72b69907a9d2",
+      "bytes": 4287
+    },
+    {
+      "path": "tmp/game-engineering-round4/reference/main_baseline.gd",
+      "sha256": "2bd7dc4a080f633af6953e39a5173801f4c73e0a7d69a563689dd0a2c6efd5ae",
+      "bytes": 150865
+    },
+    {
+      "path": "tmp/game-engineering-round4/reference/main_preflight_candidate.gd",
+      "sha256": "989372a5e08c6f9e7ad20c79c57027b0b7f0c94806455cfe7f8a7866224c707e",
+      "bytes": 151039
+    },
+    {
+      "path": "tmp/game-engineering-round4/reference/startup_test_baseline.gd",
+      "sha256": "a2ac880e82d5774f6d0d502d80462c6ce1a02bafdf0683e6c8c243e56cf5013e",
+      "bytes": 8795
+    },
+    {
+      "path": "tmp/game-engineering-round4/reference/test_launch_trim_cache_candidate.gd",
+      "sha256": "856aa9c042464e4e2c2b043b5dc1d6a715f3f7e938950df3b25a0f4e71338a1f",
+      "bytes": 11685
+    }
+  ],
+  "checks": [
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/main-candidate-check/main-preflight-candidate-check-6h0iq9s0/report.json",
+        "sha256": "276ce7ad26c62189488337e022de9a61b5617812a569d900619a9f64a29b8315",
+        "bytes": 1352
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--check-only",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\reference\\main_preflight_candidate.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.828,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/main-candidate-check/main-preflight-candidate-check-6h0iq9s0/engine.log",
+        "sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+        "bytes": 75
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/main-startup-native/main-startup-native-current-head-7vuiir_0/report.json",
+        "sha256": "37811a60be416cdcaf1ef54b1c44856f135c98c55e6c6f8238070f8275d4037b",
+        "bytes": 1976
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\benchmark\\main-startup-timed.gd"
+      ],
+      "reason": "engine_error",
+      "ok": false,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 24.484,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/main-startup-native/main-startup-native-current-head-7vuiir_0/engine.log",
+        "sha256": "1307a1a92674b2e95e7c49377ab5ecb9b8f13d4ab6b86a26192907d19f15224c",
+        "bytes": 2899
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/native-1080p-baseline-20261023-164900/checks/native-1080p-baseline-round4-zdpq66wz/report.json",
+        "sha256": "678e62c1711046d3e4fcd5984e7471276832c4234c6cda30c7faa94114c2cf56",
+        "bytes": 3284
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-07\\planar-lake-2026-10-22\\native-keyboard\\keyboard_flight.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx",
+        "--start=airborne_half_power",
+        "--view=pilot",
+        "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\benchmark\\native-1080p-baseline-20261023-164900\\frames.json",
+        "--warmup=10",
+        "--t=60"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 80.875,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/native-1080p-baseline-20261023-164900/checks/native-1080p-baseline-round4-zdpq66wz/engine.log",
+        "sha256": "d574a04e0f0dbc2f227b53909bcb6b629c8324d06a73abb22c23f70b2902b672",
+        "bytes": 803
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/native-final-20261023-172531/checks/round4-final-1080p-v_rc3i5k/report.json",
+        "sha256": "a0fce8c63f9e18dbfe4638c68a99dc6e7e22f2149265a509923c9804eb7e3882",
+        "bytes": 3350
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\regression\\head-checkout-20261023\\app",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--max-fps",
+        "0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-07\\planar-lake-2026-10-22\\native-keyboard\\keyboard_flight.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx",
+        "--start=airborne_half_power",
+        "--view=pilot",
+        "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\benchmark\\native-final-20261023-172531\\frames.json",
+        "--warmup=10",
+        "--t=60"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 81.766,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/native-final-20261023-172531/checks/round4-final-1080p-v_rc3i5k/engine.log",
+        "sha256": "f6d041c238b6639a40b80997f9e5b489fb41add1e3bce4dea6267afab49befb2",
+        "bytes": 794
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-drawn-128/sky-drawn-128-mrn5vrmd/report.json",
+        "sha256": "8f87dcbffb27e55d33d37ecd3fccdfa847f6698cfc63e455268be5a636eb913e",
+        "bytes": 1904
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\benchmark\\sky_lifecycle_probe.gd",
+        "--",
+        "--mode=sky-drawn",
+        "--size=128"
+      ],
+      "reason": "engine_error",
+      "ok": false,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.015,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-drawn-128/sky-drawn-128-mrn5vrmd/engine.log",
+        "sha256": "ab0305d7044ddef40e419a2cf310f492ebd38a44fb03d7983e7e99d3be536209",
+        "bytes": 977
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-drawn-256/sky-drawn-256-uxdtrf6l/report.json",
+        "sha256": "be9f54c3c583387c50cfecfa9c0175932f3190054147d4748290a96bb5a73f91",
+        "bytes": 1906
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\benchmark\\sky_lifecycle_probe.gd",
+        "--",
+        "--mode=sky-drawn",
+        "--size=256"
+      ],
+      "reason": "engine_error",
+      "ok": false,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.063,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-drawn-256/sky-drawn-256-uxdtrf6l/engine.log",
+        "sha256": "9b4b495dbf2d2000bd26f80a14d1c4edfaf5252366e938463811504fae959f15",
+        "bytes": 979
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-hold-frame-256/sky-hold-until-frame-post-draw-256-il4qjm3w/report.json",
+        "sha256": "e67ba1dbf7a6629fe24bd09070af3d1505fa85a0a40b7cd1965be17c6c49e16f",
+        "bytes": 1469
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\benchmark\\sky_lifecycle_probe.gd",
+        "--",
+        "--mode=sky-hold-frame",
+        "--size=256"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.984,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-hold-frame-256/sky-hold-until-frame-post-draw-256-il4qjm3w/engine.log",
+        "sha256": "b2050342fdb5758a05bfc9085ffcbac5dcb625faefd826fbecd360bf3532065d",
+        "bytes": 778
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-no-sky-pre/sky-no-sky-pre-draw-stc3kc3l/report.json",
+        "sha256": "653b4178bbe9833b35a1b2be5f449847321cca3a7b878610cc714b15d892b510",
+        "bytes": 1412
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\benchmark\\sky_lifecycle_probe.gd",
+        "--",
+        "--mode=no-sky-pre",
+        "--size=256"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.969,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-no-sky-pre/sky-no-sky-pre-draw-stc3kc3l/engine.log",
+        "sha256": "eebb40bfcc83569363ee3f50b94fb47d7b30c9fba6096653f2f51257779775ae",
+        "bytes": 579
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-pre-128/sky-pre-draw-128-xz_y_b7q/report.json",
+        "sha256": "189895fd55ad61719a513c949395d5385e7d9d3d4d64538e3aa6761c35bdc19e",
+        "bytes": 1904
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\benchmark\\sky_lifecycle_probe.gd",
+        "--",
+        "--mode=sky-pre",
+        "--size=128"
+      ],
+      "reason": "engine_error",
+      "ok": false,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.0,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-pre-128/sky-pre-draw-128-xz_y_b7q/engine.log",
+        "sha256": "a8268db9ffd2947a944175c463af77dd6e803dc37f69a4d5d7c5ecfafd9a7c7a",
+        "bytes": 803
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-pre-256/sky-pre-draw-256-9o4602s1/report.json",
+        "sha256": "bca6de7d9d8c9deb78d3af8278c6205d4ac98f449870b2a731904cde646358ef",
+        "bytes": 1908
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\benchmark\\sky_lifecycle_probe.gd",
+        "--",
+        "--mode=sky-pre",
+        "--size=256"
+      ],
+      "reason": "engine_error",
+      "ok": false,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.609,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-pre-256/sky-pre-draw-256-9o4602s1/engine.log",
+        "sha256": "8dc543b51494edb3e1006bce113bfa2c4300a027cb3fb8b53322e233cdc39011",
+        "bytes": 805
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-pre-256-force-sync/sky-pre-draw-256-force-sync-vgqjn23b/report.json",
+        "sha256": "53594e711339d5cdadccf95f3644302fe3f19bc079289c509b0ed77b118c5f0c",
+        "bytes": 1984
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "app",
+        "--fullscreen",
+        "--resolution1920x1080",
+        "--max-fps0",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\benchmark\\sky_lifecycle_probe.gd",
+        "--",
+        "--mode=sky-pre",
+        "--size=256",
+        "--force-sync"
+      ],
+      "reason": "engine_error",
+      "ok": false,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.718,
+      "log": {
+        "path": "tmp/game-engineering-round4/benchmark/sky-pre-256-force-sync/sky-pre-draw-256-force-sync-vgqjn23b/engine.log",
+        "sha256": "4e4b31e2a6377ea860da40118554fa9648519ce8f17f62ba2d6a70eb76b5d706",
+        "bytes": 802
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/qa/checks/main-startup-headless-0l0u0159/report.json",
+        "sha256": "4cc953c48fc78286b50ab348c9d5a8129ac1c1629f4dcdf7934277e39cd54748",
+        "bytes": 1294
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_main_startup_cleanup.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 19.032,
+      "log": {
+        "path": "tmp/game-engineering-round4/qa/checks/main-startup-headless-0l0u0159/engine.log",
+        "sha256": "7a8756c37bef8b2e08dee806f53d06ef8240b0e0e35141d056f979e040227bc6",
+        "bytes": 2753
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/qa/checks/main-startup-scratch-parse-afva836n/report.json",
+        "sha256": "fb79866cdbd193279822eaa02c248523cf11538c91a2ac2e2931dc6340f17edb",
+        "bytes": 1303
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--check-only",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\qa\\test_main_startup_cleanup_candidate.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 14.859,
+      "log": {
+        "path": "tmp/game-engineering-round4/qa/checks/main-startup-scratch-parse-afva836n/engine.log",
+        "sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+        "bytes": 75
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/native-gameplay-cache-round4-shared-i6fwtx4a/report.json",
+        "sha256": "b25cca586895ef3dd9075de8eea2fc69ffa76a7c75603b28d04d340dac903ec6",
+        "bytes": 1398
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--max-fps",
+        "0",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round4/qa/native_gameplay_round4.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 70.937,
+      "log": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/native-gameplay-cache-round4-shared-i6fwtx4a/engine.log",
+        "sha256": "2c8f512609cfdbeb743eba7a630261b380357c4847967759fd77429c74dd998e",
+        "bytes": 15538
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/parse-native-gameplay-round4-m5uvg0jy/report.json",
+        "sha256": "c3d9afc1f8dd2e0a2f1c4d8c1a4bd0272d7f4c27b102550173e16b9146c981d1",
+        "bytes": 1259
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--check-only",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round4/qa/native_gameplay_round4.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.625,
+      "log": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/parse-native-gameplay-round4-m5uvg0jy/engine.log",
+        "sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+        "bytes": 75
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/parse-startup-timed-round4-pcvovjs3/report.json",
+        "sha256": "60620eb95f73f4a2747ca4a2f3c7fb39afad6085562a5c5862eb42650ae7aad1",
+        "bytes": 1260
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--check-only",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round4/qa/test_main_startup_timed_round4.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.797,
+      "log": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/parse-startup-timed-round4-pcvovjs3/engine.log",
+        "sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+        "bytes": 75
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/startup-native-1920-shared-round4-ewksavez/report.json",
+        "sha256": "838d945df94443371e5c13bcaa6f35f73a077c7c7f86d6873ad895c867844589",
+        "bytes": 1964
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--windowed",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round4/qa/test_main_startup_timed_round4.gd"
+      ],
+      "reason": "process_exit",
+      "ok": false,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 34.875,
+      "log": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/startup-native-1920-shared-round4-ewksavez/engine.log",
+        "sha256": "4d10a1e3eb5c39ddc9a0325a40c8e6333e0ad01ab94aea52176803982d5a742b",
+        "bytes": 3701
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/startup-native-fullscreen-shared-round4-q1_q2m1_/report.json",
+        "sha256": "3e9a39a26650211f0bfa815b3a2618a00a985df3f9d05699b5f556c10825b073",
+        "bytes": 1959
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--max-fps",
+        "0",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round4/qa/test_main_startup_timed_round4.gd"
+      ],
+      "reason": "engine_error",
+      "ok": false,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 29.953,
+      "log": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/startup-native-fullscreen-shared-round4-q1_q2m1_/engine.log",
+        "sha256": "cd1be1ddf99b4cbf0f3e017b6fc7bc8f6e12bfe8c40fe7dbe8d8f67704882463",
+        "bytes": 3688
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/startup-native-shared-round4-jx61mnnc/report.json",
+        "sha256": "5fccdcdbabe840a8bb206a7a3ee3dab9abd95543da28128ed0fd00057570f25a",
+        "bytes": 1889
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round4/qa/test_main_startup_timed_round4.gd"
+      ],
+      "reason": "process_exit",
+      "ok": false,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 29.0,
+      "log": {
+        "path": "tmp/game-engineering-round4/qa/run-logs/startup-native-shared-round4-jx61mnnc/engine.log",
+        "sha256": "b3c0420e5a9bd39d5eeb0e400ef1d556c3ead66734dac624c3cf15f7403f4093",
+        "bytes": 3700
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-editor-import-rfuwjv1o/report.json",
+        "sha256": "21b3853c63d27ce1111f280f0f5441033572e3bb929e41a1c52d4658bdd020fa",
+        "bytes": 1166
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--editor",
+        "--import",
+        "--quit"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.547,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-editor-import-rfuwjv1o/engine.log",
+        "sha256": "aaeee1faa637e3117c00f464520167eabdce5933cb478c20f59e9b8a6850b0cf",
+        "bytes": 2062
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-exact-main-tick-checkpoints-ktdtx__r/report.json",
+        "sha256": "5bd5014544805e12e790c43367d70c82cacac918785b916156ab489f023eb534",
+        "bytes": 3981
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round4/qa/exact_main_tick_checkpoints.gd"
+      ],
+      "reason": "process_exit",
+      "ok": false,
+      "counts": {
+        "error": 6,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.781,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-exact-main-tick-checkpoints-ktdtx__r/engine.log",
+        "sha256": "934bacd949c50760bcbe1388a007c352fe4e369e30171cd25a0fea58c004dc08",
+        "bytes": 7223
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-main-baseline-arw2tg_6/report.json",
+        "sha256": "2c6e8f6711a6b7cff4903e45443701b49c38114d962ad01c7a8c7e2204c3eb0f",
+        "bytes": 1389
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/game-engineering-round4/qa/capture_main_baseline.gd"
+      ],
+      "reason": "process_exit",
+      "ok": false,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 60.454,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-main-baseline-arw2tg_6/engine.log",
+        "sha256": "b2b9f06ba4c550d64120079bb4368223b9dd79c9de6506285268b7996855a9c6",
+        "bytes": 2112
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-main-baseline-v2-_rvgvrr8/report.json",
+        "sha256": "887e8ac08ca2be518428fc82f791a22a4acbe17a9c87e0797f484d5f28cacb05",
+        "bytes": 1390
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/game-engineering-round4/qa/capture_main_baseline.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 63.61,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-main-baseline-v2-_rvgvrr8/engine.log",
+        "sha256": "2f0b70d369b4f935d538f49081352fe815f1fb38d2bf7b92789ad8cabad44e46",
+        "bytes": 1915
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-main-candidate-cold-warm-sx2b0ezi/report.json",
+        "sha256": "fb7ea0414165eafa20587897067cb37009963559ede35aa57ef576cdef725b5f",
+        "bytes": 1425
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/game-engineering-round4/qa/capture_main_candidate.gd"
+      ],
+      "reason": "process_exit",
+      "ok": false,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 96.313,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-main-candidate-cold-warm-sx2b0ezi/engine.log",
+        "sha256": "e9aeebf71a3e9cdd2a6d214aca80b39d1dd77978491d46261dcb5e02a3d26eeb",
+        "bytes": 11780
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-main-candidate-cold-warm-v2-8l3xzo9g/report.json",
+        "sha256": "80124a5ab8290ef6d3b28566571baddd92bb0e7e4dc616f96ee60782c542dd83",
+        "bytes": 1433
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/game-engineering-round4/qa/capture_main_candidate.gd"
+      ],
+      "reason": "process_exit",
+      "ok": false,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 106.5,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-main-candidate-cold-warm-v2-8l3xzo9g/engine.log",
+        "sha256": "4eaac9a203cfa754616ac2a7e1d479e0a761a799a865df7d713dd4a556b44972",
+        "bytes": 11892
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-main-candidate-cold-warm-v3-r7g4glt2/report.json",
+        "sha256": "7cfa66dd7cd1b33403e4c44885d3221941f424d55ea0c410fbd965916390c2b9",
+        "bytes": 1427
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/game-engineering-round4/qa/capture_main_candidate.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 102.14,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-main-candidate-cold-warm-v3-r7g4glt2/engine.log",
+        "sha256": "b48d50eda0701c92f795bf226cef70d53ee6b046e56c43e9821912a5c3e9b19d",
+        "bytes": 11892
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-test-fuel-start-fill-vkj0vui7/report.json",
+        "sha256": "449d3953c1782f9a0e714ea3a5b34ec5d690b4591fd37ee7ffc6ba5e562ff93b",
+        "bytes": 1369
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_fuel_start_fill.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 25.359,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-test-fuel-start-fill-vkj0vui7/engine.log",
+        "sha256": "74e2642cc898ff591f4423ac020b5301b5284834f7a5d3f6394dac9e7eac5d4f",
+        "bytes": 5251
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-test-golden-_ql63yto/report.json",
+        "sha256": "3b5fbb563047cc5da5a5d407ff3efd243d32b0e0f717b3e9e4d48936dcea4284",
+        "bytes": 1337
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_golden.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.938,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-test-golden-_ql63yto/engine.log",
+        "sha256": "1cb52c8d6be1e486f10bc083655130d0686330e203ea62de9ee15f8c5f9c6737",
+        "bytes": 1073
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-test-launch-trim-cache-k5b2jfei/report.json",
+        "sha256": "eda8ec77236b199750177aa0331f59186206dfe55aeac571cc519821048a1fba",
+        "bytes": 1388
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_launch_trim_cache.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.25,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-test-launch-trim-cache-k5b2jfei/engine.log",
+        "sha256": "437725fdce499ef47aa78cd87983345b6be140d1565f12d3875efdacbe09d892",
+        "bytes": 414
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-test-main-startup-cleanup-rfr9crhd/report.json",
+        "sha256": "380a85117ce8d8a8ac8f9307a0530a3c4692100595c38c56065e827aed807ed1",
+        "bytes": 1391
+      },
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_main_startup_cleanup.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 28.406,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/checked/round4-test-main-startup-cleanup-rfr9crhd/engine.log",
+        "sha256": "7a8756c37bef8b2e08dee806f53d06ef8240b0e0e35141d056f979e040227bc6",
+        "bytes": 2753
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/isolated-checked/round4-cache-test-dqxvdyzt/report.json",
+        "sha256": "8fc6999d34666308bbda2ffc9d74f97a236da9a380c608db0010bad0556a0abf",
+        "bytes": 1481
+      },
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_launch_trim_cache.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.672,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/head-checkout-20261023/tmp/game-engineering-round4/regression/checked/round4-cache-test-dqxvdyzt/engine.log",
+        "sha256": "437725fdce499ef47aa78cd87983345b6be140d1565f12d3875efdacbe09d892",
+        "bytes": 414
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/isolated-checked/round4-exact-main-tick-checkpoints-y9i88285/report.json",
+        "sha256": "bb444d3921d2e9db285c57c4f06cebbd1442a441d2c99b2d5094d81123a08a91",
+        "bytes": 4136
+      },
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-round4/regression/head-checkout-20261023/tmp/game-engineering-round4/qa/exact_main_tick_checkpoints.gd"
+      ],
+      "reason": "process_exit",
+      "ok": false,
+      "counts": {
+        "error": 5,
+        "warning": 0
+      },
+      "elapsed_seconds": 136.813,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/head-checkout-20261023/tmp/game-engineering-round4/regression/checked/round4-exact-main-tick-checkpoints-y9i88285/engine.log",
+        "sha256": "6f10003bbec008179b92892be4f9262f4d3d1e56c9b4f26c58b169233742d94c",
+        "bytes": 24158
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/game-engineering-round4/regression/isolated-checked/round4-isolated-editor-import-dymna_mq/report.json",
+        "sha256": "2b21b043fc85707d99dd0e113fd3430edd26071fd64efa9ae69f5bcc352cca8a",
+        "bytes": 3974
+      },
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--editor",
+        "--import",
+        "--quit"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 8
+      },
+      "elapsed_seconds": 89.797,
+      "log": {
+        "path": "tmp/game-engineering-round4/regression/head-checkout-20261023/tmp/game-engineering-round4/regression/checked/round4-isolated-editor-import-dymna_mq/engine.log",
+        "sha256": "c4ebb75bdd01a8a69e677d361222daa0b58709b155cce28d89b8720cf489b0cb",
+        "bytes": 171303
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/godot-checks/launch-trim-cache-check-only-xssan6p4/report.json",
+        "sha256": "c22146cdd4944185502af92493ccd4fb5aaff885be25930bead02045a4034610",
+        "bytes": 1321
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\cpu\\launch_trim_cache_probe.gd",
+        "--",
+        "--check-only"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.36,
+      "log": {
+        "path": "tmp/godot-checks/launch-trim-cache-check-only-xssan6p4/engine.log",
+        "sha256": "99217c887565d9361a7470fccc69a94cffc0cc99f22d3827ee9a57474e19d3b4",
+        "bytes": 172
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/godot-checks/launch-trim-cache-extra-core-rw_9u0tk/report.json",
+        "sha256": "d43482cb7655d2e52337af5bdc7fce990aeecf39d2e8a9554f0cdd0be0c10dd1",
+        "bytes": 1293
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\cpu\\launch_trim_cache_probe.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 24.484,
+      "log": {
+        "path": "tmp/godot-checks/launch-trim-cache-extra-core-rw_9u0tk/engine.log",
+        "sha256": "8f700bbbb2adb8789e295a0dc20213093d8f2a8ec6cd56dc8040931696fe4ca6",
+        "bytes": 642
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/godot-checks/launch-trim-cache-key-safety-3md2wf_t/report.json",
+        "sha256": "d0fa83e0de5dc8018d2663b5a01d5b2e7b03e88491ed1704970b19ebdbf5b7da",
+        "bytes": 1323
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\cpu\\launch_trim_cache_probe.gd",
+        "--",
+        "--check-only"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.172,
+      "log": {
+        "path": "tmp/godot-checks/launch-trim-cache-key-safety-3md2wf_t/engine.log",
+        "sha256": "44b262e1599a3ac1cd176db0938a5239301185c739a341cc7df67eb808ec12f6",
+        "bytes": 173
+      }
+    },
+    {
+      "report": {
+        "path": "tmp/godot-checks/launch-trim-cache-session-parse-0aj8mzy8/report.json",
+        "sha256": "d93d0c48944c01f1f91105793c454658fdd9204f8dd8e6e89c9b4c3fb45ae3e0",
+        "bytes": 1271
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\game-engineering-round4\\reference\\flight_session_cache_parse.gd"
+      ],
+      "reason": "passed",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.328,
+      "log": {
+        "path": "tmp/godot-checks/launch-trim-cache-session-parse-0aj8mzy8/engine.log",
+        "sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+        "bytes": 75
+      }
+    }
+  ],
+  "notes": [
+    "External commit b95d9001 swept Main and startup-test edits together with unrelated F4U work; source identities distinguish this pass.",
+    "External F4U Godot/Blender work overlapped several timing runs; no causal steady-state FPS gain is claimed.",
+    "First native startup probes omitted fullscreen/resolution or used windowed mode and are adverse evidence, not 1080p acceptance.",
+    "Sky lifetime experiment is confounded by sky_material clearing; no renderer workaround is retained.",
+    "Full Linux suite unavailable due WSL E_FAIL; existing mass_inventory.gd pow boundary guard failure predates this pass.",
+    "Exact regression uses isolated b95d9001 plus the explicit cache candidate; concurrent external wing-fold additions to shared Main/FlightSession are preserved and require separate combined-tree qualification."
+  ],
+  "measurements": [
+    {
+      "path": "tmp/game-engineering-round4/benchmark/native-1080p-baseline-20261023-164900/checks/native-1080p-baseline-round4-zdpq66wz/resources.json",
+      "sha256": "26ab0b8218122b799fc15150abb688f006b6effa95396a434368e7ceecc172d0",
+      "bytes": 99560
+    },
+    {
+      "path": "tmp/game-engineering-round4/benchmark/native-1080p-baseline-20261023-164900/frames.json",
+      "sha256": "81c1a8311f7f428cbad2438247900d65fad36d673c8feba10a857391f503cc5f",
+      "bytes": 913080
+    },
+    {
+      "path": "tmp/game-engineering-round4/benchmark/native-1080p-baseline-20261023-164900/host-telemetry-retry.jsonl",
+      "sha256": "a58dd75aa709378370594a6546257d193f95e89d259b504baf349b3eb4ffecd3",
+      "bytes": 4797
+    },
+    {
+      "path": "tmp/game-engineering-round4/benchmark/native-1080p-baseline-20261023-164900/host-telemetry.jsonl",
+      "sha256": "6db9a18dc32e93df1783da6033d96dfd3ea4352108255bb4c54c0eeb3c4b0f0d",
+      "bytes": 3528
+    },
+    {
+      "path": "tmp/game-engineering-round4/benchmark/native-1080p-baseline-20261023-164900/manifest.json",
+      "sha256": "27edb3f602b50b8ed4fd5261912f8bd7f01383333e38088995a3eddbd530d3b3",
+      "bytes": 5642
+    },
+    {
+      "path": "tmp/game-engineering-round4/benchmark/native-final-20261023-172531/checks/round4-final-1080p-v_rc3i5k/resources.json",
+      "sha256": "eae4530ff0a2bcbcfd5fcae1006e991383e04ecbd1762d4e02e51a062baa94ec",
+      "bytes": 100789
+    },
+    {
+      "path": "tmp/game-engineering-round4/benchmark/native-final-20261023-172531/frames.json",
+      "sha256": "2dd0b902258d12ca163876f1084856dc3d26c5b83917b144b0d5193d4ff353d7",
+      "bytes": 943613
+    },
+    {
+      "path": "tmp/game-engineering-round4/benchmark/native-final-20261023-172531/host.jsonl",
+      "sha256": "b6dfdb0fe04929ac28027c7eecf7d65eec635203d888758f7d9810bf462109f7",
+      "bytes": 3765
+    },
+    {
+      "path": "tmp/game-engineering-round4/benchmark/native-final-20261023-172531/receipt.json",
+      "sha256": "911b99f6c5d10d6360dfc73c523a5ff0323423894a690ba1871fe2f8dac4dfa4",
+      "bytes": 23750
+    },
+    {
+      "path": "tmp/game-engineering-round4/good-enemy/good-enemy-review.md",
+      "sha256": "26ea04c95f6db67d3f2686c54315f273d7756ef39905b1c86d79a14393f1f1f0",
+      "bytes": 2879
+    },
+    {
+      "path": "tmp/game-engineering-round4/qa/exact_main_tick_checkpoints.json",
+      "sha256": "b8593ea2c245d279794ade656578088e11c98dda57169d5ca94482ac9ef8fc81",
+      "bytes": 3673
+    },
+    {
+      "path": "tmp/game-engineering-round4/regression/final-exact-checkpoints/capture_main_baseline.gd",
+      "sha256": "45f4a8b9b114480919935930c534fd95e61b18f4df90414b241cf613db446049",
+      "bytes": 2824
+    },
+    {
+      "path": "tmp/game-engineering-round4/regression/final-exact-checkpoints/capture_main_candidate.gd",
+      "sha256": "3015179a9fc313808a7908d2544f12fd741c7b8ceb54ac1f5e9f55ac18d8c83e",
+      "bytes": 10691
+    },
+    {
+      "path": "tmp/game-engineering-round4/regression/final-exact-checkpoints/live_checkpoint_common.gd",
+      "sha256": "574c78223cad053e6edada2f73ab288ed75e73bc5e84a3ac8706169c17442fa1",
+      "bytes": 9626
+    },
+    {
+      "path": "tmp/game-engineering-round4/regression/final-exact-checkpoints/main_checkpoint_baseline.json",
+      "sha256": "6c1581681d86c30c7abfc87f21929f9604d961a3f2fee72281a2cdaaa5e5d827",
+      "bytes": 81455
+    },
+    {
+      "path": "tmp/game-engineering-round4/regression/final-exact-checkpoints/main_checkpoint_candidate.json",
+      "sha256": "bc2e9dd82dfe1180c71fa589cbfb9234f5515a37919afe90894efe3816096655",
+      "bytes": 248249
+    },
+    {
+      "path": "tmp/game-engineering-round4/regression/final-exact-checkpoints/receipt.json",
+      "sha256": "8ac8289efda55fd972dc8098b1e9316a09ff4ea985c80c0d00e372ef22162bcd",
+      "bytes": 7683
+    },
+    {
+      "path": "tmp/game-engineering-round4/static-checks.json",
+      "sha256": "a1197e7bdfac8733ab505ec3a500b76028f7e5d19da12b95de4832f0773fe63a",
+      "bytes": 660
+    }
+  ],
+  "verified_isolated_sources": [
+    {
+      "path": "tmp/game-engineering-round4/regression/head-checkout-20261023/app/main.gd",
+      "sha256": "989372a5e08c6f9e7ad20c79c57027b0b7f0c94806455cfe7f8a7866224c707e",
+      "bytes": 151039
+    },
+    {
+      "path": "tmp/game-engineering-round4/regression/head-checkout-20261023/app/sim/flight_session.gd",
+      "sha256": "f7525b21f00dfc3d38c0f0177df20cfab9213ab0c6461b94609b3e4fc0bda398",
+      "bytes": 240683
+    },
+    {
+      "path": "tmp/game-engineering-round4/regression/head-checkout-20261023/app/sim/launch_trim_cache.gd",
+      "sha256": "3a61bddb6c88bc3fb129432ef211480ee7402130a76eb39cf70a72b69907a9d2",
+      "bytes": 4287
+    },
+    {
+      "path": "tmp/game-engineering-round4/regression/head-checkout-20261023/app/tests/test_main_startup_cleanup.gd",
+      "sha256": "a58e803f949a51cb11f29c092d9b9d22b499d4e4e01969d7cc9ec27e2d3d7a2d",
+      "bytes": 9624
+    },
+    {
+      "path": "tmp/game-engineering-round4/regression/head-checkout-20261023/app/tests/test_launch_trim_cache.gd",
+      "sha256": "856aa9c042464e4e2c2b043b5dc1d6a715f3f7e938950df3b25a0f4e71338a1f",
+      "bytes": 11685
+    }
+  ]
+}

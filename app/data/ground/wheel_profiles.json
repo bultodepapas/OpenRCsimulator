@@ -135,20 +135,20 @@
       }
     },
     "f4u-corsair-250": {
-      "description": "F4U Corsair 1/4.5 retractable taildragger gear (F4U-08). Wheel radii come from the delivered g1.3 model; wheel-only masses, inertias, spin relaxation and brake torque are explicit estimates. Estimated pneumatic main-wheel brakes; the steerable tail wheel has none.",
+      "description": "F4U Corsair 1/4.5 retractable taildragger gear (F4U-08). Wheel radii come from the delivered g1.13 model; wheel-only masses, inertias, spin relaxation and brake torque are explicit estimates. Estimated pneumatic main-wheel brakes; the steerable tail wheel has none.",
       "contacts": {
         "main_left": {
-          "wheel_radius": {"value": 0.094, "unit": "m", "kind": "derived", "source": "assets/aircraft/f4u-corsair-250/model-geometry.json (g1.3 metadata): main wheel radius, the author's 1:4.5 scale of R59's tyre; visual model dimension, not a measured RC wheel"},
-          "wheel_inertia": {"value": 0.000582998, "unit": "kg·m2", "kind": "estimated", "source": "Uniform solid-disk estimate, 0.1320 kg rotating wheel mass (the P-51's 0.100 kg main wheel scaled by radius cubed) and the 0.094 m radius; not a measured wheel"},
+          "wheel_radius": {"value": 0.09415, "unit": "m", "kind": "derived", "source": "assets/aircraft/f4u-corsair-250/model-geometry.json (g1.13 metadata; tyre rebuilt in g1.8): main wheel radius, the author's 1:4.5 scale of R59's tyre; visual model dimension, not a measured RC wheel"},
+          "wheel_inertia": {"value": 0.000587664, "unit": "kg·m2", "kind": "estimated", "source": "Uniform solid-disk estimate, 0.1326 kg rotating wheel mass (the P-51's 0.100 kg main wheel scaled by radius cubed) and the 0.09415 m radius; not a measured wheel"},
           "spin_relaxation": {"value": 0.03, "unit": "s", "kind": "estimated", "source": "GP-02 shared tyre spin-slip relaxation parameter; not measured"},
-          "brake_torque": {"value": 2.0, "unit": "N·m", "kind": "estimated", "source": "Pneumatic wheel brakes of the giant-scale retract class (the CARF manual does not specify them): about 0.2 g with both mains at full demand (2 x 2.0 N·m / 0.094 m against 21.5 kg), below the friction limit of the static main-wheel load (about 7.4 N·m at mu 0.8); as the P-51 (P51-11c); not measured"},
+          "brake_torque": {"value": 2.0, "unit": "N·m", "kind": "estimated", "source": "Pneumatic wheel brakes of the giant-scale retract class (the CARF manual does not specify them): about 0.2 g with both mains at full demand (2 x 2.0 N·m / 0.09415 m against 21.5 kg), below the friction limit of the static main-wheel load (about 7.4 N·m at mu 0.8); as the P-51 (P51-11c); not measured"},
           "brake_availability": "available"
         },
         "main_right": {
-          "wheel_radius": {"value": 0.094, "unit": "m", "kind": "derived", "source": "assets/aircraft/f4u-corsair-250/model-geometry.json (g1.3 metadata): main wheel radius, the author's 1:4.5 scale of R59's tyre; visual model dimension, not a measured RC wheel"},
-          "wheel_inertia": {"value": 0.000582998, "unit": "kg·m2", "kind": "estimated", "source": "Uniform solid-disk estimate, 0.1320 kg rotating wheel mass (the P-51's 0.100 kg main wheel scaled by radius cubed) and the 0.094 m radius; not a measured wheel"},
+          "wheel_radius": {"value": 0.09415, "unit": "m", "kind": "derived", "source": "assets/aircraft/f4u-corsair-250/model-geometry.json (g1.13 metadata; tyre rebuilt in g1.8): main wheel radius, the author's 1:4.5 scale of R59's tyre; visual model dimension, not a measured RC wheel"},
+          "wheel_inertia": {"value": 0.000587664, "unit": "kg·m2", "kind": "estimated", "source": "Uniform solid-disk estimate, 0.1326 kg rotating wheel mass (the P-51's 0.100 kg main wheel scaled by radius cubed) and the 0.09415 m radius; not a measured wheel"},
           "spin_relaxation": {"value": 0.03, "unit": "s", "kind": "estimated", "source": "GP-02 shared tyre spin-slip relaxation parameter; not measured"},
-          "brake_torque": {"value": 2.0, "unit": "N·m", "kind": "estimated", "source": "Pneumatic wheel brakes of the giant-scale retract class (the CARF manual does not specify them): about 0.2 g with both mains at full demand (2 x 2.0 N·m / 0.094 m against 21.5 kg), below the friction limit of the static main-wheel load (about 7.4 N·m at mu 0.8); as the P-51 (P51-11c); not measured"},
+          "brake_torque": {"value": 2.0, "unit": "N·m", "kind": "estimated", "source": "Pneumatic wheel brakes of the giant-scale retract class (the CARF manual does not specify them): about 0.2 g with both mains at full demand (2 x 2.0 N·m / 0.09415 m against 21.5 kg), below the friction limit of the static main-wheel load (about 7.4 N·m at mu 0.8); as the P-51 (P51-11c); not measured"},
           "brake_availability": "available"
         },
         "tail": {

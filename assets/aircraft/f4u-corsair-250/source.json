@@ -105,6 +105,9 @@
     "rudder_area_aft_of_hinge_ft2": 13.0,
     "rudder_balance_area_ft2": 1.66,
     "fin_offset_left_deg": 2.0,
+    "wing_incidence_deg": 2.0,
+    "flap_restricted_speed_kt": {"at_50_deg": 130.0, "at_20_deg": 200.0, "blow_up_onset_full_flap": [90.0, 110.0]},
+    "chart_light_gross_weight_lb": 10000.0,
     "aileron_area_aft_of_hinge_both_ft2": 18.1,
     "aileron_span_each_ft": 7.48,
     "flap_area_total_ft2": 36.4,
@@ -115,13 +118,13 @@
     "pb2v_flaps_gear_down": [0.06, 0.076],
     "stall": "power on: pitch-down with roll-off to the left; power off: mild roll-off, inconsistent in direction; warning inadequate (NACA RM A7C05)",
     "clmax_tunnel": {"slotted_flaps_50_ailerons_drooped_power_off": 2.13, "power_on": 2.46, "reynolds": 2.7e6},
-    "sources": "NACA RM A7C05 (F4U-4 flying qualities, 1947, ntrs.nasa.gov/citations/20050081862) dimension table and text; NACA WR L-440 (1/2.75 model, 1942, ntrs.nasa.gov/citations/19930093637); wing area: Patriots Point FG-1D and WR L-440 model area x 2.75^2. OCR-degraded values are recorded in docs/research/f4u-corsair/F4U-01/README.md"
+    "sources": "NACA RM A7C05 (F4U-4 flying qualities, 1947, ntrs.nasa.gov/citations/20050081862) dimension table and text; NACA WR L-440 (1/2.75 model, 1942, ntrs.nasa.gov/citations/19930093637); wing area: Patriots Point FG-1D and WR L-440 model area x 2.75^2. OCR-degraded values are recorded in docs/research/f4u-corsair/F4U-01/README.md. Pilot's handbook AN 01-45HA-1 (F4U-1, FG-1, F3A-1; www.vmfa251.org/pdffiles/Corsair%20Manual.pdf), read from the page images: wing incidence +2 deg, thrust line to wing chord line (Appendix I p. 64, chart note); flaps-down restricted speed from 130 kt at 50 deg to 200 kt at 20 deg with the relief mechanism inoperative, blow-up beginning at 90-110 kt IAS at full flap (Section I p. 14); gross weights charted from 10,000 lb (Appendix I pp. 62-64)"
   },
   "sections": {
     "measured": {
-      "source": "NACA TR 586 (Jacobs and Sherman, 1937, ntrs.nasa.gov/citations/19930091662), Table I, variable-density tunnel at effective Reynolds numbers (free-air equivalent). Rows read from the OCR text layer by their Reynolds-number series and the 23012's signature (alpha0 -1.2 deg, cm -0.007 to -0.010); recheck against the page image",
+      "source": "NACA TR 586 (Jacobs and Sherman, 1937, ntrs.nasa.gov/citations/19930091662), Table I, variable-density tunnel at effective Reynolds numbers (free-air equivalent). Report pp. 39-40 checked against the page images 2026-10-23: every clmax, alpha0, slope and cm used here matches; the OCR text layer had misread two 23012 Reynolds numbers (884,000 and 8,160,000)",
       "naca_23012": {
-        "reynolds_effective": [112000, 221000, 449000, 874000, 1760000, 3400000, 6070000, 8190000],
+        "reynolds_effective": [112000, 221000, 449000, 884000, 1760000, 3400000, 6070000, 8160000],
         "clmax": [1.00, 1.15, 1.19, 1.28, 1.41, 1.53, 1.67, 1.72],
         "cl_alpha_per_deg": 0.096,
         "alpha0_deg": -1.2,

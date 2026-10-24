@@ -12,8 +12,23 @@ static func validate(construction: Variant, bindings: Dictionary) -> Dictionary:
 	if typeof(construction) != TYPE_DICTIONARY:
 		_fail(errors, diagnostics, "MODEL_CONSTRUCTION_INVALID", "$.construction", "construction must be an object")
 		return _result(errors, diagnostics)
-	if not _check_fields(construction, ["version", "hinge_axis", "rotor", "gear", "material_grow"], "$.construction", errors, diagnostics, ["retraction"]):
+	if not _check_fields(construction, ["version", "hinge_axis", "rotor", "gear", "material_grow"], "$.construction", errors, diagnostics, ["retraction", "folds"]):
 		return _result(errors, diagnostics)
+	if construction.has("folds"):
+		var folds: Variant = construction.folds
+		var fold_keys: Dictionary = {}
+		if typeof(folds) != TYPE_ARRAY or folds.is_empty() or folds.size() > 2:
+			_fail(errors, diagnostics, "MODEL_CONSTRUCTION_FOLDS_INVALID", "$.construction.folds", "folds must be an array of one or two fold groups")
+		else:
+			for index in folds.size():
+				var path := "$.construction.folds[%d]" % index
+				var fold: Variant = folds[index]
+				if not _check_fields(fold, ["key", "geometry_ref"], path, errors, diagnostics): continue
+				if not _is_node_name(fold.get("key")) or fold_keys.has(fold.get("key")):
+					_fail(errors, diagnostics, "MODEL_CONSTRUCTION_FOLDS_INVALID", path + ".key", "fold key must be a unique safe name")
+				fold_keys[fold.get("key")] = true
+				if not _dotted_ref(fold.get("geometry_ref")):
+					_fail(errors, diagnostics, "MODEL_CONSTRUCTION_REF_INVALID", path + ".geometry_ref", "fold needs a dotted geometry reference")
 
 	var version: Variant = construction.get("version")
 	if not _is_finite_number(version) or float(version) != 1.0:
