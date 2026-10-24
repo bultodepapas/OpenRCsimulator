@@ -4,6 +4,19 @@ extends SceneTree
 
 const Sound := preload("res://render/engine_sound.gd")
 const FlightAudio := preload("res://audio/flight_audio.gd")
+# Counts are FlightAudio helper outputs; Avanti's 2 is the fallback for its turbine path.
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const EXPECTED_AIRCRAFT_BLADE_COUNTS := {
+	"jensen-das-ugly-stik-60": 2,
+	"stik-glow-61fx-2t": 2,
+	"stik-glow-55ax-2t": 2,
+	"stik-glow-fs64v-4t": 2,
+	"gp-extra-300s-60": 2,
+	"p51d-mustang-120": 4,
+	"f4u-corsair-250": 3,
+	"sebart-avanti-s-a200-p100rx": 2,
+	"turbo-lumber-evolution": 3,
+}
 
 class LegacySessionStub extends Node:
 	var engine_running: bool = true
@@ -15,6 +28,17 @@ class AcceptedSourceStub extends Node:
 
 	func propulsion_source_running() -> bool:
 		return accepted_running
+
+
+class AtmosphereSessionStub extends Node:
+	var temperature_k: float = 288.15
+
+	func atmosphere_configuration() -> Dictionary:
+		return {"temperature_k": temperature_k}
+
+
+class FlightStub extends Node3D:
+	var session: AtmosphereSessionStub
 
 var _failures := 0
 var _count := 0
@@ -60,8 +84,32 @@ func _initialize() -> void:
 	_check("OCV electric fixture keeps its normalized reference RPM", Sound.reference_rpm(ocv_motor) == 13440.0)
 	_check("electric data without a reference does not use the combustion fallback",
 		Sound.reference_rpm({"kind": "electric_prop"}) == 0.0)
-	_check("Timber audio uses its three-blade propeller", FlightAudio.propeller_blade_count("turbo-lumber-evolution") == 3)
-	_check("other aircraft keep the two-blade default", FlightAudio.propeller_blade_count("jensen-ugly-stik-60") == 2)
+	var airplane_ids := Array(Catalog.airplane_flyable_ids())
+	var expected_airplane_ids := EXPECTED_AIRCRAFT_BLADE_COUNTS.keys()
+	airplane_ids.sort()
+	expected_airplane_ids.sort()
+	_check("explicit propeller blade-count expectations cover exactly the flyable airplane catalog",
+		airplane_ids == expected_airplane_ids,
+		"catalog=%s expected=%s" % [str(airplane_ids), str(expected_airplane_ids)])
+	for aircraft_id: String in EXPECTED_AIRCRAFT_BLADE_COUNTS:
+		var expected_blades: int = int(EXPECTED_AIRCRAFT_BLADE_COUNTS[aircraft_id])
+		var check_label := "FlightAudio helper returns %d for %s" % [expected_blades, aircraft_id]
+		if aircraft_id == "sebart-avanti-s-a200-p100rx":
+			check_label = "Avanti turbine audio helper returns fallback blade count %d" % expected_blades
+		_check(check_label, FlightAudio.propeller_blade_count(aircraft_id) == expected_blades,
+			"actual=%d" % FlightAudio.propeller_blade_count(aircraft_id))
+	var audio_adapter: Node = FlightAudio.new()
+	var flight_stub := FlightStub.new()
+	flight_stub.session = AtmosphereSessionStub.new()
+	audio_adapter.set("flight", flight_stub)
+	for temperature_k: float in [216.65, 288.15, 308.15]:
+		flight_stub.session.temperature_k = temperature_k
+		var expected_sound_speed: float = sqrt(1.4 * 287.05 * temperature_k)
+		_check("sound speed follows accepted atmosphere temperature %.2f K" % temperature_k,
+			is_equal_approx(float(audio_adapter.call("sound_speed_mps")), expected_sound_speed))
+	audio_adapter.free()
+	flight_stub.session.free()
+	flight_stub.free()
 	var accepted_source := AcceptedSourceStub.new()
 	_check("accepted stopped source silences audio while ignition remains on",
 		FlightAudio.propulsion_source_running(accepted_source) == false and accepted_source.engine_running)

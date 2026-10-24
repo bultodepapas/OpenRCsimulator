@@ -70,19 +70,24 @@ func _run() -> void:
 	var connections_before := RenderingServer.frame_post_draw.get_connections().size()
 	var shutdown_connections_before := root.tree_exiting.get_connections().size()
 	var quit_without_draw := OS.get_cmdline_user_args().has("--quit-no-draw")
+	var quit_pending := OS.get_cmdline_user_args().has("--quit-pending")
 	if quit_without_draw:
 		RenderingServer.set_render_loop_enabled(false)
 	for cycle in 8:
-		var refs := _create_and_retire(host, cycle == 0, cycle == 1)
+		var refs := _create_and_retire(host, cycle == 0, cycle == 1 or quit_without_draw or quit_pending)
 		_check("environment released immediately %d" % cycle, refs[0].get_ref() == null)
 		var expected_lifetime := true
 		for reference: WeakRef in refs.slice(1):
 			expected_lifetime = expected_lifetime and ((reference.get_ref() != null) == _native)
 		_check("Sky has expected pending lifetime %d" % cycle, expected_lifetime)
-		if OS.get_cmdline_user_args().has("--quit-pending") or quit_without_draw:
+		if quit_pending or quit_without_draw:
+			_check("shutdown covers two pending skies and materials", refs.size() == 5)
 			if quit_without_draw:
 				root.tree_exiting.connect(func() -> void:
-					print("SKY_SHUTDOWN_RELEASED: ", refs[1].get_ref() == null))
+					var all_released := true
+					for reference: WeakRef in refs.slice(1):
+						all_released = all_released and reference.get_ref() == null
+					print("SKY_SHUTDOWN_RELEASED: ", all_released))
 			print("SKY_PENDING_QUIT: checks=%d failures=%d" % [_checks, _failures])
 			quit(1 if _failures else 0)
 			return

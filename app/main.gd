@@ -2042,7 +2042,7 @@ func _update_storm(clock_s: float, paused: bool) -> void:
 	_storm_fx.set_cloud_state(Atmosphere.cloud_state_snapshot())
 	if _soundscape_audio != null:
 		_storm_fx.get_node("StormAudio").bind_soundscape(_soundscape_audio.soundscape)
-		_storm_fx.set_sound_speed(float(_soundscape_audio.snapshot().sound_speed))
+		_storm_fx.set_sound_speed(_soundscape_audio.sound_speed_mps())
 	_storm_fx.update_at(clock_s, _camera.global_position, paused, _env.tonemap_exposure)
 
 

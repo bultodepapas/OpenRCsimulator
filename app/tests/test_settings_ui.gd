@@ -217,6 +217,66 @@ func _run() -> void:
 	about.pressed.emit()
 	_check("Controls and Help/About expose host routes", _routes == ["controls", "about"])
 
+	# Focus recovery follows the same viewport event path used by keyboard/gamepad players.
+	settings._show_category(2)
+	settings._volume_slider.grab_focus()
+	await _tap_key(test_viewport, KEY_RIGHT)
+	_check("real Right input changes the focused menu volume", settings._draft.menu_volume > settings._saved.menu_volume)
+	settings._keep_button.grab_focus()
+	await _tap_key(test_viewport, KEY_ENTER)
+	_check("Keep via Enter moves focus to Close when Keep disables itself",
+		settings._keep_button.disabled and test_viewport.gui_get_focus_owner() == settings._close_button)
+	await _tap_key(test_viewport, KEY_UP)
+	var focus_after_keep := test_viewport.gui_get_focus_owner()
+	_check("Up after Keep continues navigating from an enabled control",
+		focus_after_keep != null and focus_after_keep != settings._keep_button and focus_after_keep != settings._revert_button)
+	settings._volume_slider.grab_focus()
+	await _tap_key(test_viewport, KEY_RIGHT)
+	settings._revert_button.grab_focus()
+	await _tap_key(test_viewport, KEY_ENTER)
+	_check("Revert via Enter moves focus to Close when Revert disables itself",
+		settings._revert_button.disabled and test_viewport.gui_get_focus_owner() == settings._close_button
+		and settings._draft.menu_volume == settings._saved.menu_volume)
+	settings._test_sound_button.grab_focus()
+	settings._volume_changed(0.0)
+	_check("muting a focused Test sound button moves focus to Game volume",
+		settings._test_sound_button.disabled and test_viewport.gui_get_focus_owner() == settings._volume_slider)
+	settings._revert()
+
+	settings._show_category(2)
+	settings._category_buttons[2].grab_focus()
+	test_viewport.size = Vector2i(1920, 580)
+	await process_frame
+	await process_frame
+	_check("compact category swap preserves Sound and moves tab focus to its picker",
+		settings._category_picker.visible and settings._category_picker.selected == 2
+		and settings._pages[2].visible and test_viewport.gui_get_focus_owner() == settings._category_picker)
+	test_viewport.size = Vector2i(1920, 1080)
+	await process_frame
+	await process_frame
+	_check("wide category swap restores Sound tab focus and selection",
+		settings._categories.visible and settings._category_picker.selected == 2
+		and settings._pages[2].visible and test_viewport.gui_get_focus_owner() == settings._category_buttons[2])
+
+	var help_layer := CanvasLayer.new()
+	var help_button := Button.new()
+	help_button.name = "NestedHelpFocus"
+	help_layer.add_child(help_button)
+	test_viewport.add_child(help_layer)
+	settings._show_category(0)
+	settings._window_mode_selected(1)
+	settings._surface.set_active(false)
+	help_button.grab_focus()
+	settings._trial_deadline_msec = Time.get_ticks_msec() - 1
+	await process_frame
+	await process_frame
+	_check("display timeout under nested Help reverts without taking its focus",
+		not settings._surface.is_visible_in_tree() and test_viewport.gui_get_focus_owner() == help_button
+		and settings._draft.window_mode == settings._saved.window_mode)
+	help_layer.queue_free()
+	settings._surface.set_active(true)
+	await process_frame
+
 	settings._scale_selected(4)
 	settings.keep_changes()
 	_check("Keep persists accessibility and scale changes", is_equal_approx(DisplayPreferences.load_from(PREFS).ui_scale, 2.0))
@@ -242,6 +302,17 @@ func _write(contents: String) -> void:
 func _clean() -> void:
 	for candidate in [PREFS, PREFS + ".bad"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(candidate))
+
+
+func _tap_key(viewport: Viewport, code: Key) -> void:
+	for pressed in [true, false]:
+		var event := InputEventKey.new()
+		event.keycode = code
+		event.physical_keycode = code
+		event.pressed = pressed
+		viewport.push_input(event)
+	await process_frame
+	await process_frame
 
 
 func _capture_presentation(config: Dictionary) -> void:

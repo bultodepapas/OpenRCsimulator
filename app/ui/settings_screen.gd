@@ -299,6 +299,14 @@ func _show_category(index: int) -> void:
 	_scroll.scroll_vertical = 0
 
 
+func _grab_settings_focus(control: Control) -> void:
+	# A suspended Settings screen must never reclaim focus from its top-level child screen.
+	if not is_inside_tree() or not _surface.is_visible_in_tree() or not is_instance_valid(control):
+		return
+	if control.is_visible_in_tree() and control.focus_mode != Control.FOCUS_NONE:
+		control.grab_focus()
+
+
 func _volume_control(container_name: String, slider_name: String, value_name: String, on_changed: Callable) -> HBoxContainer:
 	var control := HBoxContainer.new()
 	control.name = container_name
@@ -341,7 +349,10 @@ func _refresh_volume_text() -> void:
 	_volume_value.text = _volume_text(float(_draft.menu_volume))
 	if _master_value != null:
 		_master_value.text = _volume_text(float(_draft.get("master_volume", 1.0)))
+	var test_sound_had_focus := is_inside_tree() and get_viewport().gui_get_focus_owner() == _test_sound_button
 	_test_sound_button.disabled = float(_draft.menu_volume) <= 0.0
+	if test_sound_had_focus and _test_sound_button.disabled:
+		_grab_settings_focus(_volume_slider)
 
 
 func _volume_text(level: float) -> String:
@@ -547,8 +558,14 @@ func _sync_controls() -> void:
 
 func _sync_action_buttons() -> void:
 	var dirty := _draft != _saved
+	var focus_was_on_action := false
+	if is_inside_tree():
+		var focused := get_viewport().gui_get_focus_owner()
+		focus_was_on_action = focused == _keep_button or focused == _revert_button
 	_keep_button.disabled = not dirty
 	_revert_button.disabled = not dirty
+	if not dirty and focus_was_on_action:
+		_grab_settings_focus(_close_button)
 	if dirty and _trial_deadline_msec <= 0 and _status_state in ["saved", "reverted", "expired"]:
 		_set_status("instructions")
 	elif _status_state == "instructions":
@@ -565,6 +582,15 @@ func _update_layout() -> void:
 	if _surface == null or _layout_panel == null:
 		return
 	var compact_height := ScreenTheme.text_scale >= 1.75 and _surface.size.y <= 600.0
+	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	var focus_on_category_button := false
+	for category_button: Button in _category_buttons:
+		if focused == category_button:
+			focus_on_category_button = true
+			break
+	var transfer_category_focus := (compact_height and focus_on_category_button) \
+		or (not compact_height and focused == _category_picker)
+	var selected_category := clampi(_category_picker.selected, 0, _category_buttons.size() - 1)
 	var gutter := 16.0 if compact_height else 24.0
 	_layout_center.offset_left = gutter
 	_layout_center.offset_top = gutter
@@ -585,6 +611,8 @@ func _update_layout() -> void:
 	_categories.columns = 2 if stack_rows else 4
 	_categories.visible = not compact_height
 	_category_picker.visible = compact_height
+	if transfer_category_focus:
+		_grab_settings_focus(_category_picker if compact_height else _category_buttons[selected_category])
 	_destinations.vertical = stack_rows
 	for row: BoxContainer in _rows:
 		row.vertical = stack_rows

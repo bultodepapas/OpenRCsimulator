@@ -1,0 +1,640 @@
+{
+  "format": "openrc-native-a-b-frame-comparison v2",
+  "created_utc": "2026-10-24T11:44:35Z",
+  "claim": "Descriptive A/B/B/A data only; no FPS gain or regression claim.",
+  "order": [
+    "a1-before",
+    "b1-current",
+    "b2-current",
+    "a2-before"
+  ],
+  "pairs": [
+    {
+      "current": "b1",
+      "before": "a1"
+    },
+    {
+      "current": "b2",
+      "before": "a2"
+    }
+  ],
+  "environment": {
+    "engine": "Godot 4.7.2 stable official ed1daf0bf",
+    "engine_log_version": "4.7.2.stable.official.ed1daf0bf",
+    "os": "Windows",
+    "audio_driver": "Dummy",
+    "sample_instrumentation": "Frame sample collection on; extra in-game frame observer off; direct process OS sampler at 1 s."
+  },
+  "matched_conditions": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "route": "live keyboard flight; input enabled; keyboard selected; radio disconnected",
+    "startup": "quick flight, airborne start",
+    "sky": "electrical_storm",
+    "audio_seed": 27031,
+    "warmup_s": 10,
+    "sample_s": 30,
+    "display": {
+      "window": "1920x1080",
+      "renderer": "gl_compatibility",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "OpenGL 3.3.0 NVIDIA 617.42",
+      "refresh_hz": 60,
+      "max_fps": 0,
+      "vsync_mode": 1,
+      "msaa_3d_enum": 2,
+      "msaa_3d_samples": "4x",
+      "scaling_3d": 1.0,
+      "screen_space_aa": 0
+    },
+    "camera_settings": "pilot; FOV 6 deg; autozoom enabled; pose follows live aircraft and differs slightly by captured sim state (per-run transforms retained).",
+    "temporary_bootstrap": {
+      "path": "tmp/engineering-perf/native_main_pair.gd",
+      "sha256": "d8bc0a80e53016d8a31a93511303c1dc6d9ef99f5aa16b984ab86f4a3c12a572",
+      "setup": "Switch to fullscreen, settle display frames, assert focused 1920x1080, then select keyboard and attach normal flight; no pause/resume bypass."
+    },
+    "preset": "current-default",
+    "flight_companions": {
+      "enabled": false,
+      "roster": []
+    },
+    "render_details": {
+      "lake_reflections": {
+        "capture_size_at_report": [
+          0,
+          0
+        ],
+        "mode": "probe",
+        "planar_active_at_report": false,
+        "requested": ""
+      },
+      "in_game_frame_diagnostics_enabled": false,
+      "frame_percentiles_source": "native frame timing report; separate diagnostic observer disabled"
+    }
+  },
+  "source_conditions": {
+    "before_main_sha256": "32fcdf7503159ff398f8415639a8d83a026151062dbd742bd1e14f13d3fd6a75",
+    "current_main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+    "shared_source_sha256": {
+      "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+      "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+      "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+      "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+      "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+    },
+    "shared_sources_identical": true,
+    "before_main_path": "tmp/engineering-perf/main.before.gd",
+    "current_main_path": "app/main.gd"
+  },
+  "simulation_window_assessment": {
+    "all_runs_active": true,
+    "initially_paused": false,
+    "start_tick_span": 18,
+    "end_tick_span": 17,
+    "start_time_span_seconds": 0.075,
+    "end_time_span_seconds": 0.070833,
+    "sample_tick_range": [
+      7195.0,
+      7197.0
+    ],
+    "sample_wall_seconds_range": [
+      30.000085,
+      30.000432
+    ],
+    "assessment": "Active windows are close but not identical (start/end differ by up to 18/17 ticks, 0.075/0.071 s); no run needed manual resume. Treat as a near-matched screening pair, not exact replay."
+  },
+  "native_summary_default_policy": {
+    "minimum_runs": 3,
+    "minimum_warmup_seconds": 10,
+    "minimum_sample_seconds": 60,
+    "p95_max_ms": 18.0,
+    "p99_max_ms": 25.0,
+    "simulation_wall_ratio": [
+      0.99,
+      1.01
+    ],
+    "duration_gate": "not eligible: each run samples 30 s, below the 60 s minimum",
+    "observations": "b1 p95=18.640 ms exceeds the 18 ms screen. Four short runs do not establish a campaign pass."
+  },
+  "excluded_runs": [
+    {
+      "frame_sha256": "904b11264ea7052e44918b691b4bab0eaaab30b53a4a6121e4e7ccf59b547e0b",
+      "id": "before-1",
+      "reason": "excluded from 1080p set: window was 1920x1061"
+    }
+  ],
+  "runs": [
+    {
+      "id": "a1",
+      "condition": "before",
+      "main_sha256": "32fcdf7503159ff398f8415639a8d83a026151062dbd742bd1e14f13d3fd6a75",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "route": "live-input",
+      "keyboard_selected": true,
+      "radio_connected": false,
+      "initially_paused": false,
+      "sky": "electrical_storm",
+      "audio_seed": 27031,
+      "warmup_s": 10,
+      "sample_s": 30,
+      "display": {
+        "window": "1920x1080",
+        "viewport": [
+          1920.0,
+          1080.0
+        ],
+        "renderer": "gl_compatibility",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "api": "3.3.0 NVIDIA 617.42",
+        "screen_refresh_hz": 60.0,
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "scaling_3d_scale": 1.0,
+        "screen_space_aa": 0,
+        "extra_frame_observer": "off",
+        "frame_diagnostics_observer_enabled": false
+      },
+      "camera": {
+        "mode": "pilot",
+        "fov_deg": 6.0,
+        "autozoom": true,
+        "near_m": 0.100000001490116,
+        "far_m": 21000.0,
+        "projection": 0,
+        "keep_aspect": 1,
+        "pose_at_report": {
+          "basis_columns": [
+            [
+              0.0789009407162666,
+              0.0,
+              0.996882498264313
+            ],
+            [
+              -0.0360862463712692,
+              0.99934458732605,
+              0.00285614281892776
+            ],
+            [
+              -0.996229112148285,
+              -0.0361991003155708,
+              0.0788492262363434
+            ]
+          ],
+          "position": [
+            0.0,
+            1.70000004768372,
+            0.0
+          ]
+        }
+      },
+      "frame": {
+        "count": 1800,
+        "sample_wall_s": 30.00009,
+        "fps_mean": 59.99982000054,
+        "p50_ms": 16.676,
+        "p95_ms": 17.424,
+        "p99_ms": 18.157,
+        "max_ms": 19.692
+      },
+      "simulation_window": {
+        "start_tick": 2350,
+        "start_time_s": 9.79166666666667,
+        "end_tick": 9546,
+        "end_time_s": 39.775,
+        "tick_count": 7196,
+        "wall_s": 30.00009,
+        "whole_collection_paused": false,
+        "physics_hz": 240,
+        "fault": "",
+        "active_at_report": true,
+        "crashed_at_report": false,
+        "focused_at_report": true,
+        "holds_at_report": []
+      },
+      "process_resources": {
+        "scope": "direct engine process, sampled from launch through exit; 1 s sampling can miss brief peaks",
+        "sampling_interval_s": 1.0,
+        "sample_count": 50,
+        "peak_rss_bytes": 1347547136,
+        "rss_first_bytes": 2125824,
+        "rss_last_bytes": 1335754752,
+        "rss_delta_bytes": 1333628928,
+        "peak_cpu_percent": 133.71810045792824,
+        "cpu_user_s": 28.40625,
+        "cpu_system_s": 2.953125,
+        "cpu_total_s": 31.359375
+      },
+      "validity": {
+        "frame_complete": true,
+        "checked_runner_ok": true,
+        "checked_complete": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "engine_warnings": 0,
+        "objectdb_shutdown_warning": false,
+        "clean_shutdown_claim_allowed": true,
+        "true_1080p": true
+      },
+      "artifacts": {
+        "frame_report": "tmp/engineering-perf/native/a1.json",
+        "engine_log": "tmp/engineering-perf/native/checks/a1-g0kudfib/engine.log",
+        "checked_report": "tmp/engineering-perf/native/checks/a1-g0kudfib/report.json",
+        "resources": "tmp/engineering-perf/native/checks/a1-g0kudfib/resources.json",
+        "sha256": {
+          "frame_report": "2e3e895a5c149837801b5097764718c3eabb3096575205a016e412b88fe39773",
+          "engine_log": "5999fa4ce1c8c79296d53b405e4969a16b43251042164a830b5147488528124d",
+          "checked_report": "710a9b71c1475022355be093852a10a7f1fd61e0bfe17e0d774a5b2e108420b3",
+          "resources": "3214aaeb423aa3fc73889e21ee5ac84bae6da2f1f438852b53f101351f873089"
+        }
+      },
+      "main_source_path": "tmp/engineering-perf/main.before.gd"
+    },
+    {
+      "id": "b1",
+      "condition": "current",
+      "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "route": "live-input",
+      "keyboard_selected": true,
+      "radio_connected": false,
+      "initially_paused": false,
+      "sky": "electrical_storm",
+      "audio_seed": 27031,
+      "warmup_s": 10,
+      "sample_s": 30,
+      "display": {
+        "window": "1920x1080",
+        "viewport": [
+          1920.0,
+          1080.0
+        ],
+        "renderer": "gl_compatibility",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "api": "3.3.0 NVIDIA 617.42",
+        "screen_refresh_hz": 60.0,
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "scaling_3d_scale": 1.0,
+        "screen_space_aa": 0,
+        "extra_frame_observer": "off",
+        "frame_diagnostics_observer_enabled": false
+      },
+      "camera": {
+        "mode": "pilot",
+        "fov_deg": 6.0,
+        "autozoom": true,
+        "near_m": 0.100000001490116,
+        "far_m": 21000.0,
+        "projection": 0,
+        "keep_aspect": 1,
+        "pose_at_report": {
+          "basis_columns": [
+            [
+              0.0789924338459969,
+              0.0,
+              0.99687522649765
+            ],
+            [
+              -0.0361288487911224,
+              0.999343037605286,
+              0.00286285160109401
+            ],
+            [
+              -0.996220290660858,
+              -0.0362420938909054,
+              0.0789405405521393
+            ]
+          ],
+          "position": [
+            0.0,
+            1.70000004768372,
+            0.0
+          ]
+        }
+      },
+      "frame": {
+        "count": 1800,
+        "sample_wall_s": 30.000149,
+        "fps_mean": 59.9997020014801,
+        "p50_ms": 16.661,
+        "p95_ms": 18.64,
+        "p99_ms": 19.454,
+        "max_ms": 28.498
+      },
+      "simulation_window": {
+        "start_tick": 2340,
+        "start_time_s": 9.75,
+        "end_tick": 9535,
+        "end_time_s": 39.7291666666667,
+        "tick_count": 7195,
+        "wall_s": 30.000149,
+        "whole_collection_paused": false,
+        "physics_hz": 240,
+        "fault": "",
+        "active_at_report": true,
+        "crashed_at_report": false,
+        "focused_at_report": true,
+        "holds_at_report": []
+      },
+      "process_resources": {
+        "scope": "direct engine process, sampled from launch through exit; 1 s sampling can miss brief peaks",
+        "sampling_interval_s": 1.0,
+        "sample_count": 51,
+        "peak_rss_bytes": 1306882048,
+        "rss_first_bytes": 2125824,
+        "rss_last_bytes": 1296596992,
+        "rss_delta_bytes": 1294471168,
+        "peak_cpu_percent": 128.9283612166767,
+        "cpu_user_s": 32.28125,
+        "cpu_system_s": 3.71875,
+        "cpu_total_s": 36.0
+      },
+      "validity": {
+        "frame_complete": true,
+        "checked_runner_ok": true,
+        "checked_complete": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "engine_warnings": 1,
+        "objectdb_shutdown_warning": true,
+        "clean_shutdown_claim_allowed": false,
+        "true_1080p": true
+      },
+      "artifacts": {
+        "frame_report": "tmp/engineering-perf/native/b1.json",
+        "engine_log": "tmp/engineering-perf/native/checks/b1-t93znapg/engine.log",
+        "checked_report": "tmp/engineering-perf/native/checks/b1-t93znapg/report.json",
+        "resources": "tmp/engineering-perf/native/checks/b1-t93znapg/resources.json",
+        "sha256": {
+          "frame_report": "fb5c98e549e2ea36e8c4326d6abd9d38f0975bc8e3a8dab90e416bf2da64ad34",
+          "engine_log": "607288e15fe7ddfc2fa335617110259130147195d46d7443bb3f94b0eee789ce",
+          "checked_report": "e497c668b621c0d3c8941aa5e7aff44dea15656452ba9df43836ac8a4e998c47",
+          "resources": "ab750bf1f49971987f97279dadac29e231b4e24691e5c83900a11f0302d7c119"
+        }
+      },
+      "main_source_path": "app/main.gd"
+    },
+    {
+      "id": "b2",
+      "condition": "current",
+      "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "route": "live-input",
+      "keyboard_selected": true,
+      "radio_connected": false,
+      "initially_paused": false,
+      "sky": "electrical_storm",
+      "audio_seed": 27031,
+      "warmup_s": 10,
+      "sample_s": 30,
+      "display": {
+        "window": "1920x1080",
+        "viewport": [
+          1920.0,
+          1080.0
+        ],
+        "renderer": "gl_compatibility",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "api": "3.3.0 NVIDIA 617.42",
+        "screen_refresh_hz": 60.0,
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "scaling_3d_scale": 1.0,
+        "screen_space_aa": 0,
+        "extra_frame_observer": "off",
+        "frame_diagnostics_observer_enabled": false
+      },
+      "camera": {
+        "mode": "pilot",
+        "fov_deg": 6.0,
+        "autozoom": true,
+        "near_m": 0.100000001490116,
+        "far_m": 21000.0,
+        "projection": 0,
+        "keep_aspect": 1,
+        "pose_at_report": {
+          "basis_columns": [
+            [
+              0.0789214894175529,
+              0.0,
+              0.996880829334259
+            ],
+            [
+              -0.0360958240926266,
+              0.999344289302826,
+              0.00285764969885349
+            ],
+            [
+              -0.996227145195007,
+              -0.0362087674438953,
+              0.0788697451353073
+            ]
+          ],
+          "position": [
+            0.0,
+            1.70000004768372,
+            0.0
+          ]
+        }
+      },
+      "frame": {
+        "count": 1800,
+        "sample_wall_s": 30.000085,
+        "fps_mean": 59.9998300004816,
+        "p50_ms": 16.664,
+        "p95_ms": 17.588,
+        "p99_ms": 18.859,
+        "max_ms": 23.918
+      },
+      "simulation_window": {
+        "start_tick": 2347,
+        "start_time_s": 9.77916666666667,
+        "end_tick": 9543,
+        "end_time_s": 39.7625,
+        "tick_count": 7196,
+        "wall_s": 30.000085,
+        "whole_collection_paused": false,
+        "physics_hz": 240,
+        "fault": "",
+        "active_at_report": true,
+        "crashed_at_report": false,
+        "focused_at_report": true,
+        "holds_at_report": []
+      },
+      "process_resources": {
+        "scope": "direct engine process, sampled from launch through exit; 1 s sampling can miss brief peaks",
+        "sampling_interval_s": 1.0,
+        "sample_count": 50,
+        "peak_rss_bytes": 1352765440,
+        "rss_first_bytes": 2125824,
+        "rss_last_bytes": 1341636608,
+        "rss_delta_bytes": 1339510784,
+        "peak_cpu_percent": 127.74607896437264,
+        "cpu_user_s": 29.796875,
+        "cpu_system_s": 5.0,
+        "cpu_total_s": 34.796875
+      },
+      "validity": {
+        "frame_complete": true,
+        "checked_runner_ok": true,
+        "checked_complete": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "engine_warnings": 0,
+        "objectdb_shutdown_warning": false,
+        "clean_shutdown_claim_allowed": true,
+        "true_1080p": true
+      },
+      "artifacts": {
+        "frame_report": "tmp/engineering-perf/native/b2.json",
+        "engine_log": "tmp/engineering-perf/native/checks/b2-h38gmu8j/engine.log",
+        "checked_report": "tmp/engineering-perf/native/checks/b2-h38gmu8j/report.json",
+        "resources": "tmp/engineering-perf/native/checks/b2-h38gmu8j/resources.json",
+        "sha256": {
+          "frame_report": "a4631f222453abe4f7778d69e23114dc9559972f99d3e9a7e487a162aefddaa9",
+          "engine_log": "2e6133f5cd645e5129aaa7cf0cfe9c4e54feb456d5e02dccbacf965eb7377896",
+          "checked_report": "7d4c616f870fa73024cbe055f3639b3fca86ef30426e893c64d35061d8308851",
+          "resources": "0d4238a74e015e7c43b51ead6ed0f1651358728ae739bbb57d2b58f85b87669f"
+        }
+      },
+      "main_source_path": "app/main.gd"
+    },
+    {
+      "id": "a2",
+      "condition": "before",
+      "main_sha256": "32fcdf7503159ff398f8415639a8d83a026151062dbd742bd1e14f13d3fd6a75",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "route": "live-input",
+      "keyboard_selected": true,
+      "radio_connected": false,
+      "initially_paused": false,
+      "sky": "electrical_storm",
+      "audio_seed": 27031,
+      "warmup_s": 10,
+      "sample_s": 30,
+      "display": {
+        "window": "1920x1080",
+        "viewport": [
+          1920.0,
+          1080.0
+        ],
+        "renderer": "gl_compatibility",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "api": "3.3.0 NVIDIA 617.42",
+        "screen_refresh_hz": 60.0,
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "scaling_3d_scale": 1.0,
+        "screen_space_aa": 0,
+        "extra_frame_observer": "off",
+        "frame_diagnostics_observer_enabled": false
+      },
+      "camera": {
+        "mode": "pilot",
+        "fov_deg": 6.0,
+        "autozoom": true,
+        "near_m": 0.100000001490116,
+        "far_m": 21000.0,
+        "projection": 0,
+        "keep_aspect": 1,
+        "pose_at_report": {
+          "basis_columns": [
+            [
+              0.0790446102619171,
+              0.0,
+              0.996871113777161
+            ],
+            [
+              -0.036153145134449,
+              0.999342143535614,
+              0.00286668073385954
+            ],
+            [
+              -0.996215283870697,
+              -0.0362666174769402,
+              0.0789926052093506
+            ]
+          ],
+          "position": [
+            0.0,
+            1.70000004768372,
+            0.0
+          ]
+        }
+      },
+      "frame": {
+        "count": 1799,
+        "sample_wall_s": 30.000432,
+        "fps_mean": 59.9658031591012,
+        "p50_ms": 16.658,
+        "p95_ms": 17.552,
+        "p99_ms": 19.058,
+        "max_ms": 38.283
+      },
+      "simulation_window": {
+        "start_tick": 2332,
+        "start_time_s": 9.71666666666667,
+        "end_tick": 9529,
+        "end_time_s": 39.7041666666667,
+        "tick_count": 7197,
+        "wall_s": 30.000432,
+        "whole_collection_paused": false,
+        "physics_hz": 240,
+        "fault": "",
+        "active_at_report": true,
+        "crashed_at_report": false,
+        "focused_at_report": true,
+        "holds_at_report": []
+      },
+      "process_resources": {
+        "scope": "direct engine process, sampled from launch through exit; 1 s sampling can miss brief peaks",
+        "sampling_interval_s": 1.0,
+        "sample_count": 50,
+        "peak_rss_bytes": 1326546944,
+        "rss_first_bytes": 2142208,
+        "rss_last_bytes": 1322676224,
+        "rss_delta_bytes": 1320534016,
+        "peak_cpu_percent": 124.47848126576837,
+        "cpu_user_s": 29.796875,
+        "cpu_system_s": 4.65625,
+        "cpu_total_s": 34.453125
+      },
+      "validity": {
+        "frame_complete": true,
+        "checked_runner_ok": true,
+        "checked_complete": true,
+        "process_exit": 0,
+        "engine_errors": 0,
+        "engine_warnings": 0,
+        "objectdb_shutdown_warning": false,
+        "clean_shutdown_claim_allowed": true,
+        "true_1080p": true
+      },
+      "artifacts": {
+        "frame_report": "tmp/engineering-perf/native/a2.json",
+        "engine_log": "tmp/engineering-perf/native/checks/a2-71bffcyo/engine.log",
+        "checked_report": "tmp/engineering-perf/native/checks/a2-71bffcyo/report.json",
+        "resources": "tmp/engineering-perf/native/checks/a2-71bffcyo/resources.json",
+        "sha256": {
+          "frame_report": "8b524028898df5cd7b634eda1e35e1c4e71556065c27bb973104758324537c53",
+          "engine_log": "1bb67d9b1c2ea07bbfcd2b07927dc530357386814192fbba90f8c4caab81d810",
+          "checked_report": "2f432079ebf08cc2245131256770f3d478c5c42912f8d2bde50dba0e751636ef",
+          "resources": "3502ee72306a1674d65b09b68a458a67c139341dd07b2d06d1de1e4328d3c114"
+        }
+      },
+      "main_source_path": "tmp/engineering-perf/main.before.gd"
+    }
+  ],
+  "runtime_code_tree": {
+    "source_file_count": 544,
+    "manifest_sha256": "9fb5b58f374d45eb152c2944fb35ad3d5d1b91fc5b3c9765b220274a074f90ad",
+    "identical_in_all_four_runs": true,
+    "source_scope": "runtime source tree; imported/exported resources may omit original files",
+    "source_tree_available": true,
+    "main_gd_sha256_in_tree": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+    "note": "The before condition loaded the separately hashed reference script; the project-tree source manifest itself retains the current app/main.gd hash in all four reports."
+  }
+}

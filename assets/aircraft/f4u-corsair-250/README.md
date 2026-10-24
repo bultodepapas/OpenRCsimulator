@@ -11,7 +11,7 @@ Checked 2026-10-23. `f4u-corsair-250` is an experimental catalog aircraft: a 2.7
 | [source-manifest.json](source-manifest.json) | Generated: SHA-256 and size of every frozen g1.13 delivery file, the author's hashes of the files deliberately not copied, key files by role, the five livery GLBs, visual revision `g1.13-03d66d8dc142`. |
 | [gear-samples.json](gear-samples.json) | Generated in Blender from the frozen game source: 101 parent-local `GearRetract` carrier poses (sample 0 stowed), wheel-centre paths, midpoint error. |
 | [wing-fold-r59.json](wing-fold-r59.json) | Generated: R59's wing-fold rig in R59 coordinates (pivots, axis, sign, 112°, lock-release law) and Blender's folded navigation-lamp check (F4U-17). |
-| [model-geometry.json](model-geometry.json) | Generated: the model family's geometry source (control hinges, thrust frame, gear rig, wing folds), compiled into `app/aircraft/f4u_corsair_geometry.gd`. |
+| [model-geometry.json](model-geometry.json) | Generated: the model family's geometry source (control hinges, thrust frame, gear rig, wing folds, the five liveries), compiled into `app/aircraft/f4u_corsair_geometry.gd`. |
 
 Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the root leading edge on the centreline at thrust-line height. This is the delivery request's D0, so g1.13 model coordinates map as `[x_aft, y_right, z_up] = [z_model, x_model, y_model]`.
 
@@ -29,6 +29,7 @@ Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the
 | Delivery identity | [manifest.py](../../../research/f4u-corsair/F4U-03/manifest.py) | `source-manifest.json` |
 | Gear sampling | [sample_gear.py](../../../research/f4u-corsair/F4U-05/sample_gear.py) (Blender 5.2.2, headless, `--disable-autoexec`) | `gear-samples.json` |
 | Wing-fold rig | [extract_wing_fold.py](../../../research/f4u-corsair/F4U-17/extract_wing_fold.py) (Blender 5.2.2, headless, `-Y`) | `wing-fold-r59.json`; R59 stays outside the repository |
+| Runtime livery GLBs | [install_liveries.py](../../../research/f4u-corsair/F4U-16/install_liveries.py) | The four other g1.13 livery GLBs in `app/assets/aircraft/f4u-corsair-250/`, byte for byte, with the default model's import settings (F4U-16) |
 | Model compile | [compile_model.py](../../../research/f4u-corsair/F4U-05/compile_model.py) | `model-geometry.json`, `app/aircraft/f4u_corsair_geometry.gd` |
 | Model contract | [verify_f4u.gd](../../../app/aircraft/verify_f4u.gd), run by `app/test.sh` | Console checks: frozen asset, controls, flaps, throws inside the clearance envelopes, gear rig, oleo compression, propeller size, exhaust, paint slots, contacts, crash release, wing folds |
 | Flight-test card | `research/flight-test/run.py --aircraft f4u-corsair-250 --out <new directory>` | Profile and summary ([F4U-12](../../../docs/research/f4u-corsair/F4U-12/README.md)) |
@@ -42,6 +43,7 @@ blender -b -Y --factory-startup F4U_Corsair_R59.blend --python research/f4u-cors
   assets/aircraft/f4u-corsair-250/geometry-r59.json 94edd59b44f578b5a1f7c1fe4004c736dff47a63e2866e4b8a04532851cf4dc3
 blender -b -Y --factory-startup F4U_Corsair_R59.blend --python research/f4u-corsair/F4U-17/extract_wing_fold.py -- \n  assets/aircraft/f4u-corsair-250/wing-fold-r59.json 94edd59b44f578b5a1f7c1fe4004c736dff47a63e2866e4b8a04532851cf4dc3
 python3 research/f4u-corsair/F4U-03/manifest.py --check
+python3 research/f4u-corsair/F4U-16/install_liveries.py --check
 python3 research/f4u-corsair/F4U-05/compile_model.py --check
 python3 research/f4u-corsair/F4U-07/ground_effect_vlm.py --check
 python3 research/f4u-corsair/F4U-07/fit_propeller.py --check
@@ -53,7 +55,7 @@ python3 research/f4u-corsair/F4U-11/costing_entry.py --check
 
 Gear samples come from Blender on the frozen delivery: `blender -b --factory-startup --disable-autoexec assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13/source/aircraft_game.blend --python research/f4u-corsair/F4U-05/sample_gear.py -- assets/aircraft/f4u-corsair-250/gear-samples.json`. After a binding or model change, run `build_models.py`, `build_descriptors.py`, `build_customization.py` and the parked-aircraft bake in that order (see the [Avanti guide](../avanti-s-a200/README.md#regenerate-and-verify)).
 
-Run generators without `--check` in the order above after an intentional input change. Never hand-edit generated files. The physics sections stay with R59, of which g1.13 is a simplified copy; F4U-05 takes the visual model's own dimensions (propeller, contacts) from g1.13's metadata. `compile_model.py` refuses a wing-fold file whose R59 hash differs from the metadata's master.
+Run generators without `--check` in the order above after an intentional input change. Never hand-edit generated files. The physics sections stay with R59, of which g1.13 is a simplified copy; F4U-05 takes the visual model's own dimensions (propeller, contacts) from g1.13's metadata. `compile_model.py` refuses a wing-fold file whose R59 hash differs from the metadata's master, and a livery GLB that is not the frozen file or not the same airframe as the default. After `install_liveries.py` writes a new sidecar, run Godot's `--import` once to assign its uid before compiling.
 
 ## Limits
 

@@ -2046,7 +2046,7 @@ func _rebuild_home_scene() -> bool:
 	var previous: Node3D = home_scene
 	remove_child(previous)
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
-	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()), landscape_id)
+	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()), landscape_id, _livery_for(aircraft))
 	if not replacement.field_errors.is_empty():
 		replacement.free()
 		add_child(previous)
