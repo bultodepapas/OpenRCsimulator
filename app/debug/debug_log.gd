@@ -7,11 +7,17 @@ const CAPACITY := 4000
 const MAX_TEXT := 4000
 
 var _mutex := Mutex.new()
-var _records: Array[Dictionary] = []
+## A fixed ring indexed by sequence number: appending and reading after a cursor never shift or scan the whole log.
+var _ring: Array = []
+var _count := 0
 var _next_seq := 1
 var dropped := 0
 ## Totals since the logger was added, per level (the ring forgets; these do not).
 var _counts := {}
+
+
+func _init() -> void:
+	_ring.resize(CAPACITY)
 
 
 func _log_message(message: String, error: bool) -> void:
@@ -37,11 +43,12 @@ func _append(record: Dictionary) -> void:
 	record.seq = _next_seq
 	record.time_ms = Time.get_ticks_msec()
 	record.frame = Engine.get_process_frames()
+	_ring[(_next_seq - 1) % CAPACITY] = record
 	_next_seq += 1
 	_counts[record.level] = int(_counts.get(record.level, 0)) + 1
-	_records.append(record)
-	if _records.size() > CAPACITY:
-		_records.pop_front()
+	if _count < CAPACITY:
+		_count += 1
+	else:
 		dropped += 1
 	_mutex.unlock()
 
@@ -50,12 +57,12 @@ func _append(record: Dictionary) -> void:
 func since(after: int, limit: int, levels: PackedStringArray = PackedStringArray()) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	_mutex.lock()
-	for record: Dictionary in _records:
-		if int(record.seq) <= after or (not levels.is_empty() and not levels.has(str(record.level))):
-			continue
-		out.append(record.duplicate())
-		if out.size() >= limit:
-			break
+	var seq := maxi(after + 1, _next_seq - _count)
+	while seq < _next_seq and out.size() < limit:
+		var record: Dictionary = _ring[(seq - 1) % CAPACITY]
+		if levels.is_empty() or levels.has(str(record.level)):
+			out.append(record.duplicate())
+		seq += 1
 	_mutex.unlock()
 	return out
 

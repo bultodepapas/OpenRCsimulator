@@ -6,6 +6,9 @@
 # tools/debug/README.md.
 # Pattern after godot-mcp-runtime (MIT, github.com/Erodenn/godot-mcp-runtime): loopback TCP, token, ALWAYS mode.
 # It never changes the launch route or project settings; everything it does is an explicit request.
+# Threads: a network thread owns the sockets and the JSONL file, answers help/ping/logs and state (from the snapshot
+# the main thread publishes each frame while a client is active) at once, and queues every other command for the
+# main thread, which runs it in _process. A slow-rendering frame therefore never delays a ping, log or state read.
 extends Node
 
 const DebugLog := preload("res://debug/debug_log.gd")
@@ -33,6 +36,10 @@ const MAX_CLIENTS := 8
 const MAX_LINE_BYTES := 1 << 20
 const UI_LIMIT := 400
 const NODE_LIMIT := 600
+## Commands the network thread answers itself; everything else touches the scene and runs on the main thread.
+const THREAD_COMMANDS := ["help", "ping", "logs", "state"]
+## Keep publishing state snapshots this long after the last request (idle sessions cost nothing).
+const SNAPSHOT_IDLE_MS := 30000
 const COMMANDS := {
 	"help": "this list",
 	"ping": "liveness: pid, engine version, frame, fps",
@@ -80,12 +87,28 @@ const COMMANDS := {
 }
 
 var port := DEFAULT_PORT
-var token := ""
+var token := "":
+	set(value):
+		_net_mutex.lock()
+		token = value
+		_net_mutex.unlock()
 var log_path := ""
 var debug_log := DebugLog.new()
 var app: Node
+## Smoothed main-thread cost of the bridge per frame (µs), shown by perf and state.
+var bridge_usec := 0.0
 var _server := TCPServer.new()
-var _clients: Array[Dictionary] = []
+var _thread := Thread.new()
+var _net_mutex := Mutex.new()
+var _stopping := false
+var _inbox: Array[Dictionary] = [] # requests for the main thread
+var _outbox: Array[Dictionary] = [] # replies for the network thread to send
+var _dropped: Array[int] = [] # disconnected peers whose pending work the main thread forgets
+var _snapshot := {} # last published state reply (jsonable), with its frame
+var _last_request_ms := 0
+var _display_name := ""
+var _clients := {} # network thread only: peer id -> {peer, buffer}
+var _next_peer_id := 1
 var _pending: Array[Dictionary] = []
 var _scheduled: Array[Dictionary] = []
 var _log_file: FileAccess
@@ -132,41 +155,184 @@ func _ready() -> void:
 		_log_file = FileAccess.open(log_path, FileAccess.WRITE)
 		if _log_file == null:
 			push_warning("debug bridge: cannot write %s: %s" % [log_path, error_string(FileAccess.get_open_error())])
+	_display_name = DisplayServer.get_name()
 	var err := _server.listen(port, "127.0.0.1")
 	if err != OK:
 		push_error("debug bridge: cannot listen on 127.0.0.1:%d: %s" % [port, error_string(err)])
 		return
 	print("debug bridge: listening on 127.0.0.1:%d (pid %d)" % [_server.get_local_port(), OS.get_process_id()])
+	_thread.start(_serve)
 
 
 func _exit_tree() -> void:
 	_restore_sticks()
 	_release_drive()
-	_server.stop()
-	for client: Dictionary in _clients:
-		client.peer.disconnect_from_host()
-	_clients.clear()
+	_net_mutex.lock()
+	_stopping = true
+	_net_mutex.unlock()
+	if _thread.is_started():
+		_thread.wait_to_finish() # its last pass sends queued replies (quit) and the remaining log lines
 	OS.remove_logger(debug_log)
-	_write_log_file()
 
 
 func _process(_delta: float) -> void:
-	while _server.is_listening() and _server.is_connection_available():
-		var peer := _server.take_connection()
-		if _clients.size() >= MAX_CLIENTS:
-			peer.disconnect_from_host()
-			continue
-		peer.set_no_delay(true)
-		_clients.append({peer = peer, buffer = PackedByteArray()})
-	for client: Dictionary in _clients.duplicate():
-		_poll_client(client)
+	var started := Time.get_ticks_usec()
+	_net_mutex.lock()
+	var inbox := _inbox
+	_inbox = []
+	var dropped := _dropped
+	_dropped = []
+	var active := Time.get_ticks_msec() - _last_request_ms < SNAPSHOT_IDLE_MS
+	_net_mutex.unlock()
+	for peer_id: int in dropped:
+		_forget_peer(peer_id)
+	for item: Dictionary in inbox:
+		_handle(item.peer_id, item.id, item.request)
 	_run_scheduled()
 	_run_pending()
 	_finish_step()
 	_expire_drive()
 	_observe()
-	_write_log_file()
+	if active:
+		var snapshot: Dictionary = jsonable(_cmd_state({}))
+		snapshot.frame = Engine.get_process_frames()
+		_net_mutex.lock()
+		_snapshot = snapshot
+		_net_mutex.unlock()
+	bridge_usec = lerpf(bridge_usec, float(Time.get_ticks_usec() - started), 0.05)
 
+
+# ---- network thread -------------------------------------------------------------------------------------------
+
+func _serve() -> void:
+	while true:
+		_net_mutex.lock()
+		var stopping := _stopping
+		_net_mutex.unlock()
+		while _server.is_connection_available():
+			var peer := _server.take_connection()
+			if _clients.size() >= MAX_CLIENTS:
+				peer.disconnect_from_host()
+				continue
+			peer.set_no_delay(true)
+			_clients[_next_peer_id] = {peer = peer, buffer = PackedByteArray()}
+			_next_peer_id += 1
+		for peer_id: int in _clients.keys():
+			_read_client(peer_id)
+		_send_outbox()
+		_write_log_file()
+		if stopping:
+			break
+		OS.delay_msec(2)
+	for client: Dictionary in _clients.values():
+		client.peer.disconnect_from_host()
+	_clients.clear()
+	_server.stop()
+
+
+func _read_client(peer_id: int) -> void:
+	var client: Dictionary = _clients[peer_id]
+	var peer: StreamPeerTCP = client.peer
+	peer.poll()
+	if peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
+		_drop_client(peer_id)
+		return
+	var available := peer.get_available_bytes()
+	if available > 0:
+		var got: Array = peer.get_partial_data(available)
+		if got[0] == OK:
+			client.buffer.append_array(got[1])
+	while true:
+		var newline: int = client.buffer.find(10)
+		if newline < 0:
+			if client.buffer.size() > MAX_LINE_BYTES:
+				_send_now(peer, {ok = false, error = "request line exceeds %d bytes" % MAX_LINE_BYTES})
+				_drop_client(peer_id)
+			return
+		var line: String = client.buffer.slice(0, newline).get_string_from_utf8().strip_edges()
+		client.buffer = client.buffer.slice(newline + 1)
+		if not line.is_empty():
+			_route_line(peer_id, peer, line)
+
+
+func _drop_client(peer_id: int) -> void:
+	_clients.erase(peer_id)
+	_net_mutex.lock()
+	_dropped.append(peer_id)
+	_net_mutex.unlock()
+
+
+## Network thread: validate one request line, answer thread-safe commands, queue the rest for the main thread.
+func _route_line(peer_id: int, peer: StreamPeerTCP, line: String) -> void:
+	var parser := JSON.new() # parse_string would log an engine error for every malformed line
+	var request: Variant = parser.data if parser.parse(line) == OK else null
+	if not request is Dictionary or not request.has("cmd"):
+		_send_now(peer, {ok = false, error = "expected one JSON object with \"cmd\" per line"})
+		return
+	var id: Variant = request.get("id")
+	if id is float and id == floorf(id):
+		id = int(id) # JSON numbers parse as floats
+	_net_mutex.lock()
+	var expected := token
+	_last_request_ms = Time.get_ticks_msec()
+	var snapshot := _snapshot
+	_net_mutex.unlock()
+	if not expected.is_empty() and str(request.get("token", "")) != expected:
+		_send_now(peer, {id = id, ok = false, error = "bad or missing token"})
+		return
+	var cmd := str(request.cmd)
+	if cmd in THREAD_COMMANDS and not _bool(request.get("fresh", false)):
+		var reply := _thread_reply(cmd, request, snapshot)
+		if not reply.is_empty():
+			reply.id = id
+			_send_now(peer, reply)
+			return
+	_net_mutex.lock()
+	_inbox.append({peer_id = peer_id, id = id, request = request})
+	_net_mutex.unlock()
+
+
+## Replies built only from thread-safe sources: constants, the locked log and the published snapshot.
+## Empty means "ask the main thread" (no snapshot yet, or an older frame than the one just finished).
+func _thread_reply(cmd: String, request: Dictionary, snapshot: Dictionary) -> Dictionary:
+	match cmd:
+		"help":
+			return _ok(COMMANDS)
+		"logs":
+			return _cmd_logs(request)
+		"ping":
+			return _ok({pid = OS.get_process_id(), godot = Engine.get_version_info().string,
+				frame = Engine.get_process_frames(), fps = Engine.get_frames_per_second(), display = _display_name,
+				log_seq = debug_log.last_seq(), log_counts = debug_log.counts(),
+				route = snapshot.get("result", {}).get("route", "unknown"), out_dir = out_dir})
+		"state":
+			if snapshot.is_empty() or int(snapshot.frame) < Engine.get_process_frames() - 1:
+				return {}
+			var reply: Dictionary = snapshot.duplicate(true)
+			reply.result.snapshot_frame = reply.frame
+			reply.erase("frame")
+			return reply
+	return {}
+
+
+func _send_outbox() -> void:
+	_net_mutex.lock()
+	var outbox := _outbox
+	_outbox = []
+	_net_mutex.unlock()
+	for item: Dictionary in outbox:
+		if _clients.has(item.peer_id):
+			var peer: StreamPeerTCP = _clients[item.peer_id].peer
+			if peer.get_status() == StreamPeerTCP.STATUS_CONNECTED:
+				peer.put_data(item.bytes)
+
+
+static func _send_now(peer: StreamPeerTCP, reply: Dictionary) -> void:
+	if peer.get_status() == StreamPeerTCP.STATUS_CONNECTED:
+		peer.put_data((JSON.stringify(jsonable(reply), "", false, true) + "\n").to_utf8_buffer())
+
+
+# ---- main thread dispatch -------------------------------------------------------------------------------------
 
 func _physics_process(_delta: float) -> void:
 	_collect_samples()
@@ -184,50 +350,14 @@ func _physics_process(_delta: float) -> void:
 		_sticks_session.read_raw = _sticks_reader
 
 
-func _poll_client(client: Dictionary) -> void:
-	var peer: StreamPeerTCP = client.peer
-	peer.poll()
-	if peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
-		_drop(client)
-		return
-	var available := peer.get_available_bytes()
-	if available > 0:
-		var got: Array = peer.get_partial_data(available)
-		if got[0] == OK:
-			client.buffer.append_array(got[1])
-	while true:
-		var newline: int = client.buffer.find(10)
-		if newline < 0:
-			if client.buffer.size() > MAX_LINE_BYTES:
-				_send(peer, {ok = false, error = "request line exceeds %d bytes" % MAX_LINE_BYTES})
-				_drop(client)
-			return
-		var line: String = client.buffer.slice(0, newline).get_string_from_utf8().strip_edges()
-		client.buffer = client.buffer.slice(newline + 1)
-		if not line.is_empty():
-			_handle(peer, line)
-
-
-func _drop(client: Dictionary) -> void:
-	_clients.erase(client)
+func _forget_peer(peer_id: int) -> void:
 	for item: Dictionary in _pending:
-		if item.peer == client.peer and item.has("job"):
+		if item.peer_id == peer_id and not item.job.is_empty():
 			_samples.erase(item.job) # an abandoned sample stops collecting
-	_pending = _pending.filter(func(item: Dictionary) -> bool: return item.peer != client.peer)
+	_pending = _pending.filter(func(item: Dictionary) -> bool: return item.peer_id != peer_id)
 
 
-func _handle(peer: StreamPeerTCP, line: String) -> void:
-	var parser := JSON.new() # parse_string would log an engine error for every malformed line
-	var request: Variant = parser.data if parser.parse(line) == OK else null
-	if not request is Dictionary or not request.has("cmd"):
-		_send(peer, {ok = false, error = "expected one JSON object with \"cmd\" per line"})
-		return
-	var id: Variant = request.get("id")
-	if id is float and id == floorf(id):
-		id = int(id) # JSON numbers parse as floats
-	if not token.is_empty() and str(request.get("token", "")) != token:
-		_send(peer, {id = id, ok = false, error = "bad or missing token"})
-		return
+func _handle(peer_id: int, id: Variant, request: Dictionary) -> void:
 	var reply: Dictionary
 	var cmd := str(request.cmd)
 	if not COMMANDS.has(cmd):
@@ -239,11 +369,10 @@ func _handle(peer: StreamPeerTCP, line: String) -> void:
 			else _fail("'%s' failed with a script error; see logs level=script_error" % cmd)
 	if reply.has("pending"):
 		var timeout_s: float = float(request.get("timeout_s", reply.get("timeout_s", 30.0)))
-		_pending.append({peer = peer, id = id, check = reply.pending, job = reply.get("job", {}),
+		_pending.append({peer_id = peer_id, id = id, check = reply.pending, job = reply.get("job", {}),
 			deadline_ms = Time.get_ticks_msec() + int(clampf(timeout_s, 0.0, 3600.0) * 1000.0)})
 		return
-	reply.id = id
-	_send(peer, reply)
+	_reply(peer_id, id, reply)
 
 
 func _run_pending() -> void:
@@ -252,14 +381,15 @@ func _run_pending() -> void:
 		if result == null and Time.get_ticks_msec() < item.deadline_ms:
 			continue
 		_pending.erase(item)
-		var reply: Dictionary = result if result is Dictionary else _fail("timed out")
-		reply.id = item.id
-		_send(item.peer, reply)
+		_reply(item.peer_id, item.id, result if result is Dictionary else _fail("timed out"))
 
 
-func _send(peer: StreamPeerTCP, reply: Dictionary) -> void:
-	if peer.get_status() == StreamPeerTCP.STATUS_CONNECTED:
-		peer.put_data((JSON.stringify(jsonable(reply), "", false, true) + "\n").to_utf8_buffer())
+func _reply(peer_id: int, id: Variant, reply: Dictionary) -> void:
+	reply.id = id
+	var bytes := (JSON.stringify(jsonable(reply), "", false, true) + "\n").to_utf8_buffer()
+	_net_mutex.lock()
+	_outbox.append({peer_id = peer_id, bytes = bytes})
+	_net_mutex.unlock()
 
 
 static func _ok(result: Variant = null) -> Dictionary:
@@ -297,7 +427,7 @@ func _cmd_state(_request: Dictionary) -> Dictionary:
 	var out := {frame = Engine.get_process_frames(), fps = Engine.get_frames_per_second(), time_scale = Engine.time_scale,
 		tree_paused = get_tree().paused, log_seq = debug_log.last_seq(), route = _route(), screens = _screen_ids(),
 		focus = _path(get_viewport().gui_get_focus_owner()), sticks_override = _sticks.duplicate(),
-		log_counts = debug_log.counts(), realtime_factor = realtime_factor}
+		log_counts = debug_log.counts(), realtime_factor = realtime_factor, bridge_usec = bridge_usec}
 	var session := _session()
 	if session != null:
 		out.flight = _flight_state(session)
@@ -352,7 +482,7 @@ func _cmd_press(request: Dictionary) -> Dictionary:
 		control.button_pressed = not control.button_pressed
 	else:
 		control.pressed.emit()
-	return _settle(int(request.get("frames", 3)), {pressed = path, mode = mode})
+	return _settle(int(request.get("frames", 1)), {pressed = path, mode = mode})
 
 
 func _cmd_focus(request: Dictionary) -> Dictionary:
@@ -423,7 +553,7 @@ func _cmd_select(request: Dictionary) -> Dictionary:
 		target.id_pressed.emit(target.get_item_id(index))
 		target.index_pressed.emit(index)
 		target.hide()
-	return _settle(2, {selected = index, item = labels[index]})
+	return _settle(1, {selected = index, item = labels[index]})
 
 
 static func _item_labels(target: Object) -> Array:
@@ -441,7 +571,7 @@ func _cmd_set_value(request: Dictionary) -> Dictionary:
 	if not found.control is Range:
 		return _fail("%s is not a Range" % _path(found.control))
 	found.control.value = float(request.get("value", 0.0)) # Range emits value_changed itself
-	return _settle(2, _control_info(found.control))
+	return _settle(1, _control_info(found.control))
 
 
 func _cmd_key(request: Dictionary) -> Dictionary:
@@ -492,7 +622,7 @@ func _emit_input(make: Callable, request: Dictionary) -> Dictionary:
 	elif action == "tap":
 		_scheduled.append({at_ms = Time.get_ticks_msec() + int(float(request.get("hold_s", 0.05)) * 1000.0),
 			event = make.call(false)})
-	return _settle(2, {action = action})
+	return _settle(1, {action = action})
 
 
 func _run_scheduled() -> void:
@@ -785,7 +915,7 @@ func _cmd_restart(_request: Dictionary) -> Dictionary:
 	if not _screen_ids().has("pause"):
 		app.open_pause()
 	app.restart_flight()
-	return _settle(5, {restarted = true})
+	return _settle(2, {restarted = true})
 
 
 func _cmd_view(request: Dictionary) -> Dictionary:
@@ -848,6 +978,7 @@ func _cmd_perf(_request: Dictionary) -> Dictionary:
 	out.physics_ticks_per_second = Engine.physics_ticks_per_second
 	out.max_physics_steps_per_frame = Engine.max_physics_steps_per_frame
 	out.realtime_factor = realtime_factor
+	out.bridge_usec = bridge_usec
 	out.renderer = RenderingServer.get_current_rendering_method()
 	out.adapter = RenderingServer.get_video_adapter_name()
 	var session := _session()
@@ -1010,7 +1141,7 @@ func _cmd_open(request: Dictionary) -> Dictionary:
 		return _fail("this app root cannot open %s" % screen)
 	var before := [_screen_ids(), _top_window()]
 	app.call(SCREEN_OPENERS[screen])
-	var until := Engine.get_process_frames() + 3
+	var until := Engine.get_process_frames() + 1
 	return {pending = func() -> Variant:
 		if Engine.get_process_frames() < until:
 			return null
@@ -1026,7 +1157,7 @@ func _cmd_close(_request: Dictionary) -> Dictionary:
 			window.get_cancel_button().pressed.emit() # the dialog's own cancel path: hides and emits canceled
 		else:
 			window.hide()
-		return _settle(2, {closed = window.get_class()})
+		return _settle(1, {closed = window.get_class()})
 	var screens: Variant = app.get("screens")
 	if screens == null or screens.top() == null or screens.is_top("home"):
 		return _fail("nothing to close (no dialog or menu screen above Home)")
@@ -1035,7 +1166,7 @@ func _cmd_close(_request: Dictionary) -> Dictionary:
 		return _fail("the top screen has no close request")
 	var closing: Array = _screen_ids()
 	surface.close_requested.emit()
-	return _settle(3, {closed = closing.back()})
+	return _settle(1, {closed = closing.back()})
 
 
 func _cmd_control(request: Dictionary) -> Dictionary:
@@ -1066,7 +1197,7 @@ func _cmd_control(request: Dictionary) -> Dictionary:
 		return _cmd_restart(request)
 	if not flight.controller_action(id):
 		return _fail("'%s' was not accepted now (menu open, wrong vehicle or state)" % id)
-	return _settle(2, {action = id})
+	return _settle(1, {action = id})
 
 
 func _cmd_shortcuts(_request: Dictionary) -> Dictionary:
