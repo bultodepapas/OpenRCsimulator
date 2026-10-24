@@ -77,6 +77,23 @@ Not proposed: a new in-game overlay (free [Godot Debug Menu](https://github.com/
 exists and the HUD already has developer overlays), a plotting package (Perfetto and CSV tools exist), or GPU
 capture on the VM (llvmpipe/Compatibility; RenderDoc and `--gpu-validation` belong to native Forward+ sessions).
 
+## Implemented (PT1h-R8, same day)
+
+| # | Delivered as | Real-app evidence (Linux VM, headless unless noted) |
+| --- | --- | --- |
+| 1 | Bridge `frames`, `hitch` log events with counter deltas and causes | Home → Fly: one 3,559 ms frame, "scene/resource construction" (+1,482 objects, +499 nodes, +140 resources, +64 MiB) and physics catch-up (12 ticks); flight → Home 1,183 ms. Steady flight p50 6.9 ms. |
+| 2 | Bridge `break` (edge-triggered, before each tick, pause/once/wait) | `break expr="sim.time() > 3.0"` paused the Stik at tick 735 (3.0625 s), exactly. |
+| 3 | `logs --summary` (bridge `summary=true`), `run --fail-on-error` | Monkey and soak runs below: 0 grouped errors. |
+| 4 | Bridge `objects` (class/script census, orphans, baseline/diff); client `soak` | Fly/Home soak, 4 measured cycles: nodes 800, orphans 0, resources 901 in every cycle; 0 growing counters. |
+| 5 | Client `monkey` (seeded, replayable trail, hitch attribution) | 250 steps with keys, seed 11: no errors; slow actions were F5 (aircraft data reload, 58–86 ms) and R (restart, about 55 ms). Two client bugs found by it (escaped labels, unquoted key names) were fixed. |
+| 6 | `launch --script-profile` + bridge `profile` | The engine's local debugger (`-d --profiling --ignore-error-breaks`) prints per-function GDScript timings; no protocol server was needed. Flight: `glow_voice._exhaust_wave` (989 calls per frame) and `skyline._edge` (1,800 calls) lead self time. |
+| 7 | `gdscript_warnings.py`: the engine's own diagnostics through the headless editor's language server, with a line-independent baseline | gdlint 4.5.0 evaluated and rejected (see the [guide](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8)). The debug bridge and its test were brought to 0 warnings. |
+| 8 | `stop`/`status` exit report: crash reason, GDScript backtrace, objects leaked at exit; `launch --verbose` | Verified on `OS.crash` and deliberate leak fixtures (formats in the client test). |
+| 9 | Not implemented separately | The hitch event's log lines and counter deltas already locate the long frame; phase timing inside it still needs code in the build functions. |
+
+Also fixed during the review: `eval` could not reach engine singletons; `launch` could talk to another app's bridge
+when the port was still being released.
+
 ## Recommended order
 
 1, 2 and 3 first: each is small, uses only verified 4.7.2 APIs, adds microseconds per frame, and turns the bridge
@@ -87,4 +104,4 @@ to CI.
 Uncertainties: the outside-in timing has 3–5 ms resolution and includes the poller's own scheduling; it measures
 headless frames, not rendered ones. On the VM's Compatibility renderer all five pipeline counters stayed 0 through
 Home and a full flight build (rendered under Xvfb, 1280×720); they matter for Forward+ (High graphics) on real GPUs,
-which this review did not run. No proposal here has been implemented yet.
+which this review did not run.

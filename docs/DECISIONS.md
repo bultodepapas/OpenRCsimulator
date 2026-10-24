@@ -937,3 +937,13 @@ or wrong-token line, and `launch` generates a token per session: a web page can 
 `127.0.0.1`, and an optional token alone left `eval` open to it. Measured cost is 40 µs per frame idle
 and 58 µs active. [Guide, measurements and review](../tools/debug/README.md#performance).
 
+### 2026-10-24 — GDScript static checks come from the engine, not gdlint (PT1h-R8)
+
+gdtoolkit/gdlint 4.5.0 reported 29,317 items on 1,239 scripts (95 % line length and definition
+order), flagged intentional determinism checks as redundant comparisons and could not parse 9 files.
+Godot's own compiler warnings (shadowing, integer division, incompatible ternaries, unused
+parameters), collected through the pinned editor's headless language server on a snapshot of
+`app/`, use the project's settings and parse every script. Gate new warnings against a reviewed,
+line-independent baseline rather than fixing or suppressing the existing ones in bulk.
+[Guide](../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8).
+
