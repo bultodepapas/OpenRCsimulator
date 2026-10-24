@@ -179,17 +179,22 @@ static func reset_wind(field_node: Node3D, time_s: float, wind_ned: Array) -> vo
 		Windsock.reset(cue, time_s, wind_ned)
 
 
-## SC-HUM-03: advance the people's head state with the simulation tick. `aircraft_ned` is the
-## aircraft position in NED; reset restarts every head at rest (tick zero, restarts).
-static func advance_people(field_node: Node3D, time_s: float, aircraft_ned: Array, reset: bool = false) -> void:
+## SC-HUM-03/04: advance the people's head state with the simulation tick. `aircraft_ned` is the
+## player's aircraft position in NED; `companions_ned` holds one NED position (or null) per companion
+## slot, flown by the flight-line pilots. Reset restarts every head at rest (tick zero, restarts).
+static func advance_people(field_node: Node3D, time_s: float, aircraft_ned: Array, reset: bool = false,
+		companions_ned: Array = []) -> void:
 	if field_node == null or not field_node.has_meta("people_gaze"):
 		return
 	var gaze: RefCounted = field_node.get_meta("people_gaze")
 	var target: Vector3 = Frames.ned_to_render(aircraft_ned)
+	var companions: Array = []
+	for position: Variant in companions_ned:
+		companions.append(Frames.ned_to_render(position) if position is Array else null)
 	if reset:
-		gaze.reset(time_s, target)
+		gaze.reset(time_s, target, companions)
 	else:
-		gaze.update_to(time_s, target)
+		gaze.update_to(time_s, target, companions)
 
 
 ## Publish the latest head angles once per rendered frame.

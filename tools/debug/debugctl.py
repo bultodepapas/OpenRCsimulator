@@ -455,7 +455,7 @@ def stop(argv: list[str]) -> int:
         if "--force" not in argv:
             print(f"debugctl: no bridge answered ({error}); use stop --force to kill the launched process", file=sys.stderr)
             return 2
-    deadline = time.monotonic() + 20.0
+    deadline = time.monotonic() + 60.0  # saving an active trace or flight log can take a while
     while alive(pid) and time.monotonic() < deadline:
         time.sleep(0.2)
     if alive(pid) and "--force" in argv:
@@ -947,15 +947,17 @@ def smoke(argv: list[str]) -> int:
         step("crawl from the pause menu", crawl, [])
         step("back to Home", lambda _: run_lines(["home"]), [])
         step(f"monkey seed {seed}", monkey, ["--steps", steps, "--seed", seed, "--keys"])
-        step("back to Home", lambda _: run_lines(["home"]) if result_of("state")["route"] == "flight" else 0, [])
+        step("back to Home", home_reset, [])
         soak_file = Path(session["out"]) / "smoke-soak.txt"
         soak_file.write_text("fly start=airborne\nwait frames=30\nhome\n")
         step(f"soak fly/Home x{cycles}", soak, [str(soak_file), "--cycles", cycles, "--warmup", "1"])
         hitches = result_of("frames")["hitch_total"]
+        home_reset()
     finally:
         capture = io.StringIO()
         with contextlib.redirect_stdout(capture):
-            stop([])
+            if stop([]) != 0 and alive(session.get("launcher_pid")):
+                stop(["--force"])  # this smoke's own session only
         ended = json.loads(capture.getvalue().strip().splitlines()[-1]) if capture.getvalue().strip() else {}
     if ended.get("crash"):
         results.append(("engine exit (crash)", 1))
@@ -963,6 +965,31 @@ def smoke(argv: list[str]) -> int:
     print(json.dumps({"ok": not failed, "failed": failed, "steps": len(results), "hitches": hitches,
                       "leaked_objects_at_exit": ended.get("leaked_objects", 0), "out": session["out"]}))
     return 1 if failed else 0
+
+
+def home_reset(_args: list[str] | None = None) -> int:
+    """Back to a bare Home from wherever a step left the app: end flights and the truck, close dialogs and menus,
+    and discard unsaved Workshop edits."""
+    for _ in range(12):
+        state = result_of("state")
+        if state["route"] == "flight":
+            attempt = ["home"]
+        elif state["route"] == "ground_vehicle":
+            attempt = ["call node=AppRoot method=end_ground_vehicle"]
+        elif state["screens"] != ["home"] or result_of("ui").get("window"):
+            attempt = ["close"]
+        else:
+            return 0
+        try:
+            run_lines(attempt)
+        except Refused:
+            try:
+                run_lines(['press text="Discard changes"'])
+            except Refused:
+                pass
+        result_of("wait", {"frames": 3})
+    print("   could not return to Home: " + json.dumps(result_of("state")["screens"]))
+    return 1
 
 
 def run_lines(lines: list[str]) -> int:

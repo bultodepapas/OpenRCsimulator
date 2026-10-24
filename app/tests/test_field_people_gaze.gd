@@ -34,6 +34,7 @@ func _initialize() -> void:
 	_test_rear_gate_and_range()
 	_test_determinism_and_desync()
 	_test_reset_and_repeats()
+	_test_companion_pilots()
 	_test_default_scenery()
 	print("people gaze: %s" % ("PASS" if _failures == 0 else "FAIL (%d)" % _failures))
 	quit(1 if _failures > 0 else 0)
@@ -221,6 +222,33 @@ func _test_reset_and_repeats() -> void:
 	_check("a backward time jump resets to rest", model.head_angles(0).distance_to(Vector2(params.rest_yaw, params.rest_pitch) * float(params.mover)) < 1.0e-6)
 
 
+## SC-HUM-04: each flight-line pilot flies one companion; the rest of the field watches the player.
+func _test_companion_pilots() -> void:
+	var model: RefCounted = PeopleGaze.new()
+	model.configure([_person("pilot", 31), _person("pilot", 32), _person("spectator", 33)], {})
+	_check("pilots take companion slots in order", model.companion_slot(0) == 0 and model.companion_slot(1) == 1 and model.companion_slot(2) == -1)
+	var player := Vector3(-40.0, 20.0, -40.0) # 45° left
+	var companion := Vector3(40.0, 20.0, -40.0) # 45° right
+	model.reset(0.0, player, [companion])
+	for i in 720:
+		model.update_to(float(i + 1) / 240.0, player, [companion])
+	var p0 := PeopleGaze._params("pilot", 31)
+	var p1 := PeopleGaze._params("pilot", 32)
+	_check("pilot 0 watches its companion", absf(model.head_angles(0).x + deg_to_rad(45.0) * float(p0.mover)) < deg_to_rad(1.0), str(rad_to_deg(model.head_angles(0).x)))
+	_check("pilot 1 without a companion watches the player", absf(model.head_angles(1).x - deg_to_rad(45.0) * float(p1.mover)) < deg_to_rad(1.0), str(rad_to_deg(model.head_angles(1).x)))
+	_check("spectators watch the player", model.head_angles(2).x > deg_to_rad(20.0), str(rad_to_deg(model.head_angles(2).x)))
+	# Removing the companion (null slot or an empty roster) returns pilot 0 to the player.
+	for i in 720:
+		model.update_to(3.0 + float(i + 1) / 240.0, player, [null])
+	_check("a removed companion returns its pilot to the player", absf(model.head_angles(0).x - deg_to_rad(45.0) * float(p0.mover)) < deg_to_rad(1.0), str(rad_to_deg(model.head_angles(0).x)))
+	# A companion appearing far from its last position starts without a lead spike.
+	var before_rate: float = 0.0
+	model.update_to(6.0 + 1.0 / 240.0, player, [Vector3(400.0, 20.0, -40.0)])
+	for target: Dictionary in model._targets:
+		before_rate = maxf(before_rate, (target.get("velocity", Vector3.ZERO) as Vector3).length())
+	_check("a new companion target has no velocity spike", before_rate < 1.0, str(before_rate))
+
+
 func _test_default_scenery() -> void:
 	var field: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH).field
 	var scenery: Dictionary = Loader.load_from(Loader.DEFAULT_PATH, field).scenery
@@ -239,6 +267,11 @@ func _test_default_scenery() -> void:
 	for i in model.person_count():
 		roles[model.person_role(i)] = int(roles.get(model.person_role(i), 0)) + 1
 	_check("default roles", roles == {pilot = 2, pits = 5, spectator = 6}, str(roles))
+	var slots := []
+	for i in model.person_count():
+		if model.companion_slot(i) >= 0:
+			slots.append(model.companion_slot(i))
+	_check("both flight-line pilots fly companion slots 0 and 1", slots == [0, 1], str(slots))
 	model.reset(0.0, Vector3(0.0, 30.0, -80.0))
 	for i in 480:
 		var t := float(i + 1) / 240.0

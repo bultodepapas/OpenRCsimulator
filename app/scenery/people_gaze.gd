@@ -25,9 +25,6 @@ var _nodes: Dictionary = {}
 var _epoch_time_s: float = 0.0
 var _step_index: int = 0
 var _last_observed_time_s: float = 0.0
-var _target: Vector3 = Vector3.ZERO
-var _previous_target: Vector3 = Vector3.ZERO
-var _velocity: Vector3 = Vector3.ZERO
 ## Target 0 is the player's aircraft; target k + 1 is companion slot k (SC-HUM-04). Each holds
 ## {valid, position, previous, velocity}; a companion that disappears falls back to the player.
 var _targets: Array[Dictionary] = []
@@ -107,15 +104,19 @@ func person_role(index: int) -> String:
 	return str(_people[index].role)
 
 
-## Restart at time_s with the target at the given render-space position. Heads return to rest.
-func reset(time_s: float, target: Vector3) -> void:
+func companion_slot(index: int) -> int:
+	return int(_people[index].companion_slot)
+
+
+## Restart at time_s with the player's aircraft at `target` (render space) and the companions at
+## `companions` (render-space Vector3, or null for an absent slot). Heads return to rest.
+func reset(time_s: float, target: Vector3, companions: Array = []) -> void:
 	_epoch_time_s = time_s
 	_last_observed_time_s = time_s
 	_step_index = 0
 	simulated_time_s = time_s
-	_target = target
-	_previous_target = target
-	_velocity = Vector3.ZERO
+	_targets.clear()
+	_set_targets(target, companions, 0.0)
 	_initialized = true
 	for person: Dictionary in _people:
 		person.yaw = person.rest_yaw
@@ -128,20 +129,15 @@ func reset(time_s: float, target: Vector3) -> void:
 	_dirty = true
 
 
-## Advance to time_s with the aircraft at `target` (render space). Repeated timestamps are ignored;
-## a backward jump (restart, checkpoint restore) resets, as the windsock does.
-func update_to(time_s: float, target: Vector3) -> void:
+## Advance to time_s with the aircraft positions (render space, see reset). Repeated timestamps are
+## ignored; a backward jump (restart, checkpoint restore) resets, as the windsock does.
+func update_to(time_s: float, target: Vector3, companions: Array = []) -> void:
 	if not _initialized or not is_finite(time_s) or time_s < _last_observed_time_s - 1.0e-12:
-		reset(time_s, target)
+		reset(time_s, target, companions)
 		return
 	var elapsed: float = time_s - _last_observed_time_s
 	_last_observed_time_s = time_s
-	if elapsed > 0.0:
-		var measured: Vector3 = (target - _previous_target) / elapsed
-		var blend: float = 1.0 - exp(-elapsed / VELOCITY_TIME_CONSTANT_S)
-		_velocity = _velocity.lerp(measured, blend)
-		_previous_target = target
-	_target = target
+	_set_targets(target, companions, elapsed)
 	var target_index: int = int(floor((time_s - _epoch_time_s) / STEP_S + 1.0e-9))
 	var steps: int = target_index - _step_index
 	if steps > MAX_STEPS_PER_UPDATE:
@@ -153,6 +149,36 @@ func update_to(time_s: float, target: Vector3) -> void:
 	simulated_time_s = _epoch_time_s + float(_step_index) * STEP_S
 	if steps > 0:
 		_dirty = true
+
+
+## Update every target's position and smoothed velocity. A target that (re)appears starts at rest
+## so a roster change never produces a lead spike.
+func _set_targets(player: Vector3, companions: Array, elapsed: float) -> void:
+	var positions: Array = [player]
+	positions.append_array(companions)
+	_targets.resize(maxi(_targets.size(), positions.size()))
+	for index in _targets.size():
+		var value: Variant = positions[index] if index < positions.size() else null
+		var entry: Dictionary = _targets[index] if _targets[index] is Dictionary and not _targets[index].is_empty() else {valid = false}
+		if not value is Vector3 or not (value as Vector3).is_finite():
+			entry.valid = false
+		elif not bool(entry.valid):
+			entry = {valid = true, position = value, previous = value, velocity = Vector3.ZERO}
+		else:
+			if elapsed > 0.0:
+				var measured: Vector3 = ((value as Vector3) - (entry.previous as Vector3)) / elapsed
+				var blend: float = 1.0 - exp(-elapsed / VELOCITY_TIME_CONSTANT_S)
+				entry.velocity = (entry.velocity as Vector3).lerp(measured, blend)
+				entry.previous = value
+			entry.position = value
+		_targets[index] = entry
+
+
+func _target_for(person: Dictionary) -> Dictionary:
+	var slot: int = person.companion_slot
+	if slot >= 0 and slot + 1 < _targets.size() and bool(_targets[slot + 1].valid):
+		return _targets[slot + 1]
+	return _targets[0]
 
 
 func _step(dt: float) -> void:
@@ -191,7 +217,10 @@ static func _follow(person: Dictionary, angle_key: String, rate_key: String, goa
 ## aircraft is out of range or behind. Local forward is −Z, as the source meshes face.
 func _desired(person: Dictionary) -> Vector2:
 	var rest := Vector2(person.rest_yaw, person.rest_pitch)
-	var aim: Vector3 = _target + _velocity * float(person.lead_s)
+	var target: Dictionary = _target_for(person)
+	if not bool(target.valid):
+		return rest
+	var aim: Vector3 = (target.position as Vector3) + (target.velocity as Vector3) * float(person.lead_s)
 	var offset: Vector3 = aim - (person.pivot as Vector3)
 	if offset.length() > float(person.range_m):
 		return rest
