@@ -258,7 +258,7 @@ class DebugctlTests(unittest.TestCase):
         self.assertEqual(report["crash"]["reason"], "Program crashed with signal 4")
         self.assertEqual(report["crash"]["gdscript_backtrace"], ["[0] deep (res://crash.gd:3)", "[1] _init (res://crash.gd:5)"])
         log.write_text("clean exit\n")
-        self.assertEqual(debugctl.exit_report(log), {})
+        self.assertEqual(debugctl.exit_report(log), {"crash": None, "leaked_objects": 0})  # explicit, not silent
 
     def test_hitches_are_attributed_to_the_last_action_before_them(self) -> None:
         saved = debugctl.result_of
