@@ -17,6 +17,7 @@ const ShaderClock = preload("res://render/shader_clock.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
 const Lighting = preload("res://render/time_of_day_lighting.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
+const DisplayPreferences = preload("res://app_state/display_preferences.gd")
 
 const BUDGET_PRIMITIVES := 1000 # tools/scenery/scene_budget.json scenery_Birds (every view class)
 const BUDGET_DRAWS := 2
@@ -69,6 +70,7 @@ func _initialize() -> void:
 		_test_director(loaded)
 		_test_budget(loaded)
 		_test_transitions()
+		_test_preference()
 		_test_scene()
 	print("all %d bird checks passed" % _checks if _failures == 0 else "%d of %d bird checks failed" % [_failures, _checks])
 	quit(1 if _failures > 0 else 0)
@@ -539,6 +541,72 @@ func _test_transitions() -> void:
 		and not Birds.pending(root_birds))
 	root_birds.free()
 	ShaderClock.update(100.0)
+
+
+## Settings → Graphics → Birds: saved in display.cfg, mirrored levels, density per tier, applied live by the runtime.
+func _test_preference() -> void:
+	_check("the saved Birds levels mirror the director's", DisplayPreferences.BIRD_LEVELS == BirdDirector.PREFERENCES
+		and DisplayPreferences.DEFAULTS.birds == BirdDirector.DEFAULT_PREFERENCE)
+	var path := "user://test_birds_display.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	var config: Dictionary = DisplayPreferences.load_from(path)
+	_check("a new or old display.cfg means Normal birds", config.birds == "normal")
+	config.birds = "few"
+	_check("Few saves and loads back", DisplayPreferences.save_to(path, config) == OK and DisplayPreferences.load_from(path).birds == "few")
+	var invalid: Dictionary = config.duplicate()
+	invalid.birds = "flocks"
+	_check("an unknown Birds level is refused", not DisplayPreferences.validate(invalid).ok)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	_check("density per level and tier: off 0, few half, normal the tier, many full",
+		BirdDirector.density("off", "high") == 0.0 and BirdDirector.density("few", "high") == 0.5
+		and BirdDirector.density("normal", "low") == 0.5 and BirdDirector.density("many", "low") == 1.0
+		and BirdDirector.density("normal", "balanced") == 0.75)
+	BirdDirector.set_preference("normal")
+	var serial: int = BirdDirector.preference_serial
+	BirdDirector.set_preference("normal")
+	_check("choosing the current level changes nothing", BirdDirector.preference_serial == serial)
+	BirdDirector.set_preference("dodos")
+	_check("an unknown level falls back to Normal", BirdDirector.preference == "normal")
+	ShaderClock.update(300.0)
+	var noon := {sun_elevation_deg = 45.0, sun_azimuth_deg = 180.0}
+	var birds: Node3D = Birds.build(noon)
+	var flying: int = _drawn_total(birds)
+	BirdDirector.set_preference("off")
+	birds.call("poll")
+	_check("Off applies at once: every bird starts leaving (none vanishes)", Birds.pending(birds) and _drawn_total(birds) == flying)
+	ShaderClock.update(300.0 + 151.0)
+	birds.call("poll")
+	_check("…and once they have left, nothing is drawn", _drawn_total(birds) == 0 and not Birds.pending(birds))
+	BirdDirector.set_preference("many")
+	birds.call("poll")
+	ShaderClock.update(451.0 + 151.0)
+	birds.call("poll")
+	_check("Many brings the noon birds back (%d of %d)" % [_drawn_total(birds), flying], _drawn_total(birds) == flying)
+	BirdDirector.set_preference("off")
+	birds.call("poll")
+	for i: int in 31: # Home's fixed clock, or a paused flight
+		birds.call("poll")
+	_check("with the clock standing still (Home, pause) a change settles at once", _drawn_total(birds) == 0
+		and not Birds.pending(birds), str(Birds.drawn(birds)))
+	birds.free()
+	BirdDirector.set_preference("off")
+	var off_built: Node3D = Birds.build(noon)
+	_check("built while Off: the layer exists but draws nothing", off_built != null and _drawn_total(off_built) == 0)
+	off_built.free()
+	BirdDirector.set_preference("few")
+	var few_built: Node3D = Birds.build(noon, "high")
+	_check("Few at High draws about half the noon birds (%d of %d)" % [_drawn_total(few_built), flying],
+		_drawn_total(few_built) >= roundi(flying * 0.3) and _drawn_total(few_built) <= roundi(flying * 0.7))
+	few_built.free()
+	BirdDirector.set_preference("normal")
+	ShaderClock.update(100.0)
+
+
+func _drawn_total(node: Node3D) -> int:
+	var total := 0
+	for count: int in Birds.drawn(node).values():
+		total += count
+	return total
 
 
 func _test_scene() -> void:

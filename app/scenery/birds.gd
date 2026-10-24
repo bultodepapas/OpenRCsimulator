@@ -81,6 +81,7 @@ static func apply_lighting(root: Node, lighting: Dictionary, animate: bool = tru
 		_apply(root, c, false)
 	root.set_meta("conditions", c)
 	root.set_meta("lighting", lighting.duplicate(true))
+	root.set_meta("preference_serial", BirdDirector.preference_serial)
 
 
 static func _apply(root: Node, c: Dictionary, animate: bool) -> void:

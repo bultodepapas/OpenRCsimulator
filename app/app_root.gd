@@ -58,6 +58,7 @@ const HELICOPTER_MAIN_SCRIPT := "res://helicopter_main.gd"
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
+const BirdDirector := preload("res://scenery/birds/bird_director.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
 const DebugBridge := preload("res://debug/debug_bridge.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
@@ -932,6 +933,8 @@ func _apply_presentation(config: Dictionary) -> void:
 	get_viewport().msaa_3d = int(config.get("msaa_3d", 2)) as Viewport.MSAA
 	# VQ-06b: the LOD threshold applies at once; scenery and 3D trees follow at the next world build.
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
+	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).
+	BirdDirector.set_preference(str(config.get("birds", DisplayPreferences.DEFAULTS.birds)))
 	if DisplayServer.get_name() == "headless":
 		return
 	var requested_vsync := DisplayServer.VSYNC_ENABLED if config.get("vsync_mode", "enabled") == "enabled" else DisplayServer.VSYNC_DISABLED
