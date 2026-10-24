@@ -1,0 +1,8 @@
+# The X-Cell helicopter: arm, raise the collective briefly, return Home.
+fly aircraft=xcell-60-research
+control name=helicopter_arm
+sticks throttle=0.6 for_s=0.5
+wait until="flight.session.sim.tick > 240" timeout_s=120
+sticks release=true
+home
+assert expr="flight == null" message="helicopter flight ended"

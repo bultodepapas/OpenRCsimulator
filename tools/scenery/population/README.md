@@ -32,6 +32,9 @@ The packager preserves exact PNG/JPEG bytes and writes shared `textures/<sha256>
 godot --headless --path app --script res://tests/test_landscape_population_assets.gd
 godot --path app --script res://tests/test_landscape_population_assets.gd
 godot --path app --script res://tests/capture_population_assets.gd -- --out=/your/capture/folder
+godot --headless --path app --script res://tests/test_field_people_gaze.gd
 ```
+
+`test_field_people_gaze.gd` checks the head weight derived from each regenerated pose ([SC-HUM-03](../../../docs/research/scenery-implementation/SC-HUM-03/README.md)). A new pose must keep an eye proxy named `low-poly` and its parts' rotations at identity, or the head rig falls back to an estimate.
 
 The native test is required for real MultiMesh readback; the headless dummy renderer skips that subset explicitly. Captures check 5/15/40/120 m LOD and all three poses' motion/pause/reset/clock wrap. PNG-per-frame runs are visual evidence, not frame-time benchmarks. See [LU-21](../../../docs/research/landscape-upgrade/LU-21/README.md) for actual measurements and limits.

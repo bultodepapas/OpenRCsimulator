@@ -14,6 +14,12 @@ uniform float roughness_value = 0.85;
 uniform bool fabric = false;
 uniform bool skin = false;
 uniform float shirt_start = 0.90;
+// SC-HUM-03 head aim: Population.head_rig() supplies the neck pivot and weight band per pose;
+// PeopleGaze writes yaw to INSTANCE_CUSTOM.w (yaw / PI) and pitch to COLOR.a (0.5 + pitch / PI).
+uniform bool head_enabled = false;
+uniform vec3 head_pivot = vec3(0.0, 1.55, 0.0);
+uniform vec2 head_band = vec2(1.47, 1.56);
+uniform vec2 head_radius = vec2(0.13, 0.18);
 varying float shirt_weight;
 varying vec3 shirt_tint;
 varying float skin_tone;
@@ -27,6 +33,24 @@ void vertex() {
 	shirt_weight = smoothstep(shirt_start, shirt_start + 0.12, VERTEX.y);
 	shirt_tint = vertex_color_to_linear(COLOR.rgb);
 	skin_tone = INSTANCE_CUSTOM.z;
+	if (head_enabled) {
+		// Rotate each vertex by angle × weight (a position mix() would shrink the neck), pitch about
+		// local X then yaw about Y; the faces look along local -Z. Normals follow the same rotation.
+		float w = smoothstep(head_band.x, head_band.y, VERTEX.y)
+			* (1.0 - smoothstep(head_radius.x, head_radius.y, length(VERTEX.xz - head_pivot.xz)));
+		float yaw = INSTANCE_CUSTOM.w * PI * w;
+		float pitch = (COLOR.a - 0.5) * PI * w;
+		float cp = cos(pitch);
+		float sp = sin(pitch);
+		float cy = cos(yaw);
+		float sy = sin(yaw);
+		mat3 rotation = mat3(vec3(cy, 0.0, -sy), vec3(0.0, 1.0, 0.0), vec3(sy, 0.0, cy))
+			* mat3(vec3(1.0, 0.0, 0.0), vec3(0.0, cp, sp), vec3(0.0, -sp, cp));
+		VERTEX = head_pivot + rotation * (VERTEX - head_pivot);
+		NORMAL = rotation * NORMAL;
+		TANGENT = rotation * TANGENT;
+		BINORMAL = rotation * BINORMAL;
+	}
 	VERTEX.x += sin(sim_clock * (6.28318530718 * 43.0 / 1024.0) + phase) * 0.004 * upper * motion;
 	VERTEX.z += sin(sim_clock * (6.28318530718 * 171.0 / 1024.0) + phase) * 0.002 * upper * motion;
 }

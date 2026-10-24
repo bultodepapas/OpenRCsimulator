@@ -74,7 +74,7 @@ const COMMANDS := {
 	"mouse": "action=click|double|right|move|down|up|drag|wheel x= y= | text=|path= [to_x= to_y=] [amount=]",
 	"press": "text=<label>|path=<node> mode=accept|signal: activate a button like Enter on the focused control",
 	"focus": "text=|path=: give a control keyboard focus",
-	"type": "text=<s> submit=<bool> [path=]: insert text into the focused (or named) LineEdit/TextEdit",
+	"type": "text=<s> submit=<bool> [into=<label>|path=]: insert text into the focused (or named) LineEdit/TextEdit",
 	"select": "path=|text= index=<i>|item=<label>: OptionButton/ItemList item or TabBar tab; popup=true: open PopupMenu",
 	"set_value": "path=|text= value=<v>: set a Range (slider/spin box) value",
 	"key": "name=<W|Escape|F2|Shift+F|Ctrl+S...> action=tap|press|release hold_s=<s>: keyboard event (see shortcuts)",
@@ -102,7 +102,7 @@ var token := "":
 var log_path := ""
 var debug_log := DebugLog.new()
 var app: Node
-## Smoothed main-thread cost of the bridge per frame (µs), shown by perf and state.
+## Smoothed main-thread overhead of the bridge per frame (µs), excluding the work commands request; perf and state.
 var bridge_usec := 0.0
 var _server := TCPServer.new()
 var _thread := Thread.new()
@@ -211,10 +211,13 @@ func _process(_delta: float) -> void:
 	_net_mutex.unlock()
 	for peer_id: int in dropped:
 		_forget_peer(peer_id)
+	var handlers_started := Time.get_ticks_usec()
 	for item: Dictionary in inbox:
 		_handle(item.peer_id, item.id, item.request)
 	_run_scheduled()
 	_run_pending()
+	# The work a command asked for (building a flight, a screenshot readback) is not bridge overhead.
+	started += Time.get_ticks_usec() - handlers_started
 	_observe()
 	var now_ms := Time.get_ticks_msec()
 	_net_mutex.lock()
@@ -222,7 +225,8 @@ func _process(_delta: float) -> void:
 	_net_mutex.unlock()
 	if active and (invalidated or now_ms - _snapshot_ms >= SNAPSHOT_INTERVAL_MS):
 		_snapshot_ms = now_ms
-		var snapshot: Dictionary = jsonable(_cmd_state({}))
+		# Plain values only (no objects): the network thread converts it when it sends, off the frame.
+		var snapshot: Dictionary = _cmd_state({})
 		snapshot.frame = Engine.get_process_frames()
 		snapshot.ms = now_ms
 		_net_mutex.lock()
@@ -607,14 +611,16 @@ func _cmd_focus(request: Dictionary) -> Dictionary:
 
 
 func _cmd_type(request: Dictionary) -> Dictionary:
-	var control: Control = get_viewport().gui_get_focus_owner()
-	if request.has("path"):
-		var found := _find_control({path = request.path})
+	# An open dialog is its own viewport with its own focus.
+	var window := _top_window()
+	var control: Control = (window if window != null else get_viewport()).gui_get_focus_owner()
+	if request.has("path") or request.has("into"):
+		var found := _find_control({path = request.path} if request.has("path") else {text = request.into})
 		if found.has("error"):
 			return _fail(found.error)
 		control = found.control
 	if not (control is LineEdit or control is TextEdit):
-		return _fail("no LineEdit/TextEdit focused or named")
+		return _fail("no LineEdit/TextEdit focused; name one with into=<label or placeholder> or path=")
 	control.insert_text_at_caret(str(request.get("text", "")))
 	if control is LineEdit:
 		control.text_changed.emit(control.text)
@@ -691,7 +697,10 @@ func _cmd_set_value(request: Dictionary) -> Dictionary:
 
 
 func _cmd_key(request: Dictionary) -> Dictionary:
-	var parts := str(request.get("name", "")).split("+")
+	var raw_name: Variant = request.get("name", "")
+	if raw_name is float and raw_name == floorf(raw_name):
+		raw_name = int(raw_name) # JSON makes key 1 the number 1.0
+	var parts := str(raw_name).split("+")
 	var keycode := OS.find_keycode_from_string(parts[parts.size() - 1])
 	if keycode == KEY_NONE:
 		return _fail("unknown key name '%s' (examples: W, Escape, Enter, Space, F2, Up, Shift+F; see shortcuts)" % request.get("name", ""))
@@ -957,7 +966,9 @@ func _cmd_wait(request: Dictionary) -> Dictionary:
 	if request.has("seconds"):
 		var until := Time.get_ticks_msec() + int(float(request.seconds) * 1000.0)
 		return {pending = func() -> Variant:
-			return _ok({frame = Engine.get_process_frames()}) if Time.get_ticks_msec() >= until else null,
+			if Time.get_ticks_msec() < until:
+				return null
+			return _ok({frame = Engine.get_process_frames()}),
 			timeout_s = float(request.seconds) + 5.0}
 	return _settle(maxi(1, int(request.get("frames", 1))), {})
 
@@ -1185,11 +1196,11 @@ func _cmd_sample(request: Dictionary) -> Dictionary:
 	if sources.is_empty():
 		return _fail("give exprs={\"name\": \"expression\"} (inputs: app, tree, bridge, session, sim, s = sim.state)")
 	var compiled := {}
-	for name: Variant in sources:
+	for column: Variant in sources:
 		var expression := Expression.new()
-		if expression.parse(str(sources[name]), _input_names(["session", "sim", "s"])) != OK:
-			return _fail("%s: parse error: %s" % [name, expression.get_error_text()])
-		compiled[str(name)] = expression
+		if expression.parse(str(sources[column]), _input_names(["session", "sim", "s"])) != OK:
+			return _fail("%s: parse error: %s" % [column, expression.get_error_text()])
+		compiled[str(column)] = expression
 	var job := {session = session, exprs = compiled, every = maxi(1, int(request.get("every_ticks", 24))),
 		count = clampi(int(request.get("count", 10)), 1, 100000), rows = [], last_tick = -1, error = ""}
 	_samples.append(job)
@@ -1216,11 +1227,11 @@ func _collect_samples() -> void:
 			continue
 		job.last_tick = tick
 		var row: Array = [tick, sim.time()]
-		for name: String in job.exprs:
-			var expression: Expression = job.exprs[name]
+		for column: String in job.exprs:
+			var expression: Expression = job.exprs[column]
 			var value: Variant = expression.execute(_input_values([job.session, sim, sim.state]), app, false)
 			if expression.has_execute_failed():
-				job.error = "%s failed at tick %d: %s" % [name, tick, expression.get_error_text()]
+				job.error = "%s failed at tick %d: %s" % [column, tick, expression.get_error_text()]
 				break
 			row.append(jsonable(value))
 		job.rows.append(row)
@@ -1438,15 +1449,15 @@ func _cmd_methods(request: Dictionary) -> Dictionary:
 	var seen := {}
 	var out: Array = []
 	for method: Dictionary in node.get_script().get_script_method_list():
-		var name := str(method.name)
-		if seen.has(name) or name.begins_with("@") or (name.begins_with("_") and not private): # @: property accessors
+		var method_name := str(method.name)
+		if seen.has(method_name) or method_name.begins_with("@") or (method_name.begins_with("_") and not private): # @: property accessors
 			continue
-		seen[name] = true
+		seen[method_name] = true
 		var args: Array = method.args.map(func(a: Dictionary) -> String: return str(a.name))
 		var defaults: int = method.default_args.size()
 		for i in defaults:
 			args[args.size() - defaults + i] += "?"
-		out.append("%s(%s)" % [name, ", ".join(args)])
+		out.append("%s(%s)" % [method_name, ", ".join(args)])
 	out.sort()
 	return _ok({node = _path(node), script = node.get_script().resource_path, methods = out})
 
@@ -1573,13 +1584,26 @@ func _record_frame(now_us: int) -> void:
 	_frame_ms[index] = ms
 	_frame_ticks[index] = ticks
 	_frame_count += 1
+	# Typical = median of the previous (up to) 60 frames, refreshed every 15: robust to the hitches themselves and to
+	# long startup frames, and it adapts to slow renderers (llvmpipe frames are seconds long, and not hitches).
+	if _frame_count % 15 == 1 or _frame_ema_ms == 0.0:
+		_frame_ema_ms = _recent_median(mini(_frame_count - 1, 60))
 	var threshold := maxf(hitch_ms, hitch_factor * _frame_ema_ms)
 	if _frame_ema_ms > 0.0 and ms > threshold:
 		_hitch(ms, threshold, ticks, monitors)
-	else:
-		_frame_ema_ms = ms if _frame_ema_ms == 0.0 else lerpf(_frame_ema_ms, ms, 0.05)
 	_frame_monitors = monitors
 	_frame_log_seq = debug_log.last_seq()
+
+
+## Median of the `count` frames before the newest one (0 when there are none).
+func _recent_median(count: int) -> float:
+	if count <= 0:
+		return 0.0
+	var values := PackedFloat64Array()
+	for i in count:
+		values.append(_frame_ms[(_frame_count - 2 - i + FRAME_CAPACITY) % FRAME_CAPACITY])
+	values.sort()
+	return values[floori(values.size() / 2.0)]
 
 
 func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> void:
@@ -1599,7 +1623,7 @@ func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> vo
 	if absf(deltas.get("nodes", 0.0)) >= 50.0 or deltas.get("resources", 0.0) >= 20.0:
 		causes.append("scene/resource construction")
 	var lines: Array = debug_log.since(_frame_log_seq, 8, PackedStringArray(["info", "warning", "error", "script_error"])).map(
-		func(record: Dictionary) -> String: return str(record.text).left(160))
+		func(entry: Dictionary) -> String: return str(entry.text).left(160))
 	var record := {frame = Engine.get_process_frames(), ms = snappedf(ms, 0.1), threshold_ms = snappedf(threshold, 0.1),
 		physics_ticks = ticks, deltas = deltas, causes = causes, route = _route(), screens = _screen_ids(), log = lines,
 		process_ms = snappedf(Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, 0.01),
@@ -1642,7 +1666,7 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 	if window > 0:
 		var sorted := times.duplicate()
 		sorted.sort()
-		var worst := sorted.slice(sorted.size() - maxi(1, sorted.size() / 100))
+		var worst := sorted.slice(sorted.size() - maxi(1, floori(sorted.size() / 100.0)))
 		var mean := 0.0
 		for value: float in times:
 			mean += value
@@ -1686,7 +1710,9 @@ func _cmd_break(request: Dictionary) -> Dictionary:
 	if not _bool(request.get("wait", false)):
 		return _ok({name = watch.name, pause = watch.pause, once = watch.once})
 	return {pending = func() -> Variant:
-		return _ok(watch.hit) if not watch.hit.is_empty() else null,
+		if watch.hit.is_empty():
+			return null
+		return _ok(watch.hit),
 		timeout_s = 600.0}
 
 
@@ -2110,7 +2136,9 @@ static func _bool(value: Variant) -> bool:
 ## A finite number from JSON (or a numeric string), else null: callers refuse instead of failing mid-command.
 static func _number(value: Variant) -> Variant:
 	if value is int or value is float:
-		return float(value) if is_finite(float(value)) else null
+		if not is_finite(float(value)):
+			return null
+		return float(value)
 	if value is String and value.is_valid_float():
 		return value.to_float()
 	return null

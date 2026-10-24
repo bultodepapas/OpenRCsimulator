@@ -42,6 +42,12 @@ Launch options:
 - The port comes from `OPENRC_DEBUG_BRIDGE`, else the last launch (`tmp/debug-bridge/current.json`), else 47870.
   A busy 47870 makes `launch` pick a free port. `status` tells whether the app is alive. `stop` waits for the process
   to exit; `stop --force` kills it.
+- `--script-profile` adds `-d --profiling --ignore-error-breaks`, so the engine prints its per-function GDScript
+  profile about once a second (read it with `profile`). `--verbose` names each object leaked at exit.
+- `stop` reports how the engine ended: `leaked_objects` / `leaked_instances` at exit, and a `crash` with its reason
+  and GDScript backtrace, taken from `engine.log` (exit 1 after a crash). `status` shows the same when the app died.
+- If the engine cannot listen (the port is still being released), `launch` retries once on a free port. It accepts
+  an answer only from its own process group, and it stops what it launched whenever it fails.
 - Run one rendered app at a time on the shared VM (about 2–3 GB RSS).
 
 ## Commands
@@ -59,11 +65,11 @@ Launch options:
 | Menus and settings | `open screen=<…>` (no screen lists them), `close` (Esc/Back; never Home itself), `ui [all=true] [labels=true] [text=]`, `press text=\|path= [mode=signal]`, `select text=<OptionButton/TabBar/ItemList name or label> item=<label>\|index=`, `select popup=true item=` for an open PopupMenu, `set_value value=`, `type text= [submit=true]`, `focus`, `prefs` |
 | Keys and controller | `shortcuts`; `key name=<C\|Shift+C\|F10\|Escape…> [action=tap\|press\|release] [hold_s=]`; `control [name=<action>] [hold=]` (the same handlers as a bound controller button); `action name=<input action>`; `mouse action=click\|double\|right\|move\|down\|up\|drag\|wheel x= y=` or `text=` |
 | Pilot input | `sticks roll= pitch= yaw= throttle= [for_s=]` / `sticks release=true` (fixed wing and helicopter); `drive throttle= steering= brake= reverse= [for_s=]` / `drive release=true` (RC truck) |
-| Time | `pause`, `resume`, `step ticks=<n>`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]` |
-| Observe | `state`, `logs [--since N] [--level …] [--follow]`, `perf`, `screenshot [path=] [format=png\|jpg] [max_width=]` (JPEG at quality 85 is about 8× smaller for looking), `view [name=]`, `window [size=WxH] [mode=]`, `record action=start\|stop\|mark\|status` |
+| Time | `pause`, `resume`, `step ticks=<n>`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]`, `break expr= [name=] [pause=] [once=] [wait=]` / `break list=true` / `break clear=<name\|all>` |
+| Observe | `state`, `logs [--since N] [--level …] [--follow] [--summary]`, `frames [window=] [hitch_ms=] [factor=] [reset=]`, `objects [baseline=] [diff=] [top=]`, `profile [since=] [top=] [sort=self\|total]`, `perf`, `screenshot [path=] [format=png\|jpg] [max_width=]` (JPEG at quality 85 is about 8× smaller for looking), `view [name=]`, `window [size=WxH] [mode=]`, `record action=start\|stop\|mark\|status` |
 | Telemetry | `sample exprs={"h":"-s[2]"} every_ticks= count=` (rows per simulation tick); client `watch [--every N] [--count N] [--csv FILE] h=-s[2] …` streams CSV |
 | Introspection | `methods node=<path>`, `find name=<glob> type=<class>`, `get node= [prop=]`, `set node= prop= value=`, `call node= method= args=[…]`, `eval expr= [node=]`, `assert expr= [message=]`, `nodes path= depth=` |
-| Scripts | `run FILE\|- [--keep-going]`, `repl`, `crawl [--shots]` |
+| Scripts | `run FILE\|- [--keep-going] [--fail-on-error]`, `repl`, `crawl [--shots]`, `soak FILE [--cycles N] [--warmup N] [--tolerance N]`, `monkey [--steps N] [--seed S] [--keys] [--out FILE]` |
 
 Notes on the commands:
 
@@ -86,6 +92,93 @@ Notes on the commands:
   including HUD overlay buttons.
 - **Events.** The log records `event`s for changes of route, screens, pause, crash, fault and pause reason, with
   their tick.
+
+## Hunting stutter, leaks and bugs (PT1h-R8)
+
+Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-gaps-2026-10-24.md):
+
+- **Stutter: `frames`.**
+  - Every frame's wall time goes into a 7,200-frame ring, with the physics ticks the frame ran.
+  - `frames` gives the mean, p50/p95/p99, max, mean fps, 1 % low fps and the frames that hit the
+    `max_physics_steps_per_frame` limit.
+  - A frame longer than `max(hitch_ms, factor × median of the last 60)` (defaults 50 ms and 3) becomes a
+    `hitch` log event. The event carries what changed during that frame (pipeline compilations, objects, nodes,
+    resources, orphans, static memory), the physics ticks, the route, and the log lines printed in it. It also names
+    likely causes: pipeline/shader compilation, physics catch-up, scene/resource construction.
+  - Example: Home → Fly is one 3.6 s frame, with "scene/resource construction (+1,482 objects, +64 MiB)".
+- **Simulation watchpoints: `break`.**
+  - `break expr="-s[2] < 2" wait=true` checks the expression before every flight tick (inputs: `session`, `sim`,
+    `s`, `app`, singletons). It pauses at the exact tick it becomes true, logs a `break` event and returns the state.
+  - It fires on each false → true entry. `once=true` removes it after one hit; `pause=false` only logs.
+  - An expression that fails is removed with an event.
+- **Errors: `logs --summary` and `run --fail-on-error`.**
+  - The summary groups records whose texts differ only in numbers, with counts, first/last sequence and the
+    script location.
+  - `--fail-on-error` stops a repro script at the first line after which the engine logged an error.
+- **Leaks: `objects` and `soak`.**
+  - `objects` counts live nodes by class and script (internal children included), and orphan nodes by class, with
+    samples. It also reports totals for objects, nodes, resources, orphans and static memory.
+  - `baseline=true` saves the counts, and `diff=true` lists what changed since then.
+  - `soak scenario.txt --cycles N` runs a script repeatedly. After warm-up it diffs every cycle against the first
+    measured one, and reports counters that grow in every cycle and any new errors. It also prints process RSS from
+    `/proc` on Linux.
+- **Script CPU: `profile`.**
+  - Launch with `--script-profile`. Read `profile since=<log_seq>`, taking the sequence from `ping` before the action
+    you want to measure.
+  - It aggregates the engine's own profile prints (one frame per second) into functions sorted by self or total
+    time per sample, with call counts.
+  - Profiling adds overhead, and it attributes GDScript, not rendering.
+- **Random UI testing: `monkey`.**
+  - It runs a seeded walk over the visible controls: presses, selects, slider values, close, and with `--keys` the
+    vehicle's shortcuts.
+  - It avoids labels that quit, delete or open a browser.
+  - It stops at the first new engine error, or when the app stops answering. The trail is written as a replayable
+    `run` script (`tmp/debug-bridge/monkey-<seed>.txt`), with the hitches attributed to the action before them
+    ("slow after key F5: 73 ms…").
+- **Compiler warnings: `gdscript_warnings.py`.**
+  - It opens every script in the pinned editor's language server, headless and on a snapshot of `app/` (the
+    shared tree is never opened by an editor), and collects the engine's own errors and warnings with the project's
+    settings.
+  - `--baseline tools/debug/gdscript_warnings_baseline.json` fails only on warnings that are not in the baseline.
+    The baseline is keyed by file, code and message, without line numbers.
+  - `--write-baseline` refreshes the baseline after a reviewed change. `--files 'debug/*.gd'` narrows the run.
+
+```sh
+python3 tools/debug/gdscript_warnings.py --files 'debug/*.gd'          # one area, ~30 s
+python3 tools/debug/gdscript_warnings.py --baseline tools/debug/gdscript_warnings_baseline.json
+```
+
+The first full pass took 672 s on the VM: 1,239 scripts, 0 errors, and 1,160 warnings, now the baseline. By code:
+
+| Warnings | Code |
+| --- | --- |
+| 321 | `SHADOWED_GLOBAL_IDENTIFIER` |
+| 245 | `SHADOWED_VARIABLE_BASE_CLASS` |
+| 215 | `INTEGER_DIVISION` |
+| 108 | `CONFUSABLE_LOCAL_DECLARATION` |
+| 73 | `UNUSED_VARIABLE` |
+| 58 | `INCOMPATIBLE_TERNARY` |
+| 52 | `UNUSED_PARAMETER` |
+| 43 | `SHADOWED_VARIABLE` |
+| 63 | others |
+
+The rarer, bug-shaped codes were reviewed:
+
+- In production code, `UNASSIGNED_VARIABLE` (`rc_ground_material.gd`) and `CONFUSABLE_LOCAL_USAGE` (`app_root.gd`)
+  are false positives. A typed object variable starts as null, and the shadowed property is not read afterwards.
+- The test-only `INT_AS_ENUM_WITHOUT_MATCH` values are deliberate out-of-range inputs.
+- No existing warning was fixed in bulk. Owners can work down the baseline.
+
+The gate was checked both ways: a pass over 5 files against the baseline reports 0 new warnings, and removing one
+key from a copy of the baseline makes the matching warning new (exit 1).
+
+[gdlint](https://pypi.org/project/gdtoolkit/) 4.5.0 was evaluated and not adopted:
+
+- On 1,239 scripts it reported 29,317 items. 27,817 were line length and 1,094 definition order.
+- Its 3 "comparison with itself" findings were intentional determinism checks.
+- It could not parse 9 files.
+
+The engine's own warnings are the better signal.
 
 ## Recipes
 
@@ -112,6 +205,17 @@ $D open screen=settings; $D ui; $D select text=WindowResolution item="1920 × 10
 
 # Exact ticks around an event.
 $D pause; $D step ticks=240; $D state
+
+# Where does a stutter come from, and what costs script time?
+$D launch --headless --script-profile; SEQ=$($D ping --json | python3 -c 'import json,sys; print(json.load(sys.stdin)["log_seq"])')
+$D fly start=airborne; $D frames; $D profile since=$SEQ top=15
+
+# Stop at the tick something goes wrong.
+$D break name=ground expr="-s[2] < 0.5" wait=true timeout_s=600; $D state; $D sample exprs={"h":"-s[2]"} count=1
+
+# Leak check of any scenario, and a random UI walk.
+printf 'fly start=airborne\nwait frames=30\nhome\n' > tmp/cycle.txt; $D soak tmp/cycle.txt --cycles 5
+$D monkey --steps 300 --seed 42 --keys
 
 # Discover and call anything.
 $D methods node=AppRoot              # set_language(code), set_landscape(id), set_time_of_day(preset), …
@@ -223,7 +327,7 @@ python3 tools/godot/run_checked.py --timeout 90 --require-text 'all debug bridge
 python3 -m unittest discover -s tools/debug -p 'test_*.py'
 ```
 
-**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 59 checks. It talks real loopback TCP
+**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 67 checks. It talks real loopback TCP
 to the bridge on a stand-in AppRoot. It covers:
 
 - protocol errors and the token;
@@ -243,12 +347,23 @@ to the bridge on a stand-in AppRoot. It covers:
 - bad stick values refused before anything is installed;
 - `release=1` read as true;
 - `set` on an unknown property and non-numeric arguments refused;
-- `wait` timeouts reporting the last value.
+- `wait` timeouts reporting the last value;
+- engine singletons in `eval` and a numeric key name;
+- PT1h-R8 tools: a 150 ms frame becomes a `hitch` event and `frames` reports percentiles; a watchpoint pauses at the
+  exact tick and `once` removes it; `logs` summary groups messages differing only in numbers; `objects diff` names 5
+  new orphan `Node`s; `profile` parses the engine's profile format.
 
-**Client tests.** These run in `research/test-tools.sh`, with 15 tests against a fake server. They cover argument and
-JSON parsing, the token, exit codes, the `ui` table and its short paths, the remembered session port and token (sent
-only to that port), `OPENRC_DEBUG_BRIDGE=1` not being read as a port, `stop` without a session, `run` stop and
-`--keep-going`, `watch` CSV chunks, `crawl` passes and failures, and `clean`.
+**Client tests.** These run in `research/test-tools.sh`, with 21 tests, mostly against a fake server. They cover:
+
+- argument and JSON parsing, and quoted values that stay strings;
+- the token, exit codes, and the `ui` table with its short paths;
+- the remembered session port and token (sent only to that port), and `OPENRC_DEBUG_BRIDGE=1` not being read as a
+  port;
+- `stop` without a session, and `run` stop and `--keep-going`;
+- `watch` CSV chunks, `crawl` passes and failures, and `clean`;
+- the crash and leak exit report, using the engine's real output format;
+- hitch attribution to the action before it, and seed-reproducible monkey actions;
+- `gdscript_warnings.py` script selection and line-independent baseline keys.
 
 **Mutations.** On 2026-10-24, deliberate mutations on a disposable copy each failed exactly their check: no reader
 re-assert, step off by one, token ignored, release no-op, no network-thread fast path, a stale snapshot accepted, no

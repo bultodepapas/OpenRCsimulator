@@ -1,0 +1,8 @@
+# Regression (PT1h-R8 monkey seed 5): keyboard Accept on "Discard changes" closed the Workshop while the dialog
+# was still dispatching the event: `Condition "!is_inside_tree()"` in _push_unhandled_input_internal.
+press text="Workshop"
+set_value text="Control MultiplierSlider" value=0.749
+press text="Back to Home"
+press text="Discard changes"
+wait frames=3
+assert expr="screens.is_top('home')" message="back at Home after discarding"

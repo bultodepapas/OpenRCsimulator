@@ -1,0 +1,10 @@
+# The MT8 truck: leave the garage, drive one second, return Home.
+call node=AppRoot method=start_ground_vehicle args=["mt8-bisonte"]
+wait until="ground_vehicle != null and ground_vehicle.session != null and ground_vehicle.session.prepared" timeout_s=200
+press text="drive"
+drive throttle=0.6 steering=0.3 for_s=1
+wait until="ground_vehicle.scripted_controls.is_null()" timeout_s=300
+assert expr="ground_vehicle.session.tick > 200" message="the truck simulated"
+press text="Garage"
+press text="Return to Home"
+wait until="ground_vehicle == null" timeout_s=60
