@@ -19,9 +19,9 @@ const BUTTON := {
 	disabled = Color("#292929"),
 }
 const PRIMARY := {
-	normal = Color("#08290F", 0.86),
-	hover = Color("#0B3A14", 0.88),
-	pressed = Color("#061E0B", 0.92),
+	normal = Color("#08290F", 0.76),
+	hover = Color("#0B3A14", 0.80),
+	pressed = Color("#061E0B", 0.84),
 	disabled = Color("#242A24"),
 }
 const PRIMARY_TEXT := Color("#E4FFDA")
@@ -198,14 +198,14 @@ static func _primary_button(theme: Theme, type: String, font_size: int) -> void:
 	_button(theme, type, PRIMARY, FOCUS, 1, font_size, PRIMARY_TEXT, DISABLED_TEXT)
 	for state in ["normal", "hover", "pressed", "disabled"]:
 		var box := theme.get_stylebox(state, type) as StyleBoxFlat
-		box.border_color = Color(GLASS_EMISSION, 0.20 if state == "pressed" else 0.28) if state != "disabled" else EDGE
+		box.border_color = Color(GLASS_EMISSION, 0.10 if state == "pressed" else 0.12) if state != "disabled" else EDGE
 		box.border_width_top = 1
 		box.border_blend = true
 		box.set_corner_radius_all(12)
 		if opaque_panels: box.bg_color.a = 1.0
 		if state != "disabled":
-			box.shadow_color = Color(GLASS_EMISSION, 0.16 if state == "hover" else 0.10)
-			box.shadow_size = 8 if state == "hover" else (3 if state == "pressed" else 6)
+			box.shadow_color = Color(GLASS_EMISSION, 0.06 if state == "hover" else 0.04)
+			box.shadow_size = 3 if state == "hover" else (1 if state == "pressed" else 2)
 	# Native side brackets sit inside the dark well, clear of the luminous wall and label ink.
 	var focus := theme.get_stylebox("focus", "Button").duplicate() as StyleBoxFlat
 	focus.border_color = CRYSTAL

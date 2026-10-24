@@ -192,6 +192,25 @@ func _run() -> void:
 	service.play(&"focus")
 	service.set_volume(0.0)
 	_check("muting stops an already playing cue", service._voices.all(func(voice: AudioStreamPlayer) -> bool: return not voice.playing))
+	service.set_volume(0.35)
+	service.play(&"focus")
+	var first_focus_pitch: float = service._voices[0].pitch_scale
+	service._voices[0].stop()
+	service.play(&"focus")
+	_check("successive navigation cues have bounded tonal variation",
+		service._voices[0].pitch_scale != first_focus_pitch
+		and service._voices[0].pitch_scale >= 0.9 and service._voices[0].pitch_scale <= 1.12)
+	service._voices[0].stop()
+	service._voices[1].stop()
+	var dropped_before: int = service.dropped_voice_count()
+	service.play(&"accept")
+	service.play(&"back")
+	var rejection_played: bool = service.play(&"reject")
+	_check("a fresh decision replaces an older tail when both voices are busy",
+		rejection_played and service.dropped_voice_count() == dropped_before
+		and service._voices.any(func(voice: AudioStreamPlayer) -> bool: return is_equal_approx(voice.pitch_scale, 0.78)),
+		"played=%s dropped=%d before=%d pitches=%s/%s" % [str(rejection_played), service.dropped_voice_count(),
+			dropped_before, str(service._voices[0].pitch_scale), str(service._voices[1].pitch_scale)])
 
 	host.queue_free()
 	await create_timer(0.1).timeout # allow the audio mixer to release the stopped playback before process teardown

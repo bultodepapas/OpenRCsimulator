@@ -974,3 +974,6 @@ Follow the owner's photographic references by moving primary actions from a fill
 
 The next native comparison favors a broad rounded wall with thin grazing catches, an offset rear contour and curved internal reflections. Reduce the external halo, increase interior transparency and cap the text area's brightness. Use native inset side brackets for focus so the upper/lower material remains visible. Keep neutral panels on a separate shader branch. [Experiments and rendered contrast checks](research/menu-investigations/README.md#ui-22-r8--rounded-glass-wall-and-offset-reflections-2026-10-24).
 
+### 2026-10-24 — Thin the fluorescent rim and separate optical strengths (UI-22-R9)
+
+A ten-variant native comparison selects a thinner wall with subdued interior reflections and a small external halo. Keep width, emission, reflection and glint independently tunable in the shader; reduce primary interior opacity while retaining the rendered text/focus contrast gates. Preserve the black panel palette and native interaction states. [Variant matrix and verification](research/menu-investigations/README.md#ui-22-r9--ten-thinner-glass-variants-2026-10-24).

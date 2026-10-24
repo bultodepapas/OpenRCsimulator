@@ -24,13 +24,25 @@ const STREAM_BY_CUE: Dictionary = {
 
 const GAIN_BY_CUE: Dictionary = {
 	&"focus": 0.24,
-	&"hover": 0.24,
+	&"hover": 0.16,
 	&"press": 0.38,
 	&"select": 0.34,
 	&"change": 0.28,
 	&"accept": 0.48,
 	&"back": 0.40,
 	&"reject": 0.28,
+}
+
+# The seven licensed clips share a small pitch vocabulary. Repeated navigation
+# moves through it, while decisions keep stable, recognizable contours.
+const NAVIGATION_PITCHES: Array[float] = [0.94, 1.0, 1.12, 1.06, 0.98]
+const PRESS_PITCHES: Array[float] = [1.0, 1.035, 0.975]
+const CUE_PITCH: Dictionary = {
+	&"select": 1.08,
+	&"change": 1.04,
+	&"accept": 1.12,
+	&"back": 0.88,
+	&"reject": 0.78,
 }
 
 const NAVIGATION_ACTIONS: PackedStringArray = [
@@ -47,6 +59,9 @@ var _voices: Array[AudioStreamPlayer] = []
 var _voice_cues: Array[StringName] = []
 var _cue_counts: Dictionary = {}
 var _dropped_voice_count: int = 0
+var _navigation_step := 0
+var _press_step := 0
+var _voice_started_ms: Array[int] = []
 
 var _observed_screens: Dictionary = {}
 var _observed_controls: Dictionary = {}
@@ -84,6 +99,7 @@ func _ready() -> void:
 		add_child(player)
 		_voices.append(player)
 		_voice_cues.append(&"")
+		_voice_started_ms.append(0)
 	set_volume(_volume)
 
 
@@ -322,12 +338,21 @@ func _request_cue(cue: StringName, source: Object = null) -> bool:
 				_voices[voice_index].stop()
 				available_voice = voice_index
 				break
+	# A decision must remain audible even during two rapid transitions. Replace
+	# the oldest tail instead of dropping the newest confirmation/error.
+	if available_voice < 0 and _is_semantic_cue(cue):
+		for voice_index: int in range(_voices.size()):
+			if available_voice < 0 or _voice_started_ms[voice_index] < _voice_started_ms[available_voice]:
+				available_voice = voice_index
+		_voices[available_voice].stop()
 	if available_voice < 0:
 		_dropped_voice_count += 1
 		return false
 	var player := _voices[available_voice]
 	player.stream = stream
+	player.pitch_scale = _pitch_for(cue)
 	_voice_cues[available_voice] = cue
+	_voice_started_ms[available_voice] = Time.get_ticks_msec()
 	_update_voice_volume(available_voice)
 	var source_id := source.get_instance_id() if source != null and is_instance_valid(source) else 0
 	_cue_counts[cue] = int(_cue_counts.get(cue, 0)) + 1
@@ -335,6 +360,18 @@ func _request_cue(cue: StringName, source: Object = null) -> bool:
 	if _volume > 0.0:
 		player.play()
 	return true
+
+
+func _pitch_for(cue: StringName) -> float:
+	if cue == &"focus" or cue == &"hover":
+		var pitch := NAVIGATION_PITCHES[_navigation_step % NAVIGATION_PITCHES.size()]
+		_navigation_step += 1
+		return pitch - 0.035 if cue == &"hover" else pitch
+	if cue == &"press":
+		var pitch := PRESS_PITCHES[_press_step % PRESS_PITCHES.size()]
+		_press_step += 1
+		return pitch
+	return float(CUE_PITCH.get(cue, 1.0))
 
 
 func _is_semantic_cue(cue: StringName) -> bool:
