@@ -257,6 +257,7 @@ var _accident_reload_pending := false
 var _accident_checkpoint_restoring := false
 var _accident_paired_history := false
 var _crash_director: CrashDirector
+var _people_crash_clock_s := 0.0 # SC-HUM-05 presentation time since the player's crash
 var _scenery_damage_director: SceneryDamageDirector
 var _cg_model := Vector3.ZERO
 var _env: Environment
@@ -950,6 +951,18 @@ func _advance_windsock(_tick: int, time_s: float, state: PackedFloat64Array,
 		not session.crash.is_empty())
 
 
+## SC-HUM-05: a crash pauses the simulation, so the crash glance runs on the same presentation
+## clock as the crash director: crash time plus the frame time accumulated since.
+func _advance_people_after_crash(dt: float) -> void:
+	if session.crash.is_empty() or _scripted:
+		_people_crash_clock_s = 0.0
+		return
+	_people_crash_clock_s += maxf(0.0, dt)
+	var s: PackedFloat64Array = session.sim.state
+	FieldBuilder.advance_people(_field_node, session.sim.time() + _people_crash_clock_s, [s[0], s[1], s[2]], false,
+		_companion_positions(), true)
+
+
 ## Companion aircraft positions (NED) by slot, or null for one that has faulted. Read-only.
 func _companion_positions() -> Array:
 	var positions: Array = []
@@ -1028,6 +1041,7 @@ func _process(delta: float) -> void:
 	if not _scripted and _visual_pose.is_empty() and session.crash.is_empty() and sim.tick > 0:
 		smoke_clock_s = maxf(0.0, sim.time() - sim.dt() + Engine.get_physics_interpolation_fraction() * sim.dt())
 	_update_smoke(smoke_clock_s)
+	_advance_people_after_crash(dt)
 	if _crash_director != null:
 		_crash_director.update(dt)
 		if _crash_director.active and is_nan(_look.x):
