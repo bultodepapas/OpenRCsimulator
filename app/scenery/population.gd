@@ -7,17 +7,18 @@ const Palette = preload("res://scenery/palette.gd")
 const HUMAN_SHADER: Shader = preload("res://scenery/population_person.gdshader")
 const ASSETS := {
 	"car_sedan": "sedan", "car_hatch": "hatch", "car_suv": "crossover", "car_sport": "hatch",
-	"person_standing": "standing", "person_sitting": "sitting", "person_pilot": "pilot",
+	"person_standing": "standing", "person_sitting": "sitting", "person_pilot": "pilot", "person_working": "working",
 }
 const DIR := "res://assets/scenery/population/"
 ## SC-HUM-07: outfit variants per pose (tools/scenery/population/outfits/). A person asset key is
 ## "<pose>/<outfit>" and loads people/<outfit>_<pose>.glb at natural scale. Placements take the
 ## variants in turn per pose and zone, so neighbours differ; without the files the LU-21 pose is used.
-const HUMAN_POSES: Array[String] = ["standing", "sitting", "pilot"]
+const HUMAN_POSES: Array[String] = ["standing", "sitting", "pilot", "working"]
 const OUTFITS := {
 	"pilot": ["pilot_polo", "veteran_cap"],
 	"standing": ["casual_shirt", "woman_tee", "casual_jacket", "mechanic_overalls"],
 	"sitting": ["woman_tee", "veteran_cap"],
+	"working": ["mechanic_overalls", "casual_shirt", "woman_tee"],
 }
 const ZONE_OUTFITS := {
 	"pits": {"standing": ["mechanic_overalls", "casual_shirt", "mechanic_overalls", "casual_jacket", "woman_tee"]},
@@ -194,6 +195,8 @@ static func build(batches: Dictionary) -> Node3D:
 static func _role(id: String, zone: String) -> String:
 	if id == "person_pilot" or zone == "pilot_line":
 		return "pilot"
+	if id == "person_working":
+		return "worker"
 	if zone == "pits":
 		return "pits"
 	return "spectator"

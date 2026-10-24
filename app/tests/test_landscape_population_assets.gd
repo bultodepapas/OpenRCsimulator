@@ -13,7 +13,7 @@ const ShaderClock = preload("res://render/shader_clock.gd")
 const CAR_ASSETS := ["sedan", "hatch", "crossover"]
 const HUMAN_ASSETS := ["standing", "sitting", "pilot"]
 const EXPECTED_CAR_IDS := ["car_sedan", "car_hatch", "car_suv", "car_sport"]
-const EXPECTED_HUMAN_IDS := ["person_standing", "person_sitting", "person_pilot"]
+const EXPECTED_HUMAN_IDS := ["person_standing", "person_sitting", "person_pilot", "person_working"]
 const CAR_TRIANGLE_LIMIT := 30000
 const HUMAN_TRIANGLE_LIMIT := 8000
 
@@ -243,8 +243,8 @@ func _test_production_batches(field: Dictionary, scenery: Dictionary) -> void:
 	_check("production batches all 24 placed vehicles and people",
 		int(stats.get("population", -1)) == 24 and int(population.get_meta("instances", -1)) == 24,
 		"stats=%s metadata=%s" % [stats.get("population", -1), population.get_meta("instances", -1)])
-	_check("the three car styles and all three person assets are batched",
-		expected.by_asset.size() == 6 and ["sedan", "hatch", "crossover", "standing", "sitting", "pilot"].all(
+	_check("the three car styles and all four person poses are batched",
+		expected.by_asset.size() == 7 and ["sedan", "hatch", "crossover", "standing", "sitting", "pilot", "working"].all(
 			func(asset: String) -> bool: return expected.by_asset.has(asset)), str(expected.by_asset))
 	var observed_counts: Dictionary = {}
 	var variant_counts: Dictionary = {}

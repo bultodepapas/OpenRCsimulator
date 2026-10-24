@@ -415,6 +415,11 @@
       "sitting": [
         "woman_tee (callharvey3d_sittingnatural, poses01)",
         "veteran_cap (anrico_sitting03)"
+      ],
+      "working": [
+        "mechanic_overalls",
+        "casual_shirt",
+        "woman_tee (SC-HUM-06: standing02 with a 7\u00b0+7\u00b0 spine lean, 26\u00b0 head/neck tilt and IK hands at 0.94 m)"
       ]
     },
     "additional_cc0_archives": {
@@ -471,7 +476,7 @@
     },
     "runtime": "app/assets/scenery/population/people/: eight GLBs, one 2720x4064 diffuse and one 1360x2032 normal atlas (VRAM-compressed, mipmaps)",
     "retires": "SC-HUM-02 standing/sitting/pilot GLBs and their atlas (the LU-21 person stays reproducible from the default recipe)",
-    "evidence": "docs/research/scenery-implementation/SC-HUM-07/README.md",
+    "evidence": "docs/research/scenery-implementation/SC-HUM-07/README.md; work poses: docs/research/scenery-implementation/SC-HUM-06/README.md",
     "runtime_textures": [
       "1d43206c4610c39a9bb155e3e7cceefc4ec08495c2d753945feae082ef955aa8.png",
       "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png"

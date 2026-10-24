@@ -90,16 +90,17 @@ func _test_parking_and_people(groups: Array) -> void:
 		"distinct heading bands=%d" % headings.size())
 	var person_count := 0
 	var person_prefabs: Dictionary = {}
-	for id: String in ["pilots", "pits-people", "seated", "veranda-people"]:
+	for id: String in ["pilots", "pits-people", "pits-workers", "seated", "veranda-people"]:
 		var group := _group(groups, id)
 		person_count += group.get("placements", []).size()
 		var prefab := str(group.get("prefab", ""))
 		if not prefab.is_empty():
 			person_prefabs[prefab] = int(person_prefabs.get(prefab, 0)) + group.get("placements", []).size()
 	_check("all 13 existing people placements remain in the layout", person_count == 13, str(person_count))
-	_check("all three population person types occur in those 13 placements",
-		person_prefabs.keys().size() == 3 and person_prefabs.has("person_standing")
-		and person_prefabs.has("person_sitting") and person_prefabs.has("person_pilot"), str(person_prefabs))
+	_check("all four population person types occur in those 13 placements (SC-HUM-06 adds pit workers)",
+		person_prefabs.keys().size() == 4 and person_prefabs.has("person_standing")
+		and person_prefabs.has("person_sitting") and person_prefabs.has("person_pilot")
+		and person_prefabs.has("person_working"), str(person_prefabs))
 	var population_people := 0
 	for prefab: String in person_prefabs:
 		population_people += int(person_prefabs[prefab])
@@ -119,7 +120,7 @@ func _test_population_mapping() -> void:
 	_check("the four legacy car IDs resolve to exactly three replacement body styles",
 		car_sources.size() == 3 and car_sources.has("sedan") and car_sources.has("hatch")
 		and car_sources.has("crossover"), str(car_sources.keys()))
-	for id: String in ["person_standing", "person_sitting", "person_pilot"]:
+	for id: String in ["person_standing", "person_sitting", "person_pilot", "person_working"]:
 		_check("%s uses a production population batch" % id,
 			Population.ASSETS.has(id) and Population.handles(id), str(Population.ASSETS.get(id, "missing")))
 

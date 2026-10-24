@@ -298,9 +298,11 @@ static func _set_tables(material: ShaderMaterial, tracks: Array, species: Array,
 		gait_b.append(Vector4(deg_to_rad(g.dihedral), deg_to_rad(g.hand_lag), deg_to_rad(g.tip_curl), g.fold))
 		gait_c.append(Vector4(g.tail_twist, deg_to_rad(g.tail_wobble), s.departure.duration, 0.0))
 		rig.append(builds[i].rig)
-		for pair: Array in [[top, "top"], [under, "under"], [tip, "tip"]]:
-			var c: Color = s.colors[pair[1]]
-			(pair[0] as PackedVector4Array).append(Vector4(c.r, c.g, c.b, 1.0))
+		# Packed arrays are values in GDScript: append to each one directly (appending through a list of them would
+		# fill copies and leave the uniforms black).
+		top.append(_rgba(s.colors.top))
+		under.append(_rgba(s.colors.under))
+		tip.append(_rgba(s.colors.tip))
 		var away: Vector3 = departure_vector(s, flocks)
 		depart.append(Vector4(away.x, away.y, away.z, 0.0))
 	material.set_shader_parameter("seg_a", _pad(packed.seg_a, SEGMENT_SLOTS))
@@ -309,6 +311,10 @@ static func _set_tables(material: ShaderMaterial, tracks: Array, species: Array,
 	for pair: Array in [["gait_a", gait_a], ["gait_b", gait_b], ["gait_c", gait_c], ["rig", rig],
 			["color_top", top], ["color_under", under], ["color_tip", tip], ["depart", depart]]:
 		material.set_shader_parameter(pair[0], _pad(pair[1], SLOTS))
+
+
+static func _rgba(c: Color) -> Vector4:
+	return Vector4(c.r, c.g, c.b, 1.0)
 
 
 static func _pad(values: PackedVector4Array, size: int) -> PackedVector4Array:

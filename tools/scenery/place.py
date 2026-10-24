@@ -402,8 +402,12 @@ def build():
          "Flower border in front of the veranda")
     # people: one other pilot on the line, people in the pits, spectators on benches and by the veranda
     inst("pilots", "pilot_line", ["person_pilot"], [(0.0, -13.0, 5), (-0.5, 16.0, 350)], "estimated", "Other pilots on the flight line")
-    inst("pits-people", "pits", ["person_standing"], [(-19.0, -38.5, 160), (-18.8, -25.5, 20), (-18.6, 25.0, 340), (-19.2, 37.5, 200), (-16.8, -33.0, 0)],
+    inst("pits-people", "pits", ["person_standing"], [(-19.2, 37.5, 200), (-16.8, -33.0, 0)],
          "estimated", "Club members in the pits")
+    # SC-HUM-06: members preparing models at the back worktables (top 0.90 m, front edge at north -19.9),
+    # facing the table: the west micro-jet bench, the west charger table and the east sport bench.
+    inst("pits-workers", "pits", ["person_working"], [(-19.54, -42.6, 180), (-19.54, -38.5, 180), (-19.54, 19.4, 180)],
+         "estimated", "Club members preparing models at the pit tables")
     inst("seated", "spectators", ["person_sitting"], [(-16.5, -14.0, 0), (-16.5, 11.5, 0), (-16.5, 14.5, 0)], "estimated", "Spectators on the benches")
     inst("veranda-people", "club", ["person_standing"], [(-17.4, -2.6, 10), (-17.8, 1.4, 350), (-16.4, 4.2, 30)], "estimated", "On the veranda steps")
     # SC-09-R1: service benches and distinct ready bays; the apron stays clear between them.

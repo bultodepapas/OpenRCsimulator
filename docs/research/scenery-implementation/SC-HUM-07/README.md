@@ -63,4 +63,4 @@ Rejected:
 - The skin shader (wrap lighting, warm terminator) and baseball caps (CC-BY, D9) are not done.
 - The pilots still hold the primitive transmitter until the owner's models arrive (SC-HUM-01).
 - Texture memory is an estimate; a renderer memory reading on the owner's GPU is still needed.
-- Body poses are the existing CC0 poses; pits work poses are SC-HUM-06.
+- Three work-pose variants were added by [SC-HUM-06](../SC-HUM-06/README.md) in the same atlas (13 people, 11 draws).

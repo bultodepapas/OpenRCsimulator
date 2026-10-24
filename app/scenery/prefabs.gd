@@ -35,6 +35,7 @@ const CATALOG := {
 	"bush": {size = Vector3(1.6, 0.85, 1.6), tier = "ornament", shadow = false, variable = true, kind = "estimated", source = "Garden shrub"},
 	"flower_clump": {size = Vector3(0.45, 0.40, 0.45), tier = "ornament", shadow = false, variable = true, kind = "estimated", source = "Compact flower-border bouquet (visual estimate)"},
 	"person_standing": {size = Vector3(0.65, 1.78, 0.36), tier = "ornament", shadow = true, kind = "estimated", source = "LU-21 MPFB posed mesh envelope; uniform adult scale"},
+	"person_working": {size = Vector3(0.68, 1.78, 0.68), tier = "ornament", shadow = true, kind = "estimated", source = "SC-HUM-06 work pose at a 0.90 m pit table (largest of three outfits 0.676 × 1.663 × 0.672 m); capsule radius 0.34 m"},
 	"person_sitting": {size = Vector3(0.61, 1.444, 0.75), tier = "ornament", shadow = false, kind = "estimated", source = "LU-21 Anrico sitting03; seat-contact height 0.4742 m plus 0.006 m fitting offset"},
 	"person_pilot": {size = Vector3(0.67, 1.78, 0.45), tier = "ornament", shadow = true, kind = "estimated", source = "LU-21 MPFB pilot pose with transmitter; uniform adult scale"},
 	"avanti_cradle": {size = Vector3(0.7, 0.48, 1.63), tier = "standard", shadow = true, kind = "estimated",
@@ -68,6 +69,7 @@ static func build(id: String, kit: MeshKit, seed: int, theme: String) -> Array:
 		"flower_clump": _flower_clump(kit, seed, theme)
 		"person_standing": return People.build(kit, seed, "standing")
 		"person_sitting": return People.build(kit, seed, "sitting")
+		"person_working": return People.build(kit, seed, "standing")
 		"person_pilot": return People.build(kit, seed, "pilot")
 		"avanti_cradle": _avanti_cradle(kit)
 		"barn": _barn(kit)

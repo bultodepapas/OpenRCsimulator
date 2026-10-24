@@ -35,6 +35,7 @@ func _initialize() -> void:
 	_test_reset_and_repeats()
 	_test_companion_pilots()
 	_test_crash_glance()
+	_test_worker()
 	for asset: String in _human_assets():
 		_test_shader_mirror(asset)
 	_test_rotated_person()
@@ -94,7 +95,8 @@ func _test_head_mask(asset: String) -> void:
 	var eyes: Vector3i = stats.call(groups.get(Population.CLASS_EYES, PackedVector3Array()), all)
 	_check("%s eyes turn rigidly" % asset, eyes.x > 0 and eyes.y == eyes.x, str(eyes))
 	var crown: Vector3i = stats.call(groups.get(2, PackedVector3Array()), func(v: Vector3) -> bool: return v.y > eye_y)
-	_check("%s hair and brows above the eyes are mostly rigid" % asset, crown.x > 0 and crown.y >= int(0.9 * crown.x), str(crown))
+	# A long ponytail behind a bent work pose reaches past the radius and follows partly (≥85 %).
+	_check("%s hair and brows above the eyes are mostly rigid" % asset, crown.x > 0 and crown.y >= int(0.85 * crown.x), str(crown))
 	var feet: Vector3i = stats.call(groups.get(2, PackedVector3Array()), func(v: Vector3) -> bool: return v.y < 0.4)
 	_check("%s shoes never move" % asset, feet.x > 0 and feet.z == 0, str(feet))
 	if groups.has(Population.CLASS_FLAT):
@@ -299,6 +301,26 @@ func _test_companion_pilots() -> void:
 	_check("a new companion target has no velocity spike", before_rate < 1.0, str(before_rate))
 
 
+## SC-HUM-06: pit workers keep their eyes on the work; a near, low pass lifts the head, and the baked
+## downward tilt of the work pose is compensated in the pitch they look up by.
+func _test_worker() -> void:
+	var model: RefCounted = PeopleGaze.new()
+	model.configure([_person("worker", 81)], {})
+	var p := PeopleGaze._params("worker", 81)
+	var far := Vector3(-30.0, 25.0, -300.0)
+	model.reset(0.0, far)
+	for i in 480:
+		model.update_to(float(i + 1) / 240.0, far)
+	var rest := Vector2(p.rest_yaw, p.rest_pitch) * float(p.mover)
+	_check("a worker ignores a distant aircraft", model.head_angles(0).distance_to(rest) < deg_to_rad(0.5), str(model.head_angles(0)))
+	var near := Vector3(-25.0, 12.0, -25.0) # 45° to the left, about 9° above the eyes
+	for i in 960:
+		model.update_to(2.0 + float(i + 1) / 240.0, near)
+	var expected_pitch: float = (atan2(12.0 - 1.55, Vector2(25.0, 25.0).length()) - float(p.baked_pitch)) * float(p.mover)
+	_check("a near pass lifts the worker's head past the baked tilt", absf(model.head_angles(0).y - expected_pitch) < deg_to_rad(2.0),
+		"%.1f vs %.1f" % [rad_to_deg(model.head_angles(0).y), rad_to_deg(expected_pitch)])
+
+
 ## SC-HUM-05: a crash lifts the range limit for a while after each person's startle delay.
 func _test_crash_glance() -> void:
 	var model: RefCounted = PeopleGaze.new()
@@ -423,7 +445,7 @@ func _test_default_scenery() -> void:
 	var roles := {}
 	for i in model.person_count():
 		roles[model.person_role(i)] = int(roles.get(model.person_role(i), 0)) + 1
-	_check("default roles", roles == {pilot = 2, pits = 5, spectator = 6}, str(roles))
+	_check("default roles", roles == {pilot = 2, pits = 2, worker = 3, spectator = 6}, str(roles))
 	var slots := []
 	for i in model.person_count():
 		if model.companion_slot(i) >= 0:

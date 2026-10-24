@@ -480,6 +480,7 @@ func _test_scene() -> void:
 				t += 2.0
 		_check("%s: shadow casting off" % node.name, node.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
 		_check_shader_tables(node)
+		_check_species_uniforms(node)
 	_check("one MultiMesh per group %s" % [names], names == ["Birds_soaring", "Birds_small"], str(names))
 	_check("noon within the scenery_Birds budget (%d primitives, %d draws)" % [BUDGET_PRIMITIVES, BUDGET_DRAWS],
 		primitives <= BUDGET_PRIMITIVES and draws <= BUDGET_DRAWS, "%d primitives, %d draws" % [primitives, draws])
@@ -517,6 +518,23 @@ func _check_shader_tables(node: MultiMeshInstance3D) -> void:
 			t += 1.7
 	_check("%s: float32 shader tables within 5 cm of the float64 tracks over 0-2048 s" % node.name, worst < 0.05,
 		"%.4f m" % worst)
+
+
+## Every per-species uniform holds that species' data (a list of packed arrays would fill copies and leave zeros).
+func _check_species_uniforms(node: MultiMeshInstance3D) -> void:
+	var material := node.material_override as ShaderMaterial
+	var species: Array = node.get_meta("species_data")
+	var ok := true
+	for i: int in species.size():
+		var s: Dictionary = species[i]
+		for pair: Array in [["color_top", s.colors.top], ["color_under", s.colors.under], ["color_tip", s.colors.tip]]:
+			var c: Color = pair[1]
+			ok = ok and (material.get_shader_parameter(pair[0]) as PackedVector4Array)[i].is_equal_approx(Vector4(c.r, c.g, c.b, 1.0))
+		var g: Dictionary = s.gait
+		ok = ok and is_equal_approx((material.get_shader_parameter("gait_a") as PackedVector4Array)[i].x, g.flap_frequency_clock) \
+			and is_equal_approx((material.get_shader_parameter("gait_c") as PackedVector4Array)[i].z, s.departure.duration) \
+			and is_equal_approx((material.get_shader_parameter("rig") as PackedVector4Array)[i].w, float(s.span) * 0.5)
+	_check("%s: colour, gait, departure and rig uniforms hold each species' data" % node.name, ok)
 
 
 ## GDScript copy of sky_birds.gdshader track_pos() (float32 tables, same branch structure).

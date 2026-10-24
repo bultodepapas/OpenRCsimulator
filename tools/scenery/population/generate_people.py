@@ -15,14 +15,14 @@ from pathlib import Path
 
 import bpy
 import addon_utils
-from mathutils import Vector
+from mathutils import Quaternion, Vector
 
 
 def parse_arguments():
     if '--' not in sys.argv:
         raise RuntimeError('Pass --pose, --mpfb-user-data and --output-dir after Blender --')
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--pose', choices=('standing', 'seated', 'pilot'), required=True)
+    parser.add_argument('--pose', choices=('standing', 'seated', 'pilot', 'working'), required=True)
     parser.add_argument('--mpfb-user-data', required=True, type=Path,
                         help='MPFB user-data directory containing the installed CC0 system assets in data/')
     parser.add_argument('--output-dir', required=True, type=Path)
@@ -190,6 +190,14 @@ def reset_pose_bones(names):
             bone.rotation_quaternion = (1.0, 0.0, 0.0, 0.0)
             bone.location = (0.0, 0.0, 0.0)
 
+def bend_pose_bone(name, degrees):
+    """Rotate a posed bone forward about its local X axis (positive leans the body toward -Y, its front)."""
+    bone = rig.pose.bones.get(name)
+    if bone is None:
+        raise RuntimeError('missing bone ' + name)
+    bone.rotation_mode = 'QUATERNION'
+    bone.rotation_quaternion = bone.rotation_quaternion @ Quaternion((1.0, 0.0, 0.0), math.radians(degrees))
+
 source_scale = 1.75 / 1.6594
 # MPFB works in metres; LU-21 rescaled its androgynous default to 1.75 m. Natural outfits keep metres.
 pose_scale = 1.0 if OUTFIT['height'] == 'natural' else source_scale
@@ -230,6 +238,15 @@ elif pose_kind == 'pilot':
     bevel = radio_obj.modifiers.new('Radio housing edge bevel', 'BEVEL')
     bevel.width = 0.008 / pose_scale
     bevel.segments = 2
+elif pose_kind == 'working':
+    # SC-HUM-06: standing at a 0.90 m pit table working on a model: a slight forward lean, eyes on the
+    # work and both hands on the model in front (IK). Procedural placement of the CC0 standing pose only.
+    for bone_name, degrees in [('spine04', 7.0), ('spine03', 7.0), ('neck02', 12.0), ('head', 14.0)]:
+        bend_pose_bone(bone_name, degrees)
+    for side, sign in [('L', 1.0), ('R', -1.0)]:
+        reset_pose_bones([part + '.' + side for part in ['clavicle', 'shoulder01', 'upperarm01', 'upperarm02', 'lowerarm01', 'lowerarm02']])
+        make_ik_target('WorkHand_' + side, (sign * 0.17 / pose_scale, -0.44 / pose_scale, 1.08 / pose_scale), 'lowerarm02.' + side, 4,
+                       (sign * 0.45 / pose_scale, 0.10 / pose_scale, 1.05 / pose_scale))
 bpy.context.view_layer.update()
 for bone_name in ['root', 'pelvis.L', 'pelvis.R', 'upperleg02.L', 'upperleg02.R', 'lowerleg01.L', 'lowerleg01.R', 'foot.L', 'foot.R', 'lowerarm02.L', 'lowerarm02.R']:
     bone = rig.pose.bones.get(bone_name)

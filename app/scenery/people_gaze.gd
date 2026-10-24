@@ -58,6 +58,7 @@ var _mover := PackedFloat64Array()
 var _rest_yaw := PackedFloat64Array()
 var _rest_pitch := PackedFloat64Array()
 var _reaction_s := PackedFloat64Array()
+var _baked_pitch := PackedFloat64Array()
 var _pivot := PackedVector3Array()
 var _to_local: Array[Basis] = []
 # Head state.
@@ -112,6 +113,7 @@ func configure(people: Array, nodes: Dictionary) -> void:
 	_rest_yaw.resize(count)
 	_rest_pitch.resize(count)
 	_reaction_s.resize(count)
+	_baked_pitch.resize(count)
 	_pivot.resize(count)
 	_yaw.resize(count)
 	_pitch.resize(count)
@@ -136,6 +138,7 @@ func configure(people: Array, nodes: Dictionary) -> void:
 		_rest_yaw[i] = person.rest_yaw
 		_rest_pitch[i] = person.rest_pitch
 		_reaction_s[i] = person.reaction_s
+		_baked_pitch[i] = float(person.get("baked_pitch", 0.0))
 		_pivot[i] = person.pivot
 	_rest_heads()
 	_dirty = true
@@ -157,6 +160,12 @@ static func _params(role: String, seed: int) -> Dictionary:
 	}
 	if coupled:
 		params.merge({dead_zone = 0.0, omega = 7.0 + 2.0 * h.call(306), lead_s = 0.15 + 0.10 * h.call(307), range_m = INF}, true)
+	elif role == "worker":
+		# SC-HUM-06: busy at the pit table, head baked looking down at the work (about 30°). Only a low,
+		# near pass or a crash lifts it; the baked tilt is compensated when they do look.
+		params.merge({dead_zone = deg_to_rad(28.0 + 10.0 * h.call(306)), omega = 4.0 + 1.5 * h.call(307),
+			lead_s = 0.05 + 0.05 * h.call(308), range_m = 45.0 + 35.0 * h.call(309), baked_pitch = deg_to_rad(-30.0),
+			rest_pitch = 0.0}, true)
 	elif role == "pits":
 		params.merge({dead_zone = deg_to_rad(18.0 + 10.0 * h.call(306)), omega = 4.5 + 2.0 * h.call(307),
 			lead_s = 0.05 + 0.10 * h.call(308), range_m = 70.0 + 60.0 * h.call(309)}, true)
@@ -338,7 +347,8 @@ func _desired(i: int, alerted: bool = false) -> Vector2:
 		_behind[i] = 1
 	if _behind[i] != 0:
 		return rest
-	var pitch: float = atan2(local.y, horizontal)
+	# The work pose already looks down: the shader pitch is relative to that baked tilt.
+	var pitch: float = atan2(local.y, horizontal) - _baked_pitch[i]
 	return Vector2(clampf(yaw, -limit, limit), clampf(pitch, PITCH_DOWN_LIMIT_RAD, _pitch_up_limit[i]))
 
 
