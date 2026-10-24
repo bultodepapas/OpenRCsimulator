@@ -49,8 +49,9 @@ var _gauge_fill: StyleBoxFlat
 var _header_hovered := false
 
 
-func _init(instrument_id: String) -> void:
-	super(instrument_id, tr(TITLES[instrument_id]))
+func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void:
+	var heading: String = instrument_title if not instrument_title.is_empty() else TITLES[instrument_id]
+	super(instrument_id, tr(heading))
 	custom_minimum_size = Vector2(286, 0)
 	_style = backplate()
 	_style.bg_color = Color(SURFACE, 0.94)
@@ -76,7 +77,7 @@ func _init(instrument_id: String) -> void:
 	header.add_theme_constant_override("separation", 8)
 	_header_icon = TextureRect.new()
 	_header_icon.name = "InstrumentIcon"
-	_header_icon.texture = load("res://assets/ui/instruments/%s.svg" % id)
+	_header_icon.texture = load("res://assets/ui/instruments/%s.svg" % (id if icon_id.is_empty() else icon_id))
 	_header_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_header_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_header_icon.custom_minimum_size = Vector2(18, 18)
@@ -85,7 +86,7 @@ func _init(instrument_id: String) -> void:
 	_header_icon.modulate = ACCENT
 	header.add_child(_header_icon)
 	header.move_child(_header_icon, 0)
-	title_label.text = tr(TITLES[id]).to_upper()
+	title_label.text = tr(heading).to_upper()
 	title_label.add_theme_color_override("font_color", INK)
 	title_label.add_theme_font_size_override("font_size", 11)
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS

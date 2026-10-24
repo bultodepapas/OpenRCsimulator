@@ -20,19 +20,25 @@ func _run() -> void:
 		preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"],
 		units = "auto", stick_mode = 2, radio_model = "jeti_ds24_ii",
 	})
-	_check("player IDs append to the existing overlay IDs", Settings.IDS.slice(Settings.IDS.size() - 7) == Settings.PLAYER_IDS
-		and Settings.PLAYER_IDS == ["speed", "height", "power", "weather", "fuel", "trims", "engine"])
-	_check("player preset stays unchanged and all instruments appends", Settings.PRESET_ORDER == ["off", "pilot", "full", "developer", "player", "instruments"]
+	_check("player IDs append to the existing overlay IDs", Settings.IDS.slice(Settings.IDS.size() - Settings.PLAYER_IDS.size()) == Settings.PLAYER_IDS
+		and Settings.PLAYER_IDS == ["speed", "height", "power", "weather", "fuel", "trims", "engine"] + Settings.CLASSIC_IDS
+		and Settings.CLASSIC_IDS == ["airspeed_dial", "attitude", "altimeter", "heading", "variometer"])
+	_check("player preset stays unchanged, instruments stay modern, and cockpit appends", Settings.PRESET_ORDER == ["off", "pilot", "full", "developer", "player", "instruments", "cockpit"]
 		and Settings.PRESETS.player == ["warnings", "speed", "height", "power", "weather"]
 		and Settings.PRESETS.instruments == ["warnings", "speed", "height", "power", "weather", "fuel", "trims", "engine"]
+		and Settings.PRESETS.cockpit == ["warnings", "airspeed_dial", "attitude", "altimeter", "heading", "variometer"]
 		and Settings.preset_for(Settings.PRESETS.player) == "player"
-		and Settings.preset_for(Settings.PRESETS.instruments) == "instruments")
+		and Settings.preset_for(Settings.PRESETS.instruments) == "instruments"
+		and Settings.preset_for(Settings.PRESETS.cockpit) == "cockpit")
 	var player: Dictionary = Settings.validate({"preset": "player"})
 	_check("player preset validates to the five player overlays", player.preset == "player"
 		and player.visible == Settings.PRESETS.player)
 	var instruments: Dictionary = Settings.validate({"preset": "instruments"})
 	_check("all instruments preset validates to warnings and all seven widgets", instruments.preset == "instruments"
 		and instruments.visible == Settings.PRESETS.instruments)
+	var cockpit: Dictionary = Settings.validate({"preset": "cockpit"})
+	_check("classic cockpit preset validates to warnings and five classic widgets", cockpit.preset == "cockpit"
+		and cockpit.visible == Settings.PRESETS.cockpit)
 	_check("legacy settings do not gain optional position keys", not Settings.validate(Settings.DEFAULTS).has("positions")
 		and not Settings.validate(Settings.DEFAULTS).has("layout_locked")
 		and not Settings.validate(Settings.DEFAULTS).has("widget_size")

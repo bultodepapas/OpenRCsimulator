@@ -16,8 +16,10 @@ const NAMES := {
 	controls = "Control guide", battery = "Battery",
 	speed = "Speed & flight maximum", height = "Height & flight", power = "Energy", weather = "Wind conditions",
 	fuel = "Fuel tank", trims = "Trims", engine = "Engine",
+	airspeed_dial = "Airspeed dial", attitude = "Artificial horizon", altimeter = "Altimeter",
+	heading = "Heading indicator", variometer = "Vertical speed indicator",
 }
-const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", custom = "Custom" }
+const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", cockpit = "Classic cockpit", custom = "Custom" }
 const UNIT_NAMES := { auto = "By language", metric = "Metric (km/h, m)", imperial = "Imperial (mph, ft)", si = "SI (m/s, m)" }
 const RADIO_NAMES := { jeti_ds24_ii = "JETI DS-24 II", radiolink_t16d = "Radiolink T16D" }
 const WIDGET_BACKGROUND_NAMES := ["Light", "Balanced", "Solid"]
@@ -40,6 +42,8 @@ var latency_switch: CheckBox
 var lock_switch: CheckBox
 var compact_switch: CheckBox
 var _player_grid: GridContainer
+var _classic_grid: GridContainer
+var cockpit_action: Button
 
 
 func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
@@ -121,6 +125,14 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	var reset_positions := Widgets.button(tr("Reset widget positions"), "", "ResetWidgetPositions")
 	reset_positions.pressed.connect(func() -> void: manager.reset_widget_positions())
 	column.add_child(reset_positions)
+	column.add_child(Widgets.label(tr("Classic cockpit"), "SectionLabel", true, false))
+	cockpit_action = Widgets.button(tr("Use cockpit layout"), "PrimaryButton", "ClassicCockpitLayout")
+	cockpit_action.pressed.connect(func() -> void: manager.set_preset("cockpit"))
+	column.add_child(cockpit_action)
+	_classic_grid = GridContainer.new()
+	_classic_grid.columns = 2
+	_classic_grid.add_theme_constant_override("h_separation", 24)
+	column.add_child(_classic_grid)
 	column.add_child(Widgets.label(tr("Other overlays & diagnostics"), "SectionLabel", true, false))
 	var grid := GridContainer.new()
 	_switch_grid = grid
@@ -138,7 +150,12 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 			if not _syncing:
 				manager.set_overlay_visible(id, on)
 				_sync())
-		(_player_grid if id in Settings.PLAYER_IDS else grid).add_child(box)
+		if id in Settings.CLASSIC_IDS:
+			_classic_grid.add_child(box)
+		elif id in Settings.PLAYER_IDS:
+			_player_grid.add_child(box)
+		else:
+			grid.add_child(box)
 		switches[id] = box
 	if flight != null and flight.has_method("set_latency_marker_enabled"):
 		latency_switch = CheckBox.new()
@@ -198,6 +215,7 @@ func _resize_layout() -> void:
 	var stacked := preload("res://ui/ui_theme.gd").text_scale > 1.25 or available.x < 760
 	_switch_grid.columns = 1 if stacked else 2
 	_player_grid.columns = 1 if stacked else 2
+	_classic_grid.columns = 1 if stacked else 2
 	for row in _picker_rows:
 		row.vertical = stacked
 

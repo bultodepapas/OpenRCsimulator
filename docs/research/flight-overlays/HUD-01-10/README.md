@@ -138,3 +138,18 @@ Verification on native Windows with Godot 4.7.2:
 - Visual review repaired a bottom-centre notice covering the rudder trim and raster-font blur at 120% scale. A first static font cache retained resources at exit; moving atlas ownership into the flight manager removed the leak. The checked widget suite passes teardown without resource/RID warnings.
 
 Checked outputs stay in ignored `tmp/player-v2-*`; native captures/logs are under `tmp/debug-bridge/20261024-122803-47870/` and `20261024-123143-47870/`. No images added to Git. The full physics suite and target-hardware/pilot acceptance were not rerun; no solver or input mappings were changed.
+
+## Instrument visual polish (2026-10-24, HUD-13-R2)
+
+Refined the existing seven widgets with dark-blue panels, restrained amber accents, subtle static shadows/edge highlights, icon headers, a visible drag grip and rounded × targets. Secondary readings share an inset band with opposing alignment; units align with the large reading. Percentage rails gain graduations, the compass has finer bearings and a two-tone pointer, trims use diamond markers, and the speed chart has a shaded area with the newest sample aligned to “Now” at the right edge. Compact mode keeps the same hierarchy. The whole header now acts as the drag target, excluding its close button.
+
+Reused seven official Lucide SVGs from release 1.61.0, commit `c29c276f16590cf017126671535ad8c792be64d8`; [provenance and complete license](../../../../app/assets/ui/instruments/LICENSE.txt) are bundled beside the assets. Only the stroke color was adapted to white for tinting. All three export presets explicitly include the license; SVGs import as ordinary offline resources. There is no new UI framework, blur shader, animation loop or per-frame callback. Existing data cache and bounded history remain in use; no measured performance improvement is claimed.
+
+Verification, native Windows / Godot 4.7.2:
+
+- `test_player_widgets`: 74 checks pass, including new offline-icon and zero-speed plot coverage, all previous seven-widget close/focus/drag/cache tests, 1080p layout separation, higher-resolution bounds and compact 720p layout. The checked runner reports no engine errors or leaked widget resources.
+- UI-language checks pass with 1744 Spanish catalog entries. All seven SVGs and the license include in Linux/Windows/macOS presets were checked. The draft parsed before integration; asset imports completed.
+- Native English and Spanish 1920×1080 captures reviewed, including English 120% compact layout and Spanish normal layout with finite fuel. Corrected initially low unit baselines and tight trim-header spacing. Dragging the actual grip moved Trims; clicking Energy's new × closed it and left keyboard focus free. The rendered app was stopped after each review.
+- The first shared-tree import reported an unrelated ground-vehicle DLL copy failure while completing the asset import. The initial English world build also logged `rp_child` errors in `home_scene.gd`/`main.gd` and world teardown resource warnings. The later Spanish run had no engine errors or teardown warning reported by the bridge. These observations are separate from the clean focused widget checks; the full world/physics suite was not qualified here.
+
+Captures stay in ignored `tmp/debug-bridge/20261024-124351-47870/` and `20261024-124725-47870/`; checked logs in `tmp/player-v3-*`. No review screenshots were added to the repository.

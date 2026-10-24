@@ -72,6 +72,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 | HUD-12 | Cost and pilot acceptance | VM (no GPU): ≈ 60 µs mean per frame, ≈ 0.26 ms on the 10 Hz refresh frames / owner reads Pilot preset in flight at 720p and 1080p: pending |
 | HUD-13 | Player instruments, flight maximum, bounded dragging, persistent positions, lock/reset and independent switches/× | [Focused checks and native 1080p review](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13) / implemented |
 | HUD-13-R1 | Fuel, trims, engine, size/background/compact settings, crisp scaled text and cached drawing | [Verification](../research/flight-overlays/HUD-01-10/README.md#expanded-instruments-2026-10-24-hud-13-r1) / implemented |
+| HUD-13-R2 | Instrument visual polish: icon headers, drag grips, clear close targets, inset readings and refined gauges | [Verification](../research/flight-overlays/HUD-01-10/README.md#instrument-visual-polish-2026-10-24-hud-13-r2) / implemented |
 
 ## 3. Decisions
 
@@ -88,7 +89,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 
 ### HUD-13 — Player instruments (2026-10-24)
 
-Visual thesis: restrained charcoal instruments with large white readings, a warm accent, and a clear central flight view. Reuse the existing Godot theme, telemetry, unit conversions and battery sensors; no downloaded art or replacement UI framework is needed.
+Visual thesis: restrained dark-blue instruments with large white readings, a warm accent, and a clear central flight view. Reuse the existing Godot theme, telemetry, unit conversions and battery sensors. HUD-13-R2 uses seven small, pinned Lucide SVG icons with their [license and provenance](../../app/assets/ui/instruments/LICENSE.txt); no replacement UI framework is needed.
 
 Content: four core instruments — airspeed with sampled flight maximum and ground speed; height above terrain with climb, distance and flight time; estimated battery remaining or accepted finite-fuel level; wind speed and a north-referenced direction dial. HUD-13-R1 adds fuel percentage/volume/mass/reserve, three signed trim axes, and engine RPM/throttle command/flight load. Unknown/unavailable readings stay explicit. Existing diagnostic overlays remain separate.
 
@@ -97,6 +98,8 @@ Interaction: drag the header with bounded movement and save on release; hover an
 Implemented in `player_instrument.gd`: `speed`, `height`, `power`, `weather`, `fuel`, `trims` and `engine`. Coordinates use normalized available travel inside a 12 px viewport margin, accounting for the chosen widget scale. Settings accept only finite numeric pairs for these IDs. Saving occurs on drag release, not each motion. Existing 10 Hz snapshots feed visible instruments; battery readings share the existing sensor instance. The recent-speed graph is a 120-sample circular buffer. Each instrument skips unchanged relevant data, including paused snapshots; hidden instruments skip refresh. Session reset clears sampled extrema and sensor history; maximum speed continues sampling while its widget is closed. No per-frame widget polling is needed.
 
 HUD-13-R1 appearance options apply to player instruments only: sizes 85/100/120%, background opacity 80/94/100%, and compact density. The minimum opacity preserves secondary text contrast against bright sky; text itself stays opaque. A shared, flight-owned MSDF copy of the bundled font keeps scaled text sharp without changing other UI or retaining a static font resource after teardown. Compact mode retains numerical details, status and trim bars. The All instruments default leaves the centre clear and raises Trims above the bottom-centre notices. Fuel uses `fuel_remaining_kg`, never live aircraft mass or an inferred voltage percentage; no unsupported flow/endurance is invented. RPM is the existing fixed-wing engine value (propeller shaft or turbine spool), not a general cross-vehicle auxiliary-index contract.
+
+HUD-13-R2 adds a consistent icon/header strip, visible drag grip and rounded close target, a fine amber header rule, subtle static edge/shadow treatment and inset secondary readings. The whole header drags, except the close button. Gauges use ruled percentage rails, a finer compass rose, signed trim markers and a shaded recent-speed plot whose newest sample stays at the right edge. Units align with the main reading; compact mode keeps the same visual hierarchy. Cached shapes and ordinary Godot drawing keep the existing event-driven/10 Hz behavior; there are no new frame callbacks, blur shaders or ornamental animations.
 
 See the [player instructions](../FIRST-LAUNCH.md#4-settings-and-flight-options) and [verification](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13). Layout bounds are checked at 1080p, 1440p, 4K and the 720p fallback; native visual review is at 1080p. This does not qualify GPU performance or pilot readability on other hardware.
 

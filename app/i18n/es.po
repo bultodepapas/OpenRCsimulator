@@ -769,6 +769,48 @@ msgstr "Rendimiento"
 msgid "Airspeed"
 msgstr "Velocidad aire"
 
+msgid "Airspeed dial"
+msgstr "Indicador de velocidad"
+
+msgid "Artificial horizon"
+msgstr "Horizonte artificial"
+
+msgid "Altimeter"
+msgstr "Altímetro"
+
+msgid "Heading indicator"
+msgstr "Indicador de rumbo"
+
+msgid "Vertical speed indicator"
+msgstr "Indicador de velocidad vertical"
+
+msgid "Bank"
+msgstr "Alabeo"
+
+msgid "True heading"
+msgstr "Rumbo verdadero"
+
+msgid "Height above datum"
+msgstr "Altura sobre la referencia"
+
+msgid "True airspeed"
+msgstr "Velocidad verdadera"
+
+msgid "Climb / sink"
+msgstr "Ascenso / descenso"
+
+msgid "Scale exceeded"
+msgstr "Escala superada"
+
+msgid "No attitude data"
+msgstr "Sin datos de actitud"
+
+msgid "Datum"
+msgstr "Referencia"
+
+msgid "Hundreds / thousands"
+msgstr "Centenas / millares"
+
 # HUD-13 player instruments.
 msgid "RECENT"
 msgstr "RECIENTE"
@@ -785,6 +827,12 @@ msgstr "Trims"
 
 msgid "All instruments"
 msgstr "Todos los instrumentos"
+
+msgid "Classic cockpit"
+msgstr "Cabina clásica"
+
+msgid "Use cockpit layout"
+msgstr "Usar diseño de cabina"
 
 msgid "Small"
 msgstr "Pequeño"
