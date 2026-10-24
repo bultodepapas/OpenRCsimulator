@@ -944,8 +944,23 @@ func _advance_windsock(_tick: int, time_s: float, state: PackedFloat64Array,
 		FieldBuilder.reset_wind(_field_node, time_s, wind_ned)
 	else:
 		FieldBuilder.advance_wind(_field_node, time_s, wind_ned)
-	# SC-HUM-03: field people follow the aircraft (render-only head state).
-	FieldBuilder.advance_people(_field_node, time_s, [state[0], state[1], state[2]], _tick == 0)
+	# SC-HUM-03/04: field people follow the aircraft; flight-line pilots follow their companion
+	# (render-only head state; companions are read before they advance this tick).
+	FieldBuilder.advance_people(_field_node, time_s, [state[0], state[1], state[2]], _tick == 0, _companion_positions())
+
+
+## Companion aircraft positions (NED) by slot, or null for one that has faulted. Read-only.
+func _companion_positions() -> Array:
+	var positions: Array = []
+	if companions == null:
+		return positions
+	for agent: Node in companions.agents:
+		if not is_instance_valid(agent) or not str(agent.failure).is_empty() or agent.session == null:
+			positions.append(null)
+			continue
+		var s: PackedFloat64Array = agent.session.sim.state
+		positions.append([s[0], s[1], s[2]])
+	return positions
 
 
 func _process(delta: float) -> void:
