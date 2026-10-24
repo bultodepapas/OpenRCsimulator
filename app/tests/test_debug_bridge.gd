@@ -159,6 +159,10 @@ func _protocol(bridge: Node) -> void:
 	_check("logs capture print", everything.result.records.any(func(r: Dictionary) -> bool: return r.text == "bridge-test info"))
 	var value: Dictionary = await _call({cmd = "eval", expr = "flight.aircraft_id + str(flight.session.sim.state[2])"})
 	_check("eval reads AppRoot properties", value.ok and value.result == "fake-plane-30.0", str(value))
+	var singletons: Dictionary = await _call({cmd = "eval",
+		expr = "[OS.get_process_id(), Performance.get_monitor(Performance.OBJECT_NODE_COUNT) > 0, Engine.get_process_frames() > 0]"})
+	_check("eval reaches engine singletons", singletons.ok and int(singletons.result[0]) == OS.get_process_id()
+		and singletons.result[1] == true and singletons.result[2] == true, str(singletons))
 	var broken: Dictionary = await _call({cmd = "eval", expr = "flight.("})
 	_check("eval parse errors are reported", not broken.ok and str(broken.error).begins_with("parse error"))
 	var state: Dictionary = await _call({cmd = "state"})

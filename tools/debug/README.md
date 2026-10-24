@@ -71,8 +71,10 @@ Notes on the commands:
   hint (`DRIVE · Enter`), the node name, a label prefix, then a substring. A tie is refused and the candidate paths
   are listed. Generated paths (`@VBoxContainer@95`) change between runs, so scripts should use labels.
 - **Expressions.** Expressions are Godot [Expression](https://docs.godotengine.org/en/stable/classes/class_expression.html)s.
-  - `eval`, `assert` and `wait` run on AppRoot, with the inputs `app`, `tree` and `bridge`. Examples:
-    `flight.session.sim.tick` and `flight._rig.set_view("chase")`.
+  - `eval`, `assert` and `wait` run on AppRoot, with the inputs `app`, `tree` and `bridge` and every engine singleton
+    by name (Expression cannot reach singletons by itself). Examples: `flight.session.sim.tick`,
+    `flight._rig.set_view("chase")`, `Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)` and
+    `ClassDB.class_call_static("Node", "get_orphan_node_ids")`.
   - `sample` adds `session`, `sim` and `s` (= `sim.state`: NED position [0..2], body velocity [3..5], quaternion
     [6..9], body rates [10..12]).
 - **Pose.** `state` reports the pose in NED metres, plus Euler degrees and body rates.
@@ -221,7 +223,7 @@ python3 tools/godot/run_checked.py --timeout 90 --require-text 'all debug bridge
 python3 -m unittest discover -s tools/debug -p 'test_*.py'
 ```
 
-**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 58 checks. It talks real loopback TCP
+**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 59 checks. It talks real loopback TCP
 to the bridge on a stand-in AppRoot. It covers:
 
 - protocol errors and the token;

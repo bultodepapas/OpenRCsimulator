@@ -53,13 +53,17 @@ const COMMANDS := {
 	"view": "name=pilot|chase|orbit|closeup: camera view (no name: the current one)",
 	"record": "action=start|stop|mark|status: the flight log (.orfl), like F10/F11",
 	"perf": "frame/physics time, fps, memory, objects, nodes, orphans, draw calls, simulation step cost",
+	"frames": "window=<n> hitch_ms=<ms> factor=<x> reset=<bool>: frame-time percentiles, 1 % low, hitches with causes",
+	"break": "expr=<expression> name=<s> pause=<bool> once=<bool> wait=<bool> | list=true | clear=<name|all>: tick watchpoint",
+	"objects": "top=<n> baseline=<bool> diff=<bool>: live nodes by class/script, orphan nodes, totals (leak hunting)",
+	"profile": "since=<seq> top=<n> sort=self|total: GDScript functions by time (launch --profile)",
 	"sample": "exprs={name: expr} every_ticks=<n> count=<m>: values each n simulation ticks (live telemetry)",
 	"assert": "expr=<expression> message=<s>: ok when truthy, else an error (for repro scripts)",
 	"find": "name=<glob> type=<class> under=<path> limit=<n>: nodes by name pattern and class",
 	"get": "node=<path> prop=<property>: one property (or all script variables when prop is empty)",
 	"set": "node=<path> prop=<property> value=<json>: assign; arrays become vectors/colours when the property is one",
 	"call": "node=<path> method=<name> args=[...]: call a method and return its result",
-	"logs": "since=<seq> limit=<n> level=<error,warning,...>: engine/script log records after a cursor",
+	"logs": "since=<seq> limit=<n> level=<error,warning,...> summary=<bool>: log records after a cursor, or grouped",
 	"ui": "all=<bool> labels=<bool> text=<substring>: visible controls of the top dialog/popup/screen (or everything)",
 	"open": "screen=<pause|settings|controls|help|weather|time_of_day|overlays|failures|companions|natural_random|workshop> (none: list)",
 	"close": "close the top dialog, popup or menu screen (like Esc/Back)",
@@ -84,7 +88,7 @@ const COMMANDS := {
 	"window": "size=<WxH> mode=windowed|fullscreen: OS window (1920x1080 is the primary target); no args reports it",
 	"wait": "frames=<n> | seconds=<s> | until=<expr> timeout_s=<s>",
 	"screenshot": "path=<png|jpg> format=png|jpg max_width=<px>: viewport picture (needs a renderer: Xvfb, not --headless)",
-	"eval": "expr=<GDScript expression> node=<path>: evaluate on AppRoot (inputs: app, tree, bridge)",
+	"eval": "expr=<GDScript expression> node=<path>: evaluate on AppRoot (inputs: app, tree, bridge, engine singletons)",
 	"nodes": "path=<node> depth=<n>: scene-tree outline",
 	"quit": "code=<n>: quit the engine after replying",
 }
@@ -130,6 +134,21 @@ var out_dir := ""
 var _samples: Array[Dictionary] = []
 var _watch := {}
 var _rate_mark := {msec = 0, tick = -1}
+## Frame history (PT1h-R8): wall time per frame, physics ticks per frame, and recent hitches with their context.
+const FRAME_CAPACITY := 7200
+var _frame_ms := PackedFloat64Array()
+var _frame_ticks := PackedInt32Array()
+var _frame_count := 0
+var _frame_last_us := 0
+var _frame_ema_ms := 0.0
+var _frame_physics_ticks := 0
+var _frame_monitors := {}
+var _frame_log_seq := 0
+var hitch_ms := 50.0
+var hitch_factor := 3.0
+var _hitches: Array[Dictionary] = []
+var _breaks: Array[Dictionary] = []
+var _objects_baseline := {}
 var _drive_vehicle: Node
 var _drive_until_tick := -1
 var realtime_factor := -1.0
@@ -182,6 +201,7 @@ func _exit_tree() -> void:
 
 func _process(_delta: float) -> void:
 	var started := Time.get_ticks_usec()
+	_record_frame(started)
 	_net_mutex.lock()
 	var inbox := _inbox
 	_inbox = []
@@ -407,8 +427,10 @@ static func _encode(reply: Dictionary) -> PackedByteArray:
 # ---- main thread dispatch -------------------------------------------------------------------------------------
 
 func _physics_process(_delta: float) -> void:
+	_frame_physics_ticks += 1
 	# Before the session samples input and the simulation steps: a step or drive ends exactly at its tick.
 	_finish_step()
+	_check_breaks()
 	_expire_drive()
 	_collect_samples()
 	if _sticks.is_empty():
@@ -524,6 +546,8 @@ func _cmd_state(_request: Dictionary) -> Dictionary:
 
 
 func _cmd_logs(request: Dictionary) -> Dictionary:
+	if _bool(request.get("summary", false)):
+		return _log_summary(request)
 	var levels := PackedStringArray()
 	if request.has("level"):
 		levels = str(request.level).split(",", false)
@@ -917,11 +941,11 @@ func _cmd_window(request: Dictionary) -> Dictionary:
 func _cmd_wait(request: Dictionary) -> Dictionary:
 	if request.has("until"):
 		var expression := Expression.new()
-		if expression.parse(str(request.until), PackedStringArray(["app", "tree", "bridge"])) != OK:
+		if expression.parse(str(request.until), _input_names()) != OK:
 			return _fail("parse error: " + expression.get_error_text())
 		var last := ["never evaluated"]
 		return {pending = func() -> Variant:
-			var value: Variant = expression.execute([app, get_tree(), self], app, false)
+			var value: Variant = expression.execute(_input_values(), app, false)
 			if expression.has_execute_failed():
 				last[0] = "last evaluation failed: " + expression.get_error_text()
 				return null
@@ -993,12 +1017,29 @@ func _cmd_eval(request: Dictionary) -> Dictionary:
 		if base == null:
 			return _fail("no node at '%s'" % request.node)
 	var expression := Expression.new()
-	if expression.parse(str(request.get("expr", "")), PackedStringArray(["app", "tree", "bridge"])) != OK:
+	if expression.parse(str(request.get("expr", "")), _input_names()) != OK:
 		return _fail("parse error: " + expression.get_error_text())
-	var value: Variant = expression.execute([app, get_tree(), self], base, false)
+	var value: Variant = expression.execute(_input_values(), base, false)
 	if expression.has_execute_failed():
 		return _fail("execution failed: " + expression.get_error_text())
 	return _ok(value)
+
+
+## Expression inputs: app, tree, bridge, then every engine singleton by name (Expression cannot reach them itself:
+## `Performance.get_monitor(...)`, `OS.get_static_memory_usage()`, `RenderingServer...` work through these).
+func _input_names(extra: Array = []) -> PackedStringArray:
+	var names := PackedStringArray(["app", "tree", "bridge"])
+	names.append_array(Engine.get_singleton_list())
+	names.append_array(PackedStringArray(extra))
+	return names
+
+
+func _input_values(extra: Array = []) -> Array:
+	var values: Array = [app, get_tree(), self]
+	for singleton: String in Engine.get_singleton_list():
+		values.append(Engine.get_singleton(singleton))
+	values.append_array(extra)
+	return values
 
 
 func _cmd_nodes(request: Dictionary) -> Dictionary:
@@ -1146,7 +1187,7 @@ func _cmd_sample(request: Dictionary) -> Dictionary:
 	var compiled := {}
 	for name: Variant in sources:
 		var expression := Expression.new()
-		if expression.parse(str(sources[name]), PackedStringArray(["app", "tree", "bridge", "session", "sim", "s"])) != OK:
+		if expression.parse(str(sources[name]), _input_names(["session", "sim", "s"])) != OK:
 			return _fail("%s: parse error: %s" % [name, expression.get_error_text()])
 		compiled[str(name)] = expression
 	var job := {session = session, exprs = compiled, every = maxi(1, int(request.get("every_ticks", 24))),
@@ -1177,7 +1218,7 @@ func _collect_samples() -> void:
 		var row: Array = [tick, sim.time()]
 		for name: String in job.exprs:
 			var expression: Expression = job.exprs[name]
-			var value: Variant = expression.execute([app, get_tree(), self, job.session, sim, sim.state], app, false)
+			var value: Variant = expression.execute(_input_values([job.session, sim, sim.state]), app, false)
 			if expression.has_execute_failed():
 				job.error = "%s failed at tick %d: %s" % [name, tick, expression.get_error_text()]
 				break
@@ -1494,6 +1535,319 @@ static func _button(at: Vector2, button: MouseButton, pressed: bool, double: boo
 	if pressed and button <= MOUSE_BUTTON_MIDDLE:
 		event.button_mask = 1 << (button - 1)
 	return event
+
+
+# ---- frame history and hitches (PT1h-R8) -----------------------------------------------------------------------
+
+const _HITCH_MONITORS := {
+	pipelines = [Performance.PIPELINE_COMPILATIONS_CANVAS, Performance.PIPELINE_COMPILATIONS_MESH,
+		Performance.PIPELINE_COMPILATIONS_SURFACE, Performance.PIPELINE_COMPILATIONS_DRAW,
+		Performance.PIPELINE_COMPILATIONS_SPECIALIZATION],
+	objects = [Performance.OBJECT_COUNT], nodes = [Performance.OBJECT_NODE_COUNT],
+	resources = [Performance.OBJECT_RESOURCE_COUNT], orphans = [Performance.OBJECT_ORPHAN_NODE_COUNT],
+	static_memory = [Performance.MEMORY_STATIC],
+}
+
+
+## One sample per frame at the start of the bridge's _process: the wall time since the previous frame and the
+## counter deltas over that interval. A long interval becomes a "hitch" event naming what changed during it.
+func _record_frame(now_us: int) -> void:
+	var monitors := {}
+	for key: String in _HITCH_MONITORS:
+		var total := 0.0
+		for monitor: int in _HITCH_MONITORS[key]:
+			total += Performance.get_monitor(monitor)
+		monitors[key] = total
+	var ticks := _frame_physics_ticks
+	_frame_physics_ticks = 0
+	if _frame_last_us == 0:
+		_frame_last_us = now_us
+		_frame_monitors = monitors
+		_frame_log_seq = debug_log.last_seq()
+		_frame_ms.resize(FRAME_CAPACITY)
+		_frame_ticks.resize(FRAME_CAPACITY)
+		return
+	var ms := (now_us - _frame_last_us) / 1000.0
+	_frame_last_us = now_us
+	var index := _frame_count % FRAME_CAPACITY
+	_frame_ms[index] = ms
+	_frame_ticks[index] = ticks
+	_frame_count += 1
+	var threshold := maxf(hitch_ms, hitch_factor * _frame_ema_ms)
+	if _frame_ema_ms > 0.0 and ms > threshold:
+		_hitch(ms, threshold, ticks, monitors)
+	else:
+		_frame_ema_ms = ms if _frame_ema_ms == 0.0 else lerpf(_frame_ema_ms, ms, 0.05)
+	_frame_monitors = monitors
+	_frame_log_seq = debug_log.last_seq()
+
+
+func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> void:
+	var deltas := {}
+	for key: String in monitors:
+		var change: float = monitors[key] - float(_frame_monitors.get(key, monitors[key]))
+		if change != 0.0:
+			deltas[key] = change / 1048576.0 if key == "static_memory" else change
+	if deltas.has("static_memory"):
+		deltas.static_memory_mib = snappedf(deltas.static_memory, 0.01)
+		deltas.erase("static_memory")
+	var causes: Array = []
+	if deltas.get("pipelines", 0.0) > 0.0:
+		causes.append("pipeline/shader compilation")
+	if ticks >= Engine.max_physics_steps_per_frame:
+		causes.append("physics catch-up (%d ticks, the per-frame maximum)" % ticks)
+	if absf(deltas.get("nodes", 0.0)) >= 50.0 or deltas.get("resources", 0.0) >= 20.0:
+		causes.append("scene/resource construction")
+	var lines: Array = debug_log.since(_frame_log_seq, 8, PackedStringArray(["info", "warning", "error", "script_error"])).map(
+		func(record: Dictionary) -> String: return str(record.text).left(160))
+	var record := {frame = Engine.get_process_frames(), ms = snappedf(ms, 0.1), threshold_ms = snappedf(threshold, 0.1),
+		physics_ticks = ticks, deltas = deltas, causes = causes, route = _route(), screens = _screen_ids(), log = lines,
+		process_ms = snappedf(Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, 0.01),
+		physics_ms = snappedf(Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0, 0.01)}
+	var session := _session()
+	if session != null:
+		record.tick = session.sim.tick
+	_hitches.append(record)
+	if _hitches.size() > 200:
+		_hitches.pop_front()
+	debug_log.event("hitch %.0f ms%s" % [ms, (": " + ", ".join(causes)) if not causes.is_empty() else ""], record)
+
+
+func _cmd_frames(request: Dictionary) -> Dictionary:
+	for key: String in ["hitch_ms", "factor"]:
+		if request.has(key):
+			var value: Variant = _number(request[key])
+			if value == null or value <= 0.0:
+				return _fail("%s must be a positive number" % key)
+			if key == "hitch_ms":
+				hitch_ms = value
+			else:
+				hitch_factor = value
+	if _bool(request.get("reset", false)):
+		_frame_count = 0
+		_hitches.clear()
+	var available := mini(_frame_count, FRAME_CAPACITY)
+	var window_value: Variant = _number(request.get("window", available))
+	var window := clampi(int(window_value) if window_value != null else available, 0, available)
+	var times := PackedFloat64Array()
+	var catch_up := 0
+	for i in window:
+		var index := (_frame_count - 1 - i) % FRAME_CAPACITY
+		times.append(_frame_ms[index])
+		if _frame_ticks[index] >= Engine.max_physics_steps_per_frame:
+			catch_up += 1
+	var out := {frames = window, hitch_ms = hitch_ms, factor = hitch_factor, typical_ms = snappedf(_frame_ema_ms, 0.01),
+		hitches = _hitches.slice(maxi(0, _hitches.size() - 20)), hitch_total = _hitches.size(),
+		physics_catch_up_frames = catch_up, max_physics_steps_per_frame = Engine.max_physics_steps_per_frame}
+	if window > 0:
+		var sorted := times.duplicate()
+		sorted.sort()
+		var worst := sorted.slice(sorted.size() - maxi(1, sorted.size() / 100))
+		var mean := 0.0
+		for value: float in times:
+			mean += value
+		mean /= window
+		var worst_mean := 0.0
+		for value: float in worst:
+			worst_mean += value
+		worst_mean /= worst.size()
+		out.merge({mean_ms = snappedf(mean, 0.01), p50_ms = _percentile(sorted, 0.5), p95_ms = _percentile(sorted, 0.95),
+			p99_ms = _percentile(sorted, 0.99), max_ms = snappedf(sorted[sorted.size() - 1], 0.01),
+			fps_mean = snappedf(1000.0 / mean, 0.1), fps_1pct_low = snappedf(1000.0 / worst_mean, 0.1)})
+	return _ok(out)
+
+
+static func _percentile(sorted: PackedFloat64Array, q: float) -> float:
+	return snappedf(sorted[clampi(int(ceil(q * sorted.size())) - 1, 0, sorted.size() - 1)], 0.01)
+
+
+# ---- simulation watchpoints (PT1h-R8) --------------------------------------------------------------------------
+
+func _cmd_break(request: Dictionary) -> Dictionary:
+	if _bool(request.get("list", false)):
+		return _ok(_breaks.map(func(b: Dictionary) -> Dictionary:
+			return {name = b.name, expr = b.source, pause = b.pause, once = b.once, hits = b.hits, last_tick = b.last_tick}))
+	if request.has("clear"):
+		var target := str(request.clear)
+		var before := _breaks.size()
+		_breaks = _breaks.filter(func(b: Dictionary) -> bool: return target != "all" and b.name != target)
+		return _ok({cleared = before - _breaks.size()})
+	if _flight_session() == null:
+		return _fail("watchpoints run on flight ticks: fly first")
+	var source := str(request.get("expr", ""))
+	var expression := Expression.new()
+	if source.is_empty() or expression.parse(source, _input_names(["session", "sim", "s"])) != OK:
+		return _fail("parse error: " + expression.get_error_text() if not source.is_empty() else "give expr=<expression>")
+	var watch := {name = str(request.get("name", "break%d" % (_breaks.size() + 1))), source = source,
+		expression = expression, pause = _bool(request.get("pause", true)), once = _bool(request.get("once", false)),
+		hits = 0, last_tick = -1, was_true = false, hit = {}}
+	_breaks = _breaks.filter(func(b: Dictionary) -> bool: return b.name != watch.name)
+	_breaks.append(watch)
+	if not _bool(request.get("wait", false)):
+		return _ok({name = watch.name, pause = watch.pause, once = watch.once})
+	return {pending = func() -> Variant:
+		return _ok(watch.hit) if not watch.hit.is_empty() else null,
+		timeout_s = 600.0}
+
+
+## Before each tick (priority -10): edge-triggered, so a condition that stays true fires once per entry.
+func _check_breaks() -> void:
+	if _breaks.is_empty():
+		return
+	var session := _flight_session()
+	if session == null:
+		return
+	var sim: Node = session.sim
+	if sim.paused:
+		return
+	for watch: Dictionary in _breaks.duplicate():
+		var value: Variant = watch.expression.execute(_input_values([session, sim, sim.state]), app, false)
+		if watch.expression.has_execute_failed():
+			_breaks.erase(watch)
+			debug_log.event("break %s removed: %s" % [watch.name, watch.expression.get_error_text()], {expr = watch.source})
+			continue
+		var now_true := bool(value) if (value is bool or value is int or value is float) else value != null
+		if now_true and not watch.was_true:
+			watch.hits += 1
+			watch.last_tick = sim.tick
+			if watch.pause:
+				sim.set_paused(true)
+			watch.hit = {name = watch.name, tick = sim.tick, time_s = sim.time(), value = jsonable(value),
+				paused = sim.paused, state = jsonable(_flight_state(session))}
+			debug_log.event("break %s at tick %d" % [watch.name, sim.tick], {expr = watch.source, value = jsonable(value)})
+			if watch.once:
+				_breaks.erase(watch)
+		watch.was_true = now_true
+
+
+# ---- log triage, object census, script profile (PT1h-R8) -------------------------------------------------------
+
+## Groups records after a cursor by level, text with numbers masked, and script location (network-thread safe).
+func _log_summary(request: Dictionary) -> Dictionary:
+	var levels := PackedStringArray()
+	if request.has("level"):
+		levels = str(request.level).split(",", false)
+	var digits := RegEx.create_from_string("0x[0-9a-fA-F]+|[-+]?\\d+(\\.\\d+)?")
+	var groups := {}
+	var since_value: Variant = _number(request.get("since", 0))
+	for record: Dictionary in debug_log.since(int(since_value) if since_value != null else 0, DebugLog.CAPACITY, levels):
+		var key := "%s|%s|%s" % [record.level, digits.sub(str(record.text), "#", true), record.get("script", "")]
+		if not groups.has(key):
+			groups[key] = {level = record.level, text = str(record.text).left(300), script = record.get("script", ""),
+				count = 0, first_seq = record.seq, first_frame = record.frame}
+		groups[key].count += 1
+		groups[key].last_seq = record.seq
+		groups[key].last_frame = record.frame
+	var rows: Array = groups.values()
+	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return a.count > b.count if a.count != b.count else a.first_seq < b.first_seq)
+	return _ok({groups = rows, last_seq = debug_log.last_seq(), dropped = debug_log.dropped})
+
+
+func _cmd_objects(request: Dictionary) -> Dictionary:
+	var census := {}
+	var stack: Array[Node] = [get_tree().root]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		var key := _object_key(node)
+		census[key] = int(census.get(key, 0)) + 1
+		stack.append_array(node.get_children(true))
+	var orphan_census := {}
+	var orphan_samples: Array = []
+	for id: int in ClassDB.class_call_static("Node", "get_orphan_node_ids"):
+		var orphan: Object = instance_from_id(id)
+		if orphan == null:
+			continue
+		var key := _object_key(orphan)
+		orphan_census[key] = int(orphan_census.get(key, 0)) + 1
+		if orphan_samples.size() < 20:
+			orphan_samples.append({key = key, name = str(orphan.name), children = orphan.get_child_count()})
+	var totals := {objects = Performance.get_monitor(Performance.OBJECT_COUNT), nodes = Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+		resources = Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT), orphans = Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT),
+		static_memory_mib = snappedf(OS.get_static_memory_usage() / 1048576.0, 0.01), tree_nodes = census.values().reduce(func(a: int, b: int) -> int: return a + b, 0)}
+	var top_value: Variant = _number(request.get("top", 25))
+	var top := clampi(int(top_value) if top_value != null else 25, 1, 500)
+	var out := {totals = totals, orphans = _top_counts(orphan_census, top), orphan_samples = orphan_samples,
+		classes = _top_counts(census, top)}
+	if _bool(request.get("diff", false)):
+		if _objects_baseline.is_empty():
+			return _fail("no baseline: run objects baseline=true first")
+		out.diff = {totals = _deltas(_objects_baseline.totals, totals, top), classes = _deltas(_objects_baseline.census, census, top),
+			orphans = _deltas(_objects_baseline.orphans, orphan_census, top)}
+	if _bool(request.get("baseline", false)):
+		_objects_baseline = {totals = totals, census = census, orphans = orphan_census}
+		out.baseline = "saved"
+	return _ok(out)
+
+
+static func _object_key(object: Object) -> String:
+	var script: Variant = object.get_script()
+	return object.get_class() + (":" + str(script.resource_path).get_file() if script != null and not str(script.resource_path).is_empty() else "")
+
+
+static func _top_counts(counts: Dictionary, top: int) -> Array:
+	var rows: Array = counts.keys().map(func(k: String) -> Array: return [k, counts[k]])
+	rows.sort_custom(func(a: Array, b: Array) -> bool: return a[1] > b[1])
+	return rows.slice(0, top)
+
+
+static func _deltas(before: Dictionary, after: Dictionary, top: int) -> Array:
+	var rows: Array = []
+	for key: Variant in after.keys() + before.keys().filter(func(k: Variant) -> bool: return not after.has(k)):
+		var change: float = float(after.get(key, 0)) - float(before.get(key, 0))
+		if change != 0.0:
+			rows.append([key, change])
+	rows.sort_custom(func(a: Array, b: Array) -> bool: return absf(a[1]) > absf(b[1]))
+	return rows.slice(0, top)
+
+
+## Parses the local debugger's script profile (launch --profile: -d --profiling --ignore-error-breaks), which the
+## engine prints about once a second: a FRAME line, then per function "n:path::line::name" and its total/self/calls.
+func _cmd_profile(request: Dictionary) -> Dictionary:
+	var since_value: Variant = _number(request.get("since", 0))
+	var header := RegEx.create_from_string("^\\d+:(.+)::(\\d+)::(.+)$")
+	var timing := RegEx.create_from_string("total: ([0-9.e-]+)/\\d+ %\\s+self: ([0-9.e-]+)/\\d+ % tcalls: (\\d+)")
+	var functions := {}
+	var samples := 0
+	var script_s := 0.0
+	var frame_s := 0.0
+	var current := ""
+	for record: Dictionary in debug_log.since(int(since_value) if since_value != null else 0, DebugLog.CAPACITY, PackedStringArray(["info"])):
+		for line: String in str(record.text).split("\n"):
+			line = line.strip_edges()
+			if line.begins_with("FRAME: total:"):
+				samples += 1
+				var parts := line.split(" ", false)
+				frame_s += parts[2].to_float()
+				script_s += parts[4].get_slice("/", 0).to_float()
+				continue
+			var matched := header.search(line)
+			if matched != null:
+				current = "%s:%s %s" % [matched.get_string(1), matched.get_string(2), matched.get_string(3)]
+				continue
+			matched = timing.search(line)
+			if matched != null and not current.is_empty():
+				var entry: Dictionary = functions.get(current, {function = current, total_ms = 0.0, self_ms = 0.0, calls = 0, samples = 0})
+				entry.total_ms += matched.get_string(1).to_float() * 1000.0
+				entry.self_ms += matched.get_string(2).to_float() * 1000.0
+				entry.calls += matched.get_string(3).to_int()
+				entry.samples += 1
+				functions[current] = entry
+				current = ""
+	if samples == 0:
+		return _fail("no script profile in the log: launch with debugctl.py launch --profile")
+	var key := "total_ms" if str(request.get("sort", "self")) == "total" else "self_ms"
+	var rows: Array = functions.values()
+	for row: Dictionary in rows:
+		for field: String in ["total_ms", "self_ms"]:
+			row[field + "_per_sample"] = snappedf(row[field] / samples, 0.001)
+			row.erase(field)
+	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a[key + "_per_sample"] > b[key + "_per_sample"])
+	var top_value: Variant = _number(request.get("top", 20))
+	return _ok({samples = samples, frame_ms_per_sample = snappedf(frame_s * 1000.0 / samples, 0.001),
+		script_ms_per_sample = snappedf(script_s * 1000.0 / samples, 0.001),
+		functions = rows.slice(0, clampi(int(top_value) if top_value != null else 20, 1, 500)),
+		note = "samples are the engine's ~1 s profile prints (one frame each); profiling adds overhead"})
 
 
 ## Frame-level change detection: one "event" log record per changed field, so `logs --follow` tells the story.

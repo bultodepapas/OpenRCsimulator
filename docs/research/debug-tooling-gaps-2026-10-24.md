@@ -1,0 +1,90 @@
+# Debug tooling gaps — 2026-10-24
+
+Scope: what an AI developer still lacks for finding stutter, resource growth and bugs in the running app, after the
+PT1h-R1…R7 tools. This is dated research. The tool guides own current usage: [checked runner and lifecycle
+tools](../../tools/godot/README.md), [debug bridge](../../tools/debug/README.md), [performance
+tools](../../research/performance/README.md), [flight logging](../FLIGHT-LOGGING.md) and the [flight-test
+battery](../../research/flight-test/README.md). The earlier [20-source investigation](debugging-tools-2026-10-19.md)
+covered log reliability, JUnit and evidence integrity; it is not repeated here.
+
+## What exists
+
+| Question | Tool today | Limit for an agent |
+| --- | --- | --- |
+| Did Godot print an error a test ignored? | `run_checked.py`, `summarize.py` (JUnit) | Batch only; one command per run. |
+| What does the running app do now? | Debug bridge: state, logs, events, UI, input, step, sample, perf | `perf` is one instant; no frame history, no per-class objects, no script timings. |
+| Where do frames go in a capture? | `--frametimes --frame-diagnostics` + `frame_diagnose.py`; `perfetto_export.py` | Scripted or direct-flight captures only; no pipeline-compilation counters; cause of a hitch is context, not attribution. |
+| How long do Home → Fly and back take? | `research/performance/loading_probe.gd` | Native renderer only; totals, not phases. |
+| Do repeated routes leak? | `lifecycle_check.py` (Home ↔ flight, Workshop) | Fixed routes; node/orphan totals, not which class grows. |
+| Process RAM, I/O, disk? | `run_checked.py --resources`, `storage_audit.py` | Outside the engine; cannot attribute. |
+| Did a physics change alter flight? | Flight log record/replay/compare; flight-test battery | Exact and strong; not a live breakpoint. |
+| Did a picture change? | `app/capture.sh`, area checkers | Fixed cases. |
+| Is the UI reachable and error-free? | Bridge `crawl` | Opens/closes screens; does not exercise controls inside them. |
+
+Not present at all: a script (GDScript) profiler usable without the editor, a static analyser or warning policy
+(`project.godot` sets no `debug/gdscript/warnings/*`; no gdlint), randomized UI/input testing, simulation
+breakpoints, log de-duplication, and native crash backtraces.
+
+## Evidence gathered for this review
+
+Pinned engine 4.7.2, probe outside `app/` (`ClassDB` queries, `--help`):
+
+- `Performance` has `PIPELINE_COMPILATIONS_{CANVAS,MESH,SURFACE,DRAW,SPECIALIZATION}`, `TIME_NAVIGATION_PROCESS`,
+  `PHYSICS_3D_*`, `OBJECT_ORPHAN_NODE_COUNT`, `MEMORY_STATIC_MAX` and `Performance.add_custom_monitor`.
+  `app/render/frame_diagnostics.gd` reads render times, memory, resources and orphans, but no pipeline counters.
+- `EngineProfiler` (virtuals `_toggle`, `_add_frame`, `_tick`), `EngineDebugger.register_profiler` /
+  `profiler_enable`, `Node.get_orphan_node_ids`, `OS.get_static_memory_peak_usage`, `OS.get_memory_info` and
+  `RenderingServer.get_rendering_info` exist. `EngineDebugger.is_active()` is false without a remote debugger, so the
+  built-in script profiler only reports to a `--remote-debug` peer.
+- The bridge's `eval` could not reach engine singletons (`Performance`, `OS`, `RenderingServer`): Godot's
+  `Expression` only sees its inputs and base object. Fixed in this review by passing every singleton as an input;
+  orphan IDs are reachable through `ClassDB.class_call_static("Node", "get_orphan_node_ids")`. After a flight build
+  on the VM: 0 orphan nodes, static memory peak 307 MB.
+- Runtime flags: `--profiling`, `--remote-debug <uri>`, `--gpu-profile`, `--gpu-validation`, `--frame-delay <ms>`,
+  `--fixed-fps`, `--time-scale`, `--print-fps`, `--debug-stringnames`, `--write-movie`. `--benchmark` and
+  `--benchmark-file` are editor-only.
+
+Outside-in frame timing through the bridge's network thread (poll `ping` every 3 ms; the frame counter's progress
+over wall time gives each frame's duration, with no code in the game loop). Headless, Linux dev VM, Stik:
+
+| Transition | Longest frame | Notes |
+| --- | --- | --- |
+| Home → Fly (airborne) | about 6.7 s (one frame) | The whole flight is built inside one frame: the app is frozen with no progress feedback. Home also produces no frames while idle (low-processor mode), so the first frame number spans the idle time. |
+| Flight → Home | 1.09 s (one frame) | Same pattern. |
+| Steady flight | median 8.6 ms, max 19.9 ms | Headless; no rendering cost. |
+
+Loading time itself is a known, measured topic ([loading probe](../../research/performance/README.md#homefly-loading-and-lake-geometry));
+the tooling gap is that nothing attributes a long frame to its phases or causes while an agent watches.
+
+## Gaps and proposals
+
+Ranked by value for stutter, leak and bug hunting against effort. S: about a day; M: a few days; L: a week or a
+spike first. Each proposal names what it reuses, so nothing free is rebuilt.
+
+| # | Proposal | Finds | Effort | Builds on |
+| --- | --- | --- | --- | --- |
+| 1 | **Hitch recorder** in the bridge: per-frame ring (wall time, physics ticks run, pipeline compilations, process/physics time, object/orphan/static-memory deltas); `frames` command with p50/p95/p99/max and 1 % lows; a `hitch` log event with the deltas when a frame exceeds a threshold. | Stutter, and whether it coincides with shader/pipeline compilation, physics catch-up (several ticks in one frame), allocation bursts or scene loading | S | `Performance` monitors, bridge events, `frame_diagnose.py` vocabulary |
+| 2 | **Simulation watchpoints**: `break expr=… [every_tick]` evaluated before each tick; when true, pause at that exact tick, log an event, keep the state for `state`/`sample`. | Physics bugs at the moment they happen (NaN, ground penetration, attitude flips, fault precursors) | S | Bridge `_physics_process` at priority -10, `Simulation.set_paused` |
+| 3 | **Error triage**: `logs summary` grouping by message signature (numbers stripped) with counts, first/last frame and script location; `run --fail-on-error` stopping a repro script at the first new error. | Error spam, the first error in a cascade, silent regressions in scripts | S | Debug log ring, `run` |
+| 4 | **Leak hunter**: `objects` (live nodes by class and script, orphan nodes with class/name/script, resource count), `objects baseline` / `objects diff`; client `soak run repro.txt --cycles N` sampling objects, memory and RSS per cycle and reporting monotonic growth. | Which class leaks, for any scenario, not only Home ↔ flight | M | `Node.get_orphan_node_ids`, `lifecycle_check.py` growth rules, `resource_samples.py` |
+| 5 | **UI monkey**: seeded random walk over visible controls and keys (press, select, set_value, Esc), checking after each step that the app answers and logged no new error; on failure write the seed and the action trail as a replayable `run` script. | Crashes and error paths no test covers; stuck or unreachable screens | M | Bridge `ui`, `press`, `select`, `crawl`, `run` |
+| 6 | **Script profiler without the editor**: a small local debug server for `--remote-debug tcp://127.0.0.1:<port> --profiling` that decodes the engine's profiler frames and prints top functions by self/total time for a window. Spike first: confirm the engine sends script frames without an editor handshake. | Which GDScript functions cost the frame (the attribution `perf` cannot give) | L | Godot's own profiler data; protocol decoders in the MIT [godot-vscode-plugin](https://github.com/godotengine/godot-vscode-plugin) as reference |
+| 7 | **Static analysis baseline**: pinned gdtoolkit (gdlint) and/or a probe that loads every script with selected GDScript warnings enabled; a committed baseline so only new findings fail. | Unused variables, shadowing, unsafe calls, unreachable code before they become bugs | M | gdtoolkit (free), Godot warning settings |
+| 8 | **Native crash backtraces**: `debugctl launch --gdb` (batch gdb) or the engine's crash handler output collected into the incident bundle, with the pinned build's symbols if published. | Engine/driver crashes that leave only "Segmentation fault" | S–M | `incident_bundle.py`, gdb |
+| 9 | **Loading phase markers**: time World/flight build phases inside the one long frame, reported by the hitch event. | Which part of the 6.7 s start dominates | S | Existing loading probe and build functions |
+
+Not proposed: a new in-game overlay (free [Godot Debug Menu](https://github.com/godot-extended-libraries/godot-debug-menu)
+exists and the HUD already has developer overlays), a plotting package (Perfetto and CSV tools exist), or GPU
+capture on the VM (llvmpipe/Compatibility; RenderDoc and `--gpu-validation` belong to native Forward+ sessions).
+
+## Recommended order
+
+1, 2 and 3 first: each is small, uses only verified 4.7.2 APIs, adds microseconds per frame, and turns the bridge
+into a stutter and bug detector during any agent session. Then 4 and 5, which reuse them (hitch and error events
+become soak and monkey verdicts). 6 needs a protocol spike before it is planned. 7 and 8 are independent and can go
+to CI.
+
+Uncertainties: the outside-in timing has 3–5 ms resolution and includes the poller's own scheduling; it measures
+headless frames, not rendered ones. On the VM's Compatibility renderer all five pipeline counters stayed 0 through
+Home and a full flight build (rendered under Xvfb, 1280×720); they matter for Forward+ (High graphics) on real GPUs,
+which this review did not run. No proposal here has been implemented yet.
