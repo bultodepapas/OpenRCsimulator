@@ -64,6 +64,9 @@ func _run() -> void:
 			and Rect2(Vector2.ZERO, Vector2(viewport_size)).encloses(test_fly.get_global_rect())
 			and Rect2(Vector2.ZERO, Vector2(viewport_size)).encloses(title.get_global_rect()))
 	_check("opening starts at the top of the editor", workshop.get("_body_scroll").scroll_vertical == 0)
+	var build_identity := _find(workshop, "BuildIdentity") as Label
+	_check("title fitting preserves theme readability", title.resize_font_to_fit and title.minimum_font_size == 26 and title.maximum_font_size == 28)
+	_check("build name can grow while retaining its readable minimum", build_identity.resize_font_to_fit and build_identity.minimum_font_size == 22 and build_identity.maximum_font_size == 28)
 
 	# The same menu labels can translate while the screen is open.
 	TranslationServer.set_locale("es")

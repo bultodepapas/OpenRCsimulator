@@ -518,6 +518,8 @@ func _build_ui() -> void:
 
 func _resize_layout() -> void:
 	if not is_inside_tree(): return
+	Widgets.fit_title(find_child("WorkshopTitle", true, false) as Label, UiTheme._font_size(UiTheme.SIZE.body))
+	Widgets.fit_title(_build_identity, UiTheme._font_size(UiTheme.SIZE.small), UiTheme._font_size(UiTheme.SIZE.card_title))
 	var available := _screen.size - Vector2(48, 36)
 	_layout_panel.custom_minimum_size = Vector2(maxf(0, available.x), maxf(0, available.y))
 	var enlarged := preload("res://ui/ui_theme.gd").text_scale > 1.25
