@@ -8,8 +8,8 @@
   },
   "output": {
     "path": "app/assets/aircraft/ugly-stik-60/os61_engine.glb",
-    "sha256": "d636098a69e69788d07429f3da0d1f74299786d4d0c8c500e3dea45153041e02",
-    "bytes": 9374316
+    "sha256": "e679b303d3e59f1dc82cb0ac390ddc1742a701cb2a97bfb84efd0f30eb7b9a43",
+    "bytes": 9374448
   },
   "frame": "Godot metres, +X right, +Y up, -Z forward; origin on the crank axis at the drive-hub face",
   "delivered_shaft_height_m": 0.0178,
@@ -24,20 +24,20 @@
     "engine_drive_front": 5119
   },
   "winding_flipped": {
-    "engine_assembly": 17,
+    "engine_assembly": 16,
     "engine_throttle_arm": 0,
     "engine_drive_front": 3,
     "engine_drive_rear": 1
   },
   "grommet_shift_godot_m": {
     "BANC_Pasamuros_Goma_1": [
-      0.005,
-      0.0131,
+      0.012,
+      0.0061,
       0.0
     ],
     "BANC_Pasamuros_Goma_2": [
-      -0.005,
-      0.0076,
+      -0.017,
+      0.0011,
       0.0
     ]
   },
@@ -94,6 +94,16 @@
       -0.0,
       0.0,
       0.1132
+    ],
+    "engine_fuel_grommet": [
+      -0.026,
+      0.031,
+      0.1164
+    ],
+    "engine_pressure_grommet": [
+      0.021,
+      0.0315,
+      0.1164
     ]
   },
   "body_atlas_px": 1024

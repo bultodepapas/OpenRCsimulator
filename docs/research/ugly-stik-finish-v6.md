@@ -304,6 +304,58 @@ The hatches are now covered in the wing film: each corner samples the atlas at i
 - `verify_controls.gd` passes 421/0.
 - 23 related tests pass: customization, manifests, package proofs, liveries, Workshop ×9 (customization, integration, presentation, reuse, profile transfer, bundle, descriptor, preview, smoke bindings), UI ×2, scuffs ×2, crash ×3, soft contact, control presentation and engine smoke.
 
+## US-V18b · the plan's servo tray and the throttle cable
+
+2026-10-25. Jensen sheet 1 draws the fuselage installation that earlier passes had only estimated:
+- **Servo tray:** three servos side by side on "3/8 × 1/2 hardwood servo rails" between F3 and F4, outputs on the thrust line.
+- **Throttle:** driven through "brass brake cable tubing" (top view) and "nylon tubing ... to throttle" (side view).
+- **Nose steering:** driven through "nylon tubing to steering arm".
+- **Compartments:** the "fuel tank & battery compartment" (F1–F2) and the "receiver compartment" (F2–F3).
+
+Before this step, the elevator servo lay on its side and the rudder servo stood on its own rails, both at z 0.045. The throttle servo sat 30 mm behind F1, where the tank belongs, on a straight rod.
+
+**Built:**
+- **Tray:** `equipment.servo_tray` in `geometry.json` holds the plan picks and their evidence. The plan's rails are 70.8 mm apart, for the era's longer Kraft servo; modern servos are held by their tabs, so two rails across the fuselage sit under the tabs, glued to the sides. The case centre is at z 0.0887 and the arms are on the thrust line. The order elevator, throttle, rudder is an estimate; the plan's cable tubing is on the centre line.
+- **Tail pushrods:** the elevator and rudder arms point inboard, and the rods diverge to their horns. Each tail exit plate now sits where its neutral rod crosses the skin (elevator: left side at z 0.532; rudder: right side at z 0.633), instead of at a fixed 78 % of the rod.
+- **Throttle cable:** the throttle is a cable in a fixed brass tube. The cable cannot stretch, so the exposed front and rear lengths keep their neutral sum (closure 7e-9 m). The tube crosses F1 at (28.5, 26) mm. That point came from an engine-BVH scan of clear cable lines to the lever: outboard of the radial mount, inside the 1/4 in sides and clear of the pressure grommet. A tube at the US-V13 rod crossing (32, 22) mm would cut 1.2 mm into the side. A 9 mm arm hole gives 66° of servo travel over the barrel's 60°.
+- **Not built:** the steering linkage. The nose-wheel angle comes from the physics contact, and a second rod on the rudder servo would over-constrain it.
+- **Batching:** every part is indexed before a static batch (`_indexed`), so the US-V17 triangle loss cannot recur.
+
+The flight inventory puts the three servos at x_aft 0.15 (z 0.035); the plan's tray is 54 mm further aft. The mass model is unchanged, for the reason given under US-V17.
+
+**Checks:** `verify_controls.gd` adds:
+- the tube runs inside the fuselage;
+- the tube where it passes F1 clears the engine BVH by 2.5 mm;
+- throttle servo travel is 20–110°;
+- cable conservation is part of the audit (≤ 0.25 mm).
+
+## US-V18c · fuel and radio installation
+
+2026-10-25. `ugly_stik_installation.gd` builds the interior from `equipment.installation`, which records its sources and estimates.
+
+**Fuel tank.** A 12 oz-class tank, 56 × 52 × 135 mm with a 1.5 mm wall. It holds 0.339 l, which the checks compare with the flight model's `fuel_system` capacity of 0.35 l (±10 %). It has a neck, rubber stopper, cap screw and two brass nipples. It sits behind the nose-gear wire, which stands 34 mm behind F1 at the physics contact and slides up under compression. So the tank centre is 35 mm aft of the inventory point.
+
+**Fuel and pressure lines.** They run from the engine's F1 grommets to the nipples and use the engine GLB's own silicone materials.
+
+**Grommets moved.** Grommets at (±33, 38) mm were half inside the 1/4 in sides and the hatch. The engine generator now places them in F1's free strip above the radial mount: fuel at (−26, 31) mm and pressure at (21, 31.5) mm. It exports both as anchors. It fails the build if a moved grommet or a bent line overlaps the mount or the engine (`BVHTree.overlap`). That test also showed that the US-V13 pressure line already passed through the mount (77 triangle pairs).
+
+**Battery, receiver and switch.**
+- **Receiver battery:** a flat 4-cell AA pack in blue shrink wrap, on foam under the tank and behind the wire.
+- **Receiver:** in foam on the floor of its compartment, left of the throttle tube, with two 2.4 GHz antenna leads.
+- **Switch harness:** on the left side, opposite the muffler, under the wing. The body is inside and the face plate, with its toggle and two screws, is outside, visible in flight.
+- **Leads:** every servo lead, including both wing servos through the saddle, runs low to the receiver; the battery runs to the switch and on to the receiver.
+
+**Checks:** `verify_controls.gd` adds 26 checks:
+- the tank capacity matches the flight model;
+- the tank, battery and receiver lie inside the fuselage and do not overlap;
+- the tank and battery keep clear of the nose-wire column;
+- the throttle tube clears every part, and each line clears the tube;
+- each line starts in its grommet, ends on its nipple, stays inside and clears the wire;
+- the tank, battery and receiver lie within 60 mm of the flight inventory points;
+- the switch is on the side away from the exhaust.
+
+The renders reviewed: the nose interior with the covering hidden, and the switch plate in the flight model.
+
 ## Limits and open findings
 
 - **Engine shadow acne (global, not Stik-specific).** With PSSM engine shadows on (the interactive default), the wing shows a diagonal crosshatch. It disappears with `OPENRC_ENGINE_SHADOWS=off`, and the glossier film makes it more visible. Sun bias settings belong to the atmosphere/world owners (`render/atmosphere.gd`, L3).

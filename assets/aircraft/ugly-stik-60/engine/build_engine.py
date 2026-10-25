@@ -58,14 +58,15 @@ MOUNT_PARTS = {
 LEVER_PARTS = ("CARB_Throttle_Arm", "CARB_Arm_Hub", "CARB_Arm_Screw")
 LEVER_X_MAX = -0.0167  # the lever side of the barrel end; the carburettor body stops at x = -0.0164
 BODY_ATLAS_PX = 1024
-# The delivery's 90 mm firewall puts the line grommets 38 mm either side of the crank axis, outside the Stik's 78 mm F1.
-# They move to the strip between the flange top (33 mm) and the F1 top (43 mm above the axis), at 80 % size, and the
-# last 35 mm of each line bends after its grommet. Pairs are (grommet, line).
-GROMMETS = (("BANC_Pasamuros_Goma_1", "BANC_Linea_Combustible"), ("BANC_Pasamuros_Goma_2", "BANC_Linea_Presion"))
-GROMMET_X = 0.033
-GROMMET_HEIGHT = 0.038
+# The delivery's 90 mm firewall puts the line grommets 38 mm either side of the crank axis, outside the Stik's F1. They
+# move, at 80 % size, into the free strip of F1 above the radial mount: inside the 1/4 in fuselage sides (65.6 mm apart),
+# under the 1/4 in hatch (36.6 mm above the axis), above the mount (27.1 mm) and clear of the throttle cable tube at
+# (28.5, 26) mm (US-V18c; US-V13 had them at (+/-33, 38) mm, half inside the side and the hatch). The last LINE_BEND of
+# each line bends after its grommet. Entries: grommet, line, Godot x (+ right) and height above the crank axis, metres.
+GROMMETS = (("BANC_Pasamuros_Goma_1", "BANC_Linea_Combustible", -0.026, 0.031),
+            ("BANC_Pasamuros_Goma_2", "BANC_Linea_Presion", 0.021, 0.0315))
 GROMMET_SCALE = 0.8
-LINE_BEND = 0.035
+LINE_BEND = 0.045
 # Godot re-encodes embedded images to Basis Universal on import; lossy WebP only shrinks the bundled file (glTF
 # EXT_texture_webp), from 13 MB of PNG.
 IMAGE_QUALITY = 90
@@ -281,10 +282,12 @@ def build(output: Path) -> dict:
             bpy.data.objects.remove(obj, do_unlink=True)
     firewall_y = _bounds(_world_points(by_name["BANC_Bancada_OS905"]))[1].y
     moved = {}
-    for grommet_name, line_name in GROMMETS:
+    grommet_centres = {}
+    for grommet_name, line_name, godot_x, height in GROMMETS:
         grommet_low, grommet_high = _bounds(_world_points(by_name[grommet_name]))
         old_centre = (grommet_low + grommet_high) * 0.5
-        new_centre = Vector((math.copysign(GROMMET_X, old_centre.x), old_centre.y, shaft_z + GROMMET_HEIGHT))
+        # The delivered frame mirrors x (muffler on -X there, on +X in Godot).
+        new_centre = Vector((-godot_x, old_centre.y, shaft_z + height))
         by_name[grommet_name].data.transform(
             Matrix.Translation(new_centre) @ Matrix.Scale(GROMMET_SCALE, 4) @ Matrix.Translation(-old_centre))
         shift = new_centre - old_centre
@@ -292,6 +295,25 @@ def build(output: Path) -> dict:
             t = min(max((vertex.co.y - firewall_y + LINE_BEND) / LINE_BEND, 0.0), 1.0)
             vertex.co += shift * (t * t * (3.0 - 2.0 * t))
         moved[grommet_name] = [round(c, 5) for c in (-shift.x, shift.z, shift.y)]
+        grommet_centres[grommet_name] = new_centre
+    # The moved grommets and the bent ends of their lines must clear the mount, its bolts and the engine.
+    solids = [obj for obj in kept if not obj.name.startswith(("BANC_Linea_", "BANC_Pasamuros_"))]
+    solids += [meshes[name] for name in ("RT_Body", "RT_Carb", "RT_Head", "RT_Muffler")]
+    solid_points: list[Vector] = []
+    solid_polygons: list[list[int]] = []
+    for obj in solids:
+        base = len(solid_points)
+        solid_points += _world_points(obj)
+        solid_polygons += [[base + index for index in polygon.vertices] for polygon in obj.data.polygons]
+    solid_tree = BVHTree.FromPolygons(solid_points, solid_polygons)
+    for grommet_name, line_name, _x, _height in GROMMETS:
+        line = by_name[line_name]
+        points = _world_points(line)
+        bent = [list(polygon.vertices) for polygon in line.data.polygons
+                if all(points[index].y > firewall_y - LINE_BEND for index in polygon.vertices)]
+        clashes = len(solid_tree.overlap(_tree(by_name[grommet_name]))) + len(solid_tree.overlap(BVHTree.FromPolygons(points, bent)))
+        if clashes:
+            raise RuntimeError(f"{grommet_name} or the bent end of {line_name} crosses the mount or engine ({clashes} pairs)")
 
     margin = Vector((0.0003, 0.0003, 0.0003))
     low, high = lever_low - margin, lever_high + margin
@@ -335,6 +357,8 @@ def build(output: Path) -> dict:
         "engine_exhaust_upstream": frame @ upstream,
         "engine_washer_face": frame @ Vector((0.0, washer_face_y, shaft_z)),
         "engine_firewall_face": frame @ Vector((0.0, firewall_y, shaft_z)),
+        "engine_fuel_grommet": frame @ grommet_centres["BANC_Pasamuros_Goma_1"],
+        "engine_pressure_grommet": frame @ grommet_centres["BANC_Pasamuros_Goma_2"],
     }
     for root in [obj for obj in bpy.data.objects if obj.type == "EMPTY"]:
         bpy.data.objects.remove(root, do_unlink=True)

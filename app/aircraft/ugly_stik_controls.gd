@@ -6,6 +6,7 @@ extends RefCounted
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const Finish := preload("res://aircraft/ugly_stik_finish.gd")
 const Equipment := preload("res://aircraft/ugly_stik_equipment.gd")
+const Installation := preload("res://aircraft/ugly_stik_installation.gd")
 const D: Dictionary = Geometry.DATA
 
 const PLASTIC := Color("24272b")
@@ -73,6 +74,7 @@ static func build(root: Node3D, hinges: Dictionary) -> Dictionary:
 	_build_tail_mechanism(root, assembly, service, linkages, hinges, "rudder", mechanisms, servos, failures)
 	_build_throttle_mechanism(root, service, linkages, mechanisms, servos, failures)
 	_add_servo_tray(service)
+	var installation := Installation.build(root, service, linkages, servos)
 	_batch_static_meshes(service, "maintenance_static")
 	_batch_static_meshes(linkages, "linkage_static")
 	var controls := {
@@ -84,6 +86,7 @@ static func build(root: Node3D, hinges: Dictionary) -> Dictionary:
 		"hinges": hinges,
 		"mechanisms": mechanisms,
 		"servos": servos,
+		"installation": installation,
 		"maintenance": false,
 		"errors": {"max_closure_error_m": 0.0, "max_length_error_m": 0.0, "solve_failures": failures.duplicate()},
 		"failures": failures,
@@ -284,7 +287,9 @@ static func _build_wing_mechanism(root: Node3D, assembly: Node3D, service: Node3
 	var servo_pivot := _point_in_root(root, frame, servo_frame)
 	var up_root: Vector3 = frame_basis * hatch_up
 	var servo := _add_servo(service, "aileron_servo_" + side, servo_pivot, outward, frame_basis * hatch_aft)
+	var lead_exit := _point_in_root(root, frame, Vector3(sign * 0.040, servo_frame.y, hatch_z - 0.035))
 	servos["aileron_" + side] = {"type": "aileron", "side": side, "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis,
+		"lead": lead_exit, "lead_dir": Vector3.DOWN,
 		"reference": "US-V17 two-servo variant: one servo per semispan on a bottom hatch (Jensen sheet 2 draws one central servo)"}
 	# Hardwood blocks glued to the hatch take the tab screws, from the hatch up to the top of each tab.
 	var block_low := -(HATCH_CLEARANCE_M + SERVO_CASE_M.z * 0.5)
@@ -293,8 +298,7 @@ static func _build_wing_mechanism(root: Node3D, assembly: Node3D, service: Node3
 		var block := _box_mesh("aileron_servo_%s_block" % side, Vector3(0.007, 0.010, block_high - block_low), WOOD, "wood")
 		block.transform = Transform3D(servo.basis, tab - servo.basis.y * 0.00625 + up_root * ((block_low + block_high) * 0.5))
 		service.add_child(block)
-	_add_cable_route(service, surface_name + "_servo_lead", [servo.lead, servo.lead - frame_basis * hatch_aft * 0.010,
-		_point_in_root(root, frame, Vector3(sign * 0.040, servo_frame.y, hatch_z - 0.035))])
+	_add_cable_route(service, surface_name + "_servo_lead", [servo.lead, servo.lead - frame_basis * hatch_aft * 0.010, lead_exit])
 
 	var neutral_endpoint := servo_pivot + down * AILERON_ARM_RADIUS_M
 	var rod_length := neutral_endpoint.distance_to(horn_root)
@@ -348,13 +352,12 @@ static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3
 		failures.append("%s estimated pushrod is too short" % surface_name)
 		return
 	var servo := _add_servo(service, surface_name + "_servo", servo_pivot, Vector3.UP, Vector3.BACK)
-	servos[surface_name] = {"type": surface_name, "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "reference": "Jensen sheet 1 servo tray between F3 and F4 (plan picks); order estimated"}
+	servos[surface_name] = {"type": surface_name, "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis,
+		"lead": servo.lead, "lead_dir": -(servo.basis as Basis).x, "reference": "Jensen sheet 1 servo tray between F3 and F4 (plan picks); order estimated"}
 	var rod := _new_rod(linkages, surface_name + "_long_pushrod", rod_length, ROD_RADIUS_M, STEEL, "steel")
 	var start_joint := _new_joint(linkages, surface_name + "_servo_clevis", neutral_endpoint, normal)
 	var end_joint := _new_joint(linkages, surface_name + "_horn_clevis", horn_root, horn_pin)
 	var arm := _new_arm(service, surface_name + "_servo_arm", servo_pivot, neutral_endpoint, Vector3.UP, servo_radius)
-	var cable_to := Vector3(0, -0.024, 0.008)
-	_add_cable_route(service, surface_name + "_servo_lead", [servo.lead, servo.lead + Vector3.FORWARD * 0.008, cable_to])
 	_add_tail_guide(root, linkages, surface_name, neutral_endpoint, horn_root, horn_pin)
 	mechanisms[surface_name] = {
 		"kind": "direct",
@@ -427,7 +430,8 @@ static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: N
 	var normal := u.cross(v)
 	var servo_pivot := _tray_shaft("throttle", Vector3.FORWARD)
 	var servo := _add_servo(service, "throttle_servo", servo_pivot, Vector3.UP, Vector3.FORWARD)
-	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "animated": true, "reference": "Jensen sheet 1 servo tray; drives the carburettor lever through a cable in a tube"}
+	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "animated": true,
+		"lead": servo.lead, "lead_dir": -(servo.basis as Basis).x, "reference": "Jensen sheet 1 servo tray; drives the carburettor lever through a cable in a tube"}
 	var arm_end := servo_pivot + u * THROTTLE_SERVO_RADIUS_M
 	var crossing: Array = e.servo_tray.throttle_f1
 	var front := Vector3(float(crossing[0]), float(crossing[1]), float(e.firewall_z) - THROTTLE_TUBE_PROUD_M)
@@ -478,7 +482,6 @@ static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: N
 	}
 	_update_cable(mechanisms.throttle.cables[0], tip)
 	_update_cable(mechanisms.throttle.cables[1], arm_end)
-	_add_cable_route(service, "throttle_servo_lead", [servo.lead, servo.lead + Vector3.BACK * 0.008, Vector3(0, -0.024, 0.008)])
 
 
 ## Centre line of the throttle cable tube: straight through F1 on the cable's line, along the right side (past the tank),

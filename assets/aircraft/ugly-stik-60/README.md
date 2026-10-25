@@ -57,10 +57,10 @@ The engine is the owner's Blender model of an O.S. MAX 61 SF Special Edition on 
 
 - splits off the carburettor lever and the propeller drive;
 - decimates the screws and silicone lines;
-- moves the line grommets onto the Stik's narrower F1;
+- moves the line grommets into F1's free strip above the mount (inside the 1/4 in sides, under the hatch, clear of the throttle tube) and fails the build if a moved grommet or bent line overlaps the mount or engine;
 - repairs the 21 triangles whose winding opposed their shading normals;
 - halves the body atlas and writes every map as WebP;
-- adds empties for the lever ball link, intake bore, silencer outlet, washer face and firewall face.
+- adds empties for the lever ball link, intake bore, silencer outlet, washer face, firewall face and the fuel and pressure grommets (where the installation's tank lines start).
 
 ```bash
 .tools/blender-5.2.2-linux-x64/blender --background --factory-startup \
@@ -69,13 +69,13 @@ The engine is the owner's Blender model of an O.S. MAX 61 SF Special Edition on 
   --python assets/aircraft/ugly-stik-60/engine/build_engine.py -- --check # byte-identical rebuild
 ```
 
-After a rebuild, import resources and regenerate the model, customization and Workshop pins. The builder seats the mount's flange on F1. The physics-bound `prop_z` stays, so the drive hub sits 6.0 mm inside the wooden propeller hub, and the drive turns with `propeller`. Moving the hub forward the remaining 6.4 mm would be a physics change. Smoke uses the silencer-outlet anchor (4.2 mm bore), and the appearance's oil residue starts at that outlet. The gas pushrod crosses F1 at (32, 22) mm, a corridor that `verify_controls.gd` probes over the full throttle range. The asset costs about 150k of the model's 179k visible triangles (the native engine was 27k of 51k). Godot generates its LODs on import.
+After a rebuild, import resources and regenerate the model, customization and Workshop pins. The builder seats the mount's flange on F1. The physics-bound `prop_z` stays, so the drive hub sits 6.0 mm inside the wooden propeller hub, and the drive turns with `propeller`. Moving the hub forward the remaining 6.4 mm would be a physics change. Smoke uses the silencer-outlet anchor (4.2 mm bore), and the appearance's oil residue starts at that outlet. The throttle cable tube crosses F1 at `equipment.servo_tray.throttle_f1` (28.5, 26) mm; `verify_controls.gd` probes the exposed cable over the full throttle range, and the tube where it passes F1, against the engine. The asset costs about 150k of the model's 179k visible triangles (the native engine was 27k of 51k). Godot generates its LODs on import.
 
 ## Native builder and model interfaces
 
 [ugly_stik_model.gd](../../../app/aircraft/ugly_stik_model.gd) builds native meshes; its raw result is `{root, propeller, hinges, gear, controls}`. Stable `airplane`, `propeller` and surface-hinge nodes feed the version-1 `euler_hinges` manifest. Static wing frames carry dihedral; child hinges carry deflection.
 
-The [render adapter](../../../app/render/airplane.gd) updates links after surface poses, wheel spin/steering and inspector maintenance visibility. `apply_throttle()` drives the base model's carburettor/servo linkage; finite-glow visuals have a separate route. `set_maintenance()` exposes internal equipment without relocating it. Gear compression, fracture details and contact scuffs use shared presentation consumers. [Installation evidence](../../../docs/research/ugly-stik-model-v3-installation.md) records frame conversions; the model does not implement contact forces.
+The [render adapter](../../../app/render/airplane.gd) updates links after surface poses, wheel spin/steering and inspector maintenance visibility. `apply_throttle()` drives the base model's carburettor/servo linkage; finite-glow visuals have a separate route. `set_maintenance()` exposes internal equipment without relocating it: the servo tray, cable tube, fuel tank and lines, receiver battery, receiver and leads ([ugly_stik_installation.gd](../../../app/aircraft/ugly_stik_installation.gd), laid out by `equipment.installation`). Gear compression, fracture details and contact scuffs use shared presentation consumers. [Installation evidence](../../../docs/research/ugly-stik-model-v3-installation.md) records frame conversions; the model does not implement contact forces.
 
 ## Captures
 

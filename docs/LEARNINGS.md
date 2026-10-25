@@ -60,6 +60,10 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-25 · US-V18c — overlap-test every delivered part a generator moves
+
+The Stik engine generator moved the delivered line grommets and bent the last 35 mm of each silicone line. Renders and close-ups passed for a whole step, yet the bent pressure line ran through the radial mount: 77 triangle pairs, found only when the generator gained a `BVHTree.overlap` test against the mount and engine. A generator that moves or deforms delivered geometry should overlap-test the result against the solids around it and fail the build on contact. Exclude only the intended joins, such as a line on its nipple. [Generator](../assets/aircraft/ugly-stik-60/engine/build_engine.py) · [evidence](research/ugly-stik-finish-v6.md#us-v18c--fuel-and-radio-installation)
+
 ## 2026-10-25 · US-V17 — SurfaceTool merges drop unindexed triangles once any part is indexed
 
 The Stik's new horn webs and servo-arm blades are unindexed SurfaceTool plates, merged with indexed primitive meshes (`BoxMesh`, `CylinderMesh`) by `append_from`. The merged surface kept every vertex but indexed only the primitives' triangles: one horn had 84 positions and 36 indices. The web was invisible in game and in glTF, yet the AABB was right and the winding check passed, because both read only indexed triangles. Call `SurfaceTool.index()` on a custom mesh before it is merged with primitives, and check index counts, not vertex counts or bounds. [Builder](../app/aircraft/ugly_stik_controls.gd) · [evidence](research/ugly-stik-finish-v6.md#us-v17--servos-and-control-hardware)

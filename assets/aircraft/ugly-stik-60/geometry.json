@@ -461,7 +461,13 @@
       "case_z": 0.0887,
       "rail": [0.0095, 0.0127],
       "servo_x": {"elevator": -0.025, "throttle": 0.0, "rudder": 0.025},
-      "throttle_f1": [0.028, 0.023]
+      "throttle_f1": [0.0285, 0.026]
+    },
+    "installation": {
+      "tank": {"size": [0.056, 0.052, 0.135], "centre": [0.0, 0.0055, -0.1795], "corner": 0.007, "wall": 0.0015},
+      "battery": {"cells": 4, "cell_radius": 0.00725, "cell_length": 0.0505, "centre_xz": [0.0, -0.2195], "foam": 0.003},
+      "receiver": {"size": [0.030, 0.018, 0.047], "centre_xz": [-0.010, -0.060], "foam": [0.005, 0.004]},
+      "switch_zy": [-0.040, -0.026]
     }
   },
   "evidence": {
@@ -505,7 +511,12 @@
     "equipment.servo_tray": {
       "kind": "measured",
       "source": "US-V18b: Jensen oz1253 sheet 1, local 100 dpi raster. Side view: the three fuselage servos stand between F3 and F4 on '3/8 x 1/2 hardwood servo rails' at x 1445-1496 and 1725-1774 px (centres z 0.0533 and 0.1241), outputs on y 2595 (the thrust line), plywood bottom at y 2774 (-0.0502). Top view: three servos side by side; 'brass brake cable tubing' to the throttle on the centre line; 'nylon tubing to throttle' in the side view.",
-      "method": "z = -0.115 + (x - 808) * 0.000254, y = -0.005 + (2596 - y) * 0.000254. case_z is the tray centre; modern standard servos mount by their tabs, so the rails move under the tabs (case_z +/- 23.75 mm). servo_x and the order (elevator left, throttle centre, rudder right, next to their horns and the plan's centre-line cable) are estimates. throttle_f1 is where the cable tube crosses F1: outside the radial mount and inside the 1/4 in sides, replacing the US-V13 rod crossing (32, 22) mm, whose tube would cut 1.2 mm into the side."
+      "method": "z = -0.115 + (x - 808) * 0.000254, y = -0.005 + (2596 - y) * 0.000254. case_z is the tray centre; modern standard servos mount by their tabs, so the rails move under the tabs (case_z +/- 23.75 mm). servo_x and the order (elevator left, throttle centre, rudder right, next to their horns and the plan's centre-line cable) are estimates. throttle_f1 is where the cable tube crosses F1, from an engine-BVH scan of clear cable lines to the lever (US-V18c): in the free strip above the radial mount, inside the 1/4 in sides, clear of the pressure grommet; the US-V13 rod crossing (32, 22) mm would put a tube 1.2 mm into the side."
+    },
+    "equipment.installation": {
+      "kind": "estimated",
+      "source": "US-V18c: Jensen oz1253 sheet 1 top view: 'fuel tank & battery compartment' F1-F2, 'receiver compartment' F2-F3; flight inventory (app/data/aircraft/jensen_ugly_stik_60.json): fuel tank x_aft -0.10, receiver battery 4.8 V 600 mAh -0.12 (z_up -0.03), receiver 0.04; fuel_system capacity 0.35 l (O.S. manual 'approx 350cc').",
+      "method": "Model frame (z = -0.115 + x_aft, y = -0.005 + z_up). A 12 oz-class tank (56 x 52 x 135 mm outside, 1.5 mm wall: about 0.35 l inside) sits behind the nose-gear wire, which stands 34 mm behind F1 at the physics contact and slides up as the gear compresses; so the tank centre is 35 mm aft of the inventory point. A flat 4-cell AA pack lies on foam under it, behind the wire; the receiver rests on foam on the floor of its compartment, left of the throttle tube. The switch sits on the side opposite the muffler, under the wing. Sizes are typical commercial parts, not measured."
     },
     "equipment.main_strap": {
       "kind": "measured",
