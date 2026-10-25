@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="4" failures="0" errors="0" skipped="0" time="16.295000"><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/docs/research/ground-physics/GP-08/evidence/candidate/check_numeric_preservation.gd [p51-air-numeric-preservation-l604uv6k]" time="4.015000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: p51-air-numeric-preservation-l604uv6k/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/docs/research/ground-physics/GP-08/evidence/candidate/check_numeric_preservation.gd [p51-ground-numeric-preservation-u8v99pt_]" time="4.687000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: p51-ground-numeric-preservation-u8v99pt_/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/docs/research/ground-physics/GP-08/evidence/candidate/check_numeric_preservation.gd [stik-air-numeric-preservation-s0ceq6ma]" time="3.578000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: stik-air-numeric-preservation-s0ceq6ma/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/docs/research/ground-physics/GP-08/evidence/candidate/check_numeric_preservation.gd [stik-ground-numeric-preservation-lg2gmzea]" time="4.015000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: stik-ground-numeric-preservation-lg2gmzea/report.json and engine.log</system-out></testcase></testsuite>

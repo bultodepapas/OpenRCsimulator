@@ -108,7 +108,7 @@ func _test_real_assets_and_audio_lifecycle() -> void:
 			await _exercise_audio_profile(audio, config)
 			if servo_type == "standard" and retract_type == "electric":
 				await _test_loop_voice_stability(audio)
-				_test_retract_event_interruptions_and_priority(audio)
+				await _test_retract_event_interruptions_and_priority(audio)
 
 	var missing: Variant = audio.call("_load_wav", "qa_missing", ASSET_DIR + "__missing_for_qa__.wav", false)
 	var after_missing: Dictionary = audio.call("diagnostics")
@@ -350,6 +350,17 @@ func _test_retract_event_interruptions_and_priority(audio: Node) -> void:
 		"roles=%s diagnostics=%s" % [str(lock_priority_roles), str(audio.call("diagnostics"))])
 	_check("gear endpoint cue has no duplicate same-source voices",
 		_gear_source_voice_count(audio) <= 1, str(_playing_event_sources(audio)))
+	audio.call("reset")
+	audio.call("update_sound", _gear_only_snapshot(600, 0.0, false), 0.001)
+	audio.call("update_sound", _gear_only_snapshot(601, 0.5, true), 0.001)
+	audio.call("update_sound", _gear_only_snapshot(602, 0.3, false), 0.001)
+	_check("reversal fixture has a pending cue before pause", _pending_event_count(audio) == 1)
+	var cues_before_pause: int = int(audio.call("diagnostics").events_played)
+	var pause_snapshot: Dictionary = _gear_only_snapshot(602, 0.3, false)
+	pause_snapshot.paused = true
+	await _advance_same_snapshot(audio, pause_snapshot, 6)
+	_check("pause clears pending reversals before fading the old cue",
+		int(audio.call("diagnostics").events_played) == cues_before_pause and _pending_event_count(audio) == 0)
 
 
 func _playing_event_roles(audio: Node) -> Array[String]:

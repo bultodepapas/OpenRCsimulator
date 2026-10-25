@@ -1,6 +1,8 @@
 ## UI-FS: app-owned observation service. No inputs, forces or solver checkpoint mutation.
 extends Node
 
+const Rules := preload("res://statistics/rules.gd")
+
 signal changed
 var note := ""
 var revision: int = 0
@@ -111,6 +113,9 @@ func begin_activity(session: Node, aircraft_id: String, aircraft_name: String, m
 	data.clean_exit = false
 	adapter = load("res://statistics/fixed_wing_adapter.gd").new()
 	adapter.configure(session, aircraft_id, Callable(self, "_observe"))
+	# Session receipt generations are local counters. Persisted event identity uses
+	# this service's globally unique activity namespace, including fresh sessions.
+	adapter.profile.generation_id = _generation
 	detector = load("res://statistics/detector.gd").new()
 	detector.configure(adapter.profile, session.start_choice != "runway")
 	_session.statistics_lifecycle.connect(_lifecycle)
@@ -149,13 +154,30 @@ func _ingest(events: Array) -> void:
 				_active_record.end_seq = -1
 				_active_record.merge(event.get("flight", {}), true)
 				_active_record.config_hash = str(_metadata.get("config_hash", ""))
-				_active_record.rules_version = "flight-statistics-v1"
+				_active_record.rules_version = Rules.VERSION
 				_active_record.start_kind = event.get("start_kind", "takeoff")
 				_active_record.metadata.events = []
 				_append_event(event)
 				_update_active()
 			"landing":
 				_append_event(event)
+			"accident", "accident_updated":
+				_append_event(event)
+				if bool(event.get("terminal", false)):
+					# Escalation updates the original generation-latched counter record.
+					# It must not create another crash or lose the earlier gear-up cause.
+					for index: int in range(data.records.size() - 1, -1, -1):
+						var record: Dictionary = data.records[index]
+						if record.get("kind") == "crash" and not str(event.get("accident_id", "")).is_empty() \
+								and record.metadata.get("activity_generation") == _generation \
+								and record.metadata.get("accident_id") == event.accident_id:
+							# Background snapshots share immutable record entries. Replace,
+							# never mutate the object a writer may already be serializing.
+							record = record.duplicate(true)
+							record.metadata.terminal = true
+							record.metadata.terminal_event_id = event.get("event_id", "")
+							data.records[index] = record
+							break
 			"closed":
 				if not _active_record.is_empty():
 					_append_event(event)
@@ -168,8 +190,13 @@ func _ingest(events: Array) -> void:
 					_upsert(_active_record)
 					_active_record = {}
 			"crash":
+				_append_event(event)
 				var crash: Dictionary = _record("crash")
 				crash.metadata.ground = bool(event.get("ground", false))
+				crash.metadata.terminal = bool(event.get("terminal", true))
+				crash.metadata.activity_generation = _generation
+				for key: String in ["accident_id", "event_id", "rules_version", "kind"]:
+					if event.has(key): crash.metadata[key] = event[key]
 				data.records.append(crash)
 		_mark_dirty()
 		_flush_requested = true
@@ -184,7 +211,8 @@ func _append_event(event: Dictionary) -> void:
 		_active_record.metadata.events_omitted = int(_active_record.metadata.get("events_omitted", 0)) + 1
 		return
 	var entry: Dictionary = {}
-	for key: String in ["type", "kind", "outcome", "reason", "tick", "first_contact_tick", "start_kind"]:
+	for key: String in ["type", "kind", "outcome", "reason", "tick", "first_contact_tick", "start_kind",
+			"accident_id", "event_id", "rules_version", "terminal", "ground"]:
 		if event.has(key): entry[key] = event[key]
 	timeline.append(entry)
 	_active_record.metadata.events = timeline
@@ -239,6 +267,7 @@ func _lifecycle(receipt: Dictionary) -> void:
 		_branch = false
 		_generation = _uuid()
 		adapter.configure(_session, _aircraft_id, Callable(self, "_observe"))
+		adapter.profile.generation_id = _generation
 		_metadata.config_hash = str(_session.aircraft.get("input_identity", {}).get("sha256", ""))
 		detector.configure(adapter.profile, _session.start_choice != "runway")
 		_last_flush_time = float(_session.sim.time())

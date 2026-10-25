@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fe19ef30-94ed-4541-ab7b-2f76de4aa65b",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_aircraft_contact_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T23:18:38.901101+00:00",
+  "label": "test_aircraft_contact_session",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-integrated-checks\\test_aircraft_contact_session-rnfp76ae\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-integrated-checks\\test_aircraft_contact_session-rnfp76ae\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    ", 0 fail"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.344,
+  "log_bytes": 1666,
+  "log_sha256": "f18274ce58a1526c61ccbaebcdcefe878fa3f241bb9ae63ad987e5f44e28c540"
+}

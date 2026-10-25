@@ -21,6 +21,9 @@ def analyze(prefix: Path) -> dict:
     failures = []
     if report['discarded_frames'] != 0:
         failures.append('mixer capture dropped frames')
+    wall = report.get('capture_wall_seconds')
+    if wall is not None and abs(len(pcm) / rate - wall) > .12:
+        failures.append('native PCM duration differs from capture wall time by over 120 ms')
     if report['peak_dbfs'] > -0.9:
         failures.append('capture crossed the -1 dBFS ceiling tolerance')
     if np.any(np.abs(pcm.astype(np.int32)) >= 32767):

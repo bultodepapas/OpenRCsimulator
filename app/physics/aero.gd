@@ -20,6 +20,11 @@ const Flaps := preload("res://physics/flaps.gd")
 const WING_STATIONS_PER_SIDE := 3
 const LOADS_LAW := "section-plane-source-weighted-wake-velocity-v2"
 const WAKE_STATE_UNIT := "m/s (equal-area mean of section Vp*CL)"
+## Experimental unwashed ambient-gradient bridge; not a saved weather or aircraft law.
+const SPATIAL_LOADS_LAW := "matched-unwashed-station-delta-v1"
+## Provisional eligibility limits, not clamps or calibrated RC turbulence parameters.
+const SPATIAL_MAX_ANGLE_RAD := 3.0 * PI / 180.0
+const SPATIAL_MAX_PRESSURE_FRACTION := 0.25
 
 
 ## Our pilot-side surface angles (degrees, trailing edge UP for ailerons/elevator, RIGHT for rudder,
@@ -265,7 +270,8 @@ static func downwash_angle(wake_velocity: float, gain: float, plane_speed: float
 ## are attenuated: a stagnant or fully separated strip cannot export its undefined
 ## angle to a loaded neighbour. Uniform attached planar flow retains the old map.
 ## The max speed is homogeneous; its exact-zero branch needs no epsilon denominator.
-static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary) -> Dictionary:
+static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary,
+		station_delta_body := PackedFloat64Array()) -> Dictionary:
 	var arm := _arm(model.reference.arp_le, model.cg_le)
 	var v: PackedFloat64Array = air.v_air
 	var p: float = s[RB.RATE]
@@ -287,6 +293,10 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 		var f0: float = v[0] + (q*arm[2] - r*y)
 		var f1: float = v[1] + (r*arm[0] - p*arm[2])
 		var f2: float = v[2] + (p*y - q*arm[0])
+		if not station_delta_body.is_empty():
+			f0 += station_delta_body[3*i]
+			f1 += station_delta_body[3*i+1]
+			f2 += station_delta_body[3*i+2]
 		var vp := M.sqrt_(f0*f0 + f2*f2)
 		var control: float = d.aileron_right if ys[i] > 0.0 else d.aileron_left
 		var angle := wrapf(M.atan2_(f2, f0) + float(model.surfaces.wing_aileron_effectiveness)*control, -PI, PI)
@@ -348,7 +358,8 @@ static func _section_coefficients(alpha: float, base: float, env: Dictionary, po
 ## downwash_cl is the historical argument name; v2 carries the dimensional wake driver in m/s.
 ## NAN selects the instantaneous source; FlightSession holds the same driver through RK stages.
 static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
-		downwash_cl := NAN, strip_diagnostics: Variant = null, ge := PackedFloat64Array()) -> PackedFloat64Array:
+		downwash_cl := NAN, strip_diagnostics: Variant = null, ge := PackedFloat64Array(),
+		station_delta_body := PackedFloat64Array(), include_body := true) -> PackedFloat64Array:
 	var ge_active := not ge.is_empty() # M5-GE-1: σ per strip (station order), then mean σ and the tail's σ_ε
 	var p: float = s[RB.RATE]
 	var q: float = s[RB.RATE+1]
@@ -394,7 +405,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var mz_sum := 0.0
 	var wing_cl := 0.0 # Historical local name: dimensional mean Vp*CL, m/s.
 	# D11d: geometric strip angles first, then the induced-flow map (AircraftData._induced_map) couples them.
-	var wing_flow := _wing_flow(s, air, d, model)
+	var wing_flow := _wing_flow(s, air, d, model, station_delta_body)
 	var angles: PackedFloat64Array = wing_flow.angles
 	var plane_speeds: PackedFloat64Array = wing_flow.speeds
 	var source_weights: PackedFloat64Array = wing_flow.sources
@@ -423,6 +434,10 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		var f0: float = v0 + (q*az - r*arm_y)
 		var f1: float = v1 + (r*ax - p*az)
 		var f2: float = v2 + (p*arm_y - q*ax)
+		if not station_delta_body.is_empty():
+			f0 += station_delta_body[3*i]
+			f1 += station_delta_body[3*i+1]
+			f2 += station_delta_body[3*i+2]
 		var effective: float = angles[i]
 		# Stall and the flat plate follow the geometric angle; attached lift uses the induced (effective) angles.
 		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
@@ -568,6 +583,9 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		var tail: Dictionary = surfaces.vertical if vertical else surfaces.horizontal
 		var arm := _arm(tail.position, cg)
 		var flow := M.add(v, M.cross(M.v3(p, q, r), arm))
+		if not station_delta_body.is_empty():
+			for axis in 3:
+				flow[axis] += station_delta_body[3*(stations+tail_index)+axis]
 		var result := _tail_surface_from_flow(flow, arm, d, tail, surfaces, float(tail.area), vertical, rho, wake)
 		fx_sum += result[0]
 		fy_sum += result[1]
@@ -575,6 +593,8 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		mx_sum += result[3]
 		my_sum += result[4]
 		mz_sum += result[5]
+	if not include_body:
+		return PackedFloat64Array([fx_sum, fy_sum, fz_sum, mx_sum, my_sum, mz_sum])
 	# P51-25 (optional): the fuselage's destabilizing yaw as a Munk-type pure couple ½ρ·S·b·Cnβ_B·u·v (body-axis air
 	# velocity). Linear in β at small angles, where the oracle's Cnb carries the same term; zero at zero flow and broadside.
 	# Calibrated on attached crossflow at small β, it fades out over the aircraft's declared linear-sideslip range
@@ -903,3 +923,162 @@ static func loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: 
 	for k in 6:
 		global[k] = lerpf(global[k], local[k], blend)
 	return global
+
+
+## M5-W05c-R1: experimental UNWASHED ambient-gradient wrench in the same datum as loads().
+## Inputs model/air/deflections must be normalized as for loads(). Deltas are body-axis air-relative
+## increments R^T(W_O-W_i), NOT point velocity or omega cross arm: six wing stations, horizontal, vertical.
+## No atmospheric state, propulsion, slipstream or live-CG shift is owned here. Live scenarios are not admitted
+## until their matched wash/hub paths and persisted law identity exist. Refusal has no usable partial loads.
+static func ambient_spatial_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary,
+		rho: float, station_delta_body: PackedFloat64Array, downwash_cl := NAN, ground_up := NAN) -> Dictionary:
+	if not _spatial_finite(s, RB.SIZE) or not is_finite(rho) or rho <= 0.0 \
+			or is_inf(downwash_cl) or is_inf(ground_up):
+		return _spatial_failure("invalid body, density, wake or ground input")
+	var quaternion_norm := 0.0
+	for axis in 4:
+		quaternion_norm += s[RB.ATT+axis]*s[RB.ATT+axis]
+	if not is_finite(quaternion_norm) or quaternion_norm <= 1e-24:
+		return _spatial_failure("invalid body quaternion")
+	var v: Variant = air.get("v_air")
+	if not v is PackedFloat64Array or not _spatial_finite(v, 3):
+		return _spatial_failure("invalid reference air velocity")
+	for key: String in ["V", "alpha", "beta", "qbar"]:
+		var value: Variant = air.get(key)
+		if typeof(value) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(value)):
+			return _spatial_failure("invalid reference air data")
+	for key: String in ["elevator", "aileron_left", "aileron_right", "rudder"]:
+		var value: Variant = d.get(key)
+		if typeof(value) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(value)):
+			return _spatial_failure("invalid surface deflection")
+	if not is_finite(float(d.get("flap", 0.0))):
+		return _spatial_failure("invalid flap deflection")
+	var env: Dictionary = model.get("envelope", {})
+	var ys: PackedFloat64Array = env.get("station_ys", PackedFloat64Array())
+	if ys.is_empty() or not _spatial_finite(station_delta_body, 3*(ys.size()+2)):
+		return _spatial_failure("spatial air needs one finite delta per wing and tail station")
+	var uniform := true
+	for value: float in station_delta_body:
+		if value != 0.0:
+			uniform = false
+			break
+	# Do not subtract equal local loads and then add zero: preserve the exact legacy arithmetic in every regime.
+	if uniform:
+		var legacy := loads(s, air, d, model, rho, downwash_cl, ground_up)
+		if not _spatial_finite(legacy, 6):
+			return _spatial_failure("reference aerodynamic evaluation is nonfinite")
+		return {ok = true, errors = PackedStringArray(), law = SPATIAL_LOADS_LAW, uniform = true,
+			loads = legacy, delta = PackedFloat64Array([0., 0., 0., 0., 0., 0.]), held_wake_mps = downwash_cl}
+	var ge := GroundEffect.factors(s, model, ground_up)
+	# Resolve the reference source once. Each raw pass applies GE's tail scale once internally.
+	var wake: float = _wing_lift_coefficient_with(s, air, d, model, ge, true) if is_nan(downwash_cl) else downwash_cl
+	if not is_finite(wake):
+		return _spatial_failure("reference wing wake is nonfinite")
+	var domain := _spatial_domain(s, air, d, model, station_delta_body, wake, ge)
+	if not domain.ok:
+		return domain
+	# Body residuals stay at O in the baseline. Exclude them from BOTH passes rather than
+	# subtracting the same body terms after large sums and losing a small surface correction.
+	var reference := _local_loads(s, air, d, model, rho, wake, null, ge, PackedFloat64Array(), false)
+	var spatial := _local_loads(s, air, d, model, rho, wake, null, ge, station_delta_body, false)
+	var out := loads(s, air, d, model, rho, downwash_cl, ground_up)
+	var delta := PackedFloat64Array()
+	delta.resize(6)
+	for axis in 6:
+		delta[axis] = spatial[axis] - reference[axis]
+		out[axis] += delta[axis]
+	if not _spatial_finite(delta, 6) or not _spatial_finite(out, 6):
+		return _spatial_failure("spatial aerodynamic evaluation is nonfinite")
+	return {ok = true, errors = PackedStringArray(), law = SPATIAL_LOADS_LAW, uniform = false,
+		loads = out, delta = delta, held_wake_mps = wake, domain = domain}
+
+
+## Deliberately conservative initial domain: both paired local flows must remain attached.
+## The provisional 3-degree/25-percent limits measure weather changes at the SAME station, so
+## ordinary rigid-body rotation is not mistaken for an ambient gradient. No flow is clamped.
+static func _spatial_domain(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary,
+		deltas: PackedFloat64Array, wake: float, ge: PackedFloat64Array) -> Dictionary:
+	var env: Dictionary = model.envelope
+	var surfaces: Dictionary = model.surfaces
+	var ys: PackedFloat64Array = env.station_ys
+	var n := ys.size()
+	var rates := s.slice(RB.RATE, RB.RATE+3)
+	var reference_wing := _wing_flow(s, air, d, model)
+	var spatial_wing := _wing_flow(s, air, d, model, deltas)
+	var polar: Dictionary = env.get("wing_polar", {})
+	var strip_factors: PackedFloat64Array = polar.get("strip_factor", PackedFloat64Array())
+	var flap_config: Dictionary = model.get("flaps", {})
+	var stall_back := 1.0 - float(flap_config.stall_shift_fraction) if flap_config.has("stall_shift_fraction") else 0.0
+	var max_alpha := 0.0
+	var max_beta := 0.0
+	var max_pressure := 0.0
+	for i in n+2:
+		var vertical := i == n+1
+		var arm: PackedFloat64Array
+		if i < n:
+			arm = _arm(model.reference.arp_le, model.cg_le)
+			arm[1] += ys[i]
+		else:
+			arm = _arm(surfaces.vertical.position if vertical else surfaces.horizontal.position, model.cg_le)
+		var before := M.add(air.v_air, M.cross(rates, arm))
+		var after := before.duplicate()
+		for axis in 3:
+			after[axis] += deltas[3*i+axis]
+		if not _spatial_finite(before, 3) or not _spatial_finite(after, 3) or before[0] <= 0.0 or after[0] <= 0.0:
+			return _spatial_failure("spatial bridge requires forward flow at every station")
+		var alpha0 := M.atan2_(before[2], before[0])
+		var alpha1 := M.atan2_(after[2], after[0])
+		var beta0 := M.atan2_(before[1], M.sqrt_(before[0]*before[0]+before[2]*before[2]))
+		var beta1 := M.atan2_(after[1], M.sqrt_(after[0]*after[0]+after[2]*after[2]))
+		var normal: int = 1 if vertical else 2
+		var plane0 := before[0]*before[0]+before[normal]*before[normal]
+		var plane1 := after[0]*after[0]+after[normal]*after[normal]
+		var pressure_change := absf(plane1-plane0)/plane0
+		if not is_finite(pressure_change):
+			return _spatial_failure("invalid section-plane pressure")
+		max_alpha = maxf(max_alpha, absf(wrapf(alpha1-alpha0, -PI, PI)))
+		max_beta = maxf(max_beta, absf(beta1-beta0))
+		max_pressure = maxf(max_pressure, pressure_change)
+		if max_alpha > SPATIAL_MAX_ANGLE_RAD or max_beta > SPATIAL_MAX_ANGLE_RAD \
+				or max_pressure > SPATIAL_MAX_PRESSURE_FRACTION:
+			return _spatial_failure("ambient gradient exceeds the provisional angle/pressure domain")
+		if absf(beta0) >= float(env.b1) or absf(beta1) >= float(env.b1):
+			return _spatial_failure("station sideslip is outside the attached domain")
+		if i < n:
+			for wing: Dictionary in [reference_wing, spatial_wing]:
+				var angle: float = wing.angles[i]
+				var stall_angle: float = angle - stall_back * wing.flap_shifts[i]
+				if stall_weight(stall_angle, env) != 0.0:
+					return _spatial_failure("wing station is outside the attached domain")
+				if not polar.is_empty():
+					var polar_angle: float = angle if strip_factors.is_empty() else angle*strip_factors[i]
+					if WingPolar.evaluate(polar_angle, 0.0, polar)[2] != 1.0:
+						return _spatial_failure("tabulated wing station is outside the attached domain")
+		else:
+			var tail: Dictionary = surfaces.vertical if vertical else surfaces.horizontal
+			var tail_wake: float = wake * (ge[n+1] if not ge.is_empty() else 1.0)
+			for flow: PackedFloat64Array in [before, after]:
+				var angle: float
+				if not vertical and tail.has("free_slope"):
+					angle = wrapf(M.atan2_(flow[2], flow[0]) - downwash_angle(tail_wake, float(tail.downwash_per_cl),
+						M.sqrt_(flow[0]*flow[0]+flow[2]*flow[2])) + float(tail.elevator_tau)*float(d.elevator)
+						+ float(tail.free_incidence), -PI, PI)
+				else:
+					angle = _tail_angle_from_flow(flow, d, tail, vertical)
+				if absf(angle) >= float(surfaces.tail_local_limit):
+					return _spatial_failure("tail station is outside the attached domain")
+	return {ok = true, max_alpha_change_rad = max_alpha, max_beta_change_rad = max_beta,
+		max_plane_pressure_fraction = max_pressure}
+
+
+static func _spatial_finite(values: PackedFloat64Array, size: int) -> bool:
+	if values.size() != size:
+		return false
+	for value: float in values:
+		if not is_finite(value):
+			return false
+	return true
+
+
+static func _spatial_failure(message: String) -> Dictionary:
+	return {ok = false, law = SPATIAL_LOADS_LAW, errors = PackedStringArray([message])}

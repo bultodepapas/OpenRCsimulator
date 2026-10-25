@@ -199,6 +199,9 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	var servo_level: float = float(_config.get("servo_level", 1.0))
 	if paused:
 		_scene_gain = maxf(0.0, _scene_gain - dt / PAUSE_FADE_S)
+		# A queued reversal must not start while the old cue fades into pause.
+		for index: int in _pending_events.size():
+			_pending_events[index] = {}
 	else:
 		_scene_gain = minf(1.0, _scene_gain + dt / PAUSE_FADE_S)
 	var source_positions: Dictionary = _source_positions(result)

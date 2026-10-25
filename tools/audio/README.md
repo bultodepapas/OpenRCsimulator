@@ -12,6 +12,7 @@ godot --headless --path app --audio-driver Dummy --script res://tests/test_mecha
 godot --headless --path app --audio-driver Dummy --script res://tests/test_mechanical_audio.gd
 godot --headless --path app --audio-driver Dummy --script res://tests/test_mechanical_integration.gd
 godot --display-driver headless --audio-driver WASAPI --max-fps 60 --path app --script /absolute/repo/tools/audio/mechanical_probe.gd -- --fps=60 --out=/absolute/new/output/mechanical
+python tools/audio/check_mechanical_capture.py /absolute/new/output/mechanical --out=/absolute/output/mechanical-checks.json
 ```
 
 Use the checked runner around each Godot command, as described below. The mechanical probe requires a new output directory, rejects Dummy, and saves native WAVs plus `report.json` for all four combinations of the two servo and two retract settings. Its stimuli cover slow/small and fast/large travel, simultaneous surfaces, retract reversal/interruption/endpoint, distance, masks, pause/reset/rewind/detach/reconfiguration. It drives the audio contract directly: it does not simulate a whole flight or establish perceptual realism. Runs at 30, 60 or 144 requested FPS are supported. Run native benches sequentially.

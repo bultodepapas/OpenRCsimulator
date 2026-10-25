@@ -227,6 +227,18 @@ func _test_mask_from_accepted_rpm(session: Node, adapter: Node, family: String) 
 		and high_mask < low_mask,
 		"low=%.1f/%.4f high=%.1f/%.4f" % [float(low_sound.get("rpm", 0.0)), low_mask,
 		float(high_sound.get("rpm", 0.0)), high_mask])
+	# Use the existing accepted propulsion-enable mode as a stopped-source fixture;
+	# do not infer an ignition cut from a throttle stick or alter the physics law.
+	session.set("engine_running", false)
+	for _tick: int in 240:
+		sim.set("inputs", session.call("_inputs"))
+		sim.call("step")
+	var off_sound: Dictionary = adapter.call("snapshot")
+	for _sample: int in 40:
+		adapter.call("mechanical_snapshot", off_sound, 0.1)
+	_check(family + " stopped accepted source releases masking as its shaft slows",
+		not bool(off_sound.get("running", true)) and float(adapter.get("_mechanical_mask")) > high_mask,
+		"off rpm=%.1f gain=%.4f" % [float(off_sound.get("rpm", 0.0)), float(adapter.get("_mechanical_mask"))])
 
 
 func _test_electric_rpm_masking() -> void:

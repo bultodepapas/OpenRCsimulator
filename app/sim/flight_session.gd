@@ -1767,6 +1767,25 @@ func contact_events() -> Dictionary:
 		prop_strike = prop_strike.duplicate(true)}
 
 
+## GP-14: factual accepted-state observation, independent of physical damage and pause.
+## Keep the historical contact checkpoint envelope unchanged. The pure flight detector
+## owns episode/crash deduplication; reading this receipt never mutates simulation state.
+func accident_observation() -> Dictionary:
+	var touching: bool = sim != null and _contact_tick == sim.tick and not _active_hull_ids.is_empty()
+	var gear_up := false
+	if touching and _contact_tick > 0 and gear_is_retractable() and _gear_aux_valid(sim.aux) \
+			and not _contact_bindings.get("support_points", []).is_empty():
+		# Current retract law has an exact fully-down endpoint, not a 95% mechanical lock.
+		# Pilot intent is irrelevant: a deliberately commanded gear-up landing is an accident.
+		gear_up = sim.aux[gear_aux_index()] < 1.0
+	# Legacy hull probes have no declared intended skid/belly role. New authored roles
+	# must extend this contract explicitly; an absent wheel alone does not invent one.
+	return {schema = "openrc-aircraft-accident-observation", version = 1,
+		tick = _contact_tick, generation = statistics_generation,
+		gear_up_contact = gear_up, ground_contact = touching,
+		intended_support = false, terminal = not crash.is_empty()}
+
+
 ## The observer owns the accepted-tick presentation sample; the next input guard can reuse it.
 func _refresh_soft_contacts() -> void:
 	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)

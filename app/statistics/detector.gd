@@ -2,7 +2,7 @@
 extends RefCounted
 
 const Rules := preload("res://statistics/rules.gd")
-const SNAPSHOT_VERSION := 1
+const SNAPSHOT_VERSION := 2
 const PHASES := ["ground_ready", "takeoff_pending", "airborne", "contact_pending", "terminal"]
 
 var flight: Dictionary = {}
@@ -25,6 +25,9 @@ var _stop_rejected_s := 0.0
 var _rearm_clearance_s := 0.0
 var _incident_latched := false
 var _crash_emitted := false
+var _accident_serial := 0
+var _accident_id := ""
+var _accident_terminal := false
 var _continuity_lost := false
 var _speed_window: Array[Dictionary] = []
 var _speed_head := 0
@@ -56,6 +59,9 @@ func configure(profile: Dictionary, air_start: bool = false) -> void:
 	_rearm_clearance_s = 0.0
 	_incident_latched = bool(_profile.get("incident_latched", false))
 	_crash_emitted = false
+	_accident_serial = 0
+	_accident_id = ""
+	_accident_terminal = false
 	_continuity_lost = false
 	_clear_speed_state()
 	_speed_reject_counts.clear()
@@ -64,10 +70,10 @@ func configure(profile: Dictionary, air_start: bool = false) -> void:
 
 func observe(sample: Dictionary) -> Array[Dictionary]:
 	var events: Array[Dictionary] = []
+	if _phase == "terminal":
+		return events
 	var tick_value: Variant = sample.get("tick", -1)
 	var tick := int(tick_value) if typeof(tick_value) in [TYPE_INT, TYPE_FLOAT] else -1
-	if bool(sample.get("incident", false)):
-		_incident_latched = true
 	var terminal := bool(sample.get("terminal", false))
 
 	if tick == _last_tick:
@@ -97,6 +103,10 @@ func observe(sample: Dictionary) -> Array[Dictionary]:
 			_handle_terminal(sample, tick, events)
 		return events
 
+	if bool(sample.get("incident", false)):
+		_incident_latched = true
+	if bool(sample.get("gear_up_contact", false)) and not terminal:
+		_record_accident(sample, tick, false, events)
 	_clock_s += dt
 	if not flight.is_empty() and _is_active_flight() and not _is_physically_supported(sample):
 		flight.airborne_seconds = float(flight.airborne_seconds) + dt
@@ -153,6 +163,9 @@ func snapshot() -> Dictionary:
 		"rearm_clearance_s": _rearm_clearance_s,
 		"incident_latched": _incident_latched,
 		"crash_emitted": _crash_emitted,
+		"accident_serial": _accident_serial,
+		"accident_id": _accident_id,
+		"accident_terminal": _accident_terminal,
 		"continuity_lost": _continuity_lost,
 		"flight": _json_safe(flight),
 		"speed_window": _json_safe(_effective_speed_window()),
@@ -185,6 +198,12 @@ func restore(value: Dictionary) -> bool:
 	_rearm_clearance_s = float(copy.rearm_clearance_s)
 	_incident_latched = bool(copy.incident_latched)
 	_crash_emitted = bool(copy.crash_emitted)
+	# Historical v1 checkpoints did not observe survivable accident groups.
+	# Never infer or accept new group fields disguised as legacy coverage.
+	var has_accidents := int(copy.version) == SNAPSHOT_VERSION
+	_accident_serial = int(copy.accident_serial) if has_accidents else 0
+	_accident_id = str(copy.accident_id) if has_accidents else ""
+	_accident_terminal = bool(copy.accident_terminal) if has_accidents else false
 	_continuity_lost = bool(copy.continuity_lost)
 	flight = copy.flight
 	_speed_window = []
@@ -233,6 +252,7 @@ func _process_takeoff(sample: Dictionary, dt: float, tick: int, events: Array[Di
 	_candidate_clearance_s = 0.0
 	_air_start_requested = false
 	_phase = "airborne"
+	_clear_accident_group()
 
 
 func _process_airborne(sample: Dictionary, tick: int) -> void:
@@ -261,7 +281,8 @@ func _process_contact(sample: Dictionary, dt: float, tick: int, events: Array[Di
 		and float(sample.get("ground_speed_3d", -1.0)) <= float(_thresholds.full_stop_speed_mps)
 	var quiet := _finite_nonnegative(sample.get("angular_speed", -1.0)) \
 		and float(sample.get("angular_speed", -1.0)) <= float(_thresholds.full_stop_angular_speed_rad_s)
-	if stop_geometry and slow and quiet:
+	# An accident can come to physical rest on the hull without a wheel stop set.
+	if supported and (_incident_latched or stop_geometry) and slow and quiet:
 		_stop_evidence_s += dt
 		if not controlled:
 			_stop_rejected_s += dt
@@ -276,6 +297,9 @@ func _process_contact(sample: Dictionary, dt: float, tick: int, events: Array[Di
 	else:
 		_stop_s = 0.0
 
+	if _incident_latched and _stop_evidence_s + 1e-12 >= float(_thresholds.full_stop_s):
+		_finish_full_stop(tick, events)
+		return
 	if _stop_s + 1e-12 >= float(_thresholds.full_stop_s):
 		_finish_full_stop(tick, events)
 		return
@@ -296,11 +320,11 @@ func _process_contact(sample: Dictionary, dt: float, tick: int, events: Array[Di
 		else:
 			var landing_outcome := "failed"
 			var reason := "touchdown_not_confirmed"
-			if not bool(_profile.get("landing_available", false)) or _continuity_lost:
+			if _incident_latched:
+				reason = "disqualifying_incident"
+			elif not bool(_profile.get("landing_available", false)) or _continuity_lost:
 				landing_outcome = "unknown"
 				reason = "classification_unavailable"
-			elif _incident_latched:
-				reason = "disqualifying_incident"
 			_resolve_episode(landing_outcome, "bounce_departure", tick, reason, events)
 			_phase = "airborne"
 		_stable_support_s = 0.0
@@ -308,22 +332,27 @@ func _process_contact(sample: Dictionary, dt: float, tick: int, events: Array[Di
 		_stop_evidence_s = 0.0
 		_stop_rejected_s = 0.0
 		_rearm_clearance_s = 0.0
+		_clear_accident_group()
 
 
 func _finish_full_stop(tick: int, events: Array[Dictionary]) -> void:
-	if not bool(_profile.get("landing_available", false)) or _continuity_lost:
+	if _incident_latched:
+		_resolve_episode("failed", "full_stop", tick, "disqualifying_incident", events)
+		_close_flight("damaged_stop", tick, events)
+	elif not bool(_profile.get("landing_available", false)) or _continuity_lost:
 		_resolve_episode("unknown", "full_stop", tick, "classification_unavailable", events)
 		_close_flight("interrupted", tick, events)
-	elif _incident_latched or not _qualified_support_seen:
-		var reason := "disqualifying_incident" if _incident_latched else "support_not_controlled"
-		_resolve_episode("failed", "full_stop", tick, reason, events)
-		_close_flight("damaged_stop" if _incident_latched else "failed_stop", tick, events)
+	elif not _qualified_support_seen:
+		_resolve_episode("failed", "full_stop", tick, "support_not_controlled", events)
+		_close_flight("failed_stop", tick, events)
 	else:
 		_resolve_episode("success", "full_stop", tick, "", events)
 		_close_flight("completed", tick, events)
 	_phase = "ground_ready"
 	_clear_episode()
 	_clear_speed_state()
+	# Keep the last accepted contact group while supported at rest. Persistent
+	# gear-up support must not manufacture a new incident on the following tick.
 
 
 func _resolve_full_stop_failure(tick: int, reason: String, events: Array[Dictionary]) -> void:
@@ -343,17 +372,42 @@ func _resolve_full_stop_failure(tick: int, reason: String, events: Array[Diction
 	_clear_speed_state()
 
 
-func _handle_terminal(sample: Dictionary, tick: int, events: Array[Dictionary]) -> void:
-	if _crash_emitted:
-		return
-	_crash_emitted = true
+func _record_accident(sample: Dictionary, tick: int, terminal: bool, events: Array[Dictionary]) -> void:
 	_incident_latched = true
-	var ground := bool(sample.get("ground_contact", false)) \
-		or bool(sample.get("supported", false))
-	events.append({"type": "crash", "ground": ground, "tick": tick})
+	var ground := _is_physically_supported(sample)
+	var first := _accident_id.is_empty()
+	if first:
+		_accident_serial += 1
+		_accident_id = "g%s:a%d:t%d" % [str(_profile.get("generation_id", "0")), _accident_serial, tick]
+		_accident_terminal = false
+	var escalated := terminal and not _accident_terminal
+	_accident_terminal = _accident_terminal or terminal
+	var cause := "gear_up_contact" if bool(sample.get("gear_up_contact", false)) else "terminal_crash"
+	if first or escalated:
+		events.append({"type": "accident" if first else "accident_updated", "kind": cause,
+			"accident_id": _accident_id, "event_id": _accident_id + (":crash" if first else ":terminal"),
+			"terminal": terminal, "ground": ground, "tick": tick, "rules_version": Rules.VERSION})
+	# M7 is a generation latch, independent of semantic accident grouping and terminal control.
+	if not _crash_emitted:
+		_crash_emitted = true
+		events.append({"type": "crash", "kind": cause, "ground": ground, "tick": tick, "terminal": terminal,
+			"accident_id": _accident_id, "event_id": _accident_id + ":m7", "rules_version": Rules.VERSION})
+	if ground and _is_active_flight() and not _episode_open:
+		_open_episode(tick)
+		_phase = "contact_pending"
+	_clear_speed_state()
+
+
+func _clear_accident_group() -> void:
+	_accident_id = ""
+	_accident_terminal = false
+
+
+func _handle_terminal(sample: Dictionary, tick: int, events: Array[Dictionary]) -> void:
+	if _phase == "terminal":
+		return
+	_record_accident(sample, tick, true, events)
 	if _is_active_flight():
-		if not _episode_open and _phase == "airborne" and ground:
-			_open_episode(tick)
 		if _episode_open:
 			_resolve_episode("failed", "terminal_contact", tick, "terminal_crash", events)
 		_close_flight("crashed", tick, events)
@@ -668,8 +722,24 @@ func _json_safe(value: Variant) -> Variant:
 
 
 func _valid_snapshot(value: Dictionary) -> bool:
-	if int(value.get("version", -1)) != SNAPSHOT_VERSION or not _json_only(value, 0):
+	if not _json_only(value, 0) or not _finite_integer(value.get("version")) \
+		or int(value.version) not in [1, SNAPSHOT_VERSION]:
 		return false
+	if int(value.version) == SNAPSHOT_VERSION:
+		if not _finite_integer(value.get("accident_serial")) or int(value.accident_serial) < 0 \
+			or typeof(value.get("accident_id")) != TYPE_STRING or str(value.accident_id).length() > 192 \
+			or typeof(value.get("accident_terminal")) != TYPE_BOOL:
+			return false
+		# Restored group state must preserve the same idempotency relationships as
+		# accepted observations; otherwise a damaged checkpoint can recount M7 or
+		# suppress the terminal escalation that updates a durable crash record.
+		if (int(value.accident_serial) > 0 or not str(value.accident_id).is_empty()) \
+			and (value.get("incident_latched") != true or value.get("crash_emitted") != true):
+			return false
+		if not str(value.accident_id).is_empty() and int(value.accident_serial) == 0:
+			return false
+		if value.accident_terminal and (str(value.accident_id).is_empty() or value.get("phase") != "terminal"):
+			return false
 	for key: String in ["profile", "flight", "speed_window", "pending_speed", "previous_speed", "speed_reject_counts"]:
 		if not value.has(key):
 			return false

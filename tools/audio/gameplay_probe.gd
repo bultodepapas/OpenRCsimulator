@@ -144,6 +144,7 @@ func _run() -> void:
 		driver = AudioServer.get_driver_name(), display = DisplayServer.get_name(), requested_fps = Engine.max_fps,
 		aircraft = scene.aircraft_id, frames = samples.size(), mix_rate = wav.mix_rate,
 		captured_seconds = float(samples.size()) / wav.mix_rate, peak_dbfs = linear_to_db(maxf(peak, 1e-12)),
+		capture_wall_seconds = elapsed,
 		rms_dbfs = linear_to_db(sqrt(square_sum / maxf(samples.size() * 2.0, 1.0))),
 		discarded_frames = dropped, soundscape_update_p95_us = timings[int(timings.size() * 0.95)],
 		soundscape_update_max_us = timings[-1], driver_latency_estimate_s = AudioServer.get_output_latency(),

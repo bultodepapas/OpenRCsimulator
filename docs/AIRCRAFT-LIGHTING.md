@@ -20,6 +20,8 @@ The data contract is `openrc-aircraft-lighting` v1 inside presentation envelope 
 
 Use Workshop → Lighting → preset, then expand zones or effects for advanced editing. Save a build to retain colors, brightness and patterns with that aircraft variant; Trial flight uses the accepted draft. The night preview is local to the Workshop and does not change flight weather or time. The existing L/controller light control still selects ALL/NAV/OFF; NAV suppresses decorative strips and show effects.
 
+For the existing moonlit world and night exposure, select **Night, full moon** on Home. The CLI equivalent is `--time_of_day=night`. The separate `--time-of-day=HH:MM` SDR snapshot path is not equivalent and remains outside this visual qualification.
+
 Zone edits include palette, brightness, cycle duration and telemetry response. Optional effects expose spark, trail or burst, intensity and lifetime. Apply or cancel an advanced edit before saving or flying. Navigation lock protects the saved navigation colors and patterns from editing. Sequence playback uses saved cues; a visual cue-list editor is not yet implemented.
 
 Colored strip emission and lamp sprites make the emitters visible. Short-range, shadowless OmniLights provide actual decorative spill; the existing landing SpotLight(s) illuminate the approach surface. Emission alone does not illuminate nearby objects. Opaque imported skins are not made translucent: internal foam illumination requires authored masks/shells and remains separate work.

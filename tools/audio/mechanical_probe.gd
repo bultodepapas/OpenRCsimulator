@@ -171,6 +171,10 @@ func _run() -> void:
 		"update_max_usec": _maximum_usec(_overall_update_times_usec),
 		"asset_receipts": _asset_receipts,
 		"asset_manifest_sha256": _sha256_resource(ASSET_DIR + "manifest.json"),
+		"runtime_sha256": {
+			"mechanical_audio.gd": _sha256_resource(AUDIO_SCRIPT_PATH),
+			"mechanical_motion.gd": _sha256_resource("res://audio/mechanical_motion.gd"),
+		},
 		"profile_matrix": _profile_matrix(),
 		"engine_mask_cases": [0.0, 0.5, 1.0],
 		"voice_pool_limits": {"motion": 6, "event": 2},

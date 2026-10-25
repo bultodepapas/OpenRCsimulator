@@ -1,0 +1,754 @@
+{
+  "format": "openrc-mechanical-verification-v1",
+  "date": "2026-10-25",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "runtime_sha256_at_documentation": {
+    "mechanical_audio.gd": "8a316aaa67650f988400d6677a6c61e0139e3204ae3b0b0b32a086d49965d4d9",
+    "mechanical_motion.gd": "fd33eb08f8d19175d9c0072debddf48dd8d515b5f10daa9caee468a6734a6a8e",
+    "mechanical_profile.gd": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb",
+    "flight_audio.gd": "4d1a871ee0ad06474a8074e6a87891afedc327aec07cdf85598df38d5f0e8ec0"
+  },
+  "focused_checks": 177,
+  "tests": {
+    "res://tests/test_workshop_presentation.gd": {
+      "started_utc": "2026-10-25T22:37:21.196067+00:00",
+      "ok": true,
+      "elapsed_seconds": 1.032,
+      "log_sha256": "d6e8557cc6675abc86a42bda95a96f9e135af72bc54c1b32e43e62651a4f9380",
+      "verdict": "Workshop presentation: 85 checks, 0 failed"
+    },
+    "res://tests/test_workshop_profile_transfer.gd": {
+      "started_utc": "2026-10-25T22:37:22.711341+00:00",
+      "ok": true,
+      "elapsed_seconds": 3.203,
+      "log_sha256": "6359fb10fb8bd92ee88527124bbc1233de340654f05d145cb641e2dc6e7ff640",
+      "verdict": "Workshop profile transfer: 22 checks, 0 failures"
+    },
+    "res://tests/test_workshop_store.gd": {
+      "started_utc": "2026-10-25T22:37:26.112824+00:00",
+      "ok": true,
+      "elapsed_seconds": 4.875,
+      "log_sha256": "4d956e33b1a3a7f7fd5ea60291d712707181977afccc32a6d8c8e708bbc5f93e",
+      "verdict": "141 checks, 0 failed"
+    },
+    "res://tests/test_workshop_bundle.gd": {
+      "started_utc": "2026-10-25T22:37:31.154678+00:00",
+      "ok": true,
+      "elapsed_seconds": 4.125,
+      "log_sha256": "52206693108025901f8e8c139e1eeece3a995925f1327492dbf5c9383ab79b70",
+      "verdict": "Workshop bundle: 28 checks, 0 failed"
+    },
+    "res://tests/test_workshop_trial.gd": {
+      "started_utc": "2026-10-25T22:37:35.459417+00:00",
+      "ok": true,
+      "elapsed_seconds": 6.828,
+      "log_sha256": "82491baa0188453b8143bc1c10591d0a886093562c2d91d0c04d5e8de4c9ad62",
+      "verdict": "Workshop trial: 44 checks, 0 failed"
+    },
+    "res://tests/test_workshop_drafts.gd": {
+      "started_utc": "2026-10-25T22:37:42.451481+00:00",
+      "ok": true,
+      "elapsed_seconds": 15.657,
+      "log_sha256": "cd1ae97c76bc449c9601e9a851e06e1c05fffd5dedae3b54202ced11d78a8d0e",
+      "verdict": "100 checks, 0 failed"
+    },
+    "res://tests/test_workshop_ui.gd": {
+      "started_utc": "2026-10-25T22:37:58.295238+00:00",
+      "ok": true,
+      "elapsed_seconds": 20.984,
+      "log_sha256": "efbf5823190ecf66458d47ca284f06219ba07470b14f922294b0250a3ba08435",
+      "verdict": "Workshop UI: 0 failed"
+    },
+    "res://tests/test_soundscape.gd": {
+      "started_utc": "2026-10-25T22:38:19.440199+00:00",
+      "ok": true,
+      "elapsed_seconds": 1.093,
+      "log_sha256": "02ba7f8250b0159dec5d61bb0394ee51fb81a69a336a3fe124e580b96a5cbfc9",
+      "verdict": "168 checks, 0 failed"
+    },
+    "res://tests/test_powertrain_audio.gd": {
+      "started_utc": "2026-10-25T22:38:20.688064+00:00",
+      "ok": true,
+      "elapsed_seconds": 7.515,
+      "log_sha256": "a99aeeefbab5f2610b323dbd7e331f94185ddac16a7fb3e4af91111b949a613d",
+      "verdict": "AUD-15 powertrain checks: 45, failed: 0"
+    },
+    "res://tests/test_ground_audio.gd": {
+      "started_utc": "2026-10-25T22:40:00.432092+00:00",
+      "ok": true,
+      "elapsed_seconds": 4.265,
+      "log_sha256": "aeac2c46f18c68b178084d11b10c2b7520c8db978874271ea54bb762eadde57a",
+      "verdict": "33 checks, 0 failed"
+    },
+    "res://tests/test_mechanical_audio.gd": {
+      "started_utc": "2026-10-25T23:07:48.597929+00:00",
+      "ok": true,
+      "elapsed_seconds": 1.125,
+      "log_sha256": "8f8d76d08ab645edfa0e83b914e1e67fa01ec9acdb2645132a45f09ee94343f5",
+      "verdict": "97 checks, 0 failed"
+    },
+    "res://tests/test_mechanical_motion.gd": {
+      "started_utc": "2026-10-25T23:03:22.318548+00:00",
+      "ok": true,
+      "elapsed_seconds": 0.328,
+      "log_sha256": "a0f9c25cec95e5560cf2e9daf5731e9b1ff58c82b7ec6f485f9bf35ec325fa27",
+      "verdict": "28 checks, 0 failed"
+    },
+    "res://tests/test_mechanical_configuration.gd": {
+      "started_utc": "2026-10-25T22:57:18.527954+00:00",
+      "ok": true,
+      "elapsed_seconds": 0.407,
+      "log_sha256": "95e3e626f29599bf51ef5b2d8b0d7f0b517dc151a108597e99771e127a8365ed",
+      "verdict": "Mechanical configuration: 24 checks, 0 failed"
+    },
+    "res://tests/test_mechanical_integration.gd": {
+      "started_utc": "2026-10-25T23:05:38.707635+00:00",
+      "ok": true,
+      "elapsed_seconds": 17.297,
+      "log_sha256": "36d654849eaa1a691dd560d1eacbbb6b64de41a5665ea61d22da2163fec34952",
+      "verdict": "Mechanical integration: 28 checks, 0 failed"
+    }
+  },
+  "native_runs": [
+    {
+      "capture": "servo-audio-native-02",
+      "report_sha256": "15959ea0aad3d4ccbee4890a859609ac4ebd928d15d682f5e6eeeb7d009a7d40",
+      "godot": "4.8-beta1 (official)",
+      "driver": "WASAPI",
+      "mix_rate_hz": 48000.0,
+      "requested_fps": 60,
+      "captured_seconds": 49.2906666666667,
+      "scripted_wall_seconds": 49.294163,
+      "discarded_frames": 0,
+      "total_peak_dbfs": -25.1392169828596,
+      "update_p95_usec": 217,
+      "update_max_usec": 395,
+      "asset_manifest_sha256": "090b89275850c39b4fe86baecb653ccff7dfb320d2af56eecfae26cdc542ea5f",
+      "quality_checks": {
+        "actual_driver_matches_required": true,
+        "all_stage_wavs_saved": true,
+        "bus_count_restored": true,
+        "finite_signal": true,
+        "no_capture_discards": true,
+        "no_clipping": true,
+        "peak_below_dbfs": -0.9,
+        "real_assets_loaded": true,
+        "signal_present": true,
+        "voice_pool_bounded": true,
+        "wav_failures": []
+      },
+      "signal_checks": {
+        "format": "openrc-mechanical-signal-checks-v1",
+        "passed": true,
+        "report_sha256": "15959ea0aad3d4ccbee4890a859609ac4ebd928d15d682f5e6eeeb7d009a7d40",
+        "measurements": {
+          "standard_electric": {
+            "idle": {
+              "rms_dbfs": -240.0,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.51662792938862
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -47.04442945812243
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.81989087830309
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.488187089344244
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.69799066862454,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -105.17800240342724,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.7517180747837
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.66542667640339
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.234278490786636,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.060983195942782,
+            "large_minus_small_db": 3.4721984712661893
+          },
+          "standard_pneumatic": {
+            "idle": {
+              "rms_dbfs": -120.86278201294435,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.546632881372275
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -47.28182544297163
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.79528082151661
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -45.24924967678089
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.42203367678249,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -105.45193227679212,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.649967412048255
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.6357446938796
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.10187215711925,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 5.9793347312423535,
+            "large_minus_small_db": 3.264807438400645
+          },
+          "high_torque_electric": {
+            "idle": {
+              "rms_dbfs": -121.36583319605832,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.46431486988095
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.905898344575405
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.617686302122145
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.55316425630467
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.334983928969336,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -105.10914729775239,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.694207884430185
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.66989849318507
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -48.92085758997601,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 5.940549214936219,
+            "large_minus_small_db": 3.558416525305546
+          },
+          "high_torque_pneumatic": {
+            "idle": {
+              "rms_dbfs": -97.11100583249873,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.586371124713295
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -47.01402863871891
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.715258870786556
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -45.130827787437994
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.2993273146591,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -106.28683280872241,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.77239707385904
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.68108335212875
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -48.94360655283143,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.02229207514312,
+            "large_minus_small_db": 3.5723424859943833
+          }
+        },
+        "failures": [],
+        "scope": "Native signal, silence, masks and pool bounds; no perceptual click, repetition or realism certification."
+      }
+    },
+    {
+      "capture": "servo-audio-native-final",
+      "report_sha256": "59521aa885e368b230b25f0de0da7379fd61937ffef11e347d26f9bd501ee395",
+      "godot": "4.8-beta1 (official)",
+      "driver": "WASAPI",
+      "mix_rate_hz": 48000.0,
+      "requested_fps": 60,
+      "captured_seconds": 47.904,
+      "scripted_wall_seconds": 49.446567,
+      "discarded_frames": 0,
+      "total_peak_dbfs": -24.1947249996044,
+      "update_p95_usec": 331,
+      "update_max_usec": 7452,
+      "runtime_sha256": {
+        "mechanical_audio.gd": "99ace852619b26dcaefc1475a21b341c11ab2996142eb0f7f16c512274aad6f1",
+        "mechanical_motion.gd": "fd33eb08f8d19175d9c0072debddf48dd8d515b5f10daa9caee468a6734a6a8e"
+      },
+      "asset_manifest_sha256": "090b89275850c39b4fe86baecb653ccff7dfb320d2af56eecfae26cdc542ea5f",
+      "quality_checks": {
+        "actual_driver_matches_required": true,
+        "all_stage_wavs_saved": true,
+        "bus_count_restored": true,
+        "finite_signal": true,
+        "no_capture_discards": true,
+        "no_clipping": true,
+        "peak_below_dbfs": -0.9,
+        "real_assets_loaded": true,
+        "signal_present": true,
+        "voice_pool_bounded": true,
+        "wav_failures": []
+      },
+      "signal_checks": {
+        "format": "openrc-mechanical-signal-checks-v1",
+        "passed": false,
+        "report_sha256": "59521aa885e368b230b25f0de0da7379fd61937ffef11e347d26f9bd501ee395",
+        "measurements": {
+          "standard_electric": {
+            "idle": {
+              "rms_dbfs": -240.0,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.601595614023786
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -47.4445645594143
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.99033901270791
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.20692469745133
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.40634568173876,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -104.3149310947669,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.69876106381194
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.87379994888764
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.00270771702025,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.014042654475425,
+            "large_minus_small_db": 3.157031054609483
+          },
+          "standard_pneumatic": {
+            "idle": {
+              "rms_dbfs": -119.57959724034754,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.44859813734958
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.57897497998376
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.77189596819371
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -44.98329335783787
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.69126214333377,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -104.21411068270855,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.634456636453336
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.73221265649386
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -49.27717485851288,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.111992428499441,
+            "large_minus_small_db": 3.8696231573658153
+          },
+          "high_torque_electric": {
+            "idle": {
+              "rms_dbfs": -119.71563898417854,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.336955486592466
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -47.85938565003071
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.62669152384419
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -43.431349479253726
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.41094911196221,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -103.8116648002491,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.63822714744303
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.7789219084957
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -48.85429235082414,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 5.8929503742273255,
+            "large_minus_small_db": 2.477569836561756
+          },
+          "high_torque_pneumatic": {
+            "idle": {
+              "rms_dbfs": -118.71268876208384,
+              "settled_peak_linear": 0.0
+            },
+            "servo_small_slow": {
+              "rms_dbfs": -50.425478925770975
+            },
+            "servo_large_fast": {
+              "rms_dbfs": -46.313691688499404
+            },
+            "simultaneous_servos": {
+              "rms_dbfs": -48.619390479426166
+            },
+            "gear_extension_reversal_interruption_endpoint": {
+              "rms_dbfs": -44.26799330547263
+            },
+            "near_far_listener_camera_motion": {
+              "rms_dbfs": -51.39156972770059,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_0": {
+              "rms_dbfs": -103.93118745890989,
+              "settled_peak_linear": 0.0
+            },
+            "engine_mask_05": {
+              "rms_dbfs": -55.68986999051642
+            },
+            "engine_mask_1": {
+              "rms_dbfs": -49.774368367941165
+            },
+            "pause_reset_rewind_detach_reattach_configure": {
+              "rms_dbfs": -48.977322226334614,
+              "settled_peak_linear": 0.0
+            },
+            "mask_reduction_db": 6.090446742745627,
+            "large_minus_small_db": 4.111787237271571
+          }
+        },
+        "failures": [
+          "Capture timing/drop gate failed"
+        ],
+        "scope": "Native signal, silence, masks and pool bounds; no perceptual click, repetition or realism certification."
+      }
+    }
+  ],
+  "live_runs": [
+    {
+      "capture": "servo-electric-live-final",
+      "report_sha256": "395bd316617b632168d08c6dcad3ad0bdb76d38a84f73463e15b719704a0cefe",
+      "aircraft": "turbo-lumber-evolution",
+      "driver": "WASAPI",
+      "mix_rate": 48000,
+      "captured_seconds": 18.7413333333333,
+      "discarded_frames": 0,
+      "peak_dbfs": -25.512557960167,
+      "mechanical_update_p95_us": 325,
+      "mechanical_update_max_us": 28639,
+      "soundscape_update_p95_us": 1670,
+      "soundscape_update_max_us": 74703,
+      "distance_min_m": 5.77276611328125,
+      "distance_max_m": 113.749893188477,
+      "events": [
+        {
+          "paused": false,
+          "rpm": 4396.8102092345,
+          "stage": 0,
+          "tick": 2,
+          "wall_s": 0.005594
+        },
+        {
+          "paused": false,
+          "rpm": 4396.35493511179,
+          "stage": 1,
+          "tick": 970,
+          "wall_s": 4.003169
+        },
+        {
+          "paused": false,
+          "rpm": 9654.5023000882,
+          "stage": 2,
+          "tick": 1690,
+          "wall_s": 7.005701
+        },
+        {
+          "paused": true,
+          "rpm": 1352.12899562238,
+          "stage": 3,
+          "tick": 2400,
+          "wall_s": 10.01832
+        },
+        {
+          "paused": false,
+          "rpm": 1352.12899562238,
+          "stage": 4,
+          "tick": 2400,
+          "wall_s": 11.018388
+        },
+        {
+          "paused": false,
+          "rpm": 313.018699387391,
+          "stage": 5,
+          "tick": 2799,
+          "wall_s": 13.066885
+        },
+        {
+          "paused": false,
+          "rpm": 4396.81034533142,
+          "stage": 6,
+          "tick": 0,
+          "wall_s": 15.032937
+        }
+      ],
+      "audio_sources_sha256": {
+        "adapter": "4d1a871ee0ad06474a8074e6a87891afedc327aec07cdf85598df38d5f0e8ec0",
+        "mechanical": "99ace852619b26dcaefc1475a21b341c11ab2996142eb0f7f16c512274aad6f1",
+        "mechanical_motion": "55053aac0e03b0c647a958cc4cb53dbfae41beff5ed545568ee00c5258c51a4d",
+        "mixer": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+        "model": "b90e7ea7b1c0829da33eb6255bc53814ca2733675a8f7ae91bf5c3d0d637d7d3",
+        "wildlife": "e2ea89d0019da4b224d08bc4c352704fe1d6471fb1443756b28f32c2adcf78a4"
+      },
+      "requested_capture_seconds": 20,
+      "signal_checks": {
+        "capture": "servo-electric-live-final",
+        "sha256_wav": "c4f64d3fa1eccfec1de1c37bd9b7670152ea1bbbc921b585568ccfa9c2f6dd6a",
+        "driver": "WASAPI",
+        "display": "headless",
+        "fps": 60,
+        "aircraft": "turbo-lumber-evolution",
+        "seconds": 18.741333333333333,
+        "peak_dbfs": -25.512557960167,
+        "rms_dbfs": -46.6760434770836,
+        "pause_peak_linear": 0.000335693359375,
+        "dropped_frames": 0,
+        "review_kind": "transitions",
+        "wildlife_event_count": 1,
+        "adapter_p95_us": 1670,
+        "adapter_max_us": 74703,
+        "stereo_difference_rms": 0.00016758960335879188,
+        "max_adjacent_sample_step": 0.010467529296875,
+        "passed": false,
+        "failures": [
+          "pause did not reach silence",
+          "camera change did not reach close aircraft view",
+          "adapter update p95 exceeded 0.5 ms budget"
+        ]
+      },
+      "accepted_engine_mask_range": [
+        0.249291975018231,
+        0.9999999999998
+      ]
+    },
+    {
+      "capture": "servo-gasoline-live-final",
+      "report_sha256": "4200fee8784e2d006908a9b41c6e85ccb186363f8f7e6cd13217dc256487127a",
+      "aircraft": "p51d-mustang-120",
+      "driver": "WASAPI",
+      "mix_rate": 48000,
+      "captured_seconds": 20.0213333333333,
+      "discarded_frames": 0,
+      "peak_dbfs": -21.585574094195,
+      "mechanical_update_p95_us": 296,
+      "mechanical_update_max_us": 1131,
+      "soundscape_update_p95_us": 1017,
+      "soundscape_update_max_us": 6312,
+      "distance_min_m": 10.4753551483154,
+      "distance_max_m": 328.329711914063,
+      "events": [
+        {
+          "paused": false,
+          "rpm": 3362.96672568045,
+          "stage": 0,
+          "tick": 3,
+          "wall_s": 0.008624
+        },
+        {
+          "paused": false,
+          "rpm": 3352.07315632045,
+          "stage": 1,
+          "tick": 968,
+          "wall_s": 4.00436
+        },
+        {
+          "paused": false,
+          "rpm": 5880.49830173414,
+          "stage": 2,
+          "tick": 1688,
+          "wall_s": 7.001463
+        },
+        {
+          "paused": true,
+          "rpm": 4109.88925833237,
+          "stage": 3,
+          "tick": 2412,
+          "wall_s": 10.015569
+        },
+        {
+          "paused": false,
+          "rpm": 4109.88925833237,
+          "stage": 4,
+          "tick": 2412,
+          "wall_s": 11.004428
+        },
+        {
+          "paused": false,
+          "rpm": 2927.98200490431,
+          "stage": 5,
+          "tick": 2888,
+          "wall_s": 13.000556
+        },
+        {
+          "paused": false,
+          "rpm": 3362.96672568115,
+          "stage": 6,
+          "tick": 0,
+          "wall_s": 15.00392
+        }
+      ],
+      "audio_sources_sha256": {
+        "adapter": "4d1a871ee0ad06474a8074e6a87891afedc327aec07cdf85598df38d5f0e8ec0",
+        "mechanical": "99ace852619b26dcaefc1475a21b341c11ab2996142eb0f7f16c512274aad6f1",
+        "mechanical_motion": "55053aac0e03b0c647a958cc4cb53dbfae41beff5ed545568ee00c5258c51a4d",
+        "mixer": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+        "model": "b90e7ea7b1c0829da33eb6255bc53814ca2733675a8f7ae91bf5c3d0d637d7d3",
+        "wildlife": "e2ea89d0019da4b224d08bc4c352704fe1d6471fb1443756b28f32c2adcf78a4"
+      },
+      "requested_capture_seconds": 20,
+      "signal_checks": {
+        "capture": "servo-gasoline-live-final",
+        "sha256_wav": "8a6088e749acd5498b04a3d3c9b6212e12dd1503e313afb4598a495001f82441",
+        "driver": "WASAPI",
+        "display": "headless",
+        "fps": 60,
+        "aircraft": "p51d-mustang-120",
+        "seconds": 20.021333333333335,
+        "peak_dbfs": -21.585574094195,
+        "rms_dbfs": -40.0911815085037,
+        "pause_peak_linear": 0.0,
+        "dropped_frames": 0,
+        "review_kind": "transitions",
+        "wildlife_event_count": 3,
+        "adapter_p95_us": 1017,
+        "adapter_max_us": 6312,
+        "stereo_difference_rms": 0.00029944212200105945,
+        "max_adjacent_sample_step": 0.018310546875,
+        "passed": false,
+        "failures": [
+          "camera change did not reach close aircraft view",
+          "adapter update p95 exceeded 0.5 ms budget"
+        ]
+      },
+      "accepted_engine_mask_range": [
+        0.100000000027541,
+        0.687149863050874
+      ]
+    }
+  ],
+  "sources": {
+    "manifest_sha256": "090b89275850c39b4fe86baecb653ccff7dfb320d2af56eecfae26cdc542ea5f",
+    "clips": 17,
+    "decoded_pcm_bytes": 429074,
+    "importer_check": "passed",
+    "dependencies": {
+      "numpy": "2.4.6",
+      "miniaudio": "1.71"
+    }
+  },
+  "export": {
+    "preset": "Windows",
+    "empty_project_mount": "passed",
+    "audio_resources": 60,
+    "mechanical_resources": 17,
+    "license_notices_checked": true
+  },
+  "rendered_workshop": {
+    "resolution": [
+      1920,
+      1080
+    ],
+    "scenery": "off",
+    "checks": [
+      "two profiles",
+      "servo level",
+      "fixed-gear retract selection disabled",
+      "undo",
+      "redo",
+      "save",
+      "Test fly received high_torque/0.65/electric",
+      "actual control movement in chase view",
+      "pause silences mechanics",
+      "clean shutdown with zero leaked objects"
+    ],
+    "capture_location": "temporary debug-bridge run 20261025-175141-47870; no images committed"
+  },
+  "limits": [
+    "No human audition or speaker/SPL calibration.",
+    "Larger-servo source has no verified torque/load rating; retract textures are explicit non-RC proxies.",
+    "Native runs have both passing and failing PCM timing evidence; whole-flight performance is unqualified.",
+    "Final code also flushes pending cues on pause; final 97-check controller suite covers that correction.",
+    "Shared lighting/physics work changed during this session; unrelated edits were preserved.",
+    "Temporary WAVs and full logs remain under tmp; commands reproduce captures rather than promise identical wall timing."
+  ]
+}

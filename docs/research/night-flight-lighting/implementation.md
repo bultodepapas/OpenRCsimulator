@@ -16,6 +16,8 @@
 - Field spot validation reserves two of Compatibility's eight per-mesh slots for paired aircraft landing lights. The accepted default field uses five spots. Decorative RGB spill uses the separate OmniLight budget.
 - Airspeed response uses a presentation scale of 0–40 m/s; this is not an aircraft limit. Roll/pitch reactions consume accepted body rates; no render-side flight model is added.
 - Pausing freezes the displayed pattern phase and inhibits new show-effect events. Faults and crashes also inhibit new events; reset clears transient pools and resumes the existing AUTO policy.
+- Apply brightness and animated envelopes after the emitter's exposure cap, so dark-adapted worlds do not flatten breathing/chase modulation. Lamp `source_color` values are decoded only once. True airspeed uses m/s and the documented 40 m/s visual response scale.
+- Reconcile profile visibility after dynamic gear updates, including paired landing lamps/beams, and retain unsupported equipment groups. Known imported `light_red`/`light_green` lenses follow their semantic navigation zones; unmapped emissive materials retain group controls with an explicit warning.
 
 ## Implemented data contract
 
@@ -39,7 +41,7 @@ Pinned engine: `4.8.beta1.official.4d10419ca`. Primary visual target: 1920×1080
 | --- | --- |
 | Lighting profile validator, including JSON round trips and numeric rejection | 64 checks, 0 failed |
 | Presentation legacy/current validation and identity | 85 checks, 0 failed |
-| Pattern evaluator | 17 checks, 0 failed |
+| Pattern evaluator, including airspeed units | 18 checks, 0 failed |
 | Lighting save/load, bundle round trip, recovery and rejected-save preservation | 10 checks, 0 failed |
 | Existing Workshop store / bundle / draft recovery / profile transfer | 141 / 28 / 100 / 22 checks, 0 failed |
 | Workshop lighting editor, additive v1/v2 migration and v4 audio preservation | 0 failures |
@@ -47,10 +49,24 @@ Pinned engine: `4.8.beta1.official.4d10419ca`. Primary visual target: 1920×1080
 | Aircraft customization / smoke bindings / legacy fitted kit / P-51 dynamic mounts | 159 / 28 / 36 / 13 checks, 0 failed |
 | Customization generator reproducibility | 13 tests, passed |
 | Presentation source closure | 203 checks, 0 failed |
-| Final renderer gates, flight pause and shell trial regression | Final verification in progress |
-| Native Compatibility 1920×1080 | Preview inspected; final flight check in progress |
+| Renderer capabilities, gear gates, lamp patterns and imported emissions | 30 checks, 0 failed |
+| Real RGB flight controls, paused cue suppression and reset | 11 checks, 0 failed |
+| Shared aircraft light controls, including helicopter | 173 checks, 0 failed |
+| Workshop shell trial / return, including missing Home display preferences | 0 failures |
+| Native Compatibility 1920×1080 | Inspected Workshop and full-moon flight; save/restart/load/Test fly, L and Restart passed; clean exit, 0 leaked objects |
 | Forward+, higher-resolution matrix and GPU budgets | Unqualified |
 | Pilot orientation and night flight acceptance | Open, FW-N |
+
+### Native evidence and limits
+
+Native runs used Windows, Godot `4.8.beta1.official.4d10419ca`, Compatibility/OpenGL 3.3 and an NVIDIA RTX 3090 (driver 617.42), at 1920×1080. They establish functional integration and a visual inspection on this machine, not a frame-time budget or low-end qualification. The final run recorded no engine/script errors; the log retained the existing aircraft-data warning and construction/catch-up hitch events.
+
+- `tmp/debug-bridge/20261025-173300-49957/`: night-preview exposure calibration; clean exit.
+- `tmp/debug-bridge/20261025-174003-54749/`: Festival preview inspection. This run found the direct-route Test fly null display-preference bug, subsequently fixed and covered by `test_workshop_integration.gd`.
+- `tmp/debug-bridge/20261025-180145-50975/`: final-source Save/Test fly and saved build used by the next process. The separate `--time-of-day=20:00` SDR snapshot retained exposure 0.6 and was too dark for night visual acceptance. No global environment change is included in FW-RGB to mask that existing path's limitation.
+- `tmp/debug-bridge/20261025-180417-47870/`: loaded the same saved Festival revision after process restart, using `--time_of_day=night` (Home's **Night, full moon** route). Inspected pilot, chase, close-up and underside orbit views; existing sky, moon, field lights and shape remained visible. Shots 005/006 compare a breathing interval under the same adapted exposure (about 49,131); shot 007 samples the 8.1-second Festival cue with both spark pools. These three shots use a frozen presentation pose and explicitly supplied visual clocks for repeatable effect inspection, not a live-flight performance measurement. Normal pause and cue behavior is separately covered by the real-flight test. L selected NAV; Restart restored AUTO. Exit reported no crash and zero leaked objects.
+
+The full-moon capture also exposes a bright lake-reflection artifact outside the lighting rig. That scenery issue and the SDR fixed-time route remain visual qualification limits. Captures/logs stay in ignored `tmp/`; no images are added to Git. Reproduce the supported night scene with Home's night preset or the existing `--time_of_day=night` argument, rather than interpreting the similarly named SDR snapshot flag as equivalent.
 
 ## Remaining masterplan work
 

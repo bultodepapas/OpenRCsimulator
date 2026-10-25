@@ -1,6 +1,6 @@
 # Night flight and programmable RGB lighting masterplan
 
-**Status: implementation authorized and in progress.** Investigated 2026-10-25 against working-tree base `d7d49b1574f968edab533f8fc34f5a6e9e4920d3`; the user subsequently approved implementation. Runtime source takes precedence over proposals below. [Implementation and qualification record](research/night-flight-lighting/implementation.md) separates delivered behavior from remaining authoring, performance and pilot gates. Unrelated graphics and simulation work remains outside this subtrack.
+**Status: core renderer, profiles and Workshop implemented; authoring and qualification work remains.** Investigated 2026-10-25 against working-tree base `d7d49b1574f968edab533f8fc34f5a6e9e4920d3`; the user subsequently approved implementation. Runtime source takes precedence over proposals below. [Implementation and qualification record](research/night-flight-lighting/implementation.md) separates delivered behavior from remaining authoring, performance and pilot gates. Unrelated graphics and simulation work remains outside this subtrack.
 
 **Owner:** Field World, aircraft-lighting subtrack **FW-RGB-00…16**, coordinated with AS/model authors, AE/Workshop, UI/input, CAM, VQ/PT, SM and CR. Gate **FW-N** remains the pilot acceptance gate; these proposals do not close it. [Ownership registry](README.md#tracks-plans-and-step-ids), [current aircraft lighting](AIRCRAFT-LIGHTING.md), [Workshop](AIRCRAFT-WORKSHOP.md), [field world](FIELD-WORLD-PLAN.md), [aircraft contract](AIRCRAFT_CONTRACT.md).
 

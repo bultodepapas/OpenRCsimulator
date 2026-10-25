@@ -1,7 +1,9 @@
 ## Versioned pure classification thresholds for accepted-tick flight statistics.
 extends RefCounted
 
-const VERSION := "flight-statistics-rules-v1"
+# V2 widens M7 to the first accepted accident per activity generation, including
+# survivable gear-up contact; v1 historical records remain terminal-only coverage.
+const VERSION := "flight-statistics-rules-v2"
 
 const DEFAULTS := {
 	"liftoff_clearance_s": 1.0,

@@ -15,6 +15,8 @@ func configure(owner: Node, aircraft_id: String, consumer: Callable) -> void:
 	session = owner
 	_consumer = consumer
 	profile = load("res://statistics/profiles.gd").resolve(aircraft_id, session.aircraft.model, session.contact_contract())
+	profile.initial_tick = int(session.sim.tick)
+	profile.generation_id = str(session.statistics_generation)
 	_lake = session.lake_context()
 
 
@@ -72,14 +74,19 @@ func sample() -> Dictionary:
 		if i in profile.get("main_indices", []): intended = intended or contact
 		if i in profile.get("stop_indices", []) and not contact: stop = false
 	var contacts: Dictionary = session.contact_events()
-	var incident: bool = not contacts.get("prop_strike", {}).is_empty()
+	var observation := _accident_observation(contacts)
+	var gear_up := bool(observation.get("gear_up_contact", false))
+	var incident: bool = gear_up or not contacts.get("prop_strike", {}).is_empty()
 	var ground_contact: bool = physical or not contacts.get("active_hull_ids", []).is_empty()
 	for event: Dictionary in contacts.get("events", []):
 		if event.get("lifecycle") != "ended":
-			incident = incident or event.get("source") in ["hull", "scenery", "lake", "propeller"] \
+			incident = incident or event.get("source") in ["scenery", "lake", "propeller"] \
+				or (event.get("source") == "hull" and not bool(observation.get("intended_support", false))) \
 				or event.get("response") == "terminal"
 			if event.get("source") in ["hull", "gear", "lake"]: ground_contact = true
+	ground_contact = ground_contact or bool(observation.get("ground_contact", false))
 	physical = physical or ground_contact
+	intended = intended or bool(observation.get("intended_support", false))
 	var deployed := true
 	if session.gear_is_retractable():
 		deployed = float(session.sim.aux[session.gear_aux_index()]) >= 0.95
@@ -94,4 +101,30 @@ func sample() -> Dictionary:
 		controlled = controlled, ground_speed_3d = speed, angular_speed = angular,
 		tas = float(air.get("V", NAN)), groundspeed = sqrt(velocity[0] ** 2 + velocity[1] ** 2),
 		position = s.slice(RB.POS, RB.POS + 3), velocity_ned = velocity,
-		incident = incident, terminal = not session.crash.is_empty(), ground_contact = ground_contact}
+		incident = incident, gear_up_contact = gear_up,
+		terminal = not session.crash.is_empty() or bool(observation.get("terminal", false)),
+		ground_contact = ground_contact}
+
+
+## Only an accepted physical receipt may open a nonterminal accident. Missing legacy
+## packets keep terminal-only compatibility; malformed/stale data cannot invent one.
+func _accident_observation(contacts: Dictionary) -> Dictionary:
+	var value: Variant = session.accident_observation() if session.has_method("accident_observation") \
+		else contacts.get("accident_observation", {})
+	if typeof(value) != TYPE_DICTIONARY:
+		return {}
+	var observation: Dictionary = value
+	if observation.size() != 8 or observation.get("schema") != "openrc-aircraft-accident-observation" \
+		or typeof(observation.get("version")) != TYPE_INT or observation.version != 1:
+		return {}
+	if typeof(observation.get("tick")) != TYPE_INT or observation.tick < 0 or observation.tick != int(session.sim.tick) \
+		or typeof(observation.get("generation")) != TYPE_INT \
+		or observation.generation < 0 or observation.generation != int(session.statistics_generation):
+		return {}
+	for key: String in ["gear_up_contact", "ground_contact", "intended_support", "terminal"]:
+		if typeof(observation.get(key)) != TYPE_BOOL:
+			return {}
+	if observation.gear_up_contact and (not observation.ground_contact \
+		or observation.intended_support or observation.tick <= 0):
+		return {}
+	return observation.duplicate(true)

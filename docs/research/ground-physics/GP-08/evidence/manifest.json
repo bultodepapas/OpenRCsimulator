@@ -1,0 +1,118 @@
+{
+  "format": "openrc-gp08-baseline v1",
+  "baseline_commit": "cb2924b3676b72ee49497c92fe742b0b1dcd2d9c",
+  "source_identity": "source-identity.json",
+  "baseline_runtime_source_status": "No tracked .gd, .json, or .md changes at baseline/exact replay capture; importer-only .import changes",
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "flight_log_checks": 3247,
+  "flight_log_failures": 0,
+  "checked_reports": [
+    "checks/flight-log-baseline-w3blmead/report.json",
+    "checks/ground-record-baseline-9wvi2mto/report.json"
+  ],
+  "ground_driver": "record_ground.gd",
+  "ground_scenario": "ground/scenario.json",
+  "cases": [
+    {
+      "case": "stik-air",
+      "orfl": "air/jensen_ugly_stik_60.orfl",
+      "orfl_sha256": "7a91342a0469db5780a47389fe2d4962ff615f502b2e93edca3e2301fc5a7f8b",
+      "mode": "exact",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 261,
+      "first_tick": 0,
+      "final_tick": 260,
+      "dt_s": 0.004166666666666667,
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+      },
+      "baseline_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "current_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "exact_report": "stik-air-replay/replay.json",
+      "export_report": "stik-air-export/export.json",
+      "comparison": "stik-air-exact-comparison.json",
+      "comparison_status": "ok",
+      "first_divergence": null,
+      "comparison_method": "Byte-exact comparison of every recorded numeric physics/air sample on the recorded solver."
+    },
+    {
+      "case": "p51-air",
+      "orfl": "air/p51d_mustang_120.orfl",
+      "orfl_sha256": "0b8d5db677baa3a68b4a231c6165980085a4f403875ea34109b5903cbf5e82e0",
+      "mode": "exact",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 261,
+      "first_tick": 0,
+      "final_tick": 260,
+      "dt_s": 0.004166666666666667,
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+      },
+      "baseline_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "current_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "exact_report": "p51-air-replay/replay.json",
+      "export_report": "p51-air-export/export.json",
+      "comparison": "p51-air-exact-comparison.json",
+      "comparison_status": "ok",
+      "first_divergence": null,
+      "comparison_method": "Byte-exact comparison of every recorded numeric physics/air sample on the recorded solver."
+    },
+    {
+      "case": "stik-ground",
+      "orfl": "ground/jensen_ugly_stik_60-ground.orfl",
+      "orfl_sha256": "41c8aed6d090cfc6a1945c8db263928c15b5b25e3a4baad9a3daa4ee02c7eed2",
+      "mode": "exact",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 481,
+      "first_tick": 0,
+      "final_tick": 480,
+      "dt_s": 0.004166666666666667,
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77"
+      },
+      "baseline_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "current_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "exact_report": "stik-ground-replay/replay.json",
+      "export_report": "stik-ground-export/export.json",
+      "comparison": "stik-ground-exact-comparison.json",
+      "comparison_status": "ok",
+      "first_divergence": null,
+      "comparison_method": "Byte-exact comparison of every recorded numeric physics/air sample on the recorded solver."
+    },
+    {
+      "case": "p51-ground",
+      "orfl": "ground/p51d_mustang_120-ground.orfl",
+      "orfl_sha256": "48f09d885dca2e6add5b80876cda3659df6dac8473893436483094ee8382242a",
+      "mode": "exact",
+      "status": "ok",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 481,
+      "first_tick": 0,
+      "final_tick": 480,
+      "dt_s": 0.004166666666666667,
+      "aircraft_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+      },
+      "baseline_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "current_solver_sha256": "713c1b5e69359d903d2c62c5c6b88b1d02e6ba4f05ffa4829893e2544de6f781",
+      "exact_report": "p51-ground-replay/replay.json",
+      "export_report": "p51-ground-export/export.json",
+      "comparison": "p51-ground-exact-comparison.json",
+      "comparison_status": "ok",
+      "first_divergence": null,
+      "comparison_method": "Byte-exact comparison of every recorded numeric physics/air sample on the recorded solver."
+    }
+  ],
+  "limits": "Bounded software baseline only; no rendered applications, benchmarks, measured physical validation or human pilot acceptance"
+}
