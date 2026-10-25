@@ -4,7 +4,6 @@ extends Node3D
 ## This node only reads detached snapshots; it owns no simulation state.
 const Motion := preload("res://audio/mechanical_motion.gd")
 const SoundscapeScript := preload("res://audio/soundscape.gd")
-const DistanceModel := preload("res://audio/powertrain_audio.gd")
 const ASSET_PATH: String = "res://assets/audio/mechanical/"
 const MAX_MOTION_VOICES: int = 6
 const MAX_EVENT_VOICES: int = 2
@@ -16,6 +15,7 @@ const SERVO_BASE_GAIN: float = 0.16
 const RETRACT_BASE_GAIN: float = 0.22
 const PAUSE_FADE_S: float = 0.08
 const STALE_TICK_LIMIT_S: float = 0.2
+const EVENT_RELEASE_S: float = 0.02
 const SERVO_PROFILE_PITCH: Dictionary = {"standard": 1.0, "high_torque": 0.82}
 
 var _owner: Node
@@ -28,6 +28,9 @@ var _event_players: Array[AudioStreamPlayer3D] = []
 var _event_roles: Array[String] = []
 var _event_source_ids: Array[String] = []
 var _event_base_gains: Array[float] = []
+var _event_envelopes: Array[float] = []
+var _event_releasing: Array[bool] = []
+var _pending_events: Array[Dictionary] = []
 var _event_streams: Dictionary = {}
 var _servo_loop: AudioStreamWAV
 var _servo_start_takes: Array[AudioStreamWAV] = []
@@ -143,7 +146,8 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		return
 	if str(_bus).is_empty():
 		_refresh_soundscape_bus()
-	var dt: float = clampf(delta, 0.0, 0.1)
+	var safe_delta: float = delta if is_finite(delta) and delta > 0.0 else 0.0
+	var dt: float = clampf(safe_delta, 0.0, 0.1)
 	var paused: bool = bool(snapshot.get("paused", false))
 	var incoming_tick: int = int(snapshot.get("tick", -1)) if _integer_tick(snapshot.get("tick", null)) else -1
 	if incoming_tick < 0:
@@ -256,7 +260,7 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 				player, player.global_position, 0.0, float(slot.get("pitch", 1.0)), dt)
 	if far_culled:
 		_far_culled_motion_updates += 1
-	_update_event_voices(source_positions, listener, listener_valid)
+	_update_event_voices(source_positions, listener, listener_valid, dt)
 	if _scene_gain <= 0.001:
 		_stop_event_voices()
 	_last_targets = {valid = true, tick = incoming_tick, paused = paused,
@@ -296,12 +300,16 @@ func diagnostics() -> Dictionary:
 		if player != null and player.playing:
 			active += 1
 	var playing_events: int = 0
+	var pending_count: int = 0
+	for pending: Dictionary in _pending_events:
+		if not pending.is_empty(): pending_count += 1
 	for player: AudioStreamPlayer3D in _event_players:
 		if player.playing:
 			playing_events += 1
 	return {motion_voice_count = _motion_players.size(), motion_voice_limit = MAX_MOTION_VOICES,
 		event_voice_count = _event_players.size(), event_voice_limit = MAX_EVENT_VOICES,
 		active_motion_voices = active, playing_event_voices = playing_events,
+		pending_event_count = pending_count,
 		events_played = _events_played, events_dropped = _events_dropped,
 		far_culled_events = _far_culled_events, far_culled_motion_updates = _far_culled_motion_updates,
 		stale_tick_resets = _stale_tick_resets, missing_assets = _missing_assets.duplicate(),
@@ -318,7 +326,7 @@ func _load_profile_assets() -> void:
 	_servo_stop_takes = _load_takes("servo_stop", servo_type, "stop")
 	_gear_loop = _load_wav("retract_loop", ASSET_PATH + "retract_" + retract_type + "_loop.wav", true)
 	if retract_type == "electric":
-		_gear_move_one_shot = _load_wav("retract_move", ASSET_PATH + "retract_electric_move.wav", false)
+		_gear_move_one_shot = _load_wav("retract_move", ASSET_PATH + "retract_electric_move.wav", false, _gear_loop != null)
 		_gear_start = _load_wav("retract_start", ASSET_PATH + "retract_electric_start.wav", false)
 		_gear_lock = _load_wav("retract_lock", ASSET_PATH + "retract_electric_lock.wav", false)
 	else:
@@ -389,6 +397,9 @@ func _ensure_event_voices() -> void:
 		_event_roles.append("")
 		_event_source_ids.append("")
 		_event_base_gains.append(0.0)
+		_event_envelopes.append(1.0)
+		_event_releasing.append(false)
+		_pending_events.append({})
 
 
 func _ensure_motion_player(key: String, stream: AudioStreamWAV) -> AudioStreamPlayer3D:
@@ -400,11 +411,26 @@ func _ensure_motion_player(key: String, stream: AudioStreamWAV) -> AudioStreamPl
 		if found != null:
 			if found.stream != stream:
 				found.volume_db = -80.0
-			found.stop()
-			found.stream = stream
-			existing["gain"] = 0.0
+				found.stop()
+				found.stream = stream
+				existing["gain"] = 0.0
 			return found
+		_motion_players.erase(key)
 	if _motion_players.size() >= MAX_MOTION_VOICES:
+		for old_key_value: Variant in _motion_players.keys():
+			var old_key: String = str(old_key_value)
+			var idle_slot: Dictionary = _motion_players.get(old_key, {})
+			var idle_player: AudioStreamPlayer3D = idle_slot.get("player") as AudioStreamPlayer3D
+			if idle_player == null or idle_player.playing or float(idle_slot.get("gain", 0.0)) > 0.0002:
+				continue
+			_motion_players.erase(old_key)
+			idle_slot["gain"] = 0.0
+			idle_slot["pitch"] = 1.0
+			idle_slot["offset"] = 0.0
+			idle_player.name = "Mechanical_" + key.replace(":", "_")
+			idle_player.stream = stream
+			_motion_players[key] = idle_slot
+			return idle_player
 		return null
 	var player := AudioStreamPlayer3D.new()
 	player.name = "Mechanical_" + key.replace(":", "_")
@@ -452,7 +478,7 @@ func _apply_motion_voice(key: String, source_id: String, player: AudioStreamPlay
 		slot["offset"] = length * clampf(float(variation.get("phase", 0.0)), 0.0, 0.999)
 		player.play(float(slot.get("offset", 0.0)))
 	elif current_gain <= 0.0002 and target_gain <= 0.0001 and player.playing:
-		_release_motion_player(key)
+		_stop_motion_player(key)
 
 
 func _process_events(events: Array, source_positions: Dictionary, listener: Vector3,
@@ -485,6 +511,8 @@ func _process_events(events: Array, source_positions: Dictionary, listener: Vect
 			pitch = _servo_pitch(speed) * float(_gesture_variations.get(source_id, {}).get("pitch", 1.0))
 		else:
 			var gear_event: String = str(event.get("event", ""))
+			if gear_event == "stop":
+				_cancel_source_events(source_id)
 			gain = _gear_gain(speed)
 			pitch = _gear_pitch(speed)
 			if gear_event in ["start", "reverse"]:
@@ -511,30 +539,84 @@ func _play_event(role: String, source_id: String, position: Vector3, listener: V
 		return
 	var chosen: int = -1
 	for index: int in range(_event_players.size()):
-		if not _event_players[index].playing:
+		if str(_pending_events[index].get("source", "")) == source_id or \
+				(_pending_events[index].is_empty() and _event_source_ids[index] == source_id):
 			chosen = index
 			break
+	if chosen < 0:
+		for index: int in range(_event_players.size()):
+			if not _event_players[index].playing:
+				chosen = index
+				break
+	if chosen < 0:
+		var lowest_priority: int = _event_priority(role)
+		for index: int in range(_event_players.size()):
+			var pending_role: String = str(_pending_events[index].get("role", _event_roles[index]))
+			var priority: int = _event_priority(pending_role)
+			if priority < lowest_priority:
+				lowest_priority = priority
+				chosen = index
 	if chosen < 0:
 		_events_dropped += 1
 		return
 	var stream: AudioStreamWAV = _next_event_take(role)
 	if stream == null:
 		return
-	var player: AudioStreamPlayer3D = _event_players[chosen]
-	player.stream = stream
-	player.global_position = position
-	player.pitch_scale = clampf(pitch, 0.7, 1.5)
+	var cue: Dictionary = {role = role, source = source_id, stream = stream,
+		position = position, pitch = pitch, gain = gain}
+	if _event_players[chosen].playing:
+		# Retire the previous cue before replacing it: bounded voices, no hard waveform cut.
+		_pending_events[chosen] = cue
+		_event_releasing[chosen] = true
+	else:
+		_begin_event(chosen, cue, effective_gain)
+
+
+func _event_priority(role: String) -> int:
+	return 3 if role == "gear_lock" else (2 if role.begins_with("gear_") else (1 if role == "servo_start" else 0))
+
+
+func _cancel_source_events(source_id: String) -> void:
+	for index: int in _event_players.size():
+		if str(_pending_events[index].get("source", "")) == source_id:
+			_pending_events[index] = {}
+		if _event_source_ids[index] == source_id:
+			_event_releasing[index] = true
+
+
+func _begin_event(index: int, cue: Dictionary, effective_gain: float) -> void:
+	var player: AudioStreamPlayer3D = _event_players[index]
+	player.stream = cue.stream
+	player.global_position = cue.position
+	player.pitch_scale = clampf(float(cue.pitch), 0.55, 1.5)
 	player.volume_db = linear_to_db(maxf(effective_gain, 0.00001))
-	_event_roles[chosen] = role
-	_event_source_ids[chosen] = source_id
-	_event_base_gains[chosen] = gain
+	_event_roles[index] = cue.role
+	_event_source_ids[index] = cue.source
+	_event_base_gains[index] = cue.gain
+	_event_envelopes[index] = 1.0
+	_event_releasing[index] = false
+	_pending_events[index] = {}
 	player.play()
 	_events_played += 1
 
 
-func _update_event_voices(source_positions: Dictionary, listener: Vector3, listener_valid: bool) -> void:
+func _update_event_voices(source_positions: Dictionary, listener: Vector3, listener_valid: bool, dt: float) -> void:
 	for index: int in range(_event_players.size()):
 		var player: AudioStreamPlayer3D = _event_players[index]
+		if _event_releasing[index]:
+			_event_envelopes[index] = maxf(0.0, _event_envelopes[index] - dt / EVENT_RELEASE_S)
+			if _event_envelopes[index] <= 0.0:
+				player.volume_db = -80.0
+				player.stop()
+		if not player.playing and not _pending_events[index].is_empty():
+			var cue: Dictionary = _pending_events[index]
+			var pending_source: Dictionary = source_positions.get(str(cue.source), {})
+			_pending_events[index] = {}
+			if listener_valid and bool(pending_source.get("valid", false)) and _scene_gain > 0.001:
+				cue.position = pending_source.position
+				var pending_gain: float = float(cue.gain) * _engine_mask * _scene_gain * _distance_gain(cue.position.distance_to(listener))
+				if pending_gain > 0.0001:
+					_begin_event(index, cue, pending_gain)
 		if not player.playing:
 			_event_roles[index] = ""
 			_event_source_ids[index] = ""
@@ -559,7 +641,7 @@ func _update_event_voices(source_positions: Dictionary, listener: Vector3, liste
 			_event_source_ids[index] = ""
 			_event_base_gains[index] = 0.0
 			continue
-		var audible_gain: float = _event_base_gains[index] * _engine_mask * path_gain * _scene_gain
+		var audible_gain: float = _event_base_gains[index] * _event_envelopes[index] * _engine_mask * path_gain * _scene_gain
 		player.volume_db = linear_to_db(maxf(audible_gain, 0.00001))
 
 
@@ -576,12 +658,12 @@ func _fade_motion(delta: float, immediate: bool) -> void:
 		slot["gain"] = gain
 		player.volume_db = linear_to_db(maxf(gain * _scene_gain, 0.00001))
 		if immediate or gain <= 0.0002:
-			_release_motion_player(key)
+			_stop_motion_player(key)
 	if immediate or _scene_gain <= 0.001:
 		_stop_event_voices()
 
 
-func _release_motion_player(key: String) -> void:
+func _stop_motion_player(key: String) -> void:
 	var slot: Dictionary = _motion_players.get(key, {})
 	if slot.is_empty():
 		return
@@ -589,10 +671,7 @@ func _release_motion_player(key: String) -> void:
 	if player != null:
 		player.volume_db = -80.0
 		player.stop()
-		if player.get_parent() == self:
-			remove_child(player)
-		player.free()
-	_motion_players.erase(key)
+	slot["gain"] = 0.0
 
 
 func _stop_event_voices() -> void:
@@ -606,11 +685,22 @@ func _clear_event_metadata() -> void:
 	_event_roles.fill("")
 	_event_source_ids.fill("")
 	_event_base_gains.fill(0.0)
+	_event_envelopes.fill(1.0)
+	_event_releasing.fill(false)
+	for index: int in _pending_events.size():
+		_pending_events[index] = {}
 
 
 func _dispose_players() -> void:
-	for key_value: Variant in _motion_players.keys():
-		_release_motion_player(str(key_value))
+	for slot: Dictionary in _motion_players.values():
+		var motion_player: AudioStreamPlayer3D = slot.get("player") as AudioStreamPlayer3D
+		if motion_player == null:
+			continue
+		motion_player.volume_db = -80.0
+		motion_player.stop()
+		if motion_player.get_parent() == self:
+			remove_child(motion_player)
+		motion_player.free()
 	for player: AudioStreamPlayer3D in _event_players:
 		player.volume_db = -80.0
 		player.stop()
@@ -621,6 +711,9 @@ func _dispose_players() -> void:
 	_event_roles.clear()
 	_event_source_ids.clear()
 	_event_base_gains.clear()
+	_event_envelopes.clear()
+	_event_releasing.clear()
+	_pending_events.clear()
 	_motion_players.clear()
 
 
@@ -695,7 +788,7 @@ func _gear_pitch(speed: float) -> float:
 func _distance_gain(distance_m: float) -> float:
 	if not is_finite(distance_m) or distance_m < 0.0 or distance_m >= MAX_DISTANCE_M:
 		return 0.0
-	var model_gain: float = clampf(DistanceModel.distance_gain(distance_m), 0.0, 1.0)
+	var model_gain: float = 2.0 / maxf(distance_m, 2.0)
 	var fade: float = 1.0 - smoothstep(DISTANCE_FADE_START_M, MAX_DISTANCE_M, distance_m)
 	return model_gain * fade
 

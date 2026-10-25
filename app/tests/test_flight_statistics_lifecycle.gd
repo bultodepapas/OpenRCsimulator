@@ -52,6 +52,7 @@ func _initialize() -> void:
 	player.reset()
 	check("accepted reset increments one restart", int(service.query().restarts) == 1)
 	check("restart closes old flight distinctly", int(service.query().closed) == 1 and int(service.query().crashes) == 0)
+	check("reset's synthetic tick zero cannot invalidate the old flight", int(service.query().partial) == 0 and int(service.query().average_count) == 1)
 	player.release("menu")
 	player.resume()
 	for i: int in 300: player.sim.step()

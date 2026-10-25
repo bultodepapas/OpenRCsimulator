@@ -1366,6 +1366,12 @@ msgstr "Distancia"
 msgid "Elapsed simulation time"
 msgstr "Tiempo transcurrido de simulación"
 
+msgid "Elapsed sim time"
+msgstr "Tiempo simulado"
+
+msgid "Statistics unavailable"
+msgstr "Estadísticas no disponibles"
+
 msgid "Session airborne time"
 msgstr "Tiempo en el aire de la sesión"
 

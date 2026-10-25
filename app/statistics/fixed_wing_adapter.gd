@@ -35,6 +35,9 @@ func detach() -> void:
 
 func _stepped(_tick: int, _time: float, _state: PackedFloat64Array, _loads: PackedFloat64Array,
 		_inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	# Simulation.reset also publishes stepped at tick zero. It is not an accepted
+	# physics interval; only the session's later committed receipt changes generation.
+	if _tick == 0: return
 	_consumer.call(sample())
 
 

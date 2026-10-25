@@ -95,7 +95,9 @@ func stage(body: PackedFloat64Array, continuous: PackedFloat64Array, t: float) -
 	var v_air: PackedFloat64Array = velocity
 	var density: float = rho
 	if environment != null:
-		var wind_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), environment.wind(t))
+		var position_ned: PackedFloat64Array = M.v3(body[RB.POS], body[RB.POS + 1], body[RB.POS + 2])
+		var wind_ned: PackedFloat64Array = environment.wind_world(position_ned, t)
+		var wind_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), wind_ned)
 		v_air = M.sub(velocity, wind_body)
 		density = environment.air_density(body[RB.POS + 2])
 	var force: PackedFloat64Array = Airframe.loads(v_air, density, data.airframe)

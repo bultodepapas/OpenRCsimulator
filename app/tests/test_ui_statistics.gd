@@ -130,6 +130,11 @@ func _run() -> void:
 	_check("default filters show all aircraft and this session",
 		screen._scope_picker.selected == 0 and screen._period_picker.selected == 0)
 	var saved_values := service.values.duplicate(true)
+	service.values.available = false
+	screen.call("_refresh")
+	_check("unavailable storage is distinct from zero", screen.find_child("AirborneValue", true, false).text == "—"
+		and screen.find_child("CompletedValue", true, false).text == "—")
+	service.values = saved_values.duplicate(true)
 	service.values = {"started": 0, "completed": 0, "landings": 0, "crashes": 0, "restarts": 0,
 		"history": [], "has_lifetime_history": true, "tracking_started_utc": "2026-10-01T00:00:00Z"}
 	screen.call("_refresh")
@@ -295,7 +300,7 @@ func _run() -> void:
 		and manager.frames.session_stats.left_value.visible
 		and manager.frames.session_stats.right_value.visible
 		and airborne_label.text.contains("24:10")
-		and elapsed_label.text == "Elapsed simulation time")
+		and elapsed_label.text == "Elapsed sim time" and elapsed_label.tooltip_text == "Elapsed simulation time")
 	var legacy_service := LegacyHudStatisticsService.new()
 	manager.statistics_service = legacy_service
 	manager.refresh_numbers({"telemetry": {}, "battery": {}, "mass_sample": {}, "warnings": PackedStringArray()})

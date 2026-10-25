@@ -77,6 +77,17 @@ func sample(time_s: float) -> PackedFloat64Array:
 	)
 
 
+## Position-aware compatibility adapter. This first contract validates NED position but retains
+## the exact uniform legacy wind law and time behavior.
+func sample_world(position_ned: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+	if position_ned.size() != 3:
+		return M.v3(NAN, NAN, NAN)
+	for component: float in position_ned:
+		if not is_finite(component):
+			return M.v3(NAN, NAN, NAN)
+	return sample(time_s)
+
+
 func _apply_config(config: Dictionary) -> void:
 	_config = config.duplicate(true)
 	_atmosphere = Config.atmosphere(_config)

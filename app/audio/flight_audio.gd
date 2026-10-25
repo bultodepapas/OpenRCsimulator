@@ -282,7 +282,8 @@ func _process(delta: float) -> void:
 	var tick: int = flight.session.sim.tick
 	if tick < _last_tick:
 		soundscape.reset_observer()
-		mechanical_audio.reset()
+		if mechanical_audio != null:
+			mechanical_audio.reset()
 	_last_tick = tick
 	var sound_snapshot: Dictionary = snapshot()
 	soundscape.update_sound(sound_snapshot, delta)
@@ -293,5 +294,6 @@ func _process(delta: float) -> void:
 	var engine_power: float = float(sound_snapshot.get("throttle", 0.0)) if bool(sound_snapshot.get("running", false)) else 0.0
 	ground_audio.update_contacts(tick, paused, ground_contacts,
 		engine_power, delta, sound_snapshot.get("listener", Vector3.ZERO), float(Engine.physics_ticks_per_second))
-	mechanical_audio.update_sound(mechanical_snapshot(sound_snapshot, delta), delta)
+	if mechanical_audio != null:
+		mechanical_audio.update_sound(mechanical_snapshot(sound_snapshot, delta), delta)
 	last_update_usec = Time.get_ticks_usec() - started

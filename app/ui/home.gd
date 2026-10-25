@@ -1101,11 +1101,15 @@ func _refresh_statistics_summary(selected: String = "") -> void:
 		_statistics_time(float(own.get("airborne_seconds", 0.0))), int(own.get("completed", 0)), int(own.get("crashes", 0))]
 	if not supported:
 		_statistics_aircraft_summary.text = tr("Flight statistics are not available for this activity.")
+	elif not bool(own.get("available", true)):
+		_statistics_aircraft_summary.text = tr("Statistics unavailable")
 	if is_instance_valid(aircraft_statistics_button):
 		aircraft_statistics_button.disabled = not supported
 	if is_instance_valid(_statistics_pilot_summary):
 		_statistics_pilot_summary.text = tr("Pilot total · %s airborne · %d completed · best streak %d") % [
 			_statistics_time(float(all.get("airborne_seconds", 0.0))), int(all.get("completed", 0)), int(all.get("best_streak", 0))]
+		if not bool(all.get("available", true)):
+			_statistics_pilot_summary.text = tr("Statistics unavailable")
 
 
 func _statistics_time(seconds: float) -> String:

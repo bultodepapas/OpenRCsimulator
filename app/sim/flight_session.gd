@@ -384,8 +384,16 @@ func _atmosphere_down(s: PackedFloat64Array = PackedFloat64Array()) -> float:
 	return sim.state[RB.POS + 2] if sim != null and sim.state.size() == RB.SIZE else 0.0
 
 
+## Position of the fixed body datum O in world NED metres. Stage callers supply their own state;
+## the empty argument is only the accepted-endpoint view used by presentation and recording.
+func _atmosphere_position(s: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
+	if not s.is_empty():
+		return s.slice(RB.POS, RB.POS + 3) if s.size() == RB.SIZE else M.v3(NAN, NAN, NAN)
+	return sim.state.slice(RB.POS, RB.POS + 3) if sim != null and sim.state.size() == RB.SIZE else M.v3(0.0, 0.0, 0.0)
+
+
 func environment_at(s: PackedFloat64Array) -> Dictionary:
-	return environment.air(_atmosphere_down(s))
+	return environment.air_world(_atmosphere_position(s))
 
 
 func atmosphere_configuration(s: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
@@ -404,10 +412,12 @@ func engine_charge_ratio(s: PackedFloat64Array = PackedFloat64Array()) -> float:
 	return environment.engine_charge_ratio(_atmosphere_down(s))
 
 
-func wind_at(time_s: float) -> PackedFloat64Array:
+## M5-W05b-R1: pure position/time query. Never substitute the committed position for an RK stage.
+## Existing one-argument observers see wind at the accepted endpoint; legacy fields remain uniform.
+func wind_at(time_s: float, s: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
 	if _weather_pending_reset:
 		return M.v3(NAN, NAN, NAN)
-	return environment.wind(time_s)
+	return environment.wind_world(_atmosphere_position(s), time_s)
 
 
 ## The owner's turbulence sample for the environment contract: empty without turbulence (nothing is added), a NAN
@@ -458,8 +468,10 @@ func _restart_weather_aux() -> PackedFloat64Array:
 
 
 ## Reset-time wind independent of the old tick/window (also used by transactional runway preflight).
-func _initial_wind() -> PackedFloat64Array:
-	var wind: PackedFloat64Array = _weather.sample(0.0)
+## Runway equilibrium still accepts a uniform vector. Its no-argument query is at the field datum;
+## accepting spatial weather for runway solves requires a candidate-state callback in a later slice.
+func _initial_wind(position_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])) -> PackedFloat64Array:
+	var wind: PackedFloat64Array = _weather.sample_world(position_ned, 0.0)
 	var initial: Dictionary = _initial_turbulence()
 	for axis: int in 3:
 		wind[axis] += initial.values[axis]
@@ -467,7 +479,7 @@ func _initial_wind() -> PackedFloat64Array:
 
 
 func air_data(s: PackedFloat64Array, time_s: float = NAN) -> Dictionary:
-	return Air.compute(s, wind_at(sim.time() if is_nan(time_s) else time_s), air_density(s))
+	return Air.compute(s, wind_at(sim.time() if is_nan(time_s) else time_s, s), air_density(s))
 
 const Commands := preload("res://input/commands.gd")
 const ControlActuators := preload("res://physics/control_actuators.gd")
@@ -2759,7 +2771,7 @@ func _reset_airborne_start() -> bool:
 			initial[RB.ATT + axis] = spawned_attitude[axis]
 	if _has_valid_start() and not weather_is_calm():
 		var attitude: PackedFloat64Array = M.quat(initial[RB.ATT], initial[RB.ATT + 1], initial[RB.ATT + 2], initial[RB.ATT + 3])
-		var wind_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), _initial_wind())
+		var wind_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), _initial_wind(initial.slice(RB.POS, RB.POS + 3)))
 		for axis: int in 3:
 			initial[RB.VEL + axis] += wind_body[axis]
 	commands = Commands.neutral_commands()
@@ -3330,7 +3342,7 @@ func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, stag
 	var lag := downwash_index()
 	var wash_state: PackedFloat64Array = transported_dv if wheel_count() == 0 else transported_dv.slice(0, expected)
 	var out := Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
-		air_density(s), wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, wash_state, _ground_up(s))
+		air_density(s), wind_at(stage_time, s), a[lag] if lag >= 0 and lag < a.size() else NAN, wash_state, _ground_up(s))
 	var ground: Dictionary = _ground_evaluation(s, a, transported_dv, air_data(s, stage_time) if gear_is_retractable() else {})
 	if not ground.get("ok", false):
 		return PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN])
@@ -3366,7 +3378,7 @@ func _wheel_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_ti
 	var a: PackedFloat64Array = sim.aux
 	var lag: int = downwash_index()
 	var out: PackedFloat64Array = Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
-		air_density(s), wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, expected),
+		air_density(s), wind_at(stage_time, s), a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, expected),
 		_ground_up(s))
 	var ground: Dictionary = _ground_evaluation(s, a, values, air_data(s, stage_time) if gear_is_retractable() else {})
 	if not ground.get("ok", false):

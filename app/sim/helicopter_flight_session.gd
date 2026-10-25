@@ -14,6 +14,7 @@ const Lifecycle = preload("res://physics/rotorcraft/lifecycle.gd")
 const StepAdapter = preload("res://physics/rotorcraft/simulation_step_adapter.gd")
 const Swash = preload("res://physics/rotorcraft/swash.gd")
 const M = preload("res://physics/math3d.gd")
+const RB = preload("res://physics/rigid_body.gd")
 const Commands = preload("res://input/commands.gd")
 const Keyboard = preload("res://input/keyboard.gd")
 const RcInput = preload("res://input/rc_input.gd")
@@ -269,7 +270,7 @@ func reset() -> bool:
   var ground: float=environment.terrain(_start[0],_start[1])[0]
   # Match trim to the same terrain sample used by each live RK stage, including hub offset.
   for iteration: int in 5:
-   solved=Hover.solve_hover(aircraft.context,0.0,_start,wind_at(0.0),{"ground_height_up_m":ground})
+   solved=Hover.solve_hover(aircraft.context,0.0,_start,environment.wind_world(_start,0.0),{"ground_height_up_m":ground})
    if not solved.ok: break
    var actual_ground: float=_ground_under_hub(solved.state)
    if absf(actual_ground-ground)<1e-10: break
@@ -314,7 +315,7 @@ func _stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float) ->
  var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces,false,continuous.slice(6) if continuous.size()==14 else PackedFloat64Array())
  if not contact.ok: return {}
  var sticks: PackedFloat64Array=PackedFloat64Array([-sim.inputs[1],sim.inputs[0],sim.inputs[2],2.0*sim.inputs[3]-1.0])
- var result: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(t),false,contact.loads,_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,t))
+ var result: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(t,state.slice(0,RB.SIZE)),false,contact.loads,_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,t))
  if not result.ok:
   _stage_failure=str(result.get("message","flight equation refused state"))
   return {}
@@ -525,7 +526,16 @@ func controller_focus_lost() -> void:
   pause_reason="Focus lost. Release controls and review collective before continuing."
 
 func air_density() -> float: return environment.air_density()
-func wind_at(t: float) -> PackedFloat64Array: return environment.wind(t)
+func wind_at(t: float,s: PackedFloat64Array=PackedFloat64Array()) -> PackedFloat64Array:
+ var body: PackedFloat64Array=s
+ if body.is_empty():
+  body=sim.state if sim.state.size()==RB.SIZE else PackedFloat64Array()
+ elif body.size()==Flight.STATE_SIZE:
+  body=body.slice(0,RB.SIZE)
+ if body.size()!=RB.SIZE:
+  if not s.is_empty(): return PackedFloat64Array([NAN,NAN,NAN])
+  return environment.wind_world(PackedFloat64Array([0.0,0.0,0.0]),t)
+ return environment.wind_world(body.slice(RB.POS,RB.POS+3),t)
 func weather_configuration() -> Dictionary: return _weather.configuration()
 func collective_pitch(mode: String="") -> float:
  var model: Dictionary=aircraft.context.electronics_model
@@ -601,7 +611,7 @@ func telemetry() -> Dictionary:
  var state: PackedFloat64Array=sim.state.duplicate()
  state.append_array(sim.continuous.slice(0,6))
  var sticks: PackedFloat64Array=PackedFloat64Array([-sim.inputs[1],sim.inputs[0],sim.inputs[2],2.0*sim.inputs[3]-1.0])
- var out: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(sim.time()),false,PackedFloat64Array(),_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,sim.time()))
+ var out: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(sim.time(),state.slice(0,RB.SIZE)),false,PackedFloat64Array(),_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,sim.time()))
  return out
 func trace_meta() -> Dictionary:
  return {aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-rotorcraft-v2",lifecycle_law=Lifecycle.LAW,power_at_record_start=power.duplicate(),control_reference=_trim.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}),continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator"+(",skid0_z_n,skid0_z_e,skid1_z_n,skid1_z_e,skid2_z_n,skid2_z_e,skid3_z_n,skid3_z_e" if start_choice=="ground" else ""),qualification=aircraft.qualification,weather=weather_configuration()}
@@ -641,7 +651,7 @@ func _checkpoint_flight_state_is_valid(saved: Dictionary,saved_commands: Diction
  var state: PackedFloat64Array=saved.state.duplicate()
  state.append_array(saved.continuous.slice(0,6))
  var sticks: PackedFloat64Array=PackedFloat64Array([-expected[1],expected[0],expected[2],2.0*expected[3]-1.0])
- var evaluated: Dictionary=Flight.evaluate(state,aircraft.context,sticks,saved_mode,saved_trainer,saved_zero_drive or not saved_power.armed,wind_at(saved.tick*saved.dt),false,PackedFloat64Array(),_trim,_height_over_radius(state),Lifecycle.scale(saved_power,saved_zero_drive,saved.tick*saved.dt))
+ var evaluated: Dictionary=Flight.evaluate(state,aircraft.context,sticks,saved_mode,saved_trainer,saved_zero_drive or not saved_power.armed,wind_at(saved.tick*saved.dt,state.slice(0,RB.SIZE)),false,PackedFloat64Array(),_trim,_height_over_radius(state),Lifecycle.scale(saved_power,saved_zero_drive,saved.tick*saved.dt))
  return evaluated.ok
 
 func restore_checkpoint(candidate: Variant) -> Dictionary:

@@ -16,10 +16,12 @@ func _init() -> void:
 		["vertical_speed", tr("Vertical speed")],
 		["throttle", tr("Throttle")],
 		["distance", tr("Distance")],
-		["time", tr("Elapsed simulation time")],
+		["time", tr("Elapsed sim time")],
 		["fuel", tr("Fuel")],
 	])
 	_fuel_name = values.fuel.get_parent().get_child(values.fuel.get_index() - 1) as Label
+	var clock_name := values.time.get_parent().get_child(values.time.get_index() - 1) as Label
+	clock_name.tooltip_text = tr("Elapsed simulation time")
 	_set_fuel_visible(false)
 
 

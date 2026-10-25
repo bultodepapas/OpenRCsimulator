@@ -1981,7 +1981,9 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		candidate.sky_config = previous.sky_config.duplicate(true)
 	candidate.overlays_enabled = true
 	candidate.overlay_settings = preferences.get("hud", Preferences.DEFAULTS.hud).duplicate(true)
-	candidate.camera_preferences = DisplayPreferences.CameraSettings.normalized(display_preferences.config)
+	# Direct technical launches can open Workshop without the Home display-preference service.
+	var camera_config: Dictionary = display_preferences.config if display_preferences != null else {}
+	candidate.camera_preferences = DisplayPreferences.CameraSettings.normalized(camera_config)
 	add_child(candidate)
 	if not candidate.startup_error.is_empty():
 		var reason: String = candidate.startup_error

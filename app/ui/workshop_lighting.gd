@@ -9,6 +9,7 @@ signal profile_changed(profile: Dictionary)
 signal validity_changed(page: String, pending: bool)
 
 const PATTERN_IDS := ["steady", "breath", "pulse", "chase", "wave", "rainbow", "segments", "sequence"]
+const EFFECT_KIND_IDS := ["spark", "trail", "burst"]
 const ZONE_LABELS := {
 	"nav_left": "Port navigation", "nav_right": "Starboard navigation", "nav_tail": "Tail light",
 	"strobe_left": "Port strobe", "strobe_right": "Starboard strobe", "strobe_dorsal": "Dorsal spine",
@@ -30,6 +31,7 @@ var _brightness_pending := false
 var _summary: Label
 var _status: Label
 var _orientation_lock: CheckButton
+var _orientation_hint: Label
 var _zone_button: Button
 var _zone_section: VBoxContainer
 var _zone_selector: OptionButton
@@ -169,6 +171,10 @@ func _build_zone_controls() -> void:
 	_orientation_lock.text = tr("Keep orientation cues steady when inverted")
 	_orientation_lock.toggled.connect(_on_orientation_lock_toggled)
 	_zone_section.add_child(_orientation_lock)
+	_orientation_hint = Label.new()
+	_orientation_hint.name = "LightingOrientationHint"
+	_orientation_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_zone_section.add_child(_orientation_hint)
 	_zone_selector = OptionButton.new()
 	_zone_selector.name = "LightingZone"
 	_zone_selector.fit_to_longest_item = false
@@ -622,6 +628,7 @@ func _sync_zone_editor() -> void:
 	_zone_text_invalid = false
 	_zone_hex_fields.clear()
 	if _zone_draft.is_empty():
+		_orientation_hint.text = ""
 		_zone_enabled.disabled = true
 		_zone_brightness.editable = false
 		_zone_brightness_value.text = ""
@@ -642,6 +649,7 @@ func _sync_zone_editor() -> void:
 	_zone_brightness_value.text = "%d%%" % roundi(zone_brightness * 100.0)
 	_zone_brightness.editable = true
 	var pattern: Dictionary = _zone_draft.get("pattern", {})
+	var locked_navigation := bool(_profile.get("orientation_lock", false)) and _selected_zone_id.begins_with("nav_")
 	var pattern_index := _find_item_metadata(_pattern_selector, str(pattern.get("id", "steady")))
 	_pattern_selector.select(maxi(pattern_index, 0))
 	var sequence_available := _sequence_available_for_zone(_selected_zone_id)
@@ -650,10 +658,18 @@ func _sync_zone_editor() -> void:
 		_pattern_selector.set_item_disabled(sequence_index, not sequence_available)
 	_pattern_hint.text = tr("Sequence follows the saved cue list for this zone.") if sequence_available else (
 		tr("Sequence is available only when this profile has saved cues for the selected zone."))
-	_pattern_selector.disabled = false
+	if locked_navigation:
+		_orientation_hint.text = tr("Orientation lock preserves the saved navigation cue colors and patterns. Turn it off to edit them.")
+		_pattern_selector.disabled = true
+		_period.editable = false
+		_pattern_hint.text = tr("Unlock orientation cues to change their color or pattern.")
+	else:
+		_orientation_hint.text = tr("Navigation colors and patterns are available when orientation lock is off.")
+		_pattern_selector.disabled = false
 	_period.set_value_no_signal(clampf(float(pattern.get("period_ticks", 960)) / 240.0, 0.25, 60.0))
 	_period_readout.text = tr("Cycle: %.2f seconds") % [float(pattern.get("period_ticks", 960)) / 240.0]
-	_period.editable = true
+	if not locked_navigation:
+		_period.editable = true
 	var reactive: Dictionary = _zone_draft.get("reactive", {"source": "none", "gain": 0.0})
 	var source_index := _find_item_metadata(_reactive_selector, str(reactive.get("source", "none")))
 	_reactive_selector.select(maxi(source_index, 0))
@@ -661,6 +677,7 @@ func _sync_zone_editor() -> void:
 	_reactive_gain.set_value_no_signal(clampf(float(reactive.get("gain", 0.0)), 0.0, 1.0))
 	_reactive_gain.editable = str(reactive.get("source", "none")) != "none"
 	_rebuild_palette_rows()
+	_set_palette_controls_disabled(locked_navigation)
 	_zone_apply.disabled = true
 	_zone_cancel.disabled = true
 	_zone_reset.disabled = false
@@ -697,6 +714,24 @@ func _add_palette_row(index: int, raw_color: String) -> void:
 	row.add_child(remove)
 	_palette_list.add_child(row)
 	_zone_hex_fields.append(hex)
+	var locked_navigation := bool(_profile.get("orientation_lock", false)) and _selected_zone_id.begins_with("nav_")
+	picker.disabled = locked_navigation
+	hex.editable = not locked_navigation
+	remove.disabled = locked_navigation or _zone_draft.get("pattern", {}).get("palette", []).size() <= 1
+
+
+func _set_palette_controls_disabled(disabled: bool) -> void:
+	_add_color_button.disabled = disabled or _zone_draft.get("pattern", {}).get("palette", []).size() >= 8
+	for row: Node in _palette_list.get_children():
+		var picker := row.get_child(0) as ColorPickerButton if row.get_child_count() > 0 else null
+		var hex := row.get_child(1) as LineEdit if row.get_child_count() > 1 else null
+		var remove := row.get_child(2) as Button if row.get_child_count() > 2 else null
+		if picker != null:
+			picker.disabled = disabled
+		if hex != null:
+			hex.editable = not disabled
+		if remove != null:
+			remove.disabled = disabled or _zone_draft.get("pattern", {}).get("palette", []).size() <= 1
 
 
 func _set_palette_color(index: int, color_text: String) -> void:
@@ -1059,10 +1094,26 @@ func _rebuild_effect_controls() -> void:
 		var anchor := str(entry.get("anchor_id", ""))
 		var row := VBoxContainer.new()
 		var toggle := CheckButton.new()
-		toggle.text = tr("%s effect") % tr(anchor.replace("_", " ").capitalize())
+		toggle.text = tr("%s effect") % tr(_effect_anchor_label(anchor))
 		toggle.button_pressed = bool(entry.get("enabled", false))
 		toggle.toggled.connect(func(value: bool) -> void: _set_effect_value(anchor, "enabled", value))
 		row.add_child(toggle)
+		var kind_row := HBoxContainer.new()
+		var kind_label := Label.new()
+		kind_label.text = tr("Effect")
+		kind_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		kind_row.add_child(kind_label)
+		var kind_selector := OptionButton.new()
+		kind_selector.name = "EffectKind_" + anchor
+		for kind_id: String in EFFECT_KIND_IDS:
+			kind_selector.add_item(tr(kind_id.capitalize()))
+			kind_selector.set_item_metadata(kind_selector.item_count - 1, kind_id)
+		kind_selector.select(maxi(_find_item_metadata(kind_selector, str(entry.get("kind", "spark"))), 0))
+		kind_selector.item_selected.connect(func(index: int) -> void:
+			_set_effect_value(anchor, "kind", str(kind_selector.get_item_metadata(index)))
+		)
+		kind_row.add_child(kind_selector)
+		row.add_child(kind_row)
 		var intensity_row := HBoxContainer.new()
 		var intensity_label := Label.new()
 		intensity_label.text = tr("Intensity")
@@ -1077,8 +1128,25 @@ func _rebuild_effect_controls() -> void:
 		intensity.value_changed.connect(func(value: float) -> void: _set_effect_value(anchor, "intensity", value))
 		intensity_row.add_child(intensity)
 		row.add_child(intensity_row)
+		var lifetime_row := HBoxContainer.new()
+		var lifetime_label := Label.new()
+		lifetime_label.text = tr("Lifetime")
+		lifetime_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		lifetime_row.add_child(lifetime_label)
+		var lifetime := SpinBox.new()
+		lifetime.name = "EffectLifetime_" + anchor
+		lifetime.min_value = 0.05
+		lifetime.max_value = 2.0
+		lifetime.step = 0.05
+		lifetime.suffix = tr(" s")
+		lifetime.value = float(entry.get("lifetime_ticks", 96)) / 240.0
+		lifetime.value_changed.connect(func(value: float) -> void:
+			_set_effect_value(anchor, "lifetime_ticks", clampi(roundi(value * 240.0), 12, 480))
+		)
+		lifetime_row.add_child(lifetime)
+		row.add_child(lifetime_row)
 		_effects_controls.add_child(row)
-		_effects_controls_by_anchor[anchor] = {"enabled": toggle, "intensity": intensity}
+		_effects_controls_by_anchor[anchor] = {"enabled": toggle, "kind": kind_selector, "intensity": intensity, "lifetime": lifetime}
 	var has_effects := not _effects_draft.is_empty()
 	_effects_controls.visible = has_effects
 	_effects_apply.disabled = not _effects_pending or not has_effects
@@ -1088,6 +1156,13 @@ func _rebuild_effect_controls() -> void:
 		empty.text = tr("This preset has no registered show effects.")
 		empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_effects_controls.add_child(empty)
+
+
+func _effect_anchor_label(anchor_id: String) -> String:
+	match anchor_id:
+		"vfx_tip_left": return tr("Left wingtip")
+		"vfx_tip_right": return tr("Right wingtip")
+		_: return anchor_id.replace("_", " ").capitalize()
 
 
 func _set_effect_value(anchor_id: String, key: String, value: Variant) -> void:
@@ -1170,7 +1245,7 @@ func _sync_summary() -> void:
 			enabled_effect_count += 1
 	var selection := str(_profile.get("selection", "inherit"))
 	var style := tr("Aircraft equipment") if selection == "inherit" else tr("Lighting off") if selection == "disabled" else tr(Profile.label("custom" if selection == "custom" else str(_profile.get("preset_id", ""))))
-	var state := tr("No lighting overrides") if selection == "inherit" else tr("Lighting disabled") if selection == "disabled" else tr("%d zones available · %d enabled") % [_profile.get("zones", []).size(), enabled_count]
+	var state := tr("No lighting overrides") if selection == "inherit" else tr("Lighting disabled") if selection == "disabled" else tr("%d configured zones · %d enabled") % [_profile.get("zones", []).size(), enabled_count]
 	if selection in ["preset", "custom"]:
 		state += tr(" · %d effects enabled") % enabled_effect_count
 	_summary.text = tr("%s · %s") % [style, state]

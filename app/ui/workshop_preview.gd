@@ -596,12 +596,12 @@ func _apply_preview_environment() -> void:
 		return
 	_preview_environment.background_color = NIGHT_BACKGROUND if _preview_night else BACKGROUND
 	_preview_environment.ambient_light_color = NIGHT_AMBIENT if _preview_night else AMBIENT
-	_preview_environment.ambient_light_energy = 0.10 if _preview_night else 0.62
-	_preview_environment.tonemap_exposure = 0.28 if _preview_night else 0.65
+	_preview_environment.ambient_light_energy = 0.025 if _preview_night else 0.62
+	_preview_environment.tonemap_exposure = 8.0 if _preview_night else 0.65
 	if is_instance_valid(_preview_key_light):
-		_preview_key_light.light_energy = 0.10 if _preview_night else 1.25
+		_preview_key_light.light_energy = 0.025 if _preview_night else 1.25
 	if is_instance_valid(_preview_fill_light):
-		_preview_fill_light.light_energy = 0.06 if _preview_night else 0.45
+		_preview_fill_light.light_energy = 0.015 if _preview_night else 0.45
 	if is_instance_valid(_daynight_button):
 		_daynight_button.set_pressed_no_signal(_preview_night)
 		_daynight_button.text = tr("Night")
@@ -702,6 +702,7 @@ func _build_toolbar() -> void:
 	_camera_menu_button.pressed.connect(_show_camera_menu)
 	_camera_menu_button.visible = false
 	_mode_row.add_child(_camera_menu_button)
+	_mode_row.move_child(_camera_menu_button, 0)
 	_camera_menu = PopupMenu.new()
 	_camera_menu.name = "CameraControlsMenu"
 	_camera_menu.add_item(tr("Front"), CameraMenuAction.FRONT)

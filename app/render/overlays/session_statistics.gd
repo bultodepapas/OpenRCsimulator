@@ -27,6 +27,15 @@ func _init(instrument_id: String = "session_stats") -> void:
 
 
 func refresh_statistics(sample: Dictionary, scope_label: String) -> void:
+	if not bool(sample.get("available", true)):
+		value_label.text = "—"
+		left_value.text = "—"
+		right_value.text = "—"
+		subtitle.text = tr("Statistics unavailable")
+		_detail_label.text = ""
+		_airborne_label.text = "—"
+		_view_key.clear()
+		return
 	var landings := _count(sample.get("landings", 0))
 	var crashes := _count(sample.get("crashes", 0))
 	var restarts := _count(sample.get("restarts", 0))

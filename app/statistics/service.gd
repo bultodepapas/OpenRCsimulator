@@ -32,6 +32,7 @@ var _write_time := 0.0
 var _write_tick := 0
 var _durable_tick := 0
 var _save_error := ""
+var _available := true
 
 
 func setup(path: String = "user://flight_statistics", save: bool = true) -> bool:
@@ -40,6 +41,7 @@ func setup(path: String = "user://flight_statistics", save: bool = true) -> bool
 	_writer = load("res://statistics/writer.gd").new()
 	if save:
 		store.open(path)
+		_available = not store.data.is_empty()
 		data = store.data.duplicate(true)
 		note = store.note
 	else:
@@ -356,6 +358,8 @@ func _accept_write(result: Dictionary) -> void:
 		_save_error = note
 		_retry_after_msec = Time.get_ticks_msec() + 5000
 		_flush_requested = true
+	_query_cache.clear()
+	changed.emit()
 
 
 func _finish_write() -> void:
@@ -384,6 +388,7 @@ func flush(capture_context: bool = true) -> bool:
 		note = store.note
 		_save_error = note
 		_retry_after_msec = Time.get_ticks_msec() + 5000
+	_query_cache.clear()
 	return ok
 
 
@@ -394,6 +399,7 @@ func query(aircraft_id: String = "", period: String = "session") -> Dictionary:
 		_update_active()
 		var result: Dictionary = load("res://statistics/reducer.gd").query(data, aircraft_id, period)
 		result.revision = revision
+		result.available = _available and bool(result.get("available", false))
 		result.has_lifetime_history = not data.get("records", []).is_empty()
 		result.tracking_started_utc = str(data.get("tracking_started_utc", ""))
 		result.durable_tick = _durable_tick
@@ -424,6 +430,7 @@ func summary(aircraft_id: String = "", period: String = "session") -> Dictionary
 		result.max_tas_mps = maxf(float(result.max_tas_mps), float(detector.flight.max_tas_mps))
 		result.max_groundspeed_mps = maxf(float(result.max_groundspeed_mps), float(detector.flight.max_groundspeed_mps))
 	result.revision = revision
+	result.available = _available and bool(result.get("available", false))
 	return result
 
 

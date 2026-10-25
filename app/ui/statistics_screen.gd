@@ -71,7 +71,11 @@ func _init() -> void:
 
 
 func configure(statistics_service: Object, initial_aircraft: String = "", unit_system: String = "metric") -> void:
+	if is_instance_valid(_service) and _service.has_signal("changed") and _service.is_connected("changed", _refresh):
+		_service.disconnect("changed", _refresh)
 	_service = statistics_service
+	if is_instance_valid(_service) and _service.has_signal("changed"):
+		_service.connect("changed", _refresh, CONNECT_DEFERRED)
 	_unit_system = Units.resolve(unit_system, TranslationServer.get_locale())
 	_selected_aircraft = initial_aircraft
 	_build_aircraft_choices()
@@ -366,6 +370,18 @@ func _update_summary() -> void:
 	var period_text := tr(str(_stats.get("period_label", tr(PERIOD_LABELS[PERIODS.find(_period)]))))
 	_metadata_label.text = "%s · %s · %s" % [tr("Local pilot"), aircraft_text, period_text]
 	_metadata_label.tooltip_text = tr("Lifetime history remains available after counter resets.")
+	if not bool(_stats.get("available", true)):
+		for key: String in ["AirborneValue", "CompletedValue", "LandingsValue"]:
+			var unavailable_label := _panel.find_child(key, true, false) as Label
+			if unavailable_label != null: unavailable_label.text = "—"
+		_touchdown_label.text = tr("Statistics unavailable")
+		_clean_stop_label.text = ""
+		_coverage_label.text = tr(str(_service.get("note"))) if _service != null else ""
+		_more_button.disabled = true
+		_more_box.visible = false
+		return
+	_more_button.disabled = false
+	_more_box.visible = _more_open
 	var airborne := _number(_stats.get("airborne_seconds", 0.0))
 	var started := _count(_stats.get("started", 0))
 	var completed := _count(_stats.get("completed", 0))
