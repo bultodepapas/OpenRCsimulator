@@ -15,14 +15,31 @@ const THREAD_DARK := Color("565b60")
 const BRASS := Color("b88736")
 const FIBER_PLATE := Color("686a65")
 const WOOD := Color("b58a58")
-const SERVO_BODY_SIZE := Vector3(0.040, 0.022, 0.020) # Generic standard-class servo silhouette; no model selected.
-const HORN_REACH_M := 0.028
+const NYLON := Color("e6e2d6")
+const RUBBER := Color("1b1d20")
+const SERVO_LABEL := Color("3b4048")
+# US-V17: a generic standard-class servo, the common 40 x 20 x 36 mm case with 54 mm mounting tabs (no make or model is
+# claimed). Servo frame: X along the case toward the output end, Y up the output shaft, Z across the case.
+const SERVO_CASE_M := Vector3(0.0405, 0.036, 0.020) # length x height to the top cover x width
+const SERVO_TAB_Y_M := 0.0265 # tab underside above the case bottom; the tabs are 2.5 mm thick
+const SERVO_TAB_SPAN_M := 0.0545 # tab tip to tab tip
+const SERVO_SHAFT_X_M := 0.010 # output shaft ahead of the case centre
+const SERVO_SPLINE_TOP_M := 0.040 # arm seat above the case bottom
+const ARM_THICKNESS_M := 0.0025
 const ROD_RADIUS_M := 0.00115
-# US-V17: Jensen sheet 2 stands each aileron bellcrank on a 1/4 x 1/2 in hardwood mount glued to the 3/32 in bottom
-# sheeting, on a 4-40 x 1 in pivot, inside the wing. The wing linkage plane sits that high above the traced lower skin.
-const WING_BOTTOM_SHEET_M := 0.0024
-const BELLCRANK_MOUNT_M := Vector3(0.00635, 0.0127, 0.025) # span x height x chord
-const BELLCRANK_WASHER_M := 0.0015
+# US-V17 (owner: the two-servo version). Jensen sheet 2 draws one central Kraft servo driving both W3 bellcranks; the
+# two-servo variant gives each aileron its own servo, so neither needs a bellcrank. The servo lies on its side on blocks
+# glued to a bottom hatch, its arm out through a slot, with a short pushrod to the plan's nylon horn, hole under the
+# hinge line. Stations are estimates: the servo sits aft of the spar where the wing is still deep enough for the case.
+const AILERON_HORN_INSET_M := 0.012 # horn plane outboard of the aileron's inner end
+const AILERON_HORN_HOLE_M := Vector2(0.002, -0.019) # (aft of, below) the hinge line: a 3/4 in horn
+const AILERON_HORN_BASE_AFT_M := 0.010
+const AILERON_SERVO_SHAFT_Z_M := 0.150 # aft of the leading edge (chord fraction 0.49)
+const AILERON_ARM_RADIUS_M := 0.019
+const HATCH_M := Vector3(0.050, 0.0016, 0.064) # span x 1/16 in plywood x chord, film covered
+const HATCH_PROUD_M := 0.0003
+const HATCH_CLEARANCE_M := 0.0008 # servo case above the hatch's inner face
+const FUSELAGE_SHEET_M := 0.0024 # estimated side and bottom sheeting, for rails glued inside the fuselage
 const LINK_ERROR_TOLERANCE_M := 0.00025 # Visual implementation target from US-V04/05.
 const SOLVER_EPSILON := 1.0e-10
 
@@ -100,42 +117,11 @@ static func update(controls: Dictionary) -> void:
 				failures.append("%s servo crank has no circle closure" % mechanism_name)
 			else:
 				mechanism.last_servo_angle = servo_solution.angle
-				_update_arm(mechanism.servo_arm, mechanism.servo_pivot, servo_solution.point, u, v, normal, servo_solution.angle)
+				_update_arm(mechanism.servo_arm, mechanism.servo_pivot, servo_solution.point, mechanism.servo_axis)
 				endpoints["servo"] = servo_solution.point
 				endpoints["horn"] = target
 				_update_rod(rods[0], servo_solution.point, target, normal)
 				mechanism.closure_error_m = rods[0].length_error_m
-		elif mechanism.kind == "bellcrank":
-			var bell_solution := _solve_crank(
-				mechanism.bell_pivot, mechanism.bell_output_radius_m, target, mechanism.rods[1].target_length_m,
-				u, v, normal, mechanism.last_bell_angle
-			)
-			if not bell_solution.ok:
-				solved = false
-				failures.append("%s bellcrank has no circle closure" % mechanism_name)
-			else:
-				mechanism.last_bell_angle = bell_solution.angle
-				var bell_input_vector: Vector3 = mechanism.bell_input_zero.rotated(normal, bell_solution.angle)
-				var bell_input_point: Vector3 = mechanism.bell_pivot + bell_input_vector
-				var servo_solution := _solve_crank(
-					mechanism.servo_pivot, mechanism.servo_radius_m, bell_input_point, mechanism.rods[0].target_length_m,
-					u, v, normal, mechanism.last_servo_angle
-				)
-				if not servo_solution.ok:
-					solved = false
-					failures.append("%s input rod has no circle closure" % mechanism_name)
-				else:
-					mechanism.last_servo_angle = servo_solution.angle
-					_update_arm(mechanism.servo_arm, mechanism.servo_pivot, servo_solution.point, u, v, normal, servo_solution.angle)
-					mechanism.bell_output_arm.transform = _beam_transform(mechanism.bell_pivot, bell_solution.point, normal)
-					mechanism.bell_input_arm.transform = _beam_transform(mechanism.bell_pivot, bell_input_point, normal)
-					_update_rod(rods[0], servo_solution.point, bell_input_point, normal)
-					_update_rod(rods[1], bell_solution.point, target, normal)
-					endpoints["servo"] = servo_solution.point
-					endpoints["bellcrank_input"] = bell_input_point
-					endpoints["bellcrank_output"] = bell_solution.point
-					endpoints["horn"] = target
-				mechanism.closure_error_m = maxf(rods[0].length_error_m, rods[1].length_error_m)
 		else:
 			solved = false
 			failures.append("%s has unknown mechanism kind" % mechanism_name)
@@ -219,95 +205,101 @@ static func _build_wing_mechanism(root: Node3D, assembly: Node3D, service: Node3
 		return
 	var sign := -1.0 if side == "left" else 1.0
 	var wing: Dictionary = D.wing
+	var chord := float(wing.chord)
 	var frame_basis := _basis_in_root(root, frame).orthonormalized()
 	var outward: Vector3 = frame_basis.x * sign
+	var down: Vector3 = -frame_basis.y
 	var aft: Vector3 = frame_basis.z
-	var normal := outward.cross(aft).normalized()
-	var half_span: float = (float(wing.aileron_outer) - float(wing.aileron_inner)) * 0.5
-	var local_horn_x := -sign * (half_span - 0.008)
-	var horn_local := Vector3(local_horn_x, -0.028, (1.0 - float(wing.hinge_fraction)) * float(wing.chord) * 0.83)
-	_add_control_horn(hinge, surface_name + "_control_horn", horn_local, false, normal)
+	var normal := down.cross(aft).normalized()
+
+	# The horn shares the arm's chordwise plane; its base sits on the aileron's lower face, its hole under the hinge line.
+	var plane_x := sign * (float(wing.aileron_inner) + float(wing.inboard_gap) + AILERON_HORN_INSET_M)
+	var horn_local := Vector3(plane_x - hinge.position.x, AILERON_HORN_HOLE_M.y, AILERON_HORN_HOLE_M.x)
+	var base_z := AILERON_HORN_BASE_AFT_M
+	var face_rise := (_aileron_lower_y(base_z + 0.001) - _aileron_lower_y(base_z)) / 0.001
+	var horn_base := Vector3(horn_local.x, _aileron_lower_y(base_z), base_z)
+	_add_control_horn(hinge, surface_name + "_control_horn", horn_local, horn_base, Vector3(0, face_rise, 1), NYLON, "plastic")
 	var horn_root := _point_in_root(root, hinge, horn_local)
 
-	# The drawing shows a root mounted servo, a spanwise pushrod and a bellcrank that
-	# turns the motion into a short run to the aileron horn. Span and chord stations are visual estimates; the plane
-	# height follows the bellcrank mount inside the wing (US-V17; it previously hung 9 mm below the lower skin).
-	var plane_y := _wing_lower_y(0.155 / float(wing.chord)) + WING_BOTTOM_SHEET_M + BELLCRANK_MOUNT_M.y + BELLCRANK_WASHER_M
-	var servo_local := Vector3(sign * 0.055, plane_y, 0.155)
-	var bell_local := Vector3(sign * 0.165, plane_y, 0.155)
-	var servo_pivot := _point_in_root(root, frame, servo_local)
-	var bell_pivot := _point_in_root(root, frame, bell_local)
-	var servo_radius := 0.012
-	var bell_input_radius := 0.010
-	var bell_output_radius := 0.014
-	var servo_zero := outward * servo_radius
-	var to_horn := horn_root - bell_pivot
-	var flat_delta := to_horn - normal * to_horn.dot(normal)
-	if flat_delta.length_squared() <= SOLVER_EPSILON:
-		failures.append("%s estimated horn and bellcrank stations collapse" % surface_name)
-		return
-	var bell_output_zero := (normal.cross(flat_delta.normalized()) * bell_output_radius).normalized() * bell_output_radius
-	var bell_output_zero_angle := atan2(bell_output_zero.dot(aft), bell_output_zero.dot(outward))
-	var bell_input_neutral := outward * bell_input_radius
-	var bell_input_zero := bell_input_neutral.rotated(normal, -bell_output_zero_angle)
-	var servo_endpoint_neutral := servo_pivot + servo_zero
-	var bell_input_neutral_point := bell_pivot + bell_input_neutral
-	var input_length := servo_endpoint_neutral.distance_to(bell_input_neutral_point)
-	var output_length := (bell_pivot + bell_output_zero).distance_to(horn_root)
-	if input_length <= 0.01 or output_length <= 0.01:
-		failures.append("%s has an implausibly short estimated linkage" % surface_name)
-		return
+	# The hatch is a flat plate parallel to the lower skin's secant over its chord, offset past the skin's sag so it
+	# stands just proud of the film everywhere. Frame coordinates.
+	var hatch_z := AILERON_SERVO_SHAFT_Z_M - SERVO_SHAFT_X_M
+	var z0 := hatch_z - HATCH_M.z * 0.5
+	var z1 := hatch_z + HATCH_M.z * 0.5
+	var y0 := _wing_surface_y(z0 / chord, false)
+	var y1 := _wing_surface_y(z1 / chord, false)
+	var sag := 0.0
+	for i in range(17):
+		var t := float(i) / 16.0
+		sag = maxf(sag, lerpf(y0, y1, t) - _wing_surface_y(lerpf(z0, z1, t) / chord, false))
+	var slope := (y1 - y0) / (z1 - z0)
+	var hatch_aft := Vector3(0, slope, 1).normalized()
+	var hatch_up := Vector3(0, 1, -slope).normalized()
+	var hatch_basis := Basis(Vector3.RIGHT, hatch_up, hatch_aft)
+	var outer_y := func(z: float) -> float: return y0 + slope * (z - z0) - sag - HATCH_PROUD_M
+	var hatch_x := plane_x - sign * (HATCH_M.x * 0.5 - 0.006)
+	var hatch := Node3D.new()
+	hatch.name = surface_name + "_servo_hatch"
+	var plate := _box_mesh(surface_name + "_hatch_plate", HATCH_M, Finish.RED, "skin")
+	plate.transform = Transform3D(hatch_basis, Vector3(hatch_x, outer_y.call(hatch_z), hatch_z) + hatch_up * (HATCH_M.y * 0.5))
+	hatch.add_child(plate)
+	var slot := _box_mesh(surface_name + "_hatch_slot", Vector3(0.006, 0.0002, 0.026), Color("0b0c0e"), "plastic")
+	slot.transform = Transform3D(hatch_basis, Vector3(plane_x, outer_y.call(AILERON_SERVO_SHAFT_Z_M), AILERON_SERVO_SHAFT_Z_M) - hatch_up * 0.0001)
+	hatch.add_child(slot)
+	for corner_x in [-1.0, 1.0]:
+		for corner_z in [-1.0, 1.0]:
+			var z: float = hatch_z + corner_z * (HATCH_M.z * 0.5 - 0.0045)
+			var screw := _cylinder_mesh(surface_name + "_hatch_screw", 0.0011, 0.0006, STEEL, "steel", 8)
+			screw.transform = Transform3D(hatch_basis, Vector3(hatch_x + corner_x * (HATCH_M.x * 0.5 - 0.0045), outer_y.call(z), z) - hatch_up * 0.0003)
+			hatch.add_child(screw)
+	_batch_static_meshes(hatch, surface_name + "_hatch")
+	frame.add_child(hatch)
 
-	var servo_case := _point_in_root(root, frame, servo_local + Vector3(0, 0.002, -0.012))
-	_add_servo(service, "aileron_servo_" + side, servo_case, frame_basis, SERVO_BODY_SIZE, servo_pivot, normal, Vector3(sign, 0, 0), Vector3(-sign * 0.050, 0, 0), true)
-	servos["aileron_" + side] = {"type": "aileron", "side": side, "shaft_root": servo_pivot, "case_root": servo_case, "reference": "Jensen sheet 2: one root servo and bellcrank per semispan"}
-	_add_bellcrank_support(linkages, surface_name + "_bellcrank", bell_pivot, normal, frame_basis, 0.014)
-	var bell_output_arm := _new_arm(linkages, surface_name + "_bellcrank_output_arm", bell_pivot, outward, aft, normal, bell_output_zero_angle, bell_output_radius, 0.0032)
-	var bell_input_arm := _new_arm(service, surface_name + "_bellcrank_input_arm", bell_pivot, outward, aft, normal, bell_output_zero_angle, bell_input_radius, 0.0028)
-	var servo_arm := _new_arm(service, surface_name + "_servo_arm", servo_pivot, outward, aft, normal, 0.0, servo_radius, 0.0034)
+	# The servo lies on its side on the hatch, output shaft outboard in the horn's plane, case parallel to the hatch.
+	var shaft_z := AILERON_SERVO_SHAFT_Z_M
+	var servo_frame := Vector3(plane_x, outer_y.call(shaft_z), shaft_z) + hatch_up * (HATCH_M.y + HATCH_CLEARANCE_M + SERVO_CASE_M.z * 0.5)
+	var servo_pivot := _point_in_root(root, frame, servo_frame)
+	var up_root: Vector3 = frame_basis * hatch_up
+	var servo := _add_servo(service, "aileron_servo_" + side, servo_pivot, outward, frame_basis * hatch_aft)
+	servos["aileron_" + side] = {"type": "aileron", "side": side, "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis,
+		"reference": "US-V17 two-servo variant: one servo per semispan on a bottom hatch (Jensen sheet 2 draws one central servo)"}
+	# Hardwood blocks glued to the hatch take the tab screws, from the hatch up to the top of each tab.
+	var block_low := -(HATCH_CLEARANCE_M + SERVO_CASE_M.z * 0.5)
+	var block_high := 0.009
+	for tab: Vector3 in servo.tabs:
+		var block := _box_mesh("aileron_servo_%s_block" % side, Vector3(0.007, 0.010, block_high - block_low), WOOD, "wood")
+		block.transform = Transform3D(servo.basis, tab - servo.basis.y * 0.00625 + up_root * ((block_low + block_high) * 0.5))
+		service.add_child(block)
+	_add_cable_route(service, surface_name + "_servo_lead", [servo.lead, servo.lead - frame_basis * hatch_aft * 0.010,
+		_point_in_root(root, frame, Vector3(sign * 0.040, servo_frame.y, hatch_z - 0.035))])
 
-	var input_rod := _new_rod(service, surface_name + "_servo_to_bellcrank", input_length, ROD_RADIUS_M, STEEL, "steel")
-	var output_rod := _new_rod(linkages, surface_name + "_bellcrank_to_horn", output_length, ROD_RADIUS_M, STEEL, "steel")
-	var input_start := _new_joint(service, surface_name + "_input_servo_clevis", servo_endpoint_neutral, normal)
-	var input_end := _new_joint(service, surface_name + "_input_bellcrank_clevis", bell_input_neutral_point, normal)
-	var output_start := _new_joint(linkages, surface_name + "_output_bellcrank_clevis", bell_pivot + bell_output_zero, normal)
-	var output_end := _new_joint(linkages, surface_name + "_output_horn_clevis", horn_root, normal)
-	var cable_end := servo_local - Vector3(sign * 0.040, 0, 0)
-	_add_cable_route(service, surface_name + "_servo_lead", [_point_in_root(root, frame, servo_local + Vector3(-sign * 0.014, 0.004, -0.010)), _point_in_root(root, frame, servo_local + Vector3(-sign * 0.030, 0.002, -0.010)), _point_in_root(root, frame, cable_end)])
-
+	var neutral_endpoint := servo_pivot + down * AILERON_ARM_RADIUS_M
+	var rod_length := neutral_endpoint.distance_to(horn_root)
+	var arm := _new_arm(linkages, surface_name + "_servo_arm", servo_pivot, neutral_endpoint, outward, AILERON_ARM_RADIUS_M)
+	var rod := _new_rod(linkages, surface_name + "_pushrod", rod_length, ROD_RADIUS_M, STEEL, "steel")
+	var start_joint := _new_joint(linkages, surface_name + "_servo_clevis", neutral_endpoint, normal)
+	var end_joint := _new_joint(linkages, surface_name + "_horn_clevis", horn_root, normal)
 	mechanisms[surface_name] = {
-		"kind": "bellcrank",
+		"kind": "direct",
 		"surface": surface_name,
 		"hinge": hinge,
 		"horn_local": horn_local,
-		"plane_u": outward,
+		"plane_u": down,
 		"plane_v": aft,
 		"plane_normal": normal,
 		"servo_pivot": servo_pivot,
-		"servo_radius_m": servo_radius,
+		"servo_axis": outward,
+		"servo_radius_m": AILERON_ARM_RADIUS_M,
 		"last_servo_angle": 0.0,
-		"servo_arm": servo_arm,
-		"bell_pivot": bell_pivot,
-		"bell_input_radius_m": bell_input_radius,
-		"bell_input_zero": bell_input_neutral,
-		"bell_output_radius_m": bell_output_radius,
-		"bell_output_zero_angle": bell_output_zero_angle,
-		"last_bell_angle": bell_output_zero_angle,
-		"bell_output_arm": bell_output_arm,
-		"bell_input_arm": bell_input_arm,
+		"servo_arm": arm,
 		"rods": [
-			{"name": surface_name + "_servo_to_bellcrank", "node": input_rod, "start_joint": input_start, "end_joint": input_end, "target_length_m": input_length, "current_length_m": input_length, "length_error_m": 0.0},
-			{"name": surface_name + "_bellcrank_to_horn", "node": output_rod, "start_joint": output_start, "end_joint": output_end, "target_length_m": output_length, "current_length_m": output_length, "length_error_m": 0.0},
+			{"name": surface_name + "_pushrod", "node": rod, "start_joint": start_joint, "end_joint": end_joint, "target_length_m": rod_length, "current_length_m": rod_length, "length_error_m": 0.0},
 		],
 		"solved": true,
 		"closure_error_m": 0.0,
 		"estimated_geometry": true,
 	}
-	_update_arm(servo_arm, servo_pivot, servo_endpoint_neutral, outward, aft, normal, 0.0)
-	_update_beam(bell_output_arm, bell_pivot, bell_pivot + bell_output_zero, normal)
-	_update_beam(bell_input_arm, bell_pivot, bell_input_neutral_point, normal)
-	_update_rod(mechanisms[surface_name].rods[0], servo_endpoint_neutral, bell_input_neutral_point, normal)
-	_update_rod(mechanisms[surface_name].rods[1], bell_pivot + bell_output_zero, horn_root, normal)
+	_update_rod(mechanisms[surface_name].rods[0], neutral_endpoint, horn_root, normal)
 
 
 static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3D, linkages: Node3D, hinges: Dictionary, surface_name: String, mechanisms: Dictionary, servos: Dictionary, failures: Array[String]) -> void:
@@ -318,31 +310,32 @@ static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3
 	var v := Vector3.BACK
 	# The tail control surfaces extend aft (negative local z) from the hinge.
 	var horn_local := Vector3(-0.046, -0.024, -0.030) if is_elevator else Vector3(0.027, 0.006, -0.018)
-	_add_control_horn(hinge, surface_name + "_control_horn", horn_local, not is_elevator, normal)
+	# Brass horns after the owner's photo C: the elevator horn hangs below its surface, the rudder horn stands off its side.
+	var horn_base := Vector3(horn_local.x, -0.001, horn_local.z - 0.003) if is_elevator else Vector3(0.003, horn_local.y, horn_local.z - 0.004)
+	_add_control_horn(hinge, surface_name + "_control_horn", horn_local, horn_base, Vector3.BACK, BRASS, "aluminum")
 	var horn_root := _point_in_root(root, hinge, horn_local)
-	var servo_center := Vector3(-0.013, -0.025, 0.045) if is_elevator else Vector3(0.013, -0.025, 0.045)
+	# Two servos sit side by side near the wing, long axes along the fuselage. US-V17: with real 40 mm-tall cases the
+	# elevator servo lies on its side against the left fuselage side (shaft right) and the rudder servo stands on rails
+	# from the right side (shaft up), its arm 10 mm higher than with the earlier 22 mm placeholder so its case clears the
+	# bottom sheeting. Stations remain estimates.
+	var servo_pivot := Vector3(-0.002, -0.025, 0.045) if is_elevator else Vector3(0.013, -0.004, 0.045)
+	var servo_axis := normal if is_elevator else Vector3.UP
 	var servo_radius := 0.016
-	var servo_pivot := servo_center + (normal * 0.011 if is_elevator else Vector3.UP * 0.011)
 	var servo_zero := u * servo_radius
 	var neutral_endpoint := servo_pivot + servo_zero
 	var rod_length := neutral_endpoint.distance_to(horn_root)
 	if rod_length <= 0.1:
 		failures.append("%s estimated pushrod is too short" % surface_name)
 		return
-	# Two compact servos sit side by side near the wing. Their long axes run along
-	# the fuselage; the elevator output shaft faces sideways and the rudder shaft up.
-	var body_basis := Basis(Vector3.FORWARD, normal, Vector3.FORWARD.cross(normal).normalized())
-	_add_servo(service, surface_name + "_servo", servo_center, body_basis, SERVO_BODY_SIZE, servo_pivot, normal, u, Vector3(0.052, 0, 0), false)
-	servos[surface_name] = {"type": surface_name, "shaft_root": servo_pivot, "case_root": servo_center, "reference": "Jensen fuselage servo rails; installation station estimated"}
-	var tray_center := servo_center + Vector3(0, -0.013, 0)
-	for side in [-1.0, 1.0]:
-		_add_box(service, surface_name + "_tray_rail_" + ("left" if side < 0 else "right"), Vector3(0.006, 0.004, 0.054), tray_center + Vector3(side * 0.013, 0, 0), Basis.IDENTITY, WOOD, "wood")
+	var servo := _add_servo(service, surface_name + "_servo", servo_pivot, servo_axis, Vector3.BACK)
+	_add_servo_mount(service, surface_name + "_servo", servo, -1.0 if is_elevator else 1.0)
+	servos[surface_name] = {"type": surface_name, "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "reference": "Jensen fuselage servo rails; installation station estimated"}
 	var rod := _new_rod(linkages, surface_name + "_long_pushrod", rod_length, ROD_RADIUS_M, STEEL, "steel")
 	var start_joint := _new_joint(linkages, surface_name + "_servo_clevis", neutral_endpoint, normal)
 	var end_joint := _new_joint(linkages, surface_name + "_horn_clevis", horn_root, normal)
-	var arm := _new_arm(service, surface_name + "_servo_arm", servo_pivot, u, v, normal, 0.0, servo_radius, 0.0034)
+	var arm := _new_arm(service, surface_name + "_servo_arm", servo_pivot, neutral_endpoint, servo_axis, servo_radius)
 	var cable_to := Vector3(0, -0.024, 0.008)
-	_add_cable_route(service, surface_name + "_servo_lead", [servo_center + Vector3(0.004, 0.002, -0.010), servo_center + Vector3(0.002, 0.002, -0.022), cable_to])
+	_add_cable_route(service, surface_name + "_servo_lead", [servo.lead, servo.lead + Vector3.FORWARD * 0.008, cable_to])
 	_add_tail_guide(root, linkages, surface_name, neutral_endpoint, horn_root, normal)
 	mechanisms[surface_name] = {
 		"kind": "direct",
@@ -353,6 +346,7 @@ static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3
 		"plane_v": v,
 		"plane_normal": normal,
 		"servo_pivot": servo_pivot,
+		"servo_axis": servo_axis,
 		"servo_radius_m": servo_radius,
 		"last_servo_angle": 0.0,
 		"servo_arm": arm,
@@ -363,7 +357,6 @@ static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3
 		"closure_error_m": 0.0,
 		"estimated_geometry": true,
 	}
-	_update_arm(arm, servo_pivot, neutral_endpoint, u, v, normal, 0.0)
 	_update_rod(mechanisms[surface_name].rods[0], neutral_endpoint, horn_root, normal)
 
 
@@ -385,15 +378,16 @@ static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: N
 	var u := Vector3.RIGHT * Equipment.THROTTLE_SIDE
 	var v := Vector3.BACK
 	var servo_pivot := Equipment.throttle_servo_arm_end() - u * THROTTLE_SERVO_RADIUS_M
-	var servo_center := servo_pivot - Vector3(Equipment.THROTTLE_SIDE * 0.012, 0.004, 0.010)
-	_add_servo(service, "throttle_servo", servo_center, Basis.IDENTITY, SERVO_BODY_SIZE, servo_pivot, normal, u, Vector3(0, 0, -0.030), false)
-	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo_center, "animated": true, "reference": "estimated gas servo station; drives the carburettor lever from the throttle command"}
+	# Upright on rails from the fuselage side, output end forward so the case and tabs stay clear of F1.
+	var servo := _add_servo(service, "throttle_servo", servo_pivot, Vector3.UP, Vector3.FORWARD)
+	_add_servo_mount(service, "throttle_servo", servo, Equipment.THROTTLE_SIDE)
+	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "animated": true, "reference": "estimated gas servo station; drives the carburettor lever from the throttle command"}
 	var endpoint := servo_pivot + u * THROTTLE_SERVO_RADIUS_M
 	var rod_length := endpoint.distance_to(carburetor_point)
 	var rod := _new_rod(linkages, "throttle_pushrod", rod_length, 0.0008, STEEL, "steel")
 	var start_joint := _new_joint(linkages, "throttle_servo_clevis", endpoint, normal)
 	var end_joint := _new_joint(linkages, "throttle_carburetor_clevis", carburetor_point, normal)
-	var arm := _new_arm(service, "throttle_servo_arm", servo_pivot, u, v, normal, 0.0, THROTTLE_SERVO_RADIUS_M, 0.003)
+	var arm := _new_arm(service, "throttle_servo_arm", servo_pivot, endpoint, Vector3.UP, THROTTLE_SERVO_RADIUS_M)
 	mechanisms["throttle"] = {
 		"kind": "direct",
 		"surface": "throttle",
@@ -403,6 +397,7 @@ static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: N
 		"plane_v": v,
 		"plane_normal": normal,
 		"servo_pivot": servo_pivot,
+		"servo_axis": Vector3.UP,
 		"servo_radius_m": THROTTLE_SERVO_RADIUS_M,
 		"last_servo_angle": 0.0,
 		"servo_arm": arm,
@@ -413,9 +408,8 @@ static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: N
 		"closure_error_m": 0.0,
 		"estimated_geometry": true,
 	}
-	_update_arm(arm, servo_pivot, endpoint, u, v, normal, 0.0)
 	_update_rod(mechanisms.throttle.rods[0], endpoint, carburetor_point, normal)
-	_add_cable_route(service, "throttle_servo_lead", [servo_center + Vector3(-0.010, 0.002, 0.004), servo_center + Vector3(-0.018, 0.002, -0.010), Vector3(0, -0.018, -0.08)])
+	_add_cable_route(service, "throttle_servo_lead", [servo.lead, servo.lead + Vector3.BACK * 0.008, Vector3(0, -0.018, -0.08)])
 
 
 ## Throttle command 0..1 → carburettor lever angle; the neutral built pose is half throttle. Updates every linkage.
@@ -427,125 +421,221 @@ static func set_throttle(controls: Dictionary, throttle: float) -> void:
 	update(controls)
 
 
-static func _add_control_horn(hinge: Node3D, label: String, endpoint_local: Vector3, vertical: bool, normal: Vector3) -> void:
+## A control horn on a surface, in hinge coordinates: a base plate on the surface at `base`, a tapered web out to the
+## clevis hole at `endpoint_local`, two base screws and the clevis pin. `along` lies in the surface and the horn's plane.
+static func _add_control_horn(hinge: Node3D, label: String, endpoint_local: Vector3, base: Vector3, along: Vector3, color: Color, profile: String) -> void:
+	var a := along.normalized()
+	var reach := endpoint_local - base
+	var out := (reach - a * reach.dot(a)).normalized()
+	var across := a.cross(out).normalized()
+	var basis := Basis(a, out, across)
+	var tip := Vector2(reach.dot(a), reach.dot(out))
+	var outline := PackedVector2Array([Vector2(-0.008, 0.0), Vector2(0.008, 0.0)])
+	for step in range(6):
+		outline.append(tip + Vector2.from_angle(TAU * float(step) / 6.0) * 0.0028)
+	var hull := Geometry2D.convex_hull(outline)
+	hull.remove_at(hull.size() - 1)
 	var horn := Node3D.new()
 	horn.name = label
-	var washer_axis := Vector3.RIGHT if vertical else Vector3.UP
-	var washer_basis := Basis(Quaternion(Vector3.UP, washer_axis))
-	var washer := _cylinder_mesh(label + "_brass_washer", 0.007, 0.0014, BRASS, "aluminum", 12)
-	var horn_web := _box_mesh(label + "_brass_web", Vector3(0.004, 0.025, 0.008), BRASS, "aluminum")
-	var screw := _cylinder_mesh(label + "_washer_screw", 0.0015, 0.002, STEEL, "steel", 8)
-	var hole := _cylinder_mesh(label + "_clevis_pin", 0.0017, 0.006, STEEL, "steel", 8)
-	if vertical:
-		# Side-mounted rudder horn: circular base washer and a brass web projecting outboard.
-		var base_position := Vector3(0.003, endpoint_local.y, endpoint_local.z - 0.004)
-		var web_start_x := base_position.x + 0.004
-		var web_length := endpoint_local.x - web_start_x
-		washer.transform = Transform3D(washer_basis, base_position)
-		screw.transform = Transform3D(washer_basis, base_position + washer_axis * 0.0014)
-		horn_web.mesh.size = Vector3(maxf(0.008, web_length), 0.004, 0.008)
-		horn_web.transform = Transform3D(Basis.IDENTITY, Vector3((web_start_x + endpoint_local.x) * 0.5, endpoint_local.y, endpoint_local.z))
-		hole.transform = Transform3D(washer_basis, endpoint_local)
-	else:
-		# Aileron/elevator horns sit on the lower skin and hang into the linkage plane.
-		var base_position := Vector3(endpoint_local.x, -0.001, endpoint_local.z - 0.003)
-		var web_length := absf(endpoint_local.y - base_position.y)
-		washer.transform = Transform3D(washer_basis, base_position)
-		screw.transform = Transform3D(washer_basis, base_position - washer_axis * 0.0014)
-		horn_web.mesh.size = Vector3(0.004, maxf(0.008, web_length), 0.008)
-		horn_web.transform = Transform3D(Basis.IDENTITY, Vector3(endpoint_local.x, (base_position.y + endpoint_local.y) * 0.5, endpoint_local.z))
-		hole.transform = Transform3D(washer_basis, endpoint_local)
-	horn.add_child(washer)
-	horn.add_child(horn_web)
-	horn.add_child(screw)
-	horn.add_child(hole)
+	var web := MeshInstance3D.new()
+	web.name = label + "_web"
+	web.mesh = _plate_mesh(hull, 0.0016)
+	web.material_override = Finish.material(color, profile)
+	web.transform = Transform3D(basis, base)
+	horn.add_child(web)
+	var foot := _box_mesh(label + "_base", Vector3(0.020, 0.0012, 0.008), color, profile)
+	foot.transform = Transform3D(basis, base + out * 0.0006)
+	horn.add_child(foot)
+	for end in [-1.0, 1.0]:
+		var screw := _cylinder_mesh(label + "_base_screw", 0.0013, 0.0008, STEEL, "steel", 8)
+		screw.transform = Transform3D(basis, base + a * (end * 0.0085) + out * 0.0016)
+		horn.add_child(screw)
+	var hole_basis := Basis(out, across, a)
+	for fraction in [0.3, 0.55]:
+		var hole := _cylinder_mesh(label + "_spare_hole", 0.0007, 0.0019, DARK_PLASTIC, "plastic", 6)
+		hole.transform = Transform3D(hole_basis, base + basis * Vector3(tip.x, tip.y, 0.0) * (1.0 - fraction))
+		horn.add_child(hole)
+	var pin := _cylinder_mesh(label + "_clevis_pin", 0.0017, 0.006, STEEL, "steel", 8)
+	pin.transform = Transform3D(hole_basis, endpoint_local)
+	horn.add_child(pin)
 	_batch_static_meshes(horn, label + "_hardware")
 	hinge.add_child(horn)
 	# Keep the moving tip point in the surface's own coordinates for exact pose updates.
 	horn.set_meta("endpoint_local", endpoint_local)
 
 
-## Height of the wing's traced lower skin at chord fraction `u`, in the wing frame (metres).
-static func _wing_lower_y(u: float) -> float:
+## Height of the wing's traced upper or lower skin at chord fraction `u`, in the wing frame (metres).
+static func _wing_surface_y(u: float, upper: bool) -> float:
 	var section: Array = D.wing.section
 	var trailing := 0
 	for i in section.size():
 		if is_equal_approx(float(section[i][0]), 1.0): trailing = i
-	for i in range(trailing, section.size()):
+	for i in (range(0, trailing) if upper else range(trailing, section.size())):
 		var a: Array = section[i]
 		var b: Array = section[(i + 1) % section.size()]
-		if float(b[0]) <= u and u <= float(a[0]) and not is_equal_approx(float(a[0]), float(b[0])):
-			return lerpf(float(b[1]), float(a[1]), (u - float(b[0])) / (float(a[0]) - float(b[0]))) * float(D.wing.chord)
-	return float(section[trailing][1]) * float(D.wing.chord)
+		if minf(float(a[0]), float(b[0])) <= u and u <= maxf(float(a[0]), float(b[0])) and not is_equal_approx(float(a[0]), float(b[0])):
+			return lerpf(float(a[1]), float(b[1]), (u - float(a[0])) / (float(b[0]) - float(a[0]))) * float(D.wing.chord)
+	return 0.0
 
 
-static func _add_bellcrank_support(parent: Node3D, label: String, pivot: Vector3, normal: Vector3, basis: Basis, arm_radius: float) -> void:
-	var orient := Basis(Quaternion(Vector3.UP, normal))
-	var foot := _box_mesh(label + "_mount", BELLCRANK_MOUNT_M, WOOD, "wood")
-	foot.transform = Transform3D(basis, pivot - basis.y * (BELLCRANK_WASHER_M + BELLCRANK_MOUNT_M.y * 0.5))
-	parent.add_child(foot)
-	var standoff := _cylinder_mesh(label + "_standoff", 0.0025, 0.014, STEEL, "steel", 8)
-	standoff.transform = Transform3D(orient, pivot - normal * 0.002)
-	parent.add_child(standoff)
-	var washer := _cylinder_mesh(label + "_washer", 0.004, 0.002, STEEL, "steel", 10)
-	washer.transform = Transform3D(orient, pivot)
-	parent.add_child(washer)
-	var hub := _cylinder_mesh(label + "_hub", 0.0035, 0.004, PLASTIC, "plastic", 10)
-	hub.transform = Transform3D(orient, pivot + normal * 0.002)
-	parent.add_child(hub)
+## Height of the aileron's lower face `z` metres aft of its hinge line, in the hinge frame: the moving section is a wedge.
+static func _aileron_lower_y(z: float) -> float:
+	var wing: Dictionary = D.wing
+	var gap := float(wing.hinge_gap) * 0.5
+	var length := (1.0 - float(wing.hinge_fraction)) * float(wing.chord)
+	return _wing_surface_y(float(wing.hinge_fraction), false) * clampf(1.0 - (z - gap) / (length - gap), 0.0, 1.0)
 
 
-static func _add_servo(parent: Node3D, label: String, center: Vector3, body_basis: Basis, body_size: Vector3, shaft: Vector3, axis: Vector3, arm_u: Vector3, cable_hint: Vector3, wing_mount: bool) -> void:
-	var body := _box_mesh(label + "_case", body_size, PLASTIC, "plastic")
-	body.transform = Transform3D(body_basis, center)
-	parent.add_child(body)
-	var lid := _box_mesh(label + "_lid", Vector3(body_size.x * 0.70, 0.0015, body_size.z * 0.70), DARK_PLASTIC, "plastic")
-	lid.transform = Transform3D(body_basis, center + body_basis.y * (body_size.y * 0.51))
-	parent.add_child(lid)
-	var ear_axis := body_basis.y.normalized()
-	var grommet_basis := Basis(Quaternion(Vector3.UP, ear_axis))
-	var ear_span := body_basis.x.normalized()
-	for sign in [-1.0, 1.0]:
-		var ear_center: Vector3 = center + ear_span * sign * (body_size.x * 0.58) - ear_axis * 0.002
-		var ear := _box_mesh(label + "_ear_" + ("a" if sign < 0 else "b"), Vector3(body_size.x * 0.24, 0.004, body_size.z * 0.80), PLASTIC, "plastic")
-		ear.transform = Transform3D(body_basis, ear_center)
-		parent.add_child(ear)
-		var grommet := _cylinder_mesh(label + "_grommet_" + ("a" if sign < 0 else "b"), 0.003, 0.003, Color("1b1d20"), "rubber", 8)
-		grommet.transform = Transform3D(grommet_basis, ear_center - ear_axis * 0.001)
-		parent.add_child(grommet)
-		var eyelet := _cylinder_mesh(label + "_eyelet_" + ("a" if sign < 0 else "b"), 0.0018, 0.0034, STEEL, "aluminum", 8)
-		eyelet.transform = Transform3D(grommet_basis, ear_center - ear_axis * 0.0005)
-		parent.add_child(eyelet)
-		var screw := _cylinder_mesh(label + "_mount_screw_" + ("a" if sign < 0 else "b"), 0.0017, 0.002, STEEL, "steel", 8)
-		screw.transform = Transform3D(grommet_basis, ear_center + ear_axis * 0.0015)
-		parent.add_child(screw)
-		if wing_mount:
-			var rail := _box_mesh(label + "_rail_" + ("a" if sign < 0 else "b"), Vector3(0.056, 0.004, 0.006), WOOD, "wood")
-			rail.transform = Transform3D(body_basis, center - body_basis.y * 0.006 + body_basis.z * sign * 0.010)
-			parent.add_child(rail)
-	var shaft_basis := Basis(Quaternion(Vector3.UP, axis.normalized()))
-	var collar := _cylinder_mesh(label + "_output_collar", 0.0046, 0.005, STEEL, "aluminum", 10)
-	collar.transform = Transform3D(shaft_basis, shaft)
-	parent.add_child(collar)
-	var cable_anchor := center + body_basis * cable_hint
-	var cable_dir := cable_anchor.direction_to(center + body_basis * (cable_hint + Vector3(0.004, 0, 0)))
-	var cable_end := center + body_basis * (cable_hint + Vector3(0.016, -0.001, 0))
-	_add_cable_route(parent, label + "_lead", [cable_anchor, cable_anchor + cable_dir * 0.008, cable_end])
+## Inner half width of the fuselage sides at station `z` (root metres).
+static func _fuselage_inner_half_width(z: float) -> float:
+	var stations: Array = D.fuselage_stations
+	for i in range(stations.size() - 1):
+		var a: Array = stations[i]
+		var b: Array = stations[i + 1]
+		if float(a[0]) <= z and z <= float(b[0]):
+			return lerpf(float(a[1]), float(b[1]), (z - float(a[0])) / (float(b[0]) - float(a[0]))) - FUSELAGE_SHEET_M
+	return float(stations[0][1]) - FUSELAGE_SHEET_M
 
 
-static func _new_arm(parent: Node3D, name: String, pivot: Vector3, u: Vector3, v: Vector3, normal: Vector3, angle: float, radius: float, thickness: float) -> MeshInstance3D:
-	var beam := _box_mesh(name, Vector3(thickness, radius, thickness), PLASTIC, "plastic")
-	beam.set_meta("controls_dynamic", true)
-	_update_arm(beam, pivot, pivot + u.rotated(normal, angle) * radius, u, v, normal, angle)
-	parent.add_child(beam)
-	return beam
+## A standard servo whose arm turns about `pivot` (mid-thickness of the arm) on a shaft along `axis`, the case reaching
+## from the output end back along -`output_dir`. Returns its frame, centre, tab centres and lead exit (parent space).
+static func _add_servo(parent: Node3D, label: String, pivot: Vector3, axis: Vector3, output_dir: Vector3) -> Dictionary:
+	var y := axis.normalized()
+	var x := (output_dir - y * output_dir.dot(y)).normalized()
+	var basis := Basis(x, y, x.cross(y).normalized())
+	var bottom := pivot - y * (SERVO_SPLINE_TOP_M + ARM_THICKNESS_M * 0.5) - x * SERVO_SHAFT_X_M
+	var size := SERVO_CASE_M
+	var tab_y := SERVO_TAB_Y_M + 0.00125
+	var tab_x := (SERVO_TAB_SPAN_M + size.x) * 0.25
+	# Bottom cover, case to the tab flange, flange with tabs, top cover (seams read as slightly inset covers), output
+	# boss and spline, side label and lead grommet.
+	var parts := [
+		[_box_mesh(label + "_bottom_cover", Vector3(size.x - 0.0005, 0.004, size.z - 0.0004), PLASTIC, "plastic"), Vector3(0, 0.002, 0)],
+		[_box_mesh(label + "_case", Vector3(size.x, 0.025, size.z), PLASTIC, "plastic"), Vector3(0, 0.0165, 0)],
+		[_box_mesh(label + "_tabs", Vector3(SERVO_TAB_SPAN_M, 0.0025, 0.018), PLASTIC, "plastic"), Vector3(0, tab_y, 0)],
+		[_box_mesh(label + "_top_cover", Vector3(size.x - 0.0005, size.y - 0.029, size.z - 0.0004), PLASTIC, "plastic"), Vector3(0, (0.029 + size.y) * 0.5, 0)],
+		[_cylinder_mesh(label + "_output_boss", 0.0058, 0.0016, PLASTIC, "plastic", 16), Vector3(SERVO_SHAFT_X_M, size.y + 0.0008, 0)],
+		[_cylinder_mesh(label + "_spline", 0.0029, SERVO_SPLINE_TOP_M - size.y - 0.0016, DARK_PLASTIC, "plastic", 12), Vector3(SERVO_SHAFT_X_M, (size.y + 0.0016 + SERVO_SPLINE_TOP_M) * 0.5, 0)],
+		[_box_mesh(label + "_label", Vector3(0.026, 0.013, 0.0003), SERVO_LABEL, "plastic"), Vector3(-0.003, 0.0165, size.z * 0.5 + 0.00015)],
+		[_box_mesh(label + "_lead_grommet", Vector3(0.003, 0.004, 0.007), DARK_PLASTIC, "rubber"), Vector3(-size.x * 0.5 - 0.0015, 0.006, 0)],
+	]
+	var tabs: Array[Vector3] = []
+	for end in [-1.0, 1.0]:
+		parts.append([_cylinder_mesh(label + "_grommet", 0.0032, 0.0046, RUBBER, "rubber", 10), Vector3(end * tab_x, tab_y, 0)])
+		parts.append([_cylinder_mesh(label + "_eyelet", 0.0016, 0.0052, STEEL, "aluminum", 8), Vector3(end * tab_x, tab_y, 0)])
+		parts.append([_cylinder_mesh(label + "_mount_screw", 0.0021, 0.0010, STEEL, "steel", 8), Vector3(end * tab_x, tab_y + 0.0028, 0)])
+		tabs.append(bottom + basis * Vector3(end * tab_x, tab_y, 0))
+	for part in parts:
+		var node: MeshInstance3D = part[0]
+		node.transform = Transform3D(basis, bottom + basis * (part[1] as Vector3))
+		parent.add_child(node)
+	return {"basis": basis, "centre": bottom + basis.y * (size.y * 0.5), "tabs": tabs, "lead": bottom + basis * Vector3(-size.x * 0.5 - 0.003, 0.006, 0)}
 
 
-static func _update_arm(arm: Node3D, pivot: Vector3, endpoint: Vector3, u: Vector3, v: Vector3, normal: Vector3, angle: float) -> void:
-	var direction := (endpoint - pivot).normalized()
-	var orientation := Basis(Quaternion(Vector3.UP, direction))
-	var midpoint := (pivot + endpoint) * 0.5
-	arm.transform = Transform3D(orientation, midpoint)
+## Hardwood rails (upright servo) or blocks (servo on its side) under each tab, glued to the fuselage side `wall_sign`.
+static func _add_servo_mount(parent: Node3D, label: String, servo: Dictionary, wall_sign: float) -> void:
+	var basis: Basis = servo.basis
+	var centre: Vector3 = servo.centre
+	for tab: Vector3 in servo.tabs:
+		var wall := wall_sign * _fuselage_inner_half_width(tab.z)
+		var size: Vector3
+		var position: Vector3
+		if absf(basis.y.y) > 0.7:
+			# Rails across under the tabs, from the side to just past the case.
+			var inner := centre.x - wall_sign * (SERVO_CASE_M.z * 0.5 + 0.002)
+			size = Vector3(absf(wall - inner), 0.0095, 0.00635)
+			position = Vector3((wall + inner) * 0.5, tab.y - basis.y.y * (0.00125 + size.y * 0.5), tab.z)
+		else:
+			# Blocks from the tab underside to the side.
+			var face := tab.x - basis.y.x * 0.00125
+			size = Vector3(absf(wall - face), 0.012, 0.007)
+			position = Vector3((wall + face) * 0.5, tab.y, tab.z)
+		_add_box(parent, label + "_rail", size, position, Basis.IDENTITY, WOOD, "wood")
+
+
+## A servo arm turning about `pivot` on a shaft along `axis`: round hub, tapered blade, spare holes and hub screw.
+static func _new_arm(parent: Node3D, name: String, pivot: Vector3, endpoint: Vector3, axis: Vector3, radius: float) -> MeshInstance3D:
+	var outline := PackedVector2Array([Vector2(-0.004, 0.0), Vector2(0.004, 0.0), Vector2(0.0024, radius), Vector2(0.0012, radius + 0.0021), Vector2(-0.0012, radius + 0.0021), Vector2(-0.0024, radius)])
+	var hub_basis := Basis(Vector3.RIGHT, PI * 0.5)
+	var parts := [
+		[_plate_mesh(outline, ARM_THICKNESS_M), Transform3D.IDENTITY, PLASTIC, "plastic"],
+		[_cylinder(0.0045, 0.005, 14), Transform3D(hub_basis, Vector3(0, 0, -0.001)), PLASTIC, "plastic"],
+		[_cylinder(0.0017, 0.0006, 8), Transform3D(hub_basis, Vector3(0, 0, 0.0018)), STEEL, "steel"],
+	]
+	for offset in [0.0032, 0.0064]:
+		parts.append([_cylinder(0.0007, ARM_THICKNESS_M + 0.0002, 6), Transform3D(hub_basis, Vector3(0, radius - offset, 0)), DARK_PLASTIC, "plastic"])
+	var arm := MeshInstance3D.new()
+	arm.name = name
+	arm.mesh = _merged_mesh(parts)
+	arm.set_meta("controls_dynamic", true)
+	_update_arm(arm, pivot, endpoint, axis)
+	parent.add_child(arm)
+	return arm
+
+
+## Arm frame: origin on the shaft, +Y toward the clevis, +Z up the shaft (away from the servo).
+static func _update_arm(arm: Node3D, pivot: Vector3, endpoint: Vector3, axis: Vector3) -> void:
+	var along := (endpoint - pivot).normalized()
+	var up := (axis - along * axis.dot(along)).normalized()
+	arm.transform = Transform3D(Basis(along.cross(up), along, up), pivot)
+
+
+## A flat plate: convex `outline` (XY, metres) extruded `thickness` along Z, centred on Z = 0, with flat normals.
+static func _plate_mesh(outline: PackedVector2Array, thickness: float) -> ArrayMesh:
+	var tool := SurfaceTool.new()
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var centre := Vector2.ZERO
+	for point in outline:
+		centre += point
+	centre /= float(outline.size())
+	var half := thickness * 0.5
+	for i in outline.size():
+		var a: Vector2 = outline[i]
+		var b: Vector2 = outline[(i + 1) % outline.size()]
+		for z in [half, -half]:
+			_face(tool, Vector3(centre.x, centre.y, z), Vector3(a.x, a.y, z), Vector3(b.x, b.y, z), Vector3(0, 0, signf(z)))
+		var side := Vector3(b.y - a.y, a.x - b.x, 0).normalized()
+		if side.dot(Vector3(a.x - centre.x, a.y - centre.y, 0)) < 0.0:
+			side = -side
+		_face(tool, Vector3(a.x, a.y, half), Vector3(b.x, b.y, half), Vector3(b.x, b.y, -half), side)
+		_face(tool, Vector3(a.x, a.y, half), Vector3(b.x, b.y, -half), Vector3(a.x, a.y, -half), side)
+	return tool.commit()
+
+
+## One flat triangle wound to face `normal` (Godot front faces are clockwise).
+static func _face(tool: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, normal: Vector3) -> void:
+	var corners := [a, b, c] if (b - a).cross(c - a).dot(normal) < 0.0 else [a, c, b]
+	for corner: Vector3 in corners:
+		tool.set_normal(normal)
+		tool.set_uv(Vector2(corner.x, corner.y))
+		tool.add_vertex(corner)
+
+
+## Merge [mesh, transform, colour, profile] parts into one mesh with a surface per material (for moving parts).
+static func _merged_mesh(parts: Array) -> ArrayMesh:
+	var tools: Dictionary = {}
+	for part in parts:
+		var material := Finish.material(part[2], part[3])
+		if not tools.has(material):
+			var tool := SurfaceTool.new()
+			tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+			tool.set_material(material)
+			tools[material] = tool
+		(tools[material] as SurfaceTool).append_from(part[0], 0, part[1])
+	var mesh := ArrayMesh.new()
+	for material in tools:
+		(tools[material] as SurfaceTool).commit(mesh)
+	return mesh
+
+
+static func _cylinder(radius: float, length: float, segments: int) -> CylinderMesh:
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = radius
+	mesh.bottom_radius = radius
+	mesh.height = length
+	mesh.radial_segments = segments
+	mesh.rings = 1
+	return mesh
 
 
 static func _new_rod(parent: Node3D, name: String, length: float, radius: float, color: Color, profile: String) -> MeshInstance3D:
@@ -606,22 +696,6 @@ static func _update_rod(rod: Dictionary, a: Vector3, b: Vector3, normal: Vector3
 	rod.end_joint.basis = _joint_basis(normal, direction)
 	rod.current_length_m = actual_length
 	rod.length_error_m = absf(actual_length - float(rod.target_length_m))
-
-
-static func _update_beam(beam: Node3D, a: Vector3, b: Vector3, normal: Vector3) -> void:
-	var delta := b - a
-	var length := delta.length()
-	if length <= SOLVER_EPSILON:
-		return
-	beam.transform = Transform3D(Basis(Quaternion(Vector3.UP, delta / length)), (a + b) * 0.5)
-
-
-static func _beam_transform(pivot: Vector3, endpoint: Vector3, normal: Vector3) -> Transform3D:
-	var delta := endpoint - pivot
-	var length := delta.length()
-	if length <= SOLVER_EPSILON:
-		return Transform3D(Basis.IDENTITY, pivot)
-	return Transform3D(Basis(Quaternion(Vector3.UP, delta / length)), (pivot + endpoint) * 0.5)
 
 
 static func _joint_basis(normal: Vector3, direction: Vector3) -> Basis:

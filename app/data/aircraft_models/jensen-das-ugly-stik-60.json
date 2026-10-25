@@ -131,7 +131,7 @@
     },
     {
       "path": "res://aircraft/ugly_stik_controls.gd",
-      "sha256": "406c391f41cade17057e940d8dc26b5a861d6e3bd1d9979060a7ef3f771ec1b5",
+      "sha256": "b82ff4de579603d6a6659208ea536d75307e6ac193e938a67e16f9348cb81d79",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },

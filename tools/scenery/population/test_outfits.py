@@ -125,6 +125,9 @@ class Manifests(unittest.TestCase):
                 self.assertEqual(len(used_as), 1, "a texture is both diffuse and normal")
                 text = (PEOPLE_DIR / (uri + ".import")).read_text()
                 self.assertIn("compress/normal_map=%d" % (1 if used_as == {"normal"} else 0), text)
+                # People are seen at 2-32 px heads; a 2048 diffuse / 1024 normal import is indistinguishable at
+                # 5 m and saves 13.7 MB of VRAM (optimization round, 2026-10-25).
+                self.assertIn("process/size_limit=%d" % (1024 if used_as == {"normal"} else 2048), text)
 
     def test_atlas_imports_are_compressed_with_mipmaps(self):
         for path in sorted((PEOPLE_DIR / "textures").glob("*.png.import")):
