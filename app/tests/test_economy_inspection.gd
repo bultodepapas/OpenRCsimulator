@@ -1,10 +1,14 @@
 extends SceneTree
 const Incident = preload("res://economy/incident.gd")
+const AircraftData = preload("res://physics/aircraft_data.gd")
+const ContactContract = preload("res://physics/aircraft_contact_contract.gd")
+const ContactEvents = preload("res://sim/aircraft_contact_events.gd")
 var checks := 0
 var failures := 0
 
 func _initialize() -> void:
 	_test_repair_choices()
+	_test_corsair_damage()
 	var ledger := Incident.new()
 	ledger.begin("jensen-das-ugly-stik-60", "")
 	ledger._last_tick = 10
@@ -151,6 +155,72 @@ func receipt(ledger: RefCounted, id: String) -> Dictionary:
 	for component: Dictionary in ledger.dossier.components:
 		value.components[component.id] = row("replace", component.quantity)
 	return value
+
+## F4U-11-R2: accepted events open local inspections; only an explicit disposition
+## can price an airframe/control replacement. These are software scenarios.
+func _test_corsair_damage() -> void:
+	var loaded := AircraftData.load_file("res://data/aircraft/f4u_corsair_250.json")
+	check("Corsair damage fixtures load the physical model", loaded.ok)
+	if not loaded.ok: return
+	var bindings := ContactContract.describe(loaded.model, true)
+	var cases := {
+		"probe_wing_left_tip": ["wing_left", "aileron_servo_left", "flap_servos_left", "wing_joiner"],
+		"probe_gull_right_bottom": ["wing_right", "wing_joiner", "flap_servos_right", "gear_main_right", "retract_air"],
+		"probe_stabilizer_left_aft": ["horizontal_tail", "elevator_servos", "fuselage_rear"],
+		"probe_fin_aft_upper": ["vertical_tail", "rudder_servo", "fuselage_rear"],
+	}
+	for probe_id: String in cases:
+		var ledger := Incident.new()
+		ledger.begin("f4u-corsair-250", "")
+		var index := -1
+		for i in bindings.hull_probes.size():
+			if bindings.hull_probes[i].id == probe_id: index = i
+		check(probe_id + " is an accepted contact identity", index >= 0)
+		if index < 0: continue
+		var events: Array = ContactEvents.hull_events([{index = index, new = true, depth_m = 0.001}], bindings, PackedStringArray(), 10).events
+		ledger.observe({tick = 10, events = events}, bindings, false)
+		ledger.evaluate_pending()
+		var expected: Dictionary = {}
+		for id: String in cases[probe_id]: expected[id] = {disposition = "inspect"}
+		check(probe_id + " inspects exactly the local installation", ledger._assessment.components == expected)
+		check(probe_id + " cannot turn presentation damage into a bill", ledger.report.get("known_subtotal_minor") == 0 and ledger.report.get("total_minor") == null)
+		if probe_id == "probe_wing_left_tip":
+			var decision := receipt(ledger, "one-left-servo")
+			decision.full_inspection = false
+			decision.total_loss = false
+			decision.components = {"aileron_servo_left": row("replace", 1)}
+			check("one inspected left servo costs one proxy, not all ten", ledger.apply_inspection(decision).ok and ledger.report.known_subtotal_minor == 10339)
+			check("right controls remain untouched by left-only inspection", not ledger._assessment.components.has("aileron_servo_right") and not ledger._assessment.components.has("flap_servos_right"))
+		var saved := ledger.checkpoint(10, bindings)
+		var restored := Incident.new()
+		restored.begin("f4u-corsair-250", "")
+		var prepared := restored.prepare_restore(saved, 10, bindings)
+		if not prepared.get("ok", false): print(prepared)
+		check(probe_id + " damage matrix survives checkpoint validation", prepared.get("ok", false))
+		if prepared.get("ok", false):
+			restored.commit_restore(prepared)
+			check(probe_id + " restores the same report", restored.report == ledger.report)
+	# Legacy/self-referencing lists must never downgrade the mandatory propeller
+	# decision, either when observed or when checkpoint evidence is reconstructed.
+	for self_reference: bool in [false, true]:
+		var ledger := Incident.new()
+		ledger.begin("f4u-corsair-250", "")
+		if self_reference: ledger.dossier.propeller_inspection_ids.append("propeller")
+		var strike := ContactEvents.strike_event({tick = 10, rpm = 4000.0,
+			point_ned = PackedFloat64Array([0.0, 0.0, 0.0]), velocity_ned = PackedFloat64Array([1.0, 0.0, 0.0])}, 10, "test", bindings)
+		ledger.observe({tick = 10, events = [strike]}, bindings, false)
+		ledger.evaluate_pending()
+		check("Corsair strike retains one replacement, self-reference=%s" % self_reference,
+			ledger._assessment.components.propeller == {disposition = "replace", quantity = 1})
+		check("Corsair strike inspects engine without automatically purchasing it",
+			ledger._assessment.components.engine_moki_s250.disposition == "inspect" and ledger.report.total_minor == null)
+		var saved := ledger.checkpoint(10, bindings)
+		check("Corsair propeller evidence restores without downgrade", ledger.prepare_restore(saved, 10, bindings).get("ok", false))
+		var before := ledger.report.duplicate(true)
+		ledger.observe({tick = 10, events = [strike]}, bindings, false)
+		ledger.evaluate_pending()
+		check("Corsair repeated strike never rebills", ledger.report == before)
+
 
 func row(disposition: String, quantity: int) -> Dictionary:
 	return {disposition = disposition, quantity = quantity, damage_flags = [], evidence = "Explicit scenario component conclusion."}

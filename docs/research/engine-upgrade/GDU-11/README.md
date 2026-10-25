@@ -43,6 +43,8 @@ Raw PNGs and full frozen copies stay outside Git at `D:/OpenRCsimulator-experime
 
 ## Other 4.8 candidates reviewed
 
+The [expanded opportunity review](opportunities.md) adds UI search/text fitting, High contact shadows/multi-bounce AO, automatic input/loading/model benefits, and explicit exclusions. It records current integration points, exact pinned APIs and verification needed before adoption.
+
 The [official beta1 announcement](https://godotengine.org/article/dev-snapshot-godot-4-8-beta-1/) was checked against pinned source and existing runtime contracts:
 
 - **Compatibility decals:** a useful next prototype for terrain-following crash marks. The pinned [GLES3 implementation](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/drivers/gles3/rasterizer_scene_gles3.cpp#L138) limits pairing to eight decals per receiving geometry instance, while the current plane-mark pool allows sixteen. Require bounded use/fallback and slope/9/16-mark tests. Pinned `Decal.xml` still claims no Compatibility support; implementation and [PR118070](https://github.com/godotengine/godot/pull/118070) establish actual support and limits.

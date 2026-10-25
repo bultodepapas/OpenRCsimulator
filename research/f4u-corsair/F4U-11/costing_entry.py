@@ -45,10 +45,18 @@ LINES = [
     line("receiver_batteries", ["receiver_batteries"], "Unpriced two 2S LiFe receiver batteries."),
     line("receiver_radio", ["receiver_radio"], "Unpriced receiver, switches and power distribution; installed radio identity unknown."),
     line("retract_air", ["retract_air"], "Unpriced air tank, valves and lines for the Sierra retracts and Robart door cylinders."),
-    line("flight_control_servos",
-         ["servo_aileron_left", "servo_aileron_right", "servo_flap_left", "servo_flap_right", "servo_elevator", "servo_rudder", "servo_tail_steering"],
-         "Ten control servos from seven inventory rows: two aileron, four flap (an inner and an outer per side, CARF manual), two elevator, one rudder and one tail-wheel steering. Savox SA-1230SG+ (79 g, 36 kg·cm at 6 V; ServoCity $103.39) is the large-aircraft servo value proxy the P-51 uses; it is a class proxy, not the installed identity or a fit qualification, and ten-unit availability is not established. Pull-pull cables and wires remain unpriced.",
-         kind="price_proxy", observation="savox-sa1230sgp", quantity=10),
+    *[line(component_id, [inventory_id],
+           f"{description}. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, observed 2026-10-15) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced.",
+           kind="price_proxy", observation="savox-sa1230sgp", quantity=quantity)
+      for component_id, inventory_id, quantity, description in [
+          ("aileron_servo_left", "servo_aileron_left", 1, "Left aileron servo"),
+          ("aileron_servo_right", "servo_aileron_right", 1, "Right aileron servo"),
+          ("flap_servos_left", "servo_flap_left", 2, "Left inner and outer flap servos"),
+          ("flap_servos_right", "servo_flap_right", 2, "Right inner and outer flap servos"),
+          ("elevator_servos", "servo_elevator", 2, "Two elevator servos"),
+          ("rudder_servo", "servo_rudder", 1, "Rudder servo"),
+          ("tail_steering_servo", "servo_tail_steering", 1, "Tail-wheel steering servo"),
+      ]],
     line("throttle_choke_servos", ["servo_throttle_choke"],
          "Two small throttle/choke servos; Hitec HS-311 ($16.99 each at Tower) is the ordinary-servo value proxy the P-51 uses. Linkage unpriced; no installed model claimed.",
          kind="price_proxy", observation="stik_servos_hitec_hs311_four", quantity=2),
@@ -85,6 +93,23 @@ CONTACTS = {
     "contact_main_left": ["gear_main_left"], "contact_main_right": ["gear_main_right"], "contact_tail": ["gear_tail"],
 }
 
+# F4U-11-R2: advisory inspection follows local installation and load paths from
+# the CARF manual, not C0-C4 presentation severity. It never asserts part failure.
+for side in ("left", "right"):
+    for suffix in ("tip", "le", "te"):
+        CONTACTS[f"probe_wing_{side}_{suffix}"] += [f"aileron_servo_{side}", f"flap_servos_{side}", "wing_joiner"]
+    CONTACTS[f"probe_gull_{side}_bottom"] += [f"flap_servos_{side}", f"gear_main_{side}", "retract_air"]
+    CONTACTS[f"contact_main_{side}"] += [f"wing_{side}", "wing_joiner", "retract_air"]
+    for suffix in ("tip", "aft"):
+        CONTACTS[f"probe_stabilizer_{side}_{suffix}"] += ["elevator_servos", "fuselage_rear"]
+for contact_id in ("probe_fin_top", "probe_fin_aft_upper", "probe_rudder_bottom"):
+    CONTACTS[contact_id] += ["rudder_servo", "fuselage_rear"]
+for contact_id in ("probe_tail_cone", "probe_fuselage_rear_bottom"):
+    CONTACTS[contact_id] += ["horizontal_tail", "elevator_servos", "gear_tail", "tail_steering_servo"]
+CONTACTS["contact_tail"] += ["fuselage_rear", "tail_steering_servo", "retract_air"]
+CONTACTS["probe_cowl_bottom"] += ["engine_mount", "fuselage_front", "ignition_module", "throttle_choke_servos"]
+CONTACTS["probe_spinner_tip"] += ["ignition_module", "throttle_choke_servos"]
+
 
 def entry(source_sha):
     return {
@@ -103,7 +128,7 @@ def entry(source_sha):
             "lines": LINES,
             "contact_components": CONTACTS,
             "propeller_component_id": "propeller",
-            "propeller_inspection_ids": ["engine_moki_s250", "propeller", "spinner_main", "engine_mount", "cowl_main", "fuselage_front"],
+            "propeller_inspection_ids": ["engine_moki_s250", "spinner_main", "engine_mount", "cowl_main", "fuselage_front", "ignition_module", "throttle_choke_servos"],
         },
     }
 
