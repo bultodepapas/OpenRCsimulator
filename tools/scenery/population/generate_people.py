@@ -203,6 +203,36 @@ def bend_pose_bone(name, degrees):
     bone.rotation_mode = 'QUATERNION'
     bone.rotation_quaternion = bone.rotation_quaternion @ Quaternion((1.0, 0.0, 0.0), math.radians(degrees))
 
+# SC-HUM-09 hands, tuned through the Blender MCP on posed rigs (--save-posed). MPFB's default rig flexes a finger
+# about its local Z axis (+ on the left hand, - on the right) and tucks the thumb toward the index about local -X on
+# both sides. Flexion per finger (thumb to little) and joint (1-3), in degrees: relaxed for hanging or resting
+# hands, grip for hands holding a transmitter or working on a model.
+FINGERS_RELAXED = ((8, 10, 12), (12, 20, 10), (16, 25, 12), (20, 30, 14), (24, 34, 16))
+FINGERS_GRIP = ((10, 14, 14), (22, 30, 18), (26, 34, 20), (30, 38, 22), (34, 42, 24))
+THUMB_TUCK_RELAXED_DEG = -15.0
+THUMB_TUCK_GRIP_DEG = -10.0
+# Seated hands rest on the thighs: along the hip-to-knee line, lifted to the top of the thigh.
+SEAT_HAND_ALONG_THIGH = 0.55
+SEAT_HAND_LIFT_M = 0.10
+
+def pose_fingers(side, curl, thumb_tuck_deg):
+    """Replace the source pose's fingers. The CC0 standing BVH bends only the outer joints, which reads as a claw."""
+    flex = 1.0 if side == 'L' else -1.0
+    for finger in range(1, 6):
+        for joint in range(1, 4):
+            bone = rig.pose.bones['finger%d-%d.%s' % (finger, joint, side)]
+            bone.rotation_mode = 'QUATERNION'
+            rotation = Quaternion((0.0, 0.0, 1.0), math.radians(flex * curl[finger - 1][joint - 1]))
+            if finger == 1 and joint == 1:
+                rotation = Quaternion((1.0, 0.0, 0.0), math.radians(thumb_tuck_deg)) @ rotation
+            bone.rotation_quaternion = rotation
+
+def aim_bone(bone_name, world_point):
+    target = bpy.data.objects.new('Aim_' + bone_name, None)
+    bpy.context.scene.collection.objects.link(target)
+    target.location = world_point
+    rig.pose.bones[bone_name].constraints.new('DAMPED_TRACK').target = target
+
 # SC-HUM-01 transmitter hold, in metres. Source frame (owner model): width X, face toward -Y, up +Z.
 TRANSMITTER_ROOT = 'T12D_root'
 TRANSMITTER_GIMBALS = ('Stick_Izq_eje', 'Stick_Der_eje')  # their midpoint is the hold reference
@@ -213,7 +243,6 @@ TRANSMITTER_TILT_DEG = 35.0  # face elevation above horizontal, toward the pilot
 TRANSMITTER_WRIST = (0.10, 0.04, 0.02)
 TRANSMITTER_KNUCKLES = (0.085, 0.035, 0.12)
 TRANSMITTER_THUMB = (0.05, -0.034, 0.10)
-FINGER_CURL_DEG = 55.0
 TRANSMITTER_MIN_PART_M = 0.010  # screws, LEDs, knobs and printed marks are below a pixel at field range
 TRANSMITTER_TRIANGLES = 560  # keeps each pilot within the 8,000-triangle person cap; Godot adds automatic LODs
 TRANSMITTER_PART_FLOOR = 8  # triangles a small part keeps (a four-sided stick)
@@ -304,11 +333,24 @@ source_scale = 1.75 / 1.6594
 # MPFB works in metres; LU-21 rescaled its androgynous default to 1.75 m. Natural outfits keep metres.
 pose_scale = 1.0 if OUTFIT['height'] == 'natural' else source_scale
 radio_parts = []
+if ARGS.outfit:
+    for side in ('L', 'R'):
+        pose_fingers(side, FINGERS_RELAXED, THUMB_TUCK_RELAXED_DEG)
 if pose_kind == 'seated':
     # The CC0 Anrico chair pose supplies both legs and arms; move its pelvis
     # to the field bench height before the final adult-scale bake.
     hip = rig.pose.bones['root'].head.z
     rig.location.z += (0.45 / pose_scale) - hip
+    if ARGS.outfit:
+        # Both hands rest on the thighs (the Anrico pose raises one hand beside the head, a frozen wave).
+        bpy.context.view_layer.update()
+        for side, sign in [('L', 1.0), ('R', -1.0)]:
+            reset_pose_bones([part + '.' + side for part in ['clavicle', 'shoulder01', 'upperarm01', 'upperarm02', 'lowerarm01', 'lowerarm02']])
+            hip_joint = rig.matrix_world @ rig.pose.bones['upperleg02.' + side].head
+            knee = rig.matrix_world @ rig.pose.bones['lowerleg01.' + side].head
+            rest = hip_joint.lerp(knee, SEAT_HAND_ALONG_THIGH) + Vector((sign * 0.005, 0.0, SEAT_HAND_LIFT_M / pose_scale))
+            make_ik_target('SeatHand_' + side, tuple(rest), 'lowerarm02.' + side, 4, (sign * 0.45 / pose_scale, 0.25 / pose_scale, rest.z + 0.25 / pose_scale))
+            aim_bone('wrist.' + side, knee + Vector((sign * 0.02, -0.06, 0.02)) / pose_scale)
 elif pose_kind == 'pilot':
     # SC-HUM-01: the owner's transmitter, face tilted up toward the eyes, thumbs on the gimbals and the
     # wrists just outside its rear grips (IK). Both are placed from the transmitter frame, not by hand.
@@ -324,9 +366,7 @@ elif pose_kind == 'pilot':
             bpy.context.scene.collection.objects.link(target)
             target.location = radio_frame @ Vector((-sign * point[0], point[1], point[2])) / pose_scale
             rig.pose.bones[bone_name].constraints.new('DAMPED_TRACK').target = target
-        for finger in range(2, 6):
-            for joint in range(1, 4):
-                bend_pose_bone('finger%d-%d.%s' % (finger, joint, side), FINGER_CURL_DEG)
+        pose_fingers(side, FINGERS_GRIP, THUMB_TUCK_GRIP_DEG)  # the thumb's first joint follows its aim
     for part in radio_parts:
         part.data.transform(Matrix.Scale(1.0 / pose_scale, 4) @ radio_frame)
 elif pose_kind == 'working':
@@ -338,6 +378,14 @@ elif pose_kind == 'working':
         reset_pose_bones([part + '.' + side for part in ['clavicle', 'shoulder01', 'upperarm01', 'upperarm02', 'lowerarm01', 'lowerarm02']])
         make_ik_target('WorkHand_' + side, (sign * 0.17 / pose_scale, -0.44 / pose_scale, 1.08 / pose_scale), 'lowerarm02.' + side, 4,
                        (sign * 0.45 / pose_scale, 0.10 / pose_scale, 1.05 / pose_scale))
+        if ARGS.outfit:
+            pose_fingers(side, FINGERS_GRIP, THUMB_TUCK_GRIP_DEG)
+    if ARGS.outfit:
+        # Palms down on the model, fingers forward: aim each hand ahead of and below where the IK left the wrist.
+        bpy.context.view_layer.update()
+        for side, sign in [('L', 1.0), ('R', -1.0)]:
+            wrist = rig.matrix_world @ rig.pose.bones['wrist.' + side].head
+            aim_bone('wrist.' + side, wrist + Vector((-sign * 0.04, -0.16, -0.07)) / pose_scale)
 bpy.context.view_layer.update()
 if ARGS.save_posed:
     bpy.ops.wm.save_as_mainfile(filepath=str(ARGS.save_posed), copy=True)
@@ -346,10 +394,33 @@ for bone_name in ['root', 'pelvis.L', 'pelvis.R', 'upperleg02.L', 'upperleg02.R'
     if bone:
         print('POSE_BONE=' + bone_name + ':HEAD:' + str(tuple(round(v, 4) for v in (rig.matrix_world @ bone.head))) + ':TAIL:' + str(tuple(round(v, 4) for v in (rig.matrix_world @ bone.tail))))
 
+def patch_image(image, patches):
+    """Cover regions of a source texture with fabric copied from just below, feathered at the edges (a CC0 shirt's
+    MakeHuman logo, SC-HUM-09). Each patch is [x0, y0, x1, y1, dy] in fractions of the image, top-left origin."""
+    import numpy
+    width, height = image.size
+    pixels = numpy.empty(width * height * 4, dtype=numpy.float32)
+    image.pixels.foreach_get(pixels)
+    rgba = pixels.reshape(height, width, 4)[::-1]  # Blender rows start at the bottom
+    for x0, y0, x1, y1, dy in patches:
+        a, b, c, d = int(x0 * width), int(y0 * height), int(x1 * width), int(y1 * height)
+        offset = int(dy * height)
+        feather = max(1, min(c - a, d - b) // 6)
+        ramp_x = numpy.minimum(numpy.arange(c - a) + 1, numpy.arange(c - a)[::-1] + 1) / feather
+        ramp_y = numpy.minimum(numpy.arange(d - b) + 1, numpy.arange(d - b)[::-1] + 1) / feather
+        weight = numpy.clip(numpy.minimum(ramp_y[:, None], ramp_x[None, :]), 0.0, 1.0)[..., None]
+        rgba[b:d, a:c] = rgba[b:d, a:c] * (1.0 - weight) + rgba[b + offset:d + offset, a:c] * weight
+    image.pixels.foreach_set(rgba[::-1].reshape(-1))
+    image.update()
+
 # Reduce embedded images for a small compatibility-renderer asset.
 for image in list(bpy.data.images):
     if image.source != 'FILE' or image.size[0] <= 0 or image.size[1] <= 0:
         continue
+    patches = OUTFIT.get('texture_patches', {}).get(os.path.basename(image.filepath))
+    if patches:
+        patch_image(image, patches)
+        print('PATCHED_IMAGE=' + image.name + ':' + str(len(patches)))
     path = image.filepath.lower().replace('\\', '/')
     edges = OUTFIT['image_max_edge']
     if '/skins/' in path:

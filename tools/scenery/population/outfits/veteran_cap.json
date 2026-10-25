@@ -1,6 +1,6 @@
 {
   "id": "veteran_cap",
-  "notes": "Older club member: fedora, white t-shirt and jeans, cloth shoes. (The CC0 newsboy cap ships without a material line.)",
+  "notes": "Older club member: fedora, white t-shirt and jeans, cloth shoes. (The CC0 newsboy cap ships without a material line.) The MakeHuman logo on the CC0 t-shirt is patched out (front, back, sleeve).",
   "macros": {
     "gender": 1.0,
     "age": 0.82,
@@ -73,5 +73,30 @@
     "beard": 0.4,
     "glasses": 0.35,
     "fedora": 0.5
+  },
+  "texture_patches": {
+    "male_casualsuit06_diffuse.png": [
+      [
+        0.44,
+        0.115,
+        0.625,
+        0.2,
+        0.1
+      ],
+      [
+        0.195,
+        0.112,
+        0.295,
+        0.165,
+        0.08
+      ],
+      [
+        0.734,
+        0.152,
+        0.752,
+        0.178,
+        0.04
+      ]
+    ]
   }
 }
