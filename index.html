@@ -10,25 +10,31 @@
   <meta property="og:description" content="Aeromodelismo. Código abierto. Un campo para seguir aprendiendo. Descubre OpenRC Simulator.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bultodepapas.github.io/OpenRCsimulator/">
-  <meta property="og:image" content="https://bultodepapas.github.io/OpenRCsimulator/assets/cinema/jet-hero.webp">
+  <meta property="og:image" content="https://bultodepapas.github.io/OpenRCsimulator/assets/branding/openrc-social.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="OpenRC Simulator — ALPHA">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://bultodepapas.github.io/OpenRCsimulator/assets/branding/openrc-social.png">
+  <meta name="twitter:image:alt" content="OpenRC Simulator — ALPHA">
   <link rel="canonical" href="https://bultodepapas.github.io/OpenRCsimulator/">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.svg?v=official-brand-20261024" type="image/svg+xml">
   <link rel="preload" href="assets/barlow-condensed-600-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/dm-sans-variable-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=release-v018-20261024">
-  <link rel="stylesheet" href="details.css?v=release-v018-20261024">
-  <link rel="stylesheet" href="cinema.css?v=release-v018-20261024">
-  <script src="details.js?v=release-v018-20261024" defer></script>
-  <script src="viewer.js?v=release-v018-20261024" defer></script>
-  <script src="main.js?v=release-v018-20261024" defer></script>
-  <script src="cinema.js?v=release-v018-20261024" defer></script>
-  <script src="inspector.js?v=release-v018-20261024" defer></script>
+  <link rel="stylesheet" href="style.css?v=official-brand-20261024">
+  <link rel="stylesheet" href="details.css?v=official-brand-20261024">
+  <link rel="stylesheet" href="cinema.css?v=official-brand-20261024">
+  <script src="details.js?v=official-brand-20261024" defer></script>
+  <script src="viewer.js?v=official-brand-20261024" defer></script>
+  <script src="main.js?v=official-brand-20261024" defer></script>
+  <script src="cinema.js?v=official-brand-20261024" defer></script>
+  <script src="inspector.js?v=official-brand-20261024" defer></script>
 </head>
 <body>
   <div class="reading-progress" aria-hidden="true"></div>
   <a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
   <header class="header">
-    <a href="#" class="wordmark">OPENRC<span>SIMULATOR</span></a>
+    <a href="#" class="wordmark"><img src="assets/branding/openrc-logo.svg" alt="OpenRC Simulator — ALPHA" width="1505" height="327"></a>
     <nav aria-label="Principal" data-label="navigation">
       <a href="#hangar" data-i18n="navHangar">El hangar</a>
       <a href="#field" data-i18n="navField">El campo</a>
@@ -40,7 +46,7 @@
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-top"><span class="eyebrow" data-i18n="heroEyebrow">AEROMODELISMO · CÓDIGO ABIERTO</span><span class="alpha"><i></i> EARLY ALPHA / 0.1.8</span></div>
-      <h1 id="hero-title">OpenRC<span class="hero-asterisk" aria-hidden="true">✳</span></h1>
+      <h1 id="hero-title"><img src="assets/branding/openrc-logo.svg" alt="OpenRC Simulator — ALPHA" width="1505" height="327" fetchpriority="high"></h1>
       <div class="hero-aircraft"><div class="hero-film"><img src="assets/cinema/jet-hero.webp" alt="Ventage Jet naranja y violeta, render del modelo del simulador" data-alt="heroAlt" width="1600" height="1000" fetchpriority="high"><video id="hero-video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-src="assets/cinema/jet-hero.mp4"></video></div></div>
       <div class="hero-scene-caption"><span class="aircraft-note">01 / VENTAGE JET<br><span data-i18n="renderNote">MODELO DEL SIMULADOR · VISTA DE ESTUDIO</span></span><button id="film-toggle" type="button" hidden><span class="film-icon" aria-hidden="true">Ⅱ</span><span class="film-label">Pausar escena</span></button></div>
       <div class="hero-copy"><h2 data-i18n="heroHeading">El campo de vuelo<br>está abierto.</h2><p data-i18n="heroCopy">Tu emisora. Tu próximo vuelo.<br>Un simulador RC que construimos en abierto.</p><div class="hero-actions"><a class="button button-light" href="#download"><span data-i18n="heroCta">Descargar</span><span aria-hidden="true">↗</span></a><button class="hero-inspect" data-inspect-aircraft="jet" type="button" aria-haspopup="dialog" hidden><span data-i18n="exploreJet">Explora el jet</span><span aria-hidden="true">↗</span></button></div></div>
@@ -144,6 +150,6 @@
     <div class="inspector-controls"><div class="inspector-model"><label for="inspect-aircraft" data-i18n="inspectAircraft">Aeronave</label><select id="inspect-aircraft"><option value="jet">01 / Ventage Jet</option><option value="stik">02 / Ugly Stik</option><option value="extra">03 / Extra 300S</option><option value="mustang">04 / P-51D Mustang</option><option value="timber">05 / Turbo Lumber</option><option value="heli">06 / HX-700</option></select></div><div class="camera-presets" role="group" aria-label="Vistas de cámara"><button type="button" data-camera="perspective" aria-pressed="true" data-i18n="viewPerspective">Perspectiva</button><button type="button" data-camera="side" aria-pressed="false" data-i18n="viewSide">Perfil</button><button type="button" data-camera="top" aria-pressed="false" data-i18n="viewTop">Planta</button></div><div class="inspector-zoom"><button id="inspect-zoom-in" type="button" aria-label="Acercar">+</button><button id="inspect-zoom-out" type="button" aria-label="Alejar">−</button></div></div>
     <div class="inspector-footer"><p id="inspector-help" data-i18n="inspectHelp">Arrastra para girar · Rueda o pellizca para acercar · Flechas para orbitar</p><p data-i18n="inspectNote">MODELO DEL PROYECTO · VISUALIZACIÓN, NO VUELO</p></div>
   </dialog>
-  <footer class="footer"><div class="footer-top"><a class="wordmark" href="#">OPENRC<span>SIMULATOR</span></a><p data-i18n="thanks">Con el apoyo de OpenAI al desarrollo.<br>Gracias a los fabricantes participantes y a la comunidad RC.</p><a href="https://github.com/bultodepapas/OpenRCsimulator">GitHub ↗</a></div><div class="footer-bottom"><span data-i18n="license">CÓDIGO MIT · LOS ASSETS CONSERVAN SUS LICENCIAS</span><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/media/README.md" data-i18n="credits">Imágenes del proyecto y créditos ↗</a><a href="#" data-i18n="backTop">Volver arriba ↑</a></div></footer>
+  <footer class="footer"><div class="footer-top"><a class="wordmark" href="#"><img src="assets/branding/openrc-logo.svg" alt="OpenRC Simulator — ALPHA" width="1505" height="327" loading="lazy"></a><p data-i18n="thanks">Con el apoyo de OpenAI al desarrollo.<br>Gracias a los fabricantes participantes y a la comunidad RC.</p><a href="https://github.com/bultodepapas/OpenRCsimulator">GitHub ↗</a></div><div class="footer-bottom"><span data-i18n="license">CÓDIGO MIT · LOS ASSETS CONSERVAN SUS LICENCIAS</span><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/media/README.md" data-i18n="credits">Imágenes del proyecto y créditos ↗</a><a href="#" data-i18n="backTop">Volver arriba ↑</a></div></footer>
 </body>
 </html>
