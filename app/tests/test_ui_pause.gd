@@ -317,6 +317,25 @@ func _run() -> void:
 		and app._trace_recovery.pending_count() == 0)
 	_check("resolved End flight emits exactly one departure", app.menu_audio.cue_count(&"exit") == exits_before + 1)
 
+	# Statistics has a separate save decision after trace recovery. A failed Retry
+	# must release the old native exclusive window before presenting its replacement.
+	var statistics_retries := [0]
+	app._statistics_save_failed(func() -> void:
+		statistics_retries[0] += 1
+		app._statistics_save_failed(func() -> void: statistics_retries[0] += 1))
+	await ui.settle()
+	var statistics_dialog: ConfirmationDialog = app._statistics_save_dialog
+	_check("statistics save decision focuses Cancel", statistics_dialog.get_cancel_button().has_focus())
+	statistics_dialog.confirmed.emit()
+	await ui.settle()
+	statistics_dialog = app._statistics_save_dialog
+	_check("failed statistics retry safely replaces the exclusive dialog", statistics_retries[0] == 1
+		and is_instance_valid(statistics_dialog) and statistics_dialog.visible
+		and statistics_dialog.get_cancel_button().has_focus())
+	statistics_dialog.canceled.emit()
+	await ui.settle()
+	_check("statistics cancellation leaves Home available", app.home != null and statistics_retries[0] == 1)
+
 	# --- Five Home -> Fly -> End cycles leave nothing behind.
 	var counts := []
 	for i in 5:

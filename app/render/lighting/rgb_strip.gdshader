@@ -93,7 +93,9 @@ void fragment() {
 		envelope = floor_level + (1.0 - floor_level) * duty;
 	}
 	float cap = max(display_cap, 0.0) / max(local_exposure, 0.001);
-	float emitted = min(max(radiance * width_gain * effect_gain * envelope, 0.0), cap);
+	// Adapt the emitter first: capping after modulation would flatten breathing and
+	// brightness controls under the world's large night exposure.
+	float emitted = min(max(radiance * width_gain, 0.0), cap) * max(effect_gain * envelope, 0.0);
 	ALBEDO = encode_for_engine(result * emitted);
 	ALPHA = exp(-4.0 * UV.x * UV.x) * smoothstep(0.0, 0.15, underside);
 }

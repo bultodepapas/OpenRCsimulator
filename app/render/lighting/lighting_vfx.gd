@@ -476,8 +476,9 @@ func _update_spills(seconds: float, telemetry: Dictionary, exposure: float) -> v
 		var pattern: Dictionary = zone.get("pattern", {})
 		light.light_color = Patterns.sample(pattern, seconds, 0.5, _profile.get("sequence", []), zone_id)
 		var reaction := Patterns.reactive_multiplier(zone.get("reactive", {}), telemetry)
-		var requested_energy := float(binding.get("base_energy", SPILL_ENERGY)) * _gain * _spill_fade * float(reaction.get("multiplier", 1.0))
-		light.light_energy = minf(requested_energy, SPILL_MAX_EXPOSED_ENERGY / maxf(exposure, 0.0001))
+		var modulation := float(binding.get("base_energy", SPILL_ENERGY)) / SPILL_ENERGY * _gain * _spill_fade * float(reaction.get("multiplier", 1.0))
+		# Preserve user brightness and telemetry response after adapting to night exposure.
+		light.light_energy = minf(SPILL_ENERGY, SPILL_MAX_EXPOSED_ENERGY / maxf(exposure, 0.0001)) * modulation
 		light.visible = _mode == "all" and _gain > 0.0 and _spill_fade > 0.0 and _kit.visible and bool(light.get_meta("gate_open", true))
 
 

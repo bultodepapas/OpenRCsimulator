@@ -190,9 +190,12 @@ func _exercise_audio_profile(audio: Node, config: Dictionary) -> void:
 	var far_listener: Vector3 = Vector3(0.0, 0.0, 100.0)
 	audio.call("update_sound", _snapshot(4, 14.0, 0.4, true, false, far_listener), 1.0 / 60.0)
 	var culled: Dictionary = audio.call("diagnostics")
-	_check("far source is culled while observer keeps ticking", int(culled.get("far_culled_motion_updates", 0)) > 0
+	_check("far source bypasses observation and is culled without stale travel", int(culled.get("far_culled_motion_updates", 0)) > 0
 		and bool(culled.get("last_targets", {}).get("far_culled", false)))
 	audio.call("update_sound", _snapshot(5, 20.0, 0.5, true, false, Vector3.ZERO), 1.0 / 60.0)
+	_check("returning into range primes without replaying distant movement",
+		int(audio.call("diagnostics").get("events_played", 0)) == int(culled.get("events_played", 0)))
+	audio.call("update_sound", _snapshot(6, 22.0, 0.55, true, false, Vector3.ZERO), 1.0 / 60.0)
 	var near: Dictionary = audio.call("diagnostics")
 	_check("moving listener back near source restores bounded voice playback",
 		int(near.get("last_targets", {}).get("active_motion_voices", 0)) > 0)
@@ -202,7 +205,7 @@ func _exercise_audio_profile(audio: Node, config: Dictionary) -> void:
 		and is_equal_approx(zero_metre_gain, 1.0) and is_equal_approx(one_metre_gain, 1.0))
 
 	var pause_events: int = int(near.get("events_played", 0))
-	audio.call("update_sound", _snapshot(6, 40.0, 0.7, true, true, Vector3.ZERO, true), 1.0 / 60.0)
+	audio.call("update_sound", _snapshot(7, 40.0, 0.7, true, true, Vector3.ZERO, true), 1.0 / 60.0)
 	_check("pause primes a changed state without cue playback", int(audio.call("diagnostics").get("events_played", 0)) == pause_events)
 	audio.call("reset")
 	audio.call("update_sound", _snapshot(1, 40.0, 0.7, true), 1.0 / 60.0)

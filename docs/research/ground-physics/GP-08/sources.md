@@ -60,7 +60,7 @@ Access/review date for this source set: 2026-10-25. Sources were reviewed by the
 | M8 — [NASA CR-3113 landing gear study, 1979](https://ntrs.nasa.gov/citations/19790015777) | Historical dynamic gear-model/testing research. | Archival study of a 2,722 kg aircraft; method reference only, not scale-transfer authority. |
 | M9 — USDA *Wood Handbook*, [2021 chapter 5](https://research.fs.usda.gov/treesearch/62244) and [chapter 10](https://research.fs.usda.gov/treesearch/62250) | Material variability and assembly/joint dependence; reason for component-specific evidence. | Government reference records. Bulk wood properties do not establish a balsa/plywood/glue airframe joint's ultimate load. |
 
-The masterplan's coupled equations, virtual-work requirements, force ownership and controlled fixtures are engineering derivations from mechanics and current repository conventions. Proposed tolerances and stage-solver selection are design decisions, explicitly distinguished from measured hardware data. The +0.8 W example is a calculation under an inadequate additive energy oracle, **not a measured increase in the correct total energy of a running aircraft**.
+The masterplan's coupled equations, virtual-work requirements, force ownership and controlled fixtures are engineering derivations from mechanics and current repository conventions. Proposed tolerances and stage-solver selection are design decisions, explicitly distinguished from measured hardware data. An initial +0.8 W additive-oracle example was superseded by the stronger continuation fixture below, which evaluates the correct relative-spin energy under explicit inertia assumptions. Neither example is a runtime or physical measurement.
 
 ## Aerodynamics and RC configuration references
 
@@ -109,3 +109,43 @@ Existing HQ MP3 previews have lossy-source limits even when converted to WAV. Ap
 ## Verification of this documentation
 
 The final document check covers fourteen top-level sections, all sixteen proposed GP-08…23 step IDs, local Markdown file targets, fenced-block balance and whitespace. It does not resolve every external URL, execute physics scenarios, establish performance, or certify measured bounce/strength behavior. The working tree contains unrelated changes; only the masterplan, this source ledger and small GP index links belong to this mission's authored deliverables.
+
+## Continuation engineering review, 2026-10-25
+
+After the user requested continuation, two additional targeted read-only reviews ran using `gpt-6.1-sol` with high reasoning: mathematical/contact-work review and current statistics/audio integration review. They did not implement code or run the simulator. The main agent verified the relevant current source and computed an independent scalar algebraic fixture. This supplements, rather than replaces, the six original specialist roles.
+
+Source snapshot inspected at HEAD `cb2924b3676b72ee49497c92fe742b0b1dcd2d9c`:
+
+| File | Working-file Git blob |
+| --- | --- |
+| `app/physics/ground_wheels.gd` | `ef16c932191054f24092bb0a19a386a6bb538f9a` |
+| `app/physics/generalized_coordinates.gd` | `dde19cfee4ff3669f1ae78f3754b10331a517073` |
+| `app/statistics/detector.gd` | `222896a40ebcf56c74c4a8bcd29e2a86b961e414` |
+| `app/statistics/service.gd` | `5e8d816b3bc65ec014011d9f8e2aa39d28258ab6` |
+| `app/audio/mechanical_motion.gd` | `82e42fa88e258d137bef48d7b3eca97749cc3555` |
+| `app/audio/flight_audio.gd` | `921eb64be766fb6a04ff9dd7b09fafb4985d873f` |
+
+Corrections incorporated:
+
+- The existing pure UI-FS detector is the sole semantic flight/incident classifier; the session publishes accepted physical facts. Current [statistics guide](../../../FLIGHT-STATISTICS.md) supplements the earlier plan. No second takeoff/landing timer is proposed.
+- Existing [AUD-16 mechanical playback](../../../servo-retract-audio-implementation.md) is retained. Its frame-sampled transition source must migrate to accepted ticks so a complete reversal between rendered frames is not lost. Presentation retract type is not physical hardware evidence.
+- The shared structured mass factor assumes diagonal local-local inertia. Validate that assumption; reuse/qualify the existing full Cholesky path when actual local DOFs couple.
+- Hard-landing energy accounting now defines gravitational potential versus gravity work explicitly, includes open-boundary energy flux when applicable, and makes fracture/plastic work a sink rather than release energy.
+
+The strengthened wheel fixture declares `I_locked,yy=1`, `J=0.1`, `R=0.2`, `q=1`, `u=3`, pure carrier torque `M_y=-1`, fixed axis `-y`, and no instantaneous tire/brake/rolling work. Units and a realizable zero-slip contact instant are in masterplan §4.4. Its axial rotor inertia is included exactly once in the locked tensor, leaving positive residual inertia `0.9`. It does not assume those values describe a stock aircraft.
+
+Reproducible scalar arithmetic (analysis only, no engine or repository functions invoked):
+
+```python
+I, J, R, q, u, moment = 1.0, 0.1, 0.2, 1.0, 3.0, -1.0
+grad_q = I*q - (J/R)*u
+grad_u = -(J/R)*q + (J/R**2)*u
+external_power = moment*q
+old_power = grad_q*(moment/I) + grad_u*0.0
+alpha = moment/(I-J)
+coupled_power = grad_q*alpha + grad_u*(R*alpha)
+assert abs(old_power-external_power-1.5) < 1e-12
+assert abs(coupled_power-external_power) < 1e-12
+```
+
+Observed calculation: old-equation energy rate `+0.5 W`, applied power `−1 W`, residual `+1.5 W`; coupled `alpha=−1.1111111111111112 rad/s²`, rim acceleration `−0.22222222222222224 m/s²`, power residual `2.220446049250313e−16 W`. The independent mathematical reviewer agreed with the derivation. GP-09 still must execute this fixture against actual simulator source and validate stock inventory conventions before claiming a runtime fix or real-world validation.

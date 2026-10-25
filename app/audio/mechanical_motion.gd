@@ -4,7 +4,7 @@ class_name MechanicalMotion
 ## Small observer for accepted actuator positions. The caller owns the state and
 ## supplies one coherent post-tick snapshot; targets never create movement.
 const DEFAULT_TICK_RATE_HZ: float = 240.0
-const ANGLE_EPSILON_DEG: float = 0.02
+const SERVO_SPEED_FLOOR_DEG_S: float = 0.2
 const EXTENSION_EPSILON: float = 0.000001
 const MAX_CHANNELS: int = 6
 
@@ -46,7 +46,10 @@ static func observe(previous: Dictionary, snapshot: Dictionary) -> Dictionary:
 		if old.is_empty():
 			measured = _stationary(float(row.value))
 		else:
-			measured = measure_delta(float(old.value), float(row.value), tick_delta, rate, ANGLE_EPSILON_DEG)
+			# A rate floor is independent of render sampling frequency. A fixed angular
+			# epsilon per frame made the same slow correction disappear at high FPS.
+			var angular_floor: float = SERVO_SPEED_FLOOR_DEG_S * float(tick_delta) / rate
+			measured = measure_delta(float(old.value), float(row.value), tick_delta, rate, angular_floor)
 			var transition: Dictionary = transition_for(old, measured, false)
 			event_kind = str(transition.get("event", ""))
 		if not event_kind.is_empty():

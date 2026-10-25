@@ -63,6 +63,14 @@ func _run() -> void:
 	rig.dispose()
 	_check("dispose releases spill and scene VFX resources but preserves aircraft", is_instance_valid(aircraft) and aircraft.get_node_or_null("NightKit") == kit and _count_children(kit, "OmniLight3D") == 0 and _children_named(stage, "AircraftLightingWorldVfx").is_empty())
 	_check("dispose restores source strip overrides", (kit.get_node("strip_left") as MeshInstance3D).get_surface_override_material(0) == null)
+	var zones_off_profile: Dictionary = festival.duplicate(true)
+	for zone: Dictionary in zones_off_profile.get("zones", []):
+		if str(zone.get("id", "")).begins_with("strip_"):
+			zone["enabled"] = false
+	var zones_off_result: Dictionary = rig.configure(aircraft, zones_off_profile)
+	var zones_off_vfx: Dictionary = rig.budget_info().get("vfx", {})
+	_check("disabled strip zones allocate no spill", bool(zones_off_result.get("ok", false)) and int(zones_off_vfx.get("spill_lights_allocated", -1)) == 0)
+	rig.dispose()
 
 	var strip_nodes: Array[MeshInstance3D] = []
 	for child: Node in kit.get_children():
@@ -110,6 +118,106 @@ func _run() -> void:
 	_check("missing required anchor fails configuration cleanly", not bool(required.get("ok", true)) and not required.get("errors", []).is_empty() and _children_named(stage, "AircraftLightingWorldVfx").is_empty())
 	rig.dispose()
 
+	var limited_aircraft := _make_aircraft(stage, "TimberCapabilityLightingAircraft")
+	limited_aircraft.set_meta("light_groups", ["navigation", "strobe", "landing"])
+	limited_aircraft.set_meta("light_anchors", {
+		"landing": {"position": Vector3(-0.08, -0.02, -0.2), "gear_gated": true},
+		"landing_right": {"position": Vector3(0.08, -0.02, -0.2), "gear_gated": true},
+	})
+	var limited_kit := AircraftLights.attach(limited_aircraft)
+	var limited_left_beam := limited_kit.get_node("landing_light") as SpotLight3D
+	var limited_right_beam := limited_kit.get_node("landing_light_right") as SpotLight3D
+	var left_beam_energy := limited_left_beam.light_energy
+	var right_beam_energy := limited_right_beam.light_energy
+	for strip_name: String in ["strip_left", "strip_right"]:
+		if limited_kit.get_node_or_null(strip_name) == null:
+			_add_test_strip(limited_kit, strip_name)
+	var limited_bindings: Dictionary = limited_kit.get_meta("light_bindings", {})
+	var orientation_bindings: Array = limited_bindings.get("orientation", [])
+	for child: Node in limited_kit.get_children():
+		if child is MeshInstance3D and str(child.name).begins_with("strip_") and child not in orientation_bindings:
+			orientation_bindings.append(child)
+	limited_bindings["orientation"] = orientation_bindings
+	AircraftLights.bind_groups(limited_kit, limited_bindings, ["navigation", "strobe", "landing"])
+	var timber_profile: Dictionary = Profile.preset("neon_rgb")
+	var classic_profile: Dictionary = Profile.preset("classic_rc")
+	for zone: Dictionary in classic_profile.get("zones", []):
+		if str(zone.get("id", "")) == "landing_lamp":
+			var disabled_landing: Dictionary = zone.duplicate(true)
+			disabled_landing["enabled"] = false
+			timber_profile["zones"].append(disabled_landing)
+	var limited_rig := Rig.new()
+	var limited_result: Dictionary = limited_rig.configure(limited_aircraft, timber_profile)
+	limited_rig.set_mode("all")
+	_check("unsupported orientation capability suppresses strips and spill", bool(limited_result.get("ok", false)) and not (limited_kit.get_node("strip_left") as MeshInstance3D).visible and not (limited_kit.get_node("strip_right") as MeshInstance3D).visible and int(limited_rig.budget_info().get("vfx", {}).get("spill_lights_allocated", -1)) == 0)
+	var landing_nodes: Array[Node3D] = [
+		limited_kit.get_node("landing_lamp") as Node3D,
+		limited_kit.get_node("landing_lamp_right") as Node3D,
+		limited_left_beam,
+		limited_right_beam,
+	]
+	for landing_node: Node3D in landing_nodes:
+		landing_node.set_meta("gate_open", false)
+	AircraftLights.update_dynamic(limited_kit, limited_aircraft, 1.0)
+	_check("gear update exposes the disabled landing group before profile reconciliation", landing_nodes.all(func(node: Node3D) -> bool: return node.visible))
+	limited_rig.advance(0.0)
+	_check("same-frame profile reconciliation keeps disabled landing lamps and beams dark", landing_nodes.all(func(node: Node3D) -> bool: return not node.visible) and is_zero_approx(limited_left_beam.light_energy) and is_zero_approx(limited_right_beam.light_energy))
+	var enabled_landing_profile: Dictionary = timber_profile.duplicate(true)
+	enabled_landing_profile["brightness"] = 1.0
+	for zone: Dictionary in enabled_landing_profile.get("zones", []):
+		if str(zone.get("id", "")) == "landing_lamp":
+			zone["enabled"] = true
+			zone["brightness"] = 0.25
+	var enabled_landing_result: Dictionary = limited_rig.configure(limited_aircraft, enabled_landing_profile)
+	limited_rig.set_mode("all")
+	_check("canonical landing zone brightness controls both paired beams", bool(enabled_landing_result.get("ok", false)) and limited_left_beam.visible and limited_right_beam.visible and is_equal_approx(limited_left_beam.light_energy, left_beam_energy * 0.25) and is_equal_approx(limited_right_beam.light_energy, right_beam_energy * 0.25) and (limited_kit.get_node("landing_lamp_right") as MeshInstance3D).visible)
+	limited_rig.dispose()
+	limited_rig.free()
+
+	var pattern_aircraft := _make_aircraft(stage, "LightingPatternAircraft")
+	pattern_aircraft.set_meta("light_material_groups", {"light_red": "navigation", "light_green": "navigation", "light_custom": "navigation"})
+	var red_lens := _add_emission_lens(pattern_aircraft, "ImportedRedLens", "light_red")
+	var green_lens := _add_emission_lens(pattern_aircraft, "ImportedGreenLens", "light_green")
+	var custom_lens := _add_emission_lens(pattern_aircraft, "ImportedCustomLens", "light_custom")
+	var pattern_kit := AircraftLights.attach(pattern_aircraft)
+	AircraftLights.set_mode(pattern_kit, "off")
+	var pattern_profile: Dictionary = Profile.preset("classic_rc")
+	for zone: Dictionary in pattern_profile.get("zones", []):
+		match str(zone.get("id", "")):
+			"nav_left": zone["enabled"] = false
+			"nav_right": zone["brightness"] = 0.25
+			"nav_tail":
+				zone["pattern"] = {"id": "wave", "palette": ["#FF241C", "#224EFF"], "period_ticks": 240, "phase_turns": 0.0, "floor": 1.0, "duty": 0.5, "reverse": false, "segments": 1}
+	var pattern_rig := Rig.new()
+	var pattern_result: Dictionary = pattern_rig.configure(pattern_aircraft, pattern_profile)
+	pattern_rig.set_mode("all")
+	var nav_tail_material := (pattern_kit.get_node("nav_tail") as MeshInstance3D).get_surface_override_material(0) as ShaderMaterial
+	var nav_right_material := (pattern_kit.get_node("nav_right") as MeshInstance3D).get_surface_override_material(0) as ShaderMaterial
+	var pattern_strobe_material := (pattern_kit.get_node("strobe_left") as MeshInstance3D).get_surface_override_material(0) as ShaderMaterial
+	var red_emission := red_lens.get_active_material(0) as BaseMaterial3D
+	var green_emission := green_lens.get_active_material(0) as BaseMaterial3D
+	var custom_emission := custom_lens.get_active_material(0) as BaseMaterial3D
+	pattern_rig.advance(0.0)
+	var nav_tail_phase_zero: Color = nav_tail_material.get_shader_parameter("light_color")
+	pattern_rig.advance(0.25)
+	var nav_tail_phase_quarter: Color = nav_tail_material.get_shader_parameter("light_color")
+	var nav_tail_flash: Vector4 = nav_tail_material.get_shader_parameter("flash")
+	var classic_strobe_flash: Vector4 = pattern_strobe_material.get_shader_parameter("flash")
+	_check("reused OFF kit opens profile-enabled lamps", bool(pattern_result.get("ok", false)) and (pattern_kit.get_node("nav_right") as MeshInstance3D).visible)
+	_check("animated lamp samples the selected pattern and disables its legacy flash", nav_tail_phase_zero != nav_tail_phase_quarter and is_zero_approx(nav_tail_flash.w))
+	_check("steady classic strobe preserves its legacy flash", classic_strobe_flash.w > 0.5)
+	_check("known imported lenses follow their zone enabled and brightness values", not red_emission.emission_enabled and green_emission.emission_enabled and is_equal_approx(green_emission.emission_energy_multiplier, 0.5) and green_emission.emission == Color("#22E85B"))
+	_check("unknown imported material reports group-only zone control", custom_emission.emission_enabled and _contains_warning(pattern_rig.budget_info().get("warnings", []), "no individual zone mapping"))
+	var all_navigation_off: Dictionary = Profile.preset("classic_rc")
+	for zone: Dictionary in all_navigation_off.get("zones", []):
+		if str(zone.get("id", "")).begins_with("nav_"):
+			zone["enabled"] = false
+	var group_off_result: Dictionary = pattern_rig.configure(pattern_aircraft, all_navigation_off)
+	pattern_rig.set_mode("all")
+	_check("disabling every navigation zone disables unmapped imported emissions", bool(group_off_result.get("ok", false)) and not custom_emission.emission_enabled)
+	pattern_rig.dispose()
+	pattern_rig.free()
+
 	var disabled_aircraft := _make_aircraft(stage, "DisabledLightingAircraft")
 	var body := disabled_aircraft.get_node("Body") as MeshInstance3D
 	var imported := StandardMaterial3D.new()
@@ -147,6 +255,20 @@ func _make_aircraft(parent: Node3D, node_name: String) -> Node3D:
 	body.mesh = box
 	aircraft.add_child(body)
 	return aircraft
+
+
+func _add_emission_lens(parent: Node3D, node_name: String, material_name: String) -> MeshInstance3D:
+	var lens := MeshInstance3D.new()
+	lens.name = node_name
+	lens.mesh = SphereMesh.new()
+	var material := StandardMaterial3D.new()
+	material.resource_name = material_name
+	material.emission_enabled = true
+	material.emission = Color.WHITE
+	material.emission_energy_multiplier = 2.0
+	lens.material_override = material
+	parent.add_child(lens)
+	return lens
 
 
 func _add_test_strip(kit: Node3D, node_name: String) -> void:

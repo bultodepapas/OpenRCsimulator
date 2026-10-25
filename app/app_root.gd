@@ -2162,14 +2162,16 @@ func _statistics_save_failed(retry: Callable) -> void:
 	_statistics_save_dialog.add_button(tr("Leave without saving"), true, "discard")
 	add_child(_statistics_save_dialog)
 	_statistics_save_dialog.confirmed.connect(func() -> void:
-		release_hold.call()
 		dialog.queue_free()
+		await get_tree().process_frame # release the old exclusive window before Retry can open another
+		release_hold.call()
 		retry.call())
 	_statistics_save_dialog.custom_action.connect(func(action: StringName) -> void:
 		if action == &"discard":
 			_statistics_discard_exit = true
-			release_hold.call()
 			dialog.queue_free()
+			await get_tree().process_frame
+			release_hold.call()
 			retry.call())
 	_statistics_save_dialog.canceled.connect(func() -> void:
 		release_hold.call()

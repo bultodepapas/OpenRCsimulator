@@ -1030,21 +1030,26 @@ def home_reset(_args: list[str] | None = None) -> int:
     and discard unsaved Workshop edits."""
     for _ in range(12):
         state = result_of("state")
+        ui = result_of("ui")
+        # Closing Workshop successfully opens its guard; another close cancels
+        # that guard and loops forever. Only this known editor guard may discard.
+        if ui.get("window") and str(ui.get("scope", "")).endswith("/UnsavedBuildDialog"):
+            label = result_of("eval", {"expr": 'tr("Discard changes")'})
+            result_of("press", {"text": label})
+            result_of("wait", {"frames": 3})
+            continue
         if state["route"] == "flight":
             attempt = ["home"]
         elif state["route"] == "ground_vehicle":
             attempt = ["call node=AppRoot method=end_ground_vehicle"]
-        elif state["screens"] != ["home"] or result_of("ui").get("window"):
+        elif state["screens"] != ["home"] or ui.get("window"):
             attempt = ["close"]
         else:
             return 0
         try:
             run_lines(attempt)
         except Refused:
-            try:
-                run_lines(['press text="Discard changes"'])
-            except Refused:
-                pass
+            pass
         result_of("wait", {"frames": 3})
     print("   could not return to Home: " + json.dumps(result_of("state")["screens"]))
     return 1

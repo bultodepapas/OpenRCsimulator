@@ -57,6 +57,8 @@ func _initialize() -> void:
 	player.resume()
 	for i: int in 300: player.sim.step()
 	check("second flight starts after reset confirmation", int(service.query().started) == 2)
+	check("accepted generation records its current aircraft input identity",
+		service.data.records.back().config_hash == str(player.aircraft.input_identity.sha256))
 	var snapshot: Dictionary = player.checkpoint()
 	check("physics checkpoint restore accepted", player.restore_checkpoint(snapshot))
 	var after_restore: float = float(service.query().airborne_seconds)

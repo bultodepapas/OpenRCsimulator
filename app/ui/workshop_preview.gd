@@ -348,21 +348,41 @@ func _configure_lighting() -> void:
 		_lighting_rig.name = "PreviewAircraftLighting"
 		_stage.add_child(_lighting_rig)
 	var selected: Dictionary = LightingProfile.defaults() if _lighting_is_original_view else _lighting_profile.duplicate(true)
-	if not _lighting_is_original_view and _preview_night and str(selected.get("selection", "inherit")) == "inherit":
-		var inherited_preview: Dictionary = LightingProfile.preset("classic_rc")
-		inherited_preview.brightness = float(selected.get("brightness", 1.0))
-		selected = inherited_preview
+	if _preview_night and str(selected.get("selection", "inherit")) == "inherit":
+		# Sample the original fitted kit rather than substituting a different preset.
+		# Its local shader adapter keeps the preview independent of the flight clock/exposure.
+		_lighting_rig.dispose()
+		selected = _inherited_preview_lighting()
 	var configured: Dictionary = _lighting_rig.configure(_airplane_root, selected)
-	var suppress_inherited_day := not _lighting_is_original_view and str(selected.get("selection", "inherit")) == "inherit"
-	if _lighting_is_original_view or suppress_inherited_day:
+	var suppress_inherited_day := str(selected.get("selection", "inherit")) == "inherit"
+	if suppress_inherited_day:
 		var original_kit := _airplane_root.get_node_or_null("NightKit") as Node3D
 		if is_instance_valid(original_kit):
 			AircraftLights.set_mode(original_kit, "off")
+		AircraftLights.set_emission_mode(AircraftLights.prepare_emission(_airplane_root), "off", 0.0)
 	elif not bool(configured.get("ok", false)):
 		_lighting_rig.set_mode("off", 0.0)
 	elif str(selected.get("selection", "inherit")) != "disabled":
 		_lighting_rig.set_mode("all", 1.0)
 	_advance_lighting()
+
+
+func _inherited_preview_lighting() -> Dictionary:
+	var source_kit := AircraftLights.attach(_airplane_root)
+	var selected := LightingProfile.preset("custom")
+	selected.brightness = 1.0
+	for zone: Dictionary in selected.zones:
+		var source_node := source_kit.get_node_or_null(str(zone.id)) as MeshInstance3D
+		zone.enabled = source_node != null
+		if source_node == null:
+			continue
+		var material := source_node.get_active_material(0) as ShaderMaterial
+		var color: Color = material.get_shader_parameter("light_color") if material != null else Color.WHITE
+		zone.brightness = 1.0
+		zone.reactive = {"source": "none", "gain": 0.0}
+		zone.pattern.id = "steady"
+		zone.pattern.palette = ["#" + color.to_html(false).to_upper()]
+	return selected
 
 
 func _advance_lighting(effects_allowed: bool = false) -> void:
@@ -585,7 +605,7 @@ func set_preview_night(enabled: bool) -> void:
 		return
 	_preview_night = enabled
 	_apply_preview_environment()
-	if not _lighting_is_original_view and str(_lighting_profile.get("selection", "inherit")) == "inherit":
+	if _lighting_is_original_view or str(_lighting_profile.get("selection", "inherit")) == "inherit":
 		_configure_lighting()
 	_advance_lighting()
 	_request_redraw()

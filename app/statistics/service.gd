@@ -239,6 +239,7 @@ func _lifecycle(receipt: Dictionary) -> void:
 		_branch = false
 		_generation = _uuid()
 		adapter.configure(_session, _aircraft_id, Callable(self, "_observe"))
+		_metadata.config_hash = str(_session.aircraft.get("input_identity", {}).get("sha256", ""))
 		detector.configure(adapter.profile, _session.start_choice != "runway")
 		_last_flush_time = float(_session.sim.time())
 	_mark_dirty()

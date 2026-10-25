@@ -157,6 +157,18 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		_stop_event_voices()
 		_last_targets = {valid = false, active_motion_voices = 0}
 		return
+	# Beyond audible range, retain no travel history to replay on return. This avoids
+	# building the observer's channel/event dictionaries for distant aircraft.
+	if not paused and _all_sources_distant(snapshot):
+		_motion_state.clear()
+		_stale_tick_s = 0.0
+		_engine_mask = _unit(snapshot.get("engine_mask", 1.0), 1.0)
+		_fade_motion(dt, false)
+		_stop_event_voices()
+		_far_culled_motion_updates += 1
+		_last_targets = {valid = true, tick = incoming_tick, paused = false, far_culled = true,
+			engine_mask = _engine_mask, active_motion_voices = 0, listener = snapshot.get("listener", Vector3.ZERO)}
+		return
 	if paused or _motion_state.is_empty():
 		_stale_tick_s = 0.0
 	elif incoming_tick < int(_motion_state.get("tick", -1)):
@@ -267,6 +279,24 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		engine_mask = _engine_mask, listener_valid = listener_valid,
 		active_motion_voices = active, far_culled = far_culled,
 		stale_tick_s = _stale_tick_s, motion_voice_count = _motion_players.size(), listener = listener}
+
+
+func _all_sources_distant(snapshot: Dictionary) -> bool:
+	var listener: Variant = snapshot.get("listener", null)
+	if not Motion.finite_vector(listener): return false
+	var channels: Variant = snapshot.get("channels", [])
+	if channels is Array:
+		for channel: Variant in channels:
+			if channel is Dictionary:
+				var position: Variant = channel.get("position", null)
+				if Motion.finite_vector(position) and position.distance_squared_to(listener) < MAX_DISTANCE_M * MAX_DISTANCE_M:
+					return false
+	var gear: Variant = snapshot.get("gear", {})
+	if gear is Dictionary and bool(gear.get("available", true)):
+		var position: Variant = gear.get("position", null)
+		if Motion.finite_vector(position) and position.distance_squared_to(listener) < MAX_DISTANCE_M * MAX_DISTANCE_M:
+			return false
+	return true
 
 
 func reset() -> void:

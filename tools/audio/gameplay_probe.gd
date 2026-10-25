@@ -21,6 +21,9 @@ var wildlife_events: Array[Dictionary] = []
 var wildlife_serial: int = 0
 var focus_resumes: int = 0
 var focus_resume_pending: bool = false
+var mechanical_samples: Array[Dictionary] = []
+var next_mechanical_sample_s: float = 0.0
+var mechanical_timings: Array[int] = []
 
 
 func _initialize() -> void:
@@ -92,6 +95,13 @@ func _run() -> void:
 		samples.append_array(buffer)
 		if elapsed > 1.0:
 			timings.append(adapter.last_update_usec)
+			mechanical_timings.append(adapter.last_mechanical_update_usec)
+		if args.has("mechanical-review") and elapsed >= next_mechanical_sample_s:
+			next_mechanical_sample_s = elapsed + 0.1
+			mechanical_samples.append({wall_s = elapsed, stage = stage, tick = scene.session.sim.tick,
+				rpm = scene.session.sim.aux[0], running = scene.session.propulsion_source_running(),
+				paused = scene.session.sim.paused, engine_family = adapter.soundscape.voice_profile.get("family", ""),
+				mechanical = adapter.mechanical_audio.diagnostics()})
 		var distance: float = scene._airplane.root.global_position.distance_to(scene._camera.global_position)
 		if elapsed > 0.25:
 			position_min = minf(position_min, distance)
@@ -102,6 +112,7 @@ func _run() -> void:
 				pilot_doppler_max = maxf(pilot_doppler_max, adapter.soundscape.last_doppler)
 	dropped = capture.get_discarded_frames()
 	timings.sort()
+	mechanical_timings.sort()
 	var output: String = str(args.out)
 	if DisplayServer.get_name() != "headless":
 		await RenderingServer.frame_post_draw
@@ -127,6 +138,8 @@ func _run() -> void:
 			mixer = FileAccess.get_sha256("res://audio/soundscape.gd"),
 			model = FileAccess.get_sha256("res://audio/soundscape_model.gd"),
 			wildlife = FileAccess.get_sha256("res://audio/wildlife.gd"),
+			mechanical = FileAccess.get_sha256("res://audio/mechanical_audio.gd"),
+			mechanical_motion = FileAccess.get_sha256("res://audio/mechanical_motion.gd"),
 		},
 		driver = AudioServer.get_driver_name(), display = DisplayServer.get_name(), requested_fps = Engine.max_fps,
 		aircraft = scene.aircraft_id, frames = samples.size(), mix_rate = wav.mix_rate,
@@ -140,6 +153,9 @@ func _run() -> void:
 		wildlife_events = wildlife_events, wildlife_activity = adapter.soundscape.wildlife_presence,
 		final_tick = scene.session.sim.tick, final_paused = scene.session.sim.paused,
 		final_pause_reason = scene.session.pause_reason, focus_resumes = focus_resumes,
+		mechanical_samples = mechanical_samples,
+		mechanical_update_p95_us = mechanical_timings[int(mechanical_timings.size() * 0.95)],
+		mechanical_update_max_us = mechanical_timings[-1],
 		note = "Actual physics flight with automated controls. Mixer capture is not speaker listening, acoustic validation, or device latency measurement.",
 	}
 	var file: FileAccess = FileAccess.open(output + ".json", FileAccess.WRITE)
@@ -168,4 +184,5 @@ func _controls() -> Dictionary:
 	var throttle: float = 0.0 # keyboard rate command, not a normalized stick position
 	if stage == 1: throttle = 1.0
 	elif stage == 2: throttle = -1.0
-	return {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = throttle}
+	var correction: float = 0.04 * sin(elapsed * 5.0) if args.has("mechanical-review") else 0.0
+	return {roll = 0.0, pitch = correction, yaw = correction * 0.5, throttle = throttle}

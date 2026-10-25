@@ -51,6 +51,11 @@ func _initialize() -> void:
 
 	var reactive := Patterns.reactive_multiplier({"source": "throttle", "gain": 0.5}, {"throttle": 0.8})
 	_check("reactive multiplier uses bounded normalized input", is_equal_approx(float(reactive.multiplier), 1.4) and bool(reactive.available))
+	var slow := Patterns.reactive_multiplier({"source": "airspeed", "gain": 0.5}, {"airspeed": 10.0})
+	var fast := Patterns.reactive_multiplier({"source": "airspeed", "gain": 0.5}, {"airspeed": 30.0})
+	var capped := Patterns.reactive_multiplier({"source": "airspeed", "gain": 0.5}, {"airspeed": 80.0})
+	_check("airspeed response distinguishes ordinary flight speeds in m/s", is_equal_approx(float(slow.multiplier), 1.125)
+		and is_equal_approx(float(fast.multiplier), 1.375) and is_equal_approx(float(capped.multiplier), 1.5))
 	var missing := Patterns.reactive_multiplier({"source": "roll_rate", "gain": 0.2}, {})
 	_check("missing reactive input preserves base pattern", not bool(missing.available) and is_equal_approx(float(missing.multiplier), 1.0))
 

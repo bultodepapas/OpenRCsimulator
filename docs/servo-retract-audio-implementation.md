@@ -34,15 +34,38 @@ Finite numeric bounds and supported enum values are checked before a profile ent
 
 ## Sound and mix decisions
 
-Travel speed derives from angular displacement divided by accepted tick time. Motion duration gates recorded movement; speed changes the envelope and pitch. Starts, reversals and stops are separate from stationary state. No idle holding buzz is invented. Optional load information can be consumed by the audio contract, but the current flight adapter supplies none because servo torque/current is not modeled.
+Travel speed derives from angular displacement divided by accepted tick time. Motion duration gates recorded movement; speed changes the envelope and pitch. Starts, reversals and stops are separate from stationary state. No idle holding buzz is invented. The observer can carry an optional load field, but there is no load-to-sound mapping in this version: the flight model supplies no servo torque/current.
 
 Electric retract playback uses motor/gear movement and endpoint cues. Pneumatic playback uses recorded valve/air textures and endpoint cues. The current gear law has an accepted deployment fraction and target with up/down endpoints; it has no air-pressure state, independently timed door state or lock sensor. Endpoint cues represent arrival at the model's accepted endpoint. There are no invented door events or pneumatic-pressure dynamics. Canopy, tailhook and wing-fold presentation animations are outside this initial logical actuator contract.
 
 Engine masking uses accepted shaft RPM and installed engine family. Combustion idle receives a modest residual gain reduction; electric masking falls with shaft speed. This supplements the existing louder engine mix. Authored gain trims are not calibrated sound-pressure levels and cannot establish acoustic realism.
 
+The bank contains 17 mono PCM16 cues, 429,074 decoded PCM bytes. Servo and electric textures use 44.1 kHz; air-only textures use 22.05 kHz. The two profiles use separate recorded servo sources, two onset/stop takes each, small deterministic gesture pitch/phase variation, and 35 ms attack / 85 ms release envelopes. The High-Torque profile uses a 0.82 pitch reference and a gentle 2 dB upper-shelf cut; those are authored treatments, not measured torque acoustics. The existing PCM loop wrap guard remains active; committed WAV imports disable QOA compression.
+
+Spatial players feed the existing scene aggregate bus, outside the engine-only boost/filter chain. Manual gain is capped inside 2 m, follows inverse distance beyond it, fades from 39–60 m, and reaches zero at 60 m. Godot provides 3D panning without a second attenuation curve or mechanical Doppler. Outside audible range, the controller bypasses detailed motion observation and primes silently on return. Pauses, stalled ticks, rewind, reset, detach and reconfiguration retire voices. The bank fails silent if a required resource is missing.
+
+There are at most six pooled movement voices and two transient voices. Only moving audible channels start a loop. Gear locks take priority over gear onset, then servo onset and servo tails. Same-source reversals and interruptions fade the old transient over 20 ms before replacement; a canceled gear movement clears pending cues. Under simultaneous corrections, lower-priority transient cues may be dropped while movement beds remain active. This avoids multiplying every surface's start click.
+
 ## Verification
 
-Verification results are recorded below after integration. Signal checks and deterministic state tests do not establish listening acceptance or physical sound calibration.
+Signal checks and deterministic state tests do not establish listening acceptance or physical sound calibration. Verification uses the pinned Windows Godot binary, Dummy for state tests and WASAPI for actual mixer captures. Results are summarized here; native and parity measurements are retained in `docs/research/audio/AUD-16/`.
+
+| Check | Result |
+| --- | --- |
+| Motion observer | 20 checks passed: actual deltas, speed, reversal, endpoint, pause and rewind |
+| Closed profile and migration | 24 checks passed: two types, finite level, v1–v3 identity, v4 JSON round trip, transfer |
+| Recording/controller lifecycle | 89 checks passed: all four profile combinations, PCM assets, pooling, persistent loop playback, interrupted cues, priority, culling and missing-resource fallback |
+| Real-scene integration | 26 checks passed: frozen Workshop profile, P-51 accepted surface/flap/retract movement, gasoline/electric RPM masks, listener fallback, reset and cleanup |
+| Existing regressions | Workshop presentation 85, transfer 22, store 141, bundle 28, trial 44, drafts 100, soundscape 168, powertrain 45 and ground audio 33 checks passed; Workshop UI suite also passed |
+| Physics parity | Nine fixed-wing aircraft: 1,200 paired ticks each, identical full checkpoints with audio on/off, including pause and reset. Rotorcraft explicitly excluded |
+| Export | Windows PCK mounted from an empty project: all 60 audio resources checked, including 17 actuator cues, manifest and CC BY attribution |
+| 1080p Workshop | Inspected live through the debug bridge. Profile/level selection, fixed-gear restriction, Undo/Redo, save and Test fly verified; high-torque/65% reached the flight controller. Clean shutdown: no leaked objects |
+
+The four-combination native bench captured about 49.3 s at 48 kHz with zero discarded frames and no clipping. The final run's controller update p95 was 217 microseconds (maximum 395); measured peak was −25.14 dBFS. Playback stayed within six movement/two event voices, and bus count returned to baseline. These are shared-host controller measurements, not audio-thread deadlines or whole-game frame-time qualification.
+
+An initial 20 s actual gasoline flight capture had zero discarded frames, silent pause, and a −21.53 dBFS peak. The older gameplay checker did **not** pass: total adapter p95 was 722 microseconds against its 500 microsecond gate, and the P-51 chase camera stayed at least 10.48 m away against that checker's fixed 4 m bound. These results prompted the distant-source observation shortcut and separate mechanical timing instrumentation; they do not establish overall performance acceptance. Subsequent captures and any outstanding integration limits are recorded with the evidence.
+
+An initial Home render encountered an unrelated vegetation texture allocation/load failure. The inspected 1080p flight/Workshop used `--scenery=off`. Shared lighting edits temporarily caused parse/provenance failures during later full-scene checks; independent mechanical tests continued without altering those files.
 
 ## Files and reproduction
 
@@ -50,6 +73,7 @@ Verification results are recorded below after integration. Signal checks and det
 - Configuration: `app/workshop/presentation.gd`, `profile_transfer.gd`, `store.gd`, `bundle.gd`, `trial.gd`, `draft_store.gd`, and `app/ui/workshop.gd`.
 - Recordings: `app/assets/audio/mechanical/`, retained permitted sources under `research/audio/AUD-16/recordings/`, and `tools/audio/import_mechanical.py`.
 - Export: `app/export_presets.cfg` includes mechanical provenance and license notices alongside imported audio.
+- Verification: `app/tests/test_mechanical_*.gd`, `tools/audio/mechanical_probe.gd`, and mechanical telemetry in the existing gameplay/parity probes. `tools/audio/check_pack.gd` checks the actuator bank in exported resources.
 
 Use the [audio tool guide](../tools/audio/README.md) and [checked Godot runner](tools/shared.md#one-godot-script). Do not regenerate flight goldens: this change introduces no intentional flight-physics change.
 

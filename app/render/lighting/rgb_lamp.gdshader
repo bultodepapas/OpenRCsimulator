@@ -7,6 +7,7 @@ render_mode unshaded, blend_add, cull_disabled, depth_draw_never, fog_disabled, 
 
 uniform vec3 light_color : source_color = vec3(1.0);
 uniform float radiance = 2.0;
+uniform float effect_gain = 1.0;
 uniform float size_m = 0.02;
 uniform float min_px = 2.5;
 uniform vec4 flash = vec4(1.0, 0.0, 0.0, 0.0); // period, pulse, second pulse offset, enabled
@@ -52,11 +53,11 @@ void fragment() {
 		float spark_mask = exp(-5.0 * dot(p, p));
 		float ribbon_mask = 1.0 - smoothstep(0.62, 1.0, abs(p.y));
 		float mask = mix(ribbon_mask, spark_mask, clamp(radial_shape, 0.0, 1.0));
-		ALBEDO = encode_for_engine(to_linear_srgb(COLOR.rgb) * min(max(radiance, 0.0), cap));
+		ALBEDO = encode_for_engine(to_linear_srgb(COLOR.rgb) * min(max(radiance, 0.0), cap) * max(effect_gain, 0.0));
 		ALPHA = mask * COLOR.a;
 	} else {
 		vec2 p = UV * 2.0 - 1.0;
-		ALBEDO = encode_for_engine(to_linear_srgb(light_color) * min(max(radiance * billboard_gain, 0.0), cap));
+		ALBEDO = encode_for_engine(light_color * min(max(radiance * billboard_gain, 0.0), cap) * max(effect_gain, 0.0));
 		ALPHA = exp(-4.0 * dot(p, p));
 	}
 }

@@ -28,6 +28,7 @@ var _mechanical_mask := 1.0
 var _last_tick: int = -1
 var _windsock: WeakRef
 var last_update_usec: int = 0
+var last_mechanical_update_usec: int = 0
 
 
 func configure(scene: Node3D) -> void:
@@ -295,5 +296,7 @@ func _process(delta: float) -> void:
 	ground_audio.update_contacts(tick, paused, ground_contacts,
 		engine_power, delta, sound_snapshot.get("listener", Vector3.ZERO), float(Engine.physics_ticks_per_second))
 	if mechanical_audio != null:
+		var mechanical_started: int = Time.get_ticks_usec()
 		mechanical_audio.update_sound(mechanical_snapshot(sound_snapshot, delta), delta)
+		last_mechanical_update_usec = Time.get_ticks_usec() - mechanical_started
 	last_update_usec = Time.get_ticks_usec() - started

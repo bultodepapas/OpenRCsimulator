@@ -1140,7 +1140,6 @@ func _process(delta: float) -> void:
 			"throttle": session.propulsion_throttle(),
 			"speed_mps": (_last_render_pose.get("vel", Vector3.ZERO) as Vector3).length(),
 			"airspeed": lighting_airspeed,
-			"airspeed_response": clampf(lighting_airspeed / 40.0, 0.0, 1.0), # visual scale, not a flight limit
 			"roll_rate": sim.state[RB.RATE], "pitch_rate": sim.state[RB.RATE + 1],
 			"maneuver": clampf(sqrt(pow(sim.state[RB.RATE], 2.0) + pow(sim.state[RB.RATE + 1], 2.0) + pow(sim.state[RB.RATE + 2], 2.0)) / TAU, 0.0, 1.0),
 			"exposure": World.Exposure.last,

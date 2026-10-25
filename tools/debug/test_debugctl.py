@@ -367,6 +367,32 @@ class DebugctlTests(unittest.TestCase):
                     self.assertEqual(state["ran"], ["a_broken"])
                     self.assertIn("Home before scenario b_next", report["failed"])
 
+    def test_home_reset_discards_only_workshop_guard_in_current_language(self) -> None:
+        for guard in ("UnsavedBuildDialog", "StatisticsResetDialog"):
+            with self.subTest(guard=guard):
+                state = {"route": "home", "screens": ["home", "workshop"]}
+                calls = []
+                window = {"scope": f"AppRoot/Workshop/{guard}", "window": {"type": "ConfirmationDialog"}}
+
+                def result(command, args=None):
+                    calls.append((command, args))
+                    if command == "state": return state
+                    if command == "ui": return window
+                    if command == "eval": return "Descartar cambios"
+                    if command in ("press", "close"):
+                        state["screens"] = ["home"]
+                        window.clear()
+                    return {}
+
+                with patch.object(debugctl, "result_of", side_effect=result):
+                    self.assertEqual(debugctl.home_reset(), 0)
+                if guard == "UnsavedBuildDialog":
+                    self.assertIn(("press", {"text": "Descartar cambios"}), calls)
+                    self.assertFalse(any(command == "close" for command, _ in calls))
+                else:
+                    self.assertFalse(any(command == "press" for command, _ in calls))
+                    self.assertIn(("close", {}), calls)
+
     def test_an_unreaped_exited_child_is_not_alive(self) -> None:
         if not Path("/proc/self/stat").exists():
             self.skipTest("needs /proc")

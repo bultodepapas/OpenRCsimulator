@@ -143,7 +143,10 @@ static func reactive_multiplier(reactive: Dictionary, telemetry: Dictionary) -> 
 	var raw: Variant = telemetry[source]
 	if not (raw is int or raw is float) or not is_finite(float(raw)):
 		return {"available": false, "multiplier": 1.0}
-	var response := absf(float(raw)) / 4.0 if source in ["roll_rate", "pitch_rate"] else clampf(float(raw), 0.0, 1.0)
+	# Rates arrive in rad/s and true airspeed in m/s; these are visual response scales,
+	# not flight limits. Throttle is already normalized.
+	var response := absf(float(raw)) / 4.0 if source in ["roll_rate", "pitch_rate"] else (
+		maxf(float(raw), 0.0) / 40.0 if source == "airspeed" else clampf(float(raw), 0.0, 1.0))
 	return {"available": true, "multiplier": 1.0 + gain * clampf(response, 0.0, 1.0)}
 
 

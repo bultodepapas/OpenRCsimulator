@@ -44,6 +44,19 @@ func _run() -> void:
 	_check("stored presentation keeps the fields required by its historical version",
 		stock_version in [1, 2, 3, 4] and (stock_version < 3 or stock.has("lighting"))
 		and (stock_version < 4 or stock.has("mechanical_audio")))
+	var preview: Control = editor.get("_preview")
+	preview.call("set_preview_night", true)
+	var default_kit: Node3D = preview.get("_lighting_rig").get_kit()
+	_check("inherited night preview retains the stock orientation strips without editing the build",
+		default_kit != null and default_kit.get_node("strip_left").visible and editor.get_presentation() == stock)
+	preview.call("set_view_mode", "compare")
+	preview.call("set_comparison_original", true)
+	default_kit = preview.get("_lighting_rig").get_kit()
+	_check("Original night comparison shows the same stock equipment", default_kit != null
+		and default_kit.get_node("strip_left").visible)
+	preview.call("set_preview_night", false)
+	_check("Original day comparison switches the fitted kit off", not default_kit.visible)
+	preview.call("set_view_mode", "inspect")
 
 	var preset := lighting.get("_preset") as OptionButton
 	var custom_index := _metadata_index(preset, "custom")

@@ -24,7 +24,6 @@ var _gain := 1.0
 var _profile_brightness := 1.0
 var _disabled := false
 var _active := false
-var _mode_dirty := true
 var _last_seconds := -1.0
 var _last_frame_writes := 0
 var _vfx: RefCounted
@@ -67,7 +66,6 @@ func configure(aircraft_root: Node3D, raw_profile: Dictionary) -> Dictionary:
 	_previous_emission_gain = clampf(baseline_emission_gain, 0.0, 2.0)
 	_mode = requested_mode if requested_mode in MODE_IDS else "all"
 	_gain = 1.0
-	_mode_dirty = true
 	_last_seconds = -1.0
 
 	if selection == "inherit":
@@ -84,7 +82,6 @@ func configure(aircraft_root: Node3D, raw_profile: Dictionary) -> Dictionary:
 		AircraftLights.set_emission_mode(_emission_bindings, "off", 0.0)
 		if is_instance_valid(kit):
 			AircraftLights.set_mode(kit, "off")
-		_mode_dirty = false
 		return {"ok": true, "errors": [], "warnings": _warnings.duplicate()}
 
 	kit = AircraftLights.attach(aircraft_root)
@@ -114,29 +111,39 @@ func set_mode(mode: String, gain := 1.0) -> void:
 		return
 	var next_mode := "off" if _disabled else mode
 	var next_gain := clampf(gain, 0.0, 2.0)
-	if not _mode_dirty and _mode == next_mode and is_equal_approx(_gain, next_gain):
-		return
 	_mode = next_mode
 	_gain = next_gain
-	_mode_dirty = false
 	if not _active:
 		return
 	if is_instance_valid(kit):
 		AircraftLights.set_mode(kit, _mode)
 	_apply_emission_mode()
+	_reapply_profile_visibility()
+	var supported_groups := _supported_light_groups()
 	for binding: Dictionary in _materials:
-		var node: MeshInstance3D = binding.get("node")
-		var material: ShaderMaterial = binding.get("material")
-		if not is_instance_valid(node) or not is_instance_valid(material):
+		var node: Node3D = binding.get("node")
+		if not is_instance_valid(node):
 			continue
 		var group := str(binding.get("group", "orientation"))
-		var group_on := _mode == "all" or (_mode == "nav" and group in ["navigation", "strobe"])
+		var group_on := group in supported_groups and (_mode == "all" or (_mode == "nav" and group in ["navigation", "strobe"]))
 		var gate_open := bool(node.get_meta("gate_open", true))
-		node.visible = bool(binding.get("original_visible", true)) and bool(binding.get("enabled", true)) and gate_open and group_on
+		var show_binding := bool(binding.get("original_visible", true)) and bool(binding.get("enabled", true)) and gate_open and group_on
+		node.visible = show_binding
+		if str(binding.get("kind", "")) == "spot":
+			var light := node as Light3D
+			if is_instance_valid(light):
+				var light_zone: Dictionary = binding.get("zone", {})
+				light.light_color = Patterns.sample(light_zone.get("pattern", {}), 0.0, 0.5, _profile.get("sequence", []), str(binding.get("zone_id", "")))
+				light.light_energy = float(binding.get("base_energy", 0.0)) * _zone_gain(str(binding.get("zone_id", ""))) if show_binding else 0.0
+			continue
+		var material: ShaderMaterial = binding.get("material")
+		if not is_instance_valid(material):
+			continue
 		if str(binding.get("kind", "")) == "strip":
 			_set_param(material, binding, "effect_gain", _zone_gain(str(binding.get("zone_id", ""))))
 		else:
-			_set_param(material, binding, "radiance", float(binding.get("base_radiance", 1.0)) * _zone_gain(str(binding.get("zone_id", ""))))
+			_set_param(material, binding, "radiance", float(binding.get("base_radiance", 1.0)))
+			_set_param(material, binding, "effect_gain", _zone_gain(str(binding.get("zone_id", ""))))
 	if _vfx != null:
 		_vfx.set_mode(_mode, _gain)
 
@@ -146,26 +153,52 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 	_last_frame_writes = 0
 	if not _active or _disabled or not is_instance_valid(kit) or not is_finite(presentation_seconds):
 		return
+	_reapply_profile_visibility()
 	var seconds := maxf(0.0, presentation_seconds)
 	if _last_seconds >= 0.0 and seconds < _last_seconds:
 		reset()
 	var exposure := _number_or(telemetry.get("exposure", 1.0), 1.0, 0.0001, 1000000.0)
 	for binding: Dictionary in _materials:
-		if not is_instance_valid(binding.get("node")) or not is_instance_valid(binding.get("material")):
+		var bound_node: Node3D = binding.get("node")
+		if not is_instance_valid(bound_node):
+			continue
+		if str(binding.get("kind", "")) == "spot":
+			var light := bound_node as Light3D
+			if not is_instance_valid(light):
+				continue
+			var spot_zone: Dictionary = binding.get("zone", {})
+			light.light_color = Patterns.sample(spot_zone.get("pattern", {}), seconds, 0.5, _profile.get("sequence", []), str(binding.get("zone_id", "")))
+			var spot_reaction := Patterns.reactive_multiplier(spot_zone.get("reactive", {}), telemetry)
+			var spot_group := str(binding.get("group", ""))
+			var spot_show := bool(binding.get("enabled", false)) and spot_group in _supported_light_groups() \
+				and (_mode == "all" or (_mode == "nav" and spot_group in ["navigation", "strobe"])) \
+				and bool(light.get_meta("gate_open", true)) and bool(binding.get("original_visible", true))
+			light.visible = spot_show
+			light.light_energy = float(binding.get("base_energy", 0.0)) * _zone_gain(str(binding.get("zone_id", ""))) * float(spot_reaction.get("multiplier", 1.0)) if spot_show else 0.0
+			continue
+		if not is_instance_valid(binding.get("material")):
 			continue
 		var material: ShaderMaterial = binding.material
 		if str(binding.get("kind", "")) == "steady":
 			_set_param(material, binding, "local_clock", seconds)
 			_set_param(material, binding, "local_exposure", exposure)
 			var steady_zone: Dictionary = binding.get("zone", {})
+			var steady_zone_id := str(binding.get("zone_id", ""))
+			var steady_pattern: Dictionary = steady_zone.get("pattern", {})
+			if not steady_pattern.is_empty():
+				var steady_color := Patterns.sample(steady_pattern, seconds, 0.5, _profile.get("sequence", []), steady_zone_id)
+				_set_param(material, binding, "light_color", steady_color)
+				if str(steady_pattern.get("id", "steady")) != "steady":
+					_set_param(material, binding, "flash", Vector4(1.0, 0.0, 0.0, 0.0))
 			var steady_reaction := Patterns.reactive_multiplier(steady_zone.get("reactive", {}), telemetry)
 			if not bool(steady_reaction.get("available", true)):
 				var steady_source := str((steady_zone.get("reactive", {}) as Dictionary).get("source", "none"))
 				var steady_warning := "reactive source '%s' is unavailable; base pattern remains active" % steady_source
 				if steady_source != "none" and not _warnings.has(steady_warning):
 					_warnings.append(steady_warning)
-			var steady_scale := _zone_gain(str(binding.get("zone_id", ""))) * float(steady_reaction.get("multiplier", 1.0))
-			_set_param(material, binding, "radiance", float(binding.get("base_radiance", 1.0)) * steady_scale)
+			var steady_scale := _zone_gain(steady_zone_id) * float(steady_reaction.get("multiplier", 1.0))
+			_set_param(material, binding, "radiance", float(binding.get("base_radiance", 1.0)))
+			_set_param(material, binding, "effect_gain", steady_scale)
 			continue
 		if str(binding.get("kind", "")) != "strip" or not bool(binding.get("enabled", false)):
 			continue
@@ -191,6 +224,7 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 				_warnings.append(warning)
 		var scale := _zone_gain(zone_id) * float(reaction.get("multiplier", 1.0))
 		_set_param(material, binding, "effect_gain", scale)
+	_apply_profile_emission(seconds, telemetry)
 	if _vfx != null:
 		_vfx.advance(seconds, telemetry)
 	_last_seconds = seconds
@@ -228,16 +262,17 @@ func dispose() -> void:
 	if _active and is_instance_valid(kit):
 		AircraftLights.set_mode(kit, _previous_mode if _previous_mode in MODE_IDS else "all")
 	if not _emission_bindings.is_empty():
+		_restore_emission_colors()
+		_emission_bindings["mode"] = ""
 		AircraftLights.set_emission_mode(_emission_bindings, _previous_emission_mode if _previous_emission_mode in MODE_IDS else "all", _previous_emission_gain)
 	_materials.clear()
 	_zones.clear()
 	_profile.clear()
 	root = null
 	kit = null
-	_emission_bindings.clear()
+	_emission_bindings = {}
 	_active = false
 	_disabled = false
-	_mode_dirty = true
 	_last_seconds = -1.0
 	_last_frame_writes = 0
 	_warnings.clear()
@@ -286,16 +321,36 @@ func _apply_profile_materials() -> void:
 		return
 	var seen_zones: Dictionary = {}
 	for node: Node in kit.get_children():
+		if node is Light3D:
+			var light_node := node as Light3D
+			var light_zone_id := _canonical_zone_id(str(light_node.name))
+			var light_zone: Dictionary = _zones.get(light_zone_id, {})
+			if light_zone_id != "landing_lamp" or light_zone.is_empty():
+				continue
+			seen_zones[light_zone_id] = true
+			_materials.append({
+				"node": light_node,
+				"kind": "spot",
+				"zone_id": light_zone_id,
+				"zone": light_zone,
+				"enabled": bool(light_zone.get("enabled", true)),
+				"group": "landing",
+				"original_visible": _profile_node_author_visible(light_node, "landing"),
+				"base_energy": light_node.light_energy,
+				"base_color": light_node.light_color,
+			})
+			continue
 		if not node is MeshInstance3D:
 			continue
 		var mesh_node := node as MeshInstance3D
-		var zone_id := str(mesh_node.name)
+		var node_zone_id := str(mesh_node.name)
+		var zone_id := _canonical_zone_id(node_zone_id)
 		var zone: Dictionary = _zones.get(zone_id, {})
 		var enabled := bool(zone.get("enabled", true))
-		var original_visible := mesh_node.visible
+		var original_visible := _profile_node_author_visible(mesh_node, "orientation" if STRIP_NAMES.has(node_zone_id) else _group_for(zone_id))
 		var prior := mesh_node.get_surface_override_material(0)
 		var source := mesh_node.get_active_material(0) as ShaderMaterial
-		if STRIP_NAMES.has(zone_id):
+		if STRIP_NAMES.has(node_zone_id):
 			seen_zones[zone_id] = true
 			if zone.is_empty():
 				_materials.append({
@@ -365,13 +420,14 @@ func _apply_profile_materials() -> void:
 		lamp.set_shader_parameter("vfx_mode", 0.0)
 		lamp.set_shader_parameter("light_color", _profile_color(zone, source))
 		lamp.set_shader_parameter("radiance", _number_or(_shader_value(source, "radiance", 2.5), 2.5, 0.0, 100.0))
+		lamp.set_shader_parameter("effect_gain", _zone_gain(zone_id))
 		lamp.set_shader_parameter("size_m", _number_or(_shader_value(source, "size_m", 0.025), 0.025, 0.001, 1.0))
 		lamp.set_shader_parameter("min_px", _number_or(_shader_value(source, "min_px", 4.0), 4.0, 0.0, 32.0))
 		lamp.set_shader_parameter("flash", _shader_value(source, "flash", Vector4(1.0, 0.0, 0.0, 0.0)))
 		lamp.set_shader_parameter("display_cap", _number_or(_shader_value(source, "display_cap", 2.5), 2.5, 0.1, 100.0))
 		lamp.set_shader_parameter("local_exposure", 1.0)
 		lamp.set_shader_parameter("local_clock", 0.0)
-		var lamp_zone := zone_id in ["nav_left", "nav_right", "nav_tail", "strobe_left", "strobe_right", "strobe_dorsal", "strobe_ventral", "landing_lamp"]
+		var lamp_zone := _is_lamp_zone(node_zone_id)
 		if lamp_zone and not zone.is_empty():
 			seen_zones[zone_id] = true
 		mesh_node.set_surface_override_material(0, lamp)
@@ -400,9 +456,15 @@ func _apply_profile_materials() -> void:
 
 func _restore_materials() -> void:
 	for binding: Dictionary in _materials:
-		var node: MeshInstance3D = binding.get("node")
+		var node: Node3D = binding.get("node")
 		if is_instance_valid(node):
-			node.set_surface_override_material(int(binding.get("surface", 0)), binding.get("prior"))
+			if str(binding.get("kind", "")) == "spot":
+				var light := node as Light3D
+				if is_instance_valid(light):
+					light.light_energy = float(binding.get("base_energy", light.light_energy))
+					light.light_color = binding.get("base_color", light.light_color)
+			elif node is MeshInstance3D:
+				(node as MeshInstance3D).set_surface_override_material(int(binding.get("surface", 0)), binding.get("prior"))
 			node.visible = bool(binding.get("original_visible", true))
 	_materials.clear()
 
@@ -430,7 +492,7 @@ func _zone_map(entries: Variant) -> Dictionary:
 	if entries is Array:
 		for item: Variant in entries:
 			if item is Dictionary:
-				result[str(item.get("id", ""))] = item
+				result[_canonical_zone_id(str(item.get("id", "")))] = item
 	return result
 
 
@@ -443,6 +505,10 @@ func _capture_emission_baseline(fallback_mode: String) -> void:
 	_previous_emission_mode = mode if mode in MODE_IDS else (fallback_mode if fallback_mode in MODE_IDS else "all")
 	var gain := _number_or(_emission_bindings.get("gain", -1.0), -1.0, -1.0, 2.0)
 	_previous_emission_gain = gain if gain >= 0.0 else 1.0
+	for binding: Dictionary in _emission_bindings.get("materials", []):
+		var material: BaseMaterial3D = binding.get("material")
+		if is_instance_valid(material) and not binding.has("profile_original_emission"):
+			binding["profile_original_emission"] = material.emission
 
 
 func _apply_emission_mode() -> void:
@@ -450,15 +516,117 @@ func _apply_emission_mode() -> void:
 		return
 	var applied_gain := 0.0 if _mode == "off" else _profile_brightness * _gain
 	AircraftLights.set_emission_mode(_emission_bindings, _mode, applied_gain)
+	_apply_profile_emission(0.0, {})
+
+
+func _apply_profile_emission(seconds: float, telemetry: Dictionary) -> void:
+	if _emission_bindings.is_empty():
+		return
+	for binding: Dictionary in _emission_bindings.get("materials", []):
+		var material: BaseMaterial3D = binding.get("material")
+		if not is_instance_valid(material):
+			continue
+		var group := str(binding.get("group", ""))
+		var zone_id := _emission_zone_id(binding)
+		if not zone_id.is_empty() and _zones.has(zone_id):
+			var zone: Dictionary = _zones[zone_id]
+			var pattern: Dictionary = zone.get("pattern", {})
+			material.emission = Patterns.sample(pattern, seconds, 0.5, _profile.get("sequence", []), zone_id)
+			var reaction := Patterns.reactive_multiplier(zone.get("reactive", {}), telemetry)
+			var enabled := bool(zone.get("enabled", true)) and _profile_group_on(group)
+			material.emission_enabled = enabled
+			material.emission_energy_multiplier = float(binding.get("energy", 0.0)) * _zone_gain(zone_id) * float(reaction.get("multiplier", 1.0)) if enabled else 0.0
+			continue
+		if zone_id.is_empty() and _all_group_zones_disabled(group):
+			material.emission_enabled = false
+			material.emission_energy_multiplier = 0.0
+		if zone_id.is_empty() and _group_has_zones(group):
+			var warning := "imported emission material '%s' follows the %s group because no individual zone mapping is available" % [material.resource_name, group]
+			if not _warnings.has(warning):
+				_warnings.append(warning)
+
+
+func _restore_emission_colors() -> void:
+	for binding: Dictionary in _emission_bindings.get("materials", []):
+		var material: BaseMaterial3D = binding.get("material")
+		if is_instance_valid(material) and binding.has("profile_original_emission"):
+			material.emission = binding.profile_original_emission
+
+
+func _emission_zone_id(binding: Dictionary) -> String:
+	if str(binding.get("group", "")) != "navigation":
+		return ""
+	var material: BaseMaterial3D = binding.get("material")
+	if not is_instance_valid(material):
+		return ""
+	match str(material.resource_name):
+		"light_red": return "nav_left"
+		"light_green": return "nav_right"
+	return ""
+
+
+func _all_group_zones_disabled(group: String) -> bool:
+	var found := false
+	for zone_id: String in _zones:
+		if _group_for(zone_id) != group:
+			continue
+		found = true
+		if bool((_zones[zone_id] as Dictionary).get("enabled", true)):
+			return false
+	return found
+
+
+func _group_has_zones(group: String) -> bool:
+	for zone_id: String in _zones:
+		if _group_for(zone_id) == group:
+			return true
+	return false
+
+
+func _profile_group_on(group: String) -> bool:
+	if group not in _supported_light_groups():
+		return false
+	return _mode == "all" or (_mode == "nav" and group in ["navigation", "strobe"])
+
+
+func _supported_light_groups() -> Array:
+	if is_instance_valid(kit):
+		var supported: Variant = kit.get_meta("supported_light_groups", AircraftLights.GROUPS)
+		if supported is Array:
+			return supported
+	return AircraftLights.GROUPS
+
+
+func _reapply_profile_visibility() -> void:
+	var supported := _supported_light_groups()
+	for binding: Dictionary in _materials:
+		var node: Node3D = binding.get("node")
+		if not is_instance_valid(node):
+			continue
+		var group := str(binding.get("group", "orientation"))
+		var group_on := group in supported and (_mode == "all" or (_mode == "nav" and group in ["navigation", "strobe"]))
+		node.visible = bool(binding.get("original_visible", true)) and bool(binding.get("enabled", true)) \
+			and bool(node.get_meta("gate_open", true)) and group_on
+		if str(binding.get("kind", "")) == "spot":
+			var light := node as Light3D
+			if is_instance_valid(light):
+				light.light_energy = float(binding.get("base_energy", 0.0)) * _zone_gain(str(binding.get("zone_id", ""))) if node.visible else 0.0
+
+
+func _profile_node_author_visible(node: Node3D, group: String) -> bool:
+	if is_instance_valid(kit):
+		var groups: Dictionary = kit.get_meta("light_bindings", {})
+		var members: Variant = groups.get(group, [])
+		if members is Array and node in members:
+			return true # A bound node's live visibility is mode/gate state, not its authored visibility.
+	return node.visible
 
 
 func _profile_color(zone: Dictionary, source: ShaderMaterial) -> Color:
 	var original := _color(_shader_value(source, "light_color", Color.WHITE), Color.WHITE)
 	var pattern: Variant = zone.get("pattern", {})
-	if pattern is Dictionary:
-		var palette: Variant = pattern.get("palette", [])
-		if palette is Array and not palette.is_empty():
-			return _color(palette[0], original)
+	if pattern is Dictionary and not pattern.is_empty():
+		return Patterns.sample(pattern, 0.0, 0.5, _profile.get("sequence", []), str(zone.get("id", "")))
 	return original
 
 
@@ -467,9 +635,19 @@ func _group_for(zone_id: String) -> String:
 		return "navigation"
 	if zone_id.begins_with("strobe_"):
 		return "strobe"
-	if zone_id == "landing_lamp":
+	if zone_id.begins_with("landing_lamp"):
 		return "landing"
 	return "orientation"
+
+
+func _canonical_zone_id(zone_id: String) -> String:
+	if zone_id in ["landing_lamp_right", "landing_light", "landing_light_right"]:
+		return "landing_lamp"
+	return zone_id
+
+
+func _is_lamp_zone(zone_id: String) -> bool:
+	return _canonical_zone_id(zone_id) in ["nav_left", "nav_right", "nav_tail", "strobe_left", "strobe_right", "strobe_dorsal", "strobe_ventral", "landing_lamp"]
 
 
 func _default_pattern(color: Color) -> Dictionary:

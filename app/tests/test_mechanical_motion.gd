@@ -15,6 +15,7 @@ func _run() -> void:
 	_test_gear_target_and_endpoint()
 	_test_pause_and_rewind_prime()
 	_test_invalid_and_duplicate_inputs()
+	_test_slow_motion_sampling()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -92,6 +93,19 @@ func _test_invalid_and_duplicate_inputs() -> void:
 	_check("duplicate servo IDs count once", duplicated.channels.size() == 1 and is_equal_approx(duplicated.channels[0].value, 1.0))
 	var no_tick: Dictionary = Motion.observe(duplicated.state, {channels = [], gear = {}})
 	_check("missing tick produces no motion sample", not no_tick.valid and no_tick.events.is_empty())
+
+
+func _test_slow_motion_sampling() -> void:
+	for ticks_per_sample: int in [1, 2, 4, 8]:
+		var initial: Dictionary = Motion.observe({}, _snapshot(0, 0.0, 0.0, false, false)).state
+		var elapsed_s: float = float(ticks_per_sample) / 240.0
+		var slow: Dictionary = Motion.observe(initial, _snapshot(ticks_per_sample, elapsed_s, 0.0, false, false))
+		_check("one degree/second correction remains audible at %d ticks/sample" % ticks_per_sample,
+			slow.channels[0].moving and is_equal_approx(slow.channels[0].speed_per_s, 1.0)
+			and _event_keys(slow.events) == ["servo:roll:start"])
+		var settled: Dictionary = Motion.observe(initial, _snapshot(ticks_per_sample, elapsed_s * 0.1, 0.0, false, false))
+		_check("sub-floor settling stays silent at %d ticks/sample" % ticks_per_sample,
+			not settled.channels[0].moving and settled.events.is_empty())
 
 
 func _snapshot(tick: int, roll_angle: float, extension: float, target_down: bool,
