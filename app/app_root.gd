@@ -58,6 +58,7 @@ const NaturalRandomScreen = preload("res://ui/natural_random_screen.gd")
 const HELICOPTER_MAIN_SCRIPT := "res://helicopter_main.gd"
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const BirdDirector := preload("res://scenery/birds/bird_director.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
@@ -196,6 +197,7 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	Reconstruction.apply(get_viewport(), Reconstruction.startup_config())
 	if DebugBridge.requested(): # PT1h-R7: opt-in agent debug bridge; never changes the route
 		add_child(DebugBridge.new())
 	if InputReport.requested(user_args):
@@ -1156,7 +1158,7 @@ func _apply_presentation(config: Dictionary) -> void:
 		_refresh_screen_themes(self)
 	# These settings affect presentation only, including an already paused flight.
 	Engine.max_fps = int(config.get("max_fps", 0))
-	get_viewport().msaa_3d = int(config.get("msaa_3d", 2)) as Viewport.MSAA
+	Reconstruction.apply(get_viewport(), config)
 	# VQ-06b: the LOD threshold applies at once; scenery and 3D trees follow at the next world build.
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).

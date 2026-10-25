@@ -10,6 +10,7 @@ const CameraSettings := preload("res://render/camera/camera_settings.gd")
 ## Settings pages, in tab order. CAM-17 added Camera.
 const CATEGORIES: Array[String] = ["Display", "Interface", "Sound", "Graphics", "Camera"]
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 
 signal closed
@@ -48,6 +49,7 @@ var _resolution_picker: OptionButton
 var _fps_picker: OptionButton
 var _vsync_picker: OptionButton
 var _msaa_picker: OptionButton
+var _reconstruction_picker: OptionButton
 var _scene_detail_picker: OptionButton
 var _birds_picker: OptionButton
 var _camera_view_picker: OptionButton
@@ -179,6 +181,7 @@ func _build() -> void:
 	var interface_page := _pages[1]
 	var sound_page := _pages[2]
 	var graphics_page := _pages[3]
+	graphics_page.add_theme_constant_override("separation", 12)
 	var camera_page := _pages[4]
 
 	_window_picker = OptionButton.new()
@@ -209,6 +212,8 @@ func _build() -> void:
 	_add_row(graphics_page, "Frame rate limit", _fps_picker)
 	_vsync_picker = _choice_picker("VSync", "vsync_mode", DisplayPreferences.VSYNC_MODES)
 	_add_row(graphics_page, "Vertical synchronization", _vsync_picker)
+	_reconstruction_picker = _choice_picker("Reconstruction", "reconstruction", DisplayPreferences.RECONSTRUCTION_MODES)
+	_add_row(graphics_page, "3D reconstruction", _reconstruction_picker)
 	_msaa_picker = _choice_picker("Msaa3D", "msaa_3d", DisplayPreferences.MSAA_3D_VALUES)
 	_add_row(graphics_page, "Antialiasing (MSAA)", _msaa_picker)
 	_msaa_picker.tooltip_text = tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
@@ -477,6 +482,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"max_fps": return tr("Unlimited") if value == 0 else "%d FPS" % int(value)
 		"vsync_mode": return tr("On") if value == "enabled" else tr("Off")
 		"msaa_3d": return tr("Off") if value == 0 else "%d×" % (1 << int(value))
+		"reconstruction": return {native = tr("Native"), fsr2_native = tr("FSR2 · Native AA"), fsr2_quality = tr("FSR2 · Quality")}.get(value, str(value))
 		"scene_detail":
 			if value == SceneDetail.AUTO:
 				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
@@ -494,7 +500,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 
 func _on_graphics_option_changed() -> void:
 	var changed := false
-	for key: String in ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d"]:
+	for key: String in ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction"]:
 		changed = changed or _draft[key] != _saved[key]
 	if not changed:
 		_trial_deadline_msec = 0
@@ -510,7 +516,7 @@ func _on_graphics_option_changed() -> void:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds"]:
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction"]:
 		_draft[key] = DisplayPreferences.DEFAULTS[key]
 	_on_graphics_option_changed()
 
@@ -527,6 +533,8 @@ func _refresh_graphics_info() -> void:
 		tr("On") if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED else tr("Off")]
 	if HighGraphics.requested() == "high" and not HighGraphics.active():
 		_graphics_info.text += "\n" + tr("High is unavailable with the current renderer. Standard remains active.")
+	if not Reconstruction.available() and _draft.get("reconstruction", "native") != "native":
+		_graphics_info.text += "\n" + tr("FSR2 is saved for High. Native rendering is active in Standard.")
 
 
 func set_graphics_restart_available(available: bool) -> void:
@@ -625,6 +633,8 @@ func _sync_controls() -> void:
 	_select_metadata(_fps_picker, _draft.max_fps)
 	_select_metadata(_vsync_picker, _draft.vsync_mode)
 	_select_metadata(_msaa_picker, _draft.msaa_3d)
+	_select_metadata(_reconstruction_picker, _draft.get("reconstruction", "native"))
+	_sync_reconstruction_controls()
 	_select_metadata(_scene_detail_picker, _draft.scene_detail)
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
 	_select_metadata(_camera_view_picker, _draft.get("camera_view", CameraSettings.DEFAULTS.camera_view))
@@ -641,6 +651,16 @@ func _sync_controls() -> void:
 	_master_slider.set_value_no_signal(float(_draft.get("master_volume", 1.0)))
 	_refresh_volume_text()
 	_sync_action_buttons()
+
+
+func _sync_reconstruction_controls() -> void:
+	var supported := Reconstruction.available()
+	_reconstruction_picker.disabled = not supported
+	_reconstruction_picker.tooltip_text = tr("FSR2 works in High on compatible AMD, NVIDIA and Intel GPUs. Quality renders 3D at two-thirds resolution; Native AA keeps full resolution. Check distant aircraft in motion.") if supported \
+		else tr("Restart in High from Home to use FSR2.")
+	_msaa_picker.disabled = supported and _draft.get("reconstruction", "native") != "native"
+	_msaa_picker.tooltip_text = tr("FSR2 provides antialiasing. Your MSAA choice returns with Native rendering.") if _msaa_picker.disabled \
+		else tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
 
 
 func _sync_action_buttons() -> void:
@@ -692,7 +712,7 @@ func _update_layout() -> void:
 	else:
 		_layout_panel.remove_theme_stylebox_override("panel")
 	var available: Vector2 = _surface.size - Vector2(gutter * 2.0, gutter * 2.0)
-	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(720.0, maxf(0.0, available.y)))
+	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(800.0, maxf(0.0, available.y)))
 	_refresh_graphics_info()
 	var stack_rows := _should_stack_rows()
 	# Two rows of tabs when stacked, as with four categories: a third row would leave the page no room at 200 % text.
@@ -729,12 +749,13 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_scene_detail_picker, "scene_detail"],
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_scene_detail_picker, "scene_detail"],
 			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))
 	_refresh_graphics_info()
+	_sync_reconstruction_controls()
 	if _opaque_toggle != null:
 		_opaque_toggle.tooltip_text = tr("Use opaque panels")
 	if _motion_toggle != null:

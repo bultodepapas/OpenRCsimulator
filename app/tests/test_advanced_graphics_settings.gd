@@ -4,6 +4,7 @@ extends SceneTree
 
 const UiDriver := preload("res://tests/ui_driver.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const PREFS := "user://test_advanced_graphics_settings.cfg"
 var failures := 0
@@ -85,6 +86,22 @@ func _run() -> void:
 	settings._msaa_picker.select(3)
 	settings._msaa_picker.item_selected.emit(3)
 	_check("8x MSAA reaches the real viewport", root.msaa_3d == Viewport.MSAA_8X)
+	_check("FSR2 availability follows native High", settings._reconstruction_picker.disabled == not Reconstruction.available())
+	settings._reconstruction_picker.select(2)
+	settings._reconstruction_picker.item_selected.emit(2)
+	_check("reconstruction preview starts recovery without saving", settings._trial_deadline_msec > Time.get_ticks_msec()
+		and DisplayPreferences.load_from(PREFS + ".display").reconstruction == "native")
+	_check("FSR2 activates only in High and preserves saved MSAA choice", settings._draft.msaa_3d == 3
+		and root.scaling_3d_mode == (Viewport.SCALING_3D_MODE_FSR2 if Reconstruction.available() else Viewport.SCALING_3D_MODE_BILINEAR)
+		and root.msaa_3d == (Viewport.MSAA_DISABLED if Reconstruction.available() else Viewport.MSAA_8X))
+	settings._trial_deadline_msec = Time.get_ticks_msec() - 1
+	settings._process(0.0)
+	_check("FSR2 timeout restores native resolution and saved MSAA", root.scaling_3d_scale == 1.0
+		and root.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR and root.msaa_3d == Viewport.MSAA_4X)
+	settings._vsync_picker.select(1)
+	settings._vsync_picker.item_selected.emit(1)
+	settings._msaa_picker.select(3)
+	settings._msaa_picker.item_selected.emit(3)
 	app.display_preferences.writable = false
 	settings.keep_changes()
 	_check("failed Keep preserves recovery and saved values", settings._trial_deadline_msec > Time.get_ticks_msec()
@@ -201,6 +218,24 @@ func _run() -> void:
 	root.add_child(app)
 	await ui.settle()
 	_check("shell relaunch applies kept FPS and MSAA", Engine.max_fps == 60 and root.msaa_3d == Viewport.MSAA_2X)
+	app.open_settings()
+	await ui.settle()
+	settings = app.screens.get_screen("settings")
+	settings._reconstruction_picker.select(2)
+	settings._reconstruction_picker.item_selected.emit(2)
+	settings.keep_changes()
+	settings.close()
+	await ui.settle()
+	_check("kept FSR2 preserves native MSAA preference", DisplayPreferences.load_from(PREFS + ".display").reconstruction == "fsr2_quality"
+		and DisplayPreferences.load_from(PREFS + ".display").msaa_3d == 1)
+	await ui.close_app(app)
+	app = load("res://app_root.tscn").instantiate()
+	app.user_args = PackedStringArray()
+	app.preferences_path = PREFS
+	root.add_child(app)
+	await ui.settle()
+	_check("shell relaunch applies FSR2 or safe native fallback", root.scaling_3d_mode ==
+		(Viewport.SCALING_3D_MODE_FSR2 if Reconstruction.available() else Viewport.SCALING_3D_MODE_BILINEAR))
 	await ui.close_app(app)
 	Engine.max_fps = 0
 	root.msaa_3d = Viewport.MSAA_4X

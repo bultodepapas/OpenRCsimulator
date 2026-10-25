@@ -1,6 +1,8 @@
 extends RefCounted
 ## Opt-in rendering and memory observations for one viewport.
 
+const Reconstruction := preload("res://render/reconstruction.gd")
+
 const GPU_TIMING_NOTE := "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time."
 const RENDER_MEMORY_NOTE := "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM."
 const STATIC_MEMORY_NOTE := "Godot static memory may be unavailable in release builds and can report zero."
@@ -57,6 +59,8 @@ func start(viewport: Viewport) -> void:
 	_metadata["adapter_api_version"] = RenderingServer.get_video_adapter_api_version()
 	_metadata["rendering_method"] = RenderingServer.get_current_rendering_method()
 	_metadata["rendering_driver"] = RenderingServer.get_current_rendering_driver_name()
+	if is_instance_valid(viewport):
+		_metadata["reconstruction_at_start"] = Reconstruction.describe(viewport)
 	var unavailable_reason: String = _timing_unavailable_reason(display_server, _metadata["os_name"], _metadata["rendering_method"])
 	if not unavailable_reason.is_empty():
 		_metadata["render_timing_unavailable_reason"] = unavailable_reason
@@ -106,6 +110,8 @@ func sample() -> Dictionary:
 
 func metadata() -> Dictionary:
 	var result: Dictionary = _metadata.duplicate(true)
+	if _has_live_viewport():
+		result["reconstruction_at_report"] = Reconstruction.describe(_viewport_ref.get_ref())
 	result["enabled"] = _started
 	result["started"] = _started
 	result["active"] = _started and not _stopped
@@ -121,6 +127,8 @@ func stop() -> void:
 	if not _started or _stopped:
 		return
 	_stopped = true
+	if _has_live_viewport():
+		_metadata["reconstruction_at_report"] = Reconstruction.describe(_viewport_ref.get_ref())
 	if _measurement_enabled and _has_live_viewport():
 		RenderingServer.viewport_set_measure_render_time(_viewport_rid, false)
 	_measurement_enabled = false

@@ -5810,6 +5810,43 @@ msgstr "Buitres y cigüeñas en térmicas, milanos, golondrinas y vencejos al at
 msgid "Renderer: %s"
 msgstr "Renderizador: %s"
 
+msgid "3D reconstruction"
+msgstr "Reconstrucción 3D"
+
+msgid "Native"
+msgstr "Nativo"
+
+msgid "FSR2 · Native AA"
+msgstr "FSR2 · AA nativo"
+
+msgid "FSR2 · Quality"
+msgstr "FSR2 · Calidad"
+
+msgid "FSR2 works in High on compatible AMD, NVIDIA and Intel GPUs. Quality renders 3D at two-thirds resolution; Native AA keeps full resolution. Check distant aircraft in motion."
+msgstr "FSR2 funciona en Alto con GPU compatibles de AMD, NVIDIA e Intel. Calidad renderiza el 3D a dos tercios de resolución; AA nativo conserva la resolución completa. Comprueba los aviones lejanos en movimiento."
+
+msgid "Restart in High from Home to use FSR2."
+msgstr "Reinicia en Alto desde Inicio para usar FSR2."
+
+msgid "FSR2 provides antialiasing. Your MSAA choice returns with Native rendering."
+msgstr "FSR2 incluye antialiasing. Tu elección de MSAA se recupera con el renderizado Nativo."
+
+msgid "FSR2 is saved for High. Native rendering is active in Standard."
+msgstr "FSR2 está guardado para Alto. En Estándar se usa el renderizado Nativo."
+
+# UI-34: official brand startup.
+msgid "Loading…"
+msgstr "Cargando…"
+
+msgid "Preparing home…"
+msgstr "Preparando inicio…"
+
+msgid "Skip intro"
+msgstr "Saltar introducción"
+
+msgid "Unable to load. Please restart."
+msgstr "No se pudo cargar. Reinicia la aplicación."
+
 # CAM-17: camera settings page.
 msgid "First view"
 msgstr "Vista inicial"

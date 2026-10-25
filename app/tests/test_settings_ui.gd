@@ -104,7 +104,8 @@ func _run() -> void:
 		await process_frame
 		await process_frame
 		_check("default Settings category %d fits without scrolling" % category,
-			not default_settings._scroll.get_v_scroll_bar().visible)
+			not default_settings._scroll.get_v_scroll_bar().visible,
+			"surface=%s body=%s page=%s" % [default_settings._surface.size, default_settings._scroll.size, default_settings._pages[category].size])
 	default_settings._volume_changed(0.0)
 	_check("muted preview disables Test sound", default_settings._test_sound_button.disabled
 		and default_settings._volume_value.text == tr("Muted"))

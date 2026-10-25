@@ -30,7 +30,7 @@ Aircraft flight has no third-party native solver. The experimental RC ground act
 
 ## Boundaries and data flow
 
-[`app_root.tscn`](../app/app_root.tscn) loads `app_root.gd`. No user arguments opens Home; `--input-report` starts diagnostics; `--vehicle=mt8-bisonte` and `--vehicle=monster-car-2` start the corresponding ground activity; remaining arguments take the direct-flight route. Direct flights do not read Home preferences. The aircraft catalog routes fixed-wing IDs to `main.tscn` and rotorcraft IDs to the `helicopter_main.gd` activity.
+[`ui/startup.tscn`](../app/ui/startup.tscn) presents the official SVG identity on rendered interactive launches, then hands off to [`app_root.tscn`](../app/app_root.tscn), which loads `app_root.gd`. Headless and command-line launches bypass the intro. No user arguments opens Home; `--input-report` starts diagnostics; `--vehicle=mt8-bisonte` and `--vehicle=monster-car-2` start the corresponding ground activity; remaining arguments take the direct-flight route. Direct flights do not read Home preferences. The aircraft catalog routes fixed-wing IDs to `main.tscn` and rotorcraft IDs to the `helicopter_main.gd` activity.
 
 The explicit [landscape catalog](../app/landscapes/catalog.gd) registers Club field (default) and Green paradise. Home remembers a landscape ID and rebuilds its backdrop; flight and Workshop trials receive the same ID and field path. Direct flights resolve `--landscape=<id>` independently. Both flight routes validate field data before building the selected adapter's visuals and matching obstacle inventory. Field surfaces still supply ground contact; the shared kernel has no landscape branches. Selection changes only on Home between flights. [Authoring contract](LANDSCAPES.md).
 
