@@ -227,7 +227,7 @@ func _build() -> void:
 	_fsr2_sharpness_value = sharpness_control.get_node("Fsr2SharpnessValue")
 	_fsr2_sharpness_slider.drag_started.connect(func() -> void: _fsr2_sharpness_dragging = true)
 	_fsr2_sharpness_slider.drag_ended.connect(_fsr2_sharpness_drag_ended)
-	_add_row(graphics_page, "FSR2 sharpness", sharpness_control)
+	_add_row(graphics_page, "FSR sharpness", sharpness_control)
 	_msaa_picker = _choice_picker("Msaa3D", "msaa_3d", DisplayPreferences.MSAA_3D_VALUES)
 	_add_row(graphics_page, "Antialiasing (MSAA)", _msaa_picker)
 	_msaa_picker.tooltip_text = tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
@@ -603,12 +603,26 @@ func _refresh_graphics_info() -> void:
 	if HighGraphics.requested() == "high" and not HighGraphics.active():
 		_graphics_info.text += "\n" + tr("High is unavailable with the current renderer. Standard remains active.")
 	var requested := str(_draft.get("reconstruction", "native"))
-	if requested != "native":
-		var policy := Reconstruction.resolve(requested, Reconstruction.runtime_capabilities())
-		if not HighGraphics.active():
-			_graphics_info.text += "\n" + tr("Reconstruction is saved for High. Native rendering is active in Standard.")
-		elif bool(policy.fallback):
-			_graphics_info.text += "\n" + tr("Saved %s is unavailable here. Native rendering is active; the saved choice is preserved.") % _choice_caption("reconstruction", requested)
+	var capabilities := Reconstruction.runtime_capabilities()
+	var active_policy: Dictionary = Reconstruction.resolve(requested, capabilities)
+	var viewport := get_viewport()
+	var receipt := Reconstruction.describe(viewport)
+	# The viewport receipt includes runtime rollback, while this settings draft remains the
+	# user's requested choice. Use it only when it describes the same preview.
+	if str(receipt.get("requested", "")) == requested:
+		active_policy = receipt
+	var effective := str(active_policy.get("effective", "native"))
+	var output_size := viewport.get_visible_rect().size
+	var scale := float(active_policy.get("scale", 1.0))
+	var input_width := roundi(output_size.x * scale)
+	var input_height := roundi(output_size.y * scale)
+	_graphics_info.text += "\n" + tr("Reconstruction: Requested %s → Active %s") % [
+		_choice_caption("reconstruction", requested), _choice_caption("reconstruction", effective)]
+	_graphics_info.text += "\n" + tr("Estimated 3D input: %d × %d → Output: %d × %d") % [
+		input_width, input_height, roundi(output_size.x), roundi(output_size.y)]
+	if bool(active_policy.get("fallback", false)):
+		var reason := str(active_policy.get("fallback_reason", ""))
+		_graphics_info.text += "\n" + _reconstruction_fallback_text(requested, reason)
 
 
 func set_graphics_restart_available(available: bool) -> void:
@@ -736,8 +750,9 @@ func _sync_reconstruction_controls() -> void:
 	var capabilities := Reconstruction.runtime_capabilities()
 	var high_active := bool(capabilities.high)
 	_reconstruction_picker.disabled = not high_active
-	_reconstruction_picker.tooltip_text = tr("Choose a reconstruction provider supported by this High renderer. Check distant aircraft detail in motion.") if high_active \
+	_reconstruction_picker.tooltip_text = tr("Choose a reconstruction option available in High graphics. Check distant aircraft detail in motion.") if high_active \
 		else tr("Restart in High from Home to use reconstruction.")
+	_reconstruction_picker.tooltip_text += "\n" + tr("At 1080p, Quality uses about 1280 × 720 3D input; Performance uses 960 × 540. Quality keeps more input detail than Balanced or Performance. Lower input may soften distant detail; compare while moving.")
 	for index: int in _reconstruction_picker.item_count:
 		var mode := str(_reconstruction_picker.get_item_metadata(index))
 		var status := Reconstruction.option_status(mode, capabilities)
@@ -747,32 +762,71 @@ func _sync_reconstruction_controls() -> void:
 			+ (" — " + tr("Unavailable") if is_unavailable else ""))
 		_reconstruction_picker.set_item_tooltip(index, _reconstruction_option_tooltip(mode, str(status.reason)))
 	var policy := Reconstruction.resolve(str(_draft.get("reconstruction", "native")), capabilities)
-	if high_active and is_inside_tree():
-		var output := get_viewport().get_visible_rect().size
-		_reconstruction_picker.tooltip_text += "\n" + tr("3D input: about %d × %d (%d%%).") % [
-			roundi(output.x * float(policy.scale)), roundi(output.y * float(policy.scale)), roundi(float(policy.scale) * 100.0)]
 	var strength := float(_draft.get("fsr2_sharpness", DisplayPreferences.DEFAULTS.fsr2_sharpness))
 	_fsr2_sharpness_slider.set_value_no_signal(strength)
 	_fsr2_sharpness_slider.editable = high_active and policy.provider in ["fsr2", "fsr3"]
+	_fsr2_sharpness_slider.focus_mode = Control.FOCUS_ALL if _fsr2_sharpness_slider.editable else Control.FOCUS_NONE
 	_fsr2_sharpness_value.text = tr("Off") if is_zero_approx(strength) else "%d %%" % roundi(strength * 100.0)
-	_fsr2_sharpness_slider.tooltip_text = tr("DLSS manages its own reconstruction sharpness. FSR sharpness is active only with FSR2 or FSR3.") \
-		if policy.provider == "dlss" else tr("0% disables FSR sharpening. Higher values sharpen edges but can exaggerate halos and shimmer. Only active with FSR2 or FSR3.")
+	var requested_mode := str(_draft.get("reconstruction", "native"))
+	var requested_provider := str(Reconstruction.MODE_PROVIDERS.get(requested_mode, ""))
+	if policy.provider == "dlss":
+		_fsr2_sharpness_slider.tooltip_text = tr("DLSS controls its own reconstruction sharpness. This saved FSR value is kept for FSR2 or FSR3.")
+	elif requested_provider == "dlss" and policy.fallback:
+		_fsr2_sharpness_slider.tooltip_text = tr("FSR sharpness is inactive while Native is active. This saved value stays for FSR2 or FSR3. DLSS controls sharpness when it is active.")
+	elif policy.provider in ["fsr2", "fsr3"]:
+		_fsr2_sharpness_slider.tooltip_text = tr("0% disables FSR sharpening. Higher values sharpen edges but can exaggerate halos and shimmer.")
+	else:
+		_fsr2_sharpness_slider.tooltip_text = tr("Native rendering does not use FSR sharpness. This saved value is kept for FSR2 or FSR3.")
 	_msaa_picker.disabled = high_active and bool(policy.temporal)
 	_msaa_picker.tooltip_text = tr("Temporal reconstruction provides antialiasing. Your MSAA choice returns with Native rendering.") if _msaa_picker.disabled \
 		else tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
 
 
 func _reconstruction_option_tooltip(mode: String, reason: String) -> String:
-	if reason.is_empty():
-		return ""
-	if reason == "high_profile_inactive":
-		return tr("Restart in High from Home to use reconstruction.")
 	var provider := str(Reconstruction.MODE_PROVIDERS.get(mode, ""))
+	if not reason.is_empty():
+		if reason == "high_profile_inactive":
+			return tr("Restart in High from Home to use reconstruction.")
+		return _reconstruction_unavailable_text(provider, reason)
+	if not is_inside_tree():
+		return ""
+	var output_size := get_viewport().get_visible_rect().size
+	var policy := Reconstruction.resolve(mode, Reconstruction.runtime_capabilities())
+	var input_width := roundi(output_size.x * float(policy.scale))
+	var input_height := roundi(output_size.y * float(policy.scale))
+	if provider == "native":
+		return tr("Native keeps full-resolution 3D input and uses your MSAA choice.")
+	if is_equal_approx(float(policy.scale), 1.0):
+		return tr("%s keeps full-resolution 3D input and provides antialiasing. Your MSAA choice returns with Native rendering.") % _choice_caption("reconstruction", mode)
+	return tr("%s renders 3D at about %d × %d while output stays %d × %d. Lower input may soften distant detail; compare while moving.") % [
+		_choice_caption("reconstruction", mode), input_width, input_height,
+		roundi(output_size.x), roundi(output_size.y)]
+
+
+func _reconstruction_unavailable_text(provider: String, reason: String) -> String:
+	if reason == "engine_mode_missing":
+		return tr("The current game build does not offer %s reconstruction.") % str({
+			"fsr2": "FSR2", "fsr3": "FSR3", "dlss": "DLSS"}.get(provider, "this"))
+	match reason:
+		"fsr3_support_missing": return tr("FSR3 support is not included in this game build.")
+		"fsr3_unavailable": return tr("The current graphics session does not report FSR3 support.")
+		"fsr3_runtime_failure": return tr("FSR3 could not continue in this graphics session.")
+		"dlss_support_missing": return tr("DLSS support is not included in this game build.")
+		"dlss_unavailable": return tr("The current graphics session does not report DLSS support.")
+		"fsr2_unavailable": return tr("The current graphics session does not offer FSR2.")
 	match provider:
-		"fsr2": return tr("FSR2 is unavailable in this engine or renderer.")
-		"fsr3": return tr("FSR3 requires the native FSR3 extension, its supported runtime and Forward+.")
-		"dlss": return tr("DLSS requires the NVIDIA Streamline DLSS capability and Forward+.")
-	return tr("This reconstruction option is unavailable in the current runtime.")
+		"fsr2": return tr("The current graphics session does not offer FSR2.")
+		"fsr3": return tr("The current graphics session does not report FSR3 support.")
+		"dlss": return tr("The current graphics session does not report DLSS support.")
+	return tr("This reconstruction option is unavailable in the current graphics session.")
+
+
+func _reconstruction_fallback_text(mode: String, reason: String) -> String:
+	var provider := str(Reconstruction.MODE_PROVIDERS.get(mode, ""))
+	if reason == "high_profile_inactive":
+		return tr("High graphics is not active. Native rendering is active; restart in High to use your saved choice.")
+	var unavailable := _reconstruction_unavailable_text(provider, reason)
+	return tr("%s Native rendering is active, and your saved choice is kept.") % unavailable
 
 
 func _sync_action_buttons() -> void:
