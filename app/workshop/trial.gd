@@ -71,6 +71,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 				and (normalized_profile.get("paint", []) as Array).is_empty() \
 				and (normalized_profile.get("markings", []) as Array).is_empty() \
 				and (normalized_profile.get("smoke", []) as Array).is_empty() \
+					and normalized_profile.get("lighting", {}).get("selection", "inherit") == "inherit" \
 				and int(normalized_profile.get("visual_seed", 0)) == 0
 			if not is_unbound_legacy:
 				return {ok = false, errors = PackedStringArray(["The current customization companion is required to resolve this pinned presentation profile."])}

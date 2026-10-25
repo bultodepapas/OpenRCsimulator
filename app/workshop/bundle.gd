@@ -326,6 +326,7 @@ static func _is_unbound_stock_profile(profile: Dictionary) -> bool:
 		and (profile.get("paint", []) as Array).is_empty() \
 		and (profile.get("markings", []) as Array).is_empty() \
 		and (profile.get("smoke", []) as Array).is_empty() \
+		and profile.get("lighting", {}).get("selection", "inherit") == "inherit" \
 		and int(profile.get("visual_seed", 0)) == 0
 
 

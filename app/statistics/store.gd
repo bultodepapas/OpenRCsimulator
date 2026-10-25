@@ -7,6 +7,9 @@ const STORE_FORMAT: String = "openrc-flight-statistics"
 const CODEC_VERSION: int = 1
 const FENCE_FORMAT: String = "openrc-flight-statistics-deletion-fence"
 const FENCE_VERSION: int = 1
+const SNAPSHOT_MAGIC: String = "ORFSNP01"
+const FENCE_MAGIC: String = "ORFDNC01"
+const FRAME_HEADER_BYTES: int = 40
 const MAX_SNAPSHOT_BYTES: int = 64 * 1024 * 1024
 const MAX_FENCE_BYTES: int = 64 * 1024
 const SLOT_A: String = "snapshot_a.bin"
@@ -314,8 +317,11 @@ func close() -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-		close()
+	if what == NOTIFICATION_PREDELETE and _owns_lock:
+		# Avoid dispatching another method on a RefCounted during PREDELETE.
+		_release_writer_lock()
+		_owns_lock = false
+		writable = false
 
 
 func _read_snapshots() -> Dictionary:
@@ -361,7 +367,10 @@ func _read_snapshot_file(path: String) -> Dictionary:
 	file.close()
 	if bytes.size() != length:
 		return {"ok": false, "error": "snapshot ended before its declared length"}
-	var wrapper: Variant = bytes_to_var(bytes)
+	var payload_result: Dictionary = _unframe(SNAPSHOT_MAGIC, bytes)
+	if not bool(payload_result.get("ok", false)):
+		return {"ok": false, "error": str(payload_result.get("error", "snapshot frame is invalid"))}
+	var wrapper: Variant = bytes_to_var(payload_result.payload)
 	if typeof(wrapper) != TYPE_DICTIONARY:
 		return {"ok": false, "error": "snapshot envelope is invalid"}
 	if wrapper.size() != 4 or not wrapper.has_all(["format", "codec_version", "checksum_sha256", "data"]):
@@ -417,7 +426,12 @@ func _read_fence_file(path: String) -> Dictionary:
 		return {"ok": false, "error": "receipt length is outside the read limit"}
 	var bytes: PackedByteArray = file.get_buffer(length)
 	file.close()
-	var wrapper: Variant = bytes_to_var(bytes)
+	if bytes.size() != length:
+		return {"ok": false, "error": "receipt ended before its declared length"}
+	var payload_result: Dictionary = _unframe(FENCE_MAGIC, bytes)
+	if not bool(payload_result.get("ok", false)):
+		return {"ok": false, "error": str(payload_result.get("error", "receipt frame is invalid"))}
+	var wrapper: Variant = bytes_to_var(payload_result.payload)
 	if typeof(wrapper) != TYPE_DICTIONARY or wrapper.size() != 4 or not wrapper.has_all(["format", "version", "checksum_sha256", "receipt"]):
 		return {"ok": false, "error": "receipt envelope is invalid"}
 	if typeof(wrapper.version) == TYPE_INT and int(wrapper.version) > FENCE_VERSION:
@@ -607,14 +621,15 @@ func _write_snapshot_file(path: String, snapshot: Dictionary) -> Dictionary:
 	var validation: Dictionary = _schema.validate(canonical)
 	if not bool(validation.get("ok", false)):
 		return {"ok": false, "error": "; ".join(validation.get("errors", PackedStringArray()))}
-	var payload: PackedByteArray = var_to_bytes(canonical)
+	var data_payload: PackedByteArray = var_to_bytes(canonical)
 	var wrapper: Dictionary = {
 		"format": STORE_FORMAT,
 		"codec_version": CODEC_VERSION,
-		"checksum_sha256": _sha256(payload),
+		"checksum_sha256": _sha256(data_payload),
 		"data": canonical,
 	}
-	var bytes: PackedByteArray = var_to_bytes(wrapper)
+	var wrapper_payload: PackedByteArray = var_to_bytes(wrapper)
+	var bytes: PackedByteArray = _frame(SNAPSHOT_MAGIC, wrapper_payload)
 	if bytes.is_empty() or bytes.size() > MAX_SNAPSHOT_BYTES:
 		return {"ok": false, "error": "snapshot exceeds the 64 MiB limit"}
 	var file := FileAccess.open(path, FileAccess.WRITE)
@@ -640,7 +655,8 @@ func _write_fence(receipt: Dictionary) -> bool:
 		"checksum_sha256": _sha256(var_to_bytes(canonical)),
 		"receipt": canonical,
 	}
-	var bytes: PackedByteArray = var_to_bytes(wrapper)
+	var payload: PackedByteArray = var_to_bytes(wrapper)
+	var bytes: PackedByteArray = _frame(FENCE_MAGIC, payload)
 	if bytes.is_empty() or bytes.size() > MAX_FENCE_BYTES:
 		return false
 	var temp_path: String = _root_path.path_join(FENCE_TEMP)
@@ -850,3 +866,26 @@ func _sha256(bytes: PackedByteArray) -> String:
 	context.start(HashingContext.HASH_SHA256)
 	context.update(bytes)
 	return context.finish().hex_encode()
+
+
+func _frame(magic: String, payload: PackedByteArray) -> PackedByteArray:
+	var result: PackedByteArray = magic.to_ascii_buffer()
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	context.update(payload)
+	result.append_array(context.finish())
+	result.append_array(payload)
+	return result
+
+
+func _unframe(magic: String, bytes: PackedByteArray) -> Dictionary:
+	if bytes.size() <= FRAME_HEADER_BYTES or bytes.slice(0, magic.length()).get_string_from_ascii() != magic:
+		return {"ok": false, "error": "binary frame header is invalid"}
+	var expected_digest: PackedByteArray = bytes.slice(magic.length(), FRAME_HEADER_BYTES)
+	var payload: PackedByteArray = bytes.slice(FRAME_HEADER_BYTES, bytes.size())
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	context.update(payload)
+	if context.finish() != expected_digest:
+		return {"ok": false, "error": "binary frame checksum does not match"}
+	return {"ok": true, "payload": payload}

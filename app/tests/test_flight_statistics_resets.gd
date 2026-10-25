@@ -53,7 +53,7 @@ func _test_account_and_aircraft_epochs(source: Dictionary, reducer: Script, sche
 	var account_time: String = "2026-10-25T14:00:00"
 	var account: Dictionary = reducer.reset(source, "account", "", "", account_time)
 	_check("account reset returns a valid candidate", not account.is_empty() and bool(schema.validate(account).ok))
-	_check("account reset advances only account epoch", account.epochs.account == 1 and account.epochs.aircraft.a == 0 and account.epochs.aircraft.b == 0)
+	_check("account reset advances only account epoch", account.epochs.account == 1 and account.epochs.aircraft["stock:a"] == 0 and account.epochs.aircraft["stock:b"] == 0)
 	_check("account reset records its time", account.epochs.account_utc == account_time)
 	_check("account reset preserves lifetime history", reducer.query(account, "", "lifetime").started == 3)
 	_check("account since-reset view starts empty", reducer.query(account, "", "counters").started == 0)
@@ -63,7 +63,7 @@ func _test_account_and_aircraft_epochs(source: Dictionary, reducer: Script, sche
 	var aircraft_time: String = "2026-10-25T14:05:00"
 	var aircraft: Dictionary = reducer.reset(source, "aircraft", "stock:a", "", aircraft_time)
 	_check("aircraft reset returns a valid candidate", not aircraft.is_empty() and bool(schema.validate(aircraft).ok))
-	_check("aircraft reset advances only its epoch", aircraft.epochs.account == 0 and aircraft.epochs.aircraft.a == 1 and aircraft.epochs.aircraft.b == 0)
+	_check("aircraft reset advances only its epoch", aircraft.epochs.account == 0 and aircraft.epochs.aircraft["stock:a"] == 1 and aircraft.epochs.aircraft["stock:b"] == 0)
 	_check("aircraft reset records its time", aircraft.epochs.aircraft_utc["stock:a"] == aircraft_time)
 	_check("aircraft since-reset view starts empty", reducer.query(aircraft, "stock:a", "counters").started == 0)
 	_check("other aircraft counter window stays intact", reducer.query(aircraft, "stock:b", "counters").started == 1)
@@ -78,7 +78,7 @@ func _test_session_reset(source: Dictionary, reducer: Script, schema: Script) ->
 	_check("session reset selects the new session", reset.current_session == "session-next")
 	_check("session reset closes the prior session", reset.sessions[0].status == "closed" and reset.sessions[0].closed_utc == new_time)
 	_check("session reset appends an open session", reset.sessions[1].status == "open" and reset.sessions[1].opened_utc == new_time)
-	_check("session reset does not advance counter epochs", reset.epochs.account == 0 and reset.epochs.aircraft.a == 0)
+	_check("session reset does not advance counter epochs", reset.epochs.account == 0 and reset.epochs.aircraft["stock:a"] == 0)
 	_check("new-session query is empty", reducer.query(reset, "", "session").started == 0)
 	_check("explicit old-session history remains intact", reducer.query(reset, "", "session", "session-old").started == 3)
 	_check("session period label includes its opening time", str(reducer.query(reset, "", "session").period_label).contains(new_time))

@@ -218,7 +218,14 @@ func _encode_snapshot(schema: Script, snapshot: Dictionary) -> PackedByteArray:
 		"checksum_sha256": context.finish().hex_encode(),
 		"data": canonical,
 	}
-	return var_to_bytes(wrapper)
+	var payload: PackedByteArray = var_to_bytes(wrapper)
+	var frame: PackedByteArray = "ORFSNP01".to_ascii_buffer()
+	var frame_context := HashingContext.new()
+	frame_context.start(HashingContext.HASH_SHA256)
+	frame_context.update(payload)
+	frame.append_array(frame_context.finish())
+	frame.append_array(payload)
+	return frame
 
 
 func _both_slots_satisfy_fence(store: RefCounted, root_uri: String) -> bool:
@@ -228,7 +235,10 @@ func _both_slots_satisfy_fence(store: RefCounted, root_uri: String) -> bool:
 	var root_path: String = ProjectSettings.globalize_path(root_uri)
 	for slot: String in ["snapshot_a.bin", "snapshot_b.bin"]:
 		var bytes: PackedByteArray = FileAccess.get_file_as_bytes(root_path.path_join(slot))
-		var wrapper: Variant = bytes_to_var(bytes)
+		var frame: Dictionary = store._unframe("ORFSNP01", bytes)
+		if not bool(frame.get("ok", false)):
+			return false
+		var wrapper: Variant = bytes_to_var(frame.payload)
 		if typeof(wrapper) != TYPE_DICTIONARY or not wrapper.has("data"):
 			return false
 		if int(wrapper.data.generation) < int(fence.required_generation):
