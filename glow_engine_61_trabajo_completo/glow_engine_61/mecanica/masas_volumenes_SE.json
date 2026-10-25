@@ -1,0 +1,620 @@
+{
+ "groups_g": {
+  "carburettor": 31.5,
+  "engine": 454.3,
+  "prop+spinner": 58.0,
+  "muffler": 104.3
+ },
+ "engine_with_carb_g": 485.7,
+ "with_muffler_g": 590.0,
+ "heaviest": [
+  [
+   "ENG_Crankcase",
+   132.5
+  ],
+  [
+   "MUF_Can",
+   99.54
+  ],
+  [
+   "ENG_Crankshaft",
+   61.33
+  ],
+  [
+   "ENG_Front_Housing",
+   41.83
+  ],
+  [
+   "ENG_Spinner_Backplate",
+   36.44
+  ],
+  [
+   "ENG_Head",
+   34.01
+  ],
+  [
+   "ENG_Liner",
+   30.77
+  ],
+  [
+   "ENG_Cylinder_Fins",
+   24.43
+  ],
+  [
+   "ENG_Backplate",
+   22.86
+  ],
+  [
+   "CARB_Body",
+   20.17
+  ],
+  [
+   "ENG_Crank_Counterweight",
+   14.85
+  ],
+  [
+   "ENG_Spinner_Cone",
+   13.34
+  ]
+ ],
+ "parts": {
+  "CARB_Arm_Hub": {
+   "cc": 0.108,
+   "g": 0.12,
+   "material": "M_Plastic_Black",
+   "group": "carburettor"
+  },
+  "CARB_Arm_Screw": {
+   "cc": 0.016,
+   "g": 0.13,
+   "material": "M_Black_Oxide",
+   "group": "carburettor"
+  },
+  "CARB_Barrel_End": {
+   "cc": 0.178,
+   "g": 0.48,
+   "material": "M_Olive_Anodized",
+   "group": "carburettor"
+  },
+  "CARB_Body": {
+   "cc": 7.472,
+   "g": 20.17,
+   "material": "M_Alu_Carb_Body",
+   "group": "carburettor"
+  },
+  "CARB_Fuel_Nipple": {
+   "cc": 0.067,
+   "g": 0.6,
+   "material": "M_Nickel",
+   "group": "carburettor"
+  },
+  "CARB_Idle_Screw": {
+   "cc": 0.025,
+   "g": 0.19,
+   "material": "M_Black_Oxide",
+   "group": "carburettor"
+  },
+  "CARB_Needle": {
+   "cc": 0.018,
+   "g": 0.14,
+   "material": "M_Steel",
+   "group": "carburettor"
+  },
+  "CARB_Needle_Knob": {
+   "cc": 0.117,
+   "g": 0.13,
+   "material": "M_Plastic_Black",
+   "group": "carburettor"
+  },
+  "CARB_Needle_Sleeve": {
+   "cc": 0.042,
+   "g": 0.11,
+   "material": "M_Alu_Polished",
+   "group": "carburettor"
+  },
+  "CARB_Needle_Tab": {
+   "cc": 0.013,
+   "g": 0.01,
+   "material": "M_Plastic_Black",
+   "group": "carburettor"
+  },
+  "CARB_Needle_Tip": {
+   "cc": 0.006,
+   "g": 0.05,
+   "material": "M_Steel",
+   "group": "carburettor"
+  },
+  "CARB_Rotor": {
+   "cc": 1.807,
+   "g": 4.88,
+   "material": "M_Olive_Anodized",
+   "group": "carburettor"
+  },
+  "CARB_Set_Screw": {
+   "cc": 0.021,
+   "g": 0.16,
+   "material": "M_Rust",
+   "group": "carburettor"
+  },
+  "CARB_Slot_Screw": {
+   "cc": 0.013,
+   "g": 0.1,
+   "material": "M_Steel",
+   "group": "carburettor"
+  },
+  "CARB_Spigot": {
+   "cc": 0.199,
+   "g": 0.54,
+   "material": "M_Alu_Cast",
+   "group": "carburettor"
+  },
+  "CARB_Spigot_ORing": {
+   "cc": 0.009,
+   "g": 0.01,
+   "material": "M_Plastic_Black",
+   "group": "carburettor"
+  },
+  "CARB_Spray_Bar": {
+   "cc": 0.162,
+   "g": 1.38,
+   "material": "M_Brass",
+   "group": "carburettor"
+  },
+  "CARB_Stop_Plate": {
+   "cc": 0.045,
+   "g": 0.35,
+   "material": "M_Steel",
+   "group": "carburettor"
+  },
+  "CARB_Stop_Ring": {
+   "cc": 0.024,
+   "g": 0.19,
+   "material": "M_Black_Oxide",
+   "group": "carburettor"
+  },
+  "CARB_Stop_Screw": {
+   "cc": 0.028,
+   "g": 0.22,
+   "material": "M_Steel",
+   "group": "carburettor"
+  },
+  "CARB_Throttle_Arm": {
+   "cc": 0.111,
+   "g": 0.13,
+   "material": "M_Plastic_Black",
+   "group": "carburettor"
+  },
+  "CARB_Top_Nut": {
+   "cc": 0.071,
+   "g": 0.56,
+   "material": "M_Steel",
+   "group": "carburettor"
+  },
+  "CARB_Top_Screw": {
+   "cc": 0.039,
+   "g": 0.31,
+   "material": "M_Steel",
+   "group": "carburettor"
+  },
+  "CARB_Top_Stud": {
+   "cc": 0.064,
+   "g": 0.5,
+   "material": "M_Steel",
+   "group": "carburettor"
+  },
+  "ENG_Backplate": {
+   "cc": 8.466,
+   "g": 22.86,
+   "material": "M_Alu_Cast",
+   "group": "engine"
+  },
+  "ENG_Bearing_Front_Balls": {
+   "cc": 0.079,
+   "g": 0.62,
+   "material": "M_Chrome",
+   "group": "engine"
+  },
+  "ENG_Bearing_Front_Cage": {
+   "cc": 0.124,
+   "g": 1.05,
+   "material": "M_Brass",
+   "group": "engine"
+  },
+  "ENG_Bearing_Front_Inner": {
+   "cc": 0.225,
+   "g": 1.77,
+   "material": "M_Steel",
+   "group": "engine"
+  },
+  "ENG_Bearing_Front_Outer": {
+   "cc": 0.35,
+   "g": 2.75,
+   "material": "M_Steel",
+   "group": "engine"
+  },
+  "ENG_Bearing_Rear_Balls": {
+   "cc": 0.268,
+   "g": 2.11,
+   "material": "M_Chrome",
+   "group": "engine"
+  },
+  "ENG_Bearing_Rear_Cage": {
+   "cc": 0.249,
+   "g": 2.12,
+   "material": "M_Brass",
+   "group": "engine"
+  },
+  "ENG_Bearing_Rear_Inner": {
+   "cc": 0.683,
+   "g": 5.36,
+   "material": "M_Steel",
+   "group": "engine"
+  },
+  "ENG_Bearing_Rear_Outer": {
+   "cc": 1.05,
+   "g": 8.25,
+   "material": "M_Steel",
+   "group": "engine"
+  },
+  "ENG_Circlip_1": {
+   "cc": 0.006,
+   "g": 0.04,
+   "material": "M_Steel",
+   "group": "engine"
+  },
+  "ENG_Circlip_2": {
+   "cc": 0.006,
+   "g": 0.04,
+   "material": "M_Steel",
+   "group": "engine"
+  },
+  "ENG_Crank_Counterweight": {
+   "cc": 0.849,
+   "g": 14.85,
+   "material": "M_Tungsten",
+   "group": "engine"
+  },
+  "ENG_Crankcase": {
+   "cc": 49.072,
+   "g": 132.5,
+   "material": "M_Alu_Cast",
+   "group": "engine"
+  },
+  "ENG_Crankshaft": {
+   "cc": 7.813,
+   "g": 61.33,
+   "material": "M_Steel_Ground",
+   "group": "engine"
+  },
+  "ENG_Crankshaft_Thread": {
+   "cc": 1.104,
+   "g": 8.66,
+   "material": "M_Steel",
+   "group": "engine"
+  },
+  "ENG_Cylinder_Fins": {
+   "cc": 9.049,
+   "g": 24.43,
+   "material": "M_Alu_Cast",
+   "group": "engine"
+  },
+  "ENG_Drive_Hub": {
+   "cc": 3.9,
+   "g": 10.53,
+   "material": "M_Alu_Polished",
+   "group": "engine"
+  },
+  "ENG_Front_Housing": {
+   "cc": 15.491,
+   "g": 41.83,
+   "material": "M_Alu_Cast",
+   "group": "engine"
+  },
+  "ENG_Gasket_Cover": {
+   "cc": 0.101,
+   "g": 0.09,
+   "material": "M_Gasket",
+   "group": "engine"
+  },
+  "ENG_Gasket_Front": {
+   "cc": 0.188,
+   "g": 0.17,
+   "material": "M_Gasket",
+   "group": "engine"
+  },
+  "ENG_Gasket_Head": {
+   "cc": 0.037,
+   "g": 0.33,
+   "material": "M_Copper",
+   "group": "engine"
+  },
+  "ENG_GlowPlug_Body": {
+   "cc": 0.2,
+   "g": 1.57,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_GlowPlug_Element": {
+   "cc": 0.001,
+   "g": 0.01,
+   "material": "M_Steel",
+   "group": "engine"
+  },
+  "ENG_GlowPlug_Insulator": {
+   "cc": 0.006,
+   "g": 0.04,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_GlowPlug_Pin": {
+   "cc": 0.01,
+   "g": 0.09,
+   "material": "M_Nickel",
+   "group": "engine"
+  },
+  "ENG_GlowPlug_Thread": {
+   "cc": 0.134,
+   "g": 1.19,
+   "material": "M_Nickel",
+   "group": "engine"
+  },
+  "ENG_GlowPlug_Washer": {
+   "cc": 0.023,
+   "g": 0.21,
+   "material": "M_Copper",
+   "group": "engine"
+  },
+  "ENG_Head": {
+   "cc": 12.596,
+   "g": 34.01,
+   "material": "M_Head_GoldAnodized",
+   "group": "engine"
+  },
+  "ENG_Head_Screw_1": {
+   "cc": 0.129,
+   "g": 1.01,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Head_Screw_2": {
+   "cc": 0.129,
+   "g": 1.01,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Head_Screw_3": {
+   "cc": 0.129,
+   "g": 1.01,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Head_Screw_4": {
+   "cc": 0.129,
+   "g": 1.01,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Head_Screw_5": {
+   "cc": 0.129,
+   "g": 1.01,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Head_Screw_6": {
+   "cc": 0.129,
+   "g": 1.01,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Letter_61": {
+   "cc": 0.001,
+   "g": 0.0,
+   "material": "M_Alu_Cast",
+   "group": "engine"
+  },
+  "ENG_Letter_SE_Frame": {
+   "cc": 0.012,
+   "g": 0.03,
+   "material": "M_Alu_Cast",
+   "group": "engine"
+  },
+  "ENG_Letter_SE_Text": {
+   "cc": 0.005,
+   "g": 0.01,
+   "material": "M_Alu_Cast",
+   "group": "engine"
+  },
+  "ENG_Liner": {
+   "cc": 3.92,
+   "g": 30.77,
+   "material": "M_Chrome",
+   "group": "engine"
+  },
+  "ENG_Liner_Dowel": {
+   "cc": 0.002,
+   "g": 0.01,
+   "material": "M_Steel",
+   "group": "engine"
+  },
+  "ENG_Piston": {
+   "cc": 3.645,
+   "g": 9.84,
+   "material": "M_Piston_Alu",
+   "group": "engine"
+  },
+  "ENG_Piston_Ring": {
+   "cc": 0.083,
+   "g": 0.65,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Prop_Blades": {
+   "cc": 7.165,
+   "g": 8.24,
+   "material": "M_Plastic_Black",
+   "group": "prop+spinner"
+  },
+  "ENG_Prop_Nut": {
+   "cc": 0.45,
+   "g": 3.54,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Prop_Washer": {
+   "cc": 0.859,
+   "g": 6.74,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Rod": {
+   "cc": 1.352,
+   "g": 3.65,
+   "material": "M_Alu_Satin",
+   "group": "engine"
+  },
+  "ENG_Rod_Bush_Big": {
+   "cc": 0.105,
+   "g": 0.92,
+   "material": "M_Bronze",
+   "group": "engine"
+  },
+  "ENG_Rod_Bush_Small": {
+   "cc": 0.073,
+   "g": 0.64,
+   "material": "M_Bronze",
+   "group": "engine"
+  },
+  "ENG_Screw_CarbClamp_1": {
+   "cc": 0.096,
+   "g": 0.75,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Screw_CarbClamp_2": {
+   "cc": 0.096,
+   "g": 0.75,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Screw_Front_1": {
+   "cc": 0.13,
+   "g": 1.02,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Screw_Front_2": {
+   "cc": 0.13,
+   "g": 1.02,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Screw_Front_3": {
+   "cc": 0.13,
+   "g": 1.02,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Screw_Front_4": {
+   "cc": 0.13,
+   "g": 1.02,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Screw_Rear_1": {
+   "cc": 0.119,
+   "g": 0.93,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Screw_Rear_2": {
+   "cc": 0.119,
+   "g": 0.93,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Screw_Rear_3": {
+   "cc": 0.119,
+   "g": 0.93,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Screw_Rear_4": {
+   "cc": 0.119,
+   "g": 0.93,
+   "material": "M_Black_Oxide",
+   "group": "engine"
+  },
+  "ENG_Spinner_Backplate": {
+   "cc": 13.496,
+   "g": 36.44,
+   "material": "M_Alu_Polished",
+   "group": "prop+spinner"
+  },
+  "ENG_Spinner_Cone": {
+   "cc": 11.597,
+   "g": 13.34,
+   "material": "M_Plastic_White",
+   "group": "prop+spinner"
+  },
+  "ENG_Thrust_Washer": {
+   "cc": 0.02,
+   "g": 0.17,
+   "material": "M_Brass",
+   "group": "engine"
+  },
+  "ENG_Woodruff_Key": {
+   "cc": 0.034,
+   "g": 0.27,
+   "material": "M_Steel",
+   "group": "engine"
+  },
+  "ENG_Wrist_Pin": {
+   "cc": 0.359,
+   "g": 2.82,
+   "material": "M_Steel_Ground",
+   "group": "engine"
+  },
+  "MUF_Baffle": {
+   "cc": 0.769,
+   "g": 2.08,
+   "material": "M_Alu_Cast",
+   "group": "muffler"
+  },
+  "MUF_Bolt_1": {
+   "cc": 0.148,
+   "g": 1.16,
+   "material": "M_Black_Oxide",
+   "group": "muffler"
+  },
+  "MUF_Bolt_2": {
+   "cc": 0.148,
+   "g": 1.16,
+   "material": "M_Black_Oxide",
+   "group": "muffler"
+  },
+  "MUF_Can": {
+   "cc": 36.865,
+   "g": 99.54,
+   "material": "M_Alu_Cast_Muffler",
+   "group": "muffler"
+  },
+  "MUF_Gasket": {
+   "cc": 0.042,
+   "g": 0.04,
+   "material": "M_Gasket",
+   "group": "muffler"
+  },
+  "MUF_Letter_744": {
+   "cc": 0.001,
+   "g": 0.0,
+   "material": "M_Alu_Cast",
+   "group": "muffler"
+  },
+  "MUF_Pressure_Nipple": {
+   "cc": 0.033,
+   "g": 0.29,
+   "material": "M_Nickel",
+   "group": "muffler"
+  }
+ }
+}

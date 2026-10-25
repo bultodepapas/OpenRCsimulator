@@ -1,0 +1,41 @@
+{
+ "zones": {
+  "head": {
+   "median_mm": 0.21,
+   "p90_mm": 0.73,
+   "dE": 6.3,
+   "dL": -4.6
+  },
+  "cyl": {
+   "median_mm": 0.2,
+   "p90_mm": 0.68,
+   "dE": 10.6,
+   "dL": -5.0
+  },
+  "case": {
+   "median_mm": 0.48,
+   "p90_mm": 1.66,
+   "dE": 5.0,
+   "dL": 0.5
+  },
+  "drive": {
+   "median_mm": 0.46,
+   "p90_mm": 1.55,
+   "dE": 13.4,
+   "dL": -0.3
+  },
+  "carb": {
+   "median_mm": 0.32,
+   "p90_mm": 1.26,
+   "dE": 7.4,
+   "dL": -1.3
+  },
+  "muf": {
+   "median_mm": 0.56,
+   "p90_mm": 3.36,
+   "dE": 6.3,
+   "dL": -2.6
+  }
+ },
+ "mesh_defects": "none"
+}

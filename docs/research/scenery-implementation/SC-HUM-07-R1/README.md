@@ -1,4 +1,4 @@
-# SC-HUM-07-R1 — Natural hands and a logo-free shirt
+# SC-HUM-07-R1/R2 — Natural hands, readable faces, a logo-free shirt
 
 Status: **implemented and software-verified, 2026-10-25.** Owner: Scenery and field life. Plan: [field people plan](../../../plans/field-people.md). Revises [SC-HUM-07](../SC-HUM-07/README.md) (outfits), [SC-HUM-06](../SC-HUM-06/README.md) (work pose) and the hand part of [SC-HUM-01](../SC-HUM-01/README.md).
 
@@ -56,3 +56,28 @@ All 11 people were regenerated, merged and packaged:
 - Fingers are posed, not contact-solved; tips may touch or enter the model or thigh by a few millimetres.
 - Isolated captures show the workers' hands in the air; the table and model are in the field scene.
 - The final T12D (another team) needs only the pilot regeneration in [SC-HUM-01](../SC-HUM-01/README.md#limits-and-open-items); the hand presets apply automatically.
+
+## SC-HUM-07-R2 — Faces and licence audit (2026-10-25)
+
+Faces were reviewed in the game renderer: a scratch close-up capture at 1920×1080 of every variant, before and after. Blender previews hide alpha-cut hair, beards and brows, so they are not used to judge faces.
+
+| Person | Defect | Change ([outfits](../../../../tools/scenery/population/outfits/)) |
+| --- | --- | --- |
+| Veteran (pilot, seated) | A `short03` fringe came out under the fedora and covered one eye | `short01` stays under the hat |
+| Bearded spectator | A jet-black beard on light-brown hair, with harsh spikes | Brown CC0 `culturalibre_faun_beard`, decimated to 0.1 (7,681 triangles, below the previous 7,743) |
+| Bearded spectator, woman | Eyebrows read as thin pen lines | `eyebrow012` and `eyebrow010` (fuller, textured CC0) |
+
+Rejected: `mindfront_eyebrows_*`. They are untextured strand geometry, so the merge would class them as rigid (class 4) and they would not turn with the head.
+
+**Licence audit of every outfit asset.**
+- The `.mhclo` headers of `wdg_scruffy_beard`, `frankyaye_glasses_library_male` and `kwnet_at_optical_glasses` say AGPL3. `cortu_cargo_pants` has no licence line.
+- The official asset-pack catalogs (`bodyparts05`, `glasses01`, `pants01`) list all four as CC0. The packs were released as `*_cc0.zip`, so the catalog is the licence of record.
+- `HUMAN_SOURCES.json` claimed "'license CC0' in each used .mhclo"; it now records the discrepancy.
+- The AGPL-headed beard is no longer used.
+
+**Install check.** While installing, the two new atlas `.import` files were first assigned the wrong roles: the diffuse atlas got normal-map settings, and the skin rendered yellow in the face capture. That was fixed before installing. `test_outfits.py` now reads each GLB's material roles and requires the normal atlas to import as a normal map and the diffuse atlas not to (checked by mutation).
+
+**Verification.** All 11 people were regenerated, merged and packaged.
+- Atlases: diffuse `64ff2b45…`, normal `2bf58ece…`.
+- Game face captures, before and after: both eyes are visible under the fedora, the beard matches the hair, and the eyebrows are fuller.
+- The same five Godot tests pass, and `test_outfits.py` passes 7 of 7.

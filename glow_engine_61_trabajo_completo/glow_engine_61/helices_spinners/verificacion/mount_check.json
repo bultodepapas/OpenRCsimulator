@@ -1,0 +1,114 @@
+{
+ "A": {
+  "interference": {},
+  "contacts": [
+   "SPIN_TT_Std_2-1_2_Placa x ENG_Drive_Hub",
+   "HW_A_Tuerca_Spinner x ENG_Crankshaft_Thread"
+  ],
+  "prop_disc_clearance_mm": {
+   "min": 19.1,
+   "part": "CARB_Body",
+   "radius_mm": 44.7,
+   "R_mm": 152
+  },
+  "thread": {
+   "engaged_mm": 6.31,
+   "threads": 6.0,
+   "nut_rear_y": -81.69,
+   "thread_end_y": -88.0
+  },
+  "hardware_to_cone_mm": {
+   "HW_A_Arandela": 14.83,
+   "HW_A_Tuerca_Spinner": 0.6,
+   "HW_A_Tornillo_10-32": 0.0
+  },
+  "backplate_rear_y": -61.6,
+  "front_housing_front_y": -50.5
+ },
+ "B": {
+  "interference": {},
+  "contacts": [
+   "SPIN_DB_3B_2-3_4_Placa x ENG_Drive_Hub",
+   "HW_B_Tuerca x ENG_Crankshaft_Thread"
+  ],
+  "prop_disc_clearance_mm": {
+   "min": 18.6,
+   "part": "CARB_Body",
+   "radius_mm": 45.1,
+   "R_mm": 139
+  },
+  "thread": {
+   "engaged_mm": 4.7,
+   "threads": 4.4,
+   "nut_rear_y": -83.3,
+   "thread_end_y": -88.0
+  },
+  "hardware_to_cone_mm": {
+   "HW_B_Arandela": 8.6,
+   "HW_B_Tuerca": 14.79,
+   "HW_B_Tornillo_M3.5x18_0": 0.0,
+   "HW_B_Tuerca_Nyloc_0": 1.02,
+   "HW_B_Tornillo_M3.5x18_1": 0.0,
+   "HW_B_Tuerca_Nyloc_1": 1.02,
+   "HW_B_Tornillo_M3.5x18_2": 0.0,
+   "HW_B_Tuerca_Nyloc_2": 1.02
+  },
+  "backplate_rear_y": -61.6,
+  "front_housing_front_y": -50.5
+ },
+ "C": {
+  "interference": {},
+  "contacts": [
+   "SPIN_DB_2-1_2_Placa x ENG_Drive_Hub",
+   "HW_C_Tuerca x ENG_Crankshaft_Thread"
+  ],
+  "prop_disc_clearance_mm": {
+   "min": 18.7,
+   "part": "CARB_Body",
+   "radius_mm": 44.7,
+   "R_mm": 139
+  },
+  "thread": {
+   "engaged_mm": 5.54,
+   "threads": 5.2,
+   "nut_rear_y": -82.46,
+   "thread_end_y": -88.0
+  },
+  "hardware_to_cone_mm": {
+   "HW_C_Arandela": 6.1,
+   "HW_C_Tuerca": 11.35,
+   "HW_C_Tornillo_M3.5x18_0": 0.0,
+   "HW_C_Tuerca_Nyloc_0": 1.02,
+   "HW_C_Tornillo_M3.5x18_1": 0.0,
+   "HW_C_Tuerca_Nyloc_1": 1.02
+  },
+  "backplate_rear_y": -61.6,
+  "front_housing_front_y": -50.5
+ },
+ "D": {
+  "interference": {},
+  "contacts": [
+   "SPIN_TT_Ult_2-1_4_Placa x ENG_Drive_Hub",
+   "HW_D_Tuerca_Spinner x ENG_Crankshaft_Thread"
+  ],
+  "prop_disc_clearance_mm": {
+   "min": 17.7,
+   "part": "CARB_Body",
+   "radius_mm": 45.1,
+   "R_mm": 139
+  },
+  "thread": {
+   "engaged_mm": 5.5,
+   "threads": 5.2,
+   "nut_rear_y": -82.5,
+   "thread_end_y": -88.0
+  },
+  "hardware_to_cone_mm": {
+   "HW_D_Arandela": 10.74,
+   "HW_D_Tuerca_Spinner": 0.6,
+   "HW_D_Tornillo_10-32": 0.0
+  },
+  "backplate_rear_y": -61.6,
+  "front_housing_front_y": -50.5
+ }
+}

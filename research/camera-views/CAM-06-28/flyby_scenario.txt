@@ -1,0 +1,13 @@
+fly start=airborne
+wait seconds=2
+key name=4
+wait seconds=1
+eval expr="[flight._rig.view, flight._camera.global_position, flight._camera.fov, flight._camera.global_position.distance_to(flight._airplane.root.global_position), flight._camera.unproject_position(flight._airplane.root.global_position)]"
+screenshot format=jpg max_width=960
+wait seconds=2
+eval expr="[flight._camera.global_position, flight._camera.fov, flight._camera.global_position.distance_to(flight._airplane.root.global_position)]"
+screenshot format=jpg max_width=960
+wait seconds=3
+eval expr="[flight._camera.global_position, flight._camera.fov, flight._camera.global_position.distance_to(flight._airplane.root.global_position)]"
+screenshot format=jpg max_width=960
+logs --summary

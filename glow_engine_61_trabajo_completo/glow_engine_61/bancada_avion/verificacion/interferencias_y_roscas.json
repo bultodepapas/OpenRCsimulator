@@ -1,0 +1,265 @@
+{
+ "interference": "none",
+ "engagements": {
+  "BANC_Bancada_OS905 x BANC_Letras_OS905": {
+   "tri_pairs": 722,
+   "depth_mm": 0.05
+  },
+  "BANC_Bancada_OS905 x BANC_Tornillo_Motor_M3_5x16_1": {
+   "tri_pairs": 2759,
+   "depth_mm": 0.312
+  },
+  "BANC_Bancada_OS905 x BANC_Tornillo_Motor_M3_5x16_2": {
+   "tri_pairs": 2891,
+   "depth_mm": 0.312
+  },
+  "BANC_Bancada_OS905 x BANC_Tornillo_Motor_M3_5x16_3": {
+   "tri_pairs": 2942,
+   "depth_mm": 0.312
+  },
+  "BANC_Bancada_OS905 x BANC_Tornillo_Motor_M3_5x16_4": {
+   "tri_pairs": 2898,
+   "depth_mm": 0.312
+  },
+  "BANC_Linea_Combustible x CARB_Fuel_Nipple": {
+   "tri_pairs": 104,
+   "depth_mm": 0.249
+  },
+  "BANC_Linea_Presion x MUF_Pressure_Nipple": {
+   "tri_pairs": 78,
+   "depth_mm": 0.07
+  },
+  "BANC_Parallamas_Contrachapado x BANC_Tuerca_Ciega_M4_1": {
+   "tri_pairs": 142,
+   "depth_mm": 2.8
+  },
+  "BANC_Parallamas_Contrachapado x BANC_Tuerca_Ciega_M4_2": {
+   "tri_pairs": 130,
+   "depth_mm": 2.8
+  },
+  "BANC_Parallamas_Contrachapado x BANC_Tuerca_Ciega_M4_3": {
+   "tri_pairs": 128,
+   "depth_mm": 2.8
+  },
+  "BANC_Parallamas_Contrachapado x BANC_Tuerca_Ciega_M4_4": {
+   "tri_pairs": 108,
+   "depth_mm": 2.8
+  },
+  "BANC_Perno_Parallamas_M4x20_1 x BANC_Tuerca_Ciega_M4_1": {
+   "tri_pairs": 3026,
+   "depth_mm": 0.354
+  },
+  "BANC_Perno_Parallamas_M4x20_2 x BANC_Tuerca_Ciega_M4_2": {
+   "tri_pairs": 3182,
+   "depth_mm": 0.354
+  },
+  "BANC_Perno_Parallamas_M4x20_3 x BANC_Tuerca_Ciega_M4_3": {
+   "tri_pairs": 3182,
+   "depth_mm": 0.353
+  },
+  "BANC_Perno_Parallamas_M4x20_4 x BANC_Tuerca_Ciega_M4_4": {
+   "tri_pairs": 3182,
+   "depth_mm": 0.353
+  }
+ },
+ "contacts": 12,
+ "contact_pairs": [
+  "BANC_Arandela_M4_1 x BANC_Bancada_OS905",
+  "BANC_Arandela_M4_1 x BANC_Perno_Parallamas_M4x20_1",
+  "BANC_Arandela_M4_2 x BANC_Bancada_OS905",
+  "BANC_Arandela_M4_2 x BANC_Perno_Parallamas_M4x20_2",
+  "BANC_Arandela_M4_3 x BANC_Bancada_OS905",
+  "BANC_Arandela_M4_3 x BANC_Perno_Parallamas_M4x20_3",
+  "BANC_Arandela_M4_4 x BANC_Bancada_OS905",
+  "BANC_Arandela_M4_4 x BANC_Perno_Parallamas_M4x20_4",
+  "BANC_Bancada_OS905 x BANC_Parallamas_Contrachapado",
+  "BANC_Fuselaje_Morro x BANC_Parallamas_Contrachapado",
+  "BANC_Parallamas_Contrachapado x BANC_Pasamuros_Goma_1",
+  "BANC_Parallamas_Contrachapado x BANC_Pasamuros_Goma_2"
+ ],
+ "clearance_mm": {
+  "BANC_Bancada_OS905 - ENG_Crankcase": [
+   0.0,
+   [
+    -27.7,
+    15.5,
+    -6.7
+   ]
+  ],
+  "BANC_Bancada_OS905 - ENG_Backplate": [
+   4.56,
+   [
+    21.9,
+    26.5,
+    -7.5
+   ]
+  ],
+  "BANC_Bancada_OS905 - ENG_Front_Housing": [
+   2.31,
+   [
+    21.9,
+    -25.1,
+    -20.0
+   ]
+  ],
+  "BANC_Bancada_OS905 - CARB_Body": [
+   24.55,
+   [
+    -22.0,
+    -25.1,
+    -6.8
+   ]
+  ],
+  "BANC_Linea_Combustible - ENG_Crankcase": [
+   1.32,
+   [
+    16.6,
+    -11.2,
+    28.2
+   ]
+  ],
+  "BANC_Linea_Combustible - CARB_Body": [
+   3.14,
+   [
+    16.5,
+    -19.6,
+    28.2
+   ]
+  ],
+  "BANC_Linea_Combustible - CARB_Needle_Knob": [
+   6.09,
+   [
+    21.2,
+    -19.4,
+    27.0
+   ]
+  ],
+  "BANC_Linea_Combustible - BANC_Bancada_OS905": [
+   6.24,
+   [
+    35.1,
+    43.4,
+    20.3
+   ]
+  ],
+  "BANC_Linea_Combustible - ENG_Cylinder_Fins": [
+   7.35,
+   [
+    18.9,
+    -10.1,
+    30.6
+   ]
+  ],
+  "BANC_Linea_Combustible - CARB_Fuel_Nipple": [
+   0.0,
+   [
+    19.6,
+    -15.7,
+    29.8
+   ]
+  ],
+  "BANC_Linea_Presion - MUF_Can": [
+   3.25,
+   [
+    -53.2,
+    23.4,
+    66.3
+   ]
+  ],
+  "BANC_Linea_Presion - ENG_Head": [
+   31.81,
+   [
+    -45.9,
+    26.5,
+    71.0
+   ]
+  ],
+  "BANC_Linea_Presion - MUF_Pressure_Nipple": [
+   0.0,
+   [
+    -50.8,
+    26.8,
+    66.3
+   ]
+  ],
+  "BANC_Linea_Presion - ENG_Cylinder_Fins": [
+   31.8,
+   [
+    -38.9,
+    35.8,
+    39.9
+   ]
+  ],
+  "BANC_Parallamas_Contrachapado - MUF_Can": [
+   16.22,
+   [
+    -43.3,
+    51.6,
+    31.3
+   ]
+  ],
+  "BANC_Fuselaje_Morro - MUF_Can": [
+   13.26,
+   [
+    -45.7,
+    51.6,
+    33.1
+   ]
+  ],
+  "BANC_Bancada_OS905 - MUF_Can": [
+   23.01,
+   [
+    -22.8,
+    44.5,
+    22.7
+   ]
+  ],
+  "ENG_Prop_Blades - BANC_Bancada_OS905": [
+   41.5,
+   [
+    24.1,
+    -67.1,
+    -7.6
+   ]
+  ]
+ },
+ "fasteners": {
+  "BANC_Perno_Parallamas_M4x20_1": {
+   "in_blind_nut_mm": 6.4,
+   "through_plate_mm": 6.8,
+   "through_firewall_mm": 6.4
+  },
+  "BANC_Perno_Parallamas_M4x20_2": {
+   "in_blind_nut_mm": 6.4,
+   "through_plate_mm": 6.8,
+   "through_firewall_mm": 6.4
+  },
+  "BANC_Perno_Parallamas_M4x20_3": {
+   "in_blind_nut_mm": 6.4,
+   "through_plate_mm": 6.8,
+   "through_firewall_mm": 6.4
+  },
+  "BANC_Perno_Parallamas_M4x20_4": {
+   "in_blind_nut_mm": 6.4,
+   "through_plate_mm": 6.8,
+   "through_firewall_mm": 6.4
+  },
+  "BANC_Tornillo_Motor_M3_5x16_1": {
+   "in_mount_mm": 7.5,
+   "through_lug_mm": 7.0
+  },
+  "BANC_Tornillo_Motor_M3_5x16_2": {
+   "in_mount_mm": 7.5,
+   "through_lug_mm": 7.0
+  },
+  "BANC_Tornillo_Motor_M3_5x16_3": {
+   "in_mount_mm": 7.5,
+   "through_lug_mm": 7.0
+  },
+  "BANC_Tornillo_Motor_M3_5x16_4": {
+   "in_mount_mm": 7.5,
+   "through_lug_mm": 7.0
+  }
+ },
+ "banc_parts": 28
+}

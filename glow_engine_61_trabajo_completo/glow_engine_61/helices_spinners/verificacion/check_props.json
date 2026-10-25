@@ -1,0 +1,1434 @@
+{
+ "props": {
+  "APC_11x7": {
+   "label": "APC Sport 11x7",
+   "volume_cm3": 24.66,
+   "sg": 1.7,
+   "mass_g": 41.9,
+   "mass_spec_g": 40.0,
+   "mass_err_pct": 4.8,
+   "implied_sg": 1.62,
+   "diameter_in": 11.0,
+   "cg_offset_mm": 0.0,
+   "static_imbalance_gmm": 0.0,
+   "polar_inertia_kgm2": 0.0001345,
+   "axial_extent_mm": [
+    -17.67,
+    0.0
+   ],
+   "non_manifold": 0,
+   "tris": 11098,
+   "sections": {
+    "0.25": {
+     "model": {
+      "chord": 23.37,
+      "beta": 32.78,
+      "pitch_lete_in": 5.56,
+      "pitch_flat_in": 5.58,
+      "flat_len": 17.6,
+      "tmax": 5.8,
+      "le_u": 13.34,
+      "te_u": -6.31,
+      "front_width": 19.65
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.38,
+      "pitch_flat_in": 5.97,
+      "pitch_lete_in": 6.33,
+      "tmax": 5.59
+     }
+    },
+    "0.40": {
+     "model": {
+      "chord": 23.2,
+      "beta": 28.47,
+      "pitch_lete_in": 7.5,
+      "pitch_flat_in": 6.93,
+      "flat_len": 8.7,
+      "tmax": 4.66,
+      "le_u": 14.16,
+      "te_u": -6.24,
+      "front_width": 20.4
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.05,
+      "pitch_flat_in": 6.92,
+      "pitch_lete_in": 7.38,
+      "tmax": 4.51
+     }
+    },
+    "0.50": {
+     "model": {
+      "chord": 23.52,
+      "beta": 24.16,
+      "pitch_lete_in": 7.75,
+      "pitch_flat_in": 7.01,
+      "flat_len": 5.5,
+      "tmax": 4.28,
+      "le_u": 14.69,
+      "te_u": -6.77,
+      "front_width": 21.46
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.39,
+      "pitch_flat_in": 7.0,
+      "pitch_lete_in": 7.52,
+      "tmax": 4.12
+     }
+    },
+    "0.60": {
+     "model": {
+      "chord": 23.51,
+      "beta": 20.57,
+      "pitch_lete_in": 7.78,
+      "pitch_flat_in": 7.0,
+      "flat_len": 2.5,
+      "tmax": 4.0,
+      "le_u": 14.9,
+      "te_u": -7.11,
+      "front_width": 22.01
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.35,
+      "pitch_flat_in": 7.0,
+      "pitch_lete_in": 7.58,
+      "tmax": 3.83
+     }
+    },
+    "0.75": {
+     "model": {
+      "chord": 21.13,
+      "beta": 16.6,
+      "pitch_lete_in": 7.73,
+      "pitch_flat_in": 7.0,
+      "flat_len": 5.9,
+      "tmax": 3.24,
+      "le_u": 13.23,
+      "te_u": -7.02,
+      "front_width": 20.25
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 20.92,
+      "pitch_flat_in": 7.0,
+      "pitch_lete_in": 7.64,
+      "tmax": 3.09
+     }
+    },
+    "0.90": {
+     "model": {
+      "chord": 13.49,
+      "beta": 13.41,
+      "pitch_lete_in": 7.42,
+      "pitch_flat_in": 7.01,
+      "flat_len": 8.4,
+      "tmax": 1.86,
+      "le_u": 7.81,
+      "te_u": -5.31,
+      "front_width": 13.12
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 13.37,
+      "pitch_flat_in": 7.0,
+      "pitch_lete_in": 7.72,
+      "tmax": 1.75
+     }
+    }
+   },
+   "pe0_weight_g": 43.7,
+   "pe0_volume_cm3": 25.74
+  },
+  "APC_11x8": {
+   "label": "APC Sport 11x8",
+   "volume_cm3": 24.89,
+   "sg": 1.7,
+   "mass_g": 42.3,
+   "mass_spec_g": 41.1,
+   "mass_err_pct": 2.9,
+   "implied_sg": 1.65,
+   "diameter_in": 11.0,
+   "cg_offset_mm": 0.0,
+   "static_imbalance_gmm": 0.0,
+   "polar_inertia_kgm2": 0.0001346,
+   "axial_extent_mm": [
+    -18.26,
+    0.0
+   ],
+   "non_manifold": 0,
+   "tris": 11108,
+   "sections": {
+    "0.25": {
+     "model": {
+      "chord": 23.3,
+      "beta": 36.4,
+      "pitch_lete_in": 6.37,
+      "pitch_flat_in": 6.37,
+      "flat_len": 17.6,
+      "tmax": 5.79,
+      "le_u": 13.22,
+      "te_u": -5.53,
+      "front_width": 18.75
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.35,
+      "pitch_flat_in": 6.82,
+      "pitch_lete_in": 7.2,
+      "tmax": 5.58
+     }
+    },
+    "0.40": {
+     "model": {
+      "chord": 23.2,
+      "beta": 31.6,
+      "pitch_lete_in": 8.5,
+      "pitch_flat_in": 7.91,
+      "flat_len": 8.7,
+      "tmax": 4.66,
+      "le_u": 14.13,
+      "te_u": -5.63,
+      "front_width": 19.76
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.04,
+      "pitch_flat_in": 7.91,
+      "pitch_lete_in": 8.38,
+      "tmax": 4.5
+     }
+    },
+    "0.50": {
+     "model": {
+      "chord": 23.51,
+      "beta": 26.94,
+      "pitch_lete_in": 8.78,
+      "pitch_flat_in": 8.01,
+      "flat_len": 5.5,
+      "tmax": 4.28,
+      "le_u": 14.66,
+      "te_u": -6.3,
+      "front_width": 20.96
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.38,
+      "pitch_flat_in": 8.0,
+      "pitch_lete_in": 8.53,
+      "tmax": 4.12
+     }
+    },
+    "0.60": {
+     "model": {
+      "chord": 23.5,
+      "beta": 23.01,
+      "pitch_lete_in": 8.81,
+      "pitch_flat_in": 8.0,
+      "flat_len": 5.0,
+      "tmax": 4.0,
+      "le_u": 14.87,
+      "te_u": -6.76,
+      "front_width": 21.63
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.35,
+      "pitch_flat_in": 8.0,
+      "pitch_lete_in": 8.59,
+      "tmax": 3.83
+     }
+    },
+    "0.75": {
+     "model": {
+      "chord": 21.13,
+      "beta": 18.63,
+      "pitch_lete_in": 8.74,
+      "pitch_flat_in": 8.01,
+      "flat_len": 8.8,
+      "tmax": 3.24,
+      "le_u": 13.22,
+      "te_u": -6.8,
+      "front_width": 20.02
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 20.92,
+      "pitch_flat_in": 8.0,
+      "pitch_lete_in": 8.65,
+      "tmax": 3.09
+     }
+    },
+    "0.90": {
+     "model": {
+      "chord": 13.49,
+      "beta": 15.15,
+      "pitch_lete_in": 8.42,
+      "pitch_flat_in": 8.01,
+      "flat_len": 9.3,
+      "tmax": 1.86,
+      "le_u": 7.8,
+      "te_u": -5.22,
+      "front_width": 13.02
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 13.37,
+      "pitch_flat_in": 8.0,
+      "pitch_lete_in": 8.72,
+      "tmax": 1.75
+     }
+    }
+   },
+   "pe0_weight_g": 44.6,
+   "pe0_volume_cm3": 26.25
+  },
+  "APC_12x6": {
+   "label": "APC Sport 12x6",
+   "volume_cm3": 29.26,
+   "sg": 1.7,
+   "mass_g": 49.7,
+   "mass_spec_g": 45.9,
+   "mass_err_pct": 8.4,
+   "implied_sg": 1.57,
+   "diameter_in": 12.0,
+   "cg_offset_mm": 0.0,
+   "static_imbalance_gmm": 0.0,
+   "polar_inertia_kgm2": 0.0002017,
+   "axial_extent_mm": [
+    -17.03,
+    0.0
+   ],
+   "non_manifold": 0,
+   "tris": 10928,
+   "sections": {
+    "0.25": {
+     "model": {
+      "chord": 23.4,
+      "beta": 29.13,
+      "pitch_lete_in": 5.25,
+      "pitch_flat_in": 4.95,
+      "flat_len": 15.3,
+      "tmax": 7.22,
+      "le_u": 13.12,
+      "te_u": -7.32,
+      "front_width": 20.44
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.27,
+      "pitch_flat_in": 5.1,
+      "pitch_lete_in": 5.55,
+      "tmax": 6.98
+     }
+    },
+    "0.40": {
+     "model": {
+      "chord": 24.41,
+      "beta": 23.9,
+      "pitch_lete_in": 6.68,
+      "pitch_flat_in": 6.0,
+      "flat_len": 10.9,
+      "tmax": 5.28,
+      "le_u": 14.46,
+      "te_u": -7.86,
+      "front_width": 22.32
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 24.31,
+      "pitch_flat_in": 5.99,
+      "pitch_lete_in": 6.52,
+      "tmax": 5.09
+     }
+    },
+    "0.50": {
+     "model": {
+      "chord": 25.26,
+      "beta": 19.75,
+      "pitch_lete_in": 6.77,
+      "pitch_flat_in": 6.0,
+      "flat_len": 4.3,
+      "tmax": 4.56,
+      "le_u": 15.27,
+      "te_u": -8.51,
+      "front_width": 23.78
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 25.17,
+      "pitch_flat_in": 6.0,
+      "pitch_lete_in": 6.56,
+      "tmax": 4.38
+     }
+    },
+    "0.60": {
+     "model": {
+      "chord": 25.47,
+      "beta": 16.76,
+      "pitch_lete_in": 6.81,
+      "pitch_flat_in": 6.07,
+      "flat_len": 1.8,
+      "tmax": 4.19,
+      "le_u": 15.6,
+      "te_u": -8.78,
+      "front_width": 24.38
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 25.34,
+      "pitch_flat_in": 6.0,
+      "pitch_lete_in": 6.61,
+      "tmax": 4.02
+     }
+    },
+    "0.75": {
+     "model": {
+      "chord": 22.95,
+      "beta": 13.53,
+      "pitch_lete_in": 6.8,
+      "pitch_flat_in": 6.03,
+      "flat_len": 1.6,
+      "tmax": 3.48,
+      "le_u": 14.17,
+      "te_u": -8.15,
+      "front_width": 22.32
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 22.75,
+      "pitch_flat_in": 6.0,
+      "pitch_lete_in": 6.7,
+      "tmax": 3.32
+     }
+    },
+    "0.90": {
+     "model": {
+      "chord": 14.79,
+      "beta": 10.67,
+      "pitch_lete_in": 6.4,
+      "pitch_flat_in": 5.86,
+      "flat_len": 9.2,
+      "tmax": 2.07,
+      "le_u": 8.98,
+      "te_u": -5.55,
+      "front_width": 14.53
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 14.65,
+      "pitch_flat_in": 5.85,
+      "pitch_lete_in": 6.63,
+      "tmax": 1.96
+     }
+    }
+   },
+   "pe0_weight_g": 49.9,
+   "pe0_volume_cm3": 29.39
+  },
+  "APC_12x7": {
+   "label": "APC Sport 12x7",
+   "volume_cm3": 27.29,
+   "sg": 1.7,
+   "mass_g": 46.4,
+   "mass_spec_g": null,
+   "mass_err_pct": null,
+   "implied_sg": null,
+   "diameter_in": 12.0,
+   "cg_offset_mm": 0.0,
+   "static_imbalance_gmm": 0.0,
+   "polar_inertia_kgm2": 0.0001844,
+   "axial_extent_mm": [
+    -13.47,
+    1.61
+   ],
+   "non_manifold": 0,
+   "tris": 10934,
+   "sections": {
+    "0.25": {
+     "model": {
+      "chord": 23.42,
+      "beta": 31.73,
+      "pitch_lete_in": 5.83,
+      "pitch_flat_in": 5.85,
+      "flat_len": 17.7,
+      "tmax": 5.93,
+      "le_u": 13.53,
+      "te_u": -6.39,
+      "front_width": 19.92
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.27,
+      "pitch_flat_in": 5.95,
+      "pitch_lete_in": 6.31,
+      "tmax": 5.81
+     }
+    },
+    "0.40": {
+     "model": {
+      "chord": 24.42,
+      "beta": 26.23,
+      "pitch_lete_in": 7.43,
+      "pitch_flat_in": 6.99,
+      "flat_len": 12.6,
+      "tmax": 4.43,
+      "le_u": 14.75,
+      "te_u": -7.15,
+      "front_width": 21.9
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 24.31,
+      "pitch_flat_in": 6.98,
+      "pitch_lete_in": 7.41,
+      "tmax": 4.29
+     }
+    },
+    "0.50": {
+     "model": {
+      "chord": 25.27,
+      "beta": 22.02,
+      "pitch_lete_in": 7.62,
+      "pitch_flat_in": 7.01,
+      "flat_len": 7.0,
+      "tmax": 3.91,
+      "le_u": 15.35,
+      "te_u": -8.07,
+      "front_width": 23.42
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 25.16,
+      "pitch_flat_in": 7.0,
+      "pitch_lete_in": 7.46,
+      "tmax": 3.75
+     }
+    },
+    "0.60": {
+     "model": {
+      "chord": 25.46,
+      "beta": 18.82,
+      "pitch_lete_in": 7.71,
+      "pitch_flat_in": 7.07,
+      "flat_len": 1.8,
+      "tmax": 3.68,
+      "le_u": 15.61,
+      "te_u": -8.49,
+      "front_width": 24.1
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 25.34,
+      "pitch_flat_in": 7.0,
+      "pitch_lete_in": 7.53,
+      "tmax": 3.53
+     }
+    },
+    "0.75": {
+     "model": {
+      "chord": 22.95,
+      "beta": 15.31,
+      "pitch_lete_in": 7.74,
+      "pitch_flat_in": 7.06,
+      "flat_len": 1.6,
+      "tmax": 3.19,
+      "le_u": 14.18,
+      "te_u": -7.96,
+      "front_width": 22.14
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 22.75,
+      "pitch_flat_in": 7.0,
+      "pitch_lete_in": 7.65,
+      "tmax": 3.05
+     }
+    },
+    "0.90": {
+     "model": {
+      "chord": 14.79,
+      "beta": 12.23,
+      "pitch_lete_in": 7.36,
+      "pitch_flat_in": 6.86,
+      "flat_len": 1.0,
+      "tmax": 2.0,
+      "le_u": 8.98,
+      "te_u": -5.47,
+      "front_width": 14.45
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 14.66,
+      "pitch_flat_in": 6.83,
+      "pitch_lete_in": 7.59,
+      "tmax": 1.89
+     }
+    }
+   },
+   "pe0_weight_g": 46.8,
+   "pe0_volume_cm3": 27.57
+  },
+  "APC_12.5x6": {
+   "label": "APC Sport 12.5x6",
+   "volume_cm3": 32.94,
+   "sg": 1.7,
+   "mass_g": 56.0,
+   "mass_spec_g": null,
+   "mass_err_pct": null,
+   "implied_sg": null,
+   "diameter_in": 12.5,
+   "cg_offset_mm": 0.0,
+   "static_imbalance_gmm": 0.0,
+   "polar_inertia_kgm2": 0.0002476,
+   "axial_extent_mm": [
+    -13.97,
+    1.69
+   ],
+   "non_manifold": 0,
+   "tris": 11482,
+   "sections": {
+    "0.25": {
+     "model": {
+      "chord": 24.49,
+      "beta": 29.03,
+      "pitch_lete_in": 5.45,
+      "pitch_flat_in": 5.05,
+      "flat_len": 14.6,
+      "tmax": 7.5,
+      "le_u": 13.62,
+      "te_u": -7.79,
+      "front_width": 21.41
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 24.26,
+      "pitch_flat_in": 5.1,
+      "pitch_lete_in": 5.57,
+      "tmax": 7.28
+     }
+    },
+    "0.40": {
+     "model": {
+      "chord": 25.45,
+      "beta": 23.18,
+      "pitch_lete_in": 6.73,
+      "pitch_flat_in": 6.0,
+      "flat_len": 9.6,
+      "tmax": 5.5,
+      "le_u": 15.06,
+      "te_u": -8.33,
+      "front_width": 23.39
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 25.34,
+      "pitch_flat_in": 5.99,
+      "pitch_lete_in": 6.55,
+      "tmax": 5.31
+     }
+    },
+    "0.50": {
+     "model": {
+      "chord": 26.34,
+      "beta": 19.14,
+      "pitch_lete_in": 6.81,
+      "pitch_flat_in": 6.06,
+      "flat_len": 1.9,
+      "tmax": 4.75,
+      "le_u": 15.91,
+      "te_u": -8.98,
+      "front_width": 24.89
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 26.24,
+      "pitch_flat_in": 6.0,
+      "pitch_lete_in": 6.59,
+      "tmax": 4.57
+     }
+    },
+    "0.60": {
+     "model": {
+      "chord": 26.56,
+      "beta": 16.24,
+      "pitch_lete_in": 6.86,
+      "pitch_flat_in": 6.08,
+      "flat_len": 1.9,
+      "tmax": 4.36,
+      "le_u": 16.26,
+      "te_u": -9.24,
+      "front_width": 25.5
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 26.43,
+      "pitch_flat_in": 6.0,
+      "pitch_lete_in": 6.64,
+      "tmax": 4.19
+     }
+    },
+    "0.75": {
+     "model": {
+      "chord": 23.96,
+      "beta": 13.11,
+      "pitch_lete_in": 6.86,
+      "pitch_flat_in": 6.05,
+      "flat_len": 1.7,
+      "tmax": 3.63,
+      "le_u": 14.76,
+      "te_u": -8.58,
+      "front_width": 23.34
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 23.76,
+      "pitch_flat_in": 6.0,
+      "pitch_lete_in": 6.73,
+      "tmax": 3.47
+     }
+    },
+    "0.90": {
+     "model": {
+      "chord": 15.48,
+      "beta": 10.57,
+      "pitch_lete_in": 6.6,
+      "pitch_flat_in": 6.0,
+      "flat_len": 2.3,
+      "tmax": 2.17,
+      "le_u": 9.36,
+      "te_u": -5.86,
+      "front_width": 15.22
+     },
+     "ref": {
+      "src": "APC PE0",
+      "chord": 15.34,
+      "pitch_flat_in": 6.0,
+      "pitch_lete_in": 6.75,
+      "tmax": 2.05
+     }
+    }
+   },
+   "pe0_weight_g": 55.3,
+   "pe0_volume_cm3": 32.56
+  },
+  "MA_GF_11x7": {
+   "label": "Master Airscrew G/F 11x7",
+   "volume_cm3": 17.83,
+   "sg": 1.48,
+   "mass_g": 26.4,
+   "mass_spec_g": 26.1,
+   "mass_err_pct": 1.1,
+   "implied_sg": 1.46,
+   "diameter_in": 11.001,
+   "cg_offset_mm": 0.0,
+   "static_imbalance_gmm": 0.0,
+   "polar_inertia_kgm2": 9.6e-05,
+   "axial_extent_mm": [
+    -14.3,
+    0.0
+   ],
+   "non_manifold": 0,
+   "tris": 11292,
+   "sections": {
+    "0.25": {
+     "model": {
+      "chord": 16.9,
+      "beta": 37.77,
+      "pitch_lete_in": 6.69,
+      "pitch_flat_in": 5.43,
+      "flat_len": 1.2,
+      "tmax": 4.26,
+      "le_u": 7.21,
+      "te_u": -6.15,
+      "front_width": 13.36
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 38.36,
+      "pitch_lete_in": 6.84,
+      "chord_uiuc_table": 20.54,
+      "front_width_photo": 15.88
+     }
+    },
+    "0.40": {
+     "model": {
+      "chord": 19.92,
+      "beta": 25.08,
+      "pitch_lete_in": 6.47,
+      "pitch_flat_in": 5.16,
+      "flat_len": 1.4,
+      "tmax": 4.14,
+      "le_u": 9.8,
+      "te_u": -8.23,
+      "front_width": 18.03
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 25.34,
+      "pitch_lete_in": 6.55,
+      "chord_uiuc_table": 22.21,
+      "front_width_photo": 19.7
+     }
+    },
+    "0.50": {
+     "model": {
+      "chord": 20.44,
+      "beta": 20.35,
+      "pitch_lete_in": 6.41,
+      "pitch_flat_in": 5.11,
+      "flat_len": 1.5,
+      "tmax": 3.84,
+      "le_u": 10.56,
+      "te_u": -8.6,
+      "front_width": 19.16
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 20.66,
+      "pitch_lete_in": 6.52,
+      "chord_uiuc_table": 22.21,
+      "front_width_photo": 20.38
+     }
+    },
+    "0.60": {
+     "model": {
+      "chord": 20.25,
+      "beta": 16.52,
+      "pitch_lete_in": 6.15,
+      "pitch_flat_in": 4.7,
+      "flat_len": 5.7,
+      "tmax": 3.55,
+      "le_u": 10.92,
+      "te_u": -8.49,
+      "front_width": 19.41
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 16.87,
+      "pitch_lete_in": 6.29,
+      "chord_uiuc_table": 21.79,
+      "front_width_photo": 20.31
+     }
+    },
+    "0.75": {
+     "model": {
+      "chord": 18.65,
+      "beta": 12.48,
+      "pitch_lete_in": 5.73,
+      "pitch_flat_in": 4.44,
+      "flat_len": 7.9,
+      "tmax": 2.96,
+      "le_u": 10.5,
+      "te_u": -7.71,
+      "front_width": 18.21
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 12.93,
+      "pitch_lete_in": 5.95,
+      "chord_uiuc_table": 19.56,
+      "front_width_photo": 18.73
+     }
+    },
+    "0.90": {
+     "model": {
+      "chord": 15.63,
+      "beta": 9.44,
+      "pitch_lete_in": 5.17,
+      "pitch_flat_in": 4.2,
+      "flat_len": 7.7,
+      "tmax": 2.24,
+      "le_u": 9.33,
+      "te_u": -6.09,
+      "front_width": 15.42
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 9.99,
+      "pitch_lete_in": 5.48,
+      "chord_uiuc_table": 16.07,
+      "front_width_photo": 15.7
+     }
+    }
+   }
+  },
+  "MA_Scimitar_11x7": {
+   "label": "Master Airscrew Scimitar 11x7",
+   "volume_cm3": 19.57,
+   "sg": 1.48,
+   "mass_g": 29.0,
+   "mass_spec_g": 28.6,
+   "mass_err_pct": 1.2,
+   "implied_sg": 1.46,
+   "diameter_in": 11.002,
+   "cg_offset_mm": 0.0,
+   "static_imbalance_gmm": 0.0,
+   "polar_inertia_kgm2": 9.59e-05,
+   "axial_extent_mm": [
+    -13.5,
+    0.0
+   ],
+   "non_manifold": 1,
+   "tris": 11324,
+   "sections": {
+    "0.25": {
+     "model": {
+      "chord": 18.69,
+      "beta": 29.69,
+      "pitch_lete_in": 4.93,
+      "pitch_flat_in": 3.43,
+      "flat_len": 1.3,
+      "tmax": 5.71,
+      "le_u": 9.28,
+      "te_u": -6.95,
+      "front_width": 16.23
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 30.04,
+      "pitch_lete_in": 5.0,
+      "chord_uiuc_table": 22.21,
+      "front_width_photo": 18.89
+     }
+    },
+    "0.40": {
+     "model": {
+      "chord": 19.58,
+      "beta": 23.96,
+      "pitch_lete_in": 6.14,
+      "pitch_flat_in": 4.41,
+      "flat_len": 1.4,
+      "tmax": 4.95,
+      "le_u": 10.73,
+      "te_u": -7.16,
+      "front_width": 17.89
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 24.33,
+      "pitch_lete_in": 6.25,
+      "chord_uiuc_table": 22.21,
+      "front_width_photo": 19.8
+     }
+    },
+    "0.50": {
+     "model": {
+      "chord": 19.73,
+      "beta": 20.54,
+      "pitch_lete_in": 6.47,
+      "pitch_flat_in": 4.66,
+      "flat_len": 1.4,
+      "tmax": 4.49,
+      "le_u": 11.03,
+      "te_u": -7.45,
+      "front_width": 18.48
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 20.92,
+      "pitch_lete_in": 6.61,
+      "chord_uiuc_table": 21.93,
+      "front_width_photo": 19.89
+     }
+    },
+    "0.60": {
+     "model": {
+      "chord": 19.04,
+      "beta": 17.79,
+      "pitch_lete_in": 6.65,
+      "pitch_flat_in": 4.76,
+      "flat_len": 1.4,
+      "tmax": 4.06,
+      "le_u": 10.64,
+      "te_u": -7.49,
+      "front_width": 18.13
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 18.22,
+      "pitch_lete_in": 6.83,
+      "chord_uiuc_table": 20.82,
+      "front_width_photo": 19.25
+     }
+    },
+    "0.75": {
+     "model": {
+      "chord": 16.79,
+      "beta": 14.55,
+      "pitch_lete_in": 6.73,
+      "pitch_flat_in": 4.83,
+      "flat_len": 1.2,
+      "tmax": 3.24,
+      "le_u": 8.83,
+      "te_u": -7.42,
+      "front_width": 16.25
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 15.07,
+      "pitch_lete_in": 6.98,
+      "chord_uiuc_table": 18.16,
+      "front_width_photo": 16.96
+     }
+    },
+    "0.90": {
+     "model": {
+      "chord": 12.51,
+      "beta": 11.29,
+      "pitch_lete_in": 6.21,
+      "pitch_flat_in": 4.6,
+      "flat_len": 0.9,
+      "tmax": 2.18,
+      "le_u": 5.05,
+      "te_u": -7.22,
+      "front_width": 12.27
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 11.99,
+      "pitch_lete_in": 6.61,
+      "chord_uiuc_table": 13.27,
+      "front_width_photo": 12.64
+     }
+    }
+   }
+  },
+  "MA_3B_11x7": {
+   "label": "Master Airscrew 3-Blade 11x7",
+   "volume_cm3": 23.8,
+   "sg": 1.48,
+   "mass_g": 35.2,
+   "mass_spec_g": 34.9,
+   "mass_err_pct": 0.9,
+   "implied_sg": 1.47,
+   "diameter_in": 11.003,
+   "cg_offset_mm": 0.0,
+   "static_imbalance_gmm": 0.0,
+   "polar_inertia_kgm2": 0.0001251,
+   "axial_extent_mm": [
+    -14.3,
+    0.0
+   ],
+   "non_manifold": 0,
+   "tris": 16296,
+   "sections": {
+    "0.25": {
+     "model": {
+      "chord": 16.83,
+      "beta": 37.78,
+      "pitch_lete_in": 6.7,
+      "pitch_flat_in": 5.35,
+      "flat_len": 1.2,
+      "tmax": 4.42,
+      "le_u": 7.3,
+      "te_u": -6.0,
+      "front_width": 13.3
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 38.36,
+      "pitch_lete_in": 6.84
+     }
+    },
+    "0.40": {
+     "model": {
+      "chord": 18.35,
+      "beta": 25.01,
+      "pitch_lete_in": 6.45,
+      "pitch_flat_in": 5.09,
+      "flat_len": 1.3,
+      "tmax": 3.98,
+      "le_u": 9.54,
+      "te_u": -7.09,
+      "front_width": 16.63
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 25.34,
+      "pitch_lete_in": 6.55
+     }
+    },
+    "0.50": {
+     "model": {
+      "chord": 18.5,
+      "beta": 20.28,
+      "pitch_lete_in": 6.38,
+      "pitch_flat_in": 5.03,
+      "flat_len": 1.3,
+      "tmax": 3.63,
+      "le_u": 10.42,
+      "te_u": -6.93,
+      "front_width": 17.35
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 20.66,
+      "pitch_lete_in": 6.52
+     }
+    },
+    "0.60": {
+     "model": {
+      "chord": 18.38,
+      "beta": 16.46,
+      "pitch_lete_in": 6.13,
+      "pitch_flat_in": 4.74,
+      "flat_len": 1.3,
+      "tmax": 3.37,
+      "le_u": 10.98,
+      "te_u": -6.65,
+      "front_width": 17.63
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 16.87,
+      "pitch_lete_in": 6.29
+     }
+    },
+    "0.75": {
+     "model": {
+      "chord": 16.89,
+      "beta": 12.42,
+      "pitch_lete_in": 5.71,
+      "pitch_flat_in": 4.28,
+      "flat_len": 5.3,
+      "tmax": 2.81,
+      "le_u": 10.96,
+      "te_u": -5.53,
+      "front_width": 16.49
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 12.93,
+      "pitch_lete_in": 5.95
+     }
+    },
+    "0.90": {
+     "model": {
+      "chord": 14.06,
+      "beta": 9.38,
+      "pitch_lete_in": 5.14,
+      "pitch_flat_in": 4.06,
+      "flat_len": 7.0,
+      "tmax": 2.1,
+      "le_u": 10.25,
+      "te_u": -3.62,
+      "front_width": 13.87
+     },
+     "ref": {
+      "src": "UIUC",
+      "beta": 9.99,
+      "pitch_lete_in": 5.48
+     }
+    }
+   }
+  },
+  "MA_3B_12x6": {
+   "label": "Master Airscrew 3-Blade 12x6",
+   "volume_cm3": 30.8,
+   "sg": 1.48,
+   "mass_g": 45.6,
+   "mass_spec_g": 47.9,
+   "mass_err_pct": -4.8,
+   "implied_sg": 1.56,
+   "diameter_in": 12.004,
+   "cg_offset_mm": 0.0,
+   "static_imbalance_gmm": 0.01,
+   "polar_inertia_kgm2": 0.0002217,
+   "axial_extent_mm": [
+    -14.3,
+    0.0
+   ],
+   "non_manifold": 0,
+   "tris": 16308,
+   "sections": {
+    "0.25": {
+     "model": {
+      "chord": 17.1,
+      "beta": 31.31,
+      "pitch_lete_in": 5.73,
+      "pitch_flat_in": 4.1,
+      "flat_len": 1.2,
+      "tmax": 5.4,
+      "le_u": 8.03,
+      "te_u": -6.59,
+      "front_width": 14.62
+     },
+     "ref": {
+      "src": "UIUC (escalado)",
+      "beta": 31.88,
+      "pitch_lete_in": 5.86
+     }
+    },
+    "0.40": {
+     "model": {
+      "chord": 19.39,
+      "beta": 20.08,
+      "pitch_lete_in": 5.51,
+      "pitch_flat_in": 3.69,
+      "flat_len": 1.4,
+      "tmax": 5.04,
+      "le_u": 10.44,
+      "te_u": -7.77,
+      "front_width": 18.21
+     },
+     "ref": {
+      "src": "UIUC (escalado)",
+      "beta": 20.41,
+      "pitch_lete_in": 5.61
+     }
+    },
+    "0.50": {
+     "model": {
+      "chord": 19.75,
+      "beta": 16.13,
+      "pitch_lete_in": 5.45,
+      "pitch_flat_in": 3.56,
+      "flat_len": 1.4,
+      "tmax": 4.64,
+      "le_u": 11.39,
+      "te_u": -7.58,
+      "front_width": 18.97
+     },
+     "ref": {
+      "src": "UIUC (escalado)",
+      "beta": 16.5,
+      "pitch_lete_in": 5.58
+     }
+    },
+    "0.60": {
+     "model": {
+      "chord": 19.78,
+      "beta": 13.01,
+      "pitch_lete_in": 5.23,
+      "pitch_flat_in": 3.23,
+      "flat_len": 1.4,
+      "tmax": 4.34,
+      "le_u": 12.0,
+      "te_u": -7.27,
+      "front_width": 19.27
+     },
+     "ref": {
+      "src": "UIUC (escalado)",
+      "beta": 13.4,
+      "pitch_lete_in": 5.39
+     }
+    },
+    "0.75": {
+     "model": {
+      "chord": 18.28,
+      "beta": 9.75,
+      "pitch_lete_in": 4.86,
+      "pitch_flat_in": 2.83,
+      "flat_len": 1.3,
+      "tmax": 3.63,
+      "le_u": 11.97,
+      "te_u": -6.04,
+      "front_width": 18.01
+     },
+     "ref": {
+      "src": "UIUC (escalado)",
+      "beta": 10.23,
+      "pitch_lete_in": 5.1
+     }
+    },
+    "0.90": {
+     "model": {
+      "chord": 15.27,
+      "beta": 7.32,
+      "pitch_lete_in": 4.36,
+      "pitch_flat_in": 2.8,
+      "flat_len": 1.1,
+      "tmax": 2.72,
+      "le_u": 11.19,
+      "te_u": -3.95,
+      "front_width": 15.14
+     },
+     "ref": {
+      "src": "UIUC (escalado)",
+      "beta": 7.88,
+      "pitch_lete_in": 4.7
+     }
+    }
+   }
+  }
+ },
+ "spinners": {
+  "DB_2-1/2": {
+   "prop": "APC_11x7",
+   "combo": "C",
+   "blade_to_cone_min_mm": 1.6,
+   "penetration_mm": {
+    "prop_cone": 0.0,
+    "prop_backplate": 0.0,
+    "cone_backplate": 0.0
+   },
+   "hardware": {
+    "HW_C_Arandela": {
+     "cone": 6.1,
+     "overlap_cone": 0,
+     "overlap_prop": 216,
+     "depth_prop": 0.0
+    },
+    "HW_C_Tornillo_M3.5x18_0": {
+     "cone": 0.0,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    },
+    "HW_C_Tornillo_M3.5x18_1": {
+     "cone": 0.0,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    },
+    "HW_C_Tuerca": {
+     "cone": 11.35,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    },
+    "HW_C_Tuerca_Nyloc_0": {
+     "cone": 1.02,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    },
+    "HW_C_Tuerca_Nyloc_1": {
+     "cone": 1.02,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    }
+   },
+   "non_manifold": {
+    "cone": 0,
+    "backplate": 0
+   }
+  },
+  "DB_3B_2-3/4": {
+   "prop": "MA_3B_11x7",
+   "combo": "B",
+   "blade_to_cone_min_mm": 1.55,
+   "penetration_mm": {
+    "prop_cone": 0.0,
+    "prop_backplate": 0.0,
+    "cone_backplate": 0.0
+   },
+   "hardware": {
+    "HW_B_Arandela": {
+     "cone": 8.6,
+     "overlap_cone": 0,
+     "overlap_prop": 208,
+     "depth_prop": 0.0
+    },
+    "HW_B_Tornillo_M3.5x18_0": {
+     "cone": 0.0,
+     "overlap_cone": 200,
+     "overlap_prop": 0,
+     "depth_cone": 0.0
+    },
+    "HW_B_Tornillo_M3.5x18_1": {
+     "cone": 0.0,
+     "overlap_cone": 203,
+     "overlap_prop": 0,
+     "depth_cone": 0.0
+    },
+    "HW_B_Tornillo_M3.5x18_2": {
+     "cone": 0.0,
+     "overlap_cone": 203,
+     "overlap_prop": 0,
+     "depth_cone": 0.0
+    },
+    "HW_B_Tuerca": {
+     "cone": 14.79,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    },
+    "HW_B_Tuerca_Nyloc_0": {
+     "cone": 1.02,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    },
+    "HW_B_Tuerca_Nyloc_1": {
+     "cone": 1.02,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    },
+    "HW_B_Tuerca_Nyloc_2": {
+     "cone": 1.02,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    }
+   },
+   "non_manifold": {
+    "cone": 0,
+    "backplate": 0
+   }
+  },
+  "TT_Std_2-1/2": {
+   "prop": "APC_12x6",
+   "combo": "A",
+   "blade_to_cone_min_mm": 1.68,
+   "penetration_mm": {
+    "prop_cone": 0.0,
+    "prop_backplate": 0.0,
+    "cone_backplate": 0.0
+   },
+   "hardware": {
+    "HW_A_Arandela": {
+     "cone": 14.83,
+     "overlap_cone": 0,
+     "overlap_prop": 228,
+     "depth_prop": 0.0
+    },
+    "HW_A_Tornillo_10-32": {
+     "cone": 0.0,
+     "overlap_cone": 343,
+     "overlap_prop": 0,
+     "depth_cone": 0.0
+    },
+    "HW_A_Tuerca_Spinner": {
+     "cone": 0.6,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    }
+   },
+   "non_manifold": {
+    "cone": 0,
+    "backplate": 0
+   }
+  },
+  "TT_Ult_2-1/4": {
+   "prop": "MA_Scimitar_11x7",
+   "combo": "D",
+   "blade_to_cone_min_mm": 1.47,
+   "penetration_mm": {
+    "prop_cone": 0.0,
+    "prop_backplate": 0.0,
+    "cone_backplate": 0.0
+   },
+   "hardware": {
+    "HW_D_Arandela": {
+     "cone": 10.74,
+     "overlap_cone": 0,
+     "overlap_prop": 232,
+     "depth_prop": 0.0
+    },
+    "HW_D_Tornillo_10-32": {
+     "cone": 0.0,
+     "overlap_cone": 341,
+     "overlap_prop": 0,
+     "depth_cone": 0.0
+    },
+    "HW_D_Tuerca_Spinner": {
+     "cone": 0.6,
+     "overlap_cone": 0,
+     "overlap_prop": 0
+    }
+   },
+   "non_manifold": {
+    "cone": 1,
+    "backplate": 0
+   }
+  }
+ }
+}

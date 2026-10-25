@@ -1,0 +1,84 @@
+{
+ "dropped_hidden": [
+  "CARB_Needle",
+  "ENG_Bearing_Front_Balls",
+  "ENG_Bearing_Front_Cage",
+  "ENG_Bearing_Front_Inner",
+  "ENG_Bearing_Front_Outer",
+  "ENG_Bearing_Rear_Balls",
+  "ENG_Bearing_Rear_Cage",
+  "ENG_Bearing_Rear_Inner",
+  "ENG_Bearing_Rear_Outer",
+  "ENG_Circlip_1",
+  "ENG_Circlip_2",
+  "ENG_Crank_Counterweight",
+  "ENG_Gasket_Head",
+  "ENG_GlowPlug_Element",
+  "ENG_GlowPlug_Thread",
+  "ENG_Liner",
+  "ENG_Liner_Dowel",
+  "ENG_Piston",
+  "ENG_Piston_Ring",
+  "ENG_Rod",
+  "ENG_Rod_Bush_Big",
+  "ENG_Rod_Bush_Small",
+  "ENG_Wrist_Pin"
+ ],
+ "Head": {
+  "parts": 11,
+  "high_tris": 223726,
+  "low_tris": 25500,
+  "atlas": 1024,
+  "uv": {
+   "ok": true
+  },
+  "bake_s": 320.5
+ },
+ "Carb": {
+  "parts": 23,
+  "high_tris": 15106,
+  "low_tris": 14386,
+  "atlas": 1024,
+  "uv": {
+   "ok": true
+  },
+  "bake_s": 327.6
+ },
+ "Muffler": {
+  "parts": 7,
+  "high_tris": 97402,
+  "low_tris": 27000,
+  "atlas": 1024,
+  "uv": {
+   "ok": true
+  },
+  "bake_s": 171.6
+ },
+ "Drive": {
+  "parts": 7,
+  "high_tris": 37824,
+  "low_tris": 10500,
+  "atlas": 512,
+  "uv": {
+   "ok": true
+  },
+  "bake_s": 57.7
+ },
+ "Body": {
+  "parts": 19,
+  "high_tris": 116900,
+  "low_tris": 56998,
+  "atlas": 2048,
+  "uv": {
+   "ok": true
+  },
+  "bake_s": 698.2
+ },
+ "export": {
+  "ok": true,
+  "warnings": []
+ },
+ "total_tris": 134384,
+ "base_offset_mm": 22.2,
+ "seconds": 1611.6
+}

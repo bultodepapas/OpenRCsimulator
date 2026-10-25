@@ -5,6 +5,7 @@
 #   - CAM-24: chase frame-rate independence in a bank and a loop (sub-steps), no slide after entry (state velocity);
 #   - CAM-02b: each view's near plane (pilot 0.5 m, chase and close-up 0.25 m, orbit shrinking near the airframe);
 #   - CAM-06/06b/28 pilot aids: the zoom-law family, the horizon tilt and overhead smoothing; all off by default;
+#   - CAM-14 fly-by: placed ahead (FlightGear law), re-placed after the pass, sun side, low side, framing, determinism;
 #   - CAM-27: after a crash the orbit, chase and close-up look at the wreck; the orbit still turns; pilot untouched;
 #   - orbit: starts where the previous view was, clamps, keeps clear of the ground.
 # Run: godot --headless --path . --script res://tests/test_camera_views.gd
@@ -16,6 +17,7 @@ const CameraMath := preload("res://render/camera/camera_math.gd")
 const CameraRig := preload("res://render/camera/camera_rig.gd")
 const ChaseView := preload("res://render/camera/chase_view.gd")
 const OrbitView := preload("res://render/camera/orbit_view.gd")
+const FlybyView := preload("res://render/camera/flyby_view.gd")
 
 const SPAN := 1.524
 
@@ -76,6 +78,7 @@ func _run() -> void:
 	_chase()
 	_chase_smoothness()
 	_orbit()
+	_flyby()
 	_wreck_focus()
 	print("all %d camera view checks passed" % _count if _failures == 0 else "%d of %d failed" % [_failures, _count])
 	quit(1 if _failures > 0 else 0)
@@ -276,7 +279,7 @@ func _cycle() -> void:
 	for i in CameraRig.VIEWS.size():
 		seen.append(rig.view)
 		rig.cycle(1)
-	_check("C cycles pilot → chase → orbit → close-up → pilot", seen == ["pilot", "chase", "orbit", "closeup"] and rig.view == "pilot", str(seen))
+	_check("C cycles pilot → chase → fly-by → orbit → close-up → pilot", seen == ["pilot", "chase", "flyby", "orbit", "closeup"] and rig.view == "pilot", str(seen))
 	rig.cycle(-1)
 	_check("Shift+C goes back", rig.view == "closeup")
 	_check("unknown view refused", not rig.set_view("cockpit") and rig.view == "closeup")
@@ -561,3 +564,65 @@ func _wreck_focus() -> void:
 	rig.focus(wreck, _flat)
 	_check("CAM-27 pilot: focus leaves the pilot view to the crash director", cam.transform == pilot)
 	cam.free()
+
+
+## CAM-14: a straight run north at 20 m/s, `height` m up, sampled at 60 fps for `seconds`; returns the placements.
+func _flyby_run(height: float, seconds: float, light := Vector3.ZERO, ground := Callable()) -> Array:
+	var view := FlybyView.new()
+	view.configure(SPAN)
+	var placements: Array = []
+	var last := Vector3.INF
+	for i in roundi(seconds * 60.0):
+		var target := Vector3(0, height, -20.0 * i / 60.0)
+		var placed := view.update(target, _level(0.0), Vector3(0, 0, -20), 1.0 / 60.0 if i > 0 else 0.0, false,
+			ground if ground.is_valid() else Callable(_flat), light)
+		var eye: Vector3 = placed.position
+		if eye != last:
+			placements.append({eye = eye, target = target, basis = placed.basis, fov = placed.fov})
+			last = eye
+	return placements
+
+
+func _flyby() -> void:
+	var runs := _flyby_run(60.0, 20.0)
+	var first: Dictionary = runs[0]
+	var ahead: float = (first.target as Vector3).z - (first.eye as Vector3).z
+	var expected_lead := FlybyView.LEAD_SHARE * FlybyView.LEAD_S * 20.0
+	_check("CAM-14 fly-by: first placement waits exactly 0.8 × 3.5 s × speed ahead (the deviation is across the course)", absf(ahead - expected_lead) < 1e-3, "%.3f m ahead" % ahead)
+	var radius := ((first.eye as Vector3) - ((first.target as Vector3) + Vector3(0, 0, -expected_lead))).length()
+	_check("CAM-14 fly-by: deviated 0.7–1.2 × D from the course", radius >= FlybyView.RADIUS_MIN * FlybyView.DISTANCE_M - 1e-3 and radius <= FlybyView.RADIUS_MAX * FlybyView.DISTANCE_M + 1e-3, "%.1f m" % radius)
+	_check("CAM-14 fly-by: re-placed after each pass (20 s at 20 m/s → several shots)", runs.size() >= 3, "%d placements" % runs.size())
+	var replaced_late := true
+	for k in range(1, runs.size()):
+		var prev_eye: Vector3 = runs[k - 1].eye
+		var at: Vector3 = runs[k].target
+		replaced_late = replaced_late and (prev_eye.z - at.z) > FlybyView.REPLACE_PAST * FlybyView.DISTANCE_M - 1.0
+	_check("CAM-14 fly-by: a new spot only once the aircraft is 1.7 × D past the old one", replaced_late)
+	var again := _flyby_run(60.0, 20.0)
+	_check("CAM-14 fly-by: placements repeat exactly (own fixed seed, presentation only)", again.size() == runs.size() and (again[1].eye as Vector3) == (runs[1].eye as Vector3))
+	var share := PilotCamera.projected_px(SPAN, (first.eye as Vector3).distance_to(first.target), first.fov, 1.0)
+	_check("CAM-14 fly-by: framed like a photographer (span ≈ 12 % of the frame height)", absf(share - FlybyView.FRAME_SHARE) < 0.005 or first.fov == FlybyView.MAX_FOV_DEG, "%.3f" % share)
+	var low := _flyby_run(5.0, 4.0, Vector3(1, 0.5, 0).normalized())
+	var offset: Vector3 = (low[0].eye as Vector3) - (low[0].target as Vector3)
+	_check("CAM-14 fly-by: a low aircraft is watched from the side", absf(offset.x) > 2.0 * absf(offset.y) and absf(offset.x) > 0.6 * FlybyView.DISTANCE_M * FlybyView.RADIUS_MIN, str(offset))
+	_check("CAM-14 fly-by: the sun (east) stays behind the camera", offset.x > 0.0, str(offset))
+	var west := _flyby_run(5.0, 4.0, Vector3(-1, 0.5, 0).normalized())
+	_check("CAM-14 fly-by: sun in the west, camera on the west side", ((west[0].eye as Vector3) - (west[0].target as Vector3)).x < 0.0)
+	var hill := func(_x: float, _z: float) -> float: return 50.0
+	var on_hill := _flyby_run(51.0, 3.0, Vector3.ZERO, hill)
+	_check("CAM-14 fly-by: never below the terrain + 2 m", (on_hill[0].eye as Vector3).y >= 52.0 - 1e-6, str(on_hill[0].eye))
+	# Paused: no re-placement; slow: no course, the camera stands to the side and stays; teleport: placed again.
+	var view := FlybyView.new()
+	view.configure(SPAN)
+	var placed := view.update(Vector3(0, 30, 0), _level(0.0), Vector3(0, 0, -20), 0.0, false, _flat)
+	var spot: Vector3 = placed.position
+	placed = view.update(Vector3(0, 30, -500), _level(0.0), Vector3(0, 0, -20), 1.0 / 60.0, true, _flat)
+	_check("CAM-14 fly-by: holds its spot while paused", (placed.position as Vector3) == spot)
+	placed = view.update(Vector3(0, 30, -505), _level(0.0), Vector3(0, 0, -20), 1.0 / 60.0, false, _flat)
+	_check("CAM-14 fly-by: a teleport is placed again ahead", (placed.position as Vector3).z < -505.0, str(placed.position))
+	view.reset()
+	placed = view.update(Vector3(0, 3, 0), _level(0.0), Vector3.ZERO, 0.0, false, _flat)
+	var hover: Vector3 = placed.position
+	for i in 120:
+		placed = view.update(Vector3(0, 3, 0), _level(0.0), Vector3.ZERO, 1.0 / 60.0, false, _flat)
+	_check("CAM-14 fly-by: a hovering aircraft keeps one spot about D away", (placed.position as Vector3) == hover and hover.distance_to(Vector3(0, 3, 0)) > 0.6 * FlybyView.DISTANCE_M)

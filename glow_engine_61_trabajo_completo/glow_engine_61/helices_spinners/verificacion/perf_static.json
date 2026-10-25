@@ -1,0 +1,39 @@
+{
+ "engine_torque_nm": 0.474,
+ "calibration": "APC 11x7 = 10600 rpm (RCU, silenciador est\u00e1ndar)",
+ "APC_11x7": {
+  "rpm": 10600,
+  "thrust_n": 27.6,
+  "thrust_kgf": 2.81,
+  "power_hp": 0.71,
+  "tip_mach": 0.46
+ },
+ "APC_11x8": {
+  "rpm": 10060,
+  "thrust_n": 26.0,
+  "thrust_kgf": 2.65,
+  "power_hp": 0.67,
+  "tip_mach": 0.43
+ },
+ "APC_12x6": {
+  "rpm": 9590,
+  "thrust_n": 27.9,
+  "thrust_kgf": 2.84,
+  "power_hp": 0.64,
+  "tip_mach": 0.45
+ },
+ "APC_12x7": {
+  "rpm": 8970,
+  "thrust_n": 26.3,
+  "thrust_kgf": 2.69,
+  "power_hp": 0.6,
+  "tip_mach": 0.42
+ },
+ "APC_12.5x6": {
+  "rpm": 8890,
+  "thrust_n": 27.3,
+  "thrust_kgf": 2.78,
+  "power_hp": 0.59,
+  "tip_mach": 0.43
+ }
+}

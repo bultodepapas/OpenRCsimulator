@@ -1,0 +1,108 @@
+{
+ "culata": {
+  "r": 21.2,
+  "band_h": 6.5,
+  "pitch": 3.28,
+  "n_half": 5,
+  "well_r": 6.2,
+  "well_floor": 64.5,
+  "allen_r": 16.0,
+  "allen_seat": 63.6,
+  "allen_angles": [
+   0,
+   60,
+   120,
+   180,
+   240,
+   300
+  ],
+  "cb_r": 3.0,
+  "plug_tip": 75.4
+ },
+ "culata_v2": {
+  "fin_wb": 2.15,
+  "fin_wc": 1.2,
+  "end_corner_r": 0.9,
+  "root_r": 0.3,
+  "rim_round": 0.5,
+  "cres_b": 1.5,
+  "well_r": 6.2,
+  "boss_pad": 0.55,
+  "pocket_r": 3.25,
+  "nx": 520,
+  "ny": 241,
+  "bot_chamfer": 1.4
+ },
+ "cilindro": {
+  "aletas": 9,
+  "paso_mm": 2.62,
+  "z_primera_mm": 35.24,
+  "espesor_mm": 1.0,
+  "radio_mm": 20.8,
+  "junta_carter_z_mm": 37.5
+ },
+ "cara_culata_z_mm": 57.8,
+ "cresta_z_mm": 70.7,
+ "paso_medido_en_fotos": {
+  "head_D_photo": [
+   3.28,
+   2.66,
+   0.102
+  ],
+  "head_D_before": [
+   3.5,
+   2.35,
+   0.124
+  ],
+  "head_D_after": [
+   3.275,
+   0.12,
+   0.102
+  ],
+  "head_E_photo": [
+   3.22,
+   2.69,
+   0.259
+  ],
+  "head_E_before": [
+   3.5,
+   2.3,
+   0.219
+  ],
+  "head_E_after": [
+   3.28,
+   0.02,
+   0.16
+  ],
+  "cyl_A_photo": [
+   2.635,
+   1.58,
+   0.08
+  ],
+  "cyl_A_before": [
+   2.175,
+   0.03,
+   0.114
+  ],
+  "cyl_A_after": [
+   2.57,
+   0.5,
+   0.062
+  ],
+  "cyl_E_photo": [
+   2.58,
+   0.58,
+   0.225
+  ],
+  "cyl_E_before": [
+   2.29,
+   1.75,
+   0.113
+  ],
+  "cyl_E_after": [
+   2.645,
+   1.54,
+   0.147
+  ]
+ }
+}

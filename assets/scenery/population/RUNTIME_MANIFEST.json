@@ -214,20 +214,20 @@
       "source": "person_casual_jacket_standing.gltf",
       "source_sha256": "f6490b6ea5839d4e743638845fbed93ec78805bae490bbebbae3f0c2db6dc2cc",
       "output": "people/casual_jacket_standing.glb",
-      "output_sha256": "ea844d1638868134a5816187a51ea2640068d9d6ff17a37432abfe7787e4ed0c",
+      "output_sha256": "ee98b989717b83d56396b08cb7f0c22212b61091c8fb6cae3b5740cd34bd5052",
       "geometry_bytes": 307096,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
@@ -238,52 +238,52 @@
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-07 outfit variant (shared people atlas)"
     },
     "people/casual_shirt_standing": {
       "source": "person_casual_shirt_standing.gltf",
-      "source_sha256": "7779de8133220fcf15dc3940d1cfb7accc4458a4249b7920dccb33b90ab91a53",
+      "source_sha256": "80b9b732ee6da6383ea6436d1fb94809ba79dabcc0c14efd1a135f88b7072154",
       "output": "people/casual_shirt_standing.glb",
-      "output_sha256": "140456cda23b7394cb929af5031ecba6f6214d1363973a8ffe7112370f8075a0",
-      "geometry_bytes": 299552,
+      "output_sha256": "c25d3ba0870a2f832175df45740774aa008f526db28d86c95e7d6399d41e434b",
+      "geometry_bytes": 276688,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
         {
           "file": "person_casual_shirt_standing.bin",
-          "sha256": "abb55d69f83bdf9c79d63d9506002c1a09801a79fe1a1b83c8cbf11974633d44",
-          "bytes": 297876
+          "sha256": "eae60ba66d6e7c57659dd28658e355c287f90cb2349931bf01a4edef889db2dd",
+          "bytes": 275012
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-07 outfit variant (shared people atlas)"
@@ -292,37 +292,37 @@
       "source": "person_mechanic_overalls_standing.gltf",
       "source_sha256": "aa8ce8e73d1b20cf39850d8a9cad0cfef43d569364b3bd2d3d4be0506085775e",
       "output": "people/mechanic_overalls_standing.glb",
-      "output_sha256": "d843b689217732b244e913582e633a80ed32df2f23c9742440f87a875ed0e575",
+      "output_sha256": "4d6688743689dd7e4a7ce5561beea94e29a1e195943f5c55a92ef60637927981",
       "geometry_bytes": 275920,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
         {
           "file": "person_mechanic_overalls_standing.bin",
-          "sha256": "d13e1ab0bb886ad7ab89fe8ce023a5c5846d18e51319e991f203b5cf3d9b2a92",
+          "sha256": "26ef27ee968abab5ecc9d43ff1cb9f6bb8d5dd232c6c54306030f4469effc4f1",
           "bytes": 274244
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-07 outfit variant (shared people atlas)"
@@ -331,115 +331,115 @@
       "source": "person_pilot_polo_pilot.gltf",
       "source_sha256": "b309b769924ffadb34881a8846ae0b169640a88d94713558de8632ec70f91880",
       "output": "people/pilot_polo_pilot.glb",
-      "output_sha256": "089ca8f64058ff28dd407af507f276dbdc24b7d815b5429f5ed5d31d65aedf28",
+      "output_sha256": "d66fdbe77c1df87bf2659f0fefcb70a88fee26db1622a6a1990b527db3f0bed1",
       "geometry_bytes": 377596,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
         {
           "file": "person_pilot_polo_pilot.bin",
-          "sha256": "222597f32aca3cb769fcd915d2e24274a29e2d532658ab556c7a7cbf411b0272",
+          "sha256": "5267293f22c72ac6f32e6e852dc832a312ec033d0f577a2cf1838145b7cefe6e",
           "bytes": 375920
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-01 pilot holding the owner's Radiolink T12D (shared people atlas)"
     },
     "people/veteran_cap_pilot": {
       "source": "person_veteran_cap_pilot.gltf",
-      "source_sha256": "1e5bc2a112dc20a3bdaa8d98212da79c764fbc5e2a5437c1729275be05908873",
+      "source_sha256": "a43d6f358e03f46da95360e380b6020be0401e074fec307a084aa2c17c618e1c",
       "output": "people/veteran_cap_pilot.glb",
-      "output_sha256": "83d0612d1f580840c1a09dd3ea017c0f0739472173f49202b4ebca6f44585ce8",
-      "geometry_bytes": 370348,
+      "output_sha256": "2367a7614cf3f3f8c799d4dcdff41c208617c3968ca2c37edb71ab5ef1833016",
+      "geometry_bytes": 417836,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
         {
           "file": "person_veteran_cap_pilot.bin",
-          "sha256": "c967bac7c107e0737225ba6bafe6c1e6128d417374c36707c4267261e4a3dc86",
-          "bytes": 368676
+          "sha256": "784ca30f9a668945645f6c8dd97be65d9099724cc14e85d1a3d97f967033f416",
+          "bytes": 416160
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-01 pilot holding the owner's Radiolink T12D (shared people atlas)"
     },
     "people/veteran_cap_sitting": {
       "source": "person_veteran_cap_seated.gltf",
-      "source_sha256": "3441c297f234c4f20efaa5efb9202a7fbbe0ecfc9caf5435b94e98d6466ed879",
+      "source_sha256": "e34cd8094a84c3b7749ae0d065929f1d23102034d5babec3eb618db433fdc910",
       "output": "people/veteran_cap_sitting.glb",
-      "output_sha256": "3b4ff5e8c3d01c7724ba1ec8877db87d794af3846dbd042b4613f4de445907a1",
-      "geometry_bytes": 267404,
+      "output_sha256": "e949add1aaca5c02a8717c3c81c92fcba2119358c08021cba1a80860724ffebe",
+      "geometry_bytes": 314768,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
         {
           "file": "person_veteran_cap_seated.bin",
-          "sha256": "e36576276f7ac7477812f9b228219829862f80fe7ca174c483aef0d8b0b295f9",
-          "bytes": 265728
+          "sha256": "d5e24451f529accb62d7e584f13e7a27ed4e8d83f80487b3f6ec78568c215546",
+          "bytes": 313092
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-07 outfit variant (shared people atlas)"
@@ -448,37 +448,37 @@
       "source": "person_woman_tee_seated.gltf",
       "source_sha256": "21c3f20c0aa9ceff1bc2824fe39e0af4e6b1c05d7e0ce7d24175604bbd96449c",
       "output": "people/woman_tee_sitting.glb",
-      "output_sha256": "ebf3a0328491fa1fcafdd8c4439fe6a2d013ca2fdb86aa5bef41eeca27609cf5",
+      "output_sha256": "118497ea7da3677efa39edaf97c0d19565f25543ad38ca8c9da36a504498e4ae",
       "geometry_bytes": 289956,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
         {
           "file": "person_woman_tee_seated.bin",
-          "sha256": "b7ce3805da84925a7fe6201c23ea472926a0baea60b924a6f551f1f20a9d5d83",
+          "sha256": "7177048842aae9be3977d368ef966c1250d06f3a98596e909b1c4672ee190d8c",
           "bytes": 288284
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-07 outfit variant (shared people atlas)"
@@ -487,76 +487,76 @@
       "source": "person_woman_tee_standing.gltf",
       "source_sha256": "1798a9dd2760138c289d78a2cdf03211e86ac32f3a791ec0236f47193611cafd",
       "output": "people/woman_tee_standing.glb",
-      "output_sha256": "4dc045b2fa841a04f4e6b0f4f8d3d217181fa59b12e168416208e139c842402c",
+      "output_sha256": "f17b809e964048de8f9cd1c11652c2a285406b14038266c57f8ea8e226980238",
       "geometry_bytes": 290212,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
         {
           "file": "person_woman_tee_standing.bin",
-          "sha256": "a6d845a834518f514842352c34010ae993bfedec5c1df06a6d9e9e566db32b7c",
+          "sha256": "fe8d5ecdff7db3e38f6874ddbc339a4af5d2a3ff7805a3b7f27eb1e83600f539",
           "bytes": 288536
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-07 outfit variant (shared people atlas)"
     },
     "people/casual_shirt_working": {
       "source": "person_casual_shirt_working.gltf",
-      "source_sha256": "ab3bf0a4b8f0e25d04064d46b302a70ecc7f38cc0bc6fccc5c43c99d3a47a814",
+      "source_sha256": "e6481badbcbb331417b08e3602bdd390ad67a61ce6389c99776b60e2740ab7fb",
       "output": "people/casual_shirt_working.glb",
-      "output_sha256": "727b2018dc65016d4a4d4f3803d9a2d85acce5b46d41335f2f082de40b965964",
-      "geometry_bytes": 299708,
+      "output_sha256": "7d8bdc67815c4efaf70a18fe910b34aab7d0d0a058a5f016cd40e978b290bef9",
+      "geometry_bytes": 276684,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
         {
           "file": "person_casual_shirt_working.bin",
-          "sha256": "080236f68ec89725474c9cee9a90d300e559e89499b39db9aa76333c4a153784",
-          "bytes": 298036
+          "sha256": "0db5dde801eb34254f67b95f8a4b1d6a8ca2aa67e357d52a8bd716c7901ae7d8",
+          "bytes": 275012
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-06 work pose (shared people atlas)"
@@ -565,37 +565,37 @@
       "source": "person_mechanic_overalls_working.gltf",
       "source_sha256": "7f0fc84672342e2442c1675d347537c321d22438651dbff5f4aebf5da6a018e4",
       "output": "people/mechanic_overalls_working.glb",
-      "output_sha256": "225e3170ffcfdc8af0709be886fd0d027c4fc4ce5c7bb7d7e8af6efe6ed2eec5",
+      "output_sha256": "5b8050bddbfd2f588990715a9d16153c78f7bdc96dc6464862bcae103fb92030",
       "geometry_bytes": 276132,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
         {
           "file": "person_mechanic_overalls_working.bin",
-          "sha256": "1c5d75f4fdc66f1e4fcb112d7b88cf3cfa1da464a04f31d868002b95cbf24b9a",
+          "sha256": "eb06ac44a987b3a89a24d85355fb1c6e2990d35fad02b62bd633b71991a81fe0",
           "bytes": 274456
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-06 work pose (shared people atlas)"
@@ -604,37 +604,37 @@
       "source": "person_woman_tee_working.gltf",
       "source_sha256": "c76ea0ace9db742bfe6226f7f341fb6c210beb786d00b24032002b337f37cb8f",
       "output": "people/woman_tee_working.glb",
-      "output_sha256": "4eebce735372362f92592fc2c38608330ee908dfb72bf57a2c9b57629b222390",
+      "output_sha256": "25b54697b507218dde137e2cef14b17c8830de2d028ffada275fe29010fc9b1a",
       "geometry_bytes": 290652,
       "images": [
         {
           "name": "",
-          "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "name": "",
-          "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "source_dependencies": [
         {
           "file": "person_woman_tee_working.bin",
-          "sha256": "72a7e4f09cffdc39f2a4075bd760ba01143218be73e2bf0e0e9074def739d85e",
+          "sha256": "f198cb8e9d837becb0fc1cc1a769253682982bbce462a7155e3fcbcb31e4d8af",
           "bytes": 288976
         },
         {
           "file": "people_atlas.png",
-          "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74",
-          "bytes": 12124713
+          "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9",
+          "bytes": 11568811
         },
         {
           "file": "people_atlas_normal.png",
-          "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919",
-          "bytes": 702771
+          "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80",
+          "bytes": 697419
         }
       ],
       "step": "SC-HUM-06 work pose (shared people atlas)"
@@ -664,7 +664,7 @@
     {
       "path": "people/casual_jacket_standing.glb",
       "bytes": 307096,
-      "sha256": "ea844d1638868134a5816187a51ea2640068d9d6ff17a37432abfe7787e4ed0c"
+      "sha256": "ee98b989717b83d56396b08cb7f0c22212b61091c8fb6cae3b5740cd34bd5052"
     },
     {
       "path": "people/casual_jacket_standing.glb.import",
@@ -673,8 +673,8 @@
     },
     {
       "path": "people/casual_shirt_standing.glb",
-      "bytes": 299552,
-      "sha256": "140456cda23b7394cb929af5031ecba6f6214d1363973a8ffe7112370f8075a0"
+      "bytes": 276688,
+      "sha256": "c25d3ba0870a2f832175df45740774aa008f526db28d86c95e7d6399d41e434b"
     },
     {
       "path": "people/casual_shirt_standing.glb.import",
@@ -683,8 +683,8 @@
     },
     {
       "path": "people/casual_shirt_working.glb",
-      "bytes": 299708,
-      "sha256": "727b2018dc65016d4a4d4f3803d9a2d85acce5b46d41335f2f082de40b965964"
+      "bytes": 276684,
+      "sha256": "7d8bdc67815c4efaf70a18fe910b34aab7d0d0a058a5f016cd40e978b290bef9"
     },
     {
       "path": "people/casual_shirt_working.glb.import",
@@ -694,7 +694,7 @@
     {
       "path": "people/mechanic_overalls_standing.glb",
       "bytes": 275920,
-      "sha256": "d843b689217732b244e913582e633a80ed32df2f23c9742440f87a875ed0e575"
+      "sha256": "4d6688743689dd7e4a7ce5561beea94e29a1e195943f5c55a92ef60637927981"
     },
     {
       "path": "people/mechanic_overalls_standing.glb.import",
@@ -704,7 +704,7 @@
     {
       "path": "people/mechanic_overalls_working.glb",
       "bytes": 276132,
-      "sha256": "225e3170ffcfdc8af0709be886fd0d027c4fc4ce5c7bb7d7e8af6efe6ed2eec5"
+      "sha256": "5b8050bddbfd2f588990715a9d16153c78f7bdc96dc6464862bcae103fb92030"
     },
     {
       "path": "people/mechanic_overalls_working.glb.import",
@@ -714,7 +714,7 @@
     {
       "path": "people/pilot_polo_pilot.glb",
       "bytes": 377596,
-      "sha256": "089ca8f64058ff28dd407af507f276dbdc24b7d815b5429f5ed5d31d65aedf28"
+      "sha256": "d66fdbe77c1df87bf2659f0fefcb70a88fee26db1622a6a1990b527db3f0bed1"
     },
     {
       "path": "people/pilot_polo_pilot.glb.import",
@@ -722,29 +722,29 @@
       "sha256": "db259ac691563bb9f07a69447f39fea322207904bcf506c0102f9667e00a3632"
     },
     {
-      "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-      "bytes": 12124713,
-      "sha256": "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74"
+      "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png",
+      "bytes": 697419,
+      "sha256": "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80"
     },
     {
-      "path": "people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png.import",
+      "path": "people/textures/2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png.import",
+      "bytes": 1481,
+      "sha256": "5319d09fa856cfeb56ca28faa684d74c6702f4c542bfbae63c025d64b922ca1b"
+    },
+    {
+      "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+      "bytes": 11568811,
+      "sha256": "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9"
+    },
+    {
+      "path": "people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png.import",
       "bytes": 1482,
-      "sha256": "1165c27bb6cdfd02d2c2f4544eb48bc1aedd14af90aa273d83a8951de35581c5"
-    },
-    {
-      "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png",
-      "bytes": 702771,
-      "sha256": "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919"
-    },
-    {
-      "path": "people/textures/66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png.import",
-      "bytes": 1482,
-      "sha256": "1cf8afd18a31389d2e10420611f7333ef4888bddde053feaffe85fa7ad62650f"
+      "sha256": "7aacc5cd6d1ce8cf4ec1d5ec16275b3800d2173d668d08fdf90d40be01b5389e"
     },
     {
       "path": "people/veteran_cap_pilot.glb",
-      "bytes": 370348,
-      "sha256": "83d0612d1f580840c1a09dd3ea017c0f0739472173f49202b4ebca6f44585ce8"
+      "bytes": 417836,
+      "sha256": "2367a7614cf3f3f8c799d4dcdff41c208617c3968ca2c37edb71ab5ef1833016"
     },
     {
       "path": "people/veteran_cap_pilot.glb.import",
@@ -753,8 +753,8 @@
     },
     {
       "path": "people/veteran_cap_sitting.glb",
-      "bytes": 267404,
-      "sha256": "3b4ff5e8c3d01c7724ba1ec8877db87d794af3846dbd042b4613f4de445907a1"
+      "bytes": 314768,
+      "sha256": "e949add1aaca5c02a8717c3c81c92fcba2119358c08021cba1a80860724ffebe"
     },
     {
       "path": "people/veteran_cap_sitting.glb.import",
@@ -764,7 +764,7 @@
     {
       "path": "people/woman_tee_sitting.glb",
       "bytes": 289956,
-      "sha256": "ebf3a0328491fa1fcafdd8c4439fe6a2d013ca2fdb86aa5bef41eeca27609cf5"
+      "sha256": "118497ea7da3677efa39edaf97c0d19565f25543ad38ca8c9da36a504498e4ae"
     },
     {
       "path": "people/woman_tee_sitting.glb.import",
@@ -774,7 +774,7 @@
     {
       "path": "people/woman_tee_standing.glb",
       "bytes": 290212,
-      "sha256": "4dc045b2fa841a04f4e6b0f4f8d3d217181fa59b12e168416208e139c842402c"
+      "sha256": "f17b809e964048de8f9cd1c11652c2a285406b14038266c57f8ea8e226980238"
     },
     {
       "path": "people/woman_tee_standing.glb.import",
@@ -784,7 +784,7 @@
     {
       "path": "people/woman_tee_working.glb",
       "bytes": 290652,
-      "sha256": "4eebce735372362f92592fc2c38608330ee908dfb72bf57a2c9b57629b222390"
+      "sha256": "25b54697b507218dde137e2cef14b17c8830de2d028ffada275fe29010fc9b1a"
     },
     {
       "path": "people/woman_tee_working.glb.import",

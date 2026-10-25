@@ -47,8 +47,8 @@ Home also offers two separate experimental activities, each with its own control
 | Esc | Pause; cancel radio calibration |
 | R | Restart flight |
 | P | Resume after a radio failsafe |
-| C · Shift+C | Next / previous view: pilot, chase, orbit, close-up |
-| 1 · 2 · 5 | Pilot · chase · orbit view (orbit: drag with the right mouse button) |
+| C · Shift+C | Next / previous view: pilot, chase, fly-by, orbit, close-up |
+| 1 · 2 · 4 · 5 | Pilot · chase · fly-by · orbit view (fly-by: a spectator ahead of the model, sun behind; orbit: drag with the right mouse button) |
 | = · − · Backspace | Zoom in · out · reset (also the mouse wheel); in chase and orbit it moves the camera |
 | Z | Toggle auto-zoom |
 | V / L | Cycle ground-shadow aid / aircraft night lights |
@@ -149,11 +149,14 @@ thermals, kites, swallows and evening swifts, chosen by time of day and weather.
 halves it, Many keeps full flocks at every level and Off sends them all away. The change applies at once, also from
 the Pause menu: in flight the birds fly off or arrive over a minute or two. [Birds plan](plans/birds-sky-life.md).
 Workshop's separate preview images do not use the main-view MSAA setting.
-**Settings → Camera** sets the **First view** of flights from Home (pilot, chase or orbit), the **Pilot field of view**
+**Settings → Camera** sets the **First view** of flights from Home (pilot, chase, fly-by or orbit), the **Pilot field of view**
 (30–70°, default 50°; about 30° shows the model at its real size on a 24–27-inch screen at arm's length), **Auto zoom**,
 **Chase distance**, **Orbit sensitivity** and **Invert orbit up/down**. Changes apply at once, also from Pause; first view
 waits for the next flight, and auto zoom and chase distance apply only when they change, so a view or zoom chosen in
-flight with the keys stays. Command-line flights keep `--view` and `--autozoom`. [Camera plan](plans/camera-views.md).
+flight with the keys stays. Command-line flights keep `--view` and `--autozoom`. Three pilot-view aids are off until
+you try them: **Auto zoom** offers *Keeps looming* (the model still shrinks as it flies away) and *Gentle* beside the
+default *Constant size*; **Keep the horizon in view** tilts the view down so the ground stays visible under a high
+model; **Smooth overhead passes** stops the picture flipping when the model passes overhead. [Camera plan](plans/camera-views.md).
 
 From Home, **Graphics → Try High (restart)** starts a temporary experimental
 Forward+ mode with ambient occlusion, soft sun shadows and sky reflections. Keep

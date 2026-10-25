@@ -1,0 +1,24 @@
+O.S. MAX 61 SF Special Edition - modelo Blender completo
+=========================================================
+
+glow_engine_61/                      entregables
+  glow_engine_61_SE.blend / .glb     motor SE completo (culata dorada v2), camaras de tus fotos incluidas en el .blend
+  glow_engine_61_standard.blend/.glb variante estandar (culata plateada)
+  build_engine.py                    generador parametrico del motor (Blender 5.x, bpy)
+  renders/                           vistas con las camaras de tus fotos y renders/culata (detalles de culata y bujia)
+  auditoria/                         comparaciones foto | modelo | contornos, metricas, errores de forma,
+                                     culata_v2/ (antes y despues de la culata, parametros medidos)
+  mecanica/                          QA, interferencias, compresion, escape, masas y volumenes
+  tiempo_real/                       GLB de tiempo real (134 mil triangulos) con texturas horneadas
+  bancada_avion/                     motor en bancada O.S. 905 con parallamas y lineas (.blend, .glb, renders)
+  helices_spinners/                  biblioteca de 9 helices y 4 spinners, 4 conjuntos montados, GLB por pieza
+  carburetor_os61/, carburetor_modern/  carburadores por separado
+  herramientas/                      scripts de auditoria, exportacion, renders y camaras resueltas
+
+fuentes/                             todo el codigo usado para construir y verificar
+  engine/      build_engine.py, tools/ (pipeline, lookdev, QA mecanico, auditoria, exportacion), cams/ (camaras resueltas)
+  head/        desarrollo de la culata v2 (campo de alturas, proyeccion a fotos, medicion de paso, chequeos de malla)
+  props/       generador de helices y spinners (build_props.py, propgeom.py, tools/, datos de geometria APC/UIUC)
+  mount/       ajuste de la bancada O.S. 905 a su foto
+
+Abrir: Blender 4.2+ (probado con 5.2). Los GLB abren en cualquier visor glTF 2.0.

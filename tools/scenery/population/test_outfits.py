@@ -7,6 +7,7 @@ that rejected assets do not return, and that the source and runtime manifests st
 import hashlib
 import json
 import re
+import struct
 import unittest
 from pathlib import Path
 
@@ -103,6 +104,27 @@ class Manifests(unittest.TestCase):
         current = {path.name: sha256(path) for path in sorted(TRANSMITTER_DIR.glob("Radiolink_T12D.*"))}
         self.assertEqual({name: entry["sha256"] for name, entry in recorded.items()}, current,
                          "a new transmitter delivery: regenerate both pilots, merge all poses and update HUMAN_SOURCES.json")
+
+    def test_atlas_imports_match_their_material_role(self):
+        # The normal atlas must import as a normal map and the diffuse atlas must not (a swapped pair renders yellow skin).
+        roles = {}
+        for glb in sorted(PEOPLE_DIR.glob("*.glb")):
+            data = glb.read_bytes()
+            length = struct.unpack_from("<I", data, 12)[0]
+            document = json.loads(data[20:20 + length])
+            uris = [document["images"][texture["source"]]["uri"] for texture in document["textures"]]
+            for material in document["materials"]:
+                if "normalTexture" in material:
+                    roles.setdefault(uris[material["normalTexture"]["index"]], set()).add("normal")
+                base = material.get("pbrMetallicRoughness", {}).get("baseColorTexture")
+                if base:
+                    roles.setdefault(uris[base["index"]], set()).add("diffuse")
+        self.assertTrue(roles)
+        for uri, used_as in roles.items():
+            with self.subTest(texture=uri):
+                self.assertEqual(len(used_as), 1, "a texture is both diffuse and normal")
+                text = (PEOPLE_DIR / (uri + ".import")).read_text()
+                self.assertIn("compress/normal_map=%d" % (1 if used_as == {"normal"} else 0), text)
 
     def test_atlas_imports_are_compressed_with_mipmaps(self):
         for path in sorted((PEOPLE_DIR / "textures").glob("*.png.import")):

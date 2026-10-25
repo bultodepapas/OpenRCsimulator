@@ -395,11 +395,11 @@
     ],
     "outfit_specs_sha256": {
       "casual_jacket.json": "a015bb9f59ba462b94a65c3f0b49d5c1c43de18050691a1f407c91594f556964",
-      "casual_shirt.json": "4380746f76c54527b219ed457e2b5783512820bdca7db85f261df546b27b0d2c",
+      "casual_shirt.json": "b994401c0e1127ca24d90906637df3c2754ebe20af4e752f6fb3c408fbf26f8f",
       "mechanic_overalls.json": "07708338db9bbb90af538bcccd94fc6ca992237823483583621a5d8a1f486f5f",
       "pilot_polo.json": "6d8b5d9f42e9d5f2c00906ce3f88729a7f0193f23028c1f1e816ae993ee81b6b",
-      "veteran_cap.json": "20d698c6e16793e7295049fa69b64676b9a17c800385aa5d4e628165da70895d",
-      "woman_tee.json": "1c992889c167dfcb58fe540a9029df1423abe93cf4651644939ed56768daa63d"
+      "veteran_cap.json": "6179901e070d2a44611a234055a450bf01d42569f05b31694bfa69a27338f7b3",
+      "woman_tee.json": "060de963b565adb7133fa59f2543e3b84cc862123922574750321423363883d5"
     },
     "poses": {
       "pilot": [
@@ -479,8 +479,8 @@
     "retires": "SC-HUM-02 standing/sitting/pilot GLBs and their atlas (the LU-21 person stays reproducible from the default recipe)",
     "evidence": "docs/research/scenery-implementation/SC-HUM-07/README.md; work poses: docs/research/scenery-implementation/SC-HUM-06/README.md",
     "runtime_textures": [
-      "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
-      "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png"
+      "64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png",
+      "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png"
     ]
   },
   "sc_hum_01_transmitter": {

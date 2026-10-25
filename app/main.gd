@@ -19,6 +19,7 @@ const SmokeAssignment := preload("res://ui/smoke_aux_assignment.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraRig := preload("res://render/camera/camera_rig.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
+const Magnifier := preload("res://render/camera/magnifier.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Commands := preload("res://input/commands.gd")
 const ControlSurfaces := preload("res://physics/control_surfaces.gd")
@@ -226,6 +227,8 @@ var _airplane: Dictionary
 var _camera: Camera3D
 ## CAM-02: views, zoom and camera input (render/camera/camera_rig.gd); built with the world.
 var _rig: CameraRig
+## CAM-18: the magnifier inset (off unless the player chose it).
+var _magnifier: Magnifier
 ## The view a flight starts in: --view=<pilot|chase|orbit|closeup>, or closeup with --inspect.
 var _initial_view := "pilot"
 var _camera_dt := 0.0
@@ -790,6 +793,7 @@ func _prepare_flight() -> void:
 	TimberVisualMotion.attach(_airplane, session)
 	# VQ-05: speed-driven propeller blur beside the model (never inside it); it only reads sim.aux[0] each frame.
 	PropellerBlur.attach(_airplane, session, self)
+	Magnifier.tag(get_node_or_null("PropellerBlur")) # CAM-18: the blur disc belongs in the magnifier too
 	# A frozen profile replaces the legacy exhaust rig. Global smoke-off suppresses
 	# either runtime, while technical trace/capture routes may still render a profile.
 	if not await _startup_stage("Preparing effects"):
@@ -1722,6 +1726,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_rig.set_view("pilot")
 			KEY_2:
 				_rig.set_view("chase")
+			KEY_4:
+				_rig.set_view("flyby")
 			KEY_5:
 				_rig.set_view("orbit")
 			KEY_EQUAL:
@@ -2617,6 +2623,9 @@ func _build_world() -> bool:
 	var storm_args: Dictionary = _user_args()
 	_storm_fx.set_audio_enabled(not _scripted and not storm_args.has("capture") and str(storm_args.get("soundscape", "on")) != "off")
 	_rig = CameraRig.new(_camera, _extent.x)
+	_magnifier = Magnifier.new()
+	_magnifier.name = "MagnifierLayer"
+	add_child(_magnifier)
 	if not await _startup_stage("Preparing instruments"):
 		return false
 	if overlays_enabled:
@@ -2708,7 +2717,12 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, direction if _shadow_mode == "sun" else Vector3.UP, strength)
 	var paused: bool = session != null and session.sim.paused and not _scripted
+	_rig.light_direction = direction # CAM-14: the fly-by stands with the sun behind it
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF))
+	if _magnifier != null:
+		_magnifier.mode = _rig.magnifier
+		_magnifier.update(_camera, pose.pos, _extent.x, _airplane.root, _rig.view == "pilot" and is_nan(_look.x)
+			and _airplane.root.visible and (session == null or session.crash.is_empty()))
 
 
 func _write_trace_and_quit(ticks: int, path: String) -> void:
