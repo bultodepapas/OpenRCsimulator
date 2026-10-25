@@ -4,7 +4,7 @@ Checked 2026-10-19 · Owner: Stik model/finish track · Prefixes **US-01…08**,
 
 ## Current implementation
 
-The native model represents the 60-inch Jensen with a generic .61-class installation. It includes articulated controls and fixed-length links, servos, retainers, the owner's Blender O.S. 61 SF engine on a radial mount (US-V13), glossy red/white/black film, scalloped edges, wooden propeller grain and estimated weathering. Gear flex follows simulated wheel compression; prop-strike stubs, fracture details and soft-contact scuffs are implemented.
+The native model represents the 60-inch Jensen with a generic .61-class installation. It includes articulated controls and fixed-length links, five servos (two in the wing, US-V17), retainers, the owner's Blender O.S. 61 SF engine on a radial mount (US-V13), glossy red/white/black film, scalloped edges, wooden propeller grain and estimated weathering. Gear flex follows simulated wheel compression; prop-strike stubs, fracture details and soft-contact scuffs are implemented.
 
 The [geometry](../assets/aircraft/ugly-stik-60/geometry.json) and [appearance](../assets/aircraft/ugly-stik-60/appearance.json) are separate editable sources. The manifest selects the native builder through the shared [model contract](AIRCRAFT_CONTRACT.md#model-and-package-contract). Mesh counts and v3/v4/v5/v6 report names describe delivery snapshots; use current verification for today's model.
 
@@ -29,6 +29,7 @@ The base catalog aircraft, `jensen-das-ugly-stik-60`, retains prescribed fuel an
 | US-V14 | Main gear as the plan's tapered 0.090 in 2024-T3 aluminium plate; [evidence](research/ugly-stik-finish-v6.md#us-v14--aluminium-main-gear-plate) | Axle positions stay the physics contacts; the drawn ones are implausible, so only a measured build should move them. |
 | US-V15 | Form pass: sanded round wing tips (true raked cap normal) and round tail-sheet edges; [evidence](research/ugly-stik-finish-v6.md#us-v15--form-pass-sanded-wing-tips-and-tail-edges) | Owner close-up review; wing leading-edge facets (F3) left as a note. |
 | US-V16 | Lookdev vs the RCM photos: epoxy birch-ply firewall face; engine excluded from film scuffs (first contact 359 → 28 ms); [evidence](research/ugly-stik-finish-v6.md#us-v16--lookdev-colours-textures-and-the-firewall) | Owner choice on the RCM-only scheme differences (fuselage band, cross size, band colour, spinner). |
+| US-V17 | Two-servo wing (owner's choice): one servo per semispan on a bottom hatch, short pushrod, nylon horn, no bellcrank; standard 40 × 20 × 36 mm servos seated from their shafts; shaped arms and horns; [evidence](research/ugly-stik-finish-v6.md#us-v17--servos-and-control-hardware) | Stations are estimates; the economy catalogue still prices one central aileron servo. |
 
 The [2026-10-19 recheck](research/ugly-stik-finish-v6.md#2026-10-19-documentation-recheck) records focused verification separately from original delivery results. It does not close the full-suite, pilot or hardware gates.
 

@@ -32,14 +32,15 @@ const ROD_RADIUS_M := 0.00115
 # glued to a bottom hatch, its arm out through a slot, with a short pushrod to the plan's nylon horn, hole under the
 # hinge line. Stations are estimates: the servo sits aft of the spar where the wing is still deep enough for the case.
 const AILERON_HORN_INSET_M := 0.012 # horn plane outboard of the aileron's inner end
-const AILERON_HORN_HOLE_M := Vector2(0.002, -0.019) # (aft of, below) the hinge line: a 3/4 in horn
+const AILERON_HORN_HOLE_M := Vector2(0.002, -0.0225) # (aft of, below) the hinge line: a 7/8 in horn
 const AILERON_HORN_BASE_AFT_M := 0.010
 const AILERON_SERVO_SHAFT_Z_M := 0.150 # aft of the leading edge (chord fraction 0.49)
-const AILERON_ARM_RADIUS_M := 0.019
+const AILERON_ARM_RADIUS_M := 0.0225 # equal to the horn: a parallelogram, aileron throw follows the servo
 const HATCH_M := Vector3(0.050, 0.0016, 0.064) # span x 1/16 in plywood x chord, film covered
 const HATCH_PROUD_M := 0.0003
 const HATCH_CLEARANCE_M := 0.0008 # servo case above the hatch's inner face
-const FUSELAGE_SHEET_M := 0.0024 # estimated side and bottom sheeting, for rails glued inside the fuselage
+const FUSELAGE_SIDE_M := 0.00635 # Jensen sheet 1: 1/4 in balsa sides (servo rails are glued to their inner faces)
+const FUSELAGE_BOTTOM_M := 0.0024 # and a 3/32 in bottom
 const LINK_ERROR_TOLERANCE_M := 0.00025 # Visual implementation target from US-V04/05.
 const SOLVER_EPSILON := 1.0e-10
 
@@ -363,9 +364,10 @@ static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3
 # US-V09c: the carburettor lever (Equipment, node carburetor_throttle_arm_hinge) turns about X with the throttle
 # command; a direct pushrod of constant length closes it to the gas servo, like the tail mechanisms. US-V13: the O.S. 61
 # lever opens by turning about -X (Equipment.THROTTLE_OPENING) and the servo sits on the rod line Equipment routes
-# through F1. The servo station, 12 mm arm and 60-degree barrel travel are estimates, not measured.
+# through F1. The servo station, arm and 60-degree barrel travel are estimates, not measured. US-V17: a 16 mm arm hole keeps the
+# standard case clear of the 1/4 in nose side (12 mm put it 1 mm into the side).
 const THROTTLE_TRAVEL_DEG := 60.0
-const THROTTLE_SERVO_RADIUS_M := 0.012
+const THROTTLE_SERVO_RADIUS_M := 0.016
 
 static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: Node3D, mechanisms: Dictionary, servos: Dictionary, failures: Array[String]) -> void:
 	var hinge := root.find_child("carburetor_throttle_arm_hinge", false, false) as Node3D
@@ -493,8 +495,8 @@ static func _fuselage_inner_half_width(z: float) -> float:
 		var a: Array = stations[i]
 		var b: Array = stations[i + 1]
 		if float(a[0]) <= z and z <= float(b[0]):
-			return lerpf(float(a[1]), float(b[1]), (z - float(a[0])) / (float(b[0]) - float(a[0]))) - FUSELAGE_SHEET_M
-	return float(stations[0][1]) - FUSELAGE_SHEET_M
+			return lerpf(float(a[1]), float(b[1]), (z - float(a[0])) / (float(b[0]) - float(a[0]))) - FUSELAGE_SIDE_M
+	return float(stations[0][1]) - FUSELAGE_SIDE_M
 
 
 ## A standard servo whose arm turns about `pivot` (mid-thickness of the arm) on a shaft along `axis`, the case reaching

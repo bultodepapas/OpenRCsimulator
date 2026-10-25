@@ -1,5 +1,7 @@
 # US-V04/V05 — servos, cuernos y varillaje
 
+> 2026-10-25 · US-V17 correction: both bottom views on Jensen sheet 2 show the same central servo, not one per semispan. The owner chose the two-servo version. It is now built with one servo per semispan on a bottom hatch and no bellcrank, with standard 40 × 20 × 36 mm servos ([evidence](ugly-stik-finish-v6.md#us-v17--servos-and-control-hardware)). The text below records the original US-V04/05 delivery.
+
 ## Implementación
 
 `app/aircraft/ugly_stik_controls.gd` expone `build(root, hinges)`, `update(controls)`, `set_maintenance(controls, visible)` y `audit(controls)`. El builder del modelo ya construye `controls`; `render/airplane.gd` actualiza las transmisiones después de aplicar las bisagras. El verificador usa ese avión y sus controles existentes, sin construir una segunda instalación.

@@ -1,4 +1,4 @@
-# Ugly Stik · covering, shading, linkage, propeller, weathering, gear flex, broken propeller, contact scuffs, O.S. 61 engine, main-gear plate, form and lookdev passes (US-V09a–h, US-V10–V16)
+# Ugly Stik · covering, shading, linkage, propeller, weathering, gear flex, broken propeller, contact scuffs, O.S. 61 engine, main-gear plate, form, lookdev and hardware passes (US-V09a–h, US-V10–V17)
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
@@ -249,6 +249,44 @@ QA verdict: **ship with notes**. Notes: F3, and the target-GPU cost of the whole
 - These tests pass: crash ×6 (`test_crash_cause` included), scuffs, scuff cache, soft contact, manifests, customization, Workshop ×2, UI previews, engine smoke and night kit.
 - The generators pass `--check`.
 - In-game 1080p production-lighting bench views of the nose and the exhaust side were reviewed.
+
+## US-V17 · servos and control hardware
+
+2026-10-25. This was a hardware pass in a separate Blender CLI session, following the blender-skills hard-surface and qa-review routes. It used textured renders from below in flight, a side profile of the aileron linkage and maintenance views with the covering hidden.
+
+**Wing servos.** Both bottom views on Jensen sheet 2 show the same single Kraft servo on the centre line. It drives spanwise rods to a bellcrank on a 1/4 × 1/2 in hardwood mount at W3, and a short rod runs from there to a nylon aileron horn. The RCM 939 plan of the Jensen kit has the same central servo and bellcranks ([validation library](flight-dynamics/rc-validation-library-2026-10-18/ugly-stik/README.md)). US-V04 read the two views as two servos and put one at each root, driving the plan bellcrank ([controls note](ugly-stik-model-v4-controls.md)). A real servo could not fit that hybrid: the wing is about 33 mm deep at the station, and a standard servo is 36 mm tall, so its arm cannot reach the bellcrank plane inside the wing.
+
+The owner chose the two-servo version. It is built the way two-servo wings usually are, with no bellcrank:
+- **Servo:** one standard servo per semispan lies on its side on hardwood blocks. The blocks are glued to a 1/16 in plywood bottom hatch, 50 × 64 mm, film covered and held by four screws. The hatch sits just inboard of the horn. The shaft is 150 mm aft of the leading edge (chord fraction 0.49), aft of the spar.
+- **Linkage:** the arm leaves through a slot in the hatch. A 0.12 m pushrod runs aft to the plan's nylon horn, whose hole is 22.5 mm below the hinge line. The arm and the horn have the same radius, so the linkage is a parallelogram.
+- **Hatch fit:** the hatch is parallel to the secant of the lower skin and offset past the skin's sag. It stands 0.3–0.6 mm proud of the film and reads as flush from below.
+
+Stations and sizes are estimates.
+
+**Servos.** The 40 × 22 × 20 mm placeholder becomes a generic standard servo, with no make claimed:
+- a 40.5 × 20 × 36 mm case with bottom and top covers;
+- 54.5 mm tabs, 26.5 mm above the base, with grommets, eyelets and screws;
+- the output boss and spline 10 mm from one end;
+- a side label and a lead grommet.
+
+Each servo is now placed from its shaft, so the case hangs below its arm. The taller cases needed new seats in the fuselage. Rails respect the plan's 1/4 in sides and 3/32 in bottom.
+- **Elevator:** the servo lies on its side, on blocks glued to the left side.
+- **Rudder:** the servo stands on rails from the right side. Its arm is 10 mm higher than before, so the case clears the bottom.
+- **Throttle:** the servo stands on rails, output end forward, clear of F1. Its arm hole moves from 12 to 16 mm, so the case clears the 1/4 in nose side; the 12 mm arm put it 1 mm into the side, which the new fit check caught.
+
+**Arms and horns.**
+- **Arms:** each was a bar. Now it is a hub with a screw, a tapered blade, a rounded tip and two spare holes.
+- **Horns:** each has a base plate with two screws, a tapered web and spare holes. The tail horns are brass (owner photo C); the aileron horns are nylon, as on the plan.
+
+**Checks.**
+- `verify_controls.gd` passes 421/0. New checks: each aileron servo case lies between the wing skins; the fuselage servo cases and tabs lie inside the sides and above the floor; each aileron pushrod stays at least 1 mm below the lower skin over ±20°.
+- `verify_model.gd` passes 895/0. There are fewer surfaces to check after batching, and the winding check now covers the new plates.
+- 31 of 32 related tests pass: crash ×6, scuffs ×2, soft contact, gear ×2, prop strike ×2, blur, grain, night kit, engine smoke, smoke system, manifests, customization, liveries, catalogue, aircraft data, Workshop ×3, UI ×2, parked collision, contact contract and control presentation. `test_companions_profiles` fails on its existing `pilot.gd` pin, which is unrelated.
+- In-game 1080p production-light bench: `under`, `wing_under` and `stab_under` show the hatch, slot, arm, pushrod and horns.
+
+**Pitfall.** `SurfaceTool.append_from` keeps only indexed triangles once any merged part is indexed. The new plates were unindexed, so the batched horn webs and the arm blades vanished in game and in glTF. One horn had 84 positions and 36 indices. The plates are now indexed ([lesson](../LEARNINGS.md#2026-10-25--us-v17--surfacetool-merges-drop-unindexed-triangles-once-any-part-is-indexed)).
+
+**Cross-track.** `app/data/economy/catalog.json` still prices one `central_aileron_servo`, four physical servos in all. The model now has five. That catalogue belongs to the crash-economics owner.
 
 ## Limits and open findings
 
