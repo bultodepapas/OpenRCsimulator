@@ -14,7 +14,8 @@ Workshop session. If the engine falls back, Settings reports Standard.
 High enables short-range SSAO, four blended directional-shadow cascades in an
 8192-pixel atlas, solar-angle PCSS, and sky reflections during flowing time of day.
 The existing exposure, haze, aircraft, scenery population and simulation are
-retained. It does not enable temporal AA, motion blur, SSR, GI or volumetric fog.
+retained. High defaults to native rendering; FSR2 is now an explicit optional
+choice (below). It does not enable motion blur, SSR, GI or volumetric fog.
 The atlas and screen-space buffers cost additional GPU memory. Only the recorded
 Windows/NVIDIA host has been exercised; macOS, Linux and other GPUs remain open.
 
@@ -29,6 +30,34 @@ is unchanged. Full-feature builds, matching templates and lifecycle/platform
 qualification remain open. Do not suppress the pinned engine's warning.
 
 ## Explicit startup
+
+### FSR2 reconstruction (VQ-07d)
+
+In High, open **Settings → Graphics → 3D reconstruction**:
+
+- **Native** keeps the saved MSAA choice and full resolution (default).
+- **FSR2 · Native AA** reconstructs at full resolution for temporal antialiasing; it adds GPU work.
+- **FSR2 · Quality** renders the main 3D view at two-thirds of each output dimension
+  (1280×720 into a 1920×1080 output). UI and secondary viewports keep their resolution.
+
+Use **Keep changes** within 15 seconds; Revert, expiry and closing an unsaved preview
+restore the saved choice. FSR2 temporarily replaces MSAA; selecting Native restores
+it. The choice is saved, but Standard always uses native rendering. Enter High again
+to use the saved FSR2 choice. No GPU-brand whitelist is used.
+
+Direct technical launches ignore player display preferences. Set
+`OPENRC_RECONSTRUCTION=fsr2_quality` or `fsr2_native` with the High launcher for a
+reproducible candidate; `native` or an unknown value uses the native baseline.
+Home launches use saved preferences instead. Existing captures/frame reports record
+`scaling_3d_mode` and scale; `--frame-diagnostics` additionally records requested and
+effective reconstruction at start and report time. Compare each mode separately;
+the existing native campaign reducer does not automatically qualify mixed AA modes.
+
+The [RTX 3090 integration evidence](../../docs/research/visual-quality-implementation/VQ-07/fsr2-2026-10-24/README.md)
+owns the tested scope and remaining motion/performance gates. FSR2 availability does
+not establish a speedup, distant-aircraft readability or qualification on another GPU.
+
+### Launcher
 
 The Python standard-library launcher chooses the renderer before initialization
 and supplies the temporary `OPENRC_GRAPHICS_PROFILE` environment value:

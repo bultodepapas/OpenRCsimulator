@@ -41,6 +41,8 @@ func _run_checks() -> void:
 	var root_viewport: Viewport = get_root()
 	observer.start(root_viewport)
 	var started: Dictionary = observer.metadata()
+	_check("diagnostics record main-view reconstruction", started.reconstruction_at_start.scale == root_viewport.scaling_3d_scale
+		and started.reconstruction_at_start.msaa_3d == root_viewport.msaa_3d, str(started))
 	var expected_timing_available: bool = FrameDiagnostics._timing_unavailable_reason(DisplayServer.get_name(), OS.get_name(), started.rendering_method).is_empty()
 	_check("start records device identity and scope", started.enabled and started.started and started.cpu_model is String and started.rendering_method is String and started.render_cpu_scope is String, str(started))
 	_check("timing availability is explicit for this display and renderer", started.render_timing_available == expected_timing_available and started.viewport_measurement_enabled == expected_timing_available, str(started))
@@ -66,6 +68,8 @@ func _run_checks() -> void:
 	observer.stop()
 	await process_frame
 	var after_stop: Dictionary = observer.metadata()
+	_check("stopped diagnostics retain final reconstruction", not expected_timing_available or
+		after_stop.get("reconstruction_at_report", {}) == before_stop.get("reconstruction_at_report", {}), str(after_stop))
 	var stopped_sample: Dictionary = observer.sample()
 	_check("stop is idempotent and disables measurement", after_stop.stopped and not after_stop.active and not after_stop.viewport_measurement_enabled, str(after_stop))
 	_check("stopped samples do not poll again", after_stop.gpu_polls_including_warmup == before_stop.gpu_polls_including_warmup and after_stop.gpu_positive_polls == before_stop.gpu_positive_polls, str(after_stop))

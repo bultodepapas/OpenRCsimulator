@@ -7,8 +7,10 @@ config/name="OpenRC Simulator"
 ; UI-04a: numeric x.y.z only (Windows and macOS version fields take integers). The full identity (tag, commits,
 ; SHA, dirty) is res://build_info.json, written into the pack at export. export.sh checks the tag's x.y.z matches.
 config/version="0.1.8"
-; UI-01a: the entry decides Home (no user arguments) or the direct flight (any `--` argument: traces, captures...).
-run/main_scene="res://app_root.tscn"
+; The lightweight brand entrance hands off to app_root, which owns route selection.
+run/main_scene="res://ui/startup.tscn"
+boot_splash/show_image=false
+boot_splash/bg_color=Color(0.003, 0.006, 0.012, 1)
 config/features=PackedStringArray("4.7")
 
 [display]

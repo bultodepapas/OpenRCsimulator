@@ -86,6 +86,16 @@ func _run() -> void:
 		_check("MSAA mode %d is accepted" % msaa_3d, DisplayPreferences.validate(candidate).ok)
 
 	var invalid_window_mode: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+	_check("legacy reconstruction defaults to native", migrated.reconstruction == "native")
+	for mode: String in DisplayPreferences.RECONSTRUCTION_MODES:
+		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+		candidate.reconstruction = mode
+		_check("reconstruction round trip: " + mode, DisplayPreferences.save_to(PREFS, candidate) == OK
+			and DisplayPreferences.load_from(PREFS).reconstruction == mode)
+	for bad_mode: Variant in ["fsr3", "", 2, null]:
+		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+		candidate.reconstruction = bad_mode
+		_check("invalid reconstruction rejected: " + str(bad_mode), not DisplayPreferences.validate(candidate).ok)
 	invalid_window_mode.window_mode = "fullscreen"
 	_check("unsupported window mode remains rejected", not DisplayPreferences.validate(invalid_window_mode).ok)
 	var advanced: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
