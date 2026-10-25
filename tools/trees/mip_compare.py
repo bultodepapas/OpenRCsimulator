@@ -34,6 +34,8 @@ EXPECTED_MIP_TEXTURES = {
     "Leaf_Pine_C.png": "2",
 }
 BARK_TEXTURES = {"Bark_NormalTree.png", "Bark_NormalTree_Normal.png"}
+MAPLE_ALPHA = "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png"
+COVERAGE_OPTIONS = {"mipmaps/generate", "mipmaps/preserve_alpha_test_coverage", "mipmaps/alpha_test_threshold"}
 
 
 def sha256_file(path: Path) -> str:
@@ -53,7 +55,7 @@ def project_app(value: Path) -> Path:
     raise ValueError(f"project.godot not found under {value}")
 
 
-def parse_capture(path: Path) -> dict[str, Any]:
+def parse_capture(path: Path, *, coverage: bool = False) -> dict[str, Any]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
@@ -62,7 +64,26 @@ def parse_capture(path: Path) -> dict[str, Any]:
         raise ValueError(f"capture is incomplete or has an unknown format: {path}")
     if data.get("renderer") != "gl_compatibility":
         raise ValueError(f"native Compatibility backend required in {path}")
-    expected_count = len(ASSET_IDS) * len(DISTANCES_M) * len(VIEW_SIZES) * PHASE_COUNT
+    expected_keys = None
+    if coverage:
+        fixture = data.get("fixture", {})
+        sizes = fixture.get("view_sizes", [])
+        distances = fixture.get("distances_m", [])
+        if (fixture.get("asset_ids") != ["maple_tree"]
+                or len(distances) < 3 or len(distances) != len(set(distances))
+                or any(type(value) not in (int, float) or value <= 0 or not float(value).is_integer() for value in distances)
+                or fixture.get("phase_count") != PHASE_COUNT
+                or fixture.get("phase_offsets_pixels") != [phase / PHASE_COUNT for phase in range(PHASE_COUNT)]
+                or [1920, 1080] not in sizes
+                or len(sizes) != len({tuple(size) for size in sizes})
+                or any(len(size) != 2 or any(type(value) is not int or value <= 0 for value in size) for size in sizes)
+                or fixture.get("msaa") != "4x" or fixture.get("wind_enabled") is not False
+                or fixture.get("wind_vector_mps") != [0.0, 0.0, 0.0]
+                or fixture.get("wind_clock_seconds") != 0.0 or fixture.get("shadow_enabled") is not False):
+            raise ValueError("coverage fixture requires maple_tree, at least three positive integer distances, native 1080p, eight phases, 4x MSAA and frozen wind/shadows")
+        expected_keys = {("maple_tree", distance, width, height, phase)
+                         for distance in distances for width, height in sizes for phase in range(PHASE_COUNT)}
+    expected_count = len(expected_keys) if expected_keys is not None else len(ASSET_IDS) * len(DISTANCES_M) * len(VIEW_SIZES) * PHASE_COUNT
     captures = data.get("captures", [])
     if len(captures) != expected_count:
         raise ValueError(f"{path} has {len(captures)} frames; expected {expected_count}")
@@ -72,12 +93,145 @@ def parse_capture(path: Path) -> dict[str, Any]:
         if key in seen:
             raise ValueError(f"duplicate capture key in {path}: {key}")
         seen.add(key)
-        image_path = path.parent / str(record.get("filename", ""))
+        image_path = (path.parent / str(record.get("filename", ""))).resolve()
+        if coverage and not image_path.is_relative_to(path.parent.resolve()):
+            raise ValueError(f"raw frame escapes capture directory: {image_path}")
         if not image_path.is_file():
             raise ValueError(f"missing raw frame {image_path}")
         if sha256_file(image_path) != record.get("sha256"):
             raise ValueError(f"raw frame hash mismatch: {image_path}")
+        if coverage:
+            with Image.open(image_path) as image:
+                if image.size != (record["width"], record["height"]):
+                    raise ValueError(f"raw frame dimensions disagree with manifest: {image_path}")
+    if expected_keys is not None and seen != expected_keys:
+        raise ValueError("coverage capture frame keys do not match the complete declared fixture")
     return data
+
+
+def coverage_config(text: str) -> tuple[dict[str, str], str]:
+    """Separate only the three permitted importer changes from all other text."""
+    options: dict[str, str] = {}
+    unchanged: list[str] = []
+    for line in text.splitlines():
+        key, separator, value = line.partition("=")
+        if separator and key in COVERAGE_OPTIONS:
+            if key in options:
+                raise ValueError(f"duplicate importer option: {key}")
+            options[key] = value.strip()
+        elif line.strip():
+            unchanged.append(line)
+    return options, "\n".join(unchanged)
+
+
+def validate_coverage_triplet(captures: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    baseline = captures["baseline"]
+    if not baseline.get("identity") or set(baseline.get("assets", {})) != {"maple_tree"}:
+        raise ValueError("coverage capture is missing runtime or maple source identities")
+    if MAPLE_ALPHA not in baseline.get("textures", {}):
+        raise ValueError("maple leaf alpha texture was not inventoried")
+    surfaces = baseline["assets"]["maple_tree"].get("surfaces", [])
+    leaves = [surface for surface in surfaces if surface.get("albedo_texture") == MAPLE_ALPHA]
+    if not leaves or any(surface.get("alpha_scissor_threshold") != 0.5 for surface in leaves):
+        raise ValueError("maple leaf material must retain its authored 0.5 alpha cutoff")
+    for field in ("identity", "assets", "fixture", "godot", "renderer", "adapter", "api", "mip_scope"):
+        if field not in baseline or any(data.get(field) != baseline[field] for data in captures.values()):
+            raise ValueError(f"coverage captures differ or lack {field}")
+    if not str(baseline["godot"]).startswith("4.8"):
+        raise ValueError("coverage capture requires the adopted Godot 4.8 engine")
+    audit: dict[str, Any] = {}
+    base_textures = baseline["textures"]
+    for label, data in captures.items():
+        if set(data.get("textures", {})) != set(base_textures):
+            raise ValueError("coverage source texture inventory changed")
+        for path, texture in data["textures"].items():
+            original = base_textures[path]
+            if path != MAPLE_ALPHA:
+                if texture != original:
+                    raise ValueError(f"unrelated texture/import/decoded data changed: {path}")
+                continue
+            for field in ("basename", "source_png_sha256", "import_path", "texture_class", "image_size", "image_format", "used_by", "decoded_image_base_level_sha256"):
+                if field not in original or texture.get(field) != original[field]:
+                    raise ValueError(f"maple leaf source identity changed or missing: {field}")
+            allowed_payload_changes = {"import_config_text", "import_sha256", "decoded_image_has_mipmaps",
+                                       "decoded_image_mipmap_count", "decoded_image_data_bytes", "decoded_image_data_sha256"}
+            if ({key: value for key, value in texture.items() if key not in allowed_payload_changes}
+                    != {key: value for key, value in original.items() if key not in allowed_payload_changes}):
+                raise ValueError("maple leaf metadata changed outside the importer payload")
+            if not re.fullmatch(r"[0-9a-f]{64}", str(texture["source_png_sha256"])):
+                raise ValueError("maple leaf source hash is missing or invalid")
+            options, remainder = coverage_config(texture.get("import_config_text", ""))
+            _, base_remainder = coverage_config(original.get("import_config_text", ""))
+            if not remainder or remainder != base_remainder:
+                raise ValueError("maple leaf import changed outside the three coverage options")
+            expected_mips = label != "baseline"
+            expected_preserve = label == "candidate"
+            if (options.get("mipmaps/generate") != str(expected_mips).lower()
+                    or options.get("mipmaps/preserve_alpha_test_coverage", "false") != str(expected_preserve).lower()
+                    or float(options.get("mipmaps/alpha_test_threshold", "0.5")) != 0.5):
+                raise ValueError(f"incorrect maple leaf mip/coverage/threshold policy: {label}")
+            count = texture.get("decoded_image_mipmap_count", -1)
+            expected_count = max(texture["image_size"]).bit_length() - 1 if expected_mips else 0
+            if (texture.get("decoded_image_has_mipmaps") is not expected_mips
+                    or not isinstance(count, int) or count != expected_count):
+                raise ValueError(f"decoded mip chain disagrees with coverage policy: {label}")
+            audit[label] = texture
+    if audit["ordinary"]["decoded_image_mipmap_count"] != audit["candidate"]["decoded_image_mipmap_count"]:
+        raise ValueError("ordinary and coverage mip chain lengths differ")
+    base_records = {capture_key(row): row for row in baseline["captures"]}
+    for label, data in captures.items():
+        rows = {capture_key(row): row for row in data["captures"]}
+        if set(rows) != set(base_records):
+            raise ValueError("coverage frame keys differ")
+        for key, record in rows.items():
+            if ({name: value for name, value in record.items() if name not in {"filename", "sha256"}}
+                    != {name: value for name, value in base_records[key].items() if name not in {"filename", "sha256"}}):
+                raise ValueError(f"camera/subpixel metadata changed: {label}, {key}")
+    return audit
+
+
+def compare_coverage(directories: dict[str, Path], out_dir: Path) -> Path:
+    captures = {label: parse_capture(directory / "report.json", coverage=True)
+                for label, directory in directories.items()}
+    audit = validate_coverage_triplet(captures)
+    if out_dir.exists() and any(out_dir.iterdir()):
+        raise ValueError(f"output must be new or empty: {out_dir}")
+    for directory in directories.values():
+        if out_dir.resolve().is_relative_to(directory.resolve()):
+            raise ValueError("analysis output must be outside raw capture directories")
+    comparisons = {}
+    for label in ("ordinary", "candidate"):
+        groups = []
+        for distance in captures["baseline"]["fixture"]["distances_m"]:
+            for width, height in captures["baseline"]["fixture"]["view_sizes"]:
+                rows = {name: [row for row in data["captures"]
+                               if capture_key(row)[1:4] == (distance, width, height)]
+                        for name, data in captures.items()}
+                group = analyze_group(rows["baseline"], rows[label], directories["baseline"], directories[label])
+                if group["baseline"]["phase_coverage_min_pixels"] == 0 or group["candidate"]["phase_coverage_min_pixels"] == 0:
+                    raise ValueError("coverage frame contains no detectable tree silhouette")
+                groups.append(group)
+        comparisons[label] = groups
+    result = {
+        "format": "openrc-maple-alpha-coverage-comparison v1", "complete": True,
+        "scope": "Native fixed-camera maple near/mid/far subpixel sampling comparison; no frame-time or flight evidence.",
+        "limitations": "Coverage and mask transitions describe raster sampling. They do not establish visual acceptance, temporal shimmer reduction, FPS, or pilot readability; review native stills and normal-speed motion separately.",
+        "mask": {
+            "method": "RGB max-channel distance from top-left background sample",
+            "background_corner_tolerance_channel_levels": 2,
+            "silhouette_delta_threshold_channel_levels": MASK_DELTA_THRESHOLD,
+        },
+        "inputs": {label: {"directory": str(directory.resolve()), "report_sha256": sha256_file(directory / "report.json")}
+                   for label, directory in directories.items()},
+        "fixture": captures["baseline"]["fixture"], "source_identities": captures["baseline"]["identity"],
+        "assets": captures["baseline"]["assets"], "texture_import_audit": audit,
+        "renderer": {key: captures["baseline"][key] for key in ("godot", "renderer", "adapter", "api")},
+        "comparisons_against_unmipped": comparisons,
+    }
+    out_dir.mkdir(parents=True, exist_ok=True)
+    path = out_dir / "comparison.json"
+    path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return path
 
 
 def capture_key(record: dict[str, Any]) -> tuple[str, int, int, int, int]:
@@ -315,21 +469,38 @@ def run_capture(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--godot", type=Path, required=True, help="native Godot 4.7.2 executable")
-    parser.add_argument("--baseline", type=Path, required=True, help="frozen no-mipmap app or parent directory")
-    parser.add_argument("--candidate", type=Path, required=True, help="frozen explicit-mipmap app or parent directory")
+    parser.add_argument("--godot", type=Path, help="native pinned Godot executable")
+    parser.add_argument("--baseline", type=Path, help="frozen no-mipmap app or parent directory")
+    parser.add_argument("--candidate", type=Path, help="frozen explicit-mipmap app or parent directory")
+    parser.add_argument("--coverage-baseline", type=Path, help="existing unmipped maple capture directory")
+    parser.add_argument("--coverage-ordinary", type=Path, help="existing ordinary-mip maple capture directory")
+    parser.add_argument("--coverage-candidate", type=Path, help="existing coverage-preserved maple capture directory")
     parser.add_argument("--out", type=Path, required=True, help="new paired-capture directory")
     parser.add_argument(
         "--mip-scope", choices=("all", "bark"), default="all",
         help="require mip chains on all four tree maps, or only bark albedo/normal maps",
     )
     parser.add_argument("--timeout-s", type=int, default=900, help="per-project native capture timeout")
-    return parser.parse_args()
+    args = parser.parse_args()
+    coverage_paths = (args.coverage_baseline, args.coverage_ordinary, args.coverage_candidate)
+    if any(path is not None for path in coverage_paths):
+        if not all(path is not None for path in coverage_paths):
+            parser.error("coverage analysis requires --coverage-baseline, --coverage-ordinary and --coverage-candidate")
+        if any(path is not None for path in (args.godot, args.baseline, args.candidate)):
+            parser.error("coverage analysis cannot be combined with native capture arguments")
+    elif not all(path is not None for path in (args.godot, args.baseline, args.candidate)):
+        parser.error("native capture requires --godot, --baseline and --candidate")
+    return args
 
 
 def main() -> int:
     args = parse_args()
     try:
+        if args.coverage_baseline is not None:
+            path = compare_coverage({"baseline": args.coverage_baseline, "ordinary": args.coverage_ordinary,
+                                     "candidate": args.coverage_candidate}, args.out)
+            print(f"COVERAGE COMPARISON COMPLETE: {path}", flush=True)
+            return 0
         godot = args.godot.resolve(strict=True)
         if not godot.is_file():
             raise ValueError(f"Godot executable is not a file: {godot}")

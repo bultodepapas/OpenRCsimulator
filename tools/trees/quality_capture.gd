@@ -166,6 +166,24 @@ func _field() -> bool:
 	views.append({id = "forest_overview", eye = Vector3(0, 1900, 1250), at = Vector3(0, 0, -100), fov = 70.0})
 	# Fixed camera at the unchanged shade-trees:06 placement; identical for old and new sources.
 	views.append({id = "oak_close", eye = Vector3(27, 7, 49), at = Vector3(10.5, 5, 32), fov = 42.0})
+	if args.has("views"):
+		# L6c map-expansion cameras, now through the exact-size SubViewport.
+		views.append({id = "farm_maples", eye = Frames.ned_to_render([520.0, 340.0, -8.0]),
+			at = Frames.ned_to_render([568.0, 296.0, -5.0]), fov = 50.0})
+		views.append({id = "forest_maple", eye = Frames.ned_to_render([-455.0, -737.0, -4.0]),
+			at = Frames.ned_to_render([-480.0, -770.0, -5.0]), fov = 45.0})
+		var selected: Array[Dictionary] = []
+		for requested in str(args.views).split(",", false):
+			var found := false
+			for view in views:
+				if view.id == requested:
+					selected.append(view)
+					found = true
+			if not found:
+				return false
+		if selected.is_empty():
+			return false
+		views = selected
 	return true
 
 

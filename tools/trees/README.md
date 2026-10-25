@@ -132,6 +132,22 @@ The two shared bark maps use lossless mip chains; the normal map explicitly enab
 
 Actual flight throughput and pilot readability remain separate. Use the existing `--frametimes` and [flight logging](../../docs/FLIGHT-LOGGING.md) workflows; headless numerical replay does not replay a camera through a changed forest.
 
+## Maple alpha-coverage filtering (GDU-11a / L6)
+
+Godot 4.8's coverage-preserving mipmaps apply only to `maple_leaves_basecolor.png`, with import threshold 0.5 and the unchanged material cutoff 0.5. This replaces the maple's unmipped workaround; it does not change the separate Quaternius policy above or LandscapeLab's coarse-mip clamp. [Evidence and limitations](../../docs/research/engine-upgrade/GDU-11/README.md).
+
+Create/import three frozen app copies with identical source: unmipped baseline, ordinary mipmaps, and coverage-preserving mipmaps. Normalize the same engine's importer defaults in all copies. Run each **sequentially** with the pinned native engine:
+
+```powershell
+& $Godot --path $FrozenApp --rendering-driver opengl3 --audio-driver Dummy `
+  --script "$PWD/tools/trees/mip_capture.gd" -- --mip-scope=coverage `
+  --ids=maple_tree --sizes=1920x1080,2560x1440 --distances=32,64,128,256 --out=$NewCapture
+python tools/trees/mip_compare.py --coverage-baseline $BaselineCapture `
+  --coverage-ordinary $OrdinaryCapture --coverage-candidate $CandidateCapture --out $NewComparison
+```
+
+The probe defaults still reproduce the legacy fixture. Coverage analysis requires actual 1080p PNGs, all eight subpixel phases, identical source/material/fixture/adapter identities, and only the three permitted leaf import settings to vary. It verifies imported mip chains and records payload sizes/hashes. Metrics describe binary silhouette sampling, not FPS or pilot acceptance. Review the existing `quality_capture.gd --mode=field --motion=oak-approach --frames=192 --width=1920 --height=1080 --wind=off --wind_mps=0` sequence as well. `python tools/trees/test_mip_compare.py` exercises missing/tampered captures and unrelated source/import changes.
+
 ## Native flight and forest review
 
 The [completion evidence](../../docs/research/visual-quality-implementation/L6c/tree-completion/README.md) separates active-flight timing, offline camera tracks, aircraft contrast measurements and exact numerical replay. Use the direct native Godot executable on Windows; its console wrapper may return before the child finishes.

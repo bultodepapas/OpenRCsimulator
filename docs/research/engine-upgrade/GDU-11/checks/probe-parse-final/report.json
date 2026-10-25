@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c65c5445-c00b-4cbc-b01c-a61f34c2277a",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tools/trees/mip_capture.gd",
+    "--",
+    "--check-only",
+    "--mip-scope=coverage",
+    "--ids=maple_tree",
+    "--sizes=1920x1080,2560x1440",
+    "--distances=32,64,128,256"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T19:10:11.386258+00:00",
+  "label": "godot",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\checks\\probe-parse-final\\godot-ta2ssw63\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\checks\\probe-parse-final\\godot-ta2ssw63\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.297,
+  "log_bytes": 99,
+  "log_sha256": "2838a28a9b743ef9cbe05c3c6dbb14644ed387742f0d37be3b63c0510e41f13d"
+}

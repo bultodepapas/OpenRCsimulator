@@ -1,0 +1,1879 @@
+{
+  "assets": {
+    "maple_tree": {
+      "catalog_source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+      "height_m": 18.327101,
+      "parts": 1,
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf",
+      "scene_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+      "surfaces": [
+        {
+          "albedo_texture": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_basecolor.jpg",
+          "alpha_scissor_threshold": 0.5,
+          "cull_mode": 0,
+          "material_class": "StandardMaterial3D",
+          "material_resource": "res://assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf::StandardMaterial3D_mrj8q",
+          "normal_texture": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_normal.png",
+          "part_index": 0,
+          "surface_index": 0,
+          "transparency": 0
+        },
+        {
+          "albedo_texture": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png",
+          "alpha_scissor_threshold": 0.5,
+          "cull_mode": 2,
+          "material_class": "StandardMaterial3D",
+          "material_resource": "res://assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf::StandardMaterial3D_xn2h0",
+          "normal_texture": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_normal.png",
+          "part_index": 0,
+          "surface_index": 1,
+          "transparency": 2
+        }
+      ],
+      "triangles": 5541
+    }
+  },
+  "comparisons_against_unmipped": {
+    "candidate": [
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.06487804878048781,
+          "adjacent_phase_mask_transition_mean": 0.06382216251351489,
+          "frames": 8,
+          "mean_area_pixels": 111071.875,
+          "mean_coverage_fraction": 0.053564754533179014,
+          "mean_coverage_percent": 5.356475453317901,
+          "phase_coverage_max_pixels": 111120,
+          "phase_coverage_min_pixels": 110965,
+          "phase_coverage_std_percent_points": 0.002138758117560971,
+          "phase_coverage_std_pixels": 44.349288325744304,
+          "pixel_count": 2073600
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.032204640780544004,
+          "adjacent_phase_mask_transition_mean": 0.031361299874852346,
+          "frames": 8,
+          "mean_area_pixels": 109269.0,
+          "mean_coverage_fraction": 0.0526953125,
+          "mean_coverage_percent": 5.26953125,
+          "phase_coverage_max_pixels": 109359,
+          "phase_coverage_min_pixels": 109186,
+          "phase_coverage_std_percent_points": 0.0028378248330342927,
+          "phase_coverage_std_pixels": 58.84513573779909,
+          "pixel_count": 2073600
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.03246086263866254,
+          "mean_coverage_delta_percent_points": -0.08694420331790109,
+          "mean_coverage_delta_pixels": -1802.875,
+          "mean_mask_iou": 0.8994760849068053,
+          "phase_coverage_std_delta_percent_points": 0.0006990667154733216
+        },
+        "distance_m": 32,
+        "height": 1080,
+        "phases": [
+          {
+            "baseline_area_pixels": 111120,
+            "candidate_area_pixels": 109278,
+            "coverage_delta_percent_points": -0.08883101851851852,
+            "coverage_delta_pixels": -1842,
+            "mask_iou": 0.9001301825141605,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 111069,
+            "candidate_area_pixels": 109325,
+            "coverage_delta_percent_points": -0.08410493827160494,
+            "coverage_delta_pixels": -1744,
+            "mask_iou": 0.8995716366582488,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 111083,
+            "candidate_area_pixels": 109359,
+            "coverage_delta_percent_points": -0.08314043209876543,
+            "coverage_delta_pixels": -1724,
+            "mask_iou": 0.9003456866751148,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 111114,
+            "candidate_area_pixels": 109267,
+            "coverage_delta_percent_points": -0.08907214506172839,
+            "coverage_delta_pixels": -1847,
+            "mask_iou": 0.8989522119013562,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 111068,
+            "candidate_area_pixels": 109315,
+            "coverage_delta_percent_points": -0.08453896604938271,
+            "coverage_delta_pixels": -1753,
+            "mask_iou": 0.8987731118501542,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 110965,
+            "candidate_area_pixels": 109186,
+            "coverage_delta_percent_points": -0.08579282407407407,
+            "coverage_delta_pixels": -1779,
+            "mask_iou": 0.8986718413109098,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 111078,
+            "candidate_area_pixels": 109229,
+            "coverage_delta_percent_points": -0.08916859567901235,
+            "coverage_delta_pixels": -1849,
+            "mask_iou": 0.899116417395802,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 111078,
+            "candidate_area_pixels": 109193,
+            "coverage_delta_percent_points": -0.09090470679012345,
+            "coverage_delta_pixels": -1885,
+            "mask_iou": 0.900247590948696,
+            "phase_index": 7
+          }
+        ],
+        "width": 1920
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.05221904880168881,
+          "adjacent_phase_mask_transition_mean": 0.05134044407128261,
+          "frames": 8,
+          "mean_area_pixels": 195947.0,
+          "mean_coverage_fraction": 0.05315402560763889,
+          "mean_coverage_percent": 5.315402560763889,
+          "phase_coverage_max_pixels": 196083,
+          "phase_coverage_min_pixels": 195812,
+          "phase_coverage_std_percent_points": 0.0022536016635066425,
+          "phase_coverage_std_pixels": 83.07677172350886,
+          "pixel_count": 3686400
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.026404170849917693,
+          "adjacent_phase_mask_transition_mean": 0.026178645622449963,
+          "frames": 8,
+          "mean_area_pixels": 193665.125,
+          "mean_coverage_fraction": 0.052535027398003475,
+          "mean_coverage_percent": 5.253502739800347,
+          "phase_coverage_max_pixels": 193760,
+          "phase_coverage_min_pixels": 193618,
+          "phase_coverage_std_percent_points": 0.0013650866249839023,
+          "phase_coverage_std_pixels": 50.322553343406575,
+          "pixel_count": 3686400
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.025161798448832647,
+          "mean_coverage_delta_percent_points": -0.06189982096354196,
+          "mean_coverage_delta_pixels": -2281.875,
+          "mean_mask_iou": 0.9173613221795063,
+          "phase_coverage_std_delta_percent_points": -0.0008885150385227402
+        },
+        "distance_m": 32,
+        "height": 1440,
+        "phases": [
+          {
+            "baseline_area_pixels": 196054,
+            "candidate_area_pixels": 193684,
+            "coverage_delta_percent_points": -0.06429036458333333,
+            "coverage_delta_pixels": -2370,
+            "mask_iou": 0.9170962537383913,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 196083,
+            "candidate_area_pixels": 193730,
+            "coverage_delta_percent_points": -0.06382921006944445,
+            "coverage_delta_pixels": -2353,
+            "mask_iou": 0.9174934700161835,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 195958,
+            "candidate_area_pixels": 193634,
+            "coverage_delta_percent_points": -0.06304253472222222,
+            "coverage_delta_pixels": -2324,
+            "mask_iou": 0.9175288176636774,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 195926,
+            "candidate_area_pixels": 193623,
+            "coverage_delta_percent_points": -0.06247287326388889,
+            "coverage_delta_pixels": -2303,
+            "mask_iou": 0.9170812848488428,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 195812,
+            "candidate_area_pixels": 193618,
+            "coverage_delta_percent_points": -0.059516059027777776,
+            "coverage_delta_pixels": -2194,
+            "mask_iou": 0.9176470008912876,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 195880,
+            "candidate_area_pixels": 193760,
+            "coverage_delta_percent_points": -0.05750868055555555,
+            "coverage_delta_pixels": -2120,
+            "mask_iou": 0.9178500233800113,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 195959,
+            "candidate_area_pixels": 193632,
+            "coverage_delta_percent_points": -0.06312391493055555,
+            "coverage_delta_pixels": -2327,
+            "mask_iou": 0.9169955223146189,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 195904,
+            "candidate_area_pixels": 193640,
+            "coverage_delta_percent_points": -0.06141493055555555,
+            "coverage_delta_pixels": -2264,
+            "mask_iou": 0.917198204583038,
+            "phase_index": 7
+          }
+        ],
+        "width": 2560
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.09903733437533302,
+          "adjacent_phase_mask_transition_mean": 0.09728287815171348,
+          "frames": 8,
+          "mean_area_pixels": 26767.5,
+          "mean_coverage_fraction": 0.01290870949074074,
+          "mean_coverage_percent": 1.2908709490740742,
+          "phase_coverage_max_pixels": 26828,
+          "phase_coverage_min_pixels": 26715,
+          "phase_coverage_std_percent_points": 0.0016297015093282988,
+          "phase_coverage_std_pixels": 33.793490497431605,
+          "pixel_count": 2073600
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.04552864020622465,
+          "adjacent_phase_mask_transition_mean": 0.04389624895832671,
+          "frames": 8,
+          "mean_area_pixels": 25815.5,
+          "mean_coverage_fraction": 0.012449604552469136,
+          "mean_coverage_percent": 1.2449604552469136,
+          "phase_coverage_max_pixels": 25850,
+          "phase_coverage_min_pixels": 25762,
+          "phase_coverage_std_percent_points": 0.001370608747214729,
+          "phase_coverage_std_pixels": 28.420942982244625,
+          "pixel_count": 2073600
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.05338662919338677,
+          "mean_coverage_delta_percent_points": -0.045910493827160614,
+          "mean_coverage_delta_pixels": -952.0,
+          "mean_mask_iou": 0.8442175695408323,
+          "phase_coverage_std_delta_percent_points": -0.0002590927621135698
+        },
+        "distance_m": 64,
+        "height": 1080,
+        "phases": [
+          {
+            "baseline_area_pixels": 26794,
+            "candidate_area_pixels": 25762,
+            "coverage_delta_percent_points": -0.04976851851851852,
+            "coverage_delta_pixels": -1032,
+            "mask_iou": 0.8435526869650625,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 26828,
+            "candidate_area_pixels": 25795,
+            "coverage_delta_percent_points": -0.049816743827160496,
+            "coverage_delta_pixels": -1033,
+            "mask_iou": 0.8425420168067227,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 26778,
+            "candidate_area_pixels": 25850,
+            "coverage_delta_percent_points": -0.044753086419753084,
+            "coverage_delta_pixels": -928,
+            "mask_iou": 0.8441376410400169,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 26736,
+            "candidate_area_pixels": 25847,
+            "coverage_delta_percent_points": -0.04287229938271605,
+            "coverage_delta_pixels": -889,
+            "mask_iou": 0.8456651456651456,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 26715,
+            "candidate_area_pixels": 25809,
+            "coverage_delta_percent_points": -0.04369212962962963,
+            "coverage_delta_pixels": -906,
+            "mask_iou": 0.8448893572181243,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 26746,
+            "candidate_area_pixels": 25819,
+            "coverage_delta_percent_points": -0.04470486111111111,
+            "coverage_delta_pixels": -927,
+            "mask_iou": 0.8446448624368332,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 26757,
+            "candidate_area_pixels": 25842,
+            "coverage_delta_percent_points": -0.044126157407407406,
+            "coverage_delta_pixels": -915,
+            "mask_iou": 0.8431860391772086,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 26786,
+            "candidate_area_pixels": 25800,
+            "coverage_delta_percent_points": -0.04755015432098766,
+            "coverage_delta_pixels": -986,
+            "mask_iou": 0.8451228070175438,
+            "phase_index": 7
+          }
+        ],
+        "width": 1920
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.0836927857391091,
+          "adjacent_phase_mask_transition_mean": 0.08257273116818296,
+          "frames": 8,
+          "mean_area_pixels": 46919.375,
+          "mean_coverage_fraction": 0.01272769504123264,
+          "mean_coverage_percent": 1.2727695041232638,
+          "phase_coverage_max_pixels": 47025,
+          "phase_coverage_min_pixels": 46841,
+          "phase_coverage_std_percent_points": 0.001419232459008043,
+          "phase_coverage_std_pixels": 52.318585368872505,
+          "pixel_count": 3686400
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.03968901679481122,
+          "adjacent_phase_mask_transition_mean": 0.03862310347064476,
+          "frames": 8,
+          "mean_area_pixels": 45653.625,
+          "mean_coverage_fraction": 0.01238433837890625,
+          "mean_coverage_percent": 1.238433837890625,
+          "phase_coverage_max_pixels": 45671,
+          "phase_coverage_min_pixels": 45621,
+          "phase_coverage_std_percent_points": 0.00039866555104683737,
+          "phase_coverage_std_pixels": 14.696406873790613,
+          "pixel_count": 3686400
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.043949627697538206,
+          "mean_coverage_delta_percent_points": -0.03433566623263884,
+          "mean_coverage_delta_pixels": -1265.75,
+          "mean_mask_iou": 0.8670733683936246,
+          "phase_coverage_std_delta_percent_points": -0.0010205669079612057
+        },
+        "distance_m": 64,
+        "height": 1440,
+        "phases": [
+          {
+            "baseline_area_pixels": 46899,
+            "candidate_area_pixels": 45654,
+            "coverage_delta_percent_points": -0.033772786458333336,
+            "coverage_delta_pixels": -1245,
+            "mask_iou": 0.866928895612708,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 46841,
+            "candidate_area_pixels": 45621,
+            "coverage_delta_percent_points": -0.03309461805555555,
+            "coverage_delta_pixels": -1220,
+            "mask_iou": 0.8659966499162479,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 46923,
+            "candidate_area_pixels": 45655,
+            "coverage_delta_percent_points": -0.03439670138888889,
+            "coverage_delta_pixels": -1268,
+            "mask_iou": 0.8663038000201593,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 47025,
+            "candidate_area_pixels": 45671,
+            "coverage_delta_percent_points": -0.03672960069444445,
+            "coverage_delta_pixels": -1354,
+            "mask_iou": 0.867365028203062,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 46946,
+            "candidate_area_pixels": 45651,
+            "coverage_delta_percent_points": -0.03512912326388889,
+            "coverage_delta_pixels": -1295,
+            "mask_iou": 0.8678541170775003,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 46912,
+            "candidate_area_pixels": 45648,
+            "coverage_delta_percent_points": -0.03428819444444445,
+            "coverage_delta_pixels": -1264,
+            "mask_iou": 0.8668441540106089,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 46943,
+            "candidate_area_pixels": 45671,
+            "coverage_delta_percent_points": -0.034505208333333336,
+            "coverage_delta_pixels": -1272,
+            "mask_iou": 0.867782595543007,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 46866,
+            "candidate_area_pixels": 45658,
+            "coverage_delta_percent_points": -0.032769097222222224,
+            "coverage_delta_pixels": -1208,
+            "mask_iou": 0.8675117067657032,
+            "phase_index": 7
+          }
+        ],
+        "width": 2560
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.1414372061786434,
+          "adjacent_phase_mask_transition_mean": 0.13426968686728624,
+          "frames": 8,
+          "mean_area_pixels": 6894.125,
+          "mean_coverage_fraction": 0.0033247130594135804,
+          "mean_coverage_percent": 0.33247130594135804,
+          "phase_coverage_max_pixels": 6921,
+          "phase_coverage_min_pixels": 6860,
+          "phase_coverage_std_percent_points": 0.0010765800608459719,
+          "phase_coverage_std_pixels": 22.323964141702074,
+          "pixel_count": 2073600
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.05962622367250074,
+          "adjacent_phase_mask_transition_mean": 0.0556070909232111,
+          "frames": 8,
+          "mean_area_pixels": 6532.625,
+          "mean_coverage_fraction": 0.0031503785686728394,
+          "mean_coverage_percent": 0.31503785686728397,
+          "phase_coverage_max_pixels": 6556,
+          "phase_coverage_min_pixels": 6507,
+          "phase_coverage_std_percent_points": 0.0007058616617833849,
+          "phase_coverage_std_pixels": 14.63674741874027,
+          "pixel_count": 2073600
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.07866259594407514,
+          "mean_coverage_delta_percent_points": -0.01743344907407407,
+          "mean_coverage_delta_pixels": -361.5,
+          "mean_mask_iou": 0.794994109635085,
+          "phase_coverage_std_delta_percent_points": -0.00037071839906258693
+        },
+        "distance_m": 128,
+        "height": 1080,
+        "phases": [
+          {
+            "baseline_area_pixels": 6860,
+            "candidate_area_pixels": 6533,
+            "coverage_delta_percent_points": -0.015769675925925927,
+            "coverage_delta_pixels": -327,
+            "mask_iou": 0.7962714592274678,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 6916,
+            "candidate_area_pixels": 6527,
+            "coverage_delta_percent_points": -0.018759645061728395,
+            "coverage_delta_pixels": -389,
+            "mask_iou": 0.7993575157274796,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 6921,
+            "candidate_area_pixels": 6540,
+            "coverage_delta_percent_points": -0.01837384259259259,
+            "coverage_delta_pixels": -381,
+            "mask_iou": 0.7998395507420778,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 6880,
+            "candidate_area_pixels": 6507,
+            "coverage_delta_percent_points": -0.01798804012345679,
+            "coverage_delta_pixels": -373,
+            "mask_iou": 0.7959484840354172,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 6871,
+            "candidate_area_pixels": 6516,
+            "coverage_delta_percent_points": -0.017119984567901234,
+            "coverage_delta_pixels": -355,
+            "mask_iou": 0.790423966831617,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 6915,
+            "candidate_area_pixels": 6539,
+            "coverage_delta_percent_points": -0.018132716049382717,
+            "coverage_delta_pixels": -376,
+            "mask_iou": 0.7926715522984676,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 6910,
+            "candidate_area_pixels": 6543,
+            "coverage_delta_percent_points": -0.017698688271604937,
+            "coverage_delta_pixels": -367,
+            "mask_iou": 0.7920607433062475,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 6880,
+            "candidate_area_pixels": 6556,
+            "coverage_delta_percent_points": -0.015625,
+            "coverage_delta_pixels": -324,
+            "mask_iou": 0.7933796049119061,
+            "phase_index": 7
+          }
+        ],
+        "width": 1920
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.12385500665466218,
+          "adjacent_phase_mask_transition_mean": 0.11787076682926788,
+          "frames": 8,
+          "mean_area_pixels": 12009.75,
+          "mean_coverage_fraction": 0.0032578531901041666,
+          "mean_coverage_percent": 0.3257853190104167,
+          "phase_coverage_max_pixels": 12040,
+          "phase_coverage_min_pixels": 11962,
+          "phase_coverage_std_percent_points": 0.0006345496756768969,
+          "phase_coverage_std_pixels": 23.39203924415313,
+          "pixel_count": 3686400
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.05226748654880861,
+          "adjacent_phase_mask_transition_mean": 0.049834202480460124,
+          "frames": 8,
+          "mean_area_pixels": 11390.25,
+          "mean_coverage_fraction": 0.0030898030598958334,
+          "mean_coverage_percent": 0.3089803059895833,
+          "phase_coverage_max_pixels": 11419,
+          "phase_coverage_min_pixels": 11359,
+          "phase_coverage_std_percent_points": 0.0005497348693306084,
+          "phase_coverage_std_pixels": 20.26542622300355,
+          "pixel_count": 3686400
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.06803656434880775,
+          "mean_coverage_delta_percent_points": -0.01680501302083337,
+          "mean_coverage_delta_pixels": -619.5,
+          "mean_mask_iou": 0.8135495763192835,
+          "phase_coverage_std_delta_percent_points": -8.481480634628846e-05
+        },
+        "distance_m": 128,
+        "height": 1440,
+        "phases": [
+          {
+            "baseline_area_pixels": 12012,
+            "candidate_area_pixels": 11419,
+            "coverage_delta_percent_points": -0.016086154513888888,
+            "coverage_delta_pixels": -593,
+            "mask_iou": 0.8156528477334366,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 12024,
+            "candidate_area_pixels": 11372,
+            "coverage_delta_percent_points": -0.017686631944444444,
+            "coverage_delta_pixels": -652,
+            "mask_iou": 0.8129407206509105,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 12000,
+            "candidate_area_pixels": 11392,
+            "coverage_delta_percent_points": -0.016493055555555556,
+            "coverage_delta_pixels": -608,
+            "mask_iou": 0.8150217256362507,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 12001,
+            "candidate_area_pixels": 11359,
+            "coverage_delta_percent_points": -0.017415364583333332,
+            "coverage_delta_pixels": -642,
+            "mask_iou": 0.8138054196754406,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 12037,
+            "candidate_area_pixels": 11367,
+            "coverage_delta_percent_points": -0.018174913194444444,
+            "coverage_delta_pixels": -670,
+            "mask_iou": 0.8135606354126308,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 11962,
+            "candidate_area_pixels": 11403,
+            "coverage_delta_percent_points": -0.015163845486111112,
+            "coverage_delta_pixels": -559,
+            "mask_iou": 0.8103982643731598,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 12002,
+            "candidate_area_pixels": 11403,
+            "coverage_delta_percent_points": -0.016248914930555556,
+            "coverage_delta_pixels": -599,
+            "mask_iou": 0.812374167570079,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 12040,
+            "candidate_area_pixels": 11407,
+            "coverage_delta_percent_points": -0.017171223958333332,
+            "coverage_delta_pixels": -633,
+            "mask_iou": 0.8146428295023604,
+            "phase_index": 7
+          }
+        ],
+        "width": 2560
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.17733990147783252,
+          "adjacent_phase_mask_transition_mean": 0.16761888902044758,
+          "frames": 8,
+          "mean_area_pixels": 1860.0,
+          "mean_coverage_fraction": 0.0008969907407407407,
+          "mean_coverage_percent": 0.08969907407407407,
+          "phase_coverage_max_pixels": 1888,
+          "phase_coverage_min_pixels": 1821,
+          "phase_coverage_std_percent_points": 0.0009379171652573651,
+          "phase_coverage_std_pixels": 19.448650338776723,
+          "pixel_count": 2073600
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.08458542014468559,
+          "adjacent_phase_mask_transition_mean": 0.07862664492249694,
+          "frames": 8,
+          "mean_area_pixels": 1720.875,
+          "mean_coverage_fraction": 0.0008298972800925926,
+          "mean_coverage_percent": 0.08298972800925926,
+          "phase_coverage_max_pixels": 1725,
+          "phase_coverage_min_pixels": 1718,
+          "phase_coverage_std_percent_points": 0.00012630405357685285,
+          "phase_coverage_std_pixels": 2.6190408549696205,
+          "pixel_count": 2073600
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.08899224409795065,
+          "mean_coverage_delta_percent_points": -0.006709346064814811,
+          "mean_coverage_delta_pixels": -139.125,
+          "mean_mask_iou": 0.7893190222545672,
+          "phase_coverage_std_delta_percent_points": -0.0008116131116805123
+        },
+        "distance_m": 256,
+        "height": 1080,
+        "phases": [
+          {
+            "baseline_area_pixels": 1855,
+            "candidate_area_pixels": 1723,
+            "coverage_delta_percent_points": -0.00636574074074074,
+            "coverage_delta_pixels": -132,
+            "mask_iou": 0.7827603388141505,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 1851,
+            "candidate_area_pixels": 1719,
+            "coverage_delta_percent_points": -0.00636574074074074,
+            "coverage_delta_pixels": -132,
+            "mask_iou": 0.7858929464732366,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 1849,
+            "candidate_area_pixels": 1718,
+            "coverage_delta_percent_points": -0.006317515432098766,
+            "coverage_delta_pixels": -131,
+            "mask_iou": 0.7879699248120301,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 1873,
+            "candidate_area_pixels": 1724,
+            "coverage_delta_percent_points": -0.007185570987654321,
+            "coverage_delta_pixels": -149,
+            "mask_iou": 0.7940149625935162,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 1866,
+            "candidate_area_pixels": 1725,
+            "coverage_delta_percent_points": -0.006799768518518518,
+            "coverage_delta_pixels": -141,
+            "mask_iou": 0.7847912524850894,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 1888,
+            "candidate_area_pixels": 1718,
+            "coverage_delta_percent_points": -0.008198302469135802,
+            "coverage_delta_pixels": -170,
+            "mask_iou": 0.7931377424167081,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 1877,
+            "candidate_area_pixels": 1721,
+            "coverage_delta_percent_points": -0.007523148148148148,
+            "coverage_delta_pixels": -156,
+            "mask_iou": 0.7972027972027972,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 1821,
+            "candidate_area_pixels": 1719,
+            "coverage_delta_percent_points": -0.004918981481481482,
+            "coverage_delta_pixels": -102,
+            "mask_iou": 0.7887822132390097,
+            "phase_index": 7
+          }
+        ],
+        "width": 1920
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.16455331412103746,
+          "adjacent_phase_mask_transition_mean": 0.15438398366146958,
+          "frames": 8,
+          "mean_area_pixels": 3187.625,
+          "mean_coverage_fraction": 0.0008646986219618055,
+          "mean_coverage_percent": 0.08646986219618055,
+          "phase_coverage_max_pixels": 3200,
+          "phase_coverage_min_pixels": 3172,
+          "phase_coverage_std_percent_points": 0.0002540869943486089,
+          "phase_coverage_std_pixels": 9.366662959667119,
+          "pixel_count": 3686400
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.07135938004520503,
+          "adjacent_phase_mask_transition_mean": 0.06809725199307683,
+          "frames": 8,
+          "mean_area_pixels": 2978.375,
+          "mean_coverage_fraction": 0.0008079359266493055,
+          "mean_coverage_percent": 0.08079359266493055,
+          "phase_coverage_max_pixels": 2988,
+          "phase_coverage_min_pixels": 2965,
+          "phase_coverage_std_percent_points": 0.00024070201990995688,
+          "phase_coverage_std_pixels": 8.87323926196065,
+          "pixel_count": 3686400
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.08628673166839275,
+          "mean_coverage_delta_percent_points": -0.00567626953125,
+          "mean_coverage_delta_pixels": -209.25,
+          "mean_mask_iou": 0.789972273985334,
+          "phase_coverage_std_delta_percent_points": -1.3384974438652048e-05
+        },
+        "distance_m": 256,
+        "height": 1440,
+        "phases": [
+          {
+            "baseline_area_pixels": 3186,
+            "candidate_area_pixels": 2984,
+            "coverage_delta_percent_points": -0.005479600694444444,
+            "coverage_delta_pixels": -202,
+            "mask_iou": 0.7884057971014493,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 3178,
+            "candidate_area_pixels": 2965,
+            "coverage_delta_percent_points": -0.005777994791666667,
+            "coverage_delta_pixels": -213,
+            "mask_iou": 0.784718187100523,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 3189,
+            "candidate_area_pixels": 2979,
+            "coverage_delta_percent_points": -0.005696614583333333,
+            "coverage_delta_pixels": -210,
+            "mask_iou": 0.7951105937136205,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 3200,
+            "candidate_area_pixels": 2966,
+            "coverage_delta_percent_points": -0.00634765625,
+            "coverage_delta_pixels": -234,
+            "mask_iou": 0.7940064009310445,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 3172,
+            "candidate_area_pixels": 2987,
+            "coverage_delta_percent_points": -0.005018446180555556,
+            "coverage_delta_pixels": -185,
+            "mask_iou": 0.788846935811792,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 3197,
+            "candidate_area_pixels": 2986,
+            "coverage_delta_percent_points": -0.005723741319444444,
+            "coverage_delta_pixels": -211,
+            "mask_iou": 0.791135573580533,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 3197,
+            "candidate_area_pixels": 2988,
+            "coverage_delta_percent_points": -0.005669487847222222,
+            "coverage_delta_pixels": -209,
+            "mask_iou": 0.7922341350333236,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 3182,
+            "candidate_area_pixels": 2972,
+            "coverage_delta_percent_points": -0.005696614583333333,
+            "coverage_delta_pixels": -210,
+            "mask_iou": 0.7853205686103858,
+            "phase_index": 7
+          }
+        ],
+        "width": 2560
+      }
+    ],
+    "ordinary": [
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.06487804878048781,
+          "adjacent_phase_mask_transition_mean": 0.06382216251351489,
+          "frames": 8,
+          "mean_area_pixels": 111071.875,
+          "mean_coverage_fraction": 0.053564754533179014,
+          "mean_coverage_percent": 5.356475453317901,
+          "phase_coverage_max_pixels": 111120,
+          "phase_coverage_min_pixels": 110965,
+          "phase_coverage_std_percent_points": 0.002138758117560971,
+          "phase_coverage_std_pixels": 44.349288325744304,
+          "pixel_count": 2073600
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.03263347987085241,
+          "adjacent_phase_mask_transition_mean": 0.03212642800220486,
+          "frames": 8,
+          "mean_area_pixels": 107835.375,
+          "mean_coverage_fraction": 0.05200394241898148,
+          "mean_coverage_percent": 5.200394241898148,
+          "phase_coverage_max_pixels": 107920,
+          "phase_coverage_min_pixels": 107725,
+          "phase_coverage_std_percent_points": 0.0029303510190017037,
+          "phase_coverage_std_pixels": 60.763758730019326,
+          "pixel_count": 2073600
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.031695734511310025,
+          "mean_coverage_delta_percent_points": -0.15608121141975317,
+          "mean_coverage_delta_pixels": -3236.5,
+          "mean_mask_iou": 0.896212162271972,
+          "phase_coverage_std_delta_percent_points": 0.0007915929014407326
+        },
+        "distance_m": 32,
+        "height": 1080,
+        "phases": [
+          {
+            "baseline_area_pixels": 111120,
+            "candidate_area_pixels": 107907,
+            "coverage_delta_percent_points": -0.15494791666666666,
+            "coverage_delta_pixels": -3213,
+            "mask_iou": 0.8966332415441367,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 111069,
+            "candidate_area_pixels": 107920,
+            "coverage_delta_percent_points": -0.15186149691358025,
+            "coverage_delta_pixels": -3149,
+            "mask_iou": 0.8964027157158198,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 111083,
+            "candidate_area_pixels": 107885,
+            "coverage_delta_percent_points": -0.15422453703703703,
+            "coverage_delta_pixels": -3198,
+            "mask_iou": 0.8968450596857187,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 111114,
+            "candidate_area_pixels": 107821,
+            "coverage_delta_percent_points": -0.1588059413580247,
+            "coverage_delta_pixels": -3293,
+            "mask_iou": 0.8957052558663088,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 111068,
+            "candidate_area_pixels": 107816,
+            "coverage_delta_percent_points": -0.1568287037037037,
+            "coverage_delta_pixels": -3252,
+            "mask_iou": 0.895017531708584,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 110965,
+            "candidate_area_pixels": 107725,
+            "coverage_delta_percent_points": -0.15625,
+            "coverage_delta_pixels": -3240,
+            "mask_iou": 0.8955370067001239,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 111078,
+            "candidate_area_pixels": 107812,
+            "coverage_delta_percent_points": -0.15750385802469136,
+            "coverage_delta_pixels": -3266,
+            "mask_iou": 0.8962515052021519,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 111078,
+            "candidate_area_pixels": 107797,
+            "coverage_delta_percent_points": -0.15822723765432098,
+            "coverage_delta_pixels": -3281,
+            "mask_iou": 0.897304981752932,
+            "phase_index": 7
+          }
+        ],
+        "width": 1920
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.05221904880168881,
+          "adjacent_phase_mask_transition_mean": 0.05134044407128261,
+          "frames": 8,
+          "mean_area_pixels": 195947.0,
+          "mean_coverage_fraction": 0.05315402560763889,
+          "mean_coverage_percent": 5.315402560763889,
+          "phase_coverage_max_pixels": 196083,
+          "phase_coverage_min_pixels": 195812,
+          "phase_coverage_std_percent_points": 0.0022536016635066425,
+          "phase_coverage_std_pixels": 83.07677172350886,
+          "pixel_count": 3686400
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.02681243103138553,
+          "adjacent_phase_mask_transition_mean": 0.026552847390107853,
+          "frames": 8,
+          "mean_area_pixels": 192249.75,
+          "mean_coverage_fraction": 0.052151082356770836,
+          "mean_coverage_percent": 5.215108235677083,
+          "phase_coverage_max_pixels": 192327,
+          "phase_coverage_min_pixels": 192167,
+          "phase_coverage_std_percent_points": 0.0012666145285626608,
+          "phase_coverage_std_pixels": 46.69247798093393,
+          "pixel_count": 3686400
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.024787596681174758,
+          "mean_coverage_delta_percent_points": -0.10029432508680625,
+          "mean_coverage_delta_pixels": -3697.25,
+          "mean_mask_iou": 0.9155795675263336,
+          "phase_coverage_std_delta_percent_points": -0.0009869871349439817
+        },
+        "distance_m": 32,
+        "height": 1440,
+        "phases": [
+          {
+            "baseline_area_pixels": 196054,
+            "candidate_area_pixels": 192257,
+            "coverage_delta_percent_points": -0.1030002170138889,
+            "coverage_delta_pixels": -3797,
+            "mask_iou": 0.9155513898823472,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 196083,
+            "candidate_area_pixels": 192303,
+            "coverage_delta_percent_points": -0.1025390625,
+            "coverage_delta_pixels": -3780,
+            "mask_iou": 0.9157229105832215,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 195958,
+            "candidate_area_pixels": 192226,
+            "coverage_delta_percent_points": -0.10123697916666667,
+            "coverage_delta_pixels": -3732,
+            "mask_iou": 0.9156147294243049,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 195926,
+            "candidate_area_pixels": 192220,
+            "coverage_delta_percent_points": -0.10053168402777778,
+            "coverage_delta_pixels": -3706,
+            "mask_iou": 0.9152854330222988,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 195812,
+            "candidate_area_pixels": 192167,
+            "coverage_delta_percent_points": -0.098876953125,
+            "coverage_delta_pixels": -3645,
+            "mask_iou": 0.9154348963733128,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 195880,
+            "candidate_area_pixels": 192327,
+            "coverage_delta_percent_points": -0.09638129340277778,
+            "coverage_delta_pixels": -3553,
+            "mask_iou": 0.9159551471241449,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 195959,
+            "candidate_area_pixels": 192237,
+            "coverage_delta_percent_points": -0.10096571180555555,
+            "coverage_delta_pixels": -3722,
+            "mask_iou": 0.9154943477038009,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 195904,
+            "candidate_area_pixels": 192261,
+            "coverage_delta_percent_points": -0.09882269965277778,
+            "coverage_delta_pixels": -3643,
+            "mask_iou": 0.9155776860972384,
+            "phase_index": 7
+          }
+        ],
+        "width": 2560
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.09903733437533302,
+          "adjacent_phase_mask_transition_mean": 0.09728287815171348,
+          "frames": 8,
+          "mean_area_pixels": 26767.5,
+          "mean_coverage_fraction": 0.01290870949074074,
+          "mean_coverage_percent": 1.2908709490740742,
+          "phase_coverage_max_pixels": 26828,
+          "phase_coverage_min_pixels": 26715,
+          "phase_coverage_std_percent_points": 0.0016297015093282988,
+          "phase_coverage_std_pixels": 33.793490497431605,
+          "pixel_count": 2073600
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.04951359936470121,
+          "adjacent_phase_mask_transition_mean": 0.04805890243882581,
+          "frames": 8,
+          "mean_area_pixels": 24557.25,
+          "mean_coverage_fraction": 0.01184280960648148,
+          "mean_coverage_percent": 1.1842809606481481,
+          "phase_coverage_max_pixels": 24589,
+          "phase_coverage_min_pixels": 24519,
+          "phase_coverage_std_percent_points": 0.0009826461359123745,
+          "phase_coverage_std_pixels": 20.376150274278995,
+          "pixel_count": 2073600
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.04922397571288767,
+          "mean_coverage_delta_percent_points": -0.10658998842592604,
+          "mean_coverage_delta_pixels": -2210.25,
+          "mean_mask_iou": 0.8269193155478387,
+          "phase_coverage_std_delta_percent_points": -0.0006470553734159244
+        },
+        "distance_m": 64,
+        "height": 1080,
+        "phases": [
+          {
+            "baseline_area_pixels": 26794,
+            "candidate_area_pixels": 24519,
+            "coverage_delta_percent_points": -0.10971257716049383,
+            "coverage_delta_pixels": -2275,
+            "mask_iou": 0.8256306258227488,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 26828,
+            "candidate_area_pixels": 24539,
+            "coverage_delta_percent_points": -0.11038773148148148,
+            "coverage_delta_pixels": -2289,
+            "mask_iou": 0.825473542059064,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 26778,
+            "candidate_area_pixels": 24567,
+            "coverage_delta_percent_points": -0.10662615740740741,
+            "coverage_delta_pixels": -2211,
+            "mask_iou": 0.8266391547191291,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 26736,
+            "candidate_area_pixels": 24589,
+            "coverage_delta_percent_points": -0.10353973765432099,
+            "coverage_delta_pixels": -2147,
+            "mask_iou": 0.8276832134463358,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 26715,
+            "candidate_area_pixels": 24569,
+            "coverage_delta_percent_points": -0.10349151234567901,
+            "coverage_delta_pixels": -2146,
+            "mask_iou": 0.8290890933732791,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 26746,
+            "candidate_area_pixels": 24552,
+            "coverage_delta_percent_points": -0.10580632716049383,
+            "coverage_delta_pixels": -2194,
+            "mask_iou": 0.8278933865450399,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 26757,
+            "candidate_area_pixels": 24572,
+            "coverage_delta_percent_points": -0.10537229938271606,
+            "coverage_delta_pixels": -2185,
+            "mask_iou": 0.8253556187766714,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 26786,
+            "candidate_area_pixels": 24551,
+            "coverage_delta_percent_points": -0.10778356481481481,
+            "coverage_delta_pixels": -2235,
+            "mask_iou": 0.8275898896404414,
+            "phase_index": 7
+          }
+        ],
+        "width": 1920
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.0836927857391091,
+          "adjacent_phase_mask_transition_mean": 0.08257273116818296,
+          "frames": 8,
+          "mean_area_pixels": 46919.375,
+          "mean_coverage_fraction": 0.01272769504123264,
+          "mean_coverage_percent": 1.2727695041232638,
+          "phase_coverage_max_pixels": 47025,
+          "phase_coverage_min_pixels": 46841,
+          "phase_coverage_std_percent_points": 0.001419232459008043,
+          "phase_coverage_std_pixels": 52.318585368872505,
+          "pixel_count": 3686400
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.04129486526581494,
+          "adjacent_phase_mask_transition_mean": 0.04054230044005142,
+          "frames": 8,
+          "mean_area_pixels": 44210.5,
+          "mean_coverage_fraction": 0.011992865668402778,
+          "mean_coverage_percent": 1.1992865668402777,
+          "phase_coverage_max_pixels": 44254,
+          "phase_coverage_min_pixels": 44160,
+          "phase_coverage_std_percent_points": 0.0007060772072927719,
+          "phase_coverage_std_pixels": 26.02883016964074,
+          "pixel_count": 3686400
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.04203043072813154,
+          "mean_coverage_delta_percent_points": -0.07348293728298616,
+          "mean_coverage_delta_pixels": -2708.875,
+          "mean_mask_iou": 0.8568801068001107,
+          "phase_coverage_std_delta_percent_points": -0.0007131552517152712
+        },
+        "distance_m": 64,
+        "height": 1440,
+        "phases": [
+          {
+            "baseline_area_pixels": 46899,
+            "candidate_area_pixels": 44230,
+            "coverage_delta_percent_points": -0.07240125868055555,
+            "coverage_delta_pixels": -2669,
+            "mask_iou": 0.8581448932569378,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 46841,
+            "candidate_area_pixels": 44191,
+            "coverage_delta_percent_points": -0.07188585069444445,
+            "coverage_delta_pixels": -2650,
+            "mask_iou": 0.8558643044993985,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 46923,
+            "candidate_area_pixels": 44207,
+            "coverage_delta_percent_points": -0.07367621527777778,
+            "coverage_delta_pixels": -2716,
+            "mask_iou": 0.8562349777976942,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 47025,
+            "candidate_area_pixels": 44254,
+            "coverage_delta_percent_points": -0.0751681857638889,
+            "coverage_delta_pixels": -2771,
+            "mask_iou": 0.8573027306393196,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 46946,
+            "candidate_area_pixels": 44206,
+            "coverage_delta_percent_points": -0.07432725694444445,
+            "coverage_delta_pixels": -2740,
+            "mask_iou": 0.857023530610166,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 46912,
+            "candidate_area_pixels": 44160,
+            "coverage_delta_percent_points": -0.07465277777777778,
+            "coverage_delta_pixels": -2752,
+            "mask_iou": 0.8561878362954508,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 46943,
+            "candidate_area_pixels": 44224,
+            "coverage_delta_percent_points": -0.0737575954861111,
+            "coverage_delta_pixels": -2719,
+            "mask_iou": 0.8575940339867151,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 46866,
+            "candidate_area_pixels": 44212,
+            "coverage_delta_percent_points": -0.0719943576388889,
+            "coverage_delta_pixels": -2654,
+            "mask_iou": 0.8566885473152036,
+            "phase_index": 7
+          }
+        ],
+        "width": 2560
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.1414372061786434,
+          "adjacent_phase_mask_transition_mean": 0.13426968686728624,
+          "frames": 8,
+          "mean_area_pixels": 6894.125,
+          "mean_coverage_fraction": 0.0033247130594135804,
+          "mean_coverage_percent": 0.33247130594135804,
+          "phase_coverage_max_pixels": 6921,
+          "phase_coverage_min_pixels": 6860,
+          "phase_coverage_std_percent_points": 0.0010765800608459719,
+          "phase_coverage_std_pixels": 22.323964141702074,
+          "pixel_count": 2073600
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.07261233555441654,
+          "adjacent_phase_mask_transition_mean": 0.07060269590654587,
+          "frames": 8,
+          "mean_area_pixels": 5638.0,
+          "mean_coverage_fraction": 0.002718942901234568,
+          "mean_coverage_percent": 0.2718942901234568,
+          "phase_coverage_max_pixels": 5661,
+          "phase_coverage_min_pixels": 5608,
+          "phase_coverage_std_percent_points": 0.0008518287872615593,
+          "phase_coverage_std_pixels": 17.663521732655695,
+          "pixel_count": 2073600
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.06366699096074037,
+          "mean_coverage_delta_percent_points": -0.06057701581790126,
+          "mean_coverage_delta_pixels": -1256.125,
+          "mean_mask_iou": 0.7323344319726404,
+          "phase_coverage_std_delta_percent_points": -0.00022475127358441253
+        },
+        "distance_m": 128,
+        "height": 1080,
+        "phases": [
+          {
+            "baseline_area_pixels": 6860,
+            "candidate_area_pixels": 5656,
+            "coverage_delta_percent_points": -0.05806327160493827,
+            "coverage_delta_pixels": -1204,
+            "mask_iou": 0.7339983374896093,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 6916,
+            "candidate_area_pixels": 5643,
+            "coverage_delta_percent_points": -0.061390817901234566,
+            "coverage_delta_pixels": -1273,
+            "mask_iou": 0.7313206506754893,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 6921,
+            "candidate_area_pixels": 5643,
+            "coverage_delta_percent_points": -0.06163194444444445,
+            "coverage_delta_pixels": -1278,
+            "mask_iou": 0.7308169169307067,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 6880,
+            "candidate_area_pixels": 5612,
+            "coverage_delta_percent_points": -0.06114969135802469,
+            "coverage_delta_pixels": -1268,
+            "mask_iou": 0.7345181893918356,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 6871,
+            "candidate_area_pixels": 5608,
+            "coverage_delta_percent_points": -0.06090856481481482,
+            "coverage_delta_pixels": -1263,
+            "mask_iou": 0.7303105934553522,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 6915,
+            "candidate_area_pixels": 5639,
+            "coverage_delta_percent_points": -0.061535493827160496,
+            "coverage_delta_pixels": -1276,
+            "mask_iou": 0.7311086596800882,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 6910,
+            "candidate_area_pixels": 5642,
+            "coverage_delta_percent_points": -0.06114969135802469,
+            "coverage_delta_pixels": -1268,
+            "mask_iou": 0.7339411520928305,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 6880,
+            "candidate_area_pixels": 5661,
+            "coverage_delta_percent_points": -0.0587866512345679,
+            "coverage_delta_pixels": -1219,
+            "mask_iou": 0.7326609560652114,
+            "phase_index": 7
+          }
+        ],
+        "width": 1920
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.12385500665466218,
+          "adjacent_phase_mask_transition_mean": 0.11787076682926788,
+          "frames": 8,
+          "mean_area_pixels": 12009.75,
+          "mean_coverage_fraction": 0.0032578531901041666,
+          "mean_coverage_percent": 0.3257853190104167,
+          "phase_coverage_max_pixels": 12040,
+          "phase_coverage_min_pixels": 11962,
+          "phase_coverage_std_percent_points": 0.0006345496756768969,
+          "phase_coverage_std_pixels": 23.39203924415313,
+          "pixel_count": 3686400
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.06298919120387626,
+          "adjacent_phase_mask_transition_mean": 0.05964127201471542,
+          "frames": 8,
+          "mean_area_pixels": 10381.5,
+          "mean_coverage_fraction": 0.002816162109375,
+          "mean_coverage_percent": 0.2816162109375,
+          "phase_coverage_max_pixels": 10394,
+          "phase_coverage_min_pixels": 10338,
+          "phase_coverage_std_percent_points": 0.000528449428677793,
+          "phase_coverage_std_pixels": 19.480759738778158,
+          "pixel_count": 3686400
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.05822949481455246,
+          "mean_coverage_delta_percent_points": -0.044169108072916685,
+          "mean_coverage_delta_pixels": -1628.25,
+          "mean_mask_iou": 0.7758865638822681,
+          "phase_coverage_std_delta_percent_points": -0.00010610024699910393
+        },
+        "distance_m": 128,
+        "height": 1440,
+        "phases": [
+          {
+            "baseline_area_pixels": 12012,
+            "candidate_area_pixels": 10389,
+            "coverage_delta_percent_points": -0.044026692708333336,
+            "coverage_delta_pixels": -1623,
+            "mask_iou": 0.7760247363830968,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 12024,
+            "candidate_area_pixels": 10394,
+            "coverage_delta_percent_points": -0.04421657986111111,
+            "coverage_delta_pixels": -1630,
+            "mask_iou": 0.7745586954800918,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 12000,
+            "candidate_area_pixels": 10338,
+            "coverage_delta_percent_points": -0.045084635416666664,
+            "coverage_delta_pixels": -1662,
+            "mask_iou": 0.7768055997454661,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 12001,
+            "candidate_area_pixels": 10361,
+            "coverage_delta_percent_points": -0.044487847222222224,
+            "coverage_delta_pixels": -1640,
+            "mask_iou": 0.7763126539042021,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 12037,
+            "candidate_area_pixels": 10388,
+            "coverage_delta_percent_points": -0.044731987847222224,
+            "coverage_delta_pixels": -1649,
+            "mask_iou": 0.7763783269961977,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 11962,
+            "candidate_area_pixels": 10394,
+            "coverage_delta_percent_points": -0.042534722222222224,
+            "coverage_delta_pixels": -1568,
+            "mask_iou": 0.7737226277372263,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 12002,
+            "candidate_area_pixels": 10394,
+            "coverage_delta_percent_points": -0.043619791666666664,
+            "coverage_delta_pixels": -1608,
+            "mask_iou": 0.7733787314910128,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 12040,
+            "candidate_area_pixels": 10394,
+            "coverage_delta_percent_points": -0.04465060763888889,
+            "coverage_delta_pixels": -1646,
+            "mask_iou": 0.7799111393208505,
+            "phase_index": 7
+          }
+        ],
+        "width": 2560
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.17733990147783252,
+          "adjacent_phase_mask_transition_mean": 0.16761888902044758,
+          "frames": 8,
+          "mean_area_pixels": 1860.0,
+          "mean_coverage_fraction": 0.0008969907407407407,
+          "mean_coverage_percent": 0.08969907407407407,
+          "phase_coverage_max_pixels": 1888,
+          "phase_coverage_min_pixels": 1821,
+          "phase_coverage_std_percent_points": 0.0009379171652573651,
+          "phase_coverage_std_pixels": 19.448650338776723,
+          "pixel_count": 2073600
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.14774494556765164,
+          "adjacent_phase_mask_transition_mean": 0.13654839840920308,
+          "frames": 8,
+          "mean_area_pixels": 1194.25,
+          "mean_coverage_fraction": 0.0005759307484567901,
+          "mean_coverage_percent": 0.057593074845679014,
+          "phase_coverage_max_pixels": 1210,
+          "phase_coverage_min_pixels": 1180,
+          "phase_coverage_std_percent_points": 0.00042982116777526736,
+          "phase_coverage_std_pixels": 8.912771734987944,
+          "pixel_count": 2073600
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.031070490611244506,
+          "mean_coverage_delta_percent_points": -0.032105999228395056,
+          "mean_coverage_delta_pixels": -665.75,
+          "mean_mask_iou": 0.6042386185078664,
+          "phase_coverage_std_delta_percent_points": -0.0005080959974820978
+        },
+        "distance_m": 256,
+        "height": 1080,
+        "phases": [
+          {
+            "baseline_area_pixels": 1855,
+            "candidate_area_pixels": 1190,
+            "coverage_delta_percent_points": -0.03206983024691358,
+            "coverage_delta_pixels": -665,
+            "mask_iou": 0.5975865687303253,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 1851,
+            "candidate_area_pixels": 1194,
+            "coverage_delta_percent_points": -0.031684027777777776,
+            "coverage_delta_pixels": -657,
+            "mask_iou": 0.5992647058823529,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 1849,
+            "candidate_area_pixels": 1188,
+            "coverage_delta_percent_points": -0.03187692901234568,
+            "coverage_delta_pixels": -661,
+            "mask_iou": 0.6026385224274406,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 1873,
+            "candidate_area_pixels": 1204,
+            "coverage_delta_percent_points": -0.03226273148148148,
+            "coverage_delta_pixels": -669,
+            "mask_iou": 0.6093096234309623,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 1866,
+            "candidate_area_pixels": 1198,
+            "coverage_delta_percent_points": -0.032214506172839504,
+            "coverage_delta_pixels": -668,
+            "mask_iou": 0.6041884816753926,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 1888,
+            "candidate_area_pixels": 1210,
+            "coverage_delta_percent_points": -0.03269675925925926,
+            "coverage_delta_pixels": -678,
+            "mask_iou": 0.6093506493506493,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 1877,
+            "candidate_area_pixels": 1180,
+            "coverage_delta_percent_points": -0.03361304012345679,
+            "coverage_delta_pixels": -697,
+            "mask_iou": 0.5996860282574569,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 1821,
+            "candidate_area_pixels": 1190,
+            "coverage_delta_percent_points": -0.03043016975308642,
+            "coverage_delta_pixels": -631,
+            "mask_iou": 0.6118843683083511,
+            "phase_index": 7
+          }
+        ],
+        "width": 1920
+      },
+      {
+        "asset_id": "maple_tree",
+        "baseline": {
+          "adjacent_phase_mask_transition_max": 0.16455331412103746,
+          "adjacent_phase_mask_transition_mean": 0.15438398366146958,
+          "frames": 8,
+          "mean_area_pixels": 3187.625,
+          "mean_coverage_fraction": 0.0008646986219618055,
+          "mean_coverage_percent": 0.08646986219618055,
+          "phase_coverage_max_pixels": 3200,
+          "phase_coverage_min_pixels": 3172,
+          "phase_coverage_std_percent_points": 0.0002540869943486089,
+          "phase_coverage_std_pixels": 9.366662959667119,
+          "pixel_count": 3686400
+        },
+        "candidate": {
+          "adjacent_phase_mask_transition_max": 0.11052202283849918,
+          "adjacent_phase_mask_transition_mean": 0.09992923586146175,
+          "frames": 8,
+          "mean_area_pixels": 2313.125,
+          "mean_coverage_fraction": 0.0006274753146701389,
+          "mean_coverage_percent": 0.0627475314670139,
+          "phase_coverage_max_pixels": 2326,
+          "phase_coverage_min_pixels": 2297,
+          "phase_coverage_std_percent_points": 0.00024051087275262225,
+          "phase_coverage_std_pixels": 8.866192813152667,
+          "pixel_count": 3686400
+        },
+        "difference": {
+          "adjacent_phase_transition_delta": -0.05445474780000782,
+          "mean_coverage_delta_percent_points": -0.023722330729166657,
+          "mean_coverage_delta_pixels": -874.5,
+          "mean_mask_iou": 0.6681646193565036,
+          "phase_coverage_std_delta_percent_points": -1.3576121595986677e-05
+        },
+        "distance_m": 256,
+        "height": 1440,
+        "phases": [
+          {
+            "baseline_area_pixels": 3186,
+            "candidate_area_pixels": 2310,
+            "coverage_delta_percent_points": -0.023763020833333332,
+            "coverage_delta_pixels": -876,
+            "mask_iou": 0.6669699727024567,
+            "phase_index": 0
+          },
+          {
+            "baseline_area_pixels": 3178,
+            "candidate_area_pixels": 2297,
+            "coverage_delta_percent_points": -0.023898654513888888,
+            "coverage_delta_pixels": -881,
+            "mask_iou": 0.6621129326047359,
+            "phase_index": 1
+          },
+          {
+            "baseline_area_pixels": 3189,
+            "candidate_area_pixels": 2326,
+            "coverage_delta_percent_points": -0.023410373263888888,
+            "coverage_delta_pixels": -863,
+            "mask_iou": 0.6783323189287888,
+            "phase_index": 2
+          },
+          {
+            "baseline_area_pixels": 3200,
+            "candidate_area_pixels": 2309,
+            "coverage_delta_percent_points": -0.024169921875,
+            "coverage_delta_pixels": -891,
+            "mask_iou": 0.6704063068526379,
+            "phase_index": 3
+          },
+          {
+            "baseline_area_pixels": 3172,
+            "candidate_area_pixels": 2316,
+            "coverage_delta_percent_points": -0.023220486111111112,
+            "coverage_delta_pixels": -856,
+            "mask_iou": 0.6706240487062405,
+            "phase_index": 4
+          },
+          {
+            "baseline_area_pixels": 3197,
+            "candidate_area_pixels": 2314,
+            "coverage_delta_percent_points": -0.023952907986111112,
+            "coverage_delta_pixels": -883,
+            "mask_iou": 0.6649546827794562,
+            "phase_index": 5
+          },
+          {
+            "baseline_area_pixels": 3197,
+            "candidate_area_pixels": 2325,
+            "coverage_delta_percent_points": -0.023654513888888888,
+            "coverage_delta_pixels": -872,
+            "mask_iou": 0.6697913516782582,
+            "phase_index": 6
+          },
+          {
+            "baseline_area_pixels": 3182,
+            "candidate_area_pixels": 2308,
+            "coverage_delta_percent_points": -0.023708767361111112,
+            "coverage_delta_pixels": -874,
+            "mask_iou": 0.662125340599455,
+            "phase_index": 7
+          }
+        ],
+        "width": 2560
+      }
+    ]
+  },
+  "complete": true,
+  "fixture": {
+    "asset_ids": [
+      "maple_tree"
+    ],
+    "background_rgba": [
+      0.0350000001490116,
+      0.189999997615814,
+      0.839999973773956,
+      1.0
+    ],
+    "capture_process_mode": "disabled",
+    "distances_m": [
+      32.0,
+      64.0,
+      128.0,
+      256.0
+    ],
+    "fov_degrees": 50.0,
+    "interpretation": "Subpixel camera translations probe raster coverage sensitivity for fixed geometry. Adjacent-mask changes are a sampling-instability proxy, not real-time shimmer or flight evidence.",
+    "mip_scope": "coverage",
+    "msaa": "4x",
+    "phase_count": 8,
+    "phase_offsets_pixels": [
+      0.0,
+      0.125,
+      0.25,
+      0.375,
+      0.5,
+      0.625,
+      0.75,
+      0.875
+    ],
+    "shadow_enabled": false,
+    "view_sizes": [
+      [
+        1920,
+        1080
+      ],
+      [
+        2560,
+        1440
+      ]
+    ],
+    "wind_clock_seconds": 0.0,
+    "wind_enabled": false,
+    "wind_vector_mps": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "format": "openrc-maple-alpha-coverage-comparison v1",
+  "inputs": {
+    "baseline": {
+      "directory": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\final-captures\\baseline",
+      "report_sha256": "61496f8f6b5eec3ba132fee85eface2770e8bf0342dbcd032c46bd6738a563e3"
+    },
+    "candidate": {
+      "directory": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\final-captures\\candidate",
+      "report_sha256": "d5ec6d26049b9d5648050952d1a97f1779cf9e873b80649a4bea34969878989a"
+    },
+    "ordinary": {
+      "directory": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\final-captures\\ordinary",
+      "report_sha256": "71b45b5c6be2dd161323550c88a044b01dffbae04fd9a698c236eeb8d7346e7a"
+    }
+  },
+  "limitations": "Coverage and mask transitions describe raster sampling. They do not establish visual acceptance, temporal shimmer reduction, FPS, or pilot readability; review native stills and normal-speed motion separately.",
+  "mask": {
+    "background_corner_tolerance_channel_levels": 2,
+    "method": "RGB max-channel distance from top-left background sample",
+    "silhouette_delta_threshold_channel_levels": 12
+  },
+  "renderer": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "3.3.0 NVIDIA 617.42",
+    "godot": "4.8-beta1 (official)",
+    "renderer": "gl_compatibility"
+  },
+  "scope": "Native fixed-camera maple near/mid/far subpixel sampling comparison; no frame-time or flight evidence.",
+  "source_identities": {
+    "capture_script": "f80902913f412031787fec0bf030ba67fc1c299fb4cbb652bd867dc2b1368c14",
+    "res://assets/landscape/vegetation/catalog.json": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+    "res://project.godot": "4d85a7bc6eddfaad7876597a2ee9ce2b9793513a147670dcee0c3dbc3f028a0a",
+    "res://scenery/imported_tree_wind.gdshader": "e8f4ffa44c845d500b6514342011257bc9502b6aaa8b8e2cdc09c05b1c21e9e8",
+    "res://scenery/imported_tree_wind.gdshaderinc": "5c968ce4822dbcd8ff56225f153ed6b203fe38883e92c5fa55c6891c65546009",
+    "res://scenery/imported_tree_wind_clamp.gdshader": "8a50ad39fe465b57e308ff2bd1ad8ca80990435b91922c04ae575c3163b20531",
+    "res://scenery/imported_tree_wind_cull_back.gdshader": "333612342fec2b6f3621521b5a4369f0836f0491b100ef77e102a3ff10e77b84",
+    "res://scenery/imported_vegetation.gd": "3787a6fff0e5fd7961c45a1d1ceb23945b3f979acbbbdeebee4a1c86af8399e8",
+    "res://scenery/imported_vegetation_wind.gdshader": "c7d4d330ac2c026b53619e66a890826de0ec33bf0558f804866de26777a5e7b8"
+  },
+  "texture_import_audit": {
+    "baseline": {
+      "basename": "maple_leaves_basecolor.png",
+      "decoded_image_base_level_sha256": "a95a0194dfe52645c0be1c7168dd2c26bc63a3a0b6c23a7db6282f1c0e8b40e3",
+      "decoded_image_data_bytes": 4194304,
+      "decoded_image_data_sha256": "a95a0194dfe52645c0be1c7168dd2c26bc63a3a0b6c23a7db6282f1c0e8b40e3",
+      "decoded_image_has_mipmaps": false,
+      "decoded_image_mipmap_count": 0,
+      "image_format": 19,
+      "image_size": [
+        2048,
+        2048
+      ],
+      "import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://bi0sj2jut2mvl\"\npath.s3tc=\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.s3tc.ctex\"\npath.etc2=\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.etc2.ctex\"\nmetadata={\n\"imported_formats\": [\"s3tc_bptc\", \"etc2_astc\"],\n\"vram_texture\": true\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png\"\ndest_files=[\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.s3tc.ctex\", \"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.etc2.ctex\"]\n\n[params]\n\ncompress/mode=2\ncompress/high_quality=false\ncompress/high_quality_mode=0\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=false\nmipmaps/limit=-1\nmipmaps/preserve_alpha_test_coverage=false\nmipmaps/alpha_test_threshold=0.5\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+      "import_path": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import",
+      "import_sha256": "15b81856c9d06a1ecdb3c75e8b98aa2b04db5bda174d2947306ece784eb4f0af",
+      "source_png_sha256": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b",
+      "texture_class": "CompressedTexture2D",
+      "used_by": [
+        "maple_tree"
+      ]
+    },
+    "candidate": {
+      "basename": "maple_leaves_basecolor.png",
+      "decoded_image_base_level_sha256": "a95a0194dfe52645c0be1c7168dd2c26bc63a3a0b6c23a7db6282f1c0e8b40e3",
+      "decoded_image_data_bytes": 5592432,
+      "decoded_image_data_sha256": "e88bcb43341066f5245f162bf1a1b2919ad730dbba2b87378c3afbd3230e01ea",
+      "decoded_image_has_mipmaps": true,
+      "decoded_image_mipmap_count": 11,
+      "image_format": 19,
+      "image_size": [
+        2048,
+        2048
+      ],
+      "import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://bi0sj2jut2mvl\"\npath.s3tc=\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.s3tc.ctex\"\npath.etc2=\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.etc2.ctex\"\nmetadata={\n\"imported_formats\": [\"s3tc_bptc\", \"etc2_astc\"],\n\"vram_texture\": true\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png\"\ndest_files=[\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.s3tc.ctex\", \"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.etc2.ctex\"]\n\n[params]\n\ncompress/mode=2\ncompress/high_quality=false\ncompress/high_quality_mode=0\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=true\nmipmaps/limit=-1\nmipmaps/preserve_alpha_test_coverage=true\nmipmaps/alpha_test_threshold=0.5\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+      "import_path": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import",
+      "import_sha256": "ec9d909ac753fe9e56fb4eaa71cca6d797f0467aa0950c40facbd35fbe7ca97c",
+      "source_png_sha256": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b",
+      "texture_class": "CompressedTexture2D",
+      "used_by": [
+        "maple_tree"
+      ]
+    },
+    "ordinary": {
+      "basename": "maple_leaves_basecolor.png",
+      "decoded_image_base_level_sha256": "a95a0194dfe52645c0be1c7168dd2c26bc63a3a0b6c23a7db6282f1c0e8b40e3",
+      "decoded_image_data_bytes": 5592432,
+      "decoded_image_data_sha256": "3a5ab80fabf624b54aaacbb686146fc16ed6d1b1c2b8e61f6be3c85ff79e6c1e",
+      "decoded_image_has_mipmaps": true,
+      "decoded_image_mipmap_count": 11,
+      "image_format": 19,
+      "image_size": [
+        2048,
+        2048
+      ],
+      "import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://bi0sj2jut2mvl\"\npath.s3tc=\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.s3tc.ctex\"\npath.etc2=\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.etc2.ctex\"\nmetadata={\n\"imported_formats\": [\"s3tc_bptc\", \"etc2_astc\"],\n\"vram_texture\": true\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png\"\ndest_files=[\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.s3tc.ctex\", \"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.etc2.ctex\"]\n\n[params]\n\ncompress/mode=2\ncompress/high_quality=false\ncompress/high_quality_mode=0\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=true\nmipmaps/limit=-1\nmipmaps/preserve_alpha_test_coverage=false\nmipmaps/alpha_test_threshold=0.5\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+      "import_path": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import",
+      "import_sha256": "b04605008eebc11e47038d4cbc093de610cf307821e803f156695267051383da",
+      "source_png_sha256": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b",
+      "texture_class": "CompressedTexture2D",
+      "used_by": [
+        "maple_tree"
+      ]
+    }
+  }
+}

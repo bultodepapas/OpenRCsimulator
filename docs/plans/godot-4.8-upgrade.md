@@ -110,14 +110,16 @@ All work runs in a worktree or tree copy with the candidate editor in `.tools/`.
 | --- | --- | --- |
 | GDU-10 | Full CI, capture set and release gates on the merged switch; owner accepts the visual, audio and packaging diffs; release notes name the engine change | Open; CI run and owner sign-off |
 
-### Phase 11: Opt-in 4.8 features (after GDU-10, each a proposal to its owner)
+### Phase 11: Owner-authorized 4.8 improvements
 
-These are not part of the migration. Each one needs its own plan step, budget and evidence:
+On 2026-10-25 the owner requested exploiting 4.8's improvements after development adoption. This authorizes bounded feature work before GDU-10; it does not close the broader release gates. Each change retains its owning track's limits and paired evidence.
 
-- Alpha-test coverage import ([#104289](https://github.com/godotengine/godot/pull/104289)) for alpha-scissor trees and grass (L6/L11 owners).
-- Compatibility decals ([#118070](https://github.com/godotengine/godot/pull/118070)) for crash and tyre marks (CR).
-- Native `Trail3D` ([#117107](https://github.com/godotengine/godot/pull/117107)) as a smoke or trail candidate (SM).
-- Texture streaming ([#113429](https://github.com/godotengine/godot/pull/113429)) for VRAM limits (DT/VQ).
+| ID | Owner and work | Evidence / boundary |
+| --- | --- | --- |
+| GDU-11a | L6/VQ: alpha-test coverage import ([#104289](https://github.com/godotengine/godot/pull/104289)) for the existing maple leaf atlas | [Native comparison and adoption](../research/engine-upgrade/GDU-11/README.md). One texture, unchanged source pixels/material cutoff/geometry, primary 1080p and secondary 1440p. Other vegetation requires its own evidence |
+| GDU-11b | CR: Compatibility decals ([#118070](https://github.com/godotengine/godot/pull/118070)) for terrain-following marks | Candidate only. Beta1 permits eight decals per receiving geometry instance; current crash marks allow sixteen. Require bounded use/fallback and 9/16-mark tests before replacement |
+| GDU-11c | SM: native `Trail3D` ([#117107](https://github.com/godotengine/godot/pull/117107)) | Deferred: ribbons do not supply existing smoke advection, buoyancy, residual or presentation-clock contracts. No demonstrated smoke replacement benefit |
+| GDU-11d | DT/VQ: texture streaming ([#113429](https://github.com/godotengine/godot/pull/113429)) | Deferred for Compatibility: unsupported by the pinned implementation. Evaluate only within a separately qualified Forward+/Mobile profile and measured memory need |
 
 ## Owner decisions
 

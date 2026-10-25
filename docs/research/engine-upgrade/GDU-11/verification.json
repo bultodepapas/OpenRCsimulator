@@ -1,0 +1,264 @@
+{
+  "app_source_paths_checked": 3875,
+  "checks": {
+    "field-final-baseline": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "engine_log_sha256": "b71ac50869e13b824e205990815de9808bbfbc25ceac3394f7892b80e1da66fc",
+      "process_exit": 0,
+      "report_sha256": "9a915373b8af9839b4dab2f827b9f601323a36fbae10097e2228a965b19774b7"
+    },
+    "field-final-candidate": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "engine_log_sha256": "76dbffa2f12bf37987387b777a75e38c83caf494cbc814c8f89b33e038781f25",
+      "process_exit": 0,
+      "report_sha256": "a02c9571b1b2d1dcea81edaced463dd7e6e81d50b6c2dd42e0b68a072f73df64"
+    },
+    "field-probe-parse": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "engine_log_sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7",
+      "process_exit": 0,
+      "report_sha256": "8af4eaab161a3df6c0ffcabed50a8913b23ed270fb27157c86498e5ccc93aea8"
+    },
+    "final-capture-baseline": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "engine_log_sha256": "73d04c2dbacea4d2c98da900d8900a1f00f44e2e4f112244289908b9d5ef3ee4",
+      "process_exit": 0,
+      "report_sha256": "d489180dc40ef0987bc3f5ca4f1e1c833bfc4136b77fe60f9d347be761425b99"
+    },
+    "final-capture-candidate": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "engine_log_sha256": "a517d794287217930ed74090600cd92a353adcf0dc86741c24c30c48a12cd8b1",
+      "process_exit": 0,
+      "report_sha256": "11863eccfcc8bc8e53f6c945cfa007855af4c887388752080ef5acb34370e61d"
+    },
+    "final-capture-ordinary": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "engine_log_sha256": "02b286ee61eb7afa84107b3f2352abdc6d96af6c9dbde217b76bf418b471b152",
+      "process_exit": 0,
+      "report_sha256": "26ad1fae65164d98322bcada9df657dbdd2f18ab736fd7c59472834a28f44f79"
+    },
+    "import-root": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "engine_log_sha256": "26ebd25ea8a5eb89dc02ecf54ec85925c8beda6856380fee2c4dfef2c271d0f6",
+      "process_exit": 0,
+      "report_sha256": "2cab883d0e874149fc5e9d1aca629a56b0c9b1d1adede315c490b321143f05ea"
+    },
+    "motion-baseline": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "engine_log_sha256": "90ef441664173a330846fc2039c8e588c66ef0106cb889b7f5d18f4e9f09f225",
+      "process_exit": 0,
+      "report_sha256": "fb18132f442668ab885068ae8c9d2b24f22e8878a7e39c16c364bff26056965e"
+    },
+    "motion-candidate": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "engine_log_sha256": "b9070cf60a703cd5c77592eb5372640201d0e553bb5fb1f9dbd970dbba6f952c",
+      "process_exit": 0,
+      "report_sha256": "8971e20edd0bfc51dd822674c04539d61016c50da02678aa9122c86523403293"
+    },
+    "offline-0": {
+      "command": [
+        "python",
+        "tools/trees/test_mip_compare.py"
+      ],
+      "exit": 0,
+      "log_sha256": "1b435d085e86dec05828033bbf28d934eaffb11c23b51f4ac0e67b9959dc2ff2"
+    },
+    "offline-1": {
+      "command": [
+        "python",
+        "tools/landscape/vegetation/build_library.py",
+        "--check"
+      ],
+      "exit": 0,
+      "log_sha256": "7d6138ffc4a62f57dae54ecb80a958b0d762eb7617a686afe0a8f87ccfcf91db"
+    },
+    "probe-parse-final": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "engine_log_sha256": "2838a28a9b743ef9cbe05c3c6dbb14644ed387742f0d37be3b63c0510e41f13d",
+      "process_exit": 0,
+      "report_sha256": "370e1d506357c7a6920116480a2611f179ec7b34509b3b4d3d01d06a89b86b4d"
+    },
+    "tree-headless": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 4
+      },
+      "engine_log_sha256": "0be6b08a8ef551a6ca471d5c879e1a363a7542a909f42357fa6ca3c1ed48ff84",
+      "process_exit": 0,
+      "report_sha256": "6436d7a2da01b149fea01e6400d1e2ae3a21a4d645b94e493266dd9b79f86469"
+    },
+    "tree-native": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 4
+      },
+      "engine_log_sha256": "5aee343bc8de521f285461968a3ded45843532077127480a8ff53ff8f51a3e2f",
+      "process_exit": 0,
+      "report_sha256": "718aa1441eaf0a469304e73d01c8dec238becf2a641710bab08e6a231204121b"
+    }
+  },
+  "complete": true,
+  "current_own_app_changes": {
+    "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import": {
+      "after": "ec9d909ac753fe9e56fb4eaa71cca6d797f0467aa0950c40facbd35fbe7ca97c",
+      "before": "eccceb7c8c89d06a9563b58d4ef82a67ba8b62b6b121468acc972fabfc8c69bb"
+    },
+    "app/tests/test_imported_tree_rendering.gd": {
+      "after": "625f2d5bc44a0b8138dd9ba5154392ee1e6dc36af591b57c56fbc434832668f5",
+      "before": "476783ca99b1fa5037d2d3a808546408ee9b0a35f5c82062f742a46e320a5a8b"
+    }
+  },
+  "fixtures": {
+    "baseline": {
+      "changed_paths_from_frozen_source": [
+        "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import"
+      ],
+      "leaf_import_sha256": "15b81856c9d06a1ecdb3c75e8b98aa2b04db5bda174d2947306ece784eb4f0af"
+    },
+    "candidate": {
+      "changed_paths_from_frozen_source": [
+        "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import"
+      ],
+      "leaf_import_sha256": "ec9d909ac753fe9e56fb4eaa71cca6d797f0467aa0950c40facbd35fbe7ca97c"
+    },
+    "ordinary": {
+      "changed_paths_from_frozen_source": [
+        "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import"
+      ],
+      "leaf_import_sha256": "b04605008eebc11e47038d4cbc093de610cf307821e803f156695267051383da"
+    }
+  },
+  "format": "openrc-gdu11-alpha-verification v1",
+  "imported_payloads": {
+    "etc2": {
+      "bytes": 5592484,
+      "matches_captured_candidate": true,
+      "sha256": "b2f93cfd060c883a177ed52f1da449f3dec52ff549ab9534e4dc6d6360fec7de"
+    },
+    "s3tc": {
+      "bytes": 5592484,
+      "matches_captured_candidate": true,
+      "sha256": "b2b124b04f48889f138b5e5fa285b7cd4e370df0cfbfa912cfd2a0a8b11e251f"
+    }
+  },
+  "limits": [
+    "No FPS or GPU-residency measurement",
+    "Motion frames inspected at representative points; no human normal-speed playback acceptance",
+    "No full release suite or native macOS/Linux rerun for this import-only change",
+    "Parallel aircraft work is outside this evidence and was not overwritten"
+  ],
+  "nonqualifying_attempts": {
+    "field": "1920x1061 root window captures; excluded from 1080p qualification",
+    "field1080": "1920x1061 despite borderless; excluded from 1080p qualification"
+  },
+  "observed_parallel_worktree_changes_not_qualified": {
+    "app/aircraft/f4u_corsair_geometry.gd": {
+      "after": "48e967203b52a06ec8983d1170ced36683059bdfbba0a0ffec20e68ae14e2350",
+      "before": "6ffe704af4e628c334ca64048864ab7eb726e4f804182ee23eef2ae25017be50"
+    },
+    "app/data/aircraft/f4u_corsair_250.json": {
+      "after": "398cbe0263ff29cb362848116c71cd29d9c0a2a465b4c6cffd89e0798842d618",
+      "before": "ee97e6e40fc3a2e46c5de20d0c43eaf52d0520d430bf77275005db4ae35de016"
+    },
+    "app/data/aircraft_customization.json": {
+      "after": "17f4cdc031767cb590ed6399a2c8ac0089dfc6aca841b16f15bdeedac3e7f50b",
+      "before": "f858fb86cc2bc787f6b9cc3d8bf84177298ed584088e25e090b54a2511156777"
+    },
+    "app/data/aircraft_models/f4u-corsair-250.json": {
+      "after": "444f2841fc3c13bea183ec7085cb2563a1b9bc7a2eefdfda79dd5cc6260f5fc5",
+      "before": "258d5bd8d7d2cbc5236db86fd7204ad37c1d50f5ed5da51fd08c22422f433704"
+    },
+    "app/data/workshop/f4u-corsair-250.json": {
+      "after": "be3dac0180a38d36a1aefa33766912c81ef83ea7c8a6ce937299b15a43568c64",
+      "before": "9b78c5ce316104710364443372872d4d9f32092e4bdac4f9875f7966c1041b9a"
+    }
+  },
+  "raw_reports": {
+    "field-final/baseline": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\field-final\\baseline",
+      "report_sha256": "b3ab2f1f01758bff9c84ba3b999ce88ec99be148005b813f87e0785e1cc1eb3a",
+      "verified_pngs": 3
+    },
+    "field-final/candidate": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\field-final\\candidate",
+      "report_sha256": "aee0c02b3b15ed38e4e9f3804b8d76b99f1045f703e9552c3d681c912dfd8bac",
+      "verified_pngs": 3
+    },
+    "final-captures/baseline": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\final-captures\\baseline",
+      "report_sha256": "61496f8f6b5eec3ba132fee85eface2770e8bf0342dbcd032c46bd6738a563e3",
+      "verified_pngs": 64
+    },
+    "final-captures/candidate": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\final-captures\\candidate",
+      "report_sha256": "d5ec6d26049b9d5648050952d1a97f1779cf9e873b80649a4bea34969878989a",
+      "verified_pngs": 64
+    },
+    "final-captures/ordinary": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\final-captures\\ordinary",
+      "report_sha256": "71b45b5c6be2dd161323550c88a044b01dffbae04fd9a698c236eeb8d7346e7a",
+      "verified_pngs": 64
+    },
+    "motion/baseline": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\motion\\baseline",
+      "report_sha256": "0bf0468c5d77d44343c757d2425227173143fd0ffc7fbf4ac3ecf54022262a34",
+      "verified_pngs": 192
+    },
+    "motion/candidate": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu11-alpha\\motion\\candidate",
+      "report_sha256": "c12c5c8e06a4cf13eb265f6b3a6834f1f283b983faa289b1ae5e9625d89791da",
+      "verified_pngs": 192
+    }
+  },
+  "raw_root": "D:\\OpenRCsimulator-experiments\\gdu11-alpha",
+  "source_head": "b51ad477214afeaa05072c8bf36d9d07c073aada",
+  "source_manifest_sha256": "18d92d95480cf75b33fd847dff255e5d3656151b91b5ee5573b76a817db6a778",
+  "tool_sha256": {
+    "tools\\trees\\mip_capture.gd": "f80902913f412031787fec0bf030ba67fc1c299fb4cbb652bd867dc2b1368c14",
+    "tools\\trees\\mip_compare.py": "1f17c0b9bc1a4094eee3a0627808452fd5fa5c678cf33d03d8b0dfae997518ac",
+    "tools\\trees\\quality_capture.gd": "69a2b5cefe42bfd55592986983a294f652d8514c9aa7becbd30e4ae14df3b4e9",
+    "tools\\trees\\test_mip_compare.py": "5fae062d423a5c627d7a75a2b490f6e7d8239bda98b7d570a64414fd56cf37dd"
+  }
+}
