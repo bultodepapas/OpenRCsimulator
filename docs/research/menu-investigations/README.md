@@ -10,6 +10,8 @@
 
 [R5 research and implementation](UI-34c-R5/README.md) adds dedicated scene loading and exact fused electric evaluation. Five completed native 1080p pairs have cold readiness medians of 14.666 and 12.971 s and median maximum loading frames of 3414 and 583 ms. The report retains the host-condition change across the interrupted collection, an unexplained refused attempt, engine-loader experiments and cancellation/quit checks; no two-second or full-platform qualification is claimed.
 
+[Menu preparation research, 2026-10-25](UI-34c-R5/menu-prefetch-2026-10-25.md) compares background loading, pending-job adoption, exact numeric preparation, bounded retention and renderer-specific warmup. Source inspection identifies duplicate work on a busy trim reservation, missing battery/fuel change notifications and a possible default-to-selected-setup refit. This is research and a planned experiment; idle preparation is not yet enabled.
+
 ## UI-22-R11 — bounded work and equivalent shader output, 2026-10-24
 
 The owner requested efficiency, simpler ownership and clearer interaction logic. This pass preserves the existing material and nominal animation timings while removing redundant work. Baseline source was captured from `b8d251803db93a69484743ed6562bc4cdbdc1156` before editing.

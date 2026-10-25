@@ -6,7 +6,7 @@ Godot 4.7.2 pin. The upstream NVIDIA commit is based on Godot 4.8-dev; run it on
 a disposable application copy and qualify an engine upgrade separately before
 shipping it. The GPU used for local checks is not the product support boundary.
 
-See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). DLSS mode/resize testing still exposes an internal image-layout validation finding, and the first exported FSR3 capture stalled at shutdown before later runs passed. This package is not release-qualified.
+See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). The active Streamline pin is 2.11.1 with matching headers and runtime. DLSS mode/resize testing still reports an internal NGX image-layout finding; a 2.14.16 trial named the internal resource but added startup validation errors, so it was rejected. Frame-based tagging is not implemented because the render callback does not receive a per-frame token. The first exported FSR3 capture stalled during shutdown and later runs exited normally; shutdown/export revalidation is in progress, with no updated final qualification recorded here.
 
 ## Build
 
@@ -139,9 +139,9 @@ Other GPUs, platforms and drivers require their own rendered qualification.
   including FSR 3.1.4, MIT license; the local runtime is rebuilt with the recorded
   source patch. The SDK's unused frame interpolation dependencies do not enable
   frame generation in the game.
-- [Streamline 2.10.0](https://github.com/NVIDIA-RTX/Streamline/releases/tag/v2.10.0),
-  matching the fork's headers. NVIDIA component licenses are copied with the
-  runtime; SDK/source availability is not a replacement for those terms.
+- [Streamline 2.11.1](https://github.com/NVIDIA-RTX/Streamline/releases/tag/v2.11.1),
+  with matching headers and runtime. NVIDIA component licenses are copied with
+  the runtime; SDK/source availability is not a replacement for those terms.
 
 Do not swap arbitrary SDK DLL versions or distribute SDK development DLLs.
 The tool copies the release `bin/x64` runtime, not `development` binaries.
