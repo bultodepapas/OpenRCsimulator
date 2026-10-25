@@ -27,7 +27,7 @@
     "script": "res://aircraft/ugly_stik_geometry.gd",
     "source": {
       "path": "assets/aircraft/ugly-stik-60/geometry.json",
-      "sha256": "759e69fcc326976e79a29c99ac5618813020658fe78859d390416a542c03a351",
+      "sha256": "8b59f88919ddb062b08d138d186a734c42b740539abcc261290db3f247319332",
       "hash_mode": "lf_text"
     },
     "revision": "jensen-60-nitro-61-v3",
@@ -117,7 +117,7 @@
   "authoring_sources": [
     {
       "path": "assets/aircraft/ugly-stik-60/geometry.json",
-      "sha256": "759e69fcc326976e79a29c99ac5618813020658fe78859d390416a542c03a351",
+      "sha256": "8b59f88919ddb062b08d138d186a734c42b740539abcc261290db3f247319332",
       "hash_mode": "lf_text",
       "role": "geometry"
     }
@@ -131,13 +131,13 @@
     },
     {
       "path": "res://aircraft/ugly_stik_controls.gd",
-      "sha256": "d07463d558fc69d64ff3633c59479a70d019edc34ae8e73c9de137cee39fd4dd",
+      "sha256": "d0d9a1555e78069aacf97ac7f3cdbd908d3f28a072c590a9e8166e775b1b0930",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
     {
       "path": "res://aircraft/ugly_stik_equipment.gd",
-      "sha256": "74e6044a988cbf8a3d256ecb9e3766569e102793410f98aea0f7951d8e45784f",
+      "sha256": "e2c125aa11529580cb83884dd7b2be9b4135ab3ae76481cd3243ccffd1af9b18",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -161,7 +161,7 @@
     },
     {
       "path": "res://aircraft/ugly_stik_geometry.gd",
-      "sha256": "50dc101b17ed691e490acdd11cfd26e4f0d3427505938e7a41a3353329704ada",
+      "sha256": "48b917e4fa8c2d463200f563e48fe0cf0080052cdd9151448ffd7a7a28c9d99a",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
     },

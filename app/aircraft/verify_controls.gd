@@ -68,7 +68,10 @@ func _run() -> void:
 		quit(1)
 	_check("two Jensen aileron servos", controls.servos.has_all(["aileron_left", "aileron_right"]))
 	_check("two tail servos", controls.servos.has_all(["elevator", "rudder"]))
-	_check("throttle servo is animated by the throttle linkage", controls.servos.has("throttle") and controls.servos.throttle.animated and controls.mechanisms.throttle.kind == "direct")
+	_check("throttle servo is animated by the throttle linkage", controls.servos.has("throttle") and controls.servos.throttle.animated and controls.mechanisms.throttle.kind == "cable")
+	# US-V18b: the throttle cable tube stays inside the fuselage (sides, floor, under the top sheeting) behind F1.
+	var tube_outside := _tube_outside(controls.mechanisms.throttle)
+	_check("throttle cable tube runs inside the fuselage behind F1", tube_outside.is_empty(), str(tube_outside))
 	# US-V17: the owner chose the two-servo version; each aileron servo drives its horn directly (no bellcrank).
 	_check("each aileron has its own servo and a direct pushrod", controls.mechanisms.aileron_left.kind == "direct" and controls.mechanisms.aileron_right.kind == "direct")
 	for side in ["left", "right"]:
@@ -119,6 +122,7 @@ func _run() -> void:
 	# US-V09c: the carburettor lever follows the throttle command over its whole range with a constant-length rod.
 	var lever: Node3D = controls.mechanisms.throttle.hinge
 	var previous_tip := Vector3.INF
+	var servo_angles: Array[float] = []
 	var prop_z := float(ControlsBuilder.D.equipment.prop_z)
 	var min_prop_gap := INF
 	for index in range(21):
@@ -132,12 +136,15 @@ func _run() -> void:
 		_check("throttle %.2f allocates no nodes" % throttle, _same_node_ids(root, node_ids_before))
 		_check("throttle %.2f lever angle follows the command" % throttle, is_equal_approx(lever.rotation.x, deg_to_rad(ControlsBuilder.Equipment.THROTTLE_OPENING * (throttle - 0.5) * ControlsBuilder.THROTTLE_TRAVEL_DEG)), str(rad_to_deg(lever.rotation.x)))
 		var tip: Vector3 = controls.mechanisms.throttle.endpoints_root.get("horn", Vector3.INF)
+		servo_angles.append(rad_to_deg(float(controls.mechanisms.throttle.last_servo_angle)))
 		if previous_tip != Vector3.INF:
 			# US-V13: pull to open; the O.S. lever hangs below its barrel, so its height is not monotonic.
 			_check("throttle %.2f lever tip moves aft" % throttle, tip.z > previous_tip.z, "%s -> %s" % [previous_tip, tip])
 		previous_tip = tip
 		min_prop_gap = minf(min_prop_gap, tip.z - prop_z)
 	_check("throttle lever stays at least 15 mm behind the propeller plane", min_prop_gap >= 0.015, "%.4f m" % min_prop_gap)
+	var servo_travel: float = servo_angles.max() - servo_angles.min()
+	_check("throttle servo travel suits a standard servo (20..110 degrees)", servo_travel >= 20.0 and servo_travel <= 110.0, "%.1f deg" % servo_travel)
 	var hits := _throttle_rod_engine_hits(root, controls, airplane)
 	_check("throttle pushrod clears the engine and nose gear over the throttle range", hits.is_empty(), str(hits))
 	AirplaneAdapter.apply_throttle(airplane, 0.5)
@@ -224,6 +231,20 @@ func _fuselage_servo_outside(controls: Dictionary, servo_name: String) -> Array:
 	return outside
 
 
+## Throttle tube centre-line samples behind F1 whose tube wall leaves the fuselage interior.
+func _tube_outside(mechanism: Dictionary) -> Array:
+	var e: Dictionary = ControlsBuilder.D.equipment
+	var radius: float = ControlsBuilder.THROTTLE_TUBE_RADIUS_M
+	var outside := []
+	for point: Vector3 in mechanism.tube_path:
+		if point.z < float(e.firewall_z) + 0.0064: continue # in F1 or ahead of it
+		var section: Vector3 = ControlsBuilder._fuselage_section(point.z)
+		var half := section.x - ControlsBuilder.FUSELAGE_SIDE_M
+		if absf(point.x) + radius > half or point.y - radius < section.z + ControlsBuilder.FUSELAGE_BOTTOM_M or point.y + radius > section.y - 0.0064:
+			outside.append(str(point))
+	return outside
+
+
 ## Smallest clearance between an aileron pushrod (surface, 1.15 mm radius) and the fixed wing's lower skin.
 func _aileron_rod_skin_gap(root: Node3D, mechanism: Dictionary) -> float:
 	var frame := (mechanism.hinge as Node3D).get_parent() as Node3D
@@ -274,7 +295,8 @@ func _throttle_rod_engine_hits(root: Node3D, controls: Dictionary, airplane: Dic
 		var throttle := float(index) / 10.0
 		AirplaneAdapter.apply_throttle(airplane, throttle)
 		var ends: Dictionary = controls.mechanisms.throttle.endpoints_root
-		var a: Vector3 = ends.servo
+		# US-V18b: the exposed front cable, from its tube at F1 to the lever.
+		var a: Vector3 = ends.get("cable_front", ends.servo)
 		var b: Vector3 = ends.horn
 		var direction := (b - a).normalized()
 		a = (a + direction * 0.008) * 1000.0

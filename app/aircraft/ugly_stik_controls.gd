@@ -72,6 +72,7 @@ static func build(root: Node3D, hinges: Dictionary) -> Dictionary:
 	_build_tail_mechanism(root, assembly, service, linkages, hinges, "elevator", mechanisms, servos, failures)
 	_build_tail_mechanism(root, assembly, service, linkages, hinges, "rudder", mechanisms, servos, failures)
 	_build_throttle_mechanism(root, service, linkages, mechanisms, servos, failures)
+	_add_servo_tray(service)
 	_batch_static_meshes(service, "maintenance_static")
 	_batch_static_meshes(linkages, "linkage_static")
 	var controls := {
@@ -123,6 +124,27 @@ static func update(controls: Dictionary) -> void:
 				endpoints["horn"] = target
 				_update_rod(rods[0], servo_solution.point, target, normal)
 				mechanism.closure_error_m = rods[0].length_error_m
+		elif mechanism.kind == "cable":
+			var cables: Array = mechanism.cables
+			var front_exposed: float = target.distance_to(cables[0].tube_point)
+			var rear_exposed: float = float(mechanism.cable_total_m) - front_exposed
+			var servo_solution := _solve_crank(
+				mechanism.servo_pivot, mechanism.servo_radius_m, cables[1].tube_point, rear_exposed,
+				u, v, normal, mechanism.last_servo_angle
+			)
+			if not servo_solution.ok:
+				solved = false
+				failures.append("%s cable has no servo closure" % mechanism_name)
+			else:
+				mechanism.last_servo_angle = servo_solution.angle
+				_update_arm(mechanism.servo_arm, mechanism.servo_pivot, servo_solution.point, mechanism.servo_axis)
+				_update_cable(cables[0], target)
+				_update_cable(cables[1], servo_solution.point)
+				endpoints["servo"] = servo_solution.point
+				endpoints["horn"] = target
+				endpoints["cable_front"] = cables[0].tube_point
+				endpoints["cable_rear"] = cables[1].tube_point
+				mechanism.closure_error_m = absf(float(cables[0].exposed_m) + float(cables[1].exposed_m) - float(mechanism.cable_total_m))
 		else:
 			solved = false
 			failures.append("%s has unknown mechanism kind" % mechanism_name)
@@ -306,38 +328,34 @@ static func _build_wing_mechanism(root: Node3D, assembly: Node3D, service: Node3
 static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3D, linkages: Node3D, hinges: Dictionary, surface_name: String, mechanisms: Dictionary, servos: Dictionary, failures: Array[String]) -> void:
 	var hinge: Node3D = hinges[surface_name]
 	var is_elevator := surface_name == "elevator"
-	var normal := Vector3.RIGHT if is_elevator else Vector3.DOWN
-	var u := Vector3.UP if is_elevator else Vector3.RIGHT
+	# US-V18b: the elevator and rudder servos stand in the plan's tray (equipment.servo_tray), output aft. Their arms point
+	# toward the centre line, so the pushrods start near the middle and diverge to horns on either side of the tail.
+	var u := Vector3.RIGHT if is_elevator else Vector3.LEFT
 	var v := Vector3.BACK
+	var normal := u.cross(v)
 	# The tail control surfaces extend aft (negative local z) from the hinge.
 	var horn_local := Vector3(-0.046, -0.024, -0.030) if is_elevator else Vector3(0.027, 0.006, -0.018)
 	# Brass horns after the owner's photo C: the elevator horn hangs below its surface, the rudder horn stands off its side.
 	var horn_base := Vector3(horn_local.x, -0.001, horn_local.z - 0.003) if is_elevator else Vector3(0.003, horn_local.y, horn_local.z - 0.004)
 	_add_control_horn(hinge, surface_name + "_control_horn", horn_local, horn_base, Vector3.BACK, BRASS, "aluminum")
 	var horn_root := _point_in_root(root, hinge, horn_local)
-	# Two servos sit side by side near the wing, long axes along the fuselage. US-V17: with real 40 mm-tall cases the
-	# elevator servo lies on its side against the left fuselage side (shaft right) and the rudder servo stands on rails
-	# from the right side (shaft up), its arm 10 mm higher than with the earlier 22 mm placeholder so its case clears the
-	# bottom sheeting. Stations remain estimates.
-	var servo_pivot := Vector3(-0.002, -0.025, 0.045) if is_elevator else Vector3(0.013, -0.004, 0.045)
-	var servo_axis := normal if is_elevator else Vector3.UP
+	var horn_pin := Vector3.RIGHT if is_elevator else Vector3.UP
+	var servo_pivot := _tray_shaft(surface_name, Vector3.BACK)
 	var servo_radius := 0.016
-	var servo_zero := u * servo_radius
-	var neutral_endpoint := servo_pivot + servo_zero
+	var neutral_endpoint := servo_pivot + u * servo_radius
 	var rod_length := neutral_endpoint.distance_to(horn_root)
 	if rod_length <= 0.1:
 		failures.append("%s estimated pushrod is too short" % surface_name)
 		return
-	var servo := _add_servo(service, surface_name + "_servo", servo_pivot, servo_axis, Vector3.BACK)
-	_add_servo_mount(service, surface_name + "_servo", servo, -1.0 if is_elevator else 1.0)
-	servos[surface_name] = {"type": surface_name, "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "reference": "Jensen fuselage servo rails; installation station estimated"}
+	var servo := _add_servo(service, surface_name + "_servo", servo_pivot, Vector3.UP, Vector3.BACK)
+	servos[surface_name] = {"type": surface_name, "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "reference": "Jensen sheet 1 servo tray between F3 and F4 (plan picks); order estimated"}
 	var rod := _new_rod(linkages, surface_name + "_long_pushrod", rod_length, ROD_RADIUS_M, STEEL, "steel")
 	var start_joint := _new_joint(linkages, surface_name + "_servo_clevis", neutral_endpoint, normal)
-	var end_joint := _new_joint(linkages, surface_name + "_horn_clevis", horn_root, normal)
-	var arm := _new_arm(service, surface_name + "_servo_arm", servo_pivot, neutral_endpoint, servo_axis, servo_radius)
+	var end_joint := _new_joint(linkages, surface_name + "_horn_clevis", horn_root, horn_pin)
+	var arm := _new_arm(service, surface_name + "_servo_arm", servo_pivot, neutral_endpoint, Vector3.UP, servo_radius)
 	var cable_to := Vector3(0, -0.024, 0.008)
 	_add_cable_route(service, surface_name + "_servo_lead", [servo.lead, servo.lead + Vector3.FORWARD * 0.008, cable_to])
-	_add_tail_guide(root, linkages, surface_name, neutral_endpoint, horn_root, normal)
+	_add_tail_guide(root, linkages, surface_name, neutral_endpoint, horn_root, horn_pin)
 	mechanisms[surface_name] = {
 		"kind": "direct",
 		"surface": surface_name,
@@ -347,12 +365,12 @@ static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3
 		"plane_v": v,
 		"plane_normal": normal,
 		"servo_pivot": servo_pivot,
-		"servo_axis": servo_axis,
+		"servo_axis": Vector3.UP,
 		"servo_radius_m": servo_radius,
 		"last_servo_angle": 0.0,
 		"servo_arm": arm,
 		"rods": [
-			{"name": surface_name + "_long_pushrod", "node": rod, "start_joint": start_joint, "end_joint": end_joint, "target_length_m": rod_length, "current_length_m": rod_length, "length_error_m": 0.0},
+			{"name": surface_name + "_long_pushrod", "node": rod, "start_joint": start_joint, "end_joint": end_joint, "end_normal": horn_pin, "target_length_m": rod_length, "current_length_m": rod_length, "length_error_m": 0.0},
 		],
 		"solved": true,
 		"closure_error_m": 0.0,
@@ -361,37 +379,81 @@ static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3
 	_update_rod(mechanisms[surface_name].rods[0], neutral_endpoint, horn_root, normal)
 
 
+## Output shaft (arm mid-thickness) of a tray servo whose output end faces `output_dir`: arms on the thrust line.
+static func _tray_shaft(servo_name: String, output_dir: Vector3) -> Vector3:
+	var e: Dictionary = D.equipment
+	var tray: Dictionary = e.servo_tray
+	return Vector3(float(tray.servo_x[servo_name]), float(e.shaft_y), float(tray.case_z)) + output_dir * SERVO_SHAFT_X_M
+
+
+## The plan's two hardwood servo rails across the fuselage, glued to the sides, under the tabs of the tray servos.
+static func _add_servo_tray(service: Node3D) -> void:
+	var e: Dictionary = D.equipment
+	var tray: Dictionary = e.servo_tray
+	var rail: Array = tray.rail
+	var top := float(e.shaft_y) - SERVO_SPLINE_TOP_M - ARM_THICKNESS_M * 0.5 + SERVO_TAB_Y_M
+	var tab_x := (SERVO_TAB_SPAN_M + SERVO_CASE_M.x) * 0.25
+	for end in [-1.0, 1.0]:
+		var z: float = float(tray.case_z) + end * tab_x
+		var half := _fuselage_inner_half_width(z)
+		_add_box(service, "servo_tray_rail", Vector3(half * 2.0, float(rail[1]), float(rail[0])), Vector3(0, top - float(rail[1]) * 0.5, z), Basis.IDENTITY, WOOD, "wood")
+
+
 # US-V09c: the carburettor lever (Equipment, node carburetor_throttle_arm_hinge) turns about X with the throttle
-# command; a direct pushrod of constant length closes it to the gas servo, like the tail mechanisms. US-V13: the O.S. 61
-# lever opens by turning about -X (Equipment.THROTTLE_OPENING) and the servo sits on the rod line Equipment routes
-# through F1. The servo station, arm and 60-degree barrel travel are estimates, not measured. US-V17: a 16 mm arm hole keeps the
-# standard case clear of the 1/4 in nose side (12 mm put it 1 mm into the side).
+# command. US-V13: the O.S. 61 lever opens by turning about -X (Equipment.THROTTLE_OPENING). US-V18b: the gas servo
+# stands in the middle of the plan's tray, output forward, and pushes a cable that slides in a fixed brass tube (Jensen
+# sheet 1: "brass brake cable tubing", "nylon tubing ... to throttle"). The tube runs from just ahead of the servo arm
+# along the right side, past the tank, and crosses F1 at equipment.servo_tray.throttle_f1. The cable cannot stretch:
+# what leaves the front of the tube enters at the back, so the exposed front and rear lengths keep their neutral sum,
+# and the servo angle closes that sum. The 60-degree barrel travel and the 9 mm arm hole are estimates.
 const THROTTLE_TRAVEL_DEG := 60.0
-const THROTTLE_SERVO_RADIUS_M := 0.016
+const THROTTLE_SERVO_RADIUS_M := 0.009 # inner hole: about 70 degrees of servo travel for the barrel
+const THROTTLE_TUBE_RADIUS_M := 0.002 # 5/32 in tube
+const THROTTLE_CABLE_RADIUS_M := 0.0006
+const THROTTLE_TUBE_PROUD_M := 0.003 # tube end ahead of F1's front face
+const THROTTLE_REAR_EXPOSED_M := 0.025
+const THROTTLE_CABLE_HIDDEN_M := 0.010 # cable kept inside the tube at the extremes
 
 static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: Node3D, mechanisms: Dictionary, servos: Dictionary, failures: Array[String]) -> void:
 	var hinge := root.find_child("carburetor_throttle_arm_hinge", false, false) as Node3D
 	if hinge == null:
 		failures.append("missing carburetor throttle arm")
 		return
+	var e: Dictionary = D.equipment
 	var horn_local: Vector3 = Equipment.throttle_arm_tip() - Equipment.throttle_arm_pivot()
-	var carburetor_point := _point_in_root(root, hinge, horn_local)
-	var normal := Vector3.DOWN
-	var u := Vector3.RIGHT * Equipment.THROTTLE_SIDE
+	var tip := _point_in_root(root, hinge, horn_local)
+	var u := Vector3.RIGHT
 	var v := Vector3.BACK
-	var servo_pivot := Equipment.throttle_servo_arm_end() - u * THROTTLE_SERVO_RADIUS_M
-	# Upright on rails from the fuselage side, output end forward so the case and tabs stay clear of F1.
+	var normal := u.cross(v)
+	var servo_pivot := _tray_shaft("throttle", Vector3.FORWARD)
 	var servo := _add_servo(service, "throttle_servo", servo_pivot, Vector3.UP, Vector3.FORWARD)
-	_add_servo_mount(service, "throttle_servo", servo, Equipment.THROTTLE_SIDE)
-	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "animated": true, "reference": "estimated gas servo station; drives the carburettor lever from the throttle command"}
-	var endpoint := servo_pivot + u * THROTTLE_SERVO_RADIUS_M
-	var rod_length := endpoint.distance_to(carburetor_point)
-	var rod := _new_rod(linkages, "throttle_pushrod", rod_length, 0.0008, STEEL, "steel")
-	var start_joint := _new_joint(linkages, "throttle_servo_clevis", endpoint, normal)
-	var end_joint := _new_joint(linkages, "throttle_carburetor_clevis", carburetor_point, normal)
-	var arm := _new_arm(service, "throttle_servo_arm", servo_pivot, endpoint, Vector3.UP, THROTTLE_SERVO_RADIUS_M)
+	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "animated": true, "reference": "Jensen sheet 1 servo tray; drives the carburettor lever through a cable in a tube"}
+	var arm_end := servo_pivot + u * THROTTLE_SERVO_RADIUS_M
+	var crossing: Array = e.servo_tray.throttle_f1
+	var front := Vector3(float(crossing[0]), float(crossing[1]), float(e.firewall_z) - THROTTLE_TUBE_PROUD_M)
+	var rear := arm_end + Vector3.FORWARD * THROTTLE_REAR_EXPOSED_M
+	var path := _throttle_tube_path(front, (front - tip).normalized(), rear)
+	var tube := MeshInstance3D.new()
+	tube.name = "throttle_cable_tube"
+	tube.mesh = _swept_tube(path, THROTTLE_TUBE_RADIUS_M, 10, BRASS, "aluminum")
+	service.add_child(tube)
+	# Exposed lengths over the throttle range, from the lever's own rotation.
+	var total := tip.distance_to(front) + arm_end.distance_to(rear)
+	var front_max := 0.0
+	var front_min := INF
+	for index in range(21):
+		hinge.rotation.x = deg_to_rad(Equipment.THROTTLE_OPENING * (float(index) / 20.0 - 0.5) * THROTTLE_TRAVEL_DEG)
+		var exposed := _point_in_root(root, hinge, horn_local).distance_to(front)
+		front_max = maxf(front_max, exposed)
+		front_min = minf(front_min, exposed)
+	hinge.rotation.x = 0.0
+	var front_cable := _new_rod(linkages, "throttle_cable_front", front_max + THROTTLE_CABLE_HIDDEN_M, THROTTLE_CABLE_RADIUS_M, STEEL, "steel")
+	var rear_cable := _new_rod(service, "throttle_cable_rear", total - front_min + THROTTLE_CABLE_HIDDEN_M, THROTTLE_CABLE_RADIUS_M, STEEL, "steel")
+	var servo_joint := _new_joint(service, "throttle_servo_clevis", arm_end, normal)
+	var lever_joint := _new_joint(linkages, "throttle_carburetor_clevis", tip, Vector3.RIGHT)
+	var arm := _new_arm(service, "throttle_servo_arm", servo_pivot, arm_end, Vector3.UP, THROTTLE_SERVO_RADIUS_M)
 	mechanisms["throttle"] = {
-		"kind": "direct",
+		"kind": "cable",
 		"surface": "throttle",
 		"hinge": hinge,
 		"horn_local": horn_local,
@@ -403,16 +465,75 @@ static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: N
 		"servo_radius_m": THROTTLE_SERVO_RADIUS_M,
 		"last_servo_angle": 0.0,
 		"servo_arm": arm,
-		"rods": [
-			{"name": "throttle_pushrod", "node": rod, "start_joint": start_joint, "end_joint": end_joint, "target_length_m": rod_length, "current_length_m": rod_length, "length_error_m": 0.0},
+		"rods": [],
+		"cables": [
+			{"name": "throttle_cable_front", "node": front_cable, "joint": lever_joint, "pin": Vector3.RIGHT, "tube_point": front, "length_m": front_max + THROTTLE_CABLE_HIDDEN_M},
+			{"name": "throttle_cable_rear", "node": rear_cable, "joint": servo_joint, "pin": normal, "tube_point": rear, "length_m": total - front_min + THROTTLE_CABLE_HIDDEN_M},
 		],
+		"cable_total_m": total,
+		"tube_path": path,
 		"solved": true,
 		"closure_error_m": 0.0,
 		"estimated_geometry": true,
 	}
-	_update_rod(mechanisms.throttle.rods[0], endpoint, carburetor_point, normal)
-	_add_cable_route(service, "throttle_servo_lead", [servo.lead, servo.lead + Vector3.BACK * 0.008, Vector3(0, -0.018, -0.08)])
+	_update_cable(mechanisms.throttle.cables[0], tip)
+	_update_cable(mechanisms.throttle.cables[1], arm_end)
+	_add_cable_route(service, "throttle_servo_lead", [servo.lead, servo.lead + Vector3.BACK * 0.008, Vector3(0, -0.024, 0.008)])
 
+
+## Centre line of the throttle cable tube: straight through F1 on the cable's line, along the right side (past the tank),
+## then in to a straight run ahead of the servo arm.
+static func _throttle_tube_path(front: Vector3, aft_dir: Vector3, rear: Vector3) -> Array[Vector3]:
+	var points: Array[Vector3] = [front, front + aft_dir * 0.014]
+	var first: Vector3 = points[1]
+	for z in [-0.24, -0.17, -0.10]:
+		var t := inverse_lerp(first.z, rear.z, z)
+		points.append(Vector3(_fuselage_inner_half_width(z) - THROTTLE_TUBE_RADIUS_M - 0.002, lerpf(first.y, rear.y, t), z))
+	# Turn in toward the servo early, so the spline does not bulge into the side.
+	var approach := rear + Vector3.FORWARD * 0.02
+	var turn_t := inverse_lerp(first.z, rear.z, -0.03)
+	points.append(Vector3(lerpf(points[points.size() - 1].x, approach.x, 0.35), lerpf(first.y, rear.y, turn_t), -0.03))
+	points.append(approach)
+	points.append(rear)
+	return _catmull_rom(points, 8)
+
+
+## Uniform Catmull-Rom through `points` (ends extended along the end chords), `steps` samples per segment.
+static func _catmull_rom(points: Array[Vector3], steps: int) -> Array[Vector3]:
+	var result: Array[Vector3] = []
+	var count := points.size()
+	for i in range(count - 1):
+		var p0: Vector3 = points[i - 1] if i > 0 else points[0] * 2.0 - points[1]
+		var p1: Vector3 = points[i]
+		var p2: Vector3 = points[i + 1]
+		var p3: Vector3 = points[i + 2] if i + 2 < count else points[count - 1] * 2.0 - points[count - 2]
+		for step in range(steps):
+			var t := float(step) / float(steps)
+			result.append(0.5 * (2.0 * p1 + (p2 - p0) * t + (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t * t + (3.0 * p1 - p0 - 3.0 * p2 + p3) * t * t * t))
+	result.append(points[count - 1])
+	return result
+
+
+## Indexed swept tube along `path` in one material (indexed so the static batch keeps it).
+static func _swept_tube(path: Array[Vector3], radius: float, sides: int, color: Color, profile: String) -> ArrayMesh:
+	var tool := SurfaceTool.new()
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	Equipment._sweep_tube(tool, path, radius, sides)
+	tool.index()
+	var mesh := tool.commit()
+	mesh.surface_set_material(0, Finish.material(color, profile))
+	return mesh
+
+
+## A sliding cable: from its exposed end (at its clevis) toward its tube point, running on into the tube.
+static func _update_cable(cable: Dictionary, exposed_end: Vector3) -> void:
+	var direction: Vector3 = (cable.tube_point - exposed_end).normalized()
+	var node: Node3D = cable.node
+	node.transform = Transform3D(Basis(Quaternion(Vector3.UP, direction)), exposed_end + direction * float(cable.length_m) * 0.5)
+	var joint: Node3D = cable.joint
+	joint.position = exposed_end
+	joint.basis = _joint_basis(cable.pin, -direction)
+	cable["exposed_m"] = exposed_end.distance_to(cable.tube_point)
 
 ## Throttle command 0..1 → carburettor lever angle; the neutral built pose is half throttle. Updates every linkage.
 static func set_throttle(controls: Dictionary, throttle: float) -> void:
@@ -490,13 +611,20 @@ static func _aileron_lower_y(z: float) -> float:
 
 ## Inner half width of the fuselage sides at station `z` (root metres).
 static func _fuselage_inner_half_width(z: float) -> float:
+	return _fuselage_section(z).x - FUSELAGE_SIDE_M
+
+
+## Outer fuselage section at station `z`: (half width, top, bottom), interpolated between the traced stations; zero
+## size outside them.
+static func _fuselage_section(z: float) -> Vector3:
 	var stations: Array = D.fuselage_stations
 	for i in range(stations.size() - 1):
 		var a: Array = stations[i]
 		var b: Array = stations[i + 1]
 		if float(a[0]) <= z and z <= float(b[0]):
-			return lerpf(float(a[1]), float(b[1]), (z - float(a[0])) / (float(b[0]) - float(a[0]))) - FUSELAGE_SIDE_M
-	return float(stations[0][1]) - FUSELAGE_SIDE_M
+			var t := (z - float(a[0])) / (float(b[0]) - float(a[0]))
+			return Vector3(lerpf(float(a[1]), float(b[1]), t), lerpf(float(a[2]), float(b[2]), t), lerpf(float(a[3]), float(b[3]), t))
+	return Vector3.ZERO
 
 
 ## A standard servo whose arm turns about `pivot` (mid-thickness of the arm) on a shaft along `axis`, the case reaching
@@ -532,27 +660,6 @@ static func _add_servo(parent: Node3D, label: String, pivot: Vector3, axis: Vect
 		node.transform = Transform3D(basis, bottom + basis * (part[1] as Vector3))
 		parent.add_child(node)
 	return {"basis": basis, "centre": bottom + basis.y * (size.y * 0.5), "tabs": tabs, "lead": bottom + basis * Vector3(-size.x * 0.5 - 0.003, 0.006, 0)}
-
-
-## Hardwood rails (upright servo) or blocks (servo on its side) under each tab, glued to the fuselage side `wall_sign`.
-static func _add_servo_mount(parent: Node3D, label: String, servo: Dictionary, wall_sign: float) -> void:
-	var basis: Basis = servo.basis
-	var centre: Vector3 = servo.centre
-	for tab: Vector3 in servo.tabs:
-		var wall := wall_sign * _fuselage_inner_half_width(tab.z)
-		var size: Vector3
-		var position: Vector3
-		if absf(basis.y.y) > 0.7:
-			# Rails across under the tabs, from the side to just past the case.
-			var inner := centre.x - wall_sign * (SERVO_CASE_M.z * 0.5 + 0.002)
-			size = Vector3(absf(wall - inner), 0.0095, 0.00635)
-			position = Vector3((wall + inner) * 0.5, tab.y - basis.y.y * (0.00125 + size.y * 0.5), tab.z)
-		else:
-			# Blocks from the tab underside to the side.
-			var face := tab.x - basis.y.x * 0.00125
-			size = Vector3(absf(wall - face), 0.012, 0.007)
-			position = Vector3((wall + face) * 0.5, tab.y, tab.z)
-		_add_box(parent, label + "_rail", size, position, Basis.IDENTITY, WOOD, "wood")
 
 
 ## A servo arm turning about `pivot` on a shaft along `axis`: round hub, tapered blade, spare holes and hub screw.
@@ -656,11 +763,23 @@ static func _merged_mesh(parts: Array) -> ArrayMesh:
 			tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 			tool.set_material(material)
 			tools[material] = tool
-		(tools[material] as SurfaceTool).append_from(part[0], 0, part[1])
+		(tools[material] as SurfaceTool).append_from(_indexed(part[0]), 0, part[1])
 	var mesh := ArrayMesh.new()
 	for material in tools:
 		(tools[material] as SurfaceTool).commit(mesh)
 	return mesh
+
+
+## `mesh` with an index array: SurfaceTool.append_from keeps only indexed triangles once any merged part is indexed,
+## so every part is indexed before a merge (US-V17).
+static func _indexed(mesh: Mesh) -> Mesh:
+	var indices: Variant = mesh.surface_get_arrays(0)[Mesh.ARRAY_INDEX]
+	if indices != null and not (indices as PackedInt32Array).is_empty():
+		return mesh
+	var tool := SurfaceTool.new()
+	tool.create_from(mesh, 0)
+	tool.index()
+	return tool.commit()
 
 
 static func _cylinder(radius: float, length: float, segments: int) -> CylinderMesh:
@@ -727,8 +846,9 @@ static func _update_rod(rod: Dictionary, a: Vector3, b: Vector3, normal: Vector3
 	rod.start_joint.position = a
 	rod.end_joint.position = b
 	var direction := delta / actual_length if actual_length > SOLVER_EPSILON else Vector3.BACK
-	rod.start_joint.basis = _joint_basis(normal, direction)
-	rod.end_joint.basis = _joint_basis(normal, direction)
+	# Each clevis pin follows its own crank: the servo arm's axis, or the horn's when it turns in another plane.
+	rod.start_joint.basis = _joint_basis(rod.get("start_normal", normal), direction)
+	rod.end_joint.basis = _joint_basis(rod.get("end_normal", normal), direction)
 	rod.current_length_m = actual_length
 	rod.length_error_m = absf(actual_length - float(rod.target_length_m))
 
@@ -746,27 +866,59 @@ static func _joint_basis(normal: Vector3, direction: Vector3) -> Basis:
 
 
 static func _add_tail_guide(root: Node3D, linkages: Node3D, surface_name: String, servo_end: Vector3, horn_end: Vector3, normal: Vector3) -> void:
-	# The long rod runs inside the fuselage for most of its length. A short
-	# side-exit sleeve and fibre-pattern plate make its exposed terminal route legible.
-	var guide_start := servo_end.lerp(horn_end, 0.78)
-	var guide_finish := servo_end.lerp(horn_end, 0.965)
-	var delta := guide_finish - guide_start
-	var length := delta.length()
-	if length <= SOLVER_EPSILON:
+	# The long rod runs inside the fuselage and leaves it near the tail. US-V18b: a fibre exit plate sits on the skin
+	# where the neutral rod actually crosses it (side or bottom), over a short guide tube inside.
+	var exit := _fuselage_exit(servo_end, horn_end)
+	if exit.is_empty():
 		return
-	var plate_basis := Basis(Quaternion(Vector3.UP, normal.normalized()))
+	var point: Vector3 = exit.point
+	var direction := (horn_end - servo_end).normalized()
+	var plate_basis := Basis(Quaternion(Vector3.UP, exit.normal))
 	var plate := _box_mesh(surface_name + "_fibre_exit_plate", Vector3(0.020, 0.0022, 0.016), FIBER_PLATE, "plastic")
-	plate.transform = Transform3D(plate_basis, guide_start)
+	plate.transform = Transform3D(plate_basis, point)
 	linkages.add_child(plate)
 	for x_sign in [-1.0, 1.0]:
 		for z_sign in [-1.0, 1.0]:
 			var offset := Vector3(x_sign * 0.007, 0.0014, z_sign * 0.005)
 			var screw := _cylinder_mesh(surface_name + "_exit_plate_screw", 0.0011, 0.0015, STEEL, "steel", 8)
-			screw.transform = Transform3D(plate_basis, guide_start + plate_basis * offset)
+			screw.transform = Transform3D(plate_basis, point + plate_basis * offset)
 			linkages.add_child(screw)
-	var guide := _cylinder_mesh(surface_name + "_pushrod_exit_tube", 0.0022, length, FIBER_PLATE, "plastic", 10)
-	guide.transform = Transform3D(Basis(Quaternion(Vector3.UP, delta / length)), (guide_start + guide_finish) * 0.5)
+	var guide_start := point - direction * 0.05
+	var guide_finish := point + direction * 0.003
+	var guide := _cylinder_mesh(surface_name + "_pushrod_exit_tube", 0.0022, guide_start.distance_to(guide_finish), FIBER_PLATE, "plastic", 10)
+	guide.transform = Transform3D(Basis(Quaternion(Vector3.UP, direction)), (guide_start + guide_finish) * 0.5)
 	linkages.add_child(guide)
+
+
+## Where the segment a→b first leaves the fuselage's outer section (sides, top or bottom): {point, normal}, or {}.
+static func _fuselage_exit(a: Vector3, b: Vector3) -> Dictionary:
+	var inside := func(p: Vector3) -> bool:
+		var section := _fuselage_section(p.z)
+		return absf(p.x) <= section.x and p.y >= section.z and p.y <= section.y
+	if not inside.call(a):
+		return {}
+	var lo := 0.0
+	var hi := -1.0
+	for step in range(1, 401):
+		if not inside.call(a.lerp(b, float(step) / 400.0)):
+			hi = float(step) / 400.0
+			break
+		lo = float(step) / 400.0
+	if hi < 0.0:
+		return {}
+	for i in range(30):
+		var mid := (lo + hi) * 0.5
+		if inside.call(a.lerp(b, mid)): lo = mid
+		else: hi = mid
+	var point := a.lerp(b, hi)
+	var section := _fuselage_section(point.z)
+	var side := absf(absf(point.x) - section.x)
+	var bottom := absf(point.y - section.z)
+	var top := absf(point.y - section.y)
+	var normal := Vector3.RIGHT * signf(point.x)
+	if bottom < side and bottom <= top: normal = Vector3.DOWN
+	elif top < side: normal = Vector3.UP
+	return {"point": point, "normal": normal}
 
 
 static func _batch_static_meshes(parent: Node3D, label: String) -> void:
@@ -795,7 +947,7 @@ static func _batch_static_meshes(parent: Node3D, label: String) -> void:
 		tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 		tool.set_material(group.material)
 		for mesh_instance in group.nodes:
-			tool.append_from(mesh_instance.mesh, 0, mesh_instance.transform)
+			tool.append_from(_indexed(mesh_instance.mesh), 0, mesh_instance.transform)
 		var combined := tool.commit()
 		if combined == null or combined.get_surface_count() == 0:
 			continue
