@@ -1,0 +1,154 @@
+{
+  "format": "openrc-f4u-crash-geometry v1",
+  "step": "F4U-11-R1",
+  "generator": "research/f4u-corsair/F4U-11/extract_crash_geometry.py",
+  "source_glb": "assets/source-deliveries/f4u-corsair-g2-2/f4u_corsair/g2_2/export/aircraft.glb",
+  "source_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+  "pose": "neutral controls, wings spread",
+  "probes": [
+    {
+      "id": "probe_wing_left_tip",
+      "mesh": "wing_left_fixed",
+      "direction_le": [
+        0,
+        -1,
+        0
+      ],
+      "half": 0,
+      "component": "left_wing_tip",
+      "position_le": [
+        0.257276,
+        -1.388889,
+        0.0
+      ]
+    },
+    {
+      "id": "probe_wing_right_tip",
+      "mesh": "wing_right_fixed",
+      "direction_le": [
+        0,
+        1,
+        0
+      ],
+      "half": 0,
+      "component": "right_wing_tip",
+      "position_le": [
+        0.257276,
+        1.388889,
+        0.0
+      ]
+    },
+    {
+      "id": "probe_gull_left_bottom",
+      "mesh": "wing_center_fixed",
+      "direction_le": [
+        0,
+        0,
+        -1
+      ],
+      "half": -1,
+      "component": "belly",
+      "position_le": [
+        0.13554,
+        -0.381944,
+        -0.234574
+      ]
+    },
+    {
+      "id": "probe_gull_right_bottom",
+      "mesh": "wing_center_fixed",
+      "direction_le": [
+        0,
+        0,
+        -1
+      ],
+      "half": 1,
+      "component": "belly",
+      "position_le": [
+        0.13554,
+        0.381944,
+        -0.234574
+      ]
+    },
+    {
+      "id": "probe_tail_cone",
+      "mesh": "fuselage_core",
+      "direction_le": [
+        1,
+        0,
+        0
+      ],
+      "half": 0,
+      "component": "tail_end",
+      "position_le": [
+        1.793979,
+        0.001272,
+        0.074241
+      ]
+    },
+    {
+      "id": "probe_fuselage_rear_bottom",
+      "mesh": "fuselage_core",
+      "direction_le": [
+        1,
+        0,
+        -1
+      ],
+      "half": 0,
+      "component": "tail_end",
+      "position_le": [
+        1.780438,
+        -0.0,
+        0.057912
+      ]
+    },
+    {
+      "id": "probe_stabilizer_left_aft",
+      "mesh": "stabilizer_fixed",
+      "direction_le": [
+        1,
+        -1,
+        0
+      ],
+      "half": -1,
+      "component": "left_stab_tip",
+      "position_le": [
+        1.706147,
+        -0.542444,
+        0.095667
+      ]
+    },
+    {
+      "id": "probe_stabilizer_right_aft",
+      "mesh": "stabilizer_fixed",
+      "direction_le": [
+        1,
+        1,
+        0
+      ],
+      "half": 1,
+      "component": "right_stab_tip",
+      "position_le": [
+        1.706147,
+        0.542444,
+        0.095667
+      ]
+    },
+    {
+      "id": "probe_fin_aft_upper",
+      "mesh": "rudder",
+      "direction_le": [
+        1,
+        0,
+        1
+      ],
+      "half": 0,
+      "component": "fin_top",
+      "position_le": [
+        1.527006,
+        7.8e-05,
+        0.493855
+      ]
+    }
+  ]
+}

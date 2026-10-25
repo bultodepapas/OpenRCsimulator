@@ -1206,11 +1206,56 @@
         -0.16,
         -0.0,
         -0.168205
+      ],
+      [
+        0.257276,
+        -1.388889,
+        0.0
+      ],
+      [
+        0.257276,
+        1.388889,
+        0.0
+      ],
+      [
+        0.13554,
+        -0.381944,
+        -0.234574
+      ],
+      [
+        0.13554,
+        0.381944,
+        -0.234574
+      ],
+      [
+        1.793979,
+        0.001272,
+        0.074241
+      ],
+      [
+        1.780438,
+        -0.0,
+        0.057912
+      ],
+      [
+        1.706147,
+        -0.542444,
+        0.095667
+      ],
+      [
+        1.706147,
+        0.542444,
+        0.095667
+      ],
+      [
+        1.527006,
+        7.8e-05,
+        0.493855
       ]
     ],
     "unit": "m",
     "kind": "derived",
-    "source": "Points that hit the ground first (le frame) from assets/aircraft/f4u-corsair-250/geometry-r59.json (F4U-06: R59 visual master measured at 1/4.5; provisional until g1); the propeller probes use the physical 30 in propeller, the diameter the renderer draws"
+    "source": "LE-frame probes from assets/aircraft/f4u-corsair-250/geometry-r59.json (F4U-06: R59 visual master measured at 1/4.5; provisional until g1); additional neutral-mesh support points from assets/aircraft/f4u-corsair-250/crash-geometry.json (F4U-11-R1); the propeller probes use the physical 30 in propeller, the diameter the renderer draws"
   },
   "crash_hull_ids": [
     "probe_wing_left_le",
@@ -1226,7 +1271,16 @@
     "probe_stabilizer_right_tip",
     "probe_fin_top",
     "probe_canopy_top",
-    "probe_cowl_bottom"
+    "probe_cowl_bottom",
+    "probe_wing_left_tip",
+    "probe_wing_right_tip",
+    "probe_gull_left_bottom",
+    "probe_gull_right_bottom",
+    "probe_tail_cone",
+    "probe_fuselage_rear_bottom",
+    "probe_stabilizer_left_aft",
+    "probe_stabilizer_right_aft",
+    "probe_fin_aft_upper"
   ],
   "crash_hull_components": [
     "left_wing_tip",
@@ -1242,7 +1296,16 @@
     "right_stab_tip",
     "fin_top",
     "canopy",
-    "belly"
+    "belly",
+    "left_wing_tip",
+    "right_wing_tip",
+    "belly",
+    "belly",
+    "tail_end",
+    "tail_end",
+    "left_stab_tip",
+    "right_stab_tip",
+    "fin_top"
   ],
   "plausibility": {
     "mass_range": {

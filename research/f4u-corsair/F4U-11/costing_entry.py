@@ -67,6 +67,12 @@ LINES = [
     line("final_assembly_and_commissioning", [], "Unpriced Corsair-specific final assembly, balancing, commissioning and post-crash inspection labor. No transferable allowance assumed."),
 ]
 CONTACTS = {
+    "probe_wing_left_tip": ["wing_left"], "probe_wing_right_tip": ["wing_right"],
+    "probe_gull_left_bottom": ["wing_left", "wing_joiner"],
+    "probe_gull_right_bottom": ["wing_right", "wing_joiner"],
+    "probe_tail_cone": ["fuselage_rear"], "probe_fuselage_rear_bottom": ["fuselage_rear"],
+    "probe_stabilizer_left_aft": ["horizontal_tail"], "probe_stabilizer_right_aft": ["horizontal_tail"],
+    "probe_fin_aft_upper": ["vertical_tail"],
     "propeller/propulsion_main": ["propeller"],
     "probe_wing_left_le": ["wing_left"], "probe_wing_left_te": ["wing_left"],
     "probe_wing_right_le": ["wing_right"], "probe_wing_right_te": ["wing_right"],

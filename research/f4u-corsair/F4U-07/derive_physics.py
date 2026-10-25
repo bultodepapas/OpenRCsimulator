@@ -38,6 +38,7 @@ from bem import bem_tables  # noqa: E402
 
 GEOMETRY = ROOT / "assets/aircraft/f4u-corsair-250/geometry-r59.json"
 MODEL_GEOMETRY = ROOT / "assets/aircraft/f4u-corsair-250/model-geometry.json"
+CRASH_GEOMETRY = ROOT / "assets/aircraft/f4u-corsair-250/crash-geometry.json"
 SOURCE = ROOT / "assets/aircraft/f4u-corsair-250/source.json"
 STIK = ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"
 GE_FILE = HERE / "vlm_ground_effect.json"
@@ -818,6 +819,11 @@ hull_probes = [
     ("probe_fin_top", H["fin_top"], "fin_top"), ("probe_canopy_top", g["canopy_top"], "canopy"),
     ("probe_cowl_bottom", H["cowl_bottom"], "belly"),
 ]
+# F4U-11-R1: keep the original IDs/order and add bounded support for the real
+# tips, gull underside and rear fuselage. No triangle collision in the solver.
+crash_geometry = load_json(CRASH_GEOMETRY)
+assert crash_geometry["source_sha256"] == MG["inputs"]["glb_sha256"]
+hull_probes.extend((p["id"], p["position_le"], p["component"]) for p in crash_geometry["probes"])
 coeff = lambda v, unit, how: q(float(v), unit, "derived", D(how))
 coefficients = {
     "CL0": coeff(CL0, "1", "cambered wing at its mean incidence + tail at zero body alpha (no trim calibration)"),
@@ -892,7 +898,7 @@ data = {
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
     ],
-    "crash_hull": q([p_ for _, p_, _ in hull_probes], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + "; the propeller probes use the physical 30 in propeller, the diameter the renderer draws"),
+    "crash_hull": q([p_ for _, p_, _ in hull_probes], "m", "derived", "LE-frame probes from " + GEO_SRC + "; additional neutral-mesh support points from assets/aircraft/f4u-corsair-250/crash-geometry.json (F4U-11-R1); the propeller probes use the physical 30 in propeller, the diameter the renderer draws"),
     "crash_hull_ids": [i_ for i_, _, _ in hull_probes],
     "crash_hull_components": [c_ for _, _, c_ in hull_probes],
     "plausibility": {
