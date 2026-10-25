@@ -10,8 +10,18 @@ class TrackedFlight extends "res://main.gd":
 	var process_calls := 0
 	var prime_tick := -1
 	var prime_state_unchanged := false
+	var input_reads := 0
 	func _user_args() -> Dictionary:
-		return {"soundscape": "off", "crash-effects": "off", "smoke": "off"}
+		var args: Dictionary = super._user_args()
+		args.merge({"soundscape": "off", "crash-effects": "off", "smoke": "off"}, true)
+		return args
+	func _startup_stage(label: String) -> bool:
+		if label == "Preparing effects":
+			session.read_raw = _counted_raw
+		return await super._startup_stage(label)
+	func _counted_raw() -> Dictionary:
+		input_reads += 1
+		return {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
 	func _process(delta: float) -> void:
 		process_calls += 1
 		super._process(delta)
@@ -113,7 +123,31 @@ func _run() -> void:
 	_camera_before_process()
 	await _staged_start(FlightSession.START_RUNWAY)
 	await _staged_start(FlightSession.START_AIRBORNE)
+	var quick := TrackedFlight.new()
+	quick.set_user_args(PackedStringArray(["--quick-flight"]))
+	quick.external_controller_selection = true
+	quick.accident_reports_enabled = false
+	var quick_finished := {}
+	quick.startup_finished.connect(func() -> void:
+		quick_finished.merge({tick = quick.session.sim.tick, pose = quick._last_render_pose.duplicate(), renders = quick.render_calls}))
+	root.add_child(quick)
+	var quick_valid: bool = quick.startup_complete and quick.session != null and quick.session.is_flyable() and quick.startup_error.is_empty()
+	_check("quick-flight readiness signal observes the first validated tick-zero runway pose", quick_valid
+		and quick.start_choice == FlightSession.START_RUNWAY and quick_finished.get("tick", -1) == 0
+		and quick_finished.get("renders", 0) == 1 and not quick_finished.get("pose", {}).is_empty())
+	if quick_valid:
+		var expected: Dictionary = quick._pose_of(quick.session.sim.state)
+		var to_target: Vector3 = (expected.pos - quick._camera.global_position).normalized()
+		_check("quick-flight camera and aircraft are placed before the first process", quick._camera.position.is_equal_approx(_eye(quick.field.pilot))
+			and (-quick._camera.global_basis.z).dot(to_target) > 0.9999
+			and quick._last_render_pose.get("pos", Vector3.INF).is_equal_approx(expected.pos))
+		_check("quick-flight priming preserves checkpoint bytes without processing, input or time", quick.process_calls == 0
+			and quick.input_reads == 0 and quick.prime_tick == 0 and quick.session.sim.tick == 0
+			and quick.session.sim.time() == 0.0 and quick._camera_dt == 0.0 and quick.prime_state_unchanged)
+	quick.free()
+	await process_frame
 	var direct := TrackedFlight.new()
+	direct.set_user_args(PackedStringArray())
 	root.add_child(direct)
 	_check("direct technical startup retains deferred render priming", direct.startup_complete and direct.render_calls == 0 and direct._last_render_pose.is_empty())
 	direct.free()
