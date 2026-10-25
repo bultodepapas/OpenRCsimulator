@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+collision world bytes: 4781420, sha256=a0eeb61cd3f072b5f1e77564592841bcb6067c85de2667955bd8cb7f3e4300c4
+collision world cache: entry=4910972/8388608 bytes, cold=213.869 ms, hit=49.108 ms
+collision world cache: 32 checks, 0 failures
