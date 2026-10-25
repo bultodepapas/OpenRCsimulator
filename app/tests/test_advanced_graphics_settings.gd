@@ -81,8 +81,9 @@ func _run() -> void:
 	await ui.settle()
 	if DisplayServer.get_name() != "headless":
 		print("requested VSync off; platform effective mode: ", DisplayServer.window_get_vsync_mode())
-		_check("effective VSync is visible to the player", settings._graphics_info.text.ends_with(tr("On"))
-			or settings._graphics_info.text.ends_with(tr("Off")))
+		var effective_vsync := tr("On") if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED else tr("Off")
+		_check("effective VSync is visible to the player", settings._graphics_info.text.contains(
+			tr("Output: %d × %d · VSync: %s") % [root.size.x, root.size.y, effective_vsync]))
 	settings._msaa_picker.select(3)
 	settings._msaa_picker.item_selected.emit(3)
 	_check("8x MSAA reaches the real viewport", root.msaa_3d == Viewport.MSAA_8X)
@@ -106,20 +107,22 @@ func _run() -> void:
 		and settings._fsr2_sharpness_slider.tooltip_text.contains("does not use FSR sharpness")
 		and settings._fsr2_sharpness_slider.tooltip_text.contains("saved value is kept"))
 	settings._draft.reconstruction = "dlss_quality"
-	settings._sync_controls()
+	settings._on_graphics_option_changed()
 	settings._refresh_graphics_info()
-	_check("unsupported DLSS preference remains selected for the user",
+	var dlss_policy := Reconstruction.resolve("dlss_quality", reconstruction_caps)
+	_check("DLSS preference remains selected regardless of availability",
 		settings._reconstruction_picker.get_item_metadata(settings._reconstruction_picker.selected) == "dlss_quality")
 	_check("DLSS sharpness slider stays disabled and explains its saved FSR value",
 		not settings._fsr2_sharpness_slider.editable
 		and settings._fsr2_sharpness_slider.focus_mode == Control.FOCUS_NONE
-		and settings._fsr2_sharpness_slider.tooltip_text.contains("inactive while Native is active")
-		and settings._fsr2_sharpness_slider.tooltip_text.contains("DLSS controls sharpness when it is active"))
+		and settings._fsr2_sharpness_slider.tooltip_text.contains(
+			"inactive while Native is active" if dlss_policy.fallback else "DLSS controls its own reconstruction sharpness")
+		and settings._fsr2_sharpness_slider.tooltip_text.contains("FSR2 or FSR3"))
 	var current_output := settings.get_viewport().get_visible_rect().size
 	var expected_dimensions := "%d × %d" % [roundi(current_output.x), roundi(current_output.y)]
 	_check("graphics status shows requested and effective providers",
 		settings._graphics_info.text.contains(tr("Reconstruction: Requested %s → Active %s")
-			% [tr("DLSS · Quality"), tr("Native")]))
+			% [tr("DLSS · Quality"), tr("Native") if dlss_policy.fallback else tr("DLSS · Quality")]))
 	_check("graphics status shows the current 3D input and output sizes",
 		settings._graphics_info.text.contains(expected_dimensions))
 	_check("unsupported provider explanation names the actual graphics limitation in player language",
@@ -128,10 +131,16 @@ func _run() -> void:
 	_check("FSR3 runtime rollback is described as a runtime failure",
 		settings._reconstruction_unavailable_text("fsr3", "fsr3_runtime_failure").contains("could not continue")
 		and not settings._reconstruction_unavailable_text("fsr3", "fsr3_runtime_failure").contains("does not report"))
+	# Exercise a real viewport fallback receipt even on a DLSS-capable test device.
+	var unavailable_caps := reconstruction_caps.duplicate(true)
+	unavailable_caps.dlss = false
+	Reconstruction.apply(root, settings._draft, unavailable_caps)
+	settings._refresh_graphics_info()
 	_check("fallback status says Native is active and the saved request is kept",
 		settings._graphics_info.text.contains("Native rendering is active")
 		and settings._graphics_info.text.contains("saved choice"))
 	settings._draft.reconstruction = saved_reconstruction
+	Reconstruction.apply(root, settings._draft)
 	settings._sync_controls()
 	settings._reconstruction_picker.select(3)
 	settings._reconstruction_picker.item_selected.emit(3)
