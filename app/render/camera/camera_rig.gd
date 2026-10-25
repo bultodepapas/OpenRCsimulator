@@ -39,6 +39,10 @@ const ORBIT_NEAR_MAX := 0.25
 const WRECK_CLOSEUP_OFFSET := Vector3(5.0, 3.2, 6.0)
 const WRECK_CLOSEUP_FOV := 58.0
 const WRECK_CLEARANCE_M := 0.6
+## The held chase narrows its FOV so a wreck that slid away still spans this share of the frame height, like an
+## operator zooming in; never narrower than WRECK_CHASE_MIN_FOV, never wider than the chase's own FOV.
+const WRECK_FRAME_SHARE := 0.25
+const WRECK_CHASE_MIN_FOV := 12.0
 
 var camera: Camera3D
 var view := "pilot"
@@ -204,7 +208,8 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 ## CAM-27: a crash aftermath, called after update() in the same frame. Non-pilot views look at `point` (the wreck's
 ## core from the crash director) instead of a fixed spot near the impact: the orbit turns around it and stays under
 ## the player's control, the chase holds its (paused) position and turns to it, and the close-up keeps its offset from
-## it above the terrain. The pilot view keeps the director's rule (main.gd).
+## it above the terrain. The held chase narrows its FOV as the wreck slides away. The pilot view keeps the director's
+## rule (main.gd).
 func focus(point: Vector3, ground_y: Callable) -> void:
 	if not is_nan(look.x):
 		return
@@ -215,6 +220,9 @@ func focus(point: Vector3, ground_y: Callable) -> void:
 			_apply(orbit.update(point, ground_y, 0.0)) # eased once this frame already, in update()
 		"chase":
 			camera.basis = CameraMath.look_basis(camera.position, point)
+			var away := maxf(camera.position.distance_to(point), 0.1)
+			camera.fov = clampf(rad_to_deg(2.0 * atan(_span / (2.0 * away * WRECK_FRAME_SHARE))), WRECK_CHASE_MIN_FOV,
+				ChaseView.FOV_DEG)
 		"closeup":
 			var eye := point + WRECK_CLOSEUP_OFFSET
 			if ground_y.is_valid():

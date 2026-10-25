@@ -398,7 +398,7 @@
       "casual_shirt.json": "4380746f76c54527b219ed457e2b5783512820bdca7db85f261df546b27b0d2c",
       "mechanic_overalls.json": "07708338db9bbb90af538bcccd94fc6ca992237823483583621a5d8a1f486f5f",
       "pilot_polo.json": "6d8b5d9f42e9d5f2c00906ce3f88729a7f0193f23028c1f1e816ae993ee81b6b",
-      "veteran_cap.json": "a3bb636fe282c15120c40f0de4b8683d9d791a714864b17013dc94e942f091d0",
+      "veteran_cap.json": "20d698c6e16793e7295049fa69b64676b9a17c800385aa5d4e628165da70895d",
       "woman_tee.json": "1c992889c167dfcb58fe540a9029df1423abe93cf4651644939ed56768daa63d"
     },
     "poses": {
@@ -472,13 +472,14 @@
       "toigo_maga_hat (hats01)": "political slogan",
       "jujube_newsboy_cap (hats01)": "no material line in its .mhclo",
       "female/male casualsuit with the MakeHuman logo": "branding",
-      "toigo_flats": "25,920 triangles after decimation"
+      "toigo_flats": "25,920 triangles after decimation",
+      "male_casualsuit06 MakeHuman logo": "kept: the CC0 tee is used with its logo patched out by generate_people.py (outfit texture_patches, SC-HUM-07-R1)"
     },
     "runtime": "app/assets/scenery/population/people/: eight GLBs, one 2720x4064 diffuse and one 1360x2032 normal atlas (VRAM-compressed, mipmaps)",
     "retires": "SC-HUM-02 standing/sitting/pilot GLBs and their atlas (the LU-21 person stays reproducible from the default recipe)",
     "evidence": "docs/research/scenery-implementation/SC-HUM-07/README.md; work poses: docs/research/scenery-implementation/SC-HUM-06/README.md",
     "runtime_textures": [
-      "aa996a41d59cb85abc94edb1d8601011cac23693a00cc83b78c8fd9261c9ee9b.png",
+      "1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png",
       "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png"
     ]
   },

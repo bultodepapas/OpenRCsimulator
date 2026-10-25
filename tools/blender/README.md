@@ -26,9 +26,11 @@ The agent client starts `mcp-server.sh` itself after you approve the project ser
 - Verified end to end with the MCP Python client: 26 tools listed; `execute_blender_code` and `get_objects_summary` on the Radiolink T12D delivery; a thumbnail render under `--gui`.
 - **Security:** the server runs any Python an agent sends, with your user rights and no guard (Blender Lab's warning). It listens on localhost only. Run it on this development VM; stop the bridge when you are done.
 - `--gui` runs Blender under `xvfb-run`; stopping the wrapper can leave Blender listening. Check with `ss -ltn | grep 9876` and stop the Blender process by its PID.
+- A request longer than 300 s returns a timeout, but Blender finishes the job. For long renders, wait for the output files.
+- Blender previews of the merged people blend the atlas alpha, so clothing looks shredded and see-through. Unlink the alpha in previews; the game shader cuts it only on hair and brows.
 - Agent code runs in a weak sandbox that blocks only quitting Blender and resetting preferences; `result` must be a dict.
 - Use one bridge per port. To run another, set `BLENDER_MCP_PORT` for both the bridge and the `.mcp.json` entry.
-- The people generators (`tools/scenery/population/`) keep their own isolated profile in `.tools/sc-hum-authoring/` and do not use MCP.
+- The people generators (`tools/scenery/population/`) run with their own isolated profile in `.tools/sc-hum-authoring/` (MPFB). Review their poses through MCP by opening the `--save-posed` file.
 
 ## Skills
 
