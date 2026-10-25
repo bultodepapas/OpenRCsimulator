@@ -356,6 +356,11 @@ The flight inventory puts the three servos at x_aft 0.15 (z 0.035); the plan's t
 
 The renders reviewed: the nose interior with the covering hidden, and the switch plate in the flight model.
 
+**Results (US-V18b and US-V18c together):**
+- `verify_controls.gd` passes 449/0 and `verify_model.gd` passes 953/0.
+- The engine generator passes `--check`.
+- 35 of 36 related tests pass, adding Workshop customization, integration, presentation and smoke bindings to the US-V17 set. `test_companions_profiles` still fails on its existing `pilot.gd` pin.
+
 ## Limits and open findings
 
 - **Engine shadow acne (global, not Stik-specific).** With PSSM engine shadows on (the interactive default), the wing shows a diagonal crosshatch. It disappears with `OPENRC_ENGINE_SHADOWS=off`, and the glossier film makes it more visible. Sun bias settings belong to the atmosphere/world owners (`render/atmosphere.gd`, L3).
