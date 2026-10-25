@@ -272,7 +272,7 @@ Stations and sizes are estimates.
 Each servo is now placed from its shaft, so the case hangs below its arm. The taller cases needed new seats in the fuselage. Rails respect the plan's 1/4 in sides and 3/32 in bottom.
 - **Elevator:** the servo lies on its side, on blocks glued to the left side.
 - **Rudder:** the servo stands on rails from the right side. Its arm is 10 mm higher than before, so the case clears the bottom.
-- **Throttle:** the servo stands on rails, output end forward, clear of F1.
+- **Throttle:** the servo stands on rails, output end forward, clear of F1. Its arm hole moves from 12 to 16 mm, so the case clears the 1/4 in nose side; the 12 mm arm put it 1 mm into the side, which the new fit check caught.
 
 **Arms and horns.**
 - **Arms:** each was a bar. Now it is a hub with a screw, a tapered blade, a rounded tip and two spare holes.
