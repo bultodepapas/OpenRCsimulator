@@ -1,0 +1,387 @@
+{
+  "method": "Five alternating fresh-process baseline/candidate pairs, two Home Fly cycles each. Native fullscreen1920x1080; no simultaneous Godot processes in this task. OS/import/shader caches uncontrolled. Paused draws are scene-ready only, excluded from active-draw claims.",
+  "candidate_commit": "b0054b5e8",
+  "baseline_commit": "6b4bd9e3",
+  "runs": [
+    {
+      "pair": 1,
+      "role": "baseline",
+      "path": "pair-1-baseline.json",
+      "complete": true,
+      "viewport_size": [
+        1920,
+        1080
+      ],
+      "ready_ms": [
+        18994.67,
+        1916.44
+      ],
+      "first_draw_ms": [
+        19006.51,
+        1928.066
+      ],
+      "first_draw_paused": [
+        true,
+        true
+      ],
+      "feedback_ms": [
+        22.337,
+        8.351
+      ],
+      "p95_handoff_ms": [
+        1846.603,
+        239.511
+      ],
+      "max_handoff_ms": [
+        15208.65,
+        316.743
+      ],
+      "checking_flight_ms": [
+        15194.925,
+        37.433
+      ]
+    },
+    {
+      "pair": 1,
+      "role": "candidate",
+      "path": "pair-1-candidate.json",
+      "complete": true,
+      "viewport_size": [
+        1920,
+        1080
+      ],
+      "ready_ms": [
+        8121.616,
+        1597.91
+      ],
+      "first_draw_ms": [
+        8141.257,
+        1615.53
+      ],
+      "first_draw_paused": [
+        false,
+        false
+      ],
+      "feedback_ms": [
+        9.377,
+        9.777
+      ],
+      "p95_handoff_ms": [
+        29.503,
+        218.261
+      ],
+      "max_handoff_ms": [
+        1697.666,
+        219.257
+      ],
+      "checking_flight_ms": [
+        4834.613,
+        24.041
+      ]
+    },
+    {
+      "pair": 2,
+      "role": "baseline",
+      "path": "pair-2-baseline.json",
+      "complete": true,
+      "viewport_size": [
+        1920,
+        1080
+      ],
+      "ready_ms": [
+        14846.365,
+        1606.624
+      ],
+      "first_draw_ms": [
+        14867.3,
+        1625.597
+      ],
+      "first_draw_paused": [
+        false,
+        false
+      ],
+      "feedback_ms": [
+        8.891,
+        33.19
+      ],
+      "p95_handoff_ms": [
+        1624.954,
+        221.307
+      ],
+      "max_handoff_ms": [
+        11647.196,
+        222.11
+      ],
+      "checking_flight_ms": [
+        11629.199,
+        25.228
+      ]
+    },
+    {
+      "pair": 2,
+      "role": "candidate",
+      "path": "pair-2-candidate.json",
+      "complete": true,
+      "viewport_size": [
+        1920,
+        1080
+      ],
+      "ready_ms": [
+        8592.498,
+        1633.345
+      ],
+      "first_draw_ms": [
+        8616.922,
+        1658.986
+      ],
+      "first_draw_paused": [
+        false,
+        false
+      ],
+      "feedback_ms": [
+        11.456,
+        19.452
+      ],
+      "p95_handoff_ms": [
+        26.227,
+        222.369
+      ],
+      "max_handoff_ms": [
+        1832.522,
+        224.13
+      ],
+      "checking_flight_ms": [
+        5098.31,
+        24.362
+      ]
+    },
+    {
+      "pair": 3,
+      "role": "baseline",
+      "path": "pair-3-baseline.json",
+      "complete": true,
+      "viewport_size": [
+        1920,
+        1080
+      ],
+      "ready_ms": [
+        15031.875,
+        1579.653
+      ],
+      "first_draw_ms": [
+        15053.318,
+        1598.514
+      ],
+      "first_draw_paused": [
+        false,
+        false
+      ],
+      "feedback_ms": [
+        10.263,
+        33.942
+      ],
+      "p95_handoff_ms": [
+        1731.256,
+        219.036
+      ],
+      "max_handoff_ms": [
+        11732.374,
+        222.617
+      ],
+      "checking_flight_ms": [
+        11715.574,
+        24.366
+      ]
+    },
+    {
+      "pair": 3,
+      "role": "candidate",
+      "path": "pair-3-candidate.json",
+      "complete": true,
+      "viewport_size": [
+        1920,
+        1080
+      ],
+      "ready_ms": [
+        8560.791,
+        1720.719
+      ],
+      "first_draw_ms": [
+        8589.819,
+        1747.481
+      ],
+      "first_draw_paused": [
+        false,
+        false
+      ],
+      "feedback_ms": [
+        11.084,
+        18.353
+      ],
+      "p95_handoff_ms": [
+        32.494,
+        224.246
+      ],
+      "max_handoff_ms": [
+        1835.149,
+        234.934
+      ],
+      "checking_flight_ms": [
+        4980.253,
+        26.555
+      ]
+    },
+    {
+      "pair": 4,
+      "role": "baseline",
+      "path": "pair-4-baseline.json",
+      "complete": true,
+      "viewport_size": [
+        1920,
+        1080
+      ],
+      "ready_ms": [
+        15849.207,
+        1727.06
+      ],
+      "first_draw_ms": [
+        15871.541,
+        1746.831
+      ],
+      "first_draw_paused": [
+        false,
+        false
+      ],
+      "feedback_ms": [
+        11.437,
+        33.842
+      ],
+      "p95_handoff_ms": [
+        1769.878,
+        237.5
+      ],
+      "max_handoff_ms": [
+        12356.245,
+        238.018
+      ],
+      "checking_flight_ms": [
+        12338.251,
+        25.789
+      ]
+    },
+    {
+      "pair": 4,
+      "role": "candidate",
+      "path": "pair-4-candidate.json",
+      "complete": true,
+      "viewport_size": [
+        1920,
+        1080
+      ],
+      "ready_ms": [
+        10521.271,
+        1844.034
+      ],
+      "first_draw_ms": [
+        10530.851,
+        1853.856
+      ],
+      "first_draw_paused": [
+        true,
+        true
+      ],
+      "feedback_ms": [
+        20.335,
+        11.838
+      ],
+      "p95_handoff_ms": [
+        19.915,
+        245.728
+      ],
+      "max_handoff_ms": [
+        2665.918,
+        250.168
+      ],
+      "checking_flight_ms": [
+        5839.467,
+        35.068
+      ]
+    },
+    {
+      "pair": 5,
+      "role": "baseline",
+      "path": "pair-5-baseline.json",
+      "complete": true,
+      "viewport_size": [
+        1920,
+        1080
+      ],
+      "ready_ms": [
+        15811.36,
+        1633.945
+      ],
+      "first_draw_ms": [
+        15834.963,
+        1652.863
+      ],
+      "first_draw_paused": [
+        false,
+        false
+      ],
+      "feedback_ms": [
+        10.904,
+        7.323
+      ],
+      "p95_handoff_ms": [
+        1843.624,
+        227.796
+      ],
+      "max_handoff_ms": [
+        12364.1,
+        231.848
+      ],
+      "checking_flight_ms": [
+        12352.032,
+        25.081
+      ]
+    },
+    {
+      "pair": 5,
+      "role": "candidate",
+      "path": "pair-5-candidate.json",
+      "complete": true,
+      "viewport_size": [
+        1920,
+        1080
+      ],
+      "ready_ms": [
+        8271.762,
+        1706.234
+      ],
+      "first_draw_ms": [
+        8303.835,
+        1726.421
+      ],
+      "first_draw_paused": [
+        false,
+        false
+      ],
+      "feedback_ms": [
+        10.41,
+        8.647
+      ],
+      "p95_handoff_ms": [
+        26.082,
+        235.845
+      ],
+      "max_handoff_ms": [
+        1731.927,
+        263.627
+      ],
+      "checking_flight_ms": [
+        4933.368,
+        26.013
+      ]
+    }
+  ]
+}

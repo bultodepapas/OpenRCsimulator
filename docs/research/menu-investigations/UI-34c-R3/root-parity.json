@@ -1,0 +1,66 @@
+[
+  {
+    "file": "pack_default_d035_u050_rho0900.bin",
+    "baseBytes": 328,
+    "candidateBytes": 328,
+    "byteIdentical": true,
+    "baseSha256": "80f0ec9a9ace01891d929c463821ec43d6fbc6ddf705526ea225a4a06bd74988",
+    "candidateSha256": "80f0ec9a9ace01891d929c463821ec43d6fbc6ddf705526ea225a4a06bd74988"
+  },
+  {
+    "file": "pack_default_d050_u000_rho1225.bin",
+    "baseBytes": 328,
+    "candidateBytes": 328,
+    "byteIdentical": true,
+    "baseSha256": "1ae35716d5ef2dc2619094545fea21f7ef1b4afb6d59fa35bc1d218745a1d01a",
+    "candidateSha256": "1ae35716d5ef2dc2619094545fea21f7ef1b4afb6d59fa35bc1d218745a1d01a"
+  },
+  {
+    "file": "pack_default_d075_u080_rho1000.bin",
+    "baseBytes": 328,
+    "candidateBytes": 328,
+    "byteIdentical": true,
+    "baseSha256": "19220edae8eefa76673f517cb0fe2add30462ee34a5c328ef267135f6017395a",
+    "candidateSha256": "19220edae8eefa76673f517cb0fe2add30462ee34a5c328ef267135f6017395a"
+  },
+  {
+    "file": "pack_invalid_duty_failure.bin",
+    "baseBytes": 312,
+    "candidateBytes": 312,
+    "byteIdentical": true,
+    "baseSha256": "7ac302ccba77a27624682cc3368f70be438bb1925ba612d313d8390db0e5dad3",
+    "candidateSha256": "7ac302ccba77a27624682cc3368f70be438bb1925ba612d313d8390db0e5dad3"
+  },
+  {
+    "file": "pack_invalid_esc_failure.bin",
+    "baseBytes": 324,
+    "candidateBytes": 324,
+    "byteIdentical": true,
+    "baseSha256": "1b8236169776f4fdd5be092d31359762b7995f798ddffd1e0cc8dd3f6d6a8f55",
+    "candidateSha256": "1b8236169776f4fdd5be092d31359762b7995f798ddffd1e0cc8dd3f6d6a8f55"
+  },
+  {
+    "file": "pack_invalid_soc_failure.bin",
+    "baseBytes": 324,
+    "candidateBytes": 324,
+    "byteIdentical": true,
+    "baseSha256": "1b8236169776f4fdd5be092d31359762b7995f798ddffd1e0cc8dd3f6d6a8f55",
+    "candidateSha256": "1b8236169776f4fdd5be092d31359762b7995f798ddffd1e0cc8dd3f6d6a8f55"
+  },
+  {
+    "file": "pack_soc_variant_d060_u110_rho0950.bin",
+    "baseBytes": 328,
+    "candidateBytes": 328,
+    "byteIdentical": true,
+    "baseSha256": "9ce8102507d314ee7da47791f42feb0f89e25de2c11f5a815e804c1d910b90be",
+    "candidateSha256": "9ce8102507d314ee7da47791f42feb0f89e25de2c11f5a815e804c1d910b90be"
+  },
+  {
+    "file": "pack_zero_duty_failure.bin",
+    "baseBytes": 332,
+    "candidateBytes": 332,
+    "byteIdentical": true,
+    "baseSha256": "53481b1e6a72fa1311b08ccccf6d9bf3ed51ad6b2d4bd08da3ac305376be35ca",
+    "candidateSha256": "53481b1e6a72fa1311b08ccccf6d9bf3ed51ad6b2d4bd08da3ac305376be35ca"
+  }
+]
