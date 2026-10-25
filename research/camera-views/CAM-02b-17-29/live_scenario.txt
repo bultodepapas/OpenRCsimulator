@@ -1,0 +1,24 @@
+eval expr="app.display_preferences.save(app.display_preferences.config.merged({'camera_view': 'chase', 'camera_fov': 35, 'camera_sensitivity': 2.0, 'camera_invert_y': true}, true))"
+fly start=airborne
+wait seconds=3
+eval expr="[flight.camera_preferences.camera_fov, flight._rig.view, flight._rig.base_fov, flight._rig.orbit.sensitivity, flight._rig.orbit.invert_y, flight._camera.near]"
+key name=1
+wait seconds=2
+eval expr="[flight._rig.view, flight._camera.near, flight._camera.fov]"
+eval expr="app._apply_presentation(app.display_preferences.config.merged({'camera_fov': 50}, true))"
+wait seconds=2
+eval expr="[flight._rig.base_fov, flight._camera.fov, flight._rig.view]"
+key name=5
+wait seconds=1
+eval expr="[flight._rig.orbit.azimuth_deg, flight._rig.orbit.elevation_deg, flight._camera.near]"
+eval expr="flight._rig.drag(Vector2(100, 20))"
+eval expr="[flight._rig.orbit.azimuth_deg, flight._rig.orbit.elevation_deg]"
+key name=2
+sticks pitch=-1 throttle=1 for_s=6
+wait until="not flight.session.crash.is_empty()" timeout_s=60
+wait seconds=4
+press text="Inspect wreck"
+wait seconds=1
+eval expr="[flight._rig.view, flight._camera.fov, flight._crash_director.focus_point().distance_to(flight._crash_director._impact_point), flight._camera.unproject_position(flight._crash_director.focus_point())]"
+screenshot format=jpg max_width=960
+logs --summary

@@ -455,6 +455,11 @@ func _wreck_focus() -> void:
 	var held := cam.position
 	rig.focus(wreck, _flat)
 	_check("CAM-27 chase: holds its position and turns to the wreck", cam.position == held and _aims_at(cam, wreck))
+	var share := PilotCamera.projected_px(SPAN, cam.position.distance_to(wreck), cam.fov, 1.0)
+	_check("CAM-27 chase: narrows so the slid wreck spans a quarter of the frame height", cam.fov < ChaseView.FOV_DEG and absf(share - CameraRig.WRECK_FRAME_SHARE) < 0.01, "fov %.1f°, share %.3f" % [cam.fov, share])
+	rig.focus(impact, _flat)
+	_check("CAM-27 chase: a wreck still near the impact keeps the chase FOV (no jump on entry)", cam.fov == ChaseView.FOV_DEG, "%.2f" % cam.fov)
+	rig.focus(wreck, _flat)
 	rig.set_view("orbit")
 	rig.update(impact, airplane, _level(0.0), 1.0 / 60.0, true, _flat)
 	rig.focus(wreck, _flat)
