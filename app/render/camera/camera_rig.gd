@@ -106,7 +106,7 @@ static func is_view(id: String) -> bool:
 
 
 func view_name() -> String:
-	return str(NAMES.get(view, view))
+	return "chase 3D" if view == "chase" and chase.style == "follow3d" else str(NAMES.get(view, view))
 
 
 ## Selects a view. Chase restarts settled behind the airplane; orbit starts from the camera's current position.
@@ -126,6 +126,16 @@ func set_view(id: String) -> bool:
 	_fov_offset = 0.0
 	_absorb_from = NAN
 	return true
+
+
+## A view key: selects the view, and pressed again in the chase view switches its style (CAM-09: horizon-locked ↔ 3D
+## follow). Settings and command-line selection use set_view(), which never toggles.
+func select_view(id: String) -> bool:
+	if id == "chase" and view == "chase":
+		chase.style = "follow3d" if chase.style == "horizon" else "horizon"
+		chase.reset()
+		return true
+	return set_view(id)
 
 
 func cycle(step: int) -> void:
@@ -213,11 +223,13 @@ func reset() -> void:
 
 ## Places the camera for this frame. target: the airplane's CG (render); airplane: its root transform (close-up
 ## offset); dt: frame time (s); paused: the simulation is frozen; ground_y: Callable(x, z) → terrain height;
-## velocity: the CG velocity (render, m/s) from the simulation state, INF when unknown (views then estimate it).
+## velocity: the CG velocity (render, m/s) from the simulation state, INF when unknown (views then estimate it);
+## obstacles: Callable(from, to) → share of that boom clear of scenery, or empty (CAM-09: chase and orbit pull in,
+## the fly-by avoids spots behind buildings and trees).
 ## Camera consumers (audio listener, lake reflection, sun glare) must run after this call, and after focus() during a
 ## crash aftermath, in the same frame.
 func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paused: bool, ground_y: Callable,
-		velocity := Vector3.INF) -> void:
+		velocity := Vector3.INF, obstacles := Callable()) -> void:
 	# SUN-04: the pilot's eyes see the sun as an eye (veil, afterimage); the other views are camera lenses (flares).
 	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or not is_nan(look.x) else "lens")
 	_orbit_entry_eye = Vector3.INF
@@ -238,9 +250,9 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 		"closeup":
 			PilotCamera.aim(camera, target, airplane, true)
 		"chase":
-			_apply(chase.update(target, body, dt, paused, ground_y, velocity))
+			_apply(chase.update(target, body, dt, paused, ground_y, velocity, obstacles))
 		"flyby":
-			_apply(flyby.update(target, body, velocity, dt, paused, ground_y, light_direction))
+			_apply(flyby.update(target, body, velocity, dt, paused, ground_y, light_direction, obstacles))
 		"orbit":
 			if not _orbit_primed:
 				if _placed:
@@ -249,7 +261,7 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 				else:
 					orbit.start_behind(body)
 				_orbit_primed = true
-			_apply(orbit.update(target, ground_y, dt))
+			_apply(orbit.update(target, ground_y, dt, obstacles))
 	_placed = true
 
 
@@ -258,14 +270,14 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 ## the player's control, the chase holds its (paused) position and turns to it, and the close-up keeps its offset from
 ## it above the terrain. The held chase narrows its FOV as the wreck slides away. The pilot view keeps the director's
 ## rule (main.gd).
-func focus(point: Vector3, ground_y: Callable) -> void:
+func focus(point: Vector3, ground_y: Callable, obstacles := Callable()) -> void:
 	if not is_nan(look.x):
 		return
 	match view:
 		"orbit":
 			if _orbit_entry_eye.is_finite():
 				orbit.start_from(_orbit_entry_eye, point) # entered this frame: start where the last view was, around the wreck
-			_apply(orbit.update(point, ground_y, 0.0)) # eased once this frame already, in update()
+			_apply(orbit.update(point, ground_y, 0.0, obstacles)) # eased once this frame already, in update()
 		"chase", "flyby":
 			camera.basis = CameraMath.look_basis(camera.position, point)
 			var away := maxf(camera.position.distance_to(point), 0.1)

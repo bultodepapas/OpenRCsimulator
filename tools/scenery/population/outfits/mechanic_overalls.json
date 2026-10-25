@@ -67,5 +67,6 @@
     "cap": 0.5,
     "beard": 0.4,
     "glasses": 0.35
-  }
+  },
+  "eye_texture": "mindfront_brown_eye_02/brown_eye_02.png"
 }

@@ -348,8 +348,8 @@ msgstr "Reiniciar el vuelo"
 msgid "Resume after a radio failsafe"
 msgstr "Reanudar tras un failsafe de la radio"
 
-msgid "Views: next (Shift+C back), pilot, chase, fly-by, orbit"
-msgstr "Vistas (Mayús+C atrás): piloto, seguir, pasada, órbita"
+msgid "Views: next (Shift+C back), pilot, chase (again: 3D), fly-by, orbit"
+msgstr "Vistas (Mayús+C atrás): piloto, seguir (otra vez: 3D), pasada, órbita"
 
 msgid "Zoom: auto on/off, in, out, reset"
 msgstr "Zoom: auto, acercar, alejar, reiniciar"

@@ -1,7 +1,8 @@
-# Checks atlas/winding, engine bores and crown slots on built triangles, and engine clearance.
+# Checks atlas/winding, engine bores and head fins on built triangles, and engine clearance.
 extends RefCounted
 const Finish := preload("res://aircraft/ugly_stik_finish.gd")
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
+const Equipment := preload("res://aircraft/ugly_stik_equipment.gd")
 var checks := 0
 var failures: Array[String] = []
 
@@ -9,39 +10,40 @@ func check(label: String, ok: bool) -> void:
 	checks += 1
 	if not ok: failures.append(label)
 
-func _first_mesh_ray_hit(engine: MeshInstance3D, root_node: Node3D, ray_from: Vector3, ray_to: Vector3, gold_only: bool = false) -> Variant:
+# US-V13: the engine is the bundled O.S. 61 GLB (~140k indexed triangles); probes use one BVH in model millimetres.
+func _engine_bvh(engine: MeshInstance3D, root_node: Node3D, material := "") -> TriangleMesh:
 	var root_from_mesh: Transform3D = root_node.global_transform.affine_inverse() * engine.global_transform
-	var ray_direction: Vector3 = (ray_to - ray_from).normalized()
-	var ray_length: float = ray_from.distance_to(ray_to)
-	var closest_hit: Variant = null
-	var closest_distance := INF
+	var faces := PackedVector3Array()
 	for surface in range(engine.mesh.get_surface_count()):
-		if gold_only:
-			var surface_material := engine.mesh.surface_get_material(surface)
-			if surface_material == null or not surface_material.resource_name.begins_with("anodized_gold"):
-				continue
+		var surface_material := engine.mesh.surface_get_material(surface)
+		if not material.is_empty() and (surface_material == null or surface_material.resource_name != material):
+			continue
 		var arrays := engine.mesh.surface_get_arrays(surface)
 		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 		var indices: Variant = arrays[Mesh.ARRAY_INDEX]
-		var count: int = vertices.size() if indices == null or indices.is_empty() else indices.size()
-		for i in range(0, count - 2, 3):
-			var a_index: int = i if indices == null or indices.is_empty() else indices[i]
-			var b_index: int = i + 1 if indices == null or indices.is_empty() else indices[i + 1]
-			var c_index: int = i + 2 if indices == null or indices.is_empty() else indices[i + 2]
-			var a: Vector3 = root_from_mesh * vertices[a_index]
-			var b: Vector3 = root_from_mesh * vertices[b_index]
-			var c: Vector3 = root_from_mesh * vertices[c_index]
-			var hit_mm: Variant = Geometry3D.ray_intersects_triangle(ray_from * 1000.0, ray_direction, a * 1000.0, b * 1000.0, c * 1000.0)
-			if hit_mm == null:
-				continue
-			var hit: Vector3 = hit_mm / 1000.0
-			var distance: float = ray_from.distance_to(hit)
-			if (hit - ray_from).dot(ray_direction) < -0.000001 or distance > ray_length + 0.000001:
-				continue
-			if distance < closest_distance:
-				closest_distance = distance
-				closest_hit = hit
-	return closest_hit
+		if indices == null:
+			for vertex in vertices: faces.append(root_from_mesh * vertex * 1000.0)
+		else:
+			for index: int in indices: faces.append(root_from_mesh * vertices[index] * 1000.0)
+	var bvh := TriangleMesh.new()
+	bvh.create_from_faces(faces)
+	return bvh
+
+
+## Distance from `from` to the first engine triangle on the segment to `to` (model metres), or -1 when it is free.
+func _engine_hit(bvh: TriangleMesh, from: Vector3, to: Vector3) -> float:
+	var hit: Dictionary = bvh.intersect_segment(from * 1000.0, to * 1000.0)
+	return -1.0 if hit.is_empty() else (hit.position as Vector3).distance_to(from * 1000.0) / 1000.0
+
+
+## Distances from a point inside a round bore to its wall along four directions across `axis`.
+func _bore_walls(bvh: TriangleMesh, centre: Vector3, axis: Vector3) -> Array[float]:
+	var u := axis.cross(Vector3.UP if absf(axis.y) < 0.9 else Vector3.RIGHT).normalized()
+	var v := axis.cross(u).normalized()
+	var walls: Array[float] = []
+	for direction in [u, -u, v, -v]:
+		walls.append(_engine_hit(bvh, centre, centre + direction * 0.02))
+	return walls
 
 
 func _check_engine_mesh(airplane: Dictionary) -> Dictionary:
@@ -50,61 +52,68 @@ func _check_engine_mesh(airplane: Dictionary) -> Dictionary:
 	check("engine assembly mesh present", engine != null and engine.mesh != null)
 	if engine == null or engine.mesh == null:
 		return {}
+	check("engine is the bundled O.S. 61 SF model", root_node.get_meta("engine_revision", "") == Equipment.ENGINE_REVISION
+		and engine.mesh.get_surface_count() >= 5 and engine.mesh.surface_get_material(0).resource_name == "M_RT_Body")
 	var equipment: Dictionary = Geometry.DATA.equipment
-	var shaft_y: float = float(equipment.shaft_y)
-	var engine_z: float = (float(equipment.firewall_z) + float(equipment.prop_z)) * 0.5
-	check("engine assembly clears propeller plane by 5 mm", engine.get_aabb().position.z > float(equipment.prop_z) + 0.005)
+	var hub_rear: float = float(equipment.prop_z) + Equipment.PROP_HUB_HALF_THICKNESS
+	check("engine stays behind the propeller hub", engine.position.z + engine.get_aabb().position.z >= hub_rear - 0.0001)
+	check("radial mount flange seats on F1", is_equal_approx(engine.position.z + Equipment.engine_anchor("engine_firewall_face").z, float(equipment.firewall_z)))
+	var propeller := root_node.find_child("propeller", false, false) as Node3D
+	var drive_rear := propeller.find_child("engine_drive_rear", false, false) as Node3D if propeller != null else null
+	var drive_front := propeller.find_child("engine_drive_front", false, false) as Node3D if propeller != null else null
+	var washer_face: float = Equipment.engine_anchor("engine_washer_face").z
+	# The drive hub may sit inside the wooden hub (its 12 mm radius stays hidden), never ahead of the hub's rear face.
+	check("propeller drive turns with the propeller, behind the wooden hub and its washer on the hub's front face", drive_rear != null and drive_front != null
+		and is_equal_approx(propeller.position.z + drive_rear.position.z, engine.position.z)
+		and drive_rear.position.z > -Equipment.PROP_HUB_HALF_THICKNESS and drive_rear.position.z <= Equipment.PROP_HUB_HALF_THICKNESS
+		and is_equal_approx(drive_front.position.z + washer_face, -Equipment.PROP_HUB_HALF_THICKNESS))
+	var bvh := _engine_bvh(engine, root_node)
 
-	# Compute inspection rays independently from the installation datum, not node metadata.
-	var carb_lower := Vector3(0, shaft_y + 0.012, engine_z - 0.010)
-	var carb_upper := Vector3(0, shaft_y + 0.027, engine_z - 0.026)
-	var intake_axis: Vector3 = (carb_upper - carb_lower).normalized()
-	var intake_mouth: Vector3 = carb_upper + intake_axis * 0.005
-	var inward_intake: Vector3 = -intake_axis
+	# Intake: an open 12 mm bore whose rays first meet the barrel and spray bar well below the mouth.
+	var mouth: Vector3 = engine.get_meta("intake_mouth")
+	var intake_axis: Vector3 = engine.get_meta("intake_axis")
+	var intake_walls := _bore_walls(bvh, mouth - intake_axis * 0.004, intake_axis)
+	check("carburetor bore is round, 5.5-7 mm radius", intake_walls.all(func(w: float) -> bool: return w >= 0.0055 and w <= 0.007))
 	var side_axis: Vector3 = intake_axis.cross(Vector3.RIGHT).normalized()
 	var up_axis: Vector3 = intake_axis.cross(side_axis).normalized()
-	var intake_offsets: Array[Vector3] = [Vector3.ZERO, side_axis * 0.002, -side_axis * 0.002, up_axis * 0.002, -up_axis * 0.002]
 	var intake_depths: Array[float] = []
-	for i in range(intake_offsets.size()):
-		var ray_start: Vector3 = intake_mouth + intake_offsets[i]
-		var hit: Variant = _first_mesh_ray_hit(engine, root_node, ray_start, ray_start + inward_intake * 0.035)
-		var depth := ray_start.distance_to(hit) if hit is Vector3 else -1.0
-		check("carburetor bore ray %d reaches a deep mesh obstruction" % i, hit is Vector3 and depth >= 0.008 and depth < 0.035)
+	var obstructed := 0
+	for offset in [Vector3.ZERO, side_axis * 0.002, -side_axis * 0.002, up_axis * 0.002, -up_axis * 0.002]:
+		var depth := _engine_hit(bvh, mouth + offset, mouth + offset - intake_axis * 0.05)
+		check("carburetor bore ray is open for 8 mm", depth < 0.0 or depth >= 0.008)
+		if depth >= 0.0 and depth < 0.045: obstructed += 1
 		intake_depths.append(depth)
+	check("barrel and spray bar sit inside the carburetor bore", obstructed >= 3)
 
-	# Slot centers and tooth centers sample the gold triangles at matching radius.
-	var crown_center := Vector3(0, shaft_y, engine_z + 0.010)
-	var slot_floors: Array[float] = []
-	var tooth_tops: Array[float] = []
-	var crown_gaps: Array[float] = []
-	for i in range(12):
-		var base_angle: float = TAU * float(i) / 12.0
-		var slot_angle: float = base_angle
-		var tooth_angle: float = base_angle + PI / 12.0
-		var slot_point := crown_center + Vector3(cos(slot_angle), 0, sin(slot_angle)) * 0.0185
-		var tooth_point := crown_center + Vector3(cos(tooth_angle), 0, sin(tooth_angle)) * 0.0185
-		var slot_hit: Variant = _first_mesh_ray_hit(engine, root_node, Vector3(slot_point.x, shaft_y + 0.10, slot_point.z), Vector3(slot_point.x, shaft_y + 0.05, slot_point.z), true)
-		var tooth_hit: Variant = _first_mesh_ray_hit(engine, root_node, Vector3(tooth_point.x, shaft_y + 0.10, tooth_point.z), Vector3(tooth_point.x, shaft_y + 0.05, tooth_point.z), true)
-		var slot_y: float = slot_hit.y if slot_hit is Vector3 else -1.0
-		var tooth_y: float = tooth_hit.y if tooth_hit is Vector3 else -1.0
-		var height_gap: float = tooth_y - slot_y if slot_hit is Vector3 and tooth_hit is Vector3 else -1.0
-		check("gold crown slot ray %02d hits slot floor" % i, slot_hit is Vector3)
-		check("gold crown tooth ray %02d hits tooth top" % i, tooth_hit is Vector3)
-		check("gold crown slot %02d is at least 2 mm below tooth" % i, height_gap >= 0.002)
-		slot_floors.append(slot_y)
-		tooth_tops.append(tooth_y)
-		crown_gaps.append(height_gap)
+	# Gold head: downward rays on a 16 mm ring about the head axis land on fins and on slots at least 2 mm deeper.
+	var head := _engine_bvh(engine, root_node, "M_RT_Head")
+	var head_faces := head.get_faces()
+	var low := Vector3.INF
+	var high := -Vector3.INF
+	for point in head_faces:
+		low = low.min(point / 1000.0)
+		high = high.max(point / 1000.0)
+	check("gold head mesh present", not head_faces.is_empty())
+	var head_tops: Array[float] = []
+	for i in range(36):
+		var angle := TAU * float(i) / 36.0
+		var probe := Vector3((low.x + high.x) * 0.5 + cos(angle) * 0.016, high.y + 0.01, (low.z + high.z) * 0.5 + sin(angle) * 0.016)
+		var depth := _engine_hit(head, probe, probe + Vector3.DOWN * 0.05)
+		head_tops.append(probe.y - depth if depth >= 0.0 else NAN)
+	check("gold head ring rays all hit the head", head_tops.all(func(y: float) -> bool: return not is_nan(y)))
+	var head_relief: float = head_tops.max() - head_tops.min()
+	check("gold head fins stand at least 2 mm above their slots", head_relief >= 0.002)
 
-	var outlet_start := Vector3(0.056, shaft_y - 0.009, engine_z + 0.030)
-	var outlet_end := Vector3(0.064, shaft_y - 0.018, engine_z + 0.041)
-	var inward_outlet: Vector3 = (outlet_start - outlet_end).normalized()
-	var outlet_radial: Vector3 = inward_outlet.cross(Vector3.UP).normalized()
-	var outlet_probe_start: Vector3 = outlet_end + outlet_radial * 0.0004
-	var outlet_hit: Variant = _first_mesh_ray_hit(engine, root_node, outlet_probe_start, outlet_probe_start + inward_outlet * 0.020)
-	var outlet_depth := outlet_probe_start.distance_to(outlet_hit) if outlet_hit is Vector3 else -1.0
-	check("muffler outlet bore has a 5-15 mm deep mesh bottom", outlet_hit is Vector3 and outlet_depth >= 0.005 and outlet_depth < 0.015)
-	print("Engine mesh probes: intake depths m=%s; crown floor y=%s; tooth y=%s; gaps m=%s; outlet depth m=%.6f" % [str(intake_depths), str(slot_floors), str(tooth_tops), str(crown_gaps), outlet_depth])
-	return {"intake_depths_m": intake_depths, "crown_floor_y": slot_floors, "crown_tooth_y": tooth_tops, "crown_gaps_m": crown_gaps, "outlet_depth_m": outlet_depth}
+	# Outlet: the exhausts anchor is centred in the silencer tube, which stays open past its rim.
+	var exhaust: Dictionary = root_node.get_meta("exhausts", [{}])[0]
+	var outlet: Vector3 = exhaust.get("position", Vector3.ZERO)
+	var outlet_axis: Vector3 = exhaust.get("direction", Vector3.BACK)
+	var outlet_walls := _bore_walls(bvh, outlet - outlet_axis * 0.004, outlet_axis)
+	check("exhaust anchor sits on the silencer tube axis", outlet_walls.all(func(w: float) -> bool: return absf(w - float(exhaust.get("radius_m", 0.0))) <= 0.0003))
+	var outlet_depth := _engine_hit(bvh, outlet + outlet_axis * 0.001, outlet - outlet_axis * 0.05)
+	check("silencer outlet tube is open for 10 mm", outlet_depth < 0.0 or outlet_depth >= 0.011)
+	print("Engine mesh probes: intake walls m=%s depths m=%s; head relief m=%.4f; outlet walls m=%s depth m=%.4f" % [str(intake_walls), str(intake_depths), head_relief, str(outlet_walls), outlet_depth])
+	return {"intake_walls_m": intake_walls, "intake_depths_m": intake_depths, "head_relief_m": head_relief, "outlet_walls_m": outlet_walls, "outlet_depth_m": outlet_depth}
 
 
 # US-V09b: the normal map needs tangents along dP/du. Without generate_tangents() Godot fills an arbitrary orthonormal
@@ -158,8 +167,9 @@ func _check_exhaust_residue(airplane: Dictionary, atlas: Image) -> void:
 	var sample := func(z: float, arc_s: float) -> Color:
 		var p := Finish.fuselage_uv(z, arc_s) * float(atlas.get_width())
 		return atlas.get_pixel(int(p.x), int(p.y))
-	var stained: Color = sample.call(-0.24, 0.056)
-	var mirror: Color = sample.call(-0.24, -0.056)
+	# US-V13: the O.S. silencer exhausts just above the +X side, so the stain starts high on that side.
+	var stained: Color = sample.call(-0.20, 0.12)
+	var mirror: Color = sample.call(-0.20, -0.12)
 	var tail: Color = sample.call(0.70, 0.02)
 	check("exhaust residue darkens the +X side behind the outlet (%s)" % stained, stained.r < 0.6 * Finish.RED.r)
 	check("no residue on the −X side or the tail (%s %s)" % [mirror, tail], mirror.is_equal_approx(Finish.RED) and tail.is_equal_approx(Finish.RED))

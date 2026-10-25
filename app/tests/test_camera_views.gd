@@ -5,6 +5,8 @@
 #   - CAM-24: chase frame-rate independence in a bank and a loop (sub-steps), no slide after entry (state velocity);
 #   - CAM-02b: each view's near plane (pilot 0.5 m, chase and close-up 0.25 m, orbit shrinking near the airframe);
 #   - CAM-06/06b/28 pilot aids: the zoom-law family, the horizon tilt and overhead smoothing; all off by default;
+#   - CAM-09 3D follow: chase key again toggles it; a loop turns the camera far less than horizon lock; rolls lean
+#     the picture only partly; vertical lines stay defined; 30 vs 144 fps agree;
 #   - CAM-14 fly-by: placed ahead (FlightGear law), re-placed after the pass, sun side, low side, framing, determinism;
 #   - CAM-27: after a crash the orbit, chase and close-up look at the wreck; the orbit still turns; pilot untouched;
 #   - orbit: starts where the previous view was, clamps, keeps clear of the ground.
@@ -77,6 +79,7 @@ func _run() -> void:
 	_near_planes()
 	_chase()
 	_chase_smoothness()
+	_follow3d()
 	_orbit()
 	_flyby()
 	_wreck_focus()
@@ -471,6 +474,75 @@ func _chase_smoothness() -> void:
 		at[fps] = placed.position
 	var spin_gap: float = (at[30.0] as Vector3).distance_to(at[144.0])
 	_check("CAM-24 chase: hovering pirouette, 30 and 144 fps within 1 cm", spin_gap < 0.01, "%.4f m" % spin_gap)
+
+
+## The chase camera over a trajectory at fps: worst camera turn rate (°/s), frames with the aircraft off screen,
+## worst screen roll (°), whether every basis stayed finite, and the final camera offset from the aircraft.
+func _chase_run(style: String, trajectory: Callable, seconds: float, fps := 60.0) -> Dictionary:
+	var chase := ChaseView.new()
+	chase.configure(SPAN)
+	chase.style = style
+	var dt := 1.0 / fps
+	var previous := Vector3.ZERO
+	var turn := 0.0
+	var outside := 0
+	var roll := 0.0
+	var finite := true
+	var last := Vector3.ZERO
+	for i in roundi(seconds * fps) + 1: # the last frame lands exactly on `seconds`
+		var s: Dictionary = trajectory.call(i * dt)
+		var placed := chase.update(s.pos, s.basis, dt if i > 0 else 0.0, false, _flat, s.vel)
+		var b: Basis = placed.basis
+		finite = finite and b.is_finite() and (placed.position as Vector3).is_finite()
+		var forward := -b.z
+		if previous != Vector3.ZERO:
+			turn = maxf(turn, rad_to_deg(previous.angle_to(forward)) * fps)
+		previous = forward
+		var local: Vector3 = b.inverse() * ((s.pos as Vector3) - (placed.position as Vector3))
+		if local.z >= 0.0 or absf(rad_to_deg(atan2(local.y, -local.z))) > ChaseView.FOV_DEG * 0.5:
+			outside += 1
+		roll = maxf(roll, rad_to_deg(asin(clampf(absf(b.x.y), 0.0, 1.0))))
+		last = (placed.position as Vector3) - (s.pos as Vector3)
+	return { turn = turn, outside = outside, roll = roll, finite = finite, last = last }
+
+
+## Straight north at 20 m/s rolling about the nose at 360°/s (an axial roll).
+static func _roll(t: float) -> Dictionary:
+	return { pos = Vector3(0, 30, -20.0 * t), basis = Basis(Vector3(0, 0, -1), TAU * t), vel = Vector3(0, 0, -20) }
+
+
+## Straight north, then straight up at 20 m/s (a vertical line).
+static func _vertical(t: float) -> Dictionary:
+	if t < 1.0:
+		return { pos = Vector3(0, 30, -20.0 * t), basis = Basis.IDENTITY, vel = Vector3(0, 0, -20) }
+	return { pos = Vector3(0, 30 + 20.0 * (t - 1.0), -20.0), basis = Basis(Vector3.RIGHT, PI / 2.0), vel = Vector3(0, 20, 0) }
+
+
+func _follow3d() -> void:
+	var cam := _camera()
+	var rig := CameraRig.new(cam, SPAN)
+	rig.select_view("chase")
+	_check("CAM-09 the chase key selects the horizon-locked chase first", rig.view == "chase" and rig.chase.style == "horizon")
+	rig.select_view("chase")
+	_check("CAM-09 pressed again it switches to 3D follow, named so", rig.chase.style == "follow3d" and rig.view_name() == "chase 3D")
+	rig.set_view("chase")
+	_check("CAM-09 set_view (settings, command line) never toggles", rig.chase.style == "follow3d")
+	rig.select_view("chase")
+	_check("CAM-09 and once more back to horizon lock", rig.chase.style == "horizon" and rig.view_name() == "chase")
+	cam.free()
+	var horizon := _chase_run("horizon", _loop, 9.0)
+	var follow := _chase_run("follow3d", _loop, 9.0)
+	_check("CAM-09 3D follow: a loop turns the camera far less than horizon lock (no whip over the top)", follow.turn < 0.6 * horizon.turn, "%.0f vs %.0f °/s" % [follow.turn, horizon.turn])
+	_check("CAM-09 3D follow: the aircraft stays in frame through the loop", follow.outside == 0 and follow.finite, "%d frames" % follow.outside)
+	var rolled := _chase_run("follow3d", _roll, 2.0)
+	_check("CAM-09 3D follow: an axial roll leans the picture only partly, aircraft in frame", rolled.roll > 5.0 and rolled.roll < 60.0 and rolled.outside == 0, "%.1f°" % rolled.roll)
+	var level := _chase_run("horizon", _roll, 2.0)
+	_check("CAM-09 horizon lock: the same roll keeps the horizon level", level.roll < 1e-3)
+	var up := _chase_run("follow3d", _vertical, 3.0)
+	_check("CAM-09 3D follow: a vertical line stays defined (no NaN)", up.finite and up.outside == 0)
+	var at30: Vector3 = _chase_run("follow3d", _loop, 7.0, 30.0).last
+	var at144: Vector3 = _chase_run("follow3d", _loop, 7.0, 144.0).last
+	_check("CAM-09 3D follow: loop at 30 and 144 fps within 2 cm", at30.distance_to(at144) < 0.02, "%.4f m" % at30.distance_to(at144))
 
 
 func _orbit() -> void:

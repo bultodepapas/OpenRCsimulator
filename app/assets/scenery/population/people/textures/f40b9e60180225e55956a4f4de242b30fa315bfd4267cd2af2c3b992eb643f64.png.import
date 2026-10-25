@@ -2,9 +2,9 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2n2wv7akotwh"
-path.s3tc="res://.godot/imported/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png-bc9cfff988949b7e4e3200d14598cbe4.s3tc.ctex"
-path.etc2="res://.godot/imported/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png-bc9cfff988949b7e4e3200d14598cbe4.etc2.ctex"
+uid="uid://blkgv64h6irwj"
+path.s3tc="res://.godot/imported/f40b9e60180225e55956a4f4de242b30fa315bfd4267cd2af2c3b992eb643f64.png-c628fd27d890e820bb2396e2f0ca622a.s3tc.ctex"
+path.etc2="res://.godot/imported/f40b9e60180225e55956a4f4de242b30fa315bfd4267cd2af2c3b992eb643f64.png-c628fd27d890e820bb2396e2f0ca622a.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/scenery/population/people/textures/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png"
-dest_files=["res://.godot/imported/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png-bc9cfff988949b7e4e3200d14598cbe4.s3tc.ctex", "res://.godot/imported/64ff2b4529c2f7df5ee69160765b31bc198e113258045e5d4b52974aaa746fc9.png-bc9cfff988949b7e4e3200d14598cbe4.etc2.ctex"]
+source_file="res://assets/scenery/population/people/textures/f40b9e60180225e55956a4f4de242b30fa315bfd4267cd2af2c3b992eb643f64.png"
+dest_files=["res://.godot/imported/f40b9e60180225e55956a4f4de242b30fa315bfd4267cd2af2c3b992eb643f64.png-c628fd27d890e820bb2396e2f0ca622a.s3tc.ctex", "res://.godot/imported/f40b9e60180225e55956a4f4de242b30fa315bfd4267cd2af2c3b992eb643f64.png-c628fd27d890e820bb2396e2f0ca622a.etc2.ctex"]
 
 [params]
 

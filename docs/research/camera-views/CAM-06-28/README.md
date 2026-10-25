@@ -1,4 +1,4 @@
-# CAM-06, CAM-06b, CAM-28 — pilot-view aids as options; CAM-14 fly-by view
+# CAM-06, CAM-06b, CAM-28, CAM-18 — pilot-view aids and magnifier as options; CAM-14 fly-by view
 
 2026-10-25. Three pilot-view aids from the [camera plan](../../../plans/camera-views.md#51-pilot-v1-refactor-of-todays-view-then-improved), offered in **Settings → Camera** and off by default, so the reference picture is unchanged until the pilot compares them in flight (CAM-22). Checks ran on the shared VM (Godot 4.7.2, llvmpipe). They prove the laws and their wiring, not which one reads best.
 
@@ -41,4 +41,19 @@ One rule is ours: of the two mirror sides, the one with the sun behind the camer
 | `test_camera_route.gd` 30/30 | Key 4 selects the fly-by and the panel names it "fly-by" |
 | `test_controls_reference`, `test_ui_help` | Help lists 4 in the views row and still fits; Spanish "pasada" |
 | Live (1920×1080, [scenario](../../../../research/camera-views/CAM-06-28/flyby_scenario.txt)) | Key 4 placed the camera 56 m ahead of the airborne Stik; it approached head-on over the treeline at 13–17° FOV, centred. At about 1 fps on llvmpipe the simulation ran too slowly for a pass during the run; re-placement is covered by the tests |
+
+## CAM-18 magnifier inset
+
+[magnifier.gd](../../../../app/render/camera/magnifier.gd) is a small window at the top centre of the pilot view (22 % of the screen height, framed). It shows the aircraft large, so its attitude reads while the main view keeps the real distance cues. The idea comes from CRRCSim's auto model view, PicaSim's zoom inset and RealFlight's binoculars.
+
+- **Cost.** Like PicaSim's "only plane in zoom view", it draws only the aircraft over the sky. The aircraft's meshes, its propeller-blur disc and the helicopter's rotor discs join render layer `1 << 18`; crash debris uses `1 << 19`. The inset camera's cull mask holds only that layer, so the inset costs a few draw calls, not a second scene render in the Compatibility renderer. It renders nothing while hidden.
+- **Framing.** Godot refuses a Camera3D FOV below 1°. The inset camera therefore stands on the pilot's line of sight, at the distance where a 10° FOV frames the span at 60 % of the inset: the same viewing direction, so the same attitude the pilot sees, with a depth range of a few spans around the aircraft. A closer aircraft is framed from the pilot's eye with a wider FOV (up to 60°).
+- **Modes.** Off (default), On, or Auto: Auto shows below 4 % of the main view's height and hides above 5 %, so it never flickers. It shows only in the pilot view with an intact aircraft. Settings → Camera → **Magnifier**.
+- **Page fit.** To keep the Camera page within 1080p without scrolling, the horizon tilt and overhead smoothing share one picker, **Pilot view aids** (Off, Keep the horizon in view, Smooth overhead passes, Both). They remain two settings.
+
+| Proof | Result |
+| --- | --- |
+| [test_camera_magnifier.gd](../../../../app/tests/test_camera_magnifier.gd) 21/21 | Tagging covers every aircraft mesh, nested ones included, leaves scenery out and avoids the debris layer. Auto hysteresis: hidden, shown below 4 %, kept up to 5 %, hidden above. The inset sees only the aircraft layer from the pilot's line of sight at 10°, with the span at 60 % and a tight depth range; a close aircraft is framed from the eye; hidden, it does not render. A Home flight with it on shows it in the pilot view, tags every mesh of the flown airplane and no field mesh, and hides it in chase; a command-line flight never shows it |
+| Settings | `test_camera_settings` 45/45, including the aids picker (Both, horizon alone) and the stored values. `test_settings_ui` passes: eight rows fit 1080p. `test_ui_modal_responsive`: only the 6 pre-existing overlays-dialog failures |
+| Live (1920×1080, [scenario](../../../../research/camera-views/CAM-06-28/magnifier_scenario.txt)) | Magnifier on, horizon tilt on, Keeps-looming law: the inset showed the banked Stik large at the top centre over the sky (238 px, 10°, 14.5 m along the line of sight). The main view kept it small at 44° FOV with the treeline and field below. Pressing 2 (chase) hid the inset |
 

@@ -4,6 +4,7 @@
 extends RefCounted
 
 const CameraMath := preload("res://render/camera/camera_math.gd")
+const CameraCollision := preload("res://render/camera/camera_collision.gd")
 
 const FOV_DEG := 45.0
 const DEGREES_PER_PIXEL := 0.3
@@ -29,6 +30,7 @@ var _azimuth := 0.0
 var _elevation := 20.0
 var _distance := 3.0
 var _span := 1.5
+var _guard := CameraCollision.BoomGuard.new()
 
 
 func configure(span: float) -> void:
@@ -39,6 +41,7 @@ func configure(span: float) -> void:
 
 ## The shown pose takes the goals at once (view entry, reset).
 func snap() -> void:
+	_guard.reset()
 	_azimuth = azimuth_deg
 	_elevation = elevation_deg
 	_distance = distance
@@ -91,8 +94,9 @@ func reset() -> void:
 
 
 ## ground_y: Callable(x, z) → terrain height (render y); dt: frame time the shown pose eases by (INF snaps to the
-## goals, 0 holds). Returns { position, basis, fov }.
-func update(target: Vector3, ground_y: Callable, dt := INF) -> Dictionary:
+## goals, 0 holds); obstacles: Callable(from, to) → share of that boom clear of scenery (CAM-09).
+## Returns { position, basis, fov }.
+func update(target: Vector3, ground_y: Callable, dt := INF, obstacles := Callable()) -> Dictionary:
 	if is_inf(dt):
 		snap()
 	elif dt > 0.0:
@@ -103,6 +107,12 @@ func update(target: Vector3, ground_y: Callable, dt := INF) -> Dictionary:
 	var el := deg_to_rad(_elevation)
 	var dir := CameraMath.dir_of_heading(deg_to_rad(_azimuth)) * cos(el) + Vector3.UP * sin(el)
 	var eye := target + dir * _distance
+	if obstacles.is_valid():
+		# CAM-09: turned into a hangar or a tree, the orbit comes in front of it instead of looking from inside.
+		var clear := maxf(float(obstacles.call(target, eye)) * _distance, MIN_SPANS * _span * 0.5)
+		var length := _guard.update(clear, _distance, 0.0 if is_inf(dt) else dt)
+		if length < _distance:
+			eye = target + dir * length
 	var floor_y := 0.0
 	if ground_y.is_valid():
 		var y: float = ground_y.call(eye.x, eye.z)

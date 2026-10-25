@@ -89,7 +89,6 @@ func _inset_camera() -> void:
 	var span := 1.5
 	inset.update(main_camera, target, span, model, true)
 	var cam: Camera3D = inset.camera
-	var distance := main_camera.position.distance_to(target)
 	_check("on: the inset shows and renders", inset.shown and inset._viewport.render_target_update_mode == SubViewport.UPDATE_ALWAYS)
 	_check("its camera sees only the aircraft layer", cam.cull_mask == Magnifier.LAYER)
 	var sight := (target - main_camera.position).normalized()

@@ -60,6 +60,10 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-25 · US-V13 — flipping a glTF triangle in Blender flips its custom normals too
+
+The owner's real-time engine GLB had 21 triangles whose winding opposed their baked shading normals. Cycles drew them, but Godot culls them, so they would show as pinholes, and the Stik's winding check failed. Reversing those faces with bmesh `normal_flip()` changed nothing. Blender stores imported custom normals relative to each face, so they flipped with it, and the disagreement count stayed the same. Record every corner's normal vector before the flip and write the vectors back with `mesh.normals_split_custom_set()`. Skip zero-area triangles: Godot's check ignores them, but their Blender normal is arbitrary. [Generator](../assets/aircraft/ugly-stik-60/engine/build_engine.py) · [evidence](research/ugly-stik-finish-v6.md#us-v13--os-61-sf-engine-from-the-owners-blender-model)
+
 ## 2026-10-24 · F4U-18 — an inside-out skin passes Blender renders and every structural check
 
 From g1 to g1.21, the Corsair's `fuselage_core` was wound inward in every livery: 85 % of its area faced the thrust axis. Cycles shades back faces, so the author's renders looked right. The author's verifier, our preflight and `verify_f4u.gd` checked names, sections, poses and counts, so the defect shipped. Godot culls back faces, so players saw the far inner wall of the fuselage, with mirrored markings, and the owner read it as missing detail. The cause was recalculating normals on an open shell merged from several objects. When a model looks coarse, rule out winding before raising the triangle budget. The receiving preflight should measure each skin's outward area share, and at least one preview should be rendered with back-face culling. [Evidence](research/f4u-corsair/F4U-18/README.md)
@@ -241,6 +245,10 @@ CAM-24 correction: "exact for any dt" holds only while the goal stands still dur
 ## 2026-10-24 · CAM-23 — a pixel target must name its reference height
 
 The pilot auto-zoom aimed for 30 px of whatever viewport it rendered. On a 4K screen of the same size the aircraft was therefore half as large as at 1080p, and the FAR warning, computed for 720 px, disagreed with both. Express a readable size as pixels of a stated reference height (here 1080), i.e. a share of the screen, and derive every consumer from the same constant. [Audit F1](research/camera-views/CAM-AUD-2026-10-24/README.md#findings), [evidence](research/camera-views/CAM-23-27/README.md)
+
+## 2026-10-25 · CAM-09 — per-frame collision queries must not go through `nearby()` at the pilot station
+
+A camera clearance query cost 3 µs beside a church but 41.7 µs over the pilot area, above its 30 µs budget. Fence bays, the flight-line barrier and the field's people put thousands of proxies into the station's 32 m bins, and `CollisionWorld.nearby()` builds a candidate set and duplicates every overlapping proxy. For a per-frame query, walk `world.bins` over the covered cells, reject proxies by their stored bounds, then run the exact test: about 8 µs at the station. Time a new query over the pilot area, not only beside the obstacle it targets. [CAM-09 evidence](research/camera-views/CAM-09/README.md)
 
 ## 2026-10-13 · CAM-04 — Help has no spare row at 720p; key caps set the column width
 

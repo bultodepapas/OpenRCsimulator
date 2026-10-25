@@ -4,6 +4,7 @@
 # to the side when the aircraft flies lower than D, never below the terrain + 2 m. We add one rule: the side with the
 # sun behind the camera, so the aircraft is lit. The camera itself never moves between placements; it turns and zooms
 # like a photographer. Presentation only: its random draws use its own fixed-seed generator, never the simulation's.
+# CAM-09: a spot inside or behind a building or tree is drawn again, then mirrored, and at last pulled in front of it.
 extends RefCounted
 
 const CameraMath := preload("res://render/camera/camera_math.gd")
@@ -24,6 +25,8 @@ const FRAME_SHARE := 0.12
 const MIN_FOV_DEG := 3.0
 const MAX_FOV_DEG := 50.0
 const SEED := 20261025
+## CAM-09: draws tried before a blocked spot is pulled in toward the aim point.
+const PLACE_TRIES := 6
 
 var position := Vector3.ZERO
 var zoom := 1.0 # framing multiplier (+/−, wheel): > 1 frames the aircraft larger
@@ -49,10 +52,11 @@ func reset() -> void:
 
 
 ## target: the aircraft's CG (render); body: its basis; velocity: its velocity (render, m/s) or INF to estimate it;
-## ground_y: Callable(x, z) → terrain height; light: direction toward the sun (render), ZERO when unknown.
+## ground_y: Callable(x, z) → terrain height; light: direction toward the sun (render), ZERO when unknown;
+## obstacles: Callable(from, to) → share of that line clear of scenery (CAM-09), or empty for open ground.
 ## Returns { position, basis, fov }.
 func update(target: Vector3, body: Basis, velocity: Vector3, dt: float, paused: bool, ground_y: Callable,
-		light := Vector3.ZERO) -> Dictionary:
+		light := Vector3.ZERO, obstacles := Callable()) -> Dictionary:
 	if velocity.is_finite():
 		_track = velocity
 	elif _placed and not paused and dt > 0.0:
@@ -60,7 +64,7 @@ func update(target: Vector3, body: Basis, velocity: Vector3, dt: float, paused: 
 	if _placed and not paused and dt > 0.0 and (target - _last_target).length() > TELEPORT_SPEED * dt:
 		_placed = false
 	if not _placed or (not paused and _passed(target)):
-		_place(target, body, ground_y, light)
+		_place(target, body, ground_y, light, obstacles)
 	_last_target = target
 	var away := maxf(position.distance_to(target), 0.1)
 	var fov := clampf(rad_to_deg(2.0 * atan(_span / (2.0 * away * FRAME_SHARE * zoom))), MIN_FOV_DEG, MAX_FOV_DEG)
@@ -74,23 +78,33 @@ func _passed(target: Vector3) -> bool:
 	return (target - position).dot(_track.normalized()) > REPLACE_PAST * DISTANCE_M
 
 
-func _place(target: Vector3, body: Basis, ground_y: Callable, light: Vector3) -> void:
+func _place(target: Vector3, body: Basis, ground_y: Callable, light: Vector3, obstacles := Callable()) -> void:
 	var speed := _track.length()
 	var course := _track / speed if speed >= MIN_SPEED else CameraMath.dir_of_heading(CameraMath.heading_of(_nose(body)))
 	var lead := course * LEAD_SHARE * LEAD_S * speed + Vector3.UP * 0.5 * _track.y * LEAD_S if speed >= MIN_SPEED else Vector3.ZERO
-	var radius := DISTANCE_M * _rng.randf_range(RADIUS_MIN, RADIUS_MAX)
+	var aim := target + lead
 	var right := course.cross(Vector3.UP)
 	right = right.normalized() if right.length() > 1e-3 else Vector3.RIGHT
 	var up := right.cross(course).normalized()
 	var height := target.y - _ground(ground_y, target)
-	# FlightGear: any angle around the track when high, to the side (±90° ± 0.15π) when low.
-	var angle := _rng.randf_range(-PI, PI) if height > DISTANCE_M else (PI * 0.5 + _rng.randf_range(-0.15, 0.15) * PI)
-	var side := right * sin(angle) + up * cos(angle)
-	# Sun behind the camera: of the two mirror sides, keep the one facing the sun.
-	if light != Vector3.ZERO and Vector2(side.x, side.z).dot(Vector2(light.x, light.z)) < 0.0:
-		side = -right * sin(angle) + up * cos(angle)
-	position = target + lead + side * radius
-	position.y = maxf(position.y, _ground(ground_y, position) + MIN_HEIGHT_M)
+	for attempt in PLACE_TRIES:
+		var radius := DISTANCE_M * _rng.randf_range(RADIUS_MIN, RADIUS_MAX)
+		# FlightGear: any angle around the track when high, to the side (±90° ± 0.15π) when low.
+		var angle := _rng.randf_range(-PI, PI) if height > DISTANCE_M else (PI * 0.5 + _rng.randf_range(-0.15, 0.15) * PI)
+		var side := right * sin(angle) + up * cos(angle)
+		# Sun behind the camera: of the two mirror sides, keep the one facing the sun; a blocked retry takes the other.
+		var mirror := light != Vector3.ZERO and Vector2(side.x, side.z).dot(Vector2(light.x, light.z)) < 0.0
+		if mirror != (attempt % 2 == 1):
+			side = -right * sin(angle) + up * cos(angle)
+		position = aim + side * radius
+		position.y = maxf(position.y, _ground(ground_y, position) + MIN_HEIGHT_M)
+		if not obstacles.is_valid() or float(obstacles.call(aim, position)) >= 1.0:
+			break
+	if obstacles.is_valid():
+		var clear := float(obstacles.call(aim, position))
+		if clear < 1.0:
+			position = aim + (position - aim) * clear
+			position.y = maxf(position.y, _ground(ground_y, position) + MIN_HEIGHT_M)
 	_placed = true
 
 

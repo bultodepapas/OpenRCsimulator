@@ -77,5 +77,6 @@
     "cap": 0.5,
     "beard": 0.4,
     "glasses": 0.35
-  }
+  },
+  "eye_texture": "brownlight_eye.png"
 }

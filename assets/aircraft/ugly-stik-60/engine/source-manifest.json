@@ -1,0 +1,22 @@
+{
+  "format": "openrc-stik-engine-source v1",
+  "step": "US-V13",
+  "description": "O.S. MAX 61 SF Special Edition modelled in Blender by the owner's engine track (glow_engine_61_trabajo_completo/LEEME.txt). Owner instruction 2026-10-25: use it on the Ugly Stik.",
+  "provenance": "Owner-supplied original work; no third-party mesh. Delivery kept untracked at the repository root; only the generated runtime GLB is bundled.",
+  "delivery_root": "glow_engine_61_trabajo_completo",
+  "inputs": {
+    "engine_realtime": {
+      "path": "glow_engine_61/tiempo_real/glow_engine_61_SE_realtime.glb",
+      "sha256": "7fa2ffaf4e70e0bab66cfeb6308a6772175ad716fd03bd2efdb0ab56eeb98a42",
+      "use": "engine body, head, carburettor, silencer and propeller drive with baked textures (134k triangles)"
+    },
+    "mount": {
+      "path": "glow_engine_61/bancada_avion/glow_engine_61_SE_bancada.glb",
+      "sha256": "39ca2dd416646bbe8212e1ce18f3a9a79a55d5fec1326b8d7affdc0485b4da97",
+      "use": "O.S. 905 radial mount, its bolts and washers, silicone fuel and pressure lines and firewall grommets; the stand-in firewall and nose box are dropped"
+    }
+  },
+  "realtime_base_offset_m": 0.0222,
+  "output": "app/assets/aircraft/ugly-stik-60/os61_engine.glb",
+  "record": "assets/aircraft/ugly-stik-60/engine/engine-build.json"
+}

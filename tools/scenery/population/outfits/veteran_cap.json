@@ -1,6 +1,6 @@
 {
   "id": "veteran_cap",
-  "notes": "Older club member: fedora, white t-shirt and jeans, cloth shoes. (The CC0 newsboy cap ships without a material line.) The MakeHuman logo on the CC0 t-shirt is patched out (front, back, sleeve). Short01 hair stays under the fedora (short03's fringe covered one eye, SC-HUM-07-R2).",
+  "notes": "Older club member: fedora, white t-shirt and jeans, cloth shoes. (The CC0 newsboy cap ships without a material line.) The MakeHuman logo on the CC0 t-shirt is patched out (front, back, sleeve). Short01 hair stays under the fedora (short03's fringe covered one eye, SC-HUM-07-R2). Flies with his weight on one leg (CC0 standing03 under the transmitter hold, SC-HUM-07-R6).",
   "macros": {
     "gender": 1.0,
     "age": 0.82,
@@ -98,5 +98,9 @@
         0.04
       ]
     ]
+  },
+  "eye_texture": "grey_eye.png",
+  "pose_files": {
+    "pilot": "standing03"
   }
 }

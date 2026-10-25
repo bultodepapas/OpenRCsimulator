@@ -1,4 +1,4 @@
-# Ugly Stik · covering, shading, linkage, propeller, weathering, gear flex, broken propeller and contact scuffs (US-V09a–h, US-V10–V12)
+# Ugly Stik · covering, shading, linkage, propeller, weathering, gear flex, broken propeller, contact scuffs, O.S. 61 engine and main-gear plate (US-V09a–h, US-V10–V14)
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
@@ -165,6 +165,45 @@ Evidence ([hashes](ugly-stik-finish-v6-evidence/v11-SHA256SUMS)), rendered ident
 - **Limits:** the crash wreck's twin is prepared before the flight and shows no scuffs. Texture and colours are not measured. Scuffs do not fade or weather.
 
 Evidence ([hashes](ugly-stik-finish-v6-evidence/v12-SHA256SUMS)), with a fixed set of four touches (belly on grass and soil, left wing on grass and runway): [wing underside](ugly-stik-finish-v6-evidence/v12-scuffs-wing-under.png), [wing toward the leading edge](ugly-stik-finish-v6-evidence/v12-scuffs-wing-le.png) and [belly](ugly-stik-finish-v6-evidence/v12-scuffs-belly.png). Bench: `capture.sh <dir> --view wing_under --scuffs`.
+
+## US-V13 · O.S. 61 SF engine from the owner's Blender model
+
+2026-10-25. Owner request: "use the Blender MCP to improve the Ugly". When the owner noticed the folder, they added: "you have a .61 engine in the root, use it". The native v5 engine (27k triangles) is replaced by the owner's Blender O.S. MAX 61 SF Special Edition on an O.S. 905 radial mount, with silicone fuel and pressure lines. The source is the untracked `glow_engine_61_trabajo_completo/` folder. Visual only: mass, inertia, propulsion, contacts and `prop_z` are unchanged.
+
+- **Separate Blender session:** another agent's MCP bridge held port 9876, so all Blender work used `*_for_cli` processes on scratch copies ([tool note](../../tools/blender/README.md)).
+- **Review:** a review in that session rendered the native model in Cycles. It also overlaid flat orthographic silhouettes on the Jensen sheet 1 raster at 0.254 mm/px. The fuselage, fin/rudder, stabiliser and sub-rudder match. The drawn gear does not: the main axle is 71 mm forward of the model and the nose axle is higher. Taken literally, those positions rest the model 5° nose-down with 2 mm of propeller clearance, and the mains sit 6–9° behind the CG. That is a physics question for the owner, not part of this step.
+- **Asset:** [build_engine.py](../../assets/aircraft/ugly-stik-60/engine/build_engine.py) builds it. Inputs are SHA-256 pinned in the [source manifest](../../assets/aircraft/ugly-stik-60/engine/source-manifest.json), and every build is recorded in [engine-build.json](../../assets/aircraft/ugly-stik-60/engine/engine-build.json). The result is a 9.37 MB GLB with WebP textures (from 25.6 MB) and 149k triangles.
+  - The build splits off the lever and the propeller drive and decimates the screws and lines.
+  - The grommets move onto the Stik's narrower F1.
+  - It repairs 21 triangles whose winding opposed their normals ([LEARNINGS](../LEARNINGS.md)).
+  - Bores are located by probing the walls with rays: intake radius 6.1 mm, silencer outlet radius 4.2 mm.
+  - `--check` rebuilds byte for byte in a fresh process.
+- **Installation:** the flange seats on F1. The drive hub sits 6.0 mm inside the new wooden propeller hub, and the drive turns with `propeller`. The physics-bound `prop_z` is 6.4 mm aft of where this mount would put the hub.
+  - The lever hangs on the +X side and opens by pulling aft.
+  - The pushrod crosses F1 at (32, 22) mm. A probe of the engine, lines and nose gear with the 1.3 mm rod envelope found that corridor; neither (33, 14) nor (34, 14) cleared the flange edge at full throttle.
+  - Smoke and the oil residue start at the new silencer outlet, just above the +X side.
+- **Checks rewritten for the new engine:** `visual_checks.gd` drops the native crown and outlet geometry and probes the intake bore, the head-fin relief (7.1 mm), the outlet tube, the flange on F1 and the drive closure, all on a BVH. The `verify_controls.gd` rod probe now reads indexed faces from a BVH; the old vertex loop assumed non-indexed meshes. Its lever check now asks for aft motion only. `test_engine_smoke.gd` reads the outlet anchor.
+- **Cost:** the model has 179k visible triangles (51k before). Building it takes 242 ms, and preparing the scuff BVHs takes 105 ms. Godot generates the engine's LODs on import. The detail capture runner now allows 900 s instead of 180 s, because llvmpipe rendered only 3–5 engine views in 180 s while other agents were running tests.
+
+- **Checks run, Linux VM, Godot 4.7.2:**
+  - `verify_model.gd` 927 checks and `verify_controls.gd` 376 checks, 0 failed in both.
+  - These generators pass `--check`: `compile_geometry`, `compile_appearance`, `build_models`, `build_customization`, `build_descriptors` and `build_engine.py`.
+  - `check_atlas.py` passes: imported and runtime bytes match, and the stale-SVG mutation is rejected.
+  - `capture-detail.sh --engine` renders all 11 views in 6 min 34 s (llvmpipe).
+  - Through `tools/godot/run_checked.py`, 29 related tests pass. They cover engine and system smoke, scuffs and the scuff cache, crash wreck, breakup, ladder, surface and hull labels, gear flex and visual contacts, the night kit, prop strike and its feedback, propeller blur, Stik grain, model manifest, customization, liveries, catalog, aircraft data, Workshop descriptor, preview and smoke preview, UI preview requests and aircraft, soft contact, parked collision and the contact contract.
+  - `test_companions_profiles` fails because `ai/companions/pilot.gd` does not match its pin. That pin belongs to the companion profile staged by a merge in progress; this step did not touch it.
+  - The full `app/test.sh` and flight captures were not run here: the merge in progress and other tracks' edits share the tree.
+
+Evidence: the captures stay out of Git. Reproduce them with `research/ugly-stik/model-v4/capture-detail.sh --engine --output-dir <new dir>`, which renders 2560×1440 engine views of the left side, right side, front and both three-quarters.
+
+## US-V14 · aluminium main-gear plate
+
+2026-10-25. Jensen sheet 1 draws the main gear as one 0.090 in 2024-T3 aluminium plate. In side view it is a tapered blade: the leading edge is vertical and the trailing edge is raked. The native model had two 14 × 3.4 mm bars, turned so that they looked wide from the front and thin from the side.
+
+- **Measured:** edge picks on the 100 dpi raster at y = 2790…3130 px give a root of z 0.0219…0.0808 m (58.9 mm). This root already matched the old one, centred at 0.050. Extrapolating the trailing edge to the drawn axle line gives an 18.8 mm axle end. The data is in `equipment.main_strap`, with its evidence, in `geometry.json`.
+- **Built:** a flat centre plate bolted under the fuselage (four bolts with washers), plus a 12-segment tapered leg on each side. The plate's plane holds the fore-aft axis, so the gear reads wide from the side and thin from the front. GearFlex bends the legs unchanged: same leg axes, and the rigid end within 20 mm of the axle.
+- **Not changed:** the axles and physics contacts. The drawn axle position is not adopted. Taken literally, it rests the model about 5° nose-down with 2 mm of propeller clearance, and the mains sit only 6–9° behind the CG. The plan root is reproduced, so the legs rake aft to the existing axles. A side silhouette at 0.254 mm/px puts the plate root on the drawn root (leading edge within about 2.5 mm).
+- **Checks:** `verify_model.gd` 927/0, `verify_controls.gd` 376/0, `test_gear_flex.gd` 27/0 and `test_gear_visual_contacts.gd` 100/0. `compile_geometry.py` regenerates the data, and the model, customization and Workshop pins are rebuilt.
 
 ## Limits and open findings
 

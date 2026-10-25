@@ -449,7 +449,14 @@
     "wheel_y": -0.22,
     "main_axle_z": 0.1,
     "main_track": 0.36,
-    "nose_axle_z": -0.251276
+    "nose_axle_z": -0.251276,
+    "main_strap": {
+      "thickness": 0.002286,
+      "root_half_span": 0.025,
+      "root_front_z": 0.021906,
+      "root_rear_z": 0.080834,
+      "axle_width": 0.0188
+    }
   },
   "evidence": {
     "wing.span": {
@@ -488,6 +495,11 @@
     "equipment.wheels": {
       "kind": "manual",
       "source": "Jensen plan 2.75 in nose, selected 3 in main from 3 or 3.25 in callout"
+    },
+    "equipment.main_strap": {
+      "kind": "measured",
+      "source": "US-V14: Jensen oz1253 sheet 1 side view, local 100 dpi raster: '0.090 2024-T3 main gear' plate, vertical leading edge at x 1347 px and trailing edge 1579 px at the fuselage bottom (y 2782), 1470 px at the wheel top (y 3130)",
+      "method": "z = -0.115 + (x - 808) * 0.000254; axle width extrapolates the trailing edge to the drawn axle line (y 3296); thickness from the 0.090 in callout. The drawn axle position is not adopted: main_axle_z and wheel_y stay the physics contacts, so the legs rake aft from the drawn root. Root half span estimated."
     },
     "equipment.engine": {
       "kind": "estimated",

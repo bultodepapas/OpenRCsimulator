@@ -4,7 +4,7 @@ Checked 2026-10-19 · Owner: Stik model/finish track · Prefixes **US-01…08**,
 
 ## Current implementation
 
-The native model represents the 60-inch Jensen with a generic .61-class installation. It includes articulated controls and fixed-length links, servos, retainers, a detailed engine/silencer, glossy red/white/black film, scalloped edges, wooden propeller grain and estimated weathering. Gear flex follows simulated wheel compression; prop-strike stubs, fracture details and soft-contact scuffs are implemented.
+The native model represents the 60-inch Jensen with a generic .61-class installation. It includes articulated controls and fixed-length links, servos, retainers, the owner's Blender O.S. 61 SF engine on a radial mount (US-V13), glossy red/white/black film, scalloped edges, wooden propeller grain and estimated weathering. Gear flex follows simulated wheel compression; prop-strike stubs, fracture details and soft-contact scuffs are implemented.
 
 The [geometry](../assets/aircraft/ugly-stik-60/geometry.json) and [appearance](../assets/aircraft/ugly-stik-60/appearance.json) are separate editable sources. The manifest selects the native builder through the shared [model contract](AIRCRAFT_CONTRACT.md#model-and-package-contract). Mesh counts and v3/v4/v5/v6 report names describe delivery snapshots; use current verification for today's model.
 
@@ -25,6 +25,8 @@ The base catalog aircraft, `jensen-das-ugly-stik-60`, retains prescribed fuel an
 | US-V09a…h | Film/shading, structure normal map, throttle linkage, grain, residue, hatch and wear; [finish evidence](research/ugly-stik-finish-v6.md) | Pilot reading and target rendering cost. |
 | US-V10/10b | Main-leg flex and sprung/steerable nose gear; [evidence](research/ugly-stik-finish-v6.md#us-v10--landing-gear-flex) | Measured loaded gear behavior. |
 | US-V11/12 | Broken propeller and soft-contact scuffs; [evidence](research/ugly-stik-finish-v6.md#us-v11--broken-propeller-after-a-prop-strike) | Visual acceptance; these effects do not validate structural failure. |
+| US-V13 | Owner's Blender O.S. 61 SF engine on an O.S. 905 radial mount replaces the native engine; [evidence](research/ugly-stik-finish-v6.md#us-v13--os-61-sf-engine-from-the-owners-blender-model) | Owner visual review; target-GPU cost of the 150k-triangle engine; the 6.4 mm hub offset waits for a physics step. |
+| US-V14 | Main gear as the plan's tapered 0.090 in 2024-T3 aluminium plate; [evidence](research/ugly-stik-finish-v6.md#us-v14--aluminium-main-gear-plate) | Axle positions stay the physics contacts; the drawn ones are implausible, so only a measured build should move them. |
 
 The [2026-10-19 recheck](research/ugly-stik-finish-v6.md#2026-10-19-documentation-recheck) records focused verification separately from original delivery results. It does not close the full-suite, pilot or hardware gates.
 

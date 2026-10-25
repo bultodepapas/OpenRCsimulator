@@ -48,7 +48,7 @@ Home also offers two separate experimental activities, each with its own control
 | R | Restart flight |
 | P | Resume after a radio failsafe |
 | C · Shift+C | Next / previous view: pilot, chase, fly-by, orbit, close-up |
-| 1 · 2 · 4 · 5 | Pilot · chase · fly-by · orbit view (fly-by: a spectator ahead of the model, sun behind; orbit: drag with the right mouse button) |
+| 1 · 2 · 4 · 5 | Pilot · chase · fly-by · orbit view (2 again: 3D chase that leans with the model, for aerobatics; fly-by: a spectator ahead of the model, sun behind; orbit: drag with the right mouse button) |
 | = · − · Backspace | Zoom in · out · reset (also the mouse wheel); in chase and orbit it moves the camera |
 | Z | Toggle auto-zoom |
 | V / L | Cycle ground-shadow aid / aircraft night lights |
@@ -156,7 +156,9 @@ waits for the next flight, and auto zoom and chase distance apply only when they
 flight with the keys stays. Command-line flights keep `--view` and `--autozoom`. Three pilot-view aids are off until
 you try them: **Auto zoom** offers *Keeps looming* (the model still shrinks as it flies away) and *Gentle* beside the
 default *Constant size*; **Keep the horizon in view** tilts the view down so the ground stays visible under a high
-model; **Smooth overhead passes** stops the picture flipping when the model passes overhead. [Camera plan](plans/camera-views.md).
+model; **Smooth overhead passes** stops the picture flipping when the model passes overhead (both share the **Pilot view
+aids** picker); **Magnifier** adds a small window at the top that shows the model up close in the pilot view (Auto shows it
+when the model gets small). [Camera plan](plans/camera-views.md).
 
 From Home, **Graphics → Try High (restart)** starts a temporary experimental
 Forward+ mode with ambient occlusion, soft sun shadows and sky reflections. Keep

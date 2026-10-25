@@ -133,13 +133,13 @@
   "exhaust_residue": {
     "kind": "artistic_estimate",
     "enabled": true,
-    "source": "Glow two-stroke oil carried aft by the exhaust (owner request 2026-10-13). Outlet from the engine build: x 0.064, y -0.023, z -0.309 m, pointing aft, down and outboard.",
+    "source": "Glow two-stroke oil carried aft by the exhaust (owner request 2026-10-13). US-V13 O.S. 61 silencer outlet from the engine build: x 0.082, y 0.049, z -0.231 m, pointing aft and slightly outboard, just above the +X side; the stain starts at the top of that side.",
     "colour": [
       "#1f150c",
       "#3b2814"
     ],
-    "start_z_m": -0.285,
-    "start_y_m": -0.027,
+    "start_z_m": -0.231,
+    "start_y_m": 0.033,
     "corner_z_m": 0.02,
     "end_z_m": 0.56,
     "belly_end_s_m": 0.018,
