@@ -376,3 +376,80 @@ rendering sequence now passes Vulkan validation. Release qualification still
 requires the DLSS error investigation, the intermittent export/audio shutdown
 findings, temporal-quality and long-session testing, other GPUs/drivers, and the
 separate Godot engine-upgrade gates. The production engine remains 4.7.2.
+
+## Follow-up: frame ownership and preset qualification — 2026-10-25
+
+The current application and prepared package explicitly select **DLSS preset K**.
+This supersedes the earlier automatic-preset recommendation for this trial.
+The same six-phase minimal case with Streamline 2.11.1, RTX 3090 and driver
+617.42 reports two 09600 errors with automatic selection and zero with K.
+Each case completes 384 frames; the instrumented backend records 360 successful
+evaluations, six contexts and frame ID 384. NVIDIA's
+[versioned header](https://github.com/NVIDIA-RTX/Streamline/blob/v2.11.1/include/sl_dlss.h)
+describes K as a transformer preset and generally recommends it over J. The
+test changes only the preset; it does not establish an internal NGX root cause,
+a universal driver fix, or a performance improvement. F/J are available only as
+reproducer controls and were not qualified.
+
+`dlss_frame_lifecycle.patch` retains the simulation token and numeric frame ID
+when enqueueing a draw. A render-thread slot carries that identity into an owned
+callback parameter copy. Constants, resource tags and evaluation use the same
+token; execution rejects a recycled token. Frame-based tagging is explicitly
+enabled, following the [Streamline frame contract](https://github.com/NVIDIA-RTX/Streamline/blob/v2.11.1/docs/ProgrammingGuide.md#210-frame-tracking).
+The fixed-FPS early return also advances tokens. The earlier shared callback
+parameters and global-token reads are removed. These repairs alone still
+reproduce the two errors with automatic preset selection.
+
+The native status API records successful SDK dispatches and latches failures.
+The application then restores Native at full scale and the saved MSAA, retains
+the requested preset and exposes the failure reason in English/Spanish.
+Failed output initialization and rejected graph callbacks also latch failure;
+rejected callbacks release their payload. No diagnostics are suppressed.
+
+| Check | Observed result |
+| --- | --- |
+| Stock policy / graphics settings | 103 / 120 checks, zero failed |
+| Custom-engine policy / isolated graphics settings | 102 / 120 checks, zero failed; stock-only absence assertion is inapplicable |
+| Default-preset minimal case, separate thread and fixed FPS | 360 evaluations, two 09600 errors; correctly rejected by checked runner |
+| Preset K, identical minimal case | 360 evaluations, zero engine/Vulkan errors; loader and experimental-thread warnings remain |
+| Native control, separate thread and fixed FPS | 192 frames, zero errors |
+| Full game, preset K, two mode/resize smoke cycles | 943 evaluations across 15 contexts; zero engine/Vulkan errors, no backend failure, clean shutdown with zero leaked ObjectDB instances |
+| Real failure recovery | Deliberately requesting scale 0.1 in an isolated Home session cannot match a DLSS mode. Backend code 25 is recorded; effective Native returns to scale 1 and 4× MSAA while the saved request remains DLSS Quality |
+| Exported DLSS Quality, 1920×1080, fixed FPS | 32 evaluations, no fallback, zero engine errors/warnings, normal exit; image hash matches its manifest |
+| Exported Home launch/exit | Zero engine errors/warnings and normal exit |
+| Package integrity | All 34 managed files match their hashes; editor/template source, SDK and patch receipts agree |
+| Fresh clone with exact tool overlay | Seven offline tests pass; all 27 affected upstream files accept the real patch stack from pristine source and a second application is identical |
+
+Rendered validation uses the editor with the Khronos layer and synchronization
+validation observed in its log. The exported capture requested the same layer
+environment, but its release log does not identify layer activation; that export
+proves rendering/backend/lifecycle behavior, not separate Vulkan qualification.
+The 1080p menu and exported capture were visually inspected. These are static
+views, not motion-quality acceptance or GPU benchmarks.
+
+The first candidate update imported a newer complete settings file whose camera
+dependency was absent in the pinned snapshot. Its test failed and is retained.
+Preparation now overlays only the DLSS message/translation and failure policy,
+records source and final hashes separately, and rejects unexpected edits.
+The corrected settings test and final rendered run pass. The patch builder also
+reconstructs overlapping patches from the verified archive before changing live
+sources; offline tests cover drift rejection, repeat builds and Windows endings.
+
+### Godot 4.8 assessment
+
+The NVIDIA source already reports [4.8-dev](https://github.com/NVIDIA-RTX/godot/blob/135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/version.py).
+Official [4.8 beta1](https://github.com/godotengine/godot-builds/releases/tag/4.8-beta1)
+does not add DLSS to its [Viewport scaling modes](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/scene/main/viewport.h#L97),
+and the [custom-upscaler API PR](https://github.com/godotengine/godot/pull/114670)
+remains open. For this game, maintaining the existing NVIDIA 4.8 integration is
+less work than porting it to 4.7.2 or replacing it with official 4.8 beta1. It
+does not remove the separate engine-upgrade acceptance gates.
+
+[Verification identities and results](verification-dlss-2026-10-25.json) retain
+the failed controls, clean K run, callback/fallback evidence and package hashes.
+Raw logs and images stay under ignored `tmp/dlss-implementation-20261025/` and
+the named bridge sessions. The automatic-preset NGX finding remains reproducible;
+the K workaround is accepted only for the recorded hardware and tested sequences.
+Cross-device/driver, camera-cut resets, motion quality, long-session behavior,
+latency and matched GPU cost remain open. Frame generation and ray reconstruction
+are not enabled, and the production engine pin remains 4.7.2.

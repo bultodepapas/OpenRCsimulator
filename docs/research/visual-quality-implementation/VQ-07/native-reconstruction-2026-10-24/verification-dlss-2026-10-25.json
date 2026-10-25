@@ -325,6 +325,70 @@
       "report": "tmp/dlss-implementation-20261025/preset-k/dlss-preset-k-r5pn0vb_/report.json",
       "sha256": "89345dd689c8107b34d5c0ac758fea9ea9d5b72747278b4336b017fe6386a3bd",
       "log_sha256": "4bf8952c6e69552d67ca11e389946de9452f31acca4d09828ec26e1bd61a297a"
+    },
+    {
+      "label": "dlss-stock-final",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.657,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/stock-final/dlss-stock-final-iq7tvub_/report.json",
+      "sha256": "d964588ee02a50d028b7bdc5327f6ecb6b9cf170735ce80b63bdc0ea35928c62",
+      "log_sha256": "56d38bac2cf4ef71bc4b32179cd6edd42cbbb41a12b59175a7abe47326d86e4f"
+    },
+    {
+      "label": "dlss-policy-fallback",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.422,
+      "missing_required_text": [],
+      "report": "tmp/godot-checks/dlss-policy-fallback-20261025-agent/dlss-policy-fallback-asmlsbdr/report.json",
+      "sha256": "a0974dbc0d37c2aab9c5ce28555db65bd27a228427ec43a5650c3a556ea8937e",
+      "log_sha256": "56d38bac2cf4ef71bc4b32179cd6edd42cbbb41a12b59175a7abe47326d86e4f"
+    },
+    {
+      "label": "dlss-policy-fallback",
+      "ok": false,
+      "reason": "launch_error",
+      "process_exit": null,
+      "complete": false,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.015,
+      "missing_required_text": [],
+      "report": "tmp/godot-checks/dlss-policy-fallback-20261025-agent/dlss-policy-fallback-o5gdprcp/report.json",
+      "sha256": "ae978156492585a28a9d0456cc1e076a443202ea1d695a907e5de4cac54a32d6",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "dlss-settings-fallback",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 13.203,
+      "missing_required_text": [],
+      "report": "tmp/godot-checks/dlss-policy-fallback-20261025-agent/dlss-settings-fallback-o37si__k/report.json",
+      "sha256": "a9ca90e6c1df1a997f122e8841fa268f89965357419a745e30e6628308acf748",
+      "log_sha256": "16f0eb6f068b1a4624e40e6913ecefa9f8df6a7a36cd60ea18c6f2f7d86646bf"
     }
   ],
   "game_validation": {
