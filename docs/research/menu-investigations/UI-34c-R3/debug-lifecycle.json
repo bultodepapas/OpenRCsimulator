@@ -1,0 +1,24 @@
+{
+  "native_pid": 57832,
+  "native_pid_alive": false,
+  "engine_exit": {
+    "crash": null,
+    "leaked_objects": 0
+  },
+  "log_sha256": "208cb47da6c1f5af59573355e56f0f43c4512d16e7bd44a176c805322e72185e",
+  "viewport": [
+    1920,
+    1080
+  ],
+  "worker_frame_window": {
+    "frames": 46,
+    "mean_ms": 16.67,
+    "p95_ms": 17.18,
+    "max_ms": 17.24,
+    "hitches": 0
+  },
+  "cancel_acknowledged_while_worker_active": true,
+  "cancelled_cache_entries": 0,
+  "home_orphans_after_cancel": 0,
+  "quit_requested_while_worker_active": true
+}
