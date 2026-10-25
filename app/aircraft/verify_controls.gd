@@ -4,6 +4,7 @@ extends SceneTree
 
 const AirplaneAdapter := preload("res://render/airplane.gd")
 const ControlsBuilder := preload("res://aircraft/ugly_stik_controls.gd")
+const Installation := preload("res://aircraft/ugly_stik_installation.gd")
 const LINK_TOLERANCE_M := 0.00025
 const SURFACE_SWEEPS := {
 	"aileron_left": 20.0,
@@ -68,7 +69,11 @@ func _run() -> void:
 		quit(1)
 	_check("two Jensen aileron servos", controls.servos.has_all(["aileron_left", "aileron_right"]))
 	_check("two tail servos", controls.servos.has_all(["elevator", "rudder"]))
-	_check("throttle servo is animated by the throttle linkage", controls.servos.has("throttle") and controls.servos.throttle.animated and controls.mechanisms.throttle.kind == "direct")
+	_check("throttle servo is animated by the throttle linkage", controls.servos.has("throttle") and controls.servos.throttle.animated and controls.mechanisms.throttle.kind == "cable")
+	# US-V18b: the throttle cable tube stays inside the fuselage (sides, floor, under the top sheeting) behind F1.
+	var tube_outside := _tube_outside(controls.mechanisms.throttle)
+	_check("throttle cable tube runs inside the fuselage behind F1", tube_outside.is_empty(), str(tube_outside))
+	_check_installation(root, controls)
 	# US-V17: the owner chose the two-servo version; each aileron servo drives its horn directly (no bellcrank).
 	_check("each aileron has its own servo and a direct pushrod", controls.mechanisms.aileron_left.kind == "direct" and controls.mechanisms.aileron_right.kind == "direct")
 	for side in ["left", "right"]:
@@ -119,6 +124,7 @@ func _run() -> void:
 	# US-V09c: the carburettor lever follows the throttle command over its whole range with a constant-length rod.
 	var lever: Node3D = controls.mechanisms.throttle.hinge
 	var previous_tip := Vector3.INF
+	var servo_angles: Array[float] = []
 	var prop_z := float(ControlsBuilder.D.equipment.prop_z)
 	var min_prop_gap := INF
 	for index in range(21):
@@ -132,12 +138,15 @@ func _run() -> void:
 		_check("throttle %.2f allocates no nodes" % throttle, _same_node_ids(root, node_ids_before))
 		_check("throttle %.2f lever angle follows the command" % throttle, is_equal_approx(lever.rotation.x, deg_to_rad(ControlsBuilder.Equipment.THROTTLE_OPENING * (throttle - 0.5) * ControlsBuilder.THROTTLE_TRAVEL_DEG)), str(rad_to_deg(lever.rotation.x)))
 		var tip: Vector3 = controls.mechanisms.throttle.endpoints_root.get("horn", Vector3.INF)
+		servo_angles.append(rad_to_deg(float(controls.mechanisms.throttle.last_servo_angle)))
 		if previous_tip != Vector3.INF:
 			# US-V13: pull to open; the O.S. lever hangs below its barrel, so its height is not monotonic.
 			_check("throttle %.2f lever tip moves aft" % throttle, tip.z > previous_tip.z, "%s -> %s" % [previous_tip, tip])
 		previous_tip = tip
 		min_prop_gap = minf(min_prop_gap, tip.z - prop_z)
 	_check("throttle lever stays at least 15 mm behind the propeller plane", min_prop_gap >= 0.015, "%.4f m" % min_prop_gap)
+	var servo_travel: float = servo_angles.max() - servo_angles.min()
+	_check("throttle servo travel suits a standard servo (20..110 degrees)", servo_travel >= 20.0 and servo_travel <= 110.0, "%.1f deg" % servo_travel)
 	var hits := _throttle_rod_engine_hits(root, controls, airplane)
 	_check("throttle pushrod clears the engine and nose gear over the throttle range", hits.is_empty(), str(hits))
 	AirplaneAdapter.apply_throttle(airplane, 0.5)
@@ -224,6 +233,104 @@ func _fuselage_servo_outside(controls: Dictionary, servo_name: String) -> Array:
 	return outside
 
 
+# US-V18c: the radio and fuel installation against the airframe, the mass model and its neighbours.
+func _check_installation(root: Node3D, controls: Dictionary) -> void:
+	var parts: Dictionary = controls.installation
+	var tank: Dictionary = parts.tank
+	var size: Vector3 = tank.size
+	var wall: float = tank.wall
+	var corner: float = tank.corner
+	var inner := size - Vector3.ONE * wall * 2.0
+	var rounding := (4.0 - PI) * pow(corner - wall, 2.0) * inner.z
+	var litres := (inner.x * inner.y * inner.z - rounding) * 1000.0
+	var aircraft: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/jensen_ugly_stik_60.json"))
+	var capacity := float(aircraft.fuel_system.tanks[0].capacity.value)
+	_check("fuel tank holds the flight model's capacity within 10 %", absf(litres - capacity) <= 0.1 * capacity, "%.3f l vs %.3f l" % [litres, capacity])
+	var boxes := {"tank": [tank.centre, size], "battery": [parts.battery.centre, parts.battery.size], "receiver": [parts.receiver.centre, parts.receiver.size]}
+	for name: String in boxes:
+		var outside := []
+		for corner_point in _box_corners(boxes[name][0], boxes[name][1]):
+			if not _inside_fuselage(corner_point, 0.0): outside.append(str(corner_point))
+		_check("%s sits inside the fuselage" % name, outside.is_empty(), str(outside))
+	var names := boxes.keys()
+	for i in names.size():
+		for j in range(i + 1, names.size()):
+			var a := AABB(boxes[names[i]][0] - boxes[names[i]][1] * 0.5, boxes[names[i]][1])
+			var b := AABB(boxes[names[j]][0] - boxes[names[j]][1] * 0.5, boxes[names[j]][1])
+			_check("%s and %s do not overlap" % [names[i], names[j]], not a.intersects(b))
+	# The nose wire stands vertically at the steering pivot and slides up as the gear compresses: keep its column free.
+	var wire := ControlsBuilder._point_in_root(root, root.find_child("nose_steering_pivot", true, false) as Node3D, Vector3.ZERO)
+	for name in ["tank", "battery"]:
+		var footprint := Rect2(Vector2(boxes[name][0].x, boxes[name][0].z) - Vector2(boxes[name][1].x, boxes[name][1].z) * 0.5, Vector2(boxes[name][1].x, boxes[name][1].z)).grow(0.0035)
+		_check("%s keeps clear of the nose-wire column" % name, not footprint.has_point(Vector2(wire.x, wire.z)), str(Vector2(wire.x, wire.z)))
+	var tube: Array = controls.mechanisms.throttle.tube_path
+	for name: String in boxes:
+		var box := AABB(boxes[name][0] - boxes[name][1] * 0.5, boxes[name][1]).grow(ControlsBuilder.THROTTLE_TUBE_RADIUS_M + 0.0005)
+		var touching := tube.filter(func(p: Vector3) -> bool: return box.has_point(p))
+		_check("throttle tube clears the %s" % name, touching.is_empty(), str(touching.slice(0, 3)))
+	# Lines: from the engine grommets to the tank nipples, inside the airframe, clear of the wire and the tube.
+	var origin := ControlsBuilder.Equipment.engine_origin()
+	for line in [["fuel_line", "engine_fuel_grommet", "feed_tip"], ["pressure_line", "engine_pressure_grommet", "vent_tip"]]:
+		var path: Array = parts[line[0]]
+		var grommet: Vector3 = origin + ControlsBuilder.Equipment.engine_anchor(line[1])
+		_check("%s starts in its F1 grommet" % line[0], (path[0] as Vector3).distance_to(grommet) < 0.0005)
+		var tip: Vector3 = tank[line[2]]
+		_check("%s ends on its tank nipple" % line[0], Vector2((path[-1] as Vector3).x - tip.x, (path[-1] as Vector3).y - tip.y).length() < 0.0005 and (path[-1] as Vector3).z > tip.z)
+		var f1_back := float(ControlsBuilder.D.equipment.firewall_z) + 0.0064
+		var out := path.filter(func(p: Vector3) -> bool: return p.z > f1_back and not _inside_fuselage(p, Installation.FUEL_LINE_RADIUS_M))
+		_check("%s stays inside the fuselage" % line[0], out.is_empty(), str(out.slice(0, 3)))
+		var near_tube := 1.0
+		for p: Vector3 in path:
+			for q: Vector3 in tube:
+				near_tube = minf(near_tube, p.distance_to(q))
+		_check("%s clears the throttle tube" % line[0], near_tube >= Installation.FUEL_LINE_RADIUS_M + ControlsBuilder.THROTTLE_TUBE_RADIUS_M, "%.4f m" % near_tube)
+		var near_wire := 1.0
+		for p: Vector3 in path:
+			near_wire = minf(near_wire, Vector2(p.x - wire.x, p.z - wire.z).length())
+		_check("%s clears the nose-wire column" % line[0], near_wire >= Installation.FUEL_LINE_RADIUS_M + 0.0025, "%.4f m" % near_wire)
+	# Near the flight inventory's mass items (le frame x_aft, y_right, z_up), within 60 mm.
+	var leading := float(ControlsBuilder.D.wing.leading_z)
+	var thrust := float(ControlsBuilder.D.equipment.shaft_y)
+	var inventory := {}
+	for item: Dictionary in aircraft.inventory:
+		var position: Array = item.position.value if item.position is Dictionary else item.position
+		inventory[item.id] = Vector3(float(position[1]), thrust + float(position[2]), leading + float(position[0]))
+	for pair in [["tank", "item_fuel_tank"], ["battery", "item_receiver_battery"], ["receiver", "item_receiver_main"]]:
+		var offset: float = (boxes[pair[0]][0] as Vector3).distance_to(inventory[pair[1]])
+		_check("%s within 60 mm of the flight inventory's %s" % pair, offset <= 0.06, "%.4f m" % offset)
+	var outlet := origin + ControlsBuilder.Equipment.engine_anchor("engine_exhaust_outlet")
+	_check("switch plate faces the side away from the exhaust", signf(parts.switch.plate.x) == -signf(outlet.x))
+
+
+func _box_corners(centre: Vector3, size: Vector3) -> Array[Vector3]:
+	var corners: Array[Vector3] = []
+	for x in [-0.5, 0.5]:
+		for y in [-0.5, 0.5]:
+			for z in [-0.5, 0.5]:
+				corners.append(centre + Vector3(x * size.x, y * size.y, z * size.z))
+	return corners
+
+
+## Inside the fuselage sides (1/4 in), floor (3/32 in) and top sheeting (1/4 in hatch, conservative), with `margin`.
+func _inside_fuselage(point: Vector3, margin: float) -> bool:
+	var section: Vector3 = ControlsBuilder._fuselage_section(point.z)
+	return absf(point.x) + margin <= section.x - ControlsBuilder.FUSELAGE_SIDE_M and point.y - margin >= section.z + ControlsBuilder.FUSELAGE_BOTTOM_M and point.y + margin <= section.y - 0.0064
+
+
+## Throttle tube centre-line samples behind F1 whose tube wall leaves the fuselage interior.
+func _tube_outside(mechanism: Dictionary) -> Array:
+	var e: Dictionary = ControlsBuilder.D.equipment
+	var radius: float = ControlsBuilder.THROTTLE_TUBE_RADIUS_M
+	var outside := []
+	for point: Vector3 in mechanism.tube_path:
+		if point.z < float(e.firewall_z) + 0.0064: continue # in F1 or ahead of it
+		var section: Vector3 = ControlsBuilder._fuselage_section(point.z)
+		var half := section.x - ControlsBuilder.FUSELAGE_SIDE_M
+		if absf(point.x) + radius > half or point.y - radius < section.z + ControlsBuilder.FUSELAGE_BOTTOM_M or point.y + radius > section.y - 0.0064:
+			outside.append(str(point))
+	return outside
+
+
 ## Smallest clearance between an aileron pushrod (surface, 1.15 mm radius) and the fixed wing's lower skin.
 func _aileron_rod_skin_gap(root: Node3D, mechanism: Dictionary) -> float:
 	var frame := (mechanism.hinge as Node3D).get_parent() as Node3D
@@ -270,11 +377,26 @@ func _throttle_rod_engine_hits(root: Node3D, controls: Dictionary, airplane: Dic
 	var centre := Vector3(0, float(e.shaft_y), (float(e.firewall_z) + float(e.prop_z)) * 0.5)
 	if bvh.intersect_segment((centre + Vector3(-0.1, 0, 0)) * 1000.0, (centre + Vector3(0.1, 0, 0)) * 1000.0).is_empty():
 		return ["probe found no engine triangles (%d vertices)" % triangles.size()]
+	# US-V18b: the cable tube where it passes F1 and stands ahead of it, with its 2 mm radius plus 0.5 mm.
+	var tube_path: Array = controls.mechanisms.throttle.tube_path
+	var f1_back := float(e.firewall_z) + 0.0064
+	for i in range(tube_path.size() - 1):
+		var p: Vector3 = tube_path[i]
+		var q: Vector3 = tube_path[i + 1]
+		if p.z > f1_back: break
+		var axis := (q - p).normalized()
+		var side := axis.cross(Vector3.UP).normalized() * 2.5
+		var lift := side.cross(axis).normalized() * 2.5
+		for offset: Vector3 in [Vector3.ZERO, side, -side, lift, -lift]:
+			if not bvh.intersect_segment(p * 1000.0 + offset, q * 1000.0 + offset).is_empty():
+				hits.append("tube at %s" % p)
+				break
 	for index in range(11):
 		var throttle := float(index) / 10.0
 		AirplaneAdapter.apply_throttle(airplane, throttle)
 		var ends: Dictionary = controls.mechanisms.throttle.endpoints_root
-		var a: Vector3 = ends.servo
+		# US-V18b: the exposed front cable, from its tube at F1 to the lever.
+		var a: Vector3 = ends.get("cable_front", ends.servo)
 		var b: Vector3 = ends.horn
 		var direction := (b - a).normalized()
 		a = (a + direction * 0.008) * 1000.0

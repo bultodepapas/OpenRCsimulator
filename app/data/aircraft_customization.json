@@ -657,7 +657,7 @@
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "jensen-das-ugly-stik-60",
-      "model_manifest_sha256": "1f5dbc203915bc89c5d669be58fb176112dff089a73cb6d646f6c552dfc8250a",
+      "model_manifest_sha256": "79dad6e96cd12374c322aac2399708022dd1507e223ebcff40240ae467ef14de",
       "paint_slots": [
         {
           "id": "body",
@@ -1042,7 +1042,7 @@
           "sha256": "37a4b7296b7c3de78cc87de485131ec93baf4f68ef449ba2d3288c3be5d5dbb8"
         }
       ],
-      "slots_sha256": "9e5376aa64103991f472defb4a1b3edd7fed2a8f5d49157fc4096d30835c0cb4"
+      "slots_sha256": "aed8ed5082ebfacadfe74ee27bb504cdf0e3c8e643709a5bd4063d4300b97df5"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
