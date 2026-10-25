@@ -143,6 +143,12 @@ def main() -> int:
                 f'set "OPENRC_GRAPHICS_PROFILE=high"\r\nset "OPENRC_RECONSTRUCTION={mode}"\r\n'
                 'cd /d "%~dp0"\r\nstart "" "%~dp0OpenRC Native Trial.exe" -- --quick-flight\r\nendlocal\r\n')
         managed[name] = body.encode("utf-8")
+    managed["Graphics Options.cmd"] = (
+        '@echo off\r\nsetlocal\r\nset "APPDATA=%~dp0profile-options"\r\n'
+        'if not exist "%APPDATA%" mkdir "%APPDATA%"\r\n'
+        'set "OPENRC_GRAPHICS_PROFILE=high"\r\nset "OPENRC_RECONSTRUCTION=native"\r\n'
+        'cd /d "%~dp0"\r\nstart "" "%~dp0OpenRC Native Trial.exe"\r\nendlocal\r\n'
+    ).encode("utf-8")
 
     if OUT.exists() and not OUT.is_dir():
         raise RuntimeError(f"package output path is not a directory: {OUT}")

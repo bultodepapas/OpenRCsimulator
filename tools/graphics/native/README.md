@@ -6,7 +6,10 @@ Godot 4.7.2 pin. The upstream NVIDIA commit is based on Godot 4.8-dev; run it on
 a disposable application copy and qualify an engine upgrade separately before
 shipping it. The GPU used for local checks is not the product support boundary.
 
-See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). The active Streamline pin is 2.11.1 with matching headers and runtime. DLSS mode/resize testing still reports an internal NGX image-layout finding; a 2.14.16 trial named the internal resource but added startup validation errors, so it was rejected. Frame-based tagging is not implemented because the render callback does not receive a per-frame token. The first exported FSR3 capture stalled during shutdown and later runs exited normally; shutdown/export revalidation is in progress, with no updated final qualification recorded here.
+See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). The active Streamline pin is 2.11.1 with matching headers and runtime. DLSS mode/resize testing still reports an internal NGX image-layout finding; a 2.14.16 trial added startup validation errors and was rejected. Frame-based tagging requires per-frame token plumbing through the render queue and is not implemented. A separate-thread device-ownership shutdown defect is patched and reproduced by the [minimal fixture](repro/README.md). This does not explain the earlier intermittent exported FSR3 shutdown stall or qualify release stability.
+
+The exported Home route opens and exits without error records but reports 121
+ObjectDB instances retained at exit. Its resource lifetime still needs diagnosis.
 
 ## Build
 
@@ -96,7 +99,9 @@ through the existing checked Godot runner. Output is
 `tmp/native-reconstruction-export/`, with the executable, PCK, runtime DLLs,
 licenses and hash receipts. `FSR3 Quality.cmd`, `DLSS Quality.cmd` and `Native.cmd`
 start a direct flight with separate local profiles. They do not use the player's
-production preferences. The standard `app/export.sh` still uses the production
+production preferences. `Graphics Options.cmd` opens Home in High with its own
+profile: Settings → Graphics exposes the available providers and preserves kept
+choices. Its initial reconstruction is Native. The standard `app/export.sh` still uses the production
 engine and must not be used to package this trial.
 
 ## Integration contract
@@ -110,6 +115,9 @@ engine and must not be used to package this trial.
 - Preferences retain the requested mode across devices. Unsupported requests
   render natively, with the effective mode reported separately. UI options are
   disabled when unavailable. Native remains the default.
+- The settings page shows requested/active presets, estimated 3D input and output
+  dimensions, and the reason for fallback. Estimated dimensions are not GPU
+  allocation measurements; DLSS can choose different integer rounding.
 - FSR sharpness controls AMD RCAS; they do not apply an extra sharpening pass to
   DLSS. Temporal reconstruction owns antialiasing. Returning to Native restores
   the saved MSAA preference.

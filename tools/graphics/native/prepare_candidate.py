@@ -48,6 +48,7 @@ for _path in (
     "app/tests/test_advanced_graphics_settings.gd",
 ):
     INTEGRATION_SOURCE_COMMITS[_path] = FEATURE_INTEGRATION_COMMIT
+INTEGRATION_SOURCE_COMMITS["app/tests/test_advanced_graphics_settings.gd"] = "ba42e49b7b814a86f0c29f5d7d29f2239a002e03"
 
 
 def sha256(data: bytes) -> str:

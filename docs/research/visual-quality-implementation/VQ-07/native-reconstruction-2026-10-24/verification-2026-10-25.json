@@ -1,0 +1,856 @@
+{
+  "format": "openrc-native-reconstruction-verification v2",
+  "date_local": "2026-10-25",
+  "experimental": true,
+  "release_qualified": false,
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "617.42",
+    "api": "Vulkan 1.4.351",
+    "validation_layers": "1.4.366"
+  },
+  "scope": {
+    "fsr_upscaling": "3.1.4",
+    "streamline": "2.11.1",
+    "dlss_file_version": "310.6.0.0",
+    "frame_generation": false,
+    "fsr4": false,
+    "cross_vendor_qualified": false,
+    "fps_improvement_measured": false,
+    "initial_export_hang_explained": false
+  },
+  "package": {
+    "path": "tmp/native-reconstruction-export/package-receipt.json",
+    "sha256": "94caab3ef4c877a4f7044b4634cc2ed387ab67ffa80857b2c9ff7988e401580e",
+    "godot_commit": "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76",
+    "engine_version": "4.8.dev.custom_build",
+    "sources": {
+      "godot-nvidia.zip": "8f9d9604270ccca92d14cc57afca142079476cbe050e0486a90b84da17ce907a",
+      "fidelityfx-1.1.4.zip": "9a19e1f20bf269163f052186ed563209c5a1d0f7b1cf7e567e643dee6cc61179",
+      "streamline-2.11.1.zip": "0c1d562e59557434cabfb8997157cb8c04fc7d23f077c8bdf5260975b73dfb89"
+    },
+    "integration": {
+      "engine.patch": "e3d55e67e352b150da8dc1c3c3ea9caa0cbbabd2542e6f87bcd64285eb637620",
+      "vulkan_validation.patch": "26f91e399e339b4c4725f925a7c779254c9720112acf4ed49e52652480475206",
+      "dlss_validation.patch": "9bc70d7b64586a5515ad04e8c2bef9215aafae49b648ee0096d7d4aef550e9ed",
+      "shutdown_thread.patch": "a253b37bbbf88fed10bbbc6b33ce7823e52c9ffcff84fc5a973059148210d858",
+      "fidelityfx.patch": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+      "build_fidelityfx.py": "49e006c4bc989310f89a0f38fb4cf7b1b4763aa571f3076769abe695fe6d5785",
+      "fsr3.h": "acb7566f1fc05b4b6bc3d83a482b962d23247a3936cdf4f095e96eb92dab9fd4",
+      "fsr3.cpp": "e5ec7a18ea9961c5f05a5b2f81517d46da731d2489f06a5234c8f81827a5347d",
+      "fsr3_prepare.glsl": "a6a62b2ba1d5981ed48b326fc55ad5015935b6903ebcd2526a65f5bfdc569035"
+    },
+    "streamline_headers": {
+      "sl.h": "e1e81a7428d15b30db37587e9469bd68a56d630d820a4accec0aee3b17e157dd",
+      "sl_appidentity.h": "1337385ac9867d66fa6beb34c750e79aaf25a74a156a47e83f24937299dade87",
+      "sl_consts.h": "69a9f35aeecd7fbf68a997872ba2e29f27af7da4675f76b94628393d14474abf",
+      "sl_core_api.h": "328dc3a2c1dee579c200ca97e2d5b1ec38c893be4ba2745ef5ad506af7172e81",
+      "sl_core_types.h": "4096734a92c16e95a6d9051040dc4da93bb1e3e3715e34eb2cb1b1740bb05b15",
+      "sl_deepdvc.h": "c6086ffe6b1e00588368fdb91e4ab9dd9617624e0e4344cd503a2ca73e46d1a4",
+      "sl_device_wrappers.h": "af7741305b1a468c3a83efaa2005ecd53d2ffd7aadb8ec6868c9dcb4a8a8e3a1",
+      "sl_directsr.h": "65d4e68b2a0f0425ea4d381379172197b81352a50a5e399a8e8f51953e765c71",
+      "sl_dlss.h": "d2c8c61fa71794c8ba424cebce5b3079ebfab8e47ed98b4b00cf8b257ecfd6b5",
+      "sl_dlss_d.h": "a726e8135f2e36ad3939ce852530a879e1d909b85539c20c8cb5029ab122f2c4",
+      "sl_dlss_g.h": "1fc18cbe004e280df1f787276d08a1b28b8a8c4c65856fbaa659f56dff6a915d",
+      "sl_helpers.h": "b495f1e1dc88674474b49bc74b8f2d3ba8f19bab089e5127194bc44cf1e68df1",
+      "sl_helpers_vk.h": "82604567d239d00ac0ac2270cec744f6f11266e1d9d5187a95d4954f76d8c41c",
+      "sl_hooks.h": "cfeff70a52e1cc012cf4c955a15cc9d0b290f7e084dcb3c0168a9af06ff8f122",
+      "sl_matrix_helpers.h": "a65758d85abba1e12845d266d7d5e36aaefa952383cdf093f3143cd6d8653341",
+      "sl_nis.h": "f45be3cf149200e1eae081cd144c95726a7a290a89822a5d52b9f538e52484aa",
+      "sl_nvperf.h": "025f9f1c8482e75a90f8b8efccdc9cfc53a9fc8b05ba3acc6c3783708b66bd69",
+      "sl_pcl.h": "f43c5135fc8d5349ccd345e424f8cf1f61953a9f17e9897204b0741a3ab7b0fb",
+      "sl_reflex.h": "3b623a1189e04a686384d224a58c4ad9974c4e6e3204077676f6ec529475164c",
+      "sl_result.h": "2a0f6c12863bdc00b38910a5ec85d1f083c5671ee817a920afe626ac2a9100f7",
+      "sl_security.h": "a36b1c20394402bee7ce738089a5a1305ff6e9dd9dd517566154ce834f7c32b4",
+      "sl_struct.h": "5c5fcdb6b8386e81c8e003a7b45a730c83aa96b8d6e03692a54521c94d4825a5",
+      "sl_template.h": "af2d4a61361f2603872dcb6edc86cc9e18912762a5c03e6a782ff39a8c3b871b",
+      "sl_version.h": "c07ea4433db72800a0d60f8e17fff3adf09a195c3dfb8f70edf0b359a1ecea12"
+    },
+    "runtime": {
+      "amd_fidelityfx_vk.dll": "5c6aba3469e0e2170c35ce900e510ad3649500fca10139d4489490d634bbca8e",
+      "NvLowLatencyVk.dll": "2a77dc3e1c724b7eea5755be0ae7423752e79a2459fae72181a9f00e3507e5d6",
+      "nvngx_deepdvc.dll": "814bd287102fa0dbaba612ff94be9023ea940210b5fbd2bac2fabf7cb248b38a",
+      "nvngx_dlss.dll": "2173e05733fde21c7ae77c7573d1d5b60d651e659f71708807a680afe2829e4d",
+      "nvngx_dlssd.dll": "fddc24c5d343507f19a0dbd94be267418f95b5910d7615a80213ec041e069663",
+      "nvngx_dlssg.dll": "17e00fc66d32f348fa16d387d635ac1b994aa7317b3e6d968867d1ee77af3564",
+      "sl.common.dll": "9d39bf058d0dc64677fd4fab28c02b0564e16764bfdbe775d8dc5b759489cbb2",
+      "sl.deepdvc.dll": "0138befcfcd63014ea8f5ab7b005a9bebb9d883e900f8f0cc5a4a378b0af71fc",
+      "sl.directsr.dll": "2e5ebdf810368bd3f9fa9d5c928fa99c42f9462b2edcd672f5c80a7f8447474c",
+      "sl.dlss.dll": "7779f3c653535808b6f98307de8b067ca38f1dba16e3c7362b13dcd7d4e7dabe",
+      "sl.dlss_d.dll": "c8b0aacc6150bb53bad229d5ea0cf565bc8c4fa3be616bd6636afd9ae01416d3",
+      "sl.dlss_g.dll": "dae3f24a690f3dee3fbd89bdde47fbeb6bf480cee376ecfd0242a50e0bb6e6c6",
+      "sl.interposer.dll": "98ac2097902686441d6cbd1182fcf5cb15e9e7fa0744bfdf176ec728a4a49f1a",
+      "sl.nis.dll": "a3217cc877f7aa8e54d29c3cedc975c1397511af5c017c1e6057187bb9332b2a",
+      "sl.nvperf.dll": "b8f6a8e963f073490156b0ebccc73d4fe083a5c0b71484aaedc1292e6e9ee5ed",
+      "sl.pcl.dll": "4a7bb40f1328cff599de932d5fc73cfd58bd32f3e29f7c19fa464ab3e2aaa440",
+      "sl.reflex.dll": "cfbaed0b1c27d0ba415f67e2aeca32607adf2b83be084ee8ad49f7e34c89010c"
+    },
+    "candidate": {
+      "source_base_commit": "343be4b0bba007ec4295e7da408220a0577d97e1",
+      "integration_source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+      "engine_identity": "4.8.0",
+      "candidate_renderer": "forward_plus",
+      "generated_registry_sha256": "f2c9fed6f323d23626513641d8c34592829b848dd8b56d933ec4e7454953b2bb",
+      "integration_overlays": {
+        "app/render/reconstruction.gd": {
+          "source_commit": "91b67d620c1adf3f470dddba33ace63f3fb6851c",
+          "source_sha256": "3c645b2179c9bf6f61a3d5a9e07bc0053c2676e18f83b8fbd498b5339836bde1",
+          "expected_final_sha256": "3c645b2179c9bf6f61a3d5a9e07bc0053c2676e18f83b8fbd498b5339836bde1",
+          "prepared_sha256": "3c645b2179c9bf6f61a3d5a9e07bc0053c2676e18f83b8fbd498b5339836bde1"
+        },
+        "app/app_state/display_preferences.gd": {
+          "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+          "source_sha256": "68d535c76ea9d121776fdb5cf9ecc474a1b92848d77023915012b3083b3a493b",
+          "expected_final_sha256": "68d535c76ea9d121776fdb5cf9ecc474a1b92848d77023915012b3083b3a493b",
+          "prepared_sha256": "68d535c76ea9d121776fdb5cf9ecc474a1b92848d77023915012b3083b3a493b"
+        },
+        "app/ui/settings_screen.gd": {
+          "source_commit": "91b67d620c1adf3f470dddba33ace63f3fb6851c",
+          "source_sha256": "bf13fbc4f31bfbc9a47929e0c3dcd8c291dd1be611b208ce2130784e52bb32a1",
+          "expected_final_sha256": "bf13fbc4f31bfbc9a47929e0c3dcd8c291dd1be611b208ce2130784e52bb32a1",
+          "prepared_sha256": "bf13fbc4f31bfbc9a47929e0c3dcd8c291dd1be611b208ce2130784e52bb32a1"
+        },
+        "app/i18n/es.po": {
+          "source_commit": "91b67d620c1adf3f470dddba33ace63f3fb6851c",
+          "source_sha256": "15a3b368b8c7c0ee5483c06d380314b24298dae8a86c5a593d59e56d9fa4af61",
+          "expected_final_sha256": "15a3b368b8c7c0ee5483c06d380314b24298dae8a86c5a593d59e56d9fa4af61",
+          "prepared_sha256": "15a3b368b8c7c0ee5483c06d380314b24298dae8a86c5a593d59e56d9fa4af61"
+        },
+        "app/app_root.gd": {
+          "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+          "source_sha256": "1ffc7fff7ee0398efa71569988fac262fc75c3bb1020f5d2cb953d30c9ab2622",
+          "expected_final_sha256": "1ffc7fff7ee0398efa71569988fac262fc75c3bb1020f5d2cb953d30c9ab2622",
+          "prepared_sha256": "1ffc7fff7ee0398efa71569988fac262fc75c3bb1020f5d2cb953d30c9ab2622"
+        },
+        "app/main.gd": {
+          "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+          "source_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5",
+          "expected_final_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5",
+          "prepared_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5"
+        },
+        "app/tests/test_reconstruction.gd": {
+          "source_commit": "91b67d620c1adf3f470dddba33ace63f3fb6851c",
+          "source_sha256": "2d9b80c5c2d77ead1d3cd5dff85f6c0b995cdac528c9fdf21138f90339200b22",
+          "expected_final_sha256": "2d9b80c5c2d77ead1d3cd5dff85f6c0b995cdac528c9fdf21138f90339200b22",
+          "prepared_sha256": "2d9b80c5c2d77ead1d3cd5dff85f6c0b995cdac528c9fdf21138f90339200b22"
+        },
+        "app/tests/test_advanced_graphics_settings.gd": {
+          "source_commit": "ba42e49b7b814a86f0c29f5d7d29f2239a002e03",
+          "source_sha256": "a31811234a1631ac27214151dd24d6ef6669883b77870f5581a91e2031fee7cd",
+          "expected_final_sha256": "a31811234a1631ac27214151dd24d6ef6669883b77870f5581a91e2031fee7cd",
+          "prepared_sha256": "a31811234a1631ac27214151dd24d6ef6669883b77870f5581a91e2031fee7cd"
+        }
+      }
+    },
+    "files": {
+      "OpenRC Native Trial.pck": "2eadf9b7c08288e25aeacdc3d4012802dd66a8aacada6e7cb290d92794f7ba33",
+      "OpenRC Native Trial.exe": "75eedf54aed8d4890e4ff1b578c9f8b50238180d34206b4fb9637dd389532230",
+      "openrc-editor-build.json": "62713830b17eedce8a5c99635d84d4660c879bd1dc1b9ab7fab4dfdd53377ccb",
+      "openrc-template_release-build.json": "63a044efea46cbf051fcda25ff1fca1f6aef68ed98d31d806316615fca434bb5",
+      "presentation-engine-receipt.json": "c1b701bd6b6cd229f57ebc2ef4060904c85d8ce17a6c8284acff03c482fe67c8",
+      "amd_fidelityfx_vk.dll": "5c6aba3469e0e2170c35ce900e510ad3649500fca10139d4489490d634bbca8e",
+      "NvLowLatencyVk.dll": "2a77dc3e1c724b7eea5755be0ae7423752e79a2459fae72181a9f00e3507e5d6",
+      "nvngx_deepdvc.dll": "814bd287102fa0dbaba612ff94be9023ea940210b5fbd2bac2fabf7cb248b38a",
+      "nvngx_dlss.dll": "2173e05733fde21c7ae77c7573d1d5b60d651e659f71708807a680afe2829e4d",
+      "nvngx_dlssd.dll": "fddc24c5d343507f19a0dbd94be267418f95b5910d7615a80213ec041e069663",
+      "nvngx_dlssg.dll": "17e00fc66d32f348fa16d387d635ac1b994aa7317b3e6d968867d1ee77af3564",
+      "sl.common.dll": "9d39bf058d0dc64677fd4fab28c02b0564e16764bfdbe775d8dc5b759489cbb2",
+      "sl.deepdvc.dll": "0138befcfcd63014ea8f5ab7b005a9bebb9d883e900f8f0cc5a4a378b0af71fc",
+      "sl.directsr.dll": "2e5ebdf810368bd3f9fa9d5c928fa99c42f9462b2edcd672f5c80a7f8447474c",
+      "sl.dlss.dll": "7779f3c653535808b6f98307de8b067ca38f1dba16e3c7362b13dcd7d4e7dabe",
+      "sl.dlss_d.dll": "c8b0aacc6150bb53bad229d5ea0cf565bc8c4fa3be616bd6636afd9ae01416d3",
+      "sl.dlss_g.dll": "dae3f24a690f3dee3fbd89bdde47fbeb6bf480cee376ecfd0242a50e0bb6e6c6",
+      "sl.interposer.dll": "98ac2097902686441d6cbd1182fcf5cb15e9e7fa0744bfdf176ec728a4a49f1a",
+      "sl.nis.dll": "a3217cc877f7aa8e54d29c3cedc975c1397511af5c017c1e6057187bb9332b2a",
+      "sl.nvperf.dll": "b8f6a8e963f073490156b0ebccc73d4fe083a5c0b71484aaedc1292e6e9ee5ed",
+      "sl.pcl.dll": "4a7bb40f1328cff599de932d5fc73cfd58bd32f3e29f7c19fa464ab3e2aaa440",
+      "sl.reflex.dll": "cfbaed0b1c27d0ba415f67e2aeca32607adf2b83be084ee8ad49f7e34c89010c",
+      "licenses/FidelityFX-LICENSE.txt": "82cf74fc23885107c7f69249ac3f1dac55898ff68320eb2c753984cae6b2d78a",
+      "licenses/Godot-LICENSE.txt": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+      "licenses/nis.license.txt": "f80ecfbce8a84a5b4c1c59dc5a9f0ee9cf5a989c9fba3a9486ee874f7595a454",
+      "licenses/nvngx_dlss.license.txt": "3027f23ca5a46dd9cb8183fbd522983a86f64d7daac5982912bf9f214671f294",
+      "licenses/OpenRC-LICENSE.txt": "2d4dad4844d4fe37238ece86717ae47da69d6c805a898e5c9b41a0de2bfee904",
+      "licenses/reflex.license.txt": "ebf83c07fb3b2939908c3795d887afde3161c89a28ba391724efc784ce1bdabe",
+      "licenses/Streamline-LICENSE.txt": "7b6f23e7d6f3ad6292f9308d2b42cdc3d82ae4e9b2abb55f230279d83bedd43d",
+      "licenses/Streamline-third-party.md": "87a414a75a83ac4fe43111d99a52075b6d009c8802dd718084b94dfdf1b06f59",
+      "Native.cmd": "0cc94e850062436e4a3e8be6108be1e7b288ca63047181cb642c85c253226d85",
+      "FSR3 Quality.cmd": "9b7f266964b55bbdda1667dee04c6b3bd8d9e09b82d7a11a0e7fab6a917ba730",
+      "DLSS Quality.cmd": "d5bdc64ca08fe00c3f603c100be2aa93a1b6f26ac1144f29dbff3f7b0ceb7dd3",
+      "Graphics Options.cmd": "be65841254a49c5515c1f65d2194e501b57fdcfaad3435162a8f2cbf73bde79d"
+    }
+  },
+  "export_check": {
+    "path": "tmp/godot-checks/native-package-export/native-windows-trial-pack-7dfwteoy/report.json",
+    "sha256": "2494681688c13035013758ab56656c67b61d3a651a137fb6a2ddf2ae876855fa",
+    "label": "native-windows-trial-pack",
+    "ok": true,
+    "complete": true,
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "reason": "passed",
+    "elapsed_seconds": 34.688,
+    "log_sha256": "eaad93e23c5a5195422a4ec74a3e41c7bb122b625a74acf0ccef17d2071fcc24",
+    "missing_required_text": []
+  },
+  "checks": [
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/dlss-final-ntttrfwd/report.json",
+      "sha256": "3eadd566795913e20485010b39e4eceb48ccace81ba29b4d72858a32bb8162c7",
+      "label": "dlss-final",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 29.282,
+      "log_sha256": "2223456e876b63f6ec27d928ba08f0ea3281c4ad0895aedc4c3d3de767d5358d",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/export-home-loaded-3nxcjw9o/report.json",
+      "sha256": "3e77388baf4d4c3ca846fa643e8dc6e990e48f9305dc2552894d8b623e2b6d8b",
+      "label": "export-home-loaded",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 47
+      },
+      "reason": "passed",
+      "elapsed_seconds": 42.531,
+      "log_sha256": "5841c0e2bcb170b25777f8cf4acddfd0fa1f9ba92e9cfba6ce4d3aa0aaab2455",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/export-home-options-4xh9vp2n/report.json",
+      "sha256": "51b5bc844126e5b2e0b6a420874921409c99632b85ed44c6d0a3dc36843d7b2b",
+      "label": "export-home-options",
+      "ok": false,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 22,
+        "warning": 1
+      },
+      "reason": "engine_error",
+      "elapsed_seconds": 10.0,
+      "log_sha256": "07dfefffac41a738865c9799c0171592dffa46d306b95fc2f878b1d3c524fcc3",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/export-home-verbose-mg5ode0p/report.json",
+      "sha256": "210b0ea7eb88b77a4a09b9b61e46e2b4ee0b78a99ac8f6e44305a0e783c51f3b",
+      "label": "export-home-verbose",
+      "ok": false,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 138,
+        "warning": 2
+      },
+      "reason": "engine_error",
+      "elapsed_seconds": 6.422,
+      "log_sha256": "37e3fb29172f2c54a1dbdc70f1da357b5bd6cf0170771564cb7a135bcc148408",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/final-candidate-import-hma5ldgo/report.json",
+      "sha256": "e3f64fbbc53d0a8dab8416791ffff08d18c07cb7df4cec4724d1912ee29149a1",
+      "label": "final-candidate-import",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 14.422,
+      "log_sha256": "4b21ed905234fbadb7545a436d3c80b90f42b073cf6c5273c00b48b3b65f632e",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/final-native-graphics-_i2sanhi/report.json",
+      "sha256": "7bab6b1731b3618c103413732bb17218b895c94f9376c36d6ba6f7045d9ec975",
+      "label": "final-native-graphics",
+      "ok": false,
+      "complete": true,
+      "process_exit": 1,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "process_exit",
+      "elapsed_seconds": 37.594,
+      "log_sha256": "7cacbf8e1bcf7865f993eb3933ba0f0373c19cd1f3cc46626b77b5c5bea48d99",
+      "missing_required_text": [
+        "0 failed"
+      ]
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/final-native-graphics-isolated-nwllz3dr/report.json",
+      "sha256": "dbb215f782559f54b3805c5e77f66c0d94a09981ba755e4978c5477416b9254b",
+      "label": "final-native-graphics-isolated",
+      "ok": false,
+      "complete": true,
+      "process_exit": 1,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "process_exit",
+      "elapsed_seconds": 34.563,
+      "log_sha256": "7cacbf8e1bcf7865f993eb3933ba0f0373c19cd1f3cc46626b77b5c5bea48d99",
+      "missing_required_text": [
+        "129 checks, 0 failed"
+      ]
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/final-reconstruction-5_gfiesj/report.json",
+      "sha256": "6df494231525545691acd7192dcc620e721ff7409d59132d9482c593bc71c32b",
+      "label": "final-reconstruction",
+      "ok": false,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "missing_required_text",
+      "elapsed_seconds": 14.766,
+      "log_sha256": "4ac9221ce9044f0c8d5b18332e11469a9a475c1d9c60b734e9e7644176279c16",
+      "missing_required_text": [
+        "95 checks, 0 failed"
+      ]
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/final-reconstruction-correct-marker-z69xy3_f/report.json",
+      "sha256": "cb741497c2ae7b000842858017694aeaf0131302df3555866db8cfaafe1c390e",
+      "label": "final-reconstruction-correct-marker",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 17.703,
+      "log_sha256": "4ac9221ce9044f0c8d5b18332e11469a9a475c1d9c60b734e9e7644176279c16",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/fsr3-fresh-1-7ds9pd85/report.json",
+      "sha256": "cb60bf904c68a9fc22fe38417a8710e8d322555b1c4a506333e17125dd8c014d",
+      "label": "fsr3-fresh-1",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 26.469,
+      "log_sha256": "f6cddff529624d7c4482c512279df1ddf8c8229174a0ffe6f3b7b272657dad44",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/fsr3-fresh-2-brmr1q3f/report.json",
+      "sha256": "7222580169b529a0cfe81a6f6ff855d7076aca0ecc5c7d8cde5661aa8241eeb9",
+      "label": "fsr3-fresh-2",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 29.281,
+      "log_sha256": "2b785edd3170f3a7be1bf7f696d6a61bea3241ad75765abb815ea5567543a7fe",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/fsr3-warm-1-4na9wmdu/report.json",
+      "sha256": "1fb30fc933480a7c7b648b72d948cb8f43ee790859ef54cdfc15d1fc419aff60",
+      "label": "fsr3-warm-1",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 17.468,
+      "log_sha256": "d7e0611324fef1e0f893233afb939b181e882951c6afc8386c6d839a8c97a064",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/minimal-dlss-2111-no-nis-8mq6nx5w/report.json",
+      "sha256": "7debeacf717170651b8547279f9e1a9bea73a69aff3384d4f3fcbf68263939ed",
+      "label": "minimal-dlss-2111-no-nis",
+      "ok": false,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 2,
+        "warning": 2
+      },
+      "reason": "engine_error",
+      "elapsed_seconds": 23.781,
+      "log_sha256": "9ba5fc215c2e2bfa58bebe0a7ff8711bcd135c620c478504d3f65db7b6e8e8ae",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/minimal-dlss-21416-vc06fskh/report.json",
+      "sha256": "b98bc035dbb2da2f8420d7055f8f8fd5ad4c35548edb6aa51c9e73af857ef26c",
+      "label": "minimal-dlss-21416",
+      "ok": false,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 53,
+        "warning": 12
+      },
+      "reason": "engine_error",
+      "elapsed_seconds": 11.015,
+      "log_sha256": "bee48f6001dcbf7ee72ddf0de7485db0ee40e89a7f8aa4a520e3ec0b26282869",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/minimal-native-separate-after-bw7d7r9e/report.json",
+      "sha256": "7b39157dc0f1261c6ea4035c2e29a27acc2e145a3444aecfe565199e11aa2fa3",
+      "label": "minimal-native-separate-after",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 3
+      },
+      "reason": "passed",
+      "elapsed_seconds": 19.14,
+      "log_sha256": "8b10651cb9e7ff32d728e637e047f6596988c00f289a46478e90e00a3c59d098",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/minimal-native-separate-before-1w_3ss9v/report.json",
+      "sha256": "22bde9cd574427262a5350964fcea430419409b292078f9029677e001e5a6e7a",
+      "label": "minimal-native-separate-before",
+      "ok": false,
+      "complete": true,
+      "process_exit": 3221226505,
+      "counts": {
+        "error": 8,
+        "warning": 4
+      },
+      "reason": "process_exit",
+      "elapsed_seconds": 7.703,
+      "log_sha256": "5b7525ce54ed3c4caa0919c89c46134389ae059167678f5f11a3af33d2010b3e",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/native-final-a3j0h7xa/report.json",
+      "sha256": "1a7b576bff1117a684214ff35b364a6f882e63ac70568aa7e4c839d6cd99ec37",
+      "label": "native-final",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 22.641,
+      "log_sha256": "3934a032e9afbb0e9fa6f1a02b8d506610fdbfbbae60a8d0a9e612e75dff6e82",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/native-graphics-capability-fix-sfttcdwk/report.json",
+      "sha256": "eba83033eaba4a15e22786d886f78cced801387b5a8b5425a15d9cc82be3560b",
+      "label": "native-graphics-capability-fix",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 30.422,
+      "log_sha256": "f9b32bb3c948e8a79b43d6309d6837aab9727fef6ff1366d34d07cf40cc713f5",
+      "missing_required_text": []
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/checks/stock-graphics-capability-fix-ylanhr6w/report.json",
+      "sha256": "210b78e1fde5ae5b53a86bf32a0cde2d2d960a7eeb09e5dddfc4997ba3ae30b0",
+      "label": "stock-graphics-capability-fix",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 13.703,
+      "log_sha256": "16f0eb6f068b1a4624e40e6913ecefa9f8df6a7a36cd60ea18c6f2f7d86646bf",
+      "missing_required_text": []
+    }
+  ],
+  "sdk_comparison": [
+    {
+      "version": "2.10.0",
+      "decision": "baseline",
+      "log": {
+        "path": "tmp/debug-bridge/20261025-062318-47942/engine.log",
+        "sha256": "08b3d1d91fd994033e103875588851bc80716b76dbb7076f75230364e9bc0909",
+        "validation_message_counts": {
+          "Loader Message": 2,
+          "SYNC-HAZARD-WRITE-AFTER-WRITE": 10,
+          "VUID-vkCmdDraw-None-09600": 6
+        },
+        "engine_error_records": 16,
+        "warning_records": 46
+      }
+    },
+    {
+      "version": "2.11.1",
+      "decision": "retained experimental; 09600 persists",
+      "log": {
+        "path": "tmp/debug-bridge/20261025-063127-47942/engine.log",
+        "sha256": "c763e8ca4ce7a9e5186c2fd565bf6c693ea9c5e3c6aadcdf688303f33db656c4",
+        "validation_message_counts": {
+          "Loader Message": 2,
+          "SYNC-HAZARD-WRITE-AFTER-WRITE": 10,
+          "VUID-vkCmdDraw-None-09600": 10
+        },
+        "engine_error_records": 20,
+        "warning_records": 46
+      }
+    },
+    {
+      "version": "2.14.16",
+      "decision": "rejected for new initialization VUIDs",
+      "log": {
+        "path": "tmp/debug-bridge/20261025-063634-47942/engine.log",
+        "sha256": "c77834bcf031e7187e5499b1c97ca35da2bc3f4cdae2a877d16b444c3d9649c2",
+        "validation_message_counts": {
+          "Loader Message": 2,
+          "VUID-vkCreateDevice-ppEnabledExtensionNames-01387": 1,
+          "VUID-vkCreatePrivateDataSlot-privateData-04564": 1,
+          "SYNC-HAZARD-WRITE-AFTER-WRITE": 10,
+          "VUID-vkCmdDraw-None-09600": 10
+        },
+        "engine_error_records": 22,
+        "warning_records": 46
+      }
+    }
+  ],
+  "captures": [
+    {
+      "name": "fsr3-fresh-1",
+      "manifest": {
+        "path": "tmp/native-reconstruction-20261025/fsr3-fresh-1.json",
+        "sha256": "23d56b94271ad1035df160f3310ea95884e18fdf8b9fdcd2bcebc942f9ac8865"
+      },
+      "image": {
+        "path": "tmp/native-reconstruction-20261025/fsr3-fresh-1.png",
+        "sha256": "96d39bbd4de35708d58a086d2bf8116341f1693859a1e90a49db50dc6a8eba96",
+        "dimensions": [
+          1920,
+          1080
+        ]
+      },
+      "manifest_png_hash_matches": true,
+      "reconstruction": {
+        "backend": {
+          "available": true,
+          "backend_failed": false,
+          "contexts_created": 1,
+          "dispatches_succeeded": 36,
+          "last_return_code": 0,
+          "provider_version": "3.1.4"
+        },
+        "effective": "fsr3_quality",
+        "effective_provider": "fsr3",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 1.29999995231628,
+        "msaa_3d": 0,
+        "nominal_3d_size": [
+          1280,
+          720
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "fsr3",
+        "provider_available": true,
+        "requested": "fsr3_quality",
+        "requested_provider": "fsr3",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 7,
+        "sharpening_active": true,
+        "sharpening_strength": 0.350000023841858,
+        "temporal": true,
+        "texture_mipmap_bias": 0.0
+      }
+    },
+    {
+      "name": "fsr3-warm-1",
+      "manifest": {
+        "path": "tmp/native-reconstruction-20261025/fsr3-warm-1.json",
+        "sha256": "89a4f1077eac9bd3bee091120a66ded894ccbdf9e8bfca8bce41101dd3b46402"
+      },
+      "image": {
+        "path": "tmp/native-reconstruction-20261025/fsr3-warm-1.png",
+        "sha256": "710946a789673ad65c27eff14ca333f547a6ab99439247d5f07933b6ffcf1c48",
+        "dimensions": [
+          1920,
+          1080
+        ]
+      },
+      "manifest_png_hash_matches": true,
+      "reconstruction": {
+        "backend": {
+          "available": true,
+          "backend_failed": false,
+          "contexts_created": 1,
+          "dispatches_succeeded": 36,
+          "last_return_code": 0,
+          "provider_version": "3.1.4"
+        },
+        "effective": "fsr3_quality",
+        "effective_provider": "fsr3",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 1.29999995231628,
+        "msaa_3d": 0,
+        "nominal_3d_size": [
+          1280,
+          720
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "fsr3",
+        "provider_available": true,
+        "requested": "fsr3_quality",
+        "requested_provider": "fsr3",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 7,
+        "sharpening_active": true,
+        "sharpening_strength": 0.350000023841858,
+        "temporal": true,
+        "texture_mipmap_bias": 0.0
+      }
+    },
+    {
+      "name": "fsr3-fresh-2",
+      "manifest": {
+        "path": "tmp/native-reconstruction-20261025/fsr3-fresh-2.json",
+        "sha256": "b21ba790a150ba843126b3c2f39806f5b2cf709a893aebfe3ef2b713401ab9cd"
+      },
+      "image": {
+        "path": "tmp/native-reconstruction-20261025/fsr3-fresh-2.png",
+        "sha256": "2f4155cc37f018dacb02150c5c66c01716ddad4068fb2219ea1cd4a880d833b7",
+        "dimensions": [
+          1920,
+          1080
+        ]
+      },
+      "manifest_png_hash_matches": true,
+      "reconstruction": {
+        "backend": {
+          "available": true,
+          "backend_failed": false,
+          "contexts_created": 1,
+          "dispatches_succeeded": 36,
+          "last_return_code": 0,
+          "provider_version": "3.1.4"
+        },
+        "effective": "fsr3_quality",
+        "effective_provider": "fsr3",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 1.29999995231628,
+        "msaa_3d": 0,
+        "nominal_3d_size": [
+          1280,
+          720
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "fsr3",
+        "provider_available": true,
+        "requested": "fsr3_quality",
+        "requested_provider": "fsr3",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 7,
+        "sharpening_active": true,
+        "sharpening_strength": 0.350000023841858,
+        "temporal": true,
+        "texture_mipmap_bias": 0.0
+      }
+    },
+    {
+      "name": "native-final",
+      "manifest": {
+        "path": "tmp/native-reconstruction-20261025/native-final.json",
+        "sha256": "c3670194bb41a7be052fd90a8aa6794a5de770204bf621c9f3838224c33a84d6"
+      },
+      "image": {
+        "path": "tmp/native-reconstruction-20261025/native-final.png",
+        "sha256": "9d15474ab879e362c2c350e9d20ce0e6fd4f6cfbb4b0a5aa5ac66b472d1fe16e",
+        "dimensions": [
+          1920,
+          1080
+        ]
+      },
+      "manifest_png_hash_matches": true,
+      "reconstruction": {
+        "effective": "native",
+        "effective_provider": "native",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 1.29999995231628,
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "native",
+        "provider_available": true,
+        "requested": "native",
+        "requested_provider": "native",
+        "scale": 1.0,
+        "scaling_3d_mode": 0,
+        "sharpening_active": false,
+        "sharpening_strength": 0.350000023841858,
+        "temporal": false,
+        "texture_mipmap_bias": 0.0
+      }
+    },
+    {
+      "name": "dlss-final",
+      "manifest": {
+        "path": "tmp/native-reconstruction-20261025/dlss-final.json",
+        "sha256": "cfa01fe2ee7b1ebf0cd2abf047eef2dcb9eee9f3be4862e45b234ad0afa1325a"
+      },
+      "image": {
+        "path": "tmp/native-reconstruction-20261025/dlss-final.png",
+        "sha256": "e27161fa39b8598b12f3c0817ddbd9652535a28296b91f095b2f0e73d0ad76cd",
+        "dimensions": [
+          1920,
+          1080
+        ]
+      },
+      "manifest_png_hash_matches": true,
+      "reconstruction": {
+        "effective": "dlss_quality",
+        "effective_provider": "dlss",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.0,
+        "msaa_3d": 0,
+        "nominal_3d_size": [
+          1280,
+          720
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "dlss",
+        "provider_available": true,
+        "requested": "dlss_quality",
+        "requested_provider": "dlss",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 6,
+        "sharpening_active": false,
+        "sharpening_strength": 0.0,
+        "temporal": true,
+        "texture_mipmap_bias": 0.0
+      }
+    }
+  ],
+  "menu_images": [
+    {
+      "path": "tmp/native-reconstruction-20261025/options-en-fsr3.png",
+      "sha256": "43a6b2626df2a9c9f8e973e716aa09cee883e8cad11e86c6225bafc7a98dc616",
+      "dimensions": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/options-es-fsr3.png",
+      "sha256": "fe2ebe77bd029e26e5c0dbf594fa068a7a7f9c74f5543657d965d28bcb0c7a31",
+      "dimensions": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "path": "tmp/native-reconstruction-20261025/options-es-dlss.png",
+      "sha256": "7c4c56f750ff0178be27790c42b71c7e18a166cb8aba5254d9e7f12e2e45ab52",
+      "dimensions": [
+        1920,
+        1080
+      ]
+    }
+  ],
+  "fsr3_live": {
+    "status": {
+      "available": true,
+      "backend_failed": false,
+      "contexts_created": 11,
+      "dispatches_succeeded": 636,
+      "last_return_code": 0,
+      "provider_version": "3.1.4"
+    },
+    "stop": {
+      "stopped": true,
+      "pid": 55304,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "log": {
+      "path": "tmp/debug-bridge/20261025-070104-47942/engine.log",
+      "sha256": "eed449d9a643514ee58f22903ce618bf7f5cddd9d5a9fda30529104a6809aef3",
+      "validation_message_counts": {
+        "Loader Message": 2,
+        "SYNC-HAZARD-WRITE-AFTER-WRITE": 10
+      },
+      "engine_error_records": 10,
+      "warning_records": 46
+    }
+  },
+  "limitations": [
+    "SDK comparison message counts may be capped by the validation layer repeated-message limit.",
+    "Before/after shutdown tests also changed SDK version and corrected camera fixture ordering; the observed finalize-thread guard is specifically addressed, not every prior diagnostic.",
+    "Initial 2026-10-24 exported FSR3 shutdown hang remains unexplained despite subsequent successful runs.",
+    "The first Home checks forced quit after 240/20 frames during background loading and produced preload-cancellation errors; all resources were already packed. The later check required AppRoot load completion and allowed 1800 frames, then passed without code/package changes.",
+    "Non-verbose export checks without validation layers do not replace the known verbose/layer findings.",
+    "Exported Home completes with zero errors but retains 121 ObjectDB instances at exit (45 RGB8 conversion warnings plus one loader message); the editor Home stop reported zero leaked objects. Release Home lifetime qualification remains open.",
+    "No vendor/device other than the RTX 3090, motion-quality, latency or matched GPU-cost qualification is claimed."
+  ]
+}
