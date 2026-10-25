@@ -1,0 +1,2058 @@
+{
+ "format": "skywalker-x8 game delivery metadata v1 (structure modelled on the OpenRC aircraft delivery specification; not an openrc-aircraft v2 physics file)",
+ "aircraft": {
+  "source_name": "Skywalker X8",
+  "simulator_display_name": null,
+  "note_display_name": "to be chosen by the simulator team / owner",
+  "revision": "r4",
+  "configuration": {
+   "description": "UAV: mapping camera behind two articulated ventral doors, parachute pack inside the bay, magnetic top hatch that can separate (section canopy); controls, doors and propeller neutral; battery centre 228 mm from the nose; skins abisal (default) and bolido",
+   "elevons": "neutral",
+   "camera_doors": "closed",
+   "hatch": "closed",
+   "landing_gear": "none (hand/catapult launch, belly landing)"
+  }
+ },
+ "tools": {
+  "blender": "5.2.2 LTS",
+  "blender_build_hash": "d13f752e3b9c",
+  "blender_build_date": "2026-09-15",
+  "gltf_io": "Khronos glTF Blender I/O 5.2.40",
+  "runtime": "Python bpy module 5.2.2 (pip) on Linux x86_64",
+  "note": "the blender -b commands in README.md are the equivalent invocation; the delivery was produced and verified with the bpy module build above"
+ },
+ "units": "metre",
+ "frames": {
+  "blender_game_scene": "+X right wing (pilot's right), +Y nose (forward), +Z up; metres; origin = D0",
+  "glb_godot": "+X right, +Y up, -Z nose; godot = (blender.x, blender.z, -blender.y)",
+  "master_v3_blender": "X = -s (left wing at +X), Y aft, Z up, origin at x = 440 mm from the nose (nominal CG); mm tables: x aft from nose, s right, z up"
+ },
+ "conversion": {
+  "godot_from_blender": "godot = (blender.x, blender.z, -blender.y), applied once by the Y-up glTF export",
+  "blender_from_master_mm": "blender = (s, x_D0 - x, z - z_D0) / 1000 with x aft from the nose, s to the right, z up (master tables, mm)",
+  "godot_from_master_mm": "godot = (s, z - z_D0, x - x_D0) / 1000",
+  "master_blender_to_game": "game = Rz(180 deg) * (master - D0_master)"
+ },
+ "datum_D0": {
+  "definition": "symmetry plane; x = leading edge of the wing at the orange root rib (s = 236 mm, wing/centre-body joint); z = thrust-axis height (motor shaft)",
+  "master_mm": {
+   "x_from_nose": 299.581,
+   "s": 0.0,
+   "z": 1.0
+  },
+  "note": "D0 is not the CG. Root node has zero translation/rotation and unit scale.",
+  "incidence_dihedral_washout": "preserved from the master (root incidence 0, dihedral 1.5 deg, washout -2.5 deg at the tip)",
+  "ground_attitude": "not baked"
+ },
+ "landmarks": {
+  "D0": {
+   "blender_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "godot_m": [
+    0.0,
+    0.0,
+    -0.0
+   ],
+   "evidence": "datum",
+   "source": "definition",
+   "note": "symmetry plane; leading edge of the wing at the orange root rib station (s = 236 mm); thrust-axis (motor shaft) height"
+  },
+  "nose_tip": {
+   "blender_m": [
+    0.00599,
+    0.300727,
+    0.008751
+   ],
+   "godot_m": [
+    0.00599,
+    0.008751,
+    -0.300727
+   ],
+   "evidence": "model measurement",
+   "source": "fuselage_core vertices (max +Y)",
+   "note": ""
+  },
+  "fuselage_tail": {
+   "blender_m": [
+    0.0,
+    -0.496419,
+    0.023
+   ],
+   "godot_m": [
+    0.0,
+    0.023,
+    0.496419
+   ],
+   "evidence": "model measurement",
+   "source": "fuselage_core vertices (min Y)",
+   "note": ""
+  },
+  "spinner_tip": {
+   "blender_m": [
+    -0.0,
+    -0.574419,
+    -0.003
+   ],
+   "godot_m": [
+    -0.0,
+    -0.003,
+    0.574419
+   ],
+   "evidence": "model measurement",
+   "source": "propeller_rotor vertices (min Y)",
+   "note": "pusher: the spinner points aft"
+  },
+  "wingtip_left": {
+   "blender_m": [
+    -1.058621,
+    -0.677495,
+    0.206446
+   ],
+   "godot_m": [
+    -1.058621,
+    0.206446,
+    0.677495
+   ],
+   "evidence": "model measurement",
+   "source": "wing_left_fixed vertices (min X)",
+   "note": "outermost point, winglet included"
+  },
+  "wingtip_right": {
+   "blender_m": [
+    1.058621,
+    -0.677495,
+    0.206446
+   ],
+   "godot_m": [
+    1.058621,
+    0.206446,
+    0.677495
+   ],
+   "evidence": "model measurement",
+   "source": "wing_right_fixed vertices (max X)",
+   "note": "outermost point, winglet included"
+  },
+  "winglet_top_left": {
+   "blender_m": [
+    -1.057498,
+    -0.677495,
+    0.207043
+   ],
+   "godot_m": [
+    -1.057498,
+    0.207043,
+    0.677495
+   ],
+   "evidence": "model measurement",
+   "source": "wing_left_fixed vertices (max Z)",
+   "note": ""
+  },
+  "winglet_top_right": {
+   "blender_m": [
+    1.057498,
+    -0.677495,
+    0.207043
+   ],
+   "godot_m": [
+    1.057498,
+    0.207043,
+    0.677495
+   ],
+   "evidence": "model measurement",
+   "source": "wing_right_fixed vertices (max Z)",
+   "note": ""
+  },
+  "wing_root_leading_edge_left": {
+   "blender_m": [
+    -0.2376,
+    -0.000833,
+    0.00699
+   ],
+   "godot_m": [
+    -0.2376,
+    0.00699,
+    0.000833
+   ],
+   "evidence": "model measurement",
+   "source": "wing_left_fixed root section vertices (s = 237.6 mm), max +Y",
+   "note": "root skin section just outboard of the orange rib"
+  },
+  "wing_root_leading_edge_right": {
+   "blender_m": [
+    0.2376,
+    -0.000833,
+    0.00699
+   ],
+   "godot_m": [
+    0.2376,
+    0.00699,
+    0.000833
+   ],
+   "evidence": "model measurement",
+   "source": "wing_right_fixed root section vertices (s = 237.6 mm), max +Y",
+   "note": "root skin section just outboard of the orange rib"
+  },
+  "propeller_hub": {
+   "blender_m": [
+    0.0,
+    -0.546419,
+    0.0
+   ],
+   "godot_m": [
+    0.0,
+    0.0,
+    0.546419
+   ],
+   "evidence": "model measurement",
+   "source": "thrust_frame origin",
+   "note": ""
+  },
+  "lowest_point": {
+   "blender_m": [
+    0.12366,
+    -0.545983,
+    -0.089096
+   ],
+   "godot_m": [
+    0.12366,
+    -0.089096,
+    0.545983
+   ],
+   "evidence": "model measurement",
+   "source": "all exported mesh vertices (min Z)",
+   "note": ""
+  },
+  "highest_point": {
+   "blender_m": [
+    -1.057498,
+    -0.677495,
+    0.207043
+   ],
+   "godot_m": [
+    -1.057498,
+    0.207043,
+    0.677495
+   ],
+   "evidence": "model measurement",
+   "source": "all exported mesh vertices (max Z)",
+   "note": ""
+  },
+  "cg_reference_manufacturer_430mm": {
+   "blender_m": [
+    0.0,
+    -0.130419,
+    0.0
+   ],
+   "godot_m": [
+    0.0,
+    0.0,
+    0.130419
+   ],
+   "evidence": "manual value",
+   "source": "Skywalker spec sheet: CG 430-440 mm from the nose",
+   "note": "reference station only, not a measurement of this aircraft; height not specified"
+  },
+  "cg_reference_manufacturer_440mm": {
+   "blender_m": [
+    0.0,
+    -0.140419,
+    0.0
+   ],
+   "godot_m": [
+    0.0,
+    0.0,
+    0.140419
+   ],
+   "evidence": "manual value",
+   "source": "Skywalker spec sheet / Gryte et al. 2018: 440 mm",
+   "note": "reference station only"
+  }
+ },
+ "dimensions": {
+  "span_including_winglets_m": {
+   "value": 2.11724,
+   "evidence": "model measurement",
+   "source": "wingtip landmarks"
+  },
+  "length_nose_to_spinner_tip_m": {
+   "value": 0.87515,
+   "evidence": "model measurement"
+  },
+  "height_m": {
+   "value": 0.29614,
+   "evidence": "model measurement"
+  },
+  "span_manufacturer_m": {
+   "value": 2.12,
+   "evidence": "manual value",
+   "source": "Skywalker official three-view"
+  },
+  "span_ntnu_m": {
+   "value": 2.1,
+   "evidence": "published",
+   "source": "Gryte et al., ICUAS 2018"
+  },
+  "fuselage_length_manufacturer_m": {
+   "value": 0.79,
+   "evidence": "manual value",
+   "source": "Skywalker official three-view"
+  },
+  "wing_area_manufacturer_m2": {
+   "value": 0.8,
+   "evidence": "manual value",
+   "source": "Skywalker spec sheet (80 dm2)"
+  },
+  "wing_area_planform_digitised_m2": {
+   "value": 0.742,
+   "evidence": "model measurement",
+   "source": "master planform digitised from the official views"
+  },
+  "propeller_diameter_m": {
+   "value": 0.3049,
+   "evidence": "model measurement",
+   "source": "propeller_rotor vertices"
+  },
+  "note": "scale preserved from the master; no rescaling to manual values"
+ },
+ "physical": {
+  "mass_flying_manufacturer_kg": {
+   "value": [
+    2.5,
+    3.0
+   ],
+   "unit": "kg",
+   "evidence": "manual value",
+   "source": "Skywalker spec sheet"
+  },
+  "mass_empty_kit_kg": {
+   "value": 0.88,
+   "evidence": "manual value (as used by the master)",
+   "source": "Skywalker manual"
+  },
+  "mass_ledger_estimate_kg": {
+   "value": 2.532,
+   "evidence": "estimate - NON-FLIGHT PLACEHOLDER",
+   "source": "master v3.1 component list (camera + parachute configuration)",
+   "warning": "not flight-ready mass data; do not derive inertia or CG from it"
+  },
+  "cg_manufacturer_from_nose_mm": {
+   "value": [
+    430,
+    440
+   ],
+   "evidence": "manual value"
+  },
+  "cg_ledger_estimate_from_nose_mm": {
+   "value": 435.2,
+   "evidence": "estimate - NON-FLIGHT PLACEHOLDER",
+   "source": "x8_logica_tapas.py"
+  },
+  "inertia": null,
+  "strength": null,
+  "note": "geometry volume, material names and crash-section labels do not define mass, CG, inertia or strength; the simulator team owns flight-data derivation"
+ },
+ "control_mixing": {
+  "surfaces": "two elevons (no separate ailerons, elevator, rudder or flaps)",
+  "convention": "angles in degrees of surface rotation, + = trailing edge down",
+  "formula": "elevon_left = roll - pitch ; elevon_right = -roll - pitch (pitch + = nose up, roll + = right wing down)",
+  "default_rates": "pitch 0.70, roll 0.85 of the servo travel inside the mix (master radio configuration); ArduPilot SERVO1/2_FUNCTION 77/78"
+ },
+ "sections": [
+  {
+   "id": "core",
+   "nodes": [
+    "fuselage_core",
+    "bay_equipment",
+    "camera_door_left_hinge",
+    "camera_door_left",
+    "camera_door_right_hinge",
+    "camera_door_right"
+   ]
+  },
+  {
+   "id": "canopy",
+   "nodes": [
+    "canopy_hatch"
+   ]
+  },
+  {
+   "id": "wing_left",
+   "nodes": [
+    "wing_left_fixed",
+    "elevon_left_hinge",
+    "elevon_left"
+   ]
+  },
+  {
+   "id": "wing_right",
+   "nodes": [
+    "wing_right_fixed",
+    "elevon_right_hinge",
+    "elevon_right"
+   ]
+  },
+  {
+   "id": "engine",
+   "nodes": [
+    "motor_mount"
+   ]
+  },
+  {
+   "id": "propeller",
+   "nodes": [
+    "propeller_spin",
+    "propeller_rotor"
+   ]
+  }
+ ],
+ "articulations": {
+  "elevon_left_hinge": {
+   "child": "elevon_left",
+   "parent": "SkywalkerX8",
+   "section": "wing_left",
+   "frame": "root SkywalkerX8 (D0), metres",
+   "pivot_blender_m": [
+    -0.242032,
+    -0.343925,
+    0.014333
+   ],
+   "pivot_godot_m": [
+    -0.242032,
+    0.014333,
+    0.343925
+   ],
+   "axis_blender": [
+    0.98897928,
+    0.14555939,
+    -0.02706422
+   ],
+   "axis_godot": [
+    0.98897928,
+    -0.02706422,
+    -0.14555939
+   ],
+   "rest_local": {
+    "translation_m": [
+     -0.242032,
+     -0.343925,
+     0.014333
+    ],
+    "rotation_quaternion_wxyz": [
+     0.99724054,
+     -0.00098795,
+     0.01349724,
+     0.07299446
+    ],
+    "matrix_rows": [
+     [
+      0.98897928,
+      -0.14561273,
+      0.02677575,
+      -0.2420319
+     ],
+     [
+      0.14555939,
+      0.98934168,
+      0.00394089,
+      -0.34392488
+     ],
+     [
+      -0.02706422,
+      0.0,
+      0.99963361,
+      0.01433324
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "rotation_rule": "local = rest * rotation_about_local_X(angle); angle 0 = saved rest",
+   "positive_direction": "trailing edge down",
+   "hinge_line_blender_m": [
+    [
+     -0.878164,
+     -0.437552,
+     0.031741
+    ],
+    [
+     -0.243734,
+     -0.344175,
+     0.01438
+    ]
+   ],
+   "hinge_line_godot_m": [
+    [
+     -0.878164,
+     0.031741,
+     0.437552
+    ],
+    [
+     -0.243734,
+     0.01438,
+     0.344175
+    ]
+   ],
+   "mesh_members_from_master": [
+    "X8_Elevon_*",
+    "X8_Cuerno_* (control horn)",
+    "hinge-tape region and slot cover (black)"
+   ],
+   "ranges": [
+    {
+     "name": "pitch_only_full_stick",
+     "deg": [
+      -19.46,
+      19.48
+     ],
+     "unit": "degree",
+     "evidence": "model-derived (linkage geometry), not measured on hardware",
+     "source": "master v3.1 rig, x8_logica_mandos.cadena, default radio config (expo 0.25, pitch mix 0.70, roll mix 0.85, servo +-45 deg)"
+    },
+    {
+     "name": "roll_only_full_stick",
+     "deg": [
+      -23.24,
+      23.28
+     ],
+     "unit": "degree",
+     "evidence": "model-derived (linkage geometry), not measured on hardware",
+     "source": "master v3.1 rig, x8_logica_mandos.cadena, default radio config (expo 0.25, pitch mix 0.70, roll mix 0.85, servo +-45 deg)"
+    },
+    {
+     "name": "combined_full_stick_default_mix",
+     "deg": [
+      -26.76,
+      26.85
+     ],
+     "unit": "degree",
+     "evidence": "model-derived (linkage geometry), not measured on hardware",
+     "source": "master v3.1 rig, x8_logica_mandos.cadena, default radio config (expo 0.25, pitch mix 0.70, roll mix 0.85, servo +-45 deg)"
+    },
+    {
+     "name": "mechanical_full_servo_travel",
+     "deg": [
+      -26.76,
+      26.85
+     ],
+     "unit": "degree",
+     "evidence": "model-derived (linkage geometry), not measured on hardware",
+     "source": "master v3.1 rig, x8_logica_mandos.cadena, default radio config (expo 0.25, pitch mix 0.70, roll mix 0.85, servo +-45 deg)"
+    }
+   ],
+   "linear_travel_at_link_station": {
+    "station_s_mm": 515.0,
+    "elevon_chord_mm": 64.85,
+    "te_travel_mm_at_mechanical_limits": [
+     -29.2,
+     29.3
+    ],
+    "evidence": "derived: chord x sin(angle) at the pushrod station; no measured mm throws exist for this model"
+   },
+   "clearance_envelope_deg": {
+    "free": [
+     -40.0,
+     31.0
+    ],
+    "step": 1.0,
+    "note": "first contact beyond these angles; reported, not clamped"
+   }
+  },
+  "elevon_right_hinge": {
+   "child": "elevon_right",
+   "parent": "SkywalkerX8",
+   "section": "wing_right",
+   "frame": "root SkywalkerX8 (D0), metres",
+   "pivot_blender_m": [
+    0.242032,
+    -0.343925,
+    0.014333
+   ],
+   "pivot_godot_m": [
+    0.242032,
+    0.014333,
+    0.343925
+   ],
+   "axis_blender": [
+    0.98897928,
+    -0.14555939,
+    0.02706422
+   ],
+   "axis_godot": [
+    0.98897928,
+    0.02706422,
+    0.14555939
+   ],
+   "rest_local": {
+    "translation_m": [
+     0.242032,
+     -0.343925,
+     0.014333
+    ],
+    "rotation_quaternion_wxyz": [
+     0.99724054,
+     -0.00098795,
+     -0.01349724,
+     -0.07299446
+    ],
+    "matrix_rows": [
+     [
+      0.98897928,
+      0.14561273,
+      -0.02677575,
+      0.2420319
+     ],
+     [
+      -0.14555939,
+      0.98934168,
+      0.00394089,
+      -0.34392488
+     ],
+     [
+      0.02706422,
+      0.0,
+      0.99963361,
+      0.01433324
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "rotation_rule": "local = rest * rotation_about_local_X(angle); angle 0 = saved rest",
+   "positive_direction": "trailing edge down",
+   "hinge_line_blender_m": [
+    [
+     0.243734,
+     -0.344175,
+     0.01438
+    ],
+    [
+     0.878164,
+     -0.437552,
+     0.031741
+    ]
+   ],
+   "hinge_line_godot_m": [
+    [
+     0.243734,
+     0.01438,
+     0.344175
+    ],
+    [
+     0.878164,
+     0.031741,
+     0.437552
+    ]
+   ],
+   "mesh_members_from_master": [
+    "X8_Elevon_*",
+    "X8_Cuerno_* (control horn)",
+    "hinge-tape region and slot cover (black)"
+   ],
+   "ranges": [
+    {
+     "name": "pitch_only_full_stick",
+     "deg": [
+      -19.46,
+      19.48
+     ],
+     "unit": "degree",
+     "evidence": "model-derived (linkage geometry), not measured on hardware",
+     "source": "master v3.1 rig, x8_logica_mandos.cadena, default radio config (expo 0.25, pitch mix 0.70, roll mix 0.85, servo +-45 deg)"
+    },
+    {
+     "name": "roll_only_full_stick",
+     "deg": [
+      -23.24,
+      23.28
+     ],
+     "unit": "degree",
+     "evidence": "model-derived (linkage geometry), not measured on hardware",
+     "source": "master v3.1 rig, x8_logica_mandos.cadena, default radio config (expo 0.25, pitch mix 0.70, roll mix 0.85, servo +-45 deg)"
+    },
+    {
+     "name": "combined_full_stick_default_mix",
+     "deg": [
+      -26.76,
+      26.85
+     ],
+     "unit": "degree",
+     "evidence": "model-derived (linkage geometry), not measured on hardware",
+     "source": "master v3.1 rig, x8_logica_mandos.cadena, default radio config (expo 0.25, pitch mix 0.70, roll mix 0.85, servo +-45 deg)"
+    },
+    {
+     "name": "mechanical_full_servo_travel",
+     "deg": [
+      -26.76,
+      26.85
+     ],
+     "unit": "degree",
+     "evidence": "model-derived (linkage geometry), not measured on hardware",
+     "source": "master v3.1 rig, x8_logica_mandos.cadena, default radio config (expo 0.25, pitch mix 0.70, roll mix 0.85, servo +-45 deg)"
+    }
+   ],
+   "linear_travel_at_link_station": {
+    "station_s_mm": 515.0,
+    "elevon_chord_mm": 64.85,
+    "te_travel_mm_at_mechanical_limits": [
+     -29.2,
+     29.3
+    ],
+    "evidence": "derived: chord x sin(angle) at the pushrod station; no measured mm throws exist for this model"
+   },
+   "clearance_envelope_deg": {
+    "free": [
+     -40.0,
+     31.0
+    ],
+    "step": 1.0,
+    "note": "first contact beyond these angles; reported, not clamped"
+   }
+  },
+  "camera_door_left_hinge": {
+   "child": "camera_door_left",
+   "parent": "SkywalkerX8",
+   "section": "core",
+   "frame": "root SkywalkerX8 (D0), metres",
+   "pivot_blender_m": [
+    -0.036,
+    -0.240419,
+    -0.037034
+   ],
+   "pivot_godot_m": [
+    -0.036,
+    -0.037034,
+    0.240419
+   ],
+   "axis_blender": [
+    -8e-08,
+    0.99868429,
+    -0.05127957
+   ],
+   "axis_godot": [
+    -8e-08,
+    -0.05127957,
+    -0.99868429
+   ],
+   "rest_local": {
+    "translation_m": [
+     -0.036,
+     -0.240419,
+     -0.037034
+    ],
+    "rotation_quaternion_wxyz": [
+     0.70687419,
+     -0.01813604,
+     0.01813604,
+     0.70687419
+    ],
+    "matrix_rows": [
+     [
+      -8e-08,
+      -1.00000024,
+      0.0,
+      -0.036
+     ],
+     [
+      0.99868441,
+      -8e-08,
+      0.05127958,
+      -0.24041882
+     ],
+     [
+      -0.05127958,
+      0.0,
+      0.99868435,
+      -0.0370338
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "rotation_rule": "local = rest * rotation_about_local_X(angle); angle 0 = saved rest",
+   "positive_direction": "door opens (free edge swings down and inboard)",
+   "hinge_line_blender_m": [
+    [
+     -0.036,
+     -0.270301,
+     -0.035499
+    ],
+    [
+     -0.036,
+     -0.210832,
+     -0.038553
+    ]
+   ],
+   "ranges": [
+    {
+     "name": "open",
+     "deg": [
+      0.0,
+      110.0
+     ],
+     "unit": "degree",
+     "evidence": "model design value, clearance-verified",
+     "source": "master v3.1 DOOR_DEG; 110 deg keeps an 80 deg camera cone clear"
+    }
+   ],
+   "mesh_members_from_master": [
+    "X8_Compuerta_Camara_*"
+   ],
+   "mechanism_support": "not one of the shared auxiliary mechanism roles (canopy, tailhook, cowl flaps); delivered as a hinge-style pivot rotating about local +X, closed at rest; needs integration review before any runtime use"
+  },
+  "camera_door_right_hinge": {
+   "child": "camera_door_right",
+   "parent": "SkywalkerX8",
+   "section": "core",
+   "frame": "root SkywalkerX8 (D0), metres",
+   "pivot_blender_m": [
+    0.036,
+    -0.240419,
+    -0.037034
+   ],
+   "pivot_godot_m": [
+    0.036,
+    -0.037034,
+    0.240419
+   ],
+   "axis_blender": [
+    -8e-08,
+    -0.99868429,
+    0.05127957
+   ],
+   "axis_godot": [
+    -8e-08,
+    0.05127957,
+    0.99868429
+   ],
+   "rest_local": {
+    "translation_m": [
+     0.036,
+     -0.240419,
+     -0.037034
+    ],
+    "rotation_quaternion_wxyz": [
+     0.70687419,
+     -0.01813604,
+     -0.01813604,
+     -0.70687419
+    ],
+    "matrix_rows": [
+     [
+      -8e-08,
+      1.00000024,
+      0.0,
+      0.036
+     ],
+     [
+      -0.99868441,
+      -8e-08,
+      0.05127958,
+      -0.24041882
+     ],
+     [
+      0.05127958,
+      0.0,
+      0.99868435,
+      -0.0370338
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "rotation_rule": "local = rest * rotation_about_local_X(angle); angle 0 = saved rest",
+   "positive_direction": "door opens (free edge swings down and inboard)",
+   "hinge_line_blender_m": [
+    [
+     0.036,
+     -0.210832,
+     -0.038553
+    ],
+    [
+     0.036,
+     -0.270301,
+     -0.035499
+    ]
+   ],
+   "ranges": [
+    {
+     "name": "open",
+     "deg": [
+      0.0,
+      110.0
+     ],
+     "unit": "degree",
+     "evidence": "model design value, clearance-verified",
+     "source": "master v3.1 DOOR_DEG; 110 deg keeps an 80 deg camera cone clear"
+    }
+   ],
+   "mesh_members_from_master": [
+    "X8_Compuerta_Camara_*"
+   ],
+   "mechanism_support": "not one of the shared auxiliary mechanism roles (canopy, tailhook, cowl flaps); delivered as a hinge-style pivot rotating about local +X, closed at rest; needs integration review before any runtime use"
+  },
+  "propeller_spin": {
+   "child": "propeller_rotor",
+   "parent": "thrust_frame",
+   "section": "propeller",
+   "frame": "root SkywalkerX8 (D0), metres",
+   "pivot_blender_m": [
+    0.0,
+    -0.546419,
+    0.0
+   ],
+   "pivot_godot_m": [
+    0.0,
+    0.0,
+    0.546419
+   ],
+   "axis_blender": [
+    -1.3e-07,
+    1.0,
+    0.0
+   ],
+   "axis_godot": [
+    -1.3e-07,
+    0.0,
+    -1.0
+   ],
+   "rest_local": {
+    "translation_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "rotation_quaternion_wxyz": [
+     1.0,
+     0.0,
+     0.0,
+     -0.0
+    ],
+    "matrix_rows": [
+     [
+      1.00000012,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      -0.0,
+      1.00000012,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   },
+   "rotation_rule": "local = rest * rotation_about_local_X(angle); angle 0 = saved rest",
+   "positive_direction": "clockwise viewed from behind looking toward the nose (right-handed about +X = thrust direction); this is the direction that puts the blade leading edge first",
+   "ranges": [
+    {
+     "name": "spin",
+     "deg": "continuous",
+     "unit": "degree",
+     "evidence": "free rotation",
+     "source": "pusher propeller"
+    }
+   ],
+   "propeller_diameter_m": 0.3049,
+   "propeller_nominal": "12x8 in folding (manufacturer sheet): 0.3048 m",
+   "thrust_axis_direction_blender": [
+    -1.3e-07,
+    1.0,
+    0.0
+   ],
+   "thrust_axis_direction_godot": [
+    -1.3e-07,
+    0.0,
+    -1.0
+   ],
+   "thrust_angles_deg": {
+    "down": 0.0,
+    "right": 0.0,
+    "evidence": "model (motor axis parallel to the root chord datum)"
+   },
+   "mesh_members_from_master": [
+    "X8_Pala_1",
+    "X8_Pala_2",
+    "X8_Buje_Helice",
+    "X8_Cono_Helice",
+    "X8_Motor_Campana (outrunner bell)",
+    "X8_Eje (shaft)"
+   ]
+  }
+ },
+ "materials": [
+  {
+   "name": "x8_battery",
+   "base_color": [
+    0.85,
+    0.75,
+    0.1
+   ],
+   "roughness": 0.45,
+   "metallic": 0.0,
+   "textures": null
+  },
+  {
+   "name": "x8_black",
+   "base_color": [
+    0.025,
+    0.025,
+    0.028
+   ],
+   "roughness": 0.4,
+   "metallic": 0.0,
+   "textures": null
+  },
+  {
+   "name": "x8_electronics",
+   "base_color": [
+    0.1,
+    0.32,
+    0.6
+   ],
+   "roughness": 0.5,
+   "metallic": 0.0,
+   "textures": null
+  },
+  {
+   "name": "x8_foam_interior",
+   "base_color": [
+    0.6,
+    0.6,
+    0.58
+   ],
+   "roughness": 0.75,
+   "metallic": 0.0,
+   "textures": null
+  },
+  {
+   "name": "x8_glass",
+   "base_color": [
+    0.01,
+    0.01,
+    0.012
+   ],
+   "roughness": 0.05,
+   "metallic": 0.0,
+   "textures": null
+  },
+  {
+   "name": "x8_livery",
+   "base_color": "texture x8_abisal_base_color.jpg (default livery)",
+   "roughness": "texture x8_abisal_orm.png (G)",
+   "metallic": "texture x8_abisal_orm.png (B)",
+   "textures": [
+    "x8_abisal_base_color.jpg",
+    "x8_abisal_orm.png",
+    "x8_abisal_normal.png",
+    "x8_abisal_emission.jpg"
+   ],
+   "uv_map": "UVMap (TEXCOORD_0)",
+   "skins": {
+    "abisal": [
+     "x8_abisal_base_color.jpg",
+     "x8_abisal_orm.png",
+     "x8_abisal_normal.png",
+     "x8_abisal_emission.jpg"
+    ],
+    "bolido": [
+     "x8_bolido_base_color.jpg",
+     "x8_bolido_orm.png",
+     "x8_bolido_normal.png",
+     "x8_bolido_emission.jpg"
+    ]
+   }
+  },
+  {
+   "name": "x8_metal",
+   "base_color": [
+    0.75,
+    0.75,
+    0.77
+   ],
+   "roughness": 0.25,
+   "metallic": 1.0,
+   "textures": null
+  },
+  {
+   "name": "x8_motor_bell",
+   "base_color": [
+    0.55,
+    0.06,
+    0.04
+   ],
+   "roughness": 0.3,
+   "metallic": 0.9,
+   "textures": null
+  },
+  {
+   "name": "x8_orange",
+   "base_color": [
+    0.95,
+    0.3,
+    0.02
+   ],
+   "roughness": 0.38,
+   "metallic": 0.0,
+   "textures": null
+  }
+ ],
+ "atlas": {
+  "uv_coverage": 0.5451,
+  "painted_area_m2": 1.7254,
+  "mm_per_texel_runtime": 0.869,
+  "mm_per_texel_source": 0.434,
+  "unwrap": "Smart UV Project (angle 1.15 rad) + Pack Islands (concave, margin 0.003)",
+  "material": "x8_livery",
+  "uv_map": "UVMap",
+  "painted_parts": [
+   "fuselage_core",
+   "canopy_hatch",
+   "wing_left_fixed",
+   "wing_right_fixed",
+   "elevon_left",
+   "elevon_right",
+   "camera_door_left",
+   "camera_door_right",
+   "propeller_rotor"
+  ],
+  "regions": {
+   "0": "skin",
+   "1": "hinge tape",
+   "2": "servo cover",
+   "3": "orange plastic (root ribs, control horns)",
+   "4": "propeller blades and spinner"
+  },
+  "region_attributes": "face attributes x8_part / x8_region on each painted mesh",
+  "shared_by_all_liveries": true
+ },
+ "skins": [
+  {
+   "id": "abisal",
+   "label": "ABISAL - deep-sea anglerfish",
+   "description": "Original deep-sea anglerfish scheme: blue-black iridescent scales, photophores, fin rays, mouth with fangs and lure, false eyes on the winglets, worn like a working UAV.",
+   "default": true,
+   "revision_added": "r2",
+   "concept": "Deep-sea anglerfish skin on a flying wing: blue-black body with iridescent scales on the back, silver-violet belly with rows of photophores, segmented fin rays on the wings with a violet trailing edge, a bioluminescent lateral line, an open mouth with fangs and a glowing lure on the nose, false eyes on the winglets, coral gill slits at the wing root; worn like a working UAV (chipped edges showing EPO foam, belly scrapes and grass stains, insects on leading edges, dirt in seams, hand prints, a tape repair, faded technical stencils).",
+   "glb": {
+    "path": "export/aircraft.glb",
+    "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+    "bytes": 8547120
+   },
+   "runtime_textures": [
+    {
+     "file": "textures/abisal/x8_abisal_base_color.jpg",
+     "glb_image": "x8_abisal_base_color",
+     "size": [
+      2048,
+      2048
+     ],
+     "colorspace": "sRGB",
+     "gltf_slot": "baseColorTexture",
+     "uv_channel": "TEXCOORD_0 (UVMap)",
+     "content": "RGB albedo, JPEG q92",
+     "bytes": 1255935,
+     "sha256": "99eee6bf2fd358a9867e96ed0ab64b9c053aced18ab6f5d0367e514153dd9247"
+    },
+    {
+     "file": "textures/abisal/x8_abisal_orm.png",
+     "glb_image": "x8_abisal_orm",
+     "size": [
+      2048,
+      2048
+     ],
+     "colorspace": "linear",
+     "gltf_slot": "occlusionTexture (R) + metallicRoughnessTexture (G rough, B metal)",
+     "uv_channel": "TEXCOORD_0 (UVMap)",
+     "content": "R = 0.25 + 0.75 x baked AO, G roughness, B metallic",
+     "bytes": 2816695,
+     "sha256": "c224112fe48707da084bf4f3c5e0bedd91719ca542a0c398f6d0c15c87f1d5cc"
+    },
+    {
+     "file": "textures/abisal/x8_abisal_normal.png",
+     "glb_image": "x8_abisal_normal",
+     "size": [
+      2048,
+      2048
+     ],
+     "colorspace": "linear",
+     "gltf_slot": "normalTexture",
+     "uv_channel": "TEXCOORD_0 (UVMap)",
+     "content": "tangent space, MikkTSpace, +Y up (glTF/OpenGL); tangents exported in the GLB",
+     "bytes": 2408711,
+     "sha256": "65e948823877ca80d95084efb1043ea681f316f0658fb3ea48e483ae212e12d3"
+    },
+    {
+     "file": "textures/abisal/x8_abisal_emission.jpg",
+     "glb_image": "x8_abisal_emission",
+     "size": [
+      2048,
+      2048
+     ],
+     "colorspace": "sRGB",
+     "gltf_slot": "emissiveTexture (emissiveFactor 1,1,1)",
+     "uv_channel": "TEXCOORD_0 (UVMap)",
+     "content": "emissive colour; black = no emission",
+     "bytes": 270998,
+     "sha256": "8373cdbd8e77509b30d3554967f7592a48cf019e9a2d3c03abff6210acf70279"
+    }
+   ],
+   "material_bindings": {
+    "x8_livery": {
+     "uv_map": "TEXCOORD_0 (UVMap)",
+     "slots": {
+      "baseColorTexture": {
+       "image": "x8_abisal_base_color",
+       "uv": "TEXCOORD_0 (UVMap)",
+       "colorspace": "sRGB"
+      },
+      "occlusionTexture (R) + metallicRoughnessTexture (G rough, B metal)": {
+       "image": "x8_abisal_orm",
+       "uv": "TEXCOORD_0 (UVMap)",
+       "colorspace": "linear"
+      },
+      "normalTexture": {
+       "image": "x8_abisal_normal",
+       "uv": "TEXCOORD_0 (UVMap)",
+       "colorspace": "linear"
+      },
+      "emissiveTexture (emissiveFactor 1,1,1)": {
+       "image": "x8_abisal_emission",
+       "uv": "TEXCOORD_0 (UVMap)",
+       "colorspace": "sRGB"
+      }
+     },
+     "occlusion_source": "textures/shared/x8_airframe_occlusion.png (shared by every skin, ORM red channel)",
+     "emissive_factor": [
+      1,
+      1,
+      1
+     ],
+     "normal_scale": 1.0,
+     "occlusion_strength": 1.0
+    },
+    "x8_battery": "flat colour, no textures (identical in every skin)",
+    "x8_black": "flat colour, no textures (identical in every skin)",
+    "x8_electronics": "flat colour, no textures (identical in every skin)",
+    "x8_foam_interior": "flat colour, no textures (identical in every skin)",
+    "x8_glass": "flat colour, no textures (identical in every skin)",
+    "x8_metal": "flat colour, no textures (identical in every skin)",
+    "x8_motor_bell": "flat colour, no textures (identical in every skin)",
+    "x8_orange": "flat colour, no textures (identical in every skin)"
+   },
+   "editable_sources": {
+    "layers": [
+     {
+      "file": "textures/abisal/source/layers/compose_report.json",
+      "sha256": "fd2c9b0b590f76f64f3c816f957b4c4ff23ed30b5844e0ed191be626693014af"
+     },
+     {
+      "file": "textures/abisal/source/layers/x8_abisal_markings.png",
+      "sha256": "7058ea15da7c489b5bd1bc2fce1bd06b8918e38fa0ea168213d139a0390be8d8"
+     },
+     {
+      "file": "textures/abisal/source/layers/x8_abisal_paint_base.png",
+      "sha256": "267639a523b810f7faae2c5a9825d10aa7edc485d6e99a5849c8dface2181f3f"
+     }
+    ],
+    "layer_rule": "base colour = paint_base, then markings, then insignia ('over', straight alpha); rebuild with paint_layers.py compose --write",
+    "maps": [
+     {
+      "file": "textures/abisal/source/x8_abisal_base_color.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "cc43c07ee3605eafd0af3d7fada8af327cb46f2ffc9edb144afff600cc47b031"
+     },
+     {
+      "file": "textures/abisal/source/x8_abisal_coat.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "801a264acf4faa0a72298a24eebccbf7d59e2580a9a42f8469380c0e2334aadb"
+     },
+     {
+      "file": "textures/abisal/source/x8_abisal_emission.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "44545d011db96e3b5d5d75106879ab54b94f01afadd9a9edef7356eab804105d"
+     },
+     {
+      "file": "textures/abisal/source/x8_abisal_height.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "8b163e84b070eec929dd9b88e07dd5a47b964dd17f6a326b886dc2800446e635"
+     },
+     {
+      "file": "textures/abisal/source/x8_abisal_iridescence.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "9d950709ef2b789ae3f83c823b0bdecf3fb6cc88e4cc3ccd6f3047593ae8c896"
+     },
+     {
+      "file": "textures/abisal/source/x8_abisal_metallic.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "114e6316c7ea332542e405dc074e75fad4743f63cb9b22d2a36888a539f830a3"
+     },
+     {
+      "file": "textures/abisal/source/x8_abisal_normal.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "9a52abc0fd83fd8bbade4affbf5314c3b8c5323ae20f4661b9b222df1d15d241"
+     },
+     {
+      "file": "textures/abisal/source/x8_abisal_roughness.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "789615178de2dcb1634c24ad0950bfe21567d2d415fe87241cc08e713be381a2"
+     }
+    ],
+    "masks": [
+     "textures/abisal/source/masks/chips.png",
+     "textures/abisal/source/masks/grime.png",
+     "textures/abisal/source/masks/height_preview.png",
+     "textures/abisal/source/masks/insignia_alpha.png",
+     "textures/abisal/source/masks/marking_alpha.png",
+     "textures/abisal/source/masks/scale_edges.png",
+     "textures/abisal/source/masks/seam.png"
+    ]
+   },
+   "emission": "bioluminescence (lateral line, photophores, lure, eye rings, prop tips)",
+   "unlit_light_lenses": null,
+   "render_only": [
+    "iridescence of the scales (thin film)",
+    "clear coat on eyes, photophores and lure",
+    "emission strength above 1 and bloom",
+    "4096 source resolution"
+   ],
+   "invented_texts": [
+    "ABISAL",
+    "X8-08",
+    "ABISAL-08",
+    "Spanish stencils"
+   ],
+   "inspiration": [],
+   "provenance": "Original procedural paint by the package author (painter script source/scripts/livery_paint.py); fonts DejaVu (free licence) rasterised into pixels; no third-party images, logos, insignia or registrations.",
+   "pipeline": [
+    "python source/scripts/livery_paint.py <work> textures/abisal/source",
+    "python source/scripts/livery_paint.py <work> textures/abisal/source --no-markings",
+    "python source/scripts/paint_layers.py split textures/abisal/source abisal",
+    "python source/scripts/livery_bake_textures.py source/aircraft_game.blend <work> textures/abisal --livery abisal",
+    "python source/scripts/export_all.py source/aircraft_game.blend export/"
+   ],
+   "renders": [
+    "previews/renders/abisal/x8_abisal_boca.png",
+    "previews/renders/abisal/x8_abisal_cola.png",
+    "previews/renders/abisal/x8_abisal_estudio.png",
+    "previews/renders/abisal/x8_abisal_noche.png",
+    "previews/renders/abisal/x8_abisal_ojo.png",
+    "previews/renders/abisal/x8_abisal_panza.png",
+    "previews/renders/abisal/x8_abisal_planta.png"
+   ],
+   "workbench_previews": "previews/abisal/",
+   "verification": {
+    "passed": true,
+    "report": "checks/structural_abisal.json",
+    "parity": null,
+    "layers_recompose": true
+   }
+  },
+  {
+   "id": "bolido",
+   "label": "BOLIDO - re-entry heat shield",
+   "description": "Original re-entry-demonstrator scheme: black ceramic tiles below, quilted blankets above, carbon-carbon leading edges, heat stains and flight-test markings.",
+   "default": false,
+   "revision_added": "r3",
+   "concept": "Re-entry demonstrator inspired by the Space Shuttle thermal protection system: black reaction-cured-glass ceramic tiles on the underside (22 mm, laid along the body axis, the leading-edge sweep and the hinge line), each tile with its own age tone, part number and waterproofing holes, replaced tiles in fresh gloss black; white 44 mm tiles at the black/white transition; cream quilted insulation blankets on top; grey carbon-carbon nose cap and leading-edge panels with T-seals; white felt on the elevons; a temper-coloured metal heat shield around the motor. Use: plasma bleaching and flow streaks on the belly (strongest at the nose and leading edges), tobacco-brown heat stains on the blankets, chipped tiles showing white silica, one missing tile with the felt pad, primer and adhesive exposed, protruding gap fillers, grease-pencil inspection rings, photogrammetry targets, rescue arrows, Spanish stencils and unlit navigation-light lenses (red left, green right, white tail; no lamp system is installed).",
+   "glb": {
+    "path": "export/bolido.glb",
+    "sha256": "9ecaf7b49aec555bbea178b3b582378bb362bec3f816448932438db2c8da8f93",
+    "bytes": 7078856
+   },
+   "runtime_textures": [
+    {
+     "file": "textures/bolido/x8_bolido_base_color.jpg",
+     "glb_image": "x8_bolido_base_color",
+     "size": [
+      2048,
+      2048
+     ],
+     "colorspace": "sRGB",
+     "gltf_slot": "baseColorTexture",
+     "uv_channel": "TEXCOORD_0 (UVMap)",
+     "content": "RGB albedo, JPEG q92",
+     "bytes": 1008579,
+     "sha256": "93c090dfb468aadaccbd238a51d55b77f8ce9c925e1df8205e3eae7dee6ac1bb"
+    },
+    {
+     "file": "textures/bolido/x8_bolido_orm.png",
+     "glb_image": "x8_bolido_orm",
+     "size": [
+      2048,
+      2048
+     ],
+     "colorspace": "linear",
+     "gltf_slot": "occlusionTexture (R) + metallicRoughnessTexture (G rough, B metal)",
+     "uv_channel": "TEXCOORD_0 (UVMap)",
+     "content": "R = 0.25 + 0.75 x baked AO, G roughness, B metallic",
+     "bytes": 2449360,
+     "sha256": "23ed9b748b25859857192d6945f974c91bdd301aba16e0183f4ff9b815101fd5"
+    },
+    {
+     "file": "textures/bolido/x8_bolido_normal.png",
+     "glb_image": "x8_bolido_normal",
+     "size": [
+      2048,
+      2048
+     ],
+     "colorspace": "linear",
+     "gltf_slot": "normalTexture",
+     "uv_channel": "TEXCOORD_0 (UVMap)",
+     "content": "tangent space, MikkTSpace, +Y up (glTF/OpenGL); tangents exported in the GLB",
+     "bytes": 1710823,
+     "sha256": "1cce8dd5fc5f19ae5b985d68f2576d0e3dfb2bc5f30a1f114086c2230ccf36bb"
+    },
+    {
+     "file": "textures/bolido/x8_bolido_emission.jpg",
+     "glb_image": "x8_bolido_emission",
+     "size": [
+      2048,
+      2048
+     ],
+     "colorspace": "sRGB",
+     "gltf_slot": "emissiveTexture (emissiveFactor 1,1,1)",
+     "uv_channel": "TEXCOORD_0 (UVMap)",
+     "content": "emissive colour; black = no emission",
+     "bytes": 115315,
+     "sha256": "c5d77a06e6dd29e046caef75e09f356c7ce00ace5645513f1c545c6c4cd0ebb0"
+    }
+   ],
+   "material_bindings": {
+    "x8_livery": {
+     "uv_map": "TEXCOORD_0 (UVMap)",
+     "slots": {
+      "baseColorTexture": {
+       "image": "x8_bolido_base_color",
+       "uv": "TEXCOORD_0 (UVMap)",
+       "colorspace": "sRGB"
+      },
+      "occlusionTexture (R) + metallicRoughnessTexture (G rough, B metal)": {
+       "image": "x8_bolido_orm",
+       "uv": "TEXCOORD_0 (UVMap)",
+       "colorspace": "linear"
+      },
+      "normalTexture": {
+       "image": "x8_bolido_normal",
+       "uv": "TEXCOORD_0 (UVMap)",
+       "colorspace": "linear"
+      },
+      "emissiveTexture (emissiveFactor 1,1,1)": {
+       "image": "x8_bolido_emission",
+       "uv": "TEXCOORD_0 (UVMap)",
+       "colorspace": "sRGB"
+      }
+     },
+     "occlusion_source": "textures/shared/x8_airframe_occlusion.png (shared by every skin, ORM red channel)",
+     "emissive_factor": [
+      1,
+      1,
+      1
+     ],
+     "normal_scale": 1.0,
+     "occlusion_strength": 1.0
+    },
+    "x8_battery": "flat colour, no textures (identical in every skin)",
+    "x8_black": "flat colour, no textures (identical in every skin)",
+    "x8_electronics": "flat colour, no textures (identical in every skin)",
+    "x8_foam_interior": "flat colour, no textures (identical in every skin)",
+    "x8_glass": "flat colour, no textures (identical in every skin)",
+    "x8_metal": "flat colour, no textures (identical in every skin)",
+    "x8_motor_bell": "flat colour, no textures (identical in every skin)",
+    "x8_orange": "flat colour, no textures (identical in every skin)"
+   },
+   "editable_sources": {
+    "layers": [
+     {
+      "file": "textures/bolido/source/layers/compose_report.json",
+      "sha256": "f8e38f5bb37d78c9b7824006dc1a227950b53776194b832732158cbbc8700f2c"
+     },
+     {
+      "file": "textures/bolido/source/layers/x8_bolido_insignia.png",
+      "sha256": "b7e8abca663896ac78411f6f9d2f12917c953dc1b55dd3dc46e67860d5174764"
+     },
+     {
+      "file": "textures/bolido/source/layers/x8_bolido_markings.png",
+      "sha256": "7679bc85df4aa41a75aa16b78417918aa92f342450cce8c75230a6b3494ce6d1"
+     },
+     {
+      "file": "textures/bolido/source/layers/x8_bolido_paint_base.png",
+      "sha256": "b5d2bcb83125a547038b05bc401c0ea18f8dd5164f5081082314a9188e56c0cc"
+     }
+    ],
+    "layer_rule": "base colour = paint_base, then markings, then insignia ('over', straight alpha); rebuild with paint_layers.py compose --write",
+    "maps": [
+     {
+      "file": "textures/bolido/source/x8_bolido_base_color.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "56e0b5cfd908ae4930a827369fc7f8d5e8f3e1116d21edd655b05affd0c5cb73"
+     },
+     {
+      "file": "textures/bolido/source/x8_bolido_coat.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "cb0136e15bf723e15ca6153a9a62d972e4176773494f23105d6294eee495dd2a"
+     },
+     {
+      "file": "textures/bolido/source/x8_bolido_emission.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "762b0a6da544ac84210872d26da7899b4a1aedcc14629dd00c78b395ee4ebbdf"
+     },
+     {
+      "file": "textures/bolido/source/x8_bolido_heat.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "13d3747c557fd52b9303ac65015c0a27fb96f846162eaf5040f7abfa17e56fe9"
+     },
+     {
+      "file": "textures/bolido/source/x8_bolido_height.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "46647d55978f5386c499e062f8856963efb2eb35906809fa4692991cfdac80a5"
+     },
+     {
+      "file": "textures/bolido/source/x8_bolido_iridescence.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "c04a9f73449ec4717d13dee8351e4c7b7f96b581fd3850a293cb70e8acdfdc9b"
+     },
+     {
+      "file": "textures/bolido/source/x8_bolido_metallic.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "18b60d279da2b17b25a26384d7e4ad0a0262de9c8525cfc5ea4ac1394dd39cd0"
+     },
+     {
+      "file": "textures/bolido/source/x8_bolido_normal.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "71c6c23e51ea115edfc8efc869ff6b2ed3585214fbccd3668f30d4dc3811c1fd"
+     },
+     {
+      "file": "textures/bolido/source/x8_bolido_roughness.png",
+      "size": [
+       4096,
+       4096
+      ],
+      "sha256": "bc6d08fe1d4ffb8907c94d4a15ecffc88cd48c2f4e158c24d8086d1b2c082494"
+     }
+    ],
+    "masks": [
+     "textures/bolido/source/masks/emblem.png",
+     "textures/bolido/source/masks/fresh_tiles.png",
+     "textures/bolido/source/masks/heat_flux.png",
+     "textures/bolido/source/masks/height_preview.png",
+     "textures/bolido/source/masks/insignia_alpha.png",
+     "textures/bolido/source/masks/light_lenses.json",
+     "textures/bolido/source/masks/marking_alpha.png",
+     "textures/bolido/source/masks/tps_zones.png"
+    ]
+   },
+   "emission": "none (emissive texture is black; the r3 always-on lens glow was removed in r4)",
+   "unlit_light_lenses": {
+    "status": "decorative unlit lenses; no lamp system in the X8 UAV configuration",
+    "anchors": [
+     {
+      "node": "wing_left_fixed",
+      "intended_group": "navigation (not wired: no lamp installed)",
+      "colour": "red",
+      "position_blender_m": [
+       -0.99892,
+       -0.41487,
+       0.08861
+      ],
+      "position_godot_m": [
+       -0.99892,
+       0.08861,
+       0.41487
+      ],
+      "lens_radius_mm": 4.5
+     },
+     {
+      "node": "wing_right_fixed",
+      "intended_group": "navigation (not wired: no lamp installed)",
+      "colour": "green",
+      "position_blender_m": [
+       0.99865,
+       -0.41439,
+       0.08809
+      ],
+      "position_godot_m": [
+       0.99865,
+       0.08809,
+       0.41439
+      ],
+      "lens_radius_mm": 4.5
+     },
+     {
+      "node": "fuselage_core",
+      "intended_group": "navigation (not wired: no lamp installed)",
+      "colour": "white (tail)",
+      "position_blender_m": [
+       0.00012,
+       -0.3345,
+       0.04557
+      ],
+      "position_godot_m": [
+       0.00012,
+       0.04557,
+       0.3345
+      ],
+      "lens_radius_mm": 3.6
+     }
+    ]
+   },
+   "render_only": [
+    "incandescence of nose, leading edges and belly (textures/bolido/source/x8_bolido_heat.png)",
+    "plasma sheath and wake (render scene objects)",
+    "temper colours as thin film on the motor shield",
+    "clear coat on new tiles and lenses",
+    "4096 source resolution"
+   ],
+   "invented_texts": [
+    "BOLIDO",
+    "VR-08",
+    "DEMOSTRADOR DE REENTRADA",
+    "mission emblem 'BOLIDO - VUELO 08 - REENTRADA'",
+    "Spanish stencils"
+   ],
+   "inspiration": [
+    "Space Shuttle thermal protection system (HRSI/LRSI tiles, FIB blankets, RCC, gap fillers) as described on Wikipedia and seen in NASA photographs of Endeavour and Columbia; no NASA markings or insignia are reproduced"
+   ],
+   "provenance": "Original procedural paint by the package author (painter script source/scripts/livery_paint_bolido.py); fonts DejaVu (free licence) rasterised into pixels; no third-party images, logos, insignia or registrations.",
+   "pipeline": [
+    "python source/scripts/livery_paint_bolido.py <work> textures/bolido/source",
+    "python source/scripts/livery_paint_bolido.py <work> textures/bolido/source --no-markings",
+    "python source/scripts/paint_layers.py split textures/bolido/source bolido",
+    "python source/scripts/livery_bake_textures.py source/aircraft_game.blend <work> textures/bolido --livery bolido --no-material",
+    "python source/scripts/export_all.py source/aircraft_game.blend export/"
+   ],
+   "renders": [
+    "previews/renders/bolido/x8_bolido_estudio.png",
+    "previews/renders/bolido/x8_bolido_reentrada.png"
+   ],
+   "workbench_previews": "previews/bolido/",
+   "verification": {
+    "passed": true,
+    "report": "checks/structural_bolido.json",
+    "parity": {
+     "passed": true,
+     "report": "checks/parity_bolido.json"
+    },
+    "layers_recompose": true
+   }
+  }
+ ],
+ "skin_order": [
+  "abisal",
+  "bolido"
+ ],
+ "default_skin": "abisal",
+ "shared_maps": [
+  {
+   "file": "textures/shared/x8_airframe_occlusion.png",
+   "use": "ORM red channel (glTF occlusion) of every skin",
+   "sha256": "7322ab2f8067c8d8464a8cf8e44ed968b0b3a1485798f0014234dca044267ec3"
+  }
+ ],
+ "texture_memory": {
+  "per_skin_uncompressed_rgba8_with_mips_MiB": 85.3,
+  "per_skin_vram_compressed_estimate_MiB": 13.3,
+  "estimate_basis": "uncompressed: 4 images x 2048^2 x 4 bytes x 4/3 (mipmaps). Compressed: three 4-bit-per-pixel blocks (BC1/ETC2 class: base colour, ORM, emission) and one 8-bit-per-pixel normal map (BC5/RGTC class), with mipmaps. Estimate only: the real import format and cost must be measured in Godot (pending integration).",
+  "fleet_glb_bytes": 15625976,
+  "per_skin_glb_bytes": {
+   "abisal": 8547120,
+   "bolido": 7078856
+  }
+ },
+ "default_skin_paint_targets": {
+  "skin": "abisal",
+  "material": "x8_livery",
+  "uv": "TEXCOORD_0 (UVMap)",
+  "painted_parts": [
+   "fuselage_core",
+   "canopy_hatch",
+   "wing_left_fixed",
+   "wing_right_fixed",
+   "elevon_left",
+   "elevon_right",
+   "camera_door_left",
+   "camera_door_right",
+   "propeller_rotor"
+  ],
+  "region_attribute": "face attribute x8_region on each painted mesh: 0 skin, 1 hinge tape, 2 servo cover, 3 orange plastic (root ribs, control horns), 4 propeller",
+  "part_attribute": "face attribute x8_part: 1 fuselage_core, 2 canopy_hatch, 3 wing_left_fixed, 4 wing_right_fixed, 5 elevon_left, 6 elevon_right, 7 camera_door_left, 8 camera_door_right, 9 propeller_rotor",
+  "note": "Workshop paint slots and registration markings apply to the default skin only; alternate skins are not promised arbitrary repainting."
+ },
+ "default_skin_marking_anchors": [
+  {
+   "id": "registration_wing_left_top",
+   "node": "wing_left_fixed",
+   "position_blender_m": [
+    -0.56,
+    -0.26042,
+    0.03235
+   ],
+   "position_godot_m": [
+    -0.56,
+    0.03235,
+    0.26042
+   ],
+   "normal_blender": [
+    0.0052,
+    -0.0098,
+    0.9999
+   ],
+   "text_up_blender": [
+    -0.3714,
+    0.9284,
+    0.0111
+   ],
+   "max_size_mm": [
+    320,
+    110
+   ]
+  },
+  {
+   "id": "registration_wing_right_top",
+   "node": "wing_right_fixed",
+   "position_blender_m": [
+    0.56,
+    -0.26042,
+    0.03235
+   ],
+   "position_godot_m": [
+    0.56,
+    0.03235,
+    0.26042
+   ],
+   "normal_blender": [
+    -0.0052,
+    -0.0098,
+    0.9999
+   ],
+   "text_up_blender": [
+    0.3714,
+    0.9284,
+    0.0111
+   ],
+   "max_size_mm": [
+    320,
+    110
+   ]
+  },
+  {
+   "id": "registration_wing_left_underside",
+   "node": "wing_left_fixed",
+   "position_blender_m": [
+    -0.6,
+    -0.30042,
+    0.00741
+   ],
+   "position_godot_m": [
+    -0.6,
+    0.00741,
+    0.30042
+   ],
+   "normal_blender": [
+    -0.0316,
+    -0.0383,
+    -0.9988
+   ],
+   "text_up_blender": [
+    -0.3722,
+    0.9278,
+    -0.0238
+   ],
+   "max_size_mm": [
+    300,
+    90
+   ]
+  },
+  {
+   "id": "marking_winglet_left_outer",
+   "node": "wing_left_fixed",
+   "position_blender_m": [
+    -1.02032,
+    -0.56042,
+    0.124
+   ],
+   "position_godot_m": [
+    -1.02032,
+    0.124,
+    0.56042
+   ],
+   "normal_blender": [
+    -0.8798,
+    -0.0375,
+    -0.4739
+   ],
+   "text_up_blender": [
+    -0.4735,
+    -0.0202,
+    0.8806
+   ],
+   "max_size_mm": [
+    90,
+    70
+   ]
+  },
+  {
+   "id": "marking_winglet_right_outer",
+   "node": "wing_right_fixed",
+   "position_blender_m": [
+    1.02032,
+    -0.56042,
+    0.124
+   ],
+   "position_godot_m": [
+    1.02032,
+    0.124,
+    0.56042
+   ],
+   "normal_blender": [
+    0.8798,
+    -0.0375,
+    -0.4739
+   ],
+   "text_up_blender": [
+    0.4735,
+    -0.0202,
+    0.8806
+   ],
+   "max_size_mm": [
+    90,
+    70
+   ]
+  }
+ ],
+ "lights": {
+  "installed": false,
+  "groups": [],
+  "note": "The X8 UAV configuration of the master has no lamp system; no simulator light groups (navigation, strobe, landing, orientation) are declared. BOLIDO paints unlit lens shapes (anchors under skins[].unlit_light_lenses); ABISAL has decorative always-on bioluminescent emission, which is paint, not a lamp."
+ },
+ "mechanisms": {
+  "conventional_controls": [
+   "elevon_left_hinge",
+   "elevon_right_hinge"
+  ],
+  "propeller": "propeller_spin (rotor separate from the fixed motor_mount)",
+  "auxiliary_unsupported": [
+   "camera_door_left_hinge",
+   "camera_door_right_hinge"
+  ],
+  "canopy": "canopy_hatch is a detachable section only (no opening mechanism)",
+  "landing_gear": "not applicable (none)",
+  "retracts": "not applicable",
+  "wing_folds": "not applicable",
+  "tailhook": "not applicable",
+  "cowl_flaps": "not applicable"
+ },
+ "counts": {
+  "triangles": 38504,
+  "mesh_nodes": 11,
+  "surfaces": 24,
+  "materials": 9,
+  "textures_per_skin": 4,
+  "skins": 2,
+  "per_mesh": {
+   "bay_equipment": {
+    "triangles": 504,
+    "surfaces": 6,
+    "materials": [
+     "x8_battery",
+     "x8_black",
+     "x8_electronics",
+     "x8_foam_interior",
+     "x8_glass",
+     "x8_orange"
+    ]
+   },
+   "camera_door_left": {
+    "triangles": 168,
+    "surfaces": 1,
+    "materials": [
+     "x8_livery"
+    ]
+   },
+   "camera_door_right": {
+    "triangles": 166,
+    "surfaces": 1,
+    "materials": [
+     "x8_livery"
+    ]
+   },
+   "canopy_hatch": {
+    "triangles": 4458,
+    "surfaces": 2,
+    "materials": [
+     "x8_foam_interior",
+     "x8_livery"
+    ]
+   },
+   "elevon_left": {
+    "triangles": 2576,
+    "surfaces": 1,
+    "materials": [
+     "x8_livery"
+    ]
+   },
+   "elevon_right": {
+    "triangles": 2576,
+    "surfaces": 1,
+    "materials": [
+     "x8_livery"
+    ]
+   },
+   "fuselage_core": {
+    "triangles": 13592,
+    "surfaces": 4,
+    "materials": [
+     "x8_foam_interior",
+     "x8_glass",
+     "x8_livery",
+     "x8_metal"
+    ]
+   },
+   "motor_mount": {
+    "triangles": 184,
+    "surfaces": 1,
+    "materials": [
+     "x8_black"
+    ]
+   },
+   "propeller_rotor": {
+    "triangles": 1400,
+    "surfaces": 3,
+    "materials": [
+     "x8_livery",
+     "x8_metal",
+     "x8_motor_bell"
+    ]
+   },
+   "wing_left_fixed": {
+    "triangles": 6440,
+    "surfaces": 2,
+    "materials": [
+     "x8_foam_interior",
+     "x8_livery"
+    ]
+   },
+   "wing_right_fixed": {
+    "triangles": 6440,
+    "surfaces": 2,
+    "materials": [
+     "x8_foam_interior",
+     "x8_livery"
+    ]
+   }
+  }
+ },
+ "glb": {
+  "path": "export/aircraft.glb",
+  "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+  "bytes": 8547120
+ },
+ "demo_glb": {
+  "path": "previews/demo/aircraft_demo.glb",
+  "sha256": "0354732da7cbcf1a44dbe44a9841a46c27f0b7c85da7046a071d41581a4d0c2c",
+  "bytes": 8644104,
+  "animation": "demo (24 fps, 560 frames): elevons, doors, propeller, exploded sections; reference only"
+ },
+ "master_reference": {
+  "file": "Skywalker_X8/Skywalker_X8.blend (master v3.1)",
+  "sha256": "6b70daf46dc6414ad04b5e656ac96bb2916e463ff7e686accda4dcad41237156",
+  "generator": "source/scripts/x8_skywalker_blender.py",
+  "generator_sha256": "a217e027d2c2fa5e3f8057f2e7d87385c0f3720bb19680ddcf3d6bd59b27cec4"
+ },
+ "known_limits": [
+  "Servo arms and pushrods are not exported: the simulator drives only the hinge, so a static linkage would misalign when the elevons move (silhouette difference below the wing at s = +-515 mm).",
+  "Servos ES3054 inside the wing bays, magnets, tabs, latch pin, spring, carbon tubes and fasteners are hidden in flight and are not exported.",
+  "Hinge tape, servo covers and orange plastic are painted regions of the x8_livery atlas (face attribute x8_region) plus a 2 mm slot cover on each elevon; no separate shells and no coplanar decal geometry.",
+  "The magnetic hatch is tagged canopy so it can separate; the X8 has no glazing.",
+  "Wing/centre-body joint: 0.1 mm hidden separation on each side of the orange rib.",
+  "No landing gear, tail surfaces, flaps or rudder exist on this aircraft.",
+  "Mass and CG values are manual values or non-flight estimates only.",
+  "Elevon positive-deflection clearance ends at about 31 deg (game tessellation of the 35 deg lower chamfer); the authored range is +-26.8 deg.",
+  "Liveries: everything listed as render_only (ABISAL iridescence and coat; BOLIDO incandescence, plasma sheath, temper-colour thin film) exists only in the Cycles renders; the GLBs use core glTF (no KHR_materials_* extensions).",
+  "Liveries: emission is exported at factor 1.0; glow is an engine-side setting.",
+  "ABISAL: the FPV window (x8_glass) interrupts the row of teeth on the nose.",
+  "Liveries: interior foam, metal, glass, motor bell, motor mount and bay equipment keep flat materials in every skin.",
+  "Liveries: wear, dirt and markings are baked into each atlas (one look per skin); there is no clean variant or runtime decal layer.",
+  "BOLIDO: the tile grid uses planar projections per zone (belly, sides, nose front, each wing along its leading edge, each elevon along its hinge, winglets); where two zones meet, tiles end at a closeout line, as on real heat shields, and on the strongly curved nose sides tiles are slightly stretched.",
+  "BOLIDO is a visual concept: the paint does not imply real thermal protection; mass and aerodynamics are those of the foam X8."
+ ]
+}

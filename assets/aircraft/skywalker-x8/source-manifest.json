@@ -1,0 +1,743 @@
+{
+ "format": "openrc-skywalker-x8-source-manifest v1",
+ "step": "X8-00",
+ "generator": "research/skywalker-x8/X8-00/manifest.py",
+ "delivery_root": "assets/source-deliveries/skywalker-x8-r4/skywalker_x8/r4",
+ "catalog_id": "skywalker-x8",
+ "delivery_revision": "r4",
+ "visual_revision": "r4-3e14a512fac3",
+ "master": {
+  "revision": "v3.1",
+  "sha256": "6b70daf46dc6414ad04b5e656ac96bb2916e463ff7e686accda4dcad41237156",
+  "generator_sha256": "a217e027d2c2fa5e3f8057f2e7d87385c0f3720bb19680ddcf3d6bd59b27cec4"
+ },
+ "terms": "not set by the owner (LICENSE.txt: 'Asset terms NOT YET SET'); see docs/X8-PLAN.md",
+ "zip": {
+  "name": "skywalker_x8_r4.zip",
+  "bytes": 201104969,
+  "sha256": "52c9283bc873537aa7a618c47ed452929b9ba1cc057921a0e147d282a6eb0f49",
+  "local_copy": "references/source-deliveries/skywalker_x8_r4.zip (ignored by Git)"
+ },
+ "author_manifest": "50 of 147 entries of SHA256SUMS.txt match; 97 omitted by rule",
+ "omitted_rule": [
+  "textures/*",
+  "previews/*",
+  "*.png",
+  "*.jpg"
+ ],
+ "omitted": [
+  {
+   "path": "checks/silhouettes/silhouette_front.png",
+   "sha256": "85be9efcb371d41774a19e80cff3c47e37f4bff850901786cff4dc598ddb213b"
+  },
+  {
+   "path": "checks/silhouettes/silhouette_side.png",
+   "sha256": "786306a7cc8ec5ff31a2f170309015eb456ce1c26bd8919adf6c1fa6223aee25"
+  },
+  {
+   "path": "checks/silhouettes/silhouette_top.png",
+   "sha256": "78325fb495fa74b63e3b0d4f52ab3fcbbffe38a2184f0b6600faf630b6245fef"
+  },
+  {
+   "path": "checks/views/abisal_chase_1080p.png",
+   "sha256": "2365ea0bbcaff6a20d51ac0ade9e426474c2ad0f9e1c72d8323fe52d7f0ac294"
+  },
+  {
+   "path": "checks/views/abisal_inspection_nose_1080p.png",
+   "sha256": "c9f6a425377920894a41c6ad178f7d0354936de100ccd9320b491160bcf9ac3f"
+  },
+  {
+   "path": "checks/views/abisal_inspection_nose_1440p.png",
+   "sha256": "23e937195340acaf0d72c783dcd5080277e9efd263c5054f35d88346ec67714d"
+  },
+  {
+   "path": "checks/views/abisal_workshop_3q_1080p.png",
+   "sha256": "63850562dad63fbbfc17328f62ff1ca66bdf11d0f742c215f64c0cd090292949"
+  },
+  {
+   "path": "checks/views/bolido_chase_1080p.png",
+   "sha256": "5e9c1b01eff98efcda67d77549584ca4697cd59c014675faf8b5515e679c3389"
+  },
+  {
+   "path": "checks/views/bolido_inspection_nose_1080p.png",
+   "sha256": "2440a749439e34e8c0e63e1961fac160859fb5fa83a289bcdb17cd70e5cbe142"
+  },
+  {
+   "path": "checks/views/bolido_inspection_nose_1440p.png",
+   "sha256": "4f715e77aae57b43f8e1a3c83c8996caf51f76138d5e2a6f8d18a613cd516fe8"
+  },
+  {
+   "path": "checks/views/bolido_workshop_3q_1080p.png",
+   "sha256": "3a93add2fb235bbf668957b7267a2bd426b5136128f3eb7af558843114356176"
+  },
+  {
+   "path": "previews/abisal/controls_camera_doors_open.png",
+   "sha256": "33f12046a189aab7da9367cfa462ac6971c178041c72bb73793a3ce0cb6d0083"
+  },
+  {
+   "path": "previews/abisal/controls_pitch_down_elevons.png",
+   "sha256": "fe4206b6f94b4ea20b2bc78417d5b8fce238ba04b6a36f2c542ecfb6a5dba9cb"
+  },
+  {
+   "path": "previews/abisal/controls_pitch_up_elevons.png",
+   "sha256": "9d92387b73f2214d5fd91c223ed8762fce726627c4c30cdc6ae5b28cbde3a26c"
+  },
+  {
+   "path": "previews/abisal/controls_roll_left_elevons.png",
+   "sha256": "5e58f97c0203f1ae66d714339ef92e6cee7d35bdce445c239f878d08506403fa"
+  },
+  {
+   "path": "previews/abisal/controls_roll_right_elevons.png",
+   "sha256": "6089c997415dd6b14b31b4d0ed333fa8214fddc50748c0a6e48f6159a9e6fa40"
+  },
+  {
+   "path": "previews/abisal/exploded_sections.png",
+   "sha256": "a3b3d7f405ba8d75b962fa296ab33eb8153f3354db96ffb5514c3726bf1c4de4"
+  },
+  {
+   "path": "previews/abisal/exploded_sections_top.png",
+   "sha256": "1c40cfefabfc783a46d64665432a46abb4b3f5d12c18116798257587b525e3c1"
+  },
+  {
+   "path": "previews/abisal/exploded_sections_underside.png",
+   "sha256": "5f7536a66275f902289b904432a6d0ba6f43908c5a8f3d9d1e9c86ef4dff59eb"
+  },
+  {
+   "path": "previews/abisal/front.png",
+   "sha256": "ecd52b05df1aa4d8535887da9e4c87739b61e81947496bfcc64f8f18cb612a52"
+  },
+  {
+   "path": "previews/abisal/side_right.png",
+   "sha256": "29aee70178ecc5c91b820201488c8b11a2c8e872b9ba416d7bcd976d61eeffd1"
+  },
+  {
+   "path": "previews/abisal/three_quarter.png",
+   "sha256": "b5f6ec6875aa2a0aaa6f8ed8501d24c60bdd301296730f6a7ef0e0973b7ddd23"
+  },
+  {
+   "path": "previews/abisal/three_quarter_rear.png",
+   "sha256": "2d7c52974fd70e0b46b91bfcdb18cfbf168c66e004a019824172c1c2a2508184"
+  },
+  {
+   "path": "previews/abisal/top.png",
+   "sha256": "888c6cd738d3c5152172efe7e4b1d7513301f78e4e31a3ad1045a26659555bc2"
+  },
+  {
+   "path": "previews/abisal/underside.png",
+   "sha256": "98e91ef1e02195eba8809aa924da790e3ab7bb9ce8e2bc20f74810e6035f0fa8"
+  },
+  {
+   "path": "previews/bolido/controls_camera_doors_open.png",
+   "sha256": "a842ba5a125af303102554fe5686fde1c7fbb1db768ddd2a3f1b3aebb41f0ab8"
+  },
+  {
+   "path": "previews/bolido/controls_pitch_down_elevons.png",
+   "sha256": "01ecc165ebe85e164c6a41385c14d7c34bea4866f2b6eb378a58fcdb06468968"
+  },
+  {
+   "path": "previews/bolido/controls_pitch_up_elevons.png",
+   "sha256": "19718c3a2dd9e942fa054c8c429e1ba95f6d5967170bcde9203908e8578ff528"
+  },
+  {
+   "path": "previews/bolido/controls_roll_left_elevons.png",
+   "sha256": "3134a06ef227805c9420a3adf069ee08eb540205b518daf17155461be5c1916a"
+  },
+  {
+   "path": "previews/bolido/controls_roll_right_elevons.png",
+   "sha256": "ee6bf7ef16cfab178e0f6023980758ffd49ebd96f8a15cb375ce55ffe116c362"
+  },
+  {
+   "path": "previews/bolido/exploded_sections.png",
+   "sha256": "04362aa9c2dd524b5e7cc88cd9bc1e36e5eb082ef2d3590a8bf3393f06155840"
+  },
+  {
+   "path": "previews/bolido/exploded_sections_top.png",
+   "sha256": "23d51efc747d42413618a7eae5824fe88584bc1a455ef3d35a4394523a5e6933"
+  },
+  {
+   "path": "previews/bolido/exploded_sections_underside.png",
+   "sha256": "2a481ed61a605f6222c590871cea199ecd93086e667b47085f68f55655007e8b"
+  },
+  {
+   "path": "previews/bolido/front.png",
+   "sha256": "9693c14f06aa428b226302e4ff7e01634b15b99e325881d7644081773d9639d8"
+  },
+  {
+   "path": "previews/bolido/side_right.png",
+   "sha256": "3279e3ec0a9f3c82ef47fc821756b78e902ef3fa0760f075e0a65a836458fc71"
+  },
+  {
+   "path": "previews/bolido/three_quarter.png",
+   "sha256": "9df473762de0ffaf99d2dfbd59f36e608c656890077a6364020a7686b0c1e0fd"
+  },
+  {
+   "path": "previews/bolido/three_quarter_rear.png",
+   "sha256": "a90f9c3eadf704a20f412d60beb9578ef0f228ed4cc10ce95b5ba7e249beb6a8"
+  },
+  {
+   "path": "previews/bolido/top.png",
+   "sha256": "6a05654f88ee9d23723a396e5041cbea3ee9283e4cdf24999a06eb685b164d46"
+  },
+  {
+   "path": "previews/bolido/underside.png",
+   "sha256": "475fba5f6ae9b060543e5c6137af17629fe074b8744cf9106b25075886086dd4"
+  },
+  {
+   "path": "previews/demo/aircraft_demo.glb",
+   "sha256": "0354732da7cbcf1a44dbe44a9841a46c27f0b7c85da7046a071d41581a4d0c2c"
+  },
+  {
+   "path": "previews/renders/abisal/x8_abisal_boca.png",
+   "sha256": "d211438a65535f2eb89e31d29ccbfe08f609e5dbad9ea9f4942d5b6be03dad05"
+  },
+  {
+   "path": "previews/renders/abisal/x8_abisal_cola.png",
+   "sha256": "42541e1da5f754ba7e49e27a3440e67edfe4734056c4aab10481534ec0a46d05"
+  },
+  {
+   "path": "previews/renders/abisal/x8_abisal_estudio.png",
+   "sha256": "bfc3470a4b8fc9c61263f4d3437d41ffca9bea5f83ecf17ad55721617f9c230e"
+  },
+  {
+   "path": "previews/renders/abisal/x8_abisal_noche.png",
+   "sha256": "a323371670fd695827dfa44a35259b77251485616e394d2aa812f883f5f333e0"
+  },
+  {
+   "path": "previews/renders/abisal/x8_abisal_ojo.png",
+   "sha256": "65dea2fa912866348287d6c67e8b722b582a1b56d41e84dc3fd6ee21516f7dc2"
+  },
+  {
+   "path": "previews/renders/abisal/x8_abisal_panza.png",
+   "sha256": "04d8449c3d4566ee35d1956f7dd3f324024569fff7a0199375a683bc68860f0e"
+  },
+  {
+   "path": "previews/renders/abisal/x8_abisal_planta.png",
+   "sha256": "b987eb69db49d020eeaaf69712ca0534d18863e3d5d217b40c57efc514a84167"
+  },
+  {
+   "path": "previews/renders/bolido/x8_bolido_estudio.png",
+   "sha256": "520b4fc169bc9e9b010b66181107ac87b7fcf74f4358a25eb88b3be68999268b"
+  },
+  {
+   "path": "previews/renders/bolido/x8_bolido_reentrada.png",
+   "sha256": "0b15834592ab76a1475db85105da8c8f28c25ada581f144a15516b6635c6d279"
+  },
+  {
+   "path": "textures/abisal/source/layers/compose_report.json",
+   "sha256": "fd2c9b0b590f76f64f3c816f957b4c4ff23ed30b5844e0ed191be626693014af"
+  },
+  {
+   "path": "textures/abisal/source/layers/x8_abisal_markings.png",
+   "sha256": "7058ea15da7c489b5bd1bc2fce1bd06b8918e38fa0ea168213d139a0390be8d8"
+  },
+  {
+   "path": "textures/abisal/source/layers/x8_abisal_paint_base.png",
+   "sha256": "267639a523b810f7faae2c5a9825d10aa7edc485d6e99a5849c8dface2181f3f"
+  },
+  {
+   "path": "textures/abisal/source/masks/chips.png",
+   "sha256": "5cd6f395a6163edf33c805485ac09d9dcdc30822d3f53eba3f149e389eee37f8"
+  },
+  {
+   "path": "textures/abisal/source/masks/grime.png",
+   "sha256": "2606663d2b7139ecf7dbcd2e63b944860e9c4755d27d05fd9641c50fe5c42587"
+  },
+  {
+   "path": "textures/abisal/source/masks/height_preview.png",
+   "sha256": "7c86c00c13fcccfb9956aad9cbac3413da5694046bf9693cd457983ba6435817"
+  },
+  {
+   "path": "textures/abisal/source/masks/insignia_alpha.png",
+   "sha256": "62f93e2e3442600e1d8cff32859f3583f24b5364ac649c1d4dd166b5e6123d28"
+  },
+  {
+   "path": "textures/abisal/source/masks/marking_alpha.png",
+   "sha256": "561d1eb51597222aa2f0f1194d1a11c71e7dea230cf844c795f13677f7051184"
+  },
+  {
+   "path": "textures/abisal/source/masks/scale_edges.png",
+   "sha256": "70b5e7bcb7c7c46039d89860032ff913c44e7c98dbcacf301009fdfca94d5cf4"
+  },
+  {
+   "path": "textures/abisal/source/masks/seam.png",
+   "sha256": "3733cb4bacf57cf9db6e6d015d00e9278c5579f6de3037c7200e2ca254eaae03"
+  },
+  {
+   "path": "textures/abisal/source/x8_abisal_base_color.png",
+   "sha256": "cc43c07ee3605eafd0af3d7fada8af327cb46f2ffc9edb144afff600cc47b031"
+  },
+  {
+   "path": "textures/abisal/source/x8_abisal_coat.png",
+   "sha256": "801a264acf4faa0a72298a24eebccbf7d59e2580a9a42f8469380c0e2334aadb"
+  },
+  {
+   "path": "textures/abisal/source/x8_abisal_emission.png",
+   "sha256": "44545d011db96e3b5d5d75106879ab54b94f01afadd9a9edef7356eab804105d"
+  },
+  {
+   "path": "textures/abisal/source/x8_abisal_height.png",
+   "sha256": "8b163e84b070eec929dd9b88e07dd5a47b964dd17f6a326b886dc2800446e635"
+  },
+  {
+   "path": "textures/abisal/source/x8_abisal_iridescence.png",
+   "sha256": "9d950709ef2b789ae3f83c823b0bdecf3fb6cc88e4cc3ccd6f3047593ae8c896"
+  },
+  {
+   "path": "textures/abisal/source/x8_abisal_metallic.png",
+   "sha256": "114e6316c7ea332542e405dc074e75fad4743f63cb9b22d2a36888a539f830a3"
+  },
+  {
+   "path": "textures/abisal/source/x8_abisal_normal.png",
+   "sha256": "9a52abc0fd83fd8bbade4affbf5314c3b8c5323ae20f4661b9b222df1d15d241"
+  },
+  {
+   "path": "textures/abisal/source/x8_abisal_roughness.png",
+   "sha256": "789615178de2dcb1634c24ad0950bfe21567d2d415fe87241cc08e713be381a2"
+  },
+  {
+   "path": "textures/abisal/x8_abisal_base_color.jpg",
+   "sha256": "99eee6bf2fd358a9867e96ed0ab64b9c053aced18ab6f5d0367e514153dd9247"
+  },
+  {
+   "path": "textures/abisal/x8_abisal_emission.jpg",
+   "sha256": "8373cdbd8e77509b30d3554967f7592a48cf019e9a2d3c03abff6210acf70279"
+  },
+  {
+   "path": "textures/abisal/x8_abisal_normal.png",
+   "sha256": "65e948823877ca80d95084efb1043ea681f316f0658fb3ea48e483ae212e12d3"
+  },
+  {
+   "path": "textures/abisal/x8_abisal_orm.png",
+   "sha256": "c224112fe48707da084bf4f3c5e0bedd91719ca542a0c398f6d0c15c87f1d5cc"
+  },
+  {
+   "path": "textures/bolido/source/layers/compose_report.json",
+   "sha256": "f8e38f5bb37d78c9b7824006dc1a227950b53776194b832732158cbbc8700f2c"
+  },
+  {
+   "path": "textures/bolido/source/layers/x8_bolido_insignia.png",
+   "sha256": "b7e8abca663896ac78411f6f9d2f12917c953dc1b55dd3dc46e67860d5174764"
+  },
+  {
+   "path": "textures/bolido/source/layers/x8_bolido_markings.png",
+   "sha256": "7679bc85df4aa41a75aa16b78417918aa92f342450cce8c75230a6b3494ce6d1"
+  },
+  {
+   "path": "textures/bolido/source/layers/x8_bolido_paint_base.png",
+   "sha256": "b5d2bcb83125a547038b05bc401c0ea18f8dd5164f5081082314a9188e56c0cc"
+  },
+  {
+   "path": "textures/bolido/source/masks/emblem.png",
+   "sha256": "b5071959e5f1632ab9e3d68c5ffc5218316d4349e6413061c02974c46d3d670f"
+  },
+  {
+   "path": "textures/bolido/source/masks/fresh_tiles.png",
+   "sha256": "52284be8e2163ab6a42cfbfc6e508aa35bbcea76402566a8a0958ab35a976f2e"
+  },
+  {
+   "path": "textures/bolido/source/masks/heat_flux.png",
+   "sha256": "4fda4676147b521669171c9f10633e8d0704a026f3d5bfe377d0bd5d32c54976"
+  },
+  {
+   "path": "textures/bolido/source/masks/height_preview.png",
+   "sha256": "62a8c475d0926a06e8756574d2a67809a2026b329b53bd54034f3bcece30cbff"
+  },
+  {
+   "path": "textures/bolido/source/masks/insignia_alpha.png",
+   "sha256": "867987a07d004984abf096bc405d6488b5ef3a3727586cc2d2673baffe1cab8a"
+  },
+  {
+   "path": "textures/bolido/source/masks/light_lenses.json",
+   "sha256": "e7843bfb3a2a8d1f586bbfbd2577f631f95f625ede71c54696bfd36f66b91a23"
+  },
+  {
+   "path": "textures/bolido/source/masks/marking_alpha.png",
+   "sha256": "72e96eb2f11c46d2a0de1948c2751661ab647c6178bea3b2ca1a3d918312dbcb"
+  },
+  {
+   "path": "textures/bolido/source/masks/tps_zones.png",
+   "sha256": "117a9248f513dbefc5e718b131bb687f2f58810c33fa81f7184ebcc71338b5db"
+  },
+  {
+   "path": "textures/bolido/source/x8_bolido_base_color.png",
+   "sha256": "56e0b5cfd908ae4930a827369fc7f8d5e8f3e1116d21edd655b05affd0c5cb73"
+  },
+  {
+   "path": "textures/bolido/source/x8_bolido_coat.png",
+   "sha256": "cb0136e15bf723e15ca6153a9a62d972e4176773494f23105d6294eee495dd2a"
+  },
+  {
+   "path": "textures/bolido/source/x8_bolido_emission.png",
+   "sha256": "762b0a6da544ac84210872d26da7899b4a1aedcc14629dd00c78b395ee4ebbdf"
+  },
+  {
+   "path": "textures/bolido/source/x8_bolido_heat.png",
+   "sha256": "13d3747c557fd52b9303ac65015c0a27fb96f846162eaf5040f7abfa17e56fe9"
+  },
+  {
+   "path": "textures/bolido/source/x8_bolido_height.png",
+   "sha256": "46647d55978f5386c499e062f8856963efb2eb35906809fa4692991cfdac80a5"
+  },
+  {
+   "path": "textures/bolido/source/x8_bolido_iridescence.png",
+   "sha256": "c04a9f73449ec4717d13dee8351e4c7b7f96b581fd3850a293cb70e8acdfdc9b"
+  },
+  {
+   "path": "textures/bolido/source/x8_bolido_metallic.png",
+   "sha256": "18b60d279da2b17b25a26384d7e4ad0a0262de9c8525cfc5ea4ac1394dd39cd0"
+  },
+  {
+   "path": "textures/bolido/source/x8_bolido_normal.png",
+   "sha256": "71c6c23e51ea115edfc8efc869ff6b2ed3585214fbccd3668f30d4dc3811c1fd"
+  },
+  {
+   "path": "textures/bolido/source/x8_bolido_roughness.png",
+   "sha256": "bc6d08fe1d4ffb8907c94d4a15ecffc88cd48c2f4e158c24d8086d1b2c082494"
+  },
+  {
+   "path": "textures/bolido/x8_bolido_base_color.jpg",
+   "sha256": "93c090dfb468aadaccbd238a51d55b77f8ce9c925e1df8205e3eae7dee6ac1bb"
+  },
+  {
+   "path": "textures/bolido/x8_bolido_emission.jpg",
+   "sha256": "c5d77a06e6dd29e046caef75e09f356c7ce00ace5645513f1c545c6c4cd0ebb0"
+  },
+  {
+   "path": "textures/bolido/x8_bolido_normal.png",
+   "sha256": "1cce8dd5fc5f19ae5b985d68f2576d0e3dfb2bc5f30a1f114086c2230ccf36bb"
+  },
+  {
+   "path": "textures/bolido/x8_bolido_orm.png",
+   "sha256": "23ed9b748b25859857192d6945f974c91bdd301aba16e0183f4ff9b815101fd5"
+  },
+  {
+   "path": "textures/shared/x8_airframe_occlusion.png",
+   "sha256": "7322ab2f8067c8d8464a8cf8e44ed968b0b3a1485798f0014234dca044267ec3"
+  }
+ ],
+ "skin_glbs": {
+  "abisal": {
+   "path": "export/aircraft.glb",
+   "label": "ABISAL - deep-sea anglerfish",
+   "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+   "bytes": 8547120
+  },
+  "bolido": {
+   "path": "export/bolido.glb",
+   "label": "BOLIDO - re-entry heat shield",
+   "sha256": "9ecaf7b49aec555bbea178b3b582378bb362bec3f816448932438db2c8da8f93",
+   "bytes": 7078856
+  }
+ },
+ "key_files": {
+  "glb": {
+   "path": "export/aircraft.glb",
+   "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+   "bytes": 8547120
+  },
+  "metadata": {
+   "path": "metadata.json",
+   "sha256": "d05e3066e1f631307836945967ed143e6a4f5cd5fdf52045d4cb31ca60162450",
+   "bytes": 54200
+  },
+  "export_map": {
+   "path": "export-map.json",
+   "sha256": "4691ba901f4b560e89f356a6f877fc5c448a0fabbd284e9d5d57c2ec363e16f8",
+   "bytes": 27867
+  },
+  "verification": {
+   "path": "verification.json",
+   "sha256": "fcd11ec5447bbd06985fcfad10c348fa36154f4de49259e0e7c500672e3a617c",
+   "bytes": 31953
+  },
+  "blend": {
+   "path": "source/aircraft_game.blend",
+   "sha256": "c0951a4e6f50e150bada31d1e850dea30d589f7eca99410faa9475fbafdc24f7",
+   "bytes": 7525494
+  },
+  "generator": {
+   "path": "source/scripts/x8_skywalker_blender.py",
+   "sha256": "a217e027d2c2fa5e3f8057f2e7d87385c0f3720bb19680ddcf3d6bd59b27cec4",
+   "bytes": 124254
+  },
+  "license": {
+   "path": "LICENSE.txt",
+   "sha256": "3ad33722e7cbde41d4bddf4a44b4fe19ce47a39cac081a190c78ec65bab534cf",
+   "bytes": 2282
+  },
+  "readme": {
+   "path": "README.md",
+   "sha256": "032dd1ff770ebf1fa41d0db89a8b4e0d0514f9b5fe5c645fe90c5b9841b5f34b",
+   "bytes": 29655
+  },
+  "changelog": {
+   "path": "CHANGELOG.md",
+   "sha256": "8bf49c28998f101962238e9d3d18f74ef170770620deeb22f548a7bd3e81f7fc",
+   "bytes": 11794
+  },
+  "author_manifest": {
+   "path": "SHA256SUMS.txt",
+   "sha256": "a125625cdad2ea43924b51f02c7961048f245485aa12946b91e1298816799f84",
+   "bytes": 15227
+  }
+ },
+ "file_count": 51,
+ "total_bytes": 23859807,
+ "files": [
+  {
+   "path": "CHANGELOG.md",
+   "bytes": 11794,
+   "sha256": "8bf49c28998f101962238e9d3d18f74ef170770620deeb22f548a7bd3e81f7fc"
+  },
+  {
+   "path": "checks/clean_package.json",
+   "bytes": 2226,
+   "sha256": "9179d2b8a50b46850f8bd7520871c661c9bc0fb20817d87d167d0f388efec391"
+  },
+  {
+   "path": "checks/deviation.json",
+   "bytes": 9136,
+   "sha256": "3b8fb4b7107d6412a7c2620664318da1c84dfddd52aa66e7eb530c56dd4b35ea"
+  },
+  {
+   "path": "checks/finish.json",
+   "bytes": 6763,
+   "sha256": "8535cac3a0fdfc9a0e74eaea702573c74934fcfcac4d9854f44e5191fff21fdb"
+  },
+  {
+   "path": "checks/full_rebuild.json",
+   "bytes": 13442,
+   "sha256": "98d0f7a30388ede6b14709aa4d223c2b05c9f84900286dc82865f755f1f0ebd5"
+  },
+  {
+   "path": "checks/layers.json",
+   "bytes": 828,
+   "sha256": "b9b004379de784394f12216af91823d1c836711fc478bda7999807dd3c26ba37"
+  },
+  {
+   "path": "checks/motion_revision.json",
+   "bytes": 834,
+   "sha256": "61db6d937104c6df001e86eb7a0513dd4a0b99837ce68d403d4c271cd978bf52"
+  },
+  {
+   "path": "checks/negative_tests.json",
+   "bytes": 1417,
+   "sha256": "69db0279fc27566a6a8ecd5638775d337ca33d3c41b9752de1b83a8487dca59f"
+  },
+  {
+   "path": "checks/parity_bolido.json",
+   "bytes": 3264,
+   "sha256": "f6f778266d645da8a5ad12b9a7b0fa92b836a3d5aea3242c1e79f031c03c45e4"
+  },
+  {
+   "path": "checks/README.md",
+   "bytes": 2591,
+   "sha256": "f86a36196dd1aef60032ffbbb524c21732a69de4f0ad0b4b79f8a2e659c8ec1f"
+  },
+  {
+   "path": "checks/silhouettes/silhouettes.json",
+   "bytes": 684,
+   "sha256": "4edb068f9edcd845194b705b9175daf878182987569e172d19942276643af4f3"
+  },
+  {
+   "path": "checks/structural_abisal.json",
+   "bytes": 10123,
+   "sha256": "5e7423017dedddd49a306d2fe4de24785d9c27b3d0dbaef816c5a633bd3cf9b1"
+  },
+  {
+   "path": "checks/structural_bolido.json",
+   "bytes": 10516,
+   "sha256": "b29db01de20afafe2827037af364740b087ce56673b4ad4ab57abb7c5d48ac49"
+  },
+  {
+   "path": "checks/views/views.json",
+   "bytes": 4586,
+   "sha256": "294595fd7bba3df634abccaf16170495df7c492854b61554ecd9c64e009aead6"
+  },
+  {
+   "path": "export/aircraft.glb",
+   "bytes": 8547120,
+   "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac"
+  },
+  {
+   "path": "export/bolido.glb",
+   "bytes": 7078856,
+   "sha256": "9ecaf7b49aec555bbea178b3b582378bb362bec3f816448932438db2c8da8f93"
+  },
+  {
+   "path": "export-map.json",
+   "bytes": 27867,
+   "sha256": "4691ba901f4b560e89f356a6f877fc5c448a0fabbd284e9d5d57c2ec363e16f8"
+  },
+  {
+   "path": "LICENSE.txt",
+   "bytes": 2282,
+   "sha256": "3ad33722e7cbde41d4bddf4a44b4fe19ce47a39cac081a190c78ec65bab534cf"
+  },
+  {
+   "path": "metadata.json",
+   "bytes": 54200,
+   "sha256": "d05e3066e1f631307836945967ed143e6a4f5cd5fdf52045d4cb31ca60162450"
+  },
+  {
+   "path": "README.md",
+   "bytes": 29655,
+   "sha256": "032dd1ff770ebf1fa41d0db89a8b4e0d0514f9b5fe5c645fe90c5b9841b5f34b"
+  },
+  {
+   "path": "SHA256SUMS.txt",
+   "bytes": 15227,
+   "sha256": "a125625cdad2ea43924b51f02c7961048f245485aa12946b91e1298816799f84"
+  },
+  {
+   "path": "source/aircraft_game.blend",
+   "bytes": 7525494,
+   "sha256": "c0951a4e6f50e150bada31d1e850dea30d589f7eca99410faa9475fbafdc24f7"
+  },
+  {
+   "path": "source/scripts/build_game.py",
+   "bytes": 21810,
+   "sha256": "af0afcecad1e34b715995fe163479def49ff96e1bbb4b0b37d0ea92f771bc983"
+  },
+  {
+   "path": "source/scripts/check_clean_package.py",
+   "bytes": 4717,
+   "sha256": "435fb0eb59ba64455ad4bbc833f50a334735d4d74d9d295597aa955230abe306"
+  },
+  {
+   "path": "source/scripts/check_deviation.py",
+   "bytes": 6268,
+   "sha256": "e85d4e0af6e250defa3311705d7bb5d6e8468ef9122e6ccf7328def72ae41ecf"
+  },
+  {
+   "path": "source/scripts/check_finish.py",
+   "bytes": 4913,
+   "sha256": "f256128faa1e83f9da93e5cbdd3b69f1da637c7f2eab6b035c1bf2de93f52d44"
+  },
+  {
+   "path": "source/scripts/check_rig_revision.py",
+   "bytes": 4416,
+   "sha256": "c36ad7ee72da8e77778af4979ed78f78bfaa55c2652c68afe70225c2fd830a61"
+  },
+  {
+   "path": "source/scripts/check_views.py",
+   "bytes": 6414,
+   "sha256": "e7942cd407b97aa75fb1700170eaa33b3a067e419dccf259d40a2fe5a6b585e6"
+  },
+  {
+   "path": "source/scripts/compare_silhouettes.py",
+   "bytes": 5157,
+   "sha256": "a840761e993adf81f4ebb2eb3245640ba4e3333c6ca1c9c41980669596a241fa"
+  },
+  {
+   "path": "source/scripts/export_all.py",
+   "bytes": 1926,
+   "sha256": "8d02df49ca4057ea884dfcb189382180252884c55edd679374f72dbdb198a0ee"
+  },
+  {
+   "path": "source/scripts/export_glb.py",
+   "bytes": 3987,
+   "sha256": "03d42dfc9f93890c230ec04ec6054156d8747af976677174379a9e08739acbd6"
+  },
+  {
+   "path": "source/scripts/glb_util.py",
+   "bytes": 4470,
+   "sha256": "f98d8e3176fdbafdaafe183db21d92e15a2fffcf15d3c16bdbf1f364167eecfa"
+  },
+  {
+   "path": "source/scripts/livery_bake_geom.py",
+   "bytes": 5176,
+   "sha256": "257d679037864a9fe445b5b16013af89641654c3a574d3ea1f8dd25302a20dda"
+  },
+  {
+   "path": "source/scripts/livery_bake_textures.py",
+   "bytes": 11626,
+   "sha256": "70a8fa896d36157b99a60003238dbd27ee0110d710b2ddb3c9a11e329ca4d9fe"
+  },
+  {
+   "path": "source/scripts/livery_paint.py",
+   "bytes": 42856,
+   "sha256": "b1441ecb5066465f1dab861fd01e9abd70dd5999bd1e8bf995e0fab28ace95ac"
+  },
+  {
+   "path": "source/scripts/livery_paint_bolido.py",
+   "bytes": 49532,
+   "sha256": "ab3fdfce22ade33e6e7ac5b26038ed384222ac8900f1330a0991738adb05e4a9"
+  },
+  {
+   "path": "source/scripts/livery_uv.py",
+   "bytes": 4285,
+   "sha256": "115e62078a655ffc3b4da5a6fb649390ef8256a751d2c98934daefe8840431bd"
+  },
+  {
+   "path": "source/scripts/make_demo.py",
+   "bytes": 4208,
+   "sha256": "1a5d43693977499b53e2c2901226ee0493d7c6714437a3646cb8a7ed34c02bcc"
+  },
+  {
+   "path": "source/scripts/make_metadata.py",
+   "bytes": 38755,
+   "sha256": "e9a4b80bbba78d7819e41cad658d58582041ad397e8f2a3f6a6dd63593f3773d"
+  },
+  {
+   "path": "source/scripts/make_previews.py",
+   "bytes": 6130,
+   "sha256": "3d7c53619e7155f308f55e9dccfb3e50dd4fa226074abf9cd77189e391e7f673"
+  },
+  {
+   "path": "source/scripts/make_sha256sums.py",
+   "bytes": 1463,
+   "sha256": "6b25a647b449a820ca2ceead2597ff5f1670159c8131a873b69dfbb4a02ce158"
+  },
+  {
+   "path": "source/scripts/paint_layers.py",
+   "bytes": 4612,
+   "sha256": "edbe45c60b0ad7753156f8ced02cf820ed032fcfa2fc4628696af91f2a167ce2"
+  },
+  {
+   "path": "source/scripts/release.py",
+   "bytes": 14982,
+   "sha256": "56c6b9a5ac4f82b81d9759b64fcaf0d5a77ae7f6b955764d5fa9f08fd2ea9fd6"
+  },
+  {
+   "path": "source/scripts/render_bolido.py",
+   "bytes": 30165,
+   "sha256": "76d018fde5aa2445a46a0648cd4875c73404e0a9a47f0c7af406f60dbf4db8bc"
+  },
+  {
+   "path": "source/scripts/render_livery.py",
+   "bytes": 14795,
+   "sha256": "7b00f302d687b43a5746d8ffbad486490e6f154f5b2fd14461fe6838e1b27289"
+  },
+  {
+   "path": "source/scripts/skin_parity.py",
+   "bytes": 5116,
+   "sha256": "4f1144491824b5f673162d2d858ea93e2193c22b3e196969b6e6862216be40ed"
+  },
+  {
+   "path": "source/scripts/test_verifier_rejects.py",
+   "bytes": 6503,
+   "sha256": "8a9d15f13acec1ce129ea1df87e66c254a133051dd2c5f19a42d5583e67107ed"
+  },
+  {
+   "path": "source/scripts/verify_game.py",
+   "bytes": 31612,
+   "sha256": "07a759bb9f156793d9a0de8660feff4b31c03ca8892eb66c4dce1f85adca931d"
+  },
+  {
+   "path": "source/scripts/x8_game_spec.py",
+   "bytes": 8801,
+   "sha256": "d0288333f410ce09a135e9e2cdc50863933d0c5d0027e6a9e49068959515d4e0"
+  },
+  {
+   "path": "source/scripts/x8_skywalker_blender.py",
+   "bytes": 124254,
+   "sha256": "a217e027d2c2fa5e3f8057f2e7d87385c0f3720bb19680ddcf3d6bd59b27cec4"
+  },
+  {
+   "path": "verification.json",
+   "bytes": 31953,
+   "sha256": "fcd11ec5447bbd06985fcfad10c348fa36154f4de49259e0e7c500672e3a617c"
+  }
+ ]
+}

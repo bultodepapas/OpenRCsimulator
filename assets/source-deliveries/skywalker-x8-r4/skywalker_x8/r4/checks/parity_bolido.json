@@ -1,0 +1,143 @@
+{
+ "reference": "aircraft.glb",
+ "compared": "bolido.glb",
+ "tolerances": {
+  "POSITION": 1e-06,
+  "NORMAL": 1e-05,
+  "TEXCOORD_0": 1e-06,
+  "TANGENT": 1e-05,
+  "TRS": 1e-07
+ },
+ "nodes": 18,
+ "mesh_nodes": 11,
+ "max_rest_trs_diff": 0.0,
+ "per_mesh": {
+  "bay_equipment": {
+   "triangles_ref": 504,
+   "triangles": 504,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0": null,
+   "TANGENT": null
+  },
+  "camera_door_left": {
+   "triangles_ref": 168,
+   "triangles": 168,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0_max_abs_diff": 0.0,
+   "TANGENT_max_abs_diff": 0.0
+  },
+  "camera_door_right": {
+   "triangles_ref": 166,
+   "triangles": 166,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0_max_abs_diff": 0.0,
+   "TANGENT_max_abs_diff": 0.0
+  },
+  "canopy_hatch": {
+   "triangles_ref": 4458,
+   "triangles": 4458,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0_max_abs_diff": 0.0,
+   "TANGENT_max_abs_diff": 0.0
+  },
+  "elevon_left": {
+   "triangles_ref": 2576,
+   "triangles": 2576,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0_max_abs_diff": 0.0,
+   "TANGENT_max_abs_diff": 0.0
+  },
+  "elevon_right": {
+   "triangles_ref": 2576,
+   "triangles": 2576,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0_max_abs_diff": 0.0,
+   "TANGENT_max_abs_diff": 0.0
+  },
+  "fuselage_core": {
+   "triangles_ref": 13592,
+   "triangles": 13592,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0_max_abs_diff": 0.0,
+   "TANGENT_max_abs_diff": 0.0
+  },
+  "motor_mount": {
+   "triangles_ref": 184,
+   "triangles": 184,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0_max_abs_diff": 0.0,
+   "TANGENT_max_abs_diff": 0.0
+  },
+  "propeller_rotor": {
+   "triangles_ref": 1400,
+   "triangles": 1400,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0_max_abs_diff": 0.0,
+   "TANGENT_max_abs_diff": 0.0
+  },
+  "wing_left_fixed": {
+   "triangles_ref": 6440,
+   "triangles": 6440,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0_max_abs_diff": 0.0,
+   "TANGENT_max_abs_diff": 0.0
+  },
+  "wing_right_fixed": {
+   "triangles_ref": 6440,
+   "triangles": 6440,
+   "POSITION_max_abs_diff": 0.0,
+   "NORMAL_max_abs_diff": 0.0,
+   "TEXCOORD_0_max_abs_diff": 0.0,
+   "TANGENT_max_abs_diff": 0.0
+  }
+ },
+ "texture_bindings": {
+  "x8_foam_interior": {},
+  "x8_orange": {},
+  "x8_black": {},
+  "x8_glass": {},
+  "x8_battery": {},
+  "x8_electronics": {},
+  "x8_livery": {
+   "baseColorTexture": {
+    "image": "x8_bolido_base_color",
+    "texCoord": 0,
+    "mime": "image/jpeg"
+   },
+   "metallicRoughnessTexture": {
+    "image": "x8_bolido_orm",
+    "texCoord": 0,
+    "mime": "image/png"
+   },
+   "normalTexture": {
+    "image": "x8_bolido_normal",
+    "texCoord": 0,
+    "mime": "image/png"
+   },
+   "occlusionTexture": {
+    "image": "x8_bolido_orm",
+    "texCoord": 0,
+    "mime": "image/png"
+   },
+   "emissiveTexture": {
+    "image": "x8_bolido_emission",
+    "texCoord": 0,
+    "mime": "image/jpeg"
+   }
+  },
+  "x8_metal": {},
+  "x8_motor_bell": {}
+ },
+ "errors": [],
+ "passed": true
+}

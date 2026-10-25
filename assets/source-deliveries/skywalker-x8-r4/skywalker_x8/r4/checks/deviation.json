@@ -1,0 +1,476 @@
+{
+ "master": "Skywalker_X8.blend",
+ "game": "aircraft_game.blend",
+ "frame": "game frame, rest pose, mm",
+ "thresholds": {
+  "p95_mm": 1.0,
+  "max_mm": 10.0,
+  "status": "provisional, declared before measuring; no approved thresholds were supplied for this aircraft"
+ },
+ "not_measured": [
+  "bay_equipment (simplified boxes, see export-map.json)"
+ ],
+ "missing_master_objects": [],
+ "per_mesh": {
+  "camera_door_left": {
+   "master_objects": [
+    "X8_Compuerta_Camara_Izq"
+   ],
+   "game_to_master": {
+    "n": 86,
+    "max_mm": 0.251,
+    "p95_mm": 0.198,
+    "p99_mm": 0.241,
+    "mean_mm": 0.063,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      -0.0355,
+      -0.2164,
+      -0.03
+     ],
+     "s_mm": -35.5,
+     "x_from_nose_mm": 516.0,
+     "z_master_mm": -29.0
+    }
+   },
+   "master_to_game": {
+    "n": 219,
+    "max_mm": 0.344,
+    "p95_mm": 0.331,
+    "p99_mm": 0.343,
+    "mean_mm": 0.14,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      -0.02,
+      -0.2223,
+      -0.0314
+     ],
+     "s_mm": -20.0,
+     "x_from_nose_mm": 521.9,
+     "z_master_mm": -30.4
+    }
+   }
+  },
+  "camera_door_right": {
+   "master_objects": [
+    "X8_Compuerta_Camara_Der"
+   ],
+   "game_to_master": {
+    "n": 85,
+    "max_mm": 0.227,
+    "p95_mm": 0.174,
+    "p99_mm": 0.21,
+    "mean_mm": 0.057,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      0.001,
+      -0.2328,
+      -0.0311
+     ],
+     "s_mm": 1.0,
+     "x_from_nose_mm": 532.3,
+     "z_master_mm": -30.1
+    }
+   },
+   "master_to_game": {
+    "n": 219,
+    "max_mm": 0.343,
+    "p95_mm": 0.331,
+    "p99_mm": 0.341,
+    "mean_mm": 0.13,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      0.005,
+      -0.2223,
+      -0.0319
+     ],
+     "s_mm": 5.0,
+     "x_from_nose_mm": 521.9,
+     "z_master_mm": -30.9
+    }
+   }
+  },
+  "canopy_hatch": {
+   "master_objects": [
+    "X8_Tapa_Principal"
+   ],
+   "game_to_master": {
+    "n": 2231,
+    "max_mm": 1.0,
+    "p95_mm": 0.495,
+    "p99_mm": 0.811,
+    "mean_mm": 0.119,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      0.0923,
+      0.0728,
+      0.0636
+     ],
+     "s_mm": 92.3,
+     "x_from_nose_mm": 226.8,
+     "z_master_mm": 64.6
+    }
+   },
+   "master_to_game": {
+    "n": 5312,
+    "max_mm": 0.85,
+    "p95_mm": 0.503,
+    "p99_mm": 0.644,
+    "mean_mm": 0.145,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      -0.05,
+      0.0662,
+      0.0723
+     ],
+     "s_mm": -50.0,
+     "x_from_nose_mm": 233.4,
+     "z_master_mm": 73.3
+    }
+   }
+  },
+  "elevon_left": {
+   "master_objects": [
+    "X8_Cinta_Bisagra_Ala_Izq",
+    "X8_Cinta_Bisagra_Elevon_Izq",
+    "X8_Cuerno_Izq",
+    "X8_Elevon_Izq"
+   ],
+   "game_to_master": {
+    "n": 1294,
+    "max_mm": 0.84,
+    "p95_mm": 0.005,
+    "p99_mm": 0.009,
+    "mean_mm": 0.003,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      -0.2449,
+      -0.3434,
+      0.0141
+     ],
+     "s_mm": -244.9,
+     "x_from_nose_mm": 643.0,
+     "z_master_mm": 15.1
+    }
+   },
+   "master_to_game": {
+    "n": 8678,
+    "max_mm": 0.107,
+    "p95_mm": 0.026,
+    "p99_mm": 0.041,
+    "mean_mm": 0.008,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      -0.7295,
+      -0.4704,
+      0.0246
+     ],
+     "s_mm": -729.5,
+     "x_from_nose_mm": 770.0,
+     "z_master_mm": 25.6
+    }
+   }
+  },
+  "elevon_right": {
+   "master_objects": [
+    "X8_Cinta_Bisagra_Ala_Der",
+    "X8_Cinta_Bisagra_Elevon_Der",
+    "X8_Cuerno_Der",
+    "X8_Elevon_Der"
+   ],
+   "game_to_master": {
+    "n": 1294,
+    "max_mm": 0.84,
+    "p95_mm": 0.005,
+    "p99_mm": 0.009,
+    "mean_mm": 0.003,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      0.2449,
+      -0.3434,
+      0.0141
+     ],
+     "s_mm": 244.9,
+     "x_from_nose_mm": 643.0,
+     "z_master_mm": 15.1
+    }
+   },
+   "master_to_game": {
+    "n": 8678,
+    "max_mm": 0.107,
+    "p95_mm": 0.026,
+    "p99_mm": 0.041,
+    "mean_mm": 0.008,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      0.7295,
+      -0.4704,
+      0.0246
+     ],
+     "s_mm": 729.5,
+     "x_from_nose_mm": 770.0,
+     "z_master_mm": 25.6
+    }
+   }
+  },
+  "fuselage_core": {
+   "master_objects": [
+    "X8_Bisagra_Piano_Der",
+    "X8_Bisagra_Piano_Izq",
+    "X8_Fuselaje_Central",
+    "X8_Ventana_Camara"
+   ],
+   "game_to_master": {
+    "n": 6802,
+    "max_mm": 1.094,
+    "p95_mm": 0.331,
+    "p99_mm": 0.589,
+    "mean_mm": 0.054,
+    "fraction_over_1mm": 0.00103,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      -0.105,
+      -0.3509,
+      0.0098
+     ],
+     "s_mm": -105.0,
+     "x_from_nose_mm": 650.5,
+     "z_master_mm": 10.8
+    }
+   },
+   "master_to_game": {
+    "n": 31266,
+    "max_mm": 2.756,
+    "p95_mm": 0.42,
+    "p99_mm": 0.833,
+    "mean_mm": 0.119,
+    "fraction_over_1mm": 0.0056,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      -0.11,
+      0.2046,
+      0.0259
+     ],
+     "s_mm": -110.0,
+     "x_from_nose_mm": 95.0,
+     "z_master_mm": 26.9
+    }
+   }
+  },
+  "motor_mount": {
+   "master_objects": [
+    "X8_Motor_Estator",
+    "X8_Soporte_Motor"
+   ],
+   "game_to_master": {
+    "n": 96,
+    "max_mm": 0.0,
+    "p95_mm": 0.0,
+    "p99_mm": 0.0,
+    "mean_mm": 0.0,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      0.0,
+      -0.5007,
+      0.024
+     ],
+     "s_mm": 0.0,
+     "x_from_nose_mm": 800.3,
+     "z_master_mm": 25.0
+    }
+   },
+   "master_to_game": {
+    "n": 192,
+    "max_mm": 0.205,
+    "p95_mm": 0.205,
+    "p99_mm": 0.205,
+    "mean_mm": 0.074,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      -0.0146,
+      -0.5007,
+      0.019
+     ],
+     "s_mm": -14.6,
+     "x_from_nose_mm": 800.3,
+     "z_master_mm": 20.0
+    }
+   }
+  },
+  "propeller_rotor": {
+   "master_objects": [
+    "X8_Buje_Helice",
+    "X8_Cono_Helice",
+    "X8_Eje",
+    "X8_Motor_Campana",
+    "X8_Pala_1",
+    "X8_Pala_2"
+   ],
+   "game_to_master": {
+    "n": 712,
+    "max_mm": 0.039,
+    "p95_mm": 0.017,
+    "p99_mm": 0.031,
+    "mean_mm": 0.004,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      0.063,
+      -0.5528,
+      -0.0277
+     ],
+     "s_mm": 63.0,
+     "x_from_nose_mm": 852.4,
+     "z_master_mm": -26.7
+    }
+   },
+   "master_to_game": {
+    "n": 2780,
+    "max_mm": 0.357,
+    "p95_mm": 0.137,
+    "p99_mm": 0.204,
+    "mean_mm": 0.035,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      -0.1165,
+      -0.5484,
+      0.0714
+     ],
+     "s_mm": -116.5,
+     "x_from_nose_mm": 848.0,
+     "z_master_mm": 72.4
+    }
+   }
+  },
+  "wing_left_fixed": {
+   "master_objects": [
+    "X8_Ala_Izq",
+    "X8_Cinta_Bisagra_Ala_Izq",
+    "X8_Cinta_Bisagra_Elevon_Izq",
+    "X8_Costilla_Raiz_Izq",
+    "X8_Punta_Winglet_Izq",
+    "X8_Tapa_Servo_Izq"
+   ],
+   "game_to_master": {
+    "n": 3222,
+    "max_mm": 0.272,
+    "p95_mm": 0.024,
+    "p99_mm": 0.049,
+    "mean_mm": 0.006,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      -0.9834,
+      -0.6139,
+      0.0664
+     ],
+     "s_mm": -983.4,
+     "x_from_nose_mm": 913.5,
+     "z_master_mm": 67.4
+    }
+   },
+   "master_to_game": {
+    "n": 21840,
+    "max_mm": 11.178,
+    "p95_mm": 0.125,
+    "p99_mm": 0.221,
+    "mean_mm": 0.035,
+    "fraction_over_1mm": 0.00101,
+    "fraction_over_5mm": 0.00018,
+    "max_at": {
+     "blender_m": [
+      -0.502,
+      -0.2584,
+      0.0205
+     ],
+     "s_mm": -502.0,
+     "x_from_nose_mm": 558.0,
+     "z_master_mm": 21.5
+    }
+   }
+  },
+  "wing_right_fixed": {
+   "master_objects": [
+    "X8_Ala_Der",
+    "X8_Cinta_Bisagra_Ala_Der",
+    "X8_Cinta_Bisagra_Elevon_Der",
+    "X8_Costilla_Raiz_Der",
+    "X8_Punta_Winglet_Der",
+    "X8_Tapa_Servo_Der"
+   ],
+   "game_to_master": {
+    "n": 3222,
+    "max_mm": 0.272,
+    "p95_mm": 0.024,
+    "p99_mm": 0.049,
+    "mean_mm": 0.006,
+    "fraction_over_1mm": 0.0,
+    "fraction_over_5mm": 0.0,
+    "max_at": {
+     "blender_m": [
+      0.9834,
+      -0.6139,
+      0.0664
+     ],
+     "s_mm": 983.4,
+     "x_from_nose_mm": 913.5,
+     "z_master_mm": 67.4
+    }
+   },
+   "master_to_game": {
+    "n": 21840,
+    "max_mm": 11.178,
+    "p95_mm": 0.125,
+    "p99_mm": 0.221,
+    "mean_mm": 0.035,
+    "fraction_over_1mm": 0.00101,
+    "fraction_over_5mm": 0.00018,
+    "max_at": {
+     "blender_m": [
+      0.502,
+      -0.2584,
+      0.0205
+     ],
+     "s_mm": 502.0,
+     "x_from_nose_mm": 558.0,
+     "z_master_mm": 21.5
+    }
+   }
+  }
+ },
+ "exceedances": [
+  "wing_left_fixed maestro->juego: p95 0.125 mm, max 11.178 mm",
+  "wing_right_fixed maestro->juego: p95 0.125 mm, max 11.178 mm"
+ ],
+ "passed": false
+}

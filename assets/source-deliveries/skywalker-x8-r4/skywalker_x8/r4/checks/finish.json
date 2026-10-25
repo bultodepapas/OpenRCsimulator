@@ -1,0 +1,267 @@
+{
+ "method": "face-centre UV samples of the runtime (2048) textures, per painted mesh",
+ "skins": {
+  "abisal": {
+   "textures": {
+    "base": "textures/abisal/x8_abisal_base_color.jpg",
+    "orm": "textures/abisal/x8_abisal_orm.png",
+    "normal": "textures/abisal/x8_abisal_normal.png",
+    "emission": "textures/abisal/x8_abisal_emission.jpg"
+   },
+   "sizes": {
+    "base": [
+     2048,
+     2048
+    ],
+    "orm": [
+     2048,
+     2048
+    ],
+    "normal": [
+     2048,
+     2048
+    ],
+    "emission": [
+     2048,
+     2048
+    ]
+   },
+   "normal_tilt_mean_deg_atlas": 0.34,
+   "occlusion_channel": "identical to textures/shared/x8_airframe_occlusion.png",
+   "per_part": {
+    "fuselage_core": {
+     "faces": 6357,
+     "base_luminance_mean": 0.261,
+     "roughness_mean": 0.434,
+     "roughness_std": 0.08,
+     "metallic_mean": 0.138,
+     "occlusion_mean": 0.856,
+     "normal_tilt_mean_deg": 1.63,
+     "normal_tilt_p95_deg": 5.82,
+     "emissive_faces": 132
+    },
+    "canopy_hatch": {
+     "faces": 2418,
+     "base_luminance_mean": 0.175,
+     "roughness_mean": 0.459,
+     "roughness_std": 0.061,
+     "metallic_mean": 0.153,
+     "occlusion_mean": 0.674,
+     "normal_tilt_mean_deg": 1.38,
+     "normal_tilt_p95_deg": 5.32,
+     "emissive_faces": 66
+    },
+    "wing_left_fixed": {
+     "faces": 3461,
+     "base_luminance_mean": 0.247,
+     "roughness_mean": 0.435,
+     "roughness_std": 0.078,
+     "metallic_mean": 0.095,
+     "occlusion_mean": 0.943,
+     "normal_tilt_mean_deg": 1.25,
+     "normal_tilt_p95_deg": 5.58,
+     "emissive_faces": 288
+    },
+    "wing_right_fixed": {
+     "faces": 3461,
+     "base_luminance_mean": 0.233,
+     "roughness_mean": 0.434,
+     "roughness_std": 0.078,
+     "metallic_mean": 0.091,
+     "occlusion_mean": 0.943,
+     "normal_tilt_mean_deg": 1.26,
+     "normal_tilt_p95_deg": 5.75,
+     "emissive_faces": 280
+    },
+    "elevon_left": {
+     "faces": 1389,
+     "base_luminance_mean": 0.242,
+     "roughness_mean": 0.418,
+     "roughness_std": 0.067,
+     "metallic_mean": 0.093,
+     "occlusion_mean": 0.933,
+     "normal_tilt_mean_deg": 1.4,
+     "normal_tilt_p95_deg": 7.83,
+     "emissive_faces": 116
+    },
+    "elevon_right": {
+     "faces": 1389,
+     "base_luminance_mean": 0.24,
+     "roughness_mean": 0.418,
+     "roughness_std": 0.066,
+     "metallic_mean": 0.093,
+     "occlusion_mean": 0.933,
+     "normal_tilt_mean_deg": 1.37,
+     "normal_tilt_p95_deg": 7.88,
+     "emissive_faces": 101
+    },
+    "camera_door_left": {
+     "faces": 141,
+     "base_luminance_mean": 0.362,
+     "roughness_mean": 0.414,
+     "roughness_std": 0.052,
+     "metallic_mean": 0.214,
+     "occlusion_mean": 0.535,
+     "normal_tilt_mean_deg": 1.07,
+     "normal_tilt_p95_deg": 4.17,
+     "emissive_faces": 0
+    },
+    "camera_door_right": {
+     "faces": 139,
+     "base_luminance_mean": 0.368,
+     "roughness_mean": 0.408,
+     "roughness_std": 0.06,
+     "metallic_mean": 0.215,
+     "occlusion_mean": 0.539,
+     "normal_tilt_mean_deg": 1.23,
+     "normal_tilt_p95_deg": 4.61,
+     "emissive_faces": 0
+    },
+    "propeller_rotor": {
+     "faces": 718,
+     "base_luminance_mean": 0.176,
+     "roughness_mean": 0.293,
+     "roughness_std": 0.046,
+     "metallic_mean": 0.096,
+     "occlusion_mean": 0.832,
+     "normal_tilt_mean_deg": 0.32,
+     "normal_tilt_p95_deg": 0.32,
+     "emissive_faces": 128
+    }
+   },
+   "normal_tilt_mean_deg_painted": 1.38
+  },
+  "bolido": {
+   "textures": {
+    "base": "textures/bolido/x8_bolido_base_color.jpg",
+    "orm": "textures/bolido/x8_bolido_orm.png",
+    "normal": "textures/bolido/x8_bolido_normal.png",
+    "emission": "textures/bolido/x8_bolido_emission.jpg"
+   },
+   "sizes": {
+    "base": [
+     2048,
+     2048
+    ],
+    "orm": [
+     2048,
+     2048
+    ],
+    "normal": [
+     2048,
+     2048
+    ],
+    "emission": [
+     2048,
+     2048
+    ]
+   },
+   "normal_tilt_mean_deg_atlas": 1.44,
+   "occlusion_channel": "identical to textures/shared/x8_airframe_occlusion.png",
+   "per_part": {
+    "fuselage_core": {
+     "faces": 6357,
+     "base_luminance_mean": 0.541,
+     "roughness_mean": 0.576,
+     "roughness_std": 0.222,
+     "metallic_mean": 0.111,
+     "occlusion_mean": 0.856,
+     "normal_tilt_mean_deg": 3.78,
+     "normal_tilt_p95_deg": 16.16,
+     "emissive_faces": 0
+    },
+    "canopy_hatch": {
+     "faces": 2418,
+     "base_luminance_mean": 0.812,
+     "roughness_mean": 0.752,
+     "roughness_std": 0.175,
+     "metallic_mean": 0.0,
+     "occlusion_mean": 0.674,
+     "normal_tilt_mean_deg": 4.77,
+     "normal_tilt_p95_deg": 15.19,
+     "emissive_faces": 0
+    },
+    "wing_left_fixed": {
+     "faces": 3461,
+     "base_luminance_mean": 0.469,
+     "roughness_mean": 0.59,
+     "roughness_std": 0.229,
+     "metallic_mean": 0.053,
+     "occlusion_mean": 0.943,
+     "normal_tilt_mean_deg": 3.04,
+     "normal_tilt_p95_deg": 12.69,
+     "emissive_faces": 0
+    },
+    "wing_right_fixed": {
+     "faces": 3461,
+     "base_luminance_mean": 0.469,
+     "roughness_mean": 0.591,
+     "roughness_std": 0.226,
+     "metallic_mean": 0.053,
+     "occlusion_mean": 0.943,
+     "normal_tilt_mean_deg": 3.14,
+     "normal_tilt_p95_deg": 13.89,
+     "emissive_faces": 0
+    },
+    "elevon_left": {
+     "faces": 1389,
+     "base_luminance_mean": 0.267,
+     "roughness_mean": 0.509,
+     "roughness_std": 0.252,
+     "metallic_mean": 0.041,
+     "occlusion_mean": 0.933,
+     "normal_tilt_mean_deg": 2.32,
+     "normal_tilt_p95_deg": 16.24,
+     "emissive_faces": 0
+    },
+    "elevon_right": {
+     "faces": 1389,
+     "base_luminance_mean": 0.25,
+     "roughness_mean": 0.496,
+     "roughness_std": 0.254,
+     "metallic_mean": 0.041,
+     "occlusion_mean": 0.933,
+     "normal_tilt_mean_deg": 2.33,
+     "normal_tilt_p95_deg": 17.15,
+     "emissive_faces": 0
+    },
+    "camera_door_left": {
+     "faces": 141,
+     "base_luminance_mean": 0.709,
+     "roughness_mean": 0.78,
+     "roughness_std": 0.241,
+     "metallic_mean": 0.0,
+     "occlusion_mean": 0.535,
+     "normal_tilt_mean_deg": 3.8,
+     "normal_tilt_p95_deg": 15.73,
+     "emissive_faces": 0
+    },
+    "camera_door_right": {
+     "faces": 139,
+     "base_luminance_mean": 0.702,
+     "roughness_mean": 0.78,
+     "roughness_std": 0.256,
+     "metallic_mean": 0.0,
+     "occlusion_mean": 0.539,
+     "normal_tilt_mean_deg": 3.18,
+     "normal_tilt_p95_deg": 14.91,
+     "emissive_faces": 0
+    },
+    "propeller_rotor": {
+     "faces": 718,
+     "base_luminance_mean": 0.354,
+     "roughness_mean": 0.369,
+     "roughness_std": 0.132,
+     "metallic_mean": 0.0,
+     "occlusion_mean": 0.832,
+     "normal_tilt_mean_deg": 0.76,
+     "normal_tilt_p95_deg": 1.59,
+     "emissive_faces": 0
+    }
+   },
+   "normal_tilt_mean_deg_painted": 3.33
+  }
+ },
+ "errors": [],
+ "passed": true
+}

@@ -1,0 +1,104 @@
+{
+ "copy": "temporary copy (deleted after the check)",
+ "steps": [
+  {
+   "step": "open source/aircraft_game.blend (factory settings)",
+   "ok": true,
+   "detail": {
+    "libraries": [],
+    "images": [
+     {
+      "name": "x8_abisal_base_color.jpg",
+      "packed": true,
+      "exists": true
+     },
+     {
+      "name": "x8_abisal_emission.jpg",
+      "packed": true,
+      "exists": true
+     },
+     {
+      "name": "x8_abisal_normal.png",
+      "packed": true,
+      "exists": true
+     },
+     {
+      "name": "x8_abisal_orm.png",
+      "packed": true,
+      "exists": true
+     }
+    ],
+    "missing": [],
+    "texts": [
+     "build_info.json",
+     "README_export.txt"
+    ],
+    "collections": [
+     "EXPORT_aircraft"
+    ],
+    "objects": 18,
+    "cache_files": 0,
+    "extensions_used": [
+     "io_anim_bvh",
+     "io_curve_svg",
+     "io_mesh_uv_layout",
+     "io_scene_fbx",
+     "io_scene_gltf2",
+     "cycles",
+     "pose_library",
+     "bl_pkg"
+    ]
+   }
+  },
+  {
+   "step": "python source/scripts/export_all.py source/aircraft_game.blend <dir> (in the copy)",
+   "ok": true,
+   "exit_code": 0,
+   "hashes": [
+    {
+     "skin": "abisal",
+     "delivered": "export/aircraft.glb",
+     "delivered_sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+     "from_clean_copy_sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+     "identical": true
+    },
+    {
+     "skin": "bolido",
+     "delivered": "export/bolido.glb",
+     "delivered_sha256": "9ecaf7b49aec555bbea178b3b582378bb362bec3f816448932438db2c8da8f93",
+     "from_clean_copy_sha256": "9ecaf7b49aec555bbea178b3b582378bb362bec3f816448932438db2c8da8f93",
+     "identical": true
+    }
+   ]
+  },
+  {
+   "step": "clean re-import of every GLB (factory settings)",
+   "ok": true,
+   "detail": [
+    {
+     "glb": "aircraft.glb",
+     "ok": true,
+     "objects": 18,
+     "meshes": 11,
+     "materials": 9,
+     "images": 4,
+     "actions": 0,
+     "cameras": 0,
+     "lights": 0
+    },
+    {
+     "glb": "bolido.glb",
+     "ok": true,
+     "objects": 18,
+     "meshes": 11,
+     "materials": 9,
+     "images": 4,
+     "actions": 0,
+     "cameras": 0,
+     "lights": 0
+    }
+   ]
+  }
+ ],
+ "passed": true
+}

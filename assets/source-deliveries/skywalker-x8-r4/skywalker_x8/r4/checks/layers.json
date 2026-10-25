@@ -1,0 +1,32 @@
+{
+ "skins": {
+  "abisal": {
+   "skin": "abisal",
+   "layers": [
+    "paint_base",
+    "markings"
+   ],
+   "compose_rule": "base, then markings, then insignia, 'over' with straight alpha, 8-bit",
+   "max_abs_diff_8bit": 1,
+   "mean_abs_diff_8bit": 3e-05,
+   "fraction_texels_diff_gt_2": 0.0,
+   "threshold": "max <= 3 levels of 255 (8-bit quantisation of layer colour and alpha)",
+   "passed": true
+  },
+  "bolido": {
+   "skin": "bolido",
+   "layers": [
+    "paint_base",
+    "markings",
+    "insignia"
+   ],
+   "compose_rule": "base, then markings, then insignia, 'over' with straight alpha, 8-bit",
+   "max_abs_diff_8bit": 1,
+   "mean_abs_diff_8bit": 1e-05,
+   "fraction_texels_diff_gt_2": 0.0,
+   "threshold": "max <= 3 levels of 255 (8-bit quantisation of layer colour and alpha)",
+   "passed": true
+  }
+ },
+ "passed": true
+}

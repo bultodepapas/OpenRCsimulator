@@ -1,0 +1,1125 @@
+{
+ "revision": "r4",
+ "generated_utc": "2026-10-25T15:36:08Z",
+ "tool_identity": {
+  "python": "3.13.16",
+  "platform": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "PIL": "12.3.0",
+  "bpy": "5.2.2 LTS",
+  "blender_build": "5.2.2 LTS d13f752e3b9c (2026-09-15)",
+  "gltf_io": "Khronos glTF Blender I/O 5.2.40"
+ },
+ "input_identity": {
+  "master": {
+   "path": "/home/claude/x8/out/Skywalker_X8.blend",
+   "sha256": "6b70daf46dc6414ad04b5e656ac96bb2916e463ff7e686accda4dcad41237156",
+   "pinned": "6b70daf46dc6414ad04b5e656ac96bb2916e463ff7e686accda4dcad41237156",
+   "unchanged": true
+  },
+  "baseline": {
+   "revision": "r3",
+   "path": "/home/claude/x8game/r3",
+   "files": {
+    "source/aircraft_game.blend": {
+     "sha256": "ec5c99beb45fd27059c272d2570e81487ab472abffd21f2ab92936c3fdc267e8",
+     "pinned": "ec5c99beb45fd27059c272d2570e81487ab472abffd21f2ab92936c3fdc267e8",
+     "unchanged": true
+    },
+    "export/aircraft.glb": {
+     "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+     "pinned": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+     "unchanged": true
+    },
+    "export/aircraft_bolido.glb": {
+     "sha256": "9cd46993ca116917e9062996c7ed9f4cd8b20933473732b5de1e373b658d8aba",
+     "pinned": "9cd46993ca116917e9062996c7ed9f4cd8b20933473732b5de1e373b658d8aba",
+     "unchanged": true
+    }
+   },
+   "unchanged": true
+  },
+  "scripts": {
+   "build_game.py": "af0afcecad1e34b715995fe163479def49ff96e1bbb4b0b37d0ea92f771bc983",
+   "check_clean_package.py": "435fb0eb59ba64455ad4bbc833f50a334735d4d74d9d295597aa955230abe306",
+   "check_deviation.py": "e85d4e0af6e250defa3311705d7bb5d6e8468ef9122e6ccf7328def72ae41ecf",
+   "check_finish.py": "f256128faa1e83f9da93e5cbdd3b69f1da637c7f2eab6b035c1bf2de93f52d44",
+   "check_rig_revision.py": "c36ad7ee72da8e77778af4979ed78f78bfaa55c2652c68afe70225c2fd830a61",
+   "check_views.py": "e7942cd407b97aa75fb1700170eaa33b3a067e419dccf259d40a2fe5a6b585e6",
+   "compare_silhouettes.py": "a840761e993adf81f4ebb2eb3245640ba4e3333c6ca1c9c41980669596a241fa",
+   "export_all.py": "8d02df49ca4057ea884dfcb189382180252884c55edd679374f72dbdb198a0ee",
+   "export_glb.py": "03d42dfc9f93890c230ec04ec6054156d8747af976677174379a9e08739acbd6",
+   "glb_util.py": "f98d8e3176fdbafdaafe183db21d92e15a2fffcf15d3c16bdbf1f364167eecfa",
+   "livery_bake_geom.py": "257d679037864a9fe445b5b16013af89641654c3a574d3ea1f8dd25302a20dda",
+   "livery_bake_textures.py": "70a8fa896d36157b99a60003238dbd27ee0110d710b2ddb3c9a11e329ca4d9fe",
+   "livery_paint.py": "b1441ecb5066465f1dab861fd01e9abd70dd5999bd1e8bf995e0fab28ace95ac",
+   "livery_paint_bolido.py": "ab3fdfce22ade33e6e7ac5b26038ed384222ac8900f1330a0991738adb05e4a9",
+   "livery_uv.py": "115e62078a655ffc3b4da5a6fb649390ef8256a751d2c98934daefe8840431bd",
+   "make_demo.py": "1a5d43693977499b53e2c2901226ee0493d7c6714437a3646cb8a7ed34c02bcc",
+   "make_metadata.py": "e9a4b80bbba78d7819e41cad658d58582041ad397e8f2a3f6a6dd63593f3773d",
+   "make_previews.py": "3d7c53619e7155f308f55e9dccfb3e50dd4fa226074abf9cd77189e391e7f673",
+   "make_sha256sums.py": "6b25a647b449a820ca2ceead2597ff5f1670159c8131a873b69dfbb4a02ce158",
+   "paint_layers.py": "edbe45c60b0ad7753156f8ced02cf820ed032fcfa2fc4628696af91f2a167ce2",
+   "release.py": "56c6b9a5ac4f82b81d9759b64fcaf0d5a77ae7f6b955764d5fa9f08fd2ea9fd6",
+   "render_bolido.py": "76d018fde5aa2445a46a0648cd4875c73404e0a9a47f0c7af406f60dbf4db8bc",
+   "render_livery.py": "7b00f302d687b43a5746d8ffbad486490e6f154f5b2fd14461fe6838e1b27289",
+   "skin_parity.py": "4f1144491824b5f673162d2d858ea93e2193c22b3e196969b6e6862216be40ed",
+   "test_verifier_rejects.py": "8a9d15f13acec1ce129ea1df87e66c254a133051dd2c5f19a42d5583e67107ed",
+   "verify_game.py": "07a759bb9f156793d9a0de8660feff4b31c03ca8892eb66c4dce1f85adca931d",
+   "x8_game_spec.py": "d0288333f410ce09a135e9e2cdc50863933d0c5d0027e6a9e49068959515d4e0",
+   "x8_skywalker_blender.py": "a217e027d2c2fa5e3f8057f2e7d87385c0f3720bb19680ddcf3d6bd59b27cec4"
+  }
+ },
+ "skins": {
+  "abisal": {
+   "id": "abisal",
+   "default": true,
+   "glb": {
+    "file": "aircraft.glb",
+    "bytes": 8547120,
+    "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac"
+   },
+   "passed": true,
+   "mandatory_failed": [],
+   "checks": [
+    {
+     "id": "A1_export_collection",
+     "ok": true,
+     "mandatory": true,
+     "detail": "EXPORT_aircraft"
+    },
+    {
+     "id": "A2_only_export_content",
+     "ok": true,
+     "mandatory": true,
+     "detail": "objetos fuera de la coleccion: []; tipos: ['EMPTY', 'MESH']"
+    },
+    {
+     "id": "A3_names_ascii_unique",
+     "ok": true,
+     "mandatory": true,
+     "detail": "malos: []"
+    },
+    {
+     "id": "A4_self_contained",
+     "ok": true,
+     "mandatory": true,
+     "detail": "bibliotecas 0, imagenes 4"
+    },
+    {
+     "id": "B1_hierarchy",
+     "ok": true,
+     "mandatory": true,
+     "detail": "faltan [], sobran [], padre/tipo mal []"
+    },
+    {
+     "id": "B2_section_tags",
+     "ok": true,
+     "mandatory": true,
+     "detail": "todas las mallas y pivotes moviles llevan una seccion valida; raiz y thrust_frame sin etiqueta"
+    },
+    {
+     "id": "B3_section_subtrees",
+     "ok": true,
+     "mandatory": true,
+     "detail": "cada nodo etiquetado solo contiene su propia seccion (secciones como ramas hermanas)"
+    },
+    {
+     "id": "B4_root_identity",
+     "ok": true,
+     "mandatory": true,
+     "detail": "raiz en D0 con traslacion y rotacion nulas y escala 1"
+    },
+    {
+     "id": "C1_transforms",
+     "ok": true,
+     "mandatory": true,
+     "detail": "escalas (1,1,1), sin reflexion ni cizalla"
+    },
+    {
+     "id": "D1_positive_directions",
+     "ok": true,
+     "mandatory": true,
+     "detail": "elevones + = borde de salida abajo; compuertas + = abren; eje de empuje +X = nariz; el paso de las palas empuja hacia la nariz con giro positivo"
+    },
+    {
+     "id": "E0_neutral_no_interpenetration",
+     "ok": true,
+     "mandatory": true,
+     "detail": "ningun par de mallas se cruza en la pose neutra"
+    },
+    {
+     "id": "E1_elevon_clearance",
+     "ok": true,
+     "mandatory": true,
+     "detail": "barrido de -40.0 a 40.0 grados; libre: elevon_left [-40.0, 31.0], elevon_right [-40.0, 31.0]; requerido [-26.76, 26.85]",
+     "data": {
+      "elevon_left": {
+       "clear_deg": [
+        -40.0,
+        31.0
+       ],
+       "step_deg": 1.0,
+       "first_contact_positive": [
+        32.0,
+        [
+         "wing_left_fixed"
+        ]
+       ],
+       "first_contact_negative": null
+      },
+      "elevon_right": {
+       "clear_deg": [
+        -40.0,
+        31.0
+       ],
+       "step_deg": 1.0,
+       "first_contact_positive": [
+        32.0,
+        [
+         "wing_right_fixed"
+        ]
+       ],
+       "first_contact_negative": null
+      }
+     }
+    },
+    {
+     "id": "E2_door_clearance",
+     "ok": true,
+     "mandatory": true,
+     "detail": "0-110 grados cada 5: sin cruces"
+    },
+    {
+     "id": "E3_propeller_clearance",
+     "ok": true,
+     "mandatory": true,
+     "detail": "vuelta completa cada 10 grados: sin cruces"
+    },
+    {
+     "id": "F1_return_to_neutral",
+     "ok": true,
+     "mandatory": true,
+     "detail": "todos los pivotes vuelven exactamente al reposo guardado"
+    },
+    {
+     "id": "G1_mesh_quality",
+     "ok": true,
+     "mandatory": true,
+     "detail": "sin triangulos degenerados ni vertices sueltos; todas las islas cerradas hacia afuera",
+     "data": {
+      "bay_equipment": {
+       "triangles": 504,
+       "materials": [
+        "x8_battery",
+        "x8_black",
+        "x8_electronics",
+        "x8_foam_interior",
+        "x8_glass",
+        "x8_orange"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 14,
+       "inward_islands": 0,
+       "smooth_faces": 68,
+       "uv_layers": 0
+      },
+      "camera_door_left": {
+       "triangles": 168,
+       "materials": [
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 1,
+       "inward_islands": 0,
+       "smooth_faces": 141,
+       "uv_layers": 1
+      },
+      "camera_door_right": {
+       "triangles": 166,
+       "materials": [
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 1,
+       "inward_islands": 0,
+       "smooth_faces": 139,
+       "uv_layers": 1
+      },
+      "canopy_hatch": {
+       "triangles": 4458,
+       "materials": [
+        "x8_foam_interior",
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 1,
+       "inward_islands": 0,
+       "smooth_faces": 3349,
+       "uv_layers": 1
+      },
+      "elevon_left": {
+       "triangles": 2576,
+       "materials": [
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 3,
+       "inward_islands": 0,
+       "smooth_faces": 1383,
+       "uv_layers": 1
+      },
+      "elevon_right": {
+       "triangles": 2576,
+       "materials": [
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 3,
+       "inward_islands": 0,
+       "smooth_faces": 1383,
+       "uv_layers": 1
+      },
+      "fuselage_core": {
+       "triangles": 13592,
+       "materials": [
+        "x8_foam_interior",
+        "x8_glass",
+        "x8_livery",
+        "x8_metal"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 4,
+       "inward_islands": 0,
+       "smooth_faces": 7990,
+       "uv_layers": 1
+      },
+      "motor_mount": {
+       "triangles": 184,
+       "materials": [
+        "x8_black"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 2,
+       "inward_islands": 0,
+       "smooth_faces": 136,
+       "uv_layers": 1
+      },
+      "propeller_rotor": {
+       "triangles": 1400,
+       "materials": [
+        "x8_livery",
+        "x8_metal",
+        "x8_motor_bell"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 6,
+       "inward_islands": 0,
+       "smooth_faces": 818,
+       "uv_layers": 1
+      },
+      "wing_left_fixed": {
+       "triangles": 6440,
+       "materials": [
+        "x8_foam_interior",
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 3,
+       "inward_islands": 0,
+       "smooth_faces": 3520,
+       "uv_layers": 1
+      },
+      "wing_right_fixed": {
+       "triangles": 6440,
+       "materials": [
+        "x8_foam_interior",
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 3,
+       "inward_islands": 0,
+       "smooth_faces": 3520,
+       "uv_layers": 1
+      }
+     }
+    },
+    {
+     "id": "G2_closed_shells",
+     "ok": true,
+     "mandatory": false,
+     "detail": "aristas no variedad: 0"
+    },
+    {
+     "id": "H1_materials_exportable",
+     "ok": true,
+     "mandatory": true,
+     "detail": "9 materiales Principled con backface culling; solo x8_livery usa texturas"
+    },
+    {
+     "id": "H4_livery_textures",
+     "ok": true,
+     "mandatory": true,
+     "detail": "4 imagenes empaquetadas de 2048x2048; 19473 caras pintadas con UV dentro del atlas"
+    },
+    {
+     "id": "H2_material_budget",
+     "ok": true,
+     "mandatory": false,
+     "detail": "9 materiales (objetivo <= 10)"
+    },
+    {
+     "id": "H3_surface_budget",
+     "ok": true,
+     "mandatory": false,
+     "detail": "24 superficies malla x material (objetivo <= 40)"
+    },
+    {
+     "id": "I1_triangle_ceiling",
+     "ok": true,
+     "mandatory": true,
+     "detail": "38504 triangulos (techo 100000)"
+    },
+    {
+     "id": "I2_triangle_target",
+     "ok": true,
+     "mandatory": false,
+     "detail": "38504 triangulos (objetivo 30000-50000)"
+    },
+    {
+     "id": "J1_glb_contract",
+     "ok": true,
+     "mandatory": true,
+     "detail": "glTF 2.0 sin extensiones, camaras, luces ni animacion; 18 nodos con jerarquia y extras correctos; 24 primitivas; triangulos iguales al .blend; 4 imagenes embebidas; atlas con color, ORM, normales y emision; 9 primitivas del atlas con UV, normales y tangentes"
+    },
+    {
+     "id": "J2_glb_reimport",
+     "ok": true,
+     "mandatory": true,
+     "detail": "reimportado en escena limpia: misma jerarquia, secciones y materiales; marcas de metadata.json en tolerancia; desvio maximo 0.0000 mm en pivotes, 0.0000 mm en cajas de malla, 0.00000 grados en ejes",
+     "data": {
+      "max_pivot_mm": 3.3333022460664216e-05,
+      "max_bbox_mm": 2.9802322387695312e-05,
+      "max_axis_deg": 0.0
+     }
+    },
+    {
+     "id": "K1_metadata_consistency",
+     "ok": true,
+     "mandatory": true,
+     "detail": "pivotes, ejes, secciones, hash del GLB y texturas de metadata.json coinciden con el .blend, el GLB y textures/"
+    }
+   ],
+   "parity": null,
+   "layers": true,
+   "report": "checks/structural_abisal.json"
+  },
+  "bolido": {
+   "id": "bolido",
+   "default": false,
+   "glb": {
+    "file": "bolido.glb",
+    "bytes": 7078856,
+    "sha256": "9ecaf7b49aec555bbea178b3b582378bb362bec3f816448932438db2c8da8f93"
+   },
+   "passed": true,
+   "mandatory_failed": [],
+   "checks": [
+    {
+     "id": "A1_export_collection",
+     "ok": true,
+     "mandatory": true,
+     "detail": "EXPORT_aircraft"
+    },
+    {
+     "id": "A2_only_export_content",
+     "ok": true,
+     "mandatory": true,
+     "detail": "objetos fuera de la coleccion: []; tipos: ['EMPTY', 'MESH']"
+    },
+    {
+     "id": "A3_names_ascii_unique",
+     "ok": true,
+     "mandatory": true,
+     "detail": "malos: []"
+    },
+    {
+     "id": "A4_self_contained",
+     "ok": true,
+     "mandatory": true,
+     "detail": "bibliotecas 0, imagenes 4"
+    },
+    {
+     "id": "B1_hierarchy",
+     "ok": true,
+     "mandatory": true,
+     "detail": "faltan [], sobran [], padre/tipo mal []"
+    },
+    {
+     "id": "B2_section_tags",
+     "ok": true,
+     "mandatory": true,
+     "detail": "todas las mallas y pivotes moviles llevan una seccion valida; raiz y thrust_frame sin etiqueta"
+    },
+    {
+     "id": "B3_section_subtrees",
+     "ok": true,
+     "mandatory": true,
+     "detail": "cada nodo etiquetado solo contiene su propia seccion (secciones como ramas hermanas)"
+    },
+    {
+     "id": "B4_root_identity",
+     "ok": true,
+     "mandatory": true,
+     "detail": "raiz en D0 con traslacion y rotacion nulas y escala 1"
+    },
+    {
+     "id": "C1_transforms",
+     "ok": true,
+     "mandatory": true,
+     "detail": "escalas (1,1,1), sin reflexion ni cizalla"
+    },
+    {
+     "id": "D1_positive_directions",
+     "ok": true,
+     "mandatory": true,
+     "detail": "elevones + = borde de salida abajo; compuertas + = abren; eje de empuje +X = nariz; el paso de las palas empuja hacia la nariz con giro positivo"
+    },
+    {
+     "id": "E0_neutral_no_interpenetration",
+     "ok": true,
+     "mandatory": true,
+     "detail": "ningun par de mallas se cruza en la pose neutra"
+    },
+    {
+     "id": "E1_elevon_clearance",
+     "ok": true,
+     "mandatory": true,
+     "detail": "barrido de -40.0 a 40.0 grados; libre: elevon_left [-40.0, 31.0], elevon_right [-40.0, 31.0]; requerido [-26.76, 26.85]",
+     "data": {
+      "elevon_left": {
+       "clear_deg": [
+        -40.0,
+        31.0
+       ],
+       "step_deg": 1.0,
+       "first_contact_positive": [
+        32.0,
+        [
+         "wing_left_fixed"
+        ]
+       ],
+       "first_contact_negative": null
+      },
+      "elevon_right": {
+       "clear_deg": [
+        -40.0,
+        31.0
+       ],
+       "step_deg": 1.0,
+       "first_contact_positive": [
+        32.0,
+        [
+         "wing_right_fixed"
+        ]
+       ],
+       "first_contact_negative": null
+      }
+     }
+    },
+    {
+     "id": "E2_door_clearance",
+     "ok": true,
+     "mandatory": true,
+     "detail": "0-110 grados cada 5: sin cruces"
+    },
+    {
+     "id": "E3_propeller_clearance",
+     "ok": true,
+     "mandatory": true,
+     "detail": "vuelta completa cada 10 grados: sin cruces"
+    },
+    {
+     "id": "F1_return_to_neutral",
+     "ok": true,
+     "mandatory": true,
+     "detail": "todos los pivotes vuelven exactamente al reposo guardado"
+    },
+    {
+     "id": "G1_mesh_quality",
+     "ok": true,
+     "mandatory": true,
+     "detail": "sin triangulos degenerados ni vertices sueltos; todas las islas cerradas hacia afuera",
+     "data": {
+      "bay_equipment": {
+       "triangles": 504,
+       "materials": [
+        "x8_battery",
+        "x8_black",
+        "x8_electronics",
+        "x8_foam_interior",
+        "x8_glass",
+        "x8_orange"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 14,
+       "inward_islands": 0,
+       "smooth_faces": 68,
+       "uv_layers": 0
+      },
+      "camera_door_left": {
+       "triangles": 168,
+       "materials": [
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 1,
+       "inward_islands": 0,
+       "smooth_faces": 141,
+       "uv_layers": 1
+      },
+      "camera_door_right": {
+       "triangles": 166,
+       "materials": [
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 1,
+       "inward_islands": 0,
+       "smooth_faces": 139,
+       "uv_layers": 1
+      },
+      "canopy_hatch": {
+       "triangles": 4458,
+       "materials": [
+        "x8_foam_interior",
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 1,
+       "inward_islands": 0,
+       "smooth_faces": 3349,
+       "uv_layers": 1
+      },
+      "elevon_left": {
+       "triangles": 2576,
+       "materials": [
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 3,
+       "inward_islands": 0,
+       "smooth_faces": 1383,
+       "uv_layers": 1
+      },
+      "elevon_right": {
+       "triangles": 2576,
+       "materials": [
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 3,
+       "inward_islands": 0,
+       "smooth_faces": 1383,
+       "uv_layers": 1
+      },
+      "fuselage_core": {
+       "triangles": 13592,
+       "materials": [
+        "x8_foam_interior",
+        "x8_glass",
+        "x8_livery",
+        "x8_metal"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 4,
+       "inward_islands": 0,
+       "smooth_faces": 7990,
+       "uv_layers": 1
+      },
+      "motor_mount": {
+       "triangles": 184,
+       "materials": [
+        "x8_black"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 2,
+       "inward_islands": 0,
+       "smooth_faces": 136,
+       "uv_layers": 1
+      },
+      "propeller_rotor": {
+       "triangles": 1400,
+       "materials": [
+        "x8_livery",
+        "x8_metal",
+        "x8_motor_bell"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 6,
+       "inward_islands": 0,
+       "smooth_faces": 818,
+       "uv_layers": 1
+      },
+      "wing_left_fixed": {
+       "triangles": 6440,
+       "materials": [
+        "x8_foam_interior",
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 3,
+       "inward_islands": 0,
+       "smooth_faces": 3520,
+       "uv_layers": 1
+      },
+      "wing_right_fixed": {
+       "triangles": 6440,
+       "materials": [
+        "x8_foam_interior",
+        "x8_livery"
+       ],
+       "degenerate": 0,
+       "loose_verts": 0,
+       "non_manifold_edges": 0,
+       "islands": 3,
+       "inward_islands": 0,
+       "smooth_faces": 3520,
+       "uv_layers": 1
+      }
+     }
+    },
+    {
+     "id": "G2_closed_shells",
+     "ok": true,
+     "mandatory": false,
+     "detail": "aristas no variedad: 0"
+    },
+    {
+     "id": "H1_materials_exportable",
+     "ok": true,
+     "mandatory": true,
+     "detail": "9 materiales Principled con backface culling; solo x8_livery usa texturas"
+    },
+    {
+     "id": "H4_livery_textures",
+     "ok": true,
+     "mandatory": true,
+     "detail": "4 imagenes empaquetadas de 2048x2048; 19473 caras pintadas con UV dentro del atlas"
+    },
+    {
+     "id": "H2_material_budget",
+     "ok": true,
+     "mandatory": false,
+     "detail": "9 materiales (objetivo <= 10)"
+    },
+    {
+     "id": "H3_surface_budget",
+     "ok": true,
+     "mandatory": false,
+     "detail": "24 superficies malla x material (objetivo <= 40)"
+    },
+    {
+     "id": "I1_triangle_ceiling",
+     "ok": true,
+     "mandatory": true,
+     "detail": "38504 triangulos (techo 100000)"
+    },
+    {
+     "id": "I2_triangle_target",
+     "ok": true,
+     "mandatory": false,
+     "detail": "38504 triangulos (objetivo 30000-50000)"
+    },
+    {
+     "id": "J1_glb_contract",
+     "ok": true,
+     "mandatory": true,
+     "detail": "glTF 2.0 sin extensiones, camaras, luces ni animacion; 18 nodos con jerarquia y extras correctos; 24 primitivas; triangulos iguales al .blend; 4 imagenes embebidas; atlas con color, ORM, normales y emision; 9 primitivas del atlas con UV, normales y tangentes"
+    },
+    {
+     "id": "J2_glb_reimport",
+     "ok": true,
+     "mandatory": true,
+     "detail": "reimportado en escena limpia: misma jerarquia, secciones y materiales; marcas de metadata.json en tolerancia; desvio maximo 0.0000 mm en pivotes, 0.0000 mm en cajas de malla, 0.00000 grados en ejes",
+     "data": {
+      "max_pivot_mm": 3.3333022460664216e-05,
+      "max_bbox_mm": 2.9802322387695312e-05,
+      "max_axis_deg": 0.0
+     }
+    },
+    {
+     "id": "L1_skin_parity",
+     "ok": true,
+     "mandatory": true,
+     "detail": "igual a aircraft.glb: 18 nodos, jerarquia, reposo, extras; 11 mallas con posiciones, normales, UV0 y tangentes identicas (dif. max. 0.0e+00)",
+     "data": {
+      "max_abs_diff": {
+       "POSITION": 0.0,
+       "NORMAL": 0.0,
+       "TEXCOORD_0": 0.0,
+       "TANGENT": 0.0
+      },
+      "reference": "aircraft.glb"
+     }
+    },
+    {
+     "id": "K1_metadata_consistency",
+     "ok": true,
+     "mandatory": true,
+     "detail": "pivotes, ejes, secciones, hash del GLB y texturas de metadata.json coinciden con el .blend, el GLB y textures/"
+    }
+   ],
+   "parity": {
+    "passed": true,
+    "report": "checks/parity_bolido.json"
+   },
+   "layers": true,
+   "report": "checks/structural_bolido.json"
+  }
+ },
+ "package_checks": {
+  "parity_bolido": {
+   "passed": true,
+   "severity": "mandatory",
+   "report": "checks/parity_bolido.json"
+  },
+  "layers": {
+   "passed": true,
+   "severity": "mandatory",
+   "report": "checks/layers.json"
+  },
+  "motion_revision": {
+   "passed": true,
+   "severity": "mandatory",
+   "report": "checks/motion_revision.json"
+  },
+  "deviation": {
+   "passed": false,
+   "severity": "warning: provisional thresholds (no approved limits supplied); exceedances carry a disposition in warnings[]",
+   "report": "checks/deviation.json"
+  },
+  "finish": {
+   "passed": true,
+   "severity": "mandatory",
+   "report": "checks/finish.json"
+  },
+  "views": {
+   "passed": null,
+   "severity": "evidence: provisional views, no pass/fail limit supplied",
+   "report": "checks/views/views.json"
+  },
+  "negative_tests": {
+   "passed": true,
+   "severity": "mandatory",
+   "report": "checks/negative_tests.json"
+  },
+  "clean_package": {
+   "passed": true,
+   "severity": "mandatory",
+   "report": "checks/clean_package.json"
+  },
+  "silhouettes": {
+   "passed": null,
+   "severity": "evidence: IoU per view, no pass/fail limit supplied",
+   "report": "checks/silhouettes/silhouettes.json"
+  },
+  "full_rebuild": {
+   "passed": true,
+   "severity": "mandatory",
+   "report": "checks/full_rebuild.json"
+  }
+ },
+ "clearance": {
+  "elevons": {
+   "elevon_left": {
+    "clear_deg": [
+     -40.0,
+     31.0
+    ],
+    "step_deg": 1.0,
+    "first_contact_positive": [
+     32.0,
+     [
+      "wing_left_fixed"
+     ]
+    ],
+    "first_contact_negative": null
+   },
+   "elevon_right": {
+    "clear_deg": [
+     -40.0,
+     31.0
+    ],
+    "step_deg": 1.0,
+    "first_contact_positive": [
+     32.0,
+     [
+      "wing_right_fixed"
+     ]
+    ],
+    "first_contact_negative": null
+   }
+  },
+  "doors_deg": [
+   0.0,
+   110.0
+  ]
+ },
+ "counts": {
+  "triangles": 38504,
+  "surfaces": 24,
+  "materials": 9,
+  "textures": 4,
+  "meshes": 11,
+  "nodes": 18,
+  "per_mesh": {
+   "bay_equipment": {
+    "triangles": 504,
+    "surfaces": 6
+   },
+   "camera_door_left": {
+    "triangles": 168,
+    "surfaces": 1
+   },
+   "camera_door_right": {
+    "triangles": 166,
+    "surfaces": 1
+   },
+   "canopy_hatch": {
+    "triangles": 4458,
+    "surfaces": 2
+   },
+   "elevon_left": {
+    "triangles": 2576,
+    "surfaces": 1
+   },
+   "elevon_right": {
+    "triangles": 2576,
+    "surfaces": 1
+   },
+   "fuselage_core": {
+    "triangles": 13592,
+    "surfaces": 4
+   },
+   "motor_mount": {
+    "triangles": 184,
+    "surfaces": 1
+   },
+   "propeller_rotor": {
+    "triangles": 1400,
+    "surfaces": 3
+   },
+   "wing_left_fixed": {
+    "triangles": 6440,
+    "surfaces": 2
+   },
+   "wing_right_fixed": {
+    "triangles": 6440,
+    "surfaces": 2
+   }
+  }
+ },
+ "warnings": [
+  {
+   "skin": "all",
+   "id": "deviation_provisional_threshold",
+   "detail": "wing_left_fixed maestro->juego: p95 0.125 mm, max 11.178 mm",
+   "disposition": "documented simplification: the master's servo-bay cavity (boolean) is not cut in the game wing; the bay is covered by the painted servo cover. Threshold is provisional."
+  },
+  {
+   "skin": "all",
+   "id": "deviation_provisional_threshold",
+   "detail": "wing_right_fixed maestro->juego: p95 0.125 mm, max 11.178 mm",
+   "disposition": "documented simplification: the master's servo-bay cavity (boolean) is not cut in the game wing; the bay is covered by the painted servo cover. Threshold is provisional."
+  },
+  {
+   "skin": "abisal",
+   "id": "texture_magnified_inspection_nose_1080p",
+   "detail": "0.341 mm per pixel vs 0.87 mm per texel",
+   "disposition": "provisional closest view; the 2048 atlas is magnified here. 4096 sources are delivered; runtime resolution is an integration decision (open item)."
+  },
+  {
+   "skin": "abisal",
+   "id": "texture_magnified_inspection_nose_1440p",
+   "detail": "0.256 mm per pixel vs 0.87 mm per texel",
+   "disposition": "provisional closest view; the 2048 atlas is magnified here. 4096 sources are delivered; runtime resolution is an integration decision (open item)."
+  },
+  {
+   "skin": "bolido",
+   "id": "texture_magnified_inspection_nose_1080p",
+   "detail": "0.341 mm per pixel vs 0.87 mm per texel",
+   "disposition": "provisional closest view; the 2048 atlas is magnified here. 4096 sources are delivered; runtime resolution is an integration decision (open item)."
+  },
+  {
+   "skin": "bolido",
+   "id": "texture_magnified_inspection_nose_1440p",
+   "detail": "0.256 mm per pixel vs 0.87 mm per texel",
+   "disposition": "provisional closest view; the 2048 atlas is magnified here. 4096 sources are delivered; runtime resolution is an integration decision (open item)."
+  }
+ ],
+ "failures": [],
+ "pending_integration": [
+  "Godot 4.7.2 (Compatibility renderer) import of every skin: rest and full-travel poses, materials, texture import format and memory",
+  "crash separation of every section in the simulator, skin selection, independent instances",
+  "Home / flight / Workshop views at 1080p with the simulator cameras, load cost and frame time",
+  "integration review of the camera-door pivots (not a shared auxiliary mechanism role)",
+  "regeneration of runtime manifests and import-sidecar hashes by the integration team"
+ ],
+ "steps": [
+  {
+   "step": "export_all (todas las skins)",
+   "command": "python source/scripts/export_all.py source/aircraft_game.blend export",
+   "seconds": 1.6,
+   "exit_code": 0
+  },
+  {
+   "step": "make_demo.py",
+   "command": "python source/scripts/make_demo.py source/aircraft_game.blend previews/demo/aircraft_demo.glb",
+   "seconds": 1.5,
+   "exit_code": 0
+  },
+  {
+   "step": "previews abisal",
+   "command": "python source/scripts/make_previews.py source/aircraft_game.blend previews/abisal",
+   "seconds": 34.2,
+   "exit_code": 0
+  },
+  {
+   "step": "previews bolido",
+   "command": "python source/scripts/make_previews.py source/aircraft_game.blend previews/bolido --livery bolido",
+   "seconds": 35.1,
+   "exit_code": 0
+  },
+  {
+   "step": "compare_silhouettes.py",
+   "command": "python source/scripts/compare_silhouettes.py /home/claude/x8/out/Skywalker_X8.blend source/aircraft_game.blend checks/silhouettes --json checks/silhouettes/silhouettes.json",
+   "seconds": 10.4,
+   "exit_code": 0
+  },
+  {
+   "step": "verify (holguras para metadatos)",
+   "command": "python source/scripts/verify_game.py source/aircraft_game.blend --glb export/aircraft.glb --json verification.json",
+   "seconds": 2.0,
+   "exit_code": 0
+  },
+  {
+   "step": "make_metadata.py",
+   "command": "python source/scripts/make_metadata.py source/aircraft_game.blend export/aircraft.glb previews/demo/aircraft_demo.glb /home/claude/x8/out/Skywalker_X8.blend .",
+   "seconds": 1.2,
+   "exit_code": 0
+  },
+  {
+   "step": "verify abisal",
+   "command": "python source/scripts/verify_game.py source/aircraft_game.blend --glb export/aircraft.glb --metadata metadata.json --json checks/structural_abisal.json",
+   "seconds": 2.0,
+   "exit_code": 0
+  },
+  {
+   "step": "verify bolido",
+   "command": "python source/scripts/verify_game.py source/aircraft_game.blend --glb export/bolido.glb --livery bolido --parity-ref export/aircraft.glb --metadata metadata.json --json checks/structural_bolido.json",
+   "seconds": 2.2,
+   "exit_code": 0
+  },
+  {
+   "step": "paridad bolido",
+   "command": "python source/scripts/skin_parity.py export/aircraft.glb export/bolido.glb --json checks/parity_bolido.json",
+   "seconds": 0.3,
+   "exit_code": 0
+  },
+  {
+   "step": "capas abisal",
+   "command": "python source/scripts/paint_layers.py compose textures/abisal/source abisal",
+   "seconds": 4.3,
+   "exit_code": 0
+  },
+  {
+   "step": "capas bolido",
+   "command": "python source/scripts/paint_layers.py compose textures/bolido/source bolido",
+   "seconds": 4.7,
+   "exit_code": 0
+  },
+  {
+   "step": "rig r3 vs r4",
+   "command": "python source/scripts/check_rig_revision.py /home/claude/x8game/r3/source/aircraft_game.blend source/aircraft_game.blend --json checks/motion_revision.json",
+   "seconds": 1.0,
+   "exit_code": 0
+  },
+  {
+   "step": "desviacion contra el maestro",
+   "command": "python source/scripts/check_deviation.py /home/claude/x8/out/Skywalker_X8.blend source/aircraft_game.blend export-map.json --json checks/deviation.json",
+   "seconds": 1.8,
+   "exit_code": 0
+  },
+  {
+   "step": "acabado por skin",
+   "command": "python source/scripts/check_finish.py source/aircraft_game.blend textures --json checks/finish.json",
+   "seconds": 2.0,
+   "exit_code": 0
+  },
+  {
+   "step": "vistas 1080p/1440p",
+   "command": "python source/scripts/check_views.py source/aircraft_game.blend checks/views",
+   "seconds": 346.0,
+   "exit_code": 0
+  },
+  {
+   "step": "rechazos",
+   "command": "python source/scripts/test_verifier_rejects.py source/aircraft_game.blend --json checks/negative_tests.json",
+   "seconds": 15.6,
+   "exit_code": 0
+  },
+  {
+   "step": "paquete limpio",
+   "command": "python source/scripts/check_clean_package.py . --json checks/clean_package.json",
+   "seconds": 3.8,
+   "exit_code": 0
+  }
+ ],
+ "minutes": 7.8,
+ "mode": "skip-build",
+ "release_passed": true
+}

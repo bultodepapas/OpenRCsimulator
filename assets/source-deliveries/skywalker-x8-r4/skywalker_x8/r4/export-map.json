@@ -1,0 +1,1093 @@
+{
+ "master": "Skywalker_X8.blend",
+ "master_sha256": "6b70daf46dc6414ad04b5e656ac96bb2916e463ff7e686accda4dcad41237156",
+ "master_objects": 148,
+ "accounted": 148,
+ "unmatched": [],
+ "matched_more_than_once": [],
+ "summary": {
+  "included": 25,
+  "simplified": 20,
+  "excluded": 103
+ },
+ "parts": [
+  {
+   "source": "Bajo",
+   "type": "LIGHT",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Cam_34_Frontal",
+   "type": "CAMERA",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Cam_34_Trasera",
+   "type": "CAMERA",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Cam_Frontal",
+   "type": "CAMERA",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Cam_Giro",
+   "type": "CAMERA",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Cam_Inferior",
+   "type": "CAMERA",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Cam_Lateral",
+   "type": "CAMERA",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Cam_Mecanismo_Izq",
+   "type": "CAMERA",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Cam_Rasante",
+   "type": "CAMERA",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Cam_Superior",
+   "type": "CAMERA",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Cam_Trasera",
+   "type": "CAMERA",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Contra",
+   "type": "LIGHT",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Pivote_Giro",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Relleno",
+   "type": "LIGHT",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Skywalker_X8",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master root (origin at x = 440 mm); replaced by the game root SkywalkerX8 at D0"
+  },
+  {
+   "source": "Sol",
+   "type": "LIGHT",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "Suelo",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "studio camera/light/floor"
+  },
+  {
+   "source": "X8_Agujero_Brazo_Der",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master pivot/helper empty; replaced by the game pivots"
+  },
+  {
+   "source": "X8_Agujero_Brazo_Izq",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master pivot/helper empty; replaced by the game pivots"
+  },
+  {
+   "source": "X8_Agujero_Cuerno_Der",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master pivot/helper empty; replaced by the game pivots"
+  },
+  {
+   "source": "X8_Agujero_Cuerno_Izq",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master pivot/helper empty; replaced by the game pivots"
+  },
+  {
+   "source": "X8_Ala_Der",
+   "type": "MESH",
+   "status": "included",
+   "target": "wing_right_fixed",
+   "reason": "retessellated; servo-bay boolean not applied (cover is a material region)"
+  },
+  {
+   "source": "X8_Ala_Izq",
+   "type": "MESH",
+   "status": "included",
+   "target": "wing_left_fixed",
+   "reason": "retessellated; servo-bay boolean not applied (cover is a material region)"
+  },
+  {
+   "source": "X8_Amortiguador_Camara_1",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Amortiguador_Camara_2",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Apoyo_Iman_1",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Apoyo_Iman_2",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Apoyo_Iman_3",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Apoyo_Iman_4",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Apoyo_Iman_5",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Apoyo_Iman_6",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Bandeja_Bateria",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Bandeja_Bateria_Ext",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Bateria_6S_5000",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Bisagra_Compuerta_Der",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master pivot/helper empty; replaced by the game pivots"
+  },
+  {
+   "source": "X8_Bisagra_Compuerta_Izq",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master pivot/helper empty; replaced by the game pivots"
+  },
+  {
+   "source": "X8_Bisagra_Piano_Der",
+   "type": "MESH",
+   "status": "included",
+   "target": "fuselage_core",
+   "reason": "door hinge pins (r 0.4 mm)"
+  },
+  {
+   "source": "X8_Bisagra_Piano_Izq",
+   "type": "MESH",
+   "status": "included",
+   "target": "fuselage_core",
+   "reason": "door hinge pins (r 0.4 mm)"
+  },
+  {
+   "source": "X8_Brazo_Servo_Der",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "servo and linkage: hidden in the bay or would misalign because only the hinge is driven"
+  },
+  {
+   "source": "X8_Brazo_Servo_Izq",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "servo and linkage: hidden in the bay or would misalign because only the hinge is driven"
+  },
+  {
+   "source": "X8_Buje_Helice",
+   "type": "MESH",
+   "status": "included",
+   "target": "propeller_rotor",
+   "reason": "rotating hardware (outrunner bell and shaft included)"
+  },
+  {
+   "source": "X8_Camara_FPV_VTX",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Camara_Mapeo",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Camara_Mapeo_Objetivo",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Cinta_Bisagra_Ala_Der",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "wing_right_fixed / elevon_right",
+   "reason": "hinge tape shell replaced by a painted region (x8_region 1) of the x8_livery atlas + slot cover"
+  },
+  {
+   "source": "X8_Cinta_Bisagra_Ala_Izq",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "wing_left_fixed / elevon_left",
+   "reason": "hinge tape shell replaced by a painted region (x8_region 1) of the x8_livery atlas + slot cover"
+  },
+  {
+   "source": "X8_Cinta_Bisagra_Elevon_Der",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "wing_right_fixed / elevon_right",
+   "reason": "hinge tape shell replaced by a painted region (x8_region 1) of the x8_livery atlas + slot cover"
+  },
+  {
+   "source": "X8_Cinta_Bisagra_Elevon_Izq",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "wing_left_fixed / elevon_left",
+   "reason": "hinge tape shell replaced by a painted region (x8_region 1) of the x8_livery atlas + slot cover"
+  },
+  {
+   "source": "X8_Compuerta_Camara_Der",
+   "type": "MESH",
+   "status": "included",
+   "target": "camera_door_right",
+   "reason": "ventral door half"
+  },
+  {
+   "source": "X8_Compuerta_Camara_Izq",
+   "type": "MESH",
+   "status": "included",
+   "target": "camera_door_left",
+   "reason": "ventral door half"
+  },
+  {
+   "source": "X8_Cono_Helice",
+   "type": "MESH",
+   "status": "included",
+   "target": "propeller_rotor",
+   "reason": "rotating hardware (outrunner bell and shaft included)"
+  },
+  {
+   "source": "X8_Controlador_Vuelo",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Costilla_Raiz_Der",
+   "type": "MESH",
+   "status": "included",
+   "target": "wing_right_fixed",
+   "reason": "orange root rib (closes the wing root)"
+  },
+  {
+   "source": "X8_Costilla_Raiz_Izq",
+   "type": "MESH",
+   "status": "included",
+   "target": "wing_left_fixed",
+   "reason": "orange root rib (closes the wing root)"
+  },
+  {
+   "source": "X8_Cuerno_Der",
+   "type": "MESH",
+   "status": "included",
+   "target": "elevon_right",
+   "reason": "control horn moves with the elevon"
+  },
+  {
+   "source": "X8_Cuerno_Izq",
+   "type": "MESH",
+   "status": "included",
+   "target": "elevon_left",
+   "reason": "control horn moves with the elevon"
+  },
+  {
+   "source": "X8_ESC_60A",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Eje",
+   "type": "MESH",
+   "status": "included",
+   "target": "propeller_rotor",
+   "reason": "rotating hardware (outrunner bell and shaft included)"
+  },
+  {
+   "source": "X8_Eje_Bisagra_Der",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master pivot/helper empty; replaced by the game pivots"
+  },
+  {
+   "source": "X8_Eje_Bisagra_Izq",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master pivot/helper empty; replaced by the game pivots"
+  },
+  {
+   "source": "X8_Eje_Cierre",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master rig/logic empty; game pivots are elevon_*_hinge, camera_door_*_hinge, thrust_frame, propeller_spin"
+  },
+  {
+   "source": "X8_Eje_Servo_Der",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master pivot/helper empty; replaced by the game pivots"
+  },
+  {
+   "source": "X8_Eje_Servo_Izq",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master pivot/helper empty; replaced by the game pivots"
+  },
+  {
+   "source": "X8_Elevon_Der",
+   "type": "MESH",
+   "status": "included",
+   "target": "elevon_right",
+   "reason": "retessellated"
+  },
+  {
+   "source": "X8_Elevon_Izq",
+   "type": "MESH",
+   "status": "included",
+   "target": "elevon_left",
+   "reason": "retessellated"
+  },
+  {
+   "source": "X8_Enganche_Tapa",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Estado",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master rig/logic empty; game pivots are elevon_*_hinge, camera_door_*_hinge, thrust_frame, propeller_spin"
+  },
+  {
+   "source": "X8_Fuselaje_Central",
+   "type": "MESH",
+   "status": "included",
+   "target": "fuselage_core",
+   "reason": "retessellated (game resolution); hollow bay, hatch opening and camera-door openings kept; side caps = closure faces"
+  },
+  {
+   "source": "X8_GPS_Brujula",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Guia_Pestillo",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master rig/logic empty; game pivots are elevon_*_hinge, camera_door_*_hinge, thrust_frame, propeller_spin"
+  },
+  {
+   "source": "X8_Hueco_Bahia_Der",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "boolean cutter (helper)"
+  },
+  {
+   "source": "X8_Hueco_Bahia_Izq",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "boolean cutter (helper)"
+  },
+  {
+   "source": "X8_Iman_Fuselaje_1",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Fuselaje_2",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Fuselaje_3",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Fuselaje_4",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Fuselaje_5",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Fuselaje_6",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Tapa_1",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Tapa_2",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Tapa_3",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Tapa_4",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Tapa_5",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Iman_Tapa_6",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_LED_ARMADO",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_LED_CG",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_LED_PARACAIDAS",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_LED_TAPA",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_Lengueta_Tapa_D",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Lengueta_Tapa_I",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Leva_Cierre",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "rotary lock: not installed in the parachute configuration (the latch pin holds the hatch)"
+  },
+  {
+   "source": "X8_Logica_Tapas",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master rig/logic empty; game pivots are elevon_*_hinge, camera_door_*_hinge, thrust_frame, propeller_spin"
+  },
+  {
+   "source": "X8_Mando_RC",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master rig/logic empty; game pivots are elevon_*_hinge, camera_door_*_hinge, thrust_frame, propeller_spin"
+  },
+  {
+   "source": "X8_Marcador_CG",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_Mezclador",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master rig/logic empty; game pivots are elevon_*_hinge, camera_door_*_hinge, thrust_frame, propeller_spin"
+  },
+  {
+   "source": "X8_Motor_Campana",
+   "type": "MESH",
+   "status": "included",
+   "target": "propeller_rotor",
+   "reason": "rotating hardware (outrunner bell and shaft included)"
+  },
+  {
+   "source": "X8_Motor_Estator",
+   "type": "MESH",
+   "status": "included",
+   "target": "motor_mount",
+   "reason": "fixed motor parts"
+  },
+  {
+   "source": "X8_Pala_1",
+   "type": "MESH",
+   "status": "included",
+   "target": "propeller_rotor",
+   "reason": "rotating hardware (outrunner bell and shaft included)"
+  },
+  {
+   "source": "X8_Pala_2",
+   "type": "MESH",
+   "status": "included",
+   "target": "propeller_rotor",
+   "reason": "rotating hardware (outrunner bell and shaft included)"
+  },
+  {
+   "source": "X8_Palanca",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_Palanca_Base",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_Paracaidas_Paquete",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Paracaidas_Resorte",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Perilla_Agarre",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "rotary lock: not installed in the parachute configuration (the latch pin holds the hatch)"
+  },
+  {
+   "source": "X8_Perilla_Cierre",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "rotary lock: not installed in the parachute configuration (the latch pin holds the hatch)"
+  },
+  {
+   "source": "X8_Perilla_Eje",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "rotary lock: not installed in the parachute configuration (the latch pin holds the hatch)"
+  },
+  {
+   "source": "X8_Pestillo",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Pivote_Tapa",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master rig/logic empty; game pivots are elevon_*_hinge, camera_door_*_hinge, thrust_frame, propeller_spin"
+  },
+  {
+   "source": "X8_Placa_Fuselaje_1",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Fuselaje_2",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Fuselaje_3",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Fuselaje_4",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Fuselaje_5",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Fuselaje_6",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Tapa_1",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Tapa_2",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Tapa_3",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Tapa_4",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Tapa_5",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Placa_Tapa_6",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden magnet hardware"
+  },
+  {
+   "source": "X8_Poste_Cierre_Der",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "rotary lock: not installed in the parachute configuration (the latch pin holds the hatch)"
+  },
+  {
+   "source": "X8_Poste_Cierre_Izq",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "rotary lock: not installed in the parachute configuration (the latch pin holds the hatch)"
+  },
+  {
+   "source": "X8_Punta_Winglet_Der",
+   "type": "MESH",
+   "status": "included",
+   "target": "wing_right_fixed",
+   "reason": "outer panel + winglet"
+  },
+  {
+   "source": "X8_Punta_Winglet_Izq",
+   "type": "MESH",
+   "status": "included",
+   "target": "wing_left_fixed",
+   "reason": "outer panel + winglet"
+  },
+  {
+   "source": "X8_Receptor_Telemetria",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Rotor",
+   "type": "EMPTY",
+   "status": "excluded",
+   "target": null,
+   "reason": "master rig/logic empty; game pivots are elevon_*_hinge, camera_door_*_hinge, thrust_frame, propeller_spin"
+  },
+  {
+   "source": "X8_Rotulo_ARMADO",
+   "type": "FONT",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_Rotulo_CG",
+   "type": "FONT",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_Rotulo_PARACAIDAS",
+   "type": "FONT",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_Rotulo_TAPA",
+   "type": "FONT",
+   "status": "excluded",
+   "target": null,
+   "reason": "logic/demo indicator, not aircraft geometry"
+  },
+  {
+   "source": "X8_Servo_Compuertas_9g",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Servo_ES3054_Der",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "servo and linkage: hidden in the bay or would misalign because only the hinge is driven"
+  },
+  {
+   "source": "X8_Servo_ES3054_Izq",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "servo and linkage: hidden in the bay or would misalign because only the hinge is driven"
+  },
+  {
+   "source": "X8_Servo_Pestillo_9g",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "bay_equipment",
+   "reason": "box geometry, bevel 1 segment; visible through the doors or when the hatch separates"
+  },
+  {
+   "source": "X8_Soporte_Motor",
+   "type": "MESH",
+   "status": "included",
+   "target": "motor_mount",
+   "reason": "fixed motor parts"
+  },
+  {
+   "source": "X8_Taco_Lengueta_D",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Taco_Lengueta_I",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Tapa_Principal",
+   "type": "MESH",
+   "status": "included",
+   "target": "canopy_hatch",
+   "reason": "magnetic top hatch"
+  },
+  {
+   "source": "X8_Tapa_Servo_Der",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "wing_right_fixed",
+   "reason": "servo cover shell replaced by a painted region (x8_region 2) of the x8_livery atlas"
+  },
+  {
+   "source": "X8_Tapa_Servo_Izq",
+   "type": "MESH",
+   "status": "simplified",
+   "target": "wing_left_fixed",
+   "reason": "servo cover shell replaced by a painted region (x8_region 2) of the x8_livery atlas"
+  },
+  {
+   "source": "X8_Tope_Cierre_Der",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "rotary lock: not installed in the parachute configuration (the latch pin holds the hatch)"
+  },
+  {
+   "source": "X8_Tope_Cierre_Izq",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "rotary lock: not installed in the parachute configuration (the latch pin holds the hatch)"
+  },
+  {
+   "source": "X8_Tubo_Carbono_1",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Tubo_Carbono_2",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "hidden fasteners/internal structure, or not installed in this configuration"
+  },
+  {
+   "source": "X8_Varilla_Der",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "servo and linkage: hidden in the bay or would misalign because only the hinge is driven"
+  },
+  {
+   "source": "X8_Varilla_Izq",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "servo and linkage: hidden in the bay or would misalign because only the hinge is driven"
+  },
+  {
+   "source": "X8_Ventana_Camara",
+   "type": "MESH",
+   "status": "included",
+   "target": "fuselage_core",
+   "reason": "FPV window, bevel 2 segments"
+  },
+  {
+   "source": "X8_Volumen_Bahia",
+   "type": "MESH",
+   "status": "excluded",
+   "target": null,
+   "reason": "bay volume helper (cutter / display)"
+  }
+ ],
+ "added_in_game": [
+  {
+   "node": "SkywalkerX8",
+   "origin": "created for the game asset"
+  },
+  {
+   "node": "elevon_left_hinge",
+   "origin": "created for the game asset"
+  },
+  {
+   "node": "elevon_right_hinge",
+   "origin": "created for the game asset"
+  },
+  {
+   "node": "camera_door_left_hinge",
+   "origin": "created for the game asset"
+  },
+  {
+   "node": "camera_door_right_hinge",
+   "origin": "created for the game asset"
+  },
+  {
+   "node": "thrust_frame",
+   "origin": "created for the game asset"
+  },
+  {
+   "node": "propeller_spin",
+   "origin": "created for the game asset"
+  },
+  {
+   "node": "bay_equipment (merge)",
+   "origin": "created for the game asset"
+  },
+  {
+   "node": "elevon slot covers (inside elevon_*)",
+   "origin": "created for the game asset"
+  },
+  {
+   "node": "x8_livery atlas material, UVMap and face attributes x8_part/x8_region (r2)",
+   "origin": "created for the game asset"
+  }
+ ]
+}
