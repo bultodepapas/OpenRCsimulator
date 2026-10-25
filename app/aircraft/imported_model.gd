@@ -477,9 +477,20 @@ static func apply_surfaces(model: Dictionary, surfaces_deg: Dictionary) -> void:
 	for role: String in model.model_manifest.bindings.controls:
 		var control: Dictionary = model.model_manifest.bindings.controls[role]
 		if control.visual_only: continue
+		var degrees := role_degrees(role, surfaces_deg)
 		for binding: Dictionary in control.hinges:
 			var hinge: Dictionary = model.hinges[binding.key]
-			_set_hinge(hinge, float(surfaces_deg.get(role, 0.0)) * hinge.app_sign)
+			_set_hinge(hinge, degrees * hinge.app_sign)
+
+
+## A role's surface angle (degrees, trailing edge up) from the pilot-side surfaces {aileron_right, aileron_left, elevator,
+## rudder, ...}. X8-02: an elevon is its side's aileron plus the elevator, the exact inverse of the physics decomposition
+## elevator = (eR + eL) / 2, aileron_right = (eR - eL) / 2, aileron_left = (eL - eR) / 2 (saturation included).
+static func role_degrees(role: String, surfaces_deg: Dictionary) -> float:
+	match role:
+		"elevon_left": return float(surfaces_deg.get("elevator", 0.0)) + float(surfaces_deg.get("aileron_left", 0.0))
+		"elevon_right": return float(surfaces_deg.get("elevator", 0.0)) + float(surfaces_deg.get("aileron_right", 0.0))
+	return float(surfaces_deg.get(role, 0.0))
 
 
 ## Inspector-only poses. Declaring a visual flap does not enable aerodynamic flaps.
@@ -487,9 +498,10 @@ static func set_visual_surfaces(model: Dictionary, surfaces_deg: Dictionary) -> 
 	for role: String in model.model_manifest.bindings.controls:
 		var control: Dictionary = model.model_manifest.bindings.controls[role]
 		if not control.visual_only: continue
+		var degrees := role_degrees(role, surfaces_deg)
 		for binding: Dictionary in control.hinges:
 			var hinge: Dictionary = model.hinges[binding.key]
-			_set_hinge(hinge, clampf(float(surfaces_deg.get(role, 0.0)), hinge.range_deg[0], hinge.range_deg[1]) * hinge.app_sign)
+			_set_hinge(hinge, clampf(degrees, hinge.range_deg[0], hinge.range_deg[1]) * hinge.app_sign)
 
 
 ## Session-driven flap pose. Only manifest-declared physical flap hinges move here.

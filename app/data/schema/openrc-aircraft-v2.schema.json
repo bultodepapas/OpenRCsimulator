@@ -1089,14 +1089,12 @@
         "surfaces": {
           "type": "object",
           "required": [
-            "wing_aileron_effectiveness",
             "attached_limit",
             "tail_local_limit",
             "tail_stall_end",
             "tail_CD0",
             "tail_k",
             "tail_CD90",
-            "horizontal",
             "vertical"
           ],
           "properties": {
@@ -1429,7 +1427,7 @@
                   "properties": {
                     "value": {
                       "type": "number",
-                      "minimum": 0.01,
+                      "minimum": 0.0,
                       "maximum": 1.5
                     },
                     "unit": {
@@ -1447,6 +1445,66 @@
                     },
                     "unit": {
                       "const": "rad"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "tailless": {
+              "type": "object",
+              "required": [
+                "station_x",
+                "elevon_coverage",
+                "elevon_chord_fraction"
+              ],
+              "properties": {
+                "station_x": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number",
+                        "minimum": -2.0,
+                        "maximum": 2.0
+                      }
+                    },
+                    "unit": {
+                      "const": "m"
+                    }
+                  }
+                },
+                "elevon_coverage": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 1.0
+                      }
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                },
+                "elevon_chord_fraction": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.05,
+                      "maximum": 0.6
+                    },
+                    "unit": {
+                      "const": "1"
                     }
                   }
                 }
@@ -1657,8 +1715,7 @@
           "type": "object",
           "required": [
             "aileron",
-            "elevator",
-            "rudder"
+            "elevator"
           ],
           "properties": {
             "aileron": {
@@ -1712,6 +1769,19 @@
                   "const": "deg"
                 }
               }
+            },
+            "elevon": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1.0,
+                  "maximum": 60.0
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
             }
           },
           "additionalProperties": false
@@ -1727,10 +1797,8 @@
               "required": [
                 "aileron",
                 "elevator",
-                "rudder",
                 "aileron_expo",
-                "elevator_expo",
-                "rudder_expo"
+                "elevator_expo"
               ],
               "properties": {
                 "aileron": {
@@ -1916,12 +1984,7 @@
         },
         "surface_ids": {
           "type": "object",
-          "required": [
-            "aileron_left",
-            "aileron_right",
-            "elevator",
-            "rudder"
-          ],
+          "minProperties": 2,
           "additionalProperties": false,
           "properties": {
             "aileron_left": {
@@ -1952,6 +2015,24 @@
               }
             },
             "rudder": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+              "not": {
+                "pattern": "\\s"
+              }
+            },
+            "elevon_left": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+              "not": {
+                "pattern": "\\s"
+              }
+            },
+            "elevon_right": {
               "type": "string",
               "minLength": 1,
               "maxLength": 80,
@@ -2333,7 +2414,8 @@
         "controls": {
           "type": "string",
           "enum": [
-            "conventional"
+            "conventional",
+            "elevon"
           ]
         },
         "gear": {
@@ -2351,7 +2433,8 @@
           "type": "string",
           "enum": [
             "single_tractor",
-            "single_centerline_jet"
+            "single_centerline_jet",
+            "single_pusher"
           ]
         },
         "energy": {
@@ -2368,7 +2451,8 @@
         "damage": {
           "type": "string",
           "enum": [
-            "terminal_hull"
+            "terminal_hull",
+            "tolerant_hull"
           ]
         },
         "flaps": {
@@ -2376,6 +2460,12 @@
           "enum": [
             "not_simulated",
             "simulated"
+          ]
+        },
+        "airframe_layout": {
+          "type": "string",
+          "enum": [
+            "tailless"
           ]
         }
       },
@@ -2600,7 +2690,9 @@
           "fin_top",
           "canopy",
           "belly",
-          "engine"
+          "engine",
+          "left_wing_root",
+          "right_wing_root"
         ]
       }
     },
@@ -2750,6 +2842,56 @@
               }
             },
             "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "crash_tolerance": {
+      "type": "object",
+      "required": [
+        "terminal_specific_energy",
+        "crash_depth",
+        "presentation_durability"
+      ],
+      "properties": {
+        "terminal_specific_energy": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 2.5,
+              "maximum": 50.0
+            },
+            "unit": {
+              "const": "J/kg"
+            }
+          }
+        },
+        "crash_depth": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.08,
+              "maximum": 0.3
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "presentation_durability": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 1.0,
+              "maximum": 10.0
+            },
+            "unit": {
+              "const": "1"
+            }
           }
         }
       },
@@ -6094,7 +6236,10 @@
           "capabilities": {
             "properties": {
               "propulsion_layout": {
-                "const": "single_tractor"
+                "enum": [
+                  "single_tractor",
+                  "single_pusher"
+                ]
               },
               "energy": {
                 "const": "fixed_voltage"
@@ -6128,7 +6273,10 @@
           "capabilities": {
             "properties": {
               "propulsion_layout": {
-                "const": "single_tractor"
+                "enum": [
+                  "single_tractor",
+                  "single_pusher"
+                ]
               },
               "energy": {
                 "const": "ocv_resistance"
@@ -6162,7 +6310,10 @@
           "capabilities": {
             "properties": {
               "propulsion_layout": {
-                "const": "single_tractor"
+                "enum": [
+                  "single_tractor",
+                  "single_pusher"
+                ]
               },
               "energy": {
                 "const": "pack_ecm"
@@ -6360,6 +6511,320 @@
               }
             }
           }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "capabilities": {
+            "properties": {
+              "controls": {
+                "const": "elevon"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "capabilities": {
+            "required": [
+              "airframe_layout"
+            ]
+          },
+          "controls": {
+            "properties": {
+              "max_throw": {
+                "required": [
+                  "elevon"
+                ],
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "rudder"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "aileron_down"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "rates": {
+                "properties": {
+                  "normal": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "rudder"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "rudder_expo"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "surface_ids": {
+                "required": [
+                  "elevon_left",
+                  "elevon_right"
+                ],
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "aileron_left"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "aileron_right"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "elevator"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "rudder"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "aero": {
+            "properties": {
+              "coefficients": {
+                "properties": {
+                  "CYdr": {
+                    "properties": {
+                      "value": {
+                        "const": 0
+                      }
+                    }
+                  },
+                  "Cldr": {
+                    "properties": {
+                      "value": {
+                        "const": 0
+                      }
+                    }
+                  },
+                  "Cndr": {
+                    "properties": {
+                      "value": {
+                        "const": 0
+                      }
+                    }
+                  },
+                  "CDdr": {
+                    "properties": {
+                      "value": {
+                        "const": 0
+                      }
+                    }
+                  }
+                }
+              },
+              "surfaces": {
+                "properties": {
+                  "vertical": {
+                    "properties": {
+                      "control_effectiveness": {
+                        "properties": {
+                          "value": {
+                            "const": 0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "capabilities": {
+            "not": {
+              "required": [
+                "airframe_layout"
+              ]
+            }
+          },
+          "controls": {
+            "properties": {
+              "max_throw": {
+                "required": [
+                  "rudder"
+                ],
+                "not": {
+                  "required": [
+                    "elevon"
+                  ]
+                }
+              },
+              "rates": {
+                "properties": {
+                  "normal": {
+                    "required": [
+                      "rudder",
+                      "rudder_expo"
+                    ]
+                  }
+                }
+              },
+              "surface_ids": {
+                "required": [
+                  "aileron_left",
+                  "aileron_right",
+                  "elevator",
+                  "rudder"
+                ],
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "elevon_left"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "elevon_right"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "aero": {
+            "properties": {
+              "surfaces": {
+                "properties": {
+                  "vertical": {
+                    "properties": {
+                      "control_effectiveness": {
+                        "properties": {
+                          "value": {
+                            "minimum": 0.01
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "capabilities": {
+            "required": [
+              "airframe_layout"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "aero": {
+            "not": {
+              "required": [
+                "ground_effect"
+              ]
+            },
+            "properties": {
+              "surfaces": {
+                "required": [
+                  "tailless"
+                ],
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "horizontal"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "wing_aileron_effectiveness"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "wing_section_cm_ac"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "aero": {
+            "properties": {
+              "surfaces": {
+                "required": [
+                  "horizontal",
+                  "wing_aileron_effectiveness"
+                ],
+                "not": {
+                  "required": [
+                    "tailless"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "capabilities": {
+            "properties": {
+              "damage": {
+                "const": "tolerant_hull"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "crash_tolerance"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "crash_tolerance"
+          ]
         }
       }
     },

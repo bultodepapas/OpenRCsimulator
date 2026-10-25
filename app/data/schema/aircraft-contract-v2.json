@@ -7,7 +7,8 @@
   "convention_id": "openrc-le-frd-v1",
   "capabilities": {
     "controls": [
-      "conventional"
+      "conventional",
+      "elevon"
     ],
     "gear": [
       "fixed_tricycle",
@@ -19,7 +20,8 @@
     ],
     "propulsion_layout": [
       "single_tractor",
-      "single_centerline_jet"
+      "single_centerline_jet",
+      "single_pusher"
     ],
     "energy": [
       "prescribed_fuel",
@@ -30,13 +32,20 @@
       "pack_ecm"
     ],
     "damage": [
-      "terminal_hull"
+      "terminal_hull",
+      "tolerant_hull"
     ],
     "flaps": [
       "not_simulated",
       "simulated"
+    ],
+    "airframe_layout": [
+      "tailless"
     ]
   },
+  "optional_capabilities": [
+    "airframe_layout"
+  ],
   "object_rules": [
     {
       "path": "/",
@@ -77,7 +86,8 @@
         "propulsion",
         "physical_identity_version",
         "crash_hull_ids",
-        "fuel_system"
+        "fuel_system",
+        "crash_tolerance"
       ]
     },
     {
@@ -107,7 +117,8 @@
         "propulsion_layout",
         "energy",
         "damage",
-        "flaps"
+        "flaps",
+        "airframe_layout"
       ]
     },
     {
@@ -226,6 +237,27 @@
     },
     {
       "path": "/controls/max_throw",
+      "when": {
+        "path": "/capabilities/controls",
+        "equals": "elevon"
+      },
+      "required": [
+        "aileron",
+        "elevator",
+        "elevon"
+      ],
+      "allowed": [
+        "aileron",
+        "elevator",
+        "elevon"
+      ]
+    },
+    {
+      "path": "/controls/max_throw",
+      "when": {
+        "path": "/capabilities/controls",
+        "equals": "conventional"
+      },
       "required": [
         "aileron",
         "elevator",
@@ -271,6 +303,29 @@
     },
     {
       "path": "/controls/rates/normal",
+      "when": {
+        "path": "/capabilities/controls",
+        "equals": "elevon"
+      },
+      "required": [
+        "aileron",
+        "elevator",
+        "aileron_expo",
+        "elevator_expo"
+      ],
+      "allowed": [
+        "aileron",
+        "elevator",
+        "aileron_expo",
+        "elevator_expo"
+      ]
+    },
+    {
+      "path": "/controls/rates/normal",
+      "when": {
+        "path": "/capabilities/controls",
+        "equals": "conventional"
+      },
       "required": [
         "aileron",
         "elevator",
@@ -428,6 +483,38 @@
     },
     {
       "path": "/aero/surfaces",
+      "when": {
+        "path": "/capabilities/airframe_layout",
+        "equals": "tailless"
+      },
+      "required": [
+        "attached_limit",
+        "tail_local_limit",
+        "tail_stall_end",
+        "tail_CD0",
+        "tail_k",
+        "tail_CD90",
+        "vertical",
+        "tailless"
+      ],
+      "allowed": [
+        "wing_station_incidence",
+        "body_cn_beta",
+        "wing_body_cl_beta",
+        "body_cy_beta",
+        "body_crossflow_area",
+        "attached_limit",
+        "tail_local_limit",
+        "tail_stall_end",
+        "tail_CD0",
+        "tail_k",
+        "tail_CD90",
+        "vertical",
+        "tailless"
+      ]
+    },
+    {
+      "path": "/aero/surfaces",
       "required": [
         "wing_aileron_effectiveness",
         "attached_limit",
@@ -490,6 +577,19 @@
         "lift_slope",
         "control_effectiveness",
         "incidence"
+      ]
+    },
+    {
+      "path": "/aero/surfaces/tailless",
+      "required": [
+        "station_x",
+        "elevon_coverage",
+        "elevon_chord_fraction"
+      ],
+      "allowed": [
+        "station_x",
+        "elevon_coverage",
+        "elevon_chord_fraction"
       ]
     },
     {
@@ -977,6 +1077,25 @@
     },
     {
       "path": "/controls/surface_ids",
+      "when": {
+        "path": "/capabilities/controls",
+        "equals": "elevon"
+      },
+      "required": [
+        "elevon_left",
+        "elevon_right"
+      ],
+      "allowed": [
+        "elevon_left",
+        "elevon_right"
+      ]
+    },
+    {
+      "path": "/controls/surface_ids",
+      "when": {
+        "path": "/capabilities/controls",
+        "equals": "conventional"
+      },
       "required": [
         "aileron_left",
         "aileron_right",
@@ -1130,6 +1249,19 @@
         "law",
         "tank_id"
       ]
+    },
+    {
+      "path": "/crash_tolerance",
+      "required": [
+        "terminal_specific_energy",
+        "crash_depth",
+        "presentation_durability"
+      ],
+      "allowed": [
+        "terminal_specific_energy",
+        "crash_depth",
+        "presentation_durability"
+      ]
     }
   ],
   "quantity_paths": [
@@ -1191,7 +1323,8 @@
     "/fuel_system/tanks/*/pickup_position",
     "/fuel_system/tanks/*/feed_line/capacity",
     "/propulsion/fuel_consumption/bsfc",
-    "/propulsion/fuel_consumption/idle_flow"
+    "/propulsion/fuel_consumption/idle_flow",
+    "/crash_tolerance/*"
   ],
   "array_rules": [
     {
@@ -1420,7 +1553,8 @@
     {
       "path": "/capabilities/controls",
       "values": [
-        "conventional"
+        "conventional",
+        "elevon"
       ]
     },
     {
@@ -1438,7 +1572,8 @@
       "path": "/capabilities/propulsion_layout",
       "values": [
         "single_tractor",
-        "single_centerline_jet"
+        "single_centerline_jet",
+        "single_pusher"
       ]
     },
     {
@@ -1455,7 +1590,8 @@
     {
       "path": "/capabilities/damage",
       "values": [
-        "terminal_hull"
+        "terminal_hull",
+        "tolerant_hull"
       ]
     },
     {
@@ -1463,6 +1599,12 @@
       "values": [
         "not_simulated",
         "simulated"
+      ]
+    },
+    {
+      "path": "/capabilities/airframe_layout",
+      "values": [
+        "tailless"
       ]
     },
     {

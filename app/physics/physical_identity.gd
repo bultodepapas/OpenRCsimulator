@@ -2,6 +2,8 @@ extends RefCounted
 ## Additive physical v2 identity metadata. IDs never select a numerical law.
 const VERSION := 1
 const SURFACES := ["aileron_left", "aileron_right", "elevator", "rudder"]
+## X8-03: an elevon aircraft identifies its two physical surfaces instead of the four conventional ones.
+const ELEVON_SURFACES := ["elevon_left", "elevon_right"]
 const ID_PATTERN := "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
 const MAX_ID_LENGTH := 80
 
@@ -64,13 +66,16 @@ static func validate(raw: Dictionary) -> PackedStringArray:
 			_register(hull_ids[i], "/crash_hull_ids/%d" % i, seen, issues)
 	_register(propulsion.get("id") if propulsion is Dictionary else null, "/propulsion/id", seen, issues)
 	var surface_ids: Variant = controls.get("surface_ids") if controls is Dictionary else null
+	var capabilities: Variant = raw.get("capabilities")
+	var elevon: bool = capabilities is Dictionary and capabilities.get("controls") == "elevon"
+	var surfaces: Array = ELEVON_SURFACES if elevon else SURFACES
 	if not surface_ids is Dictionary:
-		issues.append("/controls/surface_ids: expected the four conventional surface IDs")
+		issues.append("/controls/surface_ids: expected the %s surface IDs" % ("two elevon" if elevon else "four conventional"))
 	else:
 		for key in surface_ids:
-			if key not in SURFACES:
+			if key not in surfaces:
 				issues.append("/controls/surface_ids/%s: unsupported surface" % str(key))
-		for key in SURFACES:
+		for key in surfaces:
 			_register(surface_ids.get(key), "/controls/surface_ids/" + key, seen, issues)
 	return issues
 

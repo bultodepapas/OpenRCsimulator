@@ -32,6 +32,7 @@ FAMILIES = {
     "sebart-avanti-s-a200-p100rx",
     "turbo-lumber-evolution",
     "f4u-corsair-250",
+    "skywalker-x8",
 }
 
 
@@ -46,7 +47,7 @@ class AircraftModelManifestTests(unittest.TestCase):
         cls.by_family = {item["family_id"]: item for item in cls.registry["families"]}
         cls.manifests = {path.stem: load_json(path) for path in OUTPUT_DIR.glob("*.json")}
 
-    def test_generated_manifests_are_current_and_cover_six_visual_builders(self):
+    def test_generated_manifests_are_current_and_cover_every_visual_family(self):
         result = subprocess.run(
             [sys.executable, "research/aircraft-standardization/build_models.py", "--check"],
             cwd=ROOT,
@@ -58,7 +59,7 @@ class AircraftModelManifestTests(unittest.TestCase):
         self.assertEqual(set(self.by_family), FAMILIES)
         self.assertEqual(set(self.manifests), FAMILIES)
         self.assertEqual(self.registry["version"], 2)
-        imported = {"turbo-lumber-evolution", "sebart-avanti-s-a200-p100rx", "f4u-corsair-250"}
+        imported = {"turbo-lumber-evolution", "sebart-avanti-s-a200-p100rx", "f4u-corsair-250", "skywalker-x8"}
         for family_id, manifest in self.manifests.items():
             self.assertEqual(manifest["version"], 2 if family_id in imported else 1)
         self.assertFalse(validate_registry(self.registry))
@@ -73,6 +74,8 @@ class AircraftModelManifestTests(unittest.TestCase):
             "turbo-lumber-evolution": (0.0, 0.0, 0.28064, "imported_glb"),
             # F4U-05: g1.3's three-blade visual propeller; the physical 30x18 is F4U-07 data.
             "f4u-corsair-250": (0.0, 0.0, 0.9003021457332075, "imported_glb"),
+            # X8-02: the r4 pusher's measured 12 in propeller; D0 is the physics LE datum.
+            "skywalker-x8": (0.0, 0.0, 0.3049, "imported_glb"),
         }
         for family_id, (datum_z, datum_y, diameter, adapter) in expected.items():
             with self.subTest(family=family_id):
@@ -81,11 +84,10 @@ class AircraftModelManifestTests(unittest.TestCase):
                 self.assertEqual(manifest["datum"]["model_z_le"], datum_z)
                 self.assertEqual(manifest["datum"]["model_y_thrust"], datum_y)
                 self.assertEqual(manifest["bindings"]["rotor"]["authored_diameter_m"], diameter)
-                self.assertEqual(
-                    set(manifest["bindings"]["controls"]),
+                expected_roles = {"elevon_left", "elevon_right"} if family_id == "skywalker-x8" else (
                     {"aileron_left", "aileron_right", "elevator", "rudder"}
-                    | ({"flap_left", "flap_right"} if family_id in {"sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "f4u-corsair-250"} else set()),
-                )
+                    | ({"flap_left", "flap_right"} if family_id in {"sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "f4u-corsair-250"} else set()))
+                self.assertEqual(set(manifest["bindings"]["controls"]), expected_roles)
         avanti = self.manifests["sebart-avanti-s-a200-p100rx"]
         self.assertEqual(
             [(hinge["key"], hinge["node"]) for hinge in avanti["bindings"]["controls"]["elevator"]["hinges"]],
@@ -214,8 +216,8 @@ class AircraftModelManifestTests(unittest.TestCase):
     def test_source_registry_v1_remains_readable(self):
         legacy = copy.deepcopy(self.registry)
         legacy["version"] = 1
-        # The F4U Corsair exists only as a version 2 construction family; a v1 registry predates it.
-        legacy["families"] = [item for item in legacy["families"] if item["family_id"] != "f4u-corsair-250"]
+        # The F4U Corsair and the X8 exist only as version 2 construction families; a v1 registry predates them.
+        legacy["families"] = [item for item in legacy["families"] if item["family_id"] not in {"f4u-corsair-250", "skywalker-x8"}]
         timber = next(item for item in legacy["families"] if item["family_id"] == "turbo-lumber-evolution")
         timber.pop("construction")
         timber["builder"]["script"] = "res://aircraft/timber_model.gd"
@@ -278,6 +280,40 @@ class AircraftModelManifestTests(unittest.TestCase):
         controls = duplicate_hinge["families"][0]["bindings"]["controls"]
         controls["rudder"]["hinges"][0]["key"] = controls["elevator"]["hinges"][0]["key"]
         self.assertTrue(validate_registry(duplicate_hinge))
+
+    def test_elevon_roles_replace_the_conventional_four_exclusively(self):
+        # X8-02: a family declares the four conventional roles or exactly both elevons; flaps stay optional.
+        def errors(mutate):
+            candidate = copy.deepcopy(self.registry)
+            mutate(next(item for item in candidate["families"] if item["family_id"] == "skywalker-x8")["bindings"]["controls"])
+            return validate_registry(candidate)
+
+        aileron = copy.deepcopy(self.by_family["f4u-corsair-250"]["bindings"]["controls"]["aileron_left"])
+        flap = copy.deepcopy(self.by_family["f4u-corsair-250"]["bindings"]["controls"]["flap_left"])
+        self.assertFalse(errors(lambda controls: None), "the elevon family is accepted")
+        self.assertFalse(errors(lambda controls: controls.update(flap_left=flap)), "flaps stay optional beside elevons")
+        self.assertTrue(errors(lambda controls: controls.update(aileron_left=aileron)), "elevons mixed with an aileron")
+        self.assertTrue(errors(lambda controls: controls.pop("elevon_right")), "a single elevon")
+        self.assertTrue(errors(lambda controls: (controls.pop("elevon_left"), controls.pop("elevon_right"))), "no roles at all")
+        conventional = copy.deepcopy(self.registry)
+        corsair = next(item for item in conventional["families"] if item["family_id"] == "f4u-corsair-250")
+        corsair["bindings"]["controls"]["elevon_left"] = copy.deepcopy(self.by_family["skywalker-x8"]["bindings"]["controls"]["elevon_left"])
+        self.assertTrue(validate_registry(conventional), "a conventional family with an added elevon")
+
+    def test_skywalker_x8_binds_two_elevons_a_pusher_frame_and_no_gear(self):
+        manifest = self.manifests["skywalker-x8"]
+        self.assertEqual(manifest["construction"], {"version": 1, "hinge_axis": "+X", "gear": [], "material_grow": [],
+                                                    "rotor": {"frame_node": "thrust_frame", "geometry_ref": "thrust", "axis": "+X"}})
+        self.assertEqual(manifest["bindings"]["gear"], {"keys": {}})
+        self.assertEqual([livery["id"] for livery in manifest["liveries"]], ["abisal", "bolido"])
+        geometry = load_json(ROOT / manifest["geometry"]["source"]["path"])
+        for side in ("left", "right"):
+            record = geometry["articulations"][f"elevon_{side}_hinge"]
+            self.assertEqual((record["app_sign"], record["positive"], record["range_deg"]), (-1, "trailing edge down", [-26.76, 26.85]))
+            self.assertLess(geometry["elevon_presentation"]["trailing_edge_check"][f"elevon_{side}_hinge"]["trailing_edge_rise_m_per_plus_1_deg"], 0.0)
+        self.assertEqual(set(geometry["unbound_pivots"]), {"camera_door_left_hinge", "camera_door_right_hinge"})
+        bound = {hinge["node"] for control in manifest["bindings"]["controls"].values() for hinge in control["hinges"]}
+        self.assertTrue(bound.isdisjoint(geometry["unbound_pivots"]))
 
     def test_geometry_articulation_reference_cannot_dangle(self):
         family = copy.deepcopy(self.by_family["turbo-lumber-evolution"])

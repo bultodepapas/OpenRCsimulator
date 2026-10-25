@@ -37,13 +37,19 @@ static func classify(base: Dictionary) -> Dictionary:
 	else:
 		capabilities = capabilities_variant
 	var capability_keys: Array = registry.get("capability_keys", [])
+	# X8-04: optional fields select a law only when present; absence keeps the historical law and adds nothing.
+	var optional_keys: Array = registry.get("optional_capability_keys", [])
 	for key_variant: Variant in capabilities.keys():
 		var key := str(key_variant)
-		if not capability_keys.has(key):
+		if not capability_keys.has(key) and not optional_keys.has(key):
 			_issue(errors, diagnostics, "module.capability.unknown_field", "capabilities." + key,
 				"is not a registered capability field")
 	var capability_registry: Dictionary = registry.get("capabilities", {})
-	for key_variant: Variant in capability_keys:
+	var selected_keys: Array = capability_keys.duplicate()
+	for key_variant: Variant in optional_keys:
+		if capabilities.has(str(key_variant)):
+			selected_keys.append(key_variant)
+	for key_variant: Variant in selected_keys:
 		var key: String = str(key_variant)
 		if not capabilities.has(key):
 			_issue(errors, diagnostics, "module.capability.missing", "capabilities." + key, "is required")

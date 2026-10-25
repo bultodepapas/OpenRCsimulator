@@ -3,7 +3,10 @@ extends RefCounted
 const ConstructionContract := preload("res://aircraft/imported_model_contract.gd")
 
 const ADAPTERS := ["euler_hinges", "axis_hinges", "imported_glb"]
-const CONTROL_ROLES := ["aileron_left", "aileron_right", "elevator", "rudder", "flap_left", "flap_right"]
+const CONTROL_ROLES := ["aileron_left", "aileron_right", "elevator", "rudder", "flap_left", "flap_right", "elevon_left", "elevon_right"]
+## A family declares either the four conventional roles or exactly both elevon roles (X8-02); flap roles stay optional.
+const CONVENTIONAL_ROLES := ["aileron_left", "aileron_right", "elevator", "rudder"]
+const ELEVON_ROLES := ["elevon_left", "elevon_right"]
 const GEAR_ROLES := ["left", "right", "tail", "steering", "nose"]
 const DEPENDENCY_ROLES := ["builder", "generated_geometry", "imported_asset", "crash_metadata", "script_dependency", "resource_dependency"]
 const SHARED_IMPORTED_BUILDER := "res://aircraft/imported_model.gd"
@@ -129,8 +132,13 @@ static func _check_controls(value: Variant, errors: PackedStringArray, diagnosti
 	var controls: Dictionary = value
 	var seen_keys: Dictionary = {}
 	var seen_nodes: Dictionary = {}
-	for required in ["aileron_left", "aileron_right", "elevator", "rudder"]:
+	# X8-02: an elevon family (any elevon role) needs both elevons and no conventional role; otherwise the four are required.
+	var elevon_layout := ELEVON_ROLES.any(func(role: String) -> bool: return controls.has(role))
+	for required in (ELEVON_ROLES if elevon_layout else CONVENTIONAL_ROLES):
 		if not controls.has(required): _fail(errors, diagnostics, "MODEL_CONTROL_MISSING", "$.bindings.controls." + required, "required stable control role is missing")
+	if elevon_layout:
+		for conventional in CONVENTIONAL_ROLES:
+			if controls.has(conventional): _fail(errors, diagnostics, "MODEL_CONTROL_LAYOUT_MIXED", "$.bindings.controls." + conventional, "elevon controls exclude aileron, elevator and rudder roles")
 	for role_variant in controls.keys():
 		var role := str(role_variant)
 		var path := "$.bindings.controls." + role

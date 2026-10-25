@@ -1,0 +1,177 @@
+{
+  "schema": "openrc-aircraft-model",
+  "version": 2,
+  "family_id": "skywalker-x8",
+  "builder": {
+    "script": "res://aircraft/imported_model.gd",
+    "adapter": "imported_glb"
+  },
+  "surface_method": "apply_surfaces",
+  "datum": {
+    "model_z_le": 0.0,
+    "model_y_thrust": 0.0
+  },
+  "coordinates": {
+    "units": "m",
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "root_node": "airplane",
+  "source_registry": {
+    "path": "assets/aircraft/model-bindings.json",
+    "sha256": "5670bc4def715502007bd06bc2303391da34b7c8866affeb0ae480df6a9682de",
+    "hash_mode": "lf_text"
+  },
+  "geometry": {
+    "script": "res://aircraft/skywalker_x8_geometry.gd",
+    "source": {
+      "path": "assets/aircraft/skywalker-x8/model-geometry.json",
+      "sha256": "0fbf3d27b932ec0b477355deabcad724b306e3a5d482d594665b24eb214e6df6",
+      "hash_mode": "lf_text"
+    },
+    "revision": "r4-3e14a512fac3",
+    "datum_source": {
+      "model_z_le": {
+        "value": 0.0
+      },
+      "model_y_thrust": {
+        "value": 0.0
+      }
+    }
+  },
+  "asset": {
+    "kind": "imported_glb",
+    "identity": "Skywalker X8 r4 game model (author delivery derived from master v3.1)",
+    "revision": "r4-3e14a512fac3",
+    "path": "res://assets/aircraft/skywalker-x8/skywalker_x8.glb",
+    "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac"
+  },
+  "bindings": {
+    "controls": {
+      "elevon_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevon_left",
+            "node": "elevon_left_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.elevon_left_hinge"
+          }
+        ]
+      },
+      "elevon_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevon_right",
+            "node": "elevon_right_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.elevon_right_hinge"
+          }
+        ]
+      }
+    },
+    "rotor": {
+      "present": true,
+      "node": "propeller",
+      "spin_node": "propeller_spin",
+      "authored_diameter_m": 0.3049,
+      "source": "geometry_articulation",
+      "geometry_ref": "articulations.propeller_spin"
+    },
+    "gear": {
+      "keys": {}
+    },
+    "crash": {
+      "provider": "gltf_extras",
+      "metadata_script": "",
+      "asset_node": ""
+    }
+  },
+  "authoring_sources": [
+    {
+      "path": "assets/aircraft/skywalker-x8/model-geometry.json",
+      "sha256": "0fbf3d27b932ec0b477355deabcad724b306e3a5d482d594665b24eb214e6df6",
+      "hash_mode": "lf_text",
+      "role": "geometry"
+    },
+    {
+      "path": "assets/aircraft/skywalker-x8/source-manifest.json",
+      "sha256": "8d176f1b350debdaf82ded28c76b2b1eb87d0aca068fb2e784e3938872960122",
+      "hash_mode": "lf_text",
+      "role": "asset_identity"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "res://aircraft/imported_model.gd",
+      "sha256": "9c652ba260167d5b89346f051a8e5b5dd01447265928afe34a0d3544a76ea464",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    },
+    {
+      "path": "res://aircraft/imported_model_contract.gd",
+      "sha256": "f209b87b1e4a8b8de5e6b501fab57f5fb4e578a9fd24044b43810ce8cb585d23",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/model_manifest.gd",
+      "sha256": "6c6a7a0a3f20a862c302088e40c58a547f05abc2a1475f1924d7a30edc0815e4",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/retractable_model.gd",
+      "sha256": "ba6cbf65c686fd244ffe4ce1c3debe9fe0e1a22b7bf32cf5d3ddf99e356cea83",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/skywalker_x8_geometry.gd",
+      "sha256": "a90dbc04cb18e747c5c784b64448623610aeae7c4962fece73334870e3f53a2c",
+      "hash_mode": "lf_text",
+      "role": "generated_geometry"
+    },
+    {
+      "path": "res://assets/aircraft/skywalker-x8/skywalker_x8.glb",
+      "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+      "hash_mode": "raw",
+      "role": "imported_asset"
+    },
+    {
+      "path": "res://assets/aircraft/skywalker-x8/skywalker_x8.glb.import",
+      "sha256": "7c97b4488989f70921d4635c15408c3937ab06f7a312af0c66cafac966341aca",
+      "hash_mode": "lf_text",
+      "role": "resource_dependency"
+    }
+  ],
+  "construction": {
+    "version": 1,
+    "hinge_axis": "+X",
+    "rotor": {
+      "frame_node": "thrust_frame",
+      "geometry_ref": "thrust",
+      "axis": "+X"
+    },
+    "gear": [],
+    "material_grow": []
+  },
+  "liveries": [
+    {
+      "id": "abisal",
+      "label": "ABISAL - deep-sea anglerfish",
+      "path": "res://assets/aircraft/skywalker-x8/skywalker_x8.glb",
+      "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+      "import_sha256": "7c97b4488989f70921d4635c15408c3937ab06f7a312af0c66cafac966341aca"
+    },
+    {
+      "id": "bolido",
+      "label": "BOLIDO - re-entry heat shield",
+      "path": "res://assets/aircraft/skywalker-x8/skywalker_x8_bolido.glb",
+      "sha256": "9ecaf7b49aec555bbea178b3b582378bb362bec3f816448932438db2c8da8f93",
+      "import_sha256": "0fe2dfaf34d6f6f863b492e54587f2c9a6cca66025cedf56ab352a44ac7e2c5d"
+    }
+  ]
+}
