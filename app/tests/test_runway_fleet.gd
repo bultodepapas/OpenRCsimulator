@@ -27,6 +27,13 @@ func _initialize() -> void:
 			session.setup(entry.data, entry.id)
 			check(entry.id + " field and weather", session.set_field(field) and session.setup_weather(weather))
 			session.start_choice = Preferences.DEFAULTS.start_choice
+			# X8-09: an airplane without landing gear has no runway start; it must refuse one explicitly, never fake it.
+			if not Session.runway_aircraft_supported(entry.id):
+				session.reset()
+				check(entry.id + " gearless airplane refuses the runway start", not session.start_error.is_empty()
+					and session.start_error.contains("landing gear"))
+				session.free()
+				continue
 			session.reset()
 			check(entry.id + " runway start: " + session.start_error, session.is_flyable() and session.start_error.is_empty()
 				and session.trace_meta().launch_choice == "runway" and session.sim.tick == 0)

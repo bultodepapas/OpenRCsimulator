@@ -62,7 +62,9 @@ func _initialize() -> void:
 			check(id + " fixed-bus electric has shaft RPM then zero wheel states, no wash transport",
 				legacy.shaft_is_coupled() and not legacy.battery_is_dynamic()
 				and legacy._rotor_index() == 0 and legacy.wheel_index() == 1
-				and legacy.wheel_count() == 3 and not W.enabled(legacy.aircraft.model.propulsion)
+				# X8-09: a gearless electric airplane has no wheel states.
+				and legacy.wheel_count() == (0 if legacy.aircraft.model.get("capabilities", {}).get("gear", "") == "locked_up" else 3)
+				and not W.enabled(legacy.aircraft.model.propulsion)
 				and legacy.sim.continuous == expected)
 		elif legacy.glow_is_active():
 			var expected_prefix: int = preload("res://physics/glow/flight.gd").SIZE

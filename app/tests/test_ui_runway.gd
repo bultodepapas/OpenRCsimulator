@@ -78,8 +78,10 @@ func _preferences_cases() -> void:
 	_check("runway preference is valid for qualified Avanti", _write_preferences(PREFS, 1, "en", AVANTI, RUNWAY) == OK
 		and Preferences.load_from(PREFS).aircraft == AVANTI and Preferences.load_from(PREFS).start_choice == RUNWAY)
 	for id in Catalog.airplane_flyable_ids():
-		_check("%s defaults to runway with no saved start" % id, _write_preferences(PREFS, 1, "en", id, AIRBORNE, false) == OK
-			and Preferences.load_from(PREFS).start_choice == RUNWAY)
+		# X8-09: an airplane without landing gear defaults to the airborne start.
+		var default_start: String = RUNWAY if Catalog.runway_supported(id) else AIRBORNE
+		_check("%s defaults to %s with no saved start" % [id, default_start], _write_preferences(PREFS, 1, "en", id, AIRBORNE, false) == OK
+			and Preferences.load_from(PREFS).start_choice == default_start)
 		_check("%s retains explicit airborne preference" % id, _write_preferences(PREFS, 1, "en", id, AIRBORNE) == OK
 			and Preferences.load_from(PREFS).start_choice == AIRBORNE)
 
@@ -409,6 +411,19 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	for aircraft: String in Catalog.airplane_flyable_ids():
 		app.call("set_aircraft", aircraft)
 		await ui.settle()
+		if not Catalog.runway_supported(aircraft):
+			# X8-09: a gearless airplane shows the airborne start only and launches in the air.
+			_check("changing to %s shows the airborne start only" % aircraft, home.get("aircraft_id") == aircraft
+				and home.get("start_choice") == AIRBORNE and home.get("start_button").disabled)
+			app.start_flight()
+			_check("%s Home Fly starts in the air" % aircraft, app.flight != null
+				and app.flight.startup_error.is_empty() and app.flight.session.trace_meta().launch_choice == AIRBORNE)
+			if app.flight != null:
+				app.open_pause()
+				app.end_flight()
+				await ui.settle()
+				home = app.home
+			continue
 		_check("changing to %s keeps runway" % aircraft, home.get("aircraft_id") == aircraft
 			and home.get("start_choice") == RUNWAY and not home.get("start_button").disabled
 			and Preferences.load_from(PREFS).start_choice == RUNWAY)

@@ -291,6 +291,9 @@ func _run() -> void:
 		and requested_catalog_button.button_pressed and requested_ids == PackedStringArray([requested_catalog_id]))
 	await process_frame # model preview may still be loading when the aircraft choice is committed
 	async_home.set_aircraft(requested_catalog_id)
+	# X8-09: the details text above the list reflows over two frames when the selection changes; with eleven rows the
+	# last one sits at the viewport edge, so the reveal is judged once that layout has settled.
+	await process_frame
 	await process_frame
 	_check("asynchronous aircraft selection keeps its row focused and revealed",
 		requested_catalog_button.has_focus() and requested_catalog_button.button_pressed

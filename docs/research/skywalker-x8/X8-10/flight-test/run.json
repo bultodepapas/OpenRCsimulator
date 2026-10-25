@@ -1,13 +1,14 @@
 {
   "card": "ft-card-v5",
-  "commit": "9a71f40209afc12521e4acedce8574b4b90c2218",
+  "commit": "ed2ccc65f01aa2199baf5f5dff4127bf7707fcb1",
   "dirty_paths": [
-    "app/data/aircraft/battery/skywalker_x8_6s_pack.json",
-    "app/data/aircraft/skywalker_x8.json",
-    "app/data/economy/catalog.json",
-    "app/data/workshop/skywalker-x8.json",
-    "app/tests/test_aircraft_model_manifest.gd",
-    "app/tests/test_aircraft_render_contract.gd"
+    "app/tests/test_runway_fleet.gd",
+    "app/tests/test_ui_home.gd",
+    "app/tests/test_ui_runway.gd",
+    "app/tests/test_wash_transport.gd",
+    "app/tests/test_workshop_descriptor.gd",
+    "app/tests/test_workshop_experiments.gd",
+    "app/tests/test_workshop_starts.gd"
   ],
   "godot": "4.8.beta1.official.4d10419ca",
   "app": "app",
@@ -16,11 +17,11 @@
     "skywalker-x8": {
       "exit": 0,
       "script_errors": 0,
-      "wall_s": 390.8,
+      "wall_s": 328.0,
       "valid_tests": 30,
       "tests": 40,
       "data_file": "data/aircraft/skywalker_x8.json",
-      "data_sha256": "e506bf3375e20da0e81f9b148e585cc4048577cfd5c4736b313b9df3d27faf8d"
+      "data_sha256": "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830"
     }
   }
 }

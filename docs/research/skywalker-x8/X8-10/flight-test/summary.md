@@ -12,10 +12,10 @@
 | 60° level turn, full throttle (°/s) | (22.5) |
 | Loop height (m) / time (s) | 33 / 4.6 |
 | Knife-edge, full top rudder, full throttle: vertical speed (m/s) / sideslip (°) | -33.3 / 1.0 |
-| Inverted pass: elevator stick / α (°) | (-0.534) / (-7.5) |
-| Spin (right): entry / time per turn (s) / recovery turns | spiral (no spin) / 10.46 / 0.00 |
+| Inverted pass: elevator stick / α (°) | (-0.536) / (-7.5) |
+| Spin (right): entry / time per turn (s) / recovery turns | spiral (no spin) / 11.56 / 0.00 |
 | Modes at start speed: phugoid period (s), ζ / dutch roll ζ / spiral | 7.3, 0.17 / 0.42 / halves 1.4 s |
-| Hands off 30 s after small pulses: heading change (°) / height change (m) | 5 / 0.4 |
+| Hands off 30 s after small pulses: heading change (°) / height change (m) | 6 / 0.4 |
 | Lift-off speed (m/s, Vs) / ground roll (m) | skipped |
 | Landing: touchdown speed (m/s) / sink (m/s) / rollout (m) | skipped |
 | Spool-up 10-90 % (s) | 0.10 |
@@ -26,14 +26,14 @@
 | Slow roll (right): height change (m) / peak rudder stick | -15.1 / 0.89 |
 | Four-point roll (right): worst over-rotation (°) | 5.0 |
 | Snap roll (right): entry / autorotation short of 360° (°) / stop error (°) | aileron roll (wing not stalled) / 334 / -334 |
-| Stall turn (right, kick at 0.35 Vs): outcome / pivot radius (spans) | no pivot in 6 s (nose not 70° down) / 18.16 |
+| Stall turn (right, kick at 0.35 Vs): outcome / pivot radius (spans) | no pivot in 6 s (nose not 70° down) / 18.65 |
 | Engine cut in the climb, 1 s reaction: least speed (Vs) / stalled | 0.95 / False |
 | Turn back, engine off: least height per 180° (m) at bank (°) | (18.2) at (45) |
-| Turning stall, 45° right: speed / Vs√n, roll-off | (0.949), (inside) |
+| Turning stall, 45° right: speed / Vs√n, roll-off | (0.949), (outside) |
 | Skidded stall (right): roll-off in 1 s (°) | -16 |
 | Stall held 5 s, controls neutral: outcome / height lost (m) | mush / 5 |
-| Inverted stall: speed (upright Vs) | 1.25 |
-| Inverted spin (right rudder): entry / time per turn (s) | spiral (no spin) / 5.81 |
+| Inverted stall: speed (upright Vs) | 0.62 |
+| Inverted spin (right rudder): entry / time per turn (s) | spin / 2.97 |
 | Dead-stick: glide ratio / touchdown past the aim (m) | skipped |
 | Hands-off throttle step from the trim: path angle after 30 s at 25 % / 50 % (°), inverted at 100 % (s) | -10.1 / 0.3 / 4.36 |
 | Go-around, throttle slammed: least wheel height (m) / most bank (°) | skipped |
