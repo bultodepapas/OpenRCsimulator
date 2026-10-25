@@ -1,0 +1,8 @@
+{
+  "note": "User paused competing Godot runs. These inventories describe each process start only; the machine was not isolated from other CPU/GPU work. Pair 4 has a long collection gap.",
+  "godot_processes_before_start": {
+    "pair-4-baseline": [],
+    "pair-5-baseline": [],
+    "pair-5-candidate": []
+  }
+}

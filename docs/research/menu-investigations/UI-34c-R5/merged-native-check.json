@@ -1,0 +1,51 @@
+{
+  "source_head": "1dc7a3dd4ec837a2a2c74592feb6c0c47787c5cf",
+  "app_root_sha256": "d5b840d16f18da5e134d0127792770b18301c1aeaeddcfe79615d5132d9d2955",
+  "checked_report": {
+    "format": "openrc-godot-check v1",
+    "capture_id": "5b6f3f2e-5ac9-4c87-8bad-e63700bd9117",
+    "command": [
+      "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1920x1080",
+      "--fullscreen",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/research/performance/loading_probe.gd",
+      "--",
+      "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/ui34c-r5-final-native/merged-turbo.json",
+      "--aircraft=turbo-lumber-evolution",
+      "--cycles=2"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-25T02:41:52.356973+00:00",
+    "label": "merged-turbo",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui34c-r5-final-native\\checks\\merged-turbo-f4523g05\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui34c-r5-final-native\\checks\\merged-turbo-f4523g05\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": true,
+    "required_text": [
+      "loading probe: 2 Home/Fly cycles ->"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 23.219,
+    "log_bytes": 284,
+    "log_sha256": "1d7576309933fd501e63556cc48c29ec00f3b87627b552a60c9927b29818050d"
+  },
+  "scope": "Separate native main integration check after the frozen paired cohort; not an A/B data point. Other host activity and OS/driver caches uncontrolled."
+}

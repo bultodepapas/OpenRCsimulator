@@ -1,5 +1,5 @@
 {
-  "method": "Three completed alternating fresh-process pairs, native fullscreen 1920x1080; two cycles each. Runtime 4ae9fc667 vs77fe89a0e, identical tracked app import metadata. OS/driver cache and other host activity uncontrolled. Pair 4 candidate is exploratory and excluded from paired aggregates. Failure-only collector diagnostics added after a refused attempt; no successful-path timing code changed.",
+  "method": "Five alternating fresh-process pairs, native fullscreen 1920x1080; two cycles each. Runtime 4ae9fc667 vs77fe89a0e, identical tracked app import metadata. Collection resumed after the user paused competing Godot runs: pair 4 baseline and both pair 5 runs are from the later window; pair 4 has a long interruption between its candidate and baseline. OS/driver cache and other host activity remain uncontrolled. Failure-only collector diagnostics added after a refused attempt; no successful-path timing code changed.",
   "runs": [
     {
       "pair": 1,
@@ -303,6 +303,56 @@
     },
     {
       "pair": 4,
+      "role": "baseline",
+      "path": "pair-4-baseline.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "home_first_draw_from_load_ms": 8888.169,
+      "home_to_first_ready_ms": 19520.155,
+      "cycles": [
+        {
+          "ready_ms": 10631.986,
+          "first_draw_ms": 10651.487,
+          "feedback_ms": 13.219,
+          "paused": false,
+          "scene_ms": 2957.167,
+          "trim_ms": 5449.566,
+          "contacts_ms": 253.639,
+          "p95_handoff_ms": 23.95,
+          "max_handoff_ms": 2960.337,
+          "frames_over_ms": {
+            "33": 17,
+            "50": 12,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1595.814,
+          "first_draw_ms": 1614.15,
+          "feedback_ms": 12.345,
+          "paused": false,
+          "scene_ms": 4.897,
+          "trim_ms": 38.76,
+          "contacts_ms": 115.88,
+          "p95_handoff_ms": 176.448,
+          "max_handoff_ms": 229.676,
+          "frames_over_ms": {
+            "33": 15,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 4,
       "role": "candidate",
       "path": "pair-4-candidate.json",
       "complete": true,
@@ -350,51 +400,153 @@
           "orphan_nodes": 0
         }
       ]
+    },
+    {
+      "pair": 5,
+      "role": "baseline",
+      "path": "pair-5-baseline.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "home_first_draw_from_load_ms": 5646.339,
+      "home_to_first_ready_ms": 13989.747,
+      "cycles": [
+        {
+          "ready_ms": 8343.408,
+          "first_draw_ms": 8363.025,
+          "feedback_ms": 11.831,
+          "paused": false,
+          "scene_ms": 1689.554,
+          "trim_ms": 4988.285,
+          "contacts_ms": 263.486,
+          "p95_handoff_ms": 26.793,
+          "max_handoff_ms": 1692.744,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1531.317,
+          "first_draw_ms": 1553.069,
+          "feedback_ms": 12.452,
+          "paused": false,
+          "scene_ms": 5.302,
+          "trim_ms": 25.157,
+          "contacts_ms": 116.616,
+          "p95_handoff_ms": 165.831,
+          "max_handoff_ms": 225.158,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 9,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 5,
+      "role": "candidate",
+      "path": "pair-5-candidate.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "home_first_draw_from_load_ms": 5728.216,
+      "home_to_first_ready_ms": 13081.362,
+      "cycles": [
+        {
+          "ready_ms": 7353.146,
+          "first_draw_ms": 7372.276,
+          "feedback_ms": 10.899,
+          "paused": false,
+          "scene_ms": 1667.754,
+          "trim_ms": 4000.983,
+          "contacts_ms": 280.952,
+          "p95_handoff_ms": 18.632,
+          "max_handoff_ms": 284.074,
+          "frames_over_ms": {
+            "33": 15,
+            "50": 10,
+            "100": 5
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1510.786,
+          "first_draw_ms": 1528.631,
+          "feedback_ms": 15.071,
+          "paused": false,
+          "scene_ms": 4.666,
+          "trim_ms": 25.362,
+          "contacts_ms": 116.301,
+          "p95_handoff_ms": 168.699,
+          "max_handoff_ms": 226.725,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
     }
   ],
   "planned_pairs": 5,
   "completed_pair_ids": [
     1,
     2,
-    3
+    3,
+    4,
+    5
   ],
-  "complete": false,
-  "stop_reason": "Shared host remained occupied by unrelated rendered Godot experiments; do not run rendered benchmarks concurrently.",
+  "complete": true,
+  "collection_interruption": "Initially closed with three complete pairs plus candidate 4 due host contention; resumed in a user-reserved window, verifying the frozen runtime hashes before candidate 5.",
   "baseline": {
     "cold": {
-      "ready_ms": 15539.869,
-      "feedback_ms": 22.296,
-      "scene_ms": 3526.817,
-      "trim_ms": 8539.203,
-      "p95_handoff_ms": 20.093,
-      "max_handoff_ms": 3531.208
+      "ready_ms": 14665.6,
+      "feedback_ms": 20.658,
+      "scene_ms": 3409.082,
+      "trim_ms": 8259.593,
+      "p95_handoff_ms": 21.512,
+      "max_handoff_ms": 3413.528
     },
     "warm": {
-      "ready_ms": 2629.149,
-      "feedback_ms": 26.554,
-      "scene_ms": 7.279,
-      "trim_ms": 47.768,
-      "p95_handoff_ms": 288.516,
-      "max_handoff_ms": 363.993
+      "ready_ms": 2447.822,
+      "feedback_ms": 25.063,
+      "scene_ms": 5.755,
+      "trim_ms": 46.564,
+      "p95_handoff_ms": 266.607,
+      "max_handoff_ms": 328.712
     },
-    "home_to_first_ready_ms": 25745.16
+    "home_to_first_ready_ms": 24657.356
   },
   "candidate": {
     "cold": {
       "ready_ms": 12970.675,
-      "feedback_ms": 22.721,
+      "feedback_ms": 20.998,
       "scene_ms": 2988.124,
-      "trim_ms": 6863.966,
+      "trim_ms": 6580.329,
       "p95_handoff_ms": 17.825,
       "max_handoff_ms": 582.777
     },
     "warm": {
       "ready_ms": 2287.762,
-      "feedback_ms": 28.472,
-      "scene_ms": 9.067,
-      "trim_ms": 37.855,
+      "feedback_ms": 28.375,
+      "scene_ms": 8.465,
+      "trim_ms": 30.937,
       "p95_handoff_ms": 226.829,
-      "max_handoff_ms": 401.114
+      "max_handoff_ms": 381.903
     },
     "home_to_first_ready_ms": 22805.221
   }
