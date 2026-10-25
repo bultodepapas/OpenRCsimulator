@@ -57,6 +57,7 @@ func _run() -> void:
 				"rpm=%s residual=%s" % [str(result.get("rpm", NAN)), String.num_scientific(residual)])
 
 	_check_pack_source_context(prop, prop_variant, failed_pack)
+	_check_fused_torque_probes(prop, prop_variant, failed_pack)
 	_finish()
 
 
@@ -116,6 +117,45 @@ func _check_pack_source_context(prop: Dictionary, prop_variant: Dictionary, fail
 	_check("prepared full, compact, and repeated A/B calls leave every input prop unchanged",
 		var_to_bytes(prop) == prop_a_bytes and var_to_bytes(prop_variant) == prop_b_bytes
 			and var_to_bytes(failed_pack) == failed_prop_bytes)
+
+
+func _check_fused_torque_probes(prop: Dictionary, prop_variant: Dictionary, failed_pack: Dictionary) -> void:
+	var context: Dictionary = {uses_pack_ecm = true}
+	var original_prop: PackedByteArray = var_to_bytes(prop)
+	var retained_sample: PackedFloat64Array = PackedFloat64Array()
+	var retained_bytes := PackedByteArray()
+	# Compare each consumed value with the independently evaluated public source/load arithmetic.
+	for inputs: PackedFloat64Array in [PackedFloat64Array([5600.0, 0.55, 5.0, 1.225]),
+			PackedFloat64Array([5601.0, 0.55, 5.0, 1.225]), PackedFloat64Array([5601.0, 0.56, 5.0, 1.225]),
+			PackedFloat64Array([5601.0, 0.56, 6.0, 1.225]), PackedFloat64Array([5601.0, 0.56, 6.0, 1.1])]:
+		var source: Dictionary = Propulsion.electric_source_state(inputs[0], inputs[1], prop)
+		var load: float = Propulsion.prop_torque(inputs[0], inputs[2], prop, inputs[3])
+		var expected_residual: float = float(source.shaft_torque_nm) - load
+		var expected_tolerance: float = Propulsion.ELECTRIC_ROOT_TORQUE_TOL \
+			* maxf(1.0, maxf(absf(float(source.shaft_torque_nm)), absf(load)))
+		var probe: PackedFloat64Array = Propulsion._electric_residual_and_tolerance(
+			inputs[0], inputs[1], inputs[2], prop, inputs[3], context)
+		_check("fused torque probe matches independent residual/tolerance arithmetic for " + str(inputs),
+			var_to_bytes(probe) == var_to_bytes(PackedFloat64Array([expected_residual, expected_tolerance])))
+		if retained_sample.is_empty():
+			retained_sample = probe
+			retained_bytes = var_to_bytes(retained_sample)
+	_check("later probes leave a returned pair and the source model unchanged",
+		var_to_bytes(retained_sample) == retained_bytes and var_to_bytes(prop) == original_prop)
+	var changed_context: Dictionary = {uses_pack_ecm = true}
+	var changed_source: Dictionary = Propulsion.electric_source_state(5600.0, 0.55, prop_variant)
+	var changed_load: float = Propulsion.prop_torque(5600.0, 5.0, prop_variant, 1.225)
+	var changed_probe: PackedFloat64Array = Propulsion._electric_residual_and_tolerance(
+		5600.0, 0.55, 5.0, prop_variant, 1.225, changed_context)
+	_check("a changed pack produces its independent fused residual/tolerance",
+		changed_probe[0] == float(changed_source.shaft_torque_nm) - changed_load \
+			and changed_probe[1] == Propulsion.ELECTRIC_ROOT_TORQUE_TOL \
+				* maxf(1.0, maxf(absf(float(changed_source.shaft_torque_nm)), absf(changed_load))))
+	var failed_context: Dictionary = {uses_pack_ecm = true}
+	var failed_probe: PackedFloat64Array = Propulsion._electric_residual_and_tolerance(
+		5600.0, 0.55, 5.0, failed_pack, 1.225, failed_context)
+	_check("invalid source retains both nonfinite fused values",
+		failed_probe.size() == 2 and is_nan(failed_probe[0]) and is_nan(failed_probe[1]))
 
 
 func _check(label: String, ok: bool, detail: String = "") -> void:
