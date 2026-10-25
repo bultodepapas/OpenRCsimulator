@@ -68,6 +68,12 @@ func _initialize() -> void:
 	_check("FSR3 and DLSS fail closed when an engine mode constant is absent",
 		Reconstruction.resolve("fsr3_native", missing_native_modes).fallback_reason == "engine_mode_missing"
 		and Reconstruction.resolve("dlss_native", missing_native_modes).fallback_reason == "engine_mode_missing")
+	var reason_caps := _caps(true, false, false)
+	reason_caps["fsr3_reason"] = "fsr3_support_missing"
+	reason_caps["dlss_reason"] = "dlss_support_missing"
+	_check("provider menu status preserves the specific runtime limitation",
+		Reconstruction.option_status("fsr3_quality", reason_caps).reason == "fsr3_support_missing"
+		and Reconstruction.option_status("dlss_quality", reason_caps).reason == "dlss_support_missing")
 	for mode: String in Preferences.RECONSTRUCTION_MODES:
 		var candidate := Preferences.DEFAULTS.duplicate(true)
 		candidate.reconstruction = mode

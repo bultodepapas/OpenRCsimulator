@@ -733,8 +733,7 @@ func _sync_reconstruction_controls() -> void:
 	_reconstruction_picker.disabled = not high_active
 	_reconstruction_picker.tooltip_text = tr("Choose a reconstruction option available in High graphics. Check distant aircraft detail in motion.") if high_active \
 		else tr("Restart in High from Home to use reconstruction.")
-	if high_active:
-		_reconstruction_picker.tooltip_text += "\n" + tr("At 1080p, Quality uses about 1280 × 720 3D input; Performance uses 960 × 540. Quality keeps more input detail than Balanced or Performance. Lower input may soften distant detail; compare while moving.")
+	_reconstruction_picker.tooltip_text += "\n" + tr("At 1080p, Quality uses about 1280 × 720 3D input; Performance uses 960 × 540. Quality keeps more input detail than Balanced or Performance. Lower input may soften distant detail; compare while moving.")
 	for index: int in _reconstruction_picker.item_count:
 		var mode := str(_reconstruction_picker.get_item_metadata(index))
 		var status := Reconstruction.option_status(mode, capabilities)
@@ -749,8 +748,12 @@ func _sync_reconstruction_controls() -> void:
 	_fsr2_sharpness_slider.editable = high_active and policy.provider in ["fsr2", "fsr3"]
 	_fsr2_sharpness_slider.focus_mode = Control.FOCUS_ALL if _fsr2_sharpness_slider.editable else Control.FOCUS_NONE
 	_fsr2_sharpness_value.text = tr("Off") if is_zero_approx(strength) else "%d %%" % roundi(strength * 100.0)
+	var requested_mode := str(_draft.get("reconstruction", "native"))
+	var requested_provider := str(Reconstruction.MODE_PROVIDERS.get(requested_mode, ""))
 	if policy.provider == "dlss":
 		_fsr2_sharpness_slider.tooltip_text = tr("DLSS controls its own reconstruction sharpness. This saved FSR value is kept for FSR2 or FSR3.")
+	elif requested_provider == "dlss" and policy.fallback:
+		_fsr2_sharpness_slider.tooltip_text = tr("FSR sharpness is inactive while Native is active. This saved value stays for FSR2 or FSR3. DLSS controls sharpness when it is active.")
 	elif policy.provider in ["fsr2", "fsr3"]:
 		_fsr2_sharpness_slider.tooltip_text = tr("0% disables FSR sharpening. Higher values sharpen edges but can exaggerate halos and shimmer.")
 	else:
@@ -788,6 +791,7 @@ func _reconstruction_unavailable_text(provider: String, reason: String) -> Strin
 	match reason:
 		"fsr3_support_missing": return tr("FSR3 support is not included in this game build.")
 		"fsr3_unavailable": return tr("The current graphics session does not report FSR3 support.")
+		"fsr3_runtime_failure": return tr("FSR3 could not continue in this graphics session.")
 		"dlss_support_missing": return tr("DLSS support is not included in this game build.")
 		"dlss_unavailable": return tr("The current graphics session does not report DLSS support.")
 		"fsr2_unavailable": return tr("The current graphics session does not offer FSR2.")

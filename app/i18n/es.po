@@ -5936,6 +5936,9 @@ msgstr "Entrada 3D: %d × %d → salida: %d × %d"
 msgid "DLSS controls its own reconstruction sharpness. This saved FSR value is kept for FSR2 or FSR3."
 msgstr "DLSS controla su propia nitidez de reconstrucción. Este valor FSR se conserva para FSR2 o FSR3."
 
+msgid "FSR sharpness is inactive while Native is active. This saved value stays for FSR2 or FSR3. DLSS controls sharpness when it is active."
+msgstr "La nitidez FSR no se aplica mientras esté activo Nativo. Este valor se conserva para FSR2 o FSR3. DLSS controla su nitidez cuando está activo."
+
 msgid "Native rendering does not use FSR sharpness. This saved value is kept for FSR2 or FSR3."
 msgstr "El renderizado nativo no usa la nitidez FSR. Este valor se conserva para FSR2 o FSR3."
 
@@ -5956,6 +5959,9 @@ msgstr "Esta versión del juego no incluye compatibilidad con FSR3."
 
 msgid "The current graphics session does not report FSR3 support."
 msgstr "La sesión gráfica actual no indica que FSR3 sea compatible."
+
+msgid "FSR3 could not continue in this graphics session."
+msgstr "FSR3 no pudo continuar en esta sesión gráfica."
 
 msgid "DLSS support is not included in this game build."
 msgstr "Esta versión del juego no incluye compatibilidad con DLSS."
