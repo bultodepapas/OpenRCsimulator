@@ -1,0 +1,17 @@
+{
+ "format": "openrc-gdscript-diagnostics v1",
+ "scripts": 1,
+ "seconds": 52.4,
+ "findings": [
+  {
+   "file": "scenery/collision_world.gd",
+   "line": 0,
+   "severity": "tool",
+   "code": "NO_DIAGNOSTICS",
+   "message": "the language server sent no diagnostics within 30 s"
+  }
+ ],
+ "by_code": {
+  "NO_DIAGNOSTICS": 1
+ }
+}

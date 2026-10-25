@@ -36,7 +36,10 @@ The [checked differential test](cache-parity.log) compares the complete default 
 - Cache regression: 32 checks with the baseline reference, covering input/parked-geometry changes, mutation of both cold and hit results, eviction, failures, unsafe/recursive data, oversized input/output and off-main fallback.
 - Existing landscape collisions: 52 checks; visibility/quality collision setup: 22; parked-aircraft geometry/contact behavior: 45.
 - Loading transaction: 14 checks, including cancel, quit, duplicate activation and readiness. All four existing golden flights pass without re-recording.
+- The optional compiler-warning audit is inconclusive: both [baseline](compiler-baseline.json) and [candidate](compiler-candidate.json) return `NO_DIAGNOSTICS` for the collision script. This is a language-server/tool limitation, not a clean-warning result. Checked import, execution and differential validation above pass.
 - Final import passes. [Checked receipts](checked-runs.json) retain commands, diagnostics and engine-log hashes; direct exploratory runs are not substitutes for these receipts.
+
+Integration into shared `main` at `9384a0c11` preserves the concurrent branding, camera and graphics changes. Import, the 32-check differential/cache test and the 14-check loading transaction test pass again. The [native integration check](integration.json) completed two electric launches at 1920×1080 with active first draws, zero orphans and clean teardown (8.349 / 1.540 s readiness). It is separate from the frozen A/B series.
 
 ## Remaining work
 
