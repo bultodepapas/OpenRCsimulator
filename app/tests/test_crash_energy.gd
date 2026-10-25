@@ -18,6 +18,7 @@ const CATALOG_AIRPLANE_TAGS := {
 	"f4u-corsair-250": "gasoline",
 	"sebart-avanti-s-a200-p100rx": "kerosene",
 	"turbo-lumber-evolution": "lipo",
+	"skywalker-x8": "lipo",
 }
 const DATA_ONLY_AIRPLANE_TAGS := {
 	"stik_glow_55ax_2t_apc_13x6.json": {"id": "stik-glow-55ax-2t", "tag": "glow_fuel"},

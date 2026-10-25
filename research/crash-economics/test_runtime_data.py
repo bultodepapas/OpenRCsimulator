@@ -146,7 +146,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
             self.assertFalse(dossier["complete"], aircraft_id)
             self.assertTrue(dossier["missing"], aircraft_id)
             if aircraft_id in {"gp-extra-300s-60", "turbo-lumber-evolution", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx",
-                               "f4u-corsair-250"}:
+                               "f4u-corsair-250", "skywalker-x8"}:
                 continue
             self.assertEqual(dossier["components"], [], aircraft_id)
             self.assertEqual(dossier["propeller_component_id"], "", aircraft_id)
@@ -154,7 +154,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
 
     def test_fleet_part_subtotals_do_not_claim_full_aircraft_prices(self) -> None:
         cases = {"turbo-lumber-evolution": 46587, "p51d-mustang-120": 245671,
-                 "sebart-avanti-s-a200-p100rx": 655912}
+                 "sebart-avanti-s-a200-p100rx": 655912, "skywalker-x8": 109005}
         for aircraft_id, subtotal in cases.items():
             dossier = self.dossiers[aircraft_id]
             self.assertFalse(dossier["complete"])
@@ -210,7 +210,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
         # appear as current Turbo Timber candidates alongside their replacements.
         self.assertIn("timber_evolution_battery_proxy", self.context["offer_by_id"])
         self.assertNotIn("timber_evolution_battery_proxy", timber_candidates)
-        self.assertEqual(self.context["price_date"], "2026-10-20")
+        self.assertEqual(self.context["price_date"], "2026-10-25")
         self.assertEqual(self.dossiers["xcell-60-research"]["components"], [])
 
     def test_p51_canister_count_and_selected_variant_do_not_close_exhaust_scope(self) -> None:
@@ -290,7 +290,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
     def test_mixed_observation_dates_preserve_history(self) -> None:
         catalog = build_catalog.build()["catalog.json"]
         offers = {row["id"]: row for row in catalog["observations"]}
-        self.assertEqual(catalog["observed_on"], "2026-10-20")
+        self.assertEqual(catalog["observed_on"], "2026-10-25")
         self.assertEqual(offers["apc-lp12060"]["observed_on"], "2026-10-15")
         self.assertEqual(offers["timber_evolution_wheel_set_efl5258_horizon_20261016"]["observed_on"], "2026-10-16")
         self.assertEqual(offers["timber_evolution_battery_proxy_horizon_20261020"]["observed_on"], "2026-10-20")

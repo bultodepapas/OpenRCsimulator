@@ -25,7 +25,11 @@ func _initialize() -> void:
 		var airplane: Dictionary = Builder.build(entry.id)
 		var throws: Dictionary = model.controls.throw_deg
 		check(entry.id + " identity", airplane.aircraft_id == model.id)
-		check(entry.id + " jet has no active propeller", airplane.get("has_propeller", true) == (model.capabilities.propulsion_layout == "single_tractor"))
+		check(entry.id + " jet has no active propeller", airplane.get("has_propeller", true) == (model.capabilities.propulsion_layout in ["single_tractor", "single_pusher"]))
+		if throws.has("elevon"):
+			_check_elevons(entry.id, airplane, throws)
+			airplane.root.free()
+			continue
 		for sign: float in [-1.0, 1.0, 0.0]:
 			var command := {roll = sign, pitch = sign, yaw = sign, throttle = 0.0}
 			var surfaces: Dictionary = Commands.surface_deflections_deg(command, throws)
@@ -64,3 +68,27 @@ func _initialize() -> void:
 		airplane.root.free()
 	print("AS render contract: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
+
+
+## X8-02/03: an elevon family draws each elevon as elevator + its side's aileron, the radio mix clipped at the end
+## point; the aerodynamic decomposition and the rendered hinges must agree, saturation included.
+func _check_elevons(id: String, airplane: Dictionary, throws: Dictionary) -> void:
+	for command: Dictionary in [{roll = 0.0, pitch = 1.0}, {roll = 1.0, pitch = 0.0}, {roll = 1.0, pitch = 1.0},
+			{roll = -1.0, pitch = -1.0}, {roll = 0.0, pitch = 0.0}]:
+		var full := {roll = command.roll, pitch = command.pitch, yaw = 1.0, throttle = 0.0}
+		var surfaces: Dictionary = Commands.surface_deflections_deg(full, throws)
+		var right := clampf(command.pitch * throws.elevator + command.roll * throws.aileron, -throws.elevon, throws.elevon)
+		var left := clampf(command.pitch * throws.elevator - command.roll * throws.aileron, -throws.elevon, throws.elevon)
+		check(id + " elevon mix right %s" % command, absf(surfaces.elevator + surfaces.aileron_right - right) < 1e-12)
+		check(id + " elevon mix left %s" % command, absf(surfaces.elevator + surfaces.aileron_left - left) < 1e-12)
+		check(id + " no rudder %s" % command, surfaces.rudder == 0.0)
+		Builder.apply_surfaces(airplane, Commands.hinge_rotations(full, throws))
+		for item: Array in [["elevon_right", right], ["elevon_left", left]]:
+			var hinge: Dictionary = airplane.hinges[item[0]]
+			var relative: Basis = hinge.node.basis * hinge.rest.inverse()
+			var witness: Vector3 = Vector3.FORWARD.cross(hinge.axis).normalized()
+			var actual: float = witness.signed_angle_to(relative * witness, hinge.axis)
+			check(id + " actual hinge %s %s (%.6f vs %.6f)" % [item[0], command, actual, -deg_to_rad(item[1])],
+				absf(actual + deg_to_rad(item[1])) < 1e-6)
+			if command.roll == 0.0 and command.pitch == 0.0:
+				check(id + " neutral rest " + item[0], hinge.node.basis == hinge.rest)

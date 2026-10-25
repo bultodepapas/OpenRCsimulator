@@ -24,16 +24,16 @@ The X8 is the first catalog aircraft outside the conventional wing-tail/tractor/
 | ID | State | Work / proof |
 | --- | --- | --- |
 | X8-00 | Done 2026-10-25 | Delivery r4 frozen in `assets/source-deliveries/skywalker-x8-r4/` without images (owner rule) or the demo GLB; zip kept local in `references/source-deliveries/`. [manifest.py](../research/skywalker-x8/X8-00/manifest.py) writes [source-manifest.json](../assets/aircraft/skywalker-x8/source-manifest.json): 50 of 147 author hashes match, 97 omitted by rule. Both GLBs pass the generic preflight (38,504 triangles, 9 materials, span 2.117 m). |
-| X8-01 | In progress | Sources: NTNU X8 aero studies (already in the [flying-wing library](research/flight-dynamics/rc-validation-library-2026-10-18/flying-wings/README.md)), manufacturer data, propulsion, EPO crash behaviour. |
-| X8-02 | In progress | Model family and elevon roles. |
-| X8-03 | Planned | Elevon controls and rudderless trim. |
-| X8-04 | Planned | Tailless local aero law. |
-| X8-05 | Planned | Pusher layout. |
-| X8-06 | Planned | Physics data generator: mass inventory, inertia, NTNU coefficients, winglets, electric drive and pack, crash hull. |
-| X8-07 | Planned | Hand-launch start. |
-| X8-08 | Planned | Foam crash tolerance. |
-| X8-09 | Planned | Catalog registration: catalog, Spanish texts, Workshop descriptor, economy dossier, fleet lists. |
-| X8-10 | Planned | Verification: loader/regime/trim suites, flight-test battery, conformance, golden flights unchanged. |
+| X8-01 | Done 2026-10-25 | [Sources](research/skywalker-x8/X8-01/README.md): NTNU wind tunnel, CFD and flight identification (2018–2026), measured part masses and inertia, retail specifications, UIUC propeller data, EPO material data; 36 records in [sources.json](research/skywalker-x8/X8-01/sources.json), local copies in `references/skywalker-x8/`. |
+| X8-02 | Done 2026-10-25 | [Model family](research/skywalker-x8/X8-02/README.md): both skins in `app/assets/aircraft/skywalker-x8/`, `compile_model.py` geometry, elevon model roles exclusive of the conventional four (`model_manifest.gd`, `imported_model.gd`, `build_models.py`). Proof: `verify_skywalker_x8.gd` 36/36, `test_elevon_model_contract.gd` 25/25, `test_models.py` 19/19, F4U and livery suites unchanged. |
+| X8-03 | Done 2026-10-25 | Elevon controls: radio mix with end-point clipping, no rudder, bank-angle trim ([X8-04 evidence](research/skywalker-x8/X8-04/README.md)). |
+| X8-04 | Done 2026-10-25 | Tailless strip law with loader-derived elevon effectiveness, station shift, section moment and elevon couple ([evidence](research/skywalker-x8/X8-04/README.md)). Proof: golden flights 4/4 unchanged, `test_x8_flying_wing.gd` 37/37, contract 3587/0, schema–loader agreement 112/0. |
+| X8-05 | Done 2026-10-25 | `single_pusher` for electric propellers, hub aft of the CG required. |
+| X8-06 | Done 2026-10-25 | [Physics data](research/skywalker-x8/X8-06/README.md) from [derive_physics.py](../research/skywalker-x8/X8-06/derive_physics.py): 3.13 kg, CG 435 mm (4.4 % MAC margin), 28-point hull from the drawn model, ideal-bus and 6S-pack files. |
+| X8-07 | Planned | Hand-launch start: a new explicit start choice for gearless aircraft at the pilot station (session, Home, preferences, launch arguments, trace). Until then the X8 starts trimmed in the air at 30 m. |
+| X8-08 | Done 2026-10-25 | `tolerant_hull`: 12.5 J/kg and 0.12 m terminal thresholds, presentation durability 4 (estimates). A 3 m/s belly touchdown is survivable; under the shared balsa thresholds it is terminal. |
+| X8-09 | Done 2026-10-25 | Catalog (experimental, after the Turbo Lumber), Spanish texts, Workshop descriptor, [economy dossier](research/skywalker-x8/X8-09/economy.md) (12 of 19 lines priced, the rest explicitly unpriced), parked bakes, fleet lists and counts. |
+| X8-10 | Done 2026-10-25 | [Verification](research/skywalker-x8/X8-10/README.md): fleet suites, flight-test card v5 30/40 valid with no script errors. |
 | X8-11 | Owner | Physical evidence: piloted `.orfl`, measured mass/CG/throws of a real X8. |
 
 ## 4. Owner decisions

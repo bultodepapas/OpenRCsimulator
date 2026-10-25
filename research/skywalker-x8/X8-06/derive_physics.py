@@ -565,6 +565,8 @@ def build():
             "firewall": est([le_x(790.0), 0.0, 0.0], "m", "pusher motor mount plate, " + AUTHOR),
             "configuration": "x8-uav-mapping-6s-v1",
             "cg_tolerance": est(0.001, "m", "reference build tolerance (fleet value)"),
+            "cg_range": {"forward": q(le_x(430.0), "m", "manual", RETAIL + " (forward limit)"),
+                         "aft": q(le_x(440.0), "m", "manual", RETAIL + " (aft limit)")},
         },
         "inventory": items,
         "start": {"level_speed": der(start_speed, "m/s", "1.6 × clean 1-g stall (%.1f m/s) at %.2f kg, CL_max 1.05 (fleet practice, Turbo Lumber)" % (vs, mass))},

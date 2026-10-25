@@ -1,13 +1,13 @@
 {
   "format": "openrc-aircraft-economics v1",
   "currency": "USD",
-  "price_date": "2026-10-20",
+  "price_date": "2026-10-25",
   "generated_from": {
-    "price_catalog_sha256": "4fccd282d03a85a2bdb855bb3a04d2ae8513fb8cd8bad5ced92c75b706c4b2fa",
-    "aircraft_costing_sha256": "43a1a2a2ca5e242beb11f38202f13cd874b2ba144afde1efc3c00dce46d3ce0a",
-    "aircraft_catalog_sha256": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+    "price_catalog_sha256": "bf1014f355342551d71729f1ec796be60e774a2be5b564852639b1204757f92e",
+    "aircraft_costing_sha256": "b8aefe5b94f90a84762770b210f1a1ea8f3ea01bcebe770470f48dbf6dbd8488",
+    "aircraft_catalog_sha256": "d5dbdbf8fbe0a7c9f941a2293a5878cc2688b28e83f6c8003e377a350c774121",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
-    "price_research_fleet_sha256": "8b31bbc4358c239b29667069f8cdc8a0ef673ed59b713f50aee9b16fff6b8d21"
+    "price_research_fleet_sha256": "597e36b42e7fc28e9c46213536026ba66b317a9d2b9456bed25948bd7f5e300f"
   },
   "products": [
     {
@@ -24,6 +24,15 @@
       "brand": "APC Propellers",
       "sku": "LP12060",
       "name": "12x6 Sport propeller",
+      "category": "propeller",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "apc_propellers_lp12060ep",
+      "brand": "APC Propellers",
+      "sku": "LP12060EP",
+      "name": "12x6EP thin electric pusher propeller",
       "category": "propeller",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
@@ -61,6 +70,15 @@
       "sku": "EDA120C",
       "name": "Slimline mufflers for DA-120, left/right pair",
       "category": "exhaust",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "dji_o4_air_unit",
+      "brand": "DJI",
+      "sku": "O4-AIR-UNIT",
+      "name": "O4 Air Unit",
+      "category": "fpv_camera_vtx",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -209,6 +227,15 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "emax_es3054",
+      "brand": "EMAX",
+      "sku": "ES3054",
+      "name": "ES3054 17 g metal-gear digital servo",
+      "category": "servo",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "flex_innovations_fpm26",
       "brand": "Flex Innovations",
       "sku": "FPM26",
@@ -223,6 +250,15 @@
       "sku": "03020110",
       "name": "ACCESS Archer Plus R10+ 10-port receiver",
       "category": "receiver",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "fruity_chutes_fwrb_48_s_2p_yb",
+      "brand": "Fruity Chutes",
+      "sku": "FWRB-48-S-2P-YB",
+      "name": "Fixed Wing Recovery Bundle - 7lb (3.2kg) @ 15fps",
+      "category": "recovery_parachute",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -254,6 +290,15 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "hangar_9_han3626",
+      "brand": "Hangar 9",
+      "sku": "HAN3626",
+      "name": "Self Stick Weight, 6 oz",
+      "category": "ballast_weight",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "hangar_9_hanu871",
       "brand": "Hangar 9",
       "sku": "HANU871",
@@ -268,6 +313,33 @@
       "sku": "HRC31311S",
       "name": "HS-311 standard analog sport servo",
       "category": "servo",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "hobbywing_hobw_029400000207",
+      "brand": "Hobbywing",
+      "sku": "HOBW-029400000207",
+      "name": "Skywalker V2 3-7S Wing 60A ESC",
+      "category": "esc",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "holybro_12040",
+      "brand": "Holybro",
+      "sku": "12040",
+      "name": "M10 GPS, IST8310 compass, standard 10-pin",
+      "category": "gps_compass",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "holybro_17013",
+      "brand": "Holybro",
+      "sku": "17013",
+      "name": "SiK Telemetry Radio V3, 100 mW, 915 MHz",
+      "category": "telemetry_radio",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -313,6 +385,15 @@
       "sku": "MAS1460",
       "name": "K Series 14x6 propeller",
       "category": "propeller",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "matek_h743_wing_v3",
+      "brand": "Matek",
+      "sku": "H743-WING-V3",
+      "name": "H743-Wing V3 Flight Controller",
+      "category": "flight_controller",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -420,6 +501,15 @@
       "brand": "RadioMaster",
       "sku": "HP0157.RX-ER8",
       "name": "ER8 2.4GHz ELRS PWM receiver",
+      "category": "receiver",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "radiomaster_hp0157_rx_rp1_v2",
+      "brand": "RadioMaster",
+      "sku": "HP0157.RX-RP1-V2",
+      "name": "RP1 V2 ExpressLRS 2.4 GHz Nano Receiver (FCC)",
       "category": "receiver",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
@@ -551,6 +641,15 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "sonicmodell_rb_son_11",
+      "brand": "SonicModell",
+      "sku": "RB-Son-11",
+      "name": "Skywalker X8 2122 Flying Wing Drone FPV Complete Kit",
+      "category": "aircraft",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "spektrum_spm_1012",
       "brand": "Spektrum",
       "sku": "SPM-1012",
@@ -605,11 +704,29 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "spektrum_spmx56s30",
+      "brand": "Spektrum",
+      "sku": "SPMX56S30",
+      "name": "22.2V 5000mAh 6S 30C Smart G2 LiPo Battery: IC5",
+      "category": "battery",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "spektrum_spmxae70e",
       "brand": "Spektrum",
       "sku": "SPMXAE70E",
       "name": "Avian 70A Smart Lite brushless ESC, 3S-6S, IC3 Ver. E",
       "category": "esc",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "sunnysky_ss_xv3_x3530_520",
+      "brand": "SunnySky",
+      "sku": "SS-XV3-X3530-520",
+      "name": "X Series V3 X3530 V3 Brushless Motor 520KV",
+      "category": "motor",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -2405,6 +2522,240 @@
       "source_url": "https://bulk55.com/products/12-count-vp-racing-10-aviation-rc-nitro-fuel-18-oil-premixed-quart-cans?_fid=345239e92&_pos=10&_ss=c",
       "evidence_quality": "high",
       "notes": "Observed 2026-10-16. Seller lists one case of 12 x 1-quart cans for USD 117.99, with a unit price of USD 9.83 per quart can; freight and hazardous-material charges were not captured in the displayed product price. Unallocated offer. The package is a case of 12 quarts; do not treat USD 117.99 as the cost of onboard 150mL or as an aircraft build total. The authored physical row specifies only a methanol/oil/nitro blend, not its percentages or brand. USD 1.56 excludes case-level purchase, freight and hazardous-material charges. This is a formula-compatible price candidate, not evidence of the installed blend or a modeled-physics match; no allocation. See intake-power-20261016.json for electrical specifications, physical group comparisons and sources. Tax and shipping excluded."
+    },
+    {
+      "id": "x8_battery_spektrum_spmx56s30_horizon_20261025",
+      "product_id": "spektrum_spmx56s30",
+      "amount_minor": 13999,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "battery_unit_price",
+      "availability": "Backorder; expected January 2027",
+      "sold_package_quantity": 1,
+      "package_description": "1 battery pack",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/22.2v-5000mah-6s-30c-smart-g2-lipo-battery-ic5/SPMX56S30.html",
+      "evidence_quality": "Direct official US retailer page opened 2026-10-25; capacity, cells, C rating, IC5 connector, price and backorder date are explicit. Weight was not in the retrieved content.",
+      "notes": "Observed 2026-10-25. Class match for the simulated 6S 5000 mAh 30C-class pack; a Smart G2 IC5 product, not a verified installed pack."
+    },
+    {
+      "id": "x8_complete_kit_sonicmodell_robotshop_20261025",
+      "product_id": "sonicmodell_rb_son_11",
+      "amount_minor": 50741,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.robotshop.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "complete_kit_package_price",
+      "availability": "Available on backorder at RobotShop US",
+      "sold_package_quantity": 1,
+      "package_description": "1 complete kit; the listing says it includes a motor, an airframe, ESC, servos, etc. and itemizes nothing else",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.robotshop.com/products/sonicmodell-skywalker-x8-2122-flying-wing-drone-fpv-complete-kit",
+      "evidence_quality": "Direct US retailer product page opened 2026-10-25; it carried a price-data timestamp of 2026-10-14. No motor, ESC, servo, propeller, carbon-tube or hardware model is named.",
+      "notes": "Observed 2026-10-25. Whole-aircraft package alternative, not attached to a line: its unitemized contents overlap the separately priced motor, ESC and servos and cannot be split into the wing and body groups. Battery and Tx/Rx are required and not included. The airframe-only Skywalker X8 Kit at Unmanned Tech Shop UK (SKU Z98.0001) listed GBP 259.49, sold out and awaiting stock, the same day; it is outside the USD runtime and lists only the EPO airframe kit with modular wing sections, fuselage and control surfaces, without stating servos, carbon tubes or motor mount."
+    },
+    {
+      "id": "x8_esc_hobbywing_skywalker_v2_60a_racedayquads_20261025",
+      "product_id": "hobbywing_hobw_029400000207",
+      "amount_minor": 4199,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.racedayquads.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "esc_unit_price",
+      "availability": "In stock",
+      "sold_package_quantity": 1,
+      "package_description": "1 ESC; a customer review says motor and XT60 connectors are not included",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.racedayquads.com/products/hobbywing-skywalker-60a-2-6s-ubec-wing-esc",
+      "evidence_quality": "Direct US retailer product page opened 2026-10-25; 3-7S input, 5 V/7 A BEC, price and stock are explicit. The SKU is the retailer's.",
+      "notes": "Observed 2026-10-25. Price proxy for the simulated 60 A ESC; the PNP ESC identity is not established."
+    },
+    {
+      "id": "x8_flight_controller_matek_h743_wing_v3_racedayquads_20261025",
+      "product_id": "matek_h743_wing_v3",
+      "amount_minor": 13099,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.racedayquads.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "flight_controller_unit_price",
+      "availability": "Sold out",
+      "sold_package_quantity": 1,
+      "package_description": "1 flight controller; no cables, PDB or GPS listed",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.racedayquads.com/products/matek-h743-wing-v3-flight-controller",
+      "evidence_quality": "Direct US retailer product page opened 2026-10-25; price and sold-out state are explicit (retailer SKU 22655).",
+      "notes": "Observed 2026-10-25. 30 g, 54 x 36 x 13 mm, built-in current sensor. Price proxy for the simulated 30 g autopilot; the installed product is unknown and firmware support was not checked."
+    },
+    {
+      "id": "x8_fpv_dji_o4_air_unit_racedayquads_20261025",
+      "product_id": "dji_o4_air_unit",
+      "amount_minor": 13999,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.racedayquads.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "fpv_system_unit_price",
+      "availability": "In stock",
+      "sold_package_quantity": 1,
+      "package_description": "1 transmission module, 1 camera module, 1 3-in-1 cable, 1 antenna",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.racedayquads.com/products/dji-o4-air-unit",
+      "evidence_quality": "Direct US retailer product page opened 2026-10-25; retailer SKU 22794, price, stock and contents are explicit.",
+      "notes": "Observed 2026-10-25. About 8.2 g with camera plus a 0.75 g antenna; 3.7-13.2 V input, so 6S needs a regulated supply. Goggles are ground equipment. Price proxy for the simulated 30 g FPV camera and VTX; mass and product differ. The 26.6 g Walksnail Avatar HD Kit V2 (dual antenna) was sold out at Caddx ($159.00, discontinued) and RaceDayQuads ($191.99) the same day."
+    },
+    {
+      "id": "x8_gps_holybro_m10_holybro_20261025",
+      "product_id": "holybro_12040",
+      "amount_minor": 4399,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "holybro.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "gps_unit_price",
+      "availability": "Available (store variant data)",
+      "sold_package_quantity": 1,
+      "package_description": "1 M10 GPS module, 1 fixed carbon-fibre GPS mount",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://holybro.com/products/m10-gps",
+      "evidence_quality": "Direct manufacturer store page opened 2026-10-25; variant SKU, price and availability are explicit.",
+      "notes": "Observed 2026-10-25. 32 g per the specification table. Price proxy for the simulated 30 g GPS and compass."
+    },
+    {
+      "id": "x8_motor_sunnysky_x3530_520kv_readymaderc_20261025",
+      "product_id": "sunnysky_ss_xv3_x3530_520",
+      "amount_minor": 7499,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.readymaderc.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "motor_unit_price",
+      "availability": "In Stock",
+      "sold_package_quantity": 1,
+      "package_description": "1 motor, 1 X mount bracket with screws, 1 propeller collet adapter",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.readymaderc.com/products/details/sunny-sky-x-series-v3-x3520-brushless-motor-520kv",
+      "evidence_quality": "Direct US retailer product page opened 2026-10-25; model, price, stock and included items are explicit. The URL slug says X3520, and the text gives a 30 mm stator height while the attribute table says 20.",
+      "notes": "Observed 2026-10-25. 219 g, 520 Kv, 35 mm stator; the retailer recommends 6S and APC 12x6 to 14x7 propellers. Price proxy for the simulated 190 g 520 Kv 3530/4250-class outrunner, not the Skywalker PNP motor, whose USD price was not verified."
+    },
+    {
+      "id": "x8_nose_weight_hangar9_han3626_horizon_20261025",
+      "product_id": "hangar_9_han3626",
+      "amount_minor": 999,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "ballast_package_price",
+      "availability": "Backorder; December 2026",
+      "sold_package_quantity": 1,
+      "package_description": "1 package, 6 oz total; segment count and material not stated",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/self-stick-weight-6-oz/HAN3626.html",
+      "evidence_quality": "Direct official US retailer page opened 2026-10-25; price and backorder month are explicit.",
+      "notes": "Observed 2026-10-25. One 170 g package covers the 69 g simulated nose lead; the surplus is not credited."
+    },
+    {
+      "id": "x8_parachute_fruity_chutes_fwrb_7lb_20261025",
+      "product_id": "fruity_chutes_fwrb_48_s_2p_yb",
+      "amount_minor": 40227,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "shop.fruitychutes.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "recovery_bundle_price",
+      "availability": "2 items left; the page also offers a back-in-stock notice",
+      "sold_package_quantity": 1,
+      "package_description": "1 bundle: IFC-48-S Iris Ultra Compact parachute, CDB-4 deployment bag, TARC-15 pilot parachute, 3/8 in Y harness, 3 yd shock cord, 1.5 yd paraline, quick links and ties",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://shop.fruitychutes.com/products/fixed-wing-recovery-bundle-7lbs-3-2kg-15fps",
+      "evidence_quality": "Direct manufacturer store page opened 2026-10-25; SKU, price, contents and 270 g system weight are explicit; per-variant stock is not shown.",
+      "notes": "Observed 2026-10-25. Rated 3.2 kg at 15 ft/s; the simulated inventory totals about 3.13 kg. No ejection spring, latch servo or bay hardware is included, and the 270 g system is heavier than the 150 g simulated pack. Price proxy only."
+    },
+    {
+      "id": "x8_propeller_apc_lp12060ep_readymaderc_20261025",
+      "product_id": "apc_propellers_lp12060ep",
+      "amount_minor": 487,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.readymaderc.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "propeller_unit_price",
+      "availability": "Only 8 left",
+      "sold_package_quantity": 1,
+      "package_description": "1 propeller with one set of adapter rings",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.readymaderc.com/products/details/apc-12x6ep-pusher-prop",
+      "evidence_quality": "Direct US retailer product page opened 2026-10-25; APC part number, GTIN 686661120372, price and low-stock message are explicit. apcprop.com returned HTTP 403 and was not used.",
+      "notes": "Observed 2026-10-25. 12x6, two blades, pusher (CW), 1/4 in bore, 26.9 g. Matches the simulated APC 12x6E pusher."
+    },
+    {
+      "id": "x8_receiver_radiomaster_rp1_v2_radiomaster_20261025",
+      "product_id": "radiomaster_hp0157_rx_rp1_v2",
+      "amount_minor": 1899,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "radiomasterrc.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "receiver_unit_price",
+      "availability": "Available (store variant data)",
+      "sold_package_quantity": 1,
+      "package_description": "1 receiver, 1 65 mm UFL T antenna, 1 user manual, 1 CRSF wire",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://radiomasterrc.com/products/rp1-expresslrs-2-4ghz-nano-receiver",
+      "evidence_quality": "Direct manufacturer store page opened 2026-10-25; variant SKU, price and availability are explicit.",
+      "notes": "Observed 2026-10-25. 2.2 g serial receiver for a flight-controller build. Proxy only; the transmitter is excluded."
+    },
+    {
+      "id": "x8_servo_emax_es3054_alofthobbies_20261025",
+      "product_id": "emax_es3054",
+      "amount_minor": 1150,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "alofthobbies.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "servo_unit_price",
+      "availability": "In stock, ready to ship",
+      "sold_package_quantity": 1,
+      "package_description": "1 servo with cross arm, six-arm horn, output disc, output screw and mounting screws with grommets",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://alofthobbies.com/products/emax-es3054-servo-3-5kg-48-6-oz-in-13-sec-17-grams",
+      "evidence_quality": "Direct US retailer product page opened 2026-10-25; price, stock and accessories are explicit (retailer SKU emax-es3054).",
+      "notes": "Observed 2026-10-25. 3.5 kg cm at 6 V, 0.13 s/60 deg, 28.45 x 13 x 31.1 mm. The r4 delivery names one Emax ES3054 per wing half; the price is per servo."
+    },
+    {
+      "id": "x8_telemetry_holybro_sik_v3_915_holybro_20261025",
+      "product_id": "holybro_17013",
+      "amount_minor": 5899,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "holybro.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "telemetry_set_price",
+      "availability": "Available (store variant data)",
+      "sold_package_quantity": 1,
+      "package_description": "1 set: 2 interchangeable radio modules with antennas (air and ground), USB and JST-GH/DF13 cables",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://holybro.com/products/sik-telemetry-radio-v3",
+      "evidence_quality": "Direct manufacturer store page opened 2026-10-25; variant SKU, price, availability and two-module contents are explicit.",
+      "notes": "Observed 2026-10-25. Sold only as an air-and-ground pair; no single-module price was listed. One module is onboard; the other is ground equipment. Proxy only."
     }
   ],
   "aircraft": [
@@ -2413,7 +2764,7 @@
       "aircraft_id": "jensen-das-ugly-stik-60",
       "source_sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77",
       "currency": "USD",
-      "price_date": "2026-10-20",
+      "price_date": "2026-10-25",
       "valuation_kind": "complete_inventory_coverage_with_cost_estimates",
       "components": [
         {
@@ -2854,7 +3205,7 @@
       "aircraft_id": "stik-glow-61fx-2t",
       "source_sha256": "ff43a548cbf8b080a720ab3f912bf6aef0cb9f1c52410c0b022f797294cb5be1",
       "currency": "USD",
-      "price_date": "2026-10-20",
+      "price_date": "2026-10-25",
       "valuation_kind": "inherited_complete_inventory_coverage_with_cost_estimates",
       "components": [
         {
@@ -3295,7 +3646,7 @@
       "aircraft_id": "stik-glow-55ax-2t",
       "source_sha256": "742a19d5411c01f81d9fa4c5627803bfde059c3d4ed1082fe82e089dbf55397a",
       "currency": "USD",
-      "price_date": "2026-10-20",
+      "price_date": "2026-10-25",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
       "components": [
         {
@@ -3736,7 +4087,7 @@
       "aircraft_id": "stik-glow-fs64v-4t",
       "source_sha256": "942cca1364cacf61c9a5c0d066ef9bfc99dc9be9c86b0c30cefec19eb3c9c182",
       "currency": "USD",
-      "price_date": "2026-10-20",
+      "price_date": "2026-10-25",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
       "components": [
         {
@@ -4177,7 +4528,7 @@
       "aircraft_id": "gp-extra-300s-60",
       "source_sha256": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
       "currency": "USD",
-      "price_date": "2026-10-20",
+      "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",
       "components": [
         {
@@ -4718,7 +5069,7 @@
       "aircraft_id": "p51d-mustang-120",
       "source_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
       "currency": "USD",
-      "price_date": "2026-10-20",
+      "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",
       "components": [
         {
@@ -5421,7 +5772,7 @@
       "aircraft_id": "f4u-corsair-250",
       "source_sha256": "e27ba35766bad2e32f7c10b0d3e80d49331af2c557957a85959dca47ebad3d43",
       "currency": "USD",
-      "price_date": "2026-10-20",
+      "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",
       "components": [
         {
@@ -6303,7 +6654,7 @@
       "aircraft_id": "sebart-avanti-s-a200-p100rx",
       "source_sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
       "currency": "USD",
-      "price_date": "2026-10-20",
+      "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",
       "components": [
         {
@@ -6871,7 +7222,7 @@
       "aircraft_id": "turbo-lumber-evolution",
       "source_sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf",
       "currency": "USD",
-      "price_date": "2026-10-20",
+      "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",
       "components": [
         {
@@ -7267,10 +7618,600 @@
     },
     {
       "format": "openrc-aircraft-economics v1",
+      "aircraft_id": "skywalker-x8",
+      "source_sha256": "e506bf3375e20da0e81f9b148e585cc4048577cfd5c4736b313b9df3d27faf8d",
+      "currency": "USD",
+      "price_date": "2026-10-25",
+      "valuation_kind": "independent_partial_inventory_costing",
+      "components": [
+        {
+          "id": "wing_left",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wing_left"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced left EPO wing panel with winglet and elevon. No USD airframe-only kit or X8 spare part was verified on 2026-10-25: the RobotShop complete kit ($507.41, backorder) does not itemize its contents and the UK airframe kit is priced in GBP and sold out."
+        },
+        {
+          "id": "wing_right",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wing_right"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced right EPO wing panel with winglet and elevon. No USD airframe-only kit or X8 spare part was verified on 2026-10-25: the RobotShop complete kit ($507.41, backorder) does not itemize its contents and the UK airframe kit is priced in GBP and sold out."
+        },
+        {
+          "id": "body_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "body_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced painted EPO centre body, hatch and root ribs. No USD airframe-only kit or X8 spare part was verified on 2026-10-25: the RobotShop complete kit ($507.41, backorder) does not itemize its contents and the UK airframe kit is priced in GBP and sold out."
+        },
+        {
+          "id": "spars_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "spars_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced carbon wing spars and joiners. Kit inclusion and tube dimensions were not verified; the physics estimates two tubes of about 1.3 m."
+        },
+        {
+          "id": "motor_main",
+          "quantity": 1,
+          "unit_minor": 7499,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "motor_main"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "x8_motor_sunnysky_x3530_520kv_readymaderc_20261025",
+          "notes": "SunnySky X3530 V3 520KV at ReadyMadeRC ($74.99, in stock) is a price proxy for the simulated 520 Kv outrunner, not its installed identity. The package includes an X mount and the propeller collet adapter."
+        },
+        {
+          "id": "propeller_main",
+          "quantity": 1,
+          "unit_minor": 487,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "propeller_main"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "x8_propeller_apc_lp12060ep_readymaderc_20261025",
+          "notes": "APC LP12060EP 12x6 pusher ($4.87 at ReadyMadeRC, 8 left) matches the simulated propeller. This line prices the blade only; the adapter in the physical row comes with the motor package and is not billed twice. A propeller strike replaces this line only."
+        },
+        {
+          "id": "motor_mount",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "motor_mount"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced plywood/plastic pusher mount plate; no separate X8 mount price was verified. The motor's X bracket is a different part."
+        },
+        {
+          "id": "esc_main",
+          "quantity": 1,
+          "unit_minor": 4199,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "esc_main"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "x8_esc_hobbywing_skywalker_v2_60a_racedayquads_20261025",
+          "notes": "Hobbywing Skywalker V2 3-7S 60A ($41.99 at RaceDayQuads, in stock) is a price proxy for the simulated 60 A ESC."
+        },
+        {
+          "id": "flight_controller",
+          "quantity": 1,
+          "unit_minor": 13099,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "flight_controller"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "x8_flight_controller_matek_h743_wing_v3_racedayquads_20261025",
+          "notes": "Matek H743-Wing V3 ($130.99 at RaceDayQuads, sold out) is a price proxy for the simulated 30 g autopilot; the installed product is unknown."
+        },
+        {
+          "id": "receiver_telemetry",
+          "quantity": 1,
+          "unit_minor": 7798,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "receiver_telemetry"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Composite estimate for the combined receiver and telemetry radio row: one RadioMaster RP1 V2 ELRS receiver plus one Holybro SiK V3 915 MHz set. Holybro sells the radio only as an air-and-ground pair, so replacing the onboard module costs the set; the ground module is not onboard and earns no salvage credit. Proxies, not installed identities. Composite estimate from separate offers, not one sold package: 1 x x8_receiver_radiomaster_rp1_v2_radiomaster_20261025: 1899 USD cents each; observed 2026-10-25; Available (store variant data); https://radiomasterrc.com/products/rp1-expresslrs-2-4ghz-nano-receiver | 1 x x8_telemetry_holybro_sik_v3_915_holybro_20261025: 5899 USD cents each; observed 2026-10-25; Available (store variant data); https://holybro.com/products/sik-telemetry-radio-v3"
+        },
+        {
+          "id": "gps_compass",
+          "quantity": 1,
+          "unit_minor": 4399,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "gps_compass"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "x8_gps_holybro_m10_holybro_20261025",
+          "notes": "Holybro M10 GPS with IST8310 compass and carbon mount ($43.99, 32 g) is a price proxy for the simulated 30 g GPS and compass."
+        },
+        {
+          "id": "fpv_camera",
+          "quantity": 1,
+          "unit_minor": 13999,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fpv_camera"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "x8_fpv_dji_o4_air_unit_racedayquads_20261025",
+          "notes": "DJI O4 Air Unit ($139.99 at RaceDayQuads, in stock) is a price proxy for the simulated 30 g FPV camera and VTX; its 9 g mass and 3.7-13.2 V input differ from the modeled unit. Goggles are excluded."
+        },
+        {
+          "id": "mapping_camera",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "mapping_camera"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced mapping camera. The r4 ledger box (102 x 58 x 41 mm, 240 g) matches the published size and mass of the first-generation Sony RX100, an inference rather than an identification. No current new-condition USD offer was verified (B&H and Sony returned 403 or blocked fetching; listings found were used or open-box). Launch price about $650 in 2012 (historical)."
+        },
+        {
+          "id": "parachute_pack",
+          "quantity": 1,
+          "unit_minor": 40227,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "parachute_pack"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "x8_parachute_fruity_chutes_fwrb_7lb_20261025",
+          "notes": "Fruity Chutes 7 lb (3.2 kg) fixed-wing recovery bundle ($402.27, 2 left) is a price proxy for the simulated 150 g pack; the 270 g bundle excludes the ejection spring and latch hardware."
+        },
+        {
+          "id": "servo_elevon_left",
+          "quantity": 1,
+          "unit_minor": 1150,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "servo_elevon_left"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "x8_servo_emax_es3054_alofthobbies_20261025",
+          "notes": "Left elevon servo. The r4 delivery names an Emax ES3054; Aloft Hobbies lists it at $11.50, in stock. Linkage and horn are unpriced."
+        },
+        {
+          "id": "servo_elevon_right",
+          "quantity": 1,
+          "unit_minor": 1150,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "servo_elevon_right"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "x8_servo_emax_es3054_alofthobbies_20261025",
+          "notes": "Right elevon servo. The r4 delivery names an Emax ES3054; Aloft Hobbies lists it at $11.50, in stock. Linkage and horn are unpriced."
+        },
+        {
+          "id": "wiring_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wiring_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced wiring, connectors and hatch magnets; contents are not itemized."
+        },
+        {
+          "id": "nose_ballast",
+          "quantity": 1,
+          "unit_minor": 999,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "nose_ballast"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "x8_nose_weight_hangar9_han3626_horizon_20261025",
+          "notes": "Real lead ballast, not virtual balance: one Hangar 9 6 oz self-stick weight package ($9.99, backorder) covers the 69 g. It is usually recovered after a crash; the package surplus is not credited."
+        },
+        {
+          "id": "battery_main",
+          "quantity": 1,
+          "unit_minor": 13999,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "battery_main"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "x8_battery_spektrum_spmx56s30_horizon_20261025",
+          "notes": "Spektrum SPMX56S30 6S 5000 mAh 30C Smart G2 ($139.99 at Horizon, backorder January 2027) is a class price proxy for the simulated pack."
+        },
+        {
+          "id": "final_assembly_and_commissioning",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced X8-specific assembly, autopilot setup, balancing, commissioning and post-crash inspection labor. No transferable allowance assumed; not salvageable."
+        }
+      ],
+      "exclusions": [],
+      "missing": [
+        "No USD airframe-only X8 kit or spare-part price was verified: wings, centre body, spars, motor mount and wiring remain unpriced. The RobotShop complete kit ($507.41, backorder, unitemized) is a package alternative and must not be added to the component lines.",
+        "The mapping camera is unpriced: its ledger size and mass match a first-generation Sony RX100 (inference), and no new-condition USD offer was verified.",
+        "Priced lines are 2026-10-25 commercial proxies or class matches, not verified installed hardware. The battery and nose weight were on backorder and the flight controller was sold out when observed.",
+        "Assembly, autopilot setup and commissioning labor has no verified basis; no foam repair recipe applies to this aircraft yet.",
+        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: x8_complete_kit_sonicmodell_robotshop_20261025.",
+        "No replacement price for economic component: wing_left.",
+        "No replacement price for economic component: wing_right.",
+        "No replacement price for economic component: body_main.",
+        "No replacement price for economic component: spars_main.",
+        "No replacement price for economic component: motor_mount.",
+        "No replacement price for economic component: mapping_camera.",
+        "No replacement price for economic component: wiring_main.",
+        "No replacement price for economic component: final_assembly_and_commissioning."
+      ],
+      "complete": false,
+      "contact_components": {
+        "probe_nose": [
+          "body_main",
+          "fpv_camera",
+          "nose_ballast",
+          "battery_main"
+        ],
+        "probe_nose_left": [
+          "body_main",
+          "fpv_camera",
+          "nose_ballast",
+          "battery_main"
+        ],
+        "probe_nose_right": [
+          "body_main",
+          "fpv_camera",
+          "nose_ballast",
+          "battery_main"
+        ],
+        "probe_nose_left_low": [
+          "body_main",
+          "fpv_camera",
+          "nose_ballast",
+          "battery_main"
+        ],
+        "probe_nose_right_low": [
+          "body_main",
+          "fpv_camera",
+          "nose_ballast",
+          "battery_main"
+        ],
+        "probe_canopy_front": [
+          "body_main",
+          "fpv_camera",
+          "nose_ballast",
+          "battery_main"
+        ],
+        "probe_belly_front": [
+          "body_main",
+          "fpv_camera",
+          "nose_ballast",
+          "battery_main"
+        ],
+        "probe_canopy": [
+          "body_main",
+          "battery_main",
+          "parachute_pack",
+          "receiver_telemetry",
+          "wiring_main"
+        ],
+        "probe_belly": [
+          "body_main",
+          "battery_main",
+          "parachute_pack",
+          "receiver_telemetry",
+          "wiring_main",
+          "flight_controller"
+        ],
+        "probe_engine": [
+          "motor_main",
+          "motor_mount",
+          "propeller_main",
+          "body_main",
+          "esc_main"
+        ],
+        "propeller/propulsion_main": [
+          "propeller_main"
+        ],
+        "probe_wing_left_root_le": [
+          "wing_left",
+          "body_main",
+          "spars_main"
+        ],
+        "probe_wing_left_bottom": [
+          "wing_left",
+          "body_main",
+          "spars_main"
+        ],
+        "probe_elevon_left_te": [
+          "wing_left",
+          "servo_elevon_left"
+        ],
+        "probe_wing_left_tip_le": [
+          "wing_left",
+          "servo_elevon_left",
+          "spars_main"
+        ],
+        "probe_wing_left_tip_te": [
+          "wing_left",
+          "servo_elevon_left",
+          "spars_main"
+        ],
+        "probe_wing_left_fill_2": [
+          "wing_left",
+          "servo_elevon_left",
+          "spars_main"
+        ],
+        "probe_winglet_left_top": [
+          "wing_left"
+        ],
+        "probe_winglet_left_outer": [
+          "wing_left"
+        ],
+        "probe_winglet_left_fill_1": [
+          "wing_left"
+        ],
+        "probe_wing_right_root_le": [
+          "wing_right",
+          "body_main",
+          "spars_main"
+        ],
+        "probe_wing_right_bottom": [
+          "wing_right",
+          "body_main",
+          "spars_main"
+        ],
+        "probe_elevon_right_te": [
+          "wing_right",
+          "servo_elevon_right"
+        ],
+        "probe_wing_right_tip_le": [
+          "wing_right",
+          "servo_elevon_right",
+          "spars_main"
+        ],
+        "probe_wing_right_tip_te": [
+          "wing_right",
+          "servo_elevon_right",
+          "spars_main"
+        ],
+        "probe_wing_right_fill_2": [
+          "wing_right",
+          "servo_elevon_right",
+          "spars_main"
+        ],
+        "probe_winglet_right_top": [
+          "wing_right"
+        ],
+        "probe_winglet_right_outer": [
+          "wing_right"
+        ],
+        "probe_winglet_right_fill_1": [
+          "wing_right"
+        ]
+      },
+      "propeller_component_id": "propeller_main",
+      "propeller_inspection_ids": [
+        "motor_main",
+        "motor_mount",
+        "body_main"
+      ],
+      "physical_signature": {
+        "inventory": {
+          "wing_left": {
+            "name": "left wing panel, winglet and elevon (EPO)",
+            "mass": 0.459,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "wing_right": {
+            "name": "right wing panel, winglet and elevon (EPO)",
+            "mass": 0.459,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "body_main": {
+            "name": "centre body, hatch and root ribs (painted EPO)",
+            "mass": 0.439,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "spars_main": {
+            "name": "carbon wing spars and joiners",
+            "mass": 0.04,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "motor_main": {
+            "name": "520 Kv outrunner (3530/4250 class)",
+            "mass": 0.19,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "propeller_main": {
+            "name": "APC 12x6E pusher propeller and adapter",
+            "mass": 0.03,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "motor_mount": {
+            "name": "motor mount plate",
+            "mass": 0.02,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "esc_main": {
+            "name": "60 A ESC",
+            "mass": 0.06,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "flight_controller": {
+            "name": "autopilot / flight controller",
+            "mass": 0.03,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "receiver_telemetry": {
+            "name": "receiver and telemetry radio",
+            "mass": 0.018,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "gps_compass": {
+            "name": "GPS and compass",
+            "mass": 0.03,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fpv_camera": {
+            "name": "FPV camera and video transmitter",
+            "mass": 0.03,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "mapping_camera": {
+            "name": "mapping camera",
+            "mass": 0.24,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "parachute_pack": {
+            "name": "recovery parachute pack",
+            "mass": 0.15,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_elevon_left": {
+            "name": "left elevon servo (17 g digital)",
+            "mass": 0.017,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_elevon_right": {
+            "name": "right elevon servo (17 g digital)",
+            "mass": 0.017,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "wiring_main": {
+            "name": "wiring, connectors and magnets",
+            "mass": 0.06,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "nose_ballast": {
+            "name": "nose ballast (lead) to the manual CG",
+            "mass": 0.069203764775,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "battery_main": {
+            "name": "6S 5000 mAh LiPo (30C class)",
+            "mass": 0.7734375,
+            "mass_unit": "kg",
+            "energy_source": "lipo"
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "electric_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "probe_belly",
+          "probe_belly_front",
+          "probe_canopy",
+          "probe_canopy_front",
+          "probe_elevon_left_te",
+          "probe_elevon_right_te",
+          "probe_engine",
+          "probe_nose",
+          "probe_nose_left",
+          "probe_nose_left_low",
+          "probe_nose_right",
+          "probe_nose_right_low",
+          "probe_wing_left_bottom",
+          "probe_wing_left_fill_2",
+          "probe_wing_left_root_le",
+          "probe_wing_left_tip_le",
+          "probe_wing_left_tip_te",
+          "probe_wing_right_bottom",
+          "probe_wing_right_fill_2",
+          "probe_wing_right_root_le",
+          "probe_wing_right_tip_le",
+          "probe_wing_right_tip_te",
+          "probe_winglet_left_fill_1",
+          "probe_winglet_left_outer",
+          "probe_winglet_left_top",
+          "probe_winglet_right_fill_1",
+          "probe_winglet_right_outer",
+          "probe_winglet_right_top",
+          "propeller/propulsion_main"
+        ]
+      }
+    },
+    {
+      "format": "openrc-aircraft-economics v1",
       "aircraft_id": "xcell-60-research",
       "source_sha256": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
       "currency": "USD",
-      "price_date": "2026-10-20",
+      "price_date": "2026-10-25",
       "valuation_kind": "unpriced",
       "components": [],
       "exclusions": [],

@@ -87,6 +87,20 @@
       "unit": "m",
       "kind": "estimated",
       "source": "reference build tolerance (fleet value)"
+    },
+    "cg_range": {
+      "forward": {
+        "value": 0.130419,
+        "unit": "m",
+        "kind": "manual",
+        "source": "Skywalker X8 retail listings (S20-S24): 2120 mm, 80 dm2, flying weight 2.5-3.0 kg, max AUW 3.5 kg, CG 430-440 mm (forward limit)"
+      },
+      "aft": {
+        "value": 0.140419,
+        "unit": "m",
+        "kind": "manual",
+        "source": "Skywalker X8 retail listings (S20-S24): 2120 mm, 80 dm2, flying weight 2.5-3.0 kg, max AUW 3.5 kg, CG 430-440 mm (aft limit)"
+      }
     }
   },
   "inventory": [
