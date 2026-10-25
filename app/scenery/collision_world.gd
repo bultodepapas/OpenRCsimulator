@@ -15,6 +15,8 @@ const FenceParts := preload("res://scenery/fence_parts.gd")
 const FORMAT := "openrc-collision-world v1"
 const CELL_SIZE_M := 32.0
 const MAX_BIN_REFERENCES := 250000
+const MAX_BUILD_CACHE_BYTES := 8 * 1024 * 1024
+const MAX_CACHE_VALUE_DEPTH := 64
 const TREE_TRUNK_RADIUS_M := 0.18 # estimated gameplay envelope; visual source is a tree card, not a trunk mesh
 const TREE_TRUNK_HEIGHT_FRACTION := 0.34
 const SHADE_TREE_TRUNK_RADIUS_FRACTION := 0.05
@@ -40,19 +42,84 @@ const TREE_CROWN_CENTER_FRACTIONS := [0.612061, 0.598877, 0.704346]
 
 const BUILDINGS: Array[String] = ["pavilion", "shed", "barn", "silo", "farmhouse", "church", "village_house"]
 const VEHICLES: Array[String] = ["car_sedan", "car_hatch", "car_suv", "car_sport", "tractor"]
+
+# Only the main thread touches this one-entry cache. Retained serialized key and world bytes together stay within
+# MAX_BUILD_CACHE_BYTES; temporary keys, build results, decoded copies, and caller-owned worlds are not retained.
+static var _build_cache_key := PackedByteArray()
+static var _build_cache_world := PackedByteArray()
+static var _build_cache_hits := 0
+static var _build_cache_misses := 0
+static var _build_cache_bypasses := 0
+
 static func build(field: Dictionary, scenery: Dictionary, lights: Dictionary = {}) -> Dictionary:
+	var input_error: String = _input_shape_error(field, scenery, lights)
+	if not input_error.is_empty():
+		return _failure(input_error)
+	var parked_info: Dictionary = _parked_aircraft_snapshots(scenery)
+	if not Thread.is_main_thread():
+		return _build_uncached(field, scenery, lights, parked_info)
+	var key_bytes: PackedByteArray = _make_build_cache_key(field, scenery, lights, parked_info)
+	if key_bytes.is_empty():
+		_build_cache_bypasses += 1
+		return _build_uncached(field, scenery, lights, parked_info)
+	if not _build_cache_key.is_empty() and key_bytes == _build_cache_key:
+		var cached_world: Variant = bytes_to_var(_build_cache_world)
+		if typeof(cached_world) == TYPE_DICTIONARY:
+			_build_cache_hits += 1
+			return {ok = true, errors = PackedStringArray(), world = cached_world}
+		# A cache payload is produced by this script; fail closed if it cannot be decoded as expected.
+		_build_cache_key = PackedByteArray()
+		_build_cache_world = PackedByteArray()
+	_build_cache_misses += 1
+	var result: Dictionary = _build_uncached(field, scenery, lights, parked_info)
+	if not result.get("ok", false) or typeof(result.get("world")) != TYPE_DICTIONARY:
+		return result
+	var world: Dictionary = result.world
+	# This builder creates only scalar values, arrays, dictionaries, and packed arrays; serialize once and
+	# enforce the exact combined retained-byte limit without walking the generated broadphase a second time.
+	var world_bytes: PackedByteArray = var_to_bytes(world)
+	if key_bytes.size() + world_bytes.size() <= MAX_BUILD_CACHE_BYTES:
+		_build_cache_key = key_bytes
+		_build_cache_world = world_bytes
+	else:
+		_build_cache_bypasses += 1
+	return result
+
+
+static func clear_cache() -> void:
+	if not Thread.is_main_thread():
+		return
+	_build_cache_key = PackedByteArray()
+	_build_cache_world = PackedByteArray()
+	_build_cache_hits = 0
+	_build_cache_misses = 0
+	_build_cache_bypasses = 0
+
+
+static func cache_diagnostics() -> Dictionary:
+	if not Thread.is_main_thread():
+		return {"main_thread": false}
+	return {
+		"main_thread": Thread.is_main_thread(),
+		"hits": _build_cache_hits,
+		"misses": _build_cache_misses,
+		"bypasses": _build_cache_bypasses,
+		"entry_bytes": _build_cache_key.size() + _build_cache_world.size(),
+		"budget_bytes": MAX_BUILD_CACHE_BYTES,
+	}
+
+
+static func _build_uncached(field: Dictionary, scenery: Dictionary, lights: Dictionary,
+		parked_info: Dictionary) -> Dictionary:
+	var input_error: String = _input_shape_error(field, scenery, lights)
+	if not input_error.is_empty():
+		return _failure(input_error)
 	var errors := PackedStringArray()
-	if typeof(field.get("pilot")) != TYPE_DICTIONARY or typeof(field.get("objects")) != TYPE_ARRAY:
-		return _failure("field must be normalized before collision inventory construction")
-	if typeof(scenery.get("groups")) != TYPE_ARRAY:
-		return _failure("scenery must be normalized before collision inventory construction")
-	if not lights.is_empty() and typeof(lights.get("fixtures")) != TYPE_ARRAY:
-		return _failure("lights must be normalized before collision inventory construction")
 	var proxies: Array[Dictionary] = []
 	var support_surfaces := SupportSurfaces.build(scenery)
 	_add_field_trees(proxies, field)
 	_add_flightline_barrier(proxies, field)
-	_add_scenery(proxies, scenery, support_surfaces)
+	_add_scenery(proxies, scenery, support_surfaces, parked_info)
 	_add_lights(proxies, lights)
 	_assign_damage_profiles(proxies)
 	proxies.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.id) < str(b.id))
@@ -84,6 +151,114 @@ static func build(field: Dictionary, scenery: Dictionary, lights: Dictionary = {
 		"bins": bins,
 	}
 	return {ok = true, errors = PackedStringArray(), world = world}
+
+
+static func _input_shape_error(field: Dictionary, scenery: Dictionary, lights: Dictionary) -> String:
+	if typeof(field.get("pilot")) != TYPE_DICTIONARY or typeof(field.get("objects")) != TYPE_ARRAY:
+		return "field must be normalized before collision inventory construction"
+	if typeof(scenery.get("groups")) != TYPE_ARRAY:
+		return "scenery must be normalized before collision inventory construction"
+	if not lights.is_empty() and typeof(lights.get("fixtures")) != TYPE_ARRAY:
+		return "lights must be normalized before collision inventory construction"
+	return ""
+
+
+static func _parked_aircraft_snapshots(scenery: Dictionary) -> Dictionary:
+	var snapshots: Dictionary = {}
+	for group_value: Variant in scenery.get("groups", []):
+		if typeof(group_value) != TYPE_DICTIONARY:
+			continue
+		var group: Dictionary = group_value
+		if str(group.get("type", "")) != "fleet":
+			continue
+		var placements: Variant = group.get("placements", [])
+		if typeof(placements) != TYPE_ARRAY:
+			continue
+		for placement_value: Variant in placements:
+			if typeof(placement_value) != TYPE_DICTIONARY:
+				continue
+			var placement: Dictionary = placement_value
+			var aircraft_id: String = str(placement.get("aircraft", ""))
+			var configuration: String = str(placement.get("configuration", "assembled"))
+			var by_configuration: Dictionary = snapshots.get(aircraft_id, {})
+			if not by_configuration.has(configuration):
+				by_configuration[configuration] = ParkedAircraft.info(aircraft_id, configuration)
+				snapshots[aircraft_id] = by_configuration
+	return snapshots
+
+
+static func _make_build_cache_key(field: Dictionary, scenery: Dictionary, lights: Dictionary,
+		parked_info: Dictionary) -> PackedByteArray:
+	var cache_value: Array = [field, scenery, lights, parked_info]
+	var estimate: Array[int] = [0]
+	if not _cache_value_is_safe(cache_value, 0, estimate):
+		return PackedByteArray()
+	var key_bytes: PackedByteArray = var_to_bytes(cache_value)
+	return key_bytes if key_bytes.size() <= MAX_BUILD_CACHE_BYTES else PackedByteArray()
+
+
+static func _cache_value_is_safe(value: Variant, depth: int, estimate: Array[int]) -> bool:
+	if depth > MAX_CACHE_VALUE_DEPTH:
+		return false # Also bounds recursive container graphs before var_to_bytes sees them.
+	var value_type: int = typeof(value)
+	if value_type in [TYPE_OBJECT, TYPE_CALLABLE, TYPE_RID, TYPE_SIGNAL]:
+		return false
+	if value_type == TYPE_ARRAY:
+		var array_value: Array = value
+		if not _cache_add_estimate(estimate, 16 + array_value.size() * 8):
+			return false
+		for item: Variant in array_value:
+			if not _cache_value_is_safe(item, depth + 1, estimate):
+				return false
+		return true
+	if value_type == TYPE_DICTIONARY:
+		var dictionary_value: Dictionary = value
+		if not _cache_add_estimate(estimate, 24 + dictionary_value.size() * 16):
+			return false
+		for key: Variant in dictionary_value:
+			if not _cache_value_is_safe(key, depth + 1, estimate) \
+					or not _cache_value_is_safe(dictionary_value[key], depth + 1, estimate):
+				return false
+		return true
+	if value_type == TYPE_STRING or value_type == TYPE_STRING_NAME:
+		var string_value: String = str(value)
+		if string_value.length() > MAX_BUILD_CACHE_BYTES:
+			return false
+		return _cache_add_estimate(estimate, string_value.to_utf8_buffer().size() + 16)
+	if value_type == TYPE_PACKED_BYTE_ARRAY:
+		return _cache_add_estimate(estimate, (value as PackedByteArray).size() + 16)
+	if value_type in [TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_FLOAT32_ARRAY]:
+		return _cache_add_estimate(estimate, (value.size() * 4) + 16)
+	if value_type in [TYPE_PACKED_INT64_ARRAY, TYPE_PACKED_FLOAT64_ARRAY]:
+		return _cache_add_estimate(estimate, (value.size() * 8) + 16)
+	if value_type == TYPE_PACKED_STRING_ARRAY:
+		var strings: PackedStringArray = value
+		if not _cache_add_estimate(estimate, strings.size() * 8 + 16):
+			return false
+		for item: String in strings:
+			if not _cache_value_is_safe(item, depth + 1, estimate):
+				return false
+		return true
+	if value_type == TYPE_PACKED_VECTOR2_ARRAY:
+		return _cache_add_estimate(estimate, value.size() * 8 + 16)
+	if value_type == TYPE_PACKED_VECTOR3_ARRAY:
+		return _cache_add_estimate(estimate, value.size() * 12 + 16)
+	if value_type == TYPE_PACKED_VECTOR4_ARRAY or value_type == TYPE_PACKED_COLOR_ARRAY:
+		return _cache_add_estimate(estimate, value.size() * 16 + 16)
+	if value_type in [TYPE_NIL, TYPE_BOOL, TYPE_INT, TYPE_FLOAT]:
+		return _cache_add_estimate(estimate, 8)
+	if value_type in [TYPE_VECTOR2, TYPE_VECTOR2I, TYPE_RECT2, TYPE_RECT2I]:
+		return _cache_add_estimate(estimate, 24)
+	if value_type in [TYPE_VECTOR3, TYPE_VECTOR3I, TYPE_PLANE]:
+		return _cache_add_estimate(estimate, 32)
+	return _cache_add_estimate(estimate, 128)
+
+
+static func _cache_add_estimate(estimate: Array[int], amount: int) -> bool:
+	if amount < 0 or estimate[0] > MAX_BUILD_CACHE_BYTES - amount:
+		return false
+	estimate[0] += amount
+	return true
 
 
 static func nearby(world: Dictionary, north: float, east: float, down: float, radius: float) -> Array[Dictionary]:
@@ -132,7 +307,7 @@ static func _add_field_trees(proxies: Array[Dictionary], field: Dictionary) -> v
 
 
 static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
-		support_surfaces: Array[Dictionary]) -> void:
+		support_surfaces: Array[Dictionary], parked_info: Dictionary) -> void:
 	for group_value: Variant in scenery.get("groups", []):
 		if typeof(group_value) != TYPE_DICTIONARY:
 			continue
@@ -142,7 +317,7 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
 			for index: int in group.get("placements", []).size():
 				var placement: Dictionary = group.placements[index]
 				var aircraft_id := str(placement.get("aircraft", ""))
-				_add_parked_aircraft(proxies, group_id, index, aircraft_id, placement)
+				_add_parked_aircraft(proxies, group_id, index, aircraft_id, placement, parked_info)
 			continue
 		if str(group.get("type", "")) in ["hedge", "fence"]:
 			_add_line_obstacles(proxies, group)
@@ -236,9 +411,10 @@ static func _assign_damage_profiles(proxies: Array[Dictionary]) -> void:
 ## Static aircraft scenery uses its authored collision parts, not one filled aircraft-sized box.
 ## Its base is local y=0; the placement adds the chosen scale and elevation in scalar NED space.
 static func _add_parked_aircraft(proxies: Array[Dictionary], group_id: String, index: int,
-		aircraft_id: String, placement: Dictionary) -> void:
+		aircraft_id: String, placement: Dictionary, parked_info: Dictionary) -> void:
 	var configuration := str(placement.get("configuration", "assembled"))
-	var info: Dictionary = ParkedAircraft.info(aircraft_id, configuration)
+	var by_configuration: Dictionary = parked_info.get(aircraft_id, {})
+	var info: Dictionary = by_configuration.get(configuration, {})
 	if info.is_empty() or not _positive_xyz(info.get("size")):
 		return
 	var parts: Variant = info.get("collision_parts", [])
