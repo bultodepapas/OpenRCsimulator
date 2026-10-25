@@ -59,6 +59,76 @@
               "node_path": "wing_frame_right/aileron_right_hinge/aileron_right",
               "surface": 0,
               "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_0",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_1",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_2",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_0",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_1",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_2",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/aileron_left_hinge/aileron_left",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/aileron_right_hinge/aileron_right",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/fixed_te_left_0_0",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/fixed_te_left_0_0",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/fixed_te_right_0_0",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/fixed_te_right_0_0",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/aileron_left_servo_hatch/aileron_left_hatch_plate",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/aileron_right_servo_hatch/aileron_right_hatch_plate",
+              "surface": 0,
+              "kind": "standard_albedo"
             }
           ]
         },
@@ -74,6 +144,16 @@
             {
               "node_path": "wing_frame_right/wing_right_3",
               "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_3",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_3",
+              "surface": 1,
               "kind": "standard_albedo"
             }
           ]
@@ -100,6 +180,21 @@
             {
               "node_path": "rudder_hinge/rudder",
               "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "stab",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "fin",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "rudder_hinge/rudder",
+              "surface": 1,
               "kind": "standard_albedo"
             }
           ]

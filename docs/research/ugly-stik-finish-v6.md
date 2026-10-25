@@ -288,6 +288,17 @@ Each servo is now placed from its shaft, so the case hangs below its arm. The ta
 
 **Cross-track.** `app/data/economy/catalog.json` still prices one `central_aileron_servo`, four physical servos in all. The model now has five. That catalogue belongs to the crash-economics owner.
 
+**Mass model unchanged (decision, 2026-10-25).** The flight inventory keeps one `item_aileron_servo` (45 g). A second servo would add 45 g and about 0.5 % roll inertia. The reference build already balances with a 248 g virtual mass that is not attributed to any part, so the servo count is below the mass model's resolution. Changing it would mean re-recording golden flights for a change no one could feel.
+
+## US-V18a · paint slots cover every film surface
+
+2026-10-25. An audit compared every Stik mesh surface that uses the film atlas with the Workshop paint slots (`assets/aircraft/customization-bindings.json`). Repainting left three kinds of surface in the default colours:
+- the fixed trailing-edge strips inboard of the ailerons (`fixed_te_*`, 171 visible triangles a side);
+- the hinge-gap faces (`classic-covering-gap-v1`), which show when a surface deflects (396 triangles on each aileron);
+- the US-V17 servo hatches, which were a fixed red.
+
+The hatches are now covered in the wing film: each corner samples the atlas at its own planform position, and the hatch is a target of the `wing` slot. The strips and gap faces join their slots (wing, wing tip, tail). `visual_checks.gd` now fails when a film surface is not a paint target. A negative control, a stray film box added in memory, makes it fail.
+
 ## Limits and open findings
 
 - **Engine shadow acne (global, not Stik-specific).** With PSSM engine shadows on (the interactive default), the wing shows a diagonal crosshatch. It disappears with `OPENRC_ENGINE_SHADOWS=off`, and the glossier film makes it more visible. Sun bias settings belong to the atmosphere/world owners (`render/atmosphere.gd`, L3).
