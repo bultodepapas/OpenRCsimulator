@@ -429,7 +429,7 @@
         "sha256": "e4e0ec60db34f279be291a83cfd7b342a7c5cf09bb7676682a5f39f4f6ac4ad9",
         "bytes": 21908723,
         "license": "CC0-1.0",
-        "evidence": "catalog per-asset CC0 and 'license CC0' in each used .mhclo"
+        "evidence": "catalog per-asset CC0 and 'license CC0' in each used .mhclo; cortu_cargo_pants has no licence line in its .mhclo (catalog CC0 is the licence of record)"
       },
       "glasses01": {
         "url": "https://files.makehumancommunity.org/asset_packs/glasses01/glasses01_cc0.zip",
@@ -437,7 +437,7 @@
         "sha256": "f215c58e09e31b7ee568c814067cb47704cee6da1f6fc01cffb8e9fca37bafdd",
         "bytes": 5782729,
         "license": "CC0-1.0",
-        "evidence": "catalog per-asset CC0 and 'license CC0' in each used .mhclo"
+        "evidence": "catalog lists every used asset as CC0 (the pack is 'shared under CC0'); the licence of record. Audit 2026-10-25 (SC-HUM-07-R2): the .mhclo headers of frankyaye_glasses_library_male and kwnet_at_optical_glasses still carry legacy 'license AGPL3' text from before the CC0 release"
       },
       "shirts01": {
         "url": "https://files.makehumancommunity.org/asset_packs/shirts01/shirts01_cc0.zip",
@@ -461,7 +461,7 @@
         "sha256": "262bba42246f85b2a91f493dd920296b258a3b4544eb495c91c4d08e57c528fd",
         "bytes": 6616507,
         "license": "CC0-1.0",
-        "evidence": "catalog per-asset CC0 and 'license CC0' in each used .mhclo"
+        "evidence": "catalog lists every asset as CC0 ('A set of beards and moustaches shared under CC0'); used asset culturalibre_faun_beard ('# license CC-0' in its .mhclo). wdg_scruffy_beard (legacy AGPL3 header) is no longer used, from SC-HUM-07-R2"
       }
     },
     "also_uses_pinned_archives": [

@@ -4,6 +4,7 @@
 #   - chase: settled pose, frame-rate independence, circle/vertical/tail-slide/terrain/teleport cases;
 #   - CAM-24: chase frame-rate independence in a bank and a loop (sub-steps), no slide after entry (state velocity);
 #   - CAM-02b: each view's near plane (pilot 0.5 m, chase and close-up 0.25 m, orbit shrinking near the airframe);
+#   - CAM-06/06b/28 pilot aids: the zoom-law family, the horizon tilt and overhead smoothing; all off by default;
 #   - CAM-27: after a crash the orbit, chase and close-up look at the wreck; the orbit still turns; pilot untouched;
 #   - orbit: starts where the previous view was, clamps, keeps clear of the ground.
 # Run: godot --headless --path . --script res://tests/test_camera_views.gd
@@ -67,6 +68,9 @@ func _run() -> void:
 	_pilot_singularities()
 	_pilot_fov_reference()
 	_pilot_zoom()
+	_zoom_laws()
+	_horizon_tilt()
+	_overhead_smoothing()
 	_cycle()
 	_near_planes()
 	_chase()
@@ -144,6 +148,86 @@ func _pilot_fov_reference() -> void:
 	PilotCamera.aim(cam, target, Transform3D(Basis.IDENTITY, target), false, SPAN)
 	var expected := PilotCamera.auto_fov(SPAN, cam.position.distance_to(target))
 	_check("CAM-23 pilot view: FOV from the reference height, not the viewport (%d px tall)" % int(cam.get_viewport().get_visible_rect().size.y), absf(cam.fov - expected) < 1e-4, "%.4f vs %.4f" % [cam.fov, expected])
+	cam.free()
+
+
+func _zoom_laws() -> void:
+	var span := SPAN
+	var start := span * float(Spec.AUTO_ZOOM.reference_height_px) / (2.0 * float(Spec.AUTO_ZOOM.target_px) * tan(deg_to_rad(Spec.CAMERA.fov_deg) * 0.5))
+	var exact := true
+	for d in range(5, 2001, 9):
+		exact = exact and PilotCamera.law_fov("constant", span, d) == PilotCamera.auto_fov(span, d)
+	_check("CAM-06 constant law is today's auto-zoom, bit for bit", exact)
+	# Partial: beyond where the constant law starts, on-screen size falls as d^-0.5 (looming kept), within 5 %.
+	var worst := 0.0
+	var at_start := PilotCamera.projected_px(span, start, PilotCamera.law_fov("partial", span, start), 1080.0)
+	for d in range(int(start) + 1, 301, 7):
+		var px := PilotCamera.projected_px(span, d, PilotCamera.law_fov("partial", span, d), 1080.0)
+		worst = maxf(worst, absf(px / (at_start * pow(start / d, PilotCamera.PARTIAL_K)) - 1.0))
+	_check("CAM-06 partial law: span ∝ d^-0.5 from %.0f to 300 m within 5 %%" % start, worst < 0.05, "%.3f" % worst)
+	_check("CAM-06 partial law never zooms in more than the constant law", PilotCamera.law_fov("partial", span, 200.0) > PilotCamera.law_fov("constant", span, 200.0))
+	# Gentle: CRRCSim's 35° → 26° → 20° at 21.5 / 200 / 400 m when the base is 35°.
+	var g := [PilotCamera.law_fov("gentle", span, 21.5, 35.0), PilotCamera.law_fov("gentle", span, 200.0, 35.0), PilotCamera.law_fov("gentle", span, 400.0, 35.0)]
+	_check("CAM-06 gentle law reproduces CRRCSim (35/26/20°)", absf(g[0] - 35.0) < 0.5 and absf(g[1] - 26.3) < 0.5 and absf(g[2] - 20.4) < 0.5, str(g))
+	var cam := _camera()
+	var rig := CameraRig.new(cam, span)
+	var target := Vector3(0, 40, -250)
+	rig.set_zoom_law("partial")
+	for i in 240:
+		rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+	_check("CAM-06 the rig shows the chosen law", absf(cam.fov - PilotCamera.law_fov("partial", span, cam.position.distance_to(target))) < 1e-3, "%.3f" % cam.fov)
+	cam.free()
+
+
+func _horizon_tilt() -> void:
+	var cam := _camera()
+	var rig := CameraRig.new(cam, SPAN)
+	rig.auto_zoom = false
+	var high := Vector3(0, 30, -40) # about 35° above the eye, beyond what a 50° view shows with the horizon
+	var airplane := Transform3D(Basis.IDENTITY, high)
+	rig.update(high, airplane, Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+	var centred := (-cam.basis.z).dot((high - cam.position).normalized()) > 0.99999
+	rig.horizon_bias = true
+	rig.update(high, airplane, Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+	var first := rad_to_deg((-cam.basis.z).angle_to((high - cam.position).normalized()))
+	for i in 240:
+		rig.update(high, airplane, Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+	var half := cam.fov * 0.5
+	var forward := -cam.basis.z
+	var aim_el := rad_to_deg(asin(forward.y))
+	var off := rad_to_deg(forward.angle_to((high - cam.position).normalized()))
+	_check("CAM-06b off by default: the aircraft is centred", centred)
+	_check("CAM-06b tilt eases in (first frame turns a fraction)", first > 0.0 and first < 0.25 * CameraRig.HORIZON_KEEP * half, "%.2f°" % first)
+	_check("CAM-06b the horizon shows: the frame's lower edge is below eye level by the margin", aim_el - half <= -CameraRig.HORIZON_MARGIN * half + 1e-3, "aim %.1f°, half %.1f°" % [aim_el, half])
+	_check("CAM-06b keeps the aircraft in the upper frame, level horizon", off <= CameraRig.HORIZON_KEEP * half + 1e-3 and absf(cam.basis.x.y) < 1e-5, "off %.2f°" % off)
+	var low := Vector3(0, 3, -120) # 0.6° up: already with its horizon
+	rig.update(low, Transform3D(Basis.IDENTITY, low), Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+	_check("CAM-06b a low aircraft is looked at directly", (-cam.basis.z).dot((low - cam.position).normalized()) > 0.99999)
+	cam.free()
+
+
+func _overhead_smoothing() -> void:
+	var cam := _camera()
+	var rig := CameraRig.new(cam, SPAN)
+	rig.auto_zoom = false
+	var worst := {}
+	for smoothing: bool in [false, true]:
+		rig.overhead_smoothing = smoothing
+		rig.reset()
+		var previous := Vector3.ZERO
+		var rate := 0.0
+		var aim := 1.0
+		for i in 360:
+			var t := -3.0 + i / 60.0
+			var target := Vector3(0.5, 20.0, -25.0 * t)
+			rig.update(target, Transform3D(Basis.IDENTITY, target), Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+			if previous != Vector3.ZERO:
+				rate = maxf(rate, rad_to_deg(previous.angle_to(cam.basis.x)) * 60.0)
+			previous = cam.basis.x
+			aim = minf(aim, (-cam.basis.z).dot((target - cam.position).normalized()))
+		worst[smoothing] = [rate, aim]
+	_check("CAM-28 off: the exact pass beside the zenith flips the picture (> 1000°/s)", worst[false][0] > 1000.0, "%.0f°/s" % worst[false][0])
+	_check("CAM-28 on: the picture turns at most ~180°/s and the aircraft stays exactly centred", worst[true][0] < 200.0 and worst[true][1] > 0.99999, "%.0f°/s, aim %.6f" % worst[true])
 	cam.free()
 
 

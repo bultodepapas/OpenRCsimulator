@@ -47,6 +47,7 @@ func _validation() -> void:
 	_check("defaults validate", CameraSettings.errors(CameraSettings.DEFAULTS).is_empty())
 	_check("an empty dictionary means the defaults", CameraSettings.normalized({}) == CameraSettings.DEFAULTS)
 	for bad: Dictionary in [{camera_view = "cockpit"}, {camera_fov = 51}, {camera_fov = "50"}, {camera_auto_zoom = 1},
+			{camera_zoom_law = "fisheye"}, {camera_horizon_bias = "on"}, {camera_overhead_smoothing = 0},
 			{camera_chase_distance = 3.0}, {camera_sensitivity = -1.0}, {camera_invert_y = "yes"}]:
 		_check("rejects %s" % str(bad), not CameraSettings.errors(bad).is_empty())
 	_check("an integer multiplier is accepted (1 = 100 %)", CameraSettings.errors({camera_sensitivity = 1}).is_empty())
@@ -59,7 +60,8 @@ func _file_round_trip() -> void:
 	_check("no file: camera defaults", CameraSettings.normalized(store.config) == CameraSettings.DEFAULTS)
 	var draft := store.config.duplicate(true)
 	draft.merge({camera_view = "chase", camera_fov = 35, camera_auto_zoom = false, camera_chase_distance = 1.25,
-		camera_sensitivity = 0.5, camera_invert_y = true}, true)
+		camera_sensitivity = 0.5, camera_invert_y = true, camera_zoom_law = "gentle", camera_horizon_bias = true,
+		camera_overhead_smoothing = true}, true)
 	_check("a camera draft saves", store.save(draft) == OK)
 	var loaded := DisplayPreferences.load_from(path)
 	_check("round trip keeps every camera value", CameraSettings.normalized(loaded) == CameraSettings.normalized(draft), str(CameraSettings.normalized(loaded)))
@@ -86,6 +88,12 @@ func _rig_application() -> void:
 	CameraSettings.apply_at_start(rig, prefs)
 	_check("start: first view, auto-zoom, chase distance, FOV and orbit controls", rig.view == "orbit" and not rig.auto_zoom
 		and is_equal_approx(rig.chase.zoom, 0.8) and rig.base_fov == 35.0 and rig.orbit.sensitivity == 1.5 and rig.orbit.invert_y)
+	_check("start: pilot aids stay off by default", rig.zoom_law == "constant" and not rig.horizon_bias and not rig.overhead_smoothing)
+	var aids := prefs.duplicate()
+	aids.merge({camera_zoom_law = "gentle", camera_horizon_bias = true, camera_overhead_smoothing = true}, true)
+	CameraSettings.apply_changes(rig, prefs, aids)
+	_check("pilot aids apply live", rig.zoom_law == "gentle" and rig.horizon_bias and rig.overhead_smoothing)
+	CameraSettings.apply_changes(rig, aids, prefs)
 	# In flight the pilot changes view and turns auto-zoom on; a Settings change of the FOV must not undo either.
 	rig.set_view("pilot")
 	rig.toggle_auto_zoom()
@@ -186,8 +194,18 @@ func _settings_page() -> void:
 	for key: String in pickers:
 		var picker: OptionButton = pickers[key]
 		complete = complete and picker.is_visible_in_tree() and picker.get_item_metadata(picker.selected) == CameraSettings.DEFAULTS[key]
-	_check("Camera page shows every option at its default", complete and screen._camera_auto_zoom_toggle.button_pressed
-		and not screen._camera_invert_toggle.button_pressed)
+	_check("Camera page shows every option at its default", complete
+		and screen._camera_zoom_picker.get_item_metadata(screen._camera_zoom_picker.selected) == "constant"
+		and not screen._camera_invert_toggle.button_pressed and not screen._camera_horizon_toggle.button_pressed
+		and not screen._camera_overhead_toggle.button_pressed)
+	var off := 0
+	screen._camera_zoom_picker.select(off)
+	screen._camera_zoom_picker.item_selected.emit(off)
+	_check("auto zoom Off keeps the chosen law", previews.back().camera_auto_zoom == false and previews.back().camera_zoom_law == "constant")
+	var partial := 2
+	screen._camera_zoom_picker.select(partial)
+	screen._camera_zoom_picker.item_selected.emit(partial)
+	_check("a law turns auto zoom on with it", previews.back().camera_auto_zoom and previews.back().camera_zoom_law == "partial")
 	_check("the default FOV is labelled as the default", screen._camera_fov_picker.get_item_text(screen._camera_fov_picker.selected) == "50° (default)")
 	var index := CameraSettings.FOVS.find(35)
 	screen._camera_fov_picker.select(index)
@@ -197,7 +215,7 @@ func _settings_page() -> void:
 	screen._camera_invert_toggle.button_pressed = true
 	screen.keep_changes()
 	var saved := DisplayPreferences.load_from(path)
-	_check("Keep stores the camera choices", saved.camera_fov == 35 and saved.camera_invert_y)
+	_check("Keep stores the camera choices", saved.camera_fov == 35 and saved.camera_invert_y and saved.camera_zoom_law == "partial")
 	screen.queue_free()
 	viewport.queue_free()
 	await process_frame

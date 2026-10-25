@@ -1,0 +1,34 @@
+# CAM-02b, CAM-17, CAM-29 — near planes, camera settings, orbit controls
+
+2026-10-25. Steps from the [camera plan](../../../plans/camera-views.md#8-steps), after [CAM-23…27](../CAM-23-27/README.md), plus a CAM-27 follow-up for the chase after a crash. Checks ran on the shared VM (Godot 4.7.2, Mesa llvmpipe). They establish behaviour, not readability or comfort on the target display.
+
+## What changed
+
+| Step | Files | Behaviour |
+| --- | --- | --- |
+| CAM-02b | [camera_rig.gd](../../../../app/render/camera/camera_rig.gd) `NEAR_M`, `near_plane()` | Near plane per view: pilot and landscape look views 0.5 m, chase and close-up 0.25 m, orbit `0.5·(distance − 0.7·span)` clamped to 0.05–0.25 m. The 24-bit depth step at 1 km falls from 0.6 m to 0.12 m in the pilot view and to 0.24 m in chase and close-up. The far plane stays 21 km |
+| CAM-17 | [camera_settings.gd](../../../../app/render/camera/camera_settings.gd), [display_preferences.gd](../../../../app/app_state/display_preferences.gd), [settings_screen.gd](../../../../app/ui/settings_screen.gd), [app_root.gd](../../../../app/app_root.gd), [main.gd](../../../../app/main.gd), [helicopter_main.gd](../../../../app/helicopter_main.gd), [pilot_camera.gd](../../../../app/render/pilot_camera.gd), [es.po](../../../../app/i18n/es.po), [FIRST-LAUNCH](../../../FIRST-LAUNCH.md) | A **Camera** page in Settings: first view, pilot field of view (30–70°, default 50°), auto zoom, chase distance, orbit sensitivity and inverted orbit up/down. They are stored as optional keys of `display.cfg [camera]` with a per-key fallback, so the schema is unchanged. Home and Workshop flights receive them; command-line routes keep `--view`/`--autozoom` and their pictures. A change in Settings applies at once: the field of view eases in, the orbit controls switch, and auto zoom and chase distance change only if their own setting changed. The first view waits for the next flight |
+| CAM-29 | [orbit_view.gd](../../../../app/render/camera/orbit_view.gd), [camera_rig.gd](../../../../app/render/camera/camera_rig.gd) `hold_cursor`, `main.gd`, `helicopter_main.gd` | The orbit eases toward the dragged azimuth, elevation and distance (half-life 0.05 s; 94 % in 0.2 s) and turns the short way across ±180°. Sensitivity and inversion come from the settings. The cursor is held (captured) while the right button turns the orbit. It is released with the button, every frame once the button is up (a menu may take the release event), and when the flight exits |
+| CAM-27 follow-up | [camera_rig.gd](../../../../app/render/camera/camera_rig.gd) `focus` | The held chase narrows its FOV so a wreck that slid away still spans a quarter of the frame height (12–55°). A wreck still near the impact keeps 55°, so entry does not jump |
+
+Not done in CAM-29: controller orbit look and hold-to-zoom. The controller layer delivers only presses, apart from the special-cased throttle cut in `app_root.gd`.
+
+## Proofs
+
+| Proof | Command | Result |
+| --- | --- | --- |
+| Pilot clearance | [nearest_geometry.gd](../../../../research/camera-views/CAM-02b/nearest_geometry.gd): exact triangle distance from the eye, every landscape | Club field: station barrier 1.11 m, runway fixture 1.23 m, ground 1.70 m; green_paradise: nothing within 1.5 m. At the widest manual zoom (85.9° vertical) the barrier is still 0.52 m deep in view (derived), above the 0.5 m near plane |
+| Airframe clearance | [airframe_clearance.gd](../../../../research/camera-views/CAM-02b/airframe_clearance.gd): closest chase (boom ×0.4), close-up, and orbit at its minimum distance in 12 directions, all 9 flyable airplanes | Chase ≥ 1.39 m, close-up ≥ 1.08 m (F4U) against 0.25 m; orbit ≥ 0.16 m (Avanti) against 0.05 m |
+| Pictures | `--capture` at 1920×1080 with the `capture.sh` environment: horizon looks at 0/90/180/270° and the pilot view, before and after; a repeat is byte-identical | Differences of 0.00–0.02 % of pixels: single pixels in distant foliage, where overlapping leaf cards now sort by depth more precisely. No clipping, no visible change |
+| Views | `test_camera_views.gd` | **79/79**. New: near plane per view, orbit at its closest, look views; chase FOV on a slid wreck (quarter of the frame) and none on entry |
+| Settings and orbit | [test_camera_settings.gd](../../../../app/tests/test_camera_settings.gd) | **35/35**. Validation; `display.cfg [camera]` round trip; one bad value falls back alone; a pre-CAM-17 file keeps the defaults. Start applies every choice; a live FOV change keeps the pilot's own view and Z state; live auto zoom on and off; FOV eases in; auto zoom never widens past the setting; Backspace keeps it. Orbit inversion, sensitivity, easing (first frame < 30 % of a dolly, 98 % within 0.3 s), short way across ±180°. The Camera page shows defaults, previews 35° live without the display trial, and Keep stores it |
+| Settings UI | `test_settings_ui`, `test_ui_settings_integration`, `test_ui_modal_responsive`, `test_display_preferences`, `test_advanced_graphics_settings`, `test_ui_pause` | Pass. The modal check covers the Camera page at every size and text scale (672 cases); its 6 failures are the overlays dialog's, identical on pristine HEAD. With five tabs, stacked layouts keep two rows: a third row collapsed the page to 44 px at 200 % text |
+| Routes | `test_camera_route` (29), `test_controls_reference`, `test_heli_control_actions` (28), `test_heli_render_audit` (32), `test_controller_flight_actions` (32) | Pass |
+| Compiler warnings | `gdscript_warnings.py` on every changed script | No new warning |
+| Live | `debugctl launch`, then `run research/camera-views/CAM-02b-17-29/live_scenario.txt` (1920×1080) | Home flight with saved choices: chase first, base FOV 35°, sensitivity 2, inverted, near 0.25 m; pilot view near 0.5 m, FOV 35°. A live change to 50° gave base 50° and kept the pilot view. Orbit near 0.25 m; a 100 px drag turned 60° (0.3°/px × 2). After a dive in chase the wreck slid 11.4 m and the chase narrowed to 30.2° with the wreck on screen |
+
+Exit leaks seen while testing (109 objects with Home alone) come from the branding/FSR2 commit `be4639a5`. A worktree at `d26989b0`, which has this camera work, exited with 0; one at `be4639a5`, which does not, exited with 105. They are reported to that work, not fixed here.
+
+## CAM-16 finding
+
+`soundscape.reset_observer()` sets the mix gain to 0, and the gain returns over 0.35 s (`move_toward(gain, target, dt / 0.35)`). Wiring it to every view change would therefore dip the whole soundscape on each C press. Today the Doppler term already ignores listener jumps above 150 m/s; only the propagation-delay history jumps. CAM-16 needs an observer cut that resets the delay history without the gain, designed by the audio track and judged by ear; the VM has no sound. No audio code was changed.
