@@ -599,6 +599,10 @@ static func _plate_mesh(outline: PackedVector2Array, thickness: float) -> ArrayM
 			side = -side
 		_face(tool, Vector3(a.x, a.y, half), Vector3(b.x, b.y, half), Vector3(b.x, b.y, -half), side)
 		_face(tool, Vector3(a.x, a.y, half), Vector3(b.x, b.y, -half), Vector3(a.x, a.y, -half), side)
+	# Indexed with tangents like the primitive meshes: SurfaceTool.append_from keeps only indexed triangles once any
+	# merged part is indexed, so an unindexed plate would silently vanish from a batch.
+	tool.index()
+	tool.generate_tangents()
 	return tool.commit()
 
 
