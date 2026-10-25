@@ -104,6 +104,14 @@ test display); a requested window size may exclude desktop decorations. Keep
 captures and raw logs outside tracked paths. Do not open the production import
 cache with this experimental engine.
 
+The preparer also imports the pinned initial-camera correction: only Main's
+startup function and the pilot-camera helper change from the older trial sources.
+This places the aircraft and selected view before the first `--quick-flight`
+draw. The receipt records the additional startup source and function hashes.
+Movie Maker uses a `movie` feature override for an actual 1920×1080 output;
+`--resolution 1920x1080` alone does not change its fixed recording viewport.
+See the [first-frame investigation](../../../docs/research/menu-investigations/UI-34c-R5/menu-preparation-2026-10-25/README.md#first-view-investigation-runway-start).
+
 After both providers are available, their bridge smoke scripts exercise mode
 changes, resizing and MSAA restoration:
 
