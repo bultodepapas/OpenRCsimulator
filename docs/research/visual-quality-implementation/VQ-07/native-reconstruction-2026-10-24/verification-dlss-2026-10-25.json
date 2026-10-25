@@ -1,0 +1,543 @@
+{
+  "format": "openrc-dlss-frame-lifecycle-verification v1",
+  "date": "2026-10-25",
+  "engine_commit": "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76",
+  "streamline": "2.11.1",
+  "dlss_preset": "K",
+  "hardware": "NVIDIA GeForce RTX 3090",
+  "source_identity": {
+    "tools/graphics/native/build.py": "b00b2faf7350b282a67c49edf5bea02b33a300d09627a24f1c558bfe888b3319",
+    "tools/graphics/native/package.py": "1c8c2953854cb83080436e07a7d8c074a5d1019e5a699216045cda011df8e649",
+    "tools/graphics/native/prepare_candidate.py": "8c67a5010307d5c4f1f885ae7e05e102e53d8daa3513a48306b655794631c8fc",
+    "tools/graphics/native/dlss_frame_lifecycle.patch": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5",
+    "tools/graphics/native/dlss_failure_paths.patch": "bf81e9af717ceeffed761350c2a8fdf39d64ca37cd350482a8c543ec726f46ee",
+    "tools/graphics/native/test_build.py": "d0be818d04f2b86377ab7a3d71dbbc27bb8016ce7bd5f041368727be33b4ca75",
+    "tools/graphics/native/repro/minimal.gd": "441d1a17a24fa75e37775d71277f087151042db246f962a05633ed1a8fa6475f",
+    "tools/graphics/native/dlss-smoke.txt": "de7b09424083c29df2a277babcf2716d3f86ae6e126a2a0a9c45146796c9f14a",
+    "app/render/reconstruction.gd": "7b2299fc75998f87e1ff3e587829b2651bd7b2475034a520fb7fa69275439ac2",
+    "app/ui/settings_screen.gd": "e7d1db8ba4534d4249458ec0f42566211f961e5042666491575ab9600fe67750",
+    "app/tests/test_reconstruction.gd": "96246950d7f30654ef8e98f48ebaf97de9ff37b6d1b90689fc446a770af0fb29",
+    "app/project.godot": "bc73e3598b8562b4811e6d25b05baacb178c7bf70ce361a619207c79b058f4f3"
+  },
+  "package": {
+    "path": "tmp/native-reconstruction-export",
+    "receipt_sha256": "dd97a66ca0bd15f9a37a5b62e21305f7e72fc0d477d4efa4bf38fc26827b47ed",
+    "verified_managed_files": 34,
+    "executable_sha256": "c0428422d144ea58d6168f5626db5f1288205a0307b6cf2a8316d6e1dab16c54",
+    "pck_sha256": "3a0ce699c80a26de9373a982a2f4af6766d9fc89759601e96dc1226487ccb951",
+    "integration": {
+      "engine.patch": "e3d55e67e352b150da8dc1c3c3ea9caa0cbbabd2542e6f87bcd64285eb637620",
+      "vulkan_validation.patch": "26f91e399e339b4c4725f925a7c779254c9720112acf4ed49e52652480475206",
+      "dlss_validation.patch": "9bc70d7b64586a5515ad04e8c2bef9215aafae49b648ee0096d7d4aef550e9ed",
+      "shutdown_thread.patch": "a253b37bbbf88fed10bbbc6b33ce7823e52c9ffcff84fc5a973059148210d858",
+      "load_token_lifetime.patch": "868c518c78d2afe86e4ea29e53ec0d13488fa1c62a0dbd9b079d7ad70e8260a1",
+      "reflection_atlas_lifetime.patch": "86ab87598f732271991332a2be5f4ba1f6e2987fbacc21030e39645ab9b3010f",
+      "buffer_write_sync.patch": "d4ed03e2f95878ca226ad2bd0c689ea2294622cb92c3dacc2080f970f812aea6",
+      "dlss_frame_lifecycle.patch": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5",
+      "dlss_failure_paths.patch": "bf81e9af717ceeffed761350c2a8fdf39d64ca37cd350482a8c543ec726f46ee",
+      "fidelityfx.patch": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+      "build_fidelityfx.py": "49e006c4bc989310f89a0f38fb4cf7b1b4763aa571f3076769abe695fe6d5785",
+      "fsr3.h": "acb7566f1fc05b4b6bc3d83a482b962d23247a3936cdf4f095e96eb92dab9fd4",
+      "fsr3.cpp": "e5ec7a18ea9961c5f05a5b2f81517d46da731d2489f06a5234c8f81827a5347d",
+      "fsr3_prepare.glsl": "a6a62b2ba1d5981ed48b326fc55ad5015935b6903ebcd2526a65f5bfdc569035"
+    },
+    "candidate": {
+      "source_base_commit": "343be4b0bba007ec4295e7da408220a0577d97e1",
+      "integration_source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+      "engine_identity": "4.8.0",
+      "candidate_renderer": "forward_plus",
+      "generated_registry_sha256": "f2c9fed6f323d23626513641d8c34592829b848dd8b56d933ec4e7454953b2bb",
+      "integration_overlays": {
+        "app/render/reconstruction.gd": {
+          "source_commit": "7af9257dbb6251f1ab3e2f4c4113eec3038b61d4",
+          "source_sha256": "d7f84caacbab6e098e0381f7738a70c47eb698c52144e847f80dd69b90e32a54",
+          "expected_final_sha256": "7b2299fc75998f87e1ff3e587829b2651bd7b2475034a520fb7fa69275439ac2",
+          "prepared_sha256": "7b2299fc75998f87e1ff3e587829b2651bd7b2475034a520fb7fa69275439ac2"
+        },
+        "app/app_state/display_preferences.gd": {
+          "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+          "source_sha256": "68d535c76ea9d121776fdb5cf9ecc474a1b92848d77023915012b3083b3a493b",
+          "expected_final_sha256": "68d535c76ea9d121776fdb5cf9ecc474a1b92848d77023915012b3083b3a493b",
+          "prepared_sha256": "68d535c76ea9d121776fdb5cf9ecc474a1b92848d77023915012b3083b3a493b"
+        },
+        "app/ui/settings_screen.gd": {
+          "source_commit": "91b67d620c1adf3f470dddba33ace63f3fb6851c",
+          "source_sha256": "bf13fbc4f31bfbc9a47929e0c3dcd8c291dd1be611b208ce2130784e52bb32a1",
+          "expected_final_sha256": "798e48b036817ad53fe595cb9b5168bb3a7fa4a080d404b1f9cc1034eacba405",
+          "prepared_sha256": "798e48b036817ad53fe595cb9b5168bb3a7fa4a080d404b1f9cc1034eacba405"
+        },
+        "app/i18n/es.po": {
+          "source_commit": "91b67d620c1adf3f470dddba33ace63f3fb6851c",
+          "source_sha256": "15a3b368b8c7c0ee5483c06d380314b24298dae8a86c5a593d59e56d9fa4af61",
+          "expected_final_sha256": "7c68a5c183e25b5c384977b02ac9a50d5f05154a37d95b4eb8e7bf52398ec8ca",
+          "prepared_sha256": "7c68a5c183e25b5c384977b02ac9a50d5f05154a37d95b4eb8e7bf52398ec8ca"
+        },
+        "app/app_root.gd": {
+          "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+          "source_sha256": "1ffc7fff7ee0398efa71569988fac262fc75c3bb1020f5d2cb953d30c9ab2622",
+          "expected_final_sha256": "1ffc7fff7ee0398efa71569988fac262fc75c3bb1020f5d2cb953d30c9ab2622",
+          "prepared_sha256": "1ffc7fff7ee0398efa71569988fac262fc75c3bb1020f5d2cb953d30c9ab2622"
+        },
+        "app/main.gd": {
+          "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+          "source_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5",
+          "expected_final_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5",
+          "prepared_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5"
+        },
+        "app/tests/test_reconstruction.gd": {
+          "source_commit": "7af9257dbb6251f1ab3e2f4c4113eec3038b61d4",
+          "source_sha256": "96246950d7f30654ef8e98f48ebaf97de9ff37b6d1b90689fc446a770af0fb29",
+          "expected_final_sha256": "96246950d7f30654ef8e98f48ebaf97de9ff37b6d1b90689fc446a770af0fb29",
+          "prepared_sha256": "96246950d7f30654ef8e98f48ebaf97de9ff37b6d1b90689fc446a770af0fb29"
+        },
+        "app/tests/test_advanced_graphics_settings.gd": {
+          "source_commit": "ba42e49b7b814a86f0c29f5d7d29f2239a002e03",
+          "source_sha256": "a31811234a1631ac27214151dd24d6ef6669883b77870f5581a91e2031fee7cd",
+          "expected_final_sha256": "a31811234a1631ac27214151dd24d6ef6669883b77870f5581a91e2031fee7cd",
+          "prepared_sha256": "a31811234a1631ac27214151dd24d6ef6669883b77870f5581a91e2031fee7cd"
+        }
+      }
+    }
+  },
+  "checks": [
+    {
+      "label": "dlss-baseline",
+      "ok": false,
+      "reason": "launch_error",
+      "process_exit": null,
+      "complete": false,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.032,
+      "missing_required_text": [
+        "MINIMAL_DLSS|RUN_COMPLETE|provider=dlss"
+      ],
+      "report": "tmp/dlss-implementation-20261025/baseline/dlss-baseline-9ajfe12d/report.json",
+      "sha256": "50a0b1ae6a74135c3768ae09fee793c9d323fa90cf29bfbac4874962aea28481",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "dlss-baseline",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 2,
+        "warning": 3
+      },
+      "elapsed_seconds": 11.297,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/baseline/dlss-baseline-t0a_7q1e/report.json",
+      "sha256": "a4364c8948616d5d81e53a6d3e941564015c83e2761d448108358320f7d18822",
+      "log_sha256": "cf06e581742bc7979b6ec18ca66a18aa4229eb7b6c111dfb984a3acca0731147"
+    },
+    {
+      "label": "dlss-export-1080p",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 24.36,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/export-check/dlss-export-1080p-ao4jgs33/report.json",
+      "sha256": "7376812d8359ad21f9a9f5ecc89770df00d60c7f8c5083ee0a02c648793a5e2c",
+      "log_sha256": "5d55aa365724c909f70e8cd26777a52b5c2063a6fc6142446fcc6a447ca69db3"
+    },
+    {
+      "label": "dlss-export-home",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 8.234,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/export-home/dlss-export-home-q4qo5uso/report.json",
+      "sha256": "d8d84eac861df51cc42f765a959bf8caa99e9372cc71a6da9c3fdce530a7250f",
+      "log_sha256": "79fc9489233c341b92732096d035812120849997ced99d607ba239554df1646f"
+    },
+    {
+      "label": "dlss-export-k-1080p",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 31.157,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/export-k-check/dlss-export-k-1080p-r0u806uo/report.json",
+      "sha256": "9a42d57a7c9ce5a8ece05976d64aebaddc80cb72ba8ed1a3ae0c441c0bcecb11",
+      "log_sha256": "ec686186c09d9588048b6769e4cb2ce2e96f44a487b74202e5620da3429f121b"
+    },
+    {
+      "label": "dlss-final-fixedfps",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 2,
+        "warning": 3
+      },
+      "elapsed_seconds": 10.953,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/final-fixedfps/dlss-final-fixedfps-e6v20u41/report.json",
+      "sha256": "60c34489158b6a3545b10fd6b0273ef542d95afe7b04c7553b7a1e759eb9fe76",
+      "log_sha256": "8301b635fdc0e13d33b0857c54e330b34edc567ab6b1fb8adcd3fb0d3352dd66"
+    },
+    {
+      "label": "dlss-frame-tagging",
+      "ok": false,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 2,
+        "warning": 3
+      },
+      "elapsed_seconds": 10.891,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/frame-tagging/dlss-frame-tagging-6aoaespp/report.json",
+      "sha256": "d1fbee5b6352c827336841ac48379d60d99faa5db707bcb63d005d4503b3f787",
+      "log_sha256": "5592af70026786568854642cc62313fd831dd0744b359915ef50c6ca2810a632"
+    },
+    {
+      "label": "dlss-candidate-import",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 27.422,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/import/dlss-candidate-import-lb6tjdw5/report.json",
+      "sha256": "634cdb7aa5b9f5d0a3de69380ac1a6386e33c3a3425a9e9af24330f5832c1fe3",
+      "log_sha256": "4a8a759ab17989f1b52321eb813ac20c5b9a47b8930979185c3c33ed96f193f3"
+    },
+    {
+      "label": "dlss-candidate-import-final",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 26.734,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/import-final/dlss-candidate-import-final-ze3zv2fo/report.json",
+      "sha256": "f174a0a4c74b1412ccb8abdc4bea407365eb1ec7532afbe70880ec93d334f03a",
+      "log_sha256": "6d2d2034a5a95fc9da2a931e41c36dd72a3371a132f9356ec862ebcc7c3a1784"
+    },
+    {
+      "label": "dlss-native-control",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 3
+      },
+      "elapsed_seconds": 7.937,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/native-control/dlss-native-control-evqmdv22/report.json",
+      "sha256": "cafdf7d89154c7ea98b5e24ff8920e4bb7ec37e11729a42fd1605052fd29c776",
+      "log_sha256": "85e1e70a34c40adab709962ef68b262085dc3be7fe957e1e538a60484651bdb1"
+    },
+    {
+      "label": "test_advanced_graphics_settings",
+      "ok": false,
+      "reason": "timeout",
+      "process_exit": 1,
+      "complete": false,
+      "counts": {
+        "error": 5,
+        "warning": 0
+      },
+      "elapsed_seconds": 150.313,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/policy/test_advanced_graphics_settings-g8seiegn/report.json",
+      "sha256": "3f752b549321bf7e01c287194302744a99dd78573d6b4d3fc22f0f0c0d762d13",
+      "log_sha256": "66894241d159aa34db168443a7256f7c76bfee86fcf40eb7f49137ae07aac8eb"
+    },
+    {
+      "label": "test_reconstruction",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 2.422,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/policy/test_reconstruction-zm81_u0j/report.json",
+      "sha256": "214705118a863e07fc9ab4a6b10f935b46fbd0de6d900a75009fa15b163f0b96",
+      "log_sha256": "4b193b69c8d7c98c810c65e25c812983bb3b927035b871e41560eb4b88add1ad"
+    },
+    {
+      "label": "dlss-settings-final",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 16.75,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/policy-final/dlss-settings-final-o832fs01/report.json",
+      "sha256": "e4e9bc68eb002baac156eff44aceaef41cb97ce3a7957bafcb46a7f103dcc564",
+      "log_sha256": "5c00ca260347b8d8826c246176b3149dee732aa53417aa62472ae756b8420601"
+    },
+    {
+      "label": "dlss-preset-k",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 3
+      },
+      "elapsed_seconds": 10.656,
+      "missing_required_text": [],
+      "report": "tmp/dlss-implementation-20261025/preset-k/dlss-preset-k-r5pn0vb_/report.json",
+      "sha256": "89345dd689c8107b34d5c0ac758fea9ea9d5b72747278b4336b017fe6386a3bd",
+      "log_sha256": "4bf8952c6e69552d67ca11e389946de9452f31acca4d09828ec26e1bd61a297a"
+    }
+  ],
+  "game_validation": {
+    "session": "tmp/debug-bridge/20261025-083340-47947",
+    "engine_log_sha256": "8c3cfcfbbfee139278f1f9a57caa2dc37c1972dd37e5e4f28bceb815695ea4ac",
+    "validation_layer_observed": true,
+    "engine_errors": 0,
+    "cycles": 2,
+    "backend": {
+      "available": true,
+      "backend_failed": false,
+      "dispatches": 943,
+      "contexts_created": 15,
+      "last_return_code": 0,
+      "last_frame_id": 3407,
+      "frame_based_tagging": true
+    },
+    "shutdown": {
+      "stopped": true,
+      "pid": 60656,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "smoke_logs": {
+      "dlss-game-preset-k.log": "3d344cc3027d54a107d036acedf95cdc26858c4b208e58ebbcf03ab11396b5e1",
+      "dlss-game-preset-k-repeat.log": "1e0853b634af02c0752824f9659bf7164900c70c9fd0732823b73a27af9fcc65"
+    }
+  },
+  "runtime_failure": {
+    "trigger": "Deliberately set scaling_3d_scale=0.1 after Keep DLSS Quality in isolated Home profile; no SDK mode fits.",
+    "result": {
+      "requested": "dlss_quality",
+      "requested_provider": "dlss",
+      "effective": "native",
+      "provider": "native",
+      "effective_provider": "native",
+      "provider_available": false,
+      "fallback": true,
+      "fallback_reason": "dlss_runtime_failure",
+      "scale": 1.0,
+      "temporal": false,
+      "scaling_3d_mode": 0,
+      "msaa_3d": 2,
+      "fsr_sharpness": 0.20000000298023224,
+      "sharpening_strength": 0.8999999985098839,
+      "sharpening_active": false,
+      "texture_mipmap_bias": 0.0,
+      "runtime_failure": {
+        "provider": "dlss",
+        "reason": "backend_failed",
+        "backend": {
+          "available": false,
+          "backend_failed": true,
+          "dispatches": 640,
+          "contexts_created": 3,
+          "last_return_code": 25,
+          "last_frame_id": 2003,
+          "frame_based_tagging": true
+        }
+      },
+      "output_size": [
+        1920.0,
+        1080.0
+      ],
+      "nominal_3d_size": [
+        1920,
+        1080
+      ]
+    },
+    "saved_display": {
+      "window_mode": "windowed",
+      "window_resolution": "auto",
+      "max_fps": 0,
+      "vsync_mode": "enabled",
+      "msaa_3d": 2,
+      "reconstruction": "dlss_quality",
+      "fsr2_sharpness": 0.9,
+      "scene_detail": "auto",
+      "birds": "normal",
+      "ui_scale": 1.0,
+      "opaque_panels": false,
+      "reduced_motion": false,
+      "menu_volume": 0.35,
+      "master_volume": 1.0,
+      "camera_view": "pilot",
+      "camera_fov": 50,
+      "camera_auto_zoom": true,
+      "camera_zoom_law": "constant",
+      "camera_horizon_bias": false,
+      "camera_overhead_smoothing": false,
+      "camera_chase_distance": 1.0,
+      "camera_sensitivity": 1.0,
+      "camera_invert_y": false
+    },
+    "shutdown": {
+      "stopped": true,
+      "pid": 6816,
+      "crash": null,
+      "leaked_objects": 0
+    }
+  },
+  "export_capture": {
+    "manifest": "tmp/dlss-implementation-20261025/export-dlss-k-quality.json",
+    "manifest_sha256": "09c7665fc9dea6dc4ec36b38a7853a917a89e34ab0170b7f7d812bbde2bc6453",
+    "image_sha256": "e27161fa39b8598b12f3c0817ddbd9652535a28296b91f095b2f0e73d0ad76cd",
+    "image_dimensions": [
+      1920,
+      1080
+    ],
+    "reconstruction": {
+      "backend": {
+        "available": true,
+        "backend_failed": false,
+        "contexts_created": 1,
+        "dispatches": 32,
+        "frame_based_tagging": true,
+        "last_frame_id": 36,
+        "last_return_code": 0
+      },
+      "effective": "dlss_quality",
+      "effective_provider": "dlss",
+      "fallback": false,
+      "fallback_reason": "",
+      "fsr_sharpness": 0.0,
+      "msaa_3d": 0,
+      "nominal_3d_size": [
+        1280,
+        720
+      ],
+      "output_size": [
+        1920.0,
+        1080.0
+      ],
+      "provider": "dlss",
+      "provider_available": true,
+      "requested": "dlss_quality",
+      "requested_provider": "dlss",
+      "scale": 0.666666686534882,
+      "scaling_3d_mode": 6,
+      "sharpening_active": false,
+      "sharpening_strength": 0.0,
+      "temporal": true,
+      "texture_mipmap_bias": 0.0
+    },
+    "validation_note": "Layer environment requested, but release log has no layer activation marker. Export establishes lifecycle/image/backend success, not independent Vulkan validation."
+  },
+  "fresh_clone": {
+    "fresh_clone": "tmp\\dlss-implementation-20261025\\fresh-clone",
+    "working_tree_tool_overlay": {
+      "tools/graphics/native/README.md": "f651e69b57ea3db8b89260a4b02b5dac9543fdf86d0d7433cb30e3457243fad8",
+      "tools/graphics/native/buffer_write_sync.patch": "d4ed03e2f95878ca226ad2bd0c689ea2294622cb92c3dacc2080f970f812aea6",
+      "tools/graphics/native/build.py": "b00b2faf7350b282a67c49edf5bea02b33a300d09627a24f1c558bfe888b3319",
+      "tools/graphics/native/build_fidelityfx.py": "49e006c4bc989310f89a0f38fb4cf7b1b4763aa571f3076769abe695fe6d5785",
+      "tools/graphics/native/dlss-smoke.txt": "de7b09424083c29df2a277babcf2716d3f86ae6e126a2a0a9c45146796c9f14a",
+      "tools/graphics/native/dlss_failure_paths.patch": "bf81e9af717ceeffed761350c2a8fdf39d64ca37cd350482a8c543ec726f46ee",
+      "tools/graphics/native/dlss_frame_lifecycle.patch": "b17141de6aeec722a6d6af3dabaa8d4619709a33167d93ff07e0949303eea2c5",
+      "tools/graphics/native/dlss_validation.patch": "9bc70d7b64586a5515ad04e8c2bef9215aafae49b648ee0096d7d4aef550e9ed",
+      "tools/graphics/native/engine.patch": "e3d55e67e352b150da8dc1c3c3ea9caa0cbbabd2542e6f87bcd64285eb637620",
+      "tools/graphics/native/fidelityfx.patch": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+      "tools/graphics/native/fsr3-smoke.txt": "b6af01df83afc742caefc762b1dc9ae973537a6d89ca74b283152f6c60448763",
+      "tools/graphics/native/fsr3.cpp": "e5ec7a18ea9961c5f05a5b2f81517d46da731d2489f06a5234c8f81827a5347d",
+      "tools/graphics/native/fsr3.h": "acb7566f1fc05b4b6bc3d83a482b962d23247a3936cdf4f095e96eb92dab9fd4",
+      "tools/graphics/native/fsr3_prepare.glsl": "a6a62b2ba1d5981ed48b326fc55ad5015935b6903ebcd2526a65f5bfdc569035",
+      "tools/graphics/native/load_token_lifetime.patch": "868c518c78d2afe86e4ea29e53ec0d13488fa1c62a0dbd9b079d7ad70e8260a1",
+      "tools/graphics/native/package.py": "1c8c2953854cb83080436e07a7d8c074a5d1019e5a699216045cda011df8e649",
+      "tools/graphics/native/prepare_candidate.py": "8c67a5010307d5c4f1f885ae7e05e102e53d8daa3513a48306b655794631c8fc",
+      "tools/graphics/native/reflection_atlas_lifetime.patch": "86ab87598f732271991332a2be5f4ba1f6e2987fbacc21030e39645ab9b3010f",
+      "tools/graphics/native/repro/README.md": "ba25a7813ffe5f407e7ae4a2eaea411edd19f5680928291b9adcf645133c675d",
+      "tools/graphics/native/repro/canvas_waw.gd": "bfc19c6f2d7643805bc4b1ead9f0272b2bf2dc97e20777146bff7ca6e48cf7a4",
+      "tools/graphics/native/repro/minimal.gd": "441d1a17a24fa75e37775d71277f087151042db246f962a05633ed1a8fa6475f",
+      "tools/graphics/native/repro/project.godot": "5e1bdd92b796d3f2b5400dfb14084c692634cb3ad2f551b937eb5c3333688669",
+      "tools/graphics/native/shutdown_thread.patch": "a253b37bbbf88fed10bbbc6b33ce7823e52c9ffcff84fc5a973059148210d858",
+      "tools/graphics/native/test_build.py": "d0be818d04f2b86377ab7a3d71dbbc27bb8016ce7bd5f041368727be33b4ca75",
+      "tools/graphics/native/vulkan_validation.patch": "26f91e399e339b4c4725f925a7c779254c9720112acf4ed49e52652480475206"
+    },
+    "engine_commit": "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76",
+    "engine_archive_sha256": "8f9d9604270ccca92d14cc57afca142079476cbe050e0486a90b84da17ce907a",
+    "patched_files": {
+      "core/io/resource_loader.cpp": "3c32a7543a44c678474a4833b8a35b266afaaaeb3626d44f26080b8756c59ecf",
+      "drivers/streamline/streamline.cpp": "fa263270da6a98ff554243a70f5b19a211eae02fbe25f57ffdc05263d2e89899",
+      "drivers/streamline/streamline.h": "8b91fb48e0c011212d45bec33e6f3eb2fc6b04906dc48aac96b52cdb78e2c422",
+      "drivers/streamline/streamline_context.cpp": "3a30c2e7947e3be799e36e39357c5b42f9476cd386584d4c02f435824a5e8440",
+      "drivers/streamline/streamline_context.h": "70606caa97d42e6c0ea665a8700ff81bd9e8869dec3047b642fcf442ddab3dc5",
+      "drivers/vulkan/rendering_device_driver_vulkan.cpp": "d78a4c8a9254ab1ac5bed6d17b29281ddc50517d7d9aae8b009030bd76549b74",
+      "main/main.cpp": "37caedfda059786f081e568f535fe9af448c96ebd7939d6127e525b1d699220b",
+      "platform/windows/rendering_context_driver_vulkan_windows.cpp": "94b71b9f9b2c2bcea59d5616944b546407d3bda926df94c585c42f3263d7f5e1",
+      "scene/main/viewport.cpp": "8a2b4e426f08837f97402dd2063eb96b0c2aba3cd6198f254f5ccf113845df84",
+      "scene/main/viewport.h": "039b65b9a7ba5990db32374e2b381904f3347666b5388549ac16721a0bf10386",
+      "servers/rendering/renderer_rd/effects/SCsub": "50665207824e265a87f791c77ea3f6ac3529fd2d3ec0eecf2d4c3cf32e6b5bb7",
+      "servers/rendering/renderer_rd/effects/dlss.cpp": "28f25c258bdba1a4f121fff5bf67d34f68b56fbabe7dc5012872bf07b1ca8beb",
+      "servers/rendering/renderer_rd/effects/dlss.h": "88251adb0744c6c83a8fc5684c150ffaed0cd5e9869525689564fcddc2d2555b",
+      "servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp": "e7e5bef3314d27f7c27a0c047c182a7b70d9bae3569383fcc3eef49d7a84bdbe",
+      "servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h": "ba51d297bd349d3bff315948411011f6fc7a3257ee0b3f2ddfa6f6cbcfb8d011",
+      "servers/rendering/renderer_rd/renderer_scene_render_rd.cpp": "5586d6a095a10aaf2681c02adc9f9cac2790c1668c9897353da7a2dadc5b6877",
+      "servers/rendering/renderer_rd/shaders/effects/motion_vector_decode.glsl": "80ddb018bb2b7401348a89aecc0ec19d705f74d941b5454553db7dc5347a65aa",
+      "servers/rendering/renderer_rd/storage_rd/light_storage.cpp": "584f009072c70e635962f75c7dd6c741d5cd1a8ec8b5b37947abb43dc5622a9d",
+      "servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp": "a4d8ffcab322de46bf0b1631a628de57ee69f217f54501e73d276a0405406561",
+      "servers/rendering/renderer_viewport.cpp": "14ea3406388d7c46468c5a3125f2f2061a01336edbc05437ad7ea85c3d495761",
+      "servers/rendering/rendering_device.cpp": "be8a1c0963c70042e399741634722b9487ad633ac419d6de7f2200df71fd6136",
+      "servers/rendering/rendering_device.h": "d25ba4cc341e2e390d8193a532ff5da0c6866f19aaf03420f453769a459b0609",
+      "servers/rendering/rendering_device_graph.cpp": "eee6061e0cc3f265e752347815099ea4d86d8a95e7ecaec64c14d2b8c384fa72",
+      "servers/rendering/rendering_server.cpp": "717ea805fc25c04d8ff03de0c99a9caf28a5e736e8d19def86036987aeb05f39",
+      "servers/rendering/rendering_server.h": "ac4ed73726357d0ff37d49a51a55eec910cc9d47a8a555d645fbaf46e5f15bc2",
+      "servers/rendering/rendering_server_default.cpp": "4c3253dfd66ab91b7c67a91a5d84eb88107def55d94f152d0534d41ff9707ed3",
+      "servers/rendering/rendering_server_enums.h": "017669fb0bdf074f4f63fdb652224d9270a794dbfac215d1f6aa5df3b503e139"
+    },
+    "repeat_identical": true,
+    "unit_tests": 7
+  },
+  "remaining": [
+    "NGX automatic-preset 09600 finding is reproduced, not fixed internally.",
+    "Preset K coverage limited to RTX 3090 / recorded driver and mode/resize sequences.",
+    "No matched GPU/FPS benchmark, arbitrary camera-cut reset, temporal-quality or cross-device qualification.",
+    "Production engine remains 4.7.2; full Godot 4.8 upgrade gates remain open."
+  ]
+}

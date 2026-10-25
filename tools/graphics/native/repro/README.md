@@ -36,6 +36,14 @@ cover capture-time token advancement and queued rendering. A reused token must
 not silently pass through the capability check: per-phase dispatch progress is
 required. A missing status API or stalled/failed backend exits 3.
 
+The fixture deliberately retains automatic preset selection to reproduce the
+original finding. Append `-- --preset=K` to the DLSS command for the application's
+validated preset. Test-only `F` and `J` choices are also accepted; they have not
+been qualified. The K comparison on the same RTX 3090, Streamline 2.11.1 and
+driver completed 384 frames / 360 SDK evaluations with zero Vulkan errors.
+Default selection still reports two 09600 errors. Do not infer that K fixes the
+SDK internally or qualifies other drivers from this comparison.
+
 On 2026-10-25, the same fixture in an isolated working directory completed with Streamline 2.11.1 on the RTX 3090. Native with the shutdown ownership patch exited zero with no engine errors (192 frames). DLSS exited zero after all 384 frames but emitted two `VUID-vkCmdDraw-None-09600` errors, so its checked validation failed. See the [dated evidence](../../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). Generated caches and logs must remain untracked.
 
 ## Canvas buffer synchronization regression

@@ -1,6 +1,7 @@
 # Requires a ready experimental Forward+ flight and a supported DLSS device/runtime.
 # Inspect Vulkan validation output and screenshots separately from bridge assertions.
 pause
+assert expr="ProjectSettings.get_setting('rendering/streamline/dlss_preset', '?') == 'K'" message="Validated DLSS preset K is pinned"
 assert expr="Engine.has_singleton('Streamline') and Engine.get_singleton('Streamline').has_method('get_dlss_status')" message="DLSS backend status API available"
 window mode=fullscreen
 assert expr="ResourceLoader.load('res://render/reconstruction.gd').runtime_capabilities().dlss" message="DLSS capability available"

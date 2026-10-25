@@ -6,7 +6,15 @@ Godot 4.7.2 pin. The upstream NVIDIA commit is based on Godot 4.8-dev; run it on
 a disposable application copy and qualify an engine upgrade separately before
 shipping it. The GPU used for local checks is not the product support boundary.
 
-See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). The active Streamline pin is 2.11.1 with matching headers and runtime. DLSS mode/resize testing still reports an internal NGX image-layout finding; a 2.14.16 trial added startup validation errors and was rejected. Frame-based tagging now captures the simulation token through the render queue and retains independent callback parameters. This fixes frame ownership; the NGX image-layout finding remains. A separate-thread device-ownership shutdown defect is patched and reproduced by the [minimal fixture](repro/README.md). This does not explain the earlier intermittent exported FSR3 shutdown stall or qualify release stability.
+See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md).
+The current trial pins Streamline 2.11.1 and DLSS **preset K**. On the RTX 3090,
+automatic preset selection still reproduces the internal NGX image-layout error;
+explicit K passes the tested mode/resize sequence with Vulkan synchronization
+validation. This is a scoped workaround, not a repair to NVIDIA's closed runtime.
+A 2.14.16 trial added startup errors and was rejected. Frame-based tagging now
+captures the simulation token through the render queue with independent callback
+parameters. The separate-thread shutdown fix and standalone reproduction live in
+[repro](repro/README.md). Broader engine and release qualification remains open.
 
 The engine candidate includes three further lifetime/synchronization fixes:
 the exported Home LoadToken leak, reflection-atlas color-buffer retention, and
@@ -134,6 +142,9 @@ engine and must not be used to package this trial.
   the AMD runtime. It does not infer support from a vendor/model string.
 - DLSS requires Forward+, its engine enum and Streamline's actual DLSS
   capability result. No static reference to custom enums enters stock GDScript.
+- The application and prepared candidate pin `rendering/streamline/dlss_preset="K"`.
+  Package preflight rejects a missing pin. Preset selection is independent of the
+  user-facing DLAA/Quality/Balanced/Performance resolution choice.
 - `Streamline.get_dlss_status()` reports successful dispatches, context count,
   last frame ID and a latched backend failure. SDK failure, expired frame token,
   failed output initialization or rejected graph callback triggers Native fallback
