@@ -647,8 +647,7 @@
       "asset": {
         "kind": "imported_glb",
         "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
-        "identity_path": "source_alias",
-        "liveries_path": "liveries"
+        "identity_path": "source_alias"
       },
       "bindings": {
         "controls": {

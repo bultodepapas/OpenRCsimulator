@@ -5,6 +5,7 @@ const Preferences := preload("res://app_state/display_preferences.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const FSR3_TEST_MODE := 101
 const DLSS_TEST_MODE := 102
+const PREFS_PATH := "user://test_reconstruction_preferences.cfg"
 var checks := 0
 var failures := 0
 
@@ -29,6 +30,18 @@ func _initialize() -> void:
 		and is_equal_approx(Reconstruction.resolve("dlss_quality", _caps(true, false, true, -1, DLSS_TEST_MODE)).scale, 2.0 / 3.0)
 		and is_equal_approx(Reconstruction.resolve("dlss_balanced", _caps(true, false, true, -1, DLSS_TEST_MODE)).scale, 1.0 / 1.7)
 		and Reconstruction.resolve("dlss_performance", _caps(true, false, true, -1, DLSS_TEST_MODE)).scale == 0.5)
+	var saved_fsr_strength := 0.35
+	var dlss_engine_sharpness := Reconstruction._engine_sharpness_value("dlss", saved_fsr_strength)
+	var dlss_sharpness_receipt := Reconstruction._sharpening_receipt("dlss", dlss_engine_sharpness)
+	_check("DLSS forces the extra engine sharpener off and reports zero strength",
+		dlss_engine_sharpness == 0.0 and dlss_sharpness_receipt.sharpening_strength == 0.0
+		and not dlss_sharpness_receipt.sharpening_active)
+	var saved_dlss_preferences := Preferences.DEFAULTS.duplicate(true)
+	saved_dlss_preferences.reconstruction = "dlss_quality"
+	saved_dlss_preferences.fsr2_sharpness = saved_fsr_strength
+	var saved_dlss_validation := Preferences.validate(saved_dlss_preferences)
+	_check("FSR sharpness remains a separate saved preference while DLSS is active",
+		saved_dlss_validation.ok and saved_dlss_validation.config.fsr2_sharpness == saved_fsr_strength)
 
 	var amd_caps := _caps(true, true, false, FSR3_TEST_MODE)
 	var nvidia_caps := _caps(true, true, true, FSR3_TEST_MODE, DLSS_TEST_MODE)
@@ -51,6 +64,17 @@ func _initialize() -> void:
 		not Reconstruction.option_status("fsr3_native", unavailable_caps).available
 		and not Reconstruction.option_status("dlss_native", amd_caps).available
 		and Reconstruction.option_status("native", unavailable_caps).available)
+	var missing_native_modes := _caps(true, true, true)
+	_check("FSR3 and DLSS fail closed when an engine mode constant is absent",
+		Reconstruction.resolve("fsr3_native", missing_native_modes).fallback_reason == "engine_mode_missing"
+		and Reconstruction.resolve("dlss_native", missing_native_modes).fallback_reason == "engine_mode_missing")
+	for mode: String in Preferences.RECONSTRUCTION_MODES:
+		var candidate := Preferences.DEFAULTS.duplicate(true)
+		candidate.reconstruction = mode
+		_check("saved preference accepts provider mode: " + mode,
+			Preferences.validate(candidate).ok and Preferences.save_to(PREFS_PATH, candidate) == OK
+			and Preferences.load_from(PREFS_PATH).reconstruction == mode)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS_PATH))
 
 	_check("native captures retain their two-frame settle", Reconstruction.capture_settle_frames(Viewport.SCALING_3D_MODE_BILINEAR, 1.0) == 2)
 	_check("FSR2 Native AA captures allow temporal history", Reconstruction.capture_settle_frames(Viewport.SCALING_3D_MODE_FSR2, 1.0) == 16)
@@ -114,6 +138,50 @@ func _initialize() -> void:
 	_check("receipt distinguishes saved request and effective fallback provider",
 		reported.requested == "fsr2_quality" and reported.effective == "native"
 		and reported.provider == "native" and reported.fallback)
+
+	var failed_fsr3_config := Preferences.DEFAULTS.duplicate(true)
+	failed_fsr3_config.reconstruction = "fsr3_quality"
+	failed_fsr3_config.msaa_3d = 3
+	failed_fsr3_config.fsr2_sharpness = 0.4
+	var original_failed_fsr3_config := failed_fsr3_config.duplicate(true)
+	# Model an already active FSR3 policy without assigning an engine-specific mode to
+	# the stock test viewport. A false injected capability forces the rollback to native.
+	root.set_meta(Reconstruction.POLICY_META, {
+		"requested": "fsr3_quality", "requested_provider": "fsr3",
+		"effective": "fsr3_quality", "effective_provider": "fsr3", "provider": "fsr3",
+		"fallback": false,
+	})
+	root.set_meta(Reconstruction.CONFIG_META, failed_fsr3_config.duplicate(true))
+	root.scaling_3d_scale = 2.0 / 3.0
+	root.msaa_3d = Viewport.MSAA_DISABLED
+	var healthy_backend := {available = true, backend_failed = false}
+	var failure_caps := _caps(true, false, false)
+	_check("healthy FSR3 status does not change the active preference",
+		not Reconstruction.guard_runtime_failure(root, healthy_backend, failure_caps)
+		and is_equal_approx(root.scaling_3d_scale, 2.0 / 3.0)
+		and root.msaa_3d == Viewport.MSAA_DISABLED)
+	var backend_failure := {available = false, backend_failed = true, last_return_code = 9}
+	_check("FSR3 runtime failure rolls the owning viewport back to native AA and full resolution",
+		Reconstruction.guard_runtime_failure(root, backend_failure, failure_caps)
+		and root.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR
+		and root.scaling_3d_scale == 1.0 and root.msaa_3d == Viewport.MSAA_8X)
+	var failure_receipt := Reconstruction.describe(root)
+	_check("runtime rollback preserves the requested provider and records the native fallback",
+		failure_receipt.requested == "fsr3_quality" and failure_receipt.effective == "native"
+		and failure_receipt.requested_provider == "fsr3" and failure_receipt.provider == "native"
+		and failure_receipt.fallback and failure_receipt.fallback_reason == "fsr3_runtime_failure"
+		and failure_receipt.runtime_failure.reason == "backend_failed"
+		and failure_receipt.runtime_failure.backend.last_return_code == 9)
+	_check("runtime rollback does not alter the saved reconstruction preference",
+		failed_fsr3_config == original_failed_fsr3_config
+		and root.get_meta(Reconstruction.CONFIG_META) == original_failed_fsr3_config)
+	Reconstruction.apply(root, failed_fsr3_config, failure_caps)
+	var persisted_failure_receipt := Reconstruction.describe(root)
+	_check("runtime failure receipt survives later presentation settings reapplication",
+		persisted_failure_receipt.provider == "native"
+		and persisted_failure_receipt.runtime_failure.reason == "backend_failed")
+	_check("runtime rollback is idempotent after switching provider to native",
+		not Reconstruction.guard_runtime_failure(root, backend_failure, failure_caps))
 	if had_profile:
 		OS.set_environment("OPENRC_GRAPHICS_PROFILE", previous_profile)
 	else:

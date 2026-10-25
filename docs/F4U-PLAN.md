@@ -4,7 +4,7 @@ Checked 2026-10-24 · Aircraft/model owner · Prefix **F4U-00…19**. The Corsai
 
 ## 1. Identity and scope
 
-A 2.778 m, 1/4.5-scale F4U-1D Corsair of the CARF-Models class, powered by a Moki S250 five-cylinder radial with a 30x18 three-blade, with retractable taildragger gear, simulated slotted flaps and finite fuel. The visual model derives from the author's full-size Blender master R59; the [delivery request](F4U-BLENDER-HANDOFF.md) specified the game revision g1.3, which g1.13 replaced (F4U-15). Owner decisions are recorded in [DECISIONS](DECISIONS.md): sampled retracts, at least three original liveries, a clean configuration (F4U-00), and since 2026-10-22 the 1:4.5 CARF-class giant with a Moki radial (F4U-00-R3), which replaced 1:5.
+A 2.778 m, 1/4.5-scale F4U-1D Corsair of the CARF-Models class, powered by a Moki S250 five-cylinder radial with a 30x18 three-blade, with retractable taildragger gear, simulated slotted flaps and finite fuel. The visual model derives from the author's full-size Blender master R59; the [delivery request](F4U-BLENDER-HANDOFF.md) specified the game revision g1.3, which g1.13 replaced (F4U-15); since F4U-19 the simulator flies the g2.1 detail tier. Owner decisions are recorded in [DECISIONS](DECISIONS.md): sampled retracts, at least three original liveries, a clean configuration (F4U-00), and since 2026-10-22 the 1:4.5 CARF-class giant with a Moki radial (F4U-00-R3), which replaced 1:5.
 
 All required physical capabilities already exist in the aircraft contract: the P-51 flies `retractable_taildragger` gear, a gasoline shaft model, `finite_liquid_fuel` and simulated flaps. The Corsair adds no new physics law; its differences are data (inverted gull wing, NACA 230-series sections, slotted flaps, fin offset) and two presentation extensions: sampled retraction (F4U-02) and the wing fold (F4U-17).
 
@@ -72,7 +72,7 @@ D1, D4 and D5 follow the owner's 2026-10-22 direction and live in [source.json](
 | --- | --- | --- |
 | D1 | RC hardware reference | CARF-Models F4U-1D 1:4.5 (2,800 mm, Sierra retracts). Replaced the FokkeRC 1/5 recommendation |
 | D2 | Display name | "F4U-1D Corsair 1/4.5", short name "F4U Corsair" (owner, 2026-10-23, F4U-13) |
-| D3 | Default livery | Naval 308 (Midnight), the default `aircraft.glb` of g1.13; the other four are selectable on Home (F4U-16) |
+| D3 | Default livery | Naval 308 (Midnight), the default `aircraft.glb`. Since F4U-19 (g2.1) it is the only paint; the owner is adapting all twelve g1 schemes to g2, and Home's Paint row returns with them |
 | D4 | Propeller | 30x18 three-blade (Moki manual). CARF's 32 in ground-adjustable scale three-blade is the alternative once data exist |
 | D5 | Engine | Moki S250 five-cylinder radial. The Moki S400 belongs to 1/3.5–1/3 models |
 

@@ -1,0 +1,40 @@
+{
+  "audit": "F4U Revision 4 preflight negative cases",
+  "read_only_input": "D:\\CodexDeliveries\\F4U_Corsair\\g2_1\\export\\aircraft.glb",
+  "cases": [
+    {
+      "case": "missing_hinge",
+      "rejected": true,
+      "expected_failure_seen": true,
+      "matching_failures": [
+        "missing pivot pair aileron_left_hinge -> aileron_left"
+      ],
+      "all_failures": [
+        "missing pivot pair aileron_left_hinge -> aileron_left"
+      ]
+    },
+    {
+      "case": "missing_mesh_tag",
+      "rejected": true,
+      "expected_failure_seen": true,
+      "matching_failures": [
+        "mesh node gear_retraction_link_left has no openrc_section"
+      ],
+      "all_failures": [
+        "mesh node gear_retraction_link_left has no openrc_section"
+      ]
+    },
+    {
+      "case": "inverted_fuselage",
+      "rejected": true,
+      "expected_failure_seen": true,
+      "matching_failures": [
+        "fuselage_core is inside out: only 12% of its area faces outward (minimum 60%); reverse its faces"
+      ],
+      "all_failures": [
+        "fuselage_core is inside out: only 12% of its area faces outward (minimum 60%); reverse its faces"
+      ]
+    }
+  ],
+  "passed": true
+}

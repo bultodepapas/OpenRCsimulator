@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""F4U-05: compile the delivered Corsair model (g1.13 since F4U-15) for the shared imported-scene builder.
+"""F4U-05: compile the delivered Corsair model (g2.1 since F4U-19) for the shared imported-scene builder.
 
 Reads only frozen inputs: the delivery identity (assets/aircraft/f4u-corsair-250/source-manifest.json), the
 delivered metadata and GLB, the runtime GLB copy in app/assets, and the GearRetract samples taken from the
@@ -88,8 +88,12 @@ def same_shape(a, b):
 def compile_liveries(manifest, meta, gltf):
     """F4U-16: the delivered liveries in the author's order, default first, with the author's names. Each runtime
     copy must be the frozen GLB, and each livery the same airframe as the default: node names, hierarchy, rest
-    transforms, crash-section tags, mesh bounds and triangle count. Materials, textures and surface splits may differ."""
+    transforms, crash-section tags, mesh bounds and triangle count. Materials, textures and surface splits may differ.
+    A delivery with one paint (g2.1) declares no liveries: the contract needs two or more."""
     frozen = manifest["livery_glbs"]
+    if len(frozen) == 1:
+        assert list(frozen) == [DEFAULT_LIVERY] and [r["id"] for r in meta["liveries"]] == [DEFAULT_LIVERY]
+        return None
     names = {livery["id"]: livery["name"] for livery in meta["liveries"]}
     order = [record["id"] for record in meta["primary_livery_deliveries"]]
     assert order[0] == DEFAULT_LIVERY and sorted(order) == sorted(frozen), "delivered livery list differs from source-manifest.json"
@@ -267,7 +271,6 @@ def compile_model():
         "thrust": thrust,
         "exhausts": exhausts,
         "folds": folds,
-        "liveries": compile_liveries(manifest, meta, gltf),
         "gear": {
             "version": 1,
             "bindings": bindings,
@@ -282,6 +285,9 @@ def compile_model():
             "wheels": wheels,
         },
     }
+    liveries = compile_liveries(manifest, meta, gltf)
+    if liveries is not None:
+        data["liveries"] = liveries
     return data
 
 

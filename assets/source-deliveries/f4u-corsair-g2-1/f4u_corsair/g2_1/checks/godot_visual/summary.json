@@ -1,0 +1,19 @@
+{
+ "import_exit": 0,
+ "import_s": 25.1,
+ "resolution": "1920x1080",
+ "runs": {
+  "g1_24-textured": {
+   "exit": 0,
+   "wall_s": 4.7
+  },
+  "g2_0-textured": {
+   "exit": 0,
+   "wall_s": 5.2
+  },
+  "g2_1-textured": {
+   "exit": 0,
+   "wall_s": 5.1
+  }
+ }
+}

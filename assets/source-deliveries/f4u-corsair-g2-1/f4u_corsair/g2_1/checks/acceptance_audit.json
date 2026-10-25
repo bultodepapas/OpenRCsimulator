@@ -1,0 +1,784 @@
+{
+  "audit": "Independent F4U g2.1 acceptance audit",
+  "read_only": true,
+  "blender": "5.2.2 LTS",
+  "inputs": {
+    "candidate": "D:\\CodexDeliveries\\F4U_Corsair\\g2_1\\source\\aircraft_game.blend",
+    "g2-baseline": "D:\\CodexDeliveries\\F4U_Corsair\\g2_0\\source\\aircraft_game.blend",
+    "g1-baseline": "D:\\CodexDeliveries\\F4U_Corsair\\g1_24\\source\\aircraft_game.blend",
+    "glb": "D:\\CodexDeliveries\\F4U_Corsair\\g2_1\\export\\aircraft.glb",
+    "package": "D:\\CodexDeliveries\\F4U_Corsair\\g2_1",
+    "out-json": "D:\\CodexDeliveries\\F4U_Corsair\\work\\g21_wheels\\acceptance_audit.json",
+    "out-md": "D:\\CodexDeliveries\\F4U_Corsair\\work\\g21_wheels\\ACCEPTANCE_AUDIT.md"
+  },
+  "checks_passed": 22,
+  "checks_total": 22,
+  "ok": true,
+  "first_issue": null,
+  "input_sha256": {
+    "candidate": "1bbe5011f099cdaa893f00f4ec081523d5873887cb5916c29ee26c5319295148",
+    "g2-baseline": "312652fe3a19d54e65a398d6090f86295cc74b9103d8d90edb5a1485840d45e9",
+    "g1-baseline": "eb7309c40dd9d443562e370ce0ca95d1ec76b604805c384e748d5c318b501ff1",
+    "glb": "cf4cdad638dae93b2ac6107bd050dcf176c4b6dbb1f03d21580f4149fda945b3"
+  },
+  "wheel_contacts": {
+    "gear_wheel_left": {
+      "triangles": 5752,
+      "local_bbox_size_m": [
+        0.04670000076293945,
+        0.1882999986410141,
+        0.1882999986410141
+      ],
+      "candidate_ground_z_m": -0.5308167338371277,
+      "g2_0_ground_z_m": -0.5308167338371277,
+      "g1_24_ground_z_m": -0.5308167338371277,
+      "delta_vs_g2_0_mm": 0.0,
+      "delta_vs_g1_24_mm": 0.0
+    },
+    "gear_wheel_right": {
+      "triangles": 5752,
+      "local_bbox_size_m": [
+        0.04670000076293945,
+        0.1882999986410141,
+        0.1882999986410141
+      ],
+      "candidate_ground_z_m": -0.5308167338371277,
+      "g2_0_ground_z_m": -0.5308167338371277,
+      "g1_24_ground_z_m": -0.5308167338371277,
+      "delta_vs_g2_0_mm": 0.0,
+      "delta_vs_g1_24_mm": 0.0
+    },
+    "gear_wheel_tail": {
+      "triangles": 3320,
+      "local_bbox_size_m": [
+        0.025760000571608543,
+        0.07778000086545944,
+        0.07778000086545944
+      ],
+      "candidate_ground_z_m": -0.18333442509174347,
+      "g2_0_ground_z_m": -0.18333442509174347,
+      "g1_24_ground_z_m": -0.18333442509174347,
+      "delta_vs_g2_0_mm": 0.0,
+      "delta_vs_g1_24_mm": 0.0
+    }
+  },
+  "rotor": {
+    "triangles": 16473,
+    "materials": [
+      "alloy",
+      "naval_blade_paint"
+    ],
+    "uv_layers": [
+      "UVMap",
+      "NavalBladeUV"
+    ],
+    "face_counts": {
+      "alloy": 14761,
+      "naval_blade_paint": 1712
+    },
+    "paint_faces": 1712,
+    "blade_uv_nodes": [
+      "NavalBladeUV",
+      "UVMap"
+    ],
+    "blade_sectors": [
+      {
+        "axis_deg_expected": 90,
+        "paint_faces": 491,
+        "paint_triangles": 491,
+        "mean_axis_deg": 87.71440842349078,
+        "uv_loops": 1473,
+        "u_span_max_abs_error": 2.5544847903624657e-08,
+        "u_slope_through_origin": 2.14285713282646
+      },
+      {
+        "axis_deg_expected": 210,
+        "paint_faces": 536,
+        "paint_triangles": 536,
+        "mean_axis_deg": 208.79533324808537,
+        "uv_loops": 1608,
+        "u_span_max_abs_error": 2.971893631187328e-08,
+        "u_slope_through_origin": 2.142857141191055
+      },
+      {
+        "axis_deg_expected": 330,
+        "paint_faces": 522,
+        "paint_triangles": 522,
+        "mean_axis_deg": 328.51230493215553,
+        "uv_loops": 1566,
+        "u_span_max_abs_error": 2.930338782736186e-08,
+        "u_slope_through_origin": 2.1428571373431455
+      }
+    ]
+  },
+  "glb_materials": {
+    "paint_wing": {
+      "index": 0,
+      "base_texture": 2,
+      "base_texcoord": 0,
+      "orm_texture": 1,
+      "occlusion_texture": 1,
+      "occlusion_texcoord": 0
+    },
+    "paint_body": {
+      "index": 1,
+      "base_texture": 2,
+      "base_texcoord": 0,
+      "orm_texture": 1,
+      "occlusion_texture": 1,
+      "occlusion_texcoord": 0
+    },
+    "glass": {
+      "index": 2,
+      "base_texture": null,
+      "base_texcoord": 0,
+      "orm_texture": null,
+      "occlusion_texture": null,
+      "occlusion_texcoord": 0
+    },
+    "cockpit": {
+      "index": 3,
+      "base_texture": null,
+      "base_texcoord": 0,
+      "orm_texture": null,
+      "occlusion_texture": 1,
+      "occlusion_texcoord": 0
+    },
+    "alloy": {
+      "index": 4,
+      "base_texture": null,
+      "base_texcoord": 0,
+      "orm_texture": null,
+      "occlusion_texture": 1,
+      "occlusion_texcoord": 0
+    },
+    "paint_tail": {
+      "index": 5,
+      "base_texture": 2,
+      "base_texcoord": 0,
+      "orm_texture": 1,
+      "occlusion_texture": 1,
+      "occlusion_texcoord": 0
+    },
+    "engine_dark": {
+      "index": 6,
+      "base_texture": null,
+      "base_texcoord": 0,
+      "orm_texture": null,
+      "occlusion_texture": 1,
+      "occlusion_texcoord": 0
+    },
+    "gear_finish": {
+      "index": 7,
+      "base_texture": 3,
+      "base_texcoord": 0,
+      "orm_texture": 4,
+      "occlusion_texture": null,
+      "occlusion_texcoord": 0
+    },
+    "naval_blade_paint": {
+      "index": 8,
+      "base_texture": 5,
+      "base_texcoord": 1,
+      "orm_texture": null,
+      "occlusion_texture": 1,
+      "occlusion_texcoord": 0
+    },
+    "gear_inner_coat": {
+      "index": 9,
+      "base_texture": null,
+      "base_texcoord": 0,
+      "orm_texture": null,
+      "occlusion_texture": 1,
+      "occlusion_texcoord": 0
+    },
+    "nav_left": {
+      "index": 10,
+      "base_texture": null,
+      "base_texcoord": 0,
+      "orm_texture": null,
+      "occlusion_texture": null,
+      "occlusion_texcoord": 0
+    },
+    "paint_wing_tip": {
+      "index": 11,
+      "base_texture": 2,
+      "base_texcoord": 0,
+      "orm_texture": 1,
+      "occlusion_texture": 1,
+      "occlusion_texcoord": 0
+    },
+    "detail_alloy": {
+      "index": 12,
+      "base_texture": null,
+      "base_texcoord": 0,
+      "orm_texture": null,
+      "occlusion_texture": null,
+      "occlusion_texcoord": 0
+    },
+    "nav_right": {
+      "index": 13,
+      "base_texture": null,
+      "base_texcoord": 0,
+      "orm_texture": null,
+      "occlusion_texture": null,
+      "occlusion_texcoord": 0
+    }
+  },
+  "glb_images": [
+    {
+      "name": "normal",
+      "mimeType": "image/png",
+      "bytes": 2078922,
+      "sha256": "a462add4f80cae31ae167a5dfce801030a2165bd980ff58ac0f60d4d4169aded"
+    },
+    {
+      "name": "orm",
+      "mimeType": "image/png",
+      "bytes": 362827,
+      "sha256": "3c48e4a45a182d881f85c265369877897b876a2478187b96389dd9aac3fe18f2"
+    },
+    {
+      "name": "basecolor",
+      "mimeType": "image/png",
+      "bytes": 634741,
+      "sha256": "b8800b9a0cb52934801f1c3378459dd10f019e3303aaefb843ac02fa8068d843"
+    },
+    {
+      "name": "gear18_basecolor",
+      "mimeType": "image/png",
+      "bytes": 447673,
+      "sha256": "40d359ff0f093b51664607395be801601af35f502bdba8721c4d0f623db1bc98"
+    },
+    {
+      "name": "gear18_orm",
+      "mimeType": "image/png",
+      "bytes": 540125,
+      "sha256": "312a63eb3b6c7ce7859def8ccbdb2f44c6f30671b9413ca9e6ed5e78c8317e6c"
+    },
+    {
+      "name": "propeller_basecolor",
+      "mimeType": "image/png",
+      "bytes": 2691,
+      "sha256": "c405014632def6882fd33925102ed178736202c37ff9172b68c21d0da3bf97b4"
+    }
+  ],
+  "glb_textures": [
+    {
+      "index": 0,
+      "source": 0,
+      "sampler": 0,
+      "image_name": "normal"
+    },
+    {
+      "index": 1,
+      "source": 1,
+      "sampler": 0,
+      "image_name": "orm"
+    },
+    {
+      "index": 2,
+      "source": 2,
+      "sampler": 0,
+      "image_name": "basecolor"
+    },
+    {
+      "index": 3,
+      "source": 3,
+      "sampler": 0,
+      "image_name": "gear18_basecolor"
+    },
+    {
+      "index": 4,
+      "source": 4,
+      "sampler": 0,
+      "image_name": "gear18_orm"
+    },
+    {
+      "index": 5,
+      "source": 5,
+      "sampler": 1,
+      "image_name": "propeller_basecolor"
+    }
+  ],
+  "checks": [
+    {
+      "name": "native g2.1 opens at frame 0",
+      "ok": true,
+      "detail": {
+        "saved_frame": 0
+      }
+    },
+    {
+      "name": "candidate has 82 EXPORT_aircraft nodes",
+      "ok": true,
+      "detail": {
+        "count": 82
+      }
+    },
+    {
+      "name": "all 82 node names preserved",
+      "ok": true,
+      "detail": {
+        "candidate_only": [],
+        "g2_only": []
+      }
+    },
+    {
+      "name": "parents/tags/types preserved",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "frame 0 and 100 matrices preserved within 1e-5",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "all 101 world-matrix poses preserved within 1e-5",
+      "ok": true,
+      "detail": {
+        "max_delta": 0.0,
+        "violations": []
+      }
+    },
+    {
+      "name": "all unaffected mesh geometry and UV signatures unchanged",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "all three wheel mesh and UV signatures exact g1.24",
+      "ok": true,
+      "detail": {
+        "gear_wheel_left": {
+          "candidate": "f67f97796d7b13ad8b473e09349ba015ab175c42511538daa5b296cac47b0256",
+          "g1_24": "f67f97796d7b13ad8b473e09349ba015ab175c42511538daa5b296cac47b0256"
+        },
+        "gear_wheel_right": {
+          "candidate": "3cc51179364075fc40b084da0ecc257509d6a4bcddd333c19ab2f603ec745ae2",
+          "g1_24": "3cc51179364075fc40b084da0ecc257509d6a4bcddd333c19ab2f603ec745ae2"
+        },
+        "gear_wheel_tail": {
+          "candidate": "065d31d6a96c1d7f1afb962ca536b0b54cdd3aa5d4b5381958a07ccbda92ae58",
+          "g1_24": "065d31d6a96c1d7f1afb962ca536b0b54cdd3aa5d4b5381958a07ccbda92ae58"
+        }
+      }
+    },
+    {
+      "name": "wheel radii and axle widths match g1.24 within 0.01 mm",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "wheel matrices and ground contacts preserved within 0.01 mm",
+      "ok": true,
+      "detail": {
+        "contacts": {
+          "gear_wheel_left": {
+            "triangles": 5752,
+            "local_bbox_size_m": [
+              0.04670000076293945,
+              0.1882999986410141,
+              0.1882999986410141
+            ],
+            "candidate_ground_z_m": -0.5308167338371277,
+            "g2_0_ground_z_m": -0.5308167338371277,
+            "g1_24_ground_z_m": -0.5308167338371277,
+            "delta_vs_g2_0_mm": 0.0,
+            "delta_vs_g1_24_mm": 0.0
+          },
+          "gear_wheel_right": {
+            "triangles": 5752,
+            "local_bbox_size_m": [
+              0.04670000076293945,
+              0.1882999986410141,
+              0.1882999986410141
+            ],
+            "candidate_ground_z_m": -0.5308167338371277,
+            "g2_0_ground_z_m": -0.5308167338371277,
+            "g1_24_ground_z_m": -0.5308167338371277,
+            "delta_vs_g2_0_mm": 0.0,
+            "delta_vs_g1_24_mm": 0.0
+          },
+          "gear_wheel_tail": {
+            "triangles": 3320,
+            "local_bbox_size_m": [
+              0.025760000571608543,
+              0.07778000086545944,
+              0.07778000086545944
+            ],
+            "candidate_ground_z_m": -0.18333442509174347,
+            "g2_0_ground_z_m": -0.18333442509174347,
+            "g1_24_ground_z_m": -0.18333442509174347,
+            "delta_vs_g2_0_mm": 0.0,
+            "delta_vs_g1_24_mm": 0.0
+          }
+        },
+        "violations": []
+      }
+    },
+    {
+      "name": "three blades share naval_blade_paint and blade_tip is removed",
+      "ok": true,
+      "detail": {
+        "materials": [
+          "alloy",
+          "naval_blade_paint"
+        ],
+        "sectors": [
+          {
+            "axis_deg_expected": 90,
+            "paint_faces": 491,
+            "paint_triangles": 491,
+            "mean_axis_deg": 87.71440842349078,
+            "uv_loops": 1473,
+            "u_span_max_abs_error": 2.5544847903624657e-08,
+            "u_slope_through_origin": 2.14285713282646
+          },
+          {
+            "axis_deg_expected": 210,
+            "paint_faces": 536,
+            "paint_triangles": 536,
+            "mean_axis_deg": 208.79533324808537,
+            "uv_loops": 1608,
+            "u_span_max_abs_error": 2.971893631187328e-08,
+            "u_slope_through_origin": 2.142857141191055
+          },
+          {
+            "axis_deg_expected": 330,
+            "paint_faces": 522,
+            "paint_triangles": 522,
+            "mean_axis_deg": 328.51230493215553,
+            "uv_loops": 1566,
+            "u_span_max_abs_error": 2.930338782736186e-08,
+            "u_slope_through_origin": 2.1428571373431455
+          }
+        ],
+        "paint_faces": 1712
+      }
+    },
+    {
+      "name": "blade paint regions align with world axes 90 plus 120 degrees per blade",
+      "ok": true,
+      "detail": {
+        "tolerance_deg": 5,
+        "sectors": [
+          {
+            "axis_deg_expected": 90,
+            "paint_faces": 491,
+            "paint_triangles": 491,
+            "mean_axis_deg": 87.71440842349078,
+            "uv_loops": 1473,
+            "u_span_max_abs_error": 2.5544847903624657e-08,
+            "u_slope_through_origin": 2.14285713282646
+          },
+          {
+            "axis_deg_expected": 210,
+            "paint_faces": 536,
+            "paint_triangles": 536,
+            "mean_axis_deg": 208.79533324808537,
+            "uv_loops": 1608,
+            "u_span_max_abs_error": 2.971893631187328e-08,
+            "u_slope_through_origin": 2.142857141191055
+          },
+          {
+            "axis_deg_expected": 330,
+            "paint_faces": 522,
+            "paint_triangles": 522,
+            "mean_axis_deg": 328.51230493215553,
+            "uv_loops": 1566,
+            "u_span_max_abs_error": 2.930338782736186e-08,
+            "u_slope_through_origin": 2.1428571373431455
+          }
+        ],
+        "violations": []
+      }
+    },
+    {
+      "name": "blade paint explicitly uses NavalBladeUV second UV layer",
+      "ok": true,
+      "detail": {
+        "uv_layers": [
+          "UVMap",
+          "NavalBladeUV"
+        ],
+        "uv_nodes": [
+          "NavalBladeUV",
+          "UVMap"
+        ]
+      }
+    },
+    {
+      "name": "axial U mapping is linear from root to 0.9 at 0.42 m",
+      "ok": true,
+      "detail": {
+        "expected_U_equals_world_axial_span_times_0.9_over_0.42": true,
+        "sectors": [
+          {
+            "axis_deg_expected": 90,
+            "paint_faces": 491,
+            "paint_triangles": 491,
+            "mean_axis_deg": 87.71440842349078,
+            "uv_loops": 1473,
+            "u_span_max_abs_error": 2.5544847903624657e-08,
+            "u_slope_through_origin": 2.14285713282646
+          },
+          {
+            "axis_deg_expected": 210,
+            "paint_faces": 536,
+            "paint_triangles": 536,
+            "mean_axis_deg": 208.79533324808537,
+            "uv_loops": 1608,
+            "u_span_max_abs_error": 2.971893631187328e-08,
+            "u_slope_through_origin": 2.142857141191055
+          },
+          {
+            "axis_deg_expected": 330,
+            "paint_faces": 522,
+            "paint_triangles": 522,
+            "mean_axis_deg": 328.51230493215553,
+            "uv_loops": 1566,
+            "u_span_max_abs_error": 2.930338782736186e-08,
+            "u_slope_through_origin": 2.1428571373431455
+          }
+        ],
+        "violations": []
+      }
+    },
+    {
+      "name": "native blade image and shipped PNG bytes equal g1.24",
+      "ok": true,
+      "detail": {
+        "g1_bytes": 2691,
+        "g1_sha256": "c405014632def6882fd33925102ed178736202c37ff9172b68c21d0da3bf97b4",
+        "native_image_names": [
+          "naval_propeller_basecolor"
+        ],
+        "native_matches_g1": true,
+        "sidecars": [
+          {
+            "path": "D:\\CodexDeliveries\\F4U_Corsair\\g2_1\\textures\\shared\\propeller_basecolor.png",
+            "bytes": 2691,
+            "sha256": "c405014632def6882fd33925102ed178736202c37ff9172b68c21d0da3bf97b4",
+            "matches_g1": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "GLB has no blade_tip material",
+      "ok": true,
+      "detail": {
+        "materials": [
+          "paint_wing",
+          "paint_body",
+          "glass",
+          "cockpit",
+          "alloy",
+          "paint_tail",
+          "engine_dark",
+          "gear_finish",
+          "naval_blade_paint",
+          "gear_inner_coat",
+          "nav_left",
+          "paint_wing_tip",
+          "detail_alloy",
+          "nav_right"
+        ]
+      }
+    },
+    {
+      "name": "GLB blade base color uses explicit TEXCOORD_1",
+      "ok": true,
+      "detail": {
+        "blade_material": {
+          "index": 8,
+          "base_texture": 5,
+          "base_texcoord": 1,
+          "orm_texture": null,
+          "occlusion_texture": 1,
+          "occlusion_texcoord": 0
+        },
+        "paint_primitives": 1,
+        "attributes": [
+          [
+            "NORMAL",
+            "POSITION",
+            "TANGENT",
+            "TEXCOORD_0",
+            "TEXCOORD_1"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "native AO inputs use the paint ORM red channel for all five materials",
+      "ok": true,
+      "detail": {
+        "paint_orm_images": [
+          "g2_Naval308_orm",
+          "g2_Naval308_orm"
+        ],
+        "graphs": {
+          "cockpit": [
+            {
+              "group": "glTF Material Output",
+              "source_type": "SEPARATE_COLOR",
+              "source_socket": "Red",
+              "image": "g2_Naval308_orm",
+              "image_is_paint_orm": true
+            }
+          ],
+          "alloy": [
+            {
+              "group": "glTF Material Output",
+              "source_type": "SEPARATE_COLOR",
+              "source_socket": "Red",
+              "image": "g2_Naval308_orm",
+              "image_is_paint_orm": true
+            }
+          ],
+          "engine_dark": [
+            {
+              "group": "glTF Material Output",
+              "source_type": "SEPARATE_COLOR",
+              "source_socket": "Red",
+              "image": "g2_Naval308_orm",
+              "image_is_paint_orm": true
+            }
+          ],
+          "gear_inner_coat": [
+            {
+              "group": "glTF Material Output",
+              "source_type": "SEPARATE_COLOR",
+              "source_socket": "Red",
+              "image": "g2_Naval308_orm",
+              "image_is_paint_orm": true
+            }
+          ],
+          "naval_blade_paint": [
+            {
+              "group": "glTF Material Output",
+              "source_type": "SEPARATE_COLOR",
+              "source_socket": "Red",
+              "image": "g2_Naval308_orm",
+              "image_is_paint_orm": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GLB occlusion uses the same paint ORM texture index for all five required materials",
+      "ok": true,
+      "detail": {
+        "paint_body_orm_texture": 1,
+        "paint_orm_image_source": 1,
+        "occlusion_image_sources": {
+          "cockpit": 1,
+          "alloy": 1,
+          "engine_dark": 1,
+          "gear_inner_coat": 1,
+          "naval_blade_paint": 1
+        },
+        "glb_images": [
+          {
+            "bufferView": 5,
+            "mimeType": "image/png",
+            "name": "normal"
+          },
+          {
+            "bufferView": 6,
+            "mimeType": "image/png",
+            "name": "orm"
+          },
+          {
+            "bufferView": 7,
+            "mimeType": "image/png",
+            "name": "basecolor"
+          },
+          {
+            "bufferView": 97,
+            "mimeType": "image/png",
+            "name": "gear18_basecolor"
+          },
+          {
+            "bufferView": 98,
+            "mimeType": "image/png",
+            "name": "gear18_orm"
+          },
+          {
+            "bufferView": 219,
+            "mimeType": "image/png",
+            "name": "propeller_basecolor"
+          }
+        ],
+        "materials": {
+          "cockpit": {
+            "index": 3,
+            "base_texture": null,
+            "base_texcoord": 0,
+            "orm_texture": null,
+            "occlusion_texture": 1,
+            "occlusion_texcoord": 0
+          },
+          "alloy": {
+            "index": 4,
+            "base_texture": null,
+            "base_texcoord": 0,
+            "orm_texture": null,
+            "occlusion_texture": 1,
+            "occlusion_texcoord": 0
+          },
+          "engine_dark": {
+            "index": 6,
+            "base_texture": null,
+            "base_texcoord": 0,
+            "orm_texture": null,
+            "occlusion_texture": 1,
+            "occlusion_texcoord": 0
+          },
+          "gear_inner_coat": {
+            "index": 9,
+            "base_texture": null,
+            "base_texcoord": 0,
+            "orm_texture": null,
+            "occlusion_texture": 1,
+            "occlusion_texcoord": 0
+          },
+          "naval_blade_paint": {
+            "index": 8,
+            "base_texture": 5,
+            "base_texcoord": 1,
+            "orm_texture": null,
+            "occlusion_texture": 1,
+            "occlusion_texcoord": 0
+          }
+        },
+        "violations": []
+      }
+    },
+    {
+      "name": "no standalone AO image in native file or GLB",
+      "ok": true,
+      "detail": {
+        "native": [],
+        "glb": [],
+        "ao_sidecars": []
+      }
+    },
+    {
+      "name": "no stale standalone AO sidecar remains in the package",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "GLB material count does not exceed 16",
+      "ok": true,
+      "detail": {
+        "materials": 14
+      }
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+[
+  {
+    "name": "g1_24_main_wheel",
+    "file": "g1_24_main_wheel.png",
+    "frame": 0,
+    "camera": [
+      -0.8311111927032471,
+      0.15935476124286652,
+      -0.3366667330265045
+    ],
+    "target": [
+      -0.4311111867427826,
+      -0.06064523383975029,
+      -0.43666672706604004
+    ],
+    "distance_m": 0.467332868422265,
+    "ortho_width": 0.37,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "g1_24_tail_wheel",
+    "file": "g1_24_tail_wheel.png",
+    "frame": 0,
+    "camera": [
+      -0.40000003576278687,
+      -1.1917564868927002,
+      -0.04444441944360733
+    ],
+    "target": [
+      -1.6471192409994728e-08,
+      -1.4117565155029297,
+      -0.14444442093372345
+    ],
+    "distance_m": 0.4673328823721889,
+    "ortho_width": 0.18,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "g2_0_main_wheel",
+    "file": "g2_0_main_wheel.png",
+    "frame": 0,
+    "camera": [
+      -0.8311111927032471,
+      0.15935476124286652,
+      -0.3366667330265045
+    ],
+    "target": [
+      -0.4311111867427826,
+      -0.06064523383975029,
+      -0.43666672706604004
+    ],
+    "distance_m": 0.467332868422265,
+    "ortho_width": 0.37,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "g2_0_tail_wheel",
+    "file": "g2_0_tail_wheel.png",
+    "frame": 0,
+    "camera": [
+      -0.40000003576278687,
+      -1.1917564868927002,
+      -0.04444441944360733
+    ],
+    "target": [
+      -1.6471192409994728e-08,
+      -1.4117565155029297,
+      -0.14444442093372345
+    ],
+    "distance_m": 0.4673328823721889,
+    "ortho_width": 0.18,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "g2_1_main_wheel",
+    "file": "g2_1_main_wheel.png",
+    "frame": 0,
+    "camera": [
+      -0.8311111927032471,
+      0.15935476124286652,
+      -0.3366667330265045
+    ],
+    "target": [
+      -0.4311111867427826,
+      -0.06064523383975029,
+      -0.43666672706604004
+    ],
+    "distance_m": 0.467332868422265,
+    "ortho_width": 0.37,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "g2_1_tail_wheel",
+    "file": "g2_1_tail_wheel.png",
+    "frame": 0,
+    "camera": [
+      -0.40000003576278687,
+      -1.1917564868927002,
+      -0.04444441944360733
+    ],
+    "target": [
+      -1.6471192409994728e-08,
+      -1.4117565155029297,
+      -0.14444442093372345
+    ],
+    "distance_m": 0.4673328823721889,
+    "ortho_width": 0.18,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "home_ground",
+    "file": "home_ground.png",
+    "frame": 0,
+    "camera": [
+      3.0,
+      3.2,
+      1.8
+    ],
+    "target": [
+      0,
+      -0.45,
+      -0.05
+    ],
+    "distance_m": 5.073953082711652,
+    "ortho_width": 4.2,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "nose_1_5m",
+    "file": "nose_1_5m.png",
+    "frame": 0,
+    "camera": [
+      0.9013765454292297,
+      1.5796794891357422,
+      0.4977295696735382
+    ],
+    "target": [
+      0.0,
+      0.47999998927116394,
+      0.019999999552965164
+    ],
+    "distance_m": 1.5000000397364293,
+    "ortho_width": null,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "blade_front",
+    "file": "blade_front.png",
+    "frame": 0,
+    "camera": [
+      0,
+      1.4,
+      0.31
+    ],
+    "target": [
+      0,
+      0.4527,
+      0.31
+    ],
+    "distance_m": 0.9472999487881811,
+    "ortho_width": 0.56,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "blade_back",
+    "file": "blade_back.png",
+    "frame": 0,
+    "camera": [
+      0,
+      -0.25,
+      0.31
+    ],
+    "target": [
+      0,
+      0.4527,
+      0.31
+    ],
+    "distance_m": 0.7027000202562214,
+    "ortho_width": 0.56,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "blade_tip_front",
+    "file": "blade_tip_front.png",
+    "frame": 0,
+    "camera": [
+      0,
+      1.0,
+      0.423
+    ],
+    "target": [
+      0,
+      0.4527,
+      0.423
+    ],
+    "distance_m": 0.5472999828807006,
+    "ortho_width": 0.14,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "blade_tip_back",
+    "file": "blade_tip_back.png",
+    "frame": 0,
+    "camera": [
+      0,
+      -0.05,
+      0.423
+    ],
+    "target": [
+      0,
+      0.4527,
+      0.423
+    ],
+    "distance_m": 0.5026999828605733,
+    "ortho_width": 0.14,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "canopy_close",
+    "file": "canopy_close.png",
+    "frame": 0,
+    "camera": [
+      -1.15,
+      0.1,
+      0.9
+    ],
+    "target": [
+      0,
+      -0.53,
+      0.15
+    ],
+    "distance_m": 1.5105959051484534,
+    "ortho_width": 1.14,
+    "Eevee_backface_culling": true
+  },
+  {
+    "name": "underside_down",
+    "file": "underside_down.png",
+    "frame": 0,
+    "camera": [
+      2.3,
+      2.5,
+      -2.0
+    ],
+    "target": [
+      0,
+      -0.5,
+      -0.08
+    ],
+    "distance_m": 4.239858476238217,
+    "ortho_width": 4.2,
+    "Eevee_backface_culling": true
+  }
+]

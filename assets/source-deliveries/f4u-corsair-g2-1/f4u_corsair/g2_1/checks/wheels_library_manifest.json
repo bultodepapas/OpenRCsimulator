@@ -1,0 +1,55 @@
+{
+  "source_blend": "D:\\CodexDeliveries\\F4U_Corsair\\g1_24\\source\\aircraft_game.blend",
+  "library_blend": "D:\\CodexDeliveries\\F4U_Corsair\\work\\g21_wheels\\wheels.blend",
+  "blender_version": "5.2.2 LTS",
+  "object_count": 0,
+  "mesh_datablocks": [
+    "F2_g1_24_gear_wheel_left_mesh",
+    "F2_g1_24_gear_wheel_right_mesh",
+    "F2_g1_24_gear_wheel_tail_mesh"
+  ],
+  "material_datablocks": [
+    "gear_finish"
+  ],
+  "image_datablocks": [
+    "gear18_basecolor",
+    "gear18_orm"
+  ],
+  "textures": [
+    {
+      "name": "gear18_basecolor",
+      "source_filepath": "C:\\Users\\bulto\\Documents\\Codex\\2026-10-08\\usa\\outputs\\f4u_corsair_rev3\\g1_8\\textures\\gear\\basecolor.png",
+      "output_filepath": "textures/gear18_basecolor.png",
+      "format_extension": ".png",
+      "file_bytes": 447673,
+      "file_sha256": "40d359ff0f093b51664607395be801601af35f502bdba8721c4d0f623db1bc98",
+      "pixel_sha256_f32le": "86ad57ccf4c34894d3e0c977d1907eea1a6092cc6cf6de92b09ec32107f9616e",
+      "size": [
+        2048,
+        2048
+      ],
+      "channels": 4,
+      "colorspace": "sRGB",
+      "alpha_mode": "STRAIGHT",
+      "packed_bytes_preserved": true
+    },
+    {
+      "name": "gear18_orm",
+      "source_filepath": "C:\\Users\\bulto\\Documents\\Codex\\2026-10-08\\usa\\outputs\\f4u_corsair_rev3\\g1_8\\textures\\gear\\orm.png",
+      "output_filepath": "textures/gear18_orm.png",
+      "format_extension": ".png",
+      "file_bytes": 540125,
+      "file_sha256": "312a63eb3b6c7ce7859def8ccbdb2f44c6f30671b9413ca9e6ed5e78c8317e6c",
+      "pixel_sha256_f32le": "1a8a15463d9cad5585fd3346a14ff10e72232e534da4b913e728b3d7e38ae95a",
+      "size": [
+        2048,
+        2048
+      ],
+      "channels": 4,
+      "colorspace": "Non-Color",
+      "alpha_mode": "STRAIGHT",
+      "packed_bytes_preserved": true
+    }
+  ],
+  "note": "Mesh datablocks only: no source objects or transforms are included. Append these meshes and assign to existing g2.0 wheel objects to preserve g2 names, transforms, parents, and rig."
+}

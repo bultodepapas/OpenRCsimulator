@@ -1,0 +1,123 @@
+{
+  "method": "Union of all projected triangle silhouettes, 4096 square binary masks, common bounds. Raster boundary Chebyshev distance is resolution-limited; not a certified continuous bound.",
+  "blade_triangles_exact": true,
+  "rows": [
+    {
+      "part": "hub",
+      "view": "front",
+      "resolution": [
+        4096,
+        4096
+      ],
+      "silhouette_IoU": 0.9999949714837791,
+      "max_outline_raster_distance_px": 2.0,
+      "max_outline_raster_distance_mm": 0.06674317270517349,
+      "pixel_mm": 0.033371586352586746,
+      "exact_pixels": false
+    },
+    {
+      "part": "hub",
+      "view": "side",
+      "resolution": [
+        4096,
+        4096
+      ],
+      "silhouette_IoU": 0.9999924844763591,
+      "max_outline_raster_distance_px": 1.0,
+      "max_outline_raster_distance_mm": 0.04212181270122528,
+      "pixel_mm": 0.04212181270122528,
+      "exact_pixels": false
+    },
+    {
+      "part": "hub",
+      "view": "top",
+      "resolution": [
+        4096,
+        4096
+      ],
+      "silhouette_IoU": 0.9999990201298001,
+      "max_outline_raster_distance_px": 1.0,
+      "max_outline_raster_distance_mm": 0.04212181270122528,
+      "pixel_mm": 0.04212181270122528,
+      "exact_pixels": false
+    },
+    {
+      "part": "blades",
+      "view": "front",
+      "resolution": [
+        4096,
+        4096
+      ],
+      "silhouette_IoU": 1.0,
+      "max_outline_raster_distance_px": 0.0,
+      "max_outline_raster_distance_mm": 0.0,
+      "pixel_mm": 0.19447991251945496,
+      "exact_pixels": true
+    },
+    {
+      "part": "blades",
+      "view": "side",
+      "resolution": [
+        4096,
+        4096
+      ],
+      "silhouette_IoU": 1.0,
+      "max_outline_raster_distance_px": 0.0,
+      "max_outline_raster_distance_mm": 0.0,
+      "pixel_mm": 0.172315314412117,
+      "exact_pixels": true
+    },
+    {
+      "part": "blades",
+      "view": "top",
+      "resolution": [
+        4096,
+        4096
+      ],
+      "silhouette_IoU": 1.0,
+      "max_outline_raster_distance_px": 0.0,
+      "max_outline_raster_distance_mm": 0.0,
+      "pixel_mm": 0.19447991251945496,
+      "exact_pixels": true
+    },
+    {
+      "part": "glass",
+      "view": "front",
+      "resolution": [
+        4096,
+        4096
+      ],
+      "silhouette_IoU": 0.9999866742155434,
+      "max_outline_raster_distance_px": 1.0,
+      "max_outline_raster_distance_mm": 0.049534644931554794,
+      "pixel_mm": 0.049534644931554794,
+      "exact_pixels": false
+    },
+    {
+      "part": "glass",
+      "view": "side",
+      "resolution": [
+        4096,
+        4096
+      ],
+      "silhouette_IoU": 0.9999942111857552,
+      "max_outline_raster_distance_px": 1.0,
+      "max_outline_raster_distance_mm": 0.05081629008054733,
+      "pixel_mm": 0.05081629008054733,
+      "exact_pixels": false
+    },
+    {
+      "part": "glass",
+      "view": "top",
+      "resolution": [
+        4096,
+        4096
+      ],
+      "silhouette_IoU": 1.0,
+      "max_outline_raster_distance_px": 0.0,
+      "max_outline_raster_distance_mm": 0.0,
+      "pixel_mm": 0.05081629008054733,
+      "exact_pixels": true
+    }
+  ]
+}

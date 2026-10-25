@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "checks": {
+    "propeller_spin": {
+      "full_revolution_return_error_m": 1.0745380149674383e-07,
+      "passed": true
+    },
+    "gear_spin_left": {
+      "full_revolution_return_error_m": 7.028863677424642e-08,
+      "passed": true
+    },
+    "gear_spin_right": {
+      "full_revolution_return_error_m": 7.028863677424642e-08,
+      "passed": true
+    },
+    "gear_spin_tail": {
+      "full_revolution_return_error_m": 1.201612854878836e-07,
+      "passed": true
+    },
+    "rolling_left": {
+      "bottom_surface_motion_y": -1.0,
+      "passed": true
+    },
+    "rolling_right": {
+      "bottom_surface_motion_y": -1.0,
+      "passed": true
+    },
+    "rolling_tail": {
+      "bottom_surface_motion_y": -1.0,
+      "passed": true
+    },
+    "tail_steering": {
+      "samples": [
+        {
+          "degrees": -30,
+          "heading_x": -0.49999988079071045
+        },
+        {
+          "degrees": 30,
+          "heading_x": 0.5000002980232239
+        }
+      ],
+      "passed": true
+    }
+  }
+}

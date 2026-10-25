@@ -1,0 +1,389 @@
+{
+  "g2_path": "D:\\CodexDeliveries\\F4U_Corsair\\g2_0\\source\\aircraft_game.blend",
+  "source_library": "D:\\CodexDeliveries\\F4U_Corsair\\work\\g21_wheels\\wheels.blend",
+  "library": {
+    "objects": 0,
+    "meshes": {
+      "F2_g1_24_gear_wheel_left_mesh": {
+        "signature": "f67f97796d7b13ad8b473e09349ba015ab175c42511538daa5b296cac47b0256",
+        "vertices": 2928,
+        "edges": 5712,
+        "polygons": 2836,
+        "triangles": 5752,
+        "uv_layers": [
+          {
+            "name": "UVMap",
+            "data_count": 11424
+          }
+        ],
+        "materials": [
+          "gear_finish"
+        ]
+      },
+      "F2_g1_24_gear_wheel_right_mesh": {
+        "signature": "3cc51179364075fc40b084da0ecc257509d6a4bcddd333c19ab2f603ec745ae2",
+        "vertices": 2928,
+        "edges": 5712,
+        "polygons": 2836,
+        "triangles": 5752,
+        "uv_layers": [
+          {
+            "name": "UVMap",
+            "data_count": 11424
+          }
+        ],
+        "materials": [
+          "gear_finish"
+        ]
+      },
+      "F2_g1_24_gear_wheel_tail_mesh": {
+        "signature": "065d31d6a96c1d7f1afb962ca536b0b54cdd3aa5d4b5381958a07ccbda92ae58",
+        "vertices": 1696,
+        "edges": 3296,
+        "polygons": 1636,
+        "triangles": 3320,
+        "uv_layers": [
+          {
+            "name": "UVMap",
+            "data_count": 6592
+          }
+        ],
+        "materials": [
+          "gear_finish"
+        ]
+      }
+    },
+    "materials": [
+      {
+        "name": "gear_finish",
+        "images": [
+          "gear18_basecolor",
+          "gear18_orm"
+        ]
+      }
+    ],
+    "images": [
+      {
+        "name": "gear18_basecolor",
+        "filepath": "//textures\\gear18_basecolor.png",
+        "abs_filepath": "D:\\CodexDeliveries\\F4U_Corsair\\work\\g21_wheels\\textures\\gear18_basecolor.png",
+        "packed": true,
+        "size": [
+          2048,
+          2048
+        ],
+        "colorspace": "sRGB"
+      },
+      {
+        "name": "gear18_orm",
+        "filepath": "//textures\\gear18_orm.png",
+        "abs_filepath": "D:\\CodexDeliveries\\F4U_Corsair\\work\\g21_wheels\\textures\\gear18_orm.png",
+        "packed": true,
+        "size": [
+          2048,
+          2048
+        ],
+        "colorspace": "Non-Color"
+      }
+    ]
+  },
+  "object_count_after_import": 82,
+  "object_snapshot_sha256_before": "161215e2b5107414f0c7ce44c873854fe6c4b38386a03c8ba65c0bfabcfa476b",
+  "object_snapshot_sha256_after": "161215e2b5107414f0c7ce44c873854fe6c4b38386a03c8ba65c0bfabcfa476b",
+  "object_snapshot_identical": true,
+  "materials_before": 16,
+  "materials_after": 17,
+  "materials_added": [
+    "gear_finish.001"
+  ],
+  "fit": {
+    "gear_wheel_left": {
+      "mesh_name": "F2_g1_24_gear_wheel_left_mesh",
+      "triangles": 5752,
+      "signature": "f67f97796d7b13ad8b473e09349ba015ab175c42511538daa5b296cac47b0256",
+      "dims_local_m": [
+        0.04670000076293945,
+        0.1882999986410141,
+        0.1882999986410141
+      ],
+      "material": "gear_finish.001",
+      "material_images": [
+        "gear18_basecolor",
+        "gear18_orm"
+      ],
+      "parent": "gear_spin_left",
+      "frames": {
+        "0": {
+          "bbox_min": [
+            -0.4548111855983734,
+            -0.15479525923728943,
+            -0.5308167338371277
+          ],
+          "bbox_max": [
+            -0.4081111550331116,
+            0.03350478783249855,
+            -0.3425167202949524
+          ],
+          "ground_z": -0.5308167338371277,
+          "object_matrix_world": [
+            [
+              1.000000238419,
+              2.09857e-07,
+              0.0,
+              -0.431111186743
+            ],
+            [
+              -2.09857e-07,
+              1.000000238419,
+              0.0,
+              -0.06064523384
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              -0.436666727066
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "100": {
+          "bbox_min": [
+            -0.5438967347145081,
+            -0.37954768538475037,
+            -0.20259328186511993
+          ],
+          "bbox_max": [
+            -0.35557445883750916,
+            -0.19119641184806824,
+            -0.14204399287700653
+          ],
+          "ground_z": -0.20259328186511993,
+          "object_matrix_world": [
+            [
+              0.069586545229,
+              0.995473563671,
+              -0.064732417464,
+              -0.449735581875
+            ],
+            [
+              -0.069756612182,
+              0.06958655268,
+              0.99513399601,
+              -0.285372048616
+            ],
+            [
+              0.995134115219,
+              -0.064732410014,
+              0.074283160269,
+              -0.172318637371
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    "gear_wheel_right": {
+      "mesh_name": "F2_g1_24_gear_wheel_right_mesh",
+      "triangles": 5752,
+      "signature": "3cc51179364075fc40b084da0ecc257509d6a4bcddd333c19ab2f603ec745ae2",
+      "dims_local_m": [
+        0.04670000076293945,
+        0.1882999986410141,
+        0.1882999986410141
+      ],
+      "material": "gear_finish.001",
+      "material_images": [
+        "gear18_basecolor",
+        "gear18_orm"
+      ],
+      "parent": "gear_spin_right",
+      "frames": {
+        "0": {
+          "bbox_min": [
+            0.4081111550331116,
+            -0.15479524433612823,
+            -0.5308167338371277
+          ],
+          "bbox_max": [
+            0.4548111855983734,
+            0.03350480645895004,
+            -0.3425167202949524
+          ],
+          "ground_z": -0.5308167338371277,
+          "object_matrix_world": [
+            [
+              1.000000238419,
+              2.09857e-07,
+              0.0,
+              0.431111186743
+            ],
+            [
+              -2.09857e-07,
+              1.000000238419,
+              0.0,
+              -0.060645215213
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              -0.436666727066
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "100": {
+          "bbox_min": [
+            0.3555743992328644,
+            -0.37954771518707275,
+            -0.202593132853508
+          ],
+          "bbox_max": [
+            0.5438967347145081,
+            -0.19119642674922943,
+            -0.14204387366771698
+          ],
+          "ground_z": -0.202593132853508,
+          "object_matrix_world": [
+            [
+              0.069586478174,
+              -0.995473861694,
+              0.064732447267,
+              0.449735552073
+            ],
+            [
+              0.06975646317,
+              0.069586701691,
+              0.995134174824,
+              -0.285372078419
+            ],
+            [
+              -0.995134413242,
+              -0.064732223749,
+              0.074282824993,
+              -0.172318503261
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    "gear_wheel_tail": {
+      "mesh_name": "F2_g1_24_gear_wheel_tail_mesh",
+      "triangles": 3320,
+      "signature": "065d31d6a96c1d7f1afb962ca536b0b54cdd3aa5d4b5381958a07ccbda92ae58",
+      "dims_local_m": [
+        0.025760000571608543,
+        0.07778000086545944,
+        0.07778000086545944
+      ],
+      "material": "gear_finish.001",
+      "material_images": [
+        "gear18_basecolor",
+        "gear18_orm"
+      ],
+      "parent": "gear_spin_tail",
+      "frames": {
+        "0": {
+          "bbox_min": [
+            -0.012880020774900913,
+            -1.4506465196609497,
+            -0.18333442509174347
+          ],
+          "bbox_max": [
+            0.012879987247288227,
+            -1.3728665113449097,
+            -0.10555441677570343
+          ],
+          "ground_z": -0.18333442509174347,
+          "object_matrix_world": [
+            [
+              1.000000119209,
+              2.7074e-08,
+              -5.9605e-08,
+              -1.6471e-08
+            ],
+            [
+              -2.7074e-08,
+              1.000000119209,
+              -3.57628e-07,
+              -1.411756515503
+            ],
+            [
+              5.9605e-08,
+              3.57628e-07,
+              1.0,
+              -0.144444420934
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "100": {
+          "bbox_min": [
+            -0.012880024500191212,
+            -1.574448823928833,
+            -0.02061769925057888
+          ],
+          "bbox_max": [
+            0.012879976071417332,
+            -1.4966695308685303,
+            0.057161565870046616
+          ],
+          "ground_z": -0.02061769925057888,
+          "object_matrix_world": [
+            [
+              0.999999940395,
+              2.1095e-08,
+              -1.7671e-08,
+              -2.422e-08
+            ],
+            [
+              2.0601e-08,
+              0.559193134308,
+              0.829037368298,
+              -1.535559177399
+            ],
+            [
+              6.0748e-08,
+              -0.829037368298,
+              0.559193193913,
+              0.018271932378
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  }
+}

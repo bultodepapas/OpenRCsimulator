@@ -1,0 +1,18 @@
+PASS strict GLB preflight
+PASS triangle target 300k–350k :: 337664
+PASS hard triangle ceiling 450k :: 337664
+PASS surface ceiling 70 :: 57
+PASS material ceiling 16 :: 14
+PASS GLB size ceiling 30 MB :: 18950912
+PASS GLB SHA-256 matches metadata :: "cf4cdad638dae93b2ac6107bd050dcf176c4b6dbb1f03d21580f4149fda945b3"
+PASS GLB byte length matches metadata :: 18950912
+PASS native source SHA-256 matches metadata :: {"source": "D:\\CodexDeliveries\\F4U_Corsair\\g2_1\\source\\aircraft_game.blend", "actual": "1bbe5011f099cdaa893f00f4ec081523d5873887cb5916c29ee26c5319295148", "metadata": "1bbe5011f099cdaa893f00f4ec081523d5873887cb5916c29ee26c5319295148"}
+PASS sidecar triangle count matches imported GLB :: {"glb": 337664, "metadata": 337664}
+PASS sidecar surface count matches imported GLB :: {"glb": 57, "metadata": 57}
+PASS sidecar material count matches imported GLB :: {"glb": 14, "metadata": 14}
+PASS sidecar mesh-node count matches imported GLB :: {"glb": 46, "metadata": 46}
+PASS per-mesh counts and section tags match metadata
+PASS Naval 308 is the first/default livery :: {"default_livery": "midnight", "first": {"id": "midnight", "name": "Naval 308", "description": "Original dark-blue naval restoration scheme on the new g2 UV atlas", "default": true}}
+PASS GearRetract has 101 samples and exports frame 100 :: {"action": "GearRetract", "samples": 101, "runtime_export_frame": 100}
+PASS two retraction links are gear meshes below existing fold carriers
+Revision 4 GLB verifier: 17/17 checks; 337664 triangles, 57 surfaces, 14 materials, 18950912 bytes

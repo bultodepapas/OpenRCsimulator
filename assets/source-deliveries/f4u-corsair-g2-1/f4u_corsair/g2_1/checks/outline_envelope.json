@@ -1,0 +1,167 @@
+{
+  "method": "Exact segment interpolation of outer projected bounds at 4096 parallel cross-sections in both directions of each principal plane. Sampled envelope, not a proof for all directions.",
+  "rows": [
+    {
+      "part": "hub",
+      "view": "front",
+      "axes": [
+        0,
+        2
+      ],
+      "sampled_envelope_delta_mm": 0.12252107262611389
+    },
+    {
+      "part": "hub",
+      "view": "front",
+      "axes": [
+        2,
+        0
+      ],
+      "sampled_envelope_delta_mm": 3.725290298461914e-06
+    },
+    {
+      "part": "hub",
+      "view": "side",
+      "axes": [
+        1,
+        2
+      ],
+      "sampled_envelope_delta_mm": 0.10716915130615234
+    },
+    {
+      "part": "hub",
+      "view": "side",
+      "axes": [
+        2,
+        1
+      ],
+      "sampled_envelope_delta_mm": 0.019043684005737305
+    },
+    {
+      "part": "hub",
+      "view": "top",
+      "axes": [
+        0,
+        1
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    },
+    {
+      "part": "hub",
+      "view": "top",
+      "axes": [
+        1,
+        0
+      ],
+      "sampled_envelope_delta_mm": 0.07528066635131836
+    },
+    {
+      "part": "blades",
+      "view": "front",
+      "axes": [
+        0,
+        2
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    },
+    {
+      "part": "blades",
+      "view": "front",
+      "axes": [
+        2,
+        0
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    },
+    {
+      "part": "blades",
+      "view": "side",
+      "axes": [
+        1,
+        2
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    },
+    {
+      "part": "blades",
+      "view": "side",
+      "axes": [
+        2,
+        1
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    },
+    {
+      "part": "blades",
+      "view": "top",
+      "axes": [
+        0,
+        1
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    },
+    {
+      "part": "blades",
+      "view": "top",
+      "axes": [
+        1,
+        0
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    },
+    {
+      "part": "glass",
+      "view": "front",
+      "axes": [
+        0,
+        2
+      ],
+      "sampled_envelope_delta_mm": 0.0014007091522216797
+    },
+    {
+      "part": "glass",
+      "view": "front",
+      "axes": [
+        2,
+        0
+      ],
+      "sampled_envelope_delta_mm": 0.0013709068298339844
+    },
+    {
+      "part": "glass",
+      "view": "side",
+      "axes": [
+        1,
+        2
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    },
+    {
+      "part": "glass",
+      "view": "side",
+      "axes": [
+        2,
+        1
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    },
+    {
+      "part": "glass",
+      "view": "top",
+      "axes": [
+        0,
+        1
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    },
+    {
+      "part": "glass",
+      "view": "top",
+      "axes": [
+        1,
+        0
+      ],
+      "sampled_envelope_delta_mm": 0.0
+    }
+  ]
+}

@@ -1,6 +1,9 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 OpenRCsimulator contributors.
 #pragma once
 
-#include "servers/rendering/renderer_rd/shaders/effects/motion_vector_decode.glsl.gen.h"
+#include "core/variant/dictionary.h"
+#include "servers/rendering/renderer_rd/shaders/effects/fsr3_prepare.glsl.gen.h"
 
 namespace RendererRD {
 
@@ -38,15 +41,16 @@ private:
 class FSR3Effect {
 public:
 	struct Shaders {
-		MotionVectorDecodeShaderRD motion_vector_decode;
-		RID motion_vector_decode_version;
-		RID motion_vector_decode_pipeline;
+		Fsr3PrepareShaderRD prepare;
+		RID prepare_version;
+		RID prepare_pipeline[2];
 	} shaders;
 
 	FSR3Effect();
 	~FSR3Effect();
 
 	static bool is_available();
+	static Dictionary get_status();
 	FSR3Context *create_context(Size2i p_internal_size, Size2i p_target_size);
 	void upscale(const FSR3Context::Parameters &p_params);
 	bool is_ready(const FSR3Context *p_context) const;

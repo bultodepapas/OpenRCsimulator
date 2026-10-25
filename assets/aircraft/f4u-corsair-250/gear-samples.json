@@ -3,7 +3,7 @@
  "step": "F4U-05",
  "generator": "research/f4u-corsair/F4U-05/sample_gear.py",
  "blender": "5.2.2 LTS",
- "source_blend_sha256": "c2137fb3e363f26b447fca5cae2f118835e198ae609b66d731cc597693be00fc",
+ "source_blend_sha256": "1bbe5011f099cdaa893f00f4ec081523d5873887cb5916c29ee26c5319295148",
  "action": "GearRetract",
  "frames": {
   "stowed": 100,
@@ -42,6 +42,8 @@
   "gear_door_tail_mesh_right_2",
   "gear_lower_left",
   "gear_lower_right",
+  "gear_retraction_link_left",
+  "gear_retraction_link_right",
   "gear_strut_left",
   "gear_strut_right",
   "gear_tail_fork",
@@ -24403,7 +24405,7 @@
  },
  "interpolation": {
   "uniform_samples": 101,
-  "max_midpoint_vertex_error_m": 5.489370420349015e-07,
+  "max_midpoint_vertex_error_m": 5.274674302467065e-07,
   "max_midpoint_rotation_error_deg": 0.0,
   "worst_mesh_and_carrier": [
    "gear_tail_fork",

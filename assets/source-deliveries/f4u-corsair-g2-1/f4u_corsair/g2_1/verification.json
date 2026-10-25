@@ -1,0 +1,21 @@
+{
+  "revision": "g2.1",
+  "source_blend_sha256": "1bbe5011f099cdaa893f00f4ec081523d5873887cb5916c29ee26c5319295148",
+  "glb_sha256": "cf4cdad638dae93b2ac6107bd050dcf176c4b6dbb1f03d21580f4149fda945b3",
+  "required_changes_implemented": [
+    "F1",
+    "F2",
+    "F3",
+    "F4"
+  ],
+  "qualification": "F3 reduced hub sampled contour residual up to 0.123 mm; mathematically identical continuous outline not claimed",
+  "optional_I1_complete": false,
+  "native_portable": true,
+  "glb_sidecar": true,
+  "scoped_independent_audit": true,
+  "Godot_GLTFDocument": true,
+  "team_preflight_no_warnings": true,
+  "clearance_sampled": true,
+  "portable_reexport": true,
+  "production_integration_performed": false
+}

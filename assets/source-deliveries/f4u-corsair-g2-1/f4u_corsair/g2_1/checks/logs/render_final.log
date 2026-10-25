@@ -1,0 +1,37 @@
+00:02.156  blend            | Read blend: "D:\CodexDeliveries\F4U_Corsair\g1_24\source\aircraft_game.blend"
+D:\CodexDeliveries\F4U_Corsair\g2_1\source\scripts\render_g21.py:11: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  S.render.film_transparent=False;S.world=bpy.data.worlds.new('G21 Inspection');S.world.use_nodes=True
+00:05.281  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\g1_24_main_wheel.png'
+G21_VIEW g1_24_main_wheel
+00:05.844  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\g1_24_tail_wheel.png'
+G21_VIEW g1_24_tail_wheel
+00:05.860  blend            | Read blend: "D:\CodexDeliveries\F4U_Corsair\g2_0\source\aircraft_game.blend"
+00:07.141  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\g2_0_main_wheel.png'
+G21_VIEW g2_0_main_wheel
+00:07.735  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\g2_0_tail_wheel.png'
+G21_VIEW g2_0_tail_wheel
+00:07.735  blend            | Read blend: "D:\CodexDeliveries\F4U_Corsair\g2_1\source\aircraft_game.blend"
+00:08.688  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\g2_1_main_wheel.png'
+G21_VIEW g2_1_main_wheel
+00:09.250  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\g2_1_tail_wheel.png'
+G21_VIEW g2_1_tail_wheel
+00:09.875  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\home_ground.png'
+G21_VIEW home_ground
+00:10.531  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\nose_1_5m.png'
+G21_VIEW nose_1_5m
+00:11.172  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\blade_front.png'
+G21_VIEW blade_front
+00:11.766  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\blade_back.png'
+G21_VIEW blade_back
+00:12.360  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\blade_tip_front.png'
+G21_VIEW blade_tip_front
+00:12.906  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\blade_tip_back.png'
+G21_VIEW blade_tip_back
+00:13.578  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\canopy_close.png'
+G21_VIEW canopy_close
+00:14.156  render           | Saved: 'D:\CodexDeliveries\F4U_Corsair\g2_1\previews\underside_down.png'
+G21_VIEW underside_down
+G21_VIEWS_COMPLETE
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

@@ -12,7 +12,7 @@ Requires Python 3.11+, Git, Visual Studio with C++ tools and Windows SDK, and
 `python -m pip install scons==4.10.1`. From the repository root:
 
 ```powershell
-python tools/graphics/native/build.py --target editor --jobs 12
+python tools/graphics/native/build.py --target editor --jobs 4
 ```
 
 `--prepare-only` downloads and verifies dependencies, applies the checked patch,
@@ -20,6 +20,8 @@ and copies SDK headers, runtime DLLs and licenses without compiling. `--cache`
 selects a separate build directory. Downloads are pinned by SHA-256. A hash
 mismatch is an error; the tool never silently refreshes a pin. Build receipts
 record source, integration and runtime identities alongside the executable.
+The experiment disables Streamline's automatic plugin downloads so the supplied
+SDK runtime remains the tested dependency. Upgrade it as a separate change.
 
 The default output is
 `.tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/`.

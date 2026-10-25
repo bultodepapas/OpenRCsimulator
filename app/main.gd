@@ -1041,6 +1041,8 @@ func _companion_positions() -> Array:
 
 
 func _process(delta: float) -> void:
+	if not interactive_start and Engine.get_process_frames() % 60 == 0:
+		Reconstruction.guard_runtime_failure(get_viewport())
 	if _accident_report != null:
 		_accident_report.suspend(not session.holds.is_empty())
 		_update_accident_report()

@@ -2,6 +2,8 @@ extends SceneTree
 ## F4U-16: selectable liveries. The manifest contract, on-use provenance, builds of every Corsair paint scheme, the
 ## derived identity check, the per-aircraft preference and Home's paint row. Negative cases use the result-returning
 ## APIs so this suite prints no engine errors.
+## F4U-19: while the Corsair ships one paint (g2.1), the contract and on-use checks run on a synthetic five-entry
+## manifest, and the shipped Corsair is checked as a one-paint aircraft. The full set returns with its g2 liveries.
 
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const Imported := preload("res://aircraft/imported_model.gd")
@@ -29,12 +31,80 @@ func _run() -> void:
 		_finish()
 		return
 	var manifest: Dictionary = described.manifest
-	_test_manifest_contract(manifest)
-	_test_registry(manifest)
-	_test_builds(manifest)
-	_test_preferences()
-	await _test_home()
+	if manifest.has("liveries"):
+		_test_manifest_contract(manifest)
+		_test_registry(manifest)
+		_test_builds(manifest)
+		_test_preferences()
+		await _test_home()
+	else:
+		print("note: the Corsair ships one paint (F4U-19); livery mechanics run on a synthetic manifest")
+		_test_one_paint_corsair(manifest)
+		var synthetic := _synthetic(manifest)
+		_check("a synthetic five-livery manifest validates", Manifest.validate(synthetic).ok, str(Manifest.validate(synthetic).get("errors", [])))
+		_test_mutations(synthetic)
+		_test_registry(_aliased(synthetic, manifest))
+		_test_preferences()
+		await _test_one_paint_home()
 	_finish()
+
+
+## The shipped manifest with five liveries in ORDER: the default asset first, then unique paths with placeholder pins.
+func _synthetic(manifest: Dictionary) -> Dictionary:
+	var synthetic := manifest.duplicate(true)
+	synthetic.liveries = []
+	for id: String in ORDER:
+		var default := id == ORDER[0]
+		synthetic.liveries.append({"id": id, "label": id.capitalize(),
+			"path": manifest.asset.path if default else "res://assets/aircraft/f4u-corsair-250/f4u_corsair_%s.glb" % id,
+			"sha256": manifest.asset.sha256 if default else "a".repeat(64),
+			"import_sha256": _default_import_sha256(manifest) if default else "b".repeat(64)})
+	return synthetic
+
+
+## The synthetic manifest with its second livery aliasing the real default GLB and sidecar, so on-use verification
+## hashes actual files. Built for Registry.livery() only: validate() refuses the duplicate path.
+func _aliased(synthetic: Dictionary, manifest: Dictionary) -> Dictionary:
+	var aliased := synthetic.duplicate(true)
+	aliased.liveries[1].path = manifest.asset.path
+	aliased.liveries[1].sha256 = manifest.asset.sha256
+	aliased.liveries[1].import_sha256 = _default_import_sha256(manifest)
+	return aliased
+
+
+func _default_import_sha256(manifest: Dictionary) -> String:
+	for record: Dictionary in manifest.dependencies:
+		if record.path == manifest.asset.path + ".import": return record.sha256
+	return ""
+
+
+func _test_one_paint_corsair(manifest: Dictionary) -> void:
+	_check("the one-paint Corsair lists no schemes", AirplaneBuilder.livery_choices(CORSAIR).is_empty())
+	_check("every saved scheme resolves to its default paint", AirplaneBuilder.resolve_livery(CORSAIR, "scarlet") == ""
+		and AirplaneBuilder.resolve_livery(CORSAIR, "midnight") == "")
+	_check("the registry refuses any livery id", _has_code(Registry.livery(manifest, "scarlet"), "MODEL_LIVERY_UNKNOWN"))
+	var airplane: Dictionary = AirplaneBuilder.build(CORSAIR)
+	_check("the default paint builds through the production adapter", not airplane.is_empty())
+	if not airplane.is_empty():
+		_check("it keeps every binding: hinges, gear rig, folds, propeller", airplane.folds.size() == 2
+			and not airplane.gear_retraction.is_empty() and airplane.propeller is Node3D and airplane.hinges.size() == 10)
+		_check("it passes the derived model check", Registry.validate_derived(manifest, airplane).ok)
+		airplane.root.free()
+	var refused: Dictionary = Imported.build_checked(manifest.duplicate(true), "retired")
+	_check("the importer refuses a livery id", not refused.ok and str(refused.errors).contains("retired"))
+
+
+func _test_one_paint_home() -> void:
+	var home: Control = Home.new()
+	root.add_child(home)
+	await process_frame
+	home.set_livery_preferences({CORSAIR: "spectrum"})
+	home.set_aircraft(CORSAIR)
+	_check("Home shows no paint row for the one-paint Corsair, whatever was saved", not home.livery_button.visible and home.livery_id == "")
+	home.set_aircraft(STIK)
+	_check("Home shows no paint row for the Stik", not home.livery_button.visible and home.livery_id == "")
+	home.queue_free()
+	await process_frame
 
 
 func _test_manifest_contract(manifest: Dictionary) -> void:
@@ -48,6 +118,11 @@ func _test_manifest_contract(manifest: Dictionary) -> void:
 	_check("resolve: a non-default scheme stays, default and stale ones are the default paint",
 		AirplaneBuilder.resolve_livery(CORSAIR, "scarlet") == "scarlet" and AirplaneBuilder.resolve_livery(CORSAIR, "midnight") == ""
 		and AirplaneBuilder.resolve_livery(CORSAIR, "retired") == "" and AirplaneBuilder.resolve_livery(STIK, "scarlet") == "")
+	_test_mutations(manifest)
+
+
+## Manifest rules on a five-entry `liveries` list in ORDER (shipped or synthetic).
+func _test_mutations(manifest: Dictionary) -> void:
 	var mutations := {
 		"one livery": func(m: Dictionary) -> void: m.liveries.resize(1),
 		"nine liveries": func(m: Dictionary) -> void:

@@ -49,16 +49,17 @@
  #include "rendering_server.compat.inc"
  
  #include "core/config/project_settings.h"
-@@ -2929,6 +2932,8 @@
+@@ -2929,6 +2932,9 @@
  	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL);
  	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_NEAREST);
  	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_DLSS);
 +	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_FSR3);
 +	ClassDB::bind_method(D_METHOD("is_fsr3_available"), &RenderingServer::is_fsr3_available);
++	ClassDB::bind_method(D_METHOD("get_fsr3_status"), &RenderingServer::get_fsr3_status);
  	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_MAX);
  
  	BIND_ENUM_CONSTANT(RSE::VIEWPORT_UPDATE_DISABLED);
-@@ -3855,3 +3860,11 @@
+@@ -3855,3 +3861,19 @@
  RenderingServer::~RenderingServer() {
  	singleton = nullptr;
  }
@@ -70,13 +71,22 @@
 +	return false;
 +#endif
 +}
++
++Dictionary RenderingServer::get_fsr3_status() const {
++#ifdef RD_ENABLED
++	return RendererRD::FSR3Effect::get_status();
++#else
++	return Dictionary();
++#endif
++}
 --- a/servers/rendering/rendering_server.h
 +++ b/servers/rendering/rendering_server.h
-@@ -1059,6 +1059,7 @@
+@@ -1059,6 +1059,8 @@
  #endif
  
  	RenderingServer();
 +	bool is_fsr3_available() const;
++	Dictionary get_fsr3_status() const;
  	virtual ~RenderingServer();
  
  #ifdef TOOLS_ENABLED
@@ -231,15 +241,16 @@
  		case RSE::VIEWPORT_SCALING_3D_MODE_DLSS:
  			return SCALE_3D_DLSS;
  		case RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL:
-@@ -1837,6 +1849,58 @@
+@@ -1840,6 +1852,62 @@
+ 		}
  
- 			rb->set_upscaler_ready(true);
- 			fsr2_effect->upscale(params);
-+		}
-+
-+		RD::get_singleton()->draw_command_end_label();
+ 		RD::get_singleton()->draw_command_end_label();
 +	} else if (p_scale_type == SCALE_3D_FSR3) {
 +		ERR_FAIL_COND_MSG(rb->get_view_count() != 1, "FSR 3.1 stereo is not supported by this integration.");
++		if (!RendererRD::FSR3Effect::is_available()) {
++			rb->set_upscaler_ready(false);
++			return;
++		}
 +		rb_data->ensure_fsr3(fsr3_effect);
 +		if (!rb_data->get_fsr3_context()) {
 +			rb->set_upscaler_ready(false);
@@ -285,12 +296,24 @@
 +			const Transform3D &cur_transform = p_render_data->scene_data->cam_transform;
 +			params.reprojection = (correction * prev_proj) * prev_transform.affine_inverse() * cur_transform * (correction * cur_proj).inverse();
 +
-+			rb->set_upscaler_ready(true);
 +			fsr3_effect->upscale(params);
- 		}
- 
- 		RD::get_singleton()->draw_command_end_label();
-@@ -5445,6 +5509,7 @@
++			rb->set_upscaler_ready(fsr3_effect->is_ready(rb_data->get_fsr3_context()));
++		}
++
++		RD::get_singleton()->draw_command_end_label();
+ 	} else if (p_scale_type == SCALE_3D_DLSS) {
+ 		RENDER_TIMESTAMP("DLSS");
+ 		rb_data->ensure_dlss(dlss_effect);
+@@ -1852,7 +1920,7 @@
+ 		for (uint32_t v = 0; v < rb->get_view_count(); v++) {
+ 			real_t fov = p_render_data->scene_data->cam_projection.get_fov();
+ 			real_t aspect = p_render_data->scene_data->cam_projection.get_aspect();
+-			real_t fovy = p_render_data->scene_data->cam_projection.get_fovy(fov, aspect);
++			real_t fovy = p_render_data->scene_data->cam_projection.get_fovy(fov, 1.0 / aspect);
+ 			Vector2 jitter = p_render_data->scene_data->taa_jitter * Vector2(rb->get_internal_size()) * 0.5f;
+ 			RendererRD::DLSSContext::Parameters params;
+ 			params.context = rb_data->get_dlss_context();
+@@ -5445,6 +5513,7 @@
  
  	taa = memnew(RendererRD::TAA);
  	fsr2_effect = memnew(RendererRD::FSR2Effect);
@@ -298,7 +321,7 @@
  	dlss_effect = memnew(RendererRD::DLSSEffect);
  	ss_effects = memnew(RendererRD::SSEffects);
  	motion_vectors_store = memnew(RendererRD::MotionVectorsStore);
-@@ -5470,6 +5535,10 @@
+@@ -5470,6 +5539,10 @@
  		memdelete(fsr2_effect);
  		fsr2_effect = nullptr;
  	}
@@ -354,3 +377,14 @@
 +	ERR_RENDER_THREAD_GUARD();
 +	_flush_and_stall_for_all_frames();
 +}
+--- a/drivers/streamline/streamline_context.cpp
++++ b/drivers/streamline/streamline_context.cpp
+@@ -361,7 +361,7 @@
+ 
+ 	pref.renderAPI = d3d12 ? sl::RenderAPI::eD3D12 : sl::RenderAPI::eVulkan;
+ 	pref.applicationId = 0x90d07004;
+-	pref.flags = sl::PreferenceFlags::eAllowOTA | sl::PreferenceFlags::eLoadDownloadedPlugins | sl::PreferenceFlags::eDisableCLStateTracking;
++	pref.flags = sl::PreferenceFlags::eDisableCLStateTracking;
+ 
+ 	if (bool(GLOBAL_GET("rendering/streamline/streamline_log"))) {
+ 		pref.logLevel = sl::LogLevel::eVerbose;

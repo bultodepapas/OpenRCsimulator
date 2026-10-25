@@ -32,6 +32,9 @@ const SHARPNESS_ENVIRONMENT_KEY := "OPENRC_FSR2_SHARPNESS"
 const FSR3_METHOD := "is_fsr3_available"
 const DLSS_SINGLETON := "Streamline"
 const DLSS_CAPABILITY := "STREAMLINE_CAPABILITY_DLSS"
+const POLICY_META := &"openrc_reconstruction"
+const CONFIG_META := &"openrc_reconstruction_config"
+const RUNTIME_FAILURE_META := &"openrc_reconstruction_runtime_failure"
 
 
 ## High is the gate for every optional reconstruction provider.
@@ -134,31 +137,72 @@ static func capture_settle_frames(mode: int, scale: float, capabilities: Diction
 
 
 static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
+	var previous_failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {})
 	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
 	var requested := str(config.get("reconstruction", "native"))
 	var policy := resolve(requested, gates)
 	viewport.scaling_3d_mode = int(policy.scaling_3d_mode)
 	viewport.scaling_3d_scale = float(policy.scale)
 	var strength := sharpness_strength(config.get("fsr2_sharpness", DEFAULT_SHARPNESS))
-	# The saved FSR sharpness remains available when switching back from DLSS or Native.
-	# It only affects the FSR providers; the menu disables the slider for DLSS.
-	viewport.fsr_sharpness = 2.0 * (1.0 - strength)
+	# Godot's DLSS path reads this value as its extra NIS sharpening control. Zero keeps it off;
+	# the saved FSR preference remains untouched for switching back to FSR2 or FSR3.
+	viewport.fsr_sharpness = _engine_sharpness_value(str(policy.provider), strength)
 	# Temporal reconstruction owns AA. The user's MSAA choice remains in config.
 	viewport.msaa_3d = Viewport.MSAA_DISABLED if policy.temporal else int(config.get("msaa_3d", 2)) as Viewport.MSAA
 	viewport.use_taa = false
 	viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
-	viewport.set_meta(&"openrc_reconstruction", policy)
+	viewport.set_meta(POLICY_META, policy)
+	viewport.set_meta(CONFIG_META, config.duplicate(true))
+	if viewport.has_meta(RUNTIME_FAILURE_META) and (typeof(previous_failure) != TYPE_DICTIONARY
+			or str(previous_failure.get("provider", "")) != str(policy.get("requested_provider", ""))):
+		viewport.remove_meta(RUNTIME_FAILURE_META)
+
+
+## Roll FSR3 back to native rendering after the native backend reports a runtime failure.
+## The requested config remains stored and is never rewritten to the display preferences file.
+static func guard_runtime_failure(viewport: Viewport, backend_status: Dictionary = {},
+		capabilities: Dictionary = {}) -> bool:
+	if not is_instance_valid(viewport):
+		return false
+	var policy: Variant = viewport.get_meta(POLICY_META, {})
+	if typeof(policy) != TYPE_DICTIONARY or str(policy.get("provider", "")) != "fsr3":
+		return false
+	var status := backend_status.duplicate(true)
+	if status.is_empty() and RenderingServer.has_method("get_fsr3_status"):
+		var reported: Variant = RenderingServer.call("get_fsr3_status")
+		if typeof(reported) == TYPE_DICTIONARY:
+			status = reported
+	if not bool(status.get("backend_failed", false)):
+		return false
+	var saved_config: Variant = viewport.get_meta(CONFIG_META, {})
+	if typeof(saved_config) != TYPE_DICTIONARY:
+		return false
+	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
+	gates["fsr3"] = false
+	apply(viewport, saved_config, gates)
+	var fallback_policy: Dictionary = viewport.get_meta(POLICY_META, {})
+	fallback_policy["fallback_reason"] = "fsr3_runtime_failure"
+	viewport.set_meta(POLICY_META, fallback_policy)
+	viewport.set_meta(RUNTIME_FAILURE_META, {
+		"provider": "fsr3",
+		"reason": "backend_failed",
+		"backend": status,
+	})
+	return true
 
 
 static func describe(viewport: Viewport) -> Dictionary:
-	var policy: Dictionary = viewport.get_meta(&"openrc_reconstruction", resolve("native", runtime_capabilities())).duplicate(true)
+	var policy: Dictionary = viewport.get_meta(POLICY_META, resolve("native", runtime_capabilities())).duplicate(true)
 	policy["scaling_3d_mode"] = viewport.scaling_3d_mode
 	policy["scale"] = viewport.scaling_3d_scale
 	policy["msaa_3d"] = viewport.msaa_3d
 	policy["fsr_sharpness"] = viewport.fsr_sharpness
-	policy["sharpening_strength"] = 1.0 - viewport.fsr_sharpness / 2.0
-	policy["sharpening_active"] = policy.provider in ["fsr2", "fsr3"] and viewport.fsr_sharpness < 2.0
+	policy.merge(_sharpening_receipt(str(policy.provider), viewport.fsr_sharpness), true)
 	policy["texture_mipmap_bias"] = viewport.texture_mipmap_bias
+	if policy.provider == "fsr3" and RenderingServer.has_method("get_fsr3_status"):
+		policy["backend"] = RenderingServer.call("get_fsr3_status")
+	if viewport.has_meta(RUNTIME_FAILURE_META):
+		policy["runtime_failure"] = viewport.get_meta(RUNTIME_FAILURE_META).duplicate(true)
 	policy["output_size"] = [viewport.get_visible_rect().size.x, viewport.get_visible_rect().size.y]
 	# Nominal dimensions, not a GPU allocation measurement (engine rounding may differ).
 	policy["nominal_3d_size"] = [roundi(policy.output_size[0] * viewport.scaling_3d_scale),
@@ -187,6 +231,18 @@ static func _scaling_mode_id(provider: String, capabilities: Dictionary) -> Vari
 		"fsr3": return capabilities.get("fsr3_mode")
 		"dlss": return capabilities.get("dlss_mode")
 	return null
+
+
+static func _engine_sharpness_value(provider: String, user_strength: float) -> float:
+	if provider == "dlss":
+		return 0.0
+	return 2.0 * (1.0 - user_strength)
+
+
+static func _sharpening_receipt(provider: String, engine_value: float) -> Dictionary:
+	var strength := 0.0 if provider == "dlss" else 1.0 - engine_value / 2.0
+	return {"sharpening_strength": strength,
+		"sharpening_active": provider in ["fsr2", "fsr3"] and engine_value < 2.0}
 
 
 static func _integer_constant_or_null(class_name_text: String, constant_name: String) -> Variant:

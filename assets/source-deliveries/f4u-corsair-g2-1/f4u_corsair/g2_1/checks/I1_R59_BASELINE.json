@@ -1,0 +1,92 @@
+[
+  {
+    "target": "fuselage_core",
+    "g2_object": "fuselage_core",
+    "donor_object": "hi_0110",
+    "donor_source": "Fuselaje | volumen continuo",
+    "g2": {
+      "vertices": 16824,
+      "triangles": 33598,
+      "dihedral_gt10_share": 0.23670825717237542,
+      "dihedral_p95": 64.3837755393549,
+      "nonmanifold_edges": 26
+    },
+    "r59": {
+      "vertices": 26832,
+      "triangles": 53660,
+      "dihedral_gt10_share": 0.02696925256642887,
+      "dihedral_p95": 6.343839893911586,
+      "nonmanifold_edges": 14
+    },
+    "g2_vertices_to_r59": {
+      "max_mm": 155.01436591148376,
+      "p95_mm": 135.69469451904294,
+      "rms_mm": 48.504626621480966
+    },
+    "r59_vertices_to_g2": {
+      "max_mm": 0.6201208452694118,
+      "p95_mm": 0.1769221082213332,
+      "rms_mm": 0.07580889660964493
+    }
+  },
+  {
+    "target": "cowl",
+    "g2_object": "cowl",
+    "donor_object": "hi_0066",
+    "donor_source": "Capot radial | boca abierta y labio redondeado",
+    "g2": {
+      "vertices": 13393,
+      "triangles": 26721,
+      "dihedral_gt10_share": 0.22879812370568128,
+      "dihedral_p95": 70.12910937104063,
+      "nonmanifold_edges": 1
+    },
+    "r59": {
+      "vertices": 33984,
+      "triangles": 67968,
+      "dihedral_gt10_share": 0.010720731324544885,
+      "dihedral_p95": 2.891941069350344,
+      "nonmanifold_edges": 0
+    },
+    "g2_vertices_to_r59": {
+      "max_mm": 71.19177281856537,
+      "p95_mm": 3.098398447036743,
+      "rms_mm": 11.704315895681903
+    },
+    "r59_vertices_to_g2": {
+      "max_mm": 0.8171414956450462,
+      "p95_mm": 0.3577454452170058,
+      "rms_mm": 0.1357331878276686
+    }
+  },
+  {
+    "target": "canopy_glass",
+    "g2_object": "canopy_glass",
+    "donor_object": "hi_0051",
+    "donor_source": "Cubierta R7 | acrilico curvo",
+    "g2": {
+      "vertices": 1717,
+      "triangles": 3427,
+      "dihedral_gt10_share": 0.13008763388510225,
+      "dihedral_p95": 87.86796783430462,
+      "nonmanifold_edges": 1
+    },
+    "r59": {
+      "vertices": 13122,
+      "triangles": 26240,
+      "dihedral_gt10_share": 0.024009146341463415,
+      "dihedral_p95": 4.467042242667108,
+      "nonmanifold_edges": 0
+    },
+    "g2_vertices_to_r59": {
+      "max_mm": 0.059221219999017194,
+      "p95_mm": 0.03085947901126928,
+      "rms_mm": 0.01374192692123052
+    },
+    "r59_vertices_to_g2": {
+      "max_mm": 0.41834975127130747,
+      "p95_mm": 0.13829396775690814,
+      "rms_mm": 0.06446441961400298
+    }
+  }
+]

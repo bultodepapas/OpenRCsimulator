@@ -291,6 +291,14 @@ func _ready() -> void:
 	_start_update_check()
 
 
+func _process(_delta: float) -> void:
+	if Engine.get_process_frames() % 60 != 0 or not has_home:
+		return
+	# The shell owns the window viewport for Home and Home-started flights. Direct
+	# flights leave has_home false and are monitored by main.gd instead.
+	Reconstruction.guard_runtime_failure(get_viewport())
+
+
 ## Any user argument selects the technical/direct route (`-- --quick-flight` is the documented shortcut).
 static func wants_direct_flight(args: PackedStringArray) -> bool:
 	return not args.is_empty()

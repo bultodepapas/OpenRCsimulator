@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-"""F4U-03: freeze the identity of the current F4U Corsair delivery (g1.13 since F4U-15; g1.3 before).
+"""F4U-03: freeze the identity of the current F4U Corsair delivery (g2.1 since F4U-19; g1.13 from F4U-15, g1.3 before).
 
 Hashes every file of the author's nested game delivery
-`assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13/` and writes
+`assets/source-deliveries/f4u-corsair-g2-1/f4u_corsair/g2_1/` and writes
 assets/aircraft/f4u-corsair-250/source-manifest.json: the SHA-256 and size of each file, the key files by role, the
 visual revision string (the revision plus the first 12 hex digits of the GLB hash), the livery GLBs and the delivery's
-request revision and scale from metadata.json. It also proves that the copy equals the author's own
-manifest.sha256.json, except for the files the repository deliberately omits (OMITTED: editable texture sources,
-preview images, the other livery .blend sources and the author's UV and reference caches); those are listed with
-the author's hashes. Downstream generators (F4U-05/06) read this manifest to show that they describe these exact bytes.
+request revision and scale from metadata.json. It also proves that the copy equals the author's own manifest.json,
+except for the files the repository deliberately omits (OMITTED: the texture folder, whose runtime images are packed
+in the .blend and embedded in the GLB, and the preview images); those are listed with the author's hashes. Downstream generators (F4U-05/06) read this manifest to show that they describe these exact bytes.
 
     python3 research/f4u-corsair/F4U-03/manifest.py           # writes the manifest
     python3 research/f4u-corsair/F4U-03/manifest.py --check   # fails if any delivery file changed
@@ -23,7 +22,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-DELIVERY = ROOT / "assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13"
+DELIVERY = ROOT / "assets/source-deliveries/f4u-corsair-g2-1/f4u_corsair/g2_1"
 TARGET = ROOT / "assets/aircraft/f4u-corsair-250/source-manifest.json"
 KEY_FILES = {
     "glb": "export/aircraft.glb",
@@ -34,16 +33,13 @@ KEY_FILES = {
     "provenance": "PROVENANCE.md",
     "readme": "README.md",
     "changelog": "CHANGELOG.md",
-    "author_manifest": "manifest.sha256.json",
+    "author_manifest": "manifest.json",
+    "author_sums": "SHA256SUMS.txt",
 }
-# Livery id (metadata.json "liveries") -> GLB. aircraft.glb carries the default naval paint.
-LIVERY_GLBS = {"midnight": "export/aircraft.glb", "blueangels": "export/aircraft_blueangels.glb",
-               "spectrum": "export/aircraft_spectrum.glb", "splash": "export/aircraft_splash.glb",
-               "scarlet": "export/aircraft_super57.glb"}
+# Livery id (metadata.json "liveries") -> GLB. g2.1 delivers the default naval paint only (owner, 2026-10-24).
+LIVERY_GLBS = {"midnight": "export/aircraft.glb"}
 # Delivered but not copied into the repository; the author's hashes stay in the source manifest.
-OMITTED = ["textures/*", "previews/*.png", "previews/index.html", "source/aircraft_blueangels.blend",
-           "source/aircraft_spectrum.blend", "source/aircraft_splash.blend", "source/aircraft_super57.blend",
-           "source/scripts/uv-layout.json", "source/scripts/reference-samples.json"]
+OMITTED = ["textures/*", "previews/*.png", "previews/index.html"]
 IGNORED_DIRS = {"__pycache__", ".git"}
 IGNORED_SUFFIXES = {".pyc", ".pyo", ".swp"}
 IGNORED_NAMES = {".DS_Store", "Thumbs.db"}
@@ -74,13 +70,14 @@ def file_table() -> list:
 def build() -> dict:
     rows = file_table()
     by_path = {row["path"]: row for row in rows}
-    author = json.loads((DELIVERY / KEY_FILES["author_manifest"]).read_text(encoding="utf-8"))
+    listing = json.loads((DELIVERY / KEY_FILES["author_manifest"]).read_text(encoding="utf-8"))
+    author = {entry["path"]: entry["sha256"] for entry in listing["files"]}
     omitted = sorted(p for p in author if any(fnmatch.fnmatch(p, pattern) for pattern in OMITTED))
     present_omitted = sorted(p for p in omitted if p in by_path)
     if present_omitted:
         sys.exit(f"files the manifest declares omitted are present: {present_omitted}")
     mismatched = sorted(p for p, h in author.items() if p not in omitted and by_path.get(p, {}).get("sha256") != h)
-    unlisted = sorted(set(by_path) - set(author) - {KEY_FILES["author_manifest"]})
+    unlisted = sorted(set(by_path) - set(author) - {KEY_FILES["author_manifest"], KEY_FILES["author_sums"]})
     if mismatched or unlisted:
         sys.exit(f"delivery differs from the author's manifest: mismatched {mismatched}, unlisted {unlisted}")
     meta = json.loads((DELIVERY / KEY_FILES["metadata"]).read_text(encoding="utf-8"))

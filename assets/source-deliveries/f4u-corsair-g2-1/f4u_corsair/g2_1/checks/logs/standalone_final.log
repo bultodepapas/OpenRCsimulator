@@ -1,0 +1,162 @@
+00:02.062  blend            | Read blend: "C:\Users\bulto\AppData\Local\Temp\g2_standalone_xbsrlmn9\source\aircraft_game.blend"
+INFO Draco is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+20:00:46 | INFO: Starting glTF 2.0 export
+20:00:46 | INFO: Extracting primitive: aileron_left_atlas_triangles
+20:00:46 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: aileron_right_atlas_triangles
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: canopy_frame_atlas_triangles
+20:00:46 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: canopy_glass_g21
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: cockpit_interior_atlas_triangles
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: core_details_atlas_triangles
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: cowl_atlas_triangles
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: elevator_atlas_triangles
+20:00:46 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: engine_face_atlas_triangles
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: exhaust_stacks_atlas_triangles
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: fin_fixed_atlas_triangles
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: flap_left_1_atlas_triangles_strictclearance
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: flap_left_2_atlas_triangles_strictclearance
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: flap_left_3_atlas_triangles_strictclearance
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: flap_right_1_atlas_triangles_strictclearance
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: flap_right_2_atlas_triangles_strictclearance
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: flap_right_3_atlas_triangles_strictclearance
+20:00:46 | INFO: Primitives created: 1
+20:00:46 | INFO: Extracting primitive: fuselage_core_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: F2_g1_24_gear_wheel_tail_mesh
+20:00:47 | WARNING: F2_g1_24_gear_wheel_tail_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+20:00:47 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_tail_fork_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_tail_strut_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_door_front_mesh_left_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_door_front_mesh_right_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_door_inner_mesh_left_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_door_inner_mesh_right_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_door_outer_mesh_left_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_door_outer_mesh_right_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_door_tail_mesh_left_1_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_door_tail_mesh_left_2_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_door_tail_mesh_right_1_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_door_tail_mesh_right_2_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_retraction_link_left_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_lower_left_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: F2_g1_24_gear_wheel_left_mesh
+20:00:47 | WARNING: F2_g1_24_gear_wheel_left_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_strut_left_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_retraction_link_right_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_lower_right_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: F2_g1_24_gear_wheel_right_mesh
+20:00:47 | WARNING: F2_g1_24_gear_wheel_right_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: gear_strut_right_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: rudder_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: stabilizer_fixed_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: propeller_rotor_g21
+20:00:47 | INFO: Primitives created: 2
+20:00:47 | INFO: Extracting primitive: windshield_glass_atlas_triangles
+20:00:47 | INFO: Primitives created: 1
+20:00:47 | INFO: Extracting primitive: wing_center_fixed_atlas_triangles_strictclearance
+20:00:47 | INFO: Primitives created: 3
+20:00:47 | INFO: Extracting primitive: wing_left_fixed_atlas_triangles
+20:00:47 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+20:00:47 | INFO: Primitives created: 6
+20:00:47 | INFO: Extracting primitive: wing_right_fixed_atlas_triangles
+20:00:47 | INFO: Primitives created: 4
+20:00:47 | INFO: Finished glTF 2.0 export in 1.0734062194824219 s
+
+Warning: F2_g1_24_gear_wheel_tail_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+Warning: F2_g1_24_gear_wheel_left_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+Warning: F2_g1_24_gear_wheel_right_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+G21_CANONICAL_TEXTURES 6
+20:00:47 | INFO: Data are loaded, start creating Blender stuff
+20:00:47 | INFO: Blender create Mesh node aileron_left_atlas_triangles
+20:00:47 | INFO: Blender create Mesh node aileron_right_atlas_triangles
+20:00:47 | INFO: Blender create Mesh node canopy_frame_atlas_triangles
+20:00:47 | INFO: Blender create Mesh node canopy_glass_g21
+20:00:47 | INFO: Blender create Mesh node cockpit_interior_atlas_triangles
+20:00:47 | INFO: Blender create Mesh node core_details_atlas_triangles
+20:00:47 | INFO: Blender create Mesh node cowl_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node elevator_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node engine_face_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node exhaust_stacks_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node fin_fixed_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node flap_left_1_atlas_triangles_strictclearance
+20:00:48 | INFO: Blender create Mesh node flap_left_2_atlas_triangles_strictclearance
+20:00:48 | INFO: Blender create Mesh node flap_left_3_atlas_triangles_strictclearance
+20:00:48 | INFO: Blender create Mesh node flap_right_1_atlas_triangles_strictclearance
+20:00:48 | INFO: Blender create Mesh node flap_right_2_atlas_triangles_strictclearance
+20:00:48 | INFO: Blender create Mesh node flap_right_3_atlas_triangles_strictclearance
+20:00:48 | INFO: Blender create Mesh node fuselage_core_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node F2_g1_24_gear_wheel_tail_mesh
+20:00:48 | INFO: Blender create Mesh node gear_tail_fork_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_tail_strut_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_door_front_mesh_left_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_door_front_mesh_right_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_door_inner_mesh_left_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_door_inner_mesh_right_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_door_outer_mesh_left_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_door_outer_mesh_right_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_door_tail_mesh_left_1_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_door_tail_mesh_left_2_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_door_tail_mesh_right_1_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_door_tail_mesh_right_2_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_retraction_link_left_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_lower_left_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node F2_g1_24_gear_wheel_left_mesh
+20:00:48 | INFO: Blender create Mesh node gear_strut_left_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_retraction_link_right_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node gear_lower_right_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node F2_g1_24_gear_wheel_right_mesh
+20:00:48 | INFO: Blender create Mesh node gear_strut_right_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node rudder_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node stabilizer_fixed_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node propeller_rotor_g21
+20:00:48 | INFO: Blender create Mesh node windshield_glass_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node wing_center_fixed_atlas_triangles_strictclearance
+20:00:48 | INFO: Blender create Mesh node wing_left_fixed_atlas_triangles
+20:00:48 | INFO: Blender create Mesh node wing_right_fixed_atlas_triangles
+20:00:48 | INFO: glTF import finished in 0.76s
+STANDALONE_PASS {'passed': True, 'test': 'Relocated native with packed maps plus export script only; clean Blender GLB import', 'R59_used': False, 'runtime_map_count': 6, 'reexport_glb_sha256': 'd17d785a98aa0a4c39c19a57d6be1555a9238c9cb47221f859fefb6bf50861d1', 'delivered_glb_sha256': 'cf4cdad638dae93b2ac6107bd050dcf176c4b6dbb1f03d21580f4149fda945b3', 'byte_identical': False, 'geometry_UV_normals_indices_images_and_JSON_identical': True, 'tangent_max_component_difference': 0.00010001659393310547, 'tangent_values_differing': 13, 'tangent_note': 'Bundled MikkTSpace export can round a few tangent components differently across processes; tolerance 0.00011. All positions, normals, UVs, indices, images and glTF JSON must be exact.', 'reimport_meshes': 46, 'reimport_triangles': 337664, 'reimport_span_m': 2.777777910232544, 'reimport_max_matrix_element_delta': 5.364418029785156e-07, 'isolated_directory': 'C:\\Users\\bulto\\AppData\\Local\\Temp\\g2_standalone_xbsrlmn9'}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

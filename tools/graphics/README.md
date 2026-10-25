@@ -29,6 +29,13 @@ removes the leak in matched custom Windows editor controls and preserves six Hig
 is unchanged. Full-feature builds, matching templates and lifecycle/platform
 qualification remain open. Do not suppress the pinned engine's warning.
 
+## Native DLSS and FSR 3.1 experiment
+
+The [native integration guide](native/README.md) owns the separate Windows/Vulkan
+engine build, SDK pins and runtime requirements. The menu discovers each provider
+through engine capabilities; stock Godot keeps those entries unavailable and uses
+Native for unsupported saved requests. The production engine pin stays unchanged.
+
 ## Explicit startup
 
 ### FSR2 reconstruction (VQ-07d)

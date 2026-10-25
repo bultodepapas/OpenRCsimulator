@@ -1,0 +1,4 @@
+PASS missing_hinge: rejected=True; expected failure seen=True
+PASS missing_mesh_tag: rejected=True; expected failure seen=True
+PASS inverted_fuselage: rejected=True; expected failure seen=True
+Negative preflight tests: 3/3 passed

@@ -78,6 +78,7 @@ def prepare(cache: Path) -> tuple[Path, dict]:
             raise RuntimeError("Engine sources do not match the pinned patch; use a new --cache directory.\n" + check.stderr.decode(errors="replace"))
     for name in ("fsr3.h", "fsr3.cpp"):
         shutil.copy2(HERE / name, engine / "servers/rendering/renderer_rd/effects" / name)
+    shutil.copy2(HERE / "fsr3_prepare.glsl", engine / "servers/rendering/renderer_rd/shaders/effects/fsr3_prepare.glsl")
     shutil.copytree(amd / "ffx-api/include/ffx_api", engine / "thirdparty/amd-fsr3/ffx_api", dirs_exist_ok=True)
     binaries = engine / "bin"
     binaries.mkdir(exist_ok=True)
@@ -87,6 +88,8 @@ def prepare(cache: Path) -> tuple[Path, dict]:
         shutil.copy2(source, binaries / source.name)
     licenses = binaries / "licenses"
     licenses.mkdir(exist_ok=True)
+    shutil.copy2(engine / "LICENSE.txt", licenses / "Godot-LICENSE.txt")
+    shutil.copy2(ROOT / "LICENSE", licenses / "OpenRC-LICENSE.txt")
     shutil.copy2(amd / "LICENSE.txt", licenses / "FidelityFX-LICENSE.txt")
     shutil.copy2(nvidia / "license.txt", licenses / "Streamline-LICENSE.txt")
     shutil.copy2(nvidia / "3rd-party-licenses.md", licenses / "Streamline-third-party.md")
@@ -98,7 +101,7 @@ def prepare(cache: Path) -> tuple[Path, dict]:
         "fidelityfx_sdk": "1.1.4", "fsr_upscaler": "3.1.4", "streamline": "2.10.0",
         "platform": "windows", "graphics_api": "vulkan", "frame_generation_enabled": False,
         "sources": {name: digest for name, _, digest, _ in ARCHIVES},
-        "integration": {name: sha256(HERE / name) for name in ("engine.patch", "fsr3.h", "fsr3.cpp")},
+        "integration": {name: sha256(HERE / name) for name in ("engine.patch", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")},
         "runtime": {source.name: sha256(source) for source in runtime_files},
     }
     return engine, receipt
@@ -108,7 +111,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cache", type=Path, default=ROOT / ".tools/advanced-rendering")
     parser.add_argument("--target", choices=("editor", "template_debug", "template_release"), default="editor")
-    parser.add_argument("--jobs", type=int, default=min(12, os.cpu_count() or 1))
+    parser.add_argument("--jobs", type=int, default=min(4, os.cpu_count() or 1))
     parser.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args()
     if os.name != "nt":
