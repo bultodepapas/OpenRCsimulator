@@ -43,6 +43,6 @@ Blender reviews (side, front, hands and over-the-shoulder close-ups) were checke
 
 - **Draft model.** Regenerate when the final T12D arrives: two pilot generations, then the shared merge and packaging (see [the tool README](../../../../tools/scenery/population/README.md)).
 - **Licence.** The model is owner-authored; the owner still has to confirm its redistribution terms (recorded in `HUMAN_SOURCES.json`).
-- **Grip.** Thumbs are aimed at the sticks, not placed by contact, and finger tips are approximate. Fine at field range; visible in a close-up.
-- **Not modelled.** No neck strap. No stick or switch motion; the pilots are static poses (moving sticks is Layer B or SC-HUM-12 territory). No LED emission, chrome or metal: the merged material is matte, roughness at least 0.6.
+- **Grip.** Since [SC-HUM-07-R7](../SC-HUM-07-R1/README.md#sc-hum-07-r7--the-pilots-hands-hold-the-transmitter-by-contact-2026-10-25), thumb tips touch the stick tips (IK) and fingertips rest 2–4 mm outside the transmitter surface.
+- **Not modelled.** No stick or switch motion (the neck strap came in [SC-HUM-07-R8](../SC-HUM-07-R1/README.md#sc-hum-07-r8--neck-straps-on-the-two-flight-line-pilots-2026-10-25)); the pilots are static poses (moving sticks is Layer B or SC-HUM-12 territory). No LED emission, chrome or metal: the merged material is matte, roughness at least 0.6.
 - **Owner review (SC-HUM-09).** The hold angle, the radio size in hand and the hand pose.

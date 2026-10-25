@@ -13,6 +13,9 @@ const CREAM := Color("f7eedb")
 const UNDER := Color("242b35")
 const METAL := Color("878e95")
 const TIRE := Color("191b20")
+# US-V16: F1's front face is the epoxy-sealed 1/4 in birch-ply firewall the radial mount bolts to; colour from the
+# owner's engine-mount delivery (M_Plywood_Firewall, linear 0.80/0.66/0.46), gloss from the existing varnish profile.
+const FIREWALL := Color("e7d5b5")
 static func material(color: Color) -> StandardMaterial3D:
 	var profile := "skin"
 	if color == METAL: profile = "aluminum"
@@ -253,14 +256,19 @@ static func _fuselage(root: Node3D) -> void:
 				for corner in [[i, j], [i, k], [i + 1, k], [i + 1, j]]:
 					uvs.append(Finish.fuselage_uv(rings[corner[0]][corner[1]].z, arcs[corner[0]][corner[1]]))
 				_smooth_quad(st, points, normals, outward, "", uvs)
-	for end in [0, rings.size() - 1]:
+	var firewall := SurfaceTool.new()
+	firewall.begin(Mesh.PRIMITIVE_TRIANGLES)
+	firewall.set_material(Finish.material(FIREWALL, "varnished_wood"))
+	for end in [rings.size() - 1, 0]:
 		var center := Vector3.ZERO
 		for p in rings[end]: center += p
 		center /= float(count)
 		for j in count:
-			_triangle(st, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, -1 if end == 0 else 1), "red")
+			if end == 0: _triangle(firewall, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, -1))
+			else: _triangle(st, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, 1), "red")
 	st.generate_tangents()
 	var mesh := st.commit()
+	firewall.commit(mesh)
 	# CR-09f: raw balsa inside the box (Jensen sheet 1: 1/4 in sides, 1/8 in top, 3/32 in bottom), facing the cavity:
 	# the same rounded section shrunk by each wall's sheet, with a smaller corner radius. A separate mesh, so the skin
 	# stays the closed solid the clearance tools probe; enclosed in flight and seen only where the wreck breaks it open.
@@ -288,12 +296,12 @@ static func _fuselage(root: Node3D) -> void:
 	var lining := _instance("fuselage_lining", inner.commit(), root)
 	var fuselage := _instance("fuselage", mesh, root)
 	# CR-09e: in a heavy crash the boom snaps at the first station aft of the wing trailing edge (estimate: where the
-	# Stik's fuselage starts to taper behind the saddle). The map follows the triangle order above: bays, then the
-	# front and rear caps. Only the wreck's twin is split (render/crash/section_splitter.gd); this mesh never changes.
+	# Stik's fuselage starts to taper behind the saddle). The map follows the triangle order above: bays, then the rear
+	# cap; the firewall face (US-V16) is its own surface. Only the wreck's twin is split (render/crash/section_splitter.gd).
 	var bay_triangles := 2 * count
 	var bays := rings.size() - 1
 	fuselage.set_meta("crash_section_map", {format = "openrc-crash-sections v1", sections = ["core", "tail_boom"],
-		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles, 0, count, 1, count]]})
+		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles, 1, count], [0, count]]})
 	lining.set_meta("crash_section_map", {format = "openrc-crash-sections v1", sections = ["core", "tail_boom"],
 		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles]]})
 

@@ -131,13 +131,13 @@
     },
     {
       "path": "res://aircraft/ugly_stik_controls.gd",
-      "sha256": "df3e45fb9e082e587854462f14a7d65e0ab1d079dd63ed64240def859f77b993",
+      "sha256": "406c391f41cade17057e940d8dc26b5a861d6e3bd1d9979060a7ef3f771ec1b5",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
     {
       "path": "res://aircraft/ugly_stik_equipment.gd",
-      "sha256": "8792a4d4001e9784b11a24101fca2d4b59a88ce484654b450ad48c94af51dce5",
+      "sha256": "74e6044a988cbf8a3d256ecb9e3766569e102793410f98aea0f7951d8e45784f",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -173,7 +173,7 @@
     },
     {
       "path": "res://aircraft/ugly_stik_model.gd",
-      "sha256": "df56314d3cbaf16e5dcf9acf9999cc7fdc28282667727301ffa9ed7aabf80d01",
+      "sha256": "bccbe905a3d72a6ba75bad0f2cc1f733b4f2d17959257345f95a5a0770dca759",
       "hash_mode": "lf_text",
       "role": "builder"
     },

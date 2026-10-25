@@ -1,4 +1,4 @@
-# Ugly Stik · covering, shading, linkage, propeller, weathering, gear flex, broken propeller, contact scuffs, O.S. 61 engine and main-gear plate (US-V09a–h, US-V10–V14)
+# Ugly Stik · covering, shading, linkage, propeller, weathering, gear flex, broken propeller, contact scuffs, O.S. 61 engine, main-gear plate, form and lookdev passes (US-V09a–h, US-V10–V16)
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
@@ -204,6 +204,51 @@ Evidence: the captures stay out of Git. Reproduce them with `research/ugly-stik/
 - **Built:** a flat centre plate bolted under the fuselage (four bolts with washers), plus a 12-segment tapered leg on each side. The plate's plane holds the fore-aft axis, so the gear reads wide from the side and thin from the front. GearFlex bends the legs unchanged: same leg axes, and the rigid end within 20 mm of the axle.
 - **Not changed:** the axles and physics contacts. The drawn axle position is not adopted. Taken literally, it rests the model about 5° nose-down with 2 mm of propeller clearance, and the mains sit only 6–9° behind the CG. The plan root is reproduced, so the legs rake aft to the existing axles. A side silhouette at 0.254 mm/px puts the plate root on the drawn root (leading edge within about 2.5 mm).
 - **Checks:** `verify_model.gd` 927/0, `verify_controls.gd` 376/0, `test_gear_flex.gd` 27/0 and `test_gear_visual_contacts.gd` 100/0. `compile_geometry.py` regenerates the data, and the model, customization and Workshop pins are rebuilt.
+
+## US-V15 · form pass: sanded wing tips and tail edges
+
+2026-10-25. This was a form review in a separate Blender CLI session, with no textures, following the blender-skills vehicle-artist and qa-review routes. Clay renders and 1 px wireframe overlays covered the hero 3/4, rear 3/4, the tail group, the wing tip, the root and the nose. Findings:
+
+| # | Finding | Severity | Action |
+| --- | --- | --- | --- |
+| F1 | The wing-tip cap was a flat fan with a square edge, and its normal was forced to ±X. The tip is raked (leading edge 62 mm inboard of the trailing edge), so the cap lies in a plane about 11° off and shaded wrongly. | Major (normal bug) | The cap takes the raked plane's normal. Over the last 6.4 mm (the 1/4 in sheet tip of Jensen sheet 2), the section closes along a quarter ellipse to 35 % of its height, in 4 rings. Normals carry on from the skin, follow the measured curvature and end on the cap. The ailerons share the tip and get the same round. |
+| F2 | The fin, rudder, stabiliser, elevator and ventral fin were slabs with square edges, and read as cut card close up. | Major | Every outer edge gets a half round of the sheet's half thickness. The faces are inset and joined to the traced outline by a 6-step band with elliptical normals. Hinge lines and the fin and ventral roots stay square. Band UVs sample the outline point, so the edge keeps its colour and the film tangents stay valid. The stab band's lower half samples the painted underside rows. |
+| F3 | The wing leading edge shows faint facets in the side profile, from 29 traced section points. | Note | No change; smooth normals hide it at play distances. |
+
+The planform outlines, metrology and contacts are unchanged; only edge thickness profiles change.
+
+| Check | Result |
+| --- | --- |
+| `verify_model.gd` | 927/0 (winding, painted stab rows, film tangents) |
+| `verify_controls.gd` | 376/0 |
+| Related tests | 17 pass: crash ×5, scuffs, soft contact, manifests, customization, Workshop ×2, UI previews, gear ×2, blur, prop strike, engine smoke |
+| Generators (`--check`) | pass |
+| Cost | +1.9k triangles (181k visible) |
+
+Pitfalls met on the way:
+- A tapered round that meets a square hinge corner stands on edge, so the corner sliver is shaded flat.
+- Band UVs projected from the band itself broke the elevator's tangent check (80 % aligned). Sampling the outline point fixes it.
+
+QA verdict: **ship with notes**. Notes: F3, and the target-GPU cost of the whole model (mostly the US-V13 engine).
+
+## US-V16 · lookdev: colours, textures and the firewall
+
+2026-10-25. This was a lookdev loop in a separate Blender CLI session, following the blender-skills lookdev and materials routes. The textured model was rendered under a neutral rig, with cameras matched to the two RCM cover photos of a classic Jensen Stik (local `references/`). It was compared side by side in colour and greyscale, then examined close up on the tip, the tail, the centre section, the nose and the exhaust side.
+
+| Finding | Action |
+| --- | --- |
+| Values: red, white and black separate in greyscale like the photo, with no pure-white or pure-black traps. The fin's brighter white in the 1080p bench comes from facing the sun, not from a second white (fin and wing panels share `#b8b7b3`). | None |
+| The RCM model differs in scheme: a fuselage band with black borders, larger crosses, light bands and probably a red spinner. The owner's photos A/B govern this finish ([photo brief](ugly-stik-visual-photo-brief.md)). | Not changed; recorded for the owner. |
+| US-V15 rounded tips and tail edges: the atlas carries the red and the black trims without stretching, and the edges keep their colour. | None |
+| F1 was red film all over. The owner's engine-mount delivery models the firewall as epoxy-sealed birch ply (`M_Plywood_Firewall`, linear 0.80/0.66/0.46), the usual fuel-proof finish. | F1's front face becomes its own surface in `FIREWALL` `#e7d5b5` with the varnish gloss. The fuselage crash map now gives that surface to the core section. |
+| The oil residue already starts at the US-V13 outlet and runs down the +X side. | Confirmed visually. |
+| Scuffs: the engine GLB (about 140k triangles) dominated the scuff BVH preparation, at 132 ms per director setup. `test_airframe_scuffs` spent 359 ms on a first contact against a 250 ms budget, under load. Scuffs model film and paint marks; the engine is bare metal. | New opt-out meta `airframe_scuff_skip`, set by the Stik on its engine and lever. Other aircraft are unchanged. First contact now 28 ms, preparation 16 ms. |
+
+**Checks:**
+- `verify_model.gd` 927/0 and `verify_controls.gd` 376/0.
+- These tests pass: crash ×6 (`test_crash_cause` included), scuffs, scuff cache, soft contact, manifests, customization, Workshop ×2, UI previews, engine smoke and night kit.
+- The generators pass `--check`.
+- In-game 1080p production-lighting bench views of the nose and the exhaust side were reviewed.
 
 ## Limits and open findings
 

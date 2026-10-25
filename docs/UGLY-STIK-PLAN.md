@@ -27,6 +27,8 @@ The base catalog aircraft, `jensen-das-ugly-stik-60`, retains prescribed fuel an
 | US-V11/12 | Broken propeller and soft-contact scuffs; [evidence](research/ugly-stik-finish-v6.md#us-v11--broken-propeller-after-a-prop-strike) | Visual acceptance; these effects do not validate structural failure. |
 | US-V13 | Owner's Blender O.S. 61 SF engine on an O.S. 905 radial mount replaces the native engine; [evidence](research/ugly-stik-finish-v6.md#us-v13--os-61-sf-engine-from-the-owners-blender-model) | Owner visual review; target-GPU cost of the 150k-triangle engine; the 6.4 mm hub offset waits for a physics step. |
 | US-V14 | Main gear as the plan's tapered 0.090 in 2024-T3 aluminium plate; [evidence](research/ugly-stik-finish-v6.md#us-v14--aluminium-main-gear-plate) | Axle positions stay the physics contacts; the drawn ones are implausible, so only a measured build should move them. |
+| US-V15 | Form pass: sanded round wing tips (true raked cap normal) and round tail-sheet edges; [evidence](research/ugly-stik-finish-v6.md#us-v15--form-pass-sanded-wing-tips-and-tail-edges) | Owner close-up review; wing leading-edge facets (F3) left as a note. |
+| US-V16 | Lookdev vs the RCM photos: epoxy birch-ply firewall face; engine excluded from film scuffs (first contact 359 → 28 ms); [evidence](research/ugly-stik-finish-v6.md#us-v16--lookdev-colours-textures-and-the-firewall) | Owner choice on the RCM-only scheme differences (fuselage band, cross size, band colour, spinner). |
 
 The [2026-10-19 recheck](research/ugly-stik-finish-v6.md#2026-10-19-documentation-recheck) records focused verification separately from original delivery results. It does not close the full-suite, pilot or hardware gates.
 

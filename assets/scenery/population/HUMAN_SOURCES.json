@@ -479,7 +479,7 @@
     "retires": "SC-HUM-02 standing/sitting/pilot GLBs and their atlas (the LU-21 person stays reproducible from the default recipe)",
     "evidence": "docs/research/scenery-implementation/SC-HUM-07/README.md; work poses: docs/research/scenery-implementation/SC-HUM-06/README.md",
     "runtime_textures": [
-      "f40b9e60180225e55956a4f4de242b30fa315bfd4267cd2af2c3b992eb643f64.png",
+      "422b4a26924743194596fa3df3609a45594da959344a5448ed498a4e14ad8206.png",
       "2bf58eced3b3df3b099ac9307e5456f0ff1ca1e123d7bd7ee6db4b3900c7cf80.png"
     ]
   },
@@ -504,7 +504,7 @@
       "pilot/veteran_cap"
     ],
     "recipe": "tools/scenery/population/generate_people.py --pose pilot (import_transmitter): parts under T12D_root at least 10 mm, bevels dropped, planar merge, area-weighted collapse to about 1.1k triangles, rigid class 4 in the merged atlas",
-    "hold": "Mode 2 thumbs on both gimbals, face elevated 35 degrees toward the eyes, gimbal midpoint 0.255 m ahead of and 1.11 m above the feet; no neck strap yet",
+    "hold": "Mode 2: thumb tips on both stick tips (IK), fingers fitted 2-4 mm outside the transmitter surface (SC-HUM-07-R7); face elevated 35 degrees toward the eyes, gimbal midpoint 0.255 m ahead of and 1.11 m above the feet; black nylon neck strap (240 triangles) from a loop on the shirt below the head-turn band to the handle (SC-HUM-07-R8)",
     "pilot_depth_m": 0.465,
     "prefab_envelope": "person_pilot depth 0.45 -> 0.47 m (SC-HUM-01) -> 0.57 m (SC-HUM-07-R6 veteran weight-shift stance, 0.556 m); the collision capsule radius (0.335 m from the 0.67 m width) is unchanged"
   }

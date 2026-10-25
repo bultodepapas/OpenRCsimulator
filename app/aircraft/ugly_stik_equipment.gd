@@ -375,6 +375,7 @@ static func _add_engine(root: Node3D, propeller: Node3D) -> void:
 	var origin := engine_origin()
 	var scene := ENGINE_SCENE.instantiate()
 	var assembly := _adopt(scene, "engine_assembly", root, origin)
+	assembly.set_meta("airframe_scuff_skip", true) # bare metal, not covering (render/crash/airframe_scuffs.gd)
 	# Crank nose, drive hub, washer and nut turn with the propeller; the washer closes on the wooden hub's front face.
 	_adopt(scene, "engine_drive_rear", propeller, Vector3(0, 0, origin.z - propeller.position.z))
 	_adopt(scene, "engine_drive_front", propeller, Vector3(0, 0, -PROP_HUB_HALF_THICKNESS - engine_anchor("engine_washer_face").z))
@@ -383,7 +384,7 @@ static func _add_engine(root: Node3D, propeller: Node3D) -> void:
 	hinge.name = "carburetor_throttle_arm_hinge"
 	hinge.position = throttle_arm_pivot()
 	root.add_child(hinge)
-	_adopt(scene, "engine_throttle_arm", hinge, Vector3.ZERO, "carburetor_throttle_arm")
+	_adopt(scene, "engine_throttle_arm", hinge, Vector3.ZERO, "carburetor_throttle_arm").set_meta("airframe_scuff_skip", true)
 	scene.free()
 	assembly.set_meta("intake_mouth", origin + engine_anchor("engine_intake_mouth"))
 	assembly.set_meta("intake_axis", (engine_anchor("engine_intake_mouth") - engine_anchor("engine_intake_inner")).normalized())

@@ -18,6 +18,11 @@ const WOOD := Color("b58a58")
 const SERVO_BODY_SIZE := Vector3(0.040, 0.022, 0.020) # Generic standard-class servo silhouette; no model selected.
 const HORN_REACH_M := 0.028
 const ROD_RADIUS_M := 0.00115
+# US-V17: Jensen sheet 2 stands each aileron bellcrank on a 1/4 x 1/2 in hardwood mount glued to the 3/32 in bottom
+# sheeting, on a 4-40 x 1 in pivot, inside the wing. The wing linkage plane sits that high above the traced lower skin.
+const WING_BOTTOM_SHEET_M := 0.0024
+const BELLCRANK_MOUNT_M := Vector3(0.00635, 0.0127, 0.025) # span x height x chord
+const BELLCRANK_WASHER_M := 0.0015
 const LINK_ERROR_TOLERANCE_M := 0.00025 # Visual implementation target from US-V04/05.
 const SOLVER_EPSILON := 1.0e-10
 
@@ -225,9 +230,11 @@ static func _build_wing_mechanism(root: Node3D, assembly: Node3D, service: Node3
 	var horn_root := _point_in_root(root, hinge, horn_local)
 
 	# The drawing shows a root mounted servo, a spanwise pushrod and a bellcrank that
-	# turns the motion into a short run to the aileron horn. Stations are visual estimates.
-	var servo_local := Vector3(sign * 0.055, -0.027, 0.155)
-	var bell_local := Vector3(sign * 0.165, -0.027, 0.155)
+	# turns the motion into a short run to the aileron horn. Span and chord stations are visual estimates; the plane
+	# height follows the bellcrank mount inside the wing (US-V17; it previously hung 9 mm below the lower skin).
+	var plane_y := _wing_lower_y(0.155 / float(wing.chord)) + WING_BOTTOM_SHEET_M + BELLCRANK_MOUNT_M.y + BELLCRANK_WASHER_M
+	var servo_local := Vector3(sign * 0.055, plane_y, 0.155)
+	var bell_local := Vector3(sign * 0.165, plane_y, 0.155)
 	var servo_pivot := _point_in_root(root, frame, servo_local)
 	var bell_pivot := _point_in_root(root, frame, bell_local)
 	var servo_radius := 0.012
@@ -458,10 +465,24 @@ static func _add_control_horn(hinge: Node3D, label: String, endpoint_local: Vect
 	horn.set_meta("endpoint_local", endpoint_local)
 
 
+## Height of the wing's traced lower skin at chord fraction `u`, in the wing frame (metres).
+static func _wing_lower_y(u: float) -> float:
+	var section: Array = D.wing.section
+	var trailing := 0
+	for i in section.size():
+		if is_equal_approx(float(section[i][0]), 1.0): trailing = i
+	for i in range(trailing, section.size()):
+		var a: Array = section[i]
+		var b: Array = section[(i + 1) % section.size()]
+		if float(b[0]) <= u and u <= float(a[0]) and not is_equal_approx(float(a[0]), float(b[0])):
+			return lerpf(float(b[1]), float(a[1]), (u - float(b[0])) / (float(a[0]) - float(b[0]))) * float(D.wing.chord)
+	return float(section[trailing][1]) * float(D.wing.chord)
+
+
 static func _add_bellcrank_support(parent: Node3D, label: String, pivot: Vector3, normal: Vector3, basis: Basis, arm_radius: float) -> void:
 	var orient := Basis(Quaternion(Vector3.UP, normal))
-	var foot := _box_mesh(label + "_mount", Vector3(0.020, 0.003, 0.020), WOOD, "wood")
-	foot.transform = Transform3D(basis, pivot - basis.y * 0.009)
+	var foot := _box_mesh(label + "_mount", BELLCRANK_MOUNT_M, WOOD, "wood")
+	foot.transform = Transform3D(basis, pivot - basis.y * (BELLCRANK_WASHER_M + BELLCRANK_MOUNT_M.y * 0.5))
 	parent.add_child(foot)
 	var standoff := _cylinder_mesh(label + "_standoff", 0.0025, 0.014, STEEL, "steel", 8)
 	standoff.transform = Transform3D(orient, pivot - normal * 0.002)

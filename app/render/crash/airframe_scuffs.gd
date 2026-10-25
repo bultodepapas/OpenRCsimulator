@@ -27,6 +27,9 @@ const COLORS := {
 }
 ## Ancestors whose meshes are not airframe skin.
 const SKIP_PARTS: Array[String] = ["propeller", "gear", "wheel"]
+## A mesh carrying this meta (true) is never scuffed: bare engines and other hardware that is not covering or paint.
+## US-V13: the Stik's imported O.S. 61 (about 140k triangles) would otherwise dominate the BVH preparation.
+const SKIP_META := "airframe_scuff_skip"
 
 var marks: Array[MeshInstance3D] = []
 var _serial := 0
@@ -267,7 +270,7 @@ static func _surface_hit(candidates: Array[Dictionary], root: Node3D, point: Vec
 
 
 static func _airframe(mi: MeshInstance3D, root: Node3D) -> bool:
-	if mi.has_meta(SCUFF_META) or mi.has_meta("crash_no_bounds") \
+	if mi.has_meta(SCUFF_META) or mi.has_meta("crash_no_bounds") or mi.get_meta(SKIP_META, false) \
 			or (mi.material_override is BaseMaterial3D and (mi.material_override as BaseMaterial3D).transparency != BaseMaterial3D.TRANSPARENCY_DISABLED):
 		return false
 	var cursor: Node = mi

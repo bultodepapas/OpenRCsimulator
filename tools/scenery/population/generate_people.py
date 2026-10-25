@@ -265,6 +265,107 @@ def fit_fingers_to_surface(objects):
             report['%s%d' % (side, finger)] = [best[1], round(distance * 1000.0, 1)]
     print('FINGER_FIT=' + json.dumps(report, sort_keys=True))
 
+# SC-HUM-07-R8: a flat black nylon neck strap (tuned through the Blender MCP): a loop that lies on the shirt
+# around the neck, below the head-turn band, meeting at the sternum, and one strap to the transmitter handle.
+STRAP_WIDTH_M = 0.020
+STRAP_THICK_M = 0.002
+STRAP_LIFT_M = 0.004  # off the shirt surface
+# Loop guide points relative to the neck01 joint (pose frame, front -Y), from the sternum around the back.
+STRAP_LOOP = ((0.0, -0.06, -0.13), (0.035, -0.05, -0.065), (0.05, -0.01, -0.03), (0.035, 0.05, -0.02),
+              (0.0, 0.065, -0.015), (-0.035, 0.05, -0.02), (-0.05, -0.01, -0.03), (-0.035, -0.05, -0.065),
+              (0.0, -0.06, -0.13))
+STRAP_LOOP_STEPS = 3
+STRAP_TAIL_SEGMENTS = 6
+STRAP_HEAD_BAND_M = 0.15  # Population.head_rig: the head turn starts this far below the eyes
+STRAP_BAND_MARGIN_M = 0.003
+
+def build_neck_strap(transmitter_parts):
+    """Return the strap as a rigid transmitter part (material RC_Transmitter_Strap, merge class 4)."""
+    import bmesh
+    from mathutils.bvhtree import BVHTree
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    surface = bmesh.new()
+    skip = ('low-poly', 'eyebrow', 'eyelash', 'short', 'ponytail', 'glasses', 'fedora', 'cap', 'hair', 'beard')
+    body_proxy_stem = os.path.splitext(OUTFIT['proxy'])[0].lower()
+    for obj in ObjectService.get_list_of_children(rig):
+        # Clothing only: the strap lies on the shirt, never on the body mesh underneath it.
+        if obj.type == 'MESH' and obj != human and body_proxy_stem not in obj.name.lower() and not any(key in obj.name.lower() for key in skip):
+            mesh = bpy.data.meshes.new_from_object(obj.evaluated_get(depsgraph))
+            mesh.transform(obj.matrix_world)
+            surface.from_mesh(mesh)
+            bpy.data.meshes.remove(mesh)
+    tree = BVHTree.FromBMesh(surface)
+    neck = rig.matrix_world @ rig.pose.bones['neck01'].head
+    radio_points = [obj.matrix_world @ vertex.co for obj in transmitter_parts for vertex in obj.data.vertices]
+    hook = max((p for p in radio_points if abs(p.x - neck.x) < 0.02 / pose_scale), key=lambda p: p.z)  # handle bar
+    def on_body(point):
+        # Nearest point of the shirt and body, lifted along its outward normal. (A horizontal ray toward the neck
+        # axis hit the shoulder first and spread the loop over the shoulders.)
+        location, normal, _index, _distance = tree.find_nearest(point)
+        if location is None:
+            return point
+        outward = Vector(((location - neck).x, (location - neck).y, 0.0))
+        if normal.dot(outward) < 0.0:
+            normal = -normal
+        return location + normal * STRAP_LIFT_M / pose_scale
+    # The runtime head turn (Population.head_rig) moves vertices above eye height - 0.15 m; a rigid strap must
+    # stay below that band, or the neck would turn through it.
+    eye_heights = []
+    for obj in ObjectService.get_list_of_children(rig):
+        if obj.type == 'MESH' and 'low-poly' in obj.name.lower():
+            posed = bpy.data.meshes.new_from_object(obj.evaluated_get(depsgraph))  # posed, not the rest mesh
+            eye_heights += [(obj.matrix_world @ vertex.co).z for vertex in posed.vertices]
+            bpy.data.meshes.remove(posed)
+    band_floor = (min(eye_heights) + max(eye_heights)) * 0.5 - (STRAP_HEAD_BAND_M + STRAP_BAND_MARGIN_M) / pose_scale
+    guide = [on_body(neck + Vector(offset) / pose_scale) for offset in STRAP_LOOP]
+    top = max(point.z for point in guide) + STRAP_WIDTH_M * 0.5 / pose_scale
+    if top > band_floor:
+        guide = [on_body(point - Vector((0.0, 0.0, top - band_floor))) for point in guide]
+    loop = []
+    padded = [guide[0]] + guide + [guide[-1]]
+    for i in range(1, len(padded) - 2):  # Catmull-Rom through the guide points
+        p0, p1, p2, p3 = padded[i - 1:i + 3]
+        for step in range(STRAP_LOOP_STEPS):
+            t = step / STRAP_LOOP_STEPS
+            loop.append(on_body(0.5 * (2 * p1 + (p2 - p0) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (3 * p1 - p0 - 3 * p2 + p3) * t ** 3)))
+    tail = [loop[0].lerp(hook, step / STRAP_TAIL_SEGMENTS) for step in range(STRAP_TAIL_SEGMENTS + 1)]
+    vertices, faces = [], []
+    def ribbon(path, closed):
+        base = len(vertices)
+        count = len(path)
+        for i, point in enumerate(path):
+            ahead = path[(i + 1) % count] if closed or i + 1 < count else point
+            behind = path[i - 1] if closed or i > 0 else point
+            tangent = (ahead - behind).normalized()
+            location, _normal, _index, _distance = tree.find_nearest(point)
+            normal = (point - location).normalized() if (point - location).length > 1e-6 else Vector((0.0, -1.0, 0.0))
+            side = tangent.cross(normal).normalized()
+            normal = side.cross(tangent).normalized()
+            for sx, sn in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+                vertices.append(point + side * (sx * STRAP_WIDTH_M * 0.5 / pose_scale) + normal * (sn * STRAP_THICK_M * 0.5 / pose_scale))
+        for i in range(count if closed else count - 1):
+            a, b = base + i * 4, base + ((i + 1) % count) * 4
+            for k in range(4):
+                faces.append((a + k, a + (k + 1) % 4, b + (k + 1) % 4, b + k))
+    ribbon(loop, True)
+    ribbon(tail, False)
+    vertices = [Vector((v.x, v.y, min(v.z, band_floor))) for v in vertices]
+    mesh = bpy.data.meshes.new('RC_Transmitter_Strap')
+    mesh.from_pydata(vertices, [], faces)
+    mesh.update()
+    mesh.uv_layers.new()  # an atlas swatch; the merge still reads a UV set
+    material = bpy.data.materials.new('RC_Transmitter_Strap')
+    material.use_nodes = True
+    shader = material.node_tree.nodes['Principled BSDF']
+    shader.inputs['Base Color'].default_value = (0.03, 0.03, 0.035, 1.0)
+    shader.inputs['Roughness'].default_value = 0.7
+    mesh.materials.append(material)
+    strap = bpy.data.objects.new('RC_Transmitter_Strap', mesh)
+    bpy.context.scene.collection.objects.link(strap)
+    print('NECK_STRAP=' + json.dumps({'triangles': sum(len(p.vertices) - 2 for p in mesh.polygons), 'hook': [round(c, 3) for c in hook],
+                                      'top': round(max(v.z for v in vertices), 3), 'band_floor': round(band_floor, 3)}))
+    return strap
+
 def aim_bone(bone_name, world_point):
     target = bpy.data.objects.new('Aim_' + bone_name, None)
     bpy.context.scene.collection.objects.link(target)
@@ -416,6 +517,7 @@ elif pose_kind == 'pilot':
     for part in radio_parts:
         part.data.transform(Matrix.Scale(1.0 / pose_scale, 4) @ radio_frame)
     fit_fingers_to_surface(radio_parts)
+    radio_parts.append(build_neck_strap(radio_parts))
 elif pose_kind == 'standing' and ARGS.outfit and os.path.basename(pose_path) in ARM_HANG_POSES:
     # Hang the arms beside the thighs (IK), elbows bending back toward a pole behind the shoulder.
     bpy.context.view_layer.update()
