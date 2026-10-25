@@ -358,7 +358,10 @@ static func _check_resource_record(record: Dictionary, path: String, proofs: Dic
 			if not ResourceLoader.exists(source_path):
 				_fail(errors, diagnostics, "MODEL_PACKAGED_RESOURCE_MISSING", path + ".path", "packaged runtime resource does not resolve: " + source_path)
 				return
-			if ResourceLoader.load(source_path) == null:
+			# F4U-20-R1: verify GLB provenance without uploading an unselected paint.
+			# The importer loads the chosen scene and rejects a missing/invalid PackedScene.
+			# Other dependencies retain their eager loadability check.
+			if not source_path.ends_with(".glb") and ResourceLoader.load(source_path) == null:
 				_fail(errors, diagnostics, "MODEL_PACKAGED_RESOURCE_LOAD", path + ".path", "packaged runtime resource failed to load: " + source_path)
 				return
 		var proof_path := _proof_for(source_path, proofs, path, errors, diagnostics)

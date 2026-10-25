@@ -93,6 +93,7 @@ var battery_button: Button
 ## remembers its own choice; aircraft with one paint show no row.
 var livery_id := ""
 var livery_button: Button
+var _livery_row: VBoxContainer
 var _livery_choices: Array = []
 var _livery_preferences: Dictionary = {}
 
@@ -477,8 +478,13 @@ func _init() -> void:
 	catalog_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	catalog_intro.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	aircraft_page.add_child(catalog_intro)
-	# F4U-16: the selected aircraft's paint scheme, above the list so it never needs scrolling. The Flight card and
-	# its details have no spare height at 1280x720 or 1920x1080 (test_ui_home).
+	# F4U-20-R1: keep paint reachable when the catalog scrolls to the selected aircraft.
+	# Its own row stays below navigation; short windows/large text keep it in scrollable content.
+	_livery_row = VBoxContainer.new()
+	_livery_row.name = "AircraftPaint"
+	_left_layout.add_child(_livery_row)
+	_left_layout.move_child(_livery_row, _scroll.get_index())
+	_livery_row.visible = false
 	livery_button = _button("", "HomeChoice")
 	livery_button.name = "LiveryChoice"
 	Widgets.mark_row(livery_button, "cycle")
@@ -489,7 +495,7 @@ func _init() -> void:
 	livery_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); livery names are proper names
 	livery_button.visible = false
 	livery_button.pressed.connect(_cycle_livery)
-	aircraft_page.add_child(livery_button)
+	_livery_row.add_child(livery_button)
 	# UI-34c (UI-30 AS-5): the catalog shows the same preview state as the Flight card.
 	_catalog_preview_label = _label("", "SecondaryLabel")
 	_catalog_preview_label.name = "CatalogPreviewState"
@@ -841,7 +847,9 @@ func _select_page(index: int) -> void:
 	fly_button.visible = selected != 3
 	ground_vehicle_button.visible = selected == 3
 	_fly_caption.visible = selected == 1 or selected == 2
+	_apply_responsive_layout()
 	_update_catalog_detail_visibility()
+	_update_livery_row()
 	if selected == 1:
 		_schedule_selected_aircraft_reveal()
 	# Focus stays on the selected destination's content; it never skips into another section.
@@ -854,6 +862,8 @@ func _select_page(index: int) -> void:
 		var catalog_selection := maxi(0, _catalog_ids.find(aircraft_id))
 		var first_controls: Array[Control] = [previous_button, _catalog_buttons[catalog_selection], natural_random_button, ground_vehicle_choice]
 		_page_buttons[selected].focus_neighbor_bottom = _page_buttons[selected].get_path_to(first_controls[selected])
+		if selected == 1 and livery_button.is_visible_in_tree():
+			_page_buttons[selected].focus_neighbor_bottom = _page_buttons[selected].get_path_to(livery_button)
 		if selected == 3:
 			ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
 			ground_vehicle_choice.focus_next = ground_vehicle_choice.get_path_to(ground_vehicle_button)
@@ -899,7 +909,13 @@ func _apply_responsive_layout() -> void:
 	var rail_width := minf(viewport_size.x * 0.48, 500.0) if large_text else \
 		clampf(viewport_size.x * 0.24, 280.0, 304.0) if compact else clampf(viewport_size.x * 0.167, 280.0, 340.0)
 	var header_top := 14.0 if compact else 20.0
-	var navigation_in_scroll := viewport_size.y < 720.0
+	var navigation_in_scroll := viewport_size.y < 720.0 or (large_text and _pages[1].visible)
+	if _livery_row != null:
+		var paint_parent: Node = _pages[1] if navigation_in_scroll or large_text else _left_layout
+		if _livery_row.get_parent() != paint_parent:
+			_livery_row.reparent(paint_parent)
+			paint_parent.move_child(_livery_row, 2 if paint_parent == _pages[1] else _scroll.get_index())
+		_update_livery_row()
 	if navigation_in_scroll != _navigation_in_scroll:
 		if navigation_in_scroll:
 			_left_layout.remove_child(_navigation)
@@ -1235,11 +1251,24 @@ func _update_livery() -> void:
 	_livery_choices = AirplaneBuilder.livery_choices(aircraft_id)
 	livery_id = AirplaneBuilder.resolve_livery(aircraft_id, str(_livery_preferences.get(aircraft_id, "")))
 	livery_button.visible = _livery_choices.size() > 1
+	_update_livery_row()
 	if not livery_button.visible:
 		return
 	var shown: Dictionary = _livery_choices[_livery_index()]
 	livery_button.text = tr("Paint (%s): %s") % [tr(Catalog.short_name(aircraft_id)), shown.label]
 	livery_button.tooltip_text = tr("Paint scheme for this aircraft. Every scheme flies the same model.")
+
+
+func _update_livery_row() -> void:
+	if _livery_row == null or _pages.size() < 2:
+		return
+	_livery_row.visible = _pages[1].visible and livery_button.visible
+	if not is_inside_tree():
+		return
+	var selected: Button = _catalog_buttons[maxi(0, _catalog_ids.find(aircraft_id))]
+	_page_buttons[1].focus_neighbor_bottom = _page_buttons[1].get_path_to(livery_button if _livery_row.visible else selected)
+	livery_button.focus_neighbor_top = livery_button.get_path_to(_page_buttons[1])
+	livery_button.focus_neighbor_bottom = livery_button.get_path_to(selected)
 
 
 func _livery_index() -> int:

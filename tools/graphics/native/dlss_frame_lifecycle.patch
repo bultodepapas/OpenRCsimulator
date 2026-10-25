@@ -453,3 +453,16 @@
  }
  
  bool Streamline::get_capability(StreamlineCapabilityType p_capability_type) {
+--- a/main/main.cpp
++++ b/main/main.cpp
+@@ -5214,6 +5214,10 @@
+ #endif
+ 
+ 	if (fixed_fps != -1) {
++		// Fixed-FPS capture skips the normal message-loop tail, but still advances SL.
++		if (Streamline::get_singleton()) {
++			Streamline::get_singleton()->emit_marker(STREAMLINE_MARKER_BEFORE_MESSAGE_LOOP);
++		}
+ 		return exit;
+ 	}
+ 

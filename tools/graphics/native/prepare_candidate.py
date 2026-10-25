@@ -49,6 +49,8 @@ for _path in (
 ):
     INTEGRATION_SOURCE_COMMITS[_path] = FEATURE_INTEGRATION_COMMIT
 INTEGRATION_SOURCE_COMMITS["app/tests/test_advanced_graphics_settings.gd"] = "ba42e49b7b814a86f0c29f5d7d29f2239a002e03"
+for _path in ("app/render/reconstruction.gd", "app/tests/test_reconstruction.gd"):
+    INTEGRATION_SOURCE_COMMITS[_path] = "7af9257dbb6251f1ab3e2f4c4113eec3038b61d4"
 
 
 def sha256(data: bytes) -> str:
@@ -84,6 +86,20 @@ def pinned_integration_blob(path: str) -> bytes:
     return pinned_blob(path, integration_source_commit(path))
 
 
+def integration_content(path: str) -> bytes:
+    """Apply narrow DLSS fixes without importing unrelated newer UI dependencies."""
+    content = pinned_integration_blob(path).decode("utf-8")
+    if path == "app/ui/settings_screen.gd":
+        anchor = '\t\t"dlss_unavailable": return tr("The current graphics session does not report DLSS support.")'
+        content = replace_once(content, anchor, anchor + '\n\t\t"dlss_runtime_failure": return tr("DLSS could not continue in this graphics session.")', path)
+    elif path == "app/i18n/es.po":
+        content += '\nmsgid "DLSS could not continue in this graphics session."\nmsgstr "DLSS no pudo continuar en esta sesión gráfica."\n'
+    elif path == "app/render/reconstruction.gd":
+        anchor = '\t\t\treturn "" if bool(status.get("available", false)) else "dlss_unavailable"'
+        content = replace_once(content, anchor, anchor + '\n\t\treturn "dlss_unavailable"', path)
+    return content.encode("utf-8")
+
+
 def expected_integration_overlays() -> dict[str, dict[str, str]]:
     records: dict[str, dict[str, str]] = {}
     for path in INTEGRATION_OVERLAYS:
@@ -92,7 +108,7 @@ def expected_integration_overlays() -> dict[str, dict[str, str]]:
         records[path] = {
             "source_commit": source_commit,
             "source_sha256": source_hash,
-            "expected_final_sha256": source_hash,
+            "expected_final_sha256": sha256(integration_content(path)),
         }
     return records
 
@@ -200,7 +216,7 @@ def verify_pinned_input(path: str, expected: bytes | None = None) -> bytes:
 
 def apply_integration_overlay(path: str, previous: dict, changes: list[dict[str, str]]) -> str:
     source_commit = integration_source_commit(path)
-    content = pinned_integration_blob(path)
+    content = integration_content(path)
     content_hash = sha256(content)
     target = CANDIDATE / path
     current = target.read_bytes() if target.is_file() else b""
@@ -223,7 +239,7 @@ def apply_integration_overlay(path: str, previous: dict, changes: list[dict[str,
         "path": path,
         "base_sha256": sha256(baseline) if baseline else "not-present-at-source-base",
         "integration_source_commit": source_commit,
-        "integration_source_sha256": content_hash,
+        "integration_source_sha256": sha256(pinned_integration_blob(path)),
         "expected_final_sha256": content_hash,
         "prepared_sha256": content_hash,
     })
@@ -239,7 +255,8 @@ def prepare_forward_plus_project(previous: dict, changes: list[dict[str, str]]) 
         'renderer/rendering_method="gl_compatibility"',
         'renderer/rendering_method="forward_plus"',
         path,
-    ).encode("utf-8")
+    )
+    expected = replace_once(expected, "[rendering]\n", '[rendering]\n\nstreamline/dlss_preset="K"\n', path).encode("utf-8")
     target = CANDIDATE / path
     current = target.read_bytes() if target.is_file() else b""
     previous_hash = previous.get("candidate_project_sha256")

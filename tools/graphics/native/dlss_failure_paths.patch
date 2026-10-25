@@ -1,0 +1,42 @@
+--- a/servers/rendering/renderer_rd/effects/dlss.cpp
++++ b/servers/rendering/renderer_rd/effects/dlss.cpp
+@@ -318,6 +318,7 @@
+ 			// Establish a real first-use layout before Streamline receives this newly allocated image.
+ 			Error clear_error = rd->texture_clear(p_params.output, Color(0.0f, 0.0f, 0.0f, 0.0f), 0, 1, 0, 1);
+ 			if (clear_error != OK) {
++				dlss_record_failure(sl::Result::eErrorInvalidIntegration);
+ 				ERR_PRINT("Failed to initialize the new DLSS output texture before native dispatch.");
+ 				return;
+ 			}
+@@ -395,7 +396,12 @@
+ 	dispatch->parameters = p_params;
+ 	dispatch->parameters.frame_token = streamline.render_token;
+ 	dispatch->parameters.frame_id = streamline.render_frame_id;
+-	RD::get_singleton()->driver_callback_add((RDD::DriverCallback)DLSSEffect::_upscale_internal_graph_callback, dispatch, VectorView<RD::CallbackResource>(res, num_resources));
++	Error callback_error = RD::get_singleton()->driver_callback_add((RDD::DriverCallback)DLSSEffect::_upscale_internal_graph_callback, dispatch, VectorView<RD::CallbackResource>(res, num_resources));
++	if (callback_error != OK) {
++		memdelete(dispatch);
++		dlss_record_failure(sl::Result::eErrorInvalidIntegration);
++		ERR_FAIL_MSG("Failed to enqueue DLSS render-graph callback.");
++	}
+ }
+ 
+ void DLSSEffect::_upscale_internal(RDD::CommandBufferID cmdid, const DLSSContext::Parameters &p_params) {
+@@ -413,7 +419,7 @@
+ 	void *nativeCmdlist = RD::get_singleton()->get_device_driver()->command_buffer_get_native_handle(cmdid);
+ 
+ 	// Helper function for tagging resources.
+-	auto assignResource = [context](sl::Resource *resources, sl::ResourceTag *resourceTags, int &numResources, RID textureRID, sl::BufferType bufferType, sl::ResourceLifecycle lifecycle) {
++	auto assignResource = [context, output = p_params.output](sl::Resource *resources, sl::ResourceTag *resourceTags, int &numResources, RID textureRID, sl::BufferType bufferType, sl::ResourceLifecycle lifecycle) {
+ 		if (!textureRID.is_valid() || textureRID.is_null()) {
+ 			return;
+ 		}
+@@ -448,7 +454,7 @@
+ 		uint64_t texture_state = DLSS_VK_IMAGE_LAYOUT_SHADER_READ_ONLY;
+ 		if (context->is_d3d12) {
+ 			texture_state = DLSS_D3D12_RESOURCE_STATE_NON_PIXEL_SR;
+-		} else if (bufferType == sl::kBufferTypeScalingOutputColor) {
++		} else if (textureRID == output) {
+ 			// DLSS writes/clears this resource; keep the tag state aligned with the graph's GENERAL usage.
+ 			texture_state = DLSS_VK_IMAGE_LAYOUT_GENERAL;
+ 		}

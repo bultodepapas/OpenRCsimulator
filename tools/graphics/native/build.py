@@ -11,9 +11,11 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import urllib.request
 import zipfile
 
@@ -28,6 +30,9 @@ ARCHIVES = (
     ("streamline-2.11.1.zip", "https://github.com/NVIDIA-RTX/Streamline/releases/download/v2.11.1/streamline-sdk-v2.11.1.zip",
      "0c1d562e59557434cabfb8997157cb8c04fc7d23f077c8bdf5260975b73dfb89", "streamline-2.11.1"),
 )
+ENGINE_PATCHES = ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch",
+                  "shutdown_thread.patch", "load_token_lifetime.patch", "reflection_atlas_lifetime.patch",
+                  "buffer_write_sync.patch", "dlss_frame_lifecycle.patch", "dlss_failure_paths.patch")
 
 
 def sha256(path: Path) -> str:
@@ -62,21 +67,52 @@ def fetch(cache: Path, spec: tuple[str, str, str, str]) -> Path:
     return destination
 
 
+def apply_engine_patches(engine: Path, archive: Path) -> None:
+    """Verify overlapping patches against the archive, including safe repeat builds.
+
+    A later patch can change an earlier patch's reverse-check context. Reconstruct
+    the known prefix states in isolation instead of treating that as source drift.
+    Validate every live input before changing any file; unknown edits are rejected.
+    """
+    patches = [HERE / name for name in ENGINE_PATCHES]
+    paths = sorted({path for patch in patches for path in
+                    re.findall(r"^\+\+\+ b/(.+)$", patch.read_text(encoding="utf-8"), re.MULTILINE)})
+    if any(Path(path).is_absolute() or ".." in Path(path).parts for path in paths):
+        raise RuntimeError("unsafe path in engine patches")
+    allowed: dict[str, set[bytes]] = {}
+    with tempfile.TemporaryDirectory(prefix="patch-stack-", dir=engine.parent) as temporary:
+        staged = Path(temporary)
+        with zipfile.ZipFile(archive) as package:
+            for path in paths:
+                content = package.read(f"godot-{COMMIT}/{path}").replace(b"\r\n", b"\n")
+                target = staged / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(content)
+                allowed[path] = {content}
+        patch_env = dict(os.environ, GIT_CEILING_DIRECTORIES=str(staged.parent))
+        for patch in patches:
+            result = subprocess.run(["git", "apply", "--whitespace=nowarn", "-"],
+                                    input=patch.read_bytes().replace(b"\r\n", b"\n"),
+                                    cwd=staged, env=patch_env, capture_output=True)
+            if result.returncode:
+                raise RuntimeError(f"Cannot apply {patch.name}: " + result.stderr.decode(errors="replace"))
+            for path in paths:
+                allowed[path].add((staged / path).read_text(encoding="utf-8").encode("utf-8"))
+        for path in paths:
+            current = (engine / path).read_text(encoding="utf-8").encode("utf-8")
+            if current not in allowed[path]:
+                raise RuntimeError(f"Engine source has unknown edits: {path}; use a new --cache directory.")
+        for path in paths:
+            target = engine / path
+            content = (staged / path).read_text(encoding="utf-8").encode("utf-8")
+            if target.read_text(encoding="utf-8").encode("utf-8") != content:
+                target.write_bytes(content)
+
+
 def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Path, dict]:
     cache.mkdir(parents=True, exist_ok=True)
     engine, amd, nvidia = (fetch(cache, spec) for spec in ARCHIVES)
-    # Only accept the pristine pinned tree or this exact patch already applied.
-    common = ["git", "apply"]
-    patch_env = dict(os.environ, GIT_CEILING_DIRECTORIES=str(engine.parent))
-    for patch_name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "load_token_lifetime.patch", "reflection_atlas_lifetime.patch", "buffer_write_sync.patch", "dlss_frame_lifecycle.patch"):
-        patch = HERE / patch_name
-        check = subprocess.run(common + ["--check", str(patch)], cwd=engine, env=patch_env, capture_output=True)
-        if check.returncode == 0:
-            subprocess.run(common + [str(patch)], cwd=engine, env=patch_env, check=True)
-        else:
-            reverse = subprocess.run(common + ["--reverse", "--check", str(patch)], cwd=engine, env=patch_env, capture_output=True)
-            if reverse.returncode:
-                raise RuntimeError(f"Engine sources do not match {patch_name}; use a new --cache directory.\n" + check.stderr.decode(errors="replace"))
+    apply_engine_patches(engine, cache / ARCHIVES[0][0])
     for name in ("fsr3.h", "fsr3.cpp"):
         shutil.copy2(HERE / name, engine / "servers/rendering/renderer_rd/effects" / name)
     shutil.copy2(HERE / "fsr3_prepare.glsl", engine / "servers/rendering/renderer_rd/shaders/effects/fsr3_prepare.glsl")
@@ -110,7 +146,7 @@ def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Pat
         "fidelityfx_sdk": "1.1.4", "fsr_upscaler": "3.1.4", "streamline": "2.11.1",
         "platform": "windows", "graphics_api": "vulkan", "frame_generation_enabled": False,
         "sources": {name: digest for name, _, digest, _ in ARCHIVES},
-        "integration": {name: sha256(HERE / name) for name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "load_token_lifetime.patch", "reflection_atlas_lifetime.patch", "buffer_write_sync.patch", "dlss_frame_lifecycle.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")},
+        "integration": {name: sha256(HERE / name) for name in (*ENGINE_PATCHES, "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")},
         "streamline_headers": {source.name: sha256(source) for source in sorted((nvidia / "include").glob("*.h"))},
         "fidelityfx_runtime_build": fidelityfx_receipt,
         "runtime": {source.name: sha256(source) for source in runtime_files},

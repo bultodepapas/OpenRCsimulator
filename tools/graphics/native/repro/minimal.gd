@@ -35,6 +35,16 @@ func _run() -> void:
 			return
 		mode_id = int(capability.mode_id)
 		print("MINIMAL_DLSS|CAPABILITY|supported=true|mode_id=%d" % mode_id)
+		for argument: String in OS.get_cmdline_user_args():
+			if argument.begins_with("--preset="):
+				var preset := argument.trim_prefix("--preset=")
+				if preset not in ["F", "J", "K"]:
+					printerr("MINIMAL_DLSS|UNAVAILABLE|reason=invalid_test_preset")
+					quit(2)
+					return
+				var parameter := ClassDB.class_get_integer_constant(DLSS_SINGLETON, "STREAMLINE_PARAM_DLSS_PRESET")
+				Engine.get_singleton(DLSS_SINGLETON).call("set_parameter", parameter, preset)
+				print("MINIMAL_DLSS|PRESET|value=%s" % preset)
 	else:
 		print("MINIMAL_DLSS|CAPABILITY|native_control=true")
 
@@ -59,7 +69,9 @@ func _run() -> void:
 		]
 	for phase: Dictionary in phases:
 		var phase_scale := float(phase.get("scale", 1.0))
-		await _render_phase(str(phase.name), Vector2i(phase.size), mode_id, phase_scale, native_control)
+		if not await _render_phase(str(phase.name), Vector2i(phase.size), mode_id, phase_scale, native_control):
+			quit(3)
+			return
 	print("MINIMAL_DLSS|RUN_COMPLETE|provider=%s|phases=%d|frames=%d" % [
 		"native" if native_control else "dlss", phases.size(), phases.size() * FRAMES_PER_PHASE])
 	quit(0)
@@ -143,7 +155,15 @@ func _build_scene() -> void:
 			index += 1
 
 
-func _render_phase(label: String, size: Vector2i, mode_id: int, scale: float, native_control: bool) -> void:
+func _render_phase(label: String, size: Vector2i, mode_id: int, scale: float, native_control: bool) -> bool:
+	var initial_dispatches := 0
+	var streamline: Object = null
+	if not native_control:
+		streamline = Engine.get_singleton(DLSS_SINGLETON)
+		if not streamline.has_method("get_dlss_status"):
+			printerr("MINIMAL_DLSS|FAIL|reason=dispatch_status_missing")
+			return false
+		initial_dispatches = int(streamline.call("get_dlss_status").get("dispatches", 0))
 	DisplayServer.window_set_size(size)
 	root.size = size
 	root.scaling_3d_mode = mode_id
@@ -160,3 +180,11 @@ func _render_phase(label: String, size: Vector2i, mode_id: int, scale: float, na
 		await RenderingServer.frame_post_draw
 	print("MINIMAL_DLSS|PHASE_DONE|name=%s|actual_output=%dx%d|frames=%d" % [
 		label, root.size.x, root.size.y, FRAMES_PER_PHASE])
+	if not native_control:
+		var status: Dictionary = streamline.call("get_dlss_status")
+		print("MINIMAL_DLSS|STATUS|name=%s|backend=%s" % [label, JSON.stringify(status)])
+		if bool(status.get("backend_failed", true)) or not bool(status.get("available", false)) \
+				or int(status.get("dispatches", 0)) <= initial_dispatches:
+			printerr("MINIMAL_DLSS|FAIL|reason=no_successful_dispatch|phase=%s" % label)
+			return false
+	return true

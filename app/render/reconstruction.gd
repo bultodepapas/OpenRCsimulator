@@ -286,6 +286,7 @@ static func _streamline_dlss_unavailable_reason() -> String:
 			if bool(status.get("backend_failed", false)):
 				return "dlss_runtime_failure"
 			return "" if bool(status.get("available", false)) else "dlss_unavailable"
+		return "dlss_unavailable"
 	if not streamline.has_method("get_capability") \
 			or not ClassDB.class_has_integer_constant(DLSS_SINGLETON, DLSS_CAPABILITY):
 		return "dlss_support_missing"
