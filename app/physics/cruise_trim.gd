@@ -38,7 +38,7 @@ static func solve_level_at_throttle(reference_speed_mps: float, target_throttle:
 	if model.is_empty():
 		return _failure("aircraft model must be a structurally valid loader model", reference_speed_mps, target_throttle, max_speed_mps)
 	if not _valid_throws(throws):
-		return _failure("control throws must contain finite positive elevator, aileron, and rudder limits", reference_speed_mps, target_throttle, max_speed_mps)
+		return _failure("control throws must contain finite positive elevator, aileron, and rudder (or elevon) limits", reference_speed_mps, target_throttle, max_speed_mps)
 
 	var search_iterations := 0
 	var low := _solve_candidate(reference_speed_mps, model, g, throws, rho, engine_charge_ratio, max_alpha_rad)
@@ -111,7 +111,9 @@ static func solve_level_at_throttle(reference_speed_mps: float, target_throttle:
 static func _guess(trim: Dictionary) -> PackedFloat64Array:
 	if trim.is_empty() or not trim.get("ok", false):
 		return PackedFloat64Array()
-	return PackedFloat64Array([float(trim.alpha), float(trim.elevator), float(trim.throttle), float(trim.beta), float(trim.aileron), float(trim.rudder)])
+	# X8-03: a rudderless trim's sixth unknown is its bank angle.
+	return PackedFloat64Array([float(trim.alpha), float(trim.elevator), float(trim.throttle), float(trim.beta), float(trim.aileron),
+		float(trim.get("bank", trim.rudder))])
 
 
 static func _solve_candidate(speed_mps: float, model: Dictionary, g: float, throws: Dictionary,
@@ -144,7 +146,8 @@ static func _finite_trim(result: Dictionary) -> bool:
 
 
 static func _valid_throws(throws: Dictionary) -> bool:
-	for axis in ["elevator", "aileron", "rudder"]:
+	# X8-03: elevon throws carry the elevon end point instead of a rudder (whose throw is exactly 0).
+	for axis in (["elevator", "aileron", "elevon"] if throws.has("elevon") else ["elevator", "aileron", "rudder"]):
 		if not throws.has(axis) or not _finite_number(throws[axis]) or throws[axis] <= 0.0:
 			return false
 	return true

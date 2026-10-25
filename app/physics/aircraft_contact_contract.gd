@@ -397,13 +397,17 @@ static func _physical_identity(model: Dictionary, hull_value: Variant, errors: P
 	elif typeof(identity_surfaces_value) == TYPE_DICTIONARY and controls_surfaces_value != identity_surfaces_value:
 		_add_error(errors, diagnostics, "physical_identity_surface_mismatch", "controls.surface_ids", "normalized control surface IDs must match physical_identity.surface_ids")
 	if typeof(identity_surfaces_value) == TYPE_DICTIONARY:
-		if surface_ids.size() != PhysicalIdentity.SURFACES.size():
-			_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids", "expected IDs for exactly the four conventional control surfaces")
-		for surface_name: String in PhysicalIdentity.SURFACES:
+		# X8-03: an elevon aircraft identifies its two elevons instead of the four conventional surfaces.
+		var elevon: bool = typeof(controls_value) == TYPE_DICTIONARY and controls_value.get("layout", "") == "elevon"
+		var expected_surfaces: Array = PhysicalIdentity.ELEVON_SURFACES if elevon else PhysicalIdentity.SURFACES
+		var layout_name := "two elevon" if elevon else "four conventional"
+		if surface_ids.size() != expected_surfaces.size():
+			_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids", "expected IDs for exactly the %s control surfaces" % layout_name)
+		for surface_name: String in expected_surfaces:
 			if not surface_ids.has(surface_name):
-				_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids.%s" % surface_name, "missing conventional control-surface ID")
+				_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids.%s" % surface_name, "missing %s control-surface ID" % layout_name)
 		for surface_name_value: Variant in surface_ids.keys():
-			if typeof(surface_name_value) != TYPE_STRING or str(surface_name_value) not in PhysicalIdentity.SURFACES:
+			if typeof(surface_name_value) != TYPE_STRING or str(surface_name_value) not in expected_surfaces:
 				_add_error(errors, diagnostics, "invalid_physical_identity_surfaces", "physical_identity.surface_ids", "unsupported control-surface name")
 
 	var used_ids: Dictionary = {}

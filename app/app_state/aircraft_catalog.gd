@@ -120,6 +120,21 @@ const ENTRIES := [
 		battery_data = "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
 	},
 	{
+		# X8-09: the author's r4 model (assets/aircraft/skywalker-x8), inspired by the Skywalker X8: NTNU flight-identified
+		# aerodynamics on the tailless strip law (X8-04), elevon mixing (X8-03), pusher (X8-05), no landing gear, EPO
+		# tolerant hull (X8-08). Working display name pending the owner's decision (docs/X8-PLAN.md D1).
+		id = "skywalker-x8",
+		visual_family = "skywalker-x8",
+		name = "X8 Flying Wing",
+		short_name = "X8 Wing",
+		summary = "EPO flying wing · 2.12 m · 6S electric pusher",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: NTNU flight-identified aerodynamics with an estimated electric drive; elevons, no landing gear (airborne start), tougher foam airframe. Not flight-validated.",
+		data = "res://data/aircraft/skywalker_x8.json",
+		# The finite 6S 5000 mAh class pack is the default battery mode, as on the Turbo Lumber.
+		battery_data = "res://data/aircraft/battery/skywalker_x8_6s_pack.json",
+	},
+	{
 		id = "xcell-60-research",
 		vehicle = "rotorcraft",
 		visual_family = "hx-700",

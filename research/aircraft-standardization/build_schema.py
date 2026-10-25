@@ -515,6 +515,8 @@ def add_v2_overlay(schema: dict, spec: dict):
         },
         "additionalProperties": False,
     }
+    # A rudderless (elevon) aircraft declares Cndr exactly 0: the stable-airplane sign moves to the conventional branch.
+    aero_props["coefficients"]["properties"]["Cndr"]["properties"]["value"].pop("exclusiveMaximum", None)
     # The vertical element's rudder effectiveness may be exactly zero only for an elevon (rudderless) aircraft.
     surfaces["properties"]["vertical"]["properties"]["control_effectiveness"]["properties"]["value"]["minimum"] = 0.0
     root_props["crash_tolerance"] = {
@@ -642,8 +644,10 @@ def add_v2_overlay(schema: dict, spec: dict):
                           "surface_ids": {"required": conventional_roles, "not": {"anyOf": [
                               {"required": ["elevon_left"]}, {"required": ["elevon_right"]}]}},
                       }},
-                      "aero": {"properties": {"surfaces": {"properties": {"vertical": {"properties": {
-                          "control_effectiveness": {"properties": {"value": {"minimum": 0.01}}}}}}}}},
+                      "aero": {"properties": {
+                          "coefficients": {"properties": {"Cndr": {"properties": {"value": {"exclusiveMaximum": 0}}}}},
+                          "surfaces": {"properties": {"vertical": {"properties": {
+                              "control_effectiveness": {"properties": {"value": {"minimum": 0.01}}}}}}}}},
                   }}})
     rules.append({"if": {"properties": {"capabilities": {"required": ["airframe_layout"]}}},
                   "then": {"properties": {"aero": {"not": {"required": ["ground_effect"]}, "properties": {"surfaces": {

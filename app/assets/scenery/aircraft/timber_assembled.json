@@ -118,20 +118,20 @@
 	"source_identity": {
 		"manifest": {
 			"path": "res://data/aircraft_models/turbo-lumber-evolution.json",
-			"sha256": "af715e7ca83ba9ddcd819653dbee6a048e5e1b5fb51460a6f77f3a563ed11f37",
-			"pinned_sha256": "af715e7ca83ba9ddcd819653dbee6a048e5e1b5fb51460a6f77f3a563ed11f37",
+			"sha256": "6b815eef6d54214b29d61b4338bf65168f1384f7beaa09074e1c5f517f120a40",
+			"pinned_sha256": "6b815eef6d54214b29d61b4338bf65168f1384f7beaa09074e1c5f517f120a40",
 			"matches_pin": true
 		},
 		"builder": {
 			"path": "res://aircraft/imported_model.gd",
-			"sha256": "76889f694b7fae6fc75394d1af2feff5c6492c7a2075c4a89e6463d54a3ac18c",
-			"pinned_sha256": "76889f694b7fae6fc75394d1af2feff5c6492c7a2075c4a89e6463d54a3ac18c",
+			"sha256": "9c652ba260167d5b89346f051a8e5b5dd01447265928afe34a0d3544a76ea464",
+			"pinned_sha256": "9c652ba260167d5b89346f051a8e5b5dd01447265928afe34a0d3544a76ea464",
 			"matches_pin": true
 		},
 		"geometry_script": {
 			"path": "res://aircraft/timber_geometry.gd",
-			"sha256": "ffb27f941c834778454af013593be7d3db358eded8c26543a3316976bae3ed83",
-			"pinned_sha256": "ffb27f941c834778454af013593be7d3db358eded8c26543a3316976bae3ed83",
+			"sha256": "9779239e822912963fe18c70d09b3cc111e44ef4821be07db94fa51e18838b73",
+			"pinned_sha256": "9779239e822912963fe18c70d09b3cc111e44ef4821be07db94fa51e18838b73",
 			"matches_pin": true
 		},
 		"fleet_collector": {
@@ -142,8 +142,8 @@
 		},
 		"airplane_snapshot_builder": {
 			"path": "res://render/airplane.gd",
-			"sha256": "d8df826777cf69dc23f551b1958e7d7ec2c8ab7a82ffcbb4867e53dd4235017c",
-			"pinned_sha256": "d8df826777cf69dc23f551b1958e7d7ec2c8ab7a82ffcbb4867e53dd4235017c",
+			"sha256": "b395edee0199f290accef2a1da93a4364ce418e8ff8ae90e1be43b89a68ae04d",
+			"pinned_sha256": "b395edee0199f290accef2a1da93a4364ce418e8ff8ae90e1be43b89a68ae04d",
 			"matches_pin": true
 		},
 		"baker": {
@@ -154,8 +154,8 @@
 		},
 		"geometry_source": {
 			"path": "assets/aircraft/turbo-lumber-evolution/geometry.json",
-			"sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681",
-			"pinned_sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681",
+			"sha256": "ba392cfc37a3a8b8489c781bd15d35f96b68091a5a128ac3818f20723683af58",
+			"pinned_sha256": "ba392cfc37a3a8b8489c781bd15d35f96b68091a5a128ac3818f20723683af58",
 			"matches_pin": true
 		},
 		"asset": {

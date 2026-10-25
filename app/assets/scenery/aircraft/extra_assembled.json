@@ -110,7 +110,7 @@
 		],
 		[
 			-0.00499999942258,
-			0.000355109572410584,
+			0.000355109572410583,
 			0.567615389823914
 		]
 	],
@@ -118,20 +118,20 @@
 	"source_identity": {
 		"manifest": {
 			"path": "res://data/aircraft_models/gp-extra-300s-60.json",
-			"sha256": "f8280cd02c96759a389438e632c05cb9c1a8b6e4f03d74dbdcc505e50d66f7a4",
-			"pinned_sha256": "f8280cd02c96759a389438e632c05cb9c1a8b6e4f03d74dbdcc505e50d66f7a4",
+			"sha256": "2a2f1cc898cb8ac3a9f96e8d6331cd80db8f8f95ecdb0956aa9caffa75f25371",
+			"pinned_sha256": "2a2f1cc898cb8ac3a9f96e8d6331cd80db8f8f95ecdb0956aa9caffa75f25371",
 			"matches_pin": true
 		},
 		"builder": {
 			"path": "res://aircraft/extra_300s_model.gd",
-			"sha256": "8ba857793231d585781a965860b1fbbbe0b102ee3f6d3dc87bb0822b719cac3c",
-			"pinned_sha256": "8ba857793231d585781a965860b1fbbbe0b102ee3f6d3dc87bb0822b719cac3c",
+			"sha256": "b4a6d5b4784985b042c3ac59bdaf422d0c8ab5007b70b39a113124f6e82d6c51",
+			"pinned_sha256": "b4a6d5b4784985b042c3ac59bdaf422d0c8ab5007b70b39a113124f6e82d6c51",
 			"matches_pin": true
 		},
 		"geometry_script": {
 			"path": "res://aircraft/extra_300s_geometry.gd",
-			"sha256": "a4154a63d4b82802ce35a3fcaaf20afd32d62a698709e551b966e148f311c9b4",
-			"pinned_sha256": "a4154a63d4b82802ce35a3fcaaf20afd32d62a698709e551b966e148f311c9b4",
+			"sha256": "4ea01c5ba8f546224faeb4f1a3a3ad5b6e3cf7848acf7a19b06a0587275c6f42",
+			"pinned_sha256": "4ea01c5ba8f546224faeb4f1a3a3ad5b6e3cf7848acf7a19b06a0587275c6f42",
 			"matches_pin": true
 		},
 		"fleet_collector": {
@@ -142,8 +142,8 @@
 		},
 		"airplane_snapshot_builder": {
 			"path": "res://render/airplane.gd",
-			"sha256": "d8df826777cf69dc23f551b1958e7d7ec2c8ab7a82ffcbb4867e53dd4235017c",
-			"pinned_sha256": "d8df826777cf69dc23f551b1958e7d7ec2c8ab7a82ffcbb4867e53dd4235017c",
+			"sha256": "b395edee0199f290accef2a1da93a4364ce418e8ff8ae90e1be43b89a68ae04d",
+			"pinned_sha256": "b395edee0199f290accef2a1da93a4364ce418e8ff8ae90e1be43b89a68ae04d",
 			"matches_pin": true
 		},
 		"baker": {

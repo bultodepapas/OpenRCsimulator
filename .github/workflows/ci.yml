@@ -90,6 +90,10 @@ jobs:
           python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py --check
           python3 assets/aircraft/turbo-lumber-evolution/compile_geometry.py --check
           python3 research/timber/tt07/derive_physics.py --check
+          python3 research/skywalker-x8/X8-00/manifest.py --check
+          python3 research/skywalker-x8/X8-02/install_assets.py --check
+          python3 research/skywalker-x8/X8-02/compile_model.py --check
+          python3 research/skywalker-x8/X8-06/derive_physics.py --check
       - name: Offline measurement and validation tool regressions
         if: matrix.part == 'integration'
         run: |

@@ -64,7 +64,7 @@
     "plan_cg": {
       "value": [
         0.135419,
-        0.000316128,
+        0.0,
         0.004255534
       ],
       "unit": "m",
@@ -367,17 +367,17 @@
         "value": 0.018,
         "unit": "kg",
         "kind": "estimated",
-        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 18 g at 420 mm, 55 mm right"
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 18 g at 420 mm; its 55 mm side offset is dropped for a symmetric CG (fleet convention, 0.3 mm)"
       },
       "position": {
         "value": [
           0.120419,
-          0.055,
+          0.0,
           -0.025
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 18 g at 420 mm, 55 mm right; D0 structural frame"
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 18 g at 420 mm; its 55 mm side offset is dropped for a symmetric CG (fleet convention, 0.3 mm); D0 structural frame"
       },
       "size": {
         "value": [
@@ -387,7 +387,7 @@
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 18 g at 420 mm, 55 mm right; aligned box inertia envelope"
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 18 g at 420 mm; its 55 mm side offset is dropped for a symmetric CG (fleet convention, 0.3 mm); aligned box inertia envelope"
       }
     },
     {
@@ -1432,7 +1432,7 @@
       "thrust_line_offset": {
         "value": [
           0.411,
-          -0.000316128,
+          0.0,
           -0.004255534
         ],
         "unit": "m",
@@ -1448,6 +1448,26 @@
         -0.3007,
         0.006,
         0.0088
+      ],
+      [
+        -0.2787,
+        -0.0616,
+        0.0171
+      ],
+      [
+        -0.2787,
+        0.0616,
+        0.0171
+      ],
+      [
+        -0.2787,
+        -0.0616,
+        -0.003
+      ],
+      [
+        -0.2787,
+        0.0616,
+        -0.003
       ],
       [
         -0.2628,
@@ -1470,9 +1490,9 @@
         -0.0485
       ],
       [
-        0.4964,
+        0.5119,
         0.0,
-        -0.023
+        -0.021
       ],
       [
         -0.0015,
@@ -1485,24 +1505,14 @@
         0.007
       ],
       [
-        0.3501,
-        -0.9672,
-        0.0352
+        0.1298,
+        -0.2345,
+        -0.011
       ],
       [
-        0.3501,
-        0.9672,
-        0.0352
-      ],
-      [
-        0.49,
-        -0.9542,
-        0.0296
-      ],
-      [
-        0.49,
-        0.9542,
-        0.0296
+        0.1298,
+        0.2345,
+        -0.011
       ],
       [
         0.4957,
@@ -1516,110 +1526,128 @@
       ],
       [
         0.6804,
-        -1.0586,
-        0.2065
+        -1.0575,
+        0.207
       ],
       [
         0.6804,
-        1.0586,
-        0.2065
+        1.0575,
+        0.207
       ],
       [
-        0.6139,
-        0.9834,
-        0.0664
+        0.5886,
+        -1.051,
+        0.1916
       ],
       [
-        0.6139,
-        -0.9834,
-        0.0664
+        0.5886,
+        1.051,
+        0.1916
       ],
       [
-        0.4983,
-        1.0308,
-        0.1555
+        0.3498,
+        -0.9628,
+        0.0292
       ],
       [
-        0.4983,
-        -1.0308,
-        0.1555
+        0.3498,
+        0.9628,
+        0.0292
       ],
       [
-        -0.2722,
-        -0.0616,
-        -0.0112
+        0.63,
+        -0.9933,
+        0.0836
       ],
       [
-        -0.2722,
-        0.0616,
-        -0.0112
+        0.63,
+        0.9933,
+        0.0836
       ],
       [
-        -0.2722,
-        -0.0616,
-        0.0263
+        0.4566,
+        1.0173,
+        0.1301
       ],
       [
-        -0.2722,
-        0.0616,
-        0.0263
+        0.4566,
+        -1.0173,
+        0.1301
+      ],
+      [
+        0.5324,
+        -0.958,
+        0.0358
+      ],
+      [
+        0.5324,
+        0.958,
+        0.0358
       ]
     ],
     "unit": "m",
     "kind": "derived",
-    "source": "research/skywalker-x8/X8-06/derive_physics.py: the drawn r4 model's extreme points per feature (GP-07 method); worst sink of the drawn airframe through the hull 12.6 mm over 6000 attitudes, propeller excluded (strike test); features: probe_nose, probe_canopy_front, probe_canopy, probe_belly_front, probe_belly, probe_belly_aft, probe_wing_left_root_le, probe_wing_right_root_le, probe_wing_left_mid_le, probe_wing_right_mid_le, probe_wing_left_bottom, probe_wing_right_bottom, probe_wing_left_root_te, probe_wing_right_root_te, probe_wing_left_tip_te, probe_wing_right_tip_te, probe_fill_1_right, probe_fill_1_left, probe_fill_2_right, probe_fill_2_left, probe_fill_3_left, probe_fill_3_right, probe_fill_4_left, probe_fill_4_right"
+    "source": "research/skywalker-x8/X8-06/derive_physics.py: the drawn r4 model's extreme points per feature (GP-07 method); worst sink of the drawn airframe through the hull 11.7 mm over 6000 attitudes, propeller excluded (strike test); features: probe_nose, probe_nose_left, probe_nose_right, probe_nose_left_low, probe_nose_right_low, probe_canopy_front, probe_canopy, probe_belly_front, probe_belly, probe_engine, probe_wing_left_root_le, probe_wing_right_root_le, probe_wing_left_bottom, probe_wing_right_bottom, probe_elevon_left_te, probe_elevon_right_te, probe_winglet_left_top, probe_winglet_right_top, probe_winglet_left_outer, probe_winglet_right_outer, probe_wing_left_tip_le, probe_wing_right_tip_le, probe_wing_left_tip_te, probe_wing_right_tip_te, probe_winglet_right_fill_1, probe_winglet_left_fill_1, probe_wing_left_fill_2, probe_wing_right_fill_2"
   },
   "crash_hull_ids": [
     "probe_nose",
+    "probe_nose_left",
+    "probe_nose_right",
+    "probe_nose_left_low",
+    "probe_nose_right_low",
     "probe_canopy_front",
     "probe_canopy",
     "probe_belly_front",
     "probe_belly",
-    "probe_belly_aft",
+    "probe_engine",
     "probe_wing_left_root_le",
     "probe_wing_right_root_le",
-    "probe_wing_left_mid_le",
-    "probe_wing_right_mid_le",
     "probe_wing_left_bottom",
     "probe_wing_right_bottom",
-    "probe_wing_left_root_te",
-    "probe_wing_right_root_te",
+    "probe_elevon_left_te",
+    "probe_elevon_right_te",
+    "probe_winglet_left_top",
+    "probe_winglet_right_top",
+    "probe_winglet_left_outer",
+    "probe_winglet_right_outer",
+    "probe_wing_left_tip_le",
+    "probe_wing_right_tip_le",
     "probe_wing_left_tip_te",
     "probe_wing_right_tip_te",
-    "probe_fill_1_right",
-    "probe_fill_1_left",
-    "probe_fill_2_right",
-    "probe_fill_2_left",
-    "probe_fill_3_left",
-    "probe_fill_3_right",
-    "probe_fill_4_left",
-    "probe_fill_4_right"
+    "probe_winglet_right_fill_1",
+    "probe_winglet_left_fill_1",
+    "probe_wing_left_fill_2",
+    "probe_wing_right_fill_2"
   ],
   "crash_hull_components": [
     "nose",
+    "nose",
+    "nose",
+    "nose",
+    "nose",
     "canopy",
     "canopy",
     "belly",
     "belly",
-    "belly",
-    "left_wing_root",
-    "right_wing_root",
-    "left_wing_root",
-    "right_wing_root",
+    "engine",
     "left_wing_root",
     "right_wing_root",
     "left_wing_root",
     "right_wing_root",
     "left_wing_tip",
     "right_wing_tip",
+    "fin_top",
+    "fin_top",
+    "fin_top",
+    "fin_top",
+    "left_wing_tip",
     "right_wing_tip",
     "left_wing_tip",
+    "right_wing_tip",
     "fin_top",
     "fin_top",
-    "nose",
-    "nose",
-    "nose",
-    "nose"
+    "left_wing_tip",
+    "right_wing_tip"
   ],
   "crash_tolerance": {
     "terminal_specific_energy": {

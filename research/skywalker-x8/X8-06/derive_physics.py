@@ -184,22 +184,24 @@ def drawn_parts():
 # id, label, part, direction (LE frame), mirrored. Left/right features mirror y.
 HULL_FEATURES = [
     ("probe_nose", "nose", "fuselage_core", (-1, 0, 0), False),
-    ("probe_nose_low", "nose", "fuselage_core", (-1, 0, -1), False),
+    ("probe_nose_{s}", "nose", "fuselage_core", (-1, 0.7, 0.3), True),
+    ("probe_nose_{s}_low", "nose", "fuselage_core", (-1, 0.7, -0.6), True),
     ("probe_canopy_front", "canopy", "fuselage_core", (-0.6, 0, 1), False),
     ("probe_canopy", "canopy", "canopy_hatch", (0, 0, 1), False),
     ("probe_belly_front", "belly", "fuselage_core", (-0.4, 0, -1), False),
     ("probe_belly", "belly", "fuselage_core", (0, 0, -1), False),
-    ("probe_belly_aft", "belly", "fuselage_core", (0.6, 0, -1), False),
-    ("probe_tail", "tail_end", "fuselage_core", (1, 0, -0.2), False),
     ("probe_engine", "engine", "motor_mount", (0.4, 0, -1), False),
+    ("probe_tail", "tail_end", "fuselage_core", (1, 0, -0.2), False),
+    ("probe_belly_aft", "belly", "fuselage_core", (0.25, 0, -1), False),
     ("probe_wing_{s}_root_le", "{s}_wing_root", "wing_{s}_fixed", (-1, 0.15, -0.3), True),
-    ("probe_wing_{s}_mid_le", "{s}_wing_root", "wing_{s}_fixed", (-0.6, 0.8, -0.3), True),
-    ("probe_wing_{s}_bottom", "{s}_wing_root", "wing_{s}_fixed", (0.1, 0.35, -1), True),
-    ("probe_wing_{s}_root_te", "{s}_wing_root", "elevon_{s}", (1, 0.2, -0.3), True),
-    ("probe_wing_{s}_tip_le", "{s}_wing_tip", "wing_{s}_fixed", (-0.4, 1, -0.4), True),
-    ("probe_wing_{s}_tip_te", "{s}_wing_tip", "wing_{s}_fixed", (0.7, 1, -0.4), True),
-    ("probe_winglet_{s}_top", "fin_top", "wing_{s}_fixed", (0.3, 0.3, 1), True),
-    ("probe_wing_{s}_top", "{s}_wing_root", "wing_{s}_fixed", (0.0, 0.4, 1), True),
+    ("probe_wing_{s}_mid_le", "{s}_wing_root", "wing_{s}_fixed", (-1, 0.45, -0.3), True),
+    ("probe_wing_{s}_bottom", "{s}_wing_root", "wing_{s}_fixed", (0, 0.02, -1), True),
+    ("probe_elevon_{s}_te", "{s}_wing_tip", "elevon_{s}", (1, 0.2, -0.3), True),
+    ("probe_winglet_{s}_top", "fin_top", "wing_{s}_fixed", (0.2, 0.5, 1), True),
+    ("probe_winglet_{s}_outer", "fin_top", "wing_{s}_fixed", (-0.3, 1, 0.5), True),
+    ("probe_winglet_{s}_knuckle", "{s}_wing_tip", "wing_{s}_fixed", (0.2, 1, -0.4), True),
+    ("probe_wing_{s}_tip_le", "{s}_wing_tip", "wing_{s}_fixed", (-0.3, 1, -1.2), True),
+    ("probe_wing_{s}_tip_te", "{s}_wing_tip", "wing_{s}_fixed", (1, 0.6, -1), True),
 ]
 HULL_EXCLUDED = ("propeller_rotor",)  # the spinning disc is the E3d2 strike test, not a contact force
 MIN_SPACING_M = 0.02
@@ -247,8 +249,11 @@ def hull(parts):
         for sign in ([1.0] if abs(point[1]) < MIN_SPACING_M else [1.0, -1.0]):
             mirrored = [round(float(point[0]), 4) + 0.0, round(float(sign * point[1]), 4) + 0.0, round(float(point[2]), 4) + 0.0]
             side = "" if abs(point[1]) < MIN_SPACING_M else ("right" if mirrored[1] > 0 else "left")
-            feats.append({"id": "probe_fill_%d%s" % (added + 1, "_" + side if side else ""),
-                          "label": _hull_label(str(owner[index]), mirrored), "point": mirrored})
+            label = _hull_label(str(owner[index]), mirrored)
+            region = {"fin_top": "winglet_{s}", "nose": "nose_{s}", "belly": "belly_{s}", "canopy": "canopy_{s}",
+                      "engine": "engine_{s}", "tail_end": "tail_{s}"}.get(label, "wing_{s}")
+            feats.append({"id": "probe_%s_fill_%d" % (region.format(s=side).rstrip("_"), added + 1),
+                          "label": label, "point": mirrored})
         added += 1
 
 
@@ -304,8 +309,8 @@ def inventory(pack, cg_target_x):
          [0.070, 0.030, 0.015], "estimated", LEDGER + ": ESC 60 A, 60 g at 662 mm"),
         ("flight_controller", "autopilot / flight controller", 0.030, [le_x(455.0), 0.0, -0.025],
          [0.052, 0.036, 0.015], "estimated", LEDGER + ": 30 g at 455 mm"),
-        ("receiver_telemetry", "receiver and telemetry radio", 0.018, [le_x(420.0), 0.055, -0.025],
-         [0.040, 0.022, 0.010], "estimated", LEDGER + ": 18 g at 420 mm, 55 mm right"),
+        ("receiver_telemetry", "receiver and telemetry radio", 0.018, [le_x(420.0), 0.0, -0.025],
+         [0.040, 0.022, 0.010], "estimated", LEDGER + ": 18 g at 420 mm; its 55 mm side offset is dropped for a symmetric CG (fleet convention, 0.3 mm)"),
         ("gps_compass", "GPS and compass", 0.030, [le_x(640.0), 0.0, 0.040],
          [0.028, 0.028, 0.010], "estimated", LEDGER + ": 30 g at 640 mm under the top skin"),
         ("fpv_camera", "FPV camera and video transmitter", 0.030, [le_x(52.0), 0.0, 0.005],
@@ -369,7 +374,24 @@ def inertia(items):
 
 
 # --- Propeller: UIUC APC 12x6E (Volume 4, measured) --------------------------------------------------------------------
-def uiuc_table(name, columns):
+# The UIUC files live in the ignored references/ folder, so the measured rows are carried here (as the aircraft JSON
+# carries them) and checked against the local copies when present. Columns: static [rpm, CT, CP]; tunnel [J, CT, CP].
+UIUC_FILES = {
+    "apce_12x6_static_0629od.txt": "e392a17a430ad2796172f21ee0106152375b298636584b33ba23f836a3a6c96c",
+    "apce_12x6_0635od_6044.txt": "7e969b7089fc74ac373cefde1fd7c1297938b79457dd1efb6e0876d9fbde6d85",
+}
+STATIC_TOP = [7546.667, 0.105460, 0.033643]  # the highest measured static rpm, nearest the X8's operating rpm
+TUNNEL_6044 = [
+    [0.333913, 0.071653, 0.034510], [0.359762, 0.065770, 0.033095], [0.373361, 0.061892, 0.031991],
+    [0.392495, 0.056601, 0.030368], [0.413002, 0.051841, 0.028904], [0.433129, 0.046902, 0.027258],
+    [0.452355, 0.042453, 0.025746], [0.473059, 0.037347, 0.023903], [0.494232, 0.032514, 0.022177],
+    [0.515098, 0.027579, 0.020350], [0.533862, 0.023112, 0.018630], [0.554337, 0.018253, 0.016692],
+    [0.573423, 0.013719, 0.014801], [0.592478, 0.009348, 0.012900], [0.614674, 0.004821, 0.010874],
+    [0.633612, -0.000128, 0.008654], [0.653931, -0.005268, 0.006382],
+]
+
+
+def uiuc_rows(name, columns):
     rows = []
     for line in (UIUC / name).read_text().splitlines()[1:]:
         values = [float(x) for x in line.split()]
@@ -378,23 +400,22 @@ def uiuc_table(name, columns):
 
 
 def propeller_tables():
-    static = uiuc_table("apce_12x6_static_0629od.txt", (0, 1, 2))
-    top = static[-1]  # highest measured static rpm, nearest the X8's operating rpm
-    tunnel = uiuc_table("apce_12x6_0635od_6044.txt", (0, 1, 2))
-    seen, run = set(), []
-    for j, ct, cp in tunnel:
-        if j in seen or (run and j <= run[-1][0]):
-            continue  # the rig repeats its last sample; keep a strictly increasing advance ratio
-        seen.add(j)
-        run.append([j, ct, cp])
-    ct = [[0.0, top[1]]] + [[j, c] for j, c, _ in run]
-    cp = [[0.0, top[2]]] + [[j, p] for j, _, p in run]
-    files = ("apce_12x6_static_0629od.txt", "apce_12x6_0635od_6044.txt")
-    digests = {f: hashlib.sha256((UIUC / f).read_bytes()).hexdigest()[:12] for f in files}
+    if all((UIUC / f).exists() for f in UIUC_FILES):
+        for name, digest in UIUC_FILES.items():
+            if hashlib.sha256((UIUC / name).read_bytes()).hexdigest() != digest:
+                raise SystemExit("X8-06: local UIUC copy %s differs from the pinned bytes" % name)
+        static = uiuc_rows("apce_12x6_static_0629od.txt", (0, 1, 2))
+        tunnel = [r for i, r in enumerate(uiuc_rows("apce_12x6_0635od_6044.txt", (0, 1, 2)))
+                  if i == 0 or r[0] > uiuc_rows("apce_12x6_0635od_6044.txt", (0, 1, 2))[i - 1][0]]
+        if static[-1] != STATIC_TOP or tunnel != TUNNEL_6044:
+            raise SystemExit("X8-06: carried UIUC rows differ from the local copies")
+    ct = [[0.0, STATIC_TOP[1]]] + [[j, c] for j, c, _ in TUNNEL_6044]
+    cp = [[0.0, STATIC_TOP[2]]] + [[j, p] for j, _, p in TUNNEL_6044]
     source = ("UIUC propeller database Vol. 4 APC 12x6E (thin electric), measured: static %s (sha256 %s…, %d rpm row) and "
               "tunnel %s at 6044 rpm (sha256 %s…, repeated end rows dropped); local copy references/rc-propellers-12x6/uiuc. "
               "A pusher APC 12x6EP is the mirror image (same CT/CP); the X8 turns ~10,000 rpm (higher Reynolds number than "
-              "the 6044 rpm run); J 0-%.3f bridged linearly" % (files[0], digests[files[0]], top[0], files[1], digests[files[1]], run[0][0]))
+              "the 6044 rpm run); J 0-%.3f bridged linearly" % ("apce_12x6_static_0629od.txt", UIUC_FILES["apce_12x6_static_0629od.txt"][:12],
+              STATIC_TOP[0], "apce_12x6_0635od_6044.txt", UIUC_FILES["apce_12x6_0635od_6044.txt"][:12], TUNNEL_6044[0][0]))
     return ct, cp, source
 
 
@@ -673,21 +694,22 @@ def pack_variant(raw, pack, pack_bytes):
 
 
 def render(raw):
-    return json.dumps(raw, indent=2, ensure_ascii=False) + "\n"
+    # .gitattributes checks aircraft JSON out with CRLF; write those exact bytes so hashes match any checkout.
+    return (json.dumps(raw, indent=2, ensure_ascii=False, allow_nan=False) + "\n").replace("\n", "\r\n").encode("utf-8")
 
 
 def main():
     raw, pack, pack_bytes, summary = build()
     outputs = {OUTPUT: render(raw), PACK_OUTPUT: render(pack_variant(raw, pack, pack_bytes))}
     if "--check" in sys.argv:
-        stale = [p for p, text in outputs.items() if not p.exists() or p.read_text(encoding="utf-8") != text]
+        stale = [p for p, data in outputs.items() if not p.exists() or p.read_bytes() != data]
         for p in stale:
             print("stale or missing: %s (run %s)" % (p.relative_to(ROOT).as_posix(), SCRIPT))
         if not stale:
             print("X8-06 physics data current (%d files)" % len(outputs))
         return 1 if stale else 0
-    for p, text in outputs.items():
-        p.write_text(text, encoding="utf-8", newline="\n")
+    for p, data in outputs.items():
+        p.write_bytes(data)
         print("wrote", p.relative_to(ROOT).as_posix())
     print(json.dumps({k: (round(v, 5) if isinstance(v, float) else v) for k, v in summary.items()}, default=str))
     return 0

@@ -1,0 +1,296 @@
+{
+ "format": "openrc-research-sources v1",
+ "step": "X8-01",
+ "accessed": "2026-10-25",
+ "note": "Local copies live in the ignored references/ folder (references/skywalker-x8/ with SHA256SUMS, and the 2026-10-18 flying-wing library); public availability does not grant redistribution.",
+ "sources": [
+  {
+   "id": "S01",
+   "title": "Gryte, Hann, Alam, Rohac, Johansen, Fossen (2018) Aerodynamic modeling of the Skywalker X8 Fixed-Wing UAV, ICUAS 2018",
+   "url": "https://doi.org/10.1109/ICUAS.2018.8453370",
+   "accessed": "2026-10-25",
+   "supports": "Wind-tunnel (VZLU) static coefficients and XFLR5 stability derivatives (Table V); test matrix; CG 440 mm; b 2.1 m, c 0.357 m; HS-5085MG servos; CG-sensitivity discussion",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2018_wind_tunnel.pdf"
+  },
+  {
+   "id": "S02",
+   "title": "Reinhardt, Gryte, Johansen (2022) Modeling of the Skywalker X8 Fixed-Wing UAV: Flight Tests and System Identification, ICUAS 2022",
+   "url": "https://doi.org/10.1109/icuas54217.2022.9836104",
+   "accessed": "2026-10-25",
+   "supports": "Re-identified tunnel model (Table I), lever arm, bifilar inertia matrix, Fitzpatrick propeller parameters, STLSQ damping model. DOI suffix differs from repo README (9836114); verify",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2022_flight_sysid.pdf"
+  },
+  {
+   "id": "S03",
+   "title": "Low-Hansen, Hann, Johansen, Deiler (2024) Time-Domain System Identification and Validation of Small Fixed-Wing UAV Dynamics (AIAA)",
+   "url": "https://doi.org/10.2514/6.2024-4653",
+   "accessed": "2026-10-25",
+   "supports": "Mass/inertia/geometry Table 1, elevon mapping eq.14, flight-identified coefficients Table 6, propulsion Tables 3-4, actuator model Table 7, NTNU hardware (Hacker A40-12S, Jeti SPIN Pro 66, Aeronaut CAM 14x8)",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2024_time_domain_sysid.pdf"
+  },
+  {
+   "id": "S04",
+   "title": "Low-Hansen, Hann, Gryte, Johansen, Deiler (2025) Modeling and identification of a small fixed-wing UAV using estimated aerodynamic angles, CEAS Aeronautical Journal (CC BY 4.0)",
+   "url": "https://doi.org/10.1007/s13272-025-00816-3",
+   "accessed": "2026-10-25",
+   "supports": "Revised flight-identified coefficients Table 8, trim, linear modes Tables 10-11, actuators Table 9, propulsion Tables 6-7",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2025_estimated_aerodynamic_angles.pdf"
+  },
+  {
+   "id": "S05",
+   "title": "Low-Hansen, Lindner, Johansen, Hann, Deiler (2026) UAV icing: system identification of leading-edge rime-ice effects on a small fixed-wing drone, The Aeronautical Journal (CC BY 4.0)",
+   "url": "https://doi.org/10.1017/aer.2026.10234",
+   "accessed": "2026-10-25",
+   "supports": "Clean flight-identified coefficients Tables 11-12 (recommended baseline), mass 3.730 kg, inertia, sweep 28.3 deg, CG measurement, propulsion Tables 3-4, elevon range +-19 deg, servo delay, trim/poles Table 13, power balance Table 14, 16 V 8 Ah battery",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2026_icing_sysid.pdf"
+  },
+  {
+   "id": "S06",
+   "title": "Winter, Hann, Wenz, Gryte, Johansen (2019) Stability of a Flying Wing UAV in Icing Conditions, EUCASS 2019 (author-corrected version)",
+   "url": "https://doi.org/10.13009/EUCASS2019-906",
+   "accessed": "2026-10-25",
+   "supports": "CFD clean CLmax 1.1 at 18 deg, CFD static slopes Table 8, CFD dynamic derivatives Tables 9-10, physical properties Table 2 (sweep ~30 deg, wing without body ~0.4 m2)",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2019_icing_cfd_corrected.pdf"
+  },
+  {
+   "id": "S07",
+   "title": "Winter (2019) X8 icing master thesis (NTNU)",
+   "url": "https://ntnuopen.ntnu.no/",
+   "accessed": "2026-10-25",
+   "supports": "CATIA mass/inertia build-up Tables 3.1-3.2 with assumed foam densities, CG 425 mm, CFD-based min sink and glide ratio, simulator envelope 12-25 m/s",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2019_icing_thesis.pdf"
+  },
+  {
+   "id": "S08",
+   "title": "Mohammadi Farhadi, Kortunov, Molchanov, Solianyk (2018) Estimation of the lateral aerodynamic coefficients for Skywalker X8 flying wing from real flight-test data, Acta Polytechnica 58(2)",
+   "url": "https://doi.org/10.14311/AP.2018.58.0077",
+   "accessed": "2026-10-25",
+   "supports": "KhAI X8 airframe parameters Table 1 (4.5 kg, inertia), lateral flight estimates Tables 4-5",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2018_lateral_flight.pdf"
+  },
+  {
+   "id": "S09",
+   "title": "Low-Hansen (2024) System identification campaign - Skywalker X8 UAV (DataverseNO)",
+   "url": "https://doi.org/10.18710/U4TLYV",
+   "accessed": "2026-10-25",
+   "supports": "17 processed flight manoeuvres; licence CC0 1.0 per DataverseNO API",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_sysid_campaign_2024.zip"
+  },
+  {
+   "id": "S10",
+   "title": "Flight-Test System Identification of Leading-Edge Rime-Ice Effects on a Small Fixed-Wing UAV (DataverseNO, 2026)",
+   "url": "https://doi.org/10.18710/NNHVBP",
+   "accessed": "2026-10-25",
+   "supports": "106 clean/iced manoeuvres incl. motor speed; licence CC0 1.0 (metadata) vs CC-BY 4.0 (embedded README)",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2026_iced_flight_data.zip"
+  },
+  {
+   "id": "S11",
+   "title": "Gryte (2015) High Angle of Attack Landing of an Unmanned Aerial Vehicle, MSc thesis, NTNU",
+   "url": "https://hdl.handle.net/11250/2352405",
+   "accessed": "2026-10-25",
+   "supports": "3-D-scan chord/LE table E.1 (planform, elevon stations), measured component masses Table 6.2, CG Table 6.1, rough inertia Table 6.3, XFLR5+tuned coefficients Table 6.4, flat-plate stall blend (M, alpha0, Cm_fp), servo limits (-30/+35 deg), Hacker A40-12S and Zippy 4S data Tables H.1-H.2, winglet modelled at 76.5 deg dihedral. Licence: Norwegian copyright act (open access)",
+   "local_path": "references/skywalker-x8/gryte_2015_msc_high_aoa_landing.pdf"
+  },
+  {
+   "id": "S12",
+   "title": "Gryte (2020) Precision control of fixed-wing UAV and robust navigation in GNSS-denied environments, PhD thesis, NTNU",
+   "url": "https://hdl.handle.net/11250/2657113",
+   "accessed": "2026-10-25",
+   "supports": "Bifilar-pendulum inertia Table 6.1 (Ixx 0.335, Iyy 0.140, Izz 0.40, Ixz -0.029), added-mass discussion, ~3.5 kg takeoff weight, 18 m/s cruise, net/belly landing context. Licence: Norwegian copyright act (open access)",
+   "local_path": "references/skywalker-x8/gryte_2020_phd_thesis.pdf"
+  },
+  {
+   "id": "S13",
+   "title": "Coates, Wenz, Gryte, Johansen (2019) Propulsion System Modeling for Small Fixed-Wing UAVs, ICUAS 2019 (accepted version)",
+   "url": "https://hdl.handle.net/11250/2630227",
+   "accessed": "2026-10-25",
+   "supports": "NTNU X8 propulsion hardware Table I, motor/prop parameters Tables II-IV, thrust errors Table V (max thrust ~31.9 N derived), 64.5 A max current. DOI 10.1109/ICUAS.2019.8798082. Licence: Norwegian copyright act (accepted manuscript)",
+   "local_path": "references/skywalker-x8/coates_2019_propulsion_icuas_accepted.pdf"
+  },
+  {
+   "id": "S14",
+   "title": "krisgry/x8 - Simple UAV simulator for the Skywalker X8 (GitHub, commit 8bfb2d9, 2018-06-14)",
+   "url": "https://github.com/krisgry/x8",
+   "accessed": "2026-10-25",
+   "supports": "Published parameter file x8_param.mat (c = S/b, tuned Cm and Cnr, B&M thrust model, superseded inertia). No licence (GitHub API license null)",
+   "local_path": "references/skywalker-x8/models/krisgry_x8/"
+  },
+  {
+   "id": "S15",
+   "title": "Akkodis/FW-JSBGym - JSBSim X8 model (x8.xml, x8-set.xml, x8.ac, x8_param.txt)",
+   "url": "https://github.com/Akkodis/FW-JSBGym",
+   "accessed": "2026-10-25",
+   "supports": "Free JSBSim/FlightGear X8 model; elevon limits +-30 deg and rate 3.49066 rad/s; 2019 NTNU parameter dump (k_Omega 797.1 rad/s, k_motor 37.42, C_prop 0.248). Repo MIT, x8.xml header GPL, mesh provenance unknown",
+   "local_path": "references/skywalker-x8/models/fw_jsbgym/"
+  },
+  {
+   "id": "S16",
+   "title": "tensoraerospace documentation - Skywalker X8 nonlinear model",
+   "url": "https://tensoraerospace.readthedocs.io/en/latest/model/skywalker_x8_nonlinear/",
+   "accessed": "2026-10-25",
+   "supports": "Third-party Python model using S04 coefficients; +-20 deg elevon limit; unsourced 40 N static thrust; licence not stated",
+   "local_path": null
+  },
+  {
+   "id": "S17",
+   "title": "UIUC Propeller Database Vol. 3 - Aero-naut CAM folding propellers (ancf_14x8 files)",
+   "url": "https://m-selig.ae.illinois.edu/props/volume-3/propDB-volume-3.html",
+   "accessed": "2026-10-25",
+   "supports": "Measured static and advance-ratio CT/CP/eta for Aero-naut CAM 14x8 folding prop. No explicit licence; citation requested by site",
+   "local_path": "references/skywalker-x8/uiuc/ (vol3_ancf_14x8_*.txt)"
+  },
+  {
+   "id": "S18",
+   "title": "UIUC Propeller Database Vol. 4 - APC thin electric (apce_14x7, apce_14x85, apce_13x8 files)",
+   "url": "https://m-selig.ae.illinois.edu/props/volume-4/propDB-volume-4.html",
+   "accessed": "2026-10-25",
+   "supports": "Measured CT/CP/eta for APC 14x7E, 14x8.5E, 13x8E comparators. No explicit licence; citation requested",
+   "local_path": "references/skywalker-x8/uiuc/ (vol4_apce_*.txt)"
+  },
+  {
+   "id": "S19",
+   "title": "Dantsker, Caccamo, Deters, Selig (2020) Performance Testing of Aero-Naut CAM Folding Propellers, AIAA 2020-2760",
+   "url": "https://doi.org/10.2514/6.2020-2760",
+   "accessed": "2026-10-25",
+   "supports": "Reference paper for UIUC Vol. 3 data (not downloaded)",
+   "local_path": null
+  },
+  {
+   "id": "S20",
+   "title": "ReadyMadeRC - Skywalker X8 Kit 2120mm EPO FPV Wing product page",
+   "url": "https://www.readymaderc.com/products/details/skywalker-model-x8-wing",
+   "accessed": "2026-10-25",
+   "supports": "Span 2120 mm, length 790 mm, 80 dm2, flying weight 2500-3000 g, CG 430-440 mm, air speed 65-70 km/h, 25 min, catapult/bungee launch, recommended motor/prop/ESC/servo/6S battery",
+   "local_path": null
+  },
+  {
+   "id": "S21",
+   "title": "Unmanned Tech UK - Skywalker X8 PNP (YF-1008A) product page",
+   "url": "https://www.unmannedtechshop.co.uk/products/yf-1008a-skywalker-x8-pnp-2120mm-epo-fpv-wing",
+   "accessed": "2026-10-25",
+   "supports": "PNP electronics: Skywalker 3530 520KV, 14x8 folding prop, Hobbywing 60A, 2x17 g servos, 6S; landing slide/skid/parachute",
+   "local_path": null
+  },
+  {
+   "id": "S22",
+   "title": "Unmanned Tech UK - Skywalker X8 Kit product page",
+   "url": "https://www.unmannedtechshop.co.uk/products/skywalker-x8-kit-2120mm-epo-fpv-wing",
+   "accessed": "2026-10-25",
+   "supports": "Kit specification and recommended equipment; launch catapult/bungee/hand",
+   "local_path": null
+  },
+  {
+   "id": "S23",
+   "title": "RobotShop - SonicModell Skywalker X8 2122 Flying Wing complete kit",
+   "url": "https://www.robotshop.com/products/sonicmodell-skywalker-x8-2122-flying-wing-drone-fpv-complete-kit",
+   "accessed": "2026-10-25",
+   "supports": "Span 2122 mm, 80 dm2, CG 430-440 mm, max AUW 3500 g",
+   "local_path": null
+  },
+  {
+   "id": "S24",
+   "title": "Skyraccoon aircraft database - Skywalker X8",
+   "url": "https://www.skyraccoon.com/aircraft/SkyWalker_X8_1642",
+   "accessed": "2026-10-25",
+   "supports": "Span 2122 mm, length 790 mm, 80 dm2, weight 2000 g, payload 1000-2000 g, CG 440 mm",
+   "local_path": null
+  },
+  {
+   "id": "S25",
+   "title": "FliteTest (2013) Skywalker X-8 review",
+   "url": "https://www.flitetest.com/articles/skywalker-x-8",
+   "accessed": "2026-10-25",
+   "supports": "Qualitative: EPO foam, wings held by a small screw, nose bump causes bouncing on landing",
+   "local_path": null
+  },
+  {
+   "id": "S26",
+   "title": "ArduPilot Plane documentation - Elevon planes",
+   "url": "https://ardupilot.org/plane/docs/guide-elevon-plane.html",
+   "accessed": "2026-10-25",
+   "supports": "MIXING_GAIN/MIXING_OFFSET semantics, servo functions 77/78, throw guidance",
+   "local_path": null
+  },
+  {
+   "id": "S27",
+   "title": "ArduPilot SITL SIM_Plane.cpp",
+   "url": "https://github.com/ArduPilot/ardupilot/blob/master/libraries/SITL/SIM_Plane.cpp",
+   "accessed": "2026-10-25",
+   "supports": "plane-elevon frame uses generic last_letter coefficients; coefficient JSON loading; GPLv3",
+   "local_path": null
+  },
+  {
+   "id": "S28",
+   "title": "pavlab-mit/project-skywalker - UAV Flight #1 Hot Report (Skywalker X8)",
+   "url": "https://github.com/pavlab-mit/project-skywalker",
+   "accessed": "2026-10-25",
+   "supports": "Qualitative crash evidence: hand-launch stall, nose collapse, wings separated at front rod, cold brittle foam. No licence",
+   "local_path": "references/skywalker-x8/models/pavlab/flight_report.pdf"
+  },
+  {
+   "id": "S29",
+   "title": "DIYDrones (2013) X8 3D scanning blog post",
+   "url": "https://diydrones.com/profiles/blogs/x8-3d-scanning",
+   "accessed": "2026-10-25",
+   "supports": "Source of the public X8 STL scan used by NTNU; no licence stated",
+   "local_path": null
+  },
+  {
+   "id": "S30",
+   "title": "Xometry - EPO (Expanded Polyolefin) material sheet",
+   "url": "https://xometry.pro/wp-content/uploads/2025/07/EPO-Expanded-Polyolefin-1.pdf",
+   "accessed": "2026-10-25",
+   "supports": "Generic EPO density 0.025 g/cm3 and mechanical properties (footnote says data based on 60 g/L material: inconsistent)",
+   "local_path": "references/skywalker-x8/xometry_epo_expanded_polyolefin.pdf"
+  },
+  {
+   "id": "S31",
+   "title": "Virginia Tech (2002) Zagi 400X morphing/wind-tunnel senior design report",
+   "url": "https://archive.aoe.vt.edu/mason/Mason_f/FinalMorphRpt02.pdf",
+   "accessed": "2026-10-25",
+   "supports": "Analog foam flying wing: stall ~12 deg, CLmax 0.954 (0 deg elevon), 1.18 / 0.684 with elevon",
+   "local_path": "references/rc-validation-library-2026-10-18/flying-wings/zagi_400x_vt_2002_tunnel.pdf"
+  },
+  {
+   "id": "S32",
+   "title": "Hacker A40-12S V2 14-pole motor data (as reproduced in S11 Table H.1)",
+   "url": "http://www.hacker-motor-shop.com/e-vendo.php?shop=hacker_e&a=article&ProdNr=33726606&t=3&c=310&p=310",
+   "accessed": "2026-10-25",
+   "supports": "KV610, Ri 0.017 ohm, 900 W/15 s, 208 g (via S11; original page not re-checked)",
+   "local_path": null
+  },
+  {
+   "id": "S33",
+   "title": "Repository asset delivery: Skywalker X8 r4 (Blender/GLB)",
+   "url": "assets/source-deliveries/skywalker-x8-r4/skywalker_x8/r4/README.md",
+   "accessed": "2026-10-25",
+   "supports": "Visual-model geometry estimates (span 2.1172 m, nose-spinner 0.875 m, elevon 242-878 mm, chord 70-58 mm, winglet cant 28 deg, dihedral 1.5 deg, washout -2.5 deg, elevon visual travel). Internal, estimated",
+   "local_path": "assets/source-deliveries/skywalker-x8-r4/skywalker_x8/r4/"
+  },
+  {
+   "id": "S34",
+   "title": "Repository research: crash-damage RC construction material evidence (Rumianek et al. EPP data)",
+   "url": "docs/research/crash-damage-investigations/03-rc-construction-material-joint-evidence.md",
+   "accessed": "2026-10-25",
+   "supports": "EPP comparator strengths and the rule not to use coupon strength as component threshold",
+   "local_path": "docs/research/crash-damage-investigations/03-rc-construction-material-joint-evidence.md"
+  },
+  {
+   "id": "X01",
+   "title": "Skywalker X8 assembly manual (ManualsLib / manuals.plus)",
+   "url": "https://www.manualslib.com/manual/1074132/Skywalker-X8.html",
+   "accessed": "2026-10-25",
+   "supports": "NOT READ: HTTP 403; only search snippets seen (CG mark at rear of hand-launch cut-outs, 440 mm, +-5 mm). Not bypassed",
+   "local_path": null
+  },
+  {
+   "id": "X02",
+   "title": "Sekisui Piocelan datasheets (SpecialChem / Knowde)",
+   "url": "https://www.specialchem.com/plastics/product/sekisui-plastics-piocelan-op-15ens",
+   "accessed": "2026-10-25",
+   "supports": "NOT READ: values login-gated",
+   "local_path": null
+  }
+ ]
+}

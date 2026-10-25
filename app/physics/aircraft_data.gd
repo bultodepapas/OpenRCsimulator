@@ -1001,8 +1001,12 @@ static func _derive_tailless(errors: PackedStringArray, envelope: Dictionary, su
 		elevon_sum += elevon[i]
 		slope_moment += slope[i] * (x0[i] - arp[0])
 	var tau: float = float(aero.CLde) * n / elevon_sum
-	if not is_finite(tau) or tau < 0.05 or tau > 1.0:
-		errors.append("aero.surfaces.tailless: elevon strip effectiveness %s needed for CLde lies outside 0.05–1 (coverage or CLde inconsistent)" % tau)
+	# The elevon's chord fraction E bounds τ against thin-airfoil flap theory, τ_ta = 1 − (θ − sin θ)/π with
+	# cos θ = 2E − 1: measured plain-flap effectiveness falls below τ_ta (viscous losses, gaps), never far above it.
+	var theta: float = M.acos_(2.0 * float(block.elevon_chord_fraction) - 1.0)
+	var tau_thin: float = 1.0 - (theta - M.sin_(theta)) / PI
+	if not is_finite(tau) or tau < 0.2 * tau_thin or tau > 1.5 * tau_thin:
+		errors.append("aero.surfaces.tailless: elevon strip effectiveness %s needed for CLde lies outside 0.2–1.5 of the thin-airfoil %s for chord fraction %s (coverage or CLde inconsistent)" % [tau, tau_thin, block.elevon_chord_fraction])
 		return
 	var shift: float = (-float(aero.Cma) * n * chord - slope_moment) / slope_sum
 	if not is_finite(shift) or absf(shift) > 0.25 * chord:
@@ -1030,6 +1034,7 @@ static func _derive_tailless(errors: PackedStringArray, envelope: Dictionary, su
 	block.station_x = xs
 	block.station_shift = shift
 	block.tau = tau
+	block.thin_airfoil_tau = tau_thin
 	block.moment_per_rad = km
 	surfaces.wing_cm_ac = cm_ac
 

@@ -992,8 +992,7 @@
                 "value": {
                   "type": "number",
                   "minimum": -100,
-                  "maximum": 100,
-                  "exclusiveMaximum": 0
+                  "maximum": 100
                 },
                 "unit": {
                   "const": "1/rad"
@@ -6716,6 +6715,17 @@
           },
           "aero": {
             "properties": {
+              "coefficients": {
+                "properties": {
+                  "Cndr": {
+                    "properties": {
+                      "value": {
+                        "exclusiveMaximum": 0
+                      }
+                    }
+                  }
+                }
+              },
               "surfaces": {
                 "properties": {
                   "vertical": {

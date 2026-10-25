@@ -13,6 +13,15 @@ const TIMBER := "turbo-lumber-evolution"
 var checks := 0
 var failures := 0
 
+## X8-04: the frozen references describe the wing-tail strip law; the tailless law (X8) has no frozen predecessor and
+## is covered by test_x8_flying_wing.gd. Skipped flights are freed here.
+func _tailless(flight: Node) -> bool:
+	if not flight.aircraft.model.get("surfaces", {}).has("tailless"):
+		return false
+	flight.queue_free()
+	return true
+
+
 func _initialize() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 44117
@@ -20,6 +29,8 @@ func _initialize() -> void:
 		var flight := Flight.new()
 		flight.setup(Catalog.entry(id).data)
 		root.add_child(flight)
+		if _tailless(flight):
+			continue
 		var model: Dictionary = flight.aircraft.model.duplicate(true)
 		for key in ["downwash_gradient", "free_slope", "elevator_tau", "downwash_per_cl", "free_incidence", "wing_cl0"]:
 			model.surfaces.horizontal.erase(key) # E0a2a: the frozen oracle predates the tail downwash split
@@ -71,6 +82,8 @@ func _check_local_loads() -> void:
 		var flight := Flight.new()
 		flight.setup(Catalog.entry(id).data)
 		root.add_child(flight)
+		if _tailless(flight):
+			continue
 		var authored_model: Dictionary = flight.aircraft.model.duplicate(true)
 		var oracle_model: Dictionary = authored_model.duplicate(true)
 		var actual_model: Dictionary = authored_model.duplicate(true)

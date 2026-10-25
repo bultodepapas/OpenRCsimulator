@@ -36,6 +36,22 @@ const AIRFRAME_STRIDE := 5
 ## (surface transfer 1, conservative), or when any point is pushed this deep (a slow crush).
 const TERMINAL_J_PER_KG := 2.5
 const CRASH_DEPTH_M := 0.08
+## X8-08: an aircraft with damage "tolerant_hull" (an EPO foam airframe) carries its own evidence-bearing thresholds
+## (model.crash_tolerance); prepare()/prepare_geometry() store them and every terminal test reads them back. Without
+## them the prepared dictionary is unchanged and the shared constants above apply.
+static func terminal_energy(prepared: Dictionary) -> float:
+	return float(prepared.get("terminal_j_per_kg", TERMINAL_J_PER_KG))
+
+
+static func crash_depth(prepared: Dictionary) -> float:
+	return float(prepared.get("crash_depth_m", CRASH_DEPTH_M))
+
+
+static func _with_tolerance(prepared: Dictionary, tolerance: Dictionary) -> Dictionary:
+	if not tolerance.is_empty():
+		prepared["terminal_j_per_kg"] = float(tolerance.terminal_specific_energy)
+		prepared["crash_depth_m"] = float(tolerance.crash_depth)
+	return prepared
 ## E3d2: a turning propeller whose disc reaches the field is a prop strike (engine stops, not a crash). Estimate: any
 ## rotation a pilot would hear; research 04 §6 proposed 1.5 × idle, but a glow prop at idle also breaks on the ground.
 const STRIKE_MIN_RPM := 300.0
@@ -116,7 +132,7 @@ const _DIRECTIONS := [
 ## Per-point stiffness/damping for `hull` (body FRD about the CG, flattened) from the smallest effective mass over
 ## 26 body directions. Returns {} when the inputs cannot support a contact (callers then add no hull forces).
 static func prepare(hull: PackedFloat64Array, mass: float, inertia: PackedFloat64Array,
-		lake: Dictionary = {}, surfaces := PackedFloat64Array()) -> Dictionary:
+		lake: Dictionary = {}, surfaces := PackedFloat64Array(), tolerance: Dictionary = {}) -> Dictionary:
 	if hull.is_empty() or hull.size() % 3 != 0 or not is_finite(mass) or mass <= 0.0 \
 			or (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)):
 		return {}
@@ -140,14 +156,14 @@ static func prepare(hull: PackedFloat64Array, mass: float, inertia: PackedFloat6
 	if not lake.is_empty():
 		prepared["lake"] = lake.duplicate(true)
 		prepared["lake_bounds_ne_m"] = _polygon_bounds(lake.bank_ne_m)
-	return prepared
+	return _with_tolerance(prepared, tolerance)
 
 
 ## Geometry-only preparation for a body whose mass properties change during flight. It deliberately does no
 ## inertia inversion or contact-coefficient work; the stage path can reject distant hulls before building a
 ## short-lived coefficient view from its one sampled mass-properties snapshot.
 static func prepare_geometry(hull: PackedFloat64Array, lake: Dictionary = {},
-		surfaces := PackedFloat64Array()) -> Dictionary:
+		surfaces := PackedFloat64Array(), tolerance: Dictionary = {}) -> Dictionary:
 	if hull.is_empty() or hull.size() % 3 != 0 or not _finite_array(hull) \
 			or (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)):
 		return {}
@@ -158,7 +174,7 @@ static func prepare_geometry(hull: PackedFloat64Array, lake: Dictionary = {},
 	if not lake.is_empty():
 		geometry["lake"] = lake.duplicate(true)
 		geometry["lake_bounds_ne_m"] = _polygon_bounds(lake.bank_ne_m)
-	return geometry
+	return _with_tolerance(geometry, tolerance)
 
 
 ## Stage loads for live mass properties, returning failure separately from a valid no-contact result.
@@ -353,7 +369,8 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary,
 
 ## The hull point that makes the step previous → s a crash, or -1. Graded on the point's state in `previous` (just
 ## before it touched): a point newly below the ground crashes when transfer-free ½·m_eff·v_n²/m reaches
-## TERMINAL_J_PER_KG; any point deeper than CRASH_DEPTH_M crashes too. Returns {index, rule, specific_j_per_kg,
+## the prepared terminal energy (TERMINAL_J_PER_KG unless X8-08 tolerant); any point deeper than the prepared crash depth
+## (CRASH_DEPTH_M by default) crashes too. Returns {index, rule, specific_j_per_kg,
 ## normal_speed_mps, depth_m}.
 static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepared: Dictionary) -> Dictionary:
 	var none := {index = -1, rule = "", specific_j_per_kg = 0.0, normal_speed_mps = 0.0, depth_m = 0.0}
@@ -382,7 +399,7 @@ static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 		var depth := s[RB.POS + 2] + down_now[0] * hull[i] + down_now[1] * hull[i + 1] + down_now[2] * hull[i + 2]
 		if depth <= 0.0:
 			continue
-		if depth > CRASH_DEPTH_M:
+		if depth > crash_depth(prepared):
 			return {index = i / 3, rule = "depth", specific_j_per_kg = 0.0, normal_speed_mps = 0.0, depth_m = depth}
 		var depth_before := previous[RB.POS + 2] + down_before[0] * r[0] + down_before[1] * r[1] + down_before[2] * r[2]
 		if depth_before > 0.0:
@@ -393,7 +410,7 @@ static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 		if m_eff <= 0.0:
 			m_eff = float(prepared.mass)
 		var specific := 0.5 * m_eff * v_n * v_n / float(prepared.mass)
-		if specific >= TERMINAL_J_PER_KG and specific > float(worst.specific_j_per_kg):
+		if specific >= terminal_energy(prepared) and specific > float(worst.specific_j_per_kg):
 			worst = {index = i / 3, rule = "impact", specific_j_per_kg = specific, normal_speed_mps = v_n, depth_m = depth}
 	return worst
 
@@ -441,7 +458,7 @@ static func terminal_at_properties(previous: PackedFloat64Array, s: PackedFloat6
 		var depth: float = s[RB.POS + 2] + down_now[0] * r[0] + down_now[1] * r[1] + down_now[2] * r[2]
 		if depth <= 0.0:
 			continue
-		if depth > CRASH_DEPTH_M:
+		if depth > crash_depth(geometry):
 			return {ok = true, event = {index = i / 3, rule = "depth", specific_j_per_kg = 0.0,
 				normal_speed_mps = 0.0, depth_m = depth}, reason = ""}
 		var depth_before: float = previous[RB.POS + 2] + down_before[0] * r[0] + down_before[1] * r[1] + down_before[2] * r[2]
@@ -456,7 +473,7 @@ static func terminal_at_properties(previous: PackedFloat64Array, s: PackedFloat6
 			return {ok = false, event = none, reason = str(effective.get("reason", "invalid_effective_mass"))}
 		var specific: float = 0.5 * float(effective.effective_mass_kg) * normal_speed * normal_speed \
 			/ float(properties_previous.mass_kg)
-		if specific >= TERMINAL_J_PER_KG and specific > float(worst.specific_j_per_kg):
+		if specific >= terminal_energy(geometry) and specific > float(worst.specific_j_per_kg):
 			worst = {index = i / 3, rule = "impact", specific_j_per_kg = specific,
 				normal_speed_mps = normal_speed, depth_m = depth}
 	return {ok = true, event = worst, reason = ""}
@@ -551,7 +568,7 @@ static func _lake_terminal_candidate(previous: PackedFloat64Array, s: PackedFloa
 	var depth: float = (point_now[2] - float(terrain_now.ground_down_m)) / normal_length
 	if depth <= 0.0:
 		return {}
-	if depth > CRASH_DEPTH_M:
+	if depth > crash_depth(prepared):
 		return {index = point_index, rule = "depth", specific_j_per_kg = 0.0,
 			normal_speed_mps = 0.0, depth_m = depth}
 	var point_before: PackedFloat64Array = _point_ned(previous, body_point)
@@ -576,7 +593,7 @@ static func _lake_terminal_candidate(previous: PackedFloat64Array, s: PackedFloa
 	if effective_mass <= 0.0:
 		effective_mass = float(prepared.mass)
 	var specific: float = 0.5 * effective_mass * normal_speed * normal_speed / float(prepared.mass)
-	if specific >= TERMINAL_J_PER_KG:
+	if specific >= terminal_energy(prepared):
 		return {index = point_index, rule = "impact", specific_j_per_kg = specific,
 			normal_speed_mps = normal_speed, depth_m = depth}
 	return {}
@@ -594,7 +611,7 @@ static func _lake_terminal_candidate_properties(previous: PackedFloat64Array, s:
 	var depth: float = (point_now[2] - float(terrain_now.ground_down_m)) / normal_length
 	if depth <= 0.0:
 		return {}
-	if depth > CRASH_DEPTH_M:
+	if depth > crash_depth(geometry):
 		return {index = point_index, rule = "depth", specific_j_per_kg = 0.0,
 			normal_speed_mps = 0.0, depth_m = depth}
 	var point_before: PackedFloat64Array = _point_ned(previous, body_point_o)
@@ -619,7 +636,7 @@ static func _lake_terminal_candidate_properties(previous: PackedFloat64Array, s:
 		return {invalid = true, reason = str(effective.get("reason", "invalid_effective_mass"))}
 	var specific: float = 0.5 * float(effective.effective_mass_kg) * normal_speed * normal_speed \
 		/ float(properties_previous.mass_kg)
-	if specific >= TERMINAL_J_PER_KG:
+	if specific >= terminal_energy(geometry):
 		return {index = point_index, rule = "impact", specific_j_per_kg = specific,
 			normal_speed_mps = normal_speed, depth_m = depth}
 	return {}

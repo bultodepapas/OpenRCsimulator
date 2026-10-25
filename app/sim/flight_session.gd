@@ -1352,9 +1352,11 @@ func _sync_post_step() -> void:
 
 
 func _prepare_hull_contact() -> Dictionary:
+	# X8-08: a tolerant (foam) hull carries its own terminal thresholds; absent, the shared ones apply.
+	var tolerance: Dictionary = aircraft.model.get("crash_tolerance", {})
 	if finite_fuel_is_active():
-		return HullContact.prepare_geometry(aircraft.model.crash_hull, _lake, airframe_surfaces)
-	return HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake, airframe_surfaces)
+		return HullContact.prepare_geometry(aircraft.model.crash_hull, _lake, airframe_surfaces, tolerance)
+	return HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake, airframe_surfaces, tolerance)
 
 
 ## Installs one normalized, detached world at a flight boundary. Proxy data contains scalar NED geometry only.
@@ -1671,9 +1673,13 @@ func _model_is_valid(model: Dictionary) -> bool:
 		return false
 	var controls: Dictionary = model.get("controls", {})
 	var throws: Dictionary = controls.get("throw_rad", {})
-	for axis in ["aileron", "elevator", "rudder"]:
+	# X8-03: an elevon aircraft has an elevon end point and an exactly zero rudder throw instead of a rudder.
+	var elevon: bool = controls.get("layout", "") == "elevon"
+	for axis in (["aileron", "elevator", "elevon"] if elevon else ["aileron", "elevator", "rudder"]):
 		if not throws.has(axis) or not is_finite(float(throws[axis])) or throws[axis] <= 0.0:
 			return false
+	if elevon and float(throws.get("rudder", NAN)) != 0.0:
+		return false
 	return true
 
 
@@ -4237,6 +4243,9 @@ func trace_meta() -> Dictionary:
 		metadata.mass_reference = "mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum"
 	if soft_hull_contacts:
 		metadata.hull_contact_model = HullContact.law()
+		if aircraft.model.has("crash_tolerance"):
+			# X8-08: the aircraft's own terminal thresholds replace the law's shared ones.
+			metadata.hull_contact_tolerance = aircraft.model.crash_tolerance.duplicate()
 	if not _collision_world.is_empty():
 		metadata.scenery_collision_model = "openrc-swept-landscape-contact v1"
 		metadata.collision_world_identity = str(_collision_world.identity)
