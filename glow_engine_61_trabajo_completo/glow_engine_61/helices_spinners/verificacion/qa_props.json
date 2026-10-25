@@ -1,0 +1,194 @@
+{
+ "ROOT_APC_11x7": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "PROP_APC_11x7: 5 zero-area UV faces",
+   "PROP_APC_11x7: degenerate faces=5 zero-len edges=0",
+   "asset lowest point z=-0.0148 (not resting on ground plane z=0)"
+  ],
+  "tris": 11098
+ },
+ "ROOT_APC_11x8": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "PROP_APC_11x8: 7 zero-area UV faces",
+   "PROP_APC_11x8: degenerate faces=7 zero-len edges=0",
+   "asset lowest point z=-0.0148 (not resting on ground plane z=0)"
+  ],
+  "tris": 11108
+ },
+ "ROOT_APC_12.5x6": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "PROP_APC_12.5x6: 6 zero-area UV faces",
+   "PROP_APC_12.5x6: degenerate faces=6 zero-len edges=0",
+   "hidden back-to-back faces: PROP_APC_12.5x6 (64 pairs) - delete to save tris",
+   "asset lowest point z=-0.0162 (not resting on ground plane z=0)"
+  ],
+  "tris": 11482
+ },
+ "ROOT_APC_12x6": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "PROP_APC_12x6: 7 zero-area UV faces",
+   "PROP_APC_12x6: degenerate faces=7 zero-len edges=0",
+   "asset lowest point z=-0.0155 (not resting on ground plane z=0)"
+  ],
+  "tris": 10928
+ },
+ "ROOT_APC_12x7": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "PROP_APC_12x7: 6 zero-area UV faces",
+   "PROP_APC_12x7: degenerate faces=6 zero-len edges=0",
+   "hidden back-to-back faces: PROP_APC_12x7 (1 pairs) - delete to save tris",
+   "asset lowest point z=-0.0155 (not resting on ground plane z=0)"
+  ],
+  "tris": 10934
+ },
+ "ROOT_HW_A": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "HW_A_Tornillo_10-32: ~16.67% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+   "HW_A_Tuerca_Spinner: 1 zero-area UV faces",
+   "HW_A_Tuerca_Spinner: degenerate faces=1 zero-len edges=0",
+   "hidden back-to-back faces: HW_A_Tornillo_10-32<->HW_A_Tuerca_Spinner (557 pairs) - delete to save tris",
+   "hidden back-to-back faces: HW_A_Arandela<->HW_A_Tuerca_Spinner (178 pairs) - delete to save tris",
+   "asset lowest point z=-0.0116 (not resting on ground plane z=0)"
+  ],
+  "tris": 14156
+ },
+ "ROOT_HW_B": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "HW_B_Tuerca: 1 zero-area UV faces",
+   "HW_B_Tuerca: degenerate faces=1 zero-len edges=0",
+   "hidden back-to-back faces: HW_B_Arandela<->HW_B_Tuerca (178 pairs) - delete to save tris",
+   "hidden back-to-back faces: HW_B_Tornillo_M3.5x18_0<->HW_B_Tuerca_Nyloc_0 (114 pairs) - delete to save tris",
+   "hidden back-to-back faces: HW_B_Tornillo_M3.5x18_2<->HW_B_Tuerca_Nyloc_2 (114 pairs) - delete to save tris",
+   "hidden back-to-back faces: HW_B_Tornillo_M3.5x18_1<->HW_B_Tuerca_Nyloc_1 (114 pairs) - delete to save tris"
+  ],
+  "tris": 37314
+ },
+ "ROOT_HW_C": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "HW_C_Tornillo_M3.5x18_0: ~50.0% UV overlap (ok only if mirrored/stacked on purpose; bakes break)",
+   "HW_C_Tuerca: 4 zero-area UV faces",
+   "HW_C_Tuerca: 2 edges with inconsistent face winding",
+   "HW_C_Tuerca: degenerate faces=4 zero-len edges=0",
+   "hidden back-to-back faces: HW_C_Arandela<->HW_C_Tuerca (178 pairs) - delete to save tris",
+   "hidden back-to-back faces: HW_C_Tornillo_M3.5x18_1<->HW_C_Tuerca_Nyloc_1 (114 pairs) - delete to save tris"
+  ],
+  "tris": 25242
+ },
+ "ROOT_HW_D": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "HW_D_Tuerca_Spinner: 4 zero-area UV faces",
+   "HW_D_Tuerca_Spinner: 2 edges with inconsistent face winding",
+   "HW_D_Tuerca_Spinner: degenerate faces=4 zero-len edges=0",
+   "hidden back-to-back faces: HW_D_Tornillo_10-32<->HW_D_Tuerca_Spinner (518 pairs) - delete to save tris",
+   "hidden back-to-back faces: HW_D_Arandela<->HW_D_Tuerca_Spinner (178 pairs) - delete to save tris",
+   "asset lowest point z=-0.0116 (not resting on ground plane z=0)"
+  ],
+  "tris": 14158
+ },
+ "ROOT_MA_3B_11x7": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "PROP_MA_3B_11x7: 4 zero-area UV faces",
+   "PROP_MA_3B_11x7: degenerate faces=5 zero-len edges=0",
+   "asset lowest point z=-0.124 (not resting on ground plane z=0)"
+  ],
+  "tris": 16296
+ },
+ "ROOT_MA_3B_12x6": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "PROP_MA_3B_12x6: 9 zero-area UV faces",
+   "PROP_MA_3B_12x6: degenerate faces=9 zero-len edges=0",
+   "asset lowest point z=-0.1353 (not resting on ground plane z=0)"
+  ],
+  "tris": 16308
+ },
+ "ROOT_MA_GF_11x7": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "PROP_MA_GF_11x7: 4 zero-area UV faces",
+   "PROP_MA_GF_11x7: degenerate faces=5 zero-len edges=0",
+   "asset lowest point z=-0.0125 (not resting on ground plane z=0)"
+  ],
+  "tris": 11292
+ },
+ "ROOT_MA_Scimitar_11x7": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "PROP_MA_Scimitar_11x7: 5 zero-area UV faces",
+   "PROP_MA_Scimitar_11x7: 2 edges with inconsistent face winding",
+   "PROP_MA_Scimitar_11x7: degenerate faces=5 zero-len edges=0",
+   "asset lowest point z=-0.0125 (not resting on ground plane z=0)"
+  ],
+  "tris": 11324
+ },
+ "ROOT_SPIN_DB_2-1_2": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "SPIN_DB_2-1_2_Cono: degenerate faces=10 zero-len edges=0",
+   "SPIN_DB_2-1_2_Placa: 8 zero-area UV faces",
+   "SPIN_DB_2-1_2_Placa: degenerate faces=8 zero-len edges=0",
+   "hidden back-to-back faces: SPIN_DB_2-1_2_Cono<->SPIN_DB_2-1_2_Placa (1718 pairs) - delete to save tris",
+   "asset lowest point z=-0.0315 (not resting on ground plane z=0)"
+  ],
+  "tris": 44544
+ },
+ "ROOT_SPIN_DB_3B_2-3_4": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "SPIN_DB_3B_2-3_4_Cono: degenerate faces=7 zero-len edges=0",
+   "SPIN_DB_3B_2-3_4_Placa: 5 zero-area UV faces",
+   "SPIN_DB_3B_2-3_4_Placa: degenerate faces=6 zero-len edges=0",
+   "hidden back-to-back faces: SPIN_DB_3B_2-3_4_Cono<->SPIN_DB_3B_2-3_4_Placa (1999 pairs) - delete to save tris",
+   "asset lowest point z=-0.035 (not resting on ground plane z=0)"
+  ],
+  "tris": 46558
+ },
+ "ROOT_SPIN_TT_Std_2-1_2": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "SPIN_TT_Std_2-1_2_Cono: 2 zero-area UV faces",
+   "SPIN_TT_Std_2-1_2_Cono: degenerate faces=11 zero-len edges=0",
+   "hidden back-to-back faces: SPIN_TT_Std_2-1_2_Cono<->SPIN_TT_Std_2-1_2_Placa (1136 pairs) - delete to save tris",
+   "asset lowest point z=-0.0318 (not resting on ground plane z=0)"
+  ],
+  "tris": 45428
+ },
+ "ROOT_SPIN_TT_Ult_2-1_4": {
+  "pass": true,
+  "errors": [],
+  "warnings": [
+   "SPIN_TT_Ult_2-1_4_Cono: 4 zero-area UV faces",
+   "SPIN_TT_Ult_2-1_4_Cono: 2 edges with inconsistent face winding",
+   "SPIN_TT_Ult_2-1_4_Cono: degenerate faces=22 zero-len edges=0",
+   "hidden back-to-back faces: SPIN_TT_Ult_2-1_4_Cono<->SPIN_TT_Ult_2-1_4_Placa (1276 pairs) - delete to save tris",
+   "asset lowest point z=-0.0285 (not resting on ground plane z=0)"
+  ],
+  "tris": 43440
+ }
+}

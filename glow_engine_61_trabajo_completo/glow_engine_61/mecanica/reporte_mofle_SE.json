@@ -1,0 +1,74 @@
+{
+ "interference_unexpected": "none",
+ "contacts_expected": [
+  "MUF_Baffle - MUF_Can",
+  "MUF_Bolt_1 - ENG_Crankcase",
+  "MUF_Bolt_1 - MUF_Can",
+  "MUF_Bolt_2 - ENG_Crankcase",
+  "MUF_Bolt_2 - MUF_Can",
+  "MUF_Can - MUF_Gasket",
+  "MUF_Can - MUF_Letter_744",
+  "MUF_Can - MUF_Pressure_Nipple",
+  "MUF_Gasket - ENG_Crankcase"
+ ],
+ "clearance_mm": {
+  "MUF_Can - ENG_Head": [
+   15.88,
+   [
+    -23.0,
+    10.5,
+    42.9
+   ]
+  ],
+  "MUF_Can - ENG_Cylinder_Fins": [
+   3.76,
+   [
+    -22.8,
+    -10.2,
+    37.1
+   ]
+  ],
+  "MUF_Can - ENG_Crankcase": [
+   0.25,
+   [
+    -22.8,
+    16.8,
+    31.7
+   ]
+  ],
+  "MUF_Can - ENG_GlowPlug_Body": [
+   30.69,
+   [
+    -23.0,
+    10.5,
+    42.9
+   ]
+  ],
+  "MUF_Can - ENG_Backplate": [
+   15.45,
+   [
+    -22.8,
+    19.4,
+    27.5
+   ]
+  ],
+  "MUF_Can - ENG_Drive_Hub": [
+   44.64,
+   [
+    -22.8,
+    -16.7,
+    28.1
+   ]
+  ],
+  "MUF_Bolt_1 head - MUF_Can (nearest)": 0.9,
+  "MUF_Bolt_2 head - MUF_Can (nearest)": 0.53
+ },
+ "gas_path": {
+  "voxel_mm": 0.6,
+  "reaches_tail_pipe": true,
+  "pressure_tap_open": true,
+  "sealed_when_plugged": true,
+  "leak_at_mm": null,
+  "gas_volume_cc": 111.4
+ }
+}

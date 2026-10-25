@@ -1,4 +1,4 @@
-# V03/V06/V07: generic glow .61 installation, detailed propeller and visible hardware.
+# V03/V06/V07: glow .61 installation (US-V13: the owner's O.S. 61 SF model), detailed propeller and visible hardware.
 # All visual choices are kept separate from shared flight/model geometry.
 extends RefCounted
 
@@ -11,12 +11,8 @@ const CASE_COLOR := Color("858d91")
 const FIN_COLOR := Color("a3aaad")
 const STEEL_COLOR := Color("c0c3c3")
 const DARK_METAL_COLOR := Color("51585b")
-const BLACK_COLOR := Color("202528")
-const MOUNT_COLOR := Color("594632")
 const WOOD_COLOR := Color("a98250")
 const BAND_COLOR := Color("302d2a")
-const FUEL_COLOR := Color("b98245")
-const PRESSURE_COLOR := Color("363c3f")
 const RUBBER_COLOR := Color("202124")
 const TIRE_LINE_COLOR := Color("292b2e")
 
@@ -213,32 +209,6 @@ static func _box(st: SurfaceTool, center: Vector3, size: Vector3) -> void:
 	_quad(st, p[4], p[5], p[1], p[0], Vector3(0, -1, 0))
 
 
-static func _bar(st: SurfaceTool, a: Vector3, b: Vector3, width: float, depth: float, plane_normal: Vector3 = Vector3.FORWARD) -> void:
-	var axis: Vector3 = (b - a).normalized()
-	if axis.length_squared() < 0.5:
-		return
-	var depth_axis: Vector3 = (plane_normal - axis * plane_normal.dot(axis)).normalized()
-	if depth_axis.length_squared() < 0.5:
-		depth_axis = _frame(axis)[0]
-	var width_axis: Vector3 = depth_axis.cross(axis).normalized()
-	var aw: Vector3 = width_axis * width * 0.5
-	var ad: Vector3 = depth_axis * depth * 0.5
-	var p0: Vector3 = a - aw - ad
-	var p1: Vector3 = a + aw - ad
-	var p2: Vector3 = a + aw + ad
-	var p3: Vector3 = a - aw + ad
-	var q0: Vector3 = b - aw - ad
-	var q1: Vector3 = b + aw - ad
-	var q2: Vector3 = b + aw + ad
-	var q3: Vector3 = b - aw + ad
-	_quad(st, p0, p1, p2, p3, -axis)
-	_quad(st, q1, q0, q3, q2, axis)
-	_quad(st, p0, q0, q1, p1, -depth_axis)
-	_quad(st, p1, q1, q2, p2, width_axis)
-	_quad(st, p2, q2, q3, p3, depth_axis)
-	_quad(st, p3, q3, q0, p0, -width_axis)
-
-
 static func _ellipsoid(st: SurfaceTool, center: Vector3, radii: Vector3, latitude_steps: int = 12, longitude_steps: int = 20) -> void:
 	var points: Array = []
 	var normals: Array = []
@@ -305,16 +275,7 @@ static func _sweep_tube(st: SurfaceTool, path: Array[Vector3], radius: float, ri
 			_triangle(st, path[path.size() - 1], rings.back()[i], rings.back()[j], end_tangent)
 
 
-static func _cubic(a: Vector3, b: Vector3, c: Vector3, d: Vector3, steps: int = 10) -> Array[Vector3]:
-	var result: Array[Vector3] = []
-	for i in range(steps + 1):
-		var t: float = float(i) / float(steps)
-		var inverse: float = 1.0 - t
-		result.append(a * inverse * inverse * inverse + b * 3.0 * inverse * inverse * t + c * 3.0 * inverse * t * t + d * t * t * t)
-	return result
-
-
-# Engine-only tooling. (axial distance, radius) profiles preserve sharp machined
+# Lathe tooling (wheels). (axial distance, radius) profiles preserve sharp machined
 # shoulders while sharing radial normals; counterbores run back down the inside.
 static func _turned(st: SurfaceTool, center: Vector3, axis: Vector3, profile: Array, segments := 48, smooth_profile := false) -> void:
 	var frame := _frame(axis)
@@ -342,303 +303,96 @@ static func _turned(st: SurfaceTool, center: Vector3, axis: Vector3, profile: Ar
 			_smooth_quad(st, center + direction * a.x + r0 * a.y, center + direction * b.x + r0 * b.y, center + direction * b.x + r1 * b.y, center + direction * a.x + r1 * a.y, na0, nb0, nb1, na1)
 
 
-static func _engine_cylinder(st: SurfaceTool, a: Vector3, b: Vector3, ra: float, rb: float, segments: int, caps := true) -> void:
-	# Hex fasteners keep six flat faces. Circular engine parts receive smooth normals.
-	if segments < 12:
-		_cylinder(st, a, b, ra, rb, segments, caps)
-		return
-	var length := a.distance_to(b)
-	var profile: Array = [Vector2(0, ra), Vector2(length, rb)]
-	if caps:
-		profile.push_front(Vector2.ZERO)
-		profile.append(Vector2(length, 0))
-	_turned(st, a, b - a, profile, maxi(48, segments))
+# US-V13: the owner's O.S. 61 SF Special Edition, modelled in Blender and bundled by
+# assets/aircraft/ugly-stik-60/engine/build_engine.py on its O.S. 905 radial mount with silicone fuel and pressure lines.
+# The GLB frame is the crank axis at the drive-hub face; its empties name the lever tip, intake bore and silencer outlet.
+const ENGINE_SCENE := preload("res://assets/aircraft/ugly-stik-60/os61_engine.glb")
+const ENGINE_REVISION := "os-61sf-se-blender-v1"
+# Silencer outlet tube bore (engine-build.json outlet_bore_radius_m, probed in Blender).
+const ENGINE_OUTLET_BORE_M := 0.0042
+# Faces of the wooden propeller hub about the propeller node (the blade roots near the axis of _prop_blades are 19.6 mm
+# thick) and the hub radius, which covers the blade roots that start at 10 % of the tip radius. The radial mount seats
+# on F1, so the drive hub sits 6.0 mm inside the wooden hub: the bound propeller position (prop_z, the physics hub) is
+# 6.4 mm aft of where this mount would put a hub of the delivered 14.3 mm seat.
+const PROP_HUB_HALF_THICKNESS := 0.0098
+const PROP_HUB_RADIUS := 0.016
+# The delivered carburettor lever hangs below its barrel on the exhaust (+X) side. Pull to open: the barrel turns
+# about -X as the throttle opens, so the ball link moves aft.
+const THROTTLE_SIDE := 1.0
+const THROTTLE_OPENING := -1.0
+# The gas pushrod runs straight from the lever to a servo arm 30 mm behind F1. It crosses F1 outboard of the radial
+# mount and below the pressure-line grommet: the clear corridor found by probing the engine, lines and nose gear with
+# the verify_controls rod envelope over the throttle travel.
+const THROTTLE_ROD_AT_F1 := Vector2(0.032, 0.022)
+const THROTTLE_SERVO_BEHIND_F1 := 0.030
+
+static var _engine_anchors: Dictionary = {}
 
 
-static func _rounded_cast(st: SurfaceTool, center: Vector3, size: Vector3, radius: float) -> void:
-	# Project a subdivided box onto its inner box + spherical corner radius.
-	# The face centres remain flat, with continuous normals across the rounded edges.
-	var half := size * 0.5
-	var inner := half - Vector3.ONE * radius
-	for axis_index in range(3):
-		var u_index := (axis_index + 1) % 3
-		var v_index := (axis_index + 2) % 3
-		var us := [-half[u_index], -inner[u_index] - radius * 0.5, -inner[u_index], inner[u_index], inner[u_index] + radius * 0.5, half[u_index]]
-		var vs := [-half[v_index], -inner[v_index] - radius * 0.5, -inner[v_index], inner[v_index], inner[v_index] + radius * 0.5, half[v_index]]
-		for side in [-1.0, 1.0]:
-			for i in range(us.size() - 1):
-				for j in range(vs.size() - 1):
-					var vertices: Array[Vector3] = []
-					var normals: Array[Vector3] = []
-					for corner in [Vector2i(i, j), Vector2i(i + 1, j), Vector2i(i + 1, j + 1), Vector2i(i, j + 1)]:
-						var point := Vector3.ZERO
-						point[axis_index] = side * half[axis_index]
-						point[u_index] = us[corner.x]
-						point[v_index] = vs[corner.y]
-						var core := point.clamp(-inner, inner)
-						var normal := (point - core).normalized()
-						vertices.append(center + core + normal * radius)
-						normals.append(normal)
-					_smooth_quad(st, vertices[0], vertices[1], vertices[2], vertices[3], normals[0], normals[1], normals[2], normals[3])
-
-
-static func _crown(st: SurfaceTool, center: Vector3) -> void:
-	# Twelve open slots cut the top rim. Counts/depths are visual estimates from D/F.
-	_turned(st, center, Vector3.UP, [Vector2(0, 0), Vector2(0, 0.019), Vector2(0.001, 0.020), Vector2(0.004, 0.020), Vector2(0.004, 0.016), Vector2(0.006, 0.015), Vector2(0.006, 0)])
-	var ri := 0.016
-	var ro := 0.020
-	for tooth in range(12):
-		var start := TAU * tooth / 12.0 + deg_to_rad(2.5)
-		var end := TAU * (tooth + 1) / 12.0 - deg_to_rad(2.5)
-		for i in range(8):
-			var a := lerpf(start, end, i / 8.0)
-			var b := lerpf(start, end, (i + 1) / 8.0)
-			var r0 := Vector3(cos(a), 0, sin(a))
-			var r1 := Vector3(cos(b), 0, sin(b))
-			var low := center + Vector3.UP * 0.004
-			var high := center + Vector3.UP * 0.0075
-			_smooth_quad(st, low + r0 * ro, high + r0 * ro, high + r1 * ro, low + r1 * ro, r0, r0, r1, r1)
-			_smooth_quad(st, high + r0 * ri, low + r0 * ri, low + r1 * ri, high + r1 * ri, -r0, -r0, -r1, -r1)
-			_quad(st, high + r0 * ri, high + r0 * ro, high + r1 * ro, high + r1 * ri, Vector3.UP)
-		for angle in [start, end]:
-			var radial := Vector3(cos(angle), 0, sin(angle))
-			var tangent := Vector3(-sin(angle), 0, cos(angle)) * (-1.0 if angle == start else 1.0)
-			_quad(st, center + radial * ri + Vector3.UP * 0.004, center + radial * ro + Vector3.UP * 0.004, center + radial * ro + Vector3.UP * 0.0075, center + radial * ri + Vector3.UP * 0.0075, tangent)
-
-
-# Carburettor barrel axis point and lever tip at the arm's neutral pose (model space, metres; estimated, US-V03).
-# US-V09c: the lever sits on the left (−X) end of the barrel, away from the exhaust header, fuel and pressure lines on
-# +X; on +X its pushrod could not pass between the cooling fins and the header (verify_controls clearance probe).
-const THROTTLE_SIDE := -1.0
-
-static func throttle_arm_pivot() -> Vector3:
+## Crank axis at the drive-hub face, in model space, with the mount flange's back face on F1.
+static func engine_origin() -> Vector3:
 	var e: Dictionary = D.equipment
-	return Vector3(THROTTLE_SIDE * 0.006, float(e.shaft_y) + 0.017, (float(e.firewall_z) + float(e.prop_z)) * 0.5 - 0.013)
+	return Vector3(0, float(e.shaft_y), float(e.firewall_z) - engine_anchor("engine_firewall_face").z)
+
+
+## Engine-frame position of a GLB node (lever pivot, anchors); read once from the imported scene.
+static func engine_anchor(node_name: String) -> Vector3:
+	if _engine_anchors.is_empty():
+		var scene := ENGINE_SCENE.instantiate()
+		for child in scene.get_children():
+			_engine_anchors[String(child.name)] = (child as Node3D).position
+		scene.free()
+	return _engine_anchors[node_name]
+
+
+# Carburettor barrel axis point and lever ball link at the delivered (half-throttle) pose, model space.
+static func throttle_arm_pivot() -> Vector3:
+	return engine_origin() + engine_anchor("engine_throttle_arm")
 
 
 static func throttle_arm_tip() -> Vector3:
-	var e: Dictionary = D.equipment
-	return Vector3(THROTTLE_SIDE * 0.019, float(e.shaft_y) + 0.031, (float(e.firewall_z) + float(e.prop_z)) * 0.5 - 0.030)
+	return engine_origin() + engine_anchor("engine_throttle_arm_tip")
 
 
-static func _add_throttle_arm(root: Node3D, pivot: Vector3, tip: Vector3) -> void:
+## Gas-servo arm end at neutral, on the pushrod line from the lever ball link through F1.
+static func throttle_servo_arm_end() -> Vector3:
+	var tip := throttle_arm_tip()
+	var crossing := Vector3(THROTTLE_ROD_AT_F1.x, THROTTLE_ROD_AT_F1.y, float(D.equipment.firewall_z))
+	return crossing + (crossing - tip) / (crossing.z - tip.z) * THROTTLE_SERVO_BEHIND_F1
+
+
+static func _adopt(scene: Node, node_name: String, parent: Node3D, position: Vector3, label := "") -> MeshInstance3D:
+	var part := scene.get_node(node_name) as MeshInstance3D
+	scene.remove_child(part)
+	part.owner = null
+	part.name = label if not label.is_empty() else node_name
+	part.transform = Transform3D(Basis.IDENTITY, position)
+	parent.add_child(part)
+	return part
+
+
+static func _add_engine(root: Node3D, propeller: Node3D) -> void:
+	var origin := engine_origin()
+	var scene := ENGINE_SCENE.instantiate()
+	var assembly := _adopt(scene, "engine_assembly", root, origin)
+	# Crank nose, drive hub, washer and nut turn with the propeller; the washer closes on the wooden hub's front face.
+	_adopt(scene, "engine_drive_rear", propeller, Vector3(0, 0, origin.z - propeller.position.z))
+	_adopt(scene, "engine_drive_front", propeller, Vector3(0, 0, -PROP_HUB_HALF_THICKNESS - engine_anchor("engine_washer_face").z))
+	# US-V09c: the lever turns with the carburettor barrel about +X; the controls pass drives its hinge.
 	var hinge := Node3D.new()
 	hinge.name = "carburetor_throttle_arm_hinge"
-	hinge.position = pivot
+	hinge.position = throttle_arm_pivot()
 	root.add_child(hinge)
-	var buckets := _buckets([["bright", Color("bdc2c5"), "machined_aluminum"], ["steel", STEEL_COLOR, "steel"]])
-	_bar(buckets.bright, Vector3.ZERO, tip, 0.003, 0.0018)
-	_engine_cylinder(buckets.steel, tip - Vector3(0.0015, 0, 0), tip + Vector3(0.0015, 0, 0), 0.0018, 0.0018, 6)
-	_flush(hinge, "carburetor_throttle_arm", buckets)
-
-
-static func _add_engine(root: Node3D) -> void:
-	var e: Dictionary = D.equipment
-	var engine_z: float = (float(e.firewall_z) + float(e.prop_z)) * 0.5
-	var shaft_y: float = float(e.shaft_y)
-	var blocks: Dictionary = _buckets([
-		["cast", Color("a4aaae"), "cast_aluminum"],
-		["bright", Color("bdc2c5"), "machined_aluminum"],
-		["gold", Color("c69a47"), "anodized_gold"],
-		["steel", STEEL_COLOR, "steel"],
-		["dark", DARK_METAL_COLOR, "aluminum"],
-		["black", BLACK_COLOR, "plastic"],
-		["mount", MOUNT_COLOR, "wood"],
-		["fuel", FUEL_COLOR, "plastic"],
-		["pressure", PRESSURE_COLOR, "plastic"]
-	])
-	var cast: SurfaceTool = blocks.cast
-	var bright: SurfaceTool = blocks.bright
-	var gold: SurfaceTool = blocks.gold
-	var steel: SurfaceTool = blocks.steel
-	var dark: SurfaceTool = blocks.dark
-	var black: SurfaceTool = blocks.black
-	var mount: SurfaceTool = blocks.mount
-	var fuel: SurfaceTool = blocks.fuel
-	var pressure: SurfaceTool = blocks.pressure
-
-	# Twin hardwood rails, backplate pads and clamping hardware; all dimensions are visual estimates.
-	var rail_front_z: float = engine_z - 0.0375
-	var rail_rear_z: float = float(e.firewall_z) + 0.004
-	var rail_center_z: float = (rail_front_z + rail_rear_z) * 0.5
-	var rail_length: float = rail_rear_z - rail_front_z
-	for side in [-1.0, 1.0]:
-		_box(mount, Vector3(side * 0.024, shaft_y - 0.025, rail_center_z), Vector3(0.009, 0.012, rail_length))
-		_box(steel, Vector3(side * 0.024, shaft_y - 0.018, rail_center_z), Vector3(0.011, 0.003, rail_length + 0.002))
-		# Rounded mounting ledges with vertical bores and bolts through the rails.
-		_rounded_cast(cast, Vector3(side * 0.024, shaft_y - 0.012, engine_z), Vector3(0.012, 0.006, 0.038), 0.001)
-		for z_offset in [-0.025, 0.025]:
-			var lug := Vector3(side * 0.024, shaft_y - 0.012, engine_z + z_offset)
-			_turned(cast, lug, Vector3.UP, [Vector2(-0.003, 0.002), Vector2(-0.003, 0.006), Vector2(-0.002, 0.007), Vector2(0.002, 0.007), Vector2(0.003, 0.006), Vector2(0.003, 0.002), Vector2(-0.003, 0.002)], 32)
-			_engine_cylinder(steel, lug - Vector3.UP * 0.01, lug + Vector3.UP * 0.005, 0.0018, 0.0018, 12)
-			_washer(bright, lug + Vector3.UP * 0.0035, Vector3.UP, 0.0042, 0.002, 0.001, 24)
-			_engine_cylinder(dark, lug + Vector3.UP * 0.004, lug + Vector3.UP * 0.006, 0.003, 0.003, 6)
-		var firewall_bolt := Vector3(side * 0.024, shaft_y - 0.015, float(e.firewall_z) + 0.001)
-		_engine_cylinder(steel, firewall_bolt - Vector3(0, 0, 0.004), firewall_bolt + Vector3(0, 0, 0.003), 0.0028, 0.0028, 6)
-		_washer(bright, firewall_bolt - Vector3(0, 0, 0.002), Vector3.FORWARD, 0.0046, 0.0029, 0.001, 24)
-
-	# Long crankcase, a stepped front bearing housing and a bolted rear cover.
-	var case_center := Vector3(0, shaft_y, engine_z)
-	_turned(cast, case_center, Vector3.BACK, [Vector2(-0.045, 0), Vector2(-0.045, 0.0105), Vector2(-0.042, 0.012), Vector2(-0.032, 0.013), Vector2(-0.025, 0.0165), Vector2(-0.017, 0.0195), Vector2(0.026, 0.0195), Vector2(0.030, 0.018), Vector2(0.030, 0)])
-	_turned(bright, Vector3(0, shaft_y, engine_z), Vector3.BACK, [Vector2(-0.046, 0), Vector2(-0.046, 0.010), Vector2(-0.0455, 0.0122), Vector2(-0.0425, 0.0122), Vector2(-0.042, 0.0115), Vector2(-0.042, 0)])
-	_engine_cylinder(steel, Vector3(0, shaft_y, engine_z - 0.045), Vector3(0, shaft_y, float(e.prop_z) + 0.010), 0.0046, 0.0046, 32)
-	_turned(dark, case_center, Vector3.BACK, [Vector2(0.030, 0), Vector2(0.030, 0.0182), Vector2(0.0308, 0.0182), Vector2(0.0308, 0)])
-	_turned(cast, case_center, Vector3.BACK, [Vector2(0.0308, 0), Vector2(0.0308, 0.0184), Vector2(0.033, 0.0184), Vector2(0.035, 0.0165), Vector2(0.035, 0)])
-	for side in [-1.0, 1.0]:
-		for upper in [-1.0, 1.0]:
-			var boss := case_center + Vector3(side * 0.014, upper * 0.011, 0)
-			for z_lug in [-0.020, 0.024]:
-				_turned(cast, boss + Vector3(0, 0, z_lug), Vector3.BACK, [Vector2(-0.007, 0), Vector2(-0.006, 0.0025), Vector2(-0.004, 0.004), Vector2(0.004, 0.004), Vector2(0.007, 0.0035), Vector2(0.008, 0)], 32, true)
-			_engine_cylinder(dark, boss + Vector3(0, 0, 0.032), boss + Vector3(0, 0, 0.035), 0.0028, 0.0028, 6)
-
-	# Exposed cylinder casting below the cooling stack, as in owner photos D/F.
-	var cylinder := Vector3(0, shaft_y, engine_z + 0.010)
-	_turned(cast, cylinder, Vector3.UP, [Vector2(0.006, 0), Vector2(0.006, 0.0155), Vector2(0.012, 0.014), Vector2(0.027, 0.013), Vector2(0.031, 0.0135), Vector2(0.060, 0.011), Vector2(0.060, 0)])
-	for side in [-1.0, 1.0]:
-		_rounded_cast(cast, cylinder + Vector3(side * 0.012, 0.021, 0), Vector3(0.004, 0.026, 0.013), 0.0015)
-	for i in range(9):
-		var fin_y := 0.030 + i * 0.0032
-		var radius := 0.0186 + 0.0010 * sin(PI * (i + 1) / 10.0)
-		_turned(bright, cylinder + Vector3.UP * fin_y, Vector3.UP, [Vector2(-0.0007, 0.011), Vector2(-0.0007, radius - 0.0005), Vector2(-0.00025, radius), Vector2(0.00025, radius), Vector2(0.0007, radius - 0.0005), Vector2(0.0007, 0.011)], 48)
-	_crown(gold, cylinder + Vector3.UP * 0.058)
-	# Four recessed fasteners and the small glowplug terminal; no permanent cable.
-	for i in range(4):
-		var angle := PI * 0.25 + TAU * i / 4.0
-		var bolt := cylinder + Vector3(cos(angle) * 0.010, 0.064, sin(angle) * 0.010)
-		_washer(dark, bolt, Vector3.UP, 0.0022, 0.0013, 0.0005, 20)
-		_turned(steel, bolt, Vector3.UP, [Vector2(0, 0.0008), Vector2(0, 0.0017), Vector2(0.0007, 0.0017), Vector2(0.0007, 0.0008), Vector2(0.0002, 0.0008)], 24)
-		_engine_cylinder(black, bolt, bolt + Vector3.UP * 0.0002, 0.0008, 0.0008, 6)
-	_washer(bright, cylinder + Vector3.UP * 0.0645, Vector3.UP, 0.0047, 0.003, 0.001, 24)
-	_engine_cylinder(steel, cylinder + Vector3.UP * 0.065, cylinder + Vector3.UP * 0.068, 0.004, 0.004, 6)
-	_engine_cylinder(bright, cylinder + Vector3.UP * 0.068, cylinder + Vector3.UP * 0.071, 0.0022, 0.0022, 24)
-	_engine_cylinder(dark, cylinder + Vector3.UP * 0.071, cylinder + Vector3.UP * 0.072, 0.0013, 0.0013, 16)
-
-	# Carburettor rises ahead of the crankcase; its throat tilts toward the propeller and upward.
-	var carb_lower := Vector3(0, shaft_y + 0.012, engine_z - 0.010)
-	var carb_upper := Vector3(0, shaft_y + 0.027, engine_z - 0.026)
-	var intake_axis: Vector3 = (carb_upper - carb_lower).normalized()
-	var intake_end := carb_upper + intake_axis * 0.005
-	var intake_length := carb_lower.distance_to(intake_end)
-	# The housing ends below the throat: no solid end cap is allowed across the bore.
-	_engine_cylinder(cast, carb_lower, carb_lower + intake_axis * 0.010, 0.0072, 0.0072, 32)
-	_turned(bright, carb_lower, intake_axis, [Vector2(0.008, 0.0067), Vector2(intake_length - 0.004, 0.0070), Vector2(intake_length - 0.001, 0.008), Vector2(intake_length, 0.008), Vector2(intake_length, 0.0055), Vector2(intake_length - 0.003, 0.0048), Vector2(0.011, 0.0042)], 48)
-	_engine_cylinder(black, carb_lower + intake_axis * 0.0105, carb_lower + intake_axis * 0.011, 0.0043, 0.0043, 32)
-	_engine_cylinder(cast, Vector3(-0.009, shaft_y + 0.017, engine_z - 0.013), Vector3(0.009, shaft_y + 0.017, engine_z - 0.013), 0.006, 0.006, 32)
-	# US-V09c: the throttle lever turns with the carburettor barrel about +X; the controls pass drives its node.
-	var throttle_pivot := throttle_arm_pivot()
-	_engine_cylinder(steel, throttle_pivot - Vector3(0.003, 0, 0), throttle_pivot + Vector3(0.003, 0, 0), 0.0034, 0.0034, 8)
-	_add_throttle_arm(root, throttle_pivot, throttle_arm_tip() - throttle_pivot)
-	var needle := Vector3(0.029, shaft_y - 0.025, engine_z + 0.044)
-	_box(dark, needle, Vector3(0.009, 0.007, 0.014))
-	_engine_cylinder(steel, needle + Vector3(0.004, 0, 0), needle + Vector3(0.010, 0, 0), 0.0021, 0.0021, 6)
-	_engine_cylinder(black, needle + Vector3(0.010, 0, 0), needle + Vector3(0.013, 0, 0), 0.003, 0.003, 8)
-	_engine_cylinder(bright, Vector3(0.008, shaft_y - 0.031, engine_z + 0.022), Vector3(0.010, shaft_y - 0.031, engine_z + 0.022), 0.0022, 0.0022, 10)
-
-	# Longitudinal cast silencer: rounded front cap, ribbed barrel, seam and tapered rear cone.
-	var muffler_center := Vector3(0.049, shaft_y - 0.004, engine_z)
-	var muffler_seam_z: float = engine_z + 0.012
-	_turned(cast, muffler_center, Vector3.BACK, [Vector2(-0.030, 0), Vector2(-0.029, 0.004), Vector2(-0.026, 0.008), Vector2(-0.022, 0.010), Vector2(-0.016, 0.0105), Vector2(0.012, 0.0105)], 48, true)
-	_torus(bright, Vector3(0.049, shaft_y - 0.004, muffler_seam_z), Vector3.FORWARD, 0.0105, 0.00035, 48, 6)
-	# Six shallow raised ribs run along the exposed barrel, rather than around it as ring bands.
-	for rib_index in range(6):
-		var rib_y: float = -0.0075 + float(rib_index) * 0.003
-		var rib_x_offset: float = sqrt(maxf(0.00011025 - rib_y * rib_y, 0.000001)) + 0.00035
-		var rib_a := Vector3(muffler_center.x + rib_x_offset, muffler_center.y + rib_y, engine_z - 0.012)
-		var rib_b := Vector3(muffler_center.x + rib_x_offset, muffler_center.y + rib_y, muffler_seam_z - 0.002)
-		_engine_cylinder(cast, rib_a, rib_b, 0.00065, 0.00065, 16)
-
-	# A broad rectangular cast neck meets the engine port; the plate carries two visible screws.
-	var neck_center := Vector3(0.034, shaft_y + 0.004, engine_z + 0.009)
-	_rounded_cast(cast, neck_center, Vector3(0.024, 0.022, 0.022), 0.003)
-	_rounded_cast(cast, Vector3(0.021, shaft_y + 0.004, engine_z + 0.009), Vector3(0.004, 0.028, 0.028), 0.001)
-	for bolt_z in [engine_z + 0.001, engine_z + 0.017]:
-		var flange_bolt := Vector3(0.0232, shaft_y + 0.004, bolt_z)
-		_engine_cylinder(steel, flange_bolt, flange_bolt + Vector3(0.0028, 0, 0), 0.0021, 0.0021, 6)
-		_washer(bright, flange_bolt + Vector3(0.002, 0, 0), Vector3.RIGHT, 0.004, 0.0018, 0.0007, 10)
-	# Fine transverse ribs mark the raised rectangular neck while leaving the pressure port clear.
-	for rib_index in range(5):
-		var neck_rib_y: float = shaft_y + 0.006 + float(rib_index) * 0.002
-		_bar(bright, Vector3(0.0464, neck_rib_y, engine_z + 0.002), Vector3(0.0464, neck_rib_y, engine_z + 0.015), 0.0012, 0.0009, Vector3.RIGHT)
-
-	# Tapered rear cone and hollow outlet; the outlet endpoint remains at the established gas exit.
-	var outlet_start := Vector3(0.056, shaft_y - 0.009, engine_z + 0.030)
-	var outlet_end := Vector3(0.064, shaft_y - 0.018, engine_z + 0.041)
-	var cone_start := Vector3(0.049, shaft_y - 0.004, muffler_seam_z)
-	_exhaust_transition(cast, cone_start, outlet_start, (outlet_end - outlet_start).normalized())
-	_add_hollow_outlet(bright, black, outlet_start, outlet_end, 0.0042, 0.0029)
-	# Pressure fitting is kept at its existing connection point and raised off the shell by its boss.
-	_engine_cylinder(bright, Vector3(0.052, shaft_y + 0.006, engine_z + 0.011), Vector3(0.052, shaft_y + 0.010, engine_z + 0.011), 0.0032, 0.0032, 8)
-	_washer(steel, Vector3(0.052, shaft_y + 0.008, engine_z + 0.011), Vector3.UP, 0.0045, 0.0026, 0.0012, 10)
-
-	# Two visible, distinct circuits meet fittings at the firewall-facing end of the installation.
-	var fuel_firewall := Vector3(0.035, shaft_y - 0.031, float(e.firewall_z) - 0.007)
-	var pressure_firewall := Vector3(0.039, shaft_y + 0.002, float(e.firewall_z) - 0.007)
-	for fitting in [fuel_firewall, pressure_firewall]:
-		_engine_cylinder(bright, fitting - Vector3(0, 0, 0.004), fitting + Vector3(0, 0, 0.008), 0.003, 0.003, 8)
-		_washer(steel, fitting - Vector3(0, 0, 0.001), Vector3.FORWARD, 0.0046, 0.0029, 0.001, 8)
-	var fuel_to_needle: Array[Vector3] = _cubic(
-		fuel_firewall + Vector3(0, 0, -0.001),
-		Vector3(0.043, shaft_y - 0.029, engine_z + 0.045),
-		Vector3(0.038, shaft_y - 0.025, engine_z + 0.043),
-		needle + Vector3(-0.003, 0, 0), 9
-	)
-	var fuel_to_carb: Array[Vector3] = _cubic(
-		needle + Vector3(-0.003, 0.001, -0.002),
-		Vector3(0.034, shaft_y - 0.024, engine_z + 0.008),
-		Vector3(0.030, shaft_y + 0.013, engine_z - 0.020),
-		Vector3(0.008, shaft_y + 0.017, engine_z - 0.013), 12
-	)
-	_engine_cylinder(bright, Vector3(0.004, shaft_y + 0.017, engine_z - 0.013), Vector3(0.010, shaft_y + 0.017, engine_z - 0.013), 0.0019, 0.0019, 8)
-	_sweep_tube(fuel, fuel_to_needle, 0.00115, 7)
-	_sweep_tube(fuel, fuel_to_carb, 0.00115, 7)
-	var pressure_path: Array[Vector3] = _cubic(
-		Vector3(0.052, shaft_y + 0.010, engine_z + 0.011),
-		Vector3(0.064, shaft_y + 0.011, engine_z + 0.016),
-		Vector3(0.062, shaft_y + 0.010, float(e.firewall_z) - 0.020),
-		pressure_firewall, 12
-	)
-	_sweep_tube(pressure, pressure_path, 0.00105, 7)
-	var assembly := _flush(root, "engine_assembly", blocks)
-	assembly.set_meta("intake_mouth", intake_end)
-	assembly.set_meta("intake_axis", intake_axis)
-	# SM-01: the optional exhaust interface is authored at the same hollow mouth as the mesh.
-	# Coordinates are model-local; this is a glow-oil trace and an optional presentation pump.
-	root.set_meta("exhausts", [{position = outlet_end, direction = (outlet_end - outlet_start).normalized(),
-		radius_m = 0.0029, kind = "glow_prop", pump = true}])
-	root.set_meta("engine_revision", "glow-61-detail-v5")
-
-
-# Matching ring planes close both ends of the bent exhaust taper.
-static func _exhaust_transition(st: SurfaceTool, a: Vector3, b: Vector3, outlet_axis: Vector3) -> void:
-	var rings: Array = []
-	var normals: Array = []
-	for i in range(9):
-		var t := i / 8.0
-		var axis := Vector3.BACK.slerp(outlet_axis, t).normalized()
-		var frame := _frame(axis)
-		var radius := lerpf(0.0105, 0.0042, t * t * (3.0 - 2.0 * t))
-		var slope := (0.0105 - 0.0042) * 6.0 * t * (1.0 - t) / a.distance_to(b)
-		var ring: Array[Vector3] = []
-		var normal_ring: Array[Vector3] = []
-		for j in range(48):
-			var angle := TAU * j / 48.0
-			var radial: Vector3 = frame[0] * cos(angle) + frame[1] * sin(angle)
-			ring.append(a.lerp(b, t) + radial * radius)
-			normal_ring.append((radial + axis * slope).normalized())
-		rings.append(ring)
-		normals.append(normal_ring)
-	for i in range(8):
-		for j in range(48):
-			var k := (j + 1) % 48
-			_smooth_quad(st, rings[i][j], rings[i + 1][j], rings[i + 1][k], rings[i][k], normals[i][j], normals[i + 1][j], normals[i + 1][k], normals[i][k])
-
-
-static func _add_hollow_outlet(outer: SurfaceTool, inner: SurfaceTool, a: Vector3, b: Vector3, outer_radius: float, inner_radius: float) -> void:
-	var length := a.distance_to(b)
-	if length <= 0.0000001: return
-	var axis := (b - a).normalized()
-	_turned(outer, a, axis, [Vector2(0, outer_radius), Vector2(length - 0.0006, outer_radius * 0.92), Vector2(length, outer_radius * 0.88), Vector2(length, inner_radius * 0.82)], 48)
-	_turned(inner, a, axis, [Vector2(length, inner_radius * 0.82), Vector2(length - 0.009, inner_radius * 0.80), Vector2(length - 0.009, 0)], 48)
+	_adopt(scene, "engine_throttle_arm", hinge, Vector3.ZERO, "carburetor_throttle_arm")
+	scene.free()
+	assembly.set_meta("intake_mouth", origin + engine_anchor("engine_intake_mouth"))
+	assembly.set_meta("intake_axis", (engine_anchor("engine_intake_mouth") - engine_anchor("engine_intake_inner")).normalized())
+	# SM-01: the optional exhaust interface sits at the silencer's outlet tube. Coordinates are model-local; this is a
+	# glow-oil trace and an optional presentation pump.
+	var outlet: Vector3 = origin + engine_anchor("engine_exhaust_outlet")
+	root.set_meta("exhausts", [{position = outlet, direction = (engine_anchor("engine_exhaust_outlet") - engine_anchor("engine_exhaust_upstream")).normalized(),
+		radius_m = ENGINE_OUTLET_BORE_M, kind = "glow_prop", pump = true}])
+	root.set_meta("engine_revision", ENGINE_REVISION)
 
 
 ## Blade planform and section of the propeller: stations as shares of the tip radius, chord as a share of the radius,
@@ -849,31 +603,67 @@ static func _add_wheel(parent: Node3D, label: String, radius: float, width: floa
 	return _flush(parent, label, buckets)
 
 
+# US-V14: Jensen sheet 1 draws the main gear as a 0.090 in 2024-T3 aluminium plate (equipment.main_strap): a flat centre
+# bolted under the fuselage, then a leg each side tapering from the full root width to the axle. The plate's plane holds
+# the fore-aft axis, so it reads wide from the side and thin from the front. The axles stay the physics contacts, so the
+# legs rake aft from the drawn root to them.
+static func _strap_leg(st: SurfaceTool, root: Vector3, tip: Vector3, front: Vector2, rear: Vector2, thickness: float) -> void:
+	# front / rear: z of the plate's leading and trailing edges at the root (x) and at the tip (y).
+	var along := Vector3(tip.x - root.x, tip.y - root.y, 0.0).normalized()
+	var offset := along.cross(Vector3.BACK).normalized() * (thickness * 0.5)
+	var rings: Array = []
+	for k in GearFlex.LEG_SEGMENTS + 1: # US-V10: interior rings let the leg take the bending shape (GearFlex)
+		var s := float(k) / GearFlex.LEG_SEGMENTS
+		var p := root.lerp(tip, s)
+		var leading := Vector3(p.x, p.y, lerpf(front.x, front.y, s))
+		var trailing := Vector3(p.x, p.y, lerpf(rear.x, rear.y, s))
+		rings.append([leading + offset, trailing + offset, trailing - offset, leading - offset])
+	for k in GearFlex.LEG_SEGMENTS:
+		var a: Array = rings[k]
+		var b: Array = rings[k + 1]
+		var centre: Vector3 = (a[0] + a[2] + b[0] + b[2]) * 0.25
+		for i in 4:
+			var j := (i + 1) % 4
+			_quad(st, a[i], a[j], b[j], b[i], (a[i] + a[j] + b[i] + b[j]) * 0.25 - centre)
+	for cap in [[rings[0], -along], [rings[GearFlex.LEG_SEGMENTS], along]]:
+		var ring: Array = cap[0]
+		_quad(st, ring[0], ring[1], ring[2], ring[3], cap[1])
+
+
 static func _add_main_gear(root: Node3D, gear: Dictionary) -> void:
 	var e: Dictionary = D.equipment
+	var strap: Dictionary = e.main_strap
 	var structure: Dictionary = _buckets([
 		["steel", STEEL_COLOR, "steel"],
-		["aluminum", DARK_METAL_COLOR, "aluminum"],
 		["bright", FIN_COLOR, "aluminum"]
 	])
 	var steel: SurfaceTool = structure.steel
-	var aluminum: SurfaceTool = structure.aluminum
 	var bright: SurfaceTool = structure.bright
+	var thickness := float(strap.thickness)
+	var root_front := float(strap.root_front_z)
+	var root_rear := float(strap.root_rear_z)
+	var root_z := (root_front + root_rear) * 0.5
+	var root_y := _fuselage_height(root_z, false) - thickness * 0.5
+	var half_span := float(strap.root_half_span)
+	var axle_z := float(e.main_axle_z)
+	var axle_half := float(strap.axle_width) * 0.5
+	# Flat centre under the fuselage bottom, held by four bolts with washers.
+	_box(bright, Vector3(0, root_y, root_z), Vector3(half_span * 2.0, thickness, root_rear - root_front))
+	for x in [-0.012, 0.012]:
+		for z in [root_front + 0.015, root_rear - 0.015]:
+			var bolt := Vector3(x, root_y - thickness * 0.5, z)
+			_washer(bright, bolt - Vector3(0, 0.0004, 0), Vector3.UP, 0.0042, 0.0018, 0.0008, 10)
+			_cylinder(steel, bolt - Vector3(0, 0.0008, 0), bolt - Vector3(0, 0.0034, 0), 0.0032, 0.0032, 6)
 	for side in [-1.0, 1.0]:
-		var center: Vector3 = Vector3(side * float(e.main_track) * 0.5, float(e.wheel_y), float(e.main_axle_z))
-		var root_z: float = float(e.main_axle_z) - 0.050
-		var root_point: Vector3 = Vector3(side * 0.025, _fuselage_height(root_z, false) + 0.004, root_z)
-		# US-V10: twelve strap segments so the leg can take the bending shape (GearFlex).
-		for k in GearFlex.LEG_SEGMENTS:
-			_bar(steel, root_point.lerp(center, float(k) / GearFlex.LEG_SEGMENTS), root_point.lerp(center, float(k + 1) / GearFlex.LEG_SEGMENTS), 0.014, 0.0034)
-		_box(aluminum, Vector3(side * 0.026, root_point.y + 0.003, root_z + 0.002), Vector3(0.027, 0.006, 0.030))
-		for z_offset in [-0.009, 0.009]:
-			var bolt_pos: Vector3 = Vector3(side * 0.026, root_point.y + 0.0065, root_z + z_offset)
-			_cylinder(steel, bolt_pos, bolt_pos + Vector3(0, 0.002, 0), 0.002, 0.002, 6)
-			_washer(bright, bolt_pos + Vector3(0, 0.0007, 0), Vector3.UP, 0.0037, 0.0015, 0.0007, 8)
-		# Axle sleeve and castellated locknut remain on the fixed gear leg, just inside the rotating wheel.
+		var center: Vector3 = Vector3(side * float(e.main_track) * 0.5, float(e.wheel_y), axle_z)
 		var sleeve_x: float = side * (float(e.main_track) * 0.5 - 0.014)
-		_cylinder(bright, Vector3(sleeve_x, center.y, center.z), Vector3(sleeve_x + side * 0.006, center.y, center.z), 0.006, 0.006, 12)
+		# The axle passes through the plate just inboard of its sleeve; the plate ends 4 mm past it along the leg.
+		var leg_root := Vector3(side * half_span, root_y, root_z)
+		var leg_tip := Vector3(sleeve_x - side * (0.003 + thickness * 0.5), center.y, axle_z)
+		leg_tip += Vector3(leg_tip.x - leg_root.x, leg_tip.y - leg_root.y, 0.0).normalized() * 0.004
+		_strap_leg(bright, leg_root, leg_tip, Vector2(root_front, axle_z - axle_half), Vector2(root_rear, axle_z + axle_half), thickness)
+		# Axle sleeve and castellated locknut remain on the fixed gear leg, just inside the rotating wheel.
+		_cylinder(bright, Vector3(sleeve_x - side * 0.004, center.y, center.z), Vector3(sleeve_x + side * 0.006, center.y, center.z), 0.006, 0.006, 12)
 		_washer(steel, Vector3(sleeve_x + side * 0.006, center.y, center.z), Vector3.RIGHT, 0.007, 0.0035, 0.0014, 10)
 		var label: String = "right" if side > 0.0 else "left"
 		var pivot := Node3D.new()
@@ -886,9 +676,8 @@ static func _add_main_gear(root: Node3D, gear: Dictionary) -> void:
 	var main := _flush(root, "main_gear_structure", structure)
 	var legs: Array = []
 	for side in [-1.0, 1.0]:
-		var root_z: float = float(e.main_axle_z) - 0.050
-		legs.append({root = Vector3(side * 0.025, _fuselage_height(root_z, false) + 0.004, root_z),
-			tip = Vector3(side * float(e.main_track) * 0.5, float(e.wheel_y), float(e.main_axle_z)), side = side, rigid_radius = 0.02})
+		legs.append({root = Vector3(side * half_span, root_y, root_z),
+			tip = Vector3(side * float(e.main_track) * 0.5, float(e.wheel_y), axle_z), side = side, rigid_radius = 0.02})
 	main.set_meta("flex_legs", legs)
 
 
@@ -1022,23 +811,11 @@ static func build(root: Node3D, gear: Dictionary) -> Node3D:
 	var stubs := _flush(propeller, "propeller_stubs", {"wood": stub_wood, "fresh": stub_fresh})
 	stubs.visible = false
 	stubs.set_meta("prop_strike_reveal", true)
-	var hub_buckets: Dictionary = _buckets([
-		["aluminum", CASE_COLOR, "aluminum"],
-		["steel", STEEL_COLOR, "steel"],
-		["dark", DARK_METAL_COLOR, "aluminum"]
-	])
-	var hub_aluminum: SurfaceTool = hub_buckets.aluminum
-	var hub_steel: SurfaceTool = hub_buckets.steel
-	var hub_dark: SurfaceTool = hub_buckets.dark
-	_engine_cylinder(hub_aluminum, Vector3(0, 0, -0.014), Vector3(0, 0, 0.012), 0.0105, 0.0105, 20)
-	_engine_cylinder(hub_aluminum, Vector3(0, 0, 0.008), Vector3(0, 0, 0.012), 0.015, 0.014, 20)
-	_washer(hub_steel, Vector3(0, 0, 0.012), Vector3.FORWARD, 0.018, 0.0052, 0.0015, 24)
-	_washer(hub_steel, Vector3(0, 0, -0.007), Vector3.FORWARD, 0.017, 0.0052, 0.0012, 24)
-	_engine_cylinder(hub_steel, Vector3(0, 0, -0.009), Vector3(0, 0, -0.017), 0.0064, 0.0061, 6)
-	_engine_cylinder(hub_dark, Vector3(0, 0, -0.017), Vector3(0, 0, -0.020), 0.0035, 0.0035, 8)
-	_flush(propeller, "propeller_hub_washers_nut", hub_buckets)
-
-	_add_engine(root)
+	# US-V13: the wooden hub between the engine's drive hub and washer; it also hides the blade root closures.
+	var hub := _surface(WOOD_COLOR, "varnished_wood")
+	_cylinder(hub, Vector3(0, 0, -PROP_HUB_HALF_THICKNESS), Vector3(0, 0, PROP_HUB_HALF_THICKNESS), PROP_HUB_RADIUS, PROP_HUB_RADIUS, 24)
+	_flush(propeller, "propeller_hub", {"wood": hub})
+	_add_engine(root, propeller)
 	_add_main_gear(root, gear)
 	_add_nose_gear(root, gear)
 	return propeller

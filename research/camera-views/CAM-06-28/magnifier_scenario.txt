@@ -1,0 +1,9 @@
+eval expr="app.display_preferences.save(app.display_preferences.config.merged({'camera_magnifier': 'on', 'camera_horizon_bias': true, 'camera_zoom_law': 'partial'}, true))"
+fly start=airborne
+wait seconds=4
+eval expr="[flight._magnifier.shown, flight._magnifier.camera.fov, flight._magnifier.camera.global_position.distance_to(flight._airplane.root.global_position), flight._magnifier._container.position, flight._magnifier._container.size, flight._camera.fov]"
+screenshot format=jpg max_width=1920
+key name=2
+wait seconds=1
+eval expr="[flight._rig.view, flight._magnifier.shown]"
+logs --summary

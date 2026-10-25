@@ -11,6 +11,7 @@ Edit [geometry.json](geometry.json) for measured/estimated geometry and [appeara
 | Geometry → `app/aircraft/ugly_stik_geometry.gd` | [compile_geometry.py](compile_geometry.py) |
 | Appearance and geometry → `app/aircraft/livery.svg`, `ugly_stik_appearance.gd` | [compile_appearance.py](compile_appearance.py) |
 | Procedural grain recipe → `app/aircraft/ugly_stik_grain.res` | [bake_grain.gd](bake_grain.gd); see DT-11a below |
+| Owner's Blender O.S. 61 delivery → `app/assets/aircraft/ugly-stik-60/os61_engine.glb`, [engine-build.json](engine/engine-build.json) | [engine/build_engine.py](engine/build_engine.py); see US-V13 below |
 | Changed sources/dependencies → model / Workshop identities | [Model pipeline](../../../docs/AIRCRAFT_CONTRACT.md#model-and-package-contract), [Workshop standard](../../../docs/AIRCRAFT_CONTRACT.md#workshop-authoring-standard) |
 
 Appearance controls exhaust residue, tail spray and belly wear; disable the corresponding fields and regenerate for a clean finish. Hatch seams remain geometry. The atlas is rasterized once from embedded SVG with mipmaps, without an editor-import dependency. Grain is a separate pinned baked resource. These visual sources do not generate flight coefficients.
@@ -49,6 +50,26 @@ python research/aircraft-editor/build_descriptors.py
 ```
 
 Commit the image and regenerated identities together. The finish helper has a procedural fallback, while the aircraft registry rejects missing/modified pinned dependencies before flight. `test_stik_grain.gd` checks pixel/mip parity. [DT-11a evidence](../../../docs/research/visual-quality-implementation/VQ-01c/loading/grain/README.md) records loading/export results.
+
+## O.S. 61 SF engine (US-V13)
+
+The engine is the owner's Blender model of an O.S. MAX 61 SF Special Edition on an O.S. 905 radial mount, delivered in the untracked `glow_engine_61_trabajo_completo/` folder at the repository root. [engine/source-manifest.json](engine/source-manifest.json) pins its real-time engine GLB and its aircraft-mount GLB by SHA-256. The generator keeps the delivered meshes and baked textures, then:
+
+- splits off the carburettor lever and the propeller drive;
+- decimates the screws and silicone lines;
+- moves the line grommets onto the Stik's narrower F1;
+- repairs the 21 triangles whose winding opposed their shading normals;
+- halves the body atlas and writes every map as WebP;
+- adds empties for the lever ball link, intake bore, silencer outlet, washer face and firewall face.
+
+```bash
+.tools/blender-5.2.2-linux-x64/blender --background --factory-startup \
+  --python assets/aircraft/ugly-stik-60/engine/build_engine.py            # rewrite GLB + engine-build.json
+.tools/blender-5.2.2-linux-x64/blender --background --factory-startup \
+  --python assets/aircraft/ugly-stik-60/engine/build_engine.py -- --check # byte-identical rebuild
+```
+
+After a rebuild, import resources and regenerate the model, customization and Workshop pins. The builder seats the mount's flange on F1. The physics-bound `prop_z` stays, so the drive hub sits 6.0 mm inside the wooden propeller hub, and the drive turns with `propeller`. Moving the hub forward the remaining 6.4 mm would be a physics change. Smoke uses the silencer-outlet anchor (4.2 mm bore), and the appearance's oil residue starts at that outlet. The gas pushrod crosses F1 at (32, 22) mm, a corridor that `verify_controls.gd` probes over the full throttle range. The asset costs about 150k of the model's 179k visible triangles (the native engine was 27k of 51k). Godot generates its LODs on import.
 
 ## Native builder and model interfaces
 

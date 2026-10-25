@@ -214,6 +214,12 @@ THUMB_TUCK_GRIP_DEG = -10.0
 # Seated hands rest on the thighs: along the hip-to-knee line, lifted to the top of the thigh.
 SEAT_HAND_ALONG_THIGH = 0.55
 SEAT_HAND_LIFT_M = 0.10
+# SC-HUM-07-R4/R5: CC0 standing02 and standing03 hold the arms out in an A (wrists 0.13-0.15 m outside the shoulders);
+# relaxed arms hang beside the thighs: wrist this far outside the shoulder joint, slightly ahead of the hip.
+ARM_HANG_OUT_M = 0.055
+ARM_HANG_AHEAD_M = 0.03
+ARM_HANG_POSES = ('standing02.bvh', 'standing03.bvh')  # standing04 keeps its hand on the hip
+EYEBROW_FROM_HAIR = 0.8  # brows a little darker than the hair (SC-HUM-07-R5)
 
 def pose_fingers(side, curl, thumb_tuck_deg):
     """Replace the source pose's fingers. The CC0 standing BVH bends only the outer joints, which reads as a claw."""
@@ -369,6 +375,16 @@ elif pose_kind == 'pilot':
         pose_fingers(side, FINGERS_GRIP, THUMB_TUCK_GRIP_DEG)  # the thumb's first joint follows its aim
     for part in radio_parts:
         part.data.transform(Matrix.Scale(1.0 / pose_scale, 4) @ radio_frame)
+elif pose_kind == 'standing' and ARGS.outfit and os.path.basename(pose_path) in ARM_HANG_POSES:
+    # Hang the arms beside the thighs (IK), elbows bending back toward a pole behind the shoulder.
+    bpy.context.view_layer.update()
+    for side, sign in [('L', 1.0), ('R', -1.0)]:
+        shoulder = rig.matrix_world @ rig.pose.bones['upperarm01.' + side].head
+        hip_joint = rig.matrix_world @ rig.pose.bones['upperleg02.' + side].head
+        wrist = rig.matrix_world @ rig.pose.bones['wrist.' + side].head
+        hang = Vector((shoulder.x + sign * ARM_HANG_OUT_M / pose_scale, hip_joint.y - ARM_HANG_AHEAD_M / pose_scale, wrist.z))
+        make_ik_target('ArmHang_' + side, tuple(hang), 'lowerarm02.' + side, 4,
+                       (shoulder.x, shoulder.y + 0.60 / pose_scale, (shoulder.z + hang.z) / 2))
 elif pose_kind == 'working':
     # SC-HUM-06: standing at a 0.90 m pit table working on a model: a slight forward lean, eyes on the
     # work and both hands on the model in front (IK). Procedural placement of the CC0 standing pose only.
@@ -412,6 +428,45 @@ def patch_image(image, patches):
         rgba[b:d, a:c] = rgba[b:d, a:c] * (1.0 - weight) + rgba[b + offset:d + offset, a:c] * weight
     image.pixels.foreach_set(rgba[::-1].reshape(-1))
     image.update()
+
+def opaque_mean_rgb(image):
+    """Mean colour of the image's opaque pixels, in its stored encoding."""
+    import numpy
+    pixels = numpy.empty(image.size[0] * image.size[1] * 4, dtype=numpy.float32)
+    image.pixels.foreach_get(pixels)
+    rgba = pixels.reshape(-1, 4)
+    opaque = rgba[:, 3] > 0.5
+    return rgba[opaque, :3].mean(axis=0) if opaque.any() else None
+
+def recolour_image(image, rgb):
+    """Replace the colour of every pixel, keeping its alpha (the shape of a strand texture)."""
+    import numpy
+    pixels = numpy.empty(image.size[0] * image.size[1] * 4, dtype=numpy.float32)
+    image.pixels.foreach_get(pixels)
+    rgba = pixels.reshape(-1, 4)
+    rgba[:, :3] = rgb
+    image.pixels.foreach_set(rgba.reshape(-1))
+    image.update()
+
+def image_files():
+    return [image for image in bpy.data.images if image.source == 'FILE' and image.size[0] > 0 and image.size[1] > 0]
+
+def image_path(image):
+    return image.filepath.lower().replace('\\', '/')
+
+if ARGS.outfit:
+    # SC-HUM-07-R5: MakeHuman eyebrows are near-black strands for any hair colour, and its default brown iris
+    # reads red at 1080p. Brows take the hair's mean colour, darkened; an outfit may name a CC0 iris texture.
+    hair = [opaque_mean_rgb(image) for image in image_files() if '/hair/' in image_path(image) and 'diffuse' in image_path(image)]
+    hair = [rgb for rgb in hair if rgb is not None]
+    for image in image_files():
+        if '/eyebrows/' in image_path(image) and hair:
+            recolour_image(image, hair[0] * EYEBROW_FROM_HAIR)
+            print('EYEBROW_TINT=' + image.name + ':' + str([round(float(c), 3) for c in hair[0] * EYEBROW_FROM_HAIR]))
+        if '/eyes/' in image_path(image) and OUTFIT.get('eye_texture'):
+            image.filepath = str(ARGS.mpfb_user_data / 'data' / 'eyes' / 'materials' / OUTFIT['eye_texture'])
+            image.reload()
+            print('EYE_TEXTURE=' + image.name + ':' + OUTFIT['eye_texture'])
 
 # Reduce embedded images for a small compatibility-renderer asset.
 for image in list(bpy.data.images):

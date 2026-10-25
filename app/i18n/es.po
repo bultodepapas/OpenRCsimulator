@@ -348,8 +348,8 @@ msgstr "Reiniciar el vuelo"
 msgid "Resume after a radio failsafe"
 msgstr "Reanudar tras un failsafe de la radio"
 
-msgid "Views: next (Shift+C back), pilot, chase, orbit"
-msgstr "Vistas (Mayús+C atrás): piloto, seguir, órbita"
+msgid "Views: next (Shift+C back), pilot, chase (again: 3D), fly-by, orbit"
+msgstr "Vistas (Mayús+C atrás): piloto, seguir (otra vez: 3D), pasada, órbita"
 
 msgid "Zoom: auto on/off, in, out, reset"
 msgstr "Zoom: auto, acercar, alejar, reiniciar"
@@ -6008,7 +6008,7 @@ msgid "Auto zoom (Z)"
 msgstr "Zoom automático (Z)"
 
 msgid "Chase distance"
-msgstr "Distancia de persecución"
+msgstr "Distancia de seguimiento"
 
 msgid "Orbit sensitivity"
 msgstr "Sensibilidad de la órbita"
@@ -6017,10 +6017,10 @@ msgid "Invert orbit up/down"
 msgstr "Invertir arriba/abajo en la órbita"
 
 msgid "The pilot view stays the reference for learning to fly; chase and orbit are aids. Right-drag turns the orbit; the wheel or +/− zooms."
-msgstr "La vista del piloto sigue siendo la referencia para aprender a volar; persecución y órbita son ayudas. Arrastra con el botón derecho para girar la órbita; la rueda o +/− hacen zoom."
+msgstr "La vista del piloto sigue siendo la referencia para aprender a volar; seguir y órbita son ayudas. Arrastra con el botón derecho para girar la órbita; la rueda o +/− hacen zoom."
 
 msgid "Chase"
-msgstr "Persecución"
+msgstr "Seguir"
 
 msgid "Orbit"
 msgstr "Órbita"
@@ -6044,11 +6044,25 @@ msgstr "Tamaño constante mantiene un avión lejano del mismo tamaño en pantall
 msgid "Keep the horizon in view"
 msgstr "Mantener el horizonte a la vista"
 
-msgid "Pilot view: tilt down to keep the horizon and ground in view under a high airplane."
-msgstr "Vista del piloto: inclina la mirada para mantener el horizonte y el suelo a la vista bajo un avión alto."
-
 msgid "Smooth overhead passes"
 msgstr "Suavizar las pasadas sobre la cabeza"
 
-msgid "Pilot view: the picture turns gradually instead of flipping when the airplane passes overhead."
-msgstr "Vista del piloto: la imagen gira poco a poco en lugar de voltearse cuando el avión pasa sobre la cabeza."
+# CAM-14: fly-by view.
+msgid "Fly-by"
+msgstr "Pasada"
+
+# CAM-18: magnifier inset.
+msgid "Magnifier"
+msgstr "Lupa"
+
+msgid "Pilot view: a small window at the top shows the airplane up close, so its attitude reads while the main view keeps the real distance. Automatic shows it when the airplane gets small."
+msgstr "Vista del piloto: una ventana pequeña arriba muestra el avión de cerca, para leer su actitud mientras la vista principal conserva la distancia real. Automática la muestra cuando el avión se ve pequeño."
+
+msgid "Pilot view aids"
+msgstr "Ayudas de la vista del piloto"
+
+msgid "Both"
+msgstr "Ambas"
+
+msgid "Keep the horizon in view: the view tilts down so the ground shows under a high airplane. Smooth overhead passes: the picture turns gradually instead of flipping when the airplane passes overhead."
+msgstr "Mantener el horizonte a la vista: la vista se inclina para que el suelo se vea bajo un avión alto. Suavizar las pasadas sobre la cabeza: la imagen gira poco a poco en lugar de voltearse cuando el avión pasa sobre la cabeza."

@@ -47,7 +47,7 @@ func _validation() -> void:
 	_check("defaults validate", CameraSettings.errors(CameraSettings.DEFAULTS).is_empty())
 	_check("an empty dictionary means the defaults", CameraSettings.normalized({}) == CameraSettings.DEFAULTS)
 	for bad: Dictionary in [{camera_view = "cockpit"}, {camera_fov = 51}, {camera_fov = "50"}, {camera_auto_zoom = 1},
-			{camera_zoom_law = "fisheye"}, {camera_horizon_bias = "on"}, {camera_overhead_smoothing = 0},
+			{camera_zoom_law = "fisheye"}, {camera_horizon_bias = "on"}, {camera_overhead_smoothing = 0}, {camera_magnifier = "big"},
 			{camera_chase_distance = 3.0}, {camera_sensitivity = -1.0}, {camera_invert_y = "yes"}]:
 		_check("rejects %s" % str(bad), not CameraSettings.errors(bad).is_empty())
 	_check("an integer multiplier is accepted (1 = 100 %)", CameraSettings.errors({camera_sensitivity = 1}).is_empty())
@@ -196,8 +196,17 @@ func _settings_page() -> void:
 		complete = complete and picker.is_visible_in_tree() and picker.get_item_metadata(picker.selected) == CameraSettings.DEFAULTS[key]
 	_check("Camera page shows every option at its default", complete
 		and screen._camera_zoom_picker.get_item_metadata(screen._camera_zoom_picker.selected) == "constant"
-		and not screen._camera_invert_toggle.button_pressed and not screen._camera_horizon_toggle.button_pressed
-		and not screen._camera_overhead_toggle.button_pressed)
+		and not screen._camera_invert_toggle.button_pressed
+		and screen._camera_aids_picker.get_item_metadata(screen._camera_aids_picker.selected) == "off"
+		and screen._camera_magnifier_picker.get_item_metadata(screen._camera_magnifier_picker.selected) == "off")
+	var both := screen.CAMERA_AIDS.find("both")
+	screen._camera_aids_picker.select(both)
+	screen._camera_aids_picker.item_selected.emit(both)
+	_check("pilot view aids: Both turns on the horizon tilt and overhead smoothing", previews.back().camera_horizon_bias and previews.back().camera_overhead_smoothing)
+	var horizon := screen.CAMERA_AIDS.find("horizon")
+	screen._camera_aids_picker.select(horizon)
+	screen._camera_aids_picker.item_selected.emit(horizon)
+	_check("pilot view aids: the horizon alone", previews.back().camera_horizon_bias and not previews.back().camera_overhead_smoothing)
 	var off := 0
 	screen._camera_zoom_picker.select(off)
 	screen._camera_zoom_picker.item_selected.emit(off)
@@ -215,7 +224,8 @@ func _settings_page() -> void:
 	screen._camera_invert_toggle.button_pressed = true
 	screen.keep_changes()
 	var saved := DisplayPreferences.load_from(path)
-	_check("Keep stores the camera choices", saved.camera_fov == 35 and saved.camera_invert_y and saved.camera_zoom_law == "partial")
+	_check("Keep stores the camera choices", saved.camera_fov == 35 and saved.camera_invert_y and saved.camera_zoom_law == "partial"
+		and saved.camera_horizon_bias and not saved.camera_overhead_smoothing)
 	screen.queue_free()
 	viewport.queue_free()
 	await process_frame

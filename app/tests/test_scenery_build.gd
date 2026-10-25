@@ -284,10 +284,13 @@ func _test_catalog_sizes() -> void:
 				if "/" in label:
 					# Natural-size outfit variants render at min(1, envelope fit) (Population.build): the
 					# drawn size must fit the collision envelope (plan §4.5), the cap must stay a small
-					# correction, and the person must not be implausibly smaller than the envelope.
+					# correction, and the person must not be implausibly smaller than the envelope. The envelope
+					# is the largest variant: in plan a person may be slimmer than a pose with a foot forward
+					# (SC-HUM-07-R3), so width and depth need 60 % and height 75 %.
 					var fit: float = minf(1.0, minf(want.x / variant_box.size.x, minf(want.y / variant_box.size.y, want.z / variant_box.size.z)))
 					var drawn: float = variant_box.size[i] * fit
-					if drawn > want[i] + 0.025 or drawn < 0.75 * want[i] or fit < 0.92:
+					var least: float = 0.75 if i == 1 else 0.60
+					if drawn > want[i] + 0.025 or drawn < least * want[i] or fit < 0.92:
 						ok = false
 				elif absf(variant_box.size[i] - want[i]) > maxf(tol * want[i], 0.1):
 					ok = false

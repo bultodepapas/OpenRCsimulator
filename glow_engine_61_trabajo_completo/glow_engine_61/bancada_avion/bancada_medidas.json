@@ -1,0 +1,33 @@
+{
+ "pieza": "O.S. 905 radial motor mount (codigo 71905200) para 60FP / 61SF / 61RF / 61FX / 91FX",
+ "material": "aluminio fundido, caras de las vigas y apoyo trasero mecanizados",
+ "fuentes": {
+  "set_71905200": "Amazon/Horizon/eBay: 4 tornillos M3.5x16 para el motor, 4 arandelas de presion, 4 tuercas ciegas",
+  "motor_61SF": "Model Airplane News (P. Chinn), prueba del O.S. 61RF/SF: ancho de carter 42 mm, agujeros de montaje 52 x 25 mm",
+  "fotos": "foto de producto (camara resuelta con el rectangulo 52 x 25 de los agujeros), 2 anuncios de eBay (tapete de corte, vista lateral, trasera y frontal)"
+ },
+ "medidas_mm": {
+  "agujeros_motor_en_vigas": "52 x 25, roscados M3.5 (broca 2.9), 7.5 mm de rosca util",
+  "vigas": "7.9 de ancho x 13.8 de alto, separacion interior 43.8, largo 70.1 desde la cara de la brida",
+  "punta_de_viga_delante_del_agujero_delantero": 15.1,
+  "brida": "59.6 x 58.7 x 7.1, esquinas R7, cara delantera 30 mm detras de los agujeros traseros",
+  "agujeros_parallamas": "cuadrado de 44.8, paso M4 (4.3), con asiento de 0.3",
+  "agujero_central": "24 de diametro, 3.9 por encima del centro de la brida",
+  "bolsillo_trasero": "39 x 39 R5, 1.8 de profundidad",
+  "aletas": "2 por viga, 2.2 de espesor, catetos 18 x 17.7",
+  "nervio_inferior": "entre vigas, z -19 a -15.2, con chaflanes de 45 grados",
+  "refuerzos": "cartelas de 45 grados (6.5 mm) donde las vigas tocan la brida"
+ },
+ "ajuste_a_la_foto": {
+  "IoU_silueta_primer_modelo": 0.885,
+  "IoU_silueta_final": 0.933,
+  "agujeros_px": 0.8,
+  "nota": "el interior de la U entre vigas queda fuera de la medida: en la foto la cara de aluminio refleja el fondo blanco"
+ },
+ "montaje": {
+  "parallamas": "contrachapado de abedul 6.4 mm (1/4 in), 90 x 90 R9, sellado con epoxi",
+  "pernos_parallamas": "4 M4 x 20 con arandela, 6.4 mm en la tuerca ciega",
+  "lineas": "silicona 2.4 x 5 mm: combustible del niple del carburador al pasamuros derecho, presion del niple del mofle al pasamuros izquierdo",
+  "morro": "fuselaje cortado 87 mm detras del parallamas, lite-ply 3 mm con esquinas R12 y entelado rojo"
+ }
+}

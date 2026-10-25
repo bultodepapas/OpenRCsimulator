@@ -1,0 +1,164 @@
+{
+ "mech": {
+  "bore_mm": 24.0,
+  "stroke_mm": 22.0,
+  "swept_cc": 9.953,
+  "rod_mm": 40.4,
+  "rod_ratio": 3.67,
+  "crown_TDC_z": 56.0,
+  "crown_BDC_z": 34.0,
+  "exhaust_top_z": 40.731,
+  "transfer_top_z": 38.505,
+  "exhaust_deg": [
+   105.0,
+   255.0
+  ],
+  "transfer_deg": [
+   119.0,
+   241.0
+  ],
+  "intake_deg": [
+   225.0,
+   50.0
+  ],
+  "valve_window_deg": 115.9,
+  "valve_window_lead_deg": 42.5,
+  "squish_mm": 0.45
+ },
+ "interference": "none",
+ "min_clearance_mm_at_deg": {
+  "ENG_Piston - ENG_Liner": [
+   0.03,
+   356.0
+  ],
+  "ENG_Piston - ENG_Crankcase": [
+   1.4,
+   180.0
+  ],
+  "ENG_Piston - ENG_Backplate": [
+   1.55,
+   180.0
+  ],
+  "ENG_Rod - ENG_Crankcase": [
+   0.491,
+   92.0
+  ],
+  "ENG_Rod - ENG_Backplate": [
+   1.8,
+   356.0
+  ],
+  "ENG_Crankshaft - ENG_Crankcase": [
+   0.091,
+   340.0
+  ],
+  "ENG_Crankshaft - ENG_Backplate": [
+   1.5,
+   0.0
+  ],
+  "ENG_Crankshaft - ENG_Liner": [
+   7.911,
+   356.0
+  ],
+  "ENG_Piston_Ring - ENG_Liner": [
+   0.004,
+   356.0
+  ],
+  "ENG_Rod_Bush_Big - ENG_Crankshaft": [
+   0.014,
+   156.0
+  ],
+  "ENG_Rod - ENG_Crankshaft": [
+   0.3,
+   356.0
+  ],
+  "ENG_Piston - ENG_Crankshaft": [
+   2.022,
+   180.0
+  ],
+  "ENG_Rod - ENG_Piston": [
+   0.3,
+   356.0
+  ],
+  "ENG_Crankshaft - ENG_Front_Housing": [
+   0.046,
+   0.0
+  ]
+ },
+ "ports": {
+  "exhaust": {
+   "top_z": 40.73,
+   "bottom_z": 35.0,
+   "height_mm": 5.73,
+   "opens_deg_ATDC": 105.0,
+   "closes_deg_ATDC": 255.0,
+   "duration_deg": 150.0
+  },
+  "transfer_rear": {
+   "top_z": 38.5,
+   "bottom_z": 33.7,
+   "height_mm": 4.8,
+   "opens_deg_ATDC": 119.0,
+   "closes_deg_ATDC": 241.0,
+   "duration_deg": 122.0
+  },
+  "transfer_front": {
+   "top_z": 38.5,
+   "bottom_z": 33.7,
+   "height_mm": 4.8,
+   "opens_deg_ATDC": 119.0,
+   "closes_deg_ATDC": 241.0,
+   "duration_deg": 122.0
+  },
+  "boost": {
+   "top_z": 38.2,
+   "bottom_z": 22.0,
+   "height_mm": 16.2,
+   "opens_deg_ATDC": 121.1,
+   "closes_deg_ATDC": 238.9,
+   "duration_deg": 117.8
+  }
+ },
+ "blowdown_deg": 14.0,
+ "exhaust_overlap_at_TDC_mm": 0.4,
+ "intake_measured": {
+  "opens_deg_ATDC": [
+   226
+  ],
+  "closes_deg_ATDC": [
+   48
+  ],
+  "open_steps": "92 of 180 (2 deg steps)",
+  "full_open_deg": [
+   296,
+   338
+  ]
+ },
+ "boost_feed_open_rays": {
+  "180deg": 90,
+  "150deg": 85,
+  "120deg": 80
+ },
+ "combustion_chamber_cc": 0.853,
+ "compression_geometric": 12.66,
+ "compression_trapped_from_exhaust_close": 9.1,
+ "crankcase_volume_TDC_cc": 37.2,
+ "crankcase_volume_BDC_cc": 27.26,
+ "crankcase_delta_vs_swept_pct": -0.1,
+ "crankcase_compression": 1.365,
+ "crankcase_voxel_mm": 0.4,
+ "masses_g": {
+  "ENG_Crankshaft": 61.33,
+  "ENG_Crank_Counterweight": 14.85,
+  "ENG_Rod": 3.8,
+  "ENG_Rod_Bush_Small": 0.64,
+  "ENG_Rod_Bush_Big": 0.92,
+  "ENG_Piston": 9.84,
+  "ENG_Piston_Ring": 0.65,
+  "ENG_Wrist_Pin": 2.82,
+  "ENG_Circlip_1": 0.04,
+  "ENG_Circlip_2": 0.04
+ },
+ "reciprocating_mass_g": 15.88,
+ "balance_factor_pct": 40.8,
+ "crank_side_unbalance_gmm": 5.96
+}

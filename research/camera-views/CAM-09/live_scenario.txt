@@ -1,0 +1,25 @@
+fly aircraft=gp-extra-300s-60 start=runway
+wait seconds=2
+eval expr="[flight._camera_obstacles.get('proxies', []).size(), flight._rig.view]"
+key name=5
+wait seconds=1
+eval expr="flight._rig.orbit.start_from(flight._airplane.root.global_position + Vector3(-10, 0.3, 0), flight._airplane.root.global_position)"
+wait seconds=2
+eval expr="[flight._rig.orbit.distance, flight._camera.global_position.distance_to(flight._airplane.root.global_position), flight._rig.orbit._guard.limit]"
+eval expr="flight._rig.orbit.start_from(flight._airplane.root.global_position + Vector3(0, 0.8, 40), flight._airplane.root.global_position)"
+wait seconds=2
+eval expr="[flight._rig.orbit.distance, flight._camera.global_position.distance_to(flight._airplane.root.global_position), flight._rig.orbit._guard.limit]"
+eval expr="flight.CameraCollision.CollisionWorld.nearby(flight._camera_obstacles, -16.0, -47.0, -0.8, 2.0)"
+screenshot format=jpg max_width=1280
+home
+fly aircraft=gp-extra-300s-60 start=airborne
+wait seconds=2
+key name=2
+key name=2
+wait seconds=2
+eval expr="flight._rig.view_name()"
+sticks roll=0.5 throttle=0.7 for_s=0.6
+wait seconds=1
+eval expr="[rad_to_deg(asin(flight._camera.global_basis.x.y)), rad_to_deg(asin(flight._airplane.root.global_basis.x.y))]"
+screenshot format=jpg max_width=1280
+logs --summary

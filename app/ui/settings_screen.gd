@@ -8,6 +8,8 @@ const ScreenTheme := preload("res://ui/ui_theme.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
+## CAM-06b/28 pilot-view aid combinations offered by one picker.
+const CAMERA_AIDS: Array[String] = ["off", "horizon", "overhead", "both"]
 ## Settings pages, in tab order. CAM-17 added Camera.
 const CATEGORIES: Array[String] = ["Display", "Interface", "Sound", "Graphics", "Camera"]
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
@@ -61,8 +63,8 @@ var _camera_fov_picker: OptionButton
 var _camera_chase_picker: OptionButton
 var _camera_sensitivity_picker: OptionButton
 var _camera_zoom_picker: OptionButton
-var _camera_horizon_toggle: CheckButton
-var _camera_overhead_toggle: CheckButton
+var _camera_aids_picker: OptionButton
+var _camera_magnifier_picker: OptionButton
 var _camera_invert_toggle: CheckButton
 var _graphics_info: Label
 var _graphics_restart_button: Button
@@ -284,16 +286,28 @@ func _build() -> void:
 		_on_presentation_option_changed())
 	_camera_zoom_picker.tooltip_text = tr("Constant size keeps a distant airplane the same size on screen. Keeps looming lets it shrink slowly, so you still see it come and go. Gentle zooms least. Z turns auto zoom off and on in flight.")
 	_add_row(camera_page, "Auto zoom (Z)", _camera_zoom_picker)
+	# CAM-06b/28: one picker for the two pilot-view aids keeps the page within 1080p without scrolling.
+	_camera_aids_picker = OptionButton.new()
+	_camera_aids_picker.name = "CameraPilotAids"
+	for value: String in CAMERA_AIDS:
+		_camera_aids_picker.add_item(_choice_caption("camera_aids", value))
+		_camera_aids_picker.set_item_metadata(_camera_aids_picker.item_count - 1, value)
+	_camera_aids_picker.item_selected.connect(func(index: int) -> void:
+		var value := str(_camera_aids_picker.get_item_metadata(index))
+		_draft.camera_horizon_bias = value in ["horizon", "both"]
+		_draft.camera_overhead_smoothing = value in ["overhead", "both"]
+		_on_presentation_option_changed())
+	_camera_aids_picker.tooltip_text = tr("Keep the horizon in view: the view tilts down so the ground shows under a high airplane. Smooth overhead passes: the picture turns gradually instead of flipping when the airplane passes overhead.")
+	_add_row(camera_page, "Pilot view aids", _camera_aids_picker)
+	_camera_magnifier_picker = _camera_picker("CameraMagnifier", "camera_magnifier", CameraSettings.MAGNIFIER_MODES)
+	_camera_magnifier_picker.tooltip_text = tr("Pilot view: a small window at the top shows the airplane up close, so its attitude reads while the main view keeps the real distance. Automatic shows it when the airplane gets small.")
+	_add_row(camera_page, "Magnifier", _camera_magnifier_picker)
 	_camera_chase_picker = _camera_picker("CameraChaseDistance", "camera_chase_distance", CameraSettings.CHASE_DISTANCES)
 	_add_row(camera_page, "Chase distance", _camera_chase_picker)
 	_camera_sensitivity_picker = _camera_picker("CameraSensitivity", "camera_sensitivity", CameraSettings.SENSITIVITIES)
 	_add_row(camera_page, "Orbit sensitivity", _camera_sensitivity_picker)
 	_camera_invert_toggle = _camera_toggle("CameraInvertY", "camera_invert_y", "Invert orbit up/down")
 	_add_row(camera_page, "Invert orbit up/down", _camera_invert_toggle)
-	_camera_horizon_toggle = _camera_toggle("CameraHorizonBias", "camera_horizon_bias", "Pilot view: tilt down to keep the horizon and ground in view under a high airplane.")
-	_add_row(camera_page, "Keep the horizon in view", _camera_horizon_toggle)
-	_camera_overhead_toggle = _camera_toggle("CameraOverheadSmoothing", "camera_overhead_smoothing", "Pilot view: the picture turns gradually instead of flipping when the airplane passes overhead.")
-	_add_row(camera_page, "Smooth overhead passes", _camera_overhead_toggle)
 
 	_opaque_toggle = CheckButton.new()
 	_opaque_toggle.name = "OpaquePanels"
@@ -522,7 +536,10 @@ func _choice_caption(key: String, value: Variant) -> String:
 				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
 			return tr(str(value).capitalize())
 		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
-		"camera_view": return {pilot = tr("Pilot"), chase = tr("Chase"), orbit = tr("Orbit")}.get(value, str(value))
+		"camera_magnifier": return {off = tr("Off"), auto = tr("Automatic"), on = tr("On")}.get(value, str(value))
+		"camera_aids": return {off = tr("Off"), horizon = tr("Keep the horizon in view"), overhead = tr("Smooth overhead passes"),
+			both = tr("Both")}.get(value, str(value))
+		"camera_view": return {pilot = tr("Pilot"), chase = tr("Chase"), flyby = tr("Fly-by"), orbit = tr("Orbit")}.get(value, str(value))
 		"camera_zoom": return {off = tr("Off"), constant = tr("%s (default)") % tr("Constant size"), partial = tr("Keeps looming"),
 			gentle = tr("Gentle")}.get(value, str(value))
 		"camera_fov":
@@ -714,8 +731,10 @@ func _sync_controls() -> void:
 	_select_metadata(_camera_sensitivity_picker, _draft.get("camera_sensitivity", CameraSettings.DEFAULTS.camera_sensitivity))
 	_select_metadata(_camera_zoom_picker, str(_draft.get("camera_zoom_law", CameraSettings.DEFAULTS.camera_zoom_law))
 		if bool(_draft.get("camera_auto_zoom", CameraSettings.DEFAULTS.camera_auto_zoom)) else "off")
-	_camera_horizon_toggle.set_pressed_no_signal(bool(_draft.get("camera_horizon_bias", CameraSettings.DEFAULTS.camera_horizon_bias)))
-	_camera_overhead_toggle.set_pressed_no_signal(bool(_draft.get("camera_overhead_smoothing", CameraSettings.DEFAULTS.camera_overhead_smoothing)))
+	_select_metadata(_camera_magnifier_picker, str(_draft.get("camera_magnifier", CameraSettings.DEFAULTS.camera_magnifier)))
+	var horizon := bool(_draft.get("camera_horizon_bias", CameraSettings.DEFAULTS.camera_horizon_bias))
+	var overhead := bool(_draft.get("camera_overhead_smoothing", CameraSettings.DEFAULTS.camera_overhead_smoothing))
+	_select_metadata(_camera_aids_picker, "both" if horizon and overhead else ("horizon" if horizon else ("overhead" if overhead else "off")))
 	_camera_invert_toggle.set_pressed_no_signal(bool(_draft.get("camera_invert_y", CameraSettings.DEFAULTS.camera_invert_y)))
 	_select_metadata(_scale_picker, _draft.ui_scale)
 	_opaque_toggle.set_pressed_no_signal(bool(_draft.opaque_panels))
@@ -898,7 +917,7 @@ func _refresh_translated_text() -> void:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
 	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_scene_detail_picker, "scene_detail"],
-			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"]]:
+			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_magnifier_picker, "camera_magnifier"], [_camera_aids_picker, "camera_aids"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))

@@ -360,9 +360,10 @@ static func _build_tail_mechanism(root: Node3D, assembly: Node3D, service: Node3
 	_update_rod(mechanisms[surface_name].rods[0], neutral_endpoint, horn_root, normal)
 
 
-# US-V09c: the carburettor lever (Equipment, node carburetor_throttle_arm_hinge) turns about +X with the throttle
-# command; a direct pushrod of constant length closes it to the gas servo, like the tail mechanisms. The servo station,
-# 12 mm arm and 60-degree barrel travel are estimates for a generic .61 installation, not measured.
+# US-V09c: the carburettor lever (Equipment, node carburetor_throttle_arm_hinge) turns about X with the throttle
+# command; a direct pushrod of constant length closes it to the gas servo, like the tail mechanisms. US-V13: the O.S. 61
+# lever opens by turning about -X (Equipment.THROTTLE_OPENING) and the servo sits on the rod line Equipment routes
+# through F1. The servo station, 12 mm arm and 60-degree barrel travel are estimates, not measured.
 const THROTTLE_TRAVEL_DEG := 60.0
 const THROTTLE_SERVO_RADIUS_M := 0.012
 
@@ -371,14 +372,13 @@ static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: N
 	if hinge == null:
 		failures.append("missing carburetor throttle arm")
 		return
-	var e: Dictionary = D.equipment
 	var horn_local: Vector3 = Equipment.throttle_arm_tip() - Equipment.throttle_arm_pivot()
 	var carburetor_point := _point_in_root(root, hinge, horn_local)
-	var servo_center := Vector3(0, -0.020, float(e.firewall_z) + 0.035)
-	var servo_pivot := servo_center + Vector3(Equipment.THROTTLE_SIDE * 0.012, 0.004, 0.010)
 	var normal := Vector3.DOWN
 	var u := Vector3.RIGHT * Equipment.THROTTLE_SIDE
 	var v := Vector3.BACK
+	var servo_pivot := Equipment.throttle_servo_arm_end() - u * THROTTLE_SERVO_RADIUS_M
+	var servo_center := servo_pivot - Vector3(Equipment.THROTTLE_SIDE * 0.012, 0.004, 0.010)
 	_add_servo(service, "throttle_servo", servo_center, Basis.IDENTITY, SERVO_BODY_SIZE, servo_pivot, normal, u, Vector3(0, 0, -0.030), false)
 	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo_center, "animated": true, "reference": "estimated gas servo station; drives the carburettor lever from the throttle command"}
 	var endpoint := servo_pivot + u * THROTTLE_SERVO_RADIUS_M
@@ -416,7 +416,7 @@ static func set_throttle(controls: Dictionary, throttle: float) -> void:
 	if not controls.get("ok", false) or not controls.mechanisms.has("throttle"):
 		return
 	var hinge: Node3D = controls.mechanisms.throttle.hinge
-	hinge.rotation.x = deg_to_rad((clampf(throttle, 0.0, 1.0) - 0.5) * THROTTLE_TRAVEL_DEG)
+	hinge.rotation.x = deg_to_rad(Equipment.THROTTLE_OPENING * (clampf(throttle, 0.0, 1.0) - 0.5) * THROTTLE_TRAVEL_DEG)
 	update(controls)
 
 

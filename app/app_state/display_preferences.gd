@@ -46,6 +46,7 @@ const DEFAULTS := {
 	"camera_zoom_law": CameraSettings.DEFAULTS.camera_zoom_law,
 	"camera_horizon_bias": CameraSettings.DEFAULTS.camera_horizon_bias,
 	"camera_overhead_smoothing": CameraSettings.DEFAULTS.camera_overhead_smoothing,
+	"camera_magnifier": CameraSettings.DEFAULTS.camera_magnifier,
 	"camera_chase_distance": CameraSettings.DEFAULTS.camera_chase_distance,
 	"camera_sensitivity": CameraSettings.DEFAULTS.camera_sensitivity,
 	"camera_invert_y": CameraSettings.DEFAULTS.camera_invert_y,
@@ -54,13 +55,14 @@ const OPTIONAL_KEYS: Array[String] = [
 	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction",
 	"camera_view", "camera_fov", "camera_auto_zoom", "camera_chase_distance", "camera_sensitivity", "camera_invert_y",
 	"fsr2_sharpness",
-	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing",
+	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
 ] # schema-1 extensions; older files and callers keep defaults
 ## CAM-17: display.cfg [camera] key for each preference.
 const CAMERA_FILE_KEYS := {
 	"camera_view": "view", "camera_fov": "fov", "camera_auto_zoom": "auto_zoom",
 	"camera_chase_distance": "chase_distance", "camera_sensitivity": "sensitivity", "camera_invert_y": "invert_y",
 	"camera_zoom_law": "zoom_law", "camera_horizon_bias": "horizon_bias", "camera_overhead_smoothing": "overhead_smoothing",
+	"camera_magnifier": "magnifier",
 }
 const AUDIO_LEVEL_KEYS: Array[String] = ["menu_volume", "master_volume"]
 

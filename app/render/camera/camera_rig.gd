@@ -12,11 +12,13 @@ const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraMath := preload("res://render/camera/camera_math.gd")
 const ChaseView := preload("res://render/camera/chase_view.gd")
 const OrbitView := preload("res://render/camera/orbit_view.gd")
+const FlybyView := preload("res://render/camera/flyby_view.gd")
 
-## The C cycle, in order. Number keys select pilot (1), chase (2) and orbit (5); 3, 4, 6, 7 are reserved (plan §4.4).
-const VIEWS := ["pilot", "chase", "orbit", "closeup"]
+## The C cycle, in order. Number keys select pilot (1), chase (2), fly-by (4) and orbit (5); 3, 6, 7 are reserved
+## (plan §4.4).
+const VIEWS := ["pilot", "chase", "flyby", "orbit", "closeup"]
 ## Names the input panel, captures and evidence show (the historical "pilot" and "close-up" are kept).
-const NAMES := { pilot = "pilot", chase = "chase", orbit = "orbit", closeup = "close-up" }
+const NAMES := { pilot = "pilot", chase = "chase", flyby = "fly-by", orbit = "orbit", closeup = "close-up" }
 ## One +/− step or wheel notch: a quarter of a doubling.
 const ZOOM_STEP := 1.189207115002721 # 2^(1/4)
 ## Pilot manual zoom limits (multiplies tan(fov/2): < 1 narrows) and chase boom limits.
@@ -32,13 +34,13 @@ const PILOT_FOV_MAX := 120.0
 ## so each view takes the largest near plane its closest geometry allows. Pilot: the nearest surface is the station
 ## barrier, 1.11 m from the eye (CAM-02b probe), still 0.52 m deep at the widest manual zoom. Chase and close-up stay
 ## ≥ 1 m from the airframe. The orbit can come within centimetres of a wing tip, so its near plane shrinks with distance.
-const NEAR_M := { pilot = 0.5, chase = 0.25, closeup = 0.25 }
+const NEAR_M := { pilot = 0.5, chase = 0.25, flyby = 0.5, closeup = 0.25 }
 const ORBIT_NEAR_MIN := 0.05
 const ORBIT_NEAR_MAX := 0.25
 ## CAM-06b: the horizon tilt keeps the aircraft within this share of the half-frame from the centre and lifts the
 ## horizon this share of the half-frame above the bottom edge; it eases in or out with this half-life (s).
 const HORIZON_KEEP := 0.75
-const HORIZON_MARGIN := 0.1
+const HORIZON_MARGIN := 0.3
 const HORIZON_EASE_HALF_LIFE := 0.25
 ## CAM-28: the most the picture may turn about the view axis (°/s); an exact pass beside the zenith turned 2388°/s.
 const OVERHEAD_ROLL_RATE := 180.0
@@ -66,6 +68,8 @@ var base_fov := float(Spec.CAMERA.fov_deg)
 var zoom_law := "constant"
 var horizon_bias := false
 var overhead_smoothing := false
+## CAM-18: magnifier inset mode ("off", "auto", "on"); the route's Magnifier node draws it.
+var magnifier := "off"
 var _bias_amount := 0.0 # 0 → 1 as the horizon tilt eases in or out
 var _screen_up := Vector3.ZERO # the overhead-smoothed screen up (ZERO: follow the exact one)
 ## Landscape review (L0): (azimuth, elevation) in degrees from the pilot's eye; NAN follows the airplane.
@@ -73,6 +77,9 @@ var look := Vector2(NAN, NAN)
 var look_height := 1.7
 var chase := ChaseView.new()
 var orbit := OrbitView.new()
+var flyby := FlybyView.new()
+## Direction toward the sun (render), set by the route each frame; the fly-by stands with the sun behind it.
+var light_direction := Vector3.ZERO
 var _span := 1.5
 var _fov_offset := 0.0 # ln(tan) difference still being blended out after a zoom change
 var _absorb_from := NAN # the FOV on screen just before a zoom change
@@ -91,6 +98,7 @@ func set_span(span: float) -> void:
 	_span = span
 	chase.configure(span)
 	orbit.configure(span)
+	flyby.configure(span)
 
 
 static func is_view(id: String) -> bool:
@@ -98,7 +106,7 @@ static func is_view(id: String) -> bool:
 
 
 func view_name() -> String:
-	return str(NAMES.get(view, view))
+	return "chase 3D" if view == "chase" and chase.style == "follow3d" else str(NAMES.get(view, view))
 
 
 ## Selects a view. Chase restarts settled behind the airplane; orbit starts from the camera's current position.
@@ -111,11 +119,23 @@ func set_view(id: String) -> bool:
 	_screen_up = Vector3.ZERO
 	if id == "chase":
 		chase.reset()
+	elif id == "flyby":
+		flyby.reset()
 	elif id == "orbit":
 		_orbit_primed = false
 	_fov_offset = 0.0
 	_absorb_from = NAN
 	return true
+
+
+## A view key: selects the view, and pressed again in the chase view switches its style (CAM-09: horizon-locked ↔ 3D
+## follow). Settings and command-line selection use set_view(), which never toggles.
+func select_view(id: String) -> bool:
+	if id == "chase" and view == "chase":
+		chase.style = "follow3d" if chase.style == "horizon" else "horizon"
+		chase.reset()
+		return true
+	return set_view(id)
 
 
 func cycle(step: int) -> void:
@@ -154,6 +174,8 @@ func zoom(steps: float) -> void:
 			chase.zoom = clampf(chase.zoom * factor, CHASE_ZOOM_MIN, CHASE_ZOOM_MAX)
 		"orbit":
 			orbit.dolly(factor)
+		"flyby":
+			flyby.zoom = clampf(flyby.zoom / factor, 0.25, 4.0)
 
 
 ## Backspace: the current view's zoom and offsets back to their defaults.
@@ -167,6 +189,8 @@ func reset_view() -> void:
 			chase.zoom = 1.0
 		"orbit":
 			orbit.reset()
+		"flyby":
+			flyby.zoom = 1.0
 
 
 ## CAM-29: while the right button turns the orbit the cursor is held (hidden, no window edge to run into); it is
@@ -191,6 +215,7 @@ func drag(relative: Vector2) -> void:
 ## A restarted flight: views with memory start settled again.
 func reset() -> void:
 	chase.reset()
+	flyby.reset()
 	_screen_up = Vector3.ZERO
 	_fov_offset = 0.0
 	_absorb_from = NAN
@@ -198,11 +223,13 @@ func reset() -> void:
 
 ## Places the camera for this frame. target: the airplane's CG (render); airplane: its root transform (close-up
 ## offset); dt: frame time (s); paused: the simulation is frozen; ground_y: Callable(x, z) → terrain height;
-## velocity: the CG velocity (render, m/s) from the simulation state, INF when unknown (views then estimate it).
+## velocity: the CG velocity (render, m/s) from the simulation state, INF when unknown (views then estimate it);
+## obstacles: Callable(from, to) → share of that boom clear of scenery, or empty (CAM-09: chase and orbit pull in,
+## the fly-by avoids spots behind buildings and trees).
 ## Camera consumers (audio listener, lake reflection, sun glare) must run after this call, and after focus() during a
 ## crash aftermath, in the same frame.
 func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paused: bool, ground_y: Callable,
-		velocity := Vector3.INF) -> void:
+		velocity := Vector3.INF, obstacles := Callable()) -> void:
 	# SUN-04: the pilot's eyes see the sun as an eye (veil, afterimage); the other views are camera lenses (flares).
 	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or not is_nan(look.x) else "lens")
 	_orbit_entry_eye = Vector3.INF
@@ -223,7 +250,9 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 		"closeup":
 			PilotCamera.aim(camera, target, airplane, true)
 		"chase":
-			_apply(chase.update(target, body, dt, paused, ground_y, velocity))
+			_apply(chase.update(target, body, dt, paused, ground_y, velocity, obstacles))
+		"flyby":
+			_apply(flyby.update(target, body, velocity, dt, paused, ground_y, light_direction, obstacles))
 		"orbit":
 			if not _orbit_primed:
 				if _placed:
@@ -232,7 +261,7 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 				else:
 					orbit.start_behind(body)
 				_orbit_primed = true
-			_apply(orbit.update(target, ground_y, dt))
+			_apply(orbit.update(target, ground_y, dt, obstacles))
 	_placed = true
 
 
@@ -241,15 +270,15 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 ## the player's control, the chase holds its (paused) position and turns to it, and the close-up keeps its offset from
 ## it above the terrain. The held chase narrows its FOV as the wreck slides away. The pilot view keeps the director's
 ## rule (main.gd).
-func focus(point: Vector3, ground_y: Callable) -> void:
+func focus(point: Vector3, ground_y: Callable, obstacles := Callable()) -> void:
 	if not is_nan(look.x):
 		return
 	match view:
 		"orbit":
 			if _orbit_entry_eye.is_finite():
 				orbit.start_from(_orbit_entry_eye, point) # entered this frame: start where the last view was, around the wreck
-			_apply(orbit.update(point, ground_y, 0.0)) # eased once this frame already, in update()
-		"chase":
+			_apply(orbit.update(point, ground_y, 0.0, obstacles)) # eased once this frame already, in update()
+		"chase", "flyby":
 			camera.basis = CameraMath.look_basis(camera.position, point)
 			var away := maxf(camera.position.distance_to(point), 0.1)
 			camera.fov = clampf(rad_to_deg(2.0 * atan(_span / (2.0 * away * WRECK_FRAME_SHARE))), WRECK_CHASE_MIN_FOV,

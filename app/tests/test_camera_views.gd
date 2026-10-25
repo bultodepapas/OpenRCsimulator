@@ -5,6 +5,9 @@
 #   - CAM-24: chase frame-rate independence in a bank and a loop (sub-steps), no slide after entry (state velocity);
 #   - CAM-02b: each view's near plane (pilot 0.5 m, chase and close-up 0.25 m, orbit shrinking near the airframe);
 #   - CAM-06/06b/28 pilot aids: the zoom-law family, the horizon tilt and overhead smoothing; all off by default;
+#   - CAM-09 3D follow: chase key again toggles it; a loop turns the camera far less than horizon lock; rolls lean
+#     the picture only partly; vertical lines stay defined; 30 vs 144 fps agree;
+#   - CAM-14 fly-by: placed ahead (FlightGear law), re-placed after the pass, sun side, low side, framing, determinism;
 #   - CAM-27: after a crash the orbit, chase and close-up look at the wreck; the orbit still turns; pilot untouched;
 #   - orbit: starts where the previous view was, clamps, keeps clear of the ground.
 # Run: godot --headless --path . --script res://tests/test_camera_views.gd
@@ -16,6 +19,7 @@ const CameraMath := preload("res://render/camera/camera_math.gd")
 const CameraRig := preload("res://render/camera/camera_rig.gd")
 const ChaseView := preload("res://render/camera/chase_view.gd")
 const OrbitView := preload("res://render/camera/orbit_view.gd")
+const FlybyView := preload("res://render/camera/flyby_view.gd")
 
 const SPAN := 1.524
 
@@ -75,7 +79,9 @@ func _run() -> void:
 	_near_planes()
 	_chase()
 	_chase_smoothness()
+	_follow3d()
 	_orbit()
+	_flyby()
 	_wreck_focus()
 	print("all %d camera view checks passed" % _count if _failures == 0 else "%d of %d failed" % [_failures, _count])
 	quit(1 if _failures > 0 else 0)
@@ -276,7 +282,7 @@ func _cycle() -> void:
 	for i in CameraRig.VIEWS.size():
 		seen.append(rig.view)
 		rig.cycle(1)
-	_check("C cycles pilot → chase → orbit → close-up → pilot", seen == ["pilot", "chase", "orbit", "closeup"] and rig.view == "pilot", str(seen))
+	_check("C cycles pilot → chase → fly-by → orbit → close-up → pilot", seen == ["pilot", "chase", "flyby", "orbit", "closeup"] and rig.view == "pilot", str(seen))
 	rig.cycle(-1)
 	_check("Shift+C goes back", rig.view == "closeup")
 	_check("unknown view refused", not rig.set_view("cockpit") and rig.view == "closeup")
@@ -470,6 +476,75 @@ func _chase_smoothness() -> void:
 	_check("CAM-24 chase: hovering pirouette, 30 and 144 fps within 1 cm", spin_gap < 0.01, "%.4f m" % spin_gap)
 
 
+## The chase camera over a trajectory at fps: worst camera turn rate (°/s), frames with the aircraft off screen,
+## worst screen roll (°), whether every basis stayed finite, and the final camera offset from the aircraft.
+func _chase_run(style: String, trajectory: Callable, seconds: float, fps := 60.0) -> Dictionary:
+	var chase := ChaseView.new()
+	chase.configure(SPAN)
+	chase.style = style
+	var dt := 1.0 / fps
+	var previous := Vector3.ZERO
+	var turn := 0.0
+	var outside := 0
+	var roll := 0.0
+	var finite := true
+	var last := Vector3.ZERO
+	for i in roundi(seconds * fps) + 1: # the last frame lands exactly on `seconds`
+		var s: Dictionary = trajectory.call(i * dt)
+		var placed := chase.update(s.pos, s.basis, dt if i > 0 else 0.0, false, _flat, s.vel)
+		var b: Basis = placed.basis
+		finite = finite and b.is_finite() and (placed.position as Vector3).is_finite()
+		var forward := -b.z
+		if previous != Vector3.ZERO:
+			turn = maxf(turn, rad_to_deg(previous.angle_to(forward)) * fps)
+		previous = forward
+		var local: Vector3 = b.inverse() * ((s.pos as Vector3) - (placed.position as Vector3))
+		if local.z >= 0.0 or absf(rad_to_deg(atan2(local.y, -local.z))) > ChaseView.FOV_DEG * 0.5:
+			outside += 1
+		roll = maxf(roll, rad_to_deg(asin(clampf(absf(b.x.y), 0.0, 1.0))))
+		last = (placed.position as Vector3) - (s.pos as Vector3)
+	return { turn = turn, outside = outside, roll = roll, finite = finite, last = last }
+
+
+## Straight north at 20 m/s rolling about the nose at 360°/s (an axial roll).
+static func _roll(t: float) -> Dictionary:
+	return { pos = Vector3(0, 30, -20.0 * t), basis = Basis(Vector3(0, 0, -1), TAU * t), vel = Vector3(0, 0, -20) }
+
+
+## Straight north, then straight up at 20 m/s (a vertical line).
+static func _vertical(t: float) -> Dictionary:
+	if t < 1.0:
+		return { pos = Vector3(0, 30, -20.0 * t), basis = Basis.IDENTITY, vel = Vector3(0, 0, -20) }
+	return { pos = Vector3(0, 30 + 20.0 * (t - 1.0), -20.0), basis = Basis(Vector3.RIGHT, PI / 2.0), vel = Vector3(0, 20, 0) }
+
+
+func _follow3d() -> void:
+	var cam := _camera()
+	var rig := CameraRig.new(cam, SPAN)
+	rig.select_view("chase")
+	_check("CAM-09 the chase key selects the horizon-locked chase first", rig.view == "chase" and rig.chase.style == "horizon")
+	rig.select_view("chase")
+	_check("CAM-09 pressed again it switches to 3D follow, named so", rig.chase.style == "follow3d" and rig.view_name() == "chase 3D")
+	rig.set_view("chase")
+	_check("CAM-09 set_view (settings, command line) never toggles", rig.chase.style == "follow3d")
+	rig.select_view("chase")
+	_check("CAM-09 and once more back to horizon lock", rig.chase.style == "horizon" and rig.view_name() == "chase")
+	cam.free()
+	var horizon := _chase_run("horizon", _loop, 9.0)
+	var follow := _chase_run("follow3d", _loop, 9.0)
+	_check("CAM-09 3D follow: a loop turns the camera far less than horizon lock (no whip over the top)", follow.turn < 0.6 * horizon.turn, "%.0f vs %.0f °/s" % [follow.turn, horizon.turn])
+	_check("CAM-09 3D follow: the aircraft stays in frame through the loop", follow.outside == 0 and follow.finite, "%d frames" % follow.outside)
+	var rolled := _chase_run("follow3d", _roll, 2.0)
+	_check("CAM-09 3D follow: an axial roll leans the picture only partly, aircraft in frame", rolled.roll > 5.0 and rolled.roll < 60.0 and rolled.outside == 0, "%.1f°" % rolled.roll)
+	var level := _chase_run("horizon", _roll, 2.0)
+	_check("CAM-09 horizon lock: the same roll keeps the horizon level", level.roll < 1e-3)
+	var up := _chase_run("follow3d", _vertical, 3.0)
+	_check("CAM-09 3D follow: a vertical line stays defined (no NaN)", up.finite and up.outside == 0)
+	var at30: Vector3 = _chase_run("follow3d", _loop, 7.0, 30.0).last
+	var at144: Vector3 = _chase_run("follow3d", _loop, 7.0, 144.0).last
+	_check("CAM-09 3D follow: loop at 30 and 144 fps within 2 cm", at30.distance_to(at144) < 0.02, "%.4f m" % at30.distance_to(at144))
+
+
 func _orbit() -> void:
 	var orbit := OrbitView.new()
 	orbit.configure(SPAN)
@@ -561,3 +636,65 @@ func _wreck_focus() -> void:
 	rig.focus(wreck, _flat)
 	_check("CAM-27 pilot: focus leaves the pilot view to the crash director", cam.transform == pilot)
 	cam.free()
+
+
+## CAM-14: a straight run north at 20 m/s, `height` m up, sampled at 60 fps for `seconds`; returns the placements.
+func _flyby_run(height: float, seconds: float, light := Vector3.ZERO, ground := Callable()) -> Array:
+	var view := FlybyView.new()
+	view.configure(SPAN)
+	var placements: Array = []
+	var last := Vector3.INF
+	for i in roundi(seconds * 60.0):
+		var target := Vector3(0, height, -20.0 * i / 60.0)
+		var placed := view.update(target, _level(0.0), Vector3(0, 0, -20), 1.0 / 60.0 if i > 0 else 0.0, false,
+			ground if ground.is_valid() else Callable(_flat), light)
+		var eye: Vector3 = placed.position
+		if eye != last:
+			placements.append({eye = eye, target = target, basis = placed.basis, fov = placed.fov})
+			last = eye
+	return placements
+
+
+func _flyby() -> void:
+	var runs := _flyby_run(60.0, 20.0)
+	var first: Dictionary = runs[0]
+	var ahead: float = (first.target as Vector3).z - (first.eye as Vector3).z
+	var expected_lead := FlybyView.LEAD_SHARE * FlybyView.LEAD_S * 20.0
+	_check("CAM-14 fly-by: first placement waits exactly 0.8 × 3.5 s × speed ahead (the deviation is across the course)", absf(ahead - expected_lead) < 1e-3, "%.3f m ahead" % ahead)
+	var radius := ((first.eye as Vector3) - ((first.target as Vector3) + Vector3(0, 0, -expected_lead))).length()
+	_check("CAM-14 fly-by: deviated 0.7–1.2 × D from the course", radius >= FlybyView.RADIUS_MIN * FlybyView.DISTANCE_M - 1e-3 and radius <= FlybyView.RADIUS_MAX * FlybyView.DISTANCE_M + 1e-3, "%.1f m" % radius)
+	_check("CAM-14 fly-by: re-placed after each pass (20 s at 20 m/s → several shots)", runs.size() >= 3, "%d placements" % runs.size())
+	var replaced_late := true
+	for k in range(1, runs.size()):
+		var prev_eye: Vector3 = runs[k - 1].eye
+		var at: Vector3 = runs[k].target
+		replaced_late = replaced_late and (prev_eye.z - at.z) > FlybyView.REPLACE_PAST * FlybyView.DISTANCE_M - 1.0
+	_check("CAM-14 fly-by: a new spot only once the aircraft is 1.7 × D past the old one", replaced_late)
+	var again := _flyby_run(60.0, 20.0)
+	_check("CAM-14 fly-by: placements repeat exactly (own fixed seed, presentation only)", again.size() == runs.size() and (again[1].eye as Vector3) == (runs[1].eye as Vector3))
+	var share := PilotCamera.projected_px(SPAN, (first.eye as Vector3).distance_to(first.target), first.fov, 1.0)
+	_check("CAM-14 fly-by: framed like a photographer (span ≈ 12 % of the frame height)", absf(share - FlybyView.FRAME_SHARE) < 0.005 or first.fov == FlybyView.MAX_FOV_DEG, "%.3f" % share)
+	var low := _flyby_run(5.0, 4.0, Vector3(1, 0.5, 0).normalized())
+	var offset: Vector3 = (low[0].eye as Vector3) - (low[0].target as Vector3)
+	_check("CAM-14 fly-by: a low aircraft is watched from the side", absf(offset.x) > 2.0 * absf(offset.y) and absf(offset.x) > 0.6 * FlybyView.DISTANCE_M * FlybyView.RADIUS_MIN, str(offset))
+	_check("CAM-14 fly-by: the sun (east) stays behind the camera", offset.x > 0.0, str(offset))
+	var west := _flyby_run(5.0, 4.0, Vector3(-1, 0.5, 0).normalized())
+	_check("CAM-14 fly-by: sun in the west, camera on the west side", ((west[0].eye as Vector3) - (west[0].target as Vector3)).x < 0.0)
+	var hill := func(_x: float, _z: float) -> float: return 50.0
+	var on_hill := _flyby_run(51.0, 3.0, Vector3.ZERO, hill)
+	_check("CAM-14 fly-by: never below the terrain + 2 m", (on_hill[0].eye as Vector3).y >= 52.0 - 1e-6, str(on_hill[0].eye))
+	# Paused: no re-placement; slow: no course, the camera stands to the side and stays; teleport: placed again.
+	var view := FlybyView.new()
+	view.configure(SPAN)
+	var placed := view.update(Vector3(0, 30, 0), _level(0.0), Vector3(0, 0, -20), 0.0, false, _flat)
+	var spot: Vector3 = placed.position
+	placed = view.update(Vector3(0, 30, -500), _level(0.0), Vector3(0, 0, -20), 1.0 / 60.0, true, _flat)
+	_check("CAM-14 fly-by: holds its spot while paused", (placed.position as Vector3) == spot)
+	placed = view.update(Vector3(0, 30, -505), _level(0.0), Vector3(0, 0, -20), 1.0 / 60.0, false, _flat)
+	_check("CAM-14 fly-by: a teleport is placed again ahead", (placed.position as Vector3).z < -505.0, str(placed.position))
+	view.reset()
+	placed = view.update(Vector3(0, 3, 0), _level(0.0), Vector3.ZERO, 0.0, false, _flat)
+	var hover: Vector3 = placed.position
+	for i in 120:
+		placed = view.update(Vector3(0, 3, 0), _level(0.0), Vector3.ZERO, 1.0 / 60.0, false, _flat)
+	_check("CAM-14 fly-by: a hovering aircraft keeps one spot about D away", (placed.position as Vector3) == hover and hover.distance_to(Vector3(0, 3, 0)) > 0.6 * FlybyView.DISTANCE_M)

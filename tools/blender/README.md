@@ -30,6 +30,7 @@ The agent client starts `mcp-server.sh` itself after you approve the project ser
 - Blender previews of the merged people blend the atlas alpha, so clothing looks shredded and see-through. Unlink the alpha in previews; the game shader cuts it only on hair and brows.
 - Agent code runs in a weak sandbox that blocks only quitting Blender and resetting preferences; `result` must be a dict.
 - Use one bridge per port. To run another, set `BLENDER_MCP_PORT` for both the bridge and the `.mcp.json` entry.
+- When another agent's bridge holds the port, the live tools would run inside its scene. The `*_for_cli` tools start a separate background Blender for each call. They keep no state between calls, so save a working `.blend` in your scratch folder. They do contact the bridge once per call, with a read-only `is_dirty`/`filepath` query. If that bridge has the same file open with unsaved changes, they also save a numbered copy next to the file, so work on your own copies. A missing `.blend` makes Blender quit: start from a copy of any bundled `.blend` and `read_factory_settings(use_empty=True)`. Each call times out after 120 s (US-V13, 2026-10-25).
 - The people generators (`tools/scenery/population/`) run with their own isolated profile in `.tools/sc-hum-authoring/` (MPFB). Review their poses through MCP by opening the `--save-posed` file.
 
 ## Skills

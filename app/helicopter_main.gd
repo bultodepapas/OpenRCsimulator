@@ -17,6 +17,8 @@ const Frames = preload("res://render/frames.gd")
 const PilotCamera = preload("res://render/pilot_camera.gd")
 const CameraRig = preload("res://render/camera/camera_rig.gd")
 const CameraSettings = preload("res://render/camera/camera_settings.gd")
+const Magnifier = preload("res://render/camera/magnifier.gd")
+const CameraCollision = preload("res://render/camera/camera_collision.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
 const Recorder = preload("res://sim/rotorcraft_recorder.gd")
 const Lighting = preload("res://render/time_of_day_lighting.gd")
@@ -50,6 +52,8 @@ var session: Node
 var recorder: RefCounted
 var _camera: Camera3D
 var _rig: RefCounted
+var _magnifier: Magnifier # CAM-18
+var _camera_obstacles: Dictionary={} # CAM-09: the scenery the cameras keep clear of
 var _airplane: Dictionary={}
 var _rotors: Node3D
 var _night_kit: Node3D
@@ -113,6 +117,8 @@ func _ready() -> void:
  _rig.default_pilot_zoom=.35
  _rig.pilot_zoom=_rig.default_pilot_zoom
  _rig.set_view(str(args.get("view","pilot")))
+ _magnifier=Magnifier.new()
+ add_child(_magnifier)
  if not camera_preferences.is_empty(): CameraSettings.apply_at_start(_rig,camera_preferences)
  session=Session.new()
  session.external_controller_selection=external_controller_selection
@@ -123,6 +129,7 @@ func _ready() -> void:
  var obstacles: Dictionary=Landscapes.collision_world(landscape_id,field)
  if not obstacles.ok or not session.set_collision_world(obstacles.world):
   _refuse("Helicopter obstacle inventory refused: "+"; ".join(obstacles.errors)); return
+ _camera_obstacles=obstacles.world
  # Existing technical captures/traces keep their explicit hover fixture unless a start is supplied.
  var requested_start: String=str(args.get("start","airborne" if args.has("trace") or args.has("capture") or args.has("alt") or not field.has("rotorcraft_pad") else start_choice))
  if not session.set_start_choice(requested_start): _refuse(session.start_error); return
@@ -143,6 +150,7 @@ func _ready() -> void:
   _refuse("Helicopter crash presentation could not prepare the source model."); return
  _crash_presentation.set_collision_world(obstacles.world)
  _rotors=RotorVisual.attach(_airplane,self)
+ Magnifier.tag(_rotors) # CAM-18: rotor discs belong in the magnifier too
  _night_kit=NightLights.attach(_airplane)
  _night_kit.set_mode(str(args.get("heli-lights","auto")))
  _crash_presentation.set_night_kit(_night_kit)
@@ -195,6 +203,10 @@ func _build_hud() -> void:
  _hud.add_theme_constant_override("shadow_offset_y",1)
  _hud_layer.add_child(_hud)
 
+## CAM-09: share of a camera boom (render points) clear of the scenery's collision proxies.
+func _camera_clearance(from: Vector3,to: Vector3) -> float:
+ return CameraCollision.free_fraction(_camera_obstacles,from,to)
+
 func _exit_tree() -> void:
  CameraRig.hold_cursor(false) # never leave the menus with a held cursor (CAM-29)
 
@@ -236,7 +248,11 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
   pos=_crash_presentation.focus_position()
  # CAM-24: the chase settles its look-ahead from the state velocity (body FRD → render); a wreck focus has none.
  var velocity: Vector3=Vector3.INF if wreck_active else body*Frames.ned_to_render(s.slice(3,6))
- _rig.update(pos,Frames.root_transform(body,pos,_airplane.cg_model_m),body,dt,presentation_paused if wreck_active else session.sim.paused,_ground_height,velocity)
+ _rig.update(pos,Frames.root_transform(body,pos,_airplane.cg_model_m),body,dt,presentation_paused if wreck_active else session.sim.paused,_ground_height,velocity,
+  _camera_clearance)
+ if _magnifier!=null:
+  _magnifier.mode=_rig.magnifier
+  _magnifier.update(_camera,pos,1.55,_airplane.root,_rig.view=="pilot" and not wreck_active)
  World.update(_environment,session.sim.time(),Frames.ned_to_render(wind),pos,_camera)
  if _night_kit!=null and not wreck_active:
   _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],session.power.armed,World.aircraft_local_seconds(lighting_config,session.sim.time()))
@@ -420,7 +436,7 @@ func controller_action(action: String) -> bool:
   "camera_cycle": _rig.cycle(1)
   "camera_previous": _rig.cycle(-1)
   "camera_pilot": _rig.set_view("pilot")
-  "camera_chase": _rig.set_view("chase")
+  "camera_chase": _rig.select_view("chase")
   "camera_orbit": _rig.set_view("orbit")
   "camera_zoom_in": _rig.zoom(1.0)
   "camera_zoom_out": _rig.zoom(-1.0)
@@ -459,7 +475,8 @@ func _unhandled_input(event: InputEvent) -> void:
     pause_requested.emit()
    KEY_C: _rig.cycle(-1 if event.shift_pressed else 1)
    KEY_1: _rig.set_view("pilot")
-   KEY_2: _rig.set_view("chase")
+   KEY_2: _rig.select_view("chase") # again: 3D follow (CAM-09)
+   KEY_4: _rig.set_view("flyby")
    KEY_5: _rig.set_view("orbit")
    KEY_EQUAL: _rig.zoom(1)
    KEY_MINUS: _rig.zoom(-1)

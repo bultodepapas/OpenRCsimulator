@@ -120,10 +120,11 @@ func _run() -> void:
 		_max_length_error = maxf(_max_length_error, float(result.max_length_error_m))
 		_check("throttle %.2f has continuous closure" % throttle, result.ok, str(result.failures))
 		_check("throttle %.2f allocates no nodes" % throttle, _same_node_ids(root, node_ids_before))
-		_check("throttle %.2f lever angle follows the command" % throttle, is_equal_approx(lever.rotation.x, deg_to_rad((throttle - 0.5) * ControlsBuilder.THROTTLE_TRAVEL_DEG)), str(rad_to_deg(lever.rotation.x)))
+		_check("throttle %.2f lever angle follows the command" % throttle, is_equal_approx(lever.rotation.x, deg_to_rad(ControlsBuilder.Equipment.THROTTLE_OPENING * (throttle - 0.5) * ControlsBuilder.THROTTLE_TRAVEL_DEG)), str(rad_to_deg(lever.rotation.x)))
 		var tip: Vector3 = controls.mechanisms.throttle.endpoints_root.get("horn", Vector3.INF)
 		if previous_tip != Vector3.INF:
-			_check("throttle %.2f lever tip moves up and aft" % throttle, tip.y > previous_tip.y and tip.z > previous_tip.z, "%s -> %s" % [previous_tip, tip])
+			# US-V13: pull to open; the O.S. lever hangs below its barrel, so its height is not monotonic.
+			_check("throttle %.2f lever tip moves aft" % throttle, tip.z > previous_tip.z, "%s -> %s" % [previous_tip, tip])
 		previous_tip = tip
 		min_prop_gap = minf(min_prop_gap, tip.z - prop_z)
 	_check("throttle lever stays at least 15 mm behind the propeller plane", min_prop_gap >= 0.015, "%.4f m" % min_prop_gap)
@@ -175,7 +176,8 @@ func _transformed_horn_matches(root: Node3D, mechanism: Dictionary) -> bool:
 
 
 # Rod envelope (axis and 1.3 mm parallels, inset 8 mm from each clevis) against every engine and nose-gear triangle, in
-# millimetres, at 11 throttles.
+# millimetres, at 11 throttles. US-V13: the imported engine is indexed and has ~140k triangles, so faces come from
+# get_faces() into one TriangleMesh (BVH) instead of a GDScript loop per segment.
 func _throttle_rod_engine_hits(root: Node3D, controls: Dictionary, airplane: Dictionary) -> Array:
 	var triangles := PackedVector3Array()
 	for mesh_name in ["engine_assembly", "nose_gear_strut", "nose_bearing", "nose_spring"]:
@@ -186,18 +188,16 @@ func _throttle_rod_engine_hits(root: Node3D, controls: Dictionary, airplane: Dic
 		while cursor != null and cursor != root:
 			to_root = (cursor as Node3D).transform * to_root
 			cursor = cursor.get_parent()
-		for surface in part.mesh.get_surface_count():
-			var arrays := part.mesh.surface_get_arrays(surface)
-			# Millimetres: Geometry3D rejects determinants below its 1e-5 epsilon, which metre-sized mm triangles fall under.
-			for point: Vector3 in arrays[Mesh.ARRAY_VERTEX]: triangles.append(to_root * point * 1000.0)
+		# Millimetres: Geometry3D rejects determinants below its 1e-5 epsilon, which metre-sized mm triangles fall under.
+		for point: Vector3 in part.mesh.get_faces(): triangles.append(to_root * point * 1000.0)
+	var bvh := TriangleMesh.new()
+	if not bvh.create_from_faces(triangles): return ["cannot build the engine BVH (%d vertices)" % triangles.size()]
 	var hits: Array = []
 	# Positive control: a segment across the crankcase must cross its walls, or the probe proves nothing.
 	var e: Dictionary = ControlsBuilder.D.equipment
 	var centre := Vector3(0, float(e.shaft_y), (float(e.firewall_z) + float(e.prop_z)) * 0.5)
-	var probe_hit := false
-	for i in range(0, triangles.size(), 3):
-		probe_hit = probe_hit or Geometry3D.segment_intersects_triangle((centre + Vector3(-0.1, 0, 0)) * 1000.0, (centre + Vector3(0.1, 0, 0)) * 1000.0, triangles[i], triangles[i + 1], triangles[i + 2]) != null
-	if not probe_hit: return ["probe found no engine triangles (%d vertices)" % triangles.size()]
+	if bvh.intersect_segment((centre + Vector3(-0.1, 0, 0)) * 1000.0, (centre + Vector3(0.1, 0, 0)) * 1000.0).is_empty():
+		return ["probe found no engine triangles (%d vertices)" % triangles.size()]
 	for index in range(11):
 		var throttle := float(index) / 10.0
 		AirplaneAdapter.apply_throttle(airplane, throttle)
@@ -212,11 +212,7 @@ func _throttle_rod_engine_hits(root: Node3D, controls: Dictionary, airplane: Dic
 		var lift := side.cross(direction).normalized() * 1.3
 		var hit := false
 		for offset: Vector3 in [Vector3.ZERO, side, -side, lift, -lift]:
-			for i in range(0, triangles.size(), 3):
-				if Geometry3D.segment_intersects_triangle(a + offset, b + offset, triangles[i], triangles[i + 1], triangles[i + 2]) != null:
-					hit = true
-					break
-			if hit: break
+			hit = hit or not bvh.intersect_segment(a + offset, b + offset).is_empty()
 		if hit: hits.append(throttle)
 	AirplaneAdapter.apply_throttle(airplane, 0.5)
 	return hits

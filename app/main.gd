@@ -19,6 +19,8 @@ const SmokeAssignment := preload("res://ui/smoke_aux_assignment.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraRig := preload("res://render/camera/camera_rig.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
+const Magnifier := preload("res://render/camera/magnifier.gd")
+const CameraCollision := preload("res://render/camera/camera_collision.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Commands := preload("res://input/commands.gd")
 const ControlSurfaces := preload("res://physics/control_surfaces.gd")
@@ -229,6 +231,10 @@ var _airplane: Dictionary
 var _camera: Camera3D
 ## CAM-02: views, zoom and camera input (render/camera/camera_rig.gd); built with the world.
 var _rig: CameraRig
+## CAM-18: the magnifier inset (off unless the player chose it).
+var _magnifier: Magnifier
+## CAM-09: the scenery collision world the cameras keep clear of (a reference, built once with the session's).
+var _camera_obstacles: Dictionary = {}
 ## The view a flight starts in: --view=<pilot|chase|orbit|closeup>, or closeup with --inspect.
 var _initial_view := "pilot"
 var _camera_dt := 0.0
@@ -727,6 +733,8 @@ func _prepare_flight() -> void:
 		return
 	if not _scripted and _capture_scene_id() == "field":
 		var obstacles: Dictionary = Landscapes.collision_world(landscape_id, field)
+		if obstacles.ok:
+			_camera_obstacles = obstacles.world
 		if not obstacles.ok or not session.set_collision_world(obstacles.world):
 			startup_error = "Scenery collision inventory refused: " + "; ".join(obstacles.errors)
 			session.free()
@@ -805,6 +813,7 @@ func _prepare_flight() -> void:
 	TimberVisualMotion.attach(_airplane, session)
 	# VQ-05: speed-driven propeller blur beside the model (never inside it); it only reads sim.aux[0] each frame.
 	PropellerBlur.attach(_airplane, session, self)
+	Magnifier.tag(get_node_or_null("PropellerBlur")) # CAM-18: the blur disc belongs in the magnifier too
 	# A frozen profile replaces the legacy exhaust rig. Global smoke-off suppresses
 	# either runtime, while technical trace/capture routes may still render a profile.
 	if not await _startup_stage("Preparing effects"):
@@ -1115,7 +1124,7 @@ func _process(delta: float) -> void:
 			if _rig.view == "pilot":
 				_crash_director.aim(_camera, false)
 			else:
-				_rig.focus(_crash_director.focus_point(), _ground_height)
+				_rig.focus(_crash_director.focus_point(), _ground_height, _camera_clearance)
 		if _crash_director.active and diagnostics_visible:
 			_panel.text = _crash_director.description()
 	var performance_visible: bool = _overlays == null or (_overlays.visible and _overlays.frames.performance.visible)
@@ -1430,7 +1439,7 @@ func controller_action(action: String) -> bool:
 		"camera_cycle": _rig.cycle(1)
 		"camera_previous": _rig.cycle(-1)
 		"camera_pilot": _rig.set_view("pilot")
-		"camera_chase": _rig.set_view("chase")
+		"camera_chase": _rig.select_view("chase")
 		"camera_orbit": _rig.set_view("orbit")
 		"camera_zoom_in": _rig.zoom(1.0)
 		"camera_zoom_out": _rig.zoom(-1.0)
@@ -1738,7 +1747,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_1:
 				_rig.set_view("pilot")
 			KEY_2:
-				_rig.set_view("chase")
+				_rig.select_view("chase") # again: 3D follow (CAM-09)
+			KEY_4:
+				_rig.set_view("flyby")
 			KEY_5:
 				_rig.set_view("orbit")
 			KEY_EQUAL:
@@ -1839,6 +1850,11 @@ func _camera_input(event: InputEvent) -> bool:
 		get_viewport().set_input_as_handled()
 		return true
 	return false
+
+
+## CAM-09: share of a camera boom (render points) clear of the scenery's collision proxies; 1 without a world.
+func _camera_clearance(from: Vector3, to: Vector3) -> float:
+	return CameraCollision.free_fraction(_camera_obstacles, from, to)
 
 
 ## Terrain height (render y) under a render-space point, from the session's own ground table; NAN when unknown.
@@ -2634,6 +2650,9 @@ func _build_world() -> bool:
 	var storm_args: Dictionary = _user_args()
 	_storm_fx.set_audio_enabled(not _scripted and not storm_args.has("capture") and str(storm_args.get("soundscape", "on")) != "off")
 	_rig = CameraRig.new(_camera, _extent.x)
+	_magnifier = Magnifier.new()
+	_magnifier.name = "MagnifierLayer"
+	add_child(_magnifier)
 	if not await _startup_stage("Preparing instruments"):
 		return false
 	if overlays_enabled:
@@ -2725,7 +2744,13 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, direction if _shadow_mode == "sun" else Vector3.UP, strength)
 	var paused: bool = session != null and session.sim.paused and not _scripted
-	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF))
+	_rig.light_direction = direction # CAM-14: the fly-by stands with the sun behind it
+	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),
+		_camera_clearance)
+	if _magnifier != null:
+		_magnifier.mode = _rig.magnifier
+		_magnifier.update(_camera, pose.pos, _extent.x, _airplane.root, _rig.view == "pilot" and is_nan(_look.x)
+			and _airplane.root.visible and (session == null or session.crash.is_empty()))
 
 
 func _write_trace_and_quit(ticks: int, path: String) -> void:

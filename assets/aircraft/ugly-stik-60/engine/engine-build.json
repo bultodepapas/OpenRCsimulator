@@ -1,0 +1,100 @@
+{
+  "format": "openrc-stik-engine-build v1",
+  "step": "US-V13",
+  "blender": "5.2.2 LTS",
+  "inputs": {
+    "engine_realtime": "7fa2ffaf4e70e0bab66cfeb6308a6772175ad716fd03bd2efdb0ab56eeb98a42",
+    "mount": "39ca2dd416646bbe8212e1ce18f3a9a79a55d5fec1326b8d7affdc0485b4da97"
+  },
+  "output": {
+    "path": "app/assets/aircraft/ugly-stik-60/os61_engine.glb",
+    "sha256": "d636098a69e69788d07429f3da0d1f74299786d4d0c8c500e3dea45153041e02",
+    "bytes": 9374316
+  },
+  "frame": "Godot metres, +X right, +Y up, -Z forward; origin on the crank axis at the drive-hub face",
+  "delivered_shaft_height_m": 0.0178,
+  "propeller_seat_m": 0.01425,
+  "intake_bore_radius_m": 0.00612,
+  "outlet_bore_radius_m": 0.00419,
+  "source_engine_triangles": 134376,
+  "triangles": {
+    "engine_assembly": 137265,
+    "engine_throttle_arm": 1581,
+    "engine_drive_rear": 5381,
+    "engine_drive_front": 5119
+  },
+  "winding_flipped": {
+    "engine_assembly": 17,
+    "engine_throttle_arm": 0,
+    "engine_drive_front": 3,
+    "engine_drive_rear": 1
+  },
+  "grommet_shift_godot_m": {
+    "BANC_Pasamuros_Goma_1": [
+      0.005,
+      0.0131,
+      0.0
+    ],
+    "BANC_Pasamuros_Goma_2": [
+      -0.005,
+      0.0076,
+      0.0
+    ]
+  },
+  "materials": [
+    "M_Alu_Mount_Cast",
+    "M_Alu_Mount_Machined",
+    "M_Black_Oxide",
+    "M_RT_Body",
+    "M_RT_Carb",
+    "M_RT_Head",
+    "M_RT_Muffler",
+    "M_Rubber_Black",
+    "M_Silicone_Fuel",
+    "M_Silicone_Pressure",
+    "M_Zinc_Plated"
+  ],
+  "throttle_arm_pivot": [
+    0.017503,
+    0.029784,
+    0.02402
+  ],
+  "anchors": {
+    "engine_throttle_arm_tip": [
+      0.017503,
+      0.019725,
+      0.021819
+    ],
+    "engine_intake_mouth": [
+      -0.001742,
+      0.0481,
+      0.018159
+    ],
+    "engine_intake_inner": [
+      -0.000782,
+      0.040342,
+      0.019861
+    ],
+    "engine_exhaust_outlet": [
+      0.082059,
+      0.054293,
+      0.173396
+    ],
+    "engine_exhaust_upstream": [
+      0.080629,
+      0.054192,
+      0.162489
+    ],
+    "engine_washer_face": [
+      0.0,
+      0.0,
+      -0.01425
+    ],
+    "engine_firewall_face": [
+      -0.0,
+      0.0,
+      0.1132
+    ]
+  },
+  "body_atlas_px": 1024
+}

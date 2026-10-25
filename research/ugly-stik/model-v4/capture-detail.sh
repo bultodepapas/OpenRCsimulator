@@ -118,7 +118,8 @@ LOG_FILE="$OUTPUT_DIR/capture.log"
 : > "$LOG_FILE"
 echo "Capturing $SUITE into $OUTPUT_DIR"
 set +e
-timeout 180 xvfb-run -a -s "-screen 0 2560x1440x24" \
+# US-V13: the bundled O.S. 61 GLB (~150k triangles) needs more than the former 180 s for the engine views on llvmpipe.
+timeout 900 xvfb-run -a -s "-screen 0 2560x1440x24" \
 	env OPENRC_CAPTURE_RENDER_DRIVER=opengl3 \
 	"$GODOT" --path "$ROOT/app" --script res://aircraft/inspect_model.gd \
 	--rendering-driver opengl3 --audio-driver Dummy -- \

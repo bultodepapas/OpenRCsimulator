@@ -1,0 +1,10 @@
+{
+ "dubro_2_5_nylon": {"dia_mm": 63.0, "length_mm": 68.0, "material": "nylon (blanco/negro/rojo...)", "fixing": "2 tornillos 3.5x18 mm cabeza allen a tuercas autoblocantes en la placa trasera, pasadores de alineacion", "adapters": "5 mm a 5/16 in", "source": "dubro.com / retailers"},
+ "dubro_2_25_nylon": {"dia_mm": 57.0, "source": "dubro.com"},
+ "dubro_2_nylon": {"screws": "4-40 x 1/2 in", "source": "dubro.com"},
+ "dubro_3_blade": "Dubro fabrica spinners de 3 palas de 2 a 2-3/4 in (cortes a 120 grados)",
+ "truturn_standard_2_5": {"code": "TT-2502-B", "material": "aluminio torneado", "mass_oz": 2.1, "backplate": "plana (flush)", "retainer": "tornillo 10-32 x 1 in en la punta (nut adapter roscado)", "blades": "versiones 2/3/4 palas", "prop_range": "hasta 12x12", "source": "truturn.com"},
+ "great_planes_2_5": {"material": "nylon", "backplate": "aluminio 1/8 in", "fixing": "2 tornillos autorroscantes", "source": "greatplanes / retailers"},
+ "apc": "nylon cargado con fibra (gris), buje 1 in, agujero 1/4 in (se escaria a 5/16 in para el 61SF)",
+ "uiuc_c75": "cuerda a 0.75R ~ 20 mm para helices de 11 in"
+}

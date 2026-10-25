@@ -2,7 +2,7 @@ extends SceneTree
 
 const Smoke := preload("res://render/smoke/exhaust.gd")
 const Builder := preload("res://render/airplane.gd")
-const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
+const Equipment := preload("res://aircraft/ugly_stik_equipment.gd")
 var checks := 0
 var failures := 0
 
@@ -16,10 +16,11 @@ func _initialize() -> void:
 	var airplane := Builder.build()
 	var anchor: Dictionary = airplane.exhausts[0]
 	check("one validated Stik mouth", airplane.exhausts.size() == 1 and Smoke.valid_anchor(anchor))
-	var e: Dictionary = Geometry.DATA.equipment
-	var z: float = (float(e.firewall_z) + float(e.prop_z)) * 0.5
-	check("mouth matches hollow mesh endpoint", anchor.position.is_equal_approx(Vector3(0.064, e.shaft_y - 0.018, z + 0.041)))
-	var direction := Vector3(0.008, -0.009, 0.011).normalized()
+	# US-V13: the mouth is the silencer outlet anchor of the bundled O.S. 61 GLB, centred in its 4.2 mm tube
+	# (aircraft/visual_checks.gd probes that bore).
+	var outlet: Vector3 = Equipment.engine_anchor("engine_exhaust_outlet")
+	check("mouth matches hollow mesh endpoint", anchor.position.is_equal_approx(Equipment.engine_origin() + outlet))
+	var direction := (outlet - Equipment.engine_anchor("engine_exhaust_upstream")).normalized()
 	check("gas exits hollow outlet axis", anchor.direction.is_equal_approx(direction))
 	for id in [Builder.EXTRA_ID, Builder.AVANTI_ID, Builder.TIMBER_ID]:
 		var model := Builder.build(id)

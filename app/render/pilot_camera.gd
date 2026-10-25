@@ -52,12 +52,12 @@ static func law_fov(law: String, span: float, distance: float, base_fov := float
 	match law:
 		"partial":
 			var target := float(Spec.AUTO_ZOOM.target_px)
-			var reference := float(Spec.AUTO_ZOOM.reference_height_px)
-			var start := span * reference / (2.0 * target * tan(deg_to_rad(base_fov) * 0.5))
+			var height := float(Spec.AUTO_ZOOM.reference_height_px)
+			var start := span * height / (2.0 * target * tan(deg_to_rad(base_fov) * 0.5))
 			if d <= start:
 				return base_fov
 			var px := target * pow(start / d, PARTIAL_K)
-			return clampf(rad_to_deg(2.0 * atan(span * reference / (2.0 * d * px))), min_fov, base_fov)
+			return clampf(rad_to_deg(2.0 * atan(span * height / (2.0 * d * px))), min_fov, base_fov)
 		"gentle":
 			if d <= GENTLE_D0_M:
 				return base_fov
