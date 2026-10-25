@@ -164,7 +164,8 @@ static func prepare(value: Variant, incident: RefCounted, tick: int, bindings: D
 		if not prop_id.is_empty():
 			forced[prop_id] = {disposition = "replace", quantity = 1}
 			for id: String in dossier.get("propeller_inspection_ids", []):
-				forced[id] = {disposition = "inspect"}
+				if id != prop_id:
+					forced[id] = {disposition = "inspect"}
 	for id: String in forced:
 		if not value.assessment.components.has(id):
 			return fail("Assessment omitted a confirmed propeller decision.")

@@ -310,7 +310,8 @@ func _mark_propeller() -> void:
 		return
 	_assessment.components[id] = {disposition = "replace", quantity = 1}
 	for inspection_id: String in dossier.get("propeller_inspection_ids", []):
-		_assessment.components[inspection_id] = {disposition = "inspect"}
+		if inspection_id != id:
+			_assessment.components[inspection_id] = {disposition = "inspect"}
 	_add_unresolved("Propeller strike: inspect the powertrain, shaft and mount before return to service.")
 
 
