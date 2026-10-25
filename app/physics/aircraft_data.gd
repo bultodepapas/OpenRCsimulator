@@ -959,6 +959,93 @@ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dicti
 	return true
 
 
+## X8-04: the tailless strip law reproduces the static oracle at small angles, as _induced_map does for CLa and CL0.
+## The strips act at their own swept quarter-chord stations (aero.surfaces.tailless.station_x, root → tip); elevons
+## shift the covered strips' angle and add a section camber couple. Solved here, with E the induced map:
+##   τ   elevon strip-angle effectiveness per radian: the strips' symmetric-elevon lift equals CLδe;
+##   Δx  one chordwise shift of every station: the strips' neutral point equals the oracle's (Cmα about the ARP);
+##   cm  the section moment on every strip: the strips' Cm at α 0 equals Cm0 (camber, reflex and washout together);
+##   km  the elevon camber couple per radian of deflection on covered strips: the strips' symmetric-elevon pitch
+##       equals Cmδe.
+## Clδa, Cmq and Clp stay predictions of the strip geometry (tests compare them with the oracle); nothing else is fitted.
+static func _derive_tailless(errors: PackedStringArray, envelope: Dictionary, surfaces: Dictionary, aero: Dictionary,
+		chord: float, arp: PackedFloat64Array) -> void:
+	var block: Dictionary = surfaces.tailless
+	var e_map: PackedFloat64Array = envelope.induced_map
+	var n: int = envelope.station_ys.size()
+	var a0: float = envelope.strip_slope
+	var cl0: PackedFloat64Array = envelope.strip_cl0
+	var chords: PackedFloat64Array = envelope.station_chords
+	var x0: PackedFloat64Array = block.station_x_authored
+	var cover: PackedFloat64Array = block.elevon_coverage
+	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
+	var slope := PackedFloat64Array() # section lift per radian of uniform angle of attack
+	var elevon := PackedFloat64Array() # section lift per radian of symmetric elevon with τ = 1
+	var lift0 := PackedFloat64Array() # section lift at α 0
+	for i in n:
+		var row := 0.0
+		var covered := 0.0
+		var twisted := 0.0
+		for k in n:
+			row += e_map[i * n + k]
+			covered += e_map[i * n + k] * cover[k]
+			twisted += e_map[i * n + k] * (twist[k] if not twist.is_empty() else 0.0)
+		slope.append(a0 * row)
+		elevon.append(a0 * covered)
+		lift0.append(cl0[i] + a0 * twisted)
+	var slope_sum := 0.0
+	var elevon_sum := 0.0
+	var slope_moment := 0.0
+	for i in n:
+		slope_sum += slope[i]
+		elevon_sum += elevon[i]
+		slope_moment += slope[i] * (x0[i] - arp[0])
+	var tau: float = float(aero.CLde) * n / elevon_sum
+	if not is_finite(tau) or tau < 0.05 or tau > 1.0:
+		errors.append("aero.surfaces.tailless: elevon strip effectiveness %s needed for CLde lies outside 0.05–1 (coverage or CLde inconsistent)" % tau)
+		return
+	var shift: float = (-float(aero.Cma) * n * chord - slope_moment) / slope_sum
+	if not is_finite(shift) or absf(shift) > 0.25 * chord:
+		errors.append("aero.surfaces.tailless.station_x: the oracle's neutral point needs a %.4f m station shift, beyond a quarter chord (geometry and Cma disagree)" % shift)
+		return
+	var xs := PackedFloat64Array()
+	var lift_moment := 0.0
+	var elevon_moment := 0.0
+	var chord_sum := 0.0
+	var covered_chord := 0.0
+	for i in n:
+		xs.append(x0[i] + shift)
+		lift_moment += lift0[i] * (xs[i] - arp[0])
+		elevon_moment += tau * elevon[i] * (xs[i] - arp[0])
+		chord_sum += chords[i] / chord
+		covered_chord += cover[i] * chords[i] / chord
+	var cm_ac: float = (float(aero.Cm0) * n + lift_moment / chord) / chord_sum
+	var km: float = (float(aero.Cmde) * n + elevon_moment / chord) / covered_chord
+	if not is_finite(cm_ac) or absf(cm_ac) > 0.3:
+		errors.append("aero.surfaces.tailless: the section moment %s needed for Cm0 lies outside ±0.3" % cm_ac)
+		return
+	if not is_finite(km) or km < -2.0 or km > 0.5:
+		errors.append("aero.surfaces.tailless: the elevon camber couple %s per rad needed for Cmde lies outside −2…0.5" % km)
+		return
+	block.station_x = xs
+	block.station_shift = shift
+	block.tau = tau
+	block.moment_per_rad = km
+	surfaces.wing_cm_ac = cm_ac
+
+
+## X8-08: a tolerant hull's own contact thresholds; terminal hulls keep HullContact's shared ones (2.5 J/kg, 0.08 m).
+## presentation_durability divides the crash presentation's specific energy (CR-08b); it never changes physics.
+static func _crash_tolerance(errors: PackedStringArray, node: Variant) -> Dictionary:
+	var block := _dictionary(errors, "crash_tolerance", node)
+	var energy = _q(errors, "crash_tolerance.terminal_specific_energy", block.get("terminal_specific_energy"), "J/kg", 2.5, 50.0)
+	var depth = _q(errors, "crash_tolerance.crash_depth", block.get("crash_depth"), "m", 0.08, 0.3)
+	var durability = _q(errors, "crash_tolerance.presentation_durability", block.get("presentation_durability"), "1", 1.0, 10.0)
+	if energy == null or depth == null or durability == null:
+		return {}
+	return {terminal_specific_energy = float(energy), crash_depth = float(depth), presentation_durability = float(durability)}
+
+
 ## D11d: Weissinger influence matrix K (row-major n×n) for strips with the given edges (2n + 1), control-point y and
 ## chords: induced angle at strip i's three-quarter-chord point per unit lift coefficient on strip j, minus strip i's
 ## own 2-D bound-vortex term 1/2π.

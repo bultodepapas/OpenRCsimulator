@@ -261,6 +261,17 @@ static func downwash_angle(wake_velocity: float, gain: float, plane_speed: float
 	return M.atan2_(gain * wake_velocity, plane_speed) if wake_velocity != 0.0 else 0.0
 
 
+## X8-04: the angle a tailless strip's elevon adds (rad): τ · coverage · the elevon's own deflection, which is the
+## symmetric (elevator) plus that side's antisymmetric (aileron) part in the data convention (+ trailing edge down).
+static func elevon_strip_angle(i: int, y: float, d: Dictionary, tailless: Dictionary) -> float:
+	return float(tailless.tau) * float(tailless.elevon_coverage[i]) * elevon_deflection(y, d)
+
+
+## X8-04: one elevon's deflection (rad, + trailing edge down) on the side of strip offset y.
+static func elevon_deflection(y: float, d: Dictionary) -> float:
+	return float(d.elevator) + float(d.aileron_right if y > 0.0 else d.aileron_left)
+
+
 ## Common strip kinematics for loads and wake. Only off-diagonal induced sources
 ## are attenuated: a stagnant or fully separated strip cannot export its undefined
 ## angle to a loaded neighbour. Uniform attached planar flow retains the old map.
@@ -281,15 +292,23 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 	var flap_angle: float = float(d.get("flap", 0.0))
 	var flap_active := Flaps.enabled(model) and flap_angle != 0.0 and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
 	var flap_coverage: PackedFloat64Array = flap_model.get("station_coverage", PackedFloat64Array())
+	# X8-04: tailless strips sit at their own swept stations and carry the elevons.
+	var tailless: Dictionary = model.surfaces.get("tailless", {})
+	var station_x: PackedFloat64Array = tailless.get("station_x", PackedFloat64Array())
 	var reference_speed := 0.0
 	for i in ys.size():
 		var y: float = arm[1] + ys[i]
+		var arm_x: float = arm[0] if station_x.is_empty() else -(station_x[i] - model.cg_le[0]) + 0.0
 		var f0: float = v[0] + (q*arm[2] - r*y)
-		var f1: float = v[1] + (r*arm[0] - p*arm[2])
-		var f2: float = v[2] + (p*y - q*arm[0])
+		var f1: float = v[1] + (r*arm_x - p*arm[2])
+		var f2: float = v[2] + (p*y - q*arm_x)
 		var vp := M.sqrt_(f0*f0 + f2*f2)
-		var control: float = d.aileron_right if ys[i] > 0.0 else d.aileron_left
-		var angle := wrapf(M.atan2_(f2, f0) + float(model.surfaces.wing_aileron_effectiveness)*control, -PI, PI)
+		var angle: float
+		if station_x.is_empty():
+			var control: float = d.aileron_right if ys[i] > 0.0 else d.aileron_left
+			angle = wrapf(M.atan2_(f2, f0) + float(model.surfaces.wing_aileron_effectiveness)*control, -PI, PI)
+		else:
+			angle = wrapf(M.atan2_(f2, f0) + elevon_strip_angle(i, ys[i], d, tailless), -PI, PI)
 		if not twist.is_empty():
 			angle = wrapf(angle + twist[i], -PI, PI)
 		var flap_shift := 0.0
@@ -417,12 +436,17 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	# 0 (absent) adds no arithmetic, so aircraft without it stay byte-identical to the frozen oracle.
 	var cm_ac: float = surfaces.get("wing_cm_ac", 0.0)
 	var station_chords: PackedFloat64Array = env.get("station_chords", PackedFloat64Array()) if cm_ac != 0.0 else PackedFloat64Array()
+	# X8-04: tailless strips act at their own swept stations; covered strips add the elevon's camber couple.
+	var tailless: Dictionary = surfaces.get("tailless", {})
+	var station_x: PackedFloat64Array = tailless.get("station_x", PackedFloat64Array())
+	var elevon_chords: PackedFloat64Array = env.get("station_chords", PackedFloat64Array()) if not station_x.is_empty() else PackedFloat64Array()
 	for i in stations:
 		var y: float = ys[i]
 		var arm_y: float = ay + y
+		var ax_i: float = ax if station_x.is_empty() else -(station_x[i]-cg[0]) + 0.0
 		var f0: float = v0 + (q*az - r*arm_y)
-		var f1: float = v1 + (r*ax - p*az)
-		var f2: float = v2 + (p*arm_y - q*ax)
+		var f1: float = v1 + (r*ax_i - p*az)
+		var f2: float = v2 + (p*arm_y - q*ax_i)
 		var effective: float = angles[i]
 		# Stall and the flat plate follow the geometric angle; attached lift uses the induced (effective) angles.
 		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
@@ -522,12 +546,18 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		fy_sum += fy
 		fz_sum += fz
 		mx_sum += arm_y * fz - az * fy
-		my_sum += az * fx - ax * fz
-		mz_sum += ax * fy - arm_y * fx
+		my_sum += az * fx - ax_i * fz
+		mz_sum += ax_i * fy - arm_y * fx
 		var section_my := 0.0
 		if cm_ac != 0.0 and plane_speed > 0.0:
 			section_my = lift_q * plane_speed * plane_speed * station_area * station_chords[i] * cm_ac
 			my_sum += section_my
+		if not station_x.is_empty() and plane_speed > 0.0:
+			# X8-04: the elevon's camber couple, fading with the strip's separation like the attached section it describes.
+			var elevon_couple: float = lift_q * plane_speed * plane_speed * station_area * elevon_chords[i] \
+				* float(tailless.moment_per_rad) * float(tailless.elevon_coverage[i]) * elevon_deflection(y, d) * (1.0 - weight)
+			section_my += elevon_couple
+			my_sum += elevon_couple
 		if flap_active and plane_speed > 0.0 and i < flap_shifts.size() and flap_shifts[i] != 0.0:
 			# Thin-airfoil theory treats flap lift increment as a pressure change over
 			# the section, not as whole-wing Δlift acting at the aft panel. Apply the
@@ -559,12 +589,14 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 				lift_n = lift_q * plane_speed * plane_speed * station_area * cl,
 				drag_n = -drag_q * plane_speed * plane_speed * station_area * cd,
 				force_body_n = PackedFloat64Array([fx, fy, fz]),
-				moment_body_nm = PackedFloat64Array([arm_y * fz - az * fy, az * fx - ax * fz + section_my, ax * fy - arm_y * fx])})
+				moment_body_nm = PackedFloat64Array([arm_y * fz - az * fy, az * fx - ax_i * fz + section_my, ax_i * fy - arm_y * fx])})
 	var wake: float = wing_cl if is_nan(downwash_cl) else downwash_cl
 	if ge_active:
 		wake *= ge[stations + 1]
 	for tail_index in 2:
 		var vertical := tail_index == 1
+		if not vertical and not surfaces.has("horizontal"):
+			continue # X8-04: a tailless airframe has no horizontal element
 		var tail: Dictionary = surfaces.vertical if vertical else surfaces.horizontal
 		var arm := _arm(tail.position, cg)
 		var flow := M.add(v, M.cross(M.v3(p, q, r), arm))
@@ -729,22 +761,26 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 	var aileron_effect: float = surfaces.wing_aileron_effectiveness
 	var da_right: float = d.aileron_right
 	var da_left: float = d.aileron_left
+	var tailless: Dictionary = surfaces.get("tailless", {}) # X8-04: swept stations and elevons
+	var station_x: PackedFloat64Array = tailless.get("station_x", PackedFloat64Array())
 	for i in ys.size():
 		var y: float = ys[i]
 		var station_y: float = arm_y + y
+		var station_arm_x: float = arm_x if station_x.is_empty() else -(station_x[i]-cg[0]) + 0.0
 		var flow_x: float = v0 + (q*arm_z - r*station_y)
-		var flow_z: float = v2 + (p*station_y - q*arm_x)
+		var flow_z: float = v2 + (p*station_y - q*station_arm_x)
 		var da: float = da_right if y > 0 else da_left
 		# Explicit squares keep this Euclidean norm on basic float64 arithmetic;
 		# generic pow(x, 2) can differ by an ulp across platform math libraries.
 		var rate_x := q*arm_z - r*station_y
-		var rate_y := r*arm_x - p*arm_z
-		var rate_z := p*station_y - q*arm_x
+		var rate_y := r*station_arm_x - p*arm_z
+		var rate_z := p*station_y - q*station_arm_x
 		var rate_speed := M.sqrt_(rate_x*rate_x + rate_y*rate_y + rate_z*rate_z)
 		blend = maxf(blend, _smoothstep((M.atan2_(rate_speed, float(air.V))-limit)/a1_span))
 		if blend == 1.0:
 			return blend
-		var angle := wrapf(M.atan2_(flow_z, flow_x) + aileron_effect*da, -PI, PI)
+		var angle := wrapf(M.atan2_(flow_z, flow_x) + (aileron_effect*da if station_x.is_empty()
+			else elevon_strip_angle(i, y, d, tailless)), -PI, PI)
 		if has_twist:
 			angle = wrapf(angle + twist[i], -PI, PI)
 		blend = maxf(blend, _smoothstep((absf(angle)-limit)/(a1_span if angle >= 0.0 else n1_span)))
@@ -753,6 +789,8 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 	var tail_span: float = float(surfaces.tail_local_limit) - limit
 	for tail_index in 2: # horizontal, then vertical
 		var vertical := tail_index == 1
+		if not vertical and not surfaces.has("horizontal"):
+			continue # X8-04: a tailless airframe has no horizontal element
 		var tail: Dictionary = surfaces.vertical if vertical else surfaces.horizontal
 		var tail_position: PackedFloat64Array = tail.position
 		var tx: float = -(tail_position[0]-cg[0])
