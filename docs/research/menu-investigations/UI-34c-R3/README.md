@@ -57,6 +57,8 @@ After these measurements, a controller-cut null guard was added for the earlier 
 
 The canonical companion rebind replayed all nine retained tapes on both solver versions with byte-identical CSVs and [renewed the solver pin](../../ai-companions/AFC-02/rebinds/2026-10-24-83b06513-to-6a5373ca.json). Its nine Python consistency tests pass. The profile gate accepts the new solver identity but still fails the **pre-existing controller-source pin mismatch** documented in [R2](../UI-34c-R2/README.md#verification-receipts). The pilot was not changed or re-pinned; full companion admission remains unresolved.
 
+Integration into shared `main` at `3fc4baa1b` preserved the concurrent graphics and camera changes. Import and the 14-check loading transaction suite passed again. A [native integration smoke](integrated-smoke.json) completed two electric launches at 1920×1080 with active first draws, zero orphans and clean teardown (8.817 / 1.801 s readiness). This shared-tree smoke is separate from the frozen A/B series; ongoing graphics work prevents treating it as another controlled pair.
+
 ## Remaining gates
 
 Scene script compilation, scenery construction and contact setup remain main-thread work. The target of Fly within two seconds, loading p95 at most 33 ms and no chunk over 100 ms remains open. Idle prefetch needs immediate-Fly and selection-dwell comparisons, cancellation/ownership proof and total launch-to-flight measurements before adoption. The rejected threaded scene preload is not restored.
