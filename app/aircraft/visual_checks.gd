@@ -10,6 +10,29 @@ func check(label: String, ok: bool) -> void:
 	checks += 1
 	if not ok: failures.append(label)
 
+# US-V18a: every film surface (atlas albedo, including hinge-gap faces and the servo hatches) is a target of a Workshop
+# paint slot, so repainting never leaves a patch in the default colours.
+func _check_paint_slot_coverage(airplane: Dictionary) -> void:
+	var registry: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft_customization.json"))
+	var targets := {}
+	for family: Dictionary in (registry as Dictionary).get("families", []):
+		if family.visual_family != "jensen-das-ugly-stik-60": continue
+		for slot: Dictionary in family.paint_slots:
+			for target: Dictionary in slot.targets:
+				targets["%s:%d" % [target.node_path, int(target.surface)]] = true
+	var root: Node3D = airplane.root
+	var film := 0
+	var missing: Array[String] = []
+	for node in root.find_children("*", "MeshInstance3D", true, false):
+		var instance := node as MeshInstance3D
+		for surface in instance.mesh.get_surface_count():
+			var material := instance.get_active_material(surface) as StandardMaterial3D
+			if material == null or material.albedo_texture != Finish.atlas(): continue
+			film += 1
+			var key := "%s:%d" % [root.get_path_to(instance), surface]
+			if not targets.has(key): missing.append(key)
+	check("paint slots cover all %d film surfaces (missing %s)" % [film, missing], film > 0 and missing.is_empty())
+
 # US-V13: the engine is the bundled O.S. 61 GLB (~140k indexed triangles); probes use one BVH in model millimetres.
 func _engine_bvh(engine: MeshInstance3D, root_node: Node3D, material := "") -> TriangleMesh:
 	var root_from_mesh: Transform3D = root_node.global_transform.affine_inverse() * engine.global_transform
@@ -377,6 +400,7 @@ func run(airplane: Dictionary) -> Dictionary:
 	_check_exhaust_residue(airplane, image)
 	_check_hatch_and_wear(image)
 	_check_painted_regions(airplane)
+	_check_paint_slot_coverage(airplane)
 	var engine_probe_report := _check_engine_mesh(airplane)
 	a.free()
 	b.free()

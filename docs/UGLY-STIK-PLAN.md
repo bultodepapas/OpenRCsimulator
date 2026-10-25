@@ -30,6 +30,7 @@ The base catalog aircraft, `jensen-das-ugly-stik-60`, retains prescribed fuel an
 | US-V15 | Form pass: sanded round wing tips (true raked cap normal) and round tail-sheet edges; [evidence](research/ugly-stik-finish-v6.md#us-v15--form-pass-sanded-wing-tips-and-tail-edges) | Owner close-up review; wing leading-edge facets (F3) left as a note. |
 | US-V16 | Lookdev vs the RCM photos: epoxy birch-ply firewall face; engine excluded from film scuffs (first contact 359 → 28 ms); [evidence](research/ugly-stik-finish-v6.md#us-v16--lookdev-colours-textures-and-the-firewall) | Owner choice on the RCM-only scheme differences (fuselage band, cross size, band colour, spinner). |
 | US-V17 | Two-servo wing (owner's choice): one servo per semispan on a bottom hatch, short pushrod, nylon horn, no bellcrank; standard 40 × 20 × 36 mm servos seated from their shafts; shaped arms and horns; [evidence](research/ugly-stik-finish-v6.md#us-v17--servos-and-control-hardware) | Stations are estimates; the economy catalogue still prices one central aileron servo. |
+| US-V18a | Every film surface follows its Workshop paint slot (inboard trailing-edge strips, hinge-gap faces, servo hatches); coverage check; [evidence](research/ugly-stik-finish-v6.md#us-v18a--paint-slots-cover-every-film-surface) | None. |
 
 The [2026-10-19 recheck](research/ugly-stik-finish-v6.md#2026-10-19-documentation-recheck) records focused verification separately from original delivery results. It does not close the full-suite, pilot or hardware gates.
 

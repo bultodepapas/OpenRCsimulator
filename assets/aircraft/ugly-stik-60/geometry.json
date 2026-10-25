@@ -456,6 +456,12 @@
       "root_front_z": 0.021906,
       "root_rear_z": 0.080834,
       "axle_width": 0.0188
+    },
+    "servo_tray": {
+      "case_z": 0.0887,
+      "rail": [0.0095, 0.0127],
+      "servo_x": {"elevator": -0.025, "throttle": 0.0, "rudder": 0.025},
+      "throttle_f1": [0.028, 0.023]
     }
   },
   "evidence": {
@@ -495,6 +501,11 @@
     "equipment.wheels": {
       "kind": "manual",
       "source": "Jensen plan 2.75 in nose, selected 3 in main from 3 or 3.25 in callout"
+    },
+    "equipment.servo_tray": {
+      "kind": "measured",
+      "source": "US-V18b: Jensen oz1253 sheet 1, local 100 dpi raster. Side view: the three fuselage servos stand between F3 and F4 on '3/8 x 1/2 hardwood servo rails' at x 1445-1496 and 1725-1774 px (centres z 0.0533 and 0.1241), outputs on y 2595 (the thrust line), plywood bottom at y 2774 (-0.0502). Top view: three servos side by side; 'brass brake cable tubing' to the throttle on the centre line; 'nylon tubing to throttle' in the side view.",
+      "method": "z = -0.115 + (x - 808) * 0.000254, y = -0.005 + (2596 - y) * 0.000254. case_z is the tray centre; modern standard servos mount by their tabs, so the rails move under the tabs (case_z +/- 23.75 mm). servo_x and the order (elevator left, throttle centre, rudder right, next to their horns and the plan's centre-line cable) are estimates. throttle_f1 is where the cable tube crosses F1: outside the radial mount and inside the 1/4 in sides, replacing the US-V13 rod crossing (32, 22) mm, whose tube would cut 1.2 mm into the side."
     },
     "equipment.main_strap": {
       "kind": "measured",

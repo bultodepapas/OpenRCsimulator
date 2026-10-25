@@ -241,9 +241,6 @@ static func _build_wing_mechanism(root: Node3D, assembly: Node3D, service: Node3
 	var hatch_x := plane_x - sign * (HATCH_M.x * 0.5 - 0.006)
 	var hatch := Node3D.new()
 	hatch.name = surface_name + "_servo_hatch"
-	var plate := _box_mesh(surface_name + "_hatch_plate", HATCH_M, Finish.RED, "skin")
-	plate.transform = Transform3D(hatch_basis, Vector3(hatch_x, outer_y.call(hatch_z), hatch_z) + hatch_up * (HATCH_M.y * 0.5))
-	hatch.add_child(plate)
 	var slot := _box_mesh(surface_name + "_hatch_slot", Vector3(0.006, 0.0002, 0.026), Color("0b0c0e"), "plastic")
 	slot.transform = Transform3D(hatch_basis, Vector3(plane_x, outer_y.call(AILERON_SERVO_SHAFT_Z_M), AILERON_SERVO_SHAFT_Z_M) - hatch_up * 0.0001)
 	hatch.add_child(slot)
@@ -254,6 +251,9 @@ static func _build_wing_mechanism(root: Node3D, assembly: Node3D, service: Node3
 			screw.transform = Transform3D(hatch_basis, Vector3(hatch_x + corner_x * (HATCH_M.x * 0.5 - 0.0045), outer_y.call(z), z) - hatch_up * 0.0003)
 			hatch.add_child(screw)
 	_batch_static_meshes(hatch, surface_name + "_hatch")
+	# US-V18a: the plate is covered in the wing film (atlas and Workshop paint slot "wing"), not a fixed red.
+	var plate_centre: Vector3 = Vector3(hatch_x, outer_y.call(hatch_z), hatch_z) + hatch_up * (HATCH_M.y * 0.5)
+	hatch.add_child(_film_box(surface_name + "_hatch_plate", HATCH_M, Transform3D(hatch_basis, plate_centre), "wing"))
 	frame.add_child(hatch)
 
 	# The servo lies on its side on the hatch, output shaft outboard in the horn's plane, case parallel to the hatch.
@@ -609,12 +609,41 @@ static func _plate_mesh(outline: PackedVector2Array, thickness: float) -> ArrayM
 
 
 ## One flat triangle wound to face `normal` (Godot front faces are clockwise).
-static func _face(tool: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, normal: Vector3) -> void:
+static func _face(tool: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, normal: Vector3, region := "") -> void:
 	var corners := [a, b, c] if (b - a).cross(c - a).dot(normal) < 0.0 else [a, c, b]
 	for corner: Vector3 in corners:
 		tool.set_normal(normal)
-		tool.set_uv(Vector2(corner.x, corner.y))
+		tool.set_uv(Finish.uv(corner, region) if not region.is_empty() else Vector2(corner.x, corner.y))
 		tool.add_vertex(corner)
+
+
+## A box covered in the airframe film: each corner samples the atlas at its own position in `region`'s unwrap, so the
+## box carries the surrounding colours and takes the paint slot that names it. `transform` is in that region's frame.
+static func _film_box(name: String, size: Vector3, transform: Transform3D, region: String) -> MeshInstance3D:
+	var tool := SurfaceTool.new()
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for axis in 3:
+		for side in [-1.0, 1.0]:
+			var n := Vector3.ZERO
+			n[axis] = side
+			var u := Vector3.ZERO
+			u[(axis + 1) % 3] = 1.0
+			var v := Vector3.ZERO
+			v[(axis + 2) % 3] = 1.0
+			var corners: Array[Vector3] = []
+			for corner in [Vector2(-1, -1), Vector2(1, -1), Vector2(1, 1), Vector2(-1, 1)]:
+				corners.append(transform * ((n + u * corner.x + v * corner.y) * size * 0.5))
+			var normal := (transform.basis * n).normalized()
+			_face(tool, corners[0], corners[1], corners[2], normal, region)
+			_face(tool, corners[0], corners[2], corners[3], normal, region)
+	# Unindexed like every film surface (the film checks read triangles in order); it is never merged.
+	tool.generate_tangents()
+	var mesh := tool.commit()
+	mesh.surface_set_material(0, Finish.covering())
+	var instance := MeshInstance3D.new()
+	instance.name = name
+	instance.mesh = mesh
+	return instance
 
 
 ## Merge [mesh, transform, colour, profile] parts into one mesh with a surface per material (for moving parts).

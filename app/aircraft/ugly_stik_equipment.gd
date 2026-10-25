@@ -320,11 +320,9 @@ const PROP_HUB_RADIUS := 0.016
 # about -X as the throttle opens, so the ball link moves aft.
 const THROTTLE_SIDE := 1.0
 const THROTTLE_OPENING := -1.0
-# The gas pushrod runs straight from the lever to a servo arm 30 mm behind F1. It crosses F1 outboard of the radial
-# mount and below the pressure-line grommet: the clear corridor found by probing the engine, lines and nose gear with
-# the verify_controls rod envelope over the throttle travel.
-const THROTTLE_ROD_AT_F1 := Vector2(0.032, 0.022)
-const THROTTLE_SERVO_BEHIND_F1 := 0.030
+# US-V18b: the gas servo stands in the servo tray and drives the lever through a cable in a tube (Jensen sheet 1), which
+# crosses F1 at equipment.servo_tray.throttle_f1: outboard of the radial mount, below the pressure-line grommet and
+# inside the 1/4 in sides. Controls build the linkage.
 
 static var _engine_anchors: Dictionary = {}
 
@@ -352,13 +350,6 @@ static func throttle_arm_pivot() -> Vector3:
 
 static func throttle_arm_tip() -> Vector3:
 	return engine_origin() + engine_anchor("engine_throttle_arm_tip")
-
-
-## Gas-servo arm end at neutral, on the pushrod line from the lever ball link through F1.
-static func throttle_servo_arm_end() -> Vector3:
-	var tip := throttle_arm_tip()
-	var crossing := Vector3(THROTTLE_ROD_AT_F1.x, THROTTLE_ROD_AT_F1.y, float(D.equipment.firewall_z))
-	return crossing + (crossing - tip) / (crossing.z - tip.z) * THROTTLE_SERVO_BEHIND_F1
 
 
 static func _adopt(scene: Node, node_name: String, parent: Node3D, position: Vector3, label := "") -> MeshInstance3D:
