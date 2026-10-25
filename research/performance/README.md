@@ -51,11 +51,16 @@ safety, records pause/tick state, and never forces a pose or advances physics ma
 ```
 
 Create the parent directory first; output and its `.settings.cfg` sidecar must not exist.
-Optional `--aircraft=<id>` selects a flyable fixed-wing aircraft. `--dwell-ms=0..30000`
+Optional `--aircraft=<id>` selects a flyable fixed-wing aircraft. `--start=airborne|runway`
+selects its start (default `airborne`). `--dwell-ms=0..30000`
 waits after each Home draw before pressing Fly. `--prefetch=off|scene|trim|scene_trim`
 selects the preparation experiment (default `off`); `--prefetch-delay-ms=0..10000`
 sets its stable-selection delay (default 350 ms). Non-off modes require an app that
 implements preparation. Compare identical dwell and delay settings across roles.
+`--observe-camera` adds bounded per-draw camera/aircraft placement and loading-cover observations,
+waits 12 extra frames after handoff, and saves the first and tenth uncovered frames beside the JSON.
+Use an ignored `tmp/` output path. Readbacks can stall rendering; these runs diagnose first reveal
+and must not be mixed with timing acceptance samples. The option never bypasses focus safety.
 Cycles are bounded to 1–50. Keep logs and inspect errors even on exit zero. Apply an external timeout for
 unattended runs. A fresh process is not a cold OS/import/shader cache. Engine elapsed
 time excludes parent-process launch overhead. `fly_sync_usec` measures only dispatch

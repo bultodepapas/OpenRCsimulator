@@ -15,6 +15,9 @@ static func create(parent: Node, pilot: Dictionary = {}) -> Camera3D:
 	camera.fov = Spec.CAMERA.fov_deg
 	camera.near = Spec.CAMERA.near
 	camera.far = Spec.CAMERA.far
+	# The first current-camera frame may precede aim() during staged startup.
+	camera.position = Frames.ned_to_render([station[0], station[1],
+		float(station[2]) - float(camera.get_meta("pilot_eye_height"))])
 	parent.add_child(camera)
 	camera.current = true
 	return camera
