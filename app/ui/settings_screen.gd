@@ -249,6 +249,7 @@ func _build() -> void:
 	# CAM-17: camera preferences; presentation only, applied to a Home flight at once.
 	_camera_view_picker = _camera_picker("CameraView", "camera_view", CameraSettings.VIEWS)
 	_add_row(camera_page, "First view", _camera_view_picker)
+	_camera_view_picker.tooltip_text = tr("The pilot view stays the reference for learning to fly; chase and orbit are aids. Right-drag turns the orbit; the wheel or +/− zooms.")
 	_camera_fov_picker = _camera_picker("CameraFov", "camera_fov", CameraSettings.FOVS)
 	_add_row(camera_page, "Pilot field of view", _camera_fov_picker)
 	_camera_fov_picker.tooltip_text = tr("The pilot view's widest angle; auto zoom narrows it for a distant airplane. About 30° shows the airplane at its real size on a 24–27-inch screen at arm's length.")
@@ -260,7 +261,6 @@ func _build() -> void:
 	_add_row(camera_page, "Orbit sensitivity", _camera_sensitivity_picker)
 	_camera_invert_toggle = _camera_toggle("CameraInvertY", "camera_invert_y", "Invert orbit up/down")
 	_add_row(camera_page, "Invert orbit up/down", _camera_invert_toggle)
-	camera_page.add_child(_label("The pilot view stays the reference for learning to fly; chase and orbit are aids. Right-drag turns the orbit; the wheel or +/− zooms.", "SecondaryLabel", true))
 
 	_opaque_toggle = CheckButton.new()
 	_opaque_toggle.name = "OpaquePanels"
@@ -695,7 +695,8 @@ func _update_layout() -> void:
 	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(720.0, maxf(0.0, available.y)))
 	_refresh_graphics_info()
 	var stack_rows := _should_stack_rows()
-	_categories.columns = 2 if stack_rows else CATEGORIES.size()
+	# Two rows of tabs when stacked, as with four categories: a third row would leave the page no room at 200 % text.
+	_categories.columns = ceili(CATEGORIES.size() / 2.0) if stack_rows else CATEGORIES.size()
 	_categories.visible = not compact_height
 	_category_picker.visible = compact_height
 	if transfer_category_focus:
