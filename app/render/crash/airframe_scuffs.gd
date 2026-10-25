@@ -1,5 +1,5 @@
 # US-V12: scuffs on the airframe where a soft hull contact touched the field and the flight went on (E3d1): grass
-# stain on mown turf, soil on rough ground, abraded film on the runway. Compatibility has no Decal node, so each scuff
+# stain on mown turf and on the mown runway strip, soil on rough ground. Compatibility has no Decal node, so each scuff
 # is a small transparent mesh fitted onto the struck surface. A ray from below the contact finds the lowest visible
 # airframe surface above it; a grid of points along the slide is projected onto the nearby airframe triangles (a
 # scuff may straddle two wing panels). The scuff is a child of the struck mesh, so it moves with hinged surfaces. Presentation only; cleared on restart.
@@ -23,7 +23,8 @@ const MM := 1000.0
 const COLORS := {
 	"mown": Color(0.25, 0.33, 0.12),
 	"rough": Color(0.33, 0.27, 0.17),
-	"runway": Color(0.72, 0.71, 0.68),
+	# GP-07d: the runway is a mown grass strip with touchdown wear: grass stain with a little soil.
+	"runway": Color(0.28, 0.31, 0.13),
 }
 ## Ancestors whose meshes are not airframe skin.
 const SKIP_PARTS: Array[String] = ["propeller", "gear", "wheel"]

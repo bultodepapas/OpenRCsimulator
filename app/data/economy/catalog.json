@@ -2411,7 +2411,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "jensen-das-ugly-stik-60",
-      "source_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+      "source_sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77",
       "currency": "USD",
       "price_date": "2026-10-20",
       "valuation_kind": "complete_inventory_coverage_with_cost_estimates",
@@ -2595,7 +2595,34 @@
         "probe_wing_right_tip": [
           "covered_airframe_and_installation_hardware"
         ],
-        "probe_tail_end": [
+        "probe_wing_left_le": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_le": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_top_front": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_top_front": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_outer": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_outer": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_te": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_te": [
           "covered_airframe_and_installation_hardware"
         ],
         "probe_stabilizer_left_tip": [
@@ -2607,8 +2634,43 @@
         "probe_fin_top": [
           "covered_airframe_and_installation_hardware"
         ],
-        "probe_belly_main": [
+        "probe_rudder_top_te": [
           "covered_airframe_and_installation_hardware"
+        ],
+        "probe_rudder_te": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_end": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_skid": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_nose_bottom_left": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_nose_bottom_right": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_engine_head": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_top": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_front_top": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_front_bottom": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_spinner_tip": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
         ],
         "contact_main_left": [
           "covered_airframe_and_installation_hardware"
@@ -2618,10 +2680,6 @@
         ],
         "contact_nose": [
           "covered_airframe_and_installation_hardware"
-        ],
-        "probe_spinner_tip": [
-          "covered_airframe_and_installation_hardware",
-          "engine_and_muffler"
         ]
       },
       "propeller_component_id": "propeller",
@@ -2761,14 +2819,32 @@
           "contact_main_left",
           "contact_main_right",
           "contact_nose",
-          "probe_belly_main",
+          "probe_engine_front_bottom",
+          "probe_engine_front_top",
+          "probe_engine_head",
+          "probe_engine_top",
           "probe_fin_top",
+          "probe_nose_bottom_left",
+          "probe_nose_bottom_right",
+          "probe_rudder_te",
+          "probe_rudder_top_te",
           "probe_spinner_tip",
           "probe_stabilizer_left_tip",
           "probe_stabilizer_right_tip",
           "probe_tail_end",
+          "probe_tail_skid",
+          "probe_wing_left_le",
+          "probe_wing_left_outer",
+          "probe_wing_left_te",
           "probe_wing_left_tip",
+          "probe_wing_left_top",
+          "probe_wing_left_top_front",
+          "probe_wing_right_le",
+          "probe_wing_right_outer",
+          "probe_wing_right_te",
           "probe_wing_right_tip",
+          "probe_wing_right_top",
+          "probe_wing_right_top_front",
           "propeller/propulsion_main"
         ]
       }
@@ -2776,7 +2852,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-61fx-2t",
-      "source_sha256": "c29f86fa72b89cd7f46206da875f28632229e5892c2db60a692959f472a73f6a",
+      "source_sha256": "ff43a548cbf8b080a720ab3f912bf6aef0cb9f1c52410c0b022f797294cb5be1",
       "currency": "USD",
       "price_date": "2026-10-20",
       "valuation_kind": "inherited_complete_inventory_coverage_with_cost_estimates",
@@ -2960,7 +3036,34 @@
         "probe_wing_right_tip": [
           "covered_airframe_and_installation_hardware"
         ],
-        "probe_tail_end": [
+        "probe_wing_left_le": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_le": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_top_front": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_top_front": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_outer": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_outer": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_te": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_te": [
           "covered_airframe_and_installation_hardware"
         ],
         "probe_stabilizer_left_tip": [
@@ -2972,8 +3075,43 @@
         "probe_fin_top": [
           "covered_airframe_and_installation_hardware"
         ],
-        "probe_belly_main": [
+        "probe_rudder_top_te": [
           "covered_airframe_and_installation_hardware"
+        ],
+        "probe_rudder_te": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_end": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_skid": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_nose_bottom_left": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_nose_bottom_right": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_engine_head": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_top": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_front_top": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_front_bottom": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_spinner_tip": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
         ],
         "contact_main_left": [
           "covered_airframe_and_installation_hardware"
@@ -2983,10 +3121,6 @@
         ],
         "contact_nose": [
           "covered_airframe_and_installation_hardware"
-        ],
-        "probe_spinner_tip": [
-          "covered_airframe_and_installation_hardware",
-          "engine_and_muffler"
         ]
       },
       "propeller_component_id": "propeller",
@@ -3126,14 +3260,32 @@
           "contact_main_left",
           "contact_main_right",
           "contact_nose",
-          "probe_belly_main",
+          "probe_engine_front_bottom",
+          "probe_engine_front_top",
+          "probe_engine_head",
+          "probe_engine_top",
           "probe_fin_top",
+          "probe_nose_bottom_left",
+          "probe_nose_bottom_right",
+          "probe_rudder_te",
+          "probe_rudder_top_te",
           "probe_spinner_tip",
           "probe_stabilizer_left_tip",
           "probe_stabilizer_right_tip",
           "probe_tail_end",
+          "probe_tail_skid",
+          "probe_wing_left_le",
+          "probe_wing_left_outer",
+          "probe_wing_left_te",
           "probe_wing_left_tip",
+          "probe_wing_left_top",
+          "probe_wing_left_top_front",
+          "probe_wing_right_le",
+          "probe_wing_right_outer",
+          "probe_wing_right_te",
           "probe_wing_right_tip",
+          "probe_wing_right_top",
+          "probe_wing_right_top_front",
           "propeller/propulsion_main"
         ]
       }
@@ -3141,7 +3293,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-55ax-2t",
-      "source_sha256": "d89b83c76da8356b39893ca3073656a3d3c8af1d761bce587e54ce707ec3fbc3",
+      "source_sha256": "742a19d5411c01f81d9fa4c5627803bfde059c3d4ed1082fe82e089dbf55397a",
       "currency": "USD",
       "price_date": "2026-10-20",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
@@ -3325,7 +3477,34 @@
         "probe_wing_right_tip": [
           "covered_airframe_and_installation_hardware"
         ],
-        "probe_tail_end": [
+        "probe_wing_left_le": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_le": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_top_front": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_top_front": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_outer": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_outer": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_te": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_te": [
           "covered_airframe_and_installation_hardware"
         ],
         "probe_stabilizer_left_tip": [
@@ -3337,8 +3516,43 @@
         "probe_fin_top": [
           "covered_airframe_and_installation_hardware"
         ],
-        "probe_belly_main": [
+        "probe_rudder_top_te": [
           "covered_airframe_and_installation_hardware"
+        ],
+        "probe_rudder_te": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_end": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_skid": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_nose_bottom_left": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_nose_bottom_right": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_engine_head": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_top": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_front_top": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_front_bottom": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_spinner_tip": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
         ],
         "contact_main_left": [
           "covered_airframe_and_installation_hardware"
@@ -3348,10 +3562,6 @@
         ],
         "contact_nose": [
           "covered_airframe_and_installation_hardware"
-        ],
-        "probe_spinner_tip": [
-          "covered_airframe_and_installation_hardware",
-          "engine_and_muffler"
         ]
       },
       "propeller_component_id": "propeller",
@@ -3491,14 +3701,32 @@
           "contact_main_left",
           "contact_main_right",
           "contact_nose",
-          "probe_belly_main",
+          "probe_engine_front_bottom",
+          "probe_engine_front_top",
+          "probe_engine_head",
+          "probe_engine_top",
           "probe_fin_top",
+          "probe_nose_bottom_left",
+          "probe_nose_bottom_right",
+          "probe_rudder_te",
+          "probe_rudder_top_te",
           "probe_spinner_tip",
           "probe_stabilizer_left_tip",
           "probe_stabilizer_right_tip",
           "probe_tail_end",
+          "probe_tail_skid",
+          "probe_wing_left_le",
+          "probe_wing_left_outer",
+          "probe_wing_left_te",
           "probe_wing_left_tip",
+          "probe_wing_left_top",
+          "probe_wing_left_top_front",
+          "probe_wing_right_le",
+          "probe_wing_right_outer",
+          "probe_wing_right_te",
           "probe_wing_right_tip",
+          "probe_wing_right_top",
+          "probe_wing_right_top_front",
           "propeller/propulsion_main"
         ]
       }
@@ -3506,7 +3734,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-fs64v-4t",
-      "source_sha256": "2ffecf15df53f55876756fb47213714a536dfd28a0b432863bdb34fc4eeee796",
+      "source_sha256": "942cca1364cacf61c9a5c0d066ef9bfc99dc9be9c86b0c30cefec19eb3c9c182",
       "currency": "USD",
       "price_date": "2026-10-20",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
@@ -3690,7 +3918,34 @@
         "probe_wing_right_tip": [
           "covered_airframe_and_installation_hardware"
         ],
-        "probe_tail_end": [
+        "probe_wing_left_le": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_le": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_top_front": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_top_front": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_outer": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_outer": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_left_te": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_te": [
           "covered_airframe_and_installation_hardware"
         ],
         "probe_stabilizer_left_tip": [
@@ -3702,8 +3957,43 @@
         "probe_fin_top": [
           "covered_airframe_and_installation_hardware"
         ],
-        "probe_belly_main": [
+        "probe_rudder_top_te": [
           "covered_airframe_and_installation_hardware"
+        ],
+        "probe_rudder_te": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_end": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_skid": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_nose_bottom_left": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_nose_bottom_right": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_engine_head": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_top": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_front_top": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_engine_front_bottom": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
+        ],
+        "probe_spinner_tip": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
         ],
         "contact_main_left": [
           "covered_airframe_and_installation_hardware"
@@ -3713,10 +4003,6 @@
         ],
         "contact_nose": [
           "covered_airframe_and_installation_hardware"
-        ],
-        "probe_spinner_tip": [
-          "covered_airframe_and_installation_hardware",
-          "engine_and_muffler"
         ]
       },
       "propeller_component_id": "propeller",
@@ -3856,14 +4142,32 @@
           "contact_main_left",
           "contact_main_right",
           "contact_nose",
-          "probe_belly_main",
+          "probe_engine_front_bottom",
+          "probe_engine_front_top",
+          "probe_engine_head",
+          "probe_engine_top",
           "probe_fin_top",
+          "probe_nose_bottom_left",
+          "probe_nose_bottom_right",
+          "probe_rudder_te",
+          "probe_rudder_top_te",
           "probe_spinner_tip",
           "probe_stabilizer_left_tip",
           "probe_stabilizer_right_tip",
           "probe_tail_end",
+          "probe_tail_skid",
+          "probe_wing_left_le",
+          "probe_wing_left_outer",
+          "probe_wing_left_te",
           "probe_wing_left_tip",
+          "probe_wing_left_top",
+          "probe_wing_left_top_front",
+          "probe_wing_right_le",
+          "probe_wing_right_outer",
+          "probe_wing_right_te",
           "probe_wing_right_tip",
+          "probe_wing_right_top",
+          "probe_wing_right_top_front",
           "propeller/propulsion_main"
         ]
       }

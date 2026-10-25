@@ -47,8 +47,10 @@ static func validate(raw: Dictionary) -> Dictionary:
 			continue
 		var ff = AircraftData._q(errors, "surfaces.%s.friction_factor" % type, node.get("friction_factor"), "1", 0.05, 1.0)
 		var rf = AircraftData._q(errors, "surfaces.%s.rolling_factor" % type, node.get("rolling_factor"), "1", 0.5, 20.0)
-		if ff != null and rf != null:
-			table[type] = { friction_factor = float(ff), rolling_factor = float(rf) }
+		# GP-07c: an airframe point (not a tyre) sliding on this surface; physics/hull_contact.gd.
+		var af = AircraftData._q(errors, "surfaces.%s.airframe_friction" % type, node.get("airframe_friction"), "1", 0.05, 1.2)
+		if ff != null and rf != null and af != null:
+			table[type] = { friction_factor = float(ff), rolling_factor = float(rf), airframe_friction = float(af) }
 	if table.has("rotorpad") and float(table.rotorpad.rolling_factor) != 0.5:
 		errors.append("surfaces.rotorpad.rolling_factor: must remain 0.5; this reserved value selects zero-relief rotorpad terrain")
 	for type in surfaces:
@@ -78,4 +80,27 @@ static func build(table: Dictionary, field: Dictionary) -> Dictionary:
 		if not (str(s.get("type", "")) in TYPES):
 			errors.append("field surface '%s': type '%s' has no friction data" % [s.get("id", "?"), s.get("type", "")])
 	rects.append_array(PackedFloat64Array([-INF, INF, -INF, INF, table[OUTSIDE].friction_factor, table[OUTSIDE].rolling_factor]))
+	return { ok = errors.is_empty(), errors = errors, rects = rects if errors.is_empty() else PackedFloat64Array() }
+
+
+## GP-07c: flat lookup table of airframe sliding friction for physics/hull_contact.gd: the field's rectangles in the
+## same precedence as build() (north_min, north_max, east_min, east_max, airframe_friction each: AIRFRAME_STRIDE
+## floats, defined with the lookup in physics/hull_contact.gd), then a catch-all block (±INF) for OUTSIDE. Kept apart from the tyre table so its layout, read by the
+## wheels, helicopters and vehicles, does not change. Returns { ok, errors, rects: PackedFloat64Array }.
+static func build_airframe(table: Dictionary, field: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var rects := PackedFloat64Array()
+	var fields_surfaces: Array = field.get("surfaces", [])
+	for type in TYPES:
+		for s in fields_surfaces:
+			if str(s.get("type", "")) != type:
+				continue
+			var half_n := float(s.width_north_south) / 2.0
+			var half_e := float(s.length_east_west) / 2.0
+			rects.append_array(PackedFloat64Array([float(s.center_north) - half_n, float(s.center_north) + half_n,
+				float(s.center_east) - half_e, float(s.center_east) + half_e, table[type].airframe_friction]))
+	for s in fields_surfaces:
+		if not (str(s.get("type", "")) in TYPES):
+			errors.append("field surface '%s': type '%s' has no friction data" % [s.get("id", "?"), s.get("type", "")])
+	rects.append_array(PackedFloat64Array([-INF, INF, -INF, INF, table[OUTSIDE].airframe_friction]))
 	return { ok = errors.is_empty(), errors = errors, rects = rects if errors.is_empty() else PackedFloat64Array() }

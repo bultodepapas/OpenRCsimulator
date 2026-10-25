@@ -70,6 +70,7 @@ func start(destination := "") -> Error:
 		metadata = _session.trace_meta(), checkpoint = checkpoint,
 		aircraft = _session.aircraft.duplicate(true), aircraft_path = _session.aircraft_path,
 		ground_surfaces = _session.ground_surfaces.duplicate(), ground_field_id = _session.ground_field_id,
+		airframe_surfaces = _session.airframe_surfaces.duplicate(),
 		collision_world = _session.collision_world(), lake = _session.lake_context(),
 		weather = _session.weather_configuration(), shaft_integrator = _session.shaft_integrator(),
 		soft_hull_contacts = _session.soft_hull_contacts,

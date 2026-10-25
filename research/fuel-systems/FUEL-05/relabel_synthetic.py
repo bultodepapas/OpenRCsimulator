@@ -60,16 +60,11 @@ GEAR_IDS = {
     "main_right": "contact_main_right",
     "nose": "contact_nose",
 }
-CRASH_HULL_IDS = [
-    "probe_wing_left_tip",
-    "probe_wing_right_tip",
-    "probe_spinner_tip",
-    "probe_tail_end",
-    "probe_stabilizer_left_tip",
-    "probe_stabilizer_right_tip",
-    "probe_fin_top",
-    "probe_belly_main",
-]
+# GP-07b: the fixtures share the base Stik's drawn-model crash hull (research/ground-physics/gp07/derive_stik_hull.py
+# writes the points into all five files), so their hull ids are the reviewed base Stik's own.
+BASE_STIK = "jensen_ugly_stik_60.json"
+
+
 SURFACE_IDS = {
     "aileron_left": "surface_aileron_left",
     "aileron_right": "surface_aileron_right",
@@ -101,10 +96,11 @@ def relabel(raw):
         contact["id"] = contact_id
     if len(contacts) != len(GEAR_IDS) or {contact["name"] for contact in contacts} != set(GEAR_IDS):
         raise ValueError("synthetic fixture gear contacts differ from the authored identity map")
+    base = json.loads((ROOT / "app/data/aircraft" / BASE_STIK).read_bytes().decode("utf-8"))
     hull_points = raw.get("crash_hull", {}).get("value", [])
-    if len(hull_points) != len(CRASH_HULL_IDS):
-        raise ValueError("synthetic fixture hull points differ from the authored identity map")
-    raw["crash_hull_ids"] = list(CRASH_HULL_IDS)
+    if hull_points != base["crash_hull"]["value"] or len(hull_points) != len(base["crash_hull_ids"]):
+        raise ValueError("synthetic fixture hull points differ from the base Stik's authored identity map")
+    raw["crash_hull_ids"] = list(base["crash_hull_ids"])
     raw["propulsion"]["id"] = "propulsion_main"
     raw["controls"]["surface_ids"] = dict(SURFACE_IDS)
     raw["physical_identity_version"] = 1

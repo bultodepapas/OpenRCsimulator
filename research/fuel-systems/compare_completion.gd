@@ -326,6 +326,7 @@ func _new_flight(header: Dictionary, candidate_data: Dictionary) -> Node:
 	flight.soft_hull_contacts = bool(header.soft_hull_contacts)
 	flight.setup(SOURCE_AIRCRAFT, "", candidate_data)
 	flight.ground_surfaces = header.ground_surfaces.duplicate()
+	flight.airframe_surfaces = header.get("airframe_surfaces", PackedFloat64Array()) # GP-07c
 	flight.ground_field_id = str(header.ground_field_id)
 	var ready: bool = flight.setup_shaft_integrator(str(header.shaft_integrator)) \
 		and flight.setup_weather(header.weather) and flight.set_collision_world(header.collision_world) \

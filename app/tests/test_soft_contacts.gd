@@ -110,19 +110,27 @@ func _loads_shape(session: Node) -> void:
 	var prepared: Dictionary = session._hull_contact
 	_check("hull contact is prepared for the Stik", not prepared.is_empty() and prepared.stiffness.size() == session.aircraft.model.crash_hull.size() / 3)
 	var names: PackedStringArray = session.aircraft.model.crash_hull_components
+	var hull: PackedFloat64Array = session.aircraft.model.crash_hull
+	# GP-07b: the drawn-model hull has no belly point (the wheels always touch first); compare with the point nearest
+	# the CG, whose effective mass is the largest.
+	var nearest := 0
+	for i in names.size():
+		if M.norm(hull.slice(3 * i, 3 * i + 3)) < M.norm(hull.slice(3 * nearest, 3 * nearest + 3)):
+			nearest = i
 	var tip_k: float = prepared.stiffness[names.find("left_wing_tip")]
-	var belly_k: float = prepared.stiffness[names.find("belly")]
+	var belly_k: float = prepared.stiffness[nearest]
 	var bound: float = float(prepared.mass) * HullContact.OMEGA_RAD_S * HullContact.OMEGA_RAD_S
 	var bounded := true
 	for k: float in prepared.stiffness:
 		bounded = bounded and k > 0.0 and k <= bound * (1.0 + 1e-12)
 	_check("every point is no stiffer than the whole mass at the contact frequency", bounded)
-	_check("a wingtip (small effective mass) is softer than the belly", tip_k < 0.5 * belly_k, "tip %.0f, belly %.0f N/m" % [tip_k, belly_k])
+	_check("a wingtip (small effective mass) is softer than the point nearest the CG", tip_k < 0.5 * belly_k,
+		"tip %.0f, %s %.0f N/m" % [tip_k, names[nearest], belly_k])
 	var air := _state_above(session, 0.5, 0.0, 0.0, 0.0, M.v3(15, 0, 0))
 	_check("no load above the ground", HullContact.loads(air, prepared).is_empty())
 	var sunk := _state_above(session, -0.005, 0.0, 0.0, 0.0, M.v3(3, 0, 0))
 	var loads := HullContact.loads(sunk, prepared)
-	_check("a sunk belly is pushed up (body −z)", loads.size() == 6 and loads[2] < 0.0)
+	_check("the sunk lowest level point is pushed up (body −z)", loads.size() == 6 and loads[2] < 0.0)
 	_check("friction opposes the slide (body −x)", loads.size() == 6 and loads[0] < 0.0)
 	var mu_ok := loads.size() == 6 and absf(loads[0]) <= HullContact.FRICTION_MU * absf(loads[2]) + 1e-9
 	_check("friction stays inside the Coulomb bound", mu_ok)
@@ -161,7 +169,7 @@ func _depth_backstop(session: Node) -> void:
 	var hit := HullContact.terminal(before, crushed, prepared)
 	_check("a crush deeper than the backstop is a crash", int(hit.index) >= 0 and hit.rule == "depth")
 	# Already touching on the previous tick and still pressing down hard: not a new impact (the depth rule watches it).
-	var pressing := _state_above(session, -0.01, 0.0, 0.0, 0.0, M.v3(0, 0, 10)) # only the belly touches, 1 cm deep
+	var pressing := _state_above(session, -0.01, 0.0, 0.0, 0.0, M.v3(0, 0, 10)) # only the lowest level point, 1 cm deep
 	var still := pressing.duplicate()
 	still[RB.POS + 2] += 0.005
 	_check("a point already in contact is not graded as a new impact", int(HullContact.terminal(pressing, still, prepared).index) < 0)

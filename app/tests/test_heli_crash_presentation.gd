@@ -46,12 +46,13 @@ func run() -> void:
   check("restart hides pooled effects and removes active debris",not p.active and not p._composite_dust.visible and not p.effects.dust.visible and p.wreck.active_body_count()==0 and p._surviving_optics.is_empty())
   check("repeated impacts do not accumulate nodes",p.get_tree().get_node_count()==count)
  report.component="fuselage"
- report.severity={"valid":true,"class":1,"severity":.05,"component":"fuselage","component_group":"fuselage","surface":"runway"}
- report.surface="runway"
+ # GP-07d: the field's runway is a mown grass strip; a paved impact is asphalt.
+ report.severity={"valid":true,"class":1,"severity":.05,"component":"fuselage","component_group":"fuselage","surface":"asphalt"}
+ report.surface="asphalt"
  p.start(report,pose,model.cg_model_m,Vector3.ZERO)
  check("small paved impact makes neither dirt plume nor fracture smoke",not p.effects.dust.emitting and not p._composite_dust.emitting and not p.effects.blade_chips.emitting)
  report.component="main_rotor"
- report.severity={"valid":true,"class":3,"severity":.5,"component":"main_rotor","component_group":"propeller","surface":"runway","tangential_speed_mps":60.0}
+ report.severity={"valid":true,"class":3,"severity":.5,"component":"main_rotor","component_group":"propeller","surface":"asphalt","tangential_speed_mps":60.0}
  kit.set_mode("off"); kit.update_visual(-20,.6)
  p.start(report,pose,model.cg_model_m,Vector3.ZERO)
  check("blade envelope does not invent metal sparks",not p.effects.sparks.emitting and not p.effects.sparks.visible)

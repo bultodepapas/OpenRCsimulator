@@ -156,7 +156,17 @@ func _initialize() -> void:
 
 	# Landing gear (E1): three spring-damper contacts, the wheels no longer in the crash hull, stiffness by the tick rule.
 	var gear: Dictionary = m.landing_gear
-	_check("landing gear: 3 contacts; the hull keeps 8 points without the wheels", gear.get("contacts", []).size() == 3 and m.crash_hull.size() == 8 * 3, str(gear))
+	# GP-07b: the hull is generated from the drawn airframe (research/ground-physics/gp07); no hull point sits on a wheel.
+	var wheel_in_hull := false
+	for contact: Dictionary in gear.get("contacts", []):
+		var w: PackedFloat64Array = contact.position
+		for i in range(0, m.crash_hull.size(), 3):
+			var dx: float = m.crash_hull[i] - w[0]
+			var dy: float = m.crash_hull[i + 1] - w[1]
+			var dz: float = m.crash_hull[i + 2] - w[2]
+			wheel_in_hull = wheel_in_hull or dx * dx + dy * dy + dz * dz < 0.02 * 0.02
+	_check("landing gear: 3 contacts; the hull keeps its points off the wheels", gear.get("contacts", []).size() == 3
+		and m.crash_hull.size() >= 8 * 3 and not wheel_in_hull, str(gear))
 	var eq: Dictionary = Geometry.DATA.equipment
 	# GP-06b: model y is measured from the model origin; the LE vertical datum is the thrust line (shaft_y). A wheel
 	# bottom sits (shaft_y − wheel_y) + r below the thrust line, plus the body datum's height above it (FUEL-05f).

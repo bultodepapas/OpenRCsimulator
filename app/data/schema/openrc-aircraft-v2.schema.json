@@ -2599,7 +2599,8 @@
           "right_stab_tip",
           "fin_top",
           "canopy",
-          "belly"
+          "belly",
+          "engine"
         ]
       }
     },

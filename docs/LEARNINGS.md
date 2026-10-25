@@ -60,6 +60,14 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-25 · GP-07 — gate contact geometry on the drawn model, and measure restitution as integrated
+
+The Stik's hand-placed crash hull drifted from its evolving model until the drawing could sink 104 mm into the ground before physics touched, and an inverted airplane rested 89 mm up on a phantom fin; no test compared hull points with the drawing (GP-06 did so only for wheels). The soft contact's restitution, assumed near 0.05 from ζ = 0.7, measured 0.22–0.44 as integrated: the non-pulling clamp ends the contact while the damper still brakes the rebound.
+
+- Generate contact points from the built model and gate their coverage over all attitudes with a convex-hull support sweep, so a model edit fails a test instead of clipping silently.
+- Judge a penalty contact's bounce with its clamp, damping ramp and integrator, not the linear spring-damper formula.
+- A stability bound sized per contact point does not bound the body: points that touch together add their rates (friction reached 179 s⁻¹ against a 120 s⁻¹ per-point bound, and bunched points multiply damping). Share the bound among the touching points, space generated points apart, and measure the eigenvalue on the real loads. [GP-07](research/ground-physics/GP-07/README.md)
+
 ## 2026-10-25 · US-V18c — overlap-test every delivered part a generator moves
 
 The Stik engine generator moved the delivered line grommets and bent the last 35 mm of each silicone line. Renders and close-ups passed for a whole step, yet the bent pressure line ran through the radial mount: 77 triangle pairs, found only when the generator gained a `BVHTree.overlap` test against the mount and engine. A generator that moves or deforms delivered geometry should overlap-test the result against the solids around it and fail the build on contact. Exclude only the intended joins, such as a line on its nipple. [Generator](../assets/aircraft/ugly-stik-60/engine/build_engine.py) · [evidence](research/ugly-stik-finish-v6.md#us-v18c--fuel-and-radio-installation)

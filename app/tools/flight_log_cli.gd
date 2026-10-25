@@ -130,7 +130,10 @@ static func inspect(path: String, recover := false) -> Dictionary:
 		if not header.get(key) is Dictionary: return {ok = false, error = "Missing header dictionary: " + key}
 	for key in ["engine", "solver_sha256", "aircraft_path", "ground_field_id", "shaft_integrator"]:
 		if typeof(header.get(key)) != TYPE_STRING: return {ok = false, error = "Missing header string: " + key}
+	# GP-07c: logs recorded before the airframe friction table have no airframe_surfaces (soft ones are refused by the
+	# contact-law identity anyway); a present one must be a flat table.
 	if typeof(header.get("soft_hull_contacts")) != TYPE_BOOL or not header.get("ground_surfaces") is PackedFloat64Array \
+			or not header.get("airframe_surfaces", PackedFloat64Array()) is PackedFloat64Array \
 			or header.aircraft.get("ok") != true or not header.aircraft.get("model") is Dictionary:
 		return {ok = false, error = "Invalid aircraft or environment header."}
 	if typeof(header.get("dt_s")) != TYPE_FLOAT or not is_finite(header.dt_s) or header.dt_s <= 0.0 \
@@ -243,6 +246,9 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 	flight.soft_hull_contacts = header.soft_hull_contacts
 	flight.setup(header.aircraft_path, "", aircraft)
 	flight.ground_surfaces = header.ground_surfaces.duplicate()
+	# GP-07c: by name, so this shared CLI still compiles against an older accepted solver (tools/companions/rebind.py
+	# replays the current tools with app/sim from the accepted revision, which has no airframe table).
+	flight.set("airframe_surfaces", header.get("airframe_surfaces", PackedFloat64Array()))
 	flight.ground_field_id = header.ground_field_id
 	var ready: bool = flight.setup_shaft_integrator(header.shaft_integrator) \
 		and flight.setup_weather(header.weather) and flight.set_collision_world(header.collision_world) and flight.set_lake_context(header.lake)

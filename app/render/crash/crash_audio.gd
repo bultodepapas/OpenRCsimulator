@@ -254,7 +254,8 @@ func active_voice_count() -> int:
 
 
 static func _surface_sample(surface: String) -> String:
-	if surface.contains("runway") or surface.contains("asphalt") or surface.contains("concrete") or surface.contains("hard") or surface.contains("tree"):
+	# GP-07d: the field's runway is a mown grass strip; it sounds like turf (impact_grass below).
+	if surface.contains("asphalt") or surface.contains("concrete") or surface.contains("hard") or surface.contains("tree"):
 		return "impact_hard"
 	if surface.contains("rough") or surface.contains("dirt") or surface.contains("soil") or surface.contains("gravel"):
 		return "impact_dirt"

@@ -5,7 +5,9 @@ extends Node3D
 const MAX_MARKS := 16
 const MAX_SPLINTERS := 160
 # CR-03b: surfaces that throw no dust (hard paving, structures); sparks need a metal part sliding fast on one.
-const HARD_SURFACES := ["runway", "asphalt", "concrete", "building", "vehicle", "lamp"]
+# GP-07d: the field's "runway" is a mown grass strip (DECISIONS 2026-10-06, surface_friction.json), so it throws
+# grass like the mown field; a paved runway would be its own surface type.
+const HARD_SURFACES := ["asphalt", "concrete", "building", "vehicle", "lamp"]
 const SPARK_SLIDE_MPS := 10.0
 const METAL_GROUPS := ["engine", "propeller"]
 # Cut grass and turf, bare soil, and bark. Alpha ramps keep the existing fade shape.

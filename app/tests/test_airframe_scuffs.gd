@@ -68,7 +68,9 @@ func _run() -> void:
 	_check("nothing is marked away from the airframe", scuffs.add(plane.root, Vector3(3.0, 0.0, 3.0), Vector3.ZERO, 1.0, "mown") == null)
 	var runway := Scuffs.material("runway").albedo_color
 	var grass := Scuffs.material("mown").albedo_color
-	_check("a runway scuff is abraded film, lighter than a grass stain", runway.get_luminance() > grass.get_luminance() + 0.3)
+	# GP-07d: the runway is a mown grass strip, so a runway scuff is a grass stain with a little soil, not grey film.
+	_check("a runway-strip scuff is a grass stain like the mown field", absf(runway.get_luminance() - grass.get_luminance()) < 0.05
+		and runway.g > runway.r and runway.g > runway.b)
 	_check("an unknown surface falls back to soil", Scuffs.material("water").albedo_color == Scuffs.material("rough").albedo_color)
 	for i in Scuffs.MAX_SCUFFS + 6:
 		scuffs.add(plane.root, belly_point + Vector3(0, 0, 0.01 * (i % 5)), Vector3(0, 0, -8), 0.4, "rough")

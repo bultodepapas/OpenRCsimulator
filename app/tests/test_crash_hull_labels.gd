@@ -23,7 +23,7 @@ const DATA_ONLY_ROTORCRAFT_CONFIGS := [
 	{"file": "hx700_electric_3d_experimental.json", "id": "hx700-electric-3d-experimental"},
 ]
 const TAIL := ["tail_end", "left_stab_tip", "right_stab_tip", "fin_top"]
-const FORWARD := ["spinner", "propeller", "nose"]
+const FORWARD := ["spinner", "propeller", "nose", "engine"]
 const CENTRELINE := ["spinner", "nose", "tail_end", "fin_top", "canopy", "belly"]
 
 var _checks := 0
@@ -224,7 +224,7 @@ func _presentation_mapping() -> void:
 	var groups := {
 		"left_wing_tip": "wingtip", "right_wing_tip": "wingtip", "spinner": "propeller", "propeller": "propeller",
 		"nose": "fuselage", "belly": "fuselage", "tail_end": "tail", "left_stab_tip": "tail", "right_stab_tip": "tail",
-		"fin_top": "tail", "canopy": "canopy",
+		"fin_top": "tail", "canopy": "canopy", "engine": "engine",
 	}
 	_check("the group table covers the whole vocabulary", groups.size() == AircraftData.HULL_COMPONENTS.size())
 	for name: String in AircraftData.HULL_COMPONENTS:
@@ -235,4 +235,5 @@ func _presentation_mapping() -> void:
 	_check("wreck releases the propeller for a spinner hit", wreck._component_matches("propeller", "spinner"))
 	_check("wreck releases the tailplane for a stab tip", wreck._component_matches("horizontal_tail", "right_stab_tip"))
 	_check("wreck releases the fin for a fin-top hit", wreck._component_matches("vertical_tail", "fin_top"))
+	_check("wreck releases the engine for an engine hit", wreck._component_matches("engine", "engine"))
 	wreck.free()
