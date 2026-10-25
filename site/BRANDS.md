@@ -63,8 +63,8 @@ These acknowledgments do not claim completed integrations, financial sponsorship
 
 ## OpenRC identity
 
-The project owner's official SVG is preserved unchanged in [app/assets/branding/openrc-official.svg](../app/assets/branding/openrc-official.svg). The website, repository README and sharing artwork use its original contours and colors, including the ALPHA badge. It is also the source of the simulator's animated entrance.
+The website, repository README, sharing artwork and simulator entrance use [openrc-refined.svg](../app/assets/branding/openrc-refined.svg). At the owner's request on 2026-10-24, the raster-traced edges were reconstructed as clean geometry, stray fragments removed, lettering regularized and the ALPHA frame rounded with cubic curves. The segmented identity and colors are retained. [Branding source](../app/assets/branding/README.md) documents the active master and preserved original.
 
-`python tools/branding/build_public.py` derives the transparent wordmark, dark README banner, social SVG and RC favicon. `--check` verifies them. The small favicon uses the original R/C groups; it is not a new letterform. `--raster` renders `assets/branding/openrc-social.png` at 1200×630 using the optional Playwright 1.61.0 package and installed Chrome. That PNG supports social crawlers which cannot display SVG. The master SVG stays authoritative.
+`python tools/branding/build_public.py` derives the transparent wordmark, dark README banner, social SVG and RC favicon without changing the refined master's paths. `--check` verifies them. The small favicon uses its R/C groups. `--raster` renders `assets/branding/openrc-social.png` at 1200×630 using the optional Playwright 1.61.0 package and installed Chrome. That PNG supports social crawlers which cannot display SVG. The master SVG stays authoritative.
 
 The header and hero keep the white mark on the existing dark backdrop. The footer also uses a dark surface in both themes. Image dimensions reserve layout space; alt text identifies the project without relying on fonts or JavaScript. The existing entrance and reduced-motion behavior remain in place.

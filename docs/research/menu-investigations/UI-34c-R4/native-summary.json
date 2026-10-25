@@ -1,0 +1,467 @@
+{
+  "method": "Five alternating fresh-process pairs at native fullscreen 1920x1080; two cycles per process. Frozen runtime revisions; identical tracked import metadata. OS/driver caches uncontrolled. No simultaneous Godot process detected at launch; other host activity uncontrolled.",
+  "runs": [
+    {
+      "pair": 1,
+      "role": "baseline",
+      "path": "pair-1-baseline.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "cycles": [
+        {
+          "ready_ms": 8213.902,
+          "first_draw_ms": 8234.719,
+          "feedback_ms": 10.742,
+          "paused": false,
+          "contacts_ms": 229.8,
+          "p95_handoff_ms": 27.77,
+          "max_handoff_ms": 1663.514,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 11,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1706.276,
+          "first_draw_ms": 1725.631,
+          "feedback_ms": 20.875,
+          "paused": false,
+          "contacts_ms": 242.517,
+          "p95_handoff_ms": 226.65,
+          "max_handoff_ms": 246.006,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 1,
+      "role": "candidate",
+      "path": "pair-1-candidate.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "cycles": [
+        {
+          "ready_ms": 8343.532,
+          "first_draw_ms": 8364.725,
+          "feedback_ms": 11.08,
+          "paused": false,
+          "contacts_ms": 267.953,
+          "p95_handoff_ms": 25.813,
+          "max_handoff_ms": 1656.876,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 10,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1591.949,
+          "first_draw_ms": 1610.878,
+          "feedback_ms": 10.144,
+          "paused": false,
+          "contacts_ms": 118.552,
+          "p95_handoff_ms": 178.613,
+          "max_handoff_ms": 244.421,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "role": "candidate",
+      "path": "pair-2-candidate.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "cycles": [
+        {
+          "ready_ms": 10275.769,
+          "first_draw_ms": 10297.284,
+          "feedback_ms": 17.908,
+          "paused": false,
+          "contacts_ms": 258.526,
+          "p95_handoff_ms": 22.426,
+          "max_handoff_ms": 2406.293,
+          "frames_over_ms": {
+            "33": 17,
+            "50": 14,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1745.549,
+          "first_draw_ms": 1766.656,
+          "feedback_ms": 15.0,
+          "paused": false,
+          "contacts_ms": 124.239,
+          "p95_handoff_ms": 190.864,
+          "max_handoff_ms": 256.774,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 11,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "role": "baseline",
+      "path": "pair-2-baseline.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "cycles": [
+        {
+          "ready_ms": 8409.675,
+          "first_draw_ms": 8433.786,
+          "feedback_ms": 12.262,
+          "paused": false,
+          "contacts_ms": 229.615,
+          "p95_handoff_ms": 26.061,
+          "max_handoff_ms": 1748.057,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 11,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1691.978,
+          "first_draw_ms": 1711.398,
+          "feedback_ms": 12.943,
+          "paused": false,
+          "contacts_ms": 227.93,
+          "p95_handoff_ms": 230.031,
+          "max_handoff_ms": 231.008,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "role": "baseline",
+      "path": "pair-3-baseline.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "cycles": [
+        {
+          "ready_ms": 8400.545,
+          "first_draw_ms": 8422.08,
+          "feedback_ms": 10.981,
+          "paused": false,
+          "contacts_ms": 222.211,
+          "p95_handoff_ms": 27.117,
+          "max_handoff_ms": 1732.18,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 11,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1654.331,
+          "first_draw_ms": 1673.142,
+          "feedback_ms": 11.03,
+          "paused": false,
+          "contacts_ms": 217.595,
+          "p95_handoff_ms": 220.644,
+          "max_handoff_ms": 234.044,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "role": "candidate",
+      "path": "pair-3-candidate.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "cycles": [
+        {
+          "ready_ms": 8161.385,
+          "first_draw_ms": 8181.316,
+          "feedback_ms": 10.476,
+          "paused": false,
+          "contacts_ms": 266.827,
+          "p95_handoff_ms": 28.438,
+          "max_handoff_ms": 1647.742,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 10,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1544.636,
+          "first_draw_ms": 1563.195,
+          "feedback_ms": 20.076,
+          "paused": false,
+          "contacts_ms": 121.0,
+          "p95_handoff_ms": 175.983,
+          "max_handoff_ms": 229.452,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 4,
+      "role": "candidate",
+      "path": "pair-4-candidate.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "cycles": [
+        {
+          "ready_ms": 8335.457,
+          "first_draw_ms": 8355.531,
+          "feedback_ms": 10.609,
+          "paused": false,
+          "contacts_ms": 271.748,
+          "p95_handoff_ms": 27.859,
+          "max_handoff_ms": 1744.016,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 10,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1561.731,
+          "first_draw_ms": 1580.854,
+          "feedback_ms": 7.763,
+          "paused": false,
+          "contacts_ms": 116.42,
+          "p95_handoff_ms": 181.272,
+          "max_handoff_ms": 233.691,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 4,
+      "role": "baseline",
+      "path": "pair-4-baseline.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "cycles": [
+        {
+          "ready_ms": 8256.132,
+          "first_draw_ms": 8275.558,
+          "feedback_ms": 11.034,
+          "paused": false,
+          "contacts_ms": 225.58,
+          "p95_handoff_ms": 27.897,
+          "max_handoff_ms": 1718.042,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 11,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1643.844,
+          "first_draw_ms": 1661.903,
+          "feedback_ms": 21.996,
+          "paused": false,
+          "contacts_ms": 217.965,
+          "p95_handoff_ms": 220.796,
+          "max_handoff_ms": 230.035,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 5,
+      "role": "baseline",
+      "path": "pair-5-baseline.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "cycles": [
+        {
+          "ready_ms": 8844.707,
+          "first_draw_ms": 8867.808,
+          "feedback_ms": 10.547,
+          "paused": false,
+          "contacts_ms": 268.387,
+          "p95_handoff_ms": 19.364,
+          "max_handoff_ms": 1684.406,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 11,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1728.957,
+          "first_draw_ms": 1748.281,
+          "feedback_ms": 22.767,
+          "paused": false,
+          "contacts_ms": 246.571,
+          "p95_handoff_ms": 249.6,
+          "max_handoff_ms": 268.416,
+          "frames_over_ms": {
+            "33": 14,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 5,
+      "role": "candidate",
+      "path": "pair-5-candidate.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "cycles": [
+        {
+          "ready_ms": 8398.137,
+          "first_draw_ms": 8420.707,
+          "feedback_ms": 10.881,
+          "paused": false,
+          "contacts_ms": 282.577,
+          "p95_handoff_ms": 26.226,
+          "max_handoff_ms": 1734.563,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 12,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1759.976,
+          "first_draw_ms": 1780.088,
+          "feedback_ms": 10.781,
+          "paused": false,
+          "contacts_ms": 155.53,
+          "p95_handoff_ms": 231.164,
+          "max_handoff_ms": 233.877,
+          "frames_over_ms": {
+            "33": 15,
+            "50": 10,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    }
+  ],
+  "medians": {
+    "baseline": {
+      "cold": {
+        "ready_ms": 8400.545,
+        "contacts_ms": 229.615
+      },
+      "warm": {
+        "ready_ms": 1691.978,
+        "contacts_ms": 227.93
+      }
+    },
+    "candidate": {
+      "cold": {
+        "ready_ms": 8343.532,
+        "contacts_ms": 267.953
+      },
+      "warm": {
+        "ready_ms": 1591.949,
+        "contacts_ms": 121.0
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "scope": "Frozen runtime source and tracked import metadata; fresh-process tests do not control OS/import/driver caches. Test additions do not change runtime.",
+  "baseline": {
+    "commit": "d064ccc3a23996f2225301a39778e2d8afe6f615",
+    "files": {
+      "app/scenery/collision_world.gd": "c63b5ee636d5f268d14c7e4fe9cad6d3dea4768d34352dffb32f5d7e2e0c8fa9",
+      "app/main.gd": "026cbc644eeef9f53195b4c26caf2e14fe25766a135a3105449a04cb1ed3b3e4",
+      "app/app_root.gd": "69fab7c0278c1a69cb89fdd606e49a4bf6e7874305ae66e01928761e236e1df6",
+      "app/project.godot": "87e1695b4612e405987586e79cf53e4d0776db578ac09222dff58b32b9f276d1",
+      "research/performance/loading_probe.gd": "87255eff0f14c203b7c160a8b075c31be9d2be4a6ff4b39ebc140978edee9f14"
+    },
+    "tracked_import_metadata_count": 399,
+    "tracked_import_metadata_sha256": "f59413e174e2677b40d0b5f8e1c5f79fe797ae3c220fb8bbaf6f4e46bc91ab64"
+  },
+  "candidate": {
+    "commit": "9608f7200628da4253423595df6c61a79fb03a32",
+    "files": {
+      "app/scenery/collision_world.gd": "4794fd0b47ac27bd6c21954a7e500485459fb0312551792f7f15f76c6ac61372",
+      "app/main.gd": "026cbc644eeef9f53195b4c26caf2e14fe25766a135a3105449a04cb1ed3b3e4",
+      "app/app_root.gd": "69fab7c0278c1a69cb89fdd606e49a4bf6e7874305ae66e01928761e236e1df6",
+      "app/project.godot": "87e1695b4612e405987586e79cf53e4d0776db578ac09222dff58b32b9f276d1",
+      "research/performance/loading_probe.gd": "87255eff0f14c203b7c160a8b075c31be9d2be4a6ff4b39ebc140978edee9f14"
+    },
+    "tracked_import_metadata_count": 399,
+    "tracked_import_metadata_sha256": "f59413e174e2677b40d0b5f8e1c5f79fe797ae3c220fb8bbaf6f4e46bc91ab64"
+  }
+}

@@ -1,5 +1,5 @@
 extends Control
-## UI-28-R4: presentation only. Every moving piece comes from an untouched official SVG contour.
+## UI-28-R4: presentation only. Every moving piece comes from the refined vector master.
 
 const Segments := preload("res://assets/branding/logo_segments.gd")
 const ATLAS := preload("res://assets/branding/logo-segments.svg")

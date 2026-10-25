@@ -84,6 +84,23 @@ func _init(existing_theme: Theme = null) -> void:
 	stage_label.visible = false
 	content.add_child(stage_label)
 
+	# Native activity feedback stays alive while numeric preparation yields. It is not a percentage.
+	# Reduced motion keeps the truthful stage text and cancel action without animated decoration.
+	if not UiTheme.reduced_motion:
+		var activity := ProgressBar.new()
+		activity.name = "LoadingActivity"
+		activity.custom_minimum_size.y = 4.0
+		activity.show_percentage = false
+		activity.indeterminate = true
+		activity.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var track := StyleBoxFlat.new()
+		track.bg_color = UiTheme.EDGE
+		var fill := StyleBoxFlat.new()
+		fill.bg_color = UiTheme.FOCUS
+		activity.add_theme_stylebox_override("background", track)
+		activity.add_theme_stylebox_override("fill", fill)
+		content.add_child(activity)
+
 	var actions := HBoxContainer.new()
 	actions.alignment = BoxContainer.ALIGNMENT_END
 	content.add_child(actions)

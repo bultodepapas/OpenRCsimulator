@@ -1,0 +1,29 @@
+{
+  "baseline_commit": "6b4bd9e3b27b87697152b5f856a3b7c59aa24f5a",
+  "candidate_commit": "b0054b5e8fe5ad6c0f8d74a212eeb011e6fabf67",
+  "scope": "Raw file SHA-256 at frozen candidate before native A/B; Windows worktree line endings",
+  "files": {
+    "app/main.gd": "e13909d48e6d02f1eb306dc9703ebe7138aecc2d44b2fc0c7964d68f5de285c2",
+    "app/app_root.gd": "adbe8e936c8c82b0644302391f08133bc58f0e8dd1d0280d26da2280a037b602",
+    "app/ui/flight_loading.gd": "3e430b21ab825b13f7586077d7933ac97bb0bc80efd2e4b65779f2a7214a7d37",
+    "app/physics/propulsion.gd": "efa3fc53db3f8a664d0c2b5833b76ad1294dfced1b62fabe187fa4be3f1e5407",
+    "app/sim/flight_session.gd": "4d236335125a0f481d31f301dcfd8c0525dbd75c4a4d045d40457cb5ac845fc3",
+    "app/sim/launch_trim_cache.gd": "5110d1b16687868c98ef537b2e3f8f5b6451277d4b8b90afcaa0b63ef7690d42",
+    "app/sim/launch_trim_job.gd": "75ede8803ba9eb851e76094fcc75bc0113659c16f2b791fcb317f5cbc7e72943",
+    "app/tests/test_electric_equilibrium_preparation.gd": "ba1db2a99e0e40a4998caa972ca186c5076a519662fc2f9839bd6244636aed35",
+    "app/tests/test_flight_session_staged.gd": "a3e9b4081f90b0068330174f56a1d9cf8391c7d29eddcbf58831315fc89c9f45",
+    "app/tests/test_launch_trim_async.gd": "872f4dce71faf01a11e331b850e2c470bc5c8463992c173e4c5899e44e74a86e"
+  },
+  "pack_start": {
+    "baseline_setup_ms": 11654.101,
+    "candidate_setup_ms": 4956.7,
+    "byte_length": 784,
+    "sha256": "105610a95322c2d1ef1e32e3ebfe2719c254a1ef90e1bd4ab581bfdad1b17d07"
+  },
+  "post_benchmark_controller_guard": {
+    "commit": "f0c1dde18362233ce4e55cd67e20a5deceb274d4",
+    "file": "app/app_root.gd",
+    "sha256": "51a3d30e5899cd7887d0199ec93cfe9b29d48fb352fa99d892224b42440a45fd",
+    "scope": "Null session guard only; included in native cancel/quit and loading transaction retry, after timed A/B and Stik20."
+  }
+}

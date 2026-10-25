@@ -1,0 +1,1373 @@
+[
+  {
+    "role": "baseline",
+    "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-1-baseline\\godot-urkj3x2l\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "e6286a67-a922-459d-b62c-32c18ce2b3d2",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3-baseline/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3-baseline/tmp/ui34c-r4/pair-1-baseline.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline",
+      "started_utc": "2026-10-25T00:50:22.701046+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-1-baseline\\godot-urkj3x2l\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-1-baseline\\godot-urkj3x2l\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 22.219,
+      "log_bytes": 289,
+      "log_sha256": "0e3396cad3056ebd6edcc937cd7ecaf9c22b02e54272336f4692a6e2c8afab70"
+    }
+  },
+  {
+    "role": "baseline",
+    "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-2-baseline\\godot-off36ulw\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "f28c1317-6169-491b-8202-5014e4dfca33",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3-baseline/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3-baseline/tmp/ui34c-r4/pair-2-baseline.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline",
+      "started_utc": "2026-10-25T00:55:57.693002+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-2-baseline\\godot-off36ulw\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-2-baseline\\godot-off36ulw\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 22.907,
+      "log_bytes": 289,
+      "log_sha256": "f01459b97cfb880f12cde4d9de1d9d8f2018c64e25c6d0708a7cf9ece4b8543b"
+    }
+  },
+  {
+    "role": "baseline",
+    "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-3-baseline\\godot-xtekcudr\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "48412a1e-402f-453e-b4af-c4746d7c37f7",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3-baseline/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3-baseline/tmp/ui34c-r4/pair-3-baseline.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline",
+      "started_utc": "2026-10-25T00:56:33.664018+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-3-baseline\\godot-xtekcudr\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-3-baseline\\godot-xtekcudr\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 22.313,
+      "log_bytes": 289,
+      "log_sha256": "92dd971aa2c9a817421756583ec9fc2510ed5190ef71e2b8f4fbc98ec6d8a223"
+    }
+  },
+  {
+    "role": "baseline",
+    "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-4-baseline\\godot-pdgc64u3\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "d35358a2-2060-4943-9d16-d604a2ee6441",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3-baseline/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3-baseline/tmp/ui34c-r4/pair-4-baseline.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline",
+      "started_utc": "2026-10-25T00:58:02.083014+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-4-baseline\\godot-pdgc64u3\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-4-baseline\\godot-pdgc64u3\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 22.25,
+      "log_bytes": 289,
+      "log_sha256": "c6580a270dd34da4416f9bc200697b02aec8233e6340b67332f479edbd25aa3d"
+    }
+  },
+  {
+    "role": "baseline",
+    "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-5-baseline\\godot-n02ve5yn\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "84b77162-6862-4fa2-8bc3-5a74bc96ce33",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3-baseline/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3-baseline/tmp/ui34c-r4/pair-5-baseline.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline",
+      "started_utc": "2026-10-25T00:58:24.634110+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-5-baseline\\godot-n02ve5yn\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4\\pair-5-baseline\\godot-n02ve5yn\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 22.891,
+      "log_bytes": 289,
+      "log_sha256": "5e6a6099bee31318544e20b8d320f08c076f0b15e2821c4e6bf5472ade44a45c"
+    }
+  },
+  {
+    "role": "baseline",
+    "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4-import-1\\godot-ciahtdy6\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "0d22daa4-d2f0-46e7-a324-d9bf9a916b47",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline",
+      "started_utc": "2026-10-25T00:43:27.397308+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4-import-1\\godot-ciahtdy6\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4-import-1\\godot-ciahtdy6\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 30,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 108,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 110,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 112,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 114,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 116,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 118,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 120,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 122,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 124,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 126,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 128,
+          "message": "Unrecognized UID: \"uid://def7sdojghkyi\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)",
+            "[   0% ] preload_reimporting_scene | Started Preparing scenes for reload (1 steps)",
+            "[   0% ] preload_reimporting_scene | Analyzing scene [empty]"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 136,
+          "message": "Can't find file 'uid://def7sdojghkyi' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[   2% ] reimport | def7sdojghkyi"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 139,
+          "message": "Can't find file 'uid://def7sdojghkyi' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[   5% ] reimport | def7sdojghkyi"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 142,
+          "message": "Can't find file 'uid://def7sdojghkyi' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[   8% ] reimport | def7sdojghkyi"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 145,
+          "message": "Can't find file 'uid://def7sdojghkyi' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  11% ] reimport | def7sdojghkyi"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 148,
+          "message": "Can't find file 'uid://def7sdojghkyi' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  13% ] reimport | def7sdojghkyi"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 151,
+          "message": "Can't find file 'uid://def7sdojghkyi' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  16% ] reimport | def7sdojghkyi"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 154,
+          "message": "Can't find file 'uid://def7sdojghkyi' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  19% ] reimport | def7sdojghkyi"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 157,
+          "message": "Can't find file 'uid://def7sdojghkyi' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  22% ] reimport | def7sdojghkyi"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 160,
+          "message": "Can't find file 'uid://def7sdojghkyi' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  25% ] reimport | def7sdojghkyi"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "engine_error",
+      "detail": "",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 7.953,
+      "log_bytes": 17291,
+      "log_sha256": "12331ce81ba238c34d7edd969e9362b55b8b6677facc2d28784934306b977c6f"
+    }
+  },
+  {
+    "role": "baseline",
+    "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4-import-2\\godot-xhb4jy8z\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "a0ab1776-d380-459e-9215-9cc811099b95",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline",
+      "started_utc": "2026-10-25T00:43:39.878613+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4-import-2\\godot-xhb4jy8z\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3-baseline\\tmp\\ui34c-r4-import-2\\godot-xhb4jy8z\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.141,
+      "log_bytes": 1033,
+      "log_sha256": "b728de0c23f24d9aa31bc7608b177d7ca13857d7c3aca862a08506d00675123b"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\cache-test\\godot-qsawd_ue\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "22ad1723-d637-47d6-a3f3-cb410869ff59",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_collision_world_cache.gd",
+        "--",
+        "--reference=D:/OpenRCsimulator-evidence/ui34c-r3/tmp/ui34c-r4/collision_world_reference.gd"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T01:00:56.104556+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\cache-test\\godot-qsawd_ue\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\cache-test\\godot-qsawd_ue\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 3.078,
+      "log_bytes": 310,
+      "log_sha256": "9cc0fea6232748f72085eb5440ea559f5c4e4dbf5301298e7866eea2b52dc951"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\final-import\\godot-yrgoc7e_\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "b3c7c6eb-1bd4-4feb-8a65-d8727ec4d5e4",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T01:02:13.063149+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\final-import\\godot-yrgoc7e_\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\final-import\\godot-yrgoc7e_\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 4.312,
+      "log_bytes": 1315,
+      "log_sha256": "97d3a98b638bde96129f72c0aa2c73756b531bcc790e7a75a73508fdf8f980e1"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\pair-1-candidate\\godot-tri8ugh_\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "87d1a9fd-3179-42f4-bc9a-9bb4687af83e",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3/tmp/ui34c-r4/pair-1-candidate.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T00:54:13.819257+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\pair-1-candidate\\godot-tri8ugh_\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\pair-1-candidate\\godot-tri8ugh_\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 22.329,
+      "log_bytes": 281,
+      "log_sha256": "f02d6f0dbf0b5b56b445121fa2a70c54c3d448fc57abfb0e3d9fd7915babc9c5"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\pair-2-candidate\\godot-j9vkmw3v\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "f2bd5364-c934-4f07-9b52-50349803be32",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3/tmp/ui34c-r4/pair-2-candidate.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T00:55:28.927005+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\pair-2-candidate\\godot-j9vkmw3v\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\pair-2-candidate\\godot-j9vkmw3v\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 28.219,
+      "log_bytes": 281,
+      "log_sha256": "151d6a0648e1f8b8a76f54e777154a897e9ad62eaf7565c206c41cfa6cc7be11"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\pair-3-candidate\\godot-sfdzjbrw\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "8571512b-ecd0-47ec-914e-ec7caa43d245",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3/tmp/ui34c-r4/pair-3-candidate.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T00:57:12.998767+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\pair-3-candidate\\godot-sfdzjbrw\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\pair-3-candidate\\godot-sfdzjbrw\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 22.063,
+      "log_bytes": 281,
+      "log_sha256": "54fe7a1a8646a93efff65ddb07d03c60fef020ab15c06728c3a66ccc84eebc4e"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\pair-4-candidate\\godot-ou6kzmo_\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "726cf4e1-f75e-4b51-84d7-b9f524e5c21e",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3/tmp/ui34c-r4/pair-4-candidate.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T00:57:39.154483+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\pair-4-candidate\\godot-ou6kzmo_\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\pair-4-candidate\\godot-ou6kzmo_\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 22.625,
+      "log_bytes": 281,
+      "log_sha256": "20e6cf1b95d2c766667d480b66a38c165dc355d21b77e7654ed714dea447add0"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\pair-5-candidate\\godot-1kqvwrep\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "713d8fee-9eab-4023-8554-448595c3fa5c",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3/tmp/ui34c-r4/pair-5-candidate.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T00:58:47.881858+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\pair-5-candidate\\godot-1kqvwrep\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\pair-5-candidate\\godot-1kqvwrep\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 22.813,
+      "log_bytes": 281,
+      "log_sha256": "e6cc010d9c91b43488bc6d76e32a537936b039cfe55bb840a83cdad7162f8695"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\stik20\\godot-a_ez77wj\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "321d0cf6-1c33-43b1-819f-05deddcc21e6",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--script",
+        "D:/OpenRCsimulator-evidence/ui34c-r3/research/performance/loading_probe.gd",
+        "--",
+        "--output=D:/OpenRCsimulator-evidence/ui34c-r3/tmp/ui34c-r4/stik20.json",
+        "--cycles=20",
+        "--aircraft=jensen-das-ugly-stik-60"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T00:59:34.502040+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\stik20\\godot-a_ez77wj\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\stik20\\godot-a_ez77wj\\report.json",
+      "timeout_seconds": 150.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 66.344,
+      "log_bytes": 2152,
+      "log_sha256": "6ac226897470379e0127a83a728e79c4f9854f027bc6273902439a5529bf0404"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\test_flight_loading\\godot-9_5ax2yb\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "96400ed4-5590-4dcd-8912-08a94973da8f",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_loading.gd"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T01:01:05.791737+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\test_flight_loading\\godot-9_5ax2yb\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\test_flight_loading\\godot-9_5ax2yb\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 17.359,
+      "log_bytes": 1205,
+      "log_sha256": "99d4ba310a4c88e60d957e68d7519a9d07ac498189240612543cca4b92a9b420"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\test_golden\\godot-ia3qfh61\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "5409206b-5d7e-4361-bb39-212ae7cf89ec",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_golden.gd"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T01:01:23.329346+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\test_golden\\godot-ia3qfh61\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\test_golden\\godot-ia3qfh61\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 4.641,
+      "log_bytes": 1073,
+      "log_sha256": "1cb52c8d6be1e486f10bc083655130d0686330e203ea62de9ee15f8c5f9c6737"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\test_landscape_collision\\godot-yvs2eixz\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "3bb4f169-301d-4c1d-9107-7eb73e179637",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_collision.gd"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T01:00:59.369182+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\test_landscape_collision\\godot-yvs2eixz\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\test_landscape_collision\\godot-yvs2eixz\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.422,
+      "log_bytes": 2795,
+      "log_sha256": "c4a368e1a52400a47e618c1494e6d509a8a056ef668a18bda60311d761c9245b"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\test_landscape_collision_setup\\godot-x6kac_1z\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "8b57c5d6-9bce-4f37-a3e7-c895140df91a",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_collision_setup.gd"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T01:01:00.985594+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\test_landscape_collision_setup\\godot-x6kac_1z\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\test_landscape_collision_setup\\godot-x6kac_1z\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 3.156,
+      "log_bytes": 1241,
+      "log_sha256": "9de20d39e70556f77a72f239d9d16788d9aadc08217ab7194439a39dc8209674"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4\\test_parked_aircraft_collision\\godot-9zds94xr\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "c18f81b1-1db0-4037-b79a-e3e093ac091a",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_parked_aircraft_collision.gd"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T01:01:04.354097+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\test_parked_aircraft_collision\\godot-9zds94xr\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4\\test_parked_aircraft_collision\\godot-9zds94xr\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.25,
+      "log_bytes": 2586,
+      "log_sha256": "da5886946c5c9caef83ab5a1f29f0793e96f37e845ad0fc5b6958e161904f89d"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4-import-1\\godot-g862t02x\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "6a8f71c5-c228-4c58-b638-ad76df1e41b0",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T00:44:13.957243+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4-import-1\\godot-g862t02x\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4-import-1\\godot-g862t02x\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 30,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 100,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 102,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 104,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 106,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 108,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 110,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 112,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 114,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 116,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 118,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 120,
+          "message": "Unrecognized UID: \"uid://dcs5nf83fj1dp\".",
+          "context": [
+            "   at: get_id_path (core/io/resource_uid.cpp:214)",
+            "[   0% ] preload_reimporting_scene | Started Preparing scenes for reload (1 steps)",
+            "[   0% ] preload_reimporting_scene | Analyzing scene [empty]"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 128,
+          "message": "Can't find file 'uid://dcs5nf83fj1dp' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[   2% ] reimport | dcs5nf83fj1dp"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 131,
+          "message": "Can't find file 'uid://dcs5nf83fj1dp' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[   5% ] reimport | dcs5nf83fj1dp"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 134,
+          "message": "Can't find file 'uid://dcs5nf83fj1dp' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[   8% ] reimport | dcs5nf83fj1dp"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 137,
+          "message": "Can't find file 'uid://dcs5nf83fj1dp' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  11% ] reimport | dcs5nf83fj1dp"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 140,
+          "message": "Can't find file 'uid://dcs5nf83fj1dp' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  13% ] reimport | dcs5nf83fj1dp"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 143,
+          "message": "Can't find file 'uid://dcs5nf83fj1dp' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  16% ] reimport | dcs5nf83fj1dp"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 146,
+          "message": "Can't find file 'uid://dcs5nf83fj1dp' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  19% ] reimport | dcs5nf83fj1dp"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 149,
+          "message": "Can't find file 'uid://dcs5nf83fj1dp' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  22% ] reimport | dcs5nf83fj1dp"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 152,
+          "message": "Can't find file 'uid://dcs5nf83fj1dp' during file reimport.",
+          "context": [
+            "   at: _reimport_file (editor/file_system/editor_file_system.cpp:2821)",
+            "[  25% ] reimport | dcs5nf83fj1dp"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "engine_error",
+      "detail": "",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 6.875,
+      "log_bytes": 16819,
+      "log_sha256": "dc19a0056f24b6a7fb53a507b7d368e793087c42d640478d3a1016b8dfa54923"
+    }
+  },
+  {
+    "role": "candidate",
+    "path": "tmp\\ui34c-r4-import-2\\godot-93m0kyoi\\report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "7a54bf4e-da49-43ce-be42-ef5c1a008033",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+      "started_utc": "2026-10-25T00:44:30.252630+00:00",
+      "label": "godot",
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4-import-2\\godot-93m0kyoi\\engine.log",
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r4-import-2\\godot-93m0kyoi\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 4.391,
+      "log_bytes": 1033,
+      "log_sha256": "b728de0c23f24d9aa31bc7608b177d7ca13857d7c3aca862a08506d00675123b"
+    }
+  }
+]

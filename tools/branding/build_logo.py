@@ -1,10 +1,11 @@
-"""Pack the official SVG paths, unchanged, into a transparent animation atlas.
+"""Pack the refined SVG paths, unchanged, into a transparent animation atlas.
 
 Run from any directory with Python's standard library. --check verifies outputs.
 """
 import argparse
 import copy
 import json
+import math
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -15,20 +16,21 @@ SVG = "{http://www.w3.org/2000/svg}"
 
 
 def build():
-    source = ET.parse(DEST / "openrc-official.svg").getroot()
+    source = ET.parse(DEST / "openrc-refined.svg").getroot()
     pieces = []
     fragments = []
     x = y = row_height = 0
     for group in source.findall(f"{SVG}g"):
         for path in group.findall(f"{SVG}path"):
-            # The supplied vector uses only absolute M/L/Z polygon contours.
-            if re.search(r"[A-KN-Y a-kn-y]", path.attrib["d"].replace(" ", "")):
+            # Absolute M/L/C/Z: the control-point hull also bounds cubic curves.
+            # The rounded ALPHA frame uses C; the other contours are polygons.
+            if any(command not in "MLCZ" for command in re.findall(r"[A-Za-z]", path.attrib["d"])):
                 raise ValueError("Unsupported path command; extend bounds calculation first")
             values = [float(v) for v in re.findall(r"-?\d+(?:\.\d+)?", path.attrib["d"])]
             left, top = min(values[::2]), min(values[1::2])
             width = max(values[::2]) - left
             height = max(values[1::2]) - top
-            w, h = int(width + 24), int(height + 24)
+            w, h = math.ceil(width + 24), math.ceil(height + 24)
             if x + w > 2048:
                 y += row_height
                 x = row_height = 0
