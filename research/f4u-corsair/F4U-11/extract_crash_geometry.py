@@ -18,8 +18,8 @@ OUTPUT = ASSET / "crash-geometry.json"
 PROBES = [
     ("probe_wing_left_tip", "wing_left_fixed", [0, -1, 0], "left_wing_tip", 0),
     ("probe_wing_right_tip", "wing_right_fixed", [0, 1, 0], "right_wing_tip", 0),
-    ("probe_gull_left_bottom", "wing_center_fixed", [0, 0, -1], "belly", -1),
-    ("probe_gull_right_bottom", "wing_center_fixed", [0, 0, -1], "belly", 1),
+    ("probe_gull_left_bottom", "wing_center_fixed", [0, 0, -1], "left_wing_root", -1),
+    ("probe_gull_right_bottom", "wing_center_fixed", [0, 0, -1], "right_wing_root", 1),
     ("probe_tail_cone", "fuselage_core", [1, 0, 0], "tail_end", 0),
     ("probe_fuselage_rear_bottom", "fuselage_core", [1, 0, -1], "tail_end", 0),
     ("probe_stabilizer_left_aft", "stabilizer_fixed", [1, -1, 0], "left_stab_tip", -1),

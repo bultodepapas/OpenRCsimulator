@@ -47,7 +47,7 @@
         -1
       ],
       "half": -1,
-      "component": "belly",
+      "component": "left_wing_root",
       "position_le": [
         0.13554,
         -0.381944,
@@ -63,7 +63,7 @@
         -1
       ],
       "half": 1,
-      "component": "belly",
+      "component": "right_wing_root",
       "position_le": [
         0.13554,
         0.381944,

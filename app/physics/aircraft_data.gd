@@ -33,7 +33,7 @@ const ORACLE_ALPHA_DEG := 8.0
 ## test_crash_hull_labels.gd keeps them equal. Left/right follow y_right in the le frame. GP-07b: `engine` names an
 ## exposed engine point (a side-mounted glow cylinder head sits off the centreline, unlike the nose).
 const HULL_COMPONENTS := ["left_wing_tip", "right_wing_tip", "spinner", "propeller", "nose", "tail_end",
-	"left_stab_tip", "right_stab_tip", "fin_top", "canopy", "belly", "engine"]
+	"left_stab_tip", "right_stab_tip", "fin_top", "canopy", "belly", "engine", "left_wing_root", "right_wing_root"]
 ## D1-R3 ground_support() tolerances (m, m²): contacts within 1 mm of a facet plane count as on it (data rounding, far
 ## below the 1–3 cm static sag); smaller triangle areas, near-vertical facets and shorter edges are degenerate.
 const SUPPORT_PLANE_TOL := 0.001

@@ -15,6 +15,11 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const GearPhysics := preload("res://physics/retractable_gear.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const Math64 := preload("res://physics/math3d.gd")
+const Hull := preload("res://physics/hull_contact.gd")
+const ContactContract := preload("res://physics/aircraft_contact_contract.gd")
+const ContactEvents := preload("res://sim/aircraft_contact_events.gd")
+const Impact := preload("res://physics/impact_snapshot.gd")
 const GLB_PATH := "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
 const DATA_PATH := "res://data/aircraft/f4u_corsair_250.json"
 const ID := "f4u-corsair-250"
@@ -265,6 +270,7 @@ func _presentation() -> void:
 		var gap := Vector3(p[2], p[0], p[1]).distance_to(_v(contact.position.value))
 		_check("%s physics contact is the rendered wheel bottom (F4U-08)" % role, gap < 2e-6, "%.7f m" % gap)
 	_contact_sweep(airplane)
+	_crash_contacts(airplane)
 	airplane.root.free()
 
 
@@ -311,6 +317,60 @@ func _contact_sweep(airplane: Dictionary) -> void:
 	Rig.apply(airplane.gear_retraction, 1.0)
 
 
+## F4U-11-R1: check the authored probes against imported vertices and the actual
+## contact/event pipeline. Local support checks isolate a struck part; the three
+## cardinal crash cases below use the whole hull, including the propeller probes.
+func _crash_contacts(airplane: Dictionary) -> void:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	var model: Dictionary = AircraftData.load_file(DATA_PATH).model
+	var source: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://../assets/aircraft/f4u-corsair-250/crash-geometry.json"))
+	var bindings := ContactContract.describe(model, true)
+	_check("crash contacts bind to stable physical identities", bindings.ok)
+	for probe: Dictionary in source.probes:
+		var index: int = raw.crash_hull_ids.find(probe.id)
+		_check(str(probe.id) + " exists with its impact label", index >= 0 and raw.crash_hull_components[index] == probe.component)
+		if index < 0: continue
+		var le: Array = raw.crash_hull.value[index]
+		var point := Vector3(le[1], le[2], le[0])
+		var direction := Vector3(probe.direction_le[1], probe.direction_le[2], probe.direction_le[0]).normalized()
+		var mesh := airplane.root.find_child(str(probe.mesh), true, false) as MeshInstance3D
+		var nearest := INF
+		var transform := Importer.relative(airplane.root, mesh)
+		for surface in mesh.mesh.get_surface_count():
+			for vertex: Vector3 in mesh.mesh.surface_get_arrays(surface)[Mesh.ARRAY_VERTEX]:
+				nearest = minf(nearest, point.distance_to(transform * vertex))
+		_check(str(probe.id) + " lies on its rendered structure", nearest < 2e-6, "%.6f mm" % (nearest * 1000.0))
+		var extreme := _extreme(airplane.root, mesh, direction)
+		_check(str(probe.id) + " reaches the measured support plane", absf((extreme - point).dot(direction)) < 2e-6)
+		var body_direction := PackedFloat64Array([-probe.direction_le[0], probe.direction_le[1], -probe.direction_le[2]])
+		body_direction = Math64.scale(body_direction, 1.0 / Math64.norm(body_direction))
+		var attitude := Math64.q_from_euler(0.0, -asin(body_direction[0]), atan2(body_direction[1], body_direction[2]))
+		var body: PackedFloat64Array = model.crash_hull.slice(3 * index, 3 * index + 3)
+		var before := RB.make_state(Math64.v3(0, 0, -Math64.q_rotate(attitude, body)[2] - 0.001),
+			Math64.q_rotate(Math64.q_conj(attitude), Math64.v3(0, 0, 20)), attitude, Math64.v3(0, 0, 0))
+		var after := before.duplicate()
+		after[RB.POS + 2] += 0.002
+		var isolated := Hull.prepare(body, model.mass_kg, model.inertia)
+		_check(str(probe.id) + " stays clear above its surface", Hull.terminal(before, before, isolated).index == -1)
+		var hit := Hull.terminal(before, after, isolated)
+		_check(str(probe.id) + " detects a hard crossing", hit.index == 0 and hit.rule == "impact")
+		var snapshot := Impact.hull_point(after, 1, model.crash_hull, index, before, "impact")
+		var event := ContactEvents.impact_event(snapshot, bindings, "normal")
+		_check(str(probe.id) + " survives impact serialization", event.get("contact_id") == probe.id)
+	var prepared := Hull.prepare(model.crash_hull, model.mass_kg, model.inertia)
+	for probe_id: String in ["probe_wing_left_tip", "probe_wing_right_tip", "probe_tail_cone"]:
+		var index: int = raw.crash_hull_ids.find(probe_id)
+		if index < 0: continue
+		var attitude := Math64.q_from_euler(0.0, PI / 2 if probe_id == "probe_tail_cone" else 0.0,
+			-PI / 2 if probe_id == "probe_wing_left_tip" else PI / 2 if probe_id == "probe_wing_right_tip" else 0.0)
+		var body: PackedFloat64Array = model.crash_hull.slice(3 * index, 3 * index + 3)
+		var before := RB.make_state(Math64.v3(0, 0, -Math64.q_rotate(attitude, body)[2] - 0.001),
+			Math64.q_rotate(Math64.q_conj(attitude), Math64.v3(0, 0, 20)), attitude, Math64.v3(0, 0, 0))
+		var after := before.duplicate()
+		after[RB.POS + 2] += 0.002
+		_check(probe_id + " wins the whole-aircraft impact", Hull.terminal(before, after, prepared).index == index)
+
+
 ## F4U-11: the wreck twin exposes all ten sections; a C3 hit naming one wing releases only that outer panel (with its
 ## aileron and outer flap, which share its section), a nose hit releases propeller, engine and canopy.
 func _crash_release() -> void:
@@ -327,7 +387,8 @@ func _crash_release() -> void:
 	var groups: Array = wreck.get_stats().fragment_groups
 	_check("the wreck exposes all ten crash sections", SECTIONS.all(func(section: String) -> bool: return groups.has(section)), str(groups))
 	var pose := Transform3D(Basis.IDENTITY, Vector3(0.0, 20.0, 0.0))
-	var cases := {"left_wing": ["wing_left"], "right_wing": ["wing_right"], "spinner": ["propeller", "engine", "canopy"]}
+	var cases := {"left_wing": ["wing_left"], "right_wing": ["wing_right"], "spinner": ["propeller", "engine", "canopy"],
+		"left_wing_root": ["wing_center", "wing_left"], "right_wing_root": ["wing_center", "wing_right"]}
 	for component: String in cases:
 		wreck.start(pose, Vector3(0.0, -10.0, -1.0), Vector3(0.3, 0.5, -0.2),
 			{"class": "C3", "mass_kg": 21.5, "cg_model": Vector3(0.0, -0.06, 0.15), "normal_speed_mps": 12.0, "component": component, "seed": 7})

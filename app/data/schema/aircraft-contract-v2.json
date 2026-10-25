@@ -1492,7 +1492,9 @@
         "fin_top",
         "canopy",
         "belly",
-        "engine"
+        "engine",
+        "left_wing_root",
+        "right_wing_root"
       ]
     },
     {
