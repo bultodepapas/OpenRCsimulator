@@ -983,7 +983,7 @@ def smoke(argv: list[str]) -> int:
     os.environ["OPENRC_DEBUG_BRIDGE"] = str(session["port"])
     results: list[tuple[str, int]] = []
 
-    def step(name: str, function, args: list[str]) -> None:
+    def step(name: str, function, args: list[str]) -> int:
         print(f"== {name}", flush=True)
         try:
             code = function(args)
@@ -991,12 +991,17 @@ def smoke(argv: list[str]) -> int:
             print(f"   {error}")
             code = 1
         results.append((name, code))
+        return code
+
+    def from_home(name: str, function, args: list[str]) -> None:
+        if step(f"Home before {name}", home_reset, []) == 0:
+            step(name, function, args)
 
     try:
         step("crawl from Home", crawl, [])
         for scenario in sorted(SCENARIOS.glob("*.txt")):
-            step(f"scenario {scenario.stem}", run_script, [str(scenario), "--fail-on-error"])
-        step("fly", lambda _: run_lines(["fly start=airborne", "wait frames=10"]), [])
+            from_home(f"scenario {scenario.stem}", run_script, [str(scenario), "--fail-on-error"])
+        from_home("fly", lambda _: run_lines(["fly start=airborne", "wait frames=10"]), [])
         step("crawl from the pause menu", crawl, [])
         step("back to Home", lambda _: run_lines(["home"]), [])
         step(f"monkey seed {seed}", monkey, ["--steps", steps, "--seed", seed, "--keys"])

@@ -1,7 +1,9 @@
 # The X-Cell helicopter: arm, raise the collective briefly, return Home.
 fly aircraft=xcell-60-research
-# The helicopter opens its launch review after staged loading completes.
-wait until="screens.is_top('pause')" timeout_s=120
+# Rendered staged launches open this automatically; headless launches need an explicit review.
+# open_pause is idempotent, so this also preserves a rendered launch's existing review.
+call node=AppRoot method=open_pause
+assert expr="screens.is_top('pause') and flight.session.sim.paused" message="helicopter launch review"
 press text="Continue"
 control name=helicopter_arm
 assert expr="flight.session.power.armed" message="helicopter armed after launch review"

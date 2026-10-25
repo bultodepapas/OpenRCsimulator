@@ -224,7 +224,7 @@ func _test_lighting_contract(bindings: Dictionary) -> void:
 	var original := Profile.validate(legacy, bindings)
 	_check("v2 remains lighting-free and canonical", original.get("ok", false)
 		and not original.profile.has("lighting") and original.profile == legacy)
-	var modern := Profile.defaults(bindings)
+	var modern := Profile.defaults(bindings, 3)
 	_check("v3 defaults explicitly inherit existing aircraft lights", modern.version == 3
 		and modern.lighting.selection == "inherit")
 	modern.lighting = Profile.LightingProfile.preset("neon_rgb")

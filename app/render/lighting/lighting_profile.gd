@@ -174,11 +174,25 @@ static func validate(raw: Variant) -> Dictionary:
 
 
 static func _preset_payload(id: String) -> Dictionary:
+	if id == "custom":
+		var custom := _preset_payload("neon_rgb")
+		custom.selection = "custom"
+		custom.orientation_lock = true
+		var present: Array[String] = []
+		for zone: Dictionary in custom.zones:
+			present.append(str(zone.id))
+		for zone_id: String in ZONE_IDS:
+			if not present.has(zone_id):
+				var optional_zone := _zone(zone_id, ["#FFFFFF"])
+				optional_zone.enabled = false
+				custom.zones.append(optional_zone)
+		custom.effects = [
+			_effect("vfx_tip_left", "spark", false, 0.3, 60, false),
+			_effect("vfx_tip_right", "spark", false, 0.3, 60, false),
+		]
+		return custom
 	var selection := "preset"
 	var base_id := id
-	if id == "custom":
-		selection = "custom"
-		base_id = "classic_rc"
 	var profile := defaults()
 	profile.selection = selection
 	profile.preset_id = base_id
@@ -187,7 +201,7 @@ static func _preset_payload(id: String) -> Dictionary:
 	profile.brightness = 0.8 if id == "night_radian" else (0.75 if id == "neon_rgb" else (0.9 if id == "night_aerobatics" else (0.7 if id == "festival" else 1.0)))
 
 	match id:
-		"classic_rc", "custom":
+		"classic_rc":
 			profile.zones = [
 				_zone("nav_left", ["#FF241C"]),
 				_zone("nav_right", ["#22E85B"]),
@@ -662,13 +676,15 @@ static func _string(value: Variant, path: String, max_length: int, errors: Array
 
 
 static func _integer(value: Variant, path: String, minimum: int, maximum: int, errors: Array[String]) -> int:
-	if typeof(value) != TYPE_INT:
+	# Godot JSON decodes all numeric tokens as floats. Accept exactly integral,
+	# finite JSON numbers while continuing to reject booleans and fractions.
+	if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)) or floor(float(value)) != float(value):
 		_error(errors, "%s must be an integer" % path)
 		return minimum
-	var int_value: int = value
-	if int_value < minimum or int_value > maximum:
+	if float(value) < float(minimum) or float(value) > float(maximum):
 		_error(errors, "%s is out of range" % path)
-	return int_value
+		return minimum
+	return int(value)
 
 
 static func _number(value: Variant, path: String, minimum: float, maximum: float, errors: Array[String]) -> float:

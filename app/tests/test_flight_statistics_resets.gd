@@ -37,6 +37,22 @@ func _test_reducer_rollups(source: Dictionary, reducer: Script, schema: Script) 
 	_check("completed streaks break at the crash event", summary.current_streak == 2 and summary.best_streak == 2)
 	_check("history preview counts records and flights distinctly", summary.history_count == 4 and summary.history_flight_count == 3 and summary.history_counts.crash == 1)
 	_check("history preview reports date bounds", summary.first_history_date == current.records[0].utc and summary.last_history_date == current.records[-1].utc)
+	var summary_without_history: Dictionary = reducer.query(current, "", "lifetime", "", false)
+	_check("history can be omitted without changing its record counts", summary_without_history.history.is_empty() and summary_without_history.history_count == summary.history_count and summary_without_history.history_total == summary.history_total)
+	_check("history-free query preserves kind counts and date bounds", summary_without_history.history_counts == summary.history_counts and summary_without_history.first_history_date == summary.first_history_date and summary_without_history.last_history_date == summary.last_history_date)
+	var unsupported: Dictionary = current.duplicate(true)
+	unsupported.schema_version = int(schema.SCHEMA_VERSION) + 1
+	_check("untrusted query rejects a newer schema", not bool(reducer.query(unsupported, "", "lifetime").ok))
+	var trusted_summary: Dictionary = reducer.query(unsupported, "", "lifetime", "", false, true)
+	_check("trusted query skips only schema validation", bool(trusted_summary.ok) and trusted_summary.started == summary.started and trusted_summary.history_count == summary.history_count and trusted_summary.history.is_empty())
+	var with_failed_stop: Dictionary = current.duplicate(true)
+	var failed_stop: Dictionary = _flight("failed-stop", 8, 9, "session-old", "stock:a", "A", "failed_stop", 15.0, 0)
+	with_failed_stop.records.append(failed_stop)
+	with_failed_stop.sequence = 9
+	_check("failed stop is a valid closed outcome", bool(schema.validate(with_failed_stop).ok))
+	var failed_stop_summary: Dictionary = reducer.query(with_failed_stop, "", "lifetime")
+	_check("failed stop is mean-eligible without becoming a clean completion", failed_stop_summary.started == 4 and failed_stop_summary.completed == 3 and failed_stop_summary.closed == 4 and failed_stop_summary.average_count == 4 and absf(failed_stop_summary.average_seconds - 37.5) < 1e-9)
+	_check("failed stop breaks the current clean streak", failed_stop_summary.current_streak == 0 and failed_stop_summary.best_streak == 2)
 
 	var active: Dictionary = _flight("active-flight", 8, -1, "session-old", "stock:a", "A", "active", 4.5, 0)
 	active.complete_observation = false

@@ -2,7 +2,10 @@
 # the service owns collection and storage even while this instrument is hidden.
 extends "res://render/overlays/player_instrument.gd"
 
+const FlightDataView := preload("res://render/overlays/flight_data.gd")
+
 var _detail_label: Label
+var _airborne_label: Label
 
 
 func _init(instrument_id: String = "session_stats") -> void:
@@ -13,6 +16,13 @@ func _init(instrument_id: String = "session_stats") -> void:
 	_detail_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_detail_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	graphic.add_child(_detail_label)
+	_airborne_label = text_label("", 12, MUTED)
+	_airborne_label.name = "SessionAirborneTime"
+	_airborne_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_airborne_label.custom_minimum_size.y = 18
+	_airborne_label.tooltip_text = tr("Session airborne time")
+	body.add_child(_airborne_label)
+	body.move_child(_airborne_label, graphic.get_index())
 	_apply_density()
 
 
@@ -22,9 +32,12 @@ func refresh_statistics(sample: Dictionary, scope_label: String) -> void:
 	var restarts := _count(sample.get("restarts", 0))
 	var started := _count(sample.get("started", 0))
 	var completed := _count(sample.get("completed", 0))
+	var airborne_seconds := float(sample.get("airborne_seconds", NAN))
+	var airborne_text := FlightDataView.clock(airborne_seconds) if is_finite(airborne_seconds) and airborne_seconds >= 0.0 else "–"
 	var subtitle_text := "%s · %s" % [tr("This session"), scope_label]
 	var details_text := "%s %d · %s %d" % [tr("Started"), started, tr("Completed"), completed]
-	var key: Array = [landings, crashes, restarts, subtitle_text, details_text, TranslationServer.get_locale()]
+	var airborne_label_text := "%s · %s" % [tr("Session airborne time"), airborne_text]
+	var key: Array = [landings, crashes, restarts, subtitle_text, details_text, airborne_label_text, TranslationServer.get_locale()]
 	if key == _view_key:
 		return
 	_view_key = key
@@ -36,6 +49,7 @@ func refresh_statistics(sample: Dictionary, scope_label: String) -> void:
 	right_caption.text = tr("Restarts").to_upper()
 	right_value.text = str(restarts)
 	_detail_label.text = details_text
+	_airborne_label.text = airborne_label_text
 	queue_redraw()
 
 

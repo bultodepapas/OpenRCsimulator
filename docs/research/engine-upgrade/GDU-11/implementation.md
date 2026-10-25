@@ -34,7 +34,7 @@ The initial Medium/0.01/blur-1 experiment had eight alternating static flightlin
 
 ### Contact-shadow AA isolation — 2026-10-25 follow-up
 
-Extended the existing graphics capture tool with explicit MSAA4, no-AA, TAA and FSR2 Native controls. Eight paired pavilion captures at actual 1920×1080 used the frozen AO-on application copy, Short rays, thickness 0.01, blur 0 and 90 drawn settling frames. FSR2 used the production adapter at scale 1 with sharpening disabled. Within each pair, only the contact setting changed. The default MSAA4/contact-off image is pixel-identical to the earlier accepted AO-on pavilion image.
+Extended the existing graphics capture tool with explicit MSAA4, no-AA, TAA and FSR2 Native controls. Four off/on pavilion pairs (eight captures) at actual 1920×1080 used the frozen AO-on application copy, Short rays, thickness 0.01, blur 0 and 90 drawn settling frames. FSR2 used the production adapter at scale 1 with sharpening disabled. Within each pair, only the contact setting changed. The default MSAA4/contact-off image is pixel-identical to the earlier accepted AO-on pavilion image.
 
 Wall bands and the additional ground-shadow outline persist without MSAA and with FSR2 Native. TAA softens fine striping but does not establish a clean contact result. Independent visual review agrees. MSAA is therefore not a necessary cause in this case; switching AA does not justify default activation. Pixel difference totals include intended new shadows and are **not** an artifact score. [AA metadata, PNG hashes and comparison](implementation-evidence/contact-aa-comparison.json).
 
@@ -53,6 +53,16 @@ Standard's aircraft-ground, flightline, pavilion and windsock images are pixel-i
 The real Home restart probe passed Standard → High → Standard in three native processes at 1920×1080 with preferences unchanged. All three retain the startup option in configuration; only Forward+ consumes it. Contact shadows remain off in all three default-profile receipts. The editor-binary path was exercised; this is not packaged-release relaunch proof.
 
 Eight alternating off/on/on/off static flightline runs (10 s warmup, 5 s sampling each) measured median GPU times on RTX 3090: 1080p off 2.195/2.246 ms, on 2.198/2.173 ms; 1440p off 3.375/3.406 ms, on 3.406/3.387 ms. No incremental cost is resolved above the observed run variation, and no FPS gain is claimed. Samples and report hashes are retained in [the compact comparison](implementation-evidence/ao-comparison.json); these are offscreen diagnostics, not full-flight performance qualification. Final native High profile checks passed 87/87, and the existing unoccluded shadow-energy oracle again measured zero sampled channel difference. The known seven-Texture-RID warning remains in both full-scene High treatments.
+
+## GDU-11i — Bounded integrated lifecycle regression
+
+The canonical debug-bridge smoke pass exposed a test assumption: headless launches skip the staged rendering path that automatically opens the helicopter launch review. The scenario now calls the existing idempotent `open_pause()`, asserts the paused review, then continues, arms, advances simulation and returns Home. Runtime launch policy is unchanged. The smoke runner also resets Home before each scenario and its pause-menu test flight, preventing a failed scenario from contaminating the next one. Reset failures remain failures and skip the dependent scenario. A fault-injection unit test covers both successful recovery and an unavailable Home; the client suite passed 23 tests with one Linux-only test skipped on Windows.
+
+The corrected complete smoke pass succeeded on the frozen accepted AO-on integration: all nine scenarios, Home and pause-menu crawls, 150 seeded random-action attempts (142 executed, eight refused, no failure), and the fly/Home soak. After one warmup, its baseline and two compared cycles retained 810 nodes, zero orphans and 1,196 resources with no growing counters or errors. Exit reported zero leaked objects. The 26-step verdict includes explicit Home recovery steps. The observed 52 headless hitches do not establish native flight performance or a speedup over 4.7.2.
+
+The same helicopter scenario also passed native Windows/RTX 3090/Compatibility at asserted 1920×1080. Its staged launch already had the pause review open; calling the opener again preserved it, and Continue/arm/simulation/Home completed with no engine errors, crash or exit leaks. [Verdicts, source hashes and retained logs](implementation-evidence/smoke/report.json).
+
+All 5,011 frozen source files match the retained AO-on manifest. An earlier live-tree attempt encountered incomplete concurrent statistics edits; it cannot qualify those edits, and an interrupted frozen attempt has no complete verdict. The passing run qualifies the frozen feature integration only. Current feature helpers, rendering settings and crash integration retain their accepted hashes; Workshop is being changed by another track, and the capture tool has the separately checked AA extension. Broader hardware, input latency, cold/warm loading and performance comparisons remain open.
 
 ## Retained evidence and reproduction
 

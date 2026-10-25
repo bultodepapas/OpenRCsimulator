@@ -2,20 +2,23 @@ extends RefCounted
 class_name FlightStatisticsReducer
 ## Pure, rebuildable rollups over canonical statistics records.
 
-static func query(data: Dictionary, aircraft_id: String = "", period: String = "session", session_id: String = "") -> Dictionary:
+## `include_history=false` keeps history counts/date bounds without copying records.
+## `trusted` skips validation and is only for data already validated by its owner.
+static func query(data: Dictionary, aircraft_id: String = "", period: String = "session", session_id: String = "", include_history: bool = true, trusted: bool = false) -> Dictionary:
 	var result: Dictionary = _empty_result(period, aircraft_id, session_id)
-	var schema_script: Script = load("res://statistics/schema.gd")
-	if schema_script == null:
-		result.ok = false
-		result.available = false
-		result.errors = PackedStringArray(["Statistics schema is unavailable."])
-		return result
-	var validation: Dictionary = schema_script.validate(data)
-	if not bool(validation.get("ok", false)):
-		result.ok = false
-		result.available = false
-		result.errors = validation.get("errors", PackedStringArray())
-		return result
+	if not trusted:
+		var schema_script: Script = load("res://statistics/schema.gd")
+		if schema_script == null:
+			result.ok = false
+			result.available = false
+			result.errors = PackedStringArray(["Statistics schema is unavailable."])
+			return result
+		var validation: Dictionary = schema_script.validate(data)
+		if not bool(validation.get("ok", false)):
+			result.ok = false
+			result.available = false
+			result.errors = validation.get("errors", PackedStringArray())
+			return result
 	var resolved_period: String = period.to_lower()
 	if resolved_period == "since_reset":
 		resolved_period = "counters"
@@ -27,6 +30,10 @@ static func query(data: Dictionary, aircraft_id: String = "", period: String = "
 	result.period_label = _period_label(data, aircraft_id, resolved_period, session_id)
 	var selected: Array[Dictionary] = []
 	var visible_history: Array[Dictionary] = []
+	var visible_history_count: int = 0
+	var first_history_date: String = ""
+	var last_history_date: String = ""
+	var has_visible_history: bool = false
 	var history_counts: Dictionary = {"flight": 0, "crash": 0, "restart": 0, "gap": 0}
 	var resolved_session: String = session_id
 	if resolved_period == "session" and resolved_session.is_empty():
@@ -55,18 +62,25 @@ static func query(data: Dictionary, aircraft_id: String = "", period: String = "
 		if history_counts.has(kind):
 			history_counts[kind] = int(history_counts[kind]) + 1
 		if kind != "gap":
-			visible_history.append(record.duplicate(true))
+			visible_history_count += 1
+			var record_utc: String = str(record.get("utc", ""))
+			if not has_visible_history:
+				first_history_date = record_utc
+				has_visible_history = true
+			last_history_date = record_utc
+			if include_history:
+				visible_history.append(record.duplicate(true))
 	result.history = visible_history
-	result.history_count = visible_history.size()
-	result.history_record_count = visible_history.size()
+	result.history_count = visible_history_count
+	result.history_record_count = visible_history_count
 	result.history_flight_count = int(history_counts.get("flight", 0))
 	result.history_counts = history_counts
 	result.history_count_label = "records"
-	result.history_total = visible_history.size()
+	result.history_total = visible_history_count
 	result.history_has_more = false
-	if not visible_history.is_empty():
-		result.first_history_date = str(visible_history.front().get("utc", ""))
-		result.last_history_date = str(visible_history.back().get("utc", ""))
+	if has_visible_history:
+		result.first_history_date = first_history_date
+		result.last_history_date = last_history_date
 	_finalize_averages(result)
 	_compute_runs(result, selected)
 	return result

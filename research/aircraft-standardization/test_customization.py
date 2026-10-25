@@ -6,6 +6,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import re
 import sys
 import unittest
 from pathlib import Path
@@ -21,6 +22,24 @@ class CustomizationGeneratorTests(unittest.TestCase):
         model_source = json.loads((self.root / generator.MODEL_SOURCE_PATH).read_text(encoding="utf-8"))
         self.families = {item["family_id"] for item in model_source["families"]}
 
+    def test_presentation_source_versions_keep_closed_legacy_sets(self) -> None:
+        legacy = generator.LEGACY_PRESENTATION_SOURCE_PATHS
+        v2 = generator.PRESENTATION_SOURCE_PATHS_V2
+        v3 = generator.PRESENTATION_SOURCE_PATHS_V3
+        self.assertEqual(len(legacy), 7)
+        self.assertEqual(len(v2), 10)
+        self.assertEqual(len(v3), 23)
+        self.assertEqual(tuple(sorted(v3)), v3)
+        self.assertTrue(set(legacy).issubset(v2))
+        self.assertTrue(set(v2).issubset(v3))
+        self.assertEqual(generator.PRESENTATION_SOURCE_PATHS, v3)
+        gd_sources = (self.root / "app/render/presentation_sources.gd").read_text(encoding="utf-8")
+        for constant_name, expected in (("SOURCE_PATHS", legacy), ("SOURCE_PATHS_V2", v2), ("SOURCE_PATHS_V3", v3)):
+            match = re.search(rf"const {constant_name} := \[(.*?)\n\]", gd_sources, re.DOTALL)
+            self.assertIsNotNone(match, constant_name)
+            actual = re.findall(r'"(res://[^\"]+)"', match.group(1))
+            self.assertEqual(actual, list(expected), constant_name)
+
     def test_generated_registry_is_current(self) -> None:
         self.assertEqual(generator.generate(self.root, True), 0)
 
@@ -31,7 +50,7 @@ class CustomizationGeneratorTests(unittest.TestCase):
         for companion in registry["families"]:
             family = companion["visual_family"]
             self.assertEqual(companion["version"], 3)
-            self.assertEqual(companion["source_proof_version"], 2)
+            self.assertEqual(companion["source_proof_version"], 3)
             self.assertEqual(companion["presentation_engine_version"], generator.PRESENTATION_ENGINE_VERSION)
             self.assertEqual([item["path"] for item in companion["presentation_sources"]],
                              list(generator.PRESENTATION_SOURCE_PATHS))

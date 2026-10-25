@@ -4,7 +4,7 @@ extends RefCounted
 ## carry resource paths, executable scripts, or mount coordinates.
 
 const FORMAT: String = "openrc-aircraft-presentation"
-const VERSION: int = 3
+const VERSION: int = 4
 const LEGACY_VERSION: int = 1
 const IDENTITY_FORMAT: String = "openrc-aircraft-presentation-identity"
 const IDENTITY_VERSION: int = 1
@@ -47,6 +47,7 @@ const BINDINGS_V2_KEYS: PackedStringArray = [
 const PresentationSources := preload("res://render/presentation_sources.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
+const MechanicalProfile := preload("res://audio/mechanical_profile.gd")
 const PRESENTATION_SOURCE_PATHS: PackedStringArray = [
 	"res://render/aircraft_customization.gd",
 	"res://render/presentation_sources.gd",
@@ -99,6 +100,8 @@ static func defaults(bindings: Dictionary = {}, version: int = VERSION) -> Dicti
 	}
 	if version >= 3:
 		profile["lighting"] = LightingProfile.defaults()
+	if version >= 4:
+		profile["mechanical_audio"] = MechanicalProfile.defaults()
 	return profile
 
 
@@ -130,13 +133,15 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 	if source.is_empty():
 		source = defaults(bindings, LEGACY_VERSION)
 	var expected_profile_keys := PROFILE_KEYS.duplicate()
-	if _integer_number(source.get("version")) and int(source.version) == 3:
+	if _integer_number(source.get("version")) and int(source.version) >= 3:
 		expected_profile_keys.append("lighting")
+	if _integer_number(source.get("version")) and int(source.version) >= 4:
+		expected_profile_keys.append("mechanical_audio")
 	if not _has_exact_keys(source, expected_profile_keys):
 		errors.append("Presentation profile has missing or unsupported fields.")
 		return _result(false, errors, {}, false)
 	if source["format"] != FORMAT or not _integer_number(source["version"]) \
-			or int(source["version"]) not in [LEGACY_VERSION, 2, VERSION]:
+			or int(source["version"]) not in [LEGACY_VERSION, 2, 3, VERSION]:
 		errors.append("Presentation profile format or version is unsupported.")
 		return _result(false, errors, {}, false)
 	if source["schedule_policy"] != SCHEDULE_POLICY:
@@ -260,12 +265,18 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 		"visual_seed": int(source["visual_seed"]),
 		"schedule_policy": SCHEDULE_POLICY,
 	}
-	if int(source.version) == 3:
+	if int(source.version) >= 3:
 		var lighting_result: Dictionary = LightingProfile.validate(source.lighting)
 		if not bool(lighting_result.get("ok", false)):
 			errors.append_array(lighting_result.get("errors", PackedStringArray()))
 			return _result(false, errors, {}, false)
 		canonical["lighting"] = lighting_result.profile
+	if int(source.version) >= 4:
+		var mechanical_result: Dictionary = MechanicalProfile.validate(source.mechanical_audio)
+		if not mechanical_result.ok:
+			errors.append_array(mechanical_result.errors)
+			return _result(false, errors, {}, false)
+		canonical["mechanical_audio"] = mechanical_result.profile
 	var canonical_bytes: PackedByteArray = _canonical_json(canonical).to_utf8_buffer()
 	if canonical_bytes.size() > MAX_PROFILE_BYTES:
 		errors.append("Canonical presentation profile exceeds the %d-byte limit." % MAX_PROFILE_BYTES)
@@ -483,7 +494,7 @@ static func migrate_v1(profile: Variant, old_bindings: Dictionary, new_bindings:
 static func _validate_smoke_entry(value: Variant, context: Dictionary, available: bool) -> Dictionary:
 	var errors := PackedStringArray()
 	var version: int = int(context.get("profile_version", LEGACY_VERSION))
-	if version not in [LEGACY_VERSION, 2, VERSION] or typeof(value) != TYPE_DICTIONARY:
+	if version not in [LEGACY_VERSION, 2, 3, VERSION] or typeof(value) != TYPE_DICTIONARY:
 		return {"ok": false, "errors": ["Smoke profile version or object is unsupported."]}
 	var expected := SMOKE_ENTRY_KEYS.duplicate()
 	if version >= 2:
@@ -948,6 +959,8 @@ static func _pins_are_empty(value: Dictionary) -> bool:
 
 
 static func _has_entries(profile: Dictionary) -> bool:
+	if profile.has("mechanical_audio") and (not profile.mechanical_audio is Dictionary or profile.mechanical_audio != MechanicalProfile.defaults()):
+		return true
 	if typeof(profile.get("lighting")) == TYPE_DICTIONARY and profile.lighting.get("selection", "inherit") != "inherit":
 		return true
 	for key: String in ["paint", "markings", "smoke"]:

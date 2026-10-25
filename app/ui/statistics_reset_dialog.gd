@@ -90,10 +90,26 @@ func _refresh_text() -> void:
 		scope_check.set_pressed_no_signal(false)
 		get_ok_button().disabled = true
 		var target := tr("All aircraft combined") if _aircraft_id.is_empty() else _aircraft_name(_preview, _aircraft_id)
-		var records := _history_count(_preview)
+		var include_gaps := _aircraft_id.is_empty()
+		var visible_records := _history_count(_preview)
+		var types := _history_type_counts(_preview, visible_records, include_gaps)
+		var records := visible_records + (int(types.gap) if include_gaps else 0)
+		var breakdown_parts := PackedStringArray([
+			_typed_count(types.flight, "flight", "flights"),
+			_typed_count(types.crash, "crash", "crashes"),
+			_typed_count(types.restart, "restart", "restarts"),
+		])
+		if include_gaps and int(types.gap) > 0:
+			breakdown_parts.append(_typed_count(types.gap, "coverage gap", "coverage gaps"))
+		var breakdown := " · ".join(breakdown_parts)
+		var other_records := maxi(0, records - types.flight - types.crash - types.restart)
+		if include_gaps:
+			other_records = maxi(0, other_records - int(types.gap))
+		if other_records > 0:
+			breakdown += " · " + _typed_count(other_records, "other record", "other records")
 		var span := _date_span(_preview)
-		var text := tr("Remove %d flight records for %s, covering %s, with %s airborne time.") \
-			% [records, target, span, _duration(float(_preview.get("airborne_seconds", 0.0)))]
+		var text := tr("Remove %d records for %s (%s), covering %s, with %s airborne time.") \
+			% [records, target, breakdown, span, _duration(float(_preview.get("airborne_seconds", 0.0)))]
 		text += "\n" + tr("This cannot be undone. Preferences, aircraft, Workshop builds, controller profiles and flight recordings stay in place.")
 		preview_label.text = text
 	else:
@@ -176,10 +192,54 @@ func _aircraft_name(data: Dictionary, fallback: String) -> String:
 
 
 func _history_count(data: Dictionary) -> int:
+	if data.get("history_record_count") is int or data.get("history_record_count") is float:
+		return _count(data.get("history_record_count"))
 	if data.get("history_count") is int or data.get("history_count") is float:
 		return _count(data.get("history_count"))
 	var history: Variant = data.get("history", [])
-	return history.size() if history is Array else _count(data.get("started", 0))
+	if history is Array:
+		return history.size()
+	return _count(data.get("started", 0)) + _count(data.get("crashes", 0)) + _count(data.get("restarts", 0))
+
+
+func _history_type_counts(data: Dictionary, record_count: int, include_gaps := false) -> Dictionary:
+	var counts := {"flight": 0, "crash": 0, "restart": 0, "gap": 0}
+	var source: Variant = data.get("history_counts", {})
+	if source is Dictionary and (source.has("flight") or source.has("crash") or source.has("restart")):
+		for kind: String in counts:
+			counts[kind] = _count(source.get(kind, 0))
+		if not include_gaps:
+			counts.gap = 0
+		return counts
+	var history: Variant = data.get("history", [])
+	if history is Array and not history.is_empty():
+		for record: Variant in history:
+			if not record is Dictionary:
+				continue
+			var kind := str(record.get("kind", ""))
+			if kind.is_empty() and (record.has("flight_id") or record.has("outcome")):
+				kind = "flight"
+			if counts.has(kind):
+				counts[kind] = int(counts[kind]) + 1
+		if not include_gaps:
+			counts.gap = 0
+		return counts
+	counts.flight = _count(data.get("history_flight_count", data.get("started", 0)))
+	counts.crash = _count(data.get("crashes", 0))
+	counts.restart = _count(data.get("restarts", 0))
+	var history_counts_value: Variant = data.get("history_counts", {})
+	counts.gap = _count(history_counts_value.get("gap", 0)) if include_gaps and history_counts_value is Dictionary else 0
+	var known := int(counts.flight) + int(counts.crash) + int(counts.restart)
+	if known > record_count:
+		# Preserve a trustworthy total when older summaries lack per-type history counts.
+		counts.flight = mini(int(counts.flight), record_count)
+		counts.crash = mini(int(counts.crash), maxi(0, record_count - int(counts.flight)))
+		counts.restart = mini(int(counts.restart), maxi(0, record_count - int(counts.flight) - int(counts.crash)))
+	return counts
+
+
+func _typed_count(count: int, singular: String, plural: String) -> String:
+	return "%d %s" % [count, tr(singular if count == 1 else plural)]
 
 
 func _date_span(data: Dictionary) -> String:
@@ -194,7 +254,8 @@ func _date_span(data: Dictionary) -> String:
 		for record: Variant in history:
 			if not record is Dictionary:
 				continue
-			var date := str(record.get("started_at", record.get("timestamp", record.get("ended_at", ""))))
+			var date := str(record.get("utc", record.get("started_at", record.get("timestamp",
+				record.get("ended_utc", record.get("ended_at", ""))))))
 			if date.is_empty():
 				continue
 			if earliest.is_empty() or date < earliest: earliest = date

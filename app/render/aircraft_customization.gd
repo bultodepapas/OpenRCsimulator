@@ -127,7 +127,7 @@ static func validate_bindings(bindings: Dictionary, expected_family := "", expec
 	if binding_version >= 2:
 		var proof_version := 1
 		if binding_version == 3:
-			if not _integer_value(bindings.get("source_proof_version")) or int(bindings.source_proof_version) != 2:
+			if not _integer_value(bindings.get("source_proof_version")) or int(bindings.source_proof_version) not in [2, 3]:
 				errors.append("customization source proof version is unsupported")
 			proof_version = int(bindings.source_proof_version) if _integer_value(bindings.get("source_proof_version")) else 0
 		var source_result: Dictionary = PresentationSources.validate(bindings.presentation_sources, bindings.presentation_engine_version, proof_version)

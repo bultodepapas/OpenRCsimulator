@@ -1,0 +1,22 @@
+> fly aircraft=xcell-60-research
+{"aircraft": "xcell-60-research", "tick": 0, "time_s": 0.0, "paused": true, "fault": "", "pause_reason": "", "holds": ["menu"], "crashed": false, "radio_connected": false, "commands": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.16666666666666663}, "raw": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}, "position_ned_m": [6.0, 0.0, -0.10778963675], "height_m": 0.10778963675, "velocity_body_mps": [0.0, 0.0, 0.0], "speed_mps": 0.0, "attitude_deg": {"roll": 0.0, "pitch": 0.0, "heading": 89.99999999999999}, "rates_body_degps": [0.0, 0.0, 0.0]}
+> call node=AppRoot method=open_pause
+null
+> assert expr="screens.is_top('pause') and flight.session.sim.paused" message="helicopter launch review"
+{"value": true}
+> press text="Continue"
+{"pressed": "AppRoot/PauseMenu/Screen/@PanelContainer@297/PauseScroll/@VBoxContainer@301/Continue", "mode": "accept", "screens": [], "focus": ""}
+> control name=helicopter_arm
+{"action": "helicopter_arm", "screens": [], "focus": ""}
+> assert expr="flight.session.power.armed" message="helicopter armed after launch review"
+{"value": true}
+> sticks throttle=0.6 for_s=0.5
+{"sticks": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.6}, "until_tick": 172, "warning": ""}
+> wait until="flight.session.sim.tick > 240" timeout_s=120
+{"frame": 1901, "value": true}
+> sticks release=true
+{"released": true}
+> home
+{"route": "home", "screens": ["home"]}
+> assert expr="flight == null" message="helicopter flight ended"
+{"value": true}

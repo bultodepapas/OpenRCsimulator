@@ -13,6 +13,7 @@ class FakeStatisticsService extends RefCounted:
 	var note := ""
 	var writable := true
 	var query_log: Array = []
+	var summary_log: Array = []
 	var reset_log: Array = []
 	var deletion_log: Array = []
 	var values: Dictionary = {}
@@ -20,11 +21,14 @@ class FakeStatisticsService extends RefCounted:
 	func _init() -> void:
 		var history: Array = []
 		for index in 52:
-			history.append({
+			var record_kind := "flight" if index < 50 else ("crash" if index == 50 else "restart")
+			var record := {
 				"flight_id": "flight-%03d" % index,
+				"kind": record_kind,
 				"aircraft_id": "trainer-a",
 				"aircraft_name": "Trainer A",
-				"started_at": "2026-10-25T10:%02d:00Z" % (index % 60),
+				"utc": "2026-10-25T10:%02d:00Z" % (index % 60),
+				"ended_utc": "2026-10-25T10:%02d:35Z" % (index % 60),
 				"outcome": "completed",
 				"airborne_seconds": 95.0,
 				"takeoffs": 1,
@@ -32,8 +36,22 @@ class FakeStatisticsService extends RefCounted:
 				"touch_and_go": 0,
 				"max_tas_mps": 18.0,
 				"partial": false,
-				"timeline": ["Takeoff", "Full stop"],
-			})
+				"timeline": ["Fixture-only timeline"],
+			}
+			if record_kind != "flight":
+				for key: String in ["outcome", "airborne_seconds", "takeoffs", "full_stops", "touch_and_go", "max_tas_mps", "partial", "timeline"]:
+					record.erase(key)
+				record.metadata = {"ground": true} if record_kind == "crash" else {"cause": "manual_restart"}
+			if index == 0:
+				record.start_kind = "takeoff"
+				record.erase("takeoffs")
+				record.metadata = {"events": [
+					{"type": "started", "start_kind": "takeoff", "tick": 240},
+					{"type": "landing", "kind": "full_stop", "outcome": "success", "reason": "stable_support",
+						"tick": 430, "first_contact_tick": 400},
+					{"type": "closed", "outcome": "completed", "reason": "full_stop", "tick": 500},
+				], "events_omitted": 2}
+			history.append(record)
 		values = {
 			"started": 5, "completed": 4, "airborne_seconds": 1450.0,
 			"average_seconds": 290.0, "average_count": 5,
@@ -46,6 +64,10 @@ class FakeStatisticsService extends RefCounted:
 			"current_clean_seconds": 1200.0, "best_clean_seconds": 2400.0,
 			"closed": 5, "active": 0, "partial": 0,
 			"history": history, "history_count": history.size(),
+			"history_record_count": history.size(),
+			"history_flight_count": 50,
+			"history_counts": {"flight": 50, "crash": 1, "restart": 1, "gap": 0},
+			"has_lifetime_history": true,
 			"first_history_date": "2026-10-01", "last_history_date": "2026-10-25",
 			"period_label": "This session", "revision": revision,
 		}
@@ -56,6 +78,10 @@ class FakeStatisticsService extends RefCounted:
 		result.revision = revision
 		result.period_label = period
 		return result
+
+	func summary(aircraft_id: String = "", period: String = "session") -> Dictionary:
+		summary_log.append([aircraft_id, period])
+		return values.duplicate(true)
 
 	func aircraft_choices() -> Array:
 		return [{"id": "trainer-a", "name": "Trainer A"}, {"id": "trainer-b", "name": "Trainer B"}]
@@ -72,6 +98,14 @@ class FakeStatisticsService extends RefCounted:
 		deletion_log.append(aircraft_id)
 		revision += 1
 		return true
+
+
+class LegacyHudStatisticsService extends RefCounted:
+	var query_log: Array = []
+
+	func query(aircraft_id: String = "", period: String = "session") -> Dictionary:
+		query_log.append([aircraft_id, period])
+		return {"airborne_seconds": 125.0, "landings": 2, "crashes": 1, "restarts": 0, "started": 2, "completed": 1}
 
 
 var _failures := 0
@@ -95,6 +129,31 @@ func _run() -> void:
 	await process_frame
 	_check("default filters show all aircraft and this session",
 		screen._scope_picker.selected == 0 and screen._period_picker.selected == 0)
+	var saved_values := service.values.duplicate(true)
+	service.values = {"started": 0, "completed": 0, "landings": 0, "crashes": 0, "restarts": 0,
+		"history": [], "has_lifetime_history": true, "tracking_started_utc": "2026-10-01T00:00:00Z"}
+	screen.call("_refresh")
+	_check("an empty session window with lifetime history says no records are in this view",
+		"No flight records in this view." in screen._coverage_label.text)
+	service.values.has_lifetime_history = false
+	screen.call("_refresh")
+	_check("authoritative no-history flag wins over an old tracking timestamp",
+		"Tracking begins with your next flight." in screen._coverage_label.text)
+	service.values.erase("has_lifetime_history")
+	screen.call("_refresh")
+	_check("legacy tracking timestamp still indicates existing lifetime history",
+		"No flight records in this view." in screen._coverage_label.text)
+	service.values.erase("tracking_started_utc")
+	screen.call("_refresh")
+	_check("tracking-begins copy appears only before lifetime history exists",
+		"Tracking begins with your next flight." in screen._coverage_label.text)
+	service.values = saved_values
+	screen.call("_refresh")
+	screen.configure(service, "", "imperial")
+	_check("configured imperial statistics speed uses mph", screen._speed(22.0) == "49 mph")
+	screen.configure(service, "", "si")
+	_check("configured SI statistics speed keeps m/s", screen._speed(22.0) == "22.0 m/s")
+	screen.configure(service, "", "metric")
 	_check("touchdown success shows the resolved-contact denominator",
 		"6 / 7" in screen._touchdown_label.text and "Touchdown success" in screen._touchdown_label.text,
 		screen._touchdown_label.text)
@@ -108,9 +167,25 @@ func _run() -> void:
 	screen.call("_on_more_toggled", true)
 	_check("expanded details show separate TAS and groundspeed",
 		"Maximum valid airspeed (TAS)" in _all_text(screen._more_box)
-		and "Maximum horizontal groundspeed" in _all_text(screen._more_box))
+		and "Maximum horizontal groundspeed" in _all_text(screen._more_box)
+		and "79 km/h" in _all_text(screen._more_box))
 	screen.call("_on_history_toggled", true)
 	_check("history is bounded to 50 rows per page", screen._history_rows.get_child_count() == 50)
+	var newest_row := screen._history_rows.get_child(0) as VBoxContainer
+	var newest_toggle := newest_row.get_child(0) as Button
+	_check("real service timestamps are preferred in the history row", "2026-10-25 10:00Z" in newest_toggle.text)
+	newest_toggle.button_pressed = true
+	newest_toggle.toggled.emit(true)
+	var newest_detail := _all_text(newest_row)
+	_check("history renders bounded metadata events and UTC endpoints instead of fixture timeline",
+		"Started (UTC)" in newest_detail and "Ended (UTC)" in newest_detail
+		and "Takeoff" in newest_detail and "First contact tick: 400" in newest_detail
+		and "More events omitted: 2" in newest_detail and "Fixture-only timeline" not in newest_detail, newest_detail)
+	_check("actual start_kind derives takeoffs when no legacy count exists", "Takeoffs 1" in newest_detail)
+	var air_start_row: VBoxContainer = screen.call("_history_row", {"kind": "flight", "outcome": "completed",
+		"start_kind": "air_start", "airborne_seconds": 30.0}, 1)
+	_check("airborne-start history records do not count as takeoffs", "Takeoffs 0" in _all_text(air_start_row))
+	air_start_row.free()
 	screen.call("_set_history_page", 1)
 	await process_frame
 	_check("next history page retains the filter and shows the remaining rows",
@@ -119,7 +194,14 @@ func _run() -> void:
 	var history_toggle := last_row.get_child(0) as Button
 	history_toggle.button_pressed = true
 	history_toggle.toggled.emit(true)
-	_check("history expansion exposes flight details", (last_row.get_child(1) as VBoxContainer).visible)
+	_check("crash history records show ground context without fake flight metrics",
+		"Ground crash" in history_toggle.text and not history_toggle.text.contains("<1 min")
+		and not _all_text(last_row).contains("Takeoffs"))
+	var restart_entry := screen._history_rows.get_child(1) as VBoxContainer
+	var restart_toggle := restart_entry.get_child(0) as Button
+	_check("restart history records show the stored cause without a flight duration",
+		"Restart: Manual Restart" in restart_toggle.text and not restart_toggle.text.contains("<1 min"))
+	_check("history expansion exposes record details", (last_row.get_child(1) as VBoxContainer).visible)
 	screen.call("_on_aircraft_selected", 1)
 	_check("aircraft filter queries the selected stable ID", service.query_log.back() == ["trainer-a", "session"])
 	screen.call("_on_period_selected", 2)
@@ -169,13 +251,22 @@ func _run() -> void:
 	screen.call("_open_delete", "trainer-a")
 	dialog = screen.get("_active_dialog")
 	_check("history deletion preview pins its store revision and exact count",
-		dialog._pinned_revision == service.revision and "52 flight records" in dialog.preview_label.text
-		and "2026-10-01" in dialog.preview_label.text)
+		dialog._pinned_revision == service.revision and "52 records" in dialog.preview_label.text
+		and "50 flights" in dialog.preview_label.text and "1 crash" in dialog.preview_label.text
+		and "1 restart" in dialog.preview_label.text and "2026-10-01" in dialog.preview_label.text)
 	dialog.scope_check.button_pressed = true
 	dialog.call("_on_confirmed")
 	_check("history deletion requires confirmation and names its aircraft",
 		service.deletion_log == ["trainer-a"])
 	await process_frame
+	service.values.history_counts.gap = 3
+	screen.call("_open_delete", "")
+	dialog = screen.get("_active_dialog")
+	_check("pilot deletion preview counts coverage gaps that the purge removes",
+		"55 records" in dialog.preview_label.text and "3 coverage gaps" in dialog.preview_label.text)
+	dialog.call("_on_cancelled")
+	await process_frame
+	service.values.history_counts.gap = 0
 
 	service.writable = false
 	screen.call("_refresh_manage_controls")
@@ -195,15 +286,27 @@ func _run() -> void:
 	manager.set_widget_option("session_stats_scope", "aircraft")
 	_check("overlay scope preference validates and persists", manager.settings.get("session_stats_scope") == "aircraft")
 	manager.refresh_numbers({"telemetry": {}, "battery": {}, "mass_sample": {}, "warnings": PackedStringArray()})
-	_check("HUD queries the selected aircraft and keeps all three counters visible",
-		service.query_log.back() == ["trainer-a", "session"]
+	var elapsed_label: Label = manager.frames.flight.values.time.get_parent().get_child(
+		manager.frames.flight.values.time.get_index() - 1) as Label
+	var airborne_label: Label = manager.frames.session_stats.find_child("SessionAirborneTime", true, false) as Label
+	_check("HUD summary prefers the service summary and keeps all three counters visible",
+		service.summary_log.back() == ["trainer-a", "session"]
 		and manager.frames.session_stats.value_label.visible
 		and manager.frames.session_stats.left_value.visible
-		and manager.frames.session_stats.right_value.visible)
+		and manager.frames.session_stats.right_value.visible
+		and airborne_label.text.contains("24:10")
+		and elapsed_label.text == "Elapsed simulation time")
+	var legacy_service := LegacyHudStatisticsService.new()
+	manager.statistics_service = legacy_service
+	manager.refresh_numbers({"telemetry": {}, "battery": {}, "mass_sample": {}, "warnings": PackedStringArray()})
+	_check("HUD falls back to query for older service fixtures", legacy_service.query_log.back() == ["trainer-a", "session"]
+		and airborne_label.text.contains("2:05"))
+	manager.statistics_service = service
 	manager.set_widget_option("widget_compact", true)
 	manager.refresh_numbers({"telemetry": {}, "battery": {}, "mass_sample": {}, "warnings": PackedStringArray()})
-	_check("compact HUD retains landings, crashes and restarts", manager.frames.session_stats.value_label.visible
-		and manager.frames.session_stats.left_value.visible and manager.frames.session_stats.right_value.visible)
+	_check("compact HUD retains session time and all three counters", manager.frames.session_stats.value_label.visible
+		and manager.frames.session_stats.left_value.visible and manager.frames.session_stats.right_value.visible
+		and airborne_label.visible and airborne_label.text.contains("24:10"))
 
 	UiTheme.text_scale = 2.0
 	screen.call("_resize_layout")
@@ -219,12 +322,13 @@ func _run() -> void:
 	service.writable = true
 	TranslationServer.set_locale("es")
 	var spanish_screen: CanvasLayer = StatisticsScreen.new()
-	spanish_screen.configure(service, "trainer-b")
+	spanish_screen.configure(service, "trainer-b", "auto")
 	root.add_child(spanish_screen)
 	await process_frame
 	_check("Spanish localizes the screen and all-aircraft filter",
 		(spanish_screen.find_child("StatisticsTitle", true, false) as Label).text == "Estadísticas"
-		and spanish_screen._scope_picker.get_item_text(0) == "Todas las aeronaves")
+		and spanish_screen._scope_picker.get_item_text(0) == "Todas las aeronaves"
+		and spanish_screen._speed(22.0) == "79 km/h")
 	var spanish_back: Array = []
 	spanish_screen.back_requested.connect(func() -> void: spanish_back.append(true))
 	var escape := InputEventKey.new()
@@ -239,9 +343,25 @@ func _run() -> void:
 		and spanish_dialog.get_cancel_button().has_focus())
 	spanish_dialog.call("_on_cancelled")
 	await process_frame
+	var failed_stop_record := {"kind": "flight", "outcome": "failed_stop", "airborne_seconds": 17.0, "metadata": {}}
+	var failed_stop_row: VBoxContainer = spanish_screen.call("_history_row", failed_stop_record, 0)
+	_check("history labels failed stop as an uncontrolled stop", tr("Uncontrolled stop") in (failed_stop_row.get_child(0) as Button).text)
+	_check("failed stops count as ended flights in fallback history", spanish_screen.call("_closed_count", {"history": [failed_stop_record]}) == 1)
+	failed_stop_row.free()
+	var airborne_crash_row: VBoxContainer = spanish_screen.call("_history_row", {"kind": "crash", "metadata": {"ground": false}}, 1)
+	_check("flight crash history localizes the recorded ground/flight context",
+		tr("Flight crash") in (airborne_crash_row.get_child(0) as Button).text)
+	airborne_crash_row.free()
 	spanish_screen.queue_free()
 	TranslationServer.set_locale("en")
 	await process_frame
+	var sequence_order := StatisticsScreen._newest_first_history([
+		{"seq": 1, "id": "old"}, {"seq": 3, "id": "new"}, {"seq": 2, "id": "middle"},
+	])
+	var fixture_order := StatisticsScreen._newest_first_history([{"id": "first"}, {"id": "second"}])
+	_check("history sorts real records newest-first but preserves sequence-free fixture order",
+		sequence_order[0].id == "new" and sequence_order[1].id == "middle" and sequence_order[2].id == "old"
+		and fixture_order[0].id == "first" and fixture_order[1].id == "second")
 
 	var stack := ScreenStack.new(root)
 	var focus_anchor := Control.new()

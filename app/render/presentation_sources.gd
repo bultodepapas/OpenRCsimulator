@@ -1,9 +1,11 @@
 extends RefCounted
 
-## Closed package proof contract for the customization adapter and smoke renderers.
+## Closed package proof contract for the aircraft presentation runtime.
 const ENGINE_VERSION_PIN := "4.8.0"
 const PACKAGE_PATH := "res://data/aircraft_customization_package.json"
 const PACKAGE_FORMAT := "openrc-aircraft-presentation-package v1"
+const PACKAGE_FORMAT_V2 := "openrc-aircraft-presentation-package v2"
+const PACKAGE_FORMAT_V3 := "openrc-aircraft-presentation-package v3"
 const PROOF_ROOT := "res://data/aircraft_customization_proofs/"
 const SOURCE_PATHS := [
 	"res://render/aircraft_customization.gd",
@@ -26,22 +28,59 @@ const SOURCE_PATHS_V2 := [
 	"res://render/smoke/stock_profile.gd",
 	"res://workshop/presentation.gd",
 ]
+const SOURCE_PATHS_V3 := [
+	"res://audio/mechanical_profile.gd",
+	"res://render/aircraft_customization.gd",
+	"res://render/lighting/aircraft_lighting_rig_3d.gd",
+	"res://render/lighting/lighting_patterns.gd",
+	"res://render/lighting/lighting_profile.gd",
+	"res://render/lighting/lighting_vfx.gd",
+	"res://render/lighting/rgb_lamp.gdshader",
+	"res://render/lighting/rgb_strip.gdshader",
+	"res://render/presentation_sources.gd",
+	"res://render/smoke/exhaust.gd",
+	"res://render/smoke/process.gdshader",
+	"res://render/smoke/profile_process.gdshader",
+	"res://render/smoke/profile_smoke.gd",
+	"res://render/smoke/profile_smoke_schedule.gd",
+	"res://render/smoke/smoke_system.gd",
+	"res://render/smoke/stock_profile.gd",
+	"res://render/world/aircraft_light_state.gd",
+	"res://render/world/aircraft_lights.gd",
+	"res://render/world/engine_srgb.gdshaderinc",
+	"res://render/world/exposure.gd",
+	"res://render/world/led_strip.gdshader",
+	"res://render/world/light_sprite.gdshader",
+	"res://workshop/presentation.gd",
+]
 ## Raw assets must enter this closed set before they can be proved. No assets yet.
 const RAW_ASSET_PATHS: Array[String] = []
 
-static func paths_for_version(version: int = 2) -> Array:
+static func paths_for_version(version: int = 3) -> Array:
 	if version == 1:
 		return SOURCE_PATHS.duplicate()
 	if version == 2:
 		return SOURCE_PATHS_V2.duplicate()
+	if version == 3:
+		return SOURCE_PATHS_V3.duplicate()
 	return []
 
 const SHA256_RE := "^[0-9a-f]{64}$"
 
 
+static func package_format_for_version(version: int) -> String:
+	if version == 1:
+		return PACKAGE_FORMAT
+	if version == 2:
+		return PACKAGE_FORMAT_V2
+	if version == 3:
+		return PACKAGE_FORMAT_V3
+	return ""
+
+
 ## Hash the exact current source bytes after normalizing line endings to LF.
 ## The fixed path list is the only source inventory accepted by validate().
-static func current_records(version: int = 2) -> Array[Dictionary]:
+static func current_records(version: int = 3) -> Array[Dictionary]:
 	var records: Array[Dictionary] = []
 	for source_path: String in paths_for_version(version):
 		var bytes := FileAccess.get_file_as_bytes(source_path) if FileAccess.file_exists(source_path) else PackedByteArray()
@@ -50,7 +89,8 @@ static func current_records(version: int = 2) -> Array[Dictionary]:
 
 
 static func expected_proof_path(source_path: String) -> String:
-	if not SOURCE_PATHS_V2.has(source_path) and not RAW_ASSET_PATHS.has(source_path):
+	var registered_source := SOURCE_PATHS.has(source_path) or SOURCE_PATHS_V2.has(source_path) or SOURCE_PATHS_V3.has(source_path)
+	if not registered_source and not RAW_ASSET_PATHS.has(source_path):
 		return ""
 	var context := HashingContext.new()
 	if context.start(HashingContext.HASH_SHA256) != OK or context.update(source_path.to_utf8_buffer()) != OK:
@@ -114,7 +154,8 @@ static func _read_package(version: int = 1) -> Dictionary:
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(PACKAGE_PATH))
 	if typeof(parsed) != TYPE_DICTIONARY or not _exact_keys(parsed, ["format", "files"]):
 		return _package_failure("PRESENTATION_PACKAGE_INVALID", PACKAGE_PATH, "presentation package marker has unknown or missing fields")
-	if parsed.get("format") != (PACKAGE_FORMAT if version == 1 else "openrc-aircraft-presentation-package v2") or typeof(parsed.get("files")) != TYPE_DICTIONARY:
+	var expected_format := package_format_for_version(version)
+	if expected_format.is_empty() or parsed.get("format") != expected_format or typeof(parsed.get("files")) != TYPE_DICTIONARY:
 		return _package_failure("PRESENTATION_PACKAGE_INVALID", PACKAGE_PATH, "presentation package format or files map is unsupported")
 	var files: Dictionary = parsed.get("files", {})
 	if files.size() != paths.size():

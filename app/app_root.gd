@@ -1839,7 +1839,8 @@ func open_pause() -> void:
 	pause_menu.time_of_day_button.text = tr("Sky and lighting")
 	pause_menu.overlays_requested.connect(open_overlays)
 	pause_menu.statistics_requested.connect(open_statistics)
-	pause_menu.statistics_button.visible = statistics_service != null
+	pause_menu.statistics_button.visible = statistics_service != null and not trial_pause \
+		and session.has_signal("statistics_lifecycle")
 	pause_menu.overlays_button.visible = flight.get("_overlays") != null
 	pause_menu.end_requested.connect(end_flight)
 	pause_menu.quit_requested.connect(quit_app)
@@ -2128,7 +2129,7 @@ func open_statistics(from: Control = null, aircraft_id: String = "") -> void:
 	if statistics_service == null or not (screens.is_top("home") or screens.is_top("pause")):
 		return
 	var screen: CanvasLayer = load("res://ui/statistics_screen.gd").new()
-	screen.configure(statistics_service, aircraft_id)
+	screen.configure(statistics_service, aircraft_id, str(preferences.get("hud", {}).get("units", "auto")))
 	screen.back_requested.connect(func() -> void:
 		if screens.is_top("statistics"): screens.pop())
 	if not screens.push("statistics", screen, from):
@@ -2139,21 +2140,39 @@ func _statistics_save_failed(retry: Callable) -> void:
 	if is_instance_valid(_statistics_save_dialog):
 		_statistics_save_dialog.queue_free()
 	_statistics_save_dialog = ConfirmationDialog.new()
+	var dialog := _statistics_save_dialog
+	dialog.exclusive = true
+	dialog.theme = UiTheme.build()
+	dialog.dialog_autowrap = true
+	# The trace exit guard has released its holds before this independent decision.
+	var held_session: Node = flight.get("session") if is_instance_valid(flight) else null
+	var resume_after := false
+	if is_instance_valid(held_session):
+		resume_after = not held_session.sim.paused and held_session.holds.is_empty()
+		held_session.hold("statistics_save")
+	var release_hold := func() -> void:
+		if is_instance_valid(held_session):
+			held_session.release("statistics_save")
+			if resume_after and held_session.holds.is_empty(): held_session.resume()
 	_statistics_save_dialog.title = tr("Flight statistics could not be saved")
 	_statistics_save_dialog.dialog_text = tr("The current flight has unsaved statistics. Retry saving, cancel, or leave without the unsaved changes.")
 	_statistics_save_dialog.ok_button_text = tr("Retry")
 	_statistics_save_dialog.add_button(tr("Leave without saving"), true, "discard")
 	add_child(_statistics_save_dialog)
 	_statistics_save_dialog.confirmed.connect(func() -> void:
-		_statistics_save_dialog.queue_free()
+		release_hold.call()
+		dialog.queue_free()
 		retry.call())
 	_statistics_save_dialog.custom_action.connect(func(action: StringName) -> void:
 		if action == &"discard":
 			_statistics_discard_exit = true
-			_statistics_save_dialog.queue_free()
+			release_hold.call()
+			dialog.queue_free()
 			retry.call())
-	_statistics_save_dialog.canceled.connect(func() -> void: _statistics_save_dialog.queue_free())
-	_statistics_save_dialog.popup_centered(Vector2i(560, 240))
+	_statistics_save_dialog.canceled.connect(func() -> void:
+		release_hold.call()
+		dialog.queue_free())
+	_statistics_save_dialog.popup_centered_clamped(Vector2i(560, 240), 0.9)
 	_statistics_save_dialog.get_cancel_button().grab_focus()
 
 
@@ -2725,7 +2744,8 @@ func change_aircraft() -> void:
 
 
 func _commit_change_aircraft() -> void:
-	_commit_end_flight()
+	if not _commit_end_flight(Callable(self, "_commit_change_aircraft")):
+		return
 	if home != null:
 		home.open_aircraft_catalog.call_deferred() # after Home's own initial focus on Fly
 
@@ -2756,10 +2776,10 @@ func end_flight() -> void:
 	_begin_exit_request("end_flight", [_flight_recorder(flight)], Callable(self, "_commit_end_flight"))
 
 
-func _commit_end_flight() -> void:
+func _commit_end_flight(retry: Callable = Callable()) -> bool:
 	if statistics_service != null and not statistics_service.end_activity("abandoned", _statistics_discard_exit):
-		_statistics_save_failed(Callable(self, "_commit_end_flight"))
-		return
+		_statistics_save_failed(retry if retry.is_valid() else Callable(self, "_commit_end_flight"))
+		return false
 	_statistics_discard_exit = false
 	_menu_feedback(&"exit")
 	var last_failure_status: Dictionary = {}
@@ -2779,6 +2799,7 @@ func _commit_end_flight() -> void:
 	show_home()
 	if home != null and not last_failure_status.is_empty():
 		home.set_failure_debrief(last_failure_status)
+	return true
 
 
 func quit_app() -> void:

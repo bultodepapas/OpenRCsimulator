@@ -1093,10 +1093,16 @@ func _process(_delta: float) -> void:
 func _refresh_statistics_summary(selected: String = "") -> void:
 	if statistics_service == null or not is_instance_valid(_statistics_aircraft_summary):
 		return
-	var own: Dictionary = statistics_service.query(selected if not selected.is_empty() else aircraft_id, "lifetime")
+	var selected_id := selected if not selected.is_empty() else aircraft_id
+	var supported := str(Catalog.entry(selected_id).get("vehicle", "fixed_wing")) != "rotorcraft"
+	var own: Dictionary = statistics_service.query(selected_id, "lifetime")
 	var all: Dictionary = statistics_service.query("", "lifetime")
 	_statistics_aircraft_summary.text = tr("Lifetime · %s airborne · %d completed · %d crashes") % [
 		_statistics_time(float(own.get("airborne_seconds", 0.0))), int(own.get("completed", 0)), int(own.get("crashes", 0))]
+	if not supported:
+		_statistics_aircraft_summary.text = tr("Flight statistics are not available for this activity.")
+	if is_instance_valid(aircraft_statistics_button):
+		aircraft_statistics_button.disabled = not supported
 	if is_instance_valid(_statistics_pilot_summary):
 		_statistics_pilot_summary.text = tr("Pilot total · %s airborne · %d completed · best streak %d") % [
 			_statistics_time(float(all.get("airborne_seconds", 0.0))), int(all.get("completed", 0)), int(all.get("best_streak", 0))]

@@ -6,6 +6,8 @@
 
 **Owns:** app/audio, its soundscape/powertrain/landing-gear assets, tools/audio and the associated tests. Simulation, aircraft data, UI, scenery and world rendering remain with their owners.
 
+AUD-16 adds recorded servo and retract mechanisms, accepted-motion gating and Workshop sound profiles. [Implementation, checks and limits](servo-retract-audio-implementation.md) and [recording provenance](audio-asset-sources.md) own that contract. Exact high-torque/retract hardware matching and human listening acceptance remain unqualified.
+
 ## Current implementation
 
 The soundscape reads simulation and view state without writing to the flight model, shared random state or trace. Aircraft audio remains the foreground cue; wind and wildlife sit behind it. Dynamic gains, filters, pause/restart and camera transitions are bounded. Legacy engine sound remains available with --soundscape=legacy.

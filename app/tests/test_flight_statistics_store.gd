@@ -16,6 +16,7 @@ func _initialize() -> void:
 		_finish()
 		return
 	_test_initial_round_trip_and_lock(schema, store_script)
+	_test_string_name_keys(schema, store_script)
 	_test_corrupt_generation_recovery(schema, store_script)
 	_test_future_schema_protection(schema, store_script)
 	_test_commit_interruptions(schema, store_script)
@@ -45,6 +46,36 @@ func _test_initial_round_trip_and_lock(schema: Script, store_script: Script) -> 
 	_check("read-only writer sees the same committed generation", competing.data.generation == generation and competing.data.pilot_id == pilot_id)
 	competing.close()
 	second.close()
+
+
+func _test_string_name_keys(schema: Script, store_script: Script) -> void:
+	var root_uri: String = _new_root("string_name_keys")
+	var store: RefCounted = store_script.new()
+	_check("StringName-key fixture opens", store.open(root_uri), store.note)
+	var candidate: Dictionary = store.data.duplicate(true)
+	var session_id: String = "session-string-name"
+	candidate.sessions.append({id = session_id, opened_utc = _utc(), closed_utc = "", status = "open"})
+	candidate.current_session = session_id
+	candidate.records.append({
+		kind = "flight", id = "flight-string-name", seq = 1, end_seq = 2,
+		session_id = session_id, aircraft_id = "stock:a", aircraft_name = "A", utc = _utc(),
+		account_epoch = 0, aircraft_epoch = 0, airborne_seconds = 12.5, outcome = "completed",
+		start_kind = "takeoff", full_stops = 1, touch_and_go = 0, failed_landings = 0,
+		unknown_landings = 0, max_tas_mps = 27.0, max_groundspeed_mps = 23.0,
+		complete_observation = true, config_hash = "", rules_version = "flight-statistics-v1",
+		ended_utc = _utc(), metadata = {source = "test", detail = {surface = "grass"}},
+	})
+	candidate.sequence = 2
+	_check("StringName keys validate with nested metadata", bool(schema.validate(candidate).ok))
+	_check("StringName-key commit succeeds", store.commit(candidate), store.note)
+	var persisted_session: Dictionary = store.data.sessions.back()
+	var persisted_record: Dictionary = store.data.records.back()
+	_check("committed StringName keys canonicalize to strings", typeof(persisted_session.keys()[0]) == TYPE_STRING and typeof(persisted_record.keys()[0]) == TYPE_STRING and typeof(persisted_record.metadata.keys()[0]) == TYPE_STRING)
+	store.close()
+	var reopened: RefCounted = store_script.new()
+	_check("StringName-key snapshot reopens", reopened.open(root_uri), reopened.note)
+	_check("nested metadata survives canonical persistence", reopened.data.records.back().metadata.detail.surface == "grass")
+	reopened.close()
 
 
 func _test_corrupt_generation_recovery(schema: Script, store_script: Script) -> void:

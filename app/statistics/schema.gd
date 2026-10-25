@@ -37,7 +37,7 @@ const FLIGHT_FIELDS: PackedStringArray = [
 const FLIGHT_OPTIONAL: PackedStringArray = ["metadata", "detector_checkpoint", "ended_utc"]
 const EVENT_OPTIONAL: PackedStringArray = ["metadata"]
 const OUTCOMES: PackedStringArray = [
-	"active", "completed", "crashed", "restarted", "abandoned", "damaged_stop", "interrupted",
+	"active", "completed", "crashed", "restarted", "abandoned", "damaged_stop", "failed_stop", "interrupted",
 ]
 const START_KINDS: PackedStringArray = ["takeoff", "air_start"]
 const RECORD_KINDS: PackedStringArray = ["flight", "crash", "restart", "gap"]
@@ -148,10 +148,11 @@ static func canonicalize(value: Variant) -> Variant:
 	match typeof(value):
 		TYPE_DICTIONARY:
 			var keys: Array = value.keys()
-			keys.sort()
+			keys.sort_custom(func(a: Variant, b: Variant) -> bool: return str(a) < str(b))
 			var result: Dictionary = {}
 			for key: Variant in keys:
-				result[key] = canonicalize(value[key])
+				var canonical_key: Variant = str(key) if typeof(key) == TYPE_STRING_NAME else key
+				result[canonical_key] = canonicalize(value[key])
 			return result
 		TYPE_ARRAY:
 			var result: Array = []
@@ -367,9 +368,14 @@ static func _walk_tree(value: Variant, depth: int, state: Dictionary) -> bool:
 		TYPE_FLOAT:
 			return is_finite(float(value))
 		TYPE_DICTIONARY:
+			var seen_keys: Dictionary = {}
 			for key: Variant in value.keys():
-				if typeof(key) != TYPE_STRING or str(key).length() > 128:
+				if typeof(key) not in [TYPE_STRING, TYPE_STRING_NAME]:
 					return false
+				var key_text: String = str(key)
+				if key_text.length() > 128 or seen_keys.has(key_text):
+					return false
+				seen_keys[key_text] = true
 				if not _walk_tree(value[key], depth + 1, state):
 					return false
 			return true
@@ -403,9 +409,14 @@ static func _walk_tree(value: Variant, depth: int, state: Dictionary) -> bool:
 
 
 static func _has_only_keys(value: Dictionary, allowed: PackedStringArray) -> bool:
+	var seen_keys: Dictionary = {}
 	for key: Variant in value.keys():
-		if typeof(key) != TYPE_STRING or not allowed.has(str(key)):
+		if typeof(key) not in [TYPE_STRING, TYPE_STRING_NAME]:
 			return false
+		var key_text: String = str(key)
+		if seen_keys.has(key_text) or not allowed.has(key_text):
+			return false
+		seen_keys[key_text] = true
 	return true
 
 

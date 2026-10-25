@@ -31,11 +31,37 @@ LEGACY_PRESENTATION_SOURCE_PATHS = (
     "res://render/smoke/profile_smoke.gd",
     "res://render/smoke/profile_smoke_schedule.gd",
 )
-PRESENTATION_SOURCE_PATHS = LEGACY_PRESENTATION_SOURCE_PATHS + (
+PRESENTATION_SOURCE_PATHS_V2 = LEGACY_PRESENTATION_SOURCE_PATHS + (
     "res://render/smoke/smoke_system.gd",
     "res://render/smoke/stock_profile.gd",
     "res://workshop/presentation.gd",
 )
+PRESENTATION_SOURCE_PATHS_V3 = (
+    "res://audio/mechanical_profile.gd",
+    "res://render/aircraft_customization.gd",
+    "res://render/lighting/aircraft_lighting_rig_3d.gd",
+    "res://render/lighting/lighting_patterns.gd",
+    "res://render/lighting/lighting_profile.gd",
+    "res://render/lighting/lighting_vfx.gd",
+    "res://render/lighting/rgb_lamp.gdshader",
+    "res://render/lighting/rgb_strip.gdshader",
+    "res://render/presentation_sources.gd",
+    "res://render/smoke/exhaust.gd",
+    "res://render/smoke/process.gdshader",
+    "res://render/smoke/profile_process.gdshader",
+    "res://render/smoke/profile_smoke.gd",
+    "res://render/smoke/profile_smoke_schedule.gd",
+    "res://render/smoke/smoke_system.gd",
+    "res://render/smoke/stock_profile.gd",
+    "res://render/world/aircraft_light_state.gd",
+    "res://render/world/aircraft_lights.gd",
+    "res://render/world/engine_srgb.gdshaderinc",
+    "res://render/world/exposure.gd",
+    "res://render/world/led_strip.gdshader",
+    "res://render/world/light_sprite.gdshader",
+    "res://workshop/presentation.gd",
+)
+PRESENTATION_SOURCE_PATHS = PRESENTATION_SOURCE_PATHS_V3
 EMISSIONS_PRESETS = {"glow_two_stroke", "glow_four_stroke", "glow_installation", "gasoline_two_stroke", "turbine_show", "independent_show"}
 SLOT_ID_RE = re.compile(r"^[a-z][a-z0-9_]{0,79}$")
 FAMILY_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -357,7 +383,7 @@ def build_companion(family_id: str, manifest_sha256: str, slots: dict[str, Any],
     companion: dict[str, Any] = {
         "format": COMPANION_FORMAT,
         "version": 3,
-        "source_proof_version": 2,
+        "source_proof_version": 3,
         "visual_family": family_id,
         "model_manifest_sha256": manifest_sha256,
         "paint_slots": slots["paint_slots"],

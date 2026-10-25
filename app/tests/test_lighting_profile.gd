@@ -30,9 +30,13 @@ func _initialize() -> void:
 		var checked: Dictionary = Profile.validate(resolved)
 		_check("preset is full and valid: " + preset_id, not resolved.is_empty() and checked.ok and checked.profile == resolved)
 		_check("preset has a label: " + preset_id, not Profile.label(preset_id).is_empty())
+		var roundtrip := Profile.validate(JSON.parse_string(JSON.stringify(resolved)))
+		_check("preset survives Godot JSON numeric roundtrip: " + preset_id, roundtrip.ok and roundtrip.profile == resolved)
 	_check("unknown preset returns empty", Profile.preset("unregistered").is_empty())
 	_check("unknown label returns empty", Profile.label("unregistered").is_empty())
-	_check("custom is materialized over a pinned base", Profile.preset("custom").selection == "custom" and Profile.preset("custom").preset_id == "classic_rc")
+	_check("custom is materialized over a pinned base", Profile.preset("custom").selection == "custom" and Profile.preset("custom").preset_id == "neon_rgb")
+	_check("custom offers all semantic zones and disabled effects", Profile.preset("custom").zones.size() == Profile.ZONE_IDS.size()
+		and Profile.preset("custom").effects.size() == 2 and not Profile.preset("custom").effects[0].enabled and not Profile.preset("custom").effects[1].enabled)
 	_check("festival contains sequence and paired optional sparks", Profile.preset("festival").sequence.size() == 4 and Profile.preset("festival").effects.size() == 2)
 	_check("preset zone IDs are canonical semantic IDs", _all_zones_supported(Profile.preset("night_radian")))
 
@@ -48,6 +52,10 @@ func _initialize() -> void:
 	malformed = inherited.duplicate(true)
 	malformed.version = true
 	_reject("boolean rejected as version", malformed)
+	malformed.version = 1.5
+	_reject("fraction rejected as version", malformed)
+	malformed.version = 1.0e100
+	_reject("huge integer rejected before narrowing", malformed)
 	malformed = inherited.duplicate(true)
 	malformed.visual_seed = 2147483648
 	_reject("seed upper bound enforced", malformed)

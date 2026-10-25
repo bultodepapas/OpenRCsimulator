@@ -12,7 +12,21 @@ The established solar rules continue before 17:30 and after midnight: airplanes 
 
 The override belongs to one flight. The existing session `resetting` boundary clears it: successful restart, aircraft-data reload or checkpoint restoration resumes automatic selection. Rejected edits/reloads do not clear it. Starting another flight or changing aircraft starts automatic selection independently; no override is saved in preferences or physical checkpoints. A helicopter `--heli-lights=all|nav|off` supplies an initial override; its next session reset resumes AUTO.
 
-## Shared interface
+## Programmable RGB builds (FW-RGB)
+
+The Workshop lighting extension is under integration verification. Its [implementation record](research/night-flight-lighting/implementation.md) identifies the checked behavior and open visual/performance gates; the [masterplan](night-flight-lighting-masterplan.md) remains the specification for later authoring and quality work.
+
+The data contract is `openrc-aircraft-lighting` v1 inside presentation envelope v3 (also retained by later envelopes). Historical v1/v2 presentations inherit the original kit. The six materialized presets are Classic RC, Night Radian, Neon RGB, Night Aerobatics, Festival / Fireworks and Custom. Custom starts with every semantic zone available for editing and its optional effects disabled. Profiles can also explicitly inherit the aircraft equipment or disable lighting.
+
+Use Workshop → Lighting → preset, then expand zones or effects for advanced editing. Save a build to retain colors, brightness and patterns with that aircraft variant; Trial flight uses the accepted draft. The night preview is local to the Workshop and does not change flight weather or time. The existing L/controller light control still selects ALL/NAV/OFF; NAV suppresses decorative strips and show effects.
+
+Colored strip emission and lamp sprites make the emitters visible. Short-range, shadowless OmniLights provide actual decorative spill; the existing landing SpotLight(s) illuminate the approach surface. Emission alone does not illuminate nearby objects. Opaque imported skins are not made translucent: internal foam illumination requires authored masks/shells and remains separate work.
+
+`AircraftLightingRig3D` receives the aircraft root and a validated lighting dictionary. Its `configure`, `set_mode`, `advance`, `reset`, `dispose` and `budget_info` methods remain on the rendering side. `advance` consumes displayed simulation time plus detached telemetry; preview uses its own accepted clock. Materials and VFX resources belong to the instance. Imported assets and shared resources are never rewritten.
+
+Initial semantic zones are `nav_left`, `nav_right`, `nav_tail`, `strobe_left`, `strobe_right`, `strobe_dorsal`, `strobe_ventral`, `strip_left`, `strip_right`, `strip_top_left`, `strip_top_right`, `strip_belly`, and `landing_lamp`. Wingtip show anchors are `vfx_tip_left` and `vfx_tip_right`. Aircraft equipment declarations and geometry determine availability; choosing a preset does not manufacture an unsupported lamp or a valid internal volume.
+
+## Shared selection interface
 
 [`aircraft_light_state.gd`](../app/render/world/aircraft_light_state.gd) is a persistent, flight-owned `RefCounted`. It owns timing and precedence; adapters own luminous nodes and rendering.
 
@@ -48,7 +62,7 @@ A different aircraft adapter should own one shared light-state instance, sample 
 Run the focused suite with the pinned engine:
 
 ```powershell
-& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_aircraft_light_control.gd
+python tools/godot/run_checked.py --label aircraft-lights --timeout 180 -- .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_aircraft_light_control.gd
 ```
 
 For native before/after images, omit `--headless` and append `-- --capture-aircraft-lights=<absolute-output-directory>`. Use an isolated APPDATA directory for native test runs. The suite covers every fixed-wing visual family and the helicopter, actual input handlers, exact threshold crossings, manual precedence, dawn/daylight policy, new flights, resets, data reloads, Home changes, bounded attachment and configurable group references. Existing `test_night_kit.gd`, `test_p51_lights.gd` and `test_heli_night_lights.gd` retain geometry, motion, gate and emissive checks.

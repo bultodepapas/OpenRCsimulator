@@ -39,13 +39,20 @@ static func propose(source_profile: Variant, source_bindings: Variant,
 		target = Presentation.defaults(target_bindings, int(source.version))
 		promoted_legacy_target = true
 	# Lighting v3 extends v2 without changing its paint or smoke interpretation.
-	if int(source.version) == 3 and int(target.version) == 2:
+	if int(source.version) >= 3 and int(target.version) == 2:
 		target.version = 3
 		target["lighting"] = Presentation.LightingProfile.defaults()
-	elif int(source.version) == 2 and int(target.version) == 3:
+	elif int(source.version) == 2 and int(target.version) >= 3:
 		source = source.duplicate(true)
 		source.version = 3
 		source["lighting"] = Presentation.LightingProfile.defaults()
+	if int(source.version) == 4 and int(target.version) == 3:
+		target.version = 4
+		target["mechanical_audio"] = Presentation.MechanicalProfile.defaults()
+	elif int(source.version) == 3 and int(target.version) == 4:
+		source = source.duplicate(true)
+		source.version = 4
+		source["mechanical_audio"] = Presentation.MechanicalProfile.defaults()
 	# Customized legacy profiles still require an explicit migration.
 	if int(source.version) != int(target.version):
 		return _failure(PackedStringArray(["Appearance profiles use different schema versions; review an explicit migration before copying."]))
@@ -61,6 +68,9 @@ static func propose(source_profile: Variant, source_bindings: Variant,
 	}
 	var applied: Array = []
 	var skipped: Array = []
+	if source.get("mechanical_audio", Presentation.MechanicalProfile.defaults()) != Presentation.MechanicalProfile.defaults():
+		target["mechanical_audio"] = source.mechanical_audio.duplicate(true)
+		applied.append({"domain": "mechanical_audio", "slot": "mechanical_audio", "reason": "compatible"})
 	# Semantic kit IDs are universal; target geometry and optional anchors are fitted
 	# by its own rig. Source mesh transforms and resource paths never cross aircraft.
 	if source.get("lighting", {}).get("selection", "inherit") != "inherit":

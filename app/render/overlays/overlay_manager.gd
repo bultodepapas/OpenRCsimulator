@@ -434,15 +434,25 @@ func refresh_numbers(snap: Dictionary) -> void:
 		if frames.session_stats.visible:
 			var scope := str(settings.get("session_stats_scope", "all"))
 			var aircraft_id := statistics_aircraft_id if scope == "aircraft" else ""
-			var summary: Dictionary = {}
-			if statistics_service != null and statistics_service.has_method("query"):
-				var result: Variant = statistics_service.call("query", aircraft_id, "session")
-				if result is Dictionary:
-					summary = result
+			var summary := _statistics_summary(aircraft_id, "session")
 			frames.session_stats.refresh_statistics(summary, tr("This aircraft") if scope == "aircraft" else tr("All aircraft"))
 	frames.warnings.visible = not _warning_codes.is_empty() and is_overlay_visible("warnings")
 	if visible and frames.warnings.visible:
 		frames.warnings.refresh(_warning_codes)
+
+
+func _statistics_summary(aircraft_id: String, period: String) -> Dictionary:
+	if statistics_service == null:
+		return {}
+	if statistics_service.has_method("summary"):
+		var summarized: Variant = statistics_service.call("summary", aircraft_id, period)
+		if summarized is Dictionary:
+			return summarized
+	if statistics_service.has_method("query"):
+		var queried: Variant = statistics_service.call("query", aircraft_id, period)
+		if queried is Dictionary:
+			return queried
+	return {}
 
 
 ## BAT-14/15: samples the pack (battery: electrical_state() or {}), shows O9 and the developer truth, and replaces a

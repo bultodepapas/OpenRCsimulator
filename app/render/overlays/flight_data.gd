@@ -16,7 +16,7 @@ func _init() -> void:
 		["vertical_speed", tr("Vertical speed")],
 		["throttle", tr("Throttle")],
 		["distance", tr("Distance")],
-		["time", tr("Flight time")],
+		["time", tr("Elapsed simulation time")],
 		["fuel", tr("Fuel")],
 	])
 	_fuel_name = values.fuel.get_parent().get_child(values.fuel.get_index() - 1) as Label

@@ -1,0 +1,547 @@
+extends RefCounted
+## Bounded render-only aircraft sparks, ribbon trails and nearby light spill.
+## All motion is analytic from the caller's displayed-pose clock; this class never reads simulation state.
+
+const RGB_LAMP_SHADER := preload("res://render/lighting/rgb_lamp.gdshader")
+const Patterns := preload("res://render/lighting/lighting_patterns.gd")
+const MAX_EFFECTS := 2
+const SPARK_POOL_CAPACITY := 32
+const SPARKS_PER_EVENT := 20
+const BURST_SPARKS_PER_EVENT := 32
+const MAX_TRAIL_SEGMENTS := 63
+const MAX_TRAIL_SAMPLES := MAX_TRAIL_SEGMENTS + 1
+const TRAIL_SAMPLE_INTERVAL := 1.0 / 30.0
+const MANEUVER_TRIGGER := 0.72
+const TRAIL_MANEUVER_THRESHOLD := 0.35
+const SPARK_COOLDOWN_S := 0.45
+const SPILL_RANGE_M := 2.7
+const SPILL_ENERGY := 0.08
+const SPILL_LIMIT := 2
+const SPILL_MAX_EXPOSED_ENERGY := 0.05
+const SPILL_FULL_DISTANCE_M := 20.0
+const SPILL_OFF_DISTANCE_M := 40.0
+const VFX_FULL_DISTANCE_M := 60.0
+const VFX_OFF_DISTANCE_M := 120.0
+const TIP_ANCHORS := {"vfx_tip_left": "nav_left", "vfx_tip_right": "nav_right"}
+const GOLD := Color("#FFD17A")
+
+var _root: Node3D
+var _kit: Node3D
+var _world_host: Node3D
+var _world_root: Node3D
+var _profile: Dictionary = {}
+var _effects: Array[Dictionary] = []
+var _spills: Array[Dictionary] = []
+var _warnings: Array[String] = []
+var _mode := "off"
+var _gain := 1.0
+var _last_seconds := -1.0
+var _last_maneuver := false
+var _last_cue_key := ""
+var _event_serial := 0
+var _spill_fade := 1.0
+var _distance_fade := 1.0
+
+
+func configure(aircraft_root: Node3D, kit: Node3D, profile: Dictionary) -> Dictionary:
+	dispose()
+	if aircraft_root == null or not is_instance_valid(aircraft_root) or kit == null or not is_instance_valid(kit):
+		return {"ok": false, "errors": ["lighting VFX requires a live aircraft root and NightKit"], "warnings": []}
+	_root = aircraft_root
+	_kit = kit
+	_profile = profile.duplicate(true)
+	var entries: Array = []
+	var errors: Array[String] = []
+	var effects: Variant = profile.get("effects", [])
+	if effects is Array:
+		for effect: Variant in effects:
+			if not effect is Dictionary or not bool(effect.get("enabled", false)):
+				continue
+			var anchor_id := str(effect.get("anchor_id", ""))
+			var kit_name := str(TIP_ANCHORS.get(anchor_id, ""))
+			var anchor := kit.get_node_or_null(NodePath(kit_name)) as Node3D if not kit_name.is_empty() else null
+			if anchor == null:
+				var message := "effect anchor '%s' is unavailable; effect was skipped" % anchor_id
+				if bool(effect.get("required", true)):
+					errors.append(message)
+				else:
+					_warnings.append(message)
+				continue
+			entries.append({"effect": effect, "anchor": anchor})
+	if not errors.is_empty():
+		var failure_warnings := _warnings.duplicate()
+		dispose()
+		return {"ok": false, "errors": errors, "warnings": failure_warnings}
+	if entries.size() > MAX_EFFECTS:
+		var overflow := "lighting VFX exceeds the two-effect runtime budget"
+		dispose()
+		return {"ok": false, "errors": [overflow], "warnings": []}
+	_create_spill_lights(profile)
+	if not entries.is_empty():
+		_create_world_root()
+		for entry: Dictionary in entries:
+			_create_effect_pool(entry.effect, entry.anchor)
+	return {"ok": true, "errors": [], "warnings": _warnings.duplicate()}
+
+
+func set_mode(mode: String, gain := 1.0) -> void:
+	if mode not in ["all", "nav", "off"] or not is_finite(gain):
+		return
+	_mode = mode
+	_gain = clampf(gain, 0.0, 2.0)
+	var show_all := _mode == "all" and _gain > 0.0 and is_instance_valid(_kit) and _kit.visible
+	for binding: Dictionary in _spills:
+		var spill: OmniLight3D = binding.get("light")
+		if is_instance_valid(spill):
+			spill.visible = show_all and _spill_fade > 0.0 and bool(spill.get_meta("gate_open", true))
+	for pool: Dictionary in _effects:
+		var instance: MultiMeshInstance3D = pool.get("instance")
+		if is_instance_valid(instance):
+			instance.visible = show_all
+	if not show_all:
+		_clear_transients()
+
+
+func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
+	if not is_finite(presentation_seconds) or not is_instance_valid(_root) or not is_instance_valid(_kit):
+		return
+	var seconds := maxf(0.0, presentation_seconds)
+	if _last_seconds >= 0.0 and seconds < _last_seconds:
+		reset()
+	var exposure := _number_or(telemetry.get("exposure", 1.0), 1.0, 0.0001, 1000000.0)
+	var distance := _number_or(telemetry.get("distance_m", 0.0), 0.0, 0.0, 1000000.0)
+	_spill_fade = 1.0 - _smoothstep(SPILL_FULL_DISTANCE_M, SPILL_OFF_DISTANCE_M, distance)
+	_distance_fade = 1.0 - _smoothstep(VFX_FULL_DISTANCE_M, VFX_OFF_DISTANCE_M, distance)
+	var maneuver := _number_or(telemetry.get("maneuver", 0.0), 0.0, 0.0, 1.0)
+	var maneuver_high := maneuver >= MANEUVER_TRIGGER
+	var maneuver_rising := maneuver_high and not _last_maneuver
+	_last_maneuver = maneuver_high
+	var effects_allowed := bool(telemetry.get("effects_allowed", false))
+	var show_all := _mode == "all" and _gain > 0.0 and _kit.visible
+	var active := show_all and effects_allowed
+	var cue_state := _sequence_state(seconds)
+	var cue := cue_state.get("cue", {}) as Dictionary
+	var cue_key := "%d:%d" % [int(cue_state.get("sequence_cycle", 0)), int(cue_state.get("cue_index", -1))]
+	var cue_changed := cue_key != _last_cue_key
+	_last_cue_key = cue_key
+	var cue_anchors: Array = cue.get("effect_anchor_ids", []) if cue_changed else []
+	var cue_active_anchors: Array = cue.get("effect_anchor_ids", [])
+	var cue_start := float(cue_state.get("cue_start_seconds", -1.0))
+	for pool: Dictionary in _effects:
+		var anchor: Node3D = pool.get("anchor")
+		if not is_instance_valid(anchor):
+			continue
+		var kind := str(pool.get("kind", "spark"))
+		var cue_trigger := str(pool.get("anchor_id", "")) in cue_anchors
+		var cue_active := str(pool.get("anchor_id", "")) in cue_active_anchors
+		if active and _distance_fade > 0.0 and cue_trigger and kind in ["spark", "burst"] and cue_start >= 0.0:
+			_trigger_sparks(pool, cue_start, seconds, true, _distance_fade)
+		elif active and _distance_fade > 0.0 and maneuver_rising and kind in ["spark", "burst"]:
+			_trigger_sparks(pool, seconds, seconds, false, _distance_fade)
+		if kind == "trail":
+			var trail_active := active and _distance_fade > 0.0 and (cue_active or maneuver >= TRAIL_MANEUVER_THRESHOLD)
+			if trail_active:
+				pool["trail_until"] = seconds + float(pool.get("lifetime_s", 0.6))
+				_sample_trail(pool, seconds, anchor.global_position)
+			_update_trail(pool, seconds, exposure, _distance_fade)
+		else:
+			_update_sparks(pool, seconds, exposure, _distance_fade)
+	_update_spills(seconds, telemetry, exposure)
+	_last_seconds = seconds
+
+
+func reset() -> void:
+	_last_seconds = -1.0
+	_last_maneuver = false
+	_last_cue_key = ""
+	_event_serial = 0
+	_spill_fade = 1.0
+	_distance_fade = 1.0
+	for pool: Dictionary in _effects:
+		pool["last_event_time"] = -INF
+		pool["last_sample_time"] = -INF
+		pool["trail_until"] = -INF
+		pool["samples"] = []
+		pool["particles"] = []
+		if pool.get("instance") is MultiMeshInstance3D:
+			var instance: MultiMeshInstance3D = pool.instance
+			if is_instance_valid(instance) and instance.multimesh != null:
+				instance.multimesh.visible_instance_count = 0
+
+
+func dispose() -> void:
+	for binding: Dictionary in _spills:
+		var spill: OmniLight3D = binding.get("light")
+		if is_instance_valid(spill):
+			spill.free()
+	_spills.clear()
+	if is_instance_valid(_world_root):
+		_world_root.free()
+	_world_root = null
+	_world_host = null
+	_effects.clear()
+	_profile.clear()
+	_warnings.clear()
+	_root = null
+	_kit = null
+	_mode = "off"
+	_gain = 1.0
+	_last_seconds = -1.0
+	_last_maneuver = false
+	_last_cue_key = ""
+	_event_serial = 0
+	_spill_fade = 1.0
+	_distance_fade = 1.0
+
+
+func budget_info() -> Dictionary:
+	var sparks := 0
+	var trails := 0
+	for pool: Dictionary in _effects:
+		if str(pool.get("kind", "")) == "trail":
+			trails += MAX_TRAIL_SAMPLES
+		else:
+			sparks += SPARK_POOL_CAPACITY
+	return {
+		"effects_allocated": _effects.size(),
+		"sparks_allocated": sparks,
+		"trails_allocated": trails,
+		"spill_lights_allocated": _spills.size(),
+		"spark_limit": MAX_EFFECTS * SPARK_POOL_CAPACITY,
+		"trail_sample_limit": MAX_EFFECTS * MAX_TRAIL_SAMPLES,
+		"spill_light_limit": SPILL_LIMIT,
+		"warnings": _warnings.duplicate(),
+	}
+
+
+func warnings() -> Array[String]:
+	return _warnings.duplicate()
+
+
+func _create_world_root() -> void:
+	var host: Node3D = null
+	var cursor: Node = _root.get_parent() if is_instance_valid(_root) else null
+	while cursor != null and host == null:
+		host = cursor as Node3D
+		cursor = cursor.get_parent()
+	if host == null:
+		host = _root
+	_world_host = host
+	_world_root = Node3D.new()
+	_world_root.name = "AircraftLightingWorldVfx"
+	_world_root.top_level = true
+	_world_host.add_child(_world_root)
+	_world_root.global_transform = Transform3D.IDENTITY
+
+
+func _create_effect_pool(effect: Dictionary, anchor: Node3D) -> void:
+	var kind := str(effect.get("kind", "spark"))
+	var count := MAX_TRAIL_SEGMENTS if kind == "trail" else SPARK_POOL_CAPACITY
+	var quad := QuadMesh.new()
+	quad.size = Vector2.ONE
+	var multi := MultiMesh.new()
+	multi.transform_format = MultiMesh.TRANSFORM_3D
+	multi.use_colors = true
+	multi.instance_count = count
+	multi.visible_instance_count = 0
+	multi.mesh = quad
+	var material := ShaderMaterial.new()
+	material.shader = RGB_LAMP_SHADER
+	material.set_shader_parameter("vfx_mode", 1.0)
+	material.set_shader_parameter("radial_shape", 0.0 if kind == "trail" else 1.0)
+	material.set_shader_parameter("radiance", 1.8 if kind == "trail" else 2.4)
+	var instance := MultiMeshInstance3D.new()
+	instance.name = "show_%s" % str(effect.get("anchor_id", "tip"))
+	instance.multimesh = multi
+	instance.material_override = material
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	instance.visible = false
+	_world_root.add_child(instance)
+	var lifetime := float(maxi(12, int(effect.get("lifetime_ticks", 96)))) / 240.0
+	_effects.append({
+		"anchor_id": str(effect.get("anchor_id", "")),
+		"anchor": anchor,
+		"kind": kind,
+		"intensity": clampf(_number_or(effect.get("intensity", 0.5), 0.5, 0.0, 1.0), 0.0, 1.0),
+		"lifetime_s": lifetime,
+		"seed": int(_profile.get("visual_seed", 0)),
+		"event_count": 0,
+		"last_event_time": -INF,
+		"last_sample_time": -INF,
+		"trail_until": -INF,
+		"samples": [],
+		"particles": [],
+		"instance": instance,
+		"material": material,
+	})
+
+
+func _create_spill_lights(profile: Dictionary) -> void:
+	var zones: Variant = profile.get("zones", [])
+	var strip_zones: Dictionary = {}
+	if zones is Array:
+		for zone: Variant in zones:
+			if zone is Dictionary and str(zone.get("id", "")).begins_with("strip_") and bool(zone.get("enabled", true)):
+				strip_zones[str(zone.get("id", ""))] = zone
+	if strip_zones.is_empty() or not is_instance_valid(_kit):
+		return
+	var supported: Array = _kit.get_meta("supported_light_groups", ["navigation", "strobe", "landing", "orientation"])
+	if not supported.has("orientation"):
+		return # Authored aircraft that do not support orientation strips cannot receive decorative spill.
+	var brightness := clampf(_number_or(profile.get("brightness", 1.0), 1.0, 0.0, 2.0), 0.0, 2.0)
+	for side in ["left", "right"]:
+		if _spills.size() >= SPILL_LIMIT:
+			break
+		var zone_id := ""
+		var zone: Dictionary = {}
+		for candidate_id in ["strip_%s" % side, "strip_top_%s" % side]:
+			var candidate_zone: Dictionary = strip_zones.get(candidate_id, {})
+			var candidate_node := _kit.get_node_or_null(candidate_id) as MeshInstance3D
+			if not candidate_zone.is_empty() and candidate_node != null and candidate_node.mesh != null and candidate_node.mesh.get_surface_count() > 0:
+				zone_id = candidate_id
+				zone = candidate_zone
+				break
+		if zone.is_empty():
+			continue
+		var anchor_name := "nav_%s" % side
+		var anchor := _kit.get_node_or_null(anchor_name) as Node3D
+		if anchor == null:
+			_warnings.append("spill anchor '%s' is unavailable; local spill was skipped" % anchor_name)
+			continue
+		var pattern: Dictionary = zone.get("pattern", {})
+		var color := Patterns.sample(pattern, 0.0, 0.5, profile.get("sequence", []), zone_id)
+		var zone_brightness := clampf(_number_or(zone.get("brightness", 1.0), 1.0, 0.0, 2.0), 0.0, 2.0)
+		var light := OmniLight3D.new()
+		light.name = "strip_spill_%s" % side
+		light.light_color = color
+		light.light_energy = 0.0 # Wait for the displayed exposure sample before enabling local spill.
+		light.omni_range = SPILL_RANGE_M
+		light.omni_attenuation = 2.0
+		light.shadow_enabled = false
+		light.light_specular = 0.0
+		light.position = anchor.position
+		light.visible = false
+		if anchor.has_meta("follow"):
+			light.set_meta("follow", anchor.get_meta("follow"))
+			light.set_meta("follow_offset", anchor.get_meta("follow_offset", Vector3.ZERO))
+		if anchor.has_meta("gear_gated"):
+			light.set_meta("gear_gated", true)
+		_kit.add_child(light)
+		_spills.append({"light": light, "zone": zone, "zone_id": zone_id, "base_energy": SPILL_ENERGY * brightness * zone_brightness})
+
+
+func _trigger_sparks(pool: Dictionary, birth_seconds: float, current_seconds: float, burst: bool, distance_fade: float) -> void:
+	var lifetime := maxf(0.001, float(pool.get("lifetime_s", 0.5)))
+	var age_at_birth := current_seconds - birth_seconds
+	if age_at_birth < 0.0 or age_at_birth >= lifetime:
+		return
+	if birth_seconds - float(pool.get("last_event_time", -INF)) < SPARK_COOLDOWN_S:
+		return
+	var base_count := BURST_SPARKS_PER_EVENT if burst else SPARKS_PER_EVENT
+	var count := clampi(roundi(float(base_count) * distance_fade), 0, SPARK_POOL_CAPACITY)
+	if count <= 0:
+		return
+	pool["last_event_time"] = birth_seconds
+	var anchor: Node3D = pool.get("anchor")
+	if not is_instance_valid(anchor):
+		return
+	var particles: Array = []
+	var rng := RandomNumberGenerator.new()
+	_event_serial += 1
+	var serial := int(pool.get("event_count", 0)) + _event_serial
+	pool["event_count"] = serial
+	rng.seed = posmod(int(pool.get("seed", 0)) + serial * 104729 + str(pool.get("anchor_id", "")).hash(), 2147483647)
+	var x_axis := _safe_axis(_root.global_transform.basis.x, Vector3.RIGHT)
+	var y_axis := _safe_axis(_root.global_transform.basis.y, Vector3.UP)
+	var z_axis := _safe_axis(_root.global_transform.basis.z, Vector3.BACK)
+	for _index in count:
+		var direction := (x_axis * rng.randf_range(-1.0, 1.0) + y_axis * rng.randf_range(0.0, 1.0) + z_axis * rng.randf_range(-1.0, 1.0)).normalized()
+		if direction.length_squared() < 0.5:
+			direction = y_axis
+		particles.append({
+			"origin": anchor.global_position,
+			"velocity": direction * rng.randf_range(0.7, 2.1),
+			"size": rng.randf_range(0.018, 0.045) * (1.25 if burst else 1.0),
+			"start": birth_seconds,
+			"life": lifetime,
+			"color": GOLD,
+		})
+	pool["particles"] = particles
+
+
+func _update_sparks(pool: Dictionary, seconds: float, exposure: float, distance_fade: float) -> void:
+	var instance: MultiMeshInstance3D = pool.get("instance")
+	if not is_instance_valid(instance) or instance.multimesh == null:
+		return
+	var material: ShaderMaterial = pool.get("material")
+	_set_exposure(material, pool, exposure)
+	var particles: Array = pool.get("particles", [])
+	var multi := instance.multimesh
+	var live_count := 0
+	var camera_basis := _camera_basis()
+	for index in SPARK_POOL_CAPACITY:
+		if index >= particles.size():
+			break
+		var particle: Dictionary = particles[index]
+		var age := maxf(0.0, seconds - float(particle.get("start", seconds)))
+		var life := maxf(0.001, float(particle.get("life", 0.5)))
+		if age >= life:
+			continue
+		var origin: Vector3 = particle.get("origin", Vector3.ZERO)
+		var velocity: Vector3 = particle.get("velocity", Vector3.ZERO)
+		var point := origin + velocity * age + Vector3.DOWN * (0.5 * 1.4 * age * age)
+		var fade := clampf(1.0 - age / life, 0.0, 1.0) * float(pool.get("intensity", 0.5)) * _gain * distance_fade
+		var size := float(particle.get("size", 0.025)) * (0.7 + 0.3 * fade)
+		var basis := Basis(camera_basis.x * size, camera_basis.y * size, camera_basis.z * size)
+		multi.set_instance_transform(index, _local_transform(Transform3D(basis, point)))
+		var color: Color = particle.get("color", GOLD)
+		multi.set_instance_color(index, Color(color.r, color.g, color.b, fade))
+		live_count = index + 1
+	multi.visible_instance_count = live_count
+
+
+func _sample_trail(pool: Dictionary, seconds: float, point: Vector3) -> void:
+	var last_sample_time := float(pool.get("last_sample_time", -INF))
+	if seconds - last_sample_time < TRAIL_SAMPLE_INTERVAL:
+		return
+	var samples: Array = pool.get("samples", [])
+	if not samples.is_empty():
+		var previous: Dictionary = samples[-1]
+		var previous_point: Vector3 = previous.get("position", point)
+		if previous_point.distance_to(point) > 5.0:
+			samples.clear() # A camera/aircraft teleport never draws a bridge across the world.
+		elif seconds - float(previous.get("time", seconds)) < TRAIL_SAMPLE_INTERVAL * 0.5:
+			return
+	samples.append({"time": seconds, "position": point})
+	while samples.size() > MAX_TRAIL_SAMPLES:
+		samples.pop_front()
+	pool["samples"] = samples
+	pool["last_sample_time"] = seconds
+
+
+func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_fade: float) -> void:
+	var instance: MultiMeshInstance3D = pool.get("instance")
+	if not is_instance_valid(instance) or instance.multimesh == null:
+		return
+	var material: ShaderMaterial = pool.get("material")
+	_set_exposure(material, pool, exposure)
+	var samples: Array = pool.get("samples", [])
+	var life := maxf(0.001, float(pool.get("lifetime_s", 0.6)))
+	while not samples.is_empty() and seconds - float(samples[0].get("time", seconds)) > life:
+		samples.pop_front()
+	pool["samples"] = samples
+	var multi := instance.multimesh
+	var camera_position := _camera_position()
+	var segments := 0
+	for index in MAX_TRAIL_SEGMENTS:
+		if index + 1 >= samples.size():
+			break
+		var before: Dictionary = samples[index]
+		var after: Dictionary = samples[index + 1]
+		var from: Vector3 = before.get("position", Vector3.ZERO)
+		var to: Vector3 = after.get("position", Vector3.ZERO)
+		var delta := to - from
+		var length := delta.length()
+		if length < 0.001 or length > 5.0:
+			continue
+		var tangent := delta / length
+		var midpoint := (from + to) * 0.5
+		var side := (camera_position - midpoint).cross(tangent)
+		if side.length_squared() < 1e-8:
+			side = Vector3.UP.cross(tangent)
+		if side.length_squared() < 1e-8:
+			side = Vector3.RIGHT.cross(tangent)
+		side = side.normalized()
+		var normal := tangent.cross(side).normalized()
+		var fade := clampf(1.0 - maxf(0.0, seconds - float(after.get("time", seconds))) / life, 0.0, 1.0)
+		fade *= float(pool.get("intensity", 0.5)) * _gain * distance_fade
+		var basis := Basis(tangent * length, side * 0.035, normal)
+		multi.set_instance_transform(segments, _local_transform(Transform3D(basis, midpoint)))
+		multi.set_instance_color(segments, Color(GOLD.r, GOLD.g, GOLD.b, fade))
+		segments += 1
+	multi.visible_instance_count = segments
+
+
+func _update_spills(seconds: float, telemetry: Dictionary, exposure: float) -> void:
+	for binding: Dictionary in _spills:
+		var light: OmniLight3D = binding.get("light")
+		if not is_instance_valid(light):
+			continue
+		if is_instance_valid(_kit) and _kit.visible:
+			light.visible = _mode == "all" and _gain > 0.0 and _spill_fade > 0.0
+		else:
+			light.visible = false
+		var zone: Dictionary = binding.get("zone", {})
+		var zone_id := str(binding.get("zone_id", ""))
+		var pattern: Dictionary = zone.get("pattern", {})
+		light.light_color = Patterns.sample(pattern, seconds, 0.5, _profile.get("sequence", []), zone_id)
+		var reaction := Patterns.reactive_multiplier(zone.get("reactive", {}), telemetry)
+		var requested_energy := float(binding.get("base_energy", SPILL_ENERGY)) * _gain * _spill_fade * float(reaction.get("multiplier", 1.0))
+		light.light_energy = minf(requested_energy, SPILL_MAX_EXPOSED_ENERGY / maxf(exposure, 0.0001))
+		light.visible = _mode == "all" and _gain > 0.0 and _spill_fade > 0.0 and _kit.visible and bool(light.get_meta("gate_open", true))
+
+
+func _sequence_state(seconds: float) -> Dictionary:
+	var sequence: Variant = _profile.get("sequence", [])
+	if not sequence is Array or sequence.is_empty():
+		return {"cue_index": -1, "sequence_cycle": 0, "cue_start_seconds": -1.0, "cue": {}}
+	return Patterns.sequence_state(sequence, seconds)
+
+
+func _set_exposure(material: ShaderMaterial, pool: Dictionary, exposure: float) -> void:
+	if not is_instance_valid(material):
+		return
+	if absf(float(pool.get("last_exposure", -1.0)) - exposure) <= 0.0001:
+		return
+	material.set_shader_parameter("local_exposure", exposure)
+	pool["last_exposure"] = exposure
+
+
+func _camera_basis() -> Basis:
+	if is_instance_valid(_world_root):
+		var viewport := _world_root.get_viewport()
+		var camera := viewport.get_camera_3d() if viewport != null else null
+		if camera != null:
+			return camera.global_transform.basis.orthonormalized()
+	return Basis.IDENTITY
+
+
+func _camera_position() -> Vector3:
+	if is_instance_valid(_world_root):
+		var viewport := _world_root.get_viewport()
+		var camera := viewport.get_camera_3d() if viewport != null else null
+		if camera != null:
+			return camera.global_position
+	return Vector3.ZERO
+
+
+func _local_transform(world_transform: Transform3D) -> Transform3D:
+	if not is_instance_valid(_world_root):
+		return world_transform
+	return _world_root.global_transform.affine_inverse() * world_transform
+
+
+func _clear_transients() -> void:
+	for pool: Dictionary in _effects:
+		pool["particles"] = []
+		pool["samples"] = []
+		pool["last_sample_time"] = -INF
+		pool["trail_until"] = -INF
+		var instance: MultiMeshInstance3D = pool.get("instance")
+		if is_instance_valid(instance) and instance.multimesh != null:
+			instance.multimesh.visible_instance_count = 0
+
+
+func _safe_axis(axis: Vector3, fallback: Vector3) -> Vector3:
+	return axis.normalized() if axis.is_finite() and axis.length_squared() > 1e-8 else fallback
+
+
+func _smoothstep(edge0: float, edge1: float, value: float) -> float:
+	var t := clampf((value - edge0) / maxf(edge1 - edge0, 0.00001), 0.0, 1.0)
+	return t * t * (3.0 - 2.0 * t)
+
+
+func _number_or(value: Variant, fallback: float, low: float, high: float) -> float:
+	if not (value is int or value is float) or not is_finite(float(value)):
+		return fallback
+	return clampf(float(value), low, high)

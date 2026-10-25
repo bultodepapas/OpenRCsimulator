@@ -179,8 +179,9 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - It runs its own headless session on its own port: `crawl` from Home, every scenario in
     `tools/debug/scenarios/*.txt` with `--fail-on-error`, a flight and `crawl` from its pause menu, a seeded
     `monkey`, a fly/Home `soak`, and the exit report.
-  - Between steps it returns to a bare Home: it ends flights and the truck, closes dialogs and discards unsaved
-    Workshop edits.
+  - Before each scenario and the pause-menu test flight, it returns to a bare Home: it ends flights and the truck,
+    closes dialogs and discards unsaved Workshop edits. A failed reset skips that dependent scenario and remains
+    a failure in the verdict. It also resets Home after the random walk and soak.
   - It prints one JSON verdict and exits 1 when any step failed or the engine crashed. It takes about 3.5 minutes
     on the VM.
   - Add a scenario file for every UI or flow bug you fix. Each must start and end at Home.

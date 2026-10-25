@@ -5,6 +5,7 @@ const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const ResetDialog := preload("res://ui/statistics_reset_dialog.gd")
+const Units := preload("res://render/overlays/units.gd")
 
 signal back_requested
 
@@ -13,6 +14,7 @@ const PERIOD_LABELS := ["This session", "Lifetime history", "Since counter reset
 const HISTORY_PAGE_SIZE := 50
 
 var _service: Object
+var _unit_system := "metric"
 var _screen: Control
 var _panel: PanelContainer
 var _filter_row: BoxContainer
@@ -68,8 +70,9 @@ func _init() -> void:
 	surface.theme_changed.connect(_resize_layout)
 
 
-func configure(statistics_service: Object, initial_aircraft: String = "") -> void:
+func configure(statistics_service: Object, initial_aircraft: String = "", unit_system: String = "metric") -> void:
 	_service = statistics_service
+	_unit_system = Units.resolve(unit_system, TranslationServer.get_locale())
 	_selected_aircraft = initial_aircraft
 	_build_aircraft_choices()
 	_select_aircraft(initial_aircraft)
@@ -345,7 +348,8 @@ func _refresh() -> void:
 		_stats = result if result is Dictionary else {}
 	else:
 		_stats = {}
-	_history = _stats.get("history", []) if _stats.get("history", []) is Array else []
+	var history_value: Variant = _stats.get("history", [])
+	_history = _newest_first_history(history_value if history_value is Array else [])
 	if _period_picker != null:
 		_period_picker.select(PERIODS.find(_period))
 	_update_summary()
@@ -395,7 +399,10 @@ func _update_summary() -> void:
 		and _count(_stats.get("restarts", 0)) == 0 and _history.is_empty()
 	var coverage := _coverage_text(_stats)
 	if empty:
-		coverage = tr("Tracking begins with your next flight.")
+		var has_lifetime_history := bool(_stats.get("has_lifetime_history", false))
+		if not _stats.has("has_lifetime_history"):
+			has_lifetime_history = not str(_stats.get("tracking_started_utc", "")).is_empty()
+		coverage = tr("No flight records in this view.") if has_lifetime_history else tr("Tracking begins with your next flight.")
 	elif coverage.is_empty():
 		coverage = tr("Completed in a row: %d · best %d · crash-free airborne time: %s · best %s") \
 			% [current_streak, best_streak, crash_free, best_crash_free]
@@ -466,12 +473,23 @@ func _render_history() -> void:
 func _history_row(record: Dictionary, index: int) -> VBoxContainer:
 	var row := VBoxContainer.new()
 	row.add_theme_constant_override("separation", 4)
-	var outcome := str(record.get("outcome", record.get("status", "Unknown"))).replace("_", " ").capitalize()
+	var record_kind := str(record.get("kind", ""))
+	if record_kind.is_empty():
+		record_kind = "flight" if record.has("flight_id") or record.has("outcome") else "record"
+	var raw_outcome := str(record.get("outcome", record.get("status", "Unknown")))
+	var metadata_value: Variant = record.get("metadata", {})
+	var metadata: Dictionary = metadata_value if metadata_value is Dictionary else {}
+	var reason := str(metadata.get("cause", record.get("reason", "")))
+	var outcome := _history_record_label(record_kind, raw_outcome, metadata, reason)
 	var date := _record_date(record)
-	if date.is_empty(): date = tr("Flight %d") % (index + 1)
+	if date.is_empty():
+		date = (tr("Flight %d") % (index + 1)) if record_kind == "flight" else (tr("Record %d") % (index + 1))
 	var aircraft := str(record.get("aircraft_name", record.get("aircraft_id", _selected_aircraft_name())))
-	var duration := _duration(_number(record.get("airborne_seconds", NAN)))
-	var toggle := Widgets.button("%s · %s · %s · %s" % [date, aircraft, duration, tr(outcome)], "QuietButton", "HistoryRow%d" % index)
+	var title_parts: PackedStringArray = [date, aircraft]
+	if record_kind == "flight":
+		title_parts.append(_duration(_number(record.get("airborne_seconds", NAN))))
+	title_parts.append(outcome)
+	var toggle := Widgets.button(" · ".join(title_parts), "QuietButton", "HistoryRow%d" % index)
 	toggle.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	toggle.toggle_mode = true
 	row.add_child(toggle)
@@ -479,23 +497,116 @@ func _history_row(record: Dictionary, index: int) -> VBoxContainer:
 	detail.visible = false
 	detail.add_theme_constant_override("separation", 2)
 	row.add_child(detail)
-	var breakdown := tr("Takeoffs %d · Full stops %d · Touch-and-go %d") % [
-		_count(record.get("takeoffs", 0)), _count(record.get("full_stops", 0)), _count(record.get("touch_and_go", 0))
-	]
-	_add_detail(detail, breakdown, "")
-	_add_detail(detail, tr("Max valid airspeed (TAS)"), _speed(record.get("max_tas_mps", NAN)))
-	_add_detail(detail, tr("Coverage"), _coverage_text(record))
+	if record_kind == "flight":
+		var takeoffs := _count(record.get("takeoffs", 0))
+		if record.has("start_kind"):
+			takeoffs = 1 if str(record.get("start_kind", "")) == "takeoff" else 0
+		var breakdown := tr("Takeoffs %d · Full stops %d · Touch-and-go %d") % [
+			takeoffs, _count(record.get("full_stops", 0)), _count(record.get("touch_and_go", 0))
+		]
+		_add_detail(detail, breakdown, "")
+		_add_detail(detail, tr("Max valid airspeed (TAS)"), _speed(record.get("max_tas_mps", NAN)))
+		_add_detail(detail, tr("Coverage"), _coverage_text(record))
+	elif record_kind == "crash" and metadata.has("ground"):
+		_add_detail(detail, tr("Crash context"), tr("On ground") if bool(metadata.ground) else tr("In flight"))
+	elif record_kind == "restart" and not reason.is_empty():
+		_add_detail(detail, tr("Restart reason"), _history_event_value("reason", reason))
+	var started_utc := str(record.get("utc", ""))
+	var started := started_utc if not started_utc.is_empty() else str(record.get("started_at", record.get("timestamp", "")))
+	if not started.is_empty():
+		_add_detail(detail, tr("Started (UTC)") if not started_utc.is_empty() else tr("Started"), started)
+	var ended_utc := str(record.get("ended_utc", ""))
+	var ended := ended_utc if not ended_utc.is_empty() else str(record.get("ended_at", ""))
+	if not ended.is_empty():
+		_add_detail(detail, tr("Ended (UTC)") if not ended_utc.is_empty() else tr("Ended"), ended)
 	var scenario := str(record.get("scenario", ""))
 	if not scenario.is_empty(): _add_detail(detail, tr("Scenario"), tr(scenario))
-	var events: Variant = record.get("timeline", record.get("events", []))
-	if events is Array and not events.is_empty():
-		var timeline := " · ".join(PackedStringArray(events.map(func(event: Variant) -> String: return tr(str(event)))))
-		_add_detail(detail, tr("Events"), timeline)
+	var events := _history_events(record)
+	for event: Variant in events:
+		var event_text := _history_event_text(event)
+		if not event_text.is_empty():
+			_add_detail(detail, tr("Events"), event_text)
+	var omitted := _count(metadata.get("events_omitted", 0))
+	if omitted > 0:
+		_add_detail(detail, tr("More events omitted: %d") % omitted, "")
 	toggle.toggled.connect(func(open: bool) -> void:
 		detail.visible = open
-		toggle.text = ("⌄ " if open else "› ") + "%s · %s · %s · %s" % [date, aircraft, duration, tr(outcome)]
+		toggle.text = ("⌄ " if open else "› ") + " · ".join(title_parts)
 	)
 	return row
+
+
+func _history_record_label(kind: String, outcome: String, metadata: Dictionary, reason: String) -> String:
+	match kind:
+		"crash":
+			if metadata.has("ground"):
+				return tr("Ground crash") if bool(metadata.ground) else tr("Flight crash")
+			return tr("Crash")
+		"restart":
+			return tr("Restart: %s") % tr(reason.replace("_", " ").capitalize()) if not reason.is_empty() else tr("Restart")
+		"flight":
+			if outcome == "failed_stop": return tr("Uncontrolled stop")
+			return tr(outcome.replace("_", " ").capitalize())
+	return tr(kind.replace("_", " ").capitalize())
+
+
+func _history_events(record: Dictionary) -> Array:
+	var metadata: Variant = record.get("metadata", {})
+	if metadata is Dictionary:
+		var observed: Variant = metadata.get("events", [])
+		if observed is Array and not observed.is_empty():
+			return observed
+	var legacy: Variant = record.get("timeline", record.get("events", []))
+	return legacy if legacy is Array else []
+
+
+func _history_event_text(event: Variant) -> String:
+	if not event is Dictionary:
+		return tr(str(event))
+	var parts := PackedStringArray()
+	for key: String in ["type", "kind", "outcome", "reason"]:
+		var value := str(event.get(key, ""))
+		if value.is_empty():
+			continue
+		value = _history_event_value(key, value)
+		match key:
+			"type": parts.append(tr("Type: %s") % value)
+			"kind": parts.append(tr("Kind: %s") % value)
+			"outcome": parts.append(tr("Outcome: %s") % value)
+			"reason": parts.append(tr("Reason: %s") % value)
+	if event.has("tick"):
+		parts.append(tr("Tick: %d") % int(event.tick))
+	if event.has("first_contact_tick"):
+		parts.append(tr("First contact tick: %d") % int(event.first_contact_tick))
+	if event.has("start_kind"):
+		var start_kind := _history_event_value("start_kind", str(event.start_kind))
+		parts.append(tr("Start kind: %s") % tr(start_kind))
+	return " · ".join(parts)
+
+
+func _history_event_value(field: String, value: String) -> String:
+	match field:
+		"type":
+			match value:
+				"started": return tr("Flight started")
+				"landing": return tr("Landing event")
+				"closed": return tr("Flight ended")
+		"kind":
+			match value:
+				"full_stop": return tr("Full stop")
+				"touch_and_go": return tr("Touch-and-go")
+		"outcome":
+			if value == "failed_stop": return tr("Uncontrolled stop")
+			if value == "success": return tr("Successful")
+		"reason":
+			match value:
+				"stable_support": return tr("Stable support")
+				"ended_before_resolution": return tr("Ended before resolution")
+		"start_kind":
+			match value:
+				"air_start": return tr("Airborne start")
+				"takeoff": return tr("Takeoff")
+	return tr(value.replace("_", " ").capitalize())
 
 
 func _set_history_page(page: int) -> void:
@@ -561,10 +672,32 @@ func _selected_aircraft_name() -> String:
 
 
 func _record_date(record: Dictionary) -> String:
-	for key: String in ["started_at", "timestamp", "ended_at", "date"]:
+	for key: String in ["utc", "started_at", "timestamp", "ended_utc", "ended_at", "date"]:
 		var value := str(record.get(key, ""))
-		if not value.is_empty(): return value
+		if not value.is_empty():
+			if key in ["utc", "started_at", "timestamp"] and value.length() >= 16 and value[10] == "T":
+				return value.substr(0, 16).replace("T", " ") + ("Z" if value.ends_with("Z") else "")
+			return value
 	return ""
+
+
+static func _newest_first_history(history: Array) -> Array:
+	var result := history.duplicate(true)
+	var has_sequence := false
+	for record: Variant in result:
+		if record is Dictionary and typeof(record.get("seq", null)) in [TYPE_INT, TYPE_FLOAT]:
+			has_sequence = true
+			break
+	if not has_sequence:
+		return result
+	result.sort_custom(func(left: Variant, right: Variant) -> bool:
+		if not left is Dictionary: return false
+		if not right is Dictionary: return true
+		var left_seq := float(left.get("seq", -1))
+		var right_seq := float(right.get("seq", -1))
+		return left_seq > right_seq
+	)
+	return result
 
 
 func _closed_count(data: Dictionary) -> int:
@@ -578,7 +711,7 @@ func _closed_count(data: Dictionary) -> int:
 	for record: Variant in history:
 		if not record is Dictionary: continue
 		var outcome := str(record.get("outcome", record.get("status", ""))).to_lower()
-		if outcome in ["completed", "crashed", "restarted", "abandoned", "damaged_stop", "interrupted"]:
+		if outcome in ["completed", "crashed", "restarted", "abandoned", "damaged_stop", "failed_stop", "interrupted"]:
 			closed += 1
 	return closed
 
@@ -608,13 +741,14 @@ func _active_text(value: Variant) -> String:
 
 func _speed(value: Variant) -> String:
 	var speed := _number(value)
-	return "—" if speed < 0.0 else "%.1f m/s" % speed
+	return "—" if speed < 0.0 else Units.format(Units.speed(speed, _unit_system))
 
 
 func _duration(seconds: float) -> String:
 	if not is_finite(seconds) or seconds < 0.0:
 		return "—"
 	var total := maxi(0, roundi(seconds))
+	if seconds == 0.0: return tr("%d min") % 0
 	if total < 60: return tr("<1 min")
 	var hours := floori(float(total) / 3600.0)
 	var minutes := int((total % 3600) / 60)

@@ -14,10 +14,17 @@ const EngineSound = preload("res://render/engine_sound.gd")
 const PowertrainAudio = preload("res://audio/powertrain_audio.gd")
 const GroundAudio = preload("res://audio/ground_audio.gd")
 const GroundAudioModel = preload("res://audio/ground_audio_model.gd")
+const MechanicalAudio = preload("res://audio/mechanical_audio.gd")
+const MechanicalProfile = preload("res://audio/mechanical_profile.gd")
 const TIMBER_ID := "turbo-lumber-evolution"
 var flight: Node3D
 var soundscape: Soundscape
 var ground_audio: GroundAudio
+var mechanical_audio: Node3D
+var _mechanical_channels: Array[Dictionary] = []
+var _mechanical_anchors: Array[Array] = []
+var _mechanical_snapshot: Dictionary = {}
+var _mechanical_mask := 1.0
 var _last_tick: int = -1
 var _windsock: WeakRef
 var last_update_usec: int = 0
@@ -44,6 +51,11 @@ func configure(scene: Node3D) -> void:
 	ground_audio = GroundAudio.new()
 	ground_audio.configure(self, soundscape.output_bus())
 	ground_audio.bind_soundscape(soundscape)
+	mechanical_audio = MechanicalAudio.new()
+	mechanical_audio.configure(self, soundscape.output_bus(),
+		MechanicalProfile.resolve(flight.workshop_trial.get("presentation_profile", {})))
+	mechanical_audio.bind_soundscape(soundscape)
+	_bind_mechanical_channels()
 	var field_node: Node3D = flight.get("_field_node") as Node3D
 	if field_node != null:
 		var cues: Array = field_node.get_meta("wind_cues", [])
@@ -141,7 +153,7 @@ func snapshot() -> Dictionary:
 		airspeed = air.V,
 		temperature_c = temperature_k - 273.15, pressure_pa = pressure_pa, humidity_molar_pct = humidity,
 		wind_speed = wind.length(), wind_direction = wind,
-		source = Frames.ned_to_render(source_ned), listener = flight._camera.global_position, source_velocity = source_velocity,
+		source = Frames.ned_to_render(source_ned), listener = listener_position(), source_velocity = source_velocity,
 		paused = session.sim.paused, sun_elevation = elevation, time = session.sim.time(),
 		jet_velocity = jet_velocity, jet_velocity_max = jet_velocity_max, exhaust_direction = exhaust,
 		glow = glow_state,
@@ -156,6 +168,11 @@ func snapshot() -> Dictionary:
 		if sock.has_meta("windsock_motion"):
 			result.windsock_inflation = float(sock.get_meta("windsock_motion").inflation)
 	return result
+
+
+func listener_position() -> Vector3:
+	var listener := flight.get_viewport().get_audio_listener_3d()
+	return listener.get_listener_transform().origin if listener != null else flight._camera.global_position
 
 
 static func propulsion_source_running(session: Node) -> bool:
@@ -188,10 +205,74 @@ func _on_resetting() -> void:
 	soundscape.reset_observer()
 	if ground_audio != null:
 		ground_audio.reset()
+	if mechanical_audio != null:
+		mechanical_audio.reset()
+	_mechanical_mask = 1.0
 
 
 func contact_snapshot() -> Array[Dictionary]:
 	return GroundAudioModel.snapshot_contacts(flight.session, flight.field)
+
+
+## One source per accepted logical actuator. Mirrored visual surfaces do not invent
+## independent servo state. The authored hinge centres approximate the installation.
+func _bind_mechanical_channels() -> void:
+	var airplane: Dictionary = flight._airplane
+	var controls: Dictionary = airplane.get("model_manifest", {}).get("bindings", {}).get("controls", {})
+	var groups: Array = [["aileron_left", "aileron_right"], ["elevator"], ["rudder"]]
+	if flight.session.flaps_available(): groups.append(["flap_left", "flap_right"])
+	var ids := ["aileron", "elevator", "rudder", "flap"]
+	for index: int in groups.size():
+		var anchors: Array = []
+		for surface: String in groups[index]:
+			for binding: Dictionary in controls.get(surface, {}).get("hinges", []):
+				var hinge: Variant = airplane.get("hinges", {}).get(str(binding.key))
+				var node: Node3D = hinge as Node3D if hinge is Node3D else (hinge.get("node") as Node3D if hinge is Dictionary else null)
+				if node != null and not anchors.has(node): anchors.append(node)
+		_mechanical_anchors.append(anchors)
+		_mechanical_channels.append({id = ids[index], angle_deg = 0.0, position = Vector3.ZERO})
+	_mechanical_snapshot = {channels = _mechanical_channels, tick_rate = float(Engine.physics_ticks_per_second)}
+
+
+func mechanical_snapshot(sound: Dictionary, delta: float) -> Dictionary:
+	var angles: Dictionary = flight.session.surface_angles_deg()
+	_mechanical_channels[0].angle_deg = float(angles.get("aileron_right", 0.0))
+	_mechanical_channels[1].angle_deg = float(angles.get("elevator", 0.0))
+	_mechanical_channels[2].angle_deg = float(angles.get("rudder", 0.0))
+	if _mechanical_channels.size() > 3:
+		# The status accessor also computes an overspeed advisory; audio only needs
+		# the same accepted fraction/maximum angle, without another air-data solve.
+		_mechanical_channels[3].angle_deg = float(flight.session.sim.aux[flight.session.flap_aux_index()]) \
+			* float(flight.session.aircraft.model.flaps.max_angle_deg)
+	var root_position: Vector3 = flight._airplane.root.global_position
+	for index: int in _mechanical_channels.size():
+		var position := Vector3.ZERO
+		var count := 0
+		for node: Node3D in _mechanical_anchors[index]:
+			if is_instance_valid(node):
+				position += node.global_position
+				count += 1
+		_mechanical_channels[index].position = position / float(count) if count > 0 else root_position
+	var gear: Dictionary = flight.session.gear_state()
+	gear["position"] = root_position
+	gear["target"] = 1.0 if bool(gear.get("target_down", false)) else 0.0
+	_mechanical_snapshot.gear = gear
+	_mechanical_snapshot.tick = flight.session.sim.tick
+	_mechanical_snapshot.paused = bool(sound.get("paused", false)) or not flight.session.physics_enabled
+	_mechanical_snapshot.listener = sound.listener
+	# Quiet mechanisms already sit below the engine. A modest, smoothed residual
+	# reduction prevents stacking several near-field servos over a running engine.
+	# Accepted RPM retains gasoline idle masking and electric coast; stick position
+	# alone never hides or exposes sound. These are authored mix trims, not SPL data.
+	var family: String = str(soundscape.voice_profile.get("family", ""))
+	var rpm_fraction := clampf(float(sound.rpm) / maxf(float(sound.max_rpm), 1.0), 0.0, 1.0)
+	var combustion: bool = family in ["gasoline", "glow_2t", "glow_4t", "turbine"]
+	var active := bool(sound.get("running", false)) and float(sound.rpm) > 100.0
+	var reduction_db: float = (8.0 + 12.0 * rpm_fraction) if combustion and active else 13.0 * smoothstep(0.10, 0.85, rpm_fraction)
+	var target := db_to_linear(-reduction_db)
+	_mechanical_mask += (target - _mechanical_mask) * (1.0 - exp(-clampf(delta, 0.0, 0.1) / 0.18))
+	_mechanical_snapshot.engine_mask = _mechanical_mask
+	return _mechanical_snapshot
 
 
 func _process(delta: float) -> void:
@@ -201,6 +282,7 @@ func _process(delta: float) -> void:
 	var tick: int = flight.session.sim.tick
 	if tick < _last_tick:
 		soundscape.reset_observer()
+		mechanical_audio.reset()
 	_last_tick = tick
 	var sound_snapshot: Dictionary = snapshot()
 	soundscape.update_sound(sound_snapshot, delta)
@@ -211,4 +293,5 @@ func _process(delta: float) -> void:
 	var engine_power: float = float(sound_snapshot.get("throttle", 0.0)) if bool(sound_snapshot.get("running", false)) else 0.0
 	ground_audio.update_contacts(tick, paused, ground_contacts,
 		engine_power, delta, sound_snapshot.get("listener", Vector3.ZERO), float(Engine.physics_ticks_per_second))
+	mechanical_audio.update_sound(mechanical_snapshot(sound_snapshot, delta), delta)
 	last_update_usec = Time.get_ticks_usec() - started

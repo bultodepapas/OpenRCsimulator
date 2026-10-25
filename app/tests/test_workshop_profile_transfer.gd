@@ -164,7 +164,7 @@ func _test_trial_identity_is_physical() -> void:
 		_check("a copied appearance changes separate presentation identity only",
 			preview.applied.size() == 1
 			and after.presentation_identity.sha256 != before.presentation_identity.sha256)
-	var lights := Presentation.defaults(bindings)
+	var lights := Presentation.defaults(bindings, 3)
 	lights.lighting = Presentation.LightingProfile.preset("festival")
 	var lighting_copy := Transfer.propose(lights, bindings, Presentation.defaults(bindings, 2), bindings)
 	_check("lighting transfer promotes v2 without altering paint or smoke", lighting_copy.get("ok", false)

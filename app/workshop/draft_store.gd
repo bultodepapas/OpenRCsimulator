@@ -25,7 +25,7 @@ const MAX_EDITOR_NODES: int = 256
 const SNAPSHOT_KEYS: PackedStringArray = ["format", "version", "bundle_sha256", "bundle_base64", "editor"]
 const EDITOR_KEYS: PackedStringArray = ["page", "name", "numeric_buffers", "presentation_buffers"]
 const EDITOR_OPTIONAL_KEYS: PackedStringArray = ["camera"]
-const PAGES: PackedStringArray = ["appearance", "smoke", "lighting", "setup", "compare"]
+const PAGES: PackedStringArray = ["appearance", "smoke", "lighting", "audio", "setup", "compare"]
 const NUMERIC_BUFFER_KEYS: PackedStringArray = [
 	"scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier",
 ]
