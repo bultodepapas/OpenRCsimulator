@@ -233,6 +233,38 @@ def pose_fingers(side, curl, thumb_tuck_deg):
                 rotation = Quaternion((1.0, 0.0, 0.0), math.radians(thumb_tuck_deg)) @ rotation
             bone.rotation_quaternion = rotation
 
+FINGER_REST_GAP_M = 0.0025  # SC-HUM-07-R7: fingertips rest this far outside the held object's surface
+
+def fit_fingers_to_surface(objects):
+    """Scale each finger's flexion (0-2x its preset, in 0.05 steps) so its tip rests FINGER_REST_GAP_M outside the
+    surface of `objects` (world-space meshes), never inside. Measured on the posed rig through the Blender MCP."""
+    import bmesh
+    from mathutils.bvhtree import BVHTree
+    surface = bmesh.new()
+    for obj in objects:
+        mesh = obj.data.copy()
+        mesh.transform(obj.matrix_world)
+        surface.from_mesh(mesh)
+        bpy.data.meshes.remove(mesh)
+    tree = BVHTree.FromBMesh(surface)
+    report = {}
+    for side in ('L', 'R'):
+        for finger in range(2, 6):
+            bones = [rig.pose.bones['finger%d-%d.%s' % (finger, joint, side)] for joint in (1, 2, 3)]
+            preset = [bone.rotation_quaternion.copy() for bone in bones]
+            def apply(scale):
+                for bone, rotation in zip(bones, preset):
+                    bone.rotation_quaternion = Quaternion(rotation.axis, rotation.angle * scale)
+                bpy.context.view_layer.update()
+                tip = rig.matrix_world @ bones[2].tail
+                location, normal, _index, distance = tree.find_nearest(tip)
+                outside = location is not None and (tip - location).dot(normal) >= 0.0
+                return (abs(distance - FINGER_REST_GAP_M) if outside else distance + 1.0), distance
+            best = min((apply(step / 20.0)[0], step / 20.0) for step in range(41))
+            _error, distance = apply(best[1])
+            report['%s%d' % (side, finger)] = [best[1], round(distance * 1000.0, 1)]
+    print('FINGER_FIT=' + json.dumps(report, sort_keys=True))
+
 def aim_bone(bone_name, world_point):
     target = bpy.data.objects.new('Aim_' + bone_name, None)
     bpy.context.scene.collection.objects.link(target)
@@ -367,14 +399,23 @@ elif pose_kind == 'pilot':
         wrist = radio_frame @ Vector((-sign * TRANSMITTER_WRIST[0], TRANSMITTER_WRIST[1], TRANSMITTER_WRIST[2]))
         make_ik_target('RadioHand_' + side, tuple(wrist / pose_scale), 'lowerarm02.' + side, 4, (sign * 0.36 / pose_scale, 0.22 / pose_scale, 1.15 / pose_scale))
         # Aim the hand and the thumb at grip points; curl the other fingers behind the grip.
+        targets = {}
         for bone_name, point in [('wrist.' + side, TRANSMITTER_KNUCKLES), ('finger1-1.' + side, TRANSMITTER_THUMB)]:
             target = bpy.data.objects.new('RadioAim_' + bone_name, None)
             bpy.context.scene.collection.objects.link(target)
             target.location = radio_frame @ Vector((-sign * point[0], point[1], point[2])) / pose_scale
-            rig.pose.bones[bone_name].constraints.new('DAMPED_TRACK').target = target
-        pose_fingers(side, FINGERS_GRIP, THUMB_TUCK_GRIP_DEG)  # the thumb's first joint follows its aim
+            targets[bone_name] = target
+        rig.pose.bones['wrist.' + side].constraints.new('DAMPED_TRACK').target = targets['wrist.' + side]
+        pose_fingers(side, FINGERS_GRIP, THUMB_TUCK_GRIP_DEG)
+        # SC-HUM-07-R7: the thumb tip rests on the stick tip (IK over its three joints), not just aims at it.
+        thumb = rig.pose.bones['finger1-3.' + side].constraints.new('IK')
+        thumb.target = targets['finger1-1.' + side]
+        thumb.chain_count = 3
+        thumb.use_tail = True
+        thumb.iterations = 200
     for part in radio_parts:
         part.data.transform(Matrix.Scale(1.0 / pose_scale, 4) @ radio_frame)
+    fit_fingers_to_surface(radio_parts)
 elif pose_kind == 'standing' and ARGS.outfit and os.path.basename(pose_path) in ARM_HANG_POSES:
     # Hang the arms beside the thighs (IK), elbows bending back toward a pole behind the shoulder.
     bpy.context.view_layer.update()

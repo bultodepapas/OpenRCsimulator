@@ -173,7 +173,7 @@
     },
     {
       "path": "res://aircraft/ugly_stik_model.gd",
-      "sha256": "5894cb0cc1d4547d45f33d76cf2727f3f0aa948a268e3f8e5d661916d904cf4c",
+      "sha256": "df56314d3cbaf16e5dcf9acf9999cc7fdc28282667727301ffa9ed7aabf80d01",
       "hash_mode": "lf_text",
       "role": "builder"
     },
