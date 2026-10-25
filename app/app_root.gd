@@ -782,6 +782,9 @@ func start_flight(request: Dictionary = {}) -> void:
 	# HUD: the Home route flies with the player's overlays; the direct route keeps the legacy labels (--hud=).
 	flight.overlays_enabled = has_home
 	flight.overlay_settings = launch_preferences.get("hud", Preferences.DEFAULTS.hud)
+	# CAM-17: Home flights start with the player's camera settings; direct routes keep --view and --autozoom.
+	if has_home and "camera_preferences" in flight:
+		flight.camera_preferences = DisplayPreferences.CameraSettings.normalized(display_preferences.config)
 	if not helicopter_route and _has_property(flight, "failure_config"):
 		flight.set("failure_config", failure_config_for_flight.duplicate(true))
 	if not helicopter_route and _has_property(flight, "failure_notifications"):
@@ -1158,6 +1161,9 @@ func _apply_presentation(config: Dictionary) -> void:
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).
 	BirdDirector.set_preference(str(config.get("birds", DisplayPreferences.DEFAULTS.birds)))
+	# CAM-17: a Home flight takes camera changes at once (the flight ignores them on direct routes).
+	if is_instance_valid(flight) and flight.has_method("apply_camera_preferences"):
+		flight.apply_camera_preferences(config)
 	if DisplayServer.get_name() == "headless":
 		return
 	var requested_vsync := DisplayServer.VSYNC_ENABLED if config.get("vsync_mode", "enabled") == "enabled" else DisplayServer.VSYNC_DISABLED
@@ -1743,6 +1749,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		candidate.sky_config = previous.sky_config.duplicate(true)
 	candidate.overlays_enabled = true
 	candidate.overlay_settings = preferences.get("hud", Preferences.DEFAULTS.hud).duplicate(true)
+	candidate.camera_preferences = DisplayPreferences.CameraSettings.normalized(display_preferences.config)
 	add_child(candidate)
 	if not candidate.startup_error.is_empty():
 		var reason: String = candidate.startup_error

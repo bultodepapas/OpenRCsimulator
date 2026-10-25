@@ -141,6 +141,19 @@ func reset_view() -> void:
 			orbit.reset()
 
 
+## CAM-29: while the right button turns the orbit the cursor is held (hidden, no window edge to run into); it is
+## released with the button. Routes call release_cursor_if_up() every frame, because a menu may take the release event.
+static func hold_cursor(held: bool) -> void:
+	var mode := Input.MOUSE_MODE_CAPTURED if held else Input.MOUSE_MODE_VISIBLE
+	if Input.mouse_mode != mode:
+		Input.mouse_mode = mode
+
+
+static func release_cursor_if_up() -> void:
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
 ## Right-button drag (relative pixels). Only the orbit view turns today.
 func drag(relative: Vector2) -> void:
 	if view == "orbit":

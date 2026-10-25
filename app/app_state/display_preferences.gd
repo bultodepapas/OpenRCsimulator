@@ -2,6 +2,8 @@
 # flight/profile contents and controller calibration remain untouched.
 extends RefCounted
 
+const CameraSettings := preload("res://render/camera/camera_settings.gd")
+
 const DEFAULT_PATH := "user://display.cfg"
 const SCHEMA := 1
 const WINDOW_MODES: Array[String] = ["windowed", "borderless"]
@@ -29,10 +31,23 @@ const DEFAULTS := {
 	"reduced_motion": false,
 	"menu_volume": 0.35,
 	"master_volume": 1.0, # AUD-12b: whole-game level on the Master bus (flight, scenery, crash, menu)
+	# CAM-17: camera preferences ([camera] section), validated by render/camera/camera_settings.gd.
+	"camera_view": CameraSettings.DEFAULTS.camera_view,
+	"camera_fov": CameraSettings.DEFAULTS.camera_fov,
+	"camera_auto_zoom": CameraSettings.DEFAULTS.camera_auto_zoom,
+	"camera_chase_distance": CameraSettings.DEFAULTS.camera_chase_distance,
+	"camera_sensitivity": CameraSettings.DEFAULTS.camera_sensitivity,
+	"camera_invert_y": CameraSettings.DEFAULTS.camera_invert_y,
 }
 const OPTIONAL_KEYS: Array[String] = [
 	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds",
+	"camera_view", "camera_fov", "camera_auto_zoom", "camera_chase_distance", "camera_sensitivity", "camera_invert_y",
 ] # schema-1 extensions; older files and callers keep defaults
+## CAM-17: display.cfg [camera] key for each preference.
+const CAMERA_FILE_KEYS := {
+	"camera_view": "view", "camera_fov": "fov", "camera_auto_zoom": "auto_zoom",
+	"camera_chase_distance": "chase_distance", "camera_sensitivity": "sensitivity", "camera_invert_y": "invert_y",
+}
 const AUDIO_LEVEL_KEYS: Array[String] = ["menu_volume", "master_volume"]
 
 var path: String
@@ -99,6 +114,12 @@ static func load_from(file_path: String) -> Dictionary:
 	raw.reduced_motion = cfg.get_value("accessibility", "reduced_motion", DEFAULTS.reduced_motion)
 	raw.menu_volume = cfg.get_value("audio", "menu_volume", DEFAULTS.menu_volume)
 	raw.master_volume = cfg.get_value("audio", "master_volume", DEFAULTS.master_volume)
+	for key: String in CAMERA_FILE_KEYS:
+		raw[key] = cfg.get_value("camera", CAMERA_FILE_KEYS[key], DEFAULTS[key])
+		# Per key, like [hud]: one bad camera value falls back alone instead of resetting every display setting.
+		if not CameraSettings.errors({key: raw[key]}).is_empty():
+			raw[key] = DEFAULTS[key]
+			result.note = _append_note(result.note, "invalid camera %s replaced with its default" % CAMERA_FILE_KEYS[key])
 	var checked := validate(raw)
 	if checked.ok:
 		result.merge(checked.config, true)
@@ -133,6 +154,8 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 	cfg.set_value("accessibility", "reduced_motion", checked.config.reduced_motion)
 	cfg.set_value("audio", "menu_volume", checked.config.menu_volume)
 	cfg.set_value("audio", "master_volume", checked.config.master_volume)
+	for key: String in CAMERA_FILE_KEYS:
+		cfg.set_value("camera", CAMERA_FILE_KEYS[key], checked.config[key])
 	return cfg.save(file_path)
 
 
@@ -177,6 +200,7 @@ static func validate(raw: Variant) -> Dictionary:
 		if typeof(level) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(level)) \
 				or float(level) < 0.0 or float(level) > 1.0:
 			errors.append("%s must be finite and between 0 and 1" % key)
+	errors.append_array(CameraSettings.errors(raw))
 	if not errors.is_empty():
 		return {"ok": false, "config": {}, "errors": errors}
 	var normalized := {
@@ -193,6 +217,7 @@ static func validate(raw: Variant) -> Dictionary:
 		"menu_volume": float(raw.get("menu_volume", DEFAULTS.menu_volume)),
 		"master_volume": float(raw.get("master_volume", DEFAULTS.master_volume)),
 	}
+	normalized.merge(CameraSettings.normalized(raw))
 	return {"ok": true, "config": normalized, "errors": errors}
 
 

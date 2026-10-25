@@ -16,6 +16,7 @@ const Landscapes = preload("res://landscapes/catalog.gd")
 const Frames = preload("res://render/frames.gd")
 const PilotCamera = preload("res://render/pilot_camera.gd")
 const CameraRig = preload("res://render/camera/camera_rig.gd")
+const CameraSettings = preload("res://render/camera/camera_settings.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
 const Recorder = preload("res://sim/rotorcraft_recorder.gd")
 const Lighting = preload("res://render/time_of_day_lighting.gd")
@@ -39,6 +40,8 @@ var night_options: Dictionary=Preferences.NIGHT_DEFAULTS.duplicate(true)
 var start_choice: String="ground"
 var interactive_start: bool=false
 var latency_marker_enabled: bool=false
+## CAM-17: the player's camera settings from Home; empty on direct routes (--view keeps its meaning).
+var camera_preferences: Dictionary={}
 var overlays_enabled: bool=false
 var overlay_settings: Dictionary={}
 var startup_error: String=""
@@ -110,6 +113,7 @@ func _ready() -> void:
  _rig.default_pilot_zoom=.35
  _rig.pilot_zoom=_rig.default_pilot_zoom
  _rig.set_view(str(args.get("view","pilot")))
+ if not camera_preferences.is_empty(): CameraSettings.apply_at_start(_rig,camera_preferences)
  session=Session.new()
  session.external_controller_selection=external_controller_selection
  session.physics_enabled=not args.has("trace") and not args.has("capture")
@@ -191,7 +195,17 @@ func _build_hud() -> void:
  _hud.add_theme_constant_override("shadow_offset_y",1)
  _hud_layer.add_child(_hud)
 
+func _exit_tree() -> void:
+ CameraRig.hold_cursor(false) # never leave the menus with a held cursor (CAM-29)
+
+## CAM-17: Settings changed during a Home flight; the rig applies what changed.
+func apply_camera_preferences(config: Dictionary) -> void:
+ if camera_preferences.is_empty() or _rig==null: return
+ CameraSettings.apply_changes(_rig,camera_preferences,config)
+ camera_preferences=CameraSettings.normalized(config)
+
 func _process(dt: float) -> void:
+ CameraRig.release_cursor_if_up()
  if not _capture: _present(minf(dt,.1))
 
 func _present(dt: float, requested_fraction: float=-1.0) -> void:
@@ -428,6 +442,8 @@ func _unhandled_input(event: InputEvent) -> void:
   var notches: float=event.factor if event.factor>0.0 else 1.0
   _rig.zoom(notches if event.button_index==MOUSE_BUTTON_WHEEL_UP else -notches)
   get_viewport().set_input_as_handled()
+ elif event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_RIGHT:
+  CameraRig.hold_cursor(event.pressed and _rig.view=="orbit") # CAM-29, as on the airplane route
  elif event is InputEventMouseMotion and event.button_mask&MOUSE_BUTTON_MASK_RIGHT:
   _rig.drag(event.relative)
   get_viewport().set_input_as_handled()

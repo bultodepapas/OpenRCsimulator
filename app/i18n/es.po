@@ -5809,3 +5809,37 @@ msgstr "Buitres y cigüeñas en térmicas, milanos, golondrinas y vencejos al at
 
 msgid "Renderer: %s"
 msgstr "Renderizador: %s"
+
+# CAM-17: camera settings page.
+msgid "First view"
+msgstr "Vista inicial"
+
+msgid "Pilot field of view"
+msgstr "Campo de visión del piloto"
+
+msgid "The pilot view's widest angle; auto zoom narrows it for a distant airplane. About 30° shows the airplane at its real size on a 24–27-inch screen at arm's length."
+msgstr "El ángulo más amplio de la vista del piloto; el zoom automático lo cierra para un avión lejano. Unos 30° muestran el avión a su tamaño real en una pantalla de 24–27 pulgadas a la distancia de un brazo."
+
+msgid "Auto zoom (Z)"
+msgstr "Zoom automático (Z)"
+
+msgid "Chase distance"
+msgstr "Distancia de persecución"
+
+msgid "Orbit sensitivity"
+msgstr "Sensibilidad de la órbita"
+
+msgid "Invert orbit up/down"
+msgstr "Invertir arriba/abajo en la órbita"
+
+msgid "The pilot view stays the reference for learning to fly; chase and orbit are aids. Right-drag turns the orbit; the wheel or +/− zooms."
+msgstr "La vista del piloto sigue siendo la referencia para aprender a volar; persecución y órbita son ayudas. Arrastra con el botón derecho para girar la órbita; la rueda o +/− hacen zoom."
+
+msgid "Chase"
+msgstr "Persecución"
+
+msgid "Orbit"
+msgstr "Órbita"
+
+msgid "%s (default)"
+msgstr "%s (predeterminado)"
