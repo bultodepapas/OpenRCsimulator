@@ -520,6 +520,45 @@ const LaunchTrimCache := preload("res://sim/launch_trim_cache.gd")
 const LaunchTrimJob: Script = preload("res://sim/launch_trim_job.gd")
 ## One detached successful trim survives Home/session replacement; every solver input is keyed exactly.
 static var _launch_trim_cache := LaunchTrimCache.new()
+## Menu speculation reconstructs the normal launch request, then destroys every temporary Node before starting work.
+static func prepare_menu_trim(path: String, aircraft_id: String) -> Dictionary:
+	var session: Node = load("res://sim/flight_session.gd").new()
+	session.trim_throttle = CRUISE_TRIM_THROTTLE
+	session.soft_hull_contacts = true
+	session._begin_setup(path, aircraft_id, {})
+	var preflight: Dictionary = session._prepare_aircraft_before_trim(session._load_selected_aircraft())
+	var request: Dictionary = {}
+	if preflight.get("ok", false):
+		request = session._selected_airborne_trim_request(preflight.model)
+	session._discard_staged_setup()
+	session.free()
+	if not preflight.get("ok", false):
+		return {kind = "invalid", reason = str(preflight.get("message", "aircraft preflight failed"))}
+	if request.get("kind", "") != "cruise":
+		return {kind = "skipped", reason = "selected launch has no detached cruise-trim request"}
+	var resolution: Dictionary = _launch_trim_cache.acquire_managed(request.arguments, true)
+	# The cache keeps the private numeric result and job; the menu never receives a live worker handle.
+	return {kind = str(resolution.kind), reason = str(resolution.get("reason", ""))}
+
+
+static func poll_menu_trim() -> Dictionary:
+	var status: Dictionary = _launch_trim_cache.poll_menu()
+	status.stats = _launch_trim_cache.stats()
+	return status
+
+
+static func abandon_menu_trim() -> void:
+	_launch_trim_cache.abandon_menu()
+
+
+static func menu_trim_busy() -> bool:
+	return _launch_trim_cache.menu_busy()
+
+
+static func launch_trim_cache_stats() -> Dictionary:
+	return _launch_trim_cache.stats()
+
+
 ## Menu hint from accepted data. The selected field, equilibrium and clearance are checked on each launch.
 static func runway_aircraft_supported(aircraft_id: String) -> bool:
 	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
@@ -844,6 +883,7 @@ func _init() -> void:
 ## Loads the aircraft, solves the trimmed start and creates the simulation. Call once, before adding to the tree.
 ## Workshop trials resolve once. Reload/reset must retain that exact immutable candidate.
 var _frozen_aircraft: Dictionary = {}
+var _staged_trim_job: Dictionary = {}
 var workshop_presentation_identity: Dictionary = {}
 var workshop_identity: Dictionary = {}
 
@@ -872,80 +912,74 @@ func setup_staged(path: String, expected_id: String, frozen_data: Dictionary, fr
 		_discard_staged_setup()
 		return false
 	if not preflight.get("ok", false):
-		_finish_setup(preflight)
+		_finish_setup(preflight, false)
 		return true
 
 	var request: Dictionary = _selected_airborne_trim_request(preflight.model)
 	var candidate_start: Dictionary = {}
 	var cache_job: Dictionary = {}
 	var cache_trim_result: Dictionary = {}
-	var reserved_cache_entry := false
 	if request.kind == "inline":
 		candidate_start = request.result
 	else:
-		var resolution: Dictionary = _launch_trim_cache.begin_staged_solve(request.arguments)
-		if resolution.get("kind", "") == "worker":
+		var resolution: Dictionary = _launch_trim_cache.acquire_managed(request.arguments, false, self)
+		while resolution.get("kind", "") == "wait":
+			await frame
+			if _staged_cancel_requested(should_cancel):
+				_discard_staged_setup()
+				return false
+			resolution = _launch_trim_cache.acquire_managed(request.arguments, false, self)
+		if resolution.get("kind", "") == "pending":
 			cache_job = resolution
-			reserved_cache_entry = true
-			var worker := Thread.new()
-			var worker_arguments: Array = cache_job.arguments.duplicate(true)
-			var start_error: Error = worker.start(Callable(LaunchTrimJob, "solve").bind(worker_arguments))
-			if start_error == OK:
-				var reservation_started: bool = _launch_trim_cache.staged_worker_started(cache_job)
-				if not reservation_started:
-					# A reservation cannot normally disappear on this main-thread path; drain before failing closed.
-					var cancelled_after_lost_reservation := _staged_cancel_requested(should_cancel)
-					while worker.is_alive():
-						await frame
-						if _staged_cancel_requested(should_cancel):
-							cancelled_after_lost_reservation = true
-					worker.wait_to_finish()
-					if _staged_cancel_requested(should_cancel) or cancelled_after_lost_reservation:
-						_launch_trim_cache.finish_staged_solve(cache_job, {}, false)
-						_discard_staged_setup()
-						return false
-					cache_trim_result = {ok = false, message = "launch trim worker reservation was lost"}
-				else:
-					var cancelled := _staged_cancel_requested(should_cancel)
-					while worker.is_alive():
-						await frame
-						if _staged_cancel_requested(should_cancel):
-							cancelled = true
-					var worker_result: Variant = worker.wait_to_finish()
-					if _staged_cancel_requested(should_cancel):
-						cancelled = true
-					if cancelled:
-						_launch_trim_cache.finish_staged_solve(cache_job, {}, false)
-						_discard_staged_setup()
-						return false
-					if typeof(worker_result) == TYPE_DICTIONARY:
-						cache_trim_result = worker_result
-					else:
-						cache_trim_result = {ok = false, message = "launch trim worker returned an invalid result"}
-			else:
-				# Thread.start failure retains the existing synchronous trim semantics and validation path.
-				cache_trim_result = _launch_trim_cache.solve_staged_synchronously(cache_job)
+			_staged_trim_job = resolution
+			var cancelled := _staged_cancel_requested(should_cancel)
+			var progress: Dictionary = _launch_trim_cache.poll_managed(cache_job)
+			while not progress.get("complete", false):
+				await frame
+				if _staged_cancel_requested(should_cancel):
+					cancelled = true
+				progress = _launch_trim_cache.poll_managed(cache_job)
+			if cancelled or _staged_cancel_requested(should_cancel):
+				_finish_staged_trim_job(false)
+				_discard_staged_setup()
+				return false
+			cache_trim_result = progress.result
 		else:
-			cache_trim_result = resolution.get("result", {ok = false, message = "launch trim solve unavailable"})
-			if typeof(cache_trim_result) != TYPE_DICTIONARY:
-				cache_trim_result = {ok = false, message = "launch trim solve returned an invalid result"}
+			cache_trim_result = resolution.get("result", {ok = false,
+				message = str(resolution.get("reason", "launch trim solve unavailable"))})
 		candidate_start = _place_cruise_trim_result(cache_trim_result)
 
 	if _staged_cancel_requested(should_cancel):
-		if reserved_cache_entry:
-			_launch_trim_cache.finish_staged_solve(cache_job, cache_trim_result, false)
+		if not cache_job.is_empty():
+			_finish_staged_trim_job(false)
 		_discard_staged_setup()
 		return false
 	var prepared: Dictionary = _finish_aircraft_prepare(preflight, candidate_start)
 	if _staged_cancel_requested(should_cancel):
-		if reserved_cache_entry:
-			_launch_trim_cache.finish_staged_solve(cache_job, cache_trim_result, false)
+		if not cache_job.is_empty():
+			_finish_staged_trim_job(false)
 		_discard_staged_setup()
 		return false
-	if reserved_cache_entry:
-		_launch_trim_cache.finish_staged_solve(cache_job, cache_trim_result, prepared.get("ok", false))
-	_finish_setup(prepared)
+	if not cache_job.is_empty():
+		_finish_staged_trim_job(prepared.get("ok", false))
+	_finish_setup(prepared, false)
 	return true
+
+
+func _finish_staged_trim_job(retain_success: bool) -> void:
+	_launch_trim_cache.finish_managed(_staged_trim_job, retain_success)
+	_staged_trim_job = {}
+
+
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_PREDELETE:
+		return
+	if not _staged_trim_job.is_empty():
+		_finish_staged_trim_job(false)
+	# Before setup commits, Simulation is deliberately not a child of this Session.
+	if sim != null and is_instance_valid(sim) and sim.get_parent() == null:
+		sim.free()
+		sim = null
 
 
 func _begin_setup(path: String, expected_id: String, frozen_data: Dictionary) -> void:
@@ -958,7 +992,7 @@ func _begin_setup(path: String, expected_id: String, frozen_data: Dictionary) ->
 	sim.stepped.connect(_on_sim_stepped)
 
 
-func _finish_setup(prepared: Dictionary) -> void:
+func _finish_setup(prepared: Dictionary, reset_invalid := true) -> void:
 	if prepared.ok:
 		_commit_aircraft(prepared)
 	else:
@@ -966,7 +1000,11 @@ func _finish_setup(prepared: Dictionary) -> void:
 	if not physics_enabled:
 		sim.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(sim)
-	reset()
+	if not prepared.ok and not reset_invalid:
+		# A rejected staged candidate must not enter reset's synchronous trim retry/cache path.
+		_fail_selected_start(str(prepared.get("message", "aircraft unavailable")))
+	else:
+		reset()
 
 
 func _staged_cancel_requested(should_cancel: Callable) -> bool:

@@ -1,11 +1,12 @@
 # F4U-12 contract checks for the F4U Corsair 1/4.5 imported model (headless).
 # Proves that the scene Godot imports is the frozen g2.2 asset (hash, counts, section tags, pivots against the delivered
 # metadata), that the production registry builds it, and that surfaces, flaps, propeller, sampled gear, oleo compression,
-# exhaust anchor and paint slots behave as the session expects. Run: godot --headless --path app --script res://aircraft/verify_f4u.gd
+# exhaust anchor, paint slots, wing fold, canopy and tailhook behave as the session expects. Run: godot --headless --path app --script res://aircraft/verify_f4u.gd
 extends SceneTree
 
 const Registry := preload("res://aircraft/model_registry.gd")
 const Importer := preload("res://aircraft/imported_model.gd")
+const Manifest := preload("res://aircraft/model_manifest.gd")
 const Rig := preload("res://aircraft/retractable_model.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const Geometry := preload("res://aircraft/f4u_corsair_geometry.gd")
@@ -92,6 +93,58 @@ func _fold_checks(model: Dictionary) -> void:
 	_check("spreading with neutral controls restores every outer-panel node to its delivered rest", rest_error < 1e-6, "%.8f" % rest_error)
 
 
+## F4U-21: the canopy slides and the tailhook turns in place by R59's laws, and both return exactly to rest.
+func _mechanism_checks(model: Dictionary, manifest: Dictionary) -> void:
+	var mechanisms: Dictionary = model.get("mechanisms", {})
+	var names := func(key: String) -> Array:
+		var found := []
+		for part: Dictionary in mechanisms.get(key, {}).get("parts", []):
+			for member: Dictionary in part.members: found.append(str(member.node.name))
+		return found
+	_check("the canopy moves its frame and glass, the tailhook its hook", mechanisms.size() == 2
+		and names.call("canopy") == ["canopy_frame", "canopy_glass"] and names.call("tailhook") == ["core_details"], str(mechanisms.keys()))
+	if mechanisms.size() != 2: return
+	var glass: Dictionary = mechanisms.canopy.parts[0].members[1]
+	Importer.apply_mechanisms(model, {"canopy": 0.5})
+	var half: Vector3 = glass.node.transform.origin - glass.rest.origin
+	Importer.apply_mechanisms(model, {"canopy": 1.0})
+	var slide: Vector3 = glass.node.transform.origin - glass.rest.origin
+	# R59: 0.70 m aft and 0.0385 m down at full size, 1:4.5.
+	_check("the open canopy slides 0.1558 m aft and slightly down without turning, half way at 0.5",
+		absf(slide.length() - Vector2(0.70, 0.0385).length() / 4.5) < 1e-6 and slide.z > 0.15 and slide.y < 0.0
+		and glass.node.basis.is_equal_approx(glass.rest.basis) and half.is_equal_approx(slide * 0.5), str(slide))
+	var hook: MeshInstance3D = mechanisms.tailhook.parts[0].members[0].node
+	var pivot: Vector3 = mechanisms.tailhook.parts[0].pivot
+	var tip := _extreme(model.root, hook, Vector3(0, 0, 1))
+	Importer.apply_mechanisms(model, {"tailhook": 1.0})
+	var lowered: Vector3 = hook.transform * (mechanisms.tailhook.parts[0].members[0].rest.affine_inverse() * tip)
+	var angle := rad_to_deg((tip - pivot).angle_to(lowered - pivot))
+	_check("the lowered tailhook turns 45 deg about R59's pivot and its tip goes down", absf(angle - 45.0) < 1e-3 and lowered.y < tip.y - 0.1,
+		"%.4f deg, tip %.3f -> %.3f m" % [angle, tip.y, lowered.y])
+	var part: Dictionary = mechanisms.tailhook.parts[0]
+	var floor_y: float = part.ground_point.y - 0.15
+	var on_floor := Importer.ground_limited_fraction(model, "tailhook", 1.0, Transform3D.IDENTITY, func(_x: float, _z: float) -> float: return floor_y)
+	var resting: Vector3 = Importer._part_motion(part, on_floor) * part.ground_point
+	var in_air := Importer.ground_limited_fraction(model, "tailhook", 1.0, Transform3D.IDENTITY, func(_x: float, _z: float) -> float: return -10.0)
+	var unknown := Importer.ground_limited_fraction(model, "tailhook", 1.0, Transform3D.IDENTITY, func(_x: float, _z: float) -> float: return NAN)
+	_check("a lowered hook stops with its tip on the ground, and lowers fully over open or unknown ground",
+		on_floor > 0.0 and on_floor < 1.0 and absf(resting.y - floor_y) < 1e-5 and in_air == 1.0 and unknown == 1.0,
+		"state %.3f, tip %.6f m above the ground" % [on_floor, resting.y - floor_y])
+	Importer.apply_mechanisms(model, {"canopy": 0.0, "tailhook": 0.0})
+	var at_rest: bool = mechanisms.values().all(func(m: Dictionary) -> bool:
+		return m.parts.all(func(p: Dictionary) -> bool: return p.members.all(func(e: Dictionary) -> bool: return e.node.transform == e.rest)))
+	_check("closing and raising restore every part exactly to its delivered rest", at_rest)
+	var renamed: Dictionary = manifest.duplicate(true)
+	renamed.construction.mechanisms[0].key = "parachute"
+	var refused := Manifest.validate(renamed)
+	_check("the contract refuses an unknown mechanism key", not refused.ok and str(refused.errors).contains("mechanism key"), str(refused.errors))
+	var data: Dictionary = Geometry.DATA.duplicate(true)
+	data.mechanisms.tailhook.parts[0].members = ["aileron_left_hinge"]
+	var built := Importer.build_scene((load(GLB_PATH) as PackedScene).instantiate(), data, manifest)
+	_check("the builder refuses a mechanism member that a control hinge already moves", not built.ok
+		and str(built.errors).contains("already moves with a hinge"), str(built.errors))
+
+
 ## The imported scene is the frozen delivery: bytes, node set, sections and the counts the author reported.
 func _asset() -> void:
 	var context := HashingContext.new()
@@ -170,6 +223,7 @@ func _built_model() -> void:
 			outside.append(role)
 	_check("full throws (13.5, 11.2, 25.9 deg) and 30 deg flaps lie inside the swept clearance envelopes", outside.is_empty(), str(outside))
 	_fold_checks(model)
+	_mechanism_checks(model, described.manifest)
 	var rig: Dictionary = model.gear_retraction
 	var worst := 0.0
 	for extension: float in [0.0, 0.5, 1.0]:

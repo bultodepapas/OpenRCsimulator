@@ -16,6 +16,7 @@ const AirplaneBuilder := preload("res://render/airplane.gd")
 const HomePreviewResources := preload("res://ui/home_preview_resources.gd")
 const FlightLoading := preload("res://ui/flight_loading.gd")
 const FlightSceneLoad := preload("res://ui/flight_scene_load.gd")
+const HomeFlightPreparation := preload("res://ui/home_flight_preparation.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const Landscapes = preload("res://landscapes/catalog.gd")
 const UiInput := preload("res://ui/ui_input.gd")
@@ -114,6 +115,15 @@ var home: Control:
 		return screens.get_screen("home") as Control
 var home_scene: Node3D
 var _home_preview_resources: Node
+## Advance one selected flight after Home draws. Technical/headless routes keep preparation disabled.
+## Modes remain available to the loading probe for matched comparisons.
+var home_flight_prefetch_mode := "off" if DisplayServer.get_name() == "headless" else "scene_trim"
+var home_flight_prefetch_delay_msec := 350
+var home_flight_preparation: Dictionary = {mode = "off", drained = true, scene_active = false, trim_active = false}
+var _home_flight_preparation: Node
+var _home_prefetch_suspended := false
+var _home_preparation_route_pending := false
+var _home_preparation_quit_pending := false
 ## UI-34c: rendered interactive launches are staged; headless callers retain their synchronous contract.
 var flight_loading_enabled := DisplayServer.get_name() != "headless"
 var last_flight_loading: Dictionary = {}
@@ -297,11 +307,71 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	_tick_home_flight_preparation()
+	if not _home_scene_preparation_busy():
+		if _home_rebuild_queued:
+			_flush_home_scene_rebuild()
 	if Engine.get_process_frames() % 60 != 0 or not has_home:
 		return
 	# The shell owns the window viewport for Home and Home-started flights. Direct
 	# flights leave has_home false and are monitored by main.gd instead.
 	Reconstruction.guard_runtime_failure(get_viewport())
+
+
+func _tick_home_flight_preparation() -> void:
+	var enabled := home_flight_prefetch_mode in ["scene", "trim", "scene_trim"]
+	var eligible := enabled and not _home_prefetch_suspended and not _loading_active and not _quit_audio_pending \
+		and not _home_preparation_route_pending and flight == null and ground_vehicle == null \
+		and not _home_preparation_quit_pending and has_home and home != null and screens.is_top("home") \
+		and is_instance_valid(home_scene) and Catalog.can_fly(home.aircraft_id) and not Catalog.is_rotorcraft(home.aircraft_id)
+	if not is_instance_valid(_home_flight_preparation):
+		if not eligible:
+			return
+		_home_flight_preparation = HomeFlightPreparation.new()
+		_home_flight_preparation.configure(self, _home_preview_resources)
+		_home_flight_preparation.trim_prepare = Callable(FlightSession, "prepare_menu_trim")
+		_home_flight_preparation.trim_poll = Callable(FlightSession, "poll_menu_trim")
+		_home_flight_preparation.trim_abandon = Callable(FlightSession, "abandon_menu_trim")
+		get_tree().root.add_child(_home_flight_preparation)
+	if not enabled:
+		_home_flight_preparation.shutdown()
+	else:
+		_home_flight_preparation.mode = home_flight_prefetch_mode
+		_home_flight_preparation.delay_msec = maxi(0, home_flight_prefetch_delay_msec)
+		if eligible:
+			_home_flight_preparation.observe_home(home)
+			_home_flight_preparation.tick(true, home_scene.preview_pending,
+				Catalog.data_for(home.aircraft_id, home.battery_mode) if not Catalog.is_rotorcraft(home.aircraft_id) else "", home.aircraft_id)
+	home_flight_preparation = _home_flight_preparation.snapshot()
+	home_flight_preparation.trim_cache = FlightSession.launch_trim_cache_stats()
+
+
+func _on_home_launch_setup_changed() -> void:
+	if is_instance_valid(_home_flight_preparation):
+		_home_flight_preparation.intent_changed()
+
+
+func _home_scene_preparation_busy() -> bool:
+	return is_instance_valid(_home_flight_preparation) and _home_flight_preparation.scene_busy()
+
+
+## Stop admissions and yield while workers drain. Safe for benchmark cleanup and muted/paused Quit.
+func shutdown_home_flight_preparation() -> void:
+	_home_prefetch_suspended = true
+	var preparation: Node = _home_flight_preparation
+	if not is_instance_valid(preparation):
+		home_flight_preparation.drained = true
+		return
+	preparation.shutdown()
+	while is_instance_valid(preparation) and not preparation.is_drained():
+		home_flight_preparation = preparation.snapshot()
+		await get_tree().process_frame
+		if not is_inside_tree():
+			return
+	if is_instance_valid(preparation):
+		home_flight_preparation = preparation.snapshot()
+	home_flight_preparation.trim_cache = FlightSession.launch_trim_cache_stats()
+	home_flight_preparation.drained = true
 
 
 ## Any user argument selects the technical/direct route (`-- --quick-flight` is the documented shortcut).
@@ -388,6 +458,7 @@ func show_home() -> void:
 	home.set_companion_config(preferences.get("companion_config", CompanionConfig.defaults()))
 	home.set_time_of_day(world_preset)
 	home.fly_requested.connect(start_flight)
+	home.launch_setup_changed.connect(_on_home_launch_setup_changed)
 	home.ground_vehicle_requested.connect(start_ground_vehicle)
 	home.workshop_requested.connect(open_workshop)
 	home.natural_random_requested.connect(open_natural_random)
@@ -417,6 +488,15 @@ func show_home() -> void:
 
 ## Ground vehicles have their own data/session contract; aircraft catalog and preferences stay aircraft-only.
 func start_ground_vehicle(vehicle_id: String = "") -> void:
+	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active:
+		return
+	if _home_scene_preparation_busy() or (is_instance_valid(_home_flight_preparation) and not _home_flight_preparation.is_drained()):
+		_home_preparation_route_pending = true
+		await shutdown_home_flight_preparation()
+		_home_preparation_route_pending = false
+		_home_prefetch_suspended = false
+		if not is_inside_tree() or not screens.is_top("home") or _home_preparation_quit_pending or _loading_active:
+			return
 	if ground_vehicle != null or flight != null:
 		return
 	if vehicle_id.is_empty():
@@ -627,6 +707,8 @@ func _night_options_from_preferences() -> Dictionary:
 
 ## Interactive rendering gets explicit loading checkpoints; direct/headless entry retains same-frame construction.
 func start_flight(request: Dictionary = {}) -> void:
+	if _home_preparation_route_pending or _home_preparation_quit_pending:
+		return
 	if flight != null or _loading_active or _quit_audio_pending:
 		return
 	var launch_preferences: Dictionary = preferences.duplicate(true)
@@ -710,6 +792,8 @@ func start_flight(request: Dictionary = {}) -> void:
 		screens.push("loading", _loading_screen, null, false)
 		last_flight_loading.surface_prepare_usec = Time.get_ticks_usec() - _loading_started_usec
 		var selected_asset := HomePreviewResources.path_for(route_aircraft_id, launch_livery) if not helicopter_route else ""
+		if is_instance_valid(_home_flight_preparation):
+			last_flight_loading.scene_prefetch_adopted = _home_flight_preparation.adopt()
 		if not selected_asset.is_empty() and is_instance_valid(_home_preview_resources):
 			_home_preview_resources.request(selected_asset, _flight_resource_ready)
 		if not await _flight_loading_checkpoint("Preparing resources"):
@@ -738,6 +822,12 @@ func start_flight(request: Dictionary = {}) -> void:
 			_cancel_loading_before_candidate(departing_home, tr("Flight scene could not be loaded."))
 			return
 	# Build before removing Home so a missing or unusable route resource cannot strand the shell.
+	if _home_scene_preparation_busy():
+		# A rotorcraft/synchronous route still shares resources with the common scene loader.
+		while _home_scene_preparation_busy():
+			await get_tree().process_frame
+			if not is_inside_tree():
+				return
 	var candidate_flight: Node = _create_flight(route_aircraft_id)
 	if candidate_flight == null:
 		if staged:
@@ -976,6 +1066,8 @@ func cancel_flight_loading() -> void:
 	if not _loading_active:
 		return
 	_loading_cancelled = true
+	if is_instance_valid(_home_flight_preparation):
+		_home_flight_preparation.cancel_launch()
 	if is_instance_valid(_loading_screen):
 		_loading_screen.set_cancelling()
 
@@ -1024,6 +1116,10 @@ func _prepare_flight_resource(path: String) -> bool:
 ## Selected/cache-hit/procedural intent may leave an obsolete GLB request draining.
 ## Serialize scene loading after that request, with main-thread frames available throughout.
 func _prepare_flight_scene() -> bool:
+	while _home_scene_preparation_busy():
+		await get_tree().process_frame
+		if not is_inside_tree():
+			return false
 	while is_instance_valid(_home_preview_resources) and _home_preview_resources.is_busy():
 		if _flight_loading_is_cancelled():
 			return false
@@ -1483,6 +1579,15 @@ func _route_controller_restart(event: InputEvent) -> bool:
 
 
 func open_natural_random(from: Control = null) -> void:
+	if _home_preparation_route_pending or _home_preparation_quit_pending:
+		return
+	if _home_scene_preparation_busy() or (is_instance_valid(_home_flight_preparation) and not _home_flight_preparation.is_drained()):
+		_home_preparation_route_pending = true
+		await shutdown_home_flight_preparation()
+		_home_preparation_route_pending = false
+		_home_prefetch_suspended = false
+		if not is_inside_tree() or _loading_active or _home_preparation_quit_pending:
+			return
 	if not screens.is_top("home") or flight != null:
 		return
 	if not home.runway_available:
@@ -1739,6 +1844,17 @@ func open_help(from: Control = null) -> void:
 
 ## One editor route for the whole catalog. Trial flights never replace the original selection.
 func open_workshop(from: Control = null) -> void:
+	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active:
+		return
+	if _home_scene_preparation_busy() or (is_instance_valid(_home_flight_preparation) and not _home_flight_preparation.is_drained()):
+		_home_preparation_route_pending = true
+		await shutdown_home_flight_preparation()
+		_home_preparation_route_pending = false
+		_home_prefetch_suspended = false
+		if not is_inside_tree():
+			return
+		if _loading_active or _home_preparation_quit_pending or not (screens.is_top("home") or screens.is_top("pause")):
+			return
 	if flight != null and Catalog.is_rotorcraft(str(flight.get("aircraft_id"))):
 		return
 	if not _workshop_screens.is_empty():
@@ -1910,6 +2026,8 @@ func _commit_return_to_workshop() -> void:
 
 
 func _exit_tree() -> void:
+	if is_instance_valid(_home_flight_preparation):
+		_home_flight_preparation.shutdown()
 	_loading_cancelled = true
 	_loading_scene_resource = null
 	if is_instance_valid(_loading_scene_job):
@@ -2372,6 +2490,8 @@ func _queue_home_scene_rebuild() -> void:
 
 
 func _flush_home_scene_rebuild() -> void:
+	if _home_scene_preparation_busy():
+		return
 	_home_rebuild_queued = false
 	var source: Node = _home_rebuild_source.get_ref() if _home_rebuild_source != null else null
 	_home_rebuild_source = null
@@ -2385,12 +2505,14 @@ func _rebuild_home_scene() -> bool:
 	if home_scene == null:
 		return false
 	var previous: Node3D = home_scene
+	previous.retain_resources_on_exit = is_instance_valid(_home_flight_preparation)
 	remove_child(previous)
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
 	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()), landscape_id, _livery_for(aircraft))
 	if not replacement.field_errors.is_empty():
 		replacement.free()
 		add_child(previous)
+		previous.retain_resources_on_exit = false
 		previous.camera.make_current()
 		if home != null:
 			home.set_note(tr("Could not update Home lighting; the previous view remains active."))
@@ -2419,12 +2541,15 @@ func set_landscape(id: String) -> void:
 	var old_path: String = field_path
 	landscape_id = id
 	field_path = path
-	if not _rebuild_home_scene():
+	if _home_scene_preparation_busy():
+		# Accept the launch intent now; defer only resource-building the backdrop.
+		_queue_home_scene_rebuild()
+	elif not _rebuild_home_scene():
 		landscape_id = old_id
 		field_path = old_path
 		return
-	home.runway_available = home_scene.field.get("id", "") == "default"
-	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
+	home.runway_available = checked.field.get("id", "") == "default"
+	home.rotorcraft_pad_available = not checked.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(id)
 	home.reapply_start_preference()
 	preferences.landscape = id
@@ -2572,7 +2697,11 @@ func quit_app() -> void:
 
 
 func _commit_app_quit() -> void:
-	if _quit_audio_pending:
+	if _quit_audio_pending or _home_preparation_quit_pending:
+		return
+	_home_preparation_quit_pending = true
+	await shutdown_home_flight_preparation()
+	if not is_inside_tree():
 		return
 	_menu_feedback(&"quit")
 	_quit_audio_pending = true

@@ -33,6 +33,7 @@ const SHORTCUTS := [
 	[[KEY_G, KEY_B], "Gear toggle · wheel brake (hold)"],
 	[[KEY_F], "Flaps: next position (Shift+F previous)"],
 	[[KEY_O], "Fold / spread folding wings (on the ground, stopped)"],
+	[[KEY_U, KEY_Y], "Canopy open / close · tailhook lower / raise"],
 	[[KEY_N], "Rates: normal / full"],
 	[[KEY_ENTER, KEY_KP_ENTER], "Next radio calibration step"],
 	[[KEY_F2, KEY_F3], "Overlay preset · developer overlays"],

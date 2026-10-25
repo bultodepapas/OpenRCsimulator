@@ -9,7 +9,8 @@ app/aircraft/f4u_corsair_geometry.gd.
 
 Rest transforms come from the GLB itself, so they equal what Godot imports. The rig's first sample must equal
 the GLB's stowed carriers, its last the delivered down-pose wheel centres; the samples must reproduce Blender's
-action between them within 1 mm and 1 degree.
+action between them within 1 mm and 1 degree. R59's wing fold, canopy slide and tailhook (F4U-17, F4U-21) are mapped to
+the model frame by the delivery's D0 and scale, and checked against the delivered parts' landmarks.
 
     python research/f4u-corsair/F4U-05/compile_model.py           # writes both outputs
     python research/f4u-corsair/F4U-05/compile_model.py --check   # fails if either is stale
@@ -28,6 +29,7 @@ ASSET_DIR = ROOT / "assets/aircraft/f4u-corsair-250"
 MANIFEST = ASSET_DIR / "source-manifest.json"
 SAMPLES = ASSET_DIR / "gear-samples.json"
 WING_FOLD = ASSET_DIR / "wing-fold-r59.json"
+MECHANISMS = ASSET_DIR / "mechanisms-r59.json"
 RUNTIME_GLB = ROOT / "app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
 DEFAULT_LIVERY = "midnight"  # aircraft.glb, the delivery's default paint (D3)
 OUT_JSON = ASSET_DIR / "model-geometry.json"
@@ -111,6 +113,18 @@ def compile_liveries(manifest, meta, gltf):
         out.append({"id": livery, "label": names[livery], "path": "res://" + path.relative_to(ROOT / "app").as_posix(),
                     "glb_sha256": frozen[livery]["sha256"]})
     return out
+
+
+def mesh_bounds(gltf, node):
+    """Low and high corners of a mesh node's position bounds, in its own frame."""
+    accessors = [gltf["accessors"][p["attributes"]["POSITION"]] for p in gltf["meshes"][node["mesh"]]["primitives"]]
+    return [min(a["min"][i] for a in accessors) for i in range(3)], [max(a["max"][i] for a in accessors) for i in range(3)]
+
+
+def mesh_centre(gltf, node):
+    """Centre of a mesh node's position bounds, in its own frame."""
+    low, high = mesh_bounds(gltf, node)
+    return [(a + b) / 2.0 for a, b in zip(low, high)]
 
 
 def basis_columns(xyzw):
@@ -253,6 +267,43 @@ def compile_model():
                        "source": f"R59 {fold_src['source']['sha256'][:12]} R51 pivot and CONTROL ALAS angulo_maximo "
                                  f"(assets/aircraft/f4u-corsair-250/wing-fold-r59.json), mapped by D0 and the 1:4.5 scale"}
 
+    # F4U-21: R59's canopy slide and tailhook (extract_mechanisms.py). The canopy's frame and glass and the hook
+    # (core_details holds only the hook's two parts) sit at the model frame under the root, so the builder moves them
+    # in place like the folds.
+    mech_src = json.loads(MECHANISMS.read_text(encoding="utf-8"))
+    assert mech_src["source"]["sha256"] == meta["master_sha256"], "mechanisms-r59.json was not read from the delivery's master"
+    canopy, hook = mech_src["canopy"], mech_src["tailhook"]
+    assert max(canopy["check_open_matrix_error"], hook["check_lowered_matrix_error"]) < 1e-5, "R59 mechanism check failed"
+    canopy_members = sorted(n for n, section in sections.items() if section == "canopy" and parent.get(n) == ROOT_NODE)
+    assert canopy_members == ["canopy_frame", "canopy_glass"], canopy_members
+    glass_gap = math.dist(r59_to_model(canopy["glass_centre"]), mesh_centre(gltf, nodes["canopy_glass"]))
+    assert glass_gap < 0.001, f"canopy glass: R59 mapped {glass_gap:.4f} m from the delivered mesh"
+    hook_node = nodes["core_details"]
+    assert parent["core_details"] == ROOT_NODE and sorted(json.loads(hook_node["extras"]["g2_sources"])) == hook["parts"], "core_details is not the tailhook"
+    hook_gap = math.dist(r59_to_model(hook["parts_centre"]), mesh_centre(gltf, hook_node))
+    # The hook's two parts are curves in R59; their converted bounds differ by about 2 mm.
+    assert hook_gap < 0.003, f"tailhook: R59 mapped {hook_gap:.4f} m from the delivered mesh"
+    cx, cy, cz = canopy["offset"]
+    hx, hy, hz = hook["axis"]
+    # The hook's tip is its aft, lowest end: the flight scene keeps it on the ground, as the real hook rides the deck.
+    low, high = mesh_bounds(gltf, hook_node)
+    hook_tip = [round((low[0] + high[0]) / 2.0, 9), round(low[1], 9), round(high[2], 9)]
+    mechanisms = {
+        "canopy": {"parts": [{"members": canopy_members, "offset": [round(scale * v, 9) for v in (cy, cz, cx)]}], "time_s": 2.5,
+                   "time_source": "estimated: an RC scale sliding canopy's servo travel; R59's rig carries no timing",
+                   "glass_landmark_check_m": round(glass_gap, 6),
+                   "source": f"R59 {mech_src['source']['sha256'][:12]} CABINA apertura drivers {', '.join(f'{k} = {v}' for k, v in canopy['law'].items())} "
+                             f"(assets/aircraft/f4u-corsair-250/mechanisms-r59.json), mapped by the 1:4.5 scale"},
+        "tailhook": {"parts": [{"members": ["core_details"], "pivot": [round(v, 9) for v in r59_to_model(hook["pivot"])],
+                                "axis": [round(v, 9) for v in (hy, hz, hx)], "max_angle_deg": hook["max_angle_deg"],
+                                "ground_point": hook_tip}], "time_s": 1.5,
+                     "time_source": "estimated: an RC tailhook servo; R59's rig carries no timing",
+                     "landmark_check_m": round(hook_gap, 6),
+                     "ground_point_source": "aft, low corner of the delivered hook's bounds (core_details), its tip",
+                     "source": f"R59 {mech_src['source']['sha256'][:12]} R27 pivote gancho driver {hook['law']} and gancho_cola_deg range "
+                               f"(assets/aircraft/f4u-corsair-250/mechanisms-r59.json), mapped by D0 and the 1:4.5 scale"},
+    }
+
     data = {
         "schema": "openrc-f4u-model v1",
         "catalog_id": manifest["catalog_id"],
@@ -266,13 +317,15 @@ def compile_model():
                   "physics_le_frame": "[x_aft, y_right, z_up] = [z, x, y]"},
         "inputs": {"glb_sha256": keys["glb"]["sha256"], "metadata_sha256": keys["metadata"]["sha256"],
                    "blend_sha256": keys["blend"]["sha256"], "gear_samples_sha256": hashlib.sha256(SAMPLES.read_bytes()).hexdigest(),
-                   "wing_fold_sha256": hashlib.sha256(WING_FOLD.read_bytes()).hexdigest()},
+                   "wing_fold_sha256": hashlib.sha256(WING_FOLD.read_bytes()).hexdigest(),
+                   "mechanisms_sha256": hashlib.sha256(MECHANISMS.read_bytes()).hexdigest()},
         "dimensions": {"span_m": meta["span_m"], "length_m": meta["length_m"], "propeller_diameter_m": meta["propeller_diameter_m"],
                        "scale_factor": meta["scale_factor"]},
         "articulations": articulations,
         "thrust": thrust,
         "exhausts": exhausts,
         "folds": folds,
+        "mechanisms": mechanisms,
         "gear": {
             "version": 1,
             "bindings": bindings,

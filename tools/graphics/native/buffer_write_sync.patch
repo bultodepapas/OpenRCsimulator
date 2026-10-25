@@ -1,0 +1,15 @@
+diff --git a/servers/rendering/rendering_device_graph.cpp b/servers/rendering/rendering_device_graph.cpp
+--- a/servers/rendering/rendering_device_graph.cpp
++++ b/servers/rendering/rendering_device_graph.cpp
+@@ -562,7 +562,10 @@
+ 		bool resource_has_parent = resource_tracker->parent != nullptr;
+ 		ResourceTracker *search_tracker = resource_has_parent ? resource_tracker->parent : resource_tracker;
+ 		bool different_usage = resource_tracker->usage != new_resource_usage;
+-		bool write_usage_after_write = (write_usage && search_tracker->write_command_or_list_index >= 0);
++		// Frame reset clears command indices, but a buffer can still have a pending
++		// write from the previous frame with exactly the same usage (e.g. COPY_TO).
++		bool write_usage_after_write = write_usage && (search_tracker->write_command_or_list_index >= 0 ||
++				(resource_tracker->buffer_driver_id.id != 0 && !search_tracker->previous_frame_stages.is_empty()));
+ 		if (different_usage || write_usage_after_write) {
+ 			// A barrier must be pushed if the usage is different of it's a write usage and there was already a command that wrote to this resource previously.
+ 			if (resource_tracker->texture_driver_id.id != 0) {

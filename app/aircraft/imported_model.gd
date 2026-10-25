@@ -115,6 +115,14 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary, li
 	for binding: Dictionary in config.get("folds", []):
 		var fold := _bind_fold(root, nodes, _record(data, binding.geometry_ref, errors), hinges, errors)
 		if not fold.is_empty(): folds[binding.key] = fold
+	var mechanisms := {}
+	var moving: Array[Node3D] = []
+	for key: String in hinges: moving.append(hinges[key].node)
+	for key: String in folds:
+		for member: Dictionary in folds[key].members: moving.append(member.node)
+	for binding: Dictionary in config.get("mechanisms", []):
+		var mechanism := _bind_mechanism(root, nodes, _record(data, binding.geometry_ref, errors), moving, errors)
+		if not mechanism.is_empty(): mechanisms[binding.key] = mechanism
 	if not errors.is_empty():
 		root.free()
 		return _failure(errors)
@@ -152,7 +160,7 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary, li
 			gear[bindings.gear.keys[role]] = retract.gear[role]
 	return {ok = true, errors = PackedStringArray(), model = {
 		root = root, propeller = propeller, hinges = hinges, gear = gear,
-		gear_retraction = retract.get("rig", {}), folds = folds, livery = str(livery.get("id", "")),
+		gear_retraction = retract.get("rig", {}), folds = folds, mechanisms = mechanisms, livery = str(livery.get("id", "")),
 		has_propeller = bindings.rotor.present, data = data, aircraft_id = manifest.family_id,
 		model_manifest = manifest.duplicate(true)}}
 
@@ -375,6 +383,94 @@ static func apply_folds(model: Dictionary, fractions: Dictionary) -> void:
 		for member: Dictionary in fold.members:
 			var hinge: Dictionary = model.hinges.get(member.hinge_key, {})
 			member.node.transform = fold.transform * (Transform3D(hinge.get("unfolded_basis", hinge.rest), hinge.pivot) if not hinge.is_empty() else member.rest)
+
+
+## F4U-21: an auxiliary mechanism (canopy, tailhook, cowl flaps) moves rigid parts at the model frame in place, in
+## proportion to its 0-1 state: each part slides by an offset or turns about a fixed axis. A member may not be, hold or
+## sit under a node that a hinge, fold or other mechanism already moves. Presentation only.
+static func _bind_mechanism(root: Node3D, nodes: Dictionary, record: Dictionary, moving: Array[Node3D], errors: PackedStringArray) -> Dictionary:
+	var parts: Variant = record.get("parts")
+	var time: Variant = record.get("time_s")
+	if not parts is Array or parts.is_empty() or not _number(time) or float(time) <= 0.0:
+		errors.append("Mechanism record needs parts and a positive cycle time.")
+		return {}
+	var mechanism := {time_s = float(time), fraction = 0.0, parts = []}
+	for part: Variant in parts:
+		var entry := {}
+		if part is Dictionary and part.has("offset") and not (part.has("pivot") or part.has("axis") or part.has("max_angle_deg")) and _vector(part.offset):
+			entry = {offset = _v3(part.offset), pivot = Vector3.ZERO, axis = Vector3.ZERO, max_deg = 0.0}
+		elif part is Dictionary and not part.has("offset") and _vector(part.get("pivot")) and _vector(part.get("axis")) and _number(part.get("max_angle_deg")) \
+				and float(part.max_angle_deg) != 0.0 and absf(float(part.max_angle_deg)) <= 180.0 and absf(_v3(part.axis).length() - 1.0) <= 1e-6:
+			entry = {offset = Vector3.ZERO, pivot = _v3(part.pivot), axis = _v3(part.axis), max_deg = float(part.max_angle_deg)}
+		if entry.is_empty() or not part.get("members") is Array or part.members.is_empty():
+			errors.append("Mechanism part needs members and either an offset, or a pivot, a unit axis and a 0-180 degree angle.")
+			continue
+		if part.has("ground_point"):
+			if not _vector(part.ground_point):
+				errors.append("Mechanism ground point must be a finite model-frame point.")
+				continue
+			entry.ground_point = _v3(part.ground_point)
+		entry.members = []
+		for name: Variant in part.members:
+			var node := _unique(nodes, str(name), errors)
+			if node == null: continue
+			var parent := node.get_parent() as Node3D
+			if parent == null or not relative(root, parent).is_equal_approx(Transform3D.IDENTITY):
+				errors.append("Mechanism member's parent must be at the model frame: " + str(name))
+				continue
+			if moving.any(func(other: Node3D) -> bool: return other == node or node.is_ancestor_of(other) or other.is_ancestor_of(node)):
+				errors.append("Mechanism member already moves with a hinge, fold or mechanism: " + str(name))
+				continue
+			moving.append(node)
+			entry.members.append({node = node, rest = node.transform})
+		mechanism.parts.append(entry)
+	return mechanism
+
+
+## Mechanism pose per key from its state q in 0-1 (0 closed or stowed); unchanged mechanisms are not rewritten.
+static func apply_mechanisms(model: Dictionary, fractions: Dictionary) -> void:
+	for key: String in model.get("mechanisms", {}):
+		var mechanism: Dictionary = model.mechanisms[key]
+		var q := float(fractions.get(key, 0.0))
+		if not is_finite(q): continue
+		q = clampf(q, 0.0, 1.0)
+		if q == mechanism.fraction: continue
+		mechanism.fraction = q
+		for part: Dictionary in mechanism.parts:
+			var motion := _part_motion(part, q)
+			for member: Dictionary in part.members:
+				member.node.transform = member.rest if q == 0.0 else motion * member.rest
+
+
+## A mechanism part's model-frame motion at state q.
+static func _part_motion(part: Dictionary, q: float) -> Transform3D:
+	if part.max_deg == 0.0:
+		return Transform3D(Basis(), part.offset * q)
+	return Transform3D(Basis(), part.pivot) * Transform3D(Basis(part.axis, deg_to_rad(part.max_deg * q)), Vector3.ZERO) \
+		* Transform3D(Basis(), -part.pivot)
+
+
+## The largest state up to q at which no part's ground point lies below the ground, given the model root's placement
+## and the ground's height under a point (render x, z to y; NAN where unknown): a lowered tailhook rests on the runway.
+static func ground_limited_fraction(model: Dictionary, key: String, q: float, placement: Transform3D, ground: Callable) -> float:
+	var mechanism: Dictionary = model.get("mechanisms", {}).get(key, {})
+	var clearance := func(f: float) -> float:
+		var lowest := INF
+		for part: Dictionary in mechanism.get("parts", []):
+			if not part.has("ground_point"): continue
+			var point: Vector3 = placement * (_part_motion(part, f) * part.ground_point)
+			var height: float = ground.call(point.x, point.z)
+			if is_finite(height): lowest = minf(lowest, point.y - height)
+		return lowest
+	if not is_finite(q) or q <= 0.0 or clearance.call(q) >= 0.0: return q
+	if clearance.call(0.0) < 0.0: return 0.0
+	var low := 0.0
+	var high := q
+	for i in 24:
+		var middle := 0.5 * (low + high)
+		if clearance.call(middle) >= 0.0: low = middle
+		else: high = middle
+	return low
 
 
 static func apply_surfaces(model: Dictionary, surfaces_deg: Dictionary) -> void:

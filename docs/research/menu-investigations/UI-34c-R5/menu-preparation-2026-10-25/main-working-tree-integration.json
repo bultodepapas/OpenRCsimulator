@@ -1,0 +1,42 @@
+{
+  "candidate_commit": "1edaa833f03e436bb4ccc0b1821f4ca585972a5f",
+  "base": "25bb32b5c22b1af5b74af5dc60c22ea2991beb88",
+  "main_head": "442b2ea02fec96669e8606ec1bfb02a4070d69e1",
+  "method": "git apply without index/staging; unrelated main merge preserved",
+  "patch_sha256": "47d3ebef4c42024f0d4217ae91249bdf1d6c5ad7eb4dea1013bfa9474714f32b",
+  "files": [
+    "app/app_root.gd",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+    "app/sim/flight_session.gd",
+    "app/sim/launch_trim_cache.gd",
+    "app/sim/launch_trim_job.gd",
+    "app/tests/test_brand_startup.gd",
+    "app/tests/test_flight_loading.gd",
+    "app/tests/test_home_flight_preparation.gd",
+    "app/tests/test_home_flight_preparation.gd.uid",
+    "app/tests/test_home_launch_setup.gd",
+    "app/tests/test_home_launch_setup.gd.uid",
+    "app/tests/test_menu_trim_prepare.gd",
+    "app/tests/test_menu_trim_prepare.gd.uid",
+    "app/ui/home.gd",
+    "app/ui/home_flight_preparation.gd",
+    "app/ui/home_flight_preparation.gd.uid",
+    "app/ui/home_preview_resources.gd",
+    "app/ui/startup.gd",
+    "docs/research/ai-companions/AFC-02/rebinds/2026-10-25-e24f64b4-to-1f7daf66.json",
+    "research/performance/README.md",
+    "research/performance/loading_probe.gd",
+    "research/performance/test_loading_probe.py",
+    "tools/companions/qualification.json"
+  ],
+  "main_metadata_before": {
+    "index": "69e657197d495938ed27afbe74925f5c3cd8e08525d52f36c30afca2da856499",
+    "MERGE_HEAD": "d560bc2d69a64c39aa9125e8f5960505a04cc6078a2c0a7533ddaf25e43194fd"
+  },
+  "main_metadata_after": {
+    "index": "69e657197d495938ed27afbe74925f5c3cd8e08525d52f36c30afca2da856499",
+    "MERGE_HEAD": "d560bc2d69a64c39aa9125e8f5960505a04cc6078a2c0a7533ddaf25e43194fd"
+  },
+  "index_and_merge_unchanged": true,
+  "integrated_runtime_validation": "blocked by existing unrelated merge-conflicted aircraft JSON"
+}

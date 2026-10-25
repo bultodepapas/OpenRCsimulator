@@ -1,0 +1,31 @@
+# F4U-21 related suites, 2026-10-25, Windows, Godot 4.7.2, tools/godot/run_checked.py (ok, exit code)
+# The two failures also fail on a clean checkout before F4U-19 (docs/research/f4u-corsair/F4U-19/README.md):
+# test_ui_aircraft_flow 'Fly shows Preparing flight before building' (Stik); test_retractable_gear_input exits 0xC0000374 after its last check (Avanti).
+test_controller_actions | True 0 
+test_controller_integration | True 0 
+test_controller_flight_actions | True 0 
+test_crash_wreck | True 0 
+test_crash_integration | True 0 
+test_crash_sections | True 0 
+test_flaps_session | True 0 
+test_flaps_ui | True 0 
+test_flight_log | True 0 
+test_retractable_gear | True 0 
+test_retractable_gear_ground | True 0 
+test_retractable_gear_trace | True 0 
+test_retractable_gear_input | False 1 
+test_ui_aircraft | True 0 
+test_ui_aircraft_flow | False 1 
+test_workshop_descriptor | True 0 
+test_workshop_integration | True 0 
+test_workshop_customization | True 0 
+test_workshop_trial | True 0 
+test_workshop_preview | True 0 
+test_night_kit | True 0 
+test_smoke_system | True 0 
+test_parked_aircraft_collision | True 0 
+test_wreck_shadow_cache | True 0 
+test_imported_aircraft_model | True 0 
+test_controls_reference | True 0 
+test_aircraft_liveries | True 0 
+test_ui_help | True 0 

@@ -22,7 +22,7 @@ INTEGRATION_COMMIT = candidate_pins.INTEGRATION_COMMIT
 CANDIDATE = ROOT / "tmp/native-reconstruction-candidate"
 OUT = ROOT / "tmp/native-reconstruction-export"
 CHECKS = ROOT / "tmp/godot-checks/native-package-export"
-INTEGRATION = ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")
+INTEGRATION = ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "load_token_lifetime.patch", "reflection_atlas_lifetime.patch", "buffer_write_sync.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")
 OVERLAYS = candidate_pins.INTEGRATION_OVERLAYS
 FORMAT = "openrc-native-reconstruction-package v1"
 sys.path.insert(0, str(ROOT / "tools/godot"))
@@ -143,6 +143,12 @@ def main() -> int:
                 f'set "OPENRC_GRAPHICS_PROFILE=high"\r\nset "OPENRC_RECONSTRUCTION={mode}"\r\n'
                 'cd /d "%~dp0"\r\nstart "" "%~dp0OpenRC Native Trial.exe" -- --quick-flight\r\nendlocal\r\n')
         managed[name] = body.encode("utf-8")
+    managed["Graphics Options.cmd"] = (
+        '@echo off\r\nsetlocal\r\nset "APPDATA=%~dp0profile-options"\r\n'
+        'if not exist "%APPDATA%" mkdir "%APPDATA%"\r\n'
+        'set "OPENRC_GRAPHICS_PROFILE=high"\r\nset "OPENRC_RECONSTRUCTION=native"\r\n'
+        'cd /d "%~dp0"\r\nstart "" "%~dp0OpenRC Native Trial.exe"\r\nendlocal\r\n'
+    ).encode("utf-8")
 
     if OUT.exists() and not OUT.is_dir():
         raise RuntimeError(f"package output path is not a directory: {OUT}")

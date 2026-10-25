@@ -242,6 +242,33 @@ func _unflyable_session() -> bool:
 '''
 
 
+PREPARATION_FIXTURE = '''extends "{probe}"
+
+class PreparingApp extends Node:
+	var home_flight_preparation := {{drained = false}}
+
+	func shutdown_home_flight_preparation() -> void:
+		for index in 3:
+			await get_tree().process_frame
+		home_flight_preparation.drained = true
+
+
+func _run() -> void:
+	_app = PreparingApp.new()
+	root.add_child(_app)
+	var app_ref: WeakRef = weakref(_app)
+	var before := Engine.get_process_frames()
+	var shutdown := await _cleanup()
+	if not shutdown.preparation_drained or app_ref.get_ref() != null \\
+			or Engine.get_process_frames() - before < 3:
+		push_error("probe freed AppRoot before preparation drained")
+		quit(1)
+		return
+	print("PASS probe waits for preparation before freeing AppRoot")
+	quit(0)
+'''
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--godot", required=True, type=Path)
@@ -305,6 +332,18 @@ def main():
         assert not re.search(r"(?m)^(?:SCRIPT )?ERROR:", handoff_log), handoff_log
         assert "instances were leaked" not in handoff_log, handoff_log
         print("PASS Home Fly handoff states", flush=True)
+
+        preparation_script = folder / "preparation_fixture.gd"
+        preparation_script.write_text(PREPARATION_FIXTURE.format(probe=PROBE.as_posix()), encoding="utf-8")
+        preparation = subprocess.run([engine, "--headless", "--path", str(ROOT / "app"), "--audio-driver",
+                                      "Dummy", "--verbose", "--script", str(preparation_script)],
+                                     capture_output=True, text=True, timeout=15)
+        preparation_log = preparation.stdout + preparation.stderr
+        assert preparation.returncode == 0, preparation_log
+        assert "PASS probe waits for preparation before freeing AppRoot" in preparation_log, preparation_log
+        assert not re.search(r"(?m)^(?:SCRIPT )?ERROR:", preparation_log), preparation_log
+        assert "instances were leaked" not in preparation_log, preparation_log
+        print("PASS preparation drain before teardown", flush=True)
     return 0
 
 

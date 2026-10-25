@@ -6,7 +6,17 @@ Godot 4.7.2 pin. The upstream NVIDIA commit is based on Godot 4.8-dev; run it on
 a disposable application copy and qualify an engine upgrade separately before
 shipping it. The GPU used for local checks is not the product support boundary.
 
-See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). The active Streamline pin is 2.11.1 with matching headers and runtime. DLSS mode/resize testing still reports an internal NGX image-layout finding; a 2.14.16 trial named the internal resource but added startup validation errors, so it was rejected. Frame-based tagging is not implemented because the render callback does not receive a per-frame token. The first exported FSR3 capture stalled during shutdown and later runs exited normally; shutdown/export revalidation is in progress, with no updated final qualification recorded here.
+See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). The active Streamline pin is 2.11.1 with matching headers and runtime. DLSS mode/resize testing still reports an internal NGX image-layout finding; a 2.14.16 trial added startup validation errors and was rejected. Frame-based tagging requires per-frame token plumbing through the render queue and is not implemented. A separate-thread device-ownership shutdown defect is patched and reproduced by the [minimal fixture](repro/README.md). This does not explain the earlier intermittent exported FSR3 shutdown stall or qualify release stability.
+
+The engine candidate includes three further lifetime/synchronization fixes:
+the exported Home LoadToken leak, reflection-atlas color-buffer retention, and
+same-usage buffer writes across graph frames. The Home comparison reduced 121
+retained LoadToken objects to zero; four reflection worlds reduced 28 retained texture
+RIDs to zero; the [canvas regression](repro/README.md#canvas-buffer-synchronization-regression)
+reduced ten reported Vulkan write hazards to zero. These bounded checks do not
+establish long-session or cross-device release stability. A later fresh-profile
+Home exit retained four audio stream/playback objects; its warm repeat retained
+none. That separate shutdown finding remains open.
 
 ## Build
 
@@ -28,6 +38,15 @@ mismatch is an error; the tool never silently refreshes a pin. Build receipts
 record source, integration and runtime identities alongside the executable.
 The experiment disables Streamline's automatic plugin downloads so the supplied
 SDK runtime remains the tested dependency. Upgrade it as a separate change.
+
+`load_token_lifetime.patch` applies the still-open
+[upstream LoadToken proposal](https://github.com/godotengine/godot/pull/121025),
+with local exported-Home evidence. `reflection_atlas_lifetime.patch` is the merged
+[upstream color-buffer fix](https://github.com/godotengine/godot/pull/124743).
+`buffer_write_sync.patch` is a local, buffer-only render-graph correction: frame
+reset must not discard the memory dependency between consecutive writes with
+unchanged usage. All three patches are hashed in matching editor/template
+receipts and required by package preflight.
 
 The original signed AMD Vulkan DLL has a luma-history storage format mismatch
 ([upstream issue 161](https://github.com/GPUOpen-LibrariesAndSDKs/FidelityFX-SDK/issues/161))
@@ -96,7 +115,9 @@ through the existing checked Godot runner. Output is
 `tmp/native-reconstruction-export/`, with the executable, PCK, runtime DLLs,
 licenses and hash receipts. `FSR3 Quality.cmd`, `DLSS Quality.cmd` and `Native.cmd`
 start a direct flight with separate local profiles. They do not use the player's
-production preferences. The standard `app/export.sh` still uses the production
+production preferences. `Graphics Options.cmd` opens Home in High with its own
+profile: Settings → Graphics exposes the available providers and preserves kept
+choices. Its initial reconstruction is Native. The standard `app/export.sh` still uses the production
 engine and must not be used to package this trial.
 
 ## Integration contract
@@ -110,6 +131,9 @@ engine and must not be used to package this trial.
 - Preferences retain the requested mode across devices. Unsupported requests
   render natively, with the effective mode reported separately. UI options are
   disabled when unavailable. Native remains the default.
+- The settings page shows requested/active presets, estimated 3D input and output
+  dimensions, and the reason for fallback. Estimated dimensions are not GPU
+  allocation measurements; DLSS can choose different integer rounding.
 - FSR sharpness controls AMD RCAS; they do not apply an extra sharpening pass to
   DLSS. Temporal reconstruction owns antialiasing. Returning to Native restores
   the saved MSAA preference.

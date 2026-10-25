@@ -1,0 +1,96 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a1c0f326-46eb-47d1-8571-6feb52e5cd71",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--fullscreen",
+    "--script",
+    "D:/OpenRCsimulator-evidence/ui34c-r3/research/performance/loading_probe.gd",
+    "--",
+    "--output=D:/OpenRCsimulator-evidence/ui34c-r3/tmp/ui34c-menu/native-exploration/native20.json",
+    "--aircraft=turbo-lumber-evolution",
+    "--cycles=20",
+    "--prefetch=scene_trim",
+    "--dwell-ms=500"
+  ],
+  "cwd": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+  "started_utc": "2026-10-25T12:36:32.116382+00:00",
+  "label": "native20",
+  "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\soak\\checks\\native20-ljb32ds_\\engine.log",
+  "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\soak\\checks\\native20-ljb32ds_\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "loading probe: 20 Home/Fly cycles ->"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 78.047,
+  "log_bytes": 295,
+  "log_sha256": "3e380caa1913abb09b1d8fe57d742d08f7b5a1cba3903f0ddec63497da026127",
+  "resources": {
+    "file": "resources.json",
+    "published": true,
+    "coverage": "sampled",
+    "bytes": 94675,
+    "sha256": "1af53d58759efb5e6a39e1a22ec47805dcf975ad97c3ccaec87e3d295f33c313",
+    "sample_count": 76,
+    "measurement_status": "ok",
+    "summary": {
+      "peaks": {
+        "rss_bytes": 1603186688,
+        "vms_bytes": 2450141184,
+        "cpu_percent": 167.29623257434253,
+        "num_threads": null,
+        "virtual_memory_total_bytes": 68603191296,
+        "virtual_memory_available_bytes": 34635804672,
+        "virtual_memory_percent": 68.9,
+        "swap_used_bytes": 2949394432,
+        "swap_total_bytes": 26078138368
+      },
+      "minima": {
+        "virtual_memory_available_bytes": 21369470976
+      },
+      "counter_deltas": {
+        "cpu_system_seconds": 8.734375,
+        "cpu_user_seconds": 75.375,
+        "io_read_bytes": 1032021396,
+        "io_read_count": 32982,
+        "io_write_bytes": 36772,
+        "io_write_count": 53
+      },
+      "counter_resets": [],
+      "process_memory_window": {
+        "rss_bytes": {
+          "first_bytes": 2129920,
+          "last_bytes": 1603186688,
+          "delta_bytes": 1601056768
+        },
+        "vms_bytes": {
+          "first_bytes": 3862528,
+          "last_bytes": 2450141184,
+          "delta_bytes": 2446278656
+        }
+      },
+      "volume_capacity_peaks": {},
+      "volume_free_capacity_minima": {}
+    }
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "format": "openrc-menu-lifecycle-observations v1",
+  "baseline_boot": {
+    "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\debug-bridge\\20261025-074340-47876\\engine.log",
+    "leaked_instances": 57,
+    "objectdb_warning": false,
+    "exit_excerpt": "hness.jpg' at thread -1\nLoading resource: res://assets/landscape/lake/default_geometry.res remapped: res://assets/landscape/lake/default_geometry.res\nCompleted load for: 'res://assets/landscape/lake/default_geometry.res' remapped 'res://assets/landscape/lake/default_geometry.res' at thread -1\nLoading resource: res://assets/landscape/rc-ground/dirt-normal.jpg remapped: res://assets/landscape/rc-ground/dirt-normal.jpg\nLoading resource: res://.godot/imported/dirt-normal.jpg-114c1d920d49e669fe06949f9eb431db.s3tc.ctex remapped: res://.godot/imported/dirt-normal.jpg-114c1d920d49e669fe06949f9eb431db.s3tc.ctex\nCompleted load for: 'res://assets/landscape/rc-ground/dirt-normal.jpg' remapped 'res://assets/landscape/rc-ground/dirt-normal.jpg' at thread -1\nLoading resource: res://assets/landscape/rc-ground/dirt-roughness.jpg remapped: res://assets/landscape/rc-ground/dirt-roughness.jpg\nLoading resource: res://.godot/imported/dirt-roughness.jpg-dd566f2d70462cf79cd6d9b789e154a3.s3tc.ctex remapped: res://.godot/imported/dirt-roughness.jpg-dd566f2d70462cf79cd6d9b789e154a3.s3tc.ctex\nCompleted load for: 'res://assets/landscape/rc-ground/dirt-roughness.jpg' remapped 'res://assets/landscape/rc-ground/dirt-roughness.jpg' at thread -1\nLoading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb\nLoading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn\nCompleted load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1\nLoading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb\nLoading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn\nCompleted load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1\nLoading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb\nLoading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn\nCompleted load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1\nLoading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb\nLoading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn\nCompleted load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1\nLoading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb\nLoading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn\nCompleted load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1\nLoading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landscape/night-lighting/lamp-head.glb\nLoading resource: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn remapped: res://.godot/imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn\nCompleted load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/landscape/night-lighting/lamp-head.glb' at thread -1\nLoading resource: res://render/landscape_upgrade/hill_settlements.gd remapped: res://render/landscape_upgrade/hill_settlements.gd\nCompleted load for: 'res://render/landscape_upgrade/hill_settlements.gd' remapped 'res://render/landscape_upgrade/hill_settlements.gd' at thread -1\nLoading resource: res://assets/landscape/regional-lighting/radio_tower.glb remapped: res://assets/landscape/regional-lighting/radio_tower.glb\nLoading resource: res://.godot/imported/radio_tower.glb-fa782d107f2361781ee05f1cf55e4d5b.scn remapped: res://.godot/imported/radio_tower.glb-fa782d107f2361781ee05f1cf55e4d5b.scn\nLoading resource: res://assets/landscape/regional-lighting/radio_tower_RadioTower_BaseColor.png remapped: res://assets/landscape/regional-lighting/radio_tower_RadioTower_BaseColor.png\nLoading resource: res://.godot/imported/radio_tower_RadioTower_BaseColor.png-81f969a4a1094094968268ed31ef5b2e.ctex remapped: res://.godot/imported/radio_tower_RadioTower_BaseColor.png-81f969a4a1094094968268ed31ef5b2e.ctex\nCompleted load for: 'res://assets/landscape/regional-lighting/radio_tower_RadioTower_BaseColor.png' remapped 'res://assets/landscape/regional-lighting/radio_tower_RadioTower_BaseColor.png' at thread -1\nCompleted load for: 'res://assets/landscape/regional-lighting/radio_tower.glb' remapped 'res://assets/landscape/regional-lighting/radio_tower.glb' at thread -1\nLoading resource: res://render/world/campfire.gd remapped: res://render/world/campfire.gd\nLoading resource: res://assets/landscape/night-lighting/campfire-pit.glb remapped: res://assets/landscape/night-lighting/campfire-pit.glb\nLoading resource: res://.godot/imported/campfire-pit.glb-b525844a605935f12dbf3d6e43e99fa1.scn remapped: res://.godot/imported/campfire-pit.glb-b525844a605935f12dbf3d6e43e99fa1.scn\nLoading resource: res://assets/landscape/night-lighting/Textures/colormap.png remapped: res://assets/landscape/night-lighting/Textures/colormap.png\nLoading resource: res://.godot/imported/colormap.png-d53b5897cf9a82dae5b4ec3145b7b195.ctex remapped: res://.godot/imported/colormap.png-d53b5897cf9a82dae5b4ec3145b7b195.ctex\nCompleted load for: 'res://assets/landscape/night-lighting/Textures/colormap.png' remapped 'res://assets/landscape/night-lighting/Textures/colormap.png' at thread -1\nCompleted load for: 'res://assets/landscape/night-lighting/campfire-pit.glb' remapped 'res://assets/landscape/night-lighting/campfire-pit.glb' at thread -1\nLoading resource: res://assets/landscape/night-lighting/flames-8x10.png remapped: res://assets/landscape/night-lighting/flames-8x10.png\nLoading resource: res://.godot/imported/flames-8x10.png-c7891dcc5db811a602cbb6d0542ed9fd.ctex remapped: res://.godot/imported/flames-8x10.png-c7891dcc5db811a602cbb6d0542ed9fd.ctex\nCompleted load for: 'res://assets/landscape/night-lighting/flames-8x10.png' remapped 'res://assets/landscape/night-lighting/flames-8x10.png' at thread -1\nLoading resource: res://render/world/campfire_flame.gdshader remapped: res://render/world/campfire_flame.gdshader\nCompleted load for: 'res://render/world/campfire_flame.gdshader' remapped 'res://render/world/campfire_flame.gdshader' at thread -1\nCompleted load for: 'res://render/world/campfire.gd' remapped 'res://render/world/campfire.gd' at thread -1\nLoading resource: res://aircraft/ugly_stik_grain.res remapped: res://aircraft/ugly_stik_grain.res\nCompleted load for: 'res://aircraft/ugly_stik_grain.res' remapped 'res://aircraft/ugly_stik_grain.res' at thread -1\nXR: Clearing primary interface\nXR: Removed interface \"Native mobile\"\nXR: Removed interface \"OpenXR\"\nAccessibility: window 0 adapter destroyed.\nLeaked instance: RefCounted:9223372262156011133 - Reference count: 0\nLeaked instance: RefCounted:9223372174495057584 - Reference count: 0\nLeaked instance: RefCounted:9223372099098248882 - Reference count: 0\nLeaked instance: RefCounted:9223372099383461556 - Reference count: 0\nLeaked instance: RefCounted:9223372100507535031 - Reference count: 0\nLeaked instance: RefCounted:9223372100020995770 - Reference count: 0\nLeaked instance: RefCounted:9223372100322985661 - Reference count: 0\nLeaked instance: RefCounted:9223372104383071941 - Reference count: 0\nLeaked instance: RefCounted:9223372135991346911 - Reference count: 0\nLeaked instance: RefCounted:9223372128575817463 - Reference count: 0\nLeaked instance: RefCounted:9223372131495053054 - Reference count: 0\nLeaked instance: RefCounted:9223372129364346629 - Reference count: 0\nLeaked instance: RefCounted:9223372131914483489 - Reference count: 0\nLeaked instance: RefCounted:9223372133155997475 - Reference count: 0\nLeaked instance: RefCounted:9223372138793142060 - Reference count: 0\nLeaked instance: RefCounted:9223372141863372593 - Reference count: 0\nLeaked instance: RefCounted:9223372136477886261 - Reference count: 0\nLeaked instance: RefCounted:9223372172179801911 - Reference count: 0\nLeaked instance: RefCounted:9223372142366689081 - Reference count: 0\nLeaked instance: RefCounted:9223372144547727164 - Reference count: 0\nLeaked instance: RefCounted:9223372151124395843 - Reference count: 0\nLeaked instance: RefCounted:9223372144061187911 - Reference count: 0\nLeaked instance: RefCounted:9223372145218815817 - Reference count: 0\nLeaked instance: RefCounted:9223372147534071627 - Reference count: 0\nLeaked instance: RefCounted:9223372172364351315 - Reference count: 0\nLeaked instance: RefCounted:9223372148960134997 - Reference count: 0\nLeaked instance: RefCounted:9223372172632786779 - Reference count: 0\nLeaked instance: RefCounted:9223372175182923617 - Reference count: 0\nLeaked instance: RefCounted:9223372175954675565 - Reference count: 0\nLeaked instance: RefCounted:9223372176709650291 - Reference count: 0\nLeaked instance: RefCounted:9223372157650732923 - Reference count: 0\nLeaked instance: RefCounted:9223372157818505086 - Reference count: 0\nLeaked instance: RefCounted:9223372158774806402 - Reference count: 0\nLeaked instance: RefCounted:9223372159278122884 - Reference count: 0\nLeaked instance: RefCounted:9223372161392052104 - Reference count: 0\nLeaked instance: RefCounted:9223372159580112777 - Reference count: 0\nLeaked instance: RefCounted:9223372159882102668 - Reference count: 0\nLeaked instance: RefCounted:9223372160788072335 - Reference count: 0\nLeaked instance: RefCounted:9223372162197358482 - Reference count: 0\nLeaked instance: RefCounted:9223372162650343317 - Reference count: 0\nLeaked instance: RefCounted:9223372164479059862 - Reference count: 0\nLeaked instance: RefCounted:9223372165049485208 - Reference count: 0\nLeaked instance: RefCounted:9223372165401806746 - Reference count: 0\nLeaked instance: RefCounted:9223372166878201758 - Reference count: 0\nLeaked instance: RefCounted:9223372169579333572 - Reference count: 0\nLeaked instance: RefCounted:9223372230581290967 - Reference count: 0\nLeaked instance: RefCounted:9223372231537592284 - Reference count: 0\nLeaked instance: RefCounted:9223372262726436831 - Reference count: 0\nLeaked instance: RefCounted:9223372247559833584 - Reference count: 0\nLeaked instance: RefCounted:9223372265494677503 - Reference count: 0\nLeaked instance: RefCounted:9223372239892645927 - Reference count: 0\nLeaked instance: RefCounted:9223372239154448424 - Reference count: 0\nLeaked instance: RefCounted:9223372240110749740 - Reference count: 0\nLeaked instance: RefCounted:9223372242291787825 - Reference count: 0\nLeaked instance: RefCounted:9223372242845435957 - Reference count: 0\nLeaked instance: RefCounted:9223372243650742332 - Reference count: 0\nLeaked instance: RefCounted:9223372243835291711 - Reference count: 0\nHint: Leaked instances typically happen when nodes are removed from the scene tree (with `remove_child()`) but not freed (with `free()` or `queue_free()`).\nOrphan StringName: MOON_UMBRA_503 (static: 0, total: 1)\nOrphan StringName: MOON_UMBRA_677 (static: 0, total: 1)\nOrphan StringName: MOON_UMBRA_U (static: 0, total: 1)\nStringName: 3 unclaimed string names at exit.\nWARNING: 57 ObjectDB instances were leaked at exit (run with `--verbose` for details).\n   at: cleanup (core/object/object.cpp:2536)\n",
+    "commit": "25bb32b5c22b1af5b74af5dc60c22ea2991beb88"
+  },
+  "candidate_boot": {
+    "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\debug-bridge\\20261025-075205-47880\\engine.log",
+    "leaked_instances": 0,
+    "objectdb_warning": false,
+    "exit_excerpt": "Loading resource: res://render/smoke/profile_process.gdshader remapped: res://render/smoke/profile_process.gdshader\nCompleted load for: 'res://render/smoke/profile_process.gdshader' remapped 'res://render/smoke/profile_process.gdshader' at thread -1\nCompleted load for: 'res://main.gd' remapped 'res://main.gd' at thread -1\nCompleted load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1\nXR: Clearing primary interface\nXR: Removed interface \"Native mobile\"\nXR: Removed interface \"OpenXR\"\nAccessibility: window 0 adapter destroyed.\nOrphan StringName: MOON_UMBRA_503 (static: 0, total: 1)\nOrphan StringName: MOON_UMBRA_677 (static: 0, total: 1)\nOrphan StringName: MOON_UMBRA_U (static: 0, total: 1)\nStringName: 3 unclaimed string names at exit.",
+    "source": "cf21cea5a plus default-enable/startup ordinary-loader changes; before additional fade rawfree fix",
+    "preparation": {
+      "scene_started": 1,
+      "scene_completed": 1,
+      "scene_adopted": 0,
+      "trim_started": 1,
+      "trim_completed": 1,
+      "scene_failed": 0,
+      "mode": "scene_trim",
+      "scene_active": false,
+      "trim_active": true,
+      "trim_ready": true,
+      "drawn": true,
+      "stopping": false,
+      "drained": false,
+      "trim_cache": {
+        "hits": 0,
+        "misses": 1,
+        "bypasses": 0,
+        "has_entry": false,
+        "entries": 0,
+        "entry_limit": 2,
+        "retained_key_bytes": 0,
+        "retained_key_limit_bytes": 1048576,
+        "staged_worker_active": true,
+        "staged_workers_started": 1,
+        "menu_starts": 1,
+        "menu_adoptions": 0,
+        "menu_discarded": 0,
+        "menu_completed": 1,
+        "menu_skipped": 0,
+        "managed_owner": "menu",
+        "managed_token": 1
+      }
+    }
+  },
+  "selection": {
+    "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\selection-check-output2.txt",
+    "dispatch_including_roundtrips_usec": 346671,
+    "preview_including_roundtrips_usec": 462091,
+    "frames": 30,
+    "max_frame_ms": 205.67,
+    "limit": "Warm resource trial, preview already settled on next query. Not pure input latency or fully cold blocked-preview qualification."
+  },
+  "limits": [
+    "Native boot verifies normal open, idle preparation and quit. Pending-startup/paused/rawfree/duplicate close are deterministic fixture checks.",
+    "Three pre-existing MOON_UMBRA StringNames remain unclaimed in verbose exit."
+  ],
+  "final_native_boot_flight_exit": {
+    "source_commit": "1edaa833f03e436bb4ccc0b1821f4ca585972a5f",
+    "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\debug-bridge\\20261025-075822-47882\\engine.log",
+    "objectdb_warning": false,
+    "exit_excerpt": "Completed load for: 'res://assets/audio/crash/turbine_spool.wav' remapped 'res://assets/audio/crash/turbine_spool.wav' at thread -1\nLoading resource: res://assets/audio/crash/fire_loop.wav remapped: res://assets/audio/crash/fire_loop.wav\nLoading resource: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample remapped: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample\nCompleted load for: 'res://assets/audio/crash/fire_loop.wav' remapped 'res://assets/audio/crash/fire_loop.wav' at thread -1\nXR: Clearing primary interface\nXR: Removed interface \"Native mobile\"\nXR: Removed interface \"OpenXR\"\nAccessibility: window 0 adapter destroyed.\nOrphan StringName: MOON_UMBRA_503 (static: 0, total: 1)\nOrphan StringName: MOON_UMBRA_677 (static: 0, total: 1)\nOrphan StringName: MOON_UMBRA_U (static: 0, total: 1)\nStringName: 3 unclaimed string names at exit.",
+    "mode_after_fade": 0,
+    "preparation": {
+      "scene_started": 1,
+      "scene_completed": 1,
+      "scene_adopted": 0,
+      "trim_started": 1,
+      "trim_completed": 1,
+      "scene_failed": 0,
+      "mode": "scene_trim",
+      "scene_active": false,
+      "trim_active": true,
+      "trim_ready": true,
+      "drawn": true,
+      "stopping": false,
+      "drained": false,
+      "trim_cache": {
+        "hits": 0,
+        "misses": 1,
+        "bypasses": 0,
+        "has_entry": false,
+        "entries": 0,
+        "entry_limit": 2,
+        "retained_key_bytes": 0,
+        "retained_key_limit_bytes": 1048576,
+        "staged_worker_active": true,
+        "staged_workers_started": 1,
+        "menu_starts": 1,
+        "menu_adoptions": 0,
+        "menu_discarded": 0,
+        "menu_completed": 1,
+        "menu_skipped": 0,
+        "managed_owner": "menu",
+        "managed_token": 1
+      }
+    },
+    "flight": {
+      "frame": 803,
+      "fps": 9.0,
+      "time_scale": 1.0,
+      "tree_paused": false,
+      "log_seq": 613,
+      "route": "flight",
+      "screens": [],
+      "focus": "",
+      "sticks_override": {},
+      "log_counts": {
+        "info": 593,
+        "event": 20
+      },
+      "realtime_factor": 0.2203925482368596,
+      "bridge_usec": 63.65540003782283,
+      "flight": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "tick": 53,
+        "time_s": 0.22083333333333333,
+        "paused": false,
+        "fault": "",
+        "pause_reason": "",
+        "holds": [],
+        "crashed": false,
+        "radio_connected": false,
+        "commands": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.49999999945363965
+        },
+        "raw": {
+          "roll": 0.0,
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "throttle": 0.0
+        },
+        "position_ned_m": [
+          60.000498869490286,
+          -35.82131038004851,
+          -29.99255574347962
+        ],
+        "height_m": 29.99255574347962,
+        "velocity_body_mps": [
+          18.915556414210183,
+          0.006419632740587614,
+          0.5679551315134307
+        ],
+        "speed_mps": 18.924082242007536,
+        "attitude_deg": {
+          "roll": 0.027083624282786337,
+          "pitch": 1.5990542886782613,
+          "heading": 89.97796534236683
+        },
+        "rates_body_degps": [
+          -0.11536615951919539,
+          0.06444335583756017,
+          -0.1016103280236951
+        ]
+      },
+      "snapshot_frame": 803,
+      "snapshot_age_ms": 18
+    },
+    "limit": "Functional check alongside Linux source-suite work; verbose bridge enabled, excluded from performance cohort."
+  }
+}

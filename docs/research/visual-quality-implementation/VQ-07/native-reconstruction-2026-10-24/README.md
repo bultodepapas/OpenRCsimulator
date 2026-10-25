@@ -15,7 +15,7 @@ replace MSAA; Native restores the saved MSAA setting. DLSS has no added NIS
 sharpening. FSR3 backend failures return the application to full-resolution Native.
 
 The opt-in Windows/Vulkan engine integrates the NVIDIA Godot fork at
-`135dff3887a3d2ccf45cafbd9bdffa7b718e1e76`, Streamline 2.10.0 and a locally built
+`135dff3887a3d2ccf45cafbd9bdffa7b718e1e76`, initially Streamline 2.10.0 and a locally built
 FidelityFX SDK 1.1.4 runtime (FSR 3.1.4). The AMD source archive is SHA-256 pinned;
 the patched runtime is locally compiled and unsigned, not AMD's signed prebuilt
 DLL. Its SHA-256 is
@@ -170,3 +170,203 @@ camera-cut history reset, animated shader motion, smoke/water/vegetation motion
 quality, stereo/XR, latency and matched GPU cost remain separate gates. The
 independent [Godot upgrade gates](../../../../plans/godot-4.8-upgrade.md) remain
 open.
+
+## Follow-up: options, SDK comparison and shutdown — 2026-10-25
+
+The current experiment pins Streamline **2.11.1**, including its matching headers
+and complete release runtime; `nvngx_dlss.dll` reports 310.6.0.0. Header hashes are
+recorded and must match between editor and export template. This retains the
+documented SR/Vulkan lifecycle fixes without accepting the additional initialization
+errors observed with 2.14.16. It does **not** fix the remaining 09600 finding.
+
+The controlled game runs used the same candidate and mode/resize smoke sequence:
+
+| Runtime | Observed validation result | Decision |
+| --- | --- | --- |
+| 2.10.0 | Six 09600 image-layout errors in one cycle, ten baseline buffer write hazards | Baseline |
+| 2.11.1 | Ten reported 09600 errors over two cycles, ten baseline buffer write hazards | Current experimental pin; not a clean DLSS validation pass |
+| 2.14.16 | Same reported 09600 count plus `vkCreateDevice` 01387 and `vkCreatePrivateDataSlot` 04564 startup errors | Rejected for this fork |
+
+The layer's repeated-message limit can cap counts; ten reports are not evidence of
+an improvement over six per cycle. 2.14.16 names the affected images
+`nv.ngx.dlss.resource`, inside `nv.ngx.dlss.Evaluate`, distinct from the app's
+tagged input/output images. It requests `VK_NV_low_latency2` without its required
+present-ID extension and creates private-data slots without the feature enabled.
+No guessed transitions on SDK-owned image handles were added. 2.10.3 was reviewed
+but not built/tested: its cited fix concerns frame generation.
+
+Primary references: [2.11.1 release](https://github.com/NVIDIA-RTX/Streamline/releases/tag/v2.11.1),
+[SR/Vulkan changelog](https://github.com/NVIDIA-RTX/Streamline/blob/v2.11.1/changelog.txt),
+[2.14.16 release](https://github.com/NVIDIA-RTX/Streamline/releases/tag/v2.14.16),
+[2.14.16 changelog](https://github.com/NVIDIA-RTX/Streamline/blob/v2.14.16/changelog.txt),
+[frame-based resource tagging](https://github.com/NVIDIA-RTX/Streamline/blob/v2.11.1/docs/ProgrammingGuide.md#29-tagging-resources).
+The fork's graph callbacks read a mutable global frame token. Migrating deprecated
+tag calls safely requires retaining the corresponding token across the asynchronous
+render queue; a direct API-call substitution is not included.
+
+`shutdown_thread.patch` follows [Godot PR 123391](https://github.com/godotengine/godot/pull/123391):
+after the rendering worker stops, the main rendering device becomes current on
+the calling thread before display-server destruction. The unpatched minimal
+Native control with a separate render thread completed its frames, then failed
+with the finalize-thread guard and exit 3221226505. The patched control completed
+192 frames and exited zero in 19.14 s with zero errors (two layer-loader warnings
+and the engine's experimental-thread warning). The before run also used 2.14.16
+and an earlier fixture with a camera ordering issue; this is evidence for the
+specific reported ownership defect, not a controlled attribution of every other
+diagnostic or the earlier intermittent export hang.
+
+The corrected [minimal reproducer](../../../../../tools/graphics/native/repro/README.md)
+removes game assets, disables extra NIS sharpening and explicitly selects AA.
+With 2.11.1, DLSS completes all six phases/384 frames and exits zero in 23.781 s,
+but produces two 09600 errors. No baseline buffer hazard occurs in that scene.
+The checked runner therefore correctly rejects its Vulkan validation result.
+
+The final FSR3 game run (`20261025-070104-47942`) exercises all five modes and
+resize, restores Native MSAA, then switches back to FSR3 Quality before closing.
+It records 11 contexts, 636 successful dispatches, version 3.1.4 and return code
+zero; no backend failure or FSR3-specific VUID occurs. Stop reports no crash or
+leaked objects. The log retains ten baseline buffer hazards, the known seven
+Texture RIDs, 43 RGB8 conversion warnings and two layer-loader warnings.
+
+Settings now explain requested versus active presets, estimated input/output
+sizes, unavailable providers and preserved FSR sharpening. Native and DLSS disable
+the FSR-only slider. Tests originally assumed DLSS was always unavailable and
+VSync was the final line; those assumptions failed on the custom engine and were
+corrected. Stock settings pass 120 checks and native settings pass 129, both with
+zero engine errors. Native reconstruction policy passes 94 checks; stock's extra
+absence assertion is inapplicable. No performance benefit is inferred from these
+functional checks or validation-layer timings.
+
+The current candidate keeps the original base and three integration files at
+`7bfbe2ec071bd142c5b1acf7350fff634ec31f16`; four UI/policy files use
+`91b67d620c1adf3f470dddba33ace63f3fb6851c`, and the settings test uses
+`ba42e49b7b814a86f0c29f5d7d29f2239a002e03`. Every overlay has its own source and
+prepared hash. Raw follow-up evidence remains under ignored
+`tmp/native-reconstruction-20261025/`; the dated verification record identifies
+the retained logs and final package.
+
+### Final package and 1080p checks
+
+The updated package contains 34 managed files with matching editor/template/SDK
+receipts. `Graphics Options.cmd` opens Home with an isolated profile for Settings
+→ Graphics; the other three launchers retain direct-flight presets. English and
+Spanish settings screenshots were reviewed at actual 1920 × 1080. FSR3 Quality
+was selected and kept through the menu; DLSS Quality preview correctly disables
+FSR sharpening. Images remain outside Git.
+
+| Exported capture / lifecycle | Result and elapsed wall time |
+| --- | --- |
+| FSR3 Quality, fresh profile 1 | Exit 0, 26.469 s |
+| FSR3 Quality, same profile | Exit 0, 17.468 s |
+| FSR3 Quality, fresh profile 2 | Exit 0, 29.281 s |
+| Native | Exit 0, 22.641 s |
+| DLSS Quality | Exit 0, 29.282 s |
+
+All five complete with zero engine error/warning records in their non-verbose,
+non-validation-layer runs. PNG hashes match manifests; actual output dimensions
+are 1920 × 1080 and provider receipts match requests. Each FSR3 capture records
+36 successful dispatches with no backend failure. These are startup/render/exit
+checks, not FPS measurements or a claim that the original intermittent stall is
+fixed. Profile resets did not clear the driver cache.
+
+An initial Home check forced exit after 240 frames while the intro was still
+loading resources asynchronously; another forced exit after 20 frames produced
+more preload errors. Inspection confirmed those resources were already in the
+PCK. Repeating with a required AppRoot load marker and 1800 frames at a 60 FPS
+cap completed in 42.531 s, exit 0 and zero errors, without changing the package.
+Its verbose log records 47 warnings: 45 RGB8 conversions, one loader message and
+**121 ObjectDB instances retained at exit**. The editor Home session reported zero
+leaked objects. The exported Home lifetime finding is not attributed to FSR3 and
+remains a separate qualification issue; this is not a warning-free shutdown pass.
+Early forced-exit logs are retained separately;
+premature cancellation does not establish missing package assets.
+
+[Verification identities and results](verification-2026-10-25.json) retain both
+failed investigative checks and final passes. DLSS Vulkan validity, the original
+intermittent shutdown, temporal motion quality and other GPUs remain open gates.
+
+## Release hardening: resource lifetime and buffer synchronization — 2026-10-25
+
+Three additional engine patches address reproduced defects. The production
+4.7.2 pin, application candidate, FSR 3.1.4 runtime and Streamline 2.11.1 remain
+unchanged. Editor and release-template receipts include each patch hash.
+
+| Isolated comparison | Before | After |
+| --- | --- | --- |
+| Exported Home, AppRoot load completed before exit | 121 RefCounted objects with reference count zero | Zero leaked ObjectDB instances, exit 0, zero errors |
+| Four reflection-probe worlds created and freed | 28 Texture RIDs retained | Zero Texture RIDs retained, exit 0, zero validation errors |
+| ColorRect followed by an empty CanvasLayer, 16 frames | Ten reported 272-byte buffer write hazards | Zero validation errors, exit 0 |
+
+`load_token_lifetime.patch` is the proposed
+[Godot LoadToken fix](https://github.com/godotengine/godot/pull/121025), still open
+at review time. It deletes tokens whose final reference is released, after the
+task's last access, and retains a guard while nested completion still needs the
+task. The first patched Home check uses the same packed game and SDK as the
+baseline, changing the template executable; it completes in 46.515 s. RGB8
+conversion/loader warnings and three orphan StringNames remain. Zero ObjectDB
+instances does not mean every diagnostic has disappeared.
+
+`reflection_atlas_lifetime.patch` reuses the merged
+[Godot color-buffer fix](https://github.com/godotengine/godot/pull/124743), commit
+`29d351f9eb0dd7582469ad38e215e9902204df12`, already retained by the
+[lake investigation](../planar-lake-2026-10-22/README.md). The four-world comparison
+was rerun on this 4.8-dev fork; the earlier 4.7 backport evidence was not treated
+as qualification of this engine.
+
+`buffer_write_sync.patch` is a local render-graph fix. Frame reset clears command
+indices while retaining resource usage and prior-frame stages. Two consecutive
+COPY_TO uses could therefore omit the memory barrier. The correction includes
+the retained stages when deciding whether a buffer write requires a barrier.
+Its scope is buffers; texture-slice and acceleration-structure rules are unchanged.
+[Khronos's synchronization guide](https://docs.vulkan.org/guide/latest/synchronization_examples.html)
+requires a memory dependency for write-after-write hazards. The standalone
+[canvas regression](../../../../../tools/graphics/native/repro/README.md#canvas-buffer-synchronization-regression)
+reproduces the game's same buffer size and hazard without any 3D or reconstruction
+provider. A preliminary raw-buffer fixture produced no error and was rejected
+as a reproducer. Layer repeat limits still apply to the baseline count.
+
+The final rendered FSR3 session (`20261025-075411-47942`) exercises all five
+presets, window resize, return to full-resolution Native with saved MSAA, then
+FSR3 Quality active during exit. It records 11 contexts and 698 successful
+dispatches, SDK version 3.1.4, return code zero, no backend failure, no engine or
+Vulkan error records, no leaked ObjectDB instances and no Texture RID warning.
+Loader and RGB8 conversion warnings remain. This supersedes the earlier baseline
+buffer-hazard and reflection-texture findings for this tested sequence.
+
+DLSS investigation also traced callback ownership against the pinned
+[Streamline guide](https://github.com/NVIDIA-RTX/Streamline/blob/v2.11.1/docs/ProgrammingGuide.md).
+Callbacks execute at render-graph end. Shared parameters are overwritten for
+multiple views; the mono draw path serializes parameter use, but token creation
+after enqueue can overlap evaluation. A future correction must generate/capture
+the SDK-owned token after rendering sync and before draw enqueue, carry it with
+per-callback parameters, and use it consistently for constants, tags and evaluation.
+Simply copying the pointer later or renaming the tag API does not establish safe
+ordering. This is a source-level finding, not a demonstrated cause or fix for the
+remaining NGX image-layout errors. Stereo/XR stays unsupported.
+
+The final DLSS minimal run still emits two 09600 errors and is correctly rejected
+by the checked runner despite completing all six phases and exiting zero.
+The rebuilt 34-file package passes receipt/source preflight. Home exits zero
+with no error records in a fresh profile (42.75 s) and a warm repeat (40.28 s).
+Neither retains the former zero-reference LoadTokens. The fresh run does retain
+four different objects: AudioStreamMP3, AudioStreamPlaybackMP3, AudioStreamWAV and
+AudioStreamPlaybackWAV, each with one reference. The warm repeat retains none.
+This intermittent audio shutdown finding remains open; the first isolated
+zero-object Home result is not generalized to every exit. All runs use the Dummy
+audio driver. No rendering or audio diagnostics are suppressed.
+
+Two final exported FSR3 Quality captures at actual 1920 × 1080 complete with
+zero errors/warnings: fresh application profile 24.64 s, warm repeat 17.17 s.
+Each receipt reports FSR3 active, no fallback/failure, version 3.1.4 and 36
+successful dispatches. PNG hashes match the manifests; the fresh capture was
+visually inspected. Native's separate-render-thread control also completes its
+192 frames and shutdown with zero errors (15.89 s). These elapsed times describe
+lifecycle checks, not rendering performance. Images and raw logs remain ignored.
+
+[Hardening verification](verification-hardening-2026-10-25.json) records package
+identities, all 34 verified managed files, the controlled before/after checks,
+successful game/export runs and failed investigative checks. FSR3's tested
+rendering sequence now passes Vulkan validation. Release qualification still
+requires the DLSS error investigation, the intermittent export/audio shutdown
+findings, temporal-quality and long-session testing, other GPUs/drivers, and the
+separate Godot engine-upgrade gates. The production engine remains 4.7.2.

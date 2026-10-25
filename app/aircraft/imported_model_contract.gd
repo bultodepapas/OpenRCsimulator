@@ -4,6 +4,8 @@ const Retraction := preload("res://aircraft/retractable_model.gd")
 
 const GEAR_ROLES := ["left", "right", "tail", "steering", "nose"]
 const AXES := ["+X", "-X", "+Y", "-Y", "+Z", "-Z"]
+## F4U-21: the auxiliary mechanisms the flight scene knows how to drive.
+const MECHANISM_KEYS := ["canopy", "tailhook", "cowl_flaps"]
 
 
 static func validate(construction: Variant, bindings: Dictionary) -> Dictionary:
@@ -12,8 +14,24 @@ static func validate(construction: Variant, bindings: Dictionary) -> Dictionary:
 	if typeof(construction) != TYPE_DICTIONARY:
 		_fail(errors, diagnostics, "MODEL_CONSTRUCTION_INVALID", "$.construction", "construction must be an object")
 		return _result(errors, diagnostics)
-	if not _check_fields(construction, ["version", "hinge_axis", "rotor", "gear", "material_grow"], "$.construction", errors, diagnostics, ["retraction", "folds"]):
+	if not _check_fields(construction, ["version", "hinge_axis", "rotor", "gear", "material_grow"], "$.construction", errors, diagnostics, ["retraction", "folds", "mechanisms"]):
 		return _result(errors, diagnostics)
+	if construction.has("mechanisms"):
+		# F4U-21: auxiliary mechanisms the flight scene drives by key, at most one of each.
+		var mechanisms: Variant = construction.mechanisms
+		var mechanism_keys: Dictionary = {}
+		if typeof(mechanisms) != TYPE_ARRAY or mechanisms.is_empty() or mechanisms.size() > MECHANISM_KEYS.size():
+			_fail(errors, diagnostics, "MODEL_CONSTRUCTION_MECHANISMS_INVALID", "$.construction.mechanisms", "mechanisms must be an array of one to three known mechanisms")
+		else:
+			for index in mechanisms.size():
+				var path := "$.construction.mechanisms[%d]" % index
+				var mechanism: Variant = mechanisms[index]
+				if not _check_fields(mechanism, ["key", "geometry_ref"], path, errors, diagnostics): continue
+				if not MECHANISM_KEYS.has(mechanism.get("key")) or mechanism_keys.has(mechanism.get("key")):
+					_fail(errors, diagnostics, "MODEL_CONSTRUCTION_MECHANISMS_INVALID", path + ".key", "mechanism key must be a unique one of " + ", ".join(MECHANISM_KEYS))
+				mechanism_keys[mechanism.get("key")] = true
+				if not _dotted_ref(mechanism.get("geometry_ref")):
+					_fail(errors, diagnostics, "MODEL_CONSTRUCTION_REF_INVALID", path + ".geometry_ref", "mechanism needs a dotted geometry reference")
 	if construction.has("folds"):
 		var folds: Variant = construction.folds
 		var fold_keys: Dictionary = {}

@@ -247,6 +247,27 @@ static func apply_folds(airplane: Dictionary, fractions: Dictionary) -> void:
 		builder.call("apply_folds", airplane, fractions)
 
 
+## F4U-21: whether the aircraft has an auxiliary mechanism by key (canopy, tailhook, cowl_flaps).
+static func has_mechanism(airplane: Dictionary, key: String) -> bool:
+	return airplane.get("mechanisms", {}).has(key)
+
+
+## Present auxiliary mechanism states by key (0 closed or stowed, 1 open or lowered); see imported_model.apply_mechanisms.
+static func apply_mechanisms(airplane: Dictionary, fractions: Dictionary) -> void:
+	var builder: Script = airplane.get("_model_builder")
+	if not airplane.get("mechanisms", {}).is_empty() and builder != null and builder.has_method("apply_mechanisms"):
+		builder.call("apply_mechanisms", airplane, fractions)
+
+
+## A mechanism state limited so its ground points stay above the ground (render x, z to y); see
+## imported_model.ground_limited_fraction. Uses the root's current global placement.
+static func ground_limited_fraction(airplane: Dictionary, key: String, fraction: float, ground: Callable) -> float:
+	var builder: Script = airplane.get("_model_builder")
+	if not has_mechanism(airplane, key) or builder == null or not builder.has_method("ground_limited_fraction"):
+		return fraction
+	return builder.call("ground_limited_fraction", airplane, key, fraction, (airplane.root as Node3D).global_transform, ground)
+
+
 ## The inverse of Commands.hinge_rotations(): trailing-edge deflections in degrees (up for ailerons/elevator,
 ## right for the rudder), as Commands.surface_deflections_deg() gives them.
 static func surface_degrees(rotations: Dictionary) -> Dictionary:

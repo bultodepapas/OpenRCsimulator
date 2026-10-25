@@ -7,7 +7,7 @@
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "f4u-corsair-250",
-      "model_manifest_sha256": "276fcf5c17013b4df59d1de5fb762fcc8486519a9ca105644d8368e6725c8fed",
+      "model_manifest_sha256": "258d5bd8d7d2cbc5236db86fd7204ad37c1d50f5ed5da51fd08c22422f433704",
       "paint_slots": [
         {
           "id": "body",
@@ -372,14 +372,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "f8eb38d8d267b192792124c1449857fd67920ba8b384a2fe922714fbec5239db"
+      "slots_sha256": "d00d4cf33a0fb154b0ebcda2890744dd40bb822275b32fa86dd1721a52dd6b42"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "gp-extra-300s-60",
-      "model_manifest_sha256": "d56c11d672ab0f5d2e67947e6b045dfe8f9fb542810547c153476359d5288f74",
+      "model_manifest_sha256": "f8280cd02c96759a389438e632c05cb9c1a8b6e4f03d74dbdcc505e50d66f7a4",
       "paint_slots": [
         {
           "id": "body",
@@ -650,14 +650,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "4dbeab56c4d4d94476c009f93b72a76016a03a27f13182b94900c03a2dec1100"
+      "slots_sha256": "4af3a88dd44e4af3b509502429f34a7f31827d41e9fae125677c2111c6093acc"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "jensen-das-ugly-stik-60",
-      "model_manifest_sha256": "64b2bc16a3985848eec6629cf78e138c54047933dc2f7ad4b6d03098226cc683",
+      "model_manifest_sha256": "a198843b42ecebd666206bfaf991a80a193155a6abe5eb741f73d601ef2e79d2",
       "paint_slots": [
         {
           "id": "body",
@@ -947,14 +947,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "fc0147717b9b5ae940cfb5337f58127192d97f6efa102dbfc38706f38c65cb8d"
+      "slots_sha256": "fd96fc64c171cad41fe04545a61eebf6006b06abc55b24676895943d252810ec"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "p51d-mustang-120",
-      "model_manifest_sha256": "25581bcb59f148cb30b28e0fe6e24ce3ba4f5c8f2da94a583947fcea4e51c94f",
+      "model_manifest_sha256": "6dd631d2e69d358f05b2639def51db22ccb5c8d81365b81d4a57b588ea561354",
       "paint_slots": [
         {
           "id": "body",
@@ -1264,14 +1264,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "556f94ca7ca1b38602cfec4c6e812dddeac7ae7c059702b7d632cd8ea0f0c9ae"
+      "slots_sha256": "b8bb5e08ebe6baeb79915de713af6e9549071f735353a52b6bdcceca0f014056"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "sebart-avanti-s-a200-p100rx",
-      "model_manifest_sha256": "56bb79c7a8b6fef0f5a71d211e016b04ffd69bf5cdee9030ce51140d8c6fd565",
+      "model_manifest_sha256": "81e87a8c463fc28369885f782ab9a19dc19223337ef50d2b99a8f05cbf75e54d",
       "paint_slots": [
         {
           "id": "body",
@@ -1478,14 +1478,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "7169a52435ae5615b964ffc37f8da504aa0ef0550f3237c8a61068cefe229efc"
+      "slots_sha256": "502569f30663655104b2de03dacb3826be8b9cb11cf29c17d65e7e660da3adf8"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "turbo-lumber-evolution",
-      "model_manifest_sha256": "f2ea502ea299a0ddc6fc56fe4f79029ca721efb8a02490c4875f262b60d8b2c9",
+      "model_manifest_sha256": "af715e7ca83ba9ddcd819653dbee6a048e5e1b5fb51460a6f77f3a563ed11f37",
       "paint_slots": [
         {
           "id": "body",
@@ -1742,7 +1742,7 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "d653e13bcdd30dc6017ba94562cb4fa40297ba87c59080285e083d68a3d78363"
+      "slots_sha256": "2d0c0ef41123ed0df57c7d7ecd5b26453b7648b228c69eda7e13c1c58c5c04b7"
     }
   ]
 }

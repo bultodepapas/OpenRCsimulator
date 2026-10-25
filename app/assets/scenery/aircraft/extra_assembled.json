@@ -118,8 +118,8 @@
 	"source_identity": {
 		"manifest": {
 			"path": "res://data/aircraft_models/gp-extra-300s-60.json",
-			"sha256": "d56c11d672ab0f5d2e67947e6b045dfe8f9fb542810547c153476359d5288f74",
-			"pinned_sha256": "d56c11d672ab0f5d2e67947e6b045dfe8f9fb542810547c153476359d5288f74",
+			"sha256": "f8280cd02c96759a389438e632c05cb9c1a8b6e4f03d74dbdcc505e50d66f7a4",
+			"pinned_sha256": "f8280cd02c96759a389438e632c05cb9c1a8b6e4f03d74dbdcc505e50d66f7a4",
 			"matches_pin": true
 		},
 		"builder": {
@@ -142,8 +142,8 @@
 		},
 		"airplane_snapshot_builder": {
 			"path": "res://render/airplane.gd",
-			"sha256": "c4ab99076ada552ce26b6a9d74346073d0a227d5cc272e23bc73a461426cc1ed",
-			"pinned_sha256": "c4ab99076ada552ce26b6a9d74346073d0a227d5cc272e23bc73a461426cc1ed",
+			"sha256": "d8df826777cf69dc23f551b1958e7d7ec2c8ab7a82ffcbb4867e53dd4235017c",
+			"pinned_sha256": "d8df826777cf69dc23f551b1958e7d7ec2c8ab7a82ffcbb4867e53dd4235017c",
 			"matches_pin": true
 		},
 		"baker": {

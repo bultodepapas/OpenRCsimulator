@@ -1,0 +1,12 @@
+{
+  "commit": "1edaa833f03e436bb4ccc0b1821f4ca585972a5f",
+  "files": {
+    "app/app_root.gd": "8f675ad61faf6977ee60be98acd0bb39ab5991acc9a55fdf179a2a75f302af43",
+    "app/ui/startup.gd": "5ce98f054884317a92dcf30ecfbabac89efa85e72e9241336176378f633235c2",
+    "app/tests/test_brand_startup.gd": "64a98a2611a5bfd2c526ec1bc51aab398adf69bca129a8df474c8dafe78a7557",
+    "app/sim/flight_session.gd": "015654cc0ece91318906bfda1af05216c062a9ece1eef627babb7d23ff26f54e",
+    "app/sim/launch_trim_cache.gd": "32b7d075cfe19178d27a8bcb56867fd637bdbd5b7555e71c22cdebbbe4499a81",
+    "app/ui/home_flight_preparation.gd": "4e479aa7e56315ca7b97b3f706002bb60a44f9f95dbecf02912fd6630301fc97"
+  },
+  "main_identical_for_these_paths": true
+}

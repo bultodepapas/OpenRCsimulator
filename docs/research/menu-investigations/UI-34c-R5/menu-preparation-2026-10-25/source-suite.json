@@ -1,0 +1,202 @@
+{
+  "format": "openrc-menu-source-suite v1",
+  "candidate_commit": "1edaa833f03e436bb4ccc0b1821f4ca585972a5f",
+  "baseline_commit": "25bb32b5c22b1af5b74af5dc60c22ea2991beb88",
+  "status": "not passed; stopped at existing model-clone fixture failures reproduced on frozen baseline",
+  "runs": {
+    "candidate": {
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\full-suite-safe.log",
+      "sha256": "d26b3cfaf409915d3118340bc4714d6ca5fddba1fc8ba43c28c5de2617a2c31c",
+      "exit_code": 1,
+      "failure_lines": [
+        "Ran 1 test in 4.606s",
+        "Ran 3 tests in 198.864s",
+        "Ran 5 tests in 7.049s",
+        "Ran 17 tests in 0.066s",
+        "Ran 9 tests in 28.449s",
+        "Ran 16 tests in 0.088s",
+        "Ran 13 tests in 0.064s",
+        "Ran 12 tests in 0.119s",
+        "Ran 5 tests in 0.039s",
+        "Ran 2 tests in 0.003s",
+        "Ran 5 tests in 0.557s",
+        "Ran 12 tests in 0.299s",
+        "Ran 7 tests in 0.108s",
+        "Ran 7 tests in 1.834s",
+        "FAIL: test_fresh_git_clones_regenerate_in_lf_and_crlf_checkouts (__main__.AircraftModelManifestTests.test_fresh_git_clones_regenerate_in_lf_and_crlf_checkouts) (checkout='lf')",
+        "AssertionError: b'\\r' unexpectedly found in b'{\\r\\n  \"schema\": \"openrc-aircraft-model-bindings\",\\r\\n  \"version\": 2,\\r\\n  \"families\": [\\r\\n    {\\r\\n      \"family_id\": \"jensen-das-ugly-stik-60\",\\r\\n      \"builder\": {\\r\\n        \"script\": \"res://aircraft/ugly_stik_model.gd\",\\r\\n        \"adapter\": \"euler_hinges\"\\r\\n      },\\r\\n      \"geometry\": {\\r\\n        \"script\": \"res://aircraft/ugly_stik_geometry.gd\",\\r\\n        \"source\": \"assets/aircraft/ugly-s",
+        "FAIL: test_fresh_git_clones_regenerate_in_lf_and_crlf_checkouts (__main__.AircraftModelManifestTests.test_fresh_git_clones_regenerate_in_lf_and_crlf_checkouts) (checkout='crlf')",
+        "AssertionError: 1 != 0 : model manifest generation failed: f4u-corsair-250.liveries[1] GLB or its import sidecar is missing",
+        "Ran 17 tests in 18.965s",
+        "FAILED (failures=2)"
+      ]
+    },
+    "baseline": {
+      "log": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\baseline-crlf-control.log",
+      "sha256": "d21a722ce57aebde7476006ac8f31047174b70b7f323e66ec48835217d8cca2a",
+      "exit_code": 1,
+      "failure_lines": [
+        "FAIL: test_fresh_git_clones_regenerate_in_lf_and_crlf_checkouts (__main__.AircraftModelManifestTests.test_fresh_git_clones_regenerate_in_lf_and_crlf_checkouts) (checkout='lf')",
+        "AssertionError: b'\\r' unexpectedly found in b'{\\r\\n  \"schema\": \"openrc-aircraft-model-bindings\",\\r\\n  \"version\": 2,\\r\\n  \"families\": [\\r\\n    {\\r\\n      \"family_id\": \"jensen-das-ugly-stik-60\",\\r\\n      \"builder\": {\\r\\n        \"script\": \"res://aircraft/ugly_stik_model.gd\",\\r\\n        \"adapter\": \"euler_hinges\"\\r\\n      },\\r\\n      \"geometry\": {\\r\\n        \"script\": \"res://aircraft/ugly_stik_geometry.gd\",\\r\\n        \"source\": \"assets/aircraft/ugly-s",
+        "FAIL: test_fresh_git_clones_regenerate_in_lf_and_crlf_checkouts (__main__.AircraftModelManifestTests.test_fresh_git_clones_regenerate_in_lf_and_crlf_checkouts) (checkout='crlf')",
+        "AssertionError: 1 != 0 : model manifest generation failed: f4u-corsair-250.liveries[1] GLB or its import sidecar is missing",
+        "Ran 1 test in 17.917s",
+        "FAILED (failures=2)"
+      ]
+    }
+  },
+  "checked_engine_runs_before_stop": [
+    {
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\full-suite-safe\\checks\\godot-1kfqt184\\report.json",
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "command": [
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_aerodynamic_stage.gd"
+      ]
+    },
+    {
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\full-suite-safe\\checks\\godot-huq0xvvh\\report.json",
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "command": [
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ]
+    },
+    {
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\full-suite-safe\\checks\\godot-hy_peou3\\report.json",
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "command": [
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_main_rotor.gd",
+        "--",
+        "--oracle=/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app/../research/helicopter/reference/main_rotor_oracle.json"
+      ]
+    },
+    {
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\full-suite-safe\\checks\\godot-i6z5tqyw\\report.json",
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "command": [
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_dynamic_inflow.gd",
+        "--",
+        "--oracle=/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app/../research/helicopter/reference/dynamic_oracle.json"
+      ]
+    },
+    {
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\full-suite-safe\\checks\\godot-oc_bl4oc\\report.json",
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "command": [
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_inflow.gd",
+        "--",
+        "--oracle=/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app/../research/helicopter/reference/oracle.json"
+      ]
+    },
+    {
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\full-suite-safe\\checks\\godot-o_rpcd_p\\report.json",
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "command": [
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_tail_rotor.gd",
+        "--",
+        "--oracle=/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app/../research/helicopter/reference/tail_rotor_oracle.json"
+      ]
+    },
+    {
+      "report": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-menu\\full-suite-safe\\checks\\godot-_3axv7z4\\report.json",
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "complete": true,
+      "command": [
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_airframe.gd",
+        "--",
+        "--oracle=/mnt/d/OpenRCsimulator-evidence/ui34c-r3/app/../research/helicopter/reference/airframe_oracle.json"
+      ]
+    }
+  ],
+  "unchanged_fixture_inputs": {
+    "research/aircraft-standardization/test_models.py": "0cc6b47f36780c3b65f80215419fd21f8b68d3eeedf08912cc57f06f8a19afa8",
+    "assets/aircraft/model-bindings.json": "2d21777000cac1ac61bc64204234359ac43dc23c77d2cb48037af58725beec60",
+    ".gitattributes": "6644656cd9d37b0184e083bd93192084127a298d59742b7dd176933f3697d0d7"
+  },
+  "limits": [
+    "Full parse sweep, remaining unit/integration scripts and exports were not reached. Focused loading/startup/cache/physics checks are retained separately.",
+    "Initial attempt inherited GIT_DIR/GIT_WORK_TREE, causing a temporary-repository fixture to change shared core.worktree and local user identity. It was terminated before commit; injected settings were removed and source/index identities verified. The reported rerun used no Git directory/work-tree environment overrides.",
+    "Candidate .git pointer was temporarily expressed as a WSL path for the rerun and restored to its Windows path afterward."
+  ]
+}

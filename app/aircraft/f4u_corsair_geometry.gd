@@ -24,7 +24,8 @@ const DATA := {
 		"metadata_sha256": "15129c73767d0cc7196955ab2b25863f2c7edc7ba4ca73311635461a86499b55",
 		"blend_sha256": "a3665272bef44b600c38212fccaa057c4289dfe48bf7fbb7034f8a467843208a",
 		"gear_samples_sha256": "7bd3eb6be284f4929033b904e1b2923c3dc63a118c956a196442fc98fc91e8bc",
-		"wing_fold_sha256": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89"
+		"wing_fold_sha256": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89",
+		"mechanisms_sha256": "4aa349793219b077f4f310e232d04e3b6e9fc933e6d492b9479f40f451a561b5"
 	},
 	"dimensions": {
 		"span_m": 2.7777703603108725,
@@ -525,6 +526,57 @@ const DATA := {
 				0.009968758
 			],
 			"source": "R59 94edd59b44f5 R51 pivot and CONTROL ALAS angulo_maximo (assets/aircraft/f4u-corsair-250/wing-fold-r59.json), mapped by D0 and the 1:4.5 scale"
+		}
+	},
+	"mechanisms": {
+		"canopy": {
+			"parts": [
+				{
+					"members": [
+						"canopy_frame",
+						"canopy_glass"
+					],
+					"offset": [
+						0.0,
+						-0.008555556,
+						0.155555553
+					]
+				}
+			],
+			"time_s": 2.5,
+			"time_source": "estimated: an RC scale sliding canopy's servo travel; R59's rig carries no timing",
+			"glass_landmark_check_m": 0.0,
+			"source": "R59 94edd59b44f5 CABINA apertura drivers location[0] = .70*apertura, location[2] = -.0385*apertura (assets/aircraft/f4u-corsair-250/mechanisms-r59.json), mapped by the 1:4.5 scale"
+		},
+		"tailhook": {
+			"parts": [
+				{
+					"members": [
+						"core_details"
+					],
+					"pivot": [
+						0.0,
+						0.097777737,
+						1.289534145
+					],
+					"axis": [
+						1.0,
+						0.0,
+						0.0
+					],
+					"max_angle_deg": 45.0,
+					"ground_point": [
+						-0.0,
+						0.013616487,
+						1.748129964
+					]
+				}
+			],
+			"time_s": 1.5,
+			"time_source": "estimated: an RC tailhook servo; R59's rig carries no timing",
+			"landmark_check_m": 0.002077,
+			"ground_point_source": "aft, low corner of the delivered hook's bounds (core_details), its tip",
+			"source": "R59 94edd59b44f5 R27 pivote gancho driver g*0.01745329252 and gancho_cola_deg range (assets/aircraft/f4u-corsair-250/mechanisms-r59.json), mapped by D0 and the 1:4.5 scale"
 		}
 	},
 	"gear": {

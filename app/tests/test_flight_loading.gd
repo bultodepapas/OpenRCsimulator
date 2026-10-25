@@ -34,6 +34,7 @@ class RejectedFlight extends Node:
 
 class TrackedApp extends "res://app_root.gd":
 	var flight_creations := 0
+	var scene_job_creations := 0
 	var scene_load_gate: SceneLoadGate
 	var scene_thread_unavailable := false
 	var reject_next_flight := false
@@ -44,6 +45,7 @@ class TrackedApp extends "res://app_root.gd":
 	var quit_commit_state: Dictionary = {}
 
 	func _new_flight_scene_load() -> Node:
+		scene_job_creations += 1
 		if scene_thread_unavailable:
 			return UnavailableSceneLoad.new()
 		var job: Node = super._new_flight_scene_load()
@@ -75,6 +77,21 @@ class TrackedApp extends "res://app_root.gd":
 				or (candidate is Node and candidate.is_queued_for_deletion()),
 			"status": str(last_flight_loading.get("status", "")),
 		}
+
+
+class QuitPreparationApp extends "res://app_root.gd":
+	var gate: SceneLoadGate
+	var quit_requested_count := 0
+	var quit_preparation: Dictionary = {}
+
+	func _new_flight_scene_load() -> Node:
+		var job: Node = super._new_flight_scene_load()
+		job.load_resource = gate.load_scene
+		return job
+
+	func _request_app_quit() -> void:
+		quit_requested_count += 1
+		quit_preparation = home_flight_preparation.duplicate(true)
 
 
 var _checks := 0
@@ -164,6 +181,8 @@ func _run() -> void:
 	app.window_focus_probe = func() -> bool: return true
 	root.add_child(app)
 	await _frames(8)
+	_check("disabled preparation creates no owner or speculative worker", app._home_flight_preparation == null
+		and app.scene_job_creations == 0 and app.home_flight_preparation.get("drained", false))
 	if app.controllers != null:
 		app.controllers.select_devices(-1, -1)
 	app.set_start_choice(FlightSession.START_RUNWAY)
@@ -353,6 +372,108 @@ func _run() -> void:
 			break
 		await process_frame
 	_check("abandoned scene job joins, drops its result and frees itself", orphan_ref.get_ref() == null)
+
+	var prepared_app := TrackedApp.new()
+	prepared_app.user_args = PackedStringArray()
+	prepared_app.preferences_path = PREFS
+	prepared_app.flight_loading_enabled = true
+	prepared_app.home_flight_prefetch_mode = "scene"
+	prepared_app.home_flight_prefetch_delay_msec = 0
+	var prepare_gate := SceneLoadGate.new()
+	prepared_app.scene_load_gate = prepare_gate
+	root.add_child(prepared_app)
+	await _frames(8)
+	prepared_app._home_flight_preparation.mark_home_drawn() # explicit headless seam
+	var prepared_worker_started := false
+	for _index in 2400:
+		if prepare_gate.entered.try_wait():
+			prepared_worker_started = true
+			break
+		await process_frame
+	prepared_app.start_flight()
+	await _frames(6)
+	_check("Fly adopts pending Home scene before selected-resource admission", prepared_worker_started
+		and prepared_app.last_flight_loading.get("scene_prefetch_adopted", false)
+		and prepared_app.scene_job_creations == 1 and prepared_app.flight_creations == 0
+		and prepared_app._home_preview_resources._admissions_paused)
+	prepare_gate.release.post()
+	var prepared_finished := await _wait_idle(prepared_app)
+	_check("adopted scene and selected GLB complete without a second scene worker", prepared_finished
+		and prepared_app.last_flight_loading.get("status", "") == "ready"
+		and prepared_app.scene_job_creations == 1 and prepared_app.flight_creations == 1
+		and not prepared_app._home_preview_resources._admissions_paused)
+	await prepared_app.shutdown_home_flight_preparation()
+	prepared_app.queue_free()
+	await _frames()
+
+	var random_app := TrackedApp.new()
+	random_app.user_args = PackedStringArray()
+	random_app.preferences_path = PREFS
+	random_app.flight_loading_enabled = true
+	random_app.home_flight_prefetch_mode = "scene"
+	random_app.home_flight_prefetch_delay_msec = 0
+	var random_gate := SceneLoadGate.new()
+	random_app.scene_load_gate = random_gate
+	root.add_child(random_app)
+	await _frames(8)
+	random_app._home_flight_preparation.mark_home_drawn()
+	var random_worker_started := false
+	for _index in 2400:
+		if random_gate.entered.try_wait():
+			random_worker_started = true
+			break
+		await process_frame
+	random_app.open_natural_random()
+	random_app.start_flight() # a competing launch must not bypass the route's drain barrier
+	await _frames(6)
+	_check("Natural Random waits for preparation before synchronous briefing setup", random_worker_started
+		and random_app._home_preparation_route_pending and random_app.natural_random_screen == null
+		and not random_app._loading_active and random_app.flight_creations == 0)
+	random_gate.release.post()
+	for _index in 2400:
+		if not random_app._home_preparation_route_pending:
+			break
+		await process_frame
+	_check("Natural Random opens after the scene drains without a competing Fly", random_app.screens.is_top("natural_random")
+		and random_app.natural_random_screen != null and random_app.flight_creations == 0
+		and random_app.home_flight_preparation.get("drained", false))
+	await random_app.shutdown_home_flight_preparation()
+	random_app.queue_free()
+	await _frames()
+
+	var quit_app := QuitPreparationApp.new()
+	quit_app.user_args = PackedStringArray()
+	quit_app.preferences_path = PREFS
+	quit_app.home_flight_prefetch_mode = "scene"
+	quit_app.home_flight_prefetch_delay_msec = 0
+	var quit_gate := SceneLoadGate.new()
+	quit_app.gate = quit_gate
+	root.add_child(quit_app)
+	await _frames(8)
+	quit_app.menu_audio.set_volume(0.0)
+	quit_app._home_flight_preparation.mark_home_drawn()
+	var quit_worker_started := false
+	for _index in 2400:
+		if quit_gate.entered.try_wait():
+			quit_worker_started = true
+			break
+		await process_frame
+	paused = true
+	quit_app.quit_app()
+	quit_app.quit_app()
+	await _frames(6)
+	_check("muted idle Quit waits for pending preparation even with SceneTree paused", quit_worker_started
+		and quit_app.quit_requested_count == 0 and not quit_app._loading_active)
+	quit_gate.release.post()
+	for _index in 2400:
+		if quit_app.quit_requested_count > 0:
+			break
+		await process_frame
+	_check("paused idle Quit commits only after preparation drains", quit_app.quit_requested_count == 1
+		and quit_app.quit_preparation.get("drained", false))
+	paused = false
+	quit_app.queue_free()
+	await _frames()
 	TranslationServer.set_locale("en")
 	_clear_test_files()
 	print("Flight loading: %d checks, %d failed" % [_checks, _failures])
