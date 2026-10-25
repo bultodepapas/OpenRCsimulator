@@ -12,15 +12,18 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[3]
 HERE = Path(__file__).resolve().parent
-COMMIT = "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76"
-BASE = "343be4b0bba007ec4295e7da408220a0577d97e1"
-INTEGRATION_COMMIT = "7bfbe2ec071bd142c5b1acf7350fff634ec31f16"
+sys.path.insert(0, str(HERE))
+import build as native_build
+import prepare_candidate as candidate_pins
+
+COMMIT = native_build.COMMIT
+BASE = candidate_pins.BASE_COMMIT
+INTEGRATION_COMMIT = candidate_pins.INTEGRATION_COMMIT
 CANDIDATE = ROOT / "tmp/native-reconstruction-candidate"
 OUT = ROOT / "tmp/native-reconstruction-export"
 CHECKS = ROOT / "tmp/godot-checks/native-package-export"
 INTEGRATION = ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")
-OVERLAYS = ("app/render/reconstruction.gd", "app/app_state/display_preferences.gd", "app/ui/settings_screen.gd",
-            "app/i18n/es.po", "app/app_root.gd", "app/main.gd", "app/tests/test_reconstruction.gd", "app/tests/test_advanced_graphics_settings.gd")
+OVERLAYS = candidate_pins.INTEGRATION_OVERLAYS
 FORMAT = "openrc-native-reconstruction-package v1"
 sys.path.insert(0, str(ROOT / "tools/godot"))
 from run_checked import run_checked
@@ -28,12 +31,6 @@ from run_checked import run_checked
 
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def pinned_app_blob(path: str) -> bytes:
-    return subprocess.check_output(
-        ["git", "show", f"{INTEGRATION_COMMIT}:{path}"], cwd=ROOT
-    )
 
 
 def read_json(path: Path) -> dict:
@@ -56,8 +53,8 @@ def main() -> int:
     editor, template = read_json(editor_receipt_path), read_json(template_receipt_path)
     candidate = read_json(candidate_receipt_path)
     expected_integration = {name: digest(HERE / name) for name in INTEGRATION}
-    expected_sources = {"godot-nvidia.zip": "8f9d9604270ccca92d14cc57afca142079476cbe050e0486a90b84da17ce907a", "fidelityfx-1.1.4.zip": "9a19e1f20bf269163f052186ed563209c5a1d0f7b1cf7e567e643dee6cc61179", "streamline-2.10.0.zip": "b0cc810c86b0335d4fd76a02d35fff53e528d2fb66c29860565130f76c9383b0"}
-    shared = ("godot_commit", "version", "fidelityfx_sdk", "fsr_upscaler", "streamline", "platform", "graphics_api", "frame_generation_enabled", "sources", "integration", "runtime", "fidelityfx_runtime_build")
+    expected_sources = {name: digest for name, _, digest, _ in native_build.ARCHIVES}
+    shared = ("godot_commit", "version", "fidelityfx_sdk", "fsr_upscaler", "streamline", "platform", "graphics_api", "frame_generation_enabled", "sources", "integration", "streamline_headers", "runtime", "fidelityfx_runtime_build")
     for label, receipt in (("editor", editor), ("template_release", template)):
         if receipt.get("experimental") is not True or receipt.get("godot_commit") != COMMIT:
             raise RuntimeError(f"{label} receipt is not for the pinned experimental engine")
@@ -67,6 +64,8 @@ def main() -> int:
             raise RuntimeError(f"{label} integration receipt is stale versus tools/graphics/native")
         if receipt.get("sources") != expected_sources:
             raise RuntimeError(f"{label} SDK/source archive identities do not match the pinned build")
+        if not isinstance(receipt.get("streamline_headers"), dict) or not receipt["streamline_headers"]:
+            raise RuntimeError(f"{label} receipt has no Streamline header hashes")
         if not isinstance(receipt.get("runtime"), dict) or not receipt["runtime"]:
             raise RuntimeError(f"{label} receipt has no runtime DLL hashes")
         exe = Path(str(receipt.get("executable", ""))).resolve()
@@ -104,14 +103,17 @@ def main() -> int:
     if any(item.get("presentation_engine_version") != "4.8.0" or item.get("presentation_sources") != source_records
            for item in bindings.get("families", [])):
         raise RuntimeError("candidate family registry does not match its presentation receipt")
-    overlay_hashes = {name: value.get("prepared_sha256") for name, value in candidate.get("integration_overlays", {}).items()}
-    if set(overlay_hashes) != set(OVERLAYS): raise RuntimeError("candidate receipt does not cover the exact app integration files")
-    expected_overlay_hashes = {
-        name: hashlib.sha256(pinned_app_blob(name)).hexdigest() for name in OVERLAYS
-    }
+    overlay_records = candidate.get("integration_overlays", {})
+    if set(overlay_records) != set(OVERLAYS): raise RuntimeError("candidate receipt does not cover the exact app integration files")
+    expected_overlay_records = candidate_pins.expected_integration_overlays()
     for name in OVERLAYS:
-        expected = expected_overlay_hashes[name]
-        if overlay_hashes[name] != expected or digest(CANDIDATE / name) != expected:
+        expected = expected_overlay_records[name]
+        actual = overlay_records[name]
+        if (actual.get("source_commit") != expected["source_commit"] or
+                actual.get("source_sha256") != expected["source_sha256"] or
+                actual.get("expected_final_sha256") != expected["expected_final_sha256"] or
+                actual.get("prepared_sha256") != expected["expected_final_sha256"] or
+                digest(CANDIDATE / name) != expected["expected_final_sha256"]):
             raise RuntimeError(f"candidate app integration is stale: {name}")
 
     licenses = engine / "licenses"
@@ -181,9 +183,10 @@ def main() -> int:
     package = {"format": FORMAT, "build_identity": build_id,
                "godot_commit": COMMIT, "engine_version": editor["version"],
                "sources": editor["sources"], "integration": editor["integration"],
+               "streamline_headers": editor["streamline_headers"],
                "runtime": editor["runtime"], "candidate": {key: candidate[key] for key in
                    ("source_base_commit", "integration_source_commit", "engine_identity", "candidate_renderer",
-                    "generated_registry_sha256")}, "export_report": result["report"], "files": files}
+                    "generated_registry_sha256", "integration_overlays")}, "export_report": result["report"], "files": files}
     (OUT / "package-receipt.json").write_text(json.dumps(package, indent=2) + "\n", encoding="utf-8")
     print(f"Packaged {len(files)} files in {OUT}")
     return 0

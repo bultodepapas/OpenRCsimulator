@@ -25,8 +25,8 @@ ARCHIVES = (
      "8f9d9604270ccca92d14cc57afca142079476cbe050e0486a90b84da17ce907a", f"godot-{COMMIT}"),
     ("fidelityfx-1.1.4.zip", "https://codeload.github.com/GPUOpen-LibrariesAndSDKs/FidelityFX-SDK/zip/refs/tags/v1.1.4",
      "9a19e1f20bf269163f052186ed563209c5a1d0f7b1cf7e567e643dee6cc61179", "FidelityFX-SDK-1.1.4"),
-    ("streamline-2.10.0.zip", "https://github.com/NVIDIA-RTX/Streamline/releases/download/v2.10.0/streamline-sdk-v2.10.0.zip",
-     "b0cc810c86b0335d4fd76a02d35fff53e528d2fb66c29860565130f76c9383b0", "streamline-2.10.0"),
+    ("streamline-2.14.16.zip", "https://github.com/NVIDIA-RTX/Streamline/releases/download/v2.14.16/streamline-sdk-v2.14.16.zip",
+     "32041e51db0cab709a271b72a352281b690c2abbd669a827809401a5dd23956b", "streamline-2.14.16"),
 )
 
 
@@ -81,6 +81,8 @@ def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Pat
         shutil.copy2(HERE / name, engine / "servers/rendering/renderer_rd/effects" / name)
     shutil.copy2(HERE / "fsr3_prepare.glsl", engine / "servers/rendering/renderer_rd/shaders/effects/fsr3_prepare.glsl")
     shutil.copytree(amd / "ffx-api/include/ffx_api", engine / "thirdparty/amd-fsr3/ffx_api", dirs_exist_ok=True)
+    # The SDK handshake and public structures must match the shipped runtime.
+    shutil.copytree(nvidia / "include", engine / "thirdparty/streamline/include", dirs_exist_ok=True)
     binaries = engine / "bin"
     binaries.mkdir(exist_ok=True)
     from build_fidelityfx import apply_fidelityfx_patch, build_runtime
@@ -105,10 +107,11 @@ def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Pat
     receipt = {
         "experimental": True, "production_engine_unchanged": "4.7.2-stable",
         "godot_repository": "https://github.com/NVIDIA-RTX/godot", "godot_commit": COMMIT,
-        "fidelityfx_sdk": "1.1.4", "fsr_upscaler": "3.1.4", "streamline": "2.10.0",
+        "fidelityfx_sdk": "1.1.4", "fsr_upscaler": "3.1.4", "streamline": "2.14.16",
         "platform": "windows", "graphics_api": "vulkan", "frame_generation_enabled": False,
         "sources": {name: digest for name, _, digest, _ in ARCHIVES},
         "integration": {name: sha256(HERE / name) for name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")},
+        "streamline_headers": {source.name: sha256(source) for source in sorted((nvidia / "include").glob("*.h"))},
         "fidelityfx_runtime_build": fidelityfx_receipt,
         "runtime": {source.name: sha256(source) for source in runtime_files},
     }

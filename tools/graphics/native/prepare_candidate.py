@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[3]
 CANDIDATE = ROOT / "tmp" / "native-reconstruction-candidate"
 BASE_COMMIT = "343be4b0bba007ec4295e7da408220a0577d97e1"
 INTEGRATION_COMMIT = "7bfbe2ec071bd142c5b1acf7350fff634ec31f16"
+FEATURE_INTEGRATION_COMMIT = "91b67d620c1adf3f470dddba33ace63f3fb6851c"
 ENGINE_VERSION = "4.8.0"
 GENERATOR_RELATIVE = Path("research/aircraft-standardization/build_customization.py")
 GENERATOR_SHA256 = "a78b580aa320dfd4d34e27ef2e017cb395e19f71a5e35b25132a7228482e7ac6"
@@ -36,6 +37,17 @@ INTEGRATION_OVERLAYS = (
     "app/tests/test_reconstruction.gd",
     "app/tests/test_advanced_graphics_settings.gd",
 )
+INTEGRATION_SOURCE_COMMITS = {
+    path: INTEGRATION_COMMIT for path in INTEGRATION_OVERLAYS
+}
+for _path in (
+    "app/render/reconstruction.gd",
+    "app/ui/settings_screen.gd",
+    "app/i18n/es.po",
+    "app/tests/test_reconstruction.gd",
+    "app/tests/test_advanced_graphics_settings.gd",
+):
+    INTEGRATION_SOURCE_COMMITS[_path] = FEATURE_INTEGRATION_COMMIT
 
 
 def sha256(data: bytes) -> str:
@@ -58,6 +70,30 @@ def pinned_blob(path: str, commit: str = BASE_COMMIT) -> bytes:
         stderr=subprocess.PIPE,
     )
     return result.stdout
+
+
+def integration_source_commit(path: str) -> str:
+    try:
+        return INTEGRATION_SOURCE_COMMITS[path]
+    except KeyError as exc:
+        raise RuntimeError(f"no integration source pin is defined for {path}") from exc
+
+
+def pinned_integration_blob(path: str) -> bytes:
+    return pinned_blob(path, integration_source_commit(path))
+
+
+def expected_integration_overlays() -> dict[str, dict[str, str]]:
+    records: dict[str, dict[str, str]] = {}
+    for path in INTEGRATION_OVERLAYS:
+        source_commit = integration_source_commit(path)
+        source_hash = sha256(pinned_integration_blob(path))
+        records[path] = {
+            "source_commit": source_commit,
+            "source_sha256": source_hash,
+            "expected_final_sha256": source_hash,
+        }
+    return records
 
 
 def create_candidate_from_archive() -> None:
@@ -162,7 +198,9 @@ def verify_pinned_input(path: str, expected: bytes | None = None) -> bytes:
 
 
 def apply_integration_overlay(path: str, previous: dict, changes: list[dict[str, str]]) -> str:
-    content = pinned_blob(path, INTEGRATION_COMMIT)
+    source_commit = integration_source_commit(path)
+    content = pinned_integration_blob(path)
+    content_hash = sha256(content)
     target = CANDIDATE / path
     current = target.read_bytes() if target.is_file() else b""
     try:
@@ -183,11 +221,12 @@ def apply_integration_overlay(path: str, previous: dict, changes: list[dict[str,
     changes.append({
         "path": path,
         "base_sha256": sha256(baseline) if baseline else "not-present-at-source-base",
-        "integration_source_commit": INTEGRATION_COMMIT,
-        "integration_source_sha256": sha256(content),
-        "prepared_sha256": sha256(content),
+        "integration_source_commit": source_commit,
+        "integration_source_sha256": content_hash,
+        "expected_final_sha256": content_hash,
+        "prepared_sha256": content_hash,
     })
-    return sha256(content)
+    return content_hash
 
 
 def prepare_forward_plus_project(previous: dict, changes: list[dict[str, str]]) -> str:
@@ -264,6 +303,10 @@ def main() -> int:
     integration_overlay_hashes: dict[str, str] = {}
     for path in INTEGRATION_OVERLAYS:
         integration_overlay_hashes[path] = apply_integration_overlay(path, old_receipt, changes)
+    integration_overlay_records = expected_integration_overlays()
+    for path, digest in integration_overlay_hashes.items():
+        if integration_overlay_records[path]["expected_final_sha256"] != digest:
+            raise RuntimeError(f"prepared integration overlay differs from its pinned hash: {path}")
     candidate_project_sha256 = prepare_forward_plus_project(old_receipt, changes)
 
     source_changes = {
@@ -371,7 +414,10 @@ def main() -> int:
         "candidate_renderer": "forward_plus",
         "candidate_project_sha256": candidate_project_sha256,
         "integration_overlays": {
-            path: {"prepared_sha256": digest}
+            path: {
+                **integration_overlay_records[path],
+                "prepared_sha256": digest,
+            }
             for path, digest in integration_overlay_hashes.items()
         },
         "generator_source_sha256": sha256(pinned_generator),
