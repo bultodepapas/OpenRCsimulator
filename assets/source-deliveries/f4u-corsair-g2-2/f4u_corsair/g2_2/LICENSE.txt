@@ -1,0 +1,3 @@
+This package contains original model and texture work authored for this delivery.
+
+No license is granted by delivery. All rights remain with the author. No third-party license is included in this package.

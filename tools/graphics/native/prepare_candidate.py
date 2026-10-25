@@ -20,6 +20,7 @@ from typing import Callable
 ROOT = Path(__file__).resolve().parents[3]
 CANDIDATE = ROOT / "tmp" / "native-reconstruction-candidate"
 BASE_COMMIT = "343be4b0bba007ec4295e7da408220a0577d97e1"
+INTEGRATION_COMMIT = "7bfbe2ec071bd142c5b1acf7350fff634ec31f16"
 ENGINE_VERSION = "4.8.0"
 GENERATOR_RELATIVE = Path("research/aircraft-standardization/build_customization.py")
 GENERATOR_SHA256 = "a78b580aa320dfd4d34e27ef2e017cb395e19f71a5e35b25132a7228482e7ac6"
@@ -48,19 +49,15 @@ def normalized_text(data: bytes) -> bytes:
         raise RuntimeError("candidate inputs must be UTF-8 text") from exc
 
 
-def pinned_blob(path: str) -> bytes:
+def pinned_blob(path: str, commit: str = BASE_COMMIT) -> bytes:
     result = subprocess.run(
-        ["git", "show", f"{BASE_COMMIT}:{path}"],
+        ["git", "show", f"{commit}:{path}"],
         cwd=ROOT,
         check=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
     return result.stdout
-
-
-def repo_head() -> str:
-    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
 
 
 def create_candidate_from_archive() -> None:
@@ -165,10 +162,7 @@ def verify_pinned_input(path: str, expected: bytes | None = None) -> bytes:
 
 
 def apply_integration_overlay(path: str, previous: dict, changes: list[dict[str, str]]) -> str:
-    source = ROOT / path
-    if not source.is_file():
-        raise RuntimeError(f"integration source is missing from the working tree: {path}")
-    content = source.read_bytes()
+    content = pinned_blob(path, INTEGRATION_COMMIT)
     target = CANDIDATE / path
     current = target.read_bytes() if target.is_file() else b""
     try:
@@ -189,7 +183,8 @@ def apply_integration_overlay(path: str, previous: dict, changes: list[dict[str,
     changes.append({
         "path": path,
         "base_sha256": sha256(baseline) if baseline else "not-present-at-source-base",
-        "working_tree_sha256": sha256(content),
+        "integration_source_commit": INTEGRATION_COMMIT,
+        "integration_source_sha256": sha256(content),
         "prepared_sha256": sha256(content),
     })
     return sha256(content)
@@ -371,7 +366,7 @@ def main() -> int:
     receipt = {
         "format": RECEIPT_FORMAT,
         "source_base_commit": BASE_COMMIT,
-        "integration_source_commit": repo_head(),
+        "integration_source_commit": INTEGRATION_COMMIT,
         "engine_identity": ENGINE_VERSION,
         "candidate_renderer": "forward_plus",
         "candidate_project_sha256": candidate_project_sha256,

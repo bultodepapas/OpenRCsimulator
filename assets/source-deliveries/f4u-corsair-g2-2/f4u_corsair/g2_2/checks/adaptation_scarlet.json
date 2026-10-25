@@ -1,0 +1,18 @@
+{
+  "id": "scarlet",
+  "name": "Super Corsair 57 / SOHIO",
+  "blend": "source/aircraft_scarlet.blend",
+  "glb": "export/aircraft_scarlet.glb",
+  "blend_sha256": "41f1b80e1db961b1c5b214bc1b478a37579d9c1412069759a8cd3e1b7f51940a",
+  "glb_sha256": "679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1",
+  "glb_bytes": 20415824,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 57,
+  "materials": 14,
+  "images": 6,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 0.65
+}

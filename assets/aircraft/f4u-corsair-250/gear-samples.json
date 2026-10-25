@@ -3,7 +3,7 @@
  "step": "F4U-05",
  "generator": "research/f4u-corsair/F4U-05/sample_gear.py",
  "blender": "5.2.2 LTS",
- "source_blend_sha256": "1bbe5011f099cdaa893f00f4ec081523d5873887cb5916c29ee26c5319295148",
+ "source_blend_sha256": "a3665272bef44b600c38212fccaa057c4289dfe48bf7fbb7034f8a467843208a",
  "action": "GearRetract",
  "frames": {
   "stowed": 100,

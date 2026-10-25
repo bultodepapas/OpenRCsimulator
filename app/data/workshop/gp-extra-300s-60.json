@@ -82,7 +82,7 @@
   ],
   "presentation": {
     "visual_family": "gp-extra-300s-60",
-    "model_manifest_sha256": "c6093b975f3e90f63d458af682db414f451f4b7d9028790b0bc4e57256b58948",
+    "model_manifest_sha256": "d56c11d672ab0f5d2e67947e6b045dfe8f9fb542810547c153476359d5288f74",
     "scale_root": "airplane"
   }
 }

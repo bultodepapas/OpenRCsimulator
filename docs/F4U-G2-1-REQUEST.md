@@ -110,4 +110,4 @@ For the next revision, after g2.1:
 
 1. **Blade normal map (required).** `naval_blade_paint` lost g2.0's normal map, and its roughness fell from 0.72 to 0.37. The blades now show faceted diagonal streaks at 1.6 m. Add the R59 normal map on UV0 at scale 0.65, keep the base colour on UV1, and check the roughness in a close preview against g2.0.
 2. **I1 (still wanted).** `fuselage_core` 23.7 % and `cowl` 22.9 % remain above the 10 % target; `canopy_glass` improved to 13.1 %.
-3. **Liveries.** Wait for the owner's list.
+3. **Liveries.** Delivered in g2.2: all thirteen schemes, integrated in F4U-20. The blade normal map (1) is still missing in all thirteen.

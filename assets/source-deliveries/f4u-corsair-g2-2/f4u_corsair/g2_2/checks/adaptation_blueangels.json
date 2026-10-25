@@ -1,0 +1,18 @@
+{
+  "id": "blueangels",
+  "name": "Blue Angels Corsair",
+  "blend": "source/aircraft_blueangels.blend",
+  "glb": "export/aircraft_blueangels.glb",
+  "blend_sha256": "b2d8083dec14eb408dadc33b467ea58029c19bde64faad11265dc0cbae167dac",
+  "glb_sha256": "76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0",
+  "glb_bytes": 19593328,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 58,
+  "materials": 15,
+  "images": 6,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 0.65
+}

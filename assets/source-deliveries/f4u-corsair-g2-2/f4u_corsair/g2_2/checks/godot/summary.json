@@ -1,0 +1,59 @@
+{
+ "import_exit": 0,
+ "import_s": 141.4,
+ "resolution": "1920x1080",
+ "runs": {
+  "midnight-textured": {
+   "exit": 0,
+   "wall_s": 6.0
+  },
+  "three_tone-textured": {
+   "exit": 0,
+   "wall_s": 6.0
+  },
+  "scarlet-textured": {
+   "exit": 0,
+   "wall_s": 5.8
+  },
+  "splash-textured": {
+   "exit": 0,
+   "wall_s": 6.8
+  },
+  "spectrum-textured": {
+   "exit": 0,
+   "wall_s": 5.9
+  },
+  "blueangels-textured": {
+   "exit": 0,
+   "wall_s": 6.4
+  },
+  "thunderbirds-textured": {
+   "exit": 0,
+   "wall_s": 5.5
+  },
+  "chrome-textured": {
+   "exit": 0,
+   "wall_s": 5.4
+  },
+  "p40-textured": {
+   "exit": 0,
+   "wall_s": 5.9
+  },
+  "japan-textured": {
+   "exit": 0,
+   "wall_s": 6.0
+  },
+  "luftwaffe-textured": {
+   "exit": 0,
+   "wall_s": 5.9
+  },
+  "italy-textured": {
+   "exit": 0,
+   "wall_s": 5.9
+  },
+  "carbon-textured": {
+   "exit": 0,
+   "wall_s": 7.3
+  }
+ }
+}

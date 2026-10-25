@@ -1,0 +1,18 @@
+{
+  "id": "spectrum",
+  "name": "Spectrum Wings",
+  "blend": "source/aircraft_spectrum.blend",
+  "glb": "export/aircraft_spectrum.glb",
+  "blend_sha256": "a248bf57c31742ef0bd60ffd7ea33332aece12a749777c6d5dc6c4503bc07150",
+  "glb_sha256": "233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6",
+  "glb_bytes": 19822212,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 57,
+  "materials": 14,
+  "images": 6,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 0.65
+}

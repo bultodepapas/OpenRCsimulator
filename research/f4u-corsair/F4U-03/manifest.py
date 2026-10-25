@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""F4U-03: freeze the identity of the current F4U Corsair delivery (g2.1 since F4U-19; g1.13 from F4U-15, g1.3 before).
+"""F4U-03: freeze the identity of the current F4U Corsair delivery (g2.2 since F4U-20; g2.1 from F4U-19, g1.13 from
+F4U-15, g1.3 before).
 
 Hashes every file of the author's nested game delivery
-`assets/source-deliveries/f4u-corsair-g2-1/f4u_corsair/g2_1/` and writes
+`assets/source-deliveries/f4u-corsair-g2-2/f4u_corsair/g2_2/` and writes
 assets/aircraft/f4u-corsair-250/source-manifest.json: the SHA-256 and size of each file, the key files by role, the
 visual revision string (the revision plus the first 12 hex digits of the GLB hash), the livery GLBs and the delivery's
-request revision and scale from metadata.json. It also proves that the copy equals the author's own manifest.json,
-except for the files the repository deliberately omits (OMITTED: the texture folder, whose runtime images are packed
-in the .blend and embedded in the GLB, and the preview images); those are listed with the author's hashes. Downstream generators (F4U-05/06) read this manifest to show that they describe these exact bytes.
+request revision and scale from metadata.json. The livery GLBs are the delivered metadata's `liveries`, in its
+order. It also proves that the copy equals the author's own SHA256SUMS.txt, except for the files the repository
+deliberately omits (OMITTED: the texture folder, whose runtime images are packed in the .blend and GLBs, the
+previews, the other liveries' .blend sources and the author's UV cache); those are listed with the author's hashes. Downstream generators (F4U-05/06) read this manifest to show that they describe these exact bytes.
 
     python3 research/f4u-corsair/F4U-03/manifest.py           # writes the manifest
     python3 research/f4u-corsair/F4U-03/manifest.py --check   # fails if any delivery file changed
@@ -22,7 +24,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-DELIVERY = ROOT / "assets/source-deliveries/f4u-corsair-g2-1/f4u_corsair/g2_1"
+DELIVERY = ROOT / "assets/source-deliveries/f4u-corsair-g2-2/f4u_corsair/g2_2"
 TARGET = ROOT / "assets/aircraft/f4u-corsair-250/source-manifest.json"
 KEY_FILES = {
     "glb": "export/aircraft.glb",
@@ -33,13 +35,11 @@ KEY_FILES = {
     "provenance": "PROVENANCE.md",
     "readme": "README.md",
     "changelog": "CHANGELOG.md",
-    "author_manifest": "manifest.json",
-    "author_sums": "SHA256SUMS.txt",
+    "author_manifest": "SHA256SUMS.txt",
 }
-# Livery id (metadata.json "liveries") -> GLB. g2.1 delivers the default naval paint only (owner, 2026-10-24).
-LIVERY_GLBS = {"midnight": "export/aircraft.glb"}
-# Delivered but not copied into the repository; the author's hashes stay in the source manifest.
-OMITTED = ["textures/*", "previews/*.png", "previews/index.html"]
+# Delivered but not copied into the repository; the author's hashes stay in the source manifest. The other liveries'
+# .blend sources are added from metadata.json (every livery's `blend` except the default's).
+OMITTED = ["textures/*", "previews/*", "source/scripts/uv-layout.json"]
 IGNORED_DIRS = {"__pycache__", ".git"}
 IGNORED_SUFFIXES = {".pyc", ".pyo", ".swp"}
 IGNORED_NAMES = {".DS_Store", "Thumbs.db"}
@@ -70,17 +70,23 @@ def file_table() -> list:
 def build() -> dict:
     rows = file_table()
     by_path = {row["path"]: row for row in rows}
-    listing = json.loads((DELIVERY / KEY_FILES["author_manifest"]).read_text(encoding="utf-8"))
-    author = {entry["path"]: entry["sha256"] for entry in listing["files"]}
-    omitted = sorted(p for p in author if any(fnmatch.fnmatch(p, pattern) for pattern in OMITTED))
+    author = {}
+    for line in (DELIVERY / KEY_FILES["author_manifest"]).read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            digest, path = line.split(maxsplit=1)
+            author[path.lstrip("*")] = digest
+    meta = json.loads((DELIVERY / KEY_FILES["metadata"]).read_text(encoding="utf-8"))
+    liveries = meta["liveries"]
+    assert liveries[0]["id"] == meta["default_livery"] and liveries[0]["glb"] == KEY_FILES["glb"], "default livery first"
+    rules = OMITTED + [r["blend"] for r in liveries[1:]]
+    omitted = sorted(p for p in author if any(fnmatch.fnmatch(p, pattern) for pattern in rules))
     present_omitted = sorted(p for p in omitted if p in by_path)
     if present_omitted:
         sys.exit(f"files the manifest declares omitted are present: {present_omitted}")
     mismatched = sorted(p for p, h in author.items() if p not in omitted and by_path.get(p, {}).get("sha256") != h)
-    unlisted = sorted(set(by_path) - set(author) - {KEY_FILES["author_manifest"], KEY_FILES["author_sums"]})
+    unlisted = sorted(set(by_path) - set(author) - {KEY_FILES["author_manifest"]})
     if mismatched or unlisted:
         sys.exit(f"delivery differs from the author's manifest: mismatched {mismatched}, unlisted {unlisted}")
-    meta = json.loads((DELIVERY / KEY_FILES["metadata"]).read_text(encoding="utf-8"))
     glb = by_path[KEY_FILES["glb"]]
     return {
         "format": "openrc-f4u-source-manifest v1",
@@ -95,9 +101,9 @@ def build() -> dict:
         "master": {"revision": meta["master_revision"], "sha256": meta["master_sha256"]},
         "terms": "project's own model; no licence required (owner decision F4U-13, 2026-10-23, docs/DECISIONS.md)",
         "author_manifest": f"{len(author) - len(omitted)} of {len(author)} entries of {KEY_FILES['author_manifest']} match; {len(omitted)} omitted by rule",
-        "omitted_rule": OMITTED,
+        "omitted_rule": rules,
         "omitted": [{"path": p, "sha256": author[p]} for p in omitted],
-        "livery_glbs": {livery: dict(path=path, **{k: by_path[path][k] for k in ("sha256", "bytes")}) for livery, path in LIVERY_GLBS.items()},
+        "livery_glbs": {r["id"]: dict(path=r["glb"], **{k: by_path[r["glb"]][k] for k in ("sha256", "bytes")}) for r in liveries},
         "key_files": {role: dict(path=path, **{k: by_path[path][k] for k in ("sha256", "bytes")}) for role, path in KEY_FILES.items()},
         "file_count": len(rows),
         "total_bytes": sum(row["bytes"] for row in rows),

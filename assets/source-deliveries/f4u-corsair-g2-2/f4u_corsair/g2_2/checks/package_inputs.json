@@ -1,0 +1,96 @@
+{
+  "all_pass": true,
+  "liveries": [
+    {
+      "id": "midnight",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "three_tone",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "scarlet",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "splash",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "spectrum",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "blueangels",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "thunderbirds",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "chrome",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "p40",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "japan",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "luftwaffe",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "italy",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    },
+    {
+      "id": "carbon",
+      "source_hash_matches": true,
+      "GLB_hash_matches": true,
+      "editable_merged_matches_runtime_base": true,
+      "four_previews_1920x1080": true
+    }
+  ]
+}

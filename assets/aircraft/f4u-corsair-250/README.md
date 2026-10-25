@@ -1,6 +1,6 @@
 # F4U Corsair 1/4.5: sources and pipeline
 
-Checked 2026-10-24. `f4u-corsair-250` is an experimental catalog aircraft: a 2.778 m, 1/4.5-scale F4U-1D of the CARF-Models class, powered by a Moki S250 five-cylinder radial with a 30x18 three-blade. The author's g2.1 visual model (F4U-19), with Naval 308 as its only paint, is frozen in `assets/source-deliveries/f4u-corsair-g2-1/` and identified by [source-manifest.json](source-manifest.json). The earlier g1.13 and g1.3 freezes stay for the F4U-04…18 evidence. The [F4U plan](../../../docs/F4U-PLAN.md) owns scope, steps and owner decisions.
+Checked 2026-10-24. `f4u-corsair-250` is an experimental catalog aircraft: a 2.778 m, 1/4.5-scale F4U-1D of the CARF-Models class, powered by a Moki S250 five-cylinder radial with a 30x18 three-blade. The author's g2.2 visual model (F4U-20), the g2.1 airframe with all thirteen paint schemes, is frozen in `assets/source-deliveries/f4u-corsair-g2-2/` and identified by [source-manifest.json](source-manifest.json). The earlier g2.1, g1.13 and g1.3 freezes stay for the F4U-04…19 evidence. The [F4U plan](../../../docs/F4U-PLAN.md) owns scope, steps and owner decisions.
 
 ## Sources
 
@@ -8,12 +8,12 @@ Checked 2026-10-24. `f4u-corsair-250` is an experimental catalog aircraft: a 2.7
 | --- | --- |
 | [source.json](source.json) | Authored inputs (format v2): D1 CARF-Models F4U-1D 1:4.5, D4 30x18 three-blade, D5 Moki S250; two mass anchors for this kit; the CARF manual's setup; three smaller Corsair setups for CG, low rates and expo; the Moki operating points; NACA full-size data; measured NACA 23012/23015 sections with XFOIL thickness trends; Roskam slotted-flap digitization. Edit only here. |
 | [geometry-r59.json](geometry-r59.json) | Generated: 1/4.5 geometry measured on the R59 master (sections, control surfaces, fuselage, nose, hull points, gear and retraction paths). g1.3 landmarks agree within 0.3 mm (F4U-06). |
-| [source-manifest.json](source-manifest.json) | Generated: SHA-256 and size of every frozen g2.1 delivery file, the author's hashes of the files deliberately not copied (textures and preview images), key files by role, the one livery GLB, visual revision `g2.1-cf4cdad638da`. |
+| [source-manifest.json](source-manifest.json) | Generated: SHA-256 and size of every frozen g2.2 delivery file, the author's hashes of the files deliberately not copied (textures, previews, the twelve other livery `.blend` sources and the UV cache), key files by role, the thirteen livery GLBs, visual revision `g2.2-9fa3b86a9b33`. |
 | [gear-samples.json](gear-samples.json) | Generated in Blender from the frozen game source: 101 parent-local `GearRetract` carrier poses (sample 0 stowed), wheel-centre paths, midpoint error. |
 | [wing-fold-r59.json](wing-fold-r59.json) | Generated: R59's wing-fold rig in R59 coordinates (pivots, axis, sign, 112°, lock-release law) and Blender's folded navigation-lamp check (F4U-17). |
 | [model-geometry.json](model-geometry.json) | Generated: the model family's geometry source (control hinges, thrust frame, gear rig, wing folds; liveries when two or more are delivered), compiled into `app/aircraft/f4u_corsair_geometry.gd`. |
 
-Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the root leading edge on the centreline at thrust-line height. This is the delivery request's D0, so g2.1 model coordinates map as `[x_aft, y_right, z_up] = [z_model, x_model, y_model]`.
+Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the root leading edge on the centreline at thrust-line height. This is the delivery request's D0, so g2.2 model coordinates map as `[x_aft, y_right, z_up] = [z_model, x_model, y_model]`.
 
 ## Pipeline
 
@@ -53,9 +53,9 @@ python3 research/f4u-corsair/F4U-11/costing_entry.py --check
 "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://aircraft/verify_f4u.gd
 ```
 
-Gear samples come from Blender on the frozen delivery: `blender -b --factory-startup --disable-autoexec assets/source-deliveries/f4u-corsair-g2-1/f4u_corsair/g2_1/source/aircraft_game.blend --python research/f4u-corsair/F4U-05/sample_gear.py -- assets/aircraft/f4u-corsair-250/gear-samples.json`. After a binding or model change, run `build_models.py`, `build_descriptors.py`, `build_customization.py` and the parked-aircraft bake in that order (see the [Avanti guide](../avanti-s-a200/README.md#regenerate-and-verify)).
+Gear samples come from Blender on the frozen delivery: `blender -b --factory-startup --disable-autoexec assets/source-deliveries/f4u-corsair-g2-2/f4u_corsair/g2_2/source/aircraft_game.blend --python research/f4u-corsair/F4U-05/sample_gear.py -- assets/aircraft/f4u-corsair-250/gear-samples.json`. After a binding or model change, run `build_models.py`, `build_descriptors.py`, `build_customization.py` and the parked-aircraft bake in that order (see the [Avanti guide](../avanti-s-a200/README.md#regenerate-and-verify)).
 
-Run generators without `--check` in the order above after an intentional input change. Never hand-edit generated files. The physics sections stay with R59, of which g2.1 is a reduced copy; F4U-05 takes the visual model's own dimensions (propeller, contacts) from g2.1's metadata, which equal g1.13's. `compile_model.py` refuses a wing-fold file whose R59 hash differs from the metadata's master, and a livery GLB that is not the frozen file or not the same airframe as the default. After `install_liveries.py` writes a new sidecar, run Godot's `--import` once to assign its uid before compiling.
+Run generators without `--check` in the order above after an intentional input change. Never hand-edit generated files. The physics sections stay with R59, of which g2.2 is a reduced copy; F4U-05 takes the visual model's own dimensions (propeller, contacts) from g2.2's metadata, which equal g1.13's. `compile_model.py` refuses a wing-fold file whose R59 hash differs from the metadata's master, and a livery GLB that is not the frozen file or not the same airframe as the default. After `install_liveries.py` writes a new sidecar, run Godot's `--import` once to assign its uid before compiling.
 
 ## Limits
 

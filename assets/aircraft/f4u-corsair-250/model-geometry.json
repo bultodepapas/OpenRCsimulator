@@ -1,9 +1,9 @@
 {
  "schema": "openrc-f4u-model v1",
  "catalog_id": "f4u-corsair-250",
- "revision": "g2.1-cf4cdad638da",
- "source_alias": "F4U Corsair g2.1 game model (author delivery derived from master R59)",
- "status": "Imported g2.1 presentation with sampled GearRetract; flaps follow the session; experimental physics (F4U-07).",
+ "revision": "g2.2-9fa3b86a9b33",
+ "source_alias": "F4U Corsair g2.2 game model (author delivery derived from master R59)",
+ "status": "Imported g2.2 presentation with sampled GearRetract; flaps follow the session; experimental physics (F4U-07).",
  "generator": "research/f4u-corsair/F4U-05/compile_model.py",
  "units": "m",
  "axes": {
@@ -16,10 +16,10 @@
   "physics_le_frame": "[x_aft, y_right, z_up] = [z, x, y]"
  },
  "inputs": {
-  "glb_sha256": "cf4cdad638dae93b2ac6107bd050dcf176c4b6dbb1f03d21580f4149fda945b3",
-  "metadata_sha256": "bdebab1c78f8d238bba03f97bd3d41b199be0a1e2287a370cc0f8bb033e2e5f0",
-  "blend_sha256": "1bbe5011f099cdaa893f00f4ec081523d5873887cb5916c29ee26c5319295148",
-  "gear_samples_sha256": "d84c6f68808fece92e95760d5d9d3e419fcf579a0e24baff9ac2c926a7118dbe",
+  "glb_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+  "metadata_sha256": "15129c73767d0cc7196955ab2b25863f2c7edc7ba4ca73311635461a86499b55",
+  "blend_sha256": "a3665272bef44b600c38212fccaa057c4289dfe48bf7fbb7034f8a467843208a",
+  "gear_samples_sha256": "7bd3eb6be284f4929033b904e1b2923c3dc63a118c956a196442fc98fc91e8bc",
   "wing_fold_sha256": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89"
  },
  "dimensions": {
@@ -430,7 +430,7 @@
    "value": 0.9003021457332075,
    "unit": "m",
    "kind": "measured",
-   "source": "g2.1 metadata.json: three-blade visual propeller"
+   "source": "g2.2 metadata.json: three-blade visual propeller"
   }
  },
  "exhausts": [
@@ -448,7 +448,7 @@
    "radius_m": 0.008,
    "kind": "glow_prop",
    "pump": true,
-   "source": "g2.1 metadata landmark 'R43 | Escape unido -1 2' (left middle stack exit); direction estimated outboard, down and aft"
+   "source": "g2.2 metadata landmark 'R43 | Escape unido -1 2' (left middle stack exit); direction estimated outboard, down and aft"
   }
  ],
  "folds": {
@@ -27012,5 +27012,85 @@
     ]
    }
   }
- }
+ },
+ "liveries": [
+  {
+   "id": "midnight",
+   "label": "Naval 308 — Midnight",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+   "glb_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851"
+  },
+  {
+   "id": "three_tone",
+   "label": "Coastal Three Tone",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_three_tone.glb",
+   "glb_sha256": "52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005"
+  },
+  {
+   "id": "scarlet",
+   "label": "Super Corsair 57 / SOHIO",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_scarlet.glb",
+   "glb_sha256": "679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1"
+  },
+  {
+   "id": "splash",
+   "label": "Sunburst Splash",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_splash.glb",
+   "glb_sha256": "dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546"
+  },
+  {
+   "id": "spectrum",
+   "label": "Spectrum Wings",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_spectrum.glb",
+   "glb_sha256": "233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6"
+  },
+  {
+   "id": "blueangels",
+   "label": "Blue Angels Corsair",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_blueangels.glb",
+   "glb_sha256": "76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0"
+  },
+  {
+   "id": "thunderbirds",
+   "label": "Thunderbirds Corsair",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_thunderbirds.glb",
+   "glb_sha256": "9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03"
+  },
+  {
+   "id": "chrome",
+   "label": "Chrome 07 Corsair",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_chrome.glb",
+   "glb_sha256": "1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859"
+  },
+  {
+   "id": "p40",
+   "label": "Sharkmouth P-40 Inspired Corsair",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_p40.glb",
+   "glb_sha256": "9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58"
+  },
+  {
+   "id": "japan",
+   "label": "Captured Corsair / Japan 09",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_japan.glb",
+   "glb_sha256": "9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824"
+  },
+  {
+   "id": "luftwaffe",
+   "label": "Captured Corsair / Beute 10",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_luftwaffe.glb",
+   "glb_sha256": "aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02"
+  },
+  {
+   "id": "italy",
+   "label": "Deserto 11 / Italian desert concept",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_italy.glb",
+   "glb_sha256": "e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac"
+  },
+  {
+   "id": "carbon",
+   "label": "Carbon 12 / Aero Sport",
+   "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_carbon.glb",
+   "glb_sha256": "ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278"
+  }
+ ]
 }

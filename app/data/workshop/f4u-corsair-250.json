@@ -119,7 +119,7 @@
   ],
   "presentation": {
     "visual_family": "f4u-corsair-250",
-    "model_manifest_sha256": "459177e38780866ca1b8fe0a8fd5d2dbb54dfaaa72a469a0f243bec226c5ae78",
+    "model_manifest_sha256": "276fcf5c17013b4df59d1de5fb762fcc8486519a9ca105644d8368e6725c8fed",
     "scale_root": "airplane"
   }
 }

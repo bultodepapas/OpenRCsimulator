@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""F4U-05: compile the delivered Corsair model (g2.1 since F4U-19) for the shared imported-scene builder.
+"""F4U-05: compile the delivered Corsair model (g2.2 since F4U-20) for the shared imported-scene builder.
 
 Reads only frozen inputs: the delivery identity (assets/aircraft/f4u-corsair-250/source-manifest.json), the
 delivered metadata and GLB, the runtime GLB copy in app/assets, and the GearRetract samples taken from the
@@ -95,9 +95,11 @@ def compile_liveries(manifest, meta, gltf):
         assert list(frozen) == [DEFAULT_LIVERY] and [r["id"] for r in meta["liveries"]] == [DEFAULT_LIVERY]
         return None
     names = {livery["id"]: livery["name"] for livery in meta["liveries"]}
-    order = [record["id"] for record in meta["primary_livery_deliveries"]]
-    assert order[0] == DEFAULT_LIVERY and sorted(order) == sorted(frozen), "delivered livery list differs from source-manifest.json"
-    assert all(frozen[r["id"]]["path"] == r["glb"] for r in meta["primary_livery_deliveries"])
+    # g1.13 listed the GLBs under `primary_livery_deliveries`; g2.2 lists them in `liveries` itself.
+    records = meta.get("primary_livery_deliveries", meta["liveries"])
+    order = [record["id"] for record in records]
+    assert order[0] == DEFAULT_LIVERY and order == list(frozen), "delivered livery list differs from source-manifest.json"
+    assert all(frozen[r["id"]]["path"] == r["glb"] for r in records)
     shape = node_shape(gltf)
     out = []
     for livery in order:

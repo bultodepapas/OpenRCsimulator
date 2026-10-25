@@ -1,5 +1,5 @@
 # F4U-12 contract checks for the F4U Corsair 1/4.5 imported model (headless).
-# Proves that the scene Godot imports is the frozen g2.1 asset (hash, counts, section tags, pivots against the delivered
+# Proves that the scene Godot imports is the frozen g2.2 asset (hash, counts, section tags, pivots against the delivered
 # metadata), that the production registry builds it, and that surfaces, flaps, propeller, sampled gear, oleo compression,
 # exhaust anchor and paint slots behave as the session expects. Run: godot --headless --path app --script res://aircraft/verify_f4u.gd
 extends SceneTree
@@ -13,7 +13,7 @@ const WreckController := preload("res://render/crash/wreck.gd")
 const GLB_PATH := "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
 const DATA_PATH := "res://data/aircraft/f4u_corsair_250.json"
 const ID := "f4u-corsair-250"
-const EXPECTED_SHA256 := "cf4cdad638dae93b2ac6107bd050dcf176c4b6dbb1f03d21580f4149fda945b3"
+const EXPECTED_SHA256 := "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851"
 const SECTIONS := ["core", "wing_left", "wing_right", "wing_center", "horizontal_tail", "vertical_tail", "engine", "propeller", "gear", "canopy"]
 var checks := 0
 var failures := 0
@@ -97,7 +97,7 @@ func _asset() -> void:
 	var context := HashingContext.new()
 	context.start(HashingContext.HASH_SHA256)
 	context.update(FileAccess.get_file_as_bytes(GLB_PATH))
-	_check("runtime GLB is the accepted g2.1 aircraft.glb", context.finish().hex_encode() == EXPECTED_SHA256 and Geometry.DATA.inputs.glb_sha256 == EXPECTED_SHA256)
+	_check("runtime GLB is the accepted g2.2 aircraft.glb", context.finish().hex_encode() == EXPECTED_SHA256 and Geometry.DATA.inputs.glb_sha256 == EXPECTED_SHA256)
 	var scene: Node3D = (load(GLB_PATH) as PackedScene).instantiate()
 	var meshes := scene.find_children("*", "MeshInstance3D", true, false)
 	var triangles := 0

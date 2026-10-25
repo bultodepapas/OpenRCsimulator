@@ -1,0 +1,518 @@
+{
+  "nodes": {
+    "F4UCorsair": {
+      "parent": null,
+      "section": null
+    },
+    "gear_root": {
+      "parent": "F4UCorsair",
+      "section": "gear"
+    },
+    "thrust_frame": {
+      "parent": "F4UCorsair",
+      "section": null
+    },
+    "propeller_spin": {
+      "parent": "thrust_frame",
+      "section": "propeller"
+    },
+    "aileron_left_hinge": {
+      "parent": "F4UCorsair",
+      "section": "wing_left"
+    },
+    "flap_left_1_hinge": {
+      "parent": "F4UCorsair",
+      "section": "wing_center"
+    },
+    "flap_left_2_hinge": {
+      "parent": "F4UCorsair",
+      "section": "wing_center"
+    },
+    "flap_left_3_hinge": {
+      "parent": "F4UCorsair",
+      "section": "wing_left"
+    },
+    "aileron_right_hinge": {
+      "parent": "F4UCorsair",
+      "section": "wing_right"
+    },
+    "flap_right_1_hinge": {
+      "parent": "F4UCorsair",
+      "section": "wing_center"
+    },
+    "flap_right_2_hinge": {
+      "parent": "F4UCorsair",
+      "section": "wing_center"
+    },
+    "flap_right_3_hinge": {
+      "parent": "F4UCorsair",
+      "section": "wing_right"
+    },
+    "elevator_hinge": {
+      "parent": "F4UCorsair",
+      "section": "horizontal_tail"
+    },
+    "rudder_hinge": {
+      "parent": "F4UCorsair",
+      "section": "vertical_tail"
+    },
+    "gear_fold_left": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_twist_left": {
+      "parent": "gear_fold_left",
+      "section": "gear"
+    },
+    "gear_compression_left": {
+      "parent": "gear_twist_left",
+      "section": "gear"
+    },
+    "gear_door_front_left": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_door_inner_left": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_door_outer_left": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_spin_left": {
+      "parent": "gear_compression_left",
+      "section": "gear"
+    },
+    "gear_fold_right": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_twist_right": {
+      "parent": "gear_fold_right",
+      "section": "gear"
+    },
+    "gear_compression_right": {
+      "parent": "gear_twist_right",
+      "section": "gear"
+    },
+    "gear_door_front_right": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_door_inner_right": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_door_outer_right": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_spin_right": {
+      "parent": "gear_compression_right",
+      "section": "gear"
+    },
+    "gear_carrier_tail": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_door_tail_left_1": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_door_tail_left_2": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_door_tail_right_1": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_door_tail_right_2": {
+      "parent": "gear_root",
+      "section": "gear"
+    },
+    "gear_steer_tail": {
+      "parent": "gear_carrier_tail",
+      "section": "gear"
+    },
+    "gear_compression_tail": {
+      "parent": "gear_steer_tail",
+      "section": "gear"
+    },
+    "gear_spin_tail": {
+      "parent": "gear_compression_tail",
+      "section": "gear"
+    },
+    "fuselage_core": {
+      "parent": "F4UCorsair",
+      "section": "core",
+      "geometry_normals": "0b83f64e814056f421c8e855804c556d2a4496ac5ec59d2f31a6656b5cc89795",
+      "uv": {
+        "UVMap": "0f6d11adbf295e2941e8cd69e1c41296afe0f00c6af271752737d9052b835627"
+      }
+    },
+    "windshield_glass": {
+      "parent": "F4UCorsair",
+      "section": "core",
+      "geometry_normals": "f50975d60b1c2644d48a250a22f13f26e011d67ebad8cd250f8df2e50daabb50",
+      "uv": {
+        "UVMap": "65c907955c1c98654a18d5fc9d87ff3f8bc0604d3b3802575946146434fb056b"
+      }
+    },
+    "cockpit_interior": {
+      "parent": "F4UCorsair",
+      "section": "core",
+      "geometry_normals": "ce4e750233d42d7b7389f6da8953b5a7835a9e4b5f9ac24ea276415439e51851",
+      "uv": {
+        "UVMap": "808469dbfbead5301380f7c1b4c91ee5ae82cecbb2ee724e590b1fa12d9d94a1"
+      }
+    },
+    "canopy_glass": {
+      "parent": "F4UCorsair",
+      "section": "canopy",
+      "geometry_normals": "3b444c78b98117b18cad1047dab0f26df3a7925a0ac036b555830a6c963f61d6",
+      "uv": {
+        "UVMap": "2037ba638a45d4e43f731fd9ab2605379552ab9705cefe203979903e874cd286"
+      }
+    },
+    "canopy_frame": {
+      "parent": "F4UCorsair",
+      "section": "canopy",
+      "geometry_normals": "4c56e27c7076a2c802f344bc8e6514ff01e18cd35df9d1a7b226e63d1555b131",
+      "uv": {
+        "UVMap": "31db55ba799aec757ebf6a2afce876cdf27d32bf933130943441f7908ecccc0a"
+      }
+    },
+    "wing_center_fixed": {
+      "parent": "F4UCorsair",
+      "section": "wing_center",
+      "geometry_normals": "e5bba4faf539c2da63264ee03e984879f58d88f1f175a88fe94431b8cfaefc2b",
+      "uv": {
+        "UVMap": "6b5b7b4daa77071085b3182afa4654c5a4f61a9c11ca07be8baee0e60195ac31"
+      }
+    },
+    "wing_left_fixed": {
+      "parent": "F4UCorsair",
+      "section": "wing_left",
+      "geometry_normals": "ea3d453baa4102629caf6e705330076e9b7d3f46da1621e64eadf12f33ef8355",
+      "uv": {
+        "UVMap": "882966a7fc6d5dfa584eb1b513afc0b659dbd2a1e5a13801e528f0dff4602550"
+      }
+    },
+    "aileron_left": {
+      "parent": "aileron_left_hinge",
+      "section": "wing_left",
+      "geometry_normals": "6c570e6e68544d55bed4bee9e4422b53b27adc69765500c545ec6d31b5724c76",
+      "uv": {
+        "UVMap": "25c5234d893e6282318c09d13ed14d47b4c90910f932971d3660051fa3564bff"
+      }
+    },
+    "flap_left_1": {
+      "parent": "flap_left_1_hinge",
+      "section": "wing_center",
+      "geometry_normals": "0670922754a07ebaa473664d3232037ea1bb49ebee04928502329970d10e5618",
+      "uv": {
+        "UVMap": "047cb906b0616958434ce2795a61f7f3610908127dc2c91e50f3949b6354544e"
+      }
+    },
+    "flap_left_2": {
+      "parent": "flap_left_2_hinge",
+      "section": "wing_center",
+      "geometry_normals": "ded84d456f00f3a73970110b6651b5d8d8b32b5e9a105d0b72f54f350906960e",
+      "uv": {
+        "UVMap": "c30254f49d89784440c7a738f0ec33181d450ed7a0f53677eca127fb5962ac19"
+      }
+    },
+    "flap_left_3": {
+      "parent": "flap_left_3_hinge",
+      "section": "wing_left",
+      "geometry_normals": "7a241463e4a6aeac8c76b9b6a561d61199a73b4e474b7f0d5d4fafca3d1e5b71",
+      "uv": {
+        "UVMap": "ee4164c15e3979f6adef8fdb6a3c1bc78c3a7fe186021fd4b9d15c3dafe4d929"
+      }
+    },
+    "wing_right_fixed": {
+      "parent": "F4UCorsair",
+      "section": "wing_right",
+      "geometry_normals": "9ca84d0e71c9aa6514c84ec1b5f2847e413b97056dcd0eed9b190f769af6dd88",
+      "uv": {
+        "UVMap": "ada6783e5a8943fbd86df39155cf9f956ea21eb8a6fec6fad7bfb777bdd2b3c1"
+      }
+    },
+    "aileron_right": {
+      "parent": "aileron_right_hinge",
+      "section": "wing_right",
+      "geometry_normals": "aec72b8a4a005cf6c908c8cfccaa908efa977181145ff6a3b57318ff51ae55ff",
+      "uv": {
+        "UVMap": "a16fb6f22d6f2783abf1fd10a59a190c08211944565ecea75ec431551932b890"
+      }
+    },
+    "flap_right_1": {
+      "parent": "flap_right_1_hinge",
+      "section": "wing_center",
+      "geometry_normals": "2d02eb794bb9f993305485928436ce07b697bd2d13443a897ff4d33ac3833aae",
+      "uv": {
+        "UVMap": "db0db4eced6d4745e0f715f6db13925c2ddb264febca259d0c82abef2357faa7"
+      }
+    },
+    "flap_right_2": {
+      "parent": "flap_right_2_hinge",
+      "section": "wing_center",
+      "geometry_normals": "14ec09d05c81910ec837f9dd090d1ec2da7dbcf8914cfa258056360bb50e460c",
+      "uv": {
+        "UVMap": "33cfa241e8fc5ee27675fa3f09614756744d6c96c4867afd490545e81ad691a0"
+      }
+    },
+    "flap_right_3": {
+      "parent": "flap_right_3_hinge",
+      "section": "wing_right",
+      "geometry_normals": "67b1f6bebb211aeeccb48084720b1b84bd601c9bf6b39fa4032f3fb05626ea22",
+      "uv": {
+        "UVMap": "942b0cffcf6faea8bb8a8cba3b1f65bf558dfa432c888ea7d10f9872d6cb5a37"
+      }
+    },
+    "stabilizer_fixed": {
+      "parent": "F4UCorsair",
+      "section": "horizontal_tail",
+      "geometry_normals": "fc07b1b77a11edb66ce378d6a0b205d50e8fc6fa3351881d61189115cd306af0",
+      "uv": {
+        "UVMap": "a58a48f8e9f372dbe15ae47d0a548f6fd1f08bd2e221044cbbea78104cdfa76b"
+      }
+    },
+    "fin_fixed": {
+      "parent": "F4UCorsair",
+      "section": "vertical_tail",
+      "geometry_normals": "f5e2213bada33bb32400fb4cbdf256bdb51a43f4342c8ea629e0beec43ad14de",
+      "uv": {
+        "UVMap": "7753a9fee65d84a67663d7be964b0ad6724662975dbcf3d04da1370e43d48f48"
+      }
+    },
+    "elevator": {
+      "parent": "elevator_hinge",
+      "section": "horizontal_tail",
+      "geometry_normals": "e80de7990f5779ff02bd2160b09ac4a3a3a67b0070c9656ee2bbd1a827018580",
+      "uv": {
+        "UVMap": "c44bd97474544883f3423396059d844ee1d34efd657e09f3edefa5e2fbfc2027"
+      }
+    },
+    "rudder": {
+      "parent": "rudder_hinge",
+      "section": "vertical_tail",
+      "geometry_normals": "e07c64d599cba8bc576a41b0a035a973443397bae206406395618bda14f7f50a",
+      "uv": {
+        "UVMap": "828b4a849c57fe6a91f156d42756d1f5335604446caa51d0cd0d4d71a48f22f1"
+      }
+    },
+    "cowl": {
+      "parent": "F4UCorsair",
+      "section": "engine",
+      "geometry_normals": "a1e5f6ae8f54158687cb59c9e7cf37f1fd9dfbbd2fe844aa90e9b2a1deeb20b6",
+      "uv": {
+        "UVMap": "531c8772fcd7c2693fe80b310a6b8cd732fb6bd477a869b5ea852a824396f4e5"
+      }
+    },
+    "engine_face": {
+      "parent": "F4UCorsair",
+      "section": "engine",
+      "geometry_normals": "18c4aa873ad257131ac60355eab01033fee7488f2387ca6bd3a5aa5b937b20a1",
+      "uv": {
+        "UVMap": "c8cf24f2e5f6385b1da5373dc71be0a1eee915ee2f075c2b658525a758e8bb3f"
+      }
+    },
+    "exhaust_stacks": {
+      "parent": "F4UCorsair",
+      "section": "engine",
+      "geometry_normals": "31e3b2d7737f8652b402e562131a2d9c54abd459a67ae5c4a525a6c56e4c41ac",
+      "uv": {
+        "UVMap": "60f3fec912ba1a32c466cc67a1a5ae793bb9eecfeb83b96dde8e9e2bdf16bab5"
+      }
+    },
+    "propeller_rotor": {
+      "parent": "propeller_spin",
+      "section": "propeller",
+      "geometry_normals": "3e6544f5df987bf8a2a7db0f183ced96ca318396371a067ffade0aeb717a1a5c",
+      "uv": {
+        "UVMap": "342d124880ac4c7da4231c4552017298811b62fb0cf55ca78b1d6201006e2919",
+        "NavalBladeUV": "235faee6532642caca23a77166c06facebc827e3a898802c892871e4ea6d086d"
+      }
+    },
+    "gear_strut_left": {
+      "parent": "gear_twist_left",
+      "section": "gear",
+      "geometry_normals": "33a63b5e0a00543e1df97bf6ad98c636d8f58f88a8809dd294872889da4a41ec",
+      "uv": {
+        "UVMap": "6604e0f1ef3354c9a1ec7f2da1a9d31b591b8db4e30003db630fe64f6ed42f3e"
+      }
+    },
+    "gear_lower_left": {
+      "parent": "gear_compression_left",
+      "section": "gear",
+      "geometry_normals": "d80e878b526abb4cb216bc8bf7ca68712e23f42c09f46939c3498eee2d1901d3",
+      "uv": {
+        "UVMap": "69e5b58f8602297c9d402976fe5fcfd9c3bf2f23ac085fa3a0b39633bf39fa2a"
+      }
+    },
+    "gear_wheel_left": {
+      "parent": "gear_spin_left",
+      "section": "gear",
+      "geometry_normals": "46f9cb6031c436b84606e1f2fa556704e4db28b26cf5a978ecb9c8d94eec062f",
+      "uv": {
+        "UVMap": "1d61b828c2c3cbb333033ac08a7ec915ad7ef85a7ba7be873de250aca8d43f38"
+      }
+    },
+    "gear_door_front_mesh_left": {
+      "parent": "gear_door_front_left",
+      "section": "gear",
+      "geometry_normals": "c559084e50baeafdc3d0fcd1ff24f3f467c3fd7ebf202accc2d7729a40a81619",
+      "uv": {
+        "UVMap": "736cbada75fcfe6931c5df0e33fd42b4ea792a4a50c4643dae5cf6e3a639e48d"
+      }
+    },
+    "gear_door_inner_mesh_left": {
+      "parent": "gear_door_inner_left",
+      "section": "gear",
+      "geometry_normals": "1fc18f3eb65965db77600090c5034b600c0d876e67ac75ec00fe62645abc26d1",
+      "uv": {
+        "UVMap": "527ed097206a0d04b1c7269775cc5c94d7d6ce0d4ee5e358b2163d1847bc3ceb"
+      }
+    },
+    "gear_door_outer_mesh_left": {
+      "parent": "gear_door_outer_left",
+      "section": "gear",
+      "geometry_normals": "3c78695a2efde0c0018ba3c25778f6e07167d8f196f2e526f08b9250821f9561",
+      "uv": {
+        "UVMap": "a7b3ccec11d4e4041de5a97e845d58ac369167ca3b6d7de583ef01d1c10deda6"
+      }
+    },
+    "gear_strut_right": {
+      "parent": "gear_twist_right",
+      "section": "gear",
+      "geometry_normals": "d7ba9646aa1cba21f37620d3bc268afc8c4f239927af07c46a8ea1c80d0adc33",
+      "uv": {
+        "UVMap": "146bb5fe3f6c0d0115514705cafe41ab15505f24bf918607c0019d157e477265"
+      }
+    },
+    "gear_lower_right": {
+      "parent": "gear_compression_right",
+      "section": "gear",
+      "geometry_normals": "d597fe633e1bf0f87537b3cd860e15a1ca6a9c56bbd1994167a8c8c43f7f86df",
+      "uv": {
+        "UVMap": "b1faec8238618958ee10fce9f24f3c29bc814473785afd7b2fb1aff2291be19a"
+      }
+    },
+    "gear_wheel_right": {
+      "parent": "gear_spin_right",
+      "section": "gear",
+      "geometry_normals": "87e882aab6dfa20a3aabba5a0c8b1a910571084f69434775802df3c6fa6c24cf",
+      "uv": {
+        "UVMap": "1d61b828c2c3cbb333033ac08a7ec915ad7ef85a7ba7be873de250aca8d43f38"
+      }
+    },
+    "gear_door_front_mesh_right": {
+      "parent": "gear_door_front_right",
+      "section": "gear",
+      "geometry_normals": "ccd1e4303f958bb2439707dc7d4abf1708848605456f39e8c54fd415004bb8da",
+      "uv": {
+        "UVMap": "8f735b057544fc991823a0c72d3245102f974170f865883f480375843118b08c"
+      }
+    },
+    "gear_door_inner_mesh_right": {
+      "parent": "gear_door_inner_right",
+      "section": "gear",
+      "geometry_normals": "bcde7e5c6171388a41de3d2e13ae7ec370d597de97da0d892f721a52c94b2bfd",
+      "uv": {
+        "UVMap": "b68318dcce0e7d87c7181d0ae3153def5e46e13e5bca667f4f6e27b5089235b8"
+      }
+    },
+    "gear_door_outer_mesh_right": {
+      "parent": "gear_door_outer_right",
+      "section": "gear",
+      "geometry_normals": "42960731eafd3b8919306ac2af52955a429aa509b9f1c3e881c9a34ba75f6ad8",
+      "uv": {
+        "UVMap": "2a5155f745e749b3b33303f0e3783a8a6ad8442dca8aa38afe74eb1c4201a2cb"
+      }
+    },
+    "gear_tail_strut": {
+      "parent": "gear_carrier_tail",
+      "section": "gear",
+      "geometry_normals": "925a54b8ed1804735cfefa7c77459e47aa5662cd2dee0c8e60cafed94af532be",
+      "uv": {
+        "UVMap": "d3d3e194892cc5acbec5c7cc6c48388594f11a848630e5a75431a3332c35e73a"
+      }
+    },
+    "gear_tail_fork": {
+      "parent": "gear_compression_tail",
+      "section": "gear",
+      "geometry_normals": "a9070b84d51aaec0f0cbbb64b94caff36d561349ba4e48ff7cbf42a545cb4b38",
+      "uv": {
+        "UVMap": "27ab55e20e0cb08606f1e6ca2808275b5889816cf65d96016f6297043c8b8b47"
+      }
+    },
+    "gear_wheel_tail": {
+      "parent": "gear_spin_tail",
+      "section": "gear",
+      "geometry_normals": "6de04d84a569c346791664483d5520e6e725d63b56c0feab59be5bd7c0b204c0",
+      "uv": {
+        "UVMap": "5673b9595479cf4f0f320f2ad44b539dae15f97097efdd0b014977f7d25580ab"
+      }
+    },
+    "gear_door_tail_mesh_left_1": {
+      "parent": "gear_door_tail_left_1",
+      "section": "gear",
+      "geometry_normals": "2fcee794aafa7c47cb687eca6396282db506ead1be767552b6775fd7cf00f758",
+      "uv": {
+        "UVMap": "258395129901407f7746551c0cebecf0908bcc956f061d4b8ec3f768b6a8acb6"
+      }
+    },
+    "gear_door_tail_mesh_left_2": {
+      "parent": "gear_door_tail_left_2",
+      "section": "gear",
+      "geometry_normals": "28dfe349f77bf31e250f09593bea222211eae8bfb7b4ac000f18285627ea5bb3",
+      "uv": {
+        "UVMap": "12205f5fb07f1cfcdc1d27ad8ad3a6221d3e6a7963c1701ee3a0e45456bda597"
+      }
+    },
+    "gear_door_tail_mesh_right_1": {
+      "parent": "gear_door_tail_right_1",
+      "section": "gear",
+      "geometry_normals": "2865dd53b145adf177f370db93adde9efe33276583a0ef7207ea63fa76e95267",
+      "uv": {
+        "UVMap": "483b13e72ba516a36d12c4e535624212c89d069f3daad68dbf79c31d917b8cd9"
+      }
+    },
+    "gear_door_tail_mesh_right_2": {
+      "parent": "gear_door_tail_right_2",
+      "section": "gear",
+      "geometry_normals": "17ace6c482c0851b48898810d59b73bdca74dd98f7c557ed21a7df941f58cb83",
+      "uv": {
+        "UVMap": "43c9e5c1a14b69b9c01147817f0f735480544233e0fd5676ff576e06b08a7336"
+      }
+    },
+    "core_details": {
+      "parent": "F4UCorsair",
+      "section": "core",
+      "geometry_normals": "3ca020ab0313ce410ab12320328da6fb2492fae638dfe635602702b20e100730",
+      "uv": {
+        "UVMap": "e0fa24b7134dd7d9b5c2573425887a3c07ee4e79f00288e74b3b73f297c12095"
+      }
+    },
+    "gear_retraction_link_left": {
+      "parent": "gear_fold_left",
+      "section": "gear",
+      "geometry_normals": "4d4c37ee6c5b08092d95d9a38e525270dd401c5e5f6fd2ce90e2689d29ef8093",
+      "uv": {
+        "UVMap": "b1dbe52e3962be63d5a27e411724faf866ca944ddf8ab3614822b6461eaa0fc0"
+      }
+    },
+    "gear_retraction_link_right": {
+      "parent": "gear_fold_right",
+      "section": "gear",
+      "geometry_normals": "84ad93496fd68173312b220d2ca7e23f820d16c0fd31378beeada458153542c2",
+      "uv": {
+        "UVMap": "5e262c0f3feec31d0ec275a8f685257ea753079578e39d19b6088325b74db428"
+      }
+    }
+  },
+  "poses_101": "5fc7db58e766a708853571bff367f4389b3465405dd13e98cd7c022a8a80a8b3"
+}

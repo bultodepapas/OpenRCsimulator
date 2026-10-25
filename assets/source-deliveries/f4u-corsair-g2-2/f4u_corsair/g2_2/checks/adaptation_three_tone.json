@@ -1,0 +1,18 @@
+{
+  "id": "three_tone",
+  "name": "Coastal Three Tone",
+  "blend": "source/aircraft_three_tone.blend",
+  "glb": "export/aircraft_three_tone.glb",
+  "blend_sha256": "eb31b5d377d6e0b38356ea7ffcc6b19d008fb9c66937bb7a81e28312ac58a6a0",
+  "glb_sha256": "52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005",
+  "glb_bytes": 20019312,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 57,
+  "materials": 14,
+  "images": 6,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 0.65
+}

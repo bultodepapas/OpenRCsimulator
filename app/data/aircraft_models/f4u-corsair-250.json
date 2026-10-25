@@ -20,17 +20,17 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "7da750eda06f0c5299479b36fc0921b024f12559f822068e4fb49cee2453c93b",
+    "sha256": "0131fa2992eb25b98f6a914f9afd751841c356098762d3dc734a4eca573fd5f9",
     "hash_mode": "lf_text"
   },
   "geometry": {
     "script": "res://aircraft/f4u_corsair_geometry.gd",
     "source": {
       "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
-      "sha256": "553336845d3db929002d5afb9dbdc04bd6e8aa58a6314085224b270b3be212e5",
+      "sha256": "8fb969f9bcd9efd50237fb700303ad49e5716b0bbf2cfa15a00bc14f536e0b92",
       "hash_mode": "lf_text"
     },
-    "revision": "g2.1-cf4cdad638da",
+    "revision": "g2.2-9fa3b86a9b33",
     "datum_source": {
       "model_z_le": {
         "value": 0.0
@@ -42,10 +42,10 @@
   },
   "asset": {
     "kind": "imported_glb",
-    "identity": "F4U Corsair g2.1 game model (author delivery derived from master R59)",
-    "revision": "g2.1-cf4cdad638da",
+    "identity": "F4U Corsair g2.2 game model (author delivery derived from master R59)",
+    "revision": "g2.2-9fa3b86a9b33",
     "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
-    "sha256": "cf4cdad638dae93b2ac6107bd050dcf176c4b6dbb1f03d21580f4149fda945b3"
+    "sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851"
   },
   "bindings": {
     "controls": {
@@ -165,19 +165,19 @@
   "authoring_sources": [
     {
       "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
-      "sha256": "553336845d3db929002d5afb9dbdc04bd6e8aa58a6314085224b270b3be212e5",
+      "sha256": "8fb969f9bcd9efd50237fb700303ad49e5716b0bbf2cfa15a00bc14f536e0b92",
       "hash_mode": "lf_text",
       "role": "geometry"
     },
     {
       "path": "assets/aircraft/f4u-corsair-250/source-manifest.json",
-      "sha256": "6b437ee89f56d10b317d95f288beb9530a9ebfdc1e9111f44eeeab5d04f3638a",
+      "sha256": "cc73743db20fdc0112674f76adced87a14675094fcca3aba1add49c433dbaf8f",
       "hash_mode": "lf_text",
       "role": "asset_identity"
     },
     {
       "path": "assets/aircraft/f4u-corsair-250/gear-samples.json",
-      "sha256": "d84c6f68808fece92e95760d5d9d3e419fcf579a0e24baff9ac2c926a7118dbe",
+      "sha256": "7bd3eb6be284f4929033b904e1b2923c3dc63a118c956a196442fc98fc91e8bc",
       "hash_mode": "lf_text",
       "role": "gear_samples"
     },
@@ -191,7 +191,7 @@
   "dependencies": [
     {
       "path": "res://aircraft/f4u_corsair_geometry.gd",
-      "sha256": "baddaecf8ab86a0692e0a72d95aa286544624a6932fb5bc037da20729dae4921",
+      "sha256": "a303f8ebecd099d0e60e2ed1360a8a52f61caebb2c5879a9f5fa1875f573896c",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
     },
@@ -209,7 +209,7 @@
     },
     {
       "path": "res://aircraft/model_manifest.gd",
-      "sha256": "a384fbfb22653a89449deb94d98a4839f500ec769b06d90f0f6da0570c25dc25",
+      "sha256": "7390e3d6a808fa96fd990c54deabb0151ff13a2d1b0f7b229368485cd3d68f7d",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -221,7 +221,7 @@
     },
     {
       "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
-      "sha256": "cf4cdad638dae93b2ac6107bd050dcf176c4b6dbb1f03d21580f4149fda945b3",
+      "sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
       "hash_mode": "raw",
       "role": "imported_asset"
     },
@@ -255,5 +255,98 @@
         "geometry_ref": "folds.right"
       }
     ]
-  }
+  },
+  "liveries": [
+    {
+      "id": "midnight",
+      "label": "Naval 308 — Midnight",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+      "sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+      "import_sha256": "9a951afd2de50da7a1f8cc643fd869942aac16377f154257afd2fc35b094aa3b"
+    },
+    {
+      "id": "three_tone",
+      "label": "Coastal Three Tone",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_three_tone.glb",
+      "sha256": "52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005",
+      "import_sha256": "d8ec22d309ee38c7ec06b77aaa05029d818b91d672f77841e1e8e00eeed38b19"
+    },
+    {
+      "id": "scarlet",
+      "label": "Super Corsair 57 / SOHIO",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_scarlet.glb",
+      "sha256": "679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1",
+      "import_sha256": "1e90948d8282ff43b1aaf83cf416c23c975fae401d3653879f7533fcf530b83e"
+    },
+    {
+      "id": "splash",
+      "label": "Sunburst Splash",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_splash.glb",
+      "sha256": "dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546",
+      "import_sha256": "4ff52aca07705e3225f55dda66358cda3843cc350086ac8d16836ca49df36a96"
+    },
+    {
+      "id": "spectrum",
+      "label": "Spectrum Wings",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_spectrum.glb",
+      "sha256": "233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6",
+      "import_sha256": "68f133d81744ff7faaa8e9aae99f6f76381fd973d6b2b054d6b9d181419f5d5c"
+    },
+    {
+      "id": "blueangels",
+      "label": "Blue Angels Corsair",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_blueangels.glb",
+      "sha256": "76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0",
+      "import_sha256": "c019c2145cebf7147d04d6fe2cf6495040cef66c76bcb126786992aeacf5cd2b"
+    },
+    {
+      "id": "thunderbirds",
+      "label": "Thunderbirds Corsair",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_thunderbirds.glb",
+      "sha256": "9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03",
+      "import_sha256": "e9024d205793c1ee7850db53f1c03c44d10479050491f4bb6fd9b1befb2d58fd"
+    },
+    {
+      "id": "chrome",
+      "label": "Chrome 07 Corsair",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_chrome.glb",
+      "sha256": "1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859",
+      "import_sha256": "2ac2447f68703c5abe5a211282fb7e9044c77a24aa37faa887cad6b62351b8f7"
+    },
+    {
+      "id": "p40",
+      "label": "Sharkmouth P-40 Inspired Corsair",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_p40.glb",
+      "sha256": "9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58",
+      "import_sha256": "52a40a80c489163949607c91af1a74e56cd7dd6c4749ed5a79ae87669265f46f"
+    },
+    {
+      "id": "japan",
+      "label": "Captured Corsair / Japan 09",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_japan.glb",
+      "sha256": "9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824",
+      "import_sha256": "7315c234b623756958d1363c4a8f186451286446ae42d86178069c6f489b6a7f"
+    },
+    {
+      "id": "luftwaffe",
+      "label": "Captured Corsair / Beute 10",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_luftwaffe.glb",
+      "sha256": "aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02",
+      "import_sha256": "8ad0318113be3206e747ffabbc57da2961ff00fd201bdb685a901419d2b5fcd9"
+    },
+    {
+      "id": "italy",
+      "label": "Deserto 11 / Italian desert concept",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_italy.glb",
+      "sha256": "e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac",
+      "import_sha256": "0caf050ebc9b95c683aefd7280dd6b3074b703d7f53076aa18db662a3589f779"
+    },
+    {
+      "id": "carbon",
+      "label": "Carbon 12 / Aero Sport",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_carbon.glb",
+      "sha256": "ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278",
+      "import_sha256": "3add2833555c0f4f401e328c18b6ff39080b66706a6898f7fb787e77f92d2c6f"
+    }
+  ]
 }

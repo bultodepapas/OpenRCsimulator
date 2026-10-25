@@ -1,0 +1,18 @@
+{
+  "id": "midnight",
+  "name": "Naval 308 \u2014 Midnight",
+  "blend": "source/aircraft_game.blend",
+  "glb": "export/aircraft.glb",
+  "blend_sha256": "a3665272bef44b600c38212fccaa057c4289dfe48bf7fbb7034f8a467843208a",
+  "glb_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+  "glb_bytes": 20026424,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 57,
+  "materials": 14,
+  "images": 6,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 0.65
+}

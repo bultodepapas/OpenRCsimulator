@@ -1,5 +1,5 @@
 extends SceneTree
-## F4U-16: paint schemes through the production shell. Home's Paint row cycles the Corsair's five schemes, the backdrop
+## F4U-16: paint schemes through the production shell. Home's Paint row cycles every Corsair scheme, the backdrop
 ## rebuilds each one, every choice is saved per aircraft, another aircraft shows no row, and Fly builds the chosen
 ## scheme. The direct route accepts --livery=<id> and refuses an unknown one. Writes checks.json and 1080p
 ## screenshots to a new directory; preferences stay in an isolated user:// file.
@@ -85,8 +85,9 @@ func _run() -> void:
 	_check("the last scheme cycles back to the default paint, saved as no entry", wrapped and home.livery_id == ""
 		and Preferences.load_from(PREFS).liveries.is_empty())
 
-	for livery in ["scarlet", "splash", "spectrum"]:
-		await _press_paint(livery)
+	for record: Dictionary in manifest.liveries.slice(1):
+		await _press_paint(record.id)
+		if record.id == "spectrum": break
 	app.set_aircraft(STIK)
 	await _wait_until(func() -> bool: return not app.home_scene.preview_pending, 30.0)
 	_check("a one-paint aircraft shows no Paint row", not home.livery_button.visible)
@@ -95,13 +96,16 @@ func _run() -> void:
 	_check("returning to the Corsair restores its scheme from the backdrop cache", restored and home.livery_id == "spectrum")
 
 	app.start_flight()
+	# UI-34c: a rendered Home launch is staged, so the flight appears after its loading screen.
+	await _wait_until(func() -> bool: return app.flight != null, 60.0)
 	var flight: Node = app.flight
 	_check("Fly starts", flight != null and str(flight.get("startup_error")) == "", str(flight.get("startup_error")) if flight != null else "no flight")
 	if flight != null:
 		await create_timer(1.5).timeout
 		var airplane: Dictionary = flight.get("_airplane")
+		var spectrum: Dictionary = manifest.liveries.filter(func(record: Dictionary) -> bool: return record.id == "spectrum")[0]
 		_check("the flight builds the chosen scheme", flight.livery == "spectrum" and airplane.get("livery") == "spectrum"
-			and airplane.root.get_meta("asset_sha256") == manifest.liveries[3].sha256)
+			and airplane.root.get_meta("asset_sha256") == spectrum.sha256)
 		var chase := InputEventKey.new()
 		chase.physical_keycode = KEY_2
 		chase.pressed = true

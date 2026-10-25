@@ -7,7 +7,7 @@ const CONTROL_ROLES := ["aileron_left", "aileron_right", "elevator", "rudder", "
 const GEAR_ROLES := ["left", "right", "tail", "steering", "nose"]
 const DEPENDENCY_ROLES := ["builder", "generated_geometry", "imported_asset", "crash_metadata", "script_dependency", "resource_dependency"]
 const SHARED_IMPORTED_BUILDER := "res://aircraft/imported_model.gd"
-const LIVERY_LIMIT := 8
+const LIVERY_LIMIT := 16
 const LIVERY_ID_LIMIT := 32
 const LIVERY_LABEL_LIMIT := 48
 

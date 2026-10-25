@@ -6,6 +6,8 @@ Godot 4.7.2 pin. The upstream NVIDIA commit is based on Godot 4.8-dev; run it on
 a disposable application copy and qualify an engine upgrade separately before
 shipping it. The GPU used for local checks is not the product support boundary.
 
+See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). DLSS mode/resize testing still exposes an internal image-layout validation finding, and the first exported FSR3 capture stalled at shutdown before later runs passed. This package is not release-qualified.
+
 ## Build
 
 Requires Python 3.11+, Git, Visual Studio 2026 with C++ tools and Windows SDK,

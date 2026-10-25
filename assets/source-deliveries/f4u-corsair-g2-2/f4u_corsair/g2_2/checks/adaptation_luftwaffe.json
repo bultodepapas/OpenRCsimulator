@@ -1,0 +1,18 @@
+{
+  "id": "luftwaffe",
+  "name": "Captured Corsair / Beute 10",
+  "blend": "source/aircraft_luftwaffe.blend",
+  "glb": "export/aircraft_luftwaffe.glb",
+  "blend_sha256": "9cb6deb9469871fc260145d360f988b8438b031888ed010607adf7620cb26a22",
+  "glb_sha256": "aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02",
+  "glb_bytes": 21782072,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 58,
+  "materials": 15,
+  "images": 7,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 1.0
+}

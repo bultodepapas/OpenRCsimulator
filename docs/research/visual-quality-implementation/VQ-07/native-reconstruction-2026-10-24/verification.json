@@ -1,0 +1,411 @@
+{
+  "format": "openrc-native-reconstruction-verification v1",
+  "date_local": "2026-10-24",
+  "experimental": true,
+  "release_qualified": false,
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "617.42",
+    "api": "Vulkan 1.4.351"
+  },
+  "package": {
+    "receipt": "tmp/native-reconstruction-export/package-receipt.json",
+    "receipt_sha256": "50beccb34e1fc0431ed02b6d52bd6d581a46f351e5e0c8817bbae894c19d0e10",
+    "base_commit": "343be4b0bba007ec4295e7da408220a0577d97e1",
+    "integration_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+    "godot_commit": "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76",
+    "engine_version": "4.8.dev.custom_build",
+    "executable_sha256": "22f266b9ed9b60d3b8edf33f2f140e097901518ac535c8e5bdb92e68329063aa",
+    "pck_sha256": "42b9e869119ab7e0cd5f3c73256ef2ca2646295e6ff24753d18b5447524c6def",
+    "runtime": {
+      "amd_fidelityfx_vk.dll": "5c6aba3469e0e2170c35ce900e510ad3649500fca10139d4489490d634bbca8e",
+      "NvLowLatencyVk.dll": "2a77dc3e1c724b7eea5755be0ae7423752e79a2459fae72181a9f00e3507e5d6",
+      "nvngx_deepdvc.dll": "60ac1e9f32ab31a8dcda3e875fd3dc2d3bcffeca3c6ca33551d6dc6871dbfd1b",
+      "nvngx_dlss.dll": "22c4660249da5b352cde0ce4d95178c3761223dd6ac096d0b88e5c03d7a5cdd1",
+      "nvngx_dlssd.dll": "4d53f6114edc61bd41fc293008aa818ab092bb8286830e61c98453da92d936d0",
+      "nvngx_dlssg.dll": "5685c065e6c048f673d70f5dda5b23570c8570642e4e284216f59c2e85583016",
+      "sl.common.dll": "be50a4c89177abb3695de92c57cc41662bfb7598ec447707b0d6efb77256d977",
+      "sl.deepdvc.dll": "c68fc648313c1b5403fb7130d6775540867b7088b0ac280b04e33b47b47b12f7",
+      "sl.directsr.dll": "6b80b92c356a113393a6f6ea349d133b45d45c2bdd8dd75ae9db934332818ee5",
+      "sl.dlss.dll": "2dbee8cb45af3de640f98ee68b4955d1fd90e772784e843f00951ac53ab908f6",
+      "sl.dlss_d.dll": "1a65ae1656d7aab4cb1025e14bc14a92330a3a3008a05aafae803c4fe508c260",
+      "sl.dlss_g.dll": "e07fd38310805e34265929d1999f33ed5566cf30176c082ca84ef63992f6c7d7",
+      "sl.interposer.dll": "c2397e96e35c1e78c0b351b0d2b070c6529ccc990f4cc73f04722db24dc2acce",
+      "sl.nis.dll": "4629c778ea65cf0676583936a0da61204c035bc4e1994e7736bc07e0114e42cb",
+      "sl.nvperf.dll": "e9459f193e85e91034b39aea5e624c8dd20e30469f63e981c851106256767ca6",
+      "sl.pcl.dll": "d6cd931f8db74978aa9159a41af288ae1480ffbeae59e64f4ea447074d861bc0",
+      "sl.reflex.dll": "42c45991b8f2972d4f341d379bd9be093c408b59d01f22b338f505f476617cc5"
+    },
+    "integration": {
+      "engine.patch": "e3d55e67e352b150da8dc1c3c3ea9caa0cbbabd2542e6f87bcd64285eb637620",
+      "vulkan_validation.patch": "26f91e399e339b4c4725f925a7c779254c9720112acf4ed49e52652480475206",
+      "dlss_validation.patch": "9bc70d7b64586a5515ad04e8c2bef9215aafae49b648ee0096d7d4aef550e9ed",
+      "fidelityfx.patch": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+      "build_fidelityfx.py": "49e006c4bc989310f89a0f38fb4cf7b1b4763aa571f3076769abe695fe6d5785",
+      "fsr3.h": "acb7566f1fc05b4b6bc3d83a482b962d23247a3936cdf4f095e96eb92dab9fd4",
+      "fsr3.cpp": "e5ec7a18ea9961c5f05a5b2f81517d46da731d2489f06a5234c8f81827a5347d",
+      "fsr3_prepare.glsl": "a6a62b2ba1d5981ed48b326fc55ad5015935b6903ebcd2526a65f5bfdc569035"
+    }
+  },
+  "export_check": {
+    "report": "tmp/godot-checks/native-package-export/native-windows-trial-pack-4i_oxft2/report.json",
+    "report_sha256": "e25e9e4a6b0441a75335c2e1ee1a11ba75d1d13bed89e71beb53f398be11d382",
+    "ok": true,
+    "complete": true,
+    "process_exit": 0,
+    "reason": "passed",
+    "elapsed_seconds": 31.86,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "log_sha256": "9534d40753470f1088ae5fca1925fe8a9b78de8d60b24f2b1a85f1a382392b64"
+  },
+  "gpu_validation": {
+    "fsr3_matrix_session": "20261024-213237-47941",
+    "fsr3_modes_tested": 5,
+    "fsr3_contexts_created": 10,
+    "fsr3_dispatches_succeeded": 771,
+    "fsr3_last_return_code": 0,
+    "fsr3_backend_failed": false,
+    "dlss_matrix_session": "20261024-213808-47941",
+    "dlss_modes_tested": 4,
+    "dlss_residual_vuid": "VUID-vkCmdDraw-None-09600",
+    "dlss_residual_messages": 6,
+    "native_baseline_session": "20261024-210437-47941",
+    "native_buffer_sync_reports": 10
+  },
+  "captures": [
+    {
+      "name": "fsr3-quality-1080p",
+      "manifest": "tmp/native-reconstruction-export/fsr3-quality-1080p.json",
+      "manifest_sha256": "c399c139753bda1517c03ed448458e28494657c411f6086601f7138b12cd862f",
+      "png_sha256": "d5ffd268f84ed8f591cc820aad5d59a27cb4d76072cfcbbc0f7e02d586a24246",
+      "png_dimensions": [
+        1920,
+        1080
+      ],
+      "reconstruction": {
+        "backend": {
+          "available": true,
+          "backend_failed": false,
+          "contexts_created": 1,
+          "dispatches_succeeded": 36,
+          "last_return_code": 0,
+          "provider_version": "3.1.4"
+        },
+        "effective": "fsr3_quality",
+        "effective_provider": "fsr3",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 1.29999995231628,
+        "msaa_3d": 0,
+        "nominal_3d_size": [
+          1280,
+          720
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "fsr3",
+        "provider_available": true,
+        "requested": "fsr3_quality",
+        "requested_provider": "fsr3",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 7,
+        "sharpening_active": true,
+        "sharpening_strength": 0.350000023841858,
+        "temporal": true,
+        "texture_mipmap_bias": 0.0
+      },
+      "check": {
+        "report": "tmp/godot-checks/native-export-fsr3-uebfr5gn/report.json",
+        "report_sha256": "3077b494758a7b6cf548c99d0896060bfa5bba62ecd91a2ec7f3e6801a24a5da",
+        "ok": false,
+        "complete": false,
+        "process_exit": 1,
+        "reason": "timeout",
+        "elapsed_seconds": 360.516,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "ca57b274b1d9403d18c440c56e0f224a235d12d030605c888ab19193e73b79b2"
+      }
+    },
+    {
+      "name": "native-baseline-1080p",
+      "manifest": "tmp/native-reconstruction-export/native-baseline-1080p.json",
+      "manifest_sha256": "9742772ac510b83c4d5e27d0109c0c4b40e9a32448050bd4b733538dea1a8449",
+      "png_sha256": "9d15474ab879e362c2c350e9d20ce0e6fd4f6cfbb4b0a5aa5ac66b472d1fe16e",
+      "png_dimensions": [
+        1920,
+        1080
+      ],
+      "reconstruction": {
+        "effective": "native",
+        "effective_provider": "native",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.200000002980232,
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "native",
+        "provider_available": true,
+        "requested": "native",
+        "requested_provider": "native",
+        "scale": 1.0,
+        "scaling_3d_mode": 0,
+        "sharpening_active": false,
+        "sharpening_strength": 0.899999998509884,
+        "temporal": false,
+        "texture_mipmap_bias": 0.0
+      },
+      "check": {
+        "report": "tmp/godot-checks/native-export-baseline-qbqyizk5/report.json",
+        "report_sha256": "fd7ec5697c4874c90fad4a2ba826f396f75af90867236f9dc0f1c054c79b1d74",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "elapsed_seconds": 16.532,
+        "counts": {
+          "error": 0,
+          "warning": 44
+        },
+        "log_sha256": "45796a25fdc030c3775447ae69cb6d8687efe66810f077e5e0332c091621b74e"
+      }
+    },
+    {
+      "name": "fsr3-repeat-1080p",
+      "manifest": "tmp/native-reconstruction-export/fsr3-repeat-1080p.json",
+      "manifest_sha256": "e097f940ab5cc35b2902fc0c60626150af52f98e2de0a19ced42cc19f85e8735",
+      "png_sha256": "f64f4b61ca264436de03388361b02ba0c41087e5ccb5cdd66b8990742770a215",
+      "png_dimensions": [
+        1920,
+        1080
+      ],
+      "reconstruction": {
+        "backend": {
+          "available": true,
+          "backend_failed": false,
+          "contexts_created": 1,
+          "dispatches_succeeded": 36,
+          "last_return_code": 0,
+          "provider_version": "3.1.4"
+        },
+        "effective": "fsr3_quality",
+        "effective_provider": "fsr3",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.200000002980232,
+        "msaa_3d": 0,
+        "nominal_3d_size": [
+          1280,
+          720
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "fsr3",
+        "provider_available": true,
+        "requested": "fsr3_quality",
+        "requested_provider": "fsr3",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 7,
+        "sharpening_active": true,
+        "sharpening_strength": 0.899999998509884,
+        "temporal": true,
+        "texture_mipmap_bias": 0.0
+      },
+      "check": {
+        "report": "tmp/godot-checks/native-export-fsr3-repeat-r481xvkh/report.json",
+        "report_sha256": "3ed7c1430b02da257dffef15d7b20eb54621bdcac9b8ca8a98de3d0289917aed",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "elapsed_seconds": 17.015,
+        "counts": {
+          "error": 0,
+          "warning": 44
+        },
+        "log_sha256": "17093f693ab209f5604227b90fbee1f697cc613f7a589423339d9696d1c38cd9"
+      }
+    },
+    {
+      "name": "dlss-quality-1080p",
+      "manifest": "tmp/native-reconstruction-export/dlss-quality-1080p.json",
+      "manifest_sha256": "dd72444b2c2505abc346037cd6609cd1e38d399d62667397d535528632b872e2",
+      "png_sha256": "e27161fa39b8598b12f3c0817ddbd9652535a28296b91f095b2f0e73d0ad76cd",
+      "png_dimensions": [
+        1920,
+        1080
+      ],
+      "reconstruction": {
+        "effective": "dlss_quality",
+        "effective_provider": "dlss",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.0,
+        "msaa_3d": 0,
+        "nominal_3d_size": [
+          1280,
+          720
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "dlss",
+        "provider_available": true,
+        "requested": "dlss_quality",
+        "requested_provider": "dlss",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 6,
+        "sharpening_active": false,
+        "sharpening_strength": 0.0,
+        "temporal": true,
+        "texture_mipmap_bias": 0.0
+      },
+      "check": {
+        "report": "tmp/godot-checks/native-export-dlss-02aw4qdo/report.json",
+        "report_sha256": "ee4ecd54764c65ba0b2f10af8054457ee521c8c33a7b3cdec859e95d6628cef7",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "elapsed_seconds": 16.937,
+        "counts": {
+          "error": 0,
+          "warning": 44
+        },
+        "log_sha256": "61dcb42686d30caa9cf9a8c6c693521cffd3e0fa977b73e747efafe302b6e563"
+      }
+    },
+    {
+      "name": "missing-amd-fallback-1080p",
+      "manifest": "tmp/native-reconstruction-export/missing-amd-fallback-1080p.json",
+      "manifest_sha256": "9950ff1fe05b866c97d9d031f09ea30cbaeec946b8cabbf3c90e3282d0656c25",
+      "png_sha256": "9d15474ab879e362c2c350e9d20ce0e6fd4f6cfbb4b0a5aa5ac66b472d1fe16e",
+      "png_dimensions": [
+        1920,
+        1080
+      ],
+      "reconstruction": {
+        "effective": "native",
+        "effective_provider": "native",
+        "fallback": true,
+        "fallback_reason": "fsr3_unavailable",
+        "fsr_sharpness": 0.200000002980232,
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "native",
+        "provider_available": false,
+        "requested": "fsr3_quality",
+        "requested_provider": "fsr3",
+        "scale": 1.0,
+        "scaling_3d_mode": 0,
+        "sharpening_active": false,
+        "sharpening_strength": 0.899999998509884,
+        "temporal": false,
+        "texture_mipmap_bias": 0.0
+      },
+      "check": {
+        "report": "tmp/godot-checks/native-export-missing-amd-pj5uwpoe/report.json",
+        "report_sha256": "4526afd0287aad4e744a3ff4b82630f93dd2d91fcaee063dd83863d305d319ce",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "elapsed_seconds": 15.032,
+        "counts": {
+          "error": 0,
+          "warning": 45
+        },
+        "log_sha256": "74541614b585df28dff57fe708c3b62bc15031de09f7052529f4f0bc4a637180"
+      }
+    },
+    {
+      "name": "fsr3-fresh-profile-1080p",
+      "manifest": "tmp/native-reconstruction-export/fsr3-fresh-profile-1080p.json",
+      "manifest_sha256": "69a625e18ce7f406411378cec4daf1c0ec5eceeb87dba6b55f252fdb8a16d0ed",
+      "png_sha256": "a918abdcce09fe0a5b50ac0c97a7bfa154b2f478cc6fa30cc1ea3344a781bac1",
+      "png_dimensions": [
+        1920,
+        1080
+      ],
+      "reconstruction": {
+        "backend": {
+          "available": true,
+          "backend_failed": false,
+          "contexts_created": 1,
+          "dispatches_succeeded": 36,
+          "last_return_code": 0,
+          "provider_version": "3.1.4"
+        },
+        "effective": "fsr3_quality",
+        "effective_provider": "fsr3",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 1.29999995231628,
+        "msaa_3d": 0,
+        "nominal_3d_size": [
+          1280,
+          720
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "fsr3",
+        "provider_available": true,
+        "requested": "fsr3_quality",
+        "requested_provider": "fsr3",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 7,
+        "sharpening_active": true,
+        "sharpening_strength": 0.350000023841858,
+        "temporal": true,
+        "texture_mipmap_bias": 0.0
+      },
+      "check": {
+        "report": "tmp/godot-checks/native-export-fsr3-fresh-h8i3trve/report.json",
+        "report_sha256": "be364f3e9d0cb6c2a7c87f6985bf56b9ba2f757086608625943ac30ac1059b18",
+        "ok": true,
+        "complete": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "elapsed_seconds": 24.89,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "b7b45f503c316a343bc577e57d8765fc0be06fee7e68e62ff5a7a1ee824527b0"
+      }
+    }
+  ],
+  "limitations": [
+    "One initial exported FSR3 shutdown stall; watchdog terminated at 360 s. Subsequent same-profile and fresh-profile FSR3 captures exited normally; cause unresolved.",
+    "DLSS mode/resize layout validation errors on untagged internal images remain unresolved.",
+    "No cross-vendor, other-platform, stereo/XR, motion-quality, latency, or performance qualification.",
+    "FSR4 and frame generation are not implemented.",
+    "Export capture durations are not frame-rate benchmarks; validation layers were used in the separate editor matrix."
+  ]
+}

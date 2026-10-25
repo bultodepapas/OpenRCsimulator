@@ -1,0 +1,121 @@
+{
+	"aabb_size": [
+		2.77777791023254,
+		0.778231084346771,
+		2.38111114501953
+	],
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"buffer_mem_mb": 22.8041038513184,
+	"cameras": [
+		{
+			"camera": "1_hero_4m",
+			"distance_m": 3.85486698150635,
+			"draw_calls": 119,
+			"frame_ms_median": 1.215,
+			"frame_ms_p95": 1.769,
+			"primitives": 88838,
+			"render_cpu_ms": 0.574300003051758,
+			"render_gpu_ms": 1.08020000457764,
+			"shadow_draw_calls": 0,
+			"shadow_primitives": 88840
+		},
+		{
+			"camera": "2_nose_1m6",
+			"distance_m": 1.57117795944214,
+			"draw_calls": 119,
+			"frame_ms_median": 0.937,
+			"frame_ms_p95": 2.325,
+			"primitives": 126232,
+			"render_cpu_ms": 0.404099997878075,
+			"render_gpu_ms": 0.490000000596046,
+			"shadow_draw_calls": 0,
+			"shadow_primitives": 126234
+		},
+		{
+			"camera": "3_cockpit_1m5",
+			"distance_m": 1.46171128749847,
+			"draw_calls": 89,
+			"frame_ms_median": 1.1,
+			"frame_ms_p95": 1.577,
+			"primitives": 126726,
+			"render_cpu_ms": 0.516199994087219,
+			"render_gpu_ms": 0.788299995660782,
+			"shadow_draw_calls": 0,
+			"shadow_primitives": 126728
+		},
+		{
+			"camera": "4_gear_1m2",
+			"distance_m": 1.18612802028656,
+			"draw_calls": 119,
+			"frame_ms_median": 1.42,
+			"frame_ms_p95": 1.567,
+			"primitives": 155082,
+			"render_cpu_ms": 0.430899995565414,
+			"render_gpu_ms": 0.66240000128746,
+			"shadow_draw_calls": 0,
+			"shadow_primitives": 155084
+		},
+		{
+			"camera": "5_tail_2m",
+			"distance_m": 2.31732606887817,
+			"draw_calls": 119,
+			"frame_ms_median": 1.032,
+			"frame_ms_p95": 1.664,
+			"primitives": 99308,
+			"render_cpu_ms": 0.503999993205071,
+			"render_gpu_ms": 0.715800005197525,
+			"shadow_draw_calls": 0,
+			"shadow_primitives": 99310
+		},
+		{
+			"camera": "6_chase_10m",
+			"distance_m": 10.0623054504395,
+			"draw_calls": 177,
+			"frame_ms_median": 1.165,
+			"frame_ms_p95": 2.504,
+			"primitives": 45510,
+			"render_cpu_ms": 0.411599999666214,
+			"render_gpu_ms": 0.488899999856949,
+			"shadow_draw_calls": 0,
+			"shadow_primitives": 91020
+		},
+		{
+			"camera": "7_pilot_40m",
+			"distance_m": 39.8426895141602,
+			"draw_calls": 119,
+			"frame_ms_median": 1.066,
+			"frame_ms_p95": 1.262,
+			"primitives": 34352,
+			"render_cpu_ms": 0.405499997735023,
+			"render_gpu_ms": 0.454699999094009,
+			"shadow_draw_calls": 0,
+			"shadow_primitives": 34354
+		},
+		{
+			"camera": "8_pilot_120m",
+			"distance_m": 119.479873657227,
+			"draw_calls": 119,
+			"frame_ms_median": 0.99,
+			"frame_ms_p95": 1.397,
+			"primitives": 26438,
+			"render_cpu_ms": 0.366800001263618,
+			"render_gpu_ms": 0.536200001835823,
+			"shadow_draw_calls": 0,
+			"shadow_primitives": 26440
+		}
+	],
+	"clay": false,
+	"driver": "opengl3",
+	"godot": "4.7.2-stable (official)",
+	"load_ms": 2332.395,
+	"mesh_instances": 46,
+	"model": "res://models/splash.glb",
+	"resolution": [
+		1920,
+		1080
+	],
+	"surfaces": 58,
+	"texture_mem_mb": 234.963297843933,
+	"triangles": 337664,
+	"video_mem_mb": 257.767401695251
+}

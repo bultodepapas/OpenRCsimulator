@@ -1,0 +1,1000 @@
+[
+  {
+    "id": "midnight",
+    "name": "Naval 308 \u2014 Midnight",
+    "description": "Original deep navy restoration scheme with white 308/NAVY, access stencils, restrained panel finish, service wear and yellow blade tips.",
+    "default": true,
+    "blend": "source/aircraft_game.blend",
+    "glb": "export/aircraft.glb",
+    "blend_sha256": "a3665272bef44b600c38212fccaa057c4289dfe48bf7fbb7034f8a467843208a",
+    "glb_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+    "glb_bytes": 20026424,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 57,
+    "materials": 14,
+    "images": 6,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 0.65,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "basecolor": "textures/liveries/midnight/runtime/basecolor.png",
+    "orm": "textures/liveries/midnight/runtime/orm.png",
+    "normal": "textures/liveries/midnight/runtime/normal.png",
+    "editable": "textures/liveries/midnight/source.ora",
+    "preview": "previews/midnight/hero.png"
+  },
+  {
+    "id": "three_tone",
+    "name": "Coastal Three Tone",
+    "description": "Original three-tone military-inspired finish with matte anti-glare panel, separate insignia and restrained exhaust residue",
+    "default": false,
+    "blend": "source/aircraft_three_tone.blend",
+    "glb": "export/aircraft_three_tone.glb",
+    "blend_sha256": "eb31b5d377d6e0b38356ea7ffcc6b19d008fb9c66937bb7a81e28312ac58a6a0",
+    "glb_sha256": "52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005",
+    "glb_bytes": 20019312,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 57,
+    "materials": 14,
+    "images": 6,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 0.65,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "basecolor": "textures/liveries/three_tone/runtime/basecolor.png",
+    "orm": "textures/liveries/three_tone/runtime/orm.png",
+    "normal": "textures/liveries/three_tone/runtime/normal.png",
+    "editable": "textures/liveries/three_tone/source.ora",
+    "preview": "previews/three_tone/hero.png"
+  },
+  {
+    "id": "scarlet",
+    "name": "Super Corsair 57 / SOHIO",
+    "description": "Photo-guided red/ivory fan, outlined 57, SOHIO, N5588N; adapted to existing F4U-1D-inspired geometry",
+    "default": false,
+    "blend": "source/aircraft_scarlet.blend",
+    "glb": "export/aircraft_scarlet.glb",
+    "blend_sha256": "41f1b80e1db961b1c5b214bc1b478a37579d9c1412069759a8cd3e1b7f51940a",
+    "glb_sha256": "679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1",
+    "glb_bytes": 20415824,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 57,
+    "materials": 14,
+    "images": 6,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 0.65,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "basecolor": "textures/liveries/scarlet/runtime/basecolor.png",
+    "orm": "textures/liveries/scarlet/runtime/orm.png",
+    "normal": "textures/liveries/scarlet/runtime/normal.png",
+    "editable": "textures/liveries/scarlet/source.ora",
+    "preview": "previews/scarlet/hero.png"
+  },
+  {
+    "id": "splash",
+    "name": "Sunburst Splash",
+    "description": "Golden yellow, cobalt nose, asymmetric coloured splashes and red/white target underside.",
+    "basecolor": "textures/liveries/splash/runtime/basecolor.png",
+    "orm": "textures/liveries/splash/runtime/orm.png",
+    "editable": "textures/liveries/splash/source.ora",
+    "blend": "source/aircraft_splash.blend",
+    "glb": "export/aircraft_splash.glb",
+    "blend_sha256": "f754345d42cb2e504efaca4bf0f6e4b69f24b58161d1e1d69abdec504ea857e6",
+    "glb_sha256": "dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546",
+    "glb_bytes": 19655820,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 58,
+    "materials": 15,
+    "images": 6,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 0.65,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "normal": "textures/liveries/splash/runtime/normal.png",
+    "preview": "previews/splash/hero.png",
+    "default": false
+  },
+  {
+    "id": "spectrum",
+    "name": "Spectrum Wings",
+    "description": "White airframe with curved gold, orange, red, violet, blue and dark wing feathers; longitudinal side ribbons.",
+    "basecolor": "textures/liveries/spectrum/runtime/basecolor.png",
+    "orm": "textures/liveries/spectrum/runtime/orm.png",
+    "editable": "textures/liveries/spectrum/source.ora",
+    "blend": "source/aircraft_spectrum.blend",
+    "glb": "export/aircraft_spectrum.glb",
+    "blend_sha256": "a248bf57c31742ef0bd60ffd7ea33332aece12a749777c6d5dc6c4503bc07150",
+    "glb_sha256": "233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6",
+    "glb_bytes": 19822212,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 57,
+    "materials": 14,
+    "images": 6,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 0.65,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "normal": "textures/liveries/spectrum/runtime/normal.png",
+    "preview": "previews/spectrum/hero.png",
+    "default": false
+  },
+  {
+    "id": "blueangels",
+    "name": "Blue Angels Corsair",
+    "description": "Cobalt blue and yellow; U.S. NAVY lettering, interpreted Blue Angels script, number 1 and a yellow underside arrow.",
+    "basecolor": "textures/liveries/blueangels/runtime/basecolor.png",
+    "orm": "textures/liveries/blueangels/runtime/orm.png",
+    "editable": "textures/liveries/blueangels/source.ora",
+    "blend": "source/aircraft_blueangels.blend",
+    "glb": "export/aircraft_blueangels.glb",
+    "blend_sha256": "b2d8083dec14eb408dadc33b467ea58029c19bde64faad11265dc0cbae167dac",
+    "glb_sha256": "76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0",
+    "glb_bytes": 19593328,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 58,
+    "materials": 15,
+    "images": 6,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 0.65,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "normal": "textures/liveries/blueangels/runtime/normal.png",
+    "preview": "previews/blueangels/hero.png",
+    "default": false
+  },
+  {
+    "id": "thunderbirds",
+    "name": "Thunderbirds Corsair",
+    "description": "White, red and navy Thunderbirds-inspired Corsair with USAF markings, ventral bird and coordinated propeller.",
+    "basecolor": "textures/liveries/thunderbirds/runtime/basecolor.png",
+    "orm": "textures/liveries/thunderbirds/runtime/orm.png",
+    "editable": "textures/liveries/thunderbirds/source.ora",
+    "blend": "source/aircraft_thunderbirds.blend",
+    "glb": "export/aircraft_thunderbirds.glb",
+    "blend_sha256": "bb135ebffa1bfbf03c50fcd453064008f92866ffeb1b69317df5fdd96f37301f",
+    "glb_sha256": "9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03",
+    "glb_bytes": 19641704,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 58,
+    "materials": 15,
+    "images": 6,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 0.65,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "normal": "textures/liveries/thunderbirds/runtime/normal.png",
+    "preview": "previews/thunderbirds/hero.png",
+    "default": false
+  },
+  {
+    "id": "chrome",
+    "name": "Chrome 07 Corsair",
+    "description": "Mirror chrome with number 07, original winged emblems, red/black accents and satin service stickers. Local gun and exhaust grime retained.",
+    "basecolor": "textures/liveries/chrome/runtime/basecolor.png",
+    "orm": "textures/liveries/chrome/runtime/orm.png",
+    "editable": "textures/liveries/chrome/source.ora",
+    "blend": "source/aircraft_chrome.blend",
+    "glb": "export/aircraft_chrome.glb",
+    "blend_sha256": "f6499bf60e1698eac3d5bcb8b52cd9fb2eb8445c850a3ecb5f717a71546c8025",
+    "glb_sha256": "1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859",
+    "glb_bytes": 21370728,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 58,
+    "materials": 15,
+    "images": 6,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 1.0,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "normal": "textures/liveries/chrome/runtime/normal.png",
+    "preview": "previews/chrome/hero.png",
+    "default": false
+  },
+  {
+    "id": "p40",
+    "name": "Sharkmouth P-40 Inspired Corsair",
+    "description": "Olive drab and grey with sharkmouth nose art, eyes, period-style star discs, yellow wheel webs and blade tips. Original adaptation of the user reference to the existing Corsair.",
+    "basecolor": "textures/liveries/p40/runtime/basecolor.png",
+    "orm": "textures/liveries/p40/runtime/orm.png",
+    "editable": "textures/liveries/p40/source.ora",
+    "blend": "source/aircraft_p40.blend",
+    "glb": "export/aircraft_p40.glb",
+    "blend_sha256": "38ba50b1c87269414a785501db6b77eadf3dc96ad1851b57d075036b3f693120",
+    "glb_sha256": "9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58",
+    "glb_bytes": 21865668,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 58,
+    "materials": 15,
+    "images": 7,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 1.0,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "normal": "textures/liveries/p40/runtime/normal.png",
+    "preview": "previews/p40/hero.png",
+    "default": false
+  },
+  {
+    "id": "japan",
+    "name": "Captured Corsair / Japan 09",
+    "description": "Fictional Japanese capture repaint: deep green, ash grey, six hinomaru, yellow leading edges, black cowling, Japanese lettering and overpaint patches. Original artistic interpretation, not a documented captured Corsair.",
+    "basecolor": "textures/liveries/japan/runtime/basecolor.png",
+    "orm": "textures/liveries/japan/runtime/orm.png",
+    "editable": "textures/liveries/japan/source.ora",
+    "blend": "source/aircraft_japan.blend",
+    "glb": "export/aircraft_japan.glb",
+    "blend_sha256": "4b5cd6040f34ce650cb59d3f3e082d35776dd02f2f5b68ad07dbaa774de8db37",
+    "glb_sha256": "9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824",
+    "glb_bytes": 21691192,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 58,
+    "materials": 15,
+    "images": 7,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 1.0,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "normal": "textures/liveries/japan/runtime/normal.png",
+    "preview": "previews/japan/hero.png",
+    "default": false
+  },
+  {
+    "id": "luftwaffe",
+    "name": "Captured Corsair / Beute 10",
+    "description": "Fictional Luftwaffe captured Corsair: angular grey-green camouflage, mottled sides, six Balkenkreuz, yellow recognition areas, original number 10 and repaint patches. Artistic interpretation, not a documented captured Corsair.",
+    "basecolor": "textures/liveries/luftwaffe/runtime/basecolor.png",
+    "orm": "textures/liveries/luftwaffe/runtime/orm.png",
+    "editable": "textures/liveries/luftwaffe/source.ora",
+    "blend": "source/aircraft_luftwaffe.blend",
+    "glb": "export/aircraft_luftwaffe.glb",
+    "blend_sha256": "9cb6deb9469871fc260145d360f988b8438b031888ed010607adf7620cb26a22",
+    "glb_sha256": "aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02",
+    "glb_bytes": 21782072,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 58,
+    "materials": 15,
+    "images": 7,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 1.0,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "normal": "textures/liveries/luftwaffe/runtime/normal.png",
+    "preview": "previews/luftwaffe/hero.png",
+    "default": false
+  },
+  {
+    "id": "italy",
+    "name": "Deserto 11 / Italian desert concept",
+    "description": "Fictional Italian desert Corsair: sand and irregular olive mottles, pale grey underside, white recognition band, period-inspired wing emblems, white tail cross and original number 11. Not a documented historical Corsair.",
+    "basecolor": "textures/liveries/italy/runtime/basecolor.png",
+    "orm": "textures/liveries/italy/runtime/orm.png",
+    "editable": "textures/liveries/italy/source.ora",
+    "blend": "source/aircraft_italy.blend",
+    "glb": "export/aircraft_italy.glb",
+    "blend_sha256": "8ff7537107b484c6a1ef131fb398867a2866973974fcf80fd16cca4cc829c293",
+    "glb_sha256": "e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac",
+    "glb_bytes": 22047652,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 58,
+    "materials": 15,
+    "images": 7,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 1.0,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "normal": "textures/liveries/italy/runtime/normal.png",
+    "preview": "previews/italy/hero.png",
+    "default": false
+  },
+  {
+    "id": "carbon",
+    "name": "Carbon 12 / Aero Sport",
+    "description": "Refined carbon concept inspired by the Chiron Super Sport 300+ palette: twin orange ribbons, dark rims, enamel-style original badges and 4K twill. Geometry and UVs preserved.",
+    "basecolor": "textures/liveries/carbon/runtime/basecolor.png",
+    "orm": "textures/liveries/carbon/runtime/orm.png",
+    "editable": "textures/liveries/carbon/source.ora",
+    "blend": "source/aircraft_carbon.blend",
+    "glb": "export/aircraft_carbon.glb",
+    "blend_sha256": "7afc3480c4a5bf56e47c01f7733b85503a04954b3f54f61ccf76af02f3d2278f",
+    "glb_sha256": "ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278",
+    "glb_bytes": 27575148,
+    "triangles": 337664,
+    "nodes": 82,
+    "surfaces": 58,
+    "materials": 15,
+    "images": 9,
+    "geometry_normals_UVs_identical_to_g21": true,
+    "all_82_nodes_101_poses_identical": true,
+    "all_images_packed": true,
+    "normal_strength": 1.0,
+    "preflight_pass": true,
+    "preflight_warnings": [],
+    "hierarchy_and_frame100_identical": true,
+    "runtime_images": [
+      {
+        "name": "emission",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "Image",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "normal",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "basecolor",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "orm",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "propeller_basecolor",
+        "size": [
+          1024,
+          256
+        ]
+      }
+    ],
+    "AO_shared_descriptor": true,
+    "normal": "textures/liveries/carbon/runtime/normal.png",
+    "preview": "previews/carbon/hero.png",
+    "default": false
+  }
+]

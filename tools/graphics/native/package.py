@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import argparse
 from pathlib import Path
 import subprocess
 import sys
@@ -13,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[3]
 HERE = Path(__file__).resolve().parent
 COMMIT = "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76"
 BASE = "343be4b0bba007ec4295e7da408220a0577d97e1"
+INTEGRATION_COMMIT = "7bfbe2ec071bd142c5b1acf7350fff634ec31f16"
 CANDIDATE = ROOT / "tmp/native-reconstruction-candidate"
 OUT = ROOT / "tmp/native-reconstruction-export"
 CHECKS = ROOT / "tmp/godot-checks/native-package-export"
@@ -28,6 +30,12 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def pinned_app_blob(path: str) -> bytes:
+    return subprocess.check_output(
+        ["git", "show", f"{INTEGRATION_COMMIT}:{path}"], cwd=ROOT
+    )
+
+
 def read_json(path: Path) -> dict:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -37,6 +45,10 @@ def read_json(path: Path) -> dict:
     return value
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--preflight-only", action="store_true",
+                        help="validate package inputs without exporting or writing files")
+    args = parser.parse_args()
     engine = ROOT / ".tools/advanced-rendering" / f"godot-{COMMIT}" / "bin"
     editor_receipt_path = engine / "openrc-editor-build.json"
     template_receipt_path = engine / "openrc-template_release-build.json"
@@ -71,7 +83,10 @@ def main() -> int:
         if not runtime.is_file() or digest(runtime) != expected:
             raise RuntimeError(f"runtime DLL hash mismatch: {name}")
 
-    if candidate.get("source_base_commit") != BASE or candidate.get("engine_identity") != "4.8.0" or candidate.get("candidate_renderer") != "forward_plus":
+    if (candidate.get("source_base_commit") != BASE or
+            candidate.get("integration_source_commit") != INTEGRATION_COMMIT or
+            candidate.get("engine_identity") != "4.8.0" or
+            candidate.get("candidate_renderer") != "forward_plus"):
         raise RuntimeError("candidate receipt does not match the pinned Forward+ source/engine identity")
     if digest(CANDIDATE / "app/project.godot") != candidate.get("candidate_project_sha256"): raise RuntimeError("candidate project changed after its receipt")
     registry = CANDIDATE / "app/data/aircraft_customization.json"
@@ -91,8 +106,12 @@ def main() -> int:
         raise RuntimeError("candidate family registry does not match its presentation receipt")
     overlay_hashes = {name: value.get("prepared_sha256") for name, value in candidate.get("integration_overlays", {}).items()}
     if set(overlay_hashes) != set(OVERLAYS): raise RuntimeError("candidate receipt does not cover the exact app integration files")
+    expected_overlay_hashes = {
+        name: hashlib.sha256(pinned_app_blob(name)).hexdigest() for name in OVERLAYS
+    }
     for name in OVERLAYS:
-        if not (ROOT / name).is_file() or digest(ROOT / name) != overlay_hashes[name] or digest(CANDIDATE / name) != overlay_hashes[name]:
+        expected = expected_overlay_hashes[name]
+        if overlay_hashes[name] != expected or digest(CANDIDATE / name) != expected:
             raise RuntimeError(f"candidate app integration is stale: {name}")
 
     licenses = engine / "licenses"
@@ -123,7 +142,8 @@ def main() -> int:
                 'cd /d "%~dp0"\r\nstart "" "%~dp0OpenRC Native Trial.exe" -- --quick-flight\r\nendlocal\r\n')
         managed[name] = body.encode("utf-8")
 
-    OUT.mkdir(parents=True, exist_ok=True)
+    if OUT.exists() and not OUT.is_dir():
+        raise RuntimeError(f"package output path is not a directory: {OUT}")
     previous_path = OUT / "package-receipt.json"
     previous = read_json(previous_path) if previous_path.exists() else {}
     if previous and (previous.get("format") != FORMAT or previous.get("godot_commit") != COMMIT):
@@ -136,8 +156,14 @@ def main() -> int:
         if target.exists() and digest(target) != hashlib.sha256(content).hexdigest():
             if previous_files.get(relative) != digest(target):
                 raise RuntimeError(f"refusing to overwrite unexpected output: {target}")
-    if pck.exists() and previous and previous_files.get(pck.name) != digest(pck):
+    if pck.exists() and (not previous or previous_files.get(pck.name) != digest(pck)):
         raise RuntimeError(f"refusing to overwrite unreceipted PCK: {pck}")
+
+    if args.preflight_only:
+        print(f"Package preflight passed for pinned candidate {BASE} + {INTEGRATION_COMMIT}; no export or files written.")
+        return 0
+
+    OUT.mkdir(parents=True, exist_ok=True)
 
     os.environ.update({"OPENRC_BUILD_DESCRIBE": build_id["describe"], "OPENRC_BUILD_COMMIT": BASE,
                        "OPENRC_BUILD_DIRTY": "1", "OPENRC_BUILD_DATE": date})

@@ -1,0 +1,166 @@
+{
+	"checks": [
+		{
+			"detail": "Paint (F4U Corsair): Naval 308 — Midnight",
+			"label": "Home opens on the Corsair with its default paint",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Coastal Three Tone on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "three_tone is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Super Corsair 57 / SOHIO on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "scarlet is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Sunburst Splash on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "splash is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Spectrum Wings on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "spectrum is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Blue Angels Corsair on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "blueangels is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Thunderbirds Corsair on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "thunderbirds is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Chrome 07 Corsair on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "chrome is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Sharkmouth P-40 Inspired Corsair on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "p40 is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Captured Corsair / Japan 09 on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "japan is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Captured Corsair / Beute 10 on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "luftwaffe is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Deserto 11 / Italian desert concept on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "italy is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Paint shows Carbon 12 / Aero Sport on the row and the backdrop",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "carbon is saved for the Corsair",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "the last scheme cycles back to the default paint, saved as no entry",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "a one-paint aircraft shows no Paint row",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "returning to the Corsair restores its scheme from the backdrop cache",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "Fly starts",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "the flight builds the chosen scheme",
+			"ok": true
+		},
+		{
+			"detail": "exit 31",
+			"label": "the direct route refuses an unknown livery",
+			"ok": true
+		},
+		{
+			"detail": "exit 0",
+			"label": "the direct route flies --livery=blueangels",
+			"ok": true
+		}
+	],
+	"failures": 0,
+	"format": "F4U-16 livery check v1"
+}
