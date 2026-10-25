@@ -40,4 +40,30 @@ Reviewed and integrated 2026-10-24 for the [F4U plan](../../../F4U-PLAN.md). The
 | Imported scenes (`.godot/imported`), one per scheme | 714 MB (47–65 MB each) |
 | Export package: the scenes plus the GLBs kept as proof | about 1 GB |
 
-Only the chosen scheme loads at run time, so frame time and memory in flight equal g2.1's ([F4U-19](../F4U-19/README.md#integration-of-g21-2026-10-24)). The cost is download and disk size. A texture-only paint switch on one shared geometry would bring the package close to one scheme plus thirteen texture sets. That needs authored material bindings per scheme ([F4U-16 decision](../../../DECISIONS.md)).
+Flight displays the chosen scheme, while Home retains a bounded cache of recent previews. F4U-20-R1 below corrects an extra GLB load during export-package validation. The duplicated geometry still costs download and disk size. A texture-only paint switch on one shared geometry would bring the package close to one scheme plus thirteen texture sets. That needs authored material bindings per scheme ([F4U-16 decision](../../../DECISIONS.md)).
+
+## F4U-20-R1: senior integration review, 2026-10-25
+
+Reviewed the current working tree on Windows, Godot 4.7.2 Compatibility, including the newer Home flight-preparation work. Two defects were corrected:
+
+- **Paint disappeared above the catalog viewport.** Opening Aircraft scrolls to the selected Corsair, hiding the old paint row. Home now pins the row below navigation. Aircraft → Down reaches Paint; Paint → Down reaches the selected aircraft. At large text sizes, navigation and paint share the scrollable page so neither consumes the entire body. The row disappears outside Aircraft and for models without selectable paints.
+- **Export validation loaded an unselected GLB.** The previous package checker loaded the default asset during `describe()`, then the alternate asset during livery validation, before the importer built the selected scene. GLB checks now verify resource existence and source-proof hashes without loading the scene. The importer still loads and validates the selected `PackedScene`; other dependency types keep their loadability checks. This corrects the earlier “only the chosen scheme loads” statement for exported builds. No reduction in package size is claimed.
+
+### Verification
+
+| Check | Result |
+| --- | --- |
+| `test_aircraft_liveries.gd` | 179/179: all thirteen builds and identities, invalid data, preference persistence, menu layout at 1080p/1440p/4K/720p in EN/ES, 100%/200% text, and real Down-key navigation at 200% |
+| `test_aircraft_package_proofs.gd` | 34 parent checks pass, including an isolated PCK overlay with the actual Corsair proof. A resource-loader spy detects eager GLB loads; tampered hashes remain rejected, and the real scene subsequently loads with the cache bypassed |
+| `verify_f4u.gd` / `test_imported_aircraft_model.gd` | 40/40 and 68/68 |
+| Home regression suites | `test_ui_home`, `test_ui_home_layout`, `test_ui_aircraft`, `test_ui_change_aircraft` pass |
+| Rendered production shell, 1920×1080 | [32/32](checks/senior-review-liveries-2026-10-25.json): all thirteen previews and saved choices, wrap to default, aircraft switching, selected paint in flight, valid/invalid CLI livery IDs. Captures stay in ignored `tmp/`; Midnight, Spectrum and Chrome menu captures were visually inspected |
+| Debug-bridge regression | `tools/debug/scenarios/corsair_paint.txt` passes at a confirmed 1920×1080 viewport: select paint, launch, return Home, retain selection |
+| Repeated lifecycle | Same scenario: one warm-up plus three measured cycles; 962 nodes and zero orphan nodes each time, zero monotonically growing counters, zero engine errors, zero leaked objects at final exit |
+
+### Remaining limits
+
+- **Cold switching is still expensive.** Before the fix, an isolated rendered Home run on an RTX 3090 at 1920×1080 recorded a 1,294.76 ms frame when first selecting Coastal Three Tone. Median was 16.64 ms and p95 17.04 ms across that 164-frame window. This is a short Home observation, not flight-performance qualification or a measured before/after improvement. The source-tree cold path is unchanged by the package-only loading fix. Later verbose runs also show repeated BasisU texture transcoding; its share of the rendered hitch has not been isolated.
+- The disk/package duplication described above remains. Texture/material-only variants on shared geometry are the larger optimization opportunity; this review does not replace the author's delivered models.
+- One earlier two-cycle debug session reported four leaked objects on exit without verbose identities. A fresh verbose single-cycle run and the four-cycle soak both exited with zero leaked objects. Treat the first observation as unresolved, not as a demonstrated persistent Corsair leak. The three known `MOON_UMBRA_*` unclaimed StringNames remain outside this change.
+- This is focused software verification. The full application suite and a new complete export were not run; the export-path regression uses a PCK overlay. F4U-14 physical validation and the g2.3 blade-normal/cowl-flap work remain open.

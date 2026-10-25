@@ -1,5 +1,11 @@
 # VQ-07d: native FSR 3.1 and DLSS experiment
 
+**Current DLSS update (2026-10-25):** explicit preset K now passes the tested
+1080p mode/resize sequence with Vulkan synchronization validation on the RTX 3090.
+Automatic preset selection still reproduces the NGX finding. See
+[frame ownership and preset qualification](#follow-up-frame-ownership-and-preset-qualification--2026-10-25)
+for the scoped workaround, export proof and remaining limits.
+
 2026-10-24. The owner requested implementation after the
 [DLSS/FSR investigation](../../../advanced-graphics-2026-10-21/dlss-fsr-2026-10-24.md).
 The RTX 3090 was the test device for this report; this does not qualify other GPUs.

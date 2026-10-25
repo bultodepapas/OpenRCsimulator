@@ -58,6 +58,14 @@ Matched Stik/Turbo cards (`trim_sweep,stall_power_off,vmax,roll_rate`) have four
 
 [Working-tree integration](main-working-tree-integration.json) applies our exact changes to main without staging or committing its unrelated in-progress merge. Main index and MERGE_HEAD hashes remain unchanged. The 36 startup checks and AppRoot parse pass there; [final source identities](final-source-identity.json) match. Five pre-existing conflicted aircraft customization/Workshop JSON files prevent claiming a complete integrated runtime pass until their owner resolves the merge.
 
+## First-view investigation: runway start
+
+2026-10-25 follow-up: the user reported an inside-aircraft view before the pilot view on runway launch. Saved settings selected Avanti. Inspection confirmed that `PilotCamera.create()` activated an identity/origin camera and staged Main could report completion before its first `_render_pose()`. Camera position changes directly to the pilot station; there is no pilot-position transition to tune.
+
+The camera now enters the tree at the configured pilot eye. A valid staged interactive flight places its final aircraft/camera pose before `startup_finished`, without advancing ticks, polling input or modifying the session checkpoint. Direct technical rendering retains its existing first-process behavior. Thirteen focused checks cover runway/airborne readiness and checkpoint byte identity; 91 existing camera checks, 28 integrated loading checks and all six probe fixture groups pass.
+
+[Per-draw evidence](camera-handoff.json) records nine native diagnostic cycles at 1920×1080, including current-main Avanti runway before/after. Before the fix, Avanti had 14/9 origin-camera frames, all hidden by the loading surface. Afterward it has zero origin frames and zero completed-but-unplaced camera frames; both first visible draws use the pilot view and active flight. **The reported visible flash was not reproduced**, so the exact reported cause remains unconfirmed despite correcting the initialization defect. Captures remain under ignored `tmp/`; image readbacks exclude these runs from performance acceptance. The optional probe observer now records first reveal rather than inferring camera readiness from a valid session alone.
+
 ## Remaining work, in order
 
 1. Improve immediate Fly: after freezing and validating its request, start managed numeric work before world construction, then adopt at the existing validation boundary. Compare identical 0/2/5 s dwell and exactly one solve. This next slice is not implemented here.

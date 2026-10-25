@@ -38,6 +38,9 @@ common/physics_jitter_fix=0.0
 
 [rendering]
 
+; VQ-07d: the native DLSS build uses the validated transformer preset.
+streamline/dlss_preset="K"
+
 ; Compatibility renderer: the only one Godot can export to the web, and the closest match to WebGL 2.
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

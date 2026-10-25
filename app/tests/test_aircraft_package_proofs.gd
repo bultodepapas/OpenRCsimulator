@@ -11,6 +11,24 @@ var _created_files: PackedStringArray = []
 var _created_dir := ""
 
 
+class SceneLoadSpy extends ResourceFormatLoader:
+	var imported_path := ""
+	var loads := 0
+	func _get_recognized_extensions() -> PackedStringArray:
+		return PackedStringArray(["scn", "glb"])
+	func _recognize_path(path: String, _type: StringName) -> bool:
+		return path == imported_path
+	func _exists(path: String) -> bool:
+		return path == imported_path
+	func _get_resource_type(path: String) -> String:
+		return "PackedScene" if path == imported_path else ""
+	func _handles_type(type: StringName) -> bool:
+		return type == &"PackedScene"
+	func _load(_path: String, _original_path: String, _use_sub_threads: bool, _cache_mode: int) -> Variant:
+		loads += 1
+		return PackedScene.new()
+
+
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
 	var case_name := _argument_value(args, "--case=")
@@ -35,6 +53,8 @@ func _run_parent() -> void:
 	for test_case: Dictionary in cases:
 		var pack_path := _build_pack(temp_dir, str(test_case.name), str(test_case.marker), true)
 		_run_child(str(test_case.name), pack_path)
+	var lazy_pack := _build_pack(temp_dir, "deferred_glb", "", true)
+	_run_child("deferred_glb", lazy_pack)
 	# Keep this last: it mounts an exported-project sentinel without a marker in a fresh process.
 	var missing_pack := _build_pack(temp_dir, "missing_marker", "", true)
 	_run_child("missing_marker", missing_pack)
@@ -73,6 +93,9 @@ func _run_case(case_name: String, pack_path: String) -> void:
 		_check("test PCKPacker overlay mounts: " + case_name, false, pack_path)
 		return
 	_check("export sentinel exists in overlay: " + case_name, FileAccess.file_exists("res://project.binary"))
+	if case_name == "deferred_glb":
+		_check_deferred_glb()
+		return
 	var result: Dictionary = Registry._read_package_proofs()
 	var expected_code := "MODEL_PACKAGE_PROOF_INVALID"
 	if case_name in ["missing_marker", "missing_proof"]:
@@ -104,6 +127,11 @@ func _build_pack(temp_dir: String, case_name: String, marker: String, include_se
 		_check("PCKPacker adds marker: " + case_name, error == OK, error_string(error))
 		if error != OK:
 			return ""
+	if case_name == "deferred_glb":
+		var asset: Dictionary = _corsair_asset()
+		error = packer.add_file(_expected_proof_path(asset.path), ProjectSettings.globalize_path(asset.path))
+		_check("PCKPacker adds actual Corsair GLB proof", error == OK, error_string(error))
+		if error != OK: return ""
 	error = packer.flush()
 	_check("PCKPacker flushes " + case_name, error == OK, error_string(error))
 	if error != OK:
@@ -111,6 +139,36 @@ func _build_pack(temp_dir: String, case_name: String, marker: String, include_se
 	var absolute_pack_path := ProjectSettings.globalize_path(pack_path)
 	_created_files.append(absolute_pack_path)
 	return absolute_pack_path
+
+
+func _corsair_asset() -> Dictionary:
+	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft_models/f4u-corsair-250.json"))
+	return {path = manifest.asset.path, sha256 = manifest.asset.sha256, hash_mode = "raw"}
+
+
+func _check_deferred_glb() -> void:
+	var asset := _corsair_asset()
+	_check("default Corsair scene starts unloaded", not ResourceLoader.has_cached(asset.path))
+	var sidecar := ConfigFile.new()
+	_check("Corsair import sidecar opens", sidecar.load(asset.path + ".import") == OK)
+	var spy := SceneLoadSpy.new()
+	spy.imported_path = str(sidecar.get_value("remap", "path", ""))
+	ResourceLoader.add_resource_format_loader(spy, true)
+	var proofs := {str(asset.path): _expected_proof_path(asset.path)}
+	var errors := PackedStringArray()
+	var diagnostics: Array[Dictionary] = []
+	Registry._check_resource_record(asset, "$.asset", proofs, errors, diagnostics)
+	_check("packaged GLB proof verifies", errors.is_empty(), str(errors))
+	_check("checking provenance does not load an unselected paint", spy.loads == 0)
+	asset.sha256 = "0".repeat(64)
+	Registry._check_resource_record(asset, "$.asset", proofs, errors, diagnostics)
+	_check("deferred GLB still rejects a mismatched hash", _has_code({diagnostics = diagnostics}, "MODEL_HASH_MISMATCH"))
+	var intercepted := ResourceLoader.load(asset.path)
+	_check("the load spy observes an actual scene request", intercepted != null and spy.loads == 1)
+	intercepted = null
+	ResourceLoader.remove_resource_format_loader(spy)
+	var scene := ResourceLoader.load(asset.path, "PackedScene", ResourceLoader.CACHE_MODE_IGNORE) as PackedScene
+	_check("the real verified scene loads when selected", scene != null and scene.get_state().get_node_count() > 0)
 
 
 func _write_source(temp_dir: String, name: String, contents: String) -> String:

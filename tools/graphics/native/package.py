@@ -22,7 +22,7 @@ INTEGRATION_COMMIT = candidate_pins.INTEGRATION_COMMIT
 CANDIDATE = ROOT / "tmp/native-reconstruction-candidate"
 OUT = ROOT / "tmp/native-reconstruction-export"
 CHECKS = ROOT / "tmp/godot-checks/native-package-export"
-INTEGRATION = ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "load_token_lifetime.patch", "reflection_atlas_lifetime.patch", "buffer_write_sync.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")
+INTEGRATION = (*native_build.ENGINE_PATCHES, "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")
 OVERLAYS = candidate_pins.INTEGRATION_OVERLAYS
 FORMAT = "openrc-native-reconstruction-package v1"
 sys.path.insert(0, str(ROOT / "tools/godot"))
@@ -88,6 +88,8 @@ def main() -> int:
             candidate.get("candidate_renderer") != "forward_plus"):
         raise RuntimeError("candidate receipt does not match the pinned Forward+ source/engine identity")
     if digest(CANDIDATE / "app/project.godot") != candidate.get("candidate_project_sha256"): raise RuntimeError("candidate project changed after its receipt")
+    if '\nstreamline/dlss_preset="K"\n' not in (CANDIDATE / "app/project.godot").read_text(encoding="utf-8"):
+        raise RuntimeError("candidate does not pin the validated DLSS preset K")
     registry = CANDIDATE / "app/data/aircraft_customization.json"
     if digest(registry) != candidate.get("generated_registry_sha256"): raise RuntimeError("candidate presentation registry changed after generation")
     generator = CANDIDATE / "research/aircraft-standardization/build_customization.py"

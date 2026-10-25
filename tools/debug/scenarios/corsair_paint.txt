@@ -1,0 +1,20 @@
+# F4U-20-R1: paint remains reachable when the catalog reveals the Corsair.
+eval expr="tree.root.set_size(Vector2i(1920,1080))"
+assert expr="tree.root.size == Vector2i(1920,1080)"
+call node=AppRoot method=set_aircraft args=["f4u-corsair-250"]
+call node=AppRoot method=set_livery args=["midnight"]
+press text=Aircraft
+wait until="not home_scene.preview_pending" timeout_s=30
+assert expr="home.livery_button.is_visible_in_tree()"
+assert expr="home.livery_button.get_global_rect().end.y <= home._scroll.get_global_rect().position.y + 0.5"
+press text=Paint
+wait until="not home_scene.preview_pending" timeout_s=30
+assert expr="home.livery_id == 'three_tone' and home_scene.airplane.livery == 'three_tone'"
+fly aircraft=f4u-corsair-250 start=runway
+assert expr="flight.livery == 'three_tone' and flight._airplane.livery == 'three_tone'"
+home
+wait until="not home_scene.preview_pending" timeout_s=30
+assert expr="home.livery_id == 'three_tone' and home_scene.airplane.livery == 'three_tone'"
+call node=AppRoot method=set_livery args=["midnight"]
+call node=AppRoot method=set_aircraft args=["jensen-das-ugly-stik-60"]
+wait until="not home_scene.preview_pending" timeout_s=30

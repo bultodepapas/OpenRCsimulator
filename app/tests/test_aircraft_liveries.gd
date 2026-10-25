@@ -11,6 +11,8 @@ const Manifest := preload("res://aircraft/model_manifest.gd")
 const Registry := preload("res://aircraft/model_registry.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const Home := preload("res://ui/home.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
+const UiDriver := preload("res://tests/ui_driver.gd")
 const CORSAIR := "f4u-corsair-250"
 const STIK := "jensen-das-ugly-stik-60"
 const ORDER := ["midnight", "three_tone", "scarlet", "splash", "spectrum", "blueangels", "thunderbirds", "chrome", "p40",
@@ -40,6 +42,7 @@ func _run() -> void:
 		_test_builds(manifest)
 		_test_preferences()
 		await _test_home()
+		await _test_paint_layout()
 	else:
 		print("note: the Corsair ships one paint (F4U-19); livery mechanics run on a synthetic manifest")
 		_test_one_paint_corsair(manifest)
@@ -263,6 +266,58 @@ func _test_home() -> void:
 	_check("a stale saved scheme shows the default paint", home.livery_id == "")
 	home.queue_free()
 	await process_frame
+
+
+func _test_paint_layout() -> void:
+	var ui := UiDriver.new(self)
+	var original_size := root.size
+	var original_scale: float = UiTheme.text_scale
+	var original_locale := TranslationServer.get_locale()
+	for language in ["en", "es"]:
+		TranslationServer.set_locale(language)
+		for viewport_size in [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160), Vector2i(1280, 720)]:
+			for scale in [1.0, 2.0]:
+				root.size = viewport_size
+				UiTheme.text_scale = scale
+				var home: Control = Home.new()
+				home.set_aircraft(CORSAIR)
+				root.add_child(home)
+				for frame in 6: await process_frame
+				home.open_aircraft_catalog()
+				for frame in 6: await process_frame
+				var label := "%s %s %.0f%%" % [language, viewport_size, scale * 100.0]
+				var scroll: ScrollContainer = home.get_node("HomeRail/HomeContentScroll")
+				var button: Button = home.livery_button
+				if scale == 1.0:
+					var paint_rect := button.get_global_rect()
+					_check("paint remains visible after revealing the Corsair: " + label,
+						button.is_visible_in_tree() and paint_rect.position.y >= 0.0
+						and paint_rect.end.y <= scroll.get_global_rect().position.y + 0.5
+						and scroll.size.y > 54.0, str(paint_rect))
+					_check("Aircraft navigation reaches paint by keyboard: " + label,
+						home._page_buttons[1].get_node(home._page_buttons[1].focus_neighbor_bottom) == button)
+				else:
+					home._page_buttons[1].grab_focus()
+					for frame in 3: await process_frame
+					await ui.tap(KEY_DOWN)
+					for frame in 3: await process_frame
+					_check("large-text keyboard navigation reaches paint: " + label, button.has_focus())
+					var paint_rect := button.get_global_rect()
+					var scroll_rect := scroll.get_global_rect()
+					_check("large-text paint remains reachable: " + label,
+						paint_rect.position.y >= scroll_rect.position.y - 0.5
+						and paint_rect.end.y <= scroll_rect.end.y + 0.5, "%s in %s" % [paint_rect, scroll_rect])
+				home._select_page(0)
+				_check("paint hides outside Aircraft: " + label, not button.is_visible_in_tree())
+				home._select_page(1)
+				home.set_aircraft(STIK)
+				_check("single-paint aircraft leaves no pinned paint row: " + label,
+					not home._livery_row.visible)
+				home.queue_free()
+				await process_frame
+	root.size = original_size
+	UiTheme.text_scale = original_scale
+	TranslationServer.set_locale(original_locale)
 
 
 func _has_code(result: Dictionary, code: String) -> bool:

@@ -813,6 +813,7 @@ func _reconstruction_unavailable_text(provider: String, reason: String) -> Strin
 		"fsr3_runtime_failure": return tr("FSR3 could not continue in this graphics session.")
 		"dlss_support_missing": return tr("DLSS support is not included in this game build.")
 		"dlss_unavailable": return tr("The current graphics session does not report DLSS support.")
+		"dlss_runtime_failure": return tr("DLSS could not continue in this graphics session.")
 		"fsr2_unavailable": return tr("The current graphics session does not offer FSR2.")
 	match provider:
 		"fsr2": return tr("The current graphics session does not offer FSR2.")

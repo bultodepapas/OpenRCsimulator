@@ -145,49 +145,57 @@ func _initialize() -> void:
 		reported.requested == "fsr2_quality" and reported.effective == "native"
 		and reported.provider == "native" and reported.fallback)
 
-	var failed_fsr3_config := Preferences.DEFAULTS.duplicate(true)
-	failed_fsr3_config.reconstruction = "fsr3_quality"
-	failed_fsr3_config.msaa_3d = 3
-	failed_fsr3_config.fsr2_sharpness = 0.4
-	var original_failed_fsr3_config := failed_fsr3_config.duplicate(true)
-	# Model an already active FSR3 policy without assigning an engine-specific mode to
-	# the stock test viewport. A false injected capability forces the rollback to native.
-	root.set_meta(Reconstruction.POLICY_META, {
-		"requested": "fsr3_quality", "requested_provider": "fsr3",
-		"effective": "fsr3_quality", "effective_provider": "fsr3", "provider": "fsr3",
-		"fallback": false,
-	})
-	root.set_meta(Reconstruction.CONFIG_META, failed_fsr3_config.duplicate(true))
-	root.scaling_3d_scale = 2.0 / 3.0
-	root.msaa_3d = Viewport.MSAA_DISABLED
-	var healthy_backend := {available = true, backend_failed = false}
-	var failure_caps := _caps(true, false, false)
-	_check("healthy FSR3 status does not change the active preference",
-		not Reconstruction.guard_runtime_failure(root, healthy_backend, failure_caps)
-		and is_equal_approx(root.scaling_3d_scale, 2.0 / 3.0)
-		and root.msaa_3d == Viewport.MSAA_DISABLED)
-	var backend_failure := {available = false, backend_failed = true, last_return_code = 9}
-	_check("FSR3 runtime failure rolls the owning viewport back to native AA and full resolution",
-		Reconstruction.guard_runtime_failure(root, backend_failure, failure_caps)
-		and root.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR
-		and root.scaling_3d_scale == 1.0 and root.msaa_3d == Viewport.MSAA_8X)
-	var failure_receipt := Reconstruction.describe(root)
-	_check("runtime rollback preserves the requested provider and records the native fallback",
-		failure_receipt.requested == "fsr3_quality" and failure_receipt.effective == "native"
-		and failure_receipt.requested_provider == "fsr3" and failure_receipt.provider == "native"
-		and failure_receipt.fallback and failure_receipt.fallback_reason == "fsr3_runtime_failure"
-		and failure_receipt.runtime_failure.reason == "backend_failed"
-		and failure_receipt.runtime_failure.backend.last_return_code == 9)
-	_check("runtime rollback does not alter the saved reconstruction preference",
-		failed_fsr3_config == original_failed_fsr3_config
-		and root.get_meta(Reconstruction.CONFIG_META) == original_failed_fsr3_config)
-	Reconstruction.apply(root, failed_fsr3_config, failure_caps)
-	var persisted_failure_receipt := Reconstruction.describe(root)
-	_check("runtime failure receipt survives later presentation settings reapplication",
-		persisted_failure_receipt.provider == "native"
-		and persisted_failure_receipt.runtime_failure.reason == "backend_failed")
-	_check("runtime rollback is idempotent after switching provider to native",
-		not Reconstruction.guard_runtime_failure(root, backend_failure, failure_caps))
+	for provider: String in ["fsr3", "dlss"]:
+		var failed_config := Preferences.DEFAULTS.duplicate(true)
+		failed_config.reconstruction = provider + "_quality"
+		failed_config.msaa_3d = 3
+		failed_config.fsr2_sharpness = 0.4
+		var original_failed_config := failed_config.duplicate(true)
+		# Model an active native policy without assigning a custom engine enum to
+		# the stock viewport. The injected backend result drives the failure branch.
+		root.set_meta(Reconstruction.POLICY_META, {
+			"requested": provider + "_quality", "requested_provider": provider,
+			"effective": provider + "_quality", "effective_provider": provider, "provider": provider,
+			"fallback": false,
+		})
+		root.set_meta(Reconstruction.CONFIG_META, failed_config.duplicate(true))
+		root.scaling_3d_scale = 2.0 / 3.0
+		root.msaa_3d = Viewport.MSAA_DISABLED
+		var healthy_backend := {available = true, backend_failed = false, dispatches = 12}
+		var failure_caps := _caps(true, false, false)
+		_check("healthy status keeps the active preference: " + provider,
+			not Reconstruction.guard_runtime_failure(root, healthy_backend, failure_caps)
+			and is_equal_approx(root.scaling_3d_scale, 2.0 / 3.0)
+			and root.msaa_3d == Viewport.MSAA_DISABLED)
+		var backend_failure := {available = false, backend_failed = true, last_return_code = 9, dispatches = 12}
+		_check("runtime failure restores native AA and full resolution: " + provider,
+			Reconstruction.guard_runtime_failure(root, backend_failure, failure_caps)
+			and root.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR
+			and root.scaling_3d_scale == 1.0 and root.msaa_3d == Viewport.MSAA_8X)
+		var failure_receipt := Reconstruction.describe(root)
+		_check("runtime rollback preserves request and backend evidence: " + provider,
+			failure_receipt.requested == provider + "_quality" and failure_receipt.effective == "native"
+			and failure_receipt.requested_provider == provider and failure_receipt.provider == "native"
+			and failure_receipt.fallback and failure_receipt.fallback_reason == provider + "_runtime_failure"
+			and failure_receipt.runtime_failure.provider == provider
+			and failure_receipt.runtime_failure.reason == "backend_failed"
+			and failure_receipt.runtime_failure.backend.last_return_code == 9
+			and failure_receipt.runtime_failure.backend.dispatches == 12)
+		_check("runtime rollback never rewrites saved preferences: " + provider,
+			failed_config == original_failed_config
+			and root.get_meta(Reconstruction.CONFIG_META) == original_failed_config)
+		Reconstruction.apply(root, failed_config, failure_caps)
+		var persisted_failure_receipt := Reconstruction.describe(root)
+		_check("failure receipt survives presentation reapplication: " + provider,
+			persisted_failure_receipt.provider == "native"
+			and persisted_failure_receipt.runtime_failure.provider == provider
+			and persisted_failure_receipt.runtime_failure.reason == "backend_failed")
+		_check("runtime rollback is idempotent: " + provider,
+			not Reconstruction.guard_runtime_failure(root, backend_failure, failure_caps))
+		var different_config := Preferences.DEFAULTS.duplicate(true)
+		Reconstruction.apply(root, different_config, failure_caps)
+		_check("choosing another provider clears stale failure evidence: " + provider,
+			not root.has_meta(Reconstruction.RUNTIME_FAILURE_META))
 	if had_profile:
 		OS.set_environment("OPENRC_GRAPHICS_PROFILE", previous_profile)
 	else:

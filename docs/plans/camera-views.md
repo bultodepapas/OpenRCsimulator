@@ -378,6 +378,8 @@ Gaps: no surveyed sim publishes pixel-size targets, zoom hysteresis or transmitt
 
 CAM-02 correctness follow-up (2026-10-23): [explicit pilot-camera singularities](../research/camera-views/CAM-02-poles-2026-10-23/README.md) remove vertical-target warnings and coincident-target errors. Ordinary framing and FOV are retained; pole roll now follows the preceding screen-right axis. Focused checks and native 1080p stills support this narrow correction, not full overflight comfort or CAM-22 acceptance.
 
+CAM-02 / UI-34c first-view follow-up (2026-10-25): cameras enter at the pilot eye and valid staged launches place their tick-zero render pose before reporting completion. [Runway investigation](../research/menu-investigations/UI-34c-R5/menu-preparation-2026-10-25/README.md#first-view-investigation-runway-start) retains state-parity checks and native first-draw observations. The initialization defect is corrected; the user's visible inside-aircraft flash was not reproduced and remains an unconfirmed symptom.
+
 1. **The pilot view is quietly weakened.** Mitigation: CAM-02 pixel identity; any law change waits for CAM-22.
 2. **Chase views teach the wrong skill.** RC flying is control-reversal from the ground; a chase hides it. Mitigation: label views as aids; pilot view default; Gate 2 is judged in the pilot view only.
 3. **Jitter from mixing tick and frame poses.** Mitigation: one pose source (§3.2) and the jitter metric.

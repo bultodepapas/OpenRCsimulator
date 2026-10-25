@@ -7,6 +7,11 @@ var _app: Node
 var _settings_path := "" # Only a sidecar successfully created by this run.
 var _finishing := false
 var _last_shutdown: Dictionary = {}
+var _observe_camera := false
+var _camera_frames: Array[Dictionary] = []
+var _camera_uncovered_frames := 0
+var _camera_capture_prefix := ""
+var _camera_capture_pending := false
 
 
 func _initialize() -> void:
@@ -16,15 +21,20 @@ func _initialize() -> void:
 func _run() -> void:
 	var output := ""
 	var aircraft := "jensen-das-ugly-stik-60"
+	var start_choice := "airborne"
 	var cycles := 3
 	var dwell_msec := 0
 	var prefetch_mode := "off"
 	var prefetch_delay_msec := 350
 	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--output="):
+		if arg == "--observe-camera":
+			_observe_camera = true
+		elif arg.begins_with("--output="):
 			output = arg.trim_prefix("--output=")
 		elif arg.begins_with("--aircraft="):
 			aircraft = arg.trim_prefix("--aircraft=")
+		elif arg.begins_with("--start="):
+			start_choice = arg.trim_prefix("--start=")
 		elif arg.begins_with("--cycles=") and arg.trim_prefix("--cycles=").is_valid_int():
 			cycles = int(arg.trim_prefix("--cycles="))
 		elif arg.begins_with("--dwell-ms=") and arg.trim_prefix("--dwell-ms=").is_valid_int():
@@ -36,8 +46,8 @@ func _run() -> void:
 		else:
 			_fail("Unknown or invalid option: " + arg)
 			return
-	if output.is_empty() or FileAccess.file_exists(output) or cycles < 1 or cycles > 50:
-		_fail("Provide a new --output file and --cycles in 1..50")
+	if output.is_empty() or FileAccess.file_exists(output) or cycles < 1 or cycles > 50 or start_choice not in ["airborne", "runway"]:
+		_fail("Provide a new --output file, --cycles in 1..50 and --start=airborne|runway")
 		return
 	if dwell_msec < 0 or dwell_msec > 30000 or prefetch_delay_msec < 0 or prefetch_delay_msec > 10000 \
 			or prefetch_mode not in ["off", "scene", "trim", "scene_trim"]:
@@ -59,7 +69,7 @@ func _run() -> void:
 	prefs.aircraft = aircraft
 	prefs.language = "en"
 	prefs.first_flight_hint_seen = true
-	prefs.start_choice = "airborne"
+	prefs.start_choice = start_choice
 	if preferences_script.save_to(prefs_path, prefs) != OK:
 		_fail("Cannot write isolated probe settings")
 		return
@@ -97,6 +107,12 @@ func _run() -> void:
 			_fail("Home Fly is disabled")
 			return
 		var begin := Time.get_ticks_usec()
+		if _observe_camera:
+			_camera_frames.clear()
+			_camera_uncovered_frames = 0
+			_camera_capture_prefix = output + ".cycle-%d" % (index + 1)
+			RenderingServer.frame_pre_draw.connect(_observe_camera_frame)
+			RenderingServer.frame_post_draw.connect(_capture_camera_frame)
 		fly.pressed.emit()
 		var dispatched := Time.get_ticks_usec()
 		# Home renders its acknowledgement before emitting fly_requested (UI-34c).
@@ -141,6 +157,13 @@ func _run() -> void:
 				sample["loading_first_draw_usec"] = app.last_flight_loading.accepted_usec + app.last_flight_loading.feedback_usec - begin
 		if not sim.paused:
 			sample["active_at_first_draw_usec"] = drawn - begin
+		if _observe_camera:
+			for _frame in 12:
+				await process_frame
+				await RenderingServer.frame_post_draw
+			RenderingServer.frame_pre_draw.disconnect(_observe_camera_frame)
+			RenderingServer.frame_post_draw.disconnect(_capture_camera_frame)
+			sample["camera_handoff"] = _camera_frames.duplicate(true)
 		await process_frame
 		var return_begin := Time.get_ticks_usec()
 		app.call("end_flight")
@@ -159,6 +182,7 @@ func _run() -> void:
 		samples.append(sample)
 	var report := {
 		"format": "openrc-loading-probe v1", "complete": true, "aircraft_id": aircraft,
+		"start_choice": start_choice, "camera_observation_enabled": _observe_camera,
 		"engine": Engine.get_version_info(), "adapter": RenderingServer.get_video_adapter_name(),
 		"renderer": RenderingServer.get_current_rendering_method(), "display_server": DisplayServer.get_name(),
 		"viewport_size": [root.size.x, root.size.y], "max_fps": Engine.max_fps,
@@ -201,6 +225,45 @@ func _wait_at_home(duration_msec: int) -> Dictionary:
 		previous = now
 	return {requested_msec = duration_msec, elapsed_usec = Time.get_ticks_usec() - begin,
 		frames_usec = frames, memory_after_bytes = int(Performance.get_monitor(Performance.MEMORY_STATIC))}
+
+
+## Optional first-reveal diagnostics; per-draw observations, not timing acceptance samples.
+func _observe_camera_frame() -> void:
+	if not is_instance_valid(_app) or not is_instance_valid(_app.flight) or _camera_frames.size() >= 2000:
+		return
+	var flight: Node = _app.flight
+	var camera: Camera3D = flight.get("_camera")
+	if not is_instance_valid(camera) or not camera.is_inside_tree():
+		return
+	var loading: Node = _app.get("_loading_screen")
+	var covered: bool = is_instance_valid(loading) and loading.is_inside_tree() and loading.visible \
+		and loading.surface.is_visible_in_tree() and loading.backdrop.is_visible_in_tree() and loading.surface.modulate.a >= 1.0 \
+		and loading.backdrop.color.a >= 1.0
+	var position := camera.global_position
+	var forward := -camera.global_basis.z
+	var airplane: Dictionary = flight.get("_airplane")
+	var aircraft_position: Vector3 = airplane.root.global_position
+	var rig: RefCounted = flight.get("_rig")
+	_camera_frames.append({frame = Engine.get_process_frames(), usec = Time.get_ticks_usec(),
+		covered = covered, loading_active = _app._loading_active, phase = _app._loading_phase,
+		camera_position = [position.x, position.y, position.z], camera_current = camera.is_current(),
+		camera_forward = [forward.x, forward.y, forward.z], camera_fov = camera.fov,
+		aircraft_position = [aircraft_position.x, aircraft_position.y, aircraft_position.z],
+		camera_placed = rig != null and rig.get("_placed"), view = rig.get("view") if rig != null else "",
+		has_render_pose = not flight.get("_last_render_pose").is_empty(),
+		startup_complete = flight.get("startup_complete")})
+	if not covered:
+		_camera_uncovered_frames += 1
+		_camera_capture_pending = _camera_uncovered_frames in [1, 10]
+
+
+func _capture_camera_frame() -> void:
+	if not _camera_capture_pending:
+		return
+	_camera_capture_pending = false
+	var path := _camera_capture_prefix + ".camera-%d.png" % _camera_uncovered_frames
+	if not FileAccess.file_exists(path):
+		root.get_texture().get_image().save_png(path)
 
 
 func _preparation_snapshot(app: Node) -> Dictionary:
@@ -247,6 +310,10 @@ func _wait_for_flight(app: Node, home: Node, max_frames: int = 7200) -> Dictiona
 
 ## Outside every timing interval. Weak references observe mixer ownership without extending it.
 func _cleanup() -> Dictionary:
+	if RenderingServer.frame_pre_draw.is_connected(_observe_camera_frame):
+		RenderingServer.frame_pre_draw.disconnect(_observe_camera_frame)
+	if RenderingServer.frame_post_draw.is_connected(_capture_camera_frame):
+		RenderingServer.frame_post_draw.disconnect(_capture_camera_frame)
 	if not _last_shutdown.is_empty():
 		return _last_shutdown
 	var playbacks: Array[WeakRef] = []
