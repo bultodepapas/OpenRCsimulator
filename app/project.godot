@@ -55,6 +55,9 @@ streamline/dlss_preset="K"
 ; Compatibility renderer: the only one Godot can export to the web, and the closest match to WebGL 2.
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+; GDU-11h: Forward+ reads this before scripts run. Compatibility/Mobile ignore it.
+; Product High uses Forward+; bare technical Forward+ launches also inherit this option.
+lights_and_shadows/multi_bounce_occlusion/enabled=true
 anti_aliasing/quality/msaa_3d=2
 ; LU-25: one lake probe. The default 64-slot atlas reserves ~256 MiB on Compatibility.
 reflections/reflection_atlas/reflection_count=2

@@ -1,0 +1,364 @@
+# Flight statistics: implementation plan
+
+Status: proposed, no runtime implementation in this change. Audit date: **2026-10-25**. Baseline: `8a44f86dfd01229eeb0e291e2a1ce4fa89b21f8c`, plus the current working tree. Existing unrelated render, crash-economics, tests and research edits were left intact. Source symbols below were checked in the working tree; the knowledge graph returned stale line ranges and omitted newer economics code, so current source was used to verify the audit.
+
+Owner: menus/product shell, with physics/session, crash/contact, Workshop and HUD owners at their existing boundaries. Use **UI-FS-00…08** as menu-subtrack steps; register this subtrack and its paths in the [ownership registry](README.md#tracks-plans-and-step-ids) in UI-FS-00 before runtime implementation. This document owns the proposed behavior and acceptance gates. All steps are pending.
+
+## 1. Repository audit
+
+| Area | Existing / partial / missing | Verified evidence and consequence |
+| --- | --- | --- |
+| Simulation clock and observation | **Existing** | [simulation.gd](../app/sim/simulation.gd), `step`, `stepped`, `faulted`, `dt`, checkpoints: fixed 240 Hz accepted ticks and detached float64 state. Observe accepted ticks; never accumulate rendered frame time or put statistics inside force evaluation. |
+| Session contact boundary | **Existing, partial for landing detection** | [flight_session.gd](../app/sim/flight_session.gd), `_on_sim_stepped`, `contact_events_changed`, `contact_events`, `gear_compressions`, `current_landing_gear`, `contact_contract`; [aircraft_contact_events.gd](../app/sim/aircraft_contact_events.gd) has tick, event ID, lifecycle and terminal/nonterminal responses. `_on_sim_stepped` commits contacts before external observers. Normal wheel support is not a landing event; `touches_ground` tests crash-hull contact, not a successful touchdown. |
+| Crash and damage | **Existing, partial for clean-flight classification** | Session `_crash` pauses and records typed impact evidence. [incident.gd](../app/economy/incident.gd), `observe`, deduplicates new contacts and archives only the last accident to `user://last_accident.json`. Unresolved inspection is not confirmed structural damage; `has_damage()` means an assessment revision exists. [settlement.gd](../app/economy/settlement.gd) detects two seconds of grounded, nearly stationary accepted samples for a damaged-flight report, explicitly not physical landing validation. Reuse observation conventions, not repair cost or VFX severity as a landing score. |
+| Flight lifecycle | **Existing, partial** | [app_root.gd](../app/app_root.gd), `_commit_restart_flight`, `_commit_end_flight`, `change_aircraft`, `_commit_app_quit`, centralizes shell transitions and trace recovery. [main.gd](../app/main.gd) forwards restart requests and owns accident presentation. Session `resetting` is emitted before some reset failures; it is not proof that a restart succeeded. `reload()` can reset or roll back. Add an explicit committed lifecycle receipt. |
+| Flight recording and recovery | **Existing, separate purpose** | [flight_log.gd](../app/sim/flight_log.gd) records opt-in bounded `.orfl` evidence, connects accepted ticks, stops on reset, and has solver/source identity. [FLIGHT-LOGGING](FLIGHT-LOGGING.md) distinguishes exact replay from recovered prefixes/candidates. Statistics must work without recording and must never credit replay to the player. Do not use `.orfl` as the mandatory player database. |
+| Current flight numbers | **Partial** | [telemetry.gd](../app/render/overlays/telemetry.gd), `compute`, gives TAS, horizontal groundspeed, AGL and simulation time. Its one-metre airborne warning threshold is a display heuristic. [flight_data.gd](../app/render/overlays/flight_data.gd) labels simulation time “Flight time”; it includes ground time. [flight_metrics.gd](../app/render/overlays/flight_metrics.gd) keeps bounded transient distance/load/height aggregates, resets on time rewind, and retains no history. Neither is the proposed airborne-time ledger. |
+| HUD and training summary | **Existing, partial** | [overlay_manager.gd](../app/render/overlays/overlay_manager.gd), [overlay_settings.gd](../app/render/overlays/overlay_settings.gd), [training_instrument.gd](../app/render/overlays/training_instrument.gd), [player_instrument.gd](../app/render/overlays/player_instrument.gd): optional `flight_summary`, draggable/lockable instruments, units, sizes, opacity, presets and bounded refresh. Add a `session_stats` instrument; hidden HUDs must not suspend recording statistics. |
+| Menus and visual language | **Existing** | [home.gd](../app/ui/home.gd), [pause_menu.gd](../app/ui/pause_menu.gd), [screen.gd](../app/ui/screen.gd), [screen_stack.gd](../app/ui/screen_stack.gd), [ui_theme.gd](../app/ui/ui_theme.gd), [ui_scale.gd](../app/ui/ui_scale.gd): Home flight/aircraft/practice sections, Pause groups, named holds, focus return, EN/ES, scale/opacity/reduced motion. Shell uses dark neutral cards, light text and green focus accents; HUD has its existing instrument styling. Reuse both, without a second UI framework. |
+| Saved preferences | **Existing** | [preferences.gd](../app/app_state/preferences.gd): versioned `user://settings.cfg`, validated values, additive HUD section, future-schema write protection and corrupt-file preservation. Direct technical routes bypass player preferences. Keep only display choices here, not flight history. |
+| Aircraft identity | **Existing** | [aircraft_catalog.gd](../app/app_state/aircraft_catalog.gd): stable IDs separate from display names, filenames and visual families. [workshop/store.gd](../app/workshop/store.gd) has persistent variant UUIDs, generations and validated manifests; [descriptor.gd](../app/workshop/descriptor.gd) binds base IDs/hashes. Preserve variant identity across rename; a source hash identifies a revision, not a new aircraft. |
+| Durable write patterns | **Existing, not a general statistics store** | Workshop store validates temporary data, rotates a backup and commits manifests; [test_workshop_store_interruptions.gd](../app/tests/test_workshop_store_interruptions.gd) tests interruption points. Economics uses temporary-file rename and [checkpoint.gd](../app/economy/checkpoint.gd) validates hashes, bounds and paired physics ticks. Reuse these patterns and test seams; extend reliability for a multi-record ledger rather than coupling statistics to Workshop storage or last-accident files. |
+| Account and cumulative statistics | **Missing** | No authentication, account identifier, cloud statistics, durable sortie ledger or session/aircraft/account rollups were found in the audited shell, `app_state`, economics, Workshop and project configuration. “Account” therefore means the local pilot on this installation for this release; no login/backend dependency is justified. |
+| Verification tools | **Existing, statistics tests missing** | [tool index](tools/README.md), [debug bridge](../tools/debug/README.md), contact/session tests, [test_ui_pause.gd](../app/tests/test_ui_pause.gd), overlay tests, flight-log tests and Workshop interruption tests provide the integration harness. New deterministic detector/reducer/store fixtures are needed. No runtime tests or rendered pilot acceptance were performed for this documentation-only audit. |
+
+### Specialist synthesis and inspiration
+
+Three parallel Luna Max reviews covered simulator/game research, beginner needs and experienced-pilot training value. The pilot perspectives are design reviews, not interviews, credentials or real-world validation. Consolidated priorities: trustworthy counts first; understandable practice feedback second; optional personal recognition last.
+
+| Official source, checked 2026-10-25 | Supported inspiration | Decision for OpenRC |
+| --- | --- | --- |
+| [RealFlight Evolution](https://store.steampowered.com/app/2069310/RealFlight_Evolution/) | Virtual Flight Instructor and game-like skill challenges | Offer optional practice goals beside practice tools. The listing does not establish educational efficacy or a landing formula. |
+| [X-Plane 12 manual, logbook](https://x-plane.com/manuals/desktop/12/) | Per-flight aircraft, date, duration, landings and cumulative time | Adopt a small durable logbook and aircraft rollups. Omit full-scale IFR, cross-country and airport fields with no RC purpose. |
+| [Microsoft Flight Simulator 2024 accessibility/features](https://www.flightsimulator.com/accessibility-msfs-2024/) | Precision-landing challenges and separate assistance contexts; also timed and low-altitude events | Borrow optional accuracy/control practice and contextual comparisons. Do not borrow speed/proximity incentives or public rankings. |
+| [DCS 2020 manual, Logbook](https://www.digitalcombatsimulator.com/upload/iblock/ed6/87v22jwd1xh51i3rgki944xsf503istq/DCS_User_Manual_EN_2020.pdf) | Pilot profiles, mission statistics and awards | Personal history can support modest milestones. This dated manual is inspiration, not a claim about today's DCS behavior. |
+
+Tradeoffs resolved: airborne-start practice earns time and valid landing events, but never a takeoff credit; otherwise the available airborne-only landscapes would hide useful beginner practice. Touch-and-goes count as landing events within one flight, not as extra completed flights. Damage-free means **no observed disqualifying incident under the recorded model/rules**, not proof of an undamaged physical aircraft. Unknown evidence earns neither success nor failure. Experienced-pilot recommendations for approach-speed/sink grading remain optional until aircraft-specific references are validated; arbitrary full-scale tolerances will not gate the essential statistics.
+
+## 2. Prioritized requirements
+
+P0 is the essential release; P1 is optional and cannot delay or weaken P0 correctness. Requirement IDs below map every mandatory behavior to steps and measurable criteria in §11.
+
+| ID | Priority and requirement | Implementation | Verification |
+| --- | --- | --- | --- |
+| R1 | P0: session and lifetime views, each for one aircraft or all aircraft; persistent local pilot identity; explicit eligibility, period and switching semantics | UI-FS-00, 01, 03 | A1, A4 |
+| R2 | P0: all metrics in §3, units, zero-denominator states, partial coverage and arithmetic invariants | UI-FS-01, 03 | A2, A3 |
+| R3 | P0: aircraft-aware accepted-tick takeoff/contact/landing/completion detector; bouncing, crash and restart deduplication | UI-FS-00, 02, 04 | A2, A5 |
+| R4 | P0: committed lifecycle receipts, pause exclusion, reload rollback, switching, interrupted-flight handling and replay isolation | UI-FS-02, 04 | A1, A5, A6 |
+| R5 | P0: valid TAS and groundspeed maxima, outlier rejection and source/configuration identity | UI-FS-01, 02 | A3, A5 |
+| R6 | P0: bounded, versioned durable event/history store, safe commits, recovery, unknown-schema protection and validated migrations | UI-FS-03, 04 | A6, A7, A10 |
+| R7 | P0: independent session/aircraft/account counter resets; separate scoped history deletion and consistent aggregates | UI-FS-03, 06 | A4, A7 |
+| R8 | P0: Statistics screen, Home/aircraft summaries, paged detailed history, explanatory empty/error states | UI-FS-05 | A8, A10 |
+| R9 | P0: compact configurable session crashes/restarts/successful-landings widget, persistent layout/visibility; counting independent of widgets | UI-FS-05 | A8, A9 |
+| R10 | P0: existing screen stack, EN/ES, keyboard/controller focus, readable 1080p, then higher resolutions, then 720p fallback | UI-FS-05, 06, 08 | A8, A9 |
+| R11 | P1: opt-in practice goals, contextual personal bests and consistency milestones; no crash avoidance through erasure or risky incentives | UI-FS-07 | A11 |
+| R12 | P0: noninterference with physics, bounded storage/runtime work and reproducible evidence; no claim of physical training validation | UI-FS-08 | A5, A10, A12 |
+
+Scope assumptions: first release supports interactive fixed-wing catalog aircraft and saved, validated fixed-wing Workshop variants. Unsaved Workshop trials, automation, debug-driven flights, manual checkpoint experiments, `.orfl` replay, AI companions and headless/capture routes use an in-memory sandbox and never the player's store. Natural Random and failure-practice flights are included, with visible scenario/failure tags; failures are not silently removed from totals. Helicopter and ground activities show “Flight statistics not available for this activity”; their existing separate sessions require later capability adapters and acceptance gates, without fixed-wing branches in the shared kernel. “All aircraft” initially means all supported recorded aircraft, clearly labelled.
+
+## 3. Metric dictionary
+
+### Scope, period and membership
+
+- **Pilot total** is the account-wide view of a generated persistent `local_pilot_id` under the existing `user://` installation. There is no online account or sync. Future account linking must preserve this ID as an origin and deduplicate records; it is outside this plan.
+- **Statistics session** starts at the first eligible flight activity after a clean app launch or explicit “New session.” It spans sorties, crashes, restarts, End flight → Home, aircraft and landscape switches. Home time does not accrue. Clean Quit closes it. After an unexpected process exit, restore its ID, counters and interrupted record; offer Continue session (default) or New session. Date/midnight changes do not reset it. A menu pause is not a session boundary.
+- **Aircraft scope** uses `stock:<catalog-id>` or `variant:<store-uuid>`, with `base_aircraft_id` retained for optional grouping. Different stock propulsion IDs remain distinct even if they share a visual family. Liveries and renamed variants keep identity. Deleted/removed aircraft keep their historical name snapshot and ID; never remap them to the default aircraft.
+- Required periods: **This session**, **Lifetime history** (all retained observations since tracking began), **Since counter reset** (explicit reset epoch for the selected scope). The default screen opens This session / All aircraft. Lifetime is not a synonym for resettable counters. A session can also be selected from history. Date ranges/recent-30-day comparisons are P1, not needed for P0.
+- Attribute a flight to the aircraft, session, configuration and counter epochs captured when it starts. A committed restart action belongs to the aircraft being restarted; it cannot migrate to the next selection. A ground-only crash/restart belongs to its activity even if no flight started. Switching ends any open flight first (abandoned unless already completed/crashed); the next aircraft starts a new activity in the same statistics session.
+- All P0 query periods are bounded at activity/flight boundaries. Reset actions are available only on Home with no active activity or unresolved transition; from Pause explain “End this flight to start new counters.” This avoids fractional flights and mismatched duration denominators. Lifetime and session detail retain the old records.
+
+Let `Q` be records matching the selected pilot, aircraft set, period/epoch and eligibility. Include an active flight's observed time and starts, but not its duration in a final-outcome average. Display “1 flight in progress” separately. Internally store float64 seconds and m/s; integer counts. Format time as `12 h 07 min` (under one minute: `<1 min`), details `h:mm:ss`; never round each flight before summing. Convert speeds using existing [units.gd](../app/render/overlays/units.gd); choose km/h or mph through the current unit preference. Use `—` plus an explanation for unknowns or empty denominators, not zero percent.
+
+| Metric | Definition / formula for Q | Display and exclusions |
+| --- | --- | --- |
+| M1 Airborne time | Sum accepted unsupported intervals belonging to qualified flights, including active, crashed and abandoned flights. `T = Σ airborne_seconds`. Confirmation backfills only observed takeoff-candidate intervals. | Hours/minutes, detail seconds. Excludes ground support, pause/holds, crash presentation, preparation and unobserved gaps. Bounce airborne intervals within an existing flight count as time but not new flights. |
+| M2 Flights started | One `flight_started` on confirmed takeoff or validated airborne-start activation; unique `flight_id`. | Integer; Fly clicks, runway placement, taxi and rejected launches are not flights. Store `start_kind=takeoff/air_start`; expose takeoff count in details. |
+| M3 Flights completed | One clean, controlled full-stop completion per started flight under §4. | Integer, not every End-flight click or every touchdown. Crash, restart while flying, abandonment, damaged stop and interruption are other outcomes. |
+| M4 Average flight duration | `Σ airborne_seconds of closed, fully observed started flights / number of those flights`. Include completed, crashed, restarted, abandoned and damaged-stop outcomes. | Minutes/seconds; show denominator and excluded partial/interrupted count. Active and incomplete observations excluded. Optional detail “Average completed flight” uses only M3 flights and their time. Never divide all time by completed flights. |
+| M5 Successful landings | Number of resolved controlled, incident-free contact episodes: `L = full_stop_landings + touch_and_go_landings`. | Integer with split disclosed. “Successful landings” widget includes both. A later en-route crash does not erase an earlier valid touch-and-go. |
+| M6 Touch-and-go | One successful landing episode followed by confirmed re-ascent before full-stop completion, meeting §4's support/airborne gates. | Subset of M5, not an extra M2 or M3. Stop-and-go after full-stop completion starts a new flight. |
+| M7 Total crashes | Unique committed terminal crash incident per activity generation, including pre-takeoff taxi incidents. | Integer; flight and ground breakdown. A propeller strike/nonterminal impact is a separate disqualifying incident, not automatically a terminal crash. A process crash is an interruption, never M7. |
+| M8 Restarts | Unique **successful reinitializations** of an existing eligible activity: keyboard/controller/menu/accident Restart, automatic recovery, or accepted F5 data reload. | Integer with cause breakdown. Initial setup, failed/cancelled reset, checkpoint inspection and state-preserving code reload excluded. Crash + Restart = one of each, not two crashes. |
+| M9 Maximum valid speed | Largest qualified airborne TAS sample after §4 filtering. Also retain independent maximum horizontal groundspeed. | Primary label “Max valid airspeed (TAS)”; secondary groundspeed. Store tick, flight, source and rules identity. No speed badge. Unknown if no qualifying sample. Account maximum is `max`, never sum; do not average aircraft maxima. |
+| M10 Landing success rate | `100 × L / (L + F)`, where F is resolved unsuccessful **surface-contact episodes of an already started flight**. | Show “6 / 8 resolved touchdowns · 75%”. A bounce sequence is one episode. En-route obstacle crash without surface touchdown, ground-only crash, go-around without contact, active/pending and unknown episodes are not denominator events. Not a whole-flight safety percentage. |
+| M11 Crash-free completed-flight streak | Current and best count of consecutive clean completed flights in event order. Increment once on M3; terminal crash anywhere resets current, including ground crashes. Restart/abandon/damaged stop after M2 or interruption breaks continuity with its reason, preventing restart-to-hide-failure. | “Completed flights in a row: 3 · best 5”. Touch-and-go does not increment; restart on ground before a flight neither increments nor breaks. Pauses, Home and aircraft switching between completed flights preserve account continuity. Per-aircraft streak ignores other aircraft; session starts its own sequence. |
+| M12 Crash-free airborne-time streak | Sum M1 since the last streak-breaking event, current and best. Completion preserves it; same breaks as M11. | Time, never a countdown or pressure to keep flying. Best retained after a break. Unknown gaps break continuity, without pretending a crash occurred. |
+
+Additional required bookkeeping (expandable): full-stop landings, failed and unknown contact episodes, takeoffs, active/partial flights, end-reason counts, disqualifying incidents and data coverage. Show `completed / closed started flights` beside landing rate as “Flights brought to a clean stop,” so an apparently perfect touchdown rate cannot hide en-route crashes. For complete records, `started = active + completed + crashed + restarted + abandoned + damaged_stop + interrupted`; terminal outcomes are mutually exclusive. Ground-only crashes do not enter that equation. `successful landings = full stops + touch-and-goes`, and P0 `full stops = completed flights`.
+
+Account additive totals equal the sum of disjoint aircraft totals **with identical period/epoch predicates**. Ratios are recomputed from summed numerators/denominators, averages from sums/counts; streaks are replayed in account event order, not summed. Independent aircraft counter resets mean “Since reset” views have different predicates; never present their sum as the account's independently reset counter. Lifetime history remains the reconciliation view.
+
+## 4. Flight-event rules
+
+### Observation boundary and aircraft profile
+
+Implement a pure float64 `FlightStatisticsDetector` outside `app/sim/` and `app/physics/`, fed by a fixed-wing adapter after `FlightSession._on_sim_stepped` commits. Use the existing `sim.stepped` observer order, checked by a regression, and also ingest committed terminal contacts raised outside an advancing tick. Merge both by `(activity_generation, tick, event_id)`; a repeated contact notification can add a previously unseen incident but can never add time twice. Never sample interpolated render transforms, VFX fragments, sound events or input-button presses as outcome evidence.
+
+Proposed `app/statistics/fixed_wing_adapter.gd` exposes detached state: tick/dt, support masks and geometry clearance, normal/vertical/horizontal velocity, body rates/attitude, terrain/surface identity, crash/prop/contact evidence, aircraft/config/source identity, accepted wind/TAS and holds/fault flags. It must not depend on economics price availability. Reuse `gear_compressions`, admitted `current_landing_gear`, contact bindings, scalar math and the environment's surface queries. Do not invoke force solvers again. Normal support must be on a land surface admitted by the current contact model; lake impact is not a landing surface for these aircraft.
+
+Create a versioned **statistics classification profile**, not new physics parameters, resolved from the accepted aircraft/configuration. Initial default rules below are explicit engineering assumptions, to be tested across the fleet in UI-FS-02; they are not RC physical limits:
+
+| Parameter | Initial policy |
+| --- | --- |
+| Supported | At least one intended main landing support has compression `> 1e-5 m`; resolve support roles from accepted bindings. Full-stop support needs the normal stable support set for that geometry, not “all wheels simultaneously” (taildragger touchdown differs from tricycle). Missing role mapping disables landing credit with a reason. |
+| Liftoff clearance | Every intended support clear, no hull contact, CG above the aircraft's upright resting CG height by `max(0.25 m, 0.1 × span_m)`, for 1.0 s of accepted ticks. Positive height gain across this window; no minimum groundspeed. Air-start activation needs the same clear geometry and 1.0 s valid ticks but not positive climb. |
+| Landing control envelope | Main support contact; roll within ±15° of the surface-normal frame, pitch within ±20° of the aircraft's upright resting pitch; angular-rate norm ≤1 rad/s; admitted gear deployed (retractable extension ≥0.95), no gear travel exceedance. Check every supported sample in the qualifying window. These are classifier defaults, overridable per reviewed geometry/profile, not a flight quality grade. |
+| Stable support | ≥0.5 s continuous controlled, intended ground support. Unsupported bounce resets this support timer, not the contact episode. |
+| Full stop | Following stable support, 2.0 s continuously supported with 3D ground-relative CG speed ≤0.5 m/s and angular-rate norm ≤0.10 rad/s, within the control envelope. No engine-off requirement: glow/turbine aircraft may idle. |
+| Rearm contact episodes | After departure, ≥2.0 s continuously unsupported above liftoff clearance. Before that, any contact rejoins the same episode. |
+| Clean evidence | No terminal crash, prop strike, gear-limit event or unintended hull/scenery/water contact since flight start. Unknown contact provenance or discontinuous history means `unknown`, never clean. Ordinary intended wheel support is allowed. Retain incident evidence even if the plane continues flying. |
+
+Span, geometry and support roles come from validated data/contact bindings; never assume a fixed one-metre CG altitude works for every aircraft. Store the profile version and resolved thresholds with the flight. Missing required geometry is “landing classification unavailable”; time/crash/restart can still work. Air-start practice has no takeoff milestone. Skids, floats, belly-landing aircraft and rotorcraft require distinct accepted profiles before earning landing credits. Approach reference speed, sink rate, crosswind, runway alignment and touchdown position are recorded where available; P0 does not grade them or infer that every rough-field landing should align with a runway.
+
+### State machine
+
+`IDLE → GROUND_READY → TAKEOFF_PENDING → AIRBORNE → CONTACT_PENDING → {AIRBORNE, GROUND_READY, TERMINAL}`. An accepted airborne spawn enters `TAKEOFF_PENDING` with `air_start`. `TERMINAL` is latched until a committed new activity generation. Each sortie within a generation gets a fresh flight ID; a flight may contain many contact episodes.
+
+| From / trigger | Required action and next state |
+| --- | --- |
+| IDLE / accepted launch | Capture identity, rules and epoch IDs; create activity, no flight count. Ground spawn → GROUND_READY. Rejected loading/setup leaves no activity contribution. |
+| GROUND_READY / unsupported | Begin TAKEOFF_PENDING and bounded timer/time accumulator. On confirmed liftoff, emit one start, backfill observed unsupported time, enter AIRBORNE. Recontact before confirmation discards the tentative start/time; no takeoff or landing. |
+| AIRBORNE / first land-surface contact | Begin CONTACT_PENDING episode, freeze first-contact tick and measurements. Intended support, hull or terminal ground contact all open one episode, so a belly crash is a failed touchdown rather than an invisible attempt. Mere low pass does not. |
+| CONTACT_PENDING / bouncing | Keep one episode across brief loss/recontact. Count actual unsupported time only; no landing award yet. Reset stable-support timer on every loss or control-envelope violation. First-contact measurements remain; later contacts can only add evidence. |
+| CONTACT_PENDING / full stop | If clean and controlled, atomically emit successful full-stop landing + flight completion; close flight and return GROUND_READY. No extra credit when End flight is subsequently pressed. If incident evidence disqualifies it, emit failed episode + `damaged_stop` outcome. Unknown provenance emits unknown episode + interrupted/partial outcome. |
+| CONTACT_PENDING / re-ascent | Require stable support was achieved and the 2 s rearm clearance window. If clean, resolve one successful landing of type touch-and-go and return AIRBORNE with the same flight ID. No arbitrary maximum ground-roll timer: a long rolling touch-and-go is still valid if it never meets full-stop criteria. If support/control failed, resolve one failed episode (rejected landing/bounce departure), no touch-and-go. Unknown evidence resolves unknown. |
+| Any active state / accepted terminal crash | Emit exactly one crash per generation, latch terminal. If a contact episode is open, resolve it failed; if the first crash is a land-surface impact from AIRBORNE, create/resolve that single episode. An obstacle strike aloft is not a touchdown denominator. Close an open flight as crashed; after a previously completed flight, preserve that completion and record a ground-only incident. |
+| Open episode / restart, End, switch or quit | Do not award a pending landing. Close episode unknown with reason `ended_before_resolution`; close started flight restarted or abandoned. Its observed time remains. Already resolved successful episodes remain valid. |
+| Any / fault or unexplained tick/identity jump | Freeze accumulation; mark continuity unknown and block success/records until an explicit validated recovery. Never infer a flight, crash or elapsed interval from the jump. |
+
+Precedence on the same accepted boundary: **terminal/invalid evidence → disqualifying contact → episode resolution → takeoff/start**. A crash during a settling window cannot also complete that flight. “Controlled” is the measurable envelope above; joystick movement, throttle use or a wheel sound does not establish control. A go-around with no contact is neutral and should not be punished by a failed landing count.
+
+The minimum support and rearm windows deliberately sacrifice very brief genuine touch-and-go recognition to avoid farming bounce counts. Show “Short contact; touch-and-go not confirmed” in details. Calibrate this tradeoff with a small annotated fleet replay corpus, preserving the rules version; do not silently retally old history when thresholds change.
+
+### Restarts, reloads and duration
+
+Add session-adapter lifecycle receipts with `operation_id`, cause, old/new generation, success, and accepted identity. Emit them only after the reset/reload transaction has committed. Capture the old detector state before calling reset; a failed reload rollback restores it, with zero counter changes. Initial reset during setup is tagged `initialization`, not restart. Route shell restart, direct fixed-wing reset, automatic crash recovery and F5 through this contract; deduplicate nested `resetting` emissions. State-preserving UI/code hot reload reattaches the observer with its existing generation/cursor and does not close a flight. A reload that cannot restore that state closes it interrupted; an accepted F5 data reinitialization closes it restarted and increments M8 once, preserving all prior history.
+
+Duration uses consecutive accepted intervals: `delta_air = dt_s` when the interval is unsupported, zero when supported. If the contact event provides a crossing fraction, split that one interval; otherwise use the endpoint support state, with declared ≤1-tick boundary uncertainty. Do not add time for tick 0, duplicate notifications, paused/faulted simulation, menu/focus/calibration/controller holds or crash countdown. Backfill up to the 1 s takeoff confirmation window; no unbounded sample list. Keep `dt_s`/tick ranges per generation, rather than subtracting a resettable `sim.time()` from a timestamp. Slow rendering with fewer simulated ticks produces less simulated airborne time, correctly. Wall-clock UTC is for chronology only.
+
+### Valid speed policy
+
+TAS is `|velocity_NED − wind_NED|` from the accepted physical weather sample; groundspeed is horizontal `sqrt(v_N² + v_E²)`, matching telemetry. It is not IAS or total 3D speed. Retain both independently; a tailwind may increase groundspeed without the same TAS increase.
+
+Only consider qualified airborne, continuous accepted samples with finite nonnegative speeds, valid state and matching identity. Exclude the first 1 s after a spawn/restore, and samples within 0.25 s before or after any contact impulse/terminal event (delay committing candidates in a bounded ring). Reject discontinuous position increments exceeding `max(0.05 m, 0.1 × speed × dt)` beyond the velocity-predicted displacement, accounting for accepted endpoint velocities; reject speed changes above `30 × g × dt` for outlier screening. A profile supplies a generous sanity cap: initial fallback `max(100 m/s, 4 × accepted reference start speed)` until reviewed aircraft-specific caps are available. This is a corruption/spike filter, explicitly **not VNE** or an overspeed warning.
+
+Require a contiguous 0.25 s window whose valid raw TAS values stay within `max(2 m/s, 5% of its median)` of the candidate median; publish that median as the maximum candidate, labelled “sustained 0.25 s.” Apply the same rule separately to groundspeed. Thus a one-tick 500 m/s jump, teleport or collision impulse cannot become a personal record. Rejected samples carry reason counts; legitimate high-acceleration/gust segments may be omitted by this conservative policy. Threshold changes require new rules version and the replay/spike corpus, without clamping and presenting a fabricated maximum.
+
+## 5. Data model
+
+Proposed files are new, not claims of current modules:
+
+| Component | Responsibility / public seam |
+| --- | --- |
+| `app/statistics/service.gd` | One app-root-owned service surviving flight-node teardown. `begin_activity`, `observe_tick`, `commit_lifecycle`, `query`, `flush`, `reset_counters`, `delete_history`; emits immutable snapshot revisions. Owns identity and eligibility, no solver writes. |
+| `app/statistics/fixed_wing_adapter.gd` | Converts existing accepted state/contacts and lifecycle receipts to detector inputs. Explicit attach/detach; observer count cannot grow on repeated launches. |
+| `app/statistics/rules.gd`, `detector.gd` | Validated profile and pure deterministic state machine, including bounded speed windows. No filesystem, UI, wall clock or prices. |
+| `app/statistics/reducer.gd` | Canonical event-to-flight/session/aircraft/account rollups; rebuildable caches, filters, ratio/streak computation and invariants. |
+| `app/statistics/store.gd`, `schema.gd` | Versioned native-data codec, bounded reads, immutable segments, generation manifests, validation/recovery/migration and single-writer ownership. No generic database framework. |
+| `app/ui/statistics_screen.gd`, `statistics_reset_dialog.gd`; `app/render/overlays/session_statistics.gd` | Read-only view models except explicit reset/delete commands. Existing screen and instrument bases own navigation, scale and presentation. |
+
+Use a small event ledger plus per-flight summaries, not high-rate telemetry history. Reuse free existing plotting/export tools if later analysis is requested; no custom chart engine, cloud service or asset generation.
+
+Schema envelope `openrc-flight-statistics v1` contains `schema_version`, `rules_version`, `store_uuid`, `pilot_id`, `generation`, `last_sequence`, `tracking_started_utc`, source/build metadata and integrity digest. IDs are generated once and persisted; UUID strings and decimal sequence strings avoid JSON double integer precision loss. Native integer validation remains bounded. Record types:
+
+```text
+Session: id, opened_utc, closed_utc?, close_reason?, status,
+         aircraft_ids_seen, coverage_by_metric
+Activity: id, generation_id, session_id, aircraft_key, base_aircraft_id,
+          variant_uuid?, display_name_at_start, physics_sha256, configuration_sha256,
+          rules_profile, field_id, start_kind, eligibility, scenario/failure/assist tags
+Flight: id, activity_id, start_sequence, end_sequence?, outcome?,
+        airborne_seconds, complete_observation, incident_status,
+        full_stop_count, touch_and_go_count, failed_episode_count, unknown_episode_count,
+        valid_tas_max?, valid_groundspeed_max?, speed_sample_provenance,
+        epoch_ids, started_utc, ended_utc?, uncertainty_reasons
+Event: id, sequence, activity_generation, flight_id?, episode_id?, aircraft_key,
+       session_id, tick, dt_s, type, cause, measures?, rules_version
+Active checkpoint: generation_id, last_tick, last_event_sequence, detector_state,
+                   timers, airborne accumulator, speed window, pending episode,
+                   flight summary revision, paired physics identity/tick if available
+Counter epoch: id, target=session/aircraft/account, target_id, start_sequence,
+               closed_sequence?, created_utc, reset_operation_id
+Deletion receipt: operation_id, target keys, committed_generation, affected_counts
+Metric coverage: metric_id, first_supported_sequence, rules_version,
+                 complete_record_count, partial_record_count
+```
+
+All event/operation IDs are unique. `(generation, tick, semantic event type, episode)` is an additional idempotency key; raw contact IDs are only unique within their activity. Maintain exactly one terminal outcome per flight, never overwrite it with “restart after crash.” Restart is its own event and can coexist with a crashed outcome. Include start and terminal events, landing episode resolution, incidents, restart and scope mutations; airborne accumulation is saved as cumulative **revisioned** flight state, not an increment replayed twice. Caches replace a prior flight revision rather than adding it again.
+
+Keep source facts and classifications under their original rules version. Upgrading the detector affects future flights; comparisons can filter by rules/configuration. New metrics are nullable with coverage start; do not manufacture pre-install flight time, historic landings or zero crashes from an old preferences file. A future optional backfill may operate only on sufficient retained source facts, as a separate labelled derived version; it cannot turn a partial log into a fully observed flight.
+
+## 6. Persistence, migrations and resets
+
+### Storage and transaction policy
+
+Use `user://flight_statistics/<store_uuid>/` and a small validated pilot manifest. Store display choices in the existing preferences/HUD section. Do not change `settings.cfg` location, calibration, Workshop manifests, repair economics, manual traces or `.orfl` files. Reuse Workshop's validated temporary-write/backup/test-injection pattern and economics' detached checkpoint validation, extracting only a genuinely shared helper if necessary. Avoid a SQLite/plugin dependency for this initial local feature.
+
+1. A single writer owns the store. A second process gets read-only statistics with a visible notice; use an exclusive lock with process-instance token, and recover a stale lock only after verifying the owner has exited. Never use mere file age as proof. If exclusive locking cannot be established on a platform, disable writes there until UI-FS-03 supplies a tested platform primitive.
+2. Append bounded transaction segments (length, checksum, monotonic sequence, complete transaction marker), containing event changes and the matching active-summary revision. Serialize/validate a temporary segment, flush/close it, reopen and validate, then rename it on the same volume. Never mutate the current committed segment in place. Hashes detect accidental corruption, not cheating.
+3. Commit a small generation manifest referencing immutable segments and a bounded summary index. Keep two independently validated manifest slots with increasing generations. Replace the older slot through a temporary file; choose the highest fully valid generation on startup. Never remove the last valid generation before the replacement validates. Reject orphan temporary/newer segments unless referenced by a valid commit.
+4. Queue outcomes for flush at the next frame boundary; no disk I/O or prices inside tick callbacks. Checkpoint the active statistics record every **5 simulated seconds**, and flush on pause, lifecycle commit, clean exit, reset/delete and pending terminal outcome. The UI distinguishes “Saving…”/“Saved”/“Not saved.” A saved receipt is issued only after manifest commit. Graceful exit waits for the statistics transaction or offers Retry / Exit without unsaved statistics with the exact pending scope; reuse the shell's exit-recovery pattern.
+5. Abrupt interruption preserves every acknowledged commit. At most the last 5 simulated seconds plus one frame's queued outcomes can be lost under normal writable conditions; no design here claims OS power-loss guarantees beyond tested flush/rename behavior. Recover the last durable active flight as **interrupted, partial**, with known time retained and no invented completion/crash. Unknown tail cannot extend a streak or set a best. Report the durable tick and uncertainty.
+6. A paired physics/statistics restore at identical tick, generation and source/config identity may continue the same flight with its cursor. A physics-only/older checkpoint is a sandbox branch and cannot credit already observed ticks again. F5 reload and app upgrades preserve the ledger even when physics cannot resume; close the open record interrupted or restarted as appropriate. No replay imports into lifetime totals.
+7. Bound segment size to 1 MiB, read packet size to 256 KiB, active speed/support memory to 2 s of samples, event queue to 256 events, and history page to 50 rows. Large aircraft/configuration files are referenced by hash, not copied into each record. Rotate segments; compact summaries every 1,000 closed flights without dropping event identities needed for replay/recovery. Never truncate lifetime history automatically. At a 256 MiB soft store limit, show size/export/delete options; if unable to persist, retain committed data and show recording unavailable rather than silently evicting history. Backpressure must mark an unobserved interval partial, never stall or modify physics.
+
+Recovery validates format, native types, finite/ranged numbers, bounds/depth, checksums, sequence order, unique identities, legal outcomes, aircraft/session foreign keys and aggregate invariants. Keep corrupt data for diagnosis, recover from the valid slot, and explain coverage loss. If neither slot validates, offer a fresh isolated store while retaining damaged files; never silently replace them with zeros. Caches are rebuildable from retained canonical records. Unknown future schema opens read-only and is never overwritten by an older build.
+
+Migrations are pure `vN → vN+1` transformations into a new generation: validate input, migrate a copy, validate all relationships/aggregates, commit, then retain the last compatible backup. Fixtures cover empty, large, partial, corrupt, future and historical schemas. Simulated interruptions at every write/rename/manifest phase must yield the old or new complete state. Additive metrics get `null` and “Tracked since …”, with the denominator based only on known observations. Schema migration is not permission to recalculate classifications with newer rules.
+
+### Independent resets and deletion
+
+“Reset counters” advances an epoch; it never subtracts from raw lifetime records. Session reset starts a new session/epoch after the previous activity ends. Aircraft/account resets create independent view epochs. Preview is generated by the same query/reducer used for the operation, pinned to a store revision; if that revision changes, refresh the preview and require a new confirmation.
+
+| Action | Exact effect | Confirmation and preservation |
+| --- | --- | --- |
+| New session / Reset session counters | Close current session, create new session and zero its session views for all aircraft. Next flight belongs to it. | One concise confirmation: old session's aircraft/count/time, new counters start at zero, history retained. Cancel focused. Aircraft/account epochs and lifetime unchanged. |
+| Reset this aircraft's counters | Advance only that aircraft's `Since reset` epoch and its current/best counter-window streaks. | Name/ID and affected counter values, one confirmation. Other aircraft, account epoch, current session and lifetime unchanged. |
+| Reset pilot counters | Advance account `Since reset` epoch for all supported aircraft; does not change individual aircraft reset epochs. | One confirmation showing scope, affected records/time and preserved history. Label “All aircraft combined”; never “delete account.” Session and aircraft counter windows unchanged. |
+| Delete this aircraft's lifetime history | Delete its canonical flight/activity/ground-incident contributions across sessions; rebuild every affected session/account aggregate, maxima, denominator and milestone. Leave surviving aircraft records/IDs/epochs intact. | Separate destructive History management action, named aircraft, exact record count/date span/time, explicit “This cannot be undone.” Require scope checkbox + confirm; accessible controller path. |
+| Delete all pilot flight history | Remove all statistics records, epochs, bests/milestones and unfinished statistics state; start a fresh tracking baseline under the same local pilot identity. | Separate destructive action with full preview and explicit confirmation. Preferences, aircraft files, Workshop variants, calibrations, accident/economics archive and manual flight recordings remain intact; state these exclusions. |
+
+Deleting selected history can remove the previous account maximum and change ratios; recompute from survivors, not by subtracting percentages/maxima. A deletion boundary breaks account streak continuity so deleting a crash cannot manufacture an achievement; recompute affected bests only over intact retained runs. Retain a minimal deletion receipt with no deleted flight measures for recovery/audit. In the same committed deletion generation, reference only surviving records; purge obsolete segments, cache copies and both prior-manifest recoverable copies containing deleted data, then report deletion complete. Crash recovery must honor a committed deletion tombstone before considering an old backup, preventing resurrection. If purge fails, say “Removed from statistics; local backup cleanup pending” and retry; do not claim physical deletion succeeded. External user-made backups/exports remain outside this operation.
+
+Reset/deletion is allowed only with no active activity and no unsaved mutations. A normal Restart never changes statistics epochs. Resetting counters cannot earn a new best or milestone; lifetime bests remain based on retained history. Failure of any reset/delete commit leaves all prior counters and history usable; cancellation changes nothing.
+
+## 7. UI wireframes and menu integration
+
+Add **Statistics** to Home's utility navigation and Pause's Session options. Opening from Pause pushes a CanvasLayer-compatible screen through `ScreenStack` and keeps the named menu hold; Back returns to Pause and its opener, not directly to an unpaused aircraft. Home and Aircraft catalog link to the same screen with different initial aircraft filters. No new hotkey is required. Add a compact summary card in the Aircraft detail area and a Pilot total card in Home/Practice; avoid enlarging the already dense flight-setup sidebar.
+
+```text
+STATISTICS                                              [Back]
+Scope: [All aircraft v]   Period: [This session v]
+Local pilot · 25 Oct · 2 aircraft · saved just now
+
+AIRBORNE          COMPLETED FLIGHTS       SUCCESSFUL LANDINGS
+0 h 24 min        4                      6 (4 stops · 2 touch-and-go)
+
+Crashes 1    Restarts 2    Completed in a row 2 · best 3
+Landings: 6 / 7 resolved touchdowns · 86%      [How counted]
+
+[More statistics v]  started / duration / speed / coverage / outcomes
+[Flight history v]   paged rows, retained filters, newest first
+[Practice goals v]   Off by default (P1)
+[Manage counters…]   [Manage history…]
+```
+
+The numbers above illustrate layout, not measured simulator data. Show `Tracking begins with your next flight` on first use. Distinguish zero, unavailable, partial coverage, unsupported aircraft and read-only save errors. “Lifetime history · tracked since …” stays visible after counter resets. The aircraft filter contains previously flown/deleted entries without forcing a catalog selection.
+
+```text
+AIRCRAFT CARD: Ugly Stick · Lifetime history
+Airborne 3 h 12 min   Completed 18   Crashes 4    [View statistics]
+
+PILOT CARD: All recorded aircraft · Lifetime history
+Airborne 8 h 09 min   Completed 46   Clean streak best 6    [Statistics]
+
+HISTORY ROW
+25 Oct 15:42 | Ugly Stick | 04:21 airborne | Completed
+  [Expand] Start: runway · 1 takeoff · 2 touch-and-go · 1 full stop
+           TAS max 82 km/h (0.25 s) · conditions/config · rules version
+           Event timeline: takeoff / contacts / go-arounds if known / stop
+           No observed disqualifying incident · saved / coverage details
+
+FLIGHT WIDGET (optional)
+This session · All aircraft                 [move] [×]
+Landings 3       Crashes 1       Restarts 2
+```
+
+`session_stats` is a new opt-in player instrument with label “Session statistics,” not a replacement for transient `flight_summary`. Default scope is All aircraft / This session; optional scope This aircraft / This session is explicit in its title. All three required counters remain visible in compact mode. Configure through Pause → Flight overlays, within the existing training/navigation grouping: visibility, scope, size, opacity, compact density, position and layout lock. Reuse existing normalized saved positions, bounds, close button, units and apply/save callbacks. Hiding, moving, switching preset or closing it never resets data. Counter updates are event driven, painted at the existing bounded HUD refresh rate; no animated crash penalties or surprise popups while flying.
+
+For the legacy “Flight time” value, rename its existing simulation clock to “Elapsed simulation time” where retained, and expose “Airborne time” from this service. Never silently change a diagnostic clock's meaning. Reuse shell typography/color/focus tokens and existing instrument visuals/icons; do not create new raster artwork. Expandable details retain focus and scroll position. Counts use text, not color alone; secondary text ≥4.5:1 contrast. Reduced motion uses static status changes. EN/ES strings use existing translation notifications.
+
+Primary acceptance is 1920×1080 at 100% and 200% text: essentials without horizontal scrolling, no center-flight obstruction, dialog actions reachable. Then qualify 1440p/4K, then 1280×720 fallback with vertical scrolling. Keep filter labels and period visible at every size. Honor existing keyboard/controller navigation, no flight inputs behind a statistics modal, safe Cancel focus for destructive dialogs and no inaccessible typed phrase requirement.
+
+### Optional practice and recognition (P1)
+
+Offer one selected goal at a time, entirely optional: complete a clean takeoff/circuit/full stop; three controlled full-stop flights; three confirmed touch-and-goes then a full stop; or repeat a landing in the same recorded conditions. A “circuit” goal needs a separately tested route/altitude envelope; do not infer a circuit merely from elapsed time. Air-start landing practice is a distinct goal, not a takeoff award. Precision zones, crosswind/engine-out drills and approach stability require capability-specific profiles, validated reference speeds and their own acceptance; do not invent historical progress for them.
+
+Personal bests: longest clean-completion streak and crash-free airborne time, with aircraft/configuration/conditions/assistance context and date. Consistency milestones at 3, 5 and 10 clean completed flights; one modest acknowledgement on the debrief, no XP/currency/unlocks/daily-login pressure. Speed, altitude proximity, repeated quick hops and accumulated crashes grant nothing. Show the previous best after a break, with neutral wording (“New run starts next flight”). Failure scenarios stay visible in totals and can have separate practice comparisons; do not shame emergency training. All acknowledgements can be disabled without disabling statistics. These are simulator practice records, not real-world proficiency certification.
+
+## 8. Implementation phases
+
+Dependencies are ordered; UI can use immutable fixtures after UI-FS-01, but cannot ship until detector/storage integration passes. Keep each step independently reviewable; do not bundle physics tuning, backend/account creation or unrelated menu redesign.
+
+| Step | Work / owned files and dependency | Required proof / status |
+| --- | --- | --- |
+| UI-FS-00 | Register menu subtrack; record decisions in existing DECISIONS home; agree lifecycle receipt and contact support adapter with physics/AS/CR owners. Audit each eligible aircraft's support roles and profile inputs. Define eligibility and freeze metric/rules schema. | R1/R3/R4 dependency review, unsupported list and fixture matrix; **pending**. |
+| UI-FS-01 | Pure schema, rules validation, reducer and fixture-driven metrics under `app/statistics/`; no live integration. Implement R1/R2/R5 equations, epochs and identity. | A2–A4 reducer invariants and empty/partial cases; **pending**, after 00. |
+| UI-FS-02 | Pure detector + fixed-wing adapter using accepted state/contact APIs. Add minimal successful lifecycle receipts in session-owned code; cover successful/failed reload without changing solver laws. | A2/A3/A5 deterministic annotated fleet cases, contact thresholds and 240 Hz observer order; **pending**, after 00/01. |
+| UI-FS-03 | Durable store, local pilot ID, bounded journal/index/checkpoint, resets/deletion reducer transactions and version migrations. Reuse existing safe-write test patterns. | A4/A6/A7/A10 corruption, interruption and two-writer fixtures; **pending**, after 01. |
+| UI-FS-04 | App-root service ownership; attach after accepted launch; wire restart/end/switch/quit/F5/restore/holds and sandbox eligibility. Add active-state recovery. Preserve recorder and economics lifecycle. | A1/A5/A6/A12 integration, exact replay noninterference and no double attachment; **pending**, after 02/03. |
+| UI-FS-05 | Statistics screen/history/cards, event-driven `session_stats` instrument, filter/view models, EN/ES and preference extension; clarify elapsed vs airborne labels. | A8/A9 flow/focus/layout tests and 1080p captures; **pending**, after 01, release blocked on 04. |
+| UI-FS-06 | Counter-management and separate destructive history UI, revision-pinned previews, cancel/retry and save-failure flows. | A4/A7/A8 destructive-isolation and recovery fixtures; **pending**, after 03–05. |
+| UI-FS-07 | Optional goals/bests/milestones and comparable-context filters; separate graded-flight capabilities where evidence exists. | A11, goal toggle/anti-farming cases and pilot usability review; **optional/pending**, after P0 gates. |
+| UI-FS-08 | Combined verification through checked Godot runner/debug bridge; storage/runtime measurements, packaging/upgrades and multi-resolution acceptance. Update FIRST-LAUNCH and canonical guides, retain concise owning evidence; consolidate this plan when complete. | A1–A10/A12 all pass; A11 only if P1 ships. Target-hardware and human review remain explicit gates; **pending**, after 04–06. |
+
+Proposed focused tests: `app/tests/test_flight_statistics_rules.gd`, `test_flight_statistics_detector.gd`, `test_flight_statistics_store.gd`, `test_flight_statistics_lifecycle.gd`, `test_flight_statistics_resets.gd`, `test_ui_statistics.gd`. Use existing checked-runner commands from [shared tools](tools/shared.md#one-godot-script); run relevant existing contact, economy-checkpoint, flight-log, UI-pause and overlay regressions. Use [debugctl smoke](../tools/debug/README.md) and targeted UI scenarios for the integrated feature. Run the full `app/test.sh` gate before merging runtime implementation. This documentation-only change needs content/reference checks, not a new flight baseline or full simulation run.
+
+## 9. Risks and decisions
+
+| Risk / dependency | Resolution and remaining gate |
+| --- | --- |
+| Apparent landing realism exceeds model evidence | Credit only the stated contact/control classifier. Unknown damage stays unknown; no generic quality score. Fleet replays verify software behavior; real RC pilot/measurement review remains separate. |
+| Existing `resetting` observers fire before success | Add explicit committed receipts, preserve old detector until commit and test rollback. Do not count signals or R key presses. |
+| Existing contact snapshot lacks ordinary wheel landing events | Adapter derives intended support from existing accepted gear geometry/compressions. Do not interpret an empty hull-event list alone as “landed safely.” Missing support roles block only the affected metric. |
+| Economics inventory unavailable or updated | Statistics use physical contact provenance, not cost/repair totals or mutable economic catalogs. Dirty economics files are outside this plan's implementation boundary. |
+| Recovery cannot prove unseen flight behavior | Retain durable observations and mark interrupted/partial. Do not infer elapsed airborne time from wall clock, award completion or extend streaks through the gap. |
+| Independent resets appear to violate totals | Distinct labelled epochs; only identical predicates reconcile. Lifetime history is the authoritative sum of retained contributions. |
+| Delete-crash or restart farming | Explicit restart/abandon outcomes break active streaks; deletion introduces continuity gaps. No global rankings or financial rewards; statistics remain a local practice tool, not tamper-proof telemetry. |
+| Aircraft changes and variant removal | Stable ID plus immutable name/config snapshots; per-revision comparison available. No name/path-based migration. Workshop UUID and contact-contract dependencies resolved before variant support ships. |
+| Store growth, disk full or multiple instances | Bounded writes, pagination, no high-rate history, single writer and visible partial/unsaved state. No automatic history erasure; benchmark large fixtures before adoption. |
+| Broad aircraft/vehicle ambitions | Fixed-wing eligibility first. Air starts included with honest labels; floats/skids/rotorcraft wait for explicit profiles. Keep the kernel vehicle-agnostic. |
+| UTC clock changes and travel | Use sequence/tick order for aggregates/streaks, UTC timestamps with stored offset only for display. Never derive flight time or reset sessions from calendar changes. |
+| UI overload or discouragement | Three-counter widget opt-in; essential cards first; neutral outcome reasons, count denominators and expandable data. Optional goals never block aircraft/content access. |
+
+## 10. Edge-case tests
+
+Each case is a deterministic detector/reducer fixture unless a UI/store integration is named. For float durations allow at most one simulation tick per boundary when a crossing fraction is unavailable; integer events require exact equality.
+
+| Case | Expected result | Requirements / criteria |
+| --- | --- | --- |
+| E01 Rejected Fly, runway spawn, 5 min taxi, brief wheel hop below confirmation | No started/completed/landing, no airborne time; accepted ground-only crashes/restarts still count independently. | R2/R3, A2/A5 |
+| E02 Ground takeoff, 60 s unsupported, controlled full stop, End | One start, completion and successful full stop; 60 s ± boundary tolerance; End adds nothing. | R2/R3, A2 |
+| E03 Valid airborne spawn, land normally | One start tagged air_start, no takeoff credit, one success/completion; no artificial spawn/paused duration. | R1/R3, A1/A2 |
+| E04 One sortie, two confirmed touch-and-goes, final stop | Starts=1, completed=1, successful landings=3, touch-and-go=2, rate=3/3. Ground intervals excluded. | R2/R3, A2 |
+| E05 Ten wheel contacts, main-wheel alternation, bounce and recontact <2 s | One contact episode, at most one landing. A hard terminal impact during settling makes it failed, with no completion. | R3, A5 |
+| E06 Low pass/go-around without contact | No landing event or denominator. Continuing flight time is retained. | R2/R3, A2 |
+| E07 Taxi collision, repeated impact messages, debris and crash hold | One ground-only crash, zero flights; no hold time; replayed event IDs do not add counts. | R3/R4, A5 |
+| E08 Airborne tree crash vs belly/gear-up ground crash | Both one crash; only ground contact creates failed touchdown. No success despite eventual visual rest. | R2/R3, A2/A5 |
+| E09 Prop strike or nonterminal fence hit, later stop | No terminal crash unless session reports it; failed clean-landing episode/damaged-stop flight, incident reason retained. Missing provenance yields unknown instead. | R2/R3, A2/A5 |
+| E10 R/controller/menu/report restart after crash; automatic respawn | One crash remains and one restart per successful operation; no extra terminal outcome; no start until new flight confirmation. | R3/R4, A5 |
+| E11 Restart while airborne, rejected restart, failed F5 rollback, successful F5 | Accepted restart/reload each adds one restart and closes old open flight as restarted; rejected/rolled-back operations add nothing. Existing time/history intact. | R4, A5/A6 |
+| E12 Pause/focus loss/controller hold/calibration for 10 min, then resume | Zero time/events during holds; exact same detector timers, no duplicate start. | R4, A1/A5 |
+| E13 Takeoff-confirmation or landing-pending quit/switch | Preserve observed qualified time; no invented success. Open flight/episode gets explicit abandonment/unknown reason. Initial unqualified hop stays unstarted. | R4, A1/A5 |
+| E14 A completed → B crash → A completed | One session, A completed=2, B crash=1; A streak=2, account current=1; all lifetime additive counts reconcile. | R1/R2, A1/A4 |
+| E15 Hide HUD, change preset, reopen screen 100 times | Same counters/store; no duplicate subscriptions, no physics changes or retained UI growth. | R9/R12, A9/A12 |
+| E16 Wind: steady tailwind, one-tick speed spike, teleport, NaN, contact impulse | TAS/groundspeed differ correctly; spike/invalid windows excluded, no fabricated cap value; units round-trip. | R5, A3/A5 |
+| E17 Short valid flights, active flight, interrupted partial, zero denominators | Exact mean over eligible closed observations; active/partial exclusions shown; no 0% for no resolved touchdowns. | R2, A2 |
+| E18 Kill process at each journal/checkpoint/manifest write stage | Old or new valid generation, never mixed; acknowledged counts never duplicated/lost; active record interrupted, unknown tail explicit. | R6, A6/A7 |
+| E19 Restore older checkpoint, replay same log twice, hot-reload UI/code | Replay/rewind has no persistent contribution; paired same-cursor continuation does not duplicate; state-preserving reload retains identity. | R4/R6, A6 |
+| E20 Reset each scope, cancel dialog, reload after reset | Only chosen epoch changes. Lifetime unchanged; session reset preserves prior session history. Cancellation and failed writes leave all epochs unchanged. | R7, A4/A7 |
+| E21 Delete A including account max/crash, retain B; interrupt purge | B records byte-identical; combined totals/maxima rebuilt, no new streak across deleted gap; deleted data cannot return from recovery slot. | R7, A4/A7 |
+| E22 Legacy schema/new metric, corrupt/future schema, full disk, two writers | Known history retained; new metric null/coverage labelled; future data untouched; visible errors; single writer; no silent resets. | R6, A6/A7 |
+| E23 Rename/delete variant, change livery/config, aircraft removed from catalog | Stable scope; immutable old revision/name, no merge with fallback aircraft; comparisons distinguish configuration. | R1/R6, A4/A6 |
+| E24 Natural Random, injected failure, companion, Workshop trial, helicopter | Eligible player fixed-wing tagged; excluded activities cannot affect pilot history. Failure-practice crashes remain counted. | R1/R11, A1/A11 |
+| E25 EN/ES, 200% text, resize, keyboard/gamepad Back/Delete/Cancel | Correct scope visible, controls reachable, focus returns, no hidden flight shortcuts; confirm preview exactly matches reducer impact. | R8–R10, A8/A9 |
+| E26 10,000 flights, 100,000 bounded events; repeated scene lifecycle | Paged history and bounded observation meet A10/A12; no unbounded sample arrays, physics/state replay unchanged. | R6/R12, A10/A12 |
+
+## 11. Measurable acceptance criteria
+
+These are future acceptance gates, not results of this audit. Evidence belongs under the menu/HUD owning evidence homes with UI-FS step IDs; raw captures/logs go in ignored `tmp/` unless needed as small accepted evidence. Do not commit unnecessary images.
+
+| ID | Pass criterion | Steps / requirements |
+| --- | --- | --- |
+| A1 Scope/lifecycle | E01/E03/E12–14/E24 pass; one session survives Home and aircraft switches, clean relaunch creates a new session, unexpected exit resumes the prior statistics session. Every excluded mode writes zero bytes to the player store. | 00/04/08; R1/R4 |
+| A2 Metric correctness | All §3 formulas and invariants pass exact-count fixtures E02–06/E08–09/E17; airborne time is within one tick per unresolved boundary. Mean/rate denominators and partial exclusions render correctly. | 01/02/08; R2/R3 |
+| A3 Speeds | E16 at 240 Hz, calm/tailwind/crosswind and invalid inputs: expected TAS and horizontal groundspeed within `1e-6 m/s` before display rounding; no one-tick spike/contact impulse candidate; maximum carries 0.25 s provenance and SI conversion tests. | 01/02/08; R5 |
+| A4 Aggregate/reset consistency | E14/E20/E21/E23: rebuilding caches equals incremental results for counts/sums/maxima/ratios/streaks; every unrelated aircraft record survives unchanged. Reset epochs affect only selected predicates; deletion cannot create a new streak across a gap. | 01/03/06/08; R1/R2/R7 |
+| A5 Event correctness and noninterference | E05/E07–13/E16 pass at different render cadences with identical accepted tick inputs. Zero duplicate events across 100 repeated notifications/respawns. Observer enabled vs disabled produces byte-identical checkpoints/exact replay for the same solver/config/input. | 02/04/08; R3–R5/R12 |
+| A6 Recovery/upgrades | Every acknowledged transaction survives process interruption; E11/E18/E19/E22 preserve prior valid generations. Normal checkpoint tail loss ≤5 simulated seconds plus queued frame, clearly marked partial. Same-cursor restore is idempotent; old/future schemas never overwrite valid unsupported data. | 03/04/08; R4/R6 |
+| A7 Persistence/reset fault safety | Inject failure after every segment/manifest/rename/migration/reset/deletion stage: only complete old/new state is visible. Cancellation changes zero data; disk-full and lock conflicts surface errors; committed deletion never resurrects via backup. All schema/migration fixtures validate bounds, relationships and coverage. | 03/06/08; R6/R7 |
+| A8 Screen flows | Home → Statistics, Aircraft → filtered Statistics, Pause → Statistics → Back, history expansion/pagination and every management flow work with keyboard/controller in EN/ES. Cancel is initially focused for destructive actions; retained filters/scope and exact previews checked. | 05/06/08; R8/R10 |
+| A9 Widget/readability | All three session counters match the screen after each event, within one HUD refresh (≤100 ms while rendered). Hide/show/preset/resize/relaunch preserve layout and counting. Native 1080p captures at 100%/200% text pass no clipping/occlusion and ≥4.5:1 secondary contrast; qualify higher resolutions next, then 720p. Human in-flight readability review remains explicit. | 05/08; R9/R10 |
+| A10 Bounded cost | On named target hardware at 1080p, detector+adapter p95 ≤50 µs per accepted tick; no filesystem I/O in tick callbacks. During 10,000-flight/100,000-event fixture, first history page ≤200 ms, subsequent page ≤100 ms, no unbounded retained tick data. Store commits must add no main-thread stall >2 ms; if exceeded, move validated immutable write jobs off-thread and retest. Report actual host/build/storage and p50/p95/p99; synthetic timing is not fleet performance qualification. | 03/05/08; R6/R8/R12 |
+| A11 Optional motivation | Goals default off; disabling acknowledgements preserves counts. Restart, deletion, fast hops, speed and low passes cannot advance clean-completion milestones. Assisted/failure/configuration contexts remain labelled. At least one beginner and one experienced RC pilot can explain the count/rate/streak meaning and complete a goal flow; record feedback without claiming skill transfer. | 07; R11 |
+| A12 Integration gate | Checked focused suite, existing affected regressions, debug-bridge smoke and full app parse/test suite pass; 100 attach/detach cycles leave observer/node counts at baseline. Packaging preserves `user://` history over supported upgrades. No golden physics change, no new solver branch, no private settings/traces modified by tests. Physical realism, actual pilot training value and untested device performance remain unclaimed. | 04/08; R12 |

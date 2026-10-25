@@ -135,6 +135,11 @@ exports or captures. `restart_probe.gd` requires an editor binary; release templ
 ignore its `--script` route. It is not a packaged-release probe. Packaged restart
 must be exercised through the actual menu.
 
+GDU-11 contact shadows are available only as an explicit High experiment with
+`OPENRC_CONTACT_SHADOWS=on`. Unset/invalid values keep them off. Beta1 produces
+visible wall artifacts with the current Native AA path; default adoption failed
+the [paired visual gate](../../docs/research/engine-upgrade/GDU-11/implementation.md#gdu-11g--high-contact-shadow-experiment).
+
 For GDU-11 contact-shadow comparisons, `capture.gd --contact-shadows=off|on`
 overrides only that runtime setting after High configuration; the default `profile`
 uses production behavior. Overrides require native High. Reports retain the actual
