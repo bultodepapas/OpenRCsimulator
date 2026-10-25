@@ -60,3 +60,11 @@ Reviewed 2026-10-24. The README and website also name these participants from th
 | Aloft Hobbies | Wayne Flower's 2026-10-23 reply says he posted the project link in the Aloft forum and offers knowledge and feedback. No brand, model or logo permission or financial support was granted. |
 
 These acknowledgments do not claim completed integrations, financial sponsorship, delivered hardware, verified radio compatibility or manufacturer validation. Public acknowledgment uses no private contact details or mailbox links. Existing marks remain their owners' property, outside the MIT code license.
+
+## OpenRC identity
+
+The project owner's official SVG is preserved unchanged in [app/assets/branding/openrc-official.svg](../app/assets/branding/openrc-official.svg). The website, repository README and sharing artwork use its original contours and colors, including the ALPHA badge. It is also the source of the simulator's animated entrance.
+
+`python tools/branding/build_public.py` derives the transparent wordmark, dark README banner, social SVG and RC favicon. `--check` verifies them. The small favicon uses the original R/C groups; it is not a new letterform. `--raster` renders `assets/branding/openrc-social.png` at 1200×630 using the optional Playwright 1.61.0 package and installed Chrome. That PNG supports social crawlers which cannot display SVG. The master SVG stays authoritative.
+
+The header and hero keep the white mark on the existing dark backdrop. The footer also uses a dark surface in both themes. Image dimensions reserve layout space; alt text identifies the project without relying on fonts or JavaScript. The existing entrance and reduced-motion behavior remain in place.

@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://bultodepapas.github.io/OpenRCsimulator/">
+    <img src="site/assets/branding/openrc-banner.svg" alt="OpenRC Simulator — ALPHA" width="960">
+  </a>
+</p>
+
 # OpenRC Simulator
 
 **[Explore the project website](https://bultodepapas.github.io/OpenRCsimulator/)** — aircraft, field, downloads and project details in English and Spanish.
