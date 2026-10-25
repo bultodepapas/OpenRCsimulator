@@ -1,0 +1,847 @@
+{
+  "format": "openrc-native-reconstruction-hardening-verification v1",
+  "date_local": "2026-10-25",
+  "experimental": true,
+  "release_qualified": false,
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "617.42",
+    "api": "Vulkan 1.4.351",
+    "validation_layers": "1.4.366"
+  },
+  "scope": {
+    "fsr_upscaling": "3.1.4",
+    "streamline": "2.11.1",
+    "frame_generation": false,
+    "fsr4": false,
+    "cross_vendor_qualified": false,
+    "fps_improvement_measured": false,
+    "initial_export_hang_explained": false
+  },
+  "package": {
+    "path": "tmp/native-reconstruction-release-20261025/package-final-receipt.json",
+    "sha256": "6110f5c68a4069e31bbe6a6fd1ee25f5ff770faea80a010f2adb5155d56d204b",
+    "files_verified": true,
+    "godot_commit": "135dff3887a3d2ccf45cafbd9bdffa7b718e1e76",
+    "engine_version": "4.8.dev.custom_build",
+    "sources": {
+      "godot-nvidia.zip": "8f9d9604270ccca92d14cc57afca142079476cbe050e0486a90b84da17ce907a",
+      "fidelityfx-1.1.4.zip": "9a19e1f20bf269163f052186ed563209c5a1d0f7b1cf7e567e643dee6cc61179",
+      "streamline-2.11.1.zip": "0c1d562e59557434cabfb8997157cb8c04fc7d23f077c8bdf5260975b73dfb89"
+    },
+    "integration": {
+      "engine.patch": "e3d55e67e352b150da8dc1c3c3ea9caa0cbbabd2542e6f87bcd64285eb637620",
+      "vulkan_validation.patch": "26f91e399e339b4c4725f925a7c779254c9720112acf4ed49e52652480475206",
+      "dlss_validation.patch": "9bc70d7b64586a5515ad04e8c2bef9215aafae49b648ee0096d7d4aef550e9ed",
+      "shutdown_thread.patch": "a253b37bbbf88fed10bbbc6b33ce7823e52c9ffcff84fc5a973059148210d858",
+      "load_token_lifetime.patch": "868c518c78d2afe86e4ea29e53ec0d13488fa1c62a0dbd9b079d7ad70e8260a1",
+      "reflection_atlas_lifetime.patch": "86ab87598f732271991332a2be5f4ba1f6e2987fbacc21030e39645ab9b3010f",
+      "buffer_write_sync.patch": "d4ed03e2f95878ca226ad2bd0c689ea2294622cb92c3dacc2080f970f812aea6",
+      "fidelityfx.patch": "b8de4d034d67f681ba554a437ab69f7e95d2b1ac019315aac77555e6fd50d528",
+      "build_fidelityfx.py": "49e006c4bc989310f89a0f38fb4cf7b1b4763aa571f3076769abe695fe6d5785",
+      "fsr3.h": "acb7566f1fc05b4b6bc3d83a482b962d23247a3936cdf4f095e96eb92dab9fd4",
+      "fsr3.cpp": "e5ec7a18ea9961c5f05a5b2f81517d46da731d2489f06a5234c8f81827a5347d",
+      "fsr3_prepare.glsl": "a6a62b2ba1d5981ed48b326fc55ad5015935b6903ebcd2526a65f5bfdc569035"
+    },
+    "runtime": {
+      "amd_fidelityfx_vk.dll": "5c6aba3469e0e2170c35ce900e510ad3649500fca10139d4489490d634bbca8e",
+      "NvLowLatencyVk.dll": "2a77dc3e1c724b7eea5755be0ae7423752e79a2459fae72181a9f00e3507e5d6",
+      "nvngx_deepdvc.dll": "814bd287102fa0dbaba612ff94be9023ea940210b5fbd2bac2fabf7cb248b38a",
+      "nvngx_dlss.dll": "2173e05733fde21c7ae77c7573d1d5b60d651e659f71708807a680afe2829e4d",
+      "nvngx_dlssd.dll": "fddc24c5d343507f19a0dbd94be267418f95b5910d7615a80213ec041e069663",
+      "nvngx_dlssg.dll": "17e00fc66d32f348fa16d387d635ac1b994aa7317b3e6d968867d1ee77af3564",
+      "sl.common.dll": "9d39bf058d0dc64677fd4fab28c02b0564e16764bfdbe775d8dc5b759489cbb2",
+      "sl.deepdvc.dll": "0138befcfcd63014ea8f5ab7b005a9bebb9d883e900f8f0cc5a4a378b0af71fc",
+      "sl.directsr.dll": "2e5ebdf810368bd3f9fa9d5c928fa99c42f9462b2edcd672f5c80a7f8447474c",
+      "sl.dlss.dll": "7779f3c653535808b6f98307de8b067ca38f1dba16e3c7362b13dcd7d4e7dabe",
+      "sl.dlss_d.dll": "c8b0aacc6150bb53bad229d5ea0cf565bc8c4fa3be616bd6636afd9ae01416d3",
+      "sl.dlss_g.dll": "dae3f24a690f3dee3fbd89bdde47fbeb6bf480cee376ecfd0242a50e0bb6e6c6",
+      "sl.interposer.dll": "98ac2097902686441d6cbd1182fcf5cb15e9e7fa0744bfdf176ec728a4a49f1a",
+      "sl.nis.dll": "a3217cc877f7aa8e54d29c3cedc975c1397511af5c017c1e6057187bb9332b2a",
+      "sl.nvperf.dll": "b8f6a8e963f073490156b0ebccc73d4fe083a5c0b71484aaedc1292e6e9ee5ed",
+      "sl.pcl.dll": "4a7bb40f1328cff599de932d5fc73cfd58bd32f3e29f7c19fa464ab3e2aaa440",
+      "sl.reflex.dll": "cfbaed0b1c27d0ba415f67e2aeca32607adf2b83be084ee8ad49f7e34c89010c"
+    },
+    "candidate": {
+      "source_base_commit": "343be4b0bba007ec4295e7da408220a0577d97e1",
+      "integration_source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+      "engine_identity": "4.8.0",
+      "candidate_renderer": "forward_plus",
+      "generated_registry_sha256": "f2c9fed6f323d23626513641d8c34592829b848dd8b56d933ec4e7454953b2bb",
+      "integration_overlays": {
+        "app/render/reconstruction.gd": {
+          "source_commit": "91b67d620c1adf3f470dddba33ace63f3fb6851c",
+          "source_sha256": "3c645b2179c9bf6f61a3d5a9e07bc0053c2676e18f83b8fbd498b5339836bde1",
+          "expected_final_sha256": "3c645b2179c9bf6f61a3d5a9e07bc0053c2676e18f83b8fbd498b5339836bde1",
+          "prepared_sha256": "3c645b2179c9bf6f61a3d5a9e07bc0053c2676e18f83b8fbd498b5339836bde1"
+        },
+        "app/app_state/display_preferences.gd": {
+          "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+          "source_sha256": "68d535c76ea9d121776fdb5cf9ecc474a1b92848d77023915012b3083b3a493b",
+          "expected_final_sha256": "68d535c76ea9d121776fdb5cf9ecc474a1b92848d77023915012b3083b3a493b",
+          "prepared_sha256": "68d535c76ea9d121776fdb5cf9ecc474a1b92848d77023915012b3083b3a493b"
+        },
+        "app/ui/settings_screen.gd": {
+          "source_commit": "91b67d620c1adf3f470dddba33ace63f3fb6851c",
+          "source_sha256": "bf13fbc4f31bfbc9a47929e0c3dcd8c291dd1be611b208ce2130784e52bb32a1",
+          "expected_final_sha256": "bf13fbc4f31bfbc9a47929e0c3dcd8c291dd1be611b208ce2130784e52bb32a1",
+          "prepared_sha256": "bf13fbc4f31bfbc9a47929e0c3dcd8c291dd1be611b208ce2130784e52bb32a1"
+        },
+        "app/i18n/es.po": {
+          "source_commit": "91b67d620c1adf3f470dddba33ace63f3fb6851c",
+          "source_sha256": "15a3b368b8c7c0ee5483c06d380314b24298dae8a86c5a593d59e56d9fa4af61",
+          "expected_final_sha256": "15a3b368b8c7c0ee5483c06d380314b24298dae8a86c5a593d59e56d9fa4af61",
+          "prepared_sha256": "15a3b368b8c7c0ee5483c06d380314b24298dae8a86c5a593d59e56d9fa4af61"
+        },
+        "app/app_root.gd": {
+          "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+          "source_sha256": "1ffc7fff7ee0398efa71569988fac262fc75c3bb1020f5d2cb953d30c9ab2622",
+          "expected_final_sha256": "1ffc7fff7ee0398efa71569988fac262fc75c3bb1020f5d2cb953d30c9ab2622",
+          "prepared_sha256": "1ffc7fff7ee0398efa71569988fac262fc75c3bb1020f5d2cb953d30c9ab2622"
+        },
+        "app/main.gd": {
+          "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+          "source_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5",
+          "expected_final_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5",
+          "prepared_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5"
+        },
+        "app/tests/test_reconstruction.gd": {
+          "source_commit": "91b67d620c1adf3f470dddba33ace63f3fb6851c",
+          "source_sha256": "2d9b80c5c2d77ead1d3cd5dff85f6c0b995cdac528c9fdf21138f90339200b22",
+          "expected_final_sha256": "2d9b80c5c2d77ead1d3cd5dff85f6c0b995cdac528c9fdf21138f90339200b22",
+          "prepared_sha256": "2d9b80c5c2d77ead1d3cd5dff85f6c0b995cdac528c9fdf21138f90339200b22"
+        },
+        "app/tests/test_advanced_graphics_settings.gd": {
+          "source_commit": "ba42e49b7b814a86f0c29f5d7d29f2239a002e03",
+          "source_sha256": "a31811234a1631ac27214151dd24d6ef6669883b77870f5581a91e2031fee7cd",
+          "expected_final_sha256": "a31811234a1631ac27214151dd24d6ef6669883b77870f5581a91e2031fee7cd",
+          "prepared_sha256": "a31811234a1631ac27214151dd24d6ef6669883b77870f5581a91e2031fee7cd"
+        }
+      }
+    },
+    "files": {
+      "OpenRC Native Trial.pck": "2eadf9b7c08288e25aeacdc3d4012802dd66a8aacada6e7cb290d92794f7ba33",
+      "OpenRC Native Trial.exe": "1bd6128ce343d2a72ef5d00e6732c9ead0d354800e013bc3bb645daa06013dd7",
+      "openrc-editor-build.json": "2c6a315605484d92063fdb3bca1d2e847e87ca094b59ec80568e2b6a7b7cae44",
+      "openrc-template_release-build.json": "05c23fad4a13f33f885ecff14246a6217c6dc01acf9dd0cf2cc1acffa24f7e85",
+      "presentation-engine-receipt.json": "c1b701bd6b6cd229f57ebc2ef4060904c85d8ce17a6c8284acff03c482fe67c8",
+      "amd_fidelityfx_vk.dll": "5c6aba3469e0e2170c35ce900e510ad3649500fca10139d4489490d634bbca8e",
+      "NvLowLatencyVk.dll": "2a77dc3e1c724b7eea5755be0ae7423752e79a2459fae72181a9f00e3507e5d6",
+      "nvngx_deepdvc.dll": "814bd287102fa0dbaba612ff94be9023ea940210b5fbd2bac2fabf7cb248b38a",
+      "nvngx_dlss.dll": "2173e05733fde21c7ae77c7573d1d5b60d651e659f71708807a680afe2829e4d",
+      "nvngx_dlssd.dll": "fddc24c5d343507f19a0dbd94be267418f95b5910d7615a80213ec041e069663",
+      "nvngx_dlssg.dll": "17e00fc66d32f348fa16d387d635ac1b994aa7317b3e6d968867d1ee77af3564",
+      "sl.common.dll": "9d39bf058d0dc64677fd4fab28c02b0564e16764bfdbe775d8dc5b759489cbb2",
+      "sl.deepdvc.dll": "0138befcfcd63014ea8f5ab7b005a9bebb9d883e900f8f0cc5a4a378b0af71fc",
+      "sl.directsr.dll": "2e5ebdf810368bd3f9fa9d5c928fa99c42f9462b2edcd672f5c80a7f8447474c",
+      "sl.dlss.dll": "7779f3c653535808b6f98307de8b067ca38f1dba16e3c7362b13dcd7d4e7dabe",
+      "sl.dlss_d.dll": "c8b0aacc6150bb53bad229d5ea0cf565bc8c4fa3be616bd6636afd9ae01416d3",
+      "sl.dlss_g.dll": "dae3f24a690f3dee3fbd89bdde47fbeb6bf480cee376ecfd0242a50e0bb6e6c6",
+      "sl.interposer.dll": "98ac2097902686441d6cbd1182fcf5cb15e9e7fa0744bfdf176ec728a4a49f1a",
+      "sl.nis.dll": "a3217cc877f7aa8e54d29c3cedc975c1397511af5c017c1e6057187bb9332b2a",
+      "sl.nvperf.dll": "b8f6a8e963f073490156b0ebccc73d4fe083a5c0b71484aaedc1292e6e9ee5ed",
+      "sl.pcl.dll": "4a7bb40f1328cff599de932d5fc73cfd58bd32f3e29f7c19fa464ab3e2aaa440",
+      "sl.reflex.dll": "cfbaed0b1c27d0ba415f67e2aeca32607adf2b83be084ee8ad49f7e34c89010c",
+      "licenses/FidelityFX-LICENSE.txt": "82cf74fc23885107c7f69249ac3f1dac55898ff68320eb2c753984cae6b2d78a",
+      "licenses/Godot-LICENSE.txt": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80",
+      "licenses/nis.license.txt": "f80ecfbce8a84a5b4c1c59dc5a9f0ee9cf5a989c9fba3a9486ee874f7595a454",
+      "licenses/nvngx_dlss.license.txt": "3027f23ca5a46dd9cb8183fbd522983a86f64d7daac5982912bf9f214671f294",
+      "licenses/OpenRC-LICENSE.txt": "2d4dad4844d4fe37238ece86717ae47da69d6c805a898e5c9b41a0de2bfee904",
+      "licenses/reflex.license.txt": "ebf83c07fb3b2939908c3795d887afde3161c89a28ba391724efc784ce1bdabe",
+      "licenses/Streamline-LICENSE.txt": "7b6f23e7d6f3ad6292f9308d2b42cdc3d82ae4e9b2abb55f230279d83bedd43d",
+      "licenses/Streamline-third-party.md": "87a414a75a83ac4fe43111d99a52075b6d009c8802dd718084b94dfdf1b06f59",
+      "Native.cmd": "0cc94e850062436e4a3e8be6108be1e7b288ca63047181cb642c85c253226d85",
+      "FSR3 Quality.cmd": "9b7f266964b55bbdda1667dee04c6b3bd8d9e09b82d7a11a0e7fab6a917ba730",
+      "DLSS Quality.cmd": "d5bdc64ca08fe00c3f603c100be2aa93a1b6f26ac1144f29dbff3f7b0ceb7dd3",
+      "Graphics Options.cmd": "be65841254a49c5515c1f65d2194e501b57fdcfaad3435162a8f2cbf73bde79d"
+    }
+  },
+  "builds": [
+    {
+      "path": "tmp/native-reconstruction-release-20261025/editor-lifetime-build.json",
+      "sha256": "93a3bca47189515a8631dd5c7a3e6bfb3cdf3264d46bdf47089b3cc5e2edb281"
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/template-lifetime-build.json",
+      "sha256": "1c6ab044e65a267a6cf0dbb531ef689c3d64f5144a82f46171a7814626d5e3c7"
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/editor-final-build.json",
+      "sha256": "2c6a315605484d92063fdb3bca1d2e847e87ca094b59ec80568e2b6a7b7cae44"
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/template-final-build.json",
+      "sha256": "05c23fad4a13f33f885ecff14246a6217c6dc01acf9dd0cf2cc1acffa24f7e85"
+    }
+  ],
+  "baseline_package": {
+    "path": "tmp/native-reconstruction-release-20261025/package-before-load-token.json",
+    "sha256": "94caab3ef4c877a4f7044b4634cc2ed387ab67ffa80857b2c9ff7988e401580e"
+  },
+  "baseline_template": {
+    "path": "tmp/native-reconstruction-release-20261025/template-before-load-token.exe",
+    "sha256": "75eedf54aed8d4890e4ff1b578c9f8b50238180d34206b4fb9637dd389532230"
+  },
+  "home_baseline": {
+    "path": "tmp/native-reconstruction-20261025/checks/export-home-loaded-3nxcjw9o/report.json",
+    "sha256": "3e77388baf4d4c3ca846fa643e8dc6e990e48f9305dc2552894d8b623e2b6d8b",
+    "label": "export-home-loaded",
+    "ok": true,
+    "complete": true,
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 47
+    },
+    "reason": "passed",
+    "elapsed_seconds": 42.531,
+    "log_sha256": "5841c0e2bcb170b25777f8cf4acddfd0fa1f9ba92e9cfba6ce4d3aa0aaab2455",
+    "missing_required_text": [],
+    "log": {
+      "path": "tmp/native-reconstruction-20261025/checks/export-home-loaded-3nxcjw9o/engine.log",
+      "sha256": "5841c0e2bcb170b25777f8cf4acddfd0fa1f9ba92e9cfba6ce4d3aa0aaab2455",
+      "validation_message_counts": {
+        "Loader Message": 1
+      },
+      "engine_errors": 0,
+      "warnings": 47,
+      "leaked_object_instances": 121,
+      "leaked_texture_rids": 0,
+      "orphan_string_names": [
+        "MOON_UMBRA_503 (static: 0, total: 1)",
+        "MOON_UMBRA_677 (static: 0, total: 1)",
+        "MOON_UMBRA_U (static: 0, total: 1)"
+      ]
+    }
+  },
+  "export_check": {
+    "path": "tmp/godot-checks/native-package-export/native-windows-trial-pack-gaaf2qu8/report.json",
+    "sha256": "ffd73d49e75fe0f2f871daecadb79b99674c2e77977d4ba9a6e71b285a6d3c21",
+    "label": "native-windows-trial-pack",
+    "ok": true,
+    "complete": true,
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "reason": "passed",
+    "elapsed_seconds": 30.313,
+    "log_sha256": "eaad93e23c5a5195422a4ec74a3e41c7bb122b625a74acf0ccef17d2071fcc24",
+    "missing_required_text": [],
+    "log": {
+      "path": "tmp/godot-checks/native-package-export/native-windows-trial-pack-gaaf2qu8/engine.log",
+      "sha256": "eaad93e23c5a5195422a4ec74a3e41c7bb122b625a74acf0ccef17d2071fcc24",
+      "validation_message_counts": {},
+      "engine_errors": 0,
+      "warnings": 0,
+      "leaked_object_instances": 0,
+      "leaked_texture_rids": 0,
+      "orphan_string_names": []
+    }
+  },
+  "checks": [
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/buffer-waw-before-c4u9zwj_/report.json",
+      "sha256": "056609274486dc8fe3d67bbb6d916d4eba2af685c6aed9e60e4b3f0f16b268f3",
+      "label": "buffer-waw-before",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "reason": "passed",
+      "elapsed_seconds": 16.079,
+      "log_sha256": "f63fdc1704b3bf17802fab29d020539747f7dc927f9d8d37d6b2e11fb6c1a210",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/buffer-waw-before-c4u9zwj_/engine.log",
+        "sha256": "f63fdc1704b3bf17802fab29d020539747f7dc927f9d8d37d6b2e11fb6c1a210",
+        "validation_message_counts": {
+          "Loader Message": 2
+        },
+        "engine_errors": 0,
+        "warnings": 2,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": []
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/canvas-repro-parse-c93gsymu/report.json",
+      "sha256": "f367b5ea11dd738830ca6cc6fabcc8ecacc0cf8c73b7a619daacecc4b8cbeeab",
+      "label": "canvas-repro-parse",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 13.703,
+      "log_sha256": "b5a6fa868b598b3ffb9d2cd712b7a619442573f746f9e9dcb0d63c4bdd12804b",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/canvas-repro-parse-c93gsymu/engine.log",
+        "sha256": "b5a6fa868b598b3ffb9d2cd712b7a619442573f746f9e9dcb0d63c4bdd12804b",
+        "validation_message_counts": {},
+        "engine_errors": 0,
+        "warnings": 0,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": []
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/canvas-waw-before-3xcsyokc/report.json",
+      "sha256": "fbd6707dfa264eb8297326535dd26f3fa49d219ddaed0ed9f572bc34edc71d55",
+      "label": "canvas-waw-before",
+      "ok": false,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 10,
+        "warning": 2
+      },
+      "reason": "engine_error",
+      "elapsed_seconds": 15.453,
+      "log_sha256": "fc92ad57a84ff56e349a65d274803a2fb187e3e259fc37e82eeb38d785959f27",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/canvas-waw-before-3xcsyokc/engine.log",
+        "sha256": "fc92ad57a84ff56e349a65d274803a2fb187e3e259fc37e82eeb38d785959f27",
+        "validation_message_counts": {
+          "Loader Message": 2,
+          "SYNC-HAZARD-WRITE-AFTER-WRITE": 10
+        },
+        "engine_errors": 10,
+        "warnings": 2,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": []
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/canvas-waw-fixed-wfoh4yej/report.json",
+      "sha256": "f4d272ace021f8425c635dcb75ac80791bf2dcf342b090385c1e03b7ec502b85",
+      "label": "canvas-waw-fixed",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "reason": "passed",
+      "elapsed_seconds": 15.078,
+      "log_sha256": "3774f8d88bff44f4d41bb67f179a6281af41ba64e582a1851a1bd47448638c75",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/canvas-waw-fixed-wfoh4yej/engine.log",
+        "sha256": "3774f8d88bff44f4d41bb67f179a6281af41ba64e582a1851a1bd47448638c75",
+        "validation_message_counts": {
+          "Loader Message": 2
+        },
+        "engine_errors": 0,
+        "warnings": 2,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": []
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/dlss-final-x1_i7c_r/report.json",
+      "sha256": "8bc907b4dc1c9d6002c554f0821ac73304dd694385820e81e76c52a7d1bbc654",
+      "label": "dlss-final",
+      "ok": false,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 2,
+        "warning": 2
+      },
+      "reason": "engine_error",
+      "elapsed_seconds": 15.797,
+      "log_sha256": "96d33d2d35c294586acc30cba9e566f7e36b946f97d1d4d393ea7b12311d525d",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/dlss-final-x1_i7c_r/engine.log",
+        "sha256": "96d33d2d35c294586acc30cba9e566f7e36b946f97d1d4d393ea7b12311d525d",
+        "validation_message_counts": {
+          "Loader Message": 2,
+          "VUID-vkCmdDraw-None-09600": 2
+        },
+        "engine_errors": 2,
+        "warnings": 2,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": []
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/export-fsr3-final-fresh-iz5rwuqh/report.json",
+      "sha256": "69eaa3551131a5264ca06e51fc5d05ddd36bc2a3d74667b04ac740cfa6d6f4d0",
+      "label": "export-fsr3-final-fresh",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 24.641,
+      "log_sha256": "21605e80636a4b9fdc218ed9069e98ffc781177a54f3c2d9b2ba1040d30e23e6",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/export-fsr3-final-fresh-iz5rwuqh/engine.log",
+        "sha256": "21605e80636a4b9fdc218ed9069e98ffc781177a54f3c2d9b2ba1040d30e23e6",
+        "validation_message_counts": {},
+        "engine_errors": 0,
+        "warnings": 0,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": []
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/export-fsr3-final-warm-nz1r_cu7/report.json",
+      "sha256": "8d4dfe247546779c630afe552670f844d4231abce0759022bbb7a5fec1c5df83",
+      "label": "export-fsr3-final-warm",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "elapsed_seconds": 17.172,
+      "log_sha256": "eda37d2302d1533428c4af37255c3c05a816c0c879837e5b0f03d90e5c7dee4c",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/export-fsr3-final-warm-nz1r_cu7/engine.log",
+        "sha256": "eda37d2302d1533428c4af37255c3c05a816c0c879837e5b0f03d90e5c7dee4c",
+        "validation_message_counts": {},
+        "engine_errors": 0,
+        "warnings": 0,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": []
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/export-home-final-fresh-uko5sb13/report.json",
+      "sha256": "3203859cef88127544bf67e93dfe628b2175a88ac0e627fd24f931683b936e47",
+      "label": "export-home-final-fresh",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 47
+      },
+      "reason": "passed",
+      "elapsed_seconds": 42.75,
+      "log_sha256": "34e973402b2a0a4a580b635a7f7800a480300020ab8cddd463f5cf29c7463205",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/export-home-final-fresh-uko5sb13/engine.log",
+        "sha256": "34e973402b2a0a4a580b635a7f7800a480300020ab8cddd463f5cf29c7463205",
+        "validation_message_counts": {
+          "Loader Message": 1
+        },
+        "engine_errors": 0,
+        "warnings": 47,
+        "leaked_object_instances": 4,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": [
+          "Master (static: 0, total: 4)",
+          "MOON_UMBRA_503 (static: 0, total: 1)",
+          "MOON_UMBRA_677 (static: 0, total: 1)",
+          "MOON_UMBRA_U (static: 0, total: 1)"
+        ]
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/export-home-final-warm-3_k_7akf/report.json",
+      "sha256": "e716ea5fdd9d2d525c82da34931fd6c555451f6b43dd0de77a5b29f54e963dcf",
+      "label": "export-home-final-warm",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 46
+      },
+      "reason": "passed",
+      "elapsed_seconds": 40.281,
+      "log_sha256": "13a4cea5298f3522c5ec9dd6df866469570064881c9b2378e4369d8773cdccf8",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/export-home-final-warm-3_k_7akf/engine.log",
+        "sha256": "13a4cea5298f3522c5ec9dd6df866469570064881c9b2378e4369d8773cdccf8",
+        "validation_message_counts": {
+          "Loader Message": 1
+        },
+        "engine_errors": 0,
+        "warnings": 46,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": [
+          "MOON_UMBRA_503 (static: 0, total: 1)",
+          "MOON_UMBRA_677 (static: 0, total: 1)",
+          "MOON_UMBRA_U (static: 0, total: 1)"
+        ]
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/home-load-token-fixed-6qa9p94r/report.json",
+      "sha256": "8680388b8b94aa3d170df6c0d8bbabe97c0234b235c7a6fb80e251f20ad87242",
+      "label": "home-load-token-fixed",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 46
+      },
+      "reason": "passed",
+      "elapsed_seconds": 46.515,
+      "log_sha256": "a3ac61e1026fd99d228aaf174a7ea13dd83d9f22704543515390cdd2a56a4aab",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/home-load-token-fixed-6qa9p94r/engine.log",
+        "sha256": "a3ac61e1026fd99d228aaf174a7ea13dd83d9f22704543515390cdd2a56a4aab",
+        "validation_message_counts": {
+          "Loader Message": 1
+        },
+        "engine_errors": 0,
+        "warnings": 46,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": [
+          "MOON_UMBRA_503 (static: 0, total: 1)",
+          "MOON_UMBRA_677 (static: 0, total: 1)",
+          "MOON_UMBRA_U (static: 0, total: 1)"
+        ]
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/home-load-token-fixed-zj8g82gm/report.json",
+      "sha256": "769b6aed4769ed966727631eb4ec8b6b6de07af9b0aad3b06c8edfbcbc424afb",
+      "label": "home-load-token-fixed",
+      "ok": false,
+      "complete": false,
+      "process_exit": null,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "launch_error",
+      "elapsed_seconds": 0.0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missing_required_text": [
+        "Completed load for: 'res://app_root.tscn'"
+      ],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/home-load-token-fixed-zj8g82gm/engine.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "validation_message_counts": {},
+        "engine_errors": 0,
+        "warnings": 0,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": []
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/native-separate-final-ejefhrx4/report.json",
+      "sha256": "02d87f31dc2436019d1c3851f2a3a090042df0ac5174d04438eb2fdff319683f",
+      "label": "native-separate-final",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 3
+      },
+      "reason": "passed",
+      "elapsed_seconds": 15.89,
+      "log_sha256": "0388d2036a70563297837b46b6d335396f814537dc177cf27804d8e99337f6fb",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/native-separate-final-ejefhrx4/engine.log",
+        "sha256": "0388d2036a70563297837b46b6d335396f814537dc177cf27804d8e99337f6fb",
+        "validation_message_counts": {
+          "Loader Message": 2
+        },
+        "engine_errors": 0,
+        "warnings": 3,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": []
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/reflection-before-four-worlds-dzbiq1wv/report.json",
+      "sha256": "f0c5c6a1a0024a110ffe4359f789ecc622d3d2047f0424e8ba71724b0dabdf11",
+      "label": "reflection-before-four-worlds",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 3
+      },
+      "reason": "passed",
+      "elapsed_seconds": 14.86,
+      "log_sha256": "8a1ca4eb7ff6896794a815a22328fe5ad4fdbb7c0231dd64b7b1dec4c218337a",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/reflection-before-four-worlds-dzbiq1wv/engine.log",
+        "sha256": "8a1ca4eb7ff6896794a815a22328fe5ad4fdbb7c0231dd64b7b1dec4c218337a",
+        "validation_message_counts": {
+          "Loader Message": 2
+        },
+        "engine_errors": 0,
+        "warnings": 3,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 28,
+        "orphan_string_names": []
+      }
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/checks/reflection-fixed-four-worlds-w5iislj7/report.json",
+      "sha256": "34a7088e94f4cb965ef8b43967f0bf152211ceb6be4e3e0b896fb576fe97eed9",
+      "label": "reflection-fixed-four-worlds",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "reason": "passed",
+      "elapsed_seconds": 14.172,
+      "log_sha256": "1b9229eb5f8325046fe89e2897046fa3107abd30877b345bb8506fd0a4a10ce2",
+      "missing_required_text": [],
+      "log": {
+        "path": "tmp/native-reconstruction-release-20261025/checks/reflection-fixed-four-worlds-w5iislj7/engine.log",
+        "sha256": "1b9229eb5f8325046fe89e2897046fa3107abd30877b345bb8506fd0a4a10ce2",
+        "validation_message_counts": {
+          "Loader Message": 2
+        },
+        "engine_errors": 0,
+        "warnings": 2,
+        "leaked_object_instances": 0,
+        "leaked_texture_rids": 0,
+        "orphan_string_names": []
+      }
+    }
+  ],
+  "fsr3_lifetime": {
+    "status": {
+      "available": true,
+      "backend_failed": false,
+      "contexts_created": 11,
+      "dispatches_succeeded": 675,
+      "last_return_code": 0,
+      "provider_version": "3.1.4"
+    },
+    "stop": {
+      "stopped": true,
+      "pid": 63656,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "log": {
+      "path": "tmp/debug-bridge/20261025-074731-47942/engine.log",
+      "sha256": "49e7297dc3070b2bf048398cbdc5cf58bee5164c109ec45ce0f2da8262dd42b0",
+      "validation_message_counts": {
+        "Loader Message": 2,
+        "SYNC-HAZARD-WRITE-AFTER-WRITE": 10
+      },
+      "engine_errors": 10,
+      "warnings": 45,
+      "leaked_object_instances": 0,
+      "leaked_texture_rids": 0,
+      "orphan_string_names": [
+        "MOON_UMBRA_503 (static: 0, total: 1)",
+        "MOON_UMBRA_677 (static: 0, total: 1)",
+        "MOON_UMBRA_U (static: 0, total: 1)"
+      ]
+    }
+  },
+  "fsr3_final": {
+    "status": {
+      "available": true,
+      "backend_failed": false,
+      "contexts_created": 11,
+      "dispatches_succeeded": 698,
+      "last_return_code": 0,
+      "provider_version": "3.1.4"
+    },
+    "stop": {
+      "stopped": true,
+      "pid": 66340,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "smoke": {
+      "path": "tmp/native-reconstruction-release-20261025/fsr3-final-smoke.log",
+      "sha256": "762ea572f3fbe97ba04ed308fe0ca35b6cb66d23765712bf7e42dc409beee4b2"
+    },
+    "log": {
+      "path": "tmp/debug-bridge/20261025-075411-47942/engine.log",
+      "sha256": "20458c99d22384ccde3b5661fe672a9bcb520a8463d9d2e72cc18a2f7b3e6b8a",
+      "validation_message_counts": {
+        "Loader Message": 2
+      },
+      "engine_errors": 0,
+      "warnings": 45,
+      "leaked_object_instances": 0,
+      "leaked_texture_rids": 0,
+      "orphan_string_names": [
+        "MOON_UMBRA_503 (static: 0, total: 1)",
+        "MOON_UMBRA_677 (static: 0, total: 1)",
+        "MOON_UMBRA_U (static: 0, total: 1)"
+      ]
+    }
+  },
+  "fixtures": [
+    {
+      "path": "tmp/native-reconstruction-release-20261025/buffer_waw.gd",
+      "sha256": "130b3b6d355c155d825e2459c43132d6ba2862b0da9c44caa71bd89936e2003a"
+    },
+    {
+      "path": "tmp/native-reconstruction-release-20261025/canvas_waw.gd",
+      "sha256": "b4b6d02cf3d9e2ee37353b9c02d10695ea10a4ae19588345177b6a6649a9a736"
+    },
+    {
+      "path": "tools/graphics/native/repro/canvas_waw.gd",
+      "sha256": "bfc19c6f2d7643805bc4b1ead9f0272b2bf2dc97e20777146bff7ca6e48cf7a4"
+    }
+  ],
+  "research_note": {
+    "path": "tmp/native-reconstruction-release-20261025/dlss-research.md",
+    "sha256": "980f59c43473971da0a326fde98d0d14e7e355095d616688f69b6b2b6ce09c93"
+  },
+  "captures": [
+    {
+      "name": "fsr3-final-fresh",
+      "manifest": {
+        "path": "tmp/native-reconstruction-release-20261025/fsr3-final-fresh.json",
+        "sha256": "7cb6f3216894fa47cf8879f6ece0b8707872c13631fd811aa9dfbad6beac6d6d"
+      },
+      "image": {
+        "path": "tmp/native-reconstruction-release-20261025/fsr3-final-fresh.png",
+        "sha256": "4da0ccaeea12aea528b69276e118f897eb50968d5c57536277dc3bbd36d0efa6",
+        "dimensions": [
+          1920,
+          1080
+        ]
+      },
+      "manifest_png_hash_matches": true,
+      "reconstruction": {
+        "backend": {
+          "available": true,
+          "backend_failed": false,
+          "contexts_created": 1,
+          "dispatches_succeeded": 36,
+          "last_return_code": 0,
+          "provider_version": "3.1.4"
+        },
+        "effective": "fsr3_quality",
+        "effective_provider": "fsr3",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 1.29999995231628,
+        "msaa_3d": 0,
+        "nominal_3d_size": [
+          1280,
+          720
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "fsr3",
+        "provider_available": true,
+        "requested": "fsr3_quality",
+        "requested_provider": "fsr3",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 7,
+        "sharpening_active": true,
+        "sharpening_strength": 0.350000023841858,
+        "temporal": true,
+        "texture_mipmap_bias": 0.0
+      }
+    },
+    {
+      "name": "fsr3-final-warm",
+      "manifest": {
+        "path": "tmp/native-reconstruction-release-20261025/fsr3-final-warm.json",
+        "sha256": "ef1aae9943c9de75333f6cb12d333d7a51c8d19379f4131105eddcd013b74fb5"
+      },
+      "image": {
+        "path": "tmp/native-reconstruction-release-20261025/fsr3-final-warm.png",
+        "sha256": "eb94b023af1b9046c9462f5f97d6bfe2570e4a0964f82c9144ef3713ac495b16",
+        "dimensions": [
+          1920,
+          1080
+        ]
+      },
+      "manifest_png_hash_matches": true,
+      "reconstruction": {
+        "backend": {
+          "available": true,
+          "backend_failed": false,
+          "contexts_created": 1,
+          "dispatches_succeeded": 36,
+          "last_return_code": 0,
+          "provider_version": "3.1.4"
+        },
+        "effective": "fsr3_quality",
+        "effective_provider": "fsr3",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 1.29999995231628,
+        "msaa_3d": 0,
+        "nominal_3d_size": [
+          1280,
+          720
+        ],
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "fsr3",
+        "provider_available": true,
+        "requested": "fsr3_quality",
+        "requested_provider": "fsr3",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 7,
+        "sharpening_active": true,
+        "sharpening_strength": 0.350000023841858,
+        "temporal": true,
+        "texture_mipmap_bias": 0.0
+      }
+    }
+  ],
+  "limitations": [
+    "Only Windows/Vulkan on the RTX 3090 was rendered; no cross-vendor or performance qualification.",
+    "LoadToken patch is an open upstream proposal, validated here on exported Home; this is not broad threaded-loader qualification.",
+    "Home no longer retains the 121 zero-reference LoadTokens. Final fresh-profile exit retains four audio stream/playback instances with reference count one; warm repeat retains none. Audio shutdown remains open.",
+    "RGB8 conversion, loader and orphan StringName diagnostics remain.",
+    "Canvas baseline message count can be capped by validation-layer repetition limits.",
+    "The raw-buffer experiment did not reproduce the hazard; the empty CanvasLayer fixture did.",
+    "Buffer-only cross-frame dependency fix does not qualify texture-slice or acceleration-structure synchronization.",
+    "DLSS completes its phases but still fails validation with two internal-image 09600 errors; token/callback changes are not implemented.",
+    "Original intermittent export shutdown hang, temporal motion quality, long sessions and Godot upgrade gates remain open.",
+    "Fresh application profiles do not clear driver caches; lifecycle elapsed times are not FPS benchmarks."
+  ]
+}

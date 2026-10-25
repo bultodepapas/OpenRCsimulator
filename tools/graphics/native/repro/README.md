@@ -32,3 +32,22 @@ python tools/godot/run_checked.py --label minimal-native-separate --timeout 150 
 If Streamline or its DLSS capability is absent, the DLSS run exits with code 2 and a `MINIMAL_DLSS|UNAVAILABLE` marker. A headless run also exits early, so it cannot be mistaken for a graphics repro.
 
 On 2026-10-25, the same fixture in an isolated working directory completed with Streamline 2.11.1 on the RTX 3090. Native with the shutdown ownership patch exited zero with no engine errors (192 frames). DLSS exited zero after all 384 frames but emitted two `VUID-vkCmdDraw-None-09600` errors, so its checked validation failed. See the [dated evidence](../../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md). Generated caches and logs must remain untracked.
+
+## Canvas buffer synchronization regression
+
+`canvas_waw.gd` isolates a separate native-renderer defect: a ColorRect followed
+by an empty CanvasLayer leaves the canvas uniform buffer's final use as a write.
+The next frame writes it again. The original graph resets its command indices
+between frames and omits the required memory dependency for that same usage.
+This case uses no 3D scene or reconstruction provider.
+
+With the validation environment above, run:
+
+```powershell
+python tools/godot/run_checked.py --label canvas-buffer-sync --timeout 120 --require-text 'CANVAS_WAW|COMPLETE|frames=16' -- $Godot --verbose --path $Project --audio-driver Dummy --script res://canvas_waw.gd
+```
+
+Require zero validation errors as well as the completion marker. The unpatched
+engine exits zero despite its write-after-write errors, so exit status alone is
+insufficient. `buffer_write_sync.patch` adds the missing prior-frame dependency
+for buffers; it does not change texture-slice or acceleration-structure tracking.
