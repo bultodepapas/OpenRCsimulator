@@ -192,6 +192,12 @@ Godot documents different shader colour/depth conventions and compositor availab
 
 ### VQ-07d: preserve a small moving aircraft
 
+Owner-requested native-provider follow-up, 2026-10-24: the application now discovers
+optional FSR3/DLSS capabilities, with a separate pinned Windows/Vulkan engine
+experiment. Production remains on 4.7.2. See the [implementation evidence](../research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md)
+and [build guide](../../tools/graphics/native/README.md). This does not close the
+motion-quality, performance, export or cross-device qualification gates below.
+
 **2026-10-24, user-requested FSR2 trial:** the existing High profile now offers Native,
 FSR2 Native AA, custom 85%, Quality, Balanced and Performance through the reversible
 graphics settings, with 0–100% sharpening. The latter options follow the owner's

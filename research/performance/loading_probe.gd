@@ -80,6 +80,14 @@ func _run() -> void:
 		# Await the real handoff; never call start_flight directly or bypass readiness.
 		var handoff := await _wait_for_flight(app, home)
 		if not handoff.ok:
+			# Keep the actual refusal/cancellation reason before cleanup disposes Home.
+			var failure_state: Dictionary = {}
+			if is_instance_valid(app):
+				failure_state = {cycle = index + 1, loading = app.last_flight_loading,
+					note = app.home.note_label.text if is_instance_valid(app.home) else "no Home",
+					phase = app._loading_phase, cancelled = app._loading_cancelled,
+					focus_lost = app._loading_focus_lost}
+			print("loading probe failure state: ", JSON.stringify(failure_state))
 			_fail(handoff.error)
 			return
 		var ready: int = handoff.ready_usec

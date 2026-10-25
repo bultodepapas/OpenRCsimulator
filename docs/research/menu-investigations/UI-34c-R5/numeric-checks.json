@@ -1,0 +1,126 @@
+{
+  "experiment": "fused electric residual/tolerance evaluation",
+  "checks": [
+    {
+      "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r5\\checked-fused\\r5-fused-parity-u2k90yo2\\report.json",
+      "label": "r5-fused-parity",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 26.703,
+      "log_sha256": "3a31cdb666ea4aa39a1ab64fe68939427450803a97314ebf4fe4e3684a66d828"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r5\\checked-fused\\test_battery_pack_ecm-u79c98re\\report.json",
+      "label": "test_battery_pack_ecm",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.766,
+      "log_sha256": "301d86f25e89512a136c0cab66095357f82a171086def1c939a8db72ceff4373"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r5\\checked-fused\\test_cruise_trim-zgdlawru\\report.json",
+      "label": "test_cruise_trim",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 2.766,
+      "log_sha256": "f6867762850d99ba75945def65ac601c8d326b124689a1383e977ba7898f8267"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r5\\checked-fused\\test_electric_equilibrium_preparation-apfk5z78\\report.json",
+      "label": "test_electric_equilibrium_preparation",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.844,
+      "log_sha256": "9138b37478e77210307e19ba998336325c8c018ba75970e484e313e819282483"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r5\\checked-fused\\test_electric_propulsion-cj1e3clr\\report.json",
+      "label": "test_electric_propulsion",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 2.125,
+      "log_sha256": "54dc24ba77613523f873847fe09254e4016bff8681bcfc2e8402d6c8c2c392ac"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r5\\checked-fused\\test_electric_trim_reuse-fdvxqdbv\\report.json",
+      "label": "test_electric_trim_reuse",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.578,
+      "log_sha256": "ef2f61d595d6dcff09cabaa030c405bb74f9222712a680074d6da2d7d4fdab66"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r5\\checked-fused\\test_flight_session_staged-w1jk08ez\\report.json",
+      "label": "test_flight_session_staged",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 27.282,
+      "log_sha256": "02cb37760993b403c82f40d541078fc76f7377d3058015134a58249eb98d5c5b"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r5\\checked-fused\\test_golden-8s5xgwq2\\report.json",
+      "label": "test_golden",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.391,
+      "log_sha256": "1cb52c8d6be1e486f10bc083655130d0686330e203ea62de9ee15f8c5f9c6737"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r5\\checked-fused\\test_launch_trim_async-snbmg5gl\\report.json",
+      "label": "test_launch_trim_async",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 18.61,
+      "log_sha256": "f08d889b2a3185c283e82c70cbb6552b94a44ffcdd29faf9025b407ea5d3ff47"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\ui34c-r5\\checked-fused\\test_launch_trim_cache-m3xm1015\\report.json",
+      "label": "test_launch_trim_cache",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.234,
+      "log_sha256": "a04a8f0d681ce1e84e0d73f1f6aee2cdf2f7a857c938a47c08534331aac3e9a6"
+    }
+  ],
+  "targeted_assertions": 257,
+  "unchanged_golden_flights": 4,
+  "differential_roots": 10,
+  "full_start_bytes": 784,
+  "start_sha256": "105610a95322c2d1ef1e32e3ebfe2719c254a1ef90e1bd4ab581bfdad1b17d07",
+  "engine_released": true,
+  "timing_caveat": "Single-order instrumented closure timings establish neither native loading performance nor a controlled uninstrumented numerical speedup. Every instrumented counter adds static Dictionary operations; evaluate performance separately.",
+  "sources": {
+    "app/physics/propulsion.gd": "70b0f8b4ad7ecbfd1603d7ad6032d0527665ba28aa6d216120a385f3c2e55f8a",
+    "app/tests/test_electric_equilibrium_preparation.gd": "7ac69f149e463dcde2872083227023c3527f9d2283b66635427c05788505adbd"
+  }
+}

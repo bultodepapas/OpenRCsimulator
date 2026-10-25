@@ -1,0 +1,28 @@
+# Requires a ready experimental Forward+ flight and a supported DLSS device/runtime.
+# Inspect Vulkan validation output and screenshots separately from bridge assertions.
+pause
+window mode=fullscreen
+assert expr="ResourceLoader.load('res://render/reconstruction.gd').runtime_capabilities().dlss" message="DLSS capability available"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'dlss_native','fsr2_sharpness':0.9,'msaa_3d':2})"
+wait frames=64
+assert expr="app.get_viewport().fsr_sharpness == 0.0 and app.get_viewport().msaa_3d == 0" message="DLAA owns AA without added NIS sharpening"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'dlss_quality','msaa_3d':2})"
+wait frames=64
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"
+screenshot max_width=1920
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'dlss_balanced','msaa_3d':2})"
+wait frames=64
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'dlss_performance','msaa_3d':2})"
+wait frames=64
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"
+window mode=windowed
+window size=1600x900
+wait frames=64
+window mode=fullscreen
+wait frames=64
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'native','msaa_3d':2})"
+wait frames=32
+assert expr="app.get_viewport().scaling_3d_scale == 1.0 and app.get_viewport().msaa_3d == 2" message="Native restored full scale and saved MSAA"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"

@@ -1,0 +1,81 @@
+{
+	"checks": [
+		{
+			"detail": "f4u-corsair-250",
+			"label": "Corsair flight running on the keyboard path",
+			"ok": true
+		},
+		{
+			"detail": "up",
+			"label": "airborne start: gear retractable and up",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "gear down request accepted",
+			"ok": true
+		},
+		{
+			"detail": "4.5 s (data 4.0 s)",
+			"label": "gear extends to down and locked",
+			"ok": true
+		},
+		{
+			"detail": "0.347 m",
+			"label": "rendered main wheel travels with the rig",
+			"ok": true
+		},
+		{
+			"detail": "lift +201.3 N, drag +13.2 N, pitch moment -21.29 N m",
+			"label": "full flap adds lift and drag at the same state",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "flap request accepted",
+			"ok": true
+		},
+		{
+			"detail": "30.00 deg in 2.6 s (data 2.5 s)",
+			"label": "flaps reach the 30 deg landing setting",
+			"ok": true
+		},
+		{
+			"detail": "30.00 deg",
+			"label": "rendered flap hinge follows to 30 deg",
+			"ok": true
+		},
+		{
+			"detail": "{ \"show_exhaust\": 672, \"source_exhaust\": 60 }",
+			"label": "stock show-smoke profile configured",
+			"ok": true
+		},
+		{
+			"detail": "request 1.00, emitting [\"show_exhaust\", \"source_exhaust\"]",
+			"label": "smoke on: emitters running with the engine",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "gear up request accepted in flight",
+			"ok": true
+		},
+		{
+			"detail": "4.1 s",
+			"label": "gear retracts to up",
+			"ok": true
+		},
+		{
+			"detail": "0.0000 m",
+			"label": "rendered wheel returns to the stowed pose",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "no crash or fault during the sequence",
+			"ok": true
+		}
+	],
+	"failures": 0,
+	"format": "F4U-12 systems check v1"
+}

@@ -1,0 +1,56 @@
+{
+ "scene": "direct route, --scripted --aircraft=f4u-corsair-250 --view=closeup --start=airborne, 1920x1080, --max-fps 0 (VSync on), warmup 10 s, 45 s sample",
+ "a": "HEAD 7bfbe2ec0 with the Corsair runtime and authoring files of 343be4b0b (g1.13)",
+ "b": "HEAD 7bfbe2ec0 (g2.1)",
+ "order": "a-1, b-1, a-2, b-2",
+ "runs": {
+  "a-1": {
+   "frames": 2700,
+   "complete": true,
+   "frame_ms": {
+    "max": 18.11,
+    "p50": 16.666,
+    "p95": 17.087,
+    "p99": 17.267
+   },
+   "adapter": "NVIDIA GeForce RTX 3090",
+   "window": "1920x1061"
+  },
+  "b-1": {
+   "frames": 2700,
+   "complete": true,
+   "frame_ms": {
+    "max": 17.828,
+    "p50": 16.665,
+    "p95": 17.09,
+    "p99": 17.345
+   },
+   "adapter": "NVIDIA GeForce RTX 3090",
+   "window": "1920x1061"
+  },
+  "a-2": {
+   "frames": 2700,
+   "complete": true,
+   "frame_ms": {
+    "max": 33.992,
+    "p50": 16.63,
+    "p95": 17.159,
+    "p99": 17.486
+   },
+   "adapter": "NVIDIA GeForce RTX 3090",
+   "window": "1920x1061"
+  },
+  "b-2": {
+   "frames": 2700,
+   "complete": true,
+   "frame_ms": {
+    "max": 33.251,
+    "p50": 16.66,
+    "p95": 17.087,
+    "p99": 17.295
+   },
+   "adapter": "NVIDIA GeForce RTX 3090",
+   "window": "1920x1061"
+  }
+ }
+}

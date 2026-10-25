@@ -179,7 +179,7 @@
     },
     {
       "path": "res://aircraft/model_manifest.gd",
-      "sha256": "a384fbfb22653a89449deb94d98a4839f500ec769b06d90f0f6da0570c25dc25",
+      "sha256": "7390e3d6a808fa96fd990c54deabb0151ff13a2d1b0f7b229368485cd3d68f7d",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },

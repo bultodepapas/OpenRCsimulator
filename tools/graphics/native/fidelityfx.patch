@@ -1,0 +1,79 @@
+diff --git a/sdk/include/FidelityFX/gpu/fsr3upscaler/ffx_fsr3upscaler_callbacks_glsl.h b/sdk/include/FidelityFX/gpu/fsr3upscaler/ffx_fsr3upscaler_callbacks_glsl.h
+--- a/sdk/include/FidelityFX/gpu/fsr3upscaler/ffx_fsr3upscaler_callbacks_glsl.h
++++ b/sdk/include/FidelityFX/gpu/fsr3upscaler/ffx_fsr3upscaler_callbacks_glsl.h
+@@ -395,7 +395,7 @@
+ #endif
+ 
+ #if defined(FSR3UPSCALER_BIND_UAV_LUMA_HISTORY)
+-layout (set = 0, binding = FSR3UPSCALER_BIND_UAV_LUMA_HISTORY, rgba8) uniform image2D  rw_luma_history;
++layout (set = 0, binding = FSR3UPSCALER_BIND_UAV_LUMA_HISTORY, rgba16f) uniform image2D  rw_luma_history;
+ 
+ void StoreLumaHistory(FfxInt32x2 iPxPos, FfxFloat32x4 fLumaHistory)
+ {
+diff --git a/sdk/src/backends/vk/ffx_vk.cpp b/sdk/src/backends/vk/ffx_vk.cpp
+--- a/sdk/src/backends/vk/ffx_vk.cpp
++++ b/sdk/src/backends/vk/ffx_vk.cpp
+@@ -1202,7 +1202,9 @@
+         FfxResourceStates& curState = backendContext->pResources[resource->internalIndex].currentState;
+ 
+         VkImageSubresourceRange range;
+-        range.aspectMask = getImageAspect(ffxResource.resourceDescription.usage);
++        range.aspectMask = getImageAspect(ffxResource.resourceDescription.usage);
++        if (FFX_CONTAINS_FLAG(ffxResource.resourceDescription.usage, FFX_RESOURCE_USAGE_STENCILTARGET))
++            range.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+         range.baseMipLevel = 0;
+         range.levelCount = VK_REMAINING_MIP_LEVELS;
+         range.baseArrayLayer = 0;
+diff --git a/ffx-api/CMakeLists.txt b/ffx-api/CMakeLists.txt
+--- a/ffx-api/CMakeLists.txt
++++ b/ffx-api/CMakeLists.txt
+@@ -74,8 +74,11 @@
+ file(GLOB private_ffx_api
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/resource/*.*
+ 	${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
+ 	${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+ 
++# Keep the trial API to FSR3 upscaling and its upstream frame interpolation dependencies.
++list(FILTER private_ffx_api EXCLUDE REGEX "ffx_provider_fsr2\\.cpp$")
++
+ file(GLOB public_ffx_api
+ 	${CMAKE_CURRENT_SOURCE_DIR}/include/ffx_api/*.h
+ 	${CMAKE_CURRENT_SOURCE_DIR}/include/ffx_api/*.hpp)
+@@ -133,15 +136,15 @@
+ # FSR dependency, must be built before using BuildFidelityFXSDK.bat
+ 
+-set(FFX_FSR2 ON)
+-set(FFX_FSR3 ON)
++set(FFX_FSR2 OFF)
++set(FFX_FSR3 OFF)
+ set(FFX_FSR3UPSCALER ON)
+ set(FFX_OF ON)
+ set(FFX_FI ON)
+ set(FFX_AUTO_COMPILE_SHADERS ON)
+ set(FFX_BUILD_AS_DLL OFF)
+ add_subdirectory(../sdk sdk)
+ 
+-target_link_libraries(amd_fidelityfx_${FFX_PLATFORM_NAME} PRIVATE ffx_fsr2_${CMAKE_GENERATOR_PLATFORM} ffx_fsr3upscaler_${CMAKE_GENERATOR_PLATFORM} ffx_opticalflow_${CMAKE_GENERATOR_PLATFORM} ffx_frameinterpolation_${CMAKE_GENERATOR_PLATFORM} DXGI)
++target_link_libraries(amd_fidelityfx_${FFX_PLATFORM_NAME} PRIVATE ffx_fsr3upscaler_${CMAKE_GENERATOR_PLATFORM} ffx_opticalflow_${CMAKE_GENERATOR_PLATFORM} ffx_frameinterpolation_${CMAKE_GENERATOR_PLATFORM} DXGI)
+ if (FFX_API_BACKEND STREQUAL VK_X64)
+ 	find_package(Vulkan REQUIRED)
+ 	target_link_libraries(amd_fidelityfx_${FFX_PLATFORM_NAME} PRIVATE Vulkan::Headers ffx_backend_vk_${CMAKE_GENERATOR_PLATFORM})
+diff --git a/ffx-api/src/ffx_provider.cpp b/ffx-api/src/ffx_provider.cpp
+--- a/ffx-api/src/ffx_provider.cpp
++++ b/ffx-api/src/ffx_provider.cpp
+@@ -24,7 +24,6 @@
+ 
+ #include "ffx_provider.h"
+ 
+-#include "ffx_provider_fsr2.h"
+ #include "ffx_provider_fsr3upscale.h"
+ #include "ffx_provider_framegeneration.h"
+ #include "ffx_provider_external.h"
+@@ -41,7 +40,6 @@
+ 
+ static constexpr ffxProvider* providers[] = {
+     &ffxProvider_FSR3Upscale::Instance,
+-    &ffxProvider_FSR2::Instance,
+     &ffxProvider_FrameGeneration::Instance,
+ #ifdef FFX_BACKEND_DX12
+     &ffxProvider_FrameGenerationSwapChain_DX12::Instance,

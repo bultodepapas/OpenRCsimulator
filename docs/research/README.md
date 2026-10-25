@@ -130,6 +130,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [DT-00-R1](desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](desktop-delivery-investigations/DT-00-R2/README.md) for platform, installer, display, performance and native-test research. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) tracks acceptance.
 
+The [twenty M1–M5 investigations, 2026-10-24](desktop-delivery-investigations/DT-MAC-00-R1/README.md) extend the [initial Apple Silicon review](apple-silicon-performance-2026-10-24.md) and support the [M1–M5 execution plan](../plans/apple-silicon-performance.md): native tools, capabilities/presets, renderer/MetalFX comparisons and sustained 1080p qualification. An M1 is available for tests; the research contains no native Mac performance result.
+
 ### Roadmap knowledge base (all phases)
 
 [Roadmap investigations](roadmap-investigations/README.md) collects pre-work research for numerics, aerodynamics, propulsion, ground handling, radio, weather, validation, aircraft data and presentation. Read the relevant phase brief before starting its implementation step.

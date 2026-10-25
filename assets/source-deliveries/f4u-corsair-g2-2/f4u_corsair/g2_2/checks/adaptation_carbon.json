@@ -1,0 +1,18 @@
+{
+  "id": "carbon",
+  "name": "Carbon 12 / Aero Sport",
+  "blend": "source/aircraft_carbon.blend",
+  "glb": "export/aircraft_carbon.glb",
+  "blend_sha256": "7afc3480c4a5bf56e47c01f7733b85503a04954b3f54f61ccf76af02f3d2278f",
+  "glb_sha256": "ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278",
+  "glb_bytes": 27575148,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 58,
+  "materials": 15,
+  "images": 9,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 1.0
+}

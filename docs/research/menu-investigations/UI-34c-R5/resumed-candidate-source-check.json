@@ -1,0 +1,67 @@
+[
+  {
+    "path": "app/app_root.gd",
+    "matches": true,
+    "sha256": "04580f314bdadf3bc919275f46118b6967db216e6ee6c51bc433c7f2699eb302"
+  },
+  {
+    "path": "app/ui/home_preview_resources.gd",
+    "matches": true,
+    "sha256": "c8333fe10c9e366267095e1432005847e7672ef6cc03c1b84f88aaf56ecea22b"
+  },
+  {
+    "path": "app/ui/flight_scene_load.gd",
+    "matches": true,
+    "sha256": "f18209bd37084a1b5c71501f06f62654f9e1e9826fe0d8c61299da0d81407c12"
+  },
+  {
+    "path": "app/physics/propulsion.gd",
+    "matches": true,
+    "sha256": "70b0f8b4ad7ecbfd1603d7ad6032d0527665ba28aa6d216120a385f3c2e55f8a"
+  },
+  {
+    "path": "app/physics/trim.gd",
+    "matches": true,
+    "sha256": "bfaf4786391239fe65d65c505c499073d89f8b648d6bf20768bf963373328ee0"
+  },
+  {
+    "path": "app/physics/cruise_trim.gd",
+    "matches": true,
+    "sha256": "50c227cd7d5d57b96cc84f8f7ce6d37666c2e90907f90bda25577443cfd81213"
+  },
+  {
+    "path": "app/sim/flight_session.gd",
+    "matches": true,
+    "sha256": "4d236335125a0f481d31f301dcfd8c0525dbd75c4a4d045d40457cb5ac845fc3"
+  },
+  {
+    "path": "app/sim/launch_trim_cache.gd",
+    "matches": true,
+    "sha256": "5110d1b16687868c98ef537b2e3f8f5b6451277d4b8b90afcaa0b63ef7690d42"
+  },
+  {
+    "path": "app/scenery/collision_world.gd",
+    "matches": true,
+    "sha256": "4794fd0b47ac27bd6c21954a7e500485459fb0312551792f7f15f76c6ac61372"
+  },
+  {
+    "path": "app/main.gd",
+    "matches": true,
+    "sha256": "fcb302d91eef665854bdee19ff082d33f959a307a274d243f6e3b69b84b98f09"
+  },
+  {
+    "path": "app/project.godot",
+    "matches": true,
+    "sha256": "87e1695b4612e405987586e79cf53e4d0776db578ac09222dff58b32b9f276d1"
+  },
+  {
+    "path": "app/app_state/preferences.gd",
+    "matches": true,
+    "sha256": "87669c4743095647d870123bd347a7e54509e37f19a839ac84e3be8d768678ee"
+  },
+  {
+    "path": "app/render/world/moon_disc.gdshaderinc",
+    "matches": true,
+    "sha256": "cba8b6ea7f291f9d7479716282942332e68b3dbf14f4fb14f98a7cd5e7205ce6"
+  }
+]

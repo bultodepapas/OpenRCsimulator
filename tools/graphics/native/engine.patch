@@ -1,0 +1,393 @@
+--- a/servers/rendering/rendering_server_enums.h
++++ b/servers/rendering/rendering_server_enums.h
+@@ -467,6 +467,7 @@
+ 	VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL,
+ 	VIEWPORT_SCALING_3D_MODE_NEAREST,
+ 	VIEWPORT_SCALING_3D_MODE_DLSS,
++	VIEWPORT_SCALING_3D_MODE_FSR3,
+ 	VIEWPORT_SCALING_3D_MODE_MAX,
+ 	VIEWPORT_SCALING_3D_MODE_OFF = 255, // for internal use only
+ };
+@@ -481,7 +482,7 @@
+ inline ViewportScaling3DType scaling_3d_mode_type(ViewportScaling3DMode p_mode) {
+ 	if (p_mode == VIEWPORT_SCALING_3D_MODE_NEAREST || p_mode == VIEWPORT_SCALING_3D_MODE_BILINEAR || p_mode == VIEWPORT_SCALING_3D_MODE_FSR || p_mode == VIEWPORT_SCALING_3D_MODE_METALFX_SPATIAL) {
+ 		return VIEWPORT_SCALING_3D_TYPE_SPATIAL;
+-	} else if (p_mode == VIEWPORT_SCALING_3D_MODE_FSR2 || p_mode == VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL || p_mode == VIEWPORT_SCALING_3D_MODE_DLSS) {
++	} else if (p_mode == VIEWPORT_SCALING_3D_MODE_FSR3 || p_mode == VIEWPORT_SCALING_3D_MODE_FSR2 || p_mode == VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL || p_mode == VIEWPORT_SCALING_3D_MODE_DLSS) {
+ 		return VIEWPORT_SCALING_3D_TYPE_TEMPORAL;
+ 	}
+ 	return VIEWPORT_SCALING_3D_TYPE_NONE;
+--- a/scene/main/viewport.h
++++ b/scene/main/viewport.h
+@@ -105,6 +105,7 @@
+ 		SCALING_3D_MODE_METALFX_TEMPORAL,
+ 		SCALING_3D_MODE_NEAREST,
+ 		SCALING_3D_MODE_DLSS,
++		SCALING_3D_MODE_FSR3,
+ 		SCALING_3D_MODE_MAX
+ 	};
+ 
+--- a/scene/main/viewport.cpp
++++ b/scene/main/viewport.cpp
+@@ -5467,6 +5467,7 @@
+ 	BIND_ENUM_CONSTANT(SCALING_3D_MODE_METALFX_TEMPORAL);
+ 	BIND_ENUM_CONSTANT(SCALING_3D_MODE_NEAREST);
+ 	BIND_ENUM_CONSTANT(SCALING_3D_MODE_DLSS);
++	BIND_ENUM_CONSTANT(SCALING_3D_MODE_FSR3);
+ 	BIND_ENUM_CONSTANT(SCALING_3D_MODE_MAX);
+ 
+ 	BIND_ENUM_CONSTANT(MSAA_DISABLED);
+--- a/servers/rendering/rendering_server.cpp
++++ b/servers/rendering/rendering_server.cpp
+@@ -29,6 +29,9 @@
+ /**************************************************************************/
+ 
+ #include "rendering_server.h"
++#ifdef RD_ENABLED
++#include "servers/rendering/renderer_rd/effects/fsr3.h"
++#endif
+ #include "rendering_server.compat.inc"
+ 
+ #include "core/config/project_settings.h"
+@@ -2929,6 +2932,9 @@
+ 	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL);
+ 	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_NEAREST);
+ 	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_DLSS);
++	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_FSR3);
++	ClassDB::bind_method(D_METHOD("is_fsr3_available"), &RenderingServer::is_fsr3_available);
++	ClassDB::bind_method(D_METHOD("get_fsr3_status"), &RenderingServer::get_fsr3_status);
+ 	BIND_ENUM_CONSTANT(RSE::VIEWPORT_SCALING_3D_MODE_MAX);
+ 
+ 	BIND_ENUM_CONSTANT(RSE::VIEWPORT_UPDATE_DISABLED);
+@@ -3855,3 +3861,19 @@
+ RenderingServer::~RenderingServer() {
+ 	singleton = nullptr;
+ }
++
++bool RenderingServer::is_fsr3_available() const {
++#ifdef RD_ENABLED
++	return RendererRD::FSR3Effect::is_available();
++#else
++	return false;
++#endif
++}
++
++Dictionary RenderingServer::get_fsr3_status() const {
++#ifdef RD_ENABLED
++	return RendererRD::FSR3Effect::get_status();
++#else
++	return Dictionary();
++#endif
++}
+--- a/servers/rendering/rendering_server.h
++++ b/servers/rendering/rendering_server.h
+@@ -1059,6 +1059,8 @@
+ #endif
+ 
+ 	RenderingServer();
++	bool is_fsr3_available() const;
++	Dictionary get_fsr3_status() const;
+ 	virtual ~RenderingServer();
+ 
+ #ifdef TOOLS_ENABLED
+--- a/servers/rendering/renderer_viewport.cpp
++++ b/servers/rendering/renderer_viewport.cpp
+@@ -29,6 +29,9 @@
+ /**************************************************************************/
+ 
+ #include "renderer_viewport.h"
++#ifdef RD_ENABLED
++#include "servers/rendering/renderer_rd/effects/fsr3.h"
++#endif
+ 
+ #include "core/config/engine.h"
+ #include "core/config/project_settings.h"
+@@ -164,7 +167,7 @@
+ 				WARN_PRINT_ONCE("MetalFX and FSR upscaling are not supported in the Compatibility renderer. Falling back to bilinear scaling.");
+ 			}
+ 
+-			if ((scaling_3d_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR || scaling_3d_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR2 || scaling_3d_mode == RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL) && OS::get_singleton()->get_current_rendering_method() == "mobile") {
++			if ((scaling_3d_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR || scaling_3d_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR3 || scaling_3d_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR2 || scaling_3d_mode == RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL) && OS::get_singleton()->get_current_rendering_method() == "mobile") {
+ 				scaling_3d_mode = RSE::VIEWPORT_SCALING_3D_MODE_BILINEAR;
+ 				scaling_type = RSE::scaling_3d_mode_type(scaling_3d_mode);
+ 				WARN_PRINT_ONCE("MetalFX temporal and FSR upscaling are not supported in the Mobile renderer. Falling back to bilinear scaling.");
+@@ -247,6 +250,7 @@
+ 				case RSE::VIEWPORT_SCALING_3D_MODE_METALFX_SPATIAL:
+ 				case RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL:
+ 				case RSE::VIEWPORT_SCALING_3D_MODE_FSR:
++				case RSE::VIEWPORT_SCALING_3D_MODE_FSR3:
+ 				case RSE::VIEWPORT_SCALING_3D_MODE_FSR2:
+ 				case RSE::VIEWPORT_SCALING_3D_MODE_DLSS:
+ 					target_width = p_viewport->size.width;
+@@ -1036,7 +1040,7 @@
+ 			WARN_PRINT_ONCE_ED("FSR1 3D scaling is only available when using the Forward+ renderer.");
+ 			return;
+ 		}
+-		if (p_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR2) {
++		if (p_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR2 || p_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR3) {
+ 			WARN_PRINT_ONCE_ED("FSR2 3D scaling is only available when using the Forward+ renderer.");
+ 			return;
+ 		}
+@@ -1060,6 +1064,14 @@
+ 		if (StreamlineContext::get().slInit == nullptr) {
+ 			ERR_PRINT_ONCE_ED("DLSS is not available because Streamline failed to initialize (sl.interposer.dll not found or failed to load). Please download the Streamline SDK from GitHub (NVIDIA-RTX/Streamline) and make sure the Streamline SDK binaries are in the same directory as the Godot executable, and restart Godot.");
+ 		}
++#endif
++	}
++
++	if (p_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR3) {
++#ifdef RD_ENABLED
++		ERR_FAIL_COND_MSG(!RendererRD::FSR3Effect::is_available(), "FSR 3.1 requires the AMD Vulkan runtime.");
++#else
++		return;
+ #endif
+ 	}
+ 
+--- a/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp
++++ b/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp
+@@ -474,7 +474,7 @@
+ 	bool can_use_storage = _render_buffers_can_be_storage();
+ 
+ 	RSE::ViewportScaling3DMode scale_mode = rb->get_scaling_3d_mode();
+-	bool use_upscaled_texture = rb->has_upscaled_texture() && (scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR2 || scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL || scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_DLSS);
++	bool use_upscaled_texture = rb->has_upscaled_texture() && (scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR3 || scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR2 || scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL || scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_DLSS);
+ 	SpatialUpscaler *spatial_upscaler = nullptr;
+ 	if (can_use_effects) {
+ 		if (scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR) {
+@@ -487,7 +487,7 @@
+ 	}
+ 
+ 	// SMAA causes issues when enabled with temporal upscalers.
+-	bool temporal_upscaler_active = scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_DLSS || scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR2 || scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL;
++	bool temporal_upscaler_active = scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_DLSS || scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR3 || scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_FSR2 || scale_mode == RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL;
+ 	bool use_fxaa = rb->get_screen_space_aa() == RSE::VIEWPORT_SCREEN_SPACE_AA_FXAA;
+ 	bool use_smaa = smaa && rb->get_screen_space_aa() == RSE::VIEWPORT_SCREEN_SPACE_AA_SMAA && !temporal_upscaler_active;
+ 	// If doing bilinear or nearest scaling + FXAA / SMAA, the framebuffer must be scaled in a framebuffer copy after AA is applied.
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.h
+@@ -35,6 +35,7 @@
+ #include "servers/rendering/renderer_rd/cluster_builder_rd.h"
+ #include "servers/rendering/renderer_rd/effects/dlss.h"
+ #include "servers/rendering/renderer_rd/effects/fsr2.h"
++#include "servers/rendering/renderer_rd/effects/fsr3.h"
+ #include "servers/rendering/renderer_rd/effects/motion_vectors_store.h"
+ #include "servers/rendering/renderer_rd/effects/ss_effects.h"
+ #include "servers/rendering/renderer_rd/effects/taa.h"
+@@ -100,6 +101,7 @@
+ 	private:
+ 		RenderSceneBuffersRD *render_buffers = nullptr;
+ 		RendererRD::FSR2Context *fsr2_context = nullptr;
++		RendererRD::FSR3Context *fsr3_context = nullptr;
+ 		RendererRD::DLSSContext *dlss_context = nullptr;
+ #ifdef METAL_MFXTEMPORAL_ENABLED
+ 		RendererRD::MFXTemporalContext *mfx_temporal_context = nullptr;
+@@ -148,6 +150,8 @@
+ 		RID get_voxelgi_msaa(uint32_t p_layer) { return render_buffers->get_texture_slice(RB_SCOPE_FORWARD_CLUSTERED, RB_TEX_VOXEL_GI_MSAA, p_layer, 0); }
+ 
+ 		void ensure_fsr2(RendererRD::FSR2Effect *effect);
++		void ensure_fsr3(RendererRD::FSR3Effect *effect);
++		RendererRD::FSR3Context *get_fsr3_context() const { return fsr3_context; }
+ 		RendererRD::FSR2Context *get_fsr2_context() const { return fsr2_context; }
+ 
+ 		void ensure_dlss(RendererRD::DLSSEffect *effect);
+@@ -773,6 +777,7 @@
+ 
+ 	RendererRD::TAA *taa = nullptr;
+ 	RendererRD::FSR2Effect *fsr2_effect = nullptr;
++	RendererRD::FSR3Effect *fsr3_effect = nullptr;
+ 	RendererRD::DLSSEffect *dlss_effect = nullptr;
+ 	RendererRD::SSEffects *ss_effects = nullptr;
+ 
+@@ -837,6 +842,7 @@
+ 	enum Scale3DMode {
+ 		SCALE_3D_NONE,
+ 		SCALE_3D_FSR2,
++		SCALE_3D_FSR3,
+ 		SCALE_3D_MFX,
+ 		SCALE_3D_DLSS,
+ 	};
+--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
++++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp
+@@ -90,6 +90,12 @@
+ 	}
+ }
+ 
++void RenderForwardClustered::RenderBufferDataForwardClustered::ensure_fsr3(RendererRD::FSR3Effect *effect) {
++	if (fsr3_context == nullptr) {
++		fsr3_context = effect->create_context(render_buffers->get_internal_size(), render_buffers->get_target_size());
++	}
++}
++
+ void RenderForwardClustered::RenderBufferDataForwardClustered::ensure_dlss(RendererRD::DLSSEffect *effect) {
+ 	if (dlss_context == nullptr) {
+ 		dlss_context = effect->create_context(render_buffers->get_internal_size(), render_buffers->get_target_size());
+@@ -138,6 +144,10 @@
+ 	if (fsr2_context) {
+ 		memdelete(fsr2_context);
+ 		fsr2_context = nullptr;
++	}
++	if (fsr3_context) {
++		memdelete(fsr3_context);
++		fsr3_context = nullptr;
+ 	}
+ 
+ #ifdef METAL_MFXTEMPORAL_ENABLED
+@@ -1774,6 +1784,8 @@
+ 	switch (p_render_buffers->get_scaling_3d_mode()) {
+ 		case RSE::VIEWPORT_SCALING_3D_MODE_FSR2:
+ 			return SCALE_3D_FSR2;
++		case RSE::VIEWPORT_SCALING_3D_MODE_FSR3:
++			return SCALE_3D_FSR3;
+ 		case RSE::VIEWPORT_SCALING_3D_MODE_DLSS:
+ 			return SCALE_3D_DLSS;
+ 		case RSE::VIEWPORT_SCALING_3D_MODE_METALFX_TEMPORAL:
+@@ -1840,6 +1852,62 @@
+ 		}
+ 
+ 		RD::get_singleton()->draw_command_end_label();
++	} else if (p_scale_type == SCALE_3D_FSR3) {
++		ERR_FAIL_COND_MSG(rb->get_view_count() != 1, "FSR 3.1 stereo is not supported by this integration.");
++		if (!RendererRD::FSR3Effect::is_available()) {
++			rb->set_upscaler_ready(false);
++			return;
++		}
++		rb_data->ensure_fsr3(fsr3_effect);
++		if (!rb_data->get_fsr3_context()) {
++			rb->set_upscaler_ready(false);
++			return;
++		}
++
++		RID exposure;
++		if (RSG::camera_attributes->camera_attributes_uses_auto_exposure(p_render_data->camera_attributes)) {
++			exposure = luminance->get_current_luminance_buffer(rb);
++		}
++
++		RD::get_singleton()->draw_command_begin_label("FSR3");
++		RENDER_TIMESTAMP("FSR3");
++
++		for (uint32_t v = 0; v < rb->get_view_count(); v++) {
++			real_t fov = p_render_data->scene_data->cam_projection.get_fov();
++			real_t aspect = p_render_data->scene_data->cam_projection.get_aspect();
++			real_t fovy = p_render_data->scene_data->cam_projection.get_fovy(fov, 1.0 / aspect);
++			Vector2 jitter = p_render_data->scene_data->taa_jitter * Vector2(rb->get_internal_size()) * 0.5f;
++			RendererRD::FSR3Context::Parameters params;
++			params.context = rb_data->get_fsr3_context();
++			params.internal_size = rb->get_internal_size();
++			params.sharpness = CLAMP(1.0f - (rb->get_fsr_sharpness() / 2.0f), 0.0f, 1.0f);
++			params.color = rb->get_internal_texture(v);
++			params.depth = rb->get_depth_texture(v);
++			params.velocity = rb->get_velocity_buffer(false, v);
++			params.reactive = rb->get_internal_texture_reactive(v);
++			params.exposure = exposure;
++			params.output = rb->get_upscaled_texture(v);
++			params.z_near = p_render_data->scene_data->z_near;
++			params.z_far = p_render_data->scene_data->z_far;
++			params.fovy = fovy;
++			params.jitter = jitter;
++			params.delta_time = float(p_time_step);
++			params.reset_accumulation = false; // FIXME: The engine does not provide a way to reset the accumulation.
++
++			Projection correction;
++			correction.set_depth_correction(true, true, false);
++
++			const Projection &prev_proj = p_render_data->scene_data->prev_cam_projection;
++			const Projection &cur_proj = p_render_data->scene_data->cam_projection;
++			const Transform3D &prev_transform = p_render_data->scene_data->prev_cam_transform;
++			const Transform3D &cur_transform = p_render_data->scene_data->cam_transform;
++			params.reprojection = (correction * prev_proj) * prev_transform.affine_inverse() * cur_transform * (correction * cur_proj).inverse();
++
++			fsr3_effect->upscale(params);
++			rb->set_upscaler_ready(fsr3_effect->is_ready(rb_data->get_fsr3_context()));
++		}
++
++		RD::get_singleton()->draw_command_end_label();
+ 	} else if (p_scale_type == SCALE_3D_DLSS) {
+ 		RENDER_TIMESTAMP("DLSS");
+ 		rb_data->ensure_dlss(dlss_effect);
+@@ -1852,7 +1920,7 @@
+ 		for (uint32_t v = 0; v < rb->get_view_count(); v++) {
+ 			real_t fov = p_render_data->scene_data->cam_projection.get_fov();
+ 			real_t aspect = p_render_data->scene_data->cam_projection.get_aspect();
+-			real_t fovy = p_render_data->scene_data->cam_projection.get_fovy(fov, aspect);
++			real_t fovy = p_render_data->scene_data->cam_projection.get_fovy(fov, 1.0 / aspect);
+ 			Vector2 jitter = p_render_data->scene_data->taa_jitter * Vector2(rb->get_internal_size()) * 0.5f;
+ 			RendererRD::DLSSContext::Parameters params;
+ 			params.context = rb_data->get_dlss_context();
+@@ -5445,6 +5513,7 @@
+ 
+ 	taa = memnew(RendererRD::TAA);
+ 	fsr2_effect = memnew(RendererRD::FSR2Effect);
++	fsr3_effect = memnew(RendererRD::FSR3Effect);
+ 	dlss_effect = memnew(RendererRD::DLSSEffect);
+ 	ss_effects = memnew(RendererRD::SSEffects);
+ 	motion_vectors_store = memnew(RendererRD::MotionVectorsStore);
+@@ -5470,6 +5539,10 @@
+ 		memdelete(fsr2_effect);
+ 		fsr2_effect = nullptr;
+ 	}
++	if (fsr3_effect) {
++		memdelete(fsr3_effect);
++		fsr3_effect = nullptr;
++	}
+ 
+ 	if (motion_vectors_store) {
+ 		memdelete(motion_vectors_store);
+--- a/servers/rendering/renderer_rd/effects/SCsub
++++ b/servers/rendering/renderer_rd/effects/SCsub
+@@ -6,6 +6,11 @@
+ Import("env")
+ 
+ env_effects = env.Clone()
++if env["vulkan"]:
++    env_effects.Prepend(CPPPATH=["#thirdparty/vulkan/include"])
++    if env["use_volk"]:
++        env_effects.AppendUnique(CPPDEFINES=["USE_VOLK"])
++        env_effects.Prepend(CPPPATH=["#thirdparty/volk"])
+ 
+ # metal-cpp headers for Metal FX
+ if env["metal"]:
+--- a/servers/rendering/renderer_rd/shaders/effects/motion_vector_decode.glsl
++++ b/servers/rendering/renderer_rd/shaders/effects/motion_vector_decode.glsl
+@@ -21,6 +21,9 @@
+ 
+ void main() {
+ 	const ivec2 screen_pos = ivec2(gl_GlobalInvocationID.xy);
++	if (any(greaterThanEqual(screen_pos, ivec2(params.resolution.xy)))) {
++		return;
++	}
+ 	vec2 velocity = imageLoad(velocity_buffer, screen_pos).rg;
+ 
+ 	bool is_invalid_motion_vector = all(lessThanEqual(velocity, vec2(-1.0f, -1.0f)));
+--- a/servers/rendering/rendering_device.h
++++ b/servers/rendering/rendering_device.h
+@@ -315,6 +315,8 @@
+ 		CallbackResourceUsage usage = CALLBACK_RESOURCE_USAGE_NONE;
+ 	};
+ 
++	// Native SDK contexts own resources outside RD: drain recorded and submitted work before destruction.
++	void flush_and_wait_for_external_resources();
+ 	Error driver_callback_add(RDD::DriverCallback p_callback, void *p_userdata, VectorView<CallbackResource> p_resources);
+ 
+ 	/*****************/
+--- a/servers/rendering/rendering_device.cpp
++++ b/servers/rendering/rendering_device.cpp
+@@ -10406,3 +10406,8 @@
+ static_assert(ENUM_MEMBERS_EQUAL(RD::CALLBACK_RESOURCE_USAGE_ATTACHMENT_DEPTH_STENCIL_READ_WRITE, RDG::RESOURCE_USAGE_ATTACHMENT_DEPTH_STENCIL_READ_WRITE));
+ static_assert(ENUM_MEMBERS_EQUAL(RD::CALLBACK_RESOURCE_USAGE_GENERAL, RDG::RESOURCE_USAGE_GENERAL));
+ static_assert(ENUM_MEMBERS_EQUAL(RD::CALLBACK_RESOURCE_USAGE_MAX, RDG::RESOURCE_USAGE_MAX));
++
++void RenderingDevice::flush_and_wait_for_external_resources() {
++	ERR_RENDER_THREAD_GUARD();
++	_flush_and_stall_for_all_frames();
++}
+--- a/drivers/streamline/streamline_context.cpp
++++ b/drivers/streamline/streamline_context.cpp
+@@ -361,7 +361,7 @@
+ 
+ 	pref.renderAPI = d3d12 ? sl::RenderAPI::eD3D12 : sl::RenderAPI::eVulkan;
+ 	pref.applicationId = 0x90d07004;
+-	pref.flags = sl::PreferenceFlags::eAllowOTA | sl::PreferenceFlags::eLoadDownloadedPlugins | sl::PreferenceFlags::eDisableCLStateTracking;
++	pref.flags = sl::PreferenceFlags::eDisableCLStateTracking;
+ 
+ 	if (bool(GLOBAL_GET("rendering/streamline/streamline_log"))) {
+ 		pref.logLevel = sl::LogLevel::eVerbose;

@@ -97,6 +97,13 @@ func _run() -> void:
 	quit(1 if failures else 0)
 
 
+## Final commit may retire mixer-owned playback across frames; fixed frame counts do not bound wall time.
+func _wait_final_quit(app: QuitProbeAppRoot) -> void:
+	var deadline := Time.get_ticks_usec() + 2_000_000
+	while app.quit_requests == 0 and Time.get_ticks_usec() < deadline:
+		await process_frame
+
+
 func _check_home_route(initial_auto_accept: bool) -> void:
 	var app := QuitProbeAppRoot.new()
 	app.user_args = PackedStringArray()
@@ -142,6 +149,7 @@ func _check_home_route(initial_auto_accept: bool) -> void:
 	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
 	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
 	await process_frame
+	await _wait_final_quit(app)
 	_check("same-frame Window close requests coalesce on Home", app.quit_requests == 1, str(app.quit_requests))
 	_check("committed Quit emits one closing cue", app.menu_audio.cue_count(&"quit") == 1)
 	await ui.close_app(app)
@@ -195,6 +203,7 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 		trace_csv.contains("# format: openrc-trace") and trace_csv.contains("tick,t_s")
 		and trace_csv.get_slice_count("\n") >= 4,
 		"CSV lines=%d" % trace_csv.get_slice_count("\n"))
+	await _wait_final_quit(app)
 	_check("successful close reaches the final quit seam once", app.quit_requests == 1, str(app.quit_requests))
 	if not saved_trace_path.is_empty() and FileAccess.file_exists(saved_trace_path):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(saved_trace_path))
@@ -204,6 +213,7 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 
 	# The Recorder contract stops even when the save fails. Recovery must keep the retained Trace explicit.
 	app.quit_requests = 0
+	app._quit_audio_pending = false # final quit is mocked; begin a separate synthetic attempt
 	var failed_recorder := FailOnceRecorder.new()
 	app.flight.recorder = failed_recorder
 	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
@@ -227,6 +237,7 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 	if failed_dialog != null:
 		failed_dialog.custom_action.emit("retry")
 	await ui.settle()
+	await _wait_final_quit(app)
 	_check("Retry saves the retained trace and completes quit exactly once",
 		failed_recorder.stop_calls == 2 and failed_recorder.note.begins_with("trace saved:")
 		and app.quit_requests == 1 and app._trace_recovery.pending_count() == 0,
@@ -235,6 +246,7 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 
 	# An explicit Quit after failure must show the decision again; accepting a second Quit is not Discard.
 	app.quit_requests = 0
+	app._quit_audio_pending = false # final quit is mocked; begin a separate synthetic attempt
 	var always_fails := AlwaysFailRecorder.new()
 	app.flight.recorder = always_fails
 	var previous_window_size: Vector2i = root.size
@@ -273,6 +285,7 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 	if repeated_dialog != null:
 		repeated_dialog.custom_action.emit("discard")
 	await ui.settle()
+	await _wait_final_quit(app)
 	_check("only explicit Discard trace and continue resolves the failed trace",
 		always_fails.stop_calls == 1 and app.quit_requests == 1 and app._trace_recovery.pending_count() == 0)
 	await ui.close_app(app)
@@ -468,6 +481,7 @@ func _check_workshop_suspended_recording() -> void:
 	if retry_retained_dialog != null:
 		retry_retained_dialog.custom_action.emit("retry")
 	await ui.settle()
+	await _wait_final_quit(app)
 	_check("Retry saves only the retained trace and completes quit",
 		trial_recorder.stop_calls == 1 and retained_recorder.stop_calls == 2
 		and retained_recorder.note.begins_with("trace saved:")
@@ -475,7 +489,8 @@ func _check_workshop_suspended_recording() -> void:
 		and app.quit_requests == 1,
 		"trial=%d retained=%d" % [trial_recorder.stop_calls, retained_recorder.stop_calls])
 
-	# A real Return action remains the final route owner after both recorder outcomes are resolved.
+	# Final quit is mocked above; allow the separate Return workflow to run on this retained fixture.
+	app._quit_audio_pending = false
 	app._return_to_workshop()
 	await ui.settle()
 	_check("Return to Workshop restores the original flight and same dirty editor",

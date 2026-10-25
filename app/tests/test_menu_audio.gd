@@ -227,6 +227,19 @@ func _run() -> void:
 	service.set_volume(0.0)
 	_check("muted Quit adds no shutdown delay", service.play(&"quit") and service.shutdown_delay() == 0.0)
 
+	await process_frame
+	service.set_volume(0.35)
+	service.play(&"quit")
+	_check("unmuted Dummy Quit allocates playback before retirement", service._voices.any(func(voice: AudioStreamPlayer) -> bool: return voice.has_stream_playback()))
+	var retired: Array[WeakRef] = service.retire_playbacks()
+	_check("retirement stops and clears the bounded voices and fades", retired.size() > 0 and retired.size() <= 2
+		and service._voices.all(func(voice: AudioStreamPlayer) -> bool: return not voice.playing and voice.stream == null)
+		and service._voice_fades.all(func(fade: Tween) -> bool: return fade == null))
+	_check("retirement is idempotent and blocks later playback", service.retire_playbacks().is_empty() and not service.play(&"accept"))
+	var retirement_deadline := Time.get_ticks_usec() + 1_000_000
+	while retired.any(func(playback: WeakRef) -> bool: return playback.get_ref() != null) and Time.get_ticks_usec() < retirement_deadline:
+		await process_frame
+	_check("weak playback observations expire after mixer retirement", retired.all(func(playback: WeakRef) -> bool: return playback.get_ref() == null))
 	host.queue_free()
 	await create_timer(0.1).timeout # allow the audio mixer to release the stopped playback before process teardown
 

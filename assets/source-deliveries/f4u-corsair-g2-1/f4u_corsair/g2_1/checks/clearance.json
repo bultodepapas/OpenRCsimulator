@@ -1,0 +1,618 @@
+{
+  "method": "BVH triangle surface intersections, 5-degree samples plus flap 1,2,3,4 degrees; contact counts are not penetration-depth measurements. Not continuous collision detection.",
+  "all_clear": true,
+  "controls": [
+    {
+      "node": "aileron_left_hinge",
+      "samples": [
+        {
+          "degrees": -25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 0,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 25,
+          "triangle_contacts": {}
+        }
+      ],
+      "clear": true
+    },
+    {
+      "node": "flap_left_1_hinge",
+      "samples": [
+        {
+          "degrees": 0,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 1,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 2,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 3,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 4,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 30,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 35,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 40,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 45,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 50,
+          "triangle_contacts": {}
+        }
+      ],
+      "clear": true
+    },
+    {
+      "node": "flap_left_2_hinge",
+      "samples": [
+        {
+          "degrees": 0,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 1,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 2,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 3,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 4,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 30,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 35,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 40,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 45,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 50,
+          "triangle_contacts": {}
+        }
+      ],
+      "clear": true
+    },
+    {
+      "node": "flap_left_3_hinge",
+      "samples": [
+        {
+          "degrees": 0,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 1,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 2,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 3,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 4,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 30,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 35,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 40,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 45,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 50,
+          "triangle_contacts": {}
+        }
+      ],
+      "clear": true
+    },
+    {
+      "node": "aileron_right_hinge",
+      "samples": [
+        {
+          "degrees": -25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 0,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 25,
+          "triangle_contacts": {}
+        }
+      ],
+      "clear": true
+    },
+    {
+      "node": "flap_right_1_hinge",
+      "samples": [
+        {
+          "degrees": 0,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 1,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 2,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 3,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 4,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 30,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 35,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 40,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 45,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 50,
+          "triangle_contacts": {}
+        }
+      ],
+      "clear": true
+    },
+    {
+      "node": "flap_right_2_hinge",
+      "samples": [
+        {
+          "degrees": 0,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 1,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 2,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 3,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 4,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 30,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 35,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 40,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 45,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 50,
+          "triangle_contacts": {}
+        }
+      ],
+      "clear": true
+    },
+    {
+      "node": "flap_right_3_hinge",
+      "samples": [
+        {
+          "degrees": 0,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 1,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 2,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 3,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 4,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 30,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 35,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 40,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 45,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 50,
+          "triangle_contacts": {}
+        }
+      ],
+      "clear": true
+    },
+    {
+      "node": "elevator_hinge",
+      "samples": [
+        {
+          "degrees": -25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 0,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 25,
+          "triangle_contacts": {}
+        }
+      ],
+      "clear": true
+    },
+    {
+      "node": "rudder_hinge",
+      "samples": [
+        {
+          "degrees": -35,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -30,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": -5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 0,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 5,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 10,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 15,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 20,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 25,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 30,
+          "triangle_contacts": {}
+        },
+        {
+          "degrees": 35,
+          "triangle_contacts": {}
+        }
+      ],
+      "clear": true
+    }
+  ]
+}

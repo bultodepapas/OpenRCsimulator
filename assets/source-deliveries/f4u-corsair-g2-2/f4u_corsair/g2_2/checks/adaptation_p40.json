@@ -1,0 +1,18 @@
+{
+  "id": "p40",
+  "name": "Sharkmouth P-40 Inspired Corsair",
+  "blend": "source/aircraft_p40.blend",
+  "glb": "export/aircraft_p40.glb",
+  "blend_sha256": "38ba50b1c87269414a785501db6b77eadf3dc96ad1851b57d075036b3f693120",
+  "glb_sha256": "9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58",
+  "glb_bytes": 21865668,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 58,
+  "materials": 15,
+  "images": 7,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 1.0
+}

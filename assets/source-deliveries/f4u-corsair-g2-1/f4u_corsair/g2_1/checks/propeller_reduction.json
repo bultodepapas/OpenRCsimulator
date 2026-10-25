@@ -1,0 +1,10 @@
+[
+  {
+    "factor": 1,
+    "tris": 16473,
+    "protected": 5047,
+    "protected_max_displacement_mm": 0.0,
+    "max_mm": 0.3057592548429966,
+    "p95_mm": 0.08170572255039588
+  }
+]

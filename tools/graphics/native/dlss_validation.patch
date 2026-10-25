@@ -1,0 +1,186 @@
+--- a/servers/rendering/rendering_device_graph.cpp
++++ b/servers/rendering/rendering_device_graph.cpp
+@@ -1957,6 +1957,8 @@
+ 	command->type = RecordedCommand::TYPE_DRIVER_CALLBACK;
+ 	command->callback = p_callback;
+ 	command->userdata = p_userdata;
++	// Native callbacks can issue commands in arbitrary pipeline stages and access scopes.
++	command->self_stages = RDD::PIPELINE_STAGE_ALL_COMMANDS_BIT;
+ 	_add_command_to_graph((ResourceTracker **)p_trackers.ptr(), (ResourceUsage *)p_usages.ptr(), p_trackers.size(), command_index, command);
+ }
+ 
+--- a/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
++++ b/servers/rendering/renderer_rd/storage_rd/render_scene_buffers_rd.cpp
+@@ -721,7 +721,8 @@
+ 
+ void RenderSceneBuffersRD::ensure_upscaled() {
+ 	if (!has_upscaled_texture()) {
+-		uint32_t usage_bits = RD::TEXTURE_USAGE_SAMPLING_BIT | (can_be_storage ? RD::TEXTURE_USAGE_STORAGE_BIT : 0) | RD::TEXTURE_USAGE_COLOR_ATTACHMENT_BIT;
++		// Native upscalers can clear the output image through a transfer operation.
++		uint32_t usage_bits = RD::TEXTURE_USAGE_SAMPLING_BIT | (can_be_storage ? RD::TEXTURE_USAGE_STORAGE_BIT : 0) | RD::TEXTURE_USAGE_COLOR_ATTACHMENT_BIT | RD::TEXTURE_USAGE_CAN_COPY_TO_BIT;
+ 		usage_bits |= RD::TEXTURE_USAGE_INPUT_ATTACHMENT_BIT;
+ 		create_texture(RB_SCOPE_BUFFERS, RB_TEX_COLOR_UPSCALED, get_base_data_format(), usage_bits, RD::TEXTURE_SAMPLES_1, target_size);
+ 	}
+--- a/servers/rendering/renderer_rd/effects/dlss.cpp
++++ b/servers/rendering/renderer_rd/effects/dlss.cpp
+@@ -45,6 +45,7 @@
+ #ifdef ENABLE_DLSS
+ 
+ // Texture layout/state constants (avoid including Vulkan/D3D12 headers here).
++static constexpr uint64_t DLSS_VK_IMAGE_LAYOUT_GENERAL = 1;
+ static constexpr uint64_t DLSS_VK_IMAGE_LAYOUT_SHADER_READ_ONLY = 5;
+ static constexpr uint64_t DLSS_D3D12_RESOURCE_STATE_NON_PIXEL_SR = 0x40;
+ static constexpr float DLSS_OPTIMAL_MODE_MAX_DISTANCE = 1000000.0f;
+@@ -56,6 +57,11 @@
+ 	sl::DLSSOptions currentDlssOptions;
+ 	sl::DLSSOptimalSettings currentOptimalSettings;
+ 	sl::DLSSDOptions currentDlssDOptions; // DLSS Ray Reconstruction options
++	bool dlss_resources_used = false;
++	bool dlss_rr_resources_used = false;
++	bool nis_resources_used = false;
++	Vector<RID> initialized_output_textures;
++	Vector<uint64_t> diagnostic_native_images;
+ 
+ 	DLSSContextInner();
+ 	virtual ~DLSSContextInner();
+@@ -146,7 +152,43 @@
+ static unsigned int g_dlss_viewportIndex = 1;
+ 
+ DLSSContextInner::~DLSSContextInner() {
+-	g_dlss_freeViewportIndices.push_back((unsigned int)viewport);
++	bool reuse_viewport = true;
++	RD *rd = RD::get_singleton();
++	StreamlineContext &streamline = StreamlineContext::get();
++	if (streamline.slShutdown != nullptr) {
++		// Drain pending callbacks and GPU work before releasing SDK-owned resources.
++		if (rd != nullptr) {
++			rd->flush_and_wait_for_external_resources();
++		}
++
++		if (rd != nullptr && streamline.slFreeResources != nullptr) {
++			auto free_feature = [&](auto p_feature, const char *p_feature_name) {
++				sl::Result result = streamline.slFreeResources(p_feature, viewport);
++				if (result != sl::Result::eOk) {
++					WARN_PRINT("Failed to release Streamline " + String(p_feature_name) + " resources. Result: " + String(StreamlineContext::result_to_string(result)));
++					reuse_viewport = false;
++				}
++			};
++
++			// NIS keeps a cache keyed by native resource handles, so clear it before IDs are recycled.
++			if (nis_resources_used) {
++				free_feature(sl::kFeatureNIS, "NIS");
++			}
++			if (dlss_rr_resources_used) {
++				free_feature(sl::kFeatureDLSS_RR, "DLSS Ray Reconstruction");
++			}
++			if (dlss_resources_used) {
++				free_feature(sl::kFeatureDLSS, "DLSS");
++			}
++		} else if (dlss_resources_used || dlss_rr_resources_used || nis_resources_used) {
++			WARN_PRINT("Streamline context resources were not released because the rendering device or slFreeResources is unavailable.");
++			reuse_viewport = false;
++		}
++	}
++
++	if (reuse_viewport) {
++		g_dlss_freeViewportIndices.push_back((unsigned int)viewport);
++	}
+ }
+ 
+ DLSSContextInner::DLSSContextInner() {
+@@ -224,6 +266,27 @@
+ 		StreamlineContext::get().get_new_frame_token();
+ 	}
+ 
++	RD *rd = RD::get_singleton();
++	bool output_initialized = false;
++	for (int i = 0; i < context->initialized_output_textures.size(); i++) {
++		if (context->initialized_output_textures[i] == p_params.output) {
++			output_initialized = true;
++			break;
++		}
++	}
++	if (!output_initialized) {
++		rd->set_resource_name(p_params.output, "DLSS output viewport " + itos((uint32_t)context->viewport));
++		if (!context->is_d3d12) {
++			// Establish a real first-use layout before Streamline receives this newly allocated image.
++			Error clear_error = rd->texture_clear(p_params.output, Color(0.0f, 0.0f, 0.0f, 0.0f), 0, 1, 0, 1);
++			if (clear_error != OK) {
++				ERR_PRINT("Failed to initialize the new DLSS output texture before native dispatch.");
++				return;
++			}
++		}
++		context->initialized_output_textures.push_back(p_params.output);
++	}
++
+ 	context->last_parameters = p_params;
+ 	context->last_effect = this;
+ 
+@@ -290,7 +353,7 @@
+ 	}
+ 
+ 	for (int i = 0; i < num_resources; i++) {
+-		res[i].usage = RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE;
++		res[i].usage = res[i].rid == p_params.output ? RD::CALLBACK_RESOURCE_USAGE_GENERAL : RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE;
+ 	}
+ 	RD::get_singleton()->driver_callback_add((RDD::DriverCallback)DLSSEffect::_upscale_internal_graph_callback, p_params.context, VectorView<RD::CallbackResource>(res, num_resources));
+ }
+@@ -310,9 +373,35 @@
+ 		uint64_t texture_image = RD::get_singleton()->get_driver_resource(RD::DriverResource::DRIVER_RESOURCE_TEXTURE, textureRID);
+ 		uint64_t texture_view = RD::get_singleton()->get_driver_resource(RD::DriverResource::DRIVER_RESOURCE_TEXTURE_VIEW, textureRID);
+ 		uint64_t texture_device_memory = RD::get_singleton()->get_driver_resource(RD::DriverResource::DRIVER_RESOURCE_TEXTURE_DEVICE_MEMORY, textureRID);
++		bool diagnostic_image_seen = false;
++		for (int i = 0; i < context->diagnostic_native_images.size(); i++) {
++			if (context->diagnostic_native_images[i] == texture_image) {
++				diagnostic_image_seen = true;
++				break;
++			}
++		}
++		if (!diagnostic_image_seen) {
++			const char *buffer_type_name = "other";
++			if (bufferType == sl::kBufferTypeScalingInputColor) {
++				buffer_type_name = "color";
++			} else if (bufferType == sl::kBufferTypeScalingOutputColor) {
++				buffer_type_name = "output";
++			} else if (bufferType == sl::kBufferTypeDepth) {
++				buffer_type_name = "depth";
++			} else if (bufferType == sl::kBufferTypeMotionVectors) {
++				buffer_type_name = "velocity";
++			} else if (bufferType == sl::kBufferTypeExposure) {
++				buffer_type_name = "exposure";
++			}
++			print_verbose("[DLSS native resource] viewport=" + itos((uint32_t)context->viewport) + " type=" + String(buffer_type_name) + " rid=0x" + String::num_uint64(textureRID.get_id(), 16, true) + " image=0x" + String::num_uint64(texture_image, 16, true) + " view=0x" + String::num_uint64(texture_view, 16, true) + " size=" + itos(texture_format.width) + "x" + itos(texture_format.height));
++			context->diagnostic_native_images.push_back(texture_image);
++		}
+ 		uint64_t texture_state = DLSS_VK_IMAGE_LAYOUT_SHADER_READ_ONLY;
+ 		if (context->is_d3d12) {
+ 			texture_state = DLSS_D3D12_RESOURCE_STATE_NON_PIXEL_SR;
++		} else if (bufferType == sl::kBufferTypeScalingOutputColor) {
++			// DLSS writes/clears this resource; keep the tag state aligned with the graph's GENERAL usage.
++			texture_state = DLSS_VK_IMAGE_LAYOUT_GENERAL;
+ 		}
+ 		uint64_t texture_vkformat = RD::get_singleton()->get_driver_resource(RD::DriverResource::DRIVER_RESOURCE_TEXTURE_DATA_FORMAT, textureRID);
+ 		uint64_t texture_usage_flags = RD::get_singleton()->get_driver_resource(RD::DriverResource::DRIVER_RESOURCE_TEXTURE_USAGE_FLAGS, textureRID);
+@@ -515,12 +604,14 @@
+ 
+ 		if (use_dlss_rr && StreamlineContext::get().streamline_capabilities.dlss_rr_available) {
+ 			// Use DLSS Ray Reconstruction
++			context->dlss_rr_resources_used = true;
+ 			result = StreamlineContext::get().slEvaluateFeature(sl::kFeatureDLSS_RR, *StreamlineContext::get().last_token, inputs, 1, nativeCmdlist);
+ 			if (result != sl::Result::eOk) {
+ 				ERR_FAIL_MSG("Failed to call streamline slEvaluateFeature for DLSS Ray Reconstruction. Result: " + String(StreamlineContext::result_to_string(result)));
+ 			}
+ 		} else if (StreamlineContext::get().streamline_capabilities.dlss_available) {
+ 			// Use regular DLSS
++			context->dlss_resources_used = true;
+ 			result = StreamlineContext::get().slEvaluateFeature(sl::kFeatureDLSS, *StreamlineContext::get().last_token, inputs, 1, nativeCmdlist);
+ 			if (result != sl::Result::eOk) {
+ 				ERR_FAIL_MSG("Failed to call streamline slEvaluateFeature for DLSS Super Resolution. Result: " + String(StreamlineContext::result_to_string(result)));
+@@ -555,6 +646,7 @@
+ 
+ 		{ // Evaluate NIS
+ 			const sl::BaseStructure *inputs[] = { &context->viewport };
++			context->nis_resources_used = true;
+ 			sl::Result result = StreamlineContext::get().slEvaluateFeature(sl::kFeatureNIS, *StreamlineContext::get().last_token, inputs, 1, nativeCmdlist);
+ 			if (result != sl::Result::eOk) {
+ 				ERR_FAIL_MSG("Failed to call streamline slEvaluateFeature for NIS. Result: " + String(StreamlineContext::result_to_string(result)));

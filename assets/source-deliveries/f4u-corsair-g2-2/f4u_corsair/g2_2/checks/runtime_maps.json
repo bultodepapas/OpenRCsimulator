@@ -1,0 +1,59 @@
+[
+  {
+    "id": "scarlet",
+    "authoring_resolution": [
+      2048,
+      2048
+    ],
+    "runtime_resolution": [
+      2048,
+      2048
+    ],
+    "normal_strength": 0.65,
+    "inner_painted_pixels": 28873,
+    "interior_srgb": [
+      210,
+      215,
+      200
+    ],
+    "shared_AO_exact": true
+  },
+  {
+    "id": "blueangels",
+    "authoring_resolution": [
+      2048,
+      2048
+    ],
+    "runtime_resolution": [
+      2048,
+      2048
+    ],
+    "normal_strength": 0.65,
+    "inner_painted_pixels": 28873,
+    "interior_srgb": [
+      192,
+      202,
+      183
+    ],
+    "shared_AO_exact": true
+  },
+  {
+    "id": "thunderbirds",
+    "authoring_resolution": [
+      2048,
+      2048
+    ],
+    "runtime_resolution": [
+      2048,
+      2048
+    ],
+    "normal_strength": 0.65,
+    "inner_painted_pixels": 28873,
+    "interior_srgb": [
+      215,
+      219,
+      211
+    ],
+    "shared_AO_exact": true
+  }
+]

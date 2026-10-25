@@ -1,0 +1,18 @@
+{
+  "id": "chrome",
+  "name": "Chrome 07 Corsair",
+  "blend": "source/aircraft_chrome.blend",
+  "glb": "export/aircraft_chrome.glb",
+  "blend_sha256": "f6499bf60e1698eac3d5bcb8b52cd9fb2eb8445c850a3ecb5f717a71546c8025",
+  "glb_sha256": "1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859",
+  "glb_bytes": 21370728,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 58,
+  "materials": 15,
+  "images": 6,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 1.0
+}

@@ -1,0 +1,120 @@
+00:01.860  blend            | Read blend: "D:\CodexDeliveries\F4U_Corsair\g2_0\source\aircraft_game.blend"
+D:\CodexDeliveries\F4U_Corsair\g2_1\source\scripts\build_g21.py:12: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  blade=bpy.data.materials.new('naval_blade_paint');blade.use_nodes=True;blade.use_backface_culling=True
+D:\CodexDeliveries\F4U_Corsair\g2_1\source\scripts\build_g21.py:48: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  if not m.use_nodes:continue
+00:02.532  blend            | Read blend: "D:\CodexDeliveries\F4U_Corsair\g2_1\source\aircraft_game.blend"
+Info: Saved as "aircraft_game.blend"
+INFO Draco is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+19:57:42 | INFO: Starting glTF 2.0 export
+19:57:42 | INFO: Extracting primitive: aileron_left_atlas_triangles
+19:57:42 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: aileron_right_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: canopy_frame_atlas_triangles
+19:57:42 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: canopy_glass_g21
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: cockpit_interior_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: core_details_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: cowl_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: elevator_atlas_triangles
+19:57:42 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: engine_face_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: exhaust_stacks_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: fin_fixed_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: flap_left_1_atlas_triangles_strictclearance
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: flap_left_2_atlas_triangles_strictclearance
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: flap_left_3_atlas_triangles_strictclearance
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: flap_right_1_atlas_triangles_strictclearance
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: flap_right_2_atlas_triangles_strictclearance
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: flap_right_3_atlas_triangles_strictclearance
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: fuselage_core_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: F2_g1_24_gear_wheel_tail_mesh
+19:57:42 | WARNING: F2_g1_24_gear_wheel_tail_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+19:57:42 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_tail_fork_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_tail_strut_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_door_front_mesh_left_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_door_front_mesh_right_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_door_inner_mesh_left_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_door_inner_mesh_right_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_door_outer_mesh_left_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_door_outer_mesh_right_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_door_tail_mesh_left_1_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_door_tail_mesh_left_2_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_door_tail_mesh_right_1_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_door_tail_mesh_right_2_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_retraction_link_left_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_lower_left_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: F2_g1_24_gear_wheel_left_mesh
+19:57:42 | WARNING: F2_g1_24_gear_wheel_left_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_strut_left_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_retraction_link_right_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_lower_right_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: F2_g1_24_gear_wheel_right_mesh
+19:57:42 | WARNING: F2_g1_24_gear_wheel_right_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: gear_strut_right_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: rudder_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: stabilizer_fixed_atlas_triangles
+19:57:42 | INFO: Primitives created: 1
+19:57:42 | INFO: Extracting primitive: propeller_rotor_g21
+19:57:43 | INFO: Primitives created: 2
+19:57:43 | INFO: Extracting primitive: windshield_glass_atlas_triangles
+19:57:43 | INFO: Primitives created: 1
+19:57:43 | INFO: Extracting primitive: wing_center_fixed_atlas_triangles_strictclearance
+19:57:43 | INFO: Primitives created: 3
+19:57:43 | INFO: Extracting primitive: wing_left_fixed_atlas_triangles
+19:57:43 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+19:57:43 | INFO: Primitives created: 6
+19:57:43 | INFO: Extracting primitive: wing_right_fixed_atlas_triangles
+19:57:43 | INFO: Primitives created: 4
+19:57:43 | INFO: Finished glTF 2.0 export in 1.0373477935791016 s
+
+Warning: F2_g1_24_gear_wheel_tail_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+Warning: F2_g1_24_gear_wheel_left_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+Warning: F2_g1_24_gear_wheel_right_mesh: Could not calculate tangents. Please try to triangulate the mesh first.
+G21_CANONICAL_TEXTURES 6
+G21_BUILT 337664 57 14 6 18950912
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

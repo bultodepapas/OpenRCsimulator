@@ -1,5 +1,5 @@
 # F4U-12 contract checks for the F4U Corsair 1/4.5 imported model (headless).
-# Proves that the scene Godot imports is the frozen g1.13 asset (hash, counts, section tags, pivots against the delivered
+# Proves that the scene Godot imports is the frozen g2.2 asset (hash, counts, section tags, pivots against the delivered
 # metadata), that the production registry builds it, and that surfaces, flaps, propeller, sampled gear, oleo compression,
 # exhaust anchor and paint slots behave as the session expects. Run: godot --headless --path app --script res://aircraft/verify_f4u.gd
 extends SceneTree
@@ -13,7 +13,7 @@ const WreckController := preload("res://render/crash/wreck.gd")
 const GLB_PATH := "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
 const DATA_PATH := "res://data/aircraft/f4u_corsair_250.json"
 const ID := "f4u-corsair-250"
-const EXPECTED_SHA256 := "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8"
+const EXPECTED_SHA256 := "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851"
 const SECTIONS := ["core", "wing_left", "wing_right", "wing_center", "horizontal_tail", "vertical_tail", "engine", "propeller", "gear", "canopy"]
 var checks := 0
 var failures := 0
@@ -97,7 +97,7 @@ func _asset() -> void:
 	var context := HashingContext.new()
 	context.start(HashingContext.HASH_SHA256)
 	context.update(FileAccess.get_file_as_bytes(GLB_PATH))
-	_check("runtime GLB is the accepted g1.13 aircraft.glb", context.finish().hex_encode() == EXPECTED_SHA256 and Geometry.DATA.inputs.glb_sha256 == EXPECTED_SHA256)
+	_check("runtime GLB is the accepted g2.2 aircraft.glb", context.finish().hex_encode() == EXPECTED_SHA256 and Geometry.DATA.inputs.glb_sha256 == EXPECTED_SHA256)
 	var scene: Node3D = (load(GLB_PATH) as PackedScene).instantiate()
 	var meshes := scene.find_children("*", "MeshInstance3D", true, false)
 	var triangles := 0
@@ -111,7 +111,7 @@ func _asset() -> void:
 		var section := str((mesh.get_meta("extras", {}) as Dictionary).get("openrc_section", "")) if mesh.has_meta("extras") else ""
 		if section.is_empty(): untagged.append(mesh.name)
 		elif not SECTIONS.has(section): invalid.append(mesh.name)
-	_check("44 meshes, 57 surfaces, 99,729 triangles as delivered", meshes.size() == 44 and surfaces == 57 and triangles == 99729, "%d meshes, %d surfaces, %d triangles" % [meshes.size(), surfaces, triangles])
+	_check("46 meshes, 57 surfaces, 337,664 triangles as delivered", meshes.size() == 46 and surfaces == 57 and triangles == 337664, "%d meshes, %d surfaces, %d triangles" % [meshes.size(), surfaces, triangles])
 	_check("every mesh carries a valid openrc_section", untagged.is_empty() and invalid.is_empty(), "untagged %s, invalid %s" % [str(untagged), str(invalid)])
 	var worst := 0.0
 	for name: String in Geometry.DATA.articulations:
@@ -158,8 +158,8 @@ func _built_model() -> void:
 	var at_80: float = angle.call()
 	Importer.set_flaps(model, 0.0)
 	_check("flap hinges turn 30.000 deg for 30 and clamp at the 50 deg envelope", absf(at_30 - 30.0) < 0.01 and absf(at_80 - 50.0) < 0.01, "%.3f, %.3f" % [at_30, at_80])
-	# The hinge ranges are the author's g1.3 clearance sweep (all clear; g1.13 keeps the g1.3 mesh outside the gear,
-	# doors and paint); the flown throws must stay inside them.
+	# The hinge ranges are the author's clearance sweep (g1.3; g2.1 keeps the same ranges, its sampled sweep of 138 control
+	# poses is clear); the flown throws must stay inside them.
 	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
 	var throws: Dictionary = data.controls.max_throw
 	var outside := []

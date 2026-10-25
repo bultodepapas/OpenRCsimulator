@@ -4,8 +4,8 @@ extends SceneTree
 const Preferences := preload("res://app_state/preferences.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
+const AirplaneBuilder := preload("res://render/airplane.gd")
 const CORSAIR := "f4u-corsair-250"
-const CORSAIR_LIVERY := "spectrum"
 const PREFS := "user://test_ui_home_rebuild.cfg"
 
 class CountingRoot extends "res://app_root.gd":
@@ -52,14 +52,17 @@ func _run() -> void:
 		and Preferences.load_from(PREFS).time_of_day == "evening")
 	_check("aircraft and current camera preserved", app.home.aircraft_id == aircraft
 		and root.get_camera_3d() == app.home_scene.camera)
+	# F4U-19: the Corsair ships one paint until its g2 liveries arrive; then its second scheme is the selection.
+	var choices: Array = AirplaneBuilder.livery_choices(CORSAIR)
+	var livery: String = choices[1].id if choices.size() > 1 else ""
 	app.set_aircraft(CORSAIR)
-	app.set_livery(CORSAIR_LIVERY)
-	_check("Home remembers selected non-default Corsair livery", app.home.aircraft_id == CORSAIR
-		and app.home.livery_id == CORSAIR_LIVERY)
+	app.set_livery(livery)
+	_check("Home remembers the selected Corsair livery", app.home.aircraft_id == CORSAIR
+		and app.home.livery_id == livery)
 	var painted_scene: WeakRef = weakref(app.home_scene)
 	_check("Home world rebuild succeeds with selected paint", app._rebuild_home_scene())
 	await ui.settle()
-	_check("Home world rebuild preserves non-default livery", app.home_scene.airplane.get("livery", "") == CORSAIR_LIVERY)
+	_check("Home world rebuild preserves the selected livery", app.home_scene.airplane.get("livery", "") == livery)
 	_check("replaced painted Home scene is released", painted_scene.get_ref() == null)
 	app.set_aircraft(aircraft)
 	app.rebuild_count = 1 # keep later assertions scoped to the existing time-of-day requests

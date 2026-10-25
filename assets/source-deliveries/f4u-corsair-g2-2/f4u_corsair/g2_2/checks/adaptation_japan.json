@@ -1,0 +1,18 @@
+{
+  "id": "japan",
+  "name": "Captured Corsair / Japan 09",
+  "blend": "source/aircraft_japan.blend",
+  "glb": "export/aircraft_japan.glb",
+  "blend_sha256": "4b5cd6040f34ce650cb59d3f3e082d35776dd02f2f5b68ad07dbaa774de8db37",
+  "glb_sha256": "9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824",
+  "glb_bytes": 21691192,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 58,
+  "materials": 15,
+  "images": 7,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 1.0
+}

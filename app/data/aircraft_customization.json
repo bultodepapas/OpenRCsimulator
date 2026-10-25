@@ -7,7 +7,7 @@
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "f4u-corsair-250",
-      "model_manifest_sha256": "69722a69d1a9f8f1fb2b2a5fcb6430263b8b3901112bc11c5b567647d327856d",
+      "model_manifest_sha256": "276fcf5c17013b4df59d1de5fb762fcc8486519a9ca105644d8368e6725c8fed",
       "paint_slots": [
         {
           "id": "body",
@@ -372,7 +372,7 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "45625eb9a274d2998fe17b60d898739b2ec1783b551239251777e6472deefd38"
+      "slots_sha256": "f8eb38d8d267b192792124c1449857fd67920ba8b384a2fe922714fbec5239db"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1271,7 +1271,7 @@
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "sebart-avanti-s-a200-p100rx",
-      "model_manifest_sha256": "4ad76c6d42d199d2d7affb954deaafb94ed77344945e17f85a637f678818d517",
+      "model_manifest_sha256": "56bb79c7a8b6fef0f5a71d211e016b04ffd69bf5cdee9030ce51140d8c6fd565",
       "paint_slots": [
         {
           "id": "body",
@@ -1478,14 +1478,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "b78385340340c20552c9d2c8b7d5d0a5321f9b463c760b1582377b92eaa3b6d2"
+      "slots_sha256": "7169a52435ae5615b964ffc37f8da504aa0ef0550f3237c8a61068cefe229efc"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "turbo-lumber-evolution",
-      "model_manifest_sha256": "aacff46450d2f49c49109f1458ca606cb4e942351846d128d0d32528939cb57c",
+      "model_manifest_sha256": "f2ea502ea299a0ddc6fc56fe4f79029ca721efb8a02490c4875f262b60d8b2c9",
       "paint_slots": [
         {
           "id": "body",
@@ -1742,7 +1742,7 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "5dbd60abb60c2d68f97b92bdc00b95903a917283205557a906e5bf600595d48b"
+      "slots_sha256": "d653e13bcdd30dc6017ba94562cb4fa40297ba87c59080285e083d68a3d78363"
     }
   ]
 }

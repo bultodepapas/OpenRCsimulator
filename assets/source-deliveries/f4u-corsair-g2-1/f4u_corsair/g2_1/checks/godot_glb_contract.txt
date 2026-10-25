@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   GLB SHA-256 equals sidecar metadata (cf4cdad638dae93b2ac6107bd050dcf176c4b6dbb1f03d21580f4149fda945b3)
+ok   GLB bytes equal sidecar and stay below 30 MB (18950912)
+ok   metadata identifies Naval 308 as default first livery
+ok   metadata records GearRetract with 101 samples
+ok   Godot GLTFDocument parses final GLB (Error 0)
+ok   Godot generates a Node3D scene
+ok   mesh-node count matches metadata (46)
+ok   imported triangles equal metadata and stay in 300–350k target (337664)
+ok   imported surfaces equal metadata and stay under 70 (57)
+ok   imported material resources stay under 16 (14)
+ok   all mesh surfaces are triangles and have materials (bad []; null [])
+ok   all mesh extras carry valid openrc_section tags (untagged []; invalid [])
+ok   all exported object nodes are present once (missing []; duplicate [])
+ok   only an identity GLTF scene wrapper is outside sidecar node set (wrapper F4UCorsair_g1; extras ["F4UCorsair_g1"])
+ok   exported hierarchy parents match frame-100 sidecar ([])
+ok   Godot transforms match Blender frame-100 local matrices within 0.02 mm (worst 0.000000267 m / basis 0.000000475; errors [])
+G2 Godot GLB contract: 16 checks, 0 failures; nodes 83/82; meshes 46; surfaces 57; triangles 337664; materials 14
+G2 GLB geometry is frame 100 (stowed gear); native 101-frame GearRetract evaluation is covered by the separate Blender audit.

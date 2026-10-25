@@ -1,0 +1,18 @@
+{
+  "captured_cli_objects": [
+    {
+      "port": 47870,
+      "session": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\debug-bridge\\20261024-211206-47870",
+      "pid": 50760,
+      "alive": false,
+      "bridge": false
+    },
+    {
+      "engine_exit": {
+        "crash": null,
+        "leaked_objects": 0
+      }
+    }
+  ],
+  "raw_transcript_sha256": "2a61dee678f4ae991bb8b8a967b438f73050a2c1d62b1c70ccb691d5cc14f805"
+}

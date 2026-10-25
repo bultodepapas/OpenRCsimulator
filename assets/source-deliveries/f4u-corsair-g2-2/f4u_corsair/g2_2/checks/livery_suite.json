@@ -1,0 +1,913 @@
+{
+  "all_pass": true,
+  "count": 13,
+  "variants": [
+    {
+      "id": "midnight",
+      "name": "Naval 308 \u2014 Midnight",
+      "blend": "source/aircraft_game.blend",
+      "glb": "export/aircraft.glb",
+      "blend_sha256": "a3665272bef44b600c38212fccaa057c4289dfe48bf7fbb7034f8a467843208a",
+      "glb_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+      "glb_bytes": 20026424,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 57,
+      "materials": 14,
+      "images": 6,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 0.65,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "three_tone",
+      "name": "Coastal Three Tone",
+      "blend": "source/aircraft_three_tone.blend",
+      "glb": "export/aircraft_three_tone.glb",
+      "blend_sha256": "eb31b5d377d6e0b38356ea7ffcc6b19d008fb9c66937bb7a81e28312ac58a6a0",
+      "glb_sha256": "52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005",
+      "glb_bytes": 20019312,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 57,
+      "materials": 14,
+      "images": 6,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 0.65,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "scarlet",
+      "name": "Super Corsair 57 / SOHIO",
+      "blend": "source/aircraft_scarlet.blend",
+      "glb": "export/aircraft_scarlet.glb",
+      "blend_sha256": "41f1b80e1db961b1c5b214bc1b478a37579d9c1412069759a8cd3e1b7f51940a",
+      "glb_sha256": "679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1",
+      "glb_bytes": 20415824,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 57,
+      "materials": 14,
+      "images": 6,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 0.65,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "splash",
+      "name": "Sunburst Splash",
+      "blend": "source/aircraft_splash.blend",
+      "glb": "export/aircraft_splash.glb",
+      "blend_sha256": "f754345d42cb2e504efaca4bf0f6e4b69f24b58161d1e1d69abdec504ea857e6",
+      "glb_sha256": "dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546",
+      "glb_bytes": 19655820,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 58,
+      "materials": 15,
+      "images": 6,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 0.65,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "spectrum",
+      "name": "Spectrum Wings",
+      "blend": "source/aircraft_spectrum.blend",
+      "glb": "export/aircraft_spectrum.glb",
+      "blend_sha256": "a248bf57c31742ef0bd60ffd7ea33332aece12a749777c6d5dc6c4503bc07150",
+      "glb_sha256": "233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6",
+      "glb_bytes": 19822212,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 57,
+      "materials": 14,
+      "images": 6,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 0.65,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "blueangels",
+      "name": "Blue Angels Corsair",
+      "blend": "source/aircraft_blueangels.blend",
+      "glb": "export/aircraft_blueangels.glb",
+      "blend_sha256": "b2d8083dec14eb408dadc33b467ea58029c19bde64faad11265dc0cbae167dac",
+      "glb_sha256": "76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0",
+      "glb_bytes": 19593328,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 58,
+      "materials": 15,
+      "images": 6,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 0.65,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "thunderbirds",
+      "name": "Thunderbirds Corsair",
+      "blend": "source/aircraft_thunderbirds.blend",
+      "glb": "export/aircraft_thunderbirds.glb",
+      "blend_sha256": "bb135ebffa1bfbf03c50fcd453064008f92866ffeb1b69317df5fdd96f37301f",
+      "glb_sha256": "9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03",
+      "glb_bytes": 19641704,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 58,
+      "materials": 15,
+      "images": 6,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 0.65,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "chrome",
+      "name": "Chrome 07 Corsair",
+      "blend": "source/aircraft_chrome.blend",
+      "glb": "export/aircraft_chrome.glb",
+      "blend_sha256": "f6499bf60e1698eac3d5bcb8b52cd9fb2eb8445c850a3ecb5f717a71546c8025",
+      "glb_sha256": "1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859",
+      "glb_bytes": 21370728,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 58,
+      "materials": 15,
+      "images": 6,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 1.0,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "p40",
+      "name": "Sharkmouth P-40 Inspired Corsair",
+      "blend": "source/aircraft_p40.blend",
+      "glb": "export/aircraft_p40.glb",
+      "blend_sha256": "38ba50b1c87269414a785501db6b77eadf3dc96ad1851b57d075036b3f693120",
+      "glb_sha256": "9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58",
+      "glb_bytes": 21865668,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 58,
+      "materials": 15,
+      "images": 7,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 1.0,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "japan",
+      "name": "Captured Corsair / Japan 09",
+      "blend": "source/aircraft_japan.blend",
+      "glb": "export/aircraft_japan.glb",
+      "blend_sha256": "4b5cd6040f34ce650cb59d3f3e082d35776dd02f2f5b68ad07dbaa774de8db37",
+      "glb_sha256": "9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824",
+      "glb_bytes": 21691192,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 58,
+      "materials": 15,
+      "images": 7,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 1.0,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "luftwaffe",
+      "name": "Captured Corsair / Beute 10",
+      "blend": "source/aircraft_luftwaffe.blend",
+      "glb": "export/aircraft_luftwaffe.glb",
+      "blend_sha256": "9cb6deb9469871fc260145d360f988b8438b031888ed010607adf7620cb26a22",
+      "glb_sha256": "aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02",
+      "glb_bytes": 21782072,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 58,
+      "materials": 15,
+      "images": 7,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 1.0,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "italy",
+      "name": "Deserto 11 / Italian desert concept",
+      "blend": "source/aircraft_italy.blend",
+      "glb": "export/aircraft_italy.glb",
+      "blend_sha256": "8ff7537107b484c6a1ef131fb398867a2866973974fcf80fd16cca4cc829c293",
+      "glb_sha256": "e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac",
+      "glb_bytes": 22047652,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 58,
+      "materials": 15,
+      "images": 7,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 1.0,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    },
+    {
+      "id": "carbon",
+      "name": "Carbon 12 / Aero Sport",
+      "blend": "source/aircraft_carbon.blend",
+      "glb": "export/aircraft_carbon.glb",
+      "blend_sha256": "7afc3480c4a5bf56e47c01f7733b85503a04954b3f54f61ccf76af02f3d2278f",
+      "glb_sha256": "ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278",
+      "glb_bytes": 27575148,
+      "triangles": 337664,
+      "nodes": 82,
+      "surfaces": 58,
+      "materials": 15,
+      "images": 9,
+      "geometry_normals_UVs_identical_to_g21": true,
+      "all_82_nodes_101_poses_identical": true,
+      "all_images_packed": true,
+      "normal_strength": 1.0,
+      "preflight_pass": true,
+      "preflight_warnings": [],
+      "hierarchy_and_frame100_identical": true,
+      "runtime_images": [
+        {
+          "name": "emission",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "Image",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "normal",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "basecolor",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "orm",
+          "size": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "name": "propeller_basecolor",
+          "size": [
+            1024,
+            256
+          ]
+        }
+      ],
+      "AO_shared_descriptor": true
+    }
+  ]
+}

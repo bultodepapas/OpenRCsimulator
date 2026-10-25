@@ -2,9 +2,9 @@
 """F4U-04: deliberate mutations of an accepted GLB must make preflight_glb.py exit nonzero.
 
 Uses the shipped Timber r2 GLB as a known-good sectioned asset and the Avanti GLB (exported with its retractable
-gear stowed) for the stowed-gear rule. For the skin-orientation rule (F4U-18) it uses the shipped Corsair, whose
-fuselage is inside out, and a copy with that mesh's triangle winding reversed. Writes each mutation to a disposable
-temporary copy and never touches the originals.
+gear stowed) for the stowed-gear rule. For the skin-orientation rule (F4U-18) it uses the frozen g1.13 Corsair, whose
+fuselage is inside out, and a copy with that mesh's triangle winding reversed; the shipped g2.1 Corsair must pass the
+g2 profile (F4U-19). Writes each mutation to a disposable temporary copy and never touches the originals.
 
     python research/f4u-corsair/F4U-04/test_preflight_glb.py
 """
@@ -19,7 +19,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 BASE = ROOT / "app/assets/aircraft/turbo-lumber-evolution/timber.glb"
 STOWED = ROOT / "app/assets/aircraft/avanti-s-a200/avanti_s.glb"
-CORSAIR = ROOT / "app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
+CORSAIR = ROOT / "assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13/export/aircraft.glb"
+SHIPPED = ROOT / "app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
 TOOL = HERE / "preflight_glb.py"
 INDEX_FORMATS = {5121: "B", 5123: "H", 5125: "I"}
 sys.path.insert(0, str(HERE))
@@ -129,9 +130,10 @@ def main():
         pivot["translation"][1] -= 0.1  # child of the identity root: 0.1 m straight down
         write_glb(Path(directory) / "gear_down.glb", stowed, stowed_binary)
         expect("preflight rejects: a main gear 0.1 m below its stowed pose", run(Path(directory) / "gear_down.glb", "generic", "--gear-stowed") == 1)
-        shipped = preflight_glb.inspect(CORSAIR, "f4u-g1")
-        expect("shipped g1.13 Corsair fails only the inside-out fuselage",
-               len(shipped["failures"]) == 1 and shipped["failures"][0].startswith("fuselage_core is inside out"))
+        frozen = preflight_glb.inspect(CORSAIR, "f4u-g1")
+        expect("frozen g1.13 Corsair fails only the inside-out fuselage",
+               len(frozen["failures"]) == 1 and frozen["failures"][0].startswith("fuselage_core is inside out"))
+        expect("shipped g2.1 Corsair passes the f4u-g2 profile", run(SHIPPED, "f4u-g2") == 0)
         corsair, corsair_binary = preflight_glb.read_glb(CORSAIR)
         fixed_binary = reverse_winding(corsair, corsair_binary, "fuselage_core")
         fixed = Path(directory) / "fuselage_reversed.glb"

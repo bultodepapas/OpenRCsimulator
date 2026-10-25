@@ -1,0 +1,40 @@
+test_aircraft_catalog | 107 checks, 0 failed
+test_aircraft_liveries | Aircraft liveries: 42 checks, 0 failures
+test_aircraft_modules | Aircraft modules: 85 checks, 0 failures
+test_aircraft_package_proofs | Aircraft package proofs: 29 checks, 0 failures
+test_aircraft_customization | Aircraft customization: 159 checks, 0 failed
+test_body_side_force | D10-R3 body side force: 25 checks, 0 failed
+test_companions_session | 65 checks, 0 failed
+test_controller_extended_actions | PASS extended controller actions: 104 checks
+test_controller_flight_actions | controller flight actions: 32 checks, 0 failures
+test_crash_energy | 225 checks, 0 failed
+test_economy_catalog | 90 checks, 0 failed
+test_engine_sound | 26 checks, 0 failed
+test_flap_aero | 28 checks, 0 failed
+test_flaps_session | AV-09 flaps session: 36 checks, 0 failures
+test_flaps_ui | flaps UI: 19 checks, 0 failures
+test_flight_log | FL-04 flight logs: 3247 checks, 0 failures; C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-3388070
+test_fuel_system_contract | FUEL-03 fuel system contract: 44 checks, 0 failed
+test_gear_visual_contacts | GP-06 gear visual contacts: 100 checks, 0 failed
+test_ground_stage_queries | 195 ground-stage checks, 0 failed
+test_half_power_start | HALF_POWER_CHECKS 68 failures=0
+test_landscape_population | all landscape population checks passed
+test_night_kit | FW-35b night kit: 36 checks, 0 failed
+test_p51_retracts | P51-11b retracts: 14 checks, 0 failed
+test_retractable_gear | AV-09 retractable gear: 77 checks, 0 failed
+test_retractable_gear_ground | 26 checks, 0 failed
+test_retractable_gear_input | ok   G does not override an assigned gear AUX input
+test_retractable_gear_trace | AV-09 retractable gear trace: 21 checks, 0 failed
+test_runway_fleet | Runway fleet: 132 checks, 0 failed
+test_shaft_coupled | G2 coupled shaft: 99 checks, 0 failed
+test_trace | 37 checks, 0 failed
+test_trace_metadata | C7-R2 / DATA-3: 411 checks, 0 failed
+test_trim_throttle | TRIM_THROTTLE_CHECKS 47 failures=0
+test_ui_aircraft | all UI aircraft checks passed
+test_ui_aircraft_flow | UI aircraft flow: 1 failed
+test_ui_change_aircraft | UI change aircraft: 0 failed
+test_ui_home | all UI home checks passed
+test_ui_home_layout | all UI home layout checks passed
+test_ui_home_rebuild | Home rebuild: 16 checks, 0 failed
+test_ui_standard_column | all standard-column UI checks passed
+test_wheel_session | GP-02 wheel session: 51 checks, 0 failed

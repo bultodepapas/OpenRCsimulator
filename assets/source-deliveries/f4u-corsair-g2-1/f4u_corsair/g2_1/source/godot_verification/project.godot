@@ -1,0 +1,5 @@
+config_version=5
+[application]
+config/name="F4U g2.1 verification"
+[rendering]
+renderer/rendering_method="gl_compatibility"

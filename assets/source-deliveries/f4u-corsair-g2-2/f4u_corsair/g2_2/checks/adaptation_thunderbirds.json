@@ -1,0 +1,18 @@
+{
+  "id": "thunderbirds",
+  "name": "Thunderbirds Corsair",
+  "blend": "source/aircraft_thunderbirds.blend",
+  "glb": "export/aircraft_thunderbirds.glb",
+  "blend_sha256": "bb135ebffa1bfbf03c50fcd453064008f92866ffeb1b69317df5fdd96f37301f",
+  "glb_sha256": "9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03",
+  "glb_bytes": 19641704,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 58,
+  "materials": 15,
+  "images": 6,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 0.65
+}

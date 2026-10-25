@@ -5,9 +5,9 @@ extends RefCounted
 const DATA := {
 	"schema": "openrc-f4u-model v1",
 	"catalog_id": "f4u-corsair-250",
-	"revision": "g1.13-03d66d8dc142",
-	"source_alias": "F4U Corsair g1.13 game model (author delivery derived from master R59)",
-	"status": "Imported g1.13 presentation with sampled GearRetract; flaps follow the session; experimental physics (F4U-07).",
+	"revision": "g2.2-9fa3b86a9b33",
+	"source_alias": "F4U Corsair g2.2 game model (author delivery derived from master R59)",
+	"status": "Imported g2.2 presentation with sampled GearRetract; flaps follow the session; experimental physics (F4U-07).",
 	"generator": "research/f4u-corsair/F4U-05/compile_model.py",
 	"units": "m",
 	"axes": {
@@ -20,10 +20,10 @@ const DATA := {
 		"physics_le_frame": "[x_aft, y_right, z_up] = [z, x, y]"
 	},
 	"inputs": {
-		"glb_sha256": "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8",
-		"metadata_sha256": "c3f2e6af575a531f32993a5eda09980bf2ce29bf4cec065519ca66efd86b45db",
-		"blend_sha256": "c2137fb3e363f26b447fca5cae2f118835e198ae609b66d731cc597693be00fc",
-		"gear_samples_sha256": "d613322954738d2b45e0076ef2fc0fbe0b490df62834923ff445d50252b4061a",
+		"glb_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+		"metadata_sha256": "15129c73767d0cc7196955ab2b25863f2c7edc7ba4ca73311635461a86499b55",
+		"blend_sha256": "a3665272bef44b600c38212fccaa057c4289dfe48bf7fbb7034f8a467843208a",
+		"gear_samples_sha256": "7bd3eb6be284f4929033b904e1b2923c3dc63a118c956a196442fc98fc91e8bc",
 		"wing_fold_sha256": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89"
 	},
 	"dimensions": {
@@ -77,19 +77,19 @@ const DATA := {
 			],
 			"rest_basis": {
 				"x": [
-					0.9590182060497061,
-					0.2825258099884184,
-					0.021523293916361867
+					0.9590181802406885,
+					0.28252589851090804,
+					0.021523306478048454
 				],
 				"y": [
-					-0.2824546841147882,
-					0.9592596998134517,
-					-0.00633914278330483
+					-0.28245477256449547,
+					0.9592596742895338,
+					-0.0063391470195171
 				],
 				"z": [
-					-0.022437399854644997,
-					-1.4556469918325377e-09,
-					0.999748249870253
+					-0.02243741310140379,
+					-2.926668685176992e-09,
+					0.9997482495762053
 				]
 			},
 			"surface_node": "flap_left_1",
@@ -111,19 +111,19 @@ const DATA := {
 			],
 			"rest_basis": {
 				"x": [
-					0.9862451205843076,
-					-0.15935916474890144,
-					0.04387732413969969
+					0.986245103747522,
+					-0.15935926875576836,
+					0.04387732748074745
 				],
 				"y": [
-					0.15920168912828236,
-					0.9872206730971936,
-					0.007082765573506761
+					0.15920179301873436,
+					0.9872206564172167,
+					0.007082770502655211
 				],
 				"z": [
-					-0.04444530505947197,
-					9.142192836097962e-10,
-					0.9990118192086022
+					-0.04444530914332846,
+					1.2028025797583553e-09,
+					0.9990118190352456
 				]
 			},
 			"surface_node": "flap_left_2",
@@ -145,19 +145,19 @@ const DATA := {
 			],
 			"rest_basis": {
 				"x": [
-					0.9829556123160307,
-					-0.17562246792123645,
-					0.0543600403863615
+					0.9829556129309749,
+					-0.1756224678555915,
+					0.05436002938135041
 				],
 				"y": [
-					0.17535452215252448,
-					0.9844575916133261,
-					0.009697566674456537
+					0.17535452221816944,
+					0.9844575916201289,
+					0.009697564298615513
 				],
 				"z": [
-					-0.055218265005452516,
-					1.0294598506987995e-09,
-					0.9984743077818659
+					-0.055218253754234746,
+					1.43564743426694e-09,
+					0.9984743084036128
 				]
 			},
 			"surface_node": "flap_left_3",
@@ -213,19 +213,19 @@ const DATA := {
 			],
 			"rest_basis": {
 				"x": [
-					0.9590182060497061,
-					-0.2825258099884184,
-					-0.021523293916361867
+					0.9590181802406885,
+					-0.28252589851090804,
+					-0.021523306478048454
 				],
 				"y": [
-					0.2824546841147882,
-					0.9592596998134517,
-					-0.00633914278330483
+					0.28245477256449547,
+					0.9592596742895338,
+					-0.0063391470195171
 				],
 				"z": [
-					0.022437399854644997,
-					-1.4556469918325377e-09,
-					0.999748249870253
+					0.02243741310140379,
+					-2.926668685176992e-09,
+					0.9997482495762053
 				]
 			},
 			"surface_node": "flap_right_1",
@@ -247,19 +247,19 @@ const DATA := {
 			],
 			"rest_basis": {
 				"x": [
-					0.9862451205843076,
-					0.15935916474890144,
-					-0.04387732413969969
+					0.986245103747522,
+					0.15935926875576836,
+					-0.04387732748074745
 				],
 				"y": [
-					-0.15920168912828236,
-					0.9872206730971936,
-					0.007082765573506761
+					-0.15920179301873436,
+					0.9872206564172167,
+					0.007082770502655211
 				],
 				"z": [
-					0.04444530505947197,
-					9.142192836097962e-10,
-					0.9990118192086022
+					0.04444530914332846,
+					1.2028025797583553e-09,
+					0.9990118190352456
 				]
 			},
 			"surface_node": "flap_right_2",
@@ -281,19 +281,19 @@ const DATA := {
 			],
 			"rest_basis": {
 				"x": [
-					0.9829556123160307,
-					0.17562246792123645,
-					-0.0543600403863615
+					0.9829556129309749,
+					0.1756224678555915,
+					-0.05436002938135041
 				],
 				"y": [
-					-0.17535452215252448,
-					0.9844575916133261,
-					0.009697566674456537
+					-0.17535452221816944,
+					0.9844575916201289,
+					0.009697564298615513
 				],
 				"z": [
-					0.055218265005452516,
-					1.0294598506987995e-09,
-					0.9984743077818659
+					0.055218253754234746,
+					1.43564743426694e-09,
+					0.9984743084036128
 				]
 			},
 			"surface_node": "flap_right_3",
@@ -434,7 +434,7 @@ const DATA := {
 			"value": 0.9003021457332075,
 			"unit": "m",
 			"kind": "measured",
-			"source": "g1.13 metadata.json: three-blade visual propeller"
+			"source": "g2.2 metadata.json: three-blade visual propeller"
 		}
 	},
 	"exhausts": [
@@ -452,7 +452,7 @@ const DATA := {
 			"radius_m": 0.008,
 			"kind": "glow_prop",
 			"pump": true,
-			"source": "g1.13 metadata landmark 'R43 | Escape unido -1 2' (left middle stack exit); direction estimated outboard, down and aft"
+			"source": "g2.2 metadata landmark 'R43 | Escape unido -1 2' (left middle stack exit); direction estimated outboard, down and aft"
 		}
 	],
 	"folds": {
@@ -527,38 +527,6 @@ const DATA := {
 			"source": "R59 94edd59b44f5 R51 pivot and CONTROL ALAS angulo_maximo (assets/aircraft/f4u-corsair-250/wing-fold-r59.json), mapped by D0 and the 1:4.5 scale"
 		}
 	},
-	"liveries": [
-		{
-			"id": "midnight",
-			"label": "Naval 308 — Midnight",
-			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
-			"glb_sha256": "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8"
-		},
-		{
-			"id": "scarlet",
-			"label": "Super Corsair 57 / SOHIO",
-			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_scarlet.glb",
-			"glb_sha256": "3238f69854a1b0a2d3d6dcbd03045fab78d18b2e6273b5f59bb4fc6531b94979"
-		},
-		{
-			"id": "splash",
-			"label": "Sunburst Splash",
-			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_splash.glb",
-			"glb_sha256": "27b60bce9d9eee59909f096502dcc6261d764ec3c173e323701b5a7ca4414622"
-		},
-		{
-			"id": "spectrum",
-			"label": "Spectrum Wings",
-			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_spectrum.glb",
-			"glb_sha256": "8434ef4b0ca6930a2228da763f926251ba73c06f8fbaac8bda11f7207fbea445"
-		},
-		{
-			"id": "blueangels",
-			"label": "Blue Angels Corsair",
-			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_blueangels.glb",
-			"glb_sha256": "c319ad9a3dc7cd9da484e5b613751809753cc6419c02950092dc715fca480a57"
-		}
-	],
 	"gear": {
 		"version": 1,
 		"bindings": {
@@ -1145,7 +1113,7 @@ const DATA := {
 			"sampled_compression": "the main oleo sliders are carriers (22.2 mm travel during the cycle); presentation compression offsets their sampled pose",
 			"interpolation": {
 				"uniform_samples": 101,
-				"max_midpoint_vertex_error_m": 5.489370420349015e-07,
+				"max_midpoint_vertex_error_m": 5.274674302467065e-07,
 				"max_midpoint_rotation_error_deg": 0.0,
 				"worst_mesh_and_carrier": [
 					"gear_tail_fork",
@@ -27048,5 +27016,85 @@ const DATA := {
 				]
 			}
 		}
-	}
+	},
+	"liveries": [
+		{
+			"id": "midnight",
+			"label": "Naval 308 — Midnight",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+			"glb_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851"
+		},
+		{
+			"id": "three_tone",
+			"label": "Coastal Three Tone",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_three_tone.glb",
+			"glb_sha256": "52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005"
+		},
+		{
+			"id": "scarlet",
+			"label": "Super Corsair 57 / SOHIO",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_scarlet.glb",
+			"glb_sha256": "679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1"
+		},
+		{
+			"id": "splash",
+			"label": "Sunburst Splash",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_splash.glb",
+			"glb_sha256": "dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546"
+		},
+		{
+			"id": "spectrum",
+			"label": "Spectrum Wings",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_spectrum.glb",
+			"glb_sha256": "233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6"
+		},
+		{
+			"id": "blueangels",
+			"label": "Blue Angels Corsair",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_blueangels.glb",
+			"glb_sha256": "76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0"
+		},
+		{
+			"id": "thunderbirds",
+			"label": "Thunderbirds Corsair",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_thunderbirds.glb",
+			"glb_sha256": "9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03"
+		},
+		{
+			"id": "chrome",
+			"label": "Chrome 07 Corsair",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_chrome.glb",
+			"glb_sha256": "1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859"
+		},
+		{
+			"id": "p40",
+			"label": "Sharkmouth P-40 Inspired Corsair",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_p40.glb",
+			"glb_sha256": "9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58"
+		},
+		{
+			"id": "japan",
+			"label": "Captured Corsair / Japan 09",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_japan.glb",
+			"glb_sha256": "9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824"
+		},
+		{
+			"id": "luftwaffe",
+			"label": "Captured Corsair / Beute 10",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_luftwaffe.glb",
+			"glb_sha256": "aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02"
+		},
+		{
+			"id": "italy",
+			"label": "Deserto 11 / Italian desert concept",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_italy.glb",
+			"glb_sha256": "e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac"
+		},
+		{
+			"id": "carbon",
+			"label": "Carbon 12 / Aero Sport",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_carbon.glb",
+			"glb_sha256": "ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278"
+		}
+	]
 }

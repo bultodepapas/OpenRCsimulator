@@ -322,6 +322,19 @@ static func _electric_reference_voltage(prop: Dictionary, equilibrium_context: D
 	return point.bus_voltage_v if point.get("ok", false) else NAN
 
 
+## Bisection and root validation consume both values at the same point. Evaluate the source and
+## propeller once, preserving the residual subtraction and tolerance arithmetic without a probe cache.
+static func _electric_residual_and_tolerance(rpm: float, duty: float, u: float, prop: Dictionary,
+		rho: float, equilibrium_context: Dictionary) -> PackedFloat64Array:
+	var source: Dictionary = _electric_equilibrium_source_state(rpm, duty, prop, equilibrium_context, true)
+	if not source.get("ok", false):
+		return PackedFloat64Array([NAN, NAN])
+	var load: float = prop_torque(rpm, u, prop, rho)
+	var residual: float = float(source.shaft_torque_nm) - load
+	var tolerance: float = ELECTRIC_ROOT_TORQUE_TOL * maxf(1.0, maxf(absf(float(source.shaft_torque_nm)), absf(load)))
+	return PackedFloat64Array([residual if is_finite(residual) else NAN, tolerance])
+
+
 static func _electric_net_torque(rpm: float, duty: float, u: float, prop: Dictionary, rho: float, equilibrium_context: Dictionary) -> float:
 	var source: Dictionary = _electric_equilibrium_source_state(rpm, duty, prop, equilibrium_context, true)
 	if not source.get("ok", false):
@@ -344,10 +357,11 @@ static func _bisect_electric_root(low_rpm: float, high_rpm: float, low_residual:
 	var residual: float = NAN
 	for iteration in range(80):
 		root = 0.5 * (lo + hi)
-		residual = _electric_net_torque(root, duty, u, prop, rho, equilibrium_context)
+		var probe: PackedFloat64Array = _electric_residual_and_tolerance(root, duty, u, prop, rho, equilibrium_context)
+		residual = probe[0]
 		if not is_finite(residual):
 			return _electric_operating_failure("invalid", "electric torque residual became nonfinite during bisection", STOPPED_RPM, search_upper_rpm, 0)
-		if absf(residual) <= _electric_torque_tolerance(root, duty, u, prop, rho, equilibrium_context):
+		if absf(residual) <= probe[1]:
 			return _electric_root_result(root, duty, u, prop, rho, search_upper_rpm, iteration + 1, equilibrium_context)
 		if (flo > 0.0 and residual > 0.0) or (flo < 0.0 and residual < 0.0):
 			lo = root
@@ -361,8 +375,9 @@ static func _bisect_electric_root(low_rpm: float, high_rpm: float, low_residual:
 
 static func _electric_root_result(rpm: float, duty: float, u: float, prop: Dictionary, rho: float,
 		search_upper_rpm: float, iterations: int, equilibrium_context: Dictionary) -> Dictionary:
-	var residual: float = _electric_net_torque(rpm, duty, u, prop, rho, equilibrium_context)
-	var tolerance: float = _electric_torque_tolerance(rpm, duty, u, prop, rho, equilibrium_context)
+	var probe: PackedFloat64Array = _electric_residual_and_tolerance(rpm, duty, u, prop, rho, equilibrium_context)
+	var residual: float = probe[0]
+	var tolerance: float = probe[1]
 	var slopes: PackedFloat64Array = _electric_one_sided_slopes(rpm, duty, u, prop, rho, equilibrium_context)
 	if not is_finite(residual) or absf(residual) > tolerance or slopes.size() != 2 \
 			or not is_finite(slopes[0]) or not is_finite(slopes[1]):

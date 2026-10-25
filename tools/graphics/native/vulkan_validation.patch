@@ -1,0 +1,97 @@
+diff --git a/platform/windows/rendering_context_driver_vulkan_windows.cpp b/platform/windows/rendering_context_driver_vulkan_windows.cpp
+--- a/platform/windows/rendering_context_driver_vulkan_windows.cpp
++++ b/platform/windows/rendering_context_driver_vulkan_windows.cpp
+@@ -56,7 +56,8 @@
+ 
+ 	VkWin32SurfaceCreateInfoKHR create_info = {};
+ 	create_info.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+-	create_info.hinstance = wpd->instance;
++	create_info.hinstance = wpd->instance != nullptr ? wpd->instance : GetModuleHandle(nullptr);
++	ERR_FAIL_COND_V(create_info.hinstance == nullptr, SurfaceID());
+ 	create_info.hwnd = wpd->window;
+ 
+ 	VkSurfaceKHR vk_surface = VK_NULL_HANDLE;
+diff --git a/drivers/vulkan/rendering_device_driver_vulkan.cpp b/drivers/vulkan/rendering_device_driver_vulkan.cpp
+--- a/drivers/vulkan/rendering_device_driver_vulkan.cpp
++++ b/drivers/vulkan/rendering_device_driver_vulkan.cpp
+@@ -928,7 +928,6 @@
+ 		VkPhysicalDevice16BitStorageFeaturesKHR storage_feature = {};
+ 		VkPhysicalDeviceMultiviewFeatures multiview_features = {};
+ 		VkPhysicalDevicePipelineCreationCacheControlFeatures pipeline_cache_control_features = {};
+-		VkPhysicalDeviceVulkanMemoryModelFeatures memory_model_features = {};
+ 		VkPhysicalDeviceAccelerationStructureFeaturesKHR acceleration_structure_features = {};
+ 		VkPhysicalDeviceRayTracingInvocationReorderFeaturesEXT raytracing_invocation_reorder_features = {};
+ 		VkPhysicalDeviceRayTracingPipelineFeaturesKHR raytracing_pipeline_features = {};
+@@ -995,11 +994,6 @@
+ 			next_features = &pipeline_cache_control_features;
+ 		}
+ 
+-		if (enabled_device_extension_names.has(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME)) {
+-			memory_model_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES;
+-			memory_model_features.pNext = next_features;
+-			next_features = &memory_model_features;
+-		}
+ 
+ 		if (enabled_device_extension_names.has(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME)) {
+ 			acceleration_structure_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR;
+@@ -1384,29 +1378,33 @@
+ 		enabled_extension_names.push_back(extension_name.ptr());
+ 	}
+ 
++	const bool enable_1_2_features = physical_device_properties.apiVersion >= VK_API_VERSION_1_2;
+ 	void *create_info_next = nullptr;
+ 	VkPhysicalDeviceShaderFloat16Int8FeaturesKHR shader_features = {};
+-	shader_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR;
+-	shader_features.pNext = create_info_next;
+-	shader_features.shaderFloat16 = shader_capabilities.shader_float16_is_supported;
+-	shader_features.shaderInt8 = shader_capabilities.shader_int8_is_supported;
+-	create_info_next = &shader_features;
+-
+ 	VkPhysicalDeviceBufferDeviceAddressFeaturesKHR buffer_device_address_features = {};
+-	if (buffer_device_address_support) {
+-		buffer_device_address_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR;
+-		buffer_device_address_features.pNext = create_info_next;
+-		buffer_device_address_features.bufferDeviceAddress = buffer_device_address_support;
+-		create_info_next = &buffer_device_address_features;
+-	}
+-
+ 	VkPhysicalDeviceVulkanMemoryModelFeaturesKHR vulkan_memory_model_features = {};
+-	if (vulkan_memory_model_support && vulkan_memory_model_device_scope_support) {
+-		vulkan_memory_model_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR;
+-		vulkan_memory_model_features.pNext = create_info_next;
+-		vulkan_memory_model_features.vulkanMemoryModel = vulkan_memory_model_support;
+-		vulkan_memory_model_features.vulkanMemoryModelDeviceScope = vulkan_memory_model_device_scope_support;
+-		create_info_next = &vulkan_memory_model_features;
++	if (!enable_1_2_features) {
++		// Use legacy structs only when the promoted Vulkan 1.2 aggregate is unavailable.
++		shader_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR;
++		shader_features.pNext = create_info_next;
++		shader_features.shaderFloat16 = shader_capabilities.shader_float16_is_supported;
++		shader_features.shaderInt8 = shader_capabilities.shader_int8_is_supported;
++		create_info_next = &shader_features;
++
++		if (buffer_device_address_support) {
++			buffer_device_address_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR;
++			buffer_device_address_features.pNext = create_info_next;
++			buffer_device_address_features.bufferDeviceAddress = buffer_device_address_support;
++			create_info_next = &buffer_device_address_features;
++		}
++
++		if (vulkan_memory_model_support && vulkan_memory_model_device_scope_support) {
++			vulkan_memory_model_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR;
++			vulkan_memory_model_features.pNext = create_info_next;
++			vulkan_memory_model_features.vulkanMemoryModel = vulkan_memory_model_support;
++			vulkan_memory_model_features.vulkanMemoryModelDeviceScope = vulkan_memory_model_device_scope_support;
++			create_info_next = &vulkan_memory_model_features;
++		}
+ 	}
+ 
+ 	VkPhysicalDeviceFragmentShadingRateFeaturesKHR fsr_features = {};
+@@ -1509,7 +1507,6 @@
+ 	VkPhysicalDeviceVulkan12Features vulkan_1_2_features = {};
+ 	VkPhysicalDevice16BitStorageFeaturesKHR storage_features = {};
+ 	VkPhysicalDeviceMultiviewFeatures multiview_features = {};
+-	const bool enable_1_2_features = physical_device_properties.apiVersion >= VK_API_VERSION_1_2;
+ 	if (enable_1_2_features) {
+ 		// In Vulkan 1.2 and newer we use a newer struct to enable various features.
+ 		// Enable Vulkan 1.2 features (descriptor indexing, buffer device address, etc.).

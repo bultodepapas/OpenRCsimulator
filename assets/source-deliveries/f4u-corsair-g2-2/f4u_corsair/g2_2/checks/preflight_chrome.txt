@@ -1,0 +1,2 @@
+D:\CodexDeliveries\F4U_Corsair\g2_2\export\aircraft_chrome.glb [f4u-g2]: 337664 triangles, 46 mesh nodes, 58 surfaces, 15 materials, 6 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS

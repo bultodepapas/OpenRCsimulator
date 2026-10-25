@@ -1,0 +1,250 @@
+{
+  "audit": "F4U g2 portable native Revision 4 audit",
+  "read_only": true,
+  "blender_version": "5.2.2 LTS",
+  "dependencies": [
+    "candidate aircraft_game.blend",
+    "metadata.json",
+    "gear-reference.json"
+  ],
+  "not_required": [
+    "g1 aircraft blend",
+    "R59 source blend"
+  ],
+  "inputs": {
+    "candidate": {
+      "path": "D:\\CodexDeliveries\\F4U_Corsair\\g2_1\\source\\aircraft_game.blend",
+      "sha256": "1bbe5011f099cdaa893f00f4ec081523d5873887cb5916c29ee26c5319295148"
+    },
+    "metadata": "D:\\CodexDeliveries\\F4U_Corsair\\g2_1\\metadata.json",
+    "gear_reference": "D:\\CodexDeliveries\\F4U_Corsair\\g2_1\\source\\scripts\\gear-reference.json"
+  },
+  "counts": {
+    "triangles": 337664,
+    "mesh_nodes": 46,
+    "surfaces": 57,
+    "materials": 14
+  },
+  "gear_reference": {
+    "carriers": 17,
+    "samples": 1717,
+    "max_translation_m": 0.0,
+    "max_rotation_deg": 0.0
+  },
+  "checks_passed": 22,
+  "checks_total": 22,
+  "ok": true,
+  "checks": [
+    {
+      "name": "EXPORT_aircraft collection exists",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "native node names exactly match current metadata",
+      "ok": true,
+      "detail": {
+        "actual_only": [],
+        "metadata_only": []
+      }
+    },
+    {
+      "name": "node names are ASCII and unique",
+      "ok": true,
+      "detail": {
+        "nodes": 82
+      }
+    },
+    {
+      "name": "no cameras or lights in exported collection",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "every node and mesh/pivot has valid openrc_section",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "static thrust_frame datum remains untagged",
+      "ok": true,
+      "detail": {
+        "section": null
+      }
+    },
+    {
+      "name": "no detachable ancestor crosses section and parents/tags match metadata",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "unit positive node transforms",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "no constraints or drivers",
+      "ok": true,
+      "detail": {
+        "constraints": [],
+        "drivers": []
+      }
+    },
+    {
+      "name": "native per-mesh counts and sections match metadata",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "native aggregate counts match metadata",
+      "ok": true,
+      "detail": {
+        "triangles": 337664,
+        "metadata_triangles": 337664,
+        "surfaces": 57,
+        "metadata_surfaces": 57,
+        "materials": 14,
+        "metadata_materials": 14,
+        "meshes": 46
+      }
+    },
+    {
+      "name": "Revision 4 geometry and package budgets",
+      "ok": true,
+      "detail": {
+        "triangles": 337664,
+        "surfaces": 57,
+        "materials": 14,
+        "glb_bytes": 18950912
+      }
+    },
+    {
+      "name": "native source SHA-256 matches current metadata",
+      "ok": true,
+      "detail": {
+        "actual": "1bbe5011f099cdaa893f00f4ec081523d5873887cb5916c29ee26c5319295148",
+        "metadata": "1bbe5011f099cdaa893f00f4ec081523d5873887cb5916c29ee26c5319295148"
+      }
+    },
+    {
+      "name": "metric metre scene and saved neutral frame 0",
+      "ok": true,
+      "detail": {
+        "unit_system": "METRIC",
+        "scale_length": 1.0,
+        "frame_current": 0
+      }
+    },
+    {
+      "name": "root identity",
+      "ok": true,
+      "detail": {
+        "max_matrix_delta": 0.0
+      }
+    },
+    {
+      "name": "required pivots/helpers and Revision 4 link parents",
+      "ok": true,
+      "detail": {
+        "missing": [],
+        "parent_errors": [],
+        "child_errors": []
+      }
+    },
+    {
+      "name": "Naval 308 is first/default livery",
+      "ok": true,
+      "detail": {
+        "default": "midnight",
+        "first": {
+          "id": "midnight",
+          "name": "Naval 308",
+          "description": "Original dark-blue naval restoration scheme on the new g2 UV atlas",
+          "default": true
+        }
+      }
+    },
+    {
+      "name": "GearRetract action range and assigned carriers",
+      "ok": true,
+      "detail": {
+        "range": [
+          0.0,
+          100.0
+        ],
+        "animated": {
+          "gear_fold_left": "GearRetract",
+          "gear_twist_left": "GearRetract",
+          "gear_compression_left": "GearRetract",
+          "gear_door_front_left": "GearRetract",
+          "gear_door_inner_left": "GearRetract",
+          "gear_door_outer_left": "GearRetract",
+          "gear_fold_right": "GearRetract",
+          "gear_twist_right": "GearRetract",
+          "gear_compression_right": "GearRetract",
+          "gear_door_front_right": "GearRetract",
+          "gear_door_inner_right": "GearRetract",
+          "gear_door_outer_right": "GearRetract",
+          "gear_carrier_tail": "GearRetract",
+          "gear_door_tail_left_1": "GearRetract",
+          "gear_door_tail_left_2": "GearRetract",
+          "gear_door_tail_right_1": "GearRetract",
+          "gear_door_tail_right_2": "GearRetract"
+        },
+        "metadata_carriers": [
+          "gear_carrier_tail",
+          "gear_compression_left",
+          "gear_compression_right",
+          "gear_door_front_left",
+          "gear_door_front_right",
+          "gear_door_inner_left",
+          "gear_door_inner_right",
+          "gear_door_outer_left",
+          "gear_door_outer_right",
+          "gear_door_tail_left_1",
+          "gear_door_tail_left_2",
+          "gear_door_tail_right_1",
+          "gear_door_tail_right_2",
+          "gear_fold_left",
+          "gear_fold_right",
+          "gear_twist_left",
+          "gear_twist_right"
+        ]
+      }
+    },
+    {
+      "name": "metadata declares 101 GearRetract samples at frame 100",
+      "ok": true,
+      "detail": {
+        "gear": {
+          "action": "GearRetract",
+          "samples": 101
+        },
+        "runtime_export_frame": 100
+      }
+    },
+    {
+      "name": "all carrier GearRetract samples match packaged gear reference within 0.01mm/0.01deg",
+      "ok": true,
+      "detail": {
+        "carriers": 17,
+        "samples": 1717,
+        "max_translation_m": 0.0,
+        "max_rotation_deg": 0.0,
+        "violations": []
+      }
+    },
+    {
+      "name": "frame-100 native node matrices match metadata",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "fuselage winding is outward",
+      "ok": true,
+      "detail": {
+        "area_weighted_outward_share": 0.8154138354010779
+      }
+    }
+  ]
+}

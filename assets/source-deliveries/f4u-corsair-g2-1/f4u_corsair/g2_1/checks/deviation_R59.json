@@ -1,0 +1,140 @@
+{
+  "method": "bidirectional nearest surface at every vertex plus R59 face centre; sampled maximum, not a certified continuous Hausdorff bound",
+  "units": "mm at 1:4.5 model scale",
+  "R13_baked_seams_excluded": true,
+  "parts": [
+    {
+      "node": "fuselage_core",
+      "samples": 124248,
+      "sampled_max_mm": 0.7011262350715697,
+      "p95_mm": 0.15809577598702163,
+      "median_mm": 0.0023361105832009343
+    },
+    {
+      "node": "cowl",
+      "samples": 128049,
+      "sampled_max_mm": 0.8438988006673753,
+      "p95_mm": 0.31646399293094873,
+      "median_mm": 0.014657304745924193
+    },
+    {
+      "node": "wing_center_fixed",
+      "samples": 376007,
+      "sampled_max_mm": 2.484972355887294,
+      "p95_mm": 0.2438881347188726,
+      "median_mm": 0.01799749952624552
+    },
+    {
+      "node": "wing_left_fixed",
+      "samples": 110747,
+      "sampled_max_mm": 2.688077511265874,
+      "p95_mm": 0.9052951936610043,
+      "median_mm": 0.011150924365210813
+    },
+    {
+      "node": "wing_right_fixed",
+      "samples": 105057,
+      "sampled_max_mm": 2.298099920153618,
+      "p95_mm": 0.6059351144358516,
+      "median_mm": 0.006786237918277038
+    },
+    {
+      "node": "aileron_left",
+      "samples": 43458,
+      "sampled_max_mm": 0.7965216063894331,
+      "p95_mm": 0.032951349567156285,
+      "median_mm": 0.004369935595605057
+    },
+    {
+      "node": "aileron_right",
+      "samples": 34422,
+      "sampled_max_mm": 0.9534169221296906,
+      "p95_mm": 0.016207479347940534,
+      "median_mm": 0.0016939054603426484
+    },
+    {
+      "node": "flap_left_1",
+      "samples": 23653,
+      "sampled_max_mm": 3.5173380747437477,
+      "p95_mm": 0.07755940168863162,
+      "median_mm": 0.007681848728680052
+    },
+    {
+      "node": "flap_left_2",
+      "samples": 23627,
+      "sampled_max_mm": 3.527836175635457,
+      "p95_mm": 0.026891873858403414,
+      "median_mm": 0.0034209119803563226
+    },
+    {
+      "node": "flap_left_3",
+      "samples": 23642,
+      "sampled_max_mm": 3.425903618335724,
+      "p95_mm": 0.0178021437022835,
+      "median_mm": 0.0015284407481885864
+    },
+    {
+      "node": "flap_right_1",
+      "samples": 23711,
+      "sampled_max_mm": 3.5211590584367514,
+      "p95_mm": 0.0757391972001642,
+      "median_mm": 0.006768490493413992
+    },
+    {
+      "node": "flap_right_2",
+      "samples": 23692,
+      "sampled_max_mm": 3.5245439503341913,
+      "p95_mm": 0.024718703571124934,
+      "median_mm": 0.0031813542591407895
+    },
+    {
+      "node": "flap_right_3",
+      "samples": 23647,
+      "sampled_max_mm": 3.425996284931898,
+      "p95_mm": 0.01662585054873489,
+      "median_mm": 0.0015205756653813296
+    },
+    {
+      "node": "stabilizer_fixed",
+      "samples": 64456,
+      "sampled_max_mm": 0.45469211181625724,
+      "p95_mm": 0.11082072160206735,
+      "median_mm": 0.008820892617222853
+    },
+    {
+      "node": "elevator",
+      "samples": 84525,
+      "sampled_max_mm": 0.363589875632897,
+      "p95_mm": 0.2211610844824463,
+      "median_mm": 0.022079502741689794
+    },
+    {
+      "node": "fin_fixed",
+      "samples": 23728,
+      "sampled_max_mm": 0.024028846382861957,
+      "p95_mm": 0.006250999831536319,
+      "median_mm": 0.0002911705223596073
+    },
+    {
+      "node": "rudder",
+      "samples": 69406,
+      "sampled_max_mm": 0.37013462861068547,
+      "p95_mm": 0.09392904757987708,
+      "median_mm": 0.011263382475590333
+    },
+    {
+      "node": "canopy_glass",
+      "samples": 41079,
+      "sampled_max_mm": 0.44782369513995945,
+      "p95_mm": 0.13591985043603927,
+      "median_mm": 0.02572500852693338
+    },
+    {
+      "node": "windshield_glass",
+      "samples": 16491,
+      "sampled_max_mm": 0.1437071623513475,
+      "p95_mm": 0.035092220059596,
+      "median_mm": 0.004121518031752203
+    }
+  ]
+}

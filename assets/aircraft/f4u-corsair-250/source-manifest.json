@@ -2,93 +2,731 @@
  "format": "openrc-f4u-source-manifest v1",
  "step": "F4U-03",
  "generator": "research/f4u-corsair/F4U-03/manifest.py",
- "delivery_root": "assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13",
+ "delivery_root": "assets/source-deliveries/f4u-corsair-g2-2/f4u_corsair/g2_2",
  "catalog_id": "f4u-corsair-250",
- "delivery_revision": "g1.13",
- "request_revision": 3,
+ "delivery_revision": "g2.2",
+ "request_revision": "All existing liveries, owner request after g2.1 acceptance",
  "scale_factor": 0.2222222222222222,
- "visual_revision": "g1.13-03d66d8dc142",
+ "visual_revision": "g2.2-9fa3b86a9b33",
  "master": {
   "revision": "R59",
   "sha256": "94edd59b44f578b5a1f7c1fe4004c736dff47a63e2866e4b8a04532851cf4dc3"
  },
  "terms": "project's own model; no licence required (owner decision F4U-13, 2026-10-23, docs/DECISIONS.md)",
- "author_manifest": "92 of 246 entries of manifest.sha256.json match; 154 omitted by rule",
+ "author_manifest": "134 of 638 entries of SHA256SUMS.txt match; 504 omitted by rule",
  "omitted_rule": [
   "textures/*",
-  "previews/*.png",
-  "previews/index.html",
-  "source/aircraft_blueangels.blend",
-  "source/aircraft_spectrum.blend",
-  "source/aircraft_splash.blend",
-  "source/aircraft_super57.blend",
+  "previews/*",
   "source/scripts/uv-layout.json",
-  "source/scripts/reference-samples.json"
+  "source/aircraft_three_tone.blend",
+  "source/aircraft_scarlet.blend",
+  "source/aircraft_splash.blend",
+  "source/aircraft_spectrum.blend",
+  "source/aircraft_blueangels.blend",
+  "source/aircraft_thunderbirds.blend",
+  "source/aircraft_chrome.blend",
+  "source/aircraft_p40.blend",
+  "source/aircraft_japan.blend",
+  "source/aircraft_luftwaffe.blend",
+  "source/aircraft_italy.blend",
+  "source/aircraft_carbon.blend"
  ],
  "omitted": [
   {
-   "path": "previews/blueangels13_bottom.png",
-   "sha256": "edb7950f93e40380347e66ae1d84ea39b1e68c5ee0a01f56ebf0a9ccca7194ea"
+   "path": "previews/blueangels/hero.png",
+   "sha256": "16db7b00743304fca7552d64721a34df6304d28869652c78f933d95174fd679e"
   },
   {
-   "path": "previews/blueangels13_gear.png",
-   "sha256": "3cebd52b7c596957f73856f93e525d3015aca1b5cdeb81078aee6e42e124f29b"
+   "path": "previews/blueangels/side.png",
+   "sha256": "caafcbab5d9fd4af5c954575aa502adb2e390e7a7dc0da9d4465f064fe49124f"
   },
   {
-   "path": "previews/blueangels13_hero.png",
-   "sha256": "14238b962ea3c0875840508d13c1c880f1ad40f7ffe02377837269ef477f5c19"
+   "path": "previews/blueangels/top.png",
+   "sha256": "300a167d99366831cd50fa0f512d2fa12caafb899c5070720259db6f04239108"
   },
   {
-   "path": "previews/blueangels13_left.png",
-   "sha256": "5b72f0bf45bc43399afefa13ef1a73ced24d0a5d7f5d1f7e38de3aaf73dfc8c2"
+   "path": "previews/blueangels/underside.png",
+   "sha256": "705e5f8c68facd9333c9d295f8ddd9324111e6f41485f97421a8922b6ae388a6"
   },
   {
-   "path": "previews/blueangels13_motion50.png",
-   "sha256": "51ba2c60bd7320d104aa76fc232c72883a3334834e7bb2df20a9acd3a65c2b03"
+   "path": "previews/carbon/hero.png",
+   "sha256": "65cf007ef7d435bcd3275756f2725344442e54c67c62c7a83d4e38bc97df1940"
   },
   {
-   "path": "previews/blueangels13_right.png",
-   "sha256": "4e0b495dcb3ce2cff8d4defa105cf259f6b5b650a9f35fb958dd8a5d02ee8515"
+   "path": "previews/carbon/side.png",
+   "sha256": "365bdefaeb9ca7e580cf10f2039eb37705a48f47177d62fcf9227cd3ae51fb32"
   },
   {
-   "path": "previews/blueangels13_runtime_belly.png",
-   "sha256": "defa9ddcf56cd6f124566fefb968c8ab7be87dc457392bfe2f27d088b41549f7"
+   "path": "previews/carbon/top.png",
+   "sha256": "11be99c36bcd552caf9bda0825e0589ebd729e093c74f4d59b0b7a907054ff2d"
   },
   {
-   "path": "previews/blueangels13_runtime_hero.png",
-   "sha256": "3f39dc6c618da406a6621d2518190b56530b7074cff8610cacf3bafa98931d7d"
+   "path": "previews/carbon/underside.png",
+   "sha256": "270865cb099afc6fecb1af58f847591c3ea050c3552e5cad5c9f6a475e20704b"
   },
   {
-   "path": "previews/blueangels13_top.png",
-   "sha256": "704bfba808fee9bace64105637b8b885124e0d4fcfae5f4cce510942992d4f04"
+   "path": "previews/chrome/hero.png",
+   "sha256": "bf59b4ca9cd9400f0e2d95a5f7083a7b9d5d7c8b45face329e4990cb562a0ddf"
+  },
+  {
+   "path": "previews/chrome/side.png",
+   "sha256": "25885699c4de413b02d98ed22c2b262ec40ca93c641105b294ecf7f3ccaeb6ac"
+  },
+  {
+   "path": "previews/chrome/top.png",
+   "sha256": "980d3d12951816cb50278ffd417e8126f4c1299347581a91508b7cc15979fed7"
+  },
+  {
+   "path": "previews/chrome/underside.png",
+   "sha256": "857f1c42e4b6fd4e5d858af6947598ba4bf4fde6e99762a9539b09da91003904"
+  },
+  {
+   "path": "previews/collection_hero.jpg",
+   "sha256": "3002fbe3eee577a95b4425d939d0161e8283bdc9844a2e350691556a244acf76"
+  },
+  {
+   "path": "previews/collection_side.jpg",
+   "sha256": "e5a9080ab720b2e57414d30dc97ea25548d0b6ab72010c7ae2895cd7ccdec3a6"
+  },
+  {
+   "path": "previews/collection_top.jpg",
+   "sha256": "ae68726978022e1edd2dffc2a59c1199caf51791b183af47b6bb20c23a56eec2"
+  },
+  {
+   "path": "previews/collection_underside.jpg",
+   "sha256": "24d427c07b4a78adf292f452d82eb588c7644c8802e288f8da537925565f130a"
+  },
+  {
+   "path": "previews/godot/blueangels-textured/1_hero_4m.png",
+   "sha256": "4462b7a45bd81153c4c47fac29c8f6977c389406dd15d4bdc05b012314564817"
+  },
+  {
+   "path": "previews/godot/blueangels-textured/2_nose_1m6.png",
+   "sha256": "8ef408ac69ce1886ad4e5f9e62778b76824a3126ab9a99f3439639ad69523534"
+  },
+  {
+   "path": "previews/godot/blueangels-textured/3_cockpit_1m5.png",
+   "sha256": "8f8bedb2a946e065463a401c8e949db5622d67c9165b4c82c87d97f457c6d658"
+  },
+  {
+   "path": "previews/godot/blueangels-textured/4_gear_1m2.png",
+   "sha256": "9466bbf929252b8404e69ef8b9700499ac7c8253771d635d552beb7c6a116eea"
+  },
+  {
+   "path": "previews/godot/blueangels-textured/5_tail_2m.png",
+   "sha256": "ecf9e2b9dd5848d7c78efe2690d4b518fc0fd71a0be850d10d8dd139d482ec72"
+  },
+  {
+   "path": "previews/godot/blueangels-textured/6_chase_10m.png",
+   "sha256": "c6c17dc5df8fb322be70820000f0c45de70ae9766531345c1e7847836e7d3a11"
+  },
+  {
+   "path": "previews/godot/blueangels-textured/7_pilot_40m.png",
+   "sha256": "55837e261b0c5ca8c05fec8f85213efee4fc0454346dd924747d5197f4f8a732"
+  },
+  {
+   "path": "previews/godot/blueangels-textured/8_pilot_120m.png",
+   "sha256": "23ca840a25602cbf580517c855b4e6dfa792cbf66b8fdb5b615b9d51582209e4"
+  },
+  {
+   "path": "previews/godot/carbon-textured/1_hero_4m.png",
+   "sha256": "fb2b147ec87e4cf73574ae4fbfe4d1d06d88fb294df2d411ce63830bcf1b44c1"
+  },
+  {
+   "path": "previews/godot/carbon-textured/2_nose_1m6.png",
+   "sha256": "49d7f91b25a63c4f97b7855581692f6adc47589496f62ff7e6be5d95b9ef8998"
+  },
+  {
+   "path": "previews/godot/carbon-textured/3_cockpit_1m5.png",
+   "sha256": "c020272ff1aa3d882c5a1ef50e01e0f502e9ba4da8f07c741f404361d4ff49bd"
+  },
+  {
+   "path": "previews/godot/carbon-textured/4_gear_1m2.png",
+   "sha256": "80ea66e21b40730c540cf84abf3ed9d4b64dd98c06bb55ce1e45e9795e29274a"
+  },
+  {
+   "path": "previews/godot/carbon-textured/5_tail_2m.png",
+   "sha256": "452968053acd5551f0801f1d50bd1c9794136e2a1dab151309c41362e9f5897b"
+  },
+  {
+   "path": "previews/godot/carbon-textured/6_chase_10m.png",
+   "sha256": "aac9928cd5f92bccb0da4a1d26d5e7eb6419a7f04427441dea79cdb758e4cf50"
+  },
+  {
+   "path": "previews/godot/carbon-textured/7_pilot_40m.png",
+   "sha256": "97ed63468bc060ed4fe35b190f573a14d113cbfdca9644e8e60040f3d2d9c857"
+  },
+  {
+   "path": "previews/godot/carbon-textured/8_pilot_120m.png",
+   "sha256": "893e6530aeee529a458a2369eea409607016f2f1aea474c5cba93fbc34af7f69"
+  },
+  {
+   "path": "previews/godot/chrome-textured/1_hero_4m.png",
+   "sha256": "cfc8e896816ea3f9468e82e603f16ee4736bbfdfba9af233471ad2d66ad7abe8"
+  },
+  {
+   "path": "previews/godot/chrome-textured/2_nose_1m6.png",
+   "sha256": "5e4539473ee4f1a7c9a05d1b1d31c16a096dc6ffb27811d56f419aabc6fe1f0d"
+  },
+  {
+   "path": "previews/godot/chrome-textured/3_cockpit_1m5.png",
+   "sha256": "4999894c8454b29c5b4f84f93651e27fe4932c083cf488f305d370f7f761f881"
+  },
+  {
+   "path": "previews/godot/chrome-textured/4_gear_1m2.png",
+   "sha256": "6dcdab1255654b06bd2a5867c5b5a23157795c8d866affba93fb66e4e752bc9f"
+  },
+  {
+   "path": "previews/godot/chrome-textured/5_tail_2m.png",
+   "sha256": "deea09fc5e542528abba913b3a0bfe28fa6ee7da3fa9578919d822d34c26a34c"
+  },
+  {
+   "path": "previews/godot/chrome-textured/6_chase_10m.png",
+   "sha256": "d3129cf48a81fbffc6540ad4c2d3804f79a71e97f0adc48c1ab31a26a6928475"
+  },
+  {
+   "path": "previews/godot/chrome-textured/7_pilot_40m.png",
+   "sha256": "24e8babec48a3249a8176f5ea3a7f2ff2a51b623f788d82b4404cd3f25bad65d"
+  },
+  {
+   "path": "previews/godot/chrome-textured/8_pilot_120m.png",
+   "sha256": "4319434caf54f7bba0ba712f567e978920941ac7546ea895e3fe3a3f5db0e086"
+  },
+  {
+   "path": "previews/godot/italy-textured/1_hero_4m.png",
+   "sha256": "420eb6fd89c89c79e3f7de77e2724379ab656358fead46b00aefd12d4d4d40a1"
+  },
+  {
+   "path": "previews/godot/italy-textured/2_nose_1m6.png",
+   "sha256": "0077db0b558cc059f7ce9a9e174162dbcc354b4d3d3801fa954219a827b9f645"
+  },
+  {
+   "path": "previews/godot/italy-textured/3_cockpit_1m5.png",
+   "sha256": "cc1608208a806e7a6353df50d69b562b50e5a3ac3dc95f039294883b555602b6"
+  },
+  {
+   "path": "previews/godot/italy-textured/4_gear_1m2.png",
+   "sha256": "c03f0348c014ceeea6600e83ba523dfd0ec4b98055cea3d4f7e6c6dc17fb72ab"
+  },
+  {
+   "path": "previews/godot/italy-textured/5_tail_2m.png",
+   "sha256": "cf505104c54c710a9e0c894ea975de1c9800cdc1b85fa2ad3e9764520696f473"
+  },
+  {
+   "path": "previews/godot/italy-textured/6_chase_10m.png",
+   "sha256": "78721162818cb3b8e8400aef9d2c9b808366350f46db7a1b69b8cce3a91cae15"
+  },
+  {
+   "path": "previews/godot/italy-textured/7_pilot_40m.png",
+   "sha256": "ded0476d601d1dbe54db055b3c5a4eef51a04a5a27a8d374b5f8c7f2079541a2"
+  },
+  {
+   "path": "previews/godot/italy-textured/8_pilot_120m.png",
+   "sha256": "7d490d2f26f40843d0c90111aa435ee99c3e055a55fb8383bdbe56871e5446d0"
+  },
+  {
+   "path": "previews/godot/japan-textured/1_hero_4m.png",
+   "sha256": "b412777cdeb85df4110167f0d8c1ad41094843a548f880e189841fb37afb863f"
+  },
+  {
+   "path": "previews/godot/japan-textured/2_nose_1m6.png",
+   "sha256": "b44a7849dd20231b026f00b93ad08261e6e5a991818fea2756472cf74990677a"
+  },
+  {
+   "path": "previews/godot/japan-textured/3_cockpit_1m5.png",
+   "sha256": "5781db40851e13d7e56d07ac4d353e91650c3d5d4b2efbd04d50ef7bf362bbd2"
+  },
+  {
+   "path": "previews/godot/japan-textured/4_gear_1m2.png",
+   "sha256": "52edbd31d71343981e27c00a7c856621c105f92af4ac1297fd0d75279ac4535a"
+  },
+  {
+   "path": "previews/godot/japan-textured/5_tail_2m.png",
+   "sha256": "7020cc67907cd1d97fbc101ba0f865d50954e698930a2030f49a45b7d7aa6083"
+  },
+  {
+   "path": "previews/godot/japan-textured/6_chase_10m.png",
+   "sha256": "0f41d409f946a3c7312eb9ee7556ab116be16be62637b7a70156dbfdd7db5c21"
+  },
+  {
+   "path": "previews/godot/japan-textured/7_pilot_40m.png",
+   "sha256": "e3fdfdd7f388381bb2f589dd7260f45da70bf07a2fcfb3dc9092afba1c5d9964"
+  },
+  {
+   "path": "previews/godot/japan-textured/8_pilot_120m.png",
+   "sha256": "7c4ecefa054fe5b3f9e46ab4347e6eeb29b573715a87af3415541532fdb26ec3"
+  },
+  {
+   "path": "previews/godot/luftwaffe-textured/1_hero_4m.png",
+   "sha256": "3190f2471d01c6af9e3a526f1847bc0bccb2972bc1bfbf6db5dddbfd2fb83a6f"
+  },
+  {
+   "path": "previews/godot/luftwaffe-textured/2_nose_1m6.png",
+   "sha256": "ac000b02afc08ab12982e15f0281abfc1d7d802e6ac84429f167d34d0d1c584c"
+  },
+  {
+   "path": "previews/godot/luftwaffe-textured/3_cockpit_1m5.png",
+   "sha256": "073fd9ad55a37e0174a692e45e06553f018aaf967153d098834624540baf159c"
+  },
+  {
+   "path": "previews/godot/luftwaffe-textured/4_gear_1m2.png",
+   "sha256": "b046575c3ca7b0940a7732b5b842c24f3087f6e571c2b9361204ebce46f4a277"
+  },
+  {
+   "path": "previews/godot/luftwaffe-textured/5_tail_2m.png",
+   "sha256": "6126b01e5787eebacbb722a556057289f471d4ac580070128d8b06765f44e3df"
+  },
+  {
+   "path": "previews/godot/luftwaffe-textured/6_chase_10m.png",
+   "sha256": "5390689d610d57429bc41a5d6a5a66e28130ef925c87313b5c2db09f3e6ce803"
+  },
+  {
+   "path": "previews/godot/luftwaffe-textured/7_pilot_40m.png",
+   "sha256": "7f189b5ba898a02646d75d37bd5a7cceb2cfb2865bf4dfae18367dc7732bdc87"
+  },
+  {
+   "path": "previews/godot/luftwaffe-textured/8_pilot_120m.png",
+   "sha256": "2ce9f1effe2d674af3d8844529afac1981957c780df9b31c471331111d437551"
+  },
+  {
+   "path": "previews/godot/midnight-textured/1_hero_4m.png",
+   "sha256": "b5b7701685f2a84e870d99e3b5e0e708574d67b1d2fbf8e6690ce0a4779a2b12"
+  },
+  {
+   "path": "previews/godot/midnight-textured/2_nose_1m6.png",
+   "sha256": "f599ff1cf5458543060476fc125bd361394f39fea3543e00750005be28e9a085"
+  },
+  {
+   "path": "previews/godot/midnight-textured/3_cockpit_1m5.png",
+   "sha256": "f15affeb86ae2d844b7526a998d4125d83e935bbcab2fb7d94fc2cb9df5c000e"
+  },
+  {
+   "path": "previews/godot/midnight-textured/4_gear_1m2.png",
+   "sha256": "2cd12d0d36367ffe3d971957fb8b73f1c62e17b3c085424f10b737a41f5bda9b"
+  },
+  {
+   "path": "previews/godot/midnight-textured/5_tail_2m.png",
+   "sha256": "fd181b802013d6b52cf4ee771ddbcf473858b12fc2aaeeb1dcffd67332d20736"
+  },
+  {
+   "path": "previews/godot/midnight-textured/6_chase_10m.png",
+   "sha256": "5fb5f091b1a5701fc3bb0793cae1d7129b45b99397f17462239bd72da850d21e"
+  },
+  {
+   "path": "previews/godot/midnight-textured/7_pilot_40m.png",
+   "sha256": "c371f5d91d686991dace649e61ab43f8c734c46be168ca566d3992b76d407add"
+  },
+  {
+   "path": "previews/godot/midnight-textured/8_pilot_120m.png",
+   "sha256": "befee61f02b26495c66501bd67fc0567f3c02d39601450e853ff5910da66ebcb"
+  },
+  {
+   "path": "previews/godot/p40-textured/1_hero_4m.png",
+   "sha256": "29680e9b8e1518affdf29c4d33c810447f45eaa2cd2639ab7e1459df18556fb2"
+  },
+  {
+   "path": "previews/godot/p40-textured/2_nose_1m6.png",
+   "sha256": "98f66bb4d1a59598e0e215fb76b79e6e3e0c1c19afef11e4d7a75e92ac22ef6d"
+  },
+  {
+   "path": "previews/godot/p40-textured/3_cockpit_1m5.png",
+   "sha256": "c3391991a776eeeb527966aaa2b4f728d2b50fa97c29b037c52d0bf2fe11c9df"
+  },
+  {
+   "path": "previews/godot/p40-textured/4_gear_1m2.png",
+   "sha256": "aa8aabbccfe7cb0423c7693e01a52f9f69e35675c1afeb24aee779cd657acc73"
+  },
+  {
+   "path": "previews/godot/p40-textured/5_tail_2m.png",
+   "sha256": "b36c5bd4d68215cc820cea5ee8a78c87d7af5916f8717caead797f06e321039c"
+  },
+  {
+   "path": "previews/godot/p40-textured/6_chase_10m.png",
+   "sha256": "6436376d4d632917aa47c51e4409b4cb880f6b1ede049bdc5c896fcd9543fe4b"
+  },
+  {
+   "path": "previews/godot/p40-textured/7_pilot_40m.png",
+   "sha256": "46f7bf9533d7af2effe7609f6605ac1248bc9c2140051d39481af37e766e0a6d"
+  },
+  {
+   "path": "previews/godot/p40-textured/8_pilot_120m.png",
+   "sha256": "9ede386a111f124cef6ae29ba26bb5b9f67c4a985c9dcbf8b556bee88ce24670"
+  },
+  {
+   "path": "previews/godot/scarlet-textured/1_hero_4m.png",
+   "sha256": "cc93ea6f179392d4109c555e7fdd22d1168649c9d560cf7c43113b4b7c626a30"
+  },
+  {
+   "path": "previews/godot/scarlet-textured/2_nose_1m6.png",
+   "sha256": "891e33e5d41cd8188d1199be238c784721bb48b603cac59da63016788a8b17fe"
+  },
+  {
+   "path": "previews/godot/scarlet-textured/3_cockpit_1m5.png",
+   "sha256": "d543f31c9d7a37ee19b06cd35d2b91b399d47d9b873a57a490f1faa943725930"
+  },
+  {
+   "path": "previews/godot/scarlet-textured/4_gear_1m2.png",
+   "sha256": "2cec1f2f7ee278a1f6bb635420f9e0603279a6bb212c980ae5a65cd052ec3292"
+  },
+  {
+   "path": "previews/godot/scarlet-textured/5_tail_2m.png",
+   "sha256": "9526dd6aee00a1617ac485ff209bb92c14f7d2f9c98d500f112f12444dfecf5d"
+  },
+  {
+   "path": "previews/godot/scarlet-textured/6_chase_10m.png",
+   "sha256": "a3710a11de8ae2ec0adfb26d8f087681c460d32d573975cdab88795da1b8101c"
+  },
+  {
+   "path": "previews/godot/scarlet-textured/7_pilot_40m.png",
+   "sha256": "7d83c953d9f1e6594134616de30f803617bd057077fc0f2b9867e17b950ccda3"
+  },
+  {
+   "path": "previews/godot/scarlet-textured/8_pilot_120m.png",
+   "sha256": "fa3e55deb7444ae1d7fb77fe0ece141260a653e7d06d299ccb09a2c225c31c78"
+  },
+  {
+   "path": "previews/godot/spectrum-textured/1_hero_4m.png",
+   "sha256": "397a8614bad6d15ed30cfdbc750e30f725f8dee0c9596b3bf58d7c13ca36fa9e"
+  },
+  {
+   "path": "previews/godot/spectrum-textured/2_nose_1m6.png",
+   "sha256": "9f61645a2e7fc4c64a2f1bd77943cb6c827281770110d8234a1354595bfa5a0c"
+  },
+  {
+   "path": "previews/godot/spectrum-textured/3_cockpit_1m5.png",
+   "sha256": "c173eb527173d5e3ae658fd8bca9a8ff8e08c992b5aa6273e72b397233cc912e"
+  },
+  {
+   "path": "previews/godot/spectrum-textured/4_gear_1m2.png",
+   "sha256": "e1e5e36f8ac6bee04abe609bfd193bff560eb194f5e298251a73e9f93badb764"
+  },
+  {
+   "path": "previews/godot/spectrum-textured/5_tail_2m.png",
+   "sha256": "12fe342c5fa352f6d2754d08c37bf2c0c642d5d973d076bcf12f428ddd507610"
+  },
+  {
+   "path": "previews/godot/spectrum-textured/6_chase_10m.png",
+   "sha256": "ea75a7f615723f5f3084af8e1a0d11065341791197430cd28e79b7b46ebf4bd8"
+  },
+  {
+   "path": "previews/godot/spectrum-textured/7_pilot_40m.png",
+   "sha256": "5a33a1026e6190a4afed0922454762d0f47d97acec9c29a131ecb1f65f76e503"
+  },
+  {
+   "path": "previews/godot/spectrum-textured/8_pilot_120m.png",
+   "sha256": "d568e8c29c11d4ceedb0397e8cf13cbaa49ddc3ae93ad726c85c88152241458b"
+  },
+  {
+   "path": "previews/godot/splash-textured/1_hero_4m.png",
+   "sha256": "d581543afe6a601c7da25da1ab33c57f57a274c90631e043450cafd338b8e8e3"
+  },
+  {
+   "path": "previews/godot/splash-textured/2_nose_1m6.png",
+   "sha256": "281b78f6f0d6a4f578cd5fbfb2926607ffe9e75f8a440fc94a3e2ac72ef14ff7"
+  },
+  {
+   "path": "previews/godot/splash-textured/3_cockpit_1m5.png",
+   "sha256": "e269e012f9235c071af50bbf7a9b1dc74f9bfe233471e89bdb1501517b6f74be"
+  },
+  {
+   "path": "previews/godot/splash-textured/4_gear_1m2.png",
+   "sha256": "98417e314ebb47b39b6b554f5dd7162f97f411a39cacf5fe305db6d34b2f6376"
+  },
+  {
+   "path": "previews/godot/splash-textured/5_tail_2m.png",
+   "sha256": "7b5b2f7e079cd87ea5155f70cab8f28394446a8fbbeb3822d4f35b95a0dac540"
+  },
+  {
+   "path": "previews/godot/splash-textured/6_chase_10m.png",
+   "sha256": "d41e8e5a918592f1c7e408915191fb05f1ad259fe34dbcbfddbed29cd2ca3ba3"
+  },
+  {
+   "path": "previews/godot/splash-textured/7_pilot_40m.png",
+   "sha256": "0c30695eeb80cfef0c2ff7da4df378ef59a219d586c0a6df92c87595189d5612"
+  },
+  {
+   "path": "previews/godot/splash-textured/8_pilot_120m.png",
+   "sha256": "54e9993d0e24dc8674ec5e13637e1e6ffef93ccd5776f18b89d4ec5ed3377ba9"
+  },
+  {
+   "path": "previews/godot/three_tone-textured/1_hero_4m.png",
+   "sha256": "d4a3b331cd0decda6f2f3b07e3f1e3cde9165a1c2bdff24cec67acadf9c277c2"
+  },
+  {
+   "path": "previews/godot/three_tone-textured/2_nose_1m6.png",
+   "sha256": "c21723e5c70535a065f2289fe584d1f09247f07785c14672b7e5ea28e3959204"
+  },
+  {
+   "path": "previews/godot/three_tone-textured/3_cockpit_1m5.png",
+   "sha256": "8968260e8ed55bf46b43f15bcc819ac2e7b22d4e65e84aba2300dc5670bbacbf"
+  },
+  {
+   "path": "previews/godot/three_tone-textured/4_gear_1m2.png",
+   "sha256": "c1c127c0333fadab58bb32606bbd4932b27627184ff17c5d1dbacae3e2118a22"
+  },
+  {
+   "path": "previews/godot/three_tone-textured/5_tail_2m.png",
+   "sha256": "6243061fa15032d550ebb7bb74234404a80673cd02990156ba58a153fb836b14"
+  },
+  {
+   "path": "previews/godot/three_tone-textured/6_chase_10m.png",
+   "sha256": "e45805bda09f8e909ee9c7f1f62a53696f4527df29bf70df966c6a5f1ccc43d1"
+  },
+  {
+   "path": "previews/godot/three_tone-textured/7_pilot_40m.png",
+   "sha256": "5c5f8473c7b48dac5de1163b416cb6b07b653c4b7075abd3f58a462816092e76"
+  },
+  {
+   "path": "previews/godot/three_tone-textured/8_pilot_120m.png",
+   "sha256": "3272fb082cea596ac487d1c7676858b7004a5dca72dacaabbd3944b39242fd37"
+  },
+  {
+   "path": "previews/godot/thunderbirds-textured/1_hero_4m.png",
+   "sha256": "d2403a48797544a311a79612536778b3803961ef52a7e970fb01f82c2d8d148f"
+  },
+  {
+   "path": "previews/godot/thunderbirds-textured/2_nose_1m6.png",
+   "sha256": "30259b5a6db0e8b213f1f5d0cf9ac766cbc58494b61a26b6c761ef7abb90a270"
+  },
+  {
+   "path": "previews/godot/thunderbirds-textured/3_cockpit_1m5.png",
+   "sha256": "95a543a9414391a70372189f22b0dde7d27df84365c9771221ae046c08758349"
+  },
+  {
+   "path": "previews/godot/thunderbirds-textured/4_gear_1m2.png",
+   "sha256": "b9354801b80d25b141bb2d6a3ca18340ef954f6a9ca1b330e95735ab23626526"
+  },
+  {
+   "path": "previews/godot/thunderbirds-textured/5_tail_2m.png",
+   "sha256": "fa65dadb84aefc8ca33fca2f7f83a8ca0205f59591bcbebd0f30eec9ee9a8005"
+  },
+  {
+   "path": "previews/godot/thunderbirds-textured/6_chase_10m.png",
+   "sha256": "08bcba766b360eb6e042e071de6621589d7217121c2847b5ff3567dec1327bd1"
+  },
+  {
+   "path": "previews/godot/thunderbirds-textured/7_pilot_40m.png",
+   "sha256": "2c1aa8b51a446fc3e27cf530a2e8314ba07df87c92e2a97f1bef895aec713dff"
+  },
+  {
+   "path": "previews/godot/thunderbirds-textured/8_pilot_120m.png",
+   "sha256": "2dd067ba2883fb628490c2f8864582ffd014e0e4aa253ef4fe144cadd7662da6"
   },
   {
    "path": "previews/index.html",
-   "sha256": "2d34ec877ccaee19b40280f21cc6b1e5cfc6c5c8f7b479b7f48e4e7998a38470"
+   "sha256": "1c8bcf1303e69eb3b493d6083f69e6be5ba684343337eeb67fafb6882f6e4459"
+  },
+  {
+   "path": "previews/italy/hero.png",
+   "sha256": "abfc91fa1518dfcaeed375e48cbf7650b7c0baca9dd8a9f22c41795513223085"
+  },
+  {
+   "path": "previews/italy/side.png",
+   "sha256": "be043841704b4c980163b6f04ebbb037cb64b3d582d6d76f528bd9b0f58084c2"
+  },
+  {
+   "path": "previews/italy/top.png",
+   "sha256": "dd035e2afee1f12e6c0e33ab67267b3fe1ecc615b37ad690852c8f4f5dfa4d8e"
+  },
+  {
+   "path": "previews/italy/underside.png",
+   "sha256": "25dcd6171a6675e62d6670354fb40ec8c8d880ee3769ca684776ebd05022850c"
+  },
+  {
+   "path": "previews/japan/hero.png",
+   "sha256": "9a4286b3e9539d0d61ec69a17d941e183252e208b1608d94511f37f148768bde"
+  },
+  {
+   "path": "previews/japan/side.png",
+   "sha256": "38fe6dd6483bfe2a429cb2a539e14e3b87286b325328a96e674d68b3953a9428"
+  },
+  {
+   "path": "previews/japan/top.png",
+   "sha256": "3e52a271bd89e168c4414b7bc9a82d0c5560566c407e7640a75be93d7e6a2a0d"
+  },
+  {
+   "path": "previews/japan/underside.png",
+   "sha256": "b6438440f52c502a0193a5f51241f5a5422def2e36dcdd6d38cf9de317a09814"
+  },
+  {
+   "path": "previews/luftwaffe/hero.png",
+   "sha256": "9ad38827e13c84d345088aa48bae77b975d9c6f805156e0ca06d3ead0e1c8b2c"
+  },
+  {
+   "path": "previews/luftwaffe/side.png",
+   "sha256": "af6628d98f3c49aa141075cf65f8e9bd4d10ca7660d2c1440a4fbd32f701baa4"
+  },
+  {
+   "path": "previews/luftwaffe/top.png",
+   "sha256": "abbafe53a97a53b1e24d3b205a61a7c4fa42015433e29a1c7dad9e8c37aa1f7f"
+  },
+  {
+   "path": "previews/luftwaffe/underside.png",
+   "sha256": "9d6ef3f36b749eb827d72c3e6902b544885642f4c6bca5e549f711004728b3d4"
+  },
+  {
+   "path": "previews/midnight/hero.png",
+   "sha256": "5049a1004a74ee61bc424392a110e03f63e503f042acf1859d15b2bfb88af0dc"
+  },
+  {
+   "path": "previews/midnight/side.png",
+   "sha256": "9dc65558981582188d9433093c92531e5b0fde18342cb7011c600edd537ce8cc"
+  },
+  {
+   "path": "previews/midnight/top.png",
+   "sha256": "1c60ccd427f77afb9c42f2b575d3bf354b8d9b00415da51633eac2a9396a7b9f"
+  },
+  {
+   "path": "previews/midnight/underside.png",
+   "sha256": "9e943b4266ef18e9186914097c98c8367003c880899aa1e9e6d19b4faebefc1d"
+  },
+  {
+   "path": "previews/p40/hero.png",
+   "sha256": "1a76d5f090f1f739484e8c3c2a9be8660837d0ca9134501e7c59e71b06782265"
+  },
+  {
+   "path": "previews/p40/side.png",
+   "sha256": "d4becf53d4e25b20a113f7018709fa39f3138972c7dcf7abfe8e3a475ca55cde"
+  },
+  {
+   "path": "previews/p40/top.png",
+   "sha256": "94fc9ad6d9af4fdb7a2b5061e8f1ab9df9b62c97c031cd4ed8287f79fd755d94"
+  },
+  {
+   "path": "previews/p40/underside.png",
+   "sha256": "0c49a0cfc29854c6ee8c8868fbe1ba9cfde96ce6f27b82c0813caf2666d785e8"
+  },
+  {
+   "path": "previews/scarlet/hero.png",
+   "sha256": "65ed9af8308ac4fab36f8c722d479e10d504d51047819ca58dd940527c865fc1"
+  },
+  {
+   "path": "previews/scarlet/side.png",
+   "sha256": "42aec8bd9803f8f9f2e51464d54a857281ab9f94bf6ea874d85c498aea7610f1"
+  },
+  {
+   "path": "previews/scarlet/top.png",
+   "sha256": "1e5b23e832a2385abc62529097177dd200ded11cb3b759d772c358d2d70cc243"
+  },
+  {
+   "path": "previews/scarlet/underside.png",
+   "sha256": "8ac0f6d0daf295dd7a1ed92d62569b1851d1e091d72f97a6ed062a8727fb7f6d"
+  },
+  {
+   "path": "previews/spectrum/hero.png",
+   "sha256": "f5daddfe4fc51ca8648523960e3d05ee3c3f1b33d4f5a1a69be75b28e185f1a3"
+  },
+  {
+   "path": "previews/spectrum/side.png",
+   "sha256": "c5aaeea55561b10598675993528b1aa75be70fcc36238bbaf23036d3519b0dbc"
+  },
+  {
+   "path": "previews/spectrum/top.png",
+   "sha256": "a2a638dbbc1d02bfcc717df561717367d91e8e12afc5cc370b77109e429d8a4c"
+  },
+  {
+   "path": "previews/spectrum/underside.png",
+   "sha256": "804e075cae992392f59beb2077d9df9f8bbbe153b5998046a7635ab28ce3bd5b"
+  },
+  {
+   "path": "previews/splash/hero.png",
+   "sha256": "76b88fdb700f5158d9b5edd040e13c9206a80325b3e1cbec2618c8ee75e2d35f"
+  },
+  {
+   "path": "previews/splash/side.png",
+   "sha256": "f82c35aa4f2dd73ee5649d9c71465c7523550c32fa11e3282f79b3a1b9f1fe46"
+  },
+  {
+   "path": "previews/splash/top.png",
+   "sha256": "506781ffd749b91eab055dd42b6bfcf854c776d1440fc8fdb7ddc8c097e08ab6"
+  },
+  {
+   "path": "previews/splash/underside.png",
+   "sha256": "4ff6f315aa3bd4f9d8549a2d6db6fbbed9341cdb80f8b6037e1abae2ca7e00ad"
+  },
+  {
+   "path": "previews/three_tone/hero.png",
+   "sha256": "a9fa021ecf70933f206c2d995bc49b11236126d272e011d33f50997f4b783d5a"
+  },
+  {
+   "path": "previews/three_tone/side.png",
+   "sha256": "7063fa02f94e204909e95c998db4449a8288cc0b54dbafac2b43926c01e6e42c"
+  },
+  {
+   "path": "previews/three_tone/top.png",
+   "sha256": "34331bd994ce20c011b38e38e48ac91a7d1af630bbef32afa08f5028dceedf9e"
+  },
+  {
+   "path": "previews/three_tone/underside.png",
+   "sha256": "d22e5b91c3d3bb8a0362d5dd1caa22bf4b74a6439cb07b789194744d2e79780a"
+  },
+  {
+   "path": "previews/thunderbirds/hero.png",
+   "sha256": "6284ea98395febac1fa70560c097c772b6a19a56d216224d8ad6e05811f9c01d"
+  },
+  {
+   "path": "previews/thunderbirds/side.png",
+   "sha256": "d12faad6469e3c7408fff299d197f8e00a58be00aa72b7c5e20f301112c377b0"
+  },
+  {
+   "path": "previews/thunderbirds/top.png",
+   "sha256": "9afb8410532390556bffff8839f9540e502ace14531b9ab07237388d5ab100ad"
+  },
+  {
+   "path": "previews/thunderbirds/underside.png",
+   "sha256": "fac09bdb792c7c1a7ff23873d79ed3e0d62c6ce6491396c4fe4b0102f81cf774"
   },
   {
    "path": "source/aircraft_blueangels.blend",
-   "sha256": "a5e18748b45cf59f01eed061c3b3d151ababf53aa8db72dbcf4973b649ffe40a"
+   "sha256": "b2d8083dec14eb408dadc33b467ea58029c19bde64faad11265dc0cbae167dac"
+  },
+  {
+   "path": "source/aircraft_carbon.blend",
+   "sha256": "7afc3480c4a5bf56e47c01f7733b85503a04954b3f54f61ccf76af02f3d2278f"
+  },
+  {
+   "path": "source/aircraft_chrome.blend",
+   "sha256": "f6499bf60e1698eac3d5bcb8b52cd9fb2eb8445c850a3ecb5f717a71546c8025"
+  },
+  {
+   "path": "source/aircraft_italy.blend",
+   "sha256": "8ff7537107b484c6a1ef131fb398867a2866973974fcf80fd16cca4cc829c293"
+  },
+  {
+   "path": "source/aircraft_japan.blend",
+   "sha256": "4b5cd6040f34ce650cb59d3f3e082d35776dd02f2f5b68ad07dbaa774de8db37"
+  },
+  {
+   "path": "source/aircraft_luftwaffe.blend",
+   "sha256": "9cb6deb9469871fc260145d360f988b8438b031888ed010607adf7620cb26a22"
+  },
+  {
+   "path": "source/aircraft_p40.blend",
+   "sha256": "38ba50b1c87269414a785501db6b77eadf3dc96ad1851b57d075036b3f693120"
+  },
+  {
+   "path": "source/aircraft_scarlet.blend",
+   "sha256": "41f1b80e1db961b1c5b214bc1b478a37579d9c1412069759a8cd3e1b7f51940a"
   },
   {
    "path": "source/aircraft_spectrum.blend",
-   "sha256": "0860323784cec8efbf282ea68be741fd946e984eb2a3cad1e35b04ea7bf96458"
+   "sha256": "a248bf57c31742ef0bd60ffd7ea33332aece12a749777c6d5dc6c4503bc07150"
   },
   {
    "path": "source/aircraft_splash.blend",
-   "sha256": "6df0edb92641a015ad19539750eaa924fbc6e3e6e037e711130235039782c204"
+   "sha256": "f754345d42cb2e504efaca4bf0f6e4b69f24b58161d1e1d69abdec504ea857e6"
   },
   {
-   "path": "source/aircraft_super57.blend",
-   "sha256": "671e1b4c76dc73b9c7c115be8a954380dea03e2c0f3dd7c4bffa50df3f5b4e7d"
+   "path": "source/aircraft_three_tone.blend",
+   "sha256": "eb31b5d377d6e0b38356ea7ffcc6b19d008fb9c66937bb7a81e28312ac58a6a0"
   },
   {
-   "path": "source/scripts/reference-samples.json",
-   "sha256": "421250f14fb89123e9980bdde280205ef74486cd2e6999eadc5b6ee223b09f31"
+   "path": "source/aircraft_thunderbirds.blend",
+   "sha256": "bb135ebffa1bfbf03c50fcd453064008f92866ffeb1b69317df5fdd96f37301f"
   },
   {
    "path": "source/scripts/uv-layout.json",
-   "sha256": "3d97623c16b80e11702f2babd7276c0078f167bda51dccefaa2ec9b1d57ffc91"
+   "sha256": "70ee9c511b753d685a30dbf8ce970aec62d4554ad7643da713ae57a7514dda92"
   },
   {
    "path": "textures/gear/base_layer.png",
@@ -111,192 +749,760 @@
    "sha256": "687825cf25589a118006831261d2f221a0a2d3b29bfc7eca0fb79da15e631e99"
   },
   {
-   "path": "textures/interiors/authoring.json",
-   "sha256": "f4e2cdbf8cbcdb738bca7742b2d5b48950bbba822e039a852b01a941a8354bd1"
-  },
-  {
-   "path": "textures/interiors/basecolor.png",
-   "sha256": "4a12d8c3947aec31ae57fe350de344b953cc185f61a17a3b9a4583c1187260f8"
-  },
-  {
-   "path": "textures/interiors/layer_1.png",
-   "sha256": "1725bfc575eb92ae7a01c8cf6991ee6f8d49d6bf1472ca4f596aec4532107eca"
-  },
-  {
-   "path": "textures/interiors/layer_2.png",
-   "sha256": "ef3c3d701ab72883c09c4f431dc2fdd6dbbfce0e64dbbd403a79c028b2d49d4e"
-  },
-  {
-   "path": "textures/interiors/layer_3.png",
-   "sha256": "1405644e9d7ed8b9dac011a339909b679f07b0c5424789abb1799a8829fdcbb6"
-  },
-  {
-   "path": "textures/interiors/layer_4.png",
-   "sha256": "394d2307bcdeb46b5c6f510580396823d5055b7f690dfa1cc18da488b4e86c83"
-  },
-  {
-   "path": "textures/interiors/layout.json",
-   "sha256": "135e260c44ca77ed14a8f346f31360b944a4184c1b2c0ea6e34faa37ae74f7bb"
-  },
-  {
-   "path": "textures/interiors/normal.png",
-   "sha256": "81f63c8eb8aefb7c606bea170ac41cd505e84d5cddefe35111f489bf99f4006a"
-  },
-  {
-   "path": "textures/interiors/orm.png",
-   "sha256": "a9ce560ac16f15bc0af455dcea3d956e1d39cb758b88d4ec1e6ecf65e0f15541"
-  },
-  {
-   "path": "textures/interiors/source.ora",
-   "sha256": "1705e8d2e2b2c8c94b42848b3a2111b0aaf7b22e15e348b03354556d5bc04333"
+   "path": "textures/liveries/blueangels/adaptation.json",
+   "sha256": "1baa1e987938fdcd9fc7178df9c694a233ea2f363b2a3c0c9ed6e7334a8900e1"
   },
   {
    "path": "textures/liveries/blueangels/basecolor.png",
-   "sha256": "3acb31936041c5a4c800d6425459f84750751dbefcf300e4fd283e494eeebe3b"
+   "sha256": "0b2be3cbc283df17a4f73077f765dab7f8173dd721ccae0d3df023ece326695b"
   },
   {
    "path": "textures/liveries/blueangels/design.json",
-   "sha256": "6b2c766422dce72b5b2155426331a91ecbc1d97064fb01ae206dce28ef705df5"
-  },
-  {
-   "path": "textures/liveries/blueangels/interiors/authoring.json",
-   "sha256": "eee3f17e821bce0fef9971dbf3e1d7347ac24f2260e14d1779a806fa8e214e00"
-  },
-  {
-   "path": "textures/liveries/blueangels/interiors/basecolor.png",
-   "sha256": "833f29650f13628c6a0f25f4f41fbf890d48475d9c0832cd87901320262cc50b"
-  },
-  {
-   "path": "textures/liveries/blueangels/interiors/layer_1.png",
-   "sha256": "1725bfc575eb92ae7a01c8cf6991ee6f8d49d6bf1472ca4f596aec4532107eca"
-  },
-  {
-   "path": "textures/liveries/blueangels/interiors/layer_2.png",
-   "sha256": "ef3c3d701ab72883c09c4f431dc2fdd6dbbfce0e64dbbd403a79c028b2d49d4e"
-  },
-  {
-   "path": "textures/liveries/blueangels/interiors/layer_3.png",
-   "sha256": "d85575551eac0fd4cc95b3ad2f72c7782aa904bef61db95f671b40aa07803f3d"
-  },
-  {
-   "path": "textures/liveries/blueangels/interiors/layer_4.png",
-   "sha256": "394d2307bcdeb46b5c6f510580396823d5055b7f690dfa1cc18da488b4e86c83"
-  },
-  {
-   "path": "textures/liveries/blueangels/interiors/layout.json",
-   "sha256": "135e260c44ca77ed14a8f346f31360b944a4184c1b2c0ea6e34faa37ae74f7bb"
-  },
-  {
-   "path": "textures/liveries/blueangels/interiors/normal.png",
-   "sha256": "81f63c8eb8aefb7c606bea170ac41cd505e84d5cddefe35111f489bf99f4006a"
-  },
-  {
-   "path": "textures/liveries/blueangels/interiors/orm.png",
-   "sha256": "a9ce560ac16f15bc0af455dcea3d956e1d39cb758b88d4ec1e6ecf65e0f15541"
-  },
-  {
-   "path": "textures/liveries/blueangels/interiors/source.ora",
-   "sha256": "59b85938c7c28383234742cc53d2a1d76b6dc3d39bb4995e6cb4d30d621e3276"
+   "sha256": "87804c756e2c36363ca4542ec7164fdfe4c099a6731620ad11d711676d8354c9"
   },
   {
    "path": "textures/liveries/blueangels/layer_1.png",
-   "sha256": "1a4beac04e5aef442e698d84de51e07215d38a283ae0e43ca441efc99b910ced"
+   "sha256": "6a140fc07084ee281673ff742915013cda7fe1e8936b014d33043e251e24a761"
   },
   {
    "path": "textures/liveries/blueangels/layer_2.png",
-   "sha256": "08e76aa5adcfea81f445dbfae96db2cd40c627de04f75daeb5323f9806d76022"
+   "sha256": "75292377dd2862bc6dbe1cb577eaee750eba34b98a5c0fd21ab92da6ff0528be"
   },
   {
    "path": "textures/liveries/blueangels/layer_3.png",
-   "sha256": "ece825e447ef618818c7394be94059d2e4ad5750efbcc4b0b24050cb91e7f8c3"
+   "sha256": "54f6ed81a378a50396dd3ddfdb3865f8a935f47507abbcca64820a4014f32278"
   },
   {
    "path": "textures/liveries/blueangels/layer_4.png",
-   "sha256": "d9397a5ba3553c11ee53deb5afaebe6e69ce6d8dfe7979b3c23da57b9ea22644"
+   "sha256": "f3bafb4474f1eb4fa376b8c3413050699b5810f69253483505b43c7928b29f81"
   },
   {
    "path": "textures/liveries/blueangels/layer_5.png",
-   "sha256": "90783ff6031fdd4a7c1886c303cc9e787fc67b4ff40e7863af2d64e622f93fb9"
+   "sha256": "8c785f84db68331be0415882c116aae2a87cbe3de417be3820435e228ada986e"
   },
   {
    "path": "textures/liveries/blueangels/layer_6.png",
-   "sha256": "bf2d4eb8937ef19f4add91be777aa90c9827e9c0dbc7941c00412f5c1a1b1934"
+   "sha256": "17a147adf35c99a9141308a883f77e9e4f25e554daccbf38a26c69bab7dd0991"
   },
   {
    "path": "textures/liveries/blueangels/layer_7.png",
-   "sha256": "f79e1471feeead28106613f169da7513adcc1c4ea50de529ad2400171feb9ee8"
+   "sha256": "726a94f8e7ed5ff89f2814aa490711a3a250228799787ecce5d4a174367a642d"
   },
   {
    "path": "textures/liveries/blueangels/layer_8.png",
-   "sha256": "cec88446a6ac666fe5f059f68a51791b1a9ee281e898af49111842578855b589"
+   "sha256": "7cb49085c659bc386555882cd9611f05f9bb096a770414745866bb877cd8ac7d"
   },
   {
    "path": "textures/liveries/blueangels/orm.png",
-   "sha256": "1461f1537f7905370359b764c22c1fc6098e507f4c0c20e5bb4739e66dcd4d17"
+   "sha256": "2ce50fa71ff58b9a22e12c65964f6efd3f131c66004465240bd33482867d9d4f"
+  },
+  {
+   "path": "textures/liveries/blueangels/propeller_basecolor.png",
+   "sha256": "c405014632def6882fd33925102ed178736202c37ff9172b68c21d0da3bf97b4"
   },
   {
    "path": "textures/liveries/blueangels/roughness.png",
-   "sha256": "4535b658996b944838f5d383de504a63f335bed2541096c676af8ea1cea41127"
+   "sha256": "bf7dbd6514c00df6bbd6d9c813c58c9884b69438bea4f8b6ca3ad4e774885a19"
+  },
+  {
+   "path": "textures/liveries/blueangels/runtime/basecolor.png",
+   "sha256": "0b2be3cbc283df17a4f73077f765dab7f8173dd721ccae0d3df023ece326695b"
+  },
+  {
+   "path": "textures/liveries/blueangels/runtime/normal.png",
+   "sha256": "a462add4f80cae31ae167a5dfce801030a2165bd980ff58ac0f60d4d4169aded"
+  },
+  {
+   "path": "textures/liveries/blueangels/runtime/orm.png",
+   "sha256": "ce9b62d061b03934cc47bff5dcb81b04b6788f72b05e16dbbd847a031281396f"
   },
   {
    "path": "textures/liveries/blueangels/source.ora",
-   "sha256": "219f1cfd365f620e60c361e88b15018b8132e9330d138c93c06e6764a6d775c9"
+   "sha256": "732cea75a24ca10dba93a348dd1ba0db0c8d488c3305ec75a369b4091de46a63"
+  },
+  {
+   "path": "textures/liveries/carbon/adaptation.json",
+   "sha256": "df0bea18b637cd9ba775a73cdd10a701c0bb31128f4f7141070f871160183ae2"
+  },
+  {
+   "path": "textures/liveries/carbon/anisotropy_rotation.png",
+   "sha256": "1035ddfdf182287202f6b2b312f9fef2bd8b97dd76915d2f1c47f158c9db8043"
+  },
+  {
+   "path": "textures/liveries/carbon/anisotropy_strength.png",
+   "sha256": "6e2ced914f9c6a232f53641d24247c90d6df0337a7109c39687575a642f37e5b"
+  },
+  {
+   "path": "textures/liveries/carbon/basecolor.png",
+   "sha256": "b89fcd03b05534ba49262b5ee7d3bd3ac3fcaa359af5ad8e661c08622dded711"
+  },
+  {
+   "path": "textures/liveries/carbon/design.json",
+   "sha256": "9dbeb2a4400f9289e87c8ef4563ac7d2a535a9a24a952d6a9a284bc45ed47397"
+  },
+  {
+   "path": "textures/liveries/carbon/emission.png",
+   "sha256": "40fe6c0f2835d8b42ec85a1460f289bbeebc602a617d43091bc9be3e0bee2e95"
+  },
+  {
+   "path": "textures/liveries/carbon/gear/base_layer.png",
+   "sha256": "f422c14ddb1707e16e4b4f40f04b385575b5eca2ef3a8d711c3883fc1bf5a627"
+  },
+  {
+   "path": "textures/liveries/carbon/gear/basecolor.png",
+   "sha256": "170c94150fb8f28c068946cdfb51f0c2420c80125f48064c7c9ac3f35ad185ba"
+  },
+  {
+   "path": "textures/liveries/carbon/gear/finish_layer.png",
+   "sha256": "d31ce8a99ca3b64e2e6da04a0443741fdfa4f9afb7e4e1e7bd87007acb26c50b"
+  },
+  {
+   "path": "textures/liveries/carbon/gear/orm.png",
+   "sha256": "312a63eb3b6c7ce7859def8ccbdb2f44c6f30671b9413ca9e6ed5e78c8317e6c"
+  },
+  {
+   "path": "textures/liveries/carbon/gear/source.ora",
+   "sha256": "ad22d35388e9ee085b99527bb50a76bc958486cabf4ff9d56a1201878532dd0e"
+  },
+  {
+   "path": "textures/liveries/carbon/layer_1.png",
+   "sha256": "aae7e56d1386b0af700cac3e4a7b6d409ed70ba445ea2651e64f23da12fe3dca"
+  },
+  {
+   "path": "textures/liveries/carbon/layer_2.png",
+   "sha256": "dd61aee1eaa822042ef73517ef0af8c677e495a8aa1466093b249c4758221326"
+  },
+  {
+   "path": "textures/liveries/carbon/layer_3.png",
+   "sha256": "53f87a42beab34a6bdb49ad979f195bc83548a455dc83ba0b8c22b9a85c9e2c1"
+  },
+  {
+   "path": "textures/liveries/carbon/layer_4.png",
+   "sha256": "010d8b9efaa4fda785c42a9984e8bff0f65b22cc1b1e66c29e2655bac6555cc0"
+  },
+  {
+   "path": "textures/liveries/carbon/layer_5.png",
+   "sha256": "f14267ca5cd35696d4f1bb48fb1f5ed43c17040ae554ed79abead814715ec884"
+  },
+  {
+   "path": "textures/liveries/carbon/layer_6.png",
+   "sha256": "5c4f2209c4d23a1bd5fcca879d16df0fb43333b9bd946a2bfe36092f150c0dfd"
+  },
+  {
+   "path": "textures/liveries/carbon/layer_7.png",
+   "sha256": "72afacf44cb46f4b6cc0fc8d68b609c385889f7bc73762cf64d0aa1eb8335c58"
+  },
+  {
+   "path": "textures/liveries/carbon/layer_8.png",
+   "sha256": "c0442d49b8595dda64b105926ad68a854db493d986fc22ae6eebd69fa7ab2b8e"
+  },
+  {
+   "path": "textures/liveries/carbon/layer_9.png",
+   "sha256": "fc04bf440fdc82c019c3b99e247f3dde93ece2ee3aaa48842f666e28781eb1da"
+  },
+  {
+   "path": "textures/liveries/carbon/localized_dirt_mask.png",
+   "sha256": "20717c9f4d9fcbc15c235da6f563c14caf2a47105acc7aaf49da4fb10b82ca29"
+  },
+  {
+   "path": "textures/liveries/carbon/normal.png",
+   "sha256": "60413dad10e70c41c4a750bd85ee83c0166535aa7cf70221d08dd9528f1a574f"
+  },
+  {
+   "path": "textures/liveries/carbon/orm.png",
+   "sha256": "14e85bf602b74bad0e869e6984c6658141343b55d01c34a8f6e85e6eaf7947d3"
+  },
+  {
+   "path": "textures/liveries/carbon/propeller_basecolor.png",
+   "sha256": "83d9d4684c46af2050ff0c8321be6fafa4af83de7d1dd146c11e12576a95c41f"
+  },
+  {
+   "path": "textures/liveries/carbon/roughness.png",
+   "sha256": "688f2bb0c627e5b3f67abda492685ce4c3f43572bfc66a435af719ad2c22fa72"
+  },
+  {
+   "path": "textures/liveries/carbon/runtime/anisotropy_rotation.png",
+   "sha256": "547185a124b7cc789b0ab1ef473050d149bea1af4abd465c74fd3bf40289dd10"
+  },
+  {
+   "path": "textures/liveries/carbon/runtime/anisotropy_strength.png",
+   "sha256": "435f843bd2670447bc0cd38767e967d448623320e212679c50afa74647dc8ba9"
+  },
+  {
+   "path": "textures/liveries/carbon/runtime/basecolor.png",
+   "sha256": "8a0f0c621e5e0c23345b8cd8a3344774095aa5aabd748348c17dde1fc1f0dd7d"
+  },
+  {
+   "path": "textures/liveries/carbon/runtime/emission.png",
+   "sha256": "9e36a70c357a7a7db516f577adadc004bb7514c88fe72104b1d11b6f1c5e70a1"
+  },
+  {
+   "path": "textures/liveries/carbon/runtime/normal.png",
+   "sha256": "2748d606dae22659f8cc612a690267d8d696935ec5c5b38748d3477eb806e75d"
+  },
+  {
+   "path": "textures/liveries/carbon/runtime/orm.png",
+   "sha256": "0fdfa15286bd0a15b2730ea4f5680aca81c62202d786b926e460118b8333acb2"
+  },
+  {
+   "path": "textures/liveries/carbon/source.ora",
+   "sha256": "6a03e6717d67bc88036d40812e3b9bdc326e8cb612e0b88c8e98a5a87590e085"
+  },
+  {
+   "path": "textures/liveries/carbon/weave_direction_preview.png",
+   "sha256": "47faf2f2813ec1e0f8cd760aaf31ecedc5c959c4d438895b2e4b864d820859d9"
+  },
+  {
+   "path": "textures/liveries/carbon/weave_height_16bit.png",
+   "sha256": "2d3c5428588d7e6449d246b7673e53d5d6ce6efc2ff239e193af1405e8174659"
+  },
+  {
+   "path": "textures/liveries/chrome/adaptation.json",
+   "sha256": "2faab3fa68e25085a3bfb36d8ff7cead4415b2fd1b7f0cc4aa8530bf38244afe"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/basecolor.png",
+   "sha256": "695a76f3570005e9845980e84d906b6872d07b1073b80bd4d1e42b7429f1a503"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/design.json",
+   "sha256": "2611bd7bee7b5f559386f63a463cd4f80f762cd9dcdef8b654a0b6567ca8b791"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/layer_1.png",
+   "sha256": "04610ab7b03f26ebe19493bc4254041658820982cb4994aba3ce804a2f98586f"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/layer_2.png",
+   "sha256": "44aa2ffb51668b76f353a93c700e0ecd6afcca9a9d7ca95fc3389c10f093347b"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/layer_3.png",
+   "sha256": "c2fad86a2a2004d4d5b237a8e2df2264bf7ed032fc24e76322d2c3e4c176ca9b"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/layer_4.png",
+   "sha256": "45e60004fcdf0edc0c5e6e32e83b448890f22153609d0d4d7e6eb376790de922"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/layer_5.png",
+   "sha256": "06de27575c418de31914a1a71fc2a03e11a26c11680fbf54455e3d4960fae93f"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/layer_6.png",
+   "sha256": "7ae80a03775912e95e780220509a720519d497f73002b1cccd4f67f47cc08920"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/layer_7.png",
+   "sha256": "0bd1b9227229503c62969a09e3799c179cc1b50057843854d24301da373c2469"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/layer_8.png",
+   "sha256": "ce85e4019024ffd96dd58a20f04ef15d509d4400e22b4c21f711c90792eaaba8"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/localized_dirt_mask.png",
+   "sha256": "2988634d5922c323a5479b5e44689d763f60656a59218004d2e2efa61fec60a4"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/metallic.png",
+   "sha256": "c20d2a2086bdbb101df8258abae149f4ec940d7dbf9d930a2bf69bc10f2b904f"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/normal.png",
+   "sha256": "27a1dd862004bd18308072a9cdfb793bd09e9ef23103eafc8431a26a26930550"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/orm.png",
+   "sha256": "2d3e939cbc793ecc927640104fe97038d14f40d5bbf5dd03ca9ed381e5acc980"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/relief_height_16bit.png",
+   "sha256": "abfb93470db9ba82e511fa870c9092ae64acd63636d321c39b78d64e8e859fde"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/roughness.png",
+   "sha256": "e68b18a660e2999f04cb433f47e14d9b27f1dc97bf3d1cba698e680b5e51861f"
+  },
+  {
+   "path": "textures/liveries/chrome/base_g1_15/source.ora",
+   "sha256": "00955fe1f664a392703729aff4b7a8dd9ac360e4e99be049b5bdfe4ef04319e1"
+  },
+  {
+   "path": "textures/liveries/chrome/basecolor.png",
+   "sha256": "df651990a57f13352f9cfaf7c9b7f9bd8ec4c46643fcbc6159b13aca6aa606e3"
+  },
+  {
+   "path": "textures/liveries/chrome/decal_mask.png",
+   "sha256": "8b5cb35ca853d350d1da547a326357159fe088132366a35f8500f1002d9b90c5"
+  },
+  {
+   "path": "textures/liveries/chrome/design.json",
+   "sha256": "5498ad757b2a581b3895cbc26b16faa221eeaf21d9a4bdb53abcb55162b9e156"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_1.png",
+   "sha256": "04610ab7b03f26ebe19493bc4254041658820982cb4994aba3ce804a2f98586f"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_10.png",
+   "sha256": "f3666c9ae9357ea2b8759438ebbc8203bdc71f3e73fbb7e773847ed2751c3a1b"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_11.png",
+   "sha256": "edf3b623b7d903e4b7caf22652c3e13423c33abb687b3bff863c16c03471a4ef"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_12.png",
+   "sha256": "dfca42ec37cd97720334c25103f0a867536e2411db9f70e4a57a4d51c1762058"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_2.png",
+   "sha256": "44aa2ffb51668b76f353a93c700e0ecd6afcca9a9d7ca95fc3389c10f093347b"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_3.png",
+   "sha256": "c2fad86a2a2004d4d5b237a8e2df2264bf7ed032fc24e76322d2c3e4c176ca9b"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_4.png",
+   "sha256": "45e60004fcdf0edc0c5e6e32e83b448890f22153609d0d4d7e6eb376790de922"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_5.png",
+   "sha256": "06de27575c418de31914a1a71fc2a03e11a26c11680fbf54455e3d4960fae93f"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_6.png",
+   "sha256": "7ae80a03775912e95e780220509a720519d497f73002b1cccd4f67f47cc08920"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_7.png",
+   "sha256": "0bd1b9227229503c62969a09e3799c179cc1b50057843854d24301da373c2469"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_8.png",
+   "sha256": "fa43bb31ef2fc76246877078115832bc246796aa82a7254769c2a51d965e65b0"
+  },
+  {
+   "path": "textures/liveries/chrome/layer_9.png",
+   "sha256": "3917a7e65c281d1f9856fde1d5d29aee465cda87c7a81a0f3b0fbf41212bde05"
+  },
+  {
+   "path": "textures/liveries/chrome/localized_dirt_mask.png",
+   "sha256": "2988634d5922c323a5479b5e44689d763f60656a59218004d2e2efa61fec60a4"
+  },
+  {
+   "path": "textures/liveries/chrome/metallic.png",
+   "sha256": "47db6449916f5f00428080f5fbf357eeb8a8bf6f68326b8819f0ac51ce489b43"
+  },
+  {
+   "path": "textures/liveries/chrome/normal.png",
+   "sha256": "27a1dd862004bd18308072a9cdfb793bd09e9ef23103eafc8431a26a26930550"
+  },
+  {
+   "path": "textures/liveries/chrome/orm.png",
+   "sha256": "8dcda5880a082258095931c1cf85a3abe7d17f6ad9979e56a31d756d5084428d"
+  },
+  {
+   "path": "textures/liveries/chrome/propeller_basecolor.png",
+   "sha256": "c405014632def6882fd33925102ed178736202c37ff9172b68c21d0da3bf97b4"
+  },
+  {
+   "path": "textures/liveries/chrome/relief_height_16bit.png",
+   "sha256": "abfb93470db9ba82e511fa870c9092ae64acd63636d321c39b78d64e8e859fde"
+  },
+  {
+   "path": "textures/liveries/chrome/roughness.png",
+   "sha256": "ef427f250d8ad44a69b45ed8ad5d3ac3bc4d02bc962f7ec676491ddb56426f91"
+  },
+  {
+   "path": "textures/liveries/chrome/runtime/basecolor.png",
+   "sha256": "df651990a57f13352f9cfaf7c9b7f9bd8ec4c46643fcbc6159b13aca6aa606e3"
+  },
+  {
+   "path": "textures/liveries/chrome/runtime/normal.png",
+   "sha256": "e66d301f100d78e2269f8f064e8f4990e760d553751df3c7c29d587af9dfafc0"
+  },
+  {
+   "path": "textures/liveries/chrome/runtime/orm.png",
+   "sha256": "cafe7358f124736bc4cd40bd99e14d8ac670ca03c8c0ad2b0a67062874f1d454"
+  },
+  {
+   "path": "textures/liveries/chrome/source.ora",
+   "sha256": "b1a296aeec6bbceabbecadb8e330667981989aba2e65f25493f95139c38d3b8e"
+  },
+  {
+   "path": "textures/liveries/chrome/studio_reflections.exr",
+   "sha256": "b37526d570a979297af151e655db5d9d44b8d5b9de00151dbd6698e8752fc4a6"
+  },
+  {
+   "path": "textures/liveries/chrome/winged_emblem.png",
+   "sha256": "273dcb0edf419a5a0bad9d8d3eb21dfeccac1c5454fdad74fc901f97845039b1"
+  },
+  {
+   "path": "textures/liveries/italy/adaptation.json",
+   "sha256": "011886e7628544a3a192630c090ddfb13e4b4479c535101822a8dbb93b126e76"
+  },
+  {
+   "path": "textures/liveries/italy/basecolor.png",
+   "sha256": "c1ab3611fbbf811e098946daeb1561c9f68e76853e162ce23d5daf03e7cb3f03"
+  },
+  {
+   "path": "textures/liveries/italy/design.json",
+   "sha256": "1642d33917bc0ef3624e309ca099852fd6a2f4c723c53f33fcdcf1d3be1ba10e"
+  },
+  {
+   "path": "textures/liveries/italy/gear/base_layer.png",
+   "sha256": "aa58773327b44c0c12f2e7c1c7590163838daa551605ba725d7fcc8d678dee7f"
+  },
+  {
+   "path": "textures/liveries/italy/gear/basecolor.png",
+   "sha256": "246acf85a733a61162ec6b8f2d39c8a04b143546d95839ac2e7599bc2249a986"
+  },
+  {
+   "path": "textures/liveries/italy/gear/finish_layer.png",
+   "sha256": "d31ce8a99ca3b64e2e6da04a0443741fdfa4f9afb7e4e1e7bd87007acb26c50b"
+  },
+  {
+   "path": "textures/liveries/italy/gear/orm.png",
+   "sha256": "312a63eb3b6c7ce7859def8ccbdb2f44c6f30671b9413ca9e6ed5e78c8317e6c"
+  },
+  {
+   "path": "textures/liveries/italy/gear/source.ora",
+   "sha256": "50584f036254f1e5eda8a5d61c9d4e096bd7d532ee22d6fcd3e34bfe1771c113"
+  },
+  {
+   "path": "textures/liveries/italy/layer_1.png",
+   "sha256": "c2e04d04bcfd0dfb7911539e314e2d1c256110bd434312c7182010a552a21ed8"
+  },
+  {
+   "path": "textures/liveries/italy/layer_10.png",
+   "sha256": "c7435705d4cf143e8f5b630a99601e74ffb1ec59593ea9048f3280a3f2d8e7ee"
+  },
+  {
+   "path": "textures/liveries/italy/layer_2.png",
+   "sha256": "305fc2cd65c099d313db062e9c76db6936aa8eeabecfa966425f3b8e0df0c166"
+  },
+  {
+   "path": "textures/liveries/italy/layer_3.png",
+   "sha256": "9495bcd1f8740023cb7ade5453fb8aa751889b255ea9995a411ffbe27ad56da8"
+  },
+  {
+   "path": "textures/liveries/italy/layer_4.png",
+   "sha256": "9784060deb670320ccc0fb91f8879740d3a4d451ad4a0a8c02494f5ecb72e331"
+  },
+  {
+   "path": "textures/liveries/italy/layer_5.png",
+   "sha256": "f86cd0c0d3f784b9f1280cae25a8d023b9927199668b089b747224da4e6e7d1f"
+  },
+  {
+   "path": "textures/liveries/italy/layer_6.png",
+   "sha256": "0bfd2d9ae0ba98db3a40e0af19c6571383400514c6c6f6fb23f92f05c28c0ac0"
+  },
+  {
+   "path": "textures/liveries/italy/layer_7.png",
+   "sha256": "163d4894d3fb68645b28573e68b8f442ce79c4e80623beb45ee0887799cd19a3"
+  },
+  {
+   "path": "textures/liveries/italy/layer_8.png",
+   "sha256": "12f401bfe3701034d9d31f283061a766446c49b7214c636574ccec2c0205cf24"
+  },
+  {
+   "path": "textures/liveries/italy/layer_9.png",
+   "sha256": "f41ad97d329cab3651f108641d3a8c7b8140c8f4276009ddd29f1c725e6e7283"
+  },
+  {
+   "path": "textures/liveries/italy/localized_dirt_mask.png",
+   "sha256": "2988634d5922c323a5479b5e44689d763f60656a59218004d2e2efa61fec60a4"
+  },
+  {
+   "path": "textures/liveries/italy/normal.png",
+   "sha256": "27a1dd862004bd18308072a9cdfb793bd09e9ef23103eafc8431a26a26930550"
+  },
+  {
+   "path": "textures/liveries/italy/orm.png",
+   "sha256": "94d5764b86f2eabcbfebb3a34dd25d4ca305d70a066cc1971ee2a8c544921f6c"
+  },
+  {
+   "path": "textures/liveries/italy/propeller_basecolor.png",
+   "sha256": "004b9767c68d38cbd045437a2ddd49a5870d7ad445ffd23357980d6363051fc0"
+  },
+  {
+   "path": "textures/liveries/italy/roughness.png",
+   "sha256": "074b83b04c32d3545f21ce20368720c008c3b6dd1f83164abab04eec8e9f5039"
+  },
+  {
+   "path": "textures/liveries/italy/runtime/basecolor.png",
+   "sha256": "c1ab3611fbbf811e098946daeb1561c9f68e76853e162ce23d5daf03e7cb3f03"
+  },
+  {
+   "path": "textures/liveries/italy/runtime/normal.png",
+   "sha256": "e66d301f100d78e2269f8f064e8f4990e760d553751df3c7c29d587af9dfafc0"
+  },
+  {
+   "path": "textures/liveries/italy/runtime/orm.png",
+   "sha256": "d6074f73e174f7cd9289cab6b4a502297faca4860d9b62c2838200c2c4d3d0a3"
+  },
+  {
+   "path": "textures/liveries/italy/source.ora",
+   "sha256": "ca327d9f511c8f53da8c367e410317fe9c2bfbe17f3b67dce4cae99b89ceb442"
+  },
+  {
+   "path": "textures/liveries/italy/tail_cross_art.png",
+   "sha256": "17fffe086275191aab35448503ca4f6004cd989cdc95120b0af8f99a0acbc62f"
+  },
+  {
+   "path": "textures/liveries/italy/wing_emblem_lower.png",
+   "sha256": "9c331835d5bba97fba6850ccd0cb13a2b8fa8802b955166602fcde0f42c82f8d"
+  },
+  {
+   "path": "textures/liveries/italy/wing_emblem_upper.png",
+   "sha256": "4890f392bb3396ab63350cae5115fba8f397b4f2ea85d6b679fb5f4d081538dc"
+  },
+  {
+   "path": "textures/liveries/japan/adaptation.json",
+   "sha256": "04c9a2cacd43cffc32e56cf4ff2507f2db6965f3e254d564f3af67d827fc5c9c"
+  },
+  {
+   "path": "textures/liveries/japan/basecolor.png",
+   "sha256": "537fdbf000351209d71821903da670b833b33b275cd47251961d482595618b00"
+  },
+  {
+   "path": "textures/liveries/japan/design.json",
+   "sha256": "87e962e921efe8cabac51d2e2dbd83091d5e37c2b6db35589a94a401ccfb5232"
+  },
+  {
+   "path": "textures/liveries/japan/gear/base_layer.png",
+   "sha256": "a1d9b15c19e63dbc99edba8019c02c33cf5b784d128bb19ee91620454e05807e"
+  },
+  {
+   "path": "textures/liveries/japan/gear/basecolor.png",
+   "sha256": "39abce35255c03bd9a3a3ece367db131716b223f6a2ac891498b828fcc858477"
+  },
+  {
+   "path": "textures/liveries/japan/gear/finish_layer.png",
+   "sha256": "d31ce8a99ca3b64e2e6da04a0443741fdfa4f9afb7e4e1e7bd87007acb26c50b"
+  },
+  {
+   "path": "textures/liveries/japan/gear/orm.png",
+   "sha256": "312a63eb3b6c7ce7859def8ccbdb2f44c6f30671b9413ca9e6ed5e78c8317e6c"
+  },
+  {
+   "path": "textures/liveries/japan/gear/source.ora",
+   "sha256": "4a2b9472ad42dfc5804366b63056d8af2d30d4169763387cfcd0ea7256907e09"
+  },
+  {
+   "path": "textures/liveries/japan/hinomaru_bordered.png",
+   "sha256": "b79cd0dc3c48659275dcd170a152793721c6cde804df3c56aa8715c45f116ac4"
+  },
+  {
+   "path": "textures/liveries/japan/hinomaru_plain.png",
+   "sha256": "c2db181aa5a72b66194e13e8c357b3371116fbd6c35764e552c4b8af3972bca5"
+  },
+  {
+   "path": "textures/liveries/japan/layer_1.png",
+   "sha256": "054a91431f33af8d1a6f3428f08a5d8c6ceaceaf2b860680ddea018695062157"
+  },
+  {
+   "path": "textures/liveries/japan/layer_10.png",
+   "sha256": "42238af4d3ec1c638e2357641724b48f1eb46c2f58d673d0fe25c9bf471e1e5d"
+  },
+  {
+   "path": "textures/liveries/japan/layer_2.png",
+   "sha256": "67490b61f54c1db2704e422d1f2c5070a034f590b52fc0e03a7dbfbab9487ace"
+  },
+  {
+   "path": "textures/liveries/japan/layer_3.png",
+   "sha256": "e05df8953cc6063e727f677d01a86b000c9d855138f7ab597beeec83dd0c4c78"
+  },
+  {
+   "path": "textures/liveries/japan/layer_4.png",
+   "sha256": "9720d5044d24eab2c130c7b76251f86564fe6af46ee662f75848966bda50f707"
+  },
+  {
+   "path": "textures/liveries/japan/layer_5.png",
+   "sha256": "4c29c52a5f437004324553b15fc135fa24d35e2bdcdf37efb634ec00500fd5aa"
+  },
+  {
+   "path": "textures/liveries/japan/layer_6.png",
+   "sha256": "0bfd2d9ae0ba98db3a40e0af19c6571383400514c6c6f6fb23f92f05c28c0ac0"
+  },
+  {
+   "path": "textures/liveries/japan/layer_7.png",
+   "sha256": "163d4894d3fb68645b28573e68b8f442ce79c4e80623beb45ee0887799cd19a3"
+  },
+  {
+   "path": "textures/liveries/japan/layer_8.png",
+   "sha256": "c25d8ff1fda9e83831d214938eebc63098279474500688b2e1e7665c529ab8f9"
+  },
+  {
+   "path": "textures/liveries/japan/layer_9.png",
+   "sha256": "894d0c50006003ed2a2de7df2eaab574b262028a9aaebf4197189a319f5791b4"
+  },
+  {
+   "path": "textures/liveries/japan/localized_dirt_mask.png",
+   "sha256": "2988634d5922c323a5479b5e44689d763f60656a59218004d2e2efa61fec60a4"
+  },
+  {
+   "path": "textures/liveries/japan/normal.png",
+   "sha256": "27a1dd862004bd18308072a9cdfb793bd09e9ef23103eafc8431a26a26930550"
+  },
+  {
+   "path": "textures/liveries/japan/orm.png",
+   "sha256": "f888a1d6cbcc8b87da1ec2f9fb08e2cad42f122ffde16da50b0244614e29441d"
+  },
+  {
+   "path": "textures/liveries/japan/propeller_basecolor.png",
+   "sha256": "e33c215b4832fc70193335fc06947cdfc024e985aa6c6247b37fde8f3b00993d"
+  },
+  {
+   "path": "textures/liveries/japan/roughness.png",
+   "sha256": "f6c938d7053a09d3935758ccc8decec0ff54372c49a9557432f248f4b680ebfc"
+  },
+  {
+   "path": "textures/liveries/japan/runtime/basecolor.png",
+   "sha256": "537fdbf000351209d71821903da670b833b33b275cd47251961d482595618b00"
+  },
+  {
+   "path": "textures/liveries/japan/runtime/normal.png",
+   "sha256": "e66d301f100d78e2269f8f064e8f4990e760d553751df3c7c29d587af9dfafc0"
+  },
+  {
+   "path": "textures/liveries/japan/runtime/orm.png",
+   "sha256": "c67095d23089f8cf91dce21acf59c13158130e7fa48ff70a8d36ff1ced714afc"
+  },
+  {
+   "path": "textures/liveries/japan/source.ora",
+   "sha256": "cd7d4e047c5550c45ce71144b41e9d13ccdae0fd515841185f9dd30f06b1311b"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/adaptation.json",
+   "sha256": "33a153e5358de67cf9bc73f0fcdc71f8e84f9681ca3df1d35139d2ef69421417"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/balkenkreuz_art.png",
+   "sha256": "ef0ff6b82e6ca2dba6e0befb4360bc99ee2072ae055cd748a7c3bf2ea9e2263c"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/basecolor.png",
+   "sha256": "ed5e8fbc787bde6b26a1fbfe78836e218db40ef7749fb01d6c458c80fd5583d2"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/design.json",
+   "sha256": "2918f8e65227c508b941dc391a785eaa264de0eb3a6fcfc7c336a2c820f70f08"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/gear/base_layer.png",
+   "sha256": "d5c4d53cfdb374c8364b66cb08d79b5e19ea016bb50f80c956ef4385e5476225"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/gear/basecolor.png",
+   "sha256": "31926fde530c3ba2a5303dadf56a03d6834e0084055ac1d81b78d0cb1c79dd95"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/gear/finish_layer.png",
+   "sha256": "d31ce8a99ca3b64e2e6da04a0443741fdfa4f9afb7e4e1e7bd87007acb26c50b"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/gear/orm.png",
+   "sha256": "312a63eb3b6c7ce7859def8ccbdb2f44c6f30671b9413ca9e6ed5e78c8317e6c"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/gear/source.ora",
+   "sha256": "8d6ec3ea57314746c89de3721790cda842f426eae7ef72a9d94bfe5fd840206f"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/layer_1.png",
+   "sha256": "272f2ad7fd21b4e3d73f81cf9204edf277afc0ab5bad0823a0682bc47b72ae6f"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/layer_10.png",
+   "sha256": "5c0a80d550b833da4809fc881ebca5fe89bd98e9a8d0c08d8b93cf72f46256a9"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/layer_2.png",
+   "sha256": "5bdb956c973bc9bf2885c48b8d0a797683df3b7161604bc87c2dbfca67b5cf8c"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/layer_3.png",
+   "sha256": "ef5a1f03d6b623f690d69340f4276e6b08588fe445be615b94dcc587a189a33d"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/layer_4.png",
+   "sha256": "1efbc70ec7f313393c7e89d34123bc5ff5c8be8b739e007264622ce68d625e22"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/layer_5.png",
+   "sha256": "df38daeaec9b5c696e87455ae87aba78726b6d428b264ff7b72ad86813c17e64"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/layer_6.png",
+   "sha256": "0bfd2d9ae0ba98db3a40e0af19c6571383400514c6c6f6fb23f92f05c28c0ac0"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/layer_7.png",
+   "sha256": "163d4894d3fb68645b28573e68b8f442ce79c4e80623beb45ee0887799cd19a3"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/layer_8.png",
+   "sha256": "c25d8ff1fda9e83831d214938eebc63098279474500688b2e1e7665c529ab8f9"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/layer_9.png",
+   "sha256": "cba365763ad56c64f0a8a4851e5dd32878a3972491f1a4f9ff44639885aaeac8"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/localized_dirt_mask.png",
+   "sha256": "2988634d5922c323a5479b5e44689d763f60656a59218004d2e2efa61fec60a4"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/normal.png",
+   "sha256": "27a1dd862004bd18308072a9cdfb793bd09e9ef23103eafc8431a26a26930550"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/orm.png",
+   "sha256": "7e775df44324b0b8ba4264d2636177c7aae68c994ccb66a7d68dc1f363bef5a1"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/propeller_basecolor.png",
+   "sha256": "eff5760a768a4602a3104aa0786e10b3d0be1de215de937aa159867d28267084"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/roughness.png",
+   "sha256": "28072cfcf366b48823fcf02e8600c51b29ffc1ac062f7c691f0d971767828a61"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/runtime/basecolor.png",
+   "sha256": "ed5e8fbc787bde6b26a1fbfe78836e218db40ef7749fb01d6c458c80fd5583d2"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/runtime/normal.png",
+   "sha256": "e66d301f100d78e2269f8f064e8f4990e760d553751df3c7c29d587af9dfafc0"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/runtime/orm.png",
+   "sha256": "4c74eda554cd59ad286d14655bf5c4f1d352e64bbcae66960c82a3ccd85b8b65"
+  },
+  {
+   "path": "textures/liveries/luftwaffe/source.ora",
+   "sha256": "67d7b37cc387cab00483bfadbeb067423906938f121fe99603da51b1cd405c4f"
   },
   {
    "path": "textures/liveries/midnight/basecolor.png",
-   "sha256": "191995a9d2a325c89fbdf270ce9f76cb8dac8f1366d1f9223cb7ed961894a6e9"
+   "sha256": "b8800b9a0cb52934801f1c3378459dd10f019e3303aaefb843ac02fa8068d843"
   },
   {
    "path": "textures/liveries/midnight/fasteners.png",
-   "sha256": "4bda43d5356005f3f73ff0b96d321aa4dd8b91b90d9deec1ec74eb4e7bba5e72"
+   "sha256": "9054aea0f93bc78931bba43cf974b402f91f6055d5bced268f5e9ac83dd0e7a0"
   },
   {
    "path": "textures/liveries/midnight/insignia.png",
-   "sha256": "02b25752c090f5417bd3886e305d9e7da76ded9bef7495756a7353d54e8c1f68"
-  },
-  {
-   "path": "textures/liveries/midnight/interiors/authoring.json",
-   "sha256": "cdad083e3303d53957c928decf1f3df5c35d6b8fa53173268ce3c225f6f7e31e"
-  },
-  {
-   "path": "textures/liveries/midnight/interiors/basecolor.png",
-   "sha256": "4bf04b3bd354d97dbde1792d19329dae8b16c6410e7bbfa9cb47f207324c24bd"
-  },
-  {
-   "path": "textures/liveries/midnight/interiors/layer_1.png",
-   "sha256": "1725bfc575eb92ae7a01c8cf6991ee6f8d49d6bf1472ca4f596aec4532107eca"
-  },
-  {
-   "path": "textures/liveries/midnight/interiors/layer_2.png",
-   "sha256": "ef3c3d701ab72883c09c4f431dc2fdd6dbbfce0e64dbbd403a79c028b2d49d4e"
-  },
-  {
-   "path": "textures/liveries/midnight/interiors/layer_3.png",
-   "sha256": "afea9c822172f89e161ae2279c6f75a214f46242333441f3fd64180ef3887ba3"
-  },
-  {
-   "path": "textures/liveries/midnight/interiors/layer_4.png",
-   "sha256": "394d2307bcdeb46b5c6f510580396823d5055b7f690dfa1cc18da488b4e86c83"
-  },
-  {
-   "path": "textures/liveries/midnight/interiors/layout.json",
-   "sha256": "135e260c44ca77ed14a8f346f31360b944a4184c1b2c0ea6e34faa37ae74f7bb"
-  },
-  {
-   "path": "textures/liveries/midnight/interiors/normal.png",
-   "sha256": "81f63c8eb8aefb7c606bea170ac41cd505e84d5cddefe35111f489bf99f4006a"
-  },
-  {
-   "path": "textures/liveries/midnight/interiors/orm.png",
-   "sha256": "a9ce560ac16f15bc0af455dcea3d956e1d39cb758b88d4ec1e6ecf65e0f15541"
-  },
-  {
-   "path": "textures/liveries/midnight/interiors/source.ora",
-   "sha256": "eb78affb451b6678db267fdf3b69dade480aed13da73ecbf4b9f7615b020545f"
+   "sha256": "a25b828d2c4d33c999ab2f1fe03a9e64b5301319797a5942c85911f4e7d7d5d1"
   },
   {
    "path": "textures/liveries/midnight/localized_wear.png",
-   "sha256": "fdf47ed70c6c51082bff7d0c686ba8b31b2e52446d5ae7dcd0d23f2dbc9ae6d3"
+   "sha256": "02b1787b00a06c5006bc037d7a4f2b8ecaade01ff8bc1b8c9bbae60f14a7f622"
   },
   {
    "path": "textures/liveries/midnight/markings.png",
@@ -304,43 +1510,51 @@
   },
   {
    "path": "textures/liveries/midnight/naval_1.png",
-   "sha256": "8e180a4954c9afbbfd6d70745c7f9bc46f1e49bb7e71e22dd73c489e5c0a4814"
+   "sha256": "15ef44748d6a9f02f53fa36bbc807c0a7dc7afc2070f93dd20c87d49c82a2e9a"
   },
   {
    "path": "textures/liveries/midnight/naval_2.png",
-   "sha256": "f64baa4b5614be1df3987425848869b6957087ff5cb437ac62f9c1264750131e"
+   "sha256": "15b5bef86666dd0b4ebbc263a973c2dbc3bbdac69675638c7bc760c85ad852ef"
   },
   {
    "path": "textures/liveries/midnight/naval_3.png",
-   "sha256": "a881668ea2efcc74ded9f03f67f8eeb3e9cd82bfe2fec4b8359574109284895d"
+   "sha256": "34128b26c56325ee832fc608618d5a800ba6860fb8da3cf28160c828ddd00440"
   },
   {
    "path": "textures/liveries/midnight/naval_4.png",
-   "sha256": "fb4c6fa49cc1054354430652bf9a4c014f8145a930c1011dbc7e5bfbe0e391a5"
+   "sha256": "fe03b9ae5c8f6d04f17be98496e79247db3a1d939d2e87de24ff5e4809ceec22"
   },
   {
    "path": "textures/liveries/midnight/naval_5.png",
-   "sha256": "6cfe132c887236db4a9ebf7e0a37fb5e6019cd744f68ea0acb4604420d597e5e"
+   "sha256": "f8d8f30be12f456cc018d57456dba5754cd995278587e1c61371f99300ce36a2"
   },
   {
    "path": "textures/liveries/midnight/orm.png",
-   "sha256": "315142dd47bf4728ebe88d81aa4bb2254502656b0a212a4f4a4a8b98a19f7e4f"
+   "sha256": "1b4a722fb71199921ba735c0bd588aa010288a2cbcaf53934e3ee45c3fb63256"
   },
   {
    "path": "textures/liveries/midnight/paint_design.png",
-   "sha256": "6f32886ec1caedc0de63b012e91c1196933a4fbf1bbdac331b97869fe97f8f4a"
-  },
-  {
-   "path": "textures/liveries/midnight/propeller_basecolor.png",
-   "sha256": "c405014632def6882fd33925102ed178736202c37ff9172b68c21d0da3bf97b4"
+   "sha256": "0e67be46e468b79393364572d89d062173a287d595a96d56796b3fabc02fe5e9"
   },
   {
    "path": "textures/liveries/midnight/roughness.png",
-   "sha256": "93c519f495f80a898605144fbbd23674e36c009f8d09770e9f18d41db4c0397b"
+   "sha256": "dfc63b740c79cd1a35c603011dc00c20857e527f023043b2f534fc167f6efa4b"
+  },
+  {
+   "path": "textures/liveries/midnight/runtime/basecolor.png",
+   "sha256": "b8800b9a0cb52934801f1c3378459dd10f019e3303aaefb843ac02fa8068d843"
+  },
+  {
+   "path": "textures/liveries/midnight/runtime/normal.png",
+   "sha256": "a462add4f80cae31ae167a5dfce801030a2165bd980ff58ac0f60d4d4169aded"
+  },
+  {
+   "path": "textures/liveries/midnight/runtime/orm.png",
+   "sha256": "1b4a722fb71199921ba735c0bd588aa010288a2cbcaf53934e3ee45c3fb63256"
   },
   {
    "path": "textures/liveries/midnight/service_finish.png",
-   "sha256": "b645497b1df1cee82be1be069ab13cfab2b3ced3bc2fa89e9fa5e79dfe1f720d"
+   "sha256": "9751d837ddb6edc497977a481826c9f68efc22ce907c71c1662fb65c4b348999"
   },
   {
    "path": "textures/liveries/midnight/service_stencils.png",
@@ -348,19 +1562,143 @@
   },
   {
    "path": "textures/liveries/midnight/source.ora",
-   "sha256": "6907c9783775cb97f64ee2137b45815b5d4e100377179ac951efe2a563d77659"
+   "sha256": "195edf954820bbf397d4dafb732438f46db6eaf4f26ebf5ee30c97ab87b40530"
   },
   {
    "path": "textures/liveries/midnight/weathering.png",
-   "sha256": "1baa0295df4ede9d87c0ab778e26ec166df97ac8236572a479e4719a042f7b0a"
+   "sha256": "0d8f04dd9aa8c6e235771e827839d3fdfc5f875fb03c6ecd8e61313004e82c57"
+  },
+  {
+   "path": "textures/liveries/p40/adaptation.json",
+   "sha256": "0d95705b888550b61bb8cd1d2e41ef143be6ead336ef6ead0d77e2c7036e67a5"
+  },
+  {
+   "path": "textures/liveries/p40/basecolor.png",
+   "sha256": "15c2d46b40525b078c19b1a7d59a303572f14cb7d8d4c2b41245d395d16f0bf4"
+  },
+  {
+   "path": "textures/liveries/p40/design.json",
+   "sha256": "bb1c2199034c24534d20fc060607a1d59001d4fcc065f2bea31cd7aa7ade1478"
+  },
+  {
+   "path": "textures/liveries/p40/eye_art.png",
+   "sha256": "2c053440ddf7276cc3e6f874e46d54c02ba0e395f608b3053dfafa0d40a76349"
+  },
+  {
+   "path": "textures/liveries/p40/gear/base_layer.png",
+   "sha256": "f596eadd566b8547ef6a4f88f44ca763f40f457a53626fb54b5ecdaa69860f3c"
+  },
+  {
+   "path": "textures/liveries/p40/gear/basecolor.png",
+   "sha256": "7ea523b7d64d9503dd1decf1b3aa33e04f3de76567834343aba5b76034b2c80b"
+  },
+  {
+   "path": "textures/liveries/p40/gear/finish_layer.png",
+   "sha256": "d31ce8a99ca3b64e2e6da04a0443741fdfa4f9afb7e4e1e7bd87007acb26c50b"
+  },
+  {
+   "path": "textures/liveries/p40/gear/orm.png",
+   "sha256": "312a63eb3b6c7ce7859def8ccbdb2f44c6f30671b9413ca9e6ed5e78c8317e6c"
+  },
+  {
+   "path": "textures/liveries/p40/gear/source.ora",
+   "sha256": "e79461a0f79db6441693deb7739c53b5bdee50da71e28168a8c85e6f241992a9"
+  },
+  {
+   "path": "textures/liveries/p40/layer_1.png",
+   "sha256": "a4262a229d8c3be813914cf4d936eeb72de94fdfef22c444d964bca6e7630f6b"
+  },
+  {
+   "path": "textures/liveries/p40/layer_10.png",
+   "sha256": "73e2f68453c005b1e2c25dc46d8c1e9b959ab50c982c35c36cbc10a56e4ca836"
+  },
+  {
+   "path": "textures/liveries/p40/layer_2.png",
+   "sha256": "8c0231e44c55b3de0368e36763b2c0ecfd9944698a358a5ddbf3ba65c3e08cc7"
+  },
+  {
+   "path": "textures/liveries/p40/layer_3.png",
+   "sha256": "183c456ff0e0db0021f69d0a5e85c0365e99e864ae2b4ae5edd19e3bfbba0c50"
+  },
+  {
+   "path": "textures/liveries/p40/layer_4.png",
+   "sha256": "c9598b773574f2756facffe61e89964371a30307a320b5bb9df518b1204dae87"
+  },
+  {
+   "path": "textures/liveries/p40/layer_5.png",
+   "sha256": "16ab356ab3df34af749bc9111ced18c55b42ee6d7664e7a5cfef08406c480d24"
+  },
+  {
+   "path": "textures/liveries/p40/layer_6.png",
+   "sha256": "0bfd2d9ae0ba98db3a40e0af19c6571383400514c6c6f6fb23f92f05c28c0ac0"
+  },
+  {
+   "path": "textures/liveries/p40/layer_7.png",
+   "sha256": "163d4894d3fb68645b28573e68b8f442ce79c4e80623beb45ee0887799cd19a3"
+  },
+  {
+   "path": "textures/liveries/p40/layer_8.png",
+   "sha256": "c25d8ff1fda9e83831d214938eebc63098279474500688b2e1e7665c529ab8f9"
+  },
+  {
+   "path": "textures/liveries/p40/layer_9.png",
+   "sha256": "93c874f64a521bfafb0a9ce2264866547d044b422ff884ea974cc5fd6f778aa0"
+  },
+  {
+   "path": "textures/liveries/p40/localized_dirt_mask.png",
+   "sha256": "2988634d5922c323a5479b5e44689d763f60656a59218004d2e2efa61fec60a4"
+  },
+  {
+   "path": "textures/liveries/p40/normal.png",
+   "sha256": "27a1dd862004bd18308072a9cdfb793bd09e9ef23103eafc8431a26a26930550"
+  },
+  {
+   "path": "textures/liveries/p40/orm.png",
+   "sha256": "5d14a43d1946e35a927868c3dbf058370301f8d73d13c2d605b2ab15660ee1e0"
+  },
+  {
+   "path": "textures/liveries/p40/propeller_basecolor.png",
+   "sha256": "c405014632def6882fd33925102ed178736202c37ff9172b68c21d0da3bf97b4"
+  },
+  {
+   "path": "textures/liveries/p40/roughness.png",
+   "sha256": "b364000024d6f0ba95c6b13d5f52e6ac6ff641bf53e4829948152c6f1802ea0e"
+  },
+  {
+   "path": "textures/liveries/p40/runtime/basecolor.png",
+   "sha256": "15c2d46b40525b078c19b1a7d59a303572f14cb7d8d4c2b41245d395d16f0bf4"
+  },
+  {
+   "path": "textures/liveries/p40/runtime/normal.png",
+   "sha256": "e66d301f100d78e2269f8f064e8f4990e760d553751df3c7c29d587af9dfafc0"
+  },
+  {
+   "path": "textures/liveries/p40/runtime/orm.png",
+   "sha256": "b108fbea610393af777694df788771eb2c4c1c430be5534e93e46337193a11a8"
+  },
+  {
+   "path": "textures/liveries/p40/sharkmouth_art.png",
+   "sha256": "5aaaefcb9d236cbb14f7241eec8af9e661bcf9f5ddd369a85b011675e44a7527"
+  },
+  {
+   "path": "textures/liveries/p40/source.ora",
+   "sha256": "655d84c9f53f3d04a6325357a369c68d9d5ff5ca0d6c52d0e0849ffce40b1116"
+  },
+  {
+   "path": "textures/liveries/p40/star_disc.png",
+   "sha256": "ffe7d950c95d520b60d01eac167890302fceeff314496bcf00bcbe73f39be01d"
+  },
+  {
+   "path": "textures/liveries/scarlet/adaptation.json",
+   "sha256": "74314a043d5963e5bbb1f783a8506c5fac7f450f91f2c1a6f4ab014ed8c3f515"
   },
   {
    "path": "textures/liveries/scarlet/basecolor.png",
-   "sha256": "101adfa46598bd3f53abe63ec8765b26644d2ad8bfb7bab8b64e6b3f90dbf9b2"
+   "sha256": "af4999ca59883976a4e7dd4ac622aa902a3239f6840ca051d19443edb7a069af"
   },
   {
    "path": "textures/liveries/scarlet/fasteners.png",
-   "sha256": "6c0117c447e61952d650b59dc236bc99764f5f6d3f85c5d503a234f08db4b3a1"
+   "sha256": "4459f2baf295fd57786dedc405f941b1ff734a50280b9ff9b887d6baaf698c6b"
   },
   {
    "path": "textures/liveries/scarlet/insignia.png",
@@ -368,19 +1706,19 @@
   },
   {
    "path": "textures/liveries/scarlet/localized_wear.png",
-   "sha256": "b2822c43c7372d38f7fc37342ff6faa2124e259d9eeb8968d1e6ea7b6c2d7b09"
+   "sha256": "3b2136c8bcf1e1089ddda7f00ddfb8632be5eac4838d85351e1d6ad769048cd4"
   },
   {
    "path": "textures/liveries/scarlet/markings.png",
-   "sha256": "7b6c43cf4cb0df2c3426a6affd89f422b85c12c54ea96c9b3e01747377b85a0d"
+   "sha256": "f8144730196322e48fa300188de334848116c8c596b43a08b5389ed368a299c2"
   },
   {
    "path": "textures/liveries/scarlet/orm.png",
-   "sha256": "c424d1020f4c6b1250632d62e62b0042cb41c39a6c78c60119e639615942e6fa"
+   "sha256": "e63689ce1f444ca3a0e74d5430ec927a0cbab1c953e3c5dc3af5b4e2341f72c9"
   },
   {
    "path": "textures/liveries/scarlet/paint_design.png",
-   "sha256": "0be4101b3bed838af13f7fbcedd9439b2886e4e02224673f4190ba59ea34e7c1"
+   "sha256": "bd9fa7af0bf2f0c0de501c5d61145c198914edc771a76a11f9a80d4631ecf972"
   },
   {
    "path": "textures/liveries/scarlet/propeller_basecolor.png",
@@ -388,15 +1726,27 @@
   },
   {
    "path": "textures/liveries/scarlet/race_details.png",
-   "sha256": "825e0c93d4791e0691c78b072dacb0888988b8a6b7892b26a49c2e0fc77912c3"
+   "sha256": "7ca00d0689d9a2612c7161d763bd5801da2e14d1f1fcd05e2eac3f921cf6a43e"
   },
   {
    "path": "textures/liveries/scarlet/roughness.png",
-   "sha256": "d3edb2d4d48b970a0b73842b7d0b2a9fb786ea086f4e873e15cd0e6bca0d0ab1"
+   "sha256": "062a5ca64405000e1d23b23af7f96a8bd9a395a1abe2f30b33819f32eb985bb8"
+  },
+  {
+   "path": "textures/liveries/scarlet/runtime/basecolor.png",
+   "sha256": "af4999ca59883976a4e7dd4ac622aa902a3239f6840ca051d19443edb7a069af"
+  },
+  {
+   "path": "textures/liveries/scarlet/runtime/normal.png",
+   "sha256": "a462add4f80cae31ae167a5dfce801030a2165bd980ff58ac0f60d4d4169aded"
+  },
+  {
+   "path": "textures/liveries/scarlet/runtime/orm.png",
+   "sha256": "6f45c720bb84e130c97137f93246162f9e78fc1417ebb06e5846c5723b9546d2"
   },
   {
    "path": "textures/liveries/scarlet/service_finish.png",
-   "sha256": "1f025f9486cabd7db199ce73e255b0f3fdcc71702277226198588ec9cbf64792"
+   "sha256": "88ac0cdaac30ee51e26d233d88d6172bcc5297e3fd32ecd756facc683b0f8e86"
   },
   {
    "path": "textures/liveries/scarlet/service_stencils.png",
@@ -404,91 +1754,55 @@
   },
   {
    "path": "textures/liveries/scarlet/source.ora",
-   "sha256": "e95e766f2ac19745d1dd2dfcdea1f17d942749b10525c3c82812499994cd547a"
+   "sha256": "d9681113b68ac28877ced5c76ad447af77dc143c044b200f7e696837036b5e46"
   },
   {
    "path": "textures/liveries/scarlet/weathering.png",
-   "sha256": "52dbb684c664451db59ec5fe8d02effba2037d145ab406a83cd2ae68a52936ed"
+   "sha256": "4958a80818af4af0e0ea892a2fb27224f26c0343c1d131c4a4d392ace4a67b36"
+  },
+  {
+   "path": "textures/liveries/spectrum/adaptation.json",
+   "sha256": "f548ace5a978e94cc4d5d4e5c61dfcd3c843962e9fbe97e217f45c2086b79c5a"
   },
   {
    "path": "textures/liveries/spectrum/basecolor.png",
-   "sha256": "79594e1bdab683342c753df277391ab7143459505edad3c698cb30d6a75997fd"
+   "sha256": "884a7fe122647997eeab1d08229d1fee928e23d4a44b0a59cf948e65c4fc183b"
   },
   {
    "path": "textures/liveries/spectrum/design.json",
-   "sha256": "ac34678f8d3b892764e2edc78d23df49523931c167da2992cd2ab4cc1fcbeca5"
-  },
-  {
-   "path": "textures/liveries/spectrum/interiors/authoring.json",
-   "sha256": "f4b8abfd910d6f5e618cd235c1d66f173e37cad1567e3d818e40673a5cd7d727"
-  },
-  {
-   "path": "textures/liveries/spectrum/interiors/basecolor.png",
-   "sha256": "6d45716bdbb762f041ed75d440c02be25e007b4258eea958f4dad17ee3afd77e"
-  },
-  {
-   "path": "textures/liveries/spectrum/interiors/layer_1.png",
-   "sha256": "1725bfc575eb92ae7a01c8cf6991ee6f8d49d6bf1472ca4f596aec4532107eca"
-  },
-  {
-   "path": "textures/liveries/spectrum/interiors/layer_2.png",
-   "sha256": "ef3c3d701ab72883c09c4f431dc2fdd6dbbfce0e64dbbd403a79c028b2d49d4e"
-  },
-  {
-   "path": "textures/liveries/spectrum/interiors/layer_3.png",
-   "sha256": "6f618ff65e01318f9b1345c1df1c7f84a5789b45a22e20cb4a1ac266ecb57136"
-  },
-  {
-   "path": "textures/liveries/spectrum/interiors/layer_4.png",
-   "sha256": "394d2307bcdeb46b5c6f510580396823d5055b7f690dfa1cc18da488b4e86c83"
-  },
-  {
-   "path": "textures/liveries/spectrum/interiors/layout.json",
-   "sha256": "135e260c44ca77ed14a8f346f31360b944a4184c1b2c0ea6e34faa37ae74f7bb"
-  },
-  {
-   "path": "textures/liveries/spectrum/interiors/normal.png",
-   "sha256": "81f63c8eb8aefb7c606bea170ac41cd505e84d5cddefe35111f489bf99f4006a"
-  },
-  {
-   "path": "textures/liveries/spectrum/interiors/orm.png",
-   "sha256": "a9ce560ac16f15bc0af455dcea3d956e1d39cb758b88d4ec1e6ecf65e0f15541"
-  },
-  {
-   "path": "textures/liveries/spectrum/interiors/source.ora",
-   "sha256": "dc86da4fcd6e2ee9d52eecce3cf4d5ec5244a9fe80070d1bbbf093f62138ca51"
+   "sha256": "b42a6f25e18837e9858d3d180597810e9686a6203b83c3656825f701ea1ba362"
   },
   {
    "path": "textures/liveries/spectrum/layer_1.png",
-   "sha256": "d39f23893727525afc32bfbc88144845918815ca5e762889b21abf9fa7964373"
+   "sha256": "e212bd1c3607f9f1b12bb08db33b57b62c7cf996e1468dc3256e12fc8c6c5e24"
   },
   {
    "path": "textures/liveries/spectrum/layer_2.png",
-   "sha256": "8674768b678d62940c95d70fea10ca80e66419326405030a479a6753746f8971"
+   "sha256": "e6212fd63403a3106c1b0b34725f386cfe2006348bdc85ca661d5245488bcbef"
   },
   {
    "path": "textures/liveries/spectrum/layer_3.png",
-   "sha256": "bf686db325a278069a4d5360484be7704520c1e057b0f2f56dd4c3d97cfbd061"
+   "sha256": "6e074943e316e2f263eb5d98735f0ba73c85272ff3dceb55dad943defb992eec"
   },
   {
    "path": "textures/liveries/spectrum/layer_4.png",
-   "sha256": "a1c5e5b992c98c890b8df57043024f1e8fcf73dd8a8701c5724f32a55723a771"
+   "sha256": "362aeff1a85065f7660053c8b70fda7928fba86f0c97e7db40ebc4f448f38be1"
   },
   {
    "path": "textures/liveries/spectrum/layer_5.png",
-   "sha256": "929be541be7d9c5f1cfe0d34ecf5cacc77275c9e9db17fa27f02866a8e542dc0"
+   "sha256": "5538ee68d1bd959e0145c9c19705d69bb8e2d337110bf587402a16fbb97bd317"
   },
   {
    "path": "textures/liveries/spectrum/layer_6.png",
-   "sha256": "49d66b2c974208e5dfbc8d980a308a5ed7b3543e2dca30ae0f30c73cb51f52fe"
+   "sha256": "25cdabf0647f7a83d0d68977613ad102b6bb9ea6b41cbc95617cc3127ad32981"
   },
   {
    "path": "textures/liveries/spectrum/layer_7.png",
-   "sha256": "4d9f6a0cec93b13fd89131ba43405615b38b198305d615cfa52bb1458b928d00"
+   "sha256": "4d558a184b885982a6ffecc2ffe639d1c7bda46e9df0220ad134f3fbee1d8fb8"
   },
   {
    "path": "textures/liveries/spectrum/orm.png",
-   "sha256": "8ffd6a45634d61c2c2a7dccd214b15b443ed1a1aa4493513730dfe350d3a80cc"
+   "sha256": "54dd348b75b2ebf3adb652a94c53ff0fd91e2168e47d44b16e3ca84107471e46"
   },
   {
    "path": "textures/liveries/spectrum/propeller_basecolor.png",
@@ -496,119 +1810,115 @@
   },
   {
    "path": "textures/liveries/spectrum/roughness.png",
-   "sha256": "491d5841188b5a2788110b24dbb2398c0645bdaa9a1fd74c7b3343f652844362"
+   "sha256": "85fa2142681ed546bd2121ce151e33f08af004bdfa717b58b9e7c63b18c062b2"
+  },
+  {
+   "path": "textures/liveries/spectrum/runtime/basecolor.png",
+   "sha256": "884a7fe122647997eeab1d08229d1fee928e23d4a44b0a59cf948e65c4fc183b"
+  },
+  {
+   "path": "textures/liveries/spectrum/runtime/normal.png",
+   "sha256": "a462add4f80cae31ae167a5dfce801030a2165bd980ff58ac0f60d4d4169aded"
+  },
+  {
+   "path": "textures/liveries/spectrum/runtime/orm.png",
+   "sha256": "3829eec8646b068583e9a9798116e305dd1a20ccf909035919cfa577e1b5415e"
   },
   {
    "path": "textures/liveries/spectrum/source.ora",
-   "sha256": "d3a15c6697d174c67e73f37c3da39a508bd172e0aa7483476eaf68451f28d1c8"
+   "sha256": "fc7e1777894bc10b43fa407ace23894372c47e98ef6020fb3c41f385629e0e2e"
+  },
+  {
+   "path": "textures/liveries/splash/adaptation.json",
+   "sha256": "31576b150d22b228a5bae132cfb83ea88eeda53e080aa69a0ab139c6bf4daab8"
   },
   {
    "path": "textures/liveries/splash/basecolor.png",
-   "sha256": "5f4da15381d4ce904453faf7a7d911c61d1e0c4106497c018beb9383aa32f283"
+   "sha256": "50c4e51686adcbedc2625b46d9393f4530899958a7ed2e389c69749ba45fc6e6"
   },
   {
    "path": "textures/liveries/splash/design.json",
-   "sha256": "fd687f695f2d4de34e907fc236ada34e7c1e2a0288ece843249ecbf65442d1fb"
-  },
-  {
-   "path": "textures/liveries/splash/interiors/authoring.json",
-   "sha256": "06fba1e178e83db597a596f441243f2a488fcb9c3f8f59af68e34a1292eed734"
-  },
-  {
-   "path": "textures/liveries/splash/interiors/basecolor.png",
-   "sha256": "cb71de0b21e175328260ae9f26065082c850b1fa0467704b765fadd4e0cf921d"
-  },
-  {
-   "path": "textures/liveries/splash/interiors/layer_1.png",
-   "sha256": "1725bfc575eb92ae7a01c8cf6991ee6f8d49d6bf1472ca4f596aec4532107eca"
-  },
-  {
-   "path": "textures/liveries/splash/interiors/layer_2.png",
-   "sha256": "ef3c3d701ab72883c09c4f431dc2fdd6dbbfce0e64dbbd403a79c028b2d49d4e"
-  },
-  {
-   "path": "textures/liveries/splash/interiors/layer_3.png",
-   "sha256": "ac04d180435835c7dd2c430aea3bceb37830fbfe7373c0f0651a9be3c4c575ca"
-  },
-  {
-   "path": "textures/liveries/splash/interiors/layer_4.png",
-   "sha256": "394d2307bcdeb46b5c6f510580396823d5055b7f690dfa1cc18da488b4e86c83"
-  },
-  {
-   "path": "textures/liveries/splash/interiors/layout.json",
-   "sha256": "135e260c44ca77ed14a8f346f31360b944a4184c1b2c0ea6e34faa37ae74f7bb"
-  },
-  {
-   "path": "textures/liveries/splash/interiors/normal.png",
-   "sha256": "81f63c8eb8aefb7c606bea170ac41cd505e84d5cddefe35111f489bf99f4006a"
-  },
-  {
-   "path": "textures/liveries/splash/interiors/orm.png",
-   "sha256": "a9ce560ac16f15bc0af455dcea3d956e1d39cb758b88d4ec1e6ecf65e0f15541"
-  },
-  {
-   "path": "textures/liveries/splash/interiors/source.ora",
-   "sha256": "ae7ea41063c51b92cc317d113469420548688b477d35db77e9e45c7e9f746889"
+   "sha256": "8e6e364e7bb13205c6960cd66c79ce73755250cfe80e6da31ebd21a6846803cd"
   },
   {
    "path": "textures/liveries/splash/layer_1.png",
-   "sha256": "320eba19fb53472ce3564dd0bb1a5102554c51f87ca64c27697f6057cae00d9b"
+   "sha256": "8920b1297e0ce2b2846a3a9c1c31840bfccd51c643b2b2724a36c6819707bf28"
   },
   {
    "path": "textures/liveries/splash/layer_2.png",
-   "sha256": "409f7109e14f3711a5b550a907b6698e0b04ced56cdddf0b61a4d72b5e6a007e"
+   "sha256": "bd5ca87574e0312775eaffdae29cdb9869069df1d29b0af954c90d374b23f9b8"
   },
   {
    "path": "textures/liveries/splash/layer_3.png",
-   "sha256": "e106e1b88b3c9c97c16008a9fff7275023c964c3dbaebb8c591eb26050787f19"
+   "sha256": "a03370ba0d6231bd732474fac4f2a4567d35568c3159c7ca871f9c0dd7b91faf"
   },
   {
    "path": "textures/liveries/splash/layer_4.png",
-   "sha256": "7ff2a75481edb770bc46a6c0feb273409a7da8666f01c10ab6c51e0ffeecdb73"
+   "sha256": "72666c726d0e423070a0d04e0634c4cd44014332fda5ef6a2917b2feb1f30182"
   },
   {
    "path": "textures/liveries/splash/layer_5.png",
-   "sha256": "d7ccf114a72d306e956b490d24205d2190cde09c833e23831d7f11da32542d6b"
+   "sha256": "78e271aafa0089fdda0f40af58ed651f882dcd047df3afb4201c8e1d50bb700e"
   },
   {
    "path": "textures/liveries/splash/layer_6.png",
-   "sha256": "7ad4b8c051950c619f6223b9c2053d5046f54ca72a5ab7dc132869fd3cfddc0a"
+   "sha256": "2fcbe64743054df0381ecb873ea3de212890496bfe06d0d1ce253da09a0e2a23"
   },
   {
    "path": "textures/liveries/splash/layer_7.png",
-   "sha256": "4424e0dac73215c4ca841795c71dc8efe5912072f55da2e308eb58417e34f66d"
+   "sha256": "ba3b3db37ed0abff87c703ecd7c89cb8f5f42732df1f06c1680aa38f5315241e"
   },
   {
    "path": "textures/liveries/splash/layer_8.png",
-   "sha256": "4c13fb01fff316f6796e0993ac4505c1be712f3965328503e19cddaea96910ea"
+   "sha256": "2af0085c1a20e5544c7e201973acc56efc841d9b4af9f29be4d0288bb574a20b"
   },
   {
    "path": "textures/liveries/splash/orm.png",
-   "sha256": "f1a224778798c69c927479fae533327c9e91a026c4d0a021b7c2d1cba067b486"
+   "sha256": "2f81389e8475afacfd409972644e6de12febf5b417131db4f78f8b2e9825f878"
+  },
+  {
+   "path": "textures/liveries/splash/propeller_basecolor.png",
+   "sha256": "c405014632def6882fd33925102ed178736202c37ff9172b68c21d0da3bf97b4"
   },
   {
    "path": "textures/liveries/splash/roughness.png",
-   "sha256": "5b6c284984e78b74ba658ee58242ebc83f51107d951522e6a3d1266983458cc8"
+   "sha256": "3abf7a968cfa45e611d4e1a090d61bd033bdb72f6ee358a5109978f04e5d82fd"
+  },
+  {
+   "path": "textures/liveries/splash/runtime/basecolor.png",
+   "sha256": "50c4e51686adcbedc2625b46d9393f4530899958a7ed2e389c69749ba45fc6e6"
+  },
+  {
+   "path": "textures/liveries/splash/runtime/normal.png",
+   "sha256": "a462add4f80cae31ae167a5dfce801030a2165bd980ff58ac0f60d4d4169aded"
+  },
+  {
+   "path": "textures/liveries/splash/runtime/orm.png",
+   "sha256": "479c451dc8e062cd932a3708749aac269bbc1465ffa1ccdd95afa42e89d127e2"
   },
   {
    "path": "textures/liveries/splash/source.ora",
-   "sha256": "ca7db3eece9dcb20897ea030e80e3ea98f2b519fe0de34b2ba11e4583429f044"
+   "sha256": "2dd9a741a42ef0316605f4de4d02791c7c55008a4eebe1dd55a692dd51805125"
+  },
+  {
+   "path": "textures/liveries/three_tone/adaptation.json",
+   "sha256": "6c5bad345da94e0aa636f89dcecf50f83ca5182e01634f8621a40c7c3955f4d8"
   },
   {
    "path": "textures/liveries/three_tone/basecolor.png",
-   "sha256": "4c9c2d6b0acaf6afac8c81aafea14f9ab8d807548c9a02a19c6a5393e9d1f2c8"
+   "sha256": "8bd4ae17f9b252b79a109806b8413b24b4e821e2de38caa8b507c432197353e6"
   },
   {
    "path": "textures/liveries/three_tone/fasteners.png",
-   "sha256": "4bda43d5356005f3f73ff0b96d321aa4dd8b91b90d9deec1ec74eb4e7bba5e72"
+   "sha256": "9054aea0f93bc78931bba43cf974b402f91f6055d5bced268f5e9ac83dd0e7a0"
   },
   {
    "path": "textures/liveries/three_tone/insignia.png",
-   "sha256": "39bf67fa6e0b07061d9adb17fe4b418a63289fb21ab042610225b424376cfa12"
+   "sha256": "071bb8f9bda8d8753cc3c43c3fb3228cf6fdeec9bafea59a4e711a3c6966748c"
   },
   {
    "path": "textures/liveries/three_tone/localized_wear.png",
-   "sha256": "d4f238ce73263a1e92c13f180dafdf7d04e85b323a67d26c1cc9e6269b6b9393"
+   "sha256": "67619fcf118c2d9620c8cb532186f2c692775ccb2cefb062063977d8f5ef84b7"
   },
   {
    "path": "textures/liveries/three_tone/markings.png",
@@ -616,239 +1926,825 @@
   },
   {
    "path": "textures/liveries/three_tone/orm.png",
-   "sha256": "5c961c4375bb08a1b1f809a7d5348ddb29d53c10f3cc5e6cb292eda9fcff6cc0"
+   "sha256": "b7595f573e9d12455b034b05ab7cc14e4fd7df543f2d828812aa93db91055cb7"
   },
   {
    "path": "textures/liveries/three_tone/paint_design.png",
-   "sha256": "247677a2e146333664b322b3ac8a83a16262fe4c4a3cee62c4f44190a5c30922"
+   "sha256": "bf1e147b6e31210a639eac4a63093392e729a5769d01920e416fc8cfb1f60067"
+  },
+  {
+   "path": "textures/liveries/three_tone/propeller_basecolor.png",
+   "sha256": "c405014632def6882fd33925102ed178736202c37ff9172b68c21d0da3bf97b4"
   },
   {
    "path": "textures/liveries/three_tone/roughness.png",
-   "sha256": "1db362deae48353bae61e7d1acff6a8905df23e8fbc01ce734d8d47ffd6718d6"
+   "sha256": "96e2ea499104c317e818f47720c00b531323027b0a1db7e6563df6f7f7a1c65a"
+  },
+  {
+   "path": "textures/liveries/three_tone/runtime/basecolor.png",
+   "sha256": "8bd4ae17f9b252b79a109806b8413b24b4e821e2de38caa8b507c432197353e6"
+  },
+  {
+   "path": "textures/liveries/three_tone/runtime/normal.png",
+   "sha256": "a462add4f80cae31ae167a5dfce801030a2165bd980ff58ac0f60d4d4169aded"
+  },
+  {
+   "path": "textures/liveries/three_tone/runtime/orm.png",
+   "sha256": "43791a77c2a396ded5c97784fa0d7032f79e5e6e07030f9e50da6590a7deaedd"
   },
   {
    "path": "textures/liveries/three_tone/service_finish.png",
-   "sha256": "11cd15639522275cf304db14e4afe0e857ff65c6113fa7a59531f75d73367622"
+   "sha256": "b3160a03d979e16c2db0687a19ba96c4f5cc5881cb2587dc95e06cf4e7cb55ae"
   },
   {
    "path": "textures/liveries/three_tone/service_stencils.png",
-   "sha256": "e970e68aa4deb491a81e4ab0d1685b54cb1a8f950c49392d6d1498ce2b39ceba"
+   "sha256": "d7c396eccad359f3d8f2364e3f53553158c89ebf9ffe8bb6d55523851ac447b9"
   },
   {
    "path": "textures/liveries/three_tone/source.ora",
-   "sha256": "2734c7bd0cffc2e2fd366efdaace205f836c24ebcd552ddfe50879168a037f24"
+   "sha256": "eaffcee2f00a938cb387e569aa861f4c60cbe07725003c71205622b31e2c89ab"
   },
   {
    "path": "textures/liveries/three_tone/weathering.png",
-   "sha256": "da1d105b7313bfaa05e156a6b1dcda0a108616654684e5c0927e13149c5aa312"
+   "sha256": "f99a850b3afebb770abf5c50cb1854d66fb7b1fb62af0c231a0c1dbad1282c4e"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/adaptation.json",
+   "sha256": "6dbac0ec012998d23b0307377b39b826eace139d9c1bdbcd508f356863e82bb1"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/basecolor.png",
+   "sha256": "0d2978e883365f0064c6e54eb749eca1f49adc2e00bdfa29f9fd640fdea4f0b4"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/design.json",
+   "sha256": "905024dc9b3ed49c1f7f8fb3c4be18e97edc4c3c3439e055f1c7ad66d9ba3e1e"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/layer_1.png",
+   "sha256": "549144e33dc4af67bc85601a6118842d0fa42db29bb43b18a651c7fc4c55f84e"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/layer_2.png",
+   "sha256": "e4fc18d0da877a077dd6cb93fc1926bfade75168a4ce241d04015d8fc678556c"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/layer_3.png",
+   "sha256": "b5fcb73496f299c1385f15c2afe36972ae5dddb25ada3a20c42ac412312c7f84"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/layer_4.png",
+   "sha256": "a78ee561654ea2d9e1cd6e48074da28c7182df881f4354591977f3ea760a0d3b"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/layer_5.png",
+   "sha256": "20059c4b4afec3e66ff69efa775074177b7b8b97e8448d72a998cbbeba83149e"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/layer_6.png",
+   "sha256": "5741f33ccea126fe2db096eb56bcbf1eb2a5fd01f777a6972983f3404b82f466"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/layer_7.png",
+   "sha256": "eb54f76dfb01971815ca38705cd2e826d200a149774c46427cb2f02e1309e71c"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/layer_8.png",
+   "sha256": "d3f46e8d789d578939d8302d9e5427ec5e603dd08fa1c78b7c6feecd5e03d597"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/orm.png",
+   "sha256": "8c5c7987986f1a560981544ed55e173490f5e408abf30a84cc205d1a414c08b6"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/propeller_basecolor.png",
+   "sha256": "a75a8b1077070f1ea3e67888534ae39d1193acd785371f5164fe8af6de2bf844"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/roughness.png",
+   "sha256": "98460725c40af15f563c44c3944517acf34b7cd84911e8518f9660ad3ebd84b2"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/runtime/basecolor.png",
+   "sha256": "0d2978e883365f0064c6e54eb749eca1f49adc2e00bdfa29f9fd640fdea4f0b4"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/runtime/normal.png",
+   "sha256": "a462add4f80cae31ae167a5dfce801030a2165bd980ff58ac0f60d4d4169aded"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/runtime/orm.png",
+   "sha256": "b770d0775cc65bfc2e234224b606da6deb1921142c70d125c1b5d0d1bafb51ed"
+  },
+  {
+   "path": "textures/liveries/thunderbirds/source.ora",
+   "sha256": "a18a7852b8a9c692595409238739f489f63d3165259d170a5448335b2e567a6b"
+  },
+  {
+   "path": "textures/shared/normal.png",
+   "sha256": "a462add4f80cae31ae167a5dfce801030a2165bd980ff58ac0f60d4d4169aded"
+  },
+  {
+   "path": "textures/shared/propeller_basecolor.png",
+   "sha256": "c405014632def6882fd33925102ed178736202c37ff9172b68c21d0da3bf97b4"
   }
  ],
  "livery_glbs": {
   "midnight": {
    "path": "export/aircraft.glb",
-   "sha256": "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8",
-   "bytes": 9675244
+   "sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+   "bytes": 20026424
   },
-  "blueangels": {
-   "path": "export/aircraft_blueangels.glb",
-   "sha256": "c319ad9a3dc7cd9da484e5b613751809753cc6419c02950092dc715fca480a57",
-   "bytes": 9347016
+  "three_tone": {
+   "path": "export/aircraft_three_tone.glb",
+   "sha256": "52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005",
+   "bytes": 20019312
   },
-  "spectrum": {
-   "path": "export/aircraft_spectrum.glb",
-   "sha256": "8434ef4b0ca6930a2228da763f926251ba73c06f8fbaac8bda11f7207fbea445",
-   "bytes": 9527636
+  "scarlet": {
+   "path": "export/aircraft_scarlet.glb",
+   "sha256": "679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1",
+   "bytes": 20415824
   },
   "splash": {
    "path": "export/aircraft_splash.glb",
-   "sha256": "27b60bce9d9eee59909f096502dcc6261d764ec3c173e323701b5a7ca4414622",
-   "bytes": 9388844
+   "sha256": "dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546",
+   "bytes": 19655820
   },
-  "scarlet": {
-   "path": "export/aircraft_super57.glb",
-   "sha256": "3238f69854a1b0a2d3d6dcbd03045fab78d18b2e6273b5f59bb4fc6531b94979",
-   "bytes": 9990168
+  "spectrum": {
+   "path": "export/aircraft_spectrum.glb",
+   "sha256": "233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6",
+   "bytes": 19822212
+  },
+  "blueangels": {
+   "path": "export/aircraft_blueangels.glb",
+   "sha256": "76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0",
+   "bytes": 19593328
+  },
+  "thunderbirds": {
+   "path": "export/aircraft_thunderbirds.glb",
+   "sha256": "9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03",
+   "bytes": 19641704
+  },
+  "chrome": {
+   "path": "export/aircraft_chrome.glb",
+   "sha256": "1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859",
+   "bytes": 21370728
+  },
+  "p40": {
+   "path": "export/aircraft_p40.glb",
+   "sha256": "9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58",
+   "bytes": 21865668
+  },
+  "japan": {
+   "path": "export/aircraft_japan.glb",
+   "sha256": "9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824",
+   "bytes": 21691192
+  },
+  "luftwaffe": {
+   "path": "export/aircraft_luftwaffe.glb",
+   "sha256": "aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02",
+   "bytes": 21782072
+  },
+  "italy": {
+   "path": "export/aircraft_italy.glb",
+   "sha256": "e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac",
+   "bytes": 22047652
+  },
+  "carbon": {
+   "path": "export/aircraft_carbon.glb",
+   "sha256": "ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278",
+   "bytes": 27575148
   }
  },
  "key_files": {
   "glb": {
    "path": "export/aircraft.glb",
-   "sha256": "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8",
-   "bytes": 9675244
+   "sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+   "bytes": 20026424
   },
   "metadata": {
    "path": "metadata.json",
-   "sha256": "c3f2e6af575a531f32993a5eda09980bf2ce29bf4cec065519ca66efd86b45db",
-   "bytes": 221613
+   "sha256": "15129c73767d0cc7196955ab2b25863f2c7edc7ba4ca73311635461a86499b55",
+   "bytes": 236842
   },
   "export_map": {
    "path": "export-map.json",
-   "sha256": "344d4ec22df065a39fec805c99672f3468d17a2a5476c078d339c476c6b54540",
-   "bytes": 1966057
+   "sha256": "58a3192515b1d34b0fe503525e55dfc63e12058015f95b9188b763d58f338d40",
+   "bytes": 7602272
   },
   "blend": {
    "path": "source/aircraft_game.blend",
-   "sha256": "c2137fb3e363f26b447fca5cae2f118835e198ae609b66d731cc597693be00fc",
-   "bytes": 21844239
+   "sha256": "a3665272bef44b600c38212fccaa057c4289dfe48bf7fbb7034f8a467843208a",
+   "bytes": 28539477
   },
   "license": {
    "path": "LICENSE.txt",
-   "sha256": "d6be0d6543ee91e3183b331247572888b8397120b505bfa6b65275e5aeec1cec",
-   "bytes": 820
+   "sha256": "a23ffafc808388118aa089db4a62ac31f93485488f05c33b99ecfa0d69d546b6",
+   "bytes": 205
   },
   "provenance": {
    "path": "PROVENANCE.md",
-   "sha256": "074b84f7ff80374a11545c59a0c7ecb7b33628c443f8ac0308ae70521820c1e0",
-   "bytes": 14178
+   "sha256": "d8b3e5a5ea0b2cf45d450d743a36d19f8993f7225129404b63088da36d00386d",
+   "bytes": 596
   },
   "readme": {
    "path": "README.md",
-   "sha256": "5855e9b81cb740086589285f0c9cf9acd7263aa13b61a2b7d95f6b9c96578263",
-   "bytes": 4433
+   "sha256": "77828f354e4e648d6b7d60b869c6d769d0f0bb8cfb0e7fcedb40985ea7d96fbd",
+   "bytes": 5727
   },
   "changelog": {
    "path": "CHANGELOG.md",
-   "sha256": "1cc39dd68ccf2ee44ea0407d8c0a8e5dd66634f760bcf50477af962b5a7071b1",
-   "bytes": 5877
+   "sha256": "cb0c13eff1e1bbb273c98a71f3388775d7916645c2808cb4e08a874b41eb5179",
+   "bytes": 396
   },
   "author_manifest": {
-   "path": "manifest.sha256.json",
-   "sha256": "e0fa0329335f94200263f1daff767694f771d63215acf44c696e31689b125e9f",
-   "bytes": 27512
+   "path": "SHA256SUMS.txt",
+   "sha256": "748267a9110c016c928dbc75c9e52fbb205ee6ca5fe07a165e41b5f2ba74982b",
+   "bytes": 67445
   }
  },
- "file_count": 93,
- "total_bytes": 72765000,
+ "file_count": 135,
+ "total_bytes": 315676355,
  "files": [
   {
    "path": "CHANGELOG.md",
-   "bytes": 5877,
-   "sha256": "1cc39dd68ccf2ee44ea0407d8c0a8e5dd66634f760bcf50477af962b5a7071b1"
+   "bytes": 396,
+   "sha256": "cb0c13eff1e1bbb273c98a71f3388775d7916645c2808cb4e08a874b41eb5179"
+  },
+  {
+   "path": "checks/accepted_geometry_signature.json",
+   "bytes": 17649,
+   "sha256": "c85a88f7019e1e012e381945bda71ecb2f86ebe3bfc038351378c7156530506e"
+  },
+  {
+   "path": "checks/adaptation_blueangels.json",
+   "bytes": 598,
+   "sha256": "8b6cb81679c9b9adc9a26df8415d11b01668cd1b85ad4575bfc41fe427e98f6d"
+  },
+  {
+   "path": "checks/adaptation_carbon.json",
+   "bytes": 588,
+   "sha256": "5c50b82f5a519e94008ef4ead1c3eb1cb87c0b63caa8d229db46224edbb20a3c"
+  },
+  {
+   "path": "checks/adaptation_chrome.json",
+   "bytes": 583,
+   "sha256": "b13dabd87bd6ea0e9a503c31d09d35c928e1cacec5374d0072185cc0029757f5"
+  },
+  {
+   "path": "checks/adaptation_italy.json",
+   "bytes": 598,
+   "sha256": "bd5eb1b2ce799400f7b3010aa9fe161e397a126510a3737f22da59aa1242d01a"
+  },
+  {
+   "path": "checks/adaptation_japan.json",
+   "bytes": 590,
+   "sha256": "b1d9199e8c6ff0297144929952be246f9f61bcc180804d7e5f67defc1716cf38"
+  },
+  {
+   "path": "checks/adaptation_luftwaffe.json",
+   "bytes": 602,
+   "sha256": "1e5c07b4d56c14718c3d1b2c512b3d4bbffa391fa1905140aed0aeb2c2a87833"
+  },
+  {
+   "path": "checks/adaptation_midnight.json",
+   "bytes": 585,
+   "sha256": "3e294ac25889079b1cb0a37403bbca36e99a6cbe645ec26a241238b458a893b2"
+  },
+  {
+   "path": "checks/adaptation_p40.json",
+   "bytes": 589,
+   "sha256": "b49a9d0a10bff5172550bb476d17b3e6501dc7c89bbc8dd483c8fa4fbf3d146f"
+  },
+  {
+   "path": "checks/adaptation_scarlet.json",
+   "bytes": 594,
+   "sha256": "9ef38c8edad49b173645e6f9a82c745d47f8247aa1ced845857f63f11e42b170"
+  },
+  {
+   "path": "checks/adaptation_spectrum.json",
+   "bytes": 587,
+   "sha256": "2ab996e8b9f68c5fe3ffc56c682c057660054177cccc0a831896c41927f6af54"
+  },
+  {
+   "path": "checks/adaptation_splash.json",
+   "bytes": 582,
+   "sha256": "8da30c7cb94c48e9d27e33d2926633b5c53ef1cfcffa977a247f6bd5274574a3"
+  },
+  {
+   "path": "checks/adaptation_three_tone.json",
+   "bytes": 597,
+   "sha256": "def3bf928a012d204c942be209cc9bcd8faca80f2375a90bea6723f72b781680"
+  },
+  {
+   "path": "checks/adaptation_thunderbirds.json",
+   "bytes": 605,
+   "sha256": "190d9b2e2fec25b0ac02616c79560247d6362e708a5b84a6aa4be9fed6a5e378"
+  },
+  {
+   "path": "checks/godot/blueangels-textured.json",
+   "bytes": 2942,
+   "sha256": "f355592efd4702e866400246750b3af56b757cd367aa581cd7fbce63f2e05d52"
+  },
+  {
+   "path": "checks/godot/blueangels-textured.log",
+   "bytes": 2623,
+   "sha256": "f94e03ca489a24d0f9b4575c06d7ed1abc97b02026cbda40e4b027d43e89ae1d"
+  },
+  {
+   "path": "checks/godot/carbon-textured.json",
+   "bytes": 2942,
+   "sha256": "776d19f8002af1bc5d953664d7dce8f266a62aa805e0bed8a7376cf8eb71e5bf"
+  },
+  {
+   "path": "checks/godot/carbon-textured.log",
+   "bytes": 2623,
+   "sha256": "89da4064b69e052794fe063c8a0c24abec2436133b565181738bcdebd6f6dae1"
+  },
+  {
+   "path": "checks/godot/chrome-textured.json",
+   "bytes": 2944,
+   "sha256": "aa539be77883c852cb145194517ff79521ff37778785df0e0c2f459cd5756f58"
+  },
+  {
+   "path": "checks/godot/chrome-textured.log",
+   "bytes": 2625,
+   "sha256": "f1cb16ace5e72ac41b4fe0e3009acded7f61f2e5744a24e6ed1e12ff67a5fc79"
+  },
+  {
+   "path": "checks/godot/import.log",
+   "bytes": 8130,
+   "sha256": "9bb3438b01fab5627a7070ac0bc434f0434d09ebcc2e6c07612457629c5ac064"
+  },
+  {
+   "path": "checks/godot/italy-textured.json",
+   "bytes": 2935,
+   "sha256": "9cddeeb9c28cec52ee2aeb1ae693c85c3f5cb1b5f99e715e437045e94801fcf7"
+  },
+  {
+   "path": "checks/godot/italy-textured.log",
+   "bytes": 2616,
+   "sha256": "6a3c1a46d2b94a2cd9c8aa7fc7b778024a03dc90ff98b999d3734bb734208e86"
+  },
+  {
+   "path": "checks/godot/japan-textured.json",
+   "bytes": 2938,
+   "sha256": "6a0403542e22aacf4e93486a290f2cd85261809bd28a6f0a72ba36289b8ccda4"
+  },
+  {
+   "path": "checks/godot/japan-textured.log",
+   "bytes": 2619,
+   "sha256": "4692b2e38af04dce5806c2aa85a5e035ba69355efb3652583dc078f43ca10a1f"
+  },
+  {
+   "path": "checks/godot/luftwaffe-textured.json",
+   "bytes": 2944,
+   "sha256": "e21fa0ee8b5ba27f89616496b0b5036600908c8f3997d859669c1c3283f5ef8d"
+  },
+  {
+   "path": "checks/godot/luftwaffe-textured.log",
+   "bytes": 2625,
+   "sha256": "98ae6efffb10677baa793ad7b11ebf5668e499a3a559901f4f70a6c02cb20d17"
+  },
+  {
+   "path": "checks/godot/midnight-textured.json",
+   "bytes": 2942,
+   "sha256": "d0eedba61f07d8ba52e3b0b9befda00f3b27786374d2e2fbefd2365d64e0e592"
+  },
+  {
+   "path": "checks/godot/midnight-textured.log",
+   "bytes": 2624,
+   "sha256": "d4f8e748f4b60f0bb0a10cb2fa5e675f37b6aac08f84e94cc41347f22a49bfdc"
+  },
+  {
+   "path": "checks/godot/p40-textured.json",
+   "bytes": 2936,
+   "sha256": "5ba794ba58053fae2a44c9f658c89b5b51ae2a0af11a4e469020248bac57986e"
+  },
+  {
+   "path": "checks/godot/p40-textured.log",
+   "bytes": 2617,
+   "sha256": "0cdfa3e30a966cb3deaec45c0973fe381404cf883efb01ea8f430c7b4a465c60"
+  },
+  {
+   "path": "checks/godot/scarlet-textured.json",
+   "bytes": 2938,
+   "sha256": "8a26da20b18c283bd85270e5207ee45e8dea8f758ee3d036edf6315739cf7faf"
+  },
+  {
+   "path": "checks/godot/scarlet-textured.log",
+   "bytes": 2620,
+   "sha256": "da5808f091a1c692bc65c5d8b95ce4710f8c4bb64e1e718c8d386c8e8945afa6"
+  },
+  {
+   "path": "checks/godot/spectrum-textured.json",
+   "bytes": 2943,
+   "sha256": "b2231d0cbaab4a484fe53452dfad2d38b494bd426dffd2ae903ee273390f1268"
+  },
+  {
+   "path": "checks/godot/spectrum-textured.log",
+   "bytes": 2625,
+   "sha256": "2f9321ecd8131745645bd9d2a223af2e164e08e253e2463dfac078cbfb8a319d"
+  },
+  {
+   "path": "checks/godot/splash-textured.json",
+   "bytes": 2938,
+   "sha256": "3d24440c096dabfaa9a8198fb8b27f2549a751212fbc3ae3a50f9e4a2c5e7644"
+  },
+  {
+   "path": "checks/godot/splash-textured.log",
+   "bytes": 2619,
+   "sha256": "ba4710829214c3f59715f33b94bc8b47073c67bfaab3b45558a2e0af815eab1e"
+  },
+  {
+   "path": "checks/godot/summary.json",
+   "bytes": 925,
+   "sha256": "02372bc76557ef3f7f03a599b260b55442f6b4e456a1a098a84734e1301d7ccd"
+  },
+  {
+   "path": "checks/godot/three_tone-textured.json",
+   "bytes": 2945,
+   "sha256": "43f669db9b295ce3e61381dd34a3ff070f63e809e39d370fe5fe55f7145b41cd"
+  },
+  {
+   "path": "checks/godot/three_tone-textured.log",
+   "bytes": 2627,
+   "sha256": "3811302f2c3b4a11526837a7ba8de127e1a327a98cfe033fb6df35487262dbe8"
+  },
+  {
+   "path": "checks/godot/thunderbirds-textured.json",
+   "bytes": 2948,
+   "sha256": "83f8f06f8265b5311b6f61cccd2eb9f8b8417e1298f40b236dff8c31d6587889"
+  },
+  {
+   "path": "checks/godot/thunderbirds-textured.log",
+   "bytes": 2629,
+   "sha256": "97f3c0a169fc9caa34e732620a92d0038cc1432ec89142476da1fd799c511703"
+  },
+  {
+   "path": "checks/livery_suite.json",
+   "bytes": 21753,
+   "sha256": "f73bdd0b423852d0d5b5046b178f691f1ebb5adae4b147583e4f2c0106eaec32"
+  },
+  {
+   "path": "checks/package_inputs.json",
+   "bytes": 2650,
+   "sha256": "b283ecd86a2ddb14d5df55b17eb55836d3dd1373a5ea159ee3cbf55d7652218c"
+  },
+  {
+   "path": "checks/preflight_blueangels.json",
+   "bytes": 7176,
+   "sha256": "b0fe4bb605341955f39bb4f429898a3c103b3fcede45237d289a49e7672e7893"
+  },
+  {
+   "path": "checks/preflight_blueangels.txt",
+   "bytes": 323,
+   "sha256": "51aa9d6e3bb78847541b431457816d354d06a6c473cbc2e5891323a5b3a751e9"
+  },
+  {
+   "path": "checks/preflight_carbon.json",
+   "bytes": 7501,
+   "sha256": "2ecaa694277aaea19edb7a4a73806547892df236a16f64bc8de835a77cbc9d60"
+  },
+  {
+   "path": "checks/preflight_carbon.txt",
+   "bytes": 319,
+   "sha256": "529e02c55d63e408f678325191e47bb9d95cf4b83cb6d71b520e17ee2d946013"
+  },
+  {
+   "path": "checks/preflight_chrome.json",
+   "bytes": 7160,
+   "sha256": "59fec32e4e878e98b6ec63917d61e53c0327d152004f57c6f5aff3f1d630c6da"
+  },
+  {
+   "path": "checks/preflight_chrome.txt",
+   "bytes": 319,
+   "sha256": "0602af76c01a32ef4d1025a7369ea5fa4479ba6d800a3d565a3fd3b6fee7031c"
+  },
+  {
+   "path": "checks/preflight_italy.json",
+   "bytes": 7270,
+   "sha256": "177773c1a31305ae877edf203d84a38f4227a4304b32cde5079a34638f3519df"
+  },
+  {
+   "path": "checks/preflight_italy.txt",
+   "bytes": 318,
+   "sha256": "7f9bcf5bf7d212508a48245818d2ac6243aa4ecdec40ee88af0d1975e97b0166"
+  },
+  {
+   "path": "checks/preflight_japan.json",
+   "bytes": 7270,
+   "sha256": "469c0d6429f5527c985a7375c5d92969e05fc15057e5a3e7401287698bb02f5a"
+  },
+  {
+   "path": "checks/preflight_japan.txt",
+   "bytes": 318,
+   "sha256": "05a69a8f0d42aa1095975cd03e77c80db3be36413aa6fd7736fefccb6fbd679d"
+  },
+  {
+   "path": "checks/preflight_luftwaffe.json",
+   "bytes": 7274,
+   "sha256": "23d418c45a1ee510bbdc527ea55f1038e1fde00f144d534de07e7a72b7cacf84"
+  },
+  {
+   "path": "checks/preflight_luftwaffe.txt",
+   "bytes": 322,
+   "sha256": "5876f0e0f191298ee693379d0c42080ee8af29e3e94096705aed5b03e70a02ca"
+  },
+  {
+   "path": "checks/preflight_midnight.json",
+   "bytes": 7165,
+   "sha256": "573a27712e0eca99d8a9bc0334188009a5afb5811c80548645ae53aa74339834"
+  },
+  {
+   "path": "checks/preflight_midnight.txt",
+   "bytes": 312,
+   "sha256": "8e551c92d8d152f7861e21d8ac0d0d6a061c489efffd3c913afffc9fd2846762"
+  },
+  {
+   "path": "checks/preflight_p40.json",
+   "bytes": 7268,
+   "sha256": "10629794f0c4ac92597af34247e3b44feb7cf09cd9b285c6af12e8f031432a13"
+  },
+  {
+   "path": "checks/preflight_p40.txt",
+   "bytes": 316,
+   "sha256": "a4d25788f700f04aac53215286d1c32c76aa1adc86ab7444f796678f74a83e30"
+  },
+  {
+   "path": "checks/preflight_scarlet.json",
+   "bytes": 7173,
+   "sha256": "d998f7f8df50013de2908270918eccebb63beb227e66e235141c29a5c8b790eb"
+  },
+  {
+   "path": "checks/preflight_scarlet.txt",
+   "bytes": 320,
+   "sha256": "943f54f1417f7b358ef385c1ba9c63db54010983965964ba0b4da1224f9857a2"
+  },
+  {
+   "path": "checks/preflight_spectrum.json",
+   "bytes": 7174,
+   "sha256": "b6084052f35004e0c3c7528bde69e2f28e2fb7c0c9f9b3440445a450dccc72c8"
+  },
+  {
+   "path": "checks/preflight_spectrum.txt",
+   "bytes": 321,
+   "sha256": "c0923c88194f0afd29f218ba15ea5b851a87f6ef0e8706d749e20bb2508c69be"
+  },
+  {
+   "path": "checks/preflight_splash.json",
+   "bytes": 7172,
+   "sha256": "bc811b3be5371621c861c5cfcbe77c3837a1bb0e3a825b66d8e24f50aefd241f"
+  },
+  {
+   "path": "checks/preflight_splash.txt",
+   "bytes": 319,
+   "sha256": "11884c8b00b09cf079c948ebc4904f5259bd82cde979c9e68e454664e5872d26"
+  },
+  {
+   "path": "checks/preflight_three_tone.json",
+   "bytes": 7176,
+   "sha256": "feeb62ac352ee070646cb10b78777d2c6fbb48658f8da7d6d762d1f334e4ab15"
+  },
+  {
+   "path": "checks/preflight_three_tone.txt",
+   "bytes": 323,
+   "sha256": "a9cb132ea7a2a5f87ed935cd71272f5647ee6ed79acab10904c8b557032c77fa"
+  },
+  {
+   "path": "checks/preflight_thunderbirds.json",
+   "bytes": 7178,
+   "sha256": "a109b6f0f73130f3d756c163484405beeab94fc85b37a74e762d148a25671971"
+  },
+  {
+   "path": "checks/preflight_thunderbirds.txt",
+   "bytes": 325,
+   "sha256": "ee7509867adc3e2348b824b51f78d1384f15f68e4ce2bac6ec7ff98fddb91f73"
+  },
+  {
+   "path": "checks/runtime_maps.json",
+   "bytes": 974,
+   "sha256": "11516afd02c7267444bd0319449901dd85c9be7ca05554cc0a6c492d479276e8"
   },
   {
    "path": "export/aircraft.glb",
-   "bytes": 9675244,
-   "sha256": "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8"
+   "bytes": 20026424,
+   "sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851"
   },
   {
    "path": "export/aircraft_blueangels.glb",
-   "bytes": 9347016,
-   "sha256": "c319ad9a3dc7cd9da484e5b613751809753cc6419c02950092dc715fca480a57"
+   "bytes": 19593328,
+   "sha256": "76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0"
+  },
+  {
+   "path": "export/aircraft_carbon.glb",
+   "bytes": 27575148,
+   "sha256": "ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278"
+  },
+  {
+   "path": "export/aircraft_chrome.glb",
+   "bytes": 21370728,
+   "sha256": "1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859"
+  },
+  {
+   "path": "export/aircraft_italy.glb",
+   "bytes": 22047652,
+   "sha256": "e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac"
+  },
+  {
+   "path": "export/aircraft_japan.glb",
+   "bytes": 21691192,
+   "sha256": "9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824"
+  },
+  {
+   "path": "export/aircraft_luftwaffe.glb",
+   "bytes": 21782072,
+   "sha256": "aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02"
+  },
+  {
+   "path": "export/aircraft_p40.glb",
+   "bytes": 21865668,
+   "sha256": "9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58"
+  },
+  {
+   "path": "export/aircraft_scarlet.glb",
+   "bytes": 20415824,
+   "sha256": "679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1"
   },
   {
    "path": "export/aircraft_spectrum.glb",
-   "bytes": 9527636,
-   "sha256": "8434ef4b0ca6930a2228da763f926251ba73c06f8fbaac8bda11f7207fbea445"
+   "bytes": 19822212,
+   "sha256": "233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6"
   },
   {
    "path": "export/aircraft_splash.glb",
-   "bytes": 9388844,
-   "sha256": "27b60bce9d9eee59909f096502dcc6261d764ec3c173e323701b5a7ca4414622"
+   "bytes": 19655820,
+   "sha256": "dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546"
   },
   {
-   "path": "export/aircraft_super57.glb",
-   "bytes": 9990168,
-   "sha256": "3238f69854a1b0a2d3d6dcbd03045fab78d18b2e6273b5f59bb4fc6531b94979"
+   "path": "export/aircraft_three_tone.glb",
+   "bytes": 20019312,
+   "sha256": "52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005"
+  },
+  {
+   "path": "export/aircraft_thunderbirds.glb",
+   "bytes": 19641704,
+   "sha256": "9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03"
   },
   {
    "path": "export-map.json",
-   "bytes": 1966057,
-   "sha256": "344d4ec22df065a39fec805c99672f3468d17a2a5476c078d339c476c6b54540"
+   "bytes": 7602272,
+   "sha256": "58a3192515b1d34b0fe503525e55dfc63e12058015f95b9188b763d58f338d40"
   },
   {
    "path": "LICENSE.txt",
-   "bytes": 820,
-   "sha256": "d6be0d6543ee91e3183b331247572888b8397120b505bfa6b65275e5aeec1cec"
+   "bytes": 205,
+   "sha256": "a23ffafc808388118aa089db4a62ac31f93485488f05c33b99ecfa0d69d546b6"
   },
   {
-   "path": "manifest.sha256.json",
-   "bytes": 27512,
-   "sha256": "e0fa0329335f94200263f1daff767694f771d63215acf44c696e31689b125e9f"
+   "path": "liveries.json",
+   "bytes": 26226,
+   "sha256": "aa4dd2b9d4838b9b7aef42645cbb109a890a8c4f8bf65ad0431982932446dce9"
+  },
+  {
+   "path": "metadata/liveries/blueangels.json",
+   "bytes": 210716,
+   "sha256": "d3f5fe0ce5ce1bd1d5e59a893a6a5110acafb4ef3241beebeac850191a572b44"
+  },
+  {
+   "path": "metadata/liveries/carbon.json",
+   "bytes": 211111,
+   "sha256": "70fb3bbb43806ec47dd55acb3124e97fe8c3c606f9b97ab13afe1dadfd7a7d6a"
+  },
+  {
+   "path": "metadata/liveries/chrome.json",
+   "bytes": 210688,
+   "sha256": "20e9fb4ec8e65e859067d55aa26c19ad48dba8dd36f03e4f9a858b945cdbd34f"
+  },
+  {
+   "path": "metadata/liveries/italy.json",
+   "bytes": 210914,
+   "sha256": "eab5f263b21626687ec0a0aeeefbb49705d3f41835e9ed448e130391ba3825fb"
+  },
+  {
+   "path": "metadata/liveries/japan.json",
+   "bytes": 210905,
+   "sha256": "788dcd2d902982961412eb5c7a4b806ab983d9f03909ceb7e7fd636e23a27d05"
+  },
+  {
+   "path": "metadata/liveries/luftwaffe.json",
+   "bytes": 210948,
+   "sha256": "5cb9ee963a12b90b399d394b43fa055ba45325204f7b0674fd6c0a83a85193b7"
+  },
+  {
+   "path": "metadata/liveries/midnight.json",
+   "bytes": 210711,
+   "sha256": "841f6887e4f9ab95f669901a3e0c5f396b879004ee7264b2ce977d20b91475e3"
+  },
+  {
+   "path": "metadata/liveries/p40.json",
+   "bytes": 210850,
+   "sha256": "5321b947bf667deba4204688de1e06d11bc876af33f0058cb2b7fd55c2486df4"
+  },
+  {
+   "path": "metadata/liveries/scarlet.json",
+   "bytes": 210679,
+   "sha256": "b32ec585d339fe9758975f7bb832b70c3adb788daa887f249eb02b21d05bc6e0"
+  },
+  {
+   "path": "metadata/liveries/spectrum.json",
+   "bytes": 210687,
+   "sha256": "ec086ad5ca860379bf0e5894ac6d4dd73252f7643746b53db5d5a15ce22a8d8e"
+  },
+  {
+   "path": "metadata/liveries/splash.json",
+   "bytes": 210649,
+   "sha256": "1a5874f0f129a3d8e5bb92381878f7e68863f77230196d4d74dc6f14d41f7817"
+  },
+  {
+   "path": "metadata/liveries/three_tone.json",
+   "bytes": 210722,
+   "sha256": "b34b0c09110cfd01fb7b95c4e8721c3cb8d57224dcbe11125c222ef4ce6b9980"
+  },
+  {
+   "path": "metadata/liveries/thunderbirds.json",
+   "bytes": 210729,
+   "sha256": "4343fd75fe9b5fb2fec9336cb6033a7cde02ed9904732ca994d24b7d9191acf0"
   },
   {
    "path": "metadata.json",
-   "bytes": 221613,
-   "sha256": "c3f2e6af575a531f32993a5eda09980bf2ce29bf4cec065519ca66efd86b45db"
-  },
-  {
-   "path": "previews/blueangels-layer-verification.json",
-   "bytes": 487,
-   "sha256": "39d874d4bac5e353993b9843c5e811a9e6acda2e2e06760353d5f2ddec36c29f"
-  },
-  {
-   "path": "previews/blueangels-paint-verification.json",
-   "bytes": 1924,
-   "sha256": "d544e9830d8e1758834fa47efcfa9679b6641d4a7dc3a28c48f8ed8da4e66aa9"
-  },
-  {
-   "path": "previews/blueangels-roundtrip.json",
-   "bytes": 171,
-   "sha256": "34290c7078e553ebfe33b5e51c0f1e28b43f4357583f282743bbed06a81597fa"
-  },
-  {
-   "path": "previews/blueangels-structural-verification.json",
-   "bytes": 3493,
-   "sha256": "bd1622bc4c2fc84dcb3496f6d9e2161f3fc9a4538e0e27d3e412a770fb47e6f6"
-  },
-  {
-   "path": "previews/package-check.json",
-   "bytes": 1293,
-   "sha256": "4a76a9aba8bbf51c33a41c4418cd42dfac3cd90154d5ba276c0adfbf459c24f7"
+   "bytes": 236842,
+   "sha256": "15129c73767d0cc7196955ab2b25863f2c7edc7ba4ca73311635461a86499b55"
   },
   {
    "path": "PROVENANCE.md",
-   "bytes": 14178,
-   "sha256": "074b84f7ff80374a11545c59a0c7ecb7b33628c443f8ac0308ae70521820c1e0"
+   "bytes": 596,
+   "sha256": "d8b3e5a5ea0b2cf45d450d743a36d19f8993f7225129404b63088da36d00386d"
   },
   {
    "path": "README.md",
-   "bytes": 4433,
-   "sha256": "5855e9b81cb740086589285f0c9cf9acd7263aa13b61a2b7d95f6b9c96578263"
+   "bytes": 5727,
+   "sha256": "77828f354e4e648d6b7d60b869c6d769d0f0bb8cfb0e7fcedb40985ea7d96fbd"
+  },
+  {
+   "path": "SHA256SUMS.txt",
+   "bytes": 67445,
+   "sha256": "748267a9110c016c928dbc75c9e52fbb205ee6ca5fe07a165e41b5f2ba74982b"
   },
   {
    "path": "source/aircraft_game.blend",
-   "bytes": 21844239,
-   "sha256": "c2137fb3e363f26b447fca5cae2f118835e198ae609b66d731cc597693be00fc"
+   "bytes": 28539477,
+   "sha256": "a3665272bef44b600c38212fccaa057c4289dfe48bf7fbb7034f8a467843208a"
   },
   {
-   "path": "source/scripts/bind_interiors19.py",
-   "bytes": 2270,
-   "sha256": "5d7ba5fbed7758e24f89f6402594841fc560911e516e64a8aad643fd1e18ffd0"
-  },
-  {
-   "path": "source/scripts/blueangels_views13.py",
-   "bytes": 1439,
-   "sha256": "5c3cc14d7fd9a46c8fbdb73a0e28d81abb8d60e658764cdd19e2026e953f8749"
+   "path": "source/scripts/adapt_liveries.py",
+   "bytes": 9597,
+   "sha256": "b9a5887db434cac905e14227a932257c0b73852a08812543c3e6c933366e6a25"
   },
   {
    "path": "source/scripts/build_blueangels13.py",
-   "bytes": 7876,
-   "sha256": "bca50622c0532c11785dee6a242797af244244f1fd5a09cb1a024e3d7f039421"
+   "bytes": 7971,
+   "sha256": "467c59381abcc4165411e2f567d9f0e4db20a3d55f12fd0d5c0cb0a7bd641eb9"
   },
   {
-   "path": "source/scripts/build_blueangels_interiors13.py",
-   "bytes": 606,
-   "sha256": "a2e8e0afa9ee38b36ae0c86a70d74354799281c6b5bafe1ed2baa76bc31066fb"
+   "path": "source/scripts/build_carbon23.py",
+   "bytes": 14902,
+   "sha256": "45539dc26b28250de6671f0c12ef3916aa1b9648e51de17361e91534bc9d5dda"
   },
   {
-   "path": "source/scripts/build_gear_atlas.py",
-   "bytes": 2835,
-   "sha256": "ceb6b83a1c75bca98c8053bd9d0a6c2dfb660d8dabe61d00221841c64d4064c7"
+   "path": "source/scripts/build_chrome15.py",
+   "bytes": 10276,
+   "sha256": "0089f3b74da848defd626a28e2942b7e6bba7e1839c009baad60e6ee7502a739"
   },
   {
-   "path": "source/scripts/build_interior_atlas19.py",
-   "bytes": 7137,
-   "sha256": "9aec255b83a09d1a77e289aa86cb4ff9aa49c913dd510bd07ff75cb629018090"
+   "path": "source/scripts/build_chrome_decals16.py",
+   "bytes": 9826,
+   "sha256": "9cbfc607f9358c7110f5137684f6d68f495a7d052060cf200d992edd8db85131"
   },
   {
-   "path": "source/scripts/build_naval_interiors10.py",
-   "bytes": 683,
-   "sha256": "288a58d669041e613b1219e2801b117bc0eafbb21a717c707b625d0e58fa1e64"
+   "path": "source/scripts/build_italy20.py",
+   "bytes": 11491,
+   "sha256": "11e2234640f1d03cccd03d33a44c16f1b82942ca0175c40fcd5f380cf6455154"
+  },
+  {
+   "path": "source/scripts/build_japan18.py",
+   "bytes": 9701,
+   "sha256": "67fbe4c8d98091c2192bd57352dbb7f61926bc79f444379f1c25c2d2a7909d15"
+  },
+  {
+   "path": "source/scripts/build_luft19.py",
+   "bytes": 11024,
+   "sha256": "27ec2d494558ec3dc137bf796a4a4b31c23936d6356c80a2b6d231966e41100a"
+  },
+  {
+   "path": "source/scripts/build_p40_17.py",
+   "bytes": 10221,
+   "sha256": "a196ebc3647f457b2b910bbff9a2082d5fc61314f3e991917c57b65f39e52164"
   },
   {
    "path": "source/scripts/build_paints.py",
-   "bytes": 12746,
-   "sha256": "2a493bba1b612020210538bca5a1ff2dea78c3b7e3ded6a92eee68f7048515cb"
+   "bytes": 12993,
+   "sha256": "76705b3f976c1322fdff6283e9caba7cc7186bacecd4910f65802408c53898c5"
   },
   {
    "path": "source/scripts/build_spectrum12.py",
@@ -856,104 +2752,29 @@
    "sha256": "e0b24329bf7e84235260d8f80d1377f04d032d9e098aefc32deecbf2ba0ce370"
   },
   {
-   "path": "source/scripts/build_spectrum_interiors12.py",
-   "bytes": 599,
-   "sha256": "cd6db5eb06595903759090649b1518db84f443d52cda58078f78df79eedbb672"
-  },
-  {
    "path": "source/scripts/build_splash11.py",
    "bytes": 9248,
    "sha256": "f2b255fff3bdfe5a02b0bd3fad93c00a8f0bcdf1c920823ac1cfab8a728d704d"
   },
   {
-   "path": "source/scripts/build_splash_interiors11.py",
-   "bytes": 586,
-   "sha256": "2cf3b5dd7d6504a956778d24643851493f59ad8b3189153744898b1acee441a0"
+   "path": "source/scripts/build_thunderbirds14.py",
+   "bytes": 10197,
+   "sha256": "696e794e903e2a9aac2ff47cea95fcf49c815998be49837bd3c6c16daf2ab545"
   },
   {
-   "path": "source/scripts/check_layers.py",
-   "bytes": 1754,
-   "sha256": "68f1d39beb54a60f560f43e2e66132ec005f2074e04f35f6fe6c7f8cb33d93f2"
+   "path": "source/scripts/carbon_direction23.py",
+   "bytes": 2155,
+   "sha256": "9771dca536ea5b0d4d4bff614e09d64e9a0de1d6b88b4fa79e78caa1463f7689"
   },
   {
-   "path": "source/scripts/choose_livery.py",
-   "bytes": 831,
-   "sha256": "0911746e3d53fc81294b286a28ebc595258ce53f86692f23a57c6bfaf54a88df"
+   "path": "source/scripts/carbon_weave23.py",
+   "bytes": 4632,
+   "sha256": "e7f4742712d217980fb555d3f5b6638931972d9049af1ee45cd1e1d18b032e22"
   },
   {
-   "path": "source/scripts/clearance.py",
-   "bytes": 1944,
-   "sha256": "90e4e5ebe19295cac04e6cf7dd7540255a238eecf7ff499a27b63659e74a475c"
-  },
-  {
-   "path": "source/scripts/compare.py",
-   "bytes": 2716,
-   "sha256": "85f704c929cfc6dc6ed1c2ffe0a7f20313cb4af06028850c5695b6b4bcc85678"
-  },
-  {
-   "path": "source/scripts/complete_details.py",
-   "bytes": 4853,
-   "sha256": "1b5b9974d501494fd4232acbd0b9c5838cb1337b9e5358b6146ce0a34d881f5b"
-  },
-  {
-   "path": "source/scripts/derive.py",
-   "bytes": 26083,
-   "sha256": "80a6288f475a081466ab013266edf8004ca876eefa3e81286448d484602f381d"
-  },
-  {
-   "path": "source/scripts/detail_views.py",
-   "bytes": 1207,
-   "sha256": "fb33e81a417f48d57454c7059eb42f523f9af493eaa0bccabda6daa9c523ea0e"
-  },
-  {
-   "path": "source/scripts/door_audit.py",
-   "bytes": 1050,
-   "sha256": "462060b75b5515c21bdc16f7f47a6107256fcc405cf8584b8121ff2e3a38adcc"
-  },
-  {
-   "path": "source/scripts/doors_views19.py",
-   "bytes": 2595,
-   "sha256": "db95b9f1d48a02ca55ee2c84041ea657c7950651735050df2bcc6cece64d9c1e"
-  },
-  {
-   "path": "source/scripts/export.py",
-   "bytes": 5108,
-   "sha256": "0966cdcdc9e43cfeda030c9b129c38834ac566bae02939389c1830162c735a66"
-  },
-  {
-   "path": "source/scripts/export_blueangels13.py",
-   "bytes": 4639,
-   "sha256": "d71913b29e5dbd80bb8d938099335e7c97041a0de4420fea0c8fec5ead399884"
-  },
-  {
-   "path": "source/scripts/export_spectrum12.py",
-   "bytes": 3699,
-   "sha256": "1b0e075e3af974c81f40d7f78e04a220f988af772dd4d01a6553f3beac8c3298"
-  },
-  {
-   "path": "source/scripts/export_splash11.py",
-   "bytes": 4488,
-   "sha256": "c8842a79df3413fe651374a3408ed8e9db655a4a520037bbc22a284dd63a6816"
-  },
-  {
-   "path": "source/scripts/export_super57.py",
-   "bytes": 3344,
-   "sha256": "cf71f3f5e3620bb865ebe04600ed853e52b735c84d6cda249588b3a3fcf1bc25"
-  },
-  {
-   "path": "source/scripts/finalize.py",
-   "bytes": 1563,
-   "sha256": "987f0f8425c550529000c7132aa6a9ff0e9d27d662d235f87726c528a3aa97f8"
-  },
-  {
-   "path": "source/scripts/finalize_paint.py",
-   "bytes": 232,
-   "sha256": "fc96d19c33b9a04c9896bce67d720c6199112727d57a662b44b49fd8d48fc7ec"
-  },
-  {
-   "path": "source/scripts/finalize_super57.py",
-   "bytes": 3328,
-   "sha256": "a744551db3ed94fde3cb3fb19c8c5a3b7152f18cc022a2d03f40cedddb9886c0"
+   "path": "source/scripts/export_livery.py",
+   "bytes": 1811,
+   "sha256": "8ff77793bf68058bc5fcf8ce064877b6a6984b7edab0324f357da46f57616a9b"
   },
   {
    "path": "source/scripts/gear-reference.json",
@@ -961,44 +2782,9 @@
    "sha256": "9fa9974fbe500916ab6170a73cfb35562f22dd3f0df5f20a1da7e488bc3ecdea"
   },
   {
-   "path": "source/scripts/gear_views.py",
-   "bytes": 1651,
-   "sha256": "bd899c9d4da6eb0ab138573cf55b4db2cb01cfba397ae233a907a075ce5849e2"
-  },
-  {
-   "path": "source/scripts/glb_pose.py",
-   "bytes": 2244,
-   "sha256": "622741b7c44d880ad5fa676578aa4ade52d561fbf18d7428b9be18f30ff2a079"
-  },
-  {
-   "path": "source/scripts/measure_revision3.py",
-   "bytes": 2421,
-   "sha256": "aed17acad8fa51b523929b71b2792fda949fc5f05ffa0257a6698a044bc9c69a"
-  },
-  {
-   "path": "source/scripts/motion_witness.py",
-   "bytes": 1867,
-   "sha256": "d774de507c33348cdec0ac13f053440bbd6de958cca3fca838507a5f2ec5cf77"
-  },
-  {
    "path": "source/scripts/naval_details10.py",
    "bytes": 9733,
    "sha256": "deef46ae9a360c42408dd5ccf291c63b8c33782eb132767210038a21494efdf2"
-  },
-  {
-   "path": "source/scripts/naval_prop10.py",
-   "bytes": 2909,
-   "sha256": "f3f8e4a743419050f480bcd217669354a1e1d2986af47dc8c0dcca4dc3c4eaad"
-  },
-  {
-   "path": "source/scripts/naval_runtime10.py",
-   "bytes": 361,
-   "sha256": "cc9a51ae7e802954d714951f3a0600227685e0687094f2870913edf7802ad599"
-  },
-  {
-   "path": "source/scripts/naval_views10.py",
-   "bytes": 1421,
-   "sha256": "692fd1192d3708f2aeb71ac8b8e29e8ef61c1a73098309f5662ab86671e9e6ce"
   },
   {
    "path": "source/scripts/paint_details.py",
@@ -1006,184 +2792,54 @@
    "sha256": "129df5dce436334482dc57af2d5951a25375e153aad79da149851dd7be920c9b"
   },
   {
-   "path": "source/scripts/paint_surface_data.py",
-   "bytes": 1486,
-   "sha256": "e8e0859062fbaf49bde76622efb1e3e493addef71de0e024893a7e0558535d4e"
+   "path": "source/scripts/preflight_glb.py",
+   "bytes": 22183,
+   "sha256": "e94abe555fff7267ced5c9abe349eb3eebb9d666c4a376a678a52a5f4b8c07de"
   },
   {
-   "path": "source/scripts/paint_views.py",
-   "bytes": 1301,
-   "sha256": "ed2f8f467111ba722fa5eda44be730ddabe87f6390d05d0ecaeb56f7b9a4e3d6"
+   "path": "source/scripts/prepare_runtime_maps.py",
+   "bytes": 5390,
+   "sha256": "639ccb9c853aec3cf13a21a09563f1af36bd16f76311ad75e0b9b8647637b6b6"
   },
   {
-   "path": "source/scripts/polish.py",
-   "bytes": 1929,
-   "sha256": "938220df242fe6d6cbdb9a7df35c10fa843c53b5c18edb5fdec19c9c8afe6e91"
+   "path": "source/scripts/render_liveries.py",
+   "bytes": 2211,
+   "sha256": "51beec6dc0c68dad85f3f622286233b471e287078d2df9f82a0851e23f56268b"
   },
   {
-   "path": "source/scripts/prepare_doors19.py",
-   "bytes": 5820,
-   "sha256": "c7dce5f42c80feb259a6bc92b4126e073e8b59a1fd00565422d8f771c24f8b38"
-  },
-  {
-   "path": "source/scripts/preview.py",
-   "bytes": 3895,
-   "sha256": "706e5efc634f519956199e3bf4677b517bbb7d5b1f6bea33bfe56603d577a65a"
-  },
-  {
-   "path": "source/scripts/prop57_strip.py",
-   "bytes": 2149,
-   "sha256": "1e0873582cce0d9c8d3c84d671382fe4d18f67a2fd0626284a7a23ba924a8b05"
-  },
-  {
-   "path": "source/scripts/race_detail_views.py",
-   "bytes": 2595,
-   "sha256": "db5bce63c33927a0ad423522d4f9c045a43d9eb58d31693e33af4c3f21272699"
-  },
-  {
-   "path": "source/scripts/refine_doors.py",
-   "bytes": 2948,
-   "sha256": "b7492a782feb20aca88eacb179cf3b56710ab1f03d42748f635fe9809dd26f80"
-  },
-  {
-   "path": "source/scripts/refine_gear18.py",
-   "bytes": 11043,
-   "sha256": "2f2283b08356a20e0dfba235cf0fef249c710acd419e9268c5f6b5e62a600b96"
-  },
-  {
-   "path": "source/scripts/restore_upper_covers.py",
-   "bytes": 4725,
-   "sha256": "cf9b9be53a84d664308bec176f9d218f4c3c22e3c44126850db71cd831a63482"
-  },
-  {
-   "path": "source/scripts/roundtrip.py",
-   "bytes": 1455,
-   "sha256": "dddef3b50c420af088aa00db1e179924ab38b60a82f95ef3aa320c87fd06ed93"
-  },
-  {
-   "path": "source/scripts/roundtrip_blueangels13.py",
-   "bytes": 415,
-   "sha256": "f2fd2f5b8e0dbee916984eb3ffcc8c19ed21234dbe4a85bd7cfab283ff9af6a8"
-  },
-  {
-   "path": "source/scripts/roundtrip_spectrum12.py",
-   "bytes": 411,
-   "sha256": "4b4facc77ec9a5a0d607819c7636dd569432f087182d2ee84f57c67301276b4d"
-  },
-  {
-   "path": "source/scripts/roundtrip_splash11.py",
-   "bytes": 402,
-   "sha256": "a5a0fd37b501902d447a2f19de102a01110806dbbb8ff5040c01d88a848a50f3"
-  },
-  {
-   "path": "source/scripts/roundtrip_super57.py",
-   "bytes": 304,
-   "sha256": "0501fdebf8d8f2f9c3077a2cc1c08e2e7c1193a8af314ea871cb31b856d7db8e"
-  },
-  {
-   "path": "source/scripts/runtime_preview.py",
-   "bytes": 606,
-   "sha256": "69ccd398967e958ac2ba405e9775821835b205758b7c4c4118629a12dd26d85b"
-  },
-  {
-   "path": "source/scripts/scale_revision3.py",
-   "bytes": 6906,
-   "sha256": "6a8e6045cf409f54be48c4ccf15a9a2d477517a9ba9062b90d57622cec6021e6"
-  },
-  {
-   "path": "source/scripts/spectrum_views12.py",
-   "bytes": 1430,
-   "sha256": "b449e945d9d156fa0a04cbeaf3ef181cca6ad0204a4e6ecc8d408320462c3ea1"
-  },
-  {
-   "path": "source/scripts/splash_views11.py",
-   "bytes": 1393,
-   "sha256": "cc35ef31b4b9126a81a36f11f5fad266065fd8ec2eb6389b47baac8bd6d61109"
+   "path": "source/scripts/studio_world.py",
+   "bytes": 1945,
+   "sha256": "7ca4602792761b8e29a79f20142197bd396db0b822d14532fd2f711d0946912a"
   },
   {
    "path": "source/scripts/super57_details.py",
-   "bytes": 7985,
-   "sha256": "73d349b184db321a3df690084eda23cef3faf8571b108488fd7db367d7ffa84f"
+   "bytes": 8125,
+   "sha256": "9ce7b8bce6488190f423c58ab5ae329d9e0735301179d2d62ddbad4a2e9b83eb"
   },
   {
    "path": "source/scripts/super57_paint.py",
-   "bytes": 5146,
-   "sha256": "70ceea0ec5836d1592bf87fdaff95180e29716bc9a6d38c2205bec76f361cce2"
-  },
-  {
-   "path": "source/scripts/super57_views.py",
-   "bytes": 1949,
-   "sha256": "2b660910d9a2cfd6f55a80b9b992568afc41aa6a5238724d001e4125dca7c6ed"
-  },
-  {
-   "path": "source/scripts/tail_door_clearance.py",
-   "bytes": 1506,
-   "sha256": "29f8db74721b6be593c4a17b4de2db9d204cfcb7f5146782979a80700cb84fbd"
-  },
-  {
-   "path": "source/scripts/update_gear_metadata.py",
-   "bytes": 2216,
-   "sha256": "83cad26a6ac088ef8434672c5c90ecbe3f109891cf3792c73f0d3f56c653718e"
+   "bytes": 5243,
+   "sha256": "ce0d3c54879564740fbae2e1e47606acd6b2e456a3a305a9727f2e2c5d3e7936"
   },
   {
    "path": "source/scripts/uv-raster-check.json",
-   "bytes": 3065,
-   "sha256": "ce5df25a91445c4214654b7358a0b160804d830e14d47de7e6f2d02edd4532af"
+   "bytes": 3069,
+   "sha256": "1200c4f1dbaae528a57e58a1d0821185c9c7410c6e4ac7684e82480cd313d1e3"
   },
   {
-   "path": "source/scripts/verify.py",
-   "bytes": 8015,
-   "sha256": "dba3d838b6c38aa7656347b5d8f0bbe3f74dbaf0f931503aa28955b9c8041406"
+   "path": "source/scripts/verify_livery_migration.py",
+   "bytes": 2883,
+   "sha256": "4e6b34f378341227b770d45cfba8ec476a71aba195be5409d4e73ba01d4e1797"
   },
   {
-   "path": "source/scripts/verify_blueangels13.py",
-   "bytes": 3577,
-   "sha256": "cb586497bb88b325ec5beb7e8e6afafd84113f1dd9932c3e6a1d039c8de75463"
+   "path": "source/scripts/verify_rev4_glb.py",
+   "bytes": 9237,
+   "sha256": "714fd12c296ed214f0e54b2ee0c2e468d3fa5adb3492971953977b453d91302c"
   },
   {
-   "path": "source/scripts/verify_blueangels_structure13.py",
-   "bytes": 522,
-   "sha256": "893cbd764ab260ec12f36e85b4821642f04a6f1a5362d9c54eb14da4fd09d682"
-  },
-  {
-   "path": "source/scripts/verify_doors19.py",
-   "bytes": 4378,
-   "sha256": "c636f389686ce66f453d25959745a741e8e888ea8c948e82d5de0085e8216bbc"
-  },
-  {
-   "path": "source/scripts/verify_gear18.py",
-   "bytes": 4137,
-   "sha256": "ea79a1a9191a78347c7140556c990f747c0aa346081e2b693846b7e6e077595e"
-  },
-  {
-   "path": "source/scripts/verify_paints.py",
-   "bytes": 3390,
-   "sha256": "73619edb77e58547752c33435b7b7c974b1d9c61aa42ff004c96280b5509b623"
-  },
-  {
-   "path": "source/scripts/verify_spectrum12.py",
-   "bytes": 3052,
-   "sha256": "0479a77f98ac23f11f640779346a03cd7a3020f12f75688478e3ed1111713cbf"
-  },
-  {
-   "path": "source/scripts/verify_spectrum_structure12.py",
-   "bytes": 517,
-   "sha256": "3a4aef05073b2575611e90655f6762ba3ea26a9a0fd8c1ba49c84ff67b38d2a5"
-  },
-  {
-   "path": "source/scripts/verify_splash11.py",
-   "bytes": 2818,
-   "sha256": "185d8ea5f92d82ecb19228ec12d4bd1849325a19a0f131217c58e3031f936328"
-  },
-  {
-   "path": "source/scripts/verify_splash_structure11.py",
-   "bytes": 504,
-   "sha256": "9e019f90e0b5752dad1f32b3329ba2bfc6107d9c82c3a8f10d686c2d994982fc"
-  },
-  {
-   "path": "source/scripts/verify_super57.py",
-   "bytes": 3782,
-   "sha256": "112880124b5a0812e4ea2a790309f27dfd2b947f7e42ccf43af2fad6eaa4cecf"
+   "path": "source/scripts/verify_rev4_native_portable.py",
+   "bytes": 15337,
+   "sha256": "72881b3dd215cf369eb536fe079b488161f1b745b4023d318c4b0d084a3baaf2"
   }
  ]
 }

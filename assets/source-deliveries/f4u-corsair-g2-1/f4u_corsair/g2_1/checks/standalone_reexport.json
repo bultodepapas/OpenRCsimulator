@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "test": "Relocated native with packed maps plus export script only; clean Blender GLB import",
+  "R59_used": false,
+  "runtime_map_count": 6,
+  "reexport_glb_sha256": "d17d785a98aa0a4c39c19a57d6be1555a9238c9cb47221f859fefb6bf50861d1",
+  "delivered_glb_sha256": "cf4cdad638dae93b2ac6107bd050dcf176c4b6dbb1f03d21580f4149fda945b3",
+  "byte_identical": false,
+  "geometry_UV_normals_indices_images_and_JSON_identical": true,
+  "tangent_max_component_difference": 0.00010001659393310547,
+  "tangent_values_differing": 13,
+  "tangent_note": "Bundled MikkTSpace export can round a few tangent components differently across processes; tolerance 0.00011. All positions, normals, UVs, indices, images and glTF JSON must be exact.",
+  "reimport_meshes": 46,
+  "reimport_triangles": 337664,
+  "reimport_span_m": 2.777777910232544,
+  "reimport_max_matrix_element_delta": 5.364418029785156e-07,
+  "isolated_directory": "C:\\Users\\bulto\\AppData\\Local\\Temp\\g2_standalone_xbsrlmn9"
+}

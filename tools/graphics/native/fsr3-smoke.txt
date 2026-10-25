@@ -1,0 +1,41 @@
+# Run through debugctl on a ready experimental Forward+ flight with FSR3 available.
+# Inspect Vulkan validation output separately: debug bridge errors do not include all layer messages.
+pause
+window mode=fullscreen
+assert expr="ResourceLoader.load('res://render/reconstruction.gd').runtime_capabilities().fsr3" message="FSR3 backend available"
+eval expr="app.set_meta('fsr3_smoke_start', RenderingServer.get_fsr3_status().dispatches_succeeded)"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'fsr3_native','fsr2_sharpness':0.35,'msaa_3d':2})"
+wait frames=64
+assert expr="RenderingServer.get_fsr3_status().dispatches_succeeded > app.get_meta('fsr3_smoke_start')" message="FSR3 Native AA dispatched"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"
+eval expr="app.set_meta('fsr3_smoke_start', RenderingServer.get_fsr3_status().dispatches_succeeded)"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'fsr3_85','fsr2_sharpness':0.35,'msaa_3d':2})"
+wait frames=64
+assert expr="RenderingServer.get_fsr3_status().dispatches_succeeded > app.get_meta('fsr3_smoke_start')" message="FSR3 85 percent dispatched"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"
+eval expr="app.set_meta('fsr3_smoke_start', RenderingServer.get_fsr3_status().dispatches_succeeded)"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'fsr3_quality','fsr2_sharpness':0.35,'msaa_3d':2})"
+wait frames=64
+assert expr="RenderingServer.get_fsr3_status().dispatches_succeeded > app.get_meta('fsr3_smoke_start')" message="FSR3 Quality dispatched"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"
+screenshot max_width=1920
+eval expr="app.set_meta('fsr3_smoke_start', RenderingServer.get_fsr3_status().dispatches_succeeded)"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'fsr3_balanced','fsr2_sharpness':0.35,'msaa_3d':2})"
+wait frames=64
+assert expr="RenderingServer.get_fsr3_status().dispatches_succeeded > app.get_meta('fsr3_smoke_start')" message="FSR3 Balanced dispatched"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"
+eval expr="app.set_meta('fsr3_smoke_start', RenderingServer.get_fsr3_status().dispatches_succeeded)"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'fsr3_performance','fsr2_sharpness':0.0,'msaa_3d':2})"
+wait frames=64
+assert expr="RenderingServer.get_fsr3_status().dispatches_succeeded > app.get_meta('fsr3_smoke_start')" message="FSR3 Performance dispatched without RCAS"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"
+window mode=windowed
+window size=1600x900
+wait frames=64
+assert expr="not RenderingServer.get_fsr3_status().backend_failed" message="FSR3 resized without backend failure"
+window mode=fullscreen
+wait frames=64
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').apply(app.get_viewport(), {'reconstruction':'native','msaa_3d':2})"
+wait frames=32
+assert expr="app.get_viewport().scaling_3d_scale == 1.0 and app.get_viewport().msaa_3d == 2" message="Native restored full scale and saved MSAA"
+eval expr="ResourceLoader.load('res://render/reconstruction.gd').describe(app.get_viewport())"

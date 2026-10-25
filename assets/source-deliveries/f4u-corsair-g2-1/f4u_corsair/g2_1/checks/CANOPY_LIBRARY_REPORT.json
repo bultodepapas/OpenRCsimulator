@@ -1,0 +1,13 @@
+{
+  "library": "D:\\CodexDeliveries\\F4U_Corsair\\work\\g21_glass\\canopy_library.blend",
+  "mesh_datablock": "canopy_glass_g21",
+  "triangles": 3427,
+  "vertices": 1717,
+  "uv_layers": [
+    "UVMap"
+  ],
+  "sha256": "d0048ef96411098e433a6b4f34f14398ca4365e6f20b27c26cae2660cea8bbbc",
+  "dependencies": [
+    "mesh datablock and its referenced materials/images only; no object or scene nodes included"
+  ]
+}

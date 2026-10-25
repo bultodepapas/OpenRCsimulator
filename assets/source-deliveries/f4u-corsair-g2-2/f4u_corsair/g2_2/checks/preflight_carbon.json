@@ -1,0 +1,427 @@
+{
+ "path": "D:\\CodexDeliveries\\F4U_Corsair\\g2_2\\export\\aircraft_carbon.glb",
+ "profile": "f4u-g2",
+ "ok": true,
+ "failures": [],
+ "warnings": [],
+ "counts": {
+  "nodes": 82,
+  "mesh_nodes": 46,
+  "triangles": 337664,
+  "surfaces": 58,
+  "materials": 15,
+  "images": 9
+ },
+ "bounds_m": {
+  "low": [
+   -1.388889,
+   -0.241795,
+   -0.587133
+  ],
+  "high": [
+   1.388889,
+   0.528649,
+   1.793979
+  ],
+  "span_x": 2.777778,
+  "length_z": 2.381111,
+  "lowest_up_by_section": {
+   "canopy": 0.152967,
+   "core": -0.167333,
+   "engine": -0.16822,
+   "gear": -0.237167,
+   "horizontal_tail": 0.074101,
+   "propeller": -0.241795,
+   "vertical_tail": 0.081922,
+   "wing_center": -0.234574,
+   "wing_left": -0.205463,
+   "wing_right": -0.205571
+  }
+ },
+ "sections": [
+  "canopy",
+  "core",
+  "engine",
+  "gear",
+  "horizontal_tail",
+  "propeller",
+  "vertical_tail",
+  "wing_center",
+  "wing_left",
+  "wing_right"
+ ],
+ "extensions_used": [
+  "KHR_materials_anisotropy",
+  "KHR_materials_clearcoat",
+  "KHR_materials_specular"
+ ],
+ "outward_share": {
+  "fuselage_core": 0.815,
+  "wing_left_fixed": 0.832,
+  "wing_right_fixed": 0.835,
+  "stabilizer_fixed": 0.966,
+  "fin_fixed": 0.962,
+  "elevator": 0.949,
+  "rudder": 0.97,
+  "aileron_left": 0.928,
+  "aileron_right": 0.952,
+  "flap_left_1": 0.871,
+  "flap_left_2": 0.942,
+  "flap_left_3": 0.932,
+  "flap_right_1": 0.871,
+  "flap_right_2": 0.942,
+  "flap_right_3": 0.932
+ },
+ "meshes": [
+  {
+   "node": "aileron_left",
+   "triangles": 5955,
+   "surfaces": 1,
+   "section": "wing_left"
+  },
+  {
+   "node": "aileron_right",
+   "triangles": 6029,
+   "surfaces": 1,
+   "section": "wing_right"
+  },
+  {
+   "node": "canopy_frame",
+   "triangles": 3978,
+   "surfaces": 1,
+   "section": "canopy"
+  },
+  {
+   "node": "canopy_glass",
+   "triangles": 3427,
+   "surfaces": 1,
+   "section": "canopy"
+  },
+  {
+   "node": "cockpit_interior",
+   "triangles": 14085,
+   "surfaces": 1,
+   "section": "core"
+  },
+  {
+   "node": "core_details",
+   "triangles": 112,
+   "surfaces": 1,
+   "section": "core"
+  },
+  {
+   "node": "cowl",
+   "triangles": 26721,
+   "surfaces": 1,
+   "section": "engine"
+  },
+  {
+   "node": "elevator",
+   "triangles": 7855,
+   "surfaces": 1,
+   "section": "horizontal_tail"
+  },
+  {
+   "node": "engine_face",
+   "triangles": 13940,
+   "surfaces": 1,
+   "section": "engine"
+  },
+  {
+   "node": "exhaust_stacks",
+   "triangles": 1536,
+   "surfaces": 1,
+   "section": "engine"
+  },
+  {
+   "node": "fin_fixed",
+   "triangles": 6808,
+   "surfaces": 1,
+   "section": "vertical_tail"
+  },
+  {
+   "node": "flap_left_1",
+   "triangles": 4083,
+   "surfaces": 1,
+   "section": "wing_center"
+  },
+  {
+   "node": "flap_left_2",
+   "triangles": 4032,
+   "surfaces": 1,
+   "section": "wing_center"
+  },
+  {
+   "node": "flap_left_3",
+   "triangles": 4022,
+   "surfaces": 1,
+   "section": "wing_left"
+  },
+  {
+   "node": "flap_right_1",
+   "triangles": 4248,
+   "surfaces": 1,
+   "section": "wing_center"
+  },
+  {
+   "node": "flap_right_2",
+   "triangles": 4161,
+   "surfaces": 1,
+   "section": "wing_center"
+  },
+  {
+   "node": "flap_right_3",
+   "triangles": 4033,
+   "surfaces": 1,
+   "section": "wing_right"
+  },
+  {
+   "node": "fuselage_core",
+   "triangles": 33598,
+   "surfaces": 1,
+   "section": "core"
+  },
+  {
+   "node": "gear_wheel_tail",
+   "triangles": 3320,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_tail_fork",
+   "triangles": 1376,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_tail_strut",
+   "triangles": 124,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_front_mesh_left",
+   "triangles": 2025,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_front_mesh_right",
+   "triangles": 2013,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_inner_mesh_left",
+   "triangles": 2024,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_inner_mesh_right",
+   "triangles": 2046,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_outer_mesh_left",
+   "triangles": 1968,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_outer_mesh_right",
+   "triangles": 1959,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_tail_mesh_left_1",
+   "triangles": 2036,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_tail_mesh_left_2",
+   "triangles": 2039,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_tail_mesh_right_1",
+   "triangles": 2022,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_door_tail_mesh_right_2",
+   "triangles": 2040,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_retraction_link_left",
+   "triangles": 768,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_lower_left",
+   "triangles": 4112,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_wheel_left",
+   "triangles": 5752,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_strut_left",
+   "triangles": 1128,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_retraction_link_right",
+   "triangles": 768,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_lower_right",
+   "triangles": 4144,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_wheel_right",
+   "triangles": 5752,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "gear_strut_right",
+   "triangles": 1128,
+   "surfaces": 1,
+   "section": "gear"
+  },
+  {
+   "node": "rudder",
+   "triangles": 7152,
+   "surfaces": 1,
+   "section": "vertical_tail"
+  },
+  {
+   "node": "stabilizer_fixed",
+   "triangles": 9791,
+   "surfaces": 1,
+   "section": "horizontal_tail"
+  },
+  {
+   "node": "propeller_rotor",
+   "triangles": 16473,
+   "surfaces": 3,
+   "section": "propeller"
+  },
+  {
+   "node": "windshield_glass",
+   "triangles": 3292,
+   "surfaces": 1,
+   "section": "core"
+  },
+  {
+   "node": "wing_center_fixed",
+   "triangles": 55881,
+   "surfaces": 3,
+   "section": "wing_center"
+  },
+  {
+   "node": "wing_left_fixed",
+   "triangles": 23966,
+   "surfaces": 6,
+   "section": "wing_left"
+  },
+  {
+   "node": "wing_right_fixed",
+   "triangles": 23942,
+   "surfaces": 4,
+   "section": "wing_right"
+  }
+ ],
+ "images": [
+  {
+   "name": "emission",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "Image",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "normal",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "orm",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "basecolor",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "normal",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "basecolor",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "orm",
+   "mime": "image/png",
+   "size": [
+    2048,
+    2048
+   ]
+  },
+  {
+   "name": "propeller_basecolor",
+   "mime": "image/png",
+   "size": [
+    1024,
+    256
+   ]
+  }
+ ]
+}

@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""F4U-16: install the delivered g1.13 livery GLBs as runtime assets.
+"""F4U-16: install the delivered livery GLBs as runtime assets.
 
 Copies each frozen livery GLB (source-manifest.json `livery_glbs`) byte for byte to
 app/assets/aircraft/f4u-corsair-250/ and gives it the default model's import settings. A new
 sidecar carries only the [remap] importer and the [params] block; Godot's import adds its uid
 and destination. The default livery (midnight) is the existing f4u_corsair.glb and is only checked.
+Runtime livery GLBs the manifest no longer lists (g1.13's four after F4U-19) are removed with their
+sidecars; --check reports them.
 
     python3 research/f4u-corsair/F4U-16/install_liveries.py [--check]
 """
@@ -66,6 +68,17 @@ def main() -> int:
             print(f"wrote {sidecar.relative_to(ROOT).as_posix()} (run Godot --import to assign its uid)")
         elif params(sidecar) != template:
             problems.append(f"{sidecar.relative_to(ROOT).as_posix()} import settings differ from f4u_corsair.glb.import")
+    listed = {runtime_glb(livery).name for livery in manifest["livery_glbs"]}
+    for stray in sorted(RUNTIME.glob("f4u_corsair_*.glb")):
+        if stray.name in listed:
+            continue
+        if check:
+            problems.append(f"{stray.relative_to(ROOT).as_posix()} is not a delivered livery")
+            continue
+        for path in (stray, Path(str(stray) + ".import")):
+            if path.exists():
+                path.unlink()
+                print(f"removed {path.relative_to(ROOT).as_posix()}")
     if problems:
         sys.exit("\n".join(problems))
     print(f"{len(manifest['livery_glbs'])} livery GLBs match the frozen delivery with the default import settings")

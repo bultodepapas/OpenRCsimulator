@@ -1,0 +1,8 @@
+{
+  "runtime_commit": "795a7d593",
+  "frozen_native_runtime_commit": "77fe89a0e",
+  "failure_diagnostics_commit": "f264536fb",
+  "audio_retirement_commit": "7695f6cb5",
+  "loading_probe_sha256": "2ab3a288ed08e0cc09e068ff50c2bf4c82d37f4c57b123c2090e40d1bc5fbf50",
+  "notes": "Final audio retirement and companion identity updates were verified after the frozen paired loading cohort; successful loading timing code unchanged."
+}

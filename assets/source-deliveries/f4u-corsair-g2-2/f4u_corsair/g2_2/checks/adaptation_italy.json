@@ -1,0 +1,18 @@
+{
+  "id": "italy",
+  "name": "Deserto 11 / Italian desert concept",
+  "blend": "source/aircraft_italy.blend",
+  "glb": "export/aircraft_italy.glb",
+  "blend_sha256": "8ff7537107b484c6a1ef131fb398867a2866973974fcf80fd16cca4cc829c293",
+  "glb_sha256": "e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac",
+  "glb_bytes": 22047652,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 58,
+  "materials": 15,
+  "images": 7,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 1.0
+}

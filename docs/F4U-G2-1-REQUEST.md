@@ -2,6 +2,8 @@
 
 2026-10-24 · OpenRC Simulator team · Base specification: [Blender delivery request](F4U-BLENDER-HANDOFF.md), sections 3–7 and 9–12 and revision 4 (B1–B8). Review behind this request: [F4U-19](research/f4u-corsair/F4U-19/README.md).
 
+**Status 2026-10-24:** delivered as g2.1 and accepted for integration ([review](research/f4u-corsair/F4U-19/README.md#g21-review-2026-10-24)). F1–F4 are done; I1 was not met. One follow-up remains for the next revision: see [After g2.1](#after-g21).
+
 ## Summary
 
 g1.24 is accepted. g2.0 is accepted in substance. It passes our preflight, keeps the g1 rig and wheel contacts exactly, costs no measurable frame time, and its engine, cockpit, intakes, gear links and baked seams are a clear step up.
@@ -101,3 +103,11 @@ python research/f4u-corsair/F4U-18/glb_shading.py <g2_1>/export/aircraft.glb fus
 1. The three checks above.
 2. A side-by-side render against g1.24 and g2.0 from the F4U-18 bench cameras.
 3. Integration into the simulator: freeze, model compile, `verify_f4u.gd`, the liveries suite, and the retract, flap and fold checks in the production scene.
+
+## After g2.1
+
+For the next revision, after g2.1:
+
+1. **Blade normal map (required).** `naval_blade_paint` lost g2.0's normal map, and its roughness fell from 0.72 to 0.37. The blades now show faceted diagonal streaks at 1.6 m. Add the R59 normal map on UV0 at scale 0.65, keep the base colour on UV1, and check the roughness in a close preview against g2.0.
+2. **I1 (still wanted).** `fuselage_core` 23.7 % and `cowl` 22.9 % remain above the 10 % target; `canopy_glass` improved to 13.1 %.
+3. **Liveries.** Delivered in g2.2: all thirteen schemes, integrated in F4U-20. The blade normal map (1) is still missing in all thirteen.

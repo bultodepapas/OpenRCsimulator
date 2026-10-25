@@ -4,9 +4,11 @@
 
 [Native 1080p audit and measurements](UI-34c-R1/README.md): first Stik Fly blocks one frame for 4.67 s; five warm repeats have a 1.73 s median maximum frame. The existing loading probe separately records 4.64 s to the first draw (paused), then 2.04/2.33 s on active warm draws. Audited button feedback, cache boundaries, rejected preloading and source-tree limits are explicit. This audit contains no runtime changes or screenshots.
 
-## UI-34c-R2/R3/R4 — Home/Fly implementation, 2026-10-24
+## UI-34c-R2/R3/R4/R5 — Home/Fly implementation, 2026-10-24
 
 [Implementation and verification](UI-34c-R2/README.md): owned EN/ES loading surface, rendered acknowledgement, cancellation/rollback, shared World/Field stages, selected-resource handoff and bounded exact trim reuse. Native 1080p samples, 20-cycle lifecycle results, software parity and focused checks are retained with explicit limits. The [execution plan](../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a) keeps unresolved cold-loading and package qualification gates open.
+
+[R5 research and implementation](UI-34c-R5/README.md) adds dedicated scene loading and exact fused electric evaluation. Five completed native 1080p pairs have cold readiness medians of 14.666 and 12.971 s and median maximum loading frames of 3414 and 583 ms. The report retains the host-condition change across the interrupted collection, an unexplained refused attempt, engine-loader experiments and cancellation/quit checks; no two-second or full-platform qualification is claimed.
 
 ## UI-22-R11 — bounded work and equivalent shader output, 2026-10-24
 

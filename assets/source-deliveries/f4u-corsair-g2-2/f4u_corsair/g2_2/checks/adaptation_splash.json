@@ -1,0 +1,18 @@
+{
+  "id": "splash",
+  "name": "Sunburst Splash",
+  "blend": "source/aircraft_splash.blend",
+  "glb": "export/aircraft_splash.glb",
+  "blend_sha256": "f754345d42cb2e504efaca4bf0f6e4b69f24b58161d1e1d69abdec504ea857e6",
+  "glb_sha256": "dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546",
+  "glb_bytes": 19655820,
+  "triangles": 337664,
+  "nodes": 82,
+  "surfaces": 58,
+  "materials": 15,
+  "images": 6,
+  "geometry_normals_UVs_identical_to_g21": true,
+  "all_82_nodes_101_poses_identical": true,
+  "all_images_packed": true,
+  "normal_strength": 0.65
+}
