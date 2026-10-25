@@ -1,0 +1,186 @@
+{
+  "format": "openrc-wind-p0-evidence-v1",
+  "date": "2026-10-25",
+  "scope": "M5-W05b-R1 body-datum position/time adapter slice; no spatial weather admitted",
+  "implementation_start_head": "498767e39859dff33ea8f38dc6caf2a6456455aa",
+  "head_at_receipt": "f3d0a163c5d12143764e74ac8e5f6a612b135586",
+  "shared_tree_note": "Concurrent external commit f3d0a163c included runtime/test changes during verification. These source hashes identify the tested wind files; no whole-tree release qualification.",
+  "engine": "Godot 4.8.beta1.official.4d10419ca Windows console",
+  "sources_sha256": {
+    "app/physics/wind_field.gd": "9834fbbcdeea314fa6614496b9b903d353a6995a5050fa49c9399162536c5c07",
+    "app/sim/environment.gd": "ef9576bdbe2f09a5bf39d934420d1f6408aeac5373bfaad4e7ec48e3897ac83c",
+    "app/sim/flight_session.gd": "69ee342a802d3ef55ff00f0726a088e219d68cc27f55295c63c952141eab635f",
+    "app/sim/helicopter_flight_session.gd": "350a0af7777926a6b1122112942ecef9218766f81522108c9db61ff76b341916",
+    "app/physics/multirotor/plant.gd": "f6d2f37e22e1301291e6152cd1767d314822bd64cd4be430938523ffe6e97065",
+    "app/tests/test_spatial_wind_contract.gd": "c76269e4725b7feec9017e21eb1e56c1430e0e3a7e743e358e31f5580c237b78",
+    "app/tests/test_spatial_wind_flight.gd": "b3f93337fdbce6c782fce5183267395b4d2cab2f3056d49f9e0f31823573b53a",
+    "app/tests/test_wind_world_consumers.gd": "730fdc35dac97052f99dbf88e5728bb5696775cbd501cf71c9dc05ae20315ab4"
+  },
+  "checks": [
+    {
+      "label": "test_atmosphere_column_session",
+      "ok": true,
+      "log_sha256": "067bc61af4787f4de2bf5e5801d2e5bcac8c1bcd8f24f414b38731d1b1a01f19"
+    },
+    {
+      "label": "test_dr_multirotor_kernel",
+      "ok": true,
+      "log_sha256": "651bc6a1f8812969fbece70a2a8dc5d4646a64113659e8a8e283920e10257be8"
+    },
+    {
+      "label": "test_golden",
+      "ok": true,
+      "log_sha256": "19cbc5d8b74aca746c81dd146b8afbbfe29ee9e8f3aeedb6caddbe98a3e79f98"
+    },
+    {
+      "label": "test_ground_start_environment",
+      "ok": true,
+      "log_sha256": "983391220e883bb651de0df121ddc438bd59be2d88f288f3adbd55bb8cf84834"
+    },
+    {
+      "label": "test_heli_ground_start",
+      "ok": true,
+      "log_sha256": "1d4b032694149348a1f73c2302bdd007778e66b5339e89ae5b62b6223554ecf9"
+    },
+    {
+      "label": "test_heli_session",
+      "ok": true,
+      "log_sha256": "455fb799dbe8f258ded1e7180d30071168e50013c07ee0581f89e7faef7cec25"
+    },
+    {
+      "label": "test_rk_stage_time",
+      "ok": true,
+      "log_sha256": "a74b6e594f4b68033f3d0add1593b1fd8a077655ec2b3d51912225598a5bef3b"
+    },
+    {
+      "label": "test_runway_transaction",
+      "ok": true,
+      "log_sha256": "67cd83060b31454e36355e2829a3af32238bc08666cd3454854f36564ca14b9a"
+    },
+    {
+      "label": "test_sf_environment",
+      "ok": true,
+      "log_sha256": "3522292c2e80184dc84588286ca423aeee27a1ac90923fd4d284fa31685cef9b"
+    },
+    {
+      "label": "test_spatial_wind_contract",
+      "ok": true,
+      "log_sha256": "067056013f51db3d3fa1cb78a9d495434a7fd46861a7bf9d4cd007f9b9e2e5e9"
+    },
+    {
+      "label": "test_spatial_wind_flight",
+      "ok": true,
+      "log_sha256": "754be814c5d2789754c1c0e95c245067ca1102ac5c1c5f5650e0cb0508c0e30a"
+    },
+    {
+      "label": "test_turbulence_flight",
+      "ok": true,
+      "log_sha256": "3d8f1a4b39b9478d182be8c9995bedcbfe5e52092835e30924005570ecb5137c"
+    },
+    {
+      "label": "test_wind_field",
+      "ok": true,
+      "log_sha256": "bba94016f66f407807b6490fb87e2e932f65e35764360fbc9beb32be88c16aec"
+    },
+    {
+      "label": "test_wind_flight",
+      "ok": true,
+      "log_sha256": "4e6c16844214136d3dd3b11649abdb5ab4772e2da64ed9a1bd4439d3d7464254"
+    },
+    {
+      "label": "test_wind_trace",
+      "ok": true,
+      "log_sha256": "c077cbef10e7670f490811c8c0290aea5a382c8c384ba3dafb96745fec056992"
+    },
+    {
+      "label": "test_wind_turbulence",
+      "ok": true,
+      "log_sha256": "8852fecf952b7adb3da8e5a1745b45cc77cd38315dcdaed404f0d843f9f9798b"
+    },
+    {
+      "label": "test_wind_world_consumers",
+      "ok": true,
+      "log_sha256": "e244ab8dcf39bc27b1ddb135c874d34bb05a3a2d520253575a43566c417f9251"
+    }
+  ],
+  "flights": [
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver_sha256": "a9b6e6c401122d4ba85c7aebbe8678789e5748878c85349d686b17c120d36548",
+      "candidate_solver_sha256": "110c4ba539c7482e71a3e1ec3f30bbbdf6602d4f848b9f8e3cab6b11aea996ce",
+      "aircraft_sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77",
+      "first_divergence": null,
+      "baseline_and_candidate_csv_sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041",
+      "baseline_recording_sha256": "51ab6eb4ad4903368c77fd4dfc20b9574b8e280705544381e7cec03adcd47007"
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver_sha256": "a9b6e6c401122d4ba85c7aebbe8678789e5748878c85349d686b17c120d36548",
+      "candidate_solver_sha256": "110c4ba539c7482e71a3e1ec3f30bbbdf6602d4f848b9f8e3cab6b11aea996ce",
+      "aircraft_sha256": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
+      "first_divergence": null,
+      "baseline_and_candidate_csv_sha256": "6936aa45bcb1a8e07acee8a34d0d9a2800bc036d1f47cc24abb48614739e5b8a",
+      "baseline_recording_sha256": "d0e4d678b3778b3ec4c8d75f93dafb9023f4afd026b07c6b8773ffc825840c0b"
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver_sha256": "a9b6e6c401122d4ba85c7aebbe8678789e5748878c85349d686b17c120d36548",
+      "candidate_solver_sha256": "110c4ba539c7482e71a3e1ec3f30bbbdf6602d4f848b9f8e3cab6b11aea996ce",
+      "aircraft_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
+      "first_divergence": null,
+      "baseline_and_candidate_csv_sha256": "78279f458ae9b477809a259c167c7b2d3b49a4c2ce7aedb182eada93d01fb748",
+      "baseline_recording_sha256": "45592a47bea58ad358e1dd826e9dc6b89d9b852b662907888f1b83350e0ef195"
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver_sha256": "a9b6e6c401122d4ba85c7aebbe8678789e5748878c85349d686b17c120d36548",
+      "candidate_solver_sha256": "110c4ba539c7482e71a3e1ec3f30bbbdf6602d4f848b9f8e3cab6b11aea996ce",
+      "aircraft_sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
+      "first_divergence": null,
+      "baseline_and_candidate_csv_sha256": "32660e6cf34c75ab5ea051fa0c086d0a03c49874ce7f5a68b91bd3027cac7977",
+      "baseline_recording_sha256": "da0eea54ca102e8ac1dac2bc9ea4e190a63d00cf99e348a45f25e7cb32fcad40"
+    },
+    {
+      "aircraft": "turbo_lumber_evolution",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver_sha256": "a9b6e6c401122d4ba85c7aebbe8678789e5748878c85349d686b17c120d36548",
+      "candidate_solver_sha256": "110c4ba539c7482e71a3e1ec3f30bbbdf6602d4f848b9f8e3cab6b11aea996ce",
+      "aircraft_sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf",
+      "first_divergence": null,
+      "baseline_and_candidate_csv_sha256": "9510719166eb8bb043a98fb1c5a4141ea9aba2bf71ccd9922d7eb6869431eea8",
+      "baseline_recording_sha256": "aec5feecba720a0928faa6ee5e5f8b2fd3c985ba41a0c279cbf5bf3950532b91"
+    },
+    {
+      "aircraft": "stik_glow_61fx_2t",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "baseline_solver_sha256": "a9b6e6c401122d4ba85c7aebbe8678789e5748878c85349d686b17c120d36548",
+      "candidate_solver_sha256": "110c4ba539c7482e71a3e1ec3f30bbbdf6602d4f848b9f8e3cab6b11aea996ce",
+      "aircraft_sha256": "ff43a548cbf8b080a720ab3f912bf6aef0cb9f1c52410c0b022f797294cb5be1",
+      "first_divergence": null,
+      "baseline_and_candidate_csv_sha256": "d57c78d951580e38fe779c03ec42cddc637f6f9ad0433769820433ced4c4773d",
+      "baseline_recording_sha256": "9d4dd5cb9eb51ae740ae71ecff977c49509f1c8b2ea8f2b1e42bb7eaaf835213"
+    }
+  ],
+  "limits": [
+    "Candidate replay is not exact replay across solver identities.",
+    "Baseline exact replay verified before consumer changes by test_flight_log.gd.",
+    "No physical/pilot or target performance qualification.",
+    "Full app/test.sh was not run."
+  ]
+}

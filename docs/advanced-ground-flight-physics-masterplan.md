@@ -57,6 +57,8 @@ The largest gaps are **physical parameter evidence, coherent wheel/body energy a
 | Obstacles/water — existing/reusable/incomplete | [scenery_collision.gd](../app/sim/scenery_collision.gd), session scenery/lake post-tick paths; [lake_collision.gd](../app/sim/lake_collision.gd), [impact_snapshot.gd](../app/physics/impact_snapshot.gd) | Swept/typed impacts and bounded responses exist. Reuse their crossing evidence, immutable inventory and accepted damage masks. Sparse aircraft proxies and moving gear/attachments remain coverage gaps. |
 | Ground starts — existing/reusable | [ground_start.gd](../app/physics/ground_start.gd), `solve`, `_contact_feasibility`; session runway/reset setup | Start qualification solves supported geometry and checks stability. Extend to new roles/curved wheels; never spawn an invalid aircraft by clamping its altitude. |
 | Steering — existing/incomplete | `GroundWheels.frame`; session control deflections; [control_surfaces.gd](../app/physics/control_surfaces.gd) | Signed steering follows actual rudder servo output. No general independent tiller, caster trail, tire aligning moment or shimmy dynamics. Authority must depend on N and tire traction, not a direct yaw-rate override. |
+| Input sampling/mixing — existing/reusable/incomplete | [rc_input.gd](../app/input/rc_input.gd), `poll`; [commands.gd](../app/input/commands.gd), `shape_sticks`, `gamepad_yaw_response`; [controller_service.gd](../app/input/controller_service.gd), profile/store/actions; session `_inputs`, `_pre_step`, `_deflections` | Devices/calibration, expo/rates, trims, failsafe and actual servo positions already exist. Flap-elevator mix follows slowed flap travel before failures/servos; surfaces remain frozen across RK stages. Current recorded gear/brake channels depend on retractability. Extend versioned input/layout/capabilities for independent steering/differential brakes without bypassing hardware, focus release, failure ordering or replay. |
+| Failure injection — existing/reusable/incomplete | [catalog.gd](../app/failures/catalog.gd), session failure adapter and `_pre_step` | Existing jam/bias/slow controls, throttle/radio-loss and finite-powertrain cutoffs are reusable deterministic commands. They do not constitute gear lock, mount fracture or physical servo topology; add those through declared mechanism/damage states. |
 | Brakes — existing/incomplete | `GroundWheels.evaluate`; session `set_wheel_brake`, `gear_is_retractable`, `_inputs`; Main `_clear_wheel_brake`, `_input`, `_unhandled_input` | `B` supplies full brake and releases on key-up/focus loss. Session acceptance is gated by retractability; brake torque evaluation is inside loaded-contact logic and early airborne exit. No independent left/right channel or stopped-wheel constraint. |
 | Retracts — existing/incomplete | [retractable_gear.gd](../app/physics/retractable_gear.gd), `advance`, `pose`, `drag_loads`; session `current_landing_gear`, `set_gear_down`, `gear_state` | Extension timing, interpolation, CdA force/moment and weight-on-wheels command inhibit exist. Inhibit is a simulator operator rule, not declared pneumatic hardware. Full mechanical support during intermediate states, per-leg locks/failures and door loads are missing. |
 | Ground effect — existing/incomplete | [ground_effect.gd](../app/physics/ground_effect.gd), `factors`; `Aero` global/local wing and free-tail paths | Already modifies lift slope, induced drag/downwash continuously. Shared fit is approximate; add local clearance/planform evidence without multiplying the whole-aircraft lift a second time. |
@@ -182,6 +184,8 @@ F_normal,i = N_i n_i.
 ```
 
 Compression and rebound damping may differ, with nonnegative coefficients. Preserve a documented contact-onset ramp if necessary for a continuous force at `x→0`; its width is a numerical/model parameter and must pass refinement. A damper cannot pull the wheel into the ground. The force/gap Jacobian and elastic energy must use the same geometry. Current local-tangent compression and `-n·v` differ on curved terrain at finite penetration; GP-10 must either use a closest-point gap with its derivative or qualify the current approximation only inside a measured micro-relief/penetration envelope. Generic hills cannot inherit that qualification.
+
+For this clipped unilateral law the actual normal dissipation is `P_diss,n=(N-F_el) x_dot≥0`, not always `c x_dot²`. They agree while the unclipped force is nonnegative; when rebound clips N to zero, use `-F_el x_dot`. An onset ramp that changes elastic force must also change its integrated potential. This distinction is required in bounce/damage energy receipts so clipping is neither hidden energy creation nor overcounted damper work.
 
 For nearly level motion, projecting Newton's law upward gives
 
@@ -453,7 +457,7 @@ For a single approaching point, the normal kinetic scale is `E_n=½m_eff,n v_n²
 For a compliant contact, integrate actual channel work:
 
 ```text
-W_damper = integral c(x,x_dot) x_dot² dt, with unilateral-law accounting
+W_damper = integral (N-F_el) x_dot dt   # equals c*x_dot² only in unclipped branch
 W_slide  = integral max(0, -F_tangent·v_slip) dt
 W_brake  = integral max(0, τ_brake σ_relative) dt
 ΔU_elastic = U_after - U_before
@@ -719,8 +723,8 @@ The requested conceptual profiles map to existing JSON/module boundaries. Use `R
 | --- | --- | --- |
 | `AircraftGroundProfile` | New registered ground module resolved by `AircraftModules` and `AircraftData`; derived model owns normalized view | Law/version, intended support roles/sets, accepted geometry envelope, refs to gear/wheel/damage material bindings and provenance. No runtime compression or event history. |
 | `LandingGearConfiguration` | Extend existing `landing_gear` through a versioned module | Fixed/retract/skid/none topology, stable leg/contact/attachment IDs, hubs/axes/linkage/paths/locks, stroke/compliance and actuator limits; no hidden aircraft-ID dispatch. |
-| `WheelContactProfile` | Version `openrc-wheel-profiles v1` registry; bind new records by stable contact ID with explicit legacy name adapter | Radius/width, rotational inertia partition, tire law/slip parameters, bearing/rolling behavior, brake hardware/torque, steering/caster capability. |
-| `GroundSurfaceProfile` | Version `openrc-surfaces v1`, retain legacy adapters | Explicit material/region, traction, rolling/roughness/soil laws and audio/VFX refs. Environment owns placement; aircraft owns tires. |
+| `WheelContactProfile` | Proposed `openrc-wheel-profiles v2`; retain explicit v1 reader/law and name adapter, bind new records by stable contact ID | Radius/width, rotational inertia partition, tire law/slip parameters, bearing/rolling behavior, brake hardware/torque, steering/caster capability. |
+| `GroundSurfaceProfile` | Proposed `openrc-surfaces v2`; retain v1 table adapters | Explicit material/region, traction, rolling/roughness/soil laws and audio/VFX refs. Environment owns placement; aircraft owns tires. |
 | `AircraftDamageProfile` | CR-owned versioned structural module bound to physical identity/inventory | Components/joints, material and section laws, threshold provenance, energy channels, topology/actuator/aero mappings, continuation envelope. |
 | `GroundAudioProfile` | AUD-owned data/presentation profile | Material-compatible licensed assets, gain/pitch/crossfade rules and voice priorities; no physical strength or solver coefficient overrides. |
 

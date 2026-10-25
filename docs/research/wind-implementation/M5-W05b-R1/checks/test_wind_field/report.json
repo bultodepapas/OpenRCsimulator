@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "752d069c-a658-4500-9975-75566c662e22",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_wind_field.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T22:39:56.043768+00:00",
+  "label": "test_wind_field",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-r1\\checks\\test_wind_field-d9i0hyqm\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-r1\\checks\\test_wind_field-d9i0hyqm\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.484,
+  "log_bytes": 105,
+  "log_sha256": "bba94016f66f407807b6490fb87e2e932f65e35764360fbc9beb32be88c16aec"
+}

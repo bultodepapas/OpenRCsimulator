@@ -1145,7 +1145,7 @@ func _process(delta: float) -> void:
 			"maneuver": clampf(sqrt(pow(sim.state[RB.RATE], 2.0) + pow(sim.state[RB.RATE + 1], 2.0) + pow(sim.state[RB.RATE + 2], 2.0)) / TAU, 0.0, 1.0),
 			"exposure": World.Exposure.last,
 			"distance_m": _camera.global_position.distance_to(_airplane.root.global_position) if is_instance_valid(_camera) else 0.0,
-			"effects_allowed": session.crash.is_empty() and sim.fault_reason.is_empty(),
+			"effects_allowed": not sim.paused and session.crash.is_empty() and sim.fault_reason.is_empty(),
 		})
 	_advance_people_after_crash(dt)
 	if _crash_director != null:

@@ -23,7 +23,7 @@ func _run() -> void:
 		_finish()
 		return
 	var profile := Presentation.defaults(described.bindings)
-	profile.lighting = Presentation.LightingProfile.preset("neon_rgb")
+	profile.lighting = Presentation.LightingProfile.preset("festival")
 	var frozen := Trial.freeze({"base_id": Catalog.DEFAULT_ID,
 		"base_bytes": FileAccess.get_file_as_bytes(Catalog.entry(Catalog.DEFAULT_ID).data),
 		"recipe": {}, "presentation_profile": profile})
@@ -67,6 +67,18 @@ func _run() -> void:
 		_check("NAV keeps navigation and suppresses RGB strip", not strip.visible and kit.get_node("nav_left").visible)
 		flight.set_aircraft_lights("all")
 		_check("ALL restores the selected RGB preset", strip.visible)
+		# First sampling a show cue during pause must not create a new burst.
+		flight.session.sim.tick = roundi(8.0 / flight.session.sim.dt()) # Festival burst cue
+		rig.reset()
+		flight._process(0.01)
+		var effects := flight.find_children("*", "MultiMeshInstance3D", true, false)
+		var show_particles := 0
+		var show_pools := 0
+		for effect: Node in effects:
+			if effect.get_parent().name == "AircraftLightingWorldVfx":
+				show_pools += 1
+				show_particles += (effect as MultiMeshInstance3D).multimesh.visible_instance_count
+		_check("paused first cue sample does not emit a burst", show_pools == 2 and show_particles == 0)
 		flight._on_resetting()
 		_check("session reset resumes AUTO and retains preset", flight._aircraft_lights.selection == "auto" and rig.budget_info().selection == "preset")
 	flight.free()

@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a5908c10-db46-4493-a61e-7328ac8630cd",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_spatial_wind_contract.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T22:51:07.398763+00:00",
+  "label": "test_spatial_wind_contract",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-r1\\checks\\test_spatial_wind_contract-7hwmi416\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-r1\\checks\\test_spatial_wind_contract-7hwmi416\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.282,
+  "log_bytes": 117,
+  "log_sha256": "067056013f51db3d3fa1cb78a9d495434a7fd46861a7bf9d4cd007f9b9e2e5e9"
+}

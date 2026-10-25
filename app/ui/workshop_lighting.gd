@@ -168,7 +168,7 @@ func _build_ui() -> void:
 func _build_zone_controls() -> void:
 	_orientation_lock = CheckButton.new()
 	_orientation_lock.name = "LightingOrientationLock"
-	_orientation_lock.text = tr("Keep orientation cues steady when inverted")
+	_orientation_lock.text = tr("Lock navigation colors and patterns")
 	_orientation_lock.toggled.connect(_on_orientation_lock_toggled)
 	_zone_section.add_child(_orientation_lock)
 	_orientation_hint = Label.new()

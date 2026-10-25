@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   state-density runway candidate converges
+ok   legacy scalar-density candidate converges
+ok   callback queried every residual state  diagnostic 91, observed 91
+ok   density follows the changing candidate height  down span 0.00083008312637 m; rho span 0.00016601662527 kg/m^3
+ok   callback density extrema are recorded
+ok   residual evaluation cap holds with environment callback
+ok   accepted fixed point uses the local queried density  local 0.00000000000933, legacy-density 0.00000748199607 m/s²/rad/s²
+ok   environment domain error rejects without scalar fallback  environment_at_state rejected engine-off residual: atmosphere query reported failure: ["outside test atmosphere domain"]
+ok   environment domain error returns no partial candidate
+ok   environment domain error remains within evaluation cap
+10 checks, 0 failed

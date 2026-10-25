@@ -6766,3 +6766,63 @@ msgstr "Los sonidos del tren retráctil están disponibles en aviones con ese ti
 #: ui/workshop.gd
 msgid "Sound selection does not change the aircraft's installed physics."
 msgstr "La selección de sonido no cambia la física del avión."
+
+#: ui/workshop_lighting.gd
+msgid "Lock navigation colors and patterns"
+msgstr "Bloquear colores y patrones de navegación"
+
+#: ui/workshop_lighting.gd
+msgid "Zone brightness"
+msgstr "Brillo de la zona"
+
+#: ui/workshop_lighting.gd
+msgid "Per-zone multiplier, independent of overall brightness."
+msgstr "Multiplicador de la zona, independiente del brillo general."
+
+#: ui/workshop_lighting.gd
+msgid "Response source"
+msgstr "Fuente de respuesta"
+
+#: ui/workshop_lighting.gd
+msgid "Response strength"
+msgstr "Intensidad de respuesta"
+
+#: ui/workshop_lighting.gd
+msgid "Telemetry reactions use accepted values when available; otherwise the zone stays steady."
+msgstr "Las respuestas usan valores disponibles de telemetría; de lo contrario, la zona mantiene su patrón base."
+
+#: ui/workshop_lighting.gd
+msgid "Sequence follows the saved cue list for this zone."
+msgstr "La secuencia sigue la lista de pasos guardada para esta zona."
+
+#: ui/workshop_lighting.gd
+msgid "Sequence is available only when this profile has saved cues for the selected zone."
+msgstr "La secuencia solo está disponible si el perfil tiene pasos guardados para esta zona."
+
+#: ui/workshop_lighting.gd
+msgid "Orientation lock preserves the saved navigation cue colors and patterns. Turn it off to edit them."
+msgstr "El bloqueo conserva los colores y patrones de navegación guardados. Desactívalo para editarlos."
+
+#: ui/workshop_lighting.gd
+msgid "Unlock orientation cues to change their color or pattern."
+msgstr "Desbloquea las luces de orientación para cambiar su color o patrón."
+
+#: ui/workshop_lighting.gd
+msgid "Navigation colors and patterns are available when orientation lock is off."
+msgstr "Puedes editar los colores y patrones de navegación al desactivar el bloqueo."
+
+#: ui/workshop_lighting.gd
+msgid "Disabling an effect also removes that effect from saved sequence cues."
+msgstr "Desactivar un efecto también lo quita de los pasos guardados de la secuencia."
+
+#: ui/workshop_lighting.gd
+msgid "Effect"
+msgstr "Efecto"
+
+#: ui/workshop_lighting.gd
+msgid "Lifetime"
+msgstr "Duración"
+
+#: ui/workshop_lighting.gd
+msgid "%d configured zones · %d enabled"
+msgstr "%d zonas configuradas · %d activas"
