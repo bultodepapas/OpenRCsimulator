@@ -8,6 +8,8 @@ Resolution priority: **1080p primary; above-1080p resolutions (including 1440p, 
 
 Research records remain in [DT-00](research/desktop-delivery-investigations/DT-00/README.md), [DT-00-R1](research/desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md). The latter reports inspect Godot/macOS artifacts and synthetic checker behavior; they do not establish native Mac launch or performance.
 
+Apple Silicon execution detail: the [M1–M5 performance plan](plans/apple-silicon-performance.md) owns DT-MAC-00…09 and its -00-R1/-06a/-08a substeps, including the available M1 baseline, cross-generation capability policy, renderer/MetalFX experiments and sustained native 1080p qualification. It supplies evidence to the existing DT gates without closing them; [twenty investigations, 2026-10-24](research/desktop-delivery-investigations/DT-MAC-00-R1/README.md).
+
 Latest DT-11a evidence: [horizon construction](research/visual-quality-implementation/VQ-01c/loading/horizon-build/README.md). Five native runs preserve complete mesh output; construction median is 68.721→55.027 ms. This does not measure full Home/Fly loading or FPS. A combined native horizon/atmosphere regression test reports four texture shutdown errors on reference and candidate; isolation remains open. [Earlier shadow blur](research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md) and [grass-mask loading attempts](research/visual-quality-implementation/VQ-01c/loading/grass-masks/README.md) remain separate evidence. Current-package qualification, cold-load non-regression, loading budgets and production shutdown/soak remain open.
 
 ## Current delivery

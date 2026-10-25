@@ -16,6 +16,7 @@
 #include "thirdparty/amd-fsr3/ffx_api/vk/ffx_api_vk.h"
 
 #include <atomic>
+#include <cstring>
 #include <mutex>
 #include <string>
 #include <vector>
@@ -57,6 +58,16 @@ static std::atomic<bool> backend_failed{ false };
 static std::atomic<uint64_t> contexts_created{ 0 };
 static std::atomic<uint64_t> dispatches_succeeded{ 0 };
 static std::atomic<uint32_t> last_return_code{ FFX_API_RETURN_OK };
+
+static VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL fsr3_get_device_proc_addr(VkDevice p_device, const char *p_name) {
+	PFN_vkVoidFunction function = vkGetDeviceProcAddr(p_device, p_name);
+	// SDK 1.1.4 requests the KHR alias even when the device uses the promoted core
+	// Vulkan 1.1 command without enabling the legacy extension. The ABI is identical.
+	if (function == nullptr && std::strcmp(p_name, "vkGetBufferMemoryRequirements2KHR") == 0) {
+		function = vkGetDeviceProcAddr(p_device, "vkGetBufferMemoryRequirements2");
+	}
+	return function;
+}
 
 static void record_backend_failure(uint32_t p_return_code) {
 	last_return_code.store(p_return_code, std::memory_order_relaxed);
@@ -309,12 +320,20 @@ FSR3Context *FSR3Effect::create_context(Size2i p_internal_size, Size2i p_target_
 	backend.header.type = FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK;
 	backend.vkDevice = context->internal->device;
 	backend.vkPhysicalDevice = (VkPhysicalDevice)(uintptr_t)physical_device_handle;
-	backend.vkDeviceProcAddr = vkGetDeviceProcAddr;
+	backend.vkDeviceProcAddr = fsr3_get_device_proc_addr;
+	if (backend.vkDeviceProcAddr(backend.vkDevice, "vkGetBufferMemoryRequirements2KHR") == nullptr) {
+		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
+		WARN_PRINT("FSR3: required Vulkan memory-requirements command is unavailable.");
+		memdelete(context);
+		return nullptr;
+	}
 
 	ffxCreateContextDescUpscale &description = context->internal->description;
 	description.header.type = FFX_API_CREATE_CONTEXT_DESC_TYPE_UPSCALE;
 	description.header.pNext = &backend.header;
-	description.flags = FFX_UPSCALE_ENABLE_HIGH_DYNAMIC_RANGE | FFX_UPSCALE_ENABLE_DEPTH_INVERTED;
+	// Godot's luminance buffer contains average luminance, not the exposure multiplier
+	// required by FFX. Let FFX derive its normalization from the HDR input instead.
+	description.flags = FFX_UPSCALE_ENABLE_HIGH_DYNAMIC_RANGE | FFX_UPSCALE_ENABLE_DEPTH_INVERTED | FFX_UPSCALE_ENABLE_AUTO_EXPOSURE;
 	description.maxRenderSize = { uint32_t(p_internal_size.x), uint32_t(p_internal_size.y) };
 	description.maxUpscaleSize = { uint32_t(p_target_size.x), uint32_t(p_target_size.y) };
 	description.fpMessage = nullptr;
@@ -419,7 +438,6 @@ void FSR3Effect::upscale(const FSR3Context::Parameters &p_params) {
 	if (!make_api_resource(p_params.color, FFX_API_RESOURCE_STATE_COMPUTE_READ, false, payload->color) ||
 			!make_api_resource(p_params.depth, FFX_API_RESOURCE_STATE_COMPUTE_READ, false, payload->depth) ||
 			!make_api_resource(p_params.velocity, FFX_API_RESOURCE_STATE_COMPUTE_READ, false, payload->velocity) ||
-			!make_api_resource(p_params.exposure, FFX_API_RESOURCE_STATE_COMPUTE_READ, false, payload->exposure) ||
 			!make_api_resource(p_params.output, FFX_API_RESOURCE_STATE_UNORDERED_ACCESS, true, payload->output)) {
 		p_params.context->internal->failed.store(true, std::memory_order_release);
 		record_backend_failure(FFX_API_RETURN_ERROR_RUNTIME_ERROR);
@@ -447,7 +465,6 @@ void FSR3Effect::upscale(const FSR3Context::Parameters &p_params) {
 	add_read_resource(p_params.depth);
 	add_read_resource(p_params.velocity);
 	add_read_resource(p_params.reactive.is_null() ? RID() : p_params.context->internal->reactive_mask);
-	add_read_resource(p_params.exposure);
 	resources[resource_count].rid = p_params.output;
 	resources[resource_count].usage = RD::CALLBACK_RESOURCE_USAGE_STORAGE_IMAGE_READ_WRITE;
 	++resource_count;
@@ -486,8 +503,9 @@ void FSR3Effect::_dispatch_graph_callback(RenderingDeviceDriver *p_driver, RDD::
 	dispatch.frameTimeDelta = params.delta_time * 1000.0f;
 	dispatch.preExposure = 1.0f;
 	dispatch.reset = params.reset_accumulation;
-	dispatch.cameraNear = params.z_near;
-	dispatch.cameraFar = params.z_far;
+	// FFX names the depth=0 and depth=1 planes; reverse-Z swaps their distances.
+	dispatch.cameraNear = params.z_far;
+	dispatch.cameraFar = params.z_near;
 	dispatch.cameraFovAngleVertical = Math::deg_to_rad(params.fovy);
 	dispatch.viewSpaceToMetersFactor = 1.0f;
 

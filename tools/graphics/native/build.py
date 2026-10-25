@@ -62,27 +62,34 @@ def fetch(cache: Path, spec: tuple[str, str, str, str]) -> Path:
     return destination
 
 
-def prepare(cache: Path) -> tuple[Path, dict]:
+def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Path, dict]:
     cache.mkdir(parents=True, exist_ok=True)
     engine, amd, nvidia = (fetch(cache, spec) for spec in ARCHIVES)
-    patch = HERE / "engine.patch"
     # Only accept the pristine pinned tree or this exact patch already applied.
     common = ["git", "apply"]
     patch_env = dict(os.environ, GIT_CEILING_DIRECTORIES=str(engine.parent))
-    check = subprocess.run(common + ["--check", str(patch)], cwd=engine, env=patch_env, capture_output=True)
-    if check.returncode == 0:
-        subprocess.run(common + [str(patch)], cwd=engine, env=patch_env, check=True)
-    else:
-        reverse = subprocess.run(common + ["--reverse", "--check", str(patch)], cwd=engine, env=patch_env, capture_output=True)
-        if reverse.returncode:
-            raise RuntimeError("Engine sources do not match the pinned patch; use a new --cache directory.\n" + check.stderr.decode(errors="replace"))
+    for patch_name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch"):
+        patch = HERE / patch_name
+        check = subprocess.run(common + ["--check", str(patch)], cwd=engine, env=patch_env, capture_output=True)
+        if check.returncode == 0:
+            subprocess.run(common + [str(patch)], cwd=engine, env=patch_env, check=True)
+        else:
+            reverse = subprocess.run(common + ["--reverse", "--check", str(patch)], cwd=engine, env=patch_env, capture_output=True)
+            if reverse.returncode:
+                raise RuntimeError(f"Engine sources do not match {patch_name}; use a new --cache directory.\n" + check.stderr.decode(errors="replace"))
     for name in ("fsr3.h", "fsr3.cpp"):
         shutil.copy2(HERE / name, engine / "servers/rendering/renderer_rd/effects" / name)
     shutil.copy2(HERE / "fsr3_prepare.glsl", engine / "servers/rendering/renderer_rd/shaders/effects/fsr3_prepare.glsl")
     shutil.copytree(amd / "ffx-api/include/ffx_api", engine / "thirdparty/amd-fsr3/ffx_api", dirs_exist_ok=True)
     binaries = engine / "bin"
     binaries.mkdir(exist_ok=True)
-    runtime_files = [amd / "PrebuiltSignedDLL/amd_fidelityfx_vk.dll"]
+    from build_fidelityfx import apply_fidelityfx_patch, build_runtime
+    if prepare_only:
+        fidelityfx_receipt = {"built": False, "patch_sha256": apply_fidelityfx_patch(amd)}
+        runtime_files = []
+    else:
+        amd_runtime, fidelityfx_receipt = build_runtime(cache, min(jobs, 4))
+        runtime_files = [amd_runtime]
     runtime_files += sorted((nvidia / "bin/x64").glob("*.dll"))
     for source in runtime_files:
         shutil.copy2(source, binaries / source.name)
@@ -101,7 +108,8 @@ def prepare(cache: Path) -> tuple[Path, dict]:
         "fidelityfx_sdk": "1.1.4", "fsr_upscaler": "3.1.4", "streamline": "2.10.0",
         "platform": "windows", "graphics_api": "vulkan", "frame_generation_enabled": False,
         "sources": {name: digest for name, _, digest, _ in ARCHIVES},
-        "integration": {name: sha256(HERE / name) for name in ("engine.patch", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")},
+        "integration": {name: sha256(HERE / name) for name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")},
+        "fidelityfx_runtime_build": fidelityfx_receipt,
         "runtime": {source.name: sha256(source) for source in runtime_files},
     }
     return engine, receipt
@@ -118,7 +126,7 @@ def main() -> int:
         parser.error("This experimental runtime package currently targets Windows/Vulkan.")
     if args.jobs < 1:
         parser.error("--jobs must be positive")
-    engine, receipt = prepare(args.cache.resolve())
+    engine, receipt = prepare(args.cache.resolve(), args.jobs, args.prepare_only)
     if not args.prepare_only:
         import SCons
         if SCons.__version__ != "4.10.1":
@@ -133,7 +141,7 @@ def main() -> int:
         receipt["executable"] = str(executable)
         receipt["executable_sha256"] = sha256(executable)
         receipt["version"] = subprocess.check_output([str(executable), "--version"], text=True).strip()
-    receipt_path = engine / "bin" / f"openrc-{args.target}-build.json"
+    receipt_path = engine / "bin" / ("openrc-prepare.json" if args.prepare_only else f"openrc-{args.target}-build.json")
     receipt_path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
     print(f"Receipt: {receipt_path}")
     return 0

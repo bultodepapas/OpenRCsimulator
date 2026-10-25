@@ -334,12 +334,15 @@
  		memdelete(motion_vectors_store);
 --- a/servers/rendering/renderer_rd/effects/SCsub
 +++ b/servers/rendering/renderer_rd/effects/SCsub
-@@ -6,6 +6,8 @@
+@@ -6,6 +6,11 @@
  Import("env")
  
  env_effects = env.Clone()
 +if env["vulkan"]:
 +    env_effects.Prepend(CPPPATH=["#thirdparty/vulkan/include"])
++    if env["use_volk"]:
++        env_effects.AppendUnique(CPPDEFINES=["USE_VOLK"])
++        env_effects.Prepend(CPPPATH=["#thirdparty/volk"])
  
  # metal-cpp headers for Metal FX
  if env["metal"]:

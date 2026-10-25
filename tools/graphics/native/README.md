@@ -1,27 +1,40 @@
 # Native reconstruction experiment (VQ-07d)
 
 This opt-in Windows/Vulkan build connects NVIDIA's existing DLSS integration and
-AMD's signed FSR 3.1.4 upscaling runtime. It does not replace the production
+AMD's FSR 3.1.4 upscaler, built from the pinned SDK with Vulkan fixes. It does not replace the production
 Godot 4.7.2 pin. The upstream NVIDIA commit is based on Godot 4.8-dev; run it on
 a disposable application copy and qualify an engine upgrade separately before
 shipping it. The GPU used for local checks is not the product support boundary.
 
 ## Build
 
-Requires Python 3.11+, Git, Visual Studio with C++ tools and Windows SDK, and
-`python -m pip install scons==4.10.1`. From the repository root:
+Requires Python 3.11+, Git, Visual Studio 2026 with C++ tools and Windows SDK,
+CMake with the Visual Studio 18 2026 generator, LLVM's `llvm-readobj`, and
+`python -m pip install scons==4.10.1`. Tested with CMake 4.4.2 and LLVM 22.1.8.
+From the repository root:
 
 ```powershell
 python tools/graphics/native/build.py --target editor --jobs 4
 ```
 
-`--prepare-only` downloads and verifies dependencies, applies the checked patch,
-and copies SDK headers, runtime DLLs and licenses without compiling. `--cache`
+`--prepare-only` downloads and verifies dependencies, applies the checked patches,
+and stages headers, NVIDIA runtime DLLs and licenses without compiling. It does
+not build or install the AMD runtime and writes a separate preparation receipt.
+The full build first compiles the patched FidelityFX runtime. `--cache`
 selects a separate build directory. Downloads are pinned by SHA-256. A hash
 mismatch is an error; the tool never silently refreshes a pin. Build receipts
 record source, integration and runtime identities alongside the executable.
 The experiment disables Streamline's automatic plugin downloads so the supplied
 SDK runtime remains the tested dependency. Upgrade it as a separate change.
+
+The original signed AMD Vulkan DLL has a luma-history storage format mismatch
+([upstream issue 161](https://github.com/GPUOpen-LibrariesAndSDKs/FidelityFX-SDK/issues/161))
+and does not include the stencil aspect in imported depth/stencil barriers.
+`fidelityfx.patch` corrects both in source. The resulting DLL is a local, unsigned
+build, identified by its receipt; it is not the original AMD-signed binary.
+The helper uses the pinned SDK's shader tools and Godot's Vulkan headers, and
+creates an import library from the installed Vulkan loader's public exports.
+It records the loader, header, compiler and library identities.
 
 The default output is
 `.tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/`.
@@ -33,11 +46,56 @@ experiment builds without D3D12, WinRT and AccessKit; it is not a production
 accessibility or platform qualification.
 
 The existing [graphics launcher](../README.md) accepts `--godot <custom editor>`.
-For a disposable application copy, use the [debug bridge](../../debug/README.md)
-with `OPENRC_GODOT` pointing to that executable and `--app <copy>/app`. Import
-the copy first, retain its required sibling assets, and select Forward+ with the
-existing High launch mechanism. Do not open the production import cache with
-this experimental engine.
+This application also validates its aircraft presentation source hashes and engine
+identity. Merely launching the production tree with 4.8-dev fails that contract.
+`prepare_candidate.py` prepares a disposable pinned snapshot, changes its strict
+presentation pin to 4.8.0, and regenerates its companion registry through the
+existing customization generator. Its receipt records all changed identities;
+production aircraft data and the 4.7.2 pin stay intact. Import this copy with the
+custom editor before using the [debug bridge](../../debug/README.md):
+
+```powershell
+python tools/graphics/native/prepare_candidate.py
+$env:OPENRC_GODOT=(Resolve-Path '.tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/godot.windows.editor.x86_64.exe').Path
+python tools/godot/run_checked.py --label native-import --timeout 900 -- $env:OPENRC_GODOT --headless --path tmp/native-reconstruction-candidate/app --import
+$env:OPENRC_GRAPHICS_PROFILE='high'
+$env:OPENRC_RECONSTRUCTION='fsr3_quality' # or dlss_quality, fsr3_native, dlss_native
+python tools/debug/debugctl.py launch --app tmp/native-reconstruction-candidate/app --port 47941 --resolution 1920x1080 -- --quick-flight
+```
+
+Set `OPENRC_DEBUG_BRIDGE` to the returned port for subsequent bridge commands.
+Confirm the actual viewport dimensions (`window mode=fullscreen` on the 1080p
+test display); a requested window size may exclude desktop decorations. Keep
+captures and raw logs outside tracked paths. Do not open the production import
+cache with this experimental engine.
+
+After both providers are available, their bridge smoke scripts exercise mode
+changes, resizing and MSAA restoration:
+
+```powershell
+$env:OPENRC_DEBUG_BRIDGE='47941'
+python tools/debug/debugctl.py run tools/graphics/native/fsr3-smoke.txt --fail-on-error
+python tools/debug/debugctl.py run tools/graphics/native/dlss-smoke.txt --fail-on-error
+python tools/debug/debugctl.py stop
+```
+
+Inspect the native engine log separately for Vulkan validation messages. A bridge
+assertion or a successful SDK dispatch is not proof of valid image synchronization.
+
+## Local experimental package
+
+```powershell
+python tools/graphics/native/build.py --target template_release --jobs 4
+python tools/graphics/native/package.py
+```
+
+The packager verifies matching editor/template/runtime/source receipts and exports
+through the existing checked Godot runner. Output is
+`tmp/native-reconstruction-export/`, with the executable, PCK, runtime DLLs,
+licenses and hash receipts. `FSR3 Quality.cmd`, `DLSS Quality.cmd` and `Native.cmd`
+start a direct flight with separate local profiles. They do not use the player's
+production preferences. The standard `app/export.sh` still uses the production
+engine and must not be used to package this trial.
 
 ## Integration contract
 
@@ -57,6 +115,9 @@ this experimental engine.
   reverse-Z depth, decoded motion vectors, reactive mask, jitter and output
   resource dependencies. SDK imported image states are restored to the graph's
   declared states. Context destruction drains recorded and submitted GPU work.
+- FSR3 uses its internal automatic exposure for HDR normalization. Godot's
+  average-luminance texture is not an exposure multiplier and is not passed as
+  one. Reverse-Z plane ordering follows the FFX dispatch contract.
 - This adapter handles one view per context. Stereo/XR, temporal-history reset
   on arbitrary camera cuts, animated shader motion and transparency quality
   require separate work and evidence.
@@ -70,9 +131,12 @@ Other GPUs, platforms and drivers require their own rendered qualification.
 ## Source and license identities
 
 - [NVIDIA Godot fork](https://github.com/NVIDIA-RTX/godot/tree/135dff3887a3d2ccf45cafbd9bdffa7b718e1e76),
-  MIT engine source, with the local `engine.patch` and `fsr3.h/.cpp` adapter.
+  MIT engine source, with the local integration/validation patches and
+  `fsr3.h/.cpp` adapter.
 - [FidelityFX SDK 1.1.4](https://github.com/GPUOpen-LibrariesAndSDKs/FidelityFX-SDK/releases/tag/v1.1.4),
-  including FSR 3.1.4 and the signed `amd_fidelityfx_vk.dll`, MIT license.
+  including FSR 3.1.4, MIT license; the local runtime is rebuilt with the recorded
+  source patch. The SDK's unused frame interpolation dependencies do not enable
+  frame generation in the game.
 - [Streamline 2.10.0](https://github.com/NVIDIA-RTX/Streamline/releases/tag/v2.10.0),
   matching the fork's headers. NVIDIA component licenses are copied with the
   runtime; SDK/source availability is not a replacement for those terms.

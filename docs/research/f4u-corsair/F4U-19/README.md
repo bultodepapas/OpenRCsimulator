@@ -8,7 +8,7 @@ Reviewed 2026-10-24 for the [F4U plan](../../../F4U-PLAN.md). The author deliver
 | --- | --- | --- |
 | A, fuselage winding | g1.24, twelve liveries | **Accepted.** All twelve GLBs pass the preflight, including the skin-orientation rule (`fuselage_core` outward 0.831). In the default GLB, `fuselage_core` is the only mesh that differs from the shipped g1.13 (positions, normals, UVs and index sets compared). |
 | B, g2 detail tier | g2.0, Naval 308 only | **Accepted in substance; three corrections requested for g2.1** ([g2.1 request](../../../F4U-G2-1-REQUEST.md)). The rig, contacts and budget fit the contract and the frame cost is unchanged. The propeller paint and the main wheels are worse than g1. |
-| g2.1 request, F1–F4 and I1 | g2.1, Naval 308 only | **Accepted for integration.** F1–F4 are done and nothing else changed. One small follow-up remains: the new blade material lost its normal map. I1 (optional) is not met. [Review below](#g21-review-2026-10-24). |
+| g2.1 request, F1–F4 and I1 | g2.1, Naval 308 only | **Accepted and integrated (2026-10-24, [below](#integration-of-g21-2026-10-24)).** F1–F4 are done and nothing else changed. One small follow-up remains: the new blade material lost its normal map. I1 (optional) is not met. [Review below](#g21-review-2026-10-24). |
 
 ## g2.0 checks
 
@@ -77,6 +77,33 @@ Visual review, from the F4U-18 cameras beside g1.24 and g2.0:
 - The only new defect is the blade streaking.
 
 The fix for the author is small: keep the normal map on UV0 at scale 0.65 in `naval_blade_paint`, beside the base colour on UV1, and check the roughness.
+
+## Integration of g2.1 (2026-10-24)
+
+On the owner's decision ([DECISIONS](../../../DECISIONS.md), F4U-19), the simulator flies g2.1 with Naval 308 as its only paint. The owner is adapting all twelve g1 schemes to g2.
+
+| Step | Change |
+| --- | --- |
+| Freeze | `assets/source-deliveries/f4u-corsair-g2-1/`: 75 files, 55 MB. The texture folder and preview images (71 files) are omitted; their author hashes are in [source-manifest.json](../../../../assets/aircraft/f4u-corsair-250/source-manifest.json), visual revision `g2.1-cf4cdad638da`. g1.13 and g1.3 stay frozen as evidence |
+| Generators | `manifest.py` reads the author's `manifest.json`. `sample_gear.py` reproduces the 17 carriers and 101 poses (largest change 2 × 10⁻⁸). `compile_model.py` declares no liveries for a one-paint delivery; rests and the rig are unchanged within 1.1 × 10⁻⁷. `install_liveries.py` removed g1.13's four runtime livery GLBs. `liveries_path` is gone from the Corsair's entry in `model-bindings.json`. Physics, costing, propeller and ground effect are current without regeneration |
+| Shared outputs | `build_models.py` regenerated the six model manifests: the other five change only in the `model-bindings.json` hash. `build_descriptors.py` regenerated nine descriptors, each changing one manifest hash. `build_customization.py` changed hashes only |
+| Tests | `verify_f4u.gd` pins the g2.1 hash and counts (46 meshes, 57 surfaces, 337,664 triangles). With no shipped multi-paint aircraft, `test_aircraft_liveries.gd` runs the livery contract and on-use checks on a synthetic five-entry manifest and checks the Corsair as a one-paint aircraft; the full set returns with the g2 schemes. `test_ui_home_rebuild.gd` selects the Corsair's second scheme when one exists. `test_preflight_glb.py` takes its inside-out fixture from the frozen g1.13 and requires the shipped g2.1 to pass `f4u-g2` |
+
+Verification on Windows, Godot 4.7.2:
+
+| Check | Result |
+| --- | --- |
+| Generators in `--check` mode | `manifest.py`, `compile_model.py`, `install_liveries.py`, `derive_physics.py`, `costing_entry.py`, `build_models.py`, `build_descriptors.py`, `build_customization.py` (and its unit tests): all current. `test_preflight_glb.py` 17/17; large-file check passes |
+| `verify_f4u.gd` | 33/33 with no engine error: hash and counts, rests, controls, throws inside the clearance envelopes, wing fold, sampled gear, oleo, propeller diameter, exhaust, paint slots, contacts within 0.6 µm of the wheel bottoms, crash sections |
+| Suites touching the Corsair or the catalog | 38 of 40 pass through the checked runner ([list](checks/integration-suites.txt)), among them the catalog, liveries 42/42, customization 159, crash energy 225, economy, retracts, gear contacts, flaps, trace metadata 411 and Home. The other two also fail on a clean checkout of `343be4b0b`, the commit before the integration: `test_ui_aircraft_flow` ("Fly shows Preparing flight before building", with the Stik) and `test_retractable_gear_input` (Avanti; every check passes, then the process exits with 0xC0000374) |
+| Production flight scene, 1920×1080, OpenGL | Retracts, flaps and smoke: 15/15 ([checks](checks/integration-systems-check.json)). Wing fold with the throttle interlock: 8/8 ([checks](checks/integration-fold-check.json)) |
+| Full-scene frame A/B | Same commit, Corsair files at g1.13 (A) or g2.1 (B). Direct route, close-up camera, 1920×1080, VSync on, 45 s per run, alternated A-B-A-B. Median 16.63–16.67 ms against 16.66 ms; p95 17.09–17.16 against 17.09; p99 17.27–17.49 against 17.30–17.34. Both hold 60 fps, and each second run has one hitch near 34 ms ([runs](checks/integration-frames-ab.json)). Other tracks' headless tests ran during the A/B |
+
+Limits:
+
+- The A/B is VSync-bound and shows pacing, not GPU headroom; the isolated bench above measures that.
+- `research/f4u-corsair/F4U-16/livery_check.gd` expects five schemes and waits for the g2 liveries.
+- Twelve schemes will exceed the contract's limit of eight.
 
 ## What integrating g2 would change
 
