@@ -3,6 +3,8 @@
 extends RefCounted
 
 const ENVIRONMENT_KEY := "OPENRC_GRAPHICS_PROFILE"
+const CONTACT_SHADOW_SETTING := "rendering/lights_and_shadows/contact_shadow/enabled"
+const CONTACT_THICKNESS_SETTING := "rendering/lights_and_shadows/contact_shadow/surface_thickness"
 static var _configured := false
 static var _reported := false
 
@@ -35,6 +37,9 @@ static func configure() -> void:
 	# Four cascades share the atlas. Preserve distant field coverage while improving near detail.
 	RenderingServer.directional_shadow_atlas_set_size(8192, false)
 	RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_SOFT_MEDIUM)
+	# 4.8 reads this version-cached setting during rendering; Standard never opts in.
+	ProjectSettings.set_setting(CONTACT_SHADOW_SETTING, true)
+	ProjectSettings.set_setting(CONTACT_THICKNESS_SETTING, 0.001)
 	_configured = true
 
 static func apply_environment(env: Environment) -> void:
@@ -64,6 +69,10 @@ static func apply_sun(sun: DirectionalLight3D) -> void:
 	sun.directional_shadow_split_3 = 0.50
 	# Approximate solar angular diameter; stock PCSS provides contact-hardening penumbrae.
 	sun.light_angular_distance = 0.53
+	sun.shadow_contact_shadows_allow = true
+	# Native AA has no temporal denoising; the beta1 default adds visible stipple to walls.
+	# Keep the short contact term sharp; ordinary PCSS still supplies distant penumbrae.
+	sun.shadow_contact_shadows_blur = 0.0
 
 ## Only a flowing High world pays for dynamic radiance filtering. Frozen worlds
 ## retain QUALITY; realtime filtering uses Godot's required 256-pixel cubemap.

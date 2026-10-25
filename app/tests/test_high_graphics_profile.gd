@@ -16,6 +16,9 @@ func _initialize() -> void:
 	var saved_profile_env := OS.get_environment(PROFILE_ENV)
 	var saved_configured: bool = HighGraphics._configured
 	var saved_reported: bool = HighGraphics._reported
+	var saved_contact_shadow: bool = ProjectSettings.get_setting(HighGraphics.CONTACT_SHADOW_SETTING, false)
+	var saved_contact_thickness: float = ProjectSettings.get_setting(HighGraphics.CONTACT_THICKNESS_SETTING, 0.01)
+	ProjectSettings.set_setting(HighGraphics.CONTACT_SHADOW_SETTING, false)
 	var saved_atmosphere_state: Dictionary = Atmosphere.state.duplicate(true)
 	var saved_engine_shadows: bool = Atmosphere.engine_shadows
 	var saved_spec: Dictionary = Spec.ATMOSPHERE.duplicate(true)
@@ -28,6 +31,7 @@ func _initialize() -> void:
 	OS.unset_environment(PROFILE_ENV)
 	_check("no request selects standard", not HighGraphics.active() and HighGraphics.requested().is_empty())
 	_test_standard_integration()
+	_check("Standard never enables contact shadows", not ProjectSettings.get_setting(HighGraphics.CONTACT_SHADOW_SETTING))
 	_test_water_defaults(false)
 
 	OS.set_environment(PROFILE_ENV, "  ultra  ")
@@ -54,6 +58,8 @@ func _initialize() -> void:
 		OS.unset_environment(PROFILE_ENV)
 	HighGraphics._configured = saved_configured
 	HighGraphics._reported = saved_reported
+	ProjectSettings.set_setting(HighGraphics.CONTACT_SHADOW_SETTING, saved_contact_shadow)
+	ProjectSettings.set_setting(HighGraphics.CONTACT_THICKNESS_SETTING, saved_contact_thickness)
 	Atmosphere.state = saved_atmosphere_state
 	Atmosphere.engine_shadows = saved_engine_shadows
 	_check("atmosphere specification remains unchanged", Spec.ATMOSPHERE == saved_spec)
@@ -165,6 +171,8 @@ func _test_direct_fallback(label: String) -> void:
 
 func _test_high_native_values() -> void:
 	HighGraphics.configure()
+	_check("native High enables screen-space contact shadows", ProjectSettings.get_setting(HighGraphics.CONTACT_SHADOW_SETTING))
+	_check("native High bounds contact surface thickness", _near(ProjectSettings.get_setting(HighGraphics.CONTACT_THICKNESS_SETTING), 0.001))
 	_check("native high request latches renderer setup", HighGraphics._configured)
 	var env := Environment.new()
 	env.ssao_enabled = false
@@ -189,6 +197,7 @@ func _test_high_native_values() -> void:
 	_check("native high uses solar angular size", _near(sun.light_angular_distance, 0.53))
 	_check("native high preserves direct light colour", sun.light_color == Color(0.4, 0.5, 0.6))
 	_check("native high preserves direct light energy", _near(sun.light_energy, 1.7))
+	_check("High sun permits contact shadows without unfiltered stochastic blur", sun.shadow_contact_shadows_allow and _near(sun.shadow_contact_shadows_blur, 0.0))
 	sun.free()
 
 

@@ -56,6 +56,17 @@ static func prepare(owner_node: Node3D, effects: Node3D, shadow_source: MeshInst
 	chips.cast_shadow = effects.fragments.cast_shadow
 	viewport.add_child(chips)
 	_sample_mesh(viewport, effects.marks[0], Vector3(-2, 0, 3))
+	if not effects.mark_decals.is_empty():
+		var decal := effects.mark_decals[0].duplicate(0) as Decal
+		decal.visible = true
+		viewport.add_child(decal)
+		decal.position = Vector3(-2, 0, 3)
+		var receiver := MeshInstance3D.new()
+		receiver.mesh = PlaneMesh.new()
+		receiver.layers = decal.cull_mask
+		receiver.material_override = preload("res://render/ground.gd").grass_material({})
+		receiver.position = decal.position
+		viewport.add_child(receiver)
 	_sample_mesh(viewport, shadow_source, Vector3(2, 0, 3))
 	var scuff := MeshInstance3D.new()
 	scuff.mesh = QuadMesh.new()

@@ -15,7 +15,7 @@ const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const DEFAULT_AIRCRAFT := "jensen-das-ugly-stik-60"
 const P51_AIRCRAFT := "p51d-mustang-120"
 const DEFAULT_WIDTH := 1920
-const WIDTHS := [1280, 1920]
+const WIDTHS := [1280, 1920, 2560]
 const WARMUP_SECONDS := 10.0
 
 var _values: Dictionary = {}
@@ -28,7 +28,7 @@ func _initialize() -> void:
 		quit(2)
 		return
 	if parsed.help:
-		print("Usage: --script tools/graphics/capture.gd -- --out PATH [--width 1280|1920] [--aircraft default|p51d-mustang-120] [--hour 0..24] [--view all|aircraftground|pilot|pavilion|lake|flightline|windsock] [--seconds N]")
+		print("Usage: --script tools/graphics/capture.gd -- --out PATH [--width 1280|1920|2560] [--aircraft default|p51d-mustang-120] [--hour 0..24] [--view all|aircraftground|pilot|pavilion|lake|flightline|windsock] [--seconds N]")
 		quit()
 		return
 	_values = parsed.values
@@ -37,7 +37,7 @@ func _initialize() -> void:
 
 func _parse_args(raw: PackedStringArray) -> Dictionary:
 	var values := {}
-	var allowed := ["--out", "--width", "--aircraft", "--hour", "--view", "--seconds"]
+	var allowed := ["--out", "--width", "--aircraft", "--hour", "--view", "--seconds", "--contact-shadows"]
 	var i := 0
 	while i < raw.size():
 		var token: String = raw[i]
@@ -64,10 +64,10 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 	var width := DEFAULT_WIDTH
 	if values.has("--width"):
 		if not str(values["--width"]).is_valid_int():
-			return {ok = false, error = "--width must be 1280 or 1920"}
+			return {ok = false, error = "--width must be 1280, 1920 or 2560"}
 		width = int(values["--width"])
 	if not WIDTHS.has(width):
-		return {ok = false, error = "--width must be 1280 or 1920"}
+		return {ok = false, error = "--width must be 1280, 1920 or 2560"}
 	var aircraft := str(values.get("--aircraft", "default"))
 	if aircraft not in ["default", P51_AIRCRAFT]:
 		return {ok = false, error = "--aircraft must be default or %s" % P51_AIRCRAFT}
@@ -81,6 +81,9 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 		if not is_finite(hour) or hour < 0.0 or hour >= 24.0:
 			return {ok = false, error = "--hour must be in [0, 24)"}
 	var seconds := 0.0
+	var contact_shadows := str(values.get("--contact-shadows", "profile"))
+	if contact_shadows not in ["profile", "off", "on"]:
+		return {ok = false, error = "--contact-shadows must be profile, off or on"}
 	if values.has("--seconds"):
 		if not str(values["--seconds"]).is_valid_float():
 			return {ok = false, error = "--seconds must be greater than zero"}
@@ -90,7 +93,7 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 		if view == "all":
 			return {ok = false, error = "--seconds profiling requires one named --view"}
 	return {ok = true, help = false, values = {out = str(values["--out"]), width = width,
-		aircraft = aircraft, hour = float(values.get("--hour", "-1")), view = view, seconds = seconds}}
+		aircraft = aircraft, hour = float(values.get("--hour", "-1")), view = view, seconds = seconds, contact_shadows = contact_shadows}}
 
 
 func run() -> void:
@@ -139,6 +142,11 @@ func run() -> void:
 	var field_node := FieldRenderer.build(loaded.field, lighting)
 	world.add_child(field_node)
 	var sun := Atmosphere.create_sun(world, lighting)
+	if _values.contact_shadows != "profile":
+		if not HighGraphics.active():
+			_fail("contact-shadow A/B controls require native High")
+			return
+		ProjectSettings.set_setting(HighGraphics.CONTACT_SHADOW_SETTING, _values.contact_shadows == "on")
 	var camera := Camera3D.new()
 	camera.name = "ComparisonCamera"
 	camera.fov = 50.0
@@ -206,6 +214,11 @@ func run() -> void:
 			"sun_energy": Atmosphere.light_energy(lighting), "engine_shadows": Atmosphere.engine_shadows,
 			"sun_shadow_enabled": sun.shadow_enabled},
 		"environment": {"ssao_enabled": environment.ssao_enabled, "glow_enabled": environment.glow_enabled,
+			"contact_shadows": ProjectSettings.get_setting(HighGraphics.CONTACT_SHADOW_SETTING, false),
+			"contact_shadow_sun_allowed": sun.shadow_contact_shadows_allow,
+			"contact_shadow_sun_blur": sun.shadow_contact_shadows_blur,
+			"contact_shadow_surface_thickness": ProjectSettings.get_setting(HighGraphics.CONTACT_THICKNESS_SETTING),
+			"multi_bounce_occlusion_startup": ProjectSettings.get_setting("rendering/lights_and_shadows/multi_bounce_occlusion/enabled", false),
 			"reflected_light_source": environment.reflected_light_source, "tonemap_mode": environment.tonemap_mode,
 			"tonemap_exposure": environment.tonemap_exposure, "fog_enabled": environment.fog_enabled,
 			"fog_density": environment.fog_density}, "arguments": _values, "cases": case_reports,

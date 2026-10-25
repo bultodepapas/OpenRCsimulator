@@ -1,0 +1,6 @@
+python research/f4u-corsair/F4U-11/costing_entry.py --check
+Corsair costing entry current
+python research/crash-economics/build_catalog.py --check
+CR-28: offers, integer cents, baseline coverage, fleet IDs, examples and generated freshness OK
+python research/crash-economics/build_runtime.py --check
+runtime economics sidecar is current (10 aircraft routes)

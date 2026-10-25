@@ -317,8 +317,8 @@ class RuntimeEconomicsTests(unittest.TestCase):
         self.assertIn("2026-10-25", parts["horizontal_tail"]["notes"])
         self.assertIn("not a sold assembly", parts["horizontal_tail"]["notes"])
         self.assertEqual(sum(p["quantity"] * p["unit_minor"] for p in parts.values()
-                             if p["unit_minor"] is not None), 202488)
-        for key in ["engine_moki_s250", "ignition_module", "propeller", "gear_main_left",
+                             if p["unit_minor"] is not None), 711388)
+        for key in ["ignition_module", "propeller", "gear_main_left",
                     "gear_main_right", "gear_tail", "wing_left", "wing_right",
                     "fuselage_front", "fuselage_rear", "canopy_pilot"]:
             self.assertIsNone(parts[key]["unit_minor"], key)
@@ -333,7 +333,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
     def test_corsair_dated_offers_keep_package_sizes_and_old_prices(self) -> None:
         offers = {row["id"]: row for row in self.document["offers"]}
         current = [row for key, row in offers.items() if key.startswith("f4u_carf_")]
-        self.assertEqual(len(current), 29)
+        self.assertEqual(len(current), 30)
         self.assertTrue(all(row["observed_on"] == "2026-10-25" for row in current))
         self.assertEqual(offers["f4u_carf_953250_20261025"]["amount_minor"], 461000)
         self.assertEqual(offers["f4u_carf_790500_20261025"]["amount_minor"], 133000)
@@ -341,6 +341,43 @@ class RuntimeEconomicsTests(unittest.TestCase):
         self.assertIn("10 MGB", offers["f4u_carf_790199_20261025"]["package_description"])
         self.assertEqual(offers["savox-sa1230sgp"]["observed_on"], "2026-10-15")
         self.assertEqual(offers["savox-sa1230sgp"]["amount_minor"], 10339)
+
+    def test_corsair_rechecked_packages_do_not_charge_kit_or_ignition_twice(self) -> None:
+        dossier = self.dossiers["f4u-corsair-250"]
+        parts = {row["id"]: row for row in dossier["components"]}
+        engine = parts["engine_moki_s250"]
+        self.assertEqual(engine["unit_minor"], 461000)
+        self.assertEqual(engine["price_basis"], "price_proxy")
+        self.assertEqual(engine["physical_inventory_ids"], ["engine_main", "engine_mount_exhaust"])
+        self.assertEqual(parts["retract_air"]["unit_minor"], 47900)
+        self.assertEqual(parts["retract_air"]["price_basis"], "price_proxy")
+        self.assertIsNone(parts["ignition_module"]["unit_minor"])
+        self.assertIsNone(parts["engine_mount"]["unit_minor"])
+        selected = [row["offer_id"] for row in parts.values()]
+        self.assertEqual(selected.count("f4u_carf_953250_20261025"), 1)
+        # Kit and alternate carbon system are already bundled; never sum them with spares.
+        for candidate in ["795000", "790700", "790751", "790752"]:
+            self.assertNotIn(f"f4u_carf_{candidate}_20261025", selected)
+        self.assertEqual(self.context["offer_by_id"]["f4u_carf_795000_20261025"]["amount_minor"], 517000)
+        # The verified EUR size option is not a USD value or a reason to close the dossier.
+        self.assertIsNone(parts["propeller"]["unit_minor"])
+        self.assertFalse(dossier["complete"])
+
+    def test_corsair_servo_recheck_preserves_other_aircraft_and_historical_dates(self) -> None:
+        offers = self.context["offer_by_id"]
+        corsair = {row["id"]: row for row in self.dossiers["f4u-corsair-250"]["components"]}
+        for component, current, historical, cents in [
+            ("aileron_servo_left", "f4u_savox_sa1230sgp_servocity_20261025", "savox-sa1230sgp", 10339),
+            ("throttle_choke_servos", "f4u_hitec_hs311_horizon_20261025", "stik_servos_hitec_hs311_four", 1699),
+        ]:
+            self.assertEqual(corsair[component]["offer_id"], current)
+            self.assertEqual(offers[current]["observed_on"], "2026-10-25")
+            self.assertEqual(offers[historical]["observed_on"], "2026-10-15")
+            self.assertEqual(offers[current]["amount_minor"], cents)
+            self.assertEqual(offers[historical]["amount_minor"], cents)
+            for aircraft_id, dossier in self.dossiers.items():
+                if aircraft_id != "f4u-corsair-250":
+                    self.assertNotIn(current, {row["offer_id"] for row in dossier["components"]})
 
     def test_new_offer_date_requires_matching_dated_evidence(self) -> None:
         original = build_catalog.read

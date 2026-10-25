@@ -317,6 +317,9 @@ func _effects_are_clear(effects: Variant) -> bool:
 	for mark: MeshInstance3D in effects.marks:
 		if mark.visible:
 			return false
+	for decal: Decal in effects.mark_decals:
+		if decal.visible:
+			return false
 	return effects.fragments.multimesh.visible_instance_count == 0 and not effects.light.visible
 
 

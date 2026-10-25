@@ -3,11 +3,11 @@
   "currency": "USD",
   "price_date": "2026-10-25",
   "generated_from": {
-    "price_catalog_sha256": "25aac8ecd9055ff8e53591c739c7ff56c003a772d9c0faf473b0f261cd07a893",
-    "aircraft_costing_sha256": "3df78dbd24d8ed715aea9ba66ac7c3c6b8c0d6f1b8a14ec2ab1ffcd4ddda288f",
+    "price_catalog_sha256": "58002f750ed11cafb30a87add10cb103c9a9f3e3df2cb98b55ce0290cd6938aa",
+    "aircraft_costing_sha256": "e19fb44ee824dd7dac3196cef112a1a422afb0bdc7691988e45169e7a0664b9e",
     "aircraft_catalog_sha256": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
-    "price_research_fleet_sha256": "75ecf349736e4ee5e2655c14224e8b937ad045a476bed3ba7f24f57f8ab67032"
+    "price_research_fleet_sha256": "4785ec51182a5c6caa68a3cd91e597dddd4ee0a0638db68b668cd57a75ca865b"
   },
   "products": [
     {
@@ -285,6 +285,15 @@
       "brand": "CARF-Models",
       "sku": "791306",
       "name": "Corsair rudder",
+      "category": "airframe",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "carf_models_795000",
+      "brand": "CARF-Models",
+      "sku": "795000",
+      "name": "F4U-1D Corsair Navy Blue Folding Wings ARF",
       "category": "airframe",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
@@ -1133,9 +1142,9 @@
       "sold_package_quantity": 1,
       "package_description": "one pneumatic system set",
       "tax_shipping": "excluded_from_model; verify seller/destination charges",
-      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "source_url": "https://carf-models.com/en/products/pneumatik-set-corsair",
       "evidence_quality": "Manufacturer USD product/accessories page opened 2026-10-25; no destination quote or stock confirmation.",
-      "notes": "Observed 2026-10-25. Set-level reference, not a single valve or line price; exact installed tank and system coverage unconfirmed. Taxes, freight and destination charges not established; listed purchase price is not a post-crash repair bill."
+      "notes": "Observed 2026-10-25, double pass. Direct package description confirms air tank, lines, Festo fittings, electronic valves and quick disconnects. Complete-system proxy only, not a single valve/line price or proof of installed part identity. Retract legs and wheels are separate. Taxes, freight, destination charges and repair/inspection labor not established."
     },
     {
       "id": "f4u_carf_790700_20261025",
@@ -1187,7 +1196,7 @@
       "sold_package_quantity": 1,
       "package_description": "one three-blade hub",
       "tax_shipping": "excluded_from_model; verify seller/destination charges",
-      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "source_url": "https://carf-models.com/en/products/corsair-scale-propeller-complete-set/parent/301",
       "evidence_quality": "Manufacturer USD product/accessories page opened 2026-10-25; no destination quote or stock confirmation.",
       "notes": "Observed 2026-10-25. Already included in 790700; incompatible price reference for the authored wooden propeller. Taxes, freight and destination charges not established; listed purchase price is not a post-crash repair bill."
     },
@@ -1205,7 +1214,7 @@
       "sold_package_quantity": 1,
       "package_description": "one spinner dome",
       "tax_shipping": "excluded_from_model; verify seller/destination charges",
-      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "source_url": "https://carf-models.com/en/products/corsair-scale-propeller-complete-set/parent/301",
       "evidence_quality": "Manufacturer USD product/accessories page opened 2026-10-25; no destination quote or stock confirmation.",
       "notes": "Observed 2026-10-25. Already included in 790700; fit to authored hub/bolts unconfirmed. Taxes, freight and destination charges not established; listed purchase price is not a post-crash repair bill."
     },
@@ -1498,6 +1507,24 @@
       "notes": "Observed 2026-10-25. Separate from fin; excludes installed hardware, finish matching and labor. Spare airframe list prices are single-color references; CARF specifies 5% per additional color and requests an item/scheme-specific quote. Taxes, freight and destination charges not established; listed purchase price is not a post-crash repair bill."
     },
     {
+      "id": "f4u_carf_795000_20261025",
+      "product_id": "carf_models_795000",
+      "amount_minor": 517000,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "carf-models.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "manufacturer_listing_price",
+      "availability": "Add to Cart shown; stock quantity and delivery not stated",
+      "sold_package_quantity": 1,
+      "package_description": "one folding-wing Navy Blue ARF kit",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair-navy-blue-folding-wings-arf",
+      "evidence_quality": "Manufacturer USD product/accessories page opened 2026-10-25; no destination quote or stock confirmation.",
+      "notes": "Observed 2026-10-25, double pass. Exact kit variant, not a complete flying aircraft or repair bill. Includes installed cowl, stabilizer, hinged surfaces/doors, folding mechanics and hardware; never sum their spare prices with this kit. Engine, retract and radio installation remain to be completed. Two 790420 actuators are requested separately; mixed hydraulic/electric wording requires package confirmation. Tax, freight and lead time unresolved."
+    },
+    {
       "id": "f4u_carf_930170_20261025",
       "product_id": "carf_models_930170",
       "amount_minor": 13600,
@@ -1531,7 +1558,43 @@
       "tax_shipping": "excluded_from_model; verify seller/destination charges",
       "source_url": "https://carf-models.com/en/products/moki-s250",
       "evidence_quality": "Manufacturer USD product/accessories page opened 2026-10-25; no destination quote or stock confirmation.",
-      "notes": "Observed 2026-10-25. Engine purchase reference only. Mounted ring muffler and ignition are described by https://www.mokimotor.de/produkte/motoren/moki-250/ . Cast mount coverage is not explicit; no engine repair quote or separate ignition charge established. Taxes, freight and destination charges not established; listed purchase price is not a post-crash repair bill."
+      "notes": "Observed 2026-10-25, double pass. Whole-engine purchase reference. MOKI S250 manual page 1 confirms cast radial mount and ignition: https://sd04284ffd3b16aa8.jimcontent.com/download/version/1618326070/module/12022345498/name/MOKI%20S%20250%20english.pdf . Mounted ring muffler confirmed by https://www.mokimotor.de/produkte/motoren/moki-250/ . Standard package contents applied to CARF offer by same-model inference; CARF does not enumerate box contents. No second ignition-module charge; external switch, battery, firewall hardware and repair labor excluded. Taxes, freight and destination charges not established."
+    },
+    {
+      "id": "f4u_hitec_hs311_horizon_20261025",
+      "product_id": "hitec_rcd_hrc31311s",
+      "amount_minor": 1699,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In Stock displayed at observation",
+      "sold_package_quantity": 1,
+      "package_description": "one servo",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/hs-311-standard-analog-sport-servo/HRC31311S.html",
+      "evidence_quality": "Direct retailer listing rechecked 2026-10-25; price unchanged from historical proxy.",
+      "notes": "Observed 2026-10-25. New dated observation preserves the 2026-10-15 historical offer. Class value proxy only, not installed identity or compatibility qualification. Destination tax, freight, wiring, linkage and installation labor remain unresolved."
+    },
+    {
+      "id": "f4u_savox_sa1230sgp_servocity_20261025",
+      "product_id": "savox_sa1230sgp",
+      "amount_minor": 10339,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.servocity.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "Quantity control shown; explicit stock status not displayed",
+      "sold_package_quantity": 1,
+      "package_description": "one servo",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.servocity.com/sa1230sg-coreless-digital-servo/",
+      "evidence_quality": "Direct retailer listing rechecked 2026-10-25; price unchanged from historical proxy.",
+      "notes": "Observed 2026-10-25. New dated observation preserves the 2026-10-15 historical offer. Class value proxy only, not installed identity or compatibility qualification. Destination tax, freight, wiring, linkage and installation labor remain unresolved."
     },
     {
       "id": "jet_retracts_jp_hobby_er150_avanti",
@@ -6210,16 +6273,16 @@
         {
           "id": "engine_moki_s250",
           "quantity": 1,
-          "unit_minor": null,
+          "unit_minor": 461000,
           "low_unit_minor": null,
           "high_unit_minor": null,
           "physical_inventory_ids": [
             "engine_main",
             "engine_mount_exhaust"
           ],
-          "price_basis": "estimated",
-          "offer_id": null,
-          "notes": "Moki S250 five-cylinder radial with cast radial mount and collector ring. CARF 953250 is a dated $4,610 whole-engine candidate, including ignition/ring muffler per MOKI, but cast-mount coverage is unconfirmed. Keep unpriced until that package and this separate ignition inventory row are reconciled; never add another ignition price to the complete engine package. Engine contact opens inspection, not automatic replacement."
+          "price_basis": "price_proxy",
+          "offer_id": "f4u_carf_953250_20261025",
+          "notes": "CARF 953250 whole-engine purchase proxy, $4,610 observed 2026-10-25. MOKI S250 manual confirms cast radial mount and ignition; manufacturer listing confirms mounted ring muffler. Applying those standard package contents to CARF's same-model offer is an inference, not seller-confirmed box contents. Included ignition must not be charged again; module-only price, external switch and battery remain unresolved/separate. Firewall bolts and spacers are excluded. Engine contact opens inspection, not automatic replacement; this is no internal repair or labor quote."
         },
         {
           "id": "ignition_module",
@@ -6232,7 +6295,7 @@
           ],
           "price_basis": "estimated",
           "offer_id": null,
-          "notes": "Unpriced Moki ignition module, sensor lead and switch; supplied with the engine per the Moki manual, so a separate replacement price is not established."
+          "notes": "Unpriced module-only replacement, sensor lead and external switch. Module/sensor are included in the whole-engine package; never add another module charge to it. The external switch is NOT included per MOKI's installation instructions; its installed identity remains unknown."
         },
         {
           "id": "propeller",
@@ -6245,7 +6308,7 @@
           ],
           "price_basis": "estimated",
           "offer_id": null,
-          "notes": "Unpriced 30x18 three-blade wood propeller (SEP class, Moki S250 manual); no current USD quote verified."
+          "notes": "30x18 three-blade wood propeller (SEP class). Heilemann SEP 250 3-B observed 2026-10-25: EUR 157.35 base (29x18) + EUR 15.59 size option = EUR 172.94 for 30x18, undrilled bolt pattern; bored option adds EUR 15 (EUR 187.94). Listed without VAT; shipping/import charges unresolved. USD remains unpriced: no exchange rate or exact USD quote. Aeroscale's $112 family listing has no 30x18 variant; CARF's $692 carbon set is a different propeller."
         },
         {
           "id": "spinner_main",
@@ -6354,15 +6417,15 @@
         {
           "id": "retract_air",
           "quantity": 1,
-          "unit_minor": null,
+          "unit_minor": 47900,
           "low_unit_minor": null,
           "high_unit_minor": null,
           "physical_inventory_ids": [
             "retract_air"
           ],
-          "price_basis": "estimated",
-          "offer_id": null,
-          "notes": "Unpriced air tank, valves and lines for the Sierra retracts and Robart door cylinders."
+          "price_basis": "price_proxy",
+          "offer_id": "f4u_carf_790650_20261025",
+          "notes": "CARF 790650 complete pneumatic-system purchase proxy, $479 observed 2026-10-25: air tank, lines, Festo fittings, electronic valves and quick disconnects. Set-level replacement of the authored air installation, not a single damaged valve/line; installed part identities and labor remain unresolved. Does not include retract legs or wheels. Contact only requests inspection."
         },
         {
           "id": "aileron_servo_left",
@@ -6374,8 +6437,8 @@
             "servo_aileron_left"
           ],
           "price_basis": "price_proxy",
-          "offer_id": "savox-sa1230sgp",
-          "notes": "Left aileron servo. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, observed 2026-10-15) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
+          "offer_id": "f4u_savox_sa1230sgp_servocity_20261025",
+          "notes": "Left aileron servo. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, rechecked 2026-10-25) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
         },
         {
           "id": "aileron_servo_right",
@@ -6387,8 +6450,8 @@
             "servo_aileron_right"
           ],
           "price_basis": "price_proxy",
-          "offer_id": "savox-sa1230sgp",
-          "notes": "Right aileron servo. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, observed 2026-10-15) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
+          "offer_id": "f4u_savox_sa1230sgp_servocity_20261025",
+          "notes": "Right aileron servo. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, rechecked 2026-10-25) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
         },
         {
           "id": "flap_servos_left",
@@ -6400,8 +6463,8 @@
             "servo_flap_left"
           ],
           "price_basis": "price_proxy",
-          "offer_id": "savox-sa1230sgp",
-          "notes": "Left inner and outer flap servos. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, observed 2026-10-15) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
+          "offer_id": "f4u_savox_sa1230sgp_servocity_20261025",
+          "notes": "Left inner and outer flap servos. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, rechecked 2026-10-25) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
         },
         {
           "id": "flap_servos_right",
@@ -6413,8 +6476,8 @@
             "servo_flap_right"
           ],
           "price_basis": "price_proxy",
-          "offer_id": "savox-sa1230sgp",
-          "notes": "Right inner and outer flap servos. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, observed 2026-10-15) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
+          "offer_id": "f4u_savox_sa1230sgp_servocity_20261025",
+          "notes": "Right inner and outer flap servos. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, rechecked 2026-10-25) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
         },
         {
           "id": "elevator_servos",
@@ -6426,8 +6489,8 @@
             "servo_elevator"
           ],
           "price_basis": "price_proxy",
-          "offer_id": "savox-sa1230sgp",
-          "notes": "Two elevator servos. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, observed 2026-10-15) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
+          "offer_id": "f4u_savox_sa1230sgp_servocity_20261025",
+          "notes": "Two elevator servos. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, rechecked 2026-10-25) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
         },
         {
           "id": "rudder_servo",
@@ -6439,8 +6502,8 @@
             "servo_rudder"
           ],
           "price_basis": "price_proxy",
-          "offer_id": "savox-sa1230sgp",
-          "notes": "Rudder servo. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, observed 2026-10-15) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
+          "offer_id": "f4u_savox_sa1230sgp_servocity_20261025",
+          "notes": "Rudder servo. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, rechecked 2026-10-25) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
         },
         {
           "id": "tail_steering_servo",
@@ -6452,8 +6515,8 @@
             "servo_tail_steering"
           ],
           "price_basis": "price_proxy",
-          "offer_id": "savox-sa1230sgp",
-          "notes": "Tail-wheel steering servo. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, observed 2026-10-15) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
+          "offer_id": "f4u_savox_sa1230sgp_servocity_20261025",
+          "notes": "Tail-wheel steering servo. Separated by control installation for local crash inspection; the two flaps on each side remain one physical inventory group. Savox SA-1230SG+ at ServoCity ($103.39, rechecked 2026-10-25) remains a class value proxy, not the installed identity, a fit qualification or a verified current stock count. Cables, linkage and wiring remain unpriced."
         },
         {
           "id": "throttle_choke_servos",
@@ -6465,8 +6528,8 @@
             "servo_throttle_choke"
           ],
           "price_basis": "price_proxy",
-          "offer_id": "stik_servos_hitec_hs311_four",
-          "notes": "Two small throttle/choke servos; Hitec HS-311 ($16.99 each at Tower) is the ordinary-servo value proxy the P-51 uses. Linkage unpriced; no installed model claimed."
+          "offer_id": "f4u_hitec_hs311_horizon_20261025",
+          "notes": "Two small throttle/choke servos; Hitec HS-311 ($16.99 each at Horizon, rechecked 2026-10-25) is an ordinary-servo value proxy. Linkage unpriced; no installed model or fit claimed."
         },
         {
           "id": "gear_main_left",
@@ -6518,7 +6581,7 @@
           ],
           "price_basis": "estimated",
           "offer_id": null,
-          "notes": "Unpriced CARF composite left wing panel with flaps and aileron; no spare-part price verified."
+          "notes": "Unpriced installed left wing group. CARF 791216 folding-wing spare is $754 single-color; control-surface, hardware and paint coverage remains unresolved."
         },
         {
           "id": "wing_right",
@@ -6531,7 +6594,7 @@
           ],
           "price_basis": "estimated",
           "offer_id": null,
-          "notes": "Unpriced CARF composite right wing panel with flaps and aileron; no spare-part price verified."
+          "notes": "Unpriced installed right wing group. CARF 791215 folding-wing spare is $754 single-color; control-surface, hardware and paint coverage remains unresolved."
         },
         {
           "id": "wing_joiner",
@@ -6647,12 +6710,11 @@
         }
       ],
       "missing": [
-        "The exact folding-wing ARF has a EUR purchase reference, not a complete-build USD price; no currency conversion or kit-plus-parts double counting. Single-color spare prices exclude the scheme-specific quote (CARF adds 5% per additional color), inspection, hardware, labor, tax and freight.",
-        "Moki S250 candidate 953250 costs $4,610 and includes ignition/ring muffler; cast mount coverage and the separate ignition row still require package reconciliation. No post-strike internal repair or labor price is established.",
+        "The exact Navy Blue folding-wing ARF 795000 has a $5,170 USD purchase reference, not a complete-build price; keep it unattached to avoid kit-plus-spares double counting. Single-color spare prices exclude the scheme-specific quote (CARF adds 5% per additional color), inspection, hardware, labor, tax and freight.",
+        "Moki S250 $4,610 whole-engine proxy uses manufacturer-documented standard mount, ring muffler and ignition contents; CARF-specific box confirmation, module-only repair, external switch, post-strike inspection and labor remain unresolved. Never add another ignition charge to the package. Pneumatic $479 proxy is a complete-system purchase, not a single valve repair.",
         "Main retract and wheel prices are set/pair offers, not per-leg prices; tail gear/door contents and steering linkage remain unresolved. Folding-wing control-surface inclusion, full-fuselage overlap, and canopy/pilot scope prevent automatic attachment of their prices.",
-        "Exact selected SEP-class 30x18 three-blade wood prop price remains unknown. The priced 32-inch CARF carbon set cannot replace its identity. Batteries, radio, fuel system and other unresolved parts remain unpriced; all twelve servo positions retain class value proxies.",
-        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: f4u_carf_953250_20261025, f4u_carf_790500_20261025, f4u_carf_790550_20261025, f4u_carf_790600_20261025, f4u_carf_790650_20261025, f4u_carf_790199_20261025, f4u_carf_930170_20261025, f4u_carf_791100_20261025, f4u_carf_791101_20261025, f4u_carf_790105_20261025, f4u_carf_790104_20261025, f4u_carf_790810_20261025, f4u_carf_790805_20261025, f4u_carf_791103_20261025, f4u_carf_791212_20261025, f4u_carf_791215_20261025, f4u_carf_791216_20261025, f4u_carf_791220_20261025, f4u_carf_790700_20261025, f4u_carf_790750_20261025, f4u_carf_790751_20261025, f4u_carf_790752_20261025.",
-        "No replacement price for economic component: engine_moki_s250.",
+        "Exact SEP-class 30x18 price verified in EUR only: 172.94 undrilled or 187.94 bored, before shipping/import charges. USD price remains null without a sourced conversion. The priced 32-inch CARF carbon set cannot replace its identity. Batteries, radio, fuel system and other unresolved parts remain unpriced; all twelve servo positions retain class value proxies.",
+        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: f4u_carf_790500_20261025, f4u_carf_790550_20261025, f4u_carf_790600_20261025, f4u_carf_790199_20261025, f4u_carf_930170_20261025, f4u_carf_791100_20261025, f4u_carf_791101_20261025, f4u_carf_790105_20261025, f4u_carf_790104_20261025, f4u_carf_790810_20261025, f4u_carf_790805_20261025, f4u_carf_791103_20261025, f4u_carf_791212_20261025, f4u_carf_791215_20261025, f4u_carf_791216_20261025, f4u_carf_791220_20261025, f4u_carf_790700_20261025, f4u_carf_790750_20261025, f4u_carf_790751_20261025, f4u_carf_790752_20261025, f4u_carf_795000_20261025.",
         "No replacement price for economic component: ignition_module.",
         "No replacement price for economic component: propeller.",
         "No replacement price for economic component: spinner_main.",
@@ -6662,7 +6724,6 @@
         "No replacement price for economic component: ignition_battery.",
         "No replacement price for economic component: receiver_batteries.",
         "No replacement price for economic component: receiver_radio.",
-        "No replacement price for economic component: retract_air.",
         "No replacement price for economic component: gear_main_left.",
         "No replacement price for economic component: gear_main_right.",
         "No replacement price for economic component: gear_tail.",

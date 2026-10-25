@@ -22,5 +22,6 @@ func _initialize() -> void:
 	check("exact matches are not capped at 100", Search.matching_indices("blue", large).size() == 150)
 	check("fuzzy matches are not capped at 100", Search.matching_indices("airshw blue", large).size() == 150)
 	check("short exact queries survive engine score filtering", Search.matching_indices("p", titles).has(3))
+	check("exact result precedes an earlier fuzzy-only row", Search.matching_indices("airshow blue", PackedStringArray(["Blue airshow", "Airshow blue"])) == [1, 0])
 	print("Workshop search: %d failures" % failures)
 	quit(1 if failures else 0)

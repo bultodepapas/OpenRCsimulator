@@ -21,8 +21,8 @@ The catalog crash suites (`test_crash_wreck`, `test_crash_integration`, `test_cr
 
 - Every inventory row is bound to one of 33 lines; the virtual balancing mass is excluded automatically.
 - Each of the 23 hull probes, three gear contacts and the propeller strike maps to the components it inspects (a cowl-bottom hit inspects cowl and engine).
-- Parts-only references: ten flight-control servo positions with the SA-1230SG+ proxy, two throttle/choke servos with the HS-311 proxy ($1,067.88 together), a single-color cowl ($262), horizontal surfaces ($454) and vertical surfaces ($241). The $2,024.88 reference subtotal is not the aircraft value or an accident bill.
-- F4U-11-R2 adds 29 dated CARF USD observations. Engine, wing, fuselage and gear package references remain unattached where the installed coverage is unresolved. The Moki S250 $4,610 purchase quote is recorded, but is not a repair quote. Each observation retains its own date; older servo observations were not refreshed by this research.
+- Parts-only references: ten flight-control servo positions with the SA-1230SG+ proxy, two throttle/choke servos with the HS-311 proxy ($1,067.88 together), a single-color cowl ($262), horizontal surfaces ($454) and vertical surfaces ($241), plus whole-engine ($4,610) and air-system ($479) proxies. The $7,113.88 reference subtotal is not the aircraft value or an accident bill.
+- F4U-11-R3 retains 30 dated CARF USD observations and two newly dated servo rechecks. The $5,170 exact kit, wing, fuselage and gear offers remain unattached where scope overlaps or installed coverage is unresolved. Engine/air package references require explicit replacement decisions. Historical servo dates and other aircraft bindings are preserved.
 
 The dossier is therefore incomplete, as the P-51's and the Ventage Jet's are.
 
@@ -50,6 +50,8 @@ Flight evidence retains the [original recording](checks/baseline.orfl) and its [
 Limits: these are sampled supports in neutral control pose with wings spread, not triangle collision for every attitude. The lowered tailhook and folded wings do not acquire dynamic crash geometry. The gull-wing support measurement excludes the propeller; it does not claim the root must strike first in a level impact. The airborne replay protects flight behavior on this tape; it neither validates crash realism nor replaces the measured crossing tests.
 
 ## F4U-11-R2: cost and damage matrices (2026-10-25)
+
+This section records the R2 acceptance state; R3 below supersedes its engine package and price-research gaps. Contact and inspection behavior is unchanged.
 
 Two research agents independently investigated [current purchase prices and package boundaries](cost-research-2026-10-25.md) and [inspection/disposition evidence](damage-research-2026-10-25.md). Primary CARF and MOKI pages establish product identities; manufacturer/model-association guidance informs inspection prompts. Full-scale composite guidance is an analogy only. No source established calibrated Corsair fracture thresholds, crash survival probabilities or post-impact labor costs.
 
@@ -85,3 +87,13 @@ Amounts exclude unresolved finish, hardware, labor, tax and freight. Missing pri
 **Corrected defect:** the old Corsair `propeller_inspection_ids` included `propeller`, so `_mark_propeller()` changed `replace` back to `inspect`. The generator excludes that self-reference; observation and checkpoint reconstruction also guard against it. A disposable copy with the old observation loop fails the two new self-reference/recovery checks; the corrected code passes. Duplicate accepted events still cannot charge twice.
 
 **Evidence:** [retained checks and source identities](checks/cost-r2/identities.json) record 64 Python tests and 431 Godot checks: inspection 79, checkpoint 65, catalog 90, report 119, production integration 78. All three economics generators pass `--check`. The production regression confirms identical healthy float64 state with economics enabled/disabled and frame-cadence-independent reports. This is headless software evidence, not physical damage validation, a rendered 1080p qualification or a full repository-suite run. No physics data or solver law changed.
+
+## F4U-11-R3: double price pass (2026-10-25)
+
+The [price research](cost-research-2026-10-25.md#double-pass-findings-f4u-11-r3) records two specialist passes and independent review of exact variants, package coverage, currencies and dated availability. All 29 previous CARF amounts matched. New observations add the exact Navy Blue folding ARF at $5,170 and refresh the unchanged Savox/Hitec proxy prices, preserving historical observations.
+
+The MOKI manual resolves standard cast-mount inclusion; engine, ring muffler and ignition are covered by one $4,610 purchase proxy. Applying manufacturer package contents to CARF remains an explicit same-model inference. The separate module/switch row stays unpriced: no duplicate included-ignition charge and no invented switch or module-only repair price. The $479 pneumatic completion set explicitly includes the tank and now prices whole-system replacement only. Known parts references total **$7,113.88**, excluding the kit; the dossier remains incomplete.
+
+The SEP 30×18 size option costs **€172.94 undrilled / €187.94 bored** before delivery/import charges. The €157.35 base belongs to 29×18. This EUR evidence is retained in research; USD runtime pricing remains null. Neither Aeroscale's $112 family listing without a 30×18 variant nor CARF's $692 carbon alternative substitutes for it.
+
+**Verification:** [retained identities and checks](checks/cost-r3/identities.json): 66 Python tests, 83 Godot inspection checks and 90 catalog checks pass; all three generators pass `--check`. New scenarios exercise explicit engine/air replacement at $5,089, no second ignition charge, unknown remaining totals and duplicate-receipt idempotence. Contact/propeller-strike scenarios retain zero known charges before inspection. [The audit comparison](checks/cost-r3/comparison.md) records three added offers, three source-URL changes and three allocation changes; 121 offers are unchanged. No physics source, simulation law or economic runtime logic changed. These focused headless checks do not constitute a full repository-suite run or physical validation.

@@ -4,6 +4,7 @@ extends "res://render/lake/vendor/smart_planar_reflector/planar_reflector.gd"
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const ENVIRONMENT_KEY := "OPENRC_LAKE_REFLECTIONS"
 const BASIN_LAYER := 4
+const MARK_RECEIVER_LAYER := preload("res://render/ground.gd").MARK_RECEIVER_LAYER
 ## Live fields owned by Atmosphere/World. Sky resources remain shared; display
 ## exposure and tonemapping belong only to the final main-camera image.
 const LIVE_ENVIRONMENT_PROPERTIES := [
@@ -86,7 +87,8 @@ func _process(_delta: float) -> void:
 	resolution_scale = minf(0.5, minf(1280.0 / maxf(main_size.x, 1.0), 720.0 / maxf(main_size.y, 1.0)))
 	update_viewport()
 	# Exclude the lake receiver and the basin's dedicated layer, not the aircraft.
-	reflect_camera.cull_mask = camera.cull_mask & ~(2 | BASIN_LAYER | 8)
+	# Terrain retains layer 1; the basin must not re-enter through its decal receiver bit.
+	reflect_camera.cull_mask = camera.cull_mask & ~(2 | BASIN_LAYER | 8 | MARK_RECEIVER_LAYER)
 	_sync_environment(camera.environment if camera.environment != null else get_world_3d().environment)
 	reflect_camera.attributes = null # Do not expose the captured radiance a second time.
 	reflect_camera.keep_aspect = camera.keep_aspect

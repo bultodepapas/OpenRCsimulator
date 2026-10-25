@@ -1,0 +1,20 @@
+[
+  {
+    "url": "https://carf-models.com/en/products/pneumatik-set-corsair",
+    "status": 200,
+    "sha256": "370f1f4992634c8a2cc6fa543d5404d0fea2d0cdd5cd2f5c615e13999ec0e1f7",
+    "observed_on": "2026-10-25",
+    "currency": "USD",
+    "sku": "790650",
+    "amount_minor": 47900
+  },
+  {
+    "url": "https://carf-models.com/en/products/f4u-1d-corsair-navy-blue-folding-wings-arf",
+    "status": 200,
+    "sha256": "104fdcd328e426a97d005ffc545ee2eba9e5b5833e66bd1d2fd0236eb348ab8d",
+    "observed_on": "2026-10-25",
+    "currency": "USD",
+    "sku": "795000",
+    "amount_minor": 517000
+  }
+]

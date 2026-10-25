@@ -396,9 +396,11 @@ func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = fals
 	_mark_index += 1
 	var height := 0.0
 	var normal := Vector3.UP
+	var sample_valid := not ground_sampler.is_valid()
 	if ground_sampler.is_valid():
 		var sample: PackedFloat64Array = ground_sampler.call(point)
 		if sample.size() == 3 and is_finite(sample[0]) and is_finite(sample[1]) and is_finite(sample[2]):
+			sample_valid = true
 			height = sample[0]
 			normal = Vector3(-sample[2], 1.0, sample[1]).normalized()
 	var along := Vector3(direction.x, 0, direction.z)
@@ -417,8 +419,8 @@ func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = fals
 		decal.position = Vector3(point.x, height, point.z)
 		decal.size = Vector3(2 * item.scale.x, 0.5, 2 * item.scale.z)
 		decal.modulate = (item.material_override as StandardMaterial3D).albedo_color
-		decal.visible = true
-		item.visible = false
+		decal.visible = sample_valid
+		item.visible = not sample_valid
 	return item
 
 ## E3d1: a soft hull contact that continues the flight: a scuff along the slide and a small puff thrown along it,

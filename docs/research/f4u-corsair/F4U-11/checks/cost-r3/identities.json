@@ -1,0 +1,48 @@
+{
+  "step": "F4U-11-R3",
+  "date": "2026-10-25",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "python_tests": 66,
+  "godot_checks": {
+    "catalog": 90,
+    "inspection": 83
+  },
+  "carf_price_crosscheck": {
+    "matched": 29,
+    "mismatched": 0
+  },
+  "other_aircraft_offer_uses_unchanged": true,
+  "physics_source_unchanged_from_R2": true,
+  "source_sha256": {
+    "app/data/economy/catalog.json": "fe5a24060233dbc749acc096e73283cec4f65359e90786829cc0d039cedd695f",
+    "app/data/aircraft/f4u_corsair_250.json": "e27ba35766bad2e32f7c10b0d3e80d49331af2c557957a85959dca47ebad3d43",
+    "app/tests/test_economy_inspection.gd": "5fa7370ca7009cfd1af134ef1745b0329797992906e774a7b4ae387c115f0248",
+    "research/f4u-corsair/F4U-11/costing_entry.py": "2c464a3cb77cc446c77c5fc7517132c15d2801597bf1722b1621a6d66dc39878",
+    "research/crash-economics/price-research-fleet.json": "4785ec51182a5c6caa68a3cd91e597dddd4ee0a0638db68b668cd57a75ca865b",
+    "research/crash-economics/aircraft-costing.json": "e19fb44ee824dd7dac3196cef112a1a422afb0bdc7691988e45169e7a0664b9e",
+    "research/crash-economics/catalog.json": "58002f750ed11cafb30a87add10cb103c9a9f3e3df2cb98b55ce0290cd6938aa",
+    "research/crash-economics/worked-examples.json": "8f129663611f9ef4e6e5cee50f129a87b9d67000305eef87ba625dcacb9e885e",
+    "research/crash-economics/test_runtime_data.py": "41222f6fe11a28d9f3d7cedd545db753dc958690c7de2e18a69df9257a31ab99"
+  },
+  "evidence_sha256": {
+    "after.json": "2a764b21383a1b79d18f7458413719b33952c0294ac93eb8d5603b55e1c6e879",
+    "before.json": "2a20e6b18216dd688f8fd6a0a9e5bfb7fe607229a7ba54e9bb6c7f1ec46d4265",
+    "carf-list-comparison.json": "8ddb75e17ac6154336dc29f25382c564db448c95ec79cb8e714040897a642414",
+    "catalog.json": "9cf338144bc802fcb2c8009f16e04b92daff7d7eba95903049e8beb2635aac54",
+    "catalog.log": "e3f71708a90e5b0fb7e27fac357cd441825b0cde44b976feff832864b885830e",
+    "comparison.json": "3c8aee103fb08a576cb99424c58e492d826cc2e7b07466ea5a136e0803ae10c7",
+    "comparison.md": "7f6dfed1eaa3c878dd60604d96695c9f81b1ff09063a9f9ae68a2775ef984438",
+    "generators.log": "fb3411f33e6aa27f0a90c79857c165940a61cb2b9bdbb2ced77211f42187b06d",
+    "inspection.json": "8527470253b6b6c3c08d06a3aed00e6b0f6ee8defdbcf27c16d43b95f43d0474",
+    "inspection.log": "07b2c6245eb964018afcee7f0ba71390e0cf994bd86a2293abfcf6d7f3f5a017",
+    "live-page-checks.json": "f88d28bdfd2bf3c356d02d2a4c952d1a378fdd3c18abd64606cc05718bbc1290",
+    "propeller-selector.json": "622eb811aceef389deb428d106647e4a080651cf27e272dd1516e7edf8f054a5",
+    "python-tests.log": "1f32c39819796cc2aa605536e1042e5a347b2caa3f1e95f16c24be5b13f7703b"
+  },
+  "limits": [
+    "Focused headless tests; no full repository suite or physical validation",
+    "EUR propeller observations retained in research; no exchange rate invented",
+    "Engine package contents applied to CARF by same-model inference from manufacturer manual",
+    "Known subtotal is partial purchase references, not complete aircraft value or accident repair cost"
+  ]
+}

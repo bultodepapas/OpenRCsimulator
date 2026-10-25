@@ -126,7 +126,7 @@ it verifies the editor-binary path, not packaged or macOS application relaunch.
 
 `capture.gd` uses production builders in a fixed 4× MSAA SubViewport. Run with a
 native renderer and `-- --out=<new directory> --aircraft=p51d-mustang-120`.
-`--width=1280|1920`, `--hour=<0..24)` and `--view=all|aircraftground|pilot|pavilion|lake|flightline|windsock`
+`--width=1280|1920|2560`, `--hour=<0..24)` and `--view=all|aircraftground|pilot|pavilion|lake|flightline|windsock`
 select static comparisons. The `pavilion` case includes the clubhouse and pit area.
 `--seconds=<duration>` requires one view and measures after 10 s warmup without
 image readback. These offscreen static timings do not qualify flight performance.
@@ -134,6 +134,15 @@ Use the existing native flight collector separately, without concurrent tests,
 exports or captures. `restart_probe.gd` requires an editor binary; release templates
 ignore its `--script` route. It is not a packaged-release probe. Packaged restart
 must be exercised through the actual menu.
+
+For GDU-11 contact-shadow comparisons, `capture.gd --contact-shadows=off|on`
+overrides only that runtime setting after High configuration; the default `profile`
+uses production behavior. Overrides require native High. Reports retain the actual
+contact-shadow setting, sun permission and startup multi-bounce setting.
+`contact_shadow_probe.gd --out=<new absolute directory>` requires native High and
+checks actual 1080p contact contribution, preservation of an offscreen caster's
+ordinary shadow, and unchanged unoccluded sunlight. Its PNGs and JSON verdict are
+fixture evidence, not flight performance or broad screen-edge acceptance.
 
 `flow_probe.gd` diagnoses moving moon/stars and twilight at a fixed 60 Hz clock,
 20× world time, 1920×1080 and 4× MSAA. Run with an editor binary and a native

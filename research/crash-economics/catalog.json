@@ -5,7 +5,7 @@
   "generated_by": "research/crash-economics/build_catalog.py",
   "source_hashes": {
     "price-research-components.json": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
-    "price-research-fleet.json": "75ecf349736e4ee5e2655c14224e8b937ad045a476bed3ba7f24f57f8ab67032"
+    "price-research-fleet.json": "4785ec51182a5c6caa68a3cd91e597dddd4ee0a0638db68b668cd57a75ca865b"
   },
   "policy": {
     "currency": "USD",
@@ -293,6 +293,15 @@
       "brand": "CARF-Models",
       "sku": "791306",
       "name": "Corsair rudder",
+      "category": "airframe",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "carf_models_795000",
+      "brand": "CARF-Models",
+      "sku": "795000",
+      "name": "F4U-1D Corsair Navy Blue Folding Wings ARF",
       "category": "airframe",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
@@ -1166,10 +1175,10 @@
       "package_description": "one pneumatic system set",
       "reference_installation_quantity": null,
       "tax_shipping": "excluded_from_model; verify seller/destination charges",
-      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "source_url": "https://carf-models.com/en/products/pneumatik-set-corsair",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Manufacturer USD product/accessories page opened 2026-10-25; no destination quote or stock confirmation.",
-      "notes": "Observed 2026-10-25. Set-level reference, not a single valve or line price; exact installed tank and system coverage unconfirmed. Taxes, freight and destination charges not established; listed purchase price is not a post-crash repair bill."
+      "notes": "Observed 2026-10-25, double pass. Direct package description confirms air tank, lines, Festo fittings, electronic valves and quick disconnects. Complete-system proxy only, not a single valve/line price or proof of installed part identity. Retract legs and wheels are separate. Taxes, freight, destination charges and repair/inspection labor not established."
     },
     {
       "id": "f4u_carf_790700_20261025",
@@ -1226,7 +1235,7 @@
       "package_description": "one three-blade hub",
       "reference_installation_quantity": null,
       "tax_shipping": "excluded_from_model; verify seller/destination charges",
-      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "source_url": "https://carf-models.com/en/products/corsair-scale-propeller-complete-set/parent/301",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Manufacturer USD product/accessories page opened 2026-10-25; no destination quote or stock confirmation.",
       "notes": "Observed 2026-10-25. Already included in 790700; incompatible price reference for the authored wooden propeller. Taxes, freight and destination charges not established; listed purchase price is not a post-crash repair bill."
@@ -1246,7 +1255,7 @@
       "package_description": "one spinner dome",
       "reference_installation_quantity": null,
       "tax_shipping": "excluded_from_model; verify seller/destination charges",
-      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "source_url": "https://carf-models.com/en/products/corsair-scale-propeller-complete-set/parent/301",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Manufacturer USD product/accessories page opened 2026-10-25; no destination quote or stock confirmation.",
       "notes": "Observed 2026-10-25. Already included in 790700; fit to authored hub/bolts unconfirmed. Taxes, freight and destination charges not established; listed purchase price is not a post-crash repair bill."
@@ -1572,6 +1581,26 @@
       "notes": "Observed 2026-10-25. Separate from fin; excludes installed hardware, finish matching and labor. Spare airframe list prices are single-color references; CARF specifies 5% per additional color and requests an item/scheme-specific quote. Taxes, freight and destination charges not established; listed purchase price is not a post-crash repair bill."
     },
     {
+      "id": "f4u_carf_795000_20261025",
+      "product_id": "carf_models_795000",
+      "amount_minor": 517000,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "carf-models.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "manufacturer_listing_price",
+      "availability": "Add to Cart shown; stock quantity and delivery not stated",
+      "sold_package_quantity": 1,
+      "package_description": "one folding-wing Navy Blue ARF kit",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair-navy-blue-folding-wings-arf",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Manufacturer USD product/accessories page opened 2026-10-25; no destination quote or stock confirmation.",
+      "notes": "Observed 2026-10-25, double pass. Exact kit variant, not a complete flying aircraft or repair bill. Includes installed cowl, stabilizer, hinged surfaces/doors, folding mechanics and hardware; never sum their spare prices with this kit. Engine, retract and radio installation remain to be completed. Two 790420 actuators are requested separately; mixed hydraulic/electric wording requires package confirmation. Tax, freight and lead time unresolved."
+    },
+    {
       "id": "f4u_carf_930170_20261025",
       "product_id": "carf_models_930170",
       "amount_minor": 13600,
@@ -1609,7 +1638,47 @@
       "source_url": "https://carf-models.com/en/products/moki-s250",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Manufacturer USD product/accessories page opened 2026-10-25; no destination quote or stock confirmation.",
-      "notes": "Observed 2026-10-25. Engine purchase reference only. Mounted ring muffler and ignition are described by https://www.mokimotor.de/produkte/motoren/moki-250/ . Cast mount coverage is not explicit; no engine repair quote or separate ignition charge established. Taxes, freight and destination charges not established; listed purchase price is not a post-crash repair bill."
+      "notes": "Observed 2026-10-25, double pass. Whole-engine purchase reference. MOKI S250 manual page 1 confirms cast radial mount and ignition: https://sd04284ffd3b16aa8.jimcontent.com/download/version/1618326070/module/12022345498/name/MOKI%20S%20250%20english.pdf . Mounted ring muffler confirmed by https://www.mokimotor.de/produkte/motoren/moki-250/ . Standard package contents applied to CARF offer by same-model inference; CARF does not enumerate box contents. No second ignition-module charge; external switch, battery, firewall hardware and repair labor excluded. Taxes, freight and destination charges not established."
+    },
+    {
+      "id": "f4u_hitec_hs311_horizon_20261025",
+      "product_id": "hitec_rcd_hrc31311s",
+      "amount_minor": 1699,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In Stock displayed at observation",
+      "sold_package_quantity": 1,
+      "package_description": "one servo",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/hs-311-standard-analog-sport-servo/HRC31311S.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct retailer listing rechecked 2026-10-25; price unchanged from historical proxy.",
+      "notes": "Observed 2026-10-25. New dated observation preserves the 2026-10-15 historical offer. Class value proxy only, not installed identity or compatibility qualification. Destination tax, freight, wiring, linkage and installation labor remain unresolved."
+    },
+    {
+      "id": "f4u_savox_sa1230sgp_servocity_20261025",
+      "product_id": "savox_sa1230sgp",
+      "amount_minor": 10339,
+      "currency": "USD",
+      "observed_on": "2026-10-25",
+      "seller_domain": "www.servocity.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "Quantity control shown; explicit stock status not displayed",
+      "sold_package_quantity": 1,
+      "package_description": "one servo",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.servocity.com/sa1230sg-coreless-digital-servo/",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct retailer listing rechecked 2026-10-25; price unchanged from historical proxy.",
+      "notes": "Observed 2026-10-25. New dated observation preserves the 2026-10-15 historical offer. Class value proxy only, not installed identity or compatibility qualification. Destination tax, freight, wiring, linkage and installation labor remain unresolved."
     },
     {
       "id": "jet_retracts_jp_hobby_er150_avanti",

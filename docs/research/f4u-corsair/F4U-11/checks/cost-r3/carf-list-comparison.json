@@ -1,0 +1,220 @@
+{
+  "source": "https://carf-models.com/en/products/f4u-1d-corsair-navy-blue-folding-wings-arf",
+  "method": "Read-only USD accessory-list extraction; exact SKU followed by Add to Cart and USD amount. Missing matches require individual page checks.",
+  "rows": [
+    {
+      "id": "f4u_carf_953250_20261025",
+      "sku": "953250",
+      "recorded_usd": 4610,
+      "live_list_usd": 4610.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790500_20261025",
+      "sku": "790500",
+      "recorded_usd": 1330,
+      "live_list_usd": 1330.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790550_20261025",
+      "sku": "790550",
+      "recorded_usd": 346,
+      "live_list_usd": 346.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790600_20261025",
+      "sku": "790600",
+      "recorded_usd": 608,
+      "live_list_usd": 608.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790650_20261025",
+      "sku": "790650",
+      "recorded_usd": 479,
+      "live_list_usd": 479.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790199_20261025",
+      "sku": "790199",
+      "recorded_usd": 1400,
+      "live_list_usd": 1400.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_930170_20261025",
+      "sku": "930170",
+      "recorded_usd": 136,
+      "live_list_usd": 136.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791100_20261025",
+      "sku": "791100",
+      "recorded_usd": 1770,
+      "live_list_usd": 1770.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791102_20261025",
+      "sku": "791102",
+      "recorded_usd": 262,
+      "live_list_usd": 262.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791101_20261025",
+      "sku": "791101",
+      "recorded_usd": 131,
+      "live_list_usd": 131.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790105_20261025",
+      "sku": "790105",
+      "recorded_usd": 67,
+      "live_list_usd": 67.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790104_20261025",
+      "sku": "790104",
+      "recorded_usd": 133,
+      "live_list_usd": 133.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790810_20261025",
+      "sku": "790810",
+      "recorded_usd": 419,
+      "live_list_usd": 419.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790805_20261025",
+      "sku": "790805",
+      "recorded_usd": 137,
+      "live_list_usd": 137.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791103_20261025",
+      "sku": "791103",
+      "recorded_usd": 93,
+      "live_list_usd": 93.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791212_20261025",
+      "sku": "791212",
+      "recorded_usd": 186,
+      "live_list_usd": 186.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791215_20261025",
+      "sku": "791215",
+      "recorded_usd": 754,
+      "live_list_usd": 754.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791216_20261025",
+      "sku": "791216",
+      "recorded_usd": 754,
+      "live_list_usd": 754.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791220_20261025",
+      "sku": "791220",
+      "recorded_usd": 357,
+      "live_list_usd": 357.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791301_20261025",
+      "sku": "791301",
+      "recorded_usd": 111,
+      "live_list_usd": 111.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791302_20261025",
+      "sku": "791302",
+      "recorded_usd": 111,
+      "live_list_usd": 111.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791303_20261025",
+      "sku": "791303",
+      "recorded_usd": 111,
+      "live_list_usd": 111.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791304_20261025",
+      "sku": "791304",
+      "recorded_usd": 121,
+      "live_list_usd": 121.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791305_20261025",
+      "sku": "791305",
+      "recorded_usd": 130,
+      "live_list_usd": 130.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_791306_20261025",
+      "sku": "791306",
+      "recorded_usd": 111,
+      "live_list_usd": 111.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790700_20261025",
+      "sku": "790700",
+      "recorded_usd": 692,
+      "live_list_usd": 692.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790750_20261025",
+      "sku": "790750",
+      "recorded_usd": 115,
+      "live_list_usd": 115.0,
+      "status": "match"
+    },
+    {
+      "id": "f4u_carf_790751_20261025",
+      "sku": "790751",
+      "recorded_usd": 213.9,
+      "live_list_usd": 213.9,
+      "status": "match",
+      "source": "https://carf-models.com/en/products/corsair-scale-propeller-complete-set/parent/301"
+    },
+    {
+      "id": "f4u_carf_790752_20261025",
+      "sku": "790752",
+      "recorded_usd": 60.7,
+      "live_list_usd": 60.7,
+      "status": "match",
+      "source": "https://carf-models.com/en/products/corsair-scale-propeller-complete-set/parent/301"
+    }
+  ],
+  "observed_on": "2026-10-25",
+  "summary": {
+    "matched": 29,
+    "mismatched": 0
+  },
+  "source_html_sha256": {
+    "kit": "104fdcd328e426a97d005ffc545ee2eba9e5b5833e66bd1d2fd0236eb348ab8d",
+    "propeller_set": "198ec6ebe0dd9da3752dc784d478f122ae633d0ec90cf7eab3e422756dd103e2"
+  }
+}
