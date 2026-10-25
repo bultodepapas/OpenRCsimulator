@@ -208,3 +208,14 @@ Planned with the `blender-director` skill (route: `prop-artist`, `realistic-styl
 - No blockers. Minor: the polo collar flaps hide part of the loop.
 - `test_landscape_population(_assets)`, `test_field_people_gaze`, `test_scenery_build`, `test_field_projected_shadows`, `test_landscape_collision_support` and `test_outfits.py` pass. Motion, pause, reset, wrap and wind pass.
 - Diffuse atlas `422b4a26…`: the strap swatch moved every person's UVs, so all 11 GLBs change.
+
+## Optimization round (2026-10-25)
+
+Audited with the `asset-optimization` skill through the Blender MCP and the game renderer.
+
+| Item | Measurement | Decision |
+| --- | --- | --- |
+| Atlas texture memory | Diffuse 14.7 MB and normal 3.7 MB of VRAM (S3TC with mipmaps). Native A/B of all 11 people with import `process/size_limit` 2048/1024: at 5 m the worst person had 4,877 changed pixels, all in the fine shirt stripes and invisible at ×2 zoom; 250 px at 15 m; 15 px at 40 m | **Adopted**: 3.75 + 0.94 MB, **13.7 MB less (75 %)**. Flight-line pilots are 13 m or more from the player. `test_outfits.py` now requires the limits |
+| Skin hidden under clothing | 5,529 of 83,955 triangles (6.6 %), counted only where clothing covers the face in three directions within 6 cm | **Not done**: about 500 triangles per person (1.5 % of the population budget), with a risk of gaps where the hem moves in the wind or the neck turns under a collar |
+| Draws and materials | One draw and one material per person; Godot LODs at 15 m and beyond (pilot 8,280 → 4,139 → 2,064) | Already optimal |
+| Rebuild workflow | Each round hand-ran 11 generations, the merge, packaging, install and manifests | `rebuild_people.sh` and `install_people.py` ([README](../../../../tools/scenery/population/README.md)) |

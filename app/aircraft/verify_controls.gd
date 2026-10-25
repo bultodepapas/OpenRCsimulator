@@ -69,7 +69,14 @@ func _run() -> void:
 	_check("two Jensen aileron servos", controls.servos.has_all(["aileron_left", "aileron_right"]))
 	_check("two tail servos", controls.servos.has_all(["elevator", "rudder"]))
 	_check("throttle servo is animated by the throttle linkage", controls.servos.has("throttle") and controls.servos.throttle.animated and controls.mechanisms.throttle.kind == "direct")
-	_check("one bellcrank per semispan", controls.mechanisms.aileron_left.kind == "bellcrank" and controls.mechanisms.aileron_right.kind == "bellcrank")
+	# US-V17: the owner chose the two-servo version; each aileron servo drives its horn directly (no bellcrank).
+	_check("each aileron has its own servo and a direct pushrod", controls.mechanisms.aileron_left.kind == "direct" and controls.mechanisms.aileron_right.kind == "direct")
+	for side in ["left", "right"]:
+		var outside := _wing_servo_outside(root, controls, side)
+		_check("aileron_%s servo case sits between the wing skins" % side, outside.is_empty(), str(outside))
+	for servo_name in ["elevator", "rudder", "throttle"]:
+		var outside := _fuselage_servo_outside(controls, servo_name)
+		_check("%s servo case and tabs sit inside the fuselage sides and floor" % servo_name, outside.is_empty(), str(outside))
 	_check("tail pushrods use direct closure", controls.mechanisms.elevator.kind == "direct" and controls.mechanisms.rudder.kind == "direct")
 
 	var node_ids_before: Array[int] = []
@@ -105,6 +112,9 @@ func _run() -> void:
 			_check("%s pose %d length within tolerance" % [surface_name, index], float(result.max_length_error_m) <= LINK_TOLERANCE_M, "%.9f m" % result.max_length_error_m)
 			if index in [0, 10, 20]:
 				_check("%s pose %d endpoint follows transformed hinge" % [surface_name, index], _transformed_horn_matches(root, controls.mechanisms[surface_name]))
+			if surface_name.begins_with("aileron"):
+				var touch := _aileron_rod_skin_gap(root, controls.mechanisms[surface_name])
+				_check("%s pose %d pushrod stays below the lower skin" % [surface_name, index], touch >= 0.001, "%.4f m" % touch)
 
 	# US-V09c: the carburettor lever follows the throttle command over its whole range with a constant-length rod.
 	var lever: Node3D = controls.mechanisms.throttle.hinge
@@ -166,6 +176,68 @@ func _same_node_ids(root: Node3D, expected: Array[int]) -> bool:
 	var current: Array[int] = []
 	_collect_ids(root, current)
 	return current == expected
+
+
+## Root-space corners of a servo's case and tab tips.
+func _servo_corners(servo: Dictionary) -> Array[Vector3]:
+	var basis: Basis = servo.case_basis
+	var size: Vector3 = ControlsBuilder.SERVO_CASE_M
+	var centre: Vector3 = servo.case_root
+	var corners: Array[Vector3] = []
+	for x in [-1.0, 1.0]:
+		for y in [-1.0, 1.0]:
+			for z in [-1.0, 1.0]:
+				corners.append(centre + basis * Vector3(x * size.x, y * size.y, z * size.z) * 0.5)
+		for z in [-1.0, 1.0]:
+			var tab_y := ControlsBuilder.SERVO_TAB_Y_M - size.y * 0.5
+			corners.append(centre + basis * Vector3(x * ControlsBuilder.SERVO_TAB_SPAN_M * 0.5, tab_y, z * 0.009))
+	return corners
+
+
+## Case corners of a wing servo outside the skins (lower skin plus hatch, upper skin less its 3/32 in sheet).
+func _wing_servo_outside(root: Node3D, controls: Dictionary, side: String) -> Array:
+	var frame := (controls.hinges["aileron_" + side] as Node3D).get_parent() as Node3D
+	var to_frame := Transform3D(ControlsBuilder._basis_in_root(root, frame), ControlsBuilder._point_in_root(root, frame, Vector3.ZERO)).affine_inverse()
+	var chord := float(ControlsBuilder.D.wing.chord)
+	var outside := []
+	for corner in _servo_corners(controls.servos["aileron_" + side]):
+		var local := to_frame * corner
+		var lower := ControlsBuilder._wing_surface_y(local.z / chord, false) + ControlsBuilder.HATCH_M.y * 0.5
+		var upper := ControlsBuilder._wing_surface_y(local.z / chord, true) - 0.0024
+		if local.y < lower or local.y > upper:
+			outside.append("%s (skins %.4f..%.4f)" % [local, lower, upper])
+	return outside
+
+
+## Case and tab corners of a fuselage servo outside the sides (less sheeting) or below the floor sheeting.
+func _fuselage_servo_outside(controls: Dictionary, servo_name: String) -> Array:
+	var stations: Array = ControlsBuilder.D.fuselage_stations
+	var outside := []
+	for corner in _servo_corners(controls.servos[servo_name]):
+		var floor := -INF
+		for i in range(stations.size() - 1):
+			if float(stations[i][0]) <= corner.z and corner.z <= float(stations[i + 1][0]):
+				var t := (corner.z - float(stations[i][0])) / (float(stations[i + 1][0]) - float(stations[i][0]))
+				floor = lerpf(float(stations[i][3]), float(stations[i + 1][3]), t) + ControlsBuilder.FUSELAGE_SHEET_M
+		if absf(corner.x) > ControlsBuilder._fuselage_inner_half_width(corner.z) or corner.y < floor:
+			outside.append(str(corner))
+	return outside
+
+
+## Smallest clearance between an aileron pushrod (surface, 1.15 mm radius) and the fixed wing's lower skin.
+func _aileron_rod_skin_gap(root: Node3D, mechanism: Dictionary) -> float:
+	var frame := (mechanism.hinge as Node3D).get_parent() as Node3D
+	var to_frame := Transform3D(ControlsBuilder._basis_in_root(root, frame), ControlsBuilder._point_in_root(root, frame, Vector3.ZERO)).affine_inverse()
+	var wing: Dictionary = ControlsBuilder.D.wing
+	var a: Vector3 = to_frame * (mechanism.endpoints_root.servo as Vector3)
+	var b: Vector3 = to_frame * (mechanism.endpoints_root.horn as Vector3)
+	var gap := INF
+	for i in range(41):
+		var point := a.lerp(b, float(i) / 40.0)
+		var u := point.z / float(wing.chord)
+		if u >= float(wing.hinge_fraction): continue
+		gap = minf(gap, ControlsBuilder._wing_surface_y(u, false) - point.y - ControlsBuilder.ROD_RADIUS_M)
+	return gap
 
 
 func _transformed_horn_matches(root: Node3D, mechanism: Dictionary) -> bool:

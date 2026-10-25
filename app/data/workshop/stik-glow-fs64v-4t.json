@@ -76,7 +76,7 @@
   ],
   "presentation": {
     "visual_family": "jensen-das-ugly-stik-60",
-    "model_manifest_sha256": "2981641eb2c98124505306eb6a65e485e22a31c4440d9101e247834e7ea66f8c",
+    "model_manifest_sha256": "fb9cd975785c653b2858196f1985256716bfe3f58af15483ebe77447be398426",
     "scale_root": "airplane"
   }
 }
