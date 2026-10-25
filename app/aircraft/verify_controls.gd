@@ -218,7 +218,7 @@ func _fuselage_servo_outside(controls: Dictionary, servo_name: String) -> Array:
 		for i in range(stations.size() - 1):
 			if float(stations[i][0]) <= corner.z and corner.z <= float(stations[i + 1][0]):
 				var t := (corner.z - float(stations[i][0])) / (float(stations[i + 1][0]) - float(stations[i][0]))
-				floor = lerpf(float(stations[i][3]), float(stations[i + 1][3]), t) + ControlsBuilder.FUSELAGE_SHEET_M
+				floor = lerpf(float(stations[i][3]), float(stations[i + 1][3]), t) + ControlsBuilder.FUSELAGE_BOTTOM_M
 		if absf(corner.x) > ControlsBuilder._fuselage_inner_half_width(corner.z) or corner.y < floor:
 			outside.append(str(corner))
 	return outside
