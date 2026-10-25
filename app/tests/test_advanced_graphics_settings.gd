@@ -93,6 +93,13 @@ func _run() -> void:
 	_check("sharpening preview reaches viewport without saving", is_equal_approx(root.fsr_sharpness, 1.3)
 		and DisplayPreferences.load_from(PREFS + ".display").fsr2_sharpness == 0.9)
 	_check("sharpening UI follows effective FSR2", settings._fsr2_sharpness_slider.editable == Reconstruction.available())
+	settings._fsr2_sharpness_slider.drag_started.emit()
+	settings._fsr2_sharpness_slider.value = 0.5
+	settings._fsr2_sharpness_slider.value = 0.6
+	_check("drag updates its label without reconfiguring the renderer", is_equal_approx(root.fsr_sharpness, 1.3)
+		and settings._fsr2_sharpness_value.text == "60 %")
+	settings._fsr2_sharpness_slider.drag_ended.emit(true)
+	_check("release applies the final sharpening preview", is_equal_approx(root.fsr_sharpness, 0.8))
 	_check("reconstruction preview starts recovery without saving", settings._trial_deadline_msec > Time.get_ticks_msec()
 		and DisplayPreferences.load_from(PREFS + ".display").reconstruction == "native")
 	_check("FSR2 activates only in High and preserves saved MSAA choice", settings._draft.msaa_3d == 3
@@ -202,6 +209,12 @@ func _run() -> void:
 			for category: int in [0, 3]:
 				settings._show_category(category)
 				await ui.settle()
+				if category == 3:
+					settings._reconstruction_picker.select(2) # Custom 85% candidate, including captures.
+					settings._reconstruction_picker.item_selected.emit(2)
+					settings._fsr2_sharpness_slider.value = 0.35
+					await ui.settle()
+					_check("sharpening slider has usable width", settings._fsr2_sharpness_slider.size.x >= 100.0)
 				var bounds: Rect2 = settings._surface.get_global_rect()
 				_check("%s %.0f%% category %d stays on screen" % [language, scale * 100, category],
 					bounds.encloses(settings._layout_panel.get_global_rect())

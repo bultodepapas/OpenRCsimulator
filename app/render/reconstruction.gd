@@ -34,6 +34,15 @@ static func sharpness_strength(value: Variant) -> float:
 	return clampf(float(value), 0.0, 1.0)
 
 
+## Static technical captures need temporal history after the final pose/camera is set.
+## At least two jitter cycles for our supported scales; bounded to 64 rendered frames.
+static func capture_settle_frames(mode: int, scale: float) -> int:
+	if mode != Viewport.SCALING_3D_MODE_FSR2:
+		return 2
+	var input_scale := clampf(scale, 0.5, 1.0)
+	return clampi(ceili(8.0 / (input_scale * input_scale)) * 2, 16, 64)
+
+
 static func apply(viewport: Viewport, config: Dictionary) -> void:
 	var policy := resolve(str(config.get("reconstruction", "native")), available())
 	viewport.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR2 if policy.temporal else Viewport.SCALING_3D_MODE_BILINEAR

@@ -46,7 +46,7 @@ WEB-05 keeps the same composition while reducing work: preload the two opening f
 
 HTML references styles/scripts with a shared release query (`?v=official-brand-20261024`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
-WEB-07 official identity, 2026-10-24: the header, hero, footer and README now use derivatives of the supplied official SVG. The favicon uses its RC contours, and Open Graph/Twitter metadata uses a 1200×630 PNG. [Source and regeneration](BRANDS.md#openrc-identity). The aircraft opening, navigation, translations and downloads retain their behavior. Local Chrome review covers 1920×1080, 390×844 and 320×740, both languages/themes, reduced motion, image loading and horizontal overflow. This is presentation verification, not a simulator release.
+WEB-07 official identity, 2026-10-24: the header, hero, footer and README now use derivatives of the refined vector master based on the supplied official SVG. The favicon uses its RC contours, and Open Graph/Twitter metadata uses a 1200×630 PNG. [Source and regeneration](BRANDS.md#openrc-identity). The aircraft opening, navigation, translations and downloads retain their behavior. Local Chrome review covers 1920×1080, 390×844 and 320×740, both languages/themes, reduced motion, image loading and horizontal overflow. This is presentation verification, not a simulator release.
 
 Publication uses a separate `gh-pages` branch with only the static website. GitHub Pages serves `/` from that branch; `.nojekyll` disables processing. The main working tree and its unrelated pending changes are never included in that publication. The website is a project showcase, not a browser build of the simulator.
 

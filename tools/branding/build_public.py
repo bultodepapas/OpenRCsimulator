@@ -1,4 +1,4 @@
-"""Derive public identity assets from the official SVG; no paths or colors are redrawn.
+"""Derive public identity assets from the refined SVG without changing its paths.
 
 SVGs use the standard library. --raster uses Playwright 1.61.0 and installed Chrome
 to render the social PNG. --check verifies SVG outputs without a browser.
@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "app/assets/branding/openrc-official.svg"
+SOURCE = ROOT / "app/assets/branding/openrc-refined.svg"
 DEST = ROOT / "site/assets/branding"
 NS = "{http://www.w3.org/2000/svg}"
 ET.register_namespace("", NS[1:-1])

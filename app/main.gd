@@ -63,6 +63,7 @@ const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
 const Hud := preload("res://render/hud.gd")
 const FrameSamples := preload("res://render/frame_samples.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
 const Air := preload("res://physics/air_data.gd")
 const M := preload("res://physics/math3d.gd")
 const VisualEvidence = preload("res://render/visual_evidence.gd")
@@ -242,6 +243,7 @@ var _inspect: bool:
 		else:
 			_initial_view = "closeup" if on else "pilot"
 var _capturing := false
+var _capture_settle_frames := 0
 var _t := 0.0
 var _prop_angle := 0.0
 ## --scripted: the Stage 0/1 scripted circle instead of the physics simulation.
@@ -2767,8 +2769,9 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	_update_aircraft_lights(clock_s)
 	_update_storm(clock_s, false) # deterministic capture includes the selected event phase
 	_update_hud()
-	await RenderingServer.frame_post_draw
-	await RenderingServer.frame_post_draw
+	_capture_settle_frames = Reconstruction.capture_settle_frames(get_viewport().scaling_3d_mode, get_viewport().scaling_3d_scale)
+	for _frame: int in _capture_settle_frames:
+		await RenderingServer.frame_post_draw
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out).get_base_dir())
 	var err := get_viewport().get_texture().get_image().save_png(out)
 	# Render counters of the captured frame (L0): deterministic for a fixed view, so landscape budgets are testable.
@@ -2908,6 +2911,7 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		backend = RenderingServer.get_current_rendering_method(),
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa,
 			scaling_3d_scale = get_viewport().scaling_3d_scale, scaling_3d_mode = get_viewport().scaling_3d_mode,
+			reconstruction = Reconstruction.describe(get_viewport()),
 			lake_reflections = LakeReflection.describe(_field_node)},
 		camera = {
 			fov_deg = _camera.fov,
@@ -3006,8 +3010,10 @@ func capture_evidence() -> Dictionary:
 		exposure = _env.tonemap_exposure, tonemapper = _env.tonemap_mode,
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa,
 			scaling_3d_scale = get_viewport().scaling_3d_scale, scaling_3d_mode = get_viewport().scaling_3d_mode,
+			reconstruction = Reconstruction.describe(get_viewport()),
 			lake_reflections = LakeReflection.describe(_field_node)},
 		clock_s = ShaderClock.last_clock, simulation_time_s = session.sim.time(), simulation_tick = session.sim.tick,
+		capture_settle_frames = _capture_settle_frames,
 		state = {paused = session.sim.paused, aircraft_visible = _airplane.root.visible, treeline_visible = not _treeline_hidden, shadow = _shadow_mode,
 			engine_shadows = Atmosphere.engine_shadows, physics_state = Array(session.sim.state),
 			controls = session.commands, surfaces = session.surfaces(), propeller_angle_rad = _airplane.propeller.rotation.z},

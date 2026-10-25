@@ -48,7 +48,9 @@ aircraft detail. These are optional trials, not qualified performance presets.
 **FSR2 sharpness** controls RCAS from off (0%) to maximum (100%), in 5% steps.
 The initial 90% preserves Godot's existing default; it is not a tuned recommendation.
 Lower it if edges show halos or scenery shimmers. The slider is inactive in Native
-and Standard. Hover over reconstruction to see nominal input dimensions; engine
+and Standard. Pointer dragging updates the displayed value and applies on release;
+keyboard steps apply immediately. This avoids repeated render-buffer reconfiguration
+during a drag in the pinned engine. Hover over reconstruction to see nominal input dimensions; engine
 rounding can differ. No extra mip bias or second sharpening pass is added.
 
 Use **Keep changes** within 15 seconds; Revert, expiry and closing an unsaved preview
@@ -62,11 +64,18 @@ or `fsr2_native` with the High launcher for a
 reproducible candidate; `native` or an unknown value uses the native baseline.
 `OPENRC_FSR2_SHARPNESS=0.35` selects user strength 0–1 (default 0.9; finite numbers
 are clamped, malformed values use the default).
-Home launches use saved preferences instead. Existing captures/frame reports record
-`scaling_3d_mode` and scale; `--frame-diagnostics` additionally records requested and
-effective reconstruction, nominal input size, sharpening strength/activation and
-additional texture mip bias at start and report time. Compare each mode separately;
+Home launches use saved preferences instead. Captures/frame reports record
+`scaling_3d_mode`, scale and a `reconstruction` receipt (requested/effective mode,
+nominal input size, sharpening strength/activation and additional texture mip bias).
+`--frame-diagnostics` additionally retains this identity at start and report time.
+Compare each mode separately;
 the existing native campaign reducer does not automatically qualify mixed AA modes.
+
+The existing main-flight `--capture` route allows temporal history after fixing the
+pose: 16 drawn frames for Native AA, 36 for Quality, up to 64 for Performance.
+Native retains its two-frame capture wait. `capture_settle_frames` records this
+allowance; it does not qualify moving imagery or guarantee convergence. Use native
+rendering for images; headless execution cannot complete a rendered capture.
 
 The [RTX 3090 integration evidence](../../docs/research/visual-quality-implementation/VQ-07/fsr2-2026-10-24/README.md)
 owns the tested scope and remaining motion/performance gates. FSR2 availability does

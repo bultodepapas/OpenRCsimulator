@@ -52,6 +52,7 @@ var _msaa_picker: OptionButton
 var _reconstruction_picker: OptionButton
 var _fsr2_sharpness_slider: HSlider
 var _fsr2_sharpness_value: Label
+var _fsr2_sharpness_dragging := false
 var _scene_detail_picker: OptionButton
 var _birds_picker: OptionButton
 var _camera_view_picker: OptionButton
@@ -219,6 +220,8 @@ func _build() -> void:
 	var sharpness_control := _volume_control("Fsr2SharpnessControl", "Fsr2Sharpness", "Fsr2SharpnessValue", _fsr2_sharpness_changed)
 	_fsr2_sharpness_slider = sharpness_control.get_node("Fsr2Sharpness")
 	_fsr2_sharpness_value = sharpness_control.get_node("Fsr2SharpnessValue")
+	_fsr2_sharpness_slider.drag_started.connect(func() -> void: _fsr2_sharpness_dragging = true)
+	_fsr2_sharpness_slider.drag_ended.connect(_fsr2_sharpness_drag_ended)
 	_add_row(graphics_page, "FSR2 sharpness", sharpness_control)
 	_msaa_picker = _choice_picker("Msaa3D", "msaa_3d", DisplayPreferences.MSAA_3D_VALUES)
 	_add_row(graphics_page, "Antialiasing (MSAA)", _msaa_picker)
@@ -507,7 +510,18 @@ func _choice_caption(key: String, value: Variant) -> String:
 
 func _fsr2_sharpness_changed(value: float) -> void:
 	_draft.fsr2_sharpness = value
+	_fsr2_sharpness_value.text = tr("Off") if is_zero_approx(value) else "%d %%" % roundi(value * 100.0)
+	# Godot 4.7.2 reconfigures render buffers on sharpness changes. Coalesce a
+	# pointer drag into one preview on release; keyboard steps still apply at once.
+	if _fsr2_sharpness_dragging:
+		return
 	_on_graphics_option_changed()
+
+
+func _fsr2_sharpness_drag_ended(changed: bool) -> void:
+	_fsr2_sharpness_dragging = false
+	if changed:
+		_on_graphics_option_changed()
 
 
 func _on_graphics_option_changed() -> void:
@@ -734,7 +748,7 @@ func _update_layout() -> void:
 	else:
 		_layout_panel.remove_theme_stylebox_override("panel")
 	var available: Vector2 = _surface.size - Vector2(gutter * 2.0, gutter * 2.0)
-	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(840.0, maxf(0.0, available.y)))
+	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(880.0, maxf(0.0, available.y)))
 	_refresh_graphics_info()
 	_sync_reconstruction_controls()
 	var stack_rows := _should_stack_rows()
