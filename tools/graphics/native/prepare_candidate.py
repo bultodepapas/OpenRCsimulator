@@ -256,7 +256,10 @@ def prepare_forward_plus_project(previous: dict, changes: list[dict[str, str]]) 
         'renderer/rendering_method="forward_plus"',
         path,
     )
-    expected = replace_once(expected, "[rendering]\n", '[rendering]\n\nstreamline/dlss_preset="K"\n', path).encode("utf-8")
+    expected = replace_once(expected, "[rendering]\n", '[rendering]\n\nstreamline/dlss_preset="K"\n', path)
+    # MovieWriter fixes its output size at startup; a 1080p window alone still
+    # records the historical 720p viewport. Keep diagnostic movies at the primary target.
+    expected = replace_once(expected, "[display]\n", "[display]\n\nwindow/size/viewport_width.movie=1920\nwindow/size/viewport_height.movie=1080\n", path).encode("utf-8")
     target = CANDIDATE / path
     current = target.read_bytes() if target.is_file() else b""
     previous_hash = previous.get("candidate_project_sha256")
