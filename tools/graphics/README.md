@@ -128,10 +128,17 @@ Inspect all three `stage-N.json` receipts and child logs, not only the parent ex
 The probe appends its own script/log arguments after checking production arguments;
 it verifies the editor-binary path, not packaged or macOS application relaunch.
 
-`capture.gd` uses production builders in a fixed 4× MSAA SubViewport. Run with a
+`capture.gd` uses production builders in an exact-size SubViewport, defaulting to 4× MSAA. Run with a
 native renderer and `-- --out=<new directory> --aircraft=p51d-mustang-120`.
 `--width=1280|1920|2560`, `--hour=<0..24)` and `--view=all|aircraftground|pilot|pavilion|lake|flightline|windsock`
 select static comparisons. The `pavilion` case includes the clubhouse and pit area.
+`--aa=msaa4|none|taa|fsr2_native` isolates antialiasing without changing player
+preferences. TAA and FSR2 require native High; unsupported requests fail instead
+of silently capturing a fallback. FSR2 Native uses the production reconstruction
+adapter at full resolution with sharpening off. Reports record the actual MSAA,
+TAA, scaling, sharpness and mip-bias values. Stills allow 90 drawn settling frames;
+this is not a convergence or motion-quality guarantee. Compare contact on/off
+within each AA mode before attributing a change to either effect.
 `--seconds=<duration>` requires one view and measures after 10 s warmup without
 image readback. These offscreen static timings do not qualify flight performance.
 Use the existing native flight collector separately, without concurrent tests,

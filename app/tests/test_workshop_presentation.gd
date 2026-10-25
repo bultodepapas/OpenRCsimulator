@@ -232,7 +232,7 @@ func _test_lighting_contract(bindings: Dictionary) -> void:
 	_check("v3 preset is part of the bound presentation identity", selected.get("ok", false)
 		and selected.identity_sha256 != original.identity_sha256, str(selected.get("errors", [])))
 	var changed := modern.duplicate(true)
-	changed.lighting.brightness = 0.75
+	changed.lighting.brightness = 0.37
 	_check("lighting brightness changes visual identity", Profile.identity(changed, bindings) != Profile.identity(modern, bindings))
 	changed.lighting.brightness = true
 	_check("invalid nested lighting cannot enter a variant", not Profile.validate(changed, bindings).get("ok", false))

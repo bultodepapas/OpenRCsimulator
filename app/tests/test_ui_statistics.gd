@@ -4,6 +4,7 @@ extends SceneTree
 const StatisticsScreen := preload("res://ui/statistics_screen.gd")
 const OverlayManager := preload("res://render/overlays/overlay_manager.gd")
 const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
+const ScreenStack := preload("res://ui/screen_stack.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 
 
@@ -132,6 +133,8 @@ func _run() -> void:
 	# Cancel is a pure close: no service method is called.
 	screen.call("_open_reset", "session", "", "session")
 	var dialog: ConfirmationDialog = screen.get("_active_dialog")
+	await process_frame
+	_check("destructive management starts with Cancel focused", dialog.get_cancel_button().has_focus())
 	dialog.call("_on_cancelled")
 	_check("cancelling a counter reset does not mutate the service", service.reset_log.is_empty())
 	await process_frame
@@ -154,6 +157,13 @@ func _run() -> void:
 	dialog.call("_on_confirmed")
 	_check("aircraft counter reset remains aircraft-scoped",
 		service.reset_log.size() == 2 and service.reset_log[1] == ["aircraft", "trainer-a"])
+	await process_frame
+
+	screen.call("_open_reset", "account", "", "counters")
+	dialog = screen.get("_active_dialog")
+	dialog.call("_on_confirmed")
+	_check("pilot counter reset advances the combined account window",
+		service.reset_log.size() == 3 and service.reset_log[2] == ["account", ""])
 	await process_frame
 
 	screen.call("_open_delete", "trainer-a")
@@ -204,6 +214,50 @@ func _run() -> void:
 	if is_instance_valid(overlays_dialog): overlays_dialog.queue_free()
 	if is_instance_valid(manager): manager.queue_free()
 	if is_instance_valid(screen): screen.queue_free()
+	await process_frame
+
+	service.writable = true
+	TranslationServer.set_locale("es")
+	var spanish_screen: CanvasLayer = StatisticsScreen.new()
+	spanish_screen.configure(service, "trainer-b")
+	root.add_child(spanish_screen)
+	await process_frame
+	_check("Spanish localizes the screen and all-aircraft filter",
+		(spanish_screen.find_child("StatisticsTitle", true, false) as Label).text == "Estadísticas"
+		and spanish_screen._scope_picker.get_item_text(0) == "Todas las aeronaves")
+	var spanish_back: Array = []
+	spanish_screen.back_requested.connect(func() -> void: spanish_back.append(true))
+	var escape := InputEventKey.new()
+	escape.keycode = KEY_ESCAPE
+	escape.pressed = true
+	spanish_screen.get("_screen").call("_unhandled_input", escape)
+	_check("Escape routes back from the Spanish keyboard screen", spanish_back.size() == 1)
+	spanish_screen.call("_open_reset", "account", "", "counters")
+	var spanish_dialog: ConfirmationDialog = spanish_screen.get("_active_dialog")
+	await process_frame
+	_check("Spanish counter confirmation retains a Cancel-first action", spanish_dialog.title == "¿Reiniciar los contadores?"
+		and spanish_dialog.get_cancel_button().has_focus())
+	spanish_dialog.call("_on_cancelled")
+	await process_frame
+	spanish_screen.queue_free()
+	TranslationServer.set_locale("en")
+	await process_frame
+
+	var stack := ScreenStack.new(root)
+	var focus_anchor := Control.new()
+	focus_anchor.name = "StatisticsStackReturnFocus"
+	focus_anchor.focus_mode = Control.FOCUS_ALL
+	root.add_child(focus_anchor)
+	focus_anchor.grab_focus()
+	var stacked_screen: CanvasLayer = StatisticsScreen.new()
+	stacked_screen.configure(service, "trainer-a")
+	var stacked := stack.push("statistics", stacked_screen, focus_anchor)
+	await process_frame
+	await process_frame
+	_check("CanvasLayer statistics screen is accepted by ScreenStack", stacked and stack.get_screen("statistics") == stacked_screen)
+	stacked_screen.back_requested.connect(func() -> void: stack.pop())
+	stacked_screen.call("_request_back")
+	_check("Back pops the statistics layer and restores opener focus", stack.size() == 0 and focus_anchor.has_focus())
 	await process_frame
 
 

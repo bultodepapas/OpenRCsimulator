@@ -1134,9 +1134,13 @@ func _process(delta: float) -> void:
 	# Lighting uses the same displayed pose clock, independent of whether smoke is installed.
 	var lighting_clock_s := sim.time() if frozen else smoke_clock_s
 	if is_instance_valid(_rgb_lighting):
+		var lighting_airspeed := float(session.air_data(sim.state, sim.time()).get("V", 0.0))
 		_rgb_lighting.advance(lighting_clock_s, {
 			"throttle": session.propulsion_throttle(),
 			"speed_mps": (_last_render_pose.get("vel", Vector3.ZERO) as Vector3).length(),
+			"airspeed": lighting_airspeed,
+			"airspeed_response": clampf(lighting_airspeed / 40.0, 0.0, 1.0), # visual scale, not a flight limit
+			"roll_rate": sim.state[RB.RATE], "pitch_rate": sim.state[RB.RATE + 1],
 			"maneuver": clampf(sqrt(pow(sim.state[RB.RATE], 2.0) + pow(sim.state[RB.RATE + 1], 2.0) + pow(sim.state[RB.RATE + 2], 2.0)) / TAU, 0.0, 1.0),
 			"exposure": World.Exposure.last,
 			"effects_allowed": session.crash.is_empty() and sim.fault_reason.is_empty(),
