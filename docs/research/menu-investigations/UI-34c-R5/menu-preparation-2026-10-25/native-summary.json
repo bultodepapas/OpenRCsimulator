@@ -1,0 +1,178 @@
+{
+  "pairs": [
+    {
+      "pair": 1,
+      "baseline": {
+        "first_s": 7.415193,
+        "warm_s": 1.339177,
+        "home_s": 5.705813,
+        "home_to_ready_s": 12.41728,
+        "menu_max_ms": 35.678,
+        "load_max_ms": 294.205,
+        "menu_over33": 1,
+        "menu_over50": 0,
+        "menu_over100": 0,
+        "menu_static_growth_MiB": 0.5716094970703125,
+        "loading_feedback_ms": 16.646
+      },
+      "candidate": {
+        "first_s": 1.698423,
+        "warm_s": 1.347615,
+        "home_s": 5.478823,
+        "home_to_ready_s": 6.69886,
+        "menu_max_ms": 36.522,
+        "load_max_ms": 273.027,
+        "menu_over33": 2,
+        "menu_over50": 0,
+        "menu_over100": 0,
+        "menu_static_growth_MiB": 18.70207977294922,
+        "loading_feedback_ms": 16.602
+      }
+    },
+    {
+      "pair": 2,
+      "baseline": {
+        "first_s": 7.320917,
+        "warm_s": 1.439459,
+        "home_s": 5.522523,
+        "home_to_ready_s": 12.330203,
+        "menu_max_ms": 31.754,
+        "load_max_ms": 271.998,
+        "menu_over33": 0,
+        "menu_over50": 0,
+        "menu_over100": 0,
+        "menu_static_growth_MiB": 0.5716094970703125,
+        "loading_feedback_ms": 16.661
+      },
+      "candidate": {
+        "first_s": 1.675463,
+        "warm_s": 1.321442,
+        "home_s": 5.489916,
+        "home_to_ready_s": 6.678152,
+        "menu_max_ms": 38.59,
+        "load_max_ms": 291.298,
+        "menu_over33": 2,
+        "menu_over50": 0,
+        "menu_over100": 0,
+        "menu_static_growth_MiB": 18.70083236694336,
+        "loading_feedback_ms": 16.298
+      }
+    },
+    {
+      "pair": 3,
+      "baseline": {
+        "first_s": 7.602179,
+        "warm_s": 1.471455,
+        "home_s": 5.880785,
+        "home_to_ready_s": 12.604363,
+        "menu_max_ms": 42.156,
+        "load_max_ms": 275.949,
+        "menu_over33": 2,
+        "menu_over50": 0,
+        "menu_over100": 0,
+        "menu_static_growth_MiB": 0.5716094970703125,
+        "loading_feedback_ms": 17.129
+      },
+      "candidate": {
+        "first_s": 1.758591,
+        "warm_s": 1.495924,
+        "home_s": 5.722593,
+        "home_to_ready_s": 6.761549,
+        "menu_max_ms": 36.267,
+        "load_max_ms": 285.441,
+        "menu_over33": 1,
+        "menu_over50": 0,
+        "menu_over100": 0,
+        "menu_static_growth_MiB": 18.700756072998047,
+        "loading_feedback_ms": 16.428
+      }
+    },
+    {
+      "pair": 4,
+      "baseline": {
+        "first_s": 7.481701,
+        "warm_s": 1.349644,
+        "home_s": 5.869661,
+        "home_to_ready_s": 12.49054,
+        "menu_max_ms": 50.071,
+        "load_max_ms": 273.002,
+        "menu_over33": 2,
+        "menu_over50": 1,
+        "menu_over100": 0,
+        "menu_static_growth_MiB": 0.5716094970703125,
+        "loading_feedback_ms": 16.281
+      },
+      "candidate": {
+        "first_s": 1.709555,
+        "warm_s": 1.416463,
+        "home_s": 5.551021,
+        "home_to_ready_s": 6.71811,
+        "menu_max_ms": 39.738,
+        "load_max_ms": 282.173,
+        "menu_over33": 2,
+        "menu_over50": 0,
+        "menu_over100": 0,
+        "menu_static_growth_MiB": 18.700756072998047,
+        "loading_feedback_ms": 16.704
+      }
+    },
+    {
+      "pair": 5,
+      "baseline": {
+        "first_s": 7.733235,
+        "warm_s": 1.34594,
+        "home_s": 5.568359,
+        "home_to_ready_s": 12.743164,
+        "menu_max_ms": 37.146,
+        "load_max_ms": 280.149,
+        "menu_over33": 1,
+        "menu_over50": 0,
+        "menu_over100": 0,
+        "menu_static_growth_MiB": 0.5716094970703125,
+        "loading_feedback_ms": 16.864
+      },
+      "candidate": {
+        "first_s": 1.688096,
+        "warm_s": 1.339972,
+        "home_s": 5.583201,
+        "home_to_ready_s": 6.702352,
+        "menu_max_ms": 35.986,
+        "load_max_ms": 265.585,
+        "menu_over33": 4,
+        "menu_over50": 0,
+        "menu_over100": 0,
+        "menu_static_growth_MiB": 18.703571319580078,
+        "loading_feedback_ms": 16.737
+      }
+    }
+  ],
+  "medians": {
+    "baseline": {
+      "first_s": 7.481701,
+      "warm_s": 1.349644,
+      "home_s": 5.705813,
+      "home_to_ready_s": 12.49054,
+      "menu_max_ms": 37.146,
+      "load_max_ms": 275.949,
+      "menu_over33": 1,
+      "menu_over50": 0,
+      "menu_over100": 0,
+      "menu_static_growth_MiB": 0.5716094970703125,
+      "loading_feedback_ms": 16.661
+    },
+    "candidate": {
+      "first_s": 1.698423,
+      "warm_s": 1.347615,
+      "home_s": 5.551021,
+      "home_to_ready_s": 6.702352,
+      "menu_max_ms": 36.522,
+      "load_max_ms": 282.173,
+      "menu_over33": 2,
+      "menu_over50": 0,
+      "menu_over100": 0,
+      "menu_static_growth_MiB": 18.70083236694336,
+      "loading_feedback_ms": 16.602
+    }
+  },
+  "limits": "OS/import/shader cache uncontrolled. One idle LSP at start, transient LSP processes observed later; no other rendered app observed. Own headless suite paused at shell boundary throughout cohort."
+}

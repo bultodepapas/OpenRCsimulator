@@ -11,6 +11,7 @@ var _queued_path := ""
 var _queued_callback := Callable()
 var _resources: Dictionary = {}
 var _order: Array[String] = []
+var _admissions_paused := false
 
 func _init() -> void:
 	set_process(false)
@@ -38,6 +39,10 @@ func request(path: String, callback: Callable) -> void:
 	_active_callback = Callable()
 	_queued_callback = Callable()
 	_queued_path = ""
+	if _admissions_paused:
+		_queued_path = path
+		_queued_callback = callback
+		return
 	if path.is_empty() or _resources.has(path):
 		if _resources.has(path):
 			_order.erase(path)
@@ -62,6 +67,22 @@ func retained(path: String) -> PackedScene:
 ## Includes obsolete active work: a cached/procedural intent can complete before it drains.
 func is_busy() -> bool:
 	return not _active_path.is_empty()
+
+## Scene preparation starts only when idle. Gate even cache/procedural callbacks:
+## those callbacks construct previews and may synchronously load shared resources.
+func set_admissions_paused(paused: bool) -> void:
+	_admissions_paused = paused
+	if paused:
+		return
+	var path := _queued_path
+	var callback := _queued_callback
+	discard_queued_request()
+	if callback.is_valid():
+		request(path, callback)
+
+func discard_queued_request() -> void:
+	_queued_path = ""
+	_queued_callback = Callable()
 
 func _start(path: String, callback: Callable) -> void:
 	var error := ResourceLoader.load_threaded_request(path, "PackedScene", false)

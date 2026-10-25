@@ -17,6 +17,9 @@ func _run() -> void:
 	var output := ""
 	var aircraft := "jensen-das-ugly-stik-60"
 	var cycles := 3
+	var dwell_msec := 0
+	var prefetch_mode := "off"
+	var prefetch_delay_msec := 350
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--output="):
 			output = arg.trim_prefix("--output=")
@@ -24,11 +27,21 @@ func _run() -> void:
 			aircraft = arg.trim_prefix("--aircraft=")
 		elif arg.begins_with("--cycles=") and arg.trim_prefix("--cycles=").is_valid_int():
 			cycles = int(arg.trim_prefix("--cycles="))
+		elif arg.begins_with("--dwell-ms=") and arg.trim_prefix("--dwell-ms=").is_valid_int():
+			dwell_msec = int(arg.trim_prefix("--dwell-ms="))
+		elif arg.begins_with("--prefetch="):
+			prefetch_mode = arg.trim_prefix("--prefetch=")
+		elif arg.begins_with("--prefetch-delay-ms=") and arg.trim_prefix("--prefetch-delay-ms=").is_valid_int():
+			prefetch_delay_msec = int(arg.trim_prefix("--prefetch-delay-ms="))
 		else:
 			_fail("Unknown or invalid option: " + arg)
 			return
 	if output.is_empty() or FileAccess.file_exists(output) or cycles < 1 or cycles > 50:
 		_fail("Provide a new --output file and --cycles in 1..50")
+		return
+	if dwell_msec < 0 or dwell_msec > 30000 or prefetch_delay_msec < 0 or prefetch_delay_msec > 10000 \
+			or prefetch_mode not in ["off", "scene", "trim", "scene_trim"]:
+		_fail("Use --dwell-ms=0..30000, --prefetch=off|scene|trim|scene_trim and --prefetch-delay-ms=0..10000")
 		return
 	if DisplayServer.get_name() == "headless":
 		_fail("Loading first-draw measurements require a native renderer")
@@ -57,6 +70,12 @@ func _run() -> void:
 	_app = app
 	app.set("user_args", PackedStringArray())
 	app.set("preferences_path", prefs_path)
+	if "home_flight_prefetch_mode" in app:
+		app.set("home_flight_prefetch_mode", prefetch_mode)
+		app.set("home_flight_prefetch_delay_msec", prefetch_delay_msec)
+	elif prefetch_mode != "off":
+		_fail("This app does not implement Home flight prefetch")
+		return
 	var before_home := Time.get_ticks_usec()
 	root.add_child(app)
 	var home_ready := Time.get_ticks_usec()
@@ -68,7 +87,11 @@ func _run() -> void:
 		_fail("Home did not become visible")
 		return
 	var samples: Array[Dictionary] = []
+	var cycle_home_drawn := home_drawn
 	for index in range(cycles):
+		var memory_before_dwell := int(Performance.get_monitor(Performance.MEMORY_STATIC))
+		var dwell := await _wait_at_home(dwell_msec)
+		var preparation_before_fly := _preparation_snapshot(app)
 		var fly: Button = app.get("home").get("fly_button")
 		if fly.disabled:
 			_fail("Home Fly is disabled")
@@ -100,6 +123,12 @@ func _run() -> void:
 		var sim: Node = session.get("sim")
 		var sample := {
 			"cycle": index + 1, "fly_sync_usec": dispatched - begin,
+			"home_to_ready_usec": ready - cycle_home_drawn,
+			"home_dwell": dwell,
+			"memory_before_dwell_bytes": memory_before_dwell,
+			"memory_before_fly_bytes": dwell.memory_after_bytes,
+			"preparation_before_fly": preparation_before_fly,
+			"preparation_after_fly": _preparation_snapshot(app),
 			"fly_ready_usec": ready - begin,
 			"fly_first_draw_usec": drawn - begin,
 			"tick_at_first_draw": sim.get("tick"), "paused_at_first_draw": sim.get("paused"),
@@ -122,6 +151,7 @@ func _run() -> void:
 			_fail("End flight failed to restore Home")
 			return
 		home = app.get("home")
+		cycle_home_drawn = Time.get_ticks_usec()
 		sample["return_sync_usec"] = return_ready - return_begin
 		sample["return_first_draw_usec"] = Time.get_ticks_usec() - return_begin
 		sample["nodes_at_home"] = int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
@@ -138,12 +168,14 @@ func _run() -> void:
 		"home_first_draw_from_load_usec": home_drawn - before_load,
 		"home_first_draw_engine_elapsed_usec": home_drawn,
 		"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+		"prefetch_mode": prefetch_mode, "prefetch_delay_msec": prefetch_delay_msec,
+		"home_dwell_requested_msec": dwell_msec,
 		"fly_timing_semantics": "fly_sync_usec is pressed.emit dispatch only; fly_ready_usec includes deferred handoff and validated scene readiness; fly_first_draw_usec additionally waits for post-draw",
 		"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
 		"cycles": samples,
 	}
 	report["shutdown"] = await _cleanup()
-	report.complete = report.shutdown.audio_released and report.shutdown.settings_removed
+	report.complete = report.shutdown.audio_released and report.shutdown.settings_removed and report.shutdown.preparation_drained
 	var file := FileAccess.open(output, FileAccess.WRITE)
 	if file == null:
 		_fail("Cannot create report")
@@ -155,6 +187,26 @@ func _run() -> void:
 		_fail("Probe cleanup incomplete: " + str(report.shutdown))
 		return
 	quit(0)
+
+
+## Dwell is measured separately from click latency and included in Home-to-ready.
+func _wait_at_home(duration_msec: int) -> Dictionary:
+	var begin := Time.get_ticks_usec()
+	var previous := begin
+	var frames: Array[int] = []
+	while Time.get_ticks_usec() - begin < duration_msec * 1000:
+		await process_frame
+		var now := Time.get_ticks_usec()
+		frames.append(now - previous)
+		previous = now
+	return {requested_msec = duration_msec, elapsed_usec = Time.get_ticks_usec() - begin,
+		frames_usec = frames, memory_after_bytes = int(Performance.get_monitor(Performance.MEMORY_STATIC))}
+
+
+func _preparation_snapshot(app: Node) -> Dictionary:
+	if "home_flight_preparation" in app:
+		return app.get("home_flight_preparation").duplicate(true)
+	return {}
 
 
 ## Staged Home preparation can cross many frames; tolerate bounded scheduling, not an unbounded wait.
@@ -198,7 +250,12 @@ func _cleanup() -> Dictionary:
 	if not _last_shutdown.is_empty():
 		return _last_shutdown
 	var playbacks: Array[WeakRef] = []
+	var preparation_drained := true
 	if is_instance_valid(_app):
+		if _app.has_method("shutdown_home_flight_preparation"):
+			await _app.call("shutdown_home_flight_preparation")
+			var preparation := _preparation_snapshot(_app)
+			preparation_drained = preparation.get("drained", true)
 		_collect_playbacks(_app, playbacks)
 		_app.queue_free()
 		_app = null
@@ -215,6 +272,7 @@ func _cleanup() -> Dictionary:
 		if settings_removed:
 			_settings_path = ""
 	_last_shutdown = {tracked_playbacks = playbacks.size(), remaining_playbacks = remaining,
+		preparation_drained = preparation_drained,
 		audio_released = remaining == 0, elapsed_usec = Time.get_ticks_usec() - begin,
 		timeout_usec = AUDIO_DRAIN_TIMEOUT_USEC, settings_removed = settings_removed}
 	return _last_shutdown

@@ -29,6 +29,8 @@ const AirplaneBuilder := preload("res://render/airplane.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
+## Actual launch setup changed; repeated setters do not restart idle preparation.
+signal launch_setup_changed
 signal ground_vehicle_requested
 signal workshop_requested(from: Control)
 signal natural_random_requested(from: Control)
@@ -1142,6 +1144,7 @@ func fuel_preference() -> float:
 
 
 func _show_start_choice(choice: String) -> void:
+	var previous := start_choice
 	if Catalog.is_rotorcraft(aircraft_id):
 		start_choice = "airborne" if choice == "airborne" or not rotorcraft_pad_available else "runway"
 		start_button.disabled = not rotorcraft_pad_available
@@ -1150,6 +1153,8 @@ func _show_start_choice(choice: String) -> void:
 		if not rotorcraft_pad_available:
 			start_button.tooltip_text = tr("This landscape supports airborne starts only.")
 		limits_label.text = tr("Experimental helicopter. On the pad: arm, release hold, wait for RPM, then raise collective.")
+		if start_choice != previous:
+			launch_setup_changed.emit()
 		return
 	var supported: bool = Catalog.runway_supported(aircraft_id) and runway_available
 	# D6e-R4: every airplane launches trimmed for level flight at 50 % throttle, in the air or after the runway
@@ -1161,6 +1166,8 @@ func _show_start_choice(choice: String) -> void:
 	limits_label.text = "Starts on the runway, trimmed for level flight at 50% throttle. Experimental ground handling." if start_choice == "runway" \
 		else "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
 	start_button.tooltip_text = tr(limits_label.text)
+	if start_choice != previous:
+		launch_setup_changed.emit()
 
 
 func set_landscape(id: String) -> void:
@@ -1180,12 +1187,15 @@ func _update_landscape_activities() -> void:
 
 ## BAT-13: keep the selected mode only where the aircraft supports it; aircraft without pack data stay ideal.
 func set_battery_mode(mode: String) -> void:
+	var previous := battery_mode
 	if mode in Catalog.BATTERY_MODES:
 		_battery_preference = mode
 	battery_mode = _battery_preference if Catalog.has_battery_mode(aircraft_id, _battery_preference) else "ideal"
 	battery_button.visible = not Catalog.battery_data(aircraft_id).is_empty() and not Catalog.is_rotorcraft(aircraft_id)
 	battery_button.text = tr("Battery: finite pack (experimental)") if battery_mode == "pack" else tr("Battery: ideal (never runs flat)")
 	battery_button.tooltip_text = tr("Finite pack: charge runs out, voltage sags under load and in the cold, the pack warms and the ESC cuts power at low voltage. Ideal: constant voltage.")
+	if battery_mode != previous:
+		launch_setup_changed.emit()
 
 
 func _cycle_battery_mode() -> void:
@@ -1194,6 +1204,7 @@ func _cycle_battery_mode() -> void:
 
 ## FUEL-07: only finite-fuel aircraft burn their tank; every other aircraft flies its fixed build (fill 1).
 func set_fuel_fill(fill: float) -> void:
+	var previous := fuel_start_fill
 	if fill in FUEL_FILLS:
 		_fuel_preference = fill
 	var finite: bool = Catalog.has_finite_fuel(aircraft_id)
@@ -1202,6 +1213,8 @@ func set_fuel_fill(fill: float) -> void:
 	fuel_button.text = tr("Fuel: full tank") if fuel_start_fill == 1.0 \
 		else tr("Fuel: %d %% of the tank") % roundi(fuel_start_fill * 100.0)
 	fuel_button.tooltip_text = tr("Start fill of the engine's tank. Fuel burns in flight: the airplane gets lighter and its balance moves aft as the tank empties.")
+	if fuel_start_fill != previous:
+		launch_setup_changed.emit()
 
 
 ## F4U-16: the saved paint scheme per catalog aircraft ([liveries] preferences).
@@ -1257,10 +1270,13 @@ func _cycle_start_choice() -> void:
 
 ## Keeps only a complete validated config. A corrupt preference can never stop Home from opening.
 func set_weather_config(raw: Variant) -> void:
+	var previous := weather_config
 	var checked := WeatherSettings.validate(raw)
 	weather_config = checked.config.duplicate(true) if checked.ok else WeatherSettings.defaults()
 	if is_node_ready():
 		_update_weather_text()
+	if weather_config != previous:
+		launch_setup_changed.emit()
 
 
 ## Keeps a complete validated lighting selection for the Home summary and flight handoff.

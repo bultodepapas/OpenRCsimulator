@@ -45,28 +45,36 @@ safety, records pause/tick state, and never forces a pose or advances physics ma
 
 ```powershell
 & .tools/Godot_v4.7.2-stable_win64_console.exe --path app --audio-driver Dummy `
-  --resolution 1280x720 --max-fps 60 `
+  --resolution 1920x1080 --fullscreen `
   --script "$PWD/research/performance/loading_probe.gd" -- `
   --output="$PWD/tmp/loading-new.json" --cycles=3
 ```
 
 Create the parent directory first; output and its `.settings.cfg` sidecar must not exist.
-Optional `--aircraft=<id>` selects a flyable fixed-wing aircraft. Cycles are bounded to
-1–50. Keep logs and inspect errors even on exit zero. Apply an external timeout for
+Optional `--aircraft=<id>` selects a flyable fixed-wing aircraft. `--dwell-ms=0..30000`
+waits after each Home draw before pressing Fly. `--prefetch=off|scene|trim|scene_trim`
+selects the preparation experiment (default `off`); `--prefetch-delay-ms=0..10000`
+sets its stable-selection delay (default 350 ms). Non-off modes require an app that
+implements preparation. Compare identical dwell and delay settings across roles.
+Cycles are bounded to 1–50. Keep logs and inspect errors even on exit zero. Apply an external timeout for
 unattended runs. A fresh process is not a cold OS/import/shader cache. Engine elapsed
 time excludes parent-process launch overhead. `fly_sync_usec` measures only dispatch
 of `pressed.emit()`; Home now acknowledges Fly before its deferred handoff.
 `fly_ready_usec` includes that handoff and validated flight creation, while
-`fly_first_draw_usec` additionally waits for post-draw. The probe allows at most four
-process frames for the handoff and rejects cancellation, retry-ready rejection,
+`fly_first_draw_usec` additionally waits for post-draw. `home_to_ready_usec` includes
+dwell; `home_dwell` records actual elapsed time and frame intervals. Preparation
+snapshots and static engine allocation counts before/after dwell are additive fields;
+static allocation is not process RSS or VRAM. The probe allows at most 7,200 process
+frames and 60 seconds for the handoff and rejects cancellation, retry-ready rejection,
 startup errors and unflyable sessions. An external timeout bounds blocking construction.
 A paused first draw is not interactive readiness. Three cycles do not establish the
 DT-12 soak or package gate.
 
-After the last sample, the probe frees its scene and observes weak references to the
+After the last sample, the probe stops and awaits any Home preparation before freeing
+its scene, then observes weak references to the
 latest playback of each audio player. It allows up to one second for the mixer to
 release them; this teardown is outside all loading timings. The additive `shutdown`
-record reports elapsed time, tracked/remaining playbacks and sidecar removal. A timeout
+record reports audio elapsed time, tracked/remaining playbacks, preparation drainage and sidecar removal. A timeout
 or sidecar removal failure marks the report incomplete and exits nonzero. Failures also
 free the owned scene and remove successfully created settings; existing files are never
 removed. This distinguishes asynchronous audio retirement from persistent retention;

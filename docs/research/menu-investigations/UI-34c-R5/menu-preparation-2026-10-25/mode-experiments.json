@@ -1,0 +1,92 @@
+[
+  {
+    "file": "scene-5000-350-turbo-lumber-evolution.json",
+    "mode": "scene",
+    "dwell_msec": 5000,
+    "delay_msec": 350,
+    "aircraft": "turbo-lumber-evolution",
+    "first_s": 6.061257,
+    "warm_s": null,
+    "all_active": true
+  },
+  {
+    "file": "scene_trim-0-350-turbo-lumber-evolution.json",
+    "mode": "scene_trim",
+    "dwell_msec": 0,
+    "delay_msec": 350,
+    "aircraft": "turbo-lumber-evolution",
+    "first_s": 7.35697,
+    "warm_s": 1.513942,
+    "all_active": true
+  },
+  {
+    "file": "scene_trim-10000-350-turbo-lumber-evolution.json",
+    "mode": "scene_trim",
+    "dwell_msec": 10000,
+    "delay_msec": 350,
+    "aircraft": "turbo-lumber-evolution",
+    "first_s": 1.653275,
+    "warm_s": null,
+    "all_active": true
+  },
+  {
+    "file": "scene_trim-2000-350-turbo-lumber-evolution.json",
+    "mode": "scene_trim",
+    "dwell_msec": 2000,
+    "delay_msec": 350,
+    "aircraft": "turbo-lumber-evolution",
+    "first_s": 4.381955,
+    "warm_s": null,
+    "all_active": true
+  },
+  {
+    "file": "scene_trim-5000-0-turbo-lumber-evolution.json",
+    "mode": "scene_trim",
+    "dwell_msec": 5000,
+    "delay_msec": 0,
+    "aircraft": "turbo-lumber-evolution",
+    "first_s": 1.76823,
+    "warm_s": null,
+    "all_active": true
+  },
+  {
+    "file": "scene_trim-5000-350-jensen-das-ugly-stik-60.json",
+    "mode": "scene_trim",
+    "dwell_msec": 5000,
+    "delay_msec": 350,
+    "aircraft": "jensen-das-ugly-stik-60",
+    "first_s": 1.662759,
+    "warm_s": 1.411522,
+    "all_active": true
+  },
+  {
+    "file": "scene_trim-5000-350-sebart-avanti-s-a200-p100rx.json",
+    "mode": "scene_trim",
+    "dwell_msec": 5000,
+    "delay_msec": 350,
+    "aircraft": "sebart-avanti-s-a200-p100rx",
+    "first_s": 1.866153,
+    "warm_s": 1.522087,
+    "all_active": true
+  },
+  {
+    "file": "scene_trim-5000-750-turbo-lumber-evolution.json",
+    "mode": "scene_trim",
+    "dwell_msec": 5000,
+    "delay_msec": 750,
+    "aircraft": "turbo-lumber-evolution",
+    "first_s": 1.641153,
+    "warm_s": null,
+    "all_active": true
+  },
+  {
+    "file": "trim-5000-350-turbo-lumber-evolution.json",
+    "mode": "trim",
+    "dwell_msec": 5000,
+    "delay_msec": 350,
+    "aircraft": "turbo-lumber-evolution",
+    "first_s": 3.49147,
+    "warm_s": null,
+    "all_active": true
+  }
+]

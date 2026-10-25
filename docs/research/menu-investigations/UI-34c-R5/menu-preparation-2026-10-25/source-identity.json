@@ -1,0 +1,15 @@
+{
+  "candidate_commit": "cf21cea5a7f09ccd2e575ecb5fcd3fa6b6ad04d5",
+  "baseline_commit": "25bb32b5c22b1af5b74af5dc60c22ea2991beb88",
+  "files": {
+    "app/app_root.gd": "e22660ab1f1dc99a7c7e065039386998c5467700a5408a27ee7fc68134d224f0",
+    "app/ui/home.gd": "8ddce1f89b18539aad8c3a2d20dd239d8b63161a81258b0b8a204162e7b22dc0",
+    "app/ui/home_preview_resources.gd": "1ea80e43cdc6b101506a9a8b5a7487f7fef0f8be5eda15935258cadc069faf89",
+    "app/ui/home_flight_preparation.gd": "4e479aa7e56315ca7b97b3f706002bb60a44f9f95dbecf02912fd6630301fc97",
+    "app/sim/flight_session.gd": "015654cc0ece91318906bfda1af05216c062a9ece1eef627babb7d23ff26f54e",
+    "app/sim/launch_trim_cache.gd": "32b7d075cfe19178d27a8bcb56867fd637bdbd5b7555e71c22cdebbbe4499a81",
+    "app/sim/launch_trim_job.gd": "c70f0588ef32ba6f1bf47afd5220f97eebfe972fa1f9dfdc8f60d471ae25f058",
+    "research/performance/loading_probe.gd": "36cd7acf7909059809716d84665feb82a54cbe829d9ae7cf06d58914fedf3bb4"
+  },
+  "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+}
