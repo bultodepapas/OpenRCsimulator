@@ -1,0 +1,401 @@
+{
+  "method": "Three completed alternating fresh-process pairs, native fullscreen 1920x1080; two cycles each. Runtime 4ae9fc667 vs77fe89a0e, identical tracked app import metadata. OS/driver cache and other host activity uncontrolled. Pair 4 candidate is exploratory and excluded from paired aggregates. Failure-only collector diagnostics added after a refused attempt; no successful-path timing code changed.",
+  "runs": [
+    {
+      "pair": 1,
+      "role": "baseline",
+      "path": "pair-1-baseline.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "home_first_draw_from_load_ms": 13033.202,
+      "home_to_first_ready_ms": 28804.058,
+      "cycles": [
+        {
+          "ready_ms": 15770.856,
+          "first_draw_ms": 15844.658,
+          "feedback_ms": 22.296,
+          "paused": false,
+          "scene_ms": 3526.817,
+          "trim_ms": 9059.331,
+          "contacts_ms": 536.69,
+          "p95_handoff_ms": 19.039,
+          "max_handoff_ms": 3531.208,
+          "frames_over_ms": {
+            "33": 18,
+            "50": 16,
+            "100": 10
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 2719.415,
+          "first_draw_ms": 2783.089,
+          "feedback_ms": 28.794,
+          "paused": false,
+          "scene_ms": 8.922,
+          "trim_ms": 47.797,
+          "contacts_ms": 242.241,
+          "p95_handoff_ms": 288.516,
+          "max_handoff_ms": 443.645,
+          "frames_over_ms": {
+            "33": 18,
+            "50": 16,
+            "100": 9
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 1,
+      "role": "candidate",
+      "path": "pair-1-candidate.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "home_first_draw_from_load_ms": 9850.34,
+      "home_to_first_ready_ms": 22104.647,
+      "cycles": [
+        {
+          "ready_ms": 12254.307,
+          "first_draw_ms": 12315.867,
+          "feedback_ms": 22.721,
+          "paused": false,
+          "scene_ms": 2984.011,
+          "trim_ms": 6580.329,
+          "contacts_ms": 419.192,
+          "p95_handoff_ms": 17.641,
+          "max_handoff_ms": 424.652,
+          "frames_over_ms": {
+            "33": 17,
+            "50": 14,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 1969.542,
+          "first_draw_ms": 1994.613,
+          "feedback_ms": 24.849,
+          "paused": false,
+          "scene_ms": 8.465,
+          "trim_ms": 30.213,
+          "contacts_ms": 132.213,
+          "p95_handoff_ms": 209.823,
+          "max_handoff_ms": 296.615,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 12,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "role": "baseline",
+      "path": "pair-2-baseline.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "home_first_draw_from_load_ms": 9991.756,
+      "home_to_first_ready_ms": 24657.356,
+      "cycles": [
+        {
+          "ready_ms": 14665.6,
+          "first_draw_ms": 14726.66,
+          "feedback_ms": 25.175,
+          "paused": false,
+          "scene_ms": 3409.082,
+          "trim_ms": 8259.593,
+          "contacts_ms": 506.195,
+          "p95_handoff_ms": 21.512,
+          "max_handoff_ms": 3413.528,
+          "frames_over_ms": {
+            "33": 20,
+            "50": 16,
+            "100": 9
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 2447.822,
+          "first_draw_ms": 2481.957,
+          "feedback_ms": 26.554,
+          "paused": false,
+          "scene_ms": 7.279,
+          "trim_ms": 47.768,
+          "contacts_ms": 234.441,
+          "p95_handoff_ms": 266.607,
+          "max_handoff_ms": 363.993,
+          "frames_over_ms": {
+            "33": 17,
+            "50": 15,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "role": "candidate",
+      "path": "pair-2-candidate.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "home_first_draw_from_load_ms": 10138.939,
+      "home_to_first_ready_ms": 23109.614,
+      "cycles": [
+        {
+          "ready_ms": 12970.675,
+          "first_draw_ms": 13036.178,
+          "feedback_ms": 25.791,
+          "paused": false,
+          "scene_ms": 3376.403,
+          "trim_ms": 6863.966,
+          "contacts_ms": 576.702,
+          "p95_handoff_ms": 17.853,
+          "max_handoff_ms": 582.777,
+          "frames_over_ms": {
+            "33": 18,
+            "50": 14,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 2287.762,
+          "first_draw_ms": 2313.852,
+          "feedback_ms": 29.1,
+          "paused": false,
+          "scene_ms": 9.067,
+          "trim_ms": 37.855,
+          "contacts_ms": 200.176,
+          "p95_handoff_ms": 226.829,
+          "max_handoff_ms": 401.114,
+          "frames_over_ms": {
+            "33": 16,
+            "50": 14,
+            "100": 7
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "role": "baseline",
+      "path": "pair-3-baseline.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "home_first_draw_from_load_ms": 10205.291,
+      "home_to_first_ready_ms": 25745.16,
+      "cycles": [
+        {
+          "ready_ms": 15539.869,
+          "first_draw_ms": 15600.917,
+          "feedback_ms": 20.658,
+          "paused": false,
+          "scene_ms": 3932.966,
+          "trim_ms": 8539.203,
+          "contacts_ms": 557.028,
+          "p95_handoff_ms": 20.093,
+          "max_handoff_ms": 3947.387,
+          "frames_over_ms": {
+            "33": 18,
+            "50": 15,
+            "100": 9
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 2629.149,
+          "first_draw_ms": 2694.77,
+          "feedback_ms": 25.063,
+          "paused": false,
+          "scene_ms": 5.755,
+          "trim_ms": 46.564,
+          "contacts_ms": 277.044,
+          "p95_handoff_ms": 304.39,
+          "max_handoff_ms": 328.712,
+          "frames_over_ms": {
+            "33": 18,
+            "50": 15,
+            "100": 10
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "role": "candidate",
+      "path": "pair-3-candidate.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "home_first_draw_from_load_ms": 9449.675,
+      "home_to_first_ready_ms": 22805.221,
+      "cycles": [
+        {
+          "ready_ms": 13355.546,
+          "first_draw_ms": 13423.463,
+          "feedback_ms": 20.998,
+          "paused": false,
+          "scene_ms": 2988.124,
+          "trim_ms": 7055.841,
+          "contacts_ms": 619.036,
+          "p95_handoff_ms": 17.825,
+          "max_handoff_ms": 625.313,
+          "frames_over_ms": {
+            "33": 19,
+            "50": 14,
+            "100": 9
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 2577.499,
+          "first_draw_ms": 2630.459,
+          "feedback_ms": 28.472,
+          "paused": false,
+          "scene_ms": 9.296,
+          "trim_ms": 54.925,
+          "contacts_ms": 204.747,
+          "p95_handoff_ms": 283.648,
+          "max_handoff_ms": 408.066,
+          "frames_over_ms": {
+            "33": 18,
+            "50": 16,
+            "100": 9
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    },
+    {
+      "pair": 4,
+      "role": "candidate",
+      "path": "pair-4-candidate.json",
+      "complete": true,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "home_first_draw_from_load_ms": 11139.538,
+      "home_to_first_ready_ms": 24611.715,
+      "cycles": [
+        {
+          "ready_ms": 13472.177,
+          "first_draw_ms": 13541.29,
+          "feedback_ms": 16.143,
+          "paused": false,
+          "scene_ms": 3904.928,
+          "trim_ms": 6398.424,
+          "contacts_ms": 477.13,
+          "p95_handoff_ms": 17.387,
+          "max_handoff_ms": 717.789,
+          "frames_over_ms": {
+            "33": 19,
+            "50": 13,
+            "100": 6
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        },
+        {
+          "ready_ms": 2386.493,
+          "first_draw_ms": 2432.583,
+          "feedback_ms": 28.375,
+          "paused": false,
+          "scene_ms": 7.963,
+          "trim_ms": 30.937,
+          "contacts_ms": 220.401,
+          "p95_handoff_ms": 241.089,
+          "max_handoff_ms": 381.903,
+          "frames_over_ms": {
+            "33": 17,
+            "50": 13,
+            "100": 9
+          },
+          "nodes_at_home": 808,
+          "orphan_nodes": 0
+        }
+      ]
+    }
+  ],
+  "planned_pairs": 5,
+  "completed_pair_ids": [
+    1,
+    2,
+    3
+  ],
+  "complete": false,
+  "stop_reason": "Shared host remained occupied by unrelated rendered Godot experiments; do not run rendered benchmarks concurrently.",
+  "baseline": {
+    "cold": {
+      "ready_ms": 15539.869,
+      "feedback_ms": 22.296,
+      "scene_ms": 3526.817,
+      "trim_ms": 8539.203,
+      "p95_handoff_ms": 20.093,
+      "max_handoff_ms": 3531.208
+    },
+    "warm": {
+      "ready_ms": 2629.149,
+      "feedback_ms": 26.554,
+      "scene_ms": 7.279,
+      "trim_ms": 47.768,
+      "p95_handoff_ms": 288.516,
+      "max_handoff_ms": 363.993
+    },
+    "home_to_first_ready_ms": 25745.16
+  },
+  "candidate": {
+    "cold": {
+      "ready_ms": 12970.675,
+      "feedback_ms": 22.721,
+      "scene_ms": 2988.124,
+      "trim_ms": 6863.966,
+      "p95_handoff_ms": 17.825,
+      "max_handoff_ms": 582.777
+    },
+    "warm": {
+      "ready_ms": 2287.762,
+      "feedback_ms": 28.472,
+      "scene_ms": 9.067,
+      "trim_ms": 37.855,
+      "p95_handoff_ms": 226.829,
+      "max_handoff_ms": 401.114
+    },
+    "home_to_first_ready_ms": 22805.221
+  }
+}

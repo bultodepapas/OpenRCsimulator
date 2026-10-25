@@ -7,6 +7,22 @@ const PREFS := "user://test_flight_loading.cfg"
 const ALTERNATE_AIRCRAFT := "sebart-avanti-s-a200-p100rx"
 
 
+class SceneLoadGate extends RefCounted:
+	var entered := Semaphore.new()
+	var release := Semaphore.new()
+
+	func load_scene(path: String, type_hint: String) -> Resource:
+		entered.post()
+		release.wait()
+		return ResourceLoader.load(path, type_hint)
+
+
+class UnavailableSceneLoad extends "res://ui/flight_scene_load.gd":
+	func start(_path: String) -> Error:
+		complete = true
+		return ERR_CANT_CREATE
+
+
 class RejectedFlight extends Node:
 	var startup_error := "Intentional startup rejection"
 	var recorder: Node
@@ -18,12 +34,22 @@ class RejectedFlight extends Node:
 
 class TrackedApp extends "res://app_root.gd":
 	var flight_creations := 0
+	var scene_load_gate: SceneLoadGate
+	var scene_thread_unavailable := false
 	var reject_next_flight := false
 	var rejected_candidate_ref: WeakRef
 	var rejected_candidate_session_was_null := false
 	var quit_candidate_instance_id := 0
 	var quit_commit_calls := 0
 	var quit_commit_state: Dictionary = {}
+
+	func _new_flight_scene_load() -> Node:
+		if scene_thread_unavailable:
+			return UnavailableSceneLoad.new()
+		var job: Node = super._new_flight_scene_load()
+		if scene_load_gate != null:
+			job.load_resource = scene_load_gate.load_scene
+		return job
 
 	func _create_flight(aircraft_id: String = "") -> Node:
 		flight_creations += 1
@@ -99,6 +125,16 @@ func _wait_quit_commit(app: TrackedApp, max_frames: int = 2400) -> bool:
 	return app.quit_commit_calls > 0
 
 
+func _wait_scene_worker(app: TrackedApp, gate: SceneLoadGate) -> bool:
+	for _index in 2400:
+		if gate.entered.try_wait():
+			return is_instance_valid(app._loading_scene_job) and not app._loading_scene_job.complete
+		if not app._loading_active:
+			return false
+		await process_frame
+	return false
+
+
 func _contains_phase(phases: Array, expected: String) -> bool:
 	for phase: Variant in phases:
 		if phase is Dictionary and str(phase.get("stage", "")) == expected:
@@ -156,6 +192,31 @@ func _run() -> void:
 		and app.home_scene != null and app.home_scene.is_inside_tree()
 		and app.screens.get_screen("loading") == null
 		and app.last_flight_loading.get("status", "") == "cancelled")
+
+	# Hold an actual scene-load worker before ResourceLoader runs, so cancellation cannot race a warm cache.
+	var cancel_gate := SceneLoadGate.new()
+	app.scene_load_gate = cancel_gate
+	app.start_flight()
+	var worker_started := await _wait_scene_worker(app, cancel_gate)
+	var cancelled_job: Node = app._loading_scene_job
+	var cancelled_job_ref: WeakRef = weakref(cancelled_job) if is_instance_valid(cancelled_job) else weakref(app)
+	_check("scene worker starts after feedback without instantiating flight", worker_started
+		and app.last_flight_loading.has("feedback_usec") and app.flight_creations == 0 and app.flight == null)
+	app.cancel_flight_loading()
+	await _frames(4)
+	_check("busy cancellation keeps its loading surface until the worker drains", worker_started
+		and app._loading_active and app.screens.is_top("loading") and app.flight_creations == 0
+		and is_instance_valid(cancelled_job) and not cancelled_job.complete)
+	cancel_gate.release.post()
+	var busy_cancel_finished := await _wait_idle(app, 2400)
+	await _frames(4)
+	_check("cancelled scene job joins and cannot populate the retained cache", busy_cancel_finished
+		and cancelled_job_ref.get_ref() == null and app._loading_scene_job == null
+		and app._loading_scene_resource == null and app.flight_creations == 0 and app.flight == null
+		and not app._home_preview_resources._resources.has(app.FLIGHT_SCENE)
+		and app.home == original_home and app.screens.is_top("home")
+		and app.last_flight_loading.get("status", "") == "cancelled")
+	app.scene_load_gate = null
 
 	# An injected constructor rejection tests the AppRoot rollback path without changing production data.
 	app.reject_next_flight = true
@@ -231,6 +292,8 @@ func _run() -> void:
 
 	# Retry after both cancellation and startup rejection; duplicate Fly calls still construct one candidate.
 	var creations_before_success := app.flight_creations
+	app.scene_thread_unavailable = true # deterministic OS Thread.start failure seam
+	app._home_preview_resources.cancel_for(app) # evict the retained scene, so fallback must run
 	app.start_flight()
 	app.start_flight()
 	var success_finished := await _wait_idle(app, 2400)
@@ -240,6 +303,8 @@ func _run() -> void:
 	_check("duplicate Fly creates one candidate and completes startup",
 		success_finished and app.flight_creations == creations_before_success + 1
 		and is_instance_valid(launched) and launched.startup_complete and is_instance_valid(session))
+	_check("unavailable worker records the existing synchronous fallback",
+		app.last_flight_loading.get("scene_load_fallback", "") == "thread_start_failed")
 	_check("successful flight is valid and uses Home's selected start",
 		is_instance_valid(session) and session.is_flyable()
 		and launched.start_choice == FlightSession.START_RUNWAY)
@@ -256,8 +321,38 @@ func _run() -> void:
 		and _contains_phase(phases, "Checking flight") and _contains_phase(phases, "Preparing effects")
 		and feedback_usec >= 0 and total_usec >= feedback_usec)
 
+	_check("successful scene preparation shares the broker's two-resource bound",
+		app._loading_scene_job == null and app._loading_scene_resource == null
+		and app._home_preview_resources._resources.size() <= 2
+		and app._home_preview_resources._resources.has(app.FLIGHT_SCENE))
 	app.queue_free()
 	await _frames(4)
+
+	# AppRoot may be freed by callers without the controlled Quit path. Its root-owned job must survive and drain.
+	var departed_app := TrackedApp.new()
+	departed_app.user_args = PackedStringArray()
+	departed_app.preferences_path = PREFS
+	departed_app.flight_loading_enabled = true
+	var departed_gate := SceneLoadGate.new()
+	departed_app.scene_load_gate = departed_gate
+	root.add_child(departed_app)
+	await _frames(8)
+	departed_app.start_flight()
+	var departed_worker_started := await _wait_scene_worker(departed_app, departed_gate)
+	var orphan_job: Node = departed_app._loading_scene_job
+	var orphan_ref: WeakRef = weakref(orphan_job) if is_instance_valid(orphan_job) else weakref(departed_app)
+	var departed_ref: WeakRef = weakref(departed_app)
+	departed_app.free()
+	await _frames(4)
+	_check("AppRoot.free leaves the active scene job owned by the tree", departed_worker_started
+		and departed_ref.get_ref() == null and is_instance_valid(orphan_job)
+		and orphan_job.get_parent() == root and not orphan_job.complete)
+	departed_gate.release.post()
+	for _index in 2400:
+		if orphan_ref.get_ref() == null:
+			break
+		await process_frame
+	_check("abandoned scene job joins, drops its result and frees itself", orphan_ref.get_ref() == null)
 	TranslationServer.set_locale("en")
 	_clear_test_files()
 	print("Flight loading: %d checks, %d failed" % [_checks, _failures])

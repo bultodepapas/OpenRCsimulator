@@ -15,6 +15,7 @@ const HomeScene := preload("res://ui/home_scene.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const HomePreviewResources := preload("res://ui/home_preview_resources.gd")
 const FlightLoading := preload("res://ui/flight_loading.gd")
+const FlightSceneLoad := preload("res://ui/flight_scene_load.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const Landscapes = preload("res://landscapes/catalog.gd")
 const UiInput := preload("res://ui/ui_input.gd")
@@ -85,6 +86,8 @@ var _auto_accept_quit_before_root := true
 var _wm_close_pending := false
 var _exit_request_active := false
 var _quit_audio_pending := false
+var last_quit_audio_retirement: Dictionary = {}
+const QUIT_AUDIO_RETIRE_TIMEOUT_USEC := 250_000
 var _exit_request_kind := ""
 var _exit_request_commit := Callable()
 var _exit_request_recorders: Array[RefCounted] = []
@@ -126,6 +129,8 @@ var _loading_phase_usec := 0
 var _loading_phase := ""
 var _loading_resource_done := false
 var _loading_resource_ok := false
+var _loading_scene_job: Node
+var _loading_scene_resource: PackedScene
 var _home_rebuild_queued := false
 var _home_rebuild_source: WeakRef
 var flight: Node
@@ -720,7 +725,12 @@ func start_flight(request: Dictionary = {}) -> void:
 			if not selected_asset.is_empty():
 				resource_ready = await _prepare_flight_resource(selected_asset)
 			if resource_ready and not _loading_cancelled:
-				await _flight_loading_checkpoint("Preparing flight scene")
+				if await _flight_loading_checkpoint("Preparing flight scene"):
+					resource_ready = await _prepare_flight_scene()
+				else:
+					resource_ready = false
+		if not is_inside_tree():
+			return
 		if _loading_cancelled:
 			_cancel_loading_before_candidate(departing_home)
 			return
@@ -953,7 +963,7 @@ func _create_flight(aircraft_id: String = "") -> Node:
 			return null
 		var instance: Variant = helicopter_script.new()
 		return instance as Node if instance is Node else null
-	var flight_scene: PackedScene = load(route_path) as PackedScene
+	var flight_scene: PackedScene = _loading_scene_resource if _loading_active and _loading_scene_resource != null else load(route_path) as PackedScene
 	if flight_scene == null or not flight_scene.can_instantiate():
 		return null
 	if _loading_active and is_instance_valid(_home_preview_resources):
@@ -1011,6 +1021,57 @@ func _prepare_flight_resource(path: String) -> bool:
 	return _loading_resource_ok and not _loading_cancelled
 
 
+## Selected/cache-hit/procedural intent may leave an obsolete GLB request draining.
+## Serialize scene loading after that request, with main-thread frames available throughout.
+func _prepare_flight_scene() -> bool:
+	while is_instance_valid(_home_preview_resources) and _home_preview_resources.is_busy():
+		if _flight_loading_is_cancelled():
+			return false
+		await get_tree().process_frame
+	if _flight_loading_is_cancelled():
+		return false
+	if is_instance_valid(_home_preview_resources):
+		var retained: PackedScene = _home_preview_resources.retained(FLIGHT_SCENE)
+		if retained != null and retained.can_instantiate():
+			_loading_scene_resource = retained
+			return true
+	_loading_scene_job = _new_flight_scene_load()
+	get_tree().root.add_child(_loading_scene_job)
+	var start_error: Error = _loading_scene_job.start(FLIGHT_SCENE)
+	if start_error != OK:
+		# Preserve the former synchronous load when the OS cannot start a worker.
+		last_flight_loading.scene_load_fallback = "thread_start_failed"
+		_loading_scene_job.abandon()
+		_loading_scene_job = null
+		return true
+	# Cancellation changes intent, but ownership remains here until the job joins.
+	# Keep the local job: _exit_tree abandons and clears the owner's field while it drains.
+	var job: Node = _loading_scene_job
+	var frame: Signal = get_tree().process_frame
+	while is_instance_valid(job) and not job.complete:
+		await frame
+		if not is_inside_tree():
+			return false
+	if not is_instance_valid(job):
+		_loading_scene_job = null
+		return false
+	var scene: PackedScene = job.take_scene()
+	_loading_scene_job = null
+	if _flight_loading_is_cancelled():
+		return false
+	if scene == null or not scene.can_instantiate():
+		return false
+	_loading_scene_resource = scene
+	if is_instance_valid(_home_preview_resources):
+		_home_preview_resources.retain_loaded(FLIGHT_SCENE, scene)
+	return true
+
+
+## Test seam; production jobs are siblings of AppRoot, so AppRoot.free cannot release a live Thread.
+func _new_flight_scene_load() -> Node:
+	return FlightSceneLoad.new()
+
+
 func _flight_resource_ready(ok: bool) -> void:
 	_loading_resource_ok = ok
 	_loading_resource_done = true
@@ -1023,6 +1084,7 @@ func _remove_flight_loading_screen() -> void:
 
 
 func _finish_flight_loading(outcome: String) -> void:
+	_loading_scene_resource = null
 	var now := Time.get_ticks_usec()
 	if not _loading_phase.is_empty():
 		last_flight_loading.phases.append({stage = _loading_phase, work_usec = now - _loading_phase_usec})
@@ -1849,6 +1911,11 @@ func _commit_return_to_workshop() -> void:
 
 func _exit_tree() -> void:
 	_loading_cancelled = true
+	_loading_scene_resource = null
+	if is_instance_valid(_loading_scene_job):
+		# The root-owned job keeps processing and drains without applying this departed launch.
+		_loading_scene_job.abandon()
+		_loading_scene_job = null
 	for retained: Node in [_loading_retained_home, _loading_retained_random, home_scene]:
 		if _loading_active and is_instance_valid(retained) and retained.get_parent() == null:
 			retained.free()
@@ -2508,27 +2575,53 @@ func _commit_app_quit() -> void:
 	if _quit_audio_pending:
 		return
 	_menu_feedback(&"quit")
+	_quit_audio_pending = true
 	var delay: float = menu_audio.shutdown_delay() if is_instance_valid(menu_audio) else 0.0
 	if delay > 0.0:
-		_quit_audio_pending = true
-		# Decisions and recording recovery have already completed. Freeze the last
-		# visible screen during the short closing tail so a second action cannot launch.
-		for child: Node in get_children():
-			if child != menu_audio:
-				child.process_mode = Node.PROCESS_MODE_DISABLED
-		var surface := ScreenStack._surface(screens.top()) if screens.top() != null else null
-		if surface != null:
-			surface.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_DISABLED
-			surface.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
-		set_process_input(false)
-		set_process_unhandled_input(false)
-		# A timer's first delta can include save work performed before it was created.
-		# Check an absolute wall deadline so neither that work nor simulation speed cuts the tail.
+		_freeze_quit_surface()
+		# A timer's first delta can include work done before its creation. Use absolute wall time.
 		var deadline_msec := Time.get_ticks_msec() + ceili(delay * 1000.0)
 		while Time.get_ticks_msec() < deadline_msec:
 			await get_tree().process_frame
 			if not is_inside_tree(): return
+	var playbacks: Array[WeakRef] = []
+	if is_instance_valid(menu_audio):
+		playbacks = menu_audio.retire_playbacks()
+	if not playbacks.is_empty() and delay <= 0.0:
+		_freeze_quit_surface()
+	var drain_started_usec := Time.get_ticks_usec()
+	var remaining := _remaining_quit_audio_playbacks(playbacks)
+	while remaining > 0 and Time.get_ticks_usec() - drain_started_usec < QUIT_AUDIO_RETIRE_TIMEOUT_USEC:
+		await get_tree().process_frame
+		if not is_inside_tree(): return
+		remaining = _remaining_quit_audio_playbacks(playbacks)
+	last_quit_audio_retirement = {complete = remaining == 0, timed_out = remaining > 0,
+		captured_playbacks = playbacks.size(), pending_playbacks = remaining,
+		elapsed_usec = Time.get_ticks_usec() - drain_started_usec, timeout_usec = QUIT_AUDIO_RETIRE_TIMEOUT_USEC}
+	if remaining > 0:
+		printerr("Menu audio shutdown incomplete: %d playback(s) retained after %d usec" % [remaining, last_quit_audio_retirement.elapsed_usec])
 	_request_app_quit()
+
+
+func _freeze_quit_surface() -> void:
+	# Decisions and recording recovery have finished. Block another action through the final tail/drain.
+	for child: Node in get_children():
+		if child != menu_audio:
+			child.process_mode = Node.PROCESS_MODE_DISABLED
+	var surface := ScreenStack._surface(screens.top()) if screens.top() != null else null
+	if surface != null:
+		surface.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_DISABLED
+		surface.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
+	set_process_input(false)
+	set_process_unhandled_input(false)
+
+
+func _remaining_quit_audio_playbacks(playbacks: Array[WeakRef]) -> int:
+	var remaining := 0
+	for playback: WeakRef in playbacks:
+		if playback.get_ref() != null:
+			remaining += 1
+	return remaining
 
 
 func _request_app_quit() -> void:

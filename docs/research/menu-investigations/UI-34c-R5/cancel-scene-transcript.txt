@@ -1,0 +1,21 @@
+> wait until="home != null and screens.is_top('home')" timeout_s=60
+{"frame": 2834, "value": true}
+> set node=AppRoot prop=flight_loading_enabled value=true
+{"before": false, "after": true}
+> call node=AppRoot method=start_flight
+"<GDScriptFunctionState#-9223371604422028507>"
+> wait until="_loading_scene_job != null and not _loading_scene_job.complete" timeout_s=30
+{"frame": 2858, "value": true}
+> get node=AppRoot prop=_loading_phase
+"Preparing flight scene"
+> call node=AppRoot method=cancel_flight_loading
+null
+> wait until="not _loading_active" timeout_s=30
+{"frame": 3131, "value": true}
+> assert expr="flight == null and screens.is_top('home') and last_flight_loading.status == 'cancelled'" message="cold scene cancellation restores Home"
+{"value": true}
+> eval expr="last_flight_loading"
+{"status": "cancelled", "phases": [{"stage": "Preparing resources", "work_usec": 573}, {"stage": "Preparing flight scene", "work_usec": 1922111}], "aircraft": "jensen-das-ugly-stik-60", "landscape": "club_field", "accepted_usec": 28904873, "surface_prepare_usec": 2192, "feedback_usec": 13063, "total_usec": 1948988}
+> objects
+totals objects 4998, nodes 870, resources 946, orphans 0, static_memory_mib 669.24, tree_nodes 870
+classes: MeshInstance3D 343, MultiMeshInstance3D 139, Node3D 93, ColorRect 39, Node2D:crystal_surface.gd 38, Label 36, Button 35, Control 17, HBoxContainer 14, VBoxContainer 14, WorldEnvironment 8, PanelContainer:key_cap.gd 8, Camera3D 8, SubViewport 7, SpotLight3D 6

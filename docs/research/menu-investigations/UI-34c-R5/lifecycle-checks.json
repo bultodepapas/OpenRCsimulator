@@ -1,0 +1,61 @@
+{
+  "smoke_before_scenario_fix": {
+    "engine_log_path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\debug-bridge\\20261024-204400-47870\\engine.log",
+    "engine_log_sha256": "bcea0372af689944a09e9ffdbc944d81cd2ad3099b55f81804622999c5dce772",
+    "leak_diagnostic_lines": [],
+    "orphan_string_names": []
+  },
+  "smoke_after_scenario_fix": {
+    "engine_log_path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\debug-bridge\\20261024-204549-47870\\engine.log",
+    "engine_log_sha256": "fca8c995aad5ec8fbbdb1fe57b5ae50a57a8ba2c5eeb63342165ed131d0da705",
+    "leak_diagnostic_lines": [],
+    "orphan_string_names": [],
+    "captured_cli_summary": {
+      "ok": true,
+      "failed": [],
+      "steps": 14,
+      "hitches": 76,
+      "leaked_objects_at_exit": 0
+    },
+    "summary_provenance": "Captured from the debugctl smoke console in this session; engine log identity above. Default headless synchronous route, not native cadence evidence."
+  },
+  "scene_cancel": {
+    "engine_log_path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\debug-bridge\\20261024-204913-47870\\engine.log",
+    "engine_log_sha256": "10c6910a0a792a66bcd209ceebb2fcb99fd1c3dd63bf8b5cae58d81273338389",
+    "leak_diagnostic_lines": [],
+    "orphan_string_names": [
+      "Orphan StringName: MOON_UMBRA_503 (static: 0, total: 1)",
+      "Orphan StringName: MOON_UMBRA_677 (static: 0, total: 1)",
+      "Orphan StringName: MOON_UMBRA_U (static: 0, total: 1)"
+    ]
+  },
+  "scene_quit_before_audio_fix": {
+    "engine_log_path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\debug-bridge\\20261024-205004-47870\\engine.log",
+    "engine_log_sha256": "1a8f06c0fc3ba0e775b9feb9ecbb02617d7f3a00506451834b001dfe772968d9",
+    "leak_diagnostic_lines": [
+      "Leaked instance: OggPacketSequence:9223372264924252219 - Reference count: 3",
+      "Leaked instance: AudioStreamOggVorbis:9223372264941029436 - Reference count: 1",
+      "Leaked instance: OggPacketSequencePlayback:9223372500325372617 - Reference count: 1",
+      "Leaked instance: AudioStreamPlaybackOggVorbis:9223372500308595402 - Reference count: 1",
+      "Hint: Leaked instances typically happen when nodes are removed from the scene tree (with `remove_child()`) but not freed (with `free()` or `queue_free()`).",
+      "WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+      "ERROR: 2 resources still in use at exit."
+    ],
+    "orphan_string_names": [
+      "Orphan StringName: Master (static: 0, total: 2)",
+      "Orphan StringName: MOON_UMBRA_503 (static: 0, total: 1)",
+      "Orphan StringName: MOON_UMBRA_677 (static: 0, total: 1)",
+      "Orphan StringName: MOON_UMBRA_U (static: 0, total: 1)"
+    ]
+  },
+  "scene_quit_after_audio_fix": {
+    "engine_log_path": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\debug-bridge\\20261024-211206-47870\\engine.log",
+    "engine_log_sha256": "4d257981accb67ac2abed1ca8d660b01042c8a2bb2f1680a8ef23c2a11e9225c",
+    "leak_diagnostic_lines": [],
+    "orphan_string_names": [
+      "Orphan StringName: MOON_UMBRA_503 (static: 0, total: 1)",
+      "Orphan StringName: MOON_UMBRA_677 (static: 0, total: 1)",
+      "Orphan StringName: MOON_UMBRA_U (static: 0, total: 1)"
+    ]
+  }
+}

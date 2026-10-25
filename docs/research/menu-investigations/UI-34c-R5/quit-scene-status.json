@@ -1,0 +1,25 @@
+{
+  "captured_cli_objects": [
+    {
+      "port": 47870,
+      "session": "D:\\OpenRCsimulator-evidence\\ui34c-r3\\tmp\\debug-bridge\\20261024-205004-47870",
+      "pid": 6588,
+      "alive": false,
+      "bridge": false
+    },
+    {
+      "engine_exit": {
+        "crash": null,
+        "leaked_objects": 4,
+        "leaked_instances": [
+          "OggPacketSequence:9223372264924252219 - Reference count: 3",
+          "AudioStreamOggVorbis:9223372264941029436 - Reference count: 1",
+          "OggPacketSequencePlayback:9223372500325372617 - Reference count: 1",
+          "AudioStreamPlaybackOggVorbis:9223372500308595402 - Reference count: 1"
+        ],
+        "resources_in_use_at_exit": 2
+      }
+    }
+  ],
+  "raw_transcript_sha256": "e648a10d7fce3375c232ca8fef6dadc4073b005e85a5e00e5a70575b6e2ab5cf"
+}

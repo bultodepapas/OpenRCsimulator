@@ -1,5 +1,6 @@
 # HUD-13-R9: all widget families, appearance changes and idle input dispatch. Starts/ends at Home.
-fly start=airborne
+# A preceding rotorcraft/garage scenario may leave a helicopter selected; these HUD widgets belong to airplanes.
+fly aircraft=jensen-das-ugly-stik-60 start=airborne
 eval expr="open_pause()"
 open screen=overlays
 select text=Preset index=5

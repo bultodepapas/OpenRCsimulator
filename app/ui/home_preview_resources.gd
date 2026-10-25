@@ -51,6 +51,18 @@ func request(path: String, callback: Callable) -> void:
 	else:
 		_start(path, callback)
 
+## Reuse only this broker's bounded ownership; do not extend a separate scene cache.
+func retained(path: String) -> PackedScene:
+	if not _resources.has(path):
+		return null
+	_order.erase(path)
+	_order.append(path)
+	return _resources[path] as PackedScene
+
+## Includes obsolete active work: a cached/procedural intent can complete before it drains.
+func is_busy() -> bool:
+	return not _active_path.is_empty()
+
 func _start(path: String, callback: Callable) -> void:
 	var error := ResourceLoader.load_threaded_request(path, "PackedScene", false)
 	if error != OK:

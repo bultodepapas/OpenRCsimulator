@@ -43,9 +43,16 @@ func _run() -> void:
 	broker.retain_loaded(paths[2], load(paths[2]) as PackedScene)
 	_check("foreground scene shares the two-resource bound", broker._resources.size() == 2
 		and broker._resources.has(paths[2]) and not broker._resources.has(paths[0]))
+	_check("retained accessor returns only an owned scene", broker.retained(paths[2]) is PackedScene
+		and broker.retained(paths[0]) == null and broker._resources.size() == 2)
 	broker.request(paths[2], _complete.bind("foreground-cached"))
 	_check("foreground scene is reusable without a worker request", completions[-1] == "foreground-cached"
 		and broker._active_path.is_empty())
+	broker.request(paths[1], _complete.bind("obsolete-before-cache-hit"))
+	broker.request(paths[3], _complete.bind("cached-while-busy"))
+	_check("cached completion preserves active drain ownership", completions[-1] == "cached-while-busy" and broker.is_busy())
+	await _drain(broker)
+	_check("cached intent suppresses obsolete callback", not completions.has("obsolete-before-cache-hit"))
 	broker.request(paths[3], _complete.bind("cached"))
 	_check("cached resource completes synchronously", completions[-1] == "cached" and broker._active_path.is_empty())
 	broker.request(paths[1], _complete.bind("cancelled"))
@@ -54,6 +61,7 @@ func _run() -> void:
 	_check("Home exit drains without applying or retaining", not completions.has("cancelled") and broker._resources.is_empty())
 	broker.request(paths[0], _complete.bind("procedural-obsolete"))
 	broker.request("", _complete.bind("procedural"))
+	_check("procedural completion preserves active drain ownership", broker.is_busy())
 	await _drain(broker)
 	_check("procedural request supersedes older completion", completions[-1] == "procedural" and not completions.has("procedural-obsolete"))
 	broker.request(paths[1], _complete.bind("shutdown"))
