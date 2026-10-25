@@ -1,8 +1,11 @@
-## CR-03a/19a/22a. Bounded, disposable flat-field crash presentation.
+## CR-03a/19a/22a. Bounded, disposable crash presentation.
 ## The simulation never reads these particles, marks or fragment transforms.
 extends Node3D
 
 const MAX_MARKS := 16
+const MAX_DECALS := 8 # Godot 4.8 Compatibility limit per receiving geometry instance.
+const Ground := preload("res://render/ground.gd")
+const DECAL_GROUP := &"openrc_crash_ground_decals"
 const MAX_SPLINTERS := 160
 # CR-03b: surfaces that throw no dust (hard paving, structures); sparks need a metal part sliding fast on one.
 # GP-07d: the field's "runway" is a mown grass strip (DECISIONS 2026-10-06, surface_friction.json), so it throws
@@ -53,6 +56,9 @@ var touch_dust: CPUParticles3D # E3d1: small puff for a soft hull contact that c
 var blade_chips: CPUParticles3D # E3d2: fragments of propeller blades after a prop strike
 var light: OmniLight3D
 var marks: Array[MeshInstance3D] = []
+var mark_decals: Array[Decal] = []
+## Read-only [height_up, dh/dnorth, dh/deast] provider, set by the presentation owner.
+var ground_sampler: Callable
 var fragments: MultiMeshInstance3D
 var _positions := PackedVector3Array()
 var _velocities := PackedVector3Array()
@@ -233,6 +239,26 @@ func _build_marks() -> void:
 		mark.visible = false
 		add_child(mark)
 		marks.append(mark)
+	# Reserve a world-wide bounded pool. Other effects in this world retain their planes.
+	# Headless/older engines keep the explicit fallback without unsupported renderer calls.
+	var version := Engine.get_version_info()
+	if DisplayServer.get_name() == "headless" or int(version.major) != 4 or int(version.minor) < 8:
+		return
+	var used := 0
+	for existing: Node in get_tree().get_nodes_in_group(DECAL_GROUP):
+		if existing is Decal and existing.get_world_3d() == get_world_3d(): used += 1
+	for index in maxi(0, MAX_DECALS - used):
+		var decal := Decal.new()
+		decal.name = "GroundMark%d" % index
+		decal.texture_albedo = (marks[index].material_override as StandardMaterial3D).albedo_texture
+		decal.cull_mask = Ground.MARK_RECEIVER_LAYER
+		decal.upper_fade = 0.0
+		decal.lower_fade = 0.0
+		decal.normal_fade = 0.5
+		decal.visible = false
+		add_child(decal)
+		decal.add_to_group(DECAL_GROUP)
+		mark_decals.append(decal)
 
 func _build_splinters() -> void:
 	fragments = MultiMeshInstance3D.new()
@@ -368,13 +394,31 @@ func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = fals
 	var slot := 0 if _mark_index == 0 else 1+((_mark_index-1) % (MAX_MARKS-1))
 	var item := marks[slot]
 	_mark_index += 1
-	item.position = Vector3(point.x,0.012 + float(_mark_index % MAX_MARKS)*0.0002,point.z)
-	item.rotation.y = atan2(direction.x,direction.z)
+	var height := 0.0
+	var normal := Vector3.UP
+	if ground_sampler.is_valid():
+		var sample: PackedFloat64Array = ground_sampler.call(point)
+		if sample.size() == 3 and is_finite(sample[0]) and is_finite(sample[1]) and is_finite(sample[2]):
+			height = sample[0]
+			normal = Vector3(-sample[2], 1.0, sample[1]).normalized()
+	var along := Vector3(direction.x, 0, direction.z)
+	if along.length_squared() < 0.000001: along = Vector3.BACK
+	along = (along - normal * along.dot(normal)).normalized()
+	item.basis = Basis(normal.cross(along).normalized(), normal, along)
+	item.position = Vector3(point.x, height, point.z) + normal * (0.012 + float(_mark_index % MAX_MARKS)*0.0002)
 	# Vertical impact speed must not elongate a horizontal ground scuff.
 	var slide_speed := Vector2(direction.x,direction.z).length()
 	item.scale = Vector3(clampf(radius*0.8,0.12,1.4),1,clampf(radius+slide_speed*0.035,0.2,2.5))
 	(item.material_override as StandardMaterial3D).albedo_color = Color(0.035,0.029,0.025,0.88) if burned else Color(0.12,0.075,0.025,0.78)
 	item.visible = true
+	if slot < mark_decals.size():
+		var decal := mark_decals[slot]
+		decal.basis = item.basis.orthonormalized()
+		decal.position = Vector3(point.x, height, point.z)
+		decal.size = Vector3(2 * item.scale.x, 0.5, 2 * item.scale.z)
+		decal.modulate = (item.material_override as StandardMaterial3D).albedo_color
+		decal.visible = true
+		item.visible = false
 	return item
 
 ## E3d1: a soft hull contact that continues the flight: a scuff along the slide and a small puff thrown along it,
@@ -535,6 +579,8 @@ func apply_energy(outcome: Dictionary) -> void:
 	if bool(outcome.get("stain", false)):
 		var stain := mark(_origin, Vector3.ZERO, 0.7)
 		(stain.material_override as StandardMaterial3D).albedo_color = Color(0.05, 0.05, 0.04, 0.55)
+		var slot := marks.find(stain)
+		if slot < mark_decals.size(): mark_decals[slot].modulate = (stain.material_override as StandardMaterial3D).albedo_color
 	if float(outcome.get("vent_delay_s", -1.0)) >= 0.0:
 		_vent_start_s = float(outcome.vent_delay_s)
 		_vent_end_s = _vent_start_s + float(outcome.vent_s)
@@ -561,6 +607,8 @@ func reset() -> void:
 		p.speed_scale = 1
 	for item in marks:
 		item.visible = false
+	for decal in mark_decals:
+		decal.visible = false
 	if fragments != null:
 		fragments.multimesh.visible_instance_count = 0
 	if light != null:

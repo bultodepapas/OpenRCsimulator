@@ -16,6 +16,8 @@ const SURFACE_KIND: Dictionary = {"rough": 0, "mown": 1, "runway": 2, "rotorpad"
 # L9c: a bounded shader batch, not a field-format limit. Unsupported layouts keep the legacy planes.
 const MAX_SURFACES: int = 32
 const HORIZON_FLAT_RADIUS_M: float = 1500.0
+## GDU-11b: terrain-only decal receivers; distinct from aircraft (19) and wreck (20).
+const MARK_RECEIVER_LAYER := 1 << 17
 
 
 ## Seamless grass tile: a few octaves of value noise around Spec.GRASS, with mipmaps for distant ground.
