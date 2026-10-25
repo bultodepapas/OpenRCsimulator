@@ -4611,6 +4611,13 @@ func _configuration_for_weather(field: WeatherField) -> String:
 ## Restoring switches to recorded-input replay and stays paused. No raw radio state is deserialized.
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
 func restore_checkpoint(candidate: Dictionary) -> bool:
+	var restored: bool = _restore_checkpoint_impl(candidate)
+	if restored:
+		_statistics_committed("checkpoint_restore")
+	return restored
+
+
+func _restore_checkpoint_impl(candidate: Dictionary) -> bool:
 	var restored_failures: RefCounted = null
 	if candidate.get("format") == FAILURE_CHECKPOINT_FORMAT:
 		if typeof(candidate.get("failure_physics_format")) != TYPE_STRING \

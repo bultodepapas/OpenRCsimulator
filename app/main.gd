@@ -9,6 +9,8 @@ const Spec := preload("res://spec.gd")
 const Scripted := preload("res://sim/scripted.gd")
 const Frames := preload("res://render/frames.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const AircraftLightingRig := preload("res://render/lighting/aircraft_lighting_rig_3d.gd")
+const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 const GroundGear := preload("res://render/ground_gear.gd")
 const TimberVisualMotion := preload("res://aircraft/timber_visual_motion.gd")
 const PropellerBlur := preload("res://render/propeller_blur.gd")
@@ -288,6 +290,7 @@ var _shadow: MeshInstance3D
 const SHADOW_MODES := ["sun", "vertical", "off"]
 var _shadow_mode := "sun"
 var _night_kit: Node3D # FW-35c: lazy presentation kit; state belongs to this flight.
+var _rgb_lighting: Node3D
 var _aircraft_lights := World.AircraftLightState.new()
 var _aircraft_lights_hud_dirty := true
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
@@ -1128,6 +1131,15 @@ func _process(delta: float) -> void:
 	if not _scripted and _visual_pose.is_empty() and session.crash.is_empty() and sim.tick > 0:
 		smoke_clock_s = maxf(0.0, sim.time() - sim.dt() + Engine.get_physics_interpolation_fraction() * sim.dt())
 	_update_smoke(smoke_clock_s)
+	# Lighting uses the same displayed pose clock, independent of whether smoke is installed.
+	var lighting_clock_s := sim.time() if frozen else smoke_clock_s
+	if is_instance_valid(_rgb_lighting):
+		_rgb_lighting.advance(lighting_clock_s, {
+			"throttle": session.propulsion_throttle(),
+			"speed_mps": (_last_render_pose.get("vel", Vector3.ZERO) as Vector3).length(),
+			"exposure": World.Exposure.last,
+			"effects_allowed": session.crash.is_empty() and sim.fault_reason.is_empty(),
+		})
 	_advance_people_after_crash(dt)
 	if _crash_director != null:
 		_crash_director.update(dt)
@@ -1878,8 +1890,13 @@ func _update_aircraft_lights(clock_s: float = -1.0) -> void:
 	if _aircraft_lights.update(World.aircraft_local_seconds(lighting_config, clock_s),
 			1.0 if elevation < World.NIGHT_KIT_BELOW_SUN_DEG else 0.0):
 		_aircraft_lights_hud_dirty = true
+	if is_instance_valid(_rgb_lighting):
+		_rgb_lighting.set_mode(_aircraft_lights.active_mode, _aircraft_lights.gain)
+		return
 	if not is_instance_valid(_night_kit) and _aircraft_lights.active_mode != "off":
 		_night_kit = World.AircraftLights.attach(_airplane.root)
+		if is_instance_valid(_night_kit):
+			Magnifier.tag(_night_kit)
 	if is_instance_valid(_night_kit) and str(_night_kit.get_meta("mode", "")) != _aircraft_lights.active_mode:
 		World.AircraftLights.set_mode(_night_kit, _aircraft_lights.active_mode)
 	World.AircraftLights.set_emission_mode(World.AircraftLights.prepare_emission(_airplane.root),
@@ -2468,6 +2485,8 @@ func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 
 
 func _exit_tree() -> void:
+	if is_instance_valid(_rgb_lighting):
+		_rgb_lighting.dispose()
 	CameraRig.hold_cursor(false) # never leave the menus with a held cursor (CAM-29)
 	# A cancelled staged build can stop before attaching these owners to the scene.
 	if not _airplane.is_empty() and is_instance_valid(_airplane.get("root")) and _airplane.root.get_parent() == null:
@@ -2495,6 +2514,8 @@ func _on_resetting() -> void:
 		session.hold("companions-reset")
 		call_deferred("_restart_companions")
 	_aircraft_lights.reset()
+	if is_instance_valid(_rgb_lighting):
+		_rgb_lighting.reset()
 	_aircraft_lights_hud_dirty = true
 	World.flow_to(0.0)
 	_update_aircraft_lights(0.0)
@@ -2698,6 +2719,16 @@ func _build_world() -> bool:
 	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	add_child(_airplane.root)
 	_extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("scale", 1.0))
+	# Legacy profiles keep the established lazy kit and imported-material behavior.
+	var lighting_profile: Dictionary = workshop_trial.get("presentation_profile", {}).get("lighting", LightingProfile.defaults())
+	if lighting_profile.get("selection", "inherit") != "inherit":
+		_rgb_lighting = AircraftLightingRig.new()
+		_rgb_lighting.name = "AircraftLightingRig"
+		add_child(_rgb_lighting)
+		var lighting_result: Dictionary = _rgb_lighting.configure(_airplane.root, lighting_profile)
+		if not bool(lighting_result.get("ok", false)):
+			startup_error = "; ".join(PackedStringArray(lighting_result.get("errors", [])))
+			return false
 	_shadow = Shadow.create(self)
 	# Staged startup binds once after applying the validated propeller diameter below.
 	# Direct/capture routes retain their historical construction order.

@@ -38,7 +38,7 @@ const NAMES := {
 	airspeed_dial = "Airspeed dial", attitude = "Artificial horizon", altimeter = "Altimeter",
 	heading = "Heading indicator", variometer = "Vertical speed indicator",
 	pilot_radar = "Pilot radar", wind_track = "Wind & drift", cruise_efficiency = "Cruise efficiency",
-	maneuver = "Maneuver meter", glide = "Glide monitor", flight_summary = "Flight summary",
+	maneuver = "Maneuver meter", glide = "Glide monitor", flight_summary = "Flight summary", session_stats = "Session statistics",
 }
 const DESCRIPTIONS := {
 	speed = "Current airspeed, recent trend, flight maximum and ground speed. Dashes indicate missing readings.",
@@ -59,6 +59,7 @@ const DESCRIPTIONS := {
 	maneuver = "Current G load and flight minimum/maximum, bank angle and angle of attack. Dashes indicate missing readings.",
 	glide = "Climb/sink history and ground glide ratio. Requires descending, low-power flight with little bank and enough speed. Wind affects the ratio; it is not aerodynamic L/D.",
 	flight_summary = "Since flight reset: elapsed time including ground time, peak airspeed, max AGL, ground-track distance and min/max body G. Dashes mark missing values; distance may be partial.",
+	session_stats = "This session's successful landings, crashes and restarts. Choose All aircraft or This aircraft. The service keeps recording when the widget is hidden.",
 }
 const COMMON_WIDGET_HELP := "Unlocked: drag the header to move; double-click to restore its position. × closes; this switch reopens. Appearance applies to all widgets."
 const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", cockpit = "Classic cockpit", navigation = "RC navigation", training = "Training", custom = "Custom" }
@@ -74,6 +75,7 @@ var mode_picker: OptionButton
 var radio_picker: OptionButton
 var widget_size_picker: OptionButton
 var widget_background_picker: OptionButton
+var session_scope_picker: OptionButton
 var switches := {}
 var done_button: Button
 var _syncing := false
@@ -207,6 +209,12 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	_navigation_grid.add_theme_constant_override("h_separation", 24)
 	navigation_page.add_child(_navigation_grid)
 	navigation_page.add_child(Widgets.label(tr("Training"), "SectionLabel", true, false))
+	session_scope_picker = _picker(navigation_page, tr("Statistics widget scope"), "SessionStatisticsScope")
+	for scope_label: String in ["All aircraft", "This aircraft"]:
+		session_scope_picker.add_item(tr(scope_label))
+	session_scope_picker.item_selected.connect(func(index: int) -> void:
+		if not _syncing:
+			manager.set_widget_option("session_stats_scope", "aircraft" if index == 1 else "all"))
 	training_action = Widgets.button(tr("Use training layout"), "PrimaryButton", "TrainingLayout")
 	training_action.pressed.connect(func() -> void: manager.set_preset("training"))
 	navigation_page.add_child(training_action)
@@ -332,7 +340,7 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 func _ready() -> void:
 	_resize_layout()
 	if DisplayServer.has_feature(DisplayServer.FEATURE_SUBWINDOWS):
-		for picker: OptionButton in [preset_picker, units_picker, radio_picker, mode_picker, widget_size_picker, widget_background_picker]:
+		for picker: OptionButton in [preset_picker, units_picker, radio_picker, mode_picker, widget_size_picker, widget_background_picker, session_scope_picker]:
 			picker.get_popup().force_native = true # as the time-of-day dialog: avoids embedded-popup teardown errors
 	preset_picker.grab_focus.call_deferred()
 
@@ -402,6 +410,7 @@ func _sync() -> void:
 	widget_size_picker.select(Settings.WIDGET_SIZES.find(widget_size))
 	widget_background_picker.select(_nearest_opacity_index(float(settings.get("widget_opacity", Settings.DEFAULT_WIDGET_OPACITY))))
 	compact_switch.set_pressed_no_signal(bool(settings.get("widget_compact", Settings.DEFAULT_WIDGET_COMPACT)))
+	session_scope_picker.select(1 if settings.get("session_stats_scope", "all") == "aircraft" else 0)
 	for id: String in Settings.IDS:
 		switches[id].set_pressed_no_signal(settings.visible.has(id))
 	lock_switch.set_pressed_no_signal(bool(settings.get("layout_locked", false)))

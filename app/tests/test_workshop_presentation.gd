@@ -86,6 +86,7 @@ func _initialize() -> void:
 	_test_future_profile()
 	_test_physical_allowlist()
 	_test_v2_contract(bindings)
+	_test_lighting_contract(bindings)
 	print("Workshop presentation: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
 
@@ -96,7 +97,7 @@ func _test_bad_profiles(bindings: Dictionary) -> void:
 	bad.unexpected = true
 	_check("unknown profile keys reject", not Profile.validate(bad, bindings).get("ok", false))
 	bad = profile.duplicate(true)
-	bad.version = 3
+	bad.version = Profile.VERSION + 1
 	_check("newer profile versions reject for use", not Profile.validate(bad, bindings).get("ok", false))
 	bad = profile.duplicate(true)
 	bad.visual_seed = true
@@ -204,7 +205,7 @@ func _test_stale_bindings(bindings: Dictionary, expected_identity: String) -> vo
 
 func _test_future_profile() -> void:
 	var future: Dictionary = Profile.defaults()
-	future.version = 3
+	future.version = Profile.VERSION + 1
 	future["future_preset"] = {"name": "future"}
 	var stored: Dictionary = Profile.validate_stored(future)
 	_check("bounded future profile remains readable as unavailable", stored.get("ok", false)
@@ -216,6 +217,34 @@ func _test_physical_allowlist() -> void:
 	var recipe: Dictionary = {"scale": 1.0, "paint": [{"slot": "body", "color": "#ffffff"}]}
 	var result: Dictionary = Parameters.validate(recipe)
 	_check("physical recipe compiler rejects visual keys", not result.get("ok", false))
+
+
+func _test_lighting_contract(bindings: Dictionary) -> void:
+	var legacy := Profile.defaults(bindings, 2)
+	var original := Profile.validate(legacy, bindings)
+	_check("v2 remains lighting-free and canonical", original.get("ok", false)
+		and not original.profile.has("lighting") and original.profile == legacy)
+	var modern := Profile.defaults(bindings)
+	_check("v3 defaults explicitly inherit existing aircraft lights", modern.version == 3
+		and modern.lighting.selection == "inherit")
+	modern.lighting = Profile.LightingProfile.preset("neon_rgb")
+	var selected := Profile.validate(modern, bindings)
+	_check("v3 preset is part of the bound presentation identity", selected.get("ok", false)
+		and selected.identity_sha256 != original.identity_sha256, str(selected.get("errors", [])))
+	var changed := modern.duplicate(true)
+	changed.lighting.brightness = 0.75
+	_check("lighting brightness changes visual identity", Profile.identity(changed, bindings) != Profile.identity(modern, bindings))
+	changed.lighting.brightness = true
+	_check("invalid nested lighting cannot enter a variant", not Profile.validate(changed, bindings).get("ok", false))
+	changed = modern.duplicate(true)
+	changed.erase("lighting")
+	_check("v3 refuses missing lighting rather than guessing", not Profile.validate(changed, bindings).get("ok", false))
+	changed = modern.duplicate(true)
+	changed.version = 2
+	_check("v2 refuses injected lighting fields", not Profile.validate(changed, bindings).get("ok", false))
+	changed = modern.duplicate(true)
+	changed.binding = Profile.defaults().binding
+	_check("custom lighting requires model pins", not Profile.validate(changed).get("ok", false))
 
 
 func _test_v2_contract(bindings: Dictionary) -> void:

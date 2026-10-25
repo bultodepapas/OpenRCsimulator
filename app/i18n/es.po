@@ -6131,3 +6131,292 @@ msgstr "Ambas"
 
 msgid "Keep the horizon in view: the view tilts down so the ground shows under a high airplane. Smooth overhead passes: the picture turns gradually instead of flipping when the airplane passes overhead."
 msgstr "Mantener el horizonte a la vista: la vista se inclina para que el suelo se vea bajo un avión alto. Suavizar las pasadas sobre la cabeza: la imagen gira poco a poco en lugar de voltearse cuando el avión pasa sobre la cabeza."
+
+# UI-FS-05/06: pilot statistics, scoped history and safe counter management.
+
+msgid "Statistics"
+msgstr "Estadísticas"
+
+msgid "Aircraft scope"
+msgstr "Ámbito de aeronave"
+
+msgid "Statistics period"
+msgstr "Período de estadísticas"
+
+msgid "All aircraft"
+msgstr "Todas las aeronaves"
+
+msgid "This session"
+msgstr "Esta sesión"
+
+msgid "Lifetime history"
+msgstr "Historial completo"
+
+msgid "Since counter reset"
+msgstr "Desde el reinicio de contadores"
+
+msgid "Airborne time"
+msgstr "Tiempo en el aire"
+
+msgid "Completed flights"
+msgstr "Vuelos completados"
+
+msgid "Successful landings"
+msgstr "Aterrizajes exitosos"
+
+msgid "Landing outcomes"
+msgstr "Resultados de aterrizaje"
+
+msgid "More statistics"
+msgstr "Más estadísticas"
+
+msgid "Fewer statistics"
+msgstr "Menos estadísticas"
+
+msgid "Flight history"
+msgstr "Historial de vuelos"
+
+msgid "Manage counters"
+msgstr "Gestionar contadores"
+
+msgid "Reset session counters…"
+msgstr "Reiniciar contadores de la sesión…"
+
+msgid "Reset this aircraft's counters…"
+msgstr "Reiniciar los contadores de esta aeronave…"
+
+msgid "Reset pilot counters…"
+msgstr "Reiniciar contadores del piloto…"
+
+msgid "Manage history"
+msgstr "Gestionar historial"
+
+msgid "Delete this aircraft's history…"
+msgstr "Eliminar el historial de esta aeronave…"
+
+msgid "Delete all pilot history…"
+msgstr "Eliminar todo el historial del piloto…"
+
+msgid "Local pilot"
+msgstr "Piloto local"
+
+msgid "Lifetime history remains available after counter resets."
+msgstr "El historial completo sigue disponible después de reiniciar los contadores."
+
+msgid "stops"
+msgstr "paradas completas"
+
+msgid "touch-and-go"
+msgstr "toques y despegues"
+
+#, python-format
+msgid "Touchdown success: %d / %d resolved touchdowns · %d%%"
+msgstr "Aterrizajes exitosos: %d de %d contactos resueltos · %d%%"
+
+msgid "Touchdown success: no resolved touchdowns yet"
+msgstr "Aún no hay contactos de aterrizaje resueltos"
+
+#, python-format
+msgid "Flights brought to a clean stop: %d / %d ended flights"
+msgstr "Vuelos con parada completa: %d de %d vuelos finalizados"
+
+#, python-format
+msgid "Flights brought to a clean stop: %d · ended-flight total unavailable"
+msgstr "Vuelos con parada completa: %d · total de vuelos finalizados no disponible"
+
+msgid "Tracking begins with your next flight."
+msgstr "El seguimiento comienza con tu próximo vuelo."
+
+#, python-format
+msgid "Completed in a row: %d · best %d · crash-free airborne time: %s · best %s"
+msgstr "Vuelos completados seguidos: %d · mejor racha %d · tiempo en el aire sin choques: %s · mejor %s"
+
+msgid "Flights started"
+msgstr "Vuelos iniciados"
+
+msgid "Average airborne duration"
+msgstr "Duración media en el aire"
+
+#, python-format
+msgid "Average duration includes %d closed flights"
+msgstr "La duración media incluye %d vuelos finalizados"
+
+msgid "Maximum valid airspeed (TAS)"
+msgstr "Velocidad aerodinámica máxima válida (TAS)"
+
+msgid "Maximum horizontal groundspeed"
+msgstr "Velocidad máxima sobre el suelo"
+
+msgid "Full-stop landings"
+msgstr "Aterrizajes con parada completa"
+
+msgid "Touch-and-go landings"
+msgstr "Aterrizajes de toque y despegue"
+
+msgid "Failed touchdown episodes"
+msgstr "Contactos de aterrizaje fallidos"
+
+msgid "Unknown touchdown episodes"
+msgstr "Contactos de aterrizaje desconocidos"
+
+msgid "Active flights"
+msgstr "Vuelos activos"
+
+msgid "Partial records"
+msgstr "Registros parciales"
+
+msgid "Touchdown success counts resolved surface contacts; the clean-stop fraction includes the end of each flight."
+msgstr "El éxito de aterrizaje cuenta los contactos resueltos con la superficie; la proporción de parada completa incluye el resultado final de cada vuelo."
+
+msgid "No flight records in this view."
+msgstr "No hay registros de vuelo en esta vista."
+
+#, python-format
+msgid "Page %d of %d · %d records"
+msgstr "Página %d de %d · %d registros"
+
+#, python-format
+msgid "Flight %d"
+msgstr "Vuelo %d"
+
+#, python-format
+msgid "Takeoffs %d · Full stops %d · Touch-and-go %d"
+msgstr "Despegues %d · Paradas completas %d · Toques y despegues %d"
+
+msgid "Coverage"
+msgstr "Cobertura"
+
+msgid "Scenario"
+msgstr "Escenario"
+
+msgid "Events"
+msgstr "Eventos"
+
+msgid "Counters and history management are available while no flight is active."
+msgstr "La gestión de contadores e historial está disponible cuando no hay vuelos activos."
+
+msgid "End the active flight before changing counters or history."
+msgstr "Termina el vuelo activo antes de cambiar los contadores o el historial."
+
+msgid "Some records are partial."
+msgstr "Algunos registros son parciales."
+
+#, python-format
+msgid "Partial records: %d"
+msgstr "Registros parciales: %d"
+
+msgid "A flight is in progress."
+msgstr "Hay un vuelo en curso."
+
+#, python-format
+msgid "Flights in progress: %d"
+msgstr "Vuelos en curso: %d"
+
+msgid "<1 min"
+msgstr "<1 min"
+
+#, python-format
+msgid "%d h %02d min"
+msgstr "%d h %02d min"
+
+#, python-format
+msgid "%d min"
+msgstr "%d min"
+
+msgid "Session statistics"
+msgstr "Estadísticas de la sesión"
+
+msgid "Started"
+msgstr "Iniciados"
+
+msgid "Completed"
+msgstr "Completados"
+
+msgid "Landings"
+msgstr "Aterrizajes"
+
+msgid "Statistics widget scope"
+msgstr "Ámbito del widget de estadísticas"
+
+msgid "This session's successful landings, crashes and restarts. Choose All aircraft or This aircraft. The service keeps recording when the widget is hidden."
+msgstr "Aterrizajes exitosos, choques y reinicios de esta sesión. Elige todas las aeronaves o esta aeronave. El registro continúa aunque ocultes el widget."
+
+msgid "All aircraft combined"
+msgstr "Todas las aeronaves"
+
+#, python-format
+msgid "Remove %d flight records for %s, covering %s, with %s airborne time."
+msgstr "Eliminar %d registros de vuelo de %s, entre %s, con %s de tiempo en el aire."
+
+msgid "This cannot be undone. Preferences, aircraft, Workshop builds, controller profiles and flight recordings stay in place."
+msgstr "Esta acción no se puede deshacer. Se conservan las preferencias, aeronaves, modelos del Taller, perfiles de control y grabaciones de vuelo."
+
+msgid "Delete flight history?"
+msgstr "¿Eliminar el historial de vuelos?"
+
+msgid "Delete history"
+msgstr "Eliminar historial"
+
+msgid "I understand this history removal cannot be undone."
+msgstr "Entiendo que no se puede deshacer la eliminación de este historial."
+
+msgid "Reset counters?"
+msgstr "¿Reiniciar los contadores?"
+
+msgid "Reset counters"
+msgstr "Reiniciar contadores"
+
+msgid "This session, all aircraft"
+msgstr "Esta sesión, todas las aeronaves"
+
+msgid "Reset counters for %s? This starts a new counter window; saved flight history stays available."
+msgstr "¿Reiniciar los contadores de %s? Esto inicia un nuevo período de conteo; el historial de vuelos guardado seguirá disponible."
+
+#, python-format
+msgid "Flights %d · Completed %d · Crashes %d · Restarts %d · Airborne %s"
+msgstr "Vuelos %d · Completados %d · Choques %d · Reinicios %d · Tiempo en el aire %s"
+
+msgid "Counters and history cannot be changed right now."
+msgstr "Ahora no se pueden cambiar los contadores ni el historial."
+
+msgid "Statistics changed. Review the updated preview and confirm again."
+msgstr "Las estadísticas cambiaron. Revisa la vista previa actualizada y confirma de nuevo."
+
+msgid "Confirm that you want to remove the history shown above."
+msgstr "Confirma que quieres eliminar el historial mostrado arriba."
+
+msgid "The change could not be saved. Your statistics are still available."
+msgstr "No se pudo guardar el cambio. Tus estadísticas siguen disponibles."
+
+msgid "tracked history"
+msgstr "historial registrado"
+
+# Home and flight-state summaries owned by the product shell.
+msgid "Statistics · Pilot total"
+msgstr "Estadísticas · Total del piloto"
+
+msgid "Aircraft statistics"
+msgstr "Estadísticas de aeronave"
+
+#, python-format
+msgid "Lifetime · %s airborne · %d completed · %d crashes"
+msgstr "Historial · %s en el aire · %d completados · %d choques"
+
+#, python-format
+msgid "Pilot total · %s airborne · %d completed · best streak %d"
+msgstr "Total del piloto · %s en el aire · %d completados · mejor racha %d"
+
+msgid "Flight statistics could not be saved"
+msgstr "No se pudieron guardar las estadísticas del vuelo"
+
+msgid "The current flight has unsaved statistics. Retry saving, cancel, or leave without the unsaved changes."
+msgstr "El vuelo actual tiene estadísticas sin guardar. Intenta guardarlas de nuevo, cancela o sal sin guardar esos cambios."
+
+msgid "Leave without saving"
+msgstr "Salir sin guardar"
+
+msgid "Interrupted flight recovered. Only saved airborne time is included."
+msgstr "Se recuperó un vuelo interrumpido. Solo se incluye el tiempo en el aire guardado."
+
+msgid "Checkpoint experiment: flight statistics are not recorded until Restart."
+msgstr "Experimento de punto de control: las estadísticas del vuelo no se registran hasta reiniciar."

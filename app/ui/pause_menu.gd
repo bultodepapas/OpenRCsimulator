@@ -19,6 +19,8 @@ signal time_of_day_requested(from: Control)
 signal failure_settings_requested(from: Control)
 signal companions_requested(from: Control)
 signal overlays_requested(from: Control)
+signal statistics_requested(from: Control, aircraft_id: String)
+var statistics_button: Button
 signal end_requested
 signal help_requested(from: Control)
 signal controls_requested(from: Control)
@@ -163,6 +165,9 @@ func _init(can_end := true, trial_mode := false) -> void:
 	overlays_button.pressed.connect(func() -> void: overlays_requested.emit(overlays_button))
 	overlays_button.visible = false
 	session_options_container.add_child(overlays_button)
+	statistics_button = _button("Statistics", "QuietButton", "Statistics")
+	statistics_button.pressed.connect(func() -> void: statistics_requested.emit(statistics_button, ""))
+	session_options_container.add_child(statistics_button)
 	controls_button = _button("Controls", "QuietButton", "ControllerSettings")
 	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
 	session_options_container.add_child(controls_button)

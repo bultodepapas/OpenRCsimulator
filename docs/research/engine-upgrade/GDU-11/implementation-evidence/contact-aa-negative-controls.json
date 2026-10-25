@@ -1,0 +1,23 @@
+[
+  {
+    "case": "headless-fsr2",
+    "process_exit": 1,
+    "engine_errors": 0,
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\ngraphics capture: temporal AA comparisons require native High\n",
+    "report_sha256": "1c0e09dbed9c6f7ec5241a9da04a62faf708d7bac8ee67cc51962b18b5a4c275"
+  },
+  {
+    "case": "headless-taa",
+    "process_exit": 1,
+    "engine_errors": 0,
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\ngraphics capture: temporal AA comparisons require native High\n",
+    "report_sha256": "6571585c8b721366e387d1dadc939ba57aedb5aeb5ce0377aaa013e85bf82a54"
+  },
+  {
+    "case": "invalid-aa",
+    "process_exit": 2,
+    "engine_errors": 0,
+    "log": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\n\ngraphics capture: --aa must be msaa4, none, taa or fsr2_native\n",
+    "report_sha256": "00e7352f0dec5d36f2a5988daba3dc8ceb984a73110bbf2a4d01430619d7cf07"
+  }
+]

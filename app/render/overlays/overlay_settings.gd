@@ -6,10 +6,10 @@ const Units := preload("res://render/overlays/units.gd")
 
 ## BAT-15: "battery" is O9; it shows only when the aircraft has a dynamic battery.
 const CLASSIC_IDS := ["airspeed_dial", "attitude", "altimeter", "heading", "variometer"]
-const IDS := ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls", "battery", "speed", "height", "power", "weather", "fuel", "trims", "engine", "airspeed_dial", "attitude", "altimeter", "heading", "variometer", "pilot_radar", "wind_track", "cruise_efficiency", "maneuver", "glide", "flight_summary"]
+const IDS := ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls", "battery", "speed", "height", "power", "weather", "fuel", "trims", "engine", "airspeed_dial", "attitude", "altimeter", "heading", "variometer", "pilot_radar", "wind_track", "cruise_efficiency", "maneuver", "glide", "flight_summary", "session_stats"]
 const NAVIGATION_IDS := ["pilot_radar", "wind_track", "cruise_efficiency"]
-const TRAINING_IDS := ["maneuver", "glide", "flight_summary"]
-const PLAYER_IDS := ["speed", "height", "power", "weather", "fuel", "trims", "engine", "airspeed_dial", "attitude", "altimeter", "heading", "variometer", "pilot_radar", "wind_track", "cruise_efficiency", "maneuver", "glide", "flight_summary"]
+const TRAINING_IDS := ["maneuver", "glide", "flight_summary", "session_stats"]
+const PLAYER_IDS := ["speed", "height", "power", "weather", "fuel", "trims", "engine", "airspeed_dial", "attitude", "altimeter", "heading", "variometer", "pilot_radar", "wind_track", "cruise_efficiency", "maneuver", "glide", "flight_summary", "session_stats"]
 const WIDGET_SIZES := ["small", "normal", "large"]
 const WIDGET_SIZE_SCALES := {"small": 0.85, "normal": 1.0, "large": 1.2}
 const DEFAULT_WIDGET_SIZE := "normal"
@@ -36,7 +36,7 @@ const RADIO_MODELS := ["jeti_ds24_ii", "radiolink_t16d"]
 ## Derived from the visible set, so the saved [hud] keys carry it without a new preference.
 const BATTERY_DETAIL_WITH := "telemetry"
 ## D2/D3/D4: Pilot preset, units by language, Mode 2.
-const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"], units = "auto", stick_mode = 2, radio_model = "jeti_ds24_ii" }
+const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"], units = "auto", stick_mode = 2, radio_model = "jeti_ds24_ii", session_stats_scope = "all" }
 
 
 ## Settings from anything (a preferences file, a dialog): always a complete valid dictionary, defaults where invalid.
@@ -66,6 +66,9 @@ static func validate(value: Variant) -> Dictionary:
 	var widget_compact: Variant = value.get("widget_compact")
 	if typeof(widget_compact) == TYPE_BOOL:
 		out.widget_compact = widget_compact
+	var statistics_scope: Variant = value.get("session_stats_scope")
+	if typeof(statistics_scope) == TYPE_STRING and statistics_scope in ["all", "aircraft"]:
+		out.session_stats_scope = statistics_scope
 	# These are optional so legacy settings keep their exact shape. Validate them before a preset returns early.
 	var raw_positions: Variant = value.get("positions")
 	if typeof(raw_positions) == TYPE_DICTIONARY:
