@@ -99,7 +99,7 @@ func _run() -> void:
 		str(default_settings._scroll.get_child(0).size), str(default_settings._layout_panel.size)])
 	_check("default Settings workspace is bounded on a wide viewport",
 		default_settings._layout_panel.size.x <= 800.0)
-	for category: int in 4:
+	for category: int in SettingsScreen.CATEGORIES.size(): # CAM-17 added Camera
 		default_settings._show_category(category)
 		await process_frame
 		await process_frame

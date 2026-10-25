@@ -15,7 +15,7 @@ const MAX_SPANS := 20.0
 const DEFAULT_SPANS := 2.0
 const CLEARANCE_M := 0.3
 ## CAM-29: the camera eases toward the dragged azimuth, elevation and distance (half-life, s): a wheel notch or a jerky
-## mouse no longer jumps the picture, and a flick still lands within about a fifth of a second.
+## mouse no longer jumps the picture, and 94 % of a flick shows within 0.2 s.
 const EASE_HALF_LIFE := 0.05
 
 ## Goals set by drag, wheel and keys; the camera shows _azimuth, _elevation and _distance as they ease toward them.
