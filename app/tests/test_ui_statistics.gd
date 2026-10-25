@@ -111,6 +111,7 @@ func _run() -> void:
 	screen.call("_on_history_toggled", true)
 	_check("history is bounded to 50 rows per page", screen._history_rows.get_child_count() == 50)
 	screen.call("_set_history_page", 1)
+	await process_frame
 	_check("next history page retains the filter and shows the remaining rows",
 		screen._history_page == 1 and screen._history_rows.get_child_count() == 2)
 	var last_row := screen._history_rows.get_child(0) as VBoxContainer
@@ -123,10 +124,10 @@ func _run() -> void:
 	screen.call("_on_period_selected", 2)
 	_check("period filter can select the counter-reset window", service.query_log.back() == ["trainer-a", "counters"])
 
-	var back_count := 0
-	screen.back_requested.connect(func() -> void: back_count += 1)
+	var back_events: Array = []
+	screen.back_requested.connect(func() -> void: back_events.append(true))
 	(screen.find_child("Back", true, false) as Button).pressed.emit()
-	_check("Back returns through the ScreenStack signal", back_count == 1)
+	_check("Back returns through the ScreenStack signal", back_events.size() == 1)
 
 	# Cancel is a pure close: no service method is called.
 	screen.call("_open_reset", "session", "", "session")

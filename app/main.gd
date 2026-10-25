@@ -1137,6 +1137,7 @@ func _process(delta: float) -> void:
 		_rgb_lighting.advance(lighting_clock_s, {
 			"throttle": session.propulsion_throttle(),
 			"speed_mps": (_last_render_pose.get("vel", Vector3.ZERO) as Vector3).length(),
+			"maneuver": clampf(sqrt(pow(sim.state[RB.RATE], 2.0) + pow(sim.state[RB.RATE + 1], 2.0) + pow(sim.state[RB.RATE + 2], 2.0)) / TAU, 0.0, 1.0),
 			"exposure": World.Exposure.last,
 			"effects_allowed": session.crash.is_empty() and sim.fault_reason.is_empty(),
 		})

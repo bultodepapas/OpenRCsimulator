@@ -46,6 +46,14 @@ func _initialize() -> void:
 	var build: Dictionary = _ui_build(variant)
 	var editor: Dictionary = _editor_state()
 	_test_validation_bounds()
+	var lighting_editor := editor.duplicate(true)
+	lighting_editor.page = "lighting"
+	lighting_editor.presentation_buffers["lighting"] = {"zone": "strip_left", "zones_open": true, "effects_open": false, "color_text": ["#12"]}
+	var lighting_checked := DraftStore.validate_editor_state(lighting_editor)
+	_check("lighting recovery retains incomplete color text without applying it", lighting_checked.get("ok", false)
+		and lighting_checked.editor.presentation_buffers.lighting.color_text == ["#12"], str(lighting_checked.get("errors", [])))
+	lighting_editor.presentation_buffers.lighting.zone = "res://unsafe.gd"
+	_check("lighting recovery rejects nonsemantic zone paths", not DraftStore.validate_editor_state(lighting_editor).get("ok", false))
 	_test_save_read_and_discard(build, editor, variant)
 	_test_recipe_specific_compiler_pin(build, editor)
 	_test_stale_dependencies(build, editor, variant)

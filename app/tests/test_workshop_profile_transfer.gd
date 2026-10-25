@@ -164,6 +164,19 @@ func _test_trial_identity_is_physical() -> void:
 		_check("a copied appearance changes separate presentation identity only",
 			preview.applied.size() == 1
 			and after.presentation_identity.sha256 != before.presentation_identity.sha256)
+	var lights := Presentation.defaults(bindings)
+	lights.lighting = Presentation.LightingProfile.preset("festival")
+	var lighting_copy := Transfer.propose(lights, bindings, Presentation.defaults(bindings, 2), bindings)
+	_check("lighting transfer promotes v2 without altering paint or smoke", lighting_copy.get("ok", false)
+		and lighting_copy.profile.version == 3 and lighting_copy.profile.paint.is_empty()
+		and lighting_copy.profile.smoke.is_empty() and lighting_copy.profile.lighting == lights.lighting,
+		str(lighting_copy.get("errors", [])))
+	var lighting_trial := Trial.freeze({"base_id": base_id, "base_bytes": bytes,
+		"recipe": {}, "presentation_profile": lights})
+	_check("RGB and fireworks do not change compiled physics identity or bytes", lighting_trial.get("ok", false)
+		and lighting_trial.identity == before.identity and lighting_trial.raw_bytes == before.raw_bytes
+		and lighting_trial.presentation_identity.sha256 != before.presentation_identity.sha256,
+		str(lighting_trial.get("errors", [])))
 
 
 func _source_profile(bindings: Dictionary) -> Dictionary:
