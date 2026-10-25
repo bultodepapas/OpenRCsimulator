@@ -86,6 +86,8 @@ var _auto_accept_quit_before_root := true
 var _wm_close_pending := false
 var _exit_request_active := false
 var _quit_audio_pending := false
+var last_quit_audio_retirement: Dictionary = {}
+const QUIT_AUDIO_RETIRE_TIMEOUT_USEC := 250_000
 var _exit_request_kind := ""
 var _exit_request_commit := Callable()
 var _exit_request_recorders: Array[RefCounted] = []
@@ -2565,27 +2567,53 @@ func _commit_app_quit() -> void:
 	if _quit_audio_pending:
 		return
 	_menu_feedback(&"quit")
+	_quit_audio_pending = true
 	var delay: float = menu_audio.shutdown_delay() if is_instance_valid(menu_audio) else 0.0
 	if delay > 0.0:
-		_quit_audio_pending = true
-		# Decisions and recording recovery have already completed. Freeze the last
-		# visible screen during the short closing tail so a second action cannot launch.
-		for child: Node in get_children():
-			if child != menu_audio:
-				child.process_mode = Node.PROCESS_MODE_DISABLED
-		var surface := ScreenStack._surface(screens.top()) if screens.top() != null else null
-		if surface != null:
-			surface.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_DISABLED
-			surface.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
-		set_process_input(false)
-		set_process_unhandled_input(false)
-		# A timer's first delta can include save work performed before it was created.
-		# Check an absolute wall deadline so neither that work nor simulation speed cuts the tail.
+		_freeze_quit_surface()
+		# A timer's first delta can include work done before its creation. Use absolute wall time.
 		var deadline_msec := Time.get_ticks_msec() + ceili(delay * 1000.0)
 		while Time.get_ticks_msec() < deadline_msec:
 			await get_tree().process_frame
 			if not is_inside_tree(): return
+	var playbacks: Array[WeakRef] = []
+	if is_instance_valid(menu_audio):
+		playbacks = menu_audio.retire_playbacks()
+	if not playbacks.is_empty() and delay <= 0.0:
+		_freeze_quit_surface()
+	var drain_started_usec := Time.get_ticks_usec()
+	var remaining := _remaining_quit_audio_playbacks(playbacks)
+	while remaining > 0 and Time.get_ticks_usec() - drain_started_usec < QUIT_AUDIO_RETIRE_TIMEOUT_USEC:
+		await get_tree().process_frame
+		if not is_inside_tree(): return
+		remaining = _remaining_quit_audio_playbacks(playbacks)
+	last_quit_audio_retirement = {complete = remaining == 0, timed_out = remaining > 0,
+		captured_playbacks = playbacks.size(), pending_playbacks = remaining,
+		elapsed_usec = Time.get_ticks_usec() - drain_started_usec, timeout_usec = QUIT_AUDIO_RETIRE_TIMEOUT_USEC}
+	if remaining > 0:
+		printerr("Menu audio shutdown incomplete: %d playback(s) retained after %d usec" % [remaining, last_quit_audio_retirement.elapsed_usec])
 	_request_app_quit()
+
+
+func _freeze_quit_surface() -> void:
+	# Decisions and recording recovery have finished. Block another action through the final tail/drain.
+	for child: Node in get_children():
+		if child != menu_audio:
+			child.process_mode = Node.PROCESS_MODE_DISABLED
+	var surface := ScreenStack._surface(screens.top()) if screens.top() != null else null
+	if surface != null:
+		surface.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_DISABLED
+		surface.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
+	set_process_input(false)
+	set_process_unhandled_input(false)
+
+
+func _remaining_quit_audio_playbacks(playbacks: Array[WeakRef]) -> int:
+	var remaining := 0
+	for playback: WeakRef in playbacks:
+		if playback.get_ref() != null:
+			remaining += 1
+	return remaining
 
 
 func _request_app_quit() -> void:

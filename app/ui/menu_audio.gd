@@ -91,6 +91,7 @@ const RANGE_ACTIONS: PackedStringArray = [
 ]
 const EXCLUDED_GROUPS: PackedStringArray = ["flight_only", "flight_input"]
 
+var _retiring := false
 var _top_screen_provider: Callable
 var _volume: float = 0.35
 var _voices: Array[AudioStreamPlayer] = []
@@ -147,6 +148,7 @@ func set_top_screen_provider(provider: Callable) -> void:
 
 
 func _exit_tree() -> void:
+	retire_playbacks()
 	if get_tree().node_added.is_connected(_on_node_added):
 		get_tree().node_added.disconnect(_on_node_added)
 	for control_id: int in _observed_controls.keys():
@@ -246,6 +248,22 @@ func shutdown_delay() -> float:
 		if _voice_cues[index] == &"quit" and _voices[index].playing:
 			return minf(_voices[index].stream.get_length() / _voices[index].pitch_scale + 0.06, 0.5)
 	return 0.0
+
+
+## Stop bounded voice ownership before final quit, leaving the mixer/main thread time to retire its references.
+## Weak observations do not extend playback lifetime; the coordinator reports a finite drain timeout.
+func retire_playbacks() -> Array[WeakRef]:
+	_retiring = true
+	var playbacks: Array[WeakRef] = []
+	for index: int in range(_voices.size()):
+		_cancel_fade(index)
+		var voice := _voices[index]
+		if voice.has_stream_playback():
+			playbacks.append(weakref(voice.get_stream_playback()))
+		voice.stop()
+		voice.stream = null
+	set_process_input(false)
+	return playbacks
 
 
 func _observe_subtree(node: Node, screen: Control) -> int:
@@ -413,6 +431,8 @@ func _is_eligible(control: Control, screen: Control) -> bool:
 
 
 func _request_cue(cue: StringName, source: Object = null) -> bool:
+	if _retiring:
+		return false
 	var stream: AudioStream = STREAM_BY_CUE.get(cue)
 	if stream == null or _voices.is_empty():
 		return false
