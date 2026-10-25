@@ -1,0 +1,743 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"aircraft_id": "turbo-lumber-evolution",
+	"app_load_and_instantiate_usec": 1932426,
+	"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+	"complete": true,
+	"cycles": [
+		{
+			"active_at_first_draw_usec": 8433786,
+			"cycle": 1,
+			"fly_first_draw_usec": 8433786,
+			"fly_ready_usec": 8409675,
+			"fly_sync_usec": 4621,
+			"handoff_frames_usec": [
+				2208,
+				6519,
+				26013,
+				1748057,
+				12597,
+				63169,
+				12900,
+				1857,
+				11069,
+				41577,
+				11351,
+				26061,
+				6725,
+				38613,
+				2994,
+				4039,
+				229711,
+				41513,
+				1185,
+				9282,
+				1846,
+				6869,
+				115603,
+				3119,
+				13972,
+				48177,
+				6671,
+				69530,
+				205662,
+				52761,
+				4841,
+				16529,
+				21570,
+				9520,
+				10975,
+				23263,
+				12594,
+				10430,
+				8749,
+				14304,
+				16729,
+				17202,
+				16119,
+				16745,
+				16464,
+				16543,
+				16899,
+				16533,
+				17081,
+				16503,
+				16647,
+				16569,
+				16551,
+				17721,
+				15688,
+				16730,
+				16457,
+				16738,
+				16756,
+				16637,
+				16760,
+				16528,
+				16812,
+				16691,
+				16430,
+				17723,
+				16268,
+				16276,
+				16472,
+				16891,
+				16637,
+				16683,
+				16597,
+				16652,
+				16957,
+				16227,
+				16602,
+				17061,
+				16596,
+				16369,
+				17091,
+				16593,
+				16625,
+				16412,
+				16903,
+				16584,
+				16472,
+				17048,
+				16676,
+				16531,
+				16593,
+				16724,
+				16536,
+				16920,
+				16308,
+				17111,
+				16556,
+				16608,
+				16749,
+				16684,
+				16684,
+				16781,
+				16334,
+				16376,
+				17101,
+				16499,
+				17390,
+				16103,
+				16823,
+				16622,
+				16917,
+				16651,
+				16500,
+				16598,
+				16636,
+				16260,
+				16869,
+				16471,
+				16681,
+				17346,
+				16184,
+				16639,
+				16478,
+				17111,
+				16586,
+				16521,
+				16740,
+				16800,
+				16722,
+				16276,
+				16740,
+				16492,
+				17504,
+				16123,
+				16789,
+				16497,
+				16859,
+				16285,
+				16815,
+				16821,
+				16679,
+				16441,
+				16938,
+				16527,
+				16739,
+				17068,
+				16131,
+				16544,
+				16781,
+				16523,
+				16824,
+				16838,
+				16436,
+				16876,
+				16651,
+				16939,
+				16476,
+				16305,
+				17198,
+				16255,
+				16893,
+				16290,
+				16599,
+				16879,
+				16619,
+				16911,
+				16696,
+				16263,
+				16870,
+				16700,
+				16428,
+				17516,
+				16108,
+				16766,
+				16375,
+				16840,
+				16422,
+				16949,
+				16511,
+				16699,
+				16776,
+				16838,
+				16153,
+				17954,
+				15529,
+				16747,
+				16542,
+				16854,
+				16752,
+				16420,
+				16609,
+				17185,
+				16131,
+				16916,
+				16804,
+				16871,
+				16314,
+				16683,
+				16500,
+				16998,
+				16232,
+				16886,
+				16861,
+				16673,
+				16570,
+				16458,
+				16805,
+				16537,
+				16975,
+				16282,
+				17376,
+				15968,
+				16746,
+				17056,
+				16303,
+				16780,
+				16700,
+				16291,
+				17004,
+				16797,
+				16479,
+				16850,
+				16688,
+				17080,
+				15857,
+				17049,
+				16643,
+				16414,
+				16958,
+				16217,
+				16638,
+				17266,
+				16492,
+				16715,
+				16329,
+				16793,
+				16623,
+				16803,
+				16522,
+				16633,
+				16692,
+				16743,
+				16505,
+				16796,
+				16900,
+				16675,
+				16517,
+				16864,
+				16456,
+				16611,
+				16755,
+				16408,
+				16665,
+				16846,
+				16573,
+				17028,
+				16407,
+				16744,
+				16876,
+				16982,
+				15893,
+				16600,
+				17119,
+				16580,
+				16713,
+				16764,
+				16398,
+				16844,
+				16410,
+				17028,
+				16400,
+				16808,
+				16455,
+				16974,
+				16601,
+				16807,
+				16360,
+				16776,
+				16458,
+				16688,
+				16600,
+				16890,
+				16734,
+				17686,
+				15470,
+				16352,
+				17056,
+				16695,
+				16801,
+				16221,
+				17059,
+				16312,
+				17125,
+				16657,
+				16488,
+				16822,
+				17207,
+				16149,
+				16314,
+				16873,
+				16452,
+				16803,
+				16764,
+				16653,
+				16421,
+				16987,
+				16502,
+				16614,
+				16587,
+				16639,
+				17409,
+				15958,
+				16956,
+				17828,
+				15145,
+				17417,
+				16078,
+				16807,
+				16758,
+				16447,
+				16805,
+				16412,
+				16792,
+				16741,
+				16749,
+				16857,
+				16378,
+				16495,
+				16573,
+				16750,
+				35340,
+				233084,
+				52656,
+				3089,
+				165133,
+				108936,
+				19052
+			],
+			"loading": {
+				"accepted_usec": 10376886,
+				"aircraft": "turbo-lumber-evolution",
+				"feedback_usec": 11376,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 27116
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 1744697
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11294
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 60253
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 10978
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 38
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 3409
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 40303
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 10302
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 24934
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5641
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 37371
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1754
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2316
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 228765
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 40060
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 227
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5525
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1174
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1847
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 100381
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 1241
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 10065
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 46861
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 5460
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 65964
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 117886
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 5003812
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 18153
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 229615
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 49515
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 34
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 156356
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 33090
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2892,
+				"total_usec": 8396034
+			},
+			"loading_first_draw_usec": 12262,
+			"nodes_at_home": 808,
+			"nodes_in_flight": 1563,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 842262,
+			"return_sync_usec": 778062,
+			"tick_at_first_draw": 12
+		},
+		{
+			"active_at_first_draw_usec": 1711398,
+			"cycle": 2,
+			"fly_first_draw_usec": 1711398,
+			"fly_ready_usec": 1691978,
+			"fly_sync_usec": 4016,
+			"handoff_frames_usec": [
+				858,
+				177912,
+				6515,
+				12365,
+				66163,
+				13450,
+				1284,
+				7019,
+				40821,
+				12593,
+				27028,
+				6489,
+				38492,
+				2701,
+				2870,
+				230031,
+				42886,
+				1966,
+				7664,
+				1887,
+				5746,
+				111493,
+				1672,
+				10618,
+				48825,
+				6056,
+				68357,
+				144515,
+				28514,
+				21018,
+				231008,
+				51205,
+				2940,
+				170406,
+				66015,
+				18571
+			],
+			"loading": {
+				"accepted_usec": 19659797,
+				"aircraft": "turbo-lumber-evolution",
+				"feedback_usec": 11971,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 169551
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4999
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11555
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 63895
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 12051
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 57
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 2453
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 39903
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 11464
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 25834
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5560
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 37514
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1733
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2123
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 229203
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 41485
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 253
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5879
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1095
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1386
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 95642
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 646
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 8272
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 47544
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 4719
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 64959
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 131796
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 25278
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 17620
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 227930
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 48311
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 33
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 153817
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 30701
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2240,
+				"total_usec": 1678455
+			},
+			"loading_first_draw_usec": 12943,
+			"nodes_at_home": 808,
+			"nodes_in_flight": 1563,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 858189,
+			"return_sync_usec": 784711,
+			"tick_at_first_draw": 12
+		}
+	],
+	"display_server": "Windows",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"fly_timing_semantics": "fly_sync_usec is pressed.emit dispatch only; fly_ready_usec includes deferred handoff and validated scene readiness; fly_first_draw_usec additionally waits for post-draw",
+	"format": "openrc-loading-probe v1",
+	"home_first_draw_engine_elapsed_usec": 10375969,
+	"home_first_draw_from_load_usec": 5891426,
+	"home_sync_usec": 3071522,
+	"max_fps": 0,
+	"renderer": "gl_compatibility",
+	"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+	"shutdown": {
+		"audio_released": true,
+		"elapsed_usec": 217473,
+		"remaining_playbacks": 0,
+		"settings_removed": true,
+		"timeout_usec": 1000000,
+		"tracked_playbacks": 1
+	},
+	"viewport_size": [
+		1920,
+		1080
+	],
+	"vsync_mode": 1
+}
