@@ -89,7 +89,7 @@ func _slot(id: String, source: String, anchor: String) -> Dictionary:
 func _bindings(slots: Array) -> Dictionary:
 	var result := {"format": Profile.BINDINGS_FORMAT, "version": 3, "source_proof_version": 2,
 		"visual_family": "fixture", "model_manifest_sha256": "a".repeat(64), "paint_slots": [], "marking_slots": [],
-		"smoke_slots": slots, "presentation_engine_version": "4.7.2", "presentation_sources": Sources.current_records(2), "slots_sha256": ""}
+		"smoke_slots": slots, "presentation_engine_version": Sources.ENGINE_VERSION_PIN, "presentation_sources": Sources.current_records(2), "slots_sha256": ""}
 	result.slots_sha256 = Profile.bindings_sha256(result)
 	return result
 

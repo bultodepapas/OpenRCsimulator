@@ -148,14 +148,23 @@ static func livery_choices(id: String) -> Array:
 	if parsed is Dictionary and parsed.get("liveries") is Array:
 		for record: Variant in parsed.liveries:
 			if record is Dictionary and record.get("id") is String and record.get("label") is String:
-				choices.append({id = str(record.id), label = str(record.label)})
+				var choice := {id = str(record.id), label = str(record.label)}
+				# Static, generated thumbnails are tied to the exact delivered asset.
+				# A changed/missing preview gracefully falls back to a named card.
+				var thumbnail := "res://assets/ui/liveries/%s/%s-%s.png" % [family, record.id, record.get("sha256", "")]
+				if ResourceLoader.exists(thumbnail): choice.thumbnail = thumbnail
+				choices.append(choice)
 	return choices
 
 
 ## F4U-16: `wanted` if it is one of the aircraft's other liveries, else "" (the default paint), so a stale or default
 ## choice builds, caches and preloads exactly as the default model.
 static func resolve_livery(id: String, wanted: String) -> String:
-	var choices := livery_choices(id)
+	return resolve_livery_choice(livery_choices(id), wanted)
+
+
+## Resolve menu snapshots without rereading the manifest. Build still validates fresh assets.
+static func resolve_livery_choice(choices: Array, wanted: String) -> String:
 	for index in range(1, choices.size()):
 		if choices[index].id == wanted: return wanted
 	return ""

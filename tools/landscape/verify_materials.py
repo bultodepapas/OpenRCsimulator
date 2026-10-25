@@ -14,7 +14,8 @@ from PIL import Image, ImageChops, ImageStat
 
 
 SCHEMA_VERSION = 1
-ENGINE_PREFIX = "4.7.2"
+ENGINE_VERSION = "4.8-beta1 (official)"
+ENGINE_HASH = "4d10419cacd6d3009976e8f9fd3abd970fd58018"
 RENDERER = "gl_compatibility"
 TWILIGHT_ROI = (910, 490, 1010, 590)  # left, top, right, bottom; right/bottom exclusive
 REC709 = (0.2126, 0.7152, 0.0722)
@@ -114,9 +115,9 @@ def _check_capture_identity(
     _check(
         checks,
         f"{label}: pinned Godot engine",
-        engine.startswith(ENGINE_PREFIX),
+        engine == ENGINE_VERSION and summary["engine_hash"] == ENGINE_HASH,
         engine,
-        f"engine string starts with {ENGINE_PREFIX}",
+        f"engine is {ENGINE_VERSION} at {ENGINE_HASH}",
     )
     _check(
         checks,

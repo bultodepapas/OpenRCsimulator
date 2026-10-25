@@ -1,26 +1,34 @@
 #!/usr/bin/env bash
 # Download the pinned Godot export templates, verify their official SHA-512, and install only the templates the
 # release builds use (Linux x86_64, Windows x86_64, macOS universal) where Godot looks for them.
-# Prints the install folder. The 1.28 GB .tpz is deleted after extraction; a second run is a no-op.
+# Prints the install folder. The 1.36 GB .tpz is deleted after extraction; a second run is a no-op.
 set -euo pipefail
-VERSION=4.7.2-stable
-TEMPLATE_DIR_NAME=4.7.2.stable # Godot reads the folder name from version.txt: a dot, not "-stable"
+VERSION=4.8-beta1
+TEMPLATE_DIR_NAME=4.8.beta1 # Godot reads the folder name from version.txt, not the archive suffix.
 FILE=Godot_v${VERSION}_export_templates.tpz
-SHA512=ca4d71c4d7b81dfc15d1a98baa07534aa95b03fdda78a0075b06672e1648d2e5f40980c9adc28d23e1b92e732ee7bf3461997aa804af74ec2fcd7a93ccb84079
+SHA512=fa53ad6883ae6c78ee9d2f8d14ca4d34852fa21c462d1f4b0f599138d7de40897cc058f15083a1fa80c7d4b7590b2222dea6f056be7b49e3a584eb64fc30b0b7
 NEEDED=(linux_release.x86_64 windows_release_x86_64.exe macos.zip version.txt)
 
 TOOLS="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)/.tools"
-DEST="${XDG_DATA_HOME:-$HOME/.local/share}/godot/export_templates/$TEMPLATE_DIR_NAME"
-present() { for f in "${NEEDED[@]}"; do [ -s "$DEST/$f" ] || return 1; done; }
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) DATA_ROOT="$(cygpath -u "${APPDATA:?APPDATA is required on Windows}")/Godot" ;;
+  Darwin) DATA_ROOT="$HOME/Library/Application Support/Godot" ;;
+  *) DATA_ROOT="${XDG_DATA_HOME:-$HOME/.local/share}/godot" ;;
+esac
+DEST="$DATA_ROOT/export_templates/$TEMPLATE_DIR_NAME"
+present() {
+  for f in "${NEEDED[@]}"; do [ -s "$DEST/$f" ] || return 1; done
+  [ "$(tr -d '\r\n' < "$DEST/version.txt")" = "$TEMPLATE_DIR_NAME" ]
+}
 if present; then echo "$DEST"; exit 0; fi
 mkdir -p "$TOOLS" "$DEST"
 if [ ! -f "$TOOLS/$FILE" ]; then
-  curl -sSfL -o "$TOOLS/$FILE.part" "https://github.com/godotengine/godot/releases/download/$VERSION/$FILE"
+  curl -sSfL -o "$TOOLS/$FILE.part" "https://github.com/godotengine/godot-builds/releases/download/$VERSION/$FILE"
   mv "$TOOLS/$FILE.part" "$TOOLS/$FILE"
 fi
 echo "$SHA512  $TOOLS/$FILE" | sha512sum -c - >&2
 unzip -q -o -j "$TOOLS/$FILE" $(printf 'templates/%s ' "${NEEDED[@]}") -d "$DEST"
-[ "$(cat "$DEST/version.txt")" = "$TEMPLATE_DIR_NAME" ] || { echo "unexpected template version: $(cat "$DEST/version.txt")" >&2; exit 1; }
+[ "$(tr -d '\r\n' < "$DEST/version.txt")" = "$TEMPLATE_DIR_NAME" ] || { echo "unexpected template version: $(cat "$DEST/version.txt")" >&2; exit 1; }
 rm "$TOOLS/$FILE"
 present
 echo "$DEST"

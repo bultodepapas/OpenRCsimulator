@@ -2014,6 +2014,22 @@ msgstr "Repetir último vuelo"
 msgid "Back"
 msgstr "Volver"
 
+# F4U-20-R3: direct paint gallery.
+msgid "Paint schemes"
+msgstr "Pinturas"
+
+msgid "Choose paint (%d)"
+msgstr "Elegir pintura (%d)"
+
+msgid "View all paint schemes and select one directly."
+msgstr "Ver todas las pinturas y elegir una directamente."
+
+msgid "Choose a paint for your next flight."
+msgstr "Elige una pintura para tu próximo vuelo."
+
+msgid "Selected"
+msgstr "Seleccionada"
+
 msgid "NATURAL RANDOM"
 msgstr "ALEATORIO NATURAL"
 

@@ -23,7 +23,7 @@ from typing import Mapping, Optional, Sequence
 
 
 PROFILE_ENV = "OPENRC_GRAPHICS_PROFILE"
-PINNED_WINDOWS_GODOT = "Godot_v4.7.2-stable_win64_console.exe"
+PINNED_WINDOWS_GODOT = "Godot_v4.8-beta1_win64_console.exe"
 APP_DIR = Path(__file__).resolve().parents[2] / "app"
 REPO_ROOT = APP_DIR.parent
 

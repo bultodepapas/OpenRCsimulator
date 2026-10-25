@@ -11,7 +11,7 @@ const FIELD_FORMAT := "openrc-ai-field v1"
 const IDENTITY_FORMAT := "openrc-ai-profile-identity v1"
 const AIRCRAFT_DATA_FORMAT := "openrc-aircraft v2"
 const FIELD_DATA_FORMAT := "openrc-field v1"
-const QUALIFIED_ENGINE_VERSION := "4.7.2"
+const QUALIFIED_ENGINE_VERSION := "4.8.beta1.official.4d10419ca"
 const QUALIFIED_PHYSICS_HZ := 240
 const SOLVER_NORMALIZATION := "utf8-lf"
 const SOLVER_SOURCE_DIRECTORIES := ["res://physics", "res://sim", "res://failures"]
@@ -47,7 +47,7 @@ const ACTIVITY_ALLOWLIST := ["circuits"]
 const QUALIFIED_SKILL := "experienced"
 const QUALIFIED_START_MODES := ["airborne"]
 const UNQUALIFIED_MODES := ["ground", "takeoff", "runway", "landing"]
-const EVIDENCE_PATH := "docs/research/ai-companions/pilot/README.md"
+const EVIDENCE_PATH := "docs/research/engine-upgrade/GDU-03/companions/README.md"
 const QUALIFIED_SCENARIOS := ["calm", "gentle-practice"]
 const REBIND_HINT := "run python3 tools/companions/rebind.py"
 
@@ -127,6 +127,17 @@ static func load_profile(
 		"field_profile": validated.field_profile.duplicate(true),
 		"identity": identity.duplicate(true),
 	}
+
+
+## Exact executable identity, including prerelease status and source revision.
+## Numeric 4.8.0 alone cannot distinguish the qualified beta from another build.
+static func engine_build_identity(info: Dictionary) -> String:
+	var version := "%d.%d" % [int(info.get("major", -1)), int(info.get("minor", -1))]
+	var patch: int = int(info.get("patch", -1))
+	if patch != 0:
+		version += ".%d" % patch
+	return "%s.%s.%s.%s" % [version, str(info.get("status", "")),
+		str(info.get("build", "")), str(info.get("hash", "")).left(9)]
 
 
 ## Validate caller-owned copies without changing them. Useful to qualify data mutations offline.
@@ -224,10 +235,7 @@ static func validate_profile_data(
 
 	if profile.get("engine_version") != QUALIFIED_ENGINE_VERSION:
 		errors.append("engine_version: profile must pin the qualified Godot %s build" % QUALIFIED_ENGINE_VERSION)
-	var engine_info: Dictionary = Engine.get_version_info()
-	var current_engine_version := "%d.%d.%d" % [
-		int(engine_info.get("major", -1)), int(engine_info.get("minor", -1)), int(engine_info.get("patch", -1)),
-	]
+	var current_engine_version: String = engine_build_identity(Engine.get_version_info())
 	if current_engine_version != QUALIFIED_ENGINE_VERSION:
 		errors.append("engine_version: runtime is %s; qualification requires Godot %s" % [current_engine_version, QUALIFIED_ENGINE_VERSION])
 	if Engine.physics_ticks_per_second != QUALIFIED_PHYSICS_HZ:

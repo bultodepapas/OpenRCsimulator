@@ -69,7 +69,7 @@ func _run() -> void:
 		and result.identity.controller_dependencies == result.profile.controller.dependencies \
 		and result.identity.solver_sha256 == FlightLog.solver_identity() \
 		and result.identity.solver_qualification_sha256 == result.profile.solver.sha256 \
-		and result.identity.engine_version == "4.7.2" \
+		and result.identity.engine_version == Loader.QUALIFIED_ENGINE_VERSION \
 		and result.identity.aircraft_profile_sha256.length() == 64 \
 		and result.identity.field_profile_sha256.length() == 64)
 	var solver_identity: Dictionary = Loader.current_solver_qualification_identity()
@@ -147,8 +147,15 @@ func _run() -> void:
 		and not _validate(drifted_profile, field_profile_copy).get("ok", false))
 
 	bad_aircraft = profile_copy.duplicate(true)
-	bad_aircraft.engine_version = "4.7.3"
+	bad_aircraft.engine_version = "4.8.stable.official.4d10419ca"
 	_check("an unqualified engine version fails closed", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
+	_check("runtime engine identity includes the qualified prerelease and revision",
+		Loader.engine_build_identity(Engine.get_version_info()) == Loader.QUALIFIED_ENGINE_VERSION)
+	for changed_key: String in ["status", "build", "hash", "patch"]:
+		var changed_engine: Dictionary = Engine.get_version_info().duplicate(true)
+		changed_engine[changed_key] = 1 if changed_key == "patch" else "unqualified"
+		_check("engine identity rejects changed " + changed_key,
+			Loader.engine_build_identity(changed_engine) != Loader.QUALIFIED_ENGINE_VERSION)
 	var original_physics_hz: int = Engine.physics_ticks_per_second
 	var rates_refused := true
 	for hz: int in [120, 480]:

@@ -221,7 +221,7 @@ def git_info(source_root: Path) -> dict[str, str]:
 
 
 def default_godot(source_root: Path) -> Path:
-    return source_root / ".tools/Godot_v4.7.2-stable_linux.x86_64"
+    return source_root / ".tools/Godot_v4.8-beta1_linux.x86_64"
 
 
 def main() -> int:
@@ -229,7 +229,7 @@ def main() -> int:
     parser.add_argument("--source-root", type=Path, default=SOURCE_ROOT, help="shared repository root visible to WSL")
     parser.add_argument("--workspace", type=Path, help="isolated Linux build workspace outside the source repository")
     parser.add_argument("--out", type=Path, help="evidence directory (defaults under repository tmp/)")
-    parser.add_argument("--godot", type=Path, help="existing Linux Godot 4.7.2 binary")
+    parser.add_argument("--godot", type=Path, help="existing Linux Godot 4.8-beta1 binary")
     parser.add_argument("--jobs", type=int, default=2)
     args = parser.parse_args()
 

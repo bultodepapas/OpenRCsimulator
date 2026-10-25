@@ -208,8 +208,8 @@ def resolve_godot(explicit_path: str | None) -> Path:
     candidates.extend(
         str(ROOT / relative)
         for relative in (
-            ".tools/Godot_v4.7.2-stable_win64_console.exe",
-            ".tools/Godot_v4.7.2-stable_linux.x86_64",
+            ".tools/Godot_v4.8-beta1_win64_console.exe",
+            ".tools/Godot_v4.8-beta1_linux.x86_64",
         )
     )
     for candidate in candidates:
@@ -227,10 +227,10 @@ def resolve_godot(explicit_path: str | None) -> Path:
             check=False,
         )
         version = (result.stdout or result.stderr).strip().splitlines()
-        if result.returncode == 0 and version and version[0].startswith("4.7.2"):
+        if result.returncode == 0 and version and version[0] == "4.8.beta1.official.4d10419ca":
             return executable.resolve()
     raise FileNotFoundError(
-        "Pinned Godot 4.7.2 is required for meshoptimizer reduction. Pass --godot PATH, "
+        "Pinned Godot 4.8-beta1 is required for meshoptimizer reduction. Pass --godot PATH, "
         "set GODOT, or run app/get-godot.sh to place its pinned binary in .tools."
     )
 
@@ -472,7 +472,7 @@ def build_data(document: dict, binary: bytes, digest: str, godot: Path) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="verify generated data matches the saved JSON")
-    parser.add_argument("--godot", help="path to the pinned Godot 4.7.2 executable")
+    parser.add_argument("--godot", help="path to the pinned Godot 4.8-beta1 executable")
     args = parser.parse_args()
     digest = hashlib.sha256(SOURCE.read_bytes()).hexdigest()
     if digest != EXPECTED_SHA256:

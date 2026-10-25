@@ -20,7 +20,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 DRIVER = Path(__file__).with_name("paired_metadata_bench.gd")
-DEFAULT_ENGINE = ROOT / ".tools" / "Godot_v4.7.2-stable_win64_console.exe"
+DEFAULT_ENGINE = ROOT / ".tools" / "Godot_v4.8-beta1_win64_console.exe"
 DEFAULT_APP = ROOT / ".tools" / "as-integration" / "app"
 DEFAULT_EVIDENCE = ROOT / "docs" / "research" / "aircraft-standardization" / "AS-04" / "evidence"
 EXPECTED_KEYS = {

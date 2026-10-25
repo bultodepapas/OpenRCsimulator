@@ -81,7 +81,9 @@ func _run() -> void:
 		for row in table:
 			keys += row[0].size()
 	_check("Help shows every key of the shared table (%d)" % keys, _caps_text(help).size() == keys, str(_caps_text(help)))
-	_check("about: development build, Godot, licence", "development build" in help.about_label.text and "Godot 4.7" in help.about_label.text
+	var engine_version := Engine.get_version_info()
+	var engine_label := "Godot %d.%d" % [engine_version.major, engine_version.minor]
+	_check("about: development build, Godot, licence", "development build" in help.about_label.text and engine_label in help.about_label.text
 		and "MIT" in help.about_label.text, help.about_label.text)
 	_check("Help documents gear AUX and the optional gear action",
 		help.radio_help_label.text.contains("gear AUX") and help.radio_help_label.text.contains("Toggle landing gear"), help.radio_help_label.text)

@@ -379,8 +379,12 @@ static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: N
 	var normal := Vector3.DOWN
 	var u := Vector3.RIGHT * Equipment.THROTTLE_SIDE
 	var v := Vector3.BACK
-	var servo_pivot := Equipment.throttle_servo_arm_end() - u * THROTTLE_SERVO_RADIUS_M
-	# Upright on rails from the fuselage side, output end forward so the case and tabs stay clear of F1.
+	# US-V18b: locate the upright throttle servo from the generated tray datum. _add_servo()
+	# takes the output shaft pivot; the case centre is 10 mm aft of it with this forward-facing output.
+	var tray: Dictionary = D.equipment.servo_tray
+	var servo_case := Vector3(float(tray.servo_x.throttle), float(D.equipment.shaft_y), float(tray.case_z))
+	var servo_pivot := servo_case + Vector3.FORWARD * SERVO_SHAFT_X_M
+	# Output end forward; the measured case station and centreline come from the tray geometry.
 	var servo := _add_servo(service, "throttle_servo", servo_pivot, Vector3.UP, Vector3.FORWARD)
 	_add_servo_mount(service, "throttle_servo", servo, Equipment.THROTTLE_SIDE)
 	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "animated": true, "reference": "estimated gas servo station; drives the carburettor lever from the throttle command"}

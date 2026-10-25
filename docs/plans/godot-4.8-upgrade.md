@@ -1,21 +1,21 @@
 # Godot 4.8 upgrade plan
 
-**Status:** GDU-00 done on 2026-10-21; GDU-02 parallel Windows trial started on 2026-10-25 ([evidence and reproduction](../research/engine-upgrade/GDU-02/README.md)). Pinned production engine: 4.7.2-stable. Latest official 4.8 build rechecked on 2026-10-25: beta1 (2026-10-15). GDU-03 onward remain open. **Owner:** export/CI maintainer (DT/PT). The tracks listed per phase own their own acceptance. **Prefix:** `GDU-`. **Evidence:** `docs/research/engine-upgrade/`; audit in [GDU-00](../research/engine-upgrade/GDU-00/README.md).
+**Status:** GDU-03 adoption in progress on 2026-10-25: the owner explicitly requested 4.8 as the standard engine after reviewing the [GDU-02 parallel trial](../research/engine-upgrade/GDU-02/README.md), accepting the beta risk. Current pin: official 4.8-beta1 (2026-10-15). This supersedes the previous stable-only entry requirement; remaining verification gates stay open until evidenced. **Owner:** export/CI maintainer (DT/PT). The tracks listed per phase own their own acceptance. **Prefix:** `GDU-`. **Evidence:** `docs/research/engine-upgrade/`; audit in [GDU-00](../research/engine-upgrade/GDU-00/README.md).
 
 ## Goal and rules
 
 Move the pinned engine from 4.7.2 to the first 4.8 build that passes every gate below, without silently changing physics, replay, identities or packages.
 
 - **Upgrade one dependency at a time.** godot-cpp stays at 10.0.0-stable with `api_version=4.7`, and Python/Node pins stay unchanged.
-- **Never ship a beta or RC.** Betas and RCs are only used in disposable worktrees (GDU-02).
+- **Owner-authorized beta adoption (2026-10-25).** Official 4.8-beta1 is the standard development engine. This replaces the earlier beta-only-in-disposable-worktrees restriction. Adopting the engine does not claim completed platform qualification or authorize publishing a release.
 - **Simulation must be byte-identical.** Golden flights, traces and fleet fingerprints are not re-recorded for the engine change. Any difference stops the upgrade until it is explained.
 - **Visual and audio baselines change only with a paired, explained diff.** Each owning track accepts its own diff.
 - **Upstream defects go upstream.** Report a regression with a minimal reproduction project. Use a local workaround only when it is scoped, tested and can be removed.
 - **Keep commits small and separate.** The switch lands as reviewable commits: pin, settings, reimport, identities, then docs.
 
-## Entry criteria for the switch (GDU-03)
+## Qualification criteria retained after the authorized switch (GDU-03)
 
-1. A 4.8 stable build, or an RC that is expected to become stable unchanged, exists with an official SHA-512.
+1. The exact adopted build has verified official SHA-512 archives. Stable/RC availability is no longer an entry requirement following the owner's explicit beta adoption.
 2. [#124742](https://github.com/godotengine/godot/issues/124742) (Compatibility globals) and [#124744](https://github.com/godotengine/godot/issues/124744) (macOS universal template swap) are fixed in that build, or have an accepted local workaround with a test.
 3. The GDU-02 triage has no unexplained failure.
 

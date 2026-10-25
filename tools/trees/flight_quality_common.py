@@ -15,7 +15,7 @@ from typing import Any, Sequence
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_ENGINE = REPO_ROOT / ".tools" / "Godot_v4.7.2-stable_win64.exe"
+DEFAULT_ENGINE = REPO_ROOT / ".tools" / "Godot_v4.8-beta1_win64.exe"
 PROBE = REPO_ROOT / "tools" / "trees" / "flight_quality_probe.gd"
 ERROR_RE = re.compile(r"\b(?:ERROR|SCRIPT ERROR|PARSE ERROR)\b", re.IGNORECASE)
 ENVIRONMENT_SELECTORS = {"OPENRC_TREE_WIND", "OPENRC_TREE_CELL_SIZE_M", "OPENRC_GRASS_QUALITY"}

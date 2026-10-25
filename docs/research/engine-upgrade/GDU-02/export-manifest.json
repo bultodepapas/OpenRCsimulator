@@ -1,0 +1,11 @@
+{
+  "format": "openrc-official-godot-trial-export v1",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "templates_sha512": "fa53ad6883ae6c78ee9d2f8d14ca4d34852fa21c462d1f4b0f599138d7de40897cc058f15083a1fa80c7d4b7590b2222dea6f056be7b49e3a584eb64fc30b0b7",
+  "source_commit": "a6c2ce38a80a44327392367520c828b42ba0acda",
+  "qualification": "experimental Windows export; production gates remain open",
+  "files": {
+    "OpenRC Godot 4.8 Trial.exe": "9d881a455f3cf6bf67a09111e0186c548017ed0813773a5a59a99733c24bf140",
+    "Play.cmd": "2ef7214c8ff0ceb8bd401848ce9ef86809818537fc2d9cf03d09191b6c662423"
+  }
+}

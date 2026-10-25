@@ -16,7 +16,7 @@ The [RCV-09-R2 handling revision](../../../docs/research/rc-monster-truck/RCV-ha
 
 ## Pinned build tools
 
-The [toolchain lock](toolchain-lock.json) pins Godot `4.7.2.stable.official.ed1daf0bf`, extension API `4.7`, godot-cpp `10.0.0-stable` at `507ed9d840c01a3c5b2a39af8bb4000bfac30bf5`, SCons `4.10.1` (including the wheel hash), and Python `3.9+`.
+The [toolchain lock](toolchain-lock.json) pins Godot `4.8.beta1.official.4d10419ca`, extension API `4.7`, godot-cpp `10.0.0-stable` at `507ed9d840c01a3c5b2a39af8bb4000bfac30bf5`, SCons `4.10.1` (including the wheel hash), and Python `3.9+`. Engine-upgrade qualification belongs to [GDU-03](../../../docs/research/engine-upgrade/GDU-03/native/README.md); earlier results below retain their original engine identity.
 
 | Host | Compiler and SDK | Flags |
 | --- | --- | --- |
@@ -31,7 +31,7 @@ On Windows, open the x64 Native Tools prompt for the pinned Visual Studio and ru
 python -B research/rc-monster-truck/native/build.py --jobs 2
 ```
 
-The build script uses `.tools/Godot_v4.7.2-stable_win64.exe` by default. Pass `--godot PATH` to use a different copy of the same pinned engine. The configured Linux app CI step targets an Ubuntu 24.04 x86_64 host with the locked GCC and runs:
+The build script uses `.tools/Godot_v4.8-beta1_win64_console.exe` on Windows and `.tools/Godot_v4.8-beta1_linux.x86_64` on Linux by default. Pass `--godot PATH` to use a different copy of the same pinned engine. The configured Linux app CI step targets an Ubuntu 24.04 x86_64 host with the locked GCC and runs:
 
 ```sh
 python3 research/rc-monster-truck/native/build.py --jobs 2 --godot "$(app/get-godot.sh)"

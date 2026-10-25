@@ -19,7 +19,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 DRIVER = Path(__file__).with_name("verify.gd")
-DEFAULT_ENGINE = ROOT / ".tools" / "Godot_v4.7.2-stable_win64_console.exe"
+DEFAULT_ENGINE = ROOT / ".tools" / "Godot_v4.8-beta1_win64_console.exe"
 DEFAULT_BASELINE = ROOT / ".tools" / "as-baseline" / "app"
 DEFAULT_CANDIDATE = ROOT / ".tools" / "as-integration" / "app"
 DEFAULT_EVIDENCE = ROOT / "docs" / "research" / "aircraft-standardization" / "AS-04" / "evidence"

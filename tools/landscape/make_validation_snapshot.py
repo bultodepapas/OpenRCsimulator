@@ -45,7 +45,7 @@ def main():
         if name.endswith(".sh"):
             destination.chmod(0o755)
     (target / "source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    binary = source / ".tools/Godot_v4.7.2-stable_linux.x86_64"
+    binary = source / ".tools/Godot_v4.8-beta1_linux.x86_64"
     if binary.exists():
         (target / ".tools").mkdir()
         copied = target / ".tools" / binary.name

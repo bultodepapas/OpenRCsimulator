@@ -74,8 +74,8 @@ def read_run(folder: Path, include: Path) -> tuple[dict[str, Any], np.ndarray]:
     width = len(PANEL_IDS) * PANEL_SIZE
     if metadata.get("format") != FORMAT or metadata.get("complete") is not True:
         raise RuntimeError(f"{metadata_path}: unexpected or incomplete probe metadata")
-    if not str(metadata.get("godot", "")).startswith("4.7.2") or not metadata.get("renderer"):
-        raise RuntimeError(f"{metadata_path}: missing pinned Godot 4.7.2 / renderer metadata")
+    if metadata.get("godot") != "4.8-beta1 (official)" or not metadata.get("renderer"):
+        raise RuntimeError(f"{metadata_path}: missing pinned Godot 4.8-beta1 / renderer metadata")
     if metadata.get("panels") != list(PANEL_IDS):
         raise RuntimeError(f"{metadata_path}: panel inventory mismatch")
     if (metadata.get("width"), metadata.get("height"), metadata.get("panel_size")) != (width, PANEL_SIZE, PANEL_SIZE):

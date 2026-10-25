@@ -24,7 +24,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_GODOT = ROOT / ".tools" / "Godot_v4.7.2-stable_win64_console.exe"
+DEFAULT_GODOT = ROOT / ".tools" / "Godot_v4.8-beta1_win64_console.exe"
 DEFAULT_APP = ROOT / "app"
 DEFAULT_PROBE = ROOT / "tools" / "audio" / "gameplay_probe.gd"
 DEFAULT_OUT = ROOT / ".tools" / "audio-profile" / "native-gameplay"

@@ -16,7 +16,7 @@ const DATA := {
 		"metadata_sha256": "e596b4044ae18547a9bbf7c2f594e1f2d6108ca90d25a1aa4295db6746c7c724",
 		"measurements": {
 			"generator": "research/timber/tt02/measure_mesh.gd",
-			"godot": "4.7.2-stable (official)",
+			"godot": "4.8-beta1 (official)",
 			"format": "openrc-timber-mesh-measurements v1"
 		},
 		"manual": "assets/aircraft/turbo-lumber-evolution/manual.json",
@@ -385,7 +385,7 @@ const DATA := {
 			"triangles": 42519.0
 		},
 		"compressed_vertex_attributes": false,
-		"godot": "4.7.2-stable (official)"
+		"godot": "4.8-beta1 (official)"
 	},
 	"dimensions": {
 		"span": {

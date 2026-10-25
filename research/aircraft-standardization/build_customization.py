@@ -21,7 +21,7 @@ OUTPUT_PATH = Path("app/data/aircraft_customization.json")
 SOURCE_FORMAT = "openrc-aircraft-customization-source"
 COMPANION_FORMAT = "openrc-aircraft-customization-bindings"
 REGISTRY_FORMAT = "openrc-aircraft-customization-registry"
-PRESENTATION_ENGINE_VERSION = "4.7.2"
+PRESENTATION_ENGINE_VERSION = "4.8.0"
 LEGACY_PRESENTATION_SOURCE_PATHS = (
     "res://render/aircraft_customization.gd",
     "res://render/presentation_sources.gd",

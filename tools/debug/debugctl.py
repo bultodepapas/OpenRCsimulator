@@ -227,7 +227,10 @@ def godot() -> str:
     if os.environ.get("OPENRC_GODOT"):
         return os.environ["OPENRC_GODOT"]
     if os.name == "nt":
-        raise ValueError("set OPENRC_GODOT to the Godot 4.7.2 executable (app/get-godot.sh is a Bash script)")
+        candidate = REPO / ".tools" / "Godot_v4.8-beta1_win64_console.exe"
+        if candidate.is_file():
+            return str(candidate)
+        raise ValueError("install the pinned Godot 4.8-beta1 with app/get-godot.sh (Git Bash), or set OPENRC_GODOT")
     return subprocess.run([str(REPO / "app" / "get-godot.sh")], check=True, capture_output=True, text=True).stdout.strip()
 
 

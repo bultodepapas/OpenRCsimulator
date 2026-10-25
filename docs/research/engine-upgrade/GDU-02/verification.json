@@ -1,0 +1,603 @@
+{
+  "format": "openrc-engine-upgrade-evidence v1",
+  "date": "2026-10-25",
+  "step": "GDU-02",
+  "production_switch_accepted": false,
+  "bootstrap_sha256": "d6f28a899161c0c5c04d773fe702b5c8c8554d0de9c30829c11face6c529b2c0",
+  "source_receipt_sha256": "9304a877a9905918c65ebc8ea0ab8f42a733f7c02fd2234bc5ba04cbc05a9482",
+  "export_manifest_sha256": "cbcd0b21ad9c49aa07fb49778e90062d4d1b7b4b7394c421352c194b35bb7db6",
+  "checks": [
+    {
+      "label": "gdu02-exported-capture",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\experimental-windows\\OpenRC Godot 4.8 Trial.exe",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--fixed-fps",
+        "60",
+        "--",
+        "--capture",
+        "--scripted",
+        "--view=closeup",
+        "--t=3.0",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\exported-1080p.png"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 54.391,
+      "log_sha256": "773e36aba16eeecc5645dec2c8bddefe20bc33d227deda6bc048322201af8f7b",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-exported-capture-lesvo31c\\report.json"
+    },
+    {
+      "label": "gdu02-final-test_advanced_graphics_settings",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_advanced_graphics_settings.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 14.579,
+      "log_sha256": "20f7a4d64102de1261b40325ca83dedf739da412910b0c290c45f12e2daafacc",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-final-test_advanced_graphics_settings-azoadvj0\\report.json"
+    },
+    {
+      "label": "gdu02-final-test_aircraft_customization",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_customization.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.594,
+      "log_sha256": "60ae6773698a2ada1016fad0848358cf4c74e8a8f822bb7c1f623e69d09a8fe5",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-final-test_aircraft_customization-24347kat\\report.json"
+    },
+    {
+      "label": "gdu02-final-test_smoke_bindings",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_smoke_bindings.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.515,
+      "log_sha256": "647c3af250cb555b3ef7b84d96ecf200f7c1c5af0ce4529ad2decc109d92a093",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-final-test_smoke_bindings-3josl3e0\\report.json"
+    },
+    {
+      "label": "gdu02-final-test_wind_field",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wind_field.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.344,
+      "log_sha256": "bba94016f66f407807b6490fb87e2e932f65e35764360fbc9beb32be88c16aec",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-final-test_wind_field-0rezemf5\\report.json"
+    },
+    {
+      "label": "gdu02-final-test_wind_trace",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wind_trace.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.204,
+      "log_sha256": "c077cbef10e7670f490811c8c0290aea5a382c8c384ba3dafb96745fec056992",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-final-test_wind_trace-0vycvby_\\report.json"
+    },
+    {
+      "label": "gdu02-final-test_wind_turbulence",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wind_turbulence.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.094,
+      "log_sha256": "8852fecf952b7adb3da8e5a1745b45cc77cd38315dcdaed404f0d843f9f9798b",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-final-test_wind_turbulence-5f4haxf4\\report.json"
+    },
+    {
+      "label": "gdu02-final-test_workshop_presentation",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_presentation.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.609,
+      "log_sha256": "d445d49f7baf291b91d93fe1a474e2ce1e5815a69998b0bedf83169ff6f25941",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-final-test_workshop_presentation-veayzrib\\report.json"
+    },
+    {
+      "label": "gdu02-import-pristine",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-4.8-beta1-trial\\app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 8
+      },
+      "elapsed_seconds": 186.453,
+      "log_sha256": "7f1d506f542de87ed669604dd2596246540ff978c40945c86b4a304ebdc52cdc",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-import-pristine-smuwrxfe\\report.json"
+    },
+    {
+      "label": "gdu02-test_aircraft_customization",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_customization.gd"
+      ],
+      "ok": false,
+      "reason": "process_exit",
+      "complete": true,
+      "process_exit": 1,
+      "counts": {
+        "error": 7,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.703,
+      "log_sha256": "bc3d021c0e78ad3de5186a8fe0f13acab5ea37ad8d391bf5c6decc3f814f5634",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_aircraft_customization-pxx93e67\\report.json"
+    },
+    {
+      "label": "gdu02-test_companions_profiles",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "ok": false,
+      "reason": "process_exit",
+      "complete": true,
+      "process_exit": 1,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.672,
+      "log_sha256": "6d66fdb12ae9a6472c9e235c1ebf9b08ffee558a180ba3ee6e2b10c53772f0da",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_companions_profiles-1rpn3xji\\report.json"
+    },
+    {
+      "label": "gdu02-test_flight_log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_log.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 14.547,
+      "log_sha256": "c467be15dd9082c6ff9028a9970c9d39246461b5f52466d70b87195d1a44b310",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_flight_log-hb53pve_\\report.json"
+    },
+    {
+      "label": "gdu02-test_golden",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_golden.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.125,
+      "log_sha256": "19cbc5d8b74aca746c81dd146b8afbbfe29ee9e8f3aeedb6caddbe98a3e79f98",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_golden-cmt64v_5\\report.json"
+    },
+    {
+      "label": "gdu02-test_high_graphics_profile",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_high_graphics_profile.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.672,
+      "log_sha256": "affb946678999b1aba5be6bb42c65908c73b5102ec1d29a77d8c584c9f820ee6",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_high_graphics_profile-63efvq3t\\report.json"
+    },
+    {
+      "label": "gdu02-test_presentation_sources",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_presentation_sources.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.156,
+      "log_sha256": "52198e1e35e28cc59eb1e196fbd0999a54b1aa88dc07ae392230617f467c09e4",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_presentation_sources-3iol03bn\\report.json"
+    },
+    {
+      "label": "gdu02-test_reconstruction",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_reconstruction.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.406,
+      "log_sha256": "3921140fe03f350286c9786681cab0574f4c9955d2e78dafdda02d1fda9ac61f",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_reconstruction-ltm0esv4\\report.json"
+    },
+    {
+      "label": "gdu02-test_sf_ground_vehicle_kernel",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_sf_ground_vehicle_kernel.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 3.797,
+      "log_sha256": "1c8995c3ed7e8ffe77209a31d9b6f1b9b5c58a6619432404bdd52981e35697b9",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_sf_ground_vehicle_kernel-yxfuhnwv\\report.json"
+    },
+    {
+      "label": "gdu02-test_simulation",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_simulation.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.39,
+      "log_sha256": "68891fa75ca677db4394d85e448f58ba790b42bfd0f3acbb762475587a74b7fa",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_simulation-15v12ta8\\report.json"
+    },
+    {
+      "label": "gdu02-test_smoke_bindings",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_smoke_bindings.gd"
+      ],
+      "ok": false,
+      "reason": "timeout",
+      "complete": false,
+      "process_exit": 1,
+      "counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "elapsed_seconds": 240.312,
+      "log_sha256": "d73219feb895799386ead4e55c83e8ea3c3d04470ce20ff0f56d5f956df2b9ae",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_smoke_bindings-o2i61psc\\report.json"
+    },
+    {
+      "label": "gdu02-test_wind",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wind.gd"
+      ],
+      "ok": false,
+      "reason": "process_exit",
+      "complete": true,
+      "process_exit": 1,
+      "counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.219,
+      "log_sha256": "56330497d7bd89a28728951aeb390867aaab73f1c97bddfb5226fa4519a02440",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_wind-s57189_d\\report.json"
+    },
+    {
+      "label": "gdu02-test_workshop_presentation",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_presentation.gd"
+      ],
+      "ok": false,
+      "reason": "process_exit",
+      "complete": true,
+      "process_exit": 1,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.391,
+      "log_sha256": "eb90153d45b2ff139a4748f13d3d86ac7fde4997abfe5e6797cf06cb1eda6723",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\checks\\gdu02-test_workshop_presentation-04cdc5rs\\report.json"
+    },
+    {
+      "label": "gdu02-export-windows",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+        "--audio-driver",
+        "Dummy",
+        "--export-release",
+        "Windows",
+        "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\experimental-windows\\OpenRC Godot 4.8 Trial.exe"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "elapsed_seconds": 26.141,
+      "log_sha256": "f8131406f2d3d5e0ffd177c1bf032e22d126955e1fa5bf1c570c71e65ebee878",
+      "report": "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\tmp\\export-checks\\gdu02-export-windows-0c687mal\\report.json"
+    }
+  ],
+  "initial_failures": {
+    "gdu02-test_wind": "Invocation mistake: nonexistent script; actual wind tests passed later.",
+    "gdu02-test_aircraft_customization": "4.7.2 fixture literal and changed import metadata; generators plus candidate fixture adaptation passed rerun.",
+    "gdu02-test_workshop_presentation": "4.7.2 fixture literal; candidate fixture adaptation passed rerun.",
+    "gdu02-test_smoke_bindings": "4.7.2 fixture rejection followed by invalid handles access and timeout; candidate fixture adaptation passed rerun.",
+    "gdu02-test_companions_profiles": "Qualification guard remains closed on 4.8; profile also reports a pilot-source SHA mismatch. No qualification was forged."
+  },
+  "source_runtime": {
+    "session": "tmp/debug-bridge/20261025-090425-47953",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "aircraft_stepped_240_ticks": [
+      "jensen-das-ugly-stik-60",
+      "sebart-avanti-s-a200-p100rx",
+      "turbo-lumber-evolution"
+    ],
+    "engine_errors": 0,
+    "exit": {
+      "stopped": true,
+      "pid": 67328,
+      "crash": null,
+      "leaked_objects": 0
+    }
+  },
+  "export_capture": {
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-02-20261025\\exported-1080p.png",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "sha256": "554ef6786af9ad4379d0297a2ff2daaf92d3279fd7688211fe0b4f9ab7faf00e",
+    "metadata_sha256": "05f7037ffefa27f454bbb17f58573c0dae3288f90af2c8f2b44e325b6d7aa785",
+    "renderer": "Compatibility",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "617.42"
+  },
+  "debug_smoke": {
+    "ok": true,
+    "failed": [],
+    "steps": 15,
+    "hitches": 71,
+    "leaked_objects_at_exit": 0,
+    "out": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\debug-bridge\\20261025-090917-47870"
+  },
+  "debug_smoke_log_sha256": "236e9dcd7080af5d51a9ebde3c8673a353b8f0080bafcb16170dc351478dfcab",
+  "bootstrap_guard_check_sha256": "7303d889695f103812bddb3fa24bb94d1d8b00518e33ebc666d744ad94c0cfb6",
+  "bootstrap_guard_result": "PASS: four unsafe destinations rejected; customized launcher and managed files preserved",
+  "remaining_gates": [
+    "complete app/test.sh",
+    "paired visual/audio comparisons",
+    "cross-engine exact replay",
+    "native evaluator qualification",
+    "AI companion requalification",
+    "Linux and macOS packages",
+    "production switch acceptance"
+  ]
+}
