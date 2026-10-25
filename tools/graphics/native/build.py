@@ -25,8 +25,8 @@ ARCHIVES = (
      "8f9d9604270ccca92d14cc57afca142079476cbe050e0486a90b84da17ce907a", f"godot-{COMMIT}"),
     ("fidelityfx-1.1.4.zip", "https://codeload.github.com/GPUOpen-LibrariesAndSDKs/FidelityFX-SDK/zip/refs/tags/v1.1.4",
      "9a19e1f20bf269163f052186ed563209c5a1d0f7b1cf7e567e643dee6cc61179", "FidelityFX-SDK-1.1.4"),
-    ("streamline-2.14.16.zip", "https://github.com/NVIDIA-RTX/Streamline/releases/download/v2.14.16/streamline-sdk-v2.14.16.zip",
-     "32041e51db0cab709a271b72a352281b690c2abbd669a827809401a5dd23956b", "streamline-2.14.16"),
+    ("streamline-2.11.1.zip", "https://github.com/NVIDIA-RTX/Streamline/releases/download/v2.11.1/streamline-sdk-v2.11.1.zip",
+     "0c1d562e59557434cabfb8997157cb8c04fc7d23f077c8bdf5260975b73dfb89", "streamline-2.11.1"),
 )
 
 
@@ -68,7 +68,7 @@ def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Pat
     # Only accept the pristine pinned tree or this exact patch already applied.
     common = ["git", "apply"]
     patch_env = dict(os.environ, GIT_CEILING_DIRECTORIES=str(engine.parent))
-    for patch_name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch"):
+    for patch_name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch"):
         patch = HERE / patch_name
         check = subprocess.run(common + ["--check", str(patch)], cwd=engine, env=patch_env, capture_output=True)
         if check.returncode == 0:
@@ -107,10 +107,10 @@ def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Pat
     receipt = {
         "experimental": True, "production_engine_unchanged": "4.7.2-stable",
         "godot_repository": "https://github.com/NVIDIA-RTX/godot", "godot_commit": COMMIT,
-        "fidelityfx_sdk": "1.1.4", "fsr_upscaler": "3.1.4", "streamline": "2.14.16",
+        "fidelityfx_sdk": "1.1.4", "fsr_upscaler": "3.1.4", "streamline": "2.11.1",
         "platform": "windows", "graphics_api": "vulkan", "frame_generation_enabled": False,
         "sources": {name: digest for name, _, digest, _ in ARCHIVES},
-        "integration": {name: sha256(HERE / name) for name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")},
+        "integration": {name: sha256(HERE / name) for name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")},
         "streamline_headers": {source.name: sha256(source) for source in sorted((nvidia / "include").glob("*.h"))},
         "fidelityfx_runtime_build": fidelityfx_receipt,
         "runtime": {source.name: sha256(source) for source in runtime_files},
