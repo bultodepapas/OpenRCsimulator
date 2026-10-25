@@ -587,24 +587,38 @@ static func sprite(name: String, color: Color, position: Vector3, size_m: float,
 	return mi
 
 
-## Adds the kit under the airplane's root (a child named "NightKit") and returns it.
-static func attach(root: Node3D) -> Node3D:
+## Compact model-local measurements, made before attaching any kit. No scene nodes,
+## meshes, materials or full triangle buffers survive in this result.
+static func prepare_layout(root: Node3D) -> Dictionary:
+	var all: AABB = bounds(root).all
+	var geometry := _geometry_arrays(root)
+	var points: PackedVector3Array = geometry.points
+	var half := span_half(points)
+	var tris: PackedVector3Array = geometry.triangles
+	var skins := wing_skin_lines(tris, half)
+	var left := tip(points, half, -1.0)
+	var right := tip(points, half, 1.0)
+	var landing := Vector3.ZERO
+	if not (root.get_meta("light_anchors", {}) as Dictionary).has("landing"):
+		var piece := wing_piece(tris, -LANDING_SPAN * half)
+		landing = Vector3(0.0, (left.centre.y + right.centre.y) / 2.0, minf(left.leading_z, right.leading_z)) if piece.is_empty() else Vector3(-LANDING_SPAN * half, float(piece[2]) - 0.003, float(piece[0]) + 0.01)
+	return {bounds = all, skins = skins, left = left, right = right, belly = belly_line(tris, all), landing = landing}
+
+
+## Adds an independent kit. A caller may reuse measurements only for the same
+## validated geometry and local pose; authored anchors and crash hosts stay local.
+static func attach(root: Node3D, prepared_layout: Dictionary = {}) -> Node3D:
 	var existing := root.get_node_or_null("NightKit") as Node3D
 	if existing != null:
 		return existing
 	var kit := Node3D.new()
 	kit.name = "NightKit"
-	var all: AABB = bounds(root).all
-	# Tips, strips and span from the model's own vertices (traced before any kit node exists).
-	var geometry := _geometry_arrays(root)
-	var points: PackedVector3Array = geometry.points
-	var half := span_half(points)
-	# Both skins use the same posed geometry, before the kit is attached.
-	var tris: PackedVector3Array = geometry.triangles
-	var skins := wing_skin_lines(tris, half)
-	var lines: Dictionary = skins.lower
-	var left := tip(points, half, -1.0)
-	var right := tip(points, half, 1.0)
+	var layout := prepare_layout(root) if prepared_layout.is_empty() else prepared_layout
+	kit.set_meta("geometry_layout", layout)
+	var all: AABB = layout.bounds
+	var lines: Dictionary = layout.skins.lower
+	var left: Dictionary = layout.left
+	var right: Dictionary = layout.right
 	# P51-V13 (optional): a model may publish "light_anchors" (model-local positions of its own lenses, an optional node to
 	# follow, a gear gate for a lamp that only works with the gear down and locked); absent keeps the bounds-derived kit.
 	var anchors: Dictionary = root.get_meta("light_anchors", {}) if root.has_meta("light_anchors") else {}
@@ -618,7 +632,7 @@ static func attach(root: Node3D) -> Node3D:
 		if anchors.has(key):
 			kit.add_child(_anchored(sprite(key, Color(1.0, 0.045, 0.015), _anchor_position(anchors, key, Vector3.ZERO), 0.012, LED_RADIANCE, STROBE), anchors, key))
 	Exposure.register()
-	var top_lines: Dictionary = skins.upper
+	var top_lines: Dictionary = layout.skins.upper
 	for key: String in ["left", "right"]:
 		var line: PackedVector3Array = lines[key]
 		if line.size() >= 2:
@@ -626,7 +640,7 @@ static func attach(root: Node3D) -> Node3D:
 		var top_line: PackedVector3Array = top_lines[key]
 		if top_line.size() >= 2:
 			kit.add_child(strip("strip_top_" + key, top_line, TOP_STRIP_COLOR, Vector3.UP))
-	var belly := belly_line(tris, all)
+	var belly: PackedVector3Array = layout.belly
 	if belly.size() >= 2:
 		kit.add_child(strip("strip_belly", belly))
 	var landing := SpotLight3D.new()
@@ -635,12 +649,7 @@ static func attach(root: Node3D) -> Node3D:
 	if anchors.has("landing"):
 		landing.position = anchors.landing.position
 	else:
-		# Authored seats need no fallback triangle scan.
-		var piece := wing_piece(tris, -LANDING_SPAN * half)
-		if piece.is_empty():
-			landing.position = Vector3(0.0, (left.centre.y + right.centre.y) / 2.0, minf(left.leading_z, right.leading_z))
-		else:
-			landing.position = Vector3(-LANDING_SPAN * half, float(piece[2]) - 0.003, float(piece[0]) + 0.01)
+		landing.position = layout.landing
 	var lamp_ahead := Vector3.ZERO if anchors.has("landing") else Vector3(0, 0, -0.012) # an anchor is the lens face itself
 	kit.add_child(_anchored(sprite("landing_lamp", Color("#fff4e0"), landing.position + lamp_ahead, NAV_SIZE_M), anchors, "landing"))
 	_anchored(landing, anchors, "landing")

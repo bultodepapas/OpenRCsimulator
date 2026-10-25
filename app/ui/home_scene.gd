@@ -197,7 +197,41 @@ func _update_aircraft_lights() -> void:
 		kit.update_visual(HeliNightLights.sun_elevation(_lighting, Atmosphere.state), World.Exposure.last, {}, 0.0, 0.0, false,
 			World.aircraft_local_seconds(lighting_config, CLOCK))
 	else:
-		World.dress_aircraft(airplane.root, lighting_config, _lighting, CLOCK)
+		var geometry: Dictionary = _preview_geometry[_preview_order.back()]
+		var layout: Dictionary = {}
+		var layout_key := ""
+		if airplane.root.get_node_or_null("NightKit") == null:
+			layout_key = _light_layout_key(airplane)
+			if not layout_key.is_empty():
+				for cached: Dictionary in _preview_geometry.values():
+					if cached.get("light_layout_key", "") == layout_key:
+						layout = cached.get("light_layout", {})
+						break
+		kit = World.dress_aircraft(airplane.root, lighting_config, _lighting, CLOCK, layout)
+		if kit != null and not layout_key.is_empty():
+			# Share only compact measurements, bounded by the existing three previews.
+			geometry.light_layout_key = layout_key
+			geometry.light_layout = kit.get_meta("geometry_layout")
+
+
+## Imported liveries are validated against one generated airframe. Include the
+## full manifest identity and every local pose (including propeller scale), so
+## different aircraft revisions, equipment or articulation cannot share a layout.
+## The world pose is irrelevant. Flight and unregistered models never use this cache.
+static func _light_layout_key(model: Dictionary) -> String:
+	var manifest: Dictionary = model.get("model_manifest", {})
+	var identity: String = model.get("model_manifest_sha256", "")
+	if identity.is_empty() or manifest.get("builder", {}).get("adapter", "") != "imported_glb" or manifest.get("liveries", []).size() < 2:
+		return ""
+	var model_root: Node3D = model.root
+	var poses: Array = []
+	for node: Node in model_root.find_children("*", "Node3D", true, false):
+		if str(node.name) == "NightKit" or model_root.get_node_or_null("NightKit") != null and model_root.get_node("NightKit").is_ancestor_of(node):
+			continue
+		poses.append([str(model_root.get_path_to(node)), (node as Node3D).transform])
+	# The presence of an authored landing seat determines whether a fallback is traced.
+	poses.append((model_root.get_meta("light_anchors", {}) as Dictionary).has("landing"))
+	return identity + ":" + var_to_bytes(poses).hex_encode().sha256_text()
 
 
 ## The card updates immediately. Cache misses allow a frame to present before

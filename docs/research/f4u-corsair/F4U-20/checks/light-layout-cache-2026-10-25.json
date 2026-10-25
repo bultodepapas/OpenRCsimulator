@@ -1,0 +1,800 @@
+{
+  "date": "2026-10-25",
+  "step": "F4U-20-R2",
+  "engine": "4.7.2-stable official ed1daf0bf",
+  "renderer": "Compatibility / OpenGL 3.3",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "viewport": [
+    1920,
+    1080
+  ],
+  "session": "tmp/debug-bridge/20261025-085109-47870",
+  "head": "7aece650061f9eec86a4745304aa74d82995a5aa",
+  "source_sha256": {
+    "app/render/world/aircraft_lights.gd": "885cf1e45f784253e1001176331eb54aa794fe8b53563f96f6056e551a31d07e",
+    "app/render/world/world.gd": "1ce54d55f2addc7e8e6883a9f1931d1576dd633f27b4075b89b621dbcf12e020",
+    "app/ui/home_scene.gd": "46397c41bab8c35516af799c43dd8fff3ebd96c7e53ca8fd90408f1d7b0e6478",
+    "app/data/aircraft_models/f4u-corsair-250.json": "258d5bd8d7d2cbc5236db86fd7204ad37c1d50f5ed5da51fd08c22422f433704"
+  },
+  "method": "Same live Home, Evening lighting. Four paints in fixed order exceed the three-preview cache. Reset frame recorder, select paint through AppRoot, wait until preview_pending is false, read frames. For uncached blocks only, erase light_layout_key from each of the three retained geometry records before selection. All normal model validation, loading, pose, kit construction and rendering remain active. Block order: uncached, cached, cached, uncached. Assets were previously loaded in this process; these are preview misses, not cold disk starts. Shared workstation, no CPU isolation; not a flight or GPU throughput qualification.",
+  "serialized_layout_bytes": 1060,
+  "median_selection_max_ms": {
+    "uncached": 800.4000000000001,
+    "cached": 352.94
+  },
+  "median_hitch_reduction_percent": 55.9,
+  "samples": [
+    {
+      "block": 1,
+      "variant": "uncached",
+      "paint": "midnight",
+      "frames": {
+        "frames": 101,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.59,
+        "hitches": [
+          {
+            "frame": 4656,
+            "ms": 717.5,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -137.0,
+              "resources": -135.0,
+              "static_memory_mib": -0.49
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.05,
+            "physics_ms": 0.13
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 23.27,
+        "p50_ms": 16.6,
+        "p95_ms": 17.12,
+        "p99_ms": 17.39,
+        "max_ms": 717.49,
+        "fps_mean": 43.0,
+        "fps_1pct_low": 1.4000000000000001
+      }
+    },
+    {
+      "block": 1,
+      "variant": "uncached",
+      "paint": "three_tone",
+      "frames": {
+        "frames": 108,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.62,
+        "hitches": [
+          {
+            "frame": 4798,
+            "ms": 769.1,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -137.0,
+              "resources": -135.0,
+              "static_memory_mib": -0.49
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 16.990000000000002,
+            "physics_ms": 0.16
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 23.3,
+        "p50_ms": 16.6,
+        "p95_ms": 17.13,
+        "p99_ms": 17.45,
+        "max_ms": 769.0600000000001,
+        "fps_mean": 42.900000000000006,
+        "fps_1pct_low": 1.3
+      }
+    },
+    {
+      "block": 1,
+      "variant": "uncached",
+      "paint": "scarlet",
+      "frames": {
+        "frames": 106,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.57,
+        "hitches": [
+          {
+            "frame": 4930,
+            "ms": 794.4000000000001,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -141.0,
+              "resources": -138.0,
+              "static_memory_mib": -8.17
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.01,
+            "physics_ms": 0.16
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 23.75,
+        "p50_ms": 16.59,
+        "p95_ms": 17.32,
+        "p99_ms": 17.46,
+        "max_ms": 794.44,
+        "fps_mean": 42.1,
+        "fps_1pct_low": 1.3
+      }
+    },
+    {
+      "block": 1,
+      "variant": "uncached",
+      "paint": "splash",
+      "frames": {
+        "frames": 110,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.62,
+        "hitches": [
+          {
+            "frame": 5066,
+            "ms": 767.4000000000001,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -137.0,
+              "resources": -135.0,
+              "static_memory_mib": -0.48
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.09,
+            "physics_ms": 0.14
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 23.18,
+        "p50_ms": 16.62,
+        "p95_ms": 17.14,
+        "p99_ms": 17.61,
+        "max_ms": 767.36,
+        "fps_mean": 43.1,
+        "fps_1pct_low": 1.3
+      }
+    },
+    {
+      "block": 2,
+      "variant": "cached",
+      "paint": "midnight",
+      "frames": {
+        "frames": 99,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.61,
+        "hitches": [
+          {
+            "frame": 5177,
+            "ms": 285.2,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -137.0,
+              "resources": -135.0,
+              "static_memory_mib": -0.5
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.06,
+            "physics_ms": 0.22
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 19.03,
+        "p50_ms": 16.63,
+        "p95_ms": 17.13,
+        "p99_ms": 285.25,
+        "max_ms": 285.25,
+        "fps_mean": 52.6,
+        "fps_1pct_low": 3.5
+      }
+    },
+    {
+      "block": 2,
+      "variant": "cached",
+      "paint": "three_tone",
+      "frames": {
+        "frames": 112,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.64,
+        "hitches": [
+          {
+            "frame": 5299,
+            "ms": 342.90000000000003,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -137.0,
+              "resources": -135.0,
+              "static_memory_mib": -0.5
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 342.76,
+            "physics_ms": 0.15
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 19.2,
+        "p50_ms": 16.64,
+        "p95_ms": 17.18,
+        "p99_ms": 17.86,
+        "max_ms": 342.94,
+        "fps_mean": 52.1,
+        "fps_1pct_low": 2.9000000000000004
+      }
+    },
+    {
+      "block": 2,
+      "variant": "cached",
+      "paint": "scarlet",
+      "frames": {
+        "frames": 106,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.61,
+        "hitches": [
+          {
+            "frame": 5422,
+            "ms": 373.1,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -140.0,
+              "resources": -138.0,
+              "static_memory_mib": -0.5
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.03,
+            "physics_ms": 0.16
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 19.81,
+        "p50_ms": 16.61,
+        "p95_ms": 17.13,
+        "p99_ms": 17.84,
+        "max_ms": 373.08,
+        "fps_mean": 50.5,
+        "fps_1pct_low": 2.7
+      }
+    },
+    {
+      "block": 2,
+      "variant": "cached",
+      "paint": "splash",
+      "frames": {
+        "frames": 109,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.62,
+        "hitches": [
+          {
+            "frame": 5544,
+            "ms": 345.40000000000003,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -137.0,
+              "resources": -135.0,
+              "static_memory_mib": -0.49
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.150000000000002,
+            "physics_ms": 0.22
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 19.42,
+        "p50_ms": 16.62,
+        "p95_ms": 17.16,
+        "p99_ms": 17.85,
+        "max_ms": 345.43,
+        "fps_mean": 51.5,
+        "fps_1pct_low": 2.9000000000000004
+      }
+    },
+    {
+      "block": 3,
+      "variant": "cached",
+      "paint": "midnight",
+      "frames": {
+        "frames": 99,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.6,
+        "hitches": [
+          {
+            "frame": 7539,
+            "ms": 294.8,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -137.0,
+              "resources": -135.0,
+              "static_memory_mib": -0.5
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.080000000000002,
+            "physics_ms": 0.35000000000000003
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 19.19,
+        "p50_ms": 16.61,
+        "p95_ms": 17.18,
+        "p99_ms": 294.84000000000003,
+        "max_ms": 294.84000000000003,
+        "fps_mean": 52.1,
+        "fps_1pct_low": 3.4000000000000004
+      }
+    },
+    {
+      "block": 3,
+      "variant": "cached",
+      "paint": "three_tone",
+      "frames": {
+        "frames": 107,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.62,
+        "hitches": [
+          {
+            "frame": 7659,
+            "ms": 364.20000000000005,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -138.0,
+              "resources": -135.0,
+              "static_memory_mib": -8.15
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.03,
+            "physics_ms": 0.14
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 19.63,
+        "p50_ms": 16.62,
+        "p95_ms": 17.11,
+        "p99_ms": 17.240000000000002,
+        "max_ms": 364.2,
+        "fps_mean": 51.0,
+        "fps_1pct_low": 2.7
+      }
+    },
+    {
+      "block": 3,
+      "variant": "cached",
+      "paint": "scarlet",
+      "frames": {
+        "frames": 120,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.62,
+        "hitches": [
+          {
+            "frame": 7793,
+            "ms": 403.0,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -141.0,
+              "resources": -138.0,
+              "static_memory_mib": -8.17
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [
+              "Completed load for: 'res://assets/aircraft/f4u-corsair-250/f4u_corsair_scarlet.glb' remapped 'res://assets/aircraft/f4u-corsair-250/f4u_corsair_scarlet.glb' at "
+            ],
+            "process_ms": 17.01,
+            "physics_ms": 0.19
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 19.580000000000002,
+        "p50_ms": 16.64,
+        "p95_ms": 17.080000000000002,
+        "p99_ms": 17.16,
+        "max_ms": 402.96000000000004,
+        "fps_mean": 51.1,
+        "fps_1pct_low": 2.5
+      }
+    },
+    {
+      "block": 3,
+      "variant": "cached",
+      "paint": "splash",
+      "frames": {
+        "frames": 115,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.68,
+        "hitches": [
+          {
+            "frame": 7923,
+            "ms": 360.5,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -138.0,
+              "resources": -135.0,
+              "static_memory_mib": -8.15
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.04,
+            "physics_ms": 0.17
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 19.42,
+        "p50_ms": 16.64,
+        "p95_ms": 17.28,
+        "p99_ms": 17.51,
+        "max_ms": 360.45,
+        "fps_mean": 51.5,
+        "fps_1pct_low": 2.8000000000000003
+      }
+    },
+    {
+      "block": 4,
+      "variant": "uncached",
+      "paint": "midnight",
+      "frames": {
+        "frames": 216,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.63,
+        "hitches": [
+          {
+            "frame": 8196,
+            "ms": 806.4000000000001,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -137.0,
+              "resources": -135.0,
+              "static_memory_mib": -0.49
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.01,
+            "physics_ms": 0.16
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 20.14,
+        "p50_ms": 16.64,
+        "p95_ms": 17.080000000000002,
+        "p99_ms": 17.38,
+        "max_ms": 806.36,
+        "fps_mean": 49.7,
+        "fps_1pct_low": 2.4000000000000004
+      }
+    },
+    {
+      "block": 4,
+      "variant": "uncached",
+      "paint": "three_tone",
+      "frames": {
+        "frames": 161,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.62,
+        "hitches": [
+          {
+            "frame": 8386,
+            "ms": 856.2,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -137.0,
+              "resources": -135.0,
+              "static_memory_mib": -0.49
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.19,
+            "physics_ms": 0.67
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 21.64,
+        "p50_ms": 16.63,
+        "p95_ms": 17.2,
+        "p99_ms": 17.59,
+        "max_ms": 856.21,
+        "fps_mean": 46.2,
+        "fps_1pct_low": 1.2000000000000002
+      }
+    },
+    {
+      "block": 4,
+      "variant": "uncached",
+      "paint": "scarlet",
+      "frames": {
+        "frames": 156,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.580000000000002,
+        "hitches": [
+          {
+            "frame": 8568,
+            "ms": 881.3000000000001,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -141.0,
+              "resources": -138.0,
+              "static_memory_mib": -8.17
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.22,
+            "physics_ms": 0.22
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 22.01,
+        "p50_ms": 16.59,
+        "p95_ms": 17.2,
+        "p99_ms": 17.990000000000002,
+        "max_ms": 881.28,
+        "fps_mean": 45.400000000000006,
+        "fps_1pct_low": 1.1
+      }
+    },
+    {
+      "block": 4,
+      "variant": "uncached",
+      "paint": "splash",
+      "frames": {
+        "frames": 124,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.62,
+        "hitches": [
+          {
+            "frame": 8718,
+            "ms": 929.3000000000001,
+            "threshold_ms": 50.0,
+            "physics_ticks": 12,
+            "deltas": {
+              "objects": -137.0,
+              "resources": -135.0,
+              "static_memory_mib": -1.25
+            },
+            "causes": [
+              "physics catch-up (12 ticks, the per-frame maximum)"
+            ],
+            "route": "home",
+            "screens": [
+              "home"
+            ],
+            "log": [],
+            "process_ms": 17.05,
+            "physics_ms": 0.29
+          }
+        ],
+        "hitch_total": 1,
+        "physics_catch_up_frames": 1,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 23.79,
+        "p50_ms": 16.64,
+        "p95_ms": 17.14,
+        "p99_ms": 17.68,
+        "max_ms": 929.26,
+        "fps_mean": 42.0,
+        "fps_1pct_low": 1.1
+      }
+    }
+  ],
+  "lifecycle": {
+    "scenario": "tools/debug/scenarios/corsair_paint.txt",
+    "warmup_cycles": 1,
+    "measured_cycles": 3,
+    "nodes_per_sample": [
+      963,
+      963,
+      963
+    ],
+    "orphan_nodes_per_sample": [
+      0,
+      0,
+      0
+    ],
+    "resources_per_sample": [
+      1129,
+      1129,
+      1129
+    ],
+    "growing_counters": 0,
+    "errors": 0,
+    "leaked_objects_at_exit": 0,
+    "crash": null
+  },
+  "tests": [
+    {
+      "script": "test_night_kit.gd",
+      "checks": 36,
+      "passed": true,
+      "elapsed_seconds": 14.14,
+      "engine_log_sha256": "b3250ab1a00d788170d92ed65e5269c3305bf3c06f500e1c78379e1116962182",
+      "script_sha256": "ba178b61949fd0ebefff45b043ae2d6745b3d7286f55efb0a25fcab7b18a37b2"
+    },
+    {
+      "script": "test_aircraft_light_control.gd",
+      "checks": 173,
+      "passed": true,
+      "elapsed_seconds": 33.703,
+      "engine_log_sha256": "33825b2e3a3bbd39c42b7a90b64ab3ebdfa90b02095ad03a14c9924c73d99a56",
+      "script_sha256": "428a7ce83e73c4926652e9f3c4481b54a180b8e3bee9e23659c4580ba2debeb1"
+    },
+    {
+      "script": "test_ui_preview_resources.gd",
+      "checks": 20,
+      "passed": true,
+      "elapsed_seconds": 0.437,
+      "engine_log_sha256": "641af9b146bc6ae435e7be7a12096b5905b4633e415acf97e266f8f9bf8b77e4",
+      "script_sha256": "b779aec3a0d20ee861d7cbdb15d593a3326729d214e29ff42f792b73138bc5a9"
+    },
+    {
+      "script": "test_aircraft_liveries.gd",
+      "checks": 179,
+      "passed": true,
+      "elapsed_seconds": 27.672,
+      "engine_log_sha256": "0c3bbb8f0eaca0c92634bb5d24e6438c5bb9a1d2933a4c69a2525a36b9724f3c",
+      "script_sha256": "26a638a4b00de19de13bf0b6c17bc960f392ac8384ee223d97c086cecae59ce1"
+    },
+    {
+      "script": "test_ui_home_preview_cache.gd",
+      "checks": 118,
+      "passed": true,
+      "elapsed_seconds": 52.032,
+      "engine_log_sha256": "c66f4cab9f57a2f2767caba75ff65c0df336e06ea32b194bf00757a355838b56",
+      "script_sha256": "63f71ec0d4009ed2bb60f5cea4a222a5ef9f2f6e75c905d394d61d7d5c4ff22a"
+    }
+  ]
+}

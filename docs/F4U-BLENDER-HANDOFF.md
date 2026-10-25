@@ -401,7 +401,7 @@ We will import g1.3 with Godot 4.7.2, verify `extras`, poses and landmarks, bind
 
 ## Supporting references
 
-- [Blender aircraft delivery specification](BLENDER-AIRCRAFT-HANDOFF.md): the general authoring contract this request adapts.
+- [Reusable Blender aircraft delivery](BLENDER-AIRCRAFT-DELIVERY.md): common requirements for future airplanes and all skins. The [Timber r2 specification](BLENDER-AIRCRAFT-HANDOFF.md) was the original precedent for this request.
 - [Model and package contract](AIRCRAFT_CONTRACT.md#model-and-package-contract): imported-model construction, retraction rig and `gltf_extras` crash sections.
 - [Ventage Jet asset guide](../assets/aircraft/avanti-s-a200/README.md): the sampled-retraction precedent.
 - [Aircraft Workshop](AIRCRAFT-WORKSHOP.md): current paint slots and registration markings.

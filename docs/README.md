@@ -20,6 +20,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Apple Silicon M1–M5 performance, native Metal comparisons and sustained 1080p qualification | [Apple Silicon performance plan](plans/apple-silicon-performance.md); [twenty investigations, 2026-10-24](research/desktop-delivery-investigations/DT-MAC-00-R1/README.md) |
 | Advanced graphics, isolated Forward+ comparison and proposed High profile | [VQ-07 upgrade plan](plans/advanced-graphics.md); [source audit, 2026-10-21](research/advanced-graphics-2026-10-21/README.md) |
 | Aircraft format, fields, conventions and extension rules | [AIRCRAFT_CONTRACT](AIRCRAFT_CONTRACT.md) |
+| Reusable Blender developer handoff for new airplanes and all their skins | [Blender aircraft delivery](BLENDER-AIRCRAFT-DELIVERY.md) |
 | Landscape folders, field data, adapters, registration and validation | [Landscape contributor guide](LANDSCAPES.md); [selection plan](plans/landscape-selection.md) |
 | Workbench: edit, save and test experimental aircraft | [Aircraft Workshop entry point](AIRCRAFT-WORKSHOP.md); [consolidated AE plan](plans/aircraft-editor.md) |
 | Aircraft geometry, generators and configuration limits | The aircraft guide below and its asset README |
