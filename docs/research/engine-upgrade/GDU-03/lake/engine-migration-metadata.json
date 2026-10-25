@@ -1,0 +1,93 @@
+{
+	"changed_fields": [
+		"engine_hex",
+		"sources"
+	],
+	"fields": [
+		{
+			"after": "openrc-lake-geometry v1",
+			"after_sha256": "106d89074f40a8bc63bf5cd8ff6369f1b387d3e8c68b731956a21a3bf0a264f5",
+			"before": "openrc-lake-geometry v1",
+			"before_sha256": "106d89074f40a8bc63bf5cd8ff6369f1b387d3e8c68b731956a21a3bf0a264f5",
+			"byte_exact": true,
+			"field": "format"
+		},
+		{
+			"after": 264192,
+			"after_sha256": "444152db7500ef5569dc93e347cacfb4061893257c8ed3f9299a9c8eade2f1c1",
+			"before": 263938,
+			"before_sha256": "5c6232eb825f1f1c050c8addc4fcd895c987a6f58f64b28726e0b9bff8462926",
+			"byte_exact": false,
+			"field": "engine_hex"
+		},
+		{
+			"after": false,
+			"after_sha256": "7c9fa136d4413fa6173637e883b6998d32e1d675f88cddff9dcbcf331820f4b8",
+			"before": false,
+			"before_sha256": "7c9fa136d4413fa6173637e883b6998d32e1d675f88cddff9dcbcf331820f4b8",
+			"byte_exact": true,
+			"field": "double_precision"
+		},
+		{
+			"after": {
+				"res://physics/ground_terrain.gd": "fa07e665a912aa8f397bfa1dc2a7c1a2ab309f0788a9ea8e7ebd195d13b4744f",
+				"res://physics/lake_surface.gd": "6d4b6e68076bc852bbcc13b32e61bec36fbb67db7786145eb7bd32f0e2845049",
+				"res://physics/math3d.gd": "b71a1cbabc483410a910b114260bfd3015accd2af0b9b97ed0a9fd9c116784a1",
+				"res://render/lake/lake_terrain.gd": "8e042fef3ee14b848ae096c8be27b2e75c6cc1a66cf744e3ae552e708bd81f65"
+			},
+			"after_sha256": "d4bc5035dc728425990dd3acb40b625b66cda5dcbf5a09c6e6b7d863d63f5f40",
+			"before": {
+				"res://physics/ground_terrain.gd": "fa07e665a912aa8f397bfa1dc2a7c1a2ab309f0788a9ea8e7ebd195d13b4744f",
+				"res://physics/lake_surface.gd": "6d4b6e68076bc852bbcc13b32e61bec36fbb67db7786145eb7bd32f0e2845049",
+				"res://physics/math3d.gd": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+				"res://render/lake/lake_terrain.gd": "8e042fef3ee14b848ae096c8be27b2e75c6cc1a66cf744e3ae552e708bd81f65"
+			},
+			"before_sha256": "bd033edd38a4de9e6865178c677a026048080c2711d93596f5f750e2e426bc8e",
+			"byte_exact": false,
+			"field": "sources"
+		},
+		{
+			"after_sha256": "b7e6a0c9f67f95b662384ec1cc236a4a0ece85f41e602486808b544749a804da",
+			"before_sha256": "b7e6a0c9f67f95b662384ec1cc236a4a0ece85f41e602486808b544749a804da",
+			"byte_exact": true,
+			"field": "basin_key"
+		},
+		{
+			"after_sha256": "9166931c10832128952c7f56cd6319e6a1d7ebb9ce69f5626be0b6c96d889ab1",
+			"before_sha256": "9166931c10832128952c7f56cd6319e6a1d7ebb9ce69f5626be0b6c96d889ab1",
+			"byte_exact": true,
+			"field": "water_key"
+		},
+		{
+			"after_sha256": "5861457b0ccf5f88f425f7882ae5e018c1b4da940b85e33c427c8e912aaf5def",
+			"before_sha256": "5861457b0ccf5f88f425f7882ae5e018c1b4da940b85e33c427c8e912aaf5def",
+			"byte_exact": true,
+			"field": "basin_arrays"
+		},
+		{
+			"after_sha256": "666a839db4292064c4bbc1042854f4f67f6adc1ccd65a531f0577d3d13587b55",
+			"before_sha256": "666a839db4292064c4bbc1042854f4f67f6adc1ccd65a531f0577d3d13587b55",
+			"byte_exact": true,
+			"field": "water_arrays"
+		},
+		{
+			"after": "5861457b0ccf5f88f425f7882ae5e018c1b4da940b85e33c427c8e912aaf5def",
+			"after_sha256": "4019bb7973485d286d88827b8e9c7d045caa45dedee8f2918c21fd7d17892ecb",
+			"before": "5861457b0ccf5f88f425f7882ae5e018c1b4da940b85e33c427c8e912aaf5def",
+			"before_sha256": "4019bb7973485d286d88827b8e9c7d045caa45dedee8f2918c21fd7d17892ecb",
+			"byte_exact": true,
+			"field": "basin_sha256"
+		},
+		{
+			"after": "666a839db4292064c4bbc1042854f4f67f6adc1ccd65a531f0577d3d13587b55",
+			"after_sha256": "ff2896795f4b9aa1f6da573616a431801dedfbe2856cba784459ff36a4a85b02",
+			"before": "666a839db4292064c4bbc1042854f4f67f6adc1ccd65a531f0577d3d13587b55",
+			"before_sha256": "ff2896795f4b9aa1f6da573616a431801dedfbe2856cba784459ff36a4a85b02",
+			"byte_exact": true,
+			"field": "water_sha256"
+		}
+	],
+	"format": "openrc-gdu03-lake-metadata-comparison v1",
+	"geometry_and_input_metadata_byte_exact": true,
+	"scope": "Existing owner-generator candidate compared with retained resource using complete var_to_bytes metadata payloads."
+}

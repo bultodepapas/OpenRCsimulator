@@ -31,7 +31,8 @@ func _run() -> void:
 			for scale in [1.0, 2.0]:
 				root.size = viewport_size
 				UiTheme.text_scale = scale
-				var picker := Picker.new(choices, "carbon", "F4U Corsair")
+				var shared_theme := UiTheme.build()
+				var picker := Picker.new(choices, "carbon", "F4U Corsair", {}, shared_theme)
 				var selected: Array[String] = []
 				var closed: Array[bool] = []
 				picker.selected.connect(func(id: String) -> void: selected.append(id))
@@ -39,6 +40,7 @@ func _run() -> void:
 				root.add_child(picker)
 				for frame in 5: await process_frame
 				var context := "%s %s %.0f%%" % [locale, viewport_size, scale * 100]
+				check(context + " gallery reuses the owner's current theme", picker._screen.theme == shared_theme)
 				check(context + " all thirteen named choices", picker.buttons.size() == 13)
 				check(context + " selected paint receives focus", picker.buttons[12].has_focus())
 				check(context + " selected paint is marked", picker.buttons[12].text.contains(tr("Selected")))
@@ -76,6 +78,8 @@ func _run() -> void:
 		await process_frame
 		check("at most one thumbnail loads per frame", cache.size() <= before + 1)
 	check("thumbnail cache is bounded to the thirteen choices", cache.size() == 13)
+	for texture: Texture2D in cache.values():
+		check("each thumbnail decodes at its authored resolution", texture != null and texture.get_size() == Vector2(288, 162))
 	progressive.free()
 	var reopened := Picker.new(choices, "", "Fixture", cache)
 	root.add_child(reopened)
@@ -84,12 +88,47 @@ func _run() -> void:
 	var cancel_cache := {}
 	var cancelled := Picker.new(choices, "", "Fixture", cancel_cache)
 	root.add_child(cancelled)
-	cancelled.free()
+	root.remove_child(cancelled) # ScreenStack removes synchronously, then frees at the frame boundary.
+	cancelled.queue_free()
 	await driver.settle()
 	check("closing cancels pending thumbnail work", cancel_cache.is_empty())
 	var fallback := Picker.new([{id = "named", label = "Named paint"}], "", "Fixture")
 	check("missing preview retains an accessible named choice", fallback._images[0].texture == null and fallback.buttons[0].text.contains("Named paint"))
 	fallback.free()
+	# Live theme changes replace the owner's theme; existing explicit card fonts
+	# must follow the replacement. Crystal decoration must not mutate shared styles.
+	root.size = Vector2i(1920,1080)
+	UiTheme.text_scale = 1.0
+	var original_compact: bool = UiTheme.compact_layout
+	var original_opaque: bool = UiTheme.opaque_panels
+	UiTheme.compact_layout = false
+	UiTheme.opaque_panels = true
+	var owner_theme := UiTheme.build()
+	var owner_style: StyleBoxFlat = owner_theme.get_stylebox("normal", "PrimaryButton")
+	var owner_style_color := owner_style.bg_color
+	var live := Picker.new(choices, "carbon", "Fixture", cache, owner_theme)
+	root.add_child(live)
+	live._screen.open()
+	await driver.settle()
+	check("decorating shared theme leaves owner styles intact", owner_style.draw_center and owner_style.bg_color == owner_style_color)
+	for compact in [false, true]:
+		for scale in [2.0, 1.0]:
+			UiTheme.compact_layout = compact
+			UiTheme.text_scale = scale
+			live._screen.theme = UiTheme.build()
+			await driver.settle()
+			var expected_size: int = live._screen.theme.get_font_size("font_size", "Button")
+			var fonts_match := true
+			var names_fit := true
+			for index in live.buttons.size():
+				fonts_match = fonts_match and live.buttons[index].get_theme_font_size("font_size") == expected_size and live._labels[index].get_theme_font_size("font_size") == expected_size
+				names_fit = names_fit and live.buttons[index].get_global_rect().grow(1).encloses(live._labels[index].get_global_rect())
+			check("live compact=%s scale=%s updates both card fonts" % [compact, scale], fonts_match)
+			check("live compact=%s scale=%s keeps names within cards" % [compact, scale], names_fit)
+			check("live text scale refreshes keyboard column targets", live.buttons[0].focus_neighbor_bottom == live.buttons[0].get_path_to(live.buttons[live.grid.columns]))
+	live.free()
+	UiTheme.compact_layout = original_compact
+	UiTheme.opaque_panels = original_opaque
 	root.size = original_size
 	UiTheme.text_scale = original_scale
 	TranslationServer.set_locale(original_locale)

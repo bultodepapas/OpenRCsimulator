@@ -51,6 +51,7 @@ func _run() -> void:
 	await _all_close_buttons()
 	await _fuel()
 	await _dialog()
+	await _dialog_resize_focus()
 	await _spanish_layout()
 	await _controls_guide()
 	await _flight_scene()
@@ -468,6 +469,43 @@ func _dialog() -> void:
 	_check("Esc closes the dialog", closed.size() == 1)
 	dialog.queue_free()
 	manager.queue_free()
+	await process_frame
+
+
+func _dialog_resize_focus() -> void:
+	var original_scale := UiTheme.text_scale
+	var original_size := root.size
+	UiTheme.text_scale = 2.0
+	root.size = Vector2i(1920, 1080)
+	await process_frame
+	var manager: CanvasLayer = Manager.new({}, "en")
+	root.add_child(manager)
+	var dialog: CanvasLayer = OverlaysDialog.new(manager)
+	root.add_child(dialog)
+	await process_frame
+	await process_frame
+	var scroll: ScrollContainer = dialog.get("_scroll")
+	for picker: OptionButton in [dialog.preset_picker, dialog.units_picker]:
+		picker.grab_focus()
+		await process_frame
+		_check(picker.name + " focused before short-viewport transition", root.gui_get_focus_owner() == picker)
+		root.size = Vector2i(1280, 720)
+		await process_frame
+		await process_frame
+		_check(picker.name + " moves into the scrolling body at large text", scroll.is_ancestor_of(picker))
+		_check(picker.name + " retains focus entering the scrolling body", root.gui_get_focus_owner() == picker)
+		picker.grab_focus()
+		await process_frame
+		root.size = Vector2i(1920, 1080)
+		await process_frame
+		await process_frame
+		_check(picker.name + " returns above the scroll at the primary viewport", not scroll.is_ancestor_of(picker))
+		_check(picker.name + " retains focus leaving the scrolling body", root.gui_get_focus_owner() == picker)
+	dialog.queue_free()
+	manager.queue_free()
+	await process_frame
+	UiTheme.text_scale = original_scale
+	root.size = original_size
 	await process_frame
 
 

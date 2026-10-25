@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d374b8db-b273-4379-91f1-7bb6544c07b0",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-companions/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_terrain_traffic.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T14:51:10.911957+00:00",
+  "label": "final-test_companions_terrain_traffic",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\final-test_companions_terrain_traffic-wxdzcbbt\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\final-test_companions_terrain_traffic-wxdzcbbt\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.422,
+  "log_bytes": 120,
+  "log_sha256": "4a777a7d26706709cbfd91b3a55edb92b112c8dc7b432deb53ca1fd77b26a3fe"
+}

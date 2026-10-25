@@ -1,0 +1,14 @@
+{
+	"complete": true,
+	"count": 3,
+	"engine": "4.8-beta1 (official)",
+	"failure": "",
+	"format": "openrc-companions-production v1",
+	"min_clearance_m": 34.5677852277669,
+	"physics_hz": 240,
+	"requested_ticks": 28800,
+	"scope": "Full production manager/session callbacks, Club collision inventory and lake context. No rendering/audio or long-session resource-soak claim.",
+	"seed": 1,
+	"ticks": 28800,
+	"weather": "calm"
+}

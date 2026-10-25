@@ -1,0 +1,294 @@
+{
+  "format": "openrc-gdu03-math-boundary-v1",
+  "date": "2026-10-25",
+  "scope": "Unchanged exactpow(2,-1022) constant relocated to sole transcendental boundary; no guard bypass or decimal replacement.",
+  "source_sha256": {
+    "app/physics/math3d.gd": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+    "app/physics/mass_inventory.gd": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+    "app/tests/test_math3d.gd": "a7fc52fa9be3e6f0175a02b0febc06d8c3797f73eb42345504ea7e79aacfd7ac",
+    "app/tests/test_mass_inventory.gd": "2d68abb8d55c96eaff7f5a74d60832ce9c4fa532d20a7a4a8bb960bc971c936b",
+    "app/tests/test_fuel_mass_reference.gd": "bdc2d8c9c7ce91a5e43ffafe6fb22c5ad7935663aea61c37ee41ea55bf176efb",
+    "app/tests/test_fuel_live_mass.gd": "0be94569236295662b943667456b29749de5ac33e73efece998526a9603c0a1b",
+    "app/tests/check_transcendentals.py": "63abddea6a948ffbe2936220186f945ad2cc35653983530c1a2e2345a3dd15ef"
+  },
+  "guard_checks": [
+    {
+      "label": "old-frozen-H6",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_transcendentals.py",
+        "--root",
+        "D:/OpenRCsimulator-experiments/gdu03-suite/app"
+      ],
+      "process_exit": 1,
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\old-frozen-H6.log",
+      "log_sha256": "2e58aa5795d618cfbf79524ae742211b021ace42398da16a08590da7f5b4929b",
+      "stdout": "direct transcendental calls found outside physics/math3d.gd:\nphysics/mass_inventory.gd:14: bare pow( call\n",
+      "stderr": ""
+    },
+    {
+      "label": "final-root-H6",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_transcendentals.py"
+      ],
+      "process_exit": 0,
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\final-root-H6.log",
+      "log_sha256": "e254044811c7cdd1bccf351aeff009525efd436e4464c410b6c40e6bee7ee68e",
+      "stdout": "all physics/sim transcendental calls route through math3d\n",
+      "stderr": ""
+    },
+    {
+      "label": "H6-negative-selftest",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_transcendentals.py",
+        "--self-test"
+      ],
+      "process_exit": 0,
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\H6-negative-selftest.log",
+      "log_sha256": "6922ea5f0a1a96ae5c6e4f87f43403f15a7bdaa6f6d50d88c03f066bc012f48b",
+      "stdout": "isolated injection rejected\n",
+      "stderr": ""
+    }
+  ],
+  "checked_runs": [
+    {
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "443ad22d-1e09-412a-af60-3b3f7757b157",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\test_math3d_constant_boundary.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:55:42.104906+00:00",
+        "label": "math3d-constant",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\checks\\math3d-constant-e0i6zdnr\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\checks\\math3d-constant-e0i6zdnr\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.469,
+        "log_bytes": 149,
+        "log_sha256": "b99ce829565de5bb4338988eb3170ce9d4bf93194f3c36b777fa591f83e45371"
+      },
+      "report_sha256": "9d4944e31765692c66865a2fdeb3b0818a3c8212ae4c0611ce85df25be4ba1a5",
+      "completion_lines": [
+        "MATH_BOUNDARY_RECEIPT 00000000000010000000000000001000",
+        "24 checks, 0 failed"
+      ]
+    },
+    {
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "1564a495-cc9a-4baa-8b72-d1c64eda9163",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_mass_inventory.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:55:42.598546+00:00",
+        "label": "mass-inventory",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\checks\\mass-inventory-7w5ofcgo\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\checks\\mass-inventory-7w5ofcgo\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.312,
+        "log_bytes": 124,
+        "log_sha256": "8555260c90bab3d7ac47675c38666bee9e4f22c88cd96ac29f13ea121cc8145f"
+      },
+      "report_sha256": "aefbe12d561190b6fb0b9cfb5c06e11c8b3053d7cad8ec79b0be6263d661a0df",
+      "completion_lines": [
+        "R05-A mass inventory geometry: 65 checks, 0 failed"
+      ]
+    },
+    {
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "f4179459-c69a-4b43-8bcd-43388e687674",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_fuel_mass_reference.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:55:42.924027+00:00",
+        "label": "fuel-mass-reference",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\checks\\fuel-mass-reference-pgadk6fl\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\checks\\fuel-mass-reference-pgadk6fl\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.219,
+        "log_bytes": 3646,
+        "log_sha256": "d8af910cf20b2f0555ebd851024fbcbb7b6a148d893443746ce83d422c18b5fa"
+      },
+      "report_sha256": "a2413ad7b3e8642eefb1ea621ba5c4065702f1463d653af5369afe4a900f385f",
+      "completion_lines": [
+        "FUEL-04 fixed-datum resources: 49 checks, 0 failed"
+      ]
+    },
+    {
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6aeb5837-6cf0-42a8-b8cf-7f7feeb7e508",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_fuel_live_mass.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:55:48.154048+00:00",
+        "label": "fuel-live-mass",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\checks\\fuel-live-mass-bkcq_h8i\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\checks\\fuel-live-mass-bkcq_h8i\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.485,
+        "log_bytes": 1525,
+        "log_sha256": "0869c2c63672c487f921639af8ea536bb118911f3b47d17e43733e3dd2a309f8"
+      },
+      "report_sha256": "e700c2445b1bbbcbd72aee35a05c12db037af2101239a995f1ad64d8745a0a8b",
+      "completion_lines": [
+        "FUEL-06 live mass: 13 checks, 0 failed"
+      ]
+    },
+    {
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "81db408c-2e8e-4527-b474-75478de6e5da",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:\\OpenRCsimulator-experiments\\gdu04-final-core-20261025\\baseline-project",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\test_math3d_constant_boundary.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:58:56.368105+00:00",
+        "label": "math3d-constant-4.7",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\checks\\math3d-constant-4.7-aj_qqiqv\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\checks\\math3d-constant-4.7-aj_qqiqv\\report.json",
+        "timeout_seconds": 90,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.438,
+        "log_bytes": 152,
+        "log_sha256": "306197cfd01a5c62589732ce4e1b042ae700bd126a0e545aa631a2ca8555d127"
+      },
+      "report_sha256": "38ea6241648d3062806b65fc96c3ab8aaf5af0d4c48dbc6da13d2987a9135be1",
+      "completion_lines": [
+        "MATH_BOUNDARY_RECEIPT 00000000000010000000000000001000",
+        "24 checks, 0 failed"
+      ]
+    }
+  ],
+  "independent_constant_fixture": {
+    "path": "D:\\OpenRCsimulator-experiments\\gdu03-math-boundary\\test_math3d_constant_boundary.gd",
+    "sha256": "e124c81dbf5d25781655bae4cfd6e10400e484fdf5de2e3d83471469c34ef1a8",
+    "expected_binary64_uint64_hex": "0010000000000000",
+    "expected_little_endian_bytes_hex": "0000000000001000",
+    "checks": [
+      "Math3D constant exact bytes",
+      "MassInventory alias exact bytes",
+      "Originalpowexpression exact bytes",
+      "Greater than independent largestsubnormal bytepattern"
+    ]
+  },
+  "no_app_test_additions": true,
+  "suite_overlay": false,
+  "numeric_followup_out": "D:/OpenRCsimulator-experiments/gdu04-final-core-20261025"
+}

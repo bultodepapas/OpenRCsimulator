@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0f37e800-a388-4ac6-8c76-2a13e7a1d559",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_retractable_gear_input.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T16:28:23.625903+00:00",
+  "label": "original-47",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-gear-input\\checks\\original-47-frzueb5n\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-gear-input\\checks\\original-47-frzueb5n\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "retractable gear input: 8 checks, 0 failures"
+  ],
+  "process_exit": 3221226356,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "retractable gear input: 8 checks, 0 failures"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 15.64,
+  "log_bytes": 623,
+  "log_sha256": "dcd6f4bf76d96e3e89ffb56a9a3bc12500e38897e214f8acce1fd6747f93b3a5"
+}

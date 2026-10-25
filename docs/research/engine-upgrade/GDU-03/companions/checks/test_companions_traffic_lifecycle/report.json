@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ade7e956-b344-492c-ab01-be1e5779457f",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-companions/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_traffic_lifecycle.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T14:51:13.743675+00:00",
+  "label": "final-test_companions_traffic_lifecycle",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\final-test_companions_traffic_lifecycle-g7h90zld\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\final-test_companions_traffic_lifecycle-g7h90zld\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.781,
+  "log_bytes": 216,
+  "log_sha256": "c65685ac644cee90433dc0d431c111480864da2c5afc28738e1152d8a897a605"
+}

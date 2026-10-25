@@ -70,8 +70,10 @@ func _test_rendering(field: Dictionary, trees: Dictionary, front: float, detail_
 		cells.size() > 1 and not cells.has(""), str(cells.keys()))
 	_check("3D field trees cast no real-time shadow, like the cards", shadowless)
 	_check("3D field trees use the qualified tree wind", tree_wind)
+	var without_direction := FieldTreeDetail.build(trees, field.pilot, NAN)
 	_check("a field without a runway direction builds no 3D trees",
-		FieldTreeDetail.build(trees, field.pilot, NAN).get_child_count() == 0)
+		without_direction.get_child_count() == 0)
+	without_direction.free()
 	var built := Field.build(field)
 	_check("the production field places the 3D trees beside the cards",
 		built.get_node_or_null("treelineDetail") != null and built.get_node_or_null("treeline") != null)

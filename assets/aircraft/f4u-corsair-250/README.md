@@ -32,6 +32,7 @@ Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the
 | Wing-fold rig | [extract_wing_fold.py](../../../research/f4u-corsair/F4U-17/extract_wing_fold.py) (Blender 5.2.2, headless, `-Y`) | `wing-fold-r59.json`; R59 stays outside the repository |
 | Canopy, tailhook and cowl-flap rigs | [extract_mechanisms.py](../../../research/f4u-corsair/F4U-21/extract_mechanisms.py) (Blender 5.2.2, headless, `-Y`) | `mechanisms-r59.json`; R59 stays outside the repository |
 | Runtime livery GLBs | [install_liveries.py](../../../research/f4u-corsair/F4U-16/install_liveries.py) | Each non-default delivered livery GLB in `app/assets/aircraft/f4u-corsair-250/`, byte for byte, with the default model's import settings (F4U-16); none while g2.1 carries one paint, and runtime livery GLBs no longer delivered are removed |
+| Paint gallery thumbnails | [generate_livery_previews.gd](../../../research/f4u-corsair/F4U-20/generate_livery_previews.gd) | Thirteen 288×162 PNGs in `app/assets/ui/liveries/f4u-corsair-250/`, rendered from validated production builds. Filenames include the full GLB SHA-256; missing or outdated previews fall back to named cards |
 | Model compile | [compile_model.py](../../../research/f4u-corsair/F4U-05/compile_model.py) | `model-geometry.json`, `app/aircraft/f4u_corsair_geometry.gd` |
 | Model contract | [verify_f4u.gd](../../../app/aircraft/verify_f4u.gd), run by `app/test.sh` | Console checks: frozen asset, controls, flaps, throws inside the clearance envelopes, gear rig, oleo compression, propeller size, exhaust, paint slots, contacts, crash release, wing folds, canopy and tailhook |
 | Flight-test card | `research/flight-test/run.py --aircraft f4u-corsair-250 --out <new directory>` | Profile and summary ([F4U-12](../../../docs/research/f4u-corsair/F4U-12/README.md)) |
@@ -63,6 +64,16 @@ python3 research/f4u-corsair/F4U-11/costing_entry.py --check
 Gear samples come from Blender on the frozen delivery: `blender -b --factory-startup --disable-autoexec assets/source-deliveries/f4u-corsair-g2-2/f4u_corsair/g2_2/source/aircraft_game.blend --python research/f4u-corsair/F4U-05/sample_gear.py -- assets/aircraft/f4u-corsair-250/gear-samples.json`. After a binding or model change, run `build_models.py`, `build_descriptors.py`, `build_customization.py` and the parked-aircraft bake in that order (see the [Avanti guide](../avanti-s-a200/README.md#regenerate-and-verify)).
 
 Run generators without `--check` in the order above after an intentional input change. Never hand-edit generated files. The physics sections stay with R59, of which g2.2 is a reduced copy; F4U-05 takes the visual model's own dimensions (propeller, contacts) from g2.2's metadata, which equal g1.13's. `compile_model.py` refuses a wing-fold or mechanisms file whose R59 hash differs from the metadata's master, and a livery GLB that is not the frozen file or not the same airframe as the default. After `install_liveries.py` writes a new sidecar, run Godot's `--import` once to assign its uid before compiling.
+
+To regenerate gallery thumbnails, run the checked Godot runner with a rendering display (not `--headless`):
+
+```sh
+python3 tools/godot/run_checked.py --timeout 180 -- "$(app/get-godot.sh)" --path "$PWD/app" --rendering-driver opengl3 \
+  --script "$PWD/research/f4u-corsair/F4U-20/generate_livery_previews.gd" -- \
+  --out="$PWD/app/assets/ui/liveries/f4u-corsair-250"
+```
+
+Run Godot's `--import` afterward. These small derived UI assets are required by the selector; review screenshots stay outside git. Runtime gallery browsing never builds an aircraft or opens a 3D viewport. [Gallery review and evidence](../../../docs/research/f4u-corsair/F4U-20/README.md#f4u-20-r3-direct-paint-gallery-2026-10-25).
 
 ## Limits
 

@@ -1,10 +1,10 @@
 # Native reconstruction experiment (VQ-07d)
 
 This opt-in Windows/Vulkan build connects NVIDIA's existing DLSS integration and
-AMD's FSR 3.1.4 upscaler, built from the pinned SDK with Vulkan fixes. It does not replace the production
-Godot 4.7.2 pin. The upstream NVIDIA commit is based on Godot 4.8-dev; run it on
-a disposable application copy and qualify an engine upgrade separately before
-shipping it. The GPU used for local checks is not the product support boundary.
+AMD's FSR 3.1.4 upscaler, built from the pinned SDK with Vulkan fixes. It remains separate from the
+standard official Godot 4.8-beta1 build. The upstream NVIDIA commit is based on
+Godot 4.8-dev; run it on a disposable application copy and qualify this distinct
+engine build before shipping it. The GPU used for local checks is not the product support boundary.
 
 See the [implementation evidence and known limitations](../../../docs/research/visual-quality-implementation/VQ-07/native-reconstruction-2026-10-24/README.md).
 The current trial pins Streamline 2.11.1 and DLSS **preset K**. On the RTX 3090,
@@ -81,13 +81,14 @@ experiment builds without D3D12, WinRT and AccessKit; it is not a production
 accessibility or platform qualification.
 
 The existing [graphics launcher](../README.md) accepts `--godot <custom editor>`.
-This application also validates its aircraft presentation source hashes and engine
-identity. Merely launching the production tree with 4.8-dev fails that contract.
-`prepare_candidate.py` prepares a disposable pinned snapshot, changes its strict
-presentation pin to 4.8.0, and regenerates its companion registry through the
-existing customization generator. Its receipt records all changed identities;
-production aircraft data and the 4.7.2 pin stay intact. Import this copy with the
-custom editor before using the [debug bridge](../../debug/README.md):
+The application validates aircraft presentation source hashes and engine
+identity. `prepare_candidate.py` extracts its pinned older project snapshot,
+changes that snapshot's 4.7.2 presentation pin to 4.8.0, and regenerates its
+aircraft customization registry through the existing generator. Its receipt
+records all changed identities; the standard 4.8-beta1 project stays intact.
+The current project's strict AI companion qualification does not admit this
+custom engine merely because both builds have a 4.8 version number. Import the
+disposable copy with the custom editor before using the [debug bridge](../../debug/README.md):
 
 ```powershell
 python tools/graphics/native/prepare_candidate.py

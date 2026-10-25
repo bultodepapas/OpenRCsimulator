@@ -19,22 +19,24 @@ choice (below). It does not enable motion blur, SSR, GI or volumetric fog.
 The atlas and screen-space buffers cost additional GPU memory. Only the recorded
 Windows/NVIDIA host has been exercised; macOS, Linux and other GPUs remain open.
 
-Known pinned-engine issue: a captured stock `ReflectionProbe` leaks its atlas
-color buffer and six texture views in Godot 4.7.2 Forward+. The native minimal
-reproduction grows from seven leaked Texture RIDs for one independent world to
-28 for four worlds. [Attribution and upstream fix](../../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#engine-lifetime-attribution-and-session-context-2026-10-22)
-are retained. A [controlled local backport](../../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#controlled-engine-backport-2026-10-22)
-removes the leak in matched custom Windows editor controls and preserves six High
-1080p captures exactly. It is not a shipping replacement; the project's engine pin
-is unchanged. Full-feature builds, matching templates and lifecycle/platform
-qualification remain open. Do not suppress the pinned engine's warning.
+Known pinned-engine issue: a captured stock `ReflectionProbe` still leaks seven
+Texture RIDs per independent world in official Godot 4.8-beta1 Forward+.
+[The existing native controls](../../docs/research/engine-upgrade/GDU-03/rendering/gpu-correctness/README.md)
+reproduce seven for one world and 28 for four, including explicit `UPDATE_ONCE`;
+the no-probe controls exit cleanly. The historical Godot 4.7.2
+[attribution and upstream fix](../../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#engine-lifetime-attribution-and-session-context-2026-10-22)
+are retained. A [controlled local 4.7.2 backport](../../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#controlled-engine-backport-2026-10-22)
+removed the leak in matched custom Windows editor controls and preserved six High
+1080p captures exactly; it is not the shipping replacement. Full lifecycle and
+platform qualification remain open. Do not suppress the pinned engine's warning.
 
 ## Native DLSS and FSR 3.1 experiment
 
 The [native integration guide](native/README.md) owns the separate Windows/Vulkan
 engine build, SDK pins and runtime requirements. The menu discovers each provider
 through engine capabilities; stock Godot keeps those entries unavailable and uses
-Native for unsupported saved requests. The production engine pin stays unchanged.
+Native for unsupported saved requests. This separate experimental build does not
+replace the standard official Godot 4.8-beta1 pin.
 
 ## Explicit startup
 
@@ -110,8 +112,8 @@ calling a measurement 1080p. The launcher does not force a platform rendering dr
 
 ```powershell
 python -m unittest tools.graphics.test_launch -v
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_high_graphics_profile.gd
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_high_graphics_restart.gd
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --script res://tests/test_high_graphics_profile.gd
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --script res://tests/test_high_graphics_restart.gd
 ```
 
 Run the profile test natively with Forward+ to exercise its active branch. The

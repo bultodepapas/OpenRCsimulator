@@ -1,0 +1,240 @@
+{
+  "step": "F4U-20-R3",
+  "date": "2026-10-25",
+  "engine": "Godot 4.8-beta1 Compatibility",
+  "viewport": [
+    1920,
+    1080
+  ],
+  "gpu": "RTX 3090",
+  "working_tree_head_at_report": "3ad5cd591fe8eae77fc79b3bdc7f43a85c5c9c98",
+  "integration_checkout_base": "3ad5cd591",
+  "source_hash_policy": "UTF-8 source bytes with CRLF normalized to LF",
+  "sources": {
+    "app/ui/livery_picker.gd": {
+      "sha256_lf": "ffb4e4411aa518d5e6697a74c271838e0929887788479d6816b07bcc5e42f16d",
+      "matches_isolated_checkout": true
+    },
+    "app/ui/home.gd": {
+      "sha256_lf": "a140f023b3d26b4c138f556e12016a1d7eaf2a779ae67a00e54e8c0f428ffe31",
+      "matches_isolated_checkout": true
+    },
+    "app/app_root.gd": {
+      "sha256_lf": "a2a6994ab41921e8928fa2d43e20976ba53b95866bf6e1799c108c5e186abcd9",
+      "matches_isolated_checkout": true
+    },
+    "app/render/airplane.gd": {
+      "sha256_lf": "6720f9a87f9fb4c88f8bd40c11277e8a75e55cd1e987815c16e2cdb5cc32ce59",
+      "matches_isolated_checkout": true
+    },
+    "app/tests/test_livery_picker.gd": {
+      "sha256_lf": "f41cf386ec5c31ea8bf4718b3e05a9a6025e8b758de2a0bf037f890d9fa682db",
+      "matches_isolated_checkout": true
+    },
+    "app/tests/test_aircraft_liveries.gd": {
+      "sha256_lf": "74ddad84772fbdf3d0da27256dadd00c219cab296332bd428fbbef846069de8c",
+      "matches_isolated_checkout": true
+    },
+    "research/f4u-corsair/F4U-16/livery_check.gd": {
+      "sha256_lf": "73c04cc2925c2c322fb89a2119d8c21089aad64ffe220ddd9fe4fd3f4809d999",
+      "matches_isolated_checkout": true
+    },
+    "research/f4u-corsair/F4U-20/generate_livery_previews.gd": {
+      "sha256_lf": "195ce2df954343c066297c5b6e3502ab6c66f7837b83c3976a63d06500491653",
+      "matches_isolated_checkout": true
+    },
+    "tools/debug/scenarios/corsair_gallery.txt": {
+      "sha256_lf": "9da8ae3fe9a256e21ac5b8fc87a6d39eed33f88ffcf0d40a8da5517672bf72a9",
+      "matches_isolated_checkout": null
+    },
+    "tools/debug/scenarios/corsair_paint.txt": {
+      "sha256_lf": "92bf439e5afe30f809d94a9f75dca54b135d8fe8daf7cbe38d145095c5db02e6",
+      "matches_isolated_checkout": true
+    }
+  },
+  "checks": {
+    "picker": {
+      "passed": 256,
+      "failed": 0,
+      "locations": [
+        "isolated checkout",
+        "current main tree"
+      ]
+    },
+    "aircraft_liveries": {
+      "passed": 179,
+      "failed": 0,
+      "location": "isolated checkout"
+    },
+    "production": {
+      "passed": 32,
+      "failed": 0,
+      "location": "isolated checkout",
+      "report": "gallery-production-2026-10-25.json"
+    }
+  },
+  "thumbnails": {
+    "count": 13,
+    "size": [
+      288,
+      162
+    ],
+    "total_bytes": 185527,
+    "sha256": {
+      "blueangels-76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0.png": "be9b0462a8b2cebae9df4c35d556dc2d9988459aedf5f3955a2d3257f6a73606",
+      "carbon-ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278.png": "e5c9faed115270e2772e506c21e006ae86d2ac999693915a0bf81529d1da596b",
+      "chrome-1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859.png": "5a24268b5ed47c62c7796e130bc018dca9c188e58cd2511ff92e39ed360b8ba2",
+      "italy-e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac.png": "b66b037dd4393c8f8b6e89c52186356efd232d9ec2043659968ee99b5e95e4fe",
+      "japan-9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824.png": "44a95327518a6cc5e43368664cc36c30eac2238d6ba21249c915bc8fa73bebdd",
+      "luftwaffe-aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02.png": "1200f567313a78fd9fbdb3910ffbcfc1f8dec4ed95b79869425eab438dc8c02e",
+      "midnight-9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851.png": "d3205f6820b3ce76d44f6ff47d4fd8ec17b098d072efcbfb2979aa334574104f",
+      "p40-9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58.png": "3bd5d40b32aaa09a7c165a3e173cab211dafeb2895283ba0fe4713c0305dca64",
+      "scarlet-679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1.png": "2047e949ce44ad768b7be7b8c5e26e36af367902c71f3874c4a7b9bb930c4d0b",
+      "spectrum-233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6.png": "6fe4160ef4bb5f087ce10f15ec92fefcad71b506b15fd7ddf5a7f862d8a51a3c",
+      "splash-dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546.png": "2cc96a1d56e14d1dae1d7a659bc763779665b3bd8f43b46a39ff7b02b58736d9",
+      "three_tone-52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005.png": "5390f4fad0b5bcce03e76677c030e3061be42480802b527e68b93c6e8deb1b2d",
+      "thunderbirds-9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03.png": "9cfc9738b2aefc4d086e8845ded6d5bad9c5e4d60edf07ff1fe387e30d603897"
+    }
+  },
+  "native_session": {
+    "path": "tmp/debug-bridge/20261025-095358-47870",
+    "first_open": {
+      "frames": 120,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 16.57,
+      "hitches": [
+        {
+          "frame": 1346,
+          "ms": 66.3,
+          "threshold_ms": 50.0,
+          "physics_ticks": 4,
+          "deltas": {
+            "objects": 401.0,
+            "nodes": 99.0,
+            "resources": 1.0,
+            "static_memory_mib": 4.93
+          },
+          "causes": [
+            "scene/resource construction"
+          ],
+          "route": "home",
+          "screens": [
+            "home",
+            "liveries"
+          ],
+          "log": [
+            "Loading resource: res://assets/ui/liveries/f4u-corsair-250/midnight-9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851.png remapped: res://assets/",
+            "Loading resource: res://.godot/imported/midnight-9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851.png-88f1453fd435fd3a3f8fe78d3b1dce22.ctex rema",
+            "Completed load for: 'res://assets/ui/liveries/f4u-corsair-250/midnight-9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851.png' remapped 'res://ass"
+          ],
+          "process_ms": 16.94,
+          "physics_ms": 5.64
+        }
+      ],
+      "hitch_total": 1,
+      "physics_catch_up_frames": 0,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 16.67,
+      "p50_ms": 16.63,
+      "p95_ms": 17.07,
+      "p99_ms": 17.35,
+      "max_ms": 66.34,
+      "fps_mean": 60.0,
+      "fps_1pct_low": 15.100000000000001
+    },
+    "cached_reopen": {
+      "frames": 79,
+      "hitch_ms": 50.0,
+      "factor": 3.0,
+      "typical_ms": 16.65,
+      "hitches": [
+        {
+          "frame": 1496,
+          "ms": 59.1,
+          "threshold_ms": 50.0,
+          "physics_ticks": 4,
+          "deltas": {
+            "objects": 386.0,
+            "nodes": 99.0,
+            "static_memory_mib": 1.68
+          },
+          "causes": [
+            "scene/resource construction"
+          ],
+          "route": "home",
+          "screens": [
+            "home",
+            "liveries"
+          ],
+          "log": [],
+          "process_ms": 17.01,
+          "physics_ms": 0.11
+        }
+      ],
+      "hitch_total": 1,
+      "physics_catch_up_frames": 0,
+      "max_physics_steps_per_frame": 12,
+      "mean_ms": 16.66,
+      "p50_ms": 16.64,
+      "p95_ms": 17.04,
+      "p99_ms": 59.09,
+      "max_ms": 59.09,
+      "fps_mean": 60.0,
+      "fps_1pct_low": 16.900000000000002
+    },
+    "soak": "warm-up   nodes    1076  orphans     0  resources   1272  static    372.6 MiB  rss       ? MiB\nbaseline  nodes    1076  orphans     0  resources   1272  static    372.7 MiB  rss       ? MiB\ncycle 1   nodes    1076  orphans     0  resources   1272  static    372.8 MiB  rss       ? MiB\ncycle 2   nodes    1076  orphans     0  resources   1272  static    372.9 MiB  rss       ? MiB\n# 0 growing counters, 0 errors: baseline + 2 compared cycles (after 1 warm-up)\n",
+    "route_transitions": [
+      {
+        "detail": {
+          "from": null,
+          "to": "home"
+        },
+        "frame": 357,
+        "level": "event",
+        "seq": 393,
+        "text": "route: home",
+        "time_ms": 14320
+      },
+      {
+        "detail": {
+          "from": "home",
+          "to": "flight"
+        },
+        "frame": 10370,
+        "level": "event",
+        "seq": 828,
+        "text": "route: flight",
+        "time_ms": 233335
+      },
+      {
+        "detail": {
+          "from": "flight",
+          "to": "home"
+        },
+        "frame": 10402,
+        "level": "event",
+        "seq": 1037,
+        "text": "route: home",
+        "time_ms": 249749
+      }
+    ],
+    "engine_error_lines": [],
+    "shutdown_leak_messages": [],
+    "shutdown_tail": [
+      "XR: Clearing primary interface",
+      "XR: Removed interface \"Native mobile\"",
+      "XR: Removed interface \"OpenXR\"",
+      "Accessibility: window 0 adapter destroyed."
+    ],
+    "stopped": true,
+    "visual_capture": "shots/shot-7652-001.png"
+  },
+  "limits": [
+    "Short menu observations on a shared workstation; not flight performance qualification.",
+    "Final opening frames still exceed 50 ms.",
+    "The initial synchronous prototype used Godot 4.7.2; no matched-engine percentage comparison is claimed.",
+    "Cold selected-GLB loading and package geometry duplication remain.",
+    "Full application suite and new export were not run."
+  ]
+}

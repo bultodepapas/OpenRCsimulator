@@ -1,0 +1,256 @@
+{
+  "format": "openrc-gdu03-import-provenance-audit-v1",
+  "observed_utc": "2026-10-25T15:26:57.602857+00:00",
+  "numeric_groups": {
+    "core": {
+      "files": 99,
+      "root_exact": 70,
+      "root_lf": 99,
+      "frozen_exact": 70,
+      "frozen_lf": 99,
+      "root_frozen_exact": 99,
+      "raw_differences": [
+        "failures/config.gd",
+        "failures/runtime.gd",
+        "input/controller_profile.gd",
+        "input/jeti_radio.gd",
+        "input/rc_input.gd",
+        "input/smoke_aux.gd",
+        "physics/aircraft_contact_contract.gd",
+        "physics/control_actuators.gd",
+        "physics/event_bracket.gd",
+        "physics/flaps.gd",
+        "physics/glow/flight.gd",
+        "physics/glow/profile.gd",
+        "physics/glow/vibration.gd",
+        "physics/ground_vehicle/airfield_course.gd",
+        "physics/ground_vehicle/course.gd",
+        "physics/ground_vehicle/vehicle_environment.gd",
+        "physics/ground_wheels.gd",
+        "physics/liquid_fuel.gd",
+        "physics/physical_identity.gd",
+        "physics/resource_event_step.gd",
+        "physics/retractable_gear.gd",
+        "physics/swirl_loads.gd",
+        "physics/wheel_profiles.gd",
+        "physics/wing_polar.gd",
+        "sim/aircraft_contact_events.gd",
+        "sim/checkpoint_json.gd",
+        "sim/fuel_sample.gd",
+        "sim/scenery_collision.gd",
+        "sim/scenery_damage.gd"
+      ]
+    },
+    "physical": {
+      "files": 18,
+      "root_exact": 17,
+      "root_lf": 18,
+      "frozen_exact": 17,
+      "frozen_lf": 18,
+      "root_frozen_exact": 18,
+      "raw_differences": [
+        "data/aircraft/hx700_electric_3d_experimental.json"
+      ]
+    }
+  },
+  "full_numeric_hashes": "D:\\OpenRCsimulator-experiments\\gdu03-provenance-audit\\numeric-source-hashes.json",
+  "full_numeric_hashes_sha256": "94a626e5c48067685ba09812434d6d981f7831331641f0a3bccdf749b42eb8bc",
+  "measurement_deltas": {
+    "timber": {
+      "old_path": "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\assets\\aircraft\\turbo-lumber-evolution\\mesh-measurements.json",
+      "old_sha256": "c9f06c66c475763417e364bdcf887685169bc788b777edd2550074279f784f70",
+      "new_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\aircraft\\turbo-lumber-evolution\\mesh-measurements.json",
+      "new_sha256": "ae585078344abbfbe1405b9e1777243c120e299516fde663c538c231f4e74063",
+      "delta": [
+        {
+          "path": "/godot",
+          "old": "4.7.2-stable (official)",
+          "new": "4.8-beta1 (official)"
+        }
+      ]
+    },
+    "insulator": {
+      "old_path": "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\baseline-project\\data\\scenery\\power_insulator.json",
+      "old_sha256": "25a9a403893a04f8e21b8b9810b00225a620e5acf9188b66489659cbb8b6275b",
+      "new_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\scenery\\power_insulator.json",
+      "new_sha256": "93353bef9a03b9b0b370f2b806072f43d80551b0a6f4664fb8924b95293b7bc5",
+      "delta": [
+        {
+          "path": "/reduction/godot_version",
+          "old": "4.7.2-stable (official)",
+          "new": "4.8-beta1 (official)"
+        }
+      ]
+    }
+  },
+  "tt07_check": {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/timber/tt07/derive_physics.py",
+      "--check"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "process_exit": 0,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-provenance-audit\\tt07-check.log",
+    "log_sha256": "4b3dc39d6b853578767ae3a0f47db47947c90bc1220fc0c19eec6148210bb903",
+    "stdout": "TT-07 Timber physics current\n",
+    "stderr": ""
+  },
+  "trajectories_rerun": false,
+  "checked_invocations": {
+    "root_import": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-03-20261025\\checks\\gdu03-root-clean-import-nxnf85xx\\report.json",
+      "sha256": "195b72d51722d68e6cb41eb212af4c255ef4309153d2c6e82577317ce526bb62",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "482f6cd7-ecbc-430d-a5f3-3a0f4886f719",
+        "command": [
+          ".tools/Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--import"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:02:35.691171+00:00",
+        "label": "gdu03-root-clean-import",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-03-20261025\\checks\\gdu03-root-clean-import-nxnf85xx\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-03-20261025\\checks\\gdu03-root-clean-import-nxnf85xx\\report.json",
+        "timeout_seconds": 300.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 15.625,
+        "log_bytes": 1453,
+        "log_sha256": "628e3404f34ff3309fd75a0f06bd656b2d7174c0ca789b19cb6c29c5724aad6f"
+      }
+    },
+    "timber_measurement": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-03-20261025\\checks\\gdu03-timber-measure-wbdd7sfn\\report.json",
+      "sha256": "d1358dafdae02e3809eba69a3c2bb8b2205a273aa9d3fedf54590ff96e62c3ce",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "38ee4edd-ea9f-4f17-9aae-5d515eaf2869",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\timber\\tt02\\measure_mesh.gd",
+          "--",
+          "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-03-20261025\\timber-measurements.json"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T14:25:12.408294+00:00",
+        "label": "gdu03-timber-measure",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-03-20261025\\checks\\gdu03-timber-measure-wbdd7sfn\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-03-20261025\\checks\\gdu03-timber-measure-wbdd7sfn\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.515,
+        "log_bytes": 197,
+        "log_sha256": "cb018b5b2347af086a4bc18bd1b19ae0c022c946a28138c45f363e99540b7922"
+      }
+    },
+    "timber_regeneration": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-03-20261025\\checks\\gdu03-timber-regenerate-mm75wyor\\report.json",
+      "sha256": "f8ebf780ad64a4eb8cdb8642b655dfc30b9336dea29d53037410406943f5f514",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "def1d057-4f69-440e-b334-b6f6d7b20895",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\timber\\tt02\\measure_mesh.gd",
+          "--",
+          "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\aircraft\\turbo-lumber-evolution\\mesh-measurements.json"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T14:26:40.221826+00:00",
+        "label": "gdu03-timber-regenerate",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-03-20261025\\checks\\gdu03-timber-regenerate-mm75wyor\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gdu-03-20261025\\checks\\gdu03-timber-regenerate-mm75wyor\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.5,
+        "log_bytes": 214,
+        "log_sha256": "c323bb06467c28e6410a64c004c3f45a5ddbed734401ed42e9f72f3a6946236f"
+      }
+    }
+  },
+  "lead_delta_receipts": {
+    "tmp/gdu-03-20261025/timber-measurement-delta.json": {
+      "sha256": "1f8e68963fbf3cff7d5690704a935386e20c7ffcbc2a670d5afbb2b21b0ea246",
+      "reported_delta": [
+        [
+          "/godot",
+          "4.7.2-stable (official)",
+          "4.8-beta1 (official)"
+        ]
+      ]
+    },
+    "tmp/gdu03-pins/insulator-delta.json": {
+      "sha256": "db383b7eb415f882cb5dd96b3f35c7531d97db102ee2328848a95520ca033e9b",
+      "reported_delta": [
+        {
+          "path": "/reduction/godot_version",
+          "old": "4.7.2-stable (official)",
+          "new": "4.8-beta1 (official)"
+        }
+      ]
+    }
+  },
+  "numerical_comparison_sha256": "6773819e782d9b2f7282dd35a215b3e8df9d67d460b4c83eefc24491436ff0f7",
+  "numerical_source_manifest_sha256": "c807334efb45a3f7c3254bdad16448f6e3802c26fbe05452014af674937e56c5",
+  "scope": "Same117 tested numeric input files on currentroot and frozen fullsuite; CRLF-to-LF normalization only, never rewrites .orfl identity. Version-only Timber and insulator recursive JSON differences; no acceptance claim for other import outputs or pending export pins."
+}

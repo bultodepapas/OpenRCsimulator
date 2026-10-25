@@ -1,0 +1,196 @@
+{
+  "format": "openrc-windows-generator-portability v1",
+  "date": "2026-10-25",
+  "offline_checks": [
+    {
+      "command": [
+        "tools/world/sky_table.py",
+        "--check"
+      ],
+      "passed": true,
+      "log": "01-sky_table.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "tools/world/stars.py",
+        "--check"
+      ],
+      "passed": true,
+      "log": "02-stars.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/propwash/e0b2/derive_geometry.py",
+        "--check"
+      ],
+      "passed": true,
+      "log": "e0b2-windows-check.log",
+      "initial_failure_log": "03-derive_geometry.log"
+    },
+    {
+      "command": [
+        "research/propwash/e0b2/test_geometry.py"
+      ],
+      "passed": true,
+      "log": "04-test_geometry.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/propwash/e0b3b/derive_profile.py",
+        "--check"
+      ],
+      "passed": true,
+      "log": "05-derive_profile.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/propwash/e0b3b/test_profile.py"
+      ],
+      "passed": true,
+      "log": "06-test_profile.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/rc-monster-truck/generate_suspension_reference.py",
+        "--check"
+      ],
+      "passed": true,
+      "log": "07-generate_suspension_reference.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/rc-monster-truck/generate_support_reference.py",
+        "--check"
+      ],
+      "passed": true,
+      "log": "08-generate_support_reference.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/rc-monster-truck/build_visual.py",
+        "--check"
+      ],
+      "passed": true,
+      "log": "09-build_visual.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/rc-monster-truck/build_vehicle_data.py",
+        "--check"
+      ],
+      "passed": true,
+      "log": "10-build_vehicle_data.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/rc-monster-truck/test_vehicle_data_generator.py"
+      ],
+      "passed": true,
+      "log": "11-test_vehicle_data_generator.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/rc-monster-truck/asset_intake.py",
+        "--check"
+      ],
+      "passed": true,
+      "log": "12-asset_intake.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/rc-monster-truck/test_asset_intake.py"
+      ],
+      "passed": true,
+      "log": "13-test_asset_intake.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/rc-monster-truck/monster-car-2/build_vehicle_data.py",
+        "--check"
+      ],
+      "passed": true,
+      "log": "14-build_vehicle_data.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/rc-monster-truck/monster-car-2/test_build_vehicle_data.py"
+      ],
+      "passed": true,
+      "log": "15-test_build_vehicle_data.log",
+      "initial_failure_log": null
+    },
+    {
+      "command": [
+        "research/rc-monster-truck/monster-car-2/visual_verify.py"
+      ],
+      "passed": true,
+      "log": "16-visual_verify.log",
+      "initial_failure_log": null
+    }
+  ],
+  "headless_rcv_checks": [
+    {
+      "label": "experiments",
+      "report": "rcv-checks/experiments/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "mt8-visual",
+      "report": "rcv-checks/mt8-visual/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "preview-en",
+      "report": "rcv-checks/preview-en/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "preview-es",
+      "report": "rcv-checks/preview-es/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "support-cli",
+      "report": "rcv-checks/support-cli/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "suspension-cli",
+      "report": "rcv-checks/suspension-cli/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    }
+  ],
+  "windows_python": "3.11.9",
+  "linux_wsl_python": "3.12.3",
+  "source_sha256": {
+    "tools/terrain/gen_terrain.py": "b077e3fcf15e37a1dd271a1c28a54ea944826a6d3ad5a40a904e3e32fc98f52d",
+    "research/propwash/e0b2/derive_geometry.py": "3e1af635717b27535d9faaadc403f25c9c356a64b3f3b3476efa9a1a552c2b51",
+    "app/data/fields/horizon.json": "7040c33f522a4e0a035089baa341018aa6000b01113c3c4dd9a8f52b86d93c3c"
+  },
+  "unchanged_contracts": "Exact generated checks remain strict. E0b2 report/aircraft/source geometry unchanged; horizon restored to generator LF bytes with no JSON value change. No physics, geometry, shader or GPU changes."
+}

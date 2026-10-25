@@ -1,0 +1,10 @@
+{
+  "true": {
+    "sha256": "7040c33f522a4e0a035089baa341018aa6000b01113c3c4dd9a8f52b86d93c3c",
+    "matches_generated_bytes": true
+  },
+  "false": {
+    "sha256": "7040c33f522a4e0a035089baa341018aa6000b01113c3c4dd9a8f52b86d93c3c",
+    "matches_generated_bytes": true
+  }
+}

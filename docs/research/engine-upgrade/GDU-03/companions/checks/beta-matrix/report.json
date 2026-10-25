@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9fc24b96-a4fe-422e-be60-540f123d7ff1",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-companions/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/pilot_probe.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-experiments/gdu03-companions/beta-pilot-matrix-qualified"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T14:23:23.891707+00:00",
+  "label": "beta-pilot-matrix-qualified",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\beta-pilot-matrix-qualified-r0i051r0\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\beta-pilot-matrix-qualified-r0i051r0\\report.json",
+  "timeout_seconds": 1800.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "companion pilot qualification:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 419.906,
+  "log_bytes": 21882,
+  "log_sha256": "d05f1921ac8841d585d97f1c94e73f74c1ec41ad2643a0811c10e25b6f526b72"
+}

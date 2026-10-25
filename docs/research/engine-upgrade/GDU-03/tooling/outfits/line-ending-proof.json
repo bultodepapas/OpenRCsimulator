@@ -1,0 +1,56 @@
+[
+  {
+    "path": "tools/scenery/population/outfits/casual_jacket.json",
+    "recorded": "95947329655375db42a4363d4ba99970a9514174c1f9d72a8a5781aa6726cdec",
+    "root_sha256": "ce97a7484847e47318715f38445386222477bcf88d0a373d8d5472cd685a79c1",
+    "frozen_sha256": "ce97a7484847e47318715f38445386222477bcf88d0a373d8d5472cd685a79c1",
+    "lf_sha256": "95947329655375db42a4363d4ba99970a9514174c1f9d72a8a5781aa6726cdec",
+    "root_crlf": 77,
+    "content_matches_recorded_after_lf": true
+  },
+  {
+    "path": "tools/scenery/population/outfits/casual_shirt.json",
+    "recorded": "b9ac43c6ffb979ffeeb6ab18f3d207f6d4ccc085cdc81bc024290641878074fb",
+    "root_sha256": "a8f350a3d15b069acc0c713a2f92470b9d805638b5e46c9e687782ca24234d66",
+    "frozen_sha256": "a8f350a3d15b069acc0c713a2f92470b9d805638b5e46c9e687782ca24234d66",
+    "lf_sha256": "b9ac43c6ffb979ffeeb6ab18f3d207f6d4ccc085cdc81bc024290641878074fb",
+    "root_crlf": 80,
+    "content_matches_recorded_after_lf": true
+  },
+  {
+    "path": "tools/scenery/population/outfits/mechanic_overalls.json",
+    "recorded": "da51c1ce4b6d9ab0ad532360e84f22ab7b4dadc94dcb02f41616adfd304151e1",
+    "root_sha256": "e5ae076555827f7bc3581e4757bc8e0bb7777fbb6bbcc8bc80d28efe6b8ae101",
+    "frozen_sha256": "e5ae076555827f7bc3581e4757bc8e0bb7777fbb6bbcc8bc80d28efe6b8ae101",
+    "lf_sha256": "da51c1ce4b6d9ab0ad532360e84f22ab7b4dadc94dcb02f41616adfd304151e1",
+    "root_crlf": 72,
+    "content_matches_recorded_after_lf": true
+  },
+  {
+    "path": "tools/scenery/population/outfits/pilot_polo.json",
+    "recorded": "78a44031a675cc0dbafb32146245eafe5e3695211c4f1b141c71857d50b2284e",
+    "root_sha256": "24139a6a895941e5e1df6935390e3d6be142d0dac51ead6b80c8dcaaadfacf0f",
+    "frozen_sha256": "24139a6a895941e5e1df6935390e3d6be142d0dac51ead6b80c8dcaaadfacf0f",
+    "lf_sha256": "78a44031a675cc0dbafb32146245eafe5e3695211c4f1b141c71857d50b2284e",
+    "root_crlf": 82,
+    "content_matches_recorded_after_lf": true
+  },
+  {
+    "path": "tools/scenery/population/outfits/veteran_cap.json",
+    "recorded": "11321f10cdbe3036eb83c0374f57d545897d4db5651c9bcc6d4b7da6a7d0d2f2",
+    "root_sha256": "ede4787624418287f8dfb5cb726c0be51a486feefd0de25062105ece04605df2",
+    "frozen_sha256": "ede4787624418287f8dfb5cb726c0be51a486feefd0de25062105ece04605df2",
+    "lf_sha256": "11321f10cdbe3036eb83c0374f57d545897d4db5651c9bcc6d4b7da6a7d0d2f2",
+    "root_crlf": 106,
+    "content_matches_recorded_after_lf": true
+  },
+  {
+    "path": "tools/scenery/population/outfits/woman_tee.json",
+    "recorded": "fbe2fb8631a05a5cb8c9a35d11c28a1605ebdb71d457c990b595bd884cc086b2",
+    "root_sha256": "f838d626b91b9cc6f952d2fc1f1a310afe39d34bc225c7b9e9bdbe20de8909f1",
+    "frozen_sha256": "f838d626b91b9cc6f952d2fc1f1a310afe39d34bc225c7b9e9bdbe20de8909f1",
+    "lf_sha256": "fbe2fb8631a05a5cb8c9a35d11c28a1605ebdb71d457c990b595bd884cc086b2",
+    "root_crlf": 81,
+    "content_matches_recorded_after_lf": true
+  }
+]

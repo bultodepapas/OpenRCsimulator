@@ -9,9 +9,7 @@ const LAW := "fixed-datum-fixed-shape-mass-inventory-geometry-v1"
 const REFERENCE_LAW := "fixed-datum-reference-state-resources-v1"
 const RESOURCE_DISTRIBUTION := "fixed_geometry_uniform_density_v1"
 const PSD_ROUNDING_TOLERANCE := 1.0e-12
-## Smallest normal IEEE-754 binary64 value; subnormal minors lose relative precision.
-## Use an exact power of two: the pinned engine parses the equivalent decimal literal as zero.
-const MIN_NORMAL_FLOAT64 := pow(2.0, -1022.0)
+const MIN_NORMAL_FLOAT64 := M.MIN_NORMAL_FLOAT64
 
 
 ## Parallel-axis tensor per kilogram in [Jxx, Jyy, Jzz, Jxy, Jxz, Jyz] order.

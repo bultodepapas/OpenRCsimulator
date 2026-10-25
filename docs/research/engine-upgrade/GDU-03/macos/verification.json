@@ -1,0 +1,340 @@
+{
+  "engine": "4.8.beta1.official.4d10419ca",
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "source_zip_sha512": "a36d2fd593a591b19358274ad8100684740fff83cf13ad04c5a3d593c3f4bd08a266f0725bda33344d00f30a56942e726d50b74109e8d50ed4794bbd917e0363",
+  "expected_uuids": {
+    "release": {
+      "arm64": "4c4c443f55553144a1f5e11d6817a434",
+      "x86_64": "4c4c443455553144a1ac1b3636b746a8"
+    },
+    "debug": {
+      "arm64": "4c4c445555553144a14b62d61c41ed3c",
+      "x86_64": "4c4c444755553144a141fb4a0f1e4d25"
+    }
+  },
+  "exports": {
+    "fixed-debug": {
+      "uuids": {
+        "arm64": "4c4c445555553144a14b62d61c41ed3c",
+        "x86_64": "4c4c444755553144a141fb4a0f1e4d25"
+      },
+      "sha256": "29f42ba0b04e3daffdf8bbfc76beabc6577e42c8f1c1fad38004a5260ef0ca91",
+      "signature_check": "macOS export: GDU08 macOS Fixture.app/Contents/MacOS/GDU08 macOS Fixture mode 0o755, slices arm64 ad-hoc signed, x86_64 ad-hoc signed",
+      "checked_report": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\fixed-debug-b0ls8bjo\\report.json"
+    },
+    "fixed-release": {
+      "uuids": {
+        "arm64": "4c4c443f55553144a1f5e11d6817a434",
+        "x86_64": "4c4c443455553144a1ac1b3636b746a8"
+      },
+      "sha256": "d9b75c0cbde8a9267138fceaf70ff7b0126d4c8d918739ff011590454b58ce0d",
+      "signature_check": "macOS export: GDU08 macOS Fixture.app/Contents/MacOS/GDU08 macOS Fixture mode 0o755, slices arm64 ad-hoc signed, x86_64 ad-hoc signed",
+      "checked_report": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\fixed-release-b9eifyg8\\report.json"
+    },
+    "official-debug": {
+      "uuids": {
+        "arm64": "4c4c443f55553144a1f5e11d6817a434",
+        "x86_64": "4c4c443455553144a1ac1b3636b746a8"
+      },
+      "sha256": "ff0a40eeafc69694eda0137d47fafe25f3982e8c487938fe0873c8c1e0526e0f",
+      "signature_check": "macOS export: GDU08 macOS Fixture.app/Contents/MacOS/GDU08 macOS Fixture mode 0o755, slices arm64 ad-hoc signed, x86_64 ad-hoc signed",
+      "checked_report": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\official-debug-i5man3jr\\report.json"
+    },
+    "official-release": {
+      "uuids": {
+        "arm64": "4c4c445555553144a14b62d61c41ed3c",
+        "x86_64": "4c4c444755553144a141fb4a0f1e4d25"
+      },
+      "sha256": "fdb16a552d1f9bb355607c5019ae26544138b19dfbacfaee2112dc84b41e3d88",
+      "signature_check": "macOS export: GDU08 macOS Fixture.app/Contents/MacOS/GDU08 macOS Fixture mode 0o755, slices arm64 ad-hoc signed, x86_64 ad-hoc signed",
+      "checked_report": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\official-release-2r5c41xf\\report.json"
+    }
+  },
+  "corrected_template": {
+    "format": "openrc-macos-universal-template v1",
+    "engine": "4.8-beta1",
+    "architecture": "universal",
+    "official_archive_sha512": "fa53ad6883ae6c78ee9d2f8d14ca4d34852fa21c462d1f4b0f599138d7de40897cc058f15083a1fa80c7d4b7590b2222dea6f056be7b49e3a584eb64fc30b0b7",
+    "source_zip_sha512": "a36d2fd593a591b19358274ad8100684740fff83cf13ad04c5a3d593c3f4bd08a266f0725bda33344d00f30a56942e726d50b74109e8d50ed4794bbd917e0363",
+    "helper_sha256": "7e9ceb2a6a62d371cbc86f409f42a8952e31778e8d10dbd1251cc6504dd1bdcc",
+    "workaround_for": "godotengine/godot#124744",
+    "removed_by_upstream": "https://github.com/godotengine/godot/pull/124757",
+    "binary_payloads": {
+      "macos_template.app/Contents/MacOS/godot_macos_release.arm64": {
+        "source_entry": "macos_template.app/Contents/MacOS/godot_macos_debug.arm64",
+        "sha256": "5e7f0dc470d97017336cae46c8577e2713a72e95420b2d2010714b0d7ae529a1"
+      },
+      "macos_template.app/Contents/MacOS/godot_macos_release.x86_64": {
+        "source_entry": "macos_template.app/Contents/MacOS/godot_macos_debug.x86_64",
+        "sha256": "658b038c4b483ea67cad2287702b7d4876fd632b719a3cf86fb31df74ba8372e"
+      },
+      "macos_template.app/Contents/MacOS/godot_macos_debug.arm64": {
+        "source_entry": "macos_template.app/Contents/MacOS/godot_macos_release.arm64",
+        "sha256": "58411709046db73d5513d998cb2dde388bafcdd68613ca8af4ed04915030146f"
+      },
+      "macos_template.app/Contents/MacOS/godot_macos_debug.x86_64": {
+        "source_entry": "macos_template.app/Contents/MacOS/godot_macos_release.x86_64",
+        "sha256": "e748e828670225cc6078f0f5858fe7b93eb93c8528d6b5e8de542222589c5abe"
+      }
+    },
+    "output_sha256": "95f6a5258f1b5b0e91ac56632ed4f74ebe92673f085aa608ff6d4e099b6b85d3"
+  },
+  "official_source_unchanged": true,
+  "format": "openrc-gdu08-macos-workaround-verification v1",
+  "checked_invocations": [
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "9027381c-438f-4015-b9f6-a21e83fe3a24",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\fixed",
+        "--export-debug",
+        "macOS",
+        "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\fixed-debug.zip"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:40:01.946537+00:00",
+      "label": "fixed-debug",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\fixed-debug-b0ls8bjo\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\fixed-debug-b0ls8bjo\\report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 12.094,
+      "log_bytes": 1800,
+      "log_sha256": "e0b544c2c3587bf43da4d5be309c9e68bcd8f33b8c08cde81e6c8b384af3ca96"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "5a21f3e9-0ef4-4a3a-99b8-645fdf213ad1",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\fixed",
+        "--import"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:39:57.879270+00:00",
+      "label": "fixed-import",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\fixed-import-gz4sj3vw\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\fixed-import-gz4sj3vw\\report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 4.047,
+      "log_bytes": 1091,
+      "log_sha256": "92d9fd0f512a1880ae3dc3448c4024971056526224d4d604a59b6e62c22027e5"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "66c84914-0934-436d-ad40-c25f286db558",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\fixed",
+        "--export-release",
+        "macOS",
+        "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\fixed-release.zip"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:40:15.141326+00:00",
+      "label": "fixed-release",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\fixed-release-b9eifyg8\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\fixed-release-b9eifyg8\\report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 12.547,
+      "log_bytes": 1800,
+      "log_sha256": "e0b544c2c3587bf43da4d5be309c9e68bcd8f33b8c08cde81e6c8b384af3ca96"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "2330da5e-8c9c-4cba-ae68-a844802befee",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\official",
+        "--export-debug",
+        "macOS",
+        "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\official-debug.zip"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:40:28.819537+00:00",
+      "label": "official-debug",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\official-debug-i5man3jr\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\official-debug-i5man3jr\\report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 10.891,
+      "log_bytes": 1800,
+      "log_sha256": "e0b544c2c3587bf43da4d5be309c9e68bcd8f33b8c08cde81e6c8b384af3ca96"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "f686fdcd-5888-4c2e-ad24-52ddf8302839",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\official",
+        "--import"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:39:34.098362+00:00",
+      "label": "official-import",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\official-import-82ucu8e3\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\official-import-82ucu8e3\\report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 3.906,
+      "log_bytes": 1091,
+      "log_sha256": "92d9fd0f512a1880ae3dc3448c4024971056526224d4d604a59b6e62c22027e5"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "052c0438-716b-4c34-aa49-c8bc87eaab6b",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\official",
+        "--export-release",
+        "macOS",
+        "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\official-release.zip"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:40:40.801579+00:00",
+      "label": "official-release",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\official-release-2r5c41xf\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3\\checks\\official-release-2r5c41xf\\report.json",
+      "timeout_seconds": 180,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 11.25,
+      "log_bytes": 1800,
+      "log_sha256": "e0b544c2c3587bf43da4d5be309c9e68bcd8f33b8c08cde81e6c8b384af3ca96"
+    }
+  ],
+  "source_identities": {
+    "tools/godot/macos_universal_template.py": "7e9ceb2a6a62d371cbc86f409f42a8952e31778e8d10dbd1251cc6504dd1bdcc",
+    "tools/godot/test_macos_universal_template.py": "8b951b7f384991c9fcf127bb2a4c73403efb5b809ef1610d4fd62668ad47969e",
+    "app/get-templates.sh": "ec0709e171d3a2e2e290287edd4ebd4190290eeee8565f62a5bfd064506f9c96",
+    "app/export_presets.cfg": "51e49c41e726fbae4c745aca18767d6db8456909799c64a9ecf78a947e6a9f3e",
+    "app/tests/check_macos_export.py": "727971f92f161e6ed828528740e3065a68191606f0c8317fbb4ebc0700ce8afd"
+  },
+  "unit_tests": {
+    "passed": 8,
+    "failed": 0
+  },
+  "native_export_controls": {
+    "passed": 4,
+    "failed": 0
+  },
+  "integration_checks": {
+    "bash_syntax": true,
+    "installed_template_fastpath": true,
+    "getter_repeat_preserves_cached_mtime": true,
+    "real_zip_entry_metadata_preserved": true,
+    "real_zip_nonbinary_payloads_unchanged": true,
+    "windows_linux_presets_unchanged": true,
+    "project_local_template_ignored_by_git": true
+  },
+  "artifact_root": "D:\\OpenRCsimulator-experiments\\gdu03-macos\\export-controls-20261025-r3",
+  "earlier_investigative_failures": [
+    {
+      "directory": "D:/OpenRCsimulator-experiments/gdu03-macos/export-controls-20261025",
+      "reason": "minimal fixture omitted include_filter/exclude_filter, import rejected"
+    },
+    {
+      "directory": "D:/OpenRCsimulator-experiments/gdu03-macos/export-controls-20261025-r2",
+      "reason": "C drive filled; exporter temp on C emitted invalid Mach-O/code-sign diagnostics; redirected all owned cache/temp environment to D for final run"
+    }
+  ],
+  "limits": "Windows cross-export fixture only; no native macOS execution, Gatekeeper, notarization or full application export qualification."
+}

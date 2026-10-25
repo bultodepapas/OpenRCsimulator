@@ -9,6 +9,7 @@ const FieldError = preload("res://ui/field_error.gd")
 const FlightSession = preload("res://sim/flight_session.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
+const ProjectedShadow := preload("res://render/projected_shadow.gd")
 
 const CUSTOM_FIELD := "user://test_field_integration_custom.json"
 const PREFS := "user://test_field_integration_settings.cfg"
@@ -471,10 +472,14 @@ func _field_shadow_viewports_own_world(field_node: Node3D) -> bool:
 	var viewport_count := 0
 	var gameplay_world: World3D = field_node.get_viewport().find_world_3d()
 	for node: Node in _descendants_including_self(field_node):
-		if not node is SubViewport:
+		# Other views, such as the magnifier, intentionally share the gameplay world.
+		# Check every shadow owner, including a missing viewport, rather than every inset.
+		if not node is ProjectedShadow:
 			continue
 		viewport_count += 1
-		var shadow_viewport := node as SubViewport
+		var shadow_viewport: SubViewport = (node as ProjectedShadow).viewport
+		if shadow_viewport == null:
+			return false
 		var shadow_world: World3D = shadow_viewport.find_world_3d()
 		if not shadow_viewport.own_world_3d or shadow_world == null or shadow_world == gameplay_world:
 			return false

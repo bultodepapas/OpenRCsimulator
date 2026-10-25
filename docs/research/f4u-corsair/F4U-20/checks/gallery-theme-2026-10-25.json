@@ -1,0 +1,259 @@
+{
+  "step": "F4U-20-R4",
+  "date": "2026-10-25",
+  "engine": "Godot 4.8-beta1 Compatibility",
+  "viewport": [
+    1920,
+    1080
+  ],
+  "gpu": "RTX 3090",
+  "method": "Four cached reopenings per variant in separate native sessions, baseline then candidate. Warm thumbnails with one unmeasured opening; reset bridge frames, open, wait 30 frames, collect frames, close. Same engine and workstation. Short observations, not a statistically qualified speedup.",
+  "baseline_session": "tmp/debug-bridge/20261025-121451-47871",
+  "candidate_measurement_session": "tmp/debug-bridge/20261025-121705-47871",
+  "observations": {
+    "baseline": [
+      {
+        "frames": 108,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.64,
+        "hitches": [],
+        "hitch_total": 0,
+        "physics_catch_up_frames": 0,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 16.67,
+        "p50_ms": 16.64,
+        "p95_ms": 17.23,
+        "p99_ms": 17.73,
+        "max_ms": 36.84,
+        "fps_mean": 60.0,
+        "fps_1pct_low": 27.1
+      },
+      {
+        "frames": 73,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.64,
+        "hitches": [],
+        "hitch_total": 0,
+        "physics_catch_up_frames": 0,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 16.66,
+        "p50_ms": 16.64,
+        "p95_ms": 17.1,
+        "p99_ms": 36.87,
+        "max_ms": 36.87,
+        "fps_mean": 60.0,
+        "fps_1pct_low": 27.1
+      },
+      {
+        "frames": 77,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.63,
+        "hitches": [],
+        "hitch_total": 0,
+        "physics_catch_up_frames": 0,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 16.66,
+        "p50_ms": 16.63,
+        "p95_ms": 17.11,
+        "p99_ms": 36.14,
+        "max_ms": 36.14,
+        "fps_mean": 60.0,
+        "fps_1pct_low": 27.700000000000003
+      },
+      {
+        "frames": 75,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.66,
+        "hitches": [],
+        "hitch_total": 0,
+        "physics_catch_up_frames": 0,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 16.66,
+        "p50_ms": 16.66,
+        "p95_ms": 17.0,
+        "p99_ms": 37.06,
+        "max_ms": 37.06,
+        "fps_mean": 60.0,
+        "fps_1pct_low": 27.0
+      }
+    ],
+    "candidate": [
+      {
+        "frames": 69,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.64,
+        "hitches": [],
+        "hitch_total": 0,
+        "physics_catch_up_frames": 0,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 16.67,
+        "p50_ms": 16.63,
+        "p95_ms": 17.28,
+        "p99_ms": 35.83,
+        "max_ms": 35.83,
+        "fps_mean": 60.0,
+        "fps_1pct_low": 27.900000000000002
+      },
+      {
+        "frames": 71,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.62,
+        "hitches": [],
+        "hitch_total": 0,
+        "physics_catch_up_frames": 0,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 16.67,
+        "p50_ms": 16.62,
+        "p95_ms": 17.19,
+        "p99_ms": 35.76,
+        "max_ms": 35.76,
+        "fps_mean": 60.0,
+        "fps_1pct_low": 28.0
+      },
+      {
+        "frames": 68,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.64,
+        "hitches": [],
+        "hitch_total": 0,
+        "physics_catch_up_frames": 0,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 16.66,
+        "p50_ms": 16.64,
+        "p95_ms": 17.12,
+        "p99_ms": 35.06,
+        "max_ms": 35.06,
+        "fps_mean": 60.0,
+        "fps_1pct_low": 28.5
+      },
+      {
+        "frames": 68,
+        "hitch_ms": 50.0,
+        "factor": 3.0,
+        "typical_ms": 16.66,
+        "hitches": [],
+        "hitch_total": 0,
+        "physics_catch_up_frames": 0,
+        "max_physics_steps_per_frame": 12,
+        "mean_ms": 16.66,
+        "p50_ms": 16.66,
+        "p95_ms": 17.080000000000002,
+        "p99_ms": 36.7,
+        "max_ms": 36.7,
+        "fps_mean": 60.0,
+        "fps_1pct_low": 27.200000000000003
+      }
+    ]
+  },
+  "median_max_frame_ms": {
+    "baseline": 36.855000000000004,
+    "candidate": 35.795
+  },
+  "source_sha256_lf": {
+    "app/ui/screen.gd": "3001fd4b8968df97a932ea9e45d9dae615b16d15791fcbeb121957526825aa76",
+    "app/ui/livery_picker.gd": "e073d4c8f8677a60c5e6ea4e0038786e08b42992cda9f49bfc0f23934c6f8e17",
+    "app/app_root.gd": "5018844740c84b79fe1feccd67530707887fe83a142f1e027860afb7db44453f",
+    "app/tests/test_livery_picker.gd": "76257ef6a42844e6381a8a2da8e36cc5edd02c18c6fb6d61b724f2a2f026dce4",
+    "tools/debug/scenarios/corsair_gallery.txt": "1b5484dd0b09a6a615224bfec4dc8da4ec82fc59417123fbc6721630c9f28414"
+  },
+  "checks": [
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "723e28b3-c0ee-4fd3-a843-ef8912f32ea4",
+      "command": [
+        ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_livery_picker.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T17:16:24.913730+00:00",
+      "label": "f4u-r4-picker",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\f4u-r4-picker-qa685_py\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\f4u-r4-picker-qa685_py\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 2.063,
+      "log_bytes": 109,
+      "log_sha256": "1a9604b5ab77c9a7a1186beff1f1118e7e7cc3ae9519518e855a965839409602"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "18b8256f-521d-4d40-a432-defaa458313c",
+      "command": [
+        ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_ui_screen_stack.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T17:16:33.140154+00:00",
+      "label": "f4u-r4-screen-stack",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\f4u-r4-screen-stack-4urywwqz\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\f4u-r4-screen-stack-4urywwqz\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 23.735,
+      "log_bytes": 2638,
+      "log_sha256": "54152fd0e72805c66d56b59cb6960a4265eaa341454f205dd335e945605e7d6a"
+    }
+  ],
+  "picker_checks": 285,
+  "screen_stack_checks": 38,
+  "native_verification": {
+    "session": "tmp/debug-bridge/20261025-121912-47871",
+    "soak": "warm-up   nodes    1076  orphans     0  resources   1272  static    372.7 MiB  rss       ? MiB\nbaseline  nodes    1076  orphans     0  resources   1272  static    372.7 MiB  rss       ? MiB\ncycle 1   nodes    1076  orphans     0  resources   1272  static    374.4 MiB  rss       ? MiB\ncycle 2   nodes    1076  orphans     0  resources   1272  static    373.6 MiB  rss       ? MiB\n# 0 growing counters, 0 errors: baseline + 2 compared cycles (after 1 warm-up)\n",
+    "stop": {
+      "stopped": true,
+      "pid": 64256,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "diagnostics": []
+  },
+  "excluded_probe": "After the candidate frame measurements, a dynamic-load allocation probe was rejected by the bridge evaluator. Its attempted cleanup caused two missing-metadata diagnostics; no allocation figures are used. That exploratory session also logged a Thread shutdown warning. The separate final native verification above has no errors, warnings, crash or leaked objects. This does not establish a fix for the isolated Thread warning.",
+  "limits": [
+    "Only focused UI checks were run; no full suite or export.",
+    "No change to aircraft geometry, materials, provenance checks or physics.",
+    "Cold selected-model loading remains expensive."
+  ]
+}

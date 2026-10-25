@@ -1,0 +1,22 @@
+{
+  "original_raw_sha256": "e3bfea05dc3f27dbcfd7f55c63bfe140880f2f6a3902c47a86f8ea4819d40275",
+  "original_lf_sha256": "bd6903b22f3dcc930e43e153e339cc5c46b3ad7a66371d4f7feeaa29c4e0aac2",
+  "original_bytes": 2052,
+  "original_crlf_count": 109,
+  "generated": {
+    "baseline": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-ex14-audit\\baseline\\research\\extra-300\\ex14\\wing_polar_fit.json",
+      "sha256": "bd6903b22f3dcc930e43e153e339cc5c46b3ad7a66371d4f7feeaa29c4e0aac2",
+      "bytes": 1943,
+      "equals_original_after_CRLF_to_LF": true,
+      "json_values_equal": true
+    },
+    "candidate": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-ex14-audit\\candidate\\research\\extra-300\\ex14\\wing_polar_fit.json",
+      "sha256": "bd6903b22f3dcc930e43e153e339cc5c46b3ad7a66371d4f7feeaa29c4e0aac2",
+      "bytes": 1943,
+      "equals_original_after_CRLF_to_LF": true,
+      "json_values_equal": true
+    }
+  }
+}

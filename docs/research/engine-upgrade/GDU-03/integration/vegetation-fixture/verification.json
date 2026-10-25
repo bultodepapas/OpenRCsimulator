@@ -1,0 +1,145 @@
+{
+  "format": "openrc-gdu03-vegetation-fixture-v1",
+  "diagnostic_script_sha256": "68e57e7f2cd76af04d12f3c29a6401bb1906cafdf9d816a3e049fd9e7eecd950",
+  "sources": {
+    "app/tests/test_landscape_vegetation.gd": "ca4ab05d6d5280c9bac8082ce9c7c8179da48ca2b3c2ba7b4b3058001995f3dd",
+    "app/scenery/scenery.gd": "bd3736b65a02e1f5a93e7a973cd99dfc911f2333cdf03517f162e9e65c3a22d8",
+    "app/scenery/population.gd": "4441418e058f108f9638139526888a53b80bef0d6a75338d2fd1ce81d1af5f9c",
+    "app/scenery/palette.gd": "442ca537c20bedda28c1a5cd7c15945c71e766ed883a256e1e34deccbfde6f63"
+  },
+  "runs": {
+    "v47": {
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-vegetation\\v47\\checks\\vegetation-diagnosis-289oo3ro\\report.json",
+      "report_sha256": "31ddb5aca9aa62bdb3289139a9e3456adff996373048e4ce38f683d1e6df7ab0",
+      "checked_invocation": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "33914b08-2b38-4841-9f4f-c3c5033ba4e4",
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:/OpenRCsimulator-experiments/gdu03-vegetation/diagnose.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T16:00:03.209858+00:00",
+        "label": "vegetation-diagnosis",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-vegetation\\v47\\checks\\vegetation-diagnosis-289oo3ro\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-vegetation\\v47\\checks\\vegetation-diagnosis-289oo3ro\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 4.938,
+        "log_bytes": 3963,
+        "log_sha256": "d5c6c7e4bec6704472c7def54eb5db72a772a62904606a9612b6e8da7a959504"
+      }
+    },
+    "v48": {
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-vegetation\\v48\\checks\\vegetation-diagnosis-ykya69wn\\report.json",
+      "report_sha256": "5c0ee7cfbae4c3f0b436131ab813ea03f9c2d8b54db48f821664410b7e2bf2a8",
+      "checked_invocation": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "5054599d-f116-4db8-b1d7-a1001fbb99e1",
+        "command": [
+          ".tools/Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:/OpenRCsimulator-experiments/gdu03-vegetation/diagnose.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:59:49.230973+00:00",
+        "label": "vegetation-diagnosis",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-vegetation\\v48\\checks\\vegetation-diagnosis-ykya69wn\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-vegetation\\v48\\checks\\vegetation-diagnosis-ykya69wn\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 4.187,
+        "log_bytes": 3956,
+        "log_sha256": "bbf48220f2ff87df460e88660b1b05f765727dab062f1cc371c0bd4aed815213"
+      }
+    },
+    "final": {
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-vegetation\\final\\checks\\vegetation-fixture-7jc7imhu\\report.json",
+      "report_sha256": "fda2bb064e3b395671e0c271116f90fcabb85f7720ec982f121ba89202fa8e5e",
+      "checked_invocation": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "4400a0b0-e163-473c-bccd-ced5c6288d14",
+        "command": [
+          ".tools/Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_landscape_vegetation.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T16:00:43.610103+00:00",
+        "label": "vegetation-fixture",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-vegetation\\final\\checks\\vegetation-fixture-7jc7imhu\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-vegetation\\final\\checks\\vegetation-fixture-7jc7imhu\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "LU-17 vegetation: 38 checks, 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.922,
+        "log_bytes": 2843,
+        "log_sha256": "24820e20a3d8780a1cc78891306aa0bda2afaa48d5d8c7b313edcf67c3acba9b"
+      }
+    }
+  },
+  "observed_moving_people": {
+    "4.7.2": 5,
+    "4.8-beta1": 5
+  },
+  "changed_production_files": []
+}

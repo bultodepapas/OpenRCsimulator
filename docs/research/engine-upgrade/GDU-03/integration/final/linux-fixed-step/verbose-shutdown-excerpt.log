@@ -1,0 +1,17 @@
+Excerpt from original verbose log linked and hashed in summary.json
+WARNING: GameMode: Failed to enable (check if the daemon is installed and running).
+     at: run (platform/linuxbsd/os_linuxbsd.cpp:1009)
+flight_sha256=54d900b532948e4a8c60be3250ceea9809ca7f084634a7e5bec3febe770e3c70
+ticks=480 frames=288 throttle=0.3509 state_sha256=6a1d701895f2fab144df79a6b94fb6315a6ecec7788e126212fb19de5c8b4d29
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Orphan StringName: JSON (static: 0, total: 2)
+Orphan StringName: OpenRCGroundVehicleNative (static: 0, total: 2)
+Orphan StringName: Resource (static: 1, total: 3)
+Orphan StringName: OS (static: 0, total: 2)
+Orphan StringName: FileAccess (static: 0, total: 2)
+Orphan StringName: RefCounted (static: 1, total: 3)
+Orphan StringName: Object (static: 1, total: 3)
+Orphan StringName: ClassDB (static: 0, total: 2)
+StringName: 8 unclaimed string names at exit.

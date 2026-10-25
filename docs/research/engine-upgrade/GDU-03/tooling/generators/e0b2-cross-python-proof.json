@@ -1,0 +1,38 @@
+{
+  "windows_python": "3.11.9",
+  "linux_wsl_python": "3.12.3",
+  "original_windows_check_exit": 1,
+  "original_linux_check_exit": 0,
+  "fixed_windows_check_exit": 0,
+  "fixed_linux_check_exit": 0,
+  "existing_geometry_tests_per_host": 5,
+  "fixed_report_text_equals_existing_report": true,
+  "unchanged_source_and_data": {
+    "docs/research/propwash/E0b2/geometry.json": {
+      "before_sha256": "5de6c86fb9893a38c462601b1620e3f1e7aa7a36ab8dbbf56d174f7280096b1d",
+      "root_sha256": "5de6c86fb9893a38c462601b1620e3f1e7aa7a36ab8dbbf56d174f7280096b1d",
+      "frozen_sha256": "5de6c86fb9893a38c462601b1620e3f1e7aa7a36ab8dbbf56d174f7280096b1d"
+    },
+    "app/data/aircraft/jensen_ugly_stik_60.json": {
+      "before_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+      "root_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+      "frozen_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+    },
+    "assets/aircraft/ugly-stik-60/geometry.json": {
+      "before_sha256": "7b1fe453d594866a24756000a318f4ba0258eb072b7b98dae5a4d2491b09bd31",
+      "root_sha256": "7b1fe453d594866a24756000a318f4ba0258eb072b7b98dae5a4d2491b09bd31",
+      "frozen_sha256": "7b1fe453d594866a24756000a318f4ba0258eb072b7b98dae5a4d2491b09bd31"
+    },
+    "app/aircraft/ugly_stik_geometry.gd": {
+      "before_sha256": "8e8e85cb44b9df1270391c47de66273a854f7114bd6b65ea6f85f3d2fea79e75",
+      "root_sha256": "8e8e85cb44b9df1270391c47de66273a854f7114bd6b65ea6f85f3d2fea79e75",
+      "frozen_sha256": "8e8e85cb44b9df1270391c47de66273a854f7114bd6b65ea6f85f3d2fea79e75"
+    }
+  },
+  "cause_reference": "https://docs.python.org/3.12/whatsnew/3.12.html#other-language-changes",
+  "baseline_head": "3ad5cd591fe8eae77fc79b3bdc7f43a85c5c9c98",
+  "generator_before_sha256": "b32d05f7ec49dae7c84874bc8a7580039ea7f12c2fb41197e40cb2a3e52d65ca",
+  "generator_before_lf_sha256": "70a11a3a00c86671fc05642b7f1864b3dfcaaaf087486202b09d18b2ece0edb9",
+  "original_generator_matches_head_after_lf": true,
+  "generator_fixed_sha256": "3e1af635717b27535d9faaadc403f25c9c356a64b3f3b3476efa9a1a552c2b51"
+}

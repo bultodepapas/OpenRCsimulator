@@ -4,11 +4,11 @@ Tools every domain uses: the engine, the test suite, headless runs, flags, trace
 
 ## Engine
 
-- **Purpose:** download and verify the pinned Godot (4.7.2) into `.tools/`; print its path.
+- **Purpose:** download and verify official Godot `4.8-beta1` (a prerelease) into `.tools/`; print its path. Exact CLI identity: `4.8.beta1.official.4d10419ca`.
 - **When:** in every command that needs Godot. Never call a system `godot`.
 - **Command:** `"$(app/get-godot.sh)"`
-- **Result:** prints the binary path; exits nonzero on a hash mismatch.
-- **Gotchas:** a fresh checkout needs `"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import` before standalone scripts; `app/test.sh` and `app/capture.sh` import by themselves. `--headless` already selects the Dummy audio driver.
+- **Result:** prints the Linux x86_64 editor path or Windows x86_64 console editor path under Git Bash; exits nonzero on an archive hash or version mismatch. Cached executable hashes are checked before reuse.
+- **Gotchas:** a fresh checkout needs `"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import` before standalone scripts; `app/test.sh` and `app/capture.sh` import by themselves. `--headless` selects the headless display and Dummy audio drivers. For beta1's X11/Wayland fallback issue and the existing launcher option, see [developer setup](../TOOLS.md#developer-setup).
 
 ## Full app suite
 
@@ -18,10 +18,10 @@ Tools every domain uses: the engine, the test suite, headless runs, flags, trace
 - **Result:** exit 0 means every step passed. Failing Godot calls print `Godot check failed: … report: <dir>/report.json`; open that report and its `engine.log`.
 - **Gotchas:**
   - It takes over 40 minutes on the dev VM. For a quick check, run the affected scripts with the [checked runner](#one-godot-script) first.
-  - The parse step launches Godot once per script; if your working tree changes during the run (another session pulls or edits), the result is invalid. Run long suites on a snapshot: `git worktree add --detach tmp/suite HEAD`, then run `tmp/suite/app/test.sh` (copy or hard-link `.tools/Godot_*` into `tmp/suite/.tools/` to skip the download).
+  - The parse step launches Godot once per script; if your working tree changes during the run (another session pulls or edits), the result is invalid. Run long suites on a snapshot: `git worktree add --detach tmp/suite HEAD`, then run `tmp/suite/app/test.sh` (copy or hard-link the matching `.tools/Godot_*` binaries and generated `.sha512` cache receipt into `tmp/suite/.tools/` to skip the download; Windows needs both executables).
   - Two named physical checks run in "pending" mode inside the suite (`test_rudder_authority.gd`, `test_yaw_damping.gd`). Pending is not a pass; run alone they are strict. Details: [TOOLS](../TOOLS.md#app-and-release-commands).
   - The script stops at the first failure (`set -e`), and the integration tail runs after the units. One red unit script hides every later result: run `OPENRC_TEST_PART=integration app/test.sh` for the tail, and loop the remaining `app/tests/test_*.gd` through the [checked runner](#one-godot-script) to see all unit failures.
-  - Do not run two suites, or two Godot tools, on checkouts of this project at once: they share the same `user://` data directory.
+  - Parallel runs require isolated `user://` profiles. On Windows, even with separate profiles, concurrent editor imports in one checkout contend for the native extension's hot-reload shadow DLL. Serialize imports; use separate checkouts for parallel full suites. The documented remaining-unit loop can reuse an already successful import.
   - It does not run the CI-only checks below.
 
 ## CI-only checks

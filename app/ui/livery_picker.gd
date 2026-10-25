@@ -17,12 +17,16 @@ var _images: Array[TextureRect] = []
 var _paths: Array[String] = []
 var _previews: Dictionary = {}
 var _pending: Array[int] = []
+var _labels: Array[Label] = []
+var _font_size := -1
+var _focus_columns := 0
 
-func _init(choices: Array = [], current := "", aircraft_name := "", previews: Dictionary = {}) -> void:
+func _init(choices: Array = [], current := "", aircraft_name := "", previews: Dictionary = {}, shared_theme: Theme = null) -> void:
 	name = "LiveryPicker"
 	layer = 12
 	_previews = previews
-	_screen = Screen.mount(self, "Modal")
+	_screen = Screen.mount(self, "Modal", shared_theme)
+	_font_size = _screen.theme.get_font_size("font_size", "Button")
 	_screen.escape_before_gui = true
 	_screen.close_requested.connect(func() -> void: close_requested.emit())
 	_screen.dim(0.70)
@@ -59,7 +63,7 @@ func _init(choices: Array = [], current := "", aircraft_name := "", previews: Di
 		button.set_meta("livery_id", str(choice.id))
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.add_theme_font_size_override("font_size", _screen.theme.get_font_size("font_size", "Button"))
+		button.add_theme_font_size_override("font_size", _font_size)
 		button.clip_text = false
 		# Keep the Button's text for accessibility and automation. A real layout
 		# draws the name below a fixed image area, so long names cannot clip or shrink it.
@@ -76,16 +80,17 @@ func _init(choices: Array = [], current := "", aircraft_name := "", previews: Di
 		var picture := TextureRect.new()
 		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		picture.custom_minimum_size.y = 104
+		picture.custom_minimum_size.y = 128
 		picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		content.add_child(picture)
 		_images.append(picture)
 		_paths.append(str(choice.get("thumbnail", "")))
 		var label := Widgets.label(("✓ " if active else "") + str(choice.label), "", true, false)
-		label.add_theme_font_size_override("font_size", _screen.theme.get_font_size("font_size", "Button"))
+		label.add_theme_font_size_override("font_size", _font_size)
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		content.add_child(label)
+		_labels.append(label)
 		content.minimum_size_changed.connect(func() -> void: button.custom_minimum_size.y = content.get_combined_minimum_size().y + 16)
 		button.pressed.connect(_choose.bind(str(choice.id)))
 		grid.add_child(button)
@@ -118,8 +123,9 @@ func _load_next_preview() -> void:
 	if not _pending.is_empty(): get_tree().process_frame.connect(_load_next_preview, CONNECT_ONE_SHOT)
 
 func _focus_selected() -> void:
+	if not is_inside_tree() or is_queued_for_deletion(): return
 	await get_tree().process_frame
-	if not is_inside_tree(): return
+	if not is_inside_tree() or is_queued_for_deletion(): return
 	if buttons.is_empty(): cancel_button.grab_focus()
 	else:
 		buttons[_selected_index].grab_focus()
@@ -131,8 +137,18 @@ func _resize() -> void:
 	panel.custom_minimum_size = Vector2(minf(1320, available.x), minf(930, available.y))
 	grid.columns = (5 if panel.custom_minimum_size.x >= 1180 else 4) if UiTheme.text_scale < 1.5 else 2
 	for picture in _images:
-		picture.custom_minimum_size.y = 104 if UiTheme.text_scale < 1.5 else 56
-	_sync_focus()
+		picture.custom_minimum_size.y = 128 if UiTheme.text_scale < 1.5 else 56
+	# Theme replacement also happens on a live viewport/compact-layout change.
+	# Explicit card font overrides must follow it, not retain the opening size.
+	var font_size := _screen.theme.get_font_size("font_size", "Button")
+	if _font_size != font_size:
+		_font_size = font_size
+		for index in buttons.size():
+			buttons[index].add_theme_font_size_override("font_size", font_size)
+			_labels[index].add_theme_font_size_override("font_size", font_size)
+	if _focus_columns != grid.columns:
+		_focus_columns = grid.columns
+		_sync_focus()
 
 func _sync_focus() -> void:
 	for index in buttons.size():

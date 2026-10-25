@@ -622,7 +622,7 @@ func open_livery_picker(from: Control = null) -> void:
 	var choices: Array = home.livery_choices()
 	if choices.size() < 2: return
 	var aircraft_id: String = home.aircraft_id
-	var dialog := LiveryPicker.new(choices, home.livery_id, tr(Catalog.short_name(home.aircraft_id)), home.livery_preview_cache)
+	var dialog := LiveryPicker.new(choices, home.livery_id, tr(Catalog.short_name(home.aircraft_id)), home.livery_preview_cache, home.theme)
 	dialog.close_requested.connect(close_livery_picker)
 	dialog.selected.connect(func(id: String) -> void:
 		close_livery_picker()

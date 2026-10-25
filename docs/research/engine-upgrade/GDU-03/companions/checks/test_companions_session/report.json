@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "edd33206-e28f-4bd6-b8ba-be0cc07ed092",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-companions/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T14:50:36.888821+00:00",
+  "label": "final-test_companions_session",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\final-test_companions_session-jalpdfy4\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\final-test_companions_session-jalpdfy4\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.75,
+  "log_bytes": 1426,
+  "log_sha256": "76e4144fdc84dcb526ab2174597c2dec1b9db1d413a7736141d44508f72f6289"
+}

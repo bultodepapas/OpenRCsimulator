@@ -89,7 +89,7 @@ func _run() -> void:
 
 	root.remove_child(flight)
 	flight.free()
-	session.free()
+	# Main._exit_tree() already freed the injected, unattached session on removal.
 
 
 func _key_event(key: Key, pressed: bool) -> InputEventKey:

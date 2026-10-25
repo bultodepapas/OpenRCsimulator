@@ -1,0 +1,37 @@
+extends "res://tests/test_overlay_manager.gd"
+
+func _run() -> void:
+	await process_frame
+	var original_scale := UiTheme.text_scale
+	UiTheme.text_scale = 2.0
+	root.size = Vector2i(1920, 1080)
+	await process_frame
+	var manager: CanvasLayer = Manager.new({}, "en")
+	root.add_child(manager)
+	var dialog: CanvasLayer = OverlaysDialog.new(manager)
+	root.add_child(dialog)
+	await process_frame
+	await process_frame
+	var scroll: ScrollContainer = dialog.get("_scroll")
+	for picker: OptionButton in [dialog.preset_picker, dialog.units_picker]:
+		picker.grab_focus()
+		await process_frame
+		_check(picker.name + " focused before narrow transition", root.gui_get_focus_owner() == picker)
+		root.size = Vector2i(1280, 720)
+		await process_frame
+		await process_frame
+		_check(picker.name + " actually moved into scroll", scroll.is_ancestor_of(picker))
+		_check(picker.name + " retains focus entering scroll", root.gui_get_focus_owner() == picker, str(root.gui_get_focus_owner()))
+		picker.grab_focus()
+		await process_frame
+		root.size = Vector2i(1920, 1080)
+		await process_frame
+		await process_frame
+		_check(picker.name + " actually restored above scroll", not scroll.is_ancestor_of(picker))
+		_check(picker.name + " retains focus leaving scroll", root.gui_get_focus_owner() == picker, str(root.gui_get_focus_owner()))
+	dialog.queue_free()
+	manager.queue_free()
+	await process_frame
+	UiTheme.text_scale = original_scale
+	print("overlay focus transitions: %d checks, %d failed" % [_count, _failures])
+	quit(1 if _failures else 0)

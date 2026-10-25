@@ -1,0 +1,169 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "38009b30-3c6e-45fb-ac45-4c0c47277033",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-companions/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T14:31:31.798577+00:00",
+  "label": "beta-integrated-import",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\beta-integrated-import-66by4o1t\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\beta-integrated-import-66by4o1t\\report.json",
+  "timeout_seconds": 1200.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 12,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 844,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[   1% ] reimport | Flowers.png",
+        "[   1% ] reimport | Leaves.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 854,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[   2% ] reimport | Leaves_NormalTree_C.png",
+        "[   3% ] reimport | Bark_NormalTree_Normal.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 900,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  12% ] reimport | grass_lolipop_tall_normal.png",
+        "[  12% ] reimport | grass_lolipop_tall_mrao.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 913,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  14% ] reimport | quercus2_Image_2.png",
+        "[  14% ] reimport | quercus2_Image_3-Image_0.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 950,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  21% ] reimport | maple_bark_basecolor.jpg",
+        "[  22% ] reimport | maple_bark_ao-maple_bark_roughness.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 978,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  27% ] reimport | moon_normal_1k.png",
+        "[  27% ] reimport | moon_albedo_2k.jpg"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1015,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  34% ] reimport | ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1018,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  34% ] reimport | 161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png",
+        "[  35% ] reimport | 1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1098,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  51% ] reimport | colormap.png",
+        "[  51% ] reimport | colormap.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1198,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  71% ] reimport | flagCheckersSmall_checkers.png",
+        "[  72% ] reimport | billboardLow_tankcoBanner.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1214,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  74% ] reimport | pine_joined_Image_3-Image_0.png",
+        "[  75% ] reimport | pine_joined_Image_1.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1218,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  75% ] reimport | Fagus_Image_4.png",
+        "[  75% ] reimport | Fagus_Image_3-Image_0.png"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 173.172,
+  "log_bytes": 132129,
+  "log_sha256": "b319c5feddeb450dd186207de66da338f56a5b86f22d0e49d49bc398424b9afd"
+}

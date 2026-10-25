@@ -8,7 +8,7 @@ Display development follows the [shared resolution policy](../AGENTS.md#display-
 
 | Layer | Implementation |
 | --- | --- |
-| Engine/language | Official Godot 4.8-beta1; GDScript. Owner-authorized adoption; [migration verification](plans/godot-4.8-upgrade.md) remains in progress |
+| Engine/language | Official Godot 4.8-beta1; GDScript. Owner-authorized adoption with [local verification](research/engine-upgrade/GDU-03/README.md); broader [platform/release gates](plans/godot-4.8-upgrade.md) remain open |
 | Rendering | Compatibility renderer (`gl_compatibility`); 1280×720 default viewport; 4× 3D MSAA |
 | Simulation | Shared float64 rigid-body kernel, RK4 and fixed 240 Hz ticks; Godot rigid-body nodes do not solve flight |
 | Aircraft data | Strict `openrc-aircraft v2` validation, unit-tagged quantities and derived mass/CG/inertia; v1 is an explicit historical path; [contract](AIRCRAFT_CONTRACT.md) |

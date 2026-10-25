@@ -1,0 +1,32 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "690b7e25-d06e-4d3b-b025-ba09d05892d3",
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "app/tests/test_rcv_support_cli.py"
+  ],
+  "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+  "started_utc": "2026-10-25T15:30:24.036128+00:00",
+  "label": "support-cli",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\rcv-checks\\support-cli-dwww2sor\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\rcv-checks\\support-cli-dwww2sor\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.171,
+  "log_bytes": 112,
+  "log_sha256": "0c7a74e7b62b7c82bb0c716997c2501e997697133c4c02af3f3536fba1c956a9"
+}

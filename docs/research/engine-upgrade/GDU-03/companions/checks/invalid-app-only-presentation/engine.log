@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:57)
+       [1] configure (res://ai/companions/agent.gd:75)
+       [2] _run (res://tests/test_companions_presentation.gd:35)
+FAIL presentation fixture uses qualified real aircraft

@@ -1,0 +1,34 @@
+{
+  "ai/companions/profile_loader.gd": {
+    "beta": "7264351706ded2f7753af7c2bb85021d1ed82209b9a6c693c55eafdd4d44efa1",
+    "stable": "49d1db17207c3952b28870401ecbd93285d2853960e4c22cc62fd93c64bc2402"
+  },
+  "data/aircraft_customization.json": {
+    "beta": "b636559bafc44675cdace32de7fe25f8e1f723acd3f0efae6c3ffba604e31c69",
+    "stable": "e50a5a156760c9235c33465a513921286fa8035b93475c0e98c2295524f2818c"
+  },
+  "data/workshop/jensen-das-ugly-stik-60.json": {
+    "beta": "f59cac02940640e2f58aab7480c2c793a12645781df65245e30f73ac57053446",
+    "stable": "07969ccddab4b67ce160956891e944152b3dc233042cdf07116922995d4badfe"
+  },
+  "data/workshop/stik-glow-55ax-2t.json": {
+    "beta": "32d3376ef4dbde0e379f3d001b19dbbe9032ce4b47ca2157c6d6bcf2b3c8721e",
+    "stable": "e9341c20963581e265d3582a860b7e072490fdaadd88550e130cf6486c1da52e"
+  },
+  "data/workshop/stik-glow-61fx-2t.json": {
+    "beta": "732a45bd1c7290643d9b496152abec8fe6bed822c6c035e9826b6b234802b32d",
+    "stable": "a88cfe334c3d8dc7fce04666328ba1c5887b59db595b440333e7310d90f45b83"
+  },
+  "data/workshop/stik-glow-fs64v-4t.json": {
+    "beta": "7f8e2a4235a357d8ffa86788a488b5348049d16753d626d9bf4e370bf7ac3069",
+    "stable": "57a1e962c40cfe64cf0832279bc8894800dc19f76cdfdb74c80f4a5f6a82a2cd"
+  },
+  "tests/test_companions_profiles.gd": {
+    "beta": "4537b3432b03b834f9f4be8070ddcd0849bf93e7831644e06c8db86c077cd40f",
+    "stable": "31b3b9f70705807c4d46ee3b5ae824689e0c09a1e900e0ee9d95eac49cc8acea"
+  },
+  "tests/test_livery_picker.gd": {
+    "beta": "f46e4c0b0e31312583f3eba701e016369de17014de3b46a9f460d2a5690d5da4",
+    "stable": "ed0a7bcb75a52456e9533974cf5b5298e57c856c101fa57899a77b35a7dca4cb"
+  }
+}

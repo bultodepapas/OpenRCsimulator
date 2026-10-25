@@ -5,7 +5,7 @@
 #   - UI-04a: one build identity (git describe, commit, dirty, commit date), computed here once, names the ZIPs, is
 #     written into every pack as res://build_info.json (addons/build_info) and is checked in the exported binary's
 #     trace header; the .exe and Info.plist carry project.godot's numeric config/version (tests/check_build_versions.py).
-# Needs: app/get-godot.sh, app/get-templates.sh (downloads 1.28 GB once), zip, python3, git. No display or GPU.
+# Needs: app/get-godot.sh, app/get-templates.sh (downloads 1.36 GB once), zip, python3, git. No display or GPU.
 # Usage: app/export.sh   (the version is always git describe: the app and the ZIP names cannot disagree)
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -23,7 +23,7 @@ if [[ "${GITHUB_REF:-}" == refs/tags/v* ]]; then
   [[ "$VERSION" != *-dirty ]] || { echo "tagged release requires a clean working tree"; exit 1; }
   VERSION="$RELEASE_TAG"
 fi
-NUMERIC="$(sed -n 's/^config\/version="\(.*\)"$/\1/p' "$HERE/project.godot")"
+NUMERIC="$(sed -n 's/\r$//; s/^config\/version="\(.*\)"$/\1/p' "$HERE/project.godot")"
 [[ "$NUMERIC" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "project.godot config/version must be x.y.z (found '$NUMERIC')"; exit 1; }
 if [[ "$VERSION" =~ ^v([0-9]+\.[0-9]+\.[0-9]+) ]] && [ "${BASH_REMATCH[1]}" != "$NUMERIC" ]; then
   echo "tag ${BASH_REMATCH[1]} (git describe: $VERSION) does not match project.godot config/version $NUMERIC"; exit 1

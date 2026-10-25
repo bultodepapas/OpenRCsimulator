@@ -159,6 +159,20 @@ class GraphicsLauncherTests(unittest.TestCase):
             )
         self.assertEqual(found, str(self.engine.resolve()))
 
+    def test_linux_prefers_pinned_linux_binary_to_path(self) -> None:
+        local_engine = self.root / ".tools" / launch.PINNED_LINUX_GODOT
+        local_engine.parent.mkdir()
+        local_engine.write_text("Linux executable", encoding="utf-8")
+        local_engine.chmod(0o755)
+        with mock.patch.object(launch.sys, "platform", "linux"), mock.patch.object(
+            launch.shutil, "which", return_value=str(self.engine)
+        ) as which:
+            found = launch._discover_godot(
+                None, environ={}, repo_root=self.root, cwd=self.root, require_exists=True
+            )
+        self.assertEqual(found, str(local_engine.resolve()))
+        which.assert_not_called()
+
     def test_resolution_validation_and_duplicate_profile_rejection(self) -> None:
         with mock.patch.object(launch.subprocess, "run") as run:
             with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):

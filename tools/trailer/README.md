@@ -6,7 +6,8 @@ No tool here edits the simulation kernel, aircraft data, damage assessment or pr
 
 ## Capture
 
-Use Godot **4.7.2 stable**, Compatibility/OpenGL, and the repository's existing imported assets.
+Use the pinned official Godot **4.8-beta1**, Compatibility/OpenGL, and the repository's existing imported assets.
+The dated trailer refresh retains its original engine scope; these instructions do not establish a new paired trailer qualification.
 Run `prepare_runtime.ps1` first. It creates `tmp/trailer/runtime/app` with a copied project configuration
 whose startup viewport is 1920×1080. Its directories are junctions to the working repository: this is
 an isolated capture configuration, **not a frozen source checkout**. Do not recursively delete its

@@ -189,3 +189,17 @@
 /research/ai-companions/performance/reachable_clear_baseline.gd -text
 /research/ai-companions/performance/reachable_clear_candidate.gd -text
 /research/ai-companions/performance/callback_pre_promotion_test_clear_fast_path.gd -text
+
+# GDU-03 receipts retain the exact bytes used by cross-engine comparisons.
+/docs/research/engine-upgrade/GDU-03/**/*.json -text
+/docs/research/engine-upgrade/GDU-03/**/*.csv -text
+/docs/research/engine-upgrade/GDU-03/**/*.log -text -whitespace
+
+# SC-HUM-07 source manifests bind the original LF outfit-spec bytes.
+/tools/scenery/population/outfits/*.json text eol=lf
+
+# L7's deterministic visual horizon generator emits exact LF JSON bytes.
+/app/data/fields/horizon.json text eol=lf
+
+# EX-14h's exact JSON serializer emits LF; preserve its generated fit bytes.
+/research/extra-300/ex14/wing_polar_fit.json text eol=lf

@@ -12,7 +12,7 @@ Focused routing checks: `test_menu_audio.gd`, `test_ui_settings_integration.gd`,
 
 ## Flight soundscape
 
-2026-10-11 · **Status: implemented.** Scope and results: [AUDIO-PLAN](../../docs/AUDIO-PLAN.md), [AUD-04](../../docs/research/audio/AUD-04/README.md), [AUD-05 wildlife](../../docs/research/audio/AUD-05/README.md). Godot is pinned to the repository's 4.7.2 binary; Python generator/checker dependency is `numpy==2.4.6`.
+2026-10-11 · **Status: implemented.** Scope and results: [AUDIO-PLAN](../../docs/AUDIO-PLAN.md), [AUD-04](../../docs/research/audio/AUD-04/README.md), [AUD-05 wildlife](../../docs/research/audio/AUD-05/README.md). Godot is pinned to official 4.8-beta1; [GDU-06 native compatibility checks](../../docs/research/engine-upgrade/GDU-03/audio/README.md) record the bounded WASAPI evidence. Python generator/checker dependency is `numpy==2.4.6`.
 
 Run from the repository root. Replace `godot` below with the pinned binary. Windows native output uses WASAPI. Bare `--headless` selects Dummy; explicitly request a native driver and verify the report's actual driver. The capture matrix uses `--display-driver headless --audio-driver WASAPI` for audio without graphics; the Windows profiler uses `--headless` followed by the explicit WASAPI override.
 
@@ -79,7 +79,7 @@ The glow-pump test deliberately blocks the main thread for 600 ms, then checks n
 godot --display-driver headless --audio-driver WASAPI --max-fps 60 --path app --script /absolute/repo/tools/audio/pump_stress_probe.gd -- --out=/absolute/output/pump-stress.json
 ```
 
-The worker uses the documented [AudioServer lock](https://docs.godotengine.org/en/4.7/classes/class_audioserver.html#class-audioserver-method-lock) for playback ring access. In the pinned engine, the [WASAPI mixer](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/wasapi/audio_driver_wasapi.cpp) holds that lock during mixing, while the [generator playback](https://github.com/godotengine/godot/blob/4.7.2-stable/servers/audio/effects/audio_stream_generator.cpp) has ordinary ring indices. Do not move synthesis inside the lock or access a live playback from the worker without it.
+The worker uses the documented [AudioServer lock](https://docs.godotengine.org/en/4.7/classes/class_audioserver.html#class-audioserver-method-lock) for playback ring access. In the audited 4.7.2 baseline, the [WASAPI mixer](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/wasapi/audio_driver_wasapi.cpp) holds that lock during mixing, while the [generator playback](https://github.com/godotengine/godot/blob/4.7.2-stable/servers/audio/effects/audio_stream_generator.cpp) has ordinary ring indices. The [4.8 native stress check and bounded source audit](../../docs/research/engine-upgrade/GDU-03/audio/README.md#version-scoped-workarounds) retain the existing ownership and workaround policies. Do not move synthesis inside the lock or access a live playback from the worker without it.
 
 `fleet_sequence.gd -- --list` lists the supported fleet. Its capture report distinguishes accepted live physics from explicit approach resets and harness engine-latch stimuli. Stage names alone do not establish successful takeoff, landing or a continuous full flight; consult the recorded outcomes.
 

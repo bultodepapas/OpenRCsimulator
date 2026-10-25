@@ -1,0 +1,1800 @@
+{
+  "format": "openrc-gdu03-gpu-correctness-v1",
+  "date": "2026-10-25",
+  "engine": {
+    "identity": "4.8.beta1.official.4d10419ca",
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+    "adjacent_executable_sha256": "bfd67323e170f4167f0df27369b5e9add66c5d6a827f8bbbb03f7c36b6e08905"
+  },
+  "out_dir": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025",
+  "snapshot": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+  "color_shadow_invocations": 9,
+  "color_shadow_all_pass": true,
+  "color_shadow_diagnostics": {
+    "error": 0,
+    "warning": 0
+  },
+  "ridge_cases_per_profile": 11,
+  "ridge_gate": "Existing independent reference anchors, max3.5/255 channel error; fixed800x800 diagnostic SubViewport. Logs retain verdict only.",
+  "results": [
+    {
+      "label": "lily_color-high",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\lily_color-high\\report.json",
+      "sha256": "de0970cd62d61d3eb3e70fe930ae7f9722b16d72ee9b82911ee03283d32f84bc",
+      "report": {
+        "cases": [
+          {
+            "actual": [
+              0.20392157137394,
+              0.274509817361832,
+              0.0823529437184334
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.20392157137394,
+              0.274509817361832,
+              0.0823529437184334
+            ],
+            "name": "leaf_0_0_8",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.301960796117783,
+              0.403921574354172,
+              0.117647059261799
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.301960796117783,
+              0.403921574354172,
+              0.117647059261799
+            ],
+            "name": "leaf_0_1_18",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.215686276555061,
+              0.294117659330368,
+              0.0862745121121407
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.215686276555061,
+              0.294117659330368,
+              0.0862745121121407
+            ],
+            "name": "leaf_1_0_8",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.317647069692612,
+              0.431372553110123,
+              0.125490203499794
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.317647069692612,
+              0.431372553110123,
+              0.125490203499794
+            ],
+            "name": "leaf_1_1_18",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.227450981736183,
+              0.301960796117783,
+              0.0901960805058479
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.227450981736183,
+              0.301960796117783,
+              0.0901960805058479
+            ],
+            "name": "leaf_2_0_8",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.337254911661148,
+              0.447058826684952,
+              0.133333340287209
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.337254911661148,
+              0.447058826684952,
+              0.133333340287209
+            ],
+            "name": "leaf_2_1_18",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.780392169952393,
+              0.749019622802734,
+              0.61176472902298
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.780392169952393,
+              0.749019622802734,
+              0.61176472902298
+            ],
+            "name": "flower_0",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.898039221763611,
+              0.690196096897125,
+              0.290196090936661
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.898039221763611,
+              0.690196096897125,
+              0.290196090936661
+            ],
+            "name": "flower_1",
+            "passed": true,
+            "reference_resolved": true
+          }
+        ],
+        "complete": true,
+        "failures": 0,
+        "renderer": "forward_plus",
+        "shader_sha256": "1676d73af401b34b57a8203538ebe5f72fab705adb021d8b991408fb27ba8acd",
+        "viewport": [
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "label": "lily_color-standard",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\lily_color-standard\\report.json",
+      "sha256": "3aa487e856b32afc68c37e540e2d07e6e30bc45c811367b795c3a4b7c9aa8156",
+      "report": {
+        "cases": [
+          {
+            "actual": [
+              0.20392157137394,
+              0.274509817361832,
+              0.0666666701436043
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.20392157137394,
+              0.274509817361832,
+              0.0666666701436043
+            ],
+            "name": "leaf_0_0_8",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.301960796117783,
+              0.403921574354172,
+              0.109803922474384
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.301960796117783,
+              0.403921574354172,
+              0.109803922474384
+            ],
+            "name": "leaf_0_1_18",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.211764708161354,
+              0.294117659330368,
+              0.0705882385373116
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.211764708161354,
+              0.294117659330368,
+              0.0705882385373116
+            ],
+            "name": "leaf_1_0_8",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.317647069692612,
+              0.431372553110123,
+              0.117647059261799
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.317647069692612,
+              0.431372553110123,
+              0.117647059261799
+            ],
+            "name": "leaf_1_1_18",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.227450981736183,
+              0.301960796117783,
+              0.0745098069310188
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.227450981736183,
+              0.301960796117783,
+              0.0745098069310188
+            ],
+            "name": "leaf_2_0_8",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.337254911661148,
+              0.447058826684952,
+              0.121568627655506
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.337254911661148,
+              0.447058826684952,
+              0.121568627655506
+            ],
+            "name": "leaf_2_1_18",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.780392169952393,
+              0.749019622802734,
+              0.61176472902298
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.780392169952393,
+              0.749019622802734,
+              0.61176472902298
+            ],
+            "name": "flower_0",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.901960790157318,
+              0.690196096897125,
+              0.290196090936661
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.901960790157318,
+              0.690196096897125,
+              0.290196090936661
+            ],
+            "name": "flower_1",
+            "passed": true,
+            "reference_resolved": true
+          }
+        ],
+        "complete": true,
+        "failures": 0,
+        "renderer": "gl_compatibility",
+        "shader_sha256": "1676d73af401b34b57a8203538ebe5f72fab705adb021d8b991408fb27ba8acd",
+        "viewport": [
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "label": "material_tags-high",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\material_tags-high\\report.json",
+      "sha256": "125a87f5e6659217760f1de9b233d306491392003297b8a81044a954237a5fa6",
+      "report": {
+        "cases": [
+          {
+            "actual": [
+              1.0,
+              0.0,
+              0.0901960805058479
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              0.0,
+              0.0901960805058479
+            ],
+            "name": "board_low",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              0.0,
+              0.74117648601532
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              0.0,
+              0.74117648601532
+            ],
+            "name": "board_mid",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              0.0,
+              0.996078431606293
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              0.0,
+              0.996078431606293
+            ],
+            "name": "board_high",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              1.0,
+              0.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              1.0,
+              0.0
+            ],
+            "name": "steel",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              1.0,
+              0.729411780834198
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              1.0,
+              0.729411780834198
+            ],
+            "name": "steel_edge",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              1.0,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              1.0,
+              1.0
+            ],
+            "name": "bolt",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.537254929542542,
+              0.760784327983856,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.537254929542542,
+              0.760784327983856,
+              1.0
+            ],
+            "name": "rafter_z",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              0.882352948188782,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              0.882352948188782,
+              1.0
+            ],
+            "name": "beam_x",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              0.811764717102051,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              0.811764717102051,
+              1.0
+            ],
+            "name": "purlin_x",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.737254917621613,
+              0.909803926944733,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.737254917621613,
+              0.909803926944733,
+              1.0
+            ],
+            "name": "post_y",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.882352948188782,
+              1.0,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.882352948188782,
+              1.0,
+              1.0
+            ],
+            "name": "brace_positive",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "name": "brace_negative",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "name": "roof_top",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "name": "roof_under",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "name": "slab",
+            "passed": true,
+            "reference_resolved": true
+          }
+        ],
+        "complete": true,
+        "failures": 0,
+        "renderer": "forward_plus",
+        "shader_sha256": {
+          "barrier": "1b4cc342fe37d1823aae5d14d1c06befdfcbe00e974aa60f0fbf566daad17eb3",
+          "shelter": "4efa7d06928e72c8be783b5ac32d38a4014893f9ecfa648c9a22edf5708124db"
+        },
+        "viewport": [
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "label": "material_tags-standard",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\material_tags-standard\\report.json",
+      "sha256": "2a5ba2c44eb648c36636129bd17e83bd3a7cf634d24cb0f91f13eefd4008031b",
+      "report": {
+        "cases": [
+          {
+            "actual": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "name": "board_low",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              0.0,
+              0.509803950786591
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              0.0,
+              0.509803950786591
+            ],
+            "name": "board_mid",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              0.0,
+              0.992156863212585
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              0.0,
+              0.992156863212585
+            ],
+            "name": "board_high",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              1.0,
+              0.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              1.0,
+              0.0
+            ],
+            "name": "steel",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              1.0,
+              0.490196079015732
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              1.0,
+              0.490196079015732
+            ],
+            "name": "steel_edge",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              1.0,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              1.0,
+              1.0
+            ],
+            "name": "bolt",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.24705882370472,
+              0.537254929542542,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.24705882370472,
+              0.537254929542542,
+              1.0
+            ],
+            "name": "rafter_z",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              0.756862759590149,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              0.756862759590149,
+              1.0
+            ],
+            "name": "beam_x",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              0.623529434204102,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              0.623529434204102,
+              1.0
+            ],
+            "name": "purlin_x",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.501960813999176,
+              0.803921580314636,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.501960813999176,
+              0.803921580314636,
+              1.0
+            ],
+            "name": "post_y",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.749019622802734,
+              1.0,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.749019622802734,
+              1.0,
+              1.0
+            ],
+            "name": "brace_positive",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "name": "brace_negative",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "name": "roof_top",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "name": "roof_under",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "name": "slab",
+            "passed": true,
+            "reference_resolved": true
+          }
+        ],
+        "complete": true,
+        "failures": 0,
+        "renderer": "gl_compatibility",
+        "shader_sha256": {
+          "barrier": "1b4cc342fe37d1823aae5d14d1c06befdfcbe00e974aa60f0fbf566daad17eb3",
+          "shelter": "4efa7d06928e72c8be783b5ac32d38a4014893f9ecfa648c9a22edf5708124db"
+        },
+        "viewport": [
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "label": "pilot_station_color-high",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\pilot_station_color-high\\report.json",
+      "sha256": "22dcfb22355d65efa1abff0850cb432ed623eefad66b62bc158e6c9ae44b6284",
+      "report": {
+        "cases": [
+          {
+            "actual": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "concrete_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.537254929542542,
+              0.537254929542542,
+              0.537254929542542
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.537254929542542,
+              0.537254929542542,
+              0.537254929542542
+            ],
+            "name": "wood_front_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.537254929542542,
+              0.537254929542542,
+              0.537254929542542
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.537254929542542,
+              0.537254929542542,
+              0.537254929542542
+            ],
+            "name": "wood_side_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.737254917621613,
+              0.737254917621613,
+              0.737254917621613
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.737254917621613,
+              0.737254917621613,
+              0.737254917621613
+            ],
+            "name": "inox_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.882352948188782,
+              0.882352948188782,
+              0.882352948188782
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.882352948188782,
+              0.882352948188782,
+              0.882352948188782
+            ],
+            "name": "rubber_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "name": "frame_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.549019634723663,
+              0.600000023841858,
+              0.619607865810394
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.549019634723663,
+              0.600000023841858,
+              0.619607865810394
+            ],
+            "name": "inox_palette",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0196078438311815,
+              0.0235294122248888,
+              0.0235294122248888
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0196078438311815,
+              0.0235294122248888,
+              0.0235294122248888
+            ],
+            "name": "rubber_palette",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0352941192686558,
+              0.105882354080677,
+              0.125490203499794
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0352941192686558,
+              0.105882354080677,
+              0.125490203499794
+            ],
+            "name": "frame_palette",
+            "passed": true,
+            "reference_resolved": true
+          }
+        ],
+        "complete": true,
+        "failures": 0,
+        "renderer": "forward_plus",
+        "shader_sha256": "f43e74d41218850ae486f68a4c8a24f19ecdf1b474d76a7d90f1946b79b5c87f",
+        "viewport": [
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "label": "pilot_station_color-standard",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\pilot_station_color-standard\\report.json",
+      "sha256": "2b1626681d4f01f39dba6a7600776bebc2416a1bec1294b7e378bcd25a340175",
+      "report": {
+        "cases": [
+          {
+            "actual": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "concrete_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.24705882370472,
+              0.24705882370472,
+              0.24705882370472
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.24705882370472,
+              0.24705882370472,
+              0.24705882370472
+            ],
+            "name": "wood_front_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.24705882370472,
+              0.24705882370472,
+              0.24705882370472
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.24705882370472,
+              0.24705882370472,
+              0.24705882370472
+            ],
+            "name": "wood_side_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.501960813999176,
+              0.501960813999176,
+              0.501960813999176
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.501960813999176,
+              0.501960813999176,
+              0.501960813999176
+            ],
+            "name": "inox_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.749019622802734,
+              0.749019622802734,
+              0.749019622802734
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.749019622802734,
+              0.749019622802734,
+              0.749019622802734
+            ],
+            "name": "rubber_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "name": "frame_tag",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.549019634723663,
+              0.600000023841858,
+              0.619607865810394
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.549019634723663,
+              0.600000023841858,
+              0.619607865810394
+            ],
+            "name": "inox_palette",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "name": "rubber_palette",
+            "passed": true,
+            "reference_resolved": true
+          },
+          {
+            "actual": [
+              0.00784313771873713,
+              0.0941176488995552,
+              0.113725490868092
+            ],
+            "error_255": 0.0,
+            "expected": [
+              0.00784313771873713,
+              0.0941176488995552,
+              0.113725490868092
+            ],
+            "name": "frame_palette",
+            "passed": true,
+            "reference_resolved": true
+          }
+        ],
+        "complete": true,
+        "failures": 0,
+        "renderer": "gl_compatibility",
+        "shader_sha256": "f43e74d41218850ae486f68a4c8a24f19ecdf1b474d76a7d90f1946b79b5c87f",
+        "viewport": [
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "label": "shadow_energy-high",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\shadow_energy-high\\report.json",
+      "sha256": "7fe321526ed3d794adabfaf1ea7429256d3168fb5337fff81c49595100f4fd94",
+      "report": {
+        "capture_only": false,
+        "complete": true,
+        "engine": {
+          "build": "official",
+          "hash": "4d10419cacd6d3009976e8f9fd3abd970fd58018",
+          "hex": 264192,
+          "major": 4,
+          "minor": 8,
+          "patch": 0,
+          "status": "beta1",
+          "string": "4.8-beta1 (official)",
+          "timestamp": 0
+        },
+        "max_channel_delta": 0.0,
+        "passed": true,
+        "performance_claim": false,
+        "profile": {
+          "active": "high_experimental",
+          "gpu": "NVIDIA GeForce RTX 3090",
+          "renderer": "forward_plus",
+          "requested": "high"
+        },
+        "resolved": true,
+        "samples": [
+          {
+            "colors": [
+              [
+                0.250980406999588,
+                0.227450981736183,
+                0.207843139767647
+              ],
+              [
+                0.513725519180298,
+                0.227450981736183,
+                0.0980392172932625
+              ],
+              [
+                0.600000023841858,
+                0.545098066329956,
+                0.501960813999176
+              ]
+            ],
+            "energy": 1.0,
+            "shadows": false
+          },
+          {
+            "colors": [
+              [
+                0.250980406999588,
+                0.227450981736183,
+                0.207843139767647
+              ],
+              [
+                0.513725519180298,
+                0.227450981736183,
+                0.0980392172932625
+              ],
+              [
+                0.600000023841858,
+                0.545098066329956,
+                0.501960813999176
+              ]
+            ],
+            "energy": 1.0,
+            "shadows": true
+          }
+        ],
+        "tolerance": 0.00784313725490196,
+        "viewport": [
+          512,
+          256
+        ]
+      }
+    }
+  ],
+  "checked_oracles": [
+    {
+      "label": "ridge_color-standard",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "standard",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../tools/graphics/test_ridge_color.gd",
+        "--",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\ridge_color-standard"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\ridge_color-standard-fb2dy63u\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\ridge_color-standard-fb2dy63u\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:17:50.194473+00:00",
+      "elapsed_seconds": 2.094,
+      "log_sha256": "f2cf6358aefe62426f0ff75b656cae010c78df5cb3ff2ca70c6fa6380cd1c829",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "79cb235f109df39320672dd962a280f29ea4f66c29a5699da0526cdf94a062f3"
+    },
+    {
+      "label": "ridge_color-high",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../tools/graphics/test_ridge_color.gd",
+        "--",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\ridge_color-high"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\ridge_color-high-ldf7ev73\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\ridge_color-high-ldf7ev73\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:17:52.297958+00:00",
+      "elapsed_seconds": 2.656,
+      "log_sha256": "36b66faea3ae45ff7a84dc99877cea31ae3b67421a5829d1bbdfd430f2f293b3",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "1d45322ebb876211b5703e1151f989ad11d55d9a3596bfcbf6db004c5e4f7d1b"
+    },
+    {
+      "label": "shadow_energy-high",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../tools/graphics/test_shadow_energy.gd",
+        "--",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\shadow_energy-high"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\shadow_energy-high-eyn9lbn4\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\shadow_energy-high-eyn9lbn4\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:17:54.968883+00:00",
+      "elapsed_seconds": 2.813,
+      "log_sha256": "34f9278c4a6d5a23c5bd5c92bbaaebd73f8687609d4946f342c8c137c5b9b9e5",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "303da8572aa385f98f35582bdd941dfc952793c417b5c048ef97a1cbdf820e89"
+    },
+    {
+      "label": "pilot_station_color-standard",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "standard",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../tools/graphics/test_pilot_station_color.gd",
+        "--",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\pilot_station_color-standard"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\pilot_station_color-standard-isdw32xi\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\pilot_station_color-standard-isdw32xi\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:17:57.789841+00:00",
+      "elapsed_seconds": 2.453,
+      "log_sha256": "da922005f2048351b67a57cc44c546eb4e48919bad2ee37066f892b2c4cd627a",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "45a7c0293939093dece667009c62b65148c8f26175cc19d779e3a521e6e7b69e"
+    },
+    {
+      "label": "pilot_station_color-high",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../tools/graphics/test_pilot_station_color.gd",
+        "--",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\pilot_station_color-high"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\pilot_station_color-high-i1rtinym\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\pilot_station_color-high-i1rtinym\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:18:00.264248+00:00",
+      "elapsed_seconds": 2.187,
+      "log_sha256": "14e6f12d4958bf77ffc191494752f550dac68aaa02d9d9a0ce27fee1d945a779",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "15db171eea1b43828f94e0088fabb8deaecd9237a1300e6feb6d159484c13ea6"
+    },
+    {
+      "label": "material_tags-standard",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "standard",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../tools/graphics/test_material_tags.gd",
+        "--",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\material_tags-standard"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\material_tags-standard-e9k4c0u1\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\material_tags-standard-e9k4c0u1\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:18:02.445140+00:00",
+      "elapsed_seconds": 2.782,
+      "log_sha256": "b4b5496627717b191ef47fad85ac65973c97167f101b2c350ed6144e18b32e15",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "50a445ccd2ca3a5a75a039115d26221498a418c02ebfaf7fb6ab26018c083fc0"
+    },
+    {
+      "label": "material_tags-high",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../tools/graphics/test_material_tags.gd",
+        "--",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\material_tags-high"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\material_tags-high-33_4kpjv\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\material_tags-high-33_4kpjv\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:18:05.235394+00:00",
+      "elapsed_seconds": 2.282,
+      "log_sha256": "5dc9650a9ac1016f31c6065fdec69b68177854907bc0c7d895540e25652c2947",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "4264deaeceabefa5e8fbc47ab844edde46d0be47fdce7e73d4d60560c51820d1"
+    },
+    {
+      "label": "lily_color-standard",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "standard",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../tools/graphics/test_lily_color.gd",
+        "--",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\lily_color-standard"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\lily_color-standard-mg84itvl\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\lily_color-standard-mg84itvl\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:18:07.521600+00:00",
+      "elapsed_seconds": 2.203,
+      "log_sha256": "c0f5d2e93ffd671acce7a829125d781504d5b5e4bc170d0247332e1f323959fb",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "373a9b86678e94071afcb05e572ecf83517dad5e470ce2a1ec9978a5078dc609"
+    },
+    {
+      "label": "lily_color-high",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../tools/graphics/test_lily_color.gd",
+        "--",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\lily_color-high"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\lily_color-high-2eu5o60k\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\lily_color-high-2eu5o60k\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:18:09.736600+00:00",
+      "elapsed_seconds": 2.094,
+      "log_sha256": "9b277b0f0333fb8db0027bed4b54cf1cd0b326327cc282ef95d639abcf273f8f",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "82223d30be6df5cd21693b02ee826cd0029927d0b1fc8349a8484752c7652341"
+    }
+  ],
+  "reflection_controls": [
+    {
+      "label": "reflection-root-no-probe",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-lifetime/minimal.gd"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-root-no-probe-pbxgz4qp\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-root-no-probe-pbxgz4qp\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:18:27.903763+00:00",
+      "elapsed_seconds": 4.187,
+      "log_sha256": "efad0d35d44bb6bf580d4d4b242c8ef6af9649a44b1a2daecbd6ea721be9c761",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "74aa630a4ef1f275b91b82d2a8d53347b5f816d2fc7e5f3cc38ecefa0f45a44e"
+    },
+    {
+      "label": "reflection-root-probe",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-lifetime/minimal.gd",
+        "--",
+        "--probe"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-root-probe-rchug38e\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-root-probe-rchug38e\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "ok": false,
+      "complete": true,
+      "started_utc": "2026-10-25T15:18:32.105182+00:00",
+      "elapsed_seconds": 2.406,
+      "log_sha256": "b2d914a50efc25866ff607ced406d56dc8753a15d404a59f01b97d3228dc3ea5",
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "7 RIDs of type \"Texture\" were leaked.",
+          "context": [
+            "   at: finalize (servers/rendering/rendering_device.cpp:9156)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "report_sha256": "612a2d78b600ed0fc127745da164a0aa26f411b55a25fd21418f6ffc8f675c86"
+    },
+    {
+      "label": "reflection-isolated-one-probe",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-lifetime/cycles.gd",
+        "--",
+        "--probe",
+        "--cycles=1"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-isolated-one-probe-sk40jr6e\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-isolated-one-probe-sk40jr6e\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "ok": false,
+      "complete": true,
+      "started_utc": "2026-10-25T15:18:54.094361+00:00",
+      "elapsed_seconds": 2.578,
+      "log_sha256": "367e07a02066bfe9715dabac3e12f7a362c68dfd36aa6284957482c74e76ff5e",
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "7 RIDs of type \"Texture\" were leaked.",
+          "context": [
+            "   at: finalize (servers/rendering/rendering_device.cpp:9156)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "report_sha256": "e79e4dc3e7e7b01da4fcd02f4a84565ae69a5bfec8c5ee7ed1598bfb95a1be2d"
+    },
+    {
+      "label": "reflection-isolated-four-probe",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-lifetime/cycles.gd",
+        "--",
+        "--probe",
+        "--cycles=4"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-isolated-four-probe-q79mkgld\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-isolated-four-probe-q79mkgld\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "ok": false,
+      "complete": true,
+      "started_utc": "2026-10-25T15:18:56.665289+00:00",
+      "elapsed_seconds": 5.047,
+      "log_sha256": "68dec26f55b1fafce3d1058f8c9012121f7d8f1db881f4b93a485c4c123ec4f2",
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "28 RIDs of type \"Texture\" were leaked.",
+          "context": [
+            "   at: finalize (servers/rendering/rendering_device.cpp:9156)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "report_sha256": "1c6e9e553317eb2459b2ea8c9a5804f8ad5d90adc5acfc2db56a63a08906c0ec"
+    },
+    {
+      "label": "reflection-isolated-four-no-probe",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-lifetime/cycles.gd",
+        "--",
+        "--cycles=4"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-isolated-four-no-probe-agvpt9u9\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-isolated-four-no-probe-agvpt9u9\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "complete": true,
+      "started_utc": "2026-10-25T15:19:01.713245+00:00",
+      "elapsed_seconds": 5.016,
+      "log_sha256": "bdc5d1e27cb07e94fe832c6dacef3d05dcdd0f5b3362afe5773c957c74f0babd",
+      "diagnostics": [],
+      "missing_required_text": [],
+      "report_sha256": "0088787244ae58097395f470ba2d81ec6768b0f5bde61e8d7726ebb2ad5b5b82"
+    },
+    {
+      "label": "reflection-isolated-four-once",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tools\\graphics\\launch.py",
+        "--godot",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--profile",
+        "high",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-lifetime/once_cycles.gd",
+        "--",
+        "--probe",
+        "--cycles=4"
+      ],
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-isolated-four-once-bkal8u07\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-gpu-correctness-20261025\\checks\\reflection-isolated-four-once-bkal8u07\\engine.log",
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "ok": false,
+      "complete": true,
+      "started_utc": "2026-10-25T15:19:06.735545+00:00",
+      "elapsed_seconds": 4.984,
+      "log_sha256": "68dec26f55b1fafce3d1058f8c9012121f7d8f1db881f4b93a485c4c123ec4f2",
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "28 RIDs of type \"Texture\" were leaked.",
+          "context": [
+            "   at: finalize (servers/rendering/rendering_device.cpp:9156)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "report_sha256": "291017bd229688c9f60ae7aaa281cbcba697a7c67cac12efa1506fdf6982cb1c"
+    }
+  ],
+  "reflection_expected_control_completed": true,
+  "reflection_all_pass": false,
+  "reflection_issue_persists": true,
+  "all_engine_error_count": 0,
+  "all_warning_count": 4,
+  "source_manifest_sha256": "668a3d788c46c7a56c2323a6951ebbb77bcd49c62d7dfd3e04a44b175e7cb607",
+  "source_root_byte_differences": [],
+  "limitations": [
+    "Not a performance measurement; headless fullsuite active.",
+    "Pilot/material/lily render in fixed1920x1080 SubViewports; ridge800x800 and shadow512x256 retain their existing diagnostic sizes. Root window requested1920x1080 fullscreen; tests do not report drawable root size.",
+    "Stock ReflectionProbe controls reproduce the engine warning; no workaround or warning suppression. No claim for full game lifecycle or leak growth rate."
+  ]
+}

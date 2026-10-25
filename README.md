@@ -115,7 +115,7 @@ REVOC Custom has agreed to a community-supporter acknowledgment and website link
 
 ## Develop and contribute
 
-The simulator lives in `app/`, using pinned **Godot 4.7.2**, GDScript and the Compatibility renderer. Start with [developer setup and commands](docs/TOOLS.md#developer-setup). `prototypes/stage0/three/` is the frozen platform bake-off.
+The simulator lives in `app/`, using pinned official **Godot 4.8-beta1** (a prerelease), GDScript and the Compatibility renderer. Start with [developer setup and commands](docs/TOOLS.md#developer-setup). `prototypes/stage0/three/` is the frozen platform bake-off.
 
 Aircraft use the strict `openrc-aircraft v2` contract: quantities include units, evidence and sources, and invalid configurations are refused. Geometry and physics data are rebuilt through their source generators. Headless regression tests, golden flights, schema/trace checks, rendered captures and export smoke checks support incremental changes.
 

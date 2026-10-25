@@ -30,6 +30,10 @@ func _run() -> void:
 	env.ambient_light_color = Color.WHITE
 	env.ambient_light_energy = 0.6
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	# Reflective paints need a neutral sky even though the card background is solid.
+	env.sky = Sky.new()
+	env.sky.sky_material = ProceduralSkyMaterial.new()
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	var world := WorldEnvironment.new()
 	world.environment = env
 	viewport.add_child(world)
@@ -70,7 +74,10 @@ func _run() -> void:
 		for frame in range(4): await process_frame
 		await RenderingServer.frame_post_draw
 		var path := output.path_join(str(record.id) + "-" + str(record.sha256) + ".png")
-		var err := viewport.get_texture().get_image().save_png(path)
+		# Keep an existing valid preview intact if the destination disk fills.
+		var temporary := path + ".tmp"
+		var err := viewport.get_texture().get_image().save_png(temporary)
+		if err == OK: err = DirAccess.rename_absolute(temporary, path)
 		if err != OK:
 			printerr("Cannot save ", path, ": ", err)
 			quit(1)

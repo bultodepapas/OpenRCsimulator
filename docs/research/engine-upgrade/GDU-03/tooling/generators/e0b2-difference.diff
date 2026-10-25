@@ -1,0 +1,56 @@
+--- recorded
++++ current derivation
+@@ -29,7 +29,7 @@
+       "name": "horizontal_left",
+       "surface": "horizontal",
+       "area": {
+-        "value": 0.04629457865,
++        "value": 0.046294578649999994,
+         "unit": "m2",
+         "kind": "derived",
+         "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+@@ -89,7 +89,7 @@
+             "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+           },
+           "area": {
+-            "value": 0.0370440458,
++            "value": 0.037044045799999994,
+             "unit": "m2",
+             "kind": "derived",
+             "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+@@ -183,7 +183,7 @@
+       "name": "horizontal_right",
+       "surface": "horizontal",
+       "area": {
+-        "value": 0.04629457865,
++        "value": 0.046294578649999994,
+         "unit": "m2",
+         "kind": "derived",
+         "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+@@ -243,7 +243,7 @@
+             "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+           },
+           "area": {
+-            "value": 0.0370440458,
++            "value": 0.037044045799999994,
+             "unit": "m2",
+             "kind": "derived",
+             "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+@@ -337,7 +337,7 @@
+       "name": "vertical",
+       "surface": "vertical",
+       "area": {
+-        "value": 0.04758883929,
++        "value": 0.047588839290000004,
+         "unit": "m2",
+         "kind": "derived",
+         "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+@@ -543,7 +543,7 @@
+             "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+           },
+           "area": {
+-            "value": 0.01652351407,
++            "value": 0.016523514070000002,
+             "unit": "m2",
+             "kind": "derived",
+             "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"

@@ -1,0 +1,176 @@
+{
+  "format": "openrc-companion-engine-regression v1",
+  "groups": 21,
+  "passed_groups": 21,
+  "engine_errors": 0,
+  "engine_warnings": 0,
+  "app_source_unchanged_across_checks": true,
+  "scripts": [
+    {
+      "script": "test_companions_airspace.gd",
+      "report": "checks/test_companions_airspace/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 48
+    },
+    {
+      "script": "test_companions_clearance.gd",
+      "report": "checks/test_companions_clearance/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 20
+    },
+    {
+      "script": "test_companions_config.gd",
+      "report": "checks/test_companions_config/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 41
+    },
+    {
+      "script": "test_companions_dialog.gd",
+      "report": "checks/test_companions_dialog/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "test_companions_encounters.gd",
+      "report": "checks/test_companions_encounters/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 191
+    },
+    {
+      "script": "test_companions_layout.gd",
+      "report": "checks/test_companions_layout/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 276
+    },
+    {
+      "script": "test_companions_lifecycle.gd",
+      "report": "checks/test_companions_lifecycle/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 653
+    },
+    {
+      "script": "test_companions_manager.gd",
+      "report": "checks/test_companions_manager/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 53
+    },
+    {
+      "script": "test_companions_observation.gd",
+      "report": "checks/test_companions_observation/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "test_companions_pilot.gd",
+      "report": "checks/test_companions_pilot/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 24
+    },
+    {
+      "script": "test_companions_presentation.gd",
+      "report": "checks/test_companions_presentation/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 13
+    },
+    {
+      "script": "test_companions_profiles.gd",
+      "report": "checks/test_companions_profiles/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 43
+    },
+    {
+      "script": "test_companions_record.gd",
+      "report": "checks/test_companions_record/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 156
+    },
+    {
+      "script": "test_companions_render_interpolation.gd",
+      "report": "checks/test_companions_render_interpolation/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 24
+    },
+    {
+      "script": "test_companions_session.gd",
+      "report": "checks/test_companions_session/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 65
+    },
+    {
+      "script": "test_companions_session_failures.gd",
+      "report": "checks/test_companions_session_failures/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 24
+    },
+    {
+      "script": "test_companions_shell.gd",
+      "report": "checks/test_companions_shell/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "script": "test_companions_terrain_traffic.gd",
+      "report": "checks/test_companions_terrain_traffic/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 60
+    },
+    {
+      "script": "test_companions_traffic_index.gd",
+      "report": "checks/test_companions_traffic_index/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 102
+    },
+    {
+      "script": "test_companions_traffic_lifecycle.gd",
+      "report": "checks/test_companions_traffic_lifecycle/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 40
+    },
+    {
+      "script": "test_companions_trajectory.gd",
+      "report": "checks/test_companions_trajectory/report.json",
+      "passed": true,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "checks": 40
+    }
+  ],
+  "fixture_note": "Three visual groups initially refused missing authoring JSONs in the app-only copy; exact dependencies were copied, and those groups passed on rerun. Observation initially used a wrong harness completion marker, then passed with its own marker."
+}

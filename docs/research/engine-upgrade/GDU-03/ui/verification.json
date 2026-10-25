@@ -1,0 +1,128 @@
+{
+  "format": "openrc-gdu03-native-ui v1",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "source_manifest": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\snapshot-manifest.json",
+  "source_manifest_sha256": "2f861fdcaab8797cf162cbea3ba482f2e7feb3c375959228dc58f5223a0a141a",
+  "scenarios": [
+    {
+      "scenario": "fly_restart_home",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-ui\\fly_restart_home.log",
+      "sha256": "4057c60a0ed1891c0ae29e612342479c282f4d5f67d42a6bfd15a4992d4561c5",
+      "completed_last_lines": [
+        "> assert expr=\"flight == null and screens.is_top('home')\" message=\"back at Home\"",
+        "{\"value\": true}"
+      ]
+    },
+    {
+      "scenario": "helicopter_arm",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-ui\\helicopter_arm-r2.log",
+      "sha256": "53a0bef8eff264d46b821077a5f9ff3a273cf31304b5069068075f49dba669b8",
+      "completed_last_lines": [
+        "> assert expr=\"flight == null\" message=\"helicopter flight ended\"",
+        "{\"value\": true}"
+      ]
+    },
+    {
+      "scenario": "truck_drive",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-ui\\truck_drive.log",
+      "sha256": "c59e8097a5965fe305c4f6209335334f23759f099e0772cd72624425c1b38f1a",
+      "completed_last_lines": [
+        "> wait until=\"ground_vehicle == null\" timeout_s=60",
+        "{\"frame\": 22719, \"value\": true}"
+      ]
+    },
+    {
+      "scenario": "settings_revert",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-ui\\settings_revert.log",
+      "sha256": "651e58a6174149cc01dd5a551dcb2018478fe26cb4d933c37bfb6e1b64b71687",
+      "completed_last_lines": [
+        "> assert expr=\"screens.is_top('home')\" message=\"settings closed\"",
+        "{\"value\": true}"
+      ]
+    },
+    {
+      "scenario": "workshop_discard_keyboard",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-ui\\workshop_discard_keyboard.log",
+      "sha256": "f753c9a21d551b5c638fab127452b03f2e620a16c0f23bb48f8fb4fe8b786b83",
+      "completed_last_lines": [
+        "> assert expr=\"screens.is_top('home')\" message=\"back at Home after discarding\"",
+        "{\"value\": true}"
+      ]
+    },
+    {
+      "scenario": "widget_presets",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-ui\\widget_presets-r2.log",
+      "sha256": "0255f2c54ab3f41739242cd4a3af60b64584463647118ab3f434e8493ee17976",
+      "completed_last_lines": [
+        "> assert expr=\"flight == null and screens.is_top('home')\" message=\"widget scenario returned Home\"",
+        "{\"value\": true}"
+      ]
+    },
+    {
+      "scenario": "birds_setting",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-ui\\birds_setting-r2.log",
+      "sha256": "271e437d19438df2779be0d1e67f156acb2f44ff5865806be5325e288e20f92a",
+      "completed_last_lines": [
+        "> assert expr=\"screens.is_top('home')\" message=\"settings closed\"",
+        "{\"value\": true}"
+      ]
+    },
+    {
+      "scenario": "corsair_paint",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-ui\\corsair_paint-r2.log",
+      "sha256": "5bc44ea941d89066a103f8cfd71a6591d20884d1dd2a069b87ac306b8c391e53",
+      "completed_last_lines": [
+        "> wait until=\"not home_scene.preview_pending\" timeout_s=30",
+        "{\"frame\": 2166, \"value\": true}"
+      ]
+    }
+  ],
+  "stop": {
+    "stopped": true,
+    "pid": 18276,
+    "crash": null,
+    "leaked_objects": 0
+  },
+  "corrections": [
+    {
+      "path": "app/debug/debug_bridge.gd",
+      "sha256": "c9f439fadcaa0ec38c4e972decc7210795142984815d4d522926a2773fc78c89",
+      "reason": "fly acknowledged the route before rendered loading completed; now waits for loading screen removal"
+    },
+    {
+      "path": "tools/debug/scenarios/helicopter_arm.txt",
+      "sha256": "9eee361c605905181a976d3e77ea48b2a12189559f17db534ce6ecd8156f3875",
+      "reason": "honor the helicopter launch review before arming and assert the armed state"
+    }
+  ],
+  "qualification": "Functional native UI checks. Parallel headless work excludes performance qualification; no real controller was connected.",
+  "invalid_attempts": [
+    "Initial windowed launch clamped content to 1920x1061; fullscreen was explicitly set and measured at 1920x1080 before accepted screenshots.",
+    "Original helicopter scenario attempted arming before launch review; rejected and timed out.",
+    "An intermediate helicopter scenario needed manual Continue; not accepted as an unattended pass.",
+    "Original widget scenario attempted overlay access during loading; rejected."
+  ],
+  "screenshots": [
+    {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\debug-bridge\\20261025-095120-48530\\shots\\shot-44568-002.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "6ed36075f27cc95a28278e7d97df1254d4172bf6cf2af601b3d6719625854ddd"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\debug-bridge\\20261025-095120-48530\\shots\\shot-44568-003.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "fc6ffac8bf420d378e91c3b7425a5207fca86bc3e63b19f11ec737614d0660cc"
+    }
+  ]
+}

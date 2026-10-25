@@ -1,0 +1,80 @@
+{
+  "scope": "Actual Windows release executable, native fullscreen 1920x1080 built-in capture; asset/render evidence, not performance or physical validation.",
+  "png": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packaged-1080p\\release-flight-1080p.png",
+  "size": [
+    1920,
+    1080
+  ],
+  "png_sha256": "24c02276c7789c1607e3e4e4cfa2aeccd74e3d75af49a57896a9054a0b9befc7",
+  "executable": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\windows\\OpenRC Simulator.exe",
+  "executable_sha256": "0b6fdef38767ed8e744c3ba6a0261fe9b7e1f722aa3428b2c963abe6ae88946a",
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tools\\godot\\run_checked.py",
+    "--timeout",
+    "180",
+    "--out-dir",
+    "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packaged-1080p\\checks",
+    "--label",
+    "windows-release-1080p",
+    "--require-text",
+    "saved ",
+    "--",
+    "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\windows\\OpenRC Simulator.exe",
+    "--fullscreen",
+    "--resolution",
+    "1920x1080",
+    "--rendering-method",
+    "gl_compatibility",
+    "--rendering-driver",
+    "opengl3",
+    "--audio-driver",
+    "Dummy",
+    "--log-file",
+    "D:/OpenRCsimulator-experiments/gdu03-packages/tmp/exports/packaged-1080p/release.godot.log",
+    "--",
+    "--capture",
+    "--t=1.5",
+    "--out=D:/OpenRCsimulator-experiments/gdu03-packages/tmp/exports/packaged-1080p/release-flight-1080p.png"
+  ],
+  "validation": "PNG fully decoded with Pillow; built-in image/hash/scene/engine/renderer and nonnegative integer render-counter fields checked.",
+  "legacy_checker_limit": "app/tests/capture_runner.py fixes1280x720 and POSIX process groups; it was not used or weakened for this native1080p capture.",
+  "format": "openrc-gdu03-release-capture-summary v1",
+  "original_manifest": {
+    "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packaged-1080p\\release-flight-1080p.json",
+    "sha256": "47d03ef76d62b01dd198b2cce52b7fa660c61999b62d014295233c525b66dcc9",
+    "bytes": 137148
+  },
+  "original_receipt": {
+    "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packaged-1080p\\capture-receipt.json",
+    "sha256": "2de71eb897bf3d9017a21202208627779bebb8de2a03ca3f78d006b38147740c",
+    "bytes": 143326
+  },
+  "manifest_fields": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "3.3.0 NVIDIA 617.42",
+    "args": "--capture --t=1.5 --out=release-flight-1080p.png",
+    "capture_scene": "field",
+    "draw_calls": {
+      "shadow": 0,
+      "visible": 183
+    },
+    "format": "openrc-capture v1",
+    "godot": "4.8-beta1 (official)",
+    "image": "release-flight-1080p.png",
+    "lp_num_threads": "",
+    "objects": {
+      "shadow": 0,
+      "visible": 184
+    },
+    "primitives": {
+      "shadow": 0,
+      "visible": 209617
+    },
+    "renderer": "gl_compatibility",
+    "sha256": "24c02276c7789c1607e3e4e4cfa2aeccd74e3d75af49a57896a9054a0b9befc7",
+    "video_memory_bytes": 691108399
+  },
+  "visual_scope": "Parent and package agent inspected normal scene/aircraft silhouette, clouds/horizon and readable HUD; no blank frame, missing sky or obvious shader failure. Aircraft occupies few pixels; this capture does not qualify detailed model materials.",
+  "gpu_released": true
+}

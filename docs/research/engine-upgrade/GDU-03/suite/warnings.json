@@ -1,0 +1,426 @@
+{
+  "warning_count": 29,
+  "invocations": [
+    {
+      "script": "test_birds.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard3-r2\\checks\\godot-ohrj8x6p\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 324,
+          "message": "birds: res://data/scenery/birds/missing.json not built: missing res://data/scenery/birds/missing.json",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build (res://scenery/birds.gd:40)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_controller_aux_runtime.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard1\\checks\\godot-6f6k8fnp\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "Existing flaps control overlaps a newly calibrated AETR axis; reassign that auxiliary channel.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _preserve_smoke_if_clear (res://input/rc_calibration.gd:214)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_crash_sections.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard0-r2\\checks\\godot-bx4ncfcf\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 16,
+          "message": "Wreck.prepare: crash section map ignored: surface 0: runs cover 3 of 4 triangles",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] prepare (res://render/crash/wreck.gd:190)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 22,
+          "message": "Wreck: unknown crash section 'rudder_blade' on rudder",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _section_of (res://render/crash/wreck.gd:790)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_debug_bridge.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard0-r2\\checks\\godot-_81lk_yp\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 8,
+          "message": "bridge-test warning",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _protocol (res://tests/test_debug_bridge.gd:152)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 86,
+          "message": "gap-test kept warning",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _gap_tools (res://tests/test_debug_bridge.gd:514)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_electric_battery_data.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard3-r2\\checks\\godot-fn1cknp8\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "Exponent too high",
+          "context": [
+            "   at: built_in_strtod (core/string/ustring.cpp:2556)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] load_file (res://physics/aircraft_data.gd:63)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_electric_data.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard2-r2\\checks\\godot-h2qf2kkv\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "Exponent too high",
+          "context": [
+            "   at: built_in_strtod (core/string/ustring.cpp:2556)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] load_file (res://physics/aircraft_data.gd:63)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_field_tree_detail.gd",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\engine-upgrade\\GDU-03\\integration\\tree-detail-cleanup\\checks\\fixed-verbose-0q0sf54y\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 603,
+          "message": "ImportedVegetation option bark_lod_error_px must be 1 to 16 pixels; using 1",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_option_once (res://scenery/imported_vegetation.gd:405)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_imported_tree_rendering.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard3-r2\\checks\\godot-dz7mb8dy\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "Tree wind is disabled for landscapelab_quercus: a shared multi-part bend frame is not qualified",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:507)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 10,
+          "message": "Tree wind is disabled for landscapelab_quercus because a placement transform is unsupported (part is not upright around local Y)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:507)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 18,
+          "message": "ImportedVegetation option tree_cell_size_m must be 0, 64, 128, or 256; using legacy batching",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_option_once (res://scenery/imported_vegetation.gd:405)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 26,
+          "message": "ImportedVegetation option tree_wind must be a boolean; ignoring it",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_option_once (res://scenery/imported_vegetation.gd:405)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_landscape_runtime.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard3-r2\\checks\\godot-g97tyl8z\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 9,
+          "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 30,
+          "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 64,
+          "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 85,
+          "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_retractable_gear.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard0-tail\\checks\\godot-dj8o76yf\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "`NaN` (\"Not a Number\") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.",
+          "context": [
+            "   at: _stringify (core/io/json.cpp:86)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _validate_legacy (res://physics/aircraft_data.gd:524)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_smoke_aux.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard0-tail\\checks\\godot-qt3ev708\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "Existing smoke control overlaps a newly calibrated AETR axis; smoke was disabled and needs reassignment.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _preserve_smoke_if_clear (res://input/rc_calibration.gd:223)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 11,
+          "message": "Ignoring invalid aux.smoke assignment; radio flight channels remain available.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] sanitize_profile (res://input/smoke_aux.gd:261)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_workshop_json.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard2-tail-r2\\checks\\godot-pry0rv_9\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "Exponent too high",
+          "context": [
+            "   at: built_in_strtod (core/string/ustring.cpp:2556)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] number (res://workshop/strict_json.gd:143)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_workshop_staging.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard1\\checks\\godot-oyudtthu\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "First-save temporary data was retained: Staging contains an unexpected file.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _notification (res://workshop/store.gd:105)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_workshop_trial.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard2-tail-r2\\checks\\godot-agz9szjs\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "Aircraft presentation changed after the Workshop trial was frozen.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build (res://render/airplane.gd:61)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_world_flow.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard0-tail\\checks\\godot-gvbsdj51\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "Bad --time_scale '-3' (0\u20133600); time stays frozen",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] resolve (res://render/world/conditions.gd:101)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_world_moon_config.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard3-tail-r2\\checks\\godot-85azzzf8\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "Bad --moon 'phase:gibbous' (real, off or phase:<new|waxing_crescent|first_quarter|waxing_gibbous|full|waning_gibbous|last_quarter|waning_crescent>); keeping off",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _apply_moon (res://environment/moon_config.gd:143)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 9,
+          "message": "Bad --moon-size 'huge' (real, large); keeping large",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _apply (res://environment/moon_config.gd:150)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 15,
+          "message": "Ignoring invalid saved moon config: moon halo must be one of auto, off",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] resolve (res://environment/moon_config.gd:76)"
+          ]
+        }
+      ]
+    },
+    {
+      "script": "test_world_sky.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard0-tail\\checks\\godot-uhawkp4i\\report.json",
+      "warnings": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 3,
+          "message": "Unknown time of day 'teatime' (dawn, sunrise, morning, noon, afternoon, golden_hour, sunset, blue_hour, night, night_dark, moonrise, moonrise_golden); using the fixed sun",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] resolve (res://render/world/conditions.gd:136)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 8,
+          "message": "Bad --time '25h' (HH:MM); using the fixed sun",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] resolve (res://render/world/conditions.gd:131)"
+          ]
+        }
+      ]
+    }
+  ]
+}

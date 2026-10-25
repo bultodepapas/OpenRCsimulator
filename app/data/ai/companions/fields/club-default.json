@@ -55,49 +55,49 @@
     },
     "observed": {
       "min_agl": {
-        "value": 34.31,
+        "value": 34.310642,
         "unit": "m",
         "kind": "measured",
         "source": "Minimum local terrain clearance across the six companion pilot matrix scenarios."
       },
       "max_agl": {
-        "value": 75.01,
+        "value": 75.005967,
         "unit": "m",
         "kind": "measured",
         "source": "Maximum local terrain clearance across the six companion pilot matrix scenarios."
       },
       "min_tas": {
-        "value": 14.57,
+        "value": 14.569302,
         "unit": "m/s",
         "kind": "measured",
         "source": "Minimum TAS across the six companion pilot matrix scenarios."
       },
       "max_tas": {
-        "value": 15.50,
+        "value": 15.498761,
         "unit": "m/s",
         "kind": "measured",
         "source": "Maximum TAS across the six companion pilot matrix scenarios."
       },
       "max_radial_error": {
-        "value": 4.05,
+        "value": 4.047819,
         "unit": "m",
         "kind": "measured",
         "source": "Maximum absolute radial error across the six companion pilot matrix scenarios."
       },
       "min_player_separation": {
-        "value": 122.31,
+        "value": 122.307209,
         "unit": "m",
         "kind": "measured",
         "source": "Minimum player-to-companion center separation across the six companion pilot matrix scenarios."
       },
       "min_pair_separation": {
-        "value": 121.74,
+        "value": 121.744244,
         "unit": "m",
         "kind": "measured",
         "source": "Minimum companion-to-companion center separation in the tested multi-aircraft scenarios."
       }
     },
-    "evidence": "docs/research/ai-companions/pilot/README.md"
+    "evidence": "docs/research/engine-upgrade/GDU-03/companions/README.md"
   },
   "static_route_clearance": "requires_session_check"
 }

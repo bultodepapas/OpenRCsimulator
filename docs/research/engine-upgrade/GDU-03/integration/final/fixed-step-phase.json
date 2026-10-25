@@ -1,0 +1,856 @@
+{
+  "format": "openrc-gdu03-fixed-step-phase-v1",
+  "date": "2026-10-25",
+  "helper_path": "app/tests/run_fixed_step.gd",
+  "helper_sha256": "7f7b1c2ca9815d28629c117f5268697165c0d992e8923755de1b4d7ac7cf8e8f",
+  "old_schedule": [
+    119,
+    239,
+    359
+  ],
+  "final_schedule": [
+    120,
+    240,
+    360
+  ],
+  "guard_and_final_tick_unchanged": true,
+  "matched_windows_p51_phase_comparison": [
+    {
+      "engine": "4.7",
+      "fps": 30,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6806c7cf-562e-4861-ab73-72a354e1a093",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "30",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent",
+          "--aircraft=p51d-mustang-120"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:18:58.179582+00:00",
+        "label": "4.7-p51-phase-30",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-p51-phase-30-wzuwz_ot\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-p51-phase-30-wzuwz_ot\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 9,
+            "message": "a frame ended at tick 120, past the scheduled tick 119 (schedule not frame-aligned)",
+            "context": []
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 11.484,
+        "log_bytes": 483,
+        "log_sha256": "69859e38081568b7f12654b5355d6a1ed8e26a73efab73cce988df992b826a90"
+      },
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=8 sim=8 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=16 sim=16 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=24 sim=24 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=32 sim=32 offset=0",
+        "FIXED_STEP_PHASE frame=14 global=112 sim=112 offset=0",
+        "FIXED_STEP_PHASE frame=15 global=120 sim=120 offset=0"
+      ]
+    },
+    {
+      "engine": "4.7",
+      "fps": 60,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "9c776790-48cd-454a-8173-265c1b6dc2b3",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "60",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent",
+          "--aircraft=p51d-mustang-120"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:19:09.677350+00:00",
+        "label": "4.7-p51-phase-60",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-p51-phase-60-yqgtpqzz\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-p51-phase-60-yqgtpqzz\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 10,
+            "message": "a frame ended at tick 120, past the scheduled tick 119 (schedule not frame-aligned)",
+            "context": []
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 10.125,
+        "log_bytes": 536,
+        "log_sha256": "d7ec9207248ca86239ecf844cadb61e181a021185a874e1a1a6c132d5da1a912"
+      },
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=4 sim=4 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=8 sim=8 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=12 sim=12 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=16 sim=16 offset=0",
+        "FIXED_STEP_PHASE frame=28 global=112 sim=112 offset=0",
+        "FIXED_STEP_PHASE frame=29 global=116 sim=116 offset=0",
+        "FIXED_STEP_PHASE frame=30 global=120 sim=120 offset=0"
+      ]
+    },
+    {
+      "engine": "4.7",
+      "fps": 144,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "77e1c0a2-399a-4e80-946d-6a614367dbdc",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "144",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent",
+          "--aircraft=p51d-mustang-120"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:19:19.792755+00:00",
+        "label": "4.7-p51-phase-144",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-p51-phase-144-8c4x_qb4\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-p51-phase-144-8c4x_qb4\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 12,
+            "message": "a frame ended at tick 120, past the scheduled tick 119 (schedule not frame-aligned)",
+            "context": []
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 10.422,
+        "log_bytes": 642,
+        "log_sha256": "7214b04e6ffd4fccaf3ddc23ef19aba26db50e121d222442a5fa700f66de06f3"
+      },
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=1 sim=1 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=3 sim=3 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=5 sim=5 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=6 sim=6 offset=0",
+        "FIXED_STEP_PHASE frame=68 global=113 sim=113 offset=0",
+        "FIXED_STEP_PHASE frame=69 global=115 sim=115 offset=0",
+        "FIXED_STEP_PHASE frame=70 global=116 sim=116 offset=0",
+        "FIXED_STEP_PHASE frame=71 global=118 sim=118 offset=0",
+        "FIXED_STEP_PHASE frame=72 global=120 sim=120 offset=0"
+      ]
+    },
+    {
+      "engine": "4.8",
+      "fps": 30,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a91f5fe4-3b49-4afb-a4ad-af2f623ccbdd",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "30",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent",
+          "--aircraft=p51d-mustang-120"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:19:30.212911+00:00",
+        "label": "4.8-p51-phase-30",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-p51-phase-30-4e84e98_\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-p51-phase-30-4e84e98_\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 9,
+            "message": "a frame ended at tick 120, past the scheduled tick 119 (schedule not frame-aligned)",
+            "context": []
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 9.563,
+        "log_bytes": 480,
+        "log_sha256": "41e85e66fe8f2df4246440b0b4894810cbebec824c0b4ed30f217478c878713a"
+      },
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=8 sim=8 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=16 sim=16 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=24 sim=24 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=32 sim=32 offset=0",
+        "FIXED_STEP_PHASE frame=14 global=112 sim=112 offset=0",
+        "FIXED_STEP_PHASE frame=15 global=120 sim=120 offset=0"
+      ]
+    },
+    {
+      "engine": "4.8",
+      "fps": 60,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "92f44ff0-91a1-479b-98cc-8888efe5c5c7",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "60",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent",
+          "--aircraft=p51d-mustang-120"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:19:39.778790+00:00",
+        "label": "4.8-p51-phase-60",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-p51-phase-60-oil0d8m1\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-p51-phase-60-oil0d8m1\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 10,
+            "message": "a frame ended at tick 120, past the scheduled tick 119 (schedule not frame-aligned)",
+            "context": []
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 8.906,
+        "log_bytes": 533,
+        "log_sha256": "39a52ddbaa1467849b01a492473abf644fa05381aac569540728af06d702378a"
+      },
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=4 sim=4 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=8 sim=8 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=12 sim=12 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=16 sim=16 offset=0",
+        "FIXED_STEP_PHASE frame=28 global=112 sim=112 offset=0",
+        "FIXED_STEP_PHASE frame=29 global=116 sim=116 offset=0",
+        "FIXED_STEP_PHASE frame=30 global=120 sim=120 offset=0"
+      ]
+    },
+    {
+      "engine": "4.8",
+      "fps": 144,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "e358c544-37dc-4711-a283-b5f60d5a80e6",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "144",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent",
+          "--aircraft=p51d-mustang-120"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:19:48.686326+00:00",
+        "label": "4.8-p51-phase-144",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-p51-phase-144-nv64r7vs\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-p51-phase-144-nv64r7vs\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 12,
+            "message": "a frame ended at tick 120, past the scheduled tick 119 (schedule not frame-aligned)",
+            "context": []
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 8.984,
+        "log_bytes": 639,
+        "log_sha256": "b9ebdd23518a0131e2f518d84e9d5c0ca54bb334399d68fbca8db922bf8ddf19"
+      },
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=1 sim=1 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=3 sim=3 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=5 sim=5 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=6 sim=6 offset=0",
+        "FIXED_STEP_PHASE frame=68 global=113 sim=113 offset=0",
+        "FIXED_STEP_PHASE frame=69 global=115 sim=115 offset=0",
+        "FIXED_STEP_PHASE frame=70 global=116 sim=116 offset=0",
+        "FIXED_STEP_PHASE frame=71 global=118 sim=118 offset=0",
+        "FIXED_STEP_PHASE frame=72 global=120 sim=120 offset=0"
+      ]
+    }
+  ],
+  "current_windows_stik_phase": [
+    {
+      "engine": "4.8",
+      "fps": 30,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c34939b5-83f4-42a9-8a3a-73d441a4c925",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "30",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:16:52.967269+00:00",
+        "label": "4.8-phase-30",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-phase-30-b8wm2yf7\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-phase-30-b8wm2yf7\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 10,
+            "message": "a frame ended at tick 120, past the scheduled tick 119 (schedule not frame-aligned)",
+            "context": []
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 8.625,
+        "log_bytes": 574,
+        "log_sha256": "21f09174c770ff5df8982ee83eb0aa588ec62d5909c3d9bd6be73dd4d1853bc3"
+      },
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=8 sim=8 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=16 sim=16 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=24 sim=24 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=32 sim=32 offset=0",
+        "FIXED_STEP_PHASE frame=14 global=112 sim=112 offset=0",
+        "FIXED_STEP_PHASE frame=15 global=120 sim=120 offset=0"
+      ]
+    },
+    {
+      "engine": "4.8",
+      "fps": 60,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c6d58d3c-1909-4c9d-b6a6-2f2371f8fb75",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "60",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:17:01.591222+00:00",
+        "label": "4.8-phase-60",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-phase-60-ys6gyom5\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-phase-60-ys6gyom5\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 11,
+            "message": "a frame ended at tick 120, past the scheduled tick 119 (schedule not frame-aligned)",
+            "context": []
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 9.11,
+        "log_bytes": 627,
+        "log_sha256": "c099b507b0cbe972d4689a2f85b23597dc8c904ed8981dee3b6b2451124153f8"
+      },
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=4 sim=4 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=8 sim=8 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=12 sim=12 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=16 sim=16 offset=0",
+        "FIXED_STEP_PHASE frame=28 global=112 sim=112 offset=0",
+        "FIXED_STEP_PHASE frame=29 global=116 sim=116 offset=0",
+        "FIXED_STEP_PHASE frame=30 global=120 sim=120 offset=0"
+      ]
+    },
+    {
+      "engine": "4.8",
+      "fps": 144,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "542e8374-a1f3-4d00-815d-f80fd3ce8245",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "144",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:17:10.716833+00:00",
+        "label": "4.8-phase-144",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-phase-144-5hknryk_\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.8-phase-144-5hknryk_\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 13,
+            "message": "a frame ended at tick 120, past the scheduled tick 119 (schedule not frame-aligned)",
+            "context": []
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 9.563,
+        "log_bytes": 733,
+        "log_sha256": "82f372a7a83b4eb16a4f6c667544559e4b0401fcb81dc7cdfaad28ee860a7737"
+      },
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=1 sim=1 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=3 sim=3 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=5 sim=5 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=6 sim=6 offset=0",
+        "FIXED_STEP_PHASE frame=68 global=113 sim=113 offset=0",
+        "FIXED_STEP_PHASE frame=69 global=115 sim=115 offset=0",
+        "FIXED_STEP_PHASE frame=70 global=116 sim=116 offset=0",
+        "FIXED_STEP_PHASE frame=71 global=118 sim=118 offset=0",
+        "FIXED_STEP_PHASE frame=72 global=120 sim=120 offset=0"
+      ]
+    }
+  ],
+  "invalid_baseline_stik_attempts": [
+    {
+      "engine": "4.7",
+      "fps": 30,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "7a423a14-8069-4605-b4cf-0b6fab2b6697",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "30",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:16:33.271769+00:00",
+        "label": "4.7-phase-30",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-phase-30-4vuz7zsv\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-phase-30-4vuz7zsv\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 30,
+        "complete": true,
+        "counts": {
+          "error": 2,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Aircraft model contract: [\"SHA-256 mismatch for D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app/../assets/aircraft/ugly-stik-60/geometry.json\", \"SHA-256 mismatch for D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app/../assets/aircraft/ugly-stik-60/geometry.json\"]",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1023)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/airplane.gd:57)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 11,
+            "message": "Invalid access to property or key 'sim' on a base object of type 'Nil'.",
+            "context": [
+              "   at: _process (D:/OpenRCsimulator-experiments/gdu03-fixed-step-phase/original_phase_copy.gd:37)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _process (D:/OpenRCsimulator-experiments/gdu03-fixed-step-phase/original_phase_copy.gd:37)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 30,
+        "ok": false,
+        "elapsed_seconds": 6.89,
+        "log_bytes": 1084,
+        "log_sha256": "60e8f4a0083eb21949383a0615b4b883a2f3e7ad4eb054a7a8fe09fc67363341"
+      },
+      "phase_lines": []
+    },
+    {
+      "engine": "4.7",
+      "fps": 60,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "df92acd7-6b07-4732-8636-9eb3838d3c11",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "60",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:16:40.174646+00:00",
+        "label": "4.7-phase-60",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-phase-60-8qwvre23\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-phase-60-8qwvre23\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 30,
+        "complete": true,
+        "counts": {
+          "error": 2,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Aircraft model contract: [\"SHA-256 mismatch for D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app/../assets/aircraft/ugly-stik-60/geometry.json\", \"SHA-256 mismatch for D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app/../assets/aircraft/ugly-stik-60/geometry.json\"]",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1023)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/airplane.gd:57)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 11,
+            "message": "Invalid access to property or key 'sim' on a base object of type 'Nil'.",
+            "context": [
+              "   at: _process (D:/OpenRCsimulator-experiments/gdu03-fixed-step-phase/original_phase_copy.gd:37)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _process (D:/OpenRCsimulator-experiments/gdu03-fixed-step-phase/original_phase_copy.gd:37)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 30,
+        "ok": false,
+        "elapsed_seconds": 6.313,
+        "log_bytes": 1084,
+        "log_sha256": "60e8f4a0083eb21949383a0615b4b883a2f3e7ad4eb054a7a8fe09fc67363341"
+      },
+      "phase_lines": []
+    },
+    {
+      "engine": "4.7",
+      "fps": 144,
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "73a0e0e8-cc00-4a99-9c11-1d10aafb0765",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app",
+          "--audio-driver",
+          "Dummy",
+          "--fixed-fps",
+          "144",
+          "--script",
+          "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+          "--",
+          "--weather=turbulent"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T17:16:46.480177+00:00",
+        "label": "4.7-phase-144",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-phase-144-y4cx_3wb\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\checks\\4.7-phase-144-y4cx_3wb\\report.json",
+        "timeout_seconds": 180,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 30,
+        "complete": true,
+        "counts": {
+          "error": 2,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Aircraft model contract: [\"SHA-256 mismatch for D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app/../assets/aircraft/ugly-stik-60/geometry.json\", \"SHA-256 mismatch for D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app/../assets/aircraft/ugly-stik-60/geometry.json\"]",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1023)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/airplane.gd:57)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 11,
+            "message": "Invalid access to property or key 'sim' on a base object of type 'Nil'.",
+            "context": [
+              "   at: _process (D:/OpenRCsimulator-experiments/gdu03-fixed-step-phase/original_phase_copy.gd:37)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _process (D:/OpenRCsimulator-experiments/gdu03-fixed-step-phase/original_phase_copy.gd:37)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 30,
+        "ok": false,
+        "elapsed_seconds": 6.484,
+        "log_bytes": 1084,
+        "log_sha256": "60e8f4a0083eb21949383a0615b4b883a2f3e7ad4eb054a7a8fe09fc67363341"
+      },
+      "phase_lines": []
+    }
+  ],
+  "invalid_attempt_limit": "Preserved baseline model admission refused stale sibling authoringgeometry; no phase was measured in those threeattempts and they are excluded fromcomparison.",
+  "windows_current_p51_144_full480": {
+    "format": "openrc-godot-check v1",
+    "capture_id": "1963732c-8dd0-4d5e-9f30-d8487c04bfb3",
+    "command": [
+      ".tools/Godot_v4.8-beta1_win64_console.exe",
+      "--headless",
+      "--path",
+      "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+      "--audio-driver",
+      "Dummy",
+      "--fixed-fps",
+      "144",
+      "--verbose",
+      "--script",
+      "res://tests/run_fixed_step.gd",
+      "--",
+      "--aircraft=p51d-mustang-120"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-25T17:29:35.915382+00:00",
+    "label": "windows144-p51-verbose",
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\final-checks\\windows144-p51-verbose-47dxfblb\\engine.log",
+    "report": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\final-checks\\windows144-p51-verbose-47dxfblb\\report.json",
+    "timeout_seconds": 180.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": true,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 15.172,
+    "log_bytes": 146827,
+    "log_sha256": "8a170125fa40f53295b85c289e63462a7b78f8407c18971e4b7ad1ca87384e43"
+  },
+  "windows_current_p51_144_report_sha256": "2a499b1c42aca11469b039a0264ce720c7b5c1409bcd49136098e60c24109c1f",
+  "linux_proof": "linux-fixed-step/summary.json",
+  "scope": "Phase/scheduler fixture diagnosis. Exact guards and within-host frame-rate hashes retained; no cross-OS hash equivalence or clean Linux lifecycle claim."
+}

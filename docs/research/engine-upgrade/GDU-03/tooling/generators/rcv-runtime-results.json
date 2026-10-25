@@ -1,0 +1,84 @@
+[
+  {
+    "label": "suspension-cli",
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "app/tests/test_rcv_suspension_cli.py"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 8.141,
+    "supervisor_log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\suspension-cli-supervisor.log"
+  },
+  {
+    "label": "support-cli",
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "app/tests/test_rcv_support_cli.py"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 12.281,
+    "supervisor_log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\support-cli-supervisor.log"
+  },
+  {
+    "label": "experiments",
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/test_experiments.py"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 18.734,
+    "supervisor_log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\experiments-supervisor.log"
+  },
+  {
+    "label": "mt8-visual",
+    "command": [
+      "D:\\OpenRCsimulator-experiments\\gdu03-suite\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+      "--headless",
+      "--path",
+      "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "D:\\OpenRCsimulator-experiments\\gdu03-suite\\research\\rc-monster-truck\\visual\\test_mt8_visual.gd"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.704,
+    "supervisor_log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\mt8-visual-supervisor.log"
+  },
+  {
+    "label": "preview-en",
+    "command": [
+      "D:\\OpenRCsimulator-experiments\\gdu03-suite\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+      "--headless",
+      "--path",
+      "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "D:\\OpenRCsimulator-experiments\\gdu03-suite\\research\\rc-monster-truck\\visual\\test_preview.gd",
+      "--",
+      "--lang=en"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.609,
+    "supervisor_log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\preview-en-supervisor.log"
+  },
+  {
+    "label": "preview-es",
+    "command": [
+      "D:\\OpenRCsimulator-experiments\\gdu03-suite\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+      "--headless",
+      "--path",
+      "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "D:\\OpenRCsimulator-experiments\\gdu03-suite\\research\\rc-monster-truck\\visual\\test_preview.gd",
+      "--",
+      "--lang=es"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.641,
+    "supervisor_log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\preview-es-supervisor.log"
+  }
+]

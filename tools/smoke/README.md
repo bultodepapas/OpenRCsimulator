@@ -2,7 +2,7 @@
 
 Checked 2026-10-20. [SMOKE](../../docs/SMOKE.md) owns the runtime/authoring contract; [SM-16–25](../../SMOKE_SYSTEM_MASTER_PLAN.md) owns execution and remaining acceptance. Keep overhaul receipts in [SM-16–23 evidence](../../docs/research/smoke-investigations/SM-16-23/README.md); earlier campaigns remain [historical evidence](../../docs/research/smoke-investigations/SM-00-09/README.md).
 
-Use pinned Godot 4.7.2 and [developer setup](../../docs/TOOLS.md#developer-setup). Import resources on fresh checkouts. Use fresh output directories outside `app/`. Native captures require OpenGL and a display or Xvfb. Headless checks establish software behavior, not native plume quality or measured emissions.
+Use pinned official Godot 4.8-beta1 and [developer setup](../../docs/TOOLS.md#developer-setup). Import resources on fresh checkouts. Use fresh output directories outside `app/`. Native captures require OpenGL and a display or Xvfb. Headless checks establish software behavior, not native plume quality or measured emissions.
 
 ## Contracts and focused checks
 
@@ -19,7 +19,7 @@ The generator emits companion v3 with proof v2's ten closed text paths. Do not h
 On Windows, use the bounded runner so exit code zero cannot conceal engine errors:
 
 ```powershell
-python tools/godot/run_checked.py --label smoke-bindings --timeout 60 -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script tests/test_smoke_bindings.gd
+python tools/godot/run_checked.py --label smoke-bindings --timeout 60 -- .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --audio-driver Dummy --script tests/test_smoke_bindings.gd
 ```
 
 Use the same invocation for the relevant suites:
@@ -50,7 +50,7 @@ These short commands are diagnostic examples, not the master plan's longer accep
 For unattended matched measurements, `benchmark_flight.gd` hosts the production flight activity with controller/key input disabled. It explicitly resumes bare focus-loss pauses while retaining crash/fault/hold guards; this behavior belongs only to the measurement tool. Its sidecar records actual emitter activity and those resumes. For example:
 
 ```powershell
-python tools/godot/run_checked.py --label smoke-timing --timeout 115 -- .tools/Godot_v4.7.2-stable_win64_console.exe --path app --rendering-driver opengl3 --audio-driver Dummy --script "$PWD/tools/smoke/benchmark_flight.gd" -- --aircraft=sebart-avanti-s-a200-p100rx --start=airborne_half_power --alt=200 --view=chase --frametimes="$PWD/tmp/fresh-on.json" --warmup=10 --t=60 --smoke=on --smoke-pump=on --soundscape=off --scenery=off --birds=off --crash-effects=off --companions=0
+python tools/godot/run_checked.py --label smoke-timing --timeout 115 -- .tools/Godot_v4.8-beta1_win64_console.exe --path app --rendering-driver opengl3 --audio-driver Dummy --script "$PWD/tools/smoke/benchmark_flight.gd" -- --aircraft=sebart-avanti-s-a200-p100rx --start=airborne_half_power --alt=200 --view=chase --frametimes="$PWD/tmp/fresh-on.json" --warmup=10 --t=60 --smoke=on --smoke-pump=on --soundscape=off --scenery=off --birds=off --crash-effects=off --companions=0
 ```
 
 Use fresh paths and repeat OFF/ON in balanced order. Require `complete=true`, no pause/fault/crash, simulation elapsed/wall elapsed within 0.99–1.01, and ON emission during at least 95% of observed frames. Keep the `.json.smoke.json` sidecar. A capped desktop result cannot isolate GPU milliseconds or qualify another device; worst-case four-emitter overlap and full scenery require separate runs.
@@ -58,7 +58,7 @@ Use fresh paths and repeat OFF/ON in balanced order. Require `complete=true`, no
 The native lifecycle extension exercises repeated configure/reset/play/stop/pause/expire/free with warm-baseline object/node/resource comparisons:
 
 ```powershell
-python tools/godot/run_checked.py --label smoke-lifecycle --timeout 180 -- .tools/Godot_v4.7.2-stable_win64_console.exe --path app --rendering-driver opengl3 --audio-driver Dummy --script res://tests/test_smoke_renderer_v2.gd -- --native --lifecycle-cycles=50 --lifecycle-out="$PWD/tmp/fresh-smoke-cycles"
+python tools/godot/run_checked.py --label smoke-lifecycle --timeout 180 -- .tools/Godot_v4.8-beta1_win64_console.exe --path app --rendering-driver opengl3 --audio-driver Dummy --script res://tests/test_smoke_renderer_v2.gd -- --native --lifecycle-cycles=50 --lifecycle-out="$PWD/tmp/fresh-smoke-cycles"
 ```
 
 This reports actual measured duration and allocator/video counters, with representative reset/residual/pause/expiry images. Fifty accelerated cycles do not substitute for a 30-minute wall-time soak or OS process-memory measurement.
@@ -66,7 +66,7 @@ This reports actual measured duration and allocator/video counters, with represe
 For Avanti tailpipe views:
 
 ```powershell
-& '.tools/Godot_v4.7.2-stable_win64_console.exe' --path app --rendering-driver opengl3 --audio-driver Dummy --script "$PWD/tools/smoke/capture_avanti.gd" -- --out="$PWD/tmp/avanti-smoke-review" --soundscape=off --scenery=off --birds=off
+& '.tools/Godot_v4.8-beta1_win64_console.exe' --path app --rendering-driver opengl3 --audio-driver Dummy --script "$PWD/tools/smoke/capture_avanti.gd" -- --out="$PWD/tmp/avanti-smoke-review" --soundscape=off --scenery=off --birds=off
 ```
 
 The harness captures the outlet, a trimmed flight trail and residuals after OFF. Add `--aircraft=<catalog-id>` for another stock installation; default is Avanti. The final frame is nine seconds after show OFF, so admitted show puffs have expired; ordinary exhaust may continue from its running engine. Record which profile/source revision it uses; historical Avanti captures do not qualify the new v2 allocation, motion or fractional timing. Explicit empty/all-disabled Workshop profiles must remain empty in Test fly. Source-bound show smoke additionally needs accepted source operation; independent show mounts have their own request policy.

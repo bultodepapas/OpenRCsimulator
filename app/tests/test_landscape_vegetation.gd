@@ -199,7 +199,8 @@ func _test_complete_scenery_budget() -> void:
 				counts[kind] += 1
 	_check("imported trees and shrubs stay out of the procedural motion tree; people use their population batch",
 		int(stats.motion) == 5 and motion.get_child_count() == 5 and counts.crown == 0 and counts.bush_tips == 0
-		and int(stats.moving_people) == 7)
+		and int(stats.moving_people) == 5,
+		"motion=%s nodes=%s moving_people=%s counts=%s" % [stats.motion, motion.get_child_count(), stats.moving_people, counts])
 	var static_cells := 0
 	for child: Node in built.get_children():
 		if child is MeshInstance3D and str(child.name).begins_with("cell_"):

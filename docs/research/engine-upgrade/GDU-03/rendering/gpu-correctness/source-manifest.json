@@ -1,0 +1,240 @@
+{
+  "scope": "Probe scripts, launcher, project settings and existing literal res:// code/shader dependencies; root compared after runs.",
+  "snapshot": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+  "files": {
+    "app/environment/sky_appearance_config.gd": {
+      "frozen_sha256": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68",
+      "root_sha256_at_review": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68",
+      "same_root_bytes": true,
+      "bytes": 17730
+    },
+    "app/project.godot": {
+      "frozen_sha256": "4d85a7bc6eddfaad7876597a2ee9ce2b9793513a147670dcee0c3dbc3f028a0a",
+      "root_sha256_at_review": "4d85a7bc6eddfaad7876597a2ee9ce2b9793513a147670dcee0c3dbc3f028a0a",
+      "same_root_bytes": true,
+      "bytes": 3080
+    },
+    "app/render/atmosphere.gd": {
+      "frozen_sha256": "318f26065021442c7096336dceee1c216b81fd3cc82133513824977f09403620",
+      "root_sha256_at_review": "318f26065021442c7096336dceee1c216b81fd3cc82133513824977f09403620",
+      "same_root_bytes": true,
+      "bytes": 43695
+    },
+    "app/render/cloud_field.gdshaderinc": {
+      "frozen_sha256": "453eb83fd256f8645af888768cc0bea62cf4f08d2f804e263173996aaa55883e",
+      "root_sha256_at_review": "453eb83fd256f8645af888768cc0bea62cf4f08d2f804e263173996aaa55883e",
+      "same_root_bytes": true,
+      "bytes": 3830
+    },
+    "app/render/cloud_relief.gdshaderinc": {
+      "frozen_sha256": "b9cf41a405bfa90c52e1fea790388b499ee741bd6e390a1e77619e062935ddd3",
+      "root_sha256_at_review": "b9cf41a405bfa90c52e1fea790388b499ee741bd6e390a1e77619e062935ddd3",
+      "same_root_bytes": true,
+      "bytes": 1569
+    },
+    "app/render/flightline_barrier.gdshader": {
+      "frozen_sha256": "1b4cc342fe37d1823aae5d14d1c06befdfcbe00e974aa60f0fbf566daad17eb3",
+      "root_sha256_at_review": "1b4cc342fe37d1823aae5d14d1c06befdfcbe00e974aa60f0fbf566daad17eb3",
+      "same_root_bytes": true,
+      "bytes": 5507
+    },
+    "app/render/frames.gd": {
+      "frozen_sha256": "8ada0562ffaa7039676f0a8c222fcf5f1211d1c2e196a55f182b05fd25c34bc9",
+      "root_sha256_at_review": "8ada0562ffaa7039676f0a8c222fcf5f1211d1c2e196a55f182b05fd25c34bc9",
+      "same_root_bytes": true,
+      "bytes": 2502
+    },
+    "app/render/grass_surface.gdshaderinc": {
+      "frozen_sha256": "97fbd41f5ba69d8a1ae5675c64503dbd3900c815c237f3be17d3699b639b6a56",
+      "root_sha256_at_review": "97fbd41f5ba69d8a1ae5675c64503dbd3900c815c237f3be17d3699b639b6a56",
+      "same_root_bytes": true,
+      "bytes": 4485
+    },
+    "app/render/ground.gdshader": {
+      "frozen_sha256": "6d75d85ebdd269deb73390def122305553169a3d6b15df38a42e87765e2f2a77",
+      "root_sha256_at_review": "6d75d85ebdd269deb73390def122305553169a3d6b15df38a42e87765e2f2a77",
+      "same_root_bytes": true,
+      "bytes": 22415
+    },
+    "app/render/high_graphics_profile.gd": {
+      "frozen_sha256": "83a1edf365cf69a396899a29f638e051a283320a112e832d68eb0cfdfe15c07a",
+      "root_sha256_at_review": "83a1edf365cf69a396899a29f638e051a283320a112e832d68eb0cfdfe15c07a",
+      "same_root_bytes": true,
+      "bytes": 3388
+    },
+    "app/render/lake/lily_pad.gdshader": {
+      "frozen_sha256": "1676d73af401b34b57a8203538ebe5f72fab705adb021d8b991408fb27ba8acd",
+      "root_sha256_at_review": "1676d73af401b34b57a8203538ebe5f72fab705adb021d8b991408fb27ba8acd",
+      "same_root_bytes": true,
+      "bytes": 2284
+    },
+    "app/render/landscape_upgrade/ridge_haze.gdshader": {
+      "frozen_sha256": "c9688437380bef067e8a247990121d54926f8bc1e99ebe6c83cfd2f38481ac30",
+      "root_sha256_at_review": "c9688437380bef067e8a247990121d54926f8bc1e99ebe6c83cfd2f38481ac30",
+      "same_root_bytes": true,
+      "bytes": 3766
+    },
+    "app/render/landscape_upgrade/twilight_palette.gd": {
+      "frozen_sha256": "a19098324e298c26dd46c73224cb8aca5dda5b0dd4ba83aaa3ebddadb727cb78",
+      "root_sha256_at_review": "a19098324e298c26dd46c73224cb8aca5dda5b0dd4ba83aaa3ebddadb727cb78",
+      "same_root_bytes": true,
+      "bytes": 1218
+    },
+    "app/render/near_grass.gdshader": {
+      "frozen_sha256": "de7f314351096e65cdde555631660ff90f5ddefec52adae6b4330f5181e65744",
+      "root_sha256_at_review": "de7f314351096e65cdde555631660ff90f5ddefec52adae6b4330f5181e65744",
+      "same_root_bytes": true,
+      "bytes": 4467
+    },
+    "app/render/pilot_station.gdshader": {
+      "frozen_sha256": "f43e74d41218850ae486f68a4c8a24f19ecdf1b474d76a7d90f1946b79b5c87f",
+      "root_sha256_at_review": "f43e74d41218850ae486f68a4c8a24f19ecdf1b474d76a7d90f1946b79b5c87f",
+      "same_root_bytes": true,
+      "bytes": 2839
+    },
+    "app/render/rc_ground_detail.gdshaderinc": {
+      "frozen_sha256": "b944309ab3996e92699b1fbd22f25fb8efa4281d52ee26e05ccdfb182ac18eca",
+      "root_sha256_at_review": "b944309ab3996e92699b1fbd22f25fb8efa4281d52ee26e05ccdfb182ac18eca",
+      "same_root_bytes": true,
+      "bytes": 3339
+    },
+    "app/render/shader_clock.gd": {
+      "frozen_sha256": "decd507dca3d2783e3cf7a80790e93d1b4772ae6727a67d59611c974e6ee2550",
+      "root_sha256_at_review": "decd507dca3d2783e3cf7a80790e93d1b4772ae6727a67d59611c974e6ee2550",
+      "same_root_bytes": true,
+      "bytes": 1763
+    },
+    "app/render/sky.gdshader": {
+      "frozen_sha256": "badc6e233c9aef2774204b4e9e3c2b12d99b84983b86603597044531fcd379ac",
+      "root_sha256_at_review": "badc6e233c9aef2774204b4e9e3c2b12d99b84983b86603597044531fcd379ac",
+      "same_root_bytes": true,
+      "bytes": 19398
+    },
+    "app/render/sun/sun_optics.gd": {
+      "frozen_sha256": "a3b2e5c64d9ed1014a9c6822cc2d2a36d32221222abf0ed89443f0ee0ca54afd",
+      "root_sha256_at_review": "a3b2e5c64d9ed1014a9c6822cc2d2a36d32221222abf0ed89443f0ee0ca54afd",
+      "same_root_bytes": true,
+      "bytes": 21989
+    },
+    "app/render/turf_detail.gdshaderinc": {
+      "frozen_sha256": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1",
+      "root_sha256_at_review": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1",
+      "same_root_bytes": true,
+      "bytes": 1185
+    },
+    "app/render/weather/cloud_transport.gd": {
+      "frozen_sha256": "0d2052cea0e0640f09c5502b57aa78bc0ceed985bade0dc8f538bf6823b8f921",
+      "root_sha256_at_review": "0d2052cea0e0640f09c5502b57aa78bc0ceed985bade0dc8f538bf6823b8f921",
+      "same_root_bytes": true,
+      "bytes": 9954
+    },
+    "app/render/weather/sky_appearance.gd": {
+      "frozen_sha256": "fb9888cee67bc5a9d482ff5140e56f0fbeb31c2f07eb9759752085ee773cb2ea",
+      "root_sha256_at_review": "fb9888cee67bc5a9d482ff5140e56f0fbeb31c2f07eb9759752085ee773cb2ea",
+      "same_root_bytes": true,
+      "bytes": 4864
+    },
+    "app/render/world/ephemeris.gd": {
+      "frozen_sha256": "4725edf686fcaf0f01ecf5271cfc61fe7a7074cb4d9e676842827144f6a49d0b",
+      "root_sha256_at_review": "4725edf686fcaf0f01ecf5271cfc61fe7a7074cb4d9e676842827144f6a49d0b",
+      "same_root_bytes": true,
+      "bytes": 9266
+    },
+    "app/render/world/lunar.gd": {
+      "frozen_sha256": "b2f4e57c95a08814b2469b27b447ef12e6a9579048919ef6024b9b005c408ec8",
+      "root_sha256_at_review": "b2f4e57c95a08814b2469b27b447ef12e6a9579048919ef6024b9b005c408ec8",
+      "same_root_bytes": true,
+      "bytes": 21650
+    },
+    "app/render/world/moon_disc.gdshaderinc": {
+      "frozen_sha256": "cba8b6ea7f291f9d7479716282942332e68b3dbf14f4fb14f98a7cd5e7205ce6",
+      "root_sha256_at_review": "cba8b6ea7f291f9d7479716282942332e68b3dbf14f4fb14f98a7cd5e7205ce6",
+      "same_root_bytes": true,
+      "bytes": 7375
+    },
+    "app/render/world/sky_state.gd": {
+      "frozen_sha256": "6121bb69a0617b9864b1c718a0b79033e61c18a86ae32913c2019100bdd95302",
+      "root_sha256_at_review": "6121bb69a0617b9864b1c718a0b79033e61c18a86ae32913c2019100bdd95302",
+      "same_root_bytes": true,
+      "bytes": 27121
+    },
+    "app/scenery/pit_shelter_roof.gdshader": {
+      "frozen_sha256": "4efa7d06928e72c8be783b5ac32d38a4014893f9ecfa648c9a22edf5708124db",
+      "root_sha256_at_review": "4efa7d06928e72c8be783b5ac32d38a4014893f9ecfa648c9a22edf5708124db",
+      "same_root_bytes": true,
+      "bytes": 10507
+    },
+    "app/scenery/vertex_color_linear.gdshaderinc": {
+      "frozen_sha256": "61b97ddbb6278497e8f297ac7d6aaef67e258c15ce7d91ffd64dd04afea43ab2",
+      "root_sha256_at_review": "61b97ddbb6278497e8f297ac7d6aaef67e258c15ce7d91ffd64dd04afea43ab2",
+      "same_root_bytes": true,
+      "bytes": 677
+    },
+    "app/spec.gd": {
+      "frozen_sha256": "a6d302ca72ad9ce01f0c124c7c7894a0c61606436ffe3b6492f886635f15e57b",
+      "root_sha256_at_review": "a6d302ca72ad9ce01f0c124c7c7894a0c61606436ffe3b6492f886635f15e57b",
+      "same_root_bytes": true,
+      "bytes": 5252
+    },
+    "app/vehicles/ground/track_surface_detail.gdshaderinc": {
+      "frozen_sha256": "b2d3edeb995e9a2ad2c4c13e78014dcff6bf5db59672ee0172c567669d9d5042",
+      "root_sha256_at_review": "b2d3edeb995e9a2ad2c4c13e78014dcff6bf5db59672ee0172c567669d9d5042",
+      "same_root_bytes": true,
+      "bytes": 4135
+    },
+    "docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-lifetime/cycles.gd": {
+      "frozen_sha256": "146210902cd9304ac8ef6298c58a005d65d4c644a303bc180b471cba35fb3f75",
+      "root_sha256_at_review": "146210902cd9304ac8ef6298c58a005d65d4c644a303bc180b471cba35fb3f75",
+      "same_root_bytes": true,
+      "bytes": 1408
+    },
+    "docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-lifetime/minimal.gd": {
+      "frozen_sha256": "40345f0f62020a0c1a5e23e13fea3797e9a9c2a14e49dcbd4e6f970863e3cffc",
+      "root_sha256_at_review": "40345f0f62020a0c1a5e23e13fea3797e9a9c2a14e49dcbd4e6f970863e3cffc",
+      "same_root_bytes": true,
+      "bytes": 1003
+    },
+    "docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-lifetime/once_cycles.gd": {
+      "frozen_sha256": "22f1ad5cd2e88925734e54fa30f837c20eb8ea144529d87ecbfb62ccbf93ea7a",
+      "root_sha256_at_review": "22f1ad5cd2e88925734e54fa30f837c20eb8ea144529d87ecbfb62ccbf93ea7a",
+      "same_root_bytes": true,
+      "bytes": 1506
+    },
+    "tools/graphics/launch.py": {
+      "frozen_sha256": "a2b533f76295395ac89837126ef081f45ebb49a21b11f6d58af8c750c0e9163d",
+      "root_sha256_at_review": "a2b533f76295395ac89837126ef081f45ebb49a21b11f6d58af8c750c0e9163d",
+      "same_root_bytes": true,
+      "bytes": 8983
+    },
+    "tools/graphics/test_lily_color.gd": {
+      "frozen_sha256": "485431927e8ee51f5e774ee1facd1d117bb839736519cc6d13ce01cbaa45790d",
+      "root_sha256_at_review": "485431927e8ee51f5e774ee1facd1d117bb839736519cc6d13ce01cbaa45790d",
+      "same_root_bytes": true,
+      "bytes": 6531
+    },
+    "tools/graphics/test_material_tags.gd": {
+      "frozen_sha256": "2c409897b435792992f83f5b4245e97dac5660984e7125df59012cad0e7dbd61",
+      "root_sha256_at_review": "2c409897b435792992f83f5b4245e97dac5660984e7125df59012cad0e7dbd61",
+      "same_root_bytes": true,
+      "bytes": 7772
+    },
+    "tools/graphics/test_pilot_station_color.gd": {
+      "frozen_sha256": "2fc50a21bb07788dfc14c3cb35f6d079d314257be2d4a840640dcf129dfc7685",
+      "root_sha256_at_review": "2fc50a21bb07788dfc14c3cb35f6d079d314257be2d4a840640dcf129dfc7685",
+      "same_root_bytes": true,
+      "bytes": 6243
+    },
+    "tools/graphics/test_ridge_color.gd": {
+      "frozen_sha256": "18f0fc9f8fa1a06184eb1f172fb130283aea5ff65b8bc18b5356b0213917bb5f",
+      "root_sha256_at_review": "18f0fc9f8fa1a06184eb1f172fb130283aea5ff65b8bc18b5356b0213917bb5f",
+      "same_root_bytes": true,
+      "bytes": 8027
+    },
+    "tools/graphics/test_shadow_energy.gd": {
+      "frozen_sha256": "ac27a6484310d39625f359f9d09d1da5a98edada7f0db589eeca362251c5de0f",
+      "root_sha256_at_review": "ac27a6484310d39625f359f9d09d1da5a98edada7f0db589eeca362251c5de0f",
+      "same_root_bytes": true,
+      "bytes": 4356
+    }
+  }
+}

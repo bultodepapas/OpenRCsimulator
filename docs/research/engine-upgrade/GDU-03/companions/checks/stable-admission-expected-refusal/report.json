@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "51087f14-58b1-4f3a-96a9-a2b0dd9b404f",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-companions/baseline-app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_profiles.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T14:38:08.813695+00:00",
+  "label": "stable-admission-expected-refusal",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\stable-admission-expected-refusal-b7tytekz\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\stable-admission-expected-refusal-b7tytekz\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 1.359,
+  "log_bytes": 423,
+  "log_sha256": "88e174510ac845d53ad968b885ea6956aa3f54f4afbcae80400eb08d268a5e31"
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "stream": "player",
+    "complete": true,
+    "solver_changed": false,
+    "report": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\fresh-exact\\player\\replay.json",
+    "csv_sha256": "fda8416adcd53e3469a13788ceea0da9ca8bf98b302f50668d434f9a275f2a14",
+    "rows": 261
+  },
+  {
+    "stream": "companion-0",
+    "complete": true,
+    "solver_changed": false,
+    "report": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\fresh-exact\\companion-0\\replay.json",
+    "csv_sha256": "194455c3bdb98b44d88ae1978ec9c8aae6257af4ed1ab678af820fefa06b21f6",
+    "rows": 261
+  }
+]

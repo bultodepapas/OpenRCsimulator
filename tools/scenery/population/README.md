@@ -1,6 +1,6 @@
 # Population authoring
 
-Status: adopted in **LU-21**, Godot 4.7.2 Compatibility. Runtime assets are in `app/assets/scenery/population/`; exact sources/licenses and manifests are in `assets/scenery/population/`. No authoring add-on is loaded by the app.
+Originally adopted in **LU-21** on Godot 4.7.2 Compatibility. This is the historical intake engine, not the current project pin. Runtime assets are in `app/assets/scenery/population/`; exact sources/licenses and manifests are in `assets/scenery/population/`. No authoring add-on is loaded by the app.
 
 ## Cars
 
