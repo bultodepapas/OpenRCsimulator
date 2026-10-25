@@ -2,6 +2,10 @@
 
 **Status:** curated reference. Lessons from 2026-10-05 to 2026-10-13; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../LEARNINGS.md) for shared engineering lessons.
 
+## Distinguish renderer-startup options from runtime settings
+
+Godot 4.8-beta1 reads multi-bounce occlusion when constructing Forward+'s shader definitions; setting the same ProjectSettings value from GDScript is too late. Contact shadows instead read version-cached runtime settings. Check the pinned consumer and compare fresh processes before claiming a setting changed rendering. Keep renderer-only startup options in project configuration and document their scope, including technical launches outside the product profile. [GDU-11g/h implementation](../research/engine-upgrade/GDU-11/implementation.md).
+
 ## Normalize texture data in the renderer's actual color space
 
 An RC grass candidate compiled and passed geometry tests while native Compatibility captures clipped almost white: an encoded texture sample had been divided by a linear source mean. Keep means and samples in the same space, check `OUTPUT_IS_SRGB`, and retain a rendered brightness comparison. `source_color` alone is not evidence of identical sample representation across rendering methods. [L9d repair and paired captures](../research/rc-ground-implementation-2026-10-15/README.md#color-space-repair-found-during-integration).

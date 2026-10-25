@@ -1,0 +1,27 @@
+{
+	"contact_shadows_setting": false,
+	"editor_binary": true,
+	"executable": "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64.exe",
+	"graphics": {
+		"active": "high_experimental",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "forward_plus",
+		"requested": "high"
+	},
+	"home": true,
+	"multi_bounce_occlusion_configured": true,
+	"ok": true,
+	"pid": 37964,
+	"preferences_unchanged": true,
+	"production_restart_arguments": [
+		"--path",
+		"C:/DEVELOPMENT/OpenRCsimulator/app/",
+		"--rendering-method",
+		"gl_compatibility"
+	],
+	"stage": 1,
+	"viewport": [
+		1920,
+		1080
+	]
+}

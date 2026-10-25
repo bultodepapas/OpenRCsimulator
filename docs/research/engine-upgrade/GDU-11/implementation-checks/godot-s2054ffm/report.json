@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0352c560-58cc-44ce-8f1d-7e0dc3379dd1",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_crash_integration.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T21:24:19.337194+00:00",
+  "label": "godot",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\checks\\godot-s2054ffm\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\checks\\godot-s2054ffm\\report.json",
+  "timeout_seconds": 600.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 68.187,
+  "log_bytes": 23147,
+  "log_sha256": "2ae87d414cfb1793161207df39086bf98b4f6d659962089af115b753af62894c"
+}

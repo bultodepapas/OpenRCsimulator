@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "85693786-b0d5-4c24-a23f-01d475751950",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu11-implementation/ao/pair/off/app",
+    "--rendering-method",
+    "gl_compatibility",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tools/graphics/capture.gd",
+    "--",
+    "--width=1920",
+    "--out=D:/OpenRCsimulator-experiments/gdu11-implementation/ao/standard-repeat"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T21:50:17.943532+00:00",
+  "label": "godot",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\ao\\checks\\godot-n6871he_\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu11-implementation\\ao\\checks\\godot-n6871he_\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 16.562,
+  "log_bytes": 518,
+  "log_sha256": "ae7fedede5af41168ce574e5429b39ea9cafa9d8656ed9a0c8ca16857b84c6f0"
+}

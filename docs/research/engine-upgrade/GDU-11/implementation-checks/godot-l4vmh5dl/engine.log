@@ -1,0 +1,69 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok particle budget
+ok transparent particles do not cast card shadows
+ok no live effects before collision
+ok vertical speed does not lengthen the horizontal gouge
+ok fire needs severe + fuel + hot engine false/0.0/0
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/0.0/1
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/0.0/2
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/0.0/3
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/0.0/4
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/1.28/0
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/1.28/1
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/1.28/2
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/1.28/3
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/1.28/4
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/0.0/0
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/0.0/1
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/0.0/2
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/0.0/3
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/0.0/4
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/1.28/0
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/1.28/1
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/1.28/2
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/1.28/3
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/1.28/4
+ok fragment budget
+ok intact tank does not ignite
+ok pause freezes fragment poses
+ok pause freezes emitters
+ok ballistic fragments remain finite above ground
+ok bounded secondary marks
+ok primary scorch persists
+ok finite fuel budget extinguishes
+ok chips settle before the 12-second update cutoff
+ok settled chips retain every position, instance transform and color
+ok settled chips still allow delayed battery vent and flare
+ok repeated pause holds delayed effects and all particle clocks
+ok a new crash after settled pause moves fresh chips
+ok a new crash restores all particle clocks
+ok reset clears aftermath
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+66 checks, 0 failures

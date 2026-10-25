@@ -114,7 +114,7 @@ All work runs in a worktree or tree copy with the candidate editor in `.tools/`.
 
 On 2026-10-25 the owner requested exploiting 4.8's improvements after development adoption. This authorizes bounded feature work before GDU-10; it does not close the broader release gates. Each change retains its owning track's limits and paired evidence.
 
-The [expanded opportunity review](../research/engine-upgrade/GDU-11/opportunities.md) separates opt-in features, automatic engine improvements and features that do not apply to this project. Recommended next implementation: saved-build search, then bounded title fitting. Standard decals and individual High effects remain separate visual experiments; no performance benefit is assumed from upstream benchmarks.
+The [expanded opportunity review](../research/engine-upgrade/GDU-11/opportunities.md) separates opt-in features, automatic engine improvements and features that do not apply to this project. [Incremental implementation evidence](../research/engine-upgrade/GDU-11/implementation.md) covers search, bounded titles, terrain decals and individual High effects. Contact shadows remain explicitly experimental after a failed visual gate; no performance benefit is assumed from upstream benchmarks.
 
 | ID | Owner and work | Evidence / boundary |
 | --- | --- | --- |
@@ -125,7 +125,7 @@ The [expanded opportunity review](../research/engine-upgrade/GDU-11/opportunitie
 | GDU-11e | UI: native fuzzy search for saved Workshop builds | [Implemented and verified](../research/engine-upgrade/GDU-11/implementation.md#gdu-11e--workshop-search): stable IDs, exact-first/fuzzy ranking, favorites/selection and libraries above 100 results |
 | GDU-11f | UI: bounded font fitting for long translated/build titles | [Implemented and verified](../research/engine-upgrade/GDU-11/implementation.md#gdu-11f--bounded-title-fitting): Workshop titles, scaled readable bounds and ellipsis fallback; native 1080p English/Spanish and 200% text |
 | GDU-11g | VQ-07e: screen-space contact shadows in High | [Integrated as an explicit High experiment, default off](../research/engine-upgrade/GDU-11/implementation.md#gdu-11g--high-contact-shadow-experiment). Functional controls pass; beta1 wall artifacts fail default visual adoption. Keep ordinary shadows unchanged |
-| GDU-11h | VQ-07b/e: multi-bounce AO with existing High SSAO | Researched, not implemented. Forward+ only, configured before renderer initialization. Fixed exposure/material/SSAO comparison and measured GPU cost; no full-GI claim |
+| GDU-11h | VQ-07b/e: multi-bounce AO with existing High SSAO | [Implemented at Forward+ startup](../research/engine-upgrade/GDU-11/implementation.md#gdu-11h--forward-multi-bounce-occlusion). Frozen six-view 1080p comparisons preserve Standard and show restrained High ambient brightening; SSAO/exposure unchanged, no full-GI claim |
 | GDU-11i | PT/DT/AS/LU/input: characterize inherited engine improvements | Pending measurements: real high-poll mouse/radio tests, tangent/model construction, High cold/warm shader loading, UI retirement and probe blending. Use existing tooling; no automatic FPS or memory claims |
 | GDU-11j | DT-MAC/VQ: ASTC 6×6/profile experiment | Conditional on an actual ASTC-capable target and measured memory need. Import profile does not improve existing S3TC/BC7 output; validate paint, normal maps and foliage before adoption |
 

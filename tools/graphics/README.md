@@ -12,10 +12,14 @@ marker or automatic restart is saved. Restart is unavailable during a flight or
 Workshop session. If the engine falls back, Settings reports Standard.
 
 High enables short-range SSAO, four blended directional-shadow cascades in an
-8192-pixel atlas, solar-angle PCSS, and sky reflections during flowing time of day.
+8192-pixel atlas, solar-angle PCSS, multi-bounce ambient occlusion, and sky reflections during flowing time of day.
 The existing exposure, haze, aircraft, scenery population and simulation are
 retained. High defaults to native rendering; FSR2 is now an explicit optional
-choice (below). It does not enable motion blur, SSR, GI or volumetric fog.
+choice (below). It does not enable motion blur, SSR, full GI or volumetric fog.
+Multi-bounce occlusion is a Forward+ startup setting in `project.godot`; Compatibility
+and Mobile ignore it. Bare technical Forward+ launches also inherit it. Changing
+the setting from an already-running script cannot activate its shader variant.
+[Paired evidence and limits](../../docs/research/engine-upgrade/GDU-11/implementation.md#gdu-11h--forward-multi-bounce-occlusion).
 The atlas and screen-space buffers cost additional GPU memory. Only the recorded
 Windows/NVIDIA host has been exercised; macOS, Linux and other GPUs remain open.
 
