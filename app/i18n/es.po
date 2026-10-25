@@ -6009,6 +6009,9 @@ msgstr "La sesión gráfica actual no indica que FSR3 sea compatible."
 msgid "FSR3 could not continue in this graphics session."
 msgstr "FSR3 no pudo continuar en esta sesión gráfica."
 
+msgid "DLSS could not continue in this graphics session."
+msgstr "DLSS no pudo continuar en esta sesión gráfica."
+
 msgid "DLSS support is not included in this game build."
 msgstr "Esta versión del juego no incluye compatibilidad con DLSS."
 

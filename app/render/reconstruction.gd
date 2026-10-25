@@ -176,33 +176,35 @@ static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictiona
 		viewport.remove_meta(RUNTIME_FAILURE_META)
 
 
-## Roll FSR3 back to native rendering after the native backend reports a runtime failure.
+## Roll a native provider back to full resolution after its backend reports a runtime failure.
 ## The requested config remains stored and is never rewritten to the display preferences file.
 static func guard_runtime_failure(viewport: Viewport, backend_status: Dictionary = {},
 		capabilities: Dictionary = {}) -> bool:
 	if not is_instance_valid(viewport):
 		return false
 	var policy: Variant = viewport.get_meta(POLICY_META, {})
-	if typeof(policy) != TYPE_DICTIONARY or str(policy.get("provider", "")) != "fsr3":
+	if typeof(policy) != TYPE_DICTIONARY:
+		return false
+	var provider := str(policy.get("provider", ""))
+	if provider not in ["fsr3", "dlss"]:
 		return false
 	var status := backend_status.duplicate(true)
-	if status.is_empty() and RenderingServer.has_method("get_fsr3_status"):
-		var reported: Variant = RenderingServer.call("get_fsr3_status")
-		if typeof(reported) == TYPE_DICTIONARY:
-			status = reported
+	if status.is_empty():
+		status = _backend_status(provider)
 	if not bool(status.get("backend_failed", false)):
 		return false
 	var saved_config: Variant = viewport.get_meta(CONFIG_META, {})
 	if typeof(saved_config) != TYPE_DICTIONARY:
 		return false
 	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
-	gates["fsr3"] = false
+	gates[provider] = false
+	gates[provider + "_reason"] = provider + "_runtime_failure"
 	apply(viewport, saved_config, gates)
 	var fallback_policy: Dictionary = viewport.get_meta(POLICY_META, {})
-	fallback_policy["fallback_reason"] = "fsr3_runtime_failure"
+	fallback_policy["fallback_reason"] = provider + "_runtime_failure"
 	viewport.set_meta(POLICY_META, fallback_policy)
 	viewport.set_meta(RUNTIME_FAILURE_META, {
-		"provider": "fsr3",
+		"provider": provider,
 		"reason": "backend_failed",
 		"backend": status,
 	})
@@ -217,8 +219,9 @@ static func describe(viewport: Viewport) -> Dictionary:
 	policy["fsr_sharpness"] = viewport.fsr_sharpness
 	policy.merge(_sharpening_receipt(str(policy.provider), viewport.fsr_sharpness), true)
 	policy["texture_mipmap_bias"] = viewport.texture_mipmap_bias
-	if policy.provider == "fsr3" and RenderingServer.has_method("get_fsr3_status"):
-		policy["backend"] = RenderingServer.call("get_fsr3_status")
+	var backend := _backend_status(str(policy.provider))
+	if not backend.is_empty():
+		policy["backend"] = backend
 	if viewport.has_meta(RUNTIME_FAILURE_META):
 		policy["runtime_failure"] = viewport.get_meta(RUNTIME_FAILURE_META).duplicate(true)
 	policy["output_size"] = [viewport.get_visible_rect().size.x, viewport.get_visible_rect().size.y]
@@ -270,11 +273,33 @@ static func _integer_constant_or_null(class_name_text: String, constant_name: St
 
 
 static func _streamline_dlss_unavailable_reason() -> String:
-	if not Engine.has_singleton(DLSS_SINGLETON) \
-			or not ClassDB.class_has_integer_constant(DLSS_SINGLETON, DLSS_CAPABILITY):
+	if not Engine.has_singleton(DLSS_SINGLETON):
 		return "dlss_support_missing"
 	var streamline: Object = Engine.get_singleton(DLSS_SINGLETON)
-	if streamline == null or not streamline.has_method("get_capability"):
+	if streamline == null:
+		return "dlss_support_missing"
+	# New native builds latch dispatch failure separately from initialization support.
+	# Retain compatibility with experimental engines predating this status API.
+	if streamline.has_method("get_dlss_status"):
+		var status: Variant = streamline.call("get_dlss_status")
+		if typeof(status) == TYPE_DICTIONARY:
+			if bool(status.get("backend_failed", false)):
+				return "dlss_runtime_failure"
+			return "" if bool(status.get("available", false)) else "dlss_unavailable"
+	if not streamline.has_method("get_capability") \
+			or not ClassDB.class_has_integer_constant(DLSS_SINGLETON, DLSS_CAPABILITY):
 		return "dlss_support_missing"
 	var capability := ClassDB.class_get_integer_constant(DLSS_SINGLETON, DLSS_CAPABILITY)
 	return "dlss_unavailable" if not bool(streamline.call("get_capability", capability)) else ""
+
+
+static func _backend_status(provider: String) -> Dictionary:
+	var backend: Object = RenderingServer if provider == "fsr3" else null
+	if provider == "dlss" and Engine.has_singleton(DLSS_SINGLETON):
+		backend = Engine.get_singleton(DLSS_SINGLETON)
+	var status_method := "get_" + provider + "_status"
+	if backend != null and backend.has_method(status_method):
+		var status: Variant = backend.call(status_method)
+		if typeof(status) == TYPE_DICTIONARY:
+			return status
+	return {}

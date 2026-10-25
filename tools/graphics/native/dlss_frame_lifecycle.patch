@@ -1,0 +1,455 @@
+--- a/drivers/streamline/streamline_context.h
++++ b/drivers/streamline/streamline_context.h
+@@ -45,7 +45,7 @@
+ 	PFun_slAllocateResources *slAllocateResources = nullptr;
+ 	PFun_slFreeResources *slFreeResources = nullptr;
+ 	PFun_slEvaluateFeature *slEvaluateFeature = nullptr;
+-	PFun_slSetTag *slSetTag = nullptr;
++	PFun_slSetTagForFrame *slSetTagForFrame = nullptr;
+ 	PFun_slSetConstants *slSetConstants = nullptr;
+ 	PFun_slSetFeatureLoaded *slSetFeatureLoaded = nullptr;
+ 	PFun_slSetD3DDevice *slSetD3DDevice = nullptr;
+@@ -107,7 +107,15 @@
+ 
+ 	static StreamlineContext &get();
+ 
++	// Main-thread simulation token; capture it before enqueueing a draw.
+ 	sl::FrameToken *last_token = nullptr;
++	// Accessed only by the render thread, installed in command-queue order.
++	sl::FrameToken *render_token = nullptr;
++	uint32_t render_frame_id = 0;
++	void set_render_frame_token(sl::FrameToken *p_token, uint32_t p_frame_id) {
++		render_token = p_token;
++		render_frame_id = p_frame_id;
++	}
+ 	bool is_game = false;
+ 
+ 	sl::ViewportHandle dlssg_viewport;
+--- a/drivers/streamline/streamline_context.cpp
++++ b/drivers/streamline/streamline_context.cpp
+@@ -87,7 +87,7 @@
+ 	this->slAllocateResources = SL_GETPROC(PFun_slAllocateResources, "slAllocateResources");
+ 	this->slFreeResources = SL_GETPROC(PFun_slFreeResources, "slFreeResources");
+ 	this->slEvaluateFeature = SL_GETPROC(PFun_slEvaluateFeature, "slEvaluateFeature");
+-	this->slSetTag = SL_GETPROC(PFun_slSetTag, "slSetTag");
++	this->slSetTagForFrame = SL_GETPROC(PFun_slSetTagForFrame, "slSetTagForFrame");
+ 	this->slSetConstants = SL_GETPROC(PFun_slSetConstants, "slSetConstants");
+ #undef SL_GETPROC
+ 
+@@ -232,6 +232,7 @@
+ }
+ 
+ sl::FrameToken *StreamlineContext::get_new_frame_token() {
++	last_token = nullptr;
+ 	sl::Result result = this->slGetNewFrameToken ? this->slGetNewFrameToken(last_token, nullptr) : sl::Result::eOk;
+ 	ERR_FAIL_COND_V_MSG(result != sl::Result::eOk, nullptr, StreamlineContext::result_to_string(result));
+ 	return last_token;
+@@ -361,7 +362,7 @@
+ 
+ 	pref.renderAPI = d3d12 ? sl::RenderAPI::eD3D12 : sl::RenderAPI::eVulkan;
+ 	pref.applicationId = 0x90d07004;
+-	pref.flags = sl::PreferenceFlags::eDisableCLStateTracking;
++	pref.flags = sl::PreferenceFlags::eDisableCLStateTracking | sl::PreferenceFlags::eUseFrameBasedResourceTagging;
+ 
+ 	if (bool(GLOBAL_GET("rendering/streamline/streamline_log"))) {
+ 		pref.logLevel = sl::LogLevel::eVerbose;
+--- a/servers/rendering/rendering_server_default.cpp
++++ b/servers/rendering/rendering_server_default.cpp
+@@ -30,6 +30,10 @@
+ 
+ #include "rendering_server_default.h"
+ 
++#ifdef STREAMLINE_ENABLED
++#include "drivers/streamline/streamline_context.h"
++#endif
++
+ #include "core/object/callable_mp.h"
+ #include "core/os/os.h"
+ #include "core/profiling/profiling.h"
+@@ -452,6 +456,21 @@
+ 	// Needs to be done before changes is reset to 0, to not force the editor to redraw.
+ 	RS::get_singleton()->emit_signal(SNAME("frame_pre_draw"));
+ 	changes = 0;
++#ifdef STREAMLINE_ENABLED
++	StreamlineContext &streamline = StreamlineContext::get();
++	// Main::iteration synchronizes the preceding draw before reaching here.
++	// Keep the simulation token: allocating another token would split one frame.
++	sl::FrameToken *frame_token = streamline.last_token;
++	if (frame_token == nullptr) {
++		frame_token = streamline.get_new_frame_token();
++	}
++	uint32_t frame_id = frame_token ? uint32_t(*frame_token) : 0;
++	if (create_thread) {
++		command_queue.push(&streamline, &StreamlineContext::set_render_frame_token, frame_token, frame_id);
++	} else {
++		streamline.set_render_frame_token(frame_token, frame_id);
++	}
++#endif
+ 	if (create_thread) {
+ 		command_queue.push(this, &RenderingServerDefault::_draw, p_present, frame_step);
+ 	} else {
+--- a/servers/rendering/renderer_rd/effects/dlss.h
++++ b/servers/rendering/renderer_rd/effects/dlss.h
+@@ -39,6 +39,8 @@
+ public:
+ 	struct Parameters {
+ 		DLSSContext *context;
++		const void *frame_token = nullptr;
++		uint32_t frame_id = 0;
+ 		Size2i internal_size;
+ 		RID color;
+ 		RID depth;
+@@ -67,8 +69,7 @@
+ 		RID dlss_rr_specular_albedo; // Specular albedo buffer (RGB)
+ 		RID dlss_rr_normal_roughness; // World-space normal (XYZ) + roughness (W)
+ 		RID dlss_rr_specular_hit_dist; // Specular hit distance (R16F, -1 = sky)
+-	} last_parameters;
+-	DLSSEffect *last_effect = nullptr;
++	};
+ 	bool is_d3d12 = false;
+ 	int delay = 4; // Warmup frames before DLSS evaluates (Vulkan stability workaround).
+ 
+@@ -83,6 +84,7 @@
+ 		RID mvec_decode_pipeline;
+ 	} shaders;
+ 
++	static Dictionary get_status();
+ 	DLSSEffect();
+ 	~DLSSEffect();
+ 	DLSSContext *create_context(Size2i p_internal_size, Size2i p_target_size);
+--- a/servers/rendering/renderer_rd/effects/dlss.cpp
++++ b/servers/rendering/renderer_rd/effects/dlss.cpp
+@@ -30,6 +30,8 @@
+ 
+ #include "dlss.h"
+ 
++#include <atomic>
++
+ #ifdef STREAMLINE_ENABLED
+ #define ENABLE_DLSS 1
+ #endif
+@@ -43,6 +45,35 @@
+ using namespace RendererRD;
+ 
+ #ifdef ENABLE_DLSS
++
++static std::atomic<bool> dlss_backend_failed{ false };
++static std::atomic<uint64_t> dlss_dispatches{ 0 };
++static std::atomic<uint64_t> dlss_contexts_created{ 0 };
++static std::atomic<int> dlss_last_return_code{ 0 };
++static std::atomic<uint32_t> dlss_last_frame_id{ 0 };
++
++static void dlss_record_failure(sl::Result p_result) {
++	dlss_last_return_code.store(int(p_result), std::memory_order_relaxed);
++	dlss_backend_failed.store(true, std::memory_order_release);
++}
++
++Dictionary DLSSEffect::get_status() {
++	Dictionary status;
++	bool failed = dlss_backend_failed.load(std::memory_order_acquire);
++	status["available"] = StreamlineContext::get().streamline_capabilities.dlss_available && !failed;
++	status["backend_failed"] = failed;
++	status["dispatches"] = int64_t(dlss_dispatches.load(std::memory_order_relaxed));
++	status["contexts_created"] = int64_t(dlss_contexts_created.load(std::memory_order_relaxed));
++	status["last_return_code"] = dlss_last_return_code.load(std::memory_order_relaxed);
++	status["last_frame_id"] = int64_t(dlss_last_frame_id.load(std::memory_order_relaxed));
++	status["frame_based_tagging"] = true;
++	return status;
++}
++
++struct DLSSGraphDispatch {
++	DLSSEffect *effect = nullptr;
++	DLSSContext::Parameters parameters;
++};
+ 
+ // Texture layout/state constants (avoid including Vulkan/D3D12 headers here).
+ static constexpr uint64_t DLSS_VK_IMAGE_LAYOUT_GENERAL = 1;
+@@ -143,6 +174,7 @@
+ 			return modes[closestDistanceMatch];
+ 		}
+ 
++		dlss_record_failure(sl::Result::eErrorInvalidParameter);
+ 		ERR_FAIL_V_MSG(sl::DLSSMode::eOff, "Couldn't find an appropriate DLSS mode.");
+ 	}
+ }; // end class
+@@ -215,6 +247,7 @@
+ 
+ DLSSContext *DLSSEffect::create_context(Size2i p_internal_size, Size2i p_target_size) {
+ 	DLSSContextInner *context = memnew(RendererRD::DLSSContextInner);
++	dlss_contexts_created.fetch_add(1, std::memory_order_relaxed);
+ 
+ 	context->currentDlssOptions.mode = context->find_optimal_mode(p_target_size.width, p_target_size.height, p_internal_size.width, p_internal_size.height, context->currentOptimalSettings);
+ 	context->currentDlssOptions.outputWidth = p_target_size.width;
+@@ -261,9 +294,14 @@
+ 		return;
+ 	}
+ 
+-	// Begin frame if needed.
+-	if (StreamlineContext::get().last_token == nullptr) {
+-		StreamlineContext::get().get_new_frame_token();
++	if (dlss_backend_failed.load(std::memory_order_acquire)) {
++		return;
++	}
++	StreamlineContext &streamline = StreamlineContext::get();
++	if (streamline.render_token == nullptr || streamline.slSetTagForFrame == nullptr ||
++			streamline.slSetConstants == nullptr || streamline.slEvaluateFeature == nullptr) {
++		dlss_record_failure(sl::Result::eErrorInvalidIntegration);
++		ERR_FAIL_MSG("DLSS frame token or required Streamline entry point is unavailable.");
+ 	}
+ 
+ 	RD *rd = RD::get_singleton();
+@@ -287,9 +325,6 @@
+ 		context->initialized_output_textures.push_back(p_params.output);
+ 	}
+ 
+-	context->last_parameters = p_params;
+-	context->last_effect = this;
+-
+ 	// Decode mvecs
+ 	{
+ 		RD::get_singleton()->draw_command_begin_label("Decode Invalid Motion Vectors");
+@@ -355,12 +390,26 @@
+ 	for (int i = 0; i < num_resources; i++) {
+ 		res[i].usage = res[i].rid == p_params.output ? RD::CALLBACK_RESOURCE_USAGE_GENERAL : RD::CALLBACK_RESOURCE_USAGE_TEXTURE_SAMPLE;
+ 	}
+-	RD::get_singleton()->driver_callback_add((RDD::DriverCallback)DLSSEffect::_upscale_internal_graph_callback, p_params.context, VectorView<RD::CallbackResource>(res, num_resources));
++	DLSSGraphDispatch *dispatch = memnew(DLSSGraphDispatch);
++	dispatch->effect = this;
++	dispatch->parameters = p_params;
++	dispatch->parameters.frame_token = streamline.render_token;
++	dispatch->parameters.frame_id = streamline.render_frame_id;
++	RD::get_singleton()->driver_callback_add((RDD::DriverCallback)DLSSEffect::_upscale_internal_graph_callback, dispatch, VectorView<RD::CallbackResource>(res, num_resources));
+ }
+ 
+ void DLSSEffect::_upscale_internal(RDD::CommandBufferID cmdid, const DLSSContext::Parameters &p_params) {
+ 	DLSSContextInner *context = (DLSSContextInner *)p_params.context;
+ 
++	if (dlss_backend_failed.load(std::memory_order_acquire)) {
++		return;
++	}
++	const sl::FrameToken *frame_token = static_cast<const sl::FrameToken *>(p_params.frame_token);
++	// Streamline owns a bounded token ring. Detect reuse before touching resources.
++	if (frame_token == nullptr || uint32_t(*frame_token) != p_params.frame_id) {
++		dlss_record_failure(sl::Result::eErrorInvalidIntegration);
++		ERR_FAIL_MSG("DLSS callback frame token expired before evaluation.");
++	}
+ 	void *nativeCmdlist = RD::get_singleton()->get_device_driver()->command_buffer_get_native_handle(cmdid);
+ 
+ 	// Helper function for tagging resources.
+@@ -466,6 +515,7 @@
+ 
+ 		sl::Result result = StreamlineContext::get().slDLSSDSetOptions(context->viewport, context->currentDlssDOptions);
+ 		if (result != sl::Result::eOk) {
++			dlss_record_failure(result);
+ 			ERR_FAIL_MSG("Failed to call streamline slDLSSDSetOptions. Result: " + String(StreamlineContext::result_to_string(result)));
+ 		}
+ 	} else if (StreamlineContext::get().slDLSSSetOptions != nullptr && StreamlineContext::get().streamline_capabilities.dlss_available) {
+@@ -500,6 +550,7 @@
+ 
+ 		sl::Result result = StreamlineContext::get().slDLSSSetOptions(context->viewport, context->currentDlssOptions);
+ 		if (result != sl::Result::eOk) {
++			dlss_record_failure(result);
+ 			ERR_FAIL_MSG("Failed to call streamline slDLSSSetOptions. Result: " + String(StreamlineContext::result_to_string(result)));
+ 		}
+ 	}
+@@ -532,36 +583,38 @@
+ 		context->constants.mvecScale = sl::float2(1.0f, 1.0f);
+ 		context->constants.orthographicProjection = sl::Boolean::eFalse;
+ 		context->constants.reset = p_params.reset_accumulation ? sl::Boolean::eTrue : sl::Boolean::eFalse;
+-		sl::Result result = StreamlineContext::get().slSetConstants(context->constants, *StreamlineContext::get().last_token, context->viewport);
++		sl::Result result = StreamlineContext::get().slSetConstants(context->constants, *frame_token, context->viewport);
+ 		if (result != sl::Result::eOk) {
++			dlss_record_failure(result);
+ 			ERR_FAIL_MSG("Failed to call streamline slSetConstants. Result: " + String(StreamlineContext::result_to_string(result)));
+ 		}
+ 	}
+ 
+ 	// Tag resources
+-	if (StreamlineContext::get().slSetTag != nullptr) {
++	if (StreamlineContext::get().slSetTagForFrame != nullptr) {
+ 		sl::Resource resources[10];
+ 		sl::ResourceTag resourceTags[10];
+ 		int numResources = 0;
+ 
+-		assignResource(resources, resourceTags, numResources, p_params.color, sl::kBufferTypeScalingInputColor, sl::ResourceLifecycle::eValidUntilPresent);
+-		assignResource(resources, resourceTags, numResources, p_params.output, sl::kBufferTypeScalingOutputColor, sl::ResourceLifecycle::eValidUntilPresent);
+-		assignResource(resources, resourceTags, numResources, p_params.depth, sl::kBufferTypeDepth, sl::ResourceLifecycle::eValidUntilPresent);
+-		assignResource(resources, resourceTags, numResources, p_params.velocity, sl::kBufferTypeMotionVectors, sl::ResourceLifecycle::eValidUntilPresent);
++		assignResource(resources, resourceTags, numResources, p_params.color, sl::kBufferTypeScalingInputColor, sl::ResourceLifecycle::eValidUntilEvaluate);
++		assignResource(resources, resourceTags, numResources, p_params.output, sl::kBufferTypeScalingOutputColor, sl::ResourceLifecycle::eValidUntilEvaluate);
++		assignResource(resources, resourceTags, numResources, p_params.depth, sl::kBufferTypeDepth, sl::ResourceLifecycle::eValidUntilEvaluate);
++		assignResource(resources, resourceTags, numResources, p_params.velocity, sl::kBufferTypeMotionVectors, sl::ResourceLifecycle::eValidUntilEvaluate);
+ 
+ 		// Tag DLSS-RR specific buffers if enabled
+ 		if (use_dlss_rr) {
+ 			// kBufferTypeAlbedo is used for diffuse albedo
+-			assignResource(resources, resourceTags, numResources, p_params.dlss_rr_diffuse_albedo, sl::kBufferTypeAlbedo, sl::ResourceLifecycle::eValidUntilPresent);
+-			assignResource(resources, resourceTags, numResources, p_params.dlss_rr_specular_albedo, sl::kBufferTypeSpecularAlbedo, sl::ResourceLifecycle::eValidUntilPresent);
++			assignResource(resources, resourceTags, numResources, p_params.dlss_rr_diffuse_albedo, sl::kBufferTypeAlbedo, sl::ResourceLifecycle::eValidUntilEvaluate);
++			assignResource(resources, resourceTags, numResources, p_params.dlss_rr_specular_albedo, sl::kBufferTypeSpecularAlbedo, sl::ResourceLifecycle::eValidUntilEvaluate);
+ 			// kBufferTypeNormalRoughness for packed normal+roughness (XYZ=normal, W=roughness)
+-			assignResource(resources, resourceTags, numResources, p_params.dlss_rr_normal_roughness, sl::kBufferTypeNormalRoughness, sl::ResourceLifecycle::eValidUntilPresent);
+-			assignResource(resources, resourceTags, numResources, p_params.dlss_rr_specular_hit_dist, sl::kBufferTypeSpecularHitDistance, sl::ResourceLifecycle::eValidUntilPresent);
+-		}
+-
+-		sl::Result result = StreamlineContext::get().slSetTag(context->viewport, resourceTags, numResources, nativeCmdlist);
++			assignResource(resources, resourceTags, numResources, p_params.dlss_rr_normal_roughness, sl::kBufferTypeNormalRoughness, sl::ResourceLifecycle::eValidUntilEvaluate);
++			assignResource(resources, resourceTags, numResources, p_params.dlss_rr_specular_hit_dist, sl::kBufferTypeSpecularHitDistance, sl::ResourceLifecycle::eValidUntilEvaluate);
++		}
++
++		sl::Result result = StreamlineContext::get().slSetTagForFrame(*frame_token, context->viewport, resourceTags, numResources, nativeCmdlist);
+ 		if (result != sl::Result::eOk) {
+-			ERR_FAIL_MSG("Failed to call streamline slSetTag. Result: " + String(StreamlineContext::result_to_string(result)));
++			dlss_record_failure(result);
++			ERR_FAIL_MSG("Failed to call streamline slSetTagForFrame. Result: " + String(StreamlineContext::result_to_string(result)));
+ 		}
+ 	}
+ 
+@@ -577,6 +630,7 @@
+ 			dlssGOptions.mode = sl::DLSSGMode::eOff;
+ 			sl::Result result = StreamlineContext::get().slDLSSGSetOptions(StreamlineContext::get().dlssg_viewport, dlssGOptions);
+ 			if (result != sl::Result::eOk) {
++				dlss_record_failure(result);
+ 				ERR_FAIL_MSG("Failed to call streamline slDLSSGSetOptions. Result: " + String(StreamlineContext::result_to_string(result)));
+ 			}
+ 
+@@ -590,6 +644,7 @@
+ 			dlssGOptions.mode = sl::DLSSGMode::eOn;
+ 			sl::Result result = StreamlineContext::get().slDLSSGSetOptions(context->viewport, dlssGOptions);
+ 			if (result != sl::Result::eOk) {
++				dlss_record_failure(result);
+ 				ERR_FAIL_MSG("Failed to call streamline slDLSSGSetOptions. Result: " + String(StreamlineContext::result_to_string(result)));
+ 			}
+ 
+@@ -605,15 +660,21 @@
+ 		if (use_dlss_rr && StreamlineContext::get().streamline_capabilities.dlss_rr_available) {
+ 			// Use DLSS Ray Reconstruction
+ 			context->dlss_rr_resources_used = true;
+-			result = StreamlineContext::get().slEvaluateFeature(sl::kFeatureDLSS_RR, *StreamlineContext::get().last_token, inputs, 1, nativeCmdlist);
++			result = StreamlineContext::get().slEvaluateFeature(sl::kFeatureDLSS_RR, *frame_token, inputs, 1, nativeCmdlist);
+ 			if (result != sl::Result::eOk) {
++				dlss_record_failure(result);
+ 				ERR_FAIL_MSG("Failed to call streamline slEvaluateFeature for DLSS Ray Reconstruction. Result: " + String(StreamlineContext::result_to_string(result)));
+ 			}
+ 		} else if (StreamlineContext::get().streamline_capabilities.dlss_available) {
+ 			// Use regular DLSS
+ 			context->dlss_resources_used = true;
+-			result = StreamlineContext::get().slEvaluateFeature(sl::kFeatureDLSS, *StreamlineContext::get().last_token, inputs, 1, nativeCmdlist);
++			result = StreamlineContext::get().slEvaluateFeature(sl::kFeatureDLSS, *frame_token, inputs, 1, nativeCmdlist);
++			if (result == sl::Result::eOk) {
++				dlss_dispatches.fetch_add(1, std::memory_order_relaxed);
++				dlss_last_frame_id.store(p_params.frame_id, std::memory_order_relaxed);
++			}
+ 			if (result != sl::Result::eOk) {
++				dlss_record_failure(result);
+ 				ERR_FAIL_MSG("Failed to call streamline slEvaluateFeature for DLSS Super Resolution. Result: " + String(StreamlineContext::result_to_string(result)));
+ 			}
+ 		}
+@@ -636,19 +697,21 @@
+ 			int numResources = 0;
+ 
+ 			assignResource(resources, resourceTags, numResources, p_params.output, sl::kBufferTypeScalingInputColor, sl::ResourceLifecycle::eOnlyValidNow);
+-			assignResource(resources, resourceTags, numResources, p_params.output, sl::kBufferTypeScalingOutputColor, sl::ResourceLifecycle::eValidUntilPresent);
+-
+-			sl::Result result = StreamlineContext::get().slSetTag(context->viewport, resourceTags, numResources, nativeCmdlist);
++			assignResource(resources, resourceTags, numResources, p_params.output, sl::kBufferTypeScalingOutputColor, sl::ResourceLifecycle::eValidUntilEvaluate);
++
++			sl::Result result = StreamlineContext::get().slSetTagForFrame(*frame_token, context->viewport, resourceTags, numResources, nativeCmdlist);
+ 			if (result != sl::Result::eOk) {
+-				ERR_FAIL_MSG("Failed to call streamline slSetTag for NIS. Result: " + String(StreamlineContext::result_to_string(result)));
++				dlss_record_failure(result);
++				ERR_FAIL_MSG("Failed to call streamline slSetTagForFrame for NIS. Result: " + String(StreamlineContext::result_to_string(result)));
+ 			}
+ 		}
+ 
+ 		{ // Evaluate NIS
+ 			const sl::BaseStructure *inputs[] = { &context->viewport };
+ 			context->nis_resources_used = true;
+-			sl::Result result = StreamlineContext::get().slEvaluateFeature(sl::kFeatureNIS, *StreamlineContext::get().last_token, inputs, 1, nativeCmdlist);
++			sl::Result result = StreamlineContext::get().slEvaluateFeature(sl::kFeatureNIS, *frame_token, inputs, 1, nativeCmdlist);
+ 			if (result != sl::Result::eOk) {
++				dlss_record_failure(result);
+ 				ERR_FAIL_MSG("Failed to call streamline slEvaluateFeature for NIS. Result: " + String(StreamlineContext::result_to_string(result)));
+ 			}
+ 		}
+@@ -656,13 +719,14 @@
+ }
+ 
+ void RendererRD::DLSSEffect::_upscale_internal_graph_callback(RenderingDeviceDriver *p_driver, RDD::CommandBufferID p_command_buffer, void *p_userdata) {
+-	DLSSContextInner *self = (DLSSContextInner *)p_userdata;
+-	self->last_effect->_upscale_internal(p_command_buffer, self->last_parameters);
++	DLSSGraphDispatch *dispatch = static_cast<DLSSGraphDispatch *>(p_userdata);
++	dispatch->effect->_upscale_internal(p_command_buffer, dispatch->parameters);
++	memdelete(dispatch);
+ }
+ 
+ bool DLSSEffect::is_ready(DLSSContext *p_context) {
+ 	DLSSContextInner *context = (DLSSContextInner *)p_context;
+-	if (context->currentDlssOptions.mode == sl::DLSSMode::eOff) {
++	if (dlss_backend_failed.load(std::memory_order_acquire) || context->currentDlssOptions.mode == sl::DLSSMode::eOff) {
+ 		return false; // unsupported mode.
+ 	}
+ 	if (context->delay > 0) {
+@@ -671,6 +735,12 @@
+ 	return true;
+ }
+ #else
++Dictionary DLSSEffect::get_status() {
++	Dictionary status;
++	status["available"] = false;
++	status["backend_failed"] = false;
++	return status;
++}
+ DLSSEffect::DLSSEffect() {}
+ DLSSEffect::~DLSSEffect() {}
+ DLSSContext *DLSSEffect::create_context(Size2i p_internal_size, Size2i p_target_size) {
+--- a/drivers/streamline/streamline.h
++++ b/drivers/streamline/streamline.h
+@@ -51,6 +51,7 @@
+ 	void emit_marker(StreamlineMarkerType p_marker);
+ 	void set_parameter(StreamlineParameterType p_parameter_type, const Variant &p_value);
+ 	bool get_capability(StreamlineCapabilityType p_capability_type);
++	Dictionary get_dlss_status() const;
+ 
+ 	void set_internal_parameter(const char *p_key, void *p_value);
+ 	void *get_internal_parameter(StreamlineInternalParameterType p_internal_parameter_type);
+--- a/drivers/streamline/streamline.cpp
++++ b/drivers/streamline/streamline.cpp
+@@ -30,6 +30,10 @@
+ 
+ #include "streamline.h"
+ 
++#ifdef RD_ENABLED
++#include "servers/rendering/renderer_rd/effects/dlss.h"
++#endif
++
+ #include "core/config/engine.h"
+ #include "core/config/project_settings.h"
+ #include "core/object/object.h"
+@@ -42,6 +46,8 @@
+ void Streamline::_bind_methods() {
+ 	ClassDB::bind_method(D_METHOD("set_parameter", "parameter_type", "value"), &Streamline::set_parameter);
+ 	ClassDB::bind_method(D_METHOD("get_capability", "capability_type"), &Streamline::get_capability);
++
++	ClassDB::bind_method(D_METHOD("get_dlss_status"), &Streamline::get_dlss_status);
+ 
+ 	BIND_ENUM_CONSTANT(STREAMLINE_PARAM_REFLEX_MODE);
+ 	BIND_ENUM_CONSTANT(STREAMLINE_PARAM_REFLEX_FRAME_LIMIT_US);
+@@ -242,6 +248,17 @@
+ 		default:
+ 			break;
+ 	}
++}
++
++Dictionary Streamline::get_dlss_status() const {
++#ifdef RD_ENABLED
++	return RendererRD::DLSSEffect::get_status();
++#else
++	Dictionary status;
++	status["available"] = false;
++	status["backend_failed"] = false;
++	return status;
++#endif
+ }
+ 
+ bool Streamline::get_capability(StreamlineCapabilityType p_capability_type) {
