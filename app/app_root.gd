@@ -1353,7 +1353,7 @@ func _input(event: InputEvent) -> void:
 	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id, not menu_context), id, "menu" if menu_context else "flight", previous)
 	if actions.is_empty(): _controller_action_edges.erase(source)
 	else: _controller_action_edges[source] = actions
-	if flight != null and flight.session.has_method("set_controller_cut"):
+	if flight != null and flight.session != null and flight.session.has_method("set_controller_cut"):
 		var held := false
 		for active: PackedStringArray in _controller_action_edges.values():
 			if active.has("throttle_cut"): held = true
