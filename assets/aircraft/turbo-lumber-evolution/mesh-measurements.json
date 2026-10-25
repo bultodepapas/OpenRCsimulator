@@ -134,7 +134,7 @@
   "frame": "root frame of the imported scene (identity root, datum D0 at the origin)",
   "generator": "research/timber/tt02/measure_mesh.gd",
   "glb_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
-  "godot": "4.7.2-stable (official)",
+  "godot": "4.8-beta1 (official)",
   "landmarks": {
     "left_wingtip": {
       "root": [

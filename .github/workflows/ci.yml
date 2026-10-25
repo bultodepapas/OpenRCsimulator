@@ -170,21 +170,25 @@ jobs:
       - name: Download pinned Godot Windows console editor
         shell: pwsh
         run: |
-          $archive = Join-Path $env:RUNNER_TEMP 'Godot_v4.7.2-stable_win64.exe.zip'
-          $destination = Join-Path $env:RUNNER_TEMP 'godot-4.7.2-stable'
+          $archive = Join-Path $env:RUNNER_TEMP 'Godot_v4.8-beta1_win64.exe.zip'
+          $destination = Join-Path $env:RUNNER_TEMP 'godot-4.8-beta1'
           Invoke-WebRequest `
-            -Uri 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_win64.exe.zip' `
+            -Uri 'https://github.com/godotengine/godot-builds/releases/download/4.8-beta1/Godot_v4.8-beta1_win64.exe.zip' `
             -OutFile $archive
-          $expected = '83decd58fdf67b9d657958a1ae6bf1929c20785315a81effe245874cdc57acb709bf868e00778a96984338c1b29dafdb453c6847747694621c6ecf5da2259993'
+          $expected = 'bdc79f8ef47c3794c6984751bbac2c1934cf1c7c9ceebc2d0e87db0846766411b7bbbb6fecf90f3485f951a1289c3171b1c7bebca18dcdd8e08bd81de95b6cc0'
           $actual = (Get-FileHash -LiteralPath $archive -Algorithm SHA512).Hash.ToLowerInvariant()
           if ($actual -ne $expected) {
             throw "Godot Windows archive SHA-512 mismatch: expected $expected, got $actual."
           }
           Expand-Archive -LiteralPath $archive -DestinationPath $destination -Force
-          $godot = Get-ChildItem -LiteralPath $destination -Filter 'Godot_v4.7.2-stable_win64_console.exe' -File -Recurse |
+          $godot = Get-ChildItem -LiteralPath $destination -Filter 'Godot_v4.8-beta1_win64_console.exe' -File -Recurse |
             Select-Object -First 1 -ExpandProperty FullName
           if (-not $godot) {
             throw 'Pinned Godot Windows console executable was not present in the verified archive.'
+          }
+          $version = (& $godot --version).Trim()
+          if ($LASTEXITCODE -ne 0 -or $version -ne '4.8.beta1.official.4d10419ca') {
+            throw "Unexpected Godot Windows version: $version"
           }
           Add-Content -LiteralPath $env:GITHUB_ENV -Value "GODOT_WINDOWS_EXE=$godot"
       - name: Build, load, float64-check and compare the native Windows evaluator

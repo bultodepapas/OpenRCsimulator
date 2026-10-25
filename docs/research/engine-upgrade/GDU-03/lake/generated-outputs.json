@@ -1,0 +1,12 @@
+[
+  {
+    "path": "app/assets/landscape/lake/default_geometry.res",
+    "sha256": "4edcba6fc11f09c521af64b6e0fc5d0b8e56645d91da1bf0b3cfdf8fae994052",
+    "bytes": 739230
+  },
+  {
+    "path": "app/render/lake/generated_geometry_stamp.gd",
+    "sha256": "0402278a05708d2b934d8a3c2ffc8d727bd7b8642283ca658241b815588de276",
+    "bytes": 173
+  }
+]

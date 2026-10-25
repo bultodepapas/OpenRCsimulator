@@ -8,7 +8,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import re
 import shutil
 import subprocess
 import sys
@@ -19,7 +18,9 @@ from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[2]
+CHECKED_RUNNER = ROOT / "tools" / "godot" / "run_checked.py"
 CAPTURE_SCRIPT = Path(__file__).with_name("probe_clouds.gd")
+PINNED_ENGINE_BUILD = "4.8.beta1.official.4d10419ca"
 FORMAT = "openrc-cloud-density-probe v1"
 SUMMARY_FORMAT = "openrc-cloud-density-probe-review v1"
 PANEL_SIZE = 256
@@ -47,22 +48,42 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def checked_run(command: list[str], log_path: Path, env: dict[str, str], timeout_s: int = 180) -> None:
-    with log_path.open("w") as output:
-        try:
-            result = subprocess.run(
-                ["timeout", "--kill-after=5", str(timeout_s), *command],
-                stdout=output,
-                stderr=subprocess.STDOUT,
-                env=env,
-                check=False,
-                timeout=timeout_s + 10,
-            )
-        except subprocess.TimeoutExpired as error:
-            raise RuntimeError(f"engine probe did not stop after {timeout_s + 10}s; inspect {log_path}") from error
-    text = re.sub(r"\x1b\[[0-9;]*m", "", log_path.read_text(errors="replace"))
-    if result.returncode or re.search(r"^\s*(?:(?:SCRIPT|SHADER)\s+)?ERROR:", text, re.M):
-        raise RuntimeError(f"engine probe failed ({result.returncode}); inspect {log_path}")
+def checked_run(command: list[str], log_path: Path, env: dict[str, str], timeout_s: int = 180,
+                required_text: str | None = None) -> dict[str, Any]:
+    """Use the shared bounded runner, including native Windows process-tree cleanup."""
+    checks = log_path.parent / "checks"
+    before = set(checks.glob("*/report.json"))
+    invocation = [sys.executable, str(CHECKED_RUNNER), "--out-dir", str(checks),
+                  "--label", log_path.stem, "--timeout", str(timeout_s)]
+    if required_text is not None:
+        invocation.extend(("--require-text", required_text))
+    # The shared supervisor owns the deadline, bounded output and process tree.
+    result = subprocess.run([*invocation, "--", *command], stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, env=env, check=False,
+                            text=True, encoding="utf-8", errors="replace")
+    created = set(checks.glob("*/report.json")) - before
+    if len(created) != 1:
+        log_path.write_text(result.stdout, encoding="utf-8")
+        raise RuntimeError(f"shared runner did not produce one report; inspect {log_path}")
+    report_path = created.pop()
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    shutil.copyfile(Path(report["log"]), log_path)
+    if result.returncode or not report.get("ok", False):
+        raise RuntimeError(f"engine probe failed ({report.get('reason')}); inspect {report_path}")
+    return report
+
+
+def render_command(godot: Path, app: Path, *, windows: bool | None = None) -> list[str]:
+    """Native Windows rendering; preserve the existing Xvfb route elsewhere."""
+    windows = os.name == "nt" if windows is None else windows
+    prefix: list[str] = []
+    if not windows:
+        if shutil.which("xvfb-run") is None:
+            raise RuntimeError("xvfb-run is required for GPU rendering on this platform")
+        prefix = ["xvfb-run", "-a", "-s", "-screen 0 1280x720x24"]
+    return [*prefix, str(godot), "--path", str(app), "--rendering-method", "gl_compatibility",
+            "--rendering-driver", "opengl3", "--audio-driver", "Dummy",
+            "--script", str(CAPTURE_SCRIPT), "--"]
 
 
 def read_run(folder: Path, include: Path) -> tuple[dict[str, Any], np.ndarray]:
@@ -74,8 +95,8 @@ def read_run(folder: Path, include: Path) -> tuple[dict[str, Any], np.ndarray]:
     width = len(PANEL_IDS) * PANEL_SIZE
     if metadata.get("format") != FORMAT or metadata.get("complete") is not True:
         raise RuntimeError(f"{metadata_path}: unexpected or incomplete probe metadata")
-    if not str(metadata.get("godot", "")).startswith("4.7.2") or not metadata.get("renderer"):
-        raise RuntimeError(f"{metadata_path}: missing pinned Godot 4.7.2 / renderer metadata")
+    if metadata.get("godot") != "4.8-beta1 (official)" or not metadata.get("renderer"):
+        raise RuntimeError(f"{metadata_path}: missing pinned Godot 4.8-beta1 / renderer metadata")
     if metadata.get("panels") != list(PANEL_IDS):
         raise RuntimeError(f"{metadata_path}: panel inventory mismatch")
     if (metadata.get("width"), metadata.get("height"), metadata.get("panel_size")) != (width, PANEL_SIZE, PANEL_SIZE):
@@ -173,7 +194,8 @@ def verify_atlas(pixels: np.ndarray) -> dict[str, Any]:
 
 def prepare_output(out: Path, parser: argparse.ArgumentParser) -> None:
     """Remove only this checker's prior artifacts, and drop stale success first."""
-    owned = ("summary.json", "import.log", "repeat-1.log", "repeat-2.log", "repeat-1", "repeat-2")
+    owned = ("summary.json", "import.log", "repeat-1.log", "repeat-2.log", "repeat-1", "repeat-2",
+             "engine-version.log", "checks")
     if out.exists() and not out.is_dir():
         parser.error(f"output path is not a directory: {out}")
     out.mkdir(parents=True, exist_ok=True)
@@ -194,6 +216,8 @@ def prepare_output(out: Path, parser: argparse.ArgumentParser) -> None:
             continue
         if path.is_symlink():
             parser.error(f"refusing to remove symlink at owned output path: {path}")
+        if path.resolve().parent != out.resolve():
+            parser.error(f"owned output path escaped its directory: {path}")
         if path.is_dir():
             shutil.rmtree(path)
         elif path.is_file():
@@ -220,33 +244,22 @@ def main() -> int:
         parser.error(f"candidate app is missing the shared shader include: {include}")
     if not CAPTURE_SCRIPT.is_file():
         parser.error(f"missing capture script: {CAPTURE_SCRIPT}")
-    if shutil.which("xvfb-run") is None:
-        parser.error("xvfb-run is required for GPU rendering")
     run_dirs = [out / f"repeat-{repeat}" for repeat in (1, 2)]
     for folder in run_dirs:
         folder.mkdir()
 
     env = dict(os.environ, LP_NUM_THREADS="1", OPENRC_SCENERY="off", PYTHONDONTWRITEBYTECODE="1")
-    render_base = [
-        "xvfb-run",
-        "-a",
-        "-s",
-        "-screen 0 1280x720x24",
-        str(godot),
-        "--path",
-        str(app),
-        "--rendering-driver",
-        "opengl3",
-        "--audio-driver",
-        "Dummy",
-        "--script",
-        str(CAPTURE_SCRIPT),
-        "--",
-    ]
+    version_report = checked_run([str(godot), "--version"], out / "engine-version.log", env, 15)
+    engine_build = (out / "engine-version.log").read_text(encoding="utf-8").strip()
+    if engine_build != PINNED_ENGINE_BUILD:
+        raise RuntimeError(f"engine build is {engine_build!r}; expected {PINNED_ENGINE_BUILD}")
+    render_base = render_command(godot, app)
+    checked_reports = [version_report]
     reports: list[dict[str, Any]] = []
     metrics: list[dict[str, Any]] = []
     for repeat, folder in enumerate(run_dirs, start=1):
-        checked_run([*render_base, f"--out={folder}"], out / f"repeat-{repeat}.log", env)
+        checked_reports.append(checked_run([*render_base, f"--out={folder}"],
+            out / f"repeat-{repeat}.log", env, required_text="Cloud density GPU atlas complete:"))
         metadata, pixels = read_run(folder, include)
         reports.append(metadata)
         metrics.append(verify_atlas(pixels))
@@ -265,6 +278,9 @@ def main() -> int:
         "format": SUMMARY_FORMAT,
         "complete": True,
         "godot": reports[0]["godot"],
+        "engine_build": engine_build,
+        "engine_executable_sha256": sha256_file(godot),
+        "checked_runs": [Path(report["report"]).relative_to(out).as_posix() for report in checked_reports],
         "renderer": reports[0]["renderer"],
         "api": reports[0]["api"],
         "cloud_include_sha256": reports[0]["cloud_include_sha256"],

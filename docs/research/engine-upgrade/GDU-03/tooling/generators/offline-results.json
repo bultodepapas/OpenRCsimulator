@@ -1,0 +1,172 @@
+[
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/world/sky_table.py",
+      "--check"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 35.532,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\01-sky_table.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "tools/world/stars.py",
+      "--check"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.172,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\02-stars.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/propwash/e0b2/derive_geometry.py",
+      "--check"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 1,
+    "elapsed_seconds": 0.109,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\03-derive_geometry.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/propwash/e0b2/test_geometry.py"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.172,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\04-test_geometry.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/propwash/e0b3b/derive_profile.py",
+      "--check"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.14,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\05-derive_profile.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/propwash/e0b3b/test_profile.py"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.157,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\06-test_profile.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/generate_suspension_reference.py",
+      "--check"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.187,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\07-generate_suspension_reference.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/generate_support_reference.py",
+      "--check"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.922,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\08-generate_support_reference.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/build_visual.py",
+      "--check"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.172,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\09-build_visual.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/build_vehicle_data.py",
+      "--check"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.125,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\10-build_vehicle_data.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/test_vehicle_data_generator.py"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.547,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\11-test_vehicle_data_generator.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/asset_intake.py",
+      "--check"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.531,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\12-asset_intake.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/test_asset_intake.py"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.625,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\13-test_asset_intake.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/monster-car-2/build_vehicle_data.py",
+      "--check"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.25,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\14-build_vehicle_data.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/monster-car-2/test_build_vehicle_data.py"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.234,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\15-test_build_vehicle_data.log"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/rc-monster-truck/monster-car-2/visual_verify.py"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "exit": 0,
+    "elapsed_seconds": 0.375,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\16-visual_verify.log"
+  }
+]

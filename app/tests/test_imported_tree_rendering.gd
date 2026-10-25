@@ -757,9 +757,13 @@ func _test_maple_texture_imports(parts: Array) -> void:
 		if not loaded:
 			continue
 		var expected_normal_mode := 1 if filename.ends_with("_normal.png") else 0
-		# Keep leaf alpha coverage at farm/forest viewing distances; ordinary
-		# color mip averaging erodes this atlas at the authored 0.5 cutoff.
-		var expected_mips := filename != "maple_leaves_basecolor.png"
+		# GDU-11a: Godot 4.8 preserves alpha-test coverage while filtering the
+		# leaf atlas. Ordinary mips erode the crown at the authored 0.5 cutoff.
+		var expected_mips := true
+		if filename == "maple_leaves_basecolor.png":
+			_check("Maple leaf mipmaps preserve alpha-test coverage at the reviewed threshold",
+				config.get_value("params", "mipmaps/preserve_alpha_test_coverage", false) == true
+				and config.get_value("params", "mipmaps/alpha_test_threshold", -1.0) == 0.5)
 		var metadata: Variant = config.get_value("remap", "metadata", {})
 		var metadata_has_vram := metadata is Dictionary \
 			and bool((metadata as Dictionary).get("vram_texture", false))

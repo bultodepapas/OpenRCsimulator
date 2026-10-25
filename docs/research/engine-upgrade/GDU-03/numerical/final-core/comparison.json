@@ -1,0 +1,206 @@
+{
+  "format": "openrc-gdu04-comparison v1",
+  "complete": true,
+  "identical": true,
+  "engines": {
+    "baseline": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "version": "4.7.2.stable.official.ed1daf0bf"
+    },
+    "candidate": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+      "sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+      "version": "4.8.beta1.official.4d10419ca"
+    }
+  },
+  "source_app": "D:\\OpenRCsimulator-experiments\\gdu04-final-core-source",
+  "source_files": 248,
+  "source_manifest_sha256": "d7ff9fefbb50129b2ac7ebece2e46e5438dd0b4073d08661aac76cfc9d990206",
+  "probe_sha256": "0b98cda921ef0e32eca5ffb8d9895d3ae4168cba22210791e996ed87b91b489b",
+  "runner_sha256": "63fe7bf21e04c258ee5c8019b3acfed3cef9effa823e6ab604d3f3ead5128967",
+  "cases": {
+    "jensen-das-ugly-stik-60-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 415152,
+      "baseline_sha256": "78ed941a12c55914d96287fe3e75464888b15a59383a586f70ae90c092dece7f",
+      "candidate_sha256": "78ed941a12c55914d96287fe3e75464888b15a59383a586f70ae90c092dece7f"
+    },
+    "jensen-das-ugly-stik-60-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 476656,
+      "baseline_sha256": "f26699444c07c2b36184ed7deeaa4c0b6686de782a38afbd7b9f6633ed706207",
+      "candidate_sha256": "f26699444c07c2b36184ed7deeaa4c0b6686de782a38afbd7b9f6633ed706207"
+    },
+    "stik-glow-61fx-2t-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "c71f206264ba3bb39c40d33e09cdb9ef307e72ea84920eb81797b6ed40055e13",
+      "candidate_sha256": "c71f206264ba3bb39c40d33e09cdb9ef307e72ea84920eb81797b6ed40055e13"
+    },
+    "stik-glow-61fx-2t-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "ba835b6d6d456bdaf8c4c45019eb892c9090b5727292b839fd11285ffe26d95c",
+      "candidate_sha256": "ba835b6d6d456bdaf8c4c45019eb892c9090b5727292b839fd11285ffe26d95c"
+    },
+    "stik-glow-55ax-2t-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "491835a2e56a5db2964fee0d80a160e51d8db38d3853c3619e1768f5d7a67ba9",
+      "candidate_sha256": "491835a2e56a5db2964fee0d80a160e51d8db38d3853c3619e1768f5d7a67ba9"
+    },
+    "stik-glow-55ax-2t-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "df11fe501e070f04a03911ef44e57c10226f814928c17bb6b65c255031809e69",
+      "candidate_sha256": "df11fe501e070f04a03911ef44e57c10226f814928c17bb6b65c255031809e69"
+    },
+    "stik-glow-fs64v-4t-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "a51f5f9c1f84996fa5fab7d0ac520dbbbf961a8da04ad14fc7b2c34016eba7a1",
+      "candidate_sha256": "a51f5f9c1f84996fa5fab7d0ac520dbbbf961a8da04ad14fc7b2c34016eba7a1"
+    },
+    "stik-glow-fs64v-4t-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "edb900d1ffcb78b6ef6d2cc6adc580c35bec594f93a18840568843d19ea542b4",
+      "candidate_sha256": "edb900d1ffcb78b6ef6d2cc6adc580c35bec594f93a18840568843d19ea542b4"
+    },
+    "gp-extra-300s-60-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "c82497c0c47daa56377328ac93b50a3189003eb1046fb942221b3234e0d6a04e",
+      "candidate_sha256": "c82497c0c47daa56377328ac93b50a3189003eb1046fb942221b3234e0d6a04e"
+    },
+    "gp-extra-300s-60-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "2ccfc17cdc9d66d48d0edc249f8ee0c0e4c3c5fd908e7de759f07356bacb3c5f",
+      "candidate_sha256": "2ccfc17cdc9d66d48d0edc249f8ee0c0e4c3c5fd908e7de759f07356bacb3c5f"
+    },
+    "p51d-mustang-120-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "db47182c60c6c05e56676b5a691c1b26cca033d56ab158f4f6d9ae50d67189dd",
+      "candidate_sha256": "db47182c60c6c05e56676b5a691c1b26cca033d56ab158f4f6d9ae50d67189dd"
+    },
+    "p51d-mustang-120-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 545848,
+      "baseline_sha256": "bcf7780e7b77d8bf3adc9ba7cd36a2bc562e6105eee4ecb06dfb397956be5cec",
+      "candidate_sha256": "bcf7780e7b77d8bf3adc9ba7cd36a2bc562e6105eee4ecb06dfb397956be5cec"
+    },
+    "f4u-corsair-250-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "63c8ebc44f7759446c80ac9aa492a49821538271174bbdbe54e6d3d15a51c1fb",
+      "candidate_sha256": "63c8ebc44f7759446c80ac9aa492a49821538271174bbdbe54e6d3d15a51c1fb"
+    },
+    "f4u-corsair-250-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 545848,
+      "baseline_sha256": "91ab33761374a1efb94b5a71f37402ea97caecf2d524aa5786e78449696950e0",
+      "candidate_sha256": "91ab33761374a1efb94b5a71f37402ea97caecf2d524aa5786e78449696950e0"
+    },
+    "sebart-avanti-s-a200-p100rx-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "8055d4681d38c7e067bb00a2791849e0cc370e6de80bd1a22cb2628dacb686eb",
+      "candidate_sha256": "8055d4681d38c7e067bb00a2791849e0cc370e6de80bd1a22cb2628dacb686eb"
+    },
+    "sebart-avanti-s-a200-p100rx-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 545848,
+      "baseline_sha256": "f6309c23d3482c1228687dfe9705c7ba60059ce7774ad03ceb27edb6ca7c438c",
+      "candidate_sha256": "f6309c23d3482c1228687dfe9705c7ba60059ce7774ad03ceb27edb6ca7c438c"
+    },
+    "turbo-lumber-evolution-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 422840,
+      "baseline_sha256": "93742cb8a2d7b3cffb734c5450ff1ca04c57d60de7c58c3d69ccf9e200223128",
+      "candidate_sha256": "93742cb8a2d7b3cffb734c5450ff1ca04c57d60de7c58c3d69ccf9e200223128"
+    },
+    "turbo-lumber-evolution-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "0c7f4b14c9ab63cc381616f72e578b8e6af952d7bc5f45cf0bb2e6054539dc90",
+      "candidate_sha256": "0c7f4b14c9ab63cc381616f72e578b8e6af952d7bc5f45cf0bb2e6054539dc90"
+    }
+  },
+  "wind": {
+    "wind-0.bin": {
+      "identical": true,
+      "baseline_sha256": "c2251b373bf3b7827e51e74cda99f04a70ce976d4293e60ac9cf8f75a0a4c2e2",
+      "candidate_sha256": "c2251b373bf3b7827e51e74cda99f04a70ce976d4293e60ac9cf8f75a0a4c2e2"
+    },
+    "ou-0.bin": {
+      "identical": true,
+      "baseline_sha256": "4d21ef977b14ac6a06e37d175cf2988f6a7a774aae152939f3e1cd2cf90179cc",
+      "candidate_sha256": "4d21ef977b14ac6a06e37d175cf2988f6a7a774aae152939f3e1cd2cf90179cc"
+    },
+    "wind-1.bin": {
+      "identical": true,
+      "baseline_sha256": "5f0542cf384ad10fd2b55b30b0fdb67d3a9b36d92afe2090c163ef96e1f2de9f",
+      "candidate_sha256": "5f0542cf384ad10fd2b55b30b0fdb67d3a9b36d92afe2090c163ef96e1f2de9f"
+    },
+    "ou-1.bin": {
+      "identical": true,
+      "baseline_sha256": "71d0950073b668d8bfa22619c859e307c90fa98c5e514ae5732a5a2c42988104",
+      "candidate_sha256": "71d0950073b668d8bfa22619c859e307c90fa98c5e514ae5732a5a2c42988104"
+    },
+    "wind-12345.bin": {
+      "identical": true,
+      "baseline_sha256": "8f98531ebdf5894c6c5983abe1e31f6afe3aed599e094c3bb668d5b20d0f144f",
+      "candidate_sha256": "8f98531ebdf5894c6c5983abe1e31f6afe3aed599e094c3bb668d5b20d0f144f"
+    },
+    "ou-12345.bin": {
+      "identical": true,
+      "baseline_sha256": "99dcad0ce892a28ede790f228a64512d5f89e0ce1532480fdde1d31792ed66b7",
+      "candidate_sha256": "99dcad0ce892a28ede790f228a64512d5f89e0ce1532480fdde1d31792ed66b7"
+    },
+    "wind-20261011.bin": {
+      "identical": true,
+      "baseline_sha256": "1212fbba5202cf33b45272d29ab863a28bf586481d2f2fa55757c5e906619bd3",
+      "candidate_sha256": "1212fbba5202cf33b45272d29ab863a28bf586481d2f2fa55757c5e906619bd3"
+    },
+    "ou-20261011.bin": {
+      "identical": true,
+      "baseline_sha256": "7290607afc1995efab04cb5b3d9b4e9ac1de798a7cef876892f1613e42e2d6a6",
+      "candidate_sha256": "7290607afc1995efab04cb5b3d9b4e9ac1de798a7cef876892f1613e42e2d6a6"
+    },
+    "wind-4294967295.bin": {
+      "identical": true,
+      "baseline_sha256": "e7f860261c35920ddba4758bde17cfebc726bd75bde6e25ca11a821886bb396b",
+      "candidate_sha256": "e7f860261c35920ddba4758bde17cfebc726bd75bde6e25ca11a821886bb396b"
+    },
+    "ou-4294967295.bin": {
+      "identical": true,
+      "baseline_sha256": "f6fa2ae67f3c40848f6242cf73b502473ea32a6dc863b6617f2a3bb5697f2223",
+      "candidate_sha256": "f6fa2ae67f3c40848f6242cf73b502473ea32a6dc863b6617f2a3bb5697f2223"
+    }
+  },
+  "engine_hash_capture": "before execution",
+  "pcg32_oracle_sha256": "5fe474aeb6274db74fb5726bbb35cbcc5d68b676f5b635437e3d557d53e3fa4a",
+  "independent_pcg32_oracle": "all raw words and states match app/tests/check_wind_trace.py",
+  "limits": "Frozen-source research comparison only; not ORFL exact replay, physical validation, all-platform equivalence or performance qualification."
+}

@@ -25,6 +25,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "research/f4u-corsair/F4U-04"))
+import preflight_glb as glb_geometry
+
 ASSET_DIR = ROOT / "assets/aircraft/f4u-corsair-250"
 MANIFEST = ASSET_DIR / "source-manifest.json"
 SAMPLES = ASSET_DIR / "gear-samples.json"
@@ -145,6 +148,43 @@ def quaternion_angle(a_wxyz, b_xyzw):
     return 2 * math.atan2(math.dist(a, b), math.hypot(*(x + y for x, y in zip(a, b))))
 
 
+def wheel_support_path(gltf, binary, samples, wheel_name, down_contact):
+    """F4U-08-R1: support points on the rotating tyre, not a radius below a horizontal wheel.
+
+    The unlocked gear uses these points only for collision detection. Average tied
+    lowest vertices without counting duplicated material/seam vertices. Preserve
+    the qualified downlocked wheel-plane contact after checking mesh agreement.
+    """
+    nodes = {n["name"]: n for n in gltf["nodes"]}
+    parent = {gltf["nodes"][c]["name"]: n["name"] for n in gltf["nodes"] for c in n.get("children", [])}
+    wheel = nodes[wheel_name]
+    vertices = sorted({v for primitive in gltf["meshes"][wheel["mesh"]]["primitives"]
+                       for v in glb_geometry.accessor_values(gltf, binary, primitive["attributes"]["POSITION"])})
+    path = []
+    for sample in samples:
+        cache = {}
+
+        def world(name):
+            if name not in cache:
+                node = nodes[name]
+                if name in sample["nodes"]:
+                    pose = sample["nodes"][name]
+                    w, x, y, z = pose["rotation_wxyz"]
+                    node = {"translation": pose["translation"], "rotation": [x, y, z, w]}
+                local = glb_geometry.local_matrix(node)
+                cache[name] = glb_geometry.multiply(world(parent[name]), local) if name in parent else local
+            return cache[name]
+
+        matrix = world(wheel_name)
+        points = [[sum(matrix[r][c] * v[c] for c in range(3)) + matrix[r][3] for r in range(3)] for v in vertices]
+        lowest = min(v[1] for v in points)
+        support = [v for v in points if v[1] <= lowest + 1e-7]
+        path.append([round(sum(v[axis] for v in support) / len(support), 10) for axis in range(3)])
+    assert abs(path[-1][1] - down_contact[1]) < 2e-6, "downlocked tyre changed: " + wheel_name
+    path[-1] = down_contact
+    return path
+
+
 def compile_model():
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     delivery = ROOT / manifest["delivery_root"]
@@ -157,7 +197,7 @@ def compile_model():
     assert gear_src["source_blend_sha256"] == keys["blend"]["sha256"], "gear-samples.json was not taken from the frozen game source"
     assert gear_src["frames"] == {"stowed": meta["gear"]["runtime_export_frame"], "down": meta["gear"]["landmark_frame"]}
 
-    gltf = read_glb(RUNTIME_GLB)
+    gltf, binary = glb_geometry.read_glb(RUNTIME_GLB)
     assert not gltf.get("animations") and not gltf.get("cameras")
     names = [n["name"] for n in gltf["nodes"]]
     assert len(names) == len(set(names)), "ambiguous node names"
@@ -223,8 +263,10 @@ def compile_model():
                 assert spec[key] in helpers, spec[key]
                 assert (spec[key] in carriers) == (key == "compression_node" and role != "tail"), f"{spec[key]} sampling"
         radius = meta_wheel["radius_m"]
+        down = centres[-1]
+        down_contact = [down[0], round(down[1] - radius, 10), down[2]]
         wheels[role] = dict(spec, radius_m=radius, center_model=centres,
-                            contact_model=[[c[0], round(c[1] - radius, 10), c[2]] for c in centres])
+                            contact_model=wheel_support_path(gltf, binary, samples, spec["node"], down_contact))
 
     # F4U-10: the smoke anchor at the delivered left middle exhaust stack (the F4U-1D's low cowl-flank stacks). The
     # Moki's collector ring exit is not modelled; the visible stack is where a viewer expects the exhaust.

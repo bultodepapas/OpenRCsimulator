@@ -1,0 +1,267 @@
+{
+  "format": "openrc-gdu03-export-source-summary v1",
+  "scope": "Summary of the retained frozen snapshot plus authorized final overlays; source head alone is not a complete build identity. Tests are excluded by production presets.",
+  "frozen_manifest": {
+    "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\snapshot-manifest.json",
+    "sha256": "2f861fdcaab8797cf162cbea3ba482f2e7feb3c375959228dc58f5223a0a141a",
+    "bytes": 5431322
+  },
+  "source_head_at_freeze": "3ad5cd591fe8eae77fc79b3bdc7f43a85c5c9c98",
+  "initial_files_verified": 34670,
+  "base_copy_receipt": {
+    "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\package-snapshot-receipt.json",
+    "sha256": "f65bebf1a61643098d34c6ba6f438fe89767eac088b519d3dc604ff694ba4ad4",
+    "bytes": 7163
+  },
+  "build_identity": {
+    "describe": "5e5243dd-dirty",
+    "commit": "5e5243dd8671fa1421e545350d1fb3d7ce1a2ce8",
+    "date": "2026-10-25T09:07:18-05:00",
+    "numeric": "0.1.8",
+    "editor": "4.8.beta1.official.4d10419ca",
+    "scope": "Native Windows official editor, all three release presets, headless."
+  },
+  "final_overlay_files": [
+    {
+      "path": "app/.godot/export_templates/macos-universal-4.8-beta1.zip.receipt.json",
+      "sha256": "490c97b6b0975156efb1a8658edaaa184f45602850b9fbf853a0537ec1ec27be",
+      "bytes": 1752
+    },
+    {
+      "path": "app/assets/landscape/lake/default_geometry.res",
+      "sha256": "4edcba6fc11f09c521af64b6e0fc5d0b8e56645d91da1bf0b3cfdf8fae994052",
+      "bytes": 739230
+    },
+    {
+      "path": "app/assets/ui/liveries/f4u-corsair-250/carbon-ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278.png.import",
+      "sha256": "cc33c3a585dd6c72ab90f33186910608891fc9736f50f779b775904d5f556568",
+      "bytes": 1257
+    },
+    {
+      "path": "app/assets/ui/liveries/f4u-corsair-250/italy-e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac.png.import",
+      "sha256": "a513d8cf0ce6842f3538e707428f054574357b61c8ba13c57835d7219f6895ad",
+      "bytes": 1254
+    },
+    {
+      "path": "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "sha256": "f715c20c14e6449a24b62d9710ec07557a1eb4afd3cd0a31f25f2d32a88ff007",
+      "bytes": 1502
+    },
+    {
+      "path": "app/data/ai/companions/fields/club-default.json",
+      "sha256": "6c057483667fc50565f5fba2ba317cde2d1709c56cbc2719ecc82adf58477fbc",
+      "bytes": 3397
+    },
+    {
+      "path": "app/data/fields/horizon.json",
+      "sha256": "7040c33f522a4e0a035089baa341018aa6000b01113c3c4dd9a8f52b86d93c3c",
+      "bytes": 164687
+    },
+    {
+      "path": "app/data/woodland_edges.json",
+      "sha256": "de51b6a5cb22ae49537075e6590c2eb9f70c16d9ee334edb57625e118a8cbe18",
+      "bytes": 62351
+    },
+    {
+      "path": "app/debug/debug_bridge.gd",
+      "sha256": "c9f439fadcaa0ec38c4e972decc7210795142984815d4d522926a2773fc78c89",
+      "bytes": 96148
+    },
+    {
+      "path": "app/export.sh",
+      "sha256": "ffb46718d48340a41426b1b93c3ef88c0c080eef8c06ec48767599f724a96ce0",
+      "bytes": 11985
+    },
+    {
+      "path": "app/export_presets.cfg",
+      "sha256": "51e49c41e726fbae4c745aca18767d6db8456909799c64a9ecf78a947e6a9f3e",
+      "bytes": 7397
+    },
+    {
+      "path": "app/native/ground_vehicle/build-receipt.json",
+      "sha256": "037d5ea773841a902e42b1ee74d6873a504e10c686d415b08d5bd939e970b633",
+      "bytes": 1880
+    },
+    {
+      "path": "app/native/ground_vehicle/openrc_ground_vehicle.gdextension",
+      "sha256": "1d4b4cbd1070c411922be4ce3c067cf8db610eec6c394dc4811fcfd02236e916",
+      "bytes": 270
+    },
+    {
+      "path": "app/physics/mass_inventory.gd",
+      "sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+      "bytes": 24933
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+      "bytes": 5514
+    },
+    {
+      "path": "app/project.godot",
+      "sha256": "4d85a7bc6eddfaad7876597a2ee9ce2b9793513a147670dcee0c3dbc3f028a0a",
+      "bytes": 3080
+    },
+    {
+      "path": "app/render/lake/generated_geometry_stamp.gd",
+      "sha256": "0402278a05708d2b934d8a3c2ffc8d727bd7b8642283ca658241b815588de276",
+      "bytes": 173
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "d87986c342b8d45b15af4da03e8bfc511c4ea3cdd2e483c7a135f3e1bb5cf92d",
+      "bytes": 248918
+    },
+    {
+      "path": "app/tests/test_field_integration.gd",
+      "sha256": "bb451fd123382f6b25c6673c284849d51757ac6268242eaa4823200b7e36879f",
+      "bytes": 24131
+    },
+    {
+      "path": "app/tests/test_landscape_vegetation.gd",
+      "sha256": "ca4ab05d6d5280c9bac8082ce9c7c8179da48ca2b3c2ba7b4b3058001995f3dd",
+      "bytes": 16768
+    },
+    {
+      "path": "app/tests/test_livery_picker.gd",
+      "sha256": "f41cf386ec5c31ea8bf4718b3e05a9a6025e8b758de2a0bf037f890d9fa682db",
+      "bytes": 5434
+    },
+    {
+      "path": "app/tests/test_overlay_manager.gd",
+      "sha256": "ba7abfe2714b43334645ff6b2ef19eca523c40b99efe73ca64fa30cbb1847a17",
+      "bytes": 48369
+    },
+    {
+      "path": "app/tests/test_retractable_gear_input.gd",
+      "sha256": "56417f3937d22101abf8799397d78c63e972874ef88d2433c495d9e8dccab998",
+      "bytes": 3622
+    },
+    {
+      "path": "app/tests/test_ui_aircraft_flow.gd",
+      "sha256": "8fadba02461785dcebd0331f1e5f8658ec4dade9c9f8da82cdc7732973e151ce",
+      "bytes": 7984
+    },
+    {
+      "path": "app/tests/test_ui_quit.gd",
+      "sha256": "19260a7b88ec8d98d004d18f07cbed0c6b711d2122a3580cc1d5559920694934",
+      "bytes": 25400
+    },
+    {
+      "path": "app/ui/livery_picker.gd",
+      "sha256": "ffb4e4411aa518d5e6697a74c271838e0929887788479d6816b07bcc5e42f16d",
+      "bytes": 7407
+    },
+    {
+      "path": "app/ui/overlays_dialog.gd",
+      "sha256": "c6d4f234b66044fdef04eb1275c95fc6e5bbe1cadea241bb275b83843db649e1",
+      "bytes": 22841
+    },
+    {
+      "path": "app/ui/settings_screen.gd",
+      "sha256": "543986c2b57ce8dd9255350adeb55f68100d5578a4edd1652f8bf466f5ade670",
+      "bytes": 49559
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02/rebinds/2026-10-25-1f7daf66-to-5df257b3.json",
+      "sha256": "0a50dee6fa03bc1c5f805190a603c2a5becfba6e32135b9c2033f62d1696a561",
+      "bytes": 5119
+    },
+    {
+      "path": "tools/companions/qualification.json",
+      "sha256": "fd24289d691abc1635c24189c890eb8528507b9e11f3b280948bc0d114d09cd9",
+      "bytes": 1400
+    },
+    {
+      "path": "tools/debug/scenarios/helicopter_arm.txt",
+      "sha256": "9eee361c605905181a976d3e77ea48b2a12189559f17db534ce6ecd8156f3875",
+      "bytes": 553
+    },
+    {
+      "path": "tools/debug/test_debugctl.py",
+      "sha256": "505c62e5da8b403fdf5c61e44d3fdda15d0f624ecfa6c7deb0d8812d8fde6f4d",
+      "bytes": 17782
+    }
+  ],
+  "final_import_sidecars_checked": 422,
+  "import_changes_from_frozen_manifest": [
+    {
+      "path": "app/assets/ui/liveries/f4u-corsair-250/carbon-ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278.png.import",
+      "before_sha256": "41a342a79ce2b4455aa83cdb51a8c58500019be4585a2d265705391db658bdae",
+      "sha256": "cc33c3a585dd6c72ab90f33186910608891fc9736f50f779b775904d5f556568"
+    },
+    {
+      "path": "app/assets/ui/liveries/f4u-corsair-250/italy-e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac.png.import",
+      "before_sha256": "57fb945164fd37254ba8612b084cf525f1c591f4f2e3a9f6c57d6bbccacd3f5e",
+      "sha256": "a513d8cf0ce6842f3538e707428f054574357b61c8ba13c57835d7219f6895ad"
+    }
+  ],
+  "invalid_import_sidecars": [],
+  "companion_source_qualification": {
+    "solver_qualification_sha256": "5df257b35154f1f2908431acfbc0dd60d837c083dddd55026a1627fab646aaae",
+    "accepted_rev": "be068e5a3a25bab03e8954fbed57eb1489b37df6",
+    "paths_sha256": {
+      "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "f715c20c14e6449a24b62d9710ec07557a1eb4afd3cd0a31f25f2d32a88ff007",
+      "tools/companions/qualification.json": "fd24289d691abc1635c24189c890eb8528507b9e11f3b280948bc0d114d09cd9",
+      "docs/research/ai-companions/AFC-02/rebinds/2026-10-25-1f7daf66-to-5df257b3.json": "0a50dee6fa03bc1c5f805190a603c2a5becfba6e32135b9c2033f62d1696a561"
+    },
+    "field_profile_sha256": "6c057483667fc50565f5fba2ba317cde2d1709c56cbc2719ecc82adf58477fbc",
+    "strict_profile_checks": 43,
+    "matrix_checks": 148,
+    "matrix_csvs_identical": true,
+    "legacy_tapes_identical": 9,
+    "current_4_8_tapes_identical": 2
+  },
+  "native_receipt": {
+    "abi_version": 1,
+    "backend": "native",
+    "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
+    "format": "openrc-ground-vehicle-native-receipt",
+    "platforms": {
+      "linux": {
+        "abi_version": 1,
+        "architecture": "x86_64",
+        "backend": "native",
+        "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
+        "binary_sha256": "08a4c6f7c05c5ef082099cd9158bd2b31814ca3bc4a7663a9ca770895141abcd",
+        "exception_flags": [
+          "-fexceptions"
+        ],
+        "floating_point_flags": [
+          "-fno-fast-math",
+          "-ffp-contract=off"
+        ],
+        "platform": "linux",
+        "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+        "source_sha256": "6d4c5eabeb2f8565cf84d08fb6825ab5b1cacc47a7ebc26f215ac97b88ae1c2b",
+        "toolchain": {
+          "compiler_version": "13.3.0"
+        },
+        "toolchain_sha256": "f496e08cc64e415f969ffbe6c7a0779f504c2668bf74ab341cd661d1cc38b289"
+      },
+      "windows": {
+        "abi_version": 1,
+        "architecture": "x86_64",
+        "backend": "native",
+        "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
+        "binary_sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+        "exception_flags": [
+          "/EHsc"
+        ],
+        "floating_point_flags": [
+          "/fp:strict"
+        ],
+        "platform": "windows",
+        "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+        "source_sha256": "6d4c5eabeb2f8565cf84d08fb6825ab5b1cacc47a7ebc26f215ac97b88ae1c2b",
+        "toolchain": {
+          "compiler_toolset": "14.51.36231",
+          "sdk_version": "10.0.26100.0",
+          "visual_studio_version": "18.9.12128.139"
+        },
+        "toolchain_sha256": "1ebb9fc5a3bc49546401e2d0373ce3e3a734d88f1aedd5f663cab2a7745cc1ad"
+      }
+    },
+    "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5"
+  }
+}

@@ -40,8 +40,8 @@ def godot_executable(root: Path, explicit: Path | None, platform: str) -> Path:
     if explicit is not None:
         return explicit.resolve()
     if platform == "windows":
-        return root / ".tools/Godot_v4.7.2-stable_win64.exe"
-    return Path(shutil.which("godot4") or shutil.which("godot") or "")
+        return root / ".tools/Godot_v4.8-beta1_win64_console.exe"
+    return root / ".tools/Godot_v4.8-beta1_linux.x86_64"
 
 
 def extension_descriptor(library_prefix: str) -> str:

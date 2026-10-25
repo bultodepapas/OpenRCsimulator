@@ -1273,7 +1273,11 @@ func _release_kinds_for(class_level: int, hint: String) -> Array:
 		elif h.contains("gear") or h.contains("wheel"):
 			kinds = ["gear"]
 	elif class_level == 3:
-		if h.contains("left_wing") or h.contains("wing_left") or h.contains("left_tip"):
+		if h.contains("left_wing_root"):
+			kinds = ["wing_center", "wing_left"]
+		elif h.contains("right_wing_root"):
+			kinds = ["wing_center", "wing_right"]
+		elif h.contains("left_wing") or h.contains("wing_left") or h.contains("left_tip"):
 			kinds = ["wing_left"]
 		elif h.contains("right_wing") or h.contains("wing_right") or h.contains("right_tip"):
 			kinds = ["wing_right"]

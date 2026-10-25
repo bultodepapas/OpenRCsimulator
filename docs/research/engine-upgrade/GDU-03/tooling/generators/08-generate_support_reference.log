@@ -1,0 +1,2 @@
+oracle checks passed: relative thirds-semigroup residual <= 9.463e-12; undamped energy drift <= 3.174e-12; minimum tire load 12.442314 N
+fixture is current: D:\OpenRCsimulator-experiments\gdu03-suite\research\rc-monster-truck\fixtures\support_reference.json

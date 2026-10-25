@@ -1,0 +1,54 @@
+{
+  "step": "F4U-11-R1",
+  "date": "2026-10-25",
+  "engine": "Godot 4.8-beta1 official.4d10419ca",
+  "source_sha256": {
+    "app/aircraft/verify_f4u.gd": "0d447a12ce64c8867f877f97ded68cc4408e58aa8b8d6e207b4aa90f5f9bab3d",
+    "app/render/crash/severity.gd": "183d2282929e28f0be709f6343cd766990fdf6e452aac6a4c6c14960e7936b47",
+    "app/render/crash/wreck.gd": "c22666bf7489a6120051b606cf286e5e4eea4ef5b9cbf9446663a4746b45d83b",
+    "app/physics/aircraft_data.gd": "06e17e0d026668ccab399b23e39870edecc913b200ff234cd687e485e3971cc2",
+    "app/data/schema/aircraft-contract-v2.json": "71d41cf42ef911e7dda885419b9f601eae599f8533392405b20cb6cb1a04ae70",
+    "app/data/aircraft/f4u_corsair_250.json": "e27ba35766bad2e32f7c10b0d3e80d49331af2c557957a85959dca47ebad3d43",
+    "app/data/economy/catalog.json": "e2b418db1d9f72962af4895e98dc18395af03490a6807a21ad55f0995d5734a6",
+    "research/f4u-corsair/F4U-11/extract_crash_geometry.py": "afb9b076fdbc05344d358f94f6430777b87fb690167e62ba3b4d0766ae1c3edd",
+    "research/f4u-corsair/F4U-07/derive_physics.py": "23c45c9c5937be22e156ce096fb643599a86c9e3caf91e2c7313d41f94781ce9",
+    "research/f4u-corsair/F4U-11/costing_entry.py": "81cc51d42e3bc1501b843e02f7ce064b12a68a9f4dfe863d05b9eecfc5e4f192",
+    "assets/aircraft/f4u-corsair-250/crash-geometry.json": "50eec9f6b9950568d7d77a05bde1c3c65eda3b00680897392e0ec1a703cd030a",
+    "assets/aircraft/f4u-corsair-250/source-manifest.json": "cc73743db20fdc0112674f76adced87a14675094fcca3aba1add49c433dbaf8f"
+  },
+  "artifact_sha256": {
+    "baseline-aircraft.json": "398cbe0263ff29cb362848116c71cd29d9c0a2a465b4c6cffd89e0798842d618",
+    "baseline.orfl": "b894dbae5bf7cbbfd93fd539aa635374881ac50c06e32fe07853e467d03ce49f",
+    "candidate.json": "f9cea016efb484ce80a3c20bb8a2390ba6d8e4b30279e46ef4eb8563b98fa4b6",
+    "comparison.json": "712c5de2dd32a4e513b2f763b117df35e1bc6fba740565fec5d790a231fc884e",
+    "crash-integration.json": "97dcc8172965668fa3d2781ca69cfa3e7e4407daf143e2a7a03793db1b0475bb",
+    "crash-integration.log": "b2dfee3f702c8abdc63362fa801a144febe6e609439185ea3346ed35c311a8b2",
+    "exact-before.json": "1dd3edcb0bb0fdd6ed254c571c7b64341a226cb2ad25fb22af606287b2db6e88",
+    "hull-labels.json": "eafdef016e62a9932514646613e0a2b79eb8bc92c07ae5d67f5b906d14bb877b",
+    "hull-labels.log": "148ba922a0562f726c64103084bab1ce4d6c8df10ab6a07d63e59f250cde0ade",
+    "isolated-baseline.orfl": "e09655142eeea9002f5837908f60d1d8d0c58e7e465e88848925bf8cc0212339",
+    "isolated-exact.json": "8cbeba6169c18381a85b0082fc3306aa5480002cdcc0252e0cd71dec655f94df",
+    "model-contract.json": "735282e5306e3d84fa9ee8122efa9a3c0b685f65e230c7c704d139356b8bf5b3",
+    "model-contract.log": "6301dc686c38eea63dd621b297436a3234f46c59083e6f03741fc2b18b8684af",
+    "old-hull-negative.json": "6198ce88087b8afceb2172d1b18ca3ff428ec6287961241be058666fe4fa751b",
+    "old-hull-negative.log": "1b50248a1d42dba2a17a72f91579b862f339bb8e7b459761c71a8c91d58726ce"
+  },
+  "shared_csv": {
+    "path": "docs/research/f4u-corsair/F4U-12/baseline.csv",
+    "sha256": "33214fffbfd3b5acda3997033b4314f9b31f9801f604d6f35306e832b42eb859",
+    "identical_outputs": [
+      "exact-before/flight.csv",
+      "isolated-exact/flight.csv",
+      "candidate/flight.csv"
+    ]
+  },
+  "negative_control": {
+    "change": "Disposable verify_f4u.gd: only DATA_PATH replaced with baseline-aircraft.json path.",
+    "expected_failed_checks": 12,
+    "whole_hull_missed_crossings": [
+      "probe_wing_left_tip",
+      "probe_wing_right_tip",
+      "probe_tail_cone"
+    ]
+  }
+}

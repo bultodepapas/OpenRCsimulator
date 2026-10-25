@@ -214,6 +214,7 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 	# The Recorder contract stops even when the save fails. Recovery must keep the retained Trace explicit.
 	app.quit_requests = 0
 	app._quit_audio_pending = false # final quit is mocked; begin a separate synthetic attempt
+	app._home_preparation_quit_pending = false # reset the completed terminal transaction too
 	var failed_recorder := FailOnceRecorder.new()
 	app.flight.recorder = failed_recorder
 	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
@@ -247,6 +248,7 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 	# An explicit Quit after failure must show the decision again; accepting a second Quit is not Discard.
 	app.quit_requests = 0
 	app._quit_audio_pending = false # final quit is mocked; begin a separate synthetic attempt
+	app._home_preparation_quit_pending = false # reset the completed terminal transaction too
 	var always_fails := AlwaysFailRecorder.new()
 	app.flight.recorder = always_fails
 	var previous_window_size: Vector2i = root.size

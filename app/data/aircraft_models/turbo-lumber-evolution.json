@@ -27,7 +27,7 @@
     "script": "res://aircraft/timber_geometry.gd",
     "source": {
       "path": "assets/aircraft/turbo-lumber-evolution/geometry.json",
-      "sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681",
+      "sha256": "ba392cfc37a3a8b8489c781bd15d35f96b68091a5a128ac3818f20723683af58",
       "hash_mode": "lf_text"
     },
     "revision": "r2-d75ae605aa3a",
@@ -141,7 +141,7 @@
   "authoring_sources": [
     {
       "path": "assets/aircraft/turbo-lumber-evolution/geometry.json",
-      "sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681",
+      "sha256": "ba392cfc37a3a8b8489c781bd15d35f96b68091a5a128ac3818f20723683af58",
       "hash_mode": "lf_text",
       "role": "geometry"
     },
@@ -153,7 +153,7 @@
     },
     {
       "path": "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json",
-      "sha256": "c9f06c66c475763417e364bdcf887685169bc788b777edd2550074279f784f70",
+      "sha256": "ae585078344abbfbe1405b9e1777243c120e299516fde663c538c231f4e74063",
       "hash_mode": "lf_text",
       "role": "mesh_measurements"
     },
@@ -191,7 +191,7 @@
     },
     {
       "path": "res://aircraft/timber_geometry.gd",
-      "sha256": "3c1b06000122d342e93a255e8259cf722add6e72f0bb924a8a91cd68129e2f65",
+      "sha256": "9779239e822912963fe18c70d09b3cc111e44ef4821be07db94fa51e18838b73",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
     },

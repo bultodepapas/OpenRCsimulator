@@ -1,0 +1,41 @@
+{
+  "format": "openrc-official-godot-trial v1",
+  "step": "GDU-02",
+  "source_commit": "a6c2ce38a80a44327392367520c828b42ba0acda",
+  "engine_version": "4.8.beta1.official.4d10419ca",
+  "editor_url": "https://github.com/godotengine/godot-builds/releases/download/4.8-beta1/Godot_v4.8-beta1_win64.exe.zip",
+  "editor_archive_sha512": "bdc79f8ef47c3794c6984751bbac2c1934cf1c7c9ceebc2d0e87db0846766411b7bbbb6fecf90f3485f951a1289c3171b1c7bebca18dcdd8e08bd81de95b6cc0",
+  "editor_executable_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "editor_gui_sha256": "bfd67323e170f4167f0df27369b5e9add66c5d6a827f8bbbb03f7c36b6e08905",
+  "presentation_engine_version": "4.8.0",
+  "presentation_qualification": "experimental; not accepted for production",
+  "companion_qualification": "unchanged 4.7.2 guard; unavailable on 4.8",
+  "renderer": "gl_compatibility",
+  "dlss": false,
+  "generated_registry_sha256": "e9b1c6865e46fe37eab79b3e7b1d9469b2f74c5e722835d4646ccf5f014656fc",
+  "generated_models": {
+    "app/data/aircraft_models/f4u-corsair-250.json": "f29e1e2ccdffa020baea16f7341fbace0e23fc2093e213926a941da006bb4910",
+    "app/data/aircraft_models/gp-extra-300s-60.json": "f8280cd02c96759a389438e632c05cb9c1a8b6e4f03d74dbdcc505e50d66f7a4",
+    "app/data/aircraft_models/jensen-das-ugly-stik-60.json": "5fcc6fe0092e7c4f95e32c46eb9f619902c51d8d7b569afeae00255a0cc9a684",
+    "app/data/aircraft_models/p51d-mustang-120.json": "6dd631d2e69d358f05b2639def51db22ccb5c8d81365b81d4a57b588ea561354",
+    "app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json": "4f49947c2c5d588f8f98895e0d72bf51ca7f4eee8cb79478f981defcb5e7393f",
+    "app/data/aircraft_models/turbo-lumber-evolution.json": "cee935909408808935e099546cd1d44c90074f2575fa431bb85a3520612302b0"
+  },
+  "adapted_files": {
+    "app/project.godot": "3ff5433fab343390ee03276f0a1d460934f1100b4979290d878b12f6e75e9981",
+    "app/render/presentation_sources.gd": "b985ac400dde140b8234ab5c5b0c5f1283a5cf6bfe69c99011d09bec8bd04e68",
+    "app/workshop/presentation.gd": "37a4b7296b7c3de78cc87de485131ec93baf4f68ef449ba2d3288c3be5d5dbb8",
+    "research/aircraft-standardization/build_customization.py": "b9f5479e024a15d341375fbba3739838cccfc63dc6fb1483890f3ba677deeefd",
+    "app/tests/test_aircraft_customization.gd": "7ecc854cf68debc857a8042dcbb4db06a8a6023cc25d94b7f60a191b89b221d2",
+    "app/tests/test_workshop_presentation.gd": "b00f13cc8b0178faf9171b4f4f200dfc56b6e27a953e7b5b2dbf473dc78f9fbb",
+    "app/tests/test_smoke_bindings.gd": "193df1c32e766904de5cfa366e8f799c47753743973834107442c2b812e46974"
+  },
+  "launchers": {
+    "Play Godot 4.8.cmd": "f069e753dc5cee72354499694c7b09ad4b6c975d72b6b5b42d3500d656bd57ab",
+    "Edit Godot 4.8.cmd": "a1a834a0aaebdc60894cb05b3d13d9e12aa3253906a378cbc29f002f0e1b06c5"
+  },
+  "tracked_diff_sha256": "d5b3825ae17cb17452310bdb758b610bb8413fdfa5a24ff02de19da881027f02",
+  "untracked_sources": {
+    "app/tests/test_initial_flight_camera.gd.uid": "99cc9241d503a4d838019032aca515244bef9d8284783e8beb196d84a9dd8d05"
+  }
+}

@@ -49,6 +49,12 @@ func _backdrop_shows(livery: String) -> Callable:
 
 func _press_paint(livery: String) -> bool:
 	app.home.livery_button.pressed.emit()
+	var picker: Node = app.screens.get_screen("liveries")
+	if picker == null: return false
+	for button: Button in picker.buttons:
+		if button.get_meta("livery_id") == livery:
+			button.pressed.emit()
+			break
 	return await _wait_until(_backdrop_shows(livery), 30.0)
 
 
@@ -82,7 +88,7 @@ func _run() -> void:
 		_check("%s is saved for the Corsair" % expected.id, Preferences.load_from(PREFS).liveries == {CORSAIR: expected.id})
 		await _shot("home-" + expected.id)
 	var wrapped := await _press_paint("midnight")
-	_check("the last scheme cycles back to the default paint, saved as no entry", wrapped and home.livery_id == ""
+	_check("the gallery selects the default paint directly, saved as no entry", wrapped and home.livery_id == ""
 		and Preferences.load_from(PREFS).liveries.is_empty())
 
 	for record: Dictionary in manifest.liveries.slice(1):

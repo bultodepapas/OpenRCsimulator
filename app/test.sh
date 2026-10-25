@@ -320,6 +320,7 @@ for t in "$HERE"/tests/test_*.gd; do
   case "$(basename "$t")" in
     test_half_power_start.gd) test_timeout=600 ;; # D6e-R3: eight airplanes, each solved and flown three times at 240 Hz; measured 219 s on the shared VM, 300 s under load
     test_glow_session.gd) test_timeout=180 ;; # Four coupled installations with replay and takeoff; measured 67 s on Linux.
+    test_companions_lifecycle.gd) test_timeout=180 ;; # 50 headless + 10 visual/audio rebuild cycles; measured 67.719 s natively on 4.8 beta1.
     test_glow_dive_support.gd) test_timeout=120 ;; # NITRO-61FX-R1: two 12 s full-throttle dives at 240 Hz; measured 32 s on the shared VM.
     test_extra_handling.gd|test_extra_runway.gd) test_timeout=120 ;; # EX-14c tail slipstream: measured 66 s / 46 s on the quiet shared VM (53 / 41 s before), 77 / 51 s under load.
     test_pilot_trim.gd) test_timeout=300 ;; # Fleet controls plus frozen/live inventory comparisons; measured 117 s natively.
@@ -410,6 +411,7 @@ python3 "$HERE/../research/f4u-corsair/F4U-03/manifest.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-05/compile_model.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-07/ground_effect_vlm.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-07/fit_propeller.py" --check || exit 1
+python3 "$HERE/../research/f4u-corsair/F4U-11/extract_crash_geometry.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-07/derive_physics.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-11/costing_entry.py" --check || exit 1
 run --script res://aircraft/verify_f4u.gd 2>&1 | tee "$LOG" | tail -1

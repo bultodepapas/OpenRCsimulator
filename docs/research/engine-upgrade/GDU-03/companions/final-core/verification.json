@@ -1,0 +1,28 @@
+{
+  "format": "openrc-companion-final-core-qualification v1",
+  "date": "2026-10-25",
+  "accepted_rev": "be068e5a3a25bab03e8954fbed57eb1489b37df6",
+  "accepted_branch": "gdu03-core-qualification-20261025",
+  "canonical_solver_sha256": "5df257b35154f1f2908431acfbc0dd60d837c083dddd55026a1627fab646aaae",
+  "raw_solver_before_sha256": "d8d056aade49f096adf353f4d0197bd4d0328e1f4a1344f085c6f0755f5eb85f",
+  "raw_solver_final_sha256": "08d8086faa1db1cd3370ec755c53e7b5b4f54adc0590b13326cafea4745bffd0",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "core_sha256": {
+    "app/sim/flight_session.gd": "d87986c342b8d45b15af4da03e8bfc511c4ea3cdd2e483c7a135f3e1bb5cf92d",
+    "app/physics/math3d.gd": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+    "app/physics/mass_inventory.gd": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292"
+  },
+  "rebind_receipt": "../../../../ai-companions/AFC-02/rebinds/2026-10-25-1f7daf66-to-5df257b3.json",
+  "legacy_tapes": 9,
+  "same_engine_candidate_streams": 2,
+  "matrix_checks": 148,
+  "strict_profile_checks": 43,
+  "fresh_recorder_checks": 157,
+  "fresh_exact_streams": 2,
+  "fresh_rows_per_stream": 261,
+  "fresh_complete": true,
+  "fresh_solver_changed": false,
+  "old_raw_headers_relabelled": false,
+  "limits": "Valid-flight software parity on recorded inputs and circuit matrix only; no fleet restore/decision replay, physical validation, new activity or population/performance qualification.",
+  "admission_commit": "280b3548cbf5ad4cf58d8ff0209adf5988ae5773"
+}

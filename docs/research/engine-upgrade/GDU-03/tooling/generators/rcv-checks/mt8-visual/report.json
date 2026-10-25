@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f176fd07-c6aa-4cbf-ba86-a7c0db8b9067",
+  "command": [
+    "D:\\OpenRCsimulator-experiments\\gdu03-suite\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "D:\\OpenRCsimulator-experiments\\gdu03-suite\\research\\rc-monster-truck\\visual\\test_mt8_visual.gd"
+  ],
+  "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+  "started_utc": "2026-10-25T15:30:55.066781+00:00",
+  "label": "mt8-visual",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\rcv-checks\\mt8-visual-gc_da_lg\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-generator-portability\\rcv-checks\\mt8-visual-gc_da_lg\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.578,
+  "log_bytes": 3023,
+  "log_sha256": "c6933e5453ba1359005d01a04b6fcada8290e389c07f50e9f09a38c158960585"
+}

@@ -1,0 +1,47 @@
+{
+  "format": "openrc-gdu03-overlay-focus v1",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "cause": "Node.reparent removes focus from the descendant OptionButton; responsive header row moves lost keyboard focus",
+  "fix": "Capture previous focus owner and restore it only if its header row moved",
+  "transitions": "2x text:1920x1080 to1280x720 and back; both Preset and Units; actual parent assertions plus focus assertions",
+  "checks": [
+    {
+      "label": "amended-overlay-manager",
+      "report": "checks/amended-overlay-manager-jxdvlpzw/report.json",
+      "ok": true,
+      "exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 21.344
+    },
+    {
+      "label": "fixed",
+      "report": "checks/fixed-_ecohxis/report.json",
+      "ok": true,
+      "exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.953
+    },
+    {
+      "label": "original",
+      "report": "checks/original-vsvv5n5w/report.json",
+      "ok": false,
+      "exit": 1,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.516
+    }
+  ],
+  "sources": {
+    "app/ui/overlays_dialog.gd": "c6d4f234b66044fdef04eb1275c95fc6e5bbe1cadea241bb275b83843db649e1",
+    "app/tests/test_overlay_manager.gd": "ba7abfe2714b43334645ff6b2ef19eca523c40b99efe73ca64fa30cbb1847a17"
+  },
+  "scope": "headless interaction/lifecycle only; no GPU/visual/performance qualification, no suite snapshot mutation"
+}

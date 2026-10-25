@@ -4,7 +4,7 @@
   "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
   "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
   "godot": {
-    "version": "4.7.2.stable.official.ed1daf0bf",
+    "version": "4.8.beta1.official.4d10419ca",
     "extension_api": "4.7"
   },
   "godot_cpp": {

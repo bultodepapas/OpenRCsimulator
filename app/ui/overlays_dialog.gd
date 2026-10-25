@@ -349,6 +349,19 @@ func _resize_layout() -> void:
 	_training_grid.columns = 1 if stacked else 2
 	for row in _picker_rows:
 		row.vertical = stacked
+	# At large text sizes, short windows need the preset and units inside the
+	# scrolling body. Keep the title, tabs and Done reachable without shrinking text.
+	var scroll_header := stacked and available.y < 800.0
+	var header_parent: Node = _scroll.get_child(0) if scroll_header else dialog_panel.get_child(0)
+	var header_rows: Array[BoxContainer] = [preset_picker.get_parent(), units_picker.get_parent()]
+	var focused := get_viewport().gui_get_focus_owner()
+	for index in header_rows.size():
+		var row := header_rows[index]
+		if row.get_parent() != header_parent:
+			row.reparent(header_parent, false)
+			header_parent.move_child(row, index if scroll_header else index + 1)
+			if focused != null and row.is_ancestor_of(focused):
+				focused.grab_focus()
 	if tab_bar != null:
 		# Five sections fit at the primary 1080p/default-text target; larger text retains native tab scrolling.
 		tab_bar.add_theme_font_size_override("font_size", roundi(22 * preload("res://ui/ui_theme.gd").text_scale))

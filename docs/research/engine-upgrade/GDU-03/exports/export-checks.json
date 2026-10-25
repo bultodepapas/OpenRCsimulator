@@ -1,0 +1,509 @@
+{
+  "format": "openrc-gdu03-export-check-summary v1",
+  "checks": [
+    {
+      "label": "early-field-linux",
+      "started_utc": "2026-10-25T16:36:07.033060+00:00",
+      "command": [
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/tmp/exports/current-pack-gates/host-linux/Godot_v4.8-beta1_linux.x86_64",
+        "--headless",
+        "--path",
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/tmp/exports/current-pack-gates/empty",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/app/tests/check_field_pack.gd",
+        "--",
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/dist/linux/openrc-simulator.x86_64",
+        "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 104
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 19.116993,
+      "log_sha256": "73eedc539804b94f7e8b0df913586b300d7f2eceec6962bbe5cf731205612011",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\checks\\early-field-linux-supsb7zc\\report.json",
+        "sha256": "d5622286b5a9107a35f7afece27e21b79c563f7e5f10f34c6e737ab95f956d06",
+        "bytes": 13737
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\checks\\early-field-linux-supsb7zc\\engine.log",
+        "sha256": "73eedc539804b94f7e8b0df913586b300d7f2eceec6962bbe5cf731205612011",
+        "bytes": 85698
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "export-linux",
+      "started_utc": "2026-10-25T16:35:50.922189+00:00",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\app",
+        "--audio-driver",
+        "Dummy",
+        "--export-release",
+        "Linux",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\linux\\openrc-simulator.x86_64"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 13.515,
+      "log_sha256": "dfdbd344475fe71fb5697e7caac8bf6db55d0c1c680f51d02b04388a3fbf268a",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\checks\\export-linux-ks12zazy\\report.json",
+        "sha256": "4b01fcb60970d90ab5a88adb8dbca7dba7ccb9574125a5c12454dcb9ef3cfc9c",
+        "bytes": 1379
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\checks\\export-linux-ks12zazy\\engine.log",
+        "sha256": "dfdbd344475fe71fb5697e7caac8bf6db55d0c1c680f51d02b04388a3fbf268a",
+        "bytes": 268153
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "export-macos",
+      "started_utc": "2026-10-25T16:36:40.756607+00:00",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\app",
+        "--audio-driver",
+        "Dummy",
+        "--export-release",
+        "macOS",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\macos\\OpenRC Simulator.zip"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 70.406,
+      "log_sha256": "9f144266541c89bdd4c54f6f1eb976f012f939c6aff5f4754d9ea581bb921590",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\checks\\export-macos-x6u0myq6\\report.json",
+        "sha256": "b69df19d4ea93b7544b63bb71d7a23778d9c166a0aaa6f2fc7aee4d3ddad1375",
+        "bytes": 1376
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\checks\\export-macos-x6u0myq6\\engine.log",
+        "sha256": "9f144266541c89bdd4c54f6f1eb976f012f939c6aff5f4754d9ea581bb921590",
+        "bytes": 268083
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "export-windows",
+      "started_utc": "2026-10-25T16:36:26.219839+00:00",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\app",
+        "--audio-driver",
+        "Dummy",
+        "--export-release",
+        "Windows",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\windows\\OpenRC Simulator.exe"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 14.39,
+      "log_sha256": "dfdbd344475fe71fb5697e7caac8bf6db55d0c1c680f51d02b04388a3fbf268a",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\checks\\export-windows-d1agk89y\\report.json",
+        "sha256": "615311ed2e8eccfec80cf066af34e1e3f29857bedb326dd11eeb1b51ef15fcd7",
+        "bytes": 1385
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\checks\\export-windows-d1agk89y\\engine.log",
+        "sha256": "dfdbd344475fe71fb5697e7caac8bf6db55d0c1c680f51d02b04388a3fbf268a",
+        "bytes": 268153
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "import",
+      "started_utc": "2026-10-25T16:35:38.449787+00:00",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 12.344,
+      "log_sha256": "5d3785db8fb36184e823896b2641d1b7703b917dfcdb0283598af7f7dc86f3b5",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\checks\\import-9cbjk6ln\\report.json",
+        "sha256": "b3741e09f9f6ac1286358d5cf2873603a7db9cd59dfd07956a2ddc0bc9212ae2",
+        "bytes": 1243
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\checks\\import-9cbjk6ln\\engine.log",
+        "sha256": "5d3785db8fb36184e823896b2641d1b7703b917dfcdb0283598af7f7dc86f3b5",
+        "bytes": 1854
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "canonical-package-tail",
+      "started_utc": "2026-10-25T16:39:17.979456+00:00",
+      "command": [
+        "bash",
+        "tmp/exports/native-editor/run-canonical-package-checks.sh"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 312
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 355.650418,
+      "log_sha256": "a8ad8840c04163826e7a4b142a3311d9df98a0f8b771270194a657b270c699ca",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\final-runtime-checks\\canonical-package-tail-qbf0so7e\\report.json",
+        "sha256": "33c6f45a2fecfe35b03b37630ddb0e537a60fa3bd59511bf95674bc79863bbe2",
+        "bytes": 13268
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\final-runtime-checks\\canonical-package-tail-qbf0so7e\\engine.log",
+        "sha256": "a8ad8840c04163826e7a4b142a3311d9df98a0f8b771270194a657b270c699ca",
+        "bytes": 263069
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "native-package",
+      "started_utc": "2026-10-25T16:39:42.746904+00:00",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\current-pack-gates\\host-windows\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--log-file",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\native-package.godot.log",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\empty-project",
+        "--main-pack",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\windows\\OpenRC Simulator.exe",
+        "--script",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\app\\tests\\check_native_pack.gd"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 0.406,
+      "log_sha256": "4ca37193dcfc27c963f2236128436f76f83f622fe8f304b68c6668aaecaa9656",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\checks\\native-package-2mu57f8r\\report.json",
+        "sha256": "8d363e7c3884af26a15225fc9726249a2350544e6d5bd5a665697e79b6a82db8",
+        "bytes": 1742
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\checks\\native-package-2mu57f8r\\engine.log",
+        "sha256": "4ca37193dcfc27c963f2236128436f76f83f622fe8f304b68c6668aaecaa9656",
+        "bytes": 2483
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "rotorcraft-package",
+      "started_utc": "2026-10-25T16:39:43.291721+00:00",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\current-pack-gates\\host-windows\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--log-file",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\rotorcraft-package.godot.log",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\empty-project",
+        "--main-pack",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\windows\\OpenRC Simulator.exe",
+        "--script",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\research\\aircraft-standardization\\rotorcraft_package_smoke.gd"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 0.484,
+      "log_sha256": "067c0eeccfdd431d81727578bf308650ad3e3690c53d9a3fbc643c1430694d1c",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\checks\\rotorcraft-package-9w6g2go5\\report.json",
+        "sha256": "53097d542888b533bf028ab85bfe2f7a71b25f5328513bfff2209974217864fe",
+        "bytes": 1788
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\checks\\rotorcraft-package-9w6g2go5\\engine.log",
+        "sha256": "067c0eeccfdd431d81727578bf308650ad3e3690c53d9a3fbc643c1430694d1c",
+        "bytes": 120
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "trimmed-startup",
+      "started_utc": "2026-10-25T16:39:25.919844+00:00",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\windows\\OpenRC Simulator.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--log-file",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\trimmed-startup.godot.log",
+        "--",
+        "--trace=D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\windows-trim.csv",
+        "--t=3"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 16.5,
+      "log_sha256": "77c4e548618e0add89537a0937fcf405922709dc7c6c6e1f43a00465f5227871",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\checks\\trimmed-startup-6jqk_k4j\\report.json",
+        "sha256": "cf113f059cf22e6e3adf503eab6e85c5e8000ee2f3be9bef06ed28582d58207b",
+        "bytes": 1498
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\windows-qualified\\checks\\trimmed-startup-6jqk_k4j\\engine.log",
+        "sha256": "77c4e548618e0add89537a0937fcf405922709dc7c6c6e1f43a00465f5227871",
+        "bytes": 284
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "windows-pack-responsive",
+      "started_utc": "2026-10-25T16:39:36.053167+00:00",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\current-pack-gates\\host-windows\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\current-pack-gates\\empty",
+        "--audio-driver",
+        "Dummy",
+        "--main-pack",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\windows\\OpenRC Simulator.exe",
+        "--script",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\app\\tests\\test_ui_modal_responsive.gd"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 49.734,
+      "log_sha256": "de698cb25882c5b9e83c91eacb8509dfbb9da20263689d6bb96f439bdbf7a00e",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packed-responsive\\checks\\windows-pack-responsive-1_7kcjy5\\report.json",
+        "sha256": "6b4bd51401c8c525b6caeb0ce19112a4822f120cc7150d2cf6ab228c396cc30f",
+        "bytes": 1639
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packed-responsive\\checks\\windows-pack-responsive-1_7kcjy5\\engine.log",
+        "sha256": "de698cb25882c5b9e83c91eacb8509dfbb9da20263689d6bb96f439bdbf7a00e",
+        "bytes": 690
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "windows-pack-livery",
+      "started_utc": "2026-10-25T16:44:10.427779+00:00",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\current-pack-gates\\host-windows\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\current-pack-gates\\empty",
+        "--audio-driver",
+        "Dummy",
+        "--main-pack",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\windows\\OpenRC Simulator.exe",
+        "--script",
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packed-livery\\test_packed_livery_picker.gd"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 2.172,
+      "log_sha256": "2770ae22236e24f207ea6f9815d9690855bf8c714e44d1564bab7963faae4e6b",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packed-livery-qualified\\checks\\windows-pack-livery-v5ps5q5c\\report.json",
+        "sha256": "098e1ea82d79266be2889164633b91099d1e5e35d61527891e33e14e6b68e0e2",
+        "bytes": 1651
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packed-livery-qualified\\checks\\windows-pack-livery-v5ps5q5c\\engine.log",
+        "sha256": "2770ae22236e24f207ea6f9815d9690855bf8c714e44d1564bab7963faae4e6b",
+        "bytes": 109
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    },
+    {
+      "label": "windows-release-1080p",
+      "started_utc": "2026-10-25T16:46:13.427288+00:00",
+      "command": [
+        "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\windows\\OpenRC Simulator.exe",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--rendering-method",
+        "gl_compatibility",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--log-file",
+        "D:/OpenRCsimulator-experiments/gdu03-packages/tmp/exports/packaged-1080p/release.godot.log",
+        "--",
+        "--capture",
+        "--t=1.5",
+        "--out=D:/OpenRCsimulator-experiments/gdu03-packages/tmp/exports/packaged-1080p/release-flight-1080p.png"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "reason": "passed",
+      "elapsed_seconds": 38.203,
+      "log_sha256": "5b2ccbfc4ed4299c3f4cd42f0ebd7a2f6f6207ead3712b847ee544fa44e2f42c",
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packaged-1080p\\checks\\windows-release-1080p-uy4knjlu\\report.json",
+        "sha256": "8ad468ec4b25b9b064ff5817ad2b43952e0c2e5c197e72f27e5b346589cd367e",
+        "bytes": 1673
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\packaged-1080p\\checks\\windows-release-1080p-uy4knjlu\\engine.log",
+        "sha256": "5b2ccbfc4ed4299c3f4cd42f0ebd7a2f6f6207ead3712b847ee544fa44e2f42c",
+        "bytes": 485
+      },
+      "scope": "Compact summary; original report/log pair retained at the linked D paths."
+    }
+  ],
+  "archive_integrity": [
+    {
+      "file": "openrc-simulator-5e5243dd-dirty-linux-x86_64.zip",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\openrc-simulator-5e5243dd-dirty-linux-x86_64.zip",
+      "bytes": 1232300253,
+      "sha256": "f4cb27a229e1300e70fc94ad9b09becc363db6a86ea11b69bfd4d4113c68d249",
+      "zip_crc": "pass",
+      "entries": [
+        "libopenrc_ground_vehicle.so",
+        "openrc-simulator.x86_64"
+      ]
+    },
+    {
+      "file": "openrc-simulator-5e5243dd-dirty-macos-universal.zip",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\openrc-simulator-5e5243dd-dirty-macos-universal.zip",
+      "bytes": 1260819598,
+      "sha256": "2b7df74cbae59d4d638a447579d97fdcc00e6c807b68379f093266d0442ad014",
+      "zip_crc": "pass",
+      "entries": [
+        "OpenRC Simulator.app/Contents/Info.plist",
+        "OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator",
+        "OpenRC Simulator.app/Contents/PkgInfo",
+        "OpenRC Simulator.app/Contents/Resources/en.lproj/InfoPlist.strings",
+        "OpenRC Simulator.app/Contents/Resources/es.lproj/InfoPlist.strings",
+        "OpenRC Simulator.app/Contents/Resources/icon.icns",
+        "OpenRC Simulator.app/Contents/Resources/OpenRC Simulator.pck",
+        "OpenRC Simulator.app/Contents/Resources/PrivacyInfo.xcprivacy",
+        "OpenRC Simulator.app/Contents/_CodeSignature/CodeResources"
+      ]
+    },
+    {
+      "file": "openrc-simulator-5e5243dd-dirty-windows-x86_64.zip",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\openrc-simulator-5e5243dd-dirty-windows-x86_64.zip",
+      "bytes": 1238557986,
+      "sha256": "dc55614a8b215c68d5b70d05519ad5dea1ef3899fbb268c5b3e9a05ba9f82736",
+      "zip_crc": "pass",
+      "entries": [
+        "OpenRC Simulator.exe",
+        "openrc_ground_vehicle.dll"
+      ]
+    }
+  ],
+  "warning_scope": "Field resource checks retain104 invalid glTF resource UID warnings per pack,312 in the all-platform check; Godot uses the valid text paths. No load errors.",
+  "canonical_package_tail": {
+    "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\native-editor\\run-canonical-package-checks.sh",
+    "sha256": "59cf831b5d8360a4d3452191828db0f13ea7f1b6ece23d80bd7af53887dd71a4",
+    "bytes": 8737
+  },
+  "production_export_script": {
+    "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\app\\export.sh",
+    "sha256": "ffb46718d48340a41426b1b93c3ef88c0c080eef8c06ec48767599f724a96ce0",
+    "bytes": 11985
+  },
+  "livery_fixture_adapter": {
+    "test_source": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\app\\tests\\test_livery_picker.gd",
+    "source_sha256": "f41cf386ec5c31ea8bf4718b3e05a9a6025e8b758de2a0bf037f890d9fa682db",
+    "only_adaptation": "External UI test driver path substituted for excluded res://tests/ui_driver.gd. All256 assertions and production res:// runtime/assets remain unchanged.",
+    "driver_sha256": "8d250337b7aa647679ad106b97a68df22a46398b7e4de7800875b0f97c944ba2"
+  },
+  "canonical_tail_verification": {
+    "exact_production_script_tail": true,
+    "sha256": "0a974443377de34e089ed00bec9baf0862e74bba3f50101455e7f6c53323a14a",
+    "start_marker": "echo \"== native package artifacts: verify both platform rows against exported binaries\""
+  }
+}

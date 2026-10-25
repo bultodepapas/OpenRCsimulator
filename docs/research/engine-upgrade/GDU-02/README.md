@@ -40,12 +40,23 @@ The following regressions are now closed upstream, but their fixes merged on Oct
 
 The same GitHub query used by GDU-00 returns 87 open 4.8-milestone regressions on this date, versus 93 on October 21. Issue closure alone does not establish that a fix is present in a downloaded binary.
 
-## Initial evidence
+## Verification and triage
+
+Retained machine-readable evidence: [checked invocations and runtime results](verification.json), [source receipt](trial-receipt.json), and [Windows package manifest](export-manifest.json). Initial failed invocations are retained and classified; they are not silently replaced by the successful reruns.
 
 - Pristine import: exit 0, zero engine errors, eight OBJ ambient-material warnings. Tracked churn: 307 `.import` files, 767 added lines; no `.tscn` or `.tres` churn. Raw diff inventory: `pristine-import-numstat.tsv`.
 - Import changed aircraft dependency metadata. The original model-manifest checks correctly rejected changed Avanti/Timber `.import` hashes. The trial therefore rebuilds model manifests **before** customization bindings, rather than weakening their SHA checks.
 - Initial headless checks passed: simulation (11), four golden flights, shared ground-vehicle kernel (23), flight logging (3,247), reconstruction policy (103), graphics profile policy (67), and presentation source proofs (97).
 - Golden checks use their existing numerical tolerances; passing them is **not** the byte-identical GDU-04 acceptance gate.
 - Three fixture tests initially retained literal 4.7.2 presentation identities. Their candidate-only fixture adaptations are recorded separately from engine regressions.
+- Final fixture reruns: customization 159 checks, Workshop presentation 77, smoke bindings 28; all pass. Wind turbulence/field/trace pass 29/59/29 checks. Advanced graphics settings pass 120 checks. In total, 14 distinct selected test scripts passed, including the four-flight golden script. The graphics policy checks disclose their headless rendering skips.
+- Companion profiles remain unavailable: the check reports the intended engine-version qualification mismatch and a pilot-source SHA mismatch. This experiment does not rewrite qualification records. A mistaken initial invocation of nonexistent `test_wind.gd` is a harness error; the actual three wind scripts above passed.
+- Rendered source session: Home, Settings, and Ugly Stik/Avanti/Timber flights, each stepped for 240 ticks; 1920×1080 window **and** viewport verified. No engine errors; normal shutdown reports no crash and zero leaked objects.
+- Official Windows release-template export: 1,475,623,720-byte embedded-PCK executable. Export has zero errors and one explicit `export-manual` build-info warning; it is an experimental package, not a tagged release. Its launch and all manifest file hashes were checked.
+- Exported game capture: 1920×1080, RTX 3090, NVIDIA 617.42, Compatibility. Checked process exits 0 with zero engine errors/warnings. The PNG was inspected; aircraft, terrain, scenery and HUD render. This single capture is not the paired GDU-02c qualification.
+- Debug bridge smoke: 15 steps pass; screen crawl reports zero errors/warnings, seeded navigation has no failure, and three fly/Home cycles have no growing counters. Shutdown reports zero leaked objects. The run recorded 71 hitches; it is not a performance qualification.
+- Bootstrap guards: four unsafe destinations are rejected; a deliberate custom launcher change is refused without modifying the launcher, project settings, generated registry or receipt. The original launcher was restored and package/source hashes rechecked.
+
+Open the standalone build with `D:/OpenRCsimulator-experiments/godot-4.8-beta1/experimental-windows/Play.cmd`, or use the worktree's `Play Godot 4.8.cmd` / `Edit Godot 4.8.cmd`. All test processes were stopped normally.
 
 Full `app/test.sh`, paired 1080p visual/audio evidence, exact cross-engine replay, native evaluator receipts and non-Windows exports remain separate gates. This experiment does not mark GDU-03 or production acceptance complete.

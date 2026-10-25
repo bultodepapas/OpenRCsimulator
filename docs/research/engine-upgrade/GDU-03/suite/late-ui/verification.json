@@ -1,0 +1,240 @@
+{
+  "format": "openrc-gdu03-late-ui-continuation v1",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "scope": "Root late UI continuation only; frozen suite/packages unchanged; no import or source edits",
+  "initial_sources": {
+    "app/app_root.gd": "5c5b2a27c9f6b1da55359e4ecff494611f8cea58e6b9b5cea8cb53c71ea65ff7",
+    "app/ui/screen.gd": "d3e31b1158eed71bd3a0e46e546f5c6e4bfbadb1c08bf8247583b9b0340f5ae4",
+    "app/ui/livery_picker.gd": "e073d4c8f8677a60c5e6ea4e0038786e08b42992cda9f49bfc0f23934c6f8e17",
+    "app/tests/test_livery_picker.gd": "76257ef6a42844e6381a8a2da8e36cc5edd02c18c6fb6d61b724f2a2f026dce4"
+  },
+  "source_files_hashed": 1860,
+  "runs": [
+    {
+      "script": "test_livery_picker.gd",
+      "runner_exit": 1,
+      "unchanged_sources": true,
+      "changed_sources": [],
+      "required_text": "Livery picker: 281 checks, 0 failed",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\godot\\run_checked.py",
+        "--out-dir",
+        "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks",
+        "--label",
+        "test_livery_picker.gd",
+        "--timeout",
+        "120",
+        "--require-text",
+        "Livery picker: 281 checks, 0 failed",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_livery_picker.gd"
+      ]
+    },
+    {
+      "script": "test_ui_modal_responsive.gd",
+      "runner_exit": 0,
+      "unchanged_sources": true,
+      "changed_sources": [],
+      "required_text": "Responsive modals: 672 cases, 0 failures",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\godot\\run_checked.py",
+        "--out-dir",
+        "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks",
+        "--label",
+        "test_ui_modal_responsive.gd",
+        "--timeout",
+        "180",
+        "--require-text",
+        "Responsive modals: 672 cases, 0 failures",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_modal_responsive.gd"
+      ]
+    },
+    {
+      "script": "test_ui_aircraft_flow.gd",
+      "runner_exit": 0,
+      "unchanged_sources": true,
+      "changed_sources": [],
+      "required_text": "UI aircraft flow: 0 failed",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\godot\\run_checked.py",
+        "--out-dir",
+        "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks",
+        "--label",
+        "test_ui_aircraft_flow.gd",
+        "--timeout",
+        "180",
+        "--require-text",
+        "UI aircraft flow: 0 failed",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_aircraft_flow.gd"
+      ]
+    },
+    {
+      "script": "test_ui_screen_stack.gd",
+      "runner_exit": 0,
+      "unchanged_sources": true,
+      "changed_sources": [],
+      "required_text": "all UI screen stack checks passed",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\godot\\run_checked.py",
+        "--out-dir",
+        "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks",
+        "--label",
+        "test_ui_screen_stack.gd",
+        "--timeout",
+        "180",
+        "--require-text",
+        "all UI screen stack checks passed",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_screen_stack.gd"
+      ]
+    }
+  ],
+  "overall_unchanged": true,
+  "final_sources": {
+    "app/app_root.gd": "5c5b2a27c9f6b1da55359e4ecff494611f8cea58e6b9b5cea8cb53c71ea65ff7",
+    "app/ui/screen.gd": "d3e31b1158eed71bd3a0e46e546f5c6e4bfbadb1c08bf8247583b9b0340f5ae4",
+    "app/ui/livery_picker.gd": "e073d4c8f8677a60c5e6ea4e0038786e08b42992cda9f49bfc0f23934c6f8e17",
+    "app/tests/test_livery_picker.gd": "76257ef6a42844e6381a8a2da8e36cc5edd02c18c6fb6d61b724f2a2f026dce4"
+  },
+  "livery_rerun": {
+    "runner_exit": 0,
+    "unchanged_sources": true,
+    "changed_sources": [],
+    "argv": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\godot\\run_checked.py",
+      "--out-dir",
+      "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks",
+      "--label",
+      "livery-confirmed-285",
+      "--timeout",
+      "120",
+      "--require-text",
+      "Livery picker: 285 checks, 0 failed",
+      "--",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_livery_picker.gd"
+    ],
+    "first_attempt_scope": "Actual285checks0failed; priorrequiredmarker281waswrongandretainedasunacceptedreceipt"
+  },
+  "excluded_attempts": [
+    {
+      "label": "test_livery_picker.gd",
+      "reason": "Wrong required completion count281; engine actually completed285checks0failed. Preserved original failedrunnerreceipt; acceptedrerunrequiresactual285."
+    }
+  ],
+  "accepted_reports": [
+    {
+      "label": "livery-confirmed-285",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks\\livery-confirmed-285-hfdqtk3d\\report.json",
+      "report_sha256": "a722828947c5797fbe1c8f2bdcde88d7ba85eb01aa8f86f02eb9735950b035fd",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks\\livery-confirmed-285-hfdqtk3d\\engine.log",
+      "log_sha256": "1a9604b5ab77c9a7a1186beff1f1118e7e7cc3ae9519518e855a965839409602",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "process_exit": 0,
+      "elapsed_seconds": 2.234,
+      "completion": [
+        "Livery picker: 285 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "test_ui_aircraft_flow.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks\\test_ui_aircraft_flow.gd-wz86miev\\report.json",
+      "report_sha256": "9433fba51359c091513e1c3664c067217dc6ff19ff12060e58f996eebf6903b9",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks\\test_ui_aircraft_flow.gd-wz86miev\\engine.log",
+      "log_sha256": "3593e4d8ff56602b4a7564e649aafe11435652b3e79f9313905e760457fb8e9e",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "process_exit": 0,
+      "elapsed_seconds": 24.86,
+      "completion": [
+        "UI aircraft flow: 0 failed"
+      ]
+    },
+    {
+      "label": "test_ui_modal_responsive.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks\\test_ui_modal_responsive.gd-kf1_scsy\\report.json",
+      "report_sha256": "0658bb75bfb6a67f2fc88abb8bea8c127332550e93884b33dbc64e1e6306bf8e",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks\\test_ui_modal_responsive.gd-kf1_scsy\\engine.log",
+      "log_sha256": "de698cb25882c5b9e83c91eacb8509dfbb9da20263689d6bb96f439bdbf7a00e",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "process_exit": 0,
+      "elapsed_seconds": 47.719,
+      "completion": [
+        "Responsive modals: 672 cases, 0 failures"
+      ]
+    },
+    {
+      "label": "test_ui_screen_stack.gd",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks\\test_ui_screen_stack.gd-l0hebcv5\\report.json",
+      "report_sha256": "4f684a71539d36e3240029076c7bcc4ec5eba5dee7fe3ba3caa5a040fcf1ba20",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-late-ui-continuation\\checks\\test_ui_screen_stack.gd-l0hebcv5\\engine.log",
+      "log_sha256": "54152fd0e72805c66d56b59cb6960a4265eaa341454f205dd335e945605e7d6a",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "process_exit": 0,
+      "elapsed_seconds": 24.657,
+      "completion": [
+        "all UI screen stack checks passed"
+      ]
+    }
+  ],
+  "all_four_passed": true,
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "sources-before.json_sha256": "693c936e423c22301807b01b7ebd8b868b31c2fceec42d264ad552c0bf423881",
+  "sources-after.json_sha256": "693c936e423c22301807b01b7ebd8b868b31c2fceec42d264ad552c0bf423881"
+}

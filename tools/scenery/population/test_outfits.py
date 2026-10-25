@@ -95,7 +95,7 @@ class Manifests(unittest.TestCase):
     def test_runtime_manifest_matches_people_files(self):
         files = json.loads(RUNTIME_MANIFEST.read_text())["files"]
         recorded = {f["path"]: f["sha256"] for f in files if f["path"].startswith("people/")}
-        current = {str(path.relative_to(RUNTIME_ROOT)): sha256(path)
+        current = {path.relative_to(RUNTIME_ROOT).as_posix(): sha256(path)
                    for path in sorted(PEOPLE_DIR.rglob("*")) if path.is_file()}
         self.assertEqual(recorded, current, "RUNTIME_MANIFEST.json people entries are stale")
 

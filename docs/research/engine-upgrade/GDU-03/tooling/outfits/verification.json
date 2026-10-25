@@ -1,0 +1,31 @@
+{
+  "format": "openrc-outfit-windows-portability-fix v1",
+  "date": "2026-10-25",
+  "changes": [
+    "Use POSIX-relative runtime manifest keys on every host.",
+    "Restore six outfit specifications to their exact previously recorded LF bytes; enforce LF checkout."
+  ],
+  "root_tests": {
+    "checks": 7,
+    "passed": true,
+    "log": "root-tests.log"
+  },
+  "frozen_tests": {
+    "checks": 7,
+    "passed": true,
+    "log": "frozen-tests.log"
+  },
+  "checkout_proof": "checkout-proof.json",
+  "original_byte_proof": "line-ending-proof.json",
+  "source_sha256": {
+    ".gitattributes": "a627a1362b3f476ea1739ff26a72b8016659bb6af2e6d55bbeafa390055e6f8b",
+    "tools/scenery/population/test_outfits.py": "7530393dedc513def8586fcf57ab9aea5bff75ff8b581ba6ba2463fe12409608",
+    "tools/scenery/population/outfits/casual_jacket.json": "95947329655375db42a4363d4ba99970a9514174c1f9d72a8a5781aa6726cdec",
+    "tools/scenery/population/outfits/casual_shirt.json": "b9ac43c6ffb979ffeeb6ab18f3d207f6d4ccc085cdc81bc024290641878074fb",
+    "tools/scenery/population/outfits/mechanic_overalls.json": "da51c1ce4b6d9ab0ad532360e84f22ab7b4dadc94dcb02f41616adfd304151e1",
+    "tools/scenery/population/outfits/pilot_polo.json": "78a44031a675cc0dbafb32146245eafe5e3695211c4f1b141c71857d50b2284e",
+    "tools/scenery/population/outfits/veteran_cap.json": "11321f10cdbe3036eb83c0374f57d545897d4db5651c9bcc6d4b7da6a7d0d2f2",
+    "tools/scenery/population/outfits/woman_tee.json": "fbe2fb8631a05a5cb8c9a35d11c28a1605ebdb71d457c990b595bd884cc086b2"
+  },
+  "unchanged_contract": "Raw SHA-256 checks and recorded source/runtime manifests unchanged; no Blender, GLB, texture, population or outfit-content changes."
+}

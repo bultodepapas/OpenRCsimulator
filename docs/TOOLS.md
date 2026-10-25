@@ -6,7 +6,7 @@ Canonical setup and command index. Code, configuration and generated data define
 
 ## Developer setup
 
-The CI host is Ubuntu 24.04 x86_64. Install Git, Bash, curl, unzip, GNU coreutils, util-linux and Python 3 (`python3`). `app/get-godot.sh` downloads the exact Godot version pinned in that script and verifies the archive's SHA-512.
+The standard engine is official Godot **4.8-beta1**, a prerelease, with CLI identity `4.8.beta1.official.4d10419ca`. The CI host is Ubuntu 24.04 x86_64. Install Git, Bash, curl, unzip, GNU coreutils, util-linux and Python 3 (`python3`). `app/get-godot.sh` downloads the pinned Linux x86_64 editor or Windows x86_64 console editor under Git Bash, verifies the official archive's SHA-512 and exact version, and checks cached binary hashes on reuse.
 
 ```sh
 git clone -c core.autocrlf=false https://github.com/bultodepapas/OpenRCsimulator.git
@@ -15,12 +15,12 @@ cd OpenRCsimulator
 "$(app/get-godot.sh)" --path app
 ```
 
-Import before standalone scripts on a fresh checkout. Test and capture runners import automatically. Interactive runs need a display. Captures also need Xvfb, Mesa/OpenGL, Python venv support and pip 22.3+; `app/tests/visual-env.sh` installs the hashed CPython 3.12 visual environment. Export needs `zip` and verified Godot export templates; the initial template download is about 1.28 GB.
+Import before standalone scripts on a fresh checkout. Test and capture runners import automatically. Interactive runs need a display. Captures also need Xvfb, Mesa/OpenGL, Python venv support and pip 22.3+; `app/tests/visual-env.sh` installs the hashed CPython 3.12 visual environment. Export needs `zip` and `app/get-templates.sh`; its initial official template download is about 1.36 GB. The installer verifies SHA-512 and uses Godot's exact `4.8.beta1` template directory under the host's Godot data folder. It also prepares the project-local macOS universal template selected by the export preset, preserving the installed official templates.
 
-**Windows:** use WSL2 Ubuntu on its Linux filesystem for the Bash test/capture/export scripts. Clone with the command above; copying a CRLF checkout can break Bash scripts. For native Windows, install the matching official Godot build:
+**Windows:** Git Bash supports the pinned native editor download and focused headless checks. Run `bash app/get-godot.sh` there first; it installs both Windows executables into `.tools/`. Use WSL2 Ubuntu on its Linux filesystem for the Linux CI/capture/export environment. Clone with the command above; CRLF files can break Bash scripts. Keep Linux and Windows import caches in separate checkouts. After installing the native editor, PowerShell can use:
 
 ```powershell
-$GodotWindows = 'C:\Tools\Godot_v4.7.2-stable_win64_console.exe'
+$GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta1_win64_console.exe').Path
 & $GodotWindows --headless --path app --editor --import
 & $GodotWindows --path app
 # Focused native check; repeat for the affected test scripts:
@@ -28,6 +28,8 @@ $GodotWindows = 'C:\Tools\Godot_v4.7.2-stable_win64_console.exe'
 ```
 
 Inspect exit status **and** engine errors in logs: Godot can report runtime script errors with exit code zero. WSL results establish Linux behavior, not native Windows GPU or device acceptance. On macOS, open `app/project.godot` with the matching Godot build.
+
+**Linux Wayland:** beta1 can crash while falling back from unavailable X11 to Wayland ([upstream issue #124731](https://github.com/godotengine/godot/issues/124731)); the [follow-up fix #124734](https://github.com/godotengine/godot/pull/124734) merged after this pinned build. In a working Wayland session, bypass X11 with `python3 tools/graphics/launch.py --display-driver wayland`. The launcher forwards that existing engine option. CLI imports, tests and exports should use `--headless`, which selects the headless display driver. Headless WSL import/export checks do not qualify desktop Wayland rendering.
 
 For focused checks, use the [checked Godot runner](../tools/godot/README.md):
 `python tools/godot/run_checked.py --timeout 90 -- $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_simulation.gd`

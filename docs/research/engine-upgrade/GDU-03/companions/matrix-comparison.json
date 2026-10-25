@@ -1,0 +1,12 @@
+{
+  "scenario_metrics.csv": {
+    "identical": true,
+    "beta_sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f",
+    "stable_sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f"
+  },
+  "flight_samples_1hz.csv": {
+    "identical": true,
+    "beta_sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2",
+    "stable_sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2"
+  }
+}

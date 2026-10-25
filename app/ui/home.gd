@@ -47,8 +47,8 @@ signal controls_requested(from: Control)
 signal settings_requested(from: Control)
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
-## F4U-16: the pilot chose another paint scheme for the current aircraft (a livery ID from its model manifest).
-signal livery_requested(livery: String)
+## Open the direct paint gallery; browsing does not request another 3D model.
+signal livery_picker_requested(from: Control)
 signal landscape_requested(id: String)
 signal start_requested(choice: String)
 ## The player asked to edit draft flight conditions; closing the dialog returns focus to `from`.
@@ -95,6 +95,8 @@ var livery_id := ""
 var livery_button: Button
 var _livery_row: VBoxContainer
 var _livery_choices: Array = []
+var _livery_choices_aircraft := ""
+var livery_preview_cache: Dictionary = {} # small UI textures for the current aircraft only
 var _livery_preferences: Dictionary = {}
 
 var fly_button: Button
@@ -485,16 +487,16 @@ func _init() -> void:
 	_left_layout.add_child(_livery_row)
 	_left_layout.move_child(_livery_row, _scroll.get_index())
 	_livery_row.visible = false
-	livery_button = _button("", "HomeChoice")
+	livery_button = _button("", "CompactPrimaryButton")
 	livery_button.name = "LiveryChoice"
-	Widgets.mark_row(livery_button, "cycle")
+	Widgets.mark_row(livery_button, "open")
 	livery_button.custom_minimum_size.y = 40
 	livery_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	livery_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	livery_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	livery_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); livery names are proper names
 	livery_button.visible = false
-	livery_button.pressed.connect(_cycle_livery)
+	livery_button.pressed.connect(func() -> void: livery_picker_requested.emit(livery_button))
 	_livery_row.add_child(livery_button)
 	# UI-34c (UI-30 AS-5): the catalog shows the same preview state as the Flight card.
 	_catalog_preview_label = _label("", "SecondaryLabel")
@@ -1071,6 +1073,7 @@ func set_aircraft(id: String) -> void:
 			focused_catalog_index = index
 			break
 	aircraft_id = id if Catalog.has(id) else Catalog.DEFAULT_ID
+	_livery_choices_aircraft = "" # refresh at aircraft boundaries, retain metadata across paint selections
 	_requested_aircraft_id = ""
 	reapply_start_preference()
 	set_battery_mode(_battery_preference)
@@ -1240,23 +1243,27 @@ func set_livery_preferences(preferences: Dictionary) -> void:
 
 
 ## Records `livery` for the current aircraft and shows it; an ID the aircraft does not offer shows its default paint.
-func set_livery(livery: String) -> void:
+func set_livery(livery: String) -> String:
 	_livery_preferences[aircraft_id] = livery
 	_update_livery()
+	return livery_id
 
 
 func _update_livery() -> void:
 	if livery_button == null:
 		return
-	_livery_choices = AirplaneBuilder.livery_choices(aircraft_id)
-	livery_id = AirplaneBuilder.resolve_livery(aircraft_id, str(_livery_preferences.get(aircraft_id, "")))
+	if _livery_choices_aircraft != aircraft_id:
+		_livery_choices = AirplaneBuilder.livery_choices(aircraft_id)
+		_livery_choices_aircraft = aircraft_id
+		livery_preview_cache = {}
+	livery_id = AirplaneBuilder.resolve_livery_choice(_livery_choices, str(_livery_preferences.get(aircraft_id, "")))
 	livery_button.visible = _livery_choices.size() > 1
 	_update_livery_row()
 	if not livery_button.visible:
 		return
 	var shown: Dictionary = _livery_choices[_livery_index()]
-	livery_button.text = tr("Paint (%s): %s") % [tr(Catalog.short_name(aircraft_id)), shown.label]
-	livery_button.tooltip_text = tr("Paint scheme for this aircraft. Every scheme flies the same model.")
+	livery_button.text = tr("Choose paint (%d)") % _livery_choices.size() + "\n" + str(shown.label)
+	livery_button.tooltip_text = tr("View all paint schemes and select one directly.")
 
 
 func _update_livery_row() -> void:
@@ -1277,9 +1284,8 @@ func _livery_index() -> int:
 	return 0
 
 
-func _cycle_livery() -> void:
-	if _livery_choices.size() > 1:
-		livery_requested.emit(_livery_choices[(_livery_index() + 1) % _livery_choices.size()].id)
+func livery_choices() -> Array:
+	return _livery_choices.duplicate(true)
 
 
 func _cycle_fuel_fill() -> void:

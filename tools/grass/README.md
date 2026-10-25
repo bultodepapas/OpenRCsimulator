@@ -6,7 +6,7 @@ The implemented preview combines retained 2K grass surface detail, the short-gra
 
 ```powershell
 $env:OPENRC_GRASS_QUALITY = 'enhanced'
-& .tools/Godot_v4.7.2-stable_win64_console.exe --path app
+& .tools/Godot_v4.8-beta1_win64_console.exe --path app
 ```
 
 Clear the variable (`Remove-Item Env:OPENRC_GRASS_QUALITY`) before launching to restore the original route. Unknown values also select the original route. No preference or physics data is changed. [Implementation evidence and outstanding gates](../../docs/research/visual-quality-implementation/grass-quality/README.md).
@@ -16,7 +16,7 @@ Clear the variable (`Remove-Item Env:OPENRC_GRASS_QUALITY`) before launching to 
 The resource audit is read-only and may run headless, with a new output file:
 
 ```powershell
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --audio-driver Dummy `
   --script "$PWD/tools/grass/audit_materials.gd" -- --out="$PWD/tmp/grass-audit-new.json"
 ```
 
@@ -24,9 +24,9 @@ The resource audit is read-only and may run headless, with a new output file:
 
 ```powershell
 New-Item -ItemType Directory tmp/grass-pack-new/empty
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app `
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app `
   --export-pack 'Windows Desktop' "$PWD/tmp/grass-pack-new/openrc.pck"
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path "$PWD/tmp/grass-pack-new/empty" `
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path "$PWD/tmp/grass-pack-new/empty" `
   --script "$PWD/tools/grass/check_pack.gd" -- `
   "$PWD/tmp/grass-pack-new/openrc.pck" "$PWD/app" "$PWD/tmp/grass-pack-new/result.json"
 ```
@@ -36,7 +36,7 @@ The checker mounts the pack itself, loads grass resources and compares them with
 `check_lifecycle.gd` exercises the actual Home buttons, fixed-wing End flight and both RC garage routes using private preferences. It checks rendered surface bindings, scene-owned material isolation, source geometry, released scene references and stable node/object counts. It captures only the first cycle's four startup/paused views, not driving or flight acceptance:
 
 ```powershell
-& .tools/Godot_v4.7.2-stable_win64_console.exe --path app `
+& .tools/Godot_v4.8-beta1_win64_console.exe --path app `
   --script "$PWD/tools/grass/check_lifecycle.gd" -- `
   --quality=enhanced --cycles=20 --capture=on --out="$PWD/tmp/grass-lifecycle-new"
 ```
@@ -46,7 +46,7 @@ Use `--quality=default --cycles=2` for the control. Headless contract checks req
 `profile_session.py` collects a normal visible flight with live input, five alternating default/enhanced pairs, 10 seconds warmup and 60 seconds measured per run. Use an idle host and keep the flight window focused; run captures and other tests separately:
 
 ```powershell
-python tools/grass/profile_session.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe `
+python tools/grass/profile_session.py --godot .tools/Godot_v4.8-beta1_win64_console.exe `
   --app app --out tmp/grass-native-profile-new
 python -m unittest discover -s tools/grass -p test_profile_session.py
 ```
@@ -58,9 +58,9 @@ Before each launch, one bounded OS process inventory rejects another Godot proce
 The imported placement selector caches only deterministic per-species rank indices (6,000 packed 64-bit keys). It rechecks field and exclusion acceptance on every call and stops when each species quota is filled. `layout_benchmark.gd` compares complete output dictionaries/order against the independent previous algorithm across field, mask and quality cases. Run timings separately on an idle host:
 
 ```powershell
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app `
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app `
   --script "$PWD/tools/grass/layout_benchmark.gd" -- --mode=check --report="$PWD/tmp/grass-layout-check.json"
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app `
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app `
   --script "$PWD/tools/grass/layout_benchmark.gd" -- --mode=benchmark --grass-mode=enhanced `
   --report="$PWD/tmp/grass-layout-timing.json"
 ```
@@ -78,7 +78,7 @@ python tools/grass/filter_compare.py --filtered <filtered> --raw <raw> `
 
 The probe verifies active production material bindings, shader-default provenance, crop projection, six-pose production parity and independent repeats. It compares linear-light photographic residuals with supersampled references while preserving base-pixel derivative fade decisions. The reference uncertainty remains part of the gate. This is a bounded sampling check, not universal shimmer or owner acceptance.
 
-`python tools/grass/check_state_invariance.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --out <new-directory>` records current Stik/P-51 runway tapes, exact-preflights them, then compares default/enhanced replay in the same process that builds and inspects the grass route. Both RC vehicles use their existing GDScript recorder/checkpoint replay. The headless fixture omits only the independent treeline object and renders no GPU frame. Before/after hashes reject drift in grass/checker sources; flight-log identities independently guard the solver. Existing output is never overwritten. See the [audit evidence](../../docs/research/visual-quality-implementation/grass-quality/README.md#2026-10-18-audit-and-optimization).
+`python tools/grass/check_state_invariance.py --godot .tools/Godot_v4.8-beta1_win64_console.exe --out <new-directory>` records current Stik/P-51 runway tapes, exact-preflights them, then compares default/enhanced replay in the same process that builds and inspects the grass route. Both RC vehicles use their existing GDScript recorder/checkpoint replay. The headless fixture omits only the independent treeline object and renders no GPU frame. Before/after hashes reject drift in grass/checker sources; flight-log identities independently guard the solver. Existing output is never overwritten. See the [audit evidence](../../docs/research/visual-quality-implementation/grass-quality/README.md#2026-10-18-audit-and-optimization).
 
 ## Placement source
 

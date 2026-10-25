@@ -6,6 +6,10 @@
 # call the same Godot built-ins as the old call sites so routing alone preserves same-build results.
 extends RefCounted
 
+## Smallest normal IEEE-754 binary64 value; subnormal minors lose relative precision.
+## Use an exact power of two: the pinned engine parses the equivalent decimal literal as zero.
+const MIN_NORMAL_FLOAT64 := pow(2.0, -1022.0)
+
 
 # --- trigonometry: the only place physics calls the engine's math library ---
 

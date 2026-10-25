@@ -253,13 +253,13 @@ func _test_home() -> void:
 	home.set_aircraft(CORSAIR)
 	_check("Home shows the Corsair's saved scheme", home.livery_button.visible and home.livery_id == "spectrum"
 		and home.livery_button.text.contains("Spectrum Wings"), home.livery_button.text)
-	var requested: Array[String] = []
-	home.livery_requested.connect(func(livery: String) -> void: requested.append(livery))
+	var requested: Array[Control] = []
+	home.livery_picker_requested.connect(func(from: Control) -> void: requested.append(from))
 	home.livery_button.pressed.emit()
-	_check("the row requests the next scheme", requested == ["blueangels"], str(requested))
+	_check("the row opens a gallery without changing paint", requested == [home.livery_button] and home.livery_id == "spectrum")
+	var choices: Array = home._livery_choices
 	home.set_livery(ORDER.back())
-	home.livery_button.pressed.emit()
-	_check("the last scheme cycles back to the default paint", requested.back() == "midnight")
+	_check("any paint can be selected directly without rereading menu choices", home.livery_id == ORDER.back() and is_same(choices, home._livery_choices))
 	home.set_livery("midnight")
 	_check("choosing the default shows it with no livery ID", home.livery_id == "" and home.livery_button.text.contains("Naval 308"))
 	home.set_livery_preferences({CORSAIR: "retired"})

@@ -8,7 +8,7 @@ project scripts; the wrapper does not change engine options or project settings.
 From the repository root, PowerShell:
 
 ```powershell
-$GodotWindows = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64_console.exe').Path
+$GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta1_win64_console.exe').Path
 python tools/godot/run_checked.py --label simulation --timeout 90 --require-text '11 checks, 0 failed' -- $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_simulation.gd
 if ($LASTEXITCODE -ne 0) { throw 'Simulation check failed; inspect the reported log and JSON.' }
 ```
@@ -195,7 +195,7 @@ only for this optional feature. Install it in an isolated environment:
 ```powershell
 python -m venv .tools/godot-diagnostics-venv
 .tools/godot-diagnostics-venv/Scripts/python.exe -m pip install -r tools/godot/requirements-resources.txt
-$GodotDirect = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
+$GodotDirect = (Resolve-Path '.tools/Godot_v4.8-beta1_win64.exe').Path
 .tools/godot-diagnostics-venv/Scripts/python.exe tools/godot/run_checked.py --resources --resource-interval 1 --resource-disk-path . --timeout 300 -- $GodotDirect --path app
 ```
 
@@ -280,7 +280,7 @@ separate regressions. Real Godot test classes additionally require
 Capture frame diagnostics and OS counters in the **same checked invocation**:
 
 ```powershell
-$GodotDirect = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
+$GodotDirect = (Resolve-Path '.tools/Godot_v4.8-beta1_win64.exe').Path
 $Frames = Join-Path (Get-Location) 'tmp/incident-frames.json'
 .tools/godot-diagnostics-venv/Scripts/python.exe tools/godot/run_checked.py --resources --resource-interval 1 --timeout 180 -- $GodotDirect --headless --path app --audio-driver Dummy --max-fps 60 -- --scripted "--frametimes=$Frames" --frame-diagnostics --warmup=1 --t=10
 ```
@@ -345,7 +345,7 @@ After importing the project, run a fresh-process, headless Home → flight → H
 and Workshop open/close check:
 
 ```powershell
-python tools/godot/lifecycle_check.py --godot .tools/Godot_v4.7.2-stable_win64.exe --scenario both --cycles 3
+python tools/godot/lifecycle_check.py --godot .tools/Godot_v4.8-beta1_win64.exe --scenario both --cycles 3
 ```
 
 Linux: use `python3` and `--godot "$(app/get-godot.sh)"`. Add `--resources` using
@@ -400,7 +400,7 @@ invalid options and output preservation. Run them directly with
 `OPENRC_TEST_GODOT` set to the direct engine executable:
 
 ```powershell
-$env:OPENRC_TEST_GODOT = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
+$env:OPENRC_TEST_GODOT = (Resolve-Path '.tools/Godot_v4.8-beta1_win64.exe').Path
 python -m unittest discover -s tools/godot -p 'test_lifecycle*.py'
 ```
 

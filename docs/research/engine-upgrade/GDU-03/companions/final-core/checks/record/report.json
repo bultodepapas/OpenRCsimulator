@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "502980a6-35a0-424e-8a5f-f1801b74fb36",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-final-core/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_record.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-experiments/gdu03-final-core/record-after.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T16:13:12.639957+00:00",
+  "label": "final-source-record",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\checks\\final-source-record-dcv5ajsu\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\checks\\final-source-record-dcv5ajsu\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "companions record: 157 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 25.188,
+  "log_bytes": 15634,
+  "log_sha256": "0a15f8d1fd83f6bf8b3a713c6ce8cced737091bb062138156cf534c09bdada72"
+}

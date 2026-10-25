@@ -9,16 +9,16 @@
   },
   "controller": {
     "path": "res://ai/companions/pilot.gd",
-    "sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
     "dependencies": {
       "res://ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
     }
   },
   "solver": {
-    "sha256": "1f7daf66deab99564225f48fbbcb6924c6b0af62f7c8109191c2c879a3333b19",
+    "sha256": "5df257b35154f1f2908431acfbc0dd60d837c083dddd55026a1627fab646aaae",
     "normalization": "utf8-lf"
   },
-  "engine_version": "4.7.2",
+  "engine_version": "4.8.beta1.official.4d10419ca",
   "field_profile_id": "club-default",
   "qualification": {
     "status": "qualified_for_narrow_scope",
@@ -39,7 +39,7 @@
       "min": 1,
       "max": 3
     },
-    "evidence": "docs/research/ai-companions/pilot/README.md"
+    "evidence": "docs/research/engine-upgrade/GDU-03/companions/README.md"
   },
   "performance": {
     "stall_speed": {

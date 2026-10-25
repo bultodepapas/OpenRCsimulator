@@ -2282,7 +2282,7 @@
     "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
     "app/data/fields/default.json": "14a1f6c9f52b126de347be945ce9c734d6a05ac1ff0ea79a2a9cde8a8c39fedd",
     "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
-    "app/data/scenery/default.json": "2200edd9baa87bb275025c295164e9f6aac8781eab28896f49fe4a66a0587130",
+    "app/data/scenery/default.json": "5825cafeddd095c2b6419468978c0cf409794df7cc25b889c4deef990c268bd8",
     "app/render/landscape_upgrade/scenery_grass_mask.gd": "c518383c7b496d719527cfec023a58a2b36be0236dc14b1f20d4beffa07d262e",
     "app/render/tree_wind.gdshaderinc": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
     "app/render/treeline.gd": "7d32ab8e069e86ad6455bdd392474624be11b5f1544919b9584857102f6ce0e6",
@@ -2290,7 +2290,7 @@
     "app/scenery/imported_vegetation.gd": "27843f02e5aeba9570995dbc72df4fdc85962838d34a379b6aec85706eaa17cf",
     "app/scenery/models.gd": "fb93bbb19b8155f3b9aa71be4cf17b1532b9b130d4b02c8cbfe8edcb2be619c9",
     "app/scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
-    "app/scenery/prefabs.gd": "4556c3b00475a16254ed7a83e58c3572e6f2f2cbccde7b3ca24150c1cb22e16c",
+    "app/scenery/prefabs.gd": "e00c81ded615aca9c51c858c07a4f202407b81522d972c540375e665c7a55584",
     "app/scenery/vegetation_placement.gd": "3c0ae8b78e3e573f44a4c9c731e7e7566d25d93d76472653b50d15b173aeae98",
     "tools/trees/place.py": "e182c0cdd7032c26162465c16bf37446ed8f6e2b49b575a652f9f4379ece44b2"
   },

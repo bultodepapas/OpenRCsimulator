@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data invalid: staged validation parity fixture
+aircraft data invalid: staged validation parity fixture
+INVALID_TREE_STATE {"staged_inside_tree":false,"staged_tick":0,"sync_inside_tree":false,"sync_tick":0}
+STAGED_DIFFERENCE {"field":"inputs","staged":"PackedFloat64Array(0, 0, 0, 0)","staged_hex":"21000000040000000000000000000000000000000000000000000000000000000000000000000000","sync_hex":"2100000004000000000000000000000000000000000000000000000000000000000000000000e03f","synchronous":"PackedFloat64Array(0, 0, 0, 0.5)"}
+ERROR: FAIL: validation failure matches synchronous state and message bytes
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (D:/OpenRCsimulator-experiments/gdu03-staged-invalid/diagnostic.gd:142)
+       [1] _run (D:/OpenRCsimulator-experiments/gdu03-staged-invalid/diagnostic.gd:90)
+       [2] setup_staged (res://sim/flight_session.gd:966)
+FlightSession staged fixture: 12 checks, 1 failed

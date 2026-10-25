@@ -1,0 +1,15 @@
+{
+  "solver_qualification_sha256": "5df257b35154f1f2908431acfbc0dd60d837c083dddd55026a1627fab646aaae",
+  "accepted_rev": "be068e5a3a25bab03e8954fbed57eb1489b37df6",
+  "paths_sha256": {
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "f715c20c14e6449a24b62d9710ec07557a1eb4afd3cd0a31f25f2d32a88ff007",
+    "tools/companions/qualification.json": "fd24289d691abc1635c24189c890eb8528507b9e11f3b280948bc0d114d09cd9",
+    "docs/research/ai-companions/AFC-02/rebinds/2026-10-25-1f7daf66-to-5df257b3.json": "0a50dee6fa03bc1c5f805190a603c2a5becfba6e32135b9c2033f62d1696a561"
+  },
+  "field_profile_sha256": "6c057483667fc50565f5fba2ba317cde2d1709c56cbc2719ecc82adf58477fbc",
+  "strict_profile_checks": 43,
+  "matrix_checks": 148,
+  "matrix_csvs_identical": true,
+  "legacy_tapes_identical": 9,
+  "current_4_8_tapes_identical": 2
+}

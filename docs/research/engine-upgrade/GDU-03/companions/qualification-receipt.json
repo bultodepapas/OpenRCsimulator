@@ -1,0 +1,73 @@
+{
+  "format": "openrc-companion-engine-qualification v1",
+  "date": "2026-10-25",
+  "matrix": {
+    "beta": "checks/beta-matrix/report.json",
+    "baseline": "checks/stable-matrix/report.json",
+    "comparison": "matrix-comparison.json",
+    "passed": true,
+    "checks_per_engine": 148,
+    "scenario_count": 6,
+    "ticks_per_scenario": 28800,
+    "physics_hz": 240,
+    "repeat_count": 2,
+    "one_second_sample_rows": 1440
+  },
+  "admission_source_sha256": {
+    "app/ai/companions/profile_loader.gd": "49d1db17207c3952b28870401ecbd93285d2853960e4c22cc62fd93c64bc2402",
+    "app/tests/test_companions_profiles.gd": "31b3b9f70705807c4d46ee3b5ae824689e0c09a1e900e0ee9d95eac49cc8acea",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "fe203655bab8556d6c2669aebf63823307596348b207cb8d304f318bfc348c33",
+    "app/data/ai/companions/fields/club-default.json": "6c057483667fc50565f5fba2ba317cde2d1709c56cbc2719ecc82adf58477fbc",
+    "research/ai-companions/pilot_probe.gd": "7357fe1cbfa130043117b7412ffb06ff02f47b3ae20ad4e0a205638f6893cd9a"
+  },
+  "controller_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+  "circuit_dependency_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+  "scope": "Existing experienced airborne Ugly Stik circuits at Club, calm/gentle-practice, roster 1-3; no new activity, performance ceiling or physical validation.",
+  "integrated_regression_status": "passed",
+  "excluded_attempts": {
+    "checks/invalid-overlap-matrix/report.json": "stopped while initial import was still running",
+    "checks/invalid-initial-import/report.json": "process exited0, checked runner found12 file-access import errors",
+    "checks/invalid-pre-clean-matrix/report.json": "stopped because preceding import had checked engine errors",
+    "checks/invalid-conflicted-overlay-import/report.json": "source overlay contained unrelated merge conflicts; import emitted12file-access errors",
+    "checks/invalid-final-overlay-import/report.json": "clean-source overlay first import emitted12 file-access errors; unchanged clean repeat passed before regressions",
+    "checks/invalid-app-only-lifecycle/report.json": "app-only copy lacked required external source-bound authoringJSONs; rerun with exact copied files passed",
+    "checks/invalid-app-only-presentation/report.json": "same missing external authoringJSON fixture",
+    "checks/invalid-app-only-interpolation/report.json": "same missing external authoringJSON fixture",
+    "checks/invalid-observation-marker/report.json": "script exited0 with0errors; generic completion marker wrong; corrected marker rerun passed"
+  },
+  "expected_old_engine_refusal": {
+    "report": "checks/stable-admission-expected-refusal/report.json",
+    "expected_process_exit": 1,
+    "observed_process_exit": 1,
+    "engine_errors": 0,
+    "expected_refusal_verified": true,
+    "method": "After preserving the completed baseline matrix, copied the new loader/profile/test into that baseline app; existing profile gate refuses exactly the old runtime build, with matching pilot and solver identities."
+  },
+  "integrated_regression_summary": "regression-summary.json",
+  "production_check": {
+    "report": "checks/production-120s/report.json",
+    "metrics": "production-120s.json",
+    "complete": true,
+    "ticks": 28800,
+    "count": 3,
+    "seed": 1,
+    "minimum_clearance_m": 34.5677852277669
+  },
+  "lifecycle_supervision": {
+    "original_passing_elapsed_s": 67.719,
+    "original_checks": 653,
+    "default_timeout_s": 60,
+    "supervision_timeout_s": 180,
+    "frozen_rerun_report": "checks/lifecycle-180s/report.json",
+    "frozen_rerun_elapsed_s": 59.469,
+    "baseline_4_7_same_workload_timing_measured": false,
+    "bounded_workload": {
+      "headless_cycles": 50,
+      "visual_audio_cycles": 10
+    },
+    "suite_policy_sha256": "2ada620aad40fe188d3f0f60231175277d48cbb9aa5623764f4f6eadeb92b561",
+    "limit": "Supervision deadline only; timings under shared/concurrent load do not establish speed parity or frame performance."
+  },
+  "source_round": "initial engine qualification, canonical solver1f7daf66",
+  "final_source_followup": "final-core/verification.json"
+}

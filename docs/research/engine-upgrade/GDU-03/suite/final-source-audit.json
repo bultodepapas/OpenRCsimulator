@@ -1,0 +1,63 @@
+{
+  "format": "openrc-gdu03-final-app-source-audit-v1",
+  "observed_utc": "2026-10-25T17:48:51.904750+00:00",
+  "scope": "Tracked app source/config/import/UID comparison after integration. Four late parallel UI differences are separately validated in late-ui/verification.json; frozen suite and exported packages were not overlaid. Binary assets use their owner receipts. This is source correspondence, not another test run.",
+  "selected_extensions": [
+    ".cfg",
+    ".gd",
+    ".gdextension",
+    ".gdshader",
+    ".gdshaderinc",
+    ".godot",
+    ".import",
+    ".json",
+    ".py",
+    ".sh",
+    ".tres",
+    ".tscn",
+    ".uid"
+  ],
+  "selected_files": 3344,
+  "late_parallel_ui_differences": [
+    {
+      "path": "app/app_root.gd",
+      "root_sha256": "5c5b2a27c9f6b1da55359e4ecff494611f8cea58e6b9b5cea8cb53c71ea65ff7",
+      "suite_sha256": "f22338bd9af6b621c3ec75b73f0b629c6f20f4308dff31eaaa43b523f10c774a"
+    },
+    {
+      "path": "app/tests/test_livery_picker.gd",
+      "root_sha256": "76257ef6a42844e6381a8a2da8e36cc5edd02c18c6fb6d61b724f2a2f026dce4",
+      "suite_sha256": "f41cf386ec5c31ea8bf4718b3e05a9a6025e8b758de2a0bf037f890d9fa682db"
+    },
+    {
+      "path": "app/ui/livery_picker.gd",
+      "root_sha256": "e073d4c8f8677a60c5e6ea4e0038786e08b42992cda9f49bfc0f23934c6f8e17",
+      "suite_sha256": "ffb4e4411aa518d5e6697a74c271838e0929887788479d6816b07bcc5e42f16d"
+    },
+    {
+      "path": "app/ui/screen.gd",
+      "root_sha256": "d3e31b1158eed71bd3a0e46e546f5c6e4bfbadb1c08bf8247583b9b0340f5ae4",
+      "suite_sha256": "9466107cfb638f3dd2048401e45ba98df28c6f595bc06c3cc7ceffee55a3e03d"
+    }
+  ],
+  "unexpected_differences": [],
+  "line_ending_only_differences": [
+    {
+      "path": "app/capture.sh",
+      "root_sha256": "e760ac04eb1e3da620cb187ddbcdd0597beb69ef791d1573cd221b4d985f8b69",
+      "suite_sha256": "f499b40d6db342ad38c013e88526f476e01bd145a2ecf8a55e317328f61111ca"
+    },
+    {
+      "path": "app/run-landscape.sh",
+      "root_sha256": "ac6058afabd41995e11aa5f0379424546d5d679db74e8d0f6f2c76185e80f837",
+      "suite_sha256": "37a8851c2e231f21ed5ae7cf6a8570072e02b96a6b618ba57930884f41bd4a3d"
+    },
+    {
+      "path": "app/tests/visual-env.sh",
+      "root_sha256": "9bf341a7769fdfc69197ace07b0d96151631635d86a0858d787701a729b4c1a2",
+      "suite_sha256": "4ebc63a99bdafcaf671a291dc5488291646beed199b87a0941f310a6f2914d02"
+    }
+  ],
+  "full_manifest": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\final-app-text-manifest.json",
+  "full_manifest_sha256": "b45e5d9a6a9966ece12e1cbcbb1af42347058737a379a8b79c53f29c3da54d42"
+}

@@ -7,7 +7,8 @@ press text=Aircraft
 wait until="not home_scene.preview_pending" timeout_s=30
 assert expr="home.livery_button.is_visible_in_tree()"
 assert expr="home.livery_button.get_global_rect().end.y <= home._scroll.get_global_rect().position.y + 0.5"
-press text=Paint
+press text="Choose paint"
+press text="Coastal Three Tone"
 wait until="not home_scene.preview_pending" timeout_s=30
 assert expr="home.livery_id == 'three_tone' and home_scene.airplane.livery == 'three_tone'"
 fly aircraft=f4u-corsair-250 start=runway

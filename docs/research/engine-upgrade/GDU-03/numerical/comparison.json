@@ -1,0 +1,446 @@
+{
+  "format": "openrc-gdu04-comparison v1",
+  "complete": true,
+  "identical": true,
+  "engines": {
+    "baseline": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "version": "4.7.2.stable.official.ed1daf0bf"
+    },
+    "candidate": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+      "sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+      "version": "4.8.beta1.official.4d10419ca"
+    }
+  },
+  "source_app": "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+  "source_files": 248,
+  "source_manifest_sha256": "c807334efb45a3f7c3254bdad16448f6e3802c26fbe05452014af674937e56c5",
+  "probe_sha256": "0b98cda921ef0e32eca5ffb8d9895d3ae4168cba22210791e996ed87b91b489b",
+  "runner_sha256": "63fe7bf21e04c258ee5c8019b3acfed3cef9effa823e6ab604d3f3ead5128967",
+  "cases": {
+    "jensen-das-ugly-stik-60-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 415152,
+      "baseline_sha256": "78ed941a12c55914d96287fe3e75464888b15a59383a586f70ae90c092dece7f",
+      "candidate_sha256": "78ed941a12c55914d96287fe3e75464888b15a59383a586f70ae90c092dece7f"
+    },
+    "jensen-das-ugly-stik-60-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 476656,
+      "baseline_sha256": "f26699444c07c2b36184ed7deeaa4c0b6686de782a38afbd7b9f6633ed706207",
+      "candidate_sha256": "f26699444c07c2b36184ed7deeaa4c0b6686de782a38afbd7b9f6633ed706207"
+    },
+    "stik-glow-61fx-2t-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "c71f206264ba3bb39c40d33e09cdb9ef307e72ea84920eb81797b6ed40055e13",
+      "candidate_sha256": "c71f206264ba3bb39c40d33e09cdb9ef307e72ea84920eb81797b6ed40055e13"
+    },
+    "stik-glow-61fx-2t-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "ba835b6d6d456bdaf8c4c45019eb892c9090b5727292b839fd11285ffe26d95c",
+      "candidate_sha256": "ba835b6d6d456bdaf8c4c45019eb892c9090b5727292b839fd11285ffe26d95c"
+    },
+    "stik-glow-55ax-2t-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "491835a2e56a5db2964fee0d80a160e51d8db38d3853c3619e1768f5d7a67ba9",
+      "candidate_sha256": "491835a2e56a5db2964fee0d80a160e51d8db38d3853c3619e1768f5d7a67ba9"
+    },
+    "stik-glow-55ax-2t-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "df11fe501e070f04a03911ef44e57c10226f814928c17bb6b65c255031809e69",
+      "candidate_sha256": "df11fe501e070f04a03911ef44e57c10226f814928c17bb6b65c255031809e69"
+    },
+    "stik-glow-fs64v-4t-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "a51f5f9c1f84996fa5fab7d0ac520dbbbf961a8da04ad14fc7b2c34016eba7a1",
+      "candidate_sha256": "a51f5f9c1f84996fa5fab7d0ac520dbbbf961a8da04ad14fc7b2c34016eba7a1"
+    },
+    "stik-glow-fs64v-4t-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "edb900d1ffcb78b6ef6d2cc6adc580c35bec594f93a18840568843d19ea542b4",
+      "candidate_sha256": "edb900d1ffcb78b6ef6d2cc6adc580c35bec594f93a18840568843d19ea542b4"
+    },
+    "gp-extra-300s-60-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 561224,
+      "baseline_sha256": "c82497c0c47daa56377328ac93b50a3189003eb1046fb942221b3234e0d6a04e",
+      "candidate_sha256": "c82497c0c47daa56377328ac93b50a3189003eb1046fb942221b3234e0d6a04e"
+    },
+    "gp-extra-300s-60-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 622728,
+      "baseline_sha256": "2ccfc17cdc9d66d48d0edc249f8ee0c0e4c3c5fd908e7de759f07356bacb3c5f",
+      "candidate_sha256": "2ccfc17cdc9d66d48d0edc249f8ee0c0e4c3c5fd908e7de759f07356bacb3c5f"
+    },
+    "p51d-mustang-120-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "db47182c60c6c05e56676b5a691c1b26cca033d56ab158f4f6d9ae50d67189dd",
+      "candidate_sha256": "db47182c60c6c05e56676b5a691c1b26cca033d56ab158f4f6d9ae50d67189dd"
+    },
+    "p51d-mustang-120-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 545848,
+      "baseline_sha256": "bcf7780e7b77d8bf3adc9ba7cd36a2bc562e6105eee4ecb06dfb397956be5cec",
+      "candidate_sha256": "bcf7780e7b77d8bf3adc9ba7cd36a2bc562e6105eee4ecb06dfb397956be5cec"
+    },
+    "f4u-corsair-250-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "63c8ebc44f7759446c80ac9aa492a49821538271174bbdbe54e6d3d15a51c1fb",
+      "candidate_sha256": "63c8ebc44f7759446c80ac9aa492a49821538271174bbdbe54e6d3d15a51c1fb"
+    },
+    "f4u-corsair-250-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 545848,
+      "baseline_sha256": "91ab33761374a1efb94b5a71f37402ea97caecf2d524aa5786e78449696950e0",
+      "candidate_sha256": "91ab33761374a1efb94b5a71f37402ea97caecf2d524aa5786e78449696950e0"
+    },
+    "sebart-avanti-s-a200-p100rx-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "8055d4681d38c7e067bb00a2791849e0cc370e6de80bd1a22cb2628dacb686eb",
+      "candidate_sha256": "8055d4681d38c7e067bb00a2791849e0cc370e6de80bd1a22cb2628dacb686eb"
+    },
+    "sebart-avanti-s-a200-p100rx-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 545848,
+      "baseline_sha256": "f6309c23d3482c1228687dfe9705c7ba60059ce7774ad03ceb27edb6ca7c438c",
+      "candidate_sha256": "f6309c23d3482c1228687dfe9705c7ba60059ce7774ad03ceb27edb6ca7c438c"
+    },
+    "turbo-lumber-evolution-calm": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 422840,
+      "baseline_sha256": "93742cb8a2d7b3cffb734c5450ff1ca04c57d60de7c58c3d69ccf9e200223128",
+      "candidate_sha256": "93742cb8a2d7b3cffb734c5450ff1ca04c57d60de7c58c3d69ccf9e200223128"
+    },
+    "turbo-lumber-evolution-turbulent": {
+      "identical": true,
+      "rows": 961,
+      "bytes": 484344,
+      "baseline_sha256": "0c7f4b14c9ab63cc381616f72e578b8e6af952d7bc5f45cf0bb2e6054539dc90",
+      "candidate_sha256": "0c7f4b14c9ab63cc381616f72e578b8e6af952d7bc5f45cf0bb2e6054539dc90"
+    }
+  },
+  "wind": {
+    "wind-0.bin": {
+      "identical": true,
+      "baseline_sha256": "c2251b373bf3b7827e51e74cda99f04a70ce976d4293e60ac9cf8f75a0a4c2e2",
+      "candidate_sha256": "c2251b373bf3b7827e51e74cda99f04a70ce976d4293e60ac9cf8f75a0a4c2e2"
+    },
+    "ou-0.bin": {
+      "identical": true,
+      "baseline_sha256": "4d21ef977b14ac6a06e37d175cf2988f6a7a774aae152939f3e1cd2cf90179cc",
+      "candidate_sha256": "4d21ef977b14ac6a06e37d175cf2988f6a7a774aae152939f3e1cd2cf90179cc"
+    },
+    "wind-1.bin": {
+      "identical": true,
+      "baseline_sha256": "5f0542cf384ad10fd2b55b30b0fdb67d3a9b36d92afe2090c163ef96e1f2de9f",
+      "candidate_sha256": "5f0542cf384ad10fd2b55b30b0fdb67d3a9b36d92afe2090c163ef96e1f2de9f"
+    },
+    "ou-1.bin": {
+      "identical": true,
+      "baseline_sha256": "71d0950073b668d8bfa22619c859e307c90fa98c5e514ae5732a5a2c42988104",
+      "candidate_sha256": "71d0950073b668d8bfa22619c859e307c90fa98c5e514ae5732a5a2c42988104"
+    },
+    "wind-12345.bin": {
+      "identical": true,
+      "baseline_sha256": "8f98531ebdf5894c6c5983abe1e31f6afe3aed599e094c3bb668d5b20d0f144f",
+      "candidate_sha256": "8f98531ebdf5894c6c5983abe1e31f6afe3aed599e094c3bb668d5b20d0f144f"
+    },
+    "ou-12345.bin": {
+      "identical": true,
+      "baseline_sha256": "99dcad0ce892a28ede790f228a64512d5f89e0ce1532480fdde1d31792ed66b7",
+      "candidate_sha256": "99dcad0ce892a28ede790f228a64512d5f89e0ce1532480fdde1d31792ed66b7"
+    },
+    "wind-20261011.bin": {
+      "identical": true,
+      "baseline_sha256": "1212fbba5202cf33b45272d29ab863a28bf586481d2f2fa55757c5e906619bd3",
+      "candidate_sha256": "1212fbba5202cf33b45272d29ab863a28bf586481d2f2fa55757c5e906619bd3"
+    },
+    "ou-20261011.bin": {
+      "identical": true,
+      "baseline_sha256": "7290607afc1995efab04cb5b3d9b4e9ac1de798a7cef876892f1613e42e2d6a6",
+      "candidate_sha256": "7290607afc1995efab04cb5b3d9b4e9ac1de798a7cef876892f1613e42e2d6a6"
+    },
+    "wind-4294967295.bin": {
+      "identical": true,
+      "baseline_sha256": "e7f860261c35920ddba4758bde17cfebc726bd75bde6e25ca11a821886bb396b",
+      "candidate_sha256": "e7f860261c35920ddba4758bde17cfebc726bd75bde6e25ca11a821886bb396b"
+    },
+    "ou-4294967295.bin": {
+      "identical": true,
+      "baseline_sha256": "f6fa2ae67f3c40848f6242cf73b502473ea32a6dc863b6617f2a3bb5697f2223",
+      "candidate_sha256": "f6fa2ae67f3c40848f6242cf73b502473ea32a6dc863b6617f2a3bb5697f2223"
+    }
+  },
+  "engine_hash_capture": "engine executable hashes measured at analysis time",
+  "pcg32_oracle_sha256": "5fe474aeb6274db74fb5726bbb35cbcc5d68b676f5b635437e3d557d53e3fa4a",
+  "independent_pcg32_oracle": "all raw words and states match app/tests/check_wind_trace.py",
+  "limits": "Frozen-source research comparison only; not ORFL exact replay, physical validation, all-platform equivalence or performance qualification.",
+  "frozen_worktree_commit": "a6c2ce38a80a44327392367520c828b42ba0acda",
+  "artifact_root": "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025",
+  "root_source_audit": {
+    "observed_utc": "2026-10-25T14:28:22.185324+00:00",
+    "groups": {
+      "aircraft_data": {
+        "files": 18,
+        "exact_bytes_match": 17,
+        "utf8_lf_match": 18
+      },
+      "failures": {
+        "files": 3,
+        "exact_bytes_match": 1,
+        "utf8_lf_match": 3
+      },
+      "input": {
+        "files": 8,
+        "exact_bytes_match": 4,
+        "utf8_lf_match": 8
+      },
+      "physics": {
+        "files": 73,
+        "exact_bytes_match": 55,
+        "utf8_lf_match": 73
+      },
+      "sim": {
+        "files": 15,
+        "exact_bytes_match": 10,
+        "utf8_lf_match": 15
+      }
+    },
+    "line_ending_only_differences": 62,
+    "semantic_differences": [
+      "data/aircraft_customization.json",
+      "data/aircraft_models/f4u-corsair-250.json",
+      "data/aircraft_models/jensen-das-ugly-stik-60.json",
+      "data/aircraft_models/sebart-avanti-s-a200-p100rx.json",
+      "data/aircraft_models/turbo-lumber-evolution.json",
+      "data/scenery/power_insulator.json",
+      "data/workshop/jensen-das-ugly-stik-60.json",
+      "data/workshop/stik-glow-55ax-2t.json",
+      "data/workshop/stik-glow-61fx-2t.json",
+      "data/workshop/stik-glow-fs64v-4t.json",
+      "data/workshop/turbo-lumber-evolution.json"
+    ],
+    "note": "Semantic differences are presentation/authoring metadata. This comparison precedes planned Timber 4.8 import-measurement provenance regeneration."
+  },
+  "checked_invocations": [
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "97294d4f-2ca2-4176-83f3-1e15808f6194",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\baseline-project",
+        "--import"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:21:42.800583+00:00",
+      "label": "baseline-import",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\checks\\baseline-import-a6ce2b8h\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\checks\\baseline-import-a6ce2b8h\\report.json",
+      "timeout_seconds": 300,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 7.656,
+      "log_bytes": 13299,
+      "log_sha256": "05e763699a59445e812de0795551af1574f6a3bbcb861694f6c08aa39f602627"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "14880e50-80f7-4eb4-a3d9-0842d0bd30e9",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\baseline-project",
+        "--script",
+        "res://probe.gd",
+        "--",
+        "--out=D:/OpenRCsimulator-experiments/gdu04-numerical-20261025/baseline",
+        "--ticks=960"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:21:50.475572+00:00",
+      "label": "baseline-numerical",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\checks\\baseline-numerical-dxnijmdw\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\checks\\baseline-numerical-dxnijmdw\\report.json",
+      "timeout_seconds": 900,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "GDU04|COMPLETE|"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 59.328,
+      "log_bytes": 2873,
+      "log_sha256": "c0aea1e3b3e647db16de61296a95bc250ffae4904a1f4204cfdef0a0372a37ab"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "6a4ab1cb-6c3e-44d0-8337-f6cff27fa93a",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\candidate-project",
+        "--import"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:22:49.812883+00:00",
+      "label": "candidate-import",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\checks\\candidate-import-f19e921t\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\checks\\candidate-import-f19e921t\\report.json",
+      "timeout_seconds": 300,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 7.531,
+      "log_bytes": 13591,
+      "log_sha256": "14663cbcad07bab0819efe91ecda5f8c507d0b6a162feff76f438d31e4ba042b"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "6a9988d9-3e73-45a2-b17a-e83cbcfe3be6",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\engine-upgrade\\4.8-beta1\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\candidate-project",
+        "--script",
+        "res://probe.gd",
+        "--",
+        "--out=D:/OpenRCsimulator-experiments/gdu04-numerical-20261025/candidate",
+        "--ticks=960",
+        "--baseline=D:/OpenRCsimulator-experiments/gdu04-numerical-20261025/baseline"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:22:57.348487+00:00",
+      "label": "candidate-numerical",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\checks\\candidate-numerical-mogmiu4y\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu04-numerical-20261025\\checks\\candidate-numerical-mogmiu4y\\report.json",
+      "timeout_seconds": 900,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "GDU04|COMPLETE|"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 56.891,
+      "log_bytes": 2870,
+      "log_sha256": "59381dcf596b715e296fd0d6fc2d39648f15b71c3a01c778f4110bbbf5d29438"
+    }
+  ],
+  "frozen_inputs": {
+    "f4u-corsair-250-calm.checkpoint.json": "598a305b9e3cf77273a495421718394572b50b14aaa4a4776a03f10c03716486",
+    "f4u-corsair-250-turbulent.checkpoint.json": "96ec9fefe11cf37c283bcae5973212eceb0dffbeed3c5d5ceaaa2e38d67c9d7f",
+    "gp-extra-300s-60-calm.checkpoint.json": "16640ac9dfe69e1aad5dc866314449a2d25d77d6f36702e58e97531179abc365",
+    "gp-extra-300s-60-turbulent.checkpoint.json": "f1f6ac66b0629c90cf3396c4dde8ffb818f6cdb29fd384b2f21f745893a1a9ba",
+    "jensen-das-ugly-stik-60-calm.checkpoint.json": "88d78473b27912c5959218f455abdabd44b13234e8dc4a32f1f9a9568250153d",
+    "jensen-das-ugly-stik-60-turbulent.checkpoint.json": "ec27bce116c00112bf4beb8735033f0124e6db4fc033a725e986d3f0815b980b",
+    "p51d-mustang-120-calm.checkpoint.json": "0513a44b71549f1d4d5d0c19f1cbffbc473ff12ab40c89c3ab3198663d1646e9",
+    "p51d-mustang-120-turbulent.checkpoint.json": "0501bb743bfd0a6f7190ca09a0424a62af137abcbbb517456cb675acae59e9bd",
+    "sebart-avanti-s-a200-p100rx-calm.checkpoint.json": "b33b6e5e3ad7ff5d8e4ba5606ca95a4785dc0ca2efed8646db61f80e7504eb1f",
+    "sebart-avanti-s-a200-p100rx-turbulent.checkpoint.json": "22e94f6c93dc3fdefcf570d25913d203e31018732dd25c35c766a615d8f18211",
+    "stik-glow-55ax-2t-calm.checkpoint.json": "2871939a7b80536b1fb1bf333e47a3ebba14d6488d44e0e2f93c4583f176dee4",
+    "stik-glow-55ax-2t-turbulent.checkpoint.json": "bc6a893d9fe47bc0f1497ebe3324a2f0816a24dd7f2639ce6fc66566c3dcdabc",
+    "stik-glow-61fx-2t-calm.checkpoint.json": "5938da3ae1cfdb629c8f1891b75f2d2edc78a89025f110cde64261d905ecad88",
+    "stik-glow-61fx-2t-turbulent.checkpoint.json": "be442cacae17b11fe4f938648d07e121ce29ea4dda531e371b4caedb5e1ee2ad",
+    "stik-glow-fs64v-4t-calm.checkpoint.json": "510d93e86e32c1a0c840548f5470a467a3f8cf7cc337fa62b056c3b44c403dbe",
+    "stik-glow-fs64v-4t-turbulent.checkpoint.json": "56ca52ed52d73829d1dd6811c03dca0dd128573221a420e4857940fd9f30e511",
+    "turbo-lumber-evolution-calm.checkpoint.json": "ffd4ab67928021620b5a2cfa31c69bd83bb699f369bb2e2f71f16ff599b41ab3",
+    "turbo-lumber-evolution-turbulent.checkpoint.json": "7c4e365c8bd8f7dd118140df715a4e21b8c0a54e7452fe70d1a64f802fd2a2ce",
+    "f4u-corsair-250-calm.inputs.json": "48975057f65e927ded5513955c4b85c5ec2ae5606fd8918946157d4c81912e1d",
+    "f4u-corsair-250-turbulent.inputs.json": "48975057f65e927ded5513955c4b85c5ec2ae5606fd8918946157d4c81912e1d",
+    "gp-extra-300s-60-calm.inputs.json": "3cd2ab403281e306d59ab2634f6bea8a7976ce54fa134b8bc22f0804624fc057",
+    "gp-extra-300s-60-turbulent.inputs.json": "3cd2ab403281e306d59ab2634f6bea8a7976ce54fa134b8bc22f0804624fc057",
+    "jensen-das-ugly-stik-60-calm.inputs.json": "fb6020825659fa9dbd05de0f3504ed1ab01e4f7568d1e92d30c8333a31a94f84",
+    "jensen-das-ugly-stik-60-turbulent.inputs.json": "fb6020825659fa9dbd05de0f3504ed1ab01e4f7568d1e92d30c8333a31a94f84",
+    "p51d-mustang-120-calm.inputs.json": "d87cba19048f914d85539b77e531e4345102cd72b23bcfa3bb75520a0952ddc2",
+    "p51d-mustang-120-turbulent.inputs.json": "d87cba19048f914d85539b77e531e4345102cd72b23bcfa3bb75520a0952ddc2",
+    "sebart-avanti-s-a200-p100rx-calm.inputs.json": "ad3f01f26bd38010a96e41378ddada819458d057267f21ac0c66f7c4701a2753",
+    "sebart-avanti-s-a200-p100rx-turbulent.inputs.json": "ad3f01f26bd38010a96e41378ddada819458d057267f21ac0c66f7c4701a2753",
+    "stik-glow-55ax-2t-calm.inputs.json": "4827d2a245dbee8957e04d4699ef2bac5f1e9b49ccbf3d197f179c801e43033c",
+    "stik-glow-55ax-2t-turbulent.inputs.json": "4827d2a245dbee8957e04d4699ef2bac5f1e9b49ccbf3d197f179c801e43033c",
+    "stik-glow-61fx-2t-calm.inputs.json": "489dcb26a4bf57b943df9dd4abada494410e1a49ff92db65f340d7ba6fb79b62",
+    "stik-glow-61fx-2t-turbulent.inputs.json": "489dcb26a4bf57b943df9dd4abada494410e1a49ff92db65f340d7ba6fb79b62",
+    "stik-glow-fs64v-4t-calm.inputs.json": "f1e4f4789146d90142d3ed44ccb2f1db32114c05554674f0b5ec9d4d6e14f355",
+    "stik-glow-fs64v-4t-turbulent.inputs.json": "f1e4f4789146d90142d3ed44ccb2f1db32114c05554674f0b5ec9d4d6e14f355",
+    "turbo-lumber-evolution-calm.inputs.json": "ecb12b026bd63d6b54ccb7af7f84b0cb22593c1f632a394e27e84461022dd1bc",
+    "turbo-lumber-evolution-turbulent.inputs.json": "ecb12b026bd63d6b54ccb7af7f84b0cb22593c1f632a394e27e84461022dd1bc"
+  }
+}

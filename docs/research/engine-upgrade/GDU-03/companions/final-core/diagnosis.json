@@ -1,0 +1,48 @@
+{
+  "format": "openrc-staged-invalid-launch-parity-diagnosis v1",
+  "date": "2026-10-25",
+  "only_difference": "synchronous invalid inputs throttle0.5 versus staged throttle0",
+  "routes_detached_at_tick_zero": true,
+  "reproduced_on_4_7_and_4_8": true,
+  "root_source_modified": false,
+  "flight_session_sha256": "015654cc0ece91318906bfda1af05216c062a9ece1eef627babb7d23ff26f54e",
+  "diagnostic_sha256": "bd47228d686463e24ba90a0d77f8172d5ce21f440b34886b630433ca08f28e84",
+  "runs": {
+    "beta": {
+      "checked_report": "D:\\OpenRCsimulator-experiments\\gdu03-staged-invalid\\checks\\beta-diagnostic-qygpj2dv\\report.json",
+      "differences": [
+        {
+          "field": "inputs",
+          "staged": "PackedFloat64Array(0, 0, 0, 0)",
+          "staged_hex": "21000000040000000000000000000000000000000000000000000000000000000000000000000000",
+          "sync_hex": "2100000004000000000000000000000000000000000000000000000000000000000000000000e03f",
+          "synchronous": "PackedFloat64Array(0, 0, 0, 0.5)"
+        }
+      ],
+      "tree_state": {
+        "staged_inside_tree": false,
+        "staged_tick": 0,
+        "sync_inside_tree": false,
+        "sync_tick": 0
+      }
+    },
+    "stable": {
+      "checked_report": "D:\\OpenRCsimulator-experiments\\gdu03-staged-invalid\\checks\\stable-diagnostic-5arg5elu\\report.json",
+      "differences": [
+        {
+          "field": "inputs",
+          "staged": "PackedFloat64Array(0, 0, 0, 0)",
+          "staged_hex": "21000000040000000000000000000000000000000000000000000000000000000000000000000000",
+          "sync_hex": "2100000004000000000000000000000000000000000000000000000000000000000000000000e03f",
+          "synchronous": "PackedFloat64Array(0, 0, 0, 0.5)"
+        }
+      ],
+      "tree_state": {
+        "staged_inside_tree": false,
+        "staged_tick": 0,
+        "sync_inside_tree": false,
+        "sync_tick": 0
+      }
+    }
+  }
+}

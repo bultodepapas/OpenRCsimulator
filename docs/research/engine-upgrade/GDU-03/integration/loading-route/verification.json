@@ -1,0 +1,49 @@
+{
+  "format": "openrc-gdu03-loading-route-v1",
+  "source": "app/tests/test_ui_aircraft_flow.gd",
+  "source_sha256": "8fadba02461785dcebd0331f1e5f8658ec4dade9c9f8da82cdc7732973e151ce",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-ui-aircraft\\checks\\interactive-aircraft-flow-m8vy_2y4\\report.json",
+  "report_sha256": "0ed6595c08a551c5a41cfb26428f16f42f7a5c6373f8643cd05e4ccca6cf8053",
+  "checked_invocation": {
+    "format": "openrc-godot-check v1",
+    "capture_id": "07ab30cb-ea71-4a0e-9cf8-7dea30d5b470",
+    "command": [
+      ".tools/Godot_v4.8-beta1_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_aircraft_flow.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-25T15:56:21.995981+00:00",
+    "label": "interactive-aircraft-flow",
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-ui-aircraft\\checks\\interactive-aircraft-flow-m8vy_2y4\\engine.log",
+    "report": "D:\\OpenRCsimulator-experiments\\gdu03-ui-aircraft\\checks\\interactive-aircraft-flow-m8vy_2y4\\report.json",
+    "timeout_seconds": 90.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": true,
+    "required_text": [
+      "UI aircraft flow: 0 failed"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 31.0,
+    "log_bytes": 1375,
+    "log_sha256": "f12377b622b999158df65e225908408cc939be31c7e486b2a3d9c828d8dd5ef9"
+  },
+  "assertions": 20,
+  "scope": "Headless 1920x1080 canvas; explicit existing interactive route; no rendered-image claim."
+}

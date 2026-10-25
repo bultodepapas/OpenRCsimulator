@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a62cf1ac-948e-45d0-9c6b-93e74e62792c",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_overlay_manager.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T16:32:11.238281+00:00",
+  "label": "amended-overlay-manager",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-overlay-focus\\checks\\amended-overlay-manager-jxdvlpzw\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-overlay-focus\\checks\\amended-overlay-manager-jxdvlpzw\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 21.344,
+  "log_bytes": 299,
+  "log_sha256": "6557744b27a0ae84e922bee3270ce7aad8d31ba2a8cbef7ecf9e4a0df45242dd"
+}

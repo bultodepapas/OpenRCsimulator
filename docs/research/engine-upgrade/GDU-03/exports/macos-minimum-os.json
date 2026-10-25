@@ -1,0 +1,51 @@
+{
+  "format": "openrc-gdu03-macos-minimum-os-readback v1",
+  "date": "2026-10-25",
+  "scope": "Readback of declared LC_BUILD_VERSION minimums from both slices of the final release archive executable; no native macOS execution or runtime-compatibility claim.",
+  "archive": {
+    "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\openrc-simulator-5e5243dd-dirty-macos-universal.zip",
+    "bytes": 1260819598,
+    "sha256": "2b7df74cbae59d4d638a447579d97fdcc00e6c807b68379f093266d0442ad014",
+    "zip_crc": "pass"
+  },
+  "executable": {
+    "archive": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\dist\\openrc-simulator-5e5243dd-dirty-macos-universal.zip",
+    "member": "OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator",
+    "extracted": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\macos-min-os\\OpenRC Simulator",
+    "bytes": 151322800,
+    "sha256": "4de76a9e2bbc576e78a9d237d82423cc153d5c3c852a53027757e0301f6fd8c2"
+  },
+  "tool": {
+    "path": "C:\\Users\\bulto\\scoop\\apps\\llvm\\current\\bin\\llvm-readobj.exe",
+    "version": "LLVM (http://llvm.org/):\n  LLVM version 22.1.8\n  Optimized build.",
+    "sha256": "0d4c7679f1fca788f765623116e77cef96571d8ff12e3b6dbe36693e472af571"
+  },
+  "command": [
+    "C:\\Users\\bulto\\scoop\\apps\\llvm\\current\\bin\\llvm-readobj.exe",
+    "--file-header",
+    "--macho-version-min",
+    "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\macos-min-os\\OpenRC Simulator"
+  ],
+  "process_exit": 0,
+  "slices": [
+    {
+      "architecture": "aarch64",
+      "command": "LC_BUILD_VERSION",
+      "platform": "macos",
+      "minimum_os": "13.0",
+      "sdk": "26.5"
+    },
+    {
+      "architecture": "x86_64",
+      "command": "LC_BUILD_VERSION",
+      "platform": "macos",
+      "minimum_os": "11.0",
+      "sdk": "26.5"
+    }
+  ],
+  "raw_output": {
+    "path": "docs/research/engine-upgrade/GDU-03/exports/macos-load-commands.log",
+    "sha256": "34cb35ac3dbf11d8e01fd0bb96b640cc1187bb4ddd570e46942ce72ba7261799"
+  },
+  "passed": true
+}

@@ -27,8 +27,8 @@ import native_summary  # noqa: E402
 
 FORMAT = "openrc-grass-native-profile v1"
 GRASS_SELECTOR = "OPENRC_GRASS_QUALITY"
-DEFAULT_GODOT = ROOT / ".tools" / "Godot_v4.7.2-stable_win64_console.exe"
-EXPECTED_GODOT_PREFIX = "4.7.2"
+DEFAULT_GODOT = ROOT / ".tools" / "Godot_v4.8-beta1_win64_console.exe"
+EXPECTED_GODOT_PREFIX = "4.8-beta1 (official)"
 EXPECTED_WINDOW = "1280x720"
 EXPECTED_VIEWPORT = [1280, 720]
 EXPECTED_BACKEND = "gl_compatibility"
@@ -265,8 +265,8 @@ def validate_report_contract(report: dict[str, Any], variant: str) -> list[str]:
     errors: list[str] = []
     if report.get("route") != "live-input":
         errors.append("effective frametime route is not live-input")
-    if not str(report.get("godot", "")).startswith(EXPECTED_GODOT_PREFIX):
-        errors.append(f"runtime is not Godot {EXPECTED_GODOT_PREFIX} (stable) family")
+    if report.get("godot") != EXPECTED_GODOT_PREFIX:
+        errors.append(f"runtime is not Godot {EXPECTED_GODOT_PREFIX} official beta1 build")
     if report.get("backend") != EXPECTED_BACKEND:
         errors.append(f"backend is not {EXPECTED_BACKEND}")
     if report.get("window") != EXPECTED_WINDOW:
@@ -599,7 +599,7 @@ def _launch_and_summarize(
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--godot", type=Path, default=DEFAULT_GODOT, help="pinned Godot 4.7.2 stable binary")
+    parser.add_argument("--godot", type=Path, default=DEFAULT_GODOT, help="pinned Godot 4.8-beta1 binary")
     parser.add_argument("--app", type=Path, default=ROOT / "app", help="Godot app checkout to profile")
     parser.add_argument("--out", type=Path, required=True, help="new output directory; existing paths are refused")
     parser.add_argument("--pairs", type=int, default=MINIMUM_PAIRS, help="complete AB/BA pairs (minimum 5; default 5)")

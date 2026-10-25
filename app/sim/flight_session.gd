@@ -2738,6 +2738,7 @@ func _reset_airborne_start() -> bool:
 		commands.throttle = start.throttle
 		engine_running = start.get("mode", "level") != "glide"
 	else:
+		commands.throttle = 0.0
 		engine_running = false
 	# Inputs first: synchronous paths (capture, --trace) never tick this node, so they must start trimmed too.
 	sim.inputs = _inputs()

@@ -97,3 +97,45 @@ The median hitch falls **55.9%**. This shared-workstation observation measures m
 | Visual inspection | Coastal Three Tone at 1920×1080; paint control remains visible and aircraft/light placement is intact. Capture stays in ignored `tmp/` |
 
 No physics, delivered assets or generated manifests changed. The full suite and export were not rerun. The known three `MOON_UMBRA_*` unclaimed StringNames still appear at exit.
+
+## F4U-20-R3: direct paint gallery, 2026-10-25
+
+Home's highlighted **Choose paint (13)** button now opens a gallery instead of advancing to the next paint. All thirteen previews and their full names fit at 1920×1080 with normal text; the current paint has a check mark and selected styling. Choosing any paint takes two activations, regardless of its position. Keyboard arrows navigate the cards, Enter selects, and Back/Escape closes without changing the aircraft and restores focus. Larger text uses fewer columns and scrolling. Choosing the current paint closes without another model request.
+
+The gallery uses thirteen 288×162 PNGs, **185,527 bytes in total**, rendered from validated production builds with a neutral reflection sky for metallic finishes. Each filename includes its source GLB's full SHA-256. Missing or outdated previews retain a named, usable card. [Generator and regeneration command](../../../../assets/aircraft/f4u-corsair-250/README.md#pipeline).
+
+Opening and navigating the gallery never loads a livery GLB. One thumbnail is loaded per frame; reopening reuses a small cache owned by the current Home aircraft. Closing cancels pending thumbnail work, and changing aircraft replaces that cache. Home also reuses its menu choices when resolving paint IDs, removing three repeated manifest reads per selection. The model builder still performs fresh provenance and selected-asset validation; this is not a global validation cache.
+
+### Verification
+
+The shared tree changed engine versions and received an unrelated Ugly Stik merge during this work. Final integration checks use Godot 4.8-beta1 in an isolated checkout of `3ad5cd591`, with the final gallery, thumbnails and tests overlaid. Its Godot-generated import settings and dependent manifests were refreshed through their generators. After the merge, the current main tree also passed import, the 256-check picker suite and the rendered debug-bridge scenarios. The tested gallery, Home, AppRoot, builder and test sources match between the two trees ([source hashes and native observations](checks/gallery-review-2026-10-25.json)). These focused checks do not qualify the engine upgrade or the Ugly Stik changes.
+
+| Check | Result |
+| --- | --- |
+| `test_livery_picker.gd` | 256/256: thirteen decoded previews, EN/ES at 1080p/1440p/4K/720p and 100%/200% text, complete names, selection visibility, real keyboard navigation/activation/cancel, single selection, no GLB loads, one thumbnail per frame, bounded reuse and cancellation |
+| `test_aircraft_liveries.gd` | 179/179: all thirteen builds and identities, malformed/tampered assets, saved/default choices, direct gallery entry, retained menu metadata, responsive Home layout and keyboard access |
+| Rendered production shell | [32/32](checks/gallery-production-2026-10-25.json), no engine errors: every paint selected directly and saved, default restoration, aircraft switching, selected paint in flight and valid/invalid CLI IDs. The fast-close path exposed a deferred-focus call after removal; the fix is covered by the picker suite and this clean rerun |
+| Current-tree lifecycle at 1920×1080 | `corsair_gallery.txt`: one warm-up plus three measured samples, each with 1,076 nodes, zero orphans and 1,272 resources; the bridge reports zero growing counters and zero errors. Reselecting the current paint does not advance the preview generation. `corsair_paint.txt` exercises selection → flight → Home. Final engine log has no errors or shutdown leak messages |
+| Visual inspection | Spanish gallery at 1920×1080: all thirteen cards, complete names, highlighted current paint, silver Chrome preview and Back fit. Capture remains in ignored `tmp/` |
+
+The first implementation uploaded every thumbnail synchronously and showed 125–129 ms opening frames under Godot 4.7.2. It was replaced by progressive loading and Home-owned reuse. Final current-tree observations under 4.8-beta1 recorded a **66.34 ms** maximum frame on first opening (120-frame window, p95 17.07 ms) and **59.09 ms** on cached reopening (79 frames, p95 17.04 ms). Each window still contains one frame above 50 ms. The engine versions differ, so these are not a matched before/after benchmark or evidence of a percentage improvement.
+
+These are short menu observations on a shared RTX 3090 workstation at 1920×1080, not flight-performance qualification. Cold loading of a newly selected GLB and the package duplication described above remain; this change avoids loading intermediate paints rather than changing their delivered geometry or materials. The full application suite and a new export were not run.
+
+## F4U-20-R4: reuse the current menu theme, 2026-10-25
+
+Opening the gallery now shares Home's current theme instead of constructing another complete theme and its styles. `Screen.mount` accepts this optional owner-supplied theme; other screens retain their existing behavior. Crystal effects still duplicate their own style overrides, leaving the shared theme intact. There is no global theme cache: reopening takes Home's current theme after accessibility or compact-layout changes.
+
+The review also found that explicit card font overrides retained their opening size after a live theme replacement. Both visible names and accessible button text now follow the replacement theme. Font overrides and keyboard neighbor paths are refreshed only when the font size or column count changes.
+
+### Evidence
+
+Godot 4.8-beta1 Compatibility, RTX 3090, 1920×1080; four cached reopenings per variant after one warm-up. The median maximum frame was **36.86 ms before and 35.80 ms after** (ranges 36.14–37.06 and 35.06–36.70 ms). This small difference is a short shared-workstation observation, not a statistically qualified speedup. [Raw samples, source hashes and checked-runner reports](checks/gallery-theme-2026-10-25.json).
+
+| Check | Result |
+| --- | --- |
+| `test_livery_picker.gd` | 285/285: previous layout/input/loading gates, owner-theme reuse across the EN/ES resolution matrix, unchanged shared styles after decoration, live 100%/200% text and compact-theme replacements, complete labels and refreshed keyboard columns |
+| `test_ui_screen_stack.gd` | 38/38: modal isolation, focus return, nested menus and five Home → Fly → End cycles without node growth |
+| Final native gallery soak | One warm-up plus three measured samples; 1,076 nodes, zero orphans and 1,272 resources at every sample. Zero growing counters, engine errors or warnings; final shutdown reports zero leaked objects and no crash |
+
+The larger cold GLB loading cost remains. Physics, aircraft assets and provenance checks were not changed. The full suite and export were not rerun. An exploratory session emitted a Thread shutdown warning that did not recur in the separate final run; it is not claimed fixed.

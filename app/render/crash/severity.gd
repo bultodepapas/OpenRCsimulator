@@ -428,7 +428,7 @@ static func _component_group(component: String) -> String:
 		return "tail"
 	if component.contains("fuselage") or component.contains("nose") or component.contains("belly"):
 		return "fuselage"
-	if component.begins_with("wing"):
+	if component.begins_with("wing") or component.ends_with("_wing_root"):
 		return "wing"
 	return "unknown"
 

@@ -1,0 +1,170 @@
+{
+  "format": "openrc-gdu03-suite-overlay-verification-v1",
+  "observed_utc": "2026-10-25T17:12:04.418742+00:00",
+  "scope": "Five final UI/test corrections were overlaid only after the canonical integration prefix stopped. Original 1,300-script parse covers its frozen sources; these five replacement scripts also pass separate final parse checks. Actual unit behavior is bound by unit-coverage.json. The timestamped whole-app audit is scoped to the overlay point; later shell-harness changes are bound by final integration evidence.",
+  "overlay": {
+    "observed_utc": "2026-10-25T17:05:48.881636+00:00",
+    "reason": "Canonical integration stopped at EX-14h before this controlled overlay. Final responsive/focus runtime correction and four already-passing unit fixture corrections; no core, model data or identity changed. Original full parse remains scoped to its frozen sources; these scripts have separate final checked invocations.",
+    "files": [
+      {
+        "path": "app/ui/overlays_dialog.gd",
+        "before_sha256": "a199ee321ab63a3bdf7ea45cf06e63815eac448f740602c7345a36a7051e6ae4",
+        "after_sha256": "c6d4f234b66044fdef04eb1275c95fc6e5bbe1cadea241bb275b83843db649e1"
+      },
+      {
+        "path": "app/tests/test_overlay_manager.gd",
+        "before_sha256": "321a04db2cea6d07d2d9d2c137209eb060c526017c6923e05da3b584c41ea625",
+        "after_sha256": "ba7abfe2714b43334645ff6b2ef19eca523c40b99efe73ca64fa30cbb1847a17"
+      },
+      {
+        "path": "app/tests/test_retractable_gear_input.gd",
+        "before_sha256": "14c8e452ea2b495cacdaa81fa66abc43b657d31fd5a1d66e555163bf524234d2",
+        "after_sha256": "56417f3937d22101abf8799397d78c63e972874ef88d2433c495d9e8dccab998"
+      },
+      {
+        "path": "app/tests/test_ui_quit.gd",
+        "before_sha256": "e21c6c30efb002ea7421fea198bf7af22351d803ff479c6a9b3202f092fe97a3",
+        "after_sha256": "19260a7b88ec8d98d004d18f07cbed0c6b711d2122a3580cc1d5559920694934"
+      },
+      {
+        "path": "app/tests/test_field_tree_detail.gd",
+        "before_sha256": "6f6637eff97bbda8fbf125ab0bb9d76856acef98359b20f7faf750ac43fbfc4c",
+        "after_sha256": "1fcfc8b592f3233f9e85fe53db6801f17673db30655bd099d9f976b8b016b060"
+      }
+    ]
+  },
+  "source_audit": {
+    "observed_utc": "2026-10-25T17:05:50.407795+00:00",
+    "selected_tracked_app_files": 3344,
+    "non_line_ending_differences": [],
+    "line_ending_only_differences": [
+      {
+        "path": "app/capture.sh",
+        "root_sha256": "e760ac04eb1e3da620cb187ddbcdd0597beb69ef791d1573cd221b4d985f8b69",
+        "suite_sha256": "f499b40d6db342ad38c013e88526f476e01bd145a2ecf8a55e317328f61111ca"
+      },
+      {
+        "path": "app/run-landscape.sh",
+        "root_sha256": "ac6058afabd41995e11aa5f0379424546d5d679db74e8d0f6f2c76185e80f837",
+        "suite_sha256": "37a8851c2e231f21ed5ae7cf6a8570072e02b96a6b618ba57930884f41bd4a3d"
+      },
+      {
+        "path": "app/tests/visual-env.sh",
+        "root_sha256": "9bf341a7769fdfc69197ace07b0d96151631635d86a0858d787701a729b4c1a2",
+        "suite_sha256": "4ebc63a99bdafcaf671a291dc5488291646beed199b87a0941f310a6f2914d02"
+      }
+    ]
+  },
+  "parse_checks": [
+    {
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks\\overlays_dialog-sf3ggln8\\report.json",
+      "report_sha256": "61d8aa3acd26448ce34eb787850e182f54de3d142c11f8e1b73387d66ba6eadd",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks\\overlays_dialog-sf3ggln8\\engine.log",
+      "log_sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://ui/overlays_dialog.gd"
+      ],
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks\\test_field_tree_detail-2thkeob0\\report.json",
+      "report_sha256": "26b0b93405a9f8cdbd068fa5419e8505dc2d8133d23476f6799064b583d5989b",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks\\test_field_tree_detail-2thkeob0\\engine.log",
+      "log_sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://tests/test_field_tree_detail.gd"
+      ],
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks\\test_overlay_manager-c7nj926l\\report.json",
+      "report_sha256": "d342c3602d57353d354a6352f7fd12d655607194ef434f7867246d08c69a7916",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks\\test_overlay_manager-c7nj926l\\engine.log",
+      "log_sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://tests/test_overlay_manager.gd"
+      ],
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks\\test_retractable_gear_input-jbklfzsp\\report.json",
+      "report_sha256": "911c796b49476d9add885083966c9586d35dc15c5b4b7e6edd7c16c35ef9ea70",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks\\test_retractable_gear_input-jbklfzsp\\engine.log",
+      "log_sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://tests/test_retractable_gear_input.gd"
+      ],
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks\\test_ui_quit-489te3dt\\report.json",
+      "report_sha256": "57c9528d7294e263ca0bb773d112cf84fe37f71054d923966b72c457279d6a3f",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks\\test_ui_quit-489te3dt\\engine.log",
+      "log_sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://tests/test_ui_quit.gd"
+      ],
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ]
+}

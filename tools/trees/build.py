@@ -211,8 +211,8 @@ def main():
                               help='Use an explicit pinned glTF/GLB recipe JSON instead of a built-in source set')
     parser.add_argument('--match-atlas', type=Path,
                         help='Align the generated material-mask alpha to an existing runtime atlas without replacing it')
-    default_godot = ROOT / ('.tools/Godot_v4.7.2-stable_win64.exe' if os.name == 'nt'
-                            else '.tools/Godot_v4.7.2-stable_linux.x86_64')
+    default_godot = ROOT / ('.tools/Godot_v4.8-beta1_win64.exe' if os.name == 'nt'
+                            else '.tools/Godot_v4.8-beta1_linux.x86_64')
     parser.add_argument('--godot', type=Path, default=default_godot)
     args = parser.parse_args()
     out = args.out.resolve()
@@ -242,8 +242,8 @@ def main():
             original_recipe_sha256 = sha(recipe_path)
     godot = args.godot.resolve()
     version = subprocess.check_output([str(godot), '--version'], text=True).strip()
-    if not version.startswith('4.7.2.stable.'):
-        raise RuntimeError(f'expected pinned Godot 4.7.2, got {version}')
+    if version != '4.8.beta1.official.4d10419ca':
+        raise RuntimeError(f'expected pinned Godot 4.8-beta1, got {version}')
     if recipe_path is None:
         run(['node', TOOLS / 'adapt.mjs', '--out', out / 'derived'], out / 'adapt.log')
     else:

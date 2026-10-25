@@ -1,0 +1,401 @@
+{
+  "format": "openrc-gdu03-final-source-exact-replay-v1",
+  "source_sha256": {
+    "app/physics/math3d.gd": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+    "app/physics/mass_inventory.gd": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+    "app/sim/flight_session.gd": "d87986c342b8d45b15af4da03e8bfc511c4ea3cdd2e483c7a135f3e1bb5cf92d",
+    "app/tests/test_flight_log.gd": "e5d5aa102039487a16ed9e68e809d58d6cc1d4830af6f0a2a276678560f2fea6"
+  },
+  "checked_invocation": {
+    "format": "openrc-godot-check v1",
+    "capture_id": "824c23a5-8472-4cc5-b0e2-919745ca1f63",
+    "command": [
+      ".tools/Godot_v4.8-beta1_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_flight_log.gd",
+      "--",
+      "--out=D:/OpenRCsimulator-experiments/gdu03-final-replay/recordings"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-25T16:13:46.846192+00:00",
+    "label": "final-flight-log",
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\checks\\final-flight-log-2_dbidy5\\engine.log",
+    "report": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\checks\\final-flight-log-2_dbidy5\\report.json",
+    "timeout_seconds": 300.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": true,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 17.891,
+    "log_bytes": 5982,
+    "log_sha256": "2f1afeb9abfe229a83e6925916b4a6c1ec552a840357169a94af76b32590a009"
+  },
+  "cli_reports": {
+    "export": {
+      "baseline_build": {
+        "commit": "",
+        "commit_date": "",
+        "describe": "",
+        "dirty": false,
+        "godot": "4.8-beta1 (official)",
+        "label": "",
+        "parsed": {
+          "after": 0,
+          "base": "0.1.8",
+          "dirty": false,
+          "prerelease": "",
+          "semver": "0.1.8",
+          "sha": "",
+          "tag": ""
+        },
+        "source": "development",
+        "version": "0.1.8"
+      },
+      "baseline_solver_sha256": "08d8086faa1db1cd3370ec755c53e7b5b4f54adc0590b13326cafea4745bffd0",
+      "complete": true,
+      "current_solver_sha256": "08d8086faa1db1cd3370ec755c53e7b5b4f54adc0590b13326cafea4745bffd0",
+      "dt_s": 0.004166666666666667,
+      "error": "",
+      "events": [
+        {
+          "detail": "roll reversal",
+          "kind": "marker",
+          "tick": 56
+        },
+        {
+          "detail": "checkpoint restored (recorded inputs)",
+          "kind": "resume",
+          "tick": 61
+        },
+        {
+          "detail": "stopped",
+          "kind": "stop",
+          "tick": 260
+        }
+      ],
+      "events_omitted": 0,
+      "final_tick": 260,
+      "first_tick": 0,
+      "format": "openrc-flight-log-report v1",
+      "metadata": {
+        "aero_loads_law": "section-plane-source-weighted-wake-velocity-v2",
+        "aero_model": "section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle",
+        "aircraft": "jensen-das-ugly-stik-60 (res://data/aircraft/jensen_ugly_stik_60.json)",
+        "aircraft_input_format": "openrc-aircraft v2",
+        "aircraft_input_hash_convention": "sha256 of exact aircraft input file bytes",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "aircraft_semantic_hash_convention": "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
+        "aircraft_semantic_sha256": "6d468e26a1b0d41fb8f4e9d7eb6eb80e80fb909b4f4ce1f536d1a222aaac4611",
+        "aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
+        "configuration": "virtual-balanced-reference-v2-empty-tank",
+        "continuous_layout": "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail",
+        "created_utc": "2026-10-25T16:13:50",
+        "dt_s": 0.004166666666666667,
+        "engine": "Godot 4.8-beta1 (official)",
+        "engine_rpm_semantics": "propeller shaft rpm",
+        "frames": "world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]",
+        "gravity_mps2": 9.80665,
+        "ground": "3 profiled spring-damper gear contacts on flat 0 m dry-pavement fixture; per-contact wheel radius and inertia, steering, continuous relative wheel spin; brakes off (no brake command exposed)",
+        "ground_effect_model": "image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)",
+        "inertia_kgm2": "Jxx Jyy Jzz Jxy Jxz Jyz = 0.11573524791512 0.3692385127982 0.46611754023941 -0.00954 0.00736510279719 0.00054849887236",
+        "launch_aux": "[]",
+        "launch_choice": "unknown",
+        "launch_continuous": "[]",
+        "launch_engine_running": "unknown",
+        "launch_error": "",
+        "launch_field_id": "",
+        "launch_ground_anchors": "[]",
+        "launch_kind": "checkpoint_restore",
+        "launch_state": "[]",
+        "launch_trim_throttle": "unknown",
+        "loads": "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
+        "mass_kg": 2.8786621383897963,
+        "metadata_schema": "openrc-flight-meta v6",
+        "propulsion_features": "{\"propeller_normal_force\":false,\"propeller_pfactor\":false,\"rotor_gyroscopic_coupling\":true,\"turbine_ram_flow\":false,\"turbine_ram_jet\":false}",
+        "propulsion_model": "propeller-rpm-lag-v1",
+        "propwash_model": "none",
+        "recording_start_aux": "[5159.1071759800525,0.02103925927458998,0.13842444673697182,0.01891865980414328]",
+        "recording_start_continuous": "[0.0,0.0,0.0]",
+        "recording_start_engine_running": "true",
+        "recording_start_tick": 0,
+        "runway_fallback": "none",
+        "runway_start_status": "not_attempted",
+        "scenario": "checkpoint replay (original launch unknown)",
+        "selected_start_choice": "unknown",
+        "state_layout": "[\"north_m\",\"east_m\",\"down_m\",\"u_mps\",\"v_mps\",\"w_mps\",\"qw\",\"qx\",\"qy\",\"qz\",\"p_radps\",\"q_radps\",\"r_radps\"]",
+        "state_timing": "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
+        "wake_state_unit": "m/s (equal-area mean of section Vp*CL)",
+        "wheel_brakes": "[{\"availability\":\"none\",\"contact\":\"main_left\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"main_right\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"nose\",\"max_torque_nm\":0.0}]",
+        "wheel_profile_hash_convention": "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes",
+        "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+        "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4",
+        "wheel_profile_status": "applied",
+        "wheel_rolling_law": "wheel-positive-terrain-excess-v2",
+        "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"nose\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+        "wheel_state_model": "relative-wheel-rim-speed-rk4-v1",
+        "wing_polar_model": "legacy attached-to-flat-plate blend"
+      },
+      "mode": "export",
+      "observer_usec": 14122,
+      "peak_buffer_rows": 199,
+      "recovery_reason": "",
+      "rows": 261,
+      "solver_changed": false,
+      "source": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\recordings\\jensen_ugly_stik_60.orfl",
+      "source_sha256": "be0332627cfa643b3db35cda0aa8843a5d5b60192b99ac4dc8b3027d342c7b86",
+      "status": "ok"
+    },
+    "replay": {
+      "baseline_build": {
+        "commit": "",
+        "commit_date": "",
+        "describe": "",
+        "dirty": false,
+        "godot": "4.8-beta1 (official)",
+        "label": "",
+        "parsed": {
+          "after": 0,
+          "base": "0.1.8",
+          "dirty": false,
+          "prerelease": "",
+          "semver": "0.1.8",
+          "sha": "",
+          "tag": ""
+        },
+        "source": "development",
+        "version": "0.1.8"
+      },
+      "baseline_solver_sha256": "08d8086faa1db1cd3370ec755c53e7b5b4f54adc0590b13326cafea4745bffd0",
+      "candidate": "",
+      "candidate_identity": {
+        "format": "openrc-aircraft v2",
+        "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+      },
+      "comparison_method": "Byte-exact comparison of every recorded numeric physics/air sample on the recorded solver.",
+      "complete": true,
+      "current_solver_sha256": "08d8086faa1db1cd3370ec755c53e7b5b4f54adc0590b13326cafea4745bffd0",
+      "dt_s": 0.004166666666666667,
+      "error": "",
+      "events": [
+        {
+          "detail": "roll reversal",
+          "kind": "marker",
+          "tick": 56
+        },
+        {
+          "detail": "checkpoint restored (recorded inputs)",
+          "kind": "resume",
+          "tick": 61
+        },
+        {
+          "detail": "stopped",
+          "kind": "stop",
+          "tick": 260
+        }
+      ],
+      "events_omitted": 0,
+      "final_tick": 260,
+      "first_tick": 0,
+      "format": "openrc-flight-log-report v1",
+      "metadata": {
+        "aero_loads_law": "section-plane-source-weighted-wake-velocity-v2",
+        "aero_model": "section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle",
+        "aircraft": "jensen-das-ugly-stik-60 (res://data/aircraft/jensen_ugly_stik_60.json)",
+        "aircraft_input_format": "openrc-aircraft v2",
+        "aircraft_input_hash_convention": "sha256 of exact aircraft input file bytes",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "aircraft_semantic_hash_convention": "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
+        "aircraft_semantic_sha256": "6d468e26a1b0d41fb8f4e9d7eb6eb80e80fb909b4f4ce1f536d1a222aaac4611",
+        "aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
+        "configuration": "virtual-balanced-reference-v2-empty-tank",
+        "continuous_layout": "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail",
+        "created_utc": "2026-10-25T16:13:50",
+        "dt_s": 0.004166666666666667,
+        "engine": "Godot 4.8-beta1 (official)",
+        "engine_rpm_semantics": "propeller shaft rpm",
+        "frames": "world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]",
+        "gravity_mps2": 9.80665,
+        "ground": "3 profiled spring-damper gear contacts on flat 0 m dry-pavement fixture; per-contact wheel radius and inertia, steering, continuous relative wheel spin; brakes off (no brake command exposed)",
+        "ground_effect_model": "image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)",
+        "inertia_kgm2": "Jxx Jyy Jzz Jxy Jxz Jyz = 0.11573524791512 0.3692385127982 0.46611754023941 -0.00954 0.00736510279719 0.00054849887236",
+        "launch_aux": "[]",
+        "launch_choice": "unknown",
+        "launch_continuous": "[]",
+        "launch_engine_running": "unknown",
+        "launch_error": "",
+        "launch_field_id": "",
+        "launch_ground_anchors": "[]",
+        "launch_kind": "checkpoint_restore",
+        "launch_state": "[]",
+        "launch_trim_throttle": "unknown",
+        "loads": "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
+        "mass_kg": 2.8786621383897963,
+        "metadata_schema": "openrc-flight-meta v6",
+        "propulsion_features": "{\"propeller_normal_force\":false,\"propeller_pfactor\":false,\"rotor_gyroscopic_coupling\":true,\"turbine_ram_flow\":false,\"turbine_ram_jet\":false}",
+        "propulsion_model": "propeller-rpm-lag-v1",
+        "propwash_model": "none",
+        "recording_start_aux": "[5159.1071759800525,0.02103925927458998,0.13842444673697182,0.01891865980414328]",
+        "recording_start_continuous": "[0.0,0.0,0.0]",
+        "recording_start_engine_running": "true",
+        "recording_start_tick": 0,
+        "runway_fallback": "none",
+        "runway_start_status": "not_attempted",
+        "scenario": "checkpoint replay (original launch unknown)",
+        "selected_start_choice": "unknown",
+        "state_layout": "[\"north_m\",\"east_m\",\"down_m\",\"u_mps\",\"v_mps\",\"w_mps\",\"qw\",\"qx\",\"qy\",\"qz\",\"p_radps\",\"q_radps\",\"r_radps\"]",
+        "state_timing": "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
+        "wake_state_unit": "m/s (equal-area mean of section Vp*CL)",
+        "wheel_brakes": "[{\"availability\":\"none\",\"contact\":\"main_left\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"main_right\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"nose\",\"max_torque_nm\":0.0}]",
+        "wheel_profile_hash_convention": "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes",
+        "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+        "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4",
+        "wheel_profile_status": "applied",
+        "wheel_rolling_law": "wheel-positive-terrain-excess-v2",
+        "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":0,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":1,\"unit\":\"m/s rim speed\"},{\"contact\":\"nose\",\"index\":2,\"unit\":\"m/s rim speed\"}]",
+        "wheel_state_model": "relative-wheel-rim-speed-rk4-v1",
+        "wing_polar_model": "legacy attached-to-flat-plate blend"
+      },
+      "mode": "exact",
+      "observer_usec": 14122,
+      "peak_buffer_rows": 199,
+      "recovery_reason": "",
+      "rows": 261,
+      "solver_changed": false,
+      "source": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\recordings\\jensen_ugly_stik_60.orfl",
+      "source_sha256": "be0332627cfa643b3db35cda0aa8843a5d5b60192b99ac4dc8b3027d342c7b86",
+      "status": "ok"
+    }
+  },
+  "comparison": {
+    "base": "flight.csv",
+    "candidate": "flight.csv",
+    "differences": {
+      "angular_rate_radps": {
+        "components": {
+          "p_radps": {
+            "max_abs": 0.0,
+            "rmse": 0.0
+          },
+          "q_radps": {
+            "max_abs": 0.0,
+            "rmse": 0.0
+          },
+          "r_radps": {
+            "max_abs": 0.0,
+            "rmse": 0.0
+          }
+        },
+        "max_abs": 0.0,
+        "rmse": 0.0,
+        "unit": "rad/s"
+      },
+      "position_m": {
+        "components": {
+          "down_m": {
+            "max_abs": 0.0,
+            "rmse": 0.0
+          },
+          "east_m": {
+            "max_abs": 0.0,
+            "rmse": 0.0
+          },
+          "north_m": {
+            "max_abs": 0.0,
+            "rmse": 0.0
+          }
+        },
+        "max_abs": 0.0,
+        "rmse": 0.0,
+        "unit": "m"
+      },
+      "quaternion_angle_rad": {
+        "max_abs": 0.0,
+        "rmse": 0.0,
+        "unit": "rad"
+      },
+      "velocity_mps": {
+        "components": {
+          "u_mps": {
+            "max_abs": 0.0,
+            "rmse": 0.0
+          },
+          "v_mps": {
+            "max_abs": 0.0,
+            "rmse": 0.0
+          },
+          "w_mps": {
+            "max_abs": 0.0,
+            "rmse": 0.0
+          }
+        },
+        "max_abs": 0.0,
+        "rmse": 0.0,
+        "unit": "m/s"
+      }
+    },
+    "first_divergence": null,
+    "rows": 261,
+    "status": "ok",
+    "tick": {
+      "first": 0,
+      "last": 260
+    },
+    "time_s": {
+      "duration": 1.0833333333333333,
+      "first": 0.0,
+      "last": 1.0833333333333333
+    }
+  },
+  "artifacts": {
+    "recordings/jensen_ugly_stik_60.orfl": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\recordings\\jensen_ugly_stik_60.orfl",
+      "sha256": "be0332627cfa643b3db35cda0aa8843a5d5b60192b99ac4dc8b3027d342c7b86"
+    },
+    "export/flight.csv": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\export\\flight.csv",
+      "sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041"
+    },
+    "replay/flight.csv": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\replay\\flight.csv",
+      "sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041"
+    },
+    "export/godot.log": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\export\\godot.log",
+      "sha256": "441647acff0e4b714924da01e381332b5d0b42ef1981f65915edb82a6528b031"
+    },
+    "replay/godot.log": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\replay\\godot.log",
+      "sha256": "b1b6799a1e36ed495cb5cbee6006a2d1fb37d2bae741e286b8929dae060a8868"
+    },
+    "recording.log": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\recording.log",
+      "sha256": "2f1afeb9abfe229a83e6925916b4a6c1ec552a840357169a94af76b32590a009"
+    },
+    "comparison.json": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\comparison.json",
+      "sha256": "d0a954d79bb7242ae325ec794303c25d71d7d660d60ea161bae8369d84bb7232"
+    },
+    "validated-results.xml": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-final-replay\\validated-results.xml",
+      "sha256": "a029649e01b9d8cd1ae3d41b0d1be1aef1b49042138b188548631e33459a4493"
+    }
+  },
+  "cli_engine_override": false,
+  "csv_byte_identical": true
+}

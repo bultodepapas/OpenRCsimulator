@@ -1,0 +1,107 @@
+{
+  "format": "openrc-gdu03-quit-fixture-v1",
+  "date": "2026-10-25",
+  "changed_path": "app/tests/test_ui_quit.gd",
+  "root_test_sha256": "19260a7b88ec8d98d004d18f07cbed0c6b711d2122a3580cc1d5559920694934",
+  "tested_external_copy_sha256": "19260a7b88ec8d98d004d18f07cbed0c6b711d2122a3580cc1d5559920694934",
+  "root_test_equals_tested_copy_after_CRLF_normalization": true,
+  "frozen_original_test_sha256": "e21c6c30efb002ea7421fea198bf7af22351d803ff479c6a9b3202f092fe97a3",
+  "frozen_runtime_app_root_sha256": "f22338bd9af6b621c3ec75b73f0b629c6f20f4308dff31eaaa43b523f10c774a",
+  "cause": "Reused mockedAppRoot resets audio-pending flag after terminalquit but omits home-preparation terminalflag; later successfulsave/discard reachescommit thatreturns early.",
+  "change": "Reset_home_preparation_quit_pending only at2existing syntheticattemptresetpoints; production/runtime/timeout/traceassertionsunchanged.",
+  "runs": {
+    "original-quit-fixture": {
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c57ee2ce-5a50-4783-8fc7-53eb6735a3c5",
+        "command": [
+          ".tools/Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_quit.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T16:30:12.339625+00:00",
+        "label": "original-quit-fixture",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-ui-quit-audit\\checks\\original-quit-fixture-awc9m355\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-ui-quit-audit\\checks\\original-quit-fixture-awc9m355\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 28.421,
+        "log_bytes": 3969,
+        "log_sha256": "76b8431c21e7161957b71487ccc97ee72120d10344eb452c2b08fcd446c037e4"
+      },
+      "report_sha256": "22080107aee8c375cd056fec7c213dd0c7474c4287adc1d6719e36b02b127575",
+      "passed_checks": 49,
+      "failed_checks": [
+        "FAIL Retry saves the retained trace and completes quit exactly once stops=2 quits=0",
+        "FAIL only explicit Discard trace and continue resolves the failed trace "
+      ]
+    },
+    "reset-quit-fixture-copy": {
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c7387ab8-31c0-413e-a0f8-20c19c0e410b",
+        "command": [
+          ".tools/Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:/OpenRCsimulator-experiments/gdu03-ui-quit-audit/test_ui_quit_reset_copy.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T16:31:17.821973+00:00",
+        "label": "reset-quit-fixture-copy",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-ui-quit-audit\\checks\\reset-quit-fixture-copy-bkybe02e\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-ui-quit-audit\\checks\\reset-quit-fixture-copy-bkybe02e\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "UI quit: 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 23.187,
+        "log_bytes": 3958,
+        "log_sha256": "b8c3f274e6fd8fa9a37e6a709f9d0efeea400c965afcc1870e51277014a4ffd2"
+      },
+      "report_sha256": "ad9e38f6a6e84a0464488b117d8cf0b06e86c0f6e5a6c7b21db7b023bf774217",
+      "passed_checks": 51,
+      "failed_checks": []
+    }
+  },
+  "suite_overlay": false,
+  "limits": "Focused existing51-check quit fixture; canonicalintegration stillrunning unchanged; no fullsuite/nativepackage qualification."
+}

@@ -1,0 +1,1357 @@
+{
+  "format": "openrc-gdu05c-moon-v1",
+  "date": "2026-10-25",
+  "out_dir": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025",
+  "scope": "Existing unchanged FW-MOON-01 Compatibility cubemap cost-amplifier; current exact shader/include bytes on both engines. Focused correctness; no quiet-host or loaded-game performance qualification.",
+  "engine_executables": {
+    "4.8": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+      "sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+      "adjacent_executable_sha256": "bfd67323e170f4167f0df27369b5e9add66c5d6a827f8bbbb03f7c36b6e08905"
+    },
+    "4.7": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "adjacent_executable_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+    }
+  },
+  "source_manifest_sha256": "e94a1a66ef330f96ff23ef5939c46891dc737d0f58b0c4c3c3a0b839e093f807",
+  "orchestration": {
+    "run_existing_probe.py": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\run_existing_probe.py",
+      "sha256": "739f989d5d1b7ebc8ae78243332217db25f3eaa0d7e32724d4ddb668aa3da637"
+    },
+    "run_fullscreen.py": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\run_fullscreen.py",
+      "sha256": "c99832224a3af102e8aa93c19eaeb2be08b09831c359b73b8ded8d313de532e8"
+    }
+  },
+  "sources_unchanged": true,
+  "fullscreen_results": [
+    {
+      "engine": "4.7",
+      "case": "burn_color_static",
+      "burn_iterations": 20000,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_color_static-burn20000.json",
+      "sha256": "6a342a6b8df87a47f548afdb79bddb58e88578719ff3dc91b65aa0b3c91be155",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 180,
+      "godot": "4.7.2-stable (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 2,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 0.8734999999999999,
+        "cpu_ms": 0.323000013828278,
+        "gpu_ms": 0.38650000095367454
+      },
+      "p95_ms": {
+        "wall_ms": 1.432499999999996,
+        "cpu_ms": 0.45934999138116805,
+        "gpu_ms": 0.9312499940395353
+      }
+    },
+    {
+      "engine": "4.7",
+      "case": "burn_color_uniform",
+      "burn_iterations": 0,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_color_uniform-burn0.json",
+      "sha256": "71403a3165dc80ba224bafc199c5ab15d2b87af56e78e29c561f1a6ed0bca7ff",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 180,
+      "godot": "4.7.2-stable (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 2,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 0.856,
+        "cpu_ms": 0.321000009775162,
+        "gpu_ms": 0.379999995231628
+      },
+      "p95_ms": {
+        "wall_ms": 1.4902999999999997,
+        "cpu_ms": 0.40440001338720294,
+        "gpu_ms": 0.9678000062704089
+      }
+    },
+    {
+      "engine": "4.7",
+      "case": "burn_color_uniform",
+      "burn_iterations": 20000,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_color_uniform-burn20000.json",
+      "sha256": "efee4c650511f1c0b08bcd38bd3e14370bc25908557c5ff8768d2948f4a99e2a",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 180,
+      "godot": "4.7.2-stable (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 2,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 0.866,
+        "cpu_ms": 0.316000014543533,
+        "gpu_ms": 0.3875000029802325
+      },
+      "p95_ms": {
+        "wall_ms": 1.6574999999999998,
+        "cpu_ms": 0.4580500036478038,
+        "gpu_ms": 0.9561999708414075
+      }
+    },
+    {
+      "engine": "4.7",
+      "case": "burn_sky_static",
+      "burn_iterations": 20000,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_sky_static-burn20000.json",
+      "sha256": "b3d48a6f19ac6a64336e1e90f788329d44d5d100caaf636c230638678796483f",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 180,
+      "godot": "4.7.2-stable (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 3,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 0.875,
+        "cpu_ms": 0.35449999570846547,
+        "gpu_ms": 0.388000011444092
+      },
+      "p95_ms": {
+        "wall_ms": 1.4186499999999997,
+        "cpu_ms": 0.4656000033020974,
+        "gpu_ms": 0.8130500227212908
+      }
+    },
+    {
+      "engine": "4.7",
+      "case": "burn_sky_uniform",
+      "burn_iterations": 0,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_sky_uniform-burn0.json",
+      "sha256": "df802ca76cfe2efbfbb821752c1e67f9ed4a8da5911ba5b909f92f2eb81d86c7",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 180,
+      "godot": "4.7.2-stable (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 3,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 1.5194999999999999,
+        "cpu_ms": 0.8645000159740446,
+        "gpu_ms": 1.17400002479553
+      },
+      "p95_ms": {
+        "wall_ms": 2.554449999999999,
+        "cpu_ms": 1.1912999868392935,
+        "gpu_ms": 1.8294499993324254
+      }
+    },
+    {
+      "engine": "4.7",
+      "case": "burn_sky_uniform",
+      "burn_iterations": 20000,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_sky_uniform-burn20000.json",
+      "sha256": "e70ceaedc995a083fb7cf2a245787606f2d1ccdd4bead5271f2051ae09c16a3f",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 120,
+      "godot": "4.7.2-stable (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 3,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 7.140499999999999,
+        "cpu_ms": 0.917999982833862,
+        "gpu_ms": 6.88800001144409
+      },
+      "p95_ms": {
+        "wall_ms": 13.38715,
+        "cpu_ms": 1.2902999639511135,
+        "gpu_ms": 7.49200010299683
+      }
+    },
+    {
+      "engine": "4.8",
+      "case": "burn_color_static",
+      "burn_iterations": 20000,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_color_static-burn20000.json",
+      "sha256": "80839bf90327f11b90a805f4824f35664490bf3376960d91873ddbd1534690f8",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 180,
+      "godot": "4.8-beta1 (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 2,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 0.9524999999999999,
+        "cpu_ms": 0.3524999916553495,
+        "gpu_ms": 0.43299999833107
+      },
+      "p95_ms": {
+        "wall_ms": 1.6125999999999994,
+        "cpu_ms": 0.4580999881029122,
+        "gpu_ms": 0.9089499920606605
+      }
+    },
+    {
+      "engine": "4.8",
+      "case": "burn_color_uniform",
+      "burn_iterations": 0,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_color_uniform-burn0.json",
+      "sha256": "914364dc682b3c19d1f812cc99474388dbd83d26d054710efca8b8f01d416644",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 180,
+      "godot": "4.8-beta1 (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 2,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 0.8494999999999999,
+        "cpu_ms": 0.3295000046491625,
+        "gpu_ms": 0.381000012159348
+      },
+      "p95_ms": {
+        "wall_ms": 1.3394499999999998,
+        "cpu_ms": 0.4060999885201457,
+        "gpu_ms": 0.8250500023365014
+      }
+    },
+    {
+      "engine": "4.8",
+      "case": "burn_color_uniform",
+      "burn_iterations": 20000,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_color_uniform-burn20000.json",
+      "sha256": "4b4724ed42daed0f6ea31dcb184b36d6450f476aa2978dcc8bb16f422ee3ce57",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 180,
+      "godot": "4.8-beta1 (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 2,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 0.8755,
+        "cpu_ms": 0.33849999308586154,
+        "gpu_ms": 0.384999990463257
+      },
+      "p95_ms": {
+        "wall_ms": 1.477549999999998,
+        "cpu_ms": 0.6241000115871427,
+        "gpu_ms": 0.9306000053882594
+      }
+    },
+    {
+      "engine": "4.8",
+      "case": "burn_sky_static",
+      "burn_iterations": 20000,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_sky_static-burn20000.json",
+      "sha256": "bd4be2632bef99e87901c03ce3193465f866fd12abeff2c624b304c54dee1553",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 180,
+      "godot": "4.8-beta1 (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 3,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 0.9555,
+        "cpu_ms": 0.383999988436699,
+        "gpu_ms": 0.396000012755394
+      },
+      "p95_ms": {
+        "wall_ms": 1.6568999999999996,
+        "cpu_ms": 0.5576499819755554,
+        "gpu_ms": 0.8395499885082247
+      }
+    },
+    {
+      "engine": "4.8",
+      "case": "burn_sky_uniform",
+      "burn_iterations": 0,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_sky_uniform-burn0.json",
+      "sha256": "83ae67e6874f86c6f71a2bd51e676c7070001027ece262d3f1f451e35249a301",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 180,
+      "godot": "4.8-beta1 (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 3,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 1.6175000000000002,
+        "cpu_ms": 1.0354999899864201,
+        "gpu_ms": 1.085999965667725
+      },
+      "p95_ms": {
+        "wall_ms": 2.6681500000000002,
+        "cpu_ms": 1.404300040006639,
+        "gpu_ms": 1.819850003719333
+      }
+    },
+    {
+      "engine": "4.8",
+      "case": "burn_sky_uniform",
+      "burn_iterations": 20000,
+      "result": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_sky_uniform-burn20000.json",
+      "sha256": "79d97e8fa20dff7b1b16926ee5b1621d5ca88311ad7aada1ba3840308333411b",
+      "size": [
+        1920.0,
+        1080.0
+      ],
+      "frames": 120,
+      "godot": "4.8-beta1 (official)",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "method": "gl_compatibility",
+      "ambient_source": 3,
+      "reflection_source": 1,
+      "radiance_size": 3,
+      "sky_process_mode": 1,
+      "msaa_3d": 2,
+      "p50_ms": {
+        "wall_ms": 7.1370000000000005,
+        "cpu_ms": 0.9950000047683715,
+        "gpu_ms": 6.805999994277955
+      },
+      "p95_ms": {
+        "wall_ms": 13.4957,
+        "cpu_ms": 1.3352500140666983,
+        "gpu_ms": 7.457499861717228
+      }
+    }
+  ],
+  "checked_invocations": [
+    {
+      "label": "moon-import-4.8",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-import-4.8-4c8oxt9_\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-import-4.8-4c8oxt9_\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--editor",
+        "--import"
+      ],
+      "started_utc": "2026-10-25T15:11:09.426886+00:00",
+      "elapsed_seconds": 5.125,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "92d9fd0f512a1880ae3dc3448c4024971056526224d4d604a59b6e62c22027e5",
+      "report_sha256": "a21653a7c3ea1b726a77f3383565b3b73ff7d0118737fca96749c78ae1eb2dde"
+    },
+    {
+      "label": "moon-import-4.7",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-import-4.7-v36ky99n\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-import-4.7-v36ky99n\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--editor",
+        "--import"
+      ],
+      "started_utc": "2026-10-25T15:11:14.553422+00:00",
+      "elapsed_seconds": 3.797,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "b728de0c23f24d9aa31bc7608b177d7ca13857d7c3aca862a08506d00675123b",
+      "report_sha256": "a4e9cd0cefb67b0b1ae96d1d7e7ce6d7c0d06670214846901bf32a47d02bbb2a"
+    },
+    {
+      "label": "moon-4.8-static-burn0",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-static-burn0-a7849deo\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-static-burn0-a7849deo\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=static",
+        "--burn=0",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.8\\static-burn0.json"
+      ],
+      "started_utc": "2026-10-25T15:11:18.351124+00:00",
+      "elapsed_seconds": 1.484,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "d59d6f832b105de168f9f6b407cf589f79478eb974f10c7c0f362c2316111a14"
+    },
+    {
+      "label": "moon-4.7-static-burn0",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-static-burn0-e69kiq3l\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-static-burn0-e69kiq3l\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=static",
+        "--burn=0",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.7\\static-burn0.json"
+      ],
+      "started_utc": "2026-10-25T15:11:19.841692+00:00",
+      "elapsed_seconds": 1.593,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "021c0d31a0d11e7dc728000e868f987736716929b02b81d24a07e9d3a4a0dbae"
+    },
+    {
+      "label": "moon-4.8-uniform-burn0",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-uniform-burn0-54007f7b\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-uniform-burn0-54007f7b\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=uniform",
+        "--burn=0",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.8\\uniform-burn0.json"
+      ],
+      "started_utc": "2026-10-25T15:11:21.443206+00:00",
+      "elapsed_seconds": 1.454,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "8902de50dc95a7ef4c9fc28f0a3578a7210abbda79aa79b318f9cfaeaff723df"
+    },
+    {
+      "label": "moon-4.7-uniform-burn0",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-uniform-burn0-64pbsqhu\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-uniform-burn0-64pbsqhu\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=uniform",
+        "--burn=0",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.7\\uniform-burn0.json"
+      ],
+      "started_utc": "2026-10-25T15:11:22.898386+00:00",
+      "elapsed_seconds": 1.421,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "ebf1b2c74419b6403c0b3edbce9df4730f8614298feb5fdcde00acfd085dfcb7"
+    },
+    {
+      "label": "moon-4.8-burn_color_static-burn2000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-burn_color_static-burn2000-bzkiray5\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-burn_color_static-burn2000-bzkiray5\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_color_static",
+        "--burn=2000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.8\\burn_color_static-burn2000.json"
+      ],
+      "started_utc": "2026-10-25T15:11:24.322906+00:00",
+      "elapsed_seconds": 2.188,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "9999be17921fe075e7cd05444c0f1ee96831e230e2d269c309742557159024c5"
+    },
+    {
+      "label": "moon-4.7-burn_color_static-burn2000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-burn_color_static-burn2000-48yuehuj\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-burn_color_static-burn2000-48yuehuj\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_color_static",
+        "--burn=2000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.7\\burn_color_static-burn2000.json"
+      ],
+      "started_utc": "2026-10-25T15:11:26.536891+00:00",
+      "elapsed_seconds": 2.203,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "bad4420268d5e1cead10d179fcd2b5bdcecc83a651715093997b75daee62bc51"
+    },
+    {
+      "label": "moon-4.8-burn_color_uniform-burn2000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-burn_color_uniform-burn2000-q1k2k6cd\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-burn_color_uniform-burn2000-q1k2k6cd\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_color_uniform",
+        "--burn=2000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.8\\burn_color_uniform-burn2000.json"
+      ],
+      "started_utc": "2026-10-25T15:11:28.740375+00:00",
+      "elapsed_seconds": 1.516,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "d9ea25d5bda0a42e09b1f6290c7e762a4b78bd02e4ff49c764fe21e0461cb014"
+    },
+    {
+      "label": "moon-4.7-burn_color_uniform-burn2000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-burn_color_uniform-burn2000-z7es_z5q\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-burn_color_uniform-burn2000-z7es_z5q\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_color_uniform",
+        "--burn=2000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.7\\burn_color_uniform-burn2000.json"
+      ],
+      "started_utc": "2026-10-25T15:11:30.255083+00:00",
+      "elapsed_seconds": 1.609,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "574cc99379cde1e5009ec80acdc28df19025a1722739824c2194c789778f3109"
+    },
+    {
+      "label": "moon-4.8-burn_sky_static-burn2000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-burn_sky_static-burn2000-3iq6fikt\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-burn_sky_static-burn2000-3iq6fikt\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_static",
+        "--burn=2000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.8\\burn_sky_static-burn2000.json"
+      ],
+      "started_utc": "2026-10-25T15:11:31.875613+00:00",
+      "elapsed_seconds": 1.484,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "e19c7885d68e820461b8795cde231f640bd3f22372f6773bf6ecc201ea444183"
+    },
+    {
+      "label": "moon-4.7-burn_sky_static-burn2000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-burn_sky_static-burn2000-acb4b051\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-burn_sky_static-burn2000-acb4b051\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_static",
+        "--burn=2000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.7\\burn_sky_static-burn2000.json"
+      ],
+      "started_utc": "2026-10-25T15:11:33.368270+00:00",
+      "elapsed_seconds": 1.563,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "e66ced0734ba76533597d3a7c52e7a3753fa50cc36a43fb4e722d3c752725ace"
+    },
+    {
+      "label": "moon-4.8-burn_sky_uniform-burn2000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-burn_sky_uniform-burn2000-ndk07l42\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-burn_sky_uniform-burn2000-ndk07l42\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_uniform",
+        "--burn=2000",
+        "--warmup=15",
+        "--frames=60",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.8\\burn_sky_uniform-burn2000.json"
+      ],
+      "started_utc": "2026-10-25T15:11:34.924699+00:00",
+      "elapsed_seconds": 1.5,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "d725657d228ce2e8668bc82e881bc649bc3125ede89b965bd935f5f0014e0695"
+    },
+    {
+      "label": "moon-4.7-burn_sky_uniform-burn2000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-burn_sky_uniform-burn2000-c01ydh2w\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-burn_sky_uniform-burn2000-c01ydh2w\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_uniform",
+        "--burn=2000",
+        "--warmup=15",
+        "--frames=60",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.7\\burn_sky_uniform-burn2000.json"
+      ],
+      "started_utc": "2026-10-25T15:11:36.419291+00:00",
+      "elapsed_seconds": 1.469,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "dfc7dda71868562e0a702e6c6e803ec7ee40ccfc8c8c058a756588e9883e4aba"
+    },
+    {
+      "label": "moon-4.8-burn_sky_uniform-burn0",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-burn_sky_uniform-burn0-h2sn88uq\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.8-burn_sky_uniform-burn0-h2sn88uq\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_uniform",
+        "--burn=0",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.8\\burn_sky_uniform-burn0.json"
+      ],
+      "started_utc": "2026-10-25T15:11:37.890720+00:00",
+      "elapsed_seconds": 1.718,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "fce7be354a2bdc5013d309386be635e7128f23521d8889d184e780e672d3b224"
+    },
+    {
+      "label": "moon-4.7-burn_sky_uniform-burn0",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-burn_sky_uniform-burn0-j8w8g9ax\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-4.7-burn_sky_uniform-burn0-j8w8g9ax\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_uniform",
+        "--burn=0",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\results-4.7\\burn_sky_uniform-burn0.json"
+      ],
+      "started_utc": "2026-10-25T15:11:39.608300+00:00",
+      "elapsed_seconds": 1.782,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "dd796db863d296e77eca712744b3ff85e22917b252110c3d9967bd8797ca64d9"
+    },
+    {
+      "label": "moon-fullscreen-4.8-burn_color_static-burn20000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_color_static-burn20000-34aro7xa\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_color_static-burn20000-34aro7xa\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_color_static",
+        "--burn=20000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_color_static-burn20000.json"
+      ],
+      "started_utc": "2026-10-25T15:12:09.278951+00:00",
+      "elapsed_seconds": 1.594,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "0b988aba2634354120c3414e2ec9fd33cb95108a91460052649c834efecd058c"
+    },
+    {
+      "label": "moon-fullscreen-4.7-burn_color_static-burn20000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_color_static-burn20000-4ew_6aes\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_color_static-burn20000-4ew_6aes\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_color_static",
+        "--burn=20000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_color_static-burn20000.json"
+      ],
+      "started_utc": "2026-10-25T15:12:10.888186+00:00",
+      "elapsed_seconds": 1.578,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "10d5852d23668ffa7b5576f075988772305f36a4c057f277db588773bd49bcb4"
+    },
+    {
+      "label": "moon-fullscreen-4.8-burn_color_uniform-burn20000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_color_uniform-burn20000-jagi8y4a\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_color_uniform-burn20000-jagi8y4a\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_color_uniform",
+        "--burn=20000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_color_uniform-burn20000.json"
+      ],
+      "started_utc": "2026-10-25T15:12:12.468759+00:00",
+      "elapsed_seconds": 1.593,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "fdf8df3e5bacfa6d6399e2bb59777b8d5c5952802a15b1bc9d879a20b6aa3d68"
+    },
+    {
+      "label": "moon-fullscreen-4.7-burn_color_uniform-burn20000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_color_uniform-burn20000-3qf9sjnr\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_color_uniform-burn20000-3qf9sjnr\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_color_uniform",
+        "--burn=20000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_color_uniform-burn20000.json"
+      ],
+      "started_utc": "2026-10-25T15:12:14.076503+00:00",
+      "elapsed_seconds": 1.609,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "41c41e38cedf621fc93d62255c086ec3ebd51e0bd9eec467b31f7d6b77a6a7e2"
+    },
+    {
+      "label": "moon-fullscreen-4.8-burn_sky_static-burn20000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_sky_static-burn20000-75bcwthl\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_sky_static-burn20000-75bcwthl\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_static",
+        "--burn=20000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_sky_static-burn20000.json"
+      ],
+      "started_utc": "2026-10-25T15:12:15.705479+00:00",
+      "elapsed_seconds": 1.656,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "8ff6f8e5ed81c5ad9bb457a67d82f9252b12ca22a21db628ae5212253cd7f8bc"
+    },
+    {
+      "label": "moon-fullscreen-4.7-burn_sky_static-burn20000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_sky_static-burn20000-kbr7edj4\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_sky_static-burn20000-kbr7edj4\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_static",
+        "--burn=20000",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_sky_static-burn20000.json"
+      ],
+      "started_utc": "2026-10-25T15:12:17.366651+00:00",
+      "elapsed_seconds": 1.657,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "9bf3aff92dbdf4d9704a158e81230bde59dc8e0b7893a99337dc24e2e37618e3"
+    },
+    {
+      "label": "moon-fullscreen-4.8-burn_sky_uniform-burn20000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_sky_uniform-burn20000-m8mkw4pq\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_sky_uniform-burn20000-m8mkw4pq\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_uniform",
+        "--burn=20000",
+        "--warmup=30",
+        "--frames=120",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_sky_uniform-burn20000.json"
+      ],
+      "started_utc": "2026-10-25T15:12:19.024574+00:00",
+      "elapsed_seconds": 2.468,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "27f4d41d906f44c7e49b062f7896baaf8dde7906b5627b7a17def3ce9be7466f"
+    },
+    {
+      "label": "moon-fullscreen-4.7-burn_sky_uniform-burn20000",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_sky_uniform-burn20000-mqyjg9tg\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_sky_uniform-burn20000-mqyjg9tg\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_uniform",
+        "--burn=20000",
+        "--warmup=30",
+        "--frames=120",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_sky_uniform-burn20000.json"
+      ],
+      "started_utc": "2026-10-25T15:12:21.493340+00:00",
+      "elapsed_seconds": 2.453,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "e3d69e464a2442b2f7c1ea2ce5d61c2be4c8ec4aaf86b34f94d81ab028ccd202"
+    },
+    {
+      "label": "moon-fullscreen-4.8-burn_color_uniform-burn0",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_color_uniform-burn0-_jx6mp81\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_color_uniform-burn0-_jx6mp81\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_color_uniform",
+        "--burn=0",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_color_uniform-burn0.json"
+      ],
+      "started_utc": "2026-10-25T15:12:23.945269+00:00",
+      "elapsed_seconds": 1.594,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "60b663a0096517ba2e3fb3480b6d60029a91a6eaa183c735390ce636a3c7f27f"
+    },
+    {
+      "label": "moon-fullscreen-4.7-burn_color_uniform-burn0",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_color_uniform-burn0-1jjfe4p7\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_color_uniform-burn0-1jjfe4p7\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_color_uniform",
+        "--burn=0",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_color_uniform-burn0.json"
+      ],
+      "started_utc": "2026-10-25T15:12:25.540791+00:00",
+      "elapsed_seconds": 1.594,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "8ba7b0194b40be5975dac8f7e170ca4048e87745910d3f4f273e9a4213067831"
+    },
+    {
+      "label": "moon-fullscreen-4.8-burn_sky_uniform-burn0",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_sky_uniform-burn0-gyeujy22\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.8-burn_sky_uniform-burn0-gyeujy22\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.8",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_uniform",
+        "--burn=0",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.8\\burn_sky_uniform-burn0.json"
+      ],
+      "started_utc": "2026-10-25T15:12:27.138786+00:00",
+      "elapsed_seconds": 1.796,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239",
+      "report_sha256": "981baed5efe611e5a6face6c4810e00e7f9efb4d18c918015f2a11ba0677a6ae"
+    },
+    {
+      "label": "moon-fullscreen-4.7-burn_sky_uniform-burn0",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_sky_uniform-burn0-4ocwhygm\\report.json",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\checks\\moon-fullscreen-4.7-burn_sky_uniform-burn0-4ocwhygm\\engine.log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\project-4.7",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--disable-vsync",
+        "--",
+        "--mode=bench",
+        "--case=burn_sky_uniform",
+        "--burn=0",
+        "--warmup=60",
+        "--frames=180",
+        "--out=D:\\OpenRCsimulator-experiments\\gdu03-moon-20261025\\fullscreen-4.7\\burn_sky_uniform-burn0.json"
+      ],
+      "started_utc": "2026-10-25T15:12:28.941168+00:00",
+      "elapsed_seconds": 1.797,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "report_sha256": "c0c976815303d6635d5ab9af46edfc0737cd09d0f8ed6f49241713913dd297fc"
+    }
+  ],
+  "all_checked_invocations": 28,
+  "all_errors": 0,
+  "all_warnings": 0,
+  "excluded_initial_windowed_pass": "Initial 14 bench runs recorded1920x1061 because Windows constrained the window. Retained on D, excluded from1080p table. Two headless imports also retained.",
+  "limitations": [
+    "Headless suites active concurrently; use large cubemap-amplifier response as a path detector, not small timing deltas or performance acceptance.",
+    "Compatibility renderer only; no claim for Forward+, High realtime sky, lake reflection probes, moon photometry or full-game frame cost.",
+    "One fullscreen repetition per engine/case; no native GPU capture/tool trace counted."
+  ]
+}

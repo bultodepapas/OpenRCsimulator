@@ -60,7 +60,7 @@ func _initialize() -> void:
 		printerr("could not locate entering real-hull contacts")
 		quit(1)
 		return
-	print("benchmark_metadata engine=Godot 4.7.2.stable.official.ed1daf0bf; physics_hz=", Engine.physics_ticks_per_second,
+	print("benchmark_metadata engine=Godot ", Engine.get_version_info().string, "; engine_hash=", Engine.get_version_info().hash, "; physics_hz=", Engine.physics_ticks_per_second,
 		"; speed_mps=", SPEED_MPS, "; hull_points=", hull.size() / 3, "; proxies=", world.proxies.size(),
 		"; bins=", world.bins.size(), "; world_build_ms=", float(build_us) / 1000.0,
 		"; warmup=", WARMUP_CALLS, "; samples=", MEASURED_CALLS,

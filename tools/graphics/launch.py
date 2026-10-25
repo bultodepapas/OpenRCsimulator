@@ -23,7 +23,8 @@ from typing import Mapping, Optional, Sequence
 
 
 PROFILE_ENV = "OPENRC_GRAPHICS_PROFILE"
-PINNED_WINDOWS_GODOT = "Godot_v4.7.2-stable_win64_console.exe"
+PINNED_WINDOWS_GODOT = "Godot_v4.8-beta1_win64_console.exe"
+PINNED_LINUX_GODOT = "Godot_v4.8-beta1_linux.x86_64"
 APP_DIR = Path(__file__).resolve().parents[2] / "app"
 REPO_ROOT = APP_DIR.parent
 
@@ -137,9 +138,11 @@ def _discover_godot(
     if configured:
         return _resolve_executable(configured, cwd=cwd, require_exists=require_exists)
 
-    pinned = repo_root / ".tools" / PINNED_WINDOWS_GODOT
-    if sys.platform == "win32" and pinned.is_file():
-        return _resolve_executable(str(pinned), cwd=cwd, require_exists=require_exists)
+    pinned_name = {"win32": PINNED_WINDOWS_GODOT, "linux": PINNED_LINUX_GODOT}.get(sys.platform)
+    if pinned_name is not None:
+        pinned = repo_root / ".tools" / pinned_name
+        if pinned.is_file():
+            return _resolve_executable(str(pinned), cwd=cwd, require_exists=require_exists)
 
     for command in ("godot", "godot4"):
         located = shutil.which(command)

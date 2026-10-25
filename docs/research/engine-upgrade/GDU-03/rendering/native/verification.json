@@ -1,0 +1,412 @@
+{
+  "format": "openrc-gdu03-rendering-functional v1",
+  "scope": "Fourteen native 1080p production captures and a three-process editor restart. Parallel CPU work excludes performance qualification. No paired full-image baseline claim.",
+  "captures": [
+    {
+      "mode": "day",
+      "case": "flower_border",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\day\\flower_border.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "87b42054a6b74d684173e701eac3c7c408dfb3edeb67ed66a3afefc2d2f670a5"
+    },
+    {
+      "mode": "day",
+      "case": "lake_shore",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\day\\lake_shore.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "d518ec6d1a8218614666ce04bc8cc3e9003ad0b8fb9b8762a211adad57fb45f4"
+    },
+    {
+      "mode": "day",
+      "case": "parked_p51",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\day\\parked_p51.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "01b71144385f4d61d5a35cffb085bb6256024dcdcf0c96afbd332d6b75996cdd"
+    },
+    {
+      "mode": "day",
+      "case": "parked_stik",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\day\\parked_stik.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "cb3dbe4ce838c5af098adf511c8384bcc4285af2276c940488a2060c48fc0023"
+    },
+    {
+      "mode": "day",
+      "case": "pilot_north",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\day\\pilot_north.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "acbdb47d44c8d80b4e3a7ae1d01b34bc141b0621452493bc53c1fb2b8b36f22b"
+    },
+    {
+      "mode": "day",
+      "case": "pit_service",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\day\\pit_service.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "8daee12f7562214990512e155621181d7d168634667c622c4b85b868a649611b"
+    },
+    {
+      "mode": "day",
+      "case": "postcard_club",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\day\\postcard_club.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "894db48641e2454fc9e416141d5dc0a6092b281c7d6b4d341de8441f3c1530cd"
+    },
+    {
+      "mode": "day",
+      "case": "tree_detail",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\day\\tree_detail.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "62d180263c38dcb24dee69ebc2c1937de73d01026e18735a9403dcee91f89146"
+    },
+    {
+      "mode": "sunset",
+      "case": "glare_clear",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\sunset\\glare_clear.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "ae741be3a59613daba7c0bf5a196c685a84d9f2943a93847aeca65c918256950"
+    },
+    {
+      "mode": "sunset",
+      "case": "twilight_aircraft",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\sunset\\twilight_aircraft.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "2ccaff6a460e8450f9d15aa32b4209f159dcc93328071fca898a87f1a940ba2f"
+    },
+    {
+      "mode": "sunset",
+      "case": "twilight_background",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\sunset\\twilight_background.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "783d2913b54521ad36cd905f948a8a5d5919e00baeb1fdc1533d6998b39a1296"
+    },
+    {
+      "mode": "night",
+      "case": "night_campfire",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\night\\night_campfire.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "40ecb01b15d40aa43402e2d99ca1a11eb4a6851e61a5690373658c75a5167361"
+    },
+    {
+      "mode": "night",
+      "case": "night_court",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\night\\night_court.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "e26ab57a1b5d16ae6cc80f497cff0d63670925a9b4882ece3a75a95d3dda0ecc"
+    },
+    {
+      "mode": "night",
+      "case": "night_runway_club",
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\night\\night_runway_club.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "14c449aedf0117067a885d8be4a8ba66795d6847bcdb86367226e9850befb2b9"
+    }
+  ],
+  "checked_runs": [
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "d20690f2-3769-42dd-9041-87aa9681047e",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--rendering-method",
+        "gl_compatibility",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--width=1920",
+        "--height=1080",
+        "--frames=120",
+        "--cases=postcard_club,pilot_north,lake_shore,tree_detail,flower_border,pit_service,parked_stik,parked_p51",
+        "--out=D:/OpenRCsimulator-experiments/gdu03-suite/tmp/gdu03-render/day"
+      ],
+      "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+      "started_utc": "2026-10-25T15:03:40.623679+00:00",
+      "label": "day-1080",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\checks\\day-1080-2pd2s7ot\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\checks\\day-1080-2pd2s7ot\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 40.281,
+      "log_bytes": 262,
+      "log_sha256": "119a85c0b1769305c0f9c3af13fa149d1ed94ba21fbf1588acf91836916935d7"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "c52ca6ee-da40-44dc-a735-03dddb24ddd0",
+      "command": [
+        "python",
+        "tools/graphics/launch.py",
+        "--profile",
+        "standard",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "D:/OpenRCsimulator-experiments/gdu03-suite/tools/graphics/restart_probe.gd",
+        "--",
+        "--out=D:/OpenRCsimulator-experiments/gdu03-suite/tmp/gdu03-render/restart"
+      ],
+      "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+      "started_utc": "2026-10-25T15:13:53.261265+00:00",
+      "label": "graphics-restart",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\checks\\graphics-restart-azb3wtzc\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\checks\\graphics-restart-azb3wtzc\\report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 62.625,
+      "log_bytes": 169,
+      "log_sha256": "7c7d94c4b125f23286cb2eb758bf4c17fb199c5ffad729ce3f1adf21a7689239"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "c79d8f95-bdbf-459a-a235-9da489d1205c",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--rendering-method",
+        "gl_compatibility",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--width=1920",
+        "--height=1080",
+        "--frames=120",
+        "--time_of_day=night",
+        "--cases=night_runway_club,night_campfire,night_court",
+        "--out=D:/OpenRCsimulator-experiments/gdu03-suite/tmp/gdu03-render/night"
+      ],
+      "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+      "started_utc": "2026-10-25T15:05:40.461081+00:00",
+      "label": "night-1080",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\checks\\night-1080-me7di_j8\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\checks\\night-1080-me7di_j8\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 17.984,
+      "log_bytes": 264,
+      "log_sha256": "cc5956af425eaceeecd8740c4175f97e0222dd68799499ffe61068f0b8a0b582"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "a946b034-db74-4d77-8f69-25ea53d8ce73",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--rendering-method",
+        "gl_compatibility",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--width=1920",
+        "--height=1080",
+        "--frames=120",
+        "--time_of_day=sunset",
+        "--cases=twilight_aircraft,twilight_background,glare_clear",
+        "--out=D:/OpenRCsimulator-experiments/gdu03-suite/tmp/gdu03-render/sunset"
+      ],
+      "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+      "started_utc": "2026-10-25T15:04:37.643496+00:00",
+      "label": "sunset-1080",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\checks\\sunset-1080-gc4otx44\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\checks\\sunset-1080-gc4otx44\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 18.0,
+      "log_bytes": 265,
+      "log_sha256": "2fbaf4492900bae0bf331e358208ae56d51c17734d3945e3f2a96f2583928ecb"
+    }
+  ],
+  "restart_stages": [
+    {
+      "editor_binary": true,
+      "executable": "D:/OpenRCsimulator-experiments/gdu03-suite/.tools/Godot_v4.8-beta1_win64.exe",
+      "graphics": {
+        "active": "standard",
+        "gpu": "NVIDIA GeForce RTX 3090",
+        "renderer": "gl_compatibility",
+        "requested": ""
+      },
+      "home": true,
+      "ok": true,
+      "pid": 29476,
+      "preferences_unchanged": true,
+      "production_restart_arguments": [
+        "--path",
+        "D:/OpenRCsimulator-experiments/gdu03-suite/app/",
+        "--rendering-method",
+        "forward_plus"
+      ],
+      "stage": 0
+    },
+    {
+      "editor_binary": true,
+      "executable": "D:/OpenRCsimulator-experiments/gdu03-suite/.tools/Godot_v4.8-beta1_win64.exe",
+      "graphics": {
+        "active": "high_experimental",
+        "gpu": "NVIDIA GeForce RTX 3090",
+        "renderer": "forward_plus",
+        "requested": "high"
+      },
+      "home": true,
+      "ok": true,
+      "pid": 45216,
+      "preferences_unchanged": true,
+      "production_restart_arguments": [
+        "--path",
+        "D:/OpenRCsimulator-experiments/gdu03-suite/app/",
+        "--rendering-method",
+        "gl_compatibility"
+      ],
+      "stage": 1
+    },
+    {
+      "editor_binary": true,
+      "executable": "D:/OpenRCsimulator-experiments/gdu03-suite/.tools/Godot_v4.8-beta1_win64.exe",
+      "graphics": {
+        "active": "standard",
+        "gpu": "NVIDIA GeForce RTX 3090",
+        "renderer": "gl_compatibility",
+        "requested": "standard"
+      },
+      "home": true,
+      "ok": true,
+      "pid": 34784,
+      "preferences_unchanged": true,
+      "stage": 2
+    }
+  ],
+  "restart_child_logs": [
+    {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\restart\\stage-1.log",
+      "sha256": "eb224442255a7836180321bf7d4b90412ee1be4c63115379aee082968cf4ef59",
+      "text": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\nVulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090\n\nGraphics profile: {\"active\":\"high_experimental\",\"gpu\":\"NVIDIA GeForce RTX 3090\",\"renderer\":\"forward_plus\",\"requested\":\"high\"}\n"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-render\\restart\\stage-2.log",
+      "sha256": "465aefb1518e2866626730307fad7e92bec2a6d22f8e8b76d08f2fdb91d2bdfb",
+      "text": "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org\nOpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090\n\nGraphics profile: {\"active\":\"standard\",\"gpu\":\"NVIDIA GeForce RTX 3090\",\"renderer\":\"gl_compatibility\",\"requested\":\"standard\"}\n"
+    }
+  ]
+}

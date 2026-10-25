@@ -1,7 +1,7 @@
 extends RefCounted
 
 ## Closed package proof contract for the customization adapter and smoke renderers.
-const ENGINE_VERSION_PIN := "4.7.2"
+const ENGINE_VERSION_PIN := "4.8.0"
 const PACKAGE_PATH := "res://data/aircraft_customization_package.json"
 const PACKAGE_FORMAT := "openrc-aircraft-presentation-package v1"
 const PROOF_ROOT := "res://data/aircraft_customization_proofs/"

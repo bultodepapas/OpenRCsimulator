@@ -6,12 +6,12 @@ extends SceneTree
 
 const TICKS := 480 # 2 s at 240 Hz
 ## Simulation tick → [[key, pressed], …], injected in the frame that ends exactly on that tick, seen from the next
-## tick on. Frames end on global ticks 40k at 30, 60 and 144 fps alike; the simulation starts one tick late (the
-## scene becomes ready after the first physics tick), so those are simulation ticks 40k − 1. Misalignment fails loudly.
+## tick on. The native Windows fixture starts before the first physics tick (measured on 4.7.2 and 4.8-beta1),
+## so simulation ticks 40k are common frame boundaries at 30, 60 and 144 fps. Misalignment fails loudly.
 const SCHEDULE := {
-	119: [[KEY_RIGHT, true], [KEY_W, true]],
-	239: [[KEY_RIGHT, false], [KEY_W, false], [KEY_DOWN, true]],
-	359: [[KEY_DOWN, false], [KEY_A, true]],
+	120: [[KEY_RIGHT, true], [KEY_W, true]],
+	240: [[KEY_RIGHT, false], [KEY_W, false], [KEY_DOWN, true]],
+	360: [[KEY_DOWN, false], [KEY_A, true]],
 }
 
 var _main: Node

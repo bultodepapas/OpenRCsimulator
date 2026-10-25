@@ -1,0 +1,27 @@
+{
+  "format": "openrc-gdu03-ex14-checkout-proof-v1",
+  "observed_utc": "2026-10-25T17:07:34.661298+00:00",
+  "scope": "Fresh minimal Git clones containing the exact current root attributes and owner-generated EX-14 JSON. This checks checkout bytes under both autocrlf settings; generator behavior is verified separately with both engines. No root index or Git configuration changed.",
+  "fixture_commit": "5a050b9fe67816b14d362d9fa4d8c687a3052409",
+  "gitattributes_sha256": "39e98a382bd5f91e70e8c809853b250c1e1621db4df445d52d08da4a1bc64f89",
+  "target": "research/extra-300/ex14/wing_polar_fit.json",
+  "expected_sha256": "bd6903b22f3dcc930e43e153e339cc5c46b3ad7a66371d4f7feeaa29c4e0aac2",
+  "clones": [
+    {
+      "autocrlf": "true",
+      "checkout": "D:\\OpenRCsimulator-experiments\\gdu03-ex14-checkout-proof\\clone-true",
+      "sha256": "bd6903b22f3dcc930e43e153e339cc5c46b3ad7a66371d4f7feeaa29c4e0aac2",
+      "bytes": 1943,
+      "attributes": "research/extra-300/ex14/wing_polar_fit.json: text: set\nresearch/extra-300/ex14/wing_polar_fit.json: eol: lf",
+      "status_porcelain": ""
+    },
+    {
+      "autocrlf": "false",
+      "checkout": "D:\\OpenRCsimulator-experiments\\gdu03-ex14-checkout-proof\\clone-false",
+      "sha256": "bd6903b22f3dcc930e43e153e339cc5c46b3ad7a66371d4f7feeaa29c4e0aac2",
+      "bytes": 1943,
+      "attributes": "research/extra-300/ex14/wing_polar_fit.json: text: set\nresearch/extra-300/ex14/wing_polar_fit.json: eol: lf",
+      "status_porcelain": ""
+    }
+  ]
+}

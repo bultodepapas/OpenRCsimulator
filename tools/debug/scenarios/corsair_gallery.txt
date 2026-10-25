@@ -1,0 +1,26 @@
+# F4U-20-R3: browsing is cheap; only explicit selection requests a model.
+call node=AppRoot method=set_aircraft args=["f4u-corsair-250"]
+call node=AppRoot method=set_livery args=["midnight"]
+wait until="not home_scene.preview_pending" timeout_s=30
+press text=Aircraft
+eval expr="home_scene.set_meta('gallery_generation', home_scene._preview_generation)"
+press text="Choose paint"
+wait frames=20
+assert expr="app.screens.top()._screen.theme == home.theme"
+key name=Right
+key name=Down
+assert expr="home_scene._preview_generation == home_scene.get_meta('gallery_generation')"
+assert expr="home.livery_id == '' and home_scene.airplane.livery == 'midnight'"
+close
+assert expr="home.livery_button.has_focus()"
+press text="Choose paint"
+press text="Carbon 12"
+wait until="not home_scene.preview_pending" timeout_s=30
+assert expr="home.livery_id == 'carbon' and home_scene.airplane.livery == 'carbon'"
+eval expr="home_scene.set_meta('gallery_generation', home_scene._preview_generation)"
+press text="Choose paint"
+press text="Carbon 12"
+assert expr="not home_scene.preview_pending"
+assert expr="home_scene._preview_generation == home_scene.get_meta('gallery_generation')"
+call node=AppRoot method=set_aircraft args=["jensen-das-ugly-stik-60"]
+wait until="not home_scene.preview_pending" timeout_s=30

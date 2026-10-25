@@ -7,6 +7,7 @@ by their existing sources. Use --check for read-only freshness verification.
 """
 import argparse
 import json
+import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -19,7 +20,8 @@ SOURCE = GENERATOR + ': assets/aircraft/ugly-stik-60/geometry.json (estimated vi
 
 
 def area(points):
-    return abs(sum(a[0] * b[1] - b[0] * a[1]
+    # Explicit accurate summation preserves the handoff across Python's 3.12 sum change.
+    return abs(math.fsum(a[0] * b[1] - b[0] * a[1]
                    for a, b in zip(points, points[1:] + points[:1]))) / 2
 
 

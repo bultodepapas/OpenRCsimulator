@@ -1,0 +1,40 @@
+[
+  {
+    "stream": "player",
+    "tape_sha256": "2331662904257def097a27f7aeb237ffe9bd7ad1bf401e6d7111be725c8f64a5",
+    "before": {
+      "complete": true,
+      "solver_changed": false,
+      "csv_sha256": "fda8416adcd53e3469a13788ceea0da9ca8bf98b302f50668d434f9a275f2a14",
+      "rows": 261,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\recorded-parity\\before-player\\replay.json"
+    },
+    "candidate": {
+      "complete": true,
+      "solver_changed": true,
+      "csv_sha256": "fda8416adcd53e3469a13788ceea0da9ca8bf98b302f50668d434f9a275f2a14",
+      "rows": 261,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\recorded-parity\\candidate-player\\replay.json"
+    },
+    "csv_byte_identical": true
+  },
+  {
+    "stream": "companion-0",
+    "tape_sha256": "e2b41acc209c424d8f0ac8d5a87d84b0ab0fa33ff2e396f7953bd7f468b0f041",
+    "before": {
+      "complete": true,
+      "solver_changed": false,
+      "csv_sha256": "194455c3bdb98b44d88ae1978ec9c8aae6257af4ed1ab678af820fefa06b21f6",
+      "rows": 261,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\recorded-parity\\before-companion-0\\replay.json"
+    },
+    "candidate": {
+      "complete": true,
+      "solver_changed": true,
+      "csv_sha256": "194455c3bdb98b44d88ae1978ec9c8aae6257af4ed1ab678af820fefa06b21f6",
+      "rows": 261,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\recorded-parity\\candidate-companion-0\\replay.json"
+    },
+    "csv_byte_identical": true
+  }
+]

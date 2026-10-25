@@ -1,0 +1,76 @@
+{
+  "format": "openrc-gdu03-gear-input v1",
+  "cause": "test double free: main._exit_tree frees unattached session during root.remove_child(flight); test then explicitly frees the same object",
+  "original_test_sha256": "14c8e452ea2b495cacdaa81fa66abc43b657d31fd5a1d66e555163bf524234d2",
+  "main_sha256": "c524b29e04f93649204a91bf2e4b76d76111be489ba865e058d154af79eab7ed",
+  "fixed_test_sha256": "56417f3937d22101abf8799397d78c63e972874ef88d2433c495d9e8dccab998",
+  "checks": [
+    {
+      "label": "fixed-48",
+      "report": "checks/fixed-48-bko827fn/report.json",
+      "exit": 0,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.031
+    },
+    {
+      "label": "fixed-48-repeat",
+      "report": "checks/fixed-48-repeat-i9vyizs8/report.json",
+      "exit": 0,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.39
+    },
+    {
+      "label": "fixed-final-47",
+      "report": "checks/fixed-final-47-zuj3zu33/report.json",
+      "exit": 0,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.031
+    },
+    {
+      "label": "original-47",
+      "report": "checks/original-47-frzueb5n/report.json",
+      "exit": 3221226356,
+      "ok": false,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 15.64
+    },
+    {
+      "label": "original-48",
+      "report": "checks/original-48-dn5jzbll/report.json",
+      "exit": 3221226356,
+      "ok": false,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 10.188
+    },
+    {
+      "label": "ownership-48",
+      "report": "checks/ownership-48-skolx944/report.json",
+      "exit": 0,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.219
+    }
+  ],
+  "scope": "test teardown only; no runtime, simulation, engine pin or qualification changes; timings under shared CPU load are not performance qualification"
+}

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7a67bc50-cd5f-455b-97dc-af0498ea7b99",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-final-core/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_flight_session_staged.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T16:00:10.965038+00:00",
+  "label": "staged-final-beta",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\checks\\staged-final-beta-d6cpeyvc\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\checks\\staged-final-beta-d6cpeyvc\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "FlightSession staged fixture: 12 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 18.531,
+  "log_bytes": 237,
+  "log_sha256": "8d5dd27b6da34619c19c9069e78985f2a4375f25594db6ae55fa75144ac51d04"
+}

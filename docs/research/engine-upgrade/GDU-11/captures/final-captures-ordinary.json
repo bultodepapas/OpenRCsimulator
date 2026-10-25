@@ -1,0 +1,940 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"api": "3.3.0 NVIDIA 617.42",
+	"assets": {
+		"maple_tree": {
+			"catalog_source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+			"height_m": 18.327101,
+			"parts": 1,
+			"role": "tree",
+			"scene": "res://assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf",
+			"scene_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+			"surfaces": [
+				{
+					"albedo_texture": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_basecolor.jpg",
+					"alpha_scissor_threshold": 0.5,
+					"cull_mode": 0,
+					"material_class": "StandardMaterial3D",
+					"material_resource": "res://assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf::StandardMaterial3D_mrj8q",
+					"normal_texture": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_normal.png",
+					"part_index": 0,
+					"surface_index": 0,
+					"transparency": 0
+				},
+				{
+					"albedo_texture": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png",
+					"alpha_scissor_threshold": 0.5,
+					"cull_mode": 2,
+					"material_class": "StandardMaterial3D",
+					"material_resource": "res://assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf::StandardMaterial3D_xn2h0",
+					"normal_texture": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_normal.png",
+					"part_index": 0,
+					"surface_index": 1,
+					"transparency": 2
+				}
+			],
+			"triangles": 5541
+		}
+	},
+	"captures": [
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__1920x1080__p00.png",
+			"height": 1080,
+			"phase_index": 0,
+			"sha256": "f93d34d880e2f3a77bef712abd3543ac4c794072e8b5e658bc8a92989ea887de",
+			"subpixel_offset_x_px": 0.0,
+			"width": 1920,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__1920x1080__p01.png",
+			"height": 1080,
+			"phase_index": 1,
+			"sha256": "a5c54e7da6ba6f7b4929a048bac727a65e5ec77df6cc9ba92bdfa73d073a8ea1",
+			"subpixel_offset_x_px": 0.125,
+			"width": 1920,
+			"world_offset_x_m": 0.00345413080114814
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__1920x1080__p02.png",
+			"height": 1080,
+			"phase_index": 2,
+			"sha256": "2a93424a63543c48ced57e1739f4de682fab33e04b05d18da81066fa3d0271ac",
+			"subpixel_offset_x_px": 0.25,
+			"width": 1920,
+			"world_offset_x_m": 0.00690826160229628
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__1920x1080__p03.png",
+			"height": 1080,
+			"phase_index": 3,
+			"sha256": "79f8c3533aef410a553d55394832c11c009600d15c1f7210256c36f40972af57",
+			"subpixel_offset_x_px": 0.375,
+			"width": 1920,
+			"world_offset_x_m": 0.0103623924034444
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__1920x1080__p04.png",
+			"height": 1080,
+			"phase_index": 4,
+			"sha256": "96af5f1a02c2ddbe4671d6ffc0ef7441983f7dee369f114f9c4a119d864ff819",
+			"subpixel_offset_x_px": 0.5,
+			"width": 1920,
+			"world_offset_x_m": 0.0138165232045926
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__1920x1080__p05.png",
+			"height": 1080,
+			"phase_index": 5,
+			"sha256": "23a0fbdf1e149add632bf27d229b5899ac5f42611fee68c0735a2f6c80a914ce",
+			"subpixel_offset_x_px": 0.625,
+			"width": 1920,
+			"world_offset_x_m": 0.0172706540057407
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__1920x1080__p06.png",
+			"height": 1080,
+			"phase_index": 6,
+			"sha256": "8ace82150026fd1076dbe81c37d22503a38f76b66b585d73c589548656893813",
+			"subpixel_offset_x_px": 0.75,
+			"width": 1920,
+			"world_offset_x_m": 0.0207247848068888
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__1920x1080__p07.png",
+			"height": 1080,
+			"phase_index": 7,
+			"sha256": "3a33bb2ec7959a420f646694fb972bd8bbbc368b2172efaacb8f84ba34c1f476",
+			"subpixel_offset_x_px": 0.875,
+			"width": 1920,
+			"world_offset_x_m": 0.024178915608037
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__1920x1080__p00.png",
+			"height": 1080,
+			"phase_index": 0,
+			"sha256": "659c8b6e0434c29f1b5e376c9c3611c758b3ee34479140cb667714d113292aff",
+			"subpixel_offset_x_px": 0.0,
+			"width": 1920,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__1920x1080__p01.png",
+			"height": 1080,
+			"phase_index": 1,
+			"sha256": "099aa2a05e18ced62809c27bfac42c57b372dd9e6ca7d94565726791807a6547",
+			"subpixel_offset_x_px": 0.125,
+			"width": 1920,
+			"world_offset_x_m": 0.00690826160229628
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__1920x1080__p02.png",
+			"height": 1080,
+			"phase_index": 2,
+			"sha256": "e854a4bf55cd577ec4fcb817057e54376c98acd6e918cb2be54a167a386d5ed1",
+			"subpixel_offset_x_px": 0.25,
+			"width": 1920,
+			"world_offset_x_m": 0.0138165232045926
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__1920x1080__p03.png",
+			"height": 1080,
+			"phase_index": 3,
+			"sha256": "d638601206afc8c3735eb0a51ad3624982b8704da203f2f212fd38795e8c63e5",
+			"subpixel_offset_x_px": 0.375,
+			"width": 1920,
+			"world_offset_x_m": 0.0207247848068888
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__1920x1080__p04.png",
+			"height": 1080,
+			"phase_index": 4,
+			"sha256": "dc2e51a73af59f70915d6b2ded56a5a9b465bd3ba69370f7f44dc530ba557ecf",
+			"subpixel_offset_x_px": 0.5,
+			"width": 1920,
+			"world_offset_x_m": 0.0276330464091851
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__1920x1080__p05.png",
+			"height": 1080,
+			"phase_index": 5,
+			"sha256": "259153ea323f12b77a0f7e1acd726e7899f10f2d07d22f0374c129ecbe8b4f00",
+			"subpixel_offset_x_px": 0.625,
+			"width": 1920,
+			"world_offset_x_m": 0.0345413080114814
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__1920x1080__p06.png",
+			"height": 1080,
+			"phase_index": 6,
+			"sha256": "2ec7fd2ef4a1d3f654bfd6d2c49ff7166d0930b5dc8968b441f334ac8d94209e",
+			"subpixel_offset_x_px": 0.75,
+			"width": 1920,
+			"world_offset_x_m": 0.0414495696137777
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__1920x1080__p07.png",
+			"height": 1080,
+			"phase_index": 7,
+			"sha256": "1b37d5e2c794dc16b6e9e9ebcf97cef86432a5f47dc9e42d2056639111e2ad85",
+			"subpixel_offset_x_px": 0.875,
+			"width": 1920,
+			"world_offset_x_m": 0.0483578312160739
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__1920x1080__p00.png",
+			"height": 1080,
+			"phase_index": 0,
+			"sha256": "c7d849fe3812aecf5f2733ef41b22fee6cea90546922bb58c083f01be76cf37e",
+			"subpixel_offset_x_px": 0.0,
+			"width": 1920,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__1920x1080__p01.png",
+			"height": 1080,
+			"phase_index": 1,
+			"sha256": "5137fcb9fdbbf1d3e464bf12ea224f7a2e4f98d51034b94ea9d8b4ed5bc432ea",
+			"subpixel_offset_x_px": 0.125,
+			"width": 1920,
+			"world_offset_x_m": 0.0138165232045926
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__1920x1080__p02.png",
+			"height": 1080,
+			"phase_index": 2,
+			"sha256": "9b0e028ea785ef8bcf06a2f1c59730f0d2f98361ced990f222979aa73726abeb",
+			"subpixel_offset_x_px": 0.25,
+			"width": 1920,
+			"world_offset_x_m": 0.0276330464091851
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__1920x1080__p03.png",
+			"height": 1080,
+			"phase_index": 3,
+			"sha256": "792c0209d565c88e1dd6fa02f374de6ddc8204292a29907f620de624661b9203",
+			"subpixel_offset_x_px": 0.375,
+			"width": 1920,
+			"world_offset_x_m": 0.0414495696137777
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__1920x1080__p04.png",
+			"height": 1080,
+			"phase_index": 4,
+			"sha256": "287b5ffb6acaf037319dec40d1ae6f74783b3cab41b7aabea18c2d2d8c6d59eb",
+			"subpixel_offset_x_px": 0.5,
+			"width": 1920,
+			"world_offset_x_m": 0.0552660928183702
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__1920x1080__p05.png",
+			"height": 1080,
+			"phase_index": 5,
+			"sha256": "4b03cdd2f7f07953af4e5475032d6b38eb9b54f80bb1d5cf201fdf1f3d70dc68",
+			"subpixel_offset_x_px": 0.625,
+			"width": 1920,
+			"world_offset_x_m": 0.0690826160229628
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__1920x1080__p06.png",
+			"height": 1080,
+			"phase_index": 6,
+			"sha256": "8664b63ed1d889d7fa54a6dee25aa34253ad68977705502b02f38352954b44c7",
+			"subpixel_offset_x_px": 0.75,
+			"width": 1920,
+			"world_offset_x_m": 0.0828991392275553
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__1920x1080__p07.png",
+			"height": 1080,
+			"phase_index": 7,
+			"sha256": "9e8f0ac39122ba745d62c1567cd5abffe7897b126626d8ee048ac6f928e103da",
+			"subpixel_offset_x_px": 0.875,
+			"width": 1920,
+			"world_offset_x_m": 0.0967156624321479
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__1920x1080__p00.png",
+			"height": 1080,
+			"phase_index": 0,
+			"sha256": "d6678b592c75ae32b6188ae14f5bd7479fc7ba818c23750f319c8466dbd2fb4f",
+			"subpixel_offset_x_px": 0.0,
+			"width": 1920,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__1920x1080__p01.png",
+			"height": 1080,
+			"phase_index": 1,
+			"sha256": "bb285daf20a32d122076ed560812bd0ace0ad796a9992d6fcba86d16ce7a203d",
+			"subpixel_offset_x_px": 0.125,
+			"width": 1920,
+			"world_offset_x_m": 0.0276330464091851
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__1920x1080__p02.png",
+			"height": 1080,
+			"phase_index": 2,
+			"sha256": "e728b22e332fe71200e277f9aa03d965fb337d00cc95d3f0ea6ddcb383df34b7",
+			"subpixel_offset_x_px": 0.25,
+			"width": 1920,
+			"world_offset_x_m": 0.0552660928183702
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__1920x1080__p03.png",
+			"height": 1080,
+			"phase_index": 3,
+			"sha256": "aa051c12c148a49900748e0f527ce070f698236ebab350859ad2f78756a29b12",
+			"subpixel_offset_x_px": 0.375,
+			"width": 1920,
+			"world_offset_x_m": 0.0828991392275553
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__1920x1080__p04.png",
+			"height": 1080,
+			"phase_index": 4,
+			"sha256": "2d0c26c1d7eb9638df58a5466f677682c1cb66ec59b5a305b62e330876f290c8",
+			"subpixel_offset_x_px": 0.5,
+			"width": 1920,
+			"world_offset_x_m": 0.11053218563674
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__1920x1080__p05.png",
+			"height": 1080,
+			"phase_index": 5,
+			"sha256": "111833385e8cadcc2bbb5e6b615fce3f6188f9aef15e70d64466924d47a84cd7",
+			"subpixel_offset_x_px": 0.625,
+			"width": 1920,
+			"world_offset_x_m": 0.138165232045926
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__1920x1080__p06.png",
+			"height": 1080,
+			"phase_index": 6,
+			"sha256": "34dee8b1c1f27a8905bfd30eb3deef18367697ef5e162e55ce821181bdff36e3",
+			"subpixel_offset_x_px": 0.75,
+			"width": 1920,
+			"world_offset_x_m": 0.165798278455111
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__1920x1080__p07.png",
+			"height": 1080,
+			"phase_index": 7,
+			"sha256": "66e0934cba1b4e3c7e2f44fb849fe5225771796b30b2e9126e900819f0f64d19",
+			"subpixel_offset_x_px": 0.875,
+			"width": 1920,
+			"world_offset_x_m": 0.193431324864296
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__2560x1440__p00.png",
+			"height": 1440,
+			"phase_index": 0,
+			"sha256": "0c9eeb56686443532c47acdc8f8c1b525702b0cc7548f03c4376f876550286ad",
+			"subpixel_offset_x_px": 0.0,
+			"width": 2560,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__2560x1440__p01.png",
+			"height": 1440,
+			"phase_index": 1,
+			"sha256": "8768657901fa39993a8bc77bcbf6cc01a8b6f5ab90c4bf138bf99f2941e9c07c",
+			"subpixel_offset_x_px": 0.125,
+			"width": 2560,
+			"world_offset_x_m": 0.0025905981008611
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__2560x1440__p02.png",
+			"height": 1440,
+			"phase_index": 2,
+			"sha256": "24ca228265f0b3b29c32e33c86113a54ea603ed9ae9942473db3e1f14141db35",
+			"subpixel_offset_x_px": 0.25,
+			"width": 2560,
+			"world_offset_x_m": 0.00518119620172221
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__2560x1440__p03.png",
+			"height": 1440,
+			"phase_index": 3,
+			"sha256": "81e4b8ae5fa4c05173231408fb768108dee8eff8cdf4265265ed96f98f9e31ef",
+			"subpixel_offset_x_px": 0.375,
+			"width": 2560,
+			"world_offset_x_m": 0.00777179430258331
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__2560x1440__p04.png",
+			"height": 1440,
+			"phase_index": 4,
+			"sha256": "5179de726f574800c9b95b8e84158ee7b072d477373c6addc1cdec0c109f6201",
+			"subpixel_offset_x_px": 0.5,
+			"width": 2560,
+			"world_offset_x_m": 0.0103623924034444
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__2560x1440__p05.png",
+			"height": 1440,
+			"phase_index": 5,
+			"sha256": "6d7905164a4e02702a6bcdbcc1b203b1d01b5448cd947330d0aaf4fcb99e9b72",
+			"subpixel_offset_x_px": 0.625,
+			"width": 2560,
+			"world_offset_x_m": 0.0129529905043055
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__2560x1440__p06.png",
+			"height": 1440,
+			"phase_index": 6,
+			"sha256": "951476af02c61fc42e24a7d2c1d69d1bb1848904b0fe116fc4c07d6c7c3153ba",
+			"subpixel_offset_x_px": 0.75,
+			"width": 2560,
+			"world_offset_x_m": 0.0155435886051666
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 32.0,
+			"filename": "maple_tree__d032__2560x1440__p07.png",
+			"height": 1440,
+			"phase_index": 7,
+			"sha256": "1d3bc00ca77f1dde4e1d3edf69905e6753eb4ffa4a53205e315b0ce541f57ee1",
+			"subpixel_offset_x_px": 0.875,
+			"width": 2560,
+			"world_offset_x_m": 0.0181341867060277
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__2560x1440__p00.png",
+			"height": 1440,
+			"phase_index": 0,
+			"sha256": "d27f05da8b91412f0e7ce89d28320216461374efe6bfb9393667e8891c59b1c0",
+			"subpixel_offset_x_px": 0.0,
+			"width": 2560,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__2560x1440__p01.png",
+			"height": 1440,
+			"phase_index": 1,
+			"sha256": "1dd9478c02bd83ac6074f0d9adb81bd9a0737791613eb5d583e906614045b4fa",
+			"subpixel_offset_x_px": 0.125,
+			"width": 2560,
+			"world_offset_x_m": 0.00518119620172221
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__2560x1440__p02.png",
+			"height": 1440,
+			"phase_index": 2,
+			"sha256": "372aee17768c3bfef0b29a71aaef6bb0e515fbd0ae53eed68d6068327ef4fa30",
+			"subpixel_offset_x_px": 0.25,
+			"width": 2560,
+			"world_offset_x_m": 0.0103623924034444
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__2560x1440__p03.png",
+			"height": 1440,
+			"phase_index": 3,
+			"sha256": "a5ba01f156a62c87a50edc48813eb337a9bfa2c04b29b10d5c9ae4b1d9639eb9",
+			"subpixel_offset_x_px": 0.375,
+			"width": 2560,
+			"world_offset_x_m": 0.0155435886051666
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__2560x1440__p04.png",
+			"height": 1440,
+			"phase_index": 4,
+			"sha256": "65bb1f81da23979e1b20d849c3f108f0c2a89f1462fc6f01be88140f3677c30b",
+			"subpixel_offset_x_px": 0.5,
+			"width": 2560,
+			"world_offset_x_m": 0.0207247848068888
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__2560x1440__p05.png",
+			"height": 1440,
+			"phase_index": 5,
+			"sha256": "cdab47523a36cfbe6d47b68b3d4150394e3c0c7cba277d4a557182570cba00c1",
+			"subpixel_offset_x_px": 0.625,
+			"width": 2560,
+			"world_offset_x_m": 0.025905981008611
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__2560x1440__p06.png",
+			"height": 1440,
+			"phase_index": 6,
+			"sha256": "62b1765914d1c032c3fb36ca6921601cdadd1ce37ad9d84dcee60b4d348b5d94",
+			"subpixel_offset_x_px": 0.75,
+			"width": 2560,
+			"world_offset_x_m": 0.0310871772103332
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 64.0,
+			"filename": "maple_tree__d064__2560x1440__p07.png",
+			"height": 1440,
+			"phase_index": 7,
+			"sha256": "67be580d2a1bb3777377f46434a72380d6b4c3d24238f1e302d6332f4dac3844",
+			"subpixel_offset_x_px": 0.875,
+			"width": 2560,
+			"world_offset_x_m": 0.0362683734120554
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__2560x1440__p00.png",
+			"height": 1440,
+			"phase_index": 0,
+			"sha256": "e97b6ec7bc4757820c5bec8a4f0459a6513bbb236a5810daba62842451918b6e",
+			"subpixel_offset_x_px": 0.0,
+			"width": 2560,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__2560x1440__p01.png",
+			"height": 1440,
+			"phase_index": 1,
+			"sha256": "93068cf1d59da8dca4e40327c8f472641eb75d61b64a81fa02914c758ded46c6",
+			"subpixel_offset_x_px": 0.125,
+			"width": 2560,
+			"world_offset_x_m": 0.0103623924034444
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__2560x1440__p02.png",
+			"height": 1440,
+			"phase_index": 2,
+			"sha256": "a99fa6e7e273c3709e74591a491147b25a4ca52dd03e773084a9124a7c670cdc",
+			"subpixel_offset_x_px": 0.25,
+			"width": 2560,
+			"world_offset_x_m": 0.0207247848068888
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__2560x1440__p03.png",
+			"height": 1440,
+			"phase_index": 3,
+			"sha256": "337a7e5d8dd44ac08e75e34643a14d43f5f7f6cf20554e13d06fd06dbd60e512",
+			"subpixel_offset_x_px": 0.375,
+			"width": 2560,
+			"world_offset_x_m": 0.0310871772103332
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__2560x1440__p04.png",
+			"height": 1440,
+			"phase_index": 4,
+			"sha256": "07daaa268e215392c077ec90d3a3b5872ac6dd04a1ce34281da5f87c79fdcf1c",
+			"subpixel_offset_x_px": 0.5,
+			"width": 2560,
+			"world_offset_x_m": 0.0414495696137777
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__2560x1440__p05.png",
+			"height": 1440,
+			"phase_index": 5,
+			"sha256": "d22811c005966f84f83de81e52169131933932c19f0660bcc9adb75499a725cf",
+			"subpixel_offset_x_px": 0.625,
+			"width": 2560,
+			"world_offset_x_m": 0.0518119620172221
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__2560x1440__p06.png",
+			"height": 1440,
+			"phase_index": 6,
+			"sha256": "c9b239157c140a4482a34b73b4ccef9563296fabea4c044d4695f03a987b5180",
+			"subpixel_offset_x_px": 0.75,
+			"width": 2560,
+			"world_offset_x_m": 0.0621743544206665
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 128.0,
+			"filename": "maple_tree__d128__2560x1440__p07.png",
+			"height": 1440,
+			"phase_index": 7,
+			"sha256": "6301b240d019dac9c053ead571540146ab418489f4600eccd3729d0423cc041a",
+			"subpixel_offset_x_px": 0.875,
+			"width": 2560,
+			"world_offset_x_m": 0.0725367468241109
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__2560x1440__p00.png",
+			"height": 1440,
+			"phase_index": 0,
+			"sha256": "cfe9c81aa264e66a412037d2ec3d69b4d1c86e3837649d6f5354e6f36a138263",
+			"subpixel_offset_x_px": 0.0,
+			"width": 2560,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__2560x1440__p01.png",
+			"height": 1440,
+			"phase_index": 1,
+			"sha256": "862ed6c2e808116b49ca9cc2df4df4353fc4b63a844e1f38dcd54defd23d8aa8",
+			"subpixel_offset_x_px": 0.125,
+			"width": 2560,
+			"world_offset_x_m": 0.0207247848068888
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__2560x1440__p02.png",
+			"height": 1440,
+			"phase_index": 2,
+			"sha256": "9a72c21c09b669922166c9dceb50c86a530a11663c6e877c1e199d4db5e88f43",
+			"subpixel_offset_x_px": 0.25,
+			"width": 2560,
+			"world_offset_x_m": 0.0414495696137777
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__2560x1440__p03.png",
+			"height": 1440,
+			"phase_index": 3,
+			"sha256": "ca27941fd932e5a5299997ad57dcd5c7678ea14ef75a23ad400599e4d321307f",
+			"subpixel_offset_x_px": 0.375,
+			"width": 2560,
+			"world_offset_x_m": 0.0621743544206665
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__2560x1440__p04.png",
+			"height": 1440,
+			"phase_index": 4,
+			"sha256": "6f1baa9dc4e22f394ac618ce1b6f137bc7b95aa108e46f312c37ef6e566d1445",
+			"subpixel_offset_x_px": 0.5,
+			"width": 2560,
+			"world_offset_x_m": 0.0828991392275553
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__2560x1440__p05.png",
+			"height": 1440,
+			"phase_index": 5,
+			"sha256": "7a4963f351f93e1863796c5a74a3115bcd798041fe89a64ac3b54c85c5564743",
+			"subpixel_offset_x_px": 0.625,
+			"width": 2560,
+			"world_offset_x_m": 0.103623924034444
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__2560x1440__p06.png",
+			"height": 1440,
+			"phase_index": 6,
+			"sha256": "9ac51061e7d435ae818f0d15cf33158684e8f4006c6a99d2068783debb6468c9",
+			"subpixel_offset_x_px": 0.75,
+			"width": 2560,
+			"world_offset_x_m": 0.124348708841333
+		},
+		{
+			"asset_id": "maple_tree",
+			"distance_m": 256.0,
+			"filename": "maple_tree__d256__2560x1440__p07.png",
+			"height": 1440,
+			"phase_index": 7,
+			"sha256": "4fc2c945ca35ac797b106b8e4861cff86754f743e5771e71f1e73b48c5f393c9",
+			"subpixel_offset_x_px": 0.875,
+			"width": 2560,
+			"world_offset_x_m": 0.145073493648222
+		}
+	],
+	"complete": true,
+	"fixture": {
+		"asset_ids": [
+			"maple_tree"
+		],
+		"background_rgba": [
+			0.0350000001490116,
+			0.189999997615814,
+			0.839999973773956,
+			1.0
+		],
+		"capture_process_mode": "disabled",
+		"distances_m": [
+			32.0,
+			64.0,
+			128.0,
+			256.0
+		],
+		"fov_degrees": 50.0,
+		"interpretation": "Subpixel camera translations probe raster coverage sensitivity for fixed geometry. Adjacent-mask changes are a sampling-instability proxy, not real-time shimmer or flight evidence.",
+		"mip_scope": "coverage",
+		"msaa": "4x",
+		"phase_count": 8,
+		"phase_offsets_pixels": [
+			0.0,
+			0.125,
+			0.25,
+			0.375,
+			0.5,
+			0.625,
+			0.75,
+			0.875
+		],
+		"shadow_enabled": false,
+		"view_sizes": [
+			[
+				1920,
+				1080
+			],
+			[
+				2560,
+				1440
+			]
+		],
+		"wind_clock_seconds": 0.0,
+		"wind_enabled": false,
+		"wind_vector_mps": [
+			0.0,
+			0.0,
+			0.0
+		]
+	},
+	"format": "openrc-tree-mipmap-sweep v1",
+	"godot": "4.8-beta1 (official)",
+	"identity": {
+		"capture_script": "f80902913f412031787fec0bf030ba67fc1c299fb4cbb652bd867dc2b1368c14",
+		"res://assets/landscape/vegetation/catalog.json": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+		"res://project.godot": "4d85a7bc6eddfaad7876597a2ee9ce2b9793513a147670dcee0c3dbc3f028a0a",
+		"res://scenery/imported_tree_wind.gdshader": "e8f4ffa44c845d500b6514342011257bc9502b6aaa8b8e2cdc09c05b1c21e9e8",
+		"res://scenery/imported_tree_wind.gdshaderinc": "5c968ce4822dbcd8ff56225f153ed6b203fe38883e92c5fa55c6891c65546009",
+		"res://scenery/imported_tree_wind_clamp.gdshader": "8a50ad39fe465b57e308ff2bd1ad8ca80990435b91922c04ae575c3163b20531",
+		"res://scenery/imported_tree_wind_cull_back.gdshader": "333612342fec2b6f3621521b5a4369f0836f0491b100ef77e102a3ff10e77b84",
+		"res://scenery/imported_vegetation.gd": "3787a6fff0e5fd7961c45a1d1ceb23945b3f979acbbbdeebee4a1c86af8399e8",
+		"res://scenery/imported_vegetation_wind.gdshader": "c7d4d330ac2c026b53619e66a890826de0ec33bf0558f804866de26777a5e7b8"
+	},
+	"mip_scope": "coverage",
+	"renderer": "gl_compatibility",
+	"textures": {
+		"res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_ao-maple_bark_roughness.png": {
+			"basename": "maple_bark_ao-maple_bark_roughness.png",
+			"decoded_image_base_level_sha256": "fbb6dc81dccc126fc923535212d8ab4e4e08b7cc1f177fb98941ef9d37292666",
+			"decoded_image_data_bytes": 2796216,
+			"decoded_image_data_sha256": "57fc9644e772ad0b22640206ddf4ba8007ccc7416f4a291780afc04500644afb",
+			"decoded_image_has_mipmaps": true,
+			"decoded_image_mipmap_count": 11,
+			"image_format": 17,
+			"image_size": [
+				2048,
+				2048
+			],
+			"import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://cx5uc11yytwtv\"\npath.s3tc=\"res://.godot/imported/maple_bark_ao-maple_bark_roughness.png-45611f76c6026f602702e44a03316c8c.s3tc.ctex\"\npath.etc2=\"res://.godot/imported/maple_bark_ao-maple_bark_roughness.png-45611f76c6026f602702e44a03316c8c.etc2.ctex\"\nmetadata={\n\"imported_formats\": [\"s3tc_bptc\", \"etc2_astc\"],\n\"vram_texture\": true\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_ao-maple_bark_roughness.png\"\ndest_files=[\"res://.godot/imported/maple_bark_ao-maple_bark_roughness.png-45611f76c6026f602702e44a03316c8c.s3tc.ctex\", \"res://.godot/imported/maple_bark_ao-maple_bark_roughness.png-45611f76c6026f602702e44a03316c8c.etc2.ctex\"]\n\n[params]\n\ncompress/mode=2\ncompress/high_quality=false\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=true\nmipmaps/limit=-1\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+			"import_path": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_ao-maple_bark_roughness.png.import",
+			"import_sha256": "e98ddd8c0a252147f7855a1e7addea6110133b45b453cec90b7622dd078a4a83",
+			"source_png_sha256": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9",
+			"texture_class": "CompressedTexture2D",
+			"used_by": [
+				"maple_tree"
+			]
+		},
+		"res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_basecolor.jpg": {
+			"basename": "maple_bark_basecolor.jpg",
+			"decoded_image_base_level_sha256": "9e0516a0d47596efbc73e36a2e551eb50df991054f8ebfbb245d88e175370d12",
+			"decoded_image_data_bytes": 2796216,
+			"decoded_image_data_sha256": "22bf8b4ca4a735d084c79e1498e01249c257573d71f7a650d06ad439581f5591",
+			"decoded_image_has_mipmaps": true,
+			"decoded_image_mipmap_count": 11,
+			"image_format": 17,
+			"image_size": [
+				2048,
+				2048
+			],
+			"import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://ce4b578q331xf\"\npath.s3tc=\"res://.godot/imported/maple_bark_basecolor.jpg-d8fec60c90628f579d9ad52988c6144b.s3tc.ctex\"\npath.etc2=\"res://.godot/imported/maple_bark_basecolor.jpg-d8fec60c90628f579d9ad52988c6144b.etc2.ctex\"\nmetadata={\n\"imported_formats\": [\"s3tc_bptc\", \"etc2_astc\"],\n\"vram_texture\": true\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_basecolor.jpg\"\ndest_files=[\"res://.godot/imported/maple_bark_basecolor.jpg-d8fec60c90628f579d9ad52988c6144b.s3tc.ctex\", \"res://.godot/imported/maple_bark_basecolor.jpg-d8fec60c90628f579d9ad52988c6144b.etc2.ctex\"]\n\n[params]\n\ncompress/mode=2\ncompress/high_quality=false\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=true\nmipmaps/limit=-1\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+			"import_path": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_basecolor.jpg.import",
+			"import_sha256": "c027640e7de71f6bd7305a2a7c5d0be603c2dcd451d3ffd538c9c22b4ef0b15c",
+			"source_png_sha256": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31",
+			"texture_class": "CompressedTexture2D",
+			"used_by": [
+				"maple_tree"
+			]
+		},
+		"res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_normal.png": {
+			"basename": "maple_bark_normal.png",
+			"decoded_image_base_level_sha256": "53b3b7403879378bc2e76d9014ce0f17a88206db12e0186ce554ad87a5ad3108",
+			"decoded_image_data_bytes": 5592432,
+			"decoded_image_data_sha256": "b20fd2e55028c8a902b69ff96214fca11e552d02c43e90327a3b9a8a485dba8d",
+			"decoded_image_has_mipmaps": true,
+			"decoded_image_mipmap_count": 11,
+			"image_format": 21,
+			"image_size": [
+				2048,
+				2048
+			],
+			"import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://c7daoekprk280\"\npath.s3tc=\"res://.godot/imported/maple_bark_normal.png-f6878f063d7b6ae9535f51f22382ab5b.s3tc.ctex\"\npath.etc2=\"res://.godot/imported/maple_bark_normal.png-f6878f063d7b6ae9535f51f22382ab5b.etc2.ctex\"\nmetadata={\n\"imported_formats\": [\"s3tc_bptc\", \"etc2_astc\"],\n\"vram_texture\": true\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_normal.png\"\ndest_files=[\"res://.godot/imported/maple_bark_normal.png-f6878f063d7b6ae9535f51f22382ab5b.s3tc.ctex\", \"res://.godot/imported/maple_bark_normal.png-f6878f063d7b6ae9535f51f22382ab5b.etc2.ctex\"]\n\n[params]\n\ncompress/mode=2\ncompress/high_quality=false\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=1\ncompress/channel_pack=0\nmipmaps/generate=true\nmipmaps/limit=-1\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+			"import_path": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_bark_normal.png.import",
+			"import_sha256": "cdd51382060552132bc8185fe09987c104d84e90c0f445108e11a9e818cd11b0",
+			"source_png_sha256": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905",
+			"texture_class": "CompressedTexture2D",
+			"used_by": [
+				"maple_tree"
+			]
+		},
+		"res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_ao-maple_leaves_roughness.png": {
+			"basename": "maple_leaves_ao-maple_leaves_roughness.png",
+			"decoded_image_base_level_sha256": "f7e568782c85d2561f6b16525de3db9f0b04c55ec94fbdbd8e39864a587f6ad5",
+			"decoded_image_data_bytes": 2796216,
+			"decoded_image_data_sha256": "064239a614c79c9a61625b6154dc9d5017d2941918f4d195685e8884fb219541",
+			"decoded_image_has_mipmaps": true,
+			"decoded_image_mipmap_count": 11,
+			"image_format": 17,
+			"image_size": [
+				2048,
+				2048
+			],
+			"import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://qtqa1qcu2yrm\"\npath.s3tc=\"res://.godot/imported/maple_leaves_ao-maple_leaves_roughness.png-b2d44f732b72deb639a42c36c76fa7d7.s3tc.ctex\"\npath.etc2=\"res://.godot/imported/maple_leaves_ao-maple_leaves_roughness.png-b2d44f732b72deb639a42c36c76fa7d7.etc2.ctex\"\nmetadata={\n\"imported_formats\": [\"s3tc_bptc\", \"etc2_astc\"],\n\"vram_texture\": true\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_ao-maple_leaves_roughness.png\"\ndest_files=[\"res://.godot/imported/maple_leaves_ao-maple_leaves_roughness.png-b2d44f732b72deb639a42c36c76fa7d7.s3tc.ctex\", \"res://.godot/imported/maple_leaves_ao-maple_leaves_roughness.png-b2d44f732b72deb639a42c36c76fa7d7.etc2.ctex\"]\n\n[params]\n\ncompress/mode=2\ncompress/high_quality=false\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=true\nmipmaps/limit=-1\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+			"import_path": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_ao-maple_leaves_roughness.png.import",
+			"import_sha256": "673d94cf4aa2671a605cb21c8e492c4cc462f832b297bc2029cab9f222d61dc3",
+			"source_png_sha256": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329",
+			"texture_class": "CompressedTexture2D",
+			"used_by": [
+				"maple_tree"
+			]
+		},
+		"res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png": {
+			"basename": "maple_leaves_basecolor.png",
+			"decoded_image_base_level_sha256": "a95a0194dfe52645c0be1c7168dd2c26bc63a3a0b6c23a7db6282f1c0e8b40e3",
+			"decoded_image_data_bytes": 5592432,
+			"decoded_image_data_sha256": "3a5ab80fabf624b54aaacbb686146fc16ed6d1b1c2b8e61f6be3c85ff79e6c1e",
+			"decoded_image_has_mipmaps": true,
+			"decoded_image_mipmap_count": 11,
+			"image_format": 19,
+			"image_size": [
+				2048,
+				2048
+			],
+			"import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://bi0sj2jut2mvl\"\npath.s3tc=\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.s3tc.ctex\"\npath.etc2=\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.etc2.ctex\"\nmetadata={\n\"imported_formats\": [\"s3tc_bptc\", \"etc2_astc\"],\n\"vram_texture\": true\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png\"\ndest_files=[\"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.s3tc.ctex\", \"res://.godot/imported/maple_leaves_basecolor.png-c5afc57020bbecb17e61a27800f4ee29.etc2.ctex\"]\n\n[params]\n\ncompress/mode=2\ncompress/high_quality=false\ncompress/high_quality_mode=0\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=true\nmipmaps/limit=-1\nmipmaps/preserve_alpha_test_coverage=false\nmipmaps/alpha_test_threshold=0.5\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+			"import_path": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import",
+			"import_sha256": "b04605008eebc11e47038d4cbc093de610cf307821e803f156695267051383da",
+			"source_png_sha256": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b",
+			"texture_class": "CompressedTexture2D",
+			"used_by": [
+				"maple_tree"
+			]
+		},
+		"res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_normal.png": {
+			"basename": "maple_leaves_normal.png",
+			"decoded_image_base_level_sha256": "18bdd60425a33ee2247b5957063e3326f5b5ea279c0ab33f86494f47c1adfbbd",
+			"decoded_image_data_bytes": 5592432,
+			"decoded_image_data_sha256": "775c780280e7fe7821d33b412b07e0102ccd2ff287ca082e9ba1c4bcd264d051",
+			"decoded_image_has_mipmaps": true,
+			"decoded_image_mipmap_count": 11,
+			"image_format": 21,
+			"image_size": [
+				2048,
+				2048
+			],
+			"import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://cufiqjx5wotjw\"\npath.s3tc=\"res://.godot/imported/maple_leaves_normal.png-2babb5f22b6a5d73e736feeb5d006437.s3tc.ctex\"\npath.etc2=\"res://.godot/imported/maple_leaves_normal.png-2babb5f22b6a5d73e736feeb5d006437.etc2.ctex\"\nmetadata={\n\"imported_formats\": [\"s3tc_bptc\", \"etc2_astc\"],\n\"vram_texture\": true\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_normal.png\"\ndest_files=[\"res://.godot/imported/maple_leaves_normal.png-2babb5f22b6a5d73e736feeb5d006437.s3tc.ctex\", \"res://.godot/imported/maple_leaves_normal.png-2babb5f22b6a5d73e736feeb5d006437.etc2.ctex\"]\n\n[params]\n\ncompress/mode=2\ncompress/high_quality=false\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=1\ncompress/channel_pack=0\nmipmaps/generate=true\nmipmaps/limit=-1\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+			"import_path": "res://assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_normal.png.import",
+			"import_sha256": "133cb517d0ff5b1d6ae033aa0165ca8e8d32465c10e14a86dc1501fe43bc5822",
+			"source_png_sha256": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4",
+			"texture_class": "CompressedTexture2D",
+			"used_by": [
+				"maple_tree"
+			]
+		}
+	}
+}

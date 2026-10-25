@@ -191,8 +191,8 @@ class AircraftModuleTests(unittest.TestCase):
     def test_python_and_gdscript_emit_identical_classification_for_every_source(self):
         configured = os.environ.get("OPENRC_TEST_GODOT", "")
         candidates = [Path(configured)] if configured else [
-            ROOT / ".tools/Godot_v4.7.2-stable_win64.exe",
-            ROOT / ".tools/Godot_v4.7.2-stable_linux.x86_64",
+            ROOT / ".tools/Godot_v4.8-beta1_win64.exe",
+            ROOT / ".tools/Godot_v4.8-beta1_linux.x86_64",
         ]
         godot = next((path for path in candidates if path.is_file()), None)
         if godot is None:

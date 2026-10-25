@@ -1,0 +1,14 @@
+test_corrupt_and_wrong_version_containers_are_rejected (__main__.ContainerTests.test_corrupt_and_wrong_version_containers_are_rejected) ... ok
+test_duplicate_child_and_negative_transform_are_rejected (__main__.ContainerTests.test_duplicate_child_and_negative_transform_are_rejected) ... ok
+test_duplicate_json_keys_and_external_uris_are_rejected (__main__.ContainerTests.test_duplicate_json_keys_and_external_uris_are_rejected) ... ok
+test_artifact_inventory_and_check_bytes_are_deterministic (__main__.SuppliedModelTests.test_artifact_inventory_and_check_bytes_are_deterministic) ... ok
+test_duplicate_node_names_are_rejected (__main__.SuppliedModelTests.test_duplicate_node_names_are_rejected) ... ok
+test_external_buffer_and_external_image_are_rejected (__main__.SuppliedModelTests.test_external_buffer_and_external_image_are_rejected) ... ok
+test_missing_node_pivot_and_spec_rig_identity_are_rejected (__main__.SuppliedModelTests.test_missing_node_pivot_and_spec_rig_identity_are_rejected) ... ok
+test_negative_scale_and_baked_animation_are_rejected (__main__.SuppliedModelTests.test_negative_scale_and_baked_animation_are_rejected) ... ok
+test_supplied_glb_passes_static_dimensions_and_articulation_intake (__main__.SuppliedModelTests.test_supplied_glb_passes_static_dimensions_and_articulation_intake) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.467s
+
+OK

@@ -33,7 +33,7 @@ def grass_contract_report(variant: str) -> dict:
     shader_paths = ["res://scenery/imported_grass.gdshader"] if enhanced else []
     return {
         "route": "live-input",
-        "godot": "4.7.2.stable.official",
+        "godot": "4.8-beta1 (official)",
         "backend": "gl_compatibility",
         "window": "1280x720",
         "camera": {"viewport": [1280, 720], "autozoom": False, "mode": "pilot"},
@@ -259,7 +259,7 @@ class RunEligibilityTests(unittest.TestCase):
 
     def test_windows_inventory_uses_hidden_tasklist_csv_and_finds_godot(self):
         output = (
-            '"Godot_v4.7.2-stable_win64_console.exe","12796","Console","1,024 K"\r\n'
+            '"Godot_v4.8-beta1_win64_console.exe","12796","Console","1,024 K"\r\n'
             '"editor.exe","8","Console","2,048 K"\r\n'
         )
         with patch.object(profile_session.platform, "system", return_value="Windows"), patch.object(
@@ -272,7 +272,7 @@ class RunEligibilityTests(unittest.TestCase):
         self.assertEqual(run.call_args.args[0], ["tasklist", "/FO", "CSV", "/NH"])
         self.assertEqual(run.call_args.kwargs["creationflags"], getattr(profile_session.subprocess, "CREATE_NO_WINDOW", 0x08000000))
         self.assertEqual(inventory["godot_processes"], [
-            {"image": "Godot_v4.7.2-stable_win64_console.exe", "pid": "12796"}
+            {"image": "Godot_v4.8-beta1_win64_console.exe", "pid": "12796"}
         ])
 
     def test_preflight_stops_before_second_launch_and_preserves_first_report(self):
@@ -281,9 +281,9 @@ class RunEligibilityTests(unittest.TestCase):
             app = root / "app"
             app.mkdir()
             (app / "project.godot").write_text("config_version=5\n", encoding="utf-8")
-            godot = root / "Godot_v4.7.2-stable_win64_console.exe"
+            godot = root / "Godot_v4.8-beta1_win64_console.exe"
             godot.write_bytes(b"test engine identity")
-            (root / "Godot_v4.7.2-stable_win64.exe").write_bytes(b"test runtime identity")
+            (root / "Godot_v4.8-beta1_win64.exe").write_bytes(b"test runtime identity")
             output = root / "campaign"
             args = argparse.Namespace(app=app, godot=godot, out=output, pairs=5, timeout=180)
             inventories = iter((
@@ -294,7 +294,7 @@ class RunEligibilityTests(unittest.TestCase):
                 {
                     "status": "available", "platform": "Windows", "scope": "test process inventory",
                     "command": ["tasklist"], "timeout_s": 10,
-                    "godot_processes": [{"image": "Godot_v4.7.2-stable_win64_console.exe", "pid": "12796"}],
+                    "godot_processes": [{"image": "Godot_v4.8-beta1_win64_console.exe", "pid": "12796"}],
                 },
             ))
 
@@ -304,7 +304,7 @@ class RunEligibilityTests(unittest.TestCase):
                 return {
                     "id": f"pair-{kwargs['pair_index']:02d}-{kwargs['variant']}",
                     "variant": kwargs["variant"],
-                    "report_identity": {"godot": "4.7.2.stable.official"},
+                    "report_identity": {"godot": "4.8-beta1 (official)"},
                     "rejection_reasons": [],
                     "interrupted": False,
                     "metrics": {"frame_ms": {"p95": 16.0, "p99": 20.0}},

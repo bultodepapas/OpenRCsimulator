@@ -22,14 +22,15 @@ candidate scripts default to the working runtime. Population rows include static
 base work, so report the two kinds separately. [Measurements and reproduction](../../docs/research/visual-quality-implementation/VQ-01c/loading/shadow-geometry/triangle-runs-2026-10-21/README.md)
 record the exact-output and visual checks.
 
-Status: Native Godot 4.7.2 Compatibility validation tools.
+Use the pinned official Godot 4.8-beta1 Compatibility engine for new native runs.
+Dated validation and timing evidence retain their recorded engine scope.
 
 Install the pinned offline analysis dependency with `python -m pip install -r
 tools/shadows/requirements.txt`. Use the pinned Godot console executable and a
 display; headless rendering cannot validate masks or GPU cost.
 
 ```powershell
-python tools/shadows/vq04a_verify.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --baseline PATH_TO_BEFORE_APP --candidate app --out NEW_OUTPUT_DIRECTORY
+python tools/shadows/vq04a_verify.py --godot .tools/Godot_v4.8-beta1_win64_console.exe --baseline PATH_TO_BEFORE_APP --candidate app --out NEW_OUTPUT_DIRECTORY
 ```
 
 The baseline must precede VQ-04a, with the same unrelated source/assets as the

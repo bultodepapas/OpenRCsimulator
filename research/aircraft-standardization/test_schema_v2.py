@@ -23,7 +23,7 @@ from jsonschema import Draft202012Validator
 ROOT = Path(__file__).resolve().parents[2]
 LOADER_PROBE = ROOT / "research" / "aircraft-data" / "schema" / "loader_probe.gd"
 LEGACY_V1 = Path(__file__).with_name("fixtures") / "legacy-stik-v1.json"
-DEFAULT_GODOT = ROOT / ".tools" / "Godot_v4.7.2-stable_linux.x86_64"
+DEFAULT_GODOT = ROOT / ".tools" / "Godot_v4.8-beta1_linux.x86_64"
 DEFAULT_APP = ROOT / "app"
 EXPECTED_FLEET = {
     "f4u_corsair_250",

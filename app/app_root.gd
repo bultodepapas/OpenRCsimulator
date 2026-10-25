@@ -52,6 +52,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const FailureMenu := preload("res://ui/failures_menu.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
 const CompanionsDialog := preload("res://ui/companions_dialog.gd")
+const LiveryPicker := preload("res://ui/livery_picker.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 const InputReport = preload("res://input/input_report.gd")
 const NaturalRandom = preload("res://scenarios/natural_random.gd")
@@ -463,7 +464,7 @@ func show_home() -> void:
 	home.workshop_requested.connect(open_workshop)
 	home.natural_random_requested.connect(open_natural_random)
 	home.aircraft_requested.connect(set_aircraft)
-	home.livery_requested.connect(set_livery)
+	home.livery_picker_requested.connect(open_livery_picker)
 	home.landscape_requested.connect(set_landscape)
 	home.start_requested.connect(set_start_choice)
 	home.quit_requested.connect(quit_app)
@@ -604,17 +605,35 @@ func set_livery(livery: String) -> void:
 	if home == null:
 		return
 	var id: String = home.aircraft_id
-	var resolved: String = AirplaneBuilder.resolve_livery(id, livery)
+	var resolved: String = home.set_livery(livery)
 	var liveries: Dictionary = preferences.get("liveries", {}).duplicate()
 	if resolved.is_empty():
 		liveries.erase(id)
 	else:
 		liveries[id] = resolved
 	preferences.liveries = liveries
-	home.set_livery(resolved)
 	if home_scene != null:
 		home_scene.request_aircraft(id, home.livery_id)
 	_report_selection_save(Preferences.save_to(preferences_path, preferences))
+
+
+func open_livery_picker(from: Control = null) -> void:
+	if _loading_active or home == null or not screens.is_top("home"): return
+	var choices: Array = home.livery_choices()
+	if choices.size() < 2: return
+	var aircraft_id: String = home.aircraft_id
+	var dialog := LiveryPicker.new(choices, home.livery_id, tr(Catalog.short_name(home.aircraft_id)), home.livery_preview_cache, home.theme)
+	dialog.close_requested.connect(close_livery_picker)
+	dialog.selected.connect(func(id: String) -> void:
+		close_livery_picker()
+		if home != null and home.aircraft_id == aircraft_id and AirplaneBuilder.resolve_livery_choice(choices, id) != home.livery_id:
+			set_livery(id)
+	)
+	if not screens.push("liveries", dialog, from): dialog.free()
+
+
+func close_livery_picker() -> void:
+	if screens.is_top("liveries"): screens.pop()
 
 
 ## The saved paint scheme that `id` still offers, else "" (its default paint).

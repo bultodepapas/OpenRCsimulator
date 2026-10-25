@@ -39,10 +39,10 @@ The default basin and water CPU arrays are generated from the production lake/gr
 loaders and scalar samplers. With the exact engine pinned in `app/get-godot.sh`:
 
 ```powershell
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --audio-driver Dummy `
   --script "$PWD/tools/ground/bake_lake_geometry.gd"
 # Check without writing either generated output:
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --audio-driver Dummy `
   --script "$PWD/tools/ground/bake_lake_geometry.gd" -- --check
 ```
 
@@ -72,7 +72,10 @@ That option does not qualify the remaining field/scenery assets or replace the f
 
 `turf_generate.py --check` verifies the original packed data texture with Python
 stdlib. For capture reduction, install the exact versions in
-`turf_requirements.txt`. The native engine must be Godot 4.7.2 Compatibility.
+`turf_requirements.txt`. This section reproduces the historical L9e result with
+Godot 4.7.2 Compatibility: `turf_verify.py` still requires `[4, 7, 2]` manifests.
+That reducer's capture admission has not been migrated to the current official
+4.8-beta1 pin.
 
 Freeze a pre-change project as `BASELINE` and the candidate as `APP`. Run the same
 `turf_capture.gd` script with `--path APP --script /absolute/tools/ground/turf_capture.gd`,
@@ -137,10 +140,10 @@ The L10a–d harness uses `--field-shadows=off` to isolate each cue mesh ablatio
 Run `res://tests/test_windsock.gd` and `res://tests/test_windsock_motion.gd` with the pinned headless engine. Both are discovered by `app/test.sh`. Native captures need a display and a new output directory:
 
 ```powershell
-& .tools/Godot_v4.7.2-stable_win64_console.exe --path app --resolution 960x540 `
+& .tools/Godot_v4.8-beta1_win64_console.exe --path app --resolution 960x540 `
   --rendering-driver opengl3 --audio-driver Dummy `
   --script "$PWD/tools/ground/capture_windsock_motion.gd" -- --out=C:/absolute/new-folder --sequence
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --audio-driver Dummy `
   --script "$PWD/tools/ground/bench_windsock.gd" -- --out=C:/absolute/cost.json
 ```
 
@@ -151,7 +154,7 @@ The capture uses the production sleeve/material and a fixed 240 Hz wind tape. It
 Before editing the renderer, copy `app/render/windsock.gd` to an absolute path outside `app/`. Keep its dependencies identical to the candidate; the tool loads both scripts in the same project. Then run alone with the pinned engine:
 
 ```powershell
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --audio-driver Dummy `
   --script "$PWD/tools/ground/compare_windsock_optimization.gd" -- `
   --baseline=C:/absolute/baseline/windsock.gd --out=C:/absolute/comparison.json
 ```

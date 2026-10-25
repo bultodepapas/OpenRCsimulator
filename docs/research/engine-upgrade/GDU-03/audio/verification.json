@@ -1,0 +1,1080 @@
+{
+  "format": "openrc-gdu06-native-audio-verification v1",
+  "host": "Windows x86_64",
+  "artifact_root": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native",
+  "menu_report": {
+    "captures": [
+      {
+        "error": 0,
+        "name": "menu-35",
+        "nonzero": 430314,
+        "peak": 0.147308349609375,
+        "rate": 48000,
+        "rms": 0.00776094290375991,
+        "seconds": 8.21333333333333,
+        "tail_silence_ms": 165.333333333333
+      },
+      {
+        "error": 0,
+        "name": "menu-100",
+        "nonzero": 433914,
+        "peak": 0.420928955078125,
+        "rate": 48000,
+        "rms": 0.0221950393470902,
+        "seconds": 8.16,
+        "tail_silence_ms": 164.979166666667
+      },
+      {
+        "error": 0,
+        "name": "menu-0",
+        "nonzero": 0,
+        "peak": 0.0,
+        "rate": 48000,
+        "rms": 0.0,
+        "seconds": 8.16,
+        "tail_silence_ms": 8160.0
+      },
+      {
+        "error": 0,
+        "name": "quit-tail-1-stall-0",
+        "nonzero": 31840,
+        "peak": 0.107025146484375,
+        "rate": 48000,
+        "rms": 0.0102607698053078,
+        "seconds": 0.405333333333333,
+        "tail_silence_ms": 69.3333333333333
+      },
+      {
+        "error": 0,
+        "name": "quit-tail-1-stall-100",
+        "nonzero": 31840,
+        "peak": 0.107025146484375,
+        "rate": 48000,
+        "rms": 0.0102607698053078,
+        "seconds": 0.405333333333333,
+        "tail_silence_ms": 69.3333333333333
+      },
+      {
+        "error": 0,
+        "name": "quit-tail-0-stall-0",
+        "nonzero": 31840,
+        "peak": 0.107025146484375,
+        "rate": 48000,
+        "rms": 0.0103985044219669,
+        "seconds": 0.394666666666667,
+        "tail_silence_ms": 58.6666666666667
+      },
+      {
+        "error": 0,
+        "name": "quit-tail-16-stall-0",
+        "nonzero": 31840,
+        "peak": 0.107025146484375,
+        "rate": 48000,
+        "rms": 0.0103985044219669,
+        "seconds": 0.394666666666667,
+        "tail_silence_ms": 58.6666666666667
+      }
+    ],
+    "cues": [
+      {
+        "accepted": true,
+        "cue": "focus",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "hover",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "press",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "select",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "change",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "open",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "back",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "pause",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "resume",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "accept",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "saved",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "cancel",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "restart",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "reject",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "exit",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "quit",
+        "level": 0.35
+      },
+      {
+        "accepted": true,
+        "cue": "focus",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "hover",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "press",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "select",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "change",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "open",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "back",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "pause",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "resume",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "accept",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "saved",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "cancel",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "restart",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "reject",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "exit",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "quit",
+        "level": 1.0
+      },
+      {
+        "accepted": true,
+        "cue": "focus",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "hover",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "press",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "select",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "change",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "open",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "back",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "pause",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "resume",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "accept",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "saved",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "cancel",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "restart",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "reject",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "exit",
+        "level": 0.0
+      },
+      {
+        "accepted": true,
+        "cue": "quit",
+        "level": 0.0
+      }
+    ],
+    "driver": "WASAPI",
+    "ok": true,
+    "quit_tails": [
+      {
+        "calls": 1,
+        "elapsed_ms": 401,
+        "expected_ms": 393.019743150903,
+        "input_locked": true,
+        "pre_quit_stall_ms": 0,
+        "time_scale": 1.0,
+        "waited": true
+      },
+      {
+        "calls": 1,
+        "elapsed_ms": 401,
+        "expected_ms": 393.019743150903,
+        "input_locked": true,
+        "pre_quit_stall_ms": 100,
+        "time_scale": 1.0,
+        "waited": true
+      },
+      {
+        "calls": 1,
+        "elapsed_ms": 400,
+        "expected_ms": 393.019743150903,
+        "input_locked": true,
+        "pre_quit_stall_ms": 0,
+        "time_scale": 0.0,
+        "waited": true
+      },
+      {
+        "calls": 1,
+        "elapsed_ms": 400,
+        "expected_ms": 393.019743150903,
+        "input_locked": true,
+        "pre_quit_stall_ms": 0,
+        "time_scale": 16.0,
+        "waited": true
+      }
+    ]
+  },
+  "menu_report_sha256": "3ae67fd0f1867b538c68f14ab49f9ec9271754fcdbe7e2dea0194c0db8d6b26c",
+  "menu_checked_invocation": {
+    "format": "openrc-godot-check v1",
+    "capture_id": "fdcd12ea-84c9-4f88-84b7-27523b269f8f",
+    "command": [
+      ".tools/Godot_v4.8-beta1_win64_console.exe",
+      "--display-driver",
+      "headless",
+      "--audio-driver",
+      "WASAPI",
+      "--path",
+      "app",
+      "--script",
+      "D:/OpenRCsimulator-experiments/gdu03-suite/tools/audio/menu_probe.gd",
+      "--",
+      "--out=D:/OpenRCsimulator-experiments/gdu03-suite/tmp/gdu03-audio/menu"
+    ],
+    "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+    "started_utc": "2026-10-25T14:50:19.416160+00:00",
+    "label": "menu-native-absolute",
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-audio\\checks\\menu-native-absolute-uptx2kug\\engine.log",
+    "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-audio\\checks\\menu-native-absolute-uptx2kug\\report.json",
+    "timeout_seconds": 90.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 33.516,
+    "log_bytes": 4015,
+    "log_sha256": "f9f706918360793432b722141631d0c3b0a5441ab6bb3e682fc8f2ad71a9fea4"
+  },
+  "pump": {
+    "busy_stalls": [
+      {
+        "phase": 0,
+        "seconds": 0.6
+      },
+      {
+        "phase": 1,
+        "seconds": 0.6
+      },
+      {
+        "phase": 2,
+        "seconds": 0.6
+      },
+      {
+        "phase": 3,
+        "seconds": 0.6
+      },
+      {
+        "phase": 4,
+        "seconds": 0.6
+      }
+    ],
+    "capture_discarded_frames": 0,
+    "capture_ring_seconds": 2.0,
+    "captured_frames": 6000640,
+    "cpu_accumulator": 0.0842532695801488,
+    "driver": "WASAPI",
+    "duration_error_s": 0.000834333333330051,
+    "duration_tolerance_s": 0.12,
+    "expected_wall_seconds": 125.0,
+    "failures": [],
+    "final_source_identity": {
+      "generator_sample_rate_hz": 22050.0,
+      "godot_version": "4.8-beta1 (official)",
+      "probe_sha256": "0d1d1c49925e27f910335d2b74551bc702a2931e13138c027f39a18bd899af0b",
+      "pump_sha256": "99b50ad28cc442f2ba818d0e72fd23897fa1462df62d873028cd537937b9a40b",
+      "voice_sha256": "f025a4d59752be25d3b34a768c024959f0e215c4a4384dc83b6dac2b25cc8f17"
+    },
+    "final_stats": {
+      "available_frames": 7089,
+      "capacity_frames": 8191,
+      "fallback": false,
+      "fallback_reason": "",
+      "phase_cycles": 0.452932347408932,
+      "primed": true,
+      "published_revision": 1,
+      "queue_frames": 1102,
+      "rendered_blocks": 11725,
+      "rendered_frames": 2658766,
+      "rendered_revision": 1,
+      "running": true,
+      "skips": 0,
+      "target_frames": 1102,
+      "worker_error": ""
+    },
+    "finished_utc": "2026-10-25 14:59:06",
+    "format": "openrc-glow-pump-stress-v1",
+    "gates": {
+      "all_five_phases_seen": true,
+      "captured_pcm_within_120ms_of_wall": true,
+      "five_600ms_busy_stalls": true,
+      "native_driver": true,
+      "no_worker_error": true,
+      "source_hashes_present": true,
+      "source_identity_unchanged": true,
+      "wall_duration_within_120ms": true,
+      "worker_did_not_fallback": true,
+      "worker_still_running_and_primed": true,
+      "zero_capture_drops": true,
+      "zero_generator_skips": true
+    },
+    "generator_buffer_seconds": 0.2,
+    "max_fps": 60,
+    "mix_rate_hz": 48000.0,
+    "output_latency_s": 0.00999999977648258,
+    "passed": true,
+    "pcm_seconds": 125.013333333333,
+    "phase_schedule": [
+      {
+        "busy_stall_at_phase_s": 1.0,
+        "busy_stall_duration_s": 0.6,
+        "duration_s": 25.0,
+        "phase": 0,
+        "player_volume_db": -20.0,
+        "source_distance_m": 3.0,
+        "start_s": 0.0
+      },
+      {
+        "busy_stall_at_phase_s": 1.0,
+        "busy_stall_duration_s": 0.6,
+        "duration_s": 25.0,
+        "phase": 1,
+        "player_volume_db": -70.0,
+        "source_distance_m": 1250.0,
+        "start_s": 25.0
+      },
+      {
+        "busy_stall_at_phase_s": 1.0,
+        "busy_stall_duration_s": 0.6,
+        "duration_s": 25.0,
+        "phase": 2,
+        "player_volume_db": -92.0,
+        "source_distance_m": 2100.0,
+        "start_s": 50.0
+      },
+      {
+        "busy_stall_at_phase_s": 1.0,
+        "busy_stall_duration_s": 0.6,
+        "duration_s": 25.0,
+        "phase": 3,
+        "player_volume_db": -20.0,
+        "source_distance_m": 3.0,
+        "start_s": 75.0
+      },
+      {
+        "busy_stall_at_phase_s": 1.0,
+        "busy_stall_duration_s": 0.6,
+        "duration_s": 25.0,
+        "phase": 4,
+        "player_volume_db": -92.0,
+        "source_distance_m": 2100.0,
+        "start_s": 100.0
+      }
+    ],
+    "phase_seen": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "post_join_stats": {
+      "available_frames": 7089,
+      "capacity_frames": 8191,
+      "fallback": false,
+      "fallback_reason": "",
+      "phase_cycles": 0.452932347408932,
+      "primed": false,
+      "published_revision": 1,
+      "queue_frames": 1102,
+      "rendered_blocks": 11725,
+      "rendered_frames": 2658766,
+      "rendered_revision": 1,
+      "running": false,
+      "skips": 0,
+      "target_frames": 1102,
+      "worker_error": ""
+    },
+    "preflight_failed": false,
+    "prime_seconds": 0.006606,
+    "prime_stats": {
+      "available_frames": 7089,
+      "capacity_frames": 8191,
+      "fallback": false,
+      "fallback_reason": "",
+      "phase_cycles": 0.168034769463179,
+      "primed": true,
+      "published_revision": 1,
+      "queue_frames": 1102,
+      "rendered_blocks": 5,
+      "rendered_frames": 1102,
+      "rendered_revision": 1,
+      "running": true,
+      "skips": 0,
+      "target_frames": 1102,
+      "worker_error": ""
+    },
+    "prime_timeout_s": 3.0,
+    "required_driver": "WASAPI",
+    "source_identity": {
+      "generator_sample_rate_hz": 22050.0,
+      "godot_version": "4.8-beta1 (official)",
+      "probe_sha256": "0d1d1c49925e27f910335d2b74551bc702a2931e13138c027f39a18bd899af0b",
+      "pump_sha256": "99b50ad28cc442f2ba818d0e72fd23897fa1462df62d873028cd537937b9a40b",
+      "voice_sha256": "f025a4d59752be25d3b34a768c024959f0e215c4a4384dc83b6dac2b25cc8f17"
+    },
+    "started_utc": "2026-10-25 14:57:01",
+    "telemetry": {
+      "blade_count": 2,
+      "family": "glow_2t",
+      "firing_fraction": 1.0,
+      "load": 0.55,
+      "max_rpm": 10000.0,
+      "rpm": 7405.0,
+      "running": true,
+      "throttle": 0.55
+    },
+    "wall_seconds": 125.012499,
+    "full_report_path": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\pump\\report.json",
+    "full_report_sha256": "2b2d2a5f6d037d63e32025325b93483e21fcc59b4e7bdc17558ab6f6daa7eac7"
+  },
+  "wind_ab": {
+    "4.8": {
+      "godot": "4.8-beta1 (official)",
+      "driver": "WASAPI",
+      "display": "headless",
+      "mix_rate": 48000.0,
+      "captured_frames": 1009152,
+      "captured_seconds": 21.024,
+      "wall_run_seconds": 21.016495,
+      "discarded_frames": 0,
+      "peak_dbfs": -19.063471413211,
+      "rms_dbfs": -37.9728105983973,
+      "quality_checks": {
+        "fabric_distance_cutoff_confirmed_at_40db": true,
+        "finite_audio": true,
+        "near_to_far_fabric_cutoff_delta_db": 185.838801649226,
+        "no_clipping": true,
+        "no_clipping_at_or_above_dbfs": -0.9,
+        "paused_stage_stream_paused": true
+      },
+      "bus_cleanup": {
+        "clean": true,
+        "count_after": 1,
+        "count_before": 1,
+        "missing_bus_indexes": []
+      },
+      "source_manifest_sha256": "81f907e19ca5895391c5e03c2d13c2d2dbf9d6ab66c595dbbbb7d686620ab417",
+      "fabric_runtime_sha256": "b0fe88199481f2ca9bf3668f92408b083428af8193b3b75065d228c69569402a",
+      "wav_saved": true,
+      "stage_summaries": [
+        {
+          "name": "calm",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -87.1662522666023,
+          "fabric_settled_rms_dbfs": -240.0,
+          "fabric_stream_paused": false
+        },
+        {
+          "name": "light_3mps",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -49.8279763158354,
+          "fabric_settled_rms_dbfs": -94.9970258002292,
+          "fabric_stream_paused": false
+        },
+        {
+          "name": "strong_12mps",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -35.1531384752993,
+          "fabric_settled_rms_dbfs": -70.6271487151701,
+          "fabric_stream_paused": false
+        },
+        {
+          "name": "gust_direction_reversal",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -34.7713985246494,
+          "fabric_settled_rms_dbfs": -73.5714142015993,
+          "fabric_stream_paused": false
+        },
+        {
+          "name": "paused",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -240.0,
+          "fabric_settled_rms_dbfs": -240.0,
+          "fabric_stream_paused": true
+        },
+        {
+          "name": "resume_near_windsock",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -37.0800312375212,
+          "fabric_settled_rms_dbfs": -54.1611983507741,
+          "fabric_stream_paused": false
+        },
+        {
+          "name": "fabric_cutoff_over_55m",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -35.7386985122663,
+          "fabric_settled_rms_dbfs": -240.0,
+          "fabric_stream_paused": false
+        }
+      ],
+      "full_report_path": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\wind-4.8\\capture.json",
+      "full_report_sha256": "4e692cffe5d03c602a83e1bd5978b5a700d0261ff752bc150471187876441127",
+      "wav_sha256": "8065edf36c2e349399862f68db0ac2ccc585e568f310f336ff4d1f90e66a8987"
+    },
+    "4.7": {
+      "godot": "4.7.2-stable (official)",
+      "driver": "WASAPI",
+      "display": "headless",
+      "mix_rate": 48000.0,
+      "captured_frames": 1008640,
+      "captured_seconds": 21.0133333333333,
+      "wall_run_seconds": 21.016857,
+      "discarded_frames": 0,
+      "peak_dbfs": -19.0136333476527,
+      "rms_dbfs": -37.9684196895704,
+      "quality_checks": {
+        "fabric_distance_cutoff_confirmed_at_40db": true,
+        "finite_audio": true,
+        "near_to_far_fabric_cutoff_delta_db": 185.90373267769,
+        "no_clipping": true,
+        "no_clipping_at_or_above_dbfs": -0.9,
+        "paused_stage_stream_paused": true
+      },
+      "bus_cleanup": {
+        "clean": true,
+        "count_after": 1,
+        "count_before": 1,
+        "missing_bus_indexes": []
+      },
+      "source_manifest_sha256": "81f907e19ca5895391c5e03c2d13c2d2dbf9d6ab66c595dbbbb7d686620ab417",
+      "fabric_runtime_sha256": "b0fe88199481f2ca9bf3668f92408b083428af8193b3b75065d228c69569402a",
+      "wav_saved": true,
+      "stage_summaries": [
+        {
+          "name": "calm",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -87.2000323749279,
+          "fabric_settled_rms_dbfs": -240.0,
+          "fabric_stream_paused": false
+        },
+        {
+          "name": "light_3mps",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -49.8287265578698,
+          "fabric_settled_rms_dbfs": -95.0013086626358,
+          "fabric_stream_paused": false
+        },
+        {
+          "name": "strong_12mps",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -35.1483634583761,
+          "fabric_settled_rms_dbfs": -70.6086783042863,
+          "fabric_stream_paused": false
+        },
+        {
+          "name": "gust_direction_reversal",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -34.7665978240562,
+          "fabric_settled_rms_dbfs": -73.4845097737645,
+          "fabric_stream_paused": false
+        },
+        {
+          "name": "paused",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -240.0,
+          "fabric_settled_rms_dbfs": -240.0,
+          "fabric_stream_paused": true
+        },
+        {
+          "name": "resume_near_windsock",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -37.0783510427768,
+          "fabric_settled_rms_dbfs": -54.0962673223102,
+          "fabric_stream_paused": false
+        },
+        {
+          "name": "fabric_cutoff_over_55m",
+          "discarded_frames": 0,
+          "fabric_discarded_frames": 0,
+          "settled_rms_dbfs": -35.7358980899897,
+          "fabric_settled_rms_dbfs": -240.0,
+          "fabric_stream_paused": false
+        }
+      ],
+      "full_report_path": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\wind-4.7\\capture.json",
+      "full_report_sha256": "1a92b7fda3f99fcf0dc111a0c3d157efa3c000d28658f36ad6954a830a5cc36d",
+      "wav_sha256": "a817130487beeba30cd4ed84ae1a8b9b8ae137c46a1a9fc273a08687d2eeaa2c"
+    }
+  },
+  "audio_snapshot_files": 149,
+  "audio_snapshot_bytes_per_copy": 31307002,
+  "audio_snapshot_manifest_sha256": "c3d7886f92bf3a3823faa41863592578918f1e6eba694f143e8c74a484e322fc",
+  "snapshot_source_files_unchanged_after_both_imports": true,
+  "source_audit": {
+    "filter": {
+      "4.7.2": {
+        "url": "https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/servers/audio/audio_filter_sw.cpp",
+        "sha256": "5639b43558814dd7cfd6dbbac11af85a9b0b09631e1932eaebc21f49345c02e0",
+        "bytes": 8334
+      },
+      "4.8-beta1": {
+        "url": "https://raw.githubusercontent.com/godotengine/godot/4d10419ca/servers/audio/audio_filter_sw.cpp",
+        "sha256": "5639b43558814dd7cfd6dbbac11af85a9b0b09631e1932eaebc21f49345c02e0",
+        "bytes": 8334
+      },
+      "identical": true
+    },
+    "hard_limiter": {
+      "4.7.2": {
+        "url": "https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/servers/audio/effects/audio_effect_hard_limiter.cpp",
+        "sha256": "3a3f5e8679d47705bcd65efc59d2779fddbd531c78d029dae17fc5d35952747e",
+        "bytes": 6795
+      },
+      "4.8-beta1": {
+        "url": "https://raw.githubusercontent.com/godotengine/godot/4d10419ca/servers/audio/effects/audio_effect_hard_limiter.cpp",
+        "sha256": "c368f9067d0559d54e6d238eb61796c27c6182d66b84a6358243617ecc3bf72d",
+        "bytes": 6804
+      },
+      "identical": false,
+      "diff_sha256": "b49bd32273b8f8cd4cf0a01773ad5c6d14580ee20ada74945f4768e6fa02f183",
+      "selected_function": {
+        "signature": "void AudioEffectHardLimiterInstance::process(",
+        "identical": true,
+        "baseline_sha256": "7b69124e986c8bac8dfd9ab70357023351e91ee2a47467e42a0c1d9ade1cedcf",
+        "candidate_sha256": "7b69124e986c8bac8dfd9ab70357023351e91ee2a47467e42a0c1d9ade1cedcf"
+      }
+    },
+    "limiter": {
+      "4.7.2": {
+        "url": "https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/servers/audio/effects/audio_effect_limiter.cpp",
+        "sha256": "b3159a4736e10e333aff60d20c76223ea6e23918b9cf1bcf2e91010a94a6faa4",
+        "bytes": 5942
+      },
+      "4.8-beta1": {
+        "url": "https://raw.githubusercontent.com/godotengine/godot/4d10419ca/servers/audio/effects/audio_effect_limiter.cpp",
+        "sha256": "b3159a4736e10e333aff60d20c76223ea6e23918b9cf1bcf2e91010a94a6faa4",
+        "bytes": 5942
+      },
+      "identical": true
+    },
+    "wav": {
+      "4.7.2": {
+        "url": "https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/scene/resources/audio_stream_wav.cpp",
+        "sha256": "40db1a2f5e34bf5b38cea864154f2538d114a11906e012f290aabaab3b0422c5",
+        "bytes": 39262
+      },
+      "4.8-beta1": {
+        "url": "https://raw.githubusercontent.com/godotengine/godot/4d10419ca/scene/resources/audio/audio_stream_wav.cpp",
+        "sha256": "0af590b9c3fd1325550ad30b25a121423d253ee76e87ca685be7e1192005ba5d",
+        "bytes": 39914
+      },
+      "identical": false,
+      "diff_sha256": "3cb18695322504274c6387cc4dba1a438a7456fdd0c88765b6f689de2d83e0a4"
+    },
+    "player3d": {
+      "4.7.2": {
+        "url": "https://raw.githubusercontent.com/godotengine/godot/4.7.2-stable/scene/3d/audio_stream_player_3d.cpp",
+        "sha256": "12792f83e5dc8cef8d7e609f564eb2dcf30ea0dcf162ee6ffe69a332f591d28c",
+        "bytes": 38747
+      },
+      "4.8-beta1": {
+        "url": "https://raw.githubusercontent.com/godotengine/godot/4d10419ca/scene/3d/audio_stream_player_3d.cpp",
+        "sha256": "1ddfc5e6a16f8a978135e39d8b92c41a8a2800b5731f24d7474ccbdafe87066c",
+        "bytes": 38625
+      },
+      "identical": false,
+      "diff_sha256": "b7ee7b02a4e74688696fad2b8826f548f2d509a1a199082bdaae3e8e6479ab2e",
+      "selected_function": {
+        "signature": "void AudioStreamPlayer3D::play(",
+        "identical": true,
+        "baseline_sha256": "628c8fa9bad91bb4eb24af60d20287c829836cb60abc791b56cedd53b97059dc",
+        "candidate_sha256": "628c8fa9bad91bb4eb24af60d20287c829836cb60abc791b56cedd53b97059dc"
+      }
+    }
+  },
+  "checked_invocations": [
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "a61c3bff-8a37-49da-a441-661e8bfda279",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "WASAPI",
+        "--max-fps",
+        "60",
+        "--path",
+        "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\audio\\pump_stress_probe.gd",
+        "--",
+        "--out=D:/OpenRCsimulator-experiments/gdu03-audio-native/pump/report.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:57:01.359154+00:00",
+      "label": "gdu06-pump-wasapi",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\checks\\gdu06-pump-wasapi-w5fwwg1g\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\checks\\gdu06-pump-wasapi-w5fwwg1g\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 125.468,
+      "log_bytes": 642,
+      "log_sha256": "d2dcd8d8958f7d737d2e6cfcbd8aad45e553c7820b05ac024860ae57fa4fd1be"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "99638475-fb4f-4f89-973c-55d8cba62ae6",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "D:/OpenRCsimulator-experiments/gdu03-audio-native/wind-4.7-app",
+        "--import"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T15:00:12.835115+00:00",
+      "label": "gdu06-wind-import-4.7",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\checks\\gdu06-wind-import-4.7-gcyapozl\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\checks\\gdu06-wind-import-4.7-gcyapozl\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.032,
+      "log_bytes": 14530,
+      "log_sha256": "d7aedb5ba07b78058b4d6faf0ed30a054207587cc8a0dd884cbcf5798d88617f"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "50371548-d6ba-48e2-b8da-dc0bdcf1dd90",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "D:/OpenRCsimulator-experiments/gdu03-audio-native/wind-4.8-app",
+        "--import"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T15:00:05.936021+00:00",
+      "label": "gdu06-wind-import-4.8",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\checks\\gdu06-wind-import-4.8-562xc3m9\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\checks\\gdu06-wind-import-4.8-562xc3m9\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 6.703,
+      "log_bytes": 15288,
+      "log_sha256": "d06af7bba3e6277d48baed8e6558be72fdbb0dd069ad5b0fe3d15854ca0b42ab"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "a0346a22-ce6d-4e46-a833-7047ecec49fb",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "WASAPI",
+        "--max-fps",
+        "60",
+        "--path",
+        "D:/OpenRCsimulator-experiments/gdu03-audio-native/wind-4.7-app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\audio\\wind_probe.gd",
+        "--",
+        "--fps=60",
+        "--out=D:/OpenRCsimulator-experiments/gdu03-audio-native/wind-4.7/capture"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T15:01:59.069369+00:00",
+      "label": "gdu06-wind-wasapi-4.7",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\checks\\gdu06-wind-wasapi-4.7-1m_nrtvb\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\checks\\gdu06-wind-wasapi-4.7-1m_nrtvb\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 21.672,
+      "log_bytes": 8167,
+      "log_sha256": "10ad5a76ed039a927cba4db2e38dc2efc9a9e68c9c219a76c83cfa9e7098d41d"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "62567903-830f-4bc1-9edd-f257486e3c31",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "WASAPI",
+        "--max-fps",
+        "60",
+        "--path",
+        "D:/OpenRCsimulator-experiments/gdu03-audio-native/wind-4.8-app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\audio\\wind_probe.gd",
+        "--",
+        "--fps=60",
+        "--out=D:/OpenRCsimulator-experiments/gdu03-audio-native/wind-4.8/capture"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T15:00:34.426171+00:00",
+      "label": "gdu06-wind-wasapi-4.8",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\checks\\gdu06-wind-wasapi-4.8-arb2tvuz\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-audio-native\\checks\\gdu06-wind-wasapi-4.8-arb2tvuz\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 21.672,
+      "log_bytes": 8219,
+      "log_sha256": "85c2fa0143b818619a0771a88ad5b5e955405f22ec0ad59ffb2cff2ed3291f49"
+    }
+  ],
+  "source_identities": {
+    "tools/audio/pump_stress_probe.gd": "0d1d1c49925e27f910335d2b74551bc702a2931e13138c027f39a18bd899af0b",
+    "tools/audio/wind_probe.gd": "731e8cc15d24c95453eba6e6e3e8ac25c96e66bbfd236930dad8fae2bbcb7bec",
+    "tools/audio/menu_probe.gd": "f7da7f909304a4b6c0ba3bf109f0a55784a5fc8a6d6ce96aba0f24df558aa847",
+    "app/audio/soundscape.gd": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+    "app/audio/glow_audio_pump.gd": "99b50ad28cc442f2ba818d0e72fd23897fa1462df62d873028cd537937b9a40b",
+    "app/audio/glow_voice.gd": "f025a4d59752be25d3b34a768c024959f0e215c4a4384dc83b6dac2b25cc8f17",
+    "tools/audio/make_bus_layout.gd": "a12edb1d1e97513688e3be7c80905144d01e7af2a285d033ef853448c83091d6"
+  },
+  "limits": "Native WASAPI mixer capture on this Windows host, headless display. Other suites/UI were active: no quiet-host performance, hardware latency, subjective listening or all-driver qualification. Guarded wind path compatibility is not isolated quirk-removal evidence. No accepted audio/physics data or runtime workaround changed."
+}

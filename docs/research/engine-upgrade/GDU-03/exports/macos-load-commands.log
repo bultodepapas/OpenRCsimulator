@@ -1,0 +1,60 @@
+
+File: D:\OpenRCsimulator-experiments\gdu03-packages\tmp\exports\macos-min-os\OpenRC Simulator
+Format: Mach-O arm64
+Arch: aarch64
+AddressSize: 64bit
+MachHeader {
+  Magic: Magic64 (0xFEEDFACF)
+  CpuType: Arm64 (0x100000C)
+  CpuSubType: CPU_SUBTYPE_ARM64_ALL (0x0)
+  FileType: Executable (0x2)
+  NumOfLoadCommands: 49
+  SizeOfLoadCommands: 6216
+  Flags [ (0xA18085)
+    MH_BINDS_TO_WEAK (0x10000)
+    MH_DYLDLINK (0x4)
+    MH_HAS_TLV_DESCRIPTORS (0x800000)
+    MH_NOUNDEFS (0x1)
+    MH_PIE (0x200000)
+    MH_TWOLEVEL (0x80)
+    MH_WEAK_DEFINES (0x8000)
+  ]
+  Reserved: 0x0
+}
+MinVersion {
+  Cmd: LC_BUILD_VERSION
+  Size: 32
+  Platform: macos
+  Version: 13.0
+  SDK: 26.5
+}
+
+File: D:\OpenRCsimulator-experiments\gdu03-packages\tmp\exports\macos-min-os\OpenRC Simulator
+Format: Mach-O 64-bit x86-64
+Arch: x86_64
+AddressSize: 64bit
+MachHeader {
+  Magic: Magic64 (0xFEEDFACF)
+  CpuType: X86-64 (0x1000007)
+  CpuSubType: CPU_SUBTYPE_X86_64_ALL (0x3)
+  FileType: Executable (0x2)
+  NumOfLoadCommands: 45
+  SizeOfLoadCommands: 6032
+  Flags [ (0xA18085)
+    MH_BINDS_TO_WEAK (0x10000)
+    MH_DYLDLINK (0x4)
+    MH_HAS_TLV_DESCRIPTORS (0x800000)
+    MH_NOUNDEFS (0x1)
+    MH_PIE (0x200000)
+    MH_TWOLEVEL (0x80)
+    MH_WEAK_DEFINES (0x8000)
+  ]
+  Reserved: 0x0
+}
+MinVersion {
+  Cmd: LC_BUILD_VERSION
+  Size: 32
+  Platform: macos
+  Version: 11.0
+  SDK: 26.5
+}

@@ -1,0 +1,35 @@
+{
+  "format": "openrc-gdu03-tree-detail-cleanup v1",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "original_test_sha256": "6f6637eff97bbda8fbf125ab0bb9d76856acef98359b20f7faf750ac43fbfc4c",
+  "fixed_test_sha256": "1fcfc8b592f3233f9e85fe53db6801f17673db30655bd099d9f976b8b016b060",
+  "runtime_builder_sha256": "0754e3181362c4382fd1cb41e675e25c11a8422fc3d008c1bd07c704c5c89e0a",
+  "cause": "Inline FieldTreeDetail.build(...,NAN).get_child_count() discards a caller-owned Node3D named treelineDetail without freeing it",
+  "fix": "Retain the missing-direction fixture, run unchanged assertion, free it",
+  "checks": [
+    {
+      "label": "fixed-verbose",
+      "report": "checks/fixed-verbose-0q0sf54y/report.json",
+      "ok": true,
+      "exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "elapsed_seconds": 4.765
+    },
+    {
+      "label": "original-verbose",
+      "report": "checks/original-verbose-gb2br_0f/report.json",
+      "ok": false,
+      "exit": 0,
+      "counts": {
+        "error": 1,
+        "warning": 2
+      },
+      "elapsed_seconds": 4.953
+    }
+  ],
+  "remaining_warning": "ImportedVegetation option bark_lod_error_px must be 1 to 16 pixels; using 1",
+  "scope": "test cleanup only; assertions, runtime, simulation core, profiles and engine pin unchanged; no frozen-suite writes"
+}

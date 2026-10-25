@@ -85,6 +85,13 @@ exit 23
         self.assertEqual(identity["DESCRIBE"], self.git("describe", "--tags", "--always", "--dirty"))
         self.assertEqual(identity["DIRTY"], "1")
 
+    def test_crlf_project_version_reaches_engine_setup(self):
+        (self.app / "project.godot").write_bytes(b'config/version="1.2.3"\r\n')
+        result = self.export()
+        self.assertEqual(result.returncode, 1, result.stdout)  # fake import exits 23
+        self.assertIn("numeric 1.2.3", result.stdout)
+        self.assertTrue((self.root / "identity.json").is_file(), result.stdout)
+
     def test_release_rejects_wrong_commit_dirty_tree_and_numeric_mismatch(self):
         self.git("tag", "v1.2.3")
         self.git("tag", "v9.8.7")

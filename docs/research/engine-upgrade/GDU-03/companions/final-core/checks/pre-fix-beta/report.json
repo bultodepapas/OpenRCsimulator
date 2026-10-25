@@ -1,0 +1,50 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5dbca1f2-1abf-4ccd-96bd-39694ab4552c",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "D:/OpenRCsimulator-experiments/gdu03-staged-invalid/diagnostic.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T15:45:55.491807+00:00",
+  "label": "beta-diagnostic",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-staged-invalid\\checks\\beta-diagnostic-qygpj2dv\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-staged-invalid\\checks\\beta-diagnostic-qygpj2dv\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "FAIL: validation failure matches synchronous state and message bytes",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _check (D:/OpenRCsimulator-experiments/gdu03-staged-invalid/diagnostic.gd:142)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 19.344,
+  "log_bytes": 1083,
+  "log_sha256": "7f328cafb905491ad38472937037fbf2619122e1942bd490b21fa73c46ef3e86"
+}

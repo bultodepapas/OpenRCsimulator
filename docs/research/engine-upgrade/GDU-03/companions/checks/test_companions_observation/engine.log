@@ -1,0 +1,35 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   production Agent script is loadable
+ok   airspeed helper matches all 521 authoritative Air.compute cases  521/521 cases; signed-zero inputs=6
+ok   signed-zero inputs retain distinct IEEE-754 bits
+ok   Club field loads  []
+ok   Club field collision fixture builds  []
+ok   lake context loads  []
+ok   physics rate remains 240 Hz
+[observation-test] start companions=1 ticks=1200
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   count-1 admitted roster is exact and nonzero  1
+ok   count-1 player, manager, and companions finish 1200 ticks
+ok   count-1 scheduled manager batches are exact  300
+ok   count-1 production/legacy observation rows are exact and nonzero  300 expected 300
+ok   count-1 every agent has 300 byte-equal snapshots  per-agent={ "0": 300 } mismatches=0
+ok   count-1 uses the production Agent script
+ok   count-1 exact post-gust samples are present  120
+{"byte_mismatches":0,"companions":1,"manager_batches":300,"observation_rows":300,"observations_at_or_after_gust_delay":120,"per_slot_sample_counts":{"0":300},"production_agent_scripts":true,"roster_count":1,"ticks":1200}
+[observation-test] start companions=3 ticks=1200
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   count-3 admitted roster is exact and nonzero  3
+ok   count-3 player, manager, and companions finish 1200 ticks
+ok   count-3 scheduled manager batches are exact  300
+ok   count-3 production/legacy observation rows are exact and nonzero  900 expected 900
+ok   count-3 every agent has 300 byte-equal snapshots  per-agent={ "0": 300, "1": 300, "2": 300 } mismatches=0
+ok   count-3 uses the production Agent script
+ok   count-3 exact post-gust samples are present  360
+{"byte_mismatches":0,"companions":3,"manager_batches":300,"observation_rows":900,"observations_at_or_after_gust_delay":360,"per_slot_sample_counts":{"0":300,"1":300,"2":300},"production_agent_scripts":true,"roster_count":3,"ticks":1200}
+AFC COMPANION OBSERVATION CHECKS 21 FAILED 0
+AFC COMPANION OBSERVATION TEST COMPLETE

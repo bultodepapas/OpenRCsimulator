@@ -1,0 +1,144 @@
+{
+  "format": "openrc-gdu03-settings-layout-v1",
+  "date": "2026-10-25",
+  "changed_path": "app/ui/settings_screen.gd",
+  "sha256": "543986c2b57ce8dd9255350adeb55f68100d5578a4edd1652f8bf466f5ade670",
+  "frozen_sha256": "543986c2b57ce8dd9255350adeb55f68100d5578a4edd1652f8bf466f5ade670",
+  "change": "Graphics VBox separation12px to10px; no control/font/panel/scroll-policy/test-threshold changes.",
+  "before_report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-shard3\\checks\\godot-3vfymrmy\\report.json",
+  "before_report_sha256": "7a6a1646f0696eff19bcd055abe2b7a2e98da73b70e72e6d4c9dfe49aeb402d7",
+  "before_failure": "default Settings category3 fits without scrolling: body752x580,page746x582",
+  "native_layout": {
+    "body": [
+      752.0,
+      580.0
+    ],
+    "page": [
+      752.0,
+      566.0
+    ],
+    "page_minimum": [
+      513.0,
+      566.0
+    ],
+    "panel": [
+      800.0,
+      880.0
+    ],
+    "root_drawable": [
+      1920.0,
+      1080.0
+    ],
+    "scrollbar": false,
+    "separation": 10,
+    "surface": [
+      1920.0,
+      1080.0
+    ],
+    "text_scale": 1.0
+  },
+  "checked_runs": {
+    "settings-layout-headless": {
+      "report_sha256": "39dc9769c05d64c0d6573e2503e5926b2c7fe4ad2f481909d67697540e81a347",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "45482281-c8f6-4e0e-b566-4752e2d26e0f",
+        "command": [
+          ".tools/Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_settings_ui.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:35:12.866776+00:00",
+        "label": "settings-layout-headless",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-settings-layout\\checks\\settings-layout-headless-gvehibi2\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-settings-layout\\checks\\settings-layout-headless-gvehibi2\\report.json",
+        "timeout_seconds": 150.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "all Settings checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 8.562,
+        "log_bytes": 3534,
+        "log_sha256": "ac0f445cc9c07b847f0fc20819503196cadbbf0a7c04218d55714132916a48bc"
+      },
+      "passed_checks": 67
+    },
+    "settings-layout-native1080": {
+      "report_sha256": "7d841ec957b0536bcb29939796198838b8aa328ae1d5b94447156f79ba1818b0",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "cc169fcd-c49a-4de2-8d3e-75917b83445c",
+        "command": [
+          "python",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/tools/graphics/launch.py",
+          "--godot",
+          "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+          "--profile",
+          "standard",
+          "--resolution",
+          "1920x1080",
+          "--fullscreen",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:/OpenRCsimulator-experiments/gdu03-settings-layout/test_settings_ui_native_receipt.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:36:26.341852+00:00",
+        "label": "settings-layout-native1080",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-settings-layout\\checks\\settings-layout-native1080-i_eemtjl\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-settings-layout\\checks\\settings-layout-native1080-i_eemtjl\\report.json",
+        "timeout_seconds": 150.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "all Settings checks passed",
+          "SETTINGS_LAYOUT_RECEIPT"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 10.016,
+        "log_bytes": 3860,
+        "log_sha256": "15c62538bd26f562c54a38564acfbf3345d3c83389b43a14b309e15165206520"
+      },
+      "passed_checks": 67
+    }
+  },
+  "original_test_sha256": "ef9ce17c6413e70183a3e84880aa680064d0ae6867e5796cc7ebe151c991318c",
+  "native_diagnostic_copy": {
+    "path": "D:\\OpenRCsimulator-experiments\\gdu03-settings-layout\\test_settings_ui_native_receipt.gd",
+    "sha256": "088da75177415ad9d21e69e0c2413096f3d276690d47f8c38ea8ae518ad405d5",
+    "scope": "Existing test unchanged except print of Graphics-page/root dimensions before existing assertion; same full test assertions."
+  },
+  "gpu_released": true,
+  "limits": "Focused Settings layout/functionality; no package or performance qualification."
+}

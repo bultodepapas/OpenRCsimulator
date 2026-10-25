@@ -26,8 +26,8 @@ ERROR = re.compile(r"^(SCRIPT ERROR|ERROR):", re.M)
 
 
 def find_godot(explicit):
-    for candidate in [explicit, os.environ.get("GODOT"), ROOT / ".tools" / "Godot_v4.7.2-stable_win64_console.exe",
-                      ROOT / ".tools" / "Godot_v4.7.2-stable_linux.x86_64"]:
+    for candidate in [explicit, os.environ.get("GODOT"),
+                      ROOT / ".tools" / ("Godot_v4.8-beta1_win64_console.exe" if os.name == "nt" else "Godot_v4.8-beta1_linux.x86_64")]:
         if candidate and Path(candidate).is_file():
             return str(candidate)
     sys.exit("no Godot found: pass --godot or set GODOT (pinned version: app/get-godot.sh)")

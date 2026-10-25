@@ -1,0 +1,21 @@
+{
+  "format": "openrc-windows-cloud-probe-tool-verification v1",
+  "date": "2026-10-25",
+  "sources": {
+    "tools/atmosphere/check_cloud_probe.py": "a60555cc209ff281bc82b8ecd5ad3cc6a558ab607bcc2b3ad252b1efdecb02e3",
+    "tools/atmosphere/test_cloud_probe_cli.py": "5e03c9025691d0357612975834910db4d084162f3f994ebd5f181669af071869",
+    "tools/atmosphere/probe_clouds.gd": "cf067003e72c75e9730b17819635053c5186269c0ee93a73eca1cb0ae2cdb315"
+  },
+  "native_cli_runs": 2,
+  "output_reuse_verified": true,
+  "final_summary": "D:\\OpenRCsimulator-experiments\\gdu03-cloud-probe-native-1\\summary.json",
+  "checked_processes": 3,
+  "engine_errors": 0,
+  "engine_warnings": 0,
+  "offline_cli_tests": {
+    "checks": 5,
+    "passed": true,
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-cloud-probe-cli-tests.txt"
+  },
+  "scope": "3072x256 mathematical cloud density atlas on actual native GPU. Not 1080p appearance or performance qualification. No shader/runtime changes."
+}

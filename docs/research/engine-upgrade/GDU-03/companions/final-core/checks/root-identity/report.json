@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2acf26c2-ed03-4a4e-b912-1712802649ba",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tools/companions/solver_identity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T16:09:55.859149+00:00",
+  "label": "root-final-identity",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\checks\\root-final-identity-sf_ssjxt\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-final-core\\checks\\root-final-identity-sf_ssjxt\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "SOLVER_IDENTITY"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.531,
+  "log_bytes": 208,
+  "log_sha256": "95d61cfe2f1484dfc34664ba2066b91be59f30d2e592a44a25d03c88f41ae2c3"
+}

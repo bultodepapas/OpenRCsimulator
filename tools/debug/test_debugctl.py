@@ -37,7 +37,11 @@ class FakeBridge:
             except OSError:
                 return
             with conn:
-                request = json.loads(conn.makefile().readline())
+                with conn.makefile() as stream:
+                    line = stream.readline()
+                if not line:
+                    continue # Port-reservation probes connect without sending a bridge request.
+                request = json.loads(line)
                 self.requests.append(request)
                 if request["cmd"] == "ui":
                     result = {"scope": "AppRoot/Home", "focus": "AppRoot/Home/Fly", "controls": [
@@ -176,7 +180,8 @@ class DebugctlTests(unittest.TestCase):
         rows = list(csv.reader(io.StringIO(out)))
         self.assertEqual(rows[0], ["tick", "time_s", "height"])
         self.assertEqual(len(rows), 14)
-        self.assertEqual(rows, list(csv.reader(target.open())))
+        with target.open() as stream:
+            self.assertEqual(rows, list(csv.reader(stream)))
         samples = [r for r in self.bridge.requests if r["cmd"] == "sample"]
         self.assertEqual([r["count"] for r in samples], [10, 3])
         self.assertEqual(samples[0]["exprs"], {"height": "-s[2]"})

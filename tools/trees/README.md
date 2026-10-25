@@ -23,7 +23,7 @@ PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --ou
 
 The legacy bake remains available with `--recipe legacy` (also the default). Use `--recipe realistic` for the pinned replacement inputs. `--match-atlas` still checks mask alignment against the selected runtime color atlas; it does not replace or recolor that atlas. For a full source-set change, review the source/derived comparisons and repeat-bake evidence before promotion.
 
-Requires pinned Godot 4.7.2 (`app/get-godot.sh`), Node 24 and the existing pinned visual Python environment. Linux captures use Xvfb; Windows runs Godot natively. `--out` must be new/empty. The pipeline verifies all recipe source hashes and dependencies, validates glTF/GLB inputs, normalizes tree height to 1 m, decodes each selected scene with GLTFDocument in an isolated project, renders source/derived comparisons, assembles the atlas, repairs alpha borders and inspects all mip levels. Subprocesses have timeouts and engine-error gates. Nothing writes back to `app/` automatically.
+Requires pinned official Godot 4.8-beta1 (`app/get-godot.sh`), Node 24 and the existing pinned visual Python environment. Linux captures use Xvfb; Windows runs Godot natively. `--out` must be new/empty. The pipeline verifies all recipe source hashes and dependencies, validates glTF/GLB inputs, normalizes tree height to 1 m, decodes each selected scene with GLTFDocument in an isolated project, renders source/derived comparisons, assembles the atlas, repairs alpha borders and inspects all mip levels. Subprocesses have timeouts and engine-error gates. Nothing writes back to `app/` automatically.
 
 Normalization preserves topology, UVs, normals, textures and alpha cutoff. The upstream glTF has COLOR_0 components up to 1.00016785; the adapter permits only that reviewed small excursion (<=1.0002) and clamps it to 1. Any other source validation error is refused. The remaining Khronos warning is generated tangent space on the normal-mapped bark; Godot's importer ensures tangents. This is irrelevant to the unshaded albedo bake, and retained in the lit diagnostic.
 
@@ -106,7 +106,7 @@ Use `--ids=common_tree_1,common_tree_2,common_tree_3,common_tree_4,pine_1,pine_2
 ```powershell
 & $GodotWindows --path C:/captures/tree-candidate/app --audio-driver Dummy --script "$PWD/tools/trees/quality_capture.gd" -- --mode=gallery --wind=on --ids=common_tree_1,common_tree_2,common_tree_3,common_tree_4,pine_1,pine_2,pine_3 --out=C:/captures/tree-gallery-wind
 python tools/trees/check_quality_capture.py --source C:/captures/tree-gallery-static --wind C:/captures/tree-gallery-wind
-python tools/trees/profile_compare.py --godot C:/Tools/Godot_v4.7.2-stable_win64.exe --baseline C:/captures/tree-baseline/app --candidate C:/captures/tree-candidate/app --out C:/captures/tree-paired --pairs 5 --warmup 10 --seconds 60 --view car_park
+python tools/trees/profile_compare.py --godot C:/Tools/Godot_v4.8-beta1_win64.exe --baseline C:/captures/tree-baseline/app --candidate C:/captures/tree-candidate/app --out C:/captures/tree-paired --pairs 5 --warmup 10 --seconds 60 --view car_park
 ```
 
 Produce the source gallery with the same command and IDs, `--wind=off` and a different output. Wind states animate only the first ID, so repeat with each qualified tree first (`landscapelab_quercus`, `landscapelab_pine`, `landscapelab_fagus`, `landscapelab_quercus2`). Exact calm parity is a native-GPU check: under Xvfb/llvmpipe even the accepted L15b-R1 shader differs by tens of pixels ([L15b-R2](../../docs/research/visual-quality-implementation/L15b-R2/README.md#native-captures-llvmpipe)). The checker verifies source/calm pixel equality, an unchanged wind-off clock control, movement/reversal, repeated time and the 1024-second wrap. The profile runner alternates AB/BA order, launches one native process at a time, rejects engine errors or changed identities, retains every sample/log and reports paired p95 differences. Keep GPU work and other benchmarks out of the measurement interval. CPU static-memory counters are not GPU residency; imported and OS file caches are not reset.
@@ -131,6 +131,22 @@ The two shared bark maps use lossless mip chains; the normal map explicitly enab
 `mip_compare.py --godot <exe> --baseline <frozen-app> --candidate <frozen-app> --mip-scope bark --out <new-folder>` runs the paired eight-asset, three-distance, two-resolution, eight-phase fixture. `--mip-scope all` retains the rejected experiment for reproduction. Keep these filtering controls separate from geometry and placement changes.
 
 Actual flight throughput and pilot readability remain separate. Use the existing `--frametimes` and [flight logging](../../docs/FLIGHT-LOGGING.md) workflows; headless numerical replay does not replay a camera through a changed forest.
+
+## Maple alpha-coverage filtering (GDU-11a / L6)
+
+Godot 4.8's coverage-preserving mipmaps apply only to `maple_leaves_basecolor.png`, with import threshold 0.5 and the unchanged material cutoff 0.5. This replaces the maple's unmipped workaround; it does not change the separate Quaternius policy above or LandscapeLab's coarse-mip clamp. [Evidence and limitations](../../docs/research/engine-upgrade/GDU-11/README.md).
+
+Create/import three frozen app copies with identical source: unmipped baseline, ordinary mipmaps, and coverage-preserving mipmaps. Normalize the same engine's importer defaults in all copies. Run each **sequentially** with the pinned native engine:
+
+```powershell
+& $Godot --path $FrozenApp --rendering-driver opengl3 --audio-driver Dummy `
+  --script "$PWD/tools/trees/mip_capture.gd" -- --mip-scope=coverage `
+  --ids=maple_tree --sizes=1920x1080,2560x1440 --distances=32,64,128,256 --out=$NewCapture
+python tools/trees/mip_compare.py --coverage-baseline $BaselineCapture `
+  --coverage-ordinary $OrdinaryCapture --coverage-candidate $CandidateCapture --out $NewComparison
+```
+
+The probe defaults still reproduce the legacy fixture. Coverage analysis requires actual 1080p PNGs, all eight subpixel phases, identical source/material/fixture/adapter identities, and only the three permitted leaf import settings to vary. It verifies imported mip chains and records payload sizes/hashes. Metrics describe binary silhouette sampling, not FPS or pilot acceptance. Review the existing `quality_capture.gd --mode=field --motion=oak-approach --frames=192 --width=1920 --height=1080 --wind=off --wind_mps=0` sequence as well. `python tools/trees/test_mip_compare.py` exercises missing/tampered captures and unrelated source/import changes.
 
 ## Native flight and forest review
 

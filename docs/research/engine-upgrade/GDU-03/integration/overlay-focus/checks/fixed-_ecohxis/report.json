@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9c230906-5f14-4af1-959a-2e286fffa600",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-final-core/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/gdu03_overlay_focus_extension.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T16:31:42.405771+00:00",
+  "label": "fixed",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-overlay-focus\\checks\\fixed-_ecohxis\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-overlay-focus\\checks\\fixed-_ecohxis\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "overlay focus transitions: 10 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.953,
+  "log_bytes": 120,
+  "log_sha256": "4a8d418d906a9154c8251777f3537cf9434d561bd4f0863a2b8d9b1320c4d176"
+}

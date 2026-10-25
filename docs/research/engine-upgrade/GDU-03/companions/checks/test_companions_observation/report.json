@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "19513041-9d07-499d-a451-c79ef48b4176",
+  "command": [
+    ".tools/engine-upgrade/4.8-beta1/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-experiments/gdu03-companions/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_observation.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-25T14:52:48.817135+00:00",
+  "label": "final-complete-test_companions_observation",
+  "log": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\final-complete-test_companions_observation-8mzfeh6k\\engine.log",
+  "report": "D:\\OpenRCsimulator-experiments\\gdu03-companions\\checks\\final-complete-test_companions_observation-8mzfeh6k\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AFC COMPANION OBSERVATION TEST COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 15.797,
+  "log_bytes": 2555,
+  "log_sha256": "a3bd0c2a48fd89c4418f39c96401e1716d09fc51546577ccfb454b0a09d187a0"
+}

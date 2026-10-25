@@ -1,0 +1,471 @@
+{
+  "format": "openrc-gdu03-final-integration-v1",
+  "observed_utc": "2026-10-25T17:49:54.681136+00:00",
+  "logical_integration_gates_complete": true,
+  "single_unmodified_canonical_pass": false,
+  "execution_scope": "Canonical prefix plus two hash-bound exact suffix continuations after explained checkout and fixture corrections; original failed exits retained. The four later root UI changes were not overlaid.",
+  "runs": [
+    {
+      "name": "gdu03-integration-final",
+      "invocation": {
+        "command": [
+          "C:/Program Files/Git/bin/bash.exe",
+          "app/test.sh"
+        ],
+        "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+        "started_utc": "2026-10-25T16:13:02.527168+00:00",
+        "environment": {
+          "APPDATA": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\environment\\APPDATA",
+          "LOCALAPPDATA": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\environment\\LOCALAPPDATA",
+          "TEMP": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\environment\\TEMP",
+          "TMP": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\environment\\TMP",
+          "TMPDIR": "/d/OpenRCsimulator-experiments/gdu03-suite/tmp/gdu03-integration-final/environment/TEMP",
+          "OPENRC_TEST_PART": "integration",
+          "OPENRC_UNIT_SHARDS": "1",
+          "OPENRC_UNIT_SHARD": "0",
+          "OPENRC_CHECK_OUT": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\checks",
+          "OPENRC_EXPECTED_CHECK_OUT": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\expected",
+          "MSYS2_ARG_CONV_EXCL": "res://*"
+        },
+        "finished_utc": "2026-10-25T17:02:01.648181+00:00",
+        "exit_code": 1
+      },
+      "suite_log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\suite.log",
+      "suite_log_sha256": "f75000f4859b9957a5da94f776c246d46a86a7269609fdbeea79f1e9e86f29c4",
+      "summary_tool_exit": 1,
+      "checked_invocations": 1325,
+      "checked_passed": 1324,
+      "checked_failed": 1,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "parse_checks": 1300,
+      "failures": [
+        {
+          "path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\checks\\godot-5ws9fq4b\\report.json",
+          "sha256": "086972752c6481097992f9e9caa1e8dc82dca4d3a43c68e97e92d8045c1a2e2d",
+          "receipt": {
+            "format": "openrc-godot-check v1",
+            "capture_id": "e232ba4f-bcf4-4112-a5b6-d967ae394f52",
+            "command": [
+              "D:/OpenRCsimulator-experiments/gdu03-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+              "--headless",
+              "--path",
+              "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+              "--audio-driver",
+              "Dummy",
+              "--script",
+              "D:/OpenRCsimulator-experiments/gdu03-suite/app/../research/extra-300/ex14/fit_wing_polar.gd",
+              "--",
+              "--check"
+            ],
+            "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+            "started_utc": "2026-10-25T17:01:59.364399+00:00",
+            "label": "godot",
+            "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\checks\\godot-5ws9fq4b\\engine.log",
+            "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\checks\\godot-5ws9fq4b\\report.json",
+            "timeout_seconds": 60.0,
+            "max_log_bytes": 8388608,
+            "warnings_as_errors": false,
+            "required_text": [],
+            "process_exit": 1,
+            "complete": true,
+            "counts": {
+              "error": 0,
+              "warning": 0
+            },
+            "diagnostics": [],
+            "missing_required_text": [],
+            "reason": "process_exit",
+            "detail": "",
+            "exit_code": 1,
+            "ok": false,
+            "elapsed_seconds": 2.25,
+            "log_bytes": 206,
+            "log_sha256": "7e914edd867d75a84d33ae3b7eb0ef67a1afd93e8f79c239626f121243720140"
+          }
+        }
+      ],
+      "checked_manifest": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\checked-file-hashes.json",
+      "checked_manifest_sha256": "f3b776c609c04fcb288641bfe2215f7344478f72b443f3735961e78ff96572a8",
+      "junit": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final\\checks-junit.xml",
+      "junit_sha256": "347657819c8062445a0807b84366753c84dc22828babf196cc65b349e8f82ecf",
+      "shell_failure": "EX-14h generated-fit CRLF checkout bytes. Its strict check passes after restoring the unchanged generator LF output."
+    },
+    {
+      "name": "gdu03-integration-final-tail",
+      "invocation": {
+        "command": [
+          "C:/Program Files/Git/bin/bash.exe",
+          "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail\\canonical-tail.sh"
+        ],
+        "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+        "started_utc": "2026-10-25T17:07:31.630399+00:00",
+        "environment": {
+          "APPDATA": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail\\environment\\APPDATA",
+          "LOCALAPPDATA": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail\\environment\\LOCALAPPDATA",
+          "TEMP": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail\\environment\\TEMP",
+          "TMP": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail\\environment\\TMP",
+          "TMPDIR": "/d/OpenRCsimulator-experiments/gdu03-suite/tmp/gdu03-integration-final-tail/environment/TEMP",
+          "OPENRC_TEST_PART": "integration",
+          "OPENRC_UNIT_SHARDS": "1",
+          "OPENRC_UNIT_SHARD": "0",
+          "OPENRC_CHECK_OUT": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail\\checks",
+          "OPENRC_EXPECTED_CHECK_OUT": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail\\expected",
+          "MSYS2_ARG_CONV_EXCL": "res://*"
+        },
+        "finished_utc": "2026-10-25T17:13:19.282335+00:00",
+        "exit_code": 1
+      },
+      "suite_log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail\\suite.log",
+      "suite_log_sha256": "3778db0ba0605de1ae10d170e7b9d69dd3ea516879fdf8a090f9a16b1d63f398",
+      "summary_tool_exit": 0,
+      "checked_invocations": 1,
+      "checked_passed": 1,
+      "checked_failed": 0,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "parse_checks": 0,
+      "failures": [],
+      "checked_manifest": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail\\checked-file-hashes.json",
+      "checked_manifest_sha256": "6af90d2f317469d1c4607d5556f0c4f95a3ad67e68f8ccaa8ff274942cca0fb9",
+      "junit": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail\\checks-junit.xml",
+      "junit_sha256": "cdbdb628fd5f6d7250d80f0fd19c58eeef025761ae217b6e1d55f24105e7028a",
+      "shell_failure": "A Python unittest outside this positive checked collection failed on the stale tick-119 schedule: three FPS subtest failures and one secondary IndexError. All ten turbulence tests pass in the next continuation."
+    },
+    {
+      "name": "gdu03-integration-final-tail-r2",
+      "invocation": {
+        "command": [
+          "C:/Program Files/Git/bin/bash.exe",
+          "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\canonical-tail.sh"
+        ],
+        "cwd": "D:\\OpenRCsimulator-experiments\\gdu03-suite",
+        "started_utc": "2026-10-25T17:22:17.657505+00:00",
+        "environment": {
+          "APPDATA": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\environment\\APPDATA",
+          "LOCALAPPDATA": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\environment\\LOCALAPPDATA",
+          "TEMP": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\environment\\TEMP",
+          "TMP": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\environment\\TMP",
+          "TMPDIR": "/d/OpenRCsimulator-experiments/gdu03-suite/tmp/gdu03-integration-final-tail-r2/environment/TEMP",
+          "OPENRC_TEST_PART": "integration",
+          "OPENRC_UNIT_SHARDS": "1",
+          "OPENRC_UNIT_SHARD": "0",
+          "OPENRC_CHECK_OUT": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\checks",
+          "OPENRC_EXPECTED_CHECK_OUT": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\expected",
+          "MSYS2_ARG_CONV_EXCL": "res://*"
+        },
+        "finished_utc": "2026-10-25T17:43:49.614589+00:00",
+        "exit_code": 0
+      },
+      "suite_log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\suite.log",
+      "suite_log_sha256": "1d41f2e252a2610fc3d527914d1a59942ab9d9f0b45fb70c3530126c59af0ef3",
+      "summary_tool_exit": 0,
+      "checked_invocations": 14,
+      "checked_passed": 14,
+      "checked_failed": 0,
+      "engine_error_count": 0,
+      "engine_warning_count": 0,
+      "parse_checks": 0,
+      "failures": [],
+      "checked_manifest": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\checked-file-hashes.json",
+      "checked_manifest_sha256": "5fb9b0da4dc66740d87a4655eba8061602d1fba01b0479a79a55a1fe082f83cc",
+      "junit": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\checks-junit.xml",
+      "junit_sha256": "a9e7c6447f113878094c6dd104d5b119e2756b189f70e92587bdb4337dfa9e85"
+    }
+  ],
+  "accepted_positive_checked_passes_including_final_helper_parse": 1340,
+  "accepted_positive_engine_errors": 0,
+  "accepted_positive_engine_warnings": 0,
+  "final_helper_parse": {
+    "format": "openrc-godot-check v1",
+    "capture_id": "0e7deedc-c7f2-468b-923d-6d684ba08323",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+      "--headless",
+      "--path",
+      "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app",
+      "--audio-driver",
+      "Dummy",
+      "--check-only",
+      "--script",
+      "res://tests/run_fixed_step.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-25T17:22:17.308765+00:00",
+    "label": "fixed-step-final-parse",
+    "log": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\final-helper-parse-checks\\fixed-step-final-parse-437loy21\\engine.log",
+    "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\final-helper-parse-checks\\fixed-step-final-parse-437loy21\\report.json",
+    "timeout_seconds": 90,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": true,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.188,
+    "log_bytes": 72,
+    "log_sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7"
+  },
+  "continuations": [
+    {
+      "observed_utc": "2026-10-25T17:07:31.450737+00:00",
+      "source_path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app\\test.sh",
+      "source_raw_sha256": "2ada620aad40fe188d3f0f60231175277d48cbb9aa5623764f4f6eadeb92b561",
+      "source_text_lf_sha256": "2ada620aad40fe188d3f0f60231175277d48cbb9aa5623764f4f6eadeb92b561",
+      "tail_start_marker": "echo \"== EX-14h:",
+      "exact_original_tail_sha256": "298a5fe93027f52f48a7ba6c6e9c017581bc52a0733aa3866ccdc0d52cb09a16",
+      "helpers_sha256": "3e3c7123943a2498b0611645dc63f70bc3ca3b01b8b83eac8e7469b63ad098df",
+      "continuation_script_sha256": "efeda506e4c832a97496d38bd276e450b3a29ccc772d7dcc068dd5f8c043f310",
+      "adaptation": "Use original pre-import helper definitions with explicit same app HERE path; append exact canonical EX14-through-EOF suffix. No repeated import/parse/passed prefix.",
+      "prior_run": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final",
+      "fixed_fit_sha256": "bd6903b22f3dcc930e43e153e339cc5c46b3ad7a66371d4f7feeaa29c4e0aac2",
+      "final_ui_overlay_receipt": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\final-ui-test-overlay.json",
+      "final_overlay_parse_checks": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-final-overlay-parse\\checks"
+    },
+    {
+      "source_path": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\app\\test.sh",
+      "source_sha256": "2ada620aad40fe188d3f0f60231175277d48cbb9aa5623764f4f6eadeb92b561",
+      "tail_start_marker": "echo \"== M5-W04a:",
+      "exact_original_tail_sha256": "e5fab23f288ace556903c08f274ff4a32e47408930f6b8caf33693a6e1987872",
+      "helpers_sha256": "3e3c7123943a2498b0611645dc63f70bc3ca3b01b8b83eac8e7469b63ad098df",
+      "continuation_script_sha256": "1e449119f42651d1a39d2bd0758db40b12b47941b3b5693bd2e5a5acceed6bf7",
+      "adaptation": "Original pre-import helpers with explicit same-app HERE; exactcanonicalM5-W04a-through-EOF suffix; no repeatedpassedprefix."
+    }
+  ],
+  "canonical_harness_sha256": "2ada620aad40fe188d3f0f60231175277d48cbb9aa5623764f4f6eadeb92b561",
+  "canonical_harness_equals_root": true,
+  "hypothetical_crlf_parser_patch_made": false,
+  "tt08_original_parser_passed": true,
+  "final_fps_hashes": [
+    {
+      "fps": 60,
+      "aircraft": "defaultStik",
+      "flight_sha256": "aff48b64b614c28b1be3b57e18c8e1551d1ab681c92a584a414fc4df0ffe3201",
+      "ticks": 480,
+      "frames": 120,
+      "throttle": 0.5326,
+      "state_sha256": "26560b7e126c505c146ba125288a6f2d3afab94b721ef332ea7464830067c96a",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\checks\\godot-3qhyz_ja\\report.json",
+      "report_sha256": "832f6ddb1b4d80ca980dae61af2bea90d9b33e5757619ef613766bf2712832a6"
+    },
+    {
+      "fps": 30,
+      "aircraft": "Timber",
+      "flight_sha256": "78c752f68c55a3647b95d34d1d8c071f33a3de601f01774b4d70c58af7c36f15",
+      "ticks": 480,
+      "frames": 60,
+      "throttle": 0.6169,
+      "state_sha256": "b26d013c52a8d3adb30f26f514287bbd0ecdf9949fee179d96314ccfb72f64ee",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\checks\\godot-4g6pzcb3\\report.json",
+      "report_sha256": "02d5b051284a59044b2935a8b64248ea1b40cdc94fb0f739c5e75afac1c4db41"
+    },
+    {
+      "fps": 60,
+      "aircraft": "Timber",
+      "flight_sha256": "78c752f68c55a3647b95d34d1d8c071f33a3de601f01774b4d70c58af7c36f15",
+      "ticks": 480,
+      "frames": 120,
+      "throttle": 0.6169,
+      "state_sha256": "b26d013c52a8d3adb30f26f514287bbd0ecdf9949fee179d96314ccfb72f64ee",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\checks\\godot-5nt3tkx0\\report.json",
+      "report_sha256": "6313168f0aff90ceea082cbf1353f17ef34c83361b26eb1380fd993437bee3f7"
+    },
+    {
+      "fps": 30,
+      "aircraft": "defaultStik",
+      "flight_sha256": "aff48b64b614c28b1be3b57e18c8e1551d1ab681c92a584a414fc4df0ffe3201",
+      "ticks": 480,
+      "frames": 60,
+      "throttle": 0.5326,
+      "state_sha256": "26560b7e126c505c146ba125288a6f2d3afab94b721ef332ea7464830067c96a",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\checks\\godot-b_tixd4e\\report.json",
+      "report_sha256": "ff5cc02449fb5dce320caed81a9d601c2226b0aa9ebe4309c56afe3e3c84b64c"
+    },
+    {
+      "fps": 144,
+      "aircraft": "defaultStik",
+      "flight_sha256": "aff48b64b614c28b1be3b57e18c8e1551d1ab681c92a584a414fc4df0ffe3201",
+      "ticks": 480,
+      "frames": 288,
+      "throttle": 0.5326,
+      "state_sha256": "26560b7e126c505c146ba125288a6f2d3afab94b721ef332ea7464830067c96a",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\checks\\godot-ihtmqt58\\report.json",
+      "report_sha256": "c615e42f3ab9973d033083663dbbfcb5677e23b95ef4c1b62aad816ceabf193f"
+    },
+    {
+      "fps": 144,
+      "aircraft": "Timber",
+      "flight_sha256": "78c752f68c55a3647b95d34d1d8c071f33a3de601f01774b4d70c58af7c36f15",
+      "ticks": 480,
+      "frames": 288,
+      "throttle": 0.6169,
+      "state_sha256": "b26d013c52a8d3adb30f26f514287bbd0ecdf9949fee179d96314ccfb72f64ee",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\checks\\godot-wmiq64mp\\report.json",
+      "report_sha256": "871ef3db7e031531e3d5a044a7dc3f6eaf4edba9cf9a7209983ea6f82e5827b0"
+    }
+  ],
+  "expected_cli_cases": [
+    {
+      "label": "frametimes-capture-conflict",
+      "expected_exit": 31,
+      "expected_error": "--frametimes cannot be combined with --trace or --capture",
+      "validation_exit": 0,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\expected\\frametimes-capture-conflict-b3tgejya\\report.json",
+      "report_sha256": "20201f540f84ea2f2af68f45a1b6f9060523521d333732c07b06b7a92dd177c1"
+    },
+    {
+      "label": "frametimes-t-nan",
+      "expected_exit": 31,
+      "expected_error": "--t requires a finite number",
+      "validation_exit": 0,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\expected\\frametimes-t-nan-qn_83rr4\\report.json",
+      "report_sha256": "a1e683543348985f3c2e8930e1f613d2079fc5cfa56606445fadfca2de6c9081"
+    },
+    {
+      "label": "frametimes-t-zero",
+      "expected_exit": 31,
+      "expected_error": "--t must be greater than 0 and at most 300 seconds",
+      "validation_exit": 0,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\expected\\frametimes-t-zero-1s9ff1i1\\report.json",
+      "report_sha256": "62eaebb57db88617235d25d1fd1b3dbc245bbf4a6ed7e5f1be35ebc0e62c4a3a"
+    },
+    {
+      "label": "frametimes-trace-conflict",
+      "expected_exit": 31,
+      "expected_error": "--frametimes cannot be combined with --trace or --capture",
+      "validation_exit": 0,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\expected\\frametimes-trace-conflict-oqt7ux_a\\report.json",
+      "report_sha256": "ba1235c9fac1c34743c8456a762b8a6dce7a39e87e7d928106c6e233fd546247"
+    },
+    {
+      "label": "frametimes-warmup-negative",
+      "expected_exit": 31,
+      "expected_error": "--warmup must be between 0 and 3600 seconds",
+      "validation_exit": 0,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\expected\\frametimes-warmup-negative-vhmqnlwt\\report.json",
+      "report_sha256": "5f3792a212a4aacbc4c07d91501fef49ac1ed0719a5e290478df14f5ac3d1eeb"
+    },
+    {
+      "label": "frametimes-write-failure",
+      "expected_exit": 1,
+      "expected_error": "Cannot write frame-time report '",
+      "validation_exit": 0,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\expected\\frametimes-write-failure-oeacu5t0\\report.json",
+      "report_sha256": "1ffb1120158a174feed4f7d397b3082f972fa9743a9c4dd3ce915fb914b57d1b"
+    },
+    {
+      "label": "unknown-aircraft",
+      "expected_exit": 1,
+      "expected_error": "aircraft 'no-such-aircraft' refused: not in the catalog (",
+      "validation_exit": 0,
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\expected\\unknown-aircraft-vjsul8ga\\report.json",
+      "report_sha256": "d70493c6862e6b4985945ff0ac3aa0c1bec92a86488ed883068aab15a5e4da8f"
+    }
+  ],
+  "expected_validation_artifact": "D:\\OpenRCsimulator-experiments\\gdu03-suite\\tmp\\gdu03-integration-final-tail-r2\\expected-validation.json",
+  "expected_validation_sha256": "fc9d4a69b3b55f3b32112e8a28c85272459af66eaaa538e33e9c82134715c10b",
+  "e5a": {
+    "checks.gd": {
+      "checks": 21,
+      "failures": 0,
+      "exit_code": 0
+    },
+    "session.gd": {
+      "checks": 116,
+      "failures": 0,
+      "exit_code": 0
+    }
+  },
+  "e5b": {
+    "full": {
+      "checks": 125,
+      "failures": 0,
+      "exit_code": 0,
+      "scope": "full",
+      "expected_failure": null
+    }
+  },
+  "critical_source_hashes": {
+    "app/physics/math3d.gd": {
+      "frozen_sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+      "root_sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb"
+    },
+    "app/physics/mass_inventory.gd": {
+      "frozen_sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+      "root_sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292"
+    },
+    "app/sim/flight_session.gd": {
+      "frozen_sha256": "d87986c342b8d45b15af4da03e8bfc511c4ea3cdd2e483c7a135f3e1bb5cf92d",
+      "root_sha256": "d87986c342b8d45b15af4da03e8bfc511c4ea3cdd2e483c7a135f3e1bb5cf92d"
+    },
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+      "frozen_sha256": "f715c20c14e6449a24b62d9710ec07557a1eb4afd3cd0a31f25f2d32a88ff007",
+      "root_sha256": "f715c20c14e6449a24b62d9710ec07557a1eb4afd3cd0a31f25f2d32a88ff007"
+    },
+    "app/data/ai/companions/fields/club-default.json": {
+      "frozen_sha256": "6c057483667fc50565f5fba2ba317cde2d1709c56cbc2719ecc82adf58477fbc",
+      "root_sha256": "6c057483667fc50565f5fba2ba317cde2d1709c56cbc2719ecc82adf58477fbc"
+    },
+    "tools/companions/qualification.json": {
+      "frozen_sha256": "fd24289d691abc1635c24189c890eb8528507b9e11f3b280948bc0d114d09cd9",
+      "root_sha256": "fd24289d691abc1635c24189c890eb8528507b9e11f3b280948bc0d114d09cd9"
+    },
+    "app/assets/landscape/lake/default_geometry.res": {
+      "frozen_sha256": "4edcba6fc11f09c521af64b6e0fc5d0b8e56645d91da1bf0b3cfdf8fae994052",
+      "root_sha256": "4edcba6fc11f09c521af64b6e0fc5d0b8e56645d91da1bf0b3cfdf8fae994052"
+    },
+    "app/render/lake/generated_geometry_stamp.gd": {
+      "frozen_sha256": "0402278a05708d2b934d8a3c2ffc8d727bd7b8642283ca658241b815588de276",
+      "root_sha256": "0402278a05708d2b934d8a3c2ffc8d727bd7b8642283ca658241b815588de276"
+    },
+    "app/tests/run_fixed_step.gd": {
+      "frozen_sha256": "7f7b1c2ca9815d28629c117f5268697165c0d992e8923755de1b4d7ac7cf8e8f",
+      "root_sha256": "7f7b1c2ca9815d28629c117f5268697165c0d992e8923755de1b4d7ac7cf8e8f"
+    }
+  },
+  "later_root_ui_bytes_excluded": {
+    "app/app_root.gd": {
+      "frozen_sha256": "f22338bd9af6b621c3ec75b73f0b629c6f20f4308dff31eaaa43b523f10c774a",
+      "root_sha256_at_report": "5c5b2a27c9f6b1da55359e4ecff494611f8cea58e6b9b5cea8cb53c71ea65ff7"
+    },
+    "app/ui/screen.gd": {
+      "frozen_sha256": "9466107cfb638f3dd2048401e45ba98df28c6f595bc06c3cc7ceffee55a3e03d",
+      "root_sha256_at_report": "d3e31b1158eed71bd3a0e46e546f5c6e4bfbadb1c08bf8247583b9b0340f5ae4"
+    },
+    "app/ui/livery_picker.gd": {
+      "frozen_sha256": "ffb4e4411aa518d5e6697a74c271838e0929887788479d6816b07bcc5e42f16d",
+      "root_sha256_at_report": "e073d4c8f8677a60c5e6ea4e0038786e08b42992cda9f49bfc0f23934c6f8e17"
+    },
+    "app/tests/test_livery_picker.gd": {
+      "frozen_sha256": "f41cf386ec5c31ea8bf4718b3e05a9a6025e8b758de2a0bf037f890d9fa682db",
+      "root_sha256_at_report": "76257ef6a42844e6381a8a2da8e36cc5edd02c18c6fb6d61b724f2a2f026dce4"
+    }
+  },
+  "five_prior_ui_overlay_reference": {
+    "path": "../../suite/overlay-verification.json",
+    "sha256": "b060725f5d5aa43fee2bb77c75a4ac039d518665188442b2c58c91371fd9af12"
+  },
+  "helper_overlay": {
+    "observed_utc": "2026-10-25T17:22:17.280416+00:00",
+    "path": "app/tests/run_fixed_step.gd",
+    "before_sha256": "c4164f74b84fcbe5b7add4db27d13220acf0db9d8030bb6f5c47bdc3d022f0aa",
+    "after_sha256": "7f7b1c2ca9815d28629c117f5268697165c0d992e8923755de1b4d7ac7cf8e8f",
+    "change": "Literal schedule120/240/360 replaces stale119/239/359 after measured nativeWindows phase0; exactguards/final480 unchanged.",
+    "core_or_profile_changes": false
+  },
+  "linux_fixed_step_evidence": {
+    "path": "linux-fixed-step/summary.json",
+    "sha256": "0062947a507ba8ac5253902e54f3c8f40109f0ece161d0421d84450f17438749",
+    "warning_limit": "One 23-ObjectDB-instance exit warning remains unclassified; the verbose repeat did not reproduce it and retained other notices. No clean Linux lifecycle or cross-OS floating-point equivalence claim."
+  },
+  "limits": "Software integration only. Native platform/GPU performance, physical validation, release qualification and the later root UI continuation are separate."
+}

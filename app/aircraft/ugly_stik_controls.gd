@@ -428,6 +428,7 @@ static func _build_throttle_mechanism(root: Node3D, service: Node3D, linkages: N
 	var u := Vector3.RIGHT
 	var v := Vector3.BACK
 	var normal := u.cross(v)
+	# The shared tray helper preserves the generated case station and output-shaft datum.
 	var servo_pivot := _tray_shaft("throttle", Vector3.FORWARD)
 	var servo := _add_servo(service, "throttle_servo", servo_pivot, Vector3.UP, Vector3.FORWARD)
 	servos["throttle"] = {"type": "throttle", "shaft_root": servo_pivot, "case_root": servo.centre, "case_basis": servo.basis, "animated": true,

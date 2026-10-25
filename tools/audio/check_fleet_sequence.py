@@ -23,7 +23,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-GODOT_DEFAULT = ROOT / ".tools" / "Godot_v4.7.2-stable_win64_console.exe"
+GODOT_DEFAULT = ROOT / ".tools" / "Godot_v4.8-beta1_win64_console.exe"
 HARNESS = Path("..") / "tools" / "audio" / "fleet_sequence.gd"
 BANKS_MANIFEST = ROOT / "app" / "assets" / "audio" / "powertrains" / "BANKS.json"
 EXPECTED_STAGES_FIXED = ["off", "start", "idle", "taxi", "takeoff", "flight", "landing", "rollout", "shutdown"]

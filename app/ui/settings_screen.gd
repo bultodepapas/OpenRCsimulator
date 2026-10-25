@@ -189,7 +189,7 @@ func _build() -> void:
 	var interface_page := _pages[1]
 	var sound_page := _pages[2]
 	var graphics_page := _pages[3]
-	graphics_page.add_theme_constant_override("separation", 12)
+	graphics_page.add_theme_constant_override("separation", 10)
 	var camera_page := _pages[4]
 
 	_window_picker = OptionButton.new()

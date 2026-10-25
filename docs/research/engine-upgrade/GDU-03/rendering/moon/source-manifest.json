@@ -1,0 +1,92 @@
+{
+  "project.godot": {
+    "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\field-world\\fw-moon-01\\project\\project.godot",
+    "sha256": "ee5cc7924000ed1294ab83e89626c2cf4fe7451006a40f3c058dfa285466741a",
+    "bytes": 724,
+    "root_unchanged_after_runs": true,
+    "copies_unchanged_after_runs": {
+      "4.8": true,
+      "4.7": true
+    }
+  },
+  "bench.gd": {
+    "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\field-world\\fw-moon-01\\project\\bench.gd",
+    "sha256": "fc1caf205d9f0fe5a4e2262345f7a1a6e2d98189287090567621babe5ee8790a",
+    "bytes": 17942,
+    "root_unchanged_after_runs": true,
+    "copies_unchanged_after_runs": {
+      "4.8": true,
+      "4.7": true
+    }
+  },
+  "bench.tscn": {
+    "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\field-world\\fw-moon-01\\project\\bench.tscn",
+    "sha256": "9bf14199b8839b3e84337fb111e70136363223c7f35e893a8b939c9e63672ce2",
+    "bytes": 159,
+    "root_unchanged_after_runs": true,
+    "copies_unchanged_after_runs": {
+      "4.8": true,
+      "4.7": true
+    }
+  },
+  "moon_disc.gdshader": {
+    "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\field-world\\fw-moon-01\\project\\moon_disc.gdshader",
+    "sha256": "22218034c0971ffb85e1620d8fb058e436ecea705139dfdeeda690b79ca78188",
+    "bytes": 5426,
+    "root_unchanged_after_runs": true,
+    "copies_unchanged_after_runs": {
+      "4.8": true,
+      "4.7": true
+    }
+  },
+  "render/sky.gdshader": {
+    "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\sky.gdshader",
+    "sha256": "badc6e233c9aef2774204b4e9e3c2b12d99b84983b86603597044531fcd379ac",
+    "bytes": 19398,
+    "root_unchanged_after_runs": true,
+    "copies_unchanged_after_runs": {
+      "4.8": true,
+      "4.7": true
+    }
+  },
+  "render/cloud_field.gdshaderinc": {
+    "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\cloud_field.gdshaderinc",
+    "sha256": "453eb83fd256f8645af888768cc0bea62cf4f08d2f804e263173996aaa55883e",
+    "bytes": 3830,
+    "root_unchanged_after_runs": true,
+    "copies_unchanged_after_runs": {
+      "4.8": true,
+      "4.7": true
+    }
+  },
+  "render/cloud_relief.gdshaderinc": {
+    "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\cloud_relief.gdshaderinc",
+    "sha256": "b9cf41a405bfa90c52e1fea790388b499ee741bd6e390a1e77619e062935ddd3",
+    "bytes": 1569,
+    "root_unchanged_after_runs": true,
+    "copies_unchanged_after_runs": {
+      "4.8": true,
+      "4.7": true
+    }
+  },
+  "render/world/engine_srgb.gdshaderinc": {
+    "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\world\\engine_srgb.gdshaderinc",
+    "sha256": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799",
+    "bytes": 1221,
+    "root_unchanged_after_runs": true,
+    "copies_unchanged_after_runs": {
+      "4.8": true,
+      "4.7": true
+    }
+  },
+  "render/world/moon_disc.gdshaderinc": {
+    "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\world\\moon_disc.gdshaderinc",
+    "sha256": "cba8b6ea7f291f9d7479716282942332e68b3dbf14f4fb14f98a7cd5e7205ce6",
+    "bytes": 7375,
+    "root_unchanged_after_runs": true,
+    "copies_unchanged_after_runs": {
+      "4.8": true,
+      "4.7": true
+    }
+  }
+}

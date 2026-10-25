@@ -1,0 +1,266 @@
+{
+  "format": "openrc-gdu03-tooling-verification v1",
+  "observed_utc": "2026-10-25T14:54:37.432462+00:00",
+  "host": "Windows x86_64",
+  "engine_resolution": {
+    "host": "nt",
+    "defaults": {
+      "debugctl": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+      "flight_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+      "flight_test": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe"
+    },
+    "default_versions": {
+      "debugctl": "4.8.beta1.official.4d10419ca",
+      "flight_log": "4.8.beta1.official.4d10419ca",
+      "flight_test": "4.8.beta1.official.4d10419ca"
+    },
+    "explicit_environment_overrides": {
+      "debugctl": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "flight_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "flight_test": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe"
+    },
+    "note": "Existing resolver functions invoked directly; non-Windows selection inspected in source, not executed on another host."
+  },
+  "offline_tests": {
+    "debugctl": {
+      "passed": 22,
+      "skipped": 1,
+      "failed": 0,
+      "skip_reason": "Linux /proc-specific test",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\debugctl-tests.log",
+      "log_sha256": "a2f3e15a35d219e961620cbb6f217f195690fab9307725c4a7052faeb0beda23"
+    },
+    "flight_log": {
+      "passed": 16,
+      "failed": 0,
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\flight-log-tests.log",
+      "log_sha256": "92046767317a45192d27f151de85ca541566de77b847184c37cbc07e9ac7300f"
+    }
+  },
+  "existing_flight_log_test": {
+    "checks": 3247,
+    "failures": 0,
+    "root_report_sha256": "4a7bbb87978285344c62beeaff14921831470d2107907527e7ba4dd67c555d5c",
+    "frozen_report_sha256": "dc9e32f64fb9753489eb1337debb7b287cdf88c2311387b06fbf40331f806520"
+  },
+  "replay_reports": {
+    "root-export": {
+      "status": "ok",
+      "error": "",
+      "complete": true,
+      "rows": 261,
+      "solver_changed": false,
+      "mode": "export",
+      "comparison_method": null,
+      "baseline_solver_sha256": "d8d056aade49f096adf353f4d0197bd4d0328e1f4a1344f085c6f0755f5eb85f",
+      "current_solver_sha256": "d8d056aade49f096adf353f4d0197bd4d0328e1f4a1344f085c6f0755f5eb85f",
+      "source": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\roundtrip-root\\jensen_ugly_stik_60.orfl",
+      "source_sha256": "e85f223a69443eddf580146423dc37ade69dc1b52c51f8128fb03e0a31bce40d",
+      "report_path": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\root-export\\export.json",
+      "report_sha256": "2f1b468f787ded9a530f6857378a936bf8ed6fc9c69c6b5c5e5d4aaf622da8cd",
+      "csv_sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041"
+    },
+    "root-replay": {
+      "status": "ok",
+      "error": "",
+      "complete": true,
+      "rows": 261,
+      "solver_changed": false,
+      "mode": "exact",
+      "comparison_method": "Byte-exact comparison of every recorded numeric physics/air sample on the recorded solver.",
+      "baseline_solver_sha256": "d8d056aade49f096adf353f4d0197bd4d0328e1f4a1344f085c6f0755f5eb85f",
+      "current_solver_sha256": "d8d056aade49f096adf353f4d0197bd4d0328e1f4a1344f085c6f0755f5eb85f",
+      "source": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\roundtrip-root\\jensen_ugly_stik_60.orfl",
+      "source_sha256": "e85f223a69443eddf580146423dc37ade69dc1b52c51f8128fb03e0a31bce40d",
+      "report_path": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\root-replay\\replay.json",
+      "report_sha256": "0fa2c9a72a2c5955a634a69460650974297c112e1fb8536c7389b4fe0b4db9c4",
+      "csv_sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041"
+    },
+    "wrong-engine-replay": {
+      "status": "error",
+      "error": "Engine version differs; use the recorded engine.",
+      "complete": true,
+      "rows": 261,
+      "solver_changed": true,
+      "mode": null,
+      "comparison_method": null,
+      "baseline_solver_sha256": "691efde5fd3c21a60a26bcecdf28274a76527a9f152d852de5c7386fe23d76c6",
+      "current_solver_sha256": "d8d056aade49f096adf353f4d0197bd4d0328e1f4a1344f085c6f0755f5eb85f",
+      "source": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\roundtrip\\jensen_ugly_stik_60.orfl",
+      "source_sha256": "697c8d59a082b8bca248a0bf0d33ee8107b88618a8cd4dc2728dc3fe8cc51b93",
+      "report_path": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\wrong-engine-replay\\replay.json",
+      "report_sha256": "63b7af2e16964a33b88eb38fd09e4c94b29885dbe3f4f801a61333c47f18d9e9"
+    },
+    "default-replay": {
+      "status": "error",
+      "error": "Solver sources differ. Exact replay refused; use explicit --candidate for an experiment.",
+      "complete": true,
+      "rows": 261,
+      "solver_changed": true,
+      "mode": null,
+      "comparison_method": null,
+      "baseline_solver_sha256": "691efde5fd3c21a60a26bcecdf28274a76527a9f152d852de5c7386fe23d76c6",
+      "current_solver_sha256": "d8d056aade49f096adf353f4d0197bd4d0328e1f4a1344f085c6f0755f5eb85f",
+      "source": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\roundtrip\\jensen_ugly_stik_60.orfl",
+      "source_sha256": "697c8d59a082b8bca248a0bf0d33ee8107b88618a8cd4dc2728dc3fe8cc51b93",
+      "report_path": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\default-replay\\replay.json",
+      "report_sha256": "18b1b969b0a3ec909b13d68677025d5d99257e2d19ab7c0c6ea34b79e791ba3c"
+    }
+  },
+  "csv_byte_identical": true,
+  "comparison_first_divergence": null,
+  "flight_test_default": {
+    "card": "ft-card-v5",
+    "commit": "3ad5cd591fe8eae77fc79b3bdc7f43a85c5c9c98",
+    "dirty_paths": [
+      "app/aircraft/ugly_stik_controls.gd",
+      "app/aircraft/ugly_stik_geometry.gd",
+      "app/aircraft/ugly_stik_installation.gd",
+      "app/aircraft/verify_controls.gd",
+      "app/assets/aircraft/ugly-stik-60/os61_engine.glb",
+      "app/assets/aircraft/ugly-stik-60/os61_engine.glb.import",
+      "app/assets/ui/liveries/f4u-corsair-250/blueangels-76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0.png",
+      "app/assets/ui/liveries/f4u-corsair-250/blueangels-76e175bb7d500edacba0cbdd614759728e13a8dcc99968d05f39d6274c53cff0.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/carbon-ebefc2032b8a39af086d193b1e8b2e85c494df186708e54cb1373834a3ffd278.png",
+      "app/assets/ui/liveries/f4u-corsair-250/chrome-1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859.png",
+      "app/assets/ui/liveries/f4u-corsair-250/chrome-1a8bb41e4cc3473d714f80797c011e65156031e2c82331accb156bede04ee859.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/italy-e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac.png",
+      "app/assets/ui/liveries/f4u-corsair-250/italy-e5705bad76bfbced4ed6150062054f25954a5f27d495d2d18225be951bfd88ac.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/japan-9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824.png",
+      "app/assets/ui/liveries/f4u-corsair-250/japan-9b03164152bea8196a22d5c3c91867e9980b2c753dd132c97b2a239e2d248824.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/luftwaffe-aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02.png",
+      "app/assets/ui/liveries/f4u-corsair-250/luftwaffe-aefb0d47adfa6fbcc45cb46fa6be49823328cf893382bc1b05e97a6da6940a02.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/midnight-9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851.png",
+      "app/assets/ui/liveries/f4u-corsair-250/midnight-9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/p40-9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58.png",
+      "app/assets/ui/liveries/f4u-corsair-250/p40-9fa704ce735a71ac787510698de5b5be3f7e00fb5db684d9557d3f23e4f2af58.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/scarlet-679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1.png",
+      "app/assets/ui/liveries/f4u-corsair-250/scarlet-679cb82ec697e0396bd2dd9b4fb0cb9a0f179cd65a5f8be054989eb3b75e40a1.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/spectrum-233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6.png",
+      "app/assets/ui/liveries/f4u-corsair-250/spectrum-233ab739e3f291057142f0264b47197097f8a3496e4977b42a720140854f57a6.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/splash-dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546.png",
+      "app/assets/ui/liveries/f4u-corsair-250/splash-dda6c9fc607dce529e21b6a8430b0cc774e2ac746aeff83943dff669348c3546.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/three_tone-52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005.png",
+      "app/assets/ui/liveries/f4u-corsair-250/three_tone-52a68a60d2a9632a97d0947fc89bea6798356130e5c5838d4f7745f51c4d1005.png.import",
+      "app/assets/ui/liveries/f4u-corsair-250/thunderbirds-9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03.png",
+      "app/assets/ui/liveries/f4u-corsair-250/thunderbirds-9e94a04858573775e9390a760c047ff8c3b360cd3c6274f8ddd9902fdb1e8b03.png.import",
+      "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "app/data/ai/companions/fields/club-default.json",
+      "app/data/aircraft_customization.json",
+      "app/data/aircraft_models/jensen-das-ugly-stik-60.json",
+      "app/data/workshop/jensen-das-ugly-stik-60.json",
+      "app/data/workshop/stik-glow-55ax-2t.json",
+      "app/data/workshop/stik-glow-61fx-2t.json",
+      "app/data/workshop/stik-glow-fs64v-4t.json",
+      "app/export_presets.cfg",
+      "app/get-templates.sh",
+      "app/tests/test_livery_picker.gd",
+      "app/ui/livery_picker.gd",
+      "app/aircraft/ugly_stik_installation.gd.uid"
+    ],
+    "godot": "4.8.beta1.official.4d10419ca",
+    "app": "D:\\OpenRCsimulator-experiments\\godot-4.8-beta1\\app",
+    "only": "modes",
+    "aircraft": {
+      "jensen-das-ugly-stik-60": {
+        "exit": 0,
+        "script_errors": 0,
+        "wall_s": 4.1,
+        "valid_tests": 1,
+        "tests": 1,
+        "data_file": "data/aircraft/jensen_ugly_stik_60.json",
+        "data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+      }
+    }
+  },
+  "checked_invocations": [
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "574e9273-463a-4c74-aa0d-10693fda5320",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_flight_log.gd",
+        "--",
+        "--out=D:/OpenRCsimulator-experiments/gdu03-tooling/roundtrip-root"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:51:28.134255+00:00",
+      "label": "gdu03-flight-log-root-roundtrip",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\checks\\gdu03-flight-log-root-roundtrip-ra8pqx_s\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\checks\\gdu03-flight-log-root-roundtrip-ra8pqx_s\\report.json",
+      "timeout_seconds": 300.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 20.422,
+      "log_bytes": 5945,
+      "log_sha256": "8097e9d78693ea3a585e8446f8174aeb378b6f3c184eac8d0423ca2762c764f4"
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "6ef82183-72cb-4342-81b1-ac7ba5422b0d",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:/OpenRCsimulator-experiments/godot-4.8-beta1/app",
+        "--script",
+        "res://tests/test_flight_log.gd",
+        "--",
+        "--out=D:/OpenRCsimulator-experiments/gdu03-tooling/roundtrip"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T14:48:28.742452+00:00",
+      "label": "gdu03-flight-log-roundtrip",
+      "log": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\checks\\gdu03-flight-log-roundtrip-4_qzxwfp\\engine.log",
+      "report": "D:\\OpenRCsimulator-experiments\\gdu03-tooling\\checks\\gdu03-flight-log-roundtrip-4_qzxwfp\\report.json",
+      "timeout_seconds": 300.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 19.297,
+      "log_bytes": 5760,
+      "log_sha256": "22c6a55fee0c9404ca9b5849f6e264eb757c097d6397badf0efea0bdd576cfb5"
+    }
+  ],
+  "source_identities": {
+    "tools\\debug\\debugctl.py": "12fb22ebe925aaf285060d5d7fe0048520c0cf2a2e2e61d3a0ad878c6a0f552e",
+    "tools\\debug\\test_debugctl.py": "505c62e5da8b403fdf5c61e44d3fdda15d0f624ecfa6c7deb0d8812d8fde6f4d",
+    "tools\\flight_log\\flight_log.py": "b4d0faeec70ec915be833ad15cb0a5ede5fe46ebc27154baf89de5dbb8ae9feb",
+    "tools\\flight_log\\test_flight_log.py": "09af6e236562ec83310bcef5da1ae8e414037f8d05db9237b6b7876e5304d9a2",
+    "research\\flight-test\\run.py": "d19639ab7485a73a9d7fc0bf850509bb92f324c901c708288154e798bd31ea16",
+    "app\\sim\\flight_log.gd": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d",
+    "app\\tools\\flight_log_cli.gd": "3c0d6c3b9ad72ec333429ce3d1ccc8d5c0172348cf7fa9615f86a1d3fd82a758",
+    "app\\tests\\test_flight_log.gd": "e5d5aa102039487a16ed9e68e809d58d6cc1d4830af6f0a2a276678560f2fea6"
+  },
+  "artifact_root": "D:\\OpenRCsimulator-experiments\\gdu03-tooling",
+  "limits": "Existing focused checks only; no full app suite, renderer run, performance or physical validation. Engine/source mismatch files were not relabeled. The frozen-checkpoint GDU04 comparison remains a separate research contract."
+}

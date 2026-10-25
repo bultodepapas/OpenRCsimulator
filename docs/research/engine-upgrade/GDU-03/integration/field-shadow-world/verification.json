@@ -1,0 +1,215 @@
+{
+  "format": "openrc-gdu03-field-shadow-world-v1",
+  "cause": "Existing field helper classified every flight SubViewport as a shadow mask. Production projected-shadow viewport is isolated, while CAM-18 magnifier intentionally shares gameplay world.",
+  "changed_path": "app/tests/test_field_integration.gd",
+  "fixed_test_sha256": "bb451fd123382f6b25c6673c284849d51757ac6268242eaa4823200b7e36879f",
+  "frozen_test_sha256": "bb451fd123382f6b25c6673c284849d51757ac6268242eaa4823200b7e36879f",
+  "production_changes": false,
+  "runs": {
+    "field-existing-check-diagnostic": {
+      "report_sha256": "489f6c43f923bbd8d39592353a0b3e9d5ac779d80bf540ebc025f38abb65d349",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "85eb2e40-532f-4ad3-8e4a-d0918aa3ffe7",
+        "command": [
+          ".tools/Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:/OpenRCsimulator-experiments/gdu03-field-shadow-audit/test_field_integration_diagnostic.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:24:53.729529+00:00",
+        "label": "field-existing-check-diagnostic",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-field-shadow-audit\\checks\\field-existing-check-diagnostic-bvkec9lv\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-field-shadow-audit\\checks\\field-existing-check-diagnostic-bvkec9lv\\report.json",
+        "timeout_seconds": 150.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 14.312,
+        "log_bytes": 2927,
+        "log_sha256": "88ca3ce35ad750d75eef049e3a5002539dd80e0a924cbd5c83068bc61d4c91ca"
+      },
+      "passed_checks": 38,
+      "failed_checks": [
+        "FAIL field shadow masks own isolated 3D worlds "
+      ],
+      "world_diagnostics": [
+        "FIELD_SHADOW_AUDIT /root/AppRoot/Main/@MeshInstance3D@200/ProjectedShadow/Silhouette256 own=true shares_gameplay=false parent_script=(res://render/projected_shadow.gd):<GDScript#-9223371948002638242> children=[@WorldEnvironment@201:<WorldEnvironment#388140896485>, @Camera3D@202:<Camera3D#388174450919>, @MeshInstance3D@203:<MeshInstance3D#388208005353>]",
+        "FIELD_SHADOW_AUDIT /root/AppRoot/Main/MagnifierLayer/Magnifier/@SubViewport@205 own=false shares_gameplay=true parent_script=<null> children=[@Camera3D@206:<Camera3D#389298524453>]"
+      ]
+    },
+    "field-shadow-negative-shared-substitution": {
+      "report_sha256": "0c89f115e179b7bd67af7ddfadcbd515c1db250d736ee70674b1a78762f99dec",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "7730e5cc-445d-4c19-9374-4f5f8d14e6d3",
+        "command": [
+          ".tools/Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:/OpenRCsimulator-experiments/gdu03-field-shadow-audit/test_field_integration_shared_substitution.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:29:28.774481+00:00",
+        "label": "field-shadow-negative-shared-substitution",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-field-shadow-audit\\checks\\field-shadow-negative-shared-substitution-btd5guwh\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-field-shadow-audit\\checks\\field-shadow-negative-shared-substitution-btd5guwh\\report.json",
+        "timeout_seconds": 150.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "FAIL field shadow masks own isolated 3D worlds"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 13.844,
+        "log_bytes": 2389,
+        "log_sha256": "90cad8ec249c62d7e56ca581c544af910c068b43724be27413343cfa0839a331"
+      },
+      "passed_checks": 38,
+      "failed_checks": [
+        "FAIL field shadow masks own isolated 3D worlds "
+      ],
+      "world_diagnostics": []
+    },
+    "field-shadow-negative-shared-world": {
+      "report_sha256": "484b90f063a911d843a2e618066b1812ba2752d8fde25cecf268459ce3ae96fd",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "cd767197-be7f-473e-b651-726351752fc0",
+        "command": [
+          ".tools/Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:/OpenRCsimulator-experiments/gdu03-field-shadow-audit/test_field_integration_shared_shadow_mutation.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:27:21.365092+00:00",
+        "label": "field-shadow-negative-shared-world",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-field-shadow-audit\\checks\\field-shadow-negative-shared-world-hz5k_wor\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-field-shadow-audit\\checks\\field-shadow-negative-shared-world-hz5k_wor\\report.json",
+        "timeout_seconds": 150.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "FAIL field shadow masks own isolated 3D worlds"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 27,
+            "message": "Parameter \"scenario\" is null.",
+            "context": [
+              "   at: scenario_remove_viewport_visibility_mask (servers/rendering/renderer_scene_cull.cpp:522)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _field_shadow_viewports_own_world (D:/OpenRCsimulator-experiments/gdu03-field-shadow-audit/test_field_integration_shared_shadow_mutation.gd:483)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 12.812,
+        "log_bytes": 2966,
+        "log_sha256": "c20c077194e478f29ab9dc3a6e59ff63f947d4396cc70e1b2752aab3324e5510"
+      },
+      "passed_checks": 38,
+      "failed_checks": [
+        "FAIL field shadow masks own isolated 3D worlds "
+      ],
+      "world_diagnostics": []
+    },
+    "field-shadow-scoped-owners": {
+      "report_sha256": "9aac679da4edd36bfd11fc367b5a1428a4023ce1b4ed083fa8ccdc48ce4447df",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "75b55fe5-a506-4a22-8906-715086fb434d",
+        "command": [
+          ".tools/Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-experiments/gdu03-suite/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_field_integration.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-25T15:26:04.610288+00:00",
+        "label": "field-shadow-scoped-owners",
+        "log": "D:\\OpenRCsimulator-experiments\\gdu03-field-shadow-audit\\checks\\field-shadow-scoped-owners-ymdmqov1\\engine.log",
+        "report": "D:\\OpenRCsimulator-experiments\\gdu03-field-shadow-audit\\checks\\field-shadow-scoped-owners-ymdmqov1\\report.json",
+        "timeout_seconds": 150.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "all field integration checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 13.984,
+        "log_bytes": 2390,
+        "log_sha256": "d4a57914d1abd5c4792a08b66dbaccd32ff289504a717ffa6b527a6bdd11519d"
+      },
+      "passed_checks": 39,
+      "failed_checks": [],
+      "world_diagnostics": []
+    }
+  },
+  "negative_control_scope": "Disposable copy of fixed existing integration test substitutes the real shared-world magnifier viewport for the shadow validator local, leaving all assertions intact. Clean rejection has0engineerrors/warnings.",
+  "rejected_live_mutation": "Earlier live own_world flag mutation also raised headless scenario-null error; retained for transparency, excluded from clean negative-control claim."
+}

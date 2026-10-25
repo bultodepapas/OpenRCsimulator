@@ -1,0 +1,20 @@
+{
+  "assets/aircraft/avanti-s-a200/blender-geometry.json": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d",
+  "assets/aircraft/avanti-s-a200/source-manifest.json": "643997608d4b788f694999e90615c24f27e71ba3410dacde2fd934f29f99884f",
+  "assets/aircraft/extra-300s-60/appearance.json": "b0a74c80baa99036ff70c92d392ca685dbafe0a84a0059568813b2327e765228",
+  "assets/aircraft/extra-300s-60/geometry.json": "bccba2f8b2e95b303140ff73683974c9679b8c65bb5938dddcf4b54c5eeea810",
+  "assets/aircraft/f4u-corsair-250/gear-samples.json": "7bd3eb6be284f4929033b904e1b2923c3dc63a118c956a196442fc98fc91e8bc",
+  "assets/aircraft/f4u-corsair-250/mechanisms-r59.json": "4aa349793219b077f4f310e232d04e3b6e9fc933e6d492b9479f40f451a561b5",
+  "assets/aircraft/f4u-corsair-250/model-geometry.json": "a619ded06d57cc6115d5b546de1594bcff976b1cdbc1c9c3cea5fe2d0e7c2c50",
+  "assets/aircraft/f4u-corsair-250/source-manifest.json": "cc73743db20fdc0112674f76adced87a14675094fcca3aba1add49c433dbaf8f",
+  "assets/aircraft/f4u-corsair-250/wing-fold-r59.json": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89",
+  "assets/aircraft/model-bindings.json": "345cb32177915fd869aaa227576661b9cb9477ee6691b79217361080f24b897e",
+  "assets/aircraft/p51d-mustang-120/appearance.json": "3dc0c503f9d93ce59165173244a3486ced11b624c01d86aaed05366d980b3da6",
+  "assets/aircraft/p51d-mustang-120/geometry.json": "f0523f9b97c318e9211fbaa1087e9c49debb662f13591f5019a4593cd2b7e290",
+  "assets/aircraft/p51d-mustang-120/source.json": "6f72856b27ef875a1ce0c572180c7fdb9a2d08789e25beb05d8eb92d17d803b0",
+  "assets/aircraft/turbo-lumber-evolution/geometry.json": "ba392cfc37a3a8b8489c781bd15d35f96b68091a5a128ac3818f20723683af58",
+  "assets/aircraft/turbo-lumber-evolution/manual.json": "118f98a8fc4628e140c24504c80ca40cf5ee247dc7ab770dacebd2bdf8a1e795",
+  "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json": "ae585078344abbfbe1405b9e1777243c120e299516fde663c538c231f4e74063",
+  "assets/aircraft/turbo-lumber-evolution/source-manifest.json": "f9d8510474a39ede0df7e77a61c91e9283bc255b09afb7543af536851bbd1a74",
+  "assets/aircraft/ugly-stik-60/geometry.json": "7b1fe453d594866a24756000a318f4ba0258eb072b7b98dae5a4d2491b09bd31"
+}

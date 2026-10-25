@@ -4,7 +4,7 @@
   "price_date": "2026-10-20",
   "generated_from": {
     "price_catalog_sha256": "4fccd282d03a85a2bdb855bb3a04d2ae8513fb8cd8bad5ced92c75b706c4b2fa",
-    "aircraft_costing_sha256": "a0ca5476e18704352d4269268691864dd4a503f33cf54ebf92efb8af2aacd542",
+    "aircraft_costing_sha256": "d05684dbc536ab428141727abb0994057e5857fa63bc9f51626c2079ae5f16f2",
     "aircraft_catalog_sha256": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "8b31bbc4358c239b29667069f8cdc8a0ef673ed59b713f50aee9b16fff6b8d21"
@@ -5419,7 +5419,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "f4u-corsair-250",
-      "source_sha256": "ee97e6e40fc3a2e46c5de20d0c43eaf52d0520d430bf77275005db4ae35de016",
+      "source_sha256": "e27ba35766bad2e32f7c10b0d3e80d49331af2c557957a85959dca47ebad3d43",
       "currency": "USD",
       "price_date": "2026-10-20",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -5823,6 +5823,35 @@
       ],
       "complete": false,
       "contact_components": {
+        "probe_wing_left_tip": [
+          "wing_left"
+        ],
+        "probe_wing_right_tip": [
+          "wing_right"
+        ],
+        "probe_gull_left_bottom": [
+          "wing_left",
+          "wing_joiner"
+        ],
+        "probe_gull_right_bottom": [
+          "wing_right",
+          "wing_joiner"
+        ],
+        "probe_tail_cone": [
+          "fuselage_rear"
+        ],
+        "probe_fuselage_rear_bottom": [
+          "fuselage_rear"
+        ],
+        "probe_stabilizer_left_aft": [
+          "horizontal_tail"
+        ],
+        "probe_stabilizer_right_aft": [
+          "horizontal_tail"
+        ],
+        "probe_fin_aft_upper": [
+          "vertical_tail"
+        ],
         "propeller/propulsion_main": [
           "propeller"
         ],
@@ -6110,18 +6139,27 @@
           "contact_tail",
           "probe_canopy_top",
           "probe_cowl_bottom",
+          "probe_fin_aft_upper",
           "probe_fin_top",
+          "probe_fuselage_rear_bottom",
+          "probe_gull_left_bottom",
+          "probe_gull_right_bottom",
           "probe_propeller_bottom",
           "probe_propeller_lower_left",
           "probe_propeller_lower_right",
           "probe_rudder_bottom",
           "probe_spinner_tip",
+          "probe_stabilizer_left_aft",
           "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_aft",
           "probe_stabilizer_right_tip",
+          "probe_tail_cone",
           "probe_wing_left_le",
           "probe_wing_left_te",
+          "probe_wing_left_tip",
           "probe_wing_right_le",
           "probe_wing_right_te",
+          "probe_wing_right_tip",
           "propeller/propulsion_main"
         ]
       }

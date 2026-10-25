@@ -1,0 +1,395 @@
+{
+  "format": "openrc-gdu03-linux-fixed-step-diagnostic v1",
+  "date": "2026-10-25",
+  "scope": "Linux official4.8-beta1 under WSL; unchanged real-app strict helper at30/60/144FPS with P51; correctness only, headless, no GPU, benchmark, import or shared-suite writes.",
+  "engine": {
+    "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\.tools\\Godot_v4.8-beta1_linux.x86_64",
+    "sha256": "28485fbd0e4cda4c503c5f3227d9b296fd5b1b4398f9fb00e9a6d72544b55e82",
+    "bytes": 136812920
+  },
+  "engine_identity": "4.8.beta1.official.4d10419ca",
+  "project": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\app",
+  "current_helper": {
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\run_fixed_step.gd",
+    "sha256": "7f7b1c2ca9815d28629c117f5268697165c0d992e8923755de1b4d7ac7cf8e8f",
+    "bytes": 2477,
+    "retained_copy": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\current-120-helper-as-tested.gd"
+  },
+  "current_schedule": [
+    120,
+    240,
+    360
+  ],
+  "checks": [
+    {
+      "label": "p51-linux-144fps",
+      "command": [
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/.tools/Godot_v4.8-beta1_linux.x86_64",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/app",
+        "--fixed-fps",
+        "144",
+        "--script",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/run_fixed_step.gd",
+        "--",
+        "--aircraft=p51d-mustang-120"
+      ],
+      "ticks": 480,
+      "frames": 288,
+      "throttle": 0.3509,
+      "state_sha256": "6a1d701895f2fab144df79a6b94fb6315a6ecec7788e126212fb19de5c8b4d29",
+      "flight_sha256": "54d900b532948e4a8c60be3250ceea9809ca7f084634a7e5bec3febe770e3c70",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\checks\\p51-linux-144fps-srkhevdr\\report.json",
+        "sha256": "11085a07ad3a898e3bc164ad58a2e199e55310f7827b907690d4acad551dfc67",
+        "bytes": 1671
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\checks\\p51-linux-144fps-srkhevdr\\engine.log",
+        "sha256": "24ccaf37dd64700ad2a214a6656733f11d82d5f68da6cfe5f0147a716395692f",
+        "bytes": 396
+      }
+    },
+    {
+      "label": "p51-linux-30fps",
+      "command": [
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/.tools/Godot_v4.8-beta1_linux.x86_64",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/app",
+        "--fixed-fps",
+        "30",
+        "--script",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/run_fixed_step.gd",
+        "--",
+        "--aircraft=p51d-mustang-120"
+      ],
+      "ticks": 480,
+      "frames": 60,
+      "throttle": 0.3509,
+      "state_sha256": "6a1d701895f2fab144df79a6b94fb6315a6ecec7788e126212fb19de5c8b4d29",
+      "flight_sha256": "54d900b532948e4a8c60be3250ceea9809ca7f084634a7e5bec3febe770e3c70",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\checks\\p51-linux-30fps-yet88dvw\\report.json",
+        "sha256": "f25b4ef6eb75f60e557cf94323180e72505d0a30ef7c82d11a007a67c376c24e",
+        "bytes": 1401
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\checks\\p51-linux-30fps-yet88dvw\\engine.log",
+        "sha256": "934eedd794fea6b5b55966567f59faa125edbc722d04d4e66d894b262c80500d",
+        "bytes": 263
+      }
+    },
+    {
+      "label": "p51-linux-60fps",
+      "command": [
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/.tools/Godot_v4.8-beta1_linux.x86_64",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/app",
+        "--fixed-fps",
+        "60",
+        "--script",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/run_fixed_step.gd",
+        "--",
+        "--aircraft=p51d-mustang-120"
+      ],
+      "ticks": 480,
+      "frames": 120,
+      "throttle": 0.3509,
+      "state_sha256": "6a1d701895f2fab144df79a6b94fb6315a6ecec7788e126212fb19de5c8b4d29",
+      "flight_sha256": "54d900b532948e4a8c60be3250ceea9809ca7f084634a7e5bec3febe770e3c70",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "original_report": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\checks\\p51-linux-60fps-mg383ci3\\report.json",
+        "sha256": "2f298005d5b12ac1832163728da1a96cf561767745972e1302a1849538aa0bc3",
+        "bytes": 1401
+      },
+      "original_log": {
+        "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\checks\\p51-linux-60fps-mg383ci3\\engine.log",
+        "sha256": "86b56212fedb0a46136a3e297d672f4cb176c6a72d40472c6f45a0d293df97b6",
+        "bytes": 264
+      }
+    }
+  ],
+  "identical_state_and_flight_hashes": true,
+  "original_schedule_probe": {
+    "source": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-fixed-step-phase\\original_phase_copy.gd",
+      "sha256": "0dce4a940e95fd5c6b0b0e3431aff9448442dcdb4303c06f5107f68635ee62ec",
+      "bytes": 2713
+    },
+    "schedule": [
+      119,
+      239,
+      359
+    ],
+    "weather": "turbulent",
+    "phase_lines": [
+      "FIXED_STEP_PHASE frame=1 global=8 sim=8 offset=0",
+      "FIXED_STEP_PHASE frame=2 global=16 sim=16 offset=0",
+      "FIXED_STEP_PHASE frame=3 global=24 sim=24 offset=0",
+      "FIXED_STEP_PHASE frame=4 global=32 sim=32 offset=0",
+      "FIXED_STEP_PHASE frame=14 global=112 sim=112 offset=0",
+      "FIXED_STEP_PHASE frame=15 global=120 sim=120 offset=0"
+    ],
+    "expected_failure": "ERROR: a frame ended at tick120, past scheduledtick119 (strictguard)",
+    "observed_offset": 0,
+    "process_exit": 1,
+    "counts": {
+      "error": 1,
+      "warning": 1
+    },
+    "original_report": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\original-119-linux-30fps-iw1ug1qo\\report.json",
+      "sha256": "623b632f12285a2fc74f1257960bf1bf98287aca22906b6ddbd7d234cafb84a4",
+      "bytes": 1956
+    },
+    "original_log": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\original-119-linux-30fps-iw1ug1qo\\engine.log",
+      "sha256": "45fc24df95bbd51d72c5f98b6176518da20e39bd3c633ca117872e43b031fd8d",
+      "bytes": 603
+    }
+  },
+  "export_scope": "EX14 LF generator correction, run_fixed_step.gd test helper and any app/test.sh harness correction are outside exported runtime content. Final exported runtime/core/UI/lake identities remain intact; no re-export is required.",
+  "limitations": "Original-guard abrupt failure retains25ObjectDBinstances warning. Passing144FPS helper retains23ObjectDBinstances warning. These diagnostics do not qualify physical behavior or performance.",
+  "bounded_verbose_repeat": {
+    "command": [
+      "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/.tools/Godot_v4.8-beta1_linux.x86_64",
+      "--verbose",
+      "--headless",
+      "--audio-driver",
+      "Dummy",
+      "--path",
+      "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/app",
+      "--fixed-fps",
+      "144",
+      "--script",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/run_fixed_step.gd",
+      "--",
+      "--aircraft=p51d-mustang-120"
+    ],
+    "process_exit": 0,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "same_480tick_state_and_flight_hashes": true,
+    "objectdb_23_warning_reproduced": false,
+    "exit_lines": [
+      "WARNING: GameMode: Failed to enable (check if the daemon is installed and running).",
+      "     at: run (platform/linuxbsd/os_linuxbsd.cpp:1009)",
+      "flight_sha256=54d900b532948e4a8c60be3250ceea9809ca7f084634a7e5bec3febe770e3c70",
+      "ticks=480 frames=288 throttle=0.3509 state_sha256=6a1d701895f2fab144df79a6b94fb6315a6ecec7788e126212fb19de5c8b4d29",
+      "XR: Clearing primary interface",
+      "XR: Removed interface \"Native mobile\"",
+      "XR: Removed interface \"OpenXR\"",
+      "Orphan StringName: JSON (static: 0, total: 2)",
+      "Orphan StringName: OpenRCGroundVehicleNative (static: 0, total: 2)",
+      "Orphan StringName: Resource (static: 1, total: 3)",
+      "Orphan StringName: OS (static: 0, total: 2)",
+      "Orphan StringName: FileAccess (static: 0, total: 2)",
+      "Orphan StringName: RefCounted (static: 1, total: 3)",
+      "Orphan StringName: Object (static: 1, total: 3)",
+      "Orphan StringName: ClassDB (static: 0, total: 2)",
+      "StringName: 8 unclaimed string names at exit."
+    ],
+    "original_report": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\verbose-checks\\p51-linux-144fps-verbose-68m4maag\\report.json",
+      "sha256": "158a541eccf32c03765efa543b6ca384e49c9d9e8283ede47b779789e842afb5",
+      "bytes": 1955
+    },
+    "original_log": {
+      "path": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\verbose-checks\\p51-linux-144fps-verbose-68m4maag\\engine.log",
+      "sha256": "f19a81ace4583dc62852d128fae26f107421fea7a1070f097fb7cda7a6f2762e",
+      "bytes": 146685
+    },
+    "classification": "Original23ObjectDBinstances warning remains unclassified; verbose repeat did not reproduce it and only lists8unclaimedStringNames. Neither benign/pre-existing classification nor clean shutdown established. GameMode warning is retained separately."
+  },
+  "original_schedule_all_fps_probes": [
+    {
+      "label": "original-119-linux-144fps",
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=1 sim=1 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=3 sim=3 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=5 sim=5 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=6 sim=6 offset=0",
+        "FIXED_STEP_PHASE frame=68 global=113 sim=113 offset=0",
+        "FIXED_STEP_PHASE frame=69 global=115 sim=115 offset=0",
+        "FIXED_STEP_PHASE frame=70 global=116 sim=116 offset=0",
+        "FIXED_STEP_PHASE frame=71 global=118 sim=118 offset=0",
+        "FIXED_STEP_PHASE frame=72 global=120 sim=120 offset=0"
+      ],
+      "process_exit": 1,
+      "counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "original_report": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\original-119-linux-144fps-53y8qfsr\\report.json",
+      "original_report_sha256": "7c4d67cd26f88746776558dbbc4dfb2a73bc6a3fe43627feacde2d3b1d18394e",
+      "original_log": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\original-119-linux-144fps-53y8qfsr\\engine.log",
+      "original_log_sha256": "ce08c1cfd0f15e92cfdf1b921b08a8af2c500a90bf7ed3b536e071359cc370de"
+    },
+    {
+      "label": "original-119-linux-30fps",
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=8 sim=8 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=16 sim=16 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=24 sim=24 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=32 sim=32 offset=0",
+        "FIXED_STEP_PHASE frame=14 global=112 sim=112 offset=0",
+        "FIXED_STEP_PHASE frame=15 global=120 sim=120 offset=0"
+      ],
+      "process_exit": 1,
+      "counts": {
+        "error": 1,
+        "warning": 1
+      },
+      "original_report": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\original-119-linux-30fps-iw1ug1qo\\report.json",
+      "original_report_sha256": "623b632f12285a2fc74f1257960bf1bf98287aca22906b6ddbd7d234cafb84a4",
+      "original_log": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\original-119-linux-30fps-iw1ug1qo\\engine.log",
+      "original_log_sha256": "45fc24df95bbd51d72c5f98b6176518da20e39bd3c633ca117872e43b031fd8d"
+    },
+    {
+      "label": "original-119-linux-60fps",
+      "phase_lines": [
+        "FIXED_STEP_PHASE frame=1 global=4 sim=4 offset=0",
+        "FIXED_STEP_PHASE frame=2 global=8 sim=8 offset=0",
+        "FIXED_STEP_PHASE frame=3 global=12 sim=12 offset=0",
+        "FIXED_STEP_PHASE frame=4 global=16 sim=16 offset=0",
+        "FIXED_STEP_PHASE frame=28 global=112 sim=112 offset=0",
+        "FIXED_STEP_PHASE frame=29 global=116 sim=116 offset=0",
+        "FIXED_STEP_PHASE frame=30 global=120 sim=120 offset=0"
+      ],
+      "process_exit": 1,
+      "counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "original_report": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\original-119-linux-60fps-6tozv14w\\report.json",
+      "original_report_sha256": "9222b272d24f30644f0754dbf97197fe241d34e7d2452ac422384ed7ac0115ac",
+      "original_log": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\original-119-linux-60fps-6tozv14w\\engine.log",
+      "original_log_sha256": "ab6c3094b9d16585a368c5b5ffc4cd5918e8ba6a41b8172076f50f8a67a11e63"
+    }
+  ],
+  "turbulent_current_schedule_checks": [
+    {
+      "label": "current-120-linux-144fps",
+      "command": [
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/.tools/Godot_v4.8-beta1_linux.x86_64",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/app",
+        "--fixed-fps",
+        "144",
+        "--script",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/run_fixed_step.gd",
+        "--",
+        "--weather=turbulent",
+        "--aircraft=p51d-mustang-120"
+      ],
+      "ticks": 480,
+      "frames": 288,
+      "throttle": 0.3509,
+      "state_sha256": "b80b35ddc95d1bc7c00206f8a0a3cfd9bd492c04150a3be33e510b277f91df76",
+      "flight_sha256": "03f29c85d6b091e9732cae98a705035b4194f693584d16daa919658680cdb955",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "original_report": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\current-120-linux-144fps-67hdr3l6\\report.json",
+      "original_report_sha256": "d2b11cd7163e95bd4be8785de6edc62d24b34f04358ba95e9bc09bff179d94a1",
+      "original_log": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\current-120-linux-144fps-67hdr3l6\\engine.log",
+      "original_log_sha256": "d6262153aca38412a8ea0a42fd72c4b512e7bd947366965d78a445621c8edba3"
+    },
+    {
+      "label": "current-120-linux-30fps",
+      "command": [
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/.tools/Godot_v4.8-beta1_linux.x86_64",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/app",
+        "--fixed-fps",
+        "30",
+        "--script",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/run_fixed_step.gd",
+        "--",
+        "--weather=turbulent",
+        "--aircraft=p51d-mustang-120"
+      ],
+      "ticks": 480,
+      "frames": 60,
+      "throttle": 0.3509,
+      "state_sha256": "b80b35ddc95d1bc7c00206f8a0a3cfd9bd492c04150a3be33e510b277f91df76",
+      "flight_sha256": "03f29c85d6b091e9732cae98a705035b4194f693584d16daa919658680cdb955",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "original_report": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\current-120-linux-30fps-s231um6s\\report.json",
+      "original_report_sha256": "867263d3bfa95dce177c38fd90d956e8fd401d9808a0e13f1308616840ad1708",
+      "original_log": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\current-120-linux-30fps-s231um6s\\engine.log",
+      "original_log_sha256": "598906329e717b835cf91af462c01fb4b81f69713f7643c2f388efaeef6fb0d9"
+    },
+    {
+      "label": "current-120-linux-60fps",
+      "command": [
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/.tools/Godot_v4.8-beta1_linux.x86_64",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "/mnt/d/OpenRCsimulator-experiments/gdu03-packages/app",
+        "--fixed-fps",
+        "60",
+        "--script",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/run_fixed_step.gd",
+        "--",
+        "--weather=turbulent",
+        "--aircraft=p51d-mustang-120"
+      ],
+      "ticks": 480,
+      "frames": 120,
+      "throttle": 0.3509,
+      "state_sha256": "b80b35ddc95d1bc7c00206f8a0a3cfd9bd492c04150a3be33e510b277f91df76",
+      "flight_sha256": "03f29c85d6b091e9732cae98a705035b4194f693584d16daa919658680cdb955",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "original_report": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\current-120-linux-60fps-mxwgu5u7\\report.json",
+      "original_report_sha256": "84cabf9d5be181f64b438b1db1c895a27617bf80ae062bc0d05456f1cc672d22",
+      "original_log": "D:\\OpenRCsimulator-experiments\\gdu03-packages\\tmp\\exports\\linux-fixed-step\\turbulent-checks\\current-120-linux-60fps-mxwgu5u7\\engine.log",
+      "original_log_sha256": "c3733dd20420e934eb13bed0035795282749f419be5a45f23f766ac95a2c7664"
+    }
+  ],
+  "all_started_diagnostics_complete": true
+}

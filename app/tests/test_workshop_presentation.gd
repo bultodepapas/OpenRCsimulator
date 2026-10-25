@@ -284,7 +284,7 @@ func _bindings_fixture() -> Dictionary:
 				"physical_source_kind_ref": "propulsion"},
 		],
 		"presentation_sources": [],
-		"presentation_engine_version": "4.7.2",
+		"presentation_engine_version": Profile.PRESENTATION_ENGINE_VERSION,
 		"slots_sha256": "",
 	}
 	for path: String in Profile.PRESENTATION_SOURCE_PATHS:

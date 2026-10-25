@@ -118,13 +118,16 @@ func _run() -> void:
 	for frame in 2: await process_frame
 	_check("the details card belongs to the Aircraft page only", details != null and not details.visible)
 
-	# --- HN-7: Fly renders a preparing state before the synchronous flight build.
+	# --- HN-7: exercise the interactive loading route even under headless Godot.
+	app.flight_loading_enabled = true
 	home.fly_button.pressed.emit()
 	_check("Fly shows Preparing flight before building", app.flight == null and home.fly_button.disabled
-		and home.fly_button.text == tr("Preparing flight…"), home.fly_button.text)
-	await process_frame
-	await process_frame
-	_check("the flight starts on the next frame", app.flight != null)
+		and home.fly_button.text == tr("Preparing flight…") and app.screens.is_top("loading"), home.fly_button.text)
+	var flight_deadline := Time.get_ticks_msec() + 15000
+	while app._loading_active and Time.get_ticks_msec() < flight_deadline:
+		await process_frame
+	_check("the flight starts after the loading checkpoints", app.flight != null and app.flight.startup_complete
+		and app.last_flight_loading.get("status", "") == "ready" and app.screens.get_screen("loading") == null)
 	app.queue_free()
 	await ui.settle()
 

@@ -1,0 +1,10 @@
+{
+  "path": "app/data/fields/horizon.json",
+  "actual_sha256": "922c2a6ca5825d06e2d6bebab16fbc21bad5f75f4d9ccbbdd18cfbb343b4ca40",
+  "expected_sha256": "7040c33f522a4e0a035089baa341018aa6000b01113c3c4dd9a8f52b86d93c3c",
+  "actual_bytes": 164688,
+  "expected_bytes": 164687,
+  "crlf_count": 1,
+  "lf_bytes_equal_to_generator": true,
+  "json_values_equal": true
+}

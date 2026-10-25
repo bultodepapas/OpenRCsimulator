@@ -1082,7 +1082,9 @@ func _cmd_fly(request: Dictionary) -> Dictionary:
 	app.start_flight()
 	return {pending = func() -> Variant:
 		var session := _session()
-		if session == null or not session.is_inside_tree():
+		# Rendered launch creates the session before its staged loading screen closes.
+		# Commands following `fly` must see the usable route and its launch review.
+		if session == null or not session.is_inside_tree() or _screen_ids().has("loading"):
 			return null
 		return _ok(_flight_state(session)),
 		timeout_s = 240.0}

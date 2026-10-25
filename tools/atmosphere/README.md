@@ -64,7 +64,7 @@ Run the pinned native Godot without `--headless`, using an absolute log path and
 a fresh output directory:
 
 ```powershell
-& .tools/Godot_v4.7.2-stable_win64_console.exe --path app --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy --log-file C:/tmp/fw83.log --script (Resolve-Path tools/atmosphere/storm_bank_capture.gd).Path -- --out=C:/tmp/fw83 --only=all --view=all
+& .tools/Godot_v4.8-beta1_win64_console.exe --path app --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy --log-file C:/tmp/fw83.log --script (Resolve-Path tools/atmosphere/storm_bank_capture.gd).Path -- --out=C:/tmp/fw83 --only=all --view=all
 ```
 
 `--only=day|dusk|fullmoon|all` and `--view=pilot|cross500|all` select subsets.
@@ -90,7 +90,7 @@ state, camera, engine/adapter and each PNG's SHA-256. It is a static scene harne
 with no aircraft; actual Main captures and flight qualification are separate.
 
 ```powershell
-& .tools/Godot_v4.7.2-stable_win64_console.exe --path app --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy --log-file C:/tmp/fw84b.log --script (Resolve-Path tools/atmosphere/electrical_bank_capture.gd).Path -- --out=C:/tmp/fw84b --only=all
+& .tools/Godot_v4.8-beta1_win64_console.exe --path app --rendering-method gl_compatibility --rendering-driver opengl3 --audio-driver Dummy --log-file C:/tmp/fw84b.log --script (Resolve-Path tools/atmosphere/electrical_bank_capture.gd).Path -- --out=C:/tmp/fw84b --only=all
 ```
 
 Use a fresh absolute output directory. `--only=day|dusk|fullmoon|newmoon|all` selects
@@ -106,5 +106,5 @@ retained Lanczos resizer. The utility validates both absolute PNG paths and the
 ```powershell
 $source = (Resolve-Path docs/research/field-world/FW-84/captures/fw84b/electrical_storm-fullmoon-peak-full.png).Path
 $out = (Resolve-Path app/assets/sky/weather/previews/electrical_storm.png).Path
-& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script (Resolve-Path tools/atmosphere/resize_preview.gd).Path -- "--source=$source" "--out=$out"
+& .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --audio-driver Dummy --script (Resolve-Path tools/atmosphere/resize_preview.gd).Path -- "--source=$source" "--out=$out"
 ```

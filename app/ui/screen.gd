@@ -19,11 +19,13 @@ var _mouse_policy: MouseBehaviorRecursive
 var _entrance: Tween
 
 
-static func mount(host: CanvasLayer, node_name: String = "") -> Control:
+static func mount(host: CanvasLayer, node_name: String = "", shared_theme: Theme = null) -> Control:
 	var surface := load("res://ui/screen.gd").new() as Control
 	if node_name != "":
 		surface.name = node_name
-	surface.theme = ScreenTheme.build()
+	# A child page may reuse its owner's current theme. Controls keep local style
+	# overrides; no process-wide theme cache survives accessibility changes.
+	surface.theme = shared_theme if shared_theme != null else ScreenTheme.build()
 	surface.set_anchors_preset(Control.PRESET_FULL_RECT)
 	host.add_child(surface)
 	return surface

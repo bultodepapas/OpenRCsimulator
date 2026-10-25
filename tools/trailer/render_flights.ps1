@@ -2,7 +2,7 @@
 $ErrorActionPreference = 'Stop'
 $trailerRepository = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 Set-Location -LiteralPath $trailerRepository
-$trailerGodot = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64_console.exe').Path
+$trailerGodot = (Resolve-Path '.tools/Godot_v4.8-beta1_win64_console.exe').Path
 $trailerScript = (Resolve-Path 'tools/trailer/capture_flight.gd').Path
 $trailerShots = @(
     @{Id='jet-pass'; Aircraft='sebart-avanti-s-a200-p100rx'; Seconds=4},

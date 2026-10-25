@@ -1,0 +1,113 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"api": "3.3.0 NVIDIA 617.42",
+	"arguments": {
+		"height": "1080",
+		"mode": "field",
+		"out": "D:/OpenRCsimulator-experiments/gdu11-alpha/field-final/candidate",
+		"views": "farm_maples,forest_maple,oak_close",
+		"width": "1920",
+		"wind": "off"
+	},
+	"captures": [
+		{
+			"at": [
+				296.0,
+				5.0,
+				-568.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 27,
+				"primitives": 122987,
+				"shadow_draws": 0
+			},
+			"eye": [
+				340.0,
+				8.0,
+				-520.0
+			],
+			"fov": 50.0,
+			"id": "farm_maples",
+			"sha256": "0ceee32a66307a07cffcb8d5f0434db97db26691019b3fe723952b20bfe82c1d",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-770.0,
+				5.0,
+				480.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 14,
+				"primitives": 93971,
+				"shadow_draws": 0
+			},
+			"eye": [
+				-737.0,
+				4.0,
+				455.0
+			],
+			"fov": 45.0,
+			"id": "forest_maple",
+			"sha256": "daa3373e4fe9ade6a768834a4b481ccb7fcef234866ccafe7fe7e3b92e3d6f31",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				10.5,
+				5.0,
+				32.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 291,
+				"primitives": 452418,
+				"shadow_draws": 0
+			},
+			"eye": [
+				27.0,
+				7.0,
+				49.0
+			],
+			"fov": 42.0,
+			"id": "oak_close",
+			"sha256": "d3bdf911df21086fc9d98b881d80ee8d588fb5ff652b79e6911b7213809a4b32",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"complete": true,
+	"construction_ms": 1561.263,
+	"directional_shadow_distance_m": 300.0,
+	"directional_shadows_enabled": true,
+	"engine_static_memory_bytes": 140653561,
+	"field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+	"format": "openrc-tree-quality v1",
+	"godot": "4.8-beta1 (official)",
+	"imported_tree_batches": 5,
+	"imported_tree_instances": 17,
+	"memory_scope": "Engine static CPU memory only; GPU residency is not measured. OS file caches are not reset.",
+	"mode": "field",
+	"msaa": "4x",
+	"renderer": "gl_compatibility",
+	"samples": [],
+	"scope": "Prescribed static rendering; no aircraft physics, active-flight ratio or pilot acceptance.",
+	"vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+	"viewport": [
+		1920,
+		1080
+	]
+}

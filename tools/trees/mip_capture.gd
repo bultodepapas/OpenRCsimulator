@@ -14,6 +14,9 @@ const FOV_DEGREES := 50.0
 const BACKGROUND := Color(0.035, 0.19, 0.84, 1.0)
 
 var args: Dictionary = {}
+var asset_ids: Array = ASSET_IDS
+var distances_m: Array = DISTANCES_M
+var view_sizes: Array = VIEW_SIZES
 var output_dir := ""
 var viewport: SubViewport
 var camera: Camera3D
@@ -33,9 +36,39 @@ func _initialize() -> void:
 		var pair := argument.trim_prefix("--").split("=", true, 1)
 		args[pair[0]] = pair[1] if pair.size() == 2 else "on"
 	var mip_scope := str(args.get("mip-scope", "all"))
-	if mip_scope not in ["all", "bark"]:
-		_fail("--mip-scope must be all or bark")
+	if mip_scope not in ["all", "bark", "coverage"]:
+		_fail("--mip-scope must be all, bark or coverage")
 		return
+	if args.has("ids"):
+		asset_ids = Array(str(args.ids).split(",", false))
+		if asset_ids.is_empty():
+			_fail("--ids must contain at least one catalog ID")
+			return
+	if args.has("distances"):
+		distances_m = []
+		for value in str(args.distances).split(",", false):
+			if not value.is_valid_int() or int(value) <= 0 or int(value) >= 500:
+				_fail("--distances must contain integer metres between 1 and 499")
+				return
+			distances_m.append(float(value))
+		if distances_m.is_empty():
+			_fail("--distances must not be empty")
+			return
+	if args.has("sizes"):
+		view_sizes = []
+		for value in str(args.sizes).split(",", false):
+			var dimensions := value.split("x")
+			if dimensions.size() != 2 or not dimensions[0].is_valid_int() or not dimensions[1].is_valid_int():
+				_fail("--sizes must contain WIDTHxHEIGHT pairs")
+				return
+			var size := Vector2i(int(dimensions[0]), int(dimensions[1]))
+			if size.x < 64 or size.y < 64 or size.x > 7680 or size.y > 4320:
+				_fail("--sizes dimensions must be within 64x64 and 7680x4320")
+				return
+			view_sizes.append(size)
+		if view_sizes.is_empty():
+			_fail("--sizes must not be empty")
+			return
 	report["mip_scope"] = mip_scope
 	if args.has("check-only"):
 		print("MIP CAPTURE SCRIPT PARSED")
@@ -66,7 +99,7 @@ func _run() -> void:
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	RenderingServer.render_loop_enabled = false
 	viewport = SubViewport.new()
-	viewport.size = VIEW_SIZES[0]
+	viewport.size = view_sizes[0]
 	viewport.msaa_3d = Viewport.MSAA_4X
 	viewport.own_world_3d = true
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -94,15 +127,19 @@ func _run() -> void:
 	var identity := {}
 	for path in identity_paths:
 		identity[path] = FileAccess.get_sha256(path) if FileAccess.file_exists(path) else "missing"
+	identity["capture_script"] = FileAccess.get_sha256(get_script().resource_path)
 	report["identity"] = identity
 	report["godot"] = Engine.get_version_info().string
 	report["renderer"] = RenderingServer.get_current_rendering_method()
 	report["adapter"] = RenderingServer.get_video_adapter_name()
 	report["api"] = RenderingServer.get_video_adapter_api_version()
+	var reported_sizes: Array = []
+	for size in view_sizes:
+		reported_sizes.append([size.x, size.y])
 	report["fixture"] = {
-		"asset_ids": ASSET_IDS,
-		"distances_m": DISTANCES_M,
-		"view_sizes": [[1280, 720], [1920, 1080]],
+		"asset_ids": asset_ids,
+		"distances_m": distances_m,
+		"view_sizes": reported_sizes,
 		"fov_degrees": FOV_DEGREES,
 		"phase_count": PHASE_COUNT,
 		"phase_offsets_pixels": [0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875],
@@ -117,7 +154,7 @@ func _run() -> void:
 		"mip_scope": str(report.get("mip_scope", "all")),
 	}
 
-	for asset_id in ASSET_IDS:
+	for asset_id in asset_ids:
 		print("MIP CAPTURE ASSET: ", asset_id)
 		var asset: Dictionary = Library.get_asset(asset_id)
 		var parts: Array[Dictionary] = Library.get_parts(asset_id)
@@ -230,6 +267,10 @@ func _register_texture(asset_id: String, texture: Texture2D) -> void:
 		var image_hash := HashingContext.new()
 		image_hash.start(HashingContext.HASH_SHA256)
 		image_hash.update(image.get_data())
+		var base_hash := HashingContext.new()
+		base_hash.start(HashingContext.HASH_SHA256)
+		var base_bytes := image.get_mipmap_offset(1) if image.has_mipmaps() else image.get_data().size()
+		base_hash.update(image.get_data().slice(0, base_bytes))
 		var import_path := path + ".import"
 		var import_text := ""
 		if FileAccess.file_exists(import_path):
@@ -253,6 +294,7 @@ func _register_texture(asset_id: String, texture: Texture2D) -> void:
 			"decoded_image_mipmap_count": image.get_mipmap_count(),
 			"decoded_image_data_bytes": image.get_data().size(),
 			"decoded_image_data_sha256": image_hash.finish().hex_encode(),
+			"decoded_image_base_level_sha256": base_hash.finish().hex_encode(),
 			"used_by": [],
 		}
 	var consumers: Array = report.textures[path].used_by
@@ -277,11 +319,11 @@ func _material_property(material: Material, property_name: String, fallback: Var
 
 
 func _capture_asset(asset_id: String, height_m: float) -> bool:
-	for size in VIEW_SIZES:
+	for size in view_sizes:
 		viewport.size = size
 		for _resize_frame in 2:
 			await _frame()
-		for distance_value in DISTANCES_M:
+		for distance_value in distances_m:
 			var distance_m: float = float(distance_value)
 			var world_units_per_pixel: float = 2.0 * distance_m * tan(deg_to_rad(FOV_DEGREES * 0.5)) / float(size.y)
 			for phase_index in range(PHASE_COUNT):
