@@ -48,13 +48,31 @@ static func runtime_capabilities() -> Dictionary:
 	var fsr2_mode: Variant = _integer_constant_or_null("Viewport", "SCALING_3D_MODE_FSR2")
 	var fsr3_mode: Variant = _integer_constant_or_null("Viewport", "SCALING_3D_MODE_FSR3")
 	var dlss_mode: Variant = _integer_constant_or_null("Viewport", "SCALING_3D_MODE_DLSS")
-	var fsr3_backend := RenderingServer.has_method(FSR3_METHOD) \
-		and bool(RenderingServer.call(FSR3_METHOD))
+	var fsr3_backend_method := RenderingServer.has_method(FSR3_METHOD)
+	var fsr3_backend := fsr3_backend_method and bool(RenderingServer.call(FSR3_METHOD))
+	var fsr2_reason := "engine_mode_missing" if high and fsr2_mode == null else ""
+	var fsr3_reason := ""
+	if high:
+		if fsr3_mode == null:
+			fsr3_reason = "engine_mode_missing"
+		elif not fsr3_backend_method:
+			fsr3_reason = "fsr3_support_missing"
+		elif not fsr3_backend:
+			fsr3_reason = "fsr3_unavailable"
+	var dlss_reason := ""
+	if high:
+		if dlss_mode == null:
+			dlss_reason = "engine_mode_missing"
+		else:
+			dlss_reason = _streamline_dlss_unavailable_reason()
 	return {
 		"high": high,
 		"fsr2": high and fsr2_mode != null,
 		"fsr3": high and fsr3_mode != null and fsr3_backend,
-		"dlss": high and dlss_mode != null and _streamline_dlss_available(),
+		"dlss": high and dlss_mode != null and dlss_reason.is_empty(),
+		"fsr2_reason": fsr2_reason,
+		"fsr3_reason": fsr3_reason,
+		"dlss_reason": dlss_reason,
 		"fsr2_mode": fsr2_mode,
 		"fsr3_mode": fsr3_mode,
 		"dlss_mode": dlss_mode,
@@ -102,7 +120,7 @@ static func option_status(mode: String, capabilities: Dictionary = {}) -> Dictio
 	if not bool(gates.get("high", false)):
 		return {"available": false, "reason": "high_profile_inactive"}
 	if not bool(gates.get(provider, false)):
-		return {"available": false, "reason": provider + "_unavailable"}
+		return {"available": false, "reason": str(gates.get(provider + "_reason", provider + "_unavailable"))}
 	if _scaling_mode_id(provider, gates) == null:
 		return {"available": false, "reason": "engine_mode_missing"}
 	return {"available": true, "reason": ""}
@@ -251,12 +269,12 @@ static func _integer_constant_or_null(class_name_text: String, constant_name: St
 	return ClassDB.class_get_integer_constant(class_name_text, constant_name)
 
 
-static func _streamline_dlss_available() -> bool:
+static func _streamline_dlss_unavailable_reason() -> String:
 	if not Engine.has_singleton(DLSS_SINGLETON) \
 			or not ClassDB.class_has_integer_constant(DLSS_SINGLETON, DLSS_CAPABILITY):
-		return false
+		return "dlss_support_missing"
 	var streamline: Object = Engine.get_singleton(DLSS_SINGLETON)
 	if streamline == null or not streamline.has_method("get_capability"):
-		return false
+		return "dlss_support_missing"
 	var capability := ClassDB.class_get_integer_constant(DLSS_SINGLETON, DLSS_CAPABILITY)
-	return bool(streamline.call("get_capability", capability))
+	return "dlss_unavailable" if not bool(streamline.call("get_capability", capability)) else ""

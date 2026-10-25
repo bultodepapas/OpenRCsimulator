@@ -5861,6 +5861,9 @@ msgstr "DLSS · Rendimiento"
 msgid "Unavailable"
 msgstr "No disponible"
 
+msgid "FSR sharpness"
+msgstr "Nitidez FSR"
+
 msgid "FSR2 sharpness"
 msgstr "Nitidez FSR2"
 
@@ -5917,6 +5920,60 @@ msgstr "FSR2 incluye antialiasing. Tu elección de MSAA se recupera con el rende
 
 msgid "FSR2 is saved for High. Native rendering is active in Standard."
 msgstr "FSR2 está guardado para Alto. En Estándar se usa el renderizado Nativo."
+
+msgid "Choose a reconstruction option available in High graphics. Check distant aircraft detail in motion."
+msgstr "Elige una opción de reconstrucción disponible en gráficos Alto. Comprueba el detalle de los aviones lejanos en movimiento."
+
+msgid "At 1080p, Quality uses about 1280 × 720 3D input; Performance uses 960 × 540. Quality keeps more input detail than Balanced or Performance. Lower input may soften distant detail; compare while moving."
+msgstr "A 1080p, Calidad usa una entrada 3D de unos 1280 × 720; Rendimiento usa 960 × 540. Calidad conserva más detalle de entrada que Equilibrado o Rendimiento. Una entrada menor puede suavizar los detalles lejanos; compara en movimiento."
+
+msgid "Reconstruction: Requested %s → Active %s"
+msgstr "Reconstrucción: solicitada %s → activa %s"
+
+msgid "3D input: %d × %d → Output: %d × %d"
+msgstr "Entrada 3D: %d × %d → salida: %d × %d"
+
+msgid "DLSS controls its own reconstruction sharpness. This saved FSR value is kept for FSR2 or FSR3."
+msgstr "DLSS controla su propia nitidez de reconstrucción. Este valor FSR se conserva para FSR2 o FSR3."
+
+msgid "Native rendering does not use FSR sharpness. This saved value is kept for FSR2 or FSR3."
+msgstr "El renderizado nativo no usa la nitidez FSR. Este valor se conserva para FSR2 o FSR3."
+
+msgid "Native keeps full-resolution 3D input and uses your MSAA choice."
+msgstr "Nativo mantiene la entrada 3D a resolución completa y usa tu opción de MSAA."
+
+msgid "%s keeps full-resolution 3D input and provides antialiasing. Your MSAA choice returns with Native rendering."
+msgstr "%s mantiene la entrada 3D a resolución completa e incluye antialiasing. Tu opción de MSAA vuelve al usar el renderizado nativo."
+
+msgid "%s renders 3D at about %d × %d while output stays %d × %d. Lower input may soften distant detail; compare while moving."
+msgstr "%s renderiza el 3D a unos %d × %d y mantiene una salida de %d × %d. Una entrada menor puede suavizar los detalles lejanos; compara en movimiento."
+
+msgid "The current game build does not offer %s reconstruction."
+msgstr "La versión actual del juego no ofrece la reconstrucción %s."
+
+msgid "FSR3 support is not included in this game build."
+msgstr "Esta versión del juego no incluye compatibilidad con FSR3."
+
+msgid "The current graphics session does not report FSR3 support."
+msgstr "La sesión gráfica actual no indica que FSR3 sea compatible."
+
+msgid "DLSS support is not included in this game build."
+msgstr "Esta versión del juego no incluye compatibilidad con DLSS."
+
+msgid "The current graphics session does not report DLSS support."
+msgstr "La sesión gráfica actual no indica que DLSS sea compatible."
+
+msgid "The current graphics session does not offer FSR2."
+msgstr "La sesión gráfica actual no ofrece FSR2."
+
+msgid "This reconstruction option is unavailable in the current graphics session."
+msgstr "Esta opción de reconstrucción no está disponible en la sesión gráfica actual."
+
+msgid "High graphics is not active. Native rendering is active; restart in High to use your saved choice."
+msgstr "Los gráficos Alto no están activos. Se usa el renderizado nativo; reinicia en Alto para usar la opción guardada."
+
+msgid "%s Native rendering is active, and your saved choice is kept."
+msgstr "%s Se usa el renderizado nativo y se conserva la opción guardada."
 
 # UI-34: official brand startup.
 msgid "Loading…"
