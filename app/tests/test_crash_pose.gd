@@ -158,7 +158,10 @@ func _run() -> void:
 		flight._process(1.0/60.0)
 		_check(entry.id+" automatic restart clears crossing pose", session.crash.is_empty() and session.sim.state == start and session.sim.previous == start and _ordinary_pose_equal(flight._last_render_pose,flight._pose_of(start)))
 		# A tick that starts in deep contact has no new crossing estimate; render its detected endpoint.
-		var preexisting_contact: PackedFloat64Array = _place_hull_contact(session, 0.10, 0.0)
+		# X8-08: a tolerant (foam) hull crushes deeper before it is terminal; sink past the aircraft's own depth.
+		var crush_m: float = 0.10 if not session.aircraft.model.has("crash_tolerance") \
+			else float(session.aircraft.model.crash_tolerance.crash_depth) + 0.02
+		var preexisting_contact: PackedFloat64Array = _place_hull_contact(session, crush_m, 0.0)
 		_accepted_contact_tick(session, preexisting_contact, entry.id)
 		_check(entry.id+" pre-existing accepted contact has unavailable crossing", not session.crash.is_empty()
 			and session.crash.impact.crossing != null and not session.crash.impact.crossing.available)
