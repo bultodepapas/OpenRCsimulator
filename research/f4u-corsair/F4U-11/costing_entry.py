@@ -3,9 +3,9 @@
 
 The entry binds every physical inventory row of app/data/aircraft/f4u_corsair_250.json to a priced or explicitly
 unpriced line, maps each hull and gear contact to the components a hit inspects, and pins the physics file's SHA-256
-(`expected_source_sha256`), so a physics change forces a reviewed rebind. Prices reuse existing observations only
-(two servo proxies): a new observation would move the price catalog's single observation date for every aircraft.
-The CARF price of the Moki S250 is recorded in the notes as dated evidence instead.
+(`expected_source_sha256`), so a physics change forces a reviewed rebind. Dated offers retain their individual
+observation dates. F4U-11-R2 separates control installations and binds only scope-matched part references;
+whole-engine, kit and package prices remain candidates where installed coverage is unresolved.
 
     python research/f4u-corsair/F4U-11/costing_entry.py           # writes or rebinds the entry
     python research/f4u-corsair/F4U-11/costing_entry.py --check   # fails if the entry differs
@@ -31,14 +31,24 @@ def line(line_id, inventory, notes, kind="estimated", observation=None, quantity
     return row
 
 
+def offer(sku):
+    return f"f4u_carf_{sku}_20261025"
+
+
+def surface_group(line_id, inventory, skus, notes):
+    row = line(line_id, inventory, notes + " Parts-only composite estimate from CARF single-color spares, observed 2026-10-25; not a sold assembly. Paint surcharge, installed hinges/linkages/hardware, inspection, assembly labor, tax and freight remain unresolved. These costs do not follow automatically from contact or C0-C4 severity.")
+    row["price_constituents"] = [{"offer_id": offer(sku), "quantity": 1} for sku in skus]
+    return row
+
+
 LINES = [
     line("engine_moki_s250", ["engine_main", "engine_mount_exhaust"],
-         "Moki S250 five-cylinder radial with its cast radial mount and collector ring (the physics splits the 5.4 kg engine into two rows). CARF-Models lists the Moki S250 at 4,610.00 USD (carf-models.com/en/products/moki-s250, observed 2026-10-22); not entered as a price observation because the shared price catalog carries one observation date. Unpriced here."),
+         "Moki S250 five-cylinder radial with cast radial mount and collector ring. CARF 953250 is a dated $4,610 whole-engine candidate, including ignition/ring muffler per MOKI, but cast-mount coverage is unconfirmed. Keep unpriced until that package and this separate ignition inventory row are reconciled; never add another ignition price to the complete engine package. Engine contact opens inspection, not automatic replacement."),
     line("ignition_module", ["ignition_module"], "Unpriced Moki ignition module, sensor lead and switch; supplied with the engine per the Moki manual, so a separate replacement price is not established."),
     line("propeller", ["propeller_main"], "Unpriced 30x18 three-blade wood propeller (SEP class, Moki S250 manual); no current USD quote verified."),
     line("spinner_main", ["spinner_main"], "Unpriced aluminium hub cap and propeller bolts."),
     line("engine_mount", ["engine_mount"], "Unpriced firewall bolts, blind nuts and thrust spacers."),
-    line("cowl_main", ["cowl_main"], "Unpriced CARF composite cowl (about 335 mm); no separate CARF spare-part price verified."),
+    line("cowl_main", ["cowl_main"], "CARF 791102 silver single-color cowl, $262 base reference observed 2026-10-25. Price proxy for the installed painted cowl, not an exact livery quote. CARF adds 5% per additional color and requests the original item/scheme; finish matching, hardware and labor remain unpriced.", kind="price_proxy", observation=offer("791102")),
     line("fuel_tank", ["fuel_tank"], "Unpriced 1 l gasoline tank with lines."),
     line("fuel_flight", ["fuel_flight"], "Unpriced half-tank flight fuel; fill and fuel price not established."),
     line("ignition_battery", ["ignition_battery"], "Unpriced 2S LiPo ignition battery."),
@@ -69,8 +79,10 @@ LINES = [
     line("fuselage_front", ["fuselage_front"], "Unpriced CARF composite forward fuselage."),
     line("fuselage_rear", ["fuselage_rear"], "Unpriced CARF composite rear fuselage and tail cone."),
     line("canopy_pilot", ["canopy_pilot"], "Unpriced canopy, frame and pilot figure."),
-    line("horizontal_tail", ["horizontal_tail"], "Unpriced stabilizer and elevator."),
-    line("vertical_tail", ["vertical_tail"], "Unpriced fin and rudder."),
+    surface_group("horizontal_tail", ["horizontal_tail"], ["791301", "791302", "791303", "791304"],
+                  "Two stabilizer sides plus right and left elevators: $111 + $111 + $111 + $121 = $454. Both sides are priced only when an explicit inspection selects replacement of this grouped physical inventory item; a tip contact merely requests inspection."),
+    surface_group("vertical_tail", ["vertical_tail"], ["791305", "791306"],
+                  "Vertical fin plus rudder: $130 + $111 = $241. Grouped physical inventory replacement reference; a fin or rudder contact does not prove both parts are lost."),
     line("control_hardware", ["control_hardware"], "Unpriced pushrods, horns, cowl fasteners and hardware."),
     line("final_assembly_and_commissioning", [], "Unpriced Corsair-specific final assembly, balancing, commissioning and post-crash inspection labor. No transferable allowance assumed."),
 ]
@@ -112,17 +124,22 @@ CONTACTS["probe_spinner_tip"] += ["ignition_module", "throttle_choke_servos"]
 
 
 def entry(source_sha):
+    researched = ["953250", "790500", "790550", "790600", "790650", "790199", "930170", "791100",
+                  "791102", "791101", "790105", "790104", "790810", "790805", "791103", "791212",
+                  "791215", "791216", "791220", "791301", "791302", "791303", "791304", "791305",
+                  "791306", "790700", "790750", "790751", "790752"]
     return {
         "aircraft_id": ID,
         "status": "independent_partial_inventory_costing",
-        "price_observations": ["savox-sa1230sgp", "stik_servos_hitec_hs311_four"],
+        "price_observations": ["savox-sa1230sgp", "stik_servos_hitec_hs311_four"] + [offer(sku) for sku in researched],
         "replacement_total_minor": None,
         "missing": [
-            "No current CARF-Models F4U-1D 1:4.5 kit, spare-part or retract price was entered: the CARF product pages did not show a kit price when observed, and the 2011 Model Airplane News prices ($3,695 ARF with wing fold) are historical.",
-            "The Moki S250 (CARF 4,610.00 USD, observed 2026-10-22) is recorded in the notes but not entered as a price observation, because the shared price catalog carries one observation date for every aircraft.",
-            "Propeller, cowl, airframe parts, gear, batteries, radio, fuel system and labor remain unpriced; ten flight-control and two throttle/choke servo positions use class value proxies, not installed identities.",
+            "The exact folding-wing ARF has a EUR purchase reference, not a complete-build USD price; no currency conversion or kit-plus-parts double counting. Single-color spare prices exclude the scheme-specific quote (CARF adds 5% per additional color), inspection, hardware, labor, tax and freight.",
+            "Moki S250 candidate 953250 costs $4,610 and includes ignition/ring muffler; cast mount coverage and the separate ignition row still require package reconciliation. No post-strike internal repair or labor price is established.",
+            "Main retract and wheel prices are set/pair offers, not per-leg prices; tail gear/door contents and steering linkage remain unresolved. Folding-wing control-surface inclusion, full-fuselage overlap, and canopy/pilot scope prevent automatic attachment of their prices.",
+            "Exact selected SEP-class 30x18 three-blade wood prop price remains unknown. The priced 32-inch CARF carbon set cannot replace its identity. Batteries, radio, fuel system and other unresolved parts remain unpriced; all twelve servo positions retain class value proxies.",
         ],
-        "notes": "Independent coverage of every physical inventory row of the 1/4.5 F4U Corsair (F4U-11). Known priced-part subtotal is $1,067.88: ten $103.39 SA-1230SG+ control-servo proxies and two $16.99 HS-311 throttle/choke-servo proxies. The Moki S250 alone lists at $4,610.00 (CARF, 2026-10-22, not entered). This is not a complete-build purchase amount.",
+        "notes": "F4U-11-R2: independent physical coverage and local inspection mappings. Parts-only reference subtotal $2,024.88: existing twelve servo proxies $1,067.88, single-color cowl $262, horizontal surfaces $454 and vertical surfaces $241. Other dated offers are candidates, not automatic component costs. This is neither a complete-build amount nor an accident repair bill; no calibrated failure thresholds or survival probabilities are claimed.",
         "dossier": {
             "expected_source_sha256": source_sha,
             "lines": LINES,

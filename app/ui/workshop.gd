@@ -10,6 +10,7 @@ const Parameters := preload("res://workshop/parameters.gd")
 const Store := preload("res://workshop/store.gd")
 const Bundle := preload("res://workshop/bundle.gd")
 const LibraryPreferences := preload("res://workshop/library_preferences.gd")
+const LibrarySearch := preload("res://workshop/library_search.gd")
 const ProfileTransfer := preload("res://workshop/profile_transfer.gd")
 const Presentation := preload("res://workshop/presentation.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
@@ -957,29 +958,33 @@ func _refresh_variants(reload := true) -> void:
 			_library_summaries.append({id = variant.get("id", ""), name = variant.get("name", ""), base_id = variant.get("base_id", ""), revision = variant.get("revision", 0)})
 	var known_ids: Array[String] = []
 	for variant: Dictionary in _library_summaries: known_ids.append(str(variant.id))
-	var query := _build_search.text.strip_edges().to_lower()
+	var titles := PackedStringArray()
+	var rows: Array[Dictionary] = []
 	for variant: Dictionary in _library_summaries:
 		var variant_id := str(variant.get("id", ""))
 		if variant_id == "":
 			continue
 		var source_name := str(Catalog.entry(str(variant.get("base_id", ""))).get("name", tr("Unavailable aircraft")))
 		if _favorites_only.button_pressed and variant_id not in _favorites: continue
-		if not query.is_empty() and not (str(variant.get("name", "")) + " " + source_name).to_lower().contains(query): continue
 		var current := tr("Current") + " · " if variant_id == _saved_variant_id else ""
 		if variant_id in _favorites: current = tr("Favorite") + " · " + current
-		_variant_selector.add_item(current + str(variant.get("name", variant_id)) + " · " + source_name + " · " + tr("revision %d") % int(variant.get("revision", 0)))
-		_variant_selector.set_item_metadata(_variant_selector.item_count - 1, variant_id)
+		titles.append(str(variant.get("name", "")) + " " + source_name)
+		rows.append({id = variant_id, missing = false, title = current + str(variant.get("name", variant_id)) + " · " + source_name + " · " + tr("revision %d") % int(variant.get("revision", 0))})
 	var missing_count := 0
 	for favorite_id: String in _favorites:
 		if favorite_id in known_ids: continue
 		missing_count += 1
 		if not _favorites_only.button_pressed: continue
 		var missing_title := tr("Unavailable favorite %d") % missing_count
-		if not query.is_empty() and not missing_title.to_lower().contains(query): continue
-		_variant_selector.add_item(missing_title)
-		_variant_selector.set_item_metadata(_variant_selector.item_count - 1, favorite_id)
-		_variant_selector.set_item_tooltip(_variant_selector.item_count - 1, tr("Restore this saved build or remove its favorite."))
-		_unavailable_favorite_ids.append(favorite_id)
+		titles.append(missing_title)
+		rows.append({id = favorite_id, missing = true, title = missing_title})
+	for row_index in LibrarySearch.matching_indices(_build_search.text, titles):
+		var row: Dictionary = rows[row_index]
+		_variant_selector.add_item(row.title)
+		_variant_selector.set_item_metadata(_variant_selector.item_count - 1, row.id)
+		if row.missing:
+			_variant_selector.set_item_tooltip(_variant_selector.item_count - 1, tr("Restore this saved build or remove its favorite."))
+			_unavailable_favorite_ids.append(row.id)
 	_favorites_hint.visible = missing_count > 0
 	_variant_selector.select(0)
 	_selected_variant_id = ""
