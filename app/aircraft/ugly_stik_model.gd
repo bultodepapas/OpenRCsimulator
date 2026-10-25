@@ -13,6 +13,9 @@ const CREAM := Color("f7eedb")
 const UNDER := Color("242b35")
 const METAL := Color("878e95")
 const TIRE := Color("191b20")
+# US-V16: F1's front face is the epoxy-sealed 1/4 in birch-ply firewall the radial mount bolts to; colour from the
+# owner's engine-mount delivery (M_Plywood_Firewall, linear 0.80/0.66/0.46), gloss from the existing varnish profile.
+const FIREWALL := Color("e7d5b5")
 static func material(color: Color) -> StandardMaterial3D:
 	var profile := "skin"
 	if color == METAL: profile = "aluminum"
@@ -78,11 +81,57 @@ static func _strut(label: String, a: Vector3, b: Vector3, radius: float, parent:
 
 # Extrude an arbitrary x/z outline; vertical maps outline x to height and thickness to x.
 # Edges lying on the relieved hinge line (both ends at gap_offset) get the hinge-gap finish (US-V09a).
-static func _prism(label: String, outline: Array, thickness: float, color: Color, parent: Node3D, vertical := false, gap_offset := NAN) -> MeshInstance3D:
+# US-V15 form pass: the tail sheets (1/4 in fin, rudder and elevator, sheeted stab, 3/16 in ventral) are sanded round.
+# Each outer edge becomes a half round of the sheet's half thickness: the faces are inset by that radius and a band
+# turns from face to face through the traced outline, so the planform is unchanged. Hinge lines and edges glued to
+# the fuselage (flat_edges; index i is the edge from point i to i + 1, -1 the closing edge) stay square, and the
+# rounding tapers to nothing at their ends.
+const EDGE_ROUND_STEPS := 6
+
+## uv_points: where each corner samples the atlas (the outline point under it, so the band carries the edge's colour).
+static func _band_quad(st: SurfaceTool, points: Array, normals: Array, outward: Vector3, region: String, uv_points: Array) -> void:
+	for indices in [[0, 1, 2], [0, 2, 3]]:
+		var face: Vector3 = (points[indices[2]] - points[indices[0]]).cross(points[indices[1]] - points[indices[0]])
+		if face.dot(outward) < 0:
+			indices = [indices[0], indices[2], indices[1]]
+			face = -face
+		# Where the round tapers to a square hinge end the band stands on edge; shade that sliver flat.
+		var smooth: Vector3 = normals[indices[0]] + normals[indices[1]] + normals[indices[2]]
+		var flat := face.dot(smooth) <= 0.2 * face.length() * smooth.length()
+		for index in indices:
+			st.set_normal(face.normalized() if flat else normals[index])
+			if not region.is_empty(): st.set_uv(Finish.uv(uv_points[index], region))
+			st.add_vertex(points[index])
+
+
+static func _prism(label: String, outline: Array, thickness: float, color: Color, parent: Node3D, vertical := false, gap_offset := NAN, flat_edges: Array = []) -> MeshInstance3D:
 	var polygon := PackedVector2Array()
 	for point in outline:
 		polygon.append(Vector2(point[0], point[1]))
-	var triangles := Geometry2D.triangulate_polygon(polygon)
+	var count := polygon.size()
+	var clockwise := Geometry2D.is_polygon_clockwise(polygon)
+	var half := thickness / 2
+	var to_3d := func(p: Vector2, height: float) -> Vector3:
+		return Vector3(height, p.x, p.y) if vertical else Vector3(p.x, height, p.y)
+	var up: Vector3 = Vector3.RIGHT if vertical else Vector3.UP
+	# Square edges: hinge lines and the explicit fuselage joints.
+	var flat: Array[bool] = []
+	var outward: Array[Vector2] = []
+	for i in count:
+		var p := polygon[i]
+		var q := polygon[(i + 1) % count]
+		var edge := q - p
+		outward.append((Vector2(edge.y, -edge.x) * (-1.0 if clockwise else 1.0)).normalized())
+		flat.append((absf(p.y - gap_offset) < 1e-7 and absf(q.y - gap_offset) < 1e-7) or flat_edges.has(i) or flat_edges.has(i - count))
+	# Inset each vertex along its mitred outward direction so both adjacent faces lie one radius inside the outline.
+	var inset := PackedVector2Array()
+	for i in count:
+		var before := outward[(i - 1 + count) % count]
+		var after := outward[i]
+		var radius := 0.0 if flat[i] or flat[(i - 1 + count) % count] else half
+		var mitre := (before + after).normalized()
+		inset.append(polygon[i] - mitre * radius / maxf(mitre.dot(after), 0.5))
+	var triangles := Geometry2D.triangulate_polygon(inset)
 	assert(not triangles.is_empty(), "Invalid model outline: " + label)
 	var textured := label == "fin" or label == "rudder"
 	# US-V09f: the stabiliser and elevator use the covering atlas too; only their undersides map to a painted region.
@@ -93,27 +142,47 @@ static func _prism(label: String, outline: Array, thickness: float, color: Color
 	gap.set_material(Finish.hinge_gap())
 	var has_gap := false
 	for side in [-1.0, 1.0]:
-		var normal := Vector3(side, 0, 0) if vertical else Vector3(0, side, 0)
+		var normal: Vector3 = up * side
 		for i in range(0, triangles.size(), 3):
 			var points: Array[Vector3] = []
 			for k in 3:
-				var p := polygon[triangles[i + k]]
-				points.append(Vector3(side * thickness / 2, p.x, p.y) if vertical else Vector3(p.x, side * thickness / 2, p.y))
+				points.append(to_3d.call(inset[triangles[i + k]], side * half))
 			_triangle(st, points[0], points[1], points[2], normal, "fin" if textured else ("stab_under" if side < 0.0 else "red") if stab else "")
-	var clockwise := Geometry2D.is_polygon_clockwise(polygon)
-	for i in polygon.size():
-		var p := polygon[i]
-		var q := polygon[(i + 1) % polygon.size()]
-		var edge := q - p
-		var n2 := Vector2(edge.y, -edge.x) * (-1.0 if clockwise else 1.0)
-		var n := Vector3(0, n2.x, n2.y) if vertical else Vector3(n2.x, 0, n2.y)
-		var a := Vector3(-thickness / 2, p.x, p.y) if vertical else Vector3(p.x, -thickness / 2, p.y)
-		var b := Vector3(thickness / 2, p.x, p.y) if vertical else Vector3(p.x, thickness / 2, p.y)
-		var c := Vector3(thickness / 2, q.x, q.y) if vertical else Vector3(q.x, thickness / 2, q.y)
-		var d := Vector3(-thickness / 2, q.x, q.y) if vertical else Vector3(q.x, -thickness / 2, q.y)
-		var on_hinge := absf(p.y - gap_offset) < 1e-7 and absf(q.y - gap_offset) < 1e-7
+	for i in count:
+		var j := (i + 1) % count
+		var n2 := outward[i]
+		var n := to_3d.call(n2, 0.0) as Vector3
+		var on_hinge := absf(polygon[i].y - gap_offset) < 1e-7 and absf(polygon[j].y - gap_offset) < 1e-7
 		has_gap = has_gap or on_hinge
-		_quad(gap if on_hinge else st, a, b, c, d, n, "white" if textured else "red" if on_hinge or stab else "")
+		var region := "white" if textured else "red" if on_hinge or stab else ""
+		if flat[i]:
+			var a := to_3d.call(polygon[i], -half) as Vector3
+			var b := to_3d.call(polygon[i], half) as Vector3
+			var c := to_3d.call(polygon[j], half) as Vector3
+			var d := to_3d.call(polygon[j], -half) as Vector3
+			_quad(gap if on_hinge else st, a, b, c, d, n, region)
+			continue
+		var rings: Array = [] # per end vertex: [points over the half round, normals]
+		for v in [i, j]:
+			var reach: Vector2 = polygon[v] - inset[v]
+			var depth := reach.length()
+			var side_dir: Vector2 = reach / depth if depth > 1e-9 else (outward[(v - 1 + count) % count] + outward[v]).normalized()
+			var points: Array[Vector3] = []
+			var normals: Array[Vector3] = []
+			for k in EDGE_ROUND_STEPS + 1:
+				var angle := PI * float(k) / EDGE_ROUND_STEPS
+				points.append(to_3d.call(inset[v] + reach * sin(angle), half * cos(angle)))
+				# Ellipse normal (depth × half); a vertex on a square edge keeps the outward edge normal.
+				var lateral := to_3d.call(side_dir * half * sin(angle), 0.0) as Vector3
+				normals.append((lateral + up * depth * cos(angle)).normalized() if depth > 1e-9 else to_3d.call(side_dir, 0.0))
+			rings.append([points, normals])
+		for k in EDGE_ROUND_STEPS:
+			# US-V09f: the stab's lower half samples its painted underside rows like the bottom face.
+			var band_region := "stab_under" if stab and k >= EDGE_ROUND_STEPS / 2 else region
+			var under_i := to_3d.call(polygon[i], 0.0) as Vector3
+			var under_j := to_3d.call(polygon[j], 0.0) as Vector3
+			_band_quad(st, [rings[0][0][k], rings[0][0][k + 1], rings[1][0][k + 1], rings[1][0][k]],
+				[rings[0][1][k], rings[0][1][k + 1], rings[1][1][k + 1], rings[1][1][k]], n, band_region, [under_i, under_i, under_j, under_j])
 	if textured or stab: st.generate_tangents()
 	var mesh := st.commit()
 	if has_gap: gap.commit(mesh)
@@ -187,14 +256,19 @@ static func _fuselage(root: Node3D) -> void:
 				for corner in [[i, j], [i, k], [i + 1, k], [i + 1, j]]:
 					uvs.append(Finish.fuselage_uv(rings[corner[0]][corner[1]].z, arcs[corner[0]][corner[1]]))
 				_smooth_quad(st, points, normals, outward, "", uvs)
-	for end in [0, rings.size() - 1]:
+	var firewall := SurfaceTool.new()
+	firewall.begin(Mesh.PRIMITIVE_TRIANGLES)
+	firewall.set_material(Finish.material(FIREWALL, "varnished_wood"))
+	for end in [rings.size() - 1, 0]:
 		var center := Vector3.ZERO
 		for p in rings[end]: center += p
 		center /= float(count)
 		for j in count:
-			_triangle(st, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, -1 if end == 0 else 1), "red")
+			if end == 0: _triangle(firewall, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, -1))
+			else: _triangle(st, center, rings[end][j], rings[end][(j + 1) % count], Vector3(0, 0, 1), "red")
 	st.generate_tangents()
 	var mesh := st.commit()
+	firewall.commit(mesh)
 	# CR-09f: raw balsa inside the box (Jensen sheet 1: 1/4 in sides, 1/8 in top, 3/32 in bottom), facing the cavity:
 	# the same rounded section shrunk by each wall's sheet, with a smaller corner radius. A separate mesh, so the skin
 	# stays the closed solid the clearance tools probe; enclosed in flight and seen only where the wreck breaks it open.
@@ -222,12 +296,12 @@ static func _fuselage(root: Node3D) -> void:
 	var lining := _instance("fuselage_lining", inner.commit(), root)
 	var fuselage := _instance("fuselage", mesh, root)
 	# CR-09e: in a heavy crash the boom snaps at the first station aft of the wing trailing edge (estimate: where the
-	# Stik's fuselage starts to taper behind the saddle). The map follows the triangle order above: bays, then the
-	# front and rear caps. Only the wreck's twin is split (render/crash/section_splitter.gd); this mesh never changes.
+	# Stik's fuselage starts to taper behind the saddle). The map follows the triangle order above: bays, then the rear
+	# cap; the firewall face (US-V16) is its own surface. Only the wreck's twin is split (render/crash/section_splitter.gd).
 	var bay_triangles := 2 * count
 	var bays := rings.size() - 1
 	fuselage.set_meta("crash_section_map", {format = "openrc-crash-sections v1", sections = ["core", "tail_boom"],
-		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles, 0, count, 1, count]]})
+		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles, 1, count], [0, count]]})
 	lining.set_meta("crash_section_map", {format = "openrc-crash-sections v1", sections = ["core", "tail_boom"],
 		surfaces = [[0, FUSELAGE_BREAK_STATION * bay_triangles, 1, (bays - FUSELAGE_BREAK_STATION) * bay_triangles]]})
 
@@ -287,6 +361,36 @@ static func _wing_quad(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, d: V
 			st.add_vertex(vertices[index])
 
 
+# US-V15 form pass: the wing ends in a 1/4 in sheet tip, sanded round (Jensen sheet 2). Over the last TIP_ROUND_M of
+# span the section closes toward its chord line along a quarter ellipse, to TIP_CAP_SCALE of its height at the cap, so the
+# skin turns into the tip instead of meeting it at 90°. The planform outline is unchanged. The cap lies in the raked plane
+# of the tip edge (leading edge 62 mm inboard of the trailing edge), so its normal is that plane's, not ±X.
+const TIP_ROUND_M := 0.0064
+const TIP_ROUND_RINGS := 4
+const TIP_CAP_SCALE := 0.35
+
+
+static func _tip_scale(s: float) -> float:
+	return TIP_CAP_SCALE + (1.0 - TIP_CAP_SCALE) * sqrt(maxf(1.0 - s * s, 0.0))
+
+
+## Point `inset` metres inboard of the raked tip edge, with the section height scaled by `scale`.
+static func _tip_vertex(x_tip: float, point: Array, inset: float, scale: float, z_offset: float, span_offset: float, chord_origin: float) -> Vector3:
+	var v := _wing_vertex(x_tip, [point[0], float(point[1]) * scale], z_offset, span_offset, chord_origin)
+	v.x -= signf(x_tip + span_offset) * inset
+	return v
+
+
+static func _wing_quad_normals(st: SurfaceTool, vertices: Array, normals: Array, outward: Vector3, uv_offset: Vector3) -> void:
+	for indices in [[0, 1, 2], [0, 2, 3]]:
+		if (vertices[indices[2]] - vertices[indices[0]]).cross(vertices[indices[1]] - vertices[indices[0]]).dot(outward) < 0:
+			indices = [indices[0], indices[2], indices[1]]
+		for index in indices:
+			st.set_normal(normals[index])
+			st.set_uv(Finish.uv(vertices[index] + uv_offset, "wing"))
+			st.add_vertex(vertices[index])
+
+
 # Section points are [chord fraction, height/chord].
 static func _wing_panel(label: String, x0: float, x1: float, section: Array, color: Color, parent: Node3D, z_offset := 0.0, span_offset := 0.0, chord_origin := 0.0) -> void:
 	var st := _surface(color, true)
@@ -297,6 +401,11 @@ static func _wing_panel(label: String, x0: float, x1: float, section: Array, col
 	gap.set_material(Finish.hinge_gap())
 	var count := maxi(1, int(ceil((x1 - x0) / 0.01016))) if chord_origin > 0 else 1
 	var uv_offset := Vector3(span_offset, 0, chord_origin * float(D.wing.chord) - z_offset)
+	var half_span: float = float(D.wing.span) / 2.0
+	var tip_x := x1 if is_equal_approx(absf(x1 + span_offset), half_span) else (x0 if is_equal_approx(absf(x0 + span_offset), half_span) else NAN)
+	var ring := func(x: float, point: Array) -> Vector3:
+		return _tip_vertex(tip_x, point, TIP_ROUND_M, 1.0, z_offset, span_offset, chord_origin) if is_finite(tip_x) and is_equal_approx(x, tip_x) \
+			else _wing_vertex(x, point, z_offset, span_offset, chord_origin)
 	for span_i in count:
 		var lo := lerpf(x0, x1, float(span_i) / count)
 		var hi := lerpf(x0, x1, float(span_i + 1) / count)
@@ -312,7 +421,7 @@ static func _wing_panel(label: String, x0: float, x1: float, section: Array, col
 			if bevel != Vector3.ZERO:
 				na = bevel
 				nb = bevel
-			_wing_quad(gap if closing else st, _wing_vertex(lo, section[i], z_offset, span_offset, chord_origin), _wing_vertex(hi, section[i], z_offset, span_offset, chord_origin), _wing_vertex(hi, section[j], z_offset, span_offset, chord_origin), _wing_vertex(lo, section[j], z_offset, span_offset, chord_origin), n, na, nb, uv_offset)
+			_wing_quad(gap if closing else st, ring.call(lo, section[i]), ring.call(hi, section[i]), ring.call(hi, section[j]), ring.call(lo, section[j]), n, na, nb, uv_offset)
 	var polygon := PackedVector2Array()
 	for p in section: polygon.append(Vector2(p[0] * D.wing.chord + z_offset, p[1] * D.wing.chord))
 	var triangles := Geometry2D.triangulate_polygon(polygon)
@@ -321,13 +430,60 @@ static func _wing_panel(label: String, x0: float, x1: float, section: Array, col
 	var rib := SurfaceTool.new()
 	rib.begin(Mesh.PRIMITIVE_TRIANGLES)
 	rib.set_material(Finish.material(Fracture.BALSA, "wood"))
+	var cap_normal := Vector3.ZERO
+	if is_finite(tip_x):
+		var side := signf(tip_x + span_offset)
+		var rings: Array = []
+		for k in TIP_ROUND_RINGS + 1:
+			var s := float(k) / TIP_ROUND_RINGS
+			var points: Array[Vector3] = []
+			for point in section: points.append(_tip_vertex(tip_x, point, TIP_ROUND_M * (1.0 - s), _tip_scale(s), z_offset, span_offset, chord_origin))
+			rings.append(points)
+		# The raked tip plane holds the vertical and the leading-to-trailing edge line.
+		var leading: Vector3 = rings[TIP_ROUND_RINGS][0]
+		var trailing: Vector3 = leading
+		for point: Vector3 in rings[TIP_ROUND_RINGS]:
+			if point.z > trailing.z: trailing = point
+		cap_normal = Vector3(trailing.x - leading.x, 0, trailing.z - leading.z).cross(Vector3.UP).normalized()
+		if signf(cap_normal.x) != side: cap_normal = -cap_normal
+		for k in TIP_ROUND_RINGS:
+			for i in section.size():
+				var j := (i + 1) % section.size()
+				var closing := is_equal_approx(float(section[i][0]), float(section[j][0]))
+				var face := Vector3(0, float(section[j][0] - section[i][0]), float(section[i][1] - section[j][1])).normalized()
+				var quad := [rings[k][i], rings[k + 1][i], rings[k + 1][j], rings[k][j]]
+				var bevel := _narrow_bevel_normal(section, i, j)
+				var normals: Array = []
+				for corner in [[k, i], [k + 1, i], [k + 1, j], [k, j]]:
+					var r: int = corner[0]
+					var p: int = corner[1]
+					var body := bevel if bevel != Vector3.ZERO else _section_normal(section, p, face)
+					var s := float(r) / TIP_ROUND_RINGS
+					if closing:
+						normals.append(face) # hinge-gap faces stay in their constant-z plane
+					elif r == 0:
+						normals.append(body)
+					elif r == TIP_ROUND_RINGS:
+						normals.append(cap_normal)
+					else:
+						# Smooth across the ring like the skin (sharp section corners keep this quad's own edge).
+						var along_section: Vector3 = rings[r][(p + 1) % section.size()] - rings[r][(p - 1 + section.size()) % section.size()] if body != face else rings[r][j] - rings[r][i]
+						var normal: Vector3 = along_section.cross(rings[r + 1][p] - rings[r - 1][p]).normalized()
+						if normal.dot(body * (1.0 - s) + cap_normal * s) < 0.0: normal = -normal
+						normals.append(normal)
+				var outward := face + cap_normal * (float(k) + 0.5) / TIP_ROUND_RINGS
+				_wing_quad_normals(gap if closing else st, quad, normals, outward, uv_offset)
 	for x in [x0, x1]:
 		var root_rib := is_zero_approx(x + span_offset)
 		var target := rib if root_rib else st
+		var tip_cap := is_finite(tip_x) and is_equal_approx(x, tip_x)
 		for i in range(0, triangles.size(), 3):
 			# Closed caps use the same planar atlas and winding as the adjacent skin.
 			var vertices := [_wing_vertex(x, section[triangles[i]], z_offset, span_offset, chord_origin), _wing_vertex(x, section[triangles[i + 1]], z_offset, span_offset, chord_origin), _wing_vertex(x, section[triangles[i + 2]], z_offset, span_offset, chord_origin)]
-			var n := Vector3(-1 if x == x0 else 1, 0, 0)
+			if tip_cap:
+				vertices = []
+				for k in 3: vertices.append(_tip_vertex(tip_x, section[triangles[i + k]], 0.0, TIP_CAP_SCALE, z_offset, span_offset, chord_origin))
+			var n := cap_normal if tip_cap else Vector3(-1 if x == x0 else 1, 0, 0)
 			if (vertices[2] - vertices[0]).cross(vertices[1] - vertices[0]).dot(n) < 0: vertices.reverse()
 			for point in vertices:
 				target.set_normal(n)
@@ -468,9 +624,9 @@ static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	fixed.position = Vector3(0, t.y, t.hinge_z)
 	var elevator := _hinge("elevator", root, fixed.position, hinges)
 	_elevator_mesh(_relieved_outline(t.elevator_outline, t.hinge_gap / 2), t, elevator)
-	var fin := _prism("fin", _relieved_outline(_curved_outline(t.fin_outline), -t.hinge_gap / 2), t.fin_thickness, Finish.WHITE, root, true, -t.hinge_gap / 2)
+	var fin := _prism("fin", _relieved_outline(_curved_outline(t.fin_outline), -t.hinge_gap / 2), t.fin_thickness, Finish.WHITE, root, true, -t.hinge_gap / 2, [-1])
 	fin.position = Vector3(0, t.fin_y, t.rudder_hinge_z)
-	var ventral := _prism("ventral_fin", t.ventral_outline, t.ventral_thickness, RED, root, true)
+	var ventral := _prism("ventral_fin", t.ventral_outline, t.ventral_thickness, RED, root, true, NAN, [0])
 	ventral.position = fin.position
 	var skid_base: Vector3 = fin.position + Vector3(0, t.ventral_outline[2][0], t.ventral_outline[2][1])
 	_strut("tail_skid", skid_base + Vector3(0, 0.018, -0.012), skid_base + Vector3(0, -0.003, 0.012), 0.0008, root)

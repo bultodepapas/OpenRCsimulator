@@ -10,7 +10,7 @@
 | One mesh and atlas per outfit and pose; six CC0 club members; members preparing models at the pit tables | [SC-HUM-02](../research/scenery-implementation/SC-HUM-02/README.md), [-07](../research/scenery-implementation/SC-HUM-07/README.md), [-06](../research/scenery-implementation/SC-HUM-06/README.md) |
 | Shirts in the wind; skin, brows and eyes | [SC-HUM-08](../research/scenery-implementation/SC-HUM-08/README.md) |
 | Pilots hold the owner's Radiolink T12D (draft), thumbs on the sticks | [SC-HUM-01](../research/scenery-implementation/SC-HUM-01/README.md) |
-| Natural hands and relaxed arms for everyone (relaxed, grip, seated on the thighs), the logo removed from the veteran's T-shirt, readable faces (hat hair, beard colour, eyebrows tinted from the hair, natural irises), varied standing stances (the two pilots included) and a licence audit | [SC-HUM-07-R1…R6](../research/scenery-implementation/SC-HUM-07-R1/README.md) |
+| Natural hands and relaxed arms for everyone (relaxed, grip, seated on the thighs), the logo removed from the veteran's T-shirt, readable faces (hat hair, beard colour, eyebrows tinted from the hair, natural irises), varied standing stances (the two pilots included), pilot thumbs and fingers in contact with the transmitter, neck straps and a licence audit | [SC-HUM-07-R1…R8](../research/scenery-implementation/SC-HUM-07-R1/README.md) |
 | Toolchain reproduction, camera census, scene budget (13 people in 11 draws, all limits pass) | [SC-HUM-00](../research/scenery-implementation/SC-HUM-00/README.md) |
 
 Open:
@@ -245,7 +245,7 @@ Verification rules for every step: scripts parse under `app/test.sh`; drafts liv
 | D2 | Realistic MPFB characters or stylized Quaternius characters? | MPFB, consistent with today's field (used for SC-HUM-07) |
 | D3 | May High/Extreme exceed today's pilot-view budget, or must people pay for themselves? | People pay for themselves through mesh merging (SC-HUM-02) |
 | D4 | Flight-line pilots when companions are off: idle with radio, watching the player, or removed? | Watching the player with the radio on a strap |
-| D5 | Which transmitters, Mode 1 or Mode 2, and which grips? | Owner models, Mode 2, thumbs. **Applied:** Radiolink T12D draft, thumbs; neck strap not modelled yet |
+| D5 | Which transmitters, Mode 1 or Mode 2, and which grips? | Owner models, Mode 2, thumbs. **Applied:** Radiolink T12D draft, thumbs on the sticks, neck strap (SC-HUM-07-R8) |
 | D6 | Animate transmitter sticks from companion commands? | Only if SC-HUM-09 approves Layer B |
 | D7 | Crash reaction: heads only, or also a standing-up / pointing clip? | Heads only until SC-HUM-09 |
 | D8 | Regional look and climate (clothing, hats, skin tones) | Owner to describe the home field |

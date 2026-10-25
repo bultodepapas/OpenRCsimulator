@@ -1,4 +1,4 @@
-# SC-HUM-07-R1…R6 — Natural hands and arms, natural eyes and brows, varied stances, a logo-free shirt
+# SC-HUM-07-R1…R8 — Natural hands and arms, natural eyes and brows, varied stances, a logo-free shirt
 
 Status: **implemented and software-verified, 2026-10-25.** Owner: Scenery and field life. Plan: [field people plan](../../../plans/field-people.md). Revises [SC-HUM-07](../SC-HUM-07/README.md) (outfits), [SC-HUM-06](../SC-HUM-06/README.md) (work pose) and the hand part of [SC-HUM-01](../SC-HUM-01/README.md).
 
@@ -162,3 +162,49 @@ The flight-line pilots are the people seen most in flight ([SC-HUM-00 census](..
 - The six scenery and people tests and `test_outfits.py` pass.
 
 **Tried and not shipped: alpha-to-coverage hairlines.** `render_mode alpha_to_coverage` with `ALPHA_ANTIALIASING_EDGE` changed 0 pixels in the 1080p face captures on this VM (llvmpipe under Xvfb). Whether MSAA or Compatibility ignores it here is unknown, so the change cannot be verified and was not kept. The hard hairline edge is visible only at about 1 m.
+
+## SC-HUM-07-R7 — The pilots' hands hold the transmitter by contact (2026-10-25)
+
+**Measurement (Blender MCP, posed pilots, BVH of the transmitter surface).**
+- Thumb tips sat 25–32 mm from the transmitter: they aimed at the sticks without touching them.
+- Index and middle tips sank up to 16 mm into the housing.
+- Ring and little fingers floated 13–28 mm off it.
+
+**Change ([generate_people.py](../../../../tools/scenery/population/generate_people.py)).**
+- The thumb's first-joint aim is replaced by an IK over its three joints onto the stick tip.
+- `fit_fingers_to_surface` scales each finger's grip flexion, 0–2× in 0.05 steps, so the tip rests `FINGER_REST_GAP_M` (2.5 mm) outside the transmitter surface and never inside. The generator logs the result as `FINGER_FIT`.
+- Both are computed from the transmitter mesh, so the other team's final T12D gets a fitted grip on regeneration.
+
+**Results.**
+- Thumb-to-stick distance 0 mm on both pilots.
+- Finger gaps 1.9–3.7 mm, all outside. The generator reproduced the MCP prototype's values exactly.
+- MCP renders, front and over the shoulder: the fingers wrap the rear grips and the thumbs sit on the sticks.
+- Game-renderer close-up at 0.75 m: the hands read as holding the transmitter.
+
+**Verification.**
+- Only the two pilot GLBs change; the atlases are identical.
+- Native capture: motion, pause, reset, wrap and wind pass.
+- `test_landscape_population_assets`, `test_field_people_gaze`, `test_scenery_build`, `test_field_projected_shadows` and `test_outfits.py` pass.
+- Only fingertips are tested against the surface; middle phalanges are checked visually.
+
+## SC-HUM-07-R8 — Neck straps on the two flight-line pilots (2026-10-25)
+
+Planned with the `blender-director` skill (route: `prop-artist`, `realistic-style`, `godot-export`, `qa-review`; `openrc-blender` rules win), prototyped through the Blender MCP on the posed pilots, then built by [generate_people.py](../../../../tools/scenery/population/generate_people.py) (`build_neck_strap`).
+
+**Strap.**
+- A flat black nylon ribbon, 20 × 2 mm, 240 triangles. A loop lies 4 mm off the clothing around the neck and meets at the sternum. A tail runs to the transmitter's handle bar, which is the topmost transmitter vertex on the centre line.
+- The material is `RC_Transmitter_Strap`: a swatch in the shared atlas and rigid class 4, like the transmitter. It adds no draw.
+- The tail end comes from the transmitter mesh, so the final T12D reattaches on regeneration.
+
+**Iterations the QA loop caught.**
+1. `test_field_people_gaze` failed: strap vertices behind the neck fell inside the runtime head-turn band (eye height − 0.15 m), so the neck would have turned through a rigid strap. The loop now stays 3 mm below that band, measured on the **posed** eyes; the rest mesh had given a 6 mm higher band for the veteran's `standing03`.
+2. The loop was too wide, reading like a harness: a horizontal ray toward the neck axis hit the shoulders first.
+3. A nearest-point projection then hid the loop under the shirt, on the body mesh.
+4. The loop is now projected onto clothing only: it rings the veteran's T-shirt collar and passes under the polo collar.
+
+**QA verdict (`qa-review`): SHIP WITH NOTES.**
+- Budgets: pilots 8,280 and 9,039 triangles (≤ 9,200 with the transmitter allowance), one draw each, automatic LOD 8,280 → 4,139 → 2,064 (polo).
+- Game-renderer captures: three-quarter, profile and chest views of both pilots.
+- No blockers. Minor: the polo collar flaps hide part of the loop.
+- `test_landscape_population(_assets)`, `test_field_people_gaze`, `test_scenery_build`, `test_field_projected_shadows`, `test_landscape_collision_support` and `test_outfits.py` pass. Motion, pause, reset, wrap and wind pass.
+- Diffuse atlas `422b4a26…`: the strap swatch moved every person's UVs, so all 11 GLBs change.
