@@ -46,8 +46,10 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 func _tables() -> void:
-	var runway := Severity.surface_contact("runway")
-	_check("runway contact uses the abrasion friction and paving restitution", runway.friction == Severity.SLIDE_FRICTION.runway and runway.bounce == Severity.SURFACE_RESTITUTION.runway)
+	var paving := Severity.surface_contact("asphalt")
+	_check("asphalt contact uses the abrasion friction and paving restitution", paving.friction == Severity.SLIDE_FRICTION.asphalt and paving.bounce == Severity.SURFACE_RESTITUTION.asphalt)
+	# GP-07d: the field's runway is a mown grass strip: it rebounds like turf.
+	_check("the runway strip rebounds like the mown field", Severity.surface_contact("runway").bounce == Severity.surface_contact("mown").bounce)
 	_check("turf absorbs more than paving", Severity.surface_contact("grass").bounce < Severity.surface_contact("concrete").bounce)
 	_check("an unknown surface uses the explicit fallback", Severity.surface_contact("moon dust").friction == Severity.SLIDE_FRICTION.unknown)
 	_check("every friction surface has a restitution", Severity.SLIDE_FRICTION.keys().all(func(k: String) -> bool: return Severity.SURFACE_RESTITUTION.has(k)))

@@ -54,6 +54,7 @@ func _run() -> void:
 			flight.soft_hull_contacts = header.soft_hull_contacts
 			flight.setup(header.aircraft_path, "", frozen.data)
 			flight.ground_surfaces = header.ground_surfaces.duplicate()
+			flight.airframe_surfaces = header.get("airframe_surfaces", PackedFloat64Array()) # GP-07c
 			flight.ground_field_id = header.ground_field_id
 			var ready: bool = flight.setup_shaft_integrator(header.shaft_integrator) \
 				and flight.setup_weather(header.weather) and flight.set_collision_world(header.collision_world) and flight.set_lake_context(header.lake)

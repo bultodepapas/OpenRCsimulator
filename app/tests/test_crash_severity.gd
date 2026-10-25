@@ -48,7 +48,8 @@ func _mass_speed_angle_surface_checks() -> void:
 	var mown_grass_slide: Dictionary = Severity.estimate(2.0, 1.0, 5.0, slide_angle, 'mown_grass', 'wing')
 	var rough_slide: Dictionary = Severity.estimate(2.0, 1.0, 5.0, slide_angle, 'rough', 'wing')
 	var dirt_slide: Dictionary = Severity.estimate(2.0, 1.0, 5.0, slide_angle, 'dirt', 'wing')
-	_check('tangential surface aliases share their estimates', mown_slide.friction_work_j > 0.0 and mown_slide.friction_work_j == mown_grass_slide.friction_work_j and rough_slide.friction_work_j == dirt_slide.friction_work_j)
+	# GP-07c: uncut grass drags more than the mown field (stems), and more than bare dirt; mown aliases share.
+	_check('tangential surface aliases share their estimates', mown_slide.friction_work_j > 0.0 and mown_slide.friction_work_j == mown_grass_slide.friction_work_j and rough_slide.friction_work_j > mown_slide.friction_work_j and rough_slide.friction_work_j > dirt_slide.friction_work_j)
 	_check("raw kinematic energy is surface independent", grass.energy_j == concrete.energy_j)
 	_check("class is within C0 to C4", base["class"] >= 0 and base["class"] <= 4)
 	# CR-08b: bins are specific energy (J per kg of aircraft); concrete transfers 1.0.

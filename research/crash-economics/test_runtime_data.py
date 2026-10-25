@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 import hashlib
 import unittest
 from pathlib import Path
@@ -12,15 +13,21 @@ import build_runtime
 import build_catalog
 
 
-# CR-39d: every Stik hull/gear contact opens its single airframe coverage group.
+# CR-39d: every Stik hull/gear contact opens its single airframe coverage group; GP-07b: the spinner and the
+# side-mounted engine's exposed points also inspect the engine. Expected rows come from the Stik's own hull data.
+_STIK_SOURCE = json.loads((Path(__file__).resolve().parents[2] / "app/data/aircraft/jensen_ugly_stik_60.json").read_bytes())
 STIK_CONTACTS = {
     "propeller/propulsion_main": ["propeller"],
+    **{contact_id: ["covered_airframe_and_installation_hardware"] + (
+        ["engine_and_muffler"] if contact_id.startswith(("probe_spinner", "probe_engine")) else [])
+       for contact_id in _STIK_SOURCE["crash_hull_ids"]},
     **{contact_id: ["covered_airframe_and_installation_hardware"] for contact_id in (
-        "probe_wing_left_tip", "probe_wing_right_tip", "probe_tail_end", "probe_stabilizer_left_tip",
-        "probe_stabilizer_right_tip", "probe_fin_top", "probe_belly_main",
         "contact_main_left", "contact_main_right", "contact_nose")},
-    "probe_spinner_tip": ["covered_airframe_and_installation_hardware", "engine_and_muffler"],
 }
+# Independent anchors: the legacy ids that keep their meaning and the GP-07b points a lost feature would drop.
+assert {"probe_wing_left_tip", "probe_wing_right_tip", "probe_spinner_tip", "probe_tail_end", "probe_fin_top",
+        "probe_stabilizer_left_tip", "probe_stabilizer_right_tip", "probe_tail_skid", "probe_engine_head"} <= set(STIK_CONTACTS)
+assert STIK_CONTACTS["probe_engine_head"] == ["covered_airframe_and_installation_hardware", "engine_and_muffler"]
 
 
 class RuntimeEconomicsTests(unittest.TestCase):

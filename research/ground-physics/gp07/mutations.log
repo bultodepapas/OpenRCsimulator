@@ -1,0 +1,22 @@
+baseline ok   test_airframe_contacts
+baseline ok   test_crash_audio
+baseline ok   test_crash_presentation_ladder
+KILLED   plan-estimate hull restored: 6 failing checks (e.g. the drawn airframe sinks at most 12 mm before a hull point or wheel touches  worst 104.2 mm along body-down [0.7511336981754, -0.43959289969851, -0.4925]; regenerate with derive_stik_hull.py)
+KILLED   one friction for every surface: 3 failing checks (e.g. a sliding tip on the rough grass feels μ 0.55  ratio 0.400000000000)
+KILLED   friction looked up under the CG: 2 failing checks (e.g. the right tip over the mown band feels its own surface's μ, not the CG's strip  1 touching, ratio 0.310000, expected 0.47)
+KILLED   north and east swapped in the lookup: 3 failing checks (e.g. a sliding tip on the runway strip feels μ 0.40  ratio 0.550000000000)
+KILLED   fixed E3d1 regularization band: 3 failing checks (e.g. linear friction never decays faster than FRICTION_RATE_MAX on the point's mass)
+KILLED   regularization ignores the load: 3 failing checks (e.g. linear friction never decays faster than FRICTION_RATE_MAX on the point's mass)
+KILLED   regularization sized on the whole mass: 1 failing checks (e.g. contact damping and friction stay inside RK4's stable rate (λ·dt ≤ 2.5) in every tested pose  worst λ·dt 6.86 (left tip edge, 20 mm))
+KILLED   touching points not shared in the rate bound: 1 failing checks (e.g. sliding points share the friction rate bound on the whole mass  worst 179.2 s⁻¹ (inverted nose-down, 20 mm))
+KILLED   session never installs the airframe table: 4 failing checks (e.g. the session's prepared hull carries the field's airframe table)
+KILLED   setting the table does not re-prepare the hull: 2 failing checks (e.g. the session's prepared hull carries the field's airframe table)
+KILLED   airframe table missing from the soft hash: 1 failing checks (e.g. soft contacts hash the airframe table)
+KILLED   airframe table leaks into the legacy hash: 1 failing checks (e.g. the airframe table stays out of the legacy configuration)
+KILLED   flight log header drops the airframe table: 2 failing checks (e.g. the header carries the airframe table)
+KILLED   replay ignores the logged airframe table: 1 failing checks (e.g. exact replay of a soft-contact field log prepares  Recorded configuration/checkpoint is incompatible with the selected aircraft or solver.)
+KILLED   presentation keeps the paving runway friction: 1 failing checks (e.g. crash slide friction on runway equals the physics table)
+KILLED   presentation keeps the paving runway rebound: 1 failing checks (e.g. the runway strip is turf for impact transfer and rebound)
+KILLED   runway strip throws no dust again: 3 failing checks (e.g. the mown runway strip throws turf)
+KILLED   runway strip sounds like paving again: 1 failing checks (e.g. ground-surface aliases resolve)
+18/18 mutations killed

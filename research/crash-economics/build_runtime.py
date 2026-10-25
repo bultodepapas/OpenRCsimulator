@@ -739,6 +739,23 @@ def _load_context(root: Path) -> dict[str, Any]:
     }
 
 
+def stik_contact_components(source: dict[str, Any]) -> dict[str, list[str]]:
+    """CR-39d: every Stik hull and gear contact opens the single airframe coverage group; a spinner or engine hull
+    point also inspects the engine, as a prop strike does. GP-07b: read from the physical source's hull ids and
+    labels, so a regenerated crash hull (research/ground-physics/gp07/derive_stik_hull.py) needs no list here."""
+    hull_ids = source.get("crash_hull_ids")
+    labels = source.get("crash_hull_components")
+    if not isinstance(hull_ids, list) or not isinstance(labels, list) or len(hull_ids) != len(labels) or not hull_ids:
+        _fail("baseline crash hull ids and labels must be nonempty aligned arrays")
+    out: dict[str, list[str]] = {"propeller/propulsion_main": ["propeller"]}
+    for contact_id, label in zip(hull_ids, labels):
+        out[contact_id] = ["covered_airframe_and_installation_hardware"] + (
+            ["engine_and_muffler"] if label in ("spinner", "engine") else [])
+    for contact in source.get("landing_gear", {}).get("contacts", []):
+        out[contact["id"]] = ["covered_airframe_and_installation_hardware"]
+    return out
+
+
 def _build_dossiers(context: dict[str, Any]) -> list[dict[str, Any]]:
     baseline_id = context["baseline_id"]
     baseline = context["baseline"]
@@ -783,14 +800,7 @@ def _build_dossiers(context: dict[str, Any]) -> list[dict[str, Any]]:
         components=components,
         exclusions=exclusions,
         missing=[],
-        contact_components={
-            "propeller/propulsion_main": ["propeller"],
-            **{contact_id: ["covered_airframe_and_installation_hardware"] for contact_id in (
-                "probe_wing_left_tip", "probe_wing_right_tip", "probe_tail_end", "probe_stabilizer_left_tip",
-                "probe_stabilizer_right_tip", "probe_fin_top", "probe_belly_main",
-                "contact_main_left", "contact_main_right", "contact_nose")},
-            "probe_spinner_tip": ["covered_airframe_and_installation_hardware", "engine_and_muffler"],
-        },
+        contact_components=stik_contact_components(base_source),
         propeller_component_id="propeller",
         propeller_inspection_ids=["engine_and_muffler", "covered_airframe_and_installation_hardware"],
     )

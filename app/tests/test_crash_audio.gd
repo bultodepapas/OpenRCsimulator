@@ -31,7 +31,9 @@ func _run() -> void:
 	_check("crash bus routes directly to Master", bus_index > 0 and AudioServer.get_bus_send(bus_index) == &"Master")
 	var limiter: AudioEffectHardLimiter = AudioServer.get_bus_effect(bus_index, 0) as AudioEffectHardLimiter
 	_check("crash bus has a -1.25 dBFS hard limiter", limiter != null and is_equal_approx(limiter.ceiling_db, -1.25))
-	_check("ground-surface aliases resolve", audio.call("_surface_sample", "runway") == "impact_hard"
+	# GP-07d: the field's runway is a mown grass strip; paving is asphalt or concrete.
+	_check("ground-surface aliases resolve", audio.call("_surface_sample", "asphalt") == "impact_hard"
+		and audio.call("_surface_sample", "runway") == "impact_grass"
 		and audio.call("_surface_sample", "rough_grass") == "impact_dirt"
 		and audio.call("_surface_sample", "mown_grass") == "impact_grass")
 

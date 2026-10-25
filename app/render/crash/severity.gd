@@ -22,7 +22,8 @@ const SURFACE_TRANSFER: Dictionary = {
 	"mown_grass": 0.82,
 	"rough": 0.88,
 	"dirt": 0.88,
-	"runway": 0.95,
+	# GP-07d: the field's runway is a mown grass strip, as compliant as the mown field.
+	"runway": 0.82,
 	"asphalt": 0.96,
 	"concrete": 1.0,
 	"water": 0.60,
@@ -38,7 +39,7 @@ const SURFACE_TRANSFER: Dictionary = {
 # CR-09d2: how much of a wreck part's impact speed comes back as rebound, per surface. Presentation estimates: turf and
 # soil absorb, paving returns a little; foliage and lamps barely, structures like paving.
 const SURFACE_RESTITUTION: Dictionary = {
-	"grass": 0.05, "mown": 0.06, "mown_grass": 0.06, "rough": 0.08, "dirt": 0.08, "runway": 0.18, "asphalt": 0.18,
+	"grass": 0.05, "mown": 0.06, "mown_grass": 0.06, "rough": 0.08, "dirt": 0.08, "runway": 0.06, "asphalt": 0.18,
 	"concrete": 0.22, "water": 0.0, "unknown": 0.10, "tree_trunk": 0.15, "tree_foliage": 0.02, "building": 0.20,
 	"vehicle": 0.18, "lamp": 0.10, "parked_aircraft": 0.10,
 }
@@ -52,13 +53,15 @@ static func surface_contact(surface_id: String) -> Dictionary:
 
 # Airframe-on-surface sliding friction coefficients for the abrasion channel.
 # Estimates (not tyre data, not measured); friction work is mu * normal impulse * slide speed.
+# GP-07c/d: the field surfaces (runway strip, mown, rough; grass aliases mown) equal airframe_friction in
+# data/ground/surface_friction.json, which the live soft hull contacts use; test_airframe_contacts.gd keeps them equal.
 const SLIDE_FRICTION: Dictionary = {
-	"grass": 0.35,
-	"mown": 0.35,
-	"rough": 0.45,
-	"mown_grass": 0.35,
+	"grass": 0.45,
+	"mown": 0.45,
+	"rough": 0.55,
+	"mown_grass": 0.45,
 	"dirt": 0.45,
-	"runway": 0.55,
+	"runway": 0.40,
 	"asphalt": 0.55,
 	"concrete": 0.60,
 	"water": 0.05,

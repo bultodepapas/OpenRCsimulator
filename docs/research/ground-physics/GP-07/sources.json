@@ -1,0 +1,140 @@
+{
+ "format": "openrc-reference-manifest v1",
+ "topic": "Airframe-on-ground contact: sliding friction of film/wood/nylon on grass and paving, turf restitution and stiffness, ploughing of a dug-in edge",
+ "retrieved": "2026-10-25",
+ "note": "Guide: docs/research/ground-physics/GP-07/README.md. Local copies in the gitignored references/ground-contact-friction/ (reference only, do not redistribute). No source measures film, painted wood or nylon on natural grass: every friction value is a proxy. Dead ends: grass-ski or grass-sled friction, plastic or wood on grass incline tests, skin on natural turf, golf club-turf forces, UAV belly-slide distances, RC ground-loop or cartwheel thresholds; the casex UAV table (glass fibre on grass 0.15) is an unsupported guess.",
+ "files": [
+  {
+   "id": "LINTHORNE-2013",
+   "path": "references/ground-contact-friction/brunel-sled-friction-running-surface.pdf",
+   "url": "https://bura.brunel.ac.uk/bitstream/2438/8685/2/Fulltext.pdf",
+   "bytes": 130760,
+   "sha256": "4c69dfc71369058a30ada7e30962eca2f31c9c26485e802b0ed821aa2ec8f458",
+   "kind": "paper (author accepted manuscript)",
+   "evidence": "measured",
+   "license": "Brunel repository AAM; research reference, do not redistribute.",
+   "use": "Linthorne & Cooper 2013, Sports Biomechanics 12(2):175, Table I: smooth steel tubes towed over a natural-grass rugby pitch (short grass, hard ground), 0.5 m/s, 32-540 N: mu_k 0.45 +/- 0.01; authors suspect about 0.6 effective on uneven grass. 3G turf 0.35, AstroTurf 0.21, track 0.58. Anchor for runway 0.40 and mown 0.45."
+  },
+  {
+   "id": "CENEK-2005",
+   "path": "references/ground-contact-friction/cenek-2005-roadside-grass-friction.pdf",
+   "url": "https://saferroadsconference.com/wp-content/uploads/2016/05/Peter-Cenek-Frictional-Characteristics-Roadside-Grass-Types.pdf",
+   "bytes": 499874,
+   "sha256": "51a2789abd184663919425b3a4aeaa647c4a93ac9afd53a72db90db780c6b3e5",
+   "kind": "conference paper",
+   "evidence": "measured",
+   "license": "Public conference posting; copyright authors/Opus. Reference only.",
+   "use": "Tables 3-5: lightly loaded rubber dragged on grass 0.68-0.80 dry, 0.59-0.74 wet; locked car wheels 0.21-0.38 dry, 0.17-0.24 wet. Light loads grip more; wet/dry ratio 0.58-0.92."
+  },
+  {
+   "id": "NASA-TM81347",
+   "path": "references/ground-contact-friction/nasa-1980-skid-friction-lakebed-19800004772.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19800004772/downloads/19800004772.pdf",
+   "bytes": 1884718,
+   "sha256": "1e827d754e54c918d4b1873635b6e5ce0441f5128521894b82c8c324a6d5cfce",
+   "kind": "NASA technical memorandum",
+   "evidence": "measured",
+   "license": "US government work, public domain.",
+   "use": "Sefic 1979, Table 3: 4130 steel skid on a dry lakebed at 9-22 m/s, flat 0.36-0.37; 6.4 mm keel 0.41-0.50; 12.7 mm keel 0.52-0.55 (dig-in adds about +0.10 to +0.17)."
+  },
+  {
+   "id": "ANDERSON-2018",
+   "path": "references/ground-contact-friction/anderson-2018-turf-stability-device-ccby.pdf",
+   "url": "https://ndownloader.figshare.com/files/17069705",
+   "bytes": 1636929,
+   "sha256": "000c8936368e1e2e7a8b7ed1863049e8b4a654468ec035d1399ac3e9d6c2a6ac",
+   "kind": "paper",
+   "evidence": "measured",
+   "license": "CC BY 4.0 (figshare, Loughborough hdl 2134/33183).",
+   "use": "Field turf, 20 mm pin through the rootzone: 50 mm deep 300-480 N, 100 mm deep 520-860 N (0.26-0.48 MPa projected). Basis of the ploughing range q_s 0.1-0.5 MPa; wet clay shear strength 204 to 64 kPa from 14.8 to 20 % water."
+  },
+  {
+   "id": "PENNER-2002",
+   "path": "references/ground-contact-friction/penner-2002-run-of-a-golf-ball.pdf",
+   "url": "http://waddengolfacademy.com/putting/Penner_The%20Run%20of%20a%20Golf%20Ball.pdf",
+   "bytes": 269778,
+   "sha256": "6c1effd3fbf1e7cfeec84d3308184261869b87c7da4b505ca0523719cf18625d",
+   "kind": "paper (third-party copy)",
+   "evidence": "measured (Haake data, fitted)",
+   "license": "Copyright NRC Canada 2002; third-party-hosted copy. Private reference only.",
+   "use": "Golf ball on a green: e(v) = 0.510 - 0.0375 v + 0.000903 v^2 (v <= 20 m/s): 0.47 at 1 m/s, 0.41 at 3, 0.23 at 10. Sliding mu about 0.25-0.40. Proxy for a hard light part on firm short turf."
+  },
+  {
+   "id": "AXIOM-MOTO",
+   "path": "references/ground-contact-friction/axiom-motorcycle-sliding-friction-summary.pdf",
+   "url": "https://axiomforensic.com/wp-content/uploads/2017/12/Sliding-Motorcycle-Friction-for-Accident-Investigation.pdf",
+   "bytes": 1751883,
+   "sha256": "d267041b537a66d644d92bfb54a3e18adb6f6fc1d1da02a151473f5c87637fe7",
+   "kind": "technical summary",
+   "evidence": "measured",
+   "license": "Publicly posted by the authors' firm. Reference only.",
+   "use": "Plastic frame sliders on asphalt 0.45 (SD 0.09); hard-packed dirt 0.45; dirt slides with dig-in 0.61 and 1.11."
+  },
+  {
+   "id": "MCNALLY-MOTO",
+   "path": "references/ground-contact-friction/mcnally-motorcycle-sliding-cof.pdf",
+   "url": "https://mcnallyassociates.com/wp-content/uploads/TechnicalPapers/MCFriction.pdf",
+   "bytes": 524865,
+   "sha256": "52b9bea6e7525635fb5fa2f20c139d4470c6f52551b51b2873643bb02c887a10",
+   "kind": "technical paper",
+   "evidence": "measured",
+   "license": "Publicly posted by the author. Reference only.",
+   "use": "Motorcycles sliding on asphalt 0.39-0.48; initial ploughing phase decelerates harder than the steady slide."
+  },
+  {
+   "id": "ISSS-CLEGG",
+   "path": "references/ground-contact-friction/mcauliffe-clegg-hammer-talk-isss.pdf",
+   "url": "https://www.isss-sportsurfacescience.org/downloads/documents/BT3YNBCQAD_McAuliffe_clegg_hammer_talk.pdf",
+   "bytes": 2218758,
+   "sha256": "e52494c948f156ed44f32ce08ae7ac80503c015eceda5cdf5eb72370a7e28d79",
+   "kind": "slides",
+   "evidence": "measured (survey)",
+   "license": "ISSS public download. Reference only.",
+   "use": "Clegg 2.25 kg hammer targets 50-120 g on natural turf (over 1000 fields)."
+  },
+  {
+   "id": "PSU-GMAX",
+   "path": "references/ground-contact-friction/psu-understanding-gmax.pdf",
+   "url": "https://plantscience.psu.edu/research/centers/ssrc/documents/understanding-gmax.pdf",
+   "bytes": 3897256,
+   "sha256": "0c55f9f3177e8cecbb90b26e565897aeb20e5764c32cba500693c533da476d7b",
+   "kind": "slides",
+   "evidence": "standard/survey",
+   "license": "Penn State SSRC public slides. Reference only.",
+   "use": "Gmax interpretation; NFL limit below 100 g; dry compacted fields above 200 g."
+  },
+  {
+   "id": "PSU-FTF",
+   "path": "references/ground-contact-friction/psu-ftf-gmax.pdf",
+   "url": "https://plantscience.psu.edu/research/centers/ssrc/documents/ftfgmax-1.pdf",
+   "bytes": 201946,
+   "sha256": "53f1fa8870898cca5c308453679f17779fedfc1ff07b6237de19e2e5ac402666",
+   "kind": "fact sheet",
+   "evidence": "standard",
+   "license": "Penn State SSRC public fact sheet. Reference only.",
+   "use": "Gmax test method and field ranges (cross-check of ISSS-CLEGG)."
+  },
+  {
+   "id": "OWEN-1989",
+   "path": "references/ground-contact-friction/csbe-31-1-15.pdf",
+   "url": "https://library.csbe-scgab.ca/docs/journal/31/31_1_15_ocr.pdf",
+   "bytes": 3785890,
+   "sha256": "b72712da2e0ef6a56cb7be7b4c1f24c7e9332f8eb767d2feecbc1a8f59b5da91",
+   "kind": "paper",
+   "evidence": "measured",
+   "license": "Copyright CSBE; free library. Reference only.",
+   "use": "Soil tool draft speed dependence (Stafford via Owen 1989): polynomial in brittle failure, roughly speed-independent above 5 m/s in flow failure."
+  },
+  {
+   "id": "ROSA-1997",
+   "path": "references/ground-contact-friction/rosa-1997-narrow-tillage-tools-high-speed-thesis.pdf",
+   "url": "https://harvest.usask.ca/bitstreams/aa1f0b1c-59ee-4489-944d-c47c2f9356c2/download",
+   "bytes": 10515366,
+   "sha256": "4199ac8fa85aad956840808f32f844115788c918ce4f8abdf275930bd1ef2bb4",
+   "kind": "PhD thesis (scanned, no text layer)",
+   "evidence": "measured",
+   "license": "University of Saskatchewan; scholarly copying with attribution permitted. Reference only.",
+   "use": "Narrow tools at 100 mm depth, 0.5-10 m/s in a soil bin: draft linear in speed."
+  }
+ ]
+}

@@ -114,6 +114,7 @@ Use fresh output directories. Fixture equivalence proves software preservation, 
 | Helicopter | `python3 research/helicopter/verify_kernels.py --godot <godot> --out <fresh-dir>`; [session and checks](../HELICOPTER.md). |
 | Bisonte ground vehicle | [runtime/experiments](../../research/rc-monster-truck/README.md), [native builder/parity](../../research/rc-monster-truck/native/README.md). |
 | Electric coupling | [EL2a-P1](../../research/propulsion/el2a-p1/README.md), [EL2a-P2 event qualification](../../research/propulsion/el2a-p2/README.md). Reference runs use their pinned NumPy/SciPy environment. |
+| Crash hull against the drawn model | `godot --headless --path app --script "$PWD/research/ground-physics/gp07/hull_coverage_dump.gd" -- --aircraft=<id> --out=$PWD/tmp/<new>/dump.json`, then `python3 research/ground-physics/gp07/hull_coverage.py tmp/<new>/dump.json`; Stik generator `derive_stik_hull.py --check`. [GP-07](../research/ground-physics/GP-07/README.md). |
 | Taildragger and nose-over | `python3 research/ground-contact/e5a/verify.py --out tmp/e5a-proof --mutations`; analogous `e5b/verify.py`. [E5a](../../research/ground-contact/e5a/README.md), [E5b](../../research/ground-contact/e5b/README.md). |
 | Long-circuit sensitivity | `python3 research/landing/e4b/measure.py --out tmp/e4b-proof`; [E4b limits](../research/ground-contact/E4b/README.md). Completion does not mean every perturbation passed. |
 | Radio calibration | `python3 research/input/d6b-r2/verify.py --out tmp/d6b-r2-proof`; [contract](../research/radio-input/D6b-R2/README.md). |

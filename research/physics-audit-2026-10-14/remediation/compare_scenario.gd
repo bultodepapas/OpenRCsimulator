@@ -41,6 +41,7 @@ func _run() -> void:
 	# Freeze the accepted aircraft data from the tape: concurrent catalog changes are not part of this experiment.
 	flight.setup(header.aircraft_path, "", header.aircraft.duplicate(true))
 	flight.ground_surfaces = header.ground_surfaces.duplicate()
+	flight.airframe_surfaces = header.get("airframe_surfaces", PackedFloat64Array()) # GP-07c
 	flight.ground_field_id = header.ground_field_id
 	if not flight.setup_shaft_integrator(header.shaft_integrator) or not flight.setup_weather(header.weather) \
 			or not flight.set_collision_world(header.collision_world) or not flight.set_lake_context(header.lake):

@@ -34,17 +34,20 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 func _dust_and_sparks() -> void:
-	for hard in ["runway", "asphalt", "concrete", "building"]:
+	for hard in ["asphalt", "concrete", "building"]:
 		_check("%s throws no dust" % hard, Effects.dust_profile(hard).is_empty())
+	# GP-07d: the field's runway is a mown grass strip, not paving.
+	_check("the mown runway strip throws turf", Effects.dust_profile("runway") == Effects.DUST_COLORS.grass)
+	_check("no sparks on the runway strip, even for an engine sliding fast", not Effects.sparks_for(3, "runway", "engine", 25.0, false))
 	_check("grass throws turf, not soil", Effects.dust_profile("grass") == Effects.DUST_COLORS.grass and Effects.dust_profile("mown") == Effects.DUST_COLORS.grass)
 	_check("rough ground throws soil", Effects.dust_profile("rough") == Effects.DUST_COLORS.soil)
 	_check("a tree trunk throws bark, foliage throws leaves", Effects.dust_profile("tree_trunk") == Effects.DUST_COLORS.bark and Effects.dust_profile("tree_foliage") == Effects.DUST_COLORS.leaves)
 	_check("no sparks on grass, even for a hot turbine", not Effects.sparks_for(4, "grass", "engine", 30.0, true))
-	_check("a wood wing sliding on asphalt does not spark", not Effects.sparks_for(3, "runway", "wingtip", 25.0, false))
-	_check("an engine sliding fast on asphalt sparks", Effects.sparks_for(2, "runway", "engine", 12.0, false))
-	_check("a slow engine scrape does not spark", not Effects.sparks_for(3, "runway", "engine", 5.0, false))
+	_check("a wood wing sliding on asphalt does not spark", not Effects.sparks_for(3, "asphalt", "wingtip", 25.0, false))
+	_check("an engine sliding fast on asphalt sparks", Effects.sparks_for(2, "asphalt", "engine", 12.0, false))
+	_check("a slow engine scrape does not spark", not Effects.sparks_for(3, "asphalt", "engine", 5.0, false))
 	_check("a hot turbine casing sparks in a structural crash on paving", Effects.sparks_for(3, "asphalt", "fuselage", 0.0, true))
-	_check("a touch or scrape never sparks", not Effects.sparks_for(1, "runway", "propeller", 30.0, true))
+	_check("a touch or scrape never sparks", not Effects.sparks_for(1, "asphalt", "propeller", 30.0, true))
 
 
 func _chips() -> void:
@@ -83,8 +86,10 @@ func _effects_instance() -> void:
 		"per chip: along %.2f, across %.2f, lift %.2f m/s" % [along / n, across / n, lift / n])
 	_check("chips take the airframe's colours", colors_ok and fx.stats().splinters > 0)
 	_check("a hot turbine adds dark casing chips", fx.chip_color(0, true).get_luminance() < 0.2 and _near(fx.chip_color(1, true), Color(0.95, 0.95, 0.95)))
+	fx.start(Vector3.ZERO, slide, {"class": 3, "severity": 0.6, "surface": "asphalt", "component_group": "wingtip", "tangential_speed_mps": 20.0}, 0.0, false, Vector3.ZERO)
+	_check("asphalt C3 wing hit: no dust, no sparks", not fx.dust.emitting and not fx.sparks.emitting)
 	fx.start(Vector3.ZERO, slide, {"class": 3, "severity": 0.6, "surface": "runway", "component_group": "wingtip", "tangential_speed_mps": 20.0}, 0.0, false, Vector3.ZERO)
-	_check("runway C3 wing hit: no dust, no sparks", not fx.dust.emitting and not fx.sparks.emitting)
+	_check("runway-strip C3 wing hit throws turf, no sparks", fx.dust.emitting and not fx.sparks.emitting)
 	fx.start(Vector3.ZERO, slide, {"class": 0, "severity": 0.0, "surface": "grass"}, 0.0, false, Vector3.ZERO)
 	_check("a C0 touch throws no crash dust and no chips", not fx.dust.emitting and fx.stats().splinters == 0)
 	fx.set_debris_colors([])
@@ -104,7 +109,7 @@ func _samples(severity: Dictionary, turbine := false) -> Array:
 func _audio_ladder() -> void:
 	_check("C0 is a body thud only", _samples({"class": 0, "severity": 0.0, "surface": "grass"}) == ["impact_grass"])
 	_check("C1 adds a scrape tail, no crack", _samples({"class": 1, "severity": 0.01, "surface": "grass"}) == ["impact_grass", "scrape"])
-	var c2_wing := _samples({"class": 2, "severity": 0.1, "surface": "runway", "component_group": "wingtip"})
+	var c2_wing := _samples({"class": 2, "severity": 0.1, "surface": "asphalt", "component_group": "wingtip"})
 	_check("C2 wing hit cracks lightly and rattles, engine keeps running", c2_wing == ["crack_light", "impact_hard", "debris", "scrape"], str(c2_wing))
 	var c2_prop := _samples({"class": 2, "severity": 0.1, "surface": "grass", "component_group": "propeller"})
 	_check("C2 propeller strike cuts the engine", c2_prop.has("engine_cut") and not c2_prop.has("tear"), str(c2_prop))

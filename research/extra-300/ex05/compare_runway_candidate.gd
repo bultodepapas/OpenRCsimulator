@@ -50,6 +50,7 @@ func _run() -> void:
 	baseline.soft_hull_contacts = header.soft_hull_contacts
 	baseline.setup(header.aircraft_path, "", header.aircraft)
 	baseline.ground_surfaces = header.ground_surfaces.duplicate()
+	baseline.airframe_surfaces = header.get("airframe_surfaces", PackedFloat64Array()) # GP-07c
 	baseline.ground_field_id = header.ground_field_id
 	var baseline_configured: bool = baseline.setup_shaft_integrator(header.shaft_integrator) \
 		and baseline.setup_weather(header.weather) \
@@ -70,6 +71,7 @@ func _run() -> void:
 	candidate.soft_hull_contacts = header.soft_hull_contacts
 	candidate.setup(header.aircraft_path, "", candidate_data)
 	candidate.ground_surfaces = header.ground_surfaces.duplicate()
+	candidate.airframe_surfaces = header.get("airframe_surfaces", PackedFloat64Array()) # GP-07c
 	candidate.ground_field_id = header.ground_field_id
 	var configured: bool = candidate.setup_shaft_integrator(header.shaft_integrator) \
 		and candidate.setup_weather(header.weather) \

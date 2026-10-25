@@ -33,9 +33,12 @@ func _initialize() -> void:
 	_check("level at 0.30 m: clear of the ground", not session.touches_ground(_at(0.30, 0.0, 0.0, 0.0)))
 	_check("level at 0.20 m: the wheels touch, which is not a hull crash", not session.touches_ground(_at(0.20, 0.0, 0.0, 0.0)) and not session.gear_collapsed(_at(0.20, 0.0, 0.0, 0.0)))
 	_check("level at 0.10 m: the gear is pushed past its travel", session.gear_collapsed(_at(0.10, 0.0, 0.0, 0.0)))
-	_check("level at 0.05 m: the belly touches", session.touches_ground(_at(0.05, 0.0, 0.0, 0.0)))
+	# GP-07b: the hull follows the drawn model: the tail skid hangs 87 mm below the thrust line, the drawn fin top is
+	# 183 mm above it (the plan estimate had 260 mm).
+	_check("level at 0.05 m: the tail skid touches", session.touches_ground(_at(0.05, 0.0, 0.0, 0.0)))
 	_check("inverted at 0.35 m: clear", not session.touches_ground(_at(0.35, 0.0, 0.0, PI)))
-	_check("inverted at 0.20 m: the fin touches", session.touches_ground(_at(0.20, 0.0, 0.0, PI)))
+	_check("inverted at 0.17 m: the fin touches", session.touches_ground(_at(0.17, 0.0, 0.0, PI)))
+	_check("inverted at 0.20 m: clear of the drawn fin", not session.touches_ground(_at(0.20, 0.0, 0.0, PI)))
 	_check("knife edge at 0.70 m: the down wing tip touches", session.touches_ground(_at(0.70, 0.0, 0.0, PI / 2.0)))
 	_check("knife edge at 0.85 m: clear", not session.touches_ground(_at(0.85, 0.0, 0.0, PI / 2.0)))
 	_check("vertical dive at 0.30 m: the spinner touches", session.touches_ground(_at(0.30, 0.0, -PI / 2.0, 0.0)))

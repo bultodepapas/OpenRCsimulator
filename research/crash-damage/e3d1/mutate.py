@@ -14,7 +14,7 @@ def swap(i, j):
     def f(a): a[i], a[j] = a[j], a[i]
     return f
 MUTS = [
- ("no friction", "physics/hull_contact.gd", text_sub("		var scale := FRICTION_MU * f_up / maxf(slip, SLIP_REGULARIZATION_MPS)", "		var scale := 0.0")),
+ ("no friction", "physics/hull_contact.gd", text_sub("		var scale := mu * f_up / maxf(slip, slip_regularization(mu, f_up, m_min))", "		var scale := 0.0")),
  ("stiffness from the whole mass", "physics/hull_contact.gd", text_sub("		k.append(smallest * OMEGA_RAD_S * OMEGA_RAD_S)", "		k.append(mass * OMEGA_RAD_S * OMEGA_RAD_S)")),
  ("damper may pull into the ground", "physics/hull_contact.gd", text_sub("		if f_up <= 0.0:\n			continue # a damper never pulls the airframe into the ground", "		if false:\n			continue")),
  ("terminal cut far too lenient", "physics/hull_contact.gd", text_sub("const TERMINAL_J_PER_KG := 2.5", "const TERMINAL_J_PER_KG := 250.0")),

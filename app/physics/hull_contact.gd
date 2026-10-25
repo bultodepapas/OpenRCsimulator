@@ -2,6 +2,9 @@
 ## normal with regularized Coulomb friction in the ground plane, so a wingtip brush, a tail touch or a belly slide
 ## no longer ends the flight. FlightSession decides when a contact is a crash (terminal()). Pure float64.
 ## Stiffness and damping are numerical contact choices (estimates), not measured airframe or turf compliance.
+## GP-07c: the friction coefficient is the field surface's airframe_friction under the point (runway strip, mown,
+## rough; ground_surfaces.gd build_airframe), and the regularization speed scales with the point's load so friction
+## holds a lightly loaded point near Coulomb while a hard impact stays inside RK4's stable rate.
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
@@ -15,10 +18,20 @@ const OMEGA_RAD_S := 60.0
 const ZETA := 0.7
 ## Damping grows from zero over this compression so the force does not jump at touchdown (cf. E1b).
 const DAMPING_ONSET_M := 0.004
-## Airframe on turf or pavement; research 04 §6 estimates 0.3–0.5.
+## Airframe sliding friction without a field surface table (fixtures, lake banks): the mown-strip value, GP-07c.
 const FRICTION_MU := 0.4
-## Below this ground-plane slip speed friction scales linearly (no chatter at rest).
-const SLIP_REGULARIZATION_MPS := 0.2
+## GP-07c: below a point's regularization speed friction scales linearly with slip (no chatter at rest). The speed is
+## n·μ·F/(m·FRICTION_RATE_MAX) with m the point's smallest effective mass and n the number of hull points touching,
+## so each point's linear friction rate on its own mass stays below FRICTION_RATE_MAX/n and the sum over the body,
+## Σ (m_i/M)·FRICTION_RATE_MAX/n, below FRICTION_RATE_MAX (λ·dt = 0.5 at 240 Hz, the wheels' SIDE_LAMBDA_DT_MAX),
+## however many points share a slide; never below SLIP_REGULARIZATION_MIN_MPS. E3d1 used a fixed 0.2 m/s: a resting
+## tip crept, and a hard tip impact reached λ·dt ≈ 4, beyond RK4's real-axis limit of 2.78, so friction chattered
+## within the band. Numerical, not a property.
+const FRICTION_RATE_MAX := 120.0
+const SLIP_REGULARIZATION_MIN_MPS := 0.01
+## Floats per surface in the airframe friction table (ground_surfaces.gd build_airframe): north_min, north_max,
+## east_min, east_max, airframe_friction; the last block is a catch-all (±INF).
+const AIRFRAME_STRIDE := 5
 ## A contact is a crash when the struck point's normal energy per kilogram of airplane reaches the CR-08b C2 cut
 ## (surface transfer 1, conservative), or when any point is pushed this deep (a slow crush).
 const TERMINAL_J_PER_KG := 2.5
@@ -29,8 +42,26 @@ const STRIKE_MIN_RPM := 300.0
 
 ## Identity of this contact law and its constants, for checkpoint configuration hashes and trace metadata.
 static func law() -> String:
-	return "soft-hull-spring-friction-v1 omega=%s zeta=%s onset_m=%s mu=%s slip_reg_mps=%s terminal_j_per_kg=%s crash_depth_m=%s prop_strike_min_rpm=%s flat-ground" % [
-		OMEGA_RAD_S, ZETA, DAMPING_ONSET_M, FRICTION_MU, SLIP_REGULARIZATION_MPS, TERMINAL_J_PER_KG, CRASH_DEPTH_M, STRIKE_MIN_RPM]
+	return "soft-hull-spring-friction-v2 omega=%s zeta=%s onset_m=%s mu=field-airframe-friction(default %s) friction_rate_max=%s-shared slip_reg_min_mps=%s terminal_j_per_kg=%s crash_depth_m=%s prop_strike_min_rpm=%s flat-ground" % [
+		OMEGA_RAD_S, ZETA, DAMPING_ONSET_M, FRICTION_MU, FRICTION_RATE_MAX, SLIP_REGULARIZATION_MIN_MPS, TERMINAL_J_PER_KG, CRASH_DEPTH_M, STRIKE_MIN_RPM]
+
+
+## GP-07c: the airframe friction coefficient at a ground position from the flat table, FRICTION_MU without one.
+static func friction_at(surfaces: PackedFloat64Array, north: float, east: float) -> float:
+	if surfaces.is_empty():
+		return FRICTION_MU
+	var i := 0
+	while i + AIRFRAME_STRIDE < surfaces.size():
+		if north >= surfaces[i] and north <= surfaces[i + 1] and east >= surfaces[i + 2] and east <= surfaces[i + 3]:
+			return surfaces[i + 4]
+		i += AIRFRAME_STRIDE
+	return surfaces[i + 4]
+
+
+## GP-07c: slip speed below which friction on a point of smallest effective mass `m_min` carrying `f_up` is linear,
+## while `touching` hull points are in contact.
+static func slip_regularization(mu: float, f_up: float, m_min: float, touching := 1) -> float:
+	return maxf(SLIP_REGULARIZATION_MIN_MPS, float(touching) * mu * f_up / (m_min * FRICTION_RATE_MAX))
 
 
 ## E3d2: the propeller disc from the propulsion data: {hub (body FRD about the CG), axis (unit, body FRD), radius};
@@ -85,7 +116,7 @@ const _DIRECTIONS := [
 ## Per-point stiffness/damping for `hull` (body FRD about the CG, flattened) from the smallest effective mass over
 ## 26 body directions. Returns {} when the inputs cannot support a contact (callers then add no hull forces).
 static func prepare(hull: PackedFloat64Array, mass: float, inertia: PackedFloat64Array,
-		lake: Dictionary = {}) -> Dictionary:
+		lake: Dictionary = {}, surfaces := PackedFloat64Array()) -> Dictionary:
 	if hull.is_empty() or hull.size() % 3 != 0 or not is_finite(mass) or mass <= 0.0 \
 			or (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)):
 		return {}
@@ -105,7 +136,7 @@ static func prepare(hull: PackedFloat64Array, mass: float, inertia: PackedFloat6
 		c.append(2.0 * ZETA * smallest * OMEGA_RAD_S)
 		reach = maxf(reach, M.norm(r))
 	var prepared := {points = hull.duplicate(), stiffness = k, damping = c, reach = reach,
-		mass = mass, inertia = inertia.duplicate()}
+		mass = mass, inertia = inertia.duplicate(), surfaces = surfaces.duplicate()}
 	if not lake.is_empty():
 		prepared["lake"] = lake.duplicate(true)
 		prepared["lake_bounds_ne_m"] = _polygon_bounds(lake.bank_ne_m)
@@ -115,14 +146,15 @@ static func prepare(hull: PackedFloat64Array, mass: float, inertia: PackedFloat6
 ## Geometry-only preparation for a body whose mass properties change during flight. It deliberately does no
 ## inertia inversion or contact-coefficient work; the stage path can reject distant hulls before building a
 ## short-lived coefficient view from its one sampled mass-properties snapshot.
-static func prepare_geometry(hull: PackedFloat64Array, lake: Dictionary = {}) -> Dictionary:
+static func prepare_geometry(hull: PackedFloat64Array, lake: Dictionary = {},
+		surfaces := PackedFloat64Array()) -> Dictionary:
 	if hull.is_empty() or hull.size() % 3 != 0 or not _finite_array(hull) \
 			or (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)):
 		return {}
 	var reach: float = 0.0
 	for i in range(0, hull.size(), 3):
 		reach = maxf(reach, M.norm(hull.slice(i, i + 3)))
-	var geometry := {points = hull.duplicate(), reach = reach, geometry_only = true}
+	var geometry := {points = hull.duplicate(), reach = reach, geometry_only = true, surfaces = surfaces.duplicate()}
 	if not lake.is_empty():
 		geometry["lake"] = lake.duplicate(true)
 		geometry["lake_bounds_ne_m"] = _polygon_bounds(lake.bank_ne_m)
@@ -230,7 +262,8 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 		stiffness[i / 3] = smallest * OMEGA_RAD_S * OMEGA_RAD_S
 		damping[i / 3] = 2.0 * ZETA * smallest * OMEGA_RAD_S
 	var prepared := {points = hull, stiffness = stiffness, damping = damping,
-		reach = float(geometry.reach), mass = float(properties.mass_kg), inertia = properties.inertia}
+		reach = float(geometry.reach), mass = float(properties.mass_kg), inertia = properties.inertia,
+		surfaces = geometry.get("surfaces", PackedFloat64Array())}
 	if geometry.has("lake"):
 		prepared["lake"] = geometry.lake
 		prepared["lake_bounds_ne_m"] = geometry.get("lake_bounds_ne_m", PackedFloat64Array())
@@ -251,14 +284,28 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary,
 	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var touched := false
 	var lake: Dictionary = prepared.get("lake", {})
+	var surfaces: PackedFloat64Array = prepared.get("surfaces", PackedFloat64Array())
+	var samples: Array[Dictionary] = lake_samples
+	if not lake.is_empty() and samples.size() != hull.size() / 3:
+		samples = []
+		for i in range(0, hull.size(), 3):
+			var point_ned: PackedFloat64Array = _point_ned(s, hull.slice(i, i + 3))
+			samples.append({point_ned = point_ned, terrain = _lake_sample(prepared, point_ned)})
+	# GP-07c: how many points touch, for the friction regularization's shared rate bound.
+	var touching := 0
+	for i in range(0, hull.size(), 3):
+		if not lake.is_empty() and bool(samples[i / 3].terrain.get("covered", false)):
+			if _lake_compression(samples[i / 3].point_ned, samples[i / 3].terrain) > 0.0:
+				touching += 1
+		elif s[RB.POS + 2] + down[0] * hull[i] + down[1] * hull[i + 1] + down[2] * hull[i + 2] > 0.0:
+			touching += 1
 	for i in range(0, hull.size(), 3):
 		var body_point: PackedFloat64Array = hull.slice(i, i + 3)
 		if not lake.is_empty():
-			var cached: Dictionary = lake_samples[i / 3] if lake_samples.size() == hull.size() / 3 else {}
-			var point_ned: PackedFloat64Array = cached.point_ned if not cached.is_empty() else _point_ned(s, body_point)
-			var terrain: Dictionary = cached.terrain if not cached.is_empty() else _lake_sample(prepared, point_ned)
+			var point_ned: PackedFloat64Array = samples[i / 3].point_ned
+			var terrain: Dictionary = samples[i / 3].terrain
 			if bool(terrain.get("covered", false)):
-				var lake_load: PackedFloat64Array = _lake_load(s, prepared, i / 3, body_point, point_ned, terrain)
+				var lake_load: PackedFloat64Array = _lake_load(s, prepared, i / 3, body_point, point_ned, terrain, touching)
 				if not lake_load.is_empty():
 					for axis: int in 6:
 						out[axis] += lake_load[axis]
@@ -282,7 +329,12 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary,
 		var vn := north[0] * vx + north[1] * vy + north[2] * vz
 		var ve := east[0] * vx + east[1] * vy + east[2] * vz
 		var slip := M.sqrt_(vn * vn + ve * ve)
-		var scale := FRICTION_MU * f_up / maxf(slip, SLIP_REGULARIZATION_MPS)
+		var mu := FRICTION_MU
+		if not surfaces.is_empty():
+			mu = friction_at(surfaces, s[RB.POS] + north[0] * rx + north[1] * ry + north[2] * rz,
+				s[RB.POS + 1] + east[0] * rx + east[1] * ry + east[2] * rz)
+		var m_min: float = prepared.stiffness[point] / (OMEGA_RAD_S * OMEGA_RAD_S)
+		var scale := mu * f_up / maxf(slip, slip_regularization(mu, f_up, m_min, touching))
 		var f_n := -scale * vn
 		var f_e := -scale * ve
 		# NED force (f_n, f_e, −f_up) in body axes.
@@ -445,8 +497,15 @@ static func contacts(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 	return out
 
 
+## Depth of a lake-covered point below the bed or bank along its normal (≤ 0: clear); NAN-free inputs assumed.
+static func _lake_compression(point_ned: PackedFloat64Array, terrain: Dictionary) -> float:
+	var normal_length: float = M.norm(PackedFloat64Array([
+		float(terrain.get("slope_north", 0.0)), float(terrain.get("slope_east", 0.0)), 1.0]))
+	return (point_ned[2] - float(terrain.get("ground_down_m", -INF))) / normal_length
+
+
 static func _lake_load(s: PackedFloat64Array, prepared: Dictionary, point_index: int,
-	body_point: PackedFloat64Array, point_ned: PackedFloat64Array, terrain: Dictionary) -> PackedFloat64Array:
+	body_point: PackedFloat64Array, point_ned: PackedFloat64Array, terrain: Dictionary, touching := 1) -> PackedFloat64Array:
 	var normal: PackedFloat64Array = _lake_normal(terrain)
 	if normal.is_empty():
 		return PackedFloat64Array()
@@ -468,7 +527,8 @@ static func _lake_load(s: PackedFloat64Array, prepared: Dictionary, point_index:
 	var normal_speed: float = M.dot(velocity_ned, normal)
 	var tangent_velocity: PackedFloat64Array = M.sub(velocity_ned, M.scale(normal, normal_speed))
 	var slip: float = M.norm(tangent_velocity)
-	var friction_scale: float = FRICTION_MU * f_up / maxf(slip, SLIP_REGULARIZATION_MPS)
+	var m_min: float = float(prepared.stiffness[point_index]) / (OMEGA_RAD_S * OMEGA_RAD_S)
+	var friction_scale: float = FRICTION_MU * f_up / maxf(slip, slip_regularization(FRICTION_MU, f_up, m_min, touching))
 	var force_ned: PackedFloat64Array = M.sub(M.scale(normal, f_up), M.scale(tangent_velocity, friction_scale))
 	var q_inverse: PackedFloat64Array = PackedFloat64Array([q[0], -q[1], -q[2], -q[3]])
 	var force_body: PackedFloat64Array = M.q_rotate(q_inverse, force_ned)

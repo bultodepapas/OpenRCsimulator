@@ -852,6 +852,17 @@ var ground_surfaces: PackedFloat64Array:
 ## H2: last deflections built by _deflections() and the servo positions they belong to (cleared with each aircraft).
 var _deflection_key := PackedFloat64Array()
 var _deflection_cache := {}
+## GP-07c: the field's airframe sliding friction as a flat table for soft hull contacts (set_field, or a flight log's
+## header on replay); empty = the HullContact default everywhere. Setting it re-prepares the hull contact, so the
+## physics and the checkpoint configuration always use the same table.
+var airframe_surfaces: PackedFloat64Array:
+	get:
+		return _airframe_surfaces
+	set(value):
+		_airframe_surfaces = value.duplicate()
+		if sim != null and aircraft.get("ok", false):
+			_hull_contact = _prepare_hull_contact()
+var _airframe_surfaces := PackedFloat64Array()
 ## The field id the surfaces came from ("" = none: pavement), and why they could not be built ("" = fine).
 var ground_field_id := ""
 ## M5-GE-1: CG height above the ground beyond which no wing strip is in ground effect; 0 = no aero.ground_effect module.
@@ -1256,9 +1267,12 @@ func set_controller_cut(held: bool) -> void:
 func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> bool:
 	var table := GroundSurfaces.load_table(table_path)
 	var built := GroundSurfaces.build(table.table, field) if table.ok else table
-	if not built.ok:
+	var airframe := GroundSurfaces.build_airframe(table.table, field) if built.ok else built
+	if not built.ok or not airframe.ok:
+		built = built if not built.ok else airframe
 		surface_error = "ground surfaces invalid: " + str(built.errors[0] if not built.errors.is_empty() else "unknown")
 		ground_surfaces = PackedFloat64Array()
+		airframe_surfaces = PackedFloat64Array()
 		ground_field_id = ""
 		_runway_field = {}
 		pause_reason = surface_error
@@ -1267,6 +1281,7 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 		return false
 	surface_error = ""
 	ground_surfaces = built.rects
+	airframe_surfaces = airframe.rects
 	ground_field_id = str(field.get("id", "?"))
 	_runway_field = field.duplicate(true)
 	return true
@@ -1338,8 +1353,8 @@ func _sync_post_step() -> void:
 
 func _prepare_hull_contact() -> Dictionary:
 	if finite_fuel_is_active():
-		return HullContact.prepare_geometry(aircraft.model.crash_hull, _lake)
-	return HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake)
+		return HullContact.prepare_geometry(aircraft.model.crash_hull, _lake, airframe_surfaces)
+	return HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake, airframe_surfaces)
 
 
 ## Installs one normalized, detached world at a flight boundary. Proxy data contains scalar NED geometry only.
@@ -4550,6 +4565,8 @@ func _configuration_for_weather(field: WeatherField) -> String:
 	if soft_hull_contacts:
 		# E3d1: soft hull contacts change the dynamics near the ground; legacy hashes stay unchanged.
 		parts.append(HullContact.law())
+		# GP-07c: and their friction follows the field's airframe surfaces.
+		parts.append(airframe_surfaces)
 	if not _collision_world.is_empty():
 		parts.append("scenery-damage-policy:" + SceneryDamage.POLICY_VERSION)
 		parts.append(SceneryDamage.THRESHOLDS_J)

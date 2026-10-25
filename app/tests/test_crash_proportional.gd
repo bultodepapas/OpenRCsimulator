@@ -46,15 +46,16 @@ func _plan_cases() -> void:
 		["Stik wingtip, cartwheel entry", STIK_KG, 0.07, 10.0, 8.0, "grass", "wing", 2],
 		["Stik vertical nose-in 15 m/s", STIK_KG, 1.0, 15.0, 0.0, "grass", "engine", 3],
 		["Stik vertical nose-in 30 m/s", STIK_KG, 1.0, 30.0, 0.0, "grass", "engine", 4],
-		["P-51 belly landing", P51_KG, 0.94, 1.0, 25.0, "runway", "fuselage", 1],
+		# GP-07d: these landings are on a paved runway; the club field's "runway" is a mown grass strip.
+		["P-51 belly landing", P51_KG, 0.94, 1.0, 25.0, "asphalt", "fuselage", 1],
 		["P-51 vertical nose-in 15 m/s", P51_KG, 1.0, 15.0, 0.0, "grass", "engine", 3],
-		["Avanti wingtip on landing", AVANTI_KG, 0.07, 1.0, 30.0, "runway", "wing", 1],
+		["Avanti wingtip on landing", AVANTI_KG, 0.07, 1.0, 30.0, "asphalt", "wing", 1],
 	]
 	for item: Array in cases:
 		var result := _grade(item[1], item[2], item[3], item[4], item[5], item[6])
 		print("     %s: eps %.3f J/kg, abrasion %.3f J/kg -> C%d" % [item[0], result.specific_energy_j_per_kg, result.abrasion_j_per_kg, result["class"]])
 		_check("%s grades C%d" % [item[0], item[7]], result.valid and result["class"] == item[7])
-	var belly := _grade(P51_KG, 0.94, 1.0, 25.0, "runway", "fuselage")
+	var belly := _grade(P51_KG, 0.94, 1.0, 25.0, "asphalt", "fuselage")
 	_check("P-51 belly landing is a scrape from abrasion, not a normal-channel break", belly.normal_class == 0 and belly.abrasion_class == 1)
 
 

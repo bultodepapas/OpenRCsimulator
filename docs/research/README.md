@@ -90,7 +90,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ### Ground physics
 
-[GP-00–05 evidence index](ground-physics/README.md) covers terrain, per-wheel contact, spin and suspension, profile/session integration, traces, numerical checks and remaining physical calibration. The [integrated ground model](ground-physics/GP-05/README.md) records current scope and open gates.
+[GP-00–05 evidence index](ground-physics/README.md) covers terrain, per-wheel contact, spin and suspension, profile/session integration, traces, numerical checks and remaining physical calibration. [GP-07](ground-physics/GP-07/README.md) derives the Stik's crash hull from its drawn model and sets airframe sliding friction per field surface from proxy sources ([manifest](ground-physics/GP-07/sources.json); no film-on-grass measurement exists). The [integrated ground model](ground-physics/GP-05/README.md) records current scope and open gates.
 
 ### Aircraft standardization
 

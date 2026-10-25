@@ -671,59 +671,167 @@
   "crash_hull": {
     "value": [
       [
-        0.15,
-        -0.762,
-        0.05
+        0.0711,
+        -0.7082,
+        0.0711
       ],
       [
-        0.15,
-        0.762,
-        0.05
+        0.0711,
+        0.7082,
+        0.0711
       ],
       [
-        -0.33,
         0.0,
-        0.0
+        -0.6991,
+        0.0909
       ],
       [
-        0.99,
         0.0,
-        0.02
+        0.6991,
+        0.0909
       ],
       [
-        0.93,
-        -0.28,
-        0.02
+        0.1273,
+        -0.7175,
+        0.1136
       ],
       [
-        0.93,
-        0.28,
-        0.02
+        0.1273,
+        0.7175,
+        0.1136
       ],
       [
-        0.97,
+        0.0263,
+        -0.6987,
+        0.1093
+      ],
+      [
+        0.0263,
+        0.6987,
+        0.1093
+      ],
+      [
+        0.2699,
+        -0.754,
+        0.0928
+      ],
+      [
+        0.2699,
+        0.754,
+        0.0928
+      ],
+      [
+        0.3048,
+        -0.7611,
+        0.094
+      ],
+      [
+        0.3048,
+        0.7611,
+        0.094
+      ],
+      [
+        0.9421,
+        -0.2794,
+        -0.0406
+      ],
+      [
+        0.9421,
+        0.2794,
+        -0.0406
+      ],
+      [
+        0.898,
         0.0,
-        0.26
+        0.1832
       ],
       [
-        0.12,
+        0.9725,
         0.0,
-        -0.053
+        0.1571
+      ],
+      [
+        1.0127,
+        0.0,
+        0.0571
+      ],
+      [
+        0.9954,
+        0.0,
+        0.0101
+      ],
+      [
+        0.9162,
+        0.0,
+        -0.0874
+      ],
+      [
+        -0.1763,
+        -0.0373,
+        -0.0431
+      ],
+      [
+        -0.1763,
+        0.0373,
+        -0.0431
+      ],
+      [
+        -0.2557,
+        0.0778,
+        0.0634
+      ],
+      [
+        -0.2279,
+        0.0,
+        0.0796
+      ],
+      [
+        -0.2478,
+        -0.0062,
+        0.0749
+      ],
+      [
+        -0.2784,
+        0.0,
+        -0.0122
+      ],
+      [
+        -0.3152,
+        -0.0029,
+        -0.0011
       ]
     ],
     "unit": "m",
-    "kind": "estimated",
-    "source": "Points that hit the ground first (le frame): wing tips (60 in span, slight dihedral), spinner tip (firewall 6.94 in ahead of LE plus engine and spinner), tail end and stabilizer tips (52 in overall length), fin top, belly under the CG (fuselage bottom 0.053 m below the thrust line, from the model team's fuselage stations). Read from the Jensen plan and the visual model. Since E1 the wheels are landing_gear contacts, not hull points: a wheel on the ground is a landing, a leg pushed past its travel is a crash"
+    "kind": "derived",
+    "source": "GP-07b (research/ground-physics/gp07/derive_stik_hull.py): body points where the drawn Stik meets flat ground, read from the built visual model's convex hulls (hull_coverage_dump.gd) as the drawn point furthest along a stated direction inside a named part: wing tip leading edge, bottom and top crest, outer edge and aileron trailing edge (2.9 deg drawn dihedral), elevator trailing-edge tips, fin top, rudder top/trailing/bottom edges, tail skid, fuselage bottom corners, cylinder head and top of the side-mounted O.S. 61, propeller nut (probe_wing_left_tip, probe_wing_right_tip, probe_wing_left_le, probe_wing_right_le, probe_wing_left_top, probe_wing_right_top, probe_wing_left_top_front, probe_wing_right_top_front, probe_wing_left_outer, probe_wing_right_outer, probe_wing_left_te, probe_wing_right_te, probe_stabilizer_left_tip, probe_stabilizer_right_tip, probe_fin_top, probe_rudder_top_te, probe_rudder_te, probe_tail_end, probe_tail_skid, probe_nose_bottom_left, probe_nose_bottom_right, probe_engine_head, probe_engine_top, probe_engine_front_top, probe_engine_front_bottom, probe_spinner_tip). Features closer than 20 mm to an earlier one or strictly inside the hull of the others are dropped. Coverage over 6000 attitudes: the drawn airframe sinks at most 9.5 mm into flat ground before a hull point or wheel touches, 10.7 mm into a flat obstacle face before a hull point does (propeller blades excepted: E3d2 strike disc; the drawn wheels' round rims up to 15.1 mm: GP-06 D2); control-surface points sit at neutral. Replaces the 2026-10 plan estimate (8 points; up to 104 mm). The wheels are landing_gear contacts, not hull points: a wheel on the ground is a landing, a leg pushed past its travel is a crash"
   },
   "crash_hull_components": [
     "left_wing_tip",
     "right_wing_tip",
-    "spinner",
-    "tail_end",
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
     "left_stab_tip",
     "right_stab_tip",
     "fin_top",
-    "belly"
+    "fin_top",
+    "tail_end",
+    "tail_end",
+    "tail_end",
+    "nose",
+    "nose",
+    "engine",
+    "engine",
+    "engine",
+    "engine",
+    "spinner"
   ],
   "landing_gear": {
     "description": "E1: the wheels as spring-damper contacts with the flat ground (physics/ground_contact.gd): F_up = max(0, k·compression + c·rate) at each wheel bottom. Stiffness from the ROADMAP E1 rule ω·dt < 0.1 (ω = sqrt(Σk/m) at the 240 Hz tick), checked by the loader; the CG must lie inside the wheel footprint. E2: tyre forces in the ground plane along each wheel's heading: rolling resistance C_rr·N and a slip-angle side force saturating at μ·N (friction circle); the nose wheel steers with the rudder servo. Coefficients are for a tyre on dry pavement; per-surface factors (grass) come with the field surfaces (E3). Brakes: none.",
@@ -1538,12 +1646,30 @@
   "crash_hull_ids": [
     "probe_wing_left_tip",
     "probe_wing_right_tip",
-    "probe_spinner_tip",
-    "probe_tail_end",
+    "probe_wing_left_le",
+    "probe_wing_right_le",
+    "probe_wing_left_top",
+    "probe_wing_right_top",
+    "probe_wing_left_top_front",
+    "probe_wing_right_top_front",
+    "probe_wing_left_outer",
+    "probe_wing_right_outer",
+    "probe_wing_left_te",
+    "probe_wing_right_te",
     "probe_stabilizer_left_tip",
     "probe_stabilizer_right_tip",
     "probe_fin_top",
-    "probe_belly_main"
+    "probe_rudder_top_te",
+    "probe_rudder_te",
+    "probe_tail_end",
+    "probe_tail_skid",
+    "probe_nose_bottom_left",
+    "probe_nose_bottom_right",
+    "probe_engine_head",
+    "probe_engine_top",
+    "probe_engine_front_top",
+    "probe_engine_front_bottom",
+    "probe_spinner_tip"
   ],
   "physical_identity_version": 1
 }
