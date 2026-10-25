@@ -299,6 +299,11 @@ Each servo is now placed from its shaft, so the case hangs below its arm. The ta
 
 The hatches are now covered in the wing film: each corner samples the atlas at its own planform position, and the hatch is a target of the `wing` slot. The strips and gap faces join their slots (wing, wing tip, tail). `visual_checks.gd` now fails when a film surface is not a paint target. A negative control, a stray film box added in memory, makes it fail.
 
+**Checks.**
+- `verify_model.gd` passes 895/0; the coverage check reports 34 film surfaces.
+- `verify_controls.gd` passes 421/0.
+- 23 related tests pass: customization, manifests, package proofs, liveries, Workshop ×9 (customization, integration, presentation, reuse, profile transfer, bundle, descriptor, preview, smoke bindings), UI ×2, scuffs ×2, crash ×3, soft contact, control presentation and engine smoke.
+
 ## Limits and open findings
 
 - **Engine shadow acne (global, not Stik-specific).** With PSSM engine shadows on (the interactive default), the wing shows a diagonal crosshatch. It disappears with `OPENRC_ENGINE_SHADOWS=off`, and the glossier film makes it more visible. Sun bias settings belong to the atmosphere/world owners (`render/atmosphere.gd`, L3).
