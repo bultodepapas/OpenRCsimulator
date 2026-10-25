@@ -601,7 +601,7 @@ func _refresh_graphics_info() -> void:
 	var input_height := roundi(output_size.y * scale)
 	_graphics_info.text += "\n" + tr("Reconstruction: Requested %s → Active %s") % [
 		_choice_caption("reconstruction", requested), _choice_caption("reconstruction", effective)]
-	_graphics_info.text += "\n" + tr("3D input: %d × %d → Output: %d × %d") % [
+	_graphics_info.text += "\n" + tr("Estimated 3D input: %d × %d → Output: %d × %d") % [
 		input_width, input_height, roundi(output_size.x), roundi(output_size.y)]
 	if bool(active_policy.get("fallback", false)):
 		var reason := str(active_policy.get("fallback_reason", ""))

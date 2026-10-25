@@ -5930,8 +5930,8 @@ msgstr "A 1080p, Calidad usa una entrada 3D de unos 1280 × 720; Rendimiento usa
 msgid "Reconstruction: Requested %s → Active %s"
 msgstr "Reconstrucción: solicitada %s → activa %s"
 
-msgid "3D input: %d × %d → Output: %d × %d"
-msgstr "Entrada 3D: %d × %d → salida: %d × %d"
+msgid "Estimated 3D input: %d × %d → Output: %d × %d"
+msgstr "Entrada 3D estimada: %d × %d → salida: %d × %d"
 
 msgid "DLSS controls its own reconstruction sharpness. This saved FSR value is kept for FSR2 or FSR3."
 msgstr "DLSS controla su propia nitidez de reconstrucción. Este valor FSR se conserva para FSR2 o FSR3."
