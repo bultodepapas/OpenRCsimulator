@@ -202,3 +202,24 @@ html[data-theme=night] .inspect-launch:hover .inspect-symbol { color:#101820; }
   .hero-aircraft,.hero-copy,.hero-top,.hero-scene-caption,.model-inspector[open] { animation:none; }
   .reading-progress { display:none; }
 }
+
+/* WEB-07: official vector identity, shared with the simulator's opening. */
+.wordmark { width:220px; flex:none; }
+.wordmark img { width:100%; height:auto; }
+.hero h1 { width:min(100%,1100px); font-size:inherit; line-height:1; margin-top:clamp(28px,4vh,60px); }
+.hero h1 img { width:100%; height:auto; filter:drop-shadow(0 8px 28px #0008); }
+.footer { background:#101820; color:#f1f0e8; border-color:#ffffff24; }
+.footer .wordmark { width:260px; }
+.footer-top p,.footer-bottom { color:#aebabe; }
+.footer-bottom { border-color:#ffffff24; }
+@media (max-width:1100px) {
+  .header .wordmark { width:180px; }
+}
+@media (max-width:640px) {
+  .header { gap:12px; }
+  .header .wordmark { width:clamp(110px,32vw,150px); }
+  .header-actions { gap:8px; }
+  .nav-download { gap:6px; font-size:11px; }
+  .hero h1 { width:100%; margin-top:32px; }
+  .footer .wordmark { width:min(60vw,260px); }
+}
