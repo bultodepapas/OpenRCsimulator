@@ -11,6 +11,7 @@ const ShaderClock := preload("res://render/shader_clock.gd")
 const Lighting := preload("res://render/time_of_day_lighting.gd")
 const TimeConfig := preload("res://environment/time_of_day_config.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
+const Reconstruction := preload("res://render/reconstruction.gd")
 
 const DEFAULT_AIRCRAFT := "jensen-das-ugly-stik-60"
 const P51_AIRCRAFT := "p51d-mustang-120"
@@ -28,7 +29,7 @@ func _initialize() -> void:
 		quit(2)
 		return
 	if parsed.help:
-		print("Usage: --script tools/graphics/capture.gd -- --out PATH [--width 1280|1920|2560] [--aircraft default|p51d-mustang-120] [--hour 0..24] [--view all|aircraftground|pilot|pavilion|lake|flightline|windsock] [--seconds N]")
+		print("Usage: --script tools/graphics/capture.gd -- --out PATH [--width 1280|1920|2560] [--aircraft default|p51d-mustang-120] [--hour 0..24] [--view all|aircraftground|pilot|pavilion|lake|flightline|windsock] [--seconds N] [--contact-shadows profile|off|on] [--aa msaa4|none|taa|fsr2_native]")
 		quit()
 		return
 	_values = parsed.values
@@ -37,7 +38,7 @@ func _initialize() -> void:
 
 func _parse_args(raw: PackedStringArray) -> Dictionary:
 	var values := {}
-	var allowed := ["--out", "--width", "--aircraft", "--hour", "--view", "--seconds", "--contact-shadows"]
+	var allowed := ["--out", "--width", "--aircraft", "--hour", "--view", "--seconds", "--contact-shadows", "--aa"]
 	var i := 0
 	while i < raw.size():
 		var token: String = raw[i]
@@ -84,6 +85,9 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 	var contact_shadows := str(values.get("--contact-shadows", "profile"))
 	if contact_shadows not in ["profile", "off", "on"]:
 		return {ok = false, error = "--contact-shadows must be profile, off or on"}
+	var aa := str(values.get("--aa", "msaa4"))
+	if aa not in ["msaa4", "none", "taa", "fsr2_native"]:
+		return {ok = false, error = "--aa must be msaa4, none, taa or fsr2_native"}
 	if values.has("--seconds"):
 		if not str(values["--seconds"]).is_valid_float():
 			return {ok = false, error = "--seconds must be greater than zero"}
@@ -93,10 +97,13 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 		if view == "all":
 			return {ok = false, error = "--seconds profiling requires one named --view"}
 	return {ok = true, help = false, values = {out = str(values["--out"]), width = width,
-		aircraft = aircraft, hour = float(values.get("--hour", "-1")), view = view, seconds = seconds, contact_shadows = contact_shadows}}
+		aircraft = aircraft, hour = float(values.get("--hour", "-1")), view = view, seconds = seconds, contact_shadows = contact_shadows, aa = aa}}
 
 
 func run() -> void:
+	if _values.aa in ["taa", "fsr2_native"] and not HighGraphics.active():
+		_fail("temporal AA comparisons require native High")
+		return
 	var out := _prepare_output(str(_values.out))
 	if out.is_empty():
 		_fail("--out must name a new directory; existing paths are never overwritten")
@@ -127,7 +134,15 @@ func run() -> void:
 	var viewport := SubViewport.new()
 	viewport.name = "GraphicsComparisonViewport"
 	viewport.size = size
-	viewport.msaa_3d = Viewport.MSAA_4X
+	viewport.msaa_3d = Viewport.MSAA_4X if _values.aa == "msaa4" else Viewport.MSAA_DISABLED
+	viewport.use_taa = _values.aa == "taa"
+	if _values.aa == "fsr2_native":
+		# Reuse product reconstruction at full resolution, without an extra sharpener.
+		Reconstruction.apply(viewport, {reconstruction = "fsr2_native", fsr2_sharpness = 0.0})
+		if Reconstruction.describe(viewport).effective != "fsr2_native":
+			viewport.free()
+			_fail("FSR2 Native AA is unavailable; refusing a mislabeled fallback capture")
+			return
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	root.add_child(viewport)
 	ShaderClock.register()
@@ -209,6 +224,9 @@ func run() -> void:
 		"renderer": RenderingServer.get_current_rendering_method(), "profile": profile,
 		"gpu": {"name": RenderingServer.get_video_adapter_name(), "api": RenderingServer.get_video_adapter_api_version()},
 		"viewport": [size.x, size.y], "msaa_3d": viewport.msaa_3d, "offscreen": true,
+		"aa": {"requested": _values.aa, "use_taa": viewport.use_taa,
+			"scaling_3d_mode": viewport.scaling_3d_mode, "scaling_3d_scale": viewport.scaling_3d_scale,
+			"fsr_sharpness": viewport.fsr_sharpness, "texture_mipmap_bias": viewport.texture_mipmap_bias},
 		"lighting": {"hour": _values.hour, "snapshot": lighting, "sun_azimuth_deg": sun_params.sun_azimuth_deg,
 			"sun_elevation_deg": sun_params.sun_elevation_deg, "sun_direction_render": _vec_array(Atmosphere.sun_direction(lighting)),
 			"sun_energy": Atmosphere.light_energy(lighting), "engine_shadows": Atmosphere.engine_shadows,

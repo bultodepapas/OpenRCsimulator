@@ -11,6 +11,11 @@ const FailureRuntime := preload("res://failures/runtime.gd")
 const FailureCatalog := preload("res://failures/catalog.gd")
 const FAILURE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v10"
 signal failure_changed
+## UI-FS-04: observational receipt after a reset transaction succeeds; never part of solver state.
+signal statistics_lifecycle(receipt: Dictionary)
+var statistics_generation: int = 0
+var _statistics_operation: int = 0
+var _statistics_reload_depth: int = 0
 var _failures: RefCounted = null
 var failure_error: String = ""
 
@@ -1975,6 +1980,15 @@ func set_start_altitude(altitude: float) -> void:
 ## [F5] Reloads the aircraft data file, re-trims and restarts: tune a coefficient without restarting the app.
 ## Invalid data keeps the current aircraft flying. Returns a message for the panel.
 func reload() -> String:
+	_statistics_reload_depth += 1
+	var result: String = _reload_impl()
+	_statistics_reload_depth -= 1
+	if result.begins_with("aircraft reloaded:"):
+		_statistics_committed("reload")
+	return result
+
+
+func _reload_impl() -> String:
 	# Refuse before loading/committing data: calibration owns the paused flight.
 	if calibration != null:
 		return "reload refused during radio calibration; finish or cancel calibration first"
@@ -2636,6 +2650,21 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 
 ## The shell may retain an armed radio when restarting under the same device/profile ownership.
 func reset(preserve_radio_readiness := false) -> void:
+	_reset_impl(preserve_radio_readiness)
+	if _statistics_reload_depth == 0 and calibration == null and sim != null and sim.tick == 0 \
+			and start_error.is_empty() and sim.fault_reason.is_empty() and _has_valid_start():
+		_statistics_committed("restart")
+
+
+func _statistics_committed(cause: String) -> void:
+	_statistics_operation += 1
+	var previous: int = statistics_generation
+	statistics_generation += 1
+	statistics_lifecycle.emit({operation_id = _statistics_operation, cause = cause,
+		old_generation = previous, generation = statistics_generation, success = true})
+
+
+func _reset_impl(preserve_radio_readiness := false) -> void:
 	# Shell restart cancels calibration explicitly. Direct callers must not bypass it
 	# or emit resetting (which would close the recorder) while the wizard is active.
 	if calibration != null:

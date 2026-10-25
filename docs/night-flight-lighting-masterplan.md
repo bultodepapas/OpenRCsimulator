@@ -4,6 +4,8 @@
 
 **Owner:** Field World, aircraft-lighting subtrack **FW-RGB-00…16**, coordinated with AS/model authors, AE/Workshop, UI/input, CAM, VQ/PT, SM and CR. Gate **FW-N** remains the pilot acceptance gate; these proposals do not close it. [Ownership registry](README.md#tracks-plans-and-step-ids), [current aircraft lighting](AIRCRAFT-LIGHTING.md), [Workshop](AIRCRAFT-WORKSHOP.md), [field world](FIELD-WORLD-PLAN.md), [aircraft contract](AIRCRAFT_CONTRACT.md).
 
+**Reading map:** [decisions](#1-product-outcome-and-architectural-decisions) · [repository audit](#2-repository-audit-what-exists-and-what-is-needed) · [references](#3-reference-research-and-visual-direction) · [presets](#4-six-complete-presets) · [rendering](#5-hybrid-rendering-architecture) · [aircraft contract](#6-universal-aircraft-lighting-contract) · [clock/lifecycle](#7-animation-telemetry-and-lifecycle) · [Workshop/UI](#8-workshop-and-menu-integration) · [persistence](#9-persistence-upgrades-and-recovery) · [budgets](#10-performance-budgets-and-quality-progression) · [verification](#11-verification-and-acceptance-matrix) · [implementation order](#12-ordered-implementation-packages) · [risks](#13-risks-decisions-requiring-evidence-and-handoff).
+
 ## 1. Product outcome and architectural decisions
 
 Make a small RC aircraft read as a three-dimensional illuminated airframe against a convincing night sky: recognizable wing outline, warm upper skin, distinguishable underside, stable navigation references and vivid moving color. Up close, embedded emitters reveal structure; at pilot distance, pattern simplification preserves orientation. At every distance, light spill and shading keep the aircraft from looking like disconnected neon lines.
@@ -65,9 +67,9 @@ The knowledge graph is available but several stored GDScript ranges lag the work
 
 ## 3. Reference research and visual direction
 
-The dated [source ledger](research/night-flight-lighting/2026-10-25-sources.md) records manufacturer references, image/video locations, Godot evidence and unresolved names. Photographs and videos are reference links, not redistributed assets. Manufacturer LED counts and marketing descriptions are not luminance measurements or proof that a particular animated effect was observed.
+The dated [source ledger](research/night-flight-lighting/2026-10-25-sources.md) records manufacturer references, image/video locations, Godot evidence and the resolved pilot identity. Photographs and videos are reference links, not redistributed assets. Manufacturer LED counts and marketing descriptions are not luminance measurements or proof that a particular animated effect was observed.
 
-Verified references are the **E-flite Night Radian 2.0m**, **Night Timber X Evolution 1.2m**, **H-King Flybeam 2**, Flytron Strobon NEO, xwLedControl and external wingtip illumination from Night Fire RC. The exact requested “Jastusa / Jast USA” identity remains unconfirmed. **Jase “The Ace” Dussia** is a plausible intended reference with independently documented night aerobatics; the [source ledger](research/night-flight-lighting/2026-10-25-sources.md#jastusa--jast-usa-identity-result) distinguishes that evidence from the unconfirmed alias. Do not invent a commercial model or lighting system to fill the gap.
+Verified references are the **E-flite Night Radian 2.0m**, **Night Timber X Evolution 1.2m**, **H-King Flybeam 2**, Flytron Strobon NEO, xwLedControl and external wingtip illumination from Night Fire RC. The user confirmed that **“Jastusa / Jast USA” means Jase “The Ace” Dussia**, the RC aerobatic pilot. The [source ledger](research/night-flight-lighting/2026-10-25-sources.md#jastusa--jast-usa-identity-result) records the identity check and documented night performances. Use his performances as creative references; do not invent a commercial aircraft or claim an official reproduction of his lighting setup.
 
 Use the references for three distinct looks:
 
@@ -78,6 +80,8 @@ Use the references for three distinct looks:
 ### Art-direction rules
 
 The fixed visual hierarchy is **aircraft shape → orientation references → animated color → accents → optional particles**. Do not allow a rainbow or a white flash to replace the left-red/right-green references in a normal preset. Preserve a steady warm-white top cue and cyan/blue underside cue, supplemented by shape: one longitudinal dorsal spine versus two transverse underside bars. Color alone is insufficient for red/green color-vision differences or an aircraft smaller than a few pixels.
+
+Port/starboard mean the pilot's left/right when facing the aircraft nose, regardless of camera view; white is the aft reference. Front-on and inverted attitudes can produce similar screen color order, so never infer heading from a red/green pair alone. Classic RC follows these RC navigation conventions; it is not a regulatory compliance claim. Today's billboard lamps do not establish exact full-size viewing sectors. Optional authored directional masks must be verified from front/side/rear before describing a scale installation as directionally accurate.
 
 Keep a dark separation between neighboring saturated regions. Avoid coating the entire silhouette in white bloom. LEDs have a narrow luminous core, a restrained local halo and, only nearby, selected spill. Lit foam has low-frequency color pools and visible structural shadows; it is not uniform fullbright albedo. Original paint remains legible in day view and when the kit is OFF.
 
@@ -118,7 +122,7 @@ Ordinary effects default to periods of 4–12 s. Advanced animation rate is 0.1�
 | Real local spill | Few shadowless `OmniLight3D` color proxies and existing `SpotLight3D` landing beam | Illuminates aircraft/runway/nearby geometry | Shadowless lights can leak through thin wings. Restrict radius, position and recipients; turn down or omit a misleading light. |
 | Glow/bloom | Existing `WorldEnvironment` configuration with restrained optional engine glow | Softens intense sources coherently | Renderer implementations differ; baseline must remain readable when disabled. Do not add a full-screen postprocess for every aircraft. |
 | Spark points | Bounded `GPUParticles3D` quads or small pooled analytic instances | Cheap, short-lived visual accents | Engine particle time needs qualification against pause/replay. Analytic material driven by supplied presentation clock is the deterministic fallback. |
-| Continuous wingtip trails | Small dynamic `ArrayMesh` ribbons from a bounded ring of displayed anchor poses | Works across renderers; accurate attachment and controllable lifetime | CPU/upload cost and ribbon twist; use 2 trails maximum initially, simplify by projected error. |
+| Continuous wingtip trails | Small dynamic `ArrayMesh` ribbons from a bounded ring of displayed anchor poses | Works across renderers; accurate attachment and controllable lifetime | CPU/upload cost and ribbon twist; maximum 2 allocated trails in the entire scene, including residuals; simplify by projected error. |
 | Particle ribbon trails/subemitters | Optional enhanced renderer path after capability tests | Useful richer burst shapes | Pinned Compatibility explicitly does not implement these. Flat sparks plus the explicit ribbon path remain complete alternatives. |
 | Runway pools/horizon/moon | Existing world/field lighting, sky, exposure and glare | Avoids duplicate infrastructure and conflicting exposure | Some TOD/moon progression and pilot gates remain open; profiles cannot claim to fix them. |
 
@@ -173,6 +177,8 @@ Near draws segments, authored skin masks and bounded particles. Medium merges su
 
 Shaders use the current view for width and facing. CPU decisions select the highest useful LOD among visible relevant views, with the inset configured to exclude expensive world spill and show VFX. Clear camera-switch history only where needed; never restart the light sequence. Frustum culling uses expanded bounds for shader-width changes and live trails. A moving spark can remain visible after its aircraft leaves the frustum; track residual bounds/lifetime separately. Offscreen residuals expire against the authoritative clock and cannot reappear frozen.
 
+There is a concrete integration trap in [`magnifier.gd`](../app/render/camera/magnifier.gd): `update()` tags the model only when its root reference changes, using `LAYER = 1 << 18`. A kit attached later at dusk is therefore not automatically tagged. At rig commit, register new luminous aircraft geometry with the existing `Magnifier.tag()` helper or a CAM-owned equivalent; do not recursively tag world-space show trails into the inset. The current helper tags every descendant `VisualInstance3D`, so selected geometry must be registered deliberately and late-created objects tested. Keep crash-debris layer `1 << 19` ownership intact.
+
 ### 5.6 Spark and trail construction
 
 Festival emits a narrow outward-and-aft fan from each validated tip anchor. At birth store immutable world position, inherited displayed aircraft velocity, outward velocity, seed, color and birth tick. Evaluate a bounded ballistic/drag-like visual path from age; these constants are artistic and never feed the solver. Limit bright cores to the first part of life, then cool gold to amber and fade. No particle gets an OmniLight, collision body, damage event or sound source. Any optional terrain clipping reads the existing field query and remains presentation-only.
@@ -202,6 +208,42 @@ The following names and paths are **proposed**, not existing classes. Use plain 
 | Workshop presentation envelope | `openrc-aircraft-presentation` proposed v3, preserving explicit v1/v2 readers | Existing paint/markings/smoke plus the new lighting payload and full presentation identity. |
 
 Do not bump the physical `openrc-aircraft v2` format. Version numbers above are reserved proposals; before implementation, check that another track has not allocated them. Extend source-proof inventories deliberately; current proof paths are closed and a new shader/mask cannot be loaded by an unrecorded path. Stock/no-metadata remains allowed without requiring every old model to gain a new manifest immediately.
+
+```mermaid
+flowchart LR
+  A[Authored source bindings] --> B[Existing generators and proof inventory]
+  B --> C[Validated customization companion]
+  D[Workshop draft and saved presentation] --> E[Profile validator and resolver]
+  C --> E
+  F[Accepted model instance] --> G[Staged lighting rig]
+  E --> G
+  H[Existing AircraftLightState] --> G
+  I[Detached displayed pose and telemetry] --> G
+  G --> J[Strips and skin materials]
+  G --> K[Scene light allocation]
+  G --> L[Bounded sparks and trails]
+```
+
+No arrow returns from presentation to the simulation. The activity owns rig disposal; the model root owns attached geometry. World-space residual pools are owned by the activity's lighting service and released with that rig generation. A generation token prevents delayed async preparation from committing to a newly selected aircraft.
+
+### Existing integration seams to change
+
+| Existing seam | Planned change, confined to its responsibility |
+| --- | --- |
+| `AircraftLights.attach()` and `prepare_layout()` | Add a detached construction/staging helper that consumes an already resolved layout. Keep `attach()` as an idempotent legacy wrapper; its current early return for an existing `NightKit` is not a transactional replacement API. |
+| `World.dress_aircraft()`, field builder, `ui/home_scene.gd`, runway scenario and main's night-kit construction sites | Route every existing attachment caller through the same factory. Default/inherit creates legacy-equivalent equipment; explicit profile resolves once. No caller may bypass a selected disabled profile or attach a second kit. |
+| `main._update_aircraft_lights()` | Retain light-state policy; dispatch accepted mode/gain to the one rig. Stage profile changes elsewhere, not in every frame. |
+| Main after `_render_pose()` and the existing fractional smoke-clock calculation | Supply RGB/VFX displayed pose time and accepted observations. Reuse the clock calculation without making lighting depend on smoke being enabled. |
+| `AircraftCustomization.apply()` / `_stage_targets()` / `AircraftLights.prepare_emission()` | Compose paint, skin emission and lens overrides in one staged per-instance material transaction. Keep an immutable original-material reference and rebuild from original + accepted paint + accepted lighting; never repeatedly duplicate the previous override or let two owners overwrite the same surface. |
+| `Presentation.defaults()`, `validate()`, `validate_stored()`, `identity_record()`, `_validate_bindings()` | Add explicit v3 profile/v4 companion readers, canonical lighting normalization and source/preset/fitter identity. Preserve historical readers and a separate presentation identity. |
+| `presentation_sources.gd`, `build_customization.py`, model/Workshop descriptor generators | Extend closed proof inventory and generated companion schema, including allowed masks and new shaders. Regenerate consumers; do not edit output hashes manually. |
+| `workshop.gd` `PAGE_IDS`, `_set_page()`, `_draft_payload()`, `_restore_history()` | Add page and accepted lighting payload; include it in one shared Undo/Redo/draft history. Environment settings remain outside the payload. |
+| `workshop_customization.gd` `configure()`, `restore_editor_state()` | Reuse control/edit conventions; implement lighting controls as a focused child component if needed instead of growing unrelated paint/smoke logic. |
+| `workshop_preview.gd` `set_presentation()`, `_refresh_model_presentation()`, `_build_world()`, `reset_playback()`, `_process()`, `_exit_tree()` | Apply staged rig, local preview exposure/time, animation demand redraw, reset and resource release. Existing smoke and lighting share the isolated playhead while retaining separate enable controls. |
+| `profile_transfer.gd` | Explicitly extend its current paint/markings/smoke-only transfer schema for lighting semantic-role/capability matching, skipped-zone report and mixed target preservation. It does not support lighting today. |
+| `trial.freeze()`, Store, Bundle and DraftStore | Carry new profile through validation/readback/export/import/recovery. Preserve the existing separate presentation identity rather than folding it into physical trial identity. |
+
+A staged commit validates all required hosts/material targets, reserves bounded resources, then swaps ownership in one main-thread operation. Only afterward dispose the old rig and release its allocations. If staging fails, free only the candidate. Preserve the public `NightKit` node name and crash metadata; support existing dynamic-lamp consumers until migrated in the same package.
 
 ### 6.2 Stable semantics
 
@@ -306,9 +348,17 @@ This complete **lighting payload** is nested in the proposed presentation v3 env
 
 `selection` is `inherit`, `preset`, `custom` or `disabled`. `inherit` means the historical/model stock equipment treatment; `disabled` is an explicit empty lighting installation and cannot fall through to stock. `preset` resolves a **version-pinned** preset plus bounded overrides. `custom` stores the materialized accepted settings; omitted zone IDs inherit that pinned preset/aircraft default, while `enabled:false` is explicit. Canonical validation expands defaults before hashing. Profile brightness multiplies zone brightness, resolved AUTO gain and accessibility caps; it never modifies physical units or sky exposure.
 
+The v1 payload has exactly the top-level keys shown in the example. `preset_id` is empty and `preset_revision=0` for `inherit`/`disabled`; their zone/effect/sequence arrays must be empty. `custom` requires the explicit base preset ID/revision or the reserved base `aircraft_default` revision 1, resolved against the same binding proof. `visual_seed` is a nonnegative integer ≤2147483647. Booleans are not integers for validation.
+
+Zone entries require `id`, `enabled`, `brightness`, `pattern`, `reactive`. Pattern entries use exactly the keys in the example; irrelevant fields receive fixed canonical defaults, not arbitrary hidden values. Palette length is 1–8; `steady` samples index 0. `reactive` is `{source, gain}` with source `none|throttle|airspeed|roll_rate|pitch_rate` and gain 0–1; conversion ranges, smoothing and validity policy belong to the versioned reaction definition, not arbitrary profile expressions. Absent telemetry produces the base pattern. No user expression evaluator is introduced.
+
+Effect entries require `{anchor_id, kind, enabled, intensity, lifetime_ticks}` and optional `required` boolean defaulting true. `required:false` explicitly permits an availability downgrade with a warning. Cue entries are `{id, duration_ticks, pattern, zone_ids, effect_anchor_ids}`: stable unique cue ID, complete non-sequence pattern record, registered zone IDs and effect IDs already enabled in `effects`. A nonempty sequence requires at least one zone with `pattern.id=sequence`; its cues advance in array order, loop at the summed duration and fire effects only on boundary crossings. No nested sequence pattern is allowed in a cue. The first cue boundary is primed without a burst at configure/reset; it fires on subsequent playback crossings only.
+
+Runtime `ResolvedLightingBindings` is a detached dictionary containing stable IDs, `Node3D` host handles, local paths/frames, validated material targets, capability flags and proof identity. It is never JSON-serialized. `LightingFrameSample` carries integer accepted tick, finite displayed seconds, generation token, detached read-only telemetry, validated render transforms and view descriptors. `LightingBudgetReceipt` contains requested/resolved counts and degradation reasons. Do not pass session objects or mutable physics arrays into shaders/VFX.
+
 ### 6.6 Validation and error policy
 
-Use strict JSON parsing consistent with Workshop's existing parser. Reject duplicate keys/IDs, unknown fields in a known schema, booleans supplied as numbers, nonfinite values, unbounded strings, unsupported versions and invalid references. Suggested initial bounds: 32 zones, 64 anchors, 128 points per strip, 4096 path points total, 8 palette colors, 32 cues, 4 VFX anchors with at most 2 simultaneously emitting. Retain the 64 KiB presentation cap by allocating a lighting sub-budget, initially 24 KiB; measure canonical worst cases before approving a larger envelope.
+Use strict JSON parsing consistent with Workshop's existing parser. Reject duplicate keys/IDs, unknown fields in a known schema, booleans supplied as numbers, nonfinite values, unbounded strings, unsupported versions and invalid references. Suggested initial bounds: 32 zones, 64 anchors, 128 points per strip, **1024 path points total**, 8 palette colors, 32 cues, 4 VFX anchors with at most 2 simultaneously emitting. The current binding reader has an 8192-node JSON-tree cap; allow at most 6144 nodes for the lighting subtree **and** enforce the unchanged total cap across paint/markings/smoke/lighting. A record can hit that total before any individual maximum. Count structural nodes before allocation and test worst-case combined fixtures; no implied allowance for all maxima simultaneously. Retain the 64 KiB presentation cap by allocating a lighting sub-budget, initially 24 KiB; measure canonical worst cases before approving a larger envelope.
 
 Brightness is 0–2, phase 0–1, duty 0.05–0.95, floor 0–1, segments 1–256, and speed periods 60–14400 ticks (0.25–60 s at 240 Hz). Effect lifetime is 12–480 ticks; intensity is 0–1. Cue durations are positive integer ticks, total ≤14400 ticks, with no nested sequences. Clamp only UI gestures and explicitly documented global preference recovery. Invalid saved profile numbers are errors, not silently corrected content.
 
@@ -322,6 +372,12 @@ Separate outcomes: `ok` (well-formed), `available` (pins/capabilities resolve), 
 4. If a path fails, omit it and show the reason; do not bridge large gaps or draw a strip at the origin. If wing semantics are ambiguous (biplane, flying wing, asymmetric/animated/skinned geometry), provide only independently valid legacy lights and require creator metadata for exact zones.
 5. Workshop offers **Customize fitted lighting**. This creates a draft from registered synthetic zone IDs bound to the current manifest plus fitting-algorithm revision and layout digest. It never writes to the imported GLB. A changed asset/fitter makes this draft stale for review.
 6. Creators replace estimated zones through source bindings and regeneration. A stable-ID migration compares old/new anchors and produces a new revision; it does not reinterpret old coordinates silently.
+
+**Synthetic-binding provider:** extend the companion resolver with a versioned `derived_fit` provider, not an exception inside the profile validator. Proposed presentation-v3 binding adds a closed `lighting_binding` record: `{provider: "authored"|"derived_fit"|"legacy", revision:int, source_sha256:string, layout_sha256:string}`. For authored bindings, source is the generated lighting companion projection and layout is its normalized target/path digest; for derived fit, source combines the manifest, admitted geometry/dependency proof and fitter source revision. For legacy/inherit, revision is 0 and both hashes are empty. Empty hashes are invalid for explicit custom/preset binding.
+
+The provider builds registered synthetic zones from the accepted neutral model through the same preparation service in Workshop and trial launch. Quantize fitted layout coordinates to 1 µm solely for the **presentation layout digest**, serialize stable zone IDs/ordered points canonically, and include the quantization algorithm version; never round physical model values. Include admitted Workshop scale and livery identity in the resolution cache key. Persist only the provider/proof record and semantic zone selections, not node paths or fitted geometry in the user profile. A nonauthoritative memory cache can reuse a resolved layout for the exact key. `disabled` uses the legacy provider with empty hashes because it requires no geometry; it still cannot fall through to inherited equipment.
+
+Library listing performs bounded structural validation without constructing aircraft. Opening/preview or trial preparation re-derives the provider, compares the layout/proof digest, and then calls the common validator with the synthetic registered companion. Until that resolution succeeds the profile is structurally valid but unavailable for launch. If re-derivation differs, retain the old record and offer reviewed regeneration into a new draft. The store/trial/bundle/recovery readers must explicitly carry this new closed binding field; this cannot be implemented by relaxing today's registered-slot checks. No per-aircraft sidecar or filesystem scan is needed.
 
 No-metadata support is strongest for the existing fixed-wing family contract. Helicopters retain their own light-state adapter and existing behavior until a dedicated binding adapter is qualified; never treat a rotor disc as a fixed wing. The contract is extensible to future vehicle visuals without changing `Simulation`, but “universal” does not mean every geometry can be inferred automatically.
 
@@ -348,7 +404,11 @@ Telemetry is a detached snapshot, read at the existing main/session presentation
 
 For “roll accent,” use a bounded envelope from absolute accepted roll rate with a threshold, hysteresis, 0.15 s attack and 0.4 s release; no discrete aerobatic achievement claim. A burst event requires a threshold crossing, 1 s cooldown and one event ID per accepted tick/source. Queue accepted events until the displayed clock reaches them, mirroring the existing smoke scheduling principle. Future state cannot trigger VFX ahead of its rendered pose. Telemetry color is optional; nav roles remain constant.
 
-Pattern time uses integer ticks for cue boundaries and bounded fractional seconds for smooth display. Use per-rig seeded hashing for visual randomness, never the simulator RNG. Evaluate wrapped phase without losing long-session precision or creating a visible discontinuity. Existing point strobes have a 1/1024-compatible clock-wrap constraint; either preserve that path unchanged or version and test a new exact phase path. Do not silently mix 240 Hz cue quantization with the old wrap assumption.
+Initial reaction-definition revision 1 uses throttle directly on [0,1], roll-rate magnitude normalized over [0, π] rad/s and pitch-rate magnitude over [0, π/2] rad/s; sign changes accent flow direction only. A roll accent arms below π/4 rad/s and triggers above π/2 rad/s, using the cooldown above. Airspeed response uses the accepted aircraft's declared visualization range when available; otherwise the reaction is unavailable, rather than importing a guessed stall/Vne number. These are visual response thresholds, not flight-envelope or maneuver-quality judgments. Source validity loss returns to the base accent over the release envelope and cancels pending births.
+
+Pattern time uses integer ticks for cue boundaries and bounded fractions for smooth display. Resolve a nonnegative displayed tick `k` and fraction `a` from the same pose sample. For a period of `P` ticks, compute `phase = ((k % P) + a) / P` in CPU float64, add the authored phase offset and wrap to [0,1); upload only this bounded phase to the material. Sequence time similarly uses `k % total_duration_ticks` and cumulative integer cue boundaries. The GPU never reconstructs arbitrary-period phase from a 1024-second wrapped clock. Shared sync groups reuse the computed phase; at most 32 zone parameter updates occur per rig/frame, not one per diode.
+
+Use per-rig seeded hashing for visual randomness, never the simulator RNG. Current `ShaderClock` wraps at 1024 seconds and existing point strobes require compatible periods; keep that legacy strobe path unchanged in the parity slice. New patterns use the explicit bounded phase contract above, with a render-owner update to the documented `sim_clock` convention: time still originates from accepted simulation, while previews have their own isolated tick sample. Test at 1024-second boundaries and long-session tick values; pause and fractional rollback cannot replay cue transitions. Track the last consumed integer cue/event index separately from shader phase.
 
 ### Lifecycle table
 
@@ -484,6 +544,8 @@ Stock aircraft can be customized by creating a Workshop build with an unchanged 
 
 Keep three independent versions: outer presentation schema, lighting payload schema, and binding/preset revisions. Historical presentation v1/v2 means **inherit current legacy lighting behavior**, using the explicit historical reader; it must not acquire a new arbitrary RGB default. New v3 must contain a lighting selection explicitly. `disabled` differs from absence; missing required v3 lighting is a malformed record.
 
+Draft recovery also needs an explicit v2 reader/writer: today's `DraftStore` v1 admits only Appearance/Smoke presentation pages and a 16 KiB editor-state object. Read old snapshots unchanged; new snapshots admit `lighting` page/zone/color buffers with a proposed 4 KiB lighting editor sub-budget inside the same total 16 KiB limit. Recovery-version migration maps no old field to a lighting value and preserves unsupported old snapshots for review. A huge cue list belongs in the accepted 24 KiB lighting profile budget, never duplicated into pending editor text.
+
 Migration is a pure function returning `{candidate, changes, warnings, unavailable}`. It never writes on read. v2→v3 preserves paint/markings/smoke and adds `inherit`; v3→future changes use named migration functions with fixtures. A renamed zone needs a creator-authored mapping and old/new pin comparison. Removed optional zones remain visible in the migration report; no nearest-name guess. Unknown future versions stay readable as unavailable metadata and cannot launch; do not downcast them.
 
 Preset upgrades do not alter saved looks silently: saved profiles pin preset revision or store their fully expanded values. Source/model/fitter/shader proof changes mark affected profiles stale. Explicit **Review upgrade → Save as new revision** presents changed/removed zones and default changes, preserves the original and creates a new identity. Copy-to-aircraft reuses `profile_transfer.gd` compatibility review: match semantic roles and capabilities, list applied/skipped settings, preserve target values not touched, then commit one Undo edit. Matching labels or matching span is insufficient.
@@ -501,10 +563,12 @@ All numbers here are **proposed incremental budgets**, not measurements or claim
 | Tier | Intended appearance | Incremental geometry/draw target | Decorative real lights | Show effects |
 | --- | --- | --- | --- | --- |
 | Low | Steady nav, simplified colored strips, optional existing landing light | ≤4 additional surfaces, ≤2k strip triangles | 0; retain qualified landing beam | Off; static accents only |
-| Standard | All patterns, authored diffuse skin, restrained glow optional | ≤8 additional surfaces, ≤8k strip triangles | ≤2 proxies per near player aircraft, scene allocator may reduce | Scene total ≤256 allocated sparks including residuals; ≤2 active trails ×64 samples |
-| Enhanced | Finer masks, richer bursts, optional backend trail experiment | ≤12 additional surfaces, ≤16k strip triangles | ≤4 proxies, ≤1 optional shadowed beam after qualification | Scene total ≤512 allocated sparks including residuals; ≤2 active trails ×128 samples |
+| Standard | All patterns, authored diffuse skin, restrained glow optional | ≤8 additional surfaces, ≤8k strip triangles | ≤2 proxies per near player aircraft, scene allocator may reduce | Scene total ≤256 allocated sparks and ≤2 allocated trails ×64 samples, both including residuals |
+| Enhanced | Finer masks, richer bursts, optional backend trail experiment | ≤12 additional surfaces, ≤16k strip triangles | ≤4 proxies, ≤1 optional shadowed beam after qualification | Scene total ≤512 allocated sparks and ≤2 allocated trails ×128 samples, both including residuals |
 
 Counts exclude existing model surfaces and existing nav/landing equipment, which must also be reported in total. Paired landing fixtures may consume two SpotLights; do not hide them behind a one-beam conceptual count. Initial scene-wide decorative spill cap is 4 (Standard) or 8 (Enhanced), reduced by backend/per-object overlap limits and reserved field/landing work. No light per particle. Particle allocation includes inactive/residual pools; lowering birth rate alone does not prove reduced GPU cost.
+
+Trail allocations belong to the scene coordinator even though each rig renders its own allocated trail. Prioritize the player, then eligible companions in stable slot-ID order; companion show effects default off. An expired/cleared trail releases its allocation. A new request cannot allocate extra buffers while an old trail is still fading. Scene changes dispose all residuals; ordinary quality changes preserve budgets without a transient double allocation.
 
 At 1080p propose ≤0.25 ms p95 additional main-thread CPU and ≤1.0 ms p95 incremental GPU for Standard steady RGB, ≤1.5 ms GPU with its Show effects. Enhanced target ≤2.0 ms incremental GPU; these require matched GPU timings and may be revised from evidence. Target a 60 Hz whole-frame budget (16.67 ms) without claiming it is already met. A scene already over budget cannot be qualified by meeting only the incremental target. Preserve the separate 500 µs physics gate without attributing render frame time to the solver.
 
@@ -559,8 +623,8 @@ Each package is independently reviewable. This document authorizes a plan only; 
 | --- | --- | --- |
 | FW-RGB-00 | Repository/source audit and masterplan; register owners; no runtime edits | This plan, dated ledger, link/content checks; complete for planning only. |
 | FW-RGB-01 | Baseline captures and renderer capability probes using existing tools; reserve 1080p workloads | Matched current kit receipts; pinned glow/particle/limit facts; proposed budgets and readability metrics accepted for measurement. |
-| FW-RGB-02 | Profile/companion schema and pure validation; version/proof strategy with AE/AS | Canonical fixtures, bounds/empty/legacy tests, migration proposal; no UI/runtime appearance change yet. |
-| FW-RGB-03 | Single rig facade over current kit; lifecycle and legacy parity | Current fleet/control/reset tests unchanged, two-instance isolation and no duplicate kit. |
+| FW-RGB-02 | Profile/companion/recovery schema and pure validation; authored/derived-fit provider/proof strategy with AE/AS | Canonical fixtures, combined JSON bounds, empty/legacy tests, migration proposal; no UI/runtime appearance change yet. |
+| FW-RGB-03 | Single detached rig factory/commit path over current kit across Home, field, runway and flight callers; lifecycle and legacy parity | Current fleet/control/reset tests unchanged, two-instance isolation, late-added magnifier tagging and no duplicate kit. |
 | FW-RGB-04 | Geometry bindings, fallback fitter validation and creator diagnostics | Authored P-51/Timber motion retained; procedural and imported examples; no-metadata/invalid geometry tests. |
 | FW-RGB-05 | Shader strip patterns and phase/clock contract | Eight patterns, 30/60/144 FPS logical parity, paused/long-duration/distance captures; no per-LED nodes. |
 | FW-RGB-06 | Real spill allocator and exposure/glow calibration | Nearby fuselage/runway receives actual light; leakage/overlap/fallback captures and incremental GPU measurements. |
@@ -598,6 +662,6 @@ First implementation slice should stop after FW-RGB-03: schema fixtures plus a f
 | Lighting changes accidentally alter physics | Presentation-only dependency direction, unchanged trace/replay hashes and recorder behavior. |
 | Impressive screenshots conceal poor pilot control | Blinded moving-flight readability gate; Festival separate from realistic defaults. |
 
-Open measurements are renderer-specific glow tuning, Compatibility particle fidelity/limits on the exact beta, practical spill cost alongside field lights, internal mask appearance on an eligible existing aircraft, and independent pilot preference. Unresolved reference naming must stay unresolved until reliable evidence identifies it; it is not a blocker for the generic system.
+Open measurements are renderer-specific glow tuning, Compatibility particle fidelity/limits on the exact beta, practical spill cost alongside field lights, internal mask appearance on an eligible existing aircraft, and independent pilot preference. The Jase Dussia reference is confirmed by the user; exact light hardware, program and aircraft configuration for any chosen performance still require their own evidence before a replica claim.
 
 The engineering handoff consists of this plan, its dated source ledger, the current contract links and the ordered evidence gates. It contains no claim that these new profiles, classes, schemas, menus or budgets already exist or have passed runtime tests.
