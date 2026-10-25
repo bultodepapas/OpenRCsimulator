@@ -60,6 +60,10 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-24 · UI-34c-R5 — draining a threaded load does not rule out an engine leak
+
+On pinned Godot 4.7.2, a scene script that preloads uncached resources can leave zero-count LoadTokens even when every `load_threaded_request(..., false)` is collected. Reproduce engine lifetime separately from application ownership before adding more caching. One ordinary `ResourceLoader.load` on a dedicated Thread avoided that signature in the retained fixture; keep the main message queue running until `is_alive()` is false, then join. A loader can need main-thread deferred work, so joining a live loader during cancellation or node destruction can deadlock. [Reproduction, ownership and limits](research/menu-investigations/UI-34c-R5/README.md).
+
 ## 2026-10-24 · F4U-18 — an inside-out skin passes Blender renders and every structural check
 
 From g1 to g1.21, the Corsair's `fuselage_core` was wound inward in every livery: 85 % of its area faced the thrust axis. Cycles shades back faces, so the author's renders looked right. The author's verifier, our preflight and `verify_f4u.gd` checked names, sections, poses and counts, so the defect shipped. Godot culls back faces, so players saw the far inner wall of the fuselage, with mirrored markings, and the owner read it as missing detail. The cause was recalculating normals on an open shell merged from several objects. When a model looks coarse, rule out winding before raising the triangle budget. The receiving preflight should measure each skin's outward area share, and at least one preview should be rendered with back-face culling. [Evidence](research/f4u-corsair/F4U-18/README.md)

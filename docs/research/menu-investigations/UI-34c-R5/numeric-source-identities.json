@@ -1,0 +1,47 @@
+{
+  "baseline_commit": "4ae9fc667da826408f1580d27d697b27e31a90c0",
+  "root": "D:\\OpenRCsimulator-evidence\\ui34c-r3",
+  "sources": {
+    "baseline/propulsion.gd": {
+      "input": "app/physics/propulsion.gd",
+      "sha256": "2344dfa4636750a45ab76157494edefeeda0e1debe0c03243829f5825626c09f"
+    },
+    "baseline/trim.gd": {
+      "input": "app/physics/trim.gd",
+      "sha256": "bfa0ebaa41dc631310509cb98d9eb93136a8bc5e5acc35b82eae17549783b59a"
+    },
+    "baseline/cruise_trim.gd": {
+      "input": "app/physics/cruise_trim.gd",
+      "sha256": "dea935adbc1ddc1f55a37dd92b6f1d2a3606fc843b4d279fef290728fbe4b2b6"
+    },
+    "baseline/launch_trim_cache.gd": {
+      "input": "app/sim/launch_trim_cache.gd",
+      "sha256": "baa940055cba057a01649b260f80136d7c57af901293220d934387022d4dd3f0"
+    },
+    "baseline/flight_session.gd": {
+      "input": "app/sim/flight_session.gd",
+      "sha256": "353cbc551a8aba061e0e7801a6abacd87d602b911534d53df4f50002c8d3b786"
+    },
+    "candidate/propulsion.gd": {
+      "input": "app/physics/propulsion.gd",
+      "sha256": "70b0f8b4ad7ecbfd1603d7ad6032d0527665ba28aa6d216120a385f3c2e55f8a"
+    },
+    "candidate/trim.gd": {
+      "input": "app/physics/trim.gd",
+      "sha256": "bfaf4786391239fe65d65c505c499073d89f8b648d6bf20768bf963373328ee0"
+    },
+    "candidate/cruise_trim.gd": {
+      "input": "app/physics/cruise_trim.gd",
+      "sha256": "50c227cd7d5d57b96cc84f8f7ce6d37666c2e90907f90bda25577443cfd81213"
+    },
+    "candidate/launch_trim_cache.gd": {
+      "input": "app/sim/launch_trim_cache.gd",
+      "sha256": "5110d1b16687868c98ef537b2e3f8f5b6451277d4b8b90afcaa0b63ef7690d42"
+    },
+    "candidate/flight_session.gd": {
+      "input": "app/sim/flight_session.gd",
+      "sha256": "4d236335125a0f481d31f301dcfd8c0525dbd75c4a4d045d40457cb5ac845fc3"
+    }
+  },
+  "note": "Instrumentation counts logical calls; no timings qualify performance. Shared untouched dependencies use the candidate project."
+}

@@ -1,0 +1,250 @@
+{
+	"complete": true,
+	"failures": 0,
+	"roots": [
+		{
+			"baseline_bytes": 328,
+			"baseline_counts": {
+				"_electric_equilibrium_source_state": 116,
+				"_electric_net_torque": 81,
+				"_electric_torque_tolerance": 33,
+				"prop_torque": 114,
+				"steady_operating_point": 1
+			},
+			"baseline_sha256": "1ae35716d5ef2dc2619094545fea21f7ef1b4afb6d59fa35bc1d218745a1d01a",
+			"candidate_bytes": 328,
+			"candidate_counts": {
+				"_electric_equilibrium_source_state": 84,
+				"_electric_net_torque": 49,
+				"_electric_residual_and_tolerance": 32,
+				"_electric_torque_tolerance": 1,
+				"prop_torque": 82,
+				"steady_operating_point": 1
+			},
+			"candidate_sha256": "1ae35716d5ef2dc2619094545fea21f7ef1b4afb6d59fa35bc1d218745a1d01a",
+			"id": "pack_default_d050_u000_rho1225",
+			"identical": true,
+			"status": "equilibrium"
+		},
+		{
+			"baseline_bytes": 328,
+			"baseline_counts": {
+				"_electric_equilibrium_source_state": 142,
+				"_electric_net_torque": 107,
+				"_electric_torque_tolerance": 33,
+				"prop_torque": 140,
+				"steady_operating_point": 1
+			},
+			"baseline_sha256": "19220edae8eefa76673f517cb0fe2add30462ee34a5c328ef267135f6017395a",
+			"candidate_bytes": 328,
+			"candidate_counts": {
+				"_electric_equilibrium_source_state": 110,
+				"_electric_net_torque": 75,
+				"_electric_residual_and_tolerance": 32,
+				"_electric_torque_tolerance": 1,
+				"prop_torque": 108,
+				"steady_operating_point": 1
+			},
+			"candidate_sha256": "19220edae8eefa76673f517cb0fe2add30462ee34a5c328ef267135f6017395a",
+			"id": "pack_default_d075_u080_rho1000",
+			"identical": true,
+			"status": "equilibrium"
+		},
+		{
+			"baseline_bytes": 328,
+			"baseline_counts": {
+				"_electric_equilibrium_source_state": 137,
+				"_electric_net_torque": 103,
+				"_electric_torque_tolerance": 32,
+				"prop_torque": 135,
+				"steady_operating_point": 1
+			},
+			"baseline_sha256": "80f0ec9a9ace01891d929c463821ec43d6fbc6ddf705526ea225a4a06bd74988",
+			"candidate_bytes": 328,
+			"candidate_counts": {
+				"_electric_equilibrium_source_state": 106,
+				"_electric_net_torque": 72,
+				"_electric_residual_and_tolerance": 31,
+				"_electric_torque_tolerance": 1,
+				"prop_torque": 104,
+				"steady_operating_point": 1
+			},
+			"candidate_sha256": "80f0ec9a9ace01891d929c463821ec43d6fbc6ddf705526ea225a4a06bd74988",
+			"id": "pack_default_d035_u050_rho0900",
+			"identical": true,
+			"status": "equilibrium"
+		},
+		{
+			"baseline_bytes": 328,
+			"baseline_counts": {
+				"_electric_equilibrium_source_state": 137,
+				"_electric_net_torque": 104,
+				"_electric_torque_tolerance": 31,
+				"prop_torque": 135,
+				"steady_operating_point": 1
+			},
+			"baseline_sha256": "9ce8102507d314ee7da47791f42feb0f89e25de2c11f5a815e804c1d910b90be",
+			"candidate_bytes": 328,
+			"candidate_counts": {
+				"_electric_equilibrium_source_state": 107,
+				"_electric_net_torque": 74,
+				"_electric_residual_and_tolerance": 30,
+				"_electric_torque_tolerance": 1,
+				"prop_torque": 105,
+				"steady_operating_point": 1
+			},
+			"candidate_sha256": "9ce8102507d314ee7da47791f42feb0f89e25de2c11f5a815e804c1d910b90be",
+			"id": "pack_soc_variant_d060_u110_rho0950",
+			"identical": true,
+			"status": "equilibrium"
+		},
+		{
+			"baseline_bytes": 332,
+			"baseline_counts": {
+				"_electric_equilibrium_source_state": 803,
+				"_electric_net_torque": 785,
+				"_electric_torque_tolerance": 1,
+				"prop_torque": 786,
+				"steady_operating_point": 1
+			},
+			"baseline_sha256": "53481b1e6a72fa1311b08ccccf6d9bf3ed51ad6b2d4bd08da3ac305376be35ca",
+			"candidate_bytes": 332,
+			"candidate_counts": {
+				"_electric_equilibrium_source_state": 803,
+				"_electric_net_torque": 785,
+				"_electric_torque_tolerance": 1,
+				"prop_torque": 786,
+				"steady_operating_point": 1
+			},
+			"candidate_sha256": "53481b1e6a72fa1311b08ccccf6d9bf3ed51ad6b2d4bd08da3ac305376be35ca",
+			"id": "pack_zero_duty_failure",
+			"identical": true,
+			"status": "unbracketed"
+		},
+		{
+			"baseline_bytes": 324,
+			"baseline_counts": {
+				"_electric_equilibrium_source_state": 1,
+				"steady_operating_point": 1
+			},
+			"baseline_sha256": "1b8236169776f4fdd5be092d31359762b7995f798ddffd1e0cc8dd3f6d6a8f55",
+			"candidate_bytes": 324,
+			"candidate_counts": {
+				"_electric_equilibrium_source_state": 1,
+				"steady_operating_point": 1
+			},
+			"candidate_sha256": "1b8236169776f4fdd5be092d31359762b7995f798ddffd1e0cc8dd3f6d6a8f55",
+			"id": "pack_invalid_soc_failure",
+			"identical": true,
+			"status": "invalid"
+		},
+		{
+			"baseline_bytes": 324,
+			"baseline_counts": {
+				"_electric_equilibrium_source_state": 1,
+				"steady_operating_point": 1
+			},
+			"baseline_sha256": "1b8236169776f4fdd5be092d31359762b7995f798ddffd1e0cc8dd3f6d6a8f55",
+			"candidate_bytes": 324,
+			"candidate_counts": {
+				"_electric_equilibrium_source_state": 1,
+				"steady_operating_point": 1
+			},
+			"candidate_sha256": "1b8236169776f4fdd5be092d31359762b7995f798ddffd1e0cc8dd3f6d6a8f55",
+			"id": "pack_invalid_esc_failure",
+			"identical": true,
+			"status": "invalid"
+		},
+		{
+			"baseline_bytes": 312,
+			"baseline_counts": {
+				"steady_operating_point": 1
+			},
+			"baseline_sha256": "7ac302ccba77a27624682cc3368f70be438bb1925ba612d313d8390db0e5dad3",
+			"candidate_bytes": 312,
+			"candidate_counts": {
+				"steady_operating_point": 1
+			},
+			"candidate_sha256": "7ac302ccba77a27624682cc3368f70be438bb1925ba612d313d8390db0e5dad3",
+			"id": "pack_invalid_duty_failure",
+			"identical": true,
+			"status": "invalid"
+		},
+		{
+			"baseline_bytes": 324,
+			"baseline_counts": {
+				"_electric_equilibrium_source_state": 118,
+				"_electric_net_torque": 86,
+				"_electric_torque_tolerance": 32,
+				"prop_torque": 118,
+				"steady_operating_point": 1
+			},
+			"baseline_sha256": "29a965a845a283584ed2998c1bd7194a19b930de406190711dc32662e4533145",
+			"candidate_bytes": 324,
+			"candidate_counts": {
+				"_electric_equilibrium_source_state": 87,
+				"_electric_net_torque": 55,
+				"_electric_residual_and_tolerance": 31,
+				"_electric_torque_tolerance": 1,
+				"prop_torque": 87,
+				"steady_operating_point": 1
+			},
+			"candidate_sha256": "29a965a845a283584ed2998c1bd7194a19b930de406190711dc32662e4533145",
+			"id": "synthetic_stik_electric_4s",
+			"identical": true,
+			"status": "equilibrium"
+		},
+		{
+			"baseline_bytes": 328,
+			"baseline_counts": {
+				"_electric_equilibrium_source_state": 120,
+				"_electric_net_torque": 86,
+				"_electric_torque_tolerance": 32,
+				"prop_torque": 118,
+				"steady_operating_point": 1
+			},
+			"baseline_sha256": "faf86215e776c8acb17eac2077be1a1555def0356b441af1f03fcb4103a5e1cf",
+			"candidate_bytes": 328,
+			"candidate_counts": {
+				"_electric_equilibrium_source_state": 89,
+				"_electric_net_torque": 55,
+				"_electric_residual_and_tolerance": 31,
+				"_electric_torque_tolerance": 1,
+				"prop_torque": 87,
+				"steady_operating_point": 1
+			},
+			"candidate_sha256": "faf86215e776c8acb17eac2077be1a1555def0356b441af1f03fcb4103a5e1cf",
+			"id": "synthetic_stik_electric_4s_battery",
+			"identical": true,
+			"status": "equilibrium"
+		}
+	],
+	"sessions": [
+		{
+			"baseline_bytes": 784,
+			"baseline_counts": {
+				"_electric_equilibrium_source_state": 190748,
+				"_electric_net_torque": 141392,
+				"_electric_torque_tolerance": 46124,
+				"prop_torque": 187517,
+				"steady_operating_point": 1616
+			},
+			"baseline_sha256": "105610a95322c2d1ef1e32e3ebfe2719c254a1ef90e1bd4ab581bfdad1b17d07",
+			"baseline_usec": 10503091,
+			"candidate_bytes": 784,
+			"candidate_counts": {
+				"_electric_equilibrium_source_state": 146240,
+				"_electric_net_torque": 96884,
+				"_electric_residual_and_tolerance": 44508,
+				"_electric_torque_tolerance": 1616,
+				"prop_torque": 143009,
+				"steady_operating_point": 1616
+			},
+			"candidate_sha256": "105610a95322c2d1ef1e32e3ebfe2719c254a1ef90e1bd4ab581bfdad1b17d07",
+			"candidate_usec": 8984061,
+			"id": "turbo-pack-full-start",
+			"identical": true,
+			"instrumented_timing_only": true
+		}
+	]
+}

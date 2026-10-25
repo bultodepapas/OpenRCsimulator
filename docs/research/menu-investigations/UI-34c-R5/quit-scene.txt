@@ -1,0 +1,6 @@
+wait until="home != null and screens.is_top('home')" timeout_s=60
+set node=AppRoot prop=flight_loading_enabled value=true
+call node=AppRoot method=start_flight
+wait until="_loading_scene_job != null and not _loading_scene_job.complete" timeout_s=30
+get node=AppRoot prop=_loading_phase
+call node=AppRoot method=quit_app
