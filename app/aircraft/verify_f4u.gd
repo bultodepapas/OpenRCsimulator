@@ -11,6 +11,10 @@ const Rig := preload("res://aircraft/retractable_model.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const Geometry := preload("res://aircraft/f4u_corsair_geometry.gd")
 const WreckController := preload("res://render/crash/wreck.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
+const GearPhysics := preload("res://physics/retractable_gear.gd")
+const Ground := preload("res://physics/ground_contact.gd")
+const RB := preload("res://physics/rigid_body.gd")
 const GLB_PATH := "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
 const DATA_PATH := "res://data/aircraft/f4u_corsair_250.json"
 const ID := "f4u-corsair-250"
@@ -260,7 +264,51 @@ func _presentation() -> void:
 		var p: Array = Geometry.DATA.gear.wheels[role].contact_model[-1]
 		var gap := Vector3(p[2], p[0], p[1]).distance_to(_v(contact.position.value))
 		_check("%s physics contact is the rendered wheel bottom (F4U-08)" % role, gap < 2e-6, "%.7f m" % gap)
+	_contact_sweep(airplane)
 	airplane.root.free()
+
+
+## F4U-08-R1: independently measure the imported tyre at all 101 samples and
+## their midpoints. A stowed main wheel is horizontal: subtracting its radius
+## from its centre used to put the contact 64 mm below the actual tyre.
+func _contact_sweep(airplane: Dictionary) -> void:
+	var loaded := AircraftData.load_file(DATA_PATH)
+	_check("contact sweep loads the production physics", loaded.ok)
+	if not loaded.ok: return
+	var model: Dictionary = loaded.model
+	var gear: Dictionary = model.landing_gear
+	for index in gear.contacts.size():
+		var role := str(gear.contacts[index].name).trim_prefix("main_")
+		var mesh := airplane.root.find_child("gear_wheel_" + role, true, false) as MeshInstance3D
+		_check(role + " contact sweep finds the imported tyre", mesh != null)
+		if mesh == null: continue
+		var worst := 0.0
+		var clear_above := true
+		var detects_touch := true
+		for step in 201:
+			var extension := float(step) / 200.0
+			Rig.apply(airplane.gear_retraction, extension)
+			var bottom := _extreme(airplane.root, mesh, Vector3.DOWN).y
+			var posed := GearPhysics.pose(gear, extension)
+			var contact: Dictionary = posed.contacts[index]
+			var physics_y: float = model.cg_le[2] - contact.position[2]
+			worst = maxf(worst, absf(bottom - physics_y))
+			if step == 200: continue # downlocked suspension admits compression
+			# Isolate this support from the hull and other wheels. Test the real
+			# collision law 2 mm on each side of the measured mesh bottom.
+			var isolated := posed.duplicate()
+			isolated.contacts = [contact]
+			var state := PackedFloat64Array()
+			state.resize(RB.SIZE)
+			state[RB.ATT] = 1.0
+			state[RB.POS + 2] = bottom - model.cg_le[2] - 0.002
+			clear_above = clear_above and not Ground.collapsed(state, isolated)
+			state[RB.POS + 2] += 0.004
+			detects_touch = detects_touch and Ground.collapsed(state, isolated)
+		_check(role + " contact follows tyre bottom across 201 retract poses", worst < 0.001, "worst %.4f mm" % (1000.0 * worst))
+		_check(role + " unlocked gear does not hit before its tyre reaches ground", clear_above)
+		_check(role + " unlocked tyre contact still triggers the collision law", detects_touch)
+	Rig.apply(airplane.gear_retraction, 1.0)
 
 
 ## F4U-11: the wreck twin exposes all ten sections; a C3 hit naming one wing releases only that outer panel (with its

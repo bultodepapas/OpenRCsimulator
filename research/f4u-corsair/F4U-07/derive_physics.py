@@ -378,9 +378,10 @@ note("aero", "Clda_right (1/rad)", Clda, "strip theory over the measured aileron
 
 # --- Inventory (le frame) ------------------------------------------------------------------------------------------
 NOSE = g["nose"]
-# F4U-08: wheels, contacts and retraction paths from the delivered g1.3 model's own GearRetract (compiled by
-# research/f4u-corsair/F4U-05/compile_model.py), so the physics follows exactly what the renderer draws. Contacts sit
-# in each wheel's plane, radius below its centre; model frame [x right, y up, z aft] -> le [x_aft, y_right, z_up].
+# F4U-08: contacts from the delivered GearRetract (compiled by F4U-05).
+# Downlocked contacts remain in the wheel plane, radius below the centre. Unlocked
+# paths follow the tyre mesh's lowest support as it rotates (F4U-08-R1).
+# Model frame [x right, y up, z aft] -> le [x_aft, y_right, z_up].
 MG = load_json(MODEL_GEOMETRY)
 WHEEL_ROLE = {"main_left": "left", "main_right": "right", "tail": "tail"}
 to_le = lambda p: [p[2], p[0], p[1]]
@@ -686,7 +687,7 @@ slip_pieces = [
     {"surface": "horizontal", "area": Sh / 2, "root": [xh_ac, 0.0, zh], "span_dir": [0.0, -1.0, 0.0], "span": hs, "chords": [crh, SS[-1]["chord"]]},
 ]
 
-# --- Landing gear: g1.3 contacts and retraction paths ---------------------------------------------------------------
+# --- Landing gear: delivered contacts and retraction paths --------------------------------------------------------
 main_pos = [GW["main_left"]["contact_down"], GW["main_right"]["contact_down"]]
 tail_pos = GW["tail"]["contact_down"]
 three_point = note("gear", "three-point attitude (deg)", math.degrees(math.atan2(tail_pos[2] - main_pos[0][2], tail_pos[0] - main_pos[0][0])), "thrust line to the ground, all wheels down, uncompressed")
@@ -696,8 +697,8 @@ k_total = (0.09 * 240) ** 2 * mass
 k_main, k_tail = k_total * (1 - tail_share) / 2, k_total * tail_share
 damp = lambda k_: 2 * 0.3 * math.sqrt(k_ * mass / 3)
 note("gear", "tail share, sum k (N/m), static sag (mm)", [tail_share, k_total, 1000 * mass * G0 / k_total], "")
-GEAR_SRC = "g1.3 wheel centre minus its radius in the wheel plane, gear down (model-geometry.json, F4U-05)"
-PATH_SRC = D(f"{len(GW['tail']['path'])} uniform extension samples of the wheel-bottom point through the delivered g1.3 GearRetract action (model-geometry.json, F4U-05): 86 deg aft fold with 90 deg wheel twist, sequenced doors")
+GEAR_SRC = "g2.2 wheel centre minus its radius in the wheel plane, gear down (model-geometry.json, F4U-05; unchanged downlocked contact)"
+PATH_SRC = D(f"{len(GW['tail']['path'])} uniform extension samples of the g2.2 tyre mesh's lowest support through GearRetract, preserving the downlocked wheel-plane contact (model-geometry.json, F4U-05, F4U-08-R1): 86 deg aft fold with 90 deg wheel twist, sequenced doors")
 
 
 def contact(identity, name, key, k_, travel, steer, how):
@@ -715,7 +716,7 @@ def contact(identity, name, key, k_, travel, steer, how):
 GT = KIT["gear_travel"]
 TRAVEL_SRC = f"{GT['method']}: reserve-drop peaks {GT['reserve_drop_peak_mm']['main']} mm (mains), {GT['reserve_drop_peak_mm']['tail']} mm (tail); {GT['source']}"
 landing_gear = {
-    "description": f"F4U-07: retractable taildragger: two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces) on the shared retractable-point-gear-v1 law. Kinematics from R59's retract rig scaled {SCALE_TXT}; timing, travel and drag are estimates.",
+    "description": "F4U-08-R1: retractable taildragger: two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces) on the shared retractable-point-gear-v1 law. Kinematics and unlocked tyre support points from the delivered g2.2 GearRetract rig; timing, travel and drag are estimates.",
     "contacts": [
         contact("contact_main_left", "main_left", "main_left", k_main, GT["main_m"], 0.0, TRAVEL_SRC),
         contact("contact_main_right", "main_right", "main_right", k_main, GT["main_m"], 0.0, TRAVEL_SRC),
