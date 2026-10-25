@@ -5831,6 +5831,36 @@ msgstr "FSR2 · Equilibrado"
 msgid "FSR2 · Performance"
 msgstr "FSR2 · Rendimiento"
 
+msgid "FSR3 · Native AA"
+msgstr "FSR3 · AA nativo"
+
+msgid "FSR3 · Quality"
+msgstr "FSR3 · Calidad"
+
+msgid "FSR3 · 85%"
+msgstr "FSR3 · 85%"
+
+msgid "FSR3 · Balanced"
+msgstr "FSR3 · Equilibrado"
+
+msgid "FSR3 · Performance"
+msgstr "FSR3 · Rendimiento"
+
+msgid "DLSS · Native AA"
+msgstr "DLSS · AA nativo"
+
+msgid "DLSS · Quality"
+msgstr "DLSS · Calidad"
+
+msgid "DLSS · Balanced"
+msgstr "DLSS · Equilibrado"
+
+msgid "DLSS · Performance"
+msgstr "DLSS · Rendimiento"
+
+msgid "Unavailable"
+msgstr "No disponible"
+
 msgid "FSR2 sharpness"
 msgstr "Nitidez FSR2"
 
@@ -5842,6 +5872,39 @@ msgstr "FSR2 funciona en Alto con GPU AMD, NVIDIA e Intel compatibles. A 1080p, 
 
 msgid "0% disables sharpening. Higher values sharpen edges but can exaggerate halos and shimmer. Only active with FSR2."
 msgstr "0% desactiva la nitidez. Los valores altos acentúan los bordes, pero pueden exagerar los halos y el parpadeo. Solo se aplica con FSR2."
+
+msgid "Choose a reconstruction provider supported by this High renderer. Check distant aircraft detail in motion."
+msgstr "Elige un método de reconstrucción compatible con este renderizador Alto. Comprueba el detalle de los aviones lejanos en movimiento."
+
+msgid "Restart in High from Home to use reconstruction."
+msgstr "Reinicia en Alto desde Inicio para usar la reconstrucción."
+
+msgid "Reconstruction is saved for High. Native rendering is active in Standard."
+msgstr "La reconstrucción está guardada para Alto. En Estándar se usa el renderizado nativo."
+
+msgid "Saved %s is unavailable here. Native rendering is active; the saved choice is preserved."
+msgstr "La opción guardada %s no está disponible aquí. Se usa el renderizado nativo y se conserva la selección guardada."
+
+msgid "FSR2 is unavailable in this engine or renderer."
+msgstr "FSR2 no está disponible en este motor o renderizador."
+
+msgid "FSR3 requires the native FSR3 extension, its supported runtime and Forward+."
+msgstr "FSR3 requiere la extensión FSR3 nativa, un entorno compatible y Forward+."
+
+msgid "DLSS requires the NVIDIA Streamline DLSS capability and Forward+."
+msgstr "DLSS requiere la capacidad DLSS de NVIDIA Streamline y Forward+."
+
+msgid "This reconstruction option is unavailable in the current runtime."
+msgstr "Esta opción de reconstrucción no está disponible en el entorno actual."
+
+msgid "DLSS manages its own reconstruction sharpness. FSR sharpness is active only with FSR2 or FSR3."
+msgstr "DLSS administra su propia nitidez de reconstrucción. La nitidez FSR solo se aplica con FSR2 o FSR3."
+
+msgid "0% disables FSR sharpening. Higher values sharpen edges but can exaggerate halos and shimmer. Only active with FSR2 or FSR3."
+msgstr "0% desactiva la nitidez FSR. Los valores altos acentúan los bordes, pero pueden exagerar los halos y el parpadeo. Solo se aplica con FSR2 o FSR3."
+
+msgid "Temporal reconstruction provides antialiasing. Your MSAA choice returns with Native rendering."
+msgstr "La reconstrucción temporal incluye antialiasing. Tu elección de MSAA se recupera con el renderizado nativo."
 
 msgid "FSR2 works in High on compatible AMD, NVIDIA and Intel GPUs. Quality renders 3D at two-thirds resolution; Native AA keeps full resolution. Check distant aircraft in motion."
 msgstr "FSR2 funciona en Alto con GPU compatibles de AMD, NVIDIA e Intel. Calidad renderiza el 3D a dos tercios de resolución; AA nativo conserva la resolución completa. Comprueba los aviones lejanos en movimiento."

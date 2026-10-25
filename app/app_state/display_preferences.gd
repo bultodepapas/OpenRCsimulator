@@ -14,7 +14,12 @@ const WINDOW_RESOLUTIONS: Array[String] = [
 const MAX_FPS_VALUES: Array[int] = [0, 30, 60, 90, 120, 144, 165, 240]
 const VSYNC_MODES: Array[String] = ["enabled", "disabled"]
 const MSAA_3D_VALUES: Array[int] = [0, 1, 2, 3]
-const RECONSTRUCTION_MODES: Array[String] = ["native", "fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance"]
+const RECONSTRUCTION_MODES: Array[String] = [
+	"native",
+	"fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance",
+	"fsr3_native", "fsr3_85", "fsr3_quality", "fsr3_balanced", "fsr3_performance",
+	"dlss_native", "dlss_quality", "dlss_balanced", "dlss_performance",
+]
 # VQ-06b: mirrors render/scene_detail.gd LEVELS (test_scene_detail.gd keeps them equal).
 const SCENE_DETAILS: Array[String] = ["auto", "low", "medium", "high", "extreme"]
 # SC-BIRD (birds-sky-life plan D2): mirrors scenery/birds/bird_director.gd PREFERENCES (test_birds.gd keeps them equal).

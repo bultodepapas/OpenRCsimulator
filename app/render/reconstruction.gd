@@ -2,27 +2,112 @@
 extends RefCounted
 
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
-const MODES: Array[String] = ["native", "fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance"]
-const SCALES := {"native": 1.0, "fsr2_native": 1.0, "fsr2_quality": 2.0 / 3.0,
-	"fsr2_85": 0.85, "fsr2_balanced": 1.0 / 1.7, "fsr2_performance": 0.5}
+const MODES: Array[String] = [
+	"native",
+	"fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance",
+	"fsr3_native", "fsr3_85", "fsr3_quality", "fsr3_balanced", "fsr3_performance",
+	"dlss_native", "dlss_quality", "dlss_balanced", "dlss_performance",
+]
+const MODE_PROVIDERS := {
+	"native": "native",
+	"fsr2_native": "fsr2", "fsr2_85": "fsr2", "fsr2_quality": "fsr2",
+	"fsr2_balanced": "fsr2", "fsr2_performance": "fsr2",
+	"fsr3_native": "fsr3", "fsr3_85": "fsr3", "fsr3_quality": "fsr3",
+	"fsr3_balanced": "fsr3", "fsr3_performance": "fsr3",
+	"dlss_native": "dlss", "dlss_quality": "dlss", "dlss_balanced": "dlss",
+	"dlss_performance": "dlss",
+}
+const SCALES := {
+	"native": 1.0,
+	"fsr2_native": 1.0, "fsr2_85": 0.85, "fsr2_quality": 2.0 / 3.0,
+	"fsr2_balanced": 1.0 / 1.7, "fsr2_performance": 0.5,
+	"fsr3_native": 1.0, "fsr3_85": 0.85, "fsr3_quality": 2.0 / 3.0,
+	"fsr3_balanced": 1.0 / 1.7, "fsr3_performance": 0.5,
+	"dlss_native": 1.0, "dlss_quality": 2.0 / 3.0, "dlss_balanced": 1.0 / 1.7,
+	"dlss_performance": 0.5,
+}
 const DEFAULT_SHARPNESS := 0.9 # User strength; matches Godot's default fsr_sharpness=0.2.
 const ENVIRONMENT_KEY := "OPENRC_RECONSTRUCTION"
+const SHARPNESS_ENVIRONMENT_KEY := "OPENRC_FSR2_SHARPNESS"
+const FSR3_METHOD := "is_fsr3_available"
+const DLSS_SINGLETON := "Streamline"
+const DLSS_CAPABILITY := "STREAMLINE_CAPABILITY_DLSS"
 
 
+## High is the gate for every optional reconstruction provider.
 static func available() -> bool:
 	return HighGraphics.active()
 
 
-static func resolve(requested: String, high_available: bool) -> Dictionary:
-	var effective := requested if high_available and requested in MODES else "native"
-	return {"requested": requested, "effective": effective,
-		"scale": SCALES[effective],
-		"temporal": effective != "native"}
+## Runtime gates are provider-specific. No GPU name or vendor heuristic is used.
+static func runtime_capabilities() -> Dictionary:
+	var high := HighGraphics.active()
+	var fsr2_mode: Variant = _integer_constant_or_null("Viewport", "SCALING_3D_MODE_FSR2")
+	var fsr3_mode: Variant = _integer_constant_or_null("Viewport", "SCALING_3D_MODE_FSR3")
+	var dlss_mode: Variant = _integer_constant_or_null("Viewport", "SCALING_3D_MODE_DLSS")
+	var fsr3_backend := RenderingServer.has_method(FSR3_METHOD) \
+		and bool(RenderingServer.call(FSR3_METHOD))
+	return {
+		"high": high,
+		"fsr2": high and fsr2_mode != null,
+		"fsr3": high and fsr3_mode != null and fsr3_backend,
+		"dlss": high and dlss_mode != null and _streamline_dlss_available(),
+		"fsr2_mode": fsr2_mode,
+		"fsr3_mode": fsr3_mode,
+		"dlss_mode": dlss_mode,
+	}
+
+
+## Preserve old `resolve(mode, high_available)` callers while allowing deterministic
+## provider injection as `resolve(mode, capabilities)` or `resolve(mode, high, caps)`.
+static func resolve(requested: String, high_available_or_capabilities: Variant = true,
+		capabilities: Dictionary = {}) -> Dictionary:
+	var gates := _resolve_capabilities(high_available_or_capabilities, capabilities)
+	var status := option_status(requested, gates)
+	var effective := requested if bool(status.available) else "native"
+	var provider := str(MODE_PROVIDERS.get(effective, "native"))
+	var mode_id: Variant = _scaling_mode_id(provider, gates)
+	var fallback_reason := str(status.reason) if effective != requested else ""
+	if provider != "native" and mode_id == null:
+		effective = "native"
+		provider = "native"
+		mode_id = Viewport.SCALING_3D_MODE_BILINEAR
+		fallback_reason = "engine_mode_missing"
+	return {
+		"requested": requested,
+		"requested_provider": str(MODE_PROVIDERS.get(requested, "unknown")),
+		"effective": effective,
+		"provider": provider,
+		"effective_provider": provider,
+		"provider_available": bool(status.available),
+		"fallback": effective != requested,
+		"fallback_reason": fallback_reason,
+		"scale": float(SCALES.get(effective, 1.0)),
+		"temporal": provider != "native",
+		"scaling_3d_mode": mode_id,
+	}
+
+
+## Explain why a menu entry is disabled without discarding its saved request.
+static func option_status(mode: String, capabilities: Dictionary = {}) -> Dictionary:
+	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
+	if not MODE_PROVIDERS.has(mode):
+		return {"available": false, "reason": "unknown_mode"}
+	var provider := str(MODE_PROVIDERS[mode])
+	if provider == "native":
+		return {"available": true, "reason": ""}
+	if not bool(gates.get("high", false)):
+		return {"available": false, "reason": "high_profile_inactive"}
+	if not bool(gates.get(provider, false)):
+		return {"available": false, "reason": provider + "_unavailable"}
+	if _scaling_mode_id(provider, gates) == null:
+		return {"available": false, "reason": "engine_mode_missing"}
+	return {"available": true, "reason": ""}
 
 
 ## Direct/technical launches may select a candidate without reading player preferences.
 static func startup_config() -> Dictionary:
-	var strength := OS.get_environment("OPENRC_FSR2_SHARPNESS").strip_edges()
+	var strength := OS.get_environment(SHARPNESS_ENVIRONMENT_KEY).strip_edges()
 	return {"reconstruction": OS.get_environment(ENVIRONMENT_KEY).strip_edges().to_lower()
 		if OS.has_environment(ENVIRONMENT_KEY) else "native",
 		"fsr2_sharpness": sharpness_strength(strength.to_float() if strength.is_valid_float() else DEFAULT_SHARPNESS)}
@@ -34,23 +119,31 @@ static func sharpness_strength(value: Variant) -> float:
 	return clampf(float(value), 0.0, 1.0)
 
 
-## Static technical captures need temporal history after the final pose/camera is set.
-## At least two jitter cycles for our supported scales; bounded to 64 rendered frames.
-static func capture_settle_frames(mode: int, scale: float) -> int:
-	if mode != Viewport.SCALING_3D_MODE_FSR2:
+## Temporal history is bounded for all three native temporal providers.
+static func capture_settle_frames(mode: int, scale: float, capabilities: Dictionary = {}) -> int:
+	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities
+	var temporal_mode := mode == Viewport.SCALING_3D_MODE_FSR2
+	for key: String in ["fsr3_mode", "dlss_mode"]:
+		var candidate: Variant = gates.get(key)
+		if typeof(candidate) == TYPE_INT and mode == int(candidate):
+			temporal_mode = true
+	if not temporal_mode:
 		return 2
 	var input_scale := clampf(scale, 0.5, 1.0)
 	return clampi(ceili(8.0 / (input_scale * input_scale)) * 2, 16, 64)
 
 
-static func apply(viewport: Viewport, config: Dictionary) -> void:
-	var policy := resolve(str(config.get("reconstruction", "native")), available())
-	viewport.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR2 if policy.temporal else Viewport.SCALING_3D_MODE_BILINEAR
+static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
+	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
+	var requested := str(config.get("reconstruction", "native"))
+	var policy := resolve(requested, gates)
+	viewport.scaling_3d_mode = int(policy.scaling_3d_mode)
 	viewport.scaling_3d_scale = float(policy.scale)
-	# Godot 4.7.2 maps this back to SDK strength as 1 - fsr_sharpness / 2.
-	# User zero disables RCAS; one is maximum. Never stack a second sharpening pass.
-	viewport.fsr_sharpness = 2.0 * (1.0 - sharpness_strength(config.get("fsr2_sharpness", DEFAULT_SHARPNESS)))
-	# FSR2 owns temporal AA. Retain the user's MSAA choice in config for native/Standard.
+	var strength := sharpness_strength(config.get("fsr2_sharpness", DEFAULT_SHARPNESS))
+	# The saved FSR sharpness remains available when switching back from DLSS or Native.
+	# It only affects the FSR providers; the menu disables the slider for DLSS.
+	viewport.fsr_sharpness = 2.0 * (1.0 - strength)
+	# Temporal reconstruction owns AA. The user's MSAA choice remains in config.
 	viewport.msaa_3d = Viewport.MSAA_DISABLED if policy.temporal else int(config.get("msaa_3d", 2)) as Viewport.MSAA
 	viewport.use_taa = false
 	viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
@@ -58,13 +151,13 @@ static func apply(viewport: Viewport, config: Dictionary) -> void:
 
 
 static func describe(viewport: Viewport) -> Dictionary:
-	var policy: Dictionary = viewport.get_meta(&"openrc_reconstruction", resolve("native", available())).duplicate(true)
+	var policy: Dictionary = viewport.get_meta(&"openrc_reconstruction", resolve("native", runtime_capabilities())).duplicate(true)
 	policy["scaling_3d_mode"] = viewport.scaling_3d_mode
 	policy["scale"] = viewport.scaling_3d_scale
 	policy["msaa_3d"] = viewport.msaa_3d
 	policy["fsr_sharpness"] = viewport.fsr_sharpness
 	policy["sharpening_strength"] = 1.0 - viewport.fsr_sharpness / 2.0
-	policy["sharpening_active"] = bool(policy.temporal) and viewport.fsr_sharpness < 2.0
+	policy["sharpening_active"] = policy.provider in ["fsr2", "fsr3"] and viewport.fsr_sharpness < 2.0
 	policy["texture_mipmap_bias"] = viewport.texture_mipmap_bias
 	policy["output_size"] = [viewport.get_visible_rect().size.x, viewport.get_visible_rect().size.y]
 	# Nominal dimensions, not a GPU allocation measurement (engine rounding may differ).
@@ -72,3 +165,42 @@ static func describe(viewport: Viewport) -> Dictionary:
 		roundi(policy.output_size[1] * viewport.scaling_3d_scale)]
 	return policy
 
+
+static func _resolve_capabilities(high_available_or_capabilities: Variant, extra: Dictionary) -> Dictionary:
+	if typeof(high_available_or_capabilities) == TYPE_DICTIONARY:
+		return high_available_or_capabilities.duplicate(true)
+	if not extra.is_empty():
+		var combined := extra.duplicate(true)
+		combined["high"] = bool(high_available_or_capabilities)
+		return combined
+	var high := bool(high_available_or_capabilities)
+	# Compatibility for existing callers/tests that passed one `high_available` flag.
+	# New provider tests and production use explicit capabilities instead.
+	return {"high": high, "fsr2": high, "fsr3": false, "dlss": false,
+		"fsr2_mode": _integer_constant_or_null("Viewport", "SCALING_3D_MODE_FSR2")}
+
+
+static func _scaling_mode_id(provider: String, capabilities: Dictionary) -> Variant:
+	match provider:
+		"native": return Viewport.SCALING_3D_MODE_BILINEAR
+		"fsr2": return capabilities.get("fsr2_mode", Viewport.SCALING_3D_MODE_FSR2)
+		"fsr3": return capabilities.get("fsr3_mode")
+		"dlss": return capabilities.get("dlss_mode")
+	return null
+
+
+static func _integer_constant_or_null(class_name_text: String, constant_name: String) -> Variant:
+	if not ClassDB.class_has_integer_constant(class_name_text, constant_name):
+		return null
+	return ClassDB.class_get_integer_constant(class_name_text, constant_name)
+
+
+static func _streamline_dlss_available() -> bool:
+	if not Engine.has_singleton(DLSS_SINGLETON) \
+			or not ClassDB.class_has_integer_constant(DLSS_SINGLETON, DLSS_CAPABILITY):
+		return false
+	var streamline: Object = Engine.get_singleton(DLSS_SINGLETON)
+	if streamline == null or not streamline.has_method("get_capability"):
+		return false
+	var capability := ClassDB.class_get_integer_constant(DLSS_SINGLETON, DLSS_CAPABILITY)
+	return bool(streamline.call("get_capability", capability))

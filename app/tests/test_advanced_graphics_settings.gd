@@ -86,13 +86,29 @@ func _run() -> void:
 	settings._msaa_picker.select(3)
 	settings._msaa_picker.item_selected.emit(3)
 	_check("8x MSAA reaches the real viewport", root.msaa_3d == Viewport.MSAA_8X)
-	_check("FSR2 availability follows native High", settings._reconstruction_picker.disabled == not Reconstruction.available())
+	var reconstruction_caps := Reconstruction.runtime_capabilities()
+	_check("reconstruction menu follows active High renderer", settings._reconstruction_picker.disabled == not reconstruction_caps.high)
+	for index: int in settings._reconstruction_picker.item_count:
+		var mode := str(settings._reconstruction_picker.get_item_metadata(index))
+		var option := Reconstruction.option_status(mode, reconstruction_caps)
+		_check("reconstruction option availability is provider-specific: " + mode,
+			settings._reconstruction_picker.is_item_disabled(index) == not bool(option.available))
+	var saved_reconstruction := str(settings._draft.reconstruction)
+	settings._draft.reconstruction = "dlss_quality"
+	settings._sync_controls()
+	_check("unsupported DLSS preference remains selected for the user",
+		settings._reconstruction_picker.get_item_metadata(settings._reconstruction_picker.selected) == "dlss_quality")
+	_check("DLSS sharpness slider stays disabled", not settings._fsr2_sharpness_slider.editable)
+	settings._draft.reconstruction = saved_reconstruction
+	settings._sync_controls()
 	settings._reconstruction_picker.select(3)
 	settings._reconstruction_picker.item_selected.emit(3)
 	settings._fsr2_sharpness_slider.value = 0.35
 	_check("sharpening preview reaches viewport without saving", is_equal_approx(root.fsr_sharpness, 1.3)
 		and DisplayPreferences.load_from(PREFS + ".display").fsr2_sharpness == 0.9)
-	_check("sharpening UI follows effective FSR2", settings._fsr2_sharpness_slider.editable == Reconstruction.available())
+	var fsr2_policy := Reconstruction.resolve("fsr2_quality", reconstruction_caps)
+	_check("sharpening UI follows the effective FSR provider", settings._fsr2_sharpness_slider.editable
+		== (reconstruction_caps.high and fsr2_policy.provider in ["fsr2", "fsr3"]))
 	settings._fsr2_sharpness_slider.drag_started.emit()
 	settings._fsr2_sharpness_slider.value = 0.5
 	settings._fsr2_sharpness_slider.value = 0.6
@@ -102,9 +118,9 @@ func _run() -> void:
 	_check("release applies the final sharpening preview", is_equal_approx(root.fsr_sharpness, 0.8))
 	_check("reconstruction preview starts recovery without saving", settings._trial_deadline_msec > Time.get_ticks_msec()
 		and DisplayPreferences.load_from(PREFS + ".display").reconstruction == "native")
-	_check("FSR2 activates only in High and preserves saved MSAA choice", settings._draft.msaa_3d == 3
-		and root.scaling_3d_mode == (Viewport.SCALING_3D_MODE_FSR2 if Reconstruction.available() else Viewport.SCALING_3D_MODE_BILINEAR)
-		and root.msaa_3d == (Viewport.MSAA_DISABLED if Reconstruction.available() else Viewport.MSAA_8X))
+	_check("FSR2 activates only when its provider is available and preserves saved MSAA choice", settings._draft.msaa_3d == 3
+		and root.scaling_3d_mode == int(fsr2_policy.scaling_3d_mode)
+		and root.msaa_3d == (Viewport.MSAA_DISABLED if fsr2_policy.temporal else Viewport.MSAA_8X))
 	settings._trial_deadline_msec = Time.get_ticks_msec() - 1
 	settings._process(0.0)
 	_check("FSR2 timeout restores native resolution and saved MSAA", root.scaling_3d_scale == 1.0
@@ -117,7 +133,7 @@ func _run() -> void:
 		await ui.settle()
 		var mode: String = settings._reconstruction_picker.get_item_metadata(index)
 		_check("live reconstruction switch: " + mode, is_equal_approx(root.scaling_3d_scale,
-			Reconstruction.resolve(mode, Reconstruction.available()).scale))
+			Reconstruction.resolve(mode, Reconstruction.runtime_capabilities()).scale))
 	settings._revert()
 	settings._vsync_picker.select(1)
 	settings._vsync_picker.item_selected.emit(1)
@@ -263,7 +279,7 @@ func _run() -> void:
 	root.add_child(app)
 	await ui.settle()
 	_check("shell relaunch applies FSR2 or safe native fallback", root.scaling_3d_mode ==
-		(Viewport.SCALING_3D_MODE_FSR2 if Reconstruction.available() else Viewport.SCALING_3D_MODE_BILINEAR))
+		int(Reconstruction.resolve("fsr2_quality", Reconstruction.runtime_capabilities()).scaling_3d_mode))
 	_check("shell relaunch preserves disabled sharpening", root.fsr_sharpness == 2.0
 		and DisplayPreferences.load_from(PREFS + ".display").fsr2_sharpness == 0.0)
 	await ui.close_app(app)
