@@ -66,14 +66,15 @@ func _aircraft(id: String) -> void:
 	var e: PackedFloat64Array = env.induced_map
 	var n: int = env.station_ys.size()
 	var a0: float = env.strip_slope
-	var horizontal: Dictionary = m.surfaces.horizontal
-	var tail_share: float = float(horizontal.area) / float(m.reference.S) * float(horizontal.lift_slope)
+	# X8-04: a tailless airframe has no horizontal element; its strips alone carry CLα and CL0.
+	var horizontal: Dictionary = m.surfaces.get("horizontal", {})
+	var tail_share: float = 0.0 if horizontal.is_empty() else float(horizontal.area) / float(m.reference.S) * float(horizontal.lift_slope)
 	var row_mean := 0.0
 	for v in e:
 		row_mean += v
 	row_mean /= float(n)
 	var twist: PackedFloat64Array = m.surfaces.get("station_incidence", PackedFloat64Array())
-	var cl_zero := tail_share * float(horizontal.incidence)
+	var cl_zero := 0.0 if horizontal.is_empty() else tail_share * float(horizontal.incidence)
 	for i in n:
 		var mapped := 0.0
 		for k in n:

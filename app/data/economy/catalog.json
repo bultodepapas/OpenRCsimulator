@@ -4,7 +4,7 @@
   "price_date": "2026-10-25",
   "generated_from": {
     "price_catalog_sha256": "bf1014f355342551d71729f1ec796be60e774a2be5b564852639b1204757f92e",
-    "aircraft_costing_sha256": "b8aefe5b94f90a84762770b210f1a1ea8f3ea01bcebe770470f48dbf6dbd8488",
+    "aircraft_costing_sha256": "f56bcafc69293d28b0e42a782f42b2c3f0658086c04afcc56918753363485fb2",
     "aircraft_catalog_sha256": "d5dbdbf8fbe0a7c9f941a2293a5878cc2688b28e83f6c8003e377a350c774121",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "597e36b42e7fc28e9c46213536026ba66b317a9d2b9456bed25948bd7f5e300f"
@@ -7619,7 +7619,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "skywalker-x8",
-      "source_sha256": "e506bf3375e20da0e81f9b148e585cc4048577cfd5c4736b313b9df3d27faf8d",
+      "source_sha256": "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",

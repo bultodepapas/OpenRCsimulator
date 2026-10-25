@@ -142,9 +142,9 @@ func _initialize() -> void:
 					and meta.flap_input_index == 6
 					and input_layout == ["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake", "flaps"]
 					and meta.recording_start_flap == session.flap_state().actual)
-		elif entry.id == TIMBER:
-			_check("Timber coupled electric motor", meta.propulsion_model == "electric-fixed-bus-coupled-stop-v1")
-			_check("Timber no unmodeled propwash", meta.propwash_model == "none")
+		elif entry.id in [TIMBER, "skywalker-x8"]:
+			_check("%s coupled electric motor" % entry.id, meta.propulsion_model == "electric-fixed-bus-coupled-stop-v1")
+			_check("%s no unmodeled propwash" % entry.id, meta.propwash_model == "none")
 		elif glow_profiled:
 			# EX-14c: a glow aircraft may declare the quasi-static tail slipstream (the Extra); it is then named, never transported.
 			var washed: bool = not session.aircraft.model.propulsion.get("slipstream", {}).is_empty()

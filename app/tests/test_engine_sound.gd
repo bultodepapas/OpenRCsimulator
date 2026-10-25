@@ -16,6 +16,7 @@ const EXPECTED_AIRCRAFT_BLADE_COUNTS := {
 	"f4u-corsair-250": 3,
 	"sebart-avanti-s-a200-p100rx": 2,
 	"turbo-lumber-evolution": 3,
+	"skywalker-x8": 2, # X8-09: APC 12x6E(P) two-blade pusher
 }
 
 class LegacySessionStub extends Node:

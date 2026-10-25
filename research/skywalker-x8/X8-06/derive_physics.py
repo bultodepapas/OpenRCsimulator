@@ -196,9 +196,9 @@ HULL_FEATURES = [
     ("probe_wing_{s}_root_le", "{s}_wing_root", "wing_{s}_fixed", (-1, 0.15, -0.3), True),
     ("probe_wing_{s}_mid_le", "{s}_wing_root", "wing_{s}_fixed", (-1, 0.45, -0.3), True),
     ("probe_wing_{s}_bottom", "{s}_wing_root", "wing_{s}_fixed", (0, 0.02, -1), True),
-    ("probe_elevon_{s}_te", "{s}_wing_tip", "elevon_{s}", (1, 0.2, -0.3), True),
-    ("probe_winglet_{s}_top", "fin_top", "wing_{s}_fixed", (0.2, 0.5, 1), True),
-    ("probe_winglet_{s}_outer", "fin_top", "wing_{s}_fixed", (-0.3, 1, 0.5), True),
+    ("probe_elevon_{s}_te", "{s}_wing_root", "elevon_{s}", (1, 0.2, -0.3), True),
+    ("probe_winglet_{s}_top", "{s}_wing_tip", "wing_{s}_fixed", (0.2, 0.5, 1), True),
+    ("probe_winglet_{s}_outer", "{s}_wing_tip", "wing_{s}_fixed", (-0.3, 1, 0.5), True),
     ("probe_winglet_{s}_knuckle", "{s}_wing_tip", "wing_{s}_fixed", (0.2, 1, -0.4), True),
     ("probe_wing_{s}_tip_le", "{s}_wing_tip", "wing_{s}_fixed", (-0.3, 1, -1.2), True),
     ("probe_wing_{s}_tip_te", "{s}_wing_tip", "wing_{s}_fixed", (1, 0.6, -1), True),
@@ -250,8 +250,10 @@ def hull(parts):
             mirrored = [round(float(point[0]), 4) + 0.0, round(float(sign * point[1]), 4) + 0.0, round(float(point[2]), 4) + 0.0]
             side = "" if abs(point[1]) < MIN_SPACING_M else ("right" if mirrored[1] > 0 else "left")
             label = _hull_label(str(owner[index]), mirrored)
-            region = {"fin_top": "winglet_{s}", "nose": "nose_{s}", "belly": "belly_{s}", "canopy": "canopy_{s}",
+            region = {"nose": "nose_{s}", "belly": "belly_{s}", "canopy": "canopy_{s}",
                       "engine": "engine_{s}", "tail_end": "tail_{s}"}.get(label, "wing_{s}")
+            if label.endswith("_wing_tip") and mirrored[2] > 0.08:
+                region = "winglet_{s}"
             feats.append({"id": "probe_%s_fill_%d" % (region.format(s=side).rstrip("_"), added + 1),
                           "label": label, "point": mirrored})
         added += 1
@@ -261,7 +263,9 @@ def _hull_label(part, point):
     """Crash-presentation name (CR-01d vocabulary) of a fill point from its drawn part and position."""
     side = "right" if point[1] > 0 else "left"
     if part.startswith("wing_") or part.startswith("elevon_"):
-        return "fin_top" if point[2] > 0.08 else ("%s_wing_tip" % side if abs(point[1]) > 0.6 else "%s_wing_root" % side)
+        # Wing-tip names need |y| >= 0.45 b (test_crash_hull_labels.gd). The winglets belong to the wing sections, so a
+        # winglet strike names its wing tip (the crash presentation then releases that wing, not a missing fin).
+        return "%s_wing_tip" % side if abs(point[1]) >= 0.45 * B_REF else "%s_wing_root" % side
     if part == "motor_mount":
         return "engine"
     if part == "canopy_hatch":

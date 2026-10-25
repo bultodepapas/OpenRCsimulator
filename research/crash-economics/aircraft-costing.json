@@ -1988,7 +1988,7 @@
       ],
       "notes": "Independent partial inventory costing of the X8 UAV build (X8-09), reviewed 2026-10-25. Known priced subtotal $1,090.05 across 12 of 19 physical lines (incl. the $402.27 parachute bundle). This is not a complete-build or replacement amount. The finite-pack variant binds to this dossier through the physical signature.",
       "dossier": {
-        "expected_source_sha256": "e506bf3375e20da0e81f9b148e585cc4048577cfd5c4736b313b9df3d27faf8d",
+        "expected_source_sha256": "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830",
         "lines": [
           {
             "id": "wing_left",

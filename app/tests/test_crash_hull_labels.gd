@@ -137,6 +137,8 @@ func _fleet_labels(path: String, expected_id: String) -> void:
 	if names.size() != hull.size() / 3:
 		return
 	var span := float(model.reference.b)
+	var tailless: bool = model.get("capabilities", {}).get("airframe_layout", "") == "tailless"
+	var pusher: bool = model.get("capabilities", {}).get("propulsion_layout", "") == "single_pusher"
 	var sides_ok := true
 	var tips_ok := true
 	var centre_ok := true
@@ -155,9 +157,16 @@ func _fleet_labels(path: String, expected_id: String) -> void:
 			sides_ok = false
 		if name.ends_with("_wing_tip") and absf(y) < 0.45 * span:
 			tips_ok = false
-		if CENTRELINE.has(name) and absf(y) > 0.05 * span:
+		# X8-04/05: a tailless airframe's fins are its winglets at the span ends, and a pusher's engine sits aft.
+		if tailless and name == "fin_top":
+			if absf(y) < 0.45 * span:
+				tips_ok = false
+		elif CENTRELINE.has(name) and absf(y) > 0.05 * span:
 			centre_ok = false
-		if TAIL.has(name) and x >= 0.0 or FORWARD.has(name) and x <= 0.0:
+		if pusher and name == "engine":
+			if x >= 0.0:
+				fore_aft_ok = false
+		elif TAIL.has(name) and x >= 0.0 or FORWARD.has(name) and x <= 0.0:
 			fore_aft_ok = false
 		if name == "fin_top":
 			fin_z = minf(fin_z, z)
@@ -170,7 +179,8 @@ func _fleet_labels(path: String, expected_id: String) -> void:
 	_check("%s wing-tip names sit at the span ends" % id, tips_ok)
 	_check("%s centreline names sit on the centreline" % id, centre_ok)
 	_check("%s tail names are aft and nose names forward of the CG" % id, fore_aft_ok)
-	_check("%s fin top is the highest hull point" % id, has.has("fin_top") and fin_z < other_z)
+	# X8-04: a tailless airframe has no fin; its winglets are wing-tip points of the wing sections.
+	_check("%s fin top is the highest hull point" % id, tailless and not has.has("fin_top") or has.has("fin_top") and fin_z < other_z)
 	_check("%s canopy names sit above and belly names below the CG" % id, vertical_ok)
 	_check("%s names both wing tips" % id, has.has("left_wing_tip") and has.has("right_wing_tip"))
 

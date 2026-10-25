@@ -60,6 +60,14 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-25 · X8-04 — a new control topology reaches every consumer that assumed four surfaces, a rudder and a tractor
+
+The X8 (elevons, no rudder, no horizontal tail, pusher) loaded and trimmed in the physics core long before it could fly: the session's model check, the contact contract's surface IDs, the cruise trim's throw validation, the legacy v1 comparison, the offline schema's sign rules, the render and manifest tests and the hull-label rules each hard-coded the conventional layout. A fleet test that hit a missing key did not fail; it raised a script error and hung until the runner's timeout.
+
+- Before registering an aircraft with a new topology, search for `rudder`, `single_tractor`, `surfaces.horizontal` and the four surface names, and run a session setup and the flight-test battery, not only the loader.
+- When a suite iterates the catalog, a script error is a hang: run new-aircraft fleet suites with a short timeout and read the first script error.
+- Make an opt-in layout refuse the historical paths that cannot represent it (the v1 adapter refuses elevons) instead of excluding it from their tests. [X8-04](research/skywalker-x8/X8-04/README.md)
+
 ## 2026-10-25 · GP-07 — gate contact geometry on the drawn model, and measure restitution as integrated
 
 The Stik's hand-placed crash hull drifted from its evolving model until the drawing could sink 104 mm into the ground before physics touched, and an inverted airplane rested 89 mm up on a phantom fin; no test compared hull points with the drawing (GP-06 did so only for wheels). The soft contact's restitution, assumed near 0.05 from ζ = 0.7, measured 0.22–0.44 as integrated: the non-pulling clamp ends the contact while the damper still brakes the rebound.

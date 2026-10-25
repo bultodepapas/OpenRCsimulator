@@ -635,7 +635,7 @@ func _place_cruise_trim_result(trim_result: Dictionary) -> Dictionary:
 	var placed: Dictionary = trim_result.duplicate(true)
 	if placed.get("ok", false):
 		placed.state = Scenarios.Trim.state_for(placed.V, placed.alpha, placed.gamma,
-			PI / 2.0, M.v3(60.0, -40.0, -30.0), placed.beta)
+			PI / 2.0, M.v3(60.0, -40.0, -30.0), placed.beta, float(placed.get("bank", 0.0)))
 	return placed
 
 
