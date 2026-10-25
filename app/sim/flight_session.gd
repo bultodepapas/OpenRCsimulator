@@ -517,6 +517,7 @@ const EXTERNAL_SPAWN_MAX_HEADING_RAD := 1000000.0
 const CRUISE_TRIM_THROTTLE := 0.5
 const PowerTrim := preload("res://physics/cruise_trim.gd")
 const LaunchTrimCache := preload("res://sim/launch_trim_cache.gd")
+const LaunchTrimJob: Script = preload("res://sim/launch_trim_job.gd")
 ## One detached successful trim survives Home/session replacement; every solver input is keyed exactly.
 static var _launch_trim_cache := LaunchTrimCache.new()
 ## Menu hint from accepted data. The selected field, equilibrium and clearance are checked on each launch.
@@ -552,29 +553,51 @@ static func half_power_start_supported(aircraft_id: String) -> bool:
 
 
 func _selected_airborne_trim(model: Dictionary, down_m: float = -30.0) -> Dictionary:
-	model = _trim_model(model)
-	var speed: float = model.get("start_speed", 15.0)
+	var request: Dictionary = _selected_airborne_trim_request(model, down_m)
+	if request.kind == "inline":
+		return request.result
+	var arguments: Array = request.arguments
+	var t: Dictionary = _launch_trim_cache.solve_level_at_throttle(
+		float(arguments[0]), float(arguments[1]), float(arguments[2]), arguments[3],
+		float(arguments[4]), arguments[5], float(arguments[6]), float(arguments[7]), float(arguments[8]))
+	return _place_cruise_trim_result(t)
+
+
+## Main-thread preparation shared by sync and staged setup. Only its object-free numeric request crosses the worker boundary.
+func _selected_airborne_trim_request(model: Dictionary, down_m: float = -30.0) -> Dictionary:
+	var query_model: Dictionary = _trim_model(model)
+	var speed: float = query_model.get("start_speed", 15.0)
 	var density: float = _weather.air_density(down_m)
 	var charge: float = _weather.engine_charge_ratio(down_m)
 	if not is_finite(density) or not is_finite(charge):
-		return {ok = false, message = "starting altitude is outside the atmosphere's supported domain"}
+		return {kind = "inline", result = {ok = false, message = "starting altitude is outside the atmosphere's supported domain"}}
 	var target: float = selected_trim_throttle()
 	if is_nan(target):
-		return Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, speed, density, charge)
-	if not half_power_start_supported(str(model.get("id", ""))):
+		return {kind = "inline", result = Scenarios.trimmed_level_across_view(
+			query_model, sim.gravity, query_model.controls.throw_rad, speed, density, charge)}
+	if not half_power_start_supported(str(query_model.get("id", ""))):
 		if start_choice == START_HALF_POWER:
-			return {ok = false, message = "half-power airborne start is not qualified for this aircraft"}
+			return {kind = "inline", result = {ok = false, message = "half-power airborne start is not qualified for this aircraft"}}
 		# D6e-R4: a rotorcraft keeps its reference launch under the product's trim throttle.
-		return Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, speed, density, charge)
+		return {kind = "inline", result = Scenarios.trimmed_level_across_view(
+			query_model, sim.gravity, query_model.controls.throw_rad, speed, density, charge)}
 	if not is_finite(target) or target <= 0.0 or target > 1.0:
-		return {ok = false, message = "trim throttle must be within 0..1 (got %s)" % str(target)}
+		return {kind = "inline", result = {ok = false, message = "trim throttle must be within 0..1 (got %s)" % str(target)}}
 	# Search bounds limit this opt-in policy; they do not prescribe a flight speed.
 	# D6e-R3: the level speed at half throttle lies between 1.3 and 2.0 times the slow start speed across the fleet
 	# (Timber 1.25, Ventage Jet 1.92); the bound leaves room for a thinner atmosphere without reaching the solver's limit.
-	var t: Dictionary = _launch_trim_cache.solve_level_at_throttle(speed, target, minf(PowerTrim.MAX_SEARCH_SPEED_MPS, 2.5 * speed), model, sim.gravity, model.controls.throw_rad, density, charge)
-	if t.ok:
-		t.state = Scenarios.Trim.state_for(t.V, t.alpha, t.gamma, PI / 2.0, M.v3(60.0, -40.0, -30.0), t.beta)
-	return t
+	var arguments: Array = [speed, target, minf(PowerTrim.MAX_SEARCH_SPEED_MPS, 2.5 * speed),
+		query_model, sim.gravity, query_model.controls.throw_rad, density, charge,
+		PowerTrim.DEFAULT_MAX_ALPHA_RAD]
+	return {kind = "cruise", model = query_model, arguments = arguments}
+
+
+func _place_cruise_trim_result(trim_result: Dictionary) -> Dictionary:
+	var placed: Dictionary = trim_result.duplicate(true)
+	if placed.get("ok", false):
+		placed.state = Scenarios.Trim.state_for(placed.V, placed.alpha, placed.gamma,
+			PI / 2.0, M.v3(60.0, -40.0, -30.0), placed.beta)
+	return placed
 
 
 ## D6e-R4: the throttle the selected launch is trimmed for; NAN names the reference trim.
@@ -826,6 +849,106 @@ var workshop_identity: Dictionary = {}
 
 
 func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Dictionary = {}) -> void:
+	_begin_setup(path, expected_id, frozen_data)
+	_finish_setup(_prepare_aircraft(_load_selected_aircraft()))
+
+
+## Staged startup keeps all session/model work on the main thread and yields only for a cold cruise-trim solve.
+## false means the owner requested cancellation; validation failures still complete setup with an invalid session.
+func setup_staged(path: String, expected_id: String, frozen_data: Dictionary, frame: Signal,
+		should_cancel: Callable) -> bool:
+	if _staged_cancel_requested(should_cancel):
+		return false
+	_begin_setup(path, expected_id, frozen_data)
+	if _staged_cancel_requested(should_cancel):
+		_discard_staged_setup()
+		return false
+	var data: Dictionary = _load_selected_aircraft()
+	if _staged_cancel_requested(should_cancel):
+		_discard_staged_setup()
+		return false
+	var preflight: Dictionary = _prepare_aircraft_before_trim(data)
+	if _staged_cancel_requested(should_cancel):
+		_discard_staged_setup()
+		return false
+	if not preflight.get("ok", false):
+		_finish_setup(preflight)
+		return true
+
+	var request: Dictionary = _selected_airborne_trim_request(preflight.model)
+	var candidate_start: Dictionary = {}
+	var cache_job: Dictionary = {}
+	var cache_trim_result: Dictionary = {}
+	var reserved_cache_entry := false
+	if request.kind == "inline":
+		candidate_start = request.result
+	else:
+		var resolution: Dictionary = _launch_trim_cache.begin_staged_solve(request.arguments)
+		if resolution.get("kind", "") == "worker":
+			cache_job = resolution
+			reserved_cache_entry = true
+			var worker := Thread.new()
+			var worker_arguments: Array = cache_job.arguments.duplicate(true)
+			var start_error: Error = worker.start(Callable(LaunchTrimJob, "solve").bind(worker_arguments))
+			if start_error == OK:
+				var reservation_started: bool = _launch_trim_cache.staged_worker_started(cache_job)
+				if not reservation_started:
+					# A reservation cannot normally disappear on this main-thread path; drain before failing closed.
+					var cancelled_after_lost_reservation := _staged_cancel_requested(should_cancel)
+					while worker.is_alive():
+						await frame
+						if _staged_cancel_requested(should_cancel):
+							cancelled_after_lost_reservation = true
+					worker.wait_to_finish()
+					if _staged_cancel_requested(should_cancel) or cancelled_after_lost_reservation:
+						_launch_trim_cache.finish_staged_solve(cache_job, {}, false)
+						_discard_staged_setup()
+						return false
+					cache_trim_result = {ok = false, message = "launch trim worker reservation was lost"}
+				else:
+					var cancelled := _staged_cancel_requested(should_cancel)
+					while worker.is_alive():
+						await frame
+						if _staged_cancel_requested(should_cancel):
+							cancelled = true
+					var worker_result: Variant = worker.wait_to_finish()
+					if _staged_cancel_requested(should_cancel):
+						cancelled = true
+					if cancelled:
+						_launch_trim_cache.finish_staged_solve(cache_job, {}, false)
+						_discard_staged_setup()
+						return false
+					if typeof(worker_result) == TYPE_DICTIONARY:
+						cache_trim_result = worker_result
+					else:
+						cache_trim_result = {ok = false, message = "launch trim worker returned an invalid result"}
+			else:
+				# Thread.start failure retains the existing synchronous trim semantics and validation path.
+				cache_trim_result = _launch_trim_cache.solve_staged_synchronously(cache_job)
+		else:
+			cache_trim_result = resolution.get("result", {ok = false, message = "launch trim solve unavailable"})
+			if typeof(cache_trim_result) != TYPE_DICTIONARY:
+				cache_trim_result = {ok = false, message = "launch trim solve returned an invalid result"}
+		candidate_start = _place_cruise_trim_result(cache_trim_result)
+
+	if _staged_cancel_requested(should_cancel):
+		if reserved_cache_entry:
+			_launch_trim_cache.finish_staged_solve(cache_job, cache_trim_result, false)
+		_discard_staged_setup()
+		return false
+	var prepared: Dictionary = _finish_aircraft_prepare(preflight, candidate_start)
+	if _staged_cancel_requested(should_cancel):
+		if reserved_cache_entry:
+			_launch_trim_cache.finish_staged_solve(cache_job, cache_trim_result, false)
+		_discard_staged_setup()
+		return false
+	if reserved_cache_entry:
+		_launch_trim_cache.finish_staged_solve(cache_job, cache_trim_result, prepared.get("ok", false))
+	_finish_setup(prepared)
+	return true
+
+
+func _begin_setup(path: String, expected_id: String, frozen_data: Dictionary) -> void:
 	aircraft_path = path
 	expected_aircraft_id = expected_id
 	_frozen_aircraft = frozen_data.duplicate(true)
@@ -833,7 +956,9 @@ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Di
 	sim.modes = PackedInt64Array([1])
 	sim.faulted.connect(_on_sim_faulted)
 	sim.stepped.connect(_on_sim_stepped)
-	var prepared := _prepare_aircraft(_load_selected_aircraft())
+
+
+func _finish_setup(prepared: Dictionary) -> void:
 	if prepared.ok:
 		_commit_aircraft(prepared)
 	else:
@@ -842,6 +967,18 @@ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Di
 		sim.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(sim)
 	reset()
+
+
+func _staged_cancel_requested(should_cancel: Callable) -> bool:
+	return should_cancel.is_valid() and bool(should_cancel.call())
+
+
+func _discard_staged_setup() -> void:
+	if sim != null:
+		if sim.get_parent() != null:
+			sim.get_parent().remove_child(sim)
+		sim.free()
+	sim = null
 
 
 ## Disables all automatic input and physics callbacks. Call after setup and before adding this node to the tree.
@@ -1310,6 +1447,15 @@ func resume() -> void:
 
 ## Prepares the complete aircraft/trim candidate without changing the active flight.
 func _prepare_aircraft(data: Dictionary) -> Dictionary:
+	var preflight: Dictionary = _prepare_aircraft_before_trim(data)
+	if not preflight.get("ok", false):
+		return preflight
+	var candidate_start: Dictionary = _selected_airborne_trim(preflight.model)
+	return _finish_aircraft_prepare(preflight, candidate_start)
+
+
+## All data, identity, propulsion, contact and timestep validation before trim. Shared by sync and staged setup.
+func _prepare_aircraft_before_trim(data: Dictionary) -> Dictionary:
 	var neutral_trims := { roll = 0.0, pitch = 0.0, yaw = 0.0 }
 	if not data.get("ok", false):
 		var error_text := "aircraft data invalid"
@@ -1349,9 +1495,14 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 	if Turbine.is_continuous(model.propulsion) and not Turbine.step_supported(model.propulsion, sim.dt()):
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
 			message = "turbine governor/schedule is too stiff for the selected timestep (step ratio > 0.25)"}
-	# AV-09 qualifies the existing joint turbine RPM + wheel-speed layout.
-	# Each aircraft declares its own start speed (the Stik's 15 m/s is the loader's default).
-	var candidate_start := _selected_airborne_trim(model)
+	return {ok = true, data = data, model = model, trims = neutral_trims}
+
+
+## Full result validation is shared by synchronous and worker-produced trim candidates.
+func _finish_aircraft_prepare(preflight: Dictionary, candidate_start: Dictionary) -> Dictionary:
+	var data: Dictionary = preflight.data
+	var model: Dictionary = preflight.model
+	var neutral_trims: Dictionary = preflight.trims
 	if not candidate_start.get("ok", false):
 		var trim_error := "trim: " + str(candidate_start.get("message", "trim failed"))
 		return { ok = false, data = data, start = candidate_start, trims = neutral_trims, message = trim_error }

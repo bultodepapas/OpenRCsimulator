@@ -798,6 +798,8 @@ func start_flight(request: Dictionary = {}) -> void:
 		flight.process_mode = Node.PROCESS_MODE_DISABLED
 		if _has_property(flight, "startup_checkpoint"):
 			flight.startup_checkpoint = _flight_loading_checkpoint
+		if _has_property(flight, "startup_cancel_requested"):
+			flight.startup_cancel_requested = _flight_loading_is_cancelled
 	add_child(flight)
 	if staged and _has_property(flight, "startup_complete") and not flight.startup_complete:
 		await flight.startup_finished
@@ -952,6 +954,10 @@ func cancel_flight_loading() -> void:
 	_loading_cancelled = true
 	if is_instance_valid(_loading_screen):
 		_loading_screen.set_cancelling()
+
+
+func _flight_loading_is_cancelled() -> bool:
+	return _loading_cancelled or not _loading_active or not is_inside_tree()
 
 
 func _flight_loading_draw() -> void:

@@ -24,6 +24,10 @@ var _entries: Array[Dictionary] = [] # Most recently used first.
 var _hits := 0
 var _misses := 0
 var _bypasses := 0
+var _staged_workers_started := 0
+var _staged_active_token := 0
+var _staged_next_token := 1
+var _cache_generation := 0
 
 
 ## Mirrors every CruiseTrim.solve_level_at_throttle input, including its default max-alpha argument.
@@ -54,10 +58,92 @@ func solve_level_at_throttle(reference_speed_mps: float, target_throttle: float,
 	var result: Dictionary = _solve(arguments)
 	if not result.get("ok", false):
 		return result # Failures are deliberately never retained.
-	_entries.push_front({"key": key.duplicate(), "result": result.duplicate(true)})
-	while _entries.size() > MAX_CACHE_ENTRIES or _retained_key_bytes() > MAX_RETAINED_KEY_BYTES:
-		_entries.pop_back()
+	_store_success(key, result)
 	return result
+
+
+## Main-thread-only cache lookup and worker reservation. The worker receives only a safe round-trip copy.
+func begin_staged_solve(arguments: Array) -> Dictionary:
+	var encoded: Dictionary = _encode_arguments(arguments)
+	if not encoded.get("ok", false):
+		_bypasses += 1
+		return {kind = "sync", result = _solve(arguments)}
+	var key: PackedByteArray = encoded.key
+	if key.size() > MAX_RETAINED_KEY_BYTES:
+		_bypasses += 1
+		return {kind = "sync", result = _solve(arguments)}
+	var entry_index: int = _find_entry_index(key)
+	if entry_index >= 0:
+		_hits += 1
+		var entry: Dictionary = _entries[entry_index]
+		_entries.remove_at(entry_index)
+		_entries.push_front(entry)
+		var cached_result: Dictionary = entry.result
+		return {kind = "result", result = cached_result.duplicate(true)}
+
+	_misses += 1
+	# There is one reservation per shared cache. A second session preserves the old sync API semantics.
+	if _staged_active_token != 0:
+		var synchronous_result: Dictionary = _solve(arguments)
+		if synchronous_result.get("ok", false):
+			_store_success(key, synchronous_result)
+		return {kind = "result", result = synchronous_result}
+
+	var worker_arguments: Variant = bytes_to_var(key)
+	var worker_ancestors: Array = []
+	if typeof(worker_arguments) != TYPE_ARRAY \
+			or not _is_cache_safe(worker_arguments, worker_ancestors, 0) \
+			or var_to_bytes(worker_arguments) != key:
+		# Defensive round-trip guard. Do not send an unchecked Variant into a worker.
+		_bypasses += 1
+		var fallback_result: Dictionary = _solve(arguments)
+		if fallback_result.get("ok", false):
+			_store_success(key, fallback_result)
+		return {kind = "result", result = fallback_result}
+
+	var token: int = _staged_next_token
+	_staged_next_token += 1
+	_staged_active_token = token
+	return {
+		kind = "worker", token = token, generation = _cache_generation,
+		key = key.duplicate(), arguments = worker_arguments,
+	}
+
+
+## The caller invokes this after Thread.start succeeds; the cache itself remains main-thread-only.
+func staged_worker_started(job: Dictionary) -> bool:
+	if int(job.get("token", 0)) != _staged_active_token:
+		return false
+	_staged_workers_started += 1
+	return true
+
+
+## Thread.start failure fallback. The reservation stays held until the same final validation decision as a worker result.
+func solve_staged_synchronously(job: Dictionary) -> Dictionary:
+	if int(job.get("token", 0)) != _staged_active_token:
+		return {ok = false, message = "launch trim reservation is no longer active"}
+	var arguments: Variant = job.get("arguments")
+	if typeof(arguments) != TYPE_ARRAY:
+		return {ok = false, message = "launch trim worker arguments are invalid"}
+	return _solve(arguments)
+
+
+## Called on main after final candidate validation. Cancellation or any failed validation releases without insertion.
+func finish_staged_solve(job: Dictionary, result: Dictionary, retain_success: bool) -> bool:
+	if int(job.get("token", 0)) != _staged_active_token:
+		return false
+	var keep: bool = retain_success and int(job.get("generation", -1)) == _cache_generation \
+			and result.get("ok", false)
+	_staged_active_token = 0
+	if keep:
+		var key_value: Variant = job.get("key", PackedByteArray())
+		if typeof(key_value) != TYPE_PACKED_BYTE_ARRAY:
+			return false
+		var key: PackedByteArray = key_value
+		if key.size() > MAX_RETAINED_KEY_BYTES:
+			return false
+		_store_success(key, result)
+	return true
 
 
 func stats() -> Dictionary:
@@ -71,6 +157,8 @@ func stats() -> Dictionary:
 		entry_limit = MAX_CACHE_ENTRIES,
 		retained_key_bytes = retained_key_bytes,
 		retained_key_limit_bytes = MAX_RETAINED_KEY_BYTES,
+		staged_worker_active = _staged_active_token != 0,
+		staged_workers_started = _staged_workers_started,
 	}
 
 
@@ -80,6 +168,8 @@ func clear() -> void:
 	_hits = 0
 	_misses = 0
 	_bypasses = 0
+	_staged_workers_started = 0
+	_cache_generation += 1
 
 
 func _find_entry_index(key: PackedByteArray) -> int:
@@ -96,6 +186,15 @@ func _retained_key_bytes() -> int:
 		var entry_key: PackedByteArray = entry.key
 		total_bytes += entry_key.size()
 	return total_bytes
+
+
+func _store_success(key: PackedByteArray, result: Dictionary) -> void:
+	var existing_index: int = _find_entry_index(key)
+	if existing_index >= 0:
+		_entries.remove_at(existing_index)
+	_entries.push_front({"key": key.duplicate(), "result": result.duplicate(true)})
+	while _entries.size() > MAX_CACHE_ENTRIES or _retained_key_bytes() > MAX_RETAINED_KEY_BYTES:
+		_entries.pop_back()
 
 
 func _solve(arguments: Array) -> Dictionary:

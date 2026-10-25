@@ -209,6 +209,8 @@ func _render_wind(time_s: float) -> Vector3:
 var interactive_start: bool = false
 ## UI-34c: optional presentation-only checkpoints. Direct/capture/trace routes stay synchronous.
 var startup_checkpoint := Callable()
+## Polled on the main thread while a private numeric trim job runs.
+var startup_cancel_requested := Callable()
 var startup_complete := false
 signal startup_finished
 ## UI-06d: Home injects the saved diagnostic choice; technical launches retain their explicit marker flag.
@@ -341,6 +343,10 @@ func _startup_stage(label: String) -> bool:
 	if startup_checkpoint.is_valid():
 		return await startup_checkpoint.call(label)
 	return true
+
+
+func _startup_cancel_requested() -> bool:
+	return not is_inside_tree() or (startup_cancel_requested.is_valid() and bool(startup_cancel_requested.call()))
 
 
 func _prepare_flight() -> void:
@@ -626,12 +632,19 @@ func _prepare_flight() -> void:
 		set_process_unhandled_input(false)
 		return
 	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (Catalog.data_for(aircraft_id, battery_mode) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
-	if workshop_trial.is_empty():
-		session.setup(physics_path, aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else "")
-	else:
+	var expected_id: String = aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else ""
+	var frozen_data: Dictionary = {}
+	if not workshop_trial.is_empty():
 		session.workshop_identity = workshop_trial.identity.duplicate(true)
 		session.workshop_presentation_identity = workshop_trial.get("presentation_identity", {}).duplicate(true)
-		session.setup("workshop://" + str(workshop_trial.identity.trial_id), str(workshop_trial.data.model.id), workshop_trial.data)
+		physics_path = "workshop://" + str(workshop_trial.identity.trial_id)
+		expected_id = str(workshop_trial.data.model.id)
+		frozen_data = workshop_trial.data
+	if startup_checkpoint.is_valid():
+		if not await session.setup_staged(physics_path, expected_id, frozen_data, get_tree().process_frame, _startup_cancel_requested):
+			return
+	else:
+		session.setup(physics_path, expected_id, frozen_data)
 	if not await _startup_stage("Preparing flight model"):
 		return
 	# Glow visuals use the exact propeller selected by the validated runtime model. Applying from the base geometry
