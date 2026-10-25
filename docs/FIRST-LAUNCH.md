@@ -149,6 +149,11 @@ thermals, kites, swallows and evening swifts, chosen by time of day and weather.
 halves it, Many keeps full flocks at every level and Off sends them all away. The change applies at once, also from
 the Pause menu: in flight the birds fly off or arrive over a minute or two. [Birds plan](plans/birds-sky-life.md).
 Workshop's separate preview images do not use the main-view MSAA setting.
+**Settings → Camera** sets the **First view** of flights from Home (pilot, chase or orbit), the **Pilot field of view**
+(30–70°, default 50°; about 30° shows the model at its real size on a 24–27-inch screen at arm's length), **Auto zoom**,
+**Chase distance**, **Orbit sensitivity** and **Invert orbit up/down**. Changes apply at once, also from Pause; first view
+waits for the next flight, and auto zoom and chase distance apply only when they change, so a view or zoom chosen in
+flight with the keys stays. Command-line flights keep `--view` and `--autozoom`. [Camera plan](plans/camera-views.md).
 
 From Home, **Graphics → Try High (restart)** starts a temporary experimental
 Forward+ mode with ambient occlusion, soft sun shadows and sky reflections. Keep
