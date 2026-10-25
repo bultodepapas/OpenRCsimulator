@@ -5880,3 +5880,28 @@ msgstr "Órbita"
 
 msgid "%s (default)"
 msgstr "%s (predeterminado)"
+
+# CAM-06/06b/28: pilot view aids.
+msgid "Constant size"
+msgstr "Tamaño constante"
+
+msgid "Keeps looming"
+msgstr "Conserva el acercamiento"
+
+msgid "Gentle"
+msgstr "Suave"
+
+msgid "Constant size keeps a distant airplane the same size on screen. Keeps looming lets it shrink slowly, so you still see it come and go. Gentle zooms least. Z turns auto zoom off and on in flight."
+msgstr "Tamaño constante mantiene un avión lejano del mismo tamaño en pantalla. Conserva el acercamiento lo deja encogerse despacio, así sigues viendo cómo se acerca y se aleja. Suave es el que menos acerca. Z apaga y enciende el zoom automático en vuelo."
+
+msgid "Keep the horizon in view"
+msgstr "Mantener el horizonte a la vista"
+
+msgid "Pilot view: tilt down to keep the horizon and ground in view under a high airplane."
+msgstr "Vista del piloto: inclina la mirada para mantener el horizonte y el suelo a la vista bajo un avión alto."
+
+msgid "Smooth overhead passes"
+msgstr "Suavizar las pasadas sobre la cabeza"
+
+msgid "Pilot view: the picture turns gradually instead of flipping when the airplane passes overhead."
+msgstr "Vista del piloto: la imagen gira poco a poco en lugar de voltearse cuando el avión pasa sobre la cabeza."

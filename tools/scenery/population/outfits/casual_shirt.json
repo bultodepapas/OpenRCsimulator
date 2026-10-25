@@ -1,6 +1,6 @@
 {
   "id": "casual_shirt",
-  "notes": "Younger spectator: striped shirt, jeans, stubble.",
+  "notes": "Younger spectator: striped shirt, jeans, stubble. Brown CC0 faun beard to match the hair and fuller eyebrows (SC-HUM-07-R2).",
   "macros": {
     "gender": 1.0,
     "age": 0.36,
@@ -23,7 +23,7 @@
     ],
     [
       "eyebrows",
-      "eyebrow007.mhclo",
+      "eyebrow012.mhclo",
       "Eyebrows"
     ],
     [
@@ -43,7 +43,7 @@
     ],
     [
       "clothes",
-      "wdg_scruffy_beard.mhclo",
+      "culturalibre_faun_beard.mhclo",
       "Clothes"
     ]
   ],

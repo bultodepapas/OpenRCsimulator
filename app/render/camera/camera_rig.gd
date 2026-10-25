@@ -35,6 +35,13 @@ const PILOT_FOV_MAX := 120.0
 const NEAR_M := { pilot = 0.5, chase = 0.25, closeup = 0.25 }
 const ORBIT_NEAR_MIN := 0.05
 const ORBIT_NEAR_MAX := 0.25
+## CAM-06b: the horizon tilt keeps the aircraft within this share of the half-frame from the centre and lifts the
+## horizon this share of the half-frame above the bottom edge; it eases in or out with this half-life (s).
+const HORIZON_KEEP := 0.75
+const HORIZON_MARGIN := 0.1
+const HORIZON_EASE_HALF_LIFE := 0.25
+## CAM-28: the most the picture may turn about the view axis (°/s); an exact pass beside the zenith turned 2388°/s.
+const OVERHEAD_ROLL_RATE := 180.0
 ## CAM-27: the close-up's view of a wreck (the crash director's former fixed framing, now kept on the wreck itself).
 const WRECK_CLOSEUP_OFFSET := Vector3(5.0, 3.2, 6.0)
 const WRECK_CLOSEUP_FOV := 58.0
@@ -53,6 +60,14 @@ var pilot_zoom := 1.0
 var default_pilot_zoom := 1.0
 ## CAM-17: the pilot view's widest vertical FOV (deg), the player's setting; the auto-zoom narrows from it.
 var base_fov := float(Spec.CAMERA.fov_deg)
+## CAM-06/06b/28 pilot aids, all off by default until the pilot picks them (CAM-22): the auto-zoom law
+## (PilotCamera.ZOOM_LAWS), a tilt toward the horizon that keeps the aircraft in frame, and a cap on how fast the
+## picture may roll when the aircraft passes overhead.
+var zoom_law := "constant"
+var horizon_bias := false
+var overhead_smoothing := false
+var _bias_amount := 0.0 # 0 → 1 as the horizon tilt eases in or out
+var _screen_up := Vector3.ZERO # the overhead-smoothed screen up (ZERO: follow the exact one)
 ## Landscape review (L0): (azimuth, elevation) in degrees from the pilot's eye; NAN follows the airplane.
 var look := Vector2(NAN, NAN)
 var look_height := 1.7
@@ -93,6 +108,7 @@ func set_view(id: String) -> bool:
 	if id == view:
 		return true
 	view = id
+	_screen_up = Vector3.ZERO
 	if id == "chase":
 		chase.reset()
 	elif id == "orbit":
@@ -104,6 +120,14 @@ func set_view(id: String) -> bool:
 
 func cycle(step: int) -> void:
 	set_view(VIEWS[posmod(VIEWS.find(view) + step, VIEWS.size())])
+
+
+## CAM-06: another auto-zoom law, reached smoothly like a zoom change.
+func set_zoom_law(law: String) -> void:
+	if law == zoom_law or law not in PilotCamera.ZOOM_LAWS:
+		return
+	_mark_fov_jump()
+	zoom_law = law
 
 
 ## CAM-17: a new widest pilot FOV, reached smoothly like a zoom change.
@@ -167,6 +191,7 @@ func drag(relative: Vector2) -> void:
 ## A restarted flight: views with memory start settled again.
 func reset() -> void:
 	chase.reset()
+	_screen_up = Vector3.ZERO
 	_fov_offset = 0.0
 	_absorb_from = NAN
 
@@ -187,8 +212,14 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 		return
 	match view:
 		"pilot":
-			PilotCamera.aim(camera, target, airplane, false, _span if auto_zoom else 0.0, base_fov)
+			PilotCamera.aim(camera, target, airplane, false, _span if auto_zoom and zoom_law == "constant" else 0.0, base_fov)
+			if auto_zoom and zoom_law != "constant":
+				camera.fov = PilotCamera.law_fov(zoom_law, _span, camera.position.distance_to(target), base_fov)
 			_apply_pilot_zoom(dt)
+			_bias_amount = CameraMath.damp(_bias_amount, 1.0 if horizon_bias else 0.0, dt, HORIZON_EASE_HALF_LIFE)
+			if _bias_amount > 1e-4:
+				_tilt_to_horizon(target)
+			_smooth_overhead(dt)
 		"closeup":
 			PilotCamera.aim(camera, target, airplane, true)
 		"chase":
@@ -267,6 +298,44 @@ func _apply_pilot_zoom(dt: float) -> void:
 		wanted = CameraMath.from_log_tan(CameraMath.log_tan(wanted) + _fov_offset)
 	if wanted != law:
 		camera.fov = clampf(wanted, PILOT_FOV_MIN, PILOT_FOV_MAX)
+
+
+## CAM-06b: tilt the pilot's look down toward the horizon as far as keeps the aircraft within HORIZON_KEEP of the
+## half-frame, so the ground and horizon show under a high aircraft; an aircraft already low is looked at directly.
+## Only the elevation changes: the azimuth, eye and FOV stay, and the tilt eases in and out (_bias_amount).
+func _tilt_to_horizon(target: Vector3) -> void:
+	var to_target := target - camera.global_position
+	var flat := Vector2(to_target.x, to_target.z).length()
+	if flat < 1e-3 or to_target.y <= 0.0:
+		return # overhead or below the eye: nothing to gain
+	var elevation := atan2(to_target.y, flat)
+	var half := deg_to_rad(camera.fov) * 0.5
+	var biased := minf(elevation, maxf(elevation - HORIZON_KEEP * half, (1.0 - HORIZON_MARGIN) * half))
+	var aim := lerpf(elevation, biased, _bias_amount)
+	var heading := atan2(to_target.x, -to_target.z)
+	var forward := Vector3(sin(heading) * cos(aim), sin(aim), -cos(heading) * cos(aim))
+	camera.basis = Basis.looking_at(forward, Vector3.UP)
+
+
+## CAM-28: with overhead_smoothing the screen-up direction turns at most OVERHEAD_ROLL_RATE; the gaze stays exact,
+## so the aircraft keeps its place while the horizon catches up. Otherwise the smoothed up just follows.
+func _smooth_overhead(dt: float) -> void:
+	var forward := -camera.basis.z
+	var exact := camera.basis.y
+	var up := _screen_up - forward * forward.dot(_screen_up)
+	if not overhead_smoothing or _screen_up == Vector3.ZERO or up.length() < 1e-6:
+		_screen_up = exact
+		return
+	up = up.normalized()
+	var step := deg_to_rad(OVERHEAD_ROLL_RATE) * maxf(dt, 0.0)
+	var angle := up.angle_to(exact)
+	if angle > step:
+		var axis := up.cross(exact)
+		up = up.rotated(axis.normalized() if axis.length() > 1e-9 else forward, step)
+	else:
+		up = exact
+	_screen_up = up
+	camera.basis = Basis.looking_at(forward, up)
 
 
 func _mark_fov_jump() -> void:

@@ -34,6 +34,38 @@ static func auto_fov(span: float, distance: float, target_px := float(Spec.AUTO_
 	return clampf(fov, min_fov, base_fov)
 
 
+## CAM-06: the auto-zoom law family (plan §5.1, X-PERC-2). "constant" keeps the span at target_px of the reference
+## height (today's law, which removes looming between ~58 and ~523 m at 1080p); "partial" lets the span shrink as
+## d^-PARTIAL_K beyond the distance where the constant law starts, so approach and retreat still read from size;
+## "gentle" is CRRCSim's form, fov = atan(tan(base)·d0 / (d0 + (d − d0)·a)), which reproduces its 35° → 26° → 20°.
+const ZOOM_LAWS: Array[String] = ["constant", "partial", "gentle"]
+const PARTIAL_K := 0.5
+const GENTLE_D0_M := 21.5
+const GENTLE_SLOPE := 0.05
+
+
+## Vertical FOV (degrees) of an auto-zoom law for a span at a distance, never wider than base_fov or narrower than
+## the minimum.
+static func law_fov(law: String, span: float, distance: float, base_fov := float(Spec.CAMERA.fov_deg)) -> float:
+	var d := maxf(distance, 1e-6)
+	var min_fov := float(Spec.AUTO_ZOOM.min_fov_deg)
+	match law:
+		"partial":
+			var target := float(Spec.AUTO_ZOOM.target_px)
+			var reference := float(Spec.AUTO_ZOOM.reference_height_px)
+			var start := span * reference / (2.0 * target * tan(deg_to_rad(base_fov) * 0.5))
+			if d <= start:
+				return base_fov
+			var px := target * pow(start / d, PARTIAL_K)
+			return clampf(rad_to_deg(2.0 * atan(span * reference / (2.0 * d * px))), min_fov, base_fov)
+		"gentle":
+			if d <= GENTLE_D0_M:
+				return base_fov
+			var fov := rad_to_deg(atan(tan(deg_to_rad(base_fov)) * GENTLE_D0_M / (GENTLE_D0_M + (d - GENTLE_D0_M) * GENTLE_SLOPE)))
+			return clampf(fov, min_fov, base_fov)
+	return auto_fov(span, d, float(Spec.AUTO_ZOOM.target_px), float(Spec.AUTO_ZOOM.reference_height_px), base_fov, min_fov)
+
+
 ## Landscape review views (L0): from above the pilot station (height in m, default the eye height), looking at an
 ## azimuth (deg from north, clockwise) and an elevation (deg above the horizon; −90 = straight down), base FOV.
 ## Independent of the airplane.

@@ -1,0 +1,13 @@
+fly start=airborne
+wait seconds=4
+eval expr="[flight._rig.view, flight._rig.zoom_law, flight._rig.horizon_bias, flight._camera.fov, rad_to_deg(asin(-flight._camera.global_basis.z.y)), flight._camera.unproject_position(flight._airplane.root.global_position)]"
+screenshot format=jpg max_width=960
+eval expr="app._apply_presentation(app.display_preferences.config.merged({'camera_horizon_bias': true}, true))"
+wait seconds=3
+eval expr="[flight._rig.horizon_bias, flight._camera.fov, rad_to_deg(asin(-flight._camera.global_basis.z.y)), flight._camera.unproject_position(flight._airplane.root.global_position)]"
+screenshot format=jpg max_width=960
+eval expr="app._apply_presentation(app.display_preferences.config.merged({'camera_horizon_bias': true, 'camera_zoom_law': 'partial'}, true))"
+wait seconds=3
+eval expr="[flight._rig.zoom_law, flight._camera.fov, flight._camera.global_position.distance_to(flight._airplane.root.global_position)]"
+screenshot format=jpg max_width=960
+logs --summary
