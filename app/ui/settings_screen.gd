@@ -6,6 +6,9 @@ const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const CameraSettings := preload("res://render/camera/camera_settings.gd")
+## Settings pages, in tab order. CAM-17 added Camera.
+const CATEGORIES: Array[String] = ["Display", "Interface", "Sound", "Graphics", "Camera"]
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
@@ -49,6 +52,12 @@ var _msaa_picker: OptionButton
 var _reconstruction_picker: OptionButton
 var _scene_detail_picker: OptionButton
 var _birds_picker: OptionButton
+var _camera_view_picker: OptionButton
+var _camera_fov_picker: OptionButton
+var _camera_chase_picker: OptionButton
+var _camera_sensitivity_picker: OptionButton
+var _camera_auto_zoom_toggle: CheckButton
+var _camera_invert_toggle: CheckButton
 var _graphics_info: Label
 var _graphics_restart_button: Button
 var _scale_picker: OptionButton
@@ -134,7 +143,7 @@ func _build() -> void:
 	categories.add_theme_constant_override("h_separation", 8)
 	categories.add_theme_constant_override("v_separation", 8)
 	var category_group := ButtonGroup.new()
-	for caption: String in ["Display", "Interface", "Sound", "Graphics"]:
+	for caption: String in CATEGORIES:
 		var tab := _button(caption, "HomeTab", caption + "Category")
 		tab.toggle_mode = true
 		tab.button_group = category_group
@@ -145,7 +154,7 @@ func _build() -> void:
 	_layout_shell.add_child(categories)
 	_category_picker = OptionButton.new()
 	_category_picker.name = "SettingsCategory"
-	for caption: String in ["Display", "Interface", "Sound", "Graphics"]:
+	for caption: String in CATEGORIES:
 		_category_picker.add_item(tr(caption))
 	_category_picker.item_selected.connect(_show_category)
 	_category_picker.hide()
@@ -161,7 +170,7 @@ func _build() -> void:
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page.add_theme_constant_override("separation", 10)
 	_scroll.add_child(page)
-	for index: int in 4:
+	for index: int in CATEGORIES.size():
 		var category := VBoxContainer.new()
 		category.name = "Category%d" % index
 		category.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -173,6 +182,7 @@ func _build() -> void:
 	var sound_page := _pages[2]
 	var graphics_page := _pages[3]
 	graphics_page.add_theme_constant_override("separation", 12)
+	var camera_page := _pages[4]
 
 	_window_picker = OptionButton.new()
 	_window_picker.name = "WindowMode"
@@ -240,6 +250,22 @@ func _build() -> void:
 		_revert()
 		graphics_restart_requested.emit("standard" if HighGraphics.active() else "high"))
 	graphics_actions.add_child(_graphics_restart_button)
+
+	# CAM-17: camera preferences; presentation only, applied to a Home flight at once.
+	_camera_view_picker = _camera_picker("CameraView", "camera_view", CameraSettings.VIEWS)
+	_add_row(camera_page, "First view", _camera_view_picker)
+	_camera_fov_picker = _camera_picker("CameraFov", "camera_fov", CameraSettings.FOVS)
+	_add_row(camera_page, "Pilot field of view", _camera_fov_picker)
+	_camera_fov_picker.tooltip_text = tr("The pilot view's widest angle; auto zoom narrows it for a distant airplane. About 30° shows the airplane at its real size on a 24–27-inch screen at arm's length.")
+	_camera_auto_zoom_toggle = _camera_toggle("CameraAutoZoom", "camera_auto_zoom", "Auto zoom (Z)")
+	_add_row(camera_page, "Auto zoom (Z)", _camera_auto_zoom_toggle)
+	_camera_chase_picker = _camera_picker("CameraChaseDistance", "camera_chase_distance", CameraSettings.CHASE_DISTANCES)
+	_add_row(camera_page, "Chase distance", _camera_chase_picker)
+	_camera_sensitivity_picker = _camera_picker("CameraSensitivity", "camera_sensitivity", CameraSettings.SENSITIVITIES)
+	_add_row(camera_page, "Orbit sensitivity", _camera_sensitivity_picker)
+	_camera_invert_toggle = _camera_toggle("CameraInvertY", "camera_invert_y", "Invert orbit up/down")
+	_add_row(camera_page, "Invert orbit up/down", _camera_invert_toggle)
+	camera_page.add_child(_label("The pilot view stays the reference for learning to fly; chase and orbit are aids. Right-drag turns the orbit; the wheel or +/− zooms.", "SecondaryLabel", true))
 
 	_opaque_toggle = CheckButton.new()
 	_opaque_toggle.name = "OpaquePanels"
@@ -426,6 +452,30 @@ func _choice_picker(node_name: String, key: String, values: Array) -> OptionButt
 	return picker
 
 
+## CAM-17: a camera option; it changes presentation only, so it applies live without the display trial timer.
+func _camera_picker(node_name: String, key: String, values: Array) -> OptionButton:
+	var picker := OptionButton.new()
+	picker.name = node_name
+	for value: Variant in values:
+		picker.add_item(_choice_caption(key, value))
+		picker.set_item_metadata(picker.item_count - 1, value)
+	picker.item_selected.connect(func(index: int) -> void:
+		_draft[key] = picker.get_item_metadata(index)
+		_on_presentation_option_changed())
+	return picker
+
+
+func _camera_toggle(node_name: String, key: String, tooltip: String) -> CheckButton:
+	var toggle := CheckButton.new()
+	toggle.name = node_name
+	toggle.theme_type_variation = "SettingsToggle"
+	toggle.tooltip_text = tr(tooltip)
+	toggle.toggled.connect(func(enabled: bool) -> void:
+		_draft[key] = enabled
+		_on_presentation_option_changed())
+	return toggle
+
+
 func _choice_caption(key: String, value: Variant) -> String:
 	match key:
 		"window_resolution": return tr("Automatic") if value == "auto" else str(value).replace("x", " × ")
@@ -438,6 +488,13 @@ func _choice_caption(key: String, value: Variant) -> String:
 				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
 			return tr(str(value).capitalize())
 		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
+		"camera_view": return {pilot = tr("Pilot"), chase = tr("Chase"), orbit = tr("Orbit")}.get(value, str(value))
+		"camera_fov":
+			var degrees := "%d°" % int(value)
+			return tr("%s (default)") % degrees if int(value) == int(CameraSettings.DEFAULTS.camera_fov) else degrees
+		"camera_chase_distance", "camera_sensitivity":
+			var percent := "%d %%" % roundi(float(value) * 100.0)
+			return tr("%s (default)") % percent if is_equal_approx(float(value), 1.0) else percent
 	return str(value)
 
 
@@ -580,6 +637,12 @@ func _sync_controls() -> void:
 	_sync_reconstruction_controls()
 	_select_metadata(_scene_detail_picker, _draft.scene_detail)
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
+	_select_metadata(_camera_view_picker, _draft.get("camera_view", CameraSettings.DEFAULTS.camera_view))
+	_select_metadata(_camera_fov_picker, _draft.get("camera_fov", CameraSettings.DEFAULTS.camera_fov))
+	_select_metadata(_camera_chase_picker, _draft.get("camera_chase_distance", CameraSettings.DEFAULTS.camera_chase_distance))
+	_select_metadata(_camera_sensitivity_picker, _draft.get("camera_sensitivity", CameraSettings.DEFAULTS.camera_sensitivity))
+	_camera_auto_zoom_toggle.set_pressed_no_signal(bool(_draft.get("camera_auto_zoom", CameraSettings.DEFAULTS.camera_auto_zoom)))
+	_camera_invert_toggle.set_pressed_no_signal(bool(_draft.get("camera_invert_y", CameraSettings.DEFAULTS.camera_invert_y)))
 	_select_metadata(_scale_picker, _draft.ui_scale)
 	_opaque_toggle.set_pressed_no_signal(bool(_draft.opaque_panels))
 	_motion_toggle.set_pressed_no_signal(bool(_draft.reduced_motion))
@@ -652,7 +715,7 @@ func _update_layout() -> void:
 	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(800.0, maxf(0.0, available.y)))
 	_refresh_graphics_info()
 	var stack_rows := _should_stack_rows()
-	_categories.columns = 2 if stack_rows else 4
+	_categories.columns = 2 if stack_rows else CATEGORIES.size()
 	_categories.visible = not compact_height
 	_category_picker.visible = compact_height
 	if transfer_category_focus:
@@ -676,9 +739,8 @@ func _refresh_shared_theme() -> void:
 
 
 func _refresh_translated_text() -> void:
-	var categories := ["Display", "Interface", "Sound", "Graphics"]
-	for index: int in categories.size():
-		_category_picker.set_item_text(index, tr(categories[index]))
+	for index: int in CATEGORIES.size():
+		_category_picker.set_item_text(index, tr(CATEGORIES[index]))
 	for entry: Dictionary in _localized_controls:
 		var control: Control = entry.control
 		if control is Button or control is Label:
@@ -686,7 +748,8 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_scene_detail_picker, "scene_detail"]]:
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_scene_detail_picker, "scene_detail"],
+			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))

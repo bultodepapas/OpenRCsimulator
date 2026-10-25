@@ -51,9 +51,11 @@ static func look(camera: Camera3D, azimuth_deg: float, elevation_deg: float, hei
 
 
 ## target: airplane position (render axes); airplane: its root transform (for the inspect offset).
-## auto_zoom_span > 0: the pilot view narrows its FOV for an airplane of that span.
-static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspect: bool, auto_zoom_span := 0.0) -> void:
-	camera.fov = Spec.CAMERA.fov_deg
+## auto_zoom_span > 0: the pilot view narrows its FOV for an airplane of that span. base_fov: the pilot view's widest
+## vertical FOV (CAM-17 player setting; the close-up keeps the default).
+static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspect: bool, auto_zoom_span := 0.0,
+		base_fov := float(Spec.CAMERA.fov_deg)) -> void:
+	camera.fov = Spec.CAMERA.fov_deg if inspect else base_fov
 	if inspect:
 		# Inspection view: camera fixed to the airplane (left, above, behind), to check geometry.
 		camera.position = airplane * Spec.INSPECT_OFFSET
@@ -62,7 +64,8 @@ static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspec
 		var eye_height: float = float(camera.get_meta("pilot_eye_height", Spec.CAMERA.eye_height))
 		camera.position = Frames.ned_to_render([station[0], station[1], float(station[2]) - eye_height])
 		if auto_zoom_span > 0.0:
-			camera.fov = auto_fov(auto_zoom_span, camera.position.distance_to(target))
+			camera.fov = auto_fov(auto_zoom_span, camera.position.distance_to(target), float(Spec.AUTO_ZOOM.target_px),
+				float(Spec.AUTO_ZOOM.reference_height_px), base_fov)
 	var direction := target - camera.global_position
 	# An eye-coincident target has no viewing direction. Preserve the last pose.
 	if direction.length_squared() < 1e-12:

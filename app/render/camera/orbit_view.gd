@@ -14,16 +14,34 @@ const MIN_SPANS := 0.6
 const MAX_SPANS := 20.0
 const DEFAULT_SPANS := 2.0
 const CLEARANCE_M := 0.3
+## CAM-29: the camera eases toward the dragged azimuth, elevation and distance (half-life, s): a wheel notch or a jerky
+## mouse no longer jumps the picture, and 94 % of a flick shows within 0.2 s.
+const EASE_HALF_LIFE := 0.05
 
+## Goals set by drag, wheel and keys; the camera shows _azimuth, _elevation and _distance as they ease toward them.
 var azimuth_deg := 0.0 # where the camera sits, seen from the CG: 0 = north of it, 90 = east
 var elevation_deg := 20.0
 var distance := 3.0
+## CAM-17 player settings: turn rate multiplier and vertical drag direction.
+var sensitivity := 1.0
+var invert_y := false
+var _azimuth := 0.0
+var _elevation := 20.0
+var _distance := 3.0
 var _span := 1.5
 
 
 func configure(span: float) -> void:
 	_span = maxf(span, 0.3)
 	distance = DEFAULT_SPANS * _span
+	snap()
+
+
+## The shown pose takes the goals at once (view entry, reset).
+func snap() -> void:
+	_azimuth = azimuth_deg
+	_elevation = elevation_deg
+	_distance = distance
 
 
 ## Starts the orbit in the direction of an existing camera (continuity when switching views); from farther than
@@ -38,6 +56,7 @@ func start_from(eye: Vector3, target: Vector3) -> void:
 	var flat := CameraMath.horizontal_dir(offset)
 	if flat != Vector3.ZERO:
 		azimuth_deg = rad_to_deg(CameraMath.heading_of(flat))
+	snap()
 
 
 ## Starts behind and to the left of the airplane's nose, slightly above (a flight that begins in this view).
@@ -45,11 +64,18 @@ func start_behind(body: Basis) -> void:
 	reset()
 	var nose := CameraMath.horizontal_dir(-body.z, 0.05)
 	azimuth_deg = wrapf(rad_to_deg(CameraMath.heading_of(nose)) + 180.0 + 35.0 if nose != Vector3.ZERO else 0.0, -180.0, 180.0)
+	snap()
 
 
 func rotate(pixels: Vector2) -> void:
-	azimuth_deg = wrapf(azimuth_deg - pixels.x * DEGREES_PER_PIXEL, -180.0, 180.0)
-	elevation_deg = clampf(elevation_deg + pixels.y * DEGREES_PER_PIXEL, MIN_ELEVATION_DEG, MAX_ELEVATION_DEG)
+	var rate := DEGREES_PER_PIXEL * sensitivity
+	azimuth_deg = wrapf(azimuth_deg - pixels.x * rate, -180.0, 180.0)
+	elevation_deg = clampf(elevation_deg + pixels.y * rate * (-1.0 if invert_y else 1.0), MIN_ELEVATION_DEG, MAX_ELEVATION_DEG)
+
+
+## The distance on screen while it eases toward `distance`.
+func shown_distance() -> float:
+	return _distance
 
 
 ## factor < 1 moves in, > 1 moves out.
@@ -61,13 +87,22 @@ func reset() -> void:
 	azimuth_deg = 0.0
 	elevation_deg = 20.0
 	distance = DEFAULT_SPANS * _span
+	snap()
 
 
-## ground_y: Callable(x, z) → terrain height (render y). Returns { position, basis, fov }.
-func update(target: Vector3, ground_y: Callable) -> Dictionary:
-	var el := deg_to_rad(elevation_deg)
-	var dir := CameraMath.dir_of_heading(deg_to_rad(azimuth_deg)) * cos(el) + Vector3.UP * sin(el)
-	var eye := target + dir * distance
+## ground_y: Callable(x, z) → terrain height (render y); dt: frame time the shown pose eases by (INF snaps to the
+## goals, 0 holds). Returns { position, basis, fov }.
+func update(target: Vector3, ground_y: Callable, dt := INF) -> Dictionary:
+	if is_inf(dt):
+		snap()
+	elif dt > 0.0:
+		var f := CameraMath.damp_factor(dt, EASE_HALF_LIFE)
+		_azimuth = wrapf(_azimuth + angle_difference(deg_to_rad(_azimuth), deg_to_rad(azimuth_deg)) * f * 180.0 / PI, -180.0, 180.0)
+		_elevation = lerpf(_elevation, elevation_deg, f)
+		_distance = lerpf(_distance, distance, f)
+	var el := deg_to_rad(_elevation)
+	var dir := CameraMath.dir_of_heading(deg_to_rad(_azimuth)) * cos(el) + Vector3.UP * sin(el)
+	var eye := target + dir * _distance
 	var floor_y := 0.0
 	if ground_y.is_valid():
 		var y: float = ground_y.call(eye.x, eye.z)

@@ -18,6 +18,7 @@ const Slipstream := preload("res://physics/slipstream.gd")
 const SmokeAssignment := preload("res://ui/smoke_aux_assignment.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraRig := preload("res://render/camera/camera_rig.gd")
+const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Commands := preload("res://input/commands.gd")
 const ControlSurfaces := preload("res://physics/control_surfaces.gd")
@@ -217,6 +218,9 @@ var latency_marker_enabled: bool = false
 ## --hud=overlays (default --hud=legacy, so captures and automation keep their picture).
 var overlays_enabled: bool = false
 var overlay_settings: Variant = {}
+## CAM-17: the player's camera settings (display.cfg [camera]); Home sets them, direct routes leave them empty and keep
+## --view/--autozoom.
+var camera_preferences: Dictionary = {}
 var startup_error: String = ""
 var _airplane: Dictionary
 var _camera: Camera3D
@@ -594,6 +598,8 @@ func _prepare_flight() -> void:
 	_rig.auto_zoom = _auto_zoom
 	_rig.look = _look
 	_rig.look_height = _look_height
+	if not camera_preferences.is_empty():
+		CameraSettings.apply_at_start(_rig, camera_preferences)
 	_shadow_mode = str(args.get("shadow", "sun"))
 	if args.has("hide_airplane"):
 		# L0c readability: the same view without the airplane (and its pilot-aid shadow) is the background reference.
@@ -1077,6 +1083,7 @@ func _process(delta: float) -> void:
 	if diagnostics_visible or _panel.text.is_empty():
 		InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
 	_camera_dt = dt
+	CameraRig.release_cursor_if_up()
 	_render_pose(_current_pose(), surfaces, _prop_angle)
 	_update_storm(visual_clock_s, frozen)
 	var smoke_clock_s: float = sim.time()
@@ -1791,6 +1798,14 @@ func _update_aircraft_lights(clock_s: float = -1.0) -> void:
 		_aircraft_lights.active_mode, _aircraft_lights.gain)
 
 
+## CAM-17: Settings changed during a Home flight; the rig applies what changed (direct routes keep their arguments).
+func apply_camera_preferences(config: Dictionary) -> void:
+	if camera_preferences.is_empty() or _rig == null:
+		return
+	CameraSettings.apply_changes(_rig, camera_preferences, config)
+	camera_preferences = CameraSettings.normalized(config)
+
+
 ## CAM-04: mouse wheel zooms the current view; a right-button drag turns the orbit view. True when used.
 func _camera_input(event: InputEvent) -> bool:
 	if _rig == null:
@@ -1800,6 +1815,8 @@ func _camera_input(event: InputEvent) -> bool:
 		_rig.zoom(notches if event.button_index == MOUSE_BUTTON_WHEEL_UP else -notches)
 		get_viewport().set_input_as_handled()
 		return true
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
+		CameraRig.hold_cursor(event.pressed and _rig.view == "orbit")
 	if event is InputEventMouseMotion and (event.button_mask & MOUSE_BUTTON_MASK_RIGHT) != 0:
 		_rig.drag(event.relative)
 		get_viewport().set_input_as_handled()
@@ -2358,6 +2375,7 @@ func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 
 
 func _exit_tree() -> void:
+	CameraRig.hold_cursor(false) # never leave the menus with a held cursor (CAM-29)
 	# A cancelled staged build can stop before attaching these owners to the scene.
 	if not _airplane.is_empty() and is_instance_valid(_airplane.get("root")) and _airplane.root.get_parent() == null:
 		_airplane.root.free()

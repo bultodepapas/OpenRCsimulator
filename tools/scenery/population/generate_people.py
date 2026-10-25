@@ -30,6 +30,8 @@ def parse_arguments():
                         help='Optional BVH override; defaults to the pinned source included in assets/scenery/population/source/')
     parser.add_argument('--outfit', type=Path,
                         help='SC-HUM-07 outfit JSON (tools/scenery/population/outfits/); omitted = the LU-21 person exactly')
+    parser.add_argument('--save-posed', type=Path,
+                        help='Also save the posed rig and meshes (before the static bake) to this .blend, for review')
     parser.add_argument('--transmitter', type=Path,
                         help='SC-HUM-01 owner transmitter .blend for the pilot pose; defaults to the Radiolink T12D delivery')
     args = parser.parse_args(sys.argv[sys.argv.index('--') + 1:])
@@ -337,6 +339,8 @@ elif pose_kind == 'working':
         make_ik_target('WorkHand_' + side, (sign * 0.17 / pose_scale, -0.44 / pose_scale, 1.08 / pose_scale), 'lowerarm02.' + side, 4,
                        (sign * 0.45 / pose_scale, 0.10 / pose_scale, 1.05 / pose_scale))
 bpy.context.view_layer.update()
+if ARGS.save_posed:
+    bpy.ops.wm.save_as_mainfile(filepath=str(ARGS.save_posed), copy=True)
 for bone_name in ['root', 'pelvis.L', 'pelvis.R', 'upperleg02.L', 'upperleg02.R', 'lowerleg01.L', 'lowerleg01.R', 'foot.L', 'foot.R', 'lowerarm02.L', 'lowerarm02.R']:
     bone = rig.pose.bones.get(bone_name)
     if bone:
