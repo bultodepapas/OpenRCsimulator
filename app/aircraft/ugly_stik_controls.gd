@@ -32,10 +32,10 @@ const ROD_RADIUS_M := 0.00115
 # glued to a bottom hatch, its arm out through a slot, with a short pushrod to the plan's nylon horn, hole under the
 # hinge line. Stations are estimates: the servo sits aft of the spar where the wing is still deep enough for the case.
 const AILERON_HORN_INSET_M := 0.012 # horn plane outboard of the aileron's inner end
-const AILERON_HORN_HOLE_M := Vector2(0.002, -0.019) # (aft of, below) the hinge line: a 3/4 in horn
+const AILERON_HORN_HOLE_M := Vector2(0.002, -0.0225) # (aft of, below) the hinge line: a 7/8 in horn
 const AILERON_HORN_BASE_AFT_M := 0.010
 const AILERON_SERVO_SHAFT_Z_M := 0.150 # aft of the leading edge (chord fraction 0.49)
-const AILERON_ARM_RADIUS_M := 0.019
+const AILERON_ARM_RADIUS_M := 0.0225 # equal to the horn: a parallelogram, aileron throw follows the servo
 const HATCH_M := Vector3(0.050, 0.0016, 0.064) # span x 1/16 in plywood x chord, film covered
 const HATCH_PROUD_M := 0.0003
 const HATCH_CLEARANCE_M := 0.0008 # servo case above the hatch's inner face
