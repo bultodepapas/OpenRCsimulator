@@ -322,6 +322,10 @@ class AircraftModelManifestTests(unittest.TestCase):
             relative_files.add(manifest["source_registry"]["path"])
             relative_files.add(manifest["geometry"]["source"]["path"])
             relative_files.update(source["path"] for source in manifest["authoring_sources"])
+            # F4U-16: the generator hashes every livery GLB and checks its import sidecar.
+            for livery in manifest.get("liveries", []):
+                glb = "app/" + livery["path"].removeprefix("res://")
+                relative_files.update({glb, glb + ".import"})
             for dependency in manifest["dependencies"]:
                 resource = dependency["path"]
                 self.assertTrue(resource.startswith("res://"), resource)

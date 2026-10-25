@@ -20,14 +20,14 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "0131fa2992eb25b98f6a914f9afd751841c356098762d3dc734a4eca573fd5f9",
+    "sha256": "345cb32177915fd869aaa227576661b9cb9477ee6691b79217361080f24b897e",
     "hash_mode": "lf_text"
   },
   "geometry": {
     "script": "res://aircraft/f4u_corsair_geometry.gd",
     "source": {
       "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
-      "sha256": "8fb969f9bcd9efd50237fb700303ad49e5716b0bbf2cfa15a00bc14f536e0b92",
+      "sha256": "a619ded06d57cc6115d5b546de1594bcff976b1cdbc1c9c3cea5fe2d0e7c2c50",
       "hash_mode": "lf_text"
     },
     "revision": "g2.2-9fa3b86a9b33",
@@ -165,7 +165,7 @@
   "authoring_sources": [
     {
       "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
-      "sha256": "8fb969f9bcd9efd50237fb700303ad49e5716b0bbf2cfa15a00bc14f536e0b92",
+      "sha256": "a619ded06d57cc6115d5b546de1594bcff976b1cdbc1c9c3cea5fe2d0e7c2c50",
       "hash_mode": "lf_text",
       "role": "geometry"
     },
@@ -186,24 +186,30 @@
       "sha256": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89",
       "hash_mode": "lf_text",
       "role": "wing_fold"
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/mechanisms-r59.json",
+      "sha256": "4aa349793219b077f4f310e232d04e3b6e9fc933e6d492b9479f40f451a561b5",
+      "hash_mode": "lf_text",
+      "role": "mechanisms"
     }
   ],
   "dependencies": [
     {
       "path": "res://aircraft/f4u_corsair_geometry.gd",
-      "sha256": "a303f8ebecd099d0e60e2ed1360a8a52f61caebb2c5879a9f5fa1875f573896c",
+      "sha256": "6ffe704af4e628c334ca64048864ab7eb726e4f804182ee23eef2ae25017be50",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
     },
     {
       "path": "res://aircraft/imported_model.gd",
-      "sha256": "a31ae82e9781fa48302a56a358e5d911dc1d3adde04d8990115180110c5f66a5",
+      "sha256": "76889f694b7fae6fc75394d1af2feff5c6492c7a2075c4a89e6463d54a3ac18c",
       "hash_mode": "lf_text",
       "role": "builder"
     },
     {
       "path": "res://aircraft/imported_model_contract.gd",
-      "sha256": "ad12591682d45b38bd27f01425b52963cc9bc66413cd88ce6b2c6242f33c75db",
+      "sha256": "f209b87b1e4a8b8de5e6b501fab57f5fb4e578a9fd24044b43810ce8cb585d23",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -253,6 +259,16 @@
       {
         "key": "wing_fold_right",
         "geometry_ref": "folds.right"
+      }
+    ],
+    "mechanisms": [
+      {
+        "key": "canopy",
+        "geometry_ref": "mechanisms.canopy"
+      },
+      {
+        "key": "tailhook",
+        "geometry_ref": "mechanisms.tailhook"
       }
     ]
   },

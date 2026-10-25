@@ -1,0 +1,46 @@
+{
+	"checks": [
+		{
+			"detail": "[\"canopy\", \"tailhook\"]",
+			"label": "the Corsair binds a canopy and a tailhook",
+			"ok": true
+		},
+		{
+			"detail": "3.0 s",
+			"label": "U opens the canopy and Y lowers the hook in the air, over about their 2.5 s and 1.5 s cycles",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "the rendered canopy is open by R59's slide",
+			"ok": true
+		},
+		{
+			"detail": "airspeed  23.0 m/s   altitude  30.0 m   AoA  +3.7°   throttle   8%\nLanding gear: Up\nFlaps: 0.0° actual → 0.0° target\nWings: spread  [O] fold\nCanopy: open  [U] close\nTailhook: down  [Y] raise\n 55 fps   frame p95  32.6 ms   physics 2157 µs/tick  [F3]\n[L] Night lights: off · Night lights: auto",
+			"label": "the HUD reports the open canopy and the lowered hook",
+			"ok": true
+		},
+		{
+			"detail": "ticks 124 -> 728, altitude 30.0 -> 30.0 m, holds {  }",
+			"label": "the flight goes on: the solver advanced, no throttle hold, still airborne",
+			"ok": true
+		},
+		{
+			"detail": "0.59",
+			"label": "pressing U again closes the canopy part way back",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "restart closes the canopy and stows the hook",
+			"ok": true
+		},
+		{
+			"detail": "tip 0.0000 m above the runway",
+			"label": "on the runway the lowered hook rests on the ground instead of passing through it",
+			"ok": true
+		}
+	],
+	"failures": 0,
+	"format": "F4U-21 mechanism check v1"
+}

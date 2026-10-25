@@ -68,7 +68,7 @@ def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Pat
     # Only accept the pristine pinned tree or this exact patch already applied.
     common = ["git", "apply"]
     patch_env = dict(os.environ, GIT_CEILING_DIRECTORIES=str(engine.parent))
-    for patch_name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch"):
+    for patch_name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "load_token_lifetime.patch"):
         patch = HERE / patch_name
         check = subprocess.run(common + ["--check", str(patch)], cwd=engine, env=patch_env, capture_output=True)
         if check.returncode == 0:
@@ -110,7 +110,7 @@ def prepare(cache: Path, jobs: int = 4, prepare_only: bool = False) -> tuple[Pat
         "fidelityfx_sdk": "1.1.4", "fsr_upscaler": "3.1.4", "streamline": "2.11.1",
         "platform": "windows", "graphics_api": "vulkan", "frame_generation_enabled": False,
         "sources": {name: digest for name, _, digest, _ in ARCHIVES},
-        "integration": {name: sha256(HERE / name) for name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")},
+        "integration": {name: sha256(HERE / name) for name in ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "load_token_lifetime.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")},
         "streamline_headers": {source.name: sha256(source) for source in sorted((nvidia / "include").glob("*.h"))},
         "fidelityfx_runtime_build": fidelityfx_receipt,
         "runtime": {source.name: sha256(source) for source in runtime_files},

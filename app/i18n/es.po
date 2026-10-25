@@ -5620,6 +5620,52 @@ msgstr "acelerador retenido en ralentí"
 msgid "Fold / spread folding wings (on the ground, stopped)"
 msgstr "Plegar / desplegar alas plegables (en tierra, detenido)"
 
+# F4U-21: canopy and tailhook.
+msgid "Canopy open / close · tailhook lower / raise"
+msgstr "Abrir / cerrar la cabina · bajar / subir el gancho"
+
+msgid "This aircraft has no sliding canopy."
+msgstr "Este avión no tiene cabina corrediza."
+
+msgid "This aircraft has no tailhook."
+msgstr "Este avión no tiene gancho de apontaje."
+
+msgid "Canopy opening"
+msgstr "Abriendo la cabina"
+
+msgid "Canopy closing"
+msgstr "Cerrando la cabina"
+
+msgid "Tailhook lowering"
+msgstr "Bajando el gancho"
+
+msgid "Tailhook raising"
+msgstr "Subiendo el gancho"
+
+msgid "Canopy: closed  [U] open"
+msgstr "Cabina: cerrada  [U] abrir"
+
+msgid "Canopy: open  [U] close"
+msgstr "Cabina: abierta  [U] cerrar"
+
+msgid "Canopy: opening %d%%"
+msgstr "Cabina: abriendo %d%%"
+
+msgid "Canopy: closing %d%%"
+msgstr "Cabina: cerrando %d%%"
+
+msgid "Tailhook: up  [Y] lower"
+msgstr "Gancho: arriba  [Y] bajar"
+
+msgid "Tailhook: down  [Y] raise"
+msgstr "Gancho: abajo  [Y] subir"
+
+msgid "Tailhook: lowering %d%%"
+msgstr "Gancho: bajando %d%%"
+
+msgid "Tailhook: raising %d%%"
+msgstr "Gancho: subiendo %d%%"
+
 msgid "Latency camera marker"
 msgstr "Marcador para medir latencia con cámara"
 

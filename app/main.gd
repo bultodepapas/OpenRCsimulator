@@ -337,6 +337,9 @@ var _smoke_key_on := false
 ## spread and locked the session holds the throttle at idle.
 var _wing_fold := 0.0
 var _wing_fold_target := 0.0
+## F4U-21: auxiliary mechanism states by key (0 closed or stowed, 1 open or lowered) and their targets. Presentation only.
+var _mechanisms := {}
+var _mechanism_targets := {}
 var _smoke_assignment: SmokeAssignment
 var _smoke_assignment_was_paused := false
 var _last_render_pose: Dictionary = {}
@@ -1062,6 +1065,7 @@ func _process(delta: float) -> void:
 		return
 	var dt := minf(delta, 0.1) # a stalled window must not jump the propeller or the scripted circle
 	_advance_wing_fold(dt)
+	_advance_mechanisms(dt)
 	if _frametimes_active:
 		if not _frametimes_clock_primed:
 			_frametimes_last_usec = Time.get_ticks_usec()
@@ -1268,6 +1272,12 @@ func _update_hud(telemetry_visible: bool = true, performance_visible: bool = tru
 			lines.append(tr("Flaps are unavailable on this aircraft."))
 		if AirplaneBuilder.has_folds(_airplane):
 			lines.append(_wing_fold_line())
+		if AirplaneBuilder.has_mechanism(_airplane, "canopy"):
+			lines.append(_mechanism_line("canopy", tr("Canopy: closed  [U] open"), tr("Canopy: open  [U] close"),
+				tr("Canopy: opening %d%%"), tr("Canopy: closing %d%%")))
+		if AirplaneBuilder.has_mechanism(_airplane, "tailhook"):
+			lines.append(_mechanism_line("tailhook", tr("Tailhook: up  [Y] lower"), tr("Tailhook: down  [Y] raise"),
+				tr("Tailhook: lowering %d%%"), tr("Tailhook: raising %d%%")))
 		if not session.weather_is_calm():
 			var wind: PackedFloat64Array = session.wind_at(session.sim.time())
 			lines.append(_weather_hud_line(s, wind))
@@ -1592,6 +1602,42 @@ func _wing_fold_line() -> String:
 	return line
 
 
+## F4U-21: open or close the canopy, lower or raise the tailhook. Presentation only, at any time.
+func _toggle_mechanism(key: String) -> void:
+	if session == null or session.sim.paused:
+		return
+	if not AirplaneBuilder.has_mechanism(_airplane, key):
+		_note = tr("This aircraft has no sliding canopy.") if key == "canopy" else tr("This aircraft has no tailhook.")
+		return
+	var opening := float(_mechanism_targets.get(key, 0.0)) < 0.5
+	_mechanism_targets[key] = 1.0 if opening else 0.0
+	if key == "canopy":
+		_note = tr("Canopy opening") if opening else tr("Canopy closing")
+	else:
+		_note = tr("Tailhook lowering") if opening else tr("Tailhook raising")
+
+
+func _advance_mechanisms(dt: float) -> void:
+	if session == null or session.sim.paused:
+		return
+	var mechanisms: Dictionary = _airplane.get("mechanisms", {})
+	for key: String in mechanisms:
+		var target := float(_mechanism_targets.get(key, 0.0))
+		var state := float(_mechanisms.get(key, 0.0))
+		if state != target:
+			_mechanisms[key] = move_toward(state, target, dt / float(mechanisms[key].time_s))
+
+
+func _mechanism_line(key: String, stowed: String, deployed: String, opening: String, closing: String) -> String:
+	var state := float(_mechanisms.get(key, 0.0))
+	var target := float(_mechanism_targets.get(key, 0.0))
+	if state <= 0.0 and target <= 0.0:
+		return stowed
+	if state >= 1.0 and target >= 1.0:
+		return deployed
+	return (opening if target > 0.5 else closing) % roundi(100.0 * state)
+
+
 func _step_flaps(direction: int) -> void:
 	if session == null or session.sim.paused:
 		return
@@ -1714,6 +1760,12 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 			KEY_O:
 				_toggle_wing_fold()
+				get_viewport().set_input_as_handled()
+			KEY_U:
+				_toggle_mechanism("canopy")
+				get_viewport().set_input_as_handled()
+			KEY_Y:
+				_toggle_mechanism("tailhook")
 				get_viewport().set_input_as_handled()
 			KEY_N:
 				controller_action("rates_toggle")
@@ -2455,6 +2507,8 @@ func _on_resetting() -> void:
 	_wing_fold = 0.0
 	_wing_fold_target = 0.0
 	session.set_throttle_hold("wing_fold", false)
+	_mechanisms.clear()
+	_mechanism_targets.clear()
 	_reset_profile_smoke()
 	if _smoke != null:
 		_smoke.reset()
@@ -2736,6 +2790,12 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 		for key: String in _airplane.folds:
 			fractions[key] = _wing_fold
 		AirplaneBuilder.apply_folds(_airplane, fractions)
+	var mechanisms := _mechanisms
+	if float(_mechanisms.get("tailhook", 0.0)) > 0.0:
+		# The lowered hook rides on the runway, as the real one rides the deck.
+		mechanisms = _mechanisms.duplicate()
+		mechanisms.tailhook = AirplaneBuilder.ground_limited_fraction(_airplane, "tailhook", _mechanisms.tailhook, _ground_height)
+	AirplaneBuilder.apply_mechanisms(_airplane, mechanisms)
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	# FW-MOON-03: field-world time passes no lighting dictionary; its strength fades the moon's shadow with the phase.
 	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \

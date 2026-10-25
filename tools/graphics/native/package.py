@@ -22,7 +22,7 @@ INTEGRATION_COMMIT = candidate_pins.INTEGRATION_COMMIT
 CANDIDATE = ROOT / "tmp/native-reconstruction-candidate"
 OUT = ROOT / "tmp/native-reconstruction-export"
 CHECKS = ROOT / "tmp/godot-checks/native-package-export"
-INTEGRATION = ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")
+INTEGRATION = ("engine.patch", "vulkan_validation.patch", "dlss_validation.patch", "shutdown_thread.patch", "load_token_lifetime.patch", "fidelityfx.patch", "build_fidelityfx.py", "fsr3.h", "fsr3.cpp", "fsr3_prepare.glsl")
 OVERLAYS = candidate_pins.INTEGRATION_OVERLAYS
 FORMAT = "openrc-native-reconstruction-package v1"
 sys.path.insert(0, str(ROOT / "tools/godot"))

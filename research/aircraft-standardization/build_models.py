@@ -29,6 +29,7 @@ GEAR_ROLES = {"left", "right", "tail", "steering", "nose"}
 REQUIRED_CONTROL_ROLES = {"aileron_left", "aileron_right", "elevator", "rudder"}
 SHARED_IMPORTED_BUILDER = "res://aircraft/imported_model.gd"
 CONSTRUCTION_ROLES = {"left", "right", "tail", "steering", "nose"}
+MECHANISM_KEYS = ("canopy", "tailhook", "cowl_flaps")  # imported_model_contract.gd MECHANISM_KEYS
 # F4U-02: a sampled retraction rig steers either a nose wheel (tricycle) or a tail wheel (taildragger).
 RETRACT_ROLE_SETS = ({"left", "right", "nose", "steering"}, {"left", "right", "tail", "steering"})
 CONSTRUCTION_AXES = {"+X", "-X", "+Y", "-Y", "+Z", "-Z"}
@@ -145,8 +146,21 @@ def _validate_construction(construction: Any, bindings: dict[str, Any], label: s
         construction,
         {"version", "hinge_axis", "rotor", "gear", "material_grow"},
         f"{label}.construction",
-        {"retraction", "folds"},
+        {"retraction", "folds", "mechanisms"},
     )
+    if "mechanisms" in construction:
+        # F4U-21: auxiliary mechanisms the flight scene drives by key, at most one of each.
+        mechanisms = construction["mechanisms"]
+        if not isinstance(mechanisms, list) or not 1 <= len(mechanisms) <= len(MECHANISM_KEYS):
+            raise ModelManifestError(f"{label}.construction.mechanisms must be an array of one to three known mechanisms")
+        seen: set[str] = set()
+        for index, mechanism in enumerate(mechanisms):
+            mechanism = _check_keys(mechanism, {"key", "geometry_ref"}, f"{label}.construction.mechanisms[{index}]")
+            if mechanism["key"] not in MECHANISM_KEYS or mechanism["key"] in seen:
+                raise ModelManifestError(f"{label}.construction.mechanisms[{index}].key must be a unique one of {', '.join(MECHANISM_KEYS)}")
+            seen.add(mechanism["key"])
+            if not isinstance(mechanism["geometry_ref"], str) or re.fullmatch(r"[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*", mechanism["geometry_ref"]) is None:
+                raise ModelManifestError(f"{label}.construction.mechanisms[{index}].geometry_ref must be a dotted source reference")
     if "folds" in construction:
         # F4U-17: one or two in-place fold groups, each a unique key and a dotted geometry reference.
         folds = construction["folds"]

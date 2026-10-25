@@ -779,6 +779,10 @@
         {
           "path": "assets/aircraft/f4u-corsair-250/wing-fold-r59.json",
           "role": "wing_fold"
+        },
+        {
+          "path": "assets/aircraft/f4u-corsair-250/mechanisms-r59.json",
+          "role": "mechanisms"
         }
       ],
       "construction": {
@@ -802,6 +806,16 @@
           {
             "key": "wing_fold_right",
             "geometry_ref": "folds.right"
+          }
+        ],
+        "mechanisms": [
+          {
+            "key": "canopy",
+            "geometry_ref": "mechanisms.canopy"
+          },
+          {
+            "key": "tailhook",
+            "geometry_ref": "mechanisms.tailhook"
           }
         ]
       }
