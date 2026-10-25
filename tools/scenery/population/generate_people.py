@@ -203,7 +203,7 @@ def bend_pose_bone(name, degrees):
     bone.rotation_mode = 'QUATERNION'
     bone.rotation_quaternion = bone.rotation_quaternion @ Quaternion((1.0, 0.0, 0.0), math.radians(degrees))
 
-# SC-HUM-09 hands, tuned through the Blender MCP on posed rigs (--save-posed). MPFB's default rig flexes a finger
+# SC-HUM-07-R1 hands, tuned through the Blender MCP on posed rigs (--save-posed). MPFB's default rig flexes a finger
 # about its local Z axis (+ on the left hand, - on the right) and tucks the thumb toward the index about local -X on
 # both sides. Flexion per finger (thumb to little) and joint (1-3), in degrees: relaxed for hanging or resting
 # hands, grip for hands holding a transmitter or working on a model.
@@ -396,7 +396,7 @@ for bone_name in ['root', 'pelvis.L', 'pelvis.R', 'upperleg02.L', 'upperleg02.R'
 
 def patch_image(image, patches):
     """Cover regions of a source texture with fabric copied from just below, feathered at the edges (a CC0 shirt's
-    MakeHuman logo, SC-HUM-09). Each patch is [x0, y0, x1, y1, dy] in fractions of the image, top-left origin."""
+    MakeHuman logo, SC-HUM-07-R1). Each patch is [x0, y0, x1, y1, dy] in fractions of the image, top-left origin."""
     import numpy
     width, height = image.size
     pixels = numpy.empty(width * height * 4, dtype=numpy.float32)

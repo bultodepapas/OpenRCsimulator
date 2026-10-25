@@ -2,9 +2,9 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wwvtws344v2d"
-path.s3tc="res://.godot/imported/aa996a41d59cb85abc94edb1d8601011cac23693a00cc83b78c8fd9261c9ee9b.png-198bce5ed7121cf490bdd5233863281e.s3tc.ctex"
-path.etc2="res://.godot/imported/aa996a41d59cb85abc94edb1d8601011cac23693a00cc83b78c8fd9261c9ee9b.png-198bce5ed7121cf490bdd5233863281e.etc2.ctex"
+uid="uid://bqn6r06yvwxxm"
+path.s3tc="res://.godot/imported/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png-be5edccfea756010114eab56d6596454.s3tc.ctex"
+path.etc2="res://.godot/imported/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png-be5edccfea756010114eab56d6596454.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/scenery/population/people/textures/aa996a41d59cb85abc94edb1d8601011cac23693a00cc83b78c8fd9261c9ee9b.png"
-dest_files=["res://.godot/imported/aa996a41d59cb85abc94edb1d8601011cac23693a00cc83b78c8fd9261c9ee9b.png-198bce5ed7121cf490bdd5233863281e.s3tc.ctex", "res://.godot/imported/aa996a41d59cb85abc94edb1d8601011cac23693a00cc83b78c8fd9261c9ee9b.png-198bce5ed7121cf490bdd5233863281e.etc2.ctex"]
+source_file="res://assets/scenery/population/people/textures/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png"
+dest_files=["res://.godot/imported/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png-be5edccfea756010114eab56d6596454.s3tc.ctex", "res://.godot/imported/1490c907184c7af2480cc9b8342c94c3a6da920443d8e215ac8c701f6bbb2b74.png-be5edccfea756010114eab56d6596454.etc2.ctex"]
 
 [params]
 

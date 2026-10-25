@@ -40,6 +40,10 @@ A fixed FOV/viewport reference makes a minimum-pixel light grow into a large sur
 
 - **A 0.5 alpha cut erases thin strands once mipmaps are on.** Eyebrows and fine hair average below the threshold in mips and disappear, so MPFB faces looked browless; an alpha cut of 0.3 restored them without visible hair-edge bloat at 1080p ([SC-HUM-08](../research/scenery-implementation/SC-HUM-08/README.md#faces-and-skin-sc-hum-07-remainder)).
 
+- **Measure a rig's joint axes before posing it.** On MPFB's default rig, fingers flex about local Z (mirrored left and right) and the thumb tucks about −X. Curling about X, which is what an earlier pose code assumed, does not close a hand. A CC0 motion-capture pose that bends only the outer finger joints reads as a claw. Measure by moving one bone and checking which way the fingertip moves relative to the thumb and the wrist ([SC-HUM-07-R1](../research/scenery-implementation/SC-HUM-07-R1/README.md#measured-rig-facts-mpfb-2018-default-rig)).
+
+- **Check `.import` settings after any bulk import.** Re-creating an `.import` file resets it to Godot's defaults, silently dropping VRAM compression, mipmaps and normal-map mode. A commit did exactly that to the people's normal atlas; a hash-and-settings guard in the area's tests caught it ([SC-HUM-07-R1](../research/scenery-implementation/SC-HUM-07-R1/README.md#verification)).
+
 - **Reduce a detailed hard-surface model per part, not as one mesh.** One collapse decimation of the joined 36k-triangle owner transmitter, to 800 triangles, tore holes in its flat face panel while small knobs kept their triangles. Merge coplanar faces of each part first (planar dissolve, materials delimited), then share the triangle budget by surface area with a small floor per part. The housing kept its outline at a similar total ([SC-HUM-01](../research/scenery-implementation/SC-HUM-01/README.md#recipe)).
 
 ## Rendering and visual evidence
