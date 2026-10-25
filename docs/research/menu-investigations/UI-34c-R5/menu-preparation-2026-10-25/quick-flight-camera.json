@@ -1,0 +1,308 @@
+{
+  "format": "openrc-initial-camera-diagnostic v1",
+  "date": "2026-10-25",
+  "scope": "Explicit --quick-flight on the pinned native graphics trial, Ugly Stik runway, first recorded frames.",
+  "visible_flash_reproduced": true,
+  "cause": "The older trial activated an origin camera while the aircraft was also at the origin. Quick-flight bypassed Home's loading surface and first placed the render pose in _process, exposing frame zero.",
+  "fix": "Place the camera at its pilot eye before activation and prime the validated aircraft/camera pose before startup_finished on explicit quick-flight and staged interactive routes. Capture, trace and scripted routes remain excluded from the priming guard.",
+  "before": {
+    "checked_run": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "951885af-fdbf-4b90-bdb2-416ab970e1b0",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/godot.windows.editor.x86_64.exe",
+        "--path",
+        "tmp/native-reconstruction-candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--write-movie",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/camera-handoff/quick-before-1080/frame.png",
+        "--quit-after",
+        "3",
+        "--",
+        "--quick-flight"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T13:42:59.326021+00:00",
+      "label": "native",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\camera-handoff\\quick-before-1080\\checks\\native-fbjpay55\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\camera-handoff\\quick-before-1080\\checks\\native-fbjpay55\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 14,
+          "message": "19 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+          "context": [
+            "   at: ObjectDB::cleanup (core\\object\\object.cpp:2535)",
+            "--------------------------------------------------------------------------------",
+            "Done recording movie at path: C:/DEVELOPMENT/OpenRCsimulator/tmp/camera-handoff/quick-before-1080/frame.png"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 29.687,
+      "log_bytes": 3380,
+      "log_sha256": "fd4a7c7de903faaf13674fc185e9fa9e6941312028ae75908c479e8979bccad7"
+    },
+    "frames": [
+      {
+        "index": 0,
+        "path": "tmp/camera-handoff/quick-before-1080/frame00000000.png",
+        "sha256": "4e90d26c116e0be793c55a977628bcb5c78bbc35f684ca53c52d8e6f8418f20e",
+        "dimensions": [
+          1920,
+          1080
+        ],
+        "visual_observation": "Inside the aircraft fuselage, engine and wing structure visible."
+      },
+      {
+        "index": 1,
+        "path": "tmp/camera-handoff/quick-before-1080/frame00000001.png",
+        "sha256": "affc4a39483a71fe3128f7def51606da87020ab1f6bb591be2a50654dd7fa654",
+        "dimensions": [
+          1920,
+          1080
+        ],
+        "visual_observation": "Pilot station overlooking the runway; aircraft at its runway position."
+      }
+    ],
+    "candidate_receipt_sha256": "f454057d08d06dce95ac67509701ef6c6cfee01eaaa29c4909478283b8332c2d",
+    "source_base_commit": "343be4b0bba007ec4295e7da408220a0577d97e1",
+    "candidate_project_sha256": "ab6389e54833de93694518df9c0b2f9a6f0fac57d7ea149b2804c2637a9dd640",
+    "camera_overlays": {
+      "app/main.gd": {
+        "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+        "source_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5",
+        "expected_final_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5",
+        "prepared_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5"
+      }
+    }
+  },
+  "after": {
+    "checked_run": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "6b1d563e-9d83-454f-bd64-a1962c1e79c5",
+      "command": [
+        ".tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/godot.windows.editor.x86_64.exe",
+        "--path",
+        "tmp/native-reconstruction-candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--fullscreen",
+        "--write-movie",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/camera-handoff/quick-after-1080/frame.png",
+        "--quit-after",
+        "3",
+        "--",
+        "--quick-flight"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T13:56:15.342505+00:00",
+      "label": "native",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\camera-handoff\\quick-after-1080\\checks\\native-2zl43413\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\camera-handoff\\quick-after-1080\\checks\\native-2zl43413\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "Current available space on disk is low (8.98 GiB). MovieWriter will fail during movie recording if the disk runs out of available space.",
+          "context": [
+            "   at: MovieWriter::begin (servers\\movie_writer\\movie_writer.cpp:116)",
+            "OpVectorExtractDynamic is not supported yet.",
+            "OpVectorExtractDynamic is not supported yet."
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 16,
+          "message": "19 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+          "context": [
+            "   at: ObjectDB::cleanup (core\\object\\object.cpp:2535)",
+            "--------------------------------------------------------------------------------",
+            "Done recording movie at path: C:/DEVELOPMENT/OpenRCsimulator/tmp/camera-handoff/quick-after-1080/frame.png"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 19.687,
+      "log_bytes": 3597,
+      "log_sha256": "6fcf1057cb6402a85f5194c04ad24388675c9ba35fd40017b0a996b3926a1816"
+    },
+    "frames": [
+      {
+        "index": 0,
+        "path": "tmp/camera-handoff/quick-after-1080/frame00000000.png",
+        "sha256": "3e30fc022606d94423aa76a4e4dbe22c6538ced4881498e04899f02fe9a631dc",
+        "dimensions": [
+          1920,
+          1080
+        ],
+        "visual_observation": "Pilot station overlooking the runway; aircraft at its runway position."
+      },
+      {
+        "index": 1,
+        "path": "tmp/camera-handoff/quick-after-1080/frame00000001.png",
+        "sha256": "868adca0d09284e235169fedddcd555a3f0034bac7ae937d14eca3ef8f30865f",
+        "dimensions": [
+          1920,
+          1080
+        ],
+        "visual_observation": "Pilot station overlooking the runway; no inside-aircraft transition."
+      }
+    ],
+    "candidate_receipt_sha256": "2c193d8fbb799801d033f3f41a4ee5cae83142e0cd8f9d19a9c1f33703a3ecc2",
+    "source_base_commit": "343be4b0bba007ec4295e7da408220a0577d97e1",
+    "candidate_project_sha256": "ab6389e54833de93694518df9c0b2f9a6f0fac57d7ea149b2804c2637a9dd640",
+    "camera_overlays": {
+      "app/main.gd": {
+        "source_commit": "7bfbe2ec071bd142c5b1acf7350fff634ec31f16",
+        "source_sha256": "c9449d0fd4480ec8bc8a14d7064c8197dfba1cfd5a9804e3754601558c87a1b5",
+        "expected_final_sha256": "c993834dc553fb5a29ab76aaec8b38c994da171ff393db9dbb7455edbd89d146",
+        "startup_source_commit": "7aece650061f9eec86a4745304aa74d82995a5aa",
+        "startup_source_sha256": "8b9af7787614fbfe1586774e29efac179299cb3e4cc318c747c25435f498ea7c",
+        "startup_function_sha256": "3b6b3fe68ef364a21970e1305d9f27f9752deccbba31f1b3894bbd8e4120693b",
+        "prepared_sha256": "c993834dc553fb5a29ab76aaec8b38c994da171ff393db9dbb7455edbd89d146"
+      },
+      "app/render/pilot_camera.gd": {
+        "source_commit": "9c672e3202408f5008ceacebf2fe2e1d3ea593ab",
+        "source_sha256": "0f49a40c9a998a246861dfed0cdd2eb49c97e36636a3dac8b20f339f958c1bbb",
+        "expected_final_sha256": "0f49a40c9a998a246861dfed0cdd2eb49c97e36636a3dac8b20f339f958c1bbb",
+        "prepared_sha256": "0f49a40c9a998a246861dfed0cdd2eb49c97e36636a3dac8b20f339f958c1bbb"
+      },
+      "app/tests/test_initial_flight_camera.gd": {
+        "source_commit": "7aece650061f9eec86a4745304aa74d82995a5aa",
+        "source_sha256": "b3dc1819c7f3653b4e0ccc4dffc15da850c8190caac9e634083ea3feb789f888",
+        "expected_final_sha256": "b3dc1819c7f3653b4e0ccc4dffc15da850c8190caac9e634083ea3feb789f888",
+        "prepared_sha256": "b3dc1819c7f3653b4e0ccc4dffc15da850c8190caac9e634083ea3feb789f888"
+      }
+    }
+  },
+  "checks": {
+    "production_4_7_2": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "7c89818c-7812-41aa-bcc6-6b1f30af99bd",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_initial_flight_camera.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T13:52:08.130963+00:00",
+      "label": "initial-camera",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\camera-handoff\\quick-main-check\\initial-camera-mcon8ec4\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\camera-handoff\\quick-main-check\\initial-camera-mcon8ec4\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [
+        "Initial flight camera: 16 checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 16.688,
+      "log_bytes": 1636,
+      "log_sha256": "fb15b1299b4b124fcf0f66466b620389695f8cf8ae2f75f86daecafe28f39c0b"
+    },
+    "native_4_8_trial": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "379ec7ad-a32d-48d2-a85b-eb53c1d35c71",
+      "command": [
+        ".tools/advanced-rendering/godot-135dff3887a3d2ccf45cafbd9bdffa7b718e1e76/bin/godot.windows.editor.x86_64.exe",
+        "--headless",
+        "--path",
+        "tmp/native-reconstruction-candidate/app",
+        "--script",
+        "res://tests/test_initial_flight_camera.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-25T13:53:39.999781+00:00",
+      "label": "initial-camera",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\camera-handoff\\quick-native-check\\initial-camera-12g482co\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\camera-handoff\\quick-native-check\\initial-camera-12g482co\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [
+        "Initial flight camera: 16 checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 28.844,
+      "log_bytes": 3450,
+      "log_sha256": "5d9ea0a40e0b367a80d9b0fbda3f047ba595343d63d9dfc1975a741389d1d736"
+    },
+    "focused_checks_per_engine": 16,
+    "package_preflight": "python tools/graphics/native/package.py --preflight-only: passed; no export or files written.",
+    "repeat_preparation_receipt_identical": true,
+    "repeat_preparation_receipt_sha256": "2c193d8fbb799801d033f3f41a4ee5cae83142e0cd8f9d19a9c1f33703a3ecc2"
+  },
+  "limitations": [
+    "These Movie Maker captures establish first-frame placement, not startup performance. Readbacks, fixed FPS and encoding change timing.",
+    "Both forced --quit-after captures report 19 leaked ObjectDB instances. The final capture also warns of low disk space (8.98 GiB) but completes all three frames. This is not a clean-exit qualification.",
+    "Earlier Home-to-Fly observations did not reproduce a visible flash because the loading surface covered the misplaced frames. See camera-handoff.json for that distinct route.",
+    "The native trial remains an experimental engine and a pinned application snapshot; it is not a production engine upgrade or full aircraft/route qualification."
+  ],
+  "references": [
+    "https://docs.godotengine.org/en/latest/tutorials/animation/creating_movies.html",
+    "https://github.com/godotengine/godot-docs/blob/master/tutorials/animation/creating_movies.rst"
+  ]
+}

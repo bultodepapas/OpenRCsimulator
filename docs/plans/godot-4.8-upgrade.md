@@ -1,6 +1,6 @@
 # Godot 4.8 upgrade plan
 
-**Status:** GDU-00 done on 2026-10-21; GDU-01 onward open. Pinned engine: 4.7.2-stable. The latest 4.8 build is beta1 (2026-10-15), and stable is expected in Q4 2026. **Owner:** export/CI maintainer (DT/PT). The tracks listed per phase own their own acceptance. **Prefix:** `GDU-`. **Evidence:** `docs/research/engine-upgrade/`; audit in [GDU-00](../research/engine-upgrade/GDU-00/README.md).
+**Status:** GDU-00 done on 2026-10-21; GDU-02 parallel Windows trial started on 2026-10-25 ([evidence and reproduction](../research/engine-upgrade/GDU-02/README.md)). Pinned production engine: 4.7.2-stable. Latest official 4.8 build rechecked on 2026-10-25: beta1 (2026-10-15). GDU-03 onward remain open. **Owner:** export/CI maintainer (DT/PT). The tracks listed per phase own their own acceptance. **Prefix:** `GDU-`. **Evidence:** `docs/research/engine-upgrade/`; audit in [GDU-00](../research/engine-upgrade/GDU-00/README.md).
 
 ## Goal and rules
 
@@ -33,7 +33,7 @@ Rollback: revert the GDU-03 commits. The 4.7.2 pins, hashes and CI cache keys co
 
 | ID | Work | Proof/status |
 | --- | --- | --- |
-| GDU-01 | At each beta/RC, re-run the regression query and the scanner, and update the GDU-00 tables in a dated addendum | Open; addendum per build |
+| GDU-01 | At each beta/RC, re-run the regression query and the scanner, and update the GDU-00 tables in a dated addendum | Rechecked beta1 on 2026-10-25: [addendum](../research/engine-upgrade/GDU-02/README.md#gdu-01-update-upstream-state). Three blockers fixed on master, still present in official beta1; watch remains active |
 | GDU-01a | Reduce any project failure found in GDU-02 to a minimal reproduction project and report it upstream with a link back here | Open; issue links |
 
 ### Phase 2: Disposable trial on the current candidate
@@ -42,8 +42,8 @@ All work runs in a worktree or tree copy with the candidate editor in `.tools/`.
 
 | ID | Work | Proof/status |
 | --- | --- | --- |
-| GDU-02a | Run `--import` and record the `.import`, `.tscn` and `.tres` churn by file type | Open; diff stat |
-| GDU-02b | Run `app/test.sh` (all parts) and classify every failure as engine regression, required adaptation or intended behavior change | Open; triage table |
+| GDU-02a | Run `--import` and record the `.import`, `.tscn` and `.tres` churn by file type | Done for Windows beta1, 2026-10-25: 307 `.import` files, 767 additions; no scene/resource churn; [evidence](../research/engine-upgrade/GDU-02/README.md) |
+| GDU-02b | Run `app/test.sh` (all parts) and classify every failure as engine regression, required adaptation or intended behavior change | In progress: isolated headless checks and identity-adaptation triage; full suite remains open ([evidence](../research/engine-upgrade/GDU-02/README.md)) |
 | GDU-02c | Run `app/capture.sh` and the field, landscape, sky, moon, lake, smoke and Workshop captures against the 4.7.2 set on the same host | Open; paired image report |
 | GDU-02d | Linux export plus `export.sh` package checks; size comparison against 4.7.2 | Open; manifest and size table |
 

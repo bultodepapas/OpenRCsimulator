@@ -22,6 +22,8 @@ CANDIDATE = ROOT / "tmp" / "native-reconstruction-candidate"
 BASE_COMMIT = "343be4b0bba007ec4295e7da408220a0577d97e1"
 INTEGRATION_COMMIT = "7bfbe2ec071bd142c5b1acf7350fff634ec31f16"
 FEATURE_INTEGRATION_COMMIT = "91b67d620c1adf3f470dddba33ace63f3fb6851c"
+CAMERA_EYE_COMMIT = "9c672e3202408f5008ceacebf2fe2e1d3ea593ab"
+CAMERA_STARTUP_COMMIT = "7aece650061f9eec86a4745304aa74d82995a5aa"
 ENGINE_VERSION = "4.8.0"
 GENERATOR_RELATIVE = Path("research/aircraft-standardization/build_customization.py")
 GENERATOR_SHA256 = "a78b580aa320dfd4d34e27ef2e017cb395e19f71a5e35b25132a7228482e7ac6"
@@ -34,6 +36,8 @@ INTEGRATION_OVERLAYS = (
     "app/i18n/es.po",
     "app/app_root.gd",
     "app/main.gd",
+    "app/render/pilot_camera.gd",
+    "app/tests/test_initial_flight_camera.gd",
     "app/tests/test_reconstruction.gd",
     "app/tests/test_advanced_graphics_settings.gd",
 )
@@ -51,6 +55,8 @@ for _path in (
 INTEGRATION_SOURCE_COMMITS["app/tests/test_advanced_graphics_settings.gd"] = "ba42e49b7b814a86f0c29f5d7d29f2239a002e03"
 for _path in ("app/render/reconstruction.gd", "app/tests/test_reconstruction.gd"):
     INTEGRATION_SOURCE_COMMITS[_path] = "7af9257dbb6251f1ab3e2f4c4113eec3038b61d4"
+INTEGRATION_SOURCE_COMMITS["app/render/pilot_camera.gd"] = CAMERA_EYE_COMMIT
+INTEGRATION_SOURCE_COMMITS["app/tests/test_initial_flight_camera.gd"] = CAMERA_STARTUP_COMMIT
 
 
 def sha256(data: bytes) -> str:
@@ -86,8 +92,20 @@ def pinned_integration_blob(path: str) -> bytes:
     return pinned_blob(path, integration_source_commit(path))
 
 
+def flight_ready_function(source: str) -> str:
+    """Keep the older trial's dependencies while importing the initial-pose fix."""
+    start = "func _ready() -> void:\n"
+    end = "\n\nfunc _startup_stage("
+    if source.count(start) != 1 or source.count(end) != 1:
+        raise RuntimeError("expected one flight startup function in pinned app/main.gd")
+    first, last = source.index(start), source.index(end)
+    if last <= first:
+        raise RuntimeError("unexpected flight startup function boundaries")
+    return source[first:last]
+
+
 def integration_content(path: str) -> bytes:
-    """Apply narrow DLSS fixes without importing unrelated newer UI dependencies."""
+    """Apply narrow runtime fixes without importing unrelated newer dependencies."""
     content = pinned_integration_blob(path).decode("utf-8")
     if path == "app/ui/settings_screen.gd":
         anchor = '\t\t"dlss_unavailable": return tr("The current graphics session does not report DLSS support.")'
@@ -97,6 +115,9 @@ def integration_content(path: str) -> bytes:
     elif path == "app/render/reconstruction.gd":
         anchor = '\t\t\treturn "" if bool(status.get("available", false)) else "dlss_unavailable"'
         content = replace_once(content, anchor, anchor + '\n\t\treturn "dlss_unavailable"', path)
+    elif path == "app/main.gd":
+        startup_source = pinned_blob(path, CAMERA_STARTUP_COMMIT).decode("utf-8")
+        content = replace_once(content, flight_ready_function(content), flight_ready_function(startup_source), path)
     return content.encode("utf-8")
 
 
@@ -110,6 +131,13 @@ def expected_integration_overlays() -> dict[str, dict[str, str]]:
             "source_sha256": source_hash,
             "expected_final_sha256": sha256(integration_content(path)),
         }
+        if path == "app/main.gd":
+            startup_source = pinned_blob(path, CAMERA_STARTUP_COMMIT)
+            records[path].update({
+                "startup_source_commit": CAMERA_STARTUP_COMMIT,
+                "startup_source_sha256": sha256(startup_source),
+                "startup_function_sha256": sha256(flight_ready_function(startup_source.decode("utf-8")).encode("utf-8")),
+            })
     return records
 
 

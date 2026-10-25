@@ -1,6 +1,8 @@
-# Blender aircraft delivery for OpenRC Simulator
+# Timber r2 Blender aircraft delivery for OpenRC Simulator
 
 2026-10-13 · Revision 2 · To the aircraft model developer · Delivery specification for Timber r2
+
+For new airplanes and their skins, use the [reusable Blender handoff](BLENDER-AIRCRAFT-DELIVERY.md). This document retains the Timber-specific dimensions, rig, budgets and accepted-delivery corrections; it is not a template for other aircraft.
 
 **Delivery status, 2026-10-13:** r2 `d75ae605aa3a` has been received and integrated. The requirements below remain the authoring contract; do not recreate the accepted package. The [TT-19 review](research/timber-integration/TT-19/README.md) records its source identity, native Godot captures, accepted behavior and remaining source corrections, including cowl marking seating and assembled closure-face visibility.
 

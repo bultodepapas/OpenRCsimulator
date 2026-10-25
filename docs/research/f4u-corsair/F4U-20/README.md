@@ -67,3 +67,33 @@ Reviewed the current working tree on Windows, Godot 4.7.2 Compatibility, includi
 - The disk/package duplication described above remains. Texture/material-only variants on shared geometry are the larger optimization opportunity; this review does not replace the author's delivered models.
 - One earlier two-cycle debug session reported four leaked objects on exit without verbose identities. A fresh verbose single-cycle run and the four-cycle soak both exited with zero leaked objects. Treat the first observation as unresolved, not as a demonstrated persistent Corsair leak. The three known `MOON_UMBRA_*` unclaimed StringNames remain outside this change.
 - This is focused software verification. The full application suite and a new complete export were not run; the export-path regression uses a PCK overlay. F4U-14 physical validation and the g2.3 blade-normal/cowl-flap work remain open.
+
+## F4U-20-R2: reuse parked lighting measurements, 2026-10-25
+
+Evening Home traced the same airframe again for every new paint: wing skins, belly strip, tips and landing-light seat. Home now shares these compact numeric measurements between validated imported liveries with the same manifest and local node transforms. Propeller scale, articulation, source revision and authored landing-seat policy participate in the identity. The existing three-preview eviction bounds their lifetime; the Corsair layout serializes to 1,060 bytes and contains no nodes, materials, meshes or full triangle buffers.
+
+Each preview still builds its own kit, resolves its own authored anchors and crash hosts, and controls its own light mode. Every selected asset still passes normal validation. Daylight does not compute an unused layout. Ordinary flight dressing computes its own measurements, independent of Home.
+
+### Measured effect at 1920×1080
+
+Godot 4.7.2 Compatibility, RTX 3090, fullscreen Home. In one session, cycle Midnight → Three Tone → Scarlet → Splash, exceeding the three-preview cache. Compare the normal cache against a control that erases only the retained layout keys before each selection. Block order is control, cached, cached, control: eight selections per variant. Assets were previously loaded; these are preview misses, not cold disk starts. [Raw frame samples, source hashes and method](checks/light-layout-cache-2026-10-25.json).
+
+| Maximum frame during each selection | Without layout reuse | With layout reuse |
+| --- | ---: | ---: |
+| Median of eight selections | 800.40 ms | 352.94 ms |
+| Range | 717.49–929.26 ms | 285.25–402.96 ms |
+
+The median hitch falls **55.9%**. This shared-workstation observation measures menu switching, not flight FPS or a hardware qualification. A visible pause remains. Initial model loading, validation, texture transcoding and shadow construction still cost time; the first lighting layout still requires tracing. Package size is unchanged.
+
+### Verification
+
+| Check | Result |
+| --- | --- |
+| `test_ui_home_preview_cache.gd` | 118/118: all thirteen cached layouts equal fresh layouts byte for byte; independently constructed kits have identical transforms, mesh vertices and crash-host paths. Checks pose/scale/revision/anchor invalidation, root-local authored seats, mode independence, bounded retention and daylight behavior |
+| `test_night_kit.gd` / `test_aircraft_light_control.gd` | 36/36 and 173/173; fleet lighting, crash attachments and light-state policy remain intact |
+| `test_ui_preview_resources.gd` | 20/20: bounded asynchronous resource ownership, latest intent and shutdown |
+| `test_aircraft_liveries.gd` | 179/179: all paints, provenance, preferences and responsive menu/keyboard checks |
+| Rendered debug-bridge lifecycle | `corsair_paint.txt`: one warm-up plus three measured cycles, including paint selection → runway flight → Home. Each measured sample has 963 nodes, zero orphans and 1,129 resources; zero growing counters or errors. Final exit has zero leaked objects and no crash |
+| Visual inspection | Coastal Three Tone at 1920×1080; paint control remains visible and aircraft/light placement is intact. Capture stays in ignored `tmp/` |
+
+No physics, delivered assets or generated manifests changed. The full suite and export were not rerun. The known three `MOON_UMBRA_*` unclaimed StringNames still appear at exit.

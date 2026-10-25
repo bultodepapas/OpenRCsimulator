@@ -350,9 +350,12 @@ func _ready() -> void:
 	if startup_checkpoint.is_valid():
 		process_mode = Node.PROCESS_MODE_DISABLED
 	await _prepare_flight()
-	if interactive_start and startup_checkpoint.is_valid() and startup_error.is_empty() \
+	var startup_args := _user_args()
+	var prime_pose := (interactive_start and startup_checkpoint.is_valid()) or startup_args.has("quick-flight")
+	if prime_pose and not _capturing and not _scripted and not startup_args.has("capture") and not startup_args.has("trace") \
+			and startup_error.is_empty() \
 			and not _startup_cancel_requested() and is_instance_valid(session) and session.is_flyable():
-		# The loading owner may draw before our first _process. Present the validated
+		# Loading and quick-flight may draw before our first _process. Present the validated
 		# tick-zero model and camera without advancing simulation, clocks or input.
 		_render_pose(_current_pose(), session.surfaces(), _prop_angle)
 	startup_complete = true

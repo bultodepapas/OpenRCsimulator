@@ -676,13 +676,13 @@ static func _legacy_lights_enabled(sun_elevation_deg: float) -> bool:
 
 ## Fits the night-flying kit to an airplane's model root when the chosen hour needs it (FW-35). Call after measuring
 ## the model (Shadow.model_extent) so the kit never changes the pilot-aid shadow. Returns the kit or null.
-static func dress_aircraft(root: Node3D, config: Dictionary = {}, snapshot: Dictionary = {}, clock_s: float = 0.0) -> Node3D:
+static func dress_aircraft(root: Node3D, config: Dictionary = {}, snapshot: Dictionary = {}, clock_s: float = 0.0, prepared_layout: Dictionary = {}) -> Node3D:
 	var state := AircraftLightState.new()
 	state.update(aircraft_local_seconds(config, clock_s),
 		1.0 if aircraft_sun_elevation(snapshot) < NIGHT_KIT_BELOW_SUN_DEG else 0.0)
 	var kit := root.get_node_or_null("NightKit") as Node3D
 	if kit == null and state.active_mode != "off":
-		kit = AircraftLights.attach(root)
+		kit = AircraftLights.attach(root, prepared_layout)
 	if kit != null and str(kit.get_meta("mode", "")) != state.active_mode:
 		AircraftLights.set_mode(kit, state.active_mode)
 	AircraftLights.set_emission_mode(AircraftLights.prepare_emission(root), state.active_mode, state.gain)
