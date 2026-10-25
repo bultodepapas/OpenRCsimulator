@@ -225,6 +225,7 @@ func _presentation_mapping() -> void:
 		"left_wing_tip": "wingtip", "right_wing_tip": "wingtip", "spinner": "propeller", "propeller": "propeller",
 		"nose": "fuselage", "belly": "fuselage", "tail_end": "tail", "left_stab_tip": "tail", "right_stab_tip": "tail",
 		"fin_top": "tail", "canopy": "canopy", "engine": "engine",
+		"left_wing_root": "wing", "right_wing_root": "wing",
 	}
 	_check("the group table covers the whole vocabulary", groups.size() == AircraftData.HULL_COMPONENTS.size())
 	for name: String in AircraftData.HULL_COMPONENTS:

@@ -411,6 +411,7 @@ python3 "$HERE/../research/f4u-corsair/F4U-03/manifest.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-05/compile_model.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-07/ground_effect_vlm.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-07/fit_propeller.py" --check || exit 1
+python3 "$HERE/../research/f4u-corsair/F4U-11/extract_crash_geometry.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-07/derive_physics.py" --check || exit 1
 python3 "$HERE/../research/f4u-corsair/F4U-11/costing_entry.py" --check || exit 1
 run --script res://aircraft/verify_f4u.gd 2>&1 | tee "$LOG" | tail -1

@@ -13,6 +13,7 @@ Checked 2026-10-24. `f4u-corsair-250` is an experimental catalog aircraft: a 2.7
 | [wing-fold-r59.json](wing-fold-r59.json) | Generated: R59's wing-fold rig in R59 coordinates (pivots, axis, sign, 112°, lock-release law) and Blender's folded navigation-lamp check (F4U-17). |
 | [mechanisms-r59.json](mechanisms-r59.json) | Generated: R59's canopy slide, tailhook and cowl-flap laws in R59 coordinates, with Blender's own open-pose checks (F4U-21). The cowl flaps wait for a delivery that separates them. |
 | [model-geometry.json](model-geometry.json) | Generated: the model family's geometry source (control hinges, thrust frame, gear rig, wing folds, canopy and tailhook; liveries when two or more are delivered), compiled into `app/aircraft/f4u_corsair_geometry.gd`. |
+| [crash-geometry.json](crash-geometry.json) | Generated: nine additional structural support points measured on the frozen neutral g2.2 mesh, with mesh names, directions and source identity (F4U-11-R1). |
 
 Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the root leading edge on the centreline at thrust-line height. This is the delivery request's D0, so g2.2 model coordinates map as `[x_aft, y_right, z_up] = [z_model, x_model, y_model]`.
 
@@ -23,6 +24,7 @@ Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the
 | R59 → 1/4.5 geometry | [extract_geometry_r59.py](../../../research/f4u-corsair/F4U-06/extract_geometry_r59.py) (Blender 5.2.2, headless, `-Y`) | `geometry-r59.json`; a research operation, R59 stays outside the repository |
 | Gull-wing ground effect | [ground_effect_vlm.py](../../../research/f4u-corsair/F4U-07/ground_effect_vlm.py) | `research/f4u-corsair/F4U-07/vlm_ground_effect.json` |
 | Propeller calibration | [fit_propeller.py](../../../research/f4u-corsair/F4U-07/fit_propeller.py) | `research/f4u-corsair/F4U-07/prop_calibration.json` |
+| Structural crash supports | [extract_crash_geometry.py](../../../research/f4u-corsair/F4U-11/extract_crash_geometry.py) | `crash-geometry.json`; run before physics derivation, no Blender session required |
 | Physics derivation | [derive_physics.py](../../../research/f4u-corsair/F4U-07/derive_physics.py) | `app/data/aircraft/f4u_corsair_250.json` and `research/f4u-corsair/F4U-07/derivation.md` |
 | Crash-economics costing | [costing_entry.py](../../../research/f4u-corsair/F4U-11/costing_entry.py), then `research/crash-economics/build_runtime.py` | the Corsair entry in `research/crash-economics/aircraft-costing.json`, `app/data/economy/catalog.json` |
 | Loader and trim probe | [probe.gd](../../../research/f4u-corsair/F4U-07/probe.gd) | Console checks |
@@ -55,6 +57,7 @@ python3 research/f4u-corsair/F4U-16/install_liveries.py --check
 python3 research/f4u-corsair/F4U-05/compile_model.py --check
 python3 research/f4u-corsair/F4U-07/ground_effect_vlm.py --check
 python3 research/f4u-corsair/F4U-07/fit_propeller.py --check
+python3 research/f4u-corsair/F4U-11/extract_crash_geometry.py --check
 python3 research/f4u-corsair/F4U-07/derive_physics.py --check
 python3 research/f4u-corsair/F4U-11/costing_entry.py --check
 "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script "$PWD/research/f4u-corsair/F4U-07/probe.gd"

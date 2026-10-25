@@ -360,15 +360,21 @@ func _crash_contacts(airplane: Dictionary) -> void:
 	var prepared := Hull.prepare(model.crash_hull, model.mass_kg, model.inertia)
 	for probe_id: String in ["probe_wing_left_tip", "probe_wing_right_tip", "probe_tail_cone"]:
 		var index: int = raw.crash_hull_ids.find(probe_id)
-		if index < 0: continue
+		# Use the source support even when a regression removes its runtime probe.
+		var support_le: Array = []
+		for probe: Dictionary in source.probes:
+			if probe.id == probe_id:
+				support_le = probe.position_le
 		var attitude := Math64.q_from_euler(0.0, PI / 2 if probe_id == "probe_tail_cone" else 0.0,
 			-PI / 2 if probe_id == "probe_wing_left_tip" else PI / 2 if probe_id == "probe_wing_right_tip" else 0.0)
-		var body: PackedFloat64Array = model.crash_hull.slice(3 * index, 3 * index + 3)
+		var body := Math64.v3(model.cg_le[0] - support_le[0], support_le[1] - model.cg_le[1], model.cg_le[2] - support_le[2])
 		var before := RB.make_state(Math64.v3(0, 0, -Math64.q_rotate(attitude, body)[2] - 0.001),
 			Math64.q_rotate(Math64.q_conj(attitude), Math64.v3(0, 0, 20)), attitude, Math64.v3(0, 0, 0))
 		var after := before.duplicate()
 		after[RB.POS + 2] += 0.002
-		_check(probe_id + " wins the whole-aircraft impact", Hull.terminal(before, after, prepared).index == index)
+		var hit := Hull.terminal(before, after, prepared)
+		_check(probe_id + " wins the whole-aircraft impact", index >= 0 and hit.index == index,
+			"detected index %d" % hit.index)
 
 
 ## F4U-11: the wreck twin exposes all ten sections; a C3 hit naming one wing releases only that outer panel (with its
