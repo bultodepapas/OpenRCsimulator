@@ -87,6 +87,16 @@ func _run() -> void:
 
 	var invalid_window_mode: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
 	_check("legacy reconstruction defaults to native", migrated.reconstruction == "native")
+	_check("legacy sharpening preserves engine default", migrated.fsr2_sharpness == 0.9)
+	for strength: float in [0.0, 0.35, 0.9, 1.0]:
+		var candidate := DisplayPreferences.DEFAULTS.duplicate(true)
+		candidate.fsr2_sharpness = strength
+		_check("sharpness round trip: %s" % strength, DisplayPreferences.save_to(PREFS, candidate) == OK
+			and is_equal_approx(DisplayPreferences.load_from(PREFS).fsr2_sharpness, strength))
+	for invalid: Variant in [-0.1, 1.1, NAN, INF, "0.5", true, null]:
+		var candidate := DisplayPreferences.DEFAULTS.duplicate(true)
+		candidate.fsr2_sharpness = invalid
+		_check("malformed sharpness rejected", not DisplayPreferences.validate(candidate).ok)
 	for mode: String in DisplayPreferences.RECONSTRUCTION_MODES:
 		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
 		candidate.reconstruction = mode

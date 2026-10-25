@@ -37,8 +37,19 @@ In High, open **Settings → Graphics → 3D reconstruction**:
 
 - **Native** keeps the saved MSAA choice and full resolution (default).
 - **FSR2 · Native AA** reconstructs at full resolution for temporal antialiasing; it adds GPU work.
+- **FSR2 · 85%** is our custom detail-preserving trial (1632×918 into 1080p), not an AMD preset name.
 - **FSR2 · Quality** renders the main 3D view at two-thirds of each output dimension
   (1280×720 into a 1920×1080 output). UI and secondary viewports keep their resolution.
+- **FSR2 · Balanced** uses 1/1.7 per axis (about 1129×635 into 1080p).
+- **FSR2 · Performance** uses half resolution (960×540 into 1080p).
+
+Start comparisons at 1080p with Native AA or 85%; the lower scales can lose small
+aircraft detail. These are optional trials, not qualified performance presets.
+**FSR2 sharpness** controls RCAS from off (0%) to maximum (100%), in 5% steps.
+The initial 90% preserves Godot's existing default; it is not a tuned recommendation.
+Lower it if edges show halos or scenery shimmers. The slider is inactive in Native
+and Standard. Hover over reconstruction to see nominal input dimensions; engine
+rounding can differ. No extra mip bias or second sharpening pass is added.
 
 Use **Keep changes** within 15 seconds; Revert, expiry and closing an unsaved preview
 restore the saved choice. FSR2 temporarily replaces MSAA; selecting Native restores
@@ -46,11 +57,15 @@ it. The choice is saved, but Standard always uses native rendering. Enter High a
 to use the saved FSR2 choice. No GPU-brand whitelist is used.
 
 Direct technical launches ignore player display preferences. Set
-`OPENRC_RECONSTRUCTION=fsr2_quality` or `fsr2_native` with the High launcher for a
+`OPENRC_RECONSTRUCTION=fsr2_85`, `fsr2_quality`, `fsr2_balanced`, `fsr2_performance`
+or `fsr2_native` with the High launcher for a
 reproducible candidate; `native` or an unknown value uses the native baseline.
+`OPENRC_FSR2_SHARPNESS=0.35` selects user strength 0–1 (default 0.9; finite numbers
+are clamped, malformed values use the default).
 Home launches use saved preferences instead. Existing captures/frame reports record
 `scaling_3d_mode` and scale; `--frame-diagnostics` additionally records requested and
-effective reconstruction at start and report time. Compare each mode separately;
+effective reconstruction, nominal input size, sharpening strength/activation and
+additional texture mip bias at start and report time. Compare each mode separately;
 the existing native campaign reducer does not automatically qualify mixed AA modes.
 
 The [RTX 3090 integration evidence](../../docs/research/visual-quality-implementation/VQ-07/fsr2-2026-10-24/README.md)

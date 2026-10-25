@@ -87,8 +87,12 @@ func _run() -> void:
 	settings._msaa_picker.item_selected.emit(3)
 	_check("8x MSAA reaches the real viewport", root.msaa_3d == Viewport.MSAA_8X)
 	_check("FSR2 availability follows native High", settings._reconstruction_picker.disabled == not Reconstruction.available())
-	settings._reconstruction_picker.select(2)
-	settings._reconstruction_picker.item_selected.emit(2)
+	settings._reconstruction_picker.select(3)
+	settings._reconstruction_picker.item_selected.emit(3)
+	settings._fsr2_sharpness_slider.value = 0.35
+	_check("sharpening preview reaches viewport without saving", is_equal_approx(root.fsr_sharpness, 1.3)
+		and DisplayPreferences.load_from(PREFS + ".display").fsr2_sharpness == 0.9)
+	_check("sharpening UI follows effective FSR2", settings._fsr2_sharpness_slider.editable == Reconstruction.available())
 	_check("reconstruction preview starts recovery without saving", settings._trial_deadline_msec > Time.get_ticks_msec()
 		and DisplayPreferences.load_from(PREFS + ".display").reconstruction == "native")
 	_check("FSR2 activates only in High and preserves saved MSAA choice", settings._draft.msaa_3d == 3
@@ -98,6 +102,16 @@ func _run() -> void:
 	settings._process(0.0)
 	_check("FSR2 timeout restores native resolution and saved MSAA", root.scaling_3d_scale == 1.0
 		and root.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR and root.msaa_3d == Viewport.MSAA_4X)
+	_check("timeout restores sharpening and disables slider", is_equal_approx(root.fsr_sharpness, 0.2)
+		and not settings._fsr2_sharpness_slider.editable)
+	for index: int in settings._reconstruction_picker.item_count:
+		settings._reconstruction_picker.select(index)
+		settings._reconstruction_picker.item_selected.emit(index)
+		await ui.settle()
+		var mode: String = settings._reconstruction_picker.get_item_metadata(index)
+		_check("live reconstruction switch: " + mode, is_equal_approx(root.scaling_3d_scale,
+			Reconstruction.resolve(mode, Reconstruction.available()).scale))
+	settings._revert()
 	settings._vsync_picker.select(1)
 	settings._vsync_picker.item_selected.emit(1)
 	settings._msaa_picker.select(3)
@@ -221,8 +235,9 @@ func _run() -> void:
 	app.open_settings()
 	await ui.settle()
 	settings = app.screens.get_screen("settings")
-	settings._reconstruction_picker.select(2)
-	settings._reconstruction_picker.item_selected.emit(2)
+	settings._reconstruction_picker.select(3)
+	settings._reconstruction_picker.item_selected.emit(3)
+	settings._fsr2_sharpness_slider.value = 0.0
 	settings.keep_changes()
 	settings.close()
 	await ui.settle()
@@ -236,6 +251,8 @@ func _run() -> void:
 	await ui.settle()
 	_check("shell relaunch applies FSR2 or safe native fallback", root.scaling_3d_mode ==
 		(Viewport.SCALING_3D_MODE_FSR2 if Reconstruction.available() else Viewport.SCALING_3D_MODE_BILINEAR))
+	_check("shell relaunch preserves disabled sharpening", root.fsr_sharpness == 2.0
+		and DisplayPreferences.load_from(PREFS + ".display").fsr2_sharpness == 0.0)
 	await ui.close_app(app)
 	Engine.max_fps = 0
 	root.msaa_3d = Viewport.MSAA_4X

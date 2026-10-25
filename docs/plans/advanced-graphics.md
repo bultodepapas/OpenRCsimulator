@@ -193,7 +193,9 @@ Godot documents different shader colour/depth conventions and compositor availab
 ### VQ-07d: preserve a small moving aircraft
 
 **2026-10-24, user-requested FSR2 trial:** the existing High profile now offers Native,
-FSR2 Native AA and FSR2 Quality through the reversible graphics settings. Standard
+FSR2 Native AA, custom 85%, Quality, Balanced and Performance through the reversible
+graphics settings, with 0–100% sharpening. The latter options follow the owner's
+explicit follow-up request for more FSR choices; they remain unqualified trials. Standard
 retains native rendering. [RTX 3090 integration evidence](../research/visual-quality-implementation/VQ-07/fsr2-2026-10-24/README.md)
 records software/native checks and the remaining gates; this optional implementation
 does not promote High or establish a GPU performance gain. Operating instructions

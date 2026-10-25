@@ -5822,6 +5822,27 @@ msgstr "FSR2 · AA nativo"
 msgid "FSR2 · Quality"
 msgstr "FSR2 · Calidad"
 
+msgid "FSR2 · 85%"
+msgstr "FSR2 · 85%"
+
+msgid "FSR2 · Balanced"
+msgstr "FSR2 · Equilibrado"
+
+msgid "FSR2 · Performance"
+msgstr "FSR2 · Rendimiento"
+
+msgid "FSR2 sharpness"
+msgstr "Nitidez FSR2"
+
+msgid "3D input: about %d × %d (%d%%)."
+msgstr "Entrada 3D: aproximadamente %d × %d (%d%%)."
+
+msgid "FSR2 works in High on compatible AMD, NVIDIA and Intel GPUs. At 1080p, try Native AA or 85% first. Lower scales can lose distant aircraft detail. Compare in motion."
+msgstr "FSR2 funciona en Alto con GPU AMD, NVIDIA e Intel compatibles. A 1080p, prueba primero AA nativo o 85%. Las escalas menores pueden perder detalle del avión lejano. Compara en movimiento."
+
+msgid "0% disables sharpening. Higher values sharpen edges but can exaggerate halos and shimmer. Only active with FSR2."
+msgstr "0% desactiva la nitidez. Los valores altos acentúan los bordes, pero pueden exagerar los halos y el parpadeo. Solo se aplica con FSR2."
+
 msgid "FSR2 works in High on compatible AMD, NVIDIA and Intel GPUs. Quality renders 3D at two-thirds resolution; Native AA keeps full resolution. Check distant aircraft in motion."
 msgstr "FSR2 funciona en Alto con GPU compatibles de AMD, NVIDIA e Intel. Calidad renderiza el 3D a dos tercios de resolución; AA nativo conserva la resolución completa. Comprueba los aviones lejanos en movimiento."
 

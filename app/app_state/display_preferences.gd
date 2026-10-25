@@ -14,7 +14,7 @@ const WINDOW_RESOLUTIONS: Array[String] = [
 const MAX_FPS_VALUES: Array[int] = [0, 30, 60, 90, 120, 144, 165, 240]
 const VSYNC_MODES: Array[String] = ["enabled", "disabled"]
 const MSAA_3D_VALUES: Array[int] = [0, 1, 2, 3]
-const RECONSTRUCTION_MODES: Array[String] = ["native", "fsr2_native", "fsr2_quality"]
+const RECONSTRUCTION_MODES: Array[String] = ["native", "fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance"]
 # VQ-06b: mirrors render/scene_detail.gd LEVELS (test_scene_detail.gd keeps them equal).
 const SCENE_DETAILS: Array[String] = ["auto", "low", "medium", "high", "extreme"]
 # SC-BIRD (birds-sky-life plan D2): mirrors scenery/birds/bird_director.gd PREFERENCES (test_birds.gd keeps them equal).
@@ -26,6 +26,7 @@ const DEFAULTS := {
 	"vsync_mode": "enabled",
 	"msaa_3d": 2,
 	"reconstruction": "native",
+	"fsr2_sharpness": 0.9,
 	"scene_detail": "auto",
 	"birds": "normal",
 	"ui_scale": 1.0,
@@ -44,6 +45,7 @@ const DEFAULTS := {
 const OPTIONAL_KEYS: Array[String] = [
 	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction",
 	"camera_view", "camera_fov", "camera_auto_zoom", "camera_chase_distance", "camera_sensitivity", "camera_invert_y",
+	"fsr2_sharpness",
 ] # schema-1 extensions; older files and callers keep defaults
 ## CAM-17: display.cfg [camera] key for each preference.
 const CAMERA_FILE_KEYS := {
@@ -111,6 +113,7 @@ static func load_from(file_path: String) -> Dictionary:
 	raw.vsync_mode = cfg.get_value("graphics", "vsync_mode", DEFAULTS.vsync_mode)
 	raw.msaa_3d = cfg.get_value("graphics", "msaa_3d", DEFAULTS.msaa_3d)
 	raw.reconstruction = cfg.get_value("graphics", "reconstruction", DEFAULTS.reconstruction)
+	raw.fsr2_sharpness = cfg.get_value("graphics", "fsr2_sharpness", DEFAULTS.fsr2_sharpness)
 	raw.scene_detail = cfg.get_value("graphics", "scene_detail", DEFAULTS.scene_detail)
 	raw.birds = cfg.get_value("graphics", "birds", DEFAULTS.birds)
 	raw.opaque_panels = cfg.get_value("accessibility", "opaque_panels", DEFAULTS.opaque_panels)
@@ -152,6 +155,7 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 	cfg.set_value("graphics", "vsync_mode", checked.config.vsync_mode)
 	cfg.set_value("graphics", "msaa_3d", checked.config.msaa_3d)
 	cfg.set_value("graphics", "reconstruction", checked.config.reconstruction)
+	cfg.set_value("graphics", "fsr2_sharpness", checked.config.fsr2_sharpness)
 	cfg.set_value("graphics", "scene_detail", checked.config.scene_detail)
 	cfg.set_value("graphics", "birds", checked.config.birds)
 	cfg.set_value("accessibility", "opaque_panels", checked.config.opaque_panels)
@@ -188,7 +192,11 @@ static func validate(raw: Variant) -> Dictionary:
 	var scene_detail: Variant = raw.get("scene_detail", DEFAULTS.scene_detail)
 	var reconstruction: Variant = raw.get("reconstruction", DEFAULTS.reconstruction)
 	if typeof(reconstruction) != TYPE_STRING or reconstruction not in RECONSTRUCTION_MODES:
-		errors.append("reconstruction must be native, fsr2_native or fsr2_quality")
+		errors.append("reconstruction must be a supported reconstruction mode")
+	var sharpness: Variant = raw.get("fsr2_sharpness", DEFAULTS.fsr2_sharpness)
+	if typeof(sharpness) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(sharpness)) \
+			or float(sharpness) < 0.0 or float(sharpness) > 1.0:
+		errors.append("fsr2_sharpness must be finite and between 0 and 1")
 	if typeof(scene_detail) != TYPE_STRING or scene_detail not in SCENE_DETAILS:
 		errors.append("scene_detail must be auto, low, medium, high or extreme")
 	var birds: Variant = raw.get("birds", DEFAULTS.birds)
@@ -217,6 +225,7 @@ static func validate(raw: Variant) -> Dictionary:
 		"vsync_mode": vsync_mode,
 		"msaa_3d": msaa_3d,
 		"reconstruction": reconstruction,
+		"fsr2_sharpness": float(sharpness),
 		"scene_detail": scene_detail,
 		"birds": birds,
 		"ui_scale": float(raw.ui_scale),

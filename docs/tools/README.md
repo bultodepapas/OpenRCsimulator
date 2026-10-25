@@ -29,6 +29,7 @@ Find the tool for your task here before you write ad-hoc test or debug code. Rea
 | Find out why CI failed | [shared](shared.md#ci) | `gh run view <id> --log-failed` |
 | Menus and UI | [shared](shared.md#one-godot-script) for `app/tests/test_ui_*.gd`; UI screenshots run inside `app/capture.sh` | — |
 | Regenerate the official startup logo segments | [Branding source](../../app/assets/branding/README.md) | `python tools/branding/build_logo.py --check` |
+| Regenerate website, README and sharing logos | [Public identity](../../site/BRANDS.md#openrc-identity) | `python tools/branding/build_public.py --check` |
 | Audio | [tools/audio](../../tools/audio/README.md) | read the requirements caveat in [shared](shared.md#known-broken-or-stale-tools) |
 | Inspect or drive Blender from an agent (scene queries, Python, renders, API and manual search) | [tools/blender](../../tools/blender/README.md) | `tools/blender/mcp-setup.sh`, then `tools/blender/mcp-bridge.sh <file.blend>` |
 | Aircraft Workshop | [TOOLS → Aircraft Workshop](../TOOLS.md#aircraft-workshop) | — |

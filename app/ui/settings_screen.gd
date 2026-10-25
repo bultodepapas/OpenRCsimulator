@@ -50,6 +50,8 @@ var _fps_picker: OptionButton
 var _vsync_picker: OptionButton
 var _msaa_picker: OptionButton
 var _reconstruction_picker: OptionButton
+var _fsr2_sharpness_slider: HSlider
+var _fsr2_sharpness_value: Label
 var _scene_detail_picker: OptionButton
 var _birds_picker: OptionButton
 var _camera_view_picker: OptionButton
@@ -214,6 +216,10 @@ func _build() -> void:
 	_add_row(graphics_page, "Vertical synchronization", _vsync_picker)
 	_reconstruction_picker = _choice_picker("Reconstruction", "reconstruction", DisplayPreferences.RECONSTRUCTION_MODES)
 	_add_row(graphics_page, "3D reconstruction", _reconstruction_picker)
+	var sharpness_control := _volume_control("Fsr2SharpnessControl", "Fsr2Sharpness", "Fsr2SharpnessValue", _fsr2_sharpness_changed)
+	_fsr2_sharpness_slider = sharpness_control.get_node("Fsr2Sharpness")
+	_fsr2_sharpness_value = sharpness_control.get_node("Fsr2SharpnessValue")
+	_add_row(graphics_page, "FSR2 sharpness", sharpness_control)
 	_msaa_picker = _choice_picker("Msaa3D", "msaa_3d", DisplayPreferences.MSAA_3D_VALUES)
 	_add_row(graphics_page, "Antialiasing (MSAA)", _msaa_picker)
 	_msaa_picker.tooltip_text = tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
@@ -482,7 +488,8 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"max_fps": return tr("Unlimited") if value == 0 else "%d FPS" % int(value)
 		"vsync_mode": return tr("On") if value == "enabled" else tr("Off")
 		"msaa_3d": return tr("Off") if value == 0 else "%d×" % (1 << int(value))
-		"reconstruction": return {native = tr("Native"), fsr2_native = tr("FSR2 · Native AA"), fsr2_quality = tr("FSR2 · Quality")}.get(value, str(value))
+		"reconstruction": return {native = tr("Native"), fsr2_native = tr("FSR2 · Native AA"), fsr2_quality = tr("FSR2 · Quality"),
+			fsr2_85 = tr("FSR2 · 85%"), fsr2_balanced = tr("FSR2 · Balanced"), fsr2_performance = tr("FSR2 · Performance")}.get(value, str(value))
 		"scene_detail":
 			if value == SceneDetail.AUTO:
 				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
@@ -498,9 +505,14 @@ func _choice_caption(key: String, value: Variant) -> String:
 	return str(value)
 
 
+func _fsr2_sharpness_changed(value: float) -> void:
+	_draft.fsr2_sharpness = value
+	_on_graphics_option_changed()
+
+
 func _on_graphics_option_changed() -> void:
 	var changed := false
-	for key: String in ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction"]:
+	for key: String in ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction", "fsr2_sharpness"]:
 		changed = changed or _draft[key] != _saved[key]
 	if not changed:
 		_trial_deadline_msec = 0
@@ -516,7 +528,7 @@ func _on_graphics_option_changed() -> void:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction"]:
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "reconstruction", "fsr2_sharpness"]:
 		_draft[key] = DisplayPreferences.DEFAULTS[key]
 	_on_graphics_option_changed()
 
@@ -656,8 +668,18 @@ func _sync_controls() -> void:
 func _sync_reconstruction_controls() -> void:
 	var supported := Reconstruction.available()
 	_reconstruction_picker.disabled = not supported
-	_reconstruction_picker.tooltip_text = tr("FSR2 works in High on compatible AMD, NVIDIA and Intel GPUs. Quality renders 3D at two-thirds resolution; Native AA keeps full resolution. Check distant aircraft in motion.") if supported \
+	_reconstruction_picker.tooltip_text = tr("FSR2 works in High on compatible AMD, NVIDIA and Intel GPUs. At 1080p, try Native AA or 85% first. Lower scales can lose distant aircraft detail. Compare in motion.") if supported \
 		else tr("Restart in High from Home to use FSR2.")
+	if supported and is_inside_tree():
+		var policy := Reconstruction.resolve(str(_draft.get("reconstruction", "native")), true)
+		var output := get_viewport().get_visible_rect().size
+		_reconstruction_picker.tooltip_text += "\n" + tr("3D input: about %d × %d (%d%%).") % [
+			roundi(output.x * float(policy.scale)), roundi(output.y * float(policy.scale)), roundi(float(policy.scale) * 100.0)]
+	var strength := float(_draft.get("fsr2_sharpness", DisplayPreferences.DEFAULTS.fsr2_sharpness))
+	_fsr2_sharpness_slider.set_value_no_signal(strength)
+	_fsr2_sharpness_slider.editable = supported and _draft.get("reconstruction", "native") != "native"
+	_fsr2_sharpness_value.text = tr("Off") if is_zero_approx(strength) else "%d %%" % roundi(strength * 100.0)
+	_fsr2_sharpness_slider.tooltip_text = tr("0% disables sharpening. Higher values sharpen edges but can exaggerate halos and shimmer. Only active with FSR2.")
 	_msaa_picker.disabled = supported and _draft.get("reconstruction", "native") != "native"
 	_msaa_picker.tooltip_text = tr("FSR2 provides antialiasing. Your MSAA choice returns with Native rendering.") if _msaa_picker.disabled \
 		else tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
@@ -712,8 +734,9 @@ func _update_layout() -> void:
 	else:
 		_layout_panel.remove_theme_stylebox_override("panel")
 	var available: Vector2 = _surface.size - Vector2(gutter * 2.0, gutter * 2.0)
-	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(800.0, maxf(0.0, available.y)))
+	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(840.0, maxf(0.0, available.y)))
 	_refresh_graphics_info()
+	_sync_reconstruction_controls()
 	var stack_rows := _should_stack_rows()
 	_categories.columns = 2 if stack_rows else CATEGORIES.size()
 	_categories.visible = not compact_height
@@ -725,7 +748,7 @@ func _update_layout() -> void:
 		row.vertical = stack_rows
 		row.add_theme_constant_override("separation", 8 if stack_rows else 24)
 		var input := row.get_child(1) as Control
-		if input is OptionButton or input.name in ["VolumeControl", "MasterVolumeControl"]:
+		if input is OptionButton or input.name in ["VolumeControl", "MasterVolumeControl", "Fsr2SharpnessControl"]:
 			input.custom_minimum_size.x = minf(300.0 * ScreenTheme.text_scale, _layout_panel.custom_minimum_size.x - 64.0)
 			input.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN if stack_rows else Control.SIZE_SHRINK_END
 		else:
