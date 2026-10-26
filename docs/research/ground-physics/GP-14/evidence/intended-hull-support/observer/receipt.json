@@ -1,0 +1,244 @@
+{
+  "format": "openrc-gp14-hull-observer-integration-receipt v1",
+  "scope": "optional authored, model-pinned, flat-solid hull intent; no stock authoring or new forces/state/classifier",
+  "passing_checks": 2037,
+  "receipts": {
+    "focused": {
+      "report": "tmp/gp14-hull-observer-checks/final-loaded-source/godot-rec82pvk/report.json",
+      "log": "tmp/gp14-hull-observer-checks/final-loaded-source/godot-rec82pvk/engine.log",
+      "complete": true,
+      "ok": true,
+      "exit_code": 0,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 53,
+      "failed": 0,
+      "elapsed_seconds": 18.703
+    },
+    "resource_pipeline": {
+      "report": "tmp/gp14-hull-observer-checks/regressions-resource/godot-2_cr2yqp/report.json",
+      "log": "tmp/gp14-hull-observer-checks/regressions-resource/godot-2_cr2yqp/engine.log",
+      "complete": true,
+      "ok": true,
+      "exit_code": 0,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 174,
+      "failed": 0,
+      "elapsed_seconds": 2.204
+    },
+    "contact_contract": {
+      "report": "tmp/gp14-hull-observer-checks/regressions-contact/godot-l3382kcl/report.json",
+      "log": "tmp/gp14-hull-observer-checks/regressions-contact/godot-l3382kcl/engine.log",
+      "complete": true,
+      "ok": true,
+      "exit_code": 0,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 1466,
+      "failed": 0,
+      "elapsed_seconds": 2.766
+    },
+    "fleet_statistics": {
+      "report": "tmp/gp14-hull-observer-checks/regressions-statistics/godot-levvcpkq/report.json",
+      "log": "tmp/gp14-hull-observer-checks/regressions-statistics/godot-levvcpkq/engine.log",
+      "complete": true,
+      "ok": true,
+      "exit_code": 0,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 111,
+      "failed": 0,
+      "elapsed_seconds": 2.547
+    },
+    "checkpoint_integrity": {
+      "report": "tmp/gp14-hull-observer-checks/regressions-checkpoint/godot-2z4zipws/report.json",
+      "log": "tmp/gp14-hull-observer-checks/regressions-checkpoint/godot-2z4zipws/engine.log",
+      "complete": true,
+      "ok": true,
+      "exit_code": 0,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 149,
+      "failed": 0,
+      "elapsed_seconds": 0.531
+    },
+    "statistics_lifecycle": {
+      "report": "tmp/gp14-hull-observer-checks/regressions-lifecycle/godot-6cdy3eal/report.json",
+      "log": "tmp/gp14-hull-observer-checks/regressions-lifecycle/godot-6cdy3eal/engine.log",
+      "complete": true,
+      "ok": true,
+      "exit_code": 0,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 51,
+      "failed": 0,
+      "elapsed_seconds": 6.547
+    },
+    "live_accident_sessions": {
+      "report": "tmp/gp14-hull-observer-checks/regressions-accident-session/godot-bqlxwhfl/report.json",
+      "log": "tmp/gp14-hull-observer-checks/regressions-accident-session/godot-bqlxwhfl/engine.log",
+      "complete": true,
+      "ok": true,
+      "exit_code": 0,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 33,
+      "failed": 0,
+      "elapsed_seconds": 13.828
+    }
+  },
+  "actual_loaded_script_utf8_sha256": {
+    "res://physics/aircraft_contact_contract.gd": "853dd541e179b393f36abb08501ff3431a1c6ecf35ac8eac7254325516e52b12",
+    "res://physics/aircraft_data.gd": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a",
+    "res://physics/intended_hull_support.gd": "ae9ece8ea78f96265046f702abe2d178c28b907d79207c098e45930ad242a61f",
+    "res://sim/flight_session.gd": "08765ae4f72e3bab00e9dc2bc94ed315122f03ea30a6e98e903297426d398f62",
+    "res://statistics/fixed_wing_adapter.gd": "5ea8de929aebbca752f37243b6f73e915945a1d21de584b43b35eeef165c2366",
+    "res://statistics/profiles.gd": "f34856af99d353154c93b893473b60b0252f6ff778db0962fe650f441be8694a",
+    "res://tests/test_intended_hull_support_session.gd": "6086a0f37c557c2297a1e93aed05f0ccf25926d01b4930d571bff134ab5ff133"
+  },
+  "selected_source_snapshot": {
+    "res://physics/aircraft_contact_contract.gd": {
+      "path": "tmp/gp14-hull-observer-checks/selected-source/app/physics/aircraft_contact_contract.gd",
+      "sha256": "853dd541e179b393f36abb08501ff3431a1c6ecf35ac8eac7254325516e52b12"
+    },
+    "res://physics/aircraft_data.gd": {
+      "path": "tmp/gp14-hull-observer-checks/selected-source/app/physics/aircraft_data.gd",
+      "sha256": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a"
+    },
+    "res://physics/intended_hull_support.gd": {
+      "path": "tmp/gp14-hull-observer-checks/selected-source/app/physics/intended_hull_support.gd",
+      "sha256": "ae9ece8ea78f96265046f702abe2d178c28b907d79207c098e45930ad242a61f"
+    },
+    "res://sim/flight_session.gd": {
+      "path": "tmp/gp14-hull-observer-checks/selected-source/app/sim/flight_session.gd",
+      "sha256": "08765ae4f72e3bab00e9dc2bc94ed315122f03ea30a6e98e903297426d398f62"
+    },
+    "res://statistics/fixed_wing_adapter.gd": {
+      "path": "tmp/gp14-hull-observer-checks/selected-source/app/statistics/fixed_wing_adapter.gd",
+      "sha256": "5ea8de929aebbca752f37243b6f73e915945a1d21de584b43b35eeef165c2366"
+    },
+    "res://statistics/profiles.gd": {
+      "path": "tmp/gp14-hull-observer-checks/selected-source/app/statistics/profiles.gd",
+      "sha256": "f34856af99d353154c93b893473b60b0252f6ff778db0962fe650f441be8694a"
+    },
+    "res://tests/test_intended_hull_support_session.gd": {
+      "path": "tmp/gp14-hull-observer-checks/selected-source/app/tests/test_intended_hull_support_session.gd",
+      "sha256": "6086a0f37c557c2297a1e93aed05f0ccf25926d01b4930d571bff134ab5ff133"
+    }
+  },
+  "current_workspace_matches_loaded_code_at_collection": {
+    "res://physics/aircraft_contact_contract.gd": true,
+    "res://physics/aircraft_data.gd": true,
+    "res://physics/intended_hull_support.gd": true,
+    "res://sim/flight_session.gd": true,
+    "res://statistics/fixed_wing_adapter.gd": true,
+    "res://statistics/profiles.gd": true,
+    "res://tests/test_intended_hull_support_session.gd": true
+  },
+  "original_baseline": {
+    "path": "tmp/gp14-observer-drafts/absence-baseline.json",
+    "sha256": "e9ef74c0951f92b2e8130959a9a147664ffac1d082ddbba472c62296e826938c",
+    "retained_mismatch_receipt": {
+      "report": "tmp/gp14-hull-observer-checks/retained-original-baseline-mismatch/godot-n__8h06o/report.json",
+      "log": "tmp/gp14-hull-observer-checks/retained-original-baseline-mismatch/godot-n__8h06o/engine.log",
+      "complete": true,
+      "ok": false,
+      "exit_code": 1,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 101,
+      "failed": 11,
+      "elapsed_seconds": 21.031
+    },
+    "changed_inputs": [
+      {
+        "path": "res://data/aircraft/f4u_corsair_250.json",
+        "captured_input_sha256": "e27ba35766bad2e32f7c10b0d3e80d49331af2c557957a85959dca47ebad3d43",
+        "later_input_sha256": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673"
+      },
+      {
+        "path": "res://data/aircraft/gp_extra_300s_60.json",
+        "captured_input_sha256": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
+        "later_input_sha256": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75"
+      },
+      {
+        "path": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "captured_input_sha256": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77",
+        "later_input_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06"
+      },
+      {
+        "path": "res://data/aircraft/p51d_mustang_120.json",
+        "captured_input_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
+        "later_input_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c"
+      },
+      {
+        "path": "res://data/aircraft/sebart_avanti_s_a200.json",
+        "captured_input_sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
+        "later_input_sha256": "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1"
+      },
+      {
+        "path": "res://data/aircraft/stik_glow_55ax_2t.json",
+        "captured_input_sha256": "742a19d5411c01f81d9fa4c5627803bfde059c3d4ed1082fe82e089dbf55397a",
+        "later_input_sha256": "66d13e8d7d3a44d371f26d75f5e08fbd75b1088430de7a4fabbc852a4c2ca298"
+      },
+      {
+        "path": "res://data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+        "captured_input_sha256": "1537bfcd00b52690c87c921eca0ad5d744b70e9225951993dfd390238f9a8c03",
+        "later_input_sha256": "45e9eb19ea03eff40c1e565ac1e76c4d72b63a4afb67b209dfa4745fb6a4f067"
+      },
+      {
+        "path": "res://data/aircraft/stik_glow_61fx_2t.json",
+        "captured_input_sha256": "ff43a548cbf8b080a720ab3f912bf6aef0cb9f1c52410c0b022f797294cb5be1",
+        "later_input_sha256": "babf709c6f8eda13af2bcb8dfc2753b98ae82aafaef048dee45610eeb799d458"
+      },
+      {
+        "path": "res://data/aircraft/stik_glow_fs64v_4t.json",
+        "captured_input_sha256": "942cca1364cacf61c9a5c0d066ef9bfc99dc9be9c86b0c30cefec19eb3c9c182",
+        "later_input_sha256": "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a"
+      },
+      {
+        "path": "res://data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+        "captured_input_sha256": "bd2b66db059c19b07446e57bd11b94bca44f301059b8ac4228a9ab7ab462e232",
+        "later_input_sha256": "fe76f6fa2a3da1f6f330e31d4c609e941f430d620175e6b44a67cc90f8d6078d"
+      },
+      {
+        "path": "res://data/aircraft/turbo_lumber_evolution.json",
+        "captured_input_sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf",
+        "later_input_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c"
+      }
+    ],
+    "absent_description_byte_comparisons_passed": 32,
+    "claim": "All 32 contact-description hashes match, but 11 input byte identities changed externally; no same-input baseline claim and no baseline rewrite."
+  },
+  "runtime_limits": [
+    "lake-enabled scope explicitly unavailable",
+    "no stock X8 role thresholds/credit",
+    "accepted endpoints only; no substep peak or collision time claim",
+    "correctness-first model revalidation; no performance qualification"
+  ],
+  "validation_details": [
+    "real synthetic 35cm drop reaches controlled full stop with zero M7",
+    "paired current-source optional/unopted simulations retain exact full physics bytes for 1200 ticks",
+    "wrong-pose and mixed active IDs latch incident even after valid restore removes compact event detail",
+    "optional-role checkpoint continuation replays exactly; rejected interval publishes no new receipt",
+    "strict existing 5-field contact and 8-field accident envelopes retained",
+    "no detector/service/FlightEvent changes by this integration"
+  ]
+}

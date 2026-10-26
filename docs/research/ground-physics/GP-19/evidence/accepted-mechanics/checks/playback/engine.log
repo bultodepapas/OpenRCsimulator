@@ -1,0 +1,106 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   mechanical motion observer is installed
+ok   mechanical audio runtime is installed
+ok   initial accepted sample primes without a cue
+ok   gear target change alone stays silent
+ok   each accepted servo plus retract movement starts once — ["servo:aileron:start", "servo:elevator:start", "servo:rudder:start", "servo:flap:start", "gear:gear:start"]
+ok   servo rate follows accepted angle and tick delta
+ok   repeated render sample cannot retrigger or replace accepted movement
+ok   accepted reversal is detected for each servo and retract — ["servo:aileron:reverse", "servo:elevator:reverse", "servo:rudder:reverse", "servo:flap:reverse", "gear:gear:reverse"]
+ok   interrupted motion stops without inventing a lock — ["servo:aileron:stop", "servo:elevator:stop", "servo:rudder:stop", "servo:flap:stop", "gear:gear:stop"]
+ok   moving to the requested up endpoint is still motion — ["gear:gear:start"]
+ok   settled accepted gear endpoint emits one lock cue — ["gear:gear:lock"]
+ok   pause primes changed actuator state without audio events
+ok   resume does not replay paused movement
+ok   tick rewind silently primes the new accepted state
+ok   audio instance is a scene node
+ok   real WAV set exists for standard/electric
+ok   installed standard/electric profile has no missing required assets — []
+ok   voice pools remain within the declared cap
+ok   standard/electric initial sample creates no cue
+ok   standard/electric accepted movement starts real cue playback
+ok   simultaneous movement stays within fixed voice pools
+ok   same tick render update cannot retrigger motion event — { &"motion_voice_count": 5, &"motion_voice_limit": 6, &"accepted_tick_observation": false, &"accepted_tick_samples": 0, &"accepted_observation_law": "", &"accepted_events_observed": 0, &"accepted_events_drained": 0, &"accepted_pending_event_count": 0, &"accepted_event_limit": 64, &"accepted_events_discarded": 0, &"accepted_events_overflowed": 0, &"accepted_discontinuities": 0, &"event_voice_count": 2, &"event_voice_limit": 2, &"active_motion_voices": 5, &"playing_event_voices": 2, &"pending_event_count": 0, &"events_played": 3, &"events_dropped": 2, &"far_culled_events": 0, &"far_culled_motion_updates": 0, &"stale_tick_resets": 0, &"missing_assets": [], &"last_targets": { &"valid": true, &"tick": 2, &"paused": false, &"engine_mask": 1.0, &"listener_valid": true, &"active_motion_voices": 5, &"far_culled": false, &"stale_tick_s": 0.01666666666667, &"motion_voice_count": 5, &"listener": (0.0, 0.0, 0.0) }, &"reset_count": 1 }
+ok   accepted reversal reaches the bounded event queue — { &"motion_voice_count": 5, &"motion_voice_limit": 6, &"accepted_tick_observation": false, &"accepted_tick_samples": 0, &"accepted_observation_law": "", &"accepted_events_observed": 0, &"accepted_events_drained": 0, &"accepted_pending_event_count": 0, &"accepted_event_limit": 64, &"accepted_events_discarded": 0, &"accepted_events_overflowed": 0, &"accepted_discontinuities": 0, &"event_voice_count": 2, &"event_voice_limit": 2, &"active_motion_voices": 5, &"playing_event_voices": 2, &"pending_event_count": 2, &"events_played": 3, &"events_dropped": 5, &"far_culled_events": 0, &"far_culled_motion_updates": 0, &"stale_tick_resets": 0, &"missing_assets": [], &"last_targets": { &"valid": true, &"tick": 3, &"paused": false, &"engine_mask": 1.0, &"listener_valid": true, &"active_motion_voices": 5, &"far_culled": false, &"stale_tick_s": 0.0, &"motion_voice_count": 5, &"listener": (0.0, 0.0, 0.0) }, &"reset_count": 1 }
+ok   far source bypasses observation and is culled without stale travel
+ok   returning into range primes without replaying distant movement
+ok   moving listener back near source restores bounded voice playback
+ok   near-field attenuation gain is capped at unity
+ok   pause primes a changed state without cue playback
+ok   reset and tick rewind prime silently
+ok   voice lifecycle fixture starts installed motion and gear voices
+ok   stalled accepted tick resets the observer
+ok   missing control channels and retract gear fade and stop owned motion voices
+ok   stopped or culled voice slots remain bounded and reusable
+ok   completed pause fade releases actual mixer voices
+ok   retired pause voices restart on fresh accepted travel
+ok   completed distance fade releases actual mixer voices
+ok   retired distance voices restart on fresh accepted travel
+ok   servo event is attached to its accepted source identity
+ok   active event voice follows its moved accepted anchor
+ok   servo loop allocates one persistent player on accepted motion
+ok   moving loop voice retains its player and nonzero envelope across updates
+ok   retract accepted extension plays one real start cue — ["gear_start"]
+ok   reversal replaces the canceled source-scoped gear cue — ["gear_start"]
+ok   interrupted gear movement leaves no stale start cue playing — []
+ok   stopped gear leaves no pending retract cue — { &"motion_voice_count": 5, &"motion_voice_limit": 6, &"accepted_tick_observation": false, &"accepted_tick_samples": 0, &"accepted_observation_law": "", &"accepted_events_observed": 0, &"accepted_events_drained": 0, &"accepted_pending_event_count": 0, &"accepted_event_limit": 64, &"accepted_events_discarded": 0, &"accepted_events_overflowed": 0, &"accepted_discontinuities": 0, &"event_voice_count": 2, &"event_voice_limit": 2, &"active_motion_voices": 1, &"playing_event_voices": 0, &"pending_event_count": 0, &"events_played": 22, &"events_dropped": 17, &"far_culled_events": 0, &"far_culled_motion_updates": 47, &"stale_tick_resets": 1, &"missing_assets": [], &"last_targets": { &"valid": true, &"tick": 403, &"paused": false, &"engine_mask": 1.0, &"listener_valid": true, &"active_motion_voices": 0, &"far_culled": false, &"stale_tick_s": 0.06666666666667, &"motion_voice_count": 5, &"listener": (0.0, 0.0, 0.0) }, &"reset_count": 8 }
+ok   two event voices are occupied by simultaneous servo starts — ["servo_start", "servo_start"]
+ok   gear lock receives a voice under a full two-slot event burst — roles=["gear_lock", "servo_stop"] diagnostics={ &"motion_voice_count": 5, &"motion_voice_limit": 6, &"accepted_tick_observation": false, &"accepted_tick_samples": 0, &"accepted_observation_law": "", &"accepted_events_observed": 0, &"accepted_events_drained": 0, &"accepted_pending_event_count": 0, &"accepted_event_limit": 64, &"accepted_events_discarded": 0, &"accepted_events_overflowed": 0, &"accepted_discontinuities": 0, &"event_voice_count": 2, &"event_voice_limit": 2, &"active_motion_voices": 5, &"playing_event_voices": 2, &"pending_event_count": 0, &"events_played": 27, &"events_dropped": 21, &"far_culled_events": 0, &"far_culled_motion_updates": 47, &"stale_tick_resets": 1, &"missing_assets": [], &"last_targets": { &"valid": true, &"tick": 504, &"paused": false, &"engine_mask": 1.0, &"listener_valid": true, &"active_motion_voices": 0, &"far_culled": false, &"stale_tick_s": 0.06666666666667, &"motion_voice_count": 5, &"listener": (0.0, 0.0, 0.0) }, &"reset_count": 9 }
+ok   gear endpoint cue has no duplicate same-source voices — ["gear", "elevator"]
+ok   reversal fixture has a pending cue before pause
+ok   pause clears pending reversals before fading the old cue
+ok   saturated event pool reserves a queued endpoint lock
+ok   finished outgoing cue cannot let a servo steal its pending gear lock — ["gear_lock", "servo_start"]
+ok   real WAV set exists for standard/pneumatic
+ok   installed standard/pneumatic profile has no missing required assets — []
+ok   voice pools remain within the declared cap
+ok   standard/pneumatic initial sample creates no cue
+ok   standard/pneumatic accepted movement starts real cue playback
+ok   simultaneous movement stays within fixed voice pools
+ok   same tick render update cannot retrigger motion event — { &"motion_voice_count": 5, &"motion_voice_limit": 6, &"accepted_tick_observation": false, &"accepted_tick_samples": 0, &"accepted_observation_law": "", &"accepted_events_observed": 0, &"accepted_events_drained": 0, &"accepted_pending_event_count": 0, &"accepted_event_limit": 64, &"accepted_events_discarded": 0, &"accepted_events_overflowed": 0, &"accepted_discontinuities": 0, &"event_voice_count": 2, &"event_voice_limit": 2, &"active_motion_voices": 5, &"playing_event_voices": 2, &"pending_event_count": 0, &"events_played": 34, &"events_dropped": 31, &"far_culled_events": 0, &"far_culled_motion_updates": 47, &"stale_tick_resets": 1, &"missing_assets": [], &"last_targets": { &"valid": true, &"tick": 2, &"paused": false, &"engine_mask": 1.0, &"listener_valid": true, &"active_motion_voices": 5, &"far_culled": false, &"stale_tick_s": 0.01666666666667, &"motion_voice_count": 5, &"listener": (0.0, 0.0, 0.0) }, &"reset_count": 12 }
+ok   accepted reversal reaches the bounded event queue — { &"motion_voice_count": 5, &"motion_voice_limit": 6, &"accepted_tick_observation": false, &"accepted_tick_samples": 0, &"accepted_observation_law": "", &"accepted_events_observed": 0, &"accepted_events_drained": 0, &"accepted_pending_event_count": 0, &"accepted_event_limit": 64, &"accepted_events_discarded": 0, &"accepted_events_overflowed": 0, &"accepted_discontinuities": 0, &"event_voice_count": 2, &"event_voice_limit": 2, &"active_motion_voices": 5, &"playing_event_voices": 2, &"pending_event_count": 2, &"events_played": 34, &"events_dropped": 34, &"far_culled_events": 0, &"far_culled_motion_updates": 47, &"stale_tick_resets": 1, &"missing_assets": [], &"last_targets": { &"valid": true, &"tick": 3, &"paused": false, &"engine_mask": 1.0, &"listener_valid": true, &"active_motion_voices": 5, &"far_culled": false, &"stale_tick_s": 0.0, &"motion_voice_count": 5, &"listener": (0.0, 0.0, 0.0) }, &"reset_count": 12 }
+ok   far source bypasses observation and is culled without stale travel
+ok   returning into range primes without replaying distant movement
+ok   moving listener back near source restores bounded voice playback
+ok   near-field attenuation gain is capped at unity
+ok   pause primes a changed state without cue playback
+ok   reset and tick rewind prime silently
+ok   real WAV set exists for high_torque/electric
+ok   installed high_torque/electric profile has no missing required assets — []
+ok   voice pools remain within the declared cap
+ok   high_torque/electric initial sample creates no cue
+ok   high_torque/electric accepted movement starts real cue playback
+ok   simultaneous movement stays within fixed voice pools
+ok   same tick render update cannot retrigger motion event — { &"motion_voice_count": 5, &"motion_voice_limit": 6, &"accepted_tick_observation": false, &"accepted_tick_samples": 0, &"accepted_observation_law": "", &"accepted_events_observed": 0, &"accepted_events_drained": 0, &"accepted_pending_event_count": 0, &"accepted_event_limit": 64, &"accepted_events_discarded": 0, &"accepted_events_overflowed": 0, &"accepted_discontinuities": 0, &"event_voice_count": 2, &"event_voice_limit": 2, &"active_motion_voices": 5, &"playing_event_voices": 2, &"pending_event_count": 0, &"events_played": 39, &"events_dropped": 38, &"far_culled_events": 0, &"far_culled_motion_updates": 48, &"stale_tick_resets": 1, &"missing_assets": [], &"last_targets": { &"valid": true, &"tick": 2, &"paused": false, &"engine_mask": 1.0, &"listener_valid": true, &"active_motion_voices": 5, &"far_culled": false, &"stale_tick_s": 0.01666666666667, &"motion_voice_count": 5, &"listener": (0.0, 0.0, 0.0) }, &"reset_count": 14 }
+ok   accepted reversal reaches the bounded event queue — { &"motion_voice_count": 5, &"motion_voice_limit": 6, &"accepted_tick_observation": false, &"accepted_tick_samples": 0, &"accepted_observation_law": "", &"accepted_events_observed": 0, &"accepted_events_drained": 0, &"accepted_pending_event_count": 0, &"accepted_event_limit": 64, &"accepted_events_discarded": 0, &"accepted_events_overflowed": 0, &"accepted_discontinuities": 0, &"event_voice_count": 2, &"event_voice_limit": 2, &"active_motion_voices": 5, &"playing_event_voices": 2, &"pending_event_count": 2, &"events_played": 39, &"events_dropped": 41, &"far_culled_events": 0, &"far_culled_motion_updates": 48, &"stale_tick_resets": 1, &"missing_assets": [], &"last_targets": { &"valid": true, &"tick": 3, &"paused": false, &"engine_mask": 1.0, &"listener_valid": true, &"active_motion_voices": 5, &"far_culled": false, &"stale_tick_s": 0.0, &"motion_voice_count": 5, &"listener": (0.0, 0.0, 0.0) }, &"reset_count": 14 }
+ok   far source bypasses observation and is culled without stale travel
+ok   returning into range primes without replaying distant movement
+ok   moving listener back near source restores bounded voice playback
+ok   near-field attenuation gain is capped at unity
+ok   pause primes a changed state without cue playback
+ok   reset and tick rewind prime silently
+ok   real WAV set exists for high_torque/pneumatic
+ok   installed high_torque/pneumatic profile has no missing required assets — []
+ok   voice pools remain within the declared cap
+ok   high_torque/pneumatic initial sample creates no cue
+ok   high_torque/pneumatic accepted movement starts real cue playback
+ok   simultaneous movement stays within fixed voice pools
+ok   same tick render update cannot retrigger motion event — { &"motion_voice_count": 5, &"motion_voice_limit": 6, &"accepted_tick_observation": false, &"accepted_tick_samples": 0, &"accepted_observation_law": "", &"accepted_events_observed": 0, &"accepted_events_drained": 0, &"accepted_pending_event_count": 0, &"accepted_event_limit": 64, &"accepted_events_discarded": 0, &"accepted_events_overflowed": 0, &"accepted_discontinuities": 0, &"event_voice_count": 2, &"event_voice_limit": 2, &"active_motion_voices": 5, &"playing_event_voices": 2, &"pending_event_count": 0, &"events_played": 44, &"events_dropped": 45, &"far_culled_events": 0, &"far_culled_motion_updates": 49, &"stale_tick_resets": 1, &"missing_assets": [], &"last_targets": { &"valid": true, &"tick": 2, &"paused": false, &"engine_mask": 1.0, &"listener_valid": true, &"active_motion_voices": 5, &"far_culled": false, &"stale_tick_s": 0.01666666666667, &"motion_voice_count": 5, &"listener": (0.0, 0.0, 0.0) }, &"reset_count": 16 }
+ok   accepted reversal reaches the bounded event queue — { &"motion_voice_count": 5, &"motion_voice_limit": 6, &"accepted_tick_observation": false, &"accepted_tick_samples": 0, &"accepted_observation_law": "", &"accepted_events_observed": 0, &"accepted_events_drained": 0, &"accepted_pending_event_count": 0, &"accepted_event_limit": 64, &"accepted_events_discarded": 0, &"accepted_events_overflowed": 0, &"accepted_discontinuities": 0, &"event_voice_count": 2, &"event_voice_limit": 2, &"active_motion_voices": 5, &"playing_event_voices": 2, &"pending_event_count": 2, &"events_played": 44, &"events_dropped": 48, &"far_culled_events": 0, &"far_culled_motion_updates": 49, &"stale_tick_resets": 1, &"missing_assets": [], &"last_targets": { &"valid": true, &"tick": 3, &"paused": false, &"engine_mask": 1.0, &"listener_valid": true, &"active_motion_voices": 5, &"far_culled": false, &"stale_tick_s": 0.0, &"motion_voice_count": 5, &"listener": (0.0, 0.0, 0.0) }, &"reset_count": 16 }
+ok   far source bypasses observation and is culled without stale travel
+ok   returning into range primes without replaying distant movement
+ok   moving listener back near source restores bounded voice playback
+ok   near-field attenuation gain is capped at unity
+ok   pause primes a changed state without cue playback
+ok   reset and tick rewind prime silently
+ok   missing resource resolves to silent null instead of a substitute
+ok   reconfigure clears the transient missing-resource diagnostic
+ok   rebind moves owned players onto the replacement scene bus
+ok   rebind resets the motion observer before accepting another tick
+ok   bus detach and rebind leave no temporary bus behind
+ok   detach, reattach and configure re-prime before new cue playback
+ok   zero servo level is accepted as configuration and resets voices
+ok   final profile remains silent of missing assets
+ok   audio instance stayed within motion and event voice caps
+103 checks, 0 failed

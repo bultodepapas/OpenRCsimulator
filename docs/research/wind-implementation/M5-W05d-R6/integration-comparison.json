@@ -1,0 +1,9 @@
+{
+  "shared_sources_stable_during_check": true,
+  "differences_from_isolated_candidate": [
+    "app/physics/aircraft_contact_contract.gd",
+    "app/physics/aircraft_ground_damage.gd",
+    "app/sim/flight_log.gd",
+    "app/sim/flight_session.gd"
+  ]
+}

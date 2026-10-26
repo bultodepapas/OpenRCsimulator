@@ -26,13 +26,26 @@ var _mechanical_anchors: Array[Array] = []
 var _mechanical_snapshot: Dictionary = {}
 var _mechanical_mask := 1.0
 var _last_tick: int = -1
+var _mechanical_session: Node
+var _mechanical_sim: Node
+var _accepted_mechanical_mode := false
 var _windsock: WeakRef
 var last_update_usec: int = 0
 var last_mechanical_update_usec: int = 0
 
 
 func configure(scene: Node3D) -> void:
+	_disconnect_mechanical_observer()
+	# Reconfiguration replaces a rig, rather than leaving duplicate bus/player
+	# owners and accepted-tick connections attached to the previous session.
+	for previous: Node in [mechanical_audio, ground_audio, soundscape]:
+		if is_instance_valid(previous): previous.free()
+	mechanical_audio = null
+	ground_audio = null
+	soundscape = null
 	flight = scene
+	_last_tick = -1
+	_windsock = null
 	process_priority = 100
 	soundscape = Soundscape.new()
 	add_child(soundscape)
@@ -62,8 +75,94 @@ func configure(scene: Node3D) -> void:
 		var cues: Array = field_node.get_meta("wind_cues", [])
 		if not cues.is_empty():
 			_windsock = weakref(cues[0])
-	flight.session.resetting.connect(_on_resetting)
+	_connect_mechanical_observer()
 	silence_legacy_ambience(flight)
+
+
+func _connect_mechanical_observer() -> void:
+	_disconnect_mechanical_observer()
+	if not is_instance_valid(flight) or not is_instance_valid(mechanical_audio) \
+		or not is_instance_valid(flight.session) or not is_instance_valid(flight.session.sim): return
+	_mechanical_session = flight.session
+	_mechanical_sim = _mechanical_session.sim
+	mechanical_audio.set_accepted_tick_observation(true)
+	_accepted_mechanical_mode = true
+	# FlightSession installs its commit handler during setup, before this rig.
+	_mechanical_sim.stepped.connect(_on_accepted_mechanical_tick)
+	_mechanical_sim.paused_changed.connect(_on_mechanical_pause_changed)
+	_mechanical_session.resetting.connect(_on_resetting)
+	_observe_mechanical_endpoint()
+
+
+func _disconnect_mechanical_observer() -> void:
+	if is_instance_valid(_mechanical_sim):
+		if _mechanical_sim.stepped.is_connected(_on_accepted_mechanical_tick):
+			_mechanical_sim.stepped.disconnect(_on_accepted_mechanical_tick)
+		if _mechanical_sim.paused_changed.is_connected(_on_mechanical_pause_changed):
+			_mechanical_sim.paused_changed.disconnect(_on_mechanical_pause_changed)
+	if is_instance_valid(_mechanical_session) and _mechanical_session.resetting.is_connected(_on_resetting):
+		_mechanical_session.resetting.disconnect(_on_resetting)
+	_mechanical_sim = null
+	_mechanical_session = null
+	_accepted_mechanical_mode = false
+
+
+func _enter_tree() -> void:
+	if is_instance_valid(flight) and is_instance_valid(mechanical_audio):
+		_disconnect_mechanical_observer()
+		mechanical_audio.reset()
+		call_deferred("_resume_mechanical_observer")
+
+
+func _resume_mechanical_observer() -> void:
+	if not is_inside_tree() or not is_instance_valid(flight) or not is_instance_valid(mechanical_audio): return
+	# Children have re-entered by now. Bind synchronously before priming, so a
+	# deferred bus refresh cannot reset and erase newly captured endpoint motion.
+	if is_instance_valid(soundscape): mechanical_audio.bind_soundscape(soundscape)
+	_connect_mechanical_observer()
+
+
+func _exit_tree() -> void:
+	_disconnect_mechanical_observer()
+	if is_instance_valid(mechanical_audio): mechanical_audio.reset()
+	_last_tick = -1
+
+
+func _on_accepted_mechanical_tick(_tick: int, _time: float, _state: PackedFloat64Array,
+		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	if is_instance_valid(_mechanical_sim) and _tick == _mechanical_sim.tick:
+		_observe_mechanical_endpoint()
+
+
+func _on_mechanical_pause_changed(_paused: bool) -> void:
+	_observe_mechanical_endpoint()
+
+
+func _observe_mechanical_endpoint() -> void:
+	if not _accepted_mechanical_mode or not is_instance_valid(mechanical_audio) \
+		or not is_instance_valid(flight) or flight.session != _mechanical_session: return
+	var endpoint := accepted_mechanical_snapshot()
+	if not endpoint.is_empty(): mechanical_audio.observe_accepted(endpoint)
+
+
+## Actual accepted actuator values only. This path has no render transforms,
+## air-data/load evaluation or target-to-motion reconstruction. Paused manual
+## steps prime silently, so their cues cannot replay after resume.
+func accepted_mechanical_snapshot() -> Dictionary:
+	if not is_instance_valid(_mechanical_session) or not is_instance_valid(_mechanical_sim): return {}
+	var active: bool = _mechanical_session.physics_enabled and bool(_mechanical_session.aircraft.get("ok", false))
+	var channels: Array[Dictionary] = []
+	var gear := {}
+	if active:
+		var angles: Dictionary = _mechanical_session.surface_angles_deg()
+		for pair: Array in [["aileron", "aileron_right"], ["elevator", "elevator"], ["rudder", "rudder"]]:
+			channels.append({id = pair[0], angle_deg = float(angles.get(pair[1], 0.0))})
+		if _mechanical_session.flaps_available():
+			channels.append({id = "flap", angle_deg = float(_mechanical_sim.aux[_mechanical_session.flap_aux_index()])
+				* float(_mechanical_session.aircraft.model.flaps.max_angle_deg)})
+		gear = _mechanical_session.gear_state()
+	return {tick = _mechanical_sim.tick, tick_rate = 1.0 / _mechanical_sim.dt(),
+		paused = _mechanical_sim.paused or not active, channels = channels, gear = gear}
 
 
 static func silence_legacy_ambience(scene: Node) -> void:
@@ -203,7 +302,7 @@ static func propeller_blade_count(aircraft_id: String) -> int:
 
 func _on_resetting() -> void:
 	_last_tick = -1
-	soundscape.reset_observer()
+	if soundscape != null: soundscape.reset_observer()
 	if ground_audio != null:
 		ground_audio.reset()
 	if mechanical_audio != null:
@@ -218,6 +317,9 @@ func contact_snapshot() -> Array[Dictionary]:
 ## One source per accepted logical actuator. Mirrored visual surfaces do not invent
 ## independent servo state. The authored hinge centres approximate the installation.
 func _bind_mechanical_channels() -> void:
+	_mechanical_channels.clear()
+	_mechanical_anchors.clear()
+	_mechanical_snapshot.clear()
 	var airplane: Dictionary = flight._airplane
 	var controls: Dictionary = airplane.get("model_manifest", {}).get("bindings", {}).get("controls", {})
 	var groups: Array = [["aileron_left", "aileron_right"], ["elevator"], ["rudder"]]
@@ -283,7 +385,9 @@ func _process(delta: float) -> void:
 	var tick: int = flight.session.sim.tick
 	if tick < _last_tick:
 		soundscape.reset_observer()
-		if mechanical_audio != null:
+		# Accepted mode already handled the rewind at its source. Do not erase
+		# legitimate post-rewind transitions captured before this render frame.
+		if mechanical_audio != null and not _accepted_mechanical_mode:
 			mechanical_audio.reset()
 	_last_tick = tick
 	var sound_snapshot: Dictionary = snapshot()

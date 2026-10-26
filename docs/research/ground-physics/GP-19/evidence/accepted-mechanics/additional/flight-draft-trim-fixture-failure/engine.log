@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+FAIL brief real servo returns to its initial accepted angle { &"before": 0.23526631894562, &"after": 0.0 }
+FAIL the same render-only endpoints miss the completed gesture 
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FlightAudio accepted endpoints: 35 checks, 2 failed

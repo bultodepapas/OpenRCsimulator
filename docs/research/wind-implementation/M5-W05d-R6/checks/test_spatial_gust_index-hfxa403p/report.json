@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f1893b42-1a25-4b64-accc-4cb4abac883e",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\candidate\\app",
+    "--script",
+    "res://tests/test_spatial_gust_index.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:36:36.666711+00:00",
+  "label": "test_spatial_gust_index",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\checks\\test_spatial_gust_index-hfxa403p\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\checks\\test_spatial_gust_index-hfxa403p\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.703,
+  "log_bytes": 108,
+  "log_sha256": "4c3276a0c4225901996c75d992b0d6287bbb36d1abb42399e64f984ea91b2e46"
+}

@@ -19,6 +19,8 @@ Use the checked runner around each Godot command, as described below. The mechan
 
 For controller CPU comparisons, `mechanical_benchmark.gd` requires Dummy and times only `update_sound`, excluding snapshot setup and diagnostics. It measures idle, simultaneous four-servo/retract movement, pause, distant sources and repeated accepted ticks after warmup. Reports include source hashes, median/p95/max, voice counts and Godot object-count growth. This is a script microbenchmark, not a native mixer deadline, allocation profiler or rendered frame-time qualification. Use the same binary, iteration counts and quiet host for before/after comparisons.
 
+Add `--observe-accepted` to enable GP-19 endpoint capture and time `observe_accepted` separately. This fixture delivers one accepted snapshot per render update; it does not reproduce the flight's ticks-per-frame ratio. Capture timings exclude `FlightAudio` snapshot construction and signal dispatch. Reports retain capture refusals, queue overflow and the observer law, alongside the existing playback timings. The default mode retains the original direct playback benchmark.
+
 ```sh
 godot --headless --path app --audio-driver Dummy --script /absolute/repo/tools/audio/mechanical_benchmark.gd -- --out=/absolute/new/benchmark.json --iterations=10000 --warmup=1000
 ```

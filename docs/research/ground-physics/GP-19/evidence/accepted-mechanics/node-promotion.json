@@ -1,0 +1,10 @@
+[
+  {
+    "path": "app/audio/mechanical_audio.gd",
+    "sha256": "328c273d9b5f29245c0da948ac0b8f60d403da521d4bf9a414816751468b5cbd"
+  },
+  {
+    "path": "app/tests/test_mechanical_accepted_ticks.gd",
+    "sha256": "62cc2683b7107a6447db66e397601ec196e3a96866830442f91155862c62f174"
+  }
+]

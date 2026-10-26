@@ -1,0 +1,321 @@
+{
+  "format": "openrc-accepted-mechanics-evidence-v1",
+  "packaged_utc": "2026-10-26T15:13:54.136115+00:00",
+  "commit_at_packaging": "ae0597880b7a63fe156237cc81321254eb0812be",
+  "engine": "Godot 4.8.beta1.official.4d10419ca",
+  "engine_console_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "source_scope": "Selected audio/test source snapshot at packaging; five changed source hashes pinned to promotion. This is not a complete isolated application/dependency checkout. Checkpoint parity is within the focused paired-session process, not a fleet or cross-version replay claim.",
+  "qualification": "Accepted-tick presentation and Dummy software checks only. Existing native AUD-16 evidence is historical; no new native playback, listening, acoustic calibration, whole-flight or 1080p performance acceptance. Ground/slip/damage packet integration remains open.",
+  "historical_failures": "Retained logs record the pre-fix duplicate-tick clock case and two draft harness failures (freed typed Node; nonzero trimmed initial servo). Earlier candidate sources are not a frozen reproduction checkout.",
+  "checks": [
+    {
+      "label": "accepted-node",
+      "checks": 58,
+      "report": "checks/accepted-node/report.json"
+    },
+    {
+      "label": "playback",
+      "checks": 103,
+      "report": "checks/playback/report.json"
+    },
+    {
+      "label": "motion",
+      "checks": 36,
+      "report": "checks/motion/report.json"
+    },
+    {
+      "label": "configuration",
+      "checks": 24,
+      "report": "checks/configuration/report.json"
+    },
+    {
+      "label": "ground",
+      "checks": 33,
+      "report": "checks/ground/report.json"
+    },
+    {
+      "label": "accepted-flight",
+      "checks": 35,
+      "report": "checks/accepted-flight/report.json"
+    },
+    {
+      "label": "production-flight",
+      "checks": 28,
+      "report": "checks/production-flight/report.json"
+    }
+  ],
+  "total_checks": 317,
+  "pins": {
+    "app/audio/mechanical_audio.gd": "328c273d9b5f29245c0da948ac0b8f60d403da521d4bf9a414816751468b5cbd",
+    "app/tests/test_mechanical_accepted_ticks.gd": "62cc2683b7107a6447db66e397601ec196e3a96866830442f91155862c62f174",
+    "tools/audio/mechanical_benchmark.gd": "74f855076428c48db73759e02d29ba89bde1a9aad171a2823840550ad9bef6cb",
+    "app/audio/flight_audio.gd": "a211c24eab64a31156249b5cd0cdc31a12116a0b65c754166968023cb2955651",
+    "app/tests/test_flight_audio_accepted.gd": "bb02dc9e6272a72dcae1a086292379a6c236b462ed5f46a121459e2aa5a82659"
+  },
+  "artifacts": [
+    {
+      "path": "source/app/audio/mechanical_audio.gd",
+      "source": "app/audio/mechanical_audio.gd",
+      "bytes": 40705,
+      "sha256": "328c273d9b5f29245c0da948ac0b8f60d403da521d4bf9a414816751468b5cbd"
+    },
+    {
+      "path": "source/app/tests/test_mechanical_accepted_ticks.gd",
+      "source": "app/tests/test_mechanical_accepted_ticks.gd",
+      "bytes": 11563,
+      "sha256": "62cc2683b7107a6447db66e397601ec196e3a96866830442f91155862c62f174"
+    },
+    {
+      "path": "source/tools/audio/mechanical_benchmark.gd",
+      "source": "tools/audio/mechanical_benchmark.gd",
+      "bytes": 15077,
+      "sha256": "74f855076428c48db73759e02d29ba89bde1a9aad171a2823840550ad9bef6cb"
+    },
+    {
+      "path": "source/app/audio/flight_audio.gd",
+      "source": "app/audio/flight_audio.gd",
+      "bytes": 20897,
+      "sha256": "a211c24eab64a31156249b5cd0cdc31a12116a0b65c754166968023cb2955651"
+    },
+    {
+      "path": "source/app/tests/test_flight_audio_accepted.gd",
+      "source": "app/tests/test_flight_audio_accepted.gd",
+      "bytes": 13464,
+      "sha256": "bb02dc9e6272a72dcae1a086292379a6c236b462ed5f46a121459e2aa5a82659"
+    },
+    {
+      "path": "source/app/audio/mechanical_motion.gd",
+      "source": "app/audio/mechanical_motion.gd",
+      "bytes": 10534,
+      "sha256": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f"
+    },
+    {
+      "path": "source/app/audio/mechanical_profile.gd",
+      "source": "app/audio/mechanical_profile.gd",
+      "bytes": 1635,
+      "sha256": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb"
+    },
+    {
+      "path": "source/app/audio/ground_audio.gd",
+      "source": "app/audio/ground_audio.gd",
+      "bytes": 14429,
+      "sha256": "fd43b4f400ef96b91b086d83388cc1b8337497e57fa3b0048944159aa26be3ea"
+    },
+    {
+      "path": "source/app/audio/ground_audio_model.gd",
+      "source": "app/audio/ground_audio_model.gd",
+      "bytes": 6519,
+      "sha256": "6b918917c7417ac9cd9a0e6d3531232142bbdd2ca8f78d736e27ca0b369c78f3"
+    },
+    {
+      "path": "source/app/tests/test_mechanical_audio.gd",
+      "source": "app/tests/test_mechanical_audio.gd",
+      "bytes": 27017,
+      "sha256": "9cab0bb40a625b0f5af3cd7e433f9c26fd19b2a793102dab3fd25f8415046249"
+    },
+    {
+      "path": "source/app/tests/test_mechanical_motion.gd",
+      "source": "app/tests/test_mechanical_motion.gd",
+      "bytes": 9505,
+      "sha256": "4822eaf771a6604d77b96368753d6b7a38d686e7f7f118e3ae2c0dc580e244f4"
+    },
+    {
+      "path": "source/app/tests/test_mechanical_configuration.gd",
+      "source": "app/tests/test_mechanical_configuration.gd",
+      "bytes": 3667,
+      "sha256": "4d00aaf15804a8c4dbfa25426ff0c98a2ebf925c49b806d1669c15906273d51a"
+    },
+    {
+      "path": "source/app/tests/test_mechanical_integration.gd",
+      "source": "app/tests/test_mechanical_integration.gd",
+      "bytes": 13311,
+      "sha256": "1987db0a6476472ea83b9540300877ca6b61bffd9256891e60cb17772a667607"
+    },
+    {
+      "path": "source/app/tests/test_ground_audio.gd",
+      "source": "app/tests/test_ground_audio.gd",
+      "bytes": 13658,
+      "sha256": "48071a60df339328028322801f2c29daa01c38797712950fb99fc04c973a7499"
+    },
+    {
+      "path": "checks/accepted-node/report.json",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-node/accepted-mechanics-exdt8lam/report.json",
+      "bytes": 1230,
+      "sha256": "2bc05838e16f960ff9efdfd8e4f3078bcaa84c14841fcdf0897fda37976b1acb"
+    },
+    {
+      "path": "checks/accepted-node/engine.log",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-node/accepted-mechanics-exdt8lam/engine.log",
+      "bytes": 120,
+      "sha256": "b91429e0a286b59d12c4e8890f3c980eea967e343c37d0eb034be725256381fb"
+    },
+    {
+      "path": "checks/playback/report.json",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-playback/mechanical-playback-5ao7cdks/report.json",
+      "bytes": 1234,
+      "sha256": "02f9bc181e43e575b53cff98e0e592712d4d908c3b00944a534aca469e4dc873"
+    },
+    {
+      "path": "checks/playback/engine.log",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-playback/mechanical-playback-5ao7cdks/engine.log",
+      "bytes": 16277,
+      "sha256": "fe22cc446fd1210fd6b8b640a19c560b84cd1c51627c74aeaf008533acf947d8"
+    },
+    {
+      "path": "checks/motion/report.json",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-motion/mechanical-motion-jkhyyqnm/report.json",
+      "bytes": 1224,
+      "sha256": "7a70f2841129f40c992508429a97fb4ce459212fea0dfe05633a224a480d80cf"
+    },
+    {
+      "path": "checks/motion/engine.log",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-motion/mechanical-motion-jkhyyqnm/engine.log",
+      "bytes": 2183,
+      "sha256": "da5750846adb70e8e4b867fbd68e94f5d616bd6bcbc3fe9b90dd89712db2b4c8"
+    },
+    {
+      "path": "checks/configuration/report.json",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-configuration/mechanical-configuration-iqjofllx/report.json",
+      "bytes": 1265,
+      "sha256": "cfb53534eda7082ecd489b68e391f8f6488c5acf255de216d9502cb696caf17c"
+    },
+    {
+      "path": "checks/configuration/engine.log",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-configuration/mechanical-configuration-iqjofllx/engine.log",
+      "bytes": 119,
+      "sha256": "95e3e626f29599bf51ef5b2d8b0d7f0b517dc151a108597e99771e127a8365ed"
+    },
+    {
+      "path": "checks/ground/report.json",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-ground-integrated/ground-audio-pde6mme5/report.json",
+      "bytes": 1226,
+      "sha256": "5780c6a5ab19d5b3ec3c6714d34d053a4222bb77184a745ede2f9ec60c881971"
+    },
+    {
+      "path": "checks/ground/engine.log",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-ground-integrated/ground-audio-pde6mme5/engine.log",
+      "bytes": 2375,
+      "sha256": "aeac2c46f18c68b178084d11b10c2b7520c8db978874271ea54bb762eadde57a"
+    },
+    {
+      "path": "checks/accepted-flight/report.json",
+      "source": "tmp/gp19-flight-audio/checks/main-01/godot-rj4bpp5p/report.json",
+      "bytes": 1151,
+      "sha256": "acd486e84904db08187ddc34f49c980fd4adbc76f74fbe529a3faf185ddbd137"
+    },
+    {
+      "path": "checks/accepted-flight/engine.log",
+      "source": "tmp/gp19-flight-audio/checks/main-01/godot-rj4bpp5p/engine.log",
+      "bytes": 219,
+      "sha256": "0f67687c4654a77f2e0957de2e5aa7178a5714db94143dd1cb719cac94e2789f"
+    },
+    {
+      "path": "checks/production-flight/report.json",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-integration/mechanical-integration-jvjzk233/report.json",
+      "bytes": 1255,
+      "sha256": "eb679369d26fbdd7093d5e4db2e699f114f7a55332a085620d01ffa9d09bd11f"
+    },
+    {
+      "path": "checks/production-flight/engine.log",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-integration/mechanical-integration-jvjzk233/engine.log",
+      "bytes": 2018,
+      "sha256": "36d654849eaa1a691dd560d1eacbbb6b64de41a5665ea61d22da2163fec34952"
+    },
+    {
+      "path": "additional/same-tick-clock-before/report.json",
+      "source": "tmp/gp19-accepted-mechanics/checks/rate-before/accepted-rate-before-b0fewa0m/report.json",
+      "bytes": 1314,
+      "sha256": "a1f89f0624f8f4acc103fbaa676408e10c87657cc546bd6d66f3bdb49e6234be"
+    },
+    {
+      "path": "additional/same-tick-clock-before/engine.log",
+      "source": "tmp/gp19-accepted-mechanics/checks/rate-before/accepted-rate-before-b0fewa0m/engine.log",
+      "bytes": 185,
+      "sha256": "537f8422d0f5c4d9c7c6535b97a1b86376839105a8944f35bafeb1ccf3ab8fa2"
+    },
+    {
+      "path": "additional/flight-draft-cleanup-failure/report.json",
+      "source": "tmp/gp19-flight-audio/checks/draft-01/godot-b5eu81ap/report.json",
+      "bytes": 1845,
+      "sha256": "60886c3b8c036b1141466d40c2a2bf8e7b3500cf555a23f406bcad8092b48b5c"
+    },
+    {
+      "path": "additional/flight-draft-cleanup-failure/engine.log",
+      "source": "tmp/gp19-flight-audio/checks/draft-01/godot-b5eu81ap/engine.log",
+      "bytes": 903,
+      "sha256": "90b94e10d517d0d41bcfe0db34a2f735695b7eebc54ba9e3c436079410403dc5"
+    },
+    {
+      "path": "additional/flight-draft-trim-fixture-failure/report.json",
+      "source": "tmp/gp19-flight-audio/checks/draft-02/godot-yyhgbrsn/report.json",
+      "bytes": 1202,
+      "sha256": "3ea0ad844cf4412481aa9eae477fb6ddae5f587cda3f49c175a2c9861ce2b10e"
+    },
+    {
+      "path": "additional/flight-draft-trim-fixture-failure/engine.log",
+      "source": "tmp/gp19-flight-audio/checks/draft-02/godot-yyhgbrsn/engine.log",
+      "bytes": 392,
+      "sha256": "a0e32daa85248370cf1af7cfad975fc9ec5d1deafd5f4bec3baecdee5099041f"
+    },
+    {
+      "path": "additional/production-baseline/report.json",
+      "source": "tmp/gp19-accepted-mechanics/checks/adapter-baseline/mechanical-integration-baseline-611g9pgp/report.json",
+      "bytes": 1282,
+      "sha256": "e751431ddcb600d3de408ab3431ea75aaa259642b19e1ea4d3dd656e51143f2d"
+    },
+    {
+      "path": "additional/production-baseline/engine.log",
+      "source": "tmp/gp19-accepted-mechanics/checks/adapter-baseline/mechanical-integration-baseline-611g9pgp/engine.log",
+      "bytes": 2018,
+      "sha256": "36d654849eaa1a691dd560d1eacbbb6b64de41a5665ea61d22da2163fec34952"
+    },
+    {
+      "path": "additional/benchmark-accepted/report.json",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-benchmark/accepted-benchmark-p93s38sh/report.json",
+      "bytes": 1422,
+      "sha256": "972267146e3918bf9db11207cb57e0c9cf9aee81c830f8e6e63541880f7895aa"
+    },
+    {
+      "path": "additional/benchmark-accepted/engine.log",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-benchmark/accepted-benchmark-p93s38sh/engine.log",
+      "bytes": 8800,
+      "sha256": "45fb1eabd9d5641fbfa18a04b61d615bcd8273bc2f94fb9a4c5b103a4ddc66b4"
+    },
+    {
+      "path": "additional/benchmark-default/report.json",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-benchmark-legacy/legacy-benchmark-9p4ajanl/report.json",
+      "bytes": 1408,
+      "sha256": "df96bec4ed56d30f0174c5e0579f9e9a9327bed5616970c03ea891c3b7b3fc25"
+    },
+    {
+      "path": "additional/benchmark-default/engine.log",
+      "source": "tmp/gp19-accepted-mechanics/checks/main-benchmark-legacy/legacy-benchmark-9p4ajanl/engine.log",
+      "bytes": 6997,
+      "sha256": "0cd8362040cf53def1e1ec214ef8fc771547d280bdb3001727a7258a35505511"
+    },
+    {
+      "path": "benchmark-main.json",
+      "source": "tmp/gp19-accepted-mechanics/benchmark-main.json",
+      "bytes": 10226,
+      "sha256": "8da01f149545e474185d54c71768f5021196fd108a9fe5615adccfad7793eda7"
+    },
+    {
+      "path": "benchmark-main-legacy.json",
+      "source": "tmp/gp19-accepted-mechanics/benchmark-main-legacy.json",
+      "bytes": 8048,
+      "sha256": "ff3ca58e72641c347edf2304ee4f539acfeebf45d2080127d5d7177654bd77cc"
+    },
+    {
+      "path": "node-promotion.json",
+      "source": "tmp/gp19-accepted-mechanics/node-promotion.json",
+      "bytes": 297,
+      "sha256": "f6e5c7b886e98f785d19896c6c9acaca260a6f288636457c5177f139935a12cc"
+    },
+    {
+      "path": "benchmark-promotion.json",
+      "source": "tmp/gp19-accepted-mechanics/benchmark-promotion.json",
+      "bytes": 224,
+      "sha256": "f64f73ae4b372d90da639ad035545207b424304672b7d47d14506ff98ad70418"
+    }
+  ]
+}

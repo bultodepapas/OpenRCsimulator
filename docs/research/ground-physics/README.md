@@ -19,6 +19,7 @@ The pre-implementation plan is consolidated into [GP-05](GP-05/README.md). The p
 - [GP-11 integration cohort](GP-11/README.md): exact compliant spring/stop potential and rebound dissipation, common shaft/wheel and round-wheel dependencies, optional aircraft ground authoring, and an explicit aggregate inertia reservation. Executable foundations; stock migration and physical calibration remain open.
 - [GP-12 contact composition](GP-12/README.md): wheel/material impulse rows, conditional multibody admission, bounded accepted-step/refinement receipts and the existing electric-source torque bridge. Real-kernel fixtures pass; aircraft session migration, source-event composition and stock activation remain open.
 - [GP-16/17 foundation](GP-16/README.md): persistent attached-gear capacity failure, potential-release ledger and generic atomic endpoint/checkpoint contracts. Actual failed support geometry and peak-load runtime integration remain open.
+- [GP-19 accepted mechanism audio](GP-19/README.md): accepted-tick servo/flap/retract transitions, bounded queues and existing player integration; 317 selected checks and separate capture/playback timing. Accepted wheel/slip/damage audio and native/performance qualification remain open.
 
 The delivered GP records are software and numerical checks. No independent physical RC rollout, drop or taxi calibration was available.
 

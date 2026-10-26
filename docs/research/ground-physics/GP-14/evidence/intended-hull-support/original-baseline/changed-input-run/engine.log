@@ -1,0 +1,14 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+FAIL absence baseline retains same input source: res://data/aircraft/f4u_corsair_250.json { &"before": "e27ba35766bad2e32f7c10b0d3e80d49331af2c557957a85959dca47ebad3d43", &"current": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673" }
+FAIL absence baseline retains same input source: res://data/aircraft/gp_extra_300s_60.json { &"before": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f", &"current": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75" }
+FAIL absence baseline retains same input source: res://data/aircraft/jensen_ugly_stik_60.json { &"before": "3f9ed1b191e57b38ea609c33db443ad7fd4e9621296c4d710d418df34ac4ce77", &"current": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06" }
+FAIL absence baseline retains same input source: res://data/aircraft/p51d_mustang_120.json { &"before": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d", &"current": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c" }
+FAIL absence baseline retains same input source: res://data/aircraft/sebart_avanti_s_a200.json { &"before": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea", &"current": "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1" }
+FAIL absence baseline retains same input source: res://data/aircraft/stik_glow_55ax_2t.json { &"before": "742a19d5411c01f81d9fa4c5627803bfde059c3d4ed1082fe82e089dbf55397a", &"current": "66d13e8d7d3a44d371f26d75f5e08fbd75b1088430de7a4fabbc852a4c2ca298" }
+FAIL absence baseline retains same input source: res://data/aircraft/stik_glow_55ax_2t_apc_13x6.json { &"before": "1537bfcd00b52690c87c921eca0ad5d744b70e9225951993dfd390238f9a8c03", &"current": "45e9eb19ea03eff40c1e565ac1e76c4d72b63a4afb67b209dfa4745fb6a4f067" }
+FAIL absence baseline retains same input source: res://data/aircraft/stik_glow_61fx_2t.json { &"before": "ff43a548cbf8b080a720ab3f912bf6aef0cb9f1c52410c0b022f797294cb5be1", &"current": "babf709c6f8eda13af2bcb8dfc2753b98ae82aafaef048dee45610eeb799d458" }
+FAIL absence baseline retains same input source: res://data/aircraft/stik_glow_fs64v_4t.json { &"before": "942cca1364cacf61c9a5c0d066ef9bfc99dc9be9c86b0c30cefec19eb3c9c182", &"current": "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a" }
+FAIL absence baseline retains same input source: res://data/aircraft/stik_glow_fs64v_4t_apc_13x6.json { &"before": "bd2b66db059c19b07446e57bd11b94bca44f301059b8ac4228a9ab7ab462e232", &"current": "fe76f6fa2a3da1f6f330e31d4c609e941f430d620175e6b44a67cc90f8d6078d" }
+FAIL absence baseline retains same input source: res://data/aircraft/turbo_lumber_evolution.json { &"before": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf", &"current": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c" }
+Intended hull support sessions: 101 checks, 11 failed

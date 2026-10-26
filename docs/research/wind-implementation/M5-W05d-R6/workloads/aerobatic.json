@@ -1,0 +1,499 @@
+{
+	"accepted_state_validation": "Every warmup and timed batch must advance exactly the requested Simulation.tick count with no fault, no crash, and finite accepted body, input, auxiliary, continuous and load arrays. Reset checks compare packed state/input/aux/mode/continuous/load bytes against the captured scenario fixture.",
+	"aircraft": [
+		{
+			"cases": [
+				{
+					"accepted_warmup_ticks": 720,
+					"accepted_workload_ticks": 1440,
+					"aircraft_status": "experimental",
+					"case_id": "spatial-v5-gusts-thermals-24",
+					"final_state_sha256_per_batch": [
+						"aed78b6dde63934de9e9f781c2aaa6de458e869fb6bd3d5f0931eb08548051ce",
+						"aed78b6dde63934de9e9f781c2aaa6de458e869fb6bd3d5f0931eb08548051ce",
+						"aed78b6dde63934de9e9f781c2aaa6de458e869fb6bd3d5f0931eb08548051ce"
+					],
+					"final_states_repeatable": true,
+					"measurement_mode": "verification-only",
+					"mode_count": 24,
+					"queries_per_accepted_tick_untimed": 98,
+					"reset_checks_expected": 9,
+					"reset_checks_passed": 9,
+					"setup_start_state": [
+						60.0,
+						-40.0,
+						-30.0,
+						25.16579439063655,
+						0.15990184150948072,
+						1.4451400820248301,
+						0.7067527934447568,
+						-0.022371610537308257,
+						0.02237161053730826,
+						0.7067527934447567,
+						0.0,
+						0.0,
+						0.0
+					],
+					"stage_wash_consumers": {
+						"actual_full_simulation_step_used": true,
+						"continuous_state_size": 22,
+						"fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+						"lagged_wash_transport_enabled": false,
+						"lagged_wash_transport_piece_count": 0,
+						"provider_queries_per_wind_flow_sample": 10,
+						"quasi_static_slipstream_piece_count": 4,
+						"simulation_split_load_route": false,
+						"simulation_stage_callback": true,
+						"stage_air_probe_contract_valid": true,
+						"stage_point_sampler_valid": true,
+						"wind_flow_station_count": 9
+					},
+					"warmup_ticks_per_batch": 240,
+					"weather_configuration": {
+						"atmosphere_mode": "reference",
+						"field_elevation_m": 0.0,
+						"format": "openrc-weather v5",
+						"from_deg": 0.0,
+						"gust_delay_s": 2.0,
+						"gust_duration_s": 4.0,
+						"gust_mps": 0.0,
+						"gust_period_s": 12.0,
+						"gust_up_mps": 0.0,
+						"qnh_hpa": 1013.25,
+						"relative_humidity_pct": 0.0,
+						"spatial_wind": {
+							"datum": {
+								"ground_down_m": 0.0,
+								"law": "flat-site-ground-plane-v1"
+							},
+							"domain": {
+								"ground_extension_m": 0.25,
+								"ground_transition_height_m": 3.0,
+								"half_extent_east_m": 10000.0,
+								"half_extent_north_m": 10000.0,
+								"max_height_agl_m": 200.0,
+								"time_horizon_s": 86400.0
+							},
+							"format": "openrc-spatial-wind v2",
+							"frame": "NED",
+							"gusts": {
+								"events": [
+									{
+										"amplitude_ned_mps": [
+											-1.714448895351328e-17,
+											-0.27999999999999997,
+											0.0
+										],
+										"duration_s": 4.0,
+										"id": "training_gust_01",
+										"start_s": 359.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-0.09317485623690748,
+											-0.3477332974640646,
+											0.0
+										],
+										"duration_s": 3.5,
+										"id": "training_gust_02",
+										"start_s": 375.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.07764571353075626,
+											-0.28977774788672056,
+											0.0
+										],
+										"duration_s": 5.0,
+										"id": "training_gust_03",
+										"start_s": 404.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-2.6941339784092304e-17,
+											-0.44000000000000006,
+											0.0
+										],
+										"duration_s": 4.5,
+										"id": "training_gust_04",
+										"start_s": 446.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.15999999999999995,
+											-0.2771281292110204,
+											0.0
+										],
+										"duration_s": 3.0,
+										"id": "training_gust_05",
+										"start_s": 501.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-0.12996765446375416,
+											-0.3570831958986452,
+											0.0
+										],
+										"duration_s": 4.0,
+										"id": "training_gust_06",
+										"start_s": 573.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.022660493114391143,
+											-0.25901062150385384,
+											0.0
+										],
+										"duration_s": 5.0,
+										"id": "training_gust_07",
+										"start_s": 664.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.1368080573302675,
+											-0.3758770483143634,
+											0.0
+										],
+										"duration_s": 3.5,
+										"id": "training_gust_08",
+										"start_s": 774.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-0.05904038040675635,
+											-0.33483463602415076,
+											0.0
+										],
+										"duration_s": 4.5,
+										"id": "training_gust_09",
+										"start_s": 905.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.0520944533000791,
+											-0.29544232590366243,
+											0.0
+										],
+										"duration_s": 3.0,
+										"id": "training_gust_10",
+										"start_s": 983.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-0.17749966993109378,
+											-0.380649270555393,
+											0.0
+										],
+										"duration_s": 5.0,
+										"id": "training_gust_11",
+										"start_s": 1057.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.1183331132873958,
+											-0.253766180370262,
+											0.0
+										],
+										"duration_s": 4.0,
+										"id": "training_gust_12",
+										"start_s": 1118.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-0.03311918224411009,
+											-0.37855398527486334,
+											0.0
+										],
+										"duration_s": 3.5,
+										"id": "training_gust_13",
+										"start_s": 1166.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.08282209443280669,
+											-0.30909626441250193,
+											0.0
+										],
+										"duration_s": 5.0,
+										"id": "training_gust_14",
+										"start_s": 1203.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-0.11388037984510914,
+											-0.4250073635671901,
+											0.0
+										],
+										"duration_s": 4.0,
+										"id": "training_gust_15",
+										"start_s": 1229.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-1.836909530733566e-17,
+											-0.30000000000000004,
+											0.0
+										],
+										"duration_s": 3.0,
+										"id": "training_gust_16",
+										"start_s": 1243.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.06251334396009492,
+											-0.35453079108439495,
+											0.0
+										],
+										"duration_s": 4.0,
+										"id": "training_gust_17",
+										"start_s": 1413.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-0.048621489746740514,
+											-0.27574617084341824,
+											0.0
+										],
+										"duration_s": 4.5,
+										"id": "training_gust_18",
+										"start_s": 1533.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.1368080573302675,
+											-0.3758770483143634,
+											0.0
+										],
+										"duration_s": 3.5,
+										"id": "training_gust_19",
+										"start_s": 1643.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-0.10944644586421405,
+											-0.30070163865149074,
+											0.0
+										],
+										"duration_s": 5.0,
+										"id": "training_gust_20",
+										"start_s": 1753.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.03660541195401646,
+											-0.41840177319853317,
+											0.0
+										],
+										"duration_s": 4.0,
+										"id": "training_gust_21",
+										"start_s": 1863.0
+									},
+									{
+										"amplitude_ned_mps": [
+											0.14999999999999997,
+											-0.2598076211353316,
+											0.0
+										],
+										"duration_s": 3.0,
+										"id": "training_gust_22",
+										"start_s": 1973.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-0.09835123713895788,
+											-0.367051813989846,
+											0.0
+										],
+										"duration_s": 4.5,
+										"id": "training_gust_23",
+										"start_s": 2078.0
+									},
+									{
+										"amplitude_ned_mps": [
+											-1.714448895351328e-17,
+											-0.27999999999999997,
+											0.0
+										],
+										"duration_s": 5.0,
+										"id": "training_gust_24",
+										"start_s": 2145.0
+									}
+								],
+								"law": "resolved-degree6-c2-bell-uniform-v1"
+							},
+							"identity": {
+								"epoch_offset_s": 360.0,
+								"seed_algorithm": "xorshift32-v1",
+								"seed_u32": 20261025,
+								"world_epoch_id_u32": 451
+							},
+							"profile": {
+								"displacement_height_m": 0.0,
+								"free_air_join_height_m": 20.0,
+								"free_air_wind_ned_mps": [
+									0.0,
+									0.0,
+									0.0
+								],
+								"law": "neutral-log-flat-site-c1-wall-v1",
+								"layers": [],
+								"reference_from_deg": 270.0,
+								"reference_height_agl_m": 10.0,
+								"reference_speed_mps": 3.0,
+								"roughness_length_m": 0.03,
+								"surface_layer_top_agl_m": 80.0,
+								"wall_join_height_agl_m": 0.3
+							},
+							"thermal_field": {
+								"cells": [
+									{
+										"birth_s": 0.0,
+										"center_ne_m": [
+											-72.0,
+											36.0
+										],
+										"drift_ne_mps": [
+											0.2,
+											-0.1
+										],
+										"duration_s": 720.0,
+										"id": "bench-mature-drifting-cell",
+										"peak_updraft_mps": 1.0,
+										"radius_m": 60.0,
+										"top_agl_m": 200.0
+									}
+								],
+								"datum": {
+									"ground_down_m": 0.0,
+									"law": "flat-site-ground-plane-v1"
+								},
+								"domain": {
+									"half_extent_east_m": 10000.0,
+									"half_extent_north_m": 10000.0,
+									"max_height_agl_m": 200.0,
+									"time_horizon_s": 86400.0
+								},
+								"format": "openrc-thermal-field v1",
+								"frame": "NED",
+								"identity": {
+									"agenda_seed_u32": 20261025,
+									"epoch_offset_s": 360.0,
+									"seed_algorithm": "resolved-explicit-agenda-v1",
+									"world_epoch_id_u32": 451
+								},
+								"law": "balanced-axisymmetric-streamfunction-c2-v1"
+							},
+							"turbulence": {
+								"coherence_time_s": 4.0,
+								"law": "finite-equal-variance-log-wavelength-vector-potential-frozen-reference-advection-flat-wall-v1",
+								"max_wavelength_m": 50.0,
+								"min_wavelength_m": 5.0,
+								"mode_count": 24,
+								"rms_mps": 0.3
+							}
+						},
+						"speed_mps": 0.0,
+						"temperature_c": 15.0,
+						"turbulence_rms_mps": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"turbulence_seed": 20261009,
+						"turbulence_tau_s": 2.0
+					},
+					"weather_format": "openrc-weather v5",
+					"weather_receipt": {
+						"aerodynamic_law": "matched-unwashed-full-angle-section-delta-v1",
+						"clock": "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1",
+						"content_sha256": "f900e75cba401f4330ece1d9547c4c078b19a82c0d8367aefdd6e7310cf710b2",
+						"field": {
+							"epoch_offset_s": 360.0,
+							"seed_algorithm": "xorshift32-v1",
+							"seed_u32": 20261025,
+							"world_epoch_id_u32": 451
+						},
+						"format": "openrc-spatial-weather-receipt v1",
+						"point_air_law": "m5-w05c-r2-point-air-v1"
+					},
+					"workload_coverage": {
+						"accepted_ticks": 480,
+						"final_state_sha256": "aed78b6dde63934de9e9f781c2aaa6de458e869fb6bd3d5f0931eb08548051ce",
+						"first_query_time_s": 0.0,
+						"gust_peak_mps": 0.27999999999999997,
+						"gust_queries_above_1e_minus_6_mps": 47524,
+						"last_query_time_s": 2.0,
+						"matches_production": true,
+						"required_active_peak_mps": 0.01,
+						"thermal_peak_mps": 0.14282921188592468,
+						"thermal_queries_above_1e_minus_6_mps": 47524,
+						"wind_queries": 47524
+					},
+					"workload_ticks_per_batch": 480
+				}
+			],
+			"data": "res://data/aircraft/gp_extra_300s_60.json",
+			"data_sha256": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
+			"id": "gp-extra-300s-60",
+			"name": "Great Planes Extra 300S .60",
+			"stage_wash_consumers": {
+				"actual_full_simulation_step_used": true,
+				"continuous_state_size": 22,
+				"fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+				"lagged_wash_transport_enabled": false,
+				"lagged_wash_transport_piece_count": 0,
+				"provider_queries_per_wind_flow_sample": 10,
+				"quasi_static_slipstream_piece_count": 4,
+				"simulation_split_load_route": false,
+				"simulation_stage_callback": true,
+				"stage_air_probe_contract_valid": true,
+				"stage_point_sampler_valid": true,
+				"wind_flow_station_count": 9
+			}
+		}
+	],
+	"benchmark_sha256": "afc13da123d21f3d724bef525c04b96156d867972328fc95911a433bbff7d02e",
+	"comparison": "Original mean/mode controls retain their configurations. Optional active cases add an explicit 24-event practice gust agenda and/or one mature drifting thermal at the origin; complete configurations and actual query coverage are recorded per case.",
+	"filters": {
+		"aircraft_ids": [
+			"gp-extra-300s-60"
+		],
+		"case_ids": [
+			"spatial-v5-gusts-thermals-24"
+		]
+	},
+	"format": "openrc-spatial-wind-full-session-bench v2",
+	"identity_scope": "Solver, harness, preset factory and aircraft hashes are read from actual files. Revision and external manifest hash are caller-supplied annotations.",
+	"machine": {
+		"architecture": "x86_64",
+		"godot": {
+			"build": "official",
+			"hash": "4d10419cacd6d3009976e8f9fd3abd970fd58018",
+			"hex": 264192,
+			"major": 4,
+			"minor": 8,
+			"patch": 0,
+			"status": "beta1",
+			"string": "4.8-beta1 (official)",
+			"timestamp": 0
+		},
+		"logical_cpu_count": 24,
+		"os": "Windows",
+		"processor": "AMD Ryzen 9 5900X 12-Core Processor"
+	},
+	"measurement_mode": "verification-only",
+	"power_variant": "ideal",
+	"preset_factory_sha256": "e30f098e75fbba3e65e59d469c64b0b08727cad20e8bf9dddc3041ac89d23150",
+	"progress_directory": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\candidate-workloads\\aerobatic.json.progress-2637123",
+	"samples": 3,
+	"session_order": "Sequential only; explicit --aircraft and --case filter order is retained. Defaults are Jensen Ugly Stick, Extra 300S, Turbo Lumber, each with legacy steady then spatial 8, 24, and 64 modes.",
+	"solver_sha256": "4a4d6d72d991069f2c8bf31460e173f80ff4325fb28aed97b4989cf9aa7488a4",
+	"source_manifest_sha256": "4dbef48659daa29f7e47b39391fd0cb725315daa5123fc27fd1f356fa7d96743",
+	"source_revision": "61e1dd9895f83b42a6427af26b22bddd4d156b08",
+	"tick_hz": 240.0,
+	"timing_method": "Verification-only records no timing values. Otherwise: for each aircraft/weather scenario, FlightSession setup, v5 install, trim/reset and fixture capture happen before timing. Each sequential batch restores the exact fixture, advances the requested warmup ticks, restores again, then times the requested batch of direct Simulation.step calls. State validation, reset checks, final hashing and the separate query-count diagnostic tick are outside the timed interval. Rendering and UI are absent.",
+	"timing_statistic": "Timing arrays contain batch arithmetic means; their median and p95 are not per-tick latency percentiles. Verification-only contains no timing arrays or ratios.",
+	"warmup_ticks_per_sample": 240,
+	"wind_query_counter": "After batches, an untimed equivalent counting field repeats the entire workload. Its final state must equal production. Isolated gust/thermal probes at each actual stage/wash query establish nonzero component coverage. The original field and tick-zero fixture are restored before return.",
+	"workload_ticks_per_sample": 480
+}

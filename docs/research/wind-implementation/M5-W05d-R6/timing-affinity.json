@@ -1,0 +1,12 @@
+[
+  {
+    "Id": 4436,
+    "ProcessName": "Godot_v4.8-beta1_win64",
+    "AffinityMask": 1048576
+  },
+  {
+    "Id": 46624,
+    "ProcessName": "Godot_v4.8-beta1_win64_console",
+    "AffinityMask": 1048576
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9b4b27f5-1df9-4856-a183-d503b683c2c7",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_mechanical_accepted_ticks.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:54:30.795122+00:00",
+  "label": "accepted-mechanics",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-accepted-mechanics\\checks\\main-node\\accepted-mechanics-exdt8lam\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-accepted-mechanics\\checks\\main-node\\accepted-mechanics-exdt8lam\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.531,
+  "log_bytes": 120,
+  "log_sha256": "b91429e0a286b59d12c4e8890f3c980eea967e343c37d0eb034be725256381fb"
+}

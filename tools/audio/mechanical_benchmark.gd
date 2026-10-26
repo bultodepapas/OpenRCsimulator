@@ -1,9 +1,11 @@
 extends SceneTree
 
 ## Bounded Dummy-driver benchmark of MechanicalAudio.update_sound().
-## Usage: godot --headless --audio-driver Dummy --path app --script <repo>/tools/audio/mechanical_benchmark.gd -- --out=<absolute-report.json> [--iterations=10000] [--warmup=1000]
+## Usage: godot --headless --audio-driver Dummy --path app --script <repo>/tools/audio/mechanical_benchmark.gd -- --out=<absolute-report.json> [--iterations=10000] [--warmup=1000] [--observe-accepted]
 ## The snapshots and scene fixtures are built before timing. This measures the
-## update call only; Dummy timings do not qualify native mixer performance.
+## update call only; --observe-accepted additionally times one accepted endpoint
+## capture per update separately. It excludes FlightAudio snapshot/signal costs
+## and does not reproduce the production ticks/render ratio or native mixing.
 const MechanicalAudio := preload("res://audio/mechanical_audio.gd")
 const AUDIO_SOURCE: String = "res://audio/mechanical_audio.gd"
 const MOTION_SOURCE: String = "res://audio/mechanical_motion.gd"
@@ -17,6 +19,8 @@ const SERVO_IDS: Array[String] = ["aileron", "elevator", "rudder", "flap"]
 var _output_path: String = ""
 var _iterations: int = DEFAULT_ITERATIONS
 var _warmup: int = DEFAULT_WARMUP
+var _observe_accepted := false
+var _capture_refusals := 0
 var _rig: Node3D
 var _camera: Camera3D
 var _listener: AudioListener3D
@@ -35,6 +39,8 @@ func _parse_args() -> bool:
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--out="):
 			_output_path = argument.trim_prefix("--out=").strip_edges()
+		elif argument == "--observe-accepted":
+			_observe_accepted = true
 		elif argument.begins_with("--iterations="):
 			var parsed_iterations: int = argument.trim_prefix("--iterations=").to_int()
 			if parsed_iterations <= 0 or parsed_iterations > MAX_ITERATIONS:
@@ -48,7 +54,7 @@ func _parse_args() -> bool:
 				return false
 			_warmup = parsed_warmup
 	if _output_path.is_empty() or not _output_path.is_absolute_path():
-		printerr("Usage: -- --out=<absolute-report.json> [--iterations=10000] [--warmup=1000]")
+		printerr("Usage: -- --out=<absolute-report.json> [--iterations=10000] [--warmup=1000] [--observe-accepted]")
 		return false
 	if FileAccess.file_exists(_output_path):
 		printerr("Refusing to overwrite existing report: " + _output_path)
@@ -88,6 +94,7 @@ func _run() -> void:
 		return
 	_rig.add_child(_audio)
 	_audio.configure(_rig, &"Master", {servo_type = "standard", servo_level = 0.75, retract_type = "electric"})
+	_audio.set_accepted_tick_observation(_observe_accepted)
 	await process_frame
 	var setup_diagnostics: Dictionary = _audio.diagnostics()
 	if not setup_diagnostics.get("missing_assets", []).is_empty():
@@ -116,11 +123,14 @@ func _run() -> void:
 		"native_mix_qualified": false,
 		"timer_call_overhead_included": true,
 		"percentile_rule": "nearest-rank (ceil(0.95*N)-1)",
+		"accepted_capture_timed_separately": _observe_accepted,
+		"accepted_calls_per_render_update": 1 if _observe_accepted else 0,
 	}
 	report["iterations_per_scenario"] = _iterations
 	report["warmup_calls_per_scenario"] = _warmup
 	report["results"] = results
 	report["final_diagnostics"] = final_diagnostics
+	report["accepted_capture_refusals"] = _capture_refusals
 	var voices_bounded: bool = int(final_diagnostics.get("motion_voice_count", 0)) <= 6 \
 		and int(final_diagnostics.get("event_voice_count", 0)) <= 2
 	for result: Dictionary in results:
@@ -133,10 +143,11 @@ func _run() -> void:
 		"installed_assets_loaded": true,
 		"voice_pools_within_runtime_limits": voices_bounded,
 		"scene_bus_count_restored": bus_count_restored,
+		"accepted_captures_valid": _capture_refusals == 0,
 	}
 	_write_report(report)
 	print(JSON.stringify(report))
-	quit(0 if voices_bounded and bus_count_restored else 1)
+	quit(0 if voices_bounded and bus_count_restored and _capture_refusals == 0 else 1)
 
 
 func _build_scenarios() -> Array[Dictionary]:
@@ -185,18 +196,29 @@ func _run_scenario(scenario: Dictionary) -> Dictionary:
 	var delta: float = float(scenario.delta_s)
 	var snapshot: Dictionary = scenario.snapshot
 	_audio.reset()
+	if _observe_accepted:
+		_audio.observe_accepted(scenario.get("prime_snapshot", snapshot))
 	if scenario.has("prime_snapshot"):
 		_audio.update_sound(scenario.prime_snapshot, delta)
+		if _observe_accepted: _audio.observe_accepted(snapshot)
 		_audio.update_sound(snapshot, delta)
 	for index: int in _warmup:
 		_prepare_sample(name, snapshot, index)
+		if _observe_accepted: _audio.observe_accepted(snapshot)
 		_audio.update_sound(snapshot, delta)
 	var after_warmup: Dictionary = _audio.diagnostics()
 	var object_count_before: int = int(Performance.get_monitor(Performance.OBJECT_COUNT))
 	var samples: PackedInt64Array = PackedInt64Array()
 	samples.resize(_iterations)
+	var capture_samples := PackedInt64Array()
+	if _observe_accepted: capture_samples.resize(_iterations)
 	for index: int in _iterations:
 		_prepare_sample(name, snapshot, index + _warmup)
+		if _observe_accepted:
+			var capture_start := Time.get_ticks_usec()
+			var captured: bool = _audio.observe_accepted(snapshot)
+			capture_samples[index] = Time.get_ticks_usec() - capture_start
+			if not captured: _capture_refusals += 1
 		var start_usec: int = Time.get_ticks_usec()
 		_audio.update_sound(snapshot, delta)
 		samples[index] = Time.get_ticks_usec() - start_usec
@@ -207,7 +229,7 @@ func _run_scenario(scenario: Dictionary) -> Dictionary:
 	var p95_index: int = clampi(int(ceil(0.95 * float(samples.size()))) - 1, 0, samples.size() - 1)
 	var p95: int = int(samples[p95_index])
 	var maximum: int = int(samples[samples.size() - 1])
-	return {
+	var result := {
 		"name": name,
 		"iterations": _iterations,
 		"warmup_calls": _warmup,
@@ -233,6 +255,18 @@ func _run_scenario(scenario: Dictionary) -> Dictionary:
 		"godot_object_count_delta": object_count_after - object_count_before,
 		"per_call_allocation_counter_available": false,
 	}
+	if _observe_accepted:
+		capture_samples.sort()
+		result["accepted_capture"] = {
+			"calls": capture_samples.size(), "units": "microseconds per observe_accepted call",
+			"median_usec": _median_usec(capture_samples), "p95_usec": int(capture_samples[p95_index]),
+			"max_usec": int(capture_samples[-1]), "mean_usec": _mean_usec(capture_samples),
+			"snapshot_generation_timed": false, "includes_adapter_and_signal_dispatch": false,
+			"pending_events_after_measurement": after_measurement.accepted_pending_event_count,
+			"observed_events_during_measurement": after_measurement.accepted_events_observed - after_warmup.accepted_events_observed,
+			"overflow_during_measurement": after_measurement.accepted_events_overflowed - after_warmup.accepted_events_overflowed,
+		}
+	return result
 
 
 func _prepare_sample(name: String, snapshot: Dictionary, iteration: int) -> void:
@@ -279,6 +313,7 @@ func _base_report(driver: String) -> Dictionary:
 	return {
 		"format": "openrc-mechanical-audio-benchmark-v1",
 		"scope": "Direct MechanicalAudio.update_sound() microbenchmark using the installed audio bank. Not a native mixer or whole-flight qualification.",
+		"accepted_tick_observation": _observe_accepted,
 		"godot": Engine.get_version_info().string,
 		"engine_hash": Engine.get_version_info().hash,
 		"driver": driver,
@@ -290,9 +325,7 @@ func _base_report(driver: String) -> Dictionary:
 
 
 func _source_hashes() -> Dictionary:
-	var project_directory: String = ProjectSettings.globalize_path("res://")
-	var repository_directory: String = project_directory.path_join("..").simplify_path()
-	var benchmark_path: String = repository_directory.path_join("tools/audio/mechanical_benchmark.gd")
+	var benchmark_path: String = get_script().resource_path
 	return {
 		"app/audio/mechanical_audio.gd": FileAccess.get_sha256(AUDIO_SOURCE),
 		"app/audio/mechanical_motion.gd": FileAccess.get_sha256(MOTION_SOURCE),

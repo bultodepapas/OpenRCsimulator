@@ -1,6 +1,6 @@
 # Wind, gusts and turbulence
 
-2026-10-26 · Revision 12 · Step prefix: **M5-W**.
+2026-10-26 · Revision 13 · Step prefix: **M5-W**.
 
 **Status:** Legacy uniform wind, repeating cosine gusts and seeded temporal OU turbulence remain supported. Weather v3 adds custom field-level atmosphere; v4 adds the dry reference altitude column. Opt-in v5 adds a flat-site spatial field, resolved smooth gusts, divergence-free finite-mode perturbations and optional balanced kinematic thermals, consumed through local aerodynamic/propulsion stages. See [atmosphere](ATMOSPHERE-PLAN.md), the [advanced masterplan](advanced-wind-atmospheric-physics-masterplan.md) and [spatial implementation, equations and evidence](research/wind-implementation/M5-W05d-R1/README.md). Owner flight gates W-A/W-B, physical/spectral acceptance, terrain and shared companion qualification remain open.
 
@@ -76,12 +76,15 @@ Weather metadata accompanies recorded rows. v4/v5 readers independently check wi
 | M5-W05d-R3 | Explicit tailless spatial geometry/load admission and release-point wind/propeller inflow for hand launches. [Compatibility and replay evidence](research/wind-implementation/M5-W05d-R3/README.md) | X8 ideal and 6S pack software admission; physical/pilot/performance gates remain open |
 | M5-W05d-R4 | Lean production Air receipts and stage-local wash pose preparation. [Query/force parity and replay](research/wind-implementation/M5-W05d-R4/README.md) | Redundant diagnostic packing removed; quiet-host performance qualification remains open |
 | M5-W05d-R5 | Active gust/thermal full-session benchmark cases, X8 ideal/pack coverage and an untimed verification mode. [Workload admission](research/wind-implementation/M5-W05d-R5/README.md) | Nine workloads / 23,760 accepted ticks verified; timing and physical qualification remain open |
+| M5-W05d-R6 | Pure binary search skips definitely expired gust entries and stops at future starts. [Numerical proof, replay and workload parity](research/wind-implementation/M5-W05d-R6/README.md) | Event arithmetic/order preserved; timing attempt rejected after a concurrent render started |
 | M5-ATM-4-R1 | Reconcile this guide with the implemented v4 dry altitude column and route-specific defaults. | Documentation corrected |
 | M5-W06a/b | Compare a Dryden reference; adopt another spectral backend only if evidence justifies it. | Conditional |
 | M5-W07 | Smoke/cloud/vegetation/audio wind consumers. | Per-consumer; physical/GPU proof required |
 | M5-W08 | Terrain/obstacle wakes and thermals. | Bounded kinematic thermals implemented; heating and terrain/obstacle models remain open |
 
 ## Open limits and sources
+
+The [R6 endpoint investigation](research/wind-implementation/M5-W05d-R6/README.md#separate-existing-validator-issue) reproduces a pre-existing rounding mismatch between the gust overlap validator and runtime subtraction-based endpoints. Aligning admission with the evaluated law needs a separate compatibility-tested correction; R6 preserves existing admission and samples.
 
 The first measured full-session spatial costs exceed the 240 Hz budget for the Extra 300S on the recorded development host, including at eight modes. Packed float64 mode storage preserves exact samples and reduces cost, but does not close the performance gate. Keep the existing default; spatial presets remain opt-in experiments. [Measurements, workload and host limits](research/wind-implementation/M5-W05d-R1/README.md#performance).
 

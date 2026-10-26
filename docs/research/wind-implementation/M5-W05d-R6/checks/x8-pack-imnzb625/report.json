@@ -1,0 +1,49 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9807ff80-cb10-4585-960b-6b05a2f83e8b",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/bench_spatial_wind.gd",
+    "--",
+    "--full-session",
+    "--verify-only",
+    "--aircraft=skywalker-x8",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\candidate-workloads\\x8-pack.json",
+    "--revision=61e1dd9895f83b42a6427af26b22bddd4d156b08",
+    "--manifest-sha256=4dbef48659daa29f7e47b39391fd0cb725315daa5123fc27fd1f356fa7d96743",
+    "--case=spatial-v5-gusts-thermals-24",
+    "--battery"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:29:52.867149+00:00",
+  "label": "x8-pack",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\checks\\x8-pack-imnzb625\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\checks\\x8-pack-imnzb625\\report.json",
+  "timeout_seconds": 600.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "wrote "
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 13.344,
+  "log_bytes": 317,
+  "log_sha256": "eec556aa573f896193bbc41c793ffdd7eb854b742fc65818e6633bc60efb38e6"
+}

@@ -1,5 +1,6 @@
 ## Live production-flight frame capture for trailer source shots.
 ## Run outside the app scene: Godot --path app --fixed-fps 60 --script <absolute path> -- --out-dir=<absolute path>.
+## For real-time --frametimes measurements, omit --fixed-fps and Movie Maker; see README.md.
 ## This driver instantiates the real main scene and never changes app/ sources or physics.
 extends SceneTree
 
@@ -12,6 +13,8 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const Exposure := preload("res://render/world/exposure.gd")
+const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
+const FrameSamples := preload("res://render/frame_samples.gd")
 
 const DEFAULT_FPS := 60
 const DEFAULT_WIDTH := 1920
@@ -47,6 +50,12 @@ var _restart_tick_after := -1
 var _details_frame := -1
 var _report_layer_hidden_before_impact := false
 var _report_layer_reveal_frame := -1
+var _realtime := false
+var _performance_options: Dictionary = {}
+var _performance_done := false
+var _performance_exit := -1
+var _performance_elapsed_s := 0.0
+var _performance_budget_samples: Array[Dictionary] = []
 
 
 func _initialize() -> void:
@@ -58,6 +67,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_options = _parse_options(OS.get_cmdline_user_args())
+	_realtime = _options.has("frametimes")
 	_out_dir = str(_options.get("out-dir", ""))
 	if _out_dir.is_empty():
 		push_error("capture_flight requires --out-dir=<absolute path>")
@@ -77,14 +87,29 @@ func _run() -> void:
 	_height = int(_options.get("height", DEFAULT_HEIGHT))
 	_seconds = float(_options.get("seconds", 4.0))
 	_shot = str(_options.get("shot", "stik-bank"))
+	if _realtime and not _validate_performance_options():
+		quit(2)
+		return
 	_sample_every = maxi(1, int(_options.get("sample-every", 1)))
 	_save_images = not OS.get_cmdline_user_args().has("--movie-only")
+	if _realtime:
+		_save_images = false
 	if _fps != 60 or _width != 1920 or _height != 1080 or _seconds <= 0.0:
 		push_error("Trailer capture requires 1920x1080, 60 fps, and a positive duration")
 		quit(2)
 		return
 	TranslationServer.set_locale("en")
 	_main = MainScene.new()
+	if _realtime:
+		if not _main.has_signal("frame_time_report_written") or not _main.get_property_list().any(
+				func(property: Dictionary) -> bool: return str(property.get("name", "")) == "frametimes_route"):
+			push_error("Real-time capture requires the current Main collector hook; refresh the prepared runtime.")
+			_main.free()
+			quit(2)
+			return
+		_main.frametimes_auto_quit = false
+		_main.frametimes_route = "director-flight"
+		_main.frame_time_report_written.connect(_on_frame_time_report_written)
 	_main.name = "Main"
 	_main.interactive_start = true
 	_main.aircraft_id = str(_options.get("aircraft", "jensen-das-ugly-stik-60"))
@@ -92,6 +117,9 @@ func _run() -> void:
 	# This capture-only option never saves a variant or changes aircraft physics.
 	if _options.has("lighting-preset"):
 		var lighting := Presentation.LightingProfile.preset(str(_options["lighting-preset"]))
+		if str(_options["lighting-preset"]) == "off":
+			lighting = Presentation.LightingProfile.defaults()
+			lighting.selection = "disabled"
 		var described := Customization.describe(_main.aircraft_id)
 		if lighting.is_empty() or not described.get("ok", false):
 			push_error("Capture requires a known lighting preset and an admitted aircraft companion.")
@@ -133,7 +161,21 @@ func _run() -> void:
 	for key: String in ["wind-speed", "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period", "gust-delay", "time_of_day"]:
 		if _options.has(key):
 			_main.user_args.append("--%s=%s" % [key, str(_options[key])])
+	if _realtime:
+		_main.user_args.append_array(PackedStringArray([
+			"--frametimes=" + str(_performance_options.path),
+			"--warmup=" + str(_performance_options.warmup_s),
+			"--t=" + str(_performance_options.sample_s),
+			"--frametimes-max-frames=" + str(_performance_options.max_frames),
+			"--case=rgb-" + str(_options["lighting-preset"]), "--frame-diagnostics",
+		]))
 	root.add_child(_main)
+	if _realtime:
+		# Exclude a connected radio before the first awaited frame, not only when the director attaches.
+		if _main.session != null:
+			_main.session.input_enabled = false
+		LightingPolicy.apply({"aircraft_lighting_quality": str(_options.get("lighting-quality", "standard")),
+			"aircraft_lighting_reduced_flashes": false, "aircraft_lighting_show_vfx": true})
 	# Hide only the presentation CanvasLayer before the real flight input starts; the incident ledger remains live.
 	if _main._accident_report != null:
 		_main._accident_report.visible = false
@@ -165,8 +207,7 @@ func _run() -> void:
 		_main._rig.set_view("chase")
 		_main._rig.auto_zoom = false
 		_main._camera.fov = 38.0
-	var project_root: String = ProjectSettings.globalize_path("res://")
-	var director_path: String = project_root.path_join("../tools/trailer/flight_director.gd").simplify_path()
+	var director_path: String = get_script().resource_path.get_base_dir().path_join("flight_director.gd")
 	if _options.has("director-script"):
 		director_path = str(_options["director-script"])
 		if not director_path.is_absolute_path():
@@ -182,13 +223,17 @@ func _run() -> void:
 		quit(1)
 		return
 	_director = director_script.new()
+	if _realtime:
+		_director.record_tick_evidence = false
 	_director.name = "TrailerFlightDirector"
 	_director.configure(_main, _shot, _seconds, _fps)
 	root.add_child(_director)
 	# Let the real world, interpolated airplane, particles, and camera finish one full presented interval.
 	await process_frame
 	await RenderingServer.frame_post_draw
-	if _shot == "crash":
+	if _realtime:
+		await _measure_realtime()
+	elif _shot == "crash":
 		await _capture_crash_report()
 	else:
 		await _capture_frames(int(round(_seconds * _fps)), 0)
@@ -202,6 +247,102 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	quit(1 if not _failure.is_empty() else 0)
+
+
+## Reuses Main's monotonic collector. This mode never invokes Movie Maker or image readback.
+func _validate_performance_options() -> bool:
+	# Godot strips processed engine flags from OS.get_cmdline_args(). The checked
+	# runner's complete command must additionally prove absence of --fixed-fps.
+	if not Engine.get_write_movie_path().is_empty() or _options.has("movie-file"):
+		push_error("Real-time lighting measurement cannot use Movie Maker.")
+		return false
+	if not is_equal_approx(Engine.time_scale, 1.0):
+		push_error("Real-time lighting measurement requires Engine.time_scale=1.")
+		return false
+	if _options.has("director-script") \
+			or _shot not in ["lighting-pass", "lighting-pilot"] or not _options.has("lighting-preset"):
+		push_error("Real-time lighting measurement requires a native display, a lighting preset (or off), and the built-in lighting-pass/pilot director.")
+		return false
+	if str(_options.get("lighting-quality", "standard")) not in ["low", "standard", "high"]:
+		push_error("--lighting-quality must be low, standard or high.")
+		return false
+	var options := _options.duplicate()
+	options["warmup"] = str(_options.get("warmup", "10"))
+	options["t"] = str(_options.get("t", "60"))
+	_performance_options = FrameSamples.options(options)
+	if not _performance_options.get("ok", false):
+		push_error(str(_performance_options.get("error", "Invalid frame-time options")))
+		return false
+	var path := str(_performance_options.path)
+	var manifest_path := _out_dir.path_join("manifest.json").replace("\\", "/").simplify_path()
+	var report_path := path.replace("\\", "/").simplify_path()
+	if OS.get_name() == "Windows":
+		manifest_path = manifest_path.to_lower()
+		report_path = report_path.to_lower()
+	if report_path == manifest_path:
+		push_error("Frame-time report and capture manifest must have distinct paths.")
+		return false
+	if not path.is_absolute_path() or FileAccess.file_exists(path) or FileAccess.file_exists(_out_dir.path_join("manifest.json")):
+		push_error("Real-time measurement requires a new absolute frametimes path and a fresh manifest destination.")
+		return false
+	if DisplayServer.get_name() == "headless":
+		push_error("Real-time lighting measurement requires a native display.")
+		return false
+	_seconds = float(_performance_options.warmup_s) + float(_performance_options.sample_s)
+	return true
+
+
+func _on_frame_time_report_written(exit_code: int) -> void:
+	_performance_done = true
+	_performance_exit = exit_code
+
+
+func _measure_realtime() -> void:
+	if _performance_done:
+		_failure = "Frame-time collector completed before the flight workload was initialized; increase warmup."
+		push_error(_failure)
+		return
+	var started_usec := Time.get_ticks_usec()
+	var last_progress_usec := started_usec
+	var next_budget_usec := started_usec
+	var last_tick := int(_main.session.sim.tick)
+	# Unlike a 60 Hz movie, an uncapped renderer may present between two 240 Hz ticks.
+	# Repeated ticks are allowed only within a short progress window; pauses still fail immediately.
+	while not _performance_done:
+		await process_frame
+		await RenderingServer.frame_post_draw
+		var now_usec := Time.get_ticks_usec()
+		var sim: Node = _main.session.sim
+		_performance_elapsed_s = float(now_usec - started_usec) / 1000000.0
+		if sim.paused or not sim.fault_reason.is_empty() or not _main.session.crash.is_empty() \
+				or sim.tick < last_tick or (sim.tick == last_tick and now_usec - last_progress_usec > 250000):
+			_failure = "Real-time lighting measurement interrupted: tick=%d paused=%s fault=%s holds=%s" % [
+				sim.tick, sim.paused, sim.fault_reason, str(_main.session.holds)]
+		elif root.get_visible_rect().size != Vector2(1920, 1080):
+			_failure = "Real-time lighting measurement requires an actual 1920x1080 viewport."
+		elif _performance_elapsed_s > _seconds + 10.0:
+			_failure = "Frame-time collector did not complete within its bounded wall-time window."
+		if not _failure.is_empty():
+			push_error(_failure)
+			if _main._frametimes_active:
+				_main._finish_frame_time(1)
+			break
+		if sim.tick > last_tick:
+			last_progress_usec = now_usec
+		last_tick = sim.tick
+		_frame_count += 1
+		# One bounded budget sample per wall second; Main owns all per-frame timing metrics.
+		if now_usec >= next_budget_usec:
+			var rig: Node = _main.get("_rgb_lighting")
+			_performance_budget_samples.append({"wall_s": _performance_elapsed_s, "tick": sim.tick,
+				"budget": rig.budget_info() if is_instance_valid(rig) else {}, "world_exposure": Exposure.last})
+			next_budget_usec = now_usec + 1000000
+	if _performance_exit != OK and _failure.is_empty():
+		_failure = "Frame-time collector failed with exit code %d." % _performance_exit
+		push_error(_failure)
+	if not FileAccess.file_exists(str(_performance_options.path)) and _failure.is_empty():
+		_failure = "Frame-time collector produced no report."
+		push_error(_failure)
 
 
 func _capture_crash_report() -> void:
@@ -353,13 +494,14 @@ func _write_manifest(ok: bool) -> void:
 	var impact_movie_frame := lead_frames + _impact_preroll_frames if _impact_preroll_frames >= 0 else -1
 	var clip_start_frame := maxi(0, impact_movie_frame - CRASH_CLIP_APPROACH_FRAMES) if impact_movie_frame >= 0 else -1
 	var manifest := {
-		format = "openrc-trailer-flight-capture v1",
+		format = "openrc-lighting-performance-capture v1" if _realtime else "openrc-trailer-flight-capture v1",
+		measurement_mode = "realtime-director-flight" if _realtime else "offline-movie",
 		complete = ok and _failure.is_empty(),
 		shot = _shot,
 		aircraft_id = str(_main.aircraft_id) if _main != null else "",
 		width = _width,
 		height = _height,
-		fps = _fps,
+		fps = 0 if _realtime else _fps,
 		frames = _frame_count,
 		images_saved = _image_count,
 		image_sample_every = _sample_every,
@@ -373,9 +515,19 @@ func _write_manifest(ok: bool) -> void:
 		movie_clip_approach_available_seconds_estimate = float(impact_movie_frame - clip_start_frame) / float(_fps) if impact_movie_frame >= 0 else 0.0,
 		movie_clip_approach_frames_target = CRASH_CLIP_APPROACH_FRAMES,
 		movie_clip_post_impact_frames_target = CRASH_CLIP_POST_IMPACT_FRAMES,
-		seconds = float(_frame_count) / float(_fps),
+		seconds = _performance_elapsed_s if _realtime else float(_frame_count) / float(_fps),
 		engine = Engine.get_version_info().string,
-		fixed_fps_argument_required = 60,
+		fixed_fps_argument_required = 0 if _realtime else 60,
+		performance = {"enabled": _realtime, "report_path": str(_performance_options.get("path", "")),
+			"report_sha256": FileAccess.get_sha256(str(_performance_options.path)) if _realtime and FileAccess.file_exists(str(_performance_options.path)) else "",
+			"collector_exit": _performance_exit, "requested": _performance_options,
+			"budget_samples": _performance_budget_samples, "tick_recording": not _realtime,
+			"quality": LightingPolicy.quality, "reduced_flashes": LightingPolicy.reduced_flashes,
+			"show_vfx": LightingPolicy.show_vfx, "engine_time_scale": Engine.time_scale,
+			"movie_writer_path": Engine.get_write_movie_path(),
+			"qualification": "unverified: requires matching command receipt, uncontended repeated runs and acceptance review",
+			"timing_scope": "Instrumented Main FrameSamples intervals; sample duration is report.actual_sample_s. Manifest seconds covers this harness loop, including warmup.",
+			"command_validation": "Qualification requires the checked runner command with no --fixed-fps; Godot removes processed flags from OS.get_cmdline_args()."},
 		physics_ticks_per_second = Engine.physics_ticks_per_second,
 		physical_flight = session != null and session.physics_enabled and session.is_flyable(),
 		simulation_paused = session.sim.paused if session != null else false,

@@ -1,0 +1,12 @@
+[
+  {
+    "ProcessId": 42724,
+    "Name": "Godot_v4.8-beta1_win64_console.exe",
+    "CommandLine": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe --headless --path C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app --audio-driver Dummy --script res://tests/test_windsock_motion.gd"
+  },
+  {
+    "ProcessId": 13432,
+    "Name": "Godot_v4.8-beta1_win64.exe",
+    "CommandLine": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite\\.tools\\Godot_v4.8-beta1_win64.exe --headless --path C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app --audio-driver Dummy --script res://tests/test_windsock_motion.gd"
+  }
+]

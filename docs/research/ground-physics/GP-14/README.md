@@ -25,7 +25,7 @@ The public physical observation is the read-only `FlightSession.accident_observa
 | `intended_support` | Boolean authored normal support fact; current legacy hull probes expose `false` |
 | `terminal` | Boolean terminal physical-session outcome |
 
-Current gear-up production requires a positive accepted tick, active hull contact IDs, valid retractable-gear auxiliary state, nonempty installed support bindings and actual extension below `1.0`. A command alone does not establish contact. Wheel-less aircraft cannot satisfy that installed-retractable-gear condition. No intended skid/belly role is inferred from missing gear; such future authored support must extend the factual contract explicitly.
+Current gear-up production requires a positive accepted tick, active hull contact IDs, valid retractable-gear auxiliary state, nonempty installed support bindings and actual extension below `1.0`. A command alone does not establish contact. Wheel-less aircraft cannot satisfy that installed-retractable-gear condition. No intended skid/belly role is inferred from missing gear; the optional authored support contract below supplies that separate evidence.
 
 The [adapter](../../../../app/statistics/fixed_wing_adapter.gd) rejects stale tick/generation, negative identities, wrong schema/version, extra keys, nonboolean flags and inconsistent gear-up facts. The detector consumes accepted facts and owns accident grouping and timers. The historical five-field `openrc-aircraft-contact-state v1` returned by `contact_events()` and stored in checkpoints is unchanged; the new receipt is not appended to that strict envelope.
 
@@ -84,3 +84,34 @@ The current packet is deliberately limited to the accepted endpoint support law.
 The [retained GP-14b evidence](evidence/shared-events/README.md) includes the new 88-check event suite and real-session checks. The actual 900-tick Avanti belly slide emits one gear-up event and one nonterminal semantic crash, continues moving, and stays byte-exact against the unobserved reference body and complete kernel checkpoint. Rejected physical intervals publish no shared event. These checks establish observer behavior and noninterference, not new advanced contact, structural damage or calibrated bounce physics.
 
 The later [primitive-validation correction](evidence/event-validation/README.md) adds 47 malformed-selector checks. Type checks now precede equality comparisons, preventing engine errors from invalid event fields. The current event suite passes 135 checks and the real-session suite still passes 33. The earlier cohort remains immutable; no valid event or physics behavior changed in this correction.
+
+## Optional authored hull support (GP-14c)
+
+2026-10-26. The optional v2 `intended_hull_support` module requires
+`capabilities.landing_support: authored_hull_v1`, existing stable hull IDs,
+provenance, allowed contact IDs, stop groups and explicit rest/control envelopes.
+The [pure resource](../../../../app/physics/intended_hull_support.gd) pins existing
+geometry and the selected soft-hull law; no geometry or force parameters are
+duplicated. Invalid present authoring fails load. Absent authoring keeps existing
+behavior. The v1 numerical adapter strips the module/capability, and historical v1
+metadata cannot acquire inferred intent. Registry identities are
+`aircraft.ground.intended_hull.v1` and the `.belly.v1` or `.skid.v1` subtype.
+
+`FlightSession.hull_support_observation()` exposes a detached, accepted-tick
+`openrc-aircraft-hull-support-observation` v1 packet. Physical role coverage is
+separate from pose qualification: mixed or wrong-pose contact cannot be intended
+support and latches the existing incident rule even without compact event detail.
+Stop requires an authored group; empty wheel maps cannot satisfy it. The initial
+scope is the actual flat solid hull plane, with explicit unavailability for
+lake-enabled sessions. Existing contact/accident envelopes, one classifier/timer
+owner and physical state remain unchanged. Configuration hashes already include
+the prepared policy through the normalized model; traces declare its identity.
+
+The [retained cohort](evidence/intended-hull-support/README.md) has 2037 passing
+observer/contact/statistics/checkpoint checks plus dated pipeline evidence and
+exact loaded sources. Its original baseline remains unchanged: all 32 unopted
+description byte comparisons pass, while 11 external input-identity changes are
+retained as failures rather than claimed as same-input equivalence. Stock X8 has
+no authored role or calibrated envelope and gains no landing credit. Lake support,
+stock authoring/qualification, richer physical event evidence and performance
+qualification remain open.
