@@ -106,6 +106,8 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 		return {}
 	airplane.customization_bindings = customization.bindings
 	airplane.customization_slots_sha256 = str(customization.slots_sha256)
+	if customization.bindings.has("lighting_layout"):
+		airplane.root.set_meta("lighting_layout", customization.bindings.lighting_layout.duplicate(true))
 	var propulsion: Dictionary = model.get("propulsion", {})
 	airplane.physical_propulsion_id = str(propulsion.get("id", ""))
 	# AircraftData's validated v2 contract defaults an omitted historical kind to glow_prop;

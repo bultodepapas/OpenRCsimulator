@@ -9,7 +9,7 @@ const LEGACY_VERSION: int = 1
 const IDENTITY_FORMAT: String = "openrc-aircraft-presentation-identity"
 const IDENTITY_VERSION: int = 1
 const BINDINGS_FORMAT: String = "openrc-aircraft-customization-bindings"
-const BINDINGS_VERSION: int = 3
+const BINDINGS_VERSION: int = 4
 const LEGACY_BINDINGS_VERSION: int = 1
 const SCHEDULE_POLICY: String = "ticks-240-v1"
 const PRESENTATION_ENGINE_VERSION: String = "4.8.0"
@@ -618,14 +618,16 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 	var checked: Dictionary = value
 	var version_value: Variant = checked.get("version", null)
 	if checked.get("format", null) != BINDINGS_FORMAT or not _integer_number(version_value) \
-			or int(version_value) not in [LEGACY_BINDINGS_VERSION, 2, BINDINGS_VERSION]:
+			or int(version_value) not in [LEGACY_BINDINGS_VERSION, 2, 3, BINDINGS_VERSION]:
 		errors.append("Customization binding format or version is unsupported.")
 		return {"ok": false, "errors": errors}
 	var binding_version: int = int(version_value)
 	var expected_keys: PackedStringArray = BINDINGS_KEYS if binding_version == LEGACY_BINDINGS_VERSION else BINDINGS_V2_KEYS
-	if binding_version == BINDINGS_VERSION:
+	if binding_version >= 3:
 		expected_keys = expected_keys.duplicate()
 		expected_keys.append("source_proof_version")
+	if binding_version == 4:
+		expected_keys.append("lighting_layout")
 	if not _has_exact_keys(checked, expected_keys):
 		errors.append("Customization bindings have missing or unsupported fields.")
 		return {"ok": false, "errors": errors}
@@ -637,10 +639,10 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 		errors.append("Customization slot contract hash is invalid.")
 	if binding_version >= 2:
 		var proof_version: int = 1
-		if binding_version == 3:
+		if binding_version >= 3:
 			proof_version = int(checked.source_proof_version) if _integer_number(checked.get("source_proof_version")) else 0
 		var source_paths: Array = PresentationSources.paths_for_version(proof_version)
-		if binding_version == 3 and (not _integer_number(checked.get("source_proof_version")) or proof_version not in [2, 3]):
+		if binding_version >= 3 and (not _integer_number(checked.get("source_proof_version")) or proof_version not in [2, 3]):
 			errors.append("Customization source proof version is unsupported.")
 		if checked["presentation_engine_version"] != PRESENTATION_ENGINE_VERSION:
 			errors.append("Customization presentation engine version is unsupported.")
@@ -665,6 +667,10 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 			errors.append("Customization %s exceeds its 64-slot limit." % slot_key)
 	if not errors.is_empty():
 		return {"ok": false, "errors": errors}
+	if binding_version == 4:
+		var lighting_check := Customization.AircraftLights.validate_authored_layout(checked.lighting_layout)
+		if not lighting_check.ok:
+			return lighting_check
 	var paint_slots: Dictionary = _slot_map(checked["paint_slots"], PAINT_SLOT_KEYS, PAINT_SLOT_OPTIONAL_KEYS, "paint_slots", errors)
 	var marking_slots: Dictionary = _slot_map(checked["marking_slots"], MARKING_SLOT_KEYS, [], "marking_slots", errors)
 	var smoke_slots: Dictionary = _slot_map(checked["smoke_slots"], SMOKE_SLOT_KEYS, [], "smoke_slots", errors, binding_version)
@@ -686,7 +692,7 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 static func _slot_map(value: Array, required_keys: PackedStringArray, optional_keys: PackedStringArray,
 		field: String, errors: PackedStringArray, binding_version: int = 2) -> Dictionary:
 	var result: Dictionary = {}
-	if field == "smoke_slots" and binding_version == 3 and value.size() > MAX_AUTHORED_SMOKE_SLOTS:
+	if field == "smoke_slots" and binding_version >= 3 and value.size() > MAX_AUTHORED_SMOKE_SLOTS:
 		errors.append("Customization supports at most eight authored smoke outlets.")
 		return result
 	for slot_value: Variant in value:
@@ -694,7 +700,7 @@ static func _slot_map(value: Array, required_keys: PackedStringArray, optional_k
 			errors.append("Customization %s contains a non-object slot." % field)
 			return result
 		var slot: Dictionary = slot_value
-		if field == "smoke_slots" and binding_version == 3:
+		if field == "smoke_slots" and binding_version >= 3:
 			var checked_slot: Dictionary = Customization.validate_smoke_slot(slot, 3)
 			if not checked_slot.get("ok", false) or result.has(str(slot.get("id", ""))):
 				errors.append("Customization smoke outlet is invalid or duplicated: " + str(checked_slot.get("errors", [])))

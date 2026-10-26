@@ -88,6 +88,7 @@ func configure(aircraft_root: Node3D, raw_profile: Dictionary) -> Dictionary:
 	if kit == null or not is_instance_valid(kit):
 		dispose()
 		return {"ok": false, "errors": ["existing aircraft light kit could not be attached"], "warnings": []}
+	_warnings.append_array(kit.get_meta("layout_warnings", PackedStringArray()))
 	_previous_mode = baseline_mode if baseline_mode in MODE_IDS else str(kit.get_meta("mode", "all"))
 	_emission_bindings = AircraftLights.prepare_emission(root)
 	_capture_emission_baseline(requested_mode)

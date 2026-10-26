@@ -77,6 +77,16 @@ SOURCE_KINDS = {"glow_prop"}
 MARKING_TEXT_CHARS = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 -ÁÉÍÓÚÜÑáéíóúüñ")
 MARKING_WIDTH_BOUNDS_M = (0.01, 1.0)
 MARKING_HEIGHT_BOUNDS_M = (0.01, 0.3)
+LIGHT_ANCHOR_IDS = {
+    "nav_left", "nav_right", "tail", "strobe_left", "strobe_right", "strobe_dorsal",
+    "strobe_ventral", "landing", "landing_right",
+}
+LIGHT_STRIP_IDS = {"strip_left", "strip_right", "strip_top_left", "strip_top_right", "strip_belly"}
+LIGHT_NODE_PATH_MAX_CHARS = 160
+LIGHT_ANCHOR_LIMIT = 9
+LIGHT_STRIP_LIMIT = 5
+LIGHT_STRIP_POINT_LIMIT = 32
+LIGHT_STRIP_WIDTH_BOUNDS_M = (0.001, 0.05)
 
 
 class CustomizationError(ValueError):
@@ -136,16 +146,117 @@ def _vector(value: Any, label: str, *, unit: bool = False) -> list[float | int]:
     return numbers
 
 
+def empty_lighting_layout() -> dict[str, Any]:
+    """Return the canonical no-authored-light layout used by historical sources."""
+    return {"version": 1, "anchors": [], "strips": []}
+
+
+def _lighting_node_path(value: Any, label: str) -> str:
+    if value == ".":
+        return value
+    path = _text(value, NODE_PATH_RE, label)
+    if len(path) > LIGHT_NODE_PATH_MAX_CHARS:
+        raise CustomizationError(f"{label} exceeds {LIGHT_NODE_PATH_MAX_CHARS} characters")
+    return path
+
+
+def validate_lighting_layout(layout: Any, label: str) -> dict[str, Any]:
+    _closed(layout, {"version", "anchors", "strips"}, label)
+    if type(layout["version"]) is not int or layout["version"] != 1:
+        raise CustomizationError(f"{label}.version is unsupported")
+    anchors, strips = layout["anchors"], layout["strips"]
+    if not isinstance(anchors, list) or len(anchors) > LIGHT_ANCHOR_LIMIT:
+        raise CustomizationError(f"{label}.anchors must be an array of at most {LIGHT_ANCHOR_LIMIT} entries")
+    if not isinstance(strips, list) or len(strips) > LIGHT_STRIP_LIMIT:
+        raise CustomizationError(f"{label}.strips must be an array of at most {LIGHT_STRIP_LIMIT} entries")
+
+    validated_anchors: list[dict[str, Any]] = []
+    anchor_ids: set[str] = set()
+    for index, anchor in enumerate(anchors):
+        anchor_label = f"{label}.anchors[{index}]"
+        _closed(anchor, {"id", "node_path", "position_m", "gear_gated"}, anchor_label)
+        anchor_id = anchor["id"]
+        if not isinstance(anchor_id, str) or anchor_id not in LIGHT_ANCHOR_IDS:
+            raise CustomizationError(f"{anchor_label}.id is unsupported")
+        if anchor_id in anchor_ids:
+            raise CustomizationError(f"{anchor_label}.id is duplicated")
+        anchor_ids.add(anchor_id)
+        node_path = _lighting_node_path(anchor["node_path"], f"{anchor_label}.node_path")
+        position = _vector(anchor["position_m"], f"{anchor_label}.position_m")
+        gear_gated = anchor["gear_gated"]
+        if type(gear_gated) is not bool:
+            raise CustomizationError(f"{anchor_label}.gear_gated must be a boolean")
+        if gear_gated and anchor_id not in {"landing", "landing_right"}:
+            raise CustomizationError(f"{anchor_label}.gear_gated is only supported for landing anchors")
+        validated_anchors.append({
+            "id": anchor_id,
+            "node_path": node_path,
+            "position_m": position,
+            "gear_gated": gear_gated,
+        })
+
+    validated_strips: list[dict[str, Any]] = []
+    strip_ids: set[str] = set()
+    for index, strip in enumerate(strips):
+        strip_label = f"{label}.strips[{index}]"
+        _closed(strip, {"id", "node_path", "points_m", "face", "width_m"}, strip_label)
+        strip_id = strip["id"]
+        if not isinstance(strip_id, str) or strip_id not in LIGHT_STRIP_IDS:
+            raise CustomizationError(f"{strip_label}.id is unsupported")
+        if strip_id in strip_ids:
+            raise CustomizationError(f"{strip_label}.id is duplicated")
+        strip_ids.add(strip_id)
+        node_path = _lighting_node_path(strip["node_path"], f"{strip_label}.node_path")
+        points_value = strip["points_m"]
+        if not isinstance(points_value, list) or not 2 <= len(points_value) <= LIGHT_STRIP_POINT_LIMIT:
+            raise CustomizationError(f"{strip_label}.points_m must contain 2 to {LIGHT_STRIP_POINT_LIMIT} points")
+        points = [_vector(point, f"{strip_label}.points_m[{point_index}]") for point_index, point in enumerate(points_value)]
+        face = _vector(strip["face"], f"{strip_label}.face", unit=True)
+        width = strip["width_m"]
+        if isinstance(width, bool) or not isinstance(width, (int, float)) or not math.isfinite(float(width)) or not LIGHT_STRIP_WIDTH_BOUNDS_M[0] <= float(width) <= LIGHT_STRIP_WIDTH_BOUNDS_M[1]:
+            raise CustomizationError(f"{strip_label}.width_m must be in [{LIGHT_STRIP_WIDTH_BOUNDS_M[0]}, {LIGHT_STRIP_WIDTH_BOUNDS_M[1]}] m")
+        face_vector = [float(part) for part in face]
+        for point_index, (start, end) in enumerate(zip(points, points[1:])):
+            segment = [float(b) - float(a) for a, b in zip(start, end)]
+            segment_length = math.sqrt(sum(part * part for part in segment))
+            if segment_length < 1e-5:
+                raise CustomizationError(f"{strip_label}.points_m[{point_index}:{point_index + 2}] are too close")
+            cross = [
+                segment[1] * face_vector[2] - segment[2] * face_vector[1],
+                segment[2] * face_vector[0] - segment[0] * face_vector[2],
+                segment[0] * face_vector[1] - segment[1] * face_vector[0],
+            ]
+            cross_ratio = math.sqrt(sum(part * part for part in cross)) / segment_length
+            if cross_ratio < 0.01:
+                raise CustomizationError(f"{strip_label}.points_m segment {point_index} is degenerate against face")
+        validated_strips.append({
+            "id": strip_id,
+            "node_path": node_path,
+            "points_m": points,
+            "face": face,
+            "width_m": width,
+        })
+
+    return {
+        "version": 1,
+        "anchors": sorted(validated_anchors, key=lambda value: value["id"]),
+        "strips": sorted(validated_strips, key=lambda value: value["id"]),
+    }
+
+
 def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[str, Any]]:
     _closed(source, {"format", "version", "families"}, "source")
-    if source["format"] != SOURCE_FORMAT or type(source["version"]) is not int or source["version"] not in (1, 2):
+    if source["format"] != SOURCE_FORMAT or type(source["version"]) is not int or source["version"] not in (1, 2, 3):
         raise CustomizationError("source format/version is unsupported")
     if not isinstance(source["families"], list):
         raise CustomizationError("source.families must be an array")
     families: dict[str, dict[str, Any]] = {}
     for index, family in enumerate(source["families"]):
         label = f"source.families[{index}]"
-        _closed(family, {"visual_family", "paint_slots", "marking_slots", "smoke_slots"}, label)
+        family_keys = {"visual_family", "paint_slots", "marking_slots", "smoke_slots"}
+        if source["version"] == 3:
+            family_keys.add("lighting_layout")
+        _closed(family, family_keys, label)
         family_id = _text(family["visual_family"], FAMILY_RE, f"{label}.visual_family")
         if family_id in families:
             raise CustomizationError(f"duplicate visual family {family_id!r}")
@@ -241,7 +352,7 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
                 raise CustomizationError(f"{slot_label} must be an object")
             kind = slot.get("kind")
             common = {"id", "label", "kind", "pair", "role"}
-            if source["version"] == 2:
+            if source["version"] in {2, 3}:
                 common |= {"radius_m", "emissions_preset", "activation_policy", "provenance"}
                 if kind == "source" or "anchor_id" in slot:
                     required = common | {"source_id", "source_kind", "anchor_id"}
@@ -314,6 +425,8 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
             "paint_slots": sorted(paint_slots, key=lambda value: value["id"]),
             "marking_slots": sorted(marking_slots, key=lambda value: value["id"]),
             "smoke_slots": sorted(smoke_slots, key=lambda value: value["id"]),
+            "lighting_layout": validate_lighting_layout(family["lighting_layout"], f"{label}.lighting_layout")
+            if source["version"] == 3 else empty_lighting_layout(),
         }
     if set(families) != expected_families:
         missing = sorted(expected_families - set(families))
@@ -382,13 +495,14 @@ def presentation_sources(root: Path) -> list[dict[str, str]]:
 def build_companion(family_id: str, manifest_sha256: str, slots: dict[str, Any], sources: list[dict[str, str]]) -> dict[str, Any]:
     companion: dict[str, Any] = {
         "format": COMPANION_FORMAT,
-        "version": 3,
+        "version": 4,
         "source_proof_version": 3,
         "visual_family": family_id,
         "model_manifest_sha256": manifest_sha256,
         "paint_slots": slots["paint_slots"],
         "marking_slots": slots["marking_slots"],
         "smoke_slots": slots["smoke_slots"],
+        "lighting_layout": slots["lighting_layout"],
         "presentation_engine_version": PRESENTATION_ENGINE_VERSION,
         "presentation_sources": sources,
     }
