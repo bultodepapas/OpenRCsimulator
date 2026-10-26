@@ -277,9 +277,9 @@ func configure(bindings: Dictionary, profile: Dictionary) -> void:
 		_slot.add_item("No registered regions" if page_kind == "appearance" else "No registered emitters")
 		_note.text = tr("This model has no registered customization for this page.")
 	_syncing = false
-	sync_fields()
+	sync_fields(false)
 	if page_kind == "appearance":
-		sync_markings()
+		sync_markings(true, false)
 		if retain_marking:
 			_marking_text.text = marking_buffer
 			_marking_color.select(marking_color_buffer)
@@ -337,7 +337,7 @@ func current_entry() -> Dictionary:
 		pulse_period_s = 0.0, pulse_duty = 0.0, palette = [], step_s = 0.0}, true)
 	return defaults
 
-func sync_fields() -> void:
+func sync_fields(notify := true) -> void:
 	if not is_instance_valid(_custom_color): return
 	var entry := current_entry()
 	if entry.is_empty(): return
@@ -381,7 +381,7 @@ func sync_fields() -> void:
 	_syncing = false
 	_shown_slot = _slot.selected
 	if page_kind == "smoke": _shown_palette = _palette_selector.selected
-	validity_changed.emit(page_kind, has_pending_color() or has_pending_marking())
+	if notify: validity_changed.emit(page_kind, has_pending_color() or has_pending_marking())
 
 func has_pending_color() -> bool:
 	if not is_instance_valid(_custom_color) or _syncing: return false
@@ -463,10 +463,10 @@ func restore_editor_state(state: Dictionary) -> bool:
 	elif state.palette_step != 0: return false
 	if slot_index >= 0: _slot.select(slot_index)
 	if page_kind == "smoke": _palette_selector.select(int(state.palette_step))
-	sync_fields()
+	sync_fields(false)
 	if page_kind == "appearance":
 		if marking_index >= 0: _marking_slot.select(marking_index)
-		sync_markings(false)
+		sync_markings(false, false)
 		_marking_text.text = state.marking_text
 		_marking_color.select(int(state.marking_color))
 	_custom_color.text = state.color_text
@@ -623,7 +623,7 @@ func propose(next: Dictionary) -> bool:
 	_error.text = ""
 	_profile = checked.profile
 	profile_changed.emit(_profile.duplicate(true))
-	sync_fields()
+	sync_fields(false)
 	# A different accepted setting must not consume unrelated, uncommitted text.
 	var state := get_editor_state()
 	if pending_color and raw.slot == state.slot and raw.palette_step == state.palette_step and previous_color == selected_color(current_entry()):
@@ -676,7 +676,7 @@ func current_marking() -> Dictionary:
 		if entry.slot == id: return entry.duplicate(true)
 	return {"slot": id, "text": "", "color": "#FFFFFFFF"}
 
-func sync_markings(refresh_slots := true) -> void:
+func sync_markings(refresh_slots := true, notify := true) -> void:
 	if not is_instance_valid(_marking_box): return
 	_syncing = true
 	var slots: Array = _bindings.get("marking_slots", [])
@@ -695,7 +695,7 @@ func sync_markings(refresh_slots := true) -> void:
 		_marking_color.select(COLORS.values().find(entry.color) if entry.color in COLORS.values() else COLORS.size())
 	_syncing = false
 	_shown_marking = _marking_slot.selected
-	validity_changed.emit(page_kind, has_pending_color())
+	if notify: validity_changed.emit(page_kind, has_pending_color() or has_pending_marking())
 
 func has_pending_marking() -> bool:
 	if _syncing or not is_instance_valid(_marking_text) or not _marking_box.visible: return false

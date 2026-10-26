@@ -230,6 +230,7 @@ func _run() -> void:
 	preview.set_presentation(Presentation.defaults(described.bindings))
 	_check("removing smoke restores normal centered inspection", preview._smoke == null
 		and preview._rig.position == Vector3.ZERO and not preview._motion_selector.visible)
+	await _check_aircraft_lifecycle(preview, profile)
 	preview.free()
 	await process_frame
 	_finish()
@@ -326,6 +327,53 @@ func _skin_has_color(preview: Control, expected: Color) -> bool:
 			and binding.mesh.get_active_material(binding.surface) == material:
 			return true
 	return false
+
+
+func _check_aircraft_lifecycle(preview: Control, profile: Dictionary) -> void:
+	preview.set_presentation(profile)
+	preview.toggle_playback()
+	preview.set_process(false)
+	preview._process(0.1)
+	var old_smoke: Node = preview._smoke
+	var discarded_allocations := [0]
+	var count_discarded := func(node: Node) -> void:
+		if node is GPUParticles3D and node.get_parent() == old_smoke:
+			discarded_allocations[0] += 1
+	node_added.connect(count_discarded)
+	preview.set_aircraft("stik-glow-61fx-2t")
+	node_added.disconnect(count_discarded)
+	_check("aircraft replacement does not recreate the discarded smoke pools", discarded_allocations[0] == 0)
+	print("discarded_swap_pools=%d" % discarded_allocations[0])
+	_check("aircraft replacement installs independent smoke and pauses playback",
+		preview._smoke != old_smoke and not preview._playing and not preview.is_processing()
+		and preview._playhead_tick == 0 and preview._smoke.budget_info().capacity == 768)
+	await process_frame
+	_check("discarded aircraft smoke is released after the swap", not is_instance_valid(old_smoke))
+	# Only this intentional unknown-ID rejection suppresses the builder's push_error.
+	var print_errors := Engine.print_error_messages
+	Engine.print_error_messages = false
+	preview.set_aircraft("workshop-test-missing-aircraft")
+	Engine.print_error_messages = print_errors
+	await process_frame
+	_check("failed build clears old model and smoke state", preview._airplane.is_empty()
+		and preview._airplane_root == null and preview._smoke == null)
+	_check("failed build removes stale playback controls and capability claims",
+		not preview._play_button.visible and preview._play_button.disabled
+		and not preview._motion_selector.visible and not preview._rate_feedback.visible
+		and not preview._badge_panel.visible
+		and preview.get_lighting_capability_report().state == "unavailable")
+	preview.toggle_playback()
+	preview.set_process(false)
+	_check("failed model cannot restart the previous aircraft's smoke", not preview._playing)
+	preview.set_aircraft("jensen-das-ugly-stik-60")
+	_check("valid retry rebuilds smoke controls from the retained presentation",
+		is_instance_valid(preview._airplane_root) and is_instance_valid(preview._smoke)
+		and preview._badge_panel.visible
+		and preview._play_button.visible and not preview._play_button.disabled
+		and preview._profile == profile and preview._smoke.budget_info().capacity == 768)
+	preview.toggle_playback()
+	preview.set_process(false)
+	_check("fixture closes a running preview", preview._playing)
 
 
 func _mounts_shifted(preview: Control, original: Dictionary, shift: Vector3) -> bool:

@@ -106,15 +106,22 @@ static func clean_radio_bindings() -> Dictionary:
 ## Validate shape, require a back and pause recovery path, and reject collisions whose contexts overlap.
 static func validate(bindings: Dictionary) -> Dictionary:
 	var errors: Array[String] = []
+	var issues: Array[Dictionary] = []
 	var definitions := _definition_map()
 	for action_id in ["back", "pause"]:
 		if not bindings.has(action_id) or not _valid_binding(bindings[action_id]) or _is_unbound(bindings.get(action_id)):
-			errors.append("Missing recovery binding: %s" % action_id)
+			var error := "Missing recovery binding: %s" % action_id
+			errors.append(error)
+			_append_issue(issues, "recovery_binding_missing", ["actions.%s" % action_id], error)
 	for action_id: Variant in bindings:
 		if not definitions.has(str(action_id)):
-			errors.append("Unknown action: %s" % str(action_id))
+			var error := "Unknown action: %s" % str(action_id)
+			errors.append(error)
+			_append_issue(issues, "action_unknown", ["actions.%s" % str(action_id)], error)
 		elif not _valid_binding(bindings[action_id]):
-			errors.append("Invalid binding: %s" % str(action_id))
+			var error := "Invalid binding: %s" % str(action_id)
+			errors.append(error)
+			_append_issue(issues, "binding_invalid", ["actions.%s" % str(action_id)], error)
 	var ids: Array = bindings.keys()
 	for i in ids.size():
 		var left_id := str(ids[i])
@@ -126,8 +133,10 @@ static func validate(bindings: Dictionary) -> Dictionary:
 				continue
 			if _contexts_overlap(definitions[left_id].context, definitions[right_id].context) \
 					and _same_binding(bindings[ids[i]], bindings[ids[j]]):
-				errors.append("Binding conflict: %s and %s" % [left_id, right_id])
-	return {"ok": errors.is_empty(), "errors": errors}
+				var error := "Binding conflict: %s and %s" % [left_id, right_id]
+				errors.append(error)
+				_append_issue(issues, "binding_conflict", ["actions.%s" % left_id, "actions.%s" % right_id], error)
+	return {"ok": errors.is_empty(), "errors": errors, "issues": issues}
 
 
 ## Resolve saved overrides against the current defaults. Only inherited flight-only defaults
@@ -196,29 +205,43 @@ static func _add_automatic_buttons(profile: Dictionary, bindings: Dictionary, ex
 ## `bindings` in the result is the merged action map suitable for the input router.
 static func validate_profile_bindings(profile: Dictionary, capabilities: Dictionary = SUPPORTED_AUX) -> Dictionary:
 	var errors: Array[String] = []
+	var issues: Array[Dictionary] = []
 	var actions_value: Variant = _dict_value(profile, "actions", {})
 	if not actions_value is Dictionary:
-		errors.append("actions must be a dictionary")
+		var error := "actions must be a dictionary"
+		errors.append(error)
+		_append_issue(issues, "profile_invalid", ["actions"], error)
 	var aux_value: Variant = _dict_value(profile, "aux", {})
 	if not aux_value is Dictionary:
-		errors.append("aux must be a dictionary")
+		var error := "aux must be a dictionary"
+		errors.append(error)
+		_append_issue(issues, "aux_invalid", ["aux"], error)
 	var bindings := effective_bindings(profile, capabilities)
 	var action_report := validate(bindings)
 	for error in action_report.errors:
 		_append_error(errors, str(error))
+	for issue in action_report.issues:
+		issues.append(issue.duplicate(true))
 	var flight_axes := SmokeAux.flight_axes(profile)
 	var configured_aux: Array[Dictionary] = _configured_aux_bindings(profile)
 	if aux_value is Dictionary:
 		for aux_id in AUX_CHANNEL_IDS:
 			var aux_binding: Variant = _dict_value(aux_value, aux_id, null)
 			if _has_key(aux_value, aux_id) and not SmokeAux.valid_binding(aux_binding, flight_axes):
-				_append_error(errors, "aux.%s is invalid or overlaps a flight axis" % aux_id)
+				var error := "aux.%s is invalid or overlaps a flight axis" % aux_id
+				_append_error(errors, error)
+				_append_issue(issues, "aux_invalid", _aux_invalid_paths(str(aux_id), aux_binding, profile), error)
 	for i in configured_aux.size():
 		for j in range(i + 1, configured_aux.size()):
 			if _same_aux_control(configured_aux[i].binding, configured_aux[j].binding):
-				_append_error(errors, "AUX binding conflict: aux.%s and aux.%s" % [
+				var error := "AUX binding conflict: aux.%s and aux.%s" % [
 					configured_aux[i].name, configured_aux[j].name,
-				])
+				]
+				_append_error(errors, error)
+				_append_issue(issues, "aux_conflict", [
+					_aux_control_path(configured_aux[i].name, configured_aux[i].binding),
+					_aux_control_path(configured_aux[j].name, configured_aux[j].binding),
+				], error)
 	var definitions := _definition_map()
 	for action_key: Variant in bindings:
 		var action_id := str(action_key)
@@ -231,14 +254,29 @@ static func validate_profile_bindings(profile: Dictionary, capabilities: Diction
 		if context not in ["flight", "both"]:
 			continue
 		if str(binding.get("type", "")) == "axis" and flight_axes.has(int(binding.axis)):
-			_append_error(errors, "Action %s uses primary flight axis %d" % [action_id, int(binding.axis)])
+			var error := "Action %s uses primary flight axis %d" % [action_id, int(binding.axis)]
+			_append_error(errors, error)
+			var axis_paths := _flight_axis_paths(profile, int(binding.axis))
+			axis_paths.push_front("actions.%s" % action_id)
+			_append_issue(issues, "action_flight_axis_conflict", axis_paths, error)
 		for aux_entry in configured_aux:
 			if _same_aux_control(binding, aux_entry.binding):
-				_append_error(errors, "Action %s conflicts with aux.%s" % [action_id, aux_entry.name])
+				var error := "Action %s conflicts with aux.%s" % [action_id, aux_entry.name]
+				_append_error(errors, error)
+				_append_issue(issues, "action_aux_conflict", [
+					"actions.%s" % action_id,
+					_aux_control_path(aux_entry.name, aux_entry.binding),
+				], error)
 		for aux_id in AUX_CHANNEL_IDS:
 			if _aux_is_configured(aux_value, aux_id) and _action_aux_semantic_conflict(action_id, aux_id):
-				_append_error(errors, "Action %s conflicts with aux.%s" % [action_id, aux_id])
-	return {"ok": errors.is_empty(), "errors": errors, "bindings": bindings}
+				var error := "Action %s conflicts with aux.%s" % [action_id, aux_id]
+				_append_error(errors, error)
+				var aux_binding: Variant = _dict_value(aux_value, aux_id, null)
+				_append_issue(issues, "action_aux_conflict", [
+					"actions.%s" % action_id,
+					_aux_control_path(aux_id, aux_binding),
+				], error)
+	return {"ok": errors.is_empty(), "errors": errors, "issues": issues, "bindings": bindings}
 
 
 ## Store an InputEvent as profile-safe data. No current device ID is persisted.
@@ -484,6 +522,101 @@ static func _action_aux_semantic_conflict(action_id: String, aux_id: String) -> 
 		"gear":
 			return action_id == "gear_toggle"
 	return false
+
+
+static func _flight_axis_paths(profile: Dictionary, axis: int) -> Array[String]:
+	var paths: Array[String] = []
+	for channel_name in ["roll", "pitch", "yaw", "throttle"]:
+		var channel: Variant = _dict_value(profile, channel_name, null)
+		if channel is Dictionary and typeof(channel.get("axis")) == TYPE_INT and int(channel.axis) == axis:
+			paths.append("%s.axis" % channel_name)
+	return paths
+
+
+static func _aux_control_path(aux_id: String, binding: Variant) -> String:
+	var path := "aux.%s" % aux_id
+	if not binding is Dictionary:
+		return path
+	match str(binding.get("type", "")):
+		"axis":
+			return path + ".axis"
+		"button":
+			return path + ".button"
+		"switch":
+			return path + ".buttons"
+	return path
+
+
+static func _aux_invalid_paths(aux_id: String, binding: Variant, profile: Dictionary) -> Array[String]:
+	var root := "aux.%s" % aux_id
+	var paths: Array[String] = []
+	if not binding is Dictionary:
+		return [root]
+	match str(binding.get("type", "")):
+		"axis":
+			var raw_axis: Variant = binding.get("axis")
+			if typeof(raw_axis) != TYPE_INT or int(raw_axis) < 0 or int(raw_axis) >= SmokeAux.AXES:
+				_append_path(paths, root + ".axis")
+			elif _flight_axis_paths(profile, int(raw_axis)).size() > 0:
+				_append_path(paths, root + ".axis")
+				for flight_path in _flight_axis_paths(profile, int(raw_axis)):
+					_append_path(paths, flight_path)
+			if typeof(binding.get("invert")) != TYPE_BOOL:
+				_append_path(paths, root + ".invert")
+			for endpoint in ["off", "on"]:
+				var raw_endpoint: Variant = binding.get(endpoint)
+				if typeof(raw_endpoint) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(raw_endpoint)) \
+						or float(raw_endpoint) < -1.0 or float(raw_endpoint) > 1.0:
+					_append_path(paths, root + "." + endpoint)
+			if binding.has("off") and binding.has("on") \
+					and typeof(binding.off) in [TYPE_INT, TYPE_FLOAT] and typeof(binding.on) in [TYPE_INT, TYPE_FLOAT]:
+				if is_finite(float(binding.off)) and is_finite(float(binding.on)) \
+						and absf(float(binding.on) - float(binding.off)) < SmokeAux.MIN_AXIS_SPAN:
+					_append_path(paths, root + ".off")
+					_append_path(paths, root + ".on")
+				if typeof(binding.get("invert")) == TYPE_BOOL and binding.invert != (float(binding.on) < float(binding.off)):
+					_append_path(paths, root + ".invert")
+		"button":
+			var raw_button: Variant = binding.get("button")
+			if typeof(raw_button) != TYPE_INT or int(raw_button) < 0 or int(raw_button) >= SmokeAux.MAX_BUTTONS:
+				_append_path(paths, root + ".button")
+			if typeof(binding.get("mode")) != TYPE_STRING or str(binding.get("mode", "")) not in ["level", "toggle_edge"]:
+				_append_path(paths, root + ".mode")
+		"switch":
+			if typeof(binding.get("invert")) != TYPE_BOOL:
+				_append_path(paths, root + ".invert")
+			if binding.has("label") and (typeof(binding.label) != TYPE_STRING or binding.label.strip_edges().is_empty() or binding.label.length() > 24):
+				_append_path(paths, root + ".label")
+			var buttons: Variant = binding.get("buttons")
+			if typeof(buttons) != TYPE_ARRAY:
+				_append_path(paths, root + ".buttons")
+			else:
+				var button_ids: Array = SmokeAux._switch_buttons(binding)
+				if button_ids.size() not in [2, 3]:
+					_append_path(paths, root + ".buttons")
+				for i in button_ids.size():
+					if typeof(button_ids[i]) != TYPE_INT or int(button_ids[i]) < 0 or int(button_ids[i]) >= SmokeAux.MAX_BUTTONS:
+						_append_path(paths, root + ".buttons")
+					for j in range(i + 1, button_ids.size()):
+						if button_ids[i] == button_ids[j]:
+							_append_path(paths, root + ".buttons")
+		_:
+			_append_path(paths, root)
+	if paths.is_empty():
+		paths.append(root)
+	return paths
+
+
+static func _append_path(paths: Array[String], path: String) -> void:
+	if not paths.has(path):
+		paths.append(path)
+
+
+static func _append_issue(issues: Array[Dictionary], code: String, paths: Array, message: String) -> void:
+	var issue_paths: Array[String] = []
+	for path in paths:
+		issue_paths.append(str(path))
+	issues.append({"code": code, "paths": issue_paths, "message": message})
 
 
 static func _has_key(value: Variant, key: String) -> bool:

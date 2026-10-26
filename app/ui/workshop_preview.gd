@@ -171,24 +171,29 @@ func set_aircraft(id: String, scale: float = 1.0) -> void:
 		if not is_equal_approx(previous_scale, _requested_scale): reset_playback()
 		_refresh_model_presentation(false)
 		return
+	_dispose_smoke()
 	reset_playback()
 	_dispose_lighting_rig()
 	if is_instance_valid(_airplane_root):
 		_rig.remove_child(_airplane_root)
 		_airplane_root.queue_free()
 		_airplane_root = null
+	_airplane = {}
 	var built: Dictionary = AirplaneBuilder.build(id)
 	if built.is_empty():
 		_model_bounds = AABB(Vector3(-0.5, -0.5, -0.5), Vector3.ONE)
 		_rebuild_grid()
+		_sync_playback_controls()
 		_refresh_model_presentation()
 		return
 	_airplane = built
 	_airplane_root = built.get("root") as Node3D
 	if not is_instance_valid(_airplane_root):
+		_airplane = {}
 		_airplane_root = null
 		_model_bounds = AABB(Vector3(-0.5, -0.5, -0.5), Vector3.ONE)
 		_rebuild_grid()
+		_sync_playback_controls()
 		_refresh_model_presentation()
 		return
 	_rig.add_child(_airplane_root)
@@ -338,9 +343,9 @@ func _refresh_model_presentation(apply_customization: bool = true) -> void:
 	_update_scale_badge()
 	_sync_toolbar()
 	if is_instance_valid(_play_button):
-		_play_button.disabled = _view_mode == "compare" and _comparison_original
+		_play_button.disabled = not is_instance_valid(_airplane_root) or (_view_mode == "compare" and _comparison_original)
 	if is_instance_valid(_restart_button):
-		_restart_button.disabled = _view_mode == "compare" and _comparison_original
+		_restart_button.disabled = not is_instance_valid(_airplane_root) or (_view_mode == "compare" and _comparison_original)
 	_refresh_camera()
 
 
@@ -965,6 +970,9 @@ func _toolbar_top_offset(compact: bool) -> float:
 func _update_scale_badge() -> void:
 	if not is_instance_valid(_scale_badge):
 		return
+	_badge_panel.visible = is_instance_valid(_airplane_root)
+	if not _badge_panel.visible:
+		return
 	var displayed_scale := _visible_model_scale()
 	var displayed_span := _model_bounds.size.x * displayed_scale
 	var shown_name := tr("Original") if _view_mode == "compare" and _comparison_original else tr("Draft")
@@ -1228,14 +1236,18 @@ func _build_playback() -> void:
 	_mode_row.add_child(_rate_feedback)
 
 
-func _configure_smoke() -> void:
-	if not is_instance_valid(_stage) or _airplane.is_empty(): return
-	# Dispose before reset: resetting a pool that is about to be discarded creates
-	# an entire extra generation of GPU emitters for no visible result.
+func _dispose_smoke() -> void:
 	if is_instance_valid(_smoke):
 		_stage.remove_child(_smoke)
 		_smoke.queue_free()
 		_smoke = null
+
+
+func _configure_smoke() -> void:
+	if not is_instance_valid(_stage) or _airplane.is_empty(): return
+	# Dispose before reset: resetting a pool that is about to be discarded creates
+	# an entire extra generation of GPU emitters for no visible result.
+	_dispose_smoke()
 	reset_playback()
 	_stop_emission_button.disabled = _emission_stopped
 	_fit_plume_button.button_pressed = _fit_plume
@@ -1264,8 +1276,9 @@ func _configure_smoke() -> void:
 
 
 func _sync_playback_controls() -> void:
-	var has_smoke: bool = not _profile.get("smoke", []).is_empty()
-	var has_lighting: bool = str(_lighting_profile.get("selection", "inherit")) in ["preset", "custom"] \
+	var has_model := is_instance_valid(_airplane_root)
+	var has_smoke: bool = has_model and not _profile.get("smoke", []).is_empty()
+	var has_lighting: bool = has_model and str(_lighting_profile.get("selection", "inherit")) in ["preset", "custom"] \
 		and (not _lighting_profile.get("zones", []).is_empty() or not _lighting_profile.get("effects", []).is_empty())
 	var show_playback: bool = has_smoke or has_lighting
 	_play_button.visible = show_playback
@@ -1277,8 +1290,8 @@ func _sync_playback_controls() -> void:
 	var pause_label := "Pause preview" if has_lighting else "Pause smoke"
 	_play_button.text = tr(pause_label if _playing else play_label)
 	_restart_button.text = tr("Restart preview" if has_lighting else "Restart smoke")
-	_play_button.disabled = _view_mode == "compare" and _comparison_original
-	_restart_button.disabled = _view_mode == "compare" and _comparison_original
+	_play_button.disabled = not has_model or (_view_mode == "compare" and _comparison_original)
+	_restart_button.disabled = not has_model or (_view_mode == "compare" and _comparison_original)
 	_source_preview_label.visible = has_smoke and _source_preview_label.visible
 
 

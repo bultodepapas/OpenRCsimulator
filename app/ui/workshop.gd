@@ -2507,7 +2507,10 @@ func _commit_number(key: String) -> void:
 	_pending_numbers.erase(key)
 	if not is_equal_approx(_effective_factor_value(key), value):
 		_set_factor_value(key, value)
-	_compile_recipe()
+		return
+	_refresh_issues()
+	_sync_save_button()
+	_trial_button.disabled = not _edit_valid()
 
 
 func _refresh_issues() -> void:
