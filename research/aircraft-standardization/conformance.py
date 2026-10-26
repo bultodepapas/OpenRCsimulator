@@ -19,11 +19,53 @@ ERROR = re.compile(r"^(?:SCRIPT |SHADER )?ERROR:|^FAIL\b", re.MULTILINE)
 
 
 def fingerprint() -> dict[str, str]:
-    paths = [*Path(APP / "physics").rglob("*.gd"), *Path(APP / "sim").glob("*.gd"),
-             *Path(APP / "input").glob("*.gd"), *Path(APP / "data/aircraft").glob("*.json"),
-             *Path(APP / "data/glow").glob("*.json")]
+    # Conservative inventory: include nested evaluators, all accepted data/profile
+    # dependencies and catalog/fixture code, not only the top-level aircraft files.
+    paths = {path for area in ["physics", "sim", "input", "failures", "app_state", "scenery", "data"]
+             for path in (APP / area).rglob("*")
+             if path.is_file() and path.suffix in {".gd", ".json"}}
+    paths.update(ROOT / "research/aircraft-standardization" / name
+                 for name in ["fleet_probe.gd", "contact_probe.gd", "conformance.py"])
+    paths.add(APP / "project.godot")
     return {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted(paths)}
+
+
+def fleet_complete(report: dict) -> bool:
+    """A matching prefix or a self-declared green report cannot establish parity."""
+    if (report.get("format") != "openrc-as-fleet-probe v2"
+            or report.get("ok") is not True or report.get("complete") is not True
+            or report.get("ticks_per_case") != 240 or report.get("replay_start_tick") != 120):
+        return False
+    cases = report.get("cases")
+    if not isinstance(cases, list) or not cases or report.get("expected_cases") != len(cases):
+        return False
+    identities = set()
+    for row in cases:
+        if not isinstance(row, dict):
+            return False
+        if (row.get("ok") is not True or row.get("complete") is not True
+                or row.get("replay_exact") is not True or row.get("completed_ticks") != 240
+                or row.get("replay_ticks") != 120 or not row.get("id") or not row.get("data_path")
+                or row.get("battery_mode") not in {"ideal", "pack"}
+                or not isinstance(row.get("soft_hull"), bool)):
+            return False
+        identity = (row["id"], row["battery_mode"], row["soft_hull"])
+        if identity in identities:
+            return False
+        identities.add(identity)
+        for key in ["model_sha256", "initial_sha256", "trajectory_sha256"]:
+            if not isinstance(row.get(key), str) or not re.fullmatch(r"[0-9a-f]{64}", row[key]):
+                return False
+        samples = row.get("samples")
+        if not isinstance(samples, list) or len(samples) != 4:
+            return False
+        for sample, tick in zip(samples, [60, 120, 180, 240]):
+            if (not isinstance(sample, dict) or sample.get("tick") != tick
+                    or not isinstance(sample.get("sha256"), str)
+                    or not re.fullmatch(r"[0-9a-f]{64}", sample["sha256"])):
+                return False
+    return True
 
 
 def main() -> int:
@@ -113,14 +155,18 @@ def main() -> int:
         flight_ok = run("fleet", engine("--script", str(probe), "--", str(out / "fleet.json")))
         drift = before != fingerprint()
         comparison = {"source_drift_during_probe": drift, "source_sha256": before}
+        if flight_ok:
+            candidate = json.loads((out / "fleet.json").read_text(encoding="utf-8"))
+            flight_ok = fleet_complete(candidate)
+            comparison["complete_fleet"] = flight_ok
         ok = flight_ok and not drift and ok
         if args.baseline and flight_ok:
             baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
-            candidate = json.loads((out / "fleet.json").read_text(encoding="utf-8"))
-            comparison["exact_baseline_match"] = baseline == candidate
+            comparison["baseline_complete"] = fleet_complete(baseline)
+            comparison["exact_baseline_match"] = fleet_complete(baseline) and baseline == candidate
             comparison["baseline_sha256"] = hashlib.sha256(args.baseline.read_bytes()).hexdigest()
-            ok = baseline == candidate and ok
-            print("PASS exact flight baseline" if baseline == candidate else "FAIL exact flight baseline", flush=True)
+            ok = comparison["exact_baseline_match"] and ok
+            print("PASS exact flight baseline" if comparison["exact_baseline_match"] else "FAIL exact flight baseline", flush=True)
         before_contacts = fingerprint()
         contacts_ok = run("contacts", engine("--script", str(ROOT / "research/aircraft-standardization/contact_probe.gd"),
                                              "--", str(out / "contacts.json")))

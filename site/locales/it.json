@@ -75,7 +75,7 @@
     "downloadHeading": "Meno guardare.<br>Più volare.",
     "downloadIntro": "Scarica, estrai lo ZIP e avvia l’app.<br>Non serve installare Godot.",
     "downloadKicker": "02 / IL TUO PROSSIMO DECOLLO",
-    "downloadNote": "Versione software stabile v0.1.8. Gli ZIP non hanno installer né firma dell’archivio; l’app macOS è firmata ad hoc ma non autenticata da Apple.<br>I modelli di aerei e veicoli terrestri restano sperimentali e richiedono misurazioni indipendenti e valutazione dei piloti.",
+    "downloadNote": "Versione software stabile v0.1.8. Gli ZIP non hanno installer né firma dell’archivio; l’app macOS è firmata ad hoc ma non notarizzata.<br>I modelli di aerei e veicoli terrestri restano sperimentali e richiedono misurazioni indipendenti e valutazione dei piloti.",
     "droneNote": "IN RICERCA: gare FPV. Un drone pilotabile e una modalità gara non sono ancora disponibili.",
     "electricLink": "Propulsione elettrica ↗",
     "evidenceBody": "Il contratto openrc-aircraft v2 richiede unità, tipo di prova e fonte. Le configurazioni non valide non possono volare. Geometria e dati fisici vengono rigenerati dalle rispettive fonti.",

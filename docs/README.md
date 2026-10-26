@@ -88,7 +88,7 @@ This registry owns file boundaries and prefixes. Each linked guide/plan owns its
 | Agent tool index | [Tool index](tools/README.md) | DX-01…05 delivered 2026-10-22; DX-06 (index merged to main, debug-bridge routes, agent skills) 2026-10-24 | Links only: each tool's README and owning track keep its commands and behavior; broken tools are reported to their owners | `docs/tools/`, nested `AGENTS.md` pointers, the root `AGENTS.md` tool section, `.claude/skills/` and `.agents/skills/` | [Known broken or stale tools](tools/shared.md#known-broken-or-stale-tools) |
 | Releases | [Notes by tag](releases/) | v* tags; PT1 | CI/export maintainers | `docs/releases/`, export build identity and packaging | [v0.1.0 qualification](research/release-readiness/PT1-v0.1.0/README.md) |
 | Cinematic trailer | [Production plan](plans/cinematic-trailer.md) | TRA-00…08 | Presentation only; CAM/FL/CR/RCV/HELI and model owners retain runtime interfaces; WEB owns publication | `tools/trailer/`, `docs/research/cinematic-trailer/`; raw media in ignored `tmp/trailer/` | [Current capture, 2026-10-21](research/cinematic-trailer/refresh-2026-10-21.md) |
-| Project website | [Website guide](../site/README.md) | WEB-01…10 | Presentation only; published releases and runtime guides own feature claims | `site/`; isolated `gh-pages` publication | Design sources and verification in the website guide |
+| Project website | [Website guide](../site/README.md) | WEB-01…11 | Presentation only; published releases and runtime guides own feature claims | `site/`; isolated `gh-pages` publication | Design sources and verification in the website guide |
 
 ## Step-ID namespaces
 
