@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "612c61e2-afde-405d-bfcd-a0632c6b8540",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-native/test_installed_probe.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:02:35.856592+00:00",
+  "label": "installed-main-fixtures",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-native\\production-checks\\installed-main-fixtures-s0hd11vh\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-native\\production-checks\\installed-main-fixtures-s0hd11vh\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Hull native probe fixtures:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 15.125,
+  "log_bytes": 534,
+  "log_sha256": "27c91919ce880465e8468ad62a47f95014fa9917d7a9b73d27c9cc67a6d3a3f8"
+}

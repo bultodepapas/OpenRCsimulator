@@ -34,6 +34,14 @@ The [scrape unloading correction](research/ground-physics/GP-19/evidence/scrape-
 
 The [native continuous Turbo Lumber capture](research/ground-physics/GP-19/evidence/native-continuous-timber/README.md) verifies one production flight's mixer clocks, headroom and source stability at its recorded source version. It predates the unloading-envelope correction and does not establish isolated scrape audibility, human listening or full-fleet coverage.
 
+The later [native hull-scrape check](research/ground-physics/GP-19/evidence/native-hull-scrape/README.md)
+captures the current default-field Stik CrashFX bus through actual accepted physics.
+Loaded brush and terminal intervals contain measured PCM; guarded airborne,
+opening-overlap, pause and reset intervals are silent. The 12.0107-second WASAPI
+capture has no lost frames. This is one source-pinned reset-fixture tape, separate
+from Soundscape and Master, with 18 installed scene checks and 41 checker tests.
+Human listening, combined headroom, fleet coverage and target-hardware budgets remain open.
+
 | Aircraft | Installed audio profile |
 | --- | --- |
 | Jensen Das Ugly Stik .60 | Phase-aware two-stroke fallback; accepted legacy shaft RPM |

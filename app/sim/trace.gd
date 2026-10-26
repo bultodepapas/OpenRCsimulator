@@ -128,6 +128,8 @@ var _glow_last_main_fuel_kg: float = NAN
 var _glow_last_opportunities: int = -1
 var _glow_last_fires: int = -1
 var _glow_wheel_count: int = 0 # GP-06a: rim speeds appended after the glow slots
+const FIXED_BRAKE_INPUT_LAW := "fixed-gear-shared-wheel-brake-input-v1"
+var _fixed_brake: bool = false
 var _gear: bool = false
 var _gear_aux_index: int = -1
 var _gear_meta: Dictionary = {}
@@ -189,6 +191,7 @@ func clear() -> void:
 	_glow_last_opportunities = -1
 	_glow_last_fires = -1
 	_glow_wheel_count = 0
+	_fixed_brake = false
 	_gear = false
 	_gear_aux_index = -1
 	_gear_meta = {}
@@ -216,6 +219,8 @@ func columns() -> Array:
 
 
 func _prepare_weather() -> void:
+	_prepare_fixed_brake_metadata()
+	if _invalid_weather: return
 	_prepare_shaft_metadata()
 	if _invalid_weather:
 		return
@@ -447,9 +452,38 @@ func _prepare_gear_metadata() -> void:
 	_columns.append_array(GEAR_COLUMNS)
 
 
+func _prepare_fixed_brake_metadata() -> void:
+	if not meta.has("fixed_brake_input_law") and not meta.has("wheel_brake_input_index"):
+		return
+	var raw: Variant = meta.get("input_layout")
+	var parser := JSON.new()
+	if typeof(raw) != TYPE_STRING or raw.length() > 256 or parser.parse(raw) != OK:
+		_invalid_weather = true
+		return
+	var layout: Variant = parser.data
+	var expected := ["roll", "pitch", "yaw", "throttle", "wheel_brake"]
+	if _has_flap_metadata_claim(): expected.append("flaps")
+	if typeof(meta.get("fixed_brake_input_law")) != TYPE_STRING or meta.fixed_brake_input_law != FIXED_BRAKE_INPUT_LAW \
+			or typeof(meta.get("wheel_brake_input_index")) != TYPE_INT or meta.wheel_brake_input_index != 4 \
+			or not layout is Array or layout.size() != expected.size():
+		_invalid_weather = true
+		return
+	for key: String in ["gear_law", "gear_aux_index", "gear_trace_schema", "recording_start_gear"]:
+		if meta.has(key):
+			_invalid_weather = true
+			return
+	for index: int in expected.size():
+		if typeof(layout[index]) != TYPE_STRING or layout[index] != expected[index]:
+			_invalid_weather = true
+			return
+	_fixed_brake = true
+	_columns.append("cmd_wheel_brake")
+
+
 func _has_gear_metadata_claim() -> bool:
 	if meta.has("gear_law") or meta.has("gear_aux_index") or meta.has("gear_trace_schema") or meta.has("recording_start_gear"):
 		return true
+	if _fixed_brake: return false
 	if not meta.has("input_layout"):
 		return false
 	var raw_layout: Variant = meta.get("input_layout")
@@ -472,7 +506,7 @@ func _has_flap_metadata_claim() -> bool:
 
 
 func _expected_input_count() -> int:
-	return 4 + (2 if _gear else 0) + (1 if _flaps else 0)
+	return 4 + (2 if _gear else 1 if _fixed_brake else 0) + (1 if _flaps else 0)
 
 
 func _gear_sample(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array,
@@ -522,10 +556,12 @@ func _prepare_flap_metadata() -> void:
 	var raw_layout: Variant = meta.get("input_layout")
 	var layout: Variant = JSON.parse_string(raw_layout) if typeof(raw_layout) == TYPE_STRING else null
 	var has_gear_claim: bool = _has_gear_metadata_claim()
-	var expected_input_index: int = 6 if has_gear_claim else 4
+	var expected_input_index: int = 6 if has_gear_claim else 5 if _fixed_brake else 4
 	var expected_layout: Array[String] = FLAP_BASE_INPUT_LAYOUT.duplicate()
 	if has_gear_claim:
 		expected_layout.append_array(GEAR_INPUT_LAYOUT.slice(4, 6))
+	elif _fixed_brake:
+		expected_layout.append("wheel_brake")
 	expected_layout.append("flaps")
 	if schema != "openrc-flight-meta v9" or typeof(flap_law) != TYPE_STRING or flap_law.is_empty() \
 			or flap_law != FLAP_LAW or trace_schema != FLAP_TRACE_SCHEMA or typeof(aux_index) != TYPE_INT or int(aux_index) < 4 \
@@ -615,7 +651,8 @@ func _prepare_turbine_metadata() -> void:
 		var layout: Variant = JSON.parse_string(str(meta.get("wheel_state_layout", "null")))
 		var launch: Variant = JSON.parse_string(str(meta.get("launch_continuous", "null")))
 		var brakes: Variant = JSON.parse_string(str(meta.get("wheel_brakes", "null")))
-		if not gear_claim or (meta.get("metadata_schema") != "openrc-flight-meta v8" \
+		if (not gear_claim and not _fixed_brake) or (meta.get("metadata_schema") != "openrc-flight-meta v8" \
+				and not (_fixed_brake and meta.get("metadata_schema") == "openrc-flight-meta v6") \
 				and not (flap_claim and meta.get("metadata_schema") == "openrc-flight-meta v9")) \
 				or meta.get("wheel_state_model") != "relative-wheel-rim-speed-rk4-v1" \
 				or meta.get("wheel_profile_status") != "applied" \
@@ -1072,7 +1109,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		_prepare_weather()
 	if _invalid_weather:
 		return
-	if inputs.size() != _expected_input_count():
+	if inputs.size() != _expected_input_count() or (_fixed_brake and (not is_finite(inputs[4]) or inputs[4] < 0.0 or inputs[4] > 1.0)):
 		_invalid_weather = true
 		return
 	var mass_row := PackedFloat64Array()
@@ -1198,9 +1235,11 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2],
 	]))
 	_rows.append_array(loads)
-	_rows.append_array(inputs.slice(0, 4) if _gear or _flaps else inputs)
+	_rows.append_array(inputs.slice(0, 4) if _gear or _flaps or _fixed_brake else inputs)
 	for i in 4: # [engine_rpm, srv_roll, srv_pitch, srv_yaw]; missing entries record as 0
 		_rows.append(aux[i] if aux.size() > i else 0.0)
+	if _fixed_brake:
+		_rows.append(inputs[4])
 	if _electric:
 		_rows.append_array(electric_row)
 	if _glow:
@@ -1580,8 +1619,12 @@ func to_csv() -> String:
 	var spatial_base_format: String = trace_format
 	if _weather != null and _weather.is_spatial():
 		trace_format = "openrc-trace v16"
+	var fixed_brake_base_trace_format: String = trace_format
+	if _fixed_brake: trace_format = "openrc-trace v17"
 	lines.append("# format: %s" % trace_format)
 	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine or _glow else (_flap_meta if _flaps else meta)).duplicate(true)
+	if _fixed_brake:
+		written_meta.fixed_brake_base_trace_format = fixed_brake_base_trace_format
 	if _weather != null and _weather.is_spatial():
 		written_meta.spatial_base_trace_format = spatial_base_format
 	if _flaps:

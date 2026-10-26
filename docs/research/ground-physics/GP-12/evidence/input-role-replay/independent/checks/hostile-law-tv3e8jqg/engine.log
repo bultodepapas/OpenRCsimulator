@@ -1,0 +1,59 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+SELECTOR type=0 returned_ok=false
+SCRIPT ERROR: Invalid operands 'bool' and 'String' in operator '!='.
+   at: input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+   GDScript backtrace (most recent call first):
+       [0] input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+       [1] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:9)
+SCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.
+   at: _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+   GDScript backtrace (most recent call first):
+       [0] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+SCRIPT ERROR: Invalid operands 'bool' and 'String' in operator '!='.
+   at: input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+   GDScript backtrace (most recent call first):
+       [0] input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+       [1] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:9)
+SCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.
+   at: _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+   GDScript backtrace (most recent call first):
+       [0] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+SCRIPT ERROR: Invalid operands 'Array' and 'String' in operator '!='.
+   at: input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+   GDScript backtrace (most recent call first):
+       [0] input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+       [1] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:9)
+SCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.
+   at: _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+   GDScript backtrace (most recent call first):
+       [0] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+SCRIPT ERROR: Invalid operands 'Dictionary' and 'String' in operator '!='.
+   at: input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+   GDScript backtrace (most recent call first):
+       [0] input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+       [1] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:9)
+SCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.
+   at: _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+   GDScript backtrace (most recent call first):
+       [0] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+SCRIPT ERROR: Invalid operands 'int' and 'String' in operator '!='.
+   at: input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+   GDScript backtrace (most recent call first):
+       [0] input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+       [1] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:9)
+SCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.
+   at: _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+   GDScript backtrace (most recent call first):
+       [0] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+SCRIPT ERROR: Invalid operands 'float' and 'String' in operator '!='.
+   at: input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+   GDScript backtrace (most recent call first):
+       [0] input_names (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/reader/flight_log_cli.gd:305)
+       [1] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:9)
+SCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.
+   at: _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+   GDScript backtrace (most recent call first):
+       [0] _case (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp20-brake-input/review/hostile_law.gd:11)
+SELECTOR type=21 returned_ok=true
+Hostile CLI law probe complete: 8 calls returned

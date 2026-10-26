@@ -1,0 +1,108 @@
+const LEGACY_ROWS_PATH := "res://tests/fixtures/ground_contact_capacity_legacy_rows.bin"
+const LEGACY_ROWS_SHA256 := "@@ROWS_HASH@@"
+const LEGACY_STEPS_PATH := "res://tests/fixtures/ground_contact_capacity_legacy_steps.bin"
+const LEGACY_STEPS_SHA256 := "ffc52cf1a57e4a7a07e4d57851238acc3961dd7409ceade70dcd4a879237de18"
+const LEGACY_INPUT_SHA256 := {
+	"ground_unloaded_gentle.bin": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408",
+	"ground_unloaded_hard.bin": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b"
+}
+const LEGACY_LAWS := ["fixed-hub-rk4-normal-endpoint-impulse-lie-v1", "fixed-hub-half-impulse-rk4-normal-half-impulse-v1"]
+
+
+func _frozen_oracle(path: String, expected_sha256: String) -> Variant:
+	var bytes := FileAccess.get_file_as_bytes(path)
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(bytes)
+	var intact := not bytes.is_empty() and hash.finish().hex_encode() == expected_sha256
+	check("immutable prepromotion oracle bytes " + path, intact)
+	return bytes_to_var(bytes) if intact else null
+
+
+static func _oracle_floats(value: Variant, count: int) -> bool:
+	if typeof(value) != TYPE_PACKED_FLOAT64_ARRAY or value.size() != count:
+		return false
+	for component: float in value:
+		if not is_finite(component): return false
+	return true
+
+
+static func _row_oracle_valid(value: Variant) -> bool:
+	if typeof(value) != TYPE_DICTIONARY or value.size() != 5 \
+		or not value.has_all(["format", "law", "prepared", "cg_body_m", "cases"]): return false
+	if typeof(value.format) != TYPE_STRING or value.format != "openrc-frozen-traction-legacy-rows v1" \
+		or typeof(value.law) != TYPE_STRING or value.law != "fixed-hub-wheel-material-impulse-rows-v1" \
+		or typeof(value.prepared) != TYPE_DICTIONARY or not _oracle_floats(value.cg_body_m, 3) \
+		or typeof(value.cases) != TYPE_ARRAY or value.cases.size() != 16: return false
+	var seen := {}
+	for row: Variant in value.cases:
+		if typeof(row) != TYPE_DICTIONARY or row.size() != 5 \
+			or not row.has_all(["id", "state", "ground", "brake", "expected_bytes"]): return false
+		if typeof(row.id) != TYPE_STRING or row.id.is_empty() or seen.has(row.id) \
+			or not _oracle_floats(row.state, RB.SIZE) or typeof(row.ground) != TYPE_DICTIONARY \
+			or not _oracle_floats(row.brake, 3) or typeof(row.expected_bytes) != TYPE_PACKED_BYTE_ARRAY \
+			or row.expected_bytes.is_empty() or row.expected_bytes.size() > 1048576: return false
+		seen[row.id] = true
+	return true
+
+
+static func _step_oracle_valid(value: Variant) -> bool:
+	if typeof(value) != TYPE_ARRAY or value.size() != 4: return false
+	var seen := {}
+	for row: Variant in value:
+		if typeof(row) != TYPE_DICTIONARY or row.size() != 5 \
+			or not row.has_all(["fixture", "law", "original_result", "draft_result", "equal"]): return false
+		if typeof(row.fixture) != TYPE_STRING or not LEGACY_INPUT_SHA256.has(row.fixture) \
+			or typeof(row.law) != TYPE_STRING or row.law not in LEGACY_LAWS \
+			or typeof(row.original_result) != TYPE_DICTIONARY or typeof(row.draft_result) != TYPE_DICTIONARY \
+			or typeof(row.equal) != TYPE_BOOL or not row.equal: return false
+		var key: String = row.fixture + ":" + row.law
+		if seen.has(key) or typeof(row.original_result.get("ok")) != TYPE_BOOL \
+			or typeof(row.original_result.get("status")) != TYPE_STRING \
+			or var_to_bytes(row.original_result) != var_to_bytes(row.draft_result): return false
+		if row.original_result.ok:
+			var receipt: Variant = row.original_result.get("integration_receipt")
+			var state: Variant = row.original_result.get("state")
+			if typeof(receipt) != TYPE_DICTIONARY or typeof(receipt.get("law")) != TYPE_STRING \
+				or receipt.law != row.law or typeof(state) != TYPE_PACKED_FLOAT64_ARRAY \
+				or state.size() < RB.SIZE or state.size() > 256 or not _oracle_floats(state, state.size()): return false
+		elif typeof(row.original_result.get("law")) != TYPE_STRING or row.original_result.law != row.law \
+			or typeof(row.original_result.get("reason")) != TYPE_STRING: return false
+		seen[key] = true
+	return true
+
+
+func _row_oracle_negative_controls(oracle: Dictionary) -> void:
+	for value: Variant in [null, false, [], {}]:
+		check("malformed row oracle root refuses", not _row_oracle_valid(value))
+	for kind: String in ["format", "case", "duplicate", "state", "brake", "bytes", "extra"]:
+		var bad := oracle.duplicate(true)
+		match kind:
+			"format": bad.format = []
+			"case": bad.cases[0] = false
+			"duplicate": bad.cases[1].id = bad.cases[0].id
+			"state": bad.cases[0].state = PackedFloat64Array([0.0])
+			"brake": bad.cases[0].brake = []
+			"bytes": bad.cases[0].expected_bytes = PackedByteArray()
+			"extra": bad.cases[0].unexpected = true
+		check("malformed row oracle record refuses " + kind, not _row_oracle_valid(bad))
+
+
+func _step_oracle_negative_controls(oracle: Array) -> void:
+	for value: Variant in [null, false, {}, []]:
+		check("malformed step oracle root refuses", not _step_oracle_valid(value))
+	for kind: String in ["record", "fixture", "law", "duplicate", "result", "provenance", "outcome_law", "extra"]:
+		var bad := oracle.duplicate(true)
+		match kind:
+			"record": bad[0] = false
+			"fixture": bad[0].fixture = "unknown.bin"
+			"law": bad[0].law = []
+			"duplicate": bad[1] = bad[0].duplicate(true)
+			"result": bad[0].original_result = []
+			"provenance": bad[0].equal = false
+			"outcome_law":
+				for key: String in ["original_result", "draft_result"]:
+					if bad[0][key].ok: bad[0][key].integration_receipt.law = "conflicting-law"
+					else: bad[0][key].law = "conflicting-law"
+			"extra": bad[0].unexpected = true
+		check("malformed step oracle record refuses " + kind, not _step_oracle_valid(bad))

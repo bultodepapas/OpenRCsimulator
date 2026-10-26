@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "af57662c-4f1a-43db-8898-3e1e9e270bef",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test-oracle-followup/validation/test_mutant_traction.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:21:01.365505+00:00",
+  "label": "mutant-row-rate",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\test-oracle-followup\\checks\\mutant-row-rate-zzynmz4w\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\test-oracle-followup\\checks\\mutant-row-rate-zzynmz4w\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Traction capacity producer:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.875,
+  "log_bytes": 867,
+  "log_sha256": "ee20b71984d8a82755c1d57d13807b3762eb298a580a16ab80c4c333cbc9712b"
+}

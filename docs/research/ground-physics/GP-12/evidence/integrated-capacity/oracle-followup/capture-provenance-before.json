@@ -1,0 +1,21 @@
+{
+  "source_manifest_sha256": "adfd3a03de06335c38c42c89c362b3f11d294e00e9265c8a658347fabfff0780",
+  "old_traction": {
+    "original": {
+      "path": "app/physics/aircraft_ground_traction.gd",
+      "sha256": "86987e1e3b036fca2c4b3dd7368308399a38fe14695adaffa0935b9863bc1b9c",
+      "bytes": 12695
+    },
+    "frozen": {
+      "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_ground_traction.gd",
+      "sha256": "8b54264c277159ac62bd8c388098cb9d523e1fa927798548dfec850dc23a4168",
+      "bytes": 13335
+    },
+    "change": "import retargeting and duplicate global registration removal only",
+    "removed_registrations": []
+  },
+  "frozen_script_count": 70,
+  "asset_count": 10,
+  "before_mismatches": [],
+  "step_fixture_sha256": "ffc52cf1a57e4a7a07e4d57851238acc3961dd7409ceade70dcd4a879237de18"
+}

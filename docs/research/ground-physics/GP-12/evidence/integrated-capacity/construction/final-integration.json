@@ -1,0 +1,176 @@
+{
+  "format": "openrc-shared-capacity-final-integration-v1",
+  "utc": "2026-10-26T21:06:13.575866+00:00",
+  "review_manifest": {
+    "path": "tmp/gp12-capacity-production/review-v1/manifest.json",
+    "sha256": "adfd3a03de06335c38c42c89c362b3f11d294e00e9265c8a658347fabfff0780",
+    "bytes": 48145
+  },
+  "payload": [
+    {
+      "target": "app/physics/aircraft_ground_step.gd",
+      "production": {
+        "path": "tmp/gp12-capacity-production/review-v1/production/app/physics/aircraft_ground_step.gd",
+        "sha256": "64cbe64bd2fe54ef36531564fbbeebe17272652de9c78b7711fa545e2ababc3e",
+        "bytes": 61980
+      },
+      "validated": {
+        "path": "tmp/gp12-capacity-production/review-v1/validation/aircraft_ground_step.gd",
+        "sha256": "611e7eb1306f82a0d7a8cacd738143e6d5c884017b1094b4b04ac0d02d20b4dd",
+        "bytes": 62026
+      },
+      "transform": "own import paths only"
+    },
+    {
+      "target": "app/physics/aircraft_ground_traction.gd",
+      "production": {
+        "path": "tmp/gp12-capacity-production/review-v1/production/app/physics/aircraft_ground_traction.gd",
+        "sha256": "35f6cdd39e1877c5c7d53e9347d08c805caa334fa56be0dbb0ea00057e972e99",
+        "bytes": 23955
+      },
+      "validated": {
+        "path": "tmp/gp12-capacity-production/review-v1/validation/aircraft_ground_traction.gd",
+        "sha256": "4b4f918172cdf1ab62f4b4d82953ed8b34c8360487d8ffb8d2c9ec95aed121db",
+        "bytes": 24001
+      },
+      "transform": "own import paths only"
+    },
+    {
+      "target": "app/physics/contact_capacity.gd",
+      "production": {
+        "path": "tmp/gp12-capacity-production/review-v1/production/app/physics/contact_capacity.gd",
+        "sha256": "f43eaf56725e79695edb47ace1a16fbcead0c30f33bf2ee05f87a267f86f3bab",
+        "bytes": 16534
+      },
+      "validated": {
+        "path": "tmp/gp12-capacity-production/review-v1/validation/contact_capacity.gd",
+        "sha256": "f43eaf56725e79695edb47ace1a16fbcead0c30f33bf2ee05f87a267f86f3bab",
+        "bytes": 16534
+      },
+      "transform": "own import paths only"
+    },
+    {
+      "target": "app/tests/test_contact_capacity.gd",
+      "production": {
+        "path": "tmp/gp12-capacity-production/review-v1/production/app/tests/test_contact_capacity.gd",
+        "sha256": "74c4238dfe109b5f63a72902bb4e301d008ab27221ecf1edfc6222c765bdb122",
+        "bytes": 13145
+      },
+      "validated": {
+        "path": "tmp/gp12-capacity-production/review-v1/validation/test_contact_capacity.gd",
+        "sha256": "c0d0ece25cfd7771760ab011370e6eeecb890a69c7877c622e4b8dd8a40be964",
+        "bytes": 13237
+      },
+      "transform": "own import paths only"
+    },
+    {
+      "target": "app/tests/test_traction_capacity.gd",
+      "production": {
+        "path": "tmp/gp12-capacity-production/review-v1/production/app/tests/test_traction_capacity.gd",
+        "sha256": "b0fbad5997d871e29561fee4add200baa2182d1f73c73c1e0718f48f90ed14fd",
+        "bytes": 7819
+      },
+      "validated": {
+        "path": "tmp/gp12-capacity-production/review-v1/validation/test_traction_capacity.gd",
+        "sha256": "adf56ae9106f32d16dc9529e5667487b087bc6c76d013842f9166065ecdb9125",
+        "bytes": 7957
+      },
+      "transform": "own import paths only"
+    }
+  ],
+  "sourcecheck": {
+    "unchanged_verified_files": 80,
+    "frozen_scripts": 70,
+    "production_payloads": 5,
+    "main_originals_still_match": true,
+    "post_freeze_code_changes": false
+  },
+  "focused_assertions": 409,
+  "full_assertions": 40,
+  "total_strict_assertions": 449,
+  "tapes": [
+    {
+      "speed_mps": 0.25,
+      "accepted_ticks": 180,
+      "full_receipts": 180,
+      "frames": 180,
+      "checkpoints": 7,
+      "primary_event_types": [
+        "composition_touchdown",
+        "composition_last_contact_unloaded",
+        "composition_touchdown"
+      ],
+      "mechanical_balance_j": -5.417312650024542e-06,
+      "maximum_compression_m": 0.1269607749116702,
+      "maximum_raw_error": 0.24586396605436148,
+      "maximum_pieces": 16,
+      "checkpoint178_continuation_complete_receipts_byte_equal": true,
+      "report": {
+        "path": "tmp/gp12-capacity-production/checks/shared-full-gentle180-uh82e901/report.json",
+        "sha256": "14713d06b6c6cb97d01eed592ef3ab8cb6956fc6e4b23492728a11bc6f5cfbf9",
+        "bytes": 1486
+      },
+      "log": {
+        "path": "tmp/gp12-capacity-production/checks/shared-full-gentle180-uh82e901/engine.log",
+        "sha256": "8b7c553210bcb14c9601ef32b9b30d19bbeb55ce06ff70e23c6ba91d43740c83",
+        "bytes": 509
+      },
+      "binary": {
+        "path": "tmp/gp12-capacity-production/full-0.25.bin",
+        "sha256": "326fa7e16f8b5eb7731fe8b1b8c17d196d065e7ce57403339df99b0608476410",
+        "bytes": 4851104
+      },
+      "json": {
+        "path": "tmp/gp12-capacity-production/full-0.25.json",
+        "sha256": "a750095136d774d72c884b6495b0129535868b27ff414e5dcbbc3fb3dcfbf915",
+        "bytes": 7899089
+      },
+      "assertions": 20
+    },
+    {
+      "speed_mps": 1.2,
+      "accepted_ticks": 180,
+      "full_receipts": 180,
+      "frames": 180,
+      "checkpoints": 7,
+      "primary_event_types": [
+        "composition_touchdown",
+        "composition_last_contact_unloaded",
+        "composition_touchdown"
+      ],
+      "mechanical_balance_j": 8.567593567931908e-08,
+      "maximum_compression_m": 0.15185710015214698,
+      "maximum_raw_error": 0.14661715057057875,
+      "maximum_pieces": 16,
+      "checkpoint178_continuation_complete_receipts_byte_equal": true,
+      "report": {
+        "path": "tmp/gp12-capacity-production/checks/shared-full-hard180-f478dvvo/report.json",
+        "sha256": "e73d55c6a86cba51c3bfdb8270c2a9afe6a59bff83178c84654336cbfa4d1316",
+        "bytes": 1477
+      },
+      "log": {
+        "path": "tmp/gp12-capacity-production/checks/shared-full-hard180-f478dvvo/engine.log",
+        "sha256": "f49629d5ac86f52009cd82ce0a807a7a26e128b3a80259a8232ce883a6f6a521",
+        "bytes": 501
+      },
+      "binary": {
+        "path": "tmp/gp12-capacity-production/full-1.2.bin",
+        "sha256": "653c7d240e31904df2c4ff0fc05e66dfef87a1a46c1e1b8ad111c41d580de6ac",
+        "bytes": 4542756
+      },
+      "json": {
+        "path": "tmp/gp12-capacity-production/full-1.2.json",
+        "sha256": "425d5680d89fcc9b31bcf2a94c81aa8cf6aa92efc61728d5a451c0cbc001053a",
+        "bytes": 7366140
+      },
+      "assertions": 20
+    }
+  ],
+  "owner_cache": "Separate tmp/gp12-owner-snapshot-cache only; not used here",
+  "not_claimed": [
+    "stock activation",
+    "physical calibration",
+    "fleet qualification",
+    "performance qualification"
+  ]
+}

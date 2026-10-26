@@ -9,6 +9,8 @@ const Quantities := preload("res://physics/wheel_profiles.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Geometry := preload("res://physics/wheel_geometry.gd")
+const Support:=preload("res://physics/ground_support.gd")
+const Capacity:=preload("res://physics/contact_capacity.gd")
 const LAW := "fixed-hub-wheel-material-impulse-rows-v1"
 const MATERIAL_FORMAT := "openrc-tire-surface-traction v1"
 const MATERIAL_LAW := "equal-static-kinetic-coulomb-ellipse-v1"
@@ -106,24 +108,10 @@ static func evaluate(prepared: Dictionary, body: PackedFloat64Array, cg_body_m: 
 		if absf(M.dot(axis, axis) - 1.0) > 1e-9: return _failure("invalid wheel axle")
 		axis = M.scale(axis, 1.0 / M.norm(axis))
 		if record.loaded:
-			if not record.get("geometry_evaluated", false) or record.get("geometry_status") != "stationary_support" \
-				or not record.get("material_resolved", false) or not prepared.materials.has(record.get("material_id")) \
-				or not Stage._finite_shape(record.get("normal_ned"), 3) or not Stage._finite_shape(record.get("rho_body_m"), 3) \
-				or not Stage._finite_shape(record.get("arm_datum_body_m"), 3):
-				return _failure("loaded wheel lacks supported geometry or an explicit tire/material pair")
-			var normal := M.q_rotate(inverse, record.normal_ned)
-			if absf(M.dot(normal, normal) - 1.0) > 1e-9 \
-				or absf(M.norm(record.rho_body_m) - wheel.radius_m) > 1e-9 * maxf(1.0, wheel.radius_m) \
-				or absf(M.dot(axis, record.rho_body_m)) > 1e-9 * wheel.radius_m \
-				or M.norm(M.sub(record.arm_datum_body_m, M.add(wheel.hub_body, record.rho_body_m))) > 1e-9:
-				return _failure("contact geometry disagrees with the installed ring/hub")
-			normal = M.scale(normal, 1.0 / M.norm(normal))
-			var longitudinal := M.cross(axis, normal)
-			var tangent_length := M.norm(longitudinal)
-			if tangent_length < Geometry.MIN_AXLE_PROJECTION: return _failure("ring rolling direction is outside the supported camber domain")
-			longitudinal = M.scale(longitudinal, 1.0 / tangent_length)
-			var lateral := M.cross(normal, longitudinal)
-			lateral = M.scale(lateral, 1.0 / M.norm(lateral))
+			var frame:=_contact_frame(prepared,wheel,record,axis,inverse,cg_body_m)
+			if not frame.ok:return frame
+			var longitudinal:PackedFloat64Array=frame.longitudinal
+			var lateral:PackedFloat64Array=frame.lateral
 			var coefficients: Dictionary = prepared.materials[record.material_id].values
 			var start := bias.size()
 			for tangent_index in 2:
@@ -188,3 +176,330 @@ static func _number(value: Variant) -> bool:
 
 static func _failure(reason: String, errors := PackedStringArray()) -> Dictionary:
 	return {ok = false, law = LAW, reason = reason, errors = errors}
+
+
+
+
+
+
+
+
+static func _contact_frame(
+	prepared: Dictionary,
+	wheel: Dictionary,
+	record: Dictionary,
+	axis: PackedFloat64Array,
+	inverse: PackedFloat64Array,
+	_cg_body_m: PackedFloat64Array
+) -> Dictionary:
+	if (
+		not record.get("geometry_evaluated", false)
+		or record.get("geometry_status") != "stationary_support"
+		or not record.get("material_resolved", false)
+		or not prepared.materials.has(record.get("material_id"))
+		or not Stage._finite_shape(record.get("normal_ned"), 3)
+		or not Stage._finite_shape(record.get("rho_body_m"), 3)
+		or not Stage._finite_shape(record.get("arm_datum_body_m"), 3)
+	):
+		return _failure("loaded wheel lacks supported geometry or an explicit tire/material pair")
+	var normal := M.q_rotate(inverse, record.normal_ned)
+	if (
+		absf(M.dot(normal, normal) - 1.0) > 1e-9
+		or absf(M.norm(record.rho_body_m) - wheel.radius_m) > 1e-9 * maxf(1.0, wheel.radius_m)
+		or absf(M.dot(axis, record.rho_body_m)) > 1e-9 * wheel.radius_m
+		or M.norm(M.sub(record.arm_datum_body_m, M.add(wheel.hub_body, record.rho_body_m))) > 1e-9
+	):
+		return _failure("contact geometry disagrees with the installed ring/hub")
+	normal = M.scale(normal, 1.0 / M.norm(normal))
+	var longitudinal := M.cross(axis, normal)
+	var tangent_length := M.norm(longitudinal)
+	if tangent_length < Geometry.MIN_AXLE_PROJECTION:
+		return _failure("ring rolling direction is outside the supported camber domain")
+	longitudinal = M.scale(longitudinal, 1.0 / tangent_length)
+	var lateral := M.cross(normal, longitudinal)
+	lateral = M.scale(lateral, 1.0 / M.norm(lateral))
+	return {ok = true, longitudinal = longitudinal, lateral = lateral}
+
+
+const CAPACITY_CONTEXT_FORMAT := "openrc-fixed-plane-capacity-context v1"
+
+
+## The owner identity names the ACTUAL derivative/source/held configuration.
+## This factory binds immutable mechanics/provider; it cannot authenticate the
+## evaluator closure. Whole-interval exclusion of sources/transitions remains
+## trusted owner authority, separately bound by Step's interval certificate.
+static func prepare_capacity(
+	prepared: Dictionary,
+	normal: Dictionary,
+	provider: Dictionary,
+	motion: Array,
+	owner_identity: String
+) -> Dictionary:
+	if (
+		typeof(prepared.get("ok")) != TYPE_BOOL
+		or typeof(prepared.get("law")) != TYPE_STRING
+		or not _prepared(prepared)
+		or not Capacity._text(owner_identity)
+		or typeof(normal.get("ok")) != TYPE_BOOL
+		or not normal.ok
+		or typeof(normal.get("identity")) != TYPE_STRING
+		or normal.identity != prepared.normal_identity
+		or typeof(normal.get("supports")) != TYPE_ARRAY
+		or normal.supports.size() != prepared.hardware.size()
+		or motion.size() != prepared.hardware.size()
+	):
+		return _failure("invalid fixed capacity owner mechanics")
+	if (
+		typeof(provider.get("geometry_law")) != TYPE_STRING
+		or provider.geometry_law != Support.LEGACY
+		or typeof(provider.get("surfaces")) != TYPE_PACKED_FLOAT64_ARRAY
+		or not provider.surfaces.is_empty()
+		or typeof(provider.get("regions")) != TYPE_ARRAY
+		or var_to_bytes(provider) != var_to_bytes(Support.prepare_legacy(PackedFloat64Array()))
+	):
+		return _failure("capacity packet supports the static default plane only")
+	var rows: Array = []
+	var seen := {}
+	for raw: Variant in motion:
+		if (
+			typeof(raw) != TYPE_DICTIONARY
+			or raw.size() != 5
+			or not raw.has_all(
+				["contact_id", "hub_body", "axle_body", "carrier_rate_body", "carrier_accel_body"]
+			)
+			or typeof(raw.contact_id) != TYPE_STRING
+			or seen.has(raw.contact_id)
+		):
+			return _failure("invalid capacity motion identity")
+		for key: String in ["hub_body", "axle_body", "carrier_rate_body", "carrier_accel_body"]:
+			if not Stage._finite_shape(raw[key], 3):
+				return _failure("invalid capacity motion vector")
+		seen[raw.contact_id] = raw
+	for i in prepared.hardware.size():
+		var support: Variant = normal.supports[i]
+		if (
+			typeof(support) != TYPE_DICTIONARY
+			or typeof(support.get("contact_id")) != TYPE_STRING
+			or not seen.has(support.contact_id)
+			or support.contact_id != prepared.hardware[i].contact_id
+			or not Stage._finite_shape(support.get("hub_body"), 3)
+			or not Stage._finite_shape(support.get("axle_body"), 3)
+			or absf(M.norm(support.axle_body) - 1.0) > 1e-9
+		):
+			return _failure("capacity support identity")
+		var row: Dictionary = seen[support.contact_id]
+		if (
+			var_to_bytes(row.hub_body) != var_to_bytes(support.hub_body)
+			or var_to_bytes(row.axle_body) != var_to_bytes(support.axle_body)
+			or M.norm(row.carrier_rate_body) != 0.0
+			or M.norm(row.carrier_accel_body) != 0.0
+		):
+			return _failure("capacity supports fixed hubs/axes only")
+		rows.append(row.duplicate(true))
+	var context := {
+		ok = true,
+		format = CAPACITY_CONTEXT_FORMAT,
+		traction = prepared.duplicate(true),
+		normal = normal.duplicate(true),
+		provider = provider.duplicate(true),
+		motion = rows,
+		owner_identity = owner_identity
+	}
+	context.identity = JSON.stringify(context, "", true, true).sha256_text()
+	context.seal = JSON.stringify(context, "", true, true).sha256_text()
+	return context
+
+
+static func _capacity_context_valid(context: Dictionary) -> bool:
+	if (
+		typeof(context.get("ok")) != TYPE_BOOL
+		or not context.ok
+		or typeof(context.get("format")) != TYPE_STRING
+		or context.format != CAPACITY_CONTEXT_FORMAT
+		or not Capacity._text(context.get("identity"))
+		or not Capacity._text(context.get("seal"))
+		or typeof(context.get("traction")) != TYPE_DICTIONARY
+		or typeof(context.get("normal")) != TYPE_DICTIONARY
+		or typeof(context.get("provider")) != TYPE_DICTIONARY
+		or typeof(context.get("motion")) != TYPE_ARRAY
+	):
+		return false
+	var copy := context.duplicate(true)
+	copy.erase("seal")
+	if (
+		context.seal != JSON.stringify(copy, "", true, true).sha256_text()
+		or not Capacity._text(context.get("owner_identity"))
+	):
+		return false
+	var rebuilt := prepare_capacity(
+		context.traction, context.normal, context.provider, context.motion, context.owner_identity
+	)
+	return rebuilt.get("ok", false) and var_to_bytes(rebuilt) == var_to_bytes(context)
+
+
+## Emits current-pose unit-capacity rows even at N=0. No normal law is evaluated,
+## no physical contact snapshot is modified, and no force/potential is authored.
+static func capacity_packet(
+	context: Dictionary,
+	body: PackedFloat64Array,
+	cg_body_m: PackedFloat64Array,
+	at: float,
+	brake_demands: PackedFloat64Array
+) -> Dictionary:
+	if (
+		not _capacity_context_valid(context)
+		or not Stage._finite_shape(body, RB.SIZE)
+		or not Stage._finite_shape(cg_body_m, 3)
+		or not _number(at)
+		or at < 0.0
+	):
+		return _failure("invalid sealed capacity context/state")
+	var prepared: Dictionary = context.traction
+	var count: int = prepared.hardware.size()
+	if not Stage._finite_shape(brake_demands, count):
+		return _failure("capacity brake dimensions")
+	for value: float in brake_demands:
+		if value < 0.0 or value > 1.0:
+			return _failure("capacity brake demand")
+	var q := body.slice(RB.ATT, RB.ATT + 4)
+	var norm_sq := 0.0
+	for value: float in q:
+		norm_sq += value * value
+	if not is_finite(norm_sq) or norm_sq <= 1e-24:
+		return _failure("capacity stage attitude")
+	q = M.q_normalized(q)
+	var inverse := M.q_conj(q)
+	var packet := {
+		format = Capacity.FORMAT,
+		law = Capacity.LAW,
+		binding_identity = context.identity,
+		time_s = at,
+		pose_state = body.slice(0, 3),
+		contact_ids = PackedStringArray(),
+		row_ids = PackedStringArray(),
+		group_ids = PackedStringArray(),
+		jacobian = PackedFloat64Array(),
+		bias = PackedFloat64Array(),
+		groups = [],
+		row_contact_indices = PackedInt64Array(),
+		normal_first = PackedFloat64Array(),
+		normal_last = PackedFloat64Array(),
+		independent_rates = PackedFloat64Array()
+	}
+	packet.pose_state.append_array(body.slice(RB.ATT, RB.ATT + 4))
+	for i in count:
+		var wheel: Dictionary = prepared.hardware[i]
+		var motion: Dictionary = context.motion[i]
+		packet.contact_ids.append(wheel.contact_id)
+		var axis := M.scale(motion.axle_body, 1.0 / M.norm(motion.axle_body))
+		var hub := M.add(body.slice(0, 3), M.q_rotate(q, motion.hub_body))
+		var geometry := Geometry.heightfield(
+			context.provider, hub, M.q_rotate(q, axis), wheel.radius_m, at
+		)
+		if not geometry.ok:
+			return _failure("capacity ring geometry unsupported")
+		var sample := Support.sample(
+			context.provider, geometry.surface_point_ned, M.v3(0.0, 0.0, 0.0), at
+		)
+		if (
+			not sample.ok
+			or sample.surface_kind != "solid"
+			or M.norm(sample.surface_velocity_ned) != 0.0
+			or not sample.material_resolved
+			or not prepared.materials.has(sample.material_id)
+		):
+			return _failure("capacity material/solid support unsupported")
+		var rho := M.q_rotate(inverse, geometry.hub_arm_ned)
+		var record := {
+			geometry_evaluated = true,
+			geometry_status = "stationary_support",
+			material_resolved = sample.material_resolved,
+			material_id = sample.material_id,
+			normal_ned = geometry.normal_ned,
+			rho_body_m = rho,
+			arm_datum_body_m = M.add(motion.hub_body, rho)
+		}
+		var frame := _contact_frame(prepared, wheel, record, axis, inverse, cg_body_m)
+		if not frame.ok:
+			return frame
+		var coefficients: Dictionary = prepared.materials[sample.material_id].values
+		var start: int = packet.bias.size()
+		for tangent_index in 2:
+			var tangent: PackedFloat64Array = (
+				frame.longitudinal if tangent_index == 0 else frame.lateral
+			)
+			var row := Impulse.point_tangent(
+				M.sub(record.arm_datum_body_m, cg_body_m),
+				rho,
+				axis,
+				i + 1,
+				tangent,
+				prepared.rotor_count,
+				motion.carrier_rate_body
+			)
+			if not row.ok:
+				return _failure("capacity tangent row")
+			packet.jacobian.append_array(row.row)
+			packet.bias.append(row.bias)
+			packet.row_contact_indices.append(i)
+			packet.normal_first.append(
+				(
+					coefficients.longitudinal_friction
+					if tangent_index == 0
+					else coefficients.lateral_friction
+				)
+			)
+			packet.normal_last.append(1.0)
+			packet.independent_rates.append(0.0)
+			packet.row_ids.append(
+				(
+					JSON
+					. stringify(
+						[
+							wheel.contact_id,
+							sample.material_id,
+							"longitudinal" if tangent_index == 0 else "lateral"
+						]
+					)
+					. sha256_text()
+				)
+			)
+		packet.groups.append(PackedInt32Array([start, start + 1]))
+		packet.group_ids.append(
+			JSON.stringify([wheel.contact_id, sample.material_id, "tire"]).sha256_text()
+		)
+		var rolling := Impulse.external_rolling(
+			axis, i + 1, prepared.rotor_count, motion.carrier_rate_body
+		)
+		if not rolling.ok:
+			return _failure("capacity rolling row")
+		packet.groups.append(PackedInt32Array([packet.bias.size()]))
+		packet.group_ids.append(
+			JSON.stringify([wheel.contact_id, sample.material_id, "rolling"]).sha256_text()
+		)
+		packet.jacobian.append_array(rolling.row)
+		packet.bias.append(rolling.bias)
+		packet.row_contact_indices.append(i)
+		packet.normal_first.append(coefficients.rolling_resistance)
+		packet.normal_last.append(wheel.radius_m)
+		packet.independent_rates.append(0.0)
+		packet.row_ids.append(
+			JSON.stringify([wheel.contact_id, sample.material_id, "rolling"]).sha256_text()
+		)
+		if wheel.brake_torque_nm > 0.0:
+			var brake := Impulse.internal_brake(i + 1, prepared.rotor_count)
+			if not brake.ok:
+				return _failure("capacity brake row")
+			packet.groups.append(PackedInt32Array([packet.bias.size()]))
+			packet.group_ids.append(JSON.stringify([wheel.contact_id, "brake"]).sha256_text())
+			packet.jacobian.append_array(brake.row)
+			packet.bias.append(brake.bias)
+			packet.row_contact_indices.append(-1)
+			packet.normal_first.append(0.0)
+			packet.normal_last.append(0.0)
+			packet.independent_rates.append(wheel.brake_torque_nm * brake_demands[i])
+			packet.row_ids.append(JSON.stringify([wheel.contact_id, "brake"]).sha256_text())
+	var valid := Capacity.validate(packet, body, at, prepared.rotor_count, packet.contact_ids)
+	if not valid.ok:
+		return valid
+	return {ok = true, packet = packet}

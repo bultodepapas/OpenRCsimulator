@@ -1,0 +1,62 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ERROR: Parse JSON failed. Error at line 0: Expected 'true', 'false', or 'null', got 'bad'
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] _prepare_fixed_brake_metadata (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:458)
+       [1] _prepare_weather (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:222)
+       [2] record (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:1103)
+       [3] record (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:70)
+       [4] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:121)
+       [5] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:27)
+ERROR: Parse JSON failed. Error at line 0: Expected 'true', 'false', or 'null', got 'bad'
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] _has_flap_metadata_claim (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:499)
+       [1] _prepare_fixed_brake_metadata (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:460)
+       [2] _prepare_weather (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:222)
+       [3] record (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:1103)
+       [4] record (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:70)
+       [5] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:121)
+       [6] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:27)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-4439117.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-4439117.orfl (4 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+FAIL legacy Trace accepts actual owner sample ["tick", "t_s", "north_m", "east_m", "down_m", "alt_m", "u_mps", "v_mps", "w_mps", "speed_mps", "qw", "qx", "qy", "qz", "yaw_deg", "pitch_deg", "roll_deg", "p_radps", "q_radps", "r_radps", "Fx_N", "Fy_N", "Fz_N", "Mx_Nm", "My_Nm", "Mz_Nm", "cmd_roll", "cmd_pitch", "cmd_yaw", "cmd_throttle", "engine_rpm", "srv_roll", "srv_pitch", "srv_yaw"]
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+FAIL legacy Trace accepts actual owner sample ["tick", "t_s", "north_m", "east_m", "down_m", "alt_m", "u_mps", "v_mps", "w_mps", "speed_mps", "qw", "qx", "qy", "qz", "yaw_deg", "pitch_deg", "roll_deg", "p_radps", "q_radps", "r_radps", "Fx_N", "Fy_N", "Fz_N", "Mx_Nm", "My_Nm", "Mz_Nm", "cmd_roll", "cmd_pitch", "cmd_yaw", "cmd_throttle", "engine_rpm", "srv_roll", "srv_pitch", "srv_yaw", "cmd_wheel_brake"]
+ERROR: Parse JSON failed. Error at line 0: Expected 'true', 'false', or 'null', got 'bad'
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] _prepare_fixed_brake_metadata (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:458)
+       [1] _prepare_weather (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:222)
+       [2] record (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:1103)
+       [3] record (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:70)
+       [4] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:121)
+       [5] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:27)
+ERROR: Parse JSON failed. Error at line 0: Expected 'true', 'false', or 'null', got 'bad'
+   at: parse_string (core/io/json.cpp:601)
+   GDScript backtrace (most recent call first):
+       [0] _has_gear_metadata_claim (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:485)
+       [1] _prepare_turbine_metadata (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:626)
+       [2] _prepare_shaft_metadata (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:872)
+       [3] _prepare_weather (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:223)
+       [4] record (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/trace.gd:1103)
+       [5] record (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:70)
+       [6] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:121)
+       [7] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:27)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-4609127.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-4609127.orfl (4 ticks)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Fixed brake candidate: 139 checks, 2 failed

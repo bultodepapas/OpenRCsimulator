@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "089a3704-da69-4446-9636-61499c25eee5",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_projection.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:24:04.026711+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-fixed-brake-session\\checks\\projection\\godot-460quhmt\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-fixed-brake-session\\checks\\projection\\godot-460quhmt\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Fixed brake candidate: 237 checks, 0 failed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "Fixed brake candidate: 237 checks, 0 failed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 8.157,
+  "log_bytes": 2454,
+  "log_sha256": "ab3d933718a3b845c6ce6365436b612d9b7211b6216bdd075d7470432334cd5d"
+}

@@ -1,0 +1,21 @@
+{
+  "format": "openrc-hull-native-tool-final-receipt-v1",
+  "tool_manifest_sha256": "aefbfae0cb203d4f8d29965ad519324fc1b1ab5f64e4cc9d684477ad1e8a08b0",
+  "tools_still_draft": true,
+  "python_tests": 41,
+  "preserved_fleet_scope_tests": 6,
+  "actual_main_fixture_checks": 18,
+  "native_process_report": "tmp/gp19-hull-native/checks/native-01/godot-tmg0dxpp/report.json",
+  "native_process_complete": true,
+  "native_engine_diagnostics": {
+    "error": 0,
+    "warning": 0
+  },
+  "native_check": "tmp/gp19-hull-native/native-01/checks-hardened-final.json",
+  "native_passed": true,
+  "native_wav_sha256": "60b7a61f210a081da2fca0b3426c25d22209722f411e3382cae73e63b341fe77",
+  "native_probe_sha256": "769565db98149dbafae91a33f78ceba0f99ac3fd90adf9da9be716c80155a49a",
+  "hardened_checker_sha256": "e6542c651f915ac84f0d5876e34668f96f2a8add4fdbfa6a2edc5c051e112910",
+  "native_capture_unchanged_after_checker_hardening": true,
+  "source_order_note": "Session.reset:3055 calls _reset_impl\u2192_commit_start_candidate:950\u2192Simulation.commit_prepared_reset:167\u2192_publish_committed_boundary:205. notification.call:210 emits resetting, stepped.emit:230 publishes committedtick0; only after return does Session.reset:3065 call _statistics_committed, increment generation:3071. One old-generation leading phase5 accepted_step tick0 is bounded/documented; not a trial/nested preparatory evaluation."
+}

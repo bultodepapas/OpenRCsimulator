@@ -1,0 +1,112 @@
+{
+  "format": "openrc-audio-capture-checks-v1",
+  "captures": [
+    {
+      "capture": "review",
+      "sha256_wav": "60b7a61f210a081da2fca0b3426c25d22209722f411e3382cae73e63b341fe77",
+      "checker_sha256": "e6542c651f915ac84f0d5876e34668f96f2a8add4fdbfa6a2edc5c051e112910",
+      "driver": "WASAPI",
+      "display": "headless",
+      "fps": 60,
+      "aircraft": "jensen-das-ugly-stik-60",
+      "seconds": 12.010666666666667,
+      "capture_wall_seconds": 12.004941,
+      "capture_wall_error_seconds": 0.00572566666666674,
+      "probe_sha256": "769565db98149dbafae91a33f78ceba0f99ac3fd90adf9da9be716c80155a49a",
+      "capture_bookkeeping": {
+        "buffer_length_frames": 65536,
+        "final": {
+          "available_frames_after_flush": 0,
+          "available_frames_before_flush": 0,
+          "discarded_frames": 0,
+          "flushed_frames": 0,
+          "pushed_frames": 576512
+        },
+        "flushed_frames": 0,
+        "initial": {
+          "available_frames": 0,
+          "discarded_frames": 0,
+          "pushed_frames": 0
+        },
+        "overflow_discarded_frames": 0,
+        "pushed_frames": 576512,
+        "recorded_frames": 576512,
+        "truncated_frames": 0,
+        "unaccounted_pushed_frames": 0
+      },
+      "timing_sample_count": 648,
+      "peak_dbfs": -6.92947976039553,
+      "rms_dbfs": -31.2049340794541,
+      "pause_peak_linear": 0.0,
+      "dropped_frames": 0,
+      "review_kind": "hull_scrape",
+      "wildlife_event_count": 0,
+      "adapter_p95_us": 416,
+      "adapter_max_us": 2069,
+      "stereo_difference_rms": 0.000889084366372597,
+      "max_adjacent_sample_step": 0.149627685546875,
+      "passed": true,
+      "failures": [],
+      "hull_scrape": {
+        "scope": "CrashFX bus only, no Master/combined mix or acoustic calibration",
+        "phase_pcm": {
+          "airborne": {
+            "frames": 24128,
+            "peak_linear": 0.0,
+            "rms_linear": 0.0,
+            "begin_frame": 16800,
+            "end_frame": 40928
+          },
+          "opening_overlap": {
+            "frames": 24128,
+            "peak_linear": 0.0,
+            "rms_linear": 0.0,
+            "begin_frame": 64928,
+            "end_frame": 89056
+          },
+          "brush": {
+            "frames": 90880,
+            "peak_linear": 0.2889404296875,
+            "rms_linear": 0.05487147198087834,
+            "begin_frame": 97696,
+            "end_frame": 188576
+          },
+          "pause": {
+            "frames": 24640,
+            "peak_linear": 0.0,
+            "rms_linear": 0.0,
+            "begin_frame": 207776,
+            "end_frame": 232416
+          },
+          "resume": {
+            "frames": 24128,
+            "peak_linear": 0.004119873046875,
+            "rms_linear": 0.00112729512740533,
+            "begin_frame": 256416,
+            "end_frame": 280544
+          },
+          "reset": {
+            "frames": 23616,
+            "peak_linear": 0.0,
+            "rms_linear": 0.0,
+            "begin_frame": 304544,
+            "end_frame": 328160
+          },
+          "terminal": {
+            "frames": 237312,
+            "peak_linear": 0.4503173828125,
+            "rms_linear": 0.02614751193685332,
+            "begin_frame": 336800,
+            "end_frame": 574112
+          }
+        },
+        "pause_peak_linear": 0.0,
+        "accepted_samples": 1453,
+        "render_samples": 708,
+        "source_files_unchanged": true,
+        "note": "Loaded source facts, tagged native player state and nonzero bus PCM are separate checks; no emission-counter-to-PCM grain, heat, damage, calibrated sound or whole-flight claim."
+      }
+    }
+  ],
+  "limits": "Mixer and transition verification only. Sample steps are reported, not a perceptual click detector. Shared-host wall timings are not target-hardware qualification."
+}

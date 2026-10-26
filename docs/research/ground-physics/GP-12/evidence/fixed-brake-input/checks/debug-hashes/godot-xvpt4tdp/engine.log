@@ -1,0 +1,31 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+HASH_DEBUG gp-extra-300s-60 cp=d9bd9b7df316718db5379f30a82d900a1cd4e4f48c35ddd844f766ed72593926 expected=d9bd9b7df316718db5379f30a82d900a1cd4e4f48c35ddd844f766ed72593926 meta=68cda076bb39527884afe1cb500d552b019f93ddfe87616ec173842fc33e511c expected=22a77fa5f73b68d424830d680ccf560279508bb93c591bc387016deec6ce9abf engine=4.8-beta1 (official)/4.8-beta1 (official) hz=240/240.0
+FAIL frozen legacy checkpoint/metadata exact gp-extra-300s-60 
+FAIL frozen legacy CSV exact gp-extra-300s-60 
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+HASH_DEBUG jensen-das-ugly-stik-60 cp=1c0414cee7e272e71ad55631aceca38c9751bb7b619578cb6ad70dc2ac3da645 expected=1c0414cee7e272e71ad55631aceca38c9751bb7b619578cb6ad70dc2ac3da645 meta=a87e2c5c3ed8c6b63a6bc1cf4f6729686fd9b227d5604d8ae5193d335c5dcd23 expected=05db5d196ea04aa51747acda3f44dd2812e13c1e716fa6a4947fbbf0928c5741 engine=4.8-beta1 (official)/4.8-beta1 (official) hz=240/240.0
+FAIL frozen legacy checkpoint/metadata exact jensen-das-ugly-stik-60 
+FAIL frozen legacy CSV exact jensen-das-ugly-stik-60 
+HASH_DEBUG p51d-mustang-120 cp=caf6d96b831d1bf26b47685bee3591bb922c260d1f58ff3368e46eb137c23dea expected=caf6d96b831d1bf26b47685bee3591bb922c260d1f58ff3368e46eb137c23dea meta=ac3440586b9a3bc0547559555b185ab2693b30c9912638ff6033835d9d4a9aa9 expected=5a6aac14502e966598b947d32faa74bb95e504237e26c908b400d667fdd48e2b engine=4.8-beta1 (official)/4.8-beta1 (official) hz=240/240.0
+FAIL frozen legacy checkpoint/metadata exact p51d-mustang-120 
+FAIL frozen legacy CSV exact p51d-mustang-120 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+HASH_DEBUG sebart-avanti-s-a200-p100rx cp=56dbcf8a87fd1b8caed5e2487d5ff0c7090dca54abd69c43396224492070998c expected=56dbcf8a87fd1b8caed5e2487d5ff0c7090dca54abd69c43396224492070998c meta=7449ecde3ee61a76169447014c79bfec28f27d740e6915f6e71e2bb48d910e00 expected=84041009f57e626e8874f2196a9d7ad96c51d75e2005c6b863bc597b6bc77f1d engine=4.8-beta1 (official)/4.8-beta1 (official) hz=240/240.0
+FAIL frozen legacy checkpoint/metadata exact sebart-avanti-s-a200-p100rx 
+FAIL frozen legacy CSV exact sebart-avanti-s-a200-p100rx 
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-10201274.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-10201274.orfl (4 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-10484326.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp12-fixed-brake-session/candidate-10484326.orfl (4 ticks)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Fixed brake candidate: 237 checks, 8 failed

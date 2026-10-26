@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8fadae6e-aade-4a42-8d6a-a8d2d041c6f9",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:11:07.529834+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-fixed-brake-session\\checks\\third\\godot-oqqzgij6\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-fixed-brake-session\\checks\\third\\godot-oqqzgij6\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Fixed brake candidate: 140 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.485,
+  "log_bytes": 2246,
+  "log_sha256": "9fe2fe65c4562ac50c9a474317f3103b7938297361b7a19b0a47ce376708e4c7"
+}

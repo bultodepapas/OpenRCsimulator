@@ -1,0 +1,63 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8b4a2dc1-863c-4bdc-b346-4f653ddfe398",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:20:09.372529+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-fixed-brake-session\\checks\\eighth\\godot-4rz4d5nn\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-fixed-brake-session\\checks\\eighth\\godot-4rz4d5nn\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Fixed brake candidate:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 17,
+      "message": "Invalid access to property or key 'state' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: rejected_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:222)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] rejected_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:222)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 29,
+      "message": "Invalid access to property or key 'state' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: rejected_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:222)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] rejected_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:222)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 12.25,
+  "log_bytes": 3631,
+  "log_sha256": "d636f1453ded7ea823b76720364d866d1748b31b7332ef35e68b212ef2269552"
+}

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2d80a295-2e6e-4599-adf3-e404b8f9860d",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/compat_test_aircraft_ground_traction.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T20:50:47.035023+00:00",
+  "label": "payload-traction",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\payload-traction-vbvd7d1q\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\payload-traction-vbvd7d1q\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Aircraft ground traction:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.172,
+  "log_bytes": 119,
+  "log_sha256": "1bf2d76d253a43513c0cc519f4badeb0f84d37366094830ab3071a0a24e7eebe"
+}

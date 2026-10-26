@@ -1,0 +1,55 @@
+{
+  "scope": "draft-only, not promoted",
+  "files": [
+    {
+      "path": "app/main.gd",
+      "base_sha256": "a6137c9ca9dbc5317e26bde0fb290ca3ad2d14c9cb285e5c2e2aec5951e279b2",
+      "payload_sha256": "6536a1632c69479aefb51e04dd0c15b534153b2c9dafca3fa186f2fa16e8b2ea"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "base_sha256": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864",
+      "payload_sha256": "da7a43bcdc7ac71bdd5194be55f44b13c3dd372b184ceaf35613cd38685eac2f"
+    },
+    {
+      "path": "app/sim/trace.gd",
+      "base_sha256": "1c529262fb33b7db3137f9cba064be0e32a6d9c7620ae224cc06500a5a05a62e",
+      "payload_sha256": "74e0e893ac698d0c1ed9e8af4fb2c29903570bfc5a62294ed18b722e951abc26"
+    },
+    {
+      "path": "app/tests/fixed_brake_trace_contract.py",
+      "base_sha256": null,
+      "payload_sha256": "739b9e36df0ee1fb1b2f2a797bd56c087770d6c1564387b52aceda2adbe0450b"
+    },
+    {
+      "path": "app/tests/fixtures/fixed_brake_legacy_outputs.json",
+      "base_sha256": null,
+      "payload_sha256": "76e9835a6fdd78ce90a3388b707f86c600eb529d7c3dc534ee7bd5955baf66a5"
+    },
+    {
+      "path": "app/tests/fixtures/fixed_brake_main_input.gd",
+      "base_sha256": null,
+      "payload_sha256": "40ba4e01cbf325f801a00da2a973ae4fde84d59ee0817bf0b052dc183a37dfe5"
+    },
+    {
+      "path": "app/tests/fixtures/fixed_brake_trace_flaps.csv",
+      "base_sha256": null,
+      "payload_sha256": "4d70221c43000717e03d833a1ca6bdf6f25159f55fb4ae54d627b6290cc29ba1"
+    },
+    {
+      "path": "app/tests/fixtures/fixed_brake_trace_stik.csv",
+      "base_sha256": null,
+      "payload_sha256": "c36767d27dcbd955ffec68ccf4935b617b57b3a746f4d18f65453e53d2e86ccc"
+    },
+    {
+      "path": "app/tests/test_fixed_brake_trace_contract.py",
+      "base_sha256": null,
+      "payload_sha256": "bb052f04cd7a23564c88264eb4a6d09966696f42cecf4539f75710e95e4885dc"
+    },
+    {
+      "path": "app/tests/test_fixed_gear_brake_input.gd",
+      "base_sha256": null,
+      "payload_sha256": "08f2a013f5f7a609d7b4e0319bcfaede82949d9639c1763fa1c44713392f1fdd"
+    }
+  ]
+}

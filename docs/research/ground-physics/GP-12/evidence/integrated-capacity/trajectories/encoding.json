@@ -1,0 +1,18 @@
+[
+  {
+    "path": "trajectories/full-0.25.bin.gz",
+    "uncompressed": {
+      "path": "tmp/gp12-capacity-production/full-0.25.bin",
+      "sha256": "326fa7e16f8b5eb7731fe8b1b8c17d196d065e7ce57403339df99b0608476410",
+      "bytes": 4851104
+    }
+  },
+  {
+    "path": "trajectories/full-1.2.bin.gz",
+    "uncompressed": {
+      "path": "tmp/gp12-capacity-production/full-1.2.bin",
+      "sha256": "653c7d240e31904df2c4ff0fc05e66dfef87a1a46c1e1b8ad111c41d580de6ac",
+      "bytes": 4542756
+    }
+  }
+]

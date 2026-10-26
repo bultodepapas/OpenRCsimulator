@@ -1,0 +1,60 @@
+{
+	"current_recording_solver_identity": "4ea93c8f7a5e2f746c3f7eb972a5d862687a58563424e6385c6e3da43e7d21e8",
+	"results": [
+		{
+			"baseline_sha256": "82e5488c247bc0667ce8b14ecbd450b0de978d3f42d5bc56b2dc2b08847de480",
+			"compared_ticks": 16,
+			"draft_vs_installed_candidate_difference": "",
+			"historical_row_difference": "",
+			"id": "gp-extra-300s-60",
+			"original_solver_sha256": "09feb7ed9e2bdc4965ce098e0c41916667f3d2476b85e2da88793d1693dbbd88",
+			"solver_changed": true
+		},
+		{
+			"baseline_sha256": "aef41ce81e41a6764377666bac8739cf9f985c8dbfd2c5ad168d127255f0f447",
+			"compared_ticks": 16,
+			"draft_vs_installed_candidate_difference": "",
+			"historical_row_difference": "",
+			"id": "jensen-das-ugly-stik-60",
+			"original_solver_sha256": "09feb7ed9e2bdc4965ce098e0c41916667f3d2476b85e2da88793d1693dbbd88",
+			"solver_changed": true
+		},
+		{
+			"baseline_sha256": "ab1fbfc2e0fa9b04f47b5e3bae2aeb2ad2a5b44aedee0ab13251b0033041a577",
+			"compared_ticks": 16,
+			"draft_vs_installed_candidate_difference": "",
+			"historical_row_difference": "",
+			"id": "p51d-mustang-120",
+			"original_solver_sha256": "09feb7ed9e2bdc4965ce098e0c41916667f3d2476b85e2da88793d1693dbbd88",
+			"solver_changed": true
+		},
+		{
+			"baseline_sha256": "04a973f9c2f9df57336b0954e9139f215ca9a22b48d599634c56650df2e0c15e",
+			"compared_ticks": 16,
+			"draft_vs_installed_candidate_difference": "",
+			"historical_row_difference": "",
+			"id": "sebart-avanti-s-a200-p100rx",
+			"original_solver_sha256": "09feb7ed9e2bdc4965ce098e0c41916667f3d2476b85e2da88793d1693dbbd88",
+			"solver_changed": true
+		},
+		{
+			"baseline_sha256": "43b1a33d988f2f116b1fb48476de0493f0bbd0a920348e83e535635c3a5d4629",
+			"compared_ticks": 16,
+			"draft_vs_installed_candidate_difference": "",
+			"historical_row_difference": "",
+			"id": "stik-glow-61fx-2t",
+			"original_solver_sha256": "09feb7ed9e2bdc4965ce098e0c41916667f3d2476b85e2da88793d1693dbbd88",
+			"solver_changed": true
+		},
+		{
+			"baseline_sha256": "e2a5fc534d8f3b54138d939830fcd8ee37f66c07960a29020ae82309a87308b7",
+			"compared_ticks": 16,
+			"draft_vs_installed_candidate_difference": "",
+			"historical_row_difference": "",
+			"id": "turbo-lumber-evolution",
+			"original_solver_sha256": "09feb7ed9e2bdc4965ce098e0c41916667f3d2476b85e2da88793d1693dbbd88",
+			"solver_changed": true
+		}
+	],
+	"scope": "explicit candidate physics comparison; draft runtime hashes separately pinned; no historical exact-source identity claim"
+}

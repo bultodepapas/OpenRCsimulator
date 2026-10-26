@@ -18,4 +18,14 @@ The [default-field dry-contact correction](evidence/dry-lake-scrape/README.md) q
 
 A [native Turbo Lumber capture](evidence/native-continuous-timber/README.md) now completes takeoff, touchdown and straight-ahead terrain rollout in one production flight. WASAPI PCM clocks, zero capture discards/clipping and all 44 selected before/after source hashes pass; estimated Master true peak is -22.5047 dBTP. This single current-physics route does not activate the advanced operator or establish isolated hull-scrape audibility, human listening, whole-fleet coverage or 1080p performance. The capture wrapper follows the live catalog and distinguishes requested-aircraft success from complete catalog coverage.
 
-GP-19 remains open for advanced accepted wheel/slip/interval-work observations, suspension and damage layers, native output, listening, combined budgets and whole-flight performance. No new recording or acoustic calibration is claimed.
+The [native hull-scrape cohort](evidence/native-hull-scrape/README.md) verifies the
+current default-field Stik route through Main, Session and Director. A 12.0107-second
+WASAPI CrashFX capture has no lost frames: loaded brush and terminal intervals have
+measured PCM, while guarded airborne, opening-overlap, pause and reset intervals are
+silent. The installed probe passes 18 actual-scene checks and its checker passes 41
+Python tests. These are explicit reset fixtures, one aircraft and a separate bus;
+they do not establish continuous full-flight, combined Master or listening acceptance.
+
+GP-19 remains open for advanced accepted wheel/slip/interval-work observations,
+suspension and damage layers, broader native coverage, listening, combined budgets
+and whole-flight performance. No acoustic calibration is claimed.

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "69a63278-dfcc-4837-a979-e599b88681b7",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/parse.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T20:22:08.902070+00:00",
+  "label": "complete-draft-parse-clean",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\complete-draft-parse-clean-awyhiho1\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\complete-draft-parse-clean-awyhiho1\\report.json",
+  "timeout_seconds": 45.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Capacity draft parsed:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.75,
+  "log_bytes": 236,
+  "log_sha256": "10cac28fe1958b32575fa21f4ff0c2113cb8b9e97d419f950859d23594d9cd66"
+}

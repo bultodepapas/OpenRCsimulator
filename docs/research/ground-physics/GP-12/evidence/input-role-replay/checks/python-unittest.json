@@ -1,0 +1,19 @@
+{
+  "format": "openrc-command-observation v1",
+  "source": "root tool execution, retained concise result",
+  "command": [
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools/flight_log",
+    "-p",
+    "test_flight_log.py"
+  ],
+  "exit_code": 0,
+  "tests": 16,
+  "elapsed_seconds": 5.812,
+  "result": "OK",
+  "scope": "Python flight-log wrapper command/summary regressions; not Godot checked-runner assertions"
+}

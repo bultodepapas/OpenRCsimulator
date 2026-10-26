@@ -1,0 +1,80 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1061f00c-e7da-4ba1-bf11-40974fa1f4fa",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--log-file",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/parse-live.log",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/parse.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T20:19:02.189881+00:00",
+  "label": "first-packet-parse",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\first-packet-parse-6wbnvd0s\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\first-packet-parse-6wbnvd0s\\report.json",
+  "timeout_seconds": 45.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Capacity draft parsed:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 4,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Assigned value for constant \"COLUMNS\" isn't a constant expression.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:62)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Parse Error: Cannot infer the type of \"value\" variable because the value doesn't have a set type.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:172)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 7,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/parse.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 9,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/parse.gd\" with error \"Compilation failed\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)",
+        "Capacity draft parsed: openrc-interval-contact-capacity v1 fixed-hub-wheel-material-impulse-rows-v1"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.656,
+  "log_bytes": 964,
+  "log_sha256": "1641520a6a2e911af4f9a44f73e97679e43f121c9a3772ae9952836adf812ded"
+}

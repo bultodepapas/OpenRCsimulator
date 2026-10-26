@@ -1,0 +1,1190 @@
+{
+  "format": "openrc-shared-contact-capacity-production-draft-v1",
+  "utc": "2026-10-26T20:54:18.317159+00:00",
+  "head": "fa9f387f68f753d988456764f5723932eae64cea",
+  "dirty": " M app/tools/flight_log_cli.gd\n M docs/research/night-flight-lighting/implementation.md\n M tools/trailer/README.md\n M tools/trailer/capture_flight.gd\n M tools/trailer/test_lighting_capture_profile.gd\n?? app/tests/fixtures/flight_log_input_columns.json\n?? app/tests/test_flight_log_inputs.gd\n",
+  "main_prehashes": [
+    {
+      "path": "app/physics/aircraft_ground_step.gd",
+      "sha256": "e042c5933dc501d244684cbe8a6480db30a3a7056629a6c014db979dba889b77"
+    },
+    {
+      "path": "app/physics/aircraft_ground_traction.gd",
+      "sha256": "86987e1e3b036fca2c4b3dd7368308399a38fe14695adaffa0935b9863bc1b9c"
+    }
+  ],
+  "payload": [
+    {
+      "target": "app/physics/aircraft_ground_step.gd",
+      "production": {
+        "path": "tmp/gp12-capacity-production/review-v1/production/app/physics/aircraft_ground_step.gd",
+        "sha256": "64cbe64bd2fe54ef36531564fbbeebe17272652de9c78b7711fa545e2ababc3e",
+        "bytes": 61980
+      },
+      "validated": {
+        "path": "tmp/gp12-capacity-production/review-v1/validation/aircraft_ground_step.gd",
+        "sha256": "611e7eb1306f82a0d7a8cacd738143e6d5c884017b1094b4b04ac0d02d20b4dd",
+        "bytes": 62026
+      },
+      "transform": "own import paths only"
+    },
+    {
+      "target": "app/physics/aircraft_ground_traction.gd",
+      "production": {
+        "path": "tmp/gp12-capacity-production/review-v1/production/app/physics/aircraft_ground_traction.gd",
+        "sha256": "35f6cdd39e1877c5c7d53e9347d08c805caa334fa56be0dbb0ea00057e972e99",
+        "bytes": 23955
+      },
+      "validated": {
+        "path": "tmp/gp12-capacity-production/review-v1/validation/aircraft_ground_traction.gd",
+        "sha256": "4b4f918172cdf1ab62f4b4d82953ed8b34c8360487d8ffb8d2c9ec95aed121db",
+        "bytes": 24001
+      },
+      "transform": "own import paths only"
+    },
+    {
+      "target": "app/physics/contact_capacity.gd",
+      "production": {
+        "path": "tmp/gp12-capacity-production/review-v1/production/app/physics/contact_capacity.gd",
+        "sha256": "f43eaf56725e79695edb47ace1a16fbcead0c30f33bf2ee05f87a267f86f3bab",
+        "bytes": 16534
+      },
+      "validated": {
+        "path": "tmp/gp12-capacity-production/review-v1/validation/contact_capacity.gd",
+        "sha256": "f43eaf56725e79695edb47ace1a16fbcead0c30f33bf2ee05f87a267f86f3bab",
+        "bytes": 16534
+      },
+      "transform": "own import paths only"
+    },
+    {
+      "target": "app/tests/test_contact_capacity.gd",
+      "production": {
+        "path": "tmp/gp12-capacity-production/review-v1/production/app/tests/test_contact_capacity.gd",
+        "sha256": "74c4238dfe109b5f63a72902bb4e301d008ab27221ecf1edfc6222c765bdb122",
+        "bytes": 13145
+      },
+      "validated": {
+        "path": "tmp/gp12-capacity-production/review-v1/validation/test_contact_capacity.gd",
+        "sha256": "c0d0ece25cfd7771760ab011370e6eeecb890a69c7877c622e4b8dd8a40be964",
+        "bytes": 13237
+      },
+      "transform": "own import paths only"
+    },
+    {
+      "target": "app/tests/test_traction_capacity.gd",
+      "production": {
+        "path": "tmp/gp12-capacity-production/review-v1/production/app/tests/test_traction_capacity.gd",
+        "sha256": "b0fbad5997d871e29561fee4add200baa2182d1f73c73c1e0718f48f90ed14fd",
+        "bytes": 7819
+      },
+      "validated": {
+        "path": "tmp/gp12-capacity-production/review-v1/validation/test_traction_capacity.gd",
+        "sha256": "adf56ae9106f32d16dc9529e5667487b087bc6c76d013842f9166065ecdb9125",
+        "bytes": 7957
+      },
+      "transform": "own import paths only"
+    }
+  ],
+  "strict_focused_assertions": 409,
+  "checks": [
+    {
+      "assertions": 78,
+      "report": {
+        "path": "tmp/gp12-capacity-production/checks/payload-packet-7d1njveo/report.json",
+        "sha256": "ebb42b2f4ca3fc0d54322786a06fb54fb748b18e0ffe8a8554d388016846847f",
+        "bytes": 1283
+      },
+      "log": {
+        "path": "tmp/gp12-capacity-production/checks/payload-packet-7d1njveo/engine.log",
+        "sha256": "5ab6ddf819a578d3e3442e75851b63010cfb79bd207aaade2f0d25e9e01d3d83",
+        "bytes": 118
+      }
+    },
+    {
+      "assertions": 78,
+      "report": {
+        "path": "tmp/gp12-capacity-production/checks/payload-producer-p1kt6urr/report.json",
+        "sha256": "d1107668c4cf7338698d18c96a18f6503a8798b38adbf74526209626a07792bd",
+        "bytes": 1405
+      },
+      "log": {
+        "path": "tmp/gp12-capacity-production/checks/payload-producer-p1kt6urr/engine.log",
+        "sha256": "99be15cc08f5e7a73fe7ea40b3ffa3cb226418514ec18421c2f10f325860818c",
+        "bytes": 121
+      }
+    },
+    {
+      "assertions": 167,
+      "report": {
+        "path": "tmp/gp12-capacity-production/checks/payload-step-b0jksa6i/report.json",
+        "sha256": "164ed19baa5e5dfc43625eac65e748eabbdfdb0dabb779340b6e4651ddfd5265",
+        "bytes": 1286
+      },
+      "log": {
+        "path": "tmp/gp12-capacity-production/checks/payload-step-b0jksa6i/engine.log",
+        "sha256": "2141d120ae5766d70ac6f424ba091ffcb6208f4e55bb34013379e8e5fb950248",
+        "bytes": 116
+      }
+    },
+    {
+      "assertions": 86,
+      "report": {
+        "path": "tmp/gp12-capacity-production/checks/payload-traction-vbvd7d1q/report.json",
+        "sha256": "a7add9793bef158cc7362bb9b7b51f919e2dd3bc3a3b02622f7bfaf09f86aef7",
+        "bytes": 1306
+      },
+      "log": {
+        "path": "tmp/gp12-capacity-production/checks/payload-traction-vbvd7d1q/engine.log",
+        "sha256": "1bf2d76d253a43513c0cc519f4badeb0f84d37366094830ab3071a0a24e7eebe",
+        "bytes": 119
+      }
+    }
+  ],
+  "frozen_scripts": [
+    {
+      "original": {
+        "path": "app/physics/aero.gd",
+        "sha256": "a325cac3af731970a667eef4d76c1208a222aa187802e088bf911fc1365f160b",
+        "bytes": 77241
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aero.gd",
+        "sha256": "70211e5e572c7db3e7a05ec1ef88f9b7f83993486682966a4ab773316fcd0d23",
+        "bytes": 77691
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_contract.gd",
+        "sha256": "42f9c2e62877591f166d12e925dfb2f8578cba0d15ec8ac674a0fed36a228718",
+        "bytes": 19380
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_contract.gd",
+        "sha256": "0078f35e8bcab4d63cee2d7e61bfb219e5eb51d5869b12dd6b8c21ca4787932c",
+        "bytes": 19501
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": [
+        "class_name AircraftContract"
+      ]
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_data.gd",
+        "sha256": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a",
+        "bytes": 154119
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_data.gd",
+        "sha256": "b19442c8d00b15d72e4077da3f1bd31e36f3b1fa2202967a47d5a4f69623bee3",
+        "bytes": 155319
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_ground_accuracy.gd",
+        "sha256": "8aefb92b1ae8441ab4d883b61c447e7d7864cb830a98ae2c82258cd0a0d5424a",
+        "bytes": 28919
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_ground_accuracy.gd",
+        "sha256": "0c3afda12979edcac654d1a59d4180a0e580c3149286fa0562281586be9071b4",
+        "bytes": 29144
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_ground_dynamics.gd",
+        "sha256": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d",
+        "bytes": 17442
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_ground_dynamics.gd",
+        "sha256": "b310f76e210f249d81730d6535e14211528648cb58b479aaba071965ea80e16f",
+        "bytes": 18322
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_ground_impulse.gd",
+        "sha256": "5bacc4e47b74db1a7d30428a0d570d53330d4c8c0d80ce93b40953b9b27063ce",
+        "bytes": 28725
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_ground_impulse.gd",
+        "sha256": "b34c603f59c8421053706cd561cd2ed6f66875bed47ca0d2b51d1a723e7bb114",
+        "bytes": 29175
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_ground_profile.gd",
+        "sha256": "74bf7e19489666e05e6533e8ea5ef97a43b9ceb52ff8de3e33d55ac68a13d9ba",
+        "bytes": 18518
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_ground_profile.gd",
+        "sha256": "00d9e6c27ae01cfe047cdadb01d9cc724b468fe236e337fd4395970e89831ee8",
+        "bytes": 19043
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_ground_stage.gd",
+        "sha256": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056",
+        "bytes": 15439
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_ground_stage.gd",
+        "sha256": "f32e36e14b58167fa9bd15e1f65b01af02cc018157b9e00be9c4473be22488f2",
+        "bytes": 16281
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_ground_step.gd",
+        "sha256": "e042c5933dc501d244684cbe8a6480db30a3a7056629a6c014db979dba889b77",
+        "bytes": 44655
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_ground_step.gd",
+        "sha256": "aa17ef9d4ce224ac76783b6f9cd3024cb122961a9f3b499446d2a166fa903c53",
+        "bytes": 45030
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_ground_traction.gd",
+        "sha256": "86987e1e3b036fca2c4b3dd7368308399a38fe14695adaffa0935b9863bc1b9c",
+        "bytes": 12695
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_ground_traction.gd",
+        "sha256": "8b54264c277159ac62bd8c388098cb9d523e1fa927798548dfec850dc23a4168",
+        "bytes": 13335
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_ground_unloaded.gd",
+        "sha256": "eb8148c1f4d0e3dbf18d38fb18eedbca63fa5a04deb5fdf7e7ddc74261dd9a6f",
+        "bytes": 15437
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_ground_unloaded.gd",
+        "sha256": "f2acdf1d1baf29c0d7f4cc3d0ce07e11513b3fec5f99e49e8c6ab63d9e7df3cd",
+        "bytes": 16262
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/aircraft_modules.gd",
+        "sha256": "99a08a559ea1fa27d807c1d8b15bc0106b58d5143c12b4a54110040762a0b23d",
+        "bytes": 20094
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/aircraft_modules.gd",
+        "sha256": "79b030030e92b35af5efe7e8f69149e6d498a6c7637aa212a926320803b1102a",
+        "bytes": 20066
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": [
+        "class_name AircraftModules"
+      ]
+    },
+    {
+      "original": {
+        "path": "app/physics/battery/battery_data.gd",
+        "sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+        "bytes": 16188
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/battery/battery_data.gd",
+        "sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+        "bytes": 16188
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/battery/esc_supervisor.gd",
+        "sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+        "bytes": 5408
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/battery/esc_supervisor.gd",
+        "sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+        "bytes": 5408
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/battery/pack_ecm.gd",
+        "sha256": "5fc20700f028d214e8e97caade261c910cdc8ee560e983cb57074077ae44ddda",
+        "bytes": 12802
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/battery/pack_ecm.gd",
+        "sha256": "41f927eb609c498601877bf2bc2d64a948fd776d91d2bc7333c368d4c35273f7",
+        "bytes": 13027
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/contact_assembly_resolution.gd",
+        "sha256": "c121d641a6e8fd05efbe2fd7ffb28d91e4809a983e3fb6486a4dfc38cb7f79db",
+        "bytes": 42193
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/contact_assembly_resolution.gd",
+        "sha256": "9df1761745ebc9335c940f12f8bb4026f3d95b82332102e6c514664cf8626990",
+        "bytes": 42418
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/contact_assembly_strategy.gd",
+        "sha256": "4135dcbf6879a54bfc7120fb0d01c91b84581bca7a9205bd9d13432fe2f4257c",
+        "bytes": 3944
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/contact_assembly_strategy.gd",
+        "sha256": "9ccd0076fef4031aafcf6c3b8493bd41364b375d211f5cace1352d6f02422e54",
+        "bytes": 4094
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/control_actuators.gd",
+        "sha256": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+        "bytes": 10502
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/control_actuators.gd",
+        "sha256": "e8e2db9f305ffc4c15db92872e0ec38c71c1c2c2eba2047875d3812099d5f5d9",
+        "bytes": 10832
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/control_surfaces.gd",
+        "sha256": "5e159ee1ebb98112e7399ef4f9ba68b30a7ea9cb5055989fbab55332c6a5edb3",
+        "bytes": 4171
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/control_surfaces.gd",
+        "sha256": "758de9a007b2d2f1bf819d6a8919e4e867f952097aa260c1f2c56405a9611beb",
+        "bytes": 4143
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": [
+        "class_name ControlSurfaces"
+      ]
+    },
+    {
+      "original": {
+        "path": "app/physics/effective_mass.gd",
+        "sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+        "bytes": 8286
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/effective_mass.gd",
+        "sha256": "442b2533d1819cb209ada80f8d20faade59622da398ebd88d120ac4a1ddf749b",
+        "bytes": 8511
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/electric_motor.gd",
+        "sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+        "bytes": 4926
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/electric_motor.gd",
+        "sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+        "bytes": 4926
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/electric_supply.gd",
+        "sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+        "bytes": 15485
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/electric_supply.gd",
+        "sha256": "f484591c77917dc3f0fa4deab032aaf1ddd95be47701cdac6529b33f3a98691d",
+        "bytes": 15560
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/event_bracket.gd",
+        "sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+        "bytes": 1381
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/event_bracket.gd",
+        "sha256": "898b8556741b98f12416f1c4e5297b833f78be788f8b6c968138fdb437a031bc",
+        "bytes": 1409
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/event_step.gd",
+        "sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+        "bytes": 7092
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/event_step.gd",
+        "sha256": "aae7f393e4ea720e51a9f95185bc86c24085a67e63f1da05aa6dce44a33b28c4",
+        "bytes": 7242
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/fixed_datum_body.gd",
+        "sha256": "a218c99f2d7079ae6788c98cf5dda24de6e3a6910fb35ab27b5c69d3f76e4293",
+        "bytes": 5547
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/fixed_datum_body.gd",
+        "sha256": "eba7e2657f51d1a1c17ef5577651c3bf7263e0d996b2c70d1f84711a178f4d5c",
+        "bytes": 5772
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/flaps.gd",
+        "sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+        "bytes": 1222
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/flaps.gd",
+        "sha256": "bf3f1ac5afc0b414d978f9f630afb12ba956635d66cf27c65d87d392ebb76b7d",
+        "bytes": 1247
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/fuel_properties.gd",
+        "sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4",
+        "bytes": 8955
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/fuel_properties.gd",
+        "sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4",
+        "bytes": 8955
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/generalized_coordinates.gd",
+        "sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8",
+        "bytes": 9692
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/generalized_coordinates.gd",
+        "sha256": "bae68f40ccc8064c153c986b5decc21a101bc2d309a9650318b7e6045e40ccb0",
+        "bytes": 9767
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/glow/carburetor.gd",
+        "sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c",
+        "bytes": 8089
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/glow/carburetor.gd",
+        "sha256": "4968aebd766a7670042305382412cc9288fd04722bd8fc644c2e23b9f2f5db7f",
+        "bytes": 8164
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/glow/four_stroke.gd",
+        "sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+        "bytes": 16957
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/glow/four_stroke.gd",
+        "sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+        "bytes": 16957
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/glow/fuel_feed.gd",
+        "sha256": "343cbfa7b1f651ac60635ac873e122a3fd99524e634e7712b57ef90e3b04b6f4",
+        "bytes": 16262
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/glow/fuel_feed.gd",
+        "sha256": "3e11a0f745cc2488573d390992e5c143688b1a82c1b75f0d12acedbf943cc078",
+        "bytes": 16337
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/glow/fuel_mass.gd",
+        "sha256": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+        "bytes": 4600
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/glow/fuel_mass.gd",
+        "sha256": "dd1122f2c9096cee80df83eb2241f68236d37d9cf641a1d51bf71d22bb752894",
+        "bytes": 4750
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/glow/installation.gd",
+        "sha256": "0b1531329e804be0fa4bd78629e6d1c254c35453006065428621cfbaa91c74bc",
+        "bytes": 37764
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/glow/installation.gd",
+        "sha256": "8820a2e4212dd58eb83d646463b3a817680346ace4be3d2e0e87b1673be48789",
+        "bytes": 38139
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/glow/operating_point.gd",
+        "sha256": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d",
+        "bytes": 5070
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/glow/operating_point.gd",
+        "sha256": "26814477a1ec0f248b490b0a6df6ff9ce63f9cef0cef2bf51f8f53f0d8ebe5ce",
+        "bytes": 5295
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/glow/profile.gd",
+        "sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+        "bytes": 11485
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/glow/profile.gd",
+        "sha256": "c52f639f3f28382bdd5a3bd8b30789d76e8ae6eb11864b5bd09eb0bff3855524",
+        "bytes": 11686
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/glow/propeller.gd",
+        "sha256": "fd6785d513962daa30ca5994f126ddfbf94e21466394b8482737e3d7428799a1",
+        "bytes": 7754
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/glow/propeller.gd",
+        "sha256": "cc06c18a90b0ac3d2eb07ca5010c263053c9776a769277dedc15cae6e30fcd88",
+        "bytes": 7904
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/glow/source.gd",
+        "sha256": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+        "bytes": 9738
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/glow/source.gd",
+        "sha256": "1913443ce5412c9a5332817a117f0449ee0f8137b8687519ba69950b4dbbd2e2",
+        "bytes": 9963
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/glow/two_stroke.gd",
+        "sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+        "bytes": 16115
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/glow/two_stroke.gd",
+        "sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+        "bytes": 16115
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/ground_contact.gd",
+        "sha256": "cdc2dcec718a9490c0a5c3de1e55ce165bba144eca9fe10845552d9d4dec8aa4",
+        "bytes": 26458
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/ground_contact.gd",
+        "sha256": "55fe64c4e3b4c1190bca38a3111c9c98277aee9a70cbd5128b0d075f0ed3734f",
+        "bytes": 26833
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/ground_effect.gd",
+        "sha256": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98",
+        "bytes": 4776
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/ground_effect.gd",
+        "sha256": "9dcf65ab1115bff009f2158f230373e0df33afc6f47ec3f2ac16c5de57b0100b",
+        "bytes": 4926
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/ground_support.gd",
+        "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+        "bytes": 7317
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/ground_support.gd",
+        "sha256": "13a59b739918726c5e7ce29df3588beaec4cb4156a4e9a84835a136ddeb15099",
+        "bytes": 7606
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/ground_terrain.gd",
+        "sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26",
+        "bytes": 13651
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/ground_terrain.gd",
+        "sha256": "a0116d1c85d37fbac5e52c9749a00cc8637ec29788cafad0597c0ad214cd64ea",
+        "bytes": 13801
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/ground_traction.gd",
+        "sha256": "2c191c1b0cb3d234419fbad80923c7386ba5603ca3b796d5fb0e433579ac5701",
+        "bytes": 32618
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/ground_traction.gd",
+        "sha256": "e525aedfc1fe98e470ebcec830d0550c50881e0b613d8c3725f7554193a0d7b9",
+        "bytes": 32768
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/ground_wheels.gd",
+        "sha256": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da",
+        "bytes": 12329
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/ground_wheels.gd",
+        "sha256": "6977c5d71a3f6f8c6ea1de70a3ddd8e31541cd728236f30de8952b9d0ff3c9bc",
+        "bytes": 12869
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/hull_contact.gd",
+        "sha256": "04490fc097e8a35f32ec2881ea8263cc4c094bea6bcae80ef31073066b7066a2",
+        "bytes": 44158
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/hull_contact.gd",
+        "sha256": "cbc9debc651607e89267a2d91b54570752649c1c1f58aad362069bf50afc9a68",
+        "bytes": 44533
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/integrator.gd",
+        "sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+        "bytes": 2366
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/integrator.gd",
+        "sha256": "2bd60924d36020d54bfeacf39de08228f2fc45be6fac9174257e47281c62f935",
+        "bytes": 2516
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/intended_hull_support.gd",
+        "sha256": "ae9ece8ea78f96265046f702abe2d178c28b907d79207c098e45930ad242a61f",
+        "bytes": 14442
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/intended_hull_support.gd",
+        "sha256": "f8dd7ad82e856cf4c90875e180476834192cf0f239f611d8fe6afc58803aea52",
+        "bytes": 14931
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/lake_surface.gd",
+        "sha256": "8c3f51ce336ca7ad674cc77ec8af8d697aa254f77ac9ae28e814ed860ba68152",
+        "bytes": 36235
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/lake_surface.gd",
+        "sha256": "41446904570ef38c7a43a5292b961d1059efcfa6dbdd7e2b44b895e8bdce9456",
+        "bytes": 36310
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/liquid_fuel.gd",
+        "sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+        "bytes": 9673
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/liquid_fuel.gd",
+        "sha256": "4bfa5ddc40f17dfba05ebcac2347af4cd28ed41a436deaca321a475c178976a5",
+        "bytes": 10000
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/mass_inventory.gd",
+        "sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+        "bytes": 24933
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/mass_inventory.gd",
+        "sha256": "2f3056a1dbf93da2547f4655d48625ebb4fc200335634a23aa93eb59d9c283e7",
+        "bytes": 25083
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/math3d.gd",
+        "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+        "bytes": 5514
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/math3d.gd",
+        "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+        "bytes": 5514
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/normal_compliance.gd",
+        "sha256": "9f05b8cb1395c54539b281ac120770c2353caef384a6fca2a857b144e7ec0beb",
+        "bytes": 10374
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/normal_compliance.gd",
+        "sha256": "4de0d13fd360ff5b4431279196412dcd0a2f2584affe3fd8dc92906ba13f4087",
+        "bytes": 10711
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/normal_contact_admission.gd",
+        "sha256": "da30e0f08c2cbee2c484b7107297770f20349255980e7d64ae56bc0997f308cc",
+        "bytes": 17435
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/normal_contact_admission.gd",
+        "sha256": "b0a2c72c9310fc86264440f4b7d86f397847ec1839c05dcdfec3c28e96c0e3ac",
+        "bytes": 18188
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/physical_identity.gd",
+        "sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8",
+        "bytes": 6946
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/physical_identity.gd",
+        "sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8",
+        "bytes": 6946
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/propulsion.gd",
+        "sha256": "732f4189efa068ff9e4469ac1c1d2f580ccd152d839005b321380a34afb92eed",
+        "bytes": 40993
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/propulsion.gd",
+        "sha256": "45c47ddf309c564435f8a854e357008e51f063180aab6eeea997ec27fe747786",
+        "bytes": 41593
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/rigid_body.gd",
+        "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+        "bytes": 5582
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/rigid_body.gd",
+        "sha256": "7a9cbdd2acc963f0dcaa37f2c3a4c9197e79c2fa87a664919b085f1533e4365b",
+        "bytes": 5657
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/rotor_coupling.gd",
+        "sha256": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+        "bytes": 27298
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/rotor_coupling.gd",
+        "sha256": "eadb5bec880aa89bb36fb5a195a4bb22d70845a16fb94a20a97c173882809f3d",
+        "bytes": 28123
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/turbine.gd",
+        "sha256": "a7577b8d2ddfe7daec69cf2992e8c566688f5b6c89cf6461c5b462abeb1ca702",
+        "bytes": 10683
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/turbine.gd",
+        "sha256": "bdbb6066713e41bd8723f32545b95842c7f5249cf73d7be676f2a5ccecc6b59d",
+        "bytes": 10758
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/wheel_geometry.gd",
+        "sha256": "a92fda4198916ac89573aca1e58c879288c8b249146fac8de04713573fdba2f9",
+        "bytes": 16230
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/wheel_geometry.gd",
+        "sha256": "b6133497d8dadb170a2c2feda2b866e582018c5a35d0f1c92434c4080040c1ff",
+        "bytes": 16455
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/wheel_profiles.gd",
+        "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+        "bytes": 13919
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/wheel_profiles.gd",
+        "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+        "bytes": 13919
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/physics/wing_polar.gd",
+        "sha256": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+        "bytes": 5401
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/physics/wing_polar.gd",
+        "sha256": "1b2990cce4f935169475440fc8efed0523138a89f63c4da970ef5632a5ef25c6",
+        "bytes": 5593
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/sim/simulation.gd",
+        "sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490",
+        "bytes": 54898
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/sim/simulation.gd",
+        "sha256": "a0b5ee23d0a1b88d65c8de75928b6bd0721bb9491b04f3015096bfa7abc0d84a",
+        "bytes": 55273
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/sim/vehicle_model.gd",
+        "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2",
+        "bytes": 12046
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/sim/vehicle_model.gd",
+        "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2",
+        "bytes": 12046
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/tests/test_aircraft_ground_stage.gd",
+        "sha256": "75d30d115978c2146f46dd5db66df15303ba90605524469c9ba55667f420083a",
+        "bytes": 25417
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/tests/test_aircraft_ground_stage.gd",
+        "sha256": "c730f58941de1e53aaaf23399736d5f5c1076331102f280a381b0d87bcbcee95",
+        "bytes": 26863
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "app/tests/test_aircraft_ground_unloaded.gd",
+        "sha256": "568a7753b9265d1a8a6c383b2dae2b41ddd335458485e031601c6ed1286ee1f3",
+        "bytes": 30021
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/app/tests/test_aircraft_ground_unloaded.gd",
+        "sha256": "957ea4b2cf7e54da66c66bf880e2cc82cb1b64938dd43a899f14ca42f7723cc1",
+        "bytes": 30696
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "tmp/gp12-capacity-production/aircraft_ground_step.gd",
+        "sha256": "611e7eb1306f82a0d7a8cacd738143e6d5c884017b1094b4b04ac0d02d20b4dd",
+        "bytes": 62026
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/tmp/gp12-capacity-production/aircraft_ground_step.gd",
+        "sha256": "87ff5eb51bf06e5c9e4ee9cfa81349fb297c4c9f19fef8620568649c52ce7f55",
+        "bytes": 62447
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "tmp/gp12-capacity-production/aircraft_ground_traction.gd",
+        "sha256": "4b4f918172cdf1ab62f4b4d82953ed8b34c8360487d8ffb8d2c9ec95aed121db",
+        "bytes": 24001
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/tmp/gp12-capacity-production/aircraft_ground_traction.gd",
+        "sha256": "47547c3997eacee58ff6ce544496a5b5d2129f739608edb8ce9c4e2d7bf0e35e",
+        "bytes": 24572
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "tmp/gp12-capacity-production/contact_capacity.gd",
+        "sha256": "f43eaf56725e79695edb47ace1a16fbcead0c30f33bf2ee05f87a267f86f3bab",
+        "bytes": 16534
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/tmp/gp12-capacity-production/contact_capacity.gd",
+        "sha256": "3a0d57da5319ff62b914cd3680dd681353db9178946ebd3fe8b14909e6c6de11",
+        "bytes": 16834
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "tmp/gp12-capacity-production/full_owner.gd",
+        "sha256": "2aefde2b26e95d89e2b56fb7f5568c137bba9311800bbe0f77f459511ffb3a61",
+        "bytes": 7438
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/tmp/gp12-capacity-production/full_owner.gd",
+        "sha256": "785ff2630c9155f5f100a41fcc0830995d8c10c6d093bfd81c8f64afd899e0bf",
+        "bytes": 7484
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    },
+    {
+      "original": {
+        "path": "tmp/gp12-capacity-production/test_traction_capacity.gd",
+        "sha256": "adf56ae9106f32d16dc9529e5667487b087bc6c76d013842f9166065ecdb9125",
+        "bytes": 7957
+      },
+      "frozen": {
+        "path": "tmp/gp12-capacity-production/review-v1/frozen/tmp/gp12-capacity-production/test_traction_capacity.gd",
+        "sha256": "b52fa40100031a8d4beadff026a01e395118fce2151ef67e2aa6af3d9fde31bc",
+        "bytes": 8170
+      },
+      "change": "import retargeting and duplicate global registration removal only",
+      "removed_registrations": []
+    }
+  ],
+  "assets": [
+    {
+      "path": "app/data/aircraft/p51d_mustang_120.json",
+      "sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+      "bytes": 112806
+    },
+    {
+      "path": "app/data/fuels/openrc-fuel-registry.json",
+      "sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1",
+      "bytes": 5563
+    },
+    {
+      "path": "app/data/glow/profile_contract.json",
+      "sha256": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+      "bytes": 5102
+    },
+    {
+      "path": "app/data/ground/wheel_profiles.json",
+      "sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "bytes": 36426
+    },
+    {
+      "path": "app/data/schema/aircraft-contract-v2.json",
+      "sha256": "0de90c832a3e875cd162d6f7bf38241b6f11337edb5794bf22ce3afc2fb4a737",
+      "bytes": 46245
+    },
+    {
+      "path": "app/tests/fixtures/ground_unloaded_gentle.bin",
+      "sha256": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408",
+      "bytes": 13952
+    },
+    {
+      "path": "app/tests/fixtures/ground_unloaded_hard.bin",
+      "sha256": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b",
+      "bytes": 13952
+    },
+    {
+      "path": "tmp/gp12-capacity-production/retained-buffers/legacy-step-parity.bin",
+      "sha256": "ffc52cf1a57e4a7a07e4d57851238acc3961dd7409ceade70dcd4a879237de18",
+      "bytes": 38160
+    },
+    {
+      "path": "tmp/gp12-capacity-production/retained-buffers/new-ground_unloaded_gentle.bin",
+      "sha256": "6fc9fd20c6672667008006b63f8b4141a56edf364e226d0739fcef52b2dcac10",
+      "bytes": 35432
+    },
+    {
+      "path": "tmp/gp12-capacity-production/retained-buffers/new-ground_unloaded_hard.bin",
+      "sha256": "31edf890260b1e267d15f542a2e3d932e75e9a4f7929f9bba54f1f6f11c02ec1",
+      "bytes": 33640
+    }
+  ],
+  "formatting": {
+    "path": "tmp/gp12-capacity-production/formatting.json",
+    "sha256": "e707acb9f61279cbef8df06ecb43dce9f3d5174cb1176a65905333ee218047f4",
+    "bytes": 1276
+  },
+  "main_written": false,
+  "long_tapes": "not yet run; frozen full_owner entrypoint prepared"
+}

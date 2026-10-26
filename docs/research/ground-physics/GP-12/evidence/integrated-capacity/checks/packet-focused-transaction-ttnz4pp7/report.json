@@ -1,0 +1,184 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "02f5816a-2079-4e61-9bba-078a788b589f",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_contact_capacity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T20:31:46.403703+00:00",
+  "label": "packet-focused-transaction",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\packet-focused-transaction-ttnz4pp7\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\packet-focused-transaction-ttnz4pp7\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Contact capacity packet:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 13,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 13,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 23,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 34,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 45,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 56,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 67,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 78,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 89,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 100,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 111,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 122,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 133,
+      "message": "Invalid type in 'PackedInt64Array' constructor. Cannot convert argument 1 from PackedInt32Array to Array.",
+      "context": [
+        "   at: receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] receipt_groups (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/contact_capacity.gd:200)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.938,
+  "log_bytes": 14668,
+  "log_sha256": "7543228e826b01f99ce6a9d2b3d9cba68454847114624f1927be83248e11cefe"
+}

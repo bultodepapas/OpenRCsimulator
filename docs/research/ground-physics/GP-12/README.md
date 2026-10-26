@@ -84,6 +84,14 @@ The [correction cohort](evidence/unresolved-descent/README.md) completes the unc
 
 An advanced owner's selected solver/start/checkpoint identity must include `bounded-eight-KKT-probe-unresolved-descent-certified-fallback-v2` before first use. Conditional `numerical_strategy v2` receipts document usage only. No stock advanced owner is activated. The old 24/2 full-drop evidence remains unchanged; the harder tape still refuses at tick 78 on raw tangent-work accuracy. Loaded cap-area integration, physical calibration and performance remain open.
 
+## Integrated normal-load capacity
+
+The opt-in `fixed-hub-predicted-actual-capacity-budget-halfkicks-order1-v1` law extends the same two-sided Step with a stable, current-pose capacity packet from `AircraftGroundTraction`. Wheel rows remain present at zero normal load; installed brake rows remain present at zero demand. The predictor supplies a named RK normal-load quadrature for the first half-kick. The actual post-kick trajectory supplies the final whole-piece budget, and `ContactCapacity` reserves the remaining scalar/elliptical capacity for the second kick. An excessive pre-kick causes refinement or refusal. Normal force, suspension, QP constraints, physical work and raw complete-path accuracy retain their existing owners. The split remains first order.
+
+The [frozen trajectory and production evidence](evidence/integrated-capacity/README.md) includes complete gentle/hard synthetic drop tapes, each 180 accepted ticks, and exact checkpoint178 continuation including full receipts. Maximum normalized raw errors are 0.245864 and 0.146617, with at most16 pieces. Compression and sink-rate fixtures are numerical cases, not calibrated aircraft suspension data. The final installed packet78, producer103, Step167, Traction86, Accuracy84 and Electric196 suites pass 714 assertions. Frozen original-result fixtures replace the temporary prepromotion old/current import comparisons in the permanent test.
+
+The qualified producer requires fixed hubs/axes and the exact static default-plane provider. Packet identities bind pose, time, topology, coefficients and independent torque rates; a trusted owner must additionally bind the actual source, held controls and configuration. Sampled/quadrature loads are not interval impact maxima. Predictor computation is bounded and accounted separately from physical work. Shaft capture and finite-source events still require integration; the new law is not selected by stock sessions. Earlier loaded-trajectory refusals above remain historical evidence of the old operators, not a claim that these new tapes failed.
+
 ## Reusable local accuracy policy
 
 [AircraftGroundAccuracy](../../../../app/physics/aircraft_ground_accuracy.gd) prepares a versioned numerical quality resource separately from the model-owned physical layout. Explicit SI absolute/relative scales and provenance cover position, CM velocity at the fixed datum, shortest quaternion angle, body rate, every continuous state coordinate, sampled normal peaks and work partitions. RPM converts to rad/s; wheel rims and wash remain declared m/s. Missing, duplicate or unknown continuous coverage refuses. Numerical quality does not author a second CG or wheel radius.
@@ -144,6 +152,20 @@ An additional 17-check slow diagnostic compares a complete two-tick full-throttl
 
 The [742-check evaluation cohort](evidence/finite-source-evaluation/README.md) preserves complete fixed-bus outputs and existing finite-source fields/rates byte exactly in the tested configurations. State order remains `[wash..., shaft RPM, battery block..., wheel rims...]`. Negative-charge/RPM continuations require explicit trial authorization. The current Step deliberately rejects `source_policy="finite_battery"`: complete split-path charge localization, final source transitions and Session activation remain unimplemented. This foundation supplies neither a second integrator nor a separate shaft projector.
 
+## Fixed-gear shared brake input
+
+`FlightSession.wheel_brake_available()` admits explicit applied-profile hardware and matching torque provenance. The shared fixed-gear channel uses `fixed-gear-shared-wheel-brake-input-v1`, input 4, with optional flaps at 5; no retract target or gear auxiliary state is added. Main's B key, external controls, checkpoint/restore and metadata now use that contract. Positive commands require hardware; zero releases remain possible after hardware loss or reload, while invalid mixed packets apply nothing. Existing unbraked and retractable layouts keep their prior meanings and frozen output hashes, excluding only the declared wall-clock presentation timestamp.
+
+Legacy Trace v17 names its underlying format and adds `cmd_wheel_brake`. Its focused inspector checks roles and bounded samples; earlier physical validators remain fail-closed. [Installed evidence](evidence/fixed-brake-input/README.md) records 256 focused assertions, 3,247 existing flight-log assertions and 13 Python tests. Six unchanged historical ORFL tapes also pass 96 candidate ticks with `solver_changed=true`; that comparison is not exact-source replay. Stock brake authoring, differential/airborne braking and Workshop controls are outside this input slice.
+
 ## Remaining integration gates
 
-Qualify loaded aircraft trajectories and the optional two-sided contact composition, integrate session state adapters, qualify actual field geometry and supported source events, and bind damage to accepted failure states. Preserve the existing session, event, Workshop and audio owners. The broad suite also identified direct transcendental calls in the new compliance/steering modules; these now route through existing `Math3D` wrappers. Original frozen evidence remains unchanged; subsequent combined-source receipts must include those corrections. No new fleet coefficient calibration, native audio listening or 1080p performance claim is established by these software checks.
+The [recorded input-role guard](evidence/input-role-replay/README.md) now validates
+named channels before CSV export and compares them with the installed aircraft after
+checkpoint restore. Historical 4/5/6/7-column layouts remain compatible; malformed
+or conflicting declarations reject. The initial reader-only cohort passes 232 new and
+3,247 existing assertions, plus 48 independent assertions and 16 Python wrapper tests;
+the subsequent control integration above has its own source identity and evidence.
+Workshop fixed-brake authoring and physical qualification remain pending.
+
+Extend the now-qualified synthetic fixed-plane drops to powered aircraft and actual field geometry, integrate session state adapters and source events, and bind damage to accepted failure states. Preserve the existing session, event, Workshop and audio owners. The broad suite also identified direct transcendental calls in the new compliance/steering modules; these now route through existing `Math3D` wrappers. Original frozen evidence remains unchanged; subsequent combin

@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Identifier "accepted" not declared in the current scope.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:478)
+SCRIPT ERROR: Parse Error: Identifier "accepted_pieces" not declared in the current scope.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/aircraft_ground_step.gd:478)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/parse.gd:0)
+ERROR: Failed to load script "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/parse.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)
+Capacity draft parsed: openrc-interval-contact-capacity v1 fixed-hub-wheel-material-impulse-rows-v1 fixed-hub-predicted-actual-capacity-budget-halfkicks-order1-v1

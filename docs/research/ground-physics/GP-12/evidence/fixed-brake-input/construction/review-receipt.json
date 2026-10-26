@@ -1,0 +1,37 @@
+{
+  "scope": "detached reviewed candidate only; not promoted; no stock data or force law changes",
+  "production_projection_checks": 256,
+  "focused_python_tests": 13,
+  "baseline_tape_checks": 30,
+  "baseline_tape_ticks": 96,
+  "baseline_solver_changed": true,
+  "exact_legacy_exclusion": "created_utc presentation timestamp only, normalized to a declared fixed sentinel",
+  "base_sources": {
+    "app/sim/flight_session.gd": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864",
+    "app/main.gd": "a6137c9ca9dbc5317e26bde0fb290ca3ad2d14c9cb285e5c2e2aec5951e279b2",
+    "app/sim/trace.gd": "1c529262fb33b7db3137f9cba064be0e32a6d9c7620ae224cc06500a5a05a62e"
+  },
+  "review_patch_sha256": "c72b013dd25fe718c31b74102dc239c8090c68d4cf99a37ba516a2a51391df08",
+  "manifest_sha256": "c1afa9ce0e2d82fdf15f40e5dd08d30eef2981e098ee1f95deed4b644478f97a",
+  "loaded_sources_sha256": "2c4a7f05338037ad2f4488bf44d8cd2262d891aa9ca4917cc5054598406da143",
+  "reports": [
+    {
+      "path": "tmp/gp12-fixed-brake-session/checks/projection-final/godot-a8e1cphd/report.json",
+      "sha256": "a9b3005e47ba49470f13fec5f280025c15d8743e9a028b20200817aa126fdae5"
+    },
+    {
+      "path": "tmp/gp12-fixed-brake-session/checks/tapes-reviewed/godot-r8v85oqk/report.json",
+      "sha256": "6ce37d2e6b7e03078467b6a7331ccab7fee2ed19868e493261f52846695e0e93"
+    },
+    {
+      "path": "tmp/gp12-fixed-brake-session/checks/review-fixes/godot-es8esdyq/report.json",
+      "sha256": "5243326b9d5afad15acfe33c8e27453608ca92519381a1df50bc7d689d5edc36"
+    }
+  ],
+  "limitations": [
+    "physics-specific legacy CSV validators intentionally refuse v17",
+    "synthetic fixture hardware only; no stock brake authoring",
+    "no airborne/differential brake qualification",
+    "production receipts must follow guarded promotion; draft ORFL solver identity hashes installed sources, draft scripts separately pinned"
+  ]
+}

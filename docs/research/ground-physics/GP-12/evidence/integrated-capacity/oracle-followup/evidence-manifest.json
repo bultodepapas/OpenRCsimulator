@@ -1,0 +1,201 @@
+{
+  "format": "openrc-traction-capacity-oracle-followup-evidence-v1",
+  "report_sha256": "99ee9c1bb2cad5bbfdc54a9242034e3c7c6a98dc83580c3226731744199ec40f",
+  "files": [
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/build.py",
+      "bytes": 4378,
+      "sha256": "f778a50402f3e045fbd60af64b5e95f9093f385a7e1f8153624c2d97dd210cf8"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/capture-provenance-before.json",
+      "bytes": 848,
+      "sha256": "5860b508f451fb44f1373f16d9021ca961bd08d39e0f9046223619e5fa2b2ce4"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/capture_old_rows.gd",
+      "bytes": 2023,
+      "sha256": "69ff884ed74998c92952930567369d1c9f888623808523682796a08ca4c0b300"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/mutant-row-rate-zzynmz4w/engine.log",
+      "bytes": 867,
+      "sha256": "ee20b71984d8a82755c1d57d13807b3762eb298a580a16ab80c4c333cbc9712b"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/mutant-row-rate-zzynmz4w/report.json",
+      "bytes": 1340,
+      "sha256": "9d9c0a0b0139477d0e8f13a570fb6caab578c66d8136c17bad17f0dfe9a39e9e"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/mutant-step-receipt-44pvtu4y/engine.log",
+      "bytes": 363,
+      "sha256": "aa79ffccc833e0b64260307dd29c4195e0b68d46583c412d697663cea9023ef2"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/mutant-step-receipt-44pvtu4y/report.json",
+      "bytes": 1348,
+      "sha256": "67b44c1bf8ba689e291b73010748b911bd6ac0e091ce62c8e0056b8f838747d3"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/mutant-step-refusal-c5vhtowr/engine.log",
+      "bytes": 359,
+      "sha256": "8bed825d27d194ed30238e0aa9c3790de5169c8ce332fdf85332d0b5c7c40fc3"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/mutant-step-refusal-c5vhtowr/report.json",
+      "bytes": 1356,
+      "sha256": "f502c9ed2cc986dbb3a8ea6c241d3a0f465c74e1453521a67af106e9d702a9f6"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/original-row-capture-m0pprs_q/engine.log",
+      "bytes": 122,
+      "sha256": "4aaa07d2c8989ecacf660f3bf1a3b40d2071e72fed6c07c8936c28b45138ee17"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/original-row-capture-m0pprs_q/report.json",
+      "bytes": 1334,
+      "sha256": "4f5ae44e2cc09ad0f85926a4610c531b792eb813f284ebab5a3c89964a54a785"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/original-step-outcomes-tzmi57ck/engine.log",
+      "bytes": 1075,
+      "sha256": "236516f8e71c46e952641eb694416aced941ba3ac8829d64eee9c0b03f476a9b"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/original-step-outcomes-tzmi57ck/report.json",
+      "bytes": 1357,
+      "sha256": "a1ce7d61ff68adb6308debdb39f24c86081dfecbd3cb2af6db63e18d0b618b9d"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/repaired-test-ready-ngd32nk3/engine.log",
+      "bytes": 575,
+      "sha256": "be47e4c925456d0cce2f6a9a68792711cd58179bfcecfe55d8148795981f2193"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/repaired-test-ready-ngd32nk3/report.json",
+      "bytes": 2179,
+      "sha256": "d5641117438bc446b57713d73933ad3b68980405bb27316126c177200dc6e282"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/repaired-test-typed-4ch4gs44/engine.log",
+      "bytes": 122,
+      "sha256": "df466d5b0b0611e6ac20f5ca3eca5c623ab2b0eb5d9f31f5029f207c0d9e4d2e"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/repaired-test-typed-4ch4gs44/report.json",
+      "bytes": 1347,
+      "sha256": "13a9bde9075de22f352db3ef0107d956306aed6942a3c4c8349ebd29d383a6db"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/repaired-test-veby057c/engine.log",
+      "bytes": 701,
+      "sha256": "77fe78e47c1156f0f6ad1852770ce9670e56c08a3dc69cd3dbc9377b91def2d1"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/checks/repaired-test-veby057c/report.json",
+      "bytes": 2418,
+      "sha256": "aa0832f27ae5033cb0f4d1132e4408c9605b2876458d5d1e83d7dd498ed1ae0d"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/helpers.gd.txt",
+      "bytes": 5679,
+      "sha256": "2dc1fb439e4d4ce73dbb921c3f094b7bff8b12dbace188f489fd89db263b9d04"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/inspect_step_oracle.gd",
+      "bytes": 848,
+      "sha256": "ae91b4b54ee5d7e8e62b30cb1f3bdbd319f4a42166b63ec7bbb38d635ab09fcf"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/legacy_rows.gd.txt",
+      "bytes": 688,
+      "sha256": "8e14a33d9f32188d3ba5a087c3ee3d7452e369e167263a4db5754eaf8bb19ba0"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/legacy_steps.gd.txt",
+      "bytes": 1019,
+      "sha256": "df669e5325286ba73893237b26df6fe9cadd57215a59f08265986d8a9925cae6"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/main-before.gd",
+      "bytes": 7819,
+      "sha256": "b0fbad5997d871e29561fee4add200baa2182d1f73c73c1e0718f48f90ed14fd"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/original-step-outcomes.json",
+      "bytes": 1022,
+      "sha256": "6fa5a2d74ba5b960c0e700ad8e247ceab1920d230cb8659c2297cc6193b9e560"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/fixtures/ground_contact_capacity_legacy_rows.bin",
+      "bytes": 121452,
+      "sha256": "d5f96330e89f1ac55a1c6df474a35cd6925008064a1c9c6b2f45e22c4bd6eba9"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/fixtures/ground_contact_capacity_legacy_steps.bin",
+      "bytes": 38160,
+      "sha256": "ffc52cf1a57e4a7a07e4d57851238acc3961dd7409ceade70dcd4a879237de18"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/production/app/tests/test_traction_capacity.gd",
+      "bytes": 13160,
+      "sha256": "d28b5a0d751544d8f11af163cea53d390165d92b91aff9436dca0b5b9e53a256"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/promotion-manifest.json",
+      "bytes": 1769,
+      "sha256": "c95ff94a5ada6233b1feb343e3e280e3618d33a6f4de9c18b593d79782311978"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/README.md",
+      "bytes": 3249,
+      "sha256": "bf1b63dc6c0649c5f1c06f65f8c7263911e95cd29f6785c4f046e53436211c61"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/report.json",
+      "bytes": 5642,
+      "sha256": "99ee9c1bb2cad5bbfdc54a9242034e3c7c6a98dc83580c3226731744199ec40f"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/review.patch",
+      "bytes": 21930,
+      "sha256": "b00a66970ee22e269954e7162961abb521775da4f2cb5cefa2ee86f37e6e40aa"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/validation/mutant_step.gd",
+      "bytes": 61996,
+      "sha256": "ab41007d258a7b96fe910793e1c717866a1cf68191637c10fd29d53f34f66304"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/validation/mutant_step_refusal.gd",
+      "bytes": 62011,
+      "sha256": "7ed4571da7c663d2c352d687eeda0e5329157f985a3ae038f31025da711c78d3"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/validation/mutant_traction.gd",
+      "bytes": 23964,
+      "sha256": "9409d8f8d69e76128f70912c3f417c2eb79b56f42549aae13ce388ee61f0d132"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/validation/test_mutant_step.gd",
+      "bytes": 13409,
+      "sha256": "fc5aa5d903fd5a6665eb02737de9500f67b66b2caeef6df7667b608d8aa808f0"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/validation/test_mutant_step_refusal.gd",
+      "bytes": 13417,
+      "sha256": "17d05c0e39a3b852d06ba5a800e605bda9d4bc97e196841f3a52a3be5e035d35"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/validation/test_mutant_traction.gd",
+      "bytes": 13409,
+      "sha256": "dcc3a759eddfa83ab81a59cb69e2e70130b6c20be20ff79f4214de2ba36bc1e4"
+    },
+    {
+      "path": "tmp/gp12-capacity-production/test-oracle-followup/validation/test_traction_capacity.gd",
+      "bytes": 13340,
+      "sha256": "3f9d7e9ded83c66f01b3ab301970ae37b4911a7af5650f6a37f0d0bf039b23ae"
+    }
+  ]
+}

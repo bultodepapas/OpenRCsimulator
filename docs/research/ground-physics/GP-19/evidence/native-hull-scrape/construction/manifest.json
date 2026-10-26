@@ -1,0 +1,22 @@
+{
+  "format": "openrc-hull-native-tool-draft-v1",
+  "base_sha256": {
+    "tools/audio/gameplay_probe.gd": "9df38b034c6a13b4748d72e496c8dbcf0056e1d6aa83023f501771f11bbc3e66",
+    "tools/audio/check_captures.py": "13100cb439c7ebab3c339fe7cb80c029f56717084d281cad272361444f458b6d",
+    "tools/audio/test_capture_checks.py": "35c17ed18d044cccc23f63fd5d5afb63feca3a4dc0df39b360c4a499dd9301f5",
+    "tools/audio/README.md": "3acbfb79f8f0c3ad6509d3dcd3e401146c515eafbe017c66e1414687528672c0"
+  },
+  "draft_sha256": {
+    "tools/audio/gameplay_probe.gd": "769565db98149dbafae91a33f78ceba0f99ac3fd90adf9da9be716c80155a49a",
+    "tools/audio/check_captures.py": "e6542c651f915ac84f0d5876e34668f96f2a8add4fdbfa6a2edc5c051e112910",
+    "tools/audio/test_capture_checks.py": "a332eb151578c88f3a3cb6a7d2093441a7ecae482e84a451505490e3c0a75ff2",
+    "tools/audio/README.md": "b0669329688e323ba0ab744b3e5036fbee6ce18cff311c55485b79636e7bf84a"
+  },
+  "runtime_pins": {
+    "app/main.gd": "a6137c9ca9dbc5317e26bde0fb290ca3ad2d14c9cb285e5c2e2aec5951e279b2",
+    "app/sim/flight_session.gd": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864",
+    "app/physics/hull_contact.gd": "04490fc097e8a35f32ec2881ea8263cc4c094bea6bcae80ef31073066b7066a2",
+    "app/render/crash/director.gd": "1ba07bd91a5e51c90dadf27d2707c86b08c4d71f442e5ea200a7120d84f8e763",
+    "app/render/crash/crash_audio.gd": "6a3c5855a3ed3d550a57904fb199f782761fb382e0d53f3901e4c295ea188978"
+  }
+}

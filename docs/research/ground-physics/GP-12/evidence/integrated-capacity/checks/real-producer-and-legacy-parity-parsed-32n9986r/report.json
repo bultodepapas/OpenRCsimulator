@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "70a8a542-ea13-4e1f-96ad-7201c98a2e02",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--log-file",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/producer-parsed-live.log",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-capacity-production/test_traction_capacity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T20:34:49.185654+00:00",
+  "label": "real-producer-and-legacy-parity-parsed",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\real-producer-and-legacy-parity-parsed-32n9986r\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-capacity-production\\checks\\real-producer-and-legacy-parity-parsed-32n9986r\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Traction capacity producer:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.375,
+  "log_bytes": 1888,
+  "log_sha256": "3e4e47d0e23250a8d24df255d7676fe8ba7c2aac40433f2fb020123142aa4e04"
+}

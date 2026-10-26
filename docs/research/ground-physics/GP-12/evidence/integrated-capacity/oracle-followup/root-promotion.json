@@ -1,0 +1,9 @@
+{
+  "format": "openrc-oracle-promotion v1",
+  "files": {
+    "app/tests/test_traction_capacity.gd": "d28b5a0d751544d8f11af163cea53d390165d92b91aff9436dca0b5b9e53a256",
+    "app/tests/fixtures/ground_contact_capacity_legacy_rows.bin": "d5f96330e89f1ac55a1c6df474a35cd6925008064a1c9c6b2f45e22c4bd6eba9",
+    "app/tests/fixtures/ground_contact_capacity_legacy_steps.bin": "ffc52cf1a57e4a7a07e4d57851238acc3961dd7409ceade70dcd4a879237de18"
+  },
+  "runtime_changed": false
+}

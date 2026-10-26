@@ -1,0 +1,186 @@
+{
+  "format": "openrc-ground-input-role-evidence v1",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 53,
+      "sha256": "9f02a1db6594afd98263a72329fd1654785bc00312ee2a3f15bb516b6326e695"
+    },
+    {
+      "path": "checks/draft-hostile-law-hardened-qb8bvr7j/engine.log",
+      "bytes": 3469,
+      "sha256": "01c8789fdf7fdf11cc7ba1b5bb65f78fd3ef4b41f9ad3543029643c42fdee902"
+    },
+    {
+      "path": "checks/draft-hostile-law-hardened-qb8bvr7j/report.json",
+      "bytes": 1304,
+      "sha256": "8f8eab4fefc9b7aad183daec94352347869067fc34339120e105e8bf9a279271"
+    },
+    {
+      "path": "checks/existing-flight-log-regression-jnqvs2mu/engine.log",
+      "bytes": 5982,
+      "sha256": "92e850c0979f1a85839e69403c69d1f5dec3b8802baad15bf68e4aab55de319c"
+    },
+    {
+      "path": "checks/existing-flight-log-regression-jnqvs2mu/report.json",
+      "bytes": 1248,
+      "sha256": "79586e345cf858df65763c483b4ba6a9452e0324118cdaa14ab7e3b3d582c693"
+    },
+    {
+      "path": "checks/existing-flight-log-verification.json",
+      "bytes": 1367,
+      "sha256": "2a8b54ae88e1117fc93b1684726cb9af4f4fb272f26f07815e1aebaf52c67552"
+    },
+    {
+      "path": "checks/production-input-contract-yyj0hm46/engine.log",
+      "bytes": 3469,
+      "sha256": "16daadc4d87fbfa4223499215aab021cae6951d8ac33d91cc30e359447725a0a"
+    },
+    {
+      "path": "checks/production-input-contract-yyj0hm46/report.json",
+      "bytes": 1267,
+      "sha256": "654eb603f4c5ed615e8061b503ef0f8a43f67cf759fa05c5dd82c9701a12887c"
+    },
+    {
+      "path": "checks/python-unittest.json",
+      "bytes": 456,
+      "sha256": "fdece262694a2e6f9f59c3dba5ce194bc5aa33fd90560031c9f875eeaedab91a"
+    },
+    {
+      "path": "construction/draft-manifest.json",
+      "bytes": 316,
+      "sha256": "7ce2d9ad2133399d469f1691ba835200cd2df849e0d66689ba022e7c419055c8"
+    },
+    {
+      "path": "construction/freeze_columns.gd",
+      "bytes": 732,
+      "sha256": "e0c02926374e3b0e57db5c550895ad7c32dc08ad545e93c0a592bcd3bbd3df78"
+    },
+    {
+      "path": "construction/prepare_production_test.py",
+      "bytes": 1884,
+      "sha256": "d56e60f5d0dce87ba8639abe9e4be06b71693adfc984f5fdf63abe5fcf4b14f0"
+    },
+    {
+      "path": "construction/prepare_reader.py",
+      "bytes": 6062,
+      "sha256": "acfcc9d50451473c9b99371217c791a6c5bcb5a8afba783a91d10f9f4e8100b5"
+    },
+    {
+      "path": "construction/promote_reader.py",
+      "bytes": 1783,
+      "sha256": "e50933b19f032d9ffb333f2dea1863aa341475fd5a988b898fd93393394574e9"
+    },
+    {
+      "path": "construction/promotion.json",
+      "bytes": 501,
+      "sha256": "2dc78e08ce6897bf33fb2b7e083eee83ecf189d6510bf1939edaf8fce3bd998e"
+    },
+    {
+      "path": "independent/checks/hostile-law-fixed-oc33afpo/engine.log",
+      "bytes": 144,
+      "sha256": "03cf878fdafae67accabbfbb2703df931700e151842706c4be2e30d0b28eef61"
+    },
+    {
+      "path": "independent/checks/hostile-law-fixed-oc33afpo/report.json",
+      "bytes": 1296,
+      "sha256": "b417b0fd904e64d48a0d3fc260719d8a3fb91a1f790eeeefeec6203b23e20a8c"
+    },
+    {
+      "path": "independent/checks/hostile-law-tv3e8jqg/engine.log",
+      "bytes": 4741,
+      "sha256": "49f85fcbbccceb8b5219b22069913a096b0f54d1fe593c095f8190802c132a75"
+    },
+    {
+      "path": "independent/checks/hostile-law-tv3e8jqg/report.json",
+      "bytes": 7142,
+      "sha256": "31af4a4ac9db1e93d2b935bde903d66447a86bd3c56511052916f1b87327bfcd"
+    },
+    {
+      "path": "independent/hostile_law.before.gd",
+      "bytes": 684,
+      "sha256": "6237e1e0badcec92557c3db48057f5948fa667091cf1e304e790ca4d895378ab"
+    },
+    {
+      "path": "independent/hostile_law.gd",
+      "bytes": 1322,
+      "sha256": "b92fe75636262f04610560b0f69f16dc17c6afeddc75bf89de049d2e320f1740"
+    },
+    {
+      "path": "independent/rejected_reader.gd",
+      "bytes": 22750,
+      "sha256": "842413529d1102dd89c356f5965680cddd78624c43a5f8dc2d091104a91583e9"
+    },
+    {
+      "path": "independent/report.json",
+      "bytes": 1749,
+      "sha256": "298a614167eee56d5be13ad06f90d66be60ec36b4de1e88e941d24f53515c37e"
+    },
+    {
+      "path": "independent/review.md",
+      "bytes": 3431,
+      "sha256": "b9e79214ae20931c8b1364ca0513e42b814ada5a5a227baee4c6fc30647f299b"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3040,
+      "sha256": "419423601e16c878f30c8c626c1064cccdbcba35597d618331fc5d6bd611f307"
+    },
+    {
+      "path": "recordings/gp-extra-300s-60.orfl",
+      "bytes": 77772,
+      "sha256": "82e5488c247bc0667ce8b14ecbd450b0de978d3f42d5bc56b2dc2b08847de480"
+    },
+    {
+      "path": "recordings/jensen-das-ugly-stik-60.orfl",
+      "bytes": 41568,
+      "sha256": "aef41ce81e41a6764377666bac8739cf9f985c8dbfd2c5ad168d127255f0f447"
+    },
+    {
+      "path": "recordings/p51d-mustang-120.orfl",
+      "bytes": 61120,
+      "sha256": "ab1fbfc2e0fa9b04f47b5e3bae2aeb2ad2a5b44aedee0ab13251b0033041a577"
+    },
+    {
+      "path": "recordings/rejected-role-confusion.orfl",
+      "bytes": 41632,
+      "sha256": "d0acafc063cc9bd32e5c4f6b5e4e450516af0e436aef141dfa846b5185803dfe"
+    },
+    {
+      "path": "recordings/sebart-avanti-s-a200-p100rx.orfl",
+      "bytes": 60120,
+      "sha256": "04a973f9c2f9df57336b0954e9139f215ca9a22b48d599634c56650df2e0c15e"
+    },
+    {
+      "path": "recordings/stik-glow-61fx-2t.orfl",
+      "bytes": 75776,
+      "sha256": "43b1a33d988f2f116b1fb48476de0493f0bbd0a920348e83e535635c3a5d4629"
+    },
+    {
+      "path": "recordings/turbo-lumber-evolution.orfl",
+      "bytes": 41860,
+      "sha256": "e2a5fc534d8f3b54138d939830fcd8ee37f66c07960a29020ae82309a87308b7"
+    },
+    {
+      "path": "source/app/tests/fixtures/flight_log_input_columns.json",
+      "bytes": 5054,
+      "sha256": "bd2329a6ea1b01990459dbc7b8067ef000ff590fb22d08affefb3a42f713ba8f"
+    },
+    {
+      "path": "source/app/tests/test_flight_log_inputs.gd",
+      "bytes": 9318,
+      "sha256": "03d430f3ded9e1c55ae089831e485bf322aedc49b272862e54a0112b4e53191a"
+    },
+    {
+      "path": "source/app/tools/flight_log_cli.gd",
+      "bytes": 22813,
+      "sha256": "63910193d1db8e2dc46961b9536b548e35c307e81e63ce338333b029b46442c7"
+    },
+    {
+      "path": "source/before/flight_log_cli.gd",
+      "bytes": 19514,
+      "sha256": "312754377f145d9ffa78f73b3f5fb96b6548967636a273a7bcf8437acbdf093b"
+    }
+  ],
+  "scope": "selected source, test and replay receipts; not full repository closure"
+}

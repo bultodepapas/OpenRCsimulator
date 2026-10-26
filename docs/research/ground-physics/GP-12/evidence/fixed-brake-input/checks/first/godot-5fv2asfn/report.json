@@ -1,0 +1,94 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5a924555-b545-45a7-ad44-9b5b64d54098",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:10:18.101974+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-fixed-brake-session\\checks\\first\\godot-5fv2asfn\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-fixed-brake-session\\checks\\first\\godot-5fv2asfn\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Fixed brake candidate:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 4,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 16,
+      "message": "Invalid access to property or key 'trim' on a base object of type 'Node (flight_session.gd)'.",
+      "context": [
+        "   at: candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 22,
+      "message": "Invalid access to property or key 'trim' on a base object of type 'Node (flight_session.gd)'.",
+      "context": [
+        "   at: candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 28,
+      "message": "Invalid access to property or key 'trim' on a base object of type 'Node (flight_session.gd)'.",
+      "context": [
+        "   at: candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 34,
+      "message": "Invalid access to property or key 'trim' on a base object of type 'Node (flight_session.gd)'.",
+      "context": [
+        "   at: candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd:77)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 40,
+      "message": "8 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+      "context": [
+        "   at: cleanup (core/object/object.cpp:2609)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 5.516,
+  "log_bytes": 3867,
+  "log_sha256": "4054ba45ddc1b0fa71162febdcbd9f26bccb1229fa635ebc9d5dd7d11abcefbb"
+}

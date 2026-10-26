@@ -1,0 +1,85 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5b4dc589-8b71-42b6-b9c9-1d7e7ebf8a45",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/test_fixed_brake.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:12:36.364303+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-fixed-brake-session\\checks\\main-input\\godot-y437n1dk\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-fixed-brake-session\\checks\\main-input\\godot-y437n1dk\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Fixed brake candidate:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 4,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 13,
+      "message": "Cannot call method 'set_input_as_handled' on a null value.",
+      "context": [
+        "   at: _unhandled_input (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/main.gd:1821)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _unhandled_input (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/main.gd:1821)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 20,
+      "message": "Cannot call method 'set_input_as_handled' on a null value.",
+      "context": [
+        "   at: _unhandled_input (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/main.gd:1821)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _unhandled_input (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/main.gd:1821)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 33,
+      "message": "Cannot call method 'set_input_as_handled' on a null value.",
+      "context": [
+        "   at: _unhandled_input (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/main.gd:1821)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _unhandled_input (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/main.gd:1821)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 40,
+      "message": "Cannot call method 'set_input_as_handled' on a null value.",
+      "context": [
+        "   at: _unhandled_input (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/main.gd:1821)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _unhandled_input (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-fixed-brake-session/main.gd:1821)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 12.734,
+  "log_bytes": 5087,
+  "log_sha256": "2c3b19dd30e4e12ace0445b59e217b78ea5faf028a5b85beb4ab8d604476886e"
+}

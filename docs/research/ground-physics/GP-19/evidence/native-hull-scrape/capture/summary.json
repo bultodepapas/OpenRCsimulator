@@ -1,0 +1,183 @@
+{
+  "format": "openrc-hull-native-draft-summary-v1",
+  "capture_qualified_by_draft_checker": true,
+  "scope": "Actual default Main/Session/Director; CrashFX local bus only; explicit synthetic initial conditions, no acoustic/listening/whole-flight claim",
+  "driver": "WASAPI",
+  "pcm_seconds": 12.0106666666667,
+  "wall_seconds": 12.004941,
+  "frame_balance": {
+    "buffer_length_frames": 65536,
+    "final": {
+      "available_frames_after_flush": 0,
+      "available_frames_before_flush": 0,
+      "discarded_frames": 0,
+      "flushed_frames": 0,
+      "pushed_frames": 576512
+    },
+    "flushed_frames": 0,
+    "initial": {
+      "available_frames": 0,
+      "discarded_frames": 0,
+      "pushed_frames": 0
+    },
+    "overflow_discarded_frames": 0,
+    "pushed_frames": 576512,
+    "recorded_frames": 576512,
+    "truncated_frames": 0,
+    "unaccounted_pushed_frames": 0
+  },
+  "peak_dbfs": -6.92947976039553,
+  "source_files_unchanged": true,
+  "source_hashes": {
+    "probe": "769565db98149dbafae91a33f78ceba0f99ac3fd90adf9da9be716c80155a49a",
+    "res://assets/audio/crash/scrape.wav": "ef1d9a060f4b8c0eda6a183715609c138f65fcc6ecd2a4509321e7fe6579ca1c",
+    "res://assets/audio/crash/sources.json": "e95188c532d1e6294a511c603360996894946cb0d9a031bf19dbc56dec954916",
+    "res://data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+    "res://data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+    "res://data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "res://data/ground/surface_friction.json": "0cb448d2e735c724069053dfe03870a4c46a075511d1ccdeb9ddd72920782a92",
+    "res://data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+    "res://landscapes/club_field/landscape.gd": "8fcb535061ef4f62066cfd4461e04b90da52401017cd2a14545e9a784f96843e",
+    "res://main.gd": "a6137c9ca9dbc5317e26bde0fb290ca3ad2d14c9cb285e5c2e2aec5951e279b2",
+    "res://physics/effective_mass.gd": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+    "res://physics/hull_contact.gd": "04490fc097e8a35f32ec2881ea8263cc4c094bea6bcae80ef31073066b7066a2",
+    "res://physics/lake_surface.gd": "8c3f51ce336ca7ad674cc77ec8af8d697aa254f77ac9ae28e814ed860ba68152",
+    "res://physics/mass_inventory.gd": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+    "res://physics/math3d.gd": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+    "res://physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "res://render/crash/crash_audio.gd": "6a3c5855a3ed3d550a57904fb199f782761fb382e0d53f3901e4c295ea188978",
+    "res://render/crash/director.gd": "1ba07bd91a5e51c90dadf27d2707c86b08c4d71f442e5ea200a7120d84f8e763",
+    "res://render/crash/presentation_context.gd": "a87281cabf0879f68d330b42b32d550f64cee6b9626b2a62cb82749c46f47cbb",
+    "res://render/field.gd": "e1bf1afebeb744d3489ff97127fa887a8e90957832c7f995acebfbc828f5ca17",
+    "res://render/lake/lake_world.gd": "30d4c396146508e95a57c3e49407bd1701d03656c4c559a5d0ce824607ad6fad",
+    "res://sim/flight_session.gd": "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864",
+    "res://sim/simulation.gd": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490"
+  },
+  "phases": [
+    {
+      "name": "airborne",
+      "accepted_records": 250,
+      "loaded_records": 0,
+      "positive_power_records": 0,
+      "max_power_w": 0.0,
+      "emission_plan_delta": 0,
+      "native_tagged_render_records": 0,
+      "max_active_voices": 0,
+      "pcm": {
+        "frames": 24128,
+        "peak_linear": 0.0,
+        "rms_linear": 0.0,
+        "begin_frame": 16800,
+        "end_frame": 40928
+      }
+    },
+    {
+      "name": "opening_overlap",
+      "accepted_records": 241,
+      "loaded_records": 0,
+      "positive_power_records": 0,
+      "max_power_w": 0.0,
+      "emission_plan_delta": 0,
+      "native_tagged_render_records": 0,
+      "max_active_voices": 0,
+      "pcm": {
+        "frames": 24128,
+        "peak_linear": 0.0,
+        "rms_linear": 0.0,
+        "begin_frame": 64928,
+        "end_frame": 89056
+      }
+    },
+    {
+      "name": "brush",
+      "accepted_records": 475,
+      "loaded_records": 390,
+      "positive_power_records": 390,
+      "max_power_w": 73.9495814927703,
+      "emission_plan_delta": 15,
+      "native_tagged_render_records": 112,
+      "max_active_voices": 7,
+      "pcm": {
+        "frames": 90880,
+        "peak_linear": 0.2889404296875,
+        "rms_linear": 0.05487147198087834,
+        "begin_frame": 97696,
+        "end_frame": 188576
+      }
+    },
+    {
+      "name": "pause",
+      "accepted_records": 1,
+      "loaded_records": 1,
+      "positive_power_records": 1,
+      "max_power_w": 0.0201971342550609,
+      "emission_plan_delta": 0,
+      "native_tagged_render_records": 1,
+      "max_active_voices": 6,
+      "pcm": {
+        "frames": 24640,
+        "peak_linear": 0.0,
+        "rms_linear": 0.0,
+        "begin_frame": 207776,
+        "end_frame": 232416
+      }
+    },
+    {
+      "name": "resume",
+      "accepted_records": 238,
+      "loaded_records": 238,
+      "positive_power_records": 238,
+      "max_power_w": 0.0201971342550609,
+      "emission_plan_delta": 8,
+      "native_tagged_render_records": 47,
+      "max_active_voices": 2,
+      "pcm": {
+        "frames": 24128,
+        "peak_linear": 0.004119873046875,
+        "rms_linear": 0.00112729512740533,
+        "begin_frame": 256416,
+        "end_frame": 280544
+      }
+    },
+    {
+      "name": "reset",
+      "accepted_records": 245,
+      "loaded_records": 0,
+      "positive_power_records": 0,
+      "max_power_w": 0.0,
+      "emission_plan_delta": 0,
+      "native_tagged_render_records": 0,
+      "max_active_voices": 0,
+      "pcm": {
+        "frames": 23616,
+        "peak_linear": 0.0,
+        "rms_linear": 0.0,
+        "begin_frame": 304544,
+        "end_frame": 328160
+      }
+    },
+    {
+      "name": "terminal",
+      "accepted_records": 3,
+      "loaded_records": 2,
+      "positive_power_records": 2,
+      "max_power_w": 9.95565068582383,
+      "emission_plan_delta": 0,
+      "native_tagged_render_records": 0,
+      "max_active_voices": 7,
+      "pcm": {
+        "frames": 237312,
+        "peak_linear": 0.4503173828125,
+        "rms_linear": 0.02614751193685332,
+        "begin_frame": 336800,
+        "end_frame": 574112
+      }
+    }
+  ],
+  "callback_p95_us": 128,
+  "callback_scope": "shared-host diagnostic including duplicate owner packet lookup; no target budget",
+  "probe_sha256": "769565db98149dbafae91a33f78ceba0f99ac3fd90adf9da9be716c80155a49a",
+  "checker_sha256": "6261ea000403ac3e1d8d15f76697759523f0d744743a864c8557cb4fe59d7580",
+  "wav_sha256": "60b7a61f210a081da2fca0b3426c25d22209722f411e3382cae73e63b341fe77",
+  "root_production_software_cohort": "earlier550 +dry lake502 +accepted-gain60 are distinct scopes; this native tool does not retest all of them"
+}
