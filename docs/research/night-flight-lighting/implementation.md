@@ -222,6 +222,8 @@ The full candidate suite **fails** at the H6 transcendental-call guard after the
 
 The unit-only partition subsequently fails `test_aircraft_liveries.gd`: one of 179 checks reports a clipped Spanish paint selector at **1280×720 / 200% text**. This fallback-resolution failure does not negate the recorded 1080p lighting results, but it remains a required regression failure. A disposable custom capture director also deliberately pauses at tick 120; the new capture guard exits nonzero and writes `complete=false`, `simulation_paused=true`, with the exact reason (`tmp/godot-checks-expected/rgb-capture-pause-negative-5yf30ugt/`, manifest under `tmp/rgb-capture-pause-negative/`). No production input or pause policy was changed for that negative check.
 
+The paint-selector failure also reproduced in the current root. A bounded Home fix preserves the selected scheme on one ellipsized line at text scales ≥150%, with its full name, translated action/count and gallery description in the tooltip. Default-scale copy and the gallery remain unchanged. The unchanged livery suite now passes **179 checks**, zero engine errors/warnings (`tmp/rgb-home-paint-audit/livery-responsive-verified-smv64jwt/report.json`). The same unchanged suite passes 179 checks in the isolated candidate (`rgb-snapshot-livery-layout-current`). Only this Home diff is applied there; unrelated newer UI integrations are not copied. The unit partition has restarted with that bounded repair (`tmp/rgb-units-linear-home-current.log`); its result remains pending.
+
 ## Remaining masterplan work
 
 ### Active completion work (2026-10-25)

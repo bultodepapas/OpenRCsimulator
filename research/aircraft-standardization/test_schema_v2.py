@@ -448,6 +448,70 @@ def build_cases(app: Path) -> list[Case]:
     for contact in inverted_gear["landing_gear"]["contacts"]:
         contact["max_steering"]["value"] = 0.0
 
+    # Intent is an optional observation capability over existing hull IDs. This
+    # synthetic derivative tests source plumbing; it does not qualify stock X8
+    # support IDs, thresholds or landing credit.
+    def intent_q(value, unit):
+        return {"value": value, "unit": unit, "kind": "estimated", "source": "synthetic authoring test; no stock qualification"}
+    intent = deepcopy(fleet["skywalker_x8"])
+    intent["capabilities"]["landing_support"] = "authored_hull_v1"
+    intent["intended_hull_support"] = {
+        "format": "openrc-intended-hull-support v1", "role": "belly",
+        "evidence": {"kind": "estimated", "source": "synthetic role contract fixture, not flight calibration"},
+        "contact_law": "soft_hull_spring_friction_v2",
+        "allowed_contact_ids": ["probe_belly_front", "probe_belly"],
+        "stop_groups": [["probe_belly_front", "probe_belly"]],
+        "rest_pose": {"roll": intent_q(0, "rad"), "pitch": intent_q(0.1, "rad")},
+        "control_envelope": {"roll_tolerance": intent_q(0.2, "rad"), "pitch_tolerance": intent_q(0.15, "rad"),
+                             "max_angular_speed": intent_q(0.5, "rad/s")},
+    }
+    cases.append(Case("hull-intent:explicit-synthetic-belly", intent, True, True, "hull-intent"))
+    skid = deepcopy(intent)
+    skid["intended_hull_support"]["role"] = "skid"
+    cases.append(Case("hull-intent:explicit-synthetic-skid", skid, True, True, "hull-intent"))
+    for name in intent["intended_hull_support"]:
+        cases.append(Case("hull-intent:missing-" + name, without(intent, ("intended_hull_support", name)), False, False, "hull-intent"))
+    cases.append(Case("hull-intent:module-without-capability", without(intent, ("capabilities", "landing_support")), False, False, "hull-intent"))
+    cases.append(Case("hull-intent:capability-without-module", without(intent, ("intended_hull_support",)), False, False, "hull-intent"))
+    for path, value, schema_ok in [
+        (("capabilities", "landing_support"), "guess_from_label", False),
+        (("capabilities", "landing_support"), False, False),
+        (("intended_hull_support", "role"), "foam", False),
+        (("intended_hull_support", "contact_law"), "terminal_hull", False),
+        (("intended_hull_support", "allowed_contact_ids"), [], False),
+        (("intended_hull_support", "allowed_contact_ids"), ["probe_belly", "probe_belly"], False),
+        (("intended_hull_support", "allowed_contact_ids"), ["bad/id"], False),
+        (("intended_hull_support", "allowed_contact_ids"), ["probe_belly\n"], False),
+        (("intended_hull_support", "allowed_contact_ids"), ["a" * 81], False),
+        (("intended_hull_support", "stop_groups"), [], False),
+        (("intended_hull_support", "stop_groups"), [[]], False),
+        (("intended_hull_support", "stop_groups"), [["probe_belly", "probe_belly"]], False),
+        (("intended_hull_support", "stop_groups"), [["probe_belly"], ["probe_belly"]], False),
+        (("intended_hull_support", "evidence", "source"), " ", False),
+        (("intended_hull_support", "evidence", "source"), "x" * 2049, False),
+        (("intended_hull_support", "rest_pose", "roll", "unit"), "deg", False),
+        (("intended_hull_support", "rest_pose", "pitch", "value"), math.pi / 4 + 1e-8, False),
+        (("intended_hull_support", "control_envelope", "roll_tolerance", "value"), 0, False),
+        (("intended_hull_support", "control_envelope", "max_angular_speed", "value"), 100.01, False),
+        # These are semantic physical-reference conditions, not scalar schema bounds.
+        (("intended_hull_support", "allowed_contact_ids"), ["missing_hull_id"], True),
+        (("intended_hull_support", "stop_groups"), [["probe_nose"]], True),
+        (("intended_hull_support", "stop_groups"), [["probe_belly_front", "probe_belly"], ["probe_belly", "probe_belly_front"]], True),
+    ]:
+        changed = deepcopy(intent)
+        at(changed, path[:-1])[path[-1]] = value
+        name = "hull-intent:reject-" + "/".join(path) + "=" + str(value)[:90]
+        cases.append(Case(name, changed, schema_ok, False, "coupled-runtime-only" if schema_ok else "hull-intent"))
+    mixed_ground = deepcopy(intent)
+    mixed_ground["ground"] = {"format": "openrc-aircraft-ground v1", "law": "legacy_wheels_v1"}
+    cases.append(Case("hull-intent:cannot-combine-wheel-ground-module", mixed_ground, False, False, "hull-intent"))
+    no_identity = without(intent, ("physical_identity_version",))
+    cases.append(Case("hull-intent:requires-authored-physical-identity", no_identity, False, False, "hull-intent"))
+    wheel_intent = deepcopy(stik)
+    wheel_intent["capabilities"]["landing_support"] = "authored_hull_v1"
+    wheel_intent["intended_hull_support"] = deepcopy(intent["intended_hull_support"])
+    cases.append(Case("hull-intent:installed-wheels-not-supported", wheel_intent, False, False, "hull-intent"))
+
     # Preserve a compact v1 specimen so compatibility remains testable after all
     # production/electric JSON moves to v2. Legacy unknown root metadata stays legal.
     legacy = read_json(LEGACY_V1)
@@ -457,6 +521,9 @@ def build_cases(app: Path) -> list[Case]:
     legacy_extra = deepcopy(legacy)
     legacy_extra["legacy_test_note"] = {"unknown_but_ignored": [1, 2]}
     cases.append(Case("legacy-permissive:unknown-root-metadata", legacy_extra, True, True, "legacy-v1"))
+    legacy_intent = deepcopy(legacy)
+    legacy_intent["intended_hull_support"] = deepcopy(intent["intended_hull_support"])
+    cases.append(Case("legacy-permissive:no-inferred-v2-intent", legacy_intent, True, True, "legacy-v1"))
     return cases
 
 

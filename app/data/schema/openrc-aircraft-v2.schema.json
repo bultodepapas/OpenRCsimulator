@@ -3501,7 +3501,10 @@
           "items": {
             "type": "string",
             "maxLength": 80,
-            "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+            "not": {
+              "pattern": "\\s"
+            }
           }
         },
         "stop_groups": {
@@ -3517,7 +3520,10 @@
             "items": {
               "type": "string",
               "maxLength": 80,
-              "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+              "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+              "not": {
+                "pattern": "\\s"
+              }
             }
           }
         },

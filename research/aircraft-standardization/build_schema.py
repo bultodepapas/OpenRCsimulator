@@ -227,7 +227,7 @@ def add_intended_hull_support(schema: dict):
         return {"$ref": "#/$defs/evidence", "properties": {
             "unit": {"const": unit}, "value": {"type": "number", "minimum": low, "maximum": high},
             "source": {"maxLength": 2048}}}
-    identifier = {"type": "string", "maxLength": 80, "pattern": r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"}
+    identifier = {"type": "string", "maxLength": 80, "pattern": r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$", "not": {"pattern": r"\s"}}
     group = {"type": "array", "minItems": 1, "maxItems": 16, "uniqueItems": True, "items": identifier}
     module = obj({
         "format": {"const": "openrc-intended-hull-support v1"},

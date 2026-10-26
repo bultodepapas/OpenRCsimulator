@@ -4,6 +4,9 @@ const Role := preload("res://physics/intended_hull_support.gd")
 const M := preload("res://physics/math3d.gd")
 const Hull := preload("res://physics/hull_contact.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
+const Modules := preload("res://physics/aircraft_modules.gd")
+const Profiles := preload("res://statistics/profiles.gd")
+const Contacts := preload("res://physics/aircraft_contact_contract.gd")
 var checks := 0
 var failed := 0
 
@@ -14,6 +17,7 @@ func _initialize() -> void:
 	_pose()
 	_malformed_queries()
 	_stock_unchanged()
+	_v2_pipeline()
 	print("Intended hull support: %d checks, %d failed" % [checks, failed])
 	quit(1 if failed else 0)
 
@@ -87,6 +91,7 @@ func _authoring() -> void:
 		{format = "v99"}, {format = 1}, {role = "foam"}, {role = 1}, {contact_law = 1}, {contact_law = "terminal_hull"}, {extra = 1},
 		{allowed_contact_ids = []}, {allowed_contact_ids = ["missing"]},
 		{allowed_contact_ids = ["belly_front", "belly_front"]}, {allowed_contact_ids = ["bad/id"]},
+		{allowed_contact_ids = ["belly_front\n"]},
 		{stop_groups = []}, {stop_groups = [[]]}, {stop_groups = [["wingtip"]]},
 		{stop_groups = [["belly_left", "belly_right"], ["belly_right", "belly_left"]]},
 		{evidence = {kind = "guessed", source = "fixture"}}, {evidence = {kind = "estimated", source = " "}},
@@ -256,3 +261,84 @@ func _stock_unchanged() -> void:
 		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
 		check("stock authoring has no optional role module", not raw.has("intended_hull_support"))
 		check("no absent-module default can enable stock X8 credit", not Role.prepare({}, loaded.model).ok)
+
+
+func _v2_pipeline() -> void:
+	# A deliberately synthetic derivative exercises authoring plumbing. These role
+	# choices/tolerances are not stock calibration and never reach a flight session.
+	var original: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/skywalker_x8.json"))
+	var source := original.duplicate(true)
+	source.capabilities.landing_support = "authored_hull_v1"
+	source.intended_hull_support = raw_fixture()
+	source.intended_hull_support.allowed_contact_ids = ["probe_belly_front", "probe_belly"]
+	source.intended_hull_support.stop_groups = [["probe_belly_front", "probe_belly"]]
+	var parsed := AircraftData.validate_and_derive(source)
+	check("v2 loader binds explicitly opted-in synthetic hull intent", parsed.ok)
+	if not parsed.ok:
+		printerr(parsed.errors)
+		return
+	check("normalized intent pins current authored model", Role.matches_model(parsed.model.intended_hull_support, parsed.model))
+	check("new optional metadata has byte-identical legacy numerical input", var_to_bytes(AircraftData.legacy_v1_input(original))
+		== var_to_bytes(AircraftData.legacy_v1_input(source)))
+	check("normalization does not mutate source authoring", source.intended_hull_support == raw_fixture_with_bound_ids())
+	var installed := Modules.classify(source)
+	var before := Modules.classify(original)
+	check("registry publishes exact observational module identities", installed.ok
+		and "aircraft.ground.intended_hull.v1" in installed.modules
+		and "aircraft.ground.intended_hull.belly.v1" in installed.modules)
+	check("intent capability does not add or replace force laws", installed.laws == before.laws)
+	check("unqualified compiler transforms fail closed", not installed.compiler_transforms.scale
+		and not installed.compiler_transforms.weight and not installed.compiler_transforms.power and not installed.compiler_transforms.controls)
+	var profile := Profiles.resolve(str(source.id), parsed.model, Contacts.describe(parsed.model, true))
+	check("loader registration alone never enables stock statistics credit", profile.landing_available == false
+		and profile.reason == "unreviewed_aircraft_profile")
+	var other_role := source.duplicate(true)
+	other_role.intended_hull_support.role = "skid"
+	var skid := AircraftData.validate_and_derive(other_role)
+	var skid_modules := Modules.classify(other_role)
+	check("explicit skid role has separately registered identity", skid.ok and skid_modules.ok
+		and "aircraft.ground.intended_hull.skid.v1" in skid_modules.modules)
+	var malformed := source.duplicate(true)
+	malformed.capabilities.erase("landing_support")
+	check("module without capability fails loader and registry", not AircraftData.validate_and_derive(malformed).ok and not Modules.classify(malformed).ok)
+	malformed = source.duplicate(true)
+	malformed.erase("intended_hull_support")
+	check("capability without module fails loader and registry", not AircraftData.validate_and_derive(malformed).ok and not Modules.classify(malformed).ok)
+	malformed = source.duplicate(true)
+	malformed.capabilities.landing_support = "guess_from_belly_label"
+	check("unknown optional capability cannot fly", not AircraftData.validate_and_derive(malformed).ok)
+	malformed = source.duplicate(true)
+	malformed.ground = {format = "openrc-aircraft-ground v1", law = "legacy_wheels_v1"}
+	check("mixed wheel-ground selection rejected by loader and registry", not AircraftData.validate_and_derive(malformed).ok and not Modules.classify(malformed).ok)
+	malformed = source.duplicate(true)
+	malformed.erase("physical_identity_version")
+	check("v2 intent requires complete authored physical identity", not AircraftData.validate_and_derive(malformed).ok)
+	var wheel_raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/jensen_ugly_stik_60.json"))
+	wheel_raw.capabilities.landing_support = "authored_hull_v1"
+	wheel_raw.intended_hull_support = raw_fixture_with_bound_ids()
+	check("installed wheel aircraft cannot select gearless intent", not AircraftData.validate_and_derive(wheel_raw).ok and not Modules.classify(wheel_raw).ok)
+	for mutation: Dictionary in [{allowed_contact_ids = ["missing_hull_id"]}, {stop_groups = [["probe_nose"]]},
+		{role = "invented"}, {extra = true}, {contact_law = "terminal_hull"},
+		{rest_pose = {roll = quantity(0.0, "deg"), pitch = quantity(0.0, "rad")}}]:
+		malformed = source.duplicate(true)
+		malformed.intended_hull_support.merge(mutation, true)
+		var rejected := AircraftData.validate_and_derive(malformed)
+		check("invalid present intent fails full v2 loader without partial model", not rejected.ok and rejected.model.is_empty())
+	var legacy := AircraftData.legacy_v1_input(source)
+	check("explicit v1 numerical adapter strips new module and capability", not legacy.has("intended_hull_support") and not legacy.has("capabilities"))
+	var historical_raw := AircraftData.legacy_v1_input(wheel_raw)
+	historical_raw.intended_hull_support = source.intended_hull_support.duplicate(true)
+	# Historical v1 remains permissive about unrelated root metadata, but cannot
+	# acquire v2 role semantics from that ignored metadata or from crash labels.
+	var historical := AircraftData.validate_and_derive(historical_raw)
+	check("historical v1 never normalizes ignored v2 intent metadata", historical.ok and not historical.model.has("intended_hull_support"))
+	var unopted := AircraftData.validate_and_derive(original)
+	check("absent optional module leaves normalized legacy intent absent", unopted.ok and not unopted.model.has("intended_hull_support")
+		and not unopted.model.capabilities.has("landing_support"))
+
+
+func raw_fixture_with_bound_ids() -> Dictionary:
+	var result := raw_fixture()
+	result.allowed_contact_ids = ["probe_belly_front", "probe_belly"]
+	result.stop_groups = [["probe_belly_front", "probe_belly"]]
+	return result

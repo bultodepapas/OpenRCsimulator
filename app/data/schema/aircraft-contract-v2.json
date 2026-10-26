@@ -2042,6 +2042,12 @@
       ]
     },
     {
+      "path": "/capabilities/landing_support",
+      "values": [
+        "authored_hull_v1"
+      ]
+    },
+    {
       "path": "/intended_hull_support/role",
       "values": [
         "belly",

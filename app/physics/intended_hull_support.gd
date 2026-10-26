@@ -200,7 +200,7 @@ static func _ids(value: Variant, limit: int, packed := false, allow_empty := fal
 
 
 static func _id(value: Variant) -> bool:
-	if not _text(value, 80): return false
+	if not _text(value, 80) or value != value.strip_edges(): return false
 	var expression := RegEx.new()
 	expression.compile("^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
 	return expression.search(value) != null
