@@ -12,6 +12,7 @@
 extends Node
 
 const DebugLog := preload("res://debug/debug_log.gd")
+const ViewportColor := preload("res://render/viewport_color.gd")
 const Spec := preload("res://spec.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
@@ -999,12 +1000,14 @@ func _cmd_screenshot(request: Dictionary) -> Dictionary:
 			if image == null or image.is_empty():
 				return _fail("the viewport returned no image")
 			var absolute := ProjectSettings.globalize_path(path)
+			var linear_hdr := get_viewport().use_hdr_2d
 			task[0] = WorkerThreadPool.add_task(func() -> void:
-				if max_width > 0 and image.get_width() > max_width:
-					image.resize(max_width, roundi(image.get_height() * float(max_width) / image.get_width()), Image.INTERPOLATE_LANCZOS)
+				var display_image := ViewportColor.display_image(image, linear_hdr)
+				if max_width > 0 and display_image.get_width() > max_width:
+					display_image.resize(max_width, roundi(display_image.get_height() * float(max_width) / display_image.get_width()), Image.INTERPOLATE_LANCZOS)
 				DirAccess.make_dir_recursive_absolute(absolute.get_base_dir())
-				var err: Error = image.save_jpg(absolute, 0.85) if format == "jpg" else image.save_png(absolute)
-				var info := {path = absolute, width = image.get_width(), height = image.get_height(), format = format}
+				var err: Error = display_image.save_jpg(absolute, 0.85) if format == "jpg" else display_image.save_png(absolute)
+				var info := {path = absolute, width = display_image.get_width(), height = display_image.get_height(), format = format}
 				# Reply from the worker as soon as the file exists, not one rendered frame later.
 				_reply(target.peer_id, target.id, _ok(info) if err == OK \
 					else _fail("cannot save %s: %s" % [absolute, error_string(err)]))

@@ -15,6 +15,7 @@ const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
 const FrameSamples := preload("res://render/frame_samples.gd")
+const ViewportColor := preload("res://render/viewport_color.gd")
 
 const DEFAULT_FPS := 60
 const DEFAULT_WIDTH := 1920
@@ -411,6 +412,7 @@ func _capture_frames(count: int, preroll: int) -> void:
 		if index % _sample_every != 0 and index != count - 1:
 			continue
 		var image: Image = root.get_texture().get_image()
+		image = ViewportColor.display_image(image, root.use_hdr_2d)
 		if image.get_width() != _width or image.get_height() != _height:
 			_failure = "Rendered frame size was %dx%d, expected %dx%d" % [image.get_width(), image.get_height(), _width, _height]
 			push_error(_failure)
@@ -546,6 +548,8 @@ func _write_manifest(ok: bool) -> void:
 		customization_registry_sha256 = FileAccess.get_sha256("res://data/aircraft_customization.json"),
 		camera_preferences = _main.camera_preferences.duplicate(true) if _main != null else {},
 		root_msaa_3d = root.msaa_3d,
+		root_hdr_2d = root.use_hdr_2d,
+		image_color_space = "srgb",
 		workshop_identity = session.workshop_identity.duplicate(true) if session != null else {},
 		workshop_presentation_identity = session.workshop_presentation_identity.duplicate(true) if session != null else {},
 		director_script = str(_options.get("director-script", "tools/trailer/flight_director.gd")),

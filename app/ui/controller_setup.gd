@@ -75,6 +75,7 @@ var _section_buttons: Dictionary = {}
 var _section_navigation: HFlowContainer
 var _section_body: VBoxContainer
 var _selected_section := "devices"
+var _mapping_focus_layout_pending := false
 var _device_summary: Label
 var _device_details_label: Label
 var _empty_device_label: Label
@@ -295,11 +296,13 @@ func _build() -> void:
 	scroll.follow_focus = true
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.resized.connect(_queue_mapping_focus_visibility)
 	shell.add_child(scroll)
 	_section_body = VBoxContainer.new()
 	_section_body.name = "ControllerSetupPage"
 	_section_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_section_body)
+	_section_body.resized.connect(_queue_mapping_focus_visibility)
 	var page := _make_section("devices", "Devices")
 	page.add_child(_label("Choose your controllers, then Save.", "SecondaryLabel", true))
 	_empty_device_label = _label("No controllers connected. Connect a gamepad or radio by USB or Bluetooth, then select it here. Keyboard and mouse remain available.", "SecondaryLabel", true)
@@ -487,6 +490,7 @@ func _build() -> void:
 	aux_help_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page.add_child(aux_help_label)
 	aux_grid = VBoxContainer.new()
+	aux_grid.sort_children.connect(_queue_mapping_focus_visibility)
 	aux_grid.name = "AuxiliaryMappings"
 	aux_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	aux_grid.add_theme_constant_override("separation", 8)
@@ -722,6 +726,7 @@ func _build() -> void:
 	page.add_child(_label("Bindings are saved by physical control. A different device cannot trigger them.", "SecondaryLabel", true))
 	page.add_child(_label("Gamepads: B/Circle controls retractable gear and RB/R1 controls an installed smoke pump automatically. Flap actions depend on the selected aircraft. Existing assignments take priority; remap other joysticks to choose their buttons.", "SecondaryLabel", true))
 	action_grid = GridContainer.new()
+	action_grid.sort_children.connect(_queue_mapping_focus_visibility)
 	action_grid.name = "SemanticActions"
 	action_grid.columns = 3
 	action_grid.add_theme_constant_override("h_separation", 18)
@@ -795,13 +800,13 @@ func _resize_panel() -> void:
 	_settings_panel.custom_minimum_size = Vector2(minf(1160.0, maxf(0.0, _screen.size.x - 40.0)), minf(780.0, maxf(0.0, _screen.size.y - 40.0)))
 	var scale := maxf(0.5, ScreenTheme.text_scale)
 	var effective_width := _screen.size.x / scale
-	var compact_height := _screen.size.y < 760.0
+	var compact_height := _screen.size.y / scale < 760.0
 	_shell.add_theme_constant_override("separation", 6 if compact_height else 12)
 	_settings_panel_style.content_margin_left = 16.0 if _screen.size.x < 1100.0 else 24.0
 	_settings_panel_style.content_margin_right = _settings_panel_style.content_margin_left
 	_settings_panel_style.content_margin_top = 12.0 if compact_height else 20.0
 	_settings_panel_style.content_margin_bottom = _settings_panel_style.content_margin_top
-	status_label.max_lines_visible = 2 if compact_height else 3
+	status_label.max_lines_visible = (1 if scale >= 1.5 else 2) if compact_height else 3
 	_settings_title.tooltip_text = _settings_title.text
 	var navigation_in_scroll := compact_height
 	if navigation_in_scroll and _section_navigation.get_parent() != _section_body:
@@ -900,6 +905,23 @@ func _make_section(section_id: String, caption: String) -> VBoxContainer:
 	_section_body.add_child(page)
 	_section_pages[section_id] = page
 	return page
+
+
+func _queue_mapping_focus_visibility() -> void:
+	_mapping_focus_layout_pending = true
+
+
+func _keep_mapping_focus_visible() -> void:
+	if not is_inside_tree():
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused == null or not focused.is_visible_in_tree():
+		return
+	# Capture/status text can resize the viewport without changing focus.
+	# Follow only a focused mapping control, never a tab or a stale capture target.
+	if (_selected_section == "buttons" and action_grid.is_ancestor_of(focused)) \
+		or (_selected_section == "aux" and aux_grid.is_ancestor_of(focused)):
+		(_section_body.get_parent() as ScrollContainer).ensure_control_visible(focused)
 
 
 ## Switching sections changes presentation only; all fields share the same draft.
@@ -1032,6 +1054,11 @@ func close_button_focus() -> void:
 
 
 func _process(delta: float) -> void:
+	# Containers finish sorting at the end of the previous frame. Coalesce their
+	# layout notifications; ordinary wheel scrolling must not force focus back.
+	if _mapping_focus_layout_pending:
+		_mapping_focus_layout_pending = false
+		_keep_mapping_focus_visible()
 	if _initial_focus_wait_frames > 0:
 		_initial_focus_wait_frames -= 1
 		if _initial_focus_wait_frames == 0:
@@ -2163,7 +2190,10 @@ func _get_prompt_texture(texture_path: String) -> Texture2D:
 
 
 func _start_capture(action_id: String, button: Button) -> void:
-	select_section("buttons")
+	# Selecting even the current section resets its scroll and focuses its tab.
+	# A row edit is not navigation: keep its viewport and keyboard/gamepad focus.
+	if _selected_section != "buttons":
+		select_section("buttons")
 	# Public callers may request an action currently hidden by the category filter.
 	if not button.visible:
 		action_filter.select(0)
@@ -2181,7 +2211,8 @@ func _start_capture(action_id: String, button: Button) -> void:
 func _start_aux_capture(aux_name: String, row_index: int, button: Button) -> void:
 	if button.disabled or not _aux_controls.has(aux_name):
 		return
-	select_section("aux")
+	if _selected_section != "aux":
+		select_section("aux")
 	_capturing_action = ""
 	_capturing_aux_name = aux_name
 	_capturing_aux_position = row_index

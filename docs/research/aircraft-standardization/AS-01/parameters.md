@@ -148,6 +148,11 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `ground.supports[].axle_le` | 1 | length 3…3 | AircraftGroundProfile.resolve validates/converts the reference axle → AircraftGroundStage.motion / WheelGeometry.heightfield and RotorCoupling: ring plane and relative-spin axis |
 | `ground.supports[].hub_le` | m | length 3…3 | AircraftGroundProfile.resolve converts LE to fixed body datum once → AircraftGroundDynamics.evaluate: fixed ring hub, contact arm and point velocity; moving hubs unsupported |
 | `ground.supports[].steering_axis_le` | 1 | length 3…3 | AircraftGroundProfile.resolve validates/converts the fixed hub hinge → AircraftGroundStage.motion / ControlActuators.fixed_axis_motion: Rodrigues axle pose and full carrier angular velocity/acceleration |
+| `intended_hull_support.control_envelope.max_angular_speed` | rad/s | ≥1e-06, ≤100 | IntendedHullSupport._compile/evaluate → FlightSession.hull_support_observation: body-rate norm bound for the controlled observation only; separate from role/stop coverage, no torque limiter or structural capacity |
+| `intended_hull_support.control_envelope.pitch_tolerance` | rad | ≥1e-06, ≤0.785398 | IntendedHullSupport._compile/evaluate → FlightSession.hull_support_observation: explicit observed pitch-error bound for pose/intended/stop-support facts; no contact-force, damage or dwell law |
+| `intended_hull_support.control_envelope.roll_tolerance` | rad | ≥1e-06, ≤0.785398 | IntendedHullSupport._compile/evaluate → FlightSession.hull_support_observation: explicit observed roll-error bound for pose/intended/stop-support facts; no contact-force, damage or dwell law |
+| `intended_hull_support.rest_pose.pitch` | rad | ≥-0.785398, ≤0.785398 | AircraftData.validate_and_derive → IntendedHullSupport.prepare/evaluate → FlightSession.hull_support_observation: authored terrain-relative rest pitch for accepted hull-contact pose observation; no force or structural capacity |
+| `intended_hull_support.rest_pose.roll` | rad | ≥-0.785398, ≤0.785398 | AircraftData.validate_and_derive → IntendedHullSupport.prepare/evaluate → FlightSession.hull_support_observation: authored terrain-relative rest roll for accepted hull-contact pose observation; no force or structural capacity |
 | `inventory[].mass` | kg | ≥0.001, ≤5 | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
 | `inventory[].position` | m | length 3…3, each(≥-2, ≤2) | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
 | `inventory[].size` | m | length 3…3, each(≥0, ≤4) | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
@@ -249,4 +254,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 235 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 240 distinct quantity paths. Shared paths retain branch-dependent ranges.

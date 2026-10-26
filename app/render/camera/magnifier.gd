@@ -8,6 +8,7 @@ extends CanvasLayer
 
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraMath := preload("res://render/camera/camera_math.gd")
+const ViewportColor := preload("res://render/viewport_color.gd")
 
 ## Render layer the aircraft's meshes join; other code uses 1 << 19 for crash debris (render/crash/wreck.gd).
 const LAYER := 1 << 18
@@ -52,6 +53,7 @@ func _ready() -> void:
 	_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_container)
 	_viewport = SubViewport.new()
+	ViewportColor.configure(_viewport)
 	_viewport.msaa_3d = Viewport.MSAA_2X
 	_viewport.audio_listener_enable_3d = false
 	_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED

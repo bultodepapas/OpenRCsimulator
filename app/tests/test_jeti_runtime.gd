@@ -92,7 +92,7 @@ func _conflicts_and_persistence() -> void:
 	invalid.aux.smoke = _switch([90, 90])
 	_check("invalid extended smoke group rejected before optional sanitization", Profile.upgrade_legacy(invalid).is_empty())
 	for aux_id in ["smoke", "gear", "flaps"]:
-		for bad_buttons in [[true, 90], [90.0, 91], ["90", 91], [90, 90], [90, 128], [90]]:
+		for bad_buttons in [[true, 90], [90, true], [90.0, 91], ["90", 91], [90, "91"], [90, null], [90, {}], [90, 90], [90, 128], [90]]:
 			var malformed := Profile.defaults("radio", "jeti_mode2")
 			malformed.aux = {aux_id: _switch(bad_buttons)}
 			_check("malformed %s group fails profile activation: %s" % [aux_id, str(bad_buttons)], not Profile.validate(malformed).ok and Profile.upgrade_legacy(malformed).is_empty())

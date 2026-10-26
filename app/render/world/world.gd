@@ -19,6 +19,7 @@ const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const AircraftLightState := preload("res://render/world/aircraft_light_state.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
 const Exposure := preload("res://render/world/exposure.gd")
+const ViewportColor := preload("res://render/viewport_color.gd")
 const LandscapeOptions := preload("res://render/landscape_upgrade/options.gd")
 const SunGlare := preload("res://render/landscape_upgrade/sun_glare.gd")
 const AirfieldLighting := preload("res://render/landscape_upgrade/airfield_lighting.gd")
@@ -356,6 +357,8 @@ static func _new_build_context(parent: Node, field: Dictionary, build_field: Cal
 
 static func _build_environment_stage(context: Dictionary) -> void:
 	var parent: Node = context.parent
+	if parent.is_inside_tree():
+		ViewportColor.configure(parent.get_viewport())
 	var field: Dictionary = context.field
 	var lighting: Dictionary = context.lighting
 	var conditions: Dictionary = context.conditions
