@@ -43,6 +43,8 @@ func _run() -> void:
 	var original: Dictionary = setup.current_profile()
 	original.presentation.glyph_family = "generic"
 	original.throttle_rate = 1.7
+	original.roll.expo = 0.35
+	original.roll.deadzone = 0.1
 	original.aux = {"smoke": {"type": "button", "button": 20, "mode": "level"}, "flaps": {"type": "axis", "axis": 4, "off": -1.0, "on": 1.0, "invert": false}}
 	setup._set_draft_profile(original)
 	setup.profile_name_edit.text = "My limited radio"
@@ -79,7 +81,7 @@ func _run() -> void:
 	await _open_wizard()
 	await ui.tap(KEY_ENTER) # rest
 	await ui.tap(KEY_ENTER) # throttle without a sweep
-	check("missing sweep stays in wizard and does not change draft", app.screens.is_top("radio_calibration") and setup.current_profile() == original)
+	check("missing sweep reports an error without changing draft", app.screens.is_top("radio_calibration") and app.screens.top()._error_label.visible and setup.current_profile() == original)
 	app.screens.top().request_close()
 
 	for inverted: bool in [false, true]:
@@ -89,6 +91,7 @@ func _run() -> void:
 		check("completed calibration returns to Controls without a flight", app.screens.is_top("controls") and app.flight == null)
 		check("limited travel records endpoints and inversion", calibrated.throttle.axis == 4 and is_equal_approx(calibrated.throttle.min, -0.6) and is_equal_approx(calibrated.throttle.max, 0.6) and calibrated.throttle.invert == inverted)
 		check("calibration preserves identity, settings, safe AUX and unsaved name", calibrated.profile_id == original.profile_id and calibrated.actions == original.actions and calibrated.presentation == original.presentation and calibrated.throttle_rate == 1.7 and calibrated.aux == {"smoke": original.aux.smoke} and setup.profile_name_edit.text == "My limited radio")
+		check("calibration preserves per-channel shaping settings", calibrated.roll.expo == 0.35 and calibrated.roll.deadzone == 0.1)
 		if not inverted:
 			check("AUX consumed by a new flight axis is reported", "flaps" in setup.status_label.text)
 		check("wizard completion never persists a profile", app.controllers.store.load_all().profiles.is_empty())
@@ -103,6 +106,11 @@ func _run() -> void:
 	app.controllers.refresh()
 	check("completed ranges cannot be saved to a new connection generation", not setup._save_profile(false) and app.controllers.store.load_all().profiles.is_empty())
 	check("stale wizard completion cannot replace another connection's draft", not setup.apply_calibration_draft(complete, 15, stale_generation) and setup.current_profile() == complete)
+	var prior_context: String = setup._draft_context_key
+	setup._duplicate_profile()
+	check("duplicating cannot bypass the calibration connection check", not setup._save_profile(false) and app.controllers.store.load_all().profiles.is_empty())
+	setup._set_draft_profile(complete, prior_context)
+	setup.profile_name_edit.text = "My limited radio"
 	await _open_wizard()
 	await _complete_wizard()
 	check("normal Save commits calibrated settings", setup._save_profile(false))
