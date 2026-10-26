@@ -1,0 +1,42 @@
+{
+	"capture_id": "2026-10-26T15:46:32-5400947",
+	"complete": true,
+	"error": "",
+	"final_tick": 4,
+	"format": "openrc-companion-capture v1",
+	"kind": "summary",
+	"manifest_sha256": "fd943850d102f3f8b6c5f9ff591495251ebfcb6436f98bd164277106da7b0447",
+	"reason": "session reset or configuration change",
+	"replay_scope": {
+		"decision_replay": false,
+		"fleet_restore": false,
+		"per_session_inputs": "Use existing .orfl verification; do not infer fleet equivalence.",
+		"shared_world_replay": false
+	},
+	"streams": [
+		{
+			"bytes": 32688,
+			"complete": true,
+			"error": "",
+			"final_tick": 4,
+			"generation": 0,
+			"id": "player",
+			"log": "player.orfl",
+			"rows": 5,
+			"session_tick": 4,
+			"sha256": "5f1c1619c76f55482dc67587ab1866483edfc6360288fc3c39bd21b1f4c61a51"
+		},
+		{
+			"bytes": 32688,
+			"complete": true,
+			"error": "",
+			"final_tick": 4,
+			"generation": 0,
+			"id": "companion-1",
+			"log": "companion-1.orfl",
+			"rows": 5,
+			"session_tick": 4,
+			"sha256": "aab7f6bfa3660a97fa441f9ceffc9a12b2f7d4a70c34cfd7d17f906b575f5265"
+		}
+	]
+}

@@ -1,0 +1,98 @@
+{
+  "format": "openrc-ground-observation-validation-evidence-v1",
+  "date": "2026-10-26",
+  "scope": "Selected adapter sources and focused headless checks; no full application snapshot or physical qualification.",
+  "passing_checks": 236,
+  "files": [
+    {
+      "path": "before/report.json",
+      "sha256": "024890dc9d7cdb5bb3dbb1538308e0e5d11fbb382eef0e88c1b3360f479ef851",
+      "bytes": 4342,
+      "origin": "tmp/gp14-observation-validation/checks/before/before-9n4trnwa/report.json"
+    },
+    {
+      "path": "before/engine.log",
+      "sha256": "136bb662b2df7b48166315eb654756064d72ba43afcaf80c596ccc39688c188b",
+      "bytes": 2802,
+      "origin": "tmp/gp14-observation-validation/checks/before/before-9n4trnwa/engine.log"
+    },
+    {
+      "path": "main/report.json",
+      "sha256": "b1f2652717b81d94776c87664fbc936d632282c3267d17713dc16f19663b5567",
+      "bytes": 1235,
+      "origin": "tmp/gp14-observation-validation/checks/main/main-e3q3iwje/report.json"
+    },
+    {
+      "path": "main/engine.log",
+      "sha256": "247c36483a97dcf02343db5868d34b100a42d7ebd2f47f4bc2845e44cb95b7a4",
+      "bytes": 110,
+      "origin": "tmp/gp14-observation-validation/checks/main/main-e3q3iwje/engine.log"
+    },
+    {
+      "path": "main-corrected/report.json",
+      "sha256": "2fc42dcda862bdd58e64b63f0b7e554a9bfcbf0430c71e86cbff3564c1102e1e",
+      "bytes": 1208,
+      "origin": "tmp/gp14-observation-validation/checks/main-corrected/main-67zd5bpx/report.json"
+    },
+    {
+      "path": "main-corrected/engine.log",
+      "sha256": "247c36483a97dcf02343db5868d34b100a42d7ebd2f47f4bc2845e44cb95b7a4",
+      "bytes": 110,
+      "origin": "tmp/gp14-observation-validation/checks/main-corrected/main-67zd5bpx/engine.log"
+    },
+    {
+      "path": "session/report.json",
+      "sha256": "7c8118f75a66afbb9f4aa6e9c7b698c8e2c91b38faf478adef8034afe031abcf",
+      "bytes": 1199,
+      "origin": "tmp/gp14-observation-validation/checks/session/session-bgtoxkf4/report.json"
+    },
+    {
+      "path": "session/engine.log",
+      "sha256": "0bc1858073b97d4a4e6a0c6e1c6d7fa28fe3c7ec3f17f9eaf4a51d5d38b9cc83",
+      "bytes": 732,
+      "origin": "tmp/gp14-observation-validation/checks/session/session-bgtoxkf4/engine.log"
+    },
+    {
+      "path": "events/report.json",
+      "sha256": "864ef8292387b3e0b4e6e417cff351328f514e4f04a8e291bfbf497dd57c2ba1",
+      "bytes": 1191,
+      "origin": "tmp/gp14-observation-validation/checks/events/events-dit1zfbo/report.json"
+    },
+    {
+      "path": "events/engine.log",
+      "sha256": "a57018228193fc3ea5ae4488db20ea67d1b0266f51773a47bcc8fdf9222207e7",
+      "bytes": 116,
+      "origin": "tmp/gp14-observation-validation/checks/events/events-dit1zfbo/engine.log"
+    },
+    {
+      "path": "baseline/fixed_wing_adapter.before.gd.txt",
+      "sha256": "5ea8de929aebbca752f37243b6f73e915945a1d21de584b43b35eeef165c2366",
+      "bytes": 11595,
+      "origin": "tmp/gp14-observation-validation/fixed_wing_adapter.before.gd.txt"
+    },
+    {
+      "path": "baseline/test_ground_accidents.before.gd.txt",
+      "sha256": "75e8ac58a42051a1b926e47289be02592e39291841c9a99e47fcd39f3aa6125e",
+      "bytes": 15247,
+      "origin": "tmp/gp14-observation-validation/test_ground_accidents.before.gd.txt"
+    },
+    {
+      "path": "baseline/reproduce.gd",
+      "sha256": "521c5fea6584b9ceb7e4077f6626837992797990b7036e6c6e5fd4d535fc76f0",
+      "bytes": 1403,
+      "origin": "tmp/gp14-observation-validation/reproduce.gd"
+    },
+    {
+      "path": "current/app/statistics/fixed_wing_adapter.gd",
+      "sha256": "678a948cb26ca5e5427d9fa4a078d40f1849bd068cfd4dbc7a003993d2ab1708",
+      "bytes": 11645,
+      "origin": "app/statistics/fixed_wing_adapter.gd"
+    },
+    {
+      "path": "current/app/tests/test_ground_accidents.gd",
+      "sha256": "d1c6bb825d383caf56a18ee5f61a5370081295bf9487dc01e5d007aa9a13b83f",
+      "bytes": 16094,
+      "origin": "app/tests/test_ground_accidents.gd"
+    }
+  ]
+}

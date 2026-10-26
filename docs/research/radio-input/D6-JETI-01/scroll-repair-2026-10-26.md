@@ -16,15 +16,19 @@ The existing JETI malformed-profile test also exposed invalid mixed-type compari
 
 ## Verification
 
-Engine: pinned Windows `4.8.beta1.official.4d10419ca`. Baseline: `557cc11d4`; broad checks use an isolated sparse worktree under local `tmp/jeti-capture-scroll/suite/`. Concurrent commits advanced the shared checkout during verification; no unrelated changes were reverted.
+Engine: pinned Windows `4.8.beta1.official.4d10419ca`. Baseline: `557cc11d4`; final source: `984403b2a`. Broad checks use an isolated sparse worktree under local `tmp/jeti-capture-scroll/suite/`. Concurrent commits advanced the shared checkout during verification; no unrelated changes were reverted.
 
 | Check | Result / scope |
 | --- | --- |
 | Identical initial capture regression on baseline/candidate | 1,296 checks: 544 failed before; 0 failed after. Baseline ran from the isolated checkout. |
-| Final capture regression | 1,328 checks, 0 failed, including actual wheel input while a layout follow is pending. Fixtures use 1920×1080 first, then 2560×1440 and 3840×2160, then 1280×720; EN/ES and text scales 1.0/2.0. Larger displays use the existing logical UI scaling. |
+| Final capture regression | 1,344 checks, 0 failed, including actual wheel movement while a layout follow is pending and preservation of that wheel's resulting offset. Fixtures use 1920×1080 first, then 2560×1440 and 3840×2160, then 1280×720; EN/ES and text scales 1.0/2.0. Larger displays use the existing logical UI scaling. |
 | Existing setup regressions | `test_controller_setup`, `test_controller_setup_safety`, `test_controller_aux_setup`, `test_controller_responsive`, `test_jeti_setup` and `test_jeti_identity` passed. |
 | Input/profile regressions | `test_controller_actions`, `test_controller_profile`, `test_controller_store`, `test_smoke_aux` passed. Expanded `test_jeti_runtime`: 105 checks, 0 failures and no engine errors. The checked runner caught the original errors despite that test's zero exit status. |
 | Native Windows desktop scenario | The keyboard Remap/assign/Escape/Cancel path passed at 1920×1080 through the debug bridge. No physical transmitter was connected. |
+| Whole-app smoke | Passed: 44 stages, all scenarios, seeded 60-step UI walk and two-cycle soak; zero growing counters, errors or objects leaked at exit. This is functional evidence, not performance qualification. |
+| Full `app/test.sh` | Attempted on the consistent final-source snapshot. Stopped during resource import: two engine `f.is_null()` errors in `get_multiple_md5 (core/io/file_access.cpp:967)`. Import exited 0, but the checked runner correctly rejected it. Complete parse/unit/integration stages were not reached; no full-suite-green claim. |
+
+An initial broad-suite attempt mixed current controller files with an older integration caller after concurrent API changes, so its missing-`SUPPORTED_AUX` parse failures are invalid acceptance evidence. The snapshot was rebuilt at the final source identity and its app-root parse passed before the final attempt above. The resource-import failure was not investigated as part of this input/UI repair.
 
 The headless smoke launcher initially produced a 64×64 window on this host. The new scenario explicitly sets a 1920×1080 window for its checks and restores the previous size afterward. This avoids mistaking an impossible viewport for a controller regression.
 

@@ -26,6 +26,14 @@ buffer; it adds no simulated flight time. F11 marks a simulation tick, not wall 
 Recording can begin midway through a flight; it captures the complete initial
 physics checkpoint, including current propulsion, wind RNG and actuator state.
 
+For the prepared runway route, rejected reset candidates leave the recording open.
+After physical commit, the reset notification closes the old recording before the
+new tick0 sample. Its footer and any intervening pause event use the explicitly
+captured old checkpoint/tick, not the new flight. A publication observer fault
+closes that accepted boundary and pauses the new flight; it does not undo the
+physical reset. Historical airborne/reload/restore and configuration reset paths
+retain their previous ordering. [Contract and retained checks](research/ground-physics/GP-14/README.md#accepted-runway-reset-publication-gp-14d).
+
 After [developer setup](TOOLS.md#developer-setup), run from the repository root.
 Select your installed engine, then launch a recording:
 

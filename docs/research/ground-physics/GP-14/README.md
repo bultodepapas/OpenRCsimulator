@@ -85,6 +85,8 @@ The [retained GP-14b evidence](evidence/shared-events/README.md) includes the ne
 
 The later [primitive-validation correction](evidence/event-validation/README.md) adds 47 malformed-selector checks. Type checks now precede equality comparisons, preventing engine errors from invalid event fields. The current event suite passes 135 checks and the real-session suite still passes 33. The earlier cohort remains immutable; no valid event or physics behavior changed in this correction.
 
+The [accident observation correction](evidence/observation-validation/README.md) applies the same type-before-comparison rule at the statistics adapter boundary. Thirteen added checks cover malformed schema types and detached valid receipts; 236 focused accident/event/session checks pass without engine diagnostics. Packet versions and physical behavior are unchanged.
+
 ## Optional authored hull support (GP-14c)
 
 2026-10-26. The optional v2 `intended_hull_support` module requires
@@ -115,3 +117,33 @@ retained as failures rather than claimed as same-input equivalence. Stock X8 has
 no authored role or calibrated envelope and gains no landing credit. Lake support,
 stock authoring/qualification, richer physical event evidence and performance
 qualification remain open.
+
+
+## Accepted runway reset publication (GP-14d)
+
+2026-10-26. The prepared runway route validates and commits physical state before
+its synchronous reset notification, then publishes tick0. A detached closing
+checkpoint/tick is captured before staging the new commands, aux or continuous
+state and exists only during that notification. FlightLog footer/pause events and
+fleet alignment retain the old flight's boundary; the existing accident ledger
+archives its stored assessment before the new ledger starts. Empty kernel hooks
+retain the frozen legacy checkpoint bytes.
+
+Rejected candidates and preparation/final-validation reentry emit no reset/sample,
+close no recorder and advance no generation. Post-commit holds may pause the new
+flight. Forbidden protected kernel/model edits or transition reentry restore the
+committed protected frame and fault/pause; physical acceptance remains `ok=true`
+with explicit `status=observer_fault`, `committed=true`, `ready=false`. One existing
+lifecycle receipt advances statistics without phantom takeoff/M7. Ordinary success
+keeps its prior result keys. The guard covers listed kernel/model fields and normal
+Session entry points, not arbitrary listener globals or captured external data.
+
+The [immutable evidence cohort](evidence/reset-publication/README.md) retains the
+original real-session defect reproduction, source hashes, actual recordings,
+discarded harness parse failure and seven current production checks: **3882 passed,
+zero engine diagnostics**. The focused suite has 180 checks, including the actual
+writer/footer replay and bounded fleet consumer. No force law or checkpoint schema
+changed. This correction covers the **prepared runway route only**; historical
+airborne/reload/restore and configuration reset paths are not automatically fixed.
+It does not activate advanced aircraft ground physics or qualify physical behavior,
+native audio, whole-suite coverage or target-host performance.

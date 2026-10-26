@@ -1,0 +1,78 @@
+{
+	"admission": {},
+	"build": {
+		"commit": "",
+		"commit_date": "",
+		"describe": "",
+		"dirty": false,
+		"godot": "4.8-beta1 (official)",
+		"label": "",
+		"parsed": {
+			"after": 0,
+			"base": "0.1.8",
+			"dirty": false,
+			"prerelease": "",
+			"semver": "0.1.8",
+			"sha": "",
+			"tag": ""
+		},
+		"source": "development",
+		"version": "0.1.8"
+	},
+	"capture_id": "2026-10-26T15:46:32-5400947",
+	"complete": false,
+	"dt_s": 0.00416666666666667,
+	"engine": "4.8-beta1 (official)",
+	"format": "openrc-companion-capture v1",
+	"generation_scope": "Generation zero within this capture only; membership changes close the capture.",
+	"global_tick_origin": 0,
+	"kind": "manifest",
+	"max_buffer_rows_per_stream": 240,
+	"max_bytes_per_stream": 536870912,
+	"max_streams": 4,
+	"max_ticks": 32,
+	"physics_hz": 240,
+	"replay_scope": {
+		"decision_replay": false,
+		"fleet_restore": false,
+		"per_session_inputs": "Use existing .orfl verification; do not infer fleet equivalence.",
+		"shared_world_replay": false
+	},
+	"rng_state": "Exact session RNG state is in each .orfl initial checkpoint; pilot phase uses the admitted slot and seed.",
+	"roster": [
+		{
+			"aircraft_identity": {
+				"format": "openrc-aircraft v2",
+				"sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06"
+			},
+			"generation": 0,
+			"id": "player",
+			"local_tick_origin": 0,
+			"log": "player.orfl"
+		},
+		{
+			"aircraft_identity": {
+				"format": "openrc-aircraft v2",
+				"sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06"
+			},
+			"generation": 0,
+			"id": "companion-1",
+			"local_tick_origin": 0,
+			"log": "companion-1.orfl"
+		}
+	],
+	"scope": "Fixed-roster diagnostic capture. A final summary is required to establish a complete common-clock capture.",
+	"source_scope": "Selected capture/admission scripts; full solver identity is in each .orfl header. Not a complete application build hash.",
+	"source_sha256": {
+		"res://ai/companions/agent.gd": "cb7d45e11dffe2d0275ef7e9055934cbf8455d02e4bc6473da701a1ccc635a86",
+		"res://ai/companions/airspace.gd": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+		"res://ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+		"res://ai/companions/config.gd": "e18565354e042ead4415a436c4774f9de8e201fdbb4923fed063c71d908ebf7c",
+		"res://ai/companions/fleet_record.gd": "95de3ae4935676a2e3105aae7d1dcdef3c4b5bd813bab696ee319d29477157e8",
+		"res://ai/companions/manager.gd": "ec279a490343379565c166d4194da98eba1de2724efbdad727ae7fb963bbf636",
+		"res://ai/companions/pilot.gd": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+		"res://ai/companions/profile_loader.gd": "49d1db17207c3952b28870401ecbd93285d2853960e4c22cc62fd93c64bc2402",
+		"res://main.gd": "a6137c9ca9dbc5317e26bde0fb290ca3ad2d14c9cb285e5c2e2aec5951e279b2",
+		"res://sim/flight_log.gd": "0646b053bae4a788883a7d13833ef24f3b43d8d30c07ea6edfc4715b038afaba"
+	}
+}

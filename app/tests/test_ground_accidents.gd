@@ -280,6 +280,19 @@ func _test_packet_identity_and_no_gear_exemption() -> void:
 		"intended_support": false, "terminal": false}
 	_check("adapter accepts current accepted physical packet",
 		adapter._accident_observation({"accident_observation": packet}).get("gear_up_contact", false))
+	var packet_bytes := var_to_bytes(packet)
+	for value: Variant in [null, false, 1, 1.0, [], {}, PackedStringArray(),
+			PackedFloat64Array(), &"openrc-aircraft-accident-observation", "unknown"]:
+		var malformed := packet.duplicate(true)
+		malformed.schema = value
+		_check("adapter rejects malformed schema type %d without an engine error" % typeof(value),
+			adapter._accident_observation({"accident_observation": malformed}).is_empty())
+	_check("rejected packet validation does not alter the accepted source",
+		var_to_bytes(packet) == packet_bytes)
+	var detached: Dictionary = adapter._accident_observation({"accident_observation": packet})
+	_check("valid observation retains exact bytes", var_to_bytes(detached) == packet_bytes)
+	detached.terminal = true
+	_check("adapter receipt is detached from its source", not packet.terminal)
 	packet.generation = 6
 	_check("adapter rejects stale generation", adapter._accident_observation({"accident_observation": packet}).is_empty())
 	packet.generation = 7
