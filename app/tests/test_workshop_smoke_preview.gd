@@ -3,7 +3,7 @@ extends SceneTree
 const Preview := preload("res://ui/workshop_preview.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const Presentation := preload("res://workshop/presentation.gd")
-const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
+const LightProfiles := preload("res://render/lighting/lighting_profile.gd")
 
 var checks := 0
 var failures := 0
@@ -237,7 +237,7 @@ func _run() -> void:
 
 func _check_edit_refresh(preview: Control, original: Dictionary) -> void:
 	var candidate := original.duplicate(true)
-	candidate.lighting = LightingProfile.preset("neon_rgb")
+	candidate.lighting = LightProfiles.preset("neon_rgb")
 	preview.set_presentation(candidate)
 	await process_frame
 	var allocations := [0]
@@ -250,8 +250,8 @@ func _check_edit_refresh(preview: Control, original: Dictionary) -> void:
 		preview.set_process(false)
 		preview._process(0.1)
 		preview.stop_emission()
-		var previous_smoke_id: int = preview._smoke.get_instance_id()
-		var previous_vfx_id: int = preview._lighting_rig.get("_vfx").get_instance_id()
+		var smoke_id_before_edit: int = preview._smoke.get_instance_id()
+		var vfx_id_before_edit: int = preview._lighting_rig.get("_vfx").get_instance_id()
 		allocations[0] = 0
 		match change:
 			"audio": candidate.mechanical_audio.servo_type = "high_torque"
@@ -267,13 +267,13 @@ func _check_edit_refresh(preview: Control, original: Dictionary) -> void:
 			and preview._smoke.budget_info().capacity == 768 and preview._profile == candidate)
 		if change in ["audio", "lighting"]:
 			_check("%s edit reuses the unchanged smoke configuration" % change,
-				preview._smoke.get_instance_id() == previous_smoke_id)
+				preview._smoke.get_instance_id() == smoke_id_before_edit)
 		else:
 			_check("%s edit refreshes its smoke settings" % change,
 				preview._smoke.get("_profile").smoke[0].density == candidate.smoke[0].density
 				and preview._smoke.get("_profile").visual_seed == candidate.visual_seed)
 		_check("%s edit refreshes lighting resources only for a lighting change" % change,
-			(preview._lighting_rig.get("_vfx").get_instance_id() != previous_vfx_id) == (change == "lighting"))
+			(preview._lighting_rig.get("_vfx").get_instance_id() != vfx_id_before_edit) == (change == "lighting"))
 		await process_frame
 	node_added.disconnect(count_pool)
 	var bindings: Dictionary = preview._airplane.customization_bindings

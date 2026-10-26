@@ -571,5 +571,328 @@
       "The resized Xvfb 720p capture retained a 1920x1080 logical viewport and is excluded; native 720p was launched separately.",
       "No full app/test.sh, GPU performance or physical-controller qualification."
     ]
+  },
+  "operation_audit": {
+    "step": "AE-09d",
+    "date": "2026-10-26",
+    "scope": "Workshop configuration reuse, pending-state refresh and smoke feedback layout; no new product capability",
+    "engine": "4.8.beta1.official.4d10419ca",
+    "source_snapshot": "tmp/workshop-ui-20261026/snapshot/app",
+    "final_sources": [
+      {
+        "path": "app/ui/workshop_preview.gd",
+        "sha256": "76e1a70d9b1cb228c3a6b9abf1264f997277e1c686833ee5fc309874e00d292c"
+      },
+      {
+        "path": "app/ui/workshop_lighting.gd",
+        "sha256": "e6fcfa63e80fa6da9d37be482cece8cee336d4e8adf0de2d39259447ebf7c747"
+      },
+      {
+        "path": "app/ui/workshop_lighting_sequence.gd",
+        "sha256": "3016c8cbcadaad1f089cadc59b01c151f8c05ccfb3965f2ac5486e882902b44e"
+      },
+      {
+        "path": "app/tests/test_workshop_smoke_preview.gd",
+        "sha256": "f5049b0006b3ed1d91c1ece2104d0ba1c6f6f19ab01c1fdb5fb3513a05494ba8"
+      },
+      {
+        "path": "app/tests/test_workshop_lighting.gd",
+        "sha256": "583876084a34fd9f8c0d8e48546bc20336c226b997b5c5f6044d29702faec0a4"
+      },
+      {
+        "path": "app/tests/test_lighting_sequence_ui.gd",
+        "sha256": "d11ce18b6c667bf5889c749790297d96bde94f14dd91f390fe902e1213e60036"
+      }
+    ],
+    "baseline_sources": [
+      {
+        "path": "tmp/workshop-operation-20261026/baseline-source/workshop_lighting.gd",
+        "sha256": "e6dd4fc8c401d02e528c0c0b999bcec07ef94ba94b6f4dddc904ae832e6c1ad2"
+      },
+      {
+        "path": "tmp/workshop-operation-20261026/baseline-source/workshop_lighting_sequence.gd",
+        "sha256": "a794e4e34c3affac1b495b304fbba967fc5d8095cd03361fb5715d64b84b3444"
+      },
+      {
+        "path": "tmp/workshop-operation-20261026/baseline-source/workshop_preview.gd",
+        "sha256": "07939fa943138bfdeb946687e00665b4ced6b15a4de65e1bcb0e1dc325696247"
+      }
+    ],
+    "measurement_scope": "Deterministic allocation/control-refresh counts; no target-GPU, frame-time or FPS qualification. Rendered review uses native 1920x1080 Xvfb/llvmpipe.",
+    "metrics": {
+      "four_emitter_profile": {
+        "particle_budget": 768,
+        "edits": [
+          "audio",
+          "smoke density",
+          "lighting brightness",
+          "visual seed"
+        ],
+        "created_pools_per_edit_before": 8,
+        "created_pools_per_edit_after": 4
+      },
+      "sequence_availability": {
+        "notifications": 13,
+        "state_transitions": 2,
+        "refreshes_before": 13,
+        "refreshes_after": 2
+      },
+      "audio_edit": {
+        "unchanged_lighting_and_bindings": true,
+        "lighting_resources_rebuilt_before": true,
+        "lighting_resources_rebuilt_after": false,
+        "lighting_rows_rebuilt_before": true,
+        "lighting_rows_rebuilt_after": false
+      },
+      "smoke_feedback_headless_fixture": {
+        "viewport": [
+          1280,
+          720
+        ],
+        "label_before": [
+          1,
+          2537
+        ],
+        "label_after": [
+          1071,
+          17
+        ],
+        "image_height_before": 0,
+        "image_height_after": 646
+      }
+    },
+    "suites": [
+      {
+        "suite": "test_workshop_smoke_preview",
+        "report": {
+          "path": "tmp/workshop-operation-20261026/final-tests/smoke_final-kwsyw27e/report.json",
+          "sha256": "1dc39951246986632adeb99d88e39e02ebe85adf0b0abbab6e81f5d61185b39b"
+        },
+        "log": {
+          "path": "tmp/workshop-operation-20261026/final-tests/smoke_final-kwsyw27e/engine.log",
+          "sha256": "6c69ae193a59fec9a5096ed48ac7c105a6ebf461188e4fe2d3e9788e02698260"
+        },
+        "complete": true,
+        "exit_code": 0,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "suite": "test_workshop_lighting",
+        "report": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_lighting-94_gcy25/report.json",
+          "sha256": "20da12d8459781d84118873d197d656db16e5e6de348dd015cb29995cd5d1d87"
+        },
+        "log": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_lighting-94_gcy25/engine.log",
+          "sha256": "ad89b77bd7f197121fd1b3e86e5461c7eb955c3a0835138b3c75502741e2a4cd"
+        },
+        "complete": true,
+        "exit_code": 0,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "suite": "test_lighting_sequence_ui",
+        "report": {
+          "path": "tmp/workshop-operation-20261026/candidate-tests/test_lighting_sequence_ui-3a57x9xj/report.json",
+          "sha256": "d29060fa0cc9311046e92ee20864a67d81dea3373eb2681174dce530d1e606a2"
+        },
+        "log": {
+          "path": "tmp/workshop-operation-20261026/candidate-tests/test_lighting_sequence_ui-3a57x9xj/engine.log",
+          "sha256": "4e7ae5a96fdfb424f6a41c8f75fffd55cbeaa2ed9a9951126eb02b789b66a0f8"
+        },
+        "complete": true,
+        "exit_code": 0,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "suite": "test_workshop_preview",
+        "report": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_preview-0nxf3o_0/report.json",
+          "sha256": "2a80696ac3ef4342eb0e703e611485596a3e5f1b2d9d6d209c25c880de235afd"
+        },
+        "log": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_preview-0nxf3o_0/engine.log",
+          "sha256": "65769ea9142715454633b257910535efabe9929269fa5b5ff8e9d9936d3e487c"
+        },
+        "complete": true,
+        "exit_code": 0,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "suite": "test_workshop_recovery_ui",
+        "report": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_recovery_ui-qgafqp9h/report.json",
+          "sha256": "fa54d9edc3865486ba0bbedf5621ec96cde90202457f2264910937ac80a6d24f"
+        },
+        "log": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_recovery_ui-qgafqp9h/engine.log",
+          "sha256": "4eabbcfefdc00f8f04719e9eee8a7c12adae690d894a95c0ce78fa9de129cb3a"
+        },
+        "complete": true,
+        "exit_code": 0,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "suite": "test_workshop_ui",
+        "report": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_ui-uu7q5kkn/report.json",
+          "sha256": "01c5721711964b96499e80301c2404d2bfc9fcdaae0ffe932068a27a9ee2f5b8"
+        },
+        "log": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_ui-uu7q5kkn/engine.log",
+          "sha256": "fac67bd15fdf6d87317d90a78489181bffc772490ca38b8f0f2a7db0589ec32b"
+        },
+        "complete": true,
+        "exit_code": 0,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "suite": "test_workshop_lighting_capabilities",
+        "report": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_lighting_capabilities-rancd1k5/report.json",
+          "sha256": "e43886c530687c4e4d90f816f8c5eb19bb1daecb7a2138250a4c6e47473415bb"
+        },
+        "log": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_lighting_capabilities-rancd1k5/engine.log",
+          "sha256": "96369fd14580c5c628ad66572afa0c18a3413ed4d186e20025e9185242f79b4a"
+        },
+        "complete": true,
+        "exit_code": 0,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "suite": "test_workshop_customization",
+        "report": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_customization-x9ypik19/report.json",
+          "sha256": "d92532f48feb553ebddefa15db58214983949a689e5029a6dbb5030951012290"
+        },
+        "log": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_customization-x9ypik19/engine.log",
+          "sha256": "ee35df8a4d4e24d121060c3189f7bfb55909db6f4ad2efacb720207521ccf182"
+        },
+        "complete": true,
+        "exit_code": 0,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "suite": "test_workshop_smoke_controls",
+        "report": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_smoke_controls-oeyrzeax/report.json",
+          "sha256": "df657c9fda5686491f11a5e21a7c0c64c4f3df1ed097fc4960b00f2fe0770f5a"
+        },
+        "log": {
+          "path": "tmp/workshop-operation-20261026/final-tests/test_workshop_smoke_controls-oeyrzeax/engine.log",
+          "sha256": "6632e0cc4c74853aaca863404d0508e61069405eed065833e8acf097b564b3ca"
+        },
+        "complete": true,
+        "exit_code": 0,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        }
+      }
+    ],
+    "baseline_reproductions": [
+      {
+        "path": "tmp/workshop-operation-20261026/baseline-final/smoke-o8gqivjw/engine.log",
+        "sha256": "da6857b49eb73a4eee4b10a8ff14ebd7f8ff7e712ef9a04f3f5d5f0df642c74b"
+      },
+      {
+        "path": "tmp/workshop-operation-20261026/baseline-tests/lighting-5_9zg3o6/engine.log",
+        "sha256": "3fc794e3fdea68bed726d2296ffb82c33e444dc4a8c5c3f427d4b001a2e83417"
+      },
+      {
+        "path": "tmp/workshop-operation-20261026/baseline-tests/sequence-flrd8td1/engine.log",
+        "sha256": "6ff975519948eac3b15adbf90abf7f63f03dc36bf5e4563ab2ca32175b8b2b9c"
+      }
+    ],
+    "baseline_expected_failures": {
+      "preview": 13,
+      "lighting_controls": 3,
+      "sequence_availability": 4
+    },
+    "bridge_smoke": {
+      "command": "python3 tools/debug/debugctl.py smoke --app tmp/workshop-ui-20261026/snapshot/app --steps 30 --cycles 2 --seed 12626",
+      "artifact": {
+        "path": "tmp/workshop-operation-20261026/smoke-regression.json",
+        "sha256": "2d9bab88d2f469e2d5bee4676c87a5c660af07ee1399eee4a3955db5fae6331f"
+      },
+      "verdict": {
+        "ok": true,
+        "failed": [],
+        "steps": 34,
+        "hitches": 94,
+        "leaked_objects_at_exit": 0,
+        "out": "/home/bulto/OpenRCsimulator/tmp/debug-bridge/20261026-131013-47870"
+      },
+      "soak_growing_counters": 0
+    },
+    "rendered_review": {
+      "resolution": [
+        1920,
+        1080
+      ],
+      "passed_log": {
+        "path": "tmp/workshop-operation-20261026/layout-rendered.log",
+        "sha256": "9e6a43e517b4b81ed6472841bac9133ca6255a9e364c4a8f7357ebaaf3d6f18f"
+      },
+      "captures": [
+        {
+          "path": "tmp/workshop-operation-20261026/final-smoke-1080.png",
+          "sha256": "194315697a870fc1e8c8d11a51ce4576a14014afc35d742099953a44c17bc4f3"
+        },
+        {
+          "path": "tmp/workshop-operation-20261026/final-lighting-1080.png",
+          "sha256": "43273bfdf4a42a5f43925c3bcb9354f695b36db3657db5b0f87df42eab1046cb"
+        }
+      ],
+      "exit": {
+        "stopped": true,
+        "pid": 2021880,
+        "crash": null,
+        "leaked_objects": 0
+      }
+    },
+    "compiler": {
+      "artifact": {
+        "path": "tmp/workshop-operation-20261026/compiler-final.json",
+        "sha256": "1e6cd9e245a50bf06d639cb25824cce7a03bc05297ceb6975a3e042bddd4a845"
+      },
+      "scripts": 6,
+      "errors": 0,
+      "warnings": 10,
+      "new_warnings": 0,
+      "note": "Ten existing global-name/shadowing warnings remain in preview and lighting test. Three warnings introduced by draft tests were removed."
+    },
+    "development_notes": [
+      "Baseline failures intentionally reproduce repeated allocations, control replacement, painted-skin/registration refresh and collapsed smoke preview.",
+      "Historical profile version changes intentionally invalidate smoke configuration. First rendered assertion incorrectly assumed no migration; subsequent v4 audio changes and history retained resources.",
+      "A debug-script log query used CLI flag syntax instead of key=value; final rendered script completed with logs level=error.",
+      "All selected raw images remain ignored; no image added to version control."
+    ]
   }
 }
