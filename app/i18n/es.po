@@ -7382,3 +7382,9 @@ msgstr "Reinicia la reproducción de la vista previa."
 
 msgid "Exhaust smoke pump"
 msgstr "Bomba de humo del escape"
+
+msgid "Choose a preset or enable an emitter, then adjust its color and shape."
+msgstr "Elige un preajuste o activa un emisor y ajusta su color y forma."
+
+msgid "This saved smoke profile uses older settings. Editing updates the draft; the saved build stays unchanged."
+msgstr "Este perfil de humo usa ajustes antiguos. La edición actualiza el borrador; la variante guardada se conserva."

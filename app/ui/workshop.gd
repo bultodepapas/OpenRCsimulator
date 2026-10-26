@@ -575,7 +575,7 @@ func _resize_layout() -> void:
 	var available := _screen.size - Vector2(48, 36)
 	_layout_panel.custom_minimum_size = Vector2(maxf(0, available.x), maxf(0, available.y))
 	var enlarged := preload("res://ui/ui_theme.gd").text_scale > 1.25
-	var tight := enlarged and available.y < 600
+	var tight := enlarged and available.y < 750
 	var navigation_width: float = 52.0 + 8.0 * (PAGE_IDS.size() - 1)
 	for tab: Button in _page_buttons.values(): navigation_width += tab.get_combined_minimum_size().x
 	_compact = available.x < maxf(1050, navigation_width) or enlarged
@@ -605,6 +605,10 @@ func _resize_layout() -> void:
 	if _action_notes.get_parent() != note_parent:
 		_action_notes.reparent(note_parent)
 		if not tight: _footer.move_child(_action_notes, 0)
+	# At fallback heights, preserve room for enlarged fields before pinning history.
+	var history_parent: Node = _page_nodes.setup.get_parent() if tight else _inspector_column
+	if _history_bar.get_parent() != history_parent:
+		_history_bar.reparent(history_parent)
 	_recipe_selectors.columns = 1 if enlarged else 2
 	_trial_button.custom_minimum_size.x = 0 if enlarged else 190
 	if old_focus != null and _screen.is_ancestor_of(old_focus) and not old_focus.is_visible_in_tree():
@@ -1976,6 +1980,7 @@ func _wire_page_navigation() -> void:
 	var first: Control = _first_editor_control(_page_nodes.get(_active_page))
 	for index: int in PAGE_IDS.size():
 		var tab: Button = _page_buttons[PAGE_IDS[index]]
+		tab.focus_next = NodePath()
 		tab.focus_neighbor_left = tab.get_path_to(_page_buttons[PAGE_IDS[maxi(0, index - 1)]])
 		tab.focus_neighbor_right = tab.get_path_to(_page_buttons[PAGE_IDS[mini(PAGE_IDS.size() - 1, index + 1)]])
 		if first != null:
@@ -2193,6 +2198,7 @@ func _load_selected_variant() -> void:
 
 func _set_page(page: String) -> void:
 	if not _page_nodes.has(page): return
+	var previous_focus: Control = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
 	if _active_page != page and _active_page == "lighting" and _page_nodes.lighting.has_pending_edit():
 		set_note("Apply or cancel the lighting edit before leaving this page.")
 		var pending: Control = _page_nodes.lighting.pending_control()
@@ -2209,6 +2215,9 @@ func _set_page(page: String) -> void:
 		_page_buttons[id].set_pressed_no_signal(id == page)
 	_body_scroll.scroll_vertical = 0
 	_resize_layout()
+	if previous_focus != null and _screen.is_ancestor_of(previous_focus) and not previous_focus.is_visible_in_tree():
+		var navigation: Control = _page_selector if _compact else _page_buttons[page]
+		navigation.grab_focus()
 	_schedule_recovery()
 
 
@@ -2483,7 +2492,7 @@ func _refresh_comparison() -> void:
 		var lighting_label: String = tr("Use aircraft default")
 		if str(lighting.get("selection", "inherit")) == "disabled": lighting_label = tr("Disabled")
 		elif lighting_changed:
-			lighting_label = tr(Presentation.LightingProfile.label(str(lighting.get("preset_id", ""))))
+			lighting_label = tr(Presentation.LightingProfile.label("custom" if lighting.get("selection") == "custom" else str(lighting.get("preset_id", ""))))
 			if lighting_label.is_empty(): lighting_label = tr("Custom")
 		for cell: String in [tr("Lighting"), tr("Use aircraft default"), lighting_label, tr("Visual only")]: _comparison_cell(cell)
 		rows += 1
@@ -2506,6 +2515,7 @@ func _audio_comparison_value(key: String, value: Variant) -> String:
 func _comparison_cell(value: String, heading: bool = false) -> void:
 	var cell := _label(value, "SectionLabel" if heading else "SecondaryLabel", true, false)
 	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	cell.size_flags_stretch_ratio = 1.6 if _comparison_grid.get_child_count() % 4 == 0 else 1.0
 	if heading: cell.add_theme_color_override("font_color", UiTheme.CRYSTAL)
 	_comparison_grid.add_child(cell)
 

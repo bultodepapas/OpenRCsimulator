@@ -245,6 +245,7 @@ func number_field(key: String, title: String, low: float, high: float, step: flo
 	value.step = step
 	value.suffix = suffix
 	value.custom_minimum_size.x = 130
+	value.get_line_edit().expand_to_text_length = true
 	value.value_changed.connect(func(next: float) -> void: change(key, next))
 	row.add_child(value)
 	_controls.add_child(row)
@@ -285,8 +286,10 @@ func configure(bindings: Dictionary, profile: Dictionary) -> void:
 	validity_changed.emit(page_kind, has_pending_color() or has_pending_marking())
 
 func _smoke_version_note() -> String:
+	if _profile.get("smoke", []).is_empty():
+		return tr("Choose a preset or enable an emitter, then adjust its color and shape.")
 	if int(_profile.get("version", Profile.VERSION)) == 1:
-		return tr("Viewing a legacy smoke profile. New controls use v2 defaults; the first smoke edit creates a v2 draft.")
+		return tr("This saved smoke profile uses older settings. Editing updates the draft; the saved build stays unchanged.")
 	return tr("Show smoke is a visual effect. Source exhaust follows the running engine.")
 
 func _display_smoke_entry(entry: Dictionary) -> Dictionary:

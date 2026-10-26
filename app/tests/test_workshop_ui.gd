@@ -3,6 +3,7 @@ extends SceneTree
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Compiler := preload("res://workshop/compiler.gd")
+const Presentation := preload("res://workshop/presentation.gd")
 const Descriptor := preload("res://workshop/descriptor.gd")
 const Store := preload("res://workshop/store.gd")
 const Workshop := preload("res://ui/workshop.gd")
@@ -190,13 +191,13 @@ func _run() -> void:
 		and not (_find(workshop, "ResetRecipe") as Button).is_visible_in_tree())
 	_check("Compare reports control travel changes", _comparison_text(workshop).contains("Control travel multiplier"))
 	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
-	var presentation: Dictionary = workshop.get_presentation()
+	var presentation: Dictionary = Presentation.defaults(workshop.get("_presentation_bindings"))
 	presentation.lighting.selection = "disabled"
 	workshop.set_presentation(presentation)
 	_check("Compare reports a lighting-only edit", _comparison_text(workshop).contains("Lighting")
 		and not _comparison_text(workshop).contains("No changes from the original."))
 	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
-	presentation = workshop.get_presentation()
+	presentation = Presentation.defaults(workshop.get("_presentation_bindings"))
 	presentation.mechanical_audio.servo_level = 0.5
 	workshop.set_presentation(presentation)
 	_check("Compare reports an audio-only edit", _comparison_text(workshop).contains("Servo sound level")
