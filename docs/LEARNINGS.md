@@ -60,6 +60,14 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-26 · X8-12 — an accepted trim can still burn its iteration cap
+
+The X8 and Timber electric trims returned `ok` while every launch spent 50 Newton steps: the source equilibrium leaves a residual floor near 1e-10, just above the 1e-10 goal, so Newton converged in three steps and then alternated between two states until the cap. A tolerance below an evaluation's noise floor costs time silently, and `ok` hides it.
+
+- When adding an aircraft or changing a residual, record trim `iterations` across the speed range; a count at the cap on an accepted trim is a stalled solve.
+- Stop when an accepted residual no longer improves, rather than loosening the goal for everyone; prove parity with digests of the full results across the fleet.
+- A residual input that a Jacobian probe does not change (steady rpm under a surface probe) can be reused bit-identically. [X8-12](research/skywalker-x8/X8-12/README.md)
+
 ## 2026-10-25 · X8-04 — a new control topology reaches every consumer that assumed four surfaces, a rudder and a tractor
 
 The X8 (elevons, no rudder, no horizontal tail, pusher) loaded and trimmed in the physics core long before it could fly: the session's model check, the contact contract's surface IDs, the cruise trim's throw validation, the legacy v1 comparison, the offline schema's sign rules, the render and manifest tests and the hull-label rules each hard-coded the conventional layout. A fleet test that hit a missing key did not fail; it raised a script error and hung until the runner's timeout.

@@ -46,12 +46,14 @@ static func _deflections(x: PackedFloat64Array, rudderless := false) -> Dictiona
 
 
 ## Shared loads/derivative and state for unknowns x. Unknown control angles remain in Aero's data convention.
-static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, rho: float, engine_charge_ratio: float) -> Dictionary:
+## `steady_rpm` is the steady rpm at x when the caller already has it (`_rpm_at`); NAN solves it here.
+static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, rho: float, engine_charge_ratio: float,
+		steady_rpm := NAN) -> Dictionary:
 	var gamma := 0.0 if mode == "level" else x[2]
 	var bank := banked(model)
 	var s := state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3], x[5] if bank else 0.0)
 	var throttle := x[2] if mode == "level" else 0.0
-	var rpm := _rpm(throttle, s, mode, model, rho, engine_charge_ratio)
+	var rpm: float = steady_rpm if not is_nan(steady_rpm) else _rpm(throttle, s, mode, model, rho, engine_charge_ratio)
 	var result: Dictionary = Dynamics.evaluate(s, model, _deflections(x, bank), rpm, rho, M.v3(0, 0, 0), g)
 	if Propulsion.is_electric(model.propulsion):
 		result["rpm"] = rpm
@@ -74,8 +76,19 @@ static func _rpm(throttle: float, s: PackedFloat64Array, mode: String, model: Di
 	return Propulsion.steady_rpm(throttle, u, model.propulsion, rho, engine_charge_ratio)
 
 
-static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, rho: float, engine_charge_ratio: float) -> PackedFloat64Array:
-	var e := _evaluate(x, mode, V, model, g, rho, engine_charge_ratio)
+## The steady rpm `_evaluate` uses at x. It depends on alpha, throttle and sideslip only: elevator, aileron and rudder
+## (or bank) Jacobian probes reuse it, which saves three of seven shaft solves per Newton step (a glow operating
+## point scans the whole rpm envelope) and leaves every result bit-identical.
+static func _rpm_at(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, rho: float, engine_charge_ratio: float) -> float:
+	if mode != "level":
+		return 0.0
+	var s := state_for(V, x[0], 0.0, 0.0, M.v3(0, 0, -100), x[3], x[5] if banked(model) else 0.0)
+	return _rpm(x[2], s, mode, model, rho, engine_charge_ratio)
+
+
+static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, rho: float, engine_charge_ratio: float,
+		steady_rpm := NAN) -> PackedFloat64Array:
+	var e := _evaluate(x, mode, V, model, g, rho, engine_charge_ratio, steady_rpm)
 	var dot: PackedFloat64Array = e.derivative
 	return PackedFloat64Array([dot[RB.VEL], dot[RB.VEL + 2], dot[RB.RATE + 1], dot[RB.VEL + 1], dot[RB.RATE], dot[RB.RATE + 2]])
 
@@ -129,7 +142,8 @@ static func solve(mode: String, V: float, model: Dictionary, g: float, throws: D
 static func _solve_from(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, x2: float, rho: float, engine_charge_ratio: float, x0: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
 	var x := x0.duplicate() if x0.size() == N else PackedFloat64Array([0.05, -0.05, x2, 0.0, 0.0, 0.0])
 	var bounded_glow_level: bool = mode == "level" and Propulsion.is_glow(model.propulsion)
-	var r := _residual(x, mode, V, model, g, rho, engine_charge_ratio)
+	var x_rpm: float = _rpm_at(x, mode, V, model, rho, engine_charge_ratio)
+	var r := _residual(x, mode, V, model, g, rho, engine_charge_ratio, x_rpm)
 	var iterations := 0
 	var residual_norm: float = _norm(r)
 	if not is_finite(residual_norm):
@@ -146,7 +160,7 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 				direction = -1.0
 			var xp := x.duplicate()
 			xp[k] += direction * h
-			var rp := _residual(xp, mode, V, model, g, rho, engine_charge_ratio)
+			var rp := _residual(xp, mode, V, model, g, rho, engine_charge_ratio, x_rpm if k == 1 or k == 4 or k == 5 else NAN)
 			if not _all_finite(rp):
 				return _numerical_failure("nonfinite perturbed trim residual", mode, V, iterations)
 			for i in N:
@@ -176,11 +190,13 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 				if not is_nan(bound) and step_scale == bounded_scale:
 					candidate[2] = bound # x + ((b - x)/dx)·dx is not b in floating point
 				if candidate[2] >= 0.0 and candidate[2] <= 1.0 and _all_finite(candidate):
-					var candidate_residual: PackedFloat64Array = _residual(candidate, mode, V, model, g, rho, engine_charge_ratio)
+					var candidate_rpm: float = _rpm_at(candidate, mode, V, model, rho, engine_charge_ratio)
+					var candidate_residual: PackedFloat64Array = _residual(candidate, mode, V, model, g, rho, engine_charge_ratio, candidate_rpm)
 					var candidate_norm: float = _norm(candidate_residual)
 					# Accept only a decreasing step; otherwise halve it (the residual must stay the iterate's own).
 					if is_finite(candidate_norm) and candidate_norm < residual_norm:
 						x = candidate
+						x_rpm = candidate_rpm
 						r = candidate_residual
 						residual_norm = candidate_norm
 						accepted_step = true
@@ -193,7 +209,8 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 			x[k] += dx[k]
 		if not _all_finite(x):
 			return _numerical_failure("nonfinite Newton iterate", mode, V, iterations)
-		r = _residual(x, mode, V, model, g, rho, engine_charge_ratio)
+		x_rpm = _rpm_at(x, mode, V, model, rho, engine_charge_ratio)
+		r = _residual(x, mode, V, model, g, rho, engine_charge_ratio, x_rpm)
 		residual_norm = _norm(r)
 		if not is_finite(residual_norm):
 			return _numerical_failure("nonfinite iterated trim residual", mode, V, iterations)
@@ -222,6 +239,7 @@ static func _solve_electric_from(mode: String, V: float, model: Dictionary, g: f
 		return _numerical_failure("nonfinite initial electric trim residual", mode, V, iterations)
 	while iterations < 50 and residual_norm > 1e-10:
 		iterations += 1
+		var previous_norm: float = residual_norm
 		var jac: Array = []
 		for i in N:
 			jac.append(PackedFloat64Array([0, 0, 0, 0, 0, 0]))
@@ -269,6 +287,10 @@ static func _solve_electric_from(mode: String, V: float, model: Dictionary, g: f
 		residual_norm = _norm(r)
 		if not is_finite(residual_norm):
 			return _numerical_failure("nonfinite iterated electric trim residual", mode, V, iterations)
+		# The source equilibrium leaves a residual floor near 1e-10 (X8, Timber above 1.2 start speed): an accepted
+		# residual that a Newton step no longer halves ends the solve instead of cycling to the iteration cap.
+		if residual_norm <= 1e-8 and residual_norm > 0.5 * previous_norm:
+			break
 	if residual_norm > 1e-8:
 		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(residual_norm), x, mode, V, r, iterations, throws, model, g, rho, 1.0)
 	var limit_message := _throw_limit_message(x, throws, model)

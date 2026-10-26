@@ -39,6 +39,19 @@
 
 Rudder-dependent manoeuvres (knife edge, stall turn, snap roll) are reported but meaningless without a rudder.
 
+## Hand launch (X8-07)
+
+2026-10-26, same VM. Details in [X8-07](../X8-07/README.md).
+
+| Check | Result |
+| --- | --- |
+| `test_hand_launch.gd` | 136/0 |
+| `test_ui_runway.gd`, `test_ui_aircraft.gd`, `test_start_choice.gd`, `test_runway_cli.gd`, `test_ui_home_start_layout.gd`, `test_ui_home_layout.gd` | pass |
+| `test_workshop_starts.gd` 402/0, `test_trace_metadata.gd` 447/0, `test_half_power_start.gd` 74/0, `test_trim_throttle.gd` 47/0, `test_launch_trim_cache.gd` 47/0, `test_runway_fleet.gd` 136/0, `test_runway_transaction.gd` 32/0, `test_x8_flying_wing.gd` 37/0, `test_pilot_trim.gd` 145/0, `test_replay_integrity.gd` 153/0, `test_crash_pose.gd` 312/0 | pass |
+| Golden flights | 4/4 unchanged |
+| `test_ui_home.gd` | The first Spanish start label, "Inicio: lanzamiento a mano", wrapped and made the X8 Flight page 26 px taller than every other aircraft. "Inicio: a mano" brings it to 335 px like the rest. The rerun ran on a tree with the incoming Flight Statistics merge, which makes every aircraft's Flight page scroll (body 291 px in English, 261 px in Spanish); that failure is not specific to the X8. |
+| Running app (debug bridge, 1920×1080 Xvfb, Home default wind 1.5 m/s from 090°) | [`x8_hand_launch.txt`](../../../../tools/debug/scenarios/x8_hand_launch.txt) passes: release 9 m in front of the pilot at 1.92 m, 7.5 m/s over the ground (6.5 m/s plus 0.1 s of full power), heading 090°, throttle 100 %, 35.8 A from the 6S pack; above 12 m without a crash after 4 s; a restart repeats the hand launch; Home shows "Start: hand launch"; 0 engine errors or warnings, 0 leaked objects |
+
 ## Open
 
-Hand launch (X8-07); the strip model's roll and yaw damping against the 2026 flight set; owner flight evidence, drive measurements and EPO drop tests (X8-11); the failure catalog's logical yaw jam has no effect on a rudderless aircraft, and the Home control guide still lists the rudder keys.
+The strip model's roll and yaw damping against the 2026 flight set; owner flight evidence, drive measurements and EPO drop tests (X8-11); the failure catalog's logical yaw jam has no effect on a rudderless aircraft, and the Home control guide still lists the rudder keys.

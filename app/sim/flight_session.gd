@@ -585,13 +585,22 @@ static func launch_trim_cache_stats() -> Dictionary:
 	return _launch_trim_cache.stats()
 
 
-## Menu hint from accepted data. The selected field, equilibrium and clearance are checked on each launch.
-static func runway_aircraft_supported(aircraft_id: String) -> bool:
+## Menu hints from one load of the accepted data: {runway, hand_launch}. The selected field, equilibrium and clearance
+## are checked on each launch. AircraftCatalog caches the answer per stock ID.
+static func ground_start_support(aircraft_id: String) -> Dictionary:
 	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
 	var entry: Dictionary = catalog.entry(aircraft_id)
-	if entry.is_empty() or catalog.is_rotorcraft(aircraft_id) or str(entry.get("data", "")).is_empty(): return false
+	if entry.is_empty() or catalog.is_rotorcraft(aircraft_id) or str(entry.get("data", "")).is_empty():
+		return {runway = false, hand_launch = false}
 	var data := AircraftData.load_file(str(entry.data))
-	return data.get("ok", false) and _runway_model_supported(data.get("model", {}))
+	if not data.get("ok", false):
+		return {runway = false, hand_launch = false}
+	var model: Dictionary = data.get("model", {})
+	return {runway = _runway_model_supported(model), hand_launch = _hand_launch_model_supported(model)}
+
+
+static func runway_aircraft_supported(aircraft_id: String) -> bool:
+	return ground_start_support(aircraft_id).runway
 
 
 static func runway_aircraft_ids() -> PackedStringArray:
@@ -607,13 +616,9 @@ static func _runway_model_supported(model: Dictionary) -> bool:
 	return not gear.is_empty() and gear.has("breakaway_factor") and not gear.get("contacts", []).is_empty()
 
 
-## X8-07: menu hint from accepted data. A fixed-wing airplane without landing gear starts by hand instead of on the runway.
+## X8-07: a fixed-wing airplane without landing gear starts by hand instead of on the runway.
 static func hand_launch_aircraft_supported(aircraft_id: String) -> bool:
-	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
-	var entry: Dictionary = catalog.entry(aircraft_id)
-	if entry.is_empty() or catalog.is_rotorcraft(aircraft_id) or str(entry.get("data", "")).is_empty(): return false
-	var data := AircraftData.load_file(str(entry.data))
-	return data.get("ok", false) and _hand_launch_model_supported(data.get("model", {}))
+	return ground_start_support(aircraft_id).hand_launch
 
 
 static func _hand_launch_model_supported(model: Dictionary) -> bool:

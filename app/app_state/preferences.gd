@@ -110,11 +110,12 @@ static func load_from(path: String) -> Dictionary:
 	var start_choice: Variant = cfg.get_value("flight", "start_choice", DEFAULTS.start_choice)
 	# Missing or invalid choices use the product default; explicit airborne choices remain valid.
 	# X8-07: an airplane without landing gear starts by hand where others start on the runway.
-	var hand_launch: bool = FlightSession.hand_launch_aircraft_supported(prefs.aircraft)
-	prefs.start_choice = "runway" if FlightSession.runway_aircraft_supported(prefs.aircraft) or Catalog.is_rotorcraft(prefs.aircraft) \
-		else FlightSession.START_HAND_LAUNCH if hand_launch else "airborne"
+	# The catalog caches both ground-start answers from one load of the stock data.
+	var runway: bool = Catalog.runway_supported(prefs.aircraft) or Catalog.is_rotorcraft(prefs.aircraft)
+	var hand_launch: bool = Catalog.hand_launch_supported(prefs.aircraft)
+	prefs.start_choice = "runway" if runway else FlightSession.START_HAND_LAUNCH if hand_launch else "airborne"
 	if typeof(start_choice) == TYPE_STRING:
-		if start_choice == "airborne" or (start_choice == "runway" and (FlightSession.runway_aircraft_supported(prefs.aircraft) or Catalog.is_rotorcraft(prefs.aircraft))) \
+		if start_choice == "airborne" or (start_choice == "runway" and runway) \
 				or (start_choice == FlightSession.START_HAND_LAUNCH and hand_launch) \
 				or (start_choice == FlightSession.START_HALF_POWER and FlightSession.half_power_start_supported(prefs.aircraft)):
 			prefs.start_choice = start_choice

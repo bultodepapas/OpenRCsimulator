@@ -14,8 +14,7 @@ const PREVIEW := "preview"
 const DEFAULT_ID := "jensen-das-ugly-stik-60"
 ## Per-ID answers read from stock data files, which never change while the application runs.
 static var _finite_fuel_cache := {}
-static var _runway_cache := {}
-static var _hand_launch_cache := {}
+static var _ground_start_cache := {}
 
 ## In menu order. `short_name` (UI-34b) is the one-line label for the Home card and catalog list; `name` stays complete in
 ## details and tooltips. `name` is a proper name (never translated; the Timber's fictional name is the one exception: es.po carries
@@ -232,16 +231,19 @@ static func has_finite_fuel(id: String) -> bool:
 
 ## Whether a runway start is supported (FlightSession validates the aircraft data's gear), cached per stock ID.
 static func runway_supported(id: String) -> bool:
-	if not _runway_cache.has(id):
-		_runway_cache[id] = bool(load("res://sim/flight_session.gd").runway_aircraft_supported(id))
-	return _runway_cache[id]
+	return bool(_ground_starts(id).runway)
 
 
 ## X8-07: an airplane without landing gear starts by hand from the field instead of on the runway.
 static func hand_launch_supported(id: String) -> bool:
-	if not _hand_launch_cache.has(id):
-		_hand_launch_cache[id] = bool(load("res://sim/flight_session.gd").hand_launch_aircraft_supported(id))
-	return _hand_launch_cache[id]
+	return bool(_ground_starts(id).hand_launch)
+
+
+## Both ground-start answers come from one load of the data file.
+static func _ground_starts(id: String) -> Dictionary:
+	if not _ground_start_cache.has(id):
+		_ground_start_cache[id] = load("res://sim/flight_session.gd").ground_start_support(id)
+	return _ground_start_cache[id]
 
 
 ## The one-line label for the Home card and catalog list; falls back to the full name.
