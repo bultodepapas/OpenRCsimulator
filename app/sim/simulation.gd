@@ -78,6 +78,11 @@ const MAX_ENDPOINT_EVENTS := 256
 var _state_layout_identity := ""
 var _endpoint_callback_active := false
 var _endpoint_reentry_attempted := false
+var _reset_publication_active := false
+var _reset_publication_reentry := false
+## Diagnostic for an accepted reset whose publication observer violated its contract.
+## This is not physical state and is cleared by the next accepted reset.
+var reset_observer_fault := ""
 
 const MIN_QUATERNION_NORM_SQ := 1e-24
 
@@ -85,7 +90,7 @@ const MIN_QUATERNION_NORM_SQ := 1e-24
 ## Install the vehicle to step. The contract's static shape is validated here (VehicleModel.validate); agreement
 ## with the live arrays is checked at reset and restore. An invalid candidate leaves the current model untouched.
 func set_model(candidate: Variant) -> bool:
-	if _reject_endpoint_reentry(): return false
+	if _reject_endpoint_reentry() or _reject_reset_publication_reentry(): return false
 	if not (candidate is VehicleModel):
 		return false
 	if not VehicleModel.validate(candidate).ok:
@@ -102,7 +107,7 @@ func _layout_matches_model(sampled: PackedFloat64Array, discrete: PackedInt64Arr
 
 
 func reset(initial: PackedFloat64Array) -> bool:
-	if _reject_endpoint_reentry(): return false
+	if _reject_endpoint_reentry() or _reject_reset_publication_reentry(): return false
 	var candidate := prepare_reset(initial)
 	if not candidate.ok:
 		_fail_safe(str(candidate.message))
@@ -114,7 +119,7 @@ func reset(initial: PackedFloat64Array) -> bool:
 ## No state, fault, clock, RNG, or observer event is changed on rejection.
 ## The owner must keep that context fixed until commit_prepared_reset().
 func prepare_reset(initial: PackedFloat64Array) -> Dictionary:
-	if _reject_endpoint_reentry(): return {ok = false, message = "reset preparation is unavailable inside an endpoint callback"}
+	if _reject_endpoint_reentry() or _reject_reset_publication_reentry(): return {ok = false, message = "reset preparation is unavailable inside an endpoint callback"}
 	if not state_is_valid(initial):
 		return {ok = false, message = "reset rejected: initial state is nonfinite, malformed, or has a degenerate quaternion"}
 	if not _configuration_is_valid():
@@ -156,8 +161,15 @@ func prepare_reset(initial: PackedFloat64Array) -> Dictionary:
 
 ## Only accepts a successful preparation from this owner with unchanged context.
 ## This is the sole publication boundary for a prepared reset.
-func commit_prepared_reset(candidate: Dictionary) -> bool:
-	if _reject_endpoint_reentry(): return false
+## Optional before_sample is a synchronous post-commit notification hook. All
+## refusal-capable validation precedes it. It may pause the accepted flight, but
+## cannot edit protected physics/model state, reenter a transition, or veto it.
+func commit_prepared_reset(candidate: Dictionary, before_sample: Callable = Callable()) -> bool:
+	if _reject_endpoint_reentry() or _reject_reset_publication_reentry(): return false
+	# Empty means the historical path. A supplied but invalid/freed callback must
+	# never silently omit required owner publication after installing new state.
+	if not before_sample.is_null() and (not before_sample.is_valid() or before_sample.get_argument_count() != 0):
+		return false
 	assert(candidate.get("ok", false))
 	if _endpoint_enabled() or candidate.has("endpoint_guard"):
 		if not _endpoint_enabled() or not candidate.get("endpoint_guard") is Dictionary \
@@ -180,7 +192,27 @@ func commit_prepared_reset(candidate: Dictionary) -> bool:
 	fault_reason = ""
 	_state_layout_identity = model.state_layout_identity
 	_remember_valid_state()
+	reset_observer_fault = ""
+	if before_sample.is_null():
+		stepped.emit(tick, time(), state, last_loads, inputs, aux)
+		return true
+	var committed_guard := _capture_endpoint_guard()
+	_reset_publication_reentry = false
+	_reset_publication_active = true
+	before_sample.call()
+	# A presentation hold is legal after physical commit. Preserve its actual
+	# paused value while restoring any forbidden direct state/model mutation.
+	committed_guard.owner.paused = paused
+	if not _endpoint_guard_unchanged(committed_guard):
+		reset_observer_fault = "reset publication observer mutated protected state or model"
+	if _reset_publication_reentry:
+		reset_observer_fault = "reset publication observer attempted transition reentry"
 	stepped.emit(tick, time(), state, last_loads, inputs, aux)
+	if _reset_publication_reentry:
+		reset_observer_fault = "reset publication observer attempted transition reentry"
+	_reset_publication_active = false
+	if not reset_observer_fault.is_empty():
+		_fail_safe(reset_observer_fault)
 	return true
 
 
@@ -208,7 +240,7 @@ func _notification(what: int) -> void:
 
 
 func step() -> void:
-	if _reject_endpoint_reentry(): return
+	if _reject_endpoint_reentry() or _reject_reset_publication_reentry(): return
 	if not fault_reason.is_empty():
 		return
 	var started := Time.get_ticks_usec()
@@ -755,7 +787,7 @@ func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, 
 
 ## Explicit recovery restores all dynamic state and pauses. No tick/trace sample is emitted.
 func restore_checkpoint(candidate: Dictionary) -> bool:
-	if _reject_endpoint_reentry(): return false
+	if _reject_endpoint_reentry() or _reject_reset_publication_reentry(): return false
 	if not can_restore_checkpoint(candidate):
 		return false
 	continuous = candidate.get("continuous", PackedFloat64Array()).duplicate()
@@ -901,6 +933,23 @@ static func _guard_copy(value: Variant) -> Variant:
 			return value.duplicate(true) if typeof(value) in [TYPE_DICTIONARY, TYPE_ARRAY] else value.duplicate()
 		_:
 			return value
+
+
+## Read-only checkpoint access and set_paused remain legal during publication.
+## Only transition entry points call this guard.
+func _reject_reset_publication_reentry() -> bool:
+	if not _reset_publication_active: return false
+	_reset_publication_reentry = true
+	return true
+
+
+func note_reset_publication_reentry() -> void:
+	if _reset_publication_active:
+		_reset_publication_reentry = true
+	elif _endpoint_callback_active:
+		# Owner transitions blocked during preparation/final commit validation
+		# must make that read-only callback fail its existing endpoint guard.
+		_endpoint_reentry_attempted = true
 
 
 func _reject_endpoint_reentry() -> bool:

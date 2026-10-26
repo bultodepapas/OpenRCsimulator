@@ -129,7 +129,7 @@ func stop(reason := "stopped", valid := true) -> Dictionary:
 	for index: int in _logs.size():
 		var writer: RefCounted = _logs[index]
 		var stopped: Error = writer.stop(reason.left(160))
-		var aligned: bool = is_instance_valid(_sessions[index]) and _sessions[index].sim.tick == _last_tick \
+		var aligned: bool = is_instance_valid(_sessions[index]) and _closing_tick(_sessions[index]) == _last_tick \
 			and writer.rows_written == _last_tick + 1
 		var complete: bool = stopped == OK and writer.failure.is_empty() and aligned
 		valid = valid and complete
@@ -146,7 +146,7 @@ func stop(reason := "stopped", valid := true) -> Dictionary:
 			if _failure.is_empty(): _failure = "Cannot fingerprint capture stream " + _ids[index]
 		streams.append({id = _ids[index], generation = 0, log = _ids[index] + ".orfl",
 			complete = complete, final_tick = writer.rows_written - 1, rows = writer.rows_written,
-			session_tick = _sessions[index].sim.tick if is_instance_valid(_sessions[index]) else -1,
+			session_tick = _closing_tick(_sessions[index]) if is_instance_valid(_sessions[index]) else -1,
 			bytes = bytes, sha256 = digest, error = writer.failure})
 	valid = valid and _logs.size() == _sessions.size()
 	_summary = {format = FORMAT, kind = "summary", capture_id = _manifest.capture_id,
@@ -184,6 +184,11 @@ func _stepped(tick: int, _time: float, _state: PackedFloat64Array,
 		stop("fleet capture interrupted", false)
 	elif tick >= _max_ticks:
 		stop("capture duration reached")
+
+
+static func _closing_tick(session: Node) -> int:
+	var closing: Dictionary = session.reset_closing_context() if session.has_method("reset_closing_context") else {}
+	return int(closing.tick) if not closing.is_empty() else session.sim.tick
 
 
 func _resetting() -> void:

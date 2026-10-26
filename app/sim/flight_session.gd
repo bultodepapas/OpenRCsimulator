@@ -25,6 +25,7 @@ var failure_error: String = ""
 
 ## One resolved episode per new flight. Restart reuses it; ordinary technical flights remain unchanged.
 func setup_failures(config: Dictionary, seed_value: int) -> bool:
+	if _reject_reset_publication_reentry(): return false
 	var checked: Dictionary = FailureConfig.validate(config)
 	if not checked.ok or sim == null or sim.tick != 0 or not physics_enabled or not _flight_ready():
 		failure_error = "Failure settings require a valid physics flight at tick zero."
@@ -111,6 +112,7 @@ var shaft_error: String = ""
 
 ## G2a/G2b: experimental shaft coupling is a launch-time choice, independent of aircraft coefficients.
 func setup_shaft_integrator(mode: Variant) -> bool:
+	if _reject_reset_publication_reentry(): return false
 	if typeof(mode) != TYPE_STRING or mode not in ["split", "coupled-rk4"]:
 		shaft_error = "shaft integrator must be split or coupled-rk4"
 		return false
@@ -161,6 +163,7 @@ var _fuel_start_fill_known := true
 
 
 func set_fuel_start_fill(fill: float) -> bool:
+	if _reject_reset_publication_reentry(): return false
 	if not is_finite(fill) or fill <= 0.0 or fill > 1.0:
 		return false
 	if liquid_fuel_is_active() and fill * float(aircraft.model.propulsion.liquid_fuel.capacity_kg) <= float(aircraft.model.propulsion.liquid_fuel.unusable_kg):
@@ -355,6 +358,7 @@ func _pack_step_ratio(prop: Dictionary) -> float:
 ## Configure only at a launch boundary, then reset() to build the selected start in this air mass.
 ## Rejected settings never alter the existing flight, field or recorder.
 func setup_weather(settings: Variant) -> bool:
+	if _reject_reset_publication_reentry(): return false
 	var built: Dictionary = WeatherField.build(settings)
 	if not built.ok:
 		weather_error = "; ".join(built.errors)
@@ -804,8 +808,30 @@ func _trim_model(model: Dictionary) -> Dictionary:
 	query.trim_mass_properties = properties
 	return query
 
-## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
+## Closes the previous flight's observers before the reset tick0 sample. On the
+## prepared runway route physical commit has already succeeded; old recorders
+## read reset_closing_context(), and a presentation hold may pause the new flight.
+## Other historical reset/configuration routes retain their established ordering.
 signal resetting
+var _reset_publication_active := false
+var _reset_transaction_active := false
+var _reset_transaction_reentry := false
+var _reset_physical_committed := false
+var _reset_closing_context := {}
+
+
+## Detached previous-flight boundary, available only during reset notifications.
+## An unavailable old checkpoint is explicit; never substitute the new flight.
+func reset_closing_context() -> Dictionary:
+	return _reset_closing_context.duplicate(true) if _reset_publication_active else {}
+
+
+func _reject_reset_publication_reentry() -> bool:
+	if not _reset_transaction_active: return false
+	_reset_transaction_reentry = true
+	if sim != null: sim.note_reset_publication_reentry()
+	return true
+
 ## Emitted when the detached scenery damage state changes or a session reset/restore succeeds.
 signal scenery_damage_changed
 ## Accepted contact observations changed, including decisions made between integration steps.
@@ -1006,6 +1032,7 @@ var workshop_identity: Dictionary = {}
 
 
 func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Dictionary = {}) -> void:
+	if _reject_reset_publication_reentry(): return
 	_begin_setup(path, expected_id, frozen_data)
 	_finish_setup(_prepare_aircraft(_load_selected_aircraft()))
 
@@ -1014,6 +1041,7 @@ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Di
 ## false means the owner requested cancellation; validation failures still complete setup with an invalid session.
 func setup_staged(path: String, expected_id: String, frozen_data: Dictionary, frame: Signal,
 		should_cancel: Callable) -> bool:
+	if _reject_reset_publication_reentry(): return false
 	if _staged_cancel_requested(should_cancel):
 		return false
 	_begin_setup(path, expected_id, frozen_data)
@@ -1297,6 +1325,11 @@ func _failsafe(reason: String) -> void:
 
 ## Freezes the session for `reason` (a menu): inputs, crash countdown and simulation all stop where they are.
 func hold(reason: String) -> void:
+	# Holds are legal publication bookkeeping after physical commit, not from
+	# a preparation evaluator that must leave the previous owner untouched.
+	if _reset_transaction_active and not _reset_physical_committed:
+		_reject_reset_publication_reentry()
+		return
 	radio.set_auxiliary_enabled(false)
 	if external_controller_selection and not holds.has(reason) and radio.connected and radio.is_gamepad():
 		radio.require_neutral(true)
@@ -1306,6 +1339,11 @@ func hold(reason: String) -> void:
 
 ## Lifts one hold. The flight stays paused until resume() (or the crash hold ends and restarts it).
 func release(reason: String) -> void:
+	# Holds are legal publication bookkeeping after physical commit, not from
+	# a preparation evaluator that must leave the previous owner untouched.
+	if _reset_transaction_active and not _reset_physical_committed:
+		_reject_reset_publication_reentry()
+		return
 	holds.erase(reason)
 
 
@@ -1371,6 +1409,7 @@ func set_controller_cut(held: bool) -> void:
 ## E3a: the wheels roll on this field's surfaces (a validated FieldLoader field). Invalid surface data refuses the
 ## flight (like invalid aircraft data). Returns false on failure; call reset() afterwards to restart on them.
 func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> bool:
+	if _reject_reset_publication_reentry(): return false
 	var table := GroundSurfaces.load_table(table_path)
 	var built := GroundSurfaces.build(table.table, field) if table.ok else table
 	var airframe := GroundSurfaces.build_airframe(table.table, field) if built.ok else built
@@ -1398,6 +1437,7 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 
 ## Installs one normalized lake at a launch/reset boundary. Invalid or stale identities leave the current lake intact.
 func set_lake_context(normalized_lake: Dictionary) -> bool:
+	if _reject_reset_publication_reentry(): return false
 	var next_lake: Dictionary = {}
 	if not normalized_lake.is_empty():
 		if not LakeSurface.is_valid_definition(normalized_lake):
@@ -1470,6 +1510,7 @@ func _prepare_hull_contact() -> Dictionary:
 
 ## Installs one normalized, detached world at a flight boundary. Proxy data contains scalar NED geometry only.
 func set_collision_world(world: Dictionary) -> bool:
+	if _reject_reset_publication_reentry(): return false
 	if world.is_empty():
 		if sim != null and sim.tick > 0 and not _collision_world.is_empty():
 			return false
@@ -1585,6 +1626,7 @@ func can_resume() -> bool:
 ## The pilot's explicit "continue" (never automatic). Refused during calibration, menu holds, or a crash
 ## (the crash restarts by itself; flying on would pass through the ground).
 func resume() -> void:
+	if _reject_reset_publication_reentry(): return
 	if calibration != null or not holds.is_empty() or not crash.is_empty():
 		return
 	if _controller_lost or (external_controller_selection and radio.connected and not radio.armed):
@@ -2118,6 +2160,7 @@ func _clear_scenery_damage(emit_if_empty: bool = false) -> void:
 ## Re-trims at another condition ("level" at `speed`, or "glide" power-off) and makes it the start. For scripted
 ## maneuvers (tests, golden flights). Returns the Trim result.
 func trim_at(speed: float, mode := "level") -> Dictionary:
+	if _reject_reset_publication_reentry(): return {ok = false, message = "reset publication is in progress"}
 	var m: Dictionary = _trim_model(aircraft.model)
 	var down_m: float = start.state[RB.POS + 2] if _has_valid_start() else -30.0
 	var density: float = _weather.air_density(down_m)
@@ -2137,6 +2180,7 @@ func trim_at(speed: float, mode := "level") -> Dictionary:
 
 ## Moves the start above the NED datum. reset() re-trims if the selected atmosphere changes with altitude.
 func set_start_altitude(altitude: float) -> void:
+	if _reject_reset_publication_reentry(): return
 	if start.get("ok", false) and is_finite(altitude) and Sim.state_is_valid(start.state):
 		var s: PackedFloat64Array = start.state
 		s[RB.POS + 2] = -altitude
@@ -2146,6 +2190,7 @@ func set_start_altitude(altitude: float) -> void:
 ## [F5] Reloads the aircraft data file, re-trims and restarts: tune a coefficient without restarting the app.
 ## Invalid data keeps the current aircraft flying. Returns a message for the panel.
 func reload() -> String:
+	if _reject_reset_publication_reentry(): return "reload refused: reset publication is in progress"
 	_statistics_reload_depth += 1
 	var result: String = _reload_impl()
 	_statistics_reload_depth -= 1
@@ -2818,9 +2863,12 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 
 ## The shell may retain an armed radio when restarting under the same device/profile ownership.
 func reset(preserve_radio_readiness := false) -> void:
+	if _reject_reset_publication_reentry(): return
 	_reset_impl(preserve_radio_readiness)
 	if _statistics_reload_depth == 0 and calibration == null and sim != null and sim.tick == 0 \
-			and start_error.is_empty() and sim.fault_reason.is_empty() and _has_valid_start():
+			and _has_valid_start() and ((start_error.is_empty() and sim.fault_reason.is_empty())
+			or (start_choice == START_RUNWAY and runway_start_outcome.get("status", "") == "observer_fault"
+				and runway_start_outcome.get("committed", false))):
 		_statistics_committed("restart")
 
 
@@ -2847,6 +2895,8 @@ func _reset_impl(preserve_radio_readiness := false) -> void:
 			start_error = str(result.message)
 			if not Sim.state_is_valid(sim.state):
 				_fail_selected_start(start_error)
+		elif result.get("status", "") == "observer_fault":
+			return # Accepted physical reset; fault diagnostics must not be overwritten.
 		elif external_controller_selection and radio.connected:
 			_pending_controller_start = float(commands.throttle) if radio.is_rate_throttle() else -1.0
 			radio.require_neutral(preserve_radio_readiness and not radio.is_gamepad())
@@ -3066,7 +3116,7 @@ func _reset_selected_runway_start() -> Dictionary:
 	var result: Dictionary = _apply_runway_start(float(spot.north), float(spot.east), float(spot.heading))
 	if not result.ok:
 		return result
-	_capture_launch("runway", "runway_threshold", field_id, "")
+	_capture_launch("runway", "runway_threshold", field_id, str(result.get("observer_fault", "")))
 	return result
 
 
@@ -3074,6 +3124,17 @@ func _reset_selected_runway_start() -> Dictionary:
 func _apply_runway_start(north: float, east: float, heading: float) -> Dictionary:
 	if not _has_valid_start() or anchor_count() == 0:
 		return {ok = false, status = "invalid_input", message = "runway start needs valid aircraft data, trim, and stiction gear"}
+	# Capture before staging commands/aux/continuous, while the previous accepted
+	# physical and owner histories still describe one coherent flight.
+	_reset_transaction_active = true
+	_reset_transaction_reentry = false
+	_reset_physical_committed = false
+	var closing_checkpoint: Dictionary = checkpoint()
+	if _reset_transaction_reentry:
+		_reset_transaction_active = false
+		return {ok = false, status = "numerical_unresolved", message = "runway start: reset preparation attempted owner transition reentry"}
+	var closing := {tick = sim.tick, checkpoint_available = not closing_checkpoint.is_empty(),
+		checkpoint = closing_checkpoint.duplicate(true)}
 	var prop: Dictionary = aircraft.model.propulsion
 	var density: float = _weather.air_density(0.0)
 	var charge: float = _weather.engine_charge_ratio(0.0)
@@ -3088,6 +3149,7 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 		rpm, density, sim.gravity, _initial_wind(), wheel_count() > 0,
 		environment_at if _weather.has_vertical_atmosphere() else Callable(), _initial_air_sampler(_trim_model(aircraft.model)))
 	if not solved.ok:
+		_reset_transaction_active = false
 		solved.message = "runway start: " + str(solved.message)
 		return solved
 	aux.append_array(solved.anchors)
@@ -3096,7 +3158,7 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	# Some existing force callbacks read the owner's sampled context. Stage only that
 	# context synchronously, with no observer publication, and restore it on rejection.
 	var saved := {}
-	for key in ["commands", "_flap_requested", "_gear_requested_down", "_wheel_brake_demand", "_gear_request_inhibited", "_gear_cache_fraction", "_gear_cache",
+	for key in ["commands", "engine_running", "_flap_requested", "_gear_requested_down", "_wheel_brake_demand", "_gear_request_inhibited", "_gear_cache_fraction", "_gear_cache",
 		"_weather_pending_reset", "_turbulence_aux_index", "_deflection_key", "_deflection_cache"]:
 		saved[key] = get(key)
 	var old_aux: PackedFloat64Array = sim.aux
@@ -3107,6 +3169,7 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	if old_failures != null:
 		var fresh := FailureRuntime.new()
 		if not fresh.restore(old_failures.snapshot(), sim.tick):
+			_reset_transaction_active = false
 			return {ok = false, status = "invalid_input", message = "runway start: failure state cannot be prepared"}
 		fresh.restart()
 		_failures = fresh
@@ -3124,7 +3187,30 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	sim.aux = aux
 	sim.continuous = _settled_continuous(solved.state, aux)
 	var candidate: Dictionary = sim.prepare_reset(solved.state)
-	if not candidate.ok:
+	if _reset_transaction_reentry:
+		candidate = {ok = false, message = "reset preparation attempted owner transition reentry"}
+	var committed := false
+	if candidate.ok:
+		committed = sim.commit_prepared_reset(candidate, func() -> void:
+			_reset_physical_committed = true
+			_reset_publication_active = true
+			_reset_closing_context = closing
+			resetting.emit()
+			_clear_scenery_damage(true)
+			_reset_contact_history()
+			soft_contacts = []
+			prop_strike = {}
+			crash = {}
+			_last_scenery_event = null
+			_last_lake_event = null
+			_shaft_pending_reset = false
+			pause_reason = ""
+			start_error = ""
+			_reset_closing_context = {}
+			_reset_publication_active = false)
+	_reset_transaction_active = false
+	_reset_physical_committed = false
+	if not committed:
 		for key in saved:
 			set(key, saved[key])
 		sim.aux = old_aux
@@ -3132,20 +3218,16 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 		sim.continuous = old_continuous
 		sim.modes = old_modes
 		_failures = old_failures
-		return {ok = false, status = "numerical_unresolved", message = "runway start: " + str(candidate.message), diagnostics = solved.get("diagnostics", {})}
-	# All validation has passed. This is the sole visible launch transaction.
-	resetting.emit()
-	_clear_scenery_damage(true)
-	_reset_contact_history()
-	soft_contacts = []
-	prop_strike = {}
-	crash = {}
-	_last_scenery_event = null
-	_last_lake_event = null
-	_shaft_pending_reset = false
-	pause_reason = ""
-	start_error = ""
-	sim.commit_prepared_reset(candidate)
+		return {ok = false, status = "numerical_unresolved", message = "runway start: " + str(candidate.get("message", "prepared reset context changed before commit")), diagnostics = solved.get("diagnostics", {})}
+	if not sim.reset_observer_fault.is_empty():
+		start_error = sim.reset_observer_fault
+		pause_reason = "simulation fault: " + start_error
+		solved.status = "observer_fault"
+		solved.committed = true
+		solved.ready = false
+		solved.observer_fault = start_error
+		solved.message = start_error
+		return solved
 	sim.set_paused(not holds.is_empty())
 	solved.status = "converged"
 	return solved
@@ -3154,10 +3236,13 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 ## Explicit launch transaction. A rejected attempt leaves the current flight intact.
 ## Rejection is diagnostic; the caller may separately choose an airborne fallback.
 func try_runway_start(north: float, east: float, heading: float) -> Dictionary:
+	if _reject_reset_publication_reentry(): return {ok = false, status = "publication_reentry", message = "reset publication is in progress"}
 	var result := _apply_runway_start(north, east, heading)
 	runway_start_outcome = result.duplicate(true)
 	if result.ok:
-		_capture_launch("runway", "runway_threshold", ground_field_id, "")
+		_capture_launch("runway", "runway_threshold", ground_field_id, str(result.get("observer_fault", "")))
+		if _statistics_reload_depth == 0 and calibration == null:
+			_statistics_committed("restart") # Accepted physical reset, even if an observer faulted.
 	else:
 		start_error = str(result.message)
 	return result
@@ -4409,6 +4494,7 @@ func _ground_up(s: PackedFloat64Array) -> float:
 ## Compatibility helper for tests/captures: one-shot runway start at (north, east), facing `heading` (rad, 0 = north).
 ## It does not change the persistent start_choice. Failure restores the normal trimmed start and returns false.
 func reset_on_runway(north: float, east: float, heading: float) -> bool:
+	if _reject_reset_publication_reentry(): return false
 	var result := try_runway_start(north, east, heading)
 	if result.ok:
 		return true
@@ -4422,6 +4508,8 @@ func reset_on_runway(north: float, east: float, heading: float) -> bool:
 	runway_start_outcome.fallback = "trimmed_airborne" if fallback_ok else "failed"
 	if fallback_ok:
 		_capture_launch("airborne", "airborne_fallback", ground_field_id, start_error)
+		if _statistics_reload_depth == 0 and calibration == null:
+			_statistics_committed("restart")
 	return false
 
 
@@ -4922,6 +5010,7 @@ func _configuration_for_weather(field: WeatherField) -> String:
 ## Restoring switches to recorded-input replay and stays paused. No raw radio state is deserialized.
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
 func restore_checkpoint(candidate: Dictionary) -> bool:
+	if _reject_reset_publication_reentry(): return false
 	var restored: bool = _restore_checkpoint_impl(candidate)
 	if restored:
 		_statistics_committed("checkpoint_restore")

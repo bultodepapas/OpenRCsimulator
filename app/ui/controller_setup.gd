@@ -76,6 +76,7 @@ var _section_navigation: HFlowContainer
 var _section_body: VBoxContainer
 var _selected_section := "devices"
 var _mapping_focus_layout_pending := false
+var _mapping_scroll_input_frame := -1
 var _device_summary: Label
 var _device_details_label: Label
 var _empty_device_label: Label
@@ -297,6 +298,7 @@ func _build() -> void:
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.resized.connect(_queue_mapping_focus_visibility)
+	scroll.get_v_scroll_bar().gui_input.connect(_on_mapping_scroll_input)
 	shell.add_child(scroll)
 	_section_body = VBoxContainer.new()
 	_section_body.name = "ControllerSetupPage"
@@ -908,7 +910,17 @@ func _make_section(section_id: String, caption: String) -> VBoxContainer:
 
 
 func _queue_mapping_focus_visibility() -> void:
+	if _mapping_scroll_input_frame == Engine.get_process_frames():
+		return
 	_mapping_focus_layout_pending = true
+
+
+func _on_mapping_scroll_input(event: InputEvent) -> void:
+	# Explicit wheel, touch or scrollbar input wins over a queued layout follow.
+	if event is InputEventMouseButton or event is InputEventPanGesture \
+		or event is InputEventScreenDrag or (event is InputEventMouseMotion and (event.button_mask & MOUSE_BUTTON_MASK_LEFT) != 0):
+		_mapping_scroll_input_frame = Engine.get_process_frames()
+		_mapping_focus_layout_pending = false
 
 
 func _keep_mapping_focus_visible() -> void:
@@ -1070,6 +1082,11 @@ func _process(delta: float) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventPanGesture or event is InputEventScreenDrag \
+		or event is InputEventMouseButton and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT]:
+		var scroll := _section_body.get_parent() as ScrollContainer
+		if scroll.get_global_rect().has_point(event.position):
+			_on_mapping_scroll_input(event)
 	if _consume_capture_release(event):
 		get_viewport().set_input_as_handled()
 		return

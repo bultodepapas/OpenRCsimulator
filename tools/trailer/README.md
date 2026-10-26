@@ -37,6 +37,15 @@ can inherit a decorated window's client size even when Movie Maker records nativ
 Create the `--write-movie` parent directory before launching Godot: Movie Maker opens its file
 before the capture script runs, so the script's output-directory creation is too late for that file.
 
+**Mobile renderer:** production worlds and the magnifier require HDR viewport precision at night.
+The pinned engine's RGBAH Movie Maker conversion writes incorrect pixels, so this harness rejects
+Mobile `--write-movie` captures. Omit `--write-movie` and `--movie-only`, keep `--fixed-fps 60`, and
+capture the PNG sequence instead. PNG readback is converted from linear HDR to sRGB before
+8-bit quantization; it is not an artistic brightness adjustment. Encode a complete sequence with
+the existing FFmpeg: `ffmpeg -framerate 60 -i frame_%05d.png -c:v libx264 -crf 18 -pix_fmt yuv420p review.mp4`.
+Do not use `--sample-every` when creating a continuous movie. The manifest records root/inset HDR
+flags and PNG color space. Sparse PNG captures are inspection samples, not full motion-video proof.
+
 For RGB acceptance captures, `capture_flight.gd --lighting-preset=<id>` freezes an ordinary
 Workshop trial from the chosen stock aircraft and built-in preset (`classic_rc`, `night_radian`,
 `neon_rgb`, `night_aerobatics`, `festival`, `custom`). It does not save a build or modify physics.

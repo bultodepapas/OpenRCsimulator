@@ -10,7 +10,7 @@ var failures := 0
 
 class RejectCommit:
 	extends "res://sim/simulation.gd"
-	func commit_prepared_reset(_candidate: Dictionary) -> bool:
+	func commit_prepared_reset(_candidate: Dictionary, _before_sample: Callable = Callable()) -> bool:
 		return false
 
 class MalformedContract:

@@ -170,6 +170,8 @@ This reviewed update cannot establish equivalence of old and new slot meanings w
 
 ## Checks
 
+Mobile world viewports and the pilot magnifier use HDR 2D to retain faint scene-linear night light before tonemapping. This also increases color-buffer memory; compare OFF and RGB with the same viewport precision. Compatibility and Forward+ retain their existing precision settings. Main, trailer PNG captures and debug-bridge screenshots encode floating-point readback to sRGB before 8-bit storage. The pinned engine has a separate HDR Movie Maker conversion defect, so Mobile trailer captures use PNG frames and external FFmpeg encoding. The known RenderingDevice ReflectionProbe lifetime warning remains open. [Evidence and limitations](research/night-flight-lighting/implementation.md#fw-rgb-13-mobile-viewport-precision-repair-2026-10-26).
+
 Run the focused suite with the pinned engine:
 
 ```powershell
