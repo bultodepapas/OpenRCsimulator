@@ -108,6 +108,7 @@ python3 "$HERE/../research/aircraft-standardization/test_migrate.py"
 python3 "$HERE/../research/aircraft-standardization/test_physical_identity_sources.py"
 
 echo "== AS-07/09: shared aircraft modules and generated model bindings"
+python3 "$HERE/../research/aircraft-standardization/test_conformance.py"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../research/aircraft-standardization/test_modules.py"
 python3 "$HERE/../research/aircraft-standardization/build_models.py" --check
 python3 "$HERE/../research/aircraft-standardization/test_models.py"

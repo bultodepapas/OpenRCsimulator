@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8e722db5-1bbb-4b76-b2ad-68551f9a6ad8",
+  "command": [
+    "/home/bulto/OpenRCsimulator/.tools/Godot_v4.8-beta1_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_aircraft_render_contract.gd"
+  ],
+  "cwd": "/home/bulto/OpenRCsimulator",
+  "started_utc": "2026-10-26T16:31:03.595695+00:00",
+  "label": "godot",
+  "log": "/home/bulto/OpenRCsimulator/tmp/aircraft-contract-20261026/preflight-repair/render-contract-check/godot-8yq0l3yr/engine.log",
+  "report": "/home/bulto/OpenRCsimulator/tmp/aircraft-contract-20261026/preflight-repair/render-contract-check/godot-8yq0l3yr/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.899539,
+  "log_bytes": 113,
+  "log_sha256": "bad12c779c4606a1936bca7e3b74668eb6c965b29d2b54bbdf49cdac2b3028a7"
+}

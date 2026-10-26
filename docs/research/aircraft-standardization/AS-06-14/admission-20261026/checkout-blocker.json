@@ -1,0 +1,297 @@
+{
+  "status": "inherited_failure",
+  "baseline_commit": "8f60b3964e767c5727524c06c24597843372d051",
+  "current_head": "4e1d6fd63b265ee7b0c5e05908015a410b154cd1",
+  "all_fixture_inputs_unchanged_since_baseline": true,
+  "fixture_inputs": [
+    {
+      "path": ".gitattributes",
+      "baseline_git_blob_sha256": "778670f347da3d5cd08821483cb21fab84365e0063d8aa6d29b1059943ad422b",
+      "current_sha256": "778670f347da3d5cd08821483cb21fab84365e0063d8aa6d29b1059943ad422b",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/app_state/aircraft_catalog.gd",
+      "baseline_git_blob_sha256": "6ff6ecefe16acfd9c5335029ea30ab63e1dafa795f5780b3f710a01767f4cb4b",
+      "current_sha256": "6ff6ecefe16acfd9c5335029ea30ab63e1dafa795f5780b3f710a01767f4cb4b",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/ground/wheel_profiles.json",
+      "baseline_git_blob_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "current_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/schema/aircraft-modules-v1.json",
+      "baseline_git_blob_sha256": "9d66d0fb0c69cea2db143bcbba9b3d3489b1a9cb89d95fad4c467584caafc840",
+      "current_sha256": "9d66d0fb0c69cea2db143bcbba9b3d3489b1a9cb89d95fad4c467584caafc840",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "research/aircraft-standardization/modules.py",
+      "baseline_git_blob_sha256": "8b73b0add3ff591e23ccc2725a01a709b34132ef7f838da6104368142080f619",
+      "current_sha256": "8b73b0add3ff591e23ccc2725a01a709b34132ef7f838da6104368142080f619",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "research/aircraft-standardization/physical_identity.py",
+      "baseline_git_blob_sha256": "3c349e063c86a89fa4796bfef8f39cabecc3c75270190c2fa2ffe64f0690dcc4",
+      "current_sha256": "3c349e063c86a89fa4796bfef8f39cabecc3c75270190c2fa2ffe64f0690dcc4",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "research/aircraft-editor/build_descriptors.py",
+      "baseline_git_blob_sha256": "c9b5c0fa0f5dc0088726bf026a74562e4e9fe8bb1b647716fbb902d90a818e4c",
+      "current_sha256": "c9b5c0fa0f5dc0088726bf026a74562e4e9fe8bb1b647716fbb902d90a818e4c",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "research/aircraft-editor/test_descriptor_checkout.py",
+      "baseline_git_blob_sha256": "65b76011444a19c893a6c704697b4037c77a9713e6f1cd5c26126bbfd3fca95b",
+      "current_sha256": "65b76011444a19c893a6c704697b4037c77a9713e6f1cd5c26126bbfd3fca95b",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/f4u_corsair_250.json",
+      "baseline_git_blob_sha256": "762c02df987a3b2b84461b795a3fcdc31b40de245dbbd38ad6787ec8816e08c9",
+      "current_sha256": "762c02df987a3b2b84461b795a3fcdc31b40de245dbbd38ad6787ec8816e08c9",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/gp_extra_300s_60.json",
+      "baseline_git_blob_sha256": "837e04a00567f6610a11bd893a73d564dec6fe56d48d5d07f1bf09e02c3582e9",
+      "current_sha256": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/hx700_electric_3d_experimental.json",
+      "baseline_git_blob_sha256": "6805ea966fbcd07111d89743946b4dd7a46d58ad6057085c15bb21cfd0e0731e",
+      "current_sha256": "b1d07c3c8a5e9e196f218fa3f049fb084f286dd262ac1aa317408311ecfb115a",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "baseline_git_blob_sha256": "3be5d217df554f1e335c3deecd2cf0887f06b9c935e6e373b75efd1eda2f6b0a",
+      "current_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/p51d_mustang_120.json",
+      "baseline_git_blob_sha256": "59d43fa446b8639cc30f8290ba6617e9ddfd5d3f2f90bae2be3e3b6f097bfe25",
+      "current_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/sebart_avanti_s_a200.json",
+      "baseline_git_blob_sha256": "2b9a6fb2d1fc609adb795de589e095863bda99cde2179188862351c95d253f3d",
+      "current_sha256": "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/skywalker_x8.json",
+      "baseline_git_blob_sha256": "a242240d166b32b7f4d793b698c0cb3e97a39b2e831812e2ba37218128473c44",
+      "current_sha256": "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_55ax_2t.json",
+      "baseline_git_blob_sha256": "5d225e2baf27ef4a5905248fd37a75d966a54b81a927c5696596dcb4b8618e62",
+      "current_sha256": "66d13e8d7d3a44d371f26d75f5e08fbd75b1088430de7a4fabbc852a4c2ca298",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+      "baseline_git_blob_sha256": "f26edab97135079d332b38d4d231a29fa3e9f50c72b6e8ae138fda477eaff9e5",
+      "current_sha256": "45e9eb19ea03eff40c1e565ac1e76c4d72b63a4afb67b209dfa4745fb6a4f067",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_61fx_2t.json",
+      "baseline_git_blob_sha256": "5a8a567d4354fc88983c56f8efc685292cd0b24a801396823c99294e1b0ea8e1",
+      "current_sha256": "babf709c6f8eda13af2bcb8dfc2753b98ae82aafaef048dee45610eeb799d458",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_fs64v_4t.json",
+      "baseline_git_blob_sha256": "41477d6c53e7400eaeb89479b4ced6494229dab0494793d15b94c0472aec8de0",
+      "current_sha256": "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+      "baseline_git_blob_sha256": "94ceba162e8deadf96ab0d39c33f2575c39fcb7895ceb9ec33c07ef6eb8529a8",
+      "current_sha256": "fe76f6fa2a3da1f6f330e31d4c609e941f430d620175e6b44a67cc90f8d6078d",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/synthetic_stik_electric_4s.json",
+      "baseline_git_blob_sha256": "d36f7287b14dec55b6ba7a45673244bb0ffe25cc30c151d51b8ba8a053b6c1b6",
+      "current_sha256": "87a182fb8aa68a15d07dd0b20785e8d9ff21f0f30813a17b57533cf53ae24b01",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/synthetic_stik_electric_4s_battery.json",
+      "baseline_git_blob_sha256": "5311340467d7ec1eb749a9c83075163173a5cd4c69568326cfe1e0af11ca0a35",
+      "current_sha256": "d6efdbba275c3a04755d591ce37ae11a3d1e461fe31de4927fb105cab8f9a0a1",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/synthetic_stik_electric_6s.json",
+      "baseline_git_blob_sha256": "0662215b18afbd9160e85ed79b2157912f5d4c30434471e78ba82ef790a0c793",
+      "current_sha256": "4683006bbebeacb1977bff8ac3448ef0b1af995db567df147c9606004785c858",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/synthetic_stik_electric_6s_battery.json",
+      "baseline_git_blob_sha256": "1407a3fd52d4fa02968f17b662a12c98db2818d8a049707db96d97646012427b",
+      "current_sha256": "0ceb94706dff1414f75bddb58ead3e361c9d316314b699751b93f3b9a8cdb635",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/turbo_lumber_evolution.json",
+      "baseline_git_blob_sha256": "abe8701552711b4e0f04574b873ba43c5bb2937198021ba492397aa28383fcc7",
+      "current_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft/xcell_60_research.json",
+      "baseline_git_blob_sha256": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+      "current_sha256": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/workshop/f4u-corsair-250.json",
+      "baseline_git_blob_sha256": "85093d5aeaa2476408a74d488d4e9424624ca98aec4dd6465969a16d8293f75e",
+      "current_sha256": "85093d5aeaa2476408a74d488d4e9424624ca98aec4dd6465969a16d8293f75e",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/workshop/gp-extra-300s-60.json",
+      "baseline_git_blob_sha256": "e683b939cff19241a62335238e14370223d8253741fc049c340677f3f552ed04",
+      "current_sha256": "e683b939cff19241a62335238e14370223d8253741fc049c340677f3f552ed04",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/workshop/jensen-das-ugly-stik-60.json",
+      "baseline_git_blob_sha256": "6531bf4ce1fc50313fe69e9b9b04839083d1a4043da3aec4e56599a52364da99",
+      "current_sha256": "6531bf4ce1fc50313fe69e9b9b04839083d1a4043da3aec4e56599a52364da99",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/workshop/p51d-mustang-120.json",
+      "baseline_git_blob_sha256": "c9764c4aececdeeb41e39ecf994d61fb801a70782e92073f5ad4fec7386528c3",
+      "current_sha256": "c9764c4aececdeeb41e39ecf994d61fb801a70782e92073f5ad4fec7386528c3",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/workshop/sebart-avanti-s-a200-p100rx.json",
+      "baseline_git_blob_sha256": "19e25b60c5e6db103f2b40b54922080f1633231e5072d2e238e770accfdb360b",
+      "current_sha256": "19e25b60c5e6db103f2b40b54922080f1633231e5072d2e238e770accfdb360b",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/workshop/skywalker-x8.json",
+      "baseline_git_blob_sha256": "d34722baf97c52e4c6da903b9a8d31cbb492474cac5116fe0a341cb319f70c73",
+      "current_sha256": "d34722baf97c52e4c6da903b9a8d31cbb492474cac5116fe0a341cb319f70c73",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/workshop/stik-glow-55ax-2t.json",
+      "baseline_git_blob_sha256": "0b9f25a1a71a294900a962b05a49f2b523b0bcf4ce3798e0cb97a36be6a29bb2",
+      "current_sha256": "0b9f25a1a71a294900a962b05a49f2b523b0bcf4ce3798e0cb97a36be6a29bb2",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/workshop/stik-glow-61fx-2t.json",
+      "baseline_git_blob_sha256": "c2d87457b68cde9ce11935644ef1a98e43194cd6f79e77770ef5a69c18d6575b",
+      "current_sha256": "c2d87457b68cde9ce11935644ef1a98e43194cd6f79e77770ef5a69c18d6575b",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/workshop/stik-glow-fs64v-4t.json",
+      "baseline_git_blob_sha256": "968c1bad9241c2dad97777f77c969a6e7a2c1e4ee60d68851c250e165f8248b7",
+      "current_sha256": "968c1bad9241c2dad97777f77c969a6e7a2c1e4ee60d68851c250e165f8248b7",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/workshop/turbo-lumber-evolution.json",
+      "baseline_git_blob_sha256": "5340d13ea15a7832b3366f950324e53321589839a2756a01a3d96f239fb693c7",
+      "current_sha256": "5340d13ea15a7832b3366f950324e53321589839a2756a01a3d96f239fb693c7",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft_models/f4u-corsair-250.json",
+      "baseline_git_blob_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+      "current_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft_models/gp-extra-300s-60.json",
+      "baseline_git_blob_sha256": "2a2f1cc898cb8ac3a9f96e8d6331cd80db8f8f95ecdb0956aa9caffa75f25371",
+      "current_sha256": "2a2f1cc898cb8ac3a9f96e8d6331cd80db8f8f95ecdb0956aa9caffa75f25371",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft_models/jensen-das-ugly-stik-60.json",
+      "baseline_git_blob_sha256": "912bee8177251ecf7ed58cb50ee05439d2806ca181c41f86b397b40555b40e55",
+      "current_sha256": "912bee8177251ecf7ed58cb50ee05439d2806ca181c41f86b397b40555b40e55",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft_models/p51d-mustang-120.json",
+      "baseline_git_blob_sha256": "6665f7160b277923d48c16ae345ae269fd5a5b9ad9f8c4a68a034cce367fce83",
+      "current_sha256": "6665f7160b277923d48c16ae345ae269fd5a5b9ad9f8c4a68a034cce367fce83",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json",
+      "baseline_git_blob_sha256": "b2196e4dfe6b5f7077e3ee5bdab6a435331cb68ea11f78cb69f46263bb10a82c",
+      "current_sha256": "b2196e4dfe6b5f7077e3ee5bdab6a435331cb68ea11f78cb69f46263bb10a82c",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft_models/skywalker-x8.json",
+      "baseline_git_blob_sha256": "f735c4192228e5863323d7fa72a1d888c1ee98a4a36c4ffc40cff84d19cc7ae1",
+      "current_sha256": "f735c4192228e5863323d7fa72a1d888c1ee98a4a36c4ffc40cff84d19cc7ae1",
+      "unchanged_since_baseline": true
+    },
+    {
+      "path": "app/data/aircraft_models/turbo-lumber-evolution.json",
+      "baseline_git_blob_sha256": "b4ac6781aa61ee376d75e41b4b6824f452ff83bd12e5787077bb3f5ff11ae669",
+      "current_sha256": "b4ac6781aa61ee376d75e41b4b6824f452ff83bd12e5787077bb3f5ff11ae669",
+      "unchanged_since_baseline": true
+    }
+  ],
+  "reproduction": {
+    "command": [
+      "/usr/bin/python3",
+      "research/aircraft-editor/test_descriptor_checkout.py",
+      "CheckoutBindings.test_fresh_checkouts_keep_exact_bindings"
+    ],
+    "returncode": 1,
+    "output": "F\n======================================================================\nFAIL: test_fresh_checkouts_keep_exact_bindings (__main__.CheckoutBindings.test_fresh_checkouts_keep_exact_bindings)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/bulto/OpenRCsimulator/research/aircraft-editor/test_descriptor_checkout.py\", line 51, in test_fresh_checkouts_keep_exact_bindings\n    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)\nAssertionError: 1 != 0 : stale generated descriptor: app/data/workshop/f4u-corsair-250.json\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.159s\n\nFAILED (failures=1)\n"
+  },
+  "live_generation_check": {
+    "command": [
+      "/usr/bin/python3",
+      "research/aircraft-editor/build_descriptors.py",
+      "--check"
+    ],
+    "returncode": 0,
+    "output": "10 Workshop descriptors are current.\n"
+  },
+  "cause": {
+    "physical_source": "app/data/aircraft/f4u_corsair_250.json",
+    "working_tree_line_endings": "LF",
+    "checkout_attribute": "app/data/aircraft/f4u_corsair_250.json: text: set\napp/data/aircraft/f4u_corsair_250.json: eol: crlf",
+    "working_lf_sha256": "762c02df987a3b2b84461b795a3fcdc31b40de245dbbd38ad6787ec8816e08c9",
+    "crlf_checkout_projection_sha256": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
+    "descriptor_base_sha256": "762c02df987a3b2b84461b795a3fcdc31b40de245dbbd38ad6787ec8816e08c9",
+    "descriptor_matches_working_lf": true,
+    "descriptor_matches_crlf_checkout_projection": false,
+    "explanation": "The descriptor binds the accepted LF source bytes. Git attributes require CRLF on checkout even with core.autocrlf=false. The fixture correctly exposes that fresh checkout changes the source identity. No geometry dependency is read by the descriptor generator."
+  },
+  "changes_applied": [],
+  "disposition": "Retain the failing fresh-checkout gate. No generated source, descriptor, checkpoint identity, Git attribute or test assertion was changed."
+}

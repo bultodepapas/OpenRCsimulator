@@ -38,7 +38,9 @@ func at(value: Dictionary, path: Array) -> Dictionary:
 func _initialize() -> void:
 	var paths: Array[String] = []
 	for entry: Dictionary in Catalog.airplane_flyable_entries(): # TT-06: previews carry no data file
-		paths.append(entry.data)
+		for mode: String in Catalog.BATTERY_MODES:
+			if Catalog.has_battery_mode(entry.id, mode):
+				paths.append(Catalog.data_for(entry.id, mode))
 	for suffix: String in ["4s", "6s", "4s_battery", "6s_battery"]:
 		paths.append("res://data/aircraft/synthetic_stik_electric_%s.json" % suffix)
 	for path: String in paths:
@@ -54,12 +56,14 @@ func _initialize() -> void:
 		var old: Dictionary = AD.validate_and_derive(AD.legacy_v1_input(raw))
 		# X8-03/04: elevons and the tailless law exist only in v2 (the shared parser needs the capability selections);
 		# the historical adapter must refuse such a file rather than derive a different airplane.
-		var v2_only_layout: bool = raw.capabilities.get("controls", "") == "elevon" or raw.capabilities.has("airframe_layout")
-		if v2_only_layout:
-			check(path + " v2-only layout refused by the legacy adapter", not old.ok)
+		# Finite packs also need v2 inventory identities; their explicit v1 rejection is intentional.
+		var v2_only_model: bool = raw.capabilities.get("controls", "") == "elevon" or raw.capabilities.has("airframe_layout") \
+			or raw.capabilities.energy == "pack_ecm"
+		if v2_only_model:
+			check(path + " v2-only model refused by the legacy adapter", not old.ok)
 		else:
 			check("explicit legacy adapter loads", old.ok, old.errors)
-		if old.ok and not v2_only_layout:
+		if old.ok and not v2_only_model:
 			# The v1 historical comparator cannot derive v2 tank bindings. Supply the
 			# normalized view from this same validated v2 input as test adapter glue;
 			# this does not make raw v2 data a supported v1 runtime contract.
@@ -100,6 +104,8 @@ func _initialize() -> void:
 			var extra: Dictionary = raw.duplicate(true)
 			at(extra, node_path)["unconsumed_tuning_gain"] = 1.0
 			rejects("unknown " + str(node_path), extra)
+
+	_test_module_admission()
 
 	var stik: Dictionary = raw_file(Catalog.entry(Catalog.DEFAULT_ID).data)
 	for key: String in ["id", "capabilities", "convention_id", "start", "reference", "inventory", "controls", "propulsion"]:
@@ -186,3 +192,40 @@ func _initialize() -> void:
 	flight.free()
 	print("AS aircraft contract: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
+
+
+# AS-07/14: flight admission shares registered branch selection with Workshop,
+# while coupled numerical/geometry checks continue to guard the physical model.
+func _test_module_admission() -> void:
+	var stik: Dictionary = raw_file(Catalog.entry(Catalog.DEFAULT_ID).data)
+	var p51: Dictionary = raw_file(Catalog.entry("p51d-mustang-120").data)
+	var candidate: Dictionary = stik.duplicate(true)
+	candidate.capabilities.flaps = "simulated"
+	_rejects_at("simulated flaps require the physical module", candidate, "/capabilities/flaps")
+	candidate = p51.duplicate(true)
+	candidate.capabilities.flaps = "not_simulated"
+	_rejects_at("inactive flaps cannot install a physical module", candidate, "/capabilities/flaps")
+	candidate = stik.duplicate(true)
+	candidate.capabilities.propulsion_layout = "single_centerline_jet"
+	_rejects_at("propeller cannot select jet layout", candidate, "/capabilities/propulsion_layout")
+	candidate = raw_file(Catalog.entry("stik-glow-55ax-2t").data)
+	candidate.propulsion.fuel_consumption = p51.propulsion.fuel_consumption.duplicate(true)
+	rejects("finite glow and finite-liquid adapters remain exclusive", candidate)
+	candidate = p51.duplicate(true)
+	candidate.erase("fuel_system")
+	_rejects_at("finite liquid still needs bound tanks", candidate, "/propulsion/fuel_consumption")
+	candidate = raw_file(Catalog.entry("sebart-avanti-s-a200-p100rx").data)
+	candidate.propulsion.engine.erase("spool_integrator")
+	rejects("finite-liquid turbine still requires continuous spool", candidate)
+	candidate = p51.duplicate(true)
+	candidate.landing_gear.contacts[0].erase("retraction_path")
+	_rejects_at("every retractable contact still needs its path", candidate, "/landing_gear/contacts/0/retraction_path")
+	candidate = raw_file(Catalog.entry("skywalker-x8").data)
+	candidate.aero.ground_effect = stik.aero.ground_effect.duplicate(true)
+	rejects("tailless ground effect remains unsupported", candidate)
+
+
+func _rejects_at(label: String, raw: Dictionary, path: String) -> void:
+	var result: Dictionary = AD.validate_and_derive(raw)
+	check(label, not result.ok and not result.errors.is_empty() and result.model.is_empty()
+		and str(result.errors).contains(path), result.errors)

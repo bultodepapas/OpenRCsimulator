@@ -1,0 +1,804 @@
+{
+	"cases": [
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v1",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+			"id": "jensen-das-ugly-stik-60",
+			"initial_sha256": "f245c2730599e5ec35e7d8099d52125470d84831ed972b3d04b70a4313055d8d",
+			"model_sha256": "7d84f515d249ed6480578413cd4dfd451a62cc7d99808ab51105bd1642c859df",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "cb5f9c0537f1255f555eb4413d5bb0975a1855c3d8367f61119ca010132f8a0f",
+					"tick": 60
+				},
+				{
+					"sha256": "ebc2b4cb84bdbe866ef8407b014731cb29288acddaeced5a98080a3a809a2da2",
+					"tick": 120
+				},
+				{
+					"sha256": "cd5cb7d7eb0b328c4bb6643953a3f50cad95d10195fbb62172219856da90ee3e",
+					"tick": 180
+				},
+				{
+					"sha256": "b6d77f2db1592b61aeb550d25fa226b2780cb875c162dcfae69b5c1285f3a8ae",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "d8bd31d053d1e9ccf9c32a9c104f7182c287a3af236e8e1995ed4dfb3af4890d"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v1",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+			"id": "jensen-das-ugly-stik-60",
+			"initial_sha256": "f245c2730599e5ec35e7d8099d52125470d84831ed972b3d04b70a4313055d8d",
+			"model_sha256": "7d84f515d249ed6480578413cd4dfd451a62cc7d99808ab51105bd1642c859df",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "cb5f9c0537f1255f555eb4413d5bb0975a1855c3d8367f61119ca010132f8a0f",
+					"tick": 60
+				},
+				{
+					"sha256": "ebc2b4cb84bdbe866ef8407b014731cb29288acddaeced5a98080a3a809a2da2",
+					"tick": 120
+				},
+				{
+					"sha256": "cd5cb7d7eb0b328c4bb6643953a3f50cad95d10195fbb62172219856da90ee3e",
+					"tick": 180
+				},
+				{
+					"sha256": "b6d77f2db1592b61aeb550d25fa226b2780cb875c162dcfae69b5c1285f3a8ae",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "d8bd31d053d1e9ccf9c32a9c104f7182c287a3af236e8e1995ed4dfb3af4890d"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/stik_glow_61fx_2t.json",
+			"id": "stik-glow-61fx-2t",
+			"initial_sha256": "3217b33bcf7f177db3112ac49a03ba4b03196e903d0a95be72024334d2faedb1",
+			"model_sha256": "64f887a2f771e330bc3d1f59adaee2e3bb392164c2a1b3146664ac2ac60f3eea",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "3e49bfe23850891891f78ba223150fa11a0251a73cdebfcc8052ddb4a1950945",
+					"tick": 60
+				},
+				{
+					"sha256": "6a7a2f0a064f80fb7a466f32fc08b3c74e7893633bf8ec9c654ef7dcc223e6d5",
+					"tick": 120
+				},
+				{
+					"sha256": "fdff0405919ceabc9ae9d7e40e59482d5129aad259aef84694327f3c6be1cd4b",
+					"tick": 180
+				},
+				{
+					"sha256": "c4363e48c916f40336bc54450830929ab96a6c00807e4980562118bfa1cec735",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "2b3684621994190971d39edee1d13587e85aac1f36c0a1afdae02ac78ce9710f"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/stik_glow_61fx_2t.json",
+			"id": "stik-glow-61fx-2t",
+			"initial_sha256": "3217b33bcf7f177db3112ac49a03ba4b03196e903d0a95be72024334d2faedb1",
+			"model_sha256": "64f887a2f771e330bc3d1f59adaee2e3bb392164c2a1b3146664ac2ac60f3eea",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "3e49bfe23850891891f78ba223150fa11a0251a73cdebfcc8052ddb4a1950945",
+					"tick": 60
+				},
+				{
+					"sha256": "6a7a2f0a064f80fb7a466f32fc08b3c74e7893633bf8ec9c654ef7dcc223e6d5",
+					"tick": 120
+				},
+				{
+					"sha256": "fdff0405919ceabc9ae9d7e40e59482d5129aad259aef84694327f3c6be1cd4b",
+					"tick": 180
+				},
+				{
+					"sha256": "c4363e48c916f40336bc54450830929ab96a6c00807e4980562118bfa1cec735",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "2b3684621994190971d39edee1d13587e85aac1f36c0a1afdae02ac78ce9710f"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/stik_glow_55ax_2t.json",
+			"id": "stik-glow-55ax-2t",
+			"initial_sha256": "dda2e22afcf0e88e22f920f42d8af91716a89867574d12ecfc2cc810a7b46730",
+			"model_sha256": "208864e4ec0ec54e0605759660fa78400266b269780903c3dca2f690cb79c7ef",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "75dc49b8b6718e1e60a1792315a9c5f3ac592d70cd6a6d3681ac8cc84ec8bce8",
+					"tick": 60
+				},
+				{
+					"sha256": "52b68e883224a9fb3ad925c507af53ac672653a8f891db50b21c7667282c6932",
+					"tick": 120
+				},
+				{
+					"sha256": "17c522891caa3a43bf375e6a23751976fe44d73056759460e30fbdc616f694fb",
+					"tick": 180
+				},
+				{
+					"sha256": "dd1dd0d5a5f30db201eb74bc2e8ef9759ce809cfc1a655ebb55b84132e2ddd52",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "bd736e8bbbec9e59fa4aa9fd2fd167c1959d197f7e217b14c6cee30019cfa7eb"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/stik_glow_55ax_2t.json",
+			"id": "stik-glow-55ax-2t",
+			"initial_sha256": "dda2e22afcf0e88e22f920f42d8af91716a89867574d12ecfc2cc810a7b46730",
+			"model_sha256": "208864e4ec0ec54e0605759660fa78400266b269780903c3dca2f690cb79c7ef",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "75dc49b8b6718e1e60a1792315a9c5f3ac592d70cd6a6d3681ac8cc84ec8bce8",
+					"tick": 60
+				},
+				{
+					"sha256": "52b68e883224a9fb3ad925c507af53ac672653a8f891db50b21c7667282c6932",
+					"tick": 120
+				},
+				{
+					"sha256": "17c522891caa3a43bf375e6a23751976fe44d73056759460e30fbdc616f694fb",
+					"tick": 180
+				},
+				{
+					"sha256": "dd1dd0d5a5f30db201eb74bc2e8ef9759ce809cfc1a655ebb55b84132e2ddd52",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "bd736e8bbbec9e59fa4aa9fd2fd167c1959d197f7e217b14c6cee30019cfa7eb"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/stik_glow_fs64v_4t.json",
+			"id": "stik-glow-fs64v-4t",
+			"initial_sha256": "72632cd1ffef77d8939ddd8a6f8408bc0061ff57809bcb11ebdc8df45e08b240",
+			"model_sha256": "25720ce05ab5c07dff5d3066e00af762002bf806c7695893048b43d790ba0664",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "86a2eb75adb7aedf1f20877bf17070773822196451a7cf39167ef7ca6af7cb6a",
+					"tick": 60
+				},
+				{
+					"sha256": "a51d4a0f871045bd1b7e9c4c0ebe69c47c8f68ed3332f30fcf0a4bfbe284b8b6",
+					"tick": 120
+				},
+				{
+					"sha256": "d5d0d2a00ad4028ee23f09fbc22691bbf88b53ee52d24f32b8968b8bba9b5e34",
+					"tick": 180
+				},
+				{
+					"sha256": "8566ba128e7405bf8a2b259183777de70c80afbd5364ce13b7f00832173d0223",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "5fb5705df6f2cbaa02778798c870215f965a8f4894663aa73a4555197bdfebcb"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/stik_glow_fs64v_4t.json",
+			"id": "stik-glow-fs64v-4t",
+			"initial_sha256": "72632cd1ffef77d8939ddd8a6f8408bc0061ff57809bcb11ebdc8df45e08b240",
+			"model_sha256": "25720ce05ab5c07dff5d3066e00af762002bf806c7695893048b43d790ba0664",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "86a2eb75adb7aedf1f20877bf17070773822196451a7cf39167ef7ca6af7cb6a",
+					"tick": 60
+				},
+				{
+					"sha256": "a51d4a0f871045bd1b7e9c4c0ebe69c47c8f68ed3332f30fcf0a4bfbe284b8b6",
+					"tick": 120
+				},
+				{
+					"sha256": "d5d0d2a00ad4028ee23f09fbc22691bbf88b53ee52d24f32b8968b8bba9b5e34",
+					"tick": 180
+				},
+				{
+					"sha256": "8566ba128e7405bf8a2b259183777de70c80afbd5364ce13b7f00832173d0223",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "5fb5705df6f2cbaa02778798c870215f965a8f4894663aa73a4555197bdfebcb"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/gp_extra_300s_60.json",
+			"id": "gp-extra-300s-60",
+			"initial_sha256": "5f737fe0e68b14396c65b95cee6faa5d5a0e66fff36abe3e3a1f5e5b97f5cef4",
+			"model_sha256": "363a8528796a9398d4e226189156fd6d4062272dffd1744013772a64461ab461",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "7f990631d10004a66d58c459542859386a1100997089da1d92394126fe9cf7f7",
+					"tick": 60
+				},
+				{
+					"sha256": "1bedc765abff4ae1121bbfe8f2f7db4e9569e107c77776f5eb8ab1a9ee8f7af2",
+					"tick": 120
+				},
+				{
+					"sha256": "1db81638aeb54c8a7caca6716b8afded8c82dd11d477e56a1f63b4e83937d171",
+					"tick": 180
+				},
+				{
+					"sha256": "77e93240c159e4d9ed63acc160cecd2edbdd3c1a983c21b05fd7bb6dbdfda23e",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "8a5f5805e8de646e5305459553cec263baead7149e4f1c5cdd2145ee96a97d02"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/gp_extra_300s_60.json",
+			"id": "gp-extra-300s-60",
+			"initial_sha256": "5f737fe0e68b14396c65b95cee6faa5d5a0e66fff36abe3e3a1f5e5b97f5cef4",
+			"model_sha256": "363a8528796a9398d4e226189156fd6d4062272dffd1744013772a64461ab461",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "7f990631d10004a66d58c459542859386a1100997089da1d92394126fe9cf7f7",
+					"tick": 60
+				},
+				{
+					"sha256": "1bedc765abff4ae1121bbfe8f2f7db4e9569e107c77776f5eb8ab1a9ee8f7af2",
+					"tick": 120
+				},
+				{
+					"sha256": "1db81638aeb54c8a7caca6716b8afded8c82dd11d477e56a1f63b4e83937d171",
+					"tick": 180
+				},
+				{
+					"sha256": "77e93240c159e4d9ed63acc160cecd2edbdd3c1a983c21b05fd7bb6dbdfda23e",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "8a5f5805e8de646e5305459553cec263baead7149e4f1c5cdd2145ee96a97d02"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v11",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/p51d_mustang_120.json",
+			"id": "p51d-mustang-120",
+			"initial_sha256": "888525c771353456e4da25906cefc714109b7c954a10fd7f1c99428b292e3ccf",
+			"model_sha256": "9071d59ef58eec6c568eb74be33854af0cf637f08ec0e67e6ec9fa689b634b3c",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "ddf58da0be6eaf3e0f6681f7a95ae569cc417e6b81bf23fb5029e5b304cba2e3",
+					"tick": 60
+				},
+				{
+					"sha256": "58e7185eaaa08b1a7ee4201d9598d90d58139cac9567522e37f149c2dfa38c41",
+					"tick": 120
+				},
+				{
+					"sha256": "712b98ca2dc215aa80452615dc61ca32b6d94a86d2792198d38a1482f9342f40",
+					"tick": 180
+				},
+				{
+					"sha256": "142a933f647063a5b55db9206a7efd5e36945852ef5c0a8ffd9fa1cf83818a94",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "ede3977b325f528201a1a8b2892d96c1f6b0347f6eb17c967d5b808d49d3ac77"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v11",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/p51d_mustang_120.json",
+			"id": "p51d-mustang-120",
+			"initial_sha256": "888525c771353456e4da25906cefc714109b7c954a10fd7f1c99428b292e3ccf",
+			"model_sha256": "9071d59ef58eec6c568eb74be33854af0cf637f08ec0e67e6ec9fa689b634b3c",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "ddf58da0be6eaf3e0f6681f7a95ae569cc417e6b81bf23fb5029e5b304cba2e3",
+					"tick": 60
+				},
+				{
+					"sha256": "58e7185eaaa08b1a7ee4201d9598d90d58139cac9567522e37f149c2dfa38c41",
+					"tick": 120
+				},
+				{
+					"sha256": "712b98ca2dc215aa80452615dc61ca32b6d94a86d2792198d38a1482f9342f40",
+					"tick": 180
+				},
+				{
+					"sha256": "142a933f647063a5b55db9206a7efd5e36945852ef5c0a8ffd9fa1cf83818a94",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "ede3977b325f528201a1a8b2892d96c1f6b0347f6eb17c967d5b808d49d3ac77"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v11",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/f4u_corsair_250.json",
+			"id": "f4u-corsair-250",
+			"initial_sha256": "d75fe1c53372ca8041c896d0175fdc8d0497308ac70d152f2554f3d0f1cddf8f",
+			"model_sha256": "7c061788cfdcf58b8c0335c72740b96dfe140099d7ddde69fcc05746dc090997",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "ba537f77018a3acbcc1bf4419faaf2237a731448ca352213ebbda6b439841c5c",
+					"tick": 60
+				},
+				{
+					"sha256": "73e0e21c498bd78e11ac81de4eb7c1ef61f946ee0d6cad651ca06c32a363fb2c",
+					"tick": 120
+				},
+				{
+					"sha256": "0acd6a52c6126f3a20c5bf30863f017ebb5c14ad13e61eca8ec2320893b8c21b",
+					"tick": 180
+				},
+				{
+					"sha256": "6ef3be8663cc7a9e36063bf55bfddc61cb16aa4ef2551662003629083def0376",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "16e8a98a7c514305e88fdbd588db6c1d61d877326a583c989b7d41f07215f75b"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v11",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/f4u_corsair_250.json",
+			"id": "f4u-corsair-250",
+			"initial_sha256": "d75fe1c53372ca8041c896d0175fdc8d0497308ac70d152f2554f3d0f1cddf8f",
+			"model_sha256": "7c061788cfdcf58b8c0335c72740b96dfe140099d7ddde69fcc05746dc090997",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "ba537f77018a3acbcc1bf4419faaf2237a731448ca352213ebbda6b439841c5c",
+					"tick": 60
+				},
+				{
+					"sha256": "73e0e21c498bd78e11ac81de4eb7c1ef61f946ee0d6cad651ca06c32a363fb2c",
+					"tick": 120
+				},
+				{
+					"sha256": "0acd6a52c6126f3a20c5bf30863f017ebb5c14ad13e61eca8ec2320893b8c21b",
+					"tick": 180
+				},
+				{
+					"sha256": "6ef3be8663cc7a9e36063bf55bfddc61cb16aa4ef2551662003629083def0376",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "16e8a98a7c514305e88fdbd588db6c1d61d877326a583c989b7d41f07215f75b"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v11",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/sebart_avanti_s_a200.json",
+			"id": "sebart-avanti-s-a200-p100rx",
+			"initial_sha256": "9f3c8dc66f3b72abb8751783b33a7097a7780f48529b1c0dd4e52b0471b6c82d",
+			"model_sha256": "eef5e58e3f226acb6d83253bb228f71e57a7cc1f400e641d037c744e70e200bf",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "34a8d8d5ec3019a282038246c3bf97715cc3d6ed45a76d8fe3d1648b1e37981d",
+					"tick": 60
+				},
+				{
+					"sha256": "30eb1c3ead97e10c592dd97c7363b2c536a120c42dfbd2dfb9df6c01df742792",
+					"tick": 120
+				},
+				{
+					"sha256": "ff26f97bf82f1da67eee8b21e9f92ab78a98959c28a51a5e970baea7d8bdc300",
+					"tick": 180
+				},
+				{
+					"sha256": "e6ecedcddb31da9f0bd0d6d91ba2e4971171884462ede19f6373b1e2c8ca2b37",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "ed6de9d42006a9111cba18a3eec05b427f06dbc70bc5ac40a356e64040fd2794"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v11",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/sebart_avanti_s_a200.json",
+			"id": "sebart-avanti-s-a200-p100rx",
+			"initial_sha256": "9f3c8dc66f3b72abb8751783b33a7097a7780f48529b1c0dd4e52b0471b6c82d",
+			"model_sha256": "eef5e58e3f226acb6d83253bb228f71e57a7cc1f400e641d037c744e70e200bf",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "34a8d8d5ec3019a282038246c3bf97715cc3d6ed45a76d8fe3d1648b1e37981d",
+					"tick": 60
+				},
+				{
+					"sha256": "30eb1c3ead97e10c592dd97c7363b2c536a120c42dfbd2dfb9df6c01df742792",
+					"tick": 120
+				},
+				{
+					"sha256": "ff26f97bf82f1da67eee8b21e9f92ab78a98959c28a51a5e970baea7d8bdc300",
+					"tick": 180
+				},
+				{
+					"sha256": "e6ecedcddb31da9f0bd0d6d91ba2e4971171884462ede19f6373b1e2c8ca2b37",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "ed6de9d42006a9111cba18a3eec05b427f06dbc70bc5ac40a356e64040fd2794"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v5",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/turbo_lumber_evolution.json",
+			"id": "turbo-lumber-evolution",
+			"initial_sha256": "922fb7e9e82c1cc1828ceaf513740d632e2675b01aa8a5797142142f85e592b5",
+			"model_sha256": "e76f074f8075cccb1e186b56eee7b83b04b4df429f78e3ad4b70a3c31d20aba7",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "48f4c5532beb8556e11c28e3097bb24616e940fa786be6a973df8acdb5022cd3",
+					"tick": 60
+				},
+				{
+					"sha256": "bd67e293848b41ac7965f50293479cd1da5894ca496efe532bafbb6d0733da50",
+					"tick": 120
+				},
+				{
+					"sha256": "c3dd9a98476300bcd340782b66e96d744cdc2ddd99fb5fa33625914330f50db0",
+					"tick": 180
+				},
+				{
+					"sha256": "9b88b4865ce05a984dcd97687694803fe1b4d33fcc70751edb17b3fe0edf873b",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "8d8a0cca341c0adae320f5ca216bc712229a11de98bb7c7839b73b142ddf9e2b"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v5",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/turbo_lumber_evolution.json",
+			"id": "turbo-lumber-evolution",
+			"initial_sha256": "922fb7e9e82c1cc1828ceaf513740d632e2675b01aa8a5797142142f85e592b5",
+			"model_sha256": "e76f074f8075cccb1e186b56eee7b83b04b4df429f78e3ad4b70a3c31d20aba7",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "48f4c5532beb8556e11c28e3097bb24616e940fa786be6a973df8acdb5022cd3",
+					"tick": 60
+				},
+				{
+					"sha256": "bd67e293848b41ac7965f50293479cd1da5894ca496efe532bafbb6d0733da50",
+					"tick": 120
+				},
+				{
+					"sha256": "c3dd9a98476300bcd340782b66e96d744cdc2ddd99fb5fa33625914330f50db0",
+					"tick": 180
+				},
+				{
+					"sha256": "9b88b4865ce05a984dcd97687694803fe1b4d33fcc70751edb17b3fe0edf873b",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "8d8a0cca341c0adae320f5ca216bc712229a11de98bb7c7839b73b142ddf9e2b"
+		},
+		{
+			"battery_mode": "pack",
+			"checkpoint_format": "openrc-flight-checkpoint v6",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
+			"id": "turbo-lumber-evolution",
+			"initial_sha256": "0ec2dc700d46351a28cbfc87e710d1791dd7f5b92538e40347c1d984f600ee87",
+			"model_sha256": "680c9527f30cb300d0e35275d2fbcfb9e06f97f0214093211f6ce871e8662e25",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "0d0124dde11fb8d293fb933bc6b8228ae7795d277cd8778a3f221897d1f114d2",
+					"tick": 60
+				},
+				{
+					"sha256": "632cf23621c3f5c1e0c87ab7aaaf075f3b8a0f3a7eac92a5059a2a64ace4a889",
+					"tick": 120
+				},
+				{
+					"sha256": "3a871928e3a46fff80486fa8a8c1da518c8d6142f194477eb651497cc4146a93",
+					"tick": 180
+				},
+				{
+					"sha256": "2f37264d86b0ed0715b874bc6d6a5192d7f12d08a41f7088bd63d4ffd5f7d478",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "89af827c3f1d7953be96ff72fa042a8b707db3f49ff1deecdc357bec45febdd1"
+		},
+		{
+			"battery_mode": "pack",
+			"checkpoint_format": "openrc-flight-checkpoint v6",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
+			"id": "turbo-lumber-evolution",
+			"initial_sha256": "0ec2dc700d46351a28cbfc87e710d1791dd7f5b92538e40347c1d984f600ee87",
+			"model_sha256": "680c9527f30cb300d0e35275d2fbcfb9e06f97f0214093211f6ce871e8662e25",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "0d0124dde11fb8d293fb933bc6b8228ae7795d277cd8778a3f221897d1f114d2",
+					"tick": 60
+				},
+				{
+					"sha256": "632cf23621c3f5c1e0c87ab7aaaf075f3b8a0f3a7eac92a5059a2a64ace4a889",
+					"tick": 120
+				},
+				{
+					"sha256": "3a871928e3a46fff80486fa8a8c1da518c8d6142f194477eb651497cc4146a93",
+					"tick": 180
+				},
+				{
+					"sha256": "2f37264d86b0ed0715b874bc6d6a5192d7f12d08a41f7088bd63d4ffd5f7d478",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "89af827c3f1d7953be96ff72fa042a8b707db3f49ff1deecdc357bec45febdd1"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v5",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/skywalker_x8.json",
+			"id": "skywalker-x8",
+			"initial_sha256": "9e735a4fb8908b196a33a5a3e8b7b54e2e68ca4e382d1bcf56f812560661757b",
+			"model_sha256": "d8fd2fc90c79fa925a084137a74982f692cad0141336849af0bf02204342178f",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "b4218d4e2f00dc01bfc999aaaa1a95f4ce69e3a8fda9f3995b364ca8fa7984b9",
+					"tick": 60
+				},
+				{
+					"sha256": "e244b2da30d24a7377ece36a3b99a577e57d07f5066891bb7d9050ced016a421",
+					"tick": 120
+				},
+				{
+					"sha256": "687370db045f1fa6d75d4cd5a1b6f3cd03f7bd90c4f3db74d768766a8859c88c",
+					"tick": 180
+				},
+				{
+					"sha256": "ad5eecc4c81769bba094e89d2c97755927380363f821708781f8fadc254fe550",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "36e3b101c09aa8824bd8f1457ad7824fd569a139c7a732a317215318cf13d51f"
+		},
+		{
+			"battery_mode": "ideal",
+			"checkpoint_format": "openrc-flight-checkpoint v5",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/skywalker_x8.json",
+			"id": "skywalker-x8",
+			"initial_sha256": "9e735a4fb8908b196a33a5a3e8b7b54e2e68ca4e382d1bcf56f812560661757b",
+			"model_sha256": "d8fd2fc90c79fa925a084137a74982f692cad0141336849af0bf02204342178f",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "b4218d4e2f00dc01bfc999aaaa1a95f4ce69e3a8fda9f3995b364ca8fa7984b9",
+					"tick": 60
+				},
+				{
+					"sha256": "e244b2da30d24a7377ece36a3b99a577e57d07f5066891bb7d9050ced016a421",
+					"tick": 120
+				},
+				{
+					"sha256": "687370db045f1fa6d75d4cd5a1b6f3cd03f7bd90c4f3db74d768766a8859c88c",
+					"tick": 180
+				},
+				{
+					"sha256": "ad5eecc4c81769bba094e89d2c97755927380363f821708781f8fadc254fe550",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "36e3b101c09aa8824bd8f1457ad7824fd569a139c7a732a317215318cf13d51f"
+		},
+		{
+			"battery_mode": "pack",
+			"checkpoint_format": "openrc-flight-checkpoint v6",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/battery/skywalker_x8_6s_pack.json",
+			"id": "skywalker-x8",
+			"initial_sha256": "7bf3db5ffca88497e24836f2c570bb14265aa6a3461b407873eea8e23f8537e5",
+			"model_sha256": "1234e73e29d7afd0d1ae9c276d4a73d063778a5b78593782851d92e41f0f038c",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "cf4c772d3971cbbb8fbd1c7c8fb03e2aa2b86ea07f9db8a20acfa89dda6aea24",
+					"tick": 60
+				},
+				{
+					"sha256": "acd7080a175f207ea766ef97c2a5c7dd51b0fc6f832d6ab578615e7a00989db4",
+					"tick": 120
+				},
+				{
+					"sha256": "2c84a1919995d05ceab75e0351f76d48c32ad63283ee16e3eb27f5c495970613",
+					"tick": 180
+				},
+				{
+					"sha256": "ee435700321517abb68d246c0ac16029da830f6ddb8df65db4cc53e9e6d3e072",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "7e4a728ad4d0c7f3ff1bf02b2f209e306cb263701dcd30966c32dde58cc560b6"
+		},
+		{
+			"battery_mode": "pack",
+			"checkpoint_format": "openrc-flight-checkpoint v6",
+			"complete": true,
+			"completed_ticks": 240,
+			"data_path": "res://data/aircraft/battery/skywalker_x8_6s_pack.json",
+			"id": "skywalker-x8",
+			"initial_sha256": "7bf3db5ffca88497e24836f2c570bb14265aa6a3461b407873eea8e23f8537e5",
+			"model_sha256": "1234e73e29d7afd0d1ae9c276d4a73d063778a5b78593782851d92e41f0f038c",
+			"ok": true,
+			"replay_exact": true,
+			"replay_ticks": 120,
+			"samples": [
+				{
+					"sha256": "cf4c772d3971cbbb8fbd1c7c8fb03e2aa2b86ea07f9db8a20acfa89dda6aea24",
+					"tick": 60
+				},
+				{
+					"sha256": "acd7080a175f207ea766ef97c2a5c7dd51b0fc6f832d6ab578615e7a00989db4",
+					"tick": 120
+				},
+				{
+					"sha256": "2c84a1919995d05ceab75e0351f76d48c32ad63283ee16e3eb27f5c495970613",
+					"tick": 180
+				},
+				{
+					"sha256": "ee435700321517abb68d246c0ac16029da830f6ddb8df65db4cc53e9e6d3e072",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "7e4a728ad4d0c7f3ff1bf02b2f209e306cb263701dcd30966c32dde58cc560b6"
+		}
+	],
+	"complete": true,
+	"expected_cases": 24,
+	"format": "openrc-as-fleet-probe v2",
+	"godot": "4.8-beta1 (official)",
+	"hz": 240,
+	"ok": true,
+	"replay_start_tick": 120,
+	"ticks_per_case": 240
+}

@@ -118,6 +118,30 @@ Optional case IDs are `spatial-v5-gusts-24`, `spatial-v5-thermals-24` and `spati
 
 For timing, omit `--verify-only` and run alone on a controlled host with frozen sources. Reports contain actual solver, benchmark, preset and selected aircraft hashes; `--revision` and `--manifest-sha256` are optional caller annotations. Session report v2 distinguishes workload counts from timed counts. Timing arrays and their median/p95 contain **batch means**, not per-tick latency percentiles. The first-tick query count is separate from the full coverage replay count; query demand can change during flight. Headless batch timing does not qualify 1080p performance or the stricter physics budget. [R5 admission evidence and limits](../research/wind-implementation/M5-W05d-R5/README.md).
 
+## Aircraft conformance and unchanged behavior
+
+Run the existing authoring verifier with the pinned engine and a new output directory:
+
+```bash
+python3 research/aircraft-standardization/conformance.py --godot "$(app/get-godot.sh)" \
+  --out tmp/aircraft-contract-before
+```
+
+For a behavior-preserving change, capture that baseline **before** editing runtime/data, then run:
+
+```bash
+python3 research/aircraft-standardization/conformance.py --godot "$(app/get-godot.sh)" \
+  --out tmp/aircraft-contract-after \
+  --baseline tmp/aircraft-contract-before/fleet.json \
+  --contact-baseline tmp/aircraft-contract-before/contacts.json
+```
+
+The v2 fleet probe discovers every catalog airplane and valid battery mode, including finite packs, under both terminal and soft-hull policies. Each case hashes its accepted model, initial state and 240 ticks, then requires 120 per-tick exact replay checks from its checkpoint. The verifier rejects incomplete reports before comparison and inventories nested code/data dependencies to detect drift during each probe. V1 fleet reports lack this coverage and are not accepted as v2 baselines; retain their original tool/source snapshot for historical reproduction.
+
+Require `verification.json.ok`, `complete_fleet`, `baseline_complete` and both exact comparison flags, with no source drift. The separate seven contact fixtures cover hull, scenery and water responses; their controlled sweeps use the installed `VehicleModel` callback interface. Identical reports establish only these tested trajectories on the same engine/platform, not arbitrary-input equivalence or physical validation. A change to the probe itself requires a baseline captured with that same probe against the original runtime.
+
+`--parse-all` also parses every application script; `--package` checks exported resources. `--models-only` omits flight/contact evidence. Use the [flight-log workflow](../FLIGHT-LOGGING.md) for deliberate handling or physics changes. The [aircraft contract](../AIRCRAFT_CONTRACT.md) owns authoring and shared correction rules.
+
 ## Track verifiers
 
 Use fresh output directories. Fixture equivalence proves software preservation, not physical validity.

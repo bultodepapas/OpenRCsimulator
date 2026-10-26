@@ -1137,3 +1137,18 @@ observer fault stays final, paused/nonready and credited once. Preserve intentio
 successful airborne fallback and initial invalid parking as separate outcomes.
 Restore/configuration publication remains a later migration. [Contract and original
 failure/current evidence](research/ground-physics/GP-14/README.md#common-start-and-reload-transactions-gp-14e).
+
+### 2026-10-26 — Share aircraft module admission with Workshop (AS-07/14-R1)
+
+Run the existing module classifier after v2 structural validation and before physical
+relations/derivation. Remove duplicated capability/layout/energy/gear-presence
+selection from the loader contract. Keep fuel bindings, tailless restrictions,
+contact topology, inertia, wake and numerical feasibility in their owning validators:
+a classified combination alone does not establish a flyable or realistic aircraft.
+
+Consume classification only as validation, preserving authored bytes, normalized
+model fields, calculation order and checkpoint layouts. This closes inconsistent
+flap-module admission without retuning current aircraft. Discover every catalog
+battery mode in equivalence checks and require complete per-tick replay; preserve
+historical reports under their original probe version. [Contract](AIRCRAFT_CONTRACT.md)
+and [verification](research/aircraft-standardization/AS-06-14/README.md#shared-flight-admission-as-0714-r1-2026-10-26).

@@ -48,8 +48,9 @@ func _exercise(fixture: String) -> Dictionary:
 		_:
 			# Controlled sweep, retaining actual aircraft probes; propulsion is outside this fixture's scope.
 			f.sim.continuous = PackedFloat64Array()
-			for field: String in ["continuous_step", "continuous_evaluate", "continuous_loads", "continuous_derivative", "continuous_rotor_momentum", "continuous_aux"]:
-				f.sim.set(field, Callable())
+			for field: String in ["step_policy", "stage", "block_loads", "block_derivative",
+				"stage_rotor_momentum", "block_aux"]:
+				f.sim.model.set(field, Callable())
 			f.sim.gravity = 0.0
 			f.sim.model.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array: return PackedFloat64Array([0, 0, 0, 0, 0, 0])
 			f.sim.model.pre_tick = func(aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array: return aux

@@ -2,6 +2,7 @@ extends RefCounted
 class_name AircraftContract
 
 const SPEC_PATH := "res://data/schema/aircraft-contract-v2.json"
+const Modules := preload("res://physics/aircraft_modules.gd")
 const PhysicalIdentity := preload("res://physics/physical_identity.gd")
 const EVIDENCE_FIELDS := ["value", "unit", "kind", "source"]
 const EVIDENCE_KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
@@ -21,7 +22,14 @@ static func validate(raw: Variant) -> PackedStringArray:
 	_visit(root, PackedStringArray(), spec, root, issues)
 	if not issues.is_empty():
 		return issues
-	_validate_relations(root, spec, issues)
+	# AS-07/14: flight and Workshop share capability/law selection. Classification
+	# is validation only: it must not add metadata to the normalized physical model.
+	var classification: Dictionary = Modules.classify(root)
+	if not classification.ok:
+		for diagnostic: Dictionary in classification.diagnostics:
+			_issue(issues, "/" + str(diagnostic.path).replace(".", "/"), str(diagnostic.message))
+		return issues
+	_validate_relations(root, issues)
 	issues.append_array(PhysicalIdentity.validate(root))
 	return issues
 
@@ -135,35 +143,25 @@ static func _validate_quantity(value: Dictionary, path: String, issues: PackedSt
 	if value.has("kind") and (not value["kind"] is String or not EVIDENCE_KINDS.has(value["kind"])):
 		_issue(issues, _append_path(path, "kind"), "must be a supported evidence kind")
 
-# Coupled invariants: capability/propulsion compatibility, gear presence and
-# deployed support/steering topology, positive inertia references, and mutually exclusive
-# legacy/smooth slipstream fields. Numeric ranges remain with AircraftData.
-static func _validate_relations(root: Dictionary, spec: Dictionary, issues: PackedStringArray) -> void:
+# Coupled physical constraints after registry admission: control/airframe coupling,
+# fuel bindings, support topology, inertia and wake dependencies. Numerical ranges
+# remain with AircraftData; capability and installed-law choices live in Modules.
+static func _validate_relations(root: Dictionary, issues: PackedStringArray) -> void:
 	var capabilities: Variant = root.get("capabilities", {})
 	var propulsion: Variant = root.get("propulsion", {})
 	if not capabilities is Dictionary or not propulsion is Dictionary:
 		return
 	var gear_kind := String(capabilities.get("gear", ""))
 	var propulsion_kind := String(propulsion.get("kind", ""))
-	var layout_expected := "single_centerline_jet" if propulsion_kind == "turbine" else "single_tractor"
-	# X8-05: an electric propeller may also sit aft of the CG as a pusher; its geometry is checked by AircraftData.
-	var layout_allowed := [layout_expected, "single_pusher"] if propulsion_kind == "electric_prop" else [layout_expected]
-	if not layout_allowed.has(capabilities.get("propulsion_layout", "")):
-		_issue(issues, "/capabilities/propulsion_layout", "does not match propulsion.kind")
 	# X8-03/04: elevons exist only on the tailless law, whose pitch control they are; neither stands alone.
 	var tailless: bool = capabilities.get("airframe_layout", "") == "tailless"
 	if (capabilities.get("controls", "") == "elevon") != tailless:
 		_issue(issues, "/capabilities/controls", "elevon controls require airframe_layout tailless, and tailless requires elevons")
 	if tailless and root.get("aero", {}) is Dictionary and root.get("aero", {}).has("ground_effect"):
 		_issue(issues, "/aero/ground_effect", "is not supported by the tailless airframe law")
-	# X8-08: a tolerant hull declares its own evidence-bearing thresholds; a terminal hull uses the shared ones.
-	if (capabilities.get("damage", "") == "tolerant_hull") != root.has("crash_tolerance"):
-		_issue(issues, "/crash_tolerance", "must be present exactly when capabilities.damage is tolerant_hull")
-	var energy_expected := "prescribed_fuel"
 	var fuel_consumption: Variant = propulsion.get("fuel_consumption", null)
 	var has_liquid_adapter: bool = fuel_consumption is Dictionary
 	if has_liquid_adapter:
-		energy_expected = "finite_liquid_fuel"
 		var law := String(fuel_consumption.get("law", ""))
 		if not root.has("fuel_system"):
 			_issue(issues, "/propulsion/fuel_consumption", "requires fuel_system tank bindings")
@@ -184,18 +182,8 @@ static func _validate_relations(root: Dictionary, spec: Dictionary, issues: Pack
 	if propulsion_kind == "glow_prop" and propulsion.get("engine", {}).has("glow_installation"):
 		if has_liquid_adapter:
 			_issue(issues, "/propulsion/fuel_consumption", "cannot be combined with glow_installation")
-		else:
-			energy_expected = "finite_glow_fuel"
 		if propulsion.engine.has("shaft"):
 			_issue(issues, "/propulsion/engine", "glow_installation and legacy shaft are mutually exclusive")
-	if propulsion_kind == "electric_prop":
-		var battery: Variant = propulsion.get("battery", {})
-		if battery is Dictionary:
-			energy_expected = String(battery.get("kind", ""))
-	if capabilities.get("energy", "") != energy_expected:
-		_issue(issues, "/capabilities/energy", "does not match the propulsion energy model")
-	if propulsion_kind == "turbine" and energy_expected not in ["prescribed_fuel", "finite_liquid_fuel"]:
-		_issue(issues, "/capabilities/energy", "turbines require prescribed_fuel or a supported finite-liquid consumer")
 
 	_validate_gear_relations(root, gear_kind, issues)
 	_validate_intended_hull_support_relations(root, issues)
@@ -217,20 +205,13 @@ static func _validate_intended_hull_support_relations(root: Dictionary, issues: 
 		_issue(issues, "/intended_hull_support", "complete authored physical hull identity is required")
 
 static func _validate_gear_relations(root: Dictionary, gear_kind: String, issues: PackedStringArray) -> void:
-	var has_gear := root.has("landing_gear")
+	# Presence and retraction selection were checked by the shared registry.
 	if gear_kind == "locked_up":
-		if has_gear:
-			_issue(issues, "/landing_gear", "must be absent when capabilities.gear is locked_up")
-		return
-	if not has_gear:
-		_issue(issues, "/landing_gear", "is required for the declared gear capability")
 		return
 	var gear: Variant = root.get("landing_gear")
 	if not gear is Dictionary:
 		return
 	var retractable := gear_kind in ["retractable_tricycle", "retractable_taildragger"]
-	if retractable != gear.has("retraction"):
-		_issue(issues, "/landing_gear/retraction", "must be present exactly for retractable gear (tricycle or taildragger)")
 	var contacts: Variant = gear.get("contacts", [])
 	if not contacts is Array:
 		return

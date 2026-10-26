@@ -46,3 +46,56 @@ Add `--baseline docs/research/aircraft-standardization/AS-06-14/baseline/fleet.j
 The accepted physical v2 topology is unchanged: conventional controls, one supported propulsion installation, neutral visual-only flaps. A new imported family still supplies a model-side builder; universal data-only Blender import has not been demonstrated. Durable inventory/contact/section IDs, complete landmark/clearance coverage, asset budgets, accepted-tick unified contact events, probe-to-detachable-section binding and a second distinct Blender delivery remain open. Flaps, multiple propulsion installations and selectable new contact laws retain their separate AS-15–18 and owning-track gates.
 
 **Later continuation, 2026-10-13:** [AS-13](../AS-13/README.md) delivers the accepted-tick contact observation, rollback and checkpoint slice listed above. The other boundaries remain in the active plan.
+
+
+## Shared flight admission (AS-07/14-R1, 2026-10-26)
+
+The physical v2 loader now uses the existing `AircraftModules` classifier after
+structural validation. Registry-owned layout, energy, damage-module presence and
+gear-module presence checks replace duplicated selection logic. Coupled fuel,
+tailless, gear topology, inertia, wake and numerical checks remain in their physical
+validators. Inconsistent simulated/inactive flap declarations now fail before a
+model can fly. No authored aircraft bytes, physical coefficients, force laws,
+normalized model fields, calculation order, checkpoint layout or goldens changed.
+The [current contract](../../../AIRCRAFT_CONTRACT.md) owns authoring and maintenance.
+
+The original runtime baseline is `8f60b3964e767c5727524c06c24597843372d051`, on Linux
+with Godot `4.8.beta1.official.4d10419ca`. Another session committed the shared tree
+during this work; source hashes, rather than HEAD alone, identify the comparison.
+[Source comparison](admission-20261026/source-comparison.json) inventories the final
+sources and the disposable original-runtime copy: only
+`app/physics/aircraft_contract.gd` differs in the covered runtime. Its original bytes
+were restored only in that copy, never by swapping the live application.
+
+| Check | Retained result |
+| --- | --- |
+| Fleet admission and checkpoint replay | [Before](admission-20261026/baseline-fleet.json) and [after](admission-20261026/candidate-fleet.json) are identical: ten catalog airplanes, all offered battery modes, both hull policies; 24 complete cases × 240 ticks and 120 per-tick checkpoint replay checks. [Baseline capture](admission-20261026/baseline-capture.json) records no source drift and unchanged original ideal-mode fingerprints |
+| Maneuvers and source cutoff | [Before](admission-20261026/baseline-power-cut.json) and [after](admission-20261026/candidate-power-cut.json): 32 identical, fault-free 960-tick runs, including both finite packs and four synthetic electric configurations. [Comparison](admission-20261026/power-cut-comparison.json). Completion and faults were checked explicitly because this existing probe does not fail its process on a faulted row |
+| Contact policies | Seven [original-runtime](admission-20261026/baseline-contacts.json) and [candidate](admission-20261026/candidate-contacts.json) fixtures match byte for byte. The same repaired harness uses `VehicleModel` callbacks in both runs; [identity/comparison](admission-20261026/contact-comparison.json) |
+| Contract and shared classification | Expanded production-loader suite: 4,023 checks; runtime classifier: 87; Python/GDScript classifier suite: seven tests. Finite-pack sources and malformed module/coupled-physics cases are covered |
+| Schema/loader agreement | [Five tests](admission-20261026/schema-summary.json): 2,070 cases, including 142 valid controls and 23 intentional runtime-only checks; structural preflight accepts all 16 root fixed-wing sources |
+| Model and control presentation | Corrected [preflight](admission-20261026/preflight.json): all ten airplanes; independent render-contract suite: 403 checks. Checked logs/reports are retained in `preflight-check/` and `render-contract-check/` |
+| Integrated suites | [Initial conformance](admission-20261026/initial-conformance/verification.json): 55 of 57 commands passed, including schema/generators, model manifests, Workshop, controls, propulsion, contacts, checkpoints and exact fleet/contact comparisons. The failed preflight is superseded by the corrected run above; the checkout failure below remains open |
+
+The fleet probe is now explicitly v2: it includes finite-pack configurations and
+rejects incomplete forward/replay prefixes. Its Python acceptance tests reject
+malformed or duplicate rows, and source inventory includes nested data, command
+defaults and collision geometry helpers. Final source-inventory extensions were
+checked separately after the initial integration run. The contact harness had
+retired callback names; the preflight misclassified elevons as flaps and needed to
+retain materials during dummy-renderer teardown. These are tool repairs, not
+changes to flight or rendering behavior. Commands and limits live in the
+[tool guide](../../../tools/physics.md#aircraft-conformance-and-unchanged-behavior).
+
+Two inherited gates remain open. The [fresh-checkout proof](admission-20261026/checkout-blocker.json)
+shows all 43 fixture inputs unchanged from the original revision: F4U physical JSON
+has LF bytes while its Git rule requires CRLF, so its exact-source Workshop pin
+becomes stale after checkout. Correcting it needs a deliberate generator/source
+identity migration; this delivery preserves the existing bytes. The attempted full
+`app/test.sh` stops earlier on stale economics `worked-examples.json`; its
+[log](admission-20261026/full-suite.log) is retained. The additional unit partition
+was stopped after the aircraft-focused suites; it is not a full-suite pass.
+[Final verification summary](admission-20261026/summary.json) records syntax,
+focused reruns and these limits. No fresh-checkout, package, physical/pilot or
+performance qualification is claimed. Exact equality applies to the tested
+trajectories on this engine/platform, not every possible flight input.

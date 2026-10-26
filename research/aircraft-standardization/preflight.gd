@@ -65,9 +65,9 @@ func inspect(entry: Dictionary) -> Dictionary:
 				for hinge: Dictionary in manifest.bindings.controls[role].hinges:
 					if _node(independent.hinges[hinge.key]) == _node(airplane.hinges[hinge.key]):
 						errors.append("Builder reused hinge " + role)
-			independent.root.free()
+			_free_model(independent)
 		report.render_geometry = _mesh_counts(airplane.root)
-		airplane.root.free()
+		_free_model(airplane)
 	report.ok = errors.is_empty()
 	report.errors = errors
 	return report
@@ -75,6 +75,22 @@ func inspect(entry: Dictionary) -> Dictionary:
 
 func _node(value: Variant) -> Node3D:
 	return value.node if value is Dictionary else value
+
+
+func _free_model(airplane: Dictionary) -> void:
+	# Retain active materials until all mesh instances are destroyed. The dummy
+	# renderer may still inspect their shader parameters while a node is freed.
+	var materials: Array[Material] = []
+	for node: Node in airplane.root.find_children("*", "MeshInstance3D", true, false):
+		var mesh := node as MeshInstance3D
+		if mesh.material_override != null:
+			materials.append(mesh.material_override)
+		if mesh.mesh != null:
+			for surface in mesh.mesh.get_surface_count():
+				var material := mesh.get_active_material(surface)
+				if material != null:
+					materials.append(material)
+	airplane.root.free()
 
 
 func _pose_checks(airplane: Dictionary, throws: Dictionary, errors: PackedStringArray) -> void:
@@ -86,6 +102,10 @@ func _pose_checks(airplane: Dictionary, throws: Dictionary, errors: PackedString
 	for command_sign: float in [-1.0, 1.0, 0.0]:
 		var command := {roll = command_sign, pitch = command_sign, yaw = command_sign, throttle = 0.0}
 		var surfaces := Commands.surface_deflections_deg(command, throws)
+		# Elevons are the accepted symmetric/antisymmetric surface mix, including saturation.
+		for side: String in ["left", "right"]:
+			if bindings.has("elevon_" + side):
+				surfaces["elevon_" + side] = surfaces.elevator + surfaces["aileron_" + side]
 		Builder.apply_surfaces(airplane, Commands.hinge_rotations(command, throws))
 		for role: String in bindings:
 			var binding: Dictionary = bindings[role]
