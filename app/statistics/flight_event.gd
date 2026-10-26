@@ -36,8 +36,9 @@ static func make(profile: Dictionary, kind: String, tick: int, sequence: int, fl
 
 static func valid(value: Variant) -> bool:
 	if not value is Dictionary or value.size() != KEYS.size() or not value.has_all(KEYS): return false
-	if value.format != FORMAT or value.version != VERSION or typeof(value.version) != TYPE_INT \
-		or value.rules_version != RULES or value.type not in TYPES: return false
+	if typeof(value.format) != TYPE_STRING or typeof(value.version) != TYPE_INT \
+		or typeof(value.rules_version) != TYPE_STRING or typeof(value.type) != TYPE_STRING \
+		or value.format != FORMAT or value.version != VERSION or value.rules_version != RULES or value.type not in TYPES: return false
 	for key: String in ["law_identity", "activity_id", "generation_id", "event_id", "aircraft_id",
 		"configuration_hash", "field_hash", "flight_id", "contact_episode_id", "accident_id", "material_id"]:
 		if typeof(value[key]) != TYPE_STRING or value[key].length() > 256: return false
@@ -45,7 +46,8 @@ static func valid(value: Variant) -> bool:
 		if value[key].is_empty(): return false
 	for key: String in ["accepted_tick", "sequence", "revision"]:
 		if not _integer(value[key]) or value[key] < 0: return false
-	if typeof(value.terminal) != TYPE_BOOL or value.continuation != ("terminal" if value.terminal else "continues") \
+	if typeof(value.terminal) != TYPE_BOOL or typeof(value.continuation) != TYPE_STRING \
+		or typeof(value.severity_status) != TYPE_STRING or value.continuation != ("terminal" if value.terminal else "continues") \
 		or value.severity_status != "unknown": return false
 	for key: String in ["contact_ids", "component_ids", "evidence_coverage"]:
 		if not _strings(value[key]): return false
@@ -56,6 +58,7 @@ static func valid(value: Variant) -> bool:
 		if typeof(number) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(number)) or number < 0: return false
 		if str(key).ends_with("_tick") and not _integer(number): return false
 	if not value.cause is Dictionary or value.cause.size() != 3 \
+		or typeof(value.cause.get("classification")) != TYPE_STRING or typeof(value.cause.get("uncertainty")) != TYPE_STRING \
 		or value.cause.get("classification") != "unknown" or value.cause.get("uncertainty") != "unavailable" \
 		or not _strings(value.cause.get("evidence_ids")): return false
 	return true

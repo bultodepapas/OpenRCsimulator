@@ -1,0 +1,119 @@
+{
+  "format": "openrc-flight-event-validation-evidence-v1",
+  "utc": "2026-10-26T14:11:38.626583+00:00",
+  "outcomes": [
+    {
+      "check": "baseline",
+      "ok": false,
+      "diagnostics": {
+        "error": 33,
+        "warning": 0
+      }
+    },
+    {
+      "check": "draft",
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "check": "main",
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "check": "session",
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "scope": "Primitive validator regression; selected source/receipts, not a complete application dependency freeze. Valid event generation/physics unchanged.",
+  "artifacts": [
+    {
+      "path": "source/app/statistics/flight_event.gd",
+      "source": "app/statistics/flight_event.gd",
+      "sha256": "8b730b8f5a4ed6c42ae3113ce12fdddcdf37b00509c6e8e2b4494970b6e29407",
+      "bytes": 5595
+    },
+    {
+      "path": "source/app/tests/test_ground_flight_events.gd",
+      "source": "app/tests/test_ground_flight_events.gd",
+      "sha256": "c7ee67d1595cb7132703a7f8ac5d0db7bdde3d756dbf8c90b8cf85471e7c1487",
+      "bytes": 13325
+    },
+    {
+      "path": "baseline/flight_event.gd",
+      "source": "tmp/gp14-event-validation/baseline-flight_event.gd",
+      "sha256": "69b809a535102c5573b37e6cd4db5610dbedda0c0d7e83e0319fb705bf7136c1",
+      "bytes": 5251
+    },
+    {
+      "path": "baseline/test.gd",
+      "source": "tmp/gp14-event-validation/baseline_test.gd",
+      "sha256": "c7ee67d1595cb7132703a7f8ac5d0db7bdde3d756dbf8c90b8cf85471e7c1487",
+      "bytes": 13325
+    },
+    {
+      "path": "promotion.json",
+      "source": "tmp/gp14-event-validation/promotion.json",
+      "sha256": "47759b67504601fcdb7ae00b4e6219335a034df0bd36ba13237887fc30abf43a",
+      "bytes": 457
+    },
+    {
+      "path": "checks/baseline/report.json",
+      "source": "tmp/gp14-event-validation/checks/baseline/primitive-baseline-clce3ixy/report.json",
+      "sha256": "659134bc69c7eee670cc648ae66e29b9fbcfc7c2f9b15dd5df379db0e7cd1f2e",
+      "bytes": 9001
+    },
+    {
+      "path": "checks/baseline/engine.log",
+      "source": "tmp/gp14-event-validation/checks/baseline/primitive-baseline-clce3ixy/engine.log",
+      "sha256": "71f9e40c549d5a866e7e1820f2cfa7a59f92854ed5d0e33361f5841dc41de0ff",
+      "bytes": 14412
+    },
+    {
+      "path": "checks/draft/report.json",
+      "source": "tmp/gp14-event-validation/checks/draft/primitive-draft-y5fs5gpa/report.json",
+      "sha256": "8a626116b4df07504c9c0dc72a1958ad05f6c8743c08deef0e8f63d935f598a5",
+      "bytes": 1227
+    },
+    {
+      "path": "checks/draft/engine.log",
+      "source": "tmp/gp14-event-validation/checks/draft/primitive-draft-y5fs5gpa/engine.log",
+      "sha256": "a57018228193fc3ea5ae4488db20ea67d1b0266f51773a47bcc8fdf9222207e7",
+      "bytes": 116
+    },
+    {
+      "path": "checks/main/report.json",
+      "source": "tmp/gp14-event-validation/checks/main/primitive-main-6zqol0fq/report.json",
+      "sha256": "c6c2d93072f392dcf52bfb72530a9efbc2e65ecbf92871991704880b6acce505",
+      "bytes": 1198
+    },
+    {
+      "path": "checks/main/engine.log",
+      "source": "tmp/gp14-event-validation/checks/main/primitive-main-6zqol0fq/engine.log",
+      "sha256": "a57018228193fc3ea5ae4488db20ea67d1b0266f51773a47bcc8fdf9222207e7",
+      "bytes": 116
+    },
+    {
+      "path": "checks/session/report.json",
+      "source": "tmp/gp14-event-validation/checks/session/primitive-session-sbkksl1k/report.json",
+      "sha256": "f1262e5e3df65309abb562cb1be330c8e3da4fd4a057eb3f5ba34adee79fde60",
+      "bytes": 1218
+    },
+    {
+      "path": "checks/session/engine.log",
+      "source": "tmp/gp14-event-validation/checks/session/primitive-session-sbkksl1k/engine.log",
+      "sha256": "0bc1858073b97d4a4e6a0c6e1c6d7fa28fe3c7ec3f17f9eaf4a51d5d38b9cc83",
+      "bytes": 732
+    }
+  ]
+}
