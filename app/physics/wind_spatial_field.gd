@@ -9,6 +9,7 @@ const TAU_F64 := 6.283185307179586476925286766559
 const U32_MASK := 0xffffffff
 const U32_SCALE := 4294967296.0
 const MODE_SCALAR_COUNT := 9
+const GUST_SCALAR_COUNT := 4
 
 var _config: Dictionary = {}
 var _content_hash := ""
@@ -17,6 +18,22 @@ var _rng_state: int = 0
 var _thermal_field: Variant = null
 var _thermal_content_hash := ""
 var _thermal_law := ""
+# Construction-only values from the detached, validated configuration. Never cache
+# query results or time here: one provider is shared by all RK stages and observers.
+var _reference_speed := 0.0
+var _roughness_length := 0.0
+var _displacement_height := 0.0
+var _wall_height := 0.0
+var _surface_top := 0.0
+var _free_air_join_height := 0.0
+var _direction_cosine := 0.0
+var _direction_sine := 0.0
+var _log_denominator := 0.0
+var _wall_scale := 0.0
+var _wall_scale_slope := 0.0
+var _gust_transition_height := 0.0
+var _gust_values := PackedFloat64Array()
+var _turbulence_rms := 0.0
 
 
 ## Validate, detach, and freeze a spatial provider. A failure never yields a zero-wind fallback.
@@ -46,7 +63,34 @@ func _apply_config(config: Dictionary, content_hash: String, thermal_field: Vari
 	_thermal_field = thermal_field
 	_thermal_content_hash = thermal_content_hash
 	_thermal_law = thermal_law
+	_prepare_profile_and_gusts()
 	_modes = _resolve_modes()
+
+
+func _prepare_profile_and_gusts() -> void:
+	var profile: Dictionary = _config.profile
+	_reference_speed = float(profile.reference_speed_mps)
+	_roughness_length = float(profile.roughness_length_m)
+	_displacement_height = float(profile.displacement_height_m)
+	_wall_height = float(profile.wall_join_height_agl_m)
+	_surface_top = float(profile.surface_layer_top_agl_m)
+	_free_air_join_height = float(profile.free_air_join_height_m)
+	var radians := deg_to_rad(float(profile.reference_from_deg))
+	_direction_cosine = cos(radians)
+	_direction_sine = sin(radians)
+	_log_denominator = log((float(profile.reference_height_agl_m) - _displacement_height) / _roughness_length)
+	_wall_scale = log((_wall_height - _displacement_height) / _roughness_length) / _log_denominator
+	_wall_scale_slope = 1.0 / ((_wall_height - _displacement_height) * _log_denominator)
+	_gust_transition_height = float(_config.domain.ground_transition_height_m)
+	var gust_values := PackedFloat64Array()
+	# Preserve authored order, including tied starts: summation order is observable.
+	for event: Dictionary in _config.gusts.events:
+		gust_values.append(float(event.start_s))
+		gust_values.append(float(event.duration_s))
+		gust_values.append(float(event.amplitude_ned_mps[0]))
+		gust_values.append(float(event.amplitude_ned_mps[1]))
+	_gust_values = gust_values
+	_turbulence_rms = float(_config.turbulence.rms_mps)
 
 
 ## A detached canonical schema object. Mutating the return value cannot change this field.
@@ -163,14 +207,14 @@ func sample_world(position_ned: PackedFloat64Array, simulation_time_s: float) ->
 func _profile_wind(height_agl: float) -> PackedFloat64Array:
 	var profile: Dictionary = _config.profile
 	var result: PackedFloat64Array
-	var wall := float(profile.wall_join_height_agl_m)
-	var surface_top := float(profile.surface_layer_top_agl_m)
+	var wall := _wall_height
+	var surface_top := _surface_top
 	if height_agl < wall:
 		result = _wall_join(height_agl)
 	elif height_agl <= surface_top:
 		result = _neutral_profile(height_agl)
 	else:
-		var fraction := (height_agl - surface_top) / float(profile.free_air_join_height_m)
+		var fraction := (height_agl - surface_top) / _free_air_join_height
 		fraction = clampf(fraction, 0.0, 1.0)
 		if fraction >= 1.0:
 			result = PackedFloat64Array(profile.free_air_wind_ned_mps)
@@ -197,37 +241,24 @@ func _profile_wind(height_agl: float) -> PackedFloat64Array:
 
 
 func _neutral_profile(height_agl: float) -> PackedFloat64Array:
-	var profile: Dictionary = _config.profile
-	var reference_speed := float(profile.reference_speed_mps)
+	var reference_speed := _reference_speed
 	if reference_speed == 0.0:
 		return PackedFloat64Array([0.0, 0.0, 0.0])
-	var reference_height := float(profile.reference_height_agl_m)
-	var z0 := float(profile.roughness_length_m)
-	var displacement := float(profile.displacement_height_m)
-	var denominator := log((reference_height - displacement) / z0)
-	var scale := log((height_agl - displacement) / z0) / denominator
-	var radians := deg_to_rad(float(profile.reference_from_deg))
-	var north := -reference_speed * cos(radians) * scale
-	var east := -reference_speed * sin(radians) * scale
+	var scale := log((height_agl - _displacement_height) / _roughness_length) / _log_denominator
+	var north := -reference_speed * _direction_cosine * scale
+	var east := -reference_speed * _direction_sine * scale
 	return PackedFloat64Array([north, east, 0.0])
 
 
 func _wall_join(height_agl: float) -> PackedFloat64Array:
-	var profile: Dictionary = _config.profile
-	var wall := float(profile.wall_join_height_agl_m)
-	var reference_speed := float(profile.reference_speed_mps)
+	var wall := _wall_height
+	var reference_speed := _reference_speed
 	if height_agl <= 0.0 or reference_speed == 0.0:
 		return PackedFloat64Array([0.0, 0.0, 0.0])
-	var reference_height := float(profile.reference_height_agl_m)
-	var z0 := float(profile.roughness_length_m)
-	var displacement := float(profile.displacement_height_m)
-	var denominator := log((reference_height - displacement) / z0)
-	var wall_log := log((wall - displacement) / z0)
-	var scale_at_wall := wall_log / denominator
-	var scale_slope_at_wall := 1.0 / ((wall - displacement) * denominator)
-	var radians := deg_to_rad(float(profile.reference_from_deg))
-	var unit_north := -cos(radians)
-	var unit_east := -sin(radians)
+	var scale_at_wall := _wall_scale
+	var scale_slope_at_wall := _wall_scale_slope
+	var unit_north := -_direction_cosine
+	var unit_east := -_direction_sine
 	var s := clampf(height_agl / wall, 0.0, 1.0)
 	var h01 := -2.0 * s * s * s + 3.0 * s * s
 	var h11 := s * s * s - s * s
@@ -238,11 +269,13 @@ func _wall_join(height_agl: float) -> PackedFloat64Array:
 
 func _gust_wind(height_agl: float, epoch_time: float) -> PackedFloat64Array:
 	var result := PackedFloat64Array([0.0, 0.0, 0.0])
-	var transition := float(_config.domain.ground_transition_height_m)
+	if _gust_values.is_empty():
+		return result
+	var transition := _gust_transition_height
 	var wall_weight := _smooth5(clampf(height_agl / transition, 0.0, 1.0))
-	for event: Dictionary in _config.gusts.events:
-		var start := float(event.start_s)
-		var duration := float(event.duration_s)
+	for event_offset: int in range(0, _gust_values.size(), GUST_SCALAR_COUNT):
+		var start: float = _gust_values[event_offset]
+		var duration: float = _gust_values[event_offset + 1]
 		var elapsed := epoch_time - start
 		if elapsed < 0.0 or elapsed >= duration:
 			continue
@@ -250,17 +283,18 @@ func _gust_wind(height_agl: float, epoch_time: float) -> PackedFloat64Array:
 		var one_minus_s := 1.0 - s
 		# Compact C2 bell: zero value, slope, and curvature at both event endpoints.
 		var pulse := 64.0 * s * s * s * one_minus_s * one_minus_s * one_minus_s
-		var amplitude: Array = event.amplitude_ned_mps
-		result[0] += float(amplitude[0]) * pulse * wall_weight
-		result[1] += float(amplitude[1]) * pulse * wall_weight
+		result[0] += _gust_values[event_offset + 2] * pulse * wall_weight
+		result[1] += _gust_values[event_offset + 3] * pulse * wall_weight
 	return result
 
 
 func _turbulence_wind(north_m: float, east_m: float, height_agl: float, epoch_time: float) -> PackedFloat64Array:
-	var result := PackedFloat64Array([0.0, 0.0, 0.0])
-	if float(_config.turbulence.rms_mps) == 0.0:
-		return result
-	for mode_offset in range(0, _modes.size(), MODE_SCALAR_COUNT):
+	var result_north := 0.0
+	var result_east := 0.0
+	var result_down := 0.0
+	if _turbulence_rms == 0.0:
+		return PackedFloat64Array([result_north, result_east, result_down])
+	for mode_offset: int in range(0, _modes.size(), MODE_SCALAR_COUNT):
 		var k_north: float = _modes[mode_offset]
 		var k_east: float = _modes[mode_offset + 1]
 		var k_down: float = _modes[mode_offset + 2]
@@ -289,10 +323,10 @@ func _turbulence_wind(north_m: float, east_m: float, height_agl: float, epoch_ti
 		var potential_height_derivative := wall_derivative * sine_vertical + wall_weight * k_down * cosine_vertical
 		var horizontal_derivative := amplitude * potential_height_derivative * cosine_phase
 		var vertical_velocity := amplitude * potential_height * cross_wavenumber * sine_phase
-		result[0] += axis_east * horizontal_derivative
-		result[1] -= axis_north * horizontal_derivative
-		result[2] += vertical_velocity
-	return result
+		result_north += axis_east * horizontal_derivative
+		result_east -= axis_north * horizontal_derivative
+		result_down += vertical_velocity
+	return PackedFloat64Array([result_north, result_east, result_down])
 
 
 func _resolve_modes() -> PackedFloat64Array:

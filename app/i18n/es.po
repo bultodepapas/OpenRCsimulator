@@ -5024,8 +5024,8 @@ msgstr "Quitar favorito"
 msgid "Favorite"
 msgstr "Favorito"
 
-msgid "Copy appearance and smoke…"
-msgstr "Copiar apariencia y humo…"
+msgid "RGB profile"
+msgstr "Perfil RGB"
 
 msgid "Favorites could not be read; existing metadata was preserved."
 msgstr "No se pudieron leer los favoritos; se conservaron los datos existentes."
@@ -5063,8 +5063,8 @@ msgstr "No se pueden copiar estos ajustes visuales."
 msgid "The draft changed. Review the settings again before applying them."
 msgstr "El borrador cambió. Revisa de nuevo los ajustes antes de aplicarlos."
 
-msgid "Compatible appearance and smoke settings copied. Undo restores the previous presentation."
-msgstr "Se copiaron la apariencia y el humo compatibles. Deshacer restaura el estado anterior."
+msgid "Compatible presentation settings copied. Undo restores the previous presentation."
+msgstr "Se copiaron los ajustes compatibles. Deshacer restaura la presentación anterior."
 
 msgid "Compatible"
 msgstr "Compatible"

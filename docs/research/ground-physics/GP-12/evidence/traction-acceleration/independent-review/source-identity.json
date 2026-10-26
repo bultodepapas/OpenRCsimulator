@@ -1,0 +1,30 @@
+{
+  "format": "openrc-independent-qp-review v1",
+  "source_commit": "b88b44022d502d68bd20c3329fce39290faec943",
+  "sha256": {
+    "tmp/gp12-qp-drafts/traction.gd": "485342c1b85e979e9c4abd763e1fef61959e9745354667eef99a76ee3e6d0045",
+    "tmp/gp12-independent-review/review.gd": "e092adf71262da5bbd506ba21ac43c92a8b3839007993c46175d4129be7c8a3a",
+    "tmp/gp12-independent-review/review.md": "67ebf6e0201a242c29735b52f647fcbdb90ae41f2c0e81273f5df54f808254ed",
+    "tmp/gp-composition-repro/braking-failed-qp.bin": "459f0d36c8f721b394aa11c0daa9fc6c5b6c2b1fee2f715e5a182a2894a47bb8",
+    "app/tests/fixtures/ground_traction_braking.json": "4ee9d3c4b57f1ceb9d49d06a58310f736b2e5d830dff8ac1805afbf8934395d9",
+    "app/tests/fixtures/ground_traction_braking.bin": "459f0d36c8f721b394aa11c0daa9fc6c5b6c2b1fee2f715e5a182a2894a47bb8"
+  },
+  "checks": 34,
+  "final_receipts": [
+    {
+      "report": "checks/candidate-final-identity-48j1igzy/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "verdict": "No remaining correctness blocker found; promotion supported with unchanged original-QP publication checks",
+  "production_edits": false,
+  "limitations": [
+    "Bounded structured review, not universal convergence or performance proof",
+    "Godot JSON parse does not preserve every original binary64 bit; binary remains exact authority"
+  ]
+}

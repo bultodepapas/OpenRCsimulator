@@ -6,6 +6,7 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const GC := preload("res://physics/generalized_coordinates.gd")
 const LAW := "compact-mobility-block-kkt-impulse-v1"
+const ACCELERATION_LAW := "bounded-interior-face-feasible-extrapolation-v1"
 const MAX_DIMENSION := 128
 const MAX_ITERATIONS := 1024
 const MULTIPLIER_ITERATIONS := 72
@@ -102,7 +103,9 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 	# Only the final GLOBAL KKT certificate authorizes publication.
 	var previous_objective := 0.0
 	var maximum_increase := 0.0
+	var accelerated := 0
 	for iteration in iteration_budget:
+		var previous_y := y.duplicate()
 		for group: PackedInt32Array in groups:
 			var indices: Array[int] = []
 			for index: int in group:
@@ -124,6 +127,18 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 			if block.size() != indices.size() or not _finite(block):
 				return _failure("block metric solve could not be certified", "nonconverged", iteration + 1)
 			for i in indices.size(): y[indices[i]] = block[i]
+		# A feasible optimization trial only: the final certificate still uses
+		# the original full mobility, limits and unchanged KKT tolerance. No
+		# diagonal, physical mass, force or impulse cap is regularized here.
+		if (iteration + 1) % 8 == 0:
+			var polished := _interior_face(hs, bs, y, limits, groups, tolerance)
+			if polished != y:
+				y = polished
+				accelerated += 1
+			var extrapolated := _extrapolate(hs, bs, y, previous_y, limits, groups, tolerance)
+			if extrapolated != y:
+				y = extrapolated
+				accelerated += 1
 		var current_objective := _objective(hs, bs, y)
 		maximum_increase = maxf(maximum_increase, current_objective - previous_objective)
 		if not is_finite(current_objective) or current_objective > previous_objective + 0.00000000000002 * (absf(previous_objective) + b_norm):
@@ -133,6 +148,10 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 		if certified.ok:
 			var published := _publish(symmetric, v, limits, groups, h, b, y, scale, validated, iteration + 1, "cyclic_exact_metric_blocks")
 			published.maximum_objective_increase_scaled = maximum_increase
+			if accelerated > 0:
+				published.method = "cyclic_exact_metric_blocks_feasible_acceleration"
+				published.acceleration_law = ACCELERATION_LAW
+				published.accepted_accelerations = accelerated
 			return published
 	var failure := _failure("global KKT residual exceeds iteration budget", "nonconverged", iteration_budget)
 	var residual := _certificate(hs, bs, y, limits, groups, tolerance)
@@ -142,6 +161,178 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 	failure.feasibility_residual = residual.feasibility
 	failure.duality_gap_scaled = residual.duality_gap
 	return failure
+
+
+## Resolve all currently interior groups together while holding saturated
+## groups fixed. Redundant active rows can make the full/interior mobility
+## singular. Rank-revealing corrections use no diagonal regularization.
+## A wrong active-face guess cannot publish: feasibility, original objective
+## and the unchanged global KKT certificate are evaluated after the proposal.
+static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
+		limits: PackedFloat64Array, groups: Array, tolerance: float) -> PackedFloat64Array:
+	var n := y.size()
+	var free: Array[int] = []
+	for group: PackedInt32Array in groups:
+		var length_sq := 0.0
+		for i: int in group: length_sq += y[i] * y[i]
+		if length_sq < 1.0 - FEASIBILITY_TOLERANCE:
+			for i: int in group:
+				if limits[i] > 0.0: free.append(i)
+	if free.is_empty(): return y
+	var size := free.size()
+	var matrix := PackedFloat64Array()
+	matrix.resize(size * size)
+	var rhs := PackedFloat64Array()
+	for i in size:
+		var value := -b[free[i]]
+		for j in n: value -= h[free[i] * n + j] * y[j]
+		rhs.append(value)
+		for j in size: matrix[i * size + j] = h[free[i] * n + free[j]]
+	var solved := _psd_correction(matrix, rhs, size, tolerance * 0.25)
+	if solved.size() != size or not _finite(solved): return y
+	var candidate := y.duplicate()
+	var delta := PackedFloat64Array()
+	delta.resize(n)
+	for i in size: delta[free[i]] = solved[i]
+	# A nearly singular interior optimum may lie far outside the caps. Follow
+	# its descent direction only as far as the first feasible group boundary.
+	var step := 1.0
+	for group: PackedInt32Array in groups:
+		var aa := 0.0
+		var bb := 0.0
+		var cc := -1.0
+		for i: int in group:
+			aa += delta[i] * delta[i]
+			bb += 2.0 * y[i] * delta[i]
+			cc += y[i] * y[i]
+		if aa == 0.0: continue
+		var discriminant := bb * bb - 4.0 * aa * minf(0.0, cc)
+		if not is_finite(discriminant): return y
+		var root := M.sqrt_(maxf(0.0, discriminant))
+		var bound := -2.0 * minf(0.0, cc) / (bb + root) if bb > 0.0 else (-bb + root) / (2.0 * aa)
+		step = minf(step, maxf(0.0, bound))
+	for i in n: candidate[i] += step * delta[i]
+	var trial := _certificate(h, b, candidate, limits, groups, tolerance)
+	var current := _certificate(h, b, y, limits, groups, tolerance)
+	var objective := _objective(h, b, y)
+	var value := _objective(h, b, candidate)
+	var linear_scale := 0.0
+	for x: float in b: linear_scale = maxf(linear_scale, absf(x))
+	if is_finite(value) and trial.feasibility <= FEASIBILITY_TOLERANCE \
+		and value <= objective + 0.00000000000001 * (absf(objective) + linear_scale) \
+		and (value < objective or (trial.stationarity < current.stationarity and trial.duality_gap <= current.duality_gap)):
+		return candidate
+	return y
+
+
+## Rank-revealing symmetric elimination on the diagonally equilibrated PSD
+## face. Unresolved null coordinates have zero correction, not invented mass.
+## A linear term outside the range refuses via the ORIGINAL equation residual.
+static func _psd_correction(matrix: PackedFloat64Array, rhs: PackedFloat64Array, size: int,
+		tolerance: float) -> PackedFloat64Array:
+	var scale := PackedFloat64Array()
+	var permutation := PackedInt32Array()
+	var work := matrix.duplicate()
+	var reduced := rhs.duplicate()
+	for i in size:
+		if matrix[i * size + i] <= 0.0: return PackedFloat64Array()
+		scale.append(M.sqrt_(matrix[i * size + i]))
+		permutation.append(i)
+	for i in size:
+		reduced[i] /= scale[i]
+		for j in size: work[i * size + j] /= scale[i] * scale[j]
+	if not _finite(work) or not _finite(reduced): return PackedFloat64Array()
+	var rank := 0
+	for k in size:
+		var pivot := k
+		for i in range(k + 1, size):
+			if work[i * size + i] > work[pivot * size + pivot]: pivot = i
+		if pivot != k:
+			for i in size:
+				var swap := work[k * size + i]
+				work[k * size + i] = work[pivot * size + i]
+				work[pivot * size + i] = swap
+			for i in size:
+				var swap := work[i * size + k]
+				work[i * size + k] = work[i * size + pivot]
+				work[i * size + pivot] = swap
+			var r := reduced[k]
+			reduced[k] = reduced[pivot]
+			reduced[pivot] = r
+			var p := permutation[k]
+			permutation[k] = permutation[pivot]
+			permutation[pivot] = p
+		var diagonal := work[k * size + k]
+		if diagonal <= PSD_TOLERANCE: break
+		rank += 1
+		for i in range(k + 1, size):
+			var factor := work[i * size + k] / diagonal
+			reduced[i] -= factor * reduced[k]
+			for j in range(k + 1, size): work[i * size + j] -= factor * work[k * size + j]
+	var pivot_solution := PackedFloat64Array()
+	pivot_solution.resize(size)
+	for i in range(rank - 1, -1, -1):
+		var value := reduced[i]
+		for j in range(i + 1, rank): value -= work[i * size + j] * pivot_solution[j]
+		pivot_solution[i] = value / work[i * size + i]
+	var result := PackedFloat64Array()
+	result.resize(size)
+	for i in size: result[permutation[i]] = pivot_solution[i] / scale[permutation[i]]
+	if not _finite(result): return PackedFloat64Array()
+	var residual := GC.matrix_vector(matrix, result, size)
+	for i in size:
+		if not is_finite(residual[i]) or absf(residual[i] - rhs[i]) > tolerance:
+			return PackedFloat64Array()
+	return result
+
+
+## Minimize along the latest coupled sweep displacement, then project ONLY
+## optimization trial coordinates to their compact feasible sets. Publication
+## never substitutes this Euclidean projection for the mobility-metric solve.
+## Four bounded backtracks accept original-objective descent. At roundoff-level
+## ties, both stationarity and the dual gap must improve, not just one group.
+static func _extrapolate(h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
+		previous: PackedFloat64Array, limits: PackedFloat64Array, groups: Array, tolerance: float) -> PackedFloat64Array:
+	var n := y.size()
+	var direction := y.duplicate()
+	for i in n: direction[i] -= previous[i]
+	var hd := GC.matrix_vector(h, direction, n)
+	var gradient := GC.matrix_vector(h, y, n)
+	var slope := 0.0
+	var curvature := 0.0
+	for i in n:
+		gradient[i] += b[i]
+		slope += direction[i] * gradient[i]
+		curvature += direction[i] * hd[i]
+	if not is_finite(slope) or not is_finite(curvature) or slope >= 0.0 or curvature <= 0.0: return y
+	var alpha := minf(8.0, -slope / curvature)
+	if not is_finite(alpha) or alpha <= 0.0: return y
+	var best := y
+	var objective := _objective(h, b, y)
+	var certificate := _certificate(h, b, y, limits, groups, tolerance)
+	for attempt in 4:
+		var candidate := y.duplicate()
+		for i in n: candidate[i] += alpha * direction[i]
+		if not _finite(candidate):
+			alpha *= 0.5
+			continue
+		for group: PackedInt32Array in groups:
+			var length := 0.0
+			for i: int in group:
+				if limits[i] == 0.0: candidate[i] = 0.0
+				length = _hypot(length, candidate[i])
+			if length > 1.0:
+				for i: int in group: candidate[i] /= length
+		var value := _objective(h, b, candidate)
+		var trial := _certificate(h, b, candidate, limits, groups, tolerance)
+		if is_finite(value) and trial.feasibility <= FEASIBILITY_TOLERANCE \
+			and (value < objective or (value == objective and trial.stationarity < certificate.stationarity \
+				and trial.duality_gap < certificate.duality_gap)):
+			best = candidate
+			objective = value
+			certificate = trial
+		alpha *= 0.5
+	return best
 
 
 ## Unit-invariant congruence validation; no fictitious diagonal is introduced.

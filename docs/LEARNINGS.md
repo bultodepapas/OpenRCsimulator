@@ -348,6 +348,8 @@ A calibration gain shared by every scale changes total mass but cancels from the
 
 A rounded JSON serialization can hide a change to a parsed aerodynamic coefficient: the CL0 late-digit regression reproduces this collision. Hash the same byte buffer used for parsing, retain that identity across failed reloads, and never reread a mutable path when recording. Keep source-file identity separate from the derived-model checkpoint fingerprint; in-memory inputs have no original file bytes. Version the metadata and label legacy semantic-only checks explicitly. [Contract and verification](research/aircraft-validation/DATA-3/README.md).
 
+For a floating-point solver failure, preserve the original packed-array bytes as well as readable JSON. GP-12 found that Godot's JSON parser moved some sufficiently precise decimal values by several ULP, including an impulse cap by 61 ULP. That was enough to invalidate a claim of an exact near-tolerance reproduction. The regression now reads a hashed, object-disabled binary Variant payload; JSON remains supporting data. [Lossless QP evidence](research/ground-physics/GP-12/evidence/traction-acceleration/README.md).
+
 ## 2026-10-07 · VAL-7a — keep measured and ideal propeller power distinct
 
 Thrust and RPM cannot establish shaft power without torque or another independent shaft-power measurement. Static ideal-disc power is a model bound; figure of merit is distinct from propulsive efficiency. Calculate ratio uncertainty from original inputs: derived Ct and Cp share density and diameter errors. [Reduction equations and verification](research/validation/VAL-7a/README.md).

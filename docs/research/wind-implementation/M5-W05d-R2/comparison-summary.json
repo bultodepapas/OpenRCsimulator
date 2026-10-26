@@ -1,0 +1,151 @@
+{
+  "timing_qualification": "observational; other host work uncontrolled; no deadline or causal end-to-end speedup established",
+  "cases": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "case": "legacy-v4-steady",
+      "baseline_us_per_tick_median_of_six_batch_means": 601.9875,
+      "candidate_us_per_tick_median_of_six_batch_means": 732.4197916666667,
+      "observed_reduction_pct": -21.666943527343463,
+      "baseline_range_us": [
+        575.5104166666666,
+        695.1520833333333
+      ],
+      "candidate_range_us": [
+        635.025,
+        753.9020833333333
+      ],
+      "provider_queries_per_tick": 6,
+      "all_final_states_identical": true,
+      "state_sha256": "b6e00f11e3ef85fb90edb9a667a601b17b2ddf6bc7017c634fe7cf9a550718b0",
+      "run_medians_us": {
+        "pinned-a1": 658.0395833333333,
+        "pinned-b1": 696.2125,
+        "pinned-b2": 743.91875,
+        "pinned-a2": 578.2541666666667
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "case": "spatial-v5-modes-24",
+      "baseline_us_per_tick_median_of_six_batch_means": 4118.9625,
+      "candidate_us_per_tick_median_of_six_batch_means": 4843.362499999999,
+      "observed_reduction_pct": -17.586953025185338,
+      "baseline_range_us": [
+        3769.3125,
+        4729.55
+      ],
+      "candidate_range_us": [
+        4528.529166666666,
+        6534.89375
+      ],
+      "provider_queries_per_tick": 60,
+      "all_final_states_identical": true,
+      "state_sha256": "9fe7a5cb7de3c174411e7dc2d115f882aab09d494d79cd80b80600fb2c915856",
+      "run_medians_us": {
+        "pinned-a1": 4619.510416666667,
+        "pinned-b1": 4858.04375,
+        "pinned-b2": 4709.116666666667,
+        "pinned-a2": 3871.0666666666666
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "case": "legacy-v4-steady",
+      "baseline_us_per_tick_median_of_six_batch_means": 2225.273958333333,
+      "candidate_us_per_tick_median_of_six_batch_means": 2878.7052083333333,
+      "observed_reduction_pct": -29.364081107990913,
+      "baseline_range_us": [
+        2068.8854166666665,
+        2426.647916666667
+      ],
+      "candidate_range_us": [
+        2539.570833333333,
+        3041.56875
+      ],
+      "provider_queries_per_tick": 7,
+      "all_final_states_identical": true,
+      "state_sha256": "eb6f7caafa25b51df653298cee9a8c8dad2836827253153402c5133ec60af36f",
+      "run_medians_us": {
+        "pinned-a1": 2349.795833333333,
+        "pinned-b1": 2821.3729166666667,
+        "pinned-b2": 2936.0375,
+        "pinned-a2": 2077.99375
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "case": "spatial-v5-modes-24",
+      "baseline_us_per_tick_median_of_six_batch_means": 7821.5354166666675,
+      "candidate_us_per_tick_median_of_six_batch_means": 9277.03125,
+      "observed_reduction_pct": -18.608824940329004,
+      "baseline_range_us": [
+        7071.741666666667,
+        9442.504166666668
+      ],
+      "candidate_range_us": [
+        7265.664583333333,
+        23712.175
+      ],
+      "provider_queries_per_tick": 98,
+      "all_final_states_identical": true,
+      "state_sha256": "acaa0cf49ad7b8851fe84477111d24e65fba9a7c07915ec548dc92fa08d3368a",
+      "run_medians_us": {
+        "pinned-a1": 8544.885416666666,
+        "pinned-b1": 14264.472916666668,
+        "pinned-b2": 8875.160416666668,
+        "pinned-a2": 7195.33125
+      }
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "case": "legacy-v4-steady",
+      "baseline_us_per_tick_median_of_six_batch_means": 1029.415625,
+      "candidate_us_per_tick_median_of_six_batch_means": 1081.0437499999998,
+      "observed_reduction_pct": -5.0152847641106835,
+      "baseline_range_us": [
+        877.4916666666667,
+        1660.4854166666667
+      ],
+      "candidate_range_us": [
+        882.8416666666667,
+        7279.64375
+      ],
+      "provider_queries_per_tick": 6,
+      "all_final_states_identical": true,
+      "state_sha256": "5164cc5e3af63e3509a23acd07a48f3f168cab5072eebc694be72ddb8eb8db1d",
+      "run_medians_us": {
+        "pinned-a1": 1036.05,
+        "pinned-b1": 1143.9208333333333,
+        "pinned-b2": 894.5208333333334,
+        "pinned-a2": 895.6645833333333
+      }
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "case": "spatial-v5-modes-24",
+      "baseline_us_per_tick_median_of_six_batch_means": 4456.055208333333,
+      "candidate_us_per_tick_median_of_six_batch_means": 4305.7,
+      "observed_reduction_pct": 3.374177412617152,
+      "baseline_range_us": [
+        4134.608333333334,
+        5981.735416666666
+      ],
+      "candidate_range_us": [
+        3963.327083333333,
+        4682.75
+      ],
+      "provider_queries_per_tick": 60,
+      "all_final_states_identical": true,
+      "state_sha256": "24955fb825a34fee79b4b431f8cb113a84dcf671390e7bb53789936de946e512",
+      "run_medians_us": {
+        "pinned-a1": 4806.05,
+        "pinned-b1": 4613.710416666667,
+        "pinned-b2": 4059.7291666666665,
+        "pinned-a2": 4156.679166666667
+      }
+    }
+  ],
+  "total_timed_ticks": 34560,
+  "total_warmup_ticks": 17280
+}

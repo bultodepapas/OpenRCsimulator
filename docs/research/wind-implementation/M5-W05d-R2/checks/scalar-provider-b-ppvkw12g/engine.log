@@ -1,0 +1,12 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+measured 8 modes / 1 stations / median 19.746 µs per accepted tick (19.7458 µs per query)
+measured 8 modes / 8 stations / median 147.204 µs per accepted tick (18.4005 µs per query)
+measured 8 modes / 32 stations / median 559.081 µs per accepted tick (17.4713 µs per query)
+measured 24 modes / 1 stations / median 33.404 µs per accepted tick (33.4042 µs per query)
+measured 24 modes / 8 stations / median 259.452 µs per accepted tick (32.4315 µs per query)
+measured 24 modes / 32 stations / median 1002.863 µs per accepted tick (31.3395 µs per query)
+measured 64 modes / 1 stations / median 73.119 µs per accepted tick (73.1188 µs per query)
+measured 64 modes / 8 stations / median 549.665 µs per accepted tick (68.7081 µs per query)
+measured 64 modes / 32 stations / median 2114.813 µs per accepted tick (66.0879 µs per query)
+wrote C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-optimization-r2/scalar-provider-b.json

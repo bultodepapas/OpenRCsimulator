@@ -664,7 +664,7 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_favorite_button = _button("Add favorite", "", "FavoriteBuild")
 	_favorite_button.pressed.connect(_toggle_favorite)
 	variant_actions.add_child(_favorite_button)
-	_copy_profile_button = _button("Copy appearance and smoke…", "", "CopyBuildProfile")
+	_copy_profile_button = _button("Review compatible settings", "", "CopyBuildProfile")
 	_copy_profile_button.pressed.connect(_review_profile_transfer)
 	variant_actions.add_child(_copy_profile_button)
 	content.add_child(variant_actions)
@@ -2518,14 +2518,17 @@ func _apply_profile_transfer() -> void:
 	_transfer_snapshot.clear()
 	_close_library()
 	set_presentation(accepted)
-	set_note("Compatible appearance and smoke settings copied. Undo restores the previous presentation.")
+	set_note("Compatible presentation settings copied. Undo restores the previous presentation.")
 
 
 func _transfer_setting_label(row: Dictionary, source_bindings: Dictionary) -> String:
 	var fields := {paint = "paint_slots", markings = "marking_slots", smoke = "smoke_slots"}
 	var title := ""
-	for slot: Dictionary in source_bindings.get(fields.get(row.domain, ""), []):
-		if slot.id == row.slot: title = tr(str(slot.label))
+	if row.domain == "lighting":
+		title = tr("RGB profile")
+	else:
+		for slot: Dictionary in source_bindings.get(fields.get(row.domain, ""), []):
+			if slot.id == row.slot: title = tr(str(slot.label))
 	var reasons := {
 		compatible = "Compatible", source_slot_missing = "Source setting is unavailable.",
 		target_slot_missing = "No matching region or emitter on this aircraft.",

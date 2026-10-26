@@ -1,0 +1,18 @@
+[
+  {
+    "ProcessId": 54764,
+    "CommandLine": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe --headless --path C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app --audio-driver Dummy --script res://tests/test_aircraft_catalog.gd"
+  },
+  {
+    "ProcessId": 564,
+    "CommandLine": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite\\.tools\\Godot_v4.8-beta1_win64.exe --headless --path C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app --audio-driver Dummy --script res://tests/test_aircraft_catalog.gd"
+  },
+  {
+    "ProcessId": 47992,
+    "CommandLine": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe --headless --path C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app --audio-driver Dummy --check-only --script res://physics/aircraft_ground_stage.gd"
+  },
+  {
+    "ProcessId": 30876,
+    "CommandLine": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite\\.tools\\Godot_v4.8-beta1_win64.exe --headless --path C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app --audio-driver Dummy --check-only --script res://physics/aircraft_ground_stage.gd"
+  }
+]

@@ -1,6 +1,6 @@
 # Night flight and programmable RGB lighting masterplan
 
-**Status: core renderer, profiles, Workshop sequences and creator layout contract implemented; asset art and qualification work remains.** Investigated 2026-10-25 against working-tree base `d7d49b1574f968edab533f8fc34f5a6e9e4920d3`; the user subsequently approved implementation. Runtime source takes precedence over proposals below. [Implementation and qualification record](research/night-flight-lighting/implementation.md) separates delivered behavior from remaining authoring, performance and pilot gates. Unrelated graphics and simulation work remains outside this subtrack.
+**Status: core renderer, profiles, Workshop sequences, creator layouts, scene allocation and Ugly Stik film treatment implemented; fleet, motion, performance and pilot qualification remains.** Investigated 2026-10-25 against working-tree base `d7d49b1574f968edab533f8fc34f5a6e9e4920d3`; the user subsequently approved implementation. Runtime source takes precedence over proposals below. [Implementation and qualification record](research/night-flight-lighting/implementation.md) separates delivered behavior from remaining authoring, performance and pilot gates. Unrelated graphics and simulation work remains outside this subtrack.
 
 **Owner:** Field World, aircraft-lighting subtrack **FW-RGB-00…16**, coordinated with AS/model authors, AE/Workshop, UI/input, CAM, VQ/PT, SM and CR. Gate **FW-N** remains the pilot acceptance gate; these proposals do not close it. [Ownership registry](README.md#tracks-plans-and-step-ids), [current aircraft lighting](AIRCRAFT-LIGHTING.md), [Workshop](AIRCRAFT-WORKSHOP.md), [field world](FIELD-WORLD-PLAN.md), [aircraft contract](AIRCRAFT_CONTRACT.md).
 
@@ -562,6 +562,8 @@ Test duplicate keys, missing fields, future fields/versions, renamed/removed IDs
 
 All numbers here are **proposed incremental budgets**, not measurements or claims about current hardware. Fix the baseline workload and target GPU before accepting them. One active aircraft is the first target; repeat with the configured companion maximum and existing field/smoke/crash workload before calling the system scalable.
 
+The implemented first release is deliberately below the proposed ceilings below: user-facing Low/Standard/High grant **0/2/4 decorative OmniLights and 0/2/4 VFX anchor buffers per World3D**, with at most two of either per rig. One granted anchor allocates 32 sparks or 63 ribbon segments; denied/idle anchors allocate no MultiMesh instance buffer. CPU residual records remain bounded separately. **High** is the implemented label for the enhanced quality choice. These enforced counts supersede the larger initial allocator proposal for current operation; the unmeasured time/memory targets remain acceptance goals. See the [current allocation contract](AIRCRAFT-LIGHTING.md#scene-grants-and-projected-effects).
+
 | Tier | Intended appearance | Incremental geometry/draw target | Decorative real lights | Show effects |
 | --- | --- | --- | --- | --- |
 | Low | Steady nav, simplified colored strips, optional existing landing light | ≤4 additional surfaces, ≤2k strip triangles | 0; retain qualified landing beam | Off; static accents only |
@@ -619,7 +621,7 @@ Evaluate Reduced flashes and Show VFX Off, grayscale and common color-vision sim
 
 ## 12. Ordered implementation packages
 
-Each package is independently reviewable. Implementation was subsequently authorized. The table retains the full acceptance scope; it is not a claim that every gate is closed. The [implementation record](research/night-flight-lighting/implementation.md) owns completed checks and remaining qualification. Core profile validation, rig lifecycle, patterns, spill, Workshop editing, persistence, reactions and bounded VFX are implemented; the creator mount/path contract is implemented with empty stock overrides, while authored skin assets, fleet placement art and broad performance/pilot acceptance remain open.
+Each package is independently reviewable. Implementation was subsequently authorized. The table retains the full acceptance scope; it is not a claim that every gate is closed. The [implementation record](research/night-flight-lighting/implementation.md) owns completed checks and remaining qualification. Core profile validation, rig lifecycle, patterns, spill, Workshop editing, persistence, reactions and bounded VFX are implemented. Creator mount/path overrides retain the fitted stock baseline; the eligible Ugly Stik film skin and six-preset native 1080p comparisons are implemented and checked on three renderers. Fleet placement, motion, whole-scene performance and pilot acceptance remain open.
 
 | ID | Work and dependencies | Proof / exit condition |
 | --- | --- | --- |
@@ -643,7 +645,7 @@ Each package is independently reviewable. Implementation was subsequently author
 
 Critical path: 00→01→02→03→04→05→06→08→09→12→13→14→15→16. Internal skin (07) and reactive/VFX work (10–11) follow stable bindings/clocks and may proceed independently with separate file ownership. Deliver Classic/Neon and save/load before Festival complexity. Do not block a useful baseline on a custom particle renderer or a new aircraft asset.
 
-The initial schema/rig and animated-strip slices are implemented. Workshop now reports actual supported/skipped zones and effects, including Original/Draft and pending-edit behavior; the FW-RGB-12 preset art pass remains open. Continue in independently checked packages: author and qualify fleet layouts using the implemented creator contract, then qualify skin treatments on an eligible asset and whole-scene performance. Do not treat delivered code as closure of the capture, hardware or pilot gates.
+The schema/rig, animated strips, preferences, scene grants and eligible Stik skin treatment are implemented. Workshop reports actual supported/skipped zones and effects, including Original/Draft and pending-edit behavior. Six-preset and film comparison captures pass on Compatibility, Forward+ and Mobile at 1080p; fleet placement, moving-flight art, whole-scene performance and pilot review remain open. Keep the automatic fitted baseline where it is accurate and author overrides only where inspection shows a need. Do not treat delivered code as closure of the hardware or pilot gates.
 
 ## 13. Risks, decisions requiring evidence and handoff
 
@@ -664,6 +666,6 @@ The initial schema/rig and animated-strip slices are implemented. Workshop now r
 | Lighting changes accidentally alter physics | Presentation-only dependency direction, unchanged trace/replay hashes and recorder behavior. |
 | Impressive screenshots conceal poor pilot control | Blinded moving-flight readability gate; Festival separate from realistic defaults. |
 
-Open measurements are renderer-specific glow tuning, Compatibility particle fidelity/limits on the exact beta, practical spill cost alongside field lights, internal mask appearance on an eligible existing aircraft, and independent pilot preference. The Jase Dussia reference is confirmed by the user; exact light hardware, program and aircraft configuration for any chosen performance still require their own evidence before a replica claim.
+Open measurements are optional renderer-specific glow tuning, moving-effect fidelity on the exact beta, practical spill cost alongside field lights, fleet appearance and independent pilot preference. The eligible Stik film mask now has actual aircraft day/night and upper/lower comparison receipts; those do not establish foam transmission or fleet-wide appearance. The Jase Dussia reference is confirmed by the user; exact light hardware, program and aircraft configuration for any chosen performance still require their own evidence before a replica claim.
 
 The engineering handoff consists of this plan, its dated source ledger, the current contract links and the ordered evidence gates. The [implementation record](research/night-flight-lighting/implementation.md) identifies delivered code and checked behavior; unfulfilled proposals and acceptance gates in this plan remain open.

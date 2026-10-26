@@ -29,7 +29,7 @@ func _run() -> void:
 	if show_slots.size() < 2:
 		_finish()
 		return
-	var profile: Dictionary = Presentation.defaults(bindings)
+	var profile: Dictionary = Presentation.defaults(bindings, 2)
 	var left := _smoke_entry(str(show_slots[0].id), "#F53A9BFF")
 	left.density = 1.35
 	left.emission_rate_hz = 78.0
@@ -152,8 +152,9 @@ func _run() -> void:
 	page.call("change", "emission_rate_hz", 241.0)
 	_check("strict validation refuses rates above the v2 limit", page.get("_profile") == accepted_before_invalid)
 
-	var legacy: Dictionary = checked.profile.duplicate(true)
-	legacy.version = Presentation.LEGACY_VERSION
+	# Construct the actual historical envelope; current defaults also contain RGB/audio.
+	var legacy: Dictionary = Presentation.defaults(bindings, Presentation.LEGACY_VERSION)
+	legacy.smoke = checked.profile.smoke.duplicate(true)
 	for entry: Dictionary in legacy.smoke:
 		for key: String in Presentation.smoke_v2_defaults(): entry.erase(key)
 	var legacy_checked: Dictionary = Presentation.validate(legacy, bindings)
@@ -177,7 +178,7 @@ func _run() -> void:
 			and not page.get("_fields").has("amount"))
 		page.call("change", "density", 1.1)
 		_check("first explicit smoke edit proposes v2 and preserves the original v1 snapshot",
-			int(page.get("_profile").version) == Presentation.VERSION
+			int(page.get("_profile").version) == 2
 			and is_equal_approx(float(page.call("current_entry").density), 1.1)
 			and untouched_snapshot == legacy_checked.profile)
 		_check("v2 promotion hides the read-only legacy amount control",
@@ -187,7 +188,7 @@ func _run() -> void:
 		page.call("apply_preset", 1)
 		var cleared_v1_note := str(page.get("_note").text)
 		_check("clearing populated v1 smoke describes the empty v2 draft accurately",
-			int(page.get("_profile").version) == Presentation.VERSION
+			int(page.get("_profile").version) == 2
 			and page.get("_profile").smoke.is_empty()
 			and cleared_v1_note.contains("0 enabled smoke outlet(s)")
 			and cleared_v1_note.contains("saved v1 revision is unchanged")
@@ -208,7 +209,7 @@ func _run() -> void:
 			page.call("change", "enabled", true)
 			var enabled_v1_note := str(page.get("_note").text)
 			_check("enabling an outlet from empty v1 reports the enabled v2 draft",
-				int(page.get("_profile").version) == Presentation.VERSION
+				int(page.get("_profile").version) == 2
 				and _entry_for(page.get("_profile"), str(show_slots[0].id)).enabled
 				and enabled_v1_note.contains("1 enabled smoke outlet(s)")
 				and enabled_v1_note.contains("saved v1 revision is unchanged")

@@ -1,6 +1,6 @@
 # Wind, gusts and turbulence
 
-2026-10-25 · Revision 8 · Step prefix: **M5-W**.
+2026-10-26 · Revision 9 · Step prefix: **M5-W**.
 
 **Status:** Legacy uniform wind, repeating cosine gusts and seeded temporal OU turbulence remain supported. Weather v3 adds custom field-level atmosphere; v4 adds the dry reference altitude column. Opt-in v5 adds a flat-site spatial field, resolved smooth gusts, divergence-free finite-mode perturbations and optional balanced kinematic thermals, consumed through local aerodynamic/propulsion stages. See [atmosphere](ATMOSPHERE-PLAN.md), the [advanced masterplan](advanced-wind-atmospheric-physics-masterplan.md) and [spatial implementation, equations and evidence](research/wind-implementation/M5-W05d-R1/README.md). Owner flight gates W-A/W-B, physical/spectral acceptance, terrain and shared companion qualification remain open.
 
@@ -70,6 +70,7 @@ Weather metadata accompanies recorded rows. v4/v5 readers independently check wi
 | M5-W05c-R2 | Complete stage Air receipt, local propulsion inflow and matched wash/transport consumers; actual powered-session stages and refusal rollback. [Evidence](research/wind-implementation/M5-W05c-R2/README.md) | Implemented foundation; persistence and starts follow in W05d; physical qualification open |
 | M5-W05d-R1 | Explicit v5 spatial scenarios, complete stage law, starts, checkpoint/trace identity, local windsock and native UI. [Evidence and limits](research/wind-implementation/M5-W05d-R1/README.md) | Implemented experimental path; physical/handling/performance qualification remains distinct |
 | M5-W08a-R1 | Finite drifting streamfunction thermals with compensated sink, shared field identity and replay. [Equations and evidence](research/wind-implementation/M5-W05d-R1/README.md#balanced-thermal-circulation) | Implemented kinematic closure; heating/meteorological calibration remains open |
+| M5-W05d-R2 | Prepare immutable profile/gust values at construction and accumulate turbulence in float64 locals. [Parity, profiling and performance](research/wind-implementation/M5-W05d-R2/README.md) | Same field laws and sampling workload; performance qualification remains open |
 | M5-ATM-4-R1 | Reconcile this guide with the implemented v4 dry altitude column and route-specific defaults. | Documentation corrected |
 | M5-W06a/b | Compare a Dryden reference; adopt another spectral backend only if evidence justifies it. | Conditional |
 | M5-W07 | Smoke/cloud/vegetation/audio wind consumers. | Per-consumer; physical/GPU proof required |
@@ -78,6 +79,10 @@ Weather metadata accompanies recorded rows. v4/v5 readers independently check wi
 ## Open limits and sources
 
 The first measured full-session spatial costs exceed the 240 Hz budget for the Extra 300S on the recorded development host, including at eight modes. Packed float64 mode storage preserves exact samples and reduces cost, but does not close the performance gate. Keep the existing default; spatial presets remain opt-in experiments. [Measurements, workload and host limits](research/wind-implementation/M5-W05d-R1/README.md#performance).
+
+The subsequent [M5-W05d-R2 optimization](research/wind-implementation/M5-W05d-R2/README.md) moves immutable profile calculations and ordered gust values to construction, skips empty-gust work, and avoids packed-array writes inside the turbulence mode loop. It retains every sampling point, mode, seed, timestep and arithmetic order. No mutable query/time cache or aircraft-specific weather adjustment is introduced.
+
+The newly added Skywalker X8 variants currently fail v5 airborne start because spatial station geometry and Aero continuation still require a horizontal tail. R2 reproduces both failures with the original field and identical remaining solver sources. Tailless spatial geometry/loading requires a separate capability-aware change; no artificial tail should be added to valid X8 data. This remains an open v5 fleet-admission gate.
 
 V5 shear is relative to an explicitly flat datum, not arbitrary physical terrain. The finite-mode field is not a Dryden/von Kármán spectrum; its nominal turbulence input is not measured local RMS. Kinematic thermal circulation does not predict solar heating, atmospheric stability or clouds. Matched wash does not establish spatial wake evolution or strong-shear validity. Terrain/obstacle flow, live mean-weather transitions, spectral calibration and shared companion qualification remain open. Shader noise and cloud drift are visual unless tied to physical wind. The [physics notebook](research/wind-physics-primary-sources.md), [runtime audit](research/wind-godot-integration.md) and [twelve investigations](research/wind-investigations/README.md) retain derivations, statistical limits and future consumer notes.
 

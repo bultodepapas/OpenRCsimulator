@@ -1,0 +1,22 @@
+[
+  {
+    "run": "exact",
+    "complete": true,
+    "solver_changed": false,
+    "rows": 61,
+    "columns": 62,
+    "all_csv_values_identical": true,
+    "baseline_solver_sha256": "cba4552d2749e19ace9483de73a6114adb7beb15ce7e70922b05a2a02fe27904",
+    "current_solver_sha256": "cba4552d2749e19ace9483de73a6114adb7beb15ce7e70922b05a2a02fe27904"
+  },
+  {
+    "run": "candidate",
+    "complete": true,
+    "solver_changed": true,
+    "rows": 61,
+    "columns": 62,
+    "all_csv_values_identical": true,
+    "baseline_solver_sha256": "cba4552d2749e19ace9483de73a6114adb7beb15ce7e70922b05a2a02fe27904",
+    "current_solver_sha256": "1e035f01e7332979c6c25187cfe99e5be91dea6346f0ec3fc7ca70800a1b1363"
+  }
+]

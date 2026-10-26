@@ -23,8 +23,114 @@ func _initialize() -> void:
 	_capacity()
 	_validation()
 	_common_wheel_energy()
+	_actual_braking_regression()
+	_psd_face_regressions()
 	print("GP-12 traction: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
+
+
+func _psd_face_regressions() -> void:
+	for units: float in [1.0, 0.001, 1000.0]:
+		var matrix := _p([units * units, units, units, 1.0])
+		var rhs := _p([2.0 * units, 2.0])
+		var before := var_to_bytes([matrix, rhs])
+		var correction := T._psd_correction(matrix, rhs, 2, 1e-10)
+		_check("rank-deficient consistent correction respects original equations", correction.size() == 2
+			and _distance(G.matrix_vector(matrix, correction, 2), rhs) <= 1e-10)
+		_check("rank correction does not edit original mobility", before == var_to_bytes([matrix, rhs]))
+		rhs[1] += 0.01
+		_check("out-of-range linear term is not dropped as a fictitious zero mode", T._psd_correction(matrix, rhs, 2, 1e-10).is_empty())
+	var dense := _p([3.0, 0.2, 0.4, 0.2, 1.0, -0.3, 0.4, -0.3, 2.0])
+	var desired := _p([0.3, -0.7, 0.2])
+	_check("full-rank face correction retains pivoted coordinate mapping", _distance(T._psd_correction(dense,
+		G.matrix_vector(dense, desired, 3), 3, 1e-12), desired) < 1e-12)
+	for fixture in 8:
+		var n := 6
+		var factor := PackedFloat64Array()
+		factor.resize(n * n)
+		for i in n:
+			for j in n: factor[i * n + j] = sin(float((i + 1) * (j + 2) + fixture)) + (0.1 if i == j else 0.0)
+		var a := PackedFloat64Array()
+		a.resize(n * n)
+		for i in n:
+			for j in n:
+				for k in n: a[i * n + j] += factor[k * n + i] * factor[k * n + j]
+				if i == j: a[i * n + j] += 0.001
+		var y := PackedFloat64Array()
+		var lambda := PackedFloat64Array()
+		var groups: Array = []
+		for group in 3:
+			var active: bool = (fixture + group) % 2 == 0
+			var radius := 1.0 if active else 0.3
+			var angle: float = 0.2 * fixture + 0.7 * group
+			y.append(radius * cos(angle))
+			y.append(radius * sin(angle))
+			lambda.append(0.15 if active else 0.0)
+			groups.append(PackedInt32Array([2 * group, 2 * group + 1]))
+		var v := _neg(G.matrix_vector(a, y, n))
+		for i in n: v[i] -= lambda[i / 2] * y[i]
+		var limits := _p([1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+		var solved := T.solve(a, v, limits, groups)
+		_verify("independent prescribed KKT dense disks %d" % fixture, a, v, limits, groups, solved)
+		if solved.ok: _check("unique dense solution matches prescribed constrained optimum", _distance(solved.impulse, y) < 1e-6)
+
+
+func _actual_braking_regression() -> void:
+	var metadata: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/ground_traction_braking.json"))
+	_check("actual braking regression metadata loads", metadata is Dictionary and metadata.get("format") == "openrc-ground-traction-regression v1")
+	if not metadata is Dictionary: return
+	# The readable JSON is not the exact numerical source: Godot JSON float
+	# decoding can move values by several ULP. Preserve the captured float64s.
+	var path := "res://tests/fixtures/ground_traction_braking.bin"
+	_check("lossless captured input retains original source hash", FileAccess.get_sha256(path) == metadata.original_binary_sha256)
+	var file := FileAccess.open(path, FileAccess.READ)
+	_check("lossless input fixture opens", file != null)
+	if file == null: return
+	var raw: Variant = bytes_to_var(file.get_buffer(file.get_length()))
+	file.close()
+	_check("lossless input fixture is bounded data", raw is Dictionary)
+	if not raw is Dictionary: return
+	var a: PackedFloat64Array = raw.mobility
+	var v: PackedFloat64Array = raw.free_slip
+	var d: PackedFloat64Array = raw.limits
+	var groups: Array = raw.groups
+	var before := var_to_bytes([a, v, d, groups])
+	var result := T.solve(a, v, d, groups)
+	_verify("actual ill-conditioned coupled braking", a, v, d, groups, result)
+	_check("bounded feasible acceleration resolves the formerly exhausted solve", result.ok and result.iterations <= 64
+		and result.get("accepted_accelerations", 0) > 0, str(result))
+	_check("regression inputs remain byte-identical", before == var_to_bytes([a, v, d, groups]))
+	if not result.ok: return
+	var repeated := T.solve(a, v, d, groups)
+	_check("accelerated solve is reproducible", var_to_bytes(result) == var_to_bytes(repeated))
+	# Change row units by 1e3 in torque rows, with the matching impulse units.
+	# This must not change physical optimization; normalize by the same D.
+	var units := PackedFloat64Array()
+	units.resize(v.size())
+	units.fill(1.0)
+	for group: PackedInt32Array in groups:
+		if group.size() == 1: units[group[0]] = 1000.0
+	var changed_a := a.duplicate()
+	var changed_v := v.duplicate()
+	var changed_d := d.duplicate()
+	for i in v.size():
+		changed_v[i] *= units[i]
+		changed_d[i] /= units[i]
+		for j in v.size(): changed_a[i * v.size() + j] *= units[i] * units[j]
+	var changed := T.solve(changed_a, changed_v, changed_d, groups)
+	_verify("same braking problem in rescaled row units", changed_a, changed_v, changed_d, groups, changed)
+	if changed.ok:
+		var physical_post: PackedFloat64Array = changed.post_slip.duplicate()
+		for i in units.size(): physical_post[i] /= units[i]
+		# PSD rank is eight for eleven rows: impulses may differ in nullspace.
+		_check("row units preserve post velocity and physical work", _distance(physical_post, result.post_slip) < 1e-7
+			and absf(changed.dissipation - result.dissipation) < 1e-12)
+	var backwards := groups.duplicate()
+	backwards.reverse()
+	var reverse_result := T.solve(a, v, d, backwards)
+	_verify("same braking problem in reversed sweep order", a, v, d, backwards, reverse_result)
+	if reverse_result.ok:
+		_check("different optimization order preserves dissipation", absf(reverse_result.dissipation - result.dissipation) < 1e-11)
 
 
 func _p(values: Array) -> PackedFloat64Array:
