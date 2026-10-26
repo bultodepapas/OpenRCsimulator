@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "581f4e53-9ca9-432f-9072-db9297fb6dfc",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-p0-propwash/candidate-snapshot/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_spatial_wash.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T00:19:22.862227+00:00",
+  "label": "test_spatial_wash",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-propwash\\isolated-checks\\test_spatial_wash-9yt3b_2a\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-propwash\\isolated-checks\\test_spatial_wash-9yt3b_2a\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.516,
+  "log_bytes": 2632,
+  "log_sha256": "9d443dc43b623273609480466a02ea747bf77993f51edeb4a6983972fa76d0b7"
+}

@@ -191,6 +191,9 @@ func set_field(field: Dictionary) -> bool:
 
 func setup_weather(settings: Variant) -> bool:
  var result: Dictionary=WeatherField.build(settings)
+ if result.ok and result.field.is_spatial():
+  weather_error="Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset."
+  return false
  if result.ok and result.field.has_vertical_atmosphere():
   weather_error="Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions."
   return false

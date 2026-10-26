@@ -365,18 +365,42 @@ static func _default_field_light_exclusions() -> Array[Dictionary]:
 
 
 ## Read-only consumer of committed wind samples. No flight solver, RNG or input changes.
-static func advance_wind(field_node: Node3D, time_s: float, wind_ned: Array) -> void:
+static func advance_wind(field_node: Node3D, time_s: float, wind_ned: Array, sampler: Callable = Callable()) -> void:
 	if field_node == null:
 		return
+	field_node.set_meta("wind_world_sampler", sampler)
 	for cue: Node3D in field_node.get_meta("wind_cues", []):
-		Windsock.advance(cue, time_s, wind_ned)
+		var local: Array = _cue_wind(field_node, cue, time_s, wind_ned)
+		if local.size() == 3:
+			Windsock.advance(cue, time_s, local)
 
 
-static func reset_wind(field_node: Node3D, time_s: float, wind_ned: Array) -> void:
+static func reset_wind(field_node: Node3D, time_s: float, wind_ned: Array, sampler: Callable = Callable()) -> void:
 	if field_node == null:
 		return
+	field_node.set_meta("wind_world_sampler", sampler)
 	for cue: Node3D in field_node.get_meta("wind_cues", []):
-		Windsock.reset(cue, time_s, wind_ned)
+		var local: Array = _cue_wind(field_node, cue, time_s, wind_ned)
+		if local.size() == 3:
+			Windsock.reset(cue, time_s, local)
+
+
+## Fixed observation point at the pole head; cloth motion does not move the physical sample.
+## Conversion happens only here at the render boundary. Invalid observations leave the cue unchanged.
+static func _cue_wind(field_node: Node3D, cue: Node3D, time_s: float, fallback: Array) -> Array:
+	var sampler: Variant = field_node.get_meta("wind_world_sampler", Callable())
+	if not sampler is Callable or not sampler.is_valid():
+		return fallback
+	var dimensions: Dictionary = cue.get_meta("windsock_dimensions", {})
+	var height: float = float(dimensions.get("height_m", 0.0))
+	var position: Vector3 = cue.global_transform * Vector3(0.0, height, 0.0)
+	var result: Variant = sampler.call(PackedFloat64Array([-position.z, position.x, -position.y]), time_s)
+	if not result is PackedFloat64Array or result.size() != 3:
+		return []
+	for value: float in result:
+		if not is_finite(value):
+			return []
+	return Array(result)
 
 
 ## SC-HUM-03/04: advance the people's head state with the simulation tick. `aircraft_ned` is the
@@ -411,7 +435,9 @@ static func update_wind(field_node: Node3D, time_s: float, wind: Vector3) -> voi
 		return
 	var wind_ned: Array = [-wind.z, wind.x, -wind.y]
 	for cue: Node3D in field_node.get_meta("wind_cues", []):
-		Windsock.update(cue, time_s, wind_ned)
+		var local: Array = _cue_wind(field_node, cue, time_s, wind_ned)
+		if local.size() == 3:
+			Windsock.update(cue, time_s, local)
 
 
 ## Prepare shadow geometry before a checkpoint can commit physical state. Materials are retained by this field.

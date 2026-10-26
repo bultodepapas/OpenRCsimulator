@@ -5,6 +5,7 @@ const SimEnvironment := preload("res://sim/environment.gd")
 const Plant := preload("res://physics/multirotor/plant.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const M := preload("res://physics/math3d.gd")
+const FieldBuilder := preload("res://render/field.gd")
 
 class PositionWeather extends "res://physics/wind_field.gd":
 	var sampled_positions: Array[PackedFloat64Array] = []
@@ -38,6 +39,7 @@ func _initialize() -> void:
 func _run() -> void:
 	_helicopter_uses_candidate_and_endpoint_positions()
 	_multirotor_uses_stage_body_position()
+	_local_visual_cue()
 	print("world wind consumers: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -95,6 +97,29 @@ func _helicopter_uses_candidate_and_endpoint_positions() -> void:
 		and _same(weather.sampled_positions[0], checkpoint_position),
 		"samples=%s candidate=%s" % [str(weather.sampled_positions), str(checkpoint_position)])
 	session.free()
+
+
+func _local_visual_cue() -> void:
+	var field := Node3D.new()
+	root.add_child(field)
+	field.position = Vector3(10.0, 2.0, -20.0)
+	var cue := Node3D.new()
+	field.add_child(cue)
+	cue.position = Vector3(3.0, 0.0, -4.0)
+	cue.set_meta("windsock_dimensions", {height_m = 5.0})
+	var observations: Array = []
+	var sampler := func(point: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+		observations.append([point.duplicate(), time_s])
+		return PackedFloat64Array([point[0] * 0.1, point[1] * 0.1, point[2] * 0.1])
+	field.set_meta("wind_world_sampler", sampler)
+	var actual := FieldBuilder._cue_wind(field, cue, 3.5, [99.0, 99.0, 99.0])
+	_check("cue samples its own fixed pole head in NED", observations.size() == 1 and observations[0][0] == PackedFloat64Array([24.0, 13.0, -7.0]) and observations[0][1] == 3.5)
+	_check("cue receives its local wind instead of aircraft fallback", actual == [2.4, 1.3, -0.7] or (absf(actual[0] - 2.4) < 1e-14 and absf(actual[1] - 1.3) < 1e-14 and absf(actual[2] + 0.7) < 1e-14))
+	field.set_meta("wind_world_sampler", func(_p: PackedFloat64Array, _t: float) -> PackedFloat64Array: return PackedFloat64Array([NAN, 0.0, 0.0]))
+	_check("invalid local wind does not become calm or aircraft wind", FieldBuilder._cue_wind(field, cue, 3.5, [99.0, 99.0, 99.0]).is_empty())
+	field.set_meta("wind_world_sampler", Callable())
+	_check("legacy visual route retains exact uniform fallback", FieldBuilder._cue_wind(field, cue, 3.5, [1.25, -3.5, 0.0]) == [1.25, -3.5, 0.0])
+	field.free()
 
 
 func _multirotor_uses_stage_body_position() -> void:

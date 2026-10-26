@@ -91,13 +91,18 @@ static func _components_from_air(state: PackedFloat64Array, model: Dictionary, d
 	if air.has("spatial_air_law"):
 		if not WindFlow.matches_stage(air, state, rho):
 			return _invalid_components(air, "invalid or stale spatial stage air")
-		var spatial := Aero.ambient_spatial_loads(state, air, d, model, rho, air.aero_station_delta_body,
-			downwash_cl, ground_up)
+		var spatial: Dictionary
+		if air.get("spatial_aero_law", "") == Aero.SPATIAL_CONTINUATION_LAW:
+			spatial = Aero.ambient_spatial_continuation_loads(state, air, d, model, rho,
+				air.aero_station_delta_body, downwash_cl, ground_up)
+		else:
+			spatial = Aero.ambient_spatial_loads(state, air, d, model, rho,
+				air.aero_station_delta_body, downwash_cl, ground_up)
 		if not spatial.ok:
 			return _invalid_components(air, str(spatial.errors))
 		aero_loads = spatial.loads
 	else:
-		for key: String in ["aero_station_delta_body", "ambient_delta_body_at", "wake_source_delta_body", "propulsion_air_body"]:
+		for key: String in ["aero_station_delta_body", "ambient_delta_body_at", "wake_source_delta_body", "propulsion_air_body", "spatial_aero_law"]:
 			if air.has(key):
 				return _invalid_components(air, "spatial ambient fields require the complete stage contract")
 		aero_loads = Aero.loads(state, air, d, model, rho, downwash_cl, ground_up)

@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b2fb3659-a43a-4382-8954-1f5ebcd889bb",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-p0-propwash/candidate-snapshot/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_shaft_coupled.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T00:24:29.588179+00:00",
+  "label": "test_shaft_coupled",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-propwash\\isolated-checks\\test_shaft_coupled-ctqh7jkk\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-propwash\\isolated-checks\\test_shaft_coupled-ctqh7jkk\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.75,
+  "log_bytes": 12997,
+  "log_sha256": "c0992804a0da6c39148643021bcac4bcfede646d1283484792be7af684337d90"
+}

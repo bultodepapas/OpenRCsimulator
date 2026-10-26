@@ -1,0 +1,16 @@
+{
+  "scope": "Isolated evidence-only Git fixture with root and local attributes; not a fresh full-app qualification",
+  "local_attributes_sha256": "7f8fb6efedf887dd5d568db08cfe28c1a76d304babae1f85cc930afbc4f85954",
+  "clones": [
+    {
+      "core.autocrlf": "true",
+      "files": 92,
+      "all_bytes_equal": true
+    },
+    {
+      "core.autocrlf": "false",
+      "files": 92,
+      "all_bytes_equal": true
+    }
+  ]
+}

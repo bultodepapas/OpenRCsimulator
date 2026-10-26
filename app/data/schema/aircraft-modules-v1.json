@@ -550,5 +550,44 @@
       "path": "propeller.slipstream",
       "law": "propeller.slipstream.v1"
     }
+  ],
+  "optional_modules": [
+    {
+      "path": "ground",
+      "format": "openrc-aircraft-ground v1",
+      "selector": "law",
+      "choices": {
+        "legacy_wheels_v1": {
+          "module": "aircraft.ground.legacy.v1"
+        },
+        "coupled_thin_ring_compliance_v1": {
+          "module": "aircraft.ground.thin_ring_compliance.v1",
+          "law": "ground.coupled_thin_ring_compliance.v1",
+          "replaces_laws": [
+            "gear.point_contacts.v1"
+          ],
+          "compiler_transforms": {
+            "scale": false,
+            "weight": false,
+            "power": false,
+            "controls": false
+          },
+          "compiler_transform_reason": "explicit ground module requires owner-aware hardware transforms and coupled admission",
+          "required_paths": [
+            "landing_gear",
+            "physical_identity_version"
+          ],
+          "allowed_capabilities": {
+            "gear": [
+              "fixed_tricycle",
+              "fixed_taildragger",
+              "locked_down_taildragger",
+              "retractable_tricycle",
+              "retractable_taildragger"
+            ]
+          }
+        }
+      }
+    }
   ]
 }

@@ -18,6 +18,20 @@ var modes_size: int = -1
 var continuous_size: int = -1
 ## Free-form law/version identity (strings and numbers). Sessions pin it into their checkpoint envelopes.
 var identity: Dictionary = {}
+## Optional semantic identity for an explicitly sized, checkpoint-v2 state layout.
+## Empty keeps the historical checkpoint/step path. A transition or validator requires it.
+var state_layout_identity: String = ""
+## Pure endpoint_transition(previous, candidate, context) -> {body, continuous, aux, modes, events}.
+## Frames contain exactly body/continuous/aux/modes. Candidate is a detached working copy;
+## previous and context are read-only. Context has tick, time_s (endpoint), dt, events and
+## body_filtered. Events returned here append to existing located events, in model order.
+## Every output keeps its declared size. No inputs, mass, inertia or model edits are allowed.
+## Runs after the legacy body filter, before final block_aux projection and validation.
+var endpoint_transition: Callable = Callable()
+## Pure state_validator(frame, context) -> bool, after final projection and at reset/restore.
+## Context is {tick, time_s, dt} for the state being validated, including a restored
+## checkpoint's clock. Both arguments are detached/read-only; live state is guarded.
+var state_validator: Callable = Callable()
 
 ## loads(body, t) -> float64[6]: [Fx, Fy, Fz, Mx, My, Mz] in body axes, gravity excluded. Body-only route.
 var loads: Callable = func(_body: PackedFloat64Array, _t: float) -> PackedFloat64Array:
@@ -88,10 +102,21 @@ static func validate(candidate: Variant) -> Dictionary:
 			return {ok = false, message = "vehicle model %s must be -1 (fixed at reset) or a non-negative integer" % field}
 	if typeof(candidate.identity) != TYPE_DICTIONARY:
 		return {ok = false, message = "vehicle model identity must be a dictionary"}
+	if typeof(candidate.state_layout_identity) != TYPE_STRING or candidate.state_layout_identity.length() > 256 \
+		or candidate.state_layout_identity != candidate.state_layout_identity.strip_edges():
+		return {ok = false, message = "vehicle model state layout identity must be a bounded string without edge whitespace"}
+	if not candidate.state_layout_identity.is_empty():
+		for field: String in ["aux_size", "modes_size", "continuous_size"]:
+			if candidate.get(field) < 0:
+				return {ok = false, message = "vehicle model endpoint layout requires explicit %s" % field}
 	for field: String in ["loads", "stage", "block_loads", "block_derivative", "stage_rotor_momentum",
-			"rotor_momentum", "pre_tick", "post_tick", "post_tick_joint", "block_aux", "step_policy", "substeps", "substeps_joint"]:
+			"rotor_momentum", "pre_tick", "post_tick", "post_tick_joint", "block_aux", "step_policy", "substeps", "substeps_joint",
+			"endpoint_transition", "state_validator"]:
 		if typeof(candidate.get(field)) != TYPE_CALLABLE:
 			return {ok = false, message = "vehicle model %s must be a Callable" % field}
+	if candidate.endpoint_transition.is_valid() or candidate.state_validator.is_valid():
+		if candidate.state_layout_identity.is_empty():
+			return {ok = false, message = "vehicle model endpoint callbacks require a state layout identity"}
 	if candidate.post_tick.is_valid() and candidate.post_tick_joint.is_valid():
 		return {ok = false, message = "vehicle model selects at most one of post_tick and post_tick_joint"}
 	if candidate.substeps.is_valid() and candidate.substeps_joint.is_valid():

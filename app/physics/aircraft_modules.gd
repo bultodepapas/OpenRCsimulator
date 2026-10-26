@@ -283,6 +283,37 @@ static func classify(base: Dictionary) -> Dictionary:
 			if overrides.has(key):
 				family_transforms[key] = bool(family_transforms.get(key, false)) and bool(overrides[key])
 
+	for optional_value: Variant in registry.get("optional_modules", []):
+		var definition: Dictionary = optional_value
+		var path: String = definition.path
+		var found := _at_path(base, path)
+		if not found.exists: continue
+		if typeof(found.value) != TYPE_DICTIONARY or found.value.get("format") != definition.format:
+			_issue(errors, diagnostics, "module.optional.format", path, "unsupported optional module format")
+			continue
+		var selector: String = definition.selector
+		var selected: Variant = found.value.get(selector)
+		var choices: Dictionary = definition.choices
+		if typeof(selected) != TYPE_STRING or not choices.has(selected):
+			_issue(errors, diagnostics, "module.optional.selector", path + "." + selector, "unsupported optional module law")
+			continue
+		var choice: Dictionary = choices[selected]
+		for required_path: String in choice.get("required_paths", []):
+			if not _at_path(base, required_path).exists:
+				_issue(errors, diagnostics, "module.optional.relation", path, "requires " + required_path)
+		for capability: String in choice.get("allowed_capabilities", {}):
+			if not choice.allowed_capabilities[capability].has(capabilities.get(capability)):
+				_issue(errors, diagnostics, "module.optional.capability", path, "incompatible capability: " + capability)
+		modules.append(choice.module)
+		parameters[path + "." + selector] = selected
+		for replaced: String in choice.get("replaces_laws", []): laws.erase(replaced)
+		if choice.has("law"): laws.append(choice.law)
+		var overrides: Dictionary = choice.get("compiler_transforms", {})
+		for key: String in ["scale", "weight", "power"]:
+			if overrides.has(key): family_transforms[key] = bool(family_transforms.get(key, false)) and bool(overrides[key])
+		if overrides.has("controls"): control_transform_supported = control_transform_supported and bool(overrides.controls)
+		if choice.has("compiler_transform_reason"): transform_reasons.append(choice.compiler_transform_reason)
+
 	if not errors.is_empty():
 		return _result(errors, diagnostics)
 	var transform_result := {

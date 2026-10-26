@@ -328,6 +328,40 @@ def classify(base: Any) -> dict[str, Any]:
             if key in overrides:
                 family_transforms[key] = bool(family_transforms.get(key, False) and overrides[key])
 
+    for definition in registry.get("optional_modules", []):
+        path = definition["path"]
+        exists, value = _at_path(base, path)
+        if not exists:
+            continue
+        if not isinstance(value, dict) or value.get("format") != definition["format"]:
+            issue("module.optional.format", path, "unsupported optional module format")
+            continue
+        selector = definition["selector"]
+        selected = value.get(selector)
+        if type(selected) is not str or selected not in definition["choices"]:
+            issue("module.optional.selector", f"{path}.{selector}", "unsupported optional module law")
+            continue
+        choice = definition["choices"][selected]
+        for required_path in choice.get("required_paths", []):
+            if not _at_path(base, required_path)[0]:
+                issue("module.optional.relation", path, "requires " + required_path)
+        for capability, allowed in choice.get("allowed_capabilities", {}).items():
+            if capabilities.get(capability) not in allowed:
+                issue("module.optional.capability", path, "incompatible capability: " + capability)
+        modules.append(choice["module"])
+        parameters[f"{path}.{selector}"] = selected
+        laws = [law for law in laws if law not in choice.get("replaces_laws", [])]
+        if "law" in choice:
+            laws.append(choice["law"])
+        overrides = choice.get("compiler_transforms", {})
+        for key in ("scale", "weight", "power"):
+            if key in overrides:
+                family_transforms[key] = bool(family_transforms.get(key, False) and overrides[key])
+        if "controls" in overrides:
+            control_transform_supported = bool(control_transform_supported and overrides["controls"])
+        if "compiler_transform_reason" in choice:
+            transform_reasons.append(choice["compiler_transform_reason"])
+
     if errors:
         return _result(errors, diagnostics)
     return _result(

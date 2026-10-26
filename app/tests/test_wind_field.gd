@@ -86,7 +86,8 @@ func _validate_configs() -> void:
 	for entry: Dictionary in Config.presets():
 		preset_ids.append(str(entry.id))
 		_check("preset %s validates" % str(entry.id), Config.validate(entry.config).ok)
-	_check("required preset set", preset_ids == PackedStringArray(["calm", "steady", "crosswind", "gusty", "updraft", "turbulent", "hot-high", "cool-dense", "gentle-practice", "standard-column"]))
+	_check("required preset set", preset_ids == PackedStringArray(["calm", "steady", "crosswind", "gusty", "updraft", "turbulent", "hot-high", "cool-dense", "gentle-practice", "standard-column",
+		"spatial-realistic-v1", "spatial-light-breeze-v1", "spatial-crosswind-v1", "spatial-gusty-v1", "spatial-shear-v1", "spatial-thermal-soaring-v2", "spatial-strong-wind-v1"]))
 	_check("unknown preset is empty", Config.preset("missing").is_empty())
 	var steady: Dictionary = Config.preset("steady")
 	var crosswind: Dictionary = Config.preset("crosswind")

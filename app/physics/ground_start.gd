@@ -13,6 +13,7 @@ const Ground := preload("res://physics/ground_contact.gd")
 const GroundWheels := preload("res://physics/ground_wheels.gd")
 const RetractableGear := preload("res://physics/retractable_gear.gd")
 const Air := preload("res://physics/air_data.gd")
+const WindFlow := preload("res://physics/wind_aircraft_flow.gd")
 
 ## Residual accelerations (m/s², rad/s²) below which the pose counts as solved.
 const TOLERANCE := 1e-11
@@ -47,10 +48,12 @@ static func threshold(field: Dictionary, east_bound := true, lineup := LINEUP) -
 ## Solve the start. model: AircraftData model with stiction gear; surfaces: the field's surface table; d: aerodynamic
 ## deflections (radians, Aero convention); steer: the rudder servo position (nose wheel); rpm: the idling engine.
 ## Returns a pure start candidate plus bounded numerical/contact diagnostics. Failure results publish no partial state.
+## Optional candidate_air_at_state(state, rho) must return a matching R2 stage Air receipt on every residual query;
+## unsupported or malformed local-flow samples refuse the solve. Omitting it preserves the uniform-wind path.
 static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float, east: float, heading: float,
 		d: Dictionary, steer: float, rpm: float, rho: float, g: float,
 		wind_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]), enhanced := false,
-		environment_at_state: Callable = Callable()) -> Dictionary:
+		environment_at_state: Callable = Callable(), candidate_air_at_state: Callable = Callable()) -> Dictionary:
 	if wind_ned.size() != 3:
 		return _fail("runway start needs three NED wind components")
 	for value: float in wind_ned:
@@ -75,6 +78,8 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 	var budget := {"evaluations": 0, "feasibility_checks": 0, "max_evaluations": MAX_RESIDUAL_EVALUATIONS}
 	var environment_stats := {"queries": 0, "minimum_rho_kgm3": INF, "maximum_rho_kgm3": -INF}
 	var environment_error := [""]
+	var candidate_air_stats := {"queries": 0}
+	var candidate_air_error := [""]
 	# Stage 1 starts from the existing contact-plane seed.
 	var lowest := 0.0 # deepest contact below the CG (body z, down)
 	var support_pose: Dictionary = _aft_tricycle_support_pose(gear.contacts)
@@ -99,8 +104,16 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 		if not local_environment.ok:
 			environment_error[0] = str(local_environment.error)
 			return PackedFloat64Array([NAN, NAN, NAN])
+		var candidate_air: Dictionary = {}
+		if candidate_air_at_state.is_valid():
+			var air_sample := _candidate_air_sample(candidate_air_at_state, state,
+				float(local_environment.rho_kgm3), candidate_air_stats)
+			if not air_sample.ok:
+				candidate_air_error[0] = str(air_sample.error)
+				return PackedFloat64Array([NAN, NAN, NAN])
+			candidate_air = air_sample.air
 		var a := _accelerations(state, model, inv, gear, surfaces, d, steer, 0.0,
-			float(local_environment.rho_kgm3), g, free, false, wind_ned, enhanced)
+			float(local_environment.rho_kgm3), g, free, false, wind_ned, enhanced, candidate_air)
 		var q := PackedFloat64Array([state[RB.ATT], state[RB.ATT + 1], state[RB.ATT + 2], state[RB.ATT + 3]])
 		var lin := M.q_rotate(q, M.v3(a[0], a[1], a[2]))
 		var ang := M.q_rotate(q, M.v3(a[3], a[4], a[5]))
@@ -126,12 +139,17 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 		"feasibility_checks": int(budget.feasibility_checks),
 		"environment": _environment_summary(environment_at_state, environment_stats, ""),
 	}
+	if candidate_air_at_state.is_valid():
+		diagnostics["candidate_air"] = _candidate_air_summary(candidate_air_stats, "")
 	if not rest.ok:
 		diagnostics.total_residual_evaluations = int(budget.evaluations)
 		diagnostics.feasibility_checks = int(budget.feasibility_checks)
 		diagnostics.environment = _environment_summary(environment_at_state, environment_stats, environment_error[0])
 		var rest_reason := "engine-off support pose unresolved: " + str(rest.reason)
-		if environment_error[0] != "":
+		if candidate_air_error[0] != "":
+			diagnostics.candidate_air = _candidate_air_summary(candidate_air_stats, candidate_air_error[0])
+			rest_reason = "candidate_air_at_state rejected engine-off residual: " + candidate_air_error[0]
+		elif environment_error[0] != "":
 			rest_reason = "environment_at_state rejected engine-off residual: " + environment_error[0]
 		return _start_failure(rest_reason, diagnostics,
 			rest.iterations, rest.residual, rest.scaled_residual)
@@ -159,8 +177,16 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 		if not local_environment.ok:
 			environment_error[0] = str(local_environment.error)
 			return PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN])
+		var candidate_air: Dictionary = {}
+		if candidate_air_at_state.is_valid():
+			var air_sample := _candidate_air_sample(candidate_air_at_state, state,
+				float(local_environment.rho_kgm3), candidate_air_stats)
+			if not air_sample.ok:
+				candidate_air_error[0] = str(air_sample.error)
+				return PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN])
+			candidate_air = air_sample.air
 		return _accelerations(state, model, inv, gear, surfaces, d, steer, rpm,
-			float(local_environment.rho_kgm3), g, anchors, true, wind_ned, enhanced)
+			float(local_environment.rho_kgm3), g, anchors, true, wind_ned, enhanced, candidate_air)
 	var idle_feasible: Callable = func(x: PackedFloat64Array) -> Dictionary:
 		var state: PackedFloat64Array = idle_state_at.call(x)
 		var horizontal_shift := M.sqrt_(x[0] * x[0] + x[1] * x[1])
@@ -185,9 +211,13 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 	diagnostics.total_residual_evaluations = int(budget.evaluations)
 	diagnostics.feasibility_checks = int(budget.feasibility_checks)
 	diagnostics.environment = _environment_summary(environment_at_state, environment_stats, environment_error[0])
+	if candidate_air_at_state.is_valid():
+		diagnostics.candidate_air = _candidate_air_summary(candidate_air_stats, candidate_air_error[0])
 	if not idle.ok:
 		var idle_reason := "idle support pose unresolved: " + str(idle.reason)
-		if environment_error[0] != "":
+		if candidate_air_error[0] != "":
+			idle_reason = "candidate_air_at_state rejected idle residual: " + candidate_air_error[0]
+		elif environment_error[0] != "":
 			idle_reason = "environment_at_state rejected idle residual: " + environment_error[0]
 		return _start_failure(idle_reason, diagnostics,
 			rest.iterations + idle.iterations, idle.residual, idle.scaled_residual)
@@ -231,6 +261,36 @@ static func _environment_density(environment_at_state: Callable, state: PackedFl
 	stats["minimum_rho_kgm3"] = minf(float(stats.get("minimum_rho_kgm3", INF)), local_rho)
 	stats["maximum_rho_kgm3"] = maxf(float(stats.get("maximum_rho_kgm3", -INF)), local_rho)
 	return {"ok": true, "rho_kgm3": local_rho}
+
+
+## Candidate mode accepts only a complete R2 stage Air receipt for this exact state and density.
+## The callback samples on every residual evaluation; it must not cache or reuse receipts across candidates.
+static func _candidate_air_sample(candidate_air_at_state: Callable, state: PackedFloat64Array,
+		rho_kgm3: float, stats: Dictionary) -> Dictionary:
+	stats["queries"] = int(stats.get("queries", 0)) + 1
+	var sample: Variant = candidate_air_at_state.call(state.duplicate(), rho_kgm3)
+	if typeof(sample) != TYPE_DICTIONARY:
+		return {"ok": false, "error": "callback must return a stage Air Dictionary"}
+	var receipt: Dictionary = sample
+	if not bool(receipt.get("ok", false)):
+		return {"ok": false, "error": "stage Air callback reported failure: " + str(receipt.get("errors", []))}
+	var air_value: Variant = receipt.get("air")
+	if typeof(air_value) != TYPE_DICTIONARY:
+		return {"ok": false, "error": "stage Air callback must include an air Dictionary"}
+	var air: Dictionary = air_value
+	if air.get("spatial_air_law", "") != WindFlow.STAGE_AIR_LAW or not WindFlow.matches_stage(air, state, rho_kgm3):
+		return {"ok": false, "error": "air must be a matching R2 stage receipt for the candidate state and density"}
+	var v_air: Variant = air.get("v_air")
+	if typeof(v_air) != TYPE_PACKED_FLOAT64_ARRAY or not _finite_size(v_air, 3):
+		return {"ok": false, "error": "air.v_air must contain three finite body-frame components"}
+	var qbar: Variant = air.get("qbar")
+	if (typeof(qbar) != TYPE_FLOAT and typeof(qbar) != TYPE_INT) or not is_finite(float(qbar)) or float(qbar) < 0.0:
+		return {"ok": false, "error": "air.qbar must be finite and nonnegative"}
+	return {"ok": true, "air": air}
+
+
+static func _candidate_air_summary(stats: Dictionary, error: String) -> Dictionary:
+	return {"source": "candidate_air_at_state", "queries": int(stats.get("queries", 0)), "error": error}
 
 
 static func _environment_summary(environment_at_state: Callable, stats: Dictionary, error: String) -> Dictionary:
@@ -297,16 +357,25 @@ static func _aft_tricycle_support_pose(contacts: Array) -> Dictionary:
 static func _accelerations(s: PackedFloat64Array, model: Dictionary, inv: PackedFloat64Array, gear: Dictionary,
 		surfaces: PackedFloat64Array, d: Dictionary, steer: float, rpm: float, rho: float, g: float,
 		anchors: PackedFloat64Array, engine: bool,
-		wind_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]), enhanced := false) -> PackedFloat64Array:
+		wind_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]), enhanced := false,
+		candidate_air: Dictionary = {}) -> PackedFloat64Array:
 	var loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	if engine or wind_ned[0] != 0.0 or wind_ned[1] != 0.0 or wind_ned[2] != 0.0:
+	if engine or wind_ned[0] != 0.0 or wind_ned[1] != 0.0 or wind_ned[2] != 0.0 or not candidate_air.is_empty():
 		# M5-GE-1: on the runway the session evaluates aero with the terrain height under the CG; the static solve must
 		# see the same ground (zero airspeed gives zero aero either way; wind does not).
 		var ground_up: float = GroundTerrain.sample_validated(s[RB.POS], s[RB.POS + 1], surfaces)[0] \
 			if GroundEffect.enabled(model) else NAN
-		loads = Dynamics.loads(s, model, d, rpm if engine else 0.0, rho, wind_ned, NAN, PackedFloat64Array(), ground_up)
+		if candidate_air.is_empty():
+			loads = Dynamics.loads(s, model, d, rpm if engine else 0.0, rho, wind_ned, NAN, PackedFloat64Array(), ground_up)
+		else:
+			loads = Dynamics.loads_from_air(s, model, d, rpm if engine else 0.0, rho, candidate_air,
+				NAN, PackedFloat64Array(), ground_up)
 		if RetractableGear.enabled(gear):
-			var drag := RetractableGear.drag_loads(s, Air.compute(s, wind_ned, rho).v_air, gear, 1.0, rho)
+			var drag: PackedFloat64Array
+			if candidate_air.is_empty():
+				drag = RetractableGear.drag_loads(s, Air.compute(s, wind_ned, rho).v_air, gear, 1.0, rho)
+			else:
+				drag = RetractableGear.drag_loads(s, candidate_air.v_air, gear, 1.0, rho)
 			for i in drag.size(): loads[i] += drag[i]
 	var wheels := PackedFloat64Array()
 	if enhanced:

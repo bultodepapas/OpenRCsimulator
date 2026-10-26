@@ -1026,10 +1026,11 @@ func _prepare_flight() -> void:
 func _advance_windsock(_tick: int, time_s: float, state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	var wind_ned: Array = Array(session.wind_at(time_s))
+	var sampler: Callable = session.environment.wind_world if session.environment.weather.is_spatial() else Callable()
 	if _tick == 0:
-		FieldBuilder.reset_wind(_field_node, time_s, wind_ned)
+		FieldBuilder.reset_wind(_field_node, time_s, wind_ned, sampler)
 	else:
-		FieldBuilder.advance_wind(_field_node, time_s, wind_ned)
+		FieldBuilder.advance_wind(_field_node, time_s, wind_ned, sampler)
 	# SC-HUM-03/04: field people follow the aircraft; flight-line pilots follow their companion
 	# (render-only head state; companions are read before they advance this tick).
 	FieldBuilder.advance_people(_field_node, time_s, [state[0], state[1], state[2]], _tick == 0, _companion_positions(),

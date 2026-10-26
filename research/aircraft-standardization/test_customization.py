@@ -22,6 +22,13 @@ class CustomizationGeneratorTests(unittest.TestCase):
         model_source = json.loads((self.root / generator.MODEL_SOURCE_PATH).read_text(encoding="utf-8"))
         self.families = {item["family_id"] for item in model_source["families"]}
 
+    def _v3_source(self) -> dict[str, object]:
+        source = copy.deepcopy(self.source)
+        source["version"] = 3
+        for family in source["families"]:
+            family["lighting_layout"] = generator.empty_lighting_layout()
+        return source
+
     def test_presentation_source_versions_keep_closed_legacy_sets(self) -> None:
         legacy = generator.LEGACY_PRESENTATION_SOURCE_PATHS
         v2 = generator.PRESENTATION_SOURCE_PATHS_V2
@@ -40,6 +47,34 @@ class CustomizationGeneratorTests(unittest.TestCase):
             actual = re.findall(r'"(res://[^\"]+)"', match.group(1))
             self.assertEqual(actual, list(expected), constant_name)
 
+    def test_historical_sources_default_to_an_empty_lighting_layout(self) -> None:
+        source_v2 = copy.deepcopy(self.source)
+        source_v2["version"] = 2
+        for family in source_v2["families"]:
+            family.pop("lighting_layout", None)
+        slots_v2 = generator.validate_source(source_v2, self.families)
+        self.assertTrue(all(slots["lighting_layout"] == generator.empty_lighting_layout() for slots in slots_v2.values()))
+
+        source_v1 = {
+            "format": generator.SOURCE_FORMAT,
+            "version": 1,
+            "families": [{
+                "visual_family": "historical-fixture",
+                "paint_slots": [],
+                "marking_slots": [],
+                "smoke_slots": [
+                    {"id": "wing_left", "label": "Left", "kind": "show", "pair": "wing_tips", "role": "wing_tip_left",
+                     "node_path": ".", "position_m": [-0.5, 0, 0], "direction": [0, 0, 1]},
+                    {"id": "wing_right", "label": "Right", "kind": "show", "pair": "wing_tips", "role": "wing_tip_right",
+                     "node_path": ".", "position_m": [0.5, 0, 0], "direction": [0, 0, 1]},
+                    {"id": "tail", "label": "Tail", "kind": "show", "pair": "", "role": "tail",
+                     "node_path": ".", "position_m": [0, 0, 1], "direction": [0, 0, 1]},
+                ],
+            }],
+        }
+        slots_v1 = generator.validate_source(source_v1, {"historical-fixture"})
+        self.assertEqual(slots_v1["historical-fixture"]["lighting_layout"], generator.empty_lighting_layout())
+
     def test_generated_registry_is_current(self) -> None:
         self.assertEqual(generator.generate(self.root, True), 0)
 
@@ -49,8 +84,9 @@ class CustomizationGeneratorTests(unittest.TestCase):
         self.assertEqual({item["visual_family"] for item in registry["families"]}, self.families)
         for companion in registry["families"]:
             family = companion["visual_family"]
-            self.assertEqual(companion["version"], 3)
+            self.assertEqual(companion["version"], 4)
             self.assertEqual(companion["source_proof_version"], 3)
+            self.assertEqual(companion["lighting_layout"], generator.empty_lighting_layout())
             self.assertEqual(companion["presentation_engine_version"], generator.PRESENTATION_ENGINE_VERSION)
             self.assertEqual([item["path"] for item in companion["presentation_sources"]],
                              list(generator.PRESENTATION_SOURCE_PATHS))
@@ -107,6 +143,131 @@ class CustomizationGeneratorTests(unittest.TestCase):
             slot.update(change)
             with self.subTest(change=change), self.assertRaises(generator.CustomizationError):
                 generator.validate_source(bad, self.families)
+
+    def test_v3_lighting_layout_sorts_ids_and_preserves_strip_point_order(self) -> None:
+        source = self._v3_source()
+        family = source["families"][0]
+        family["lighting_layout"] = {
+            "version": 1,
+            "anchors": [
+                {"id": "nav_right", "node_path": "wing_frame_right", "position_m": [1, 0, 0], "gear_gated": False},
+                {"id": "nav_left", "node_path": ".", "position_m": [-1, 0, 0], "gear_gated": False},
+                {"id": "nav_tail", "node_path": ".", "position_m": [0, 0, 1], "gear_gated": False},
+            ],
+            "strips": [{
+                "id": "strip_top_left", "node_path": "wing_frame_left",
+                "points_m": [[0.8, 0, 0], [-0.8, 0, 0]], "face": [0, 1, 0], "width_m": 0.01,
+            }, {
+                "id": "strip_belly", "node_path": ".",
+                "points_m": [[0, 0, 0.2], [0, 0, -0.2]], "face": [1, 0, 0], "width_m": 0.02,
+            }],
+        }
+        slots = generator.validate_source(source, self.families)
+        layout = slots[family["visual_family"]]["lighting_layout"]
+        self.assertEqual([item["id"] for item in layout["anchors"]], ["nav_left", "nav_right", "nav_tail"])
+        self.assertEqual([item["id"] for item in layout["strips"]], ["strip_belly", "strip_top_left"])
+        self.assertEqual(layout["strips"][1]["points_m"], [[0.8, 0, 0], [-0.8, 0, 0]])
+
+    def test_v3_lighting_layout_rejects_malformed_paths_duplicates_nonfinite_and_bounds(self) -> None:
+        anchor = {"id": "nav_left", "node_path": ".", "position_m": [0, 0, 0], "gear_gated": False}
+        strip = {"id": "strip_left", "node_path": ".", "points_m": [[0, 0, 0], [1, 0, 0]], "face": [0, 1, 0], "width_m": 0.01}
+        bad_layouts = []
+
+        bad = generator.empty_lighting_layout()
+        bad["anchors"] = [dict(anchor, node_path="../wing")]
+        bad_layouts.append(("path traversal", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["anchors"] = [dict(anchor, node_path="a" * (generator.LIGHT_NODE_PATH_MAX_CHARS + 1))]
+        bad_layouts.append(("long path", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["anchors"] = [anchor, copy.deepcopy(anchor)]
+        bad_layouts.append(("duplicate anchor id", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["anchors"] = [dict(anchor, position_m=[0, float("nan"), 0])]
+        bad_layouts.append(("nonfinite anchor position", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["anchors"] = [dict(anchor, position_m=[10 ** 1000, 0, 0])]
+        bad_layouts.append(("unrepresentable anchor position", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["anchors"] = [dict(anchor, position_m=[5.001, 0, 0])]
+        bad_layouts.append(("anchor bound", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["anchors"] = [dict(anchor, id="tail")]
+        bad_layouts.append(("unsupported legacy anchor alias", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["anchors"] = [{**anchor, "id": "strobe_dorsal", "gear_gated": True}]
+        bad_layouts.append(("invalid gear gating", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["strips"] = [strip, copy.deepcopy(strip)]
+        bad_layouts.append(("duplicate strip id", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["strips"] = [dict(strip, node_path="wing//left")]
+        bad_layouts.append(("malformed strip path", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["strips"] = [dict(strip, points_m=[[0, 0, 0], [float("inf"), 0, 0]])]
+        bad_layouts.append(("nonfinite strip point", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["strips"] = [dict(strip, points_m=[[0, 0, 0], [5.01, 0, 0]])]
+        bad_layouts.append(("strip point bound", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["strips"] = [dict(strip, points_m=[[0, 0, 0], [0.000009, 0, 0]])]
+        bad_layouts.append(("adjacent points too close", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["strips"] = [dict(strip, face=[1, 0, 0])]
+        bad_layouts.append(("degenerate segment face", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["strips"] = [dict(strip, width_m=True)]
+        bad_layouts.append(("boolean width", bad))
+
+        bad = generator.empty_lighting_layout()
+        bad["strips"] = [dict(strip, width_m=10 ** 1000)]
+        bad_layouts.append(("unrepresentable width", bad))
+
+        for name, layout in bad_layouts:
+            source = self._v3_source()
+            source["families"][0]["lighting_layout"] = layout
+            with self.subTest(case=name), self.assertRaises(generator.CustomizationError):
+                generator.validate_source(source, self.families)
+
+    def test_v3_lighting_layout_requires_exact_shape_and_supported_versions(self) -> None:
+        source = self._v3_source()
+        source["families"][0].pop("lighting_layout")
+        with self.assertRaises(generator.CustomizationError):
+            generator.validate_source(source, self.families)
+
+        source = self._v3_source()
+        source["families"][0]["lighting_layout"]["unused"] = True
+        with self.assertRaises(generator.CustomizationError):
+            generator.validate_source(source, self.families)
+
+        source = self._v3_source()
+        source["families"][0]["lighting_layout"]["version"] = True
+        with self.assertRaises(generator.CustomizationError):
+            generator.validate_source(source, self.families)
+
+        source = self._v3_source()
+        source["families"][0]["lighting_layout"]["version"] = 1.0
+        slots = generator.validate_source(source, self.families)
+        self.assertEqual(slots[source["families"][0]["visual_family"]]["lighting_layout"], generator.empty_lighting_layout())
+
+        source = self._v3_source()
+        source["families"][0]["lighting_layout"]["version"] = 10 ** 1000
+        with self.assertRaises(generator.CustomizationError):
+            generator.validate_source(source, self.families)
 
     def test_two_authored_outlets_can_share_one_engine(self) -> None:
         candidate = copy.deepcopy(self.source)

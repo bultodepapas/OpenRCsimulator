@@ -21,6 +21,7 @@ const Aero := preload("res://physics/aero.gd")
 const WingPolar := preload("res://physics/wing_polar.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
+const GroundProfile := preload("res://physics/aircraft_ground_profile.gd")
 const GlowInstallation := preload("res://physics/glow/installation.gd")
 const BatteryData := preload("res://physics/battery/battery_data.gd")
 const EscSupervisor := preload("res://physics/battery/esc_supervisor.gd")
@@ -260,6 +261,15 @@ static func _validate_with_domain(raw: Dictionary, domain: Dictionary) -> Dictio
 			result.model.controls.surface_ids = identities.surface_ids.duplicate(true)
 			for i in identities.support_ids.size():
 				result.model.landing_gear.contacts[i].id = identities.support_ids[i]
+		if raw.has("ground"):
+			var ground := GroundProfile.resolve(raw.ground, result.model)
+			if not ground.ok:
+				return {ok = false, errors = ground.errors, warnings = result.warnings, model = {}}
+			if not ground.launch_available:
+				return {ok = false, errors = PackedStringArray(["ground: selected coupled law is launch-unavailable until rotor inventory, coupled stage and transactional admission are qualified"]),
+					warnings = result.warnings, model = {}, ground_profile = ground.profile}
+			# Explicit legacy authoring is observational: retain the historical
+			# model exactly and the existing load_file wheel-profile boundary.
 	return result
 
 

@@ -78,7 +78,7 @@ MARKING_TEXT_CHARS = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01
 MARKING_WIDTH_BOUNDS_M = (0.01, 1.0)
 MARKING_HEIGHT_BOUNDS_M = (0.01, 0.3)
 LIGHT_ANCHOR_IDS = {
-    "nav_left", "nav_right", "tail", "strobe_left", "strobe_right", "strobe_dorsal",
+    "nav_left", "nav_right", "nav_tail", "strobe_left", "strobe_right", "strobe_dorsal",
     "strobe_ventral", "landing", "landing_right",
 }
 LIGHT_STRIP_IDS = {"strip_left", "strip_right", "strip_top_left", "strip_top_right", "strip_belly"}
@@ -136,9 +136,15 @@ def _vector(value: Any, label: str, *, unit: bool = False) -> list[float | int]:
         raise CustomizationError(f"{label} must be a three-number array")
     numbers: list[float | int] = []
     for part in value:
-        if isinstance(part, bool) or not isinstance(part, (int, float)) or not math.isfinite(float(part)):
+        if isinstance(part, bool) or not isinstance(part, (int, float)):
             raise CustomizationError(f"{label} must contain finite numbers")
-        if abs(float(part)) > 5.0:
+        try:
+            number = float(part)
+        except OverflowError as exc:
+            raise CustomizationError(f"{label} must contain finite numbers") from exc
+        if not math.isfinite(number):
+            raise CustomizationError(f"{label} must contain finite numbers")
+        if abs(number) > 5.0:
             raise CustomizationError(f"{label} exceeds the five-metre source-space bound")
         numbers.append(part)
     if unit and not 0.999 <= sum(float(part) ** 2 for part in numbers) ** 0.5 <= 1.001:
@@ -162,7 +168,14 @@ def _lighting_node_path(value: Any, label: str) -> str:
 
 def validate_lighting_layout(layout: Any, label: str) -> dict[str, Any]:
     _closed(layout, {"version", "anchors", "strips"}, label)
-    if type(layout["version"]) is not int or layout["version"] != 1:
+    version = layout["version"]
+    if isinstance(version, bool) or not isinstance(version, (int, float)):
+        raise CustomizationError(f"{label}.version is unsupported")
+    try:
+        numeric_version = float(version)
+    except OverflowError as exc:
+        raise CustomizationError(f"{label}.version is unsupported") from exc
+    if not math.isfinite(numeric_version) or numeric_version != 1.0:
         raise CustomizationError(f"{label}.version is unsupported")
     anchors, strips = layout["anchors"], layout["strips"]
     if not isinstance(anchors, list) or len(anchors) > LIGHT_ANCHOR_LIMIT:
@@ -213,7 +226,13 @@ def validate_lighting_layout(layout: Any, label: str) -> dict[str, Any]:
         points = [_vector(point, f"{strip_label}.points_m[{point_index}]") for point_index, point in enumerate(points_value)]
         face = _vector(strip["face"], f"{strip_label}.face", unit=True)
         width = strip["width_m"]
-        if isinstance(width, bool) or not isinstance(width, (int, float)) or not math.isfinite(float(width)) or not LIGHT_STRIP_WIDTH_BOUNDS_M[0] <= float(width) <= LIGHT_STRIP_WIDTH_BOUNDS_M[1]:
+        if isinstance(width, bool) or not isinstance(width, (int, float)):
+            raise CustomizationError(f"{strip_label}.width_m must be in [{LIGHT_STRIP_WIDTH_BOUNDS_M[0]}, {LIGHT_STRIP_WIDTH_BOUNDS_M[1]}] m")
+        try:
+            numeric_width = float(width)
+        except OverflowError as exc:
+            raise CustomizationError(f"{strip_label}.width_m must be in [{LIGHT_STRIP_WIDTH_BOUNDS_M[0]}, {LIGHT_STRIP_WIDTH_BOUNDS_M[1]}] m") from exc
+        if not math.isfinite(numeric_width) or not LIGHT_STRIP_WIDTH_BOUNDS_M[0] <= numeric_width <= LIGHT_STRIP_WIDTH_BOUNDS_M[1]:
             raise CustomizationError(f"{strip_label}.width_m must be in [{LIGHT_STRIP_WIDTH_BOUNDS_M[0]}, {LIGHT_STRIP_WIDTH_BOUNDS_M[1]}] m")
         face_vector = [float(part) for part in face]
         for point_index, (start, end) in enumerate(zip(points, points[1:])):

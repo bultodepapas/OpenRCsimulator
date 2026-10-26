@@ -49,7 +49,9 @@ class StagePointSampler:
 ## including in uniform air; do not toggle the law when the instantaneous gradient happens to be zero.
 ## No caller may reuse this result for another body stage, density, model or time.
 static func stage_air(s: PackedFloat64Array, model: Dictionary, environment: Object, time_s: float,
-		rho := Air.RHO_SEA_LEVEL) -> Dictionary:
+		rho := Air.RHO_SEA_LEVEL, aero_law: String = "") -> Dictionary:
+	if aero_law not in ["", Aero.SPATIAL_CONTINUATION_LAW]:
+		return {ok = false, errors = PackedStringArray(["unsupported spatial aerodynamic law"]), air = {}}
 	if not is_finite(rho) or rho <= 0.0:
 		return {ok = false, errors = PackedStringArray(["invalid stage density"]), air = {}}
 	var flow := sample(s, model, environment, time_s)
@@ -66,6 +68,8 @@ static func stage_air(s: PackedFloat64Array, model: Dictionary, environment: Obj
 	point_sampler.environment = environment
 	point_sampler.time_s = time_s
 	air.spatial_air_law = STAGE_AIR_LAW
+	if not aero_law.is_empty():
+		air.spatial_aero_law = aero_law
 	air.spatial_state = s.duplicate()
 	air.spatial_time_s = time_s
 	air.spatial_rho = rho
@@ -89,6 +93,7 @@ static func matches_stage(air: Dictionary, s: PackedFloat64Array, rho: float) ->
 	var time: Variant = air.get("spatial_time_s")
 	var density: Variant = air.get("spatial_rho")
 	return air.get("spatial_air_law", "") == STAGE_AIR_LAW \
+		and air.get("spatial_aero_law", "") in ["", Aero.SPATIAL_CONTINUATION_LAW] \
 		and state is PackedFloat64Array and state.to_byte_array() == s.to_byte_array() \
 		and deltas is PackedFloat64Array and Aero._spatial_finite(deltas, 3 * (Aero.WING_STATIONS_PER_SIDE * 2 + 2)) \
 		and sampler is Callable and sampler.is_valid() \

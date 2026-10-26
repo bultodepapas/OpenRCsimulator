@@ -10,6 +10,9 @@ const FailureConfig := preload("res://failures/config.gd")
 const FailureRuntime := preload("res://failures/runtime.gd")
 const FailureCatalog := preload("res://failures/catalog.gd")
 const FAILURE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v10"
+const SPATIAL_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v12"
+const SPATIAL_RECEIPT_FORMAT := "openrc-spatial-weather-receipt v1"
+const WindFlow := preload("res://physics/wind_aircraft_flow.gd")
 signal failure_changed
 ## UI-FS-04: observational receipt after a reset transaction succeeds; never part of solver state.
 signal statistics_lifecycle(receipt: Dictionary)
@@ -479,7 +482,39 @@ func _initial_wind(position_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0
 
 
 func air_data(s: PackedFloat64Array, time_s: float = NAN) -> Dictionary:
-	return Air.compute(s, wind_at(sim.time() if is_nan(time_s) else time_s, s), air_density(s))
+	var at: float = sim.time() if is_nan(time_s) else time_s
+	if _weather.is_spatial() and not _weather_pending_reset:
+		var sampled := WindFlow.stage_air(s, aircraft.model, environment, at, air_density(s),
+			Aero.SPATIAL_CONTINUATION_LAW)
+		if sampled.ok:
+			return sampled.air
+		# Consumers already reject nonfinite flow; never substitute calm/datum flow on failure.
+		return Air.compute(s, M.v3(NAN, NAN, NAN), air_density(s))
+	return Air.compute(s, wind_at(at, s), air_density(s))
+
+
+## Pure reset-time producer for each runway candidate; independent of the accepted tick and OU window.
+func _initial_air_sampler(model: Dictionary) -> Callable:
+	if not _weather.is_spatial():
+		return Callable()
+	return func(state: PackedFloat64Array, rho: float) -> Dictionary:
+		return WindFlow.stage_air(state, model, environment, 0.0, rho, Aero.SPATIAL_CONTINUATION_LAW)
+
+
+func _spatial_weather_receipt(field: WeatherField) -> Dictionary:
+	return {format = SPATIAL_RECEIPT_FORMAT, field = field.spatial_identity(),
+		content_sha256 = field.spatial_content_hash(), point_air_law = WindFlow.STAGE_AIR_LAW,
+		aerodynamic_law = Aero.SPATIAL_CONTINUATION_LAW,
+		clock = "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1"}
+
+
+## JSON changes dictionary key/numeric Variant types. Compare detached JSON structures without
+## losing float64 precision; exact keys, values and law identities remain required.
+static func spatial_receipt_matches(candidate: Variant, expected: Dictionary) -> bool:
+	if typeof(candidate) != TYPE_DICTIONARY:
+		return false
+	return JSON.parse_string(JSON.stringify(candidate, "", true, true)) == \
+		JSON.parse_string(JSON.stringify(expected, "", true, true))
 
 const Commands := preload("res://input/commands.gd")
 const ControlActuators := preload("res://physics/control_actuators.gd")
@@ -2136,7 +2171,7 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 	var rpm: float = 0.0 if Propulsion.is_glow(model.propulsion) else Propulsion.steady_rpm(0.0, 0.0, model.propulsion, density, charge)
 	var solved: Dictionary = GroundStart.solve(_trim_model(model), ground_surfaces, float(spot.north), float(spot.east), float(spot.heading),
 		deflections, input_values[2], rpm, density, sim.gravity, _initial_wind(), _model_wheel_count(model) > 0,
-		environment_at if _weather.has_vertical_atmosphere() else Callable())
+		environment_at if _weather.has_vertical_atmosphere() else Callable(), _initial_air_sampler(_trim_model(model)))
 	return { ok = true, message = "" } if solved.ok else { ok = false, message = "runway start: " + str(solved.message) }
 
 
@@ -2882,7 +2917,7 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	# Solve first, without changing commands, modes, weather, crash state, or observers.
 	var solved: Dictionary = GroundStart.solve(_trim_model(aircraft.model), ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO+2],
 		rpm, density, sim.gravity, _initial_wind(), wheel_count() > 0,
-		environment_at if _weather.has_vertical_atmosphere() else Callable())
+		environment_at if _weather.has_vertical_atmosphere() else Callable(), _initial_air_sampler(_trim_model(aircraft.model)))
 	if not solved.ok:
 		solved.message = "runway start: " + str(solved.message)
 		return solved
@@ -4494,6 +4529,13 @@ func trace_meta() -> Dictionary:
 	metadata.wake_state_unit = Aero.WAKE_STATE_UNIT if downwash_index() >= 0 else "none"
 	if turbine:
 		metadata.turbine_loads_law = Turbine.LOADS_LAW
+	if _weather.is_spatial():
+		metadata.spatial_weather_schema = SPATIAL_RECEIPT_FORMAT
+		metadata.spatial_weather_receipt = JSON.stringify(_spatial_weather_receipt(_weather), "", true, true)
+		metadata.weather_model = "flat-site-spatial-wind-v1"
+		metadata.weather_timing = "datum wind/TAS at row position/time; loads_* at previous body position and k1 time; all surface/prop points use that stage time"
+		metadata.spatial_aero_model = Aero.SPATIAL_CONTINUATION_LAW
+		metadata.spatial_aero_limits = "continuous local section surrogate; held reference wake; datum body residuals; no dynamic stall or measured RC qualification"
 	return metadata
 
 
@@ -4595,6 +4637,10 @@ func checkpoint() -> Dictionary:
 			return {}
 		boundary.failure_physics_format = boundary.format
 		boundary.format = FAILURE_CHECKPOINT_FORMAT
+	if _weather.is_spatial():
+		boundary.spatial_physics_format = boundary.format
+		boundary.format = SPATIAL_CHECKPOINT_FORMAT
+		boundary.spatial_weather_receipt = _spatial_weather_receipt(_weather)
 	return boundary
 
 
@@ -4631,6 +4677,8 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(Ground.ROLLING_LAW)
 	if not field.is_calm() or field.has_atmosphere():
 		parts.append(field.configuration())
+	if field.is_spatial():
+		parts.append(_spatial_weather_receipt(field))
 	if field.has_vertical_atmosphere():
 		parts.append(field.atmosphere_law() + "; datum=field_elevation-minus-NED-down; sample=stage-body-datum")
 	if shaft_is_coupled():
@@ -4676,6 +4724,19 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 
 
 func _restore_checkpoint_impl(candidate: Dictionary) -> bool:
+	var spatial_boundary: bool = candidate.get("format") == SPATIAL_CHECKPOINT_FORMAT
+	if spatial_boundary:
+		var spatial_built := WeatherField.build(candidate.get("weather_config"))
+		if not spatial_built.ok or not spatial_built.field.is_spatial() \
+				or not spatial_receipt_matches(candidate.get("spatial_weather_receipt"), _spatial_weather_receipt(spatial_built.field)) \
+				or candidate.get("spatial_physics_format") not in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v7", "openrc-flight-checkpoint v8", "openrc-flight-checkpoint v9", "openrc-flight-checkpoint v11", FAILURE_CHECKPOINT_FORMAT]:
+			return false
+		candidate = candidate.duplicate(true)
+		candidate.format = candidate.spatial_physics_format
+		candidate.erase("spatial_physics_format")
+		candidate.erase("spatial_weather_receipt")
+	elif candidate.has("spatial_weather_receipt") or candidate.has("spatial_physics_format"):
+		return false
 	var restored_failures: RefCounted = null
 	if candidate.get("format") == FAILURE_CHECKPOINT_FORMAT:
 		if typeof(candidate.get("failure_physics_format")) != TYPE_STRING \
@@ -4822,6 +4883,25 @@ func _restore_checkpoint_impl(candidate: Dictionary) -> bool:
 		restored_weather = built.field
 	elif not weather_is_calm() or not atmosphere_is_reference() or candidate.has("weather_config"):
 		return false # a legacy physics-only boundary cannot hide non-calm forcing
+	if restored_weather.is_spatial() != spatial_boundary:
+		return false # spatial forcing must never hide inside an older checkpoint envelope
+	if spatial_boundary:
+		var candidate_environment := SimEnvironment.new()
+		candidate_environment.weather = restored_weather
+		var tick_value: Variant = snapshot.get("tick")
+		var dt_value: Variant = snapshot.get("dt")
+		if typeof(tick_value) != TYPE_INT or tick_value < 0 or typeof(dt_value) != TYPE_FLOAT \
+				or not is_finite(dt_value) or dt_value <= 0.0:
+			return false
+		for key: String in ["state", "previous"]:
+			var body: Variant = snapshot.get(key)
+			if not body is PackedFloat64Array or body.size() != RB.SIZE:
+				return false
+			var at: float = float(tick_value if key == "state" else maxi(0, tick_value - 1)) * dt_value
+			var sampled := WindFlow.stage_air(body, aircraft.model, candidate_environment, at,
+				restored_weather.air_density(body[RB.POS + 2]), Aero.SPATIAL_CONTINUATION_LAW)
+			if not sampled.ok:
+				return false
 	if restored_weather.has_vertical_atmosphere():
 		if candidate.get("atmosphere_law") != restored_weather.atmosphere_law():
 			return false

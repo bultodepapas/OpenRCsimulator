@@ -6826,3 +6826,143 @@ msgstr "Duración"
 #: ui/workshop_lighting.gd
 msgid "%d configured zones · %d enabled"
 msgstr "%d zonas configuradas · %d activas"
+
+
+# Spatial weather controls and presets; schema v5/v2 remain opt-in.
+msgid "Experimental spatial wind"
+msgstr "Viento espacial experimental"
+
+msgid "Spatial preset"
+msgstr "Preajuste espacial"
+
+msgid "Enable spatial wind"
+msgstr "Activar viento espacial"
+
+msgid "Advanced spatial settings"
+msgstr "Ajustes espaciales avanzados"
+
+msgid "Custom spatial wind"
+msgstr "Viento espacial personalizado"
+
+msgid "Choose a spatial preset or enable spatial wind to edit this separate draft."
+msgstr "Elige un preajuste espacial o activa el viento espacial para editar este borrador independiente."
+
+msgid "Custom spatial wind draft. Only the controls shown here are edited."
+msgstr "Borrador de viento espacial personalizado. Solo se modifican los controles mostrados aquí."
+
+msgid "Spatial mode replaces legacy mean wind, repeating gusts, and session turbulence in the applied draft."
+msgstr "Al aplicar el borrador, el modo espacial sustituye el viento medio heredado, las ráfagas repetitivas y la turbulencia de sesión."
+
+msgid "Flat-site spatial field; terrain lift, rotor flow, and valley channeling are unavailable."
+msgstr "Campo espacial sobre terreno plano; no incluye sustentación orográfica, flujo de rotor ni canalización de valles."
+
+msgid "Turbulence input is nominal; realized local variation can differ with height, wall taper, and the finite mode set."
+msgstr "La entrada de turbulencia es nominal; la variación local puede diferir con la altura, la transición de pared y el conjunto finito de modos."
+
+msgid "Gusts are finite authored events. Editing these fields replaces the agenda with one event; the profile remains after it ends."
+msgstr "Las ráfagas son eventos finitos definidos de antemano. Al editar estos campos, la agenda se sustituye por un evento; después permanece el perfil."
+
+msgid "Reference speed (0–20 m/s)"
+msgstr "Velocidad de referencia (0–20 m/s)"
+
+msgid "Direction FROM (0–360°)"
+msgstr "Dirección DESDE (0–360°)"
+
+msgid "Reference height AGL (0.1–200 m)"
+msgstr "Altura de referencia AGL (0,1–200 m)"
+
+msgid "Roughness length (0.001–0.5 m)"
+msgstr "Longitud de rugosidad (0,001–0,5 m)"
+
+msgid "Turbulence input (0–1 m/s)"
+msgstr "Entrada de turbulencia (0–1 m/s)"
+
+msgid "Seed (0–4294967295)"
+msgstr "Semilla (0–4294967295)"
+
+msgid "First gust increase (0–3.54 m/s)"
+msgstr "Aumento de la primera ráfaga (0–3,54 m/s)"
+
+msgid "First gust start (0–86400 s)"
+msgstr "Inicio de la primera ráfaga (0–86400 s)"
+
+msgid "Gust duration (0.1–120 s)"
+msgstr "Duración de la ráfaga (0,1–120 s)"
+
+msgid "Time horizon (60–86400 s)"
+msgstr "Horizonte de tiempo (60–86400 s)"
+
+msgid "Realistic · light breeze training"
+msgstr "Entrenamiento con brisa ligera · realista"
+
+msgid "1.5 m/s FROM 075° at 10 m, with 0.08 m/s nominal turbulence and a subdued finite gust agenda. Authored practice conditions, not a site measurement."
+msgstr "1,5 m/s DESDE 075° a 10 m, con turbulencia nominal de 0,08 m/s y una agenda moderada de ráfagas finitas. Son condiciones de práctica, no una medición del lugar."
+
+msgid "Light breeze · 2.5 m/s FROM 090°"
+msgstr "Brisa ligera · 2,5 m/s DESDE 090°"
+
+msgid "A steady east wind at the reference height. This does not include terrain flow."
+msgstr "Viento constante del este a la altura de referencia. No incluye flujo del terreno."
+
+msgid "Crosswind training · 5 m/s FROM 000°"
+msgstr "Entrenamiento de viento cruzado · 5 m/s DESDE 000°"
+
+msgid "A north wind. Headwind and crosswind components depend on the active runway heading."
+msgstr "Viento del norte. Las componentes de frente y lateral dependen del rumbo de la pista activa."
+
+msgid "Gusty · finite irregular agenda"
+msgstr "Ráfagas · agenda irregular finita"
+
+msgid "A 30-minute training agenda with 24 finite events inside a one-day validity horizon; gusts stop after the last event and the profile remains."
+msgstr "Agenda de entrenamiento de 30 minutos con 24 eventos finitos dentro de una vigencia de un día; las ráfagas terminan tras el último evento y permanece el perfil."
+
+msgid "Vertical shear training · one smooth layer"
+msgstr "Entrenamiento de cizalladura vertical · una capa suave"
+
+msgid "A finite-height wind layer adds a smooth direction and speed change above the reference height."
+msgstr "Una capa de viento de altura finita añade un cambio suave de dirección y velocidad sobre la altura de referencia."
+
+msgid "Thermal soaring training · finite kinematic cell"
+msgstr "Entrenamiento de vuelo térmico · celda cinemática finita"
+
+msgid "One prescribed finite updraft cell; no sun, terrain, or heating evolution is modeled."
+msgstr "Una celda ascendente finita prescrita; no se modelan el sol, el terreno ni la evolución del calentamiento."
+
+msgid "Strong wind · 8 m/s FROM 090°"
+msgstr "Viento fuerte · 8 m/s DESDE 090°"
+
+msgid "A steady east wind at the reference height. Use only when the selected aircraft and scenario support it."
+msgstr "Viento constante del este a la altura de referencia. Úsalo solo si la aeronave y el escenario seleccionados lo permiten."
+
+msgid "Ridge lift (unavailable)"
+msgstr "Sustentación de ladera (no disponible)"
+
+msgid "Terrain-driven ridge lift is not represented by the flat-site spatial-wind provider."
+msgstr "El proveedor espacial sobre terreno plano no representa la sustentación de ladera causada por el terreno."
+
+msgid "Thermal soaring (unavailable)"
+msgstr "Vuelo térmico (no disponible)"
+
+msgid "The spatial provider could not validate the finite thermal practice cell."
+msgstr "El proveedor espacial no pudo validar la celda térmica finita de práctica."
+
+msgid "Terrain rotor (unavailable)"
+msgstr "Rotor de terreno (no disponible)"
+
+msgid "Terrain-driven rotor flow is not represented by the flat-site spatial-wind provider."
+msgstr "El proveedor espacial sobre terreno plano no representa el flujo de rotor causado por el terreno."
+
+msgid "Valley channeling (unavailable)"
+msgstr "Canalización de valle (no disponible)"
+
+msgid "Valley channeling is not represented by the flat-site spatial-wind provider."
+msgstr "El proveedor espacial sobre terreno plano no representa la canalización del viento en un valle."
+
+msgid "Check the spatial wind values against their displayed limits."
+msgstr "Revisa los valores del viento espacial según los límites indicados."
+
+msgid "Spatial wind"
+msgstr "Viento espacial"
+
+msgid "Spatial wind varies with position and height. This flat-field model is experimental."
+msgstr "El viento espacial varía con la posición y la altura. Este modelo de campo plano es experimental."

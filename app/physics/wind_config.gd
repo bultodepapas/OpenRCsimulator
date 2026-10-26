@@ -5,6 +5,9 @@ extends RefCounted
 const Atmosphere = preload("res://physics/atmosphere.gd")
 const ATMOSPHERE_FORMAT := "openrc-weather v3"
 const COLUMN_FORMAT := "openrc-weather v4"
+const SPATIAL_FORMAT := "openrc-weather v5"
+const SpatialPresets := preload("res://physics/wind_spatial_presets.gd")
+const SpatialConfig := preload("res://physics/wind_spatial_config.gd")
 const ATMOSPHERE_KEYS := ["atmosphere_mode", "field_elevation_m", "temperature_c", "qnh_hpa", "relative_humidity_pct"]
 const FORMAT := "openrc-weather v1"
 const TURBULENCE_FORMAT := "openrc-weather v2"
@@ -32,6 +35,39 @@ const REQUIRED_KEYS := [
 ]
 
 
+## Explicit new law; no legacy profile is migrated automatically.
+static func spatial_defaults() -> Dictionary:
+	var config := upgrade_column(defaults())
+	config.format = SPATIAL_FORMAT
+	config.spatial_wind = SpatialConfig.defaults()
+	return config
+
+
+static func _validate_spatial(source: Dictionary) -> Dictionary:
+	var legacy := source.duplicate(true)
+	legacy.erase("spatial_wind")
+	legacy.format = COLUMN_FORMAT
+	var checked := validate(legacy)
+	if not checked.ok:
+		return checked
+	var errors := PackedStringArray()
+	# The spatial provider owns the entire wind, not a second copy of the legacy mean/gust/OU.
+	for key: String in ["speed_mps", "gust_mps", "gust_up_mps"]:
+		if checked.config[key] != 0.0:
+			errors.append("spatial weather requires legacy %s = 0" % key)
+	for component: float in checked.config.turbulence_rms_mps:
+		if component != 0.0:
+			errors.append("spatial weather cannot also enable session OU turbulence")
+	var spatial: Dictionary = SpatialConfig.resolve(source.get("spatial_wind"))
+	if not spatial.ok:
+		errors.append_array(spatial.errors)
+	if not errors.is_empty():
+		return {ok = false, config = {}, errors = errors}
+	checked.config.format = SPATIAL_FORMAT
+	checked.config.spatial_wind = spatial.config
+	return checked
+
+
 static func defaults() -> Dictionary:
 	return {
 		"format": FORMAT,
@@ -48,6 +84,8 @@ static func defaults() -> Dictionary:
 ## Validate a complete weather object and return a detached, canonical configuration.
 ## Values are never rounded; 360 degrees is the sole canonicalization to 0 degrees.
 static func validate(raw: Variant) -> Dictionary:
+	if raw is Dictionary and raw.get("format") == SPATIAL_FORMAT:
+		return _validate_spatial(raw)
 	var errors := PackedStringArray()
 	if typeof(raw) != TYPE_DICTIONARY:
 		errors.append("weather configuration must be an object")
@@ -167,6 +205,12 @@ static func presets() -> Array[Dictionary]:
 	out.append({id = "standard-column", label = "Standard dry ISA column", config = upgrade_column(defaults(), {
 		atmosphere_mode = "standard_column", field_elevation_m = 0.0, temperature_c = 15.0,
 		qnh_hpa = 1013.25, relative_humidity_pct = 0.0})})
+	for entry: Dictionary in SpatialPresets.entries():
+		if not entry.available:
+			continue
+		var spatial := spatial_defaults()
+		spatial.spatial_wind = entry.spatial_wind.duplicate(true)
+		out.append({id = entry.id, label = entry.label, config = spatial})
 	return out
 
 
@@ -183,6 +227,8 @@ static func summary(config: Variant) -> String:
 	if not checked.ok:
 		return "Invalid weather"
 	var c: Dictionary = checked.config
+	if c.format == SPATIAL_FORMAT:
+		return "Spatial wind: %.1f m/s from %03.0f° at %.0f m AGL" % [c.spatial_wind.profile.reference_speed_mps, c.spatial_wind.profile.reference_from_deg, c.spatial_wind.profile.reference_height_agl_m]
 	if float(c.speed_mps) == 0.0 and float(c.gust_mps) == 0.0 and float(c.gust_up_mps) == 0.0 \
 			and not has_turbulence(c) and not has_atmosphere(c) and not has_vertical_atmosphere(c):
 		return "Calm"
@@ -234,10 +280,10 @@ static func upgrade_atmosphere(config: Dictionary, changes: Dictionary = {}) -> 
 	var result: Dictionary = config.duplicate(true)
 	if result.get("format") == FORMAT:
 		result.merge({turbulence_rms_mps = [0.0, 0.0, 0.0], turbulence_tau_s = 2.0, turbulence_seed = 20261009})
-	if result.get("format") not in [ATMOSPHERE_FORMAT, COLUMN_FORMAT]:
+	if result.get("format") not in [ATMOSPHERE_FORMAT, COLUMN_FORMAT, SPATIAL_FORMAT]:
 		result.merge({atmosphere_mode = "reference", field_elevation_m = 0.0, temperature_c = 15.0,
 			qnh_hpa = 1013.25, relative_humidity_pct = 0.0})
-	if result.get("format") != COLUMN_FORMAT:
+	if result.get("format") not in [COLUMN_FORMAT, SPATIAL_FORMAT]:
 		result.format = ATMOSPHERE_FORMAT
 	result.merge(changes, true)
 	return result
@@ -246,18 +292,19 @@ static func upgrade_atmosphere(config: Dictionary, changes: Dictionary = {}) -> 
 ## Promote a weather object to v4 so it can explicitly select the dry standard-column mode.
 static func upgrade_column(config: Dictionary, changes: Dictionary = {}) -> Dictionary:
 	var result: Dictionary = upgrade_atmosphere(config)
-	result.format = COLUMN_FORMAT
+	if result.get("format") != SPATIAL_FORMAT:
+		result.format = COLUMN_FORMAT
 	result.merge(changes, true)
 	return result
 
 
 static func has_atmosphere(config: Dictionary) -> bool:
 	return (config.get("format") == ATMOSPHERE_FORMAT and config.get("atmosphere_mode") == "custom") \
-		or (config.get("format") == COLUMN_FORMAT and config.get("atmosphere_mode") in ["custom", "standard_column"])
+		or (config.get("format") in [COLUMN_FORMAT, SPATIAL_FORMAT] and config.get("atmosphere_mode") in ["custom", "standard_column"])
 
 
 static func has_vertical_atmosphere(config: Dictionary) -> bool:
-	return config.get("format") == COLUMN_FORMAT and config.get("atmosphere_mode") == "standard_column"
+	return config.get("format") in [COLUMN_FORMAT, SPATIAL_FORMAT] and config.get("atmosphere_mode") == "standard_column"
 
 
 ## UI preview and field construction share the physical kernel; reference stays the literal legacy density.

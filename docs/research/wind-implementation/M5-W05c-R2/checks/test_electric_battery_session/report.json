@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ba4a31f1-e80f-4e86-8ea9-548a439672c6",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-p0-propwash/candidate-snapshot/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_electric_battery_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T00:24:06.394120+00:00",
+  "label": "test_electric_battery_session",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-propwash\\isolated-checks\\test_electric_battery_session-vpvaj2zf\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-propwash\\isolated-checks\\test_electric_battery_session-vpvaj2zf\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 16.782,
+  "log_bytes": 1432,
+  "log_sha256": "92cd9ef5a263405560c4c4d4e201c76b27ea339c2289b8d21ae40f25198c35f1"
+}

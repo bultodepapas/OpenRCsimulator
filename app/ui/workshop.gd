@@ -68,6 +68,12 @@ var _presentation: Dictionary = {}
 var _presentation_bindings: Dictionary = {}
 var _presentation_errors := PackedStringArray()
 var _presentation_buffers: Dictionary = {}
+var _rebind_button: Button
+var _rebind_dialog: ConfirmationDialog
+var _rebind_text: Label
+var _rebind_snapshot: Dictionary = {}
+var _rebind_proposal: Dictionary = {}
+var _rebind_base_id := ""
 var _customization_panels: Array = []
 var _servo_type: OptionButton
 var _servo_level: HSlider
@@ -524,6 +530,11 @@ func _build_ui() -> void:
 	_review_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	_review_button.pressed.connect(_review_issues)
 	notes.add_child(_review_button)
+	_rebind_button = _button("Review appearance update", "", "ReviewAppearanceUpdate")
+	_rebind_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_rebind_button.visible = false
+	_rebind_button.pressed.connect(_review_appearance_update)
+	notes.add_child(_rebind_button)
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
 	_footer.add_child(actions)
@@ -1766,6 +1777,7 @@ func _messages(value: Variant, fallback: String) -> String:
 
 func _request_trial() -> void:
 	if _trial_pending: return
+	if is_instance_valid(_rebind_dialog) and _rebind_dialog.visible: return
 	if is_instance_valid(_mass_dialog) and _mass_dialog.visible: return
 	if is_instance_valid(_recovery_dialog) and _recovery_dialog.visible: return
 	if _library_dialog.visible or _name_dialog.visible or (is_instance_valid(_guard_dialog) and _guard_dialog.visible): return
@@ -1821,6 +1833,11 @@ func _request_close() -> void:
 
 ## Main-window close consumes one active editor modal before beginning an exit decision.
 func dismiss_modal_for_exit() -> bool:
+	if is_instance_valid(_rebind_dialog) and _rebind_dialog.visible:
+		_rebind_dialog.hide()
+		_rebind_proposal.clear()
+		_rebind_snapshot.clear()
+		return true
 	if is_instance_valid(_mass_dialog) and _mass_dialog.visible:
 		_mass_dialog.hide()
 		_mass_snapshot.clear()
@@ -2305,6 +2322,8 @@ func _refresh_issues() -> void:
 	_errors_label.text = messages
 	_errors_label.visible = not messages.is_empty()
 	_review_button.visible = not _edit_valid()
+	_rebind_button.visible = not _presentation_errors.is_empty() and not _presentation_bindings.is_empty()
+	_rebind_button.disabled = not _presentation_buffers.is_empty() or not _pending_numbers.is_empty()
 	_validation_label.text = tr("Ready for a trial · runway qualification required" if trial_start_choice == "runway" else "Ready for a trial · start in the air") if _edit_valid() else tr("Build blocked until the listed validation errors are resolved.")
 
 
@@ -2374,6 +2393,64 @@ func _restore_interaction() -> void:
 
 func get_presentation() -> Dictionary:
 	return _presentation.duplicate(true)
+
+
+## Explicit repair creates an unsaved copy; original revisions and their pins are never rewritten.
+func _review_appearance_update() -> void:
+	if not _presentation_buffers.is_empty() or not _pending_numbers.is_empty(): return
+	var service: Script = load("res://workshop/presentation_rebind.gd")
+	var proposal: Dictionary = service.propose(_presentation, _presentation_bindings)
+	if not proposal.get("ok", false):
+		set_note(_messages(proposal.get("errors", []), "These appearance settings cannot be updated safely."))
+		return
+	_rebind_snapshot = _presentation.duplicate(true)
+	_rebind_proposal = proposal.profile.duplicate(true)
+	_rebind_base_id = _base_id
+	if not is_instance_valid(_rebind_dialog):
+		_rebind_dialog = ConfirmationDialog.new()
+		_rebind_dialog.name = "ReviewAppearanceUpdateDialog"
+		_rebind_dialog.title = tr("Review appearance update")
+		_rebind_dialog.ok_button_text = tr("Create updated draft")
+		_rebind_dialog.theme = _screen.theme
+		_rebind_dialog.exclusive = true
+		var scroll := ScrollContainer.new()
+		scroll.custom_minimum_size = Vector2(260, 100)
+		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		_rebind_dialog.add_child(scroll)
+		_rebind_text = _label("", "SecondaryLabel", true)
+		_rebind_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		scroll.add_child(_rebind_text)
+		_rebind_dialog.confirmed.connect(_apply_appearance_update)
+		_rebind_dialog.canceled.connect(func() -> void:
+			_rebind_proposal.clear()
+			_rebind_snapshot.clear())
+		add_child(_rebind_dialog)
+	_rebind_dialog.theme = _screen.theme
+	_rebind_text.text = tr("This aircraft's appearance has been updated. Keep the saved colors, markings, lighting sequences and sound settings with the current aircraft model. Their placement or appearance may differ.\n\nReview the preview before saving or flying. Save will create a new build; the original saved revision stays unchanged. Physical settings stay unchanged.")
+	_rebind_dialog.popup_centered_clamped(Vector2i(850, 420), 0.9)
+	_rebind_dialog.get_cancel_button().grab_focus()
+
+
+func _apply_appearance_update() -> void:
+	if is_instance_valid(_rebind_dialog): _rebind_dialog.hide()
+	if _rebind_proposal.is_empty(): return
+	if _base_id != _rebind_base_id or _presentation != _rebind_snapshot or not _presentation_buffers.is_empty() or not _pending_numbers.is_empty():
+		_rebind_proposal.clear()
+		set_note("The draft changed. Review the appearance update again.")
+		return
+	var checked := Presentation.validate(_rebind_proposal, _presentation_bindings)
+	if not checked.ok:
+		_rebind_proposal.clear()
+		set_note(_messages(checked.errors, "The current aircraft bindings changed. Review again."))
+		return
+	_saved_variant_id = ""
+	_saved_variant_revision = 0
+	_saved_compiler_version = ""
+	set_presentation(checked.profile)
+	_rebind_proposal.clear()
+	_rebind_snapshot.clear()
+	_sync_variant_actions()
+	set_note("Updated appearance draft created. Inspect it, then save as a new build. The original is unchanged.")
 
 
 func _presentation_validity_changed(page: String, pending: bool) -> void:

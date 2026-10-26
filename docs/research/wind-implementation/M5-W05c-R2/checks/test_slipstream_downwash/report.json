@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6ad1c830-c152-418b-9616-0a91a7f48ece",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-p0-propwash/candidate-snapshot/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_slipstream_downwash.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T00:23:29.464988+00:00",
+  "label": "test_slipstream_downwash",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-propwash\\isolated-checks\\test_slipstream_downwash-hgnw4j_1\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-p0-propwash\\isolated-checks\\test_slipstream_downwash-hgnw4j_1\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.781,
+  "log_bytes": 1145,
+  "log_sha256": "de18a72815d16bb4e14f5bf8f49c340257ec9ea9288ad7743f71a2e0b8f3558e"
+}

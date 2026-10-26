@@ -1778,6 +1778,334 @@
       },
       "finite_samples": true,
       "note": "Timing/accounting/pause/throttle tape pass; the fixed 4 m camera and 500 us total-adapter gates still fail."
+    },
+    {
+      "capture": "servo-opt-gasoline-isolated",
+      "report_sha256": "966f4514f3c7d3bc4c43644302c8b16910a1ec63a3092465feb78c2fd35e85f6",
+      "checked_runner": {
+        "started_utc": "2026-10-26T00:33:38.320441+00:00",
+        "ok": true,
+        "complete": true,
+        "elapsed_seconds": 30.469,
+        "log_sha256": "acf2122c0b2c1e07a7dd0cf051ca8b6d109000e0a48fb461dd673c606d53fe57",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed",
+        "report_sha256": "9b698fb91a8ecca1dc071f7c937f2211ca7155f907cb1d1c9f92a206a0afe7a9",
+        "diagnostics": []
+      },
+      "signal_checks": {
+        "capture": "servo-opt-gasoline-isolated",
+        "sha256_wav": "551d3d08897d6f1f52c3ac522b94ab0444a1286e8cb9f0a8fc9a6224d3b73a09",
+        "checker_sha256": "13100cb439c7ebab3c339fe7cb80c029f56717084d281cad272361444f458b6d",
+        "driver": "WASAPI",
+        "display": "headless",
+        "fps": 60,
+        "aircraft": "p51d-mustang-120",
+        "seconds": 20.085333333333335,
+        "capture_wall_seconds": 20.092306,
+        "capture_wall_error_seconds": 0.006972666666666072,
+        "probe_sha256": "9df38b034c6a13b4748d72e496c8dbcf0056e1d6aa83023f501771f11bbc3e66",
+        "capture_bookkeeping": {
+          "buffer_length_frames": 65536,
+          "final": {
+            "available_frames_after_flush": 0,
+            "available_frames_before_flush": 0,
+            "discarded_frames": 0,
+            "flushed_frames": 0,
+            "pushed_frames": 964096
+          },
+          "flushed_frames": 0,
+          "initial": {
+            "available_frames": 0,
+            "discarded_frames": 0,
+            "pushed_frames": 0
+          },
+          "overflow_discarded_frames": 0,
+          "pushed_frames": 964096,
+          "recorded_frames": 964096,
+          "truncated_frames": 0,
+          "unaccounted_pushed_frames": 0
+        },
+        "timing_sample_count": 1127,
+        "peak_dbfs": -21.5625916550637,
+        "rms_dbfs": -40.0791893557051,
+        "pause_peak_linear": 0.0,
+        "dropped_frames": 0,
+        "review_kind": "transitions",
+        "wildlife_event_count": 2,
+        "adapter_p95_us": 879,
+        "adapter_max_us": 2449,
+        "stereo_difference_rms": 0.00026566479601900016,
+        "max_adjacent_sample_step": 0.01806640625,
+        "passed": false,
+        "failures": [
+          "camera change did not reach close aircraft view",
+          "adapter update p95 exceeded 0.5 ms budget"
+        ]
+      },
+      "note": "Stable disposable checkout, same final audio code. Other sessions resumed rendered tests, so this isolates files rather than machine workload. Timing/accounting/pause/throttle pass; fixed camera-distance and whole-adapter budget gates still fail.",
+      "aircraft": "p51d-mustang-120",
+      "driver": "WASAPI",
+      "mix_rate": 48000,
+      "captured_seconds": 20.0853333333333,
+      "capture_wall_seconds": 20.092306,
+      "discarded_frames": 0,
+      "peak_dbfs": -21.5625916550637,
+      "mechanical_update_p95_us": 208,
+      "mechanical_update_max_us": 1452,
+      "soundscape_update_p95_us": 879,
+      "soundscape_update_max_us": 2449,
+      "distance_min_m": 10.4753017425537,
+      "distance_max_m": 327.918182373047,
+      "events": [
+        {
+          "paused": false,
+          "rpm": 3362.96672567998,
+          "stage": 0,
+          "tick": 4,
+          "wall_s": 0.010822
+        },
+        {
+          "paused": false,
+          "rpm": 3352.07484093079,
+          "stage": 1,
+          "tick": 968,
+          "wall_s": 4.005464
+        },
+        {
+          "paused": false,
+          "rpm": 5880.06289901833,
+          "stage": 2,
+          "tick": 1688,
+          "wall_s": 7.00407
+        },
+        {
+          "paused": true,
+          "rpm": 4117.28589236947,
+          "stage": 3,
+          "tick": 2408,
+          "wall_s": 10.005102
+        },
+        {
+          "paused": false,
+          "rpm": 4117.28589236947,
+          "stage": 4,
+          "tick": 2408,
+          "wall_s": 11.011328
+        },
+        {
+          "paused": false,
+          "rpm": 2935.78880574682,
+          "stage": 5,
+          "tick": 2884,
+          "wall_s": 13.004172
+        },
+        {
+          "paused": false,
+          "rpm": 3362.96672568115,
+          "stage": 6,
+          "tick": 0,
+          "wall_s": 15.005324
+        }
+      ],
+      "audio_sources_sha256": {
+        "adapter": "1c48a609a4ea2e914169ec7060f702be174016f3dfe250c848aaf231fb7f68cb",
+        "mechanical": "c8cc20d93a74e799e67648700ea3f84f80befa36637eff420003c7d9bd2d949a",
+        "mechanical_motion": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
+        "mixer": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+        "model": "b90e7ea7b1c0829da33eb6255bc53814ca2733675a8f7ae91bf5c3d0d637d7d3",
+        "wildlife": "bb90ef1e5c31f72c376d4990e86e641f5122d0f80516600f46812981e9c26512"
+      },
+      "probe_sha256": "9df38b034c6a13b4748d72e496c8dbcf0056e1d6aa83023f501771f11bbc3e66",
+      "capture_bookkeeping": {
+        "buffer_length_frames": 65536,
+        "final": {
+          "available_frames_after_flush": 0,
+          "available_frames_before_flush": 0,
+          "discarded_frames": 0,
+          "flushed_frames": 0,
+          "pushed_frames": 964096
+        },
+        "flushed_frames": 0,
+        "initial": {
+          "available_frames": 0,
+          "discarded_frames": 0,
+          "pushed_frames": 0
+        },
+        "overflow_discarded_frames": 0,
+        "pushed_frames": 964096,
+        "recorded_frames": 964096,
+        "truncated_frames": 0,
+        "unaccounted_pushed_frames": 0
+      },
+      "finite_samples": true
+    },
+    {
+      "capture": "servo-opt-electric-isolated",
+      "report_sha256": "b911f9d87fc5b4eea41fd758d453d8f76281ea906b9616d8f0a6302b96a96bef",
+      "checked_runner": {
+        "started_utc": "2026-10-26T00:34:09.010949+00:00",
+        "ok": true,
+        "complete": true,
+        "elapsed_seconds": 30.828,
+        "log_sha256": "9e80cab30c9d9984fea071a3bee863ce9a0b6b8762b0ad941c73210e15afcd70",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed",
+        "report_sha256": "18bc16b42d851b18dcb373aacc50b64d7f3074591f73eab2f8d1374f0c9bd061",
+        "diagnostics": []
+      },
+      "signal_checks": {
+        "capture": "servo-opt-electric-isolated",
+        "sha256_wav": "1d7c13412e03eb91c7b79d8501310bee62a24b950c99ca3d89aa7b333243783a",
+        "checker_sha256": "13100cb439c7ebab3c339fe7cb80c029f56717084d281cad272361444f458b6d",
+        "driver": "WASAPI",
+        "display": "headless",
+        "fps": 60,
+        "aircraft": "turbo-lumber-evolution",
+        "seconds": 20.010666666666665,
+        "capture_wall_seconds": 20.004946,
+        "capture_wall_error_seconds": 0.005720666666665153,
+        "probe_sha256": "9df38b034c6a13b4748d72e496c8dbcf0056e1d6aa83023f501771f11bbc3e66",
+        "capture_bookkeeping": {
+          "buffer_length_frames": 65536,
+          "final": {
+            "available_frames_after_flush": 0,
+            "available_frames_before_flush": 0,
+            "discarded_frames": 0,
+            "flushed_frames": 0,
+            "pushed_frames": 960512
+          },
+          "flushed_frames": 0,
+          "initial": {
+            "available_frames": 0,
+            "discarded_frames": 0,
+            "pushed_frames": 0
+          },
+          "overflow_discarded_frames": 0,
+          "pushed_frames": 960512,
+          "recorded_frames": 960512,
+          "truncated_frames": 0,
+          "unaccounted_pushed_frames": 0
+        },
+        "timing_sample_count": 1141,
+        "peak_dbfs": -25.848321289179,
+        "rms_dbfs": -46.5104620483777,
+        "pause_peak_linear": 0.0,
+        "dropped_frames": 0,
+        "review_kind": "transitions",
+        "wildlife_event_count": 1,
+        "adapter_p95_us": 743,
+        "adapter_max_us": 1127,
+        "stereo_difference_rms": 7.414243967642131e-05,
+        "max_adjacent_sample_step": 0.00994873046875,
+        "passed": false,
+        "failures": [
+          "camera change did not reach close aircraft view",
+          "adapter update p95 exceeded 0.5 ms budget"
+        ]
+      },
+      "note": "Stable disposable checkout, same final audio code. Other sessions resumed rendered tests, so this isolates files rather than machine workload. Timing/accounting/pause/throttle pass; fixed camera-distance and whole-adapter budget gates still fail.",
+      "aircraft": "turbo-lumber-evolution",
+      "driver": "WASAPI",
+      "mix_rate": 48000,
+      "captured_seconds": 20.0106666666667,
+      "capture_wall_seconds": 20.004946,
+      "discarded_frames": 0,
+      "peak_dbfs": -25.848321289179,
+      "mechanical_update_p95_us": 160,
+      "mechanical_update_max_us": 307,
+      "soundscape_update_p95_us": 743,
+      "soundscape_update_max_us": 1127,
+      "distance_min_m": 5.77106189727783,
+      "distance_max_m": 113.820503234863,
+      "events": [
+        {
+          "paused": false,
+          "rpm": 4396.81004313105,
+          "stage": 0,
+          "tick": 3,
+          "wall_s": 0.006776
+        },
+        {
+          "paused": false,
+          "rpm": 4396.39266247768,
+          "stage": 1,
+          "tick": 972,
+          "wall_s": 4.005561
+        },
+        {
+          "paused": false,
+          "rpm": 9654.49355226038,
+          "stage": 2,
+          "tick": 1692,
+          "wall_s": 7.004946
+        },
+        {
+          "paused": true,
+          "rpm": 1313.06620459936,
+          "stage": 3,
+          "tick": 2412,
+          "wall_s": 10.005024
+        },
+        {
+          "paused": false,
+          "rpm": 1313.06620459936,
+          "stage": 4,
+          "tick": 2412,
+          "wall_s": 11.016176
+        },
+        {
+          "paused": false,
+          "rpm": 103.16110098132,
+          "stage": 5,
+          "tick": 2888,
+          "wall_s": 13.004916
+        },
+        {
+          "paused": false,
+          "rpm": 4396.81034533142,
+          "stage": 6,
+          "tick": 0,
+          "wall_s": 15.004512
+        }
+      ],
+      "audio_sources_sha256": {
+        "adapter": "1c48a609a4ea2e914169ec7060f702be174016f3dfe250c848aaf231fb7f68cb",
+        "mechanical": "c8cc20d93a74e799e67648700ea3f84f80befa36637eff420003c7d9bd2d949a",
+        "mechanical_motion": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
+        "mixer": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+        "model": "b90e7ea7b1c0829da33eb6255bc53814ca2733675a8f7ae91bf5c3d0d637d7d3",
+        "wildlife": "bb90ef1e5c31f72c376d4990e86e641f5122d0f80516600f46812981e9c26512"
+      },
+      "probe_sha256": "9df38b034c6a13b4748d72e496c8dbcf0056e1d6aa83023f501771f11bbc3e66",
+      "capture_bookkeeping": {
+        "buffer_length_frames": 65536,
+        "final": {
+          "available_frames_after_flush": 0,
+          "available_frames_before_flush": 0,
+          "discarded_frames": 0,
+          "flushed_frames": 0,
+          "pushed_frames": 960512
+        },
+        "flushed_frames": 0,
+        "initial": {
+          "available_frames": 0,
+          "discarded_frames": 0,
+          "pushed_frames": 0
+        },
+        "overflow_discarded_frames": 0,
+        "pushed_frames": 960512,
+        "recorded_frames": 960512,
+        "truncated_frames": 0,
+        "unaccounted_pushed_frames": 0
+      },
+      "finite_samples": true
     }
   ],
   "sources": {
@@ -2410,6 +2738,74 @@
       "mechanical_motion.gd": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
       "mechanical_profile.gd": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb",
       "flight_audio.gd": "4d1a871ee0ad06474a8074e6a87891afedc327aec07cdf85598df38d5f0e8ec0"
+    },
+    "shared_tree_final_parity_attempt": {
+      "started_utc": "2026-10-26T00:22:50.317211+00:00",
+      "ok": false,
+      "complete": true,
+      "elapsed_seconds": 184.516,
+      "log_sha256": "fe6d7b82e6bc22034658cc88ae30c437d14c7698343bc95cd10dad99e9a761bf",
+      "counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "reason": "process_exit",
+      "report_sha256": "75e1567114516636c984343af06b779fe9002fcdbfeff4e53614b4742513a942",
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 129,
+          "message": "Aircraft customization bindings: [\"presentation dependency validation failed: SHA-256 mismatch for presentation source res://render/world/aircraft_lights.gd\"]",
+          "context": [
+            "   at: push_error (core/variant/variant_utility.cpp:1024)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build (res://render/airplane.gd:104)"
+          ]
+        }
+      ]
+    },
+    "final_physics_parity": {
+      "checked_runner": {
+        "started_utc": "2026-10-26T00:30:14.418920+00:00",
+        "ok": true,
+        "complete": true,
+        "elapsed_seconds": 178.641,
+        "log_sha256": "e59ca393ba77951b304e4c6a85b57572f2a1c1122b47b4e561b3c4e42a8ebd26",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "reason": "passed",
+        "report_sha256": "d0b4c62d628745c8c384d48ad1cf5e46ee35d5868239d9e4a1507c725fcb2b27",
+        "diagnostics": []
+      },
+      "report_sha256": "3c2d4f4f04f93450e1978e8429fa6cafba2215b720588f9c10b8ccc2c9c8350c",
+      "snapshot_base_commit": "ac6fb953508bad76b2f12f9690a03ea5b20c014a",
+      "snapshot_note": "Disposable worktree plus final audio changes; regenerated presentation registry only inside the snapshot. Reused imported assets, then imported with pinned Godot and the same native extension. The shared-tree attempt failed after a concurrent lighting source edit invalidated its presentation hash. Windows checkout line endings change some byte hashes; normalized audio sources match the shared tree.",
+      "native_extension_sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+      "presentation_registry_sha256": "b8aaa0f936ccfbb4713023b90babdd80fe696743868d2e63063c993a0ff4b9bb",
+      "normalized_audio_sources_match_shared_tree": true,
+      "status": "pass",
+      "checks": 36,
+      "passed_pairs": 9,
+      "expected_pairs": 9,
+      "ticks_per_pair_run": 1200,
+      "failures": [],
+      "audio_modules_sha256": {
+        "flight_audio.gd": "1c48a609a4ea2e914169ec7060f702be174016f3dfe250c848aaf231fb7f68cb",
+        "glow_audio_pump.gd": "62df5592f3c3f5c0c4bdbf8dd6fbfe4e2313b042d8170ea74147cbbc96b9eec8",
+        "glow_voice.gd": "22551e2f74b185300c70a0a0b7fca49b2232c2dcad75aa13baa0fab356214a62",
+        "ground_audio.gd": "2bfddf0626bb4c7ce2d5eec4a8fba14639e13c2b804a425b8da7dd06db0c0693",
+        "ground_audio_model.gd": "25158687fb5bbd6900797443ecbcc26dfc122cb7e84d7ae9294d14e675ec4e3b",
+        "mechanical_audio.gd": "c8cc20d93a74e799e67648700ea3f84f80befa36637eff420003c7d9bd2d949a",
+        "mechanical_motion.gd": "695500e636e5e205fa982de52de02d3252f06331cf4fb480611400b5703e004f",
+        "mechanical_profile.gd": "f44afe5ac9f4851ffdea0cb7944c5748f31c4821960cfe7eab8678a3009de807",
+        "powertrain_audio.gd": "76fc1ba32033b1f3179a2faa605097a5731cf615ab3edd0823554f51a19b0196",
+        "soundscape.gd": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+        "soundscape_model.gd": "b90e7ea7b1c0829da33eb6255bc53814ca2733675a8f7ae91bf5c3d0d637d7d3"
+      },
+      "tested_at_utc": "2026-10-26 00:33:12"
     }
   }
 }

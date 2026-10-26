@@ -1,0 +1,229 @@
+{
+  "format": "openrc-wind-p0-evidence-v1",
+  "date": "2026-10-25",
+  "scope": "M5-W05c-R2 experimental powered stage and matched local wash; no product spatial weather admission",
+  "implementation_start_head": "b85ce1047a3e7798ab22b330675fc0c9e4bce912",
+  "head_at_receipt": "ac6fb953508bad76b2f12f9690a03ea5b20c014a",
+  "engine": "Godot 4.8.beta1.official.4d10419ca Windows console",
+  "baseline_solver_sha256": "a47d31c6aa5cb73bf94feb4deb4130396a0a5d27863bc45cc4e2791dd45cc18d",
+  "candidate_solver_sha256": "7742f61a2028dbf758bbacffa4f5f525049544b05cf5a2a69488a519e256c21b",
+  "sources_sha256": {
+    "app/physics/dynamics.gd": "e3f2c6e9561d583c6013ae6bd5c095ef56aec6407d13a65ed6676237b45f0752",
+    "app/physics/glow/flight.gd": "37b5e2d58ffb3615a8aabcaceb26db4408835135723200d07fb5f6b4dd8b60a0",
+    "app/physics/propulsion.gd": "732f4189efa068ff9e4469ac1c1d2f580ccd152d839005b321380a34afb92eed",
+    "app/physics/slipstream.gd": "49482b032ecedb652d049b0b9b685aff6cb9097b950a459fe8bfec106dcd2e02",
+    "app/physics/swirl_loads.gd": "c0213ca06cfe9e265f2c442aa144524f3ea8b29a17724845116359235dc8a0eb",
+    "app/physics/wash_transport.gd": "5cfae8de20432d66f2d5629716b1cf96cd3425dae083e362e4d3c415546f6e8a",
+    "app/physics/wind_aircraft_flow.gd": "0ff23dd3c154d80439a8f69e46aa7eb20af42c2f45d9bb7d4a61c04f0ca78c58",
+    "app/sim/flight_session.gd": "d4db0896268c1b33c2db1bc9a65ab7fedbf862be693bf351b229fc3e9f43f855",
+    "app/sim/liquid_fuel_flight.gd": "26397c12a5af6ccf45c442c796c397be9ff6068be293f0e92bc71fc257cc2e53",
+    "app/tests/test_spatial_propulsion_flow.gd": "0ea7fedd617511c562e2ea4ba1ad6520cd210a1c928fc6af71edc27343063ca0",
+    "app/tests/test_spatial_wash.gd": "74611527e852f28180b54b0d2c8c79e564095ef7d6794d362fe960b1d4fece9d",
+    "app/tests/test_spatial_powered_stage.gd": "1cea575a35b7f8800cb700daea003a000402ab633ce6b9874d594b85f5bff115",
+    "app/tests/fixtures/segmented_slipstream_reference.gd": "006087f70be22df01e8af7373e67584e647c7711979986f774bf9c677003a8c7"
+  },
+  "source_note": "Isolated baseline worktree plus nine wind-owned runtime files. All owned root source bytes match except flight_session.gd, whose three concurrent ground hunks were excluded only in the tested snapshot. Candidate session bytes are retained. External commits during verification did not change these owned bytes.",
+  "checks": [
+    {
+      "script": "test_spatial_propulsion_flow",
+      "report": "checks/test_spatial_propulsion_flow/report.json",
+      "log": "checks/test_spatial_propulsion_flow/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_spatial_wash",
+      "report": "checks/test_spatial_wash/report.json",
+      "log": "checks/test_spatial_wash/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_spatial_powered_stage",
+      "report": "checks/test_spatial_powered_stage/report.json",
+      "log": "checks/test_spatial_powered_stage/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_wind_aircraft_flow",
+      "report": "checks/test_wind_aircraft_flow/report.json",
+      "log": "checks/test_wind_aircraft_flow/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_spatial_wind_aerodynamics",
+      "report": "checks/test_spatial_wind_aerodynamics/report.json",
+      "log": "checks/test_spatial_wind_aerodynamics/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_propulsion_scalar",
+      "report": "checks/test_propulsion_scalar/report.json",
+      "log": "checks/test_propulsion_scalar/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_slipstream_scalar",
+      "report": "checks/test_slipstream_scalar/report.json",
+      "log": "checks/test_slipstream_scalar/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_segmented_slipstream_parity",
+      "report": "checks/test_segmented_slipstream_parity/report.json",
+      "log": "checks/test_segmented_slipstream_parity/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_slipstream_sidewash",
+      "report": "checks/test_slipstream_sidewash/report.json",
+      "log": "checks/test_slipstream_sidewash/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_swirl_optimization",
+      "report": "checks/test_swirl_optimization/report.json",
+      "log": "checks/test_swirl_optimization/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_wash_transport",
+      "report": "checks/test_wash_transport/report.json",
+      "log": "checks/test_wash_transport/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_slipstream_downwash",
+      "report": "checks/test_slipstream_downwash/report.json",
+      "log": "checks/test_slipstream_downwash/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_glow_stage_reuse",
+      "report": "checks/test_glow_stage_reuse/report.json",
+      "log": "checks/test_glow_stage_reuse/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_glow_hub_inflow",
+      "report": "checks/test_glow_hub_inflow/report.json",
+      "log": "checks/test_glow_hub_inflow/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_glow_flight_physics",
+      "report": "checks/test_glow_flight_physics/report.json",
+      "log": "checks/test_glow_flight_physics/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_liquid_fuel_session",
+      "report": "checks/test_liquid_fuel_session/report.json",
+      "log": "checks/test_liquid_fuel_session/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_electric_session",
+      "report": "checks/test_electric_session/report.json",
+      "log": "checks/test_electric_session/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_electric_battery_session",
+      "report": "checks/test_electric_battery_session/report.json",
+      "log": "checks/test_electric_battery_session/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_turbine_continuous",
+      "report": "checks/test_turbine_continuous/report.json",
+      "log": "checks/test_turbine_continuous/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_shaft_coupled",
+      "report": "checks/test_shaft_coupled/report.json",
+      "log": "checks/test_shaft_coupled/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_spatial_wind_flight",
+      "report": "checks/test_spatial_wind_flight/report.json",
+      "log": "checks/test_spatial_wind_flight/engine.log",
+      "ok": true
+    },
+    {
+      "script": "test_golden",
+      "report": "checks/test_golden/report.json",
+      "log": "checks/test_golden/engine.log",
+      "ok": true
+    }
+  ],
+  "focused_checks": 294,
+  "baseline_flight_log_checks": 3247,
+  "flights": [
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "directory": "flights/jensen_ugly_stik_60",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "csv_bytes_equal": true,
+      "recording_sha256": "6fb5658b23520a170e26050232219aaf5f0bac58742da52c8518b71eb159ad1c",
+      "csv_sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041"
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "directory": "flights/gp_extra_300s_60",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "csv_bytes_equal": true,
+      "recording_sha256": "81f438918a07a4033618023048550689566abab18789c974029ebe4df650a3e7",
+      "csv_sha256": "6936aa45bcb1a8e07acee8a34d0d9a2800bc036d1f47cc24abb48614739e5b8a"
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "directory": "flights/p51d_mustang_120",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "csv_bytes_equal": true,
+      "recording_sha256": "6eb47700c58576221bb6e5d5739478c2286330883e9e42bf2e9914341c6b666c",
+      "csv_sha256": "78279f458ae9b477809a259c167c7b2d3b49a4c2ce7aedb182eada93d01fb748"
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "directory": "flights/sebart_avanti_s_a200",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "csv_bytes_equal": true,
+      "recording_sha256": "ca3526173e4077327cbd58bc225e1ce202d69976ca1138f07c5f3e01aa19ad2f",
+      "csv_sha256": "32660e6cf34c75ab5ea051fa0c086d0a03c49874ce7f5a68b91bd3027cac7977"
+    },
+    {
+      "aircraft": "turbo_lumber_evolution",
+      "directory": "flights/turbo_lumber_evolution",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "csv_bytes_equal": true,
+      "recording_sha256": "3e9da3ccc8ea3d55cec75e447ccf259c9461da31d411c161641f206566a27fba",
+      "csv_sha256": "9510719166eb8bb043a98fb1c5a4141ea9aba2bf71ccd9922d7eb6869431eea8"
+    },
+    {
+      "aircraft": "stik_glow_61fx_2t",
+      "directory": "flights/stik_glow_61fx_2t",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": true,
+      "csv_bytes_equal": true,
+      "recording_sha256": "ced560b71284c3da821ed285586a99347a19dc252b6e92c5ed39ff5d81af12b3",
+      "csv_sha256": "d57c78d951580e38fe779c03ec42cddc637f6f9ad0433769820433ced4c4773d"
+    }
+  ],
+  "candidate_rows": 1566,
+  "full_release_suite_run": false,
+  "physical_validation": false,
+  "performance_qualified": false,
+  "resolved_failure": "The inherited segmented reference fixture needed the new optional Callable argument. Only its signature and explanatory comment changed; uniform reference calculations remain unchanged. The rerun passed 381 checks."
+}

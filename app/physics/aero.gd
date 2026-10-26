@@ -22,9 +22,17 @@ const LOADS_LAW := "section-plane-source-weighted-wake-velocity-v2"
 const WAKE_STATE_UNIT := "m/s (equal-area mean of section Vp*CL)"
 ## Experimental unwashed ambient-gradient bridge; not a saved weather or aircraft law.
 const SPATIAL_LOADS_LAW := "matched-unwashed-station-delta-v1"
+## Experimental full-angle continuation using the existing smooth local section laws.
+## This is a distinct stage law; it is not admitted by the v1 attached-flow contract.
+const SPATIAL_CONTINUATION_LAW := "matched-unwashed-full-angle-section-delta-v1"
 ## Provisional eligibility limits, not clamps or calibrated RC turbulence parameters.
 const SPATIAL_MAX_ANGLE_RAD := 3.0 * PI / 180.0
 const SPATIAL_MAX_PRESSURE_FRACTION := 0.25
+## Defensive bounds against malformed finite receipts only. They are not flight envelopes or physical qualifications.
+const SPATIAL_CONTINUATION_MAX_FLOW_MPS := 500.0
+const SPATIAL_CONTINUATION_MAX_DELTA_MPS := 1000.0
+const SPATIAL_CONTINUATION_MAX_DENSITY := 1000.0
+const SPATIAL_CONTINUATION_MAX_LOAD := 1.0e12
 
 
 ## Our pilot-side surface angles (degrees, trailing edge UP for ailerons/elevator, RIGHT for rudder,
@@ -991,6 +999,169 @@ static func ambient_spatial_loads(s: PackedFloat64Array, air: Dictionary, d: Dic
 		return _spatial_failure("spatial aerodynamic evaluation is nonfinite")
 	return {ok = true, errors = PackedStringArray(), law = SPATIAL_LOADS_LAW, uniform = false,
 		loads = out, delta = delta, held_wake_mps = wake, domain = domain}
+
+
+## Experimental full-angle counterpart to ambient_spatial_loads(). The paired raw
+## surface evaluations keep the legacy global/local blend at the reference point,
+## while allowing the existing continuous section/tail laws to cross stall, zero
+## forward flow and reversal. This remains a quasi-steady model continuation, not
+## an aircraft or atmosphere validation. The stage caller selects it explicitly.
+static func ambient_spatial_continuation_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
+		model: Dictionary, rho: float, station_delta_body: PackedFloat64Array,
+		downwash_cl := NAN, ground_up := NAN) -> Dictionary:
+	if not _spatial_finite(s, RB.SIZE) or not is_finite(rho) or rho <= 0.0 \
+			or rho > SPATIAL_CONTINUATION_MAX_DENSITY or is_inf(downwash_cl) or is_inf(ground_up):
+		return _continuation_failure("invalid body, density, wake or ground input")
+	var quaternion_norm := 0.0
+	for axis in 4:
+		quaternion_norm += s[RB.ATT+axis]*s[RB.ATT+axis]
+	if not is_finite(quaternion_norm) or quaternion_norm <= 1e-24:
+		return _continuation_failure("invalid body quaternion")
+	var v: Variant = air.get("v_air")
+	if not v is PackedFloat64Array or not _spatial_finite(v, 3):
+		return _continuation_failure("invalid reference air velocity")
+	for key: String in ["V", "alpha", "beta", "qbar"]:
+		var value: Variant = air.get(key)
+		if typeof(value) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(value)):
+			return _continuation_failure("invalid reference air data")
+	if float(air.V) < 0.0 or float(air.V) > SPATIAL_CONTINUATION_MAX_FLOW_MPS \
+			or float(air.qbar) < 0.0 or float(air.qbar) > 0.5 * SPATIAL_CONTINUATION_MAX_DENSITY \
+			* SPATIAL_CONTINUATION_MAX_FLOW_MPS * SPATIAL_CONTINUATION_MAX_FLOW_MPS:
+		return _continuation_failure("reference air data exceeds the defensive numerical bound")
+	for component: float in v:
+		if absf(component) > SPATIAL_CONTINUATION_MAX_FLOW_MPS:
+			return _continuation_failure("reference air velocity exceeds the defensive numerical bound")
+	for key: String in ["elevator", "aileron_left", "aileron_right", "rudder"]:
+		var value: Variant = d.get(key)
+		if typeof(value) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(value)):
+			return _continuation_failure("invalid surface deflection")
+	if not is_finite(float(d.get("flap", 0.0))):
+		return _continuation_failure("invalid flap deflection")
+	if not model.get("reference", {}) is Dictionary or not model.get("aero", {}) is Dictionary \
+			or not model.get("envelope", {}) is Dictionary or not model.get("surfaces", {}) is Dictionary:
+		return _continuation_failure("invalid normalized aircraft model")
+	var reference: Dictionary = model.reference
+	var envelope: Dictionary = model.envelope
+	var surfaces: Dictionary = model.surfaces
+	var cg: Variant = model.get("cg_le")
+	var arp: Variant = reference.get("arp_le")
+	var ys: Variant = envelope.get("station_ys")
+	if not cg is PackedFloat64Array or not _spatial_finite(cg, 3) \
+			or not arp is PackedFloat64Array or not _spatial_finite(arp, 3) \
+			or not ys is PackedFloat64Array or ys.is_empty() or not _spatial_finite(ys, ys.size()):
+		return _continuation_failure("invalid aircraft datum or wing stations")
+	for name: String in ["horizontal", "vertical"]:
+		var tail: Variant = surfaces.get(name)
+		if not tail is Dictionary or not tail.get("position", PackedFloat64Array()) is PackedFloat64Array \
+				or not _spatial_finite(tail.position, 3):
+			return _continuation_failure("invalid %s-tail geometry" % name)
+	if station_delta_body.size() != 3 * (ys.size() + 2) \
+			or not _spatial_finite(station_delta_body, 3 * (ys.size() + 2)):
+		return _continuation_failure("spatial air needs one finite delta per wing and tail station")
+	for component: float in station_delta_body:
+		if absf(component) > SPATIAL_CONTINUATION_MAX_DELTA_MPS:
+			return _continuation_failure("station wind delta exceeds the defensive numerical bound")
+	var uniform := true
+	for component: float in station_delta_body:
+		if component != 0.0:
+			uniform = false
+			break
+	# The exact-zero path avoids subtraction and retains legacy bytes in every regime.
+	if uniform:
+		var legacy := loads(s, air, d, model, rho, downwash_cl, ground_up)
+		if not _continuation_loads_bounded(legacy):
+			return _continuation_failure("reference aerodynamic evaluation is nonfinite or unbounded")
+		return {ok = true, errors = PackedStringArray(), law = SPATIAL_CONTINUATION_LAW, uniform = true,
+			loads = legacy, delta = PackedFloat64Array([0., 0., 0., 0., 0., 0.]), held_wake_mps = downwash_cl}
+
+	var rates := s.slice(RB.RATE, RB.RATE+3)
+	var reference_wing := _wing_flow(s, air, d, model)
+	var spatial_wing := _wing_flow(s, air, d, model, station_delta_body)
+	if not _continuation_wing_flow_bounded(reference_wing, ys.size()) \
+			or not _continuation_wing_flow_bounded(spatial_wing, ys.size()):
+		return _continuation_failure("wing station flow is nonfinite or exceeds the defensive numerical bound")
+	# Bound both tail planes before their section law squares velocity components.
+	for tail_index in 2:
+		var vertical := tail_index == 1
+		var tail: Dictionary = surfaces.vertical if vertical else surfaces.horizontal
+		var arm := _arm(tail.position, cg)
+		var before := M.add(v, M.cross(rates, arm))
+		var after := before.duplicate()
+		for axis in 3:
+			after[axis] += station_delta_body[3 * (ys.size() + tail_index) + axis]
+		if not _continuation_flow_bounded(before) or not _continuation_flow_bounded(after):
+			return _continuation_failure("tail station flow is nonfinite or exceeds the defensive numerical bound")
+
+	var ge := GroundEffect.factors(s, model, ground_up)
+	# Resolve the reference wake once and share it across both raw surfaces evaluations.
+	# Spatial strip-wake feedback remains a separate, versioned law change.
+	var wake: float = _wing_lift_coefficient_with(s, air, d, model, ge, true) if is_nan(downwash_cl) else downwash_cl
+	if not is_finite(wake) or absf(wake) > 3.0 * SPATIAL_CONTINUATION_MAX_FLOW_MPS:
+		return _continuation_failure("reference wing wake is nonfinite or exceeds the defensive numerical bound")
+	var reference_loads := _local_loads(s, air, d, model, rho, wake, null, ge, PackedFloat64Array(), false)
+	var spatial_loads := _local_loads(s, air, d, model, rho, wake, null, ge, station_delta_body, false)
+	var legacy := loads(s, air, d, model, rho, downwash_cl, ground_up)
+	if not _continuation_loads_bounded(reference_loads) or not _continuation_loads_bounded(spatial_loads) \
+			or not _continuation_loads_bounded(legacy):
+		return _continuation_failure("reference or spatial aerodynamic evaluation is nonfinite or unbounded")
+	var delta := PackedFloat64Array()
+	delta.resize(6)
+	var out := legacy.duplicate()
+	for axis in 6:
+		delta[axis] = spatial_loads[axis] - reference_loads[axis]
+		out[axis] += delta[axis]
+	if not _continuation_loads_bounded(delta) or not _continuation_loads_bounded(out):
+		return _continuation_failure("spatial aerodynamic result is nonfinite or unbounded")
+	return {ok = true, errors = PackedStringArray(), law = SPATIAL_CONTINUATION_LAW, uniform = false,
+		loads = out, delta = delta, held_wake_mps = wake,
+		flow = {reference_zero_plane_wing_stations = _count_zero_plane_speeds(reference_wing),
+			spatial_zero_plane_wing_stations = _count_zero_plane_speeds(spatial_wing)}}
+
+
+static func _continuation_flow_bounded(flow: PackedFloat64Array) -> bool:
+	if not _spatial_finite(flow, 3):
+		return false
+	for component: float in flow:
+		if absf(component) > SPATIAL_CONTINUATION_MAX_FLOW_MPS:
+			return false
+	return M.sqrt_(flow[0]*flow[0] + flow[1]*flow[1] + flow[2]*flow[2]) <= SPATIAL_CONTINUATION_MAX_FLOW_MPS
+
+
+static func _continuation_wing_flow_bounded(flow: Dictionary, stations: int) -> bool:
+	if not flow.has("reference_speed") or not is_finite(float(flow.reference_speed)) \
+			or float(flow.reference_speed) > SPATIAL_CONTINUATION_MAX_FLOW_MPS:
+		return false
+	for key: String in ["angles", "speeds", "sources", "flap_shifts"]:
+		var values: Variant = flow.get(key)
+		if not values is PackedFloat64Array or not _spatial_finite(values, stations):
+			return false
+		for value: float in values:
+			if absf(value) > SPATIAL_CONTINUATION_MAX_FLOW_MPS:
+				return false
+	return true
+
+
+static func _continuation_loads_bounded(values: PackedFloat64Array) -> bool:
+	if not _spatial_finite(values, 6):
+		return false
+	for value: float in values:
+		if absf(value) > SPATIAL_CONTINUATION_MAX_LOAD:
+			return false
+	return true
+
+
+static func _count_zero_plane_speeds(flow: Dictionary) -> int:
+	var count := 0
+	for speed_index in flow.speeds.size():
+		# This diagnostic names only zero chord-normal speed. Actual section angles,
+		# including reversed flow, remain in the raw continuous law and are unclamped.
+		if flow.speeds[speed_index] == 0.0:
+			count += 1
+	return count
+
+
+static func _continuation_failure(message: String) -> Dictionary:
+	return {ok = false, law = SPATIAL_CONTINUATION_LAW, errors = PackedStringArray([message])}
 
 
 ## Deliberately conservative initial domain: both paired local flows must remain attached.

@@ -16,13 +16,38 @@ const QUANTITIES := {
 ## Apply only at the file-loading boundary. In-memory AircraftData.validate_and_derive() stays legacy-compatible.
 ## Returns {ok, model, errors, identity}; malformed profile data blocks a file-backed aircraft load.
 static func apply_to_model(model: Dictionary, path := DEFAULT_PATH) -> Dictionary:
+	return _apply(model, path, "")
+
+
+## Explicit authoring-module selection. Unknown/missing profiles cannot downgrade
+## to legacy, and a stable source-profile key survives a Workshop aircraft rename.
+static func apply_selected_profile(model: Dictionary, profile_id: String,
+		expected_sha256: String, path := DEFAULT_PATH) -> Dictionary:
+	if profile_id.strip_edges().is_empty() or profile_id.length() > 128 or expected_sha256.length() != 64:
+		return _failure("explicit wheel profile needs a bounded ID and exact SHA-256")
+	for character: String in expected_sha256:
+		if character not in "0123456789abcdef":
+			return _failure("explicit wheel profile SHA-256 must use lowercase hexadecimal")
+	var result := _apply(model, path, profile_id)
+	if not result.ok: return result
+	if result.identity.get("profile_sha256", "") != expected_sha256:
+		return _failure("explicit wheel profile '%s' identity does not match its pin" % profile_id)
+	result.model.wheel_profile.profile_id = profile_id
+	result.identity = result.model.wheel_profile
+	return result
+
+
+static func _apply(model: Dictionary, path: String, selected_profile: String) -> Dictionary:
 	var loaded := _read(path)
 	if not loaded.ok:
 		return {ok = false, model = {}, errors = loaded.errors, identity = {}}
 	var profiles: Dictionary = loaded.profiles
 	var aircraft_id := str(model.get("id", ""))
 	var gear: Dictionary = model.get("landing_gear", {})
-	var has_profile: bool = profiles.has(aircraft_id)
+	var profile_key: String = aircraft_id if selected_profile.is_empty() else selected_profile
+	var has_profile: bool = profiles.has(profile_key)
+	if not selected_profile.is_empty() and not has_profile:
+		return _failure("explicit wheel profile '%s' is missing" % profile_key)
 	if gear.is_empty():
 		if has_profile:
 			return _failure("wheel profile '%s' is defined for an aircraft with no landing gear" % aircraft_id)
@@ -40,7 +65,7 @@ static func apply_to_model(model: Dictionary, path := DEFAULT_PATH) -> Dictionar
 		}
 		return {ok = true, model = legacy, errors = PackedStringArray(), identity = legacy.wheel_profile}
 
-	var profile: Dictionary = profiles[aircraft_id]
+	var profile: Dictionary = profiles[profile_key]
 	var profile_contacts: Dictionary = profile.contacts
 	var contacts: Array = gear.get("contacts", [])
 	if contacts.is_empty() or contacts.size() != profile_contacts.size():

@@ -77,7 +77,8 @@
         "propulsion",
         "physical_identity_version",
         "crash_hull_ids",
-        "fuel_system"
+        "fuel_system",
+        "ground"
       ]
     },
     {
@@ -1130,6 +1131,127 @@
         "law",
         "tank_id"
       ]
+    },
+    {
+      "path": "/ground",
+      "required": [
+        "format",
+        "law"
+      ],
+      "allowed": [
+        "format",
+        "law"
+      ],
+      "when": {
+        "path": "/ground/law",
+        "equals": "legacy_wheels_v1"
+      }
+    },
+    {
+      "path": "/ground",
+      "required": [
+        "format",
+        "law",
+        "capabilities",
+        "wheel_profile_ref",
+        "normal_profiles",
+        "supports"
+      ],
+      "allowed": [
+        "format",
+        "law",
+        "capabilities",
+        "wheel_profile_ref",
+        "normal_profiles",
+        "supports"
+      ],
+      "when": {
+        "path": "/ground/law",
+        "equals": "coupled_thin_ring_compliance_v1"
+      }
+    },
+    {
+      "path": "/ground/capabilities",
+      "required": [
+        "support",
+        "shape",
+        "normal"
+      ],
+      "allowed": [
+        "support",
+        "shape",
+        "normal"
+      ]
+    },
+    {
+      "path": "/ground/wheel_profile_ref",
+      "required": [
+        "format",
+        "profile_id",
+        "profile_sha256"
+      ],
+      "allowed": [
+        "format",
+        "profile_id",
+        "profile_sha256"
+      ]
+    },
+    {
+      "path": "/ground/normal_profiles/*",
+      "required": [
+        "id",
+        "parameters"
+      ],
+      "allowed": [
+        "id",
+        "parameters"
+      ]
+    },
+    {
+      "path": "/ground/normal_profiles/*/parameters",
+      "required": [
+        "format",
+        "stiffness",
+        "compression_damping",
+        "rebound_damping",
+        "damping_onset",
+        "stroke",
+        "stop_stiffness",
+        "stop_scale",
+        "stop_exponent",
+        "stop_damping"
+      ],
+      "allowed": [
+        "format",
+        "stiffness",
+        "compression_damping",
+        "rebound_damping",
+        "damping_onset",
+        "stroke",
+        "stop_stiffness",
+        "stop_scale",
+        "stop_exponent",
+        "stop_damping"
+      ]
+    },
+    {
+      "path": "/ground/supports/*",
+      "required": [
+        "contact_id",
+        "support_type",
+        "hub_le",
+        "axle_le",
+        "width_model",
+        "normal_profile_id"
+      ],
+      "allowed": [
+        "contact_id",
+        "support_type",
+        "hub_le",
+        "axle_le",
+        "width_model",
+        "normal_profile_id"
+      ]
     }
   ],
   "quantity_paths": [
@@ -1191,7 +1313,18 @@
     "/fuel_system/tanks/*/pickup_position",
     "/fuel_system/tanks/*/feed_line/capacity",
     "/propulsion/fuel_consumption/bsfc",
-    "/propulsion/fuel_consumption/idle_flow"
+    "/propulsion/fuel_consumption/idle_flow",
+    "/ground/normal_profiles/*/parameters/stiffness",
+    "/ground/normal_profiles/*/parameters/compression_damping",
+    "/ground/normal_profiles/*/parameters/rebound_damping",
+    "/ground/normal_profiles/*/parameters/damping_onset",
+    "/ground/normal_profiles/*/parameters/stroke",
+    "/ground/normal_profiles/*/parameters/stop_stiffness",
+    "/ground/normal_profiles/*/parameters/stop_scale",
+    "/ground/normal_profiles/*/parameters/stop_exponent",
+    "/ground/normal_profiles/*/parameters/stop_damping",
+    "/ground/supports/*/hub_le",
+    "/ground/supports/*/axle_le"
   ],
   "array_rules": [
     {
@@ -1220,6 +1353,14 @@
     },
     {
       "path": "/fuel_system/tanks",
+      "min_items": 1
+    },
+    {
+      "path": "/ground/normal_profiles",
+      "min_items": 1
+    },
+    {
+      "path": "/ground/supports",
       "min_items": 1
     }
   ],
@@ -1342,6 +1483,26 @@
     },
     {
       "path": "/propulsion/fuel_consumption/tank_id",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/wheel_profile_ref/profile_id",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/wheel_profile_ref/profile_sha256",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/normal_profiles/*/id",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/supports/*/contact_id",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/supports/*/normal_profile_id",
       "nonempty": true
     }
   ],
@@ -1529,6 +1690,13 @@
         "pumped_diaphragm",
         "ecu_pump"
       ]
+    },
+    {
+      "path": "/ground/law",
+      "values": [
+        "legacy_wheels_v1",
+        "coupled_thin_ring_compliance_v1"
+      ]
     }
   ],
   "literal_paths": [
@@ -1539,6 +1707,38 @@
     {
       "path": "/physical_identity_version",
       "value": 1
+    },
+    {
+      "path": "/ground/format",
+      "value": "openrc-aircraft-ground v1"
+    },
+    {
+      "path": "/ground/capabilities/support",
+      "value": "wheels"
+    },
+    {
+      "path": "/ground/capabilities/shape",
+      "value": "thin_ring"
+    },
+    {
+      "path": "/ground/capabilities/normal",
+      "value": "effective_leg_tire"
+    },
+    {
+      "path": "/ground/wheel_profile_ref/format",
+      "value": "openrc-wheel-profiles v1"
+    },
+    {
+      "path": "/ground/normal_profiles/*/parameters/format",
+      "value": "openrc-normal-compliance v1"
+    },
+    {
+      "path": "/ground/supports/*/support_type",
+      "value": "wheel"
+    },
+    {
+      "path": "/ground/supports/*/width_model",
+      "value": "zero_width"
     }
   ]
 }

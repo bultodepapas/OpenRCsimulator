@@ -2600,7 +2600,9 @@
           "fin_top",
           "canopy",
           "belly",
-          "engine"
+          "engine",
+          "left_wing_root",
+          "right_wing_root"
         ]
       }
     },
@@ -2754,6 +2756,323 @@
         }
       },
       "additionalProperties": false
+    },
+    "ground": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "format",
+            "law"
+          ],
+          "properties": {
+            "format": {
+              "const": "openrc-aircraft-ground v1"
+            },
+            "law": {
+              "const": "legacy_wheels_v1"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "format",
+            "law",
+            "capabilities",
+            "wheel_profile_ref",
+            "normal_profiles",
+            "supports"
+          ],
+          "properties": {
+            "format": {
+              "const": "openrc-aircraft-ground v1"
+            },
+            "law": {
+              "const": "coupled_thin_ring_compliance_v1"
+            },
+            "capabilities": {
+              "type": "object",
+              "required": [
+                "support",
+                "shape",
+                "normal"
+              ],
+              "properties": {
+                "support": {
+                  "const": "wheels"
+                },
+                "shape": {
+                  "const": "thin_ring"
+                },
+                "normal": {
+                  "const": "effective_leg_tire"
+                }
+              },
+              "additionalProperties": false
+            },
+            "wheel_profile_ref": {
+              "type": "object",
+              "required": [
+                "format",
+                "profile_id",
+                "profile_sha256"
+              ],
+              "properties": {
+                "format": {
+                  "const": "openrc-wheel-profiles v1"
+                },
+                "profile_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "profile_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "normal_profiles": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 16,
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "parameters"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "maxLength": 80,
+                    "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+                    "not": {
+                      "pattern": "\\s"
+                    }
+                  },
+                  "parameters": {
+                    "type": "object",
+                    "required": [
+                      "format",
+                      "stiffness",
+                      "compression_damping",
+                      "rebound_damping",
+                      "damping_onset",
+                      "stroke",
+                      "stop_stiffness",
+                      "stop_scale",
+                      "stop_exponent",
+                      "stop_damping"
+                    ],
+                    "properties": {
+                      "format": {
+                        "const": "openrc-normal-compliance v1"
+                      },
+                      "stiffness": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "N/m"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 1000000000000.0
+                          }
+                        }
+                      },
+                      "compression_damping": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "N·s/m"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1000000000000.0
+                          }
+                        }
+                      },
+                      "rebound_damping": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "N·s/m"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1000000000000.0
+                          }
+                        }
+                      },
+                      "damping_onset": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "m"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 10000.0
+                          }
+                        }
+                      },
+                      "stroke": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "m"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 10000.0
+                          }
+                        }
+                      },
+                      "stop_stiffness": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "N/m"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1000000000000.0
+                          }
+                        }
+                      },
+                      "stop_scale": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "m"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 10000.0
+                          }
+                        }
+                      },
+                      "stop_exponent": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "1"
+                          },
+                          "value": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 3
+                          }
+                        }
+                      },
+                      "stop_damping": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "N·s/m"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1000000000000.0
+                          }
+                        }
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "supports": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 16,
+              "items": {
+                "type": "object",
+                "required": [
+                  "contact_id",
+                  "support_type",
+                  "hub_le",
+                  "axle_le",
+                  "width_model",
+                  "normal_profile_id"
+                ],
+                "properties": {
+                  "contact_id": {
+                    "type": "string",
+                    "maxLength": 80,
+                    "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+                    "not": {
+                      "pattern": "\\s"
+                    }
+                  },
+                  "support_type": {
+                    "const": "wheel"
+                  },
+                  "hub_le": {
+                    "$ref": "#/$defs/evidence",
+                    "properties": {
+                      "unit": {
+                        "const": "m"
+                      },
+                      "value": {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "axle_le": {
+                    "$ref": "#/$defs/evidence",
+                    "properties": {
+                      "unit": {
+                        "const": "1"
+                      },
+                      "value": {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "width_model": {
+                    "const": "zero_width"
+                  },
+                  "normal_profile_id": {
+                    "type": "string",
+                    "maxLength": 80,
+                    "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+                    "not": {
+                      "pattern": "\\s"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
     },
     "physical_identity_version": {
       "type": "integer",
@@ -5768,6 +6087,30 @@
   },
   "additionalProperties": false,
   "allOf": [
+    {
+      "if": {
+        "required": [
+          "ground"
+        ],
+        "properties": {
+          "ground": {
+            "required": [
+              "law"
+            ],
+            "properties": {
+              "law": {
+                "const": "coupled_thin_ring_compliance_v1"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "physical_identity_version"
+        ]
+      }
+    },
     {
       "if": {
         "properties": {

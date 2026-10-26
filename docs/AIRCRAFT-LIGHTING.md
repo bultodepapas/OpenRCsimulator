@@ -63,6 +63,55 @@ Imported emissive lenses use `prepare_emission(root)` and `set_emission_mode(bin
 
 A different aircraft adapter should own one shared light-state instance, sample its authoritative clock and existing solar gain, apply `active_mode`/`gain` to its supported effects, and reset at its session boundary. The helicopter adapter demonstrates this while retaining rotor phase, exposure caps, its armed beacon gate and body-optic fade. Keep animation updates separate from selection changes.
 
+## Creator-authored layouts (FW-RGB-04)
+
+The authoritative authoring source is `assets/aircraft/customization-bindings.json` v3. Each family supplies `lighting_layout`; `research/aircraft-standardization/build_customization.py` generates companion v4. Historical source v1/v2 and companion v1–v3 remain readable. The independent presentation source-proof version stays 3 because the implementation extends files already in its closed inventory. Never hand-edit `app/data/aircraft_customization.json`.
+
+The layout is creator data, separate from player lighting choices:
+
+```json
+{
+  "version": 1,
+  "anchors": [
+    {"id": "nav_left", "node_path": ".", "position_m": [-0.7, 0.04, 0.0], "gear_gated": false}
+  ],
+  "strips": [
+    {"id": "strip_left", "node_path": ".", "points_m": [[-0.3, -0.04, 0.0], [-0.7, -0.04, 0.0]], "face": [0, -1, 0], "width_m": 0.012}
+  ]
+}
+```
+
+These coordinates illustrate the schema; measure the actual aircraft before using them. The shipped six families currently use `{ "version": 1, "anchors": [], "strips": [] }`, preserving their existing fits and builder-owned mounts. This package enables authoring; it does not claim a new manual placement art pass across the fleet.
+
+| Field | Contract |
+| --- | --- |
+| `anchors` | At most nine unique IDs: `nav_left`, `nav_right`, `nav_tail`, `strobe_left`, `strobe_right`, `strobe_dorsal`, `strobe_ventral`, `landing`, `landing_right`. Every row has exactly the four example fields. |
+| `node_path` | `.` means the aircraft root; otherwise a relative path of ASCII alphanumeric/underscore node names separated by `/`, at most 160 characters. No absolute/resource paths, `..`, subnames or scripts. Host must resolve to a descendant `Node3D`. |
+| `position_m` / `points_m` | Three finite numbers per position, each component in [−5, 5], in the host's local model metres. Booleans are invalid. Ancestor transforms apply once; the aircraft root supplies the world transform. |
+| `gear_gated` | Boolean; only `landing` / `landing_right` may be true. Existing gear-down-and-locked policy controls both lens and beam. Point mounts follow host translation, rotation and scale; beam aiming retains the existing forward/down policy. |
+| `strips` | At most five unique IDs: `strip_left`, `strip_right`, `strip_top_left`, `strip_top_right`, `strip_belly`. Each row has exactly the five example fields. |
+| `points_m` | Ordered centerline of 2–32 points. Adjacent points must be at least 0.00001 m apart; segment/face cross-product magnitude divided by segment length must be at least 0.01. No per-LED nodes. |
+| `face` | Host-local unit direction, length tolerance 0.999–1.001. Controls which side emits and the ribbon's across direction; do not make it parallel to a segment. |
+| `width_m` | Finite width in [0.001, 0.05] scene metres. Like fitted strips, the shader maintains its physical/distance width independently of model scaling; centerline coordinates follow the host transform. |
+
+`Airplane.build` copies the validated companion layout to instance metadata. `AircraftLights.attach` resolves it per instance after the shared geometric measurements, merges missing point anchors into the existing `light_anchors` contract, and substitutes authored ribbons only for the selected canonical strips. A strip follows its host's full transform through the existing `update_dynamic` call. Cached Home geometry never retains another instance's paths or pose. Existing builder-owned anchors win a conflict with a diagnostic. Missing hosts or invalid runtime metadata retain automatic fitting; geometry without a usable span yields an empty diagnosed kit. Source-schema errors fail generation and companion admission instead of silently publishing bad data.
+
+Diagnostics are available in `NightKit.get_meta("layout_warnings")` and the RGB rig's configure/budget result. Layouts are installed during aircraft construction; rebuild the aircraft after changing metadata. Repeated `attach` calls retain the same kit. Original GLBs, meshes and shared materials remain untouched. VFX still uses the established wingtip kit anchors; there is no separate arbitrary VFX path registry in this revision.
+
+Creator checklist:
+
+1. Use the model's stable node names and local coordinates; test rotated/scaled parents and every articulated pose.
+2. Keep builder-owned P-51/Timber mounts in their existing pipelines; do not duplicate them in the companion.
+3. Keep omitted zones empty for automatic fitting. Check `light_groups` before expecting a fixture to illuminate.
+4. Regenerate through `build_customization.py`, run its `--check` and Python tests, then the pinned `test_lighting_layout.gd` and existing kit/mount tests.
+5. Inspect 1080p day/night, upper/lower views, manual light modes and gear gates. Check warnings and confirm fresh builds and cached Home previews agree.
+
+### Updating saved builds
+
+The full companion hash still pins a saved appearance, including authored geometry and presentation source hashes. Loading never silently changes that identity. For a readable old profile on the **same visual family and physical model manifest**, Workshop offers **Review appearance update**. Acceptance creates an unsaved copy with current bindings; Save creates a separate build, preserving the original revision. Undo restores the old pins and its blocked state. Colors, markings, lighting, sequences and mechanical-audio settings must remain identical except for the binding pins.
+
+This reviewed update cannot establish equivalence of old and new slot meanings without the original companion descriptors. Missing current references, changed physical identity, future profile schemas and **any saved smoke entries** are refused. Smoke needs its original descriptor/migration path; this action does not discard it or reinterpret its outlets. Rebinding does not repair stale physical dependencies or grant flight validation. Inspect the proposed appearance before saving or flying.
+
 ## Checks
 
 Run the focused suite with the pinned engine:

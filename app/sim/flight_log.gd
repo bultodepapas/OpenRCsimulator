@@ -10,6 +10,7 @@ const MAX_BYTES := 512 * 1024 * 1024
 const MAX_TICKS := 240 * 60 * 60
 const BuildInfo := preload("res://app_state/build_info.gd")
 const BODY := preload("res://physics/rigid_body.gd")
+const Air := preload("res://physics/air_data.gd")
 
 var recording := false
 var note := ""
@@ -172,7 +173,7 @@ func _sample(intervention: Dictionary) -> Dictionary:
 	sample.sticks = _controls(_session.commands)
 	# Existing cheap air transform; no extra force, derivative or RK evaluation.
 	var wind: PackedFloat64Array = _session.wind_at(_session.sim.time())
-	var air: Dictionary = _session.air_data(_session.sim.state, _session.sim.time())
+	var air: Dictionary = Air.compute(_session.sim.state, wind, _session.air_density(_session.sim.state))
 	sample.air = PackedFloat64Array([air.V, air.alpha, air.beta, wind[0], wind[1], wind[2]])
 	# FUEL-06: the live mass sample (read-only kernel evaluation; finite fuel changes it every tick).
 	var live: Dictionary = _session.mass_properties() if _session.has_method("mass_properties") else {}

@@ -8,6 +8,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Profiles := preload("res://ai/companions/profile_loader.gd")
 const Airspace := preload("res://ai/companions/airspace.gd")
 const FleetRecord := preload("res://ai/companions/fleet_record.gd")
+const WeatherConfig := preload("res://physics/wind_config.gd")
 
 signal changed
 var config: Dictionary = Config.defaults()
@@ -36,6 +37,8 @@ static func validate_context(player: Node, field: Dictionary, landscape: String,
 	elif not player.atmosphere_is_reference():
 		reason = "Companion circuits currently require the reference atmosphere."
 	var weather: Dictionary = player.weather_configuration()
+	if weather.get("format") == WeatherConfig.SPATIAL_FORMAT:
+		reason = "Spatial weather needs a qualified companion circuit and shared world-clock policy."
 	if float(weather.get("speed_mps", 0.0)) > 1.5 or float(weather.get("gust_mps", 0.0)) > 0.6 \
 			or absf(float(weather.get("gust_up_mps", 0.0))) > 0.15:
 		reason = "Companion circuits currently support calm air or a gentle breeze."

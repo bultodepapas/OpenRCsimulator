@@ -1,6 +1,6 @@
 {
   "format": "openrc-aircraft-customization-source",
-  "version": 2,
+  "version": 3,
   "families": [
     {
       "visual_family": "jensen-das-ugly-stik-60",
@@ -344,7 +344,12 @@
           "source_id": "$propulsion",
           "anchor_id": "physical_exit"
         }
-      ]
+      ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      }
     },
     {
       "visual_family": "gp-extra-300s-60",
@@ -574,7 +579,12 @@
           "activation_policy": "independent_request",
           "provenance": "authored"
         }
-      ]
+      ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      }
     },
     {
       "visual_family": "p51d-mustang-120",
@@ -843,7 +853,12 @@
           "source_id": "$propulsion",
           "anchor_id": "physical_exit"
         }
-      ]
+      ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      }
     },
     {
       "visual_family": "sebart-avanti-s-a200-p100rx",
@@ -1009,7 +1024,12 @@
           "source_id": "$propulsion",
           "source_kind": "turbine"
         }
-      ]
+      ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      }
     },
     {
       "visual_family": "turbo-lumber-evolution",
@@ -1225,7 +1245,12 @@
           "activation_policy": "independent_request",
           "provenance": "authored"
         }
-      ]
+      ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      }
     },
     {
       "visual_family": "f4u-corsair-250",
@@ -1549,7 +1574,12 @@
           "source_id": "$propulsion",
           "anchor_id": "physical_exit"
         }
-      ]
+      ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      }
     }
   ]
 }

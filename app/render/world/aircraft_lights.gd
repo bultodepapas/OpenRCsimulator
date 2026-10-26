@@ -166,7 +166,7 @@ static func resolve_authored_layout(root: Node3D) -> Dictionary:
 				result.warnings.append("%s host is missing; keeping automatic fitting" % row.id)
 				continue
 			var transform := _root_local(host, root)
-			if not transform.is_finite() or absf(transform.basis.determinant()) < 0.000001:
+			if not transform.is_finite() or not is_finite(transform.basis.determinant()) or absf(transform.basis.determinant()) < 0.000001:
 				result.warnings.append("%s host transform is invalid; keeping automatic fitting" % row.id)
 				continue
 			if group == "anchors":
@@ -736,7 +736,7 @@ static func prepare_layout(root: Node3D) -> Dictionary:
 	var geometry := _geometry_arrays(root)
 	var points: PackedVector3Array = geometry.points
 	var half := span_half(points)
-	if points.is_empty() or not is_finite(half) or half <= 0.00001:
+	if points.is_empty() or not all.is_finite() or not is_finite(half) or half <= 0.00001:
 		return {"valid": false, "bounds": all}
 	var tris: PackedVector3Array = geometry.triangles
 	var skins := wing_skin_lines(tris, half)

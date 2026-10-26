@@ -31,6 +31,7 @@ var meta := {} # written as "# key: value" lines above the header
 var _rows := PackedFloat64Array() # flattened, COLUMNS.size() per row
 const WEATHER_COLUMNS = ["wind_north_mps", "wind_east_mps", "wind_down_mps", "tas_mps", "ground_horizontal_mps", "loads_t_s", "loads_wind_north_mps", "loads_wind_east_mps", "loads_wind_down_mps", "loads_tas_mps"]
 const TURBULENCE_COLUMNS = ["turbulence_north_mps", "turbulence_east_mps", "turbulence_down_mps", "loads_turbulence_north_mps", "loads_turbulence_east_mps", "loads_turbulence_down_mps"]
+const SPATIAL_COLUMNS = ["loads_north_m", "loads_east_m", "loads_down_m", "weather_epoch_time_s", "loads_weather_epoch_time_s"]
 var _turbulence_index: int = -1
 const ATMOSPHERE_COLUMNS = ["rho_kgm3", "density_ratio", "equivalent_airspeed_mps", "density_altitude_m", "pressure_pa", "temperature_k", "engine_charge_ratio"]
 const COLUMN_ATMOSPHERE_COLUMNS = ["geometric_altitude_m", "loads_rho_kgm3", "loads_pressure_pa", "loads_temperature_k"]
@@ -219,6 +220,9 @@ func _prepare_weather() -> void:
 	if _invalid_weather:
 		return
 	if not meta.has("weather_config"):
+		if meta.has("spatial_weather_schema") or meta.has("spatial_weather_receipt"):
+			_invalid_weather = true
+			return
 		_prepare_gear_metadata()
 		_prepare_flap_metadata()
 		_prepare_mass_metadata()
@@ -236,8 +240,23 @@ func _prepare_weather() -> void:
 		_invalid_weather = true
 		return
 	_weather = built.field
+	if _weather.is_spatial():
+		var receipt: Variant = JSON.parse_string(str(meta.get("spatial_weather_receipt", "null")))
+		var expected := {format = Session.SPATIAL_RECEIPT_FORMAT, field = _weather.spatial_identity(),
+			content_sha256 = _weather.spatial_content_hash(), point_air_law = Session.WindFlow.STAGE_AIR_LAW,
+			aerodynamic_law = Session.Aero.SPATIAL_CONTINUATION_LAW,
+			clock = "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1"}
+		if meta.get("spatial_weather_schema") != Session.SPATIAL_RECEIPT_FORMAT or not receipt is Dictionary \
+				or not Session.spatial_receipt_matches(receipt, expected) or meta.get("spatial_aero_model") != Session.Aero.SPATIAL_CONTINUATION_LAW:
+			_invalid_weather = true
+			return
+	elif meta.has("spatial_weather_schema") or meta.has("spatial_weather_receipt"):
+		_invalid_weather = true
+		return
 	_weather_meta = meta.duplicate(true)
 	_columns.append_array(WEATHER_COLUMNS)
+	if _weather.is_spatial():
+		_columns.append_array(SPATIAL_COLUMNS)
 	if _weather.has_turbulence():
 		var index: Variant = meta.get("turbulence_aux_index")
 		if typeof(index) != TYPE_INT or index < 4:
@@ -1151,6 +1170,15 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	if _weather != null and not _state_valid(force_state):
 		_invalid_weather = true
 		return
+	var spatial_wind := PackedFloat64Array()
+	var spatial_load_wind := PackedFloat64Array()
+	if _weather != null and _weather.is_spatial():
+		spatial_wind = _weather.sample_world(s.slice(RB.POS, RB.POS + 3), t)
+		spatial_load_wind = _weather.sample_world(force_state.slice(RB.POS, RB.POS + 3),
+			max(0, tick - 1) * float(_weather_meta.dt_s))
+		if not _finite(spatial_wind, 3) or not _finite(spatial_load_wind, 3):
+			_invalid_weather = true
+			return
 	var atmosphere_endpoint: Dictionary = _atmosphere
 	var atmosphere_loads: Dictionary = _atmosphere
 	if _weather != null and _weather.has_vertical_atmosphere():
@@ -1178,7 +1206,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	if _glow:
 		_rows.append_array(glow_row)
 	if _weather != null:
-		var wind: PackedFloat64Array = _weather.sample(t)
+		var wind: PackedFloat64Array = spatial_wind if _weather.is_spatial() else _weather.sample(t)
 		var noise: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])
 		if _turbulence_index >= 0:
 			noise = Session.turbulence_at(aux, _turbulence_index, t, float(_weather_meta.dt_s))
@@ -1187,7 +1215,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		var air: Dictionary = Air.compute(s, wind, _weather.air_density(s[RB.POS + 2]))
 		var velocity_ned: PackedFloat64Array = M.q_rotate(q, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))
 		var load_time: float = max(0, tick - 1) * float(_weather_meta.dt_s)
-		var load_wind: PackedFloat64Array = _weather.sample(load_time)
+		var load_wind: PackedFloat64Array = spatial_load_wind if _weather.is_spatial() else _weather.sample(load_time)
 		var load_noise := PackedFloat64Array([0.0, 0.0, 0.0])
 		if _turbulence_index >= 0:
 			load_noise = Session.turbulence_at(aux, _turbulence_index, load_time, float(_weather_meta.dt_s))
@@ -1197,6 +1225,10 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		_rows.append_array(PackedFloat64Array([wind[0], wind[1], wind[2], air.V,
 			M.sqrt_(velocity_ned[0] * velocity_ned[0] + velocity_ned[1] * velocity_ned[1]), load_time,
 			load_wind[0], load_wind[1], load_wind[2], load_air.V]))
+		if _weather.is_spatial():
+			var epoch_offset: float = float(_weather.spatial_identity().epoch_offset_s)
+			_rows.append_array(PackedFloat64Array([force_state[RB.POS], force_state[RB.POS + 1],
+				force_state[RB.POS + 2], t + epoch_offset, load_time + epoch_offset]))
 		if _turbulence_index >= 0:
 			_rows.append_array(noise)
 			_rows.append_array(load_noise)
@@ -1545,8 +1577,13 @@ func to_csv() -> String:
 	var base_trace_format: String = _base_trace_format()
 	var complete_base_trace_format: String = "openrc-trace v13" if _pack else "openrc-trace v12" if _flaps else base_trace_format
 	var trace_format: String = "openrc-trace v15" if _liquid_trace else ("openrc-trace v14" if _mass_trace else complete_base_trace_format)
+	var spatial_base_format: String = trace_format
+	if _weather != null and _weather.is_spatial():
+		trace_format = "openrc-trace v16"
 	lines.append("# format: %s" % trace_format)
 	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine or _glow else (_flap_meta if _flaps else meta)).duplicate(true)
+	if _weather != null and _weather.is_spatial():
+		written_meta.spatial_base_trace_format = spatial_base_format
 	if _flaps:
 		written_meta.flap_base_trace_format = base_trace_format
 	if _mass_trace:

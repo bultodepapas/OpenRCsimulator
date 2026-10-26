@@ -150,6 +150,46 @@ def add_physical_identity(schema: dict):
         "research/aircraft-standardization/physical_identity.py.")
 
 
+
+def add_ground_profile(schema: dict):
+    """Optional GP authoring module; parsing never implies coupled launch admission."""
+    def quantity(unit, value):
+        return {"$ref": "#/$defs/evidence", "properties": {"unit": {"const": unit}, "value": value}}
+    def obj(properties):
+        return {"type": "object", "required": list(properties), "properties": properties}
+    identifier = {"type": "string", "maxLength": 80, "pattern": r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$", "not": {"pattern": r"\s"}}
+    normal_specs = {
+        "stiffness": ("N/m", 1e-9, 1e12),
+        "compression_damping": ("N·s/m", 0, 1e12), "rebound_damping": ("N·s/m", 0, 1e12),
+        "damping_onset": ("m", 0, 1e4), "stroke": ("m", 1e-9, 1e4),
+        "stop_stiffness": ("N/m", 0, 1e12), "stop_scale": ("m", 1e-9, 1e4),
+        "stop_exponent": ("1", 1, 3), "stop_damping": ("N·s/m", 0, 1e12),
+    }
+    normal = {"format": {"const": "openrc-normal-compliance v1"}}
+    for name, (unit, low, high) in normal_specs.items():
+        normal[name] = quantity(unit, {"type": "integer" if name == "stop_exponent" else "number", "minimum": low, "maximum": high})
+    vector = {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}}
+    support = obj({"contact_id": identifier, "support_type": {"const": "wheel"},
+                   "hub_le": quantity("m", vector), "axle_le": quantity("1", vector),
+                   "width_model": {"const": "zero_width"}, "normal_profile_id": identifier})
+    legacy = obj({"format": {"const": "openrc-aircraft-ground v1"}, "law": {"const": "legacy_wheels_v1"}})
+    coupled = obj({
+        "format": {"const": "openrc-aircraft-ground v1"}, "law": {"const": "coupled_thin_ring_compliance_v1"},
+        "capabilities": obj({"support": {"const": "wheels"}, "shape": {"const": "thin_ring"}, "normal": {"const": "effective_leg_tire"}}),
+        "wheel_profile_ref": obj({"format": {"const": "openrc-wheel-profiles v1"},
+                                  "profile_id": {"type": "string", "minLength": 1, "maxLength": 128},
+                                  "profile_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}),
+        "normal_profiles": {"type": "array", "minItems": 1, "maxItems": 16,
+                            "items": obj({"id": identifier, "parameters": obj(normal)})},
+        "supports": {"type": "array", "minItems": 1, "maxItems": 16, "items": support},
+    })
+    schema["properties"]["ground"] = {"oneOf": [legacy, coupled]}
+    schema.setdefault("allOf", []).append({
+        "if": {"required": ["ground"], "properties": {"ground": {"required": ["law"], "properties": {"law": {"const": "coupled_thin_ring_compliance_v1"}}}}},
+        "then": {"required": ["physical_identity_version"]},
+    })
+
+
 def add_v2_overlay(schema: dict, spec: dict):
     schema["title"] = "OpenRC aircraft data v2"
     schema["description"] = "Strict structural and per-field validation for openrc-aircraft v2. Coupled physical validation remains in AircraftData and AircraftContract."
@@ -500,6 +540,7 @@ def add_v2_overlay(schema: dict, spec: dict):
     if isinstance(inertia_value.get("items"), dict):
         inertia_value["items"]["exclusiveMinimum"] = 0.0
 
+    add_ground_profile(schema)
     prune_null_anyof(schema)
     # Remove reference-only CLadot from the active map, but retain its exact v1
     # unit/range/evidence contract at aero.reference_coefficients.CLadot.

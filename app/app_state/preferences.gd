@@ -23,7 +23,7 @@ const NIGHT_DEFAULTS := {"field_lighting": "club", "campfire": false, "field_act
 const FUEL_FILLS := [1.0, 0.75, 0.5, 0.25]
 
 const DEFAULT_PATH := "user://settings.cfg"
-const SCHEMA := 5
+const SCHEMA := 6
 const LIGHTING_SCHEMA := 4
 const LEGACY_SCHEMA := 1
 ## Interface languages: code -> name in that language (never translated). English is the default and the source
@@ -240,6 +240,8 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	var cfg := ConfigFile.new()
 	var weather_schema: int = 5 if checked_weather.config.format == WeatherSettings.COLUMN_FORMAT else (3 if checked_weather.config.format == WeatherSettings.ATMOSPHERE_FORMAT \
 		else (2 if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA))
+	if checked_weather.config.format == WeatherSettings.SPATIAL_FORMAT:
+		weather_schema = 6
 	var schema: int = maxi(LIGHTING_SCHEMA, weather_schema) if checked_lighting.config != TimeOfDay.defaults() else weather_schema
 	cfg.set_value("meta", "schema", schema)
 	cfg.set_value("ui", "language", prefs.language)

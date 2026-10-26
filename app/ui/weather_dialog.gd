@@ -5,6 +5,7 @@ const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const SpatialWeatherControls := preload("res://ui/spatial_weather_controls.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const SkyControls := preload("res://ui/sky_controls.gd")
@@ -82,6 +83,7 @@ var wind_grid: GridContainer
 var turbulence_grid: GridContainer
 var atmosphere_grid: GridContainer
 var atmosphere_mode_row: GridContainer
+var spatial_controls: VBoxContainer
 var time_of_day_page: VBoxContainer
 var time_of_day_controls: VBoxContainer
 var sky_controls: VBoxContainer
@@ -200,6 +202,12 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	wind_page.add_child(wind_grid)
 	for key: String in EDITED_KEYS:
 		_add_number_field(wind_grid, key, FIELD_LABELS[key], field_inputs, false, false)
+	spatial_controls = SpatialWeatherControls.new() as VBoxContainer
+	spatial_controls.set_source(_base_config.get("spatial_wind"),
+		_base_config.get("format", "") == WeatherSettings.SPATIAL_FORMAT)
+	spatial_controls.enabled_changed.connect(_on_spatial_enabled_changed)
+	spatial_controls.draft_changed.connect(_on_spatial_draft_changed)
+	wind_page.add_child(spatial_controls)
 
 	turbulence_page = VBoxContainer.new()
 	turbulence_page.name = "TurbulencePage"
@@ -425,7 +433,9 @@ func _update_scroll_height() -> void:
 		if selector.size_flags_horizontal != Control.SIZE_SHRINK_BEGIN:
 			selector.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 			responsive_layout_changed = true
-	for grid: GridContainer in [wind_grid, turbulence_grid, atmosphere_grid, atmosphere_mode_row]:
+	var responsive_grids: Array[GridContainer] = [wind_grid, turbulence_grid, atmosphere_grid, atmosphere_mode_row]
+	responsive_grids.append_array(spatial_controls.layout_grids())
+	for grid: GridContainer in responsive_grids:
 		var previous_columns: int = grid.columns
 		grid.columns = 2
 		var two_column_width: float = grid.get_combined_minimum_size().x
@@ -483,6 +493,7 @@ func _set_fields(config: Dictionary, selected_preset: int = 0) -> void:
 	_initial_turbulence_enabled = WeatherSettings.has_turbulence(_base_config)
 	turbulence_enabled.set_pressed_no_signal(_initial_turbulence_enabled)
 	var source_format: String = String(_base_config.get("format", ""))
+	spatial_controls.set_source(_base_config.get("spatial_wind"), source_format == WeatherSettings.SPATIAL_FORMAT)
 	_atmosphere_source_config = _base_config.duplicate(true) if source_format in [WeatherSettings.ATMOSPHERE_FORMAT, WeatherSettings.COLUMN_FORMAT] \
 		else WeatherSettings.upgrade_atmosphere(_base_config)
 	_initial_atmosphere_mode = String(_atmosphere_source_config.get("atmosphere_mode", "reference"))
@@ -502,7 +513,42 @@ func _set_fields(config: Dictionary, selected_preset: int = 0) -> void:
 	if error_label != null:
 		_set_error_visible(false)
 	_setting_fields = false
+	_update_spatial_mode_controls()
 	_set_focus_ring()
+	_schedule_scroll_height_update()
+
+
+func _on_spatial_enabled_changed(_enabled: bool) -> void:
+	_update_spatial_mode_controls()
+	if preset_picker != null and preset_picker.selected != 0:
+		preset_picker.select(0)
+	_set_focus_ring()
+	_schedule_scroll_height_update()
+
+
+func _on_spatial_draft_changed() -> void:
+	if spatial_controls.spatial_enabled() and preset_picker != null and preset_picker.selected != 0:
+		preset_picker.select(0)
+	if error_label != null:
+		_set_error_visible(false)
+
+
+func _update_spatial_mode_controls() -> void:
+	if spatial_controls == null or field_inputs.is_empty():
+		return
+	var spatial_enabled: bool = spatial_controls.spatial_enabled()
+	for key: String in EDITED_KEYS:
+		(field_inputs[key] as LineEdit).editable = not spatial_enabled
+		(field_inputs[key] as LineEdit).focus_mode = Control.FOCUS_NONE if spatial_enabled else Control.FOCUS_ALL
+		(field_sliders[key] as HSlider).editable = not spatial_enabled
+		(field_sliders[key] as HSlider).focus_mode = Control.FOCUS_NONE if spatial_enabled else Control.FOCUS_ALL
+	turbulence_enabled.disabled = spatial_enabled
+	for key: String in TURBULENCE_EDITED_KEYS:
+		(turbulence_inputs[key] as LineEdit).editable = not spatial_enabled
+		(turbulence_inputs[key] as LineEdit).focus_mode = Control.FOCUS_NONE if spatial_enabled else Control.FOCUS_ALL
+		if turbulence_sliders.has(key):
+			(turbulence_sliders[key] as HSlider).editable = not spatial_enabled
+			(turbulence_sliders[key] as HSlider).focus_mode = Control.FOCUS_NONE if spatial_enabled else Control.FOCUS_ALL
 
 
 ## Picker index of the stock preset equal to `config`, or 0 (Custom).
@@ -696,56 +742,72 @@ func _on_apply() -> void:
 	if not moon_result.get("ok", false):
 		_show_error()
 		return
+	var spatial_enabled: bool = spatial_controls.spatial_enabled()
+	var spatial_result: Dictionary = spatial_controls.read_draft()
+	if spatial_enabled and not spatial_result.get("ok", false):
+		error_label.text = tr("Check the spatial wind values against their displayed limits.")
+		_set_error_visible(true)
+		return
 	var raw: Dictionary = _base_config.duplicate(true)
 	for key: String in EDITED_KEYS:
-		var edit: LineEdit = field_inputs[key]
-		if edit.text == String(_initial_text[key]):
-			continue # retain the source float64 exactly unless the player changed its displayed text
-		if not edit.text.is_valid_float():
-			_show_error()
-			return
-		raw[key] = edit.text.to_float()
+		if spatial_enabled:
+			raw[key] = 0.0
+		else:
+			var edit: LineEdit = field_inputs[key]
+			if edit.text == String(_initial_text[key]):
+				continue # retain the source float64 exactly unless the player changed its displayed text
+			if not edit.text.is_valid_float():
+				_show_error()
+				return
+			raw[key] = edit.text.to_float()
 
 	var sigma: Array[float] = []
 	var original_sigma: Array = _base_config.get("turbulence_rms_mps", [0.0, 0.0, 0.0])
-	for index: int in 3:
-		var key: String = TURBULENCE_EDITED_KEYS[index]
-		var edit: LineEdit = turbulence_inputs[key]
-		if edit.text == String(_initial_turbulence_text[key]):
-			sigma.append(float(original_sigma[index]))
-		elif not edit.text.is_valid_float():
-			_show_error()
-			return
-		else:
-			sigma.append(edit.text.to_float())
+	if spatial_enabled:
+		sigma = [0.0, 0.0, 0.0]
+	else:
+		for index: int in 3:
+			var key: String = TURBULENCE_EDITED_KEYS[index]
+			var edit: LineEdit = turbulence_inputs[key]
+			if edit.text == String(_initial_turbulence_text[key]):
+				sigma.append(float(original_sigma[index]))
+			elif not edit.text.is_valid_float():
+				_show_error()
+				return
+			else:
+				sigma.append(edit.text.to_float())
 	var tau_edit: LineEdit = turbulence_inputs["tau_s"]
 	var tau: float = float(_base_config.get("turbulence_tau_s", TURBULENCE_DEFAULT_TAU))
-	if tau_edit.text != String(_initial_turbulence_text["tau_s"]):
+	if not spatial_enabled and tau_edit.text != String(_initial_turbulence_text["tau_s"]):
 		if not tau_edit.text.is_valid_float():
 			_show_error()
 			return
 		tau = tau_edit.text.to_float()
 	var seed_edit: LineEdit = turbulence_inputs["seed"]
 	var seed: int = int(_base_config.get("turbulence_seed", TURBULENCE_DEFAULT_SEED))
-	if seed_edit.text != String(_initial_turbulence_text["seed"]):
+	if not spatial_enabled and seed_edit.text != String(_initial_turbulence_text["seed"]):
 		if not _contains_ascii_digits(seed_edit.text):
 			_show_error()
 			return
 		seed = int(seed_edit.text)
 
-	var any_rms: bool = sigma[0] > 0.0 or sigma[1] > 0.0 or sigma[2] > 0.0
-	var changed_turbulence: bool = any_rms != _initial_turbulence_enabled
-	for key: String in TURBULENCE_EDITED_KEYS:
-		var edit: LineEdit = turbulence_inputs[key]
-		if edit.text != String(_initial_turbulence_text[key]):
-			changed_turbulence = true
+	var any_rms: bool = not spatial_enabled and (sigma[0] > 0.0 or sigma[1] > 0.0 or sigma[2] > 0.0)
+	var changed_turbulence: bool = not spatial_enabled and any_rms != _initial_turbulence_enabled
+	if not spatial_enabled:
+		for key: String in TURBULENCE_EDITED_KEYS:
+			var edit: LineEdit = turbulence_inputs[key]
+			if edit.text != String(_initial_turbulence_text[key]):
+				changed_turbulence = true
 	turbulence_enabled.set_pressed_no_signal(any_rms)
 	var base_is_atmosphere: bool = _base_config.get("format", "") == WeatherSettings.ATMOSPHERE_FORMAT
 	var base_is_column: bool = _base_config.get("format", "") == WeatherSettings.COLUMN_FORMAT
-	if base_is_atmosphere or base_is_column or _base_config.get("format", "") == WeatherSettings.TURBULENCE_FORMAT \
+	var base_is_spatial: bool = _base_config.get("format", "") == WeatherSettings.SPATIAL_FORMAT
+	if base_is_atmosphere or base_is_column or base_is_spatial or _base_config.get("format", "") == WeatherSettings.TURBULENCE_FORMAT \
 			or any_rms or changed_turbulence:
 		if base_is_column:
 			raw["format"] = WeatherSettings.COLUMN_FORMAT
+		elif base_is_spatial:
+			raw["format"] = WeatherSettings.SPATIAL_FORMAT
 		elif base_is_atmosphere:
 			raw["format"] = WeatherSettings.ATMOSPHERE_FORMAT
 		else:
@@ -753,7 +815,7 @@ func _on_apply() -> void:
 		raw["turbulence_rms_mps"] = sigma
 		raw["turbulence_tau_s"] = tau
 		raw["turbulence_seed"] = seed
-	if _atmosphere_touched or base_is_atmosphere or base_is_column:
+	if _atmosphere_touched or base_is_atmosphere or base_is_column or base_is_spatial:
 		var mode: String = _selected_atmosphere_mode()
 		var atmosphere_changes: Dictionary = {"atmosphere_mode": mode}
 		for key: String in ATMOSPHERE_EDITED_KEYS:
@@ -768,9 +830,19 @@ func _on_apply() -> void:
 				return
 			else:
 				atmosphere_changes[key] = edit.text.to_float()
-		var keep_column: bool = base_is_column or mode == "standard_column"
+		var keep_column: bool = base_is_column or base_is_spatial or mode == "standard_column"
 		raw = WeatherSettings.upgrade_column(raw, atmosphere_changes) if keep_column \
 			else WeatherSettings.upgrade_atmosphere(raw, atmosphere_changes)
+	if spatial_enabled:
+		raw = WeatherSettings.upgrade_column(raw)
+		for key: String in ["speed_mps", "gust_mps", "gust_up_mps"]:
+			raw[key] = 0.0
+		raw["turbulence_rms_mps"] = [0.0, 0.0, 0.0]
+		raw["format"] = WeatherSettings.SPATIAL_FORMAT
+		raw["spatial_wind"] = spatial_result.spatial_wind.duplicate(true)
+	elif base_is_spatial:
+		raw.erase("spatial_wind")
+		raw["format"] = WeatherSettings.COLUMN_FORMAT
 	var checked: Dictionary = WeatherSettings.validate(raw)
 	if not checked.ok:
 		_show_error()
@@ -798,7 +870,8 @@ func _on_cancel() -> void:
 
 func _show_error() -> void:
 	var message: String = TIME_ERROR_TEXT if tab_container.current_tab == 3 else \
-		(ATMOSPHERE_ERROR_TEXT if tab_container.current_tab == 2 else ERROR_TEXT)
+		(ATMOSPHERE_ERROR_TEXT if tab_container.current_tab == 2 else \
+		("Check the spatial wind values against their displayed limits." if tab_container.current_tab == 0 and spatial_controls.spatial_enabled() else ERROR_TEXT))
 	error_label.text = tr(message)
 	_set_error_visible(true)
 
@@ -833,15 +906,19 @@ func _set_focus_ring() -> void:
 	_focus_order.append(tab_bar)
 	if tab_container.current_tab == 0:
 		for key: String in EDITED_KEYS:
-			if field_sliders.has(key):
+			if field_sliders.has(key) and field_sliders[key].focus_mode != Control.FOCUS_NONE:
 				_focus_order.append(field_sliders[key])
-			_focus_order.append(field_inputs[key])
+			if field_inputs[key].focus_mode != Control.FOCUS_NONE:
+				_focus_order.append(field_inputs[key])
+		_focus_order.append_array(spatial_controls.focus_controls())
 	elif tab_container.current_tab == 1:
-		_focus_order.append(turbulence_enabled)
+		if not turbulence_enabled.disabled:
+			_focus_order.append(turbulence_enabled)
 		for key: String in TURBULENCE_EDITED_KEYS:
-			if turbulence_sliders.has(key):
+			if turbulence_sliders.has(key) and turbulence_sliders[key].focus_mode != Control.FOCUS_NONE:
 				_focus_order.append(turbulence_sliders[key])
-			_focus_order.append(turbulence_inputs[key])
+			if turbulence_inputs[key].focus_mode != Control.FOCUS_NONE:
+				_focus_order.append(turbulence_inputs[key])
 	elif tab_container.current_tab == 2:
 		_focus_order.append(atmosphere_mode_picker)
 		for key: String in ATMOSPHERE_EDITED_KEYS:

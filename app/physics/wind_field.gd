@@ -1,10 +1,12 @@
-# Pure, spatially uniform NED wind for fixed-step flight physics. 64-bit values only.
+# Versioned NED wind for fixed-step flight physics. 64-bit values only.
 class_name WindField
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const Config := preload("res://physics/wind_config.gd")
 const Atmosphere := preload("res://physics/atmosphere.gd")
+const SpatialField := preload("res://physics/wind_spatial_field.gd")
+var _spatial: RefCounted
 
 var _atmosphere: Dictionary = {}
 var _atmosphere_active := false
@@ -36,7 +38,8 @@ static func build(raw: Variant) -> Dictionary:
 		return { ok = false, field = null, errors = checked.errors }
 	var script: Script = load("res://physics/wind_field.gd")
 	var field: Variant = script.new()
-	field.call("_apply_config", checked.config)
+	if not field.call("_apply_config", checked.config):
+		return {ok = false, field = null, errors = PackedStringArray(["spatial wind provider could not be constructed"])}
 	return { ok = true, field = field, errors = PackedStringArray() }
 
 
@@ -46,14 +49,29 @@ func configuration() -> Dictionary:
 
 
 func is_calm() -> bool:
-	return _calm
+	# Spatial point-flow law has its own identity even if all weather amplitudes are zero.
+	return _calm and _spatial == null
+
+
+func is_spatial() -> bool:
+	return _spatial != null
+
+
+func spatial_identity() -> Dictionary:
+	return _spatial.identity() if _spatial != null else {}
+
+
+func spatial_content_hash() -> String:
+	return _spatial.content_hash() if _spatial != null else ""
 
 
 ## Deterministic mean/gust background velocity [north, east, down] in m/s at simulation time.
 ## Stateful turbulence is added by FlightSession; this pure profile never advances RNG state.
-## The field is uniform, so position is intentionally not an input in this first version.
+## Legacy uniform fields only; the explicit spatial law requires sample_world.
 ## Invalid time is surfaced as nonfinite wind for the simulation's existing fail-closed guard.
 func sample(time_s: float) -> PackedFloat64Array:
+	if _spatial != null:
+		return M.v3(NAN, NAN, NAN) # a spatial query must supply its physical position
 	if not is_finite(time_s) or time_s < 0.0:
 		return M.v3(NAN, NAN, NAN)
 	if _calm:
@@ -77,19 +95,28 @@ func sample(time_s: float) -> PackedFloat64Array:
 	)
 
 
-## Position-aware compatibility adapter. This first contract validates NED position but retains
-## the exact uniform legacy wind law and time behavior.
+## Position-aware query; preserves the exact legacy law for weather v1-v4.
 func sample_world(position_ned: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
 	if position_ned.size() != 3:
 		return M.v3(NAN, NAN, NAN)
 	for component: float in position_ned:
 		if not is_finite(component):
 			return M.v3(NAN, NAN, NAN)
+	if _spatial != null:
+		var result: Dictionary = _spatial.sample_world(position_ned, time_s)
+		return result.wind_ned_mps if result.get("ok", false) else M.v3(NAN, NAN, NAN)
 	return sample(time_s)
 
 
-func _apply_config(config: Dictionary) -> void:
+func _apply_config(config: Dictionary) -> bool:
+	var spatial: RefCounted = null
+	if config.format == Config.SPATIAL_FORMAT:
+		var built := SpatialField.build(config.spatial_wind)
+		if not built.ok:
+			return false
+		spatial = built.field
 	_config = config.duplicate(true)
+	_spatial = spatial
 	_atmosphere = Config.atmosphere(_config)
 	_atmosphere_active = Config.has_atmosphere(_config)
 	_vertical_air = Config.has_vertical_atmosphere(_config)
@@ -108,6 +135,7 @@ func _apply_config(config: Dictionary) -> void:
 	_gust_delay_s = float(_config.gust_delay_s)
 	_has_gust = float(_config.gust_mps) != 0.0 or float(_config.gust_up_mps) != 0.0
 	_calm = float(_config.speed_mps) == 0.0 and not _has_gust and not has_turbulence()
+	return true
 
 
 ## Meteorological direction is "from"; the returned vector points toward the air's transport direction.

@@ -1,6 +1,6 @@
 # Night flight and programmable RGB lighting masterplan
 
-**Status: core renderer, profiles and Workshop implemented; authoring and qualification work remains.** Investigated 2026-10-25 against working-tree base `d7d49b1574f968edab533f8fc34f5a6e9e4920d3`; the user subsequently approved implementation. Runtime source takes precedence over proposals below. [Implementation and qualification record](research/night-flight-lighting/implementation.md) separates delivered behavior from remaining authoring, performance and pilot gates. Unrelated graphics and simulation work remains outside this subtrack.
+**Status: core renderer, profiles, Workshop sequences and creator layout contract implemented; asset art and qualification work remains.** Investigated 2026-10-25 against working-tree base `d7d49b1574f968edab533f8fc34f5a6e9e4920d3`; the user subsequently approved implementation. Runtime source takes precedence over proposals below. [Implementation and qualification record](research/night-flight-lighting/implementation.md) separates delivered behavior from remaining authoring, performance and pilot gates. Unrelated graphics and simulation work remains outside this subtrack.
 
 **Owner:** Field World, aircraft-lighting subtrack **FW-RGB-00…16**, coordinated with AS/model authors, AE/Workshop, UI/input, CAM, VQ/PT, SM and CR. Gate **FW-N** remains the pilot acceptance gate; these proposals do not close it. [Ownership registry](README.md#tracks-plans-and-step-ids), [current aircraft lighting](AIRCRAFT-LIGHTING.md), [Workshop](AIRCRAFT-WORKSHOP.md), [field world](FIELD-WORLD-PLAN.md), [aircraft contract](AIRCRAFT_CONTRACT.md).
 
@@ -617,7 +617,7 @@ Evaluate Reduced flashes and Show VFX Off, grayscale and common color-vision sim
 
 ## 12. Ordered implementation packages
 
-Each package is independently reviewable. Implementation was subsequently authorized. The table retains the full acceptance scope; it is not a claim that every gate is closed. The [implementation record](research/night-flight-lighting/implementation.md) owns completed checks and remaining qualification. Core profile validation, rig lifecycle, patterns, spill, Workshop editing, persistence, reactions and bounded VFX are implemented; authored mounts/skins and broad performance/pilot acceptance remain open.
+Each package is independently reviewable. Implementation was subsequently authorized. The table retains the full acceptance scope; it is not a claim that every gate is closed. The [implementation record](research/night-flight-lighting/implementation.md) owns completed checks and remaining qualification. Core profile validation, rig lifecycle, patterns, spill, Workshop editing, persistence, reactions and bounded VFX are implemented; the creator mount/path contract is implemented with empty stock overrides, while authored skin assets, fleet placement art and broad performance/pilot acceptance remain open.
 
 | ID | Work and dependencies | Proof / exit condition |
 | --- | --- | --- |
@@ -641,7 +641,7 @@ Each package is independently reviewable. Implementation was subsequently author
 
 Critical path: 00→01→02→03→04→05→06→08→09→12→13→14→15→16. Internal skin (07) and reactive/VFX work (10–11) follow stable bindings/clocks and may proceed independently with separate file ownership. Deliver Classic/Neon and save/load before Festival complexity. Do not block a useful baseline on a custom particle renderer or a new aircraft asset.
 
-The initial schema/rig and animated-strip slices are implemented. Continue in independently checked packages: extend the existing creator fitting contract, then qualify authored skin treatments on an eligible asset and whole-scene performance. Do not treat delivered code as closure of the capture, hardware or pilot gates.
+The initial schema/rig and animated-strip slices are implemented. Continue in independently checked packages: author and qualify fleet layouts using the implemented creator contract, then qualify skin treatments on an eligible asset and whole-scene performance. Do not treat delivered code as closure of the capture, hardware or pilot gates.
 
 ## 13. Risks, decisions requiring evidence and handoff
 

@@ -73,6 +73,11 @@ var _last_valid_mass := 1.0
 var _last_valid_gravity := 9.80665
 var _last_valid_inertia := PackedFloat64Array()
 const CHECKPOINT_FORMAT := "openrc-simulation-checkpoint v1"
+const ENDPOINT_CHECKPOINT_FORMAT := "openrc-simulation-checkpoint v2"
+const MAX_ENDPOINT_EVENTS := 256
+var _state_layout_identity := ""
+var _endpoint_callback_active := false
+var _endpoint_reentry_attempted := false
 
 const MIN_QUATERNION_NORM_SQ := 1e-24
 
@@ -80,6 +85,7 @@ const MIN_QUATERNION_NORM_SQ := 1e-24
 ## Install the vehicle to step. The contract's static shape is validated here (VehicleModel.validate); agreement
 ## with the live arrays is checked at reset and restore. An invalid candidate leaves the current model untouched.
 func set_model(candidate: Variant) -> bool:
+	if _reject_endpoint_reentry(): return false
 	if not (candidate is VehicleModel):
 		return false
 	if not VehicleModel.validate(candidate).ok:
@@ -96,18 +102,19 @@ func _layout_matches_model(sampled: PackedFloat64Array, discrete: PackedInt64Arr
 
 
 func reset(initial: PackedFloat64Array) -> bool:
+	if _reject_endpoint_reentry(): return false
 	var candidate := prepare_reset(initial)
 	if not candidate.ok:
 		_fail_safe(str(candidate.message))
 		return false
-	commit_prepared_reset(candidate)
-	return true
+	return commit_prepared_reset(candidate)
 
 
 ## Evaluate a detached reset candidate in the owner's supplied callback context.
 ## No state, fault, clock, RNG, or observer event is changed on rejection.
 ## The owner must keep that context fixed until commit_prepared_reset().
 func prepare_reset(initial: PackedFloat64Array) -> Dictionary:
+	if _reject_endpoint_reentry(): return {ok = false, message = "reset preparation is unavailable inside an endpoint callback"}
 	if not state_is_valid(initial):
 		return {ok = false, message = "reset rejected: initial state is nonfinite, malformed, or has a degenerate quaternion"}
 	if not _configuration_is_valid():
@@ -127,19 +134,41 @@ func prepare_reset(initial: PackedFloat64Array) -> Dictionary:
 		+ next_state[a + 2] * next_state[a + 2] + next_state[a + 3] * next_state[a + 3]
 	if absf(quaternion_norm_sq - 1.0) > 1e-12:
 		RK.normalize_attitude(next_state)
+	if _endpoint_enabled() and not _validate_endpoint_frame(_endpoint_frame(next_state, continuous, aux, modes),
+		_endpoint_validation_context(0, 1.0 / Engine.physics_ticks_per_second)):
+		return {ok = false, message = "reset rejected: endpoint state validator or layout refused the state"}
 	var next_inertia_inv := RB.inertia_inverse(inertia)
 	if not _array_is_finite(next_inertia_inv, 6):
 		return {ok = false, message = "reset rejected: inertia inverse is nonfinite"}
-	var reset_loads: Variant = _stage_loads(_packed_state(next_state), 0.0)
+	var reset_guard: Dictionary = _capture_endpoint_guard() if _endpoint_enabled() else {}
+	var reset_loads: Variant = _call_endpoint_read_only(_stage_loads, [_packed_state(next_state), 0.0]) \
+		if _endpoint_enabled() else _stage_loads(_packed_state(next_state), 0.0)
+	if not reset_guard.is_empty() and not _endpoint_guard_unchanged(reset_guard):
+		return {ok = false, message = "reset rejected: evaluator mutated live state or model"}
 	if not _loads_are_valid(reset_loads):
 		return {ok = false, message = "reset rejected: aircraft returned nonfinite or malformed loads"}
-	return {ok = true, state = next_state, inertia_inverse = next_inertia_inv, loads = reset_loads}
+	var prepared := {ok = true, state = next_state, inertia_inverse = next_inertia_inv, loads = reset_loads}
+	if _endpoint_enabled():
+		prepared.endpoint_guard = _capture_endpoint_guard()
+		prepared.endpoint_seal = _endpoint_reset_seal(prepared)
+	return prepared
 
 
 ## Only accepts a successful preparation from this owner with unchanged context.
 ## This is the sole publication boundary for a prepared reset.
-func commit_prepared_reset(candidate: Dictionary) -> void:
+func commit_prepared_reset(candidate: Dictionary) -> bool:
+	if _reject_endpoint_reentry(): return false
 	assert(candidate.get("ok", false))
+	if _endpoint_enabled() or candidate.has("endpoint_guard"):
+		if not _endpoint_enabled() or not candidate.get("endpoint_guard") is Dictionary \
+			or typeof(candidate.get("endpoint_seal")) != TYPE_PACKED_BYTE_ARRAY:
+			return false
+		# A changed context is refused without overwriting the caller's new context.
+		if not _endpoint_guard_matches(candidate.endpoint_guard) \
+			or candidate.endpoint_seal != _endpoint_reset_seal(candidate) \
+			or not _validate_endpoint_frame(_endpoint_frame(candidate.state, continuous, aux, modes),
+				_endpoint_validation_context(0, 1.0 / Engine.physics_ticks_per_second)):
+			return false
 	state = candidate.state.duplicate()
 	previous = state.duplicate()
 	tick = 0
@@ -149,8 +178,10 @@ func commit_prepared_reset(candidate: Dictionary) -> void:
 	last_loads = candidate.loads.duplicate()
 	last_events = []
 	fault_reason = ""
+	_state_layout_identity = model.state_layout_identity
 	_remember_valid_state()
 	stepped.emit(tick, time(), state, last_loads, inputs, aux)
+	return true
 
 
 func dt() -> float:
@@ -162,6 +193,7 @@ func time() -> float:
 
 
 func set_paused(value: bool) -> void:
+	if _reject_endpoint_reentry(): return
 	if not value and not fault_reason.is_empty():
 		return
 	if value != paused:
@@ -176,6 +208,7 @@ func _notification(what: int) -> void:
 
 
 func step() -> void:
+	if _reject_endpoint_reentry(): return
 	if not fault_reason.is_empty():
 		return
 	var started := Time.get_ticks_usec()
@@ -195,7 +228,12 @@ func step() -> void:
 			or not _array_is_finite(continuous, _last_valid_continuous.size()):
 		_fail_safe("step rejected: input or auxiliary state is nonfinite or malformed")
 		return
+	if _state_layout_identity != model.state_layout_identity or (_endpoint_enabled() \
+		and not _validate_endpoint_frame(_endpoint_frame(state, continuous, aux, modes), _endpoint_validation_context(tick, dt()))):
+		_fail_safe("step rejected: endpoint state validator or layout identity refused the current state")
+		return
 	before_step.emit(tick)
+	var endpoint_previous: Dictionary = _endpoint_frame(state, continuous, aux, modes) if _endpoint_enabled() else {}
 	var old_aux := aux.duplicate()
 	var next_aux: Variant = model.pre_tick.call(old_aux, inputs, dt())
 	if not _array_is_finite(next_aux) or next_aux.size() != old_aux.size():
@@ -321,10 +359,19 @@ func step() -> void:
 		_fail_safe("step rejected: integrated state is nonfinite, malformed, or has a degenerate quaternion")
 		return
 	var accepted_body_state: PackedFloat64Array = next_state.slice(0, RB.SIZE)
+	var integrated_body_state: PackedFloat64Array = accepted_body_state.duplicate() if _endpoint_enabled() else PackedFloat64Array()
 	if model.post_tick.is_valid() or model.post_tick_joint.is_valid():
-		var filtered: Variant = model.post_tick_joint.call(state.duplicate(), accepted_body_state.duplicate(), tick + 1,
-			continuous.duplicate(), next_state.slice(RB.SIZE)) if model.post_tick_joint.is_valid() else \
-			model.post_tick.call(state.duplicate(), accepted_body_state.duplicate(), tick + 1)
+		var filter_guard: Dictionary = _capture_endpoint_guard() if _endpoint_enabled() else {}
+		var filter_callback: Callable = model.post_tick_joint if model.post_tick_joint.is_valid() else model.post_tick
+		var filter_arguments: Array = [state.duplicate(), accepted_body_state.duplicate(), tick + 1]
+		if model.post_tick_joint.is_valid():
+			filter_arguments.append(continuous.duplicate())
+			filter_arguments.append(next_state.slice(RB.SIZE))
+		var filtered: Variant = _call_endpoint_read_only(filter_callback, filter_arguments) if _endpoint_enabled() \
+			else filter_callback.callv(filter_arguments)
+		if not filter_guard.is_empty() and not _endpoint_guard_unchanged(filter_guard):
+			_fail_safe("step rejected: endpoint body filter mutated live state or model")
+			return
 		# post_tick owns only the 13-value rigid body. Continuous states are integrated independently
 		# and remain the already-validated tail of next_state.
 		if not (filtered is PackedFloat64Array) or not state_is_valid(filtered):
@@ -332,16 +379,67 @@ func step() -> void:
 			_fail_safe("step rejected: post-step contact filter returned a malformed body state")
 			return
 		accepted_body_state = filtered.duplicate()
+	var accepted_continuous: PackedFloat64Array = next_state.slice(RB.SIZE)
+	var accepted_aux: PackedFloat64Array = aux
+	var accepted_modes: PackedInt64Array = modes
+	if model.endpoint_transition.is_valid():
+		var candidate_frame := _endpoint_frame(accepted_body_state, accepted_continuous, aux, modes)
+		var context := {tick = tick + 1, time_s = t + dt(), dt = dt(), events = tick_events.duplicate(true),
+			body_filtered = integrated_body_state.to_byte_array() != accepted_body_state.to_byte_array()}
+		var previous_copy: Dictionary = endpoint_previous.duplicate(true)
+		var context_copy: Dictionary = context.duplicate(true)
+		var transition_guard := _capture_endpoint_guard()
+		var transitioned: Variant = _call_endpoint_read_only(model.endpoint_transition, [endpoint_previous, candidate_frame, context])
+		var pure := _endpoint_guard_unchanged(transition_guard)
+		if not pure or not _guard_values_equal(endpoint_previous, previous_copy) or not _guard_values_equal(context, context_copy):
+			_fail_safe("step rejected: endpoint transition mutated live state, previous frame or context")
+			return
+		if not transitioned is Dictionary or transitioned.size() != 5 \
+			or not transitioned.has_all(["body", "continuous", "aux", "modes", "events"]):
+			_fail_safe("step rejected: endpoint transition returned a malformed frame")
+			return
+		var frame_only: Dictionary = transitioned.duplicate(true)
+		frame_only.erase("events")
+		if not _endpoint_frame_shape_is_valid(frame_only):
+			_fail_safe("step rejected: endpoint transition returned nonfinite or resized state")
+			return
+		var merged: Dictionary = _endpoint_events(transitioned.events, tick_events, t)
+		if not merged.ok:
+			_fail_safe("step rejected: " + str(merged.message))
+			return
+		accepted_body_state = frame_only.body.duplicate()
+		accepted_continuous = frame_only.continuous.duplicate()
+		accepted_aux = frame_only.aux.duplicate()
+		accepted_modes = frame_only.modes.duplicate()
+		tick_events = merged.events
 	if not continuous.is_empty() and model.block_aux.is_valid():
-		var projected: Variant = model.block_aux.call(next_state.slice(RB.SIZE), aux.duplicate())
+		var projection_guard: Dictionary = _capture_endpoint_guard() if _endpoint_enabled() else {}
+		var projected: Variant = _call_endpoint_read_only(model.block_aux, [accepted_continuous.duplicate(), accepted_aux.duplicate()]) \
+			if _endpoint_enabled() else model.block_aux.call(accepted_continuous, accepted_aux.duplicate())
+		if not projection_guard.is_empty() and not _endpoint_guard_unchanged(projection_guard):
+			_fail_safe("step rejected: endpoint auxiliary projection mutated live state or model")
+			return
 		if not _array_is_finite(projected, aux.size()):
 			aux = old_aux
 			_fail_safe("step rejected: continuous auxiliary projection is nonfinite or malformed")
 			return
-		aux = projected
+		accepted_aux = projected
+	if _endpoint_enabled() and (not _continuous_aux_matches(accepted_continuous, accepted_aux) \
+		or not _validate_endpoint_frame(_endpoint_frame(accepted_body_state, accepted_continuous, accepted_aux, accepted_modes),
+			_endpoint_validation_context(tick + 1, dt()))):
+		_fail_safe("step rejected: endpoint projection or validator refused the final state")
+		return
+	if _endpoint_enabled() and not model.endpoint_transition.is_valid():
+		var checked_events := _endpoint_events([], tick_events, t)
+		if not checked_events.ok:
+			_fail_safe("step rejected: " + str(checked_events.message))
+			return
+		tick_events = checked_events.events
 	previous = state.duplicate()
 	if not continuous.is_empty():
-		continuous = next_state.slice(RB.SIZE)
+		continuous = accepted_continuous
+	aux = accepted_aux
+	modes = accepted_modes
 	state = accepted_body_state
 	last_loads = current_loads
 	last_events = tick_events
@@ -364,6 +462,7 @@ func _physics_process(_delta: float) -> void:
 ## State between the previous and current step: position lerp, attitude nlerp (shortest path).
 ## Only position and attitude are interpolated; rates are taken from the current state.
 func interpolated(fraction: float) -> PackedFloat64Array:
+	if _reject_endpoint_reentry(): return state.duplicate()
 	if not is_finite(fraction):
 		_fail_safe("interpolation rejected: fraction is nonfinite")
 		return state.duplicate()
@@ -412,6 +511,9 @@ func _loads_are_valid(candidate: Variant) -> bool:
 
 
 func _configuration_is_valid() -> bool:
+	if (not model.state_layout_identity.is_empty() or model.endpoint_transition.is_valid() \
+		or model.state_validator.is_valid()) and not VehicleModel.validate(model).ok:
+		return false
 	# Joint stages require a continuous block. Never silently discard that evaluator
 	# in favour of the body-only loads callback (whose default returns zero loads).
 	if continuous.is_empty() and (model.stage.is_valid() or not model.loads.is_valid()):
@@ -467,7 +569,11 @@ func _same_array(left: PackedFloat64Array, right: PackedFloat64Array) -> bool:
 func _continuous_aux_matches(extra: PackedFloat64Array, sampled: PackedFloat64Array) -> bool:
 	if not model.block_aux.is_valid():
 		return true
-	var projected: Variant = model.block_aux.call(extra.duplicate(), sampled.duplicate())
+	var projection_guard: Dictionary = _capture_endpoint_guard() if _endpoint_enabled() else {}
+	var projected: Variant = _call_endpoint_read_only(model.block_aux, [extra.duplicate(), sampled.duplicate()]) \
+		if _endpoint_enabled() else model.block_aux.call(extra.duplicate(), sampled.duplicate())
+	if not projection_guard.is_empty() and not _endpoint_guard_unchanged(projection_guard):
+		return false
 	return _array_is_finite(projected, sampled.size()) and _same_array(projected, sampled)
 
 
@@ -573,7 +679,10 @@ func _fail_safe(reason: String) -> void:
 ## Exact, detached tick-boundary snapshot. var_to_bytes/bytes_to_var preserves float64 bits;
 ## JSON/CSV are diagnostics, not this format. Callbacks and model configuration stay with the owner.
 func checkpoint() -> Dictionary:
+	if _reject_endpoint_reentry(): return {}
 	if not fault_reason.is_empty() or not _array_is_finite(continuous, _last_valid_continuous.size()):
+		return {}
+	if _state_layout_identity != model.state_layout_identity:
 		return {}
 	var snapshot: Dictionary = { format = CHECKPOINT_FORMAT, tick = tick, dt = dt(), state = state.duplicate(),
 		previous = previous.duplicate(), aux = aux.duplicate(), inputs = inputs.duplicate(),
@@ -581,19 +690,31 @@ func checkpoint() -> Dictionary:
 		inertia = inertia.duplicate(), gravity = gravity, stop_at_tick = stop_at_tick }
 	if not continuous.is_empty():
 		snapshot.continuous = continuous.duplicate()
+	if _endpoint_enabled():
+		snapshot.format = ENDPOINT_CHECKPOINT_FORMAT
+		snapshot.state_layout_identity = model.state_layout_identity
 	# A producer must not emit a boundary that its own reader refuses.
 	return snapshot if can_restore_checkpoint(snapshot) else {}
 
 
 ## Validate before changing anything. Restoring across a layout, timestep or mass configuration is refused.
 func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, expected_modes_size: int = -1) -> bool:
+	if _reject_endpoint_reentry(): return false
 	if not VehicleModel.validate(model).ok:
 		return false
 	for key in ["format", "tick", "dt", "state", "previous", "aux", "inputs", "modes", "last_loads", "mass", "inertia", "gravity", "stop_at_tick"]:
 		if not candidate.has(key):
 			return false
-	if typeof(candidate.format) != TYPE_STRING or candidate.format != CHECKPOINT_FORMAT or typeof(candidate.tick) != TYPE_INT or candidate.tick < 0 \
+	var expected_format: String = ENDPOINT_CHECKPOINT_FORMAT if _endpoint_enabled() else CHECKPOINT_FORMAT
+	if typeof(candidate.format) != TYPE_STRING or candidate.format != expected_format or typeof(candidate.tick) != TYPE_INT or candidate.tick < 0 \
 			or typeof(candidate.stop_at_tick) != TYPE_INT or candidate.stop_at_tick < -1:
+		return false
+	if _endpoint_enabled():
+		if typeof(candidate.get("state_layout_identity")) != TYPE_STRING \
+			or candidate.state_layout_identity != model.state_layout_identity \
+			or candidate.size() != 14 + (1 if candidate.has("continuous") else 0):
+			return false
+	elif candidate.has("state_layout_identity"):
 		return false
 	for key in ["dt", "mass", "gravity"]:
 		if typeof(candidate[key]) != TYPE_FLOAT or not is_finite(candidate[key]):
@@ -605,17 +726,21 @@ func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, 
 		return false
 	if not _checkpoint_state_is_valid(candidate.state) or not _checkpoint_state_is_valid(candidate.previous):
 		return false
-	return _array_is_finite(candidate.get("continuous", PackedFloat64Array()), continuous.size()) \
+	var structural: bool = _array_is_finite(candidate.get("continuous", PackedFloat64Array()), continuous.size()) \
 		and _array_is_finite(candidate.aux, aux.size() if expected_aux_size < 0 else expected_aux_size) and _array_is_finite(candidate.inputs, model.input_size) \
 		and _loads_are_valid(candidate.last_loads) and typeof(candidate.modes) == TYPE_PACKED_INT64_ARRAY \
 		and candidate.modes.size() == (modes.size() if expected_modes_size < 0 else expected_modes_size) and _configuration_is_valid() \
 		and _array_is_finite(RB.inertia_inverse(inertia), 6) \
 		and _continuous_aux_matches(candidate.get("continuous", PackedFloat64Array()), candidate.aux) \
 		and _layout_matches_model(candidate.aux, candidate.modes, candidate.get("continuous", PackedFloat64Array()))
+	return structural and (not _endpoint_enabled() or _validate_endpoint_frame(_endpoint_frame(candidate.state,
+		candidate.get("continuous", PackedFloat64Array()), candidate.aux, candidate.modes),
+		_endpoint_validation_context(candidate.tick, candidate.dt)))
 
 
 ## Explicit recovery restores all dynamic state and pauses. No tick/trace sample is emitted.
 func restore_checkpoint(candidate: Dictionary) -> bool:
+	if _reject_endpoint_reentry(): return false
 	if not can_restore_checkpoint(candidate):
 		return false
 	continuous = candidate.get("continuous", PackedFloat64Array()).duplicate()
@@ -632,6 +757,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	_inertia_cache = inertia.duplicate()
 	fault_reason = ""
 	last_events = []
+	_state_layout_identity = model.state_layout_identity
 	_remember_valid_state()
 	set_paused(true)
 	return true
@@ -698,3 +824,171 @@ func _stage_state_is_valid(combined: PackedFloat64Array) -> bool:
 	if continuous.is_empty():
 		return state_is_valid(combined)
 	return _array_is_finite(combined, RB.SIZE + continuous.size()) and state_is_valid(combined.slice(0, RB.SIZE))
+
+
+func _endpoint_enabled() -> bool:
+	return not model.state_layout_identity.is_empty()
+
+
+func _endpoint_frame(body: PackedFloat64Array, extra: PackedFloat64Array,
+		sampled: PackedFloat64Array, discrete: PackedInt64Array) -> Dictionary:
+	return {body = body.duplicate(), continuous = extra.duplicate(), aux = sampled.duplicate(), modes = discrete.duplicate()}
+
+
+func _endpoint_frame_shape_is_valid(frame: Dictionary) -> bool:
+	return frame.size() == 4 and frame.has_all(["body", "continuous", "aux", "modes"]) \
+		and _checkpoint_state_is_valid(frame.body) \
+		and _array_is_finite(frame.continuous, model.continuous_size) \
+		and _array_is_finite(frame.aux, model.aux_size) \
+		and typeof(frame.modes) == TYPE_PACKED_INT64_ARRAY and frame.modes.size() == model.modes_size
+
+
+static func _endpoint_validation_context(at_tick: int, timestep: float) -> Dictionary:
+	return {tick = at_tick, time_s = at_tick * timestep, dt = timestep}
+
+
+func _validate_endpoint_frame(frame: Dictionary, context: Dictionary) -> bool:
+	if not _endpoint_frame_shape_is_valid(frame):
+		return false
+	if not model.state_validator.is_valid():
+		return true
+	var original: Dictionary = frame.duplicate(true)
+	var original_context: Dictionary = context.duplicate(true)
+	var guard := _capture_endpoint_guard()
+	var result: Variant = _call_endpoint_read_only(model.state_validator, [frame, context])
+	var pure := _endpoint_guard_unchanged(guard)
+	return pure and _guard_values_equal(original, frame) and _guard_values_equal(original_context, context) \
+		and typeof(result) == TYPE_BOOL and result
+
+
+func _endpoint_reset_seal(candidate: Dictionary) -> PackedByteArray:
+	return var_to_bytes([candidate.get("state"), candidate.get("inertia_inverse"), candidate.get("loads")])
+
+
+## Only new endpoint callbacks use these guards. Legacy RK/pre_tick behavior is unchanged.
+## They detect net mutation of owned state/model; arbitrary user code is not a sandbox.
+const _ENDPOINT_STATE_FIELDS := ["mass", "inertia", "gravity", "inputs", "last_loads", "aux", "modes", "continuous",
+	"state", "previous", "tick", "_fixed_dt", "paused", "stop_at_tick", "step_usec", "fault_reason", "last_events",
+	"_inertia_inv", "_inertia_cache", "_state_layout_identity", "_endpoint_callback_active", "_endpoint_reentry_attempted",
+	"_last_valid_continuous", "_last_valid_state",
+	"_last_valid_previous", "_last_valid_aux", "_last_valid_inputs", "_last_valid_loads", "_last_valid_modes",
+	"_last_valid_tick", "_last_valid_stop", "_last_valid_mass", "_last_valid_gravity", "_last_valid_inertia"]
+const _ENDPOINT_MODEL_FIELDS := ["input_size", "aux_size", "modes_size", "continuous_size", "identity", "state_layout_identity",
+	"loads", "stage", "block_loads", "block_derivative", "stage_rotor_momentum", "rotor_momentum", "pre_tick",
+	"post_tick", "post_tick_joint", "block_aux", "step_policy", "events", "substeps", "substeps_joint",
+	"endpoint_transition", "state_validator"]
+
+
+static func _guard_copy(value: Variant) -> Variant:
+	match typeof(value):
+		TYPE_DICTIONARY, TYPE_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_INT64_ARRAY, \
+		TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY, TYPE_PACKED_STRING_ARRAY:
+			return value.duplicate(true) if typeof(value) in [TYPE_DICTIONARY, TYPE_ARRAY] else value.duplicate()
+		_:
+			return value
+
+
+func _reject_endpoint_reentry() -> bool:
+	if not _endpoint_callback_active:
+		return false
+	_endpoint_reentry_attempted = true
+	return true
+
+
+func _call_endpoint_read_only(callback: Callable, arguments: Array) -> Variant:
+	_endpoint_callback_active = true
+	var result: Variant = callback.callv(arguments)
+	_endpoint_callback_active = false
+	return result
+
+
+static func _guard_values_equal(left: Variant, right: Variant) -> bool:
+	if typeof(left) != typeof(right):
+		return false
+	if typeof(left) == TYPE_DICTIONARY:
+		if left.keys() != right.keys(): return false
+		for key: Variant in left:
+			if not _guard_values_equal(left[key], right[key]): return false
+		return true
+	if typeof(left) == TYPE_ARRAY:
+		if left.size() != right.size(): return false
+		for index: int in left.size():
+			if not _guard_values_equal(left[index], right[index]): return false
+		return true
+	if typeof(left) in [TYPE_CALLABLE, TYPE_OBJECT, TYPE_SIGNAL]:
+		return left == right
+	return var_to_bytes(left) == var_to_bytes(right)
+
+
+func _capture_endpoint_guard() -> Dictionary:
+	var owner_values := {}
+	var model_values := {}
+	for field: String in _ENDPOINT_STATE_FIELDS:
+		owner_values[field] = _guard_copy(get(field))
+	for field: String in _ENDPOINT_MODEL_FIELDS:
+		model_values[field] = _guard_copy(model.get(field))
+	return {owner_id = get_instance_id(), owner = owner_values, vehicle = model, contract = model_values}
+
+
+func _endpoint_guard_matches(guard: Dictionary) -> bool:
+	if guard.get("owner_id") != get_instance_id() or model != guard.get("vehicle") \
+		or not guard.get("owner") is Dictionary or not guard.get("contract") is Dictionary:
+		return false
+	for field: String in _ENDPOINT_STATE_FIELDS:
+		if not guard.owner.has(field) or not _guard_values_equal(get(field), guard.owner[field]): return false
+	for field: String in _ENDPOINT_MODEL_FIELDS:
+		if not guard.contract.has(field) or not _guard_values_equal(model.get(field), guard.contract[field]): return false
+	return true
+
+
+func _endpoint_guard_unchanged(guard: Dictionary) -> bool:
+	if _endpoint_guard_matches(guard):
+		return true
+	model = guard.vehicle
+	for field: String in _ENDPOINT_STATE_FIELDS:
+		set(field, _guard_copy(guard.owner[field]))
+	for field: String in _ENDPOINT_MODEL_FIELDS:
+		model.set(field, _guard_copy(guard.contract[field]))
+	return false
+
+
+func _endpoint_events(added: Variant, located: Array[Dictionary], start_time: float) -> Dictionary:
+	if typeof(added) != TYPE_ARRAY or added.size() + located.size() > MAX_ENDPOINT_EVENTS:
+		return {ok = false, message = "endpoint event count or array is invalid"}
+	var merged: Array = located.duplicate()
+	merged.append_array(added)
+	var ids := {}
+	var payload_budget := {left = 4096}
+	for event: Variant in merged:
+		if typeof(event) != TYPE_DICTIONARY or not _endpoint_event_value(event, 0, payload_budget):
+			return {ok = false, message = "endpoint event payload is nonfinite, unsupported or exceeds bounds"}
+		if event.has("event_id"):
+			var id: Variant = event.event_id
+			if typeof(id) != TYPE_STRING or id.is_empty() or id.length() > 256 or ids.has(id):
+				return {ok = false, message = "endpoint event_id must be a unique bounded nonempty string"}
+			ids[id] = true
+	return _unpack_policy_result({state = PackedFloat64Array(), events = merged}, start_time)
+
+
+static func _endpoint_event_value(value: Variant, depth: int, budget: Dictionary) -> bool:
+	if depth > 8 or budget.left <= 0: return false
+	budget.left -= 1
+	match typeof(value):
+		TYPE_NIL, TYPE_BOOL, TYPE_INT:
+			return true
+		TYPE_FLOAT:
+			return is_finite(value)
+		TYPE_STRING:
+			return value.length() <= 1024
+		TYPE_DICTIONARY:
+			if value.size() > 64: return false
+			for key: Variant in value:
+				if typeof(key) not in [TYPE_STRING, TYPE_STRING_NAME] or str(key).length() > 256 or not _endpoint_event_value(value[key], depth + 1, budget): return false
+			return true
+		TYPE_ARRAY, TYPE_PACKED_FLOAT64_ARRAY, TYPE_PACKED_INT64_ARRAY, TYPE_PACKED_STRING_ARRAY, TYPE_PACKED_BYTE_ARRAY:
+			if value.size() > 256: return false
+			for item: Variant in value:
+				if not _endpoint_event_value(item, depth + 1, budget): return false
+			return true
+		_:
+			return false
