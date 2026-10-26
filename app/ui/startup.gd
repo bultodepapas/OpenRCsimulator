@@ -1,6 +1,7 @@
 extends Node
 ## Lightweight entry: the official mark renders before the shell's large preload graph.
 
+const Languages := preload("res://i18n/languages.gd")
 const APP_SCENE := "res://app_root.tscn"
 const Intro := preload("res://ui/brand_intro.gd")
 const SceneLoad := preload("res://ui/flight_scene_load.gd")
@@ -210,7 +211,7 @@ static func read_presentation(path: String) -> Dictionary:
 	if cfg.load(path) == OK:
 		var schema: Variant = cfg.get_value("meta", "schema", -1)
 		var language: Variant = cfg.get_value("ui", "language", "en")
-		if typeof(schema) == TYPE_INT and schema >= 1 and typeof(language) == TYPE_STRING and language in ["en", "es"]:
+		if typeof(schema) == TYPE_INT and schema >= 1 and typeof(language) == TYPE_STRING and Languages.NAMES.has(language):
 			result.language = language
 	var display := ConfigFile.new()
 	if display.load(path + ".display") == OK:

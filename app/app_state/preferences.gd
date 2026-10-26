@@ -28,7 +28,8 @@ const LIGHTING_SCHEMA := 4
 const LEGACY_SCHEMA := 1
 ## Interface languages: code -> name in that language (never translated). English is the default and the source
 ## language of every text; others come from res://i18n/<code>.po. The order is the order the Home button cycles.
-const LANGUAGES := { "en": "English", "es": "Español" }
+const Languages := preload("res://i18n/languages.gd")
+const LANGUAGES := Languages.NAMES
 ## aircraft: the catalog ID Home offers to fly (UI-05); an ID that is no longer in the catalog falls back to the default.
 const DEFAULTS := {
 	language = "en",
