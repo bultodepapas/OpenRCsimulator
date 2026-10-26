@@ -1,12 +1,12 @@
 # OpenRC project website
 
-WEB-01…08 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
+WEB-01…09 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
 
 ## Design
 
 Visual thesis: an RC club's aircraft catalogue, combining oversized workshop typography, original dark studio renders, ivory paper and field green.
 
-Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and manufacturer introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → manufacturer partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads target the v0.1.7 release snapshot; the site distinguishes a stable software release from the simulator's early-alpha status and experimental aircraft and vehicle models.
+Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and manufacturer introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → manufacturer partner details → development status and contribution paths. Spanish is served at the project root and English at `en.html`; visible links switch between them. The page-wide night theme is saved locally. Downloads target the v0.1.8 release snapshot; the site distinguishes a stable software release from the simulator's early-alpha status and experimental aircraft and vehicle models.
 
 Interaction thesis: a short hero entrance, restrained section reveals and real aircraft turntables with drag, angle slider and play/pause controls. Reduced-motion preference disables autoplay and offers deliberate single-frame steps; core content, technical disclosures and downloads work without JavaScript. The viewer loads only near the hangar, pauses offscreen/when hidden, and retains at most two decoded sheets.
 
@@ -34,9 +34,9 @@ The [browser model pipeline](MODELS.md) exports the six actual visual hierarchie
 
 From the repository root: `python -m http.server 4173 --bind 127.0.0.1 --directory site`. Open `http://127.0.0.1:4173/`. The page uses relative asset URLs and works at GitHub's project subpath.
 
-Regenerate images with Pillow 12.3.0 and `python site/prepare_assets.py`. Edit copy in `index.html` and its matching English translation in `main.js`. Update platform download links, version, checksums and sizes together after a release. Keep source-state claims separate from release contents and preserve experimental labels.
+Regenerate images with Pillow 12.3.0 and `python site/prepare_assets.py`. Edit Spanish copy in `index.html` and its matching English translation in `content.js`, then run `python3 site/build_locales.py`. Never hand-edit generated `en.html` or `sitemap.xml`. Update platform download links, version, checksums and sizes together after a release. Keep source-state claims separate from release contents and preserve experimental labels.
 
-Additional WEB-02 copy and theme behavior live in `details.js`, presentation in `details.css`, and the orbit renderer in `viewer.js`. `main.js` owns catalogue/language/field selection. Keep all translations in sync with `data-i18n`, including dynamic viewer labels.
+Shared copy, catalogue data and English metadata live in `content.js`; theme behavior lives in `details.js`, presentation in `details.css`, and the orbit renderer in `viewer.js`. `main.js` owns catalogue/field selection and preserves section fragments in the language link. Keep all translations in sync with `data-i18n`, including dynamic viewer labels.
 
 WEB-03 presentation lives in `cinema.css`, bounded page/film motion in `cinema.js`, and optional geometry inspection in `inspector.js`. The native modal supports Escape, focus restoration, camera presets, keyboard orbit and explicit zoom. Portrait camera framing differs from landscape framing. Changing aircraft cancels obsolete loads; loading failures preserve access to the existing turntable.
 
@@ -44,7 +44,7 @@ WEB-04 makes the jet the initial catalogue selection and adds direct inspector e
 
 WEB-05 keeps the same composition while reducing work: preload the two opening fonts, show the hero poster immediately, cache scroll geometry between layout changes, and defer distant editorial rendering with `content-visibility: auto`. Intrinsic section sizes are estimates until first rendering; the browser then remembers measured sizes. The turntable schedules one animation callback per frame at its existing 125 ms interval, updates only angle UI per frame, cancels obsolete image loads, retries failed selections, and retains a two-sheet LRU cache. Language and theme changes avoid identical HTML/image assignments. Rebuild the black Savox display copy with `python site/prepare_assets.py --brands-only`.
 
-HTML references styles/scripts with a shared release query (`?v=web08-seo-20261026`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references styles/scripts with a shared release query (`?v=web09-seo-20261026`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
 WEB-07 official identity, 2026-10-24: the header, hero, footer and README now use derivatives of the refined vector master based on the supplied official SVG. The favicon uses its RC contours, and Open Graph/Twitter metadata uses a 1200×630 PNG. [Source and regeneration](BRANDS.md#openrc-identity). The aircraft opening, navigation, translations and downloads retain their behavior. Local Chrome review covers 1920×1080, 390×844 and 320×740, both languages/themes, reduced motion, image loading and horizontal overflow. This is presentation verification, not a simulator release.
 
@@ -54,19 +54,38 @@ The unpublished v0.1.2 draft refresh keeps download, first-launch and checksum l
 
 The subsequent P51-22 update labels the Mustang's powered takeoff and loop acceptance as pending in both languages. Local and public aircraft-selection checks show the warning without horizontal overflow. Public HTML/main.js hashes match the local files; the browser reports no warnings or errors. Deployment `2e1475092c4a7a608fb30a63826c98cfda6622dd` passed [Pages](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38926987899). Download links still target v0.1.1.
 
-Publish with `python site/publish.py --message "WEB-step: change; proof: completed checks"` after browser verification, replacing the message with the actual change and checks. It requires Git identity and an authenticated `gh` with repository admin access; it refuses to replace a different existing Pages source. Only HTML, sitemap XML, CSS, JS, favicon, `.nojekyll` and licensed assets are copied into a temporary checkout. No force push or changes to the working branch/index.
+Publish with `python site/publish.py --message "WEB-step: change; proof: completed checks"` after browser verification, replacing the message with the actual change and checks. It requires Git identity and an authenticated `gh` with repository admin access; it refuses to replace a different existing Pages source. The publisher first rejects stale locale outputs. Only the two HTML pages, sitemap XML, CSS, JS, favicon, `.nojekyll` and licensed assets are copied into a temporary checkout. No force push or changes to the working branch/index.
 
-## Search metadata (WEB-08)
+## Search metadata and static languages (WEB-08…09)
 
-`index.html` owns the Spanish title, description, canonical URL, social preview and `SoftwareApplication` JSON-LD. `main.js` preserves those defaults and synchronizes the English title, descriptions and structured data when the visitor changes language. Keep metadata aligned with visible copy and the early-alpha status. Do not add fabricated ratings or claim eligibility for rich results: Google's [software-app guidance](https://developers.google.com/search/docs/appearance/structured-data/software-app) requires review/rating evidence that this site does not have.
+`index.html` owns the Spanish source, title, description, canonical URL, social preview and `SoftwareApplication` JSON-LD. `content.js` owns shared catalogue data and English translations. `build_locales.py` generates a complete `en.html` with English body copy, accessible names, metadata, self-canonical and localized software landing/download URLs. The software identity stays shared. Both pages declare reciprocal `es`/`en` and `x-default` alternates, and the sitemap lists both canonical URLs.
 
-`sitemap.xml` lists the single canonical page and ships through `publish.py`. Add only independently accessible, indexable pages; section fragments and local-storage language choices are not separate pages. The English translation currently shares the Spanish URL, so it has no separate `hreflang` entry. Separate translated URLs would be required for [localized-page annotations](https://developers.google.com/search/docs/specialty/international/localized-versions).
+The URL determines the language. A visible link works without JavaScript; with JavaScript it also preserves the current fragment. Old `openrc-language` storage does not override the requested page. This deliberately replaces the former client-side language toggle. The theme preference still persists. Keep metadata aligned with visible copy and the early-alpha status; do not add fabricated ratings or claim software rich-result eligibility without the required evidence.
+
+Install the free build dependency from `requirements-seo.txt` in your Python environment (Beautiful Soup 4.12.3). Node.js evaluates only the local shared data file; no npm package is needed (verified with Node.js 24.19.0). From the repository root:
+
+```bash
+python3 -m pip install -r site/requirements-seo.txt
+python3 site/build_locales.py
+python3 site/build_locales.py --check
+python3 site/test_locales.py
+```
+
+The generator fails on missing or empty translations. `--check` compares generated outputs without writing; `publish.py` runs it before accessing GitHub. Static checks cover reciprocal language routes, self-canonicals, metadata/schema consistency, sitemap entries, downloads, visible answers, asset references and fragment targets. Browser checks must also cover both URLs with and without JavaScript, then catalogue, field, theme and inspector interactions.
+
+The visible FAQ answers installation, licensing, controls, browser use and physical-validation questions, with links to authoritative project guides. Keep the answers immediately visible and preserve their IDs for deep links. The dated [2026 search research](../docs/research/website-seo-2026-10-26.md) explains the official Google/Bing guidance, FAQ rich-result retirement, AI-search requirements and measurement limits. No special AI files or FAQ rich-result markup are required for this change.
 
 The [sitemap](https://bultodepapas.github.io/OpenRCsimulator/sitemap.xml) is linked from the page and can be submitted in Google Search Console for the project URL-prefix property. Submission and search-index coverage have not been verified. A project-level `robots.txt` would not control crawling: robots rules must live at the host root, `https://bultodepapas.github.io/robots.txt`, outside this deployment. That root returned 404 on 2026-10-26. See Google's [sitemap instructions](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap) and [robots.txt placement rules](https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt).
 
 WEB-08 local verification, 2026-10-26: Chromium checks passed at 1920×1080, 390×844 and 320×740, switching Spanish → English → Spanish and reloading the saved English preference. Titles, descriptions and JSON-LD stay consistent; no empty translations, broken loaded images, broken section links, horizontal overflow, page exceptions or HTTP errors were found. Spanish content, metadata, downloads and the sitemap link remain in static HTML without JavaScript. Asset references, sitemap XML, JSON-LD, JavaScript and publisher syntax passed. These checks do not establish search rankings or indexing.
 
 Published WEB-08 deployment: `1ed14df22f1553cdb1b617475e9fcf10eb73807a`; GitHub Pages reports `built`. The same browser checks passed on the public URL. Public HTML, `main.js` and `sitemap.xml` return HTTP 200 and match local bytes. A fresh `gh-pages` clone resolves static asset references and includes the sitemap and `.nojekyll`, without simulator files.
+
+## WEB-09 verification — 2026-10-26
+
+Before this pass, the public `en.html` returned 404; initial HTML contained Spanish only, no locale alternates, no crawlable language link and no FAQ answers. Both current pages now contain full localized HTML, three reciprocal language annotations (including `x-default`), a visible language link and five visible answers. The generated English copy uses the existing translations rather than a separate hand-maintained page.
+
+Local Chromium checks passed 12 combinations: Spanish/English × JavaScript on/off × 1920×1080, 390×844 and 320×740. They cover matching title/description/schema/canonical metadata, nonempty copy, fragment targets, loaded images, visible answers, language navigation and overflow. Old stored English preference does not override the Spanish URL. Section fragments survive language navigation with JavaScript. All six catalogue selections, the night field, night theme, optional jet GLB loading and Escape-to-close passed without page exceptions or HTTP failures. The four static publication tests and generator freshness check passed. Screenshots remain in ignored scratch storage. No field performance or ranking gains are claimed.
 
 ## WEB-01 verification — 2026-10-15
 
