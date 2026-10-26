@@ -1,0 +1,188 @@
+{
+  "format": "openrc-gp19-hull-scrape-evidence-recipe-v1",
+  "status": "awaiting root production receipts; do not seal canonical cohort yet",
+  "canonical_destination": "docs/research/ground-physics/GP-19/evidence/accepted-hull-scrape",
+  "copied_artifacts": [
+    {
+      "from": "tmp/gp19-hull-scrape/proposal.md",
+      "to": "design/proposal.md",
+      "qualification": "read-only original proposal"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/source",
+      "to": "before/sources",
+      "qualification": "seven original source/asset-ledger snapshots; raw copy"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/source-hashes.json",
+      "to": "before/source-hashes.json",
+      "qualification": "original baseline source pins"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/baseline.gd",
+      "to": "before/baseline.gd",
+      "qualification": "independent10-check original-law audit"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/observations.json",
+      "to": "before/observations.json",
+      "qualification": "opening overlap has geometric slide but no loaded friction"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/baseline-02",
+      "to": "before/checks",
+      "qualification": "qualified10 audit only; not an acoustic/physics validation"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/evidence-inputs/draft501",
+      "to": "draft501/sources",
+      "qualification": "exact earlier seven source bytes independently digest-verified against old manifest; source reconstruction disclosed"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/evidence-inputs/draft501-sources.json",
+      "to": "draft501/source-reconciliation.json",
+      "qualification": "not an extra run or numerical recapture"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/draft/pre-null-guards",
+      "to": "draft501/identity",
+      "qualification": "earlier source/patch/receipt pins before two null guards"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/metrics-fixture-01",
+      "to": "draft501/checks/metrics",
+      "qualification": "367 old-force fixture and independent virtual work checks"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/audio-render-domain-01",
+      "to": "draft501/checks/audio",
+      "qualification": "46 corrected audio scheduling/numeric tests"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/session-deferred-01",
+      "to": "draft501/checks/session",
+      "qualification": "40 real Session checks before null guards"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/legacy-audio-deferred-01",
+      "to": "draft501/checks/legacy-audio",
+      "qualification": "12 unchanged legacy test cases via draft preload"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/legacy-soft-deferred-01",
+      "to": "draft501/checks/legacy-soft",
+      "qualification": "36 unchanged existing soft-contact checks via draft preloads"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/session-null-01",
+      "to": "final-guards/checks",
+      "qualification": "44 actual Session checks;40 repeated+4 added; not added to501 as wholly new tests"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/draft/director.gd",
+      "to": "final-guards/director.gd",
+      "qualification": "two sim-null guards"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/draft/test_session.gd",
+      "to": "final-guards/test_session.gd",
+      "qualification": "valid uninitialized PresentationContext regression"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/promotion",
+      "to": "promotion",
+      "qualification": "exact installed8 payloads, source pin manifest, commands, attribute snippet"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/draft/freeze_reference.gd",
+      "to": "fixture/freeze_reference.gd",
+      "qualification": "one-time generator uses frozen pre-change source, not candidate"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/reference-02",
+      "to": "fixture/capture-check",
+      "qualification": "generator completed; not counted implementation assertions"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/promotion/app/tests/fixtures/hull_friction_reference.bin",
+      "to": "fixture/hull_friction_reference.bin",
+      "qualification": "9132 bytes -text, SHA pinned in production test"
+    },
+    {
+      "from": "tmp/gp19-scrape-independent-review",
+      "to": "independent",
+      "qualification": "report identifies14 new assertions+411 repeated existing checks,425 executions separate from producer"
+    }
+  ],
+  "negative_receipts": [
+    {
+      "from": "tmp/gp19-hull-scrape/checks/baseline",
+      "to": "rejected/baseline-inference",
+      "reason": "original audit fixture inference parse error"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/metrics-01",
+      "to": "rejected/metrics-parse",
+      "reason": "test-only wrong baseline path and packed-array multiply"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/metrics-02",
+      "to": "rejected/metrics-oracle",
+      "reason": "test decimal -2.88 exact equality overstrict"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/audio-01",
+      "to": "rejected/audio-parse",
+      "reason": "test reserved dictionary key"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/session-01",
+      "to": "rejected/session-parse",
+      "reason": "test Variant inference"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/session-02",
+      "to": "rejected/session-clock-api",
+      "reason": "real draft bug: nonexistent sim.tick_rate; corrected dt inverse"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/session-04",
+      "to": "rejected/session-fuel-epoch",
+      "reason": "fixture last-valid fuel epoch inconsistent after direct mutation"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/audio-deferred-01",
+      "to": "rejected/audio-float32-oracle",
+      "reason": "test double0.2 versus float32 stored gain"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/checks/reference-01",
+      "to": "rejected/reference-parse",
+      "reason": "test Script.resource_path static lookup"
+    },
+    {
+      "from": "tmp/gp19-hull-scrape/draft/pre-deferred-cancel",
+      "to": "superseded/immediate-cancellation-draft",
+      "reason": "preserve reviewed callback/comment/invalid-queue state before correction"
+    }
+  ],
+  "required_before_seal": [
+    "all root production report.json complete/ok/exit0/errors0/warnings0 with required completion strings, process commands and engine logs retained",
+    "copy exact tested current-source snapshots and root pre/post source guards; if any differ record mismatch rather than relabel current source as tested",
+    "seven existing/new production scripts count separately; do not count generator/rejected/superseded runs as passing implementation assertions",
+    "retain independent negative numeric-boundary.json and snapshot as successfully reproduced defect, not supported candidate acceptance",
+    "pin raw fixture, binary -text attribute, original source SHA and one-time generator receipt",
+    "include current root44-path native source wrapper identity snapshot; no new native result",
+    "write SHA256 manifest for every raw artifact and verify every entry after copying, with no text normalization",
+    "root owns final canonical README/masterplan/status edits; preserve existing accepted contact/mechanism paragraphs"
+  ],
+  "limits": [
+    "current legacy soft-hull flat-solid force law only; all lake-enabled observation explicitly unavailable",
+    "accepted endpoint instantaneous friction power only, not accepted-interval work/heat/damage",
+    "finite-fuel same-law mass/inertia/CG sampled from owner; production stock physical constants unchanged",
+    "250ms cue age measured in accepted simulation time, no wall-clock latency bound on slow/stalled host",
+    "capture never starts/stops tagged players; pending cancellation applied at render before grains; explicit presentation reset/terminal immediate",
+    "eight existing total crash voices; existing generic synthetic scrape sample provenance retained, no recording/material acoustic calibration",
+    "Dummy scheduling/physics parity are software evidence only; native timing/headroom/listening and combined whole-flight budgets remain open"
+  ]
+}

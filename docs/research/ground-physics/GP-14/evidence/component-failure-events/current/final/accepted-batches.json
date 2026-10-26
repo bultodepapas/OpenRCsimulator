@@ -1,0 +1,637 @@
+[
+	{
+		"accepted_tick": 48,
+		"modes": [
+			0,
+			-1
+		],
+		"qualification": "synthetic_symmetric_kernel_fixture_not_stock_activation",
+		"scenario": "light",
+		"shared_events": [],
+		"source_events": []
+	},
+	{
+		"accepted_tick": 48,
+		"modes": [
+			1,
+			5
+		],
+		"qualification": "synthetic_symmetric_kernel_fixture_not_stock_activation",
+		"scenario": "heavy",
+		"shared_events": [
+			{
+				"accepted_tick": 5,
+				"accident_id": "gkernel-heavy:a1:t5",
+				"activity_id": "kernel-heavy",
+				"aircraft_id": "",
+				"cause": {
+					"classification": "unknown",
+					"evidence_ids": [
+						"gd1:81a209f2688da8cae4c3945a5e42df22aec09fb1c2f4fb752f58fec8a683e7e8"
+					],
+					"uncertainty": "unavailable"
+				},
+				"component_ids": [],
+				"configuration_hash": "",
+				"contact_episode_id": "",
+				"contact_ids": [],
+				"continuation": "continues",
+				"event_id": "gkernel-heavy:t5:s0:CRASH",
+				"evidence_coverage": [
+					"accepted_endpoint_support",
+					"no_substep_timing",
+					"component_failure_observed"
+				],
+				"field_hash": "",
+				"flight_id": "",
+				"format": "openrc-ground-flight-event",
+				"generation_id": "kernel-heavy",
+				"law_identity": "accepted-endpoint-support-v1",
+				"material_id": "",
+				"measurements": {
+					"sample_interval_s": 0.004166666666666667
+				},
+				"revision": 0,
+				"rules_version": "ground-flight-events-v1",
+				"sequence": 0,
+				"severity_status": "unknown",
+				"terminal": false,
+				"type": "CRASH",
+				"version": 1
+			},
+			{
+				"accepted_tick": 5,
+				"accident_id": "gkernel-heavy:a1:t5",
+				"activity_id": "kernel-heavy",
+				"aircraft_id": "",
+				"cause": {
+					"classification": "unknown",
+					"evidence_ids": [
+						"gd1:81a209f2688da8cae4c3945a5e42df22aec09fb1c2f4fb752f58fec8a683e7e8"
+					],
+					"uncertainty": "unavailable"
+				},
+				"component_ids": [
+					"assembly"
+				],
+				"configuration_hash": "",
+				"contact_episode_id": "",
+				"contact_ids": [
+					"contact_main_left",
+					"contact_main_right",
+					"contact_tail"
+				],
+				"continuation": "continues",
+				"event_id": "gkernel-heavy:t5:s1:COMPONENT_DAMAGE",
+				"evidence_coverage": [
+					"accepted_boundary_component_transition",
+					"same_state_potential_loss",
+					"experimental_unvalidated",
+					"no_substep_timing",
+					"strength_not_physically_calibrated"
+				],
+				"field_hash": "",
+				"flight_id": "",
+				"format": "openrc-ground-flight-event",
+				"generation_id": "kernel-heavy",
+				"law_identity": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"material_id": "",
+				"measurements": {
+					"confirmation_tick": 5,
+					"normal_failure_force_n": 100.0,
+					"normal_load_n": 104.33921881209913,
+					"potential_after_j": 0.05190063809746036,
+					"potential_before_j": 0.5190063809746036,
+					"sample_interval_s": 0.004166666666666667,
+					"transition_loss_j": 0.46710574287714324
+				},
+				"physical_evidence": {
+					"criterion": "declared_normal_capacity_exceeded",
+					"damage_profile_identity": "b98f068374796d9c3373de1005c3fe2c8c88a4c8db8301376c8f4b13f8f4cb21",
+					"qualification": "experimental_unvalidated",
+					"response_identity": "5c5dd7a19dd391d7aff5731b9d6fe8e5561374a95449eaea1f7054aae9419da3",
+					"response_mode": "failed_attached",
+					"sampling": "accepted_boundary_only_not_interval_peak",
+					"source_event_id": "gd1:81a209f2688da8cae4c3945a5e42df22aec09fb1c2f4fb752f58fec8a683e7e8",
+					"source_generation_id": "drop-fixture"
+				},
+				"revision": 0,
+				"rules_version": "ground-flight-events-v2",
+				"sequence": 1,
+				"severity_status": "unknown",
+				"terminal": false,
+				"type": "COMPONENT_DAMAGE",
+				"version": 2
+			},
+			{
+				"accepted_tick": 5,
+				"accident_id": "gkernel-heavy:a1:t5",
+				"activity_id": "kernel-heavy",
+				"aircraft_id": "",
+				"cause": {
+					"classification": "unknown",
+					"evidence_ids": [
+						"gd1:81a209f2688da8cae4c3945a5e42df22aec09fb1c2f4fb752f58fec8a683e7e8"
+					],
+					"uncertainty": "unavailable"
+				},
+				"component_ids": [
+					"assembly"
+				],
+				"configuration_hash": "",
+				"contact_episode_id": "",
+				"contact_ids": [
+					"contact_main_left",
+					"contact_main_right",
+					"contact_tail"
+				],
+				"continuation": "continues",
+				"event_id": "gkernel-heavy:t5:s2:GEAR_FAILURE",
+				"evidence_coverage": [
+					"accepted_boundary_component_transition",
+					"same_state_potential_loss",
+					"experimental_unvalidated",
+					"no_substep_timing",
+					"strength_not_physically_calibrated"
+				],
+				"field_hash": "",
+				"flight_id": "",
+				"format": "openrc-ground-flight-event",
+				"generation_id": "kernel-heavy",
+				"law_identity": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"material_id": "",
+				"measurements": {
+					"confirmation_tick": 5,
+					"normal_failure_force_n": 100.0,
+					"normal_load_n": 104.33921881209913,
+					"potential_after_j": 0.05190063809746036,
+					"potential_before_j": 0.5190063809746036,
+					"sample_interval_s": 0.004166666666666667,
+					"transition_loss_j": 0.46710574287714324
+				},
+				"physical_evidence": {
+					"criterion": "declared_normal_capacity_exceeded",
+					"damage_profile_identity": "b98f068374796d9c3373de1005c3fe2c8c88a4c8db8301376c8f4b13f8f4cb21",
+					"qualification": "experimental_unvalidated",
+					"response_identity": "5c5dd7a19dd391d7aff5731b9d6fe8e5561374a95449eaea1f7054aae9419da3",
+					"response_mode": "failed_attached",
+					"sampling": "accepted_boundary_only_not_interval_peak",
+					"source_event_id": "gd1:81a209f2688da8cae4c3945a5e42df22aec09fb1c2f4fb752f58fec8a683e7e8",
+					"source_generation_id": "drop-fixture"
+				},
+				"revision": 0,
+				"rules_version": "ground-flight-events-v2",
+				"sequence": 2,
+				"severity_status": "unknown",
+				"terminal": false,
+				"type": "GEAR_FAILURE",
+				"version": 2
+			}
+		],
+		"source_events": [
+			{
+				"component_id": "assembly",
+				"continuation": "authored_weaker_fixed_hub_compliance",
+				"criterion": "declared_normal_capacity_exceeded",
+				"event_id": "gd1:81a209f2688da8cae4c3945a5e42df22aec09fb1c2f4fb752f58fec8a683e7e8",
+				"generation_id": "drop-fixture",
+				"law": "experimental-brittle-normal-capacity-attached-v1",
+				"loss_provenance": "elastic_normal_stop_and_anchor_potential_before_minus_after_at_same_body_state",
+				"normal_failure_force_n": 100.0,
+				"normal_load_n": 104.33921881209913,
+				"potential_after_j": 0.05190063809746036,
+				"potential_before_j": 0.5190063809746036,
+				"profile_identity": "b98f068374796d9c3373de1005c3fe2c8c88a4c8db8301376c8f4b13f8f4cb21",
+				"qualification": "experimental_unvalidated",
+				"response_identity": "5c5dd7a19dd391d7aff5731b9d6fe8e5561374a95449eaea1f7054aae9419da3",
+				"response_law": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"sampling": "accepted_boundary_only_not_interval_peak",
+				"support_ids": [
+					"contact_main_left",
+					"contact_main_right",
+					"contact_tail"
+				],
+				"terminal": false,
+				"tick": 5,
+				"time_s": 0.020833333333333332,
+				"transition_loss_j": 0.46710574287714324,
+				"type": "gear_failure"
+			}
+		]
+	},
+	{
+		"accepted_tick": 48,
+		"modes": [
+			1,
+			1
+		],
+		"qualification": "synthetic_symmetric_kernel_fixture_not_stock_activation",
+		"scenario": "hard",
+		"shared_events": [
+			{
+				"accepted_tick": 1,
+				"accident_id": "gkernel-hard:a1:t1",
+				"activity_id": "kernel-hard",
+				"aircraft_id": "",
+				"cause": {
+					"classification": "unknown",
+					"evidence_ids": [
+						"gd1:1bcaa9dd4fc1a7f0bf74d49e9a6dd6d60ba570873a7035c1827d51916de408a4"
+					],
+					"uncertainty": "unavailable"
+				},
+				"component_ids": [],
+				"configuration_hash": "",
+				"contact_episode_id": "",
+				"contact_ids": [],
+				"continuation": "continues",
+				"event_id": "gkernel-hard:t1:s0:CRASH",
+				"evidence_coverage": [
+					"accepted_endpoint_support",
+					"no_substep_timing",
+					"component_failure_observed"
+				],
+				"field_hash": "",
+				"flight_id": "",
+				"format": "openrc-ground-flight-event",
+				"generation_id": "kernel-hard",
+				"law_identity": "accepted-endpoint-support-v1",
+				"material_id": "",
+				"measurements": {
+					"sample_interval_s": 0.004166666666666667
+				},
+				"revision": 0,
+				"rules_version": "ground-flight-events-v1",
+				"sequence": 0,
+				"severity_status": "unknown",
+				"terminal": false,
+				"type": "CRASH",
+				"version": 1
+			},
+			{
+				"accepted_tick": 1,
+				"accident_id": "gkernel-hard:a1:t1",
+				"activity_id": "kernel-hard",
+				"aircraft_id": "",
+				"cause": {
+					"classification": "unknown",
+					"evidence_ids": [
+						"gd1:1bcaa9dd4fc1a7f0bf74d49e9a6dd6d60ba570873a7035c1827d51916de408a4"
+					],
+					"uncertainty": "unavailable"
+				},
+				"component_ids": [
+					"assembly"
+				],
+				"configuration_hash": "",
+				"contact_episode_id": "",
+				"contact_ids": [
+					"contact_main_left",
+					"contact_main_right",
+					"contact_tail"
+				],
+				"continuation": "continues",
+				"event_id": "gkernel-hard:t1:s1:COMPONENT_DAMAGE",
+				"evidence_coverage": [
+					"accepted_boundary_component_transition",
+					"same_state_potential_loss",
+					"experimental_unvalidated",
+					"no_substep_timing",
+					"strength_not_physically_calibrated"
+				],
+				"field_hash": "",
+				"flight_id": "",
+				"format": "openrc-ground-flight-event",
+				"generation_id": "kernel-hard",
+				"law_identity": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"material_id": "",
+				"measurements": {
+					"confirmation_tick": 1,
+					"normal_failure_force_n": 100.0,
+					"normal_load_n": 127.17989186224403,
+					"potential_after_j": 0.012631873435019026,
+					"potential_before_j": 0.12631873435019025,
+					"sample_interval_s": 0.004166666666666667,
+					"transition_loss_j": 0.11368686091517123
+				},
+				"physical_evidence": {
+					"criterion": "declared_normal_capacity_exceeded",
+					"damage_profile_identity": "b98f068374796d9c3373de1005c3fe2c8c88a4c8db8301376c8f4b13f8f4cb21",
+					"qualification": "experimental_unvalidated",
+					"response_identity": "5c5dd7a19dd391d7aff5731b9d6fe8e5561374a95449eaea1f7054aae9419da3",
+					"response_mode": "failed_attached",
+					"sampling": "accepted_boundary_only_not_interval_peak",
+					"source_event_id": "gd1:1bcaa9dd4fc1a7f0bf74d49e9a6dd6d60ba570873a7035c1827d51916de408a4",
+					"source_generation_id": "drop-fixture"
+				},
+				"revision": 0,
+				"rules_version": "ground-flight-events-v2",
+				"sequence": 1,
+				"severity_status": "unknown",
+				"terminal": false,
+				"type": "COMPONENT_DAMAGE",
+				"version": 2
+			},
+			{
+				"accepted_tick": 1,
+				"accident_id": "gkernel-hard:a1:t1",
+				"activity_id": "kernel-hard",
+				"aircraft_id": "",
+				"cause": {
+					"classification": "unknown",
+					"evidence_ids": [
+						"gd1:1bcaa9dd4fc1a7f0bf74d49e9a6dd6d60ba570873a7035c1827d51916de408a4"
+					],
+					"uncertainty": "unavailable"
+				},
+				"component_ids": [
+					"assembly"
+				],
+				"configuration_hash": "",
+				"contact_episode_id": "",
+				"contact_ids": [
+					"contact_main_left",
+					"contact_main_right",
+					"contact_tail"
+				],
+				"continuation": "continues",
+				"event_id": "gkernel-hard:t1:s2:GEAR_FAILURE",
+				"evidence_coverage": [
+					"accepted_boundary_component_transition",
+					"same_state_potential_loss",
+					"experimental_unvalidated",
+					"no_substep_timing",
+					"strength_not_physically_calibrated"
+				],
+				"field_hash": "",
+				"flight_id": "",
+				"format": "openrc-ground-flight-event",
+				"generation_id": "kernel-hard",
+				"law_identity": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"material_id": "",
+				"measurements": {
+					"confirmation_tick": 1,
+					"normal_failure_force_n": 100.0,
+					"normal_load_n": 127.17989186224403,
+					"potential_after_j": 0.012631873435019026,
+					"potential_before_j": 0.12631873435019025,
+					"sample_interval_s": 0.004166666666666667,
+					"transition_loss_j": 0.11368686091517123
+				},
+				"physical_evidence": {
+					"criterion": "declared_normal_capacity_exceeded",
+					"damage_profile_identity": "b98f068374796d9c3373de1005c3fe2c8c88a4c8db8301376c8f4b13f8f4cb21",
+					"qualification": "experimental_unvalidated",
+					"response_identity": "5c5dd7a19dd391d7aff5731b9d6fe8e5561374a95449eaea1f7054aae9419da3",
+					"response_mode": "failed_attached",
+					"sampling": "accepted_boundary_only_not_interval_peak",
+					"source_event_id": "gd1:1bcaa9dd4fc1a7f0bf74d49e9a6dd6d60ba570873a7035c1827d51916de408a4",
+					"source_generation_id": "drop-fixture"
+				},
+				"revision": 0,
+				"rules_version": "ground-flight-events-v2",
+				"sequence": 2,
+				"severity_status": "unknown",
+				"terminal": false,
+				"type": "GEAR_FAILURE",
+				"version": 2
+			}
+		],
+		"source_events": [
+			{
+				"component_id": "assembly",
+				"continuation": "authored_weaker_fixed_hub_compliance",
+				"criterion": "declared_normal_capacity_exceeded",
+				"event_id": "gd1:1bcaa9dd4fc1a7f0bf74d49e9a6dd6d60ba570873a7035c1827d51916de408a4",
+				"generation_id": "drop-fixture",
+				"law": "experimental-brittle-normal-capacity-attached-v1",
+				"loss_provenance": "elastic_normal_stop_and_anchor_potential_before_minus_after_at_same_body_state",
+				"normal_failure_force_n": 100.0,
+				"normal_load_n": 127.17989186224403,
+				"potential_after_j": 0.012631873435019026,
+				"potential_before_j": 0.12631873435019025,
+				"profile_identity": "b98f068374796d9c3373de1005c3fe2c8c88a4c8db8301376c8f4b13f8f4cb21",
+				"qualification": "experimental_unvalidated",
+				"response_identity": "5c5dd7a19dd391d7aff5731b9d6fe8e5561374a95449eaea1f7054aae9419da3",
+				"response_law": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"sampling": "accepted_boundary_only_not_interval_peak",
+				"support_ids": [
+					"contact_main_left",
+					"contact_main_right",
+					"contact_tail"
+				],
+				"terminal": false,
+				"tick": 1,
+				"time_s": 0.004166666666666667,
+				"transition_loss_j": 0.11368686091517123,
+				"type": "gear_failure"
+			}
+		]
+	},
+	{
+		"accepted_tick": 1,
+		"continuation_fault": "step rejected: endpoint transition returned a malformed frame",
+		"modes": [
+			1,
+			1,
+			0,
+			-1
+		],
+		"qualification": "first_boundary_only_rolled_continuation_refused",
+		"scenario": "asymmetric_first_boundary",
+		"shared_events": [
+			{
+				"accepted_tick": 1,
+				"accident_id": "gasymmetric:a1:t1",
+				"activity_id": "asymmetric",
+				"aircraft_id": "",
+				"cause": {
+					"classification": "unknown",
+					"evidence_ids": [
+						"gd1:a8b2fb71a0bfb55a8e9872916b59e4e75684c31abbb043619bc002349839816b"
+					],
+					"uncertainty": "unavailable"
+				},
+				"component_ids": [],
+				"configuration_hash": "",
+				"contact_episode_id": "",
+				"contact_ids": [],
+				"continuation": "continues",
+				"event_id": "gasymmetric:t1:s0:CRASH",
+				"evidence_coverage": [
+					"accepted_endpoint_support",
+					"no_substep_timing",
+					"component_failure_observed"
+				],
+				"field_hash": "",
+				"flight_id": "",
+				"format": "openrc-ground-flight-event",
+				"generation_id": "asymmetric",
+				"law_identity": "accepted-endpoint-support-v1",
+				"material_id": "",
+				"measurements": {
+					"sample_interval_s": 0.004166666666666667
+				},
+				"revision": 0,
+				"rules_version": "ground-flight-events-v1",
+				"sequence": 0,
+				"severity_status": "unknown",
+				"terminal": false,
+				"type": "CRASH",
+				"version": 1
+			},
+			{
+				"accepted_tick": 1,
+				"accident_id": "gasymmetric:a1:t1",
+				"activity_id": "asymmetric",
+				"aircraft_id": "",
+				"cause": {
+					"classification": "unknown",
+					"evidence_ids": [
+						"gd1:a8b2fb71a0bfb55a8e9872916b59e4e75684c31abbb043619bc002349839816b"
+					],
+					"uncertainty": "unavailable"
+				},
+				"component_ids": [
+					"left"
+				],
+				"configuration_hash": "",
+				"contact_episode_id": "",
+				"contact_ids": [
+					"contact_main_left"
+				],
+				"continuation": "continues",
+				"event_id": "gasymmetric:t1:s1:COMPONENT_DAMAGE",
+				"evidence_coverage": [
+					"accepted_boundary_component_transition",
+					"same_state_potential_loss",
+					"experimental_unvalidated",
+					"no_substep_timing",
+					"strength_not_physically_calibrated"
+				],
+				"field_hash": "",
+				"flight_id": "",
+				"format": "openrc-ground-flight-event",
+				"generation_id": "asymmetric",
+				"law_identity": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"material_id": "",
+				"measurements": {
+					"confirmation_tick": 1,
+					"normal_failure_force_n": 20.0,
+					"normal_load_n": 37.72094547628802,
+					"potential_after_j": 0.06295439690259254,
+					"potential_before_j": 0.6295439690259252,
+					"sample_interval_s": 0.004166666666666667,
+					"transition_loss_j": 0.5665895721233327
+				},
+				"physical_evidence": {
+					"criterion": "declared_normal_capacity_exceeded",
+					"damage_profile_identity": "b63a159884bae04d0c641af2c5f5f3dfb7fb5f35f64f9b0d2be3728acbf1499e",
+					"qualification": "experimental_unvalidated",
+					"response_identity": "e5103fd05ba140779d6d5f627d9b0776ca18d79be5382a6de11d2673e4bc1053",
+					"response_mode": "failed_attached",
+					"sampling": "accepted_boundary_only_not_interval_peak",
+					"source_event_id": "gd1:a8b2fb71a0bfb55a8e9872916b59e4e75684c31abbb043619bc002349839816b",
+					"source_generation_id": "drop-fixture"
+				},
+				"revision": 0,
+				"rules_version": "ground-flight-events-v2",
+				"sequence": 1,
+				"severity_status": "unknown",
+				"terminal": false,
+				"type": "COMPONENT_DAMAGE",
+				"version": 2
+			},
+			{
+				"accepted_tick": 1,
+				"accident_id": "gasymmetric:a1:t1",
+				"activity_id": "asymmetric",
+				"aircraft_id": "",
+				"cause": {
+					"classification": "unknown",
+					"evidence_ids": [
+						"gd1:a8b2fb71a0bfb55a8e9872916b59e4e75684c31abbb043619bc002349839816b"
+					],
+					"uncertainty": "unavailable"
+				},
+				"component_ids": [
+					"left"
+				],
+				"configuration_hash": "",
+				"contact_episode_id": "",
+				"contact_ids": [
+					"contact_main_left"
+				],
+				"continuation": "continues",
+				"event_id": "gasymmetric:t1:s2:GEAR_FAILURE",
+				"evidence_coverage": [
+					"accepted_boundary_component_transition",
+					"same_state_potential_loss",
+					"experimental_unvalidated",
+					"no_substep_timing",
+					"strength_not_physically_calibrated"
+				],
+				"field_hash": "",
+				"flight_id": "",
+				"format": "openrc-ground-flight-event",
+				"generation_id": "asymmetric",
+				"law_identity": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"material_id": "",
+				"measurements": {
+					"confirmation_tick": 1,
+					"normal_failure_force_n": 20.0,
+					"normal_load_n": 37.72094547628802,
+					"potential_after_j": 0.06295439690259254,
+					"potential_before_j": 0.6295439690259252,
+					"sample_interval_s": 0.004166666666666667,
+					"transition_loss_j": 0.5665895721233327
+				},
+				"physical_evidence": {
+					"criterion": "declared_normal_capacity_exceeded",
+					"damage_profile_identity": "b63a159884bae04d0c641af2c5f5f3dfb7fb5f35f64f9b0d2be3728acbf1499e",
+					"qualification": "experimental_unvalidated",
+					"response_identity": "e5103fd05ba140779d6d5f627d9b0776ca18d79be5382a6de11d2673e4bc1053",
+					"response_mode": "failed_attached",
+					"sampling": "accepted_boundary_only_not_interval_peak",
+					"source_event_id": "gd1:a8b2fb71a0bfb55a8e9872916b59e4e75684c31abbb043619bc002349839816b",
+					"source_generation_id": "drop-fixture"
+				},
+				"revision": 0,
+				"rules_version": "ground-flight-events-v2",
+				"sequence": 2,
+				"severity_status": "unknown",
+				"terminal": false,
+				"type": "GEAR_FAILURE",
+				"version": 2
+			}
+		],
+		"source_events": [
+			{
+				"component_id": "left",
+				"continuation": "authored_weaker_fixed_hub_compliance",
+				"criterion": "declared_normal_capacity_exceeded",
+				"event_id": "gd1:a8b2fb71a0bfb55a8e9872916b59e4e75684c31abbb043619bc002349839816b",
+				"generation_id": "drop-fixture",
+				"law": "experimental-brittle-normal-capacity-attached-v1",
+				"loss_provenance": "elastic_normal_stop_and_anchor_potential_before_minus_after_at_same_body_state",
+				"normal_failure_force_n": 20.0,
+				"normal_load_n": 37.72094547628802,
+				"potential_after_j": 0.06295439690259254,
+				"potential_before_j": 0.6295439690259252,
+				"profile_identity": "b63a159884bae04d0c641af2c5f5f3dfb7fb5f35f64f9b0d2be3728acbf1499e",
+				"qualification": "experimental_unvalidated",
+				"response_identity": "e5103fd05ba140779d6d5f627d9b0776ca18d79be5382a6de11d2673e4bc1053",
+				"response_law": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"sampling": "accepted_boundary_only_not_interval_peak",
+				"support_ids": [
+					"contact_main_left"
+				],
+				"terminal": false,
+				"tick": 1,
+				"time_s": 0.004166666666666667,
+				"transition_loss_j": 0.5665895721233327,
+				"type": "gear_failure"
+			}
+		]
+	}
+]

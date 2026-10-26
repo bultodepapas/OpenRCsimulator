@@ -1,0 +1,60 @@
+{
+	"checks": 7,
+	"failed": 0,
+	"observations": [
+		{
+			"accepted": false,
+			"case": "listener-mutation",
+			"checkpoint_available": false,
+			"fault": "",
+			"holds": {},
+			"mass": 0.0,
+			"old_checkpoint_retained": false,
+			"paused": false,
+			"recording": false,
+			"signals": [
+				1,
+				0,
+				0
+			],
+			"tick": 3
+		},
+		{
+			"accepted": false,
+			"case": "validator-hold",
+			"checkpoint_available": true,
+			"fault": "",
+			"holds": {
+				"restore-validator-hold": true
+			},
+			"mass": 2.8786621383897963,
+			"old_checkpoint_retained": true,
+			"paused": false,
+			"recording": true,
+			"signals": [
+				0,
+				0,
+				0
+			],
+			"tick": 3
+		},
+		{
+			"accepted": true,
+			"case": "normal-control",
+			"checkpoint_available": true,
+			"fault": "",
+			"holds": {},
+			"mass": 2.8786621383897963,
+			"old_checkpoint_retained": false,
+			"paused": true,
+			"recording": false,
+			"signals": [
+				1,
+				1,
+				0
+			],
+			"tick": 0
+		}
+	],
+	"scope": "Assertions reproduce observed defects/normal control, not correctness acceptance"
+}

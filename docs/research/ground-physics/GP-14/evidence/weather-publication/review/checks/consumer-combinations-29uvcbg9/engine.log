@@ -1,0 +1,12 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-weather-independent-review/recordings-2855613/two-pending-selections.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-weather-independent-review/recordings-2855613/two-pending-selections.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-weather-independent-review/recordings-2855613/detached-closing-context.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-weather-independent-review/recordings-2855613/detached-closing-context.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-weather-independent-review/recordings-2855613/pause-observer-weather-reentry.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-weather-independent-review/recordings-2855613/pause-observer-weather-reentry.orfl (0 ticks)
+Independent weather publication review: 19 checks, 0 failed

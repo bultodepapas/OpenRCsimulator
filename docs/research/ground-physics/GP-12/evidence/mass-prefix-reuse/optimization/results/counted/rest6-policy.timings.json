@@ -1,0 +1,21 @@
+{
+	"accepted_substeps": 16,
+	"calls": {
+		"mass._bounds_mass": 51
+	},
+	"case": "rest6",
+	"elapsed_us": 515472,
+	"exclusive_us": {
+		"mass._bounds_mass": 147551
+	},
+	"inclusive_us": {
+		"mass._bounds_mass": 147551
+	},
+	"mass_prepare_us": 2169,
+	"note": "Diagnostic wrapper timings include overhead; no native or performance qualification",
+	"ok": true,
+	"policy": true,
+	"reason": null,
+	"serialized_bytes": {},
+	"status": "accepted"
+}

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "898e4422-d8fe-4753-8fb3-13247a4b2bfa",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_rotor_stage_factor.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T19:43:03.760786+00:00",
+  "label": "factor-pin",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-stage-factor\\production\\factor-pin-bi7e5y7a\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-stage-factor\\production\\factor-pin-bi7e5y7a\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.515,
+  "log_bytes": 113,
+  "log_sha256": "1e39d1935d4dab9fe1f99c04ad7983a02693be07188ad6ca8a70ab93257a1ee4"
+}

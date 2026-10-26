@@ -1,0 +1,776 @@
+{
+  "format": "openrc-ground-unloaded-transport-v1",
+  "utc": "2026-10-26T18:38:21.584583+00:00",
+  "ok": true,
+  "core_autocrlf": true,
+  "files_checked": 127,
+  "files": [
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/analysis/guard-manifest.json",
+      "original_sha256": "4d84d32b8e6f892c3e0320f9f549259e9bd333812639957b0befed94e29c3767",
+      "cloned_sha256": "4d84d32b8e6f892c3e0320f9f549259e9bd333812639957b0befed94e29c3767",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/analysis/policy-interface.md",
+      "original_sha256": "94b836083b2d88ae77e6f60c8510493e5802c9ab0ec4eac112265e801b762190",
+      "cloned_sha256": "94b836083b2d88ae77e6f60c8510493e5802c9ab0ec4eac112265e801b762190",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/analysis/prox-flow-guard-review.md",
+      "original_sha256": "47c6d4eff939b562cfe6864b2145047e3421b7b5247e246bfed6017efa85d310",
+      "cloned_sha256": "47c6d4eff939b562cfe6864b2145047e3421b7b5247e246bfed6017efa85d310",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/analysis/unloaded-heat-results.bin",
+      "original_sha256": "2820c10621a138b9a8a0d5c83f8ff203cbcc3590f712a0286fafe6bfe0377b07",
+      "cloned_sha256": "2820c10621a138b9a8a0d5c83f8ff203cbcc3590f712a0286fafe6bfe0377b07",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/analysis/unloaded-heat-results.json",
+      "original_sha256": "a219dead48f14bba52f399d0802902a1e4cc952857f4dfd17f20d74d930fa86d",
+      "cloned_sha256": "a219dead48f14bba52f399d0802902a1e4cc952857f4dfd17f20d74d930fa86d",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/analysis/unloaded-heat-review.md",
+      "original_sha256": "c29e381ee776241e414aa64af67a71c194e004914d2556bdea9b76604b0ec022",
+      "cloned_sha256": "c29e381ee776241e414aa64af67a71c194e004914d2556bdea9b76604b0ec022",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/analysis/unloaded-reference-results.json",
+      "original_sha256": "d315a156c630409a8c4d97c6f26c3cfd9412daec048b9fb15ab8acfdbdc53361",
+      "cloned_sha256": "d315a156c630409a8c4d97c6f26c3cfd9412daec048b9fb15ab8acfdbdc53361",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/checks/accuracy-y5mvv0f3/engine.log",
+      "original_sha256": "29609f9a44da1a1ec1fb3a6d5dca20afd3e5068a369506f3751a810096942573",
+      "cloned_sha256": "29609f9a44da1a1ec1fb3a6d5dca20afd3e5068a369506f3751a810096942573",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/checks/accuracy-y5mvv0f3/report.json",
+      "original_sha256": "13210bd9ea0f9939c63c96995996c0661ccb3f0c6054df93cd6cdd0c61eeb25a",
+      "cloned_sha256": "13210bd9ea0f9939c63c96995996c0661ccb3f0c6054df93cd6cdd0c61eeb25a",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/checks/policy-4g639fc8/engine.log",
+      "original_sha256": "0fc47cd5393c71e2a32ffd4bad8602135ac8691467b8693a8bc11a41c3441c1e",
+      "cloned_sha256": "0fc47cd5393c71e2a32ffd4bad8602135ac8691467b8693a8bc11a41c3441c1e",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/checks/policy-4g639fc8/report.json",
+      "original_sha256": "8204a10e51eef89de9868c8b446e35faf39c3801df0657c89d716751735902f0",
+      "cloned_sha256": "8204a10e51eef89de9868c8b446e35faf39c3801df0657c89d716751735902f0",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/checks/results.xml",
+      "original_sha256": "51c5fb98ae0d4295e71d077d5ca8933a922bb7b156ff774a9e9937364d857548",
+      "cloned_sha256": "51c5fb98ae0d4295e71d077d5ca8933a922bb7b156ff774a9e9937364d857548",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/checks/step-yvtzsjmf/engine.log",
+      "original_sha256": "2141d120ae5766d70ac6f424ba091ffcb6208f4e55bb34013379e8e5fb950248",
+      "cloned_sha256": "2141d120ae5766d70ac6f424ba091ffcb6208f4e55bb34013379e8e5fb950248",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/checks/step-yvtzsjmf/report.json",
+      "original_sha256": "c6727befc94817f34e4ab47cd5337df42d3cd467b370e3b06079c941a34e16a9",
+      "cloned_sha256": "c6727befc94817f34e4ab47cd5337df42d3cd467b370e3b06079c941a34e16a9",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/full-drops/checked/engine.log",
+      "original_sha256": "4865741a4a7ade3ee25335ead76fd7d1249d1d522e30c2bf7cf8abd0acf4fb14",
+      "cloned_sha256": "4865741a4a7ade3ee25335ead76fd7d1249d1d522e30c2bf7cf8abd0acf4fb14",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/full-drops/checked/report.json",
+      "original_sha256": "c6b9656b3854a0556cedd93c5f49f7a0cf66bc16ed8db07da472a8a6d8868c1f",
+      "cloned_sha256": "c6b9656b3854a0556cedd93c5f49f7a0cf66bc16ed8db07da472a8a6d8868c1f",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/full-drops/drop-0.25.bin",
+      "original_sha256": "1f38d389e05366f2f8e9021e2ec68c77f487df571132e4d2ccef597a94bb8789",
+      "cloned_sha256": "1f38d389e05366f2f8e9021e2ec68c77f487df571132e4d2ccef597a94bb8789",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/full-drops/drop-0.25.json",
+      "original_sha256": "ef44597bbc36677867c1e36c37bd897aff053653025fc3575f2c919b4d3ca2fd",
+      "cloned_sha256": "ef44597bbc36677867c1e36c37bd897aff053653025fc3575f2c919b4d3ca2fd",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/full-drops/drop-1.2.bin",
+      "original_sha256": "94437906e506af4e01eb5cae341443ce12e116eb4417163d3e74f4ad78072f04",
+      "cloned_sha256": "94437906e506af4e01eb5cae341443ce12e116eb4417163d3e74f4ad78072f04",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/full-drops/drop-1.2.json",
+      "original_sha256": "e819b5b65cd438afef44e473ec31dbc1429ae2273cc8152f074992c4137d793a",
+      "cloned_sha256": "e819b5b65cd438afef44e473ec31dbc1429ae2273cc8152f074992c4137d793a",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/identities.json",
+      "original_sha256": "ffa9dc6ea4cfb911f66604a668f951107067f13dcc44528c8498a2f2bb7dcd41",
+      "cloned_sha256": "ffa9dc6ea4cfb911f66604a668f951107067f13dcc44528c8498a2f2bb7dcd41",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/independent-review/checks/constitutive-oracles-2boggmjy/engine.log",
+      "original_sha256": "ded8928aa8b6a3c516ac08e9aba55cd0a15c660bffd6e7801e52b0f36ceaa11a",
+      "cloned_sha256": "ded8928aa8b6a3c516ac08e9aba55cd0a15c660bffd6e7801e52b0f36ceaa11a",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/independent-review/checks/constitutive-oracles-2boggmjy/report.json",
+      "original_sha256": "b545285cdd4f2854affd4d7738a64631c1d96c3eb6f818360b570abbe41f0a8f",
+      "cloned_sha256": "b545285cdd4f2854affd4d7738a64631c1d96c3eb6f818360b570abbe41f0a8f",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/independent-review/checks/expected-negative-selector-6rgl3x2z/engine.log",
+      "original_sha256": "7560f60696dac741845852858c9f2f2565c540b33bab50385a9b4567220928c6",
+      "cloned_sha256": "7560f60696dac741845852858c9f2f2565c540b33bab50385a9b4567220928c6",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/independent-review/checks/expected-negative-selector-6rgl3x2z/report.json",
+      "original_sha256": "359e1f23b0a80c199e035c7acd07e84da65979c28caf22468c55b0b70df1d341",
+      "cloned_sha256": "359e1f23b0a80c199e035c7acd07e84da65979c28caf22468c55b0b70df1d341",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/independent-review/checks/resolved-negative-selector-9jaybmnq/engine.log",
+      "original_sha256": "2919991e425ce18368fe107b5a6f9ba9f25c3542a2e501250477f8d7318cd5cd",
+      "cloned_sha256": "2919991e425ce18368fe107b5a6f9ba9f25c3542a2e501250477f8d7318cd5cd",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/independent-review/checks/resolved-negative-selector-9jaybmnq/report.json",
+      "original_sha256": "555c701144195dd5628401990eb3bb5353861e2f442365c8cb06329b029a3d38",
+      "cloned_sha256": "555c701144195dd5628401990eb3bb5353861e2f442365c8cb06329b029a3d38",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/independent-review/constitutive_oracles.gd",
+      "original_sha256": "216ce02cc596ca592ec046d8dd379005a6d86b36194dcd9ecb0d00acf53e170c",
+      "cloned_sha256": "216ce02cc596ca592ec046d8dd379005a6d86b36194dcd9ecb0d00acf53e170c",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/independent-review/report.json",
+      "original_sha256": "4f9d51ae1c9e64fbd9f7a8b3ccd82f65fd48d8f84be048a2b4b02b437d998edd",
+      "cloned_sha256": "4f9d51ae1c9e64fbd9f7a8b3ccd82f65fd48d8f84be048a2b4b02b437d998edd",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/independent-review/review.md",
+      "original_sha256": "9105a6faab51bc675ca829422facb39fd7f0433512cc37b0623a86ff845c10b0",
+      "cloned_sha256": "9105a6faab51bc675ca829422facb39fd7f0433512cc37b0623a86ff845c10b0",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/next-qp/checked/engine.log",
+      "original_sha256": "aaf3dab6d54ee13c585e03d76938183431f3d060ee037cd992fcb0d5049aa993",
+      "cloned_sha256": "aaf3dab6d54ee13c585e03d76938183431f3d060ee037cd992fcb0d5049aa993",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/next-qp/checked/report.json",
+      "original_sha256": "e0c5435cf494cd3c14a0361de1dc26eb2774fbc272532365988fbc398ca05b88",
+      "cloned_sha256": "e0c5435cf494cd3c14a0361de1dc26eb2774fbc272532365988fbc398ca05b88",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/next-qp/count-results.bin",
+      "original_sha256": "e5923fa24a75169faca461d8d3373df13f378b6c27d02d5529639275d9f9d58c",
+      "cloned_sha256": "e5923fa24a75169faca461d8d3373df13f378b6c27d02d5529639275d9f9d58c",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/next-qp/count-results.json",
+      "original_sha256": "ce56b02eca9d46c0bc8bbc6e1eebe15568602ce184cc83cb9f098bf64a9f103c",
+      "cloned_sha256": "ce56b02eca9d46c0bc8bbc6e1eebe15568602ce184cc83cb9f098bf64a9f103c",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/next-qp/impulse.gd",
+      "original_sha256": "f14eda760e0ec2113d6dfa5794458bc00357422370b94255b9e7471138be24f3",
+      "cloned_sha256": "f14eda760e0ec2113d6dfa5794458bc00357422370b94255b9e7471138be24f3",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/next-qp/probe.gd",
+      "original_sha256": "2a6d2a3098c3cd058abd3712c96e2dec8c76b600273dc20a4cb79eaf37548997",
+      "cloned_sha256": "2a6d2a3098c3cd058abd3712c96e2dec8c76b600273dc20a4cb79eaf37548997",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/next-qp/qp-3c9f6c92a84c4e47d393c4f3965890f6871815aa232cf7e34d2afa3ef3b53d0f.bin",
+      "original_sha256": "b565d3edd1b997704b75369e6e7f8c8e50b08ed63f8c3a268df9443cf0536bc6",
+      "cloned_sha256": "b565d3edd1b997704b75369e6e7f8c8e50b08ed63f8c3a268df9443cf0536bc6",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/next-qp/qp-5cf650e80d5237f5d0578f3a628bf392cc7de279e85747b51af107cffb9b3f06.bin",
+      "original_sha256": "9d066b9e540d817e9a3d5d9770f46fe9d2b4f17da31d72a575629f50009e7e1f",
+      "cloned_sha256": "9d066b9e540d817e9a3d5d9770f46fe9d2b4f17da31d72a575629f50009e7e1f",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/next-qp/step.gd",
+      "original_sha256": "b539d0719e0f49a0974039474161978d3089a5b3a3cc3e00bd9f8c0d0b513024",
+      "cloned_sha256": "b539d0719e0f49a0974039474161978d3089a5b3a3cc3e00bd9f8c0d0b513024",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/payload/app/physics/aircraft_ground_accuracy.gd",
+      "original_sha256": "8aefb92b1ae8441ab4d883b61c447e7d7864cb830a98ae2c82258cd0a0d5424a",
+      "cloned_sha256": "8aefb92b1ae8441ab4d883b61c447e7d7864cb830a98ae2c82258cd0a0d5424a",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/payload/app/physics/aircraft_ground_step.gd",
+      "original_sha256": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366",
+      "cloned_sha256": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/payload/app/physics/aircraft_ground_unloaded.gd",
+      "original_sha256": "eb8148c1f4d0e3dbf18d38fb18eedbca63fa5a04deb5fdf7e7ddc74261dd9a6f",
+      "cloned_sha256": "eb8148c1f4d0e3dbf18d38fb18eedbca63fa5a04deb5fdf7e7ddc74261dd9a6f",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/payload/app/tests/fixtures/ground_unloaded_gentle.bin",
+      "original_sha256": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408",
+      "cloned_sha256": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/payload/app/tests/fixtures/ground_unloaded_hard.bin",
+      "original_sha256": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b",
+      "cloned_sha256": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/payload/app/tests/test_aircraft_ground_unloaded.gd",
+      "original_sha256": "568a7753b9265d1a8a6c383b2dae2b41ddd335458485e031601c6ed1286ee1f3",
+      "cloned_sha256": "568a7753b9265d1a8a6c383b2dae2b41ddd335458485e031601c6ed1286ee1f3",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/promotion/manifest.json",
+      "original_sha256": "76ba1936985d61183f97c58d125c527de855d0d127777fc195b0e19f70127d7d",
+      "cloned_sha256": "76ba1936985d61183f97c58d125c527de855d0d127777fc195b0e19f70127d7d",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/promotion/review.patch",
+      "original_sha256": "64f8d836dc98d33a38208b74e357fc8bca14266d0e4f9f58e1feb2d5298f68c3",
+      "cloned_sha256": "64f8d836dc98d33a38208b74e357fc8bca14266d0e4f9f58e1feb2d5298f68c3",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/promotion/root-promotion.json",
+      "original_sha256": "e5c963a0ef306847c97f2c2d24b1af7e7e8fb3171afc0308a111bf0347da8644",
+      "cloned_sha256": "e5c963a0ef306847c97f2c2d24b1af7e7e8fb3171afc0308a111bf0347da8644",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/README.md",
+      "original_sha256": "7ec2253b6a176ef746c785a654eca790826d0b68ab0aa02f76e3b7d280522d20",
+      "cloned_sha256": "7ec2253b6a176ef746c785a654eca790826d0b68ab0aa02f76e3b7d280522d20",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/report.json",
+      "original_sha256": "e29d20e741ed7e8be80aef88ae3372b475d9aca7d1865e368905555b01e40037",
+      "cloned_sha256": "e29d20e741ed7e8be80aef88ae3372b475d9aca7d1865e368905555b01e40037",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/data/aircraft/p51d_mustang_120.json",
+      "original_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+      "cloned_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/data/fuels/openrc-fuel-registry.json",
+      "original_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1",
+      "cloned_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/data/glow/profile_contract.json",
+      "original_sha256": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+      "cloned_sha256": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/data/ground/wheel_profiles.json",
+      "original_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "cloned_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/data/schema/aircraft-contract-v2.json",
+      "original_sha256": "0de90c832a3e875cd162d6f7bf38241b6f11337edb5794bf22ce3afc2fb4a737",
+      "cloned_sha256": "0de90c832a3e875cd162d6f7bf38241b6f11337edb5794bf22ce3afc2fb4a737",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/aero.gd",
+      "original_sha256": "a325cac3af731970a667eef4d76c1208a222aa187802e088bf911fc1365f160b",
+      "cloned_sha256": "a325cac3af731970a667eef4d76c1208a222aa187802e088bf911fc1365f160b",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/aircraft_contract.gd",
+      "original_sha256": "42f9c2e62877591f166d12e925dfb2f8578cba0d15ec8ac674a0fed36a228718",
+      "cloned_sha256": "42f9c2e62877591f166d12e925dfb2f8578cba0d15ec8ac674a0fed36a228718",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/aircraft_data.gd",
+      "original_sha256": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a",
+      "cloned_sha256": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/aircraft_ground_dynamics.gd",
+      "original_sha256": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d",
+      "cloned_sha256": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/aircraft_ground_impulse.gd",
+      "original_sha256": "76c279a9fb58ffcbf5f69861cc2e817dd4bd8300c052504495e76a28c2211f69",
+      "cloned_sha256": "76c279a9fb58ffcbf5f69861cc2e817dd4bd8300c052504495e76a28c2211f69",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/aircraft_ground_profile.gd",
+      "original_sha256": "74bf7e19489666e05e6533e8ea5ef97a43b9ceb52ff8de3e33d55ac68a13d9ba",
+      "cloned_sha256": "74bf7e19489666e05e6533e8ea5ef97a43b9ceb52ff8de3e33d55ac68a13d9ba",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/aircraft_ground_stage.gd",
+      "original_sha256": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056",
+      "cloned_sha256": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/aircraft_ground_traction.gd",
+      "original_sha256": "86987e1e3b036fca2c4b3dd7368308399a38fe14695adaffa0935b9863bc1b9c",
+      "cloned_sha256": "86987e1e3b036fca2c4b3dd7368308399a38fe14695adaffa0935b9863bc1b9c",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/aircraft_modules.gd",
+      "original_sha256": "99a08a559ea1fa27d807c1d8b15bc0106b58d5143c12b4a54110040762a0b23d",
+      "cloned_sha256": "99a08a559ea1fa27d807c1d8b15bc0106b58d5143c12b4a54110040762a0b23d",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/battery/battery_data.gd",
+      "original_sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+      "cloned_sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/battery/esc_supervisor.gd",
+      "original_sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+      "cloned_sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/battery/pack_ecm.gd",
+      "original_sha256": "5fc20700f028d214e8e97caade261c910cdc8ee560e983cb57074077ae44ddda",
+      "cloned_sha256": "5fc20700f028d214e8e97caade261c910cdc8ee560e983cb57074077ae44ddda",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/contact_assembly_resolution.gd",
+      "original_sha256": "3cb14049fee9f7976fdac0b88b1129c2aca20c686b53e15fc188a44856d53f45",
+      "cloned_sha256": "3cb14049fee9f7976fdac0b88b1129c2aca20c686b53e15fc188a44856d53f45",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/contact_assembly_strategy.gd",
+      "original_sha256": "ec89cd594e810188092647165961ddaf2b6da854e2c3ce05ed03badfb24123fb",
+      "cloned_sha256": "ec89cd594e810188092647165961ddaf2b6da854e2c3ce05ed03badfb24123fb",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/control_actuators.gd",
+      "original_sha256": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+      "cloned_sha256": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/control_surfaces.gd",
+      "original_sha256": "5e159ee1ebb98112e7399ef4f9ba68b30a7ea9cb5055989fbab55332c6a5edb3",
+      "cloned_sha256": "5e159ee1ebb98112e7399ef4f9ba68b30a7ea9cb5055989fbab55332c6a5edb3",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/effective_mass.gd",
+      "original_sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+      "cloned_sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/electric_motor.gd",
+      "original_sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "cloned_sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/electric_supply.gd",
+      "original_sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "cloned_sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/event_bracket.gd",
+      "original_sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "cloned_sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/event_step.gd",
+      "original_sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+      "cloned_sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/fixed_datum_body.gd",
+      "original_sha256": "a218c99f2d7079ae6788c98cf5dda24de6e3a6910fb35ab27b5c69d3f76e4293",
+      "cloned_sha256": "a218c99f2d7079ae6788c98cf5dda24de6e3a6910fb35ab27b5c69d3f76e4293",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/flaps.gd",
+      "original_sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+      "cloned_sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/fuel_properties.gd",
+      "original_sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4",
+      "cloned_sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/generalized_coordinates.gd",
+      "original_sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8",
+      "cloned_sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/glow/carburetor.gd",
+      "original_sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c",
+      "cloned_sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/glow/four_stroke.gd",
+      "original_sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+      "cloned_sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/glow/fuel_feed.gd",
+      "original_sha256": "343cbfa7b1f651ac60635ac873e122a3fd99524e634e7712b57ef90e3b04b6f4",
+      "cloned_sha256": "343cbfa7b1f651ac60635ac873e122a3fd99524e634e7712b57ef90e3b04b6f4",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/glow/fuel_mass.gd",
+      "original_sha256": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+      "cloned_sha256": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/glow/installation.gd",
+      "original_sha256": "0b1531329e804be0fa4bd78629e6d1c254c35453006065428621cfbaa91c74bc",
+      "cloned_sha256": "0b1531329e804be0fa4bd78629e6d1c254c35453006065428621cfbaa91c74bc",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/glow/operating_point.gd",
+      "original_sha256": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d",
+      "cloned_sha256": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/glow/profile.gd",
+      "original_sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+      "cloned_sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/glow/propeller.gd",
+      "original_sha256": "fd6785d513962daa30ca5994f126ddfbf94e21466394b8482737e3d7428799a1",
+      "cloned_sha256": "fd6785d513962daa30ca5994f126ddfbf94e21466394b8482737e3d7428799a1",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/glow/source.gd",
+      "original_sha256": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+      "cloned_sha256": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/glow/two_stroke.gd",
+      "original_sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+      "cloned_sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/ground_contact.gd",
+      "original_sha256": "cdc2dcec718a9490c0a5c3de1e55ce165bba144eca9fe10845552d9d4dec8aa4",
+      "cloned_sha256": "cdc2dcec718a9490c0a5c3de1e55ce165bba144eca9fe10845552d9d4dec8aa4",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/ground_effect.gd",
+      "original_sha256": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98",
+      "cloned_sha256": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/ground_support.gd",
+      "original_sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "cloned_sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/ground_terrain.gd",
+      "original_sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26",
+      "cloned_sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/ground_traction.gd",
+      "original_sha256": "77393b81f6d6676aea5f679a48dd7b408996cf509fb6945e70b3ebc9d662ada1",
+      "cloned_sha256": "77393b81f6d6676aea5f679a48dd7b408996cf509fb6945e70b3ebc9d662ada1",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/ground_wheels.gd",
+      "original_sha256": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da",
+      "cloned_sha256": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/hull_contact.gd",
+      "original_sha256": "aa9cd474975d8e529dea14fef46baa0c6208ca78652ba28e8203773a04024e92",
+      "cloned_sha256": "aa9cd474975d8e529dea14fef46baa0c6208ca78652ba28e8203773a04024e92",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/integrator.gd",
+      "original_sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+      "cloned_sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/intended_hull_support.gd",
+      "original_sha256": "ae9ece8ea78f96265046f702abe2d178c28b907d79207c098e45930ad242a61f",
+      "cloned_sha256": "ae9ece8ea78f96265046f702abe2d178c28b907d79207c098e45930ad242a61f",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/lake_surface.gd",
+      "original_sha256": "8c3f51ce336ca7ad674cc77ec8af8d697aa254f77ac9ae28e814ed860ba68152",
+      "cloned_sha256": "8c3f51ce336ca7ad674cc77ec8af8d697aa254f77ac9ae28e814ed860ba68152",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/liquid_fuel.gd",
+      "original_sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+      "cloned_sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/mass_inventory.gd",
+      "original_sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+      "cloned_sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/math3d.gd",
+      "original_sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+      "cloned_sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/normal_compliance.gd",
+      "original_sha256": "9f05b8cb1395c54539b281ac120770c2353caef384a6fca2a857b144e7ec0beb",
+      "cloned_sha256": "9f05b8cb1395c54539b281ac120770c2353caef384a6fca2a857b144e7ec0beb",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/normal_contact_admission.gd",
+      "original_sha256": "da30e0f08c2cbee2c484b7107297770f20349255980e7d64ae56bc0997f308cc",
+      "cloned_sha256": "da30e0f08c2cbee2c484b7107297770f20349255980e7d64ae56bc0997f308cc",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/physical_identity.gd",
+      "original_sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8",
+      "cloned_sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/propulsion.gd",
+      "original_sha256": "732f4189efa068ff9e4469ac1c1d2f580ccd152d839005b321380a34afb92eed",
+      "cloned_sha256": "732f4189efa068ff9e4469ac1c1d2f580ccd152d839005b321380a34afb92eed",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/rigid_body.gd",
+      "original_sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+      "cloned_sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/rotor_coupling.gd",
+      "original_sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+      "cloned_sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/turbine.gd",
+      "original_sha256": "a7577b8d2ddfe7daec69cf2992e8c566688f5b6c89cf6461c5b462abeb1ca702",
+      "cloned_sha256": "a7577b8d2ddfe7daec69cf2992e8c566688f5b6c89cf6461c5b462abeb1ca702",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/wheel_geometry.gd",
+      "original_sha256": "a92fda4198916ac89573aca1e58c879288c8b249146fac8de04713573fdba2f9",
+      "cloned_sha256": "a92fda4198916ac89573aca1e58c879288c8b249146fac8de04713573fdba2f9",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/wheel_profiles.gd",
+      "original_sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+      "cloned_sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/physics/wing_polar.gd",
+      "original_sha256": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+      "cloned_sha256": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/project.godot",
+      "original_sha256": "d8ee4f72c94837885503f278581fe846e0e64a2305978a7ec4a47c0450772ca9",
+      "cloned_sha256": "d8ee4f72c94837885503f278581fe846e0e64a2305978a7ec4a47c0450772ca9",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/sim/simulation.gd",
+      "original_sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490",
+      "cloned_sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/sim/vehicle_model.gd",
+      "original_sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2",
+      "cloned_sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/app/tests/test_aircraft_ground_stage.gd",
+      "original_sha256": "75d30d115978c2146f46dd5db66df15303ba90605524469c9ba55667f420083a",
+      "cloned_sha256": "75d30d115978c2146f46dd5db66df15303ba90605524469c9ba55667f420083a",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/tmp/gp12-unloaded-policy/accuracy.gd",
+      "original_sha256": "8aefb92b1ae8441ab4d883b61c447e7d7864cb830a98ae2c82258cd0a0d5424a",
+      "cloned_sha256": "8aefb92b1ae8441ab4d883b61c447e7d7864cb830a98ae2c82258cd0a0d5424a",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/tmp/gp12-unloaded-policy/drop_driver.gd",
+      "original_sha256": "d7bef91611be658b4e6fd3299faa79b369d26c4a21a8d1a5dd2d84111be6f4fb",
+      "cloned_sha256": "d7bef91611be658b4e6fd3299faa79b369d26c4a21a8d1a5dd2d84111be6f4fb",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/tmp/gp12-unloaded-policy/production/app/tests/fixtures/ground_unloaded_gentle.bin",
+      "original_sha256": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408",
+      "cloned_sha256": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/tmp/gp12-unloaded-policy/production/app/tests/fixtures/ground_unloaded_hard.bin",
+      "original_sha256": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b",
+      "cloned_sha256": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/tmp/gp12-unloaded-policy/self_contained_test.gd",
+      "original_sha256": "02769a86d9732dae5432c6fc2ac35cf21f79c3c1810a8f2641f8b85cf6810025",
+      "cloned_sha256": "02769a86d9732dae5432c6fc2ac35cf21f79c3c1810a8f2641f8b85cf6810025",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/tmp/gp12-unloaded-policy/step.gd",
+      "original_sha256": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366",
+      "cloned_sha256": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/source-run/tmp/gp12-unloaded-policy/unloaded.gd",
+      "original_sha256": "eb8148c1f4d0e3dbf18d38fb18eedbca63fa5a04deb5fdf7e7ddc74261dd9a6f",
+      "cloned_sha256": "eb8148c1f4d0e3dbf18d38fb18eedbca63fa5a04deb5fdf7e7ddc74261dd9a6f",
+      "equal": true
+    },
+    {
+      "path": "docs/research/ground-physics/GP-12/evidence/unloaded-potential/files.json",
+      "original_sha256": "d91e9f87936f55eff51aa6c4f239e64fa07ecb60cb1320aad2a20572a80ad0c9",
+      "cloned_sha256": "d91e9f87936f55eff51aa6c4f239e64fa07ecb60cb1320aad2a20572a80ad0c9",
+      "equal": true
+    },
+    {
+      "path": "app/tests/fixtures/ground_unloaded_gentle.bin",
+      "original_sha256": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408",
+      "cloned_sha256": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408",
+      "equal": true
+    },
+    {
+      "path": "app/tests/fixtures/ground_unloaded_hard.bin",
+      "original_sha256": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b",
+      "cloned_sha256": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b",
+      "equal": true
+    }
+  ],
+  "attribute_semantics_all_text_unset": true,
+  "normalized_gitattributes_equal": true,
+  "scope": "Disposable cohort-only Git repository/fresh local clone; no actual repository staged or committed; no application export/build.",
+  "inventory_excludes_generated_transport_report": true,
+  "scratch": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-unloaded-transport-hjxdtct_"
+}

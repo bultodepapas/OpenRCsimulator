@@ -1,0 +1,10 @@
+{
+  "format": "openrc-native-true-peak-v1",
+  "method": "existing tools/audio/bench_analyze.py true_peak:4x48-tap-per-phaseBlackman-windowed-sinc",
+  "analyzer_sha256": "3f47a549a1b9ac88a9296c4212df3b9bdf8cd87f4152ba6b5326cdc60879bf94",
+  "sample_rate_hz": 48000,
+  "frames": 3163136,
+  "true_peak_dbtp": -22.50466322805696,
+  "passes_minus1_dbtp": true,
+  "scope": "captured Master PCM only; no calibrated acoustic/listening/1080p claim"
+}

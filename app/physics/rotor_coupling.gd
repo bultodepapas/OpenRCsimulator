@@ -192,7 +192,18 @@ static func _evaluate_carrier(carrier: PackedFloat64Array, axial: PackedFloat64A
 		return _failure("rotor transport overflow")
 	# Eliminate held local accelerations exactly. Their unknown static torques are
 	# recovered from the full rows AFTER every other wheel/shaft participates.
-	var solved := _solve_holds(matrix, rhs, constraints.indices, count)
+	# The no-hold system is exactly the full matrix already factored above.
+	# Reuse this stage-local factor; changed axes/live mass are assembled anew.
+	var solved: Dictionary
+	if constraints.indices.is_empty():
+		var free := GC.solve_body_local(assembled.factor, rhs, 3, count)
+		if free.size() != n:
+			return _failure("held rotor solve failed")
+		var torque := PackedFloat64Array()
+		torque.resize(count)
+		solved = {ok = true, acceleration = free, hold_torques = torque}
+	else:
+		solved = _solve_holds(matrix, rhs, constraints.indices, count)
 	if not solved.ok:
 		return solved
 	var stage := {format = STAGE_FORMAT, law = SYSTEM_LAW, system_identity = "carrier-owned-reference",

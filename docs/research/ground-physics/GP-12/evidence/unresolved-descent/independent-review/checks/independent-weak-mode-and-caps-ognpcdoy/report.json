@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ac2ac6ab-8304-4e41-a132-49c5119a2862",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-gentle-qp-review/oracle.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T19:08:51.869151+00:00",
+  "label": "independent-weak-mode-and-caps",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-gentle-qp-review\\checks\\independent-weak-mode-and-caps-ognpcdoy\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-gentle-qp-review\\checks\\independent-weak-mode-and-caps-ognpcdoy\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Independent weak-mode oracle: 64 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.063,
+  "log_bytes": 123,
+  "log_sha256": "9a471e682741deb98d53b357bd20316ea336bc242b94ae9d9ba97a537facd1a7"
+}

@@ -1,0 +1,194 @@
+{
+  "format": "openrc-accepted-ground-audio-manifest-v1",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 97,
+      "sha256": "3cbfe9646a3661aba2e93a95c8805274d0c22d0eac000b8969cb8654ec31b3c1"
+    },
+    {
+      "path": "before/app/audio/flight_audio.gd",
+      "bytes": 20897,
+      "sha256": "a211c24eab64a31156249b5cd0cdc31a12116a0b65c754166968023cb2955651"
+    },
+    {
+      "path": "before/app/audio/ground_audio.gd",
+      "bytes": 14429,
+      "sha256": "fd43b4f400ef96b91b086d83388cc1b8337497e57fa3b0048944159aa26be3ea"
+    },
+    {
+      "path": "before/legacy_trace.gd",
+      "bytes": 926,
+      "sha256": "7c2fccd3966eb3fcf12599b20b0ce47af771f15f98ad06f17aff8a0d7b663c9e"
+    },
+    {
+      "path": "development/legacy-byte-capture/engine.log",
+      "bytes": 195,
+      "sha256": "08dd6e81957c7ecb534d8056289f40281c9b449fe4bc5956a5395df681c0b4fe"
+    },
+    {
+      "path": "development/legacy-byte-capture/report.json",
+      "bytes": 1267,
+      "sha256": "e372a87c0564b27ef821c3bd6c33bae0cef058f627be4f40318959c99ff938e7"
+    },
+    {
+      "path": "development/legacy-control/engine.log",
+      "bytes": 2375,
+      "sha256": "aeac2c46f18c68b178084d11b10c2b7520c8db978874271ea54bb762eadde57a"
+    },
+    {
+      "path": "development/legacy-control/report.json",
+      "bytes": 1191,
+      "sha256": "97dfefe454b6aaa590b3d7cd836aba3a2d52880ad61822766c8a3c676790c765"
+    },
+    {
+      "path": "development/rejected-identity-fixture/engine.log",
+      "bytes": 868,
+      "sha256": "09f5640733343d62445e8aaa5bb46bc0b47580bc5a48d2d3cbb6d8a09dc8a4ad"
+    },
+    {
+      "path": "development/rejected-identity-fixture/report.json",
+      "bytes": 1270,
+      "sha256": "4032a757505b4c0da90282fe35572f796cd8c9873b6d13c94917cf1731cc42b1"
+    },
+    {
+      "path": "main-checks/accepted/engine.log",
+      "bytes": 116,
+      "sha256": "5ac4a4f9db24db188e8ff5629a803155cced08cce6c0366be4feacf28b1d59e8"
+    },
+    {
+      "path": "main-checks/accepted/report.json",
+      "bytes": 1232,
+      "sha256": "c8f158ad502a33d918542b9246baeb1c503b23ae524aaa88c6d1332aaf4de3a7"
+    },
+    {
+      "path": "main-checks/actual/engine.log",
+      "bytes": 579,
+      "sha256": "550326c119857e744c01fad5bd6ad1b05f598e449146ecda82745d85ff2f4634"
+    },
+    {
+      "path": "main-checks/actual/report.json",
+      "bytes": 1224,
+      "sha256": "755b2571257d755ca5608e451b3ee6a85854263e01743b2d844482fd52c8f4d9"
+    },
+    {
+      "path": "main-checks/legacy/engine.log",
+      "bytes": 2375,
+      "sha256": "aeac2c46f18c68b178084d11b10c2b7520c8db978874271ea54bb762eadde57a"
+    },
+    {
+      "path": "main-checks/legacy/report.json",
+      "bytes": 1191,
+      "sha256": "1152315bfbead9080213507a752fd558fb40898b51049286677d0102b6d0542b"
+    },
+    {
+      "path": "main-checks/materials/engine.log",
+      "bytes": 211,
+      "sha256": "73658fdc088d7150fd0a1481e384ddd11d1128b35f121d8c749a447693037e7e"
+    },
+    {
+      "path": "main-checks/materials/report.json",
+      "bytes": 1215,
+      "sha256": "92aea92417a3e43efb665c5d3602d4920d5cd5c8aa669de0540f70ba8e543568"
+    },
+    {
+      "path": "main-checks/mechanical/engine.log",
+      "bytes": 219,
+      "sha256": "0f67687c4654a77f2e0957de2e5aa7178a5714db94143dd1cb719cac94e2789f"
+    },
+    {
+      "path": "main-checks/mechanical/report.json",
+      "bytes": 1251,
+      "sha256": "aed7ebfb2e208f33e3795ee9c2127a4b044eed764ba7dc7d630b74c4cf557376"
+    },
+    {
+      "path": "origins.json",
+      "bytes": 3374,
+      "sha256": "ffcf6ba27478bd162971c2f9eb7bc27b1d040898ff6fe9cdc38cf57a49452990"
+    },
+    {
+      "path": "promotion.json",
+      "bytes": 1434,
+      "sha256": "86d948ac28da82fcc61a406708e427b9b43372c54b67f7b5daefb0c4f35998ce"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4562,
+      "sha256": "d8d8b3ef84e484af3bf0b5a0147c70bb0f9cb427f837cb8dd6c7584f657f9292"
+    },
+    {
+      "path": "report.json",
+      "bytes": 2005,
+      "sha256": "01573fb8e365551fa39710b339be32ff723e468da5f3e975d07893427f30fd32"
+    },
+    {
+      "path": "review/adversarial.gd",
+      "bytes": 3171,
+      "sha256": "4786891fc5183a78a1a558d6695bdce0ad5a0eee2ee5fd6a4740bbc0c98e460a"
+    },
+    {
+      "path": "review/check/engine.log",
+      "bytes": 129,
+      "sha256": "f8535ca5d2dee53cd8e529b8ae1863f4f7eab01362366eb9b561664262af0d39"
+    },
+    {
+      "path": "review/check/report.json",
+      "bytes": 1261,
+      "sha256": "99a44b7fa8f487d916692a87268311c895f9b667ed7f753a65df294babfe68f4"
+    },
+    {
+      "path": "review/report.json",
+      "bytes": 2114,
+      "sha256": "a4a0f07d3aaa7865d0b70ca2d5ca95a9506fed4c2b01c1d981bd1e9c5e5810fa"
+    },
+    {
+      "path": "source/app/audio/flight_audio.gd",
+      "bytes": 22082,
+      "sha256": "7b58e36a4e8b855c1374d2a138241b31cef7fd4c22260ea8da2d098df559a4b6"
+    },
+    {
+      "path": "source/app/audio/ground_audio.gd",
+      "bytes": 19316,
+      "sha256": "76a979123d1b79cd88212f8f373f09b454d4ab3df53042f779f39afb4db08311"
+    },
+    {
+      "path": "source/app/audio/ground_audio_model.gd",
+      "bytes": 8674,
+      "sha256": "8b4a2de11d84ce2417c1269c6cfada6c5f6028393e9489d500660933b3975065"
+    },
+    {
+      "path": "source/app/audio/ground_audio_motion.gd",
+      "bytes": 2708,
+      "sha256": "38b174ed59c83177dbc8962d88140380bd9108746a4bb407fd715c4e68b87222"
+    },
+    {
+      "path": "source/app/tests/test_flight_audio_accepted.gd",
+      "bytes": 13464,
+      "sha256": "bb02dc9e6272a72dcae1a086292379a6c236b462ed5f46a121459e2aa5a82659"
+    },
+    {
+      "path": "source/app/tests/test_flight_ground_accepted.gd",
+      "bytes": 4890,
+      "sha256": "eb954bef574cc2adabf04f3192e4aab141160fb9bc0f021a47343759ff90bcea"
+    },
+    {
+      "path": "source/app/tests/test_ground_accepted_ticks.gd",
+      "bytes": 10208,
+      "sha256": "10ea1910f278e8b65ff350516cf920e04f199c3f9bde7b42102768dae7d06599"
+    },
+    {
+      "path": "source/app/tests/test_ground_audio.gd",
+      "bytes": 13658,
+      "sha256": "48071a60df339328028322801f2c29daa01c38797712950fb99fc04c973a7499"
+    },
+    {
+      "path": "source/app/tests/test_ground_audio_materials.gd",
+      "bytes": 4359,
+      "sha256": "e788d9f7759f4dc7e800373a5c537821cd6e6e71c976523b6f209072193eeb61"
+    }
+  ],
+  "excludes": [
+    "manifest.json (self)",
+    "transport.json (post-verification receipt)"
+  ]
+}

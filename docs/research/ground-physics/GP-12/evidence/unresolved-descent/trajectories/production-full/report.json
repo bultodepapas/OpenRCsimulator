@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0c5211fa-a0b2-425b-993b-961364c9d0a3",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-gentle-qp/drop_production.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T19:16:48.031228+00:00",
+  "label": "full-gentle-production",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-gentle-qp\\checks\\full-gentle-production-pso11gvu\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-gentle-qp\\checks\\full-gentle-production-pso11gvu\\report.json",
+  "timeout_seconds": 600.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Opt-in full drops: 16 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 71.266,
+  "log_bytes": 10809,
+  "log_sha256": "da0b44a79d956a45dac0de77c4d990f1349b6e25837242da7de1dde5071b1c77"
+}

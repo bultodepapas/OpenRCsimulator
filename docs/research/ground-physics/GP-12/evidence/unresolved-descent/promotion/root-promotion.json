@@ -1,0 +1,49 @@
+{
+  "format": "openrc-unresolved-descent-root-promotion-v1",
+  "manifest_sha256": "41505942a7211da031d5825b72a1982a945e0c84839490a7091dd53eeff07b90",
+  "payload": [
+    {
+      "target": "app/physics/contact_assembly_resolution.gd",
+      "path": "tmp/gp12-gentle-qp/production/app/physics/contact_assembly_resolution.gd",
+      "bytes": 42195,
+      "sha256": "f5190d8683f6a1818beed06b93403d3e0b22638c3dfb71893c605a4d49a6fcb5"
+    },
+    {
+      "target": "app/physics/contact_assembly_strategy.gd",
+      "path": "tmp/gp12-gentle-qp/production/app/physics/contact_assembly_strategy.gd",
+      "bytes": 3944,
+      "sha256": "4135dcbf6879a54bfc7120fb0d01c91b84581bca7a9205bd9d13432fe2f4257c"
+    },
+    {
+      "target": "app/physics/ground_traction.gd",
+      "path": "tmp/gp12-gentle-qp/production/app/physics/ground_traction.gd",
+      "bytes": 32618,
+      "sha256": "2c191c1b0cb3d234419fbad80923c7386ba5603ca3b796d5fb0e433579ac5701"
+    },
+    {
+      "target": "app/tests/fixtures/ground_contact_unresolved_16.bin",
+      "path": "tmp/gp12-gentle-qp/production/app/tests/fixtures/ground_contact_unresolved_16.bin",
+      "bytes": 6824,
+      "sha256": "9d066b9e540d817e9a3d5d9770f46fe9d2b4f17da31d72a575629f50009e7e1f"
+    },
+    {
+      "target": "app/tests/fixtures/ground_contact_unresolved_8.bin",
+      "path": "tmp/gp12-gentle-qp/production/app/tests/fixtures/ground_contact_unresolved_8.bin",
+      "bytes": 6824,
+      "sha256": "b565d3edd1b997704b75369e6e7f8c8e50b08ed63f8c3a268df9443cf0536bc6"
+    },
+    {
+      "target": "app/tests/fixtures/ground_contact_unresolved_defaults.bin",
+      "path": "tmp/gp12-gentle-qp/production/app/tests/fixtures/ground_contact_unresolved_defaults.bin",
+      "bytes": 5772,
+      "sha256": "e9573e09f971d5d4dcc285e8038b034c3015c9bca57d5f9719ffd9acab759b52"
+    },
+    {
+      "target": "app/tests/test_contact_unresolved_descent.gd",
+      "path": "tmp/gp12-gentle-qp/production/app/tests/test_contact_unresolved_descent.gd",
+      "bytes": 7362,
+      "sha256": "9a39891bd9267988c2a59d9ba0486a687384e5470733151050bd4fbaedbf10c7"
+    }
+  ],
+  "staged_or_committed": false
+}

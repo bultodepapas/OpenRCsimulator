@@ -35,7 +35,7 @@ class CustomizationGeneratorTests(unittest.TestCase):
         v3 = generator.PRESENTATION_SOURCE_PATHS_V3
         self.assertEqual(len(legacy), 7)
         self.assertEqual(len(v2), 10)
-        self.assertEqual(len(v3), 27)
+        self.assertEqual(len(v3), 28)
         self.assertEqual(tuple(sorted(v3)), v3)
         self.assertTrue(set(legacy).issubset(v2))
         self.assertTrue(set(v2).issubset(v3))
@@ -117,6 +117,8 @@ class CustomizationGeneratorTests(unittest.TestCase):
 
     def test_companions_pin_exact_manifest_bytes_and_self_hash_slots(self) -> None:
         registry = json.loads((self.root / generator.OUTPUT_PATH).read_text(encoding="utf-8"))
+        authored_layouts = {item["visual_family"]: item.get("lighting_layout", generator.empty_lighting_layout())
+                            for item in self.source["families"]}
         self.assertEqual(registry["format"], generator.REGISTRY_FORMAT)
         self.assertEqual({item["visual_family"] for item in registry["families"]}, self.families)
         for companion in registry["families"]:
@@ -126,7 +128,7 @@ class CustomizationGeneratorTests(unittest.TestCase):
             if family == "jensen-das-ugly-stik-60":
                 self.assertEqual(companion["lighting_layout"], {
                     "version": 2,
-                    "anchors": [],
+                    "anchors": authored_layouts[family]["anchors"],
                     "strips": [],
                     "skins": [
                         {
@@ -144,7 +146,7 @@ class CustomizationGeneratorTests(unittest.TestCase):
                     ],
                 })
             else:
-                self.assertEqual(companion["lighting_layout"], generator.empty_lighting_layout())
+                self.assertEqual(companion["lighting_layout"], authored_layouts[family])
             self.assertEqual(companion["presentation_engine_version"], generator.PRESENTATION_ENGINE_VERSION)
             self.assertEqual([item["path"] for item in companion["presentation_sources"]],
                              list(generator.PRESENTATION_SOURCE_PATHS))

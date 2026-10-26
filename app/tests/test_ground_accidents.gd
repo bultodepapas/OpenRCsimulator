@@ -227,7 +227,7 @@ func _test_snapshot_replay_and_legacy_coverage() -> void:
 	var migrated: RefCounted = Detector.new()
 	_check("legacy v1 checkpoint loads without invented accidents", migrated.restore(legacy)
 		and migrated.snapshot().accident_serial == 0 and migrated.snapshot().accident_id == "")
-	_check("new rules explicitly version the widened M7 meaning", Rules.VERSION == "flight-statistics-rules-v2")
+	_check("new rules explicitly version the widened M7 meaning", Rules.VERSION == "flight-statistics-rules-v3")
 
 
 func _test_rejected_and_duplicate_ticks() -> void:

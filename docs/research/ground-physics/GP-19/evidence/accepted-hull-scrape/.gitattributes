@@ -1,0 +1,3 @@
+# Exact selected sources, fixtures and checked receipts.
+* -text whitespace=cr-at-eol
+*.log -whitespace

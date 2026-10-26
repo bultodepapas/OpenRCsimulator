@@ -1,0 +1,12 @@
+{
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "tools/audio/test_capture_checks.py"
+  ],
+  "exit_code": 0,
+  "tests": 12,
+  "new_scope_tests": 6,
+  "test_source_sha256": "35c17ed18d044cccc23f63fd5d5afb63feca3a4dc0df39b360c4a499dd9301f5",
+  "wrapper_sha256": "fc405b1616ade4bd2fcc9c7243f64cea1dcb5565e5437f29ea64c671fc365e9e",
+  "log_sha256": "b6754acc45868cc1cd8a6ddd1c80dd7a6993ace67d57c05b2205eeb2126777ec"
+}

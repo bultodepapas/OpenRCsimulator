@@ -172,7 +172,7 @@ func _capture_strip_state(rig: Node, binding: Dictionary, material: ShaderMateri
 	var expected: Dictionary = Patterns.uniforms(resolved.pattern)
 	var pattern_settings: Vector4 = material.get_shader_parameter("pattern_settings")
 	var pattern_extras: Vector4 = material.get_shader_parameter("pattern_extras")
-	var palette: PackedColorArray = material.get_shader_parameter("palette")
+	var palette: PackedVector4Array = material.get_shader_parameter("palette")
 	var phase := float(material.get_shader_parameter("pattern_phase"))
 	var uniform_match: bool = pattern_settings == expected.pattern_settings \
 		and pattern_extras == expected.pattern_extras \

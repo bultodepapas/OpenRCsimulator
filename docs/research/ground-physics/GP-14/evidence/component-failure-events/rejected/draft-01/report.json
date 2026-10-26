@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "15c3a366-59dd-4d2e-9db6-2869de3b752c",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp16-damage-events/test_damage_flight_events.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T18:10:04.020504+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp16-damage-events\\checks\\draft-01\\godot-5h5pg78m\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp16-damage-events\\checks\\draft-01\\godot-5h5pg78m\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Damage flight events:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Cannot infer the type of \"modes\" variable because the value doesn't have a set type.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp16-damage-events/test_damage_flight_events.gd:87)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/gp16-damage-events/test_damage_flight_events.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "Damage flight events:"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.375,
+  "log_bytes": 503,
+  "log_sha256": "dd2b37f2541cb06adf8f2bed8e147073eef9f07c5081c924abb9fe7acdb91a4b"
+}

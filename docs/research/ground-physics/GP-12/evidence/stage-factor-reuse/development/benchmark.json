@@ -1,0 +1,41 @@
+{
+	"complete_returns_equal": true,
+	"format": "openrc-rotor-factor-benchmark-v1",
+	"interleaved_pairs": [
+		{
+			"baseline_us": 94780,
+			"candidate_us": 81306
+		},
+		{
+			"baseline_us": 90677,
+			"candidate_us": 82342
+		},
+		{
+			"baseline_us": 90419,
+			"candidate_us": 77533
+		},
+		{
+			"baseline_us": 104925,
+			"candidate_us": 128522
+		},
+		{
+			"baseline_us": 103559,
+			"candidate_us": 89812
+		},
+		{
+			"baseline_us": 94557,
+			"candidate_us": 98252
+		},
+		{
+			"baseline_us": 93823,
+			"candidate_us": 85374
+		},
+		{
+			"baseline_us": 92428,
+			"candidate_us": 89014
+		}
+	],
+	"loops": 300,
+	"scope": "isolated four-rotor microbenchmark; shared host; no real-time qualification",
+	"warmup": 50
+}

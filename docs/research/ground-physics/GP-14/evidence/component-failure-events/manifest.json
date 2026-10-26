@@ -1,0 +1,615 @@
+{
+  "format": "openrc-component-failure-events-evidence v1",
+  "date": "2026-10-26",
+  "step": "GP-16c / GP-14 physical emitters",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "final_source_counts": {
+    "integration": 197,
+    "events": 135
+  },
+  "preceding_regression_counts": {
+    "response": 125,
+    "gear": 113,
+    "accidents": 68,
+    "detector": 111,
+    "lifecycle": 51,
+    "session": 33,
+    "resets": 48,
+    "store": 49,
+    "writer": 18
+  },
+  "selected_checks": 948,
+  "final_source_checks": 332,
+  "preceding_source_checks": 616,
+  "source_scope": "Two explicitly retained production revisions: final332 affected checks, preceding616 regressions. Not an all-final-source broad suite or full application/dependency snapshot. Original current194/events135 pre-correction receipts are retained separately and not counted twice.",
+  "files": [
+    {
+      "path": "baseline/bridge-gap/report.json",
+      "sha256": "33dce0d9d4dc7d02253e352d213201233847c0510e673c9c99e3ad7bfe482b20",
+      "bytes": 1227,
+      "origin": "tmp\\gp16-damage-events\\checks\\baseline-01\\godot-trpfzy54\\report.json",
+      "scope": "43 existing physical-transport/gap/control assertions; shared emitters were absent"
+    },
+    {
+      "path": "baseline/bridge-gap/engine.log",
+      "sha256": "e105fa334eb6da14b0801f23b6278c6d7535e3f865374344adf75a3827b0ad3f",
+      "bytes": 197,
+      "origin": "tmp\\gp16-damage-events\\checks\\baseline-01\\godot-trpfzy54\\engine.log",
+      "scope": "43 existing physical-transport/gap/control assertions; shared emitters were absent"
+    },
+    {
+      "path": "baseline/baseline.gd",
+      "sha256": "4bc27ceaca68355a00e01000aae025595fb1a8b4b6a5354e3f4f9338f44334f6",
+      "bytes": 7815,
+      "origin": "tmp\\gp16-damage-events\\baseline.gd",
+      "scope": "Original baseline/sentinel source or identity record"
+    },
+    {
+      "path": "baseline/source-hashes.json",
+      "sha256": "ff43003d52c270817528b41101e285e71f2bef5cc19b21ab9f08c790980ec66e",
+      "bytes": 1060,
+      "origin": "tmp\\gp16-damage-events\\source-hashes.json",
+      "scope": "Original baseline/sentinel source or identity record"
+    },
+    {
+      "path": "baseline/baseline-manifest.json",
+      "sha256": "afce44028c0fc145d863991aa48e533fdd248bf502c7648d70bab7c71d3d67fa",
+      "bytes": 1225,
+      "origin": "tmp\\gp16-damage-events\\baseline-manifest.json",
+      "scope": "Original baseline/sentinel source or identity record"
+    },
+    {
+      "path": "baseline/absent_before.gd",
+      "sha256": "01693e82ebe8f7d0ae73ca21312c2f0525d3f44e6d0280587f905c7aed202c59",
+      "bytes": 579,
+      "origin": "tmp\\gp16-damage-events\\absent_before.gd",
+      "scope": "Original baseline/sentinel source or identity record"
+    },
+    {
+      "path": "baseline/source/app/physics/aircraft_ground_damage.gd",
+      "sha256": "d10ab36349a41983592d2020df0ef14c8aa45ee140f8f8ab3560b2921df7b628",
+      "bytes": 13971,
+      "origin": "tmp\\gp16-damage-events\\source\\app\\physics\\aircraft_ground_damage.gd",
+      "scope": "Original selected source bytes, not all dependencies"
+    },
+    {
+      "path": "baseline/source/app/physics/gear_damage.gd",
+      "sha256": "8aa2cc1e966967ef191dfdad1d597253cecabefb741a3234158b081c258e5900",
+      "bytes": 14685,
+      "origin": "tmp\\gp16-damage-events\\source\\app\\physics\\gear_damage.gd",
+      "scope": "Original selected source bytes, not all dependencies"
+    },
+    {
+      "path": "baseline/source/app/sim/aircraft_contact_events.gd",
+      "sha256": "76532d5d4879a781abacc87298ccff9f6a1b0615499b64e52079064aa7110d90",
+      "bytes": 22591,
+      "origin": "tmp\\gp16-damage-events\\source\\app\\sim\\aircraft_contact_events.gd",
+      "scope": "Original selected source bytes, not all dependencies"
+    },
+    {
+      "path": "baseline/source/app/sim/simulation.gd",
+      "sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490",
+      "bytes": 54898,
+      "origin": "tmp\\gp16-damage-events\\source\\app\\sim\\simulation.gd",
+      "scope": "Original selected source bytes, not all dependencies"
+    },
+    {
+      "path": "baseline/source/app/statistics/detector.gd",
+      "sha256": "5887f57c851917c7a15ad0dfbd1e2ee7ab65c7da0557c53f6f22d19d7c78c1f2",
+      "bytes": 38618,
+      "origin": "tmp\\gp16-damage-events\\source\\app\\statistics\\detector.gd",
+      "scope": "Original selected source bytes, not all dependencies"
+    },
+    {
+      "path": "baseline/source/app/statistics/fixed_wing_adapter.gd",
+      "sha256": "678a948cb26ca5e5427d9fa4a078d40f1849bd068cfd4dbc7a003993d2ab1708",
+      "bytes": 11645,
+      "origin": "tmp\\gp16-damage-events\\source\\app\\statistics\\fixed_wing_adapter.gd",
+      "scope": "Original selected source bytes, not all dependencies"
+    },
+    {
+      "path": "baseline/source/app/statistics/flight_event.gd",
+      "sha256": "8b730b8f5a4ed6c42ae3113ce12fdddcdf37b00509c6e8e2b4494970b6e29407",
+      "bytes": 5595,
+      "origin": "tmp\\gp16-damage-events\\source\\app\\statistics\\flight_event.gd",
+      "scope": "Original selected source bytes, not all dependencies"
+    },
+    {
+      "path": "baseline/source/app/statistics/service.gd",
+      "sha256": "9f2afbdedb4e17c42a45034add7791d1e585d820a8a3d5bbb5d42a8d455414fe",
+      "bytes": 20570,
+      "origin": "tmp\\gp16-damage-events\\source\\app\\statistics\\service.gd",
+      "scope": "Original selected source bytes, not all dependencies"
+    },
+    {
+      "path": "baseline/source/app/tests/test_aircraft_ground_damage.gd",
+      "sha256": "7fac4b73873fa00ff94ddb76e891f9a2dbaf2a0e9b67b6548c4cedadd5cbe64d",
+      "bytes": 24116,
+      "origin": "tmp\\gp16-damage-events\\source\\app\\tests\\test_aircraft_ground_damage.gd",
+      "scope": "Original selected source bytes, not all dependencies"
+    },
+    {
+      "path": "baseline/observations.json",
+      "sha256": "49fadb1d7202109aa543b297c71ae8b1735d428b4f7692189fd211900758d7a3",
+      "bytes": 4993,
+      "origin": "tmp\\gp16-damage-events\\baseline-artifacts\\observations.json",
+      "scope": "Actual baseline heavy/hard raw events, deterministic rewind IDs and direct-only asymmetric response"
+    },
+    {
+      "path": "baseline/absent-producer/report.json",
+      "sha256": "1872a4261558e0ada68c59ace6edfa21c588f411444377c992b3d7c44d636ec1",
+      "bytes": 1234,
+      "origin": "tmp\\gp16-damage-events\\checks\\absent-before\\godot-5zyst7_4\\report.json",
+      "scope": "Pre-change production adapter sample digest; completed without diagnostics"
+    },
+    {
+      "path": "baseline/absent-producer/engine.log",
+      "sha256": "5770f971678da219e5999eaad684126839d1f8e505abc843dd4b51ec4458a52f",
+      "bytes": 263,
+      "origin": "tmp\\gp16-damage-events\\checks\\absent-before\\godot-5zyst7_4\\engine.log",
+      "scope": "Pre-change production adapter sample digest; completed without diagnostics"
+    },
+    {
+      "path": "historical/v1-sentinel/report.json",
+      "sha256": "8addaaa1db12e0ec9ebdd118aec746e3146dad1eb2ada85bb8187099169f93cb",
+      "bytes": 1230,
+      "origin": "tmp\\gp16-damage-events\\checks\\draft-02\\godot-4r6imq9p\\report.json",
+      "scope": "155-check early draft, used only to retain original v1 sentinel capture; predates semantic review fixes, not final correctness acceptance"
+    },
+    {
+      "path": "historical/v1-sentinel/engine.log",
+      "sha256": "589ed5a7104d0ec6357ae2ec6cd29d27ed06741cf73b646d609bc02e7bbf4a1a",
+      "bytes": 277,
+      "origin": "tmp\\gp16-damage-events\\checks\\draft-02\\godot-4r6imq9p\\engine.log",
+      "scope": "155-check early draft, used only to retain original v1 sentinel capture; predates semantic review fixes, not final correctness acceptance"
+    },
+    {
+      "path": "rejected/draft-01/report.json",
+      "sha256": "74d811c5f757e03fb08f04e21e8bcacd32d852e844d6667a2f853e8b4515baa6",
+      "bytes": 1983,
+      "origin": "tmp\\gp16-damage-events\\checks\\draft-01\\godot-5h5pg78m\\report.json",
+      "scope": "Original rejected draft/harness receipt; exact executed mutable draft source was not retained"
+    },
+    {
+      "path": "rejected/draft-01/engine.log",
+      "sha256": "dd2b37f2541cb06adf8f2bed8e147073eef9f07c5081c924abb9fe7acdb91a4b",
+      "bytes": 503,
+      "origin": "tmp\\gp16-damage-events\\checks\\draft-01\\godot-5h5pg78m\\engine.log",
+      "scope": "Original rejected draft/harness receipt; exact executed mutable draft source was not retained"
+    },
+    {
+      "path": "rejected/draft-03/report.json",
+      "sha256": "aee0b83620a74d9c36e6f8ce0c80667582d87562143586ec9c542b7f90379e90",
+      "bytes": 1237,
+      "origin": "tmp\\gp16-damage-events\\checks\\draft-03\\godot-zhf8kdjz\\report.json",
+      "scope": "Original rejected draft/harness receipt; exact executed mutable draft source was not retained"
+    },
+    {
+      "path": "rejected/draft-03/engine.log",
+      "sha256": "6149c4632f1a0d9cb2cee8051ff92f4384f4c5587d0b495169eeb154e1e3bf5b",
+      "bytes": 632,
+      "origin": "tmp\\gp16-damage-events\\checks\\draft-03\\godot-zhf8kdjz\\engine.log",
+      "scope": "Original rejected draft/harness receipt; exact executed mutable draft source was not retained"
+    },
+    {
+      "path": "rejected/draft-detector/report.json",
+      "sha256": "2a55ddf9cf9f837f256545bbc49865b0c3b5d996b269472e968009f4e14374d5",
+      "bytes": 1313,
+      "origin": "tmp\\gp16-damage-events\\checks\\draft-detector\\godot-fd0wiea4\\report.json",
+      "scope": "Original rejected draft/harness receipt; exact executed mutable draft source was not retained"
+    },
+    {
+      "path": "rejected/draft-detector/engine.log",
+      "sha256": "f0ed75c61239086b51118f3f2751ccf0b395df2cd3653c28606ee2cab7de806b",
+      "bytes": 94,
+      "origin": "tmp\\gp16-damage-events\\checks\\draft-detector\\godot-fd0wiea4\\engine.log",
+      "scope": "Original rejected draft/harness receipt; exact executed mutable draft source was not retained"
+    },
+    {
+      "path": "current/preceding/checks/response/report.json",
+      "sha256": "bff392c5ee73a16412ca34aa00adbf497ea77b0cb97ce6ed5e37bff8b7663df0",
+      "bytes": 1223,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-response\\godot-pvky2v7z\\report.json",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/response/engine.log",
+      "sha256": "0eacfd46e1e87f71ebfa35b805f9176f20ea3b600b50e9ff6d72bcd9daace655",
+      "bytes": 118,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-response\\godot-pvky2v7z\\engine.log",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/gear/report.json",
+      "sha256": "955fa6a717d0d8dcdb257a5a5f7af2da0d6579946225375acf58ed49c7cb5e5f",
+      "bytes": 1178,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-gear\\godot-ykxbf7f5\\report.json",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/gear/engine.log",
+      "sha256": "a907696c9a4f083e2c38c215fec4f550b9c1e80e9cb9ef3fe647266b27c8e8d4",
+      "bytes": 112,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-gear\\godot-ykxbf7f5\\engine.log",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/accidents/report.json",
+      "sha256": "b21b193eb9bb39121603c2ba766f15a98ed40eb73428f78c476d9641edb1908c",
+      "bytes": 1209,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-accidents\\godot-2kxy7nx0\\report.json",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/accidents/engine.log",
+      "sha256": "247c36483a97dcf02343db5868d34b100a42d7ebd2f47f4bc2845e44cb95b7a4",
+      "bytes": 110,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-accidents\\godot-2kxy7nx0\\engine.log",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/detector/report.json",
+      "sha256": "84a07daa58b187d38eed10886ad5ddc0c62e50de12cf2acce3a7fe9166aec3e4",
+      "bytes": 1200,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-detector\\godot-red58prs\\report.json",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/detector/engine.log",
+      "sha256": "f0ed75c61239086b51118f3f2751ccf0b395df2cd3653c28606ee2cab7de806b",
+      "bytes": 94,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-detector\\godot-red58prs\\engine.log",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/lifecycle/report.json",
+      "sha256": "3832b04beed9bc59e6661767c0778f0f08b6b00eccd094e2d104b1bff3cc475c",
+      "bytes": 1232,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-lifecycle\\godot-zix9z8l2\\report.json",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/lifecycle/engine.log",
+      "sha256": "c5ccca9c3fc98f9d822c22c1bad9db1e827a7487fdd5538a9be1be4957a09397",
+      "bytes": 498,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-lifecycle\\godot-zix9z8l2\\engine.log",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/session/report.json",
+      "sha256": "1b7c8978b123d89606e35a60d440ca2428abd3e73396c1cdb8bbc45319bee1a8",
+      "bytes": 1217,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-session\\godot-p8toqi9s\\report.json",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/session/engine.log",
+      "sha256": "0bc1858073b97d4a4e6a0c6e1c6d7fa28fe3c7ec3f17f9eaf4a51d5d38b9cc83",
+      "bytes": 732,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-session\\godot-p8toqi9s\\engine.log",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/resets/report.json",
+      "sha256": "ff911bcd78fa4b04e064fe3729061f9fa164ba4c0c2d515e0b9597bd2a3ddfb0",
+      "bytes": 1191,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-resets\\godot-3lt7vlfw\\report.json",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/resets/engine.log",
+      "sha256": "0242ae7ac143d4ee6f9816fba66d58a44ae3fbd0e8724437587840cf4e1925cd",
+      "bytes": 93,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-resets\\godot-3lt7vlfw\\engine.log",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/store/report.json",
+      "sha256": "f84c25f90329bd29849313440f97c69ac55314f11bf2b99eea1e1cabd631ac5d",
+      "bytes": 1190,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-store\\godot-src82wq4\\report.json",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/store/engine.log",
+      "sha256": "ea9e157a43ffce574abfb371062af0bf18ebafd0c727972f03f3ca180f943d16",
+      "bytes": 93,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-store\\godot-src82wq4\\engine.log",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/writer/report.json",
+      "sha256": "fcb1f3051645ae92195e55c9b1c2bcb1c27c827a308d7870d7a5f03c01f3306f",
+      "bytes": 1220,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-writer\\godot-u2ewjbxd\\report.json",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/checks/writer/engine.log",
+      "sha256": "08de208c1f07262d853ae1b6e1f129bcc057a5678a015ae5c51a62e7de4b6284",
+      "bytes": 119,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-writer\\godot-u2ewjbxd\\engine.log",
+      "scope": "Complete preceding production regression revision; exact selected source snapshot retained"
+    },
+    {
+      "path": "current/preceding/source/hashes.json",
+      "sha256": "18aab548254b9ccfefd40ee5cd3995b48579d1b8c2d902c1cd81fe46db9e4856",
+      "bytes": 969,
+      "origin": "tmp\\gp16-damage-events\\promoted-194-source\\hashes.json",
+      "scope": "Exact preceding production selected source bytes, including pre-coverage Detector"
+    },
+    {
+      "path": "current/preceding/source/app/physics/aircraft_ground_damage.gd",
+      "sha256": "3424b5edeb019d5a177a32774bb1436950ef92a619198ad1767b30253831f9b1",
+      "bytes": 19478,
+      "origin": "tmp\\gp16-damage-events\\promoted-194-source\\app\\physics\\aircraft_ground_damage.gd",
+      "scope": "Exact preceding production selected source bytes, including pre-coverage Detector"
+    },
+    {
+      "path": "current/preceding/source/app/statistics/detector.gd",
+      "sha256": "fa700829e8bcbb120379b50286cb761c78c09f171beb04bbc0e108aa4ebe0203",
+      "bytes": 42530,
+      "origin": "tmp\\gp16-damage-events\\promoted-194-source\\app\\statistics\\detector.gd",
+      "scope": "Exact preceding production selected source bytes, including pre-coverage Detector"
+    },
+    {
+      "path": "current/preceding/source/app/statistics/fixed_wing_adapter.gd",
+      "sha256": "1cb6b345d90737da632c04252cb819f11ae758f7fc05a663a5dea55fa3c32525",
+      "bytes": 13081,
+      "origin": "tmp\\gp16-damage-events\\promoted-194-source\\app\\statistics\\fixed_wing_adapter.gd",
+      "scope": "Exact preceding production selected source bytes, including pre-coverage Detector"
+    },
+    {
+      "path": "current/preceding/source/app/statistics/flight_event.gd",
+      "sha256": "bcc16fb3c9c4c55aac12394d8495744386acd426798d479c8fd00302d769f063",
+      "bytes": 15128,
+      "origin": "tmp\\gp16-damage-events\\promoted-194-source\\app\\statistics\\flight_event.gd",
+      "scope": "Exact preceding production selected source bytes, including pre-coverage Detector"
+    },
+    {
+      "path": "current/preceding/source/app/statistics/rules.gd",
+      "sha256": "ff911bea727dd43a5b9ae7a459118c9a6c58bd86d58d78cf29666378f25f328f",
+      "bytes": 1562,
+      "origin": "tmp\\gp16-damage-events\\promoted-194-source\\app\\statistics\\rules.gd",
+      "scope": "Exact preceding production selected source bytes, including pre-coverage Detector"
+    },
+    {
+      "path": "current/preceding/source/app/statistics/service.gd",
+      "sha256": "46d54ae6e84ec5d92b5d325cd24cd94ddc7ec47c63647c46f122d73ded4081d0",
+      "bytes": 23214,
+      "origin": "tmp\\gp16-damage-events\\promoted-194-source\\app\\statistics\\service.gd",
+      "scope": "Exact preceding production selected source bytes, including pre-coverage Detector"
+    },
+    {
+      "path": "current/preceding/source/app/tests/test_aircraft_ground_damage.gd",
+      "sha256": "ca51590a5f4ebbdb1f90e7fb129f1d76d14a3e22702dcac595063004f84e6a58",
+      "bytes": 24707,
+      "origin": "tmp\\gp16-damage-events\\promoted-194-source\\app\\tests\\test_aircraft_ground_damage.gd",
+      "scope": "Exact preceding production selected source bytes, including pre-coverage Detector"
+    },
+    {
+      "path": "current/preceding/source/app/tests/test_damage_flight_events.gd",
+      "sha256": "0d84e0d48b45ab346e377edaa08c56e32fdfc0f9373988bc61b6b5bf3d62da14",
+      "bytes": 22823,
+      "origin": "tmp\\gp16-damage-events\\promoted-194-source\\app\\tests\\test_damage_flight_events.gd",
+      "scope": "Exact preceding production selected source bytes, including pre-coverage Detector"
+    },
+    {
+      "path": "current/preceding/source/app/tests/test_ground_accidents.gd",
+      "sha256": "8ee935c4809bfbbb159c8ea11deba184fbe444f4ea4c8a07a29b20e6c34b4229",
+      "bytes": 16094,
+      "origin": "tmp\\gp16-damage-events\\promoted-194-source\\app\\tests\\test_ground_accidents.gd",
+      "scope": "Exact preceding production selected source bytes, including pre-coverage Detector"
+    },
+    {
+      "path": "historical/pre-coverage/integration/report.json",
+      "sha256": "1912235a28cf7f960524cf0f6fe115dbef3cb0b762e73213ec0d3742a7abd37a",
+      "bytes": 1225,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-integration\\godot-b3eqbyin\\report.json",
+      "scope": "Passing pre-coverage correction receipt, distinctly superseded by final-source affected checks"
+    },
+    {
+      "path": "historical/pre-coverage/integration/engine.log",
+      "sha256": "7fc28ca78dd273faee9101b43e39d825916da8489b058d6b471bf0903b006954",
+      "bytes": 491,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-integration\\godot-b3eqbyin\\engine.log",
+      "scope": "Passing pre-coverage correction receipt, distinctly superseded by final-source affected checks"
+    },
+    {
+      "path": "historical/pre-coverage/events/report.json",
+      "sha256": "f0ab9cd0573b4200c36b0f180f06478da16fca7cf7cb3ccc3857d4daf25e4abe",
+      "bytes": 1213,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-events\\godot-55n9iac5\\report.json",
+      "scope": "Passing pre-coverage correction receipt, distinctly superseded by final-source affected checks"
+    },
+    {
+      "path": "historical/pre-coverage/events/engine.log",
+      "sha256": "a57018228193fc3ea5ae4488db20ea67d1b0266f51773a47bcc8fdf9222207e7",
+      "bytes": 116,
+      "origin": "tmp\\gp16-damage-events\\checks\\main-events\\godot-55n9iac5\\engine.log",
+      "scope": "Passing pre-coverage correction receipt, distinctly superseded by final-source affected checks"
+    },
+    {
+      "path": "current/final/checks/integration/report.json",
+      "sha256": "4a8488c9f71f7bd4390a6c6d39e3e357d5068520c4d2a904a383ea20816f5f7d",
+      "bytes": 1229,
+      "origin": "tmp\\gp16-damage-events\\checks\\sealed-integration\\godot-ff2exyeq\\report.json",
+      "scope": "Final production after qualified-CRASH coverage correction; exact completion marker"
+    },
+    {
+      "path": "current/final/checks/integration/engine.log",
+      "sha256": "173ed221797556736bd1d11603173efe0a8084275799d9af5389f0a1891a8eab",
+      "bytes": 491,
+      "origin": "tmp\\gp16-damage-events\\checks\\sealed-integration\\godot-ff2exyeq\\engine.log",
+      "scope": "Final production after qualified-CRASH coverage correction; exact completion marker"
+    },
+    {
+      "path": "current/final/checks/events/report.json",
+      "sha256": "6b0379188667a36d5bca62318b4f345083c95d6478d82234159ba269f95d4f82",
+      "bytes": 1215,
+      "origin": "tmp\\gp16-damage-events\\checks\\final-events\\godot-fb07svnq\\report.json",
+      "scope": "Final production after qualified-CRASH coverage correction; exact completion marker"
+    },
+    {
+      "path": "current/final/checks/events/engine.log",
+      "sha256": "a57018228193fc3ea5ae4488db20ea67d1b0266f51773a47bcc8fdf9222207e7",
+      "bytes": 116,
+      "origin": "tmp\\gp16-damage-events\\checks\\final-events\\godot-fb07svnq\\engine.log",
+      "scope": "Final production after qualified-CRASH coverage correction; exact completion marker"
+    },
+    {
+      "path": "current/final/source/app/physics/aircraft_ground_damage.gd",
+      "sha256": "3424b5edeb019d5a177a32774bb1436950ef92a619198ad1767b30253831f9b1",
+      "bytes": 19478,
+      "origin": "app\\physics\\aircraft_ground_damage.gd",
+      "scope": "Selected final production source bytes, unchanged through final affected checks"
+    },
+    {
+      "path": "current/final/source/app/statistics/flight_event.gd",
+      "sha256": "bcc16fb3c9c4c55aac12394d8495744386acd426798d479c8fd00302d769f063",
+      "bytes": 15128,
+      "origin": "app\\statistics\\flight_event.gd",
+      "scope": "Selected final production source bytes, unchanged through final affected checks"
+    },
+    {
+      "path": "current/final/source/app/statistics/fixed_wing_adapter.gd",
+      "sha256": "1cb6b345d90737da632c04252cb819f11ae758f7fc05a663a5dea55fa3c32525",
+      "bytes": 13081,
+      "origin": "app\\statistics\\fixed_wing_adapter.gd",
+      "scope": "Selected final production source bytes, unchanged through final affected checks"
+    },
+    {
+      "path": "current/final/source/app/statistics/detector.gd",
+      "sha256": "43ff1c448cd9faf0d89114a4d8c25d18f070ec9c748f2d8506f2fef9c5533aa2",
+      "bytes": 42882,
+      "origin": "app\\statistics\\detector.gd",
+      "scope": "Selected final production source bytes, unchanged through final affected checks"
+    },
+    {
+      "path": "current/final/source/app/statistics/rules.gd",
+      "sha256": "ff911bea727dd43a5b9ae7a459118c9a6c58bd86d58d78cf29666378f25f328f",
+      "bytes": 1562,
+      "origin": "app\\statistics\\rules.gd",
+      "scope": "Selected final production source bytes, unchanged through final affected checks"
+    },
+    {
+      "path": "current/final/source/app/statistics/service.gd",
+      "sha256": "46d54ae6e84ec5d92b5d325cd24cd94ddc7ec47c63647c46f122d73ded4081d0",
+      "bytes": 23214,
+      "origin": "app\\statistics\\service.gd",
+      "scope": "Selected final production source bytes, unchanged through final affected checks"
+    },
+    {
+      "path": "current/final/source/app/tests/test_aircraft_ground_damage.gd",
+      "sha256": "ca51590a5f4ebbdb1f90e7fb129f1d76d14a3e22702dcac595063004f84e6a58",
+      "bytes": 24707,
+      "origin": "app\\tests\\test_aircraft_ground_damage.gd",
+      "scope": "Selected final production source bytes, unchanged through final affected checks"
+    },
+    {
+      "path": "current/final/source/app/tests/test_ground_accidents.gd",
+      "sha256": "8ee935c4809bfbbb159c8ea11deba184fbe444f4ea4c8a07a29b20e6c34b4229",
+      "bytes": 16094,
+      "origin": "app\\tests\\test_ground_accidents.gd",
+      "scope": "Selected final production source bytes, unchanged through final affected checks"
+    },
+    {
+      "path": "current/final/source/app/tests/test_damage_flight_events.gd",
+      "sha256": "95c59820cbd1355fc26ccacb0fdb9a92840567a682a8503c659d5e7568ff6051",
+      "bytes": 24328,
+      "origin": "app\\tests\\test_damage_flight_events.gd",
+      "scope": "Selected final production source bytes, unchanged through final affected checks"
+    },
+    {
+      "path": "current/supporting-tests/test_ground_flight_events.gd",
+      "sha256": "c7ee67d1595cb7132703a7f8ac5d0db7bdde3d756dbf8c90b8cf85471e7c1487",
+      "bytes": 13325,
+      "origin": "app\\tests\\test_ground_flight_events.gd",
+      "scope": "Supporting regression source at retention; not every loaded application source"
+    },
+    {
+      "path": "current/supporting-tests/test_flight_statistics_detector.gd",
+      "sha256": "fc83209a7f15c1eb90c3f5503f02bc28a9012e884b9701c838cc7737d15fd7d2",
+      "bytes": 19478,
+      "origin": "app\\tests\\test_flight_statistics_detector.gd",
+      "scope": "Supporting regression source at retention; not every loaded application source"
+    },
+    {
+      "path": "current/supporting-tests/test_flight_statistics_lifecycle.gd",
+      "sha256": "9fb7668400b5f8b30d907aa2bec29d1eddd3f141980975e511824aa9e3b9eada",
+      "bytes": 9156,
+      "origin": "app\\tests\\test_flight_statistics_lifecycle.gd",
+      "scope": "Supporting regression source at retention; not every loaded application source"
+    },
+    {
+      "path": "current/supporting-tests/test_ground_accident_session.gd",
+      "sha256": "e6bf4f4f07097e5b83f9ac7680845ed62cd468600e7df614c97f026afd3006a4",
+      "bytes": 10258,
+      "origin": "app\\tests\\test_ground_accident_session.gd",
+      "scope": "Supporting regression source at retention; not every loaded application source"
+    },
+    {
+      "path": "current/supporting-tests/test_gear_damage.gd",
+      "sha256": "47b8c856446c88b33bd3bb9ca585facc62d3525a29497ce9825d5864e6701669",
+      "bytes": 19864,
+      "origin": "app\\tests\\test_gear_damage.gd",
+      "scope": "Supporting regression source at retention; not every loaded application source"
+    },
+    {
+      "path": "current/supporting-tests/test_flight_statistics_resets.gd",
+      "sha256": "89fa7994f0a98703b83559a236cf56a62ef68433ca3f6c39fde5ba061a813742",
+      "bytes": 11374,
+      "origin": "app\\tests\\test_flight_statistics_resets.gd",
+      "scope": "Supporting regression source at retention; not every loaded application source"
+    },
+    {
+      "path": "current/supporting-tests/test_flight_statistics_store.gd",
+      "sha256": "60e01bce85787821020d10ae05787c946a47fa7690c7315065a9a0852c832be2",
+      "bytes": 17298,
+      "origin": "app\\tests\\test_flight_statistics_store.gd",
+      "scope": "Supporting regression source at retention; not every loaded application source"
+    },
+    {
+      "path": "current/supporting-tests/test_flight_statistics_writer.gd",
+      "sha256": "a3e9c935513ebe2118ea3e328d0fe60723f6623ed5a79a9a359b5734851b0295",
+      "bytes": 5537,
+      "origin": "app\\tests\\test_flight_statistics_writer.gd",
+      "scope": "Supporting regression source at retention; not every loaded application source"
+    },
+    {
+      "path": "current/promotion-hashes.json",
+      "sha256": "f6cd4e07e77fb8ac0844430f236a553c48d4c42ee8d530b163320f51d67f7db4",
+      "bytes": 5312,
+      "origin": "tmp\\gp16-damage-events\\promotion-hashes.json",
+      "scope": "Approved minimal promotions and exact source identity transitions"
+    },
+    {
+      "path": "current/promotion.patch",
+      "sha256": "99dcfc162e5f7f8db07b9a5f81ae3e75f1707630fde3d6661635e604de908b0d",
+      "bytes": 54614,
+      "origin": "tmp\\gp16-damage-events\\promotion.patch",
+      "scope": "Approved minimal promotions and exact source identity transitions"
+    },
+    {
+      "path": "current/coverage.patch",
+      "sha256": "439e5331b7dce24ae6a096ec111444c610a481fa17d8520f775e0f56afbfa5c2",
+      "bytes": 1871,
+      "origin": "tmp\\gp16-damage-events\\coverage.patch",
+      "scope": "Approved minimal promotions and exact source identity transitions"
+    },
+    {
+      "path": "current/evidence-test.patch",
+      "sha256": "3e8a698a32ec06f6ff55f9b7e34419e4e3ee569bea8f73dad5876eeabc5a97f9",
+      "bytes": 2702,
+      "origin": "tmp\\gp16-damage-events\\evidence-test.patch",
+      "scope": "Approved minimal promotions and exact source identity transitions"
+    },
+    {
+      "path": "current/final/accepted-batches.json",
+      "sha256": "1acd479e983159aeb64e87671f9cc0593f1c622ff48e09b1e557e3c09ca1a03a",
+      "bytes": 20672,
+      "origin": "tmp\\damage-flight-events-2899727\\accepted-batches.json",
+      "scope": "Actual light/heavy/hard and first asymmetric kernel-source/shared-bus packets from final197-check run"
+    }
+  ]
+}

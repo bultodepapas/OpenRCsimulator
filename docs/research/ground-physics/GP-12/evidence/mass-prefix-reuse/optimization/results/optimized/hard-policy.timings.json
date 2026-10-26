@@ -1,0 +1,15 @@
+{
+	"accepted_substeps": null,
+	"calls": {},
+	"case": "hard",
+	"elapsed_us": 390263,
+	"exclusive_us": {},
+	"inclusive_us": {},
+	"mass_prepare_us": 3686,
+	"note": "Diagnostic wrapper timings include overhead; no native or performance qualification",
+	"ok": false,
+	"policy": true,
+	"reason": "complete split n/2n accuracy needs a finer path beyond the budget",
+	"serialized_bytes": {},
+	"status": "error_control_exhausted"
+}

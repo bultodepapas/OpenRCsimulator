@@ -1,0 +1,34 @@
+{
+  "format": "openrc-independent-weather-publication-review v1",
+  "complete": true,
+  "findings": "No ordinary-consumer regression or additional scoped owner field guard required in reviewed draft",
+  "checked_receipt": "tmp/gp-weather-independent-review/checks/consumer-combinations-29uvcbg9/report.json",
+  "checks": 19,
+  "reviewed_sources": [
+    {
+      "path": "tmp/gp-weather-publication/flight_session.gd",
+      "sha256": "cb37851164451a4f04d019775ebce64041c59bfe55f03786821b983f8cc1a64b"
+    },
+    {
+      "path": "tmp/gp-weather-publication/flight_session.before.gd",
+      "sha256": "9b6de6144a1af3c8bf042e04173b3485196954da94b40fdd73c9f309802d0802"
+    },
+    {
+      "path": "tmp/gp-weather-publication/test_weather_publication.gd",
+      "sha256": "11bb295e870e1f393ba74db4cdb69c6e1d80e94703beb12c5975821362b18a12"
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490"
+    }
+  ],
+  "covered": [
+    "successive pending selections retain physical frame and commit only one generation on explicit reset",
+    "old available context then explicit unavailable pending context",
+    "second selection cannot rewrite closed original footer",
+    "detached closing/config accessor copies protect ordinary consumers",
+    "pause observer Session weather reentry refused without vetoing accepted pending selection or publishing ticks/credit"
+  ],
+  "scope": "existing declared Simulation state/model publication guard and Session transition reentry; no arbitrary Session/WeatherField internal sandbox claim",
+  "production_edits": []
+}

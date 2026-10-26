@@ -1,0 +1,11 @@
+{
+  "app/physics/aircraft_ground_damage.gd": "3424b5edeb019d5a177a32774bb1436950ef92a619198ad1767b30253831f9b1",
+  "app/statistics/flight_event.gd": "bcc16fb3c9c4c55aac12394d8495744386acd426798d479c8fd00302d769f063",
+  "app/statistics/fixed_wing_adapter.gd": "1cb6b345d90737da632c04252cb819f11ae758f7fc05a663a5dea55fa3c32525",
+  "app/statistics/detector.gd": "fa700829e8bcbb120379b50286cb761c78c09f171beb04bbc0e108aa4ebe0203",
+  "app/statistics/rules.gd": "ff911bea727dd43a5b9ae7a459118c9a6c58bd86d58d78cf29666378f25f328f",
+  "app/statistics/service.gd": "46d54ae6e84ec5d92b5d325cd24cd94ddc7ec47c63647c46f122d73ded4081d0",
+  "app/tests/test_aircraft_ground_damage.gd": "ca51590a5f4ebbdb1f90e7fb129f1d76d14a3e22702dcac595063004f84e6a58",
+  "app/tests/test_ground_accidents.gd": "8ee935c4809bfbbb159c8ea11deba184fbe444f4ea4c8a07a29b20e6c34b4229",
+  "app/tests/test_damage_flight_events.gd": "0d84e0d48b45ab346e377edaa08c56e32fdfc0f9373988bc61b6b5bf3d62da14"
+}

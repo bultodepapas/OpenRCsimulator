@@ -208,6 +208,7 @@ func _ingest(events: Array) -> void:
 				crash.metadata.activity_generation = _generation
 				for key: String in ["accident_id", "event_id", "rules_version", "kind"]:
 					if event.has(key): crash.metadata[key] = event[key]
+				if event.has("damage_summary"): _copy_damage_summary(crash.metadata, event.damage_summary)
 				data.records.append(crash)
 		_mark_dirty()
 		_flush_requested = true
@@ -228,6 +229,11 @@ func _append_semantic_event(event: Dictionary) -> void:
 		event_id = event.event_id, accident_id = event.accident_id, terminal = event.terminal,
 		rules_version = event.rules_version, contact_episode_id = event.contact_episode_id,
 		revision = event.revision, measurements = event.measurements.duplicate(true)}
+	if int(event.version) == FlightEvent.DAMAGE_VERSION:
+		compact.law_identity = event.law_identity
+		compact.contact_ids = event.contact_ids.duplicate()
+		compact.component_ids = event.component_ids.duplicate()
+		compact.physical_evidence = event.physical_evidence.duplicate(true)
 	_append_event(compact)
 
 
@@ -241,7 +247,7 @@ func _append_event(event: Dictionary) -> void:
 		return
 	var entry: Dictionary = {}
 	for key: String in ["type", "kind", "outcome", "reason", "tick", "first_contact_tick", "start_kind",
-			"accident_id", "event_id", "rules_version", "terminal", "ground", "contact_episode_id", "revision", "measurements"]:
+			"accident_id", "event_id", "rules_version", "terminal", "ground", "contact_episode_id", "revision", "measurements", "law_identity", "contact_ids", "component_ids", "physical_evidence"]:
 		if event.has(key): entry[key] = event[key]
 	# Shared semantic detail contains longer identities and measurements. Preserve
 	# the existing store's byte contract as well as the 128-event count limit.
@@ -578,3 +584,32 @@ func close() -> void:
 
 func _exit_tree() -> void:
 	close()
+
+## Keep bounded first-failure detail on the existing M7 record even before a
+## flight timeline exists. This is not a separate per-accident archive.
+func _copy_damage_summary(metadata: Dictionary, values: Variant) -> void:
+	if typeof(values) != TYPE_ARRAY or values.size() > 16: return
+	for record: Variant in values:
+		if typeof(record) != TYPE_DICTIONARY or typeof(record.get("physical_evidence")) != TYPE_DICTIONARY \
+			or typeof(record.get("measurements")) != TYPE_DICTIONARY \
+			or typeof(record.measurements.get("sample_interval_s")) not in [TYPE_FLOAT, TYPE_INT] \
+			or not FlightEvent._integer(record.get("accepted_tick")): return
+		if not FlightEvent.valid_damage_record(record, int(record.accepted_tick), record.physical_evidence.get("source_generation_id"),
+			record.physical_evidence.get("response_identity"), float(record.measurements.sample_interval_s)): return
+	var retained: Array = []
+	var omitted := 0
+	for record: Dictionary in values:
+		var candidate := metadata.duplicate(true)
+		var expanded := retained.duplicate(true)
+		expanded.append(record.duplicate(true))
+		candidate.component_damage = expanded
+		candidate.component_damage_omitted = omitted
+		if var_to_bytes(candidate).size() > StoreSchema.MAX_METADATA_BYTES - 256:
+			omitted += 1
+		else: retained = expanded
+	var candidate := metadata.duplicate(true)
+	candidate.component_damage = retained
+	candidate.component_damage_omitted = omitted
+	if var_to_bytes(candidate).size() <= StoreSchema.MAX_METADATA_BYTES - 256:
+		metadata.component_damage = retained
+		metadata.component_damage_omitted = omitted

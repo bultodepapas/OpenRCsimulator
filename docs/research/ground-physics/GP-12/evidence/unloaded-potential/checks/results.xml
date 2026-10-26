@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="3" failures="0" errors="0" skipped="0" time="8.640000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_accuracy.gd [accuracy-y5mvv0f3]" time="2.516000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: accuracy-y5mvv0f3/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_unloaded.gd [policy-4g639fc8]" time="3.437000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: policy-4g639fc8/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_step.gd [step-yvtzsjmf]" time="2.687000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: step-yvtzsjmf/report.json and engine.log</system-out></testcase></testsuite>

@@ -1,0 +1,7 @@
+{
+  "complete": false,
+  "exit_code": 1,
+  "capture_started": false,
+  "reason": "stale wrapper cardinality expected9, current catalog11",
+  "fix": "use nonempty unique live catalog IDs; no membership hardcode"
+}

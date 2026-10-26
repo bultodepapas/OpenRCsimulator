@@ -16,6 +16,9 @@ const Exposure := preload("res://render/world/exposure.gd")
 const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
 const FrameSamples := preload("res://render/frame_samples.gd")
 const ViewportColor := preload("res://render/viewport_color.gd")
+const StockSmoke := preload("res://render/smoke/stock_profile.gd")
+const Landscapes := preload("res://landscapes/catalog.gd")
+const WorkloadAudit := preload("lighting_workload_audit.gd")
 
 const DEFAULT_FPS := 60
 const DEFAULT_WIDTH := 1920
@@ -24,6 +27,8 @@ const MAX_CRASH_PREROLL_S := 30.0
 const CRASH_CLIP_APPROACH_FRAMES := 120
 const CRASH_CLIP_POST_IMPACT_FRAMES := 360
 const CRASH_RESTART_AFTER_IMPACT_FRAMES := 240
+const AUDIO_TEARDOWN_TIMEOUT_USEC := 2_000_000
+const AUDIO_MIX_AGE_JITTER_USEC := 2_000
 
 var _options: Dictionary = {}
 var _main: Node
@@ -57,6 +62,12 @@ var _performance_done := false
 var _performance_exit := -1
 var _performance_elapsed_s := 0.0
 var _performance_budget_samples: Array[Dictionary] = []
+var _lighting_profile_input_path := ""
+var _lighting_profile_input_sha256 := ""
+var _lighting_profile_data: Dictionary = {}
+var _lighting_smoke_preset := ""
+var _workload_audit: RefCounted
+var _workload_audit_usec := 0
 
 
 func _initialize() -> void:
@@ -69,6 +80,20 @@ func _initialize() -> void:
 func _run() -> void:
 	_options = _parse_options(OS.get_cmdline_user_args())
 	_realtime = _options.has("frametimes")
+	var lighting_options := validate_lighting_profile_options(_options)
+	if not bool(lighting_options.get("ok", false)):
+		push_error(str(lighting_options.get("error", "Invalid lighting profile options.")))
+		quit(2)
+		return
+	if _options.has("lighting-profile"):
+		var profile_input := read_lighting_profile_file(str(_options["lighting-profile"]))
+		if not bool(profile_input.get("ok", false)):
+			push_error("Lighting profile refused: " + str(profile_input.get("error", "invalid input")))
+			quit(2)
+			return
+		_lighting_profile_data = profile_input.profile
+		_lighting_profile_input_path = str(_options["lighting-profile"]).replace("\\", "/").simplify_path()
+		_lighting_profile_input_sha256 = str(profile_input.sha256)
 	# Mobile world rendering needs HDR. The pinned engine's Movie Maker corrupts
 	# RGBAH-to-sRGB conversion; use this harness's correctly encoded PNG sequence.
 	if RenderingServer.get_current_rendering_method() == "mobile" and not Engine.get_write_movie_path().is_empty():
@@ -84,6 +109,10 @@ func _run() -> void:
 		push_error("--out-dir must be an absolute path")
 		quit(2)
 		return
+	if _options.has("lighting-profile") and lighting_profile_collides_with_manifest(_lighting_profile_input_path, _out_dir):
+		push_error("--lighting-profile must not point to the capture manifest path.")
+		quit(2)
+		return
 	var directory_error := DirAccess.make_dir_recursive_absolute(_out_dir)
 	if directory_error != OK:
 		push_error("Could not create capture directory: %s (%s)" % [_out_dir, error_string(directory_error)])
@@ -97,6 +126,8 @@ func _run() -> void:
 	if _realtime and not _validate_performance_options():
 		quit(2)
 		return
+	if str(_options.get("lighting-workload-audit", "off")) == "on":
+		_workload_audit = WorkloadAudit.new()
 	_sample_every = maxi(1, int(_options.get("sample-every", 1)))
 	_save_images = not OS.get_cmdline_user_args().has("--movie-only")
 	if _realtime:
@@ -121,29 +152,21 @@ func _run() -> void:
 	_main.interactive_start = true
 	_main.aircraft_id = str(_options.get("aircraft", "jensen-das-ugly-stik-60"))
 	# Build the same validated, detached presentation snapshot used by Workshop trials.
-	# This capture-only option never saves a variant or changes aircraft physics.
-	if _options.has("lighting-preset"):
-		var lighting := Presentation.LightingProfile.preset(str(_options["lighting-preset"]))
-		if str(_options["lighting-preset"]) == "off":
+	# Preset and data-only profile capture options never save a variant or change physics.
+	if _options.has("lighting-preset") or _options.has("lighting-profile"):
+		var lighting: Dictionary = _lighting_profile_data.duplicate(true) if _options.has("lighting-profile") \
+			else Presentation.LightingProfile.preset(str(_options["lighting-preset"]))
+		if _options.has("lighting-preset") and str(_options["lighting-preset"]) == "off":
 			lighting = Presentation.LightingProfile.defaults()
 			lighting.selection = "disabled"
-		var described := Customization.describe(_main.aircraft_id)
-		if lighting.is_empty() or not described.get("ok", false):
-			push_error("Capture requires a known lighting preset and an admitted aircraft companion.")
+		var prepared := freeze_lighting_trial(_main.aircraft_id, lighting, str(_options.get("lighting-smoke", "off")))
+		if not prepared.get("ok", false):
+			push_error("Lighting capture trial refused: " + str(prepared.get("errors", [])))
 			_main.free()
 			quit(2)
 			return
-		var profile := Presentation.defaults(described.bindings)
-		profile.lighting = lighting
-		var frozen := Trial.freeze({"base_id": _main.aircraft_id,
-			"base_bytes": FileAccess.get_file_as_bytes(Catalog.entry(_main.aircraft_id).data),
-			"recipe": {}, "presentation_profile": profile})
-		if not frozen.get("ok", false):
-			push_error("Lighting capture trial refused: " + str(frozen.get("errors", [])))
-			_main.free()
-			quit(2)
-			return
-		_main.workshop_trial = frozen
+		_main.workshop_trial = prepared.trial
+		_lighting_smoke_preset = str(prepared.smoke_preset)
 	_main.start_choice = str(_options.get("start", "airborne"))
 	if _shot == "lighting-pilot":
 		_main.camera_preferences = CameraSettings.normalized({
@@ -165,7 +188,7 @@ func _run() -> void:
 		_main.user_args.append("--alt=" + str(_options.alt))
 	if _options.has("sky"):
 		_main.user_args.append("--sky=" + str(_options.sky))
-	for key: String in ["wind-speed", "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period", "gust-delay", "time_of_day"]:
+	for key: String in ["wind-speed", "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period", "gust-delay", "time_of_day", "landscape"]:
 		if _options.has(key):
 			_main.user_args.append("--%s=%s" % [key, str(_options[key])])
 	if _realtime:
@@ -251,9 +274,76 @@ func _run() -> void:
 		_director.free()
 	if is_instance_valid(_main):
 		_main.queue_free()
-	await process_frame
-	await process_frame
+	var teardown_error: String = await _wait_for_audio_teardown()
+	if not teardown_error.is_empty():
+		_failure = teardown_error if _failure.is_empty() else _failure + "\n" + teardown_error
+		push_error(teardown_error)
+		_mark_manifest_incomplete(teardown_error)
 	quit(1 if not _failure.is_empty() else 0)
+
+
+## Main's exit hooks stop audio; the driver must mix before main-thread playback cleanup.
+func _wait_for_audio_teardown() -> String:
+	var started_usec := Time.get_ticks_usec()
+	var deadline_usec := started_usec + AUDIO_TEARDOWN_TIMEOUT_USEC
+	while is_instance_valid(_main):
+		if Time.get_ticks_usec() >= deadline_usec:
+			return "Main scene did not exit before the audio teardown watchdog expired."
+		await process_frame
+	# Keep one post-stop baseline: fast Movie Maker frames can each be shorter
+	# than the jitter tolerance. Cumulative elapsed time still exposes a new mix.
+	var before := _audio_mix_age_sample()
+	var waited_frames := 0
+	while Time.get_ticks_usec() < deadline_usec:
+		await process_frame
+		waited_frames += 1
+		var after := _audio_mix_age_sample()
+		if audio_mix_reset_between(before, after):
+			# Let a subsequent AudioServer.update release the stopped playback list.
+			await process_frame
+			if Time.get_ticks_usec() >= deadline_usec:
+				break
+			print("FLIGHT_CAPTURE_AUDIO_DRAIN frames=", waited_frames + 1,
+				" wall_usec=", Time.get_ticks_usec() - started_usec)
+			return ""
+	return "No completed post-stop audio mix and cleanup were observed before the teardown watchdog expired."
+
+
+func _audio_mix_age_sample() -> Dictionary:
+	# This supported API locks the driver internally; never wrap it in AudioServer.lock().
+	var query_start_usec := Time.get_ticks_usec()
+	var age_usec := roundi(AudioServer.get_time_since_last_mix() * 1_000_000.0)
+	var query_end_usec := Time.get_ticks_usec()
+	return {"start_usec": query_start_usec, "end_usec": query_end_usec, "age_usec": age_usec}
+
+
+static func audio_mix_reset_between(previous: Dictionary, current: Dictionary) -> bool:
+	# A lower elapsed bound excludes query latency from apparent clock resets.
+	var elapsed_lower_bound_usec := maxi(int(current.start_usec) - int(previous.end_usec), 0)
+	return int(current.age_usec) + AUDIO_MIX_AGE_JITTER_USEC < int(previous.age_usec) + elapsed_lower_bound_usec
+
+
+func _mark_manifest_incomplete(teardown_error: String) -> void:
+	var manifest_path := _out_dir.path_join("manifest.json")
+	var input_file := FileAccess.open(manifest_path, FileAccess.READ)
+	if input_file == null:
+		push_error("Could not read the manifest after audio teardown failure.")
+		return
+	var parsed: Variant = JSON.parse_string(input_file.get_as_text())
+	input_file.close()
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_error("Could not parse the manifest after audio teardown failure.")
+		return
+	var manifest: Dictionary = parsed
+	manifest.complete = false
+	var existing_error := str(manifest.get("capture_error", ""))
+	manifest.capture_error = teardown_error if existing_error.is_empty() else existing_error + "\n" + teardown_error
+	var output_file := FileAccess.open(manifest_path, FileAccess.WRITE)
+	if output_file == null:
+		push_error("Could not update the manifest after audio teardown failure.")
+		return
+	output_file.store_string(JSON.stringify(manifest, "\t"))
+	output_file.close()
 
 
 ## Reuses Main's monotonic collector. This mode never invokes Movie Maker or image readback.
@@ -338,11 +428,22 @@ func _measure_realtime() -> void:
 			last_progress_usec = now_usec
 		last_tick = sim.tick
 		_frame_count += 1
+		if _workload_audit != null:
+			var audit_started_usec := Time.get_ticks_usec()
+			var audit_rig: Node = _main.get("_rgb_lighting")
+			if not is_instance_valid(audit_rig) or not _workload_audit.record(audit_rig.budget_info(), int(sim.tick), _frame_count - 1, _performance_elapsed_s):
+				_failure = "Lighting workload audit failed: " + str(_workload_audit.report().get("failure", "missing rig"))
+				push_error(_failure)
+				if _main._frametimes_active:
+					_main._finish_frame_time(1)
+				break
+			_workload_audit_usec += Time.get_ticks_usec() - audit_started_usec
 		# One bounded budget sample per wall second; Main owns all per-frame timing metrics.
 		if now_usec >= next_budget_usec:
 			var rig: Node = _main.get("_rgb_lighting")
 			_performance_budget_samples.append({"wall_s": _performance_elapsed_s, "tick": sim.tick,
-				"budget": rig.budget_info() if is_instance_valid(rig) else {}, "world_exposure": Exposure.last})
+				"budget": rig.budget_info() if is_instance_valid(rig) else {}, "world_exposure": Exposure.last,
+				"smoke": _main._smoke_evidence()})
 			next_budget_usec = now_usec + 1000000
 	if _performance_exit != OK and _failure.is_empty():
 		_failure = "Frame-time collector failed with exit code %d." % _performance_exit
@@ -435,7 +536,7 @@ func _capture_frames(count: int, preroll: int) -> void:
 
 
 func _lighting_capture_requested() -> bool:
-	return _options.has("lighting-preset") or _shot in ["lighting-pass", "lighting-pilot"]
+	return _options.has("lighting-preset") or _options.has("lighting-profile") or _shot in ["lighting-pass", "lighting-pilot"]
 
 
 func _director_frame_record_count() -> int:
@@ -482,6 +583,9 @@ func _ensure_lighting_frame_evidence(frame_index: int, record_count_before: int)
 			return _lighting_capture_failure("Frame %d records world_exposure inconsistent with the live world exposure." % frame_index)
 	else:
 		record["world_exposure"] = actual_exposure
+	# The director's older `smoke` field describes legacy exhaust only. Preserve it,
+	# and expose the production profile renderer separately for RGB smoke workloads.
+	record["smoke_effects"] = _main._smoke_evidence()
 	records[record_index] = record
 	_director.set("frame_records", records)
 	return true
@@ -494,6 +598,7 @@ func _lighting_capture_failure(message: String) -> bool:
 
 
 func _write_manifest(ok: bool) -> void:
+	var workload_audit_script: Script = WorkloadAudit
 	var session: Node = _main.session if _main != null else null
 	var current_report: Dictionary = _main._accident_incident.report.duplicate(true) if _main != null and _main._accident_incident != null else {}
 	var report: Dictionary = _preserved_report if not _preserved_report.is_empty() else current_report
@@ -507,6 +612,10 @@ func _write_manifest(ok: bool) -> void:
 		complete = ok and _failure.is_empty(),
 		shot = _shot,
 		aircraft_id = str(_main.aircraft_id) if _main != null else "",
+		landscape = {"requested": str(_options.get("landscape", Landscapes.DEFAULT_ID)),
+			"resolved": str(_main.landscape_id) if _main != null else "",
+			"field_path": str(_main.field_path) if _main != null else "",
+			"field_sha256": FileAccess.get_sha256(_main.field_path) if _main != null and FileAccess.file_exists(_main.field_path) else ""},
 		width = _width,
 		height = _height,
 		fps = 0 if _realtime else _fps,
@@ -516,7 +625,8 @@ func _write_manifest(ok: bool) -> void:
 		image_sequence_enabled = _save_images,
 		movie_file = str(_options.get("movie-file", "")),
 		movie_writer_lead_frames_expected = lead_frames,
-		movie_writer_cleanup_frames_expected = 1,
+		movie_writer_cleanup_frames_expected = -1,
+		movie_writer_cleanup_frame_policy = "Variable: observe post-stop audio mix and cleanup; measure the encoded file's actual frame count.",
 		movie_impact_frame_estimate = impact_movie_frame,
 		movie_eight_second_clip_start_frame_estimate = clip_start_frame,
 		movie_eight_second_clip_end_frame_estimate_exclusive = impact_movie_frame + CRASH_CLIP_POST_IMPACT_FRAMES if impact_movie_frame >= 0 else -1,
@@ -533,7 +643,10 @@ func _write_manifest(ok: bool) -> void:
 			"quality": LightingPolicy.quality, "reduced_flashes": LightingPolicy.reduced_flashes,
 			"show_vfx": LightingPolicy.show_vfx, "engine_time_scale": Engine.time_scale,
 			"movie_writer_path": Engine.get_write_movie_path(),
-			"qualification": "unverified: requires matching command receipt, uncontended repeated runs and acceptance review",
+			"qualification": "ineligible: per-frame workload audit adds observer cost" if _workload_audit != null else "unverified: requires matching command receipt, uncontended repeated runs and acceptance review",
+			"workload_audit": _workload_audit.report() if _workload_audit != null else {"enabled": false},
+			"workload_audit_observer_usec": _workload_audit_usec,
+			"workload_audit_source_sha256": FileAccess.get_sha256(workload_audit_script.resource_path),
 			"timing_scope": "Instrumented Main FrameSamples intervals; sample duration is report.actual_sample_s. Manifest seconds covers this harness loop, including warmup.",
 			"command_validation": "Qualification requires the checked runner command with no --fixed-fps; Godot removes processed flags from OS.get_cmdline_args()."},
 		physics_ticks_per_second = Engine.physics_ticks_per_second,
@@ -547,7 +660,11 @@ func _write_manifest(ok: bool) -> void:
 		world_conditions = WorldConditions.resolve(),
 		field_world_lighting = bool(_main._field_world_lighting) if _main != null else false,
 		lighting_config = _main.lighting_config.duplicate(true) if _main != null else {},
-		lighting_preset = str(_options.get("lighting-preset", "inherit")),
+		lighting_preset = str(_options.get("lighting-preset", "profile-file" if _options.has("lighting-profile") else "inherit")),
+		lighting_profile_input_path = _lighting_profile_input_path,
+		lighting_profile_input_sha256 = _lighting_profile_input_sha256,
+		lighting_smoke = {"requested": str(_options.get("lighting-smoke", "off")),
+			"preset": _lighting_smoke_preset, "at_report": _main._smoke_evidence() if _main != null else {}},
 		capture_script_sha256 = FileAccess.get_sha256(get_script().resource_path),
 		director_script_sha256 = FileAccess.get_sha256(_director.get_script().resource_path) if is_instance_valid(_director) else "",
 		main_source_sha256 = FileAccess.get_sha256("res://main.gd"),
@@ -600,3 +717,99 @@ func _parse_options(arguments: PackedStringArray) -> Dictionary:
 		if pair.size() == 2:
 			options[pair[0]] = pair[1]
 	return options
+
+
+static func validate_lighting_profile_options(options: Dictionary) -> Dictionary:
+	if str(options.get("lighting-workload-audit", "off")) not in ["off", "on"]:
+		return {"ok": false, "error": "--lighting-workload-audit must be off or on."}
+	if options.has("lighting-workload-audit") and not options.has("frametimes"):
+		return {"ok": false, "error": "--lighting-workload-audit requires the real-time --frametimes route."}
+	if options.has("landscape") and (typeof(options.landscape) != TYPE_STRING or not Landscapes.has(options.landscape)):
+		return {"ok": false, "error": "--landscape must name a registered landscape: " + ", ".join(Landscapes.ids())}
+	for companion_option: String in ["companions", "companions-seed", "companions-record"]:
+		if options.has(companion_option):
+			return {"ok": false, "error": "This capture route does not admit flight companions; a supplied companion option cannot be ignored as a full-scene workload."}
+	if str(options.get("lighting-smoke", "off")) not in ["off", "stock"]:
+		return {"ok": false, "error": "--lighting-smoke must be off or stock."}
+	if options.has("lighting-smoke") and not options.has("lighting-preset") and not options.has("lighting-profile"):
+		return {"ok": false, "error": "--lighting-smoke requires an explicit lighting preset or profile."}
+	if options.has("lighting-profile") and options.has("lighting-preset"):
+		return {"ok": false, "error": "Use either --lighting-profile or --lighting-preset, not both."}
+	if options.has("lighting-profile") and options.has("frametimes"):
+		return {"ok": false, "error": "--lighting-profile is supported for offline captures only, not --frametimes."}
+	if options.has("lighting-profile") and str(options.get("lighting-profile", "")).strip_edges().is_empty():
+		return {"ok": false, "error": "--lighting-profile requires an absolute JSON file path."}
+	return {"ok": true, "error": ""}
+
+
+## Uses stock authored outlets through the ordinary frozen Workshop profile, without a second smoke system.
+static func freeze_lighting_trial(aircraft_id: String, lighting: Dictionary, smoke_mode := "off") -> Dictionary:
+	if smoke_mode not in ["off", "stock"]:
+		return {"ok": false, "errors": ["--lighting-smoke must be off or stock."]}
+	var described := Customization.describe(aircraft_id)
+	if lighting.is_empty() or not bool(described.get("ok", false)):
+		return {"ok": false, "errors": ["Capture requires validated lighting and an admitted aircraft companion."]}
+	var profile := Presentation.defaults(described.bindings)
+	profile.lighting = lighting.duplicate(true)
+	var payload := {"base_id": aircraft_id,
+		"base_bytes": FileAccess.get_file_as_bytes(Catalog.entry(aircraft_id).data),
+		"recipe": {}, "presentation_profile": profile}
+	var frozen := Trial.freeze(payload)
+	if not bool(frozen.get("ok", false)):
+		return frozen
+	if smoke_mode == "off":
+		return {"ok": true, "trial": frozen, "smoke_preset": ""}
+	var propulsion: Dictionary = frozen.data.model.propulsion
+	var stock := StockSmoke.for_aircraft(described.bindings, propulsion)
+	if stock.is_empty() or stock.get("smoke", []).is_empty():
+		return {"ok": false, "errors": ["This aircraft has no supported stock smoke profile; smoke workload was not substituted."]}
+	profile.smoke = stock.smoke.duplicate(true)
+	profile.visual_seed = stock.visual_seed
+	payload.presentation_profile = profile
+	var with_smoke := Trial.freeze(payload)
+	if not bool(with_smoke.get("ok", false)):
+		return with_smoke
+	if with_smoke.identity != frozen.identity or with_smoke.data != frozen.data:
+		return {"ok": false, "errors": ["Adding stock smoke changed the physical trial; capture refused."]}
+	return {"ok": true, "trial": with_smoke, "smoke_preset": StockSmoke.preset_id(described.bindings, propulsion)}
+
+
+static func read_lighting_profile_file(path: String) -> Dictionary:
+	if path.is_empty() or not path.is_absolute_path():
+		return {"ok": false, "error": "--lighting-profile must be an absolute path."}
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {"ok": false, "error": "lighting profile file could not be opened."}
+	var byte_count := file.get_length()
+	if byte_count <= 0:
+		file.close()
+		return {"ok": false, "error": "lighting profile file is empty."}
+	if byte_count > Presentation.LightingProfile.MAX_PROFILE_BYTES:
+		file.close()
+		return {"ok": false, "error": "lighting profile file exceeds %d bytes." % Presentation.LightingProfile.MAX_PROFILE_BYTES}
+	var bytes := file.get_buffer(byte_count)
+	file.close()
+	if bytes.size() != byte_count:
+		return {"ok": false, "error": "lighting profile file could not be read completely."}
+	var source := bytes.get_string_from_utf8()
+	if source.to_utf8_buffer() != bytes:
+		return {"ok": false, "error": "lighting profile file is not valid UTF-8."}
+	var parser := JSON.new()
+	if parser.parse(source) != OK:
+		return {"ok": false, "error": "lighting profile JSON is invalid: %s" % parser.get_error_message()}
+	var checked: Dictionary = Presentation.LightingProfile.validate(parser.data)
+	if not bool(checked.get("ok", false)):
+		return {"ok": false, "error": "lighting profile is invalid: %s" % "; ".join(PackedStringArray(checked.get("errors", [])))}
+	var hashing := HashingContext.new()
+	if hashing.start(HashingContext.HASH_SHA256) != OK or hashing.update(bytes) != OK:
+		return {"ok": false, "error": "lighting profile input hash could not be computed."}
+	return {"ok": true, "profile": checked.profile, "sha256": hashing.finish().hex_encode()}
+
+
+static func lighting_profile_collides_with_manifest(profile_path: String, out_dir: String) -> bool:
+	var input_path := profile_path.replace("\\", "/").simplify_path()
+	var manifest_path := out_dir.path_join("manifest.json").replace("\\", "/").simplify_path()
+	if OS.get_name() == "Windows":
+		input_path = input_path.to_lower()
+		manifest_path = manifest_path.to_lower()
+	return input_path == manifest_path

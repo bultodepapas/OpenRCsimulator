@@ -1,0 +1,97 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b9ecaaf7-8b44-45b1-b8ad-86bb715d4f4d",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T17:02:49.286166+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-restore-transaction\\checks\\font-import-02\\godot-86sk2srx\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-restore-transaction\\checks\\font-import-02\\godot-86sk2srx\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 4294967295,
+  "complete": true,
+  "counts": {
+    "error": 6,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1,
+      "message": "Failed to open 'C:/DEVELOPMENT/OpenRCsimulator/app/native/ground_vehicle/~openrc_ground_vehicle.dll'.",
+      "context": [
+        "   at: copy (core/io/dir_access.cpp:426)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Error copying library: C:/DEVELOPMENT/OpenRCsimulator/app/native/ground_vehicle/openrc_ground_vehicle.dll",
+      "context": [
+        "   at: open_dynamic_library (platform/windows/os_windows.cpp:500)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Can't open GDExtension dynamic library: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.",
+      "context": [
+        "   at: open_library (core/extension/gdextension.cpp:809)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Error loading extension: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.",
+      "context": [
+        "   at: load_extensions (core/extension/gdextension_manager.cpp:339)",
+        "Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1009,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[   8% ] reimport | flower_empodium_a_nor_gl_1k.jpg",
+        "[   8% ] reimport | flower_empodium_a_base_color_alpha_1k.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1095,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  29% ] reimport | ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png",
+        "[  29% ] reimport | 9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 47.187,
+  "log_bytes": 104743,
+  "log_sha256": "54b45f210e58bf111f4c2a75c192aa857110541633b200b43bdc25fbff2ed019"
+}

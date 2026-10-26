@@ -1,0 +1,32 @@
+{
+  "format": "openrc-mass-prefix-promotion-v1",
+  "review_report_sha256": "822b14a7b259416d5e64e94fa4ec1f9427fd14e877d68f2ee004d8f103a06c4c",
+  "payload": [
+    {
+      "target": "app/physics/contact_assembly_resolution.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/contact_assembly_resolution.gd",
+      "sha256": "406b89fbe2a4a09754bf10a2db07d2dfb87fb86038d807cb22396a175a4b9831",
+      "main_prehash": "3cb14049fee9f7976fdac0b88b1129c2aca20c686b53e15fc188a44856d53f45"
+    },
+    {
+      "target": "app/physics/aircraft_ground_impulse.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/aircraft_ground_impulse.gd",
+      "sha256": "5bacc4e47b74db1a7d30428a0d570d53330d4c8c0d80ce93b40953b9b27063ce",
+      "main_prehash": "76c279a9fb58ffcbf5f69861cc2e817dd4bd8300c052504495e76a28c2211f69"
+    },
+    {
+      "target": "app/physics/aircraft_ground_step.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/aircraft_ground_step.gd",
+      "sha256": "e042c5933dc501d244684cbe8a6480db30a3a7056629a6c014db979dba889b77",
+      "main_prehash": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366"
+    },
+    {
+      "target": "app/tests/test_contact_mass_prefix.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/tests/test_contact_mass_prefix.gd",
+      "sha256": "841cc3c701c2895492bfa5e9234ad27d0c121b0a649edb6955ed954884a99f98",
+      "main_prehash": null
+    }
+  ],
+  "test_sha256": "841cc3c701c2895492bfa5e9234ad27d0c121b0a649edb6955ed954884a99f98",
+  "staged_or_committed": false
+}

@@ -219,6 +219,10 @@ func configure(root: Node3D, profile: Dictionary) -> Dictionary:
 			var overlay := ShaderMaterial.new()
 			overlay.shader = SkinShader
 			overlay.set_shader_parameter("emission_map", composed_texture)
+			var root_u := Finish.uv(Vector3.ZERO, "wing").x
+			var side := -1.0 if zone_id.ends_with("left") else 1.0
+			var tip_u := Finish.uv(Vector3(side * float(Geometry.DATA.wing.span) * 0.5, 0.0, 0.0), "wing").x
+			overlay.set_shader_parameter("span_uv_range", Vector2(root_u, tip_u - root_u))
 			var clone := original.duplicate() as StandardMaterial3D
 			if clone == null:
 				_warnings.append("lighting skin target '%s' material could not be duplicated; opaque surface kept" % target_id)
@@ -233,8 +237,8 @@ func configure(root: Node3D, profile: Dictionary) -> Dictionary:
 				"original_override": previous_override,
 				"material": clone,
 				"overlay": overlay,
-				"last_color": Color.WHITE,
-				"color_set": false,
+				"pattern_signature": "",
+				"last_phase": -1.0,
 				"last_energy": 0.0,
 				"energy_set": false,
 			})
@@ -261,11 +265,11 @@ func advance(seconds: float, telemetry: Dictionary, mode: String, gain: float) -
 		var zone_id := str(binding.get("zone_id", ""))
 		var zone: Dictionary = _zones.get(zone_id, {})
 		var show := active_mode == "all" and user_gain > 0.0 and bool(zone.get("enabled", false))
-		var color := Color.WHITE
+		var resolved := {}
 		var energy := 0.0
 		if show:
 			var pattern: Dictionary = zone.get("pattern", {})
-			color = LightingPolicy.sample(pattern, clock, 0.5, sequence, zone_id)
+			resolved = LightingPolicy.resolve(pattern, clock, sequence, zone_id)
 			var reaction := LightingPolicy.reaction(zone.get("reactive", {}), telemetry)
 			var reaction_gain := _bounded_number(reaction.get("multiplier", 1.0), 1.0, 0.0, 2.0)
 			var zone_brightness := _bounded_number(zone.get("brightness", 1.0), 1.0, 0.0, 2.0)
@@ -277,11 +281,17 @@ func advance(seconds: float, telemetry: Dictionary, mode: String, gain: float) -
 				material.next_pass = overlay
 				_last_advance_writes += 1
 			_active_emission_passes += 1
-			var previous_color: Color = binding.get("last_color", Color.WHITE)
-			if not bool(binding.get("color_set", false)) or not previous_color.is_equal_approx(color):
-				overlay.set_shader_parameter("emission_color", color)
-				binding["last_color"] = color
-				binding["color_set"] = true
+			var signature := JSON.stringify(resolved.pattern)
+			if signature != str(binding.get("pattern_signature", "")):
+				var uniforms := LightingPolicy.Patterns.uniforms(resolved.pattern)
+				for parameter: String in ["pattern_settings", "pattern_extras", "palette"]:
+					overlay.set_shader_parameter(parameter, uniforms[parameter])
+				binding["pattern_signature"] = signature
+				_last_advance_writes += 3
+			var phase := float(resolved.phase)
+			if phase != float(binding.get("last_phase", -1.0)):
+				overlay.set_shader_parameter("pattern_phase", phase)
+				binding["last_phase"] = phase
 				_last_advance_writes += 1
 			var previous_energy := float(binding.get("last_energy", 0.0))
 			var energy_tolerance := maxf(0.000000001, maxf(absf(previous_energy), absf(energy)) * 0.001)

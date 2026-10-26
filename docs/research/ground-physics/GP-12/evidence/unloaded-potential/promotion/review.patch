@@ -1,0 +1,987 @@
+--- a/app/physics/aircraft_ground_accuracy.gd
++++ b/app/physics/aircraft_ground_accuracy.gd
+@@ -163,7 +163,7 @@
+ 		or r.sampled_peak_normal_n.size() != m or r.sampled_peak_times_s.size() != m:
+ 		return _failure("receipt sample/peak dimensions disagree")
+ 	if r.get("normal_sampling_method") != "accepted_substep_start_and_end_states_not_interval_maximum" \
+-		or r.get("quadrature_method") != "RK4_algebraic_stage_weights_not_damage_samples":
++		or r.get("quadrature_method") not in ["RK4_algebraic_stage_weights_not_damage_samples","RK4_external_work_piecewise_normal_loss_v1"]:
+ 		return _failure("receipt sampling/quadature contract differs")
+ 	var start: float = r.normal_sample_times_s[0]
+ 	if start < 0.0: return _failure("negative receipt clock")
+@@ -185,6 +185,10 @@
+ 	for i in m:
+ 		if r.sampled_peak_times_s[i] < 0.0 or r.sampled_peak_normal_n[i] != peak[i] or absf(r.sampled_peak_times_s[i] - peak_times[i]) > prepared.time_tolerance_s:
+ 			return _failure("sampled peak was altered or is not an accepted boundary sample")
++	if r.quadrature_method=="RK4_external_work_piecewise_normal_loss_v1":
++		var normal_loss:=_normal_loss_receipt(r,n)
++		if not normal_loss.ok:return normal_loss
++	elif r.has("normal_loss_policy"):return _failure("normal loss metadata requires its explicit method")
+ 	for key: String in WORK_KEYS + ["initial_mechanical_energy_j", "final_mechanical_energy_j", "energy_balance_residual_j", "maximum_piece_energy_residual_j", "absolute_impulse_sum"]:
+ 		if not _number(r.get(key)): return _failure("missing/nonfinite work or energy diagnostic")
+ 	for key: String in ["tangent_dissipation_j", "normal_dissipation_j", "maximum_piece_energy_residual_j", "absolute_impulse_sum"]:
+@@ -378,3 +382,47 @@
+ 
+ static func _failure(reason: String, id := LAW) -> Dictionary:
+ 	return {ok = false, admitted = false, identity = id, normalized_error = 0.0, reason = reason}
++
++
++## Structural accounting only. Callable owner qualification occurs in Step;
++## no receipt string, identity or count confers physical interval authority.
++static func _normal_loss_receipt(r:Dictionary,n:int)->Dictionary:
++	var policy:Variant=r.get("normal_loss_policy")
++	if not _keys(policy,["format","identity","pieces"]) or typeof(policy.format)!=TYPE_STRING or policy.format!="openrc-normal-loss-policy-receipt v1" \
++		or not _text(policy.identity,256) or not policy.pieces is Array or policy.pieces.size()!=n:
++		return _failure("invalid opted-in normal loss accounting")
++	var sum:=0.0
++	var maximum:=0.0
++	var support_identity:=""
++	var previous:Dictionary={}
++	for i in n:
++		var piece:Variant=policy.pieces[i]
++		if not piece is Dictionary or typeof(piece.get("method"))!=TYPE_STRING:return _failure("malformed normal loss piece")
++		var keys:=["method","normal_dissipation_j","energy_residual_j"]
++		if piece.method=="unloaded_support_potential_difference_v1":
++			keys.append_array(["start_support_potential_j","end_support_potential_j","support_identity","zero_force_rk_samples"])
++			if not _keys(piece,keys) or not _text(piece.support_identity,256) \
++				or typeof(piece.zero_force_rk_samples)!=TYPE_INT or piece.zero_force_rk_samples!=4 \
++				or not _number(piece.start_support_potential_j) or not _number(piece.end_support_potential_j) or not _number(piece.get("normal_dissipation_j")) \
++				or piece.start_support_potential_j<0.0 or piece.end_support_potential_j<0.0 \
++				or piece.get("normal_dissipation_j")!=piece.start_support_potential_j-piece.end_support_potential_j:
++				return _failure("unloaded piece potential/count algebra differs")
++			if not support_identity.is_empty() and support_identity!=piece.support_identity:return _failure("normal support binding changed")
++			support_identity=piece.support_identity
++			if previous.get("method")==piece.method and previous.end_support_potential_j!=piece.start_support_potential_j:
++				return _failure("adjacent unloaded potential chain differs")
++			for j in [i,i+1]:
++				for load:float in r.normal_samples_n[j]:
++					if load!=0.0:return _failure("unloaded heat piece has loaded boundary sample")
++		elif piece.method=="RK4_normal_power_v1":
++			if not _keys(piece,keys):return _failure("invalid RK normal piece accounting")
++		else:return _failure("unknown normal loss method")
++		if not _number(piece.get("normal_dissipation_j")) or piece.normal_dissipation_j<0.0 or not _number(piece.get("energy_residual_j")):
++			return _failure("invalid normal piece loss/residual")
++		sum+=piece.normal_dissipation_j
++		maximum=maxf(maximum,absf(piece.energy_residual_j))
++		previous=piece
++	if not _number(r.get("normal_dissipation_j")) or not _number(r.get("maximum_piece_energy_residual_j")) \
++		or sum!=r.normal_dissipation_j or maximum!=r.maximum_piece_energy_residual_j:
++		return _failure("normal piece heat sum/maximum differs")
++	return {ok=true}
+--- a/app/physics/aircraft_ground_step.gd
++++ b/app/physics/aircraft_ground_step.gd
+@@ -43,9 +43,20 @@
+ ## The owner allocates its tick budget over at most 2*16 accepted solves, e.g.
+ ## tick_budget/32. Discarded attempts publish no proof or work. The accepted
+ ## opt-in receipt retains outward sums of actual Gamma/objective-gap bounds.
++## Optional normal_loss_policy(s,t,h,sample)->EXACT {ok,eligible,identity} is
++## trusted OWNER authority, like derivative/certificate, not receipt metadata.
++## It runs after the actual prekick and must bind/revalidate its actual evaluator,
++## fixed mechanics/provider and interval source/brake/external-wrench exclusions.
++## Generic Step cannot authenticate captured closures. Eligible samples provide
++## normal_support_potential_j>=0 and a stable normal_support_identity; all actual
++## RK normal evaluations and endpoint loads must be zero. Heat is the per-piece
++## support-potential decrease (no gravity/clamp), before piece-energy admission.
++## Otherwise RK heat is unchanged. Opted-in receipts explicitly record every
++## piece method/loss/residual; an absent policy preserves legacy receipt bytes.
+ static func advance(initial: PackedFloat64Array, time_s: float, dt: float,
+ 		derivative: Callable, first: PackedFloat64Array, evaluate: Callable,
+-		certificate: Callable, options: Dictionary = {}, error_gate: Callable = Callable()) -> Dictionary:
++		certificate: Callable, options: Dictionary = {}, error_gate: Callable = Callable(),
++		normal_loss_policy: Callable = Callable()) -> Dictionary:
+ 	var settings := _settings(options)
+ 	if not settings.ok: return _operator_failure(settings,options)
+ 	if not _state(initial) or not is_finite(time_s) or time_s < 0.0 or not is_finite(dt) \
+@@ -53,6 +64,9 @@
+ 		or not derivative.is_valid() or not evaluate.is_valid() or not certificate.is_valid() \
+ 		or (not first.is_empty() and (first.size() != initial.size() or not _finite(first))):
+ 		return _operator_failure(_failure("invalid bounded state, time or callbacks"),settings)
++	if not normal_loss_policy.is_null() and (not normal_loss_policy.is_valid() or normal_loss_policy.get_argument_count()!=4):
++		return _operator_failure(_failure("normal loss policy requires exactly four arguments", "invalid_normal_loss_policy"),settings)
++	var policy_pin:Dictionary={}
+ 	var start := _sample(evaluate, initial, time_s)
+ 	if not start.ok: return _operator_failure(start,settings)
+ 	if not _domain(initial, start): return _operator_failure(_failure("initial reverse rotor state is unsupported", "unsupported_reverse"),settings)
+@@ -62,7 +76,7 @@
+ 	var gate_identity := ""
+ 	for attempt in 5:
+ 		if count > settings.max_substeps: break
+-		var trial := _attempt(initial, time_s, dt, derivative, first, evaluate, certificate, start, count, settings)
++		var trial := _attempt(initial, time_s, dt, derivative, first, evaluate, certificate, start, count, settings,normal_loss_policy,policy_pin)
+ 		if settings.operator_law!=LAW and not trial.ok: trial.law=settings.operator_law
+ 		if trial.ok:
+ 			had_admissible = true
+@@ -120,9 +134,9 @@
+ 
+ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
+ 		first: PackedFloat64Array, evaluate: Callable, certificate: Callable,
+-		start: Dictionary, count: int, settings: Dictionary) -> Dictionary:
++		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={}) -> Dictionary:
+ 	if settings.operator_law==TWO_SIDED_LAW:
+-		return _operator_failure(_attempt_two_sided(initial,time_s,dt,derivative,first,evaluate,certificate,start,count,settings),settings)
++		return _operator_failure(_attempt_two_sided(initial,time_s,dt,derivative,first,evaluate,certificate,start,count,settings,normal_loss_policy,policy_pin),settings)
+ 	var state := initial.duplicate()
+ 	var sample := start
+ 	var h := dt / count
+@@ -132,6 +146,7 @@
+ 	var peak_times := PackedFloat64Array()
+ 	peak_times.resize(peaks.size())
+ 	peak_times.fill(time_s)
++	var loss_pieces:Array=[]
+ 	var normal_loss := 0.0
+ 	var external_work := 0.0
+ 	var tangent_loss := 0.0
+@@ -151,9 +166,16 @@
+ 		if not certified.ok: return _failure("whole-piece certificate is unsupported", "unsupported_certificate")
+ 		if not certified.admitted: return _failure("whole-piece refinement required", "refine")
+ 		if not certificate_ids.has(certified.identity): certificate_ids.append(certified.identity)
++		var loss_policy:=_loss_policy(normal_loss_policy,state,at,h,sample,policy_pin)
++		if not loss_policy.ok:return loss_policy
++		if loss_policy.eligible and not _loss_same_potential(sample,sample):return _failure("prekick changed support potential or identity","invalid_normal_loss_policy")
+ 		# These are RK algebraic evaluations ONLY. Store quadrature power, never
+ 		# damage maxima. A rejected attempt discards every sample and integral.
+ 		var quadrature: Array = [PackedFloat64Array([sample.normal_dissipation_w, sample.external_power_w])]
++		var zero_samples:={count=0}
++		if loss_policy.eligible:
++			if not _loss_zero_sample(sample,sample):return _failure("eligible initial normal sample is loaded or malformed","invalid_normal_loss_policy")
++			zero_samples.count=1
+ 		var tracker := {ok = true, reason = ""}
+ 		var tracked := func(values: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
+ 			if not _state(values):
+@@ -165,6 +187,10 @@
+ 				tracker.ok = false
+ 				tracker.reason = "stage snapshot refused or changed the fixed binding"
+ 				return _zeros(initial.size())
++			if loss_policy.eligible:
++				if not _loss_zero_sample(sample,point):
++					tracker.ok=false;tracker.reason="qualified RK normal sample is loaded or binding changed";return _zeros(initial.size())
++				zero_samples.count+=1
+ 			quadrature.append(PackedFloat64Array([point.normal_dissipation_w, point.external_power_w]))
+ 			var raw: Variant = derivative.call(values.duplicate(), stage_t)
+ 			if typeof(raw) != TYPE_PACKED_FLOAT64_ARRAY or raw.size() != initial.size() or not _finite(raw):
+@@ -175,6 +201,9 @@
+ 		var raw_k1: Variant = first if piece == 0 and not first.is_empty() else derivative.call(state.duplicate(), at)
+ 		if typeof(raw_k1) != TYPE_PACKED_FLOAT64_ARRAY or raw_k1.size() != initial.size() or not _finite(raw_k1):
+ 			return _failure("malformed initial continuous derivative")
++		if loss_policy.eligible and piece==0 and not first.is_empty():
++			var verified_k1:Variant=derivative.call(state.duplicate(),at)
++			if typeof(verified_k1)!=TYPE_PACKED_FLOAT64_ARRAY or verified_k1!=raw_k1:return _failure("qualified owner k1 disagrees with supplied derivative","invalid_normal_loss_policy")
+ 		var k1: PackedFloat64Array = raw_k1
+ 		var candidate := RK.rk4_step_at(state, at, h, tracked, k1)
+ 		if not tracker.ok or quadrature.size() != 4 or not _state(candidate):
+@@ -209,6 +238,10 @@
+ 		if absf(potential_change) > 1e-12 * maxf(1.0, maxf(absf(accepted.potential_j), absf(before_impulse.potential_j))):
+ 			return _failure("velocity-only impulse changed recoverable potential")
+ 		var piece_normal: float = h / 6.0 * (quadrature[0][0] + 2 * quadrature[1][0] + 2 * quadrature[2][0] + quadrature[3][0])
++		if loss_policy.eligible:
++			if not _loss_zero_sample(sample,before_impulse) or not _loss_same_potential(before_impulse,accepted):return _failure("qualified endpoint/potential binding changed","invalid_normal_loss_policy")
++			piece_normal=sample.normal_support_potential_j-before_impulse.normal_support_potential_j
++			if not is_finite(piece_normal) or piece_normal<0.0:return _failure("qualified support potential increased; no heat clamp","invalid_normal_loss_policy")
+ 		var piece_work: float = h / 6.0 * (quadrature[0][1] + 2 * quadrature[1][1] + 2 * quadrature[2][1] + quadrature[3][1])
+ 		var before_energy := _energy(state, sample)
+ 		var after_energy := _energy(next, accepted)
+@@ -218,6 +251,11 @@
+ 			return _failure("normal/contact work overflow")
+ 		if absf(residual) > settings.energy_absolute_tolerance_j + settings.energy_relative_tolerance * scale:
+ 			return _failure("normal/contact work accuracy requires refinement", "refine")
++		if normal_loss_policy.is_valid():
++			var entry:={method="unloaded_support_potential_difference_v1" if loss_policy.eligible else "RK4_normal_power_v1",normal_dissipation_j=piece_normal,energy_residual_j=residual}
++			if loss_policy.eligible:
++				entry.merge({start_support_potential_j=sample.normal_support_potential_j,end_support_potential_j=before_impulse.normal_support_potential_j,support_identity=sample.normal_support_identity,zero_force_rk_samples=zero_samples.count})
++			loss_pieces.append(entry)
+ 		largest_piece_residual = maxf(largest_piece_residual, absf(residual))
+ 		normal_loss += piece_normal
+ 		external_work += piece_work
+@@ -246,13 +284,16 @@
+ 		initial_mechanical_energy_j = initial_energy, final_mechanical_energy_j = final_energy,
+ 		energy_balance_residual_j = final_energy - initial_energy + normal_loss + tangent_loss - external_work - prescribed_work,
+ 		maximum_piece_energy_residual_j = largest_piece_residual}}
++	if normal_loss_policy.is_valid():
++		result.integration_receipt.quadrature_method="RK4_external_work_piecewise_normal_loss_v1"
++		result.integration_receipt.normal_loss_policy={format="openrc-normal-loss-policy-receipt v1",identity=policy_pin.identity,pieces=loss_pieces}
+ 	if not resolution_stats.is_empty(): result.integration_receipt.assembly_resolution=resolution_stats
+ 	return result
+ 
+ 
+ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
+ 		_first: PackedFloat64Array, evaluate: Callable, certificate: Callable,
+-		start: Dictionary, count: int, settings: Dictionary) -> Dictionary:
++		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={}) -> Dictionary:
+ 	var state := initial.duplicate()
+ 	var sample := start
+ 	var h := dt / count
+@@ -262,6 +303,7 @@
+ 	var peak_times := PackedFloat64Array()
+ 	peak_times.resize(peaks.size())
+ 	peak_times.fill(time_s)
++	var loss_pieces:Array=[]
+ 	var normal_loss := 0.0
+ 	var external_work := 0.0
+ 	var tangent_loss := 0.0
+@@ -290,9 +332,16 @@
+ 		if not certified.ok: return _failure("whole-piece certificate is unsupported", "unsupported_certificate")
+ 		if not certified.admitted: return _failure("whole-piece refinement required", "refine")
+ 		if not certificate_ids.has(certified.identity): certificate_ids.append(certified.identity)
++		var loss_policy:=_loss_policy(normal_loss_policy,kicked,at,h,kicked_sample,policy_pin)
++		if not loss_policy.ok:return loss_policy
++		if loss_policy.eligible and not _loss_same_potential(sample,kicked_sample):return _failure("prekick changed support potential or identity","invalid_normal_loss_policy")
+ 		# The preimpulse changes body/spin velocities. Caller k1 is stale even on
+ 		# piece0; recompute both force snapshot and derivative after the halfkick.
+ 		var quadrature: Array = [PackedFloat64Array([kicked_sample.normal_dissipation_w, kicked_sample.external_power_w])]
++		var zero_samples:={count=0}
++		if loss_policy.eligible:
++			if not _loss_zero_sample(kicked_sample,kicked_sample):return _failure("eligible initial normal sample is loaded or malformed","invalid_normal_loss_policy")
++			zero_samples.count=1
+ 		var tracker := {ok = true, reason = ""}
+ 		var tracked := func(values: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
+ 			if not _state(values):
+@@ -304,6 +353,10 @@
+ 				tracker.ok = false
+ 				tracker.reason = "stage snapshot refused or changed fixed binding"
+ 				return _zeros(initial.size())
++			if loss_policy.eligible:
++				if not _loss_zero_sample(kicked_sample,point):
++					tracker.ok=false;tracker.reason="qualified RK normal sample is loaded or binding changed";return _zeros(initial.size())
++				zero_samples.count+=1
+ 			quadrature.append(PackedFloat64Array([point.normal_dissipation_w, point.external_power_w]))
+ 			var raw: Variant = derivative.call(values.duplicate(), stage_t)
+ 			if typeof(raw) != TYPE_PACKED_FLOAT64_ARRAY or raw.size() != initial.size() or not _finite(raw):
+@@ -324,6 +377,10 @@
+ 		var next: PackedFloat64Array = post.state
+ 		var accepted: Dictionary = post.sample
+ 		var piece_normal: float = h / 6.0 * (quadrature[0][0] + 2 * quadrature[1][0] + 2 * quadrature[2][0] + quadrature[3][0])
++		if loss_policy.eligible:
++			if not _loss_zero_sample(kicked_sample,after_flow) or not _loss_same_potential(after_flow,accepted):return _failure("qualified endpoint/potential binding changed","invalid_normal_loss_policy")
++			piece_normal=kicked_sample.normal_support_potential_j-after_flow.normal_support_potential_j
++			if not is_finite(piece_normal) or piece_normal<0.0:return _failure("qualified support potential increased; no heat clamp","invalid_normal_loss_policy")
+ 		var piece_work: float = h / 6.0 * (quadrature[0][1] + 2 * quadrature[1][1] + 2 * quadrature[2][1] + quadrature[3][1])
+ 		var after_energy := _energy(next, accepted)
+ 		var loss: float = pre.loss + post.loss
+@@ -334,6 +391,11 @@
+ 			return _failure("normal/contact work overflow")
+ 		if absf(residual) > settings.energy_absolute_tolerance_j + settings.energy_relative_tolerance * scale:
+ 			return _failure("normal/contact work accuracy requires refinement", "refine")
++		if normal_loss_policy.is_valid():
++			var entry:={method="unloaded_support_potential_difference_v1" if loss_policy.eligible else "RK4_normal_power_v1",normal_dissipation_j=piece_normal,energy_residual_j=residual}
++			if loss_policy.eligible:
++				entry.merge({start_support_potential_j=kicked_sample.normal_support_potential_j,end_support_potential_j=after_flow.normal_support_potential_j,support_identity=kicked_sample.normal_support_identity,zero_force_rk_samples=zero_samples.count})
++			loss_pieces.append(entry)
+ 		largest_piece_residual = maxf(largest_piece_residual, absf(residual))
+ 		normal_loss += piece_normal
+ 		external_work += piece_work
+@@ -371,6 +433,9 @@
+ 		pre_contact_dissipation_j=pre_loss,post_contact_dissipation_j=post_loss,
+ 		pre_prescribed_contact_work_j=pre_work,post_prescribed_contact_work_j=post_work,
+ 		split_method="two_sided_half_impulses_recomputed_k1_order1"}}
++	if normal_loss_policy.is_valid():
++		result.integration_receipt.quadrature_method="RK4_external_work_piecewise_normal_loss_v1"
++		result.integration_receipt.normal_loss_policy={format="openrc-normal-loss-policy-receipt v1",identity=policy_pin.identity,pieces=loss_pieces}
+ 	if not resolution_stats.is_empty(): result.integration_receipt.assembly_resolution=resolution_stats
+ 	return result
+ 
+@@ -590,3 +655,40 @@
+ 
+ static func _failure(reason: String, status := "invalid") -> Dictionary:
+ 	return {ok = false, status = status, reason = reason, law = LAW}
++
++
++## Trusted owner authority, like derivative/certificate. Receipt data cannot
++## activate this policy. Captured source/config binding is the OWNER's duty.
++static func _loss_policy(policy:Callable,state:PackedFloat64Array,at:float,h:float,sample:Dictionary,pin:Dictionary)->Dictionary:
++	if policy.is_null():return {ok=true,eligible=false,identity=""}
++	if not policy.is_valid() or policy.get_argument_count()!=4:return _failure("normal loss policy requires exactly four arguments","invalid_normal_loss_policy")
++	var a:=state.duplicate()
++	var b:=sample.duplicate(true)
++	var before:=var_to_bytes([a,b])
++	var raw:Variant=policy.call(a,at,h,b)
++	if before!=var_to_bytes([a,b]):return _failure("normal loss policy mutated read-only inputs","invalid_normal_loss_policy")
++	if not raw is Dictionary or raw.size()!=3 or not raw.has_all(["ok","eligible","identity"]) \
++		or typeof(raw.ok)!=TYPE_BOOL or typeof(raw.eligible)!=TYPE_BOOL or typeof(raw.identity)!=TYPE_STRING \
++		or raw.identity.is_empty() or raw.identity.length()>256:
++		return _failure("malformed normal loss policy result","invalid_normal_loss_policy")
++	if not raw.ok:return _failure("normal loss owner refused its binding/domain","unsupported_normal_loss_policy")
++	if pin.has("identity") and pin.identity!=raw.identity:return _failure("normal loss policy identity changed","invalid_normal_loss_policy")
++	pin.identity=raw.identity
++	return raw.duplicate(true)
++
++
++static func _loss_support(sample:Dictionary)->bool:
++	return _number(sample.get("normal_support_potential_j")) and sample.normal_support_potential_j>=0.0 \
++		and typeof(sample.get("normal_support_identity"))==TYPE_STRING and not sample.normal_support_identity.is_empty() and sample.normal_support_identity.length()<=256
++
++
++static func _loss_same_potential(a:Dictionary,b:Dictionary)->bool:
++	return _loss_support(a) and _loss_support(b) and a.normal_support_identity==b.normal_support_identity \
++		and a.normal_support_potential_j==b.normal_support_potential_j
++
++
++static func _loss_zero_sample(a:Dictionary,b:Dictionary)->bool:
++	if not _loss_support(a) or not _loss_support(b) or a.normal_support_identity!=b.normal_support_identity:return false
++	for load:float in b.normal_load_n:
++		if load!=0.0:return false
++	return true
+--- a/app/physics/aircraft_ground_unloaded.gd
++++ b/app/physics/aircraft_ground_unloaded.gd
+@@ -0,0 +1,217 @@
++## Qualified zero-normal-force reference slice; no source or integrator owner.
++## The TRUSTED evaluator owner must first prove its ACTUAL source/brake/external
++## wrench law remains absent over the entire interval. Snapshot zeros and receipt
++## metadata cannot establish that precondition. This helper binds fixed mechanical
++## configuration and proves the unloaded free-reference branch only.
++extends RefCounted
++const Stage:=preload("res://physics/aircraft_ground_stage.gd")
++const Datum:=preload("res://physics/fixed_datum_body.gd")
++const Support:=preload("res://physics/ground_support.gd")
++const Rotor:=preload("res://physics/rotor_coupling.gd")
++const Normal:=preload("res://physics/normal_compliance.gd")
++const Ring:=preload("res://physics/wheel_geometry.gd")
++const Admission:=preload("res://physics/normal_contact_admission.gd")
++const AR:=preload("res://physics/contact_assembly_resolution.gd")
++const RB:=preload("res://physics/rigid_body.gd")
++const GC:=preload("res://physics/generalized_coordinates.gd")
++const M:=preload("res://physics/math3d.gd")
++const FORMAT:="openrc-aircraft-ground-unloaded-binding v1"
++const LAW:="fixed-CM-free-spin-plane-unloaded-reference-v1"
++const KEYS:=["ground_stage","properties","provider","motion","gravity","minimum_kappa","owner_dynamics_identity"]
++## Same nondegenerate raw-stage convention as Simulation; avoid a preload cycle.
++const MIN_STAGE_QNORM_SQ:=1e-24
++
++static func prepare(config:Dictionary)->Dictionary:
++	if config.size()!=KEYS.size() or not config.has_all(KEYS):return _failure("explicit complete owner configuration required")
++	if not config.ground_stage is Dictionary or typeof(config.ground_stage.get("law"))!=TYPE_STRING \
++		or not config.ground_stage.get("normal") is Dictionary or typeof(config.ground_stage.normal.get("law"))!=TYPE_STRING \
++		or not config.ground_stage.get("rotor_system") is Dictionary or typeof(config.ground_stage.rotor_system.get("law"))!=TYPE_STRING \
++		or not Stage._prepared_shape(config.ground_stage) \
++		or not config.properties is Dictionary or not Datum._coupled_properties_valid(config.properties) \
++		or not config.provider is Dictionary or not config.motion is Array \
++		or typeof(config.gravity) not in [TYPE_FLOAT,TYPE_INT] or not is_finite(config.gravity) or config.gravity<0.0 \
++		or typeof(config.minimum_kappa) not in [TYPE_FLOAT,TYPE_INT] or not is_finite(config.minimum_kappa) \
++		or config.minimum_kappa<Ring.MIN_AXLE_PROJECTION or config.minimum_kappa>1.0 \
++		or typeof(config.owner_dynamics_identity)!=TYPE_STRING or config.owner_dynamics_identity.is_empty() or config.owner_dynamics_identity.length()>256:
++		return _failure("invalid fixed owner configuration")
++	var provider:Dictionary=config.provider
++	if typeof(provider.get("format"))!=TYPE_STRING or typeof(provider.get("geometry_law"))!=TYPE_STRING \
++		or provider.format!=Support.FORMAT or provider.geometry_law!=Support.LEGACY \
++		or typeof(provider.get("surfaces"))!=TYPE_PACKED_FLOAT64_ARRAY or not provider.surfaces.is_empty() \
++		or not provider.get("regions") is Array:return _failure("only explicit immutable flat legacy provider is qualified")
++	var rebuilt:=Support.prepare_legacy(PackedFloat64Array(),provider.regions)
++	if var_to_bytes(rebuilt)!=var_to_bytes(provider):return _failure("provider identity/configuration differs")
++	var supports:Array=config.ground_stage.normal.supports
++	if config.motion.size()!=supports.size():return _failure("fixed motion layout differs")
++	for i in supports.size():
++		var support:Variant=supports[i]
++		if not support is Dictionary or typeof(support.get("contact_id"))!=TYPE_STRING \
++			or not Stage._finite_shape(support.get("hub_body"),3) or not Stage._finite_shape(support.get("axle_body"),3) \
++			or typeof(support.get("radius_m")) not in [TYPE_FLOAT,TYPE_INT] or not is_finite(support.radius_m) \
++			or support.radius_m<Ring.MIN_RADIUS_M or support.radius_m>Ring.MAX_RADIUS_M \
++			or not support.get("normal") is Dictionary or not support.normal.get("provenance") is Dictionary:
++			return _failure("malformed compiled normal support")
++		var normal:=Normal.prepare(support.normal.provenance)
++		if not normal.ok or var_to_bytes(normal)!=var_to_bytes(support.normal):return _failure("compiled normal law differs from provenance")
++		var row:Variant=config.motion[i]
++		if not row is Dictionary or typeof(row.get("contact_id"))!=TYPE_STRING or row.contact_id!=supports[i].contact_id \
++			or not Stage._finite_shape(row.get("hub_body"),3) or not Stage._finite_shape(row.get("axle_body"),3) \
++			or row.get("hub_body")!=supports[i].hub_body or row.get("axle_body")!=supports[i].axle_body:
++			return _failure("fixed hub/axle configuration differs")
++		for key:String in ["carrier_rate_body","carrier_accel_body"]:
++			if not Stage._finite_shape(row.get(key),3):return _failure("invalid carrier motion")
++			for value:float in row[key]:
++				if value!=0.0:return _failure("moving axes/carriers are not qualified")
++	var system:Dictionary=config.ground_stage.rotor_system
++	var carrier:=Rotor._carrier_remainder(config.properties.inertia,system.axial,system.transverse,system.reference_axes)
++	var assembled:=Rotor._assemble(carrier,system.axial,system.transverse,system.reference_axes)
++	if not assembled.ok:return _failure("live constant rotor matrix cannot be assembled")
++	var detached:=config.duplicate(true)
++	return {ok=true,format=FORMAT,law=LAW,identity=_identity(detached),config=detached,expected_matrix=assembled.matrix,expected_carrier=carrier}
++
++
++## No source-free bool parameter: the owner that invokes this function must bind
++## its real evaluator and prove the unforced interval, as documented above.
++## Passing current configuration permits detection of captured-resource mutation.
++static func qualify(binding:Dictionary,current:Dictionary,state:PackedFloat64Array,h:float,point:Dictionary)->Dictionary:
++	if typeof(binding.get("format"))!=TYPE_STRING or typeof(binding.get("law"))!=TYPE_STRING \
++		or binding.format!=FORMAT or binding.law!=LAW or not binding.get("config") is Dictionary \
++		or typeof(binding.get("identity"))!=TYPE_STRING or _identity(binding.config)!=binding.identity \
++		or var_to_bytes(binding.config)!=var_to_bytes(current):return _failure("sealed owner configuration changed")
++	var checked:=prepare(current)
++	if not checked.ok:return _failure("owner configuration is malformed")
++	if not Stage._finite_shape(binding.get("expected_matrix"),checked.expected_matrix.size()) or not Stage._finite_shape(binding.get("expected_carrier"),6) \
++		or checked.identity!=binding.identity or checked.expected_matrix!=binding.expected_matrix or checked.expected_carrier!=binding.expected_carrier:
++		return _failure("owner binding is malformed or stale")
++	if not Stage._finite_shape(state,state.size()) or state.size()<RB.SIZE or state.size()>256 or not is_finite(h) or h<=0.0 or h>1.0:
++		return _failure("invalid bounded state/interval")
++	var qnorm:=0.0
++	for i in 4:qnorm+=state[RB.ATT+i]*state[RB.ATT+i]
++	if not is_finite(qnorm) or qnorm<=MIN_STAGE_QNORM_SQ:return _failure("nondegenerate stage quaternion required")
++	if typeof(point.get("ok"))!=TYPE_BOOL or not point.ok \
++		or typeof(point.get("mass_kg")) not in [TYPE_FLOAT,TYPE_INT] or not is_finite(point.mass_kg) \
++		or not Stage._finite_shape(point.get("cg_body_m"),3) \
++		or point.mass_kg!=current.properties.mass_kg or point.cg_body_m!=current.properties.cg_body_m \
++		or not point.get("rotor_stage") is Dictionary:return _failure("live mass/CG/stage does not match owner binding")
++	var valid:=Rotor._validate_stage(point.rotor_stage)
++	if not valid.ok or point.rotor_stage.matrix!=binding.expected_matrix or point.rotor_stage.carrier!=binding.expected_carrier \
++		or point.rotor_stage.axes!=current.ground_stage.rotor_system.reference_axes:return _failure("live rotor matrix/axis binding differs")
++	for i in 3:
++		if point.rotor_stage.velocity[i]!=state[RB.RATE+i]:return _failure("live angular state differs")
++	var proof:=_reference(current,state,h,point)
++	return {ok=true,eligible=proof.ok,identity=binding.identity,reference_proof=proof}
++
++
++static func _reference(config:Dictionary,state:PackedFloat64Array,h:float,point:Dictionary)->Dictionary:
++	if typeof(point.get("limit_rates"))!=TYPE_PACKED_FLOAT64_ARRAY or not point.limit_rates.is_empty():return _failure("not empty initial impulse map")
++	if not point.get("physical") is Dictionary or not Stage._finite_shape(point.physical.get("loads"),6):return _failure("actual mechanical load evidence missing")
++	for value:float in point.physical.loads:
++		if value!=0.0:return _failure("actual initial wrench is not zero")
++	if typeof(point.get("normal_load_n"))!=TYPE_PACKED_FLOAT64_ARRAY:return _failure("normal load evidence missing")
++	for value:float in point.normal_load_n:
++		if value!=0.0:return _failure("actual initial normal load is not zero")
++	if typeof(point.rotor_stage.get("generalized_rhs"))!=TYPE_PACKED_FLOAT64_ARRAY:return _failure("source row evidence missing")
++	for value:float in point.rotor_stage.generalized_rhs.slice(3):
++		if value!=0.0:return _failure("actual local source torque is not zero")
++	var rotor:Dictionary=point.rotor_stage
++	for value:float in rotor.carrier_rates:
++		if value!=0.0:return {ok=false,reason="moving carrier"}
++	if typeof(rotor.get("hold_indices"))!=TYPE_PACKED_INT64_ARRAY or not rotor.hold_indices.is_empty():return {ok=false,reason="held rotor"}
++	var omega:=state.slice(RB.RATE,RB.RATE+3)
++	# Work from the actual symmetric full matrix, not ideal unit-axis algebra.
++	# The exact matrix-entry Schur complement is bracketed by this rounded3x3
++	# center plus a symmetric entrywise assembly error. No spin energy subtracts.
++	var n:int=rotor.axial.size()+3
++	var schur:=PackedFloat64Array();schur.resize(9)
++	var errors:=PackedFloat64Array();errors.resize(9)
++	for i in 3:
++		for j in range(i,3):
++			var value:float=rotor.matrix[i*n+j]
++			var terms:float=absf(value)
++			for k in rotor.axial.size():
++				var d:float=rotor.matrix[(3+k)*n+3+k]
++				if d<=0.0:return {ok=false,reason="invalid free-spin diagonal"}
++				var left:float=rotor.matrix[i*n+3+k]
++				var right:float=rotor.matrix[j*n+3+k]
++				value-=left*right/d
++				terms=AR._add(terms,AR._div(AR._mul(absf(left),absf(right)),d))
++			schur[i*3+j]=value;schur[j*3+i]=value
++			var error:=AR._roundoff(terms,4*rotor.axial.size()+8)
++			errors[i*3+j]=error;errors[j*3+i]=error
++	var schur_error:=0.0
++	for i in 3:schur_error=maxf(schur_error,AR._add(AR._add(errors[i*3],errors[i*3+1]),errors[i*3+2]))
++	var compact:=PackedFloat64Array([schur[0],schur[4],schur[8],schur[1],schur[2],schur[5]])
++	var factor:=GC.cholesky_factor(schur,3)
++	if not factor.ok:return {ok=false,reason="Schur center Cholesky refused"}
++	var spd:=AR._spd_margin(schur,factor.lower,3)
++	if not spd.ok:return {ok=false,reason="Schur center congruence SPD proof refused"}
++	var inverse_proof:=Admission._carrier_lower_bound(compact)
++	if not inverse_proof.ok:return {ok=false,reason="no positive Schur center lower bound"}
++	var beta:float=inverse_proof.beta-schur_error-AR._roundoff(inverse_proof.beta+schur_error,8)
++	if beta<=0.0:return {ok=false,reason="true Schur lower bound does not close"}
++	var product:=RB.inertia_mul(compact,omega)
++	var energy2:=M.dot(omega,product)
++	var magnitude:=0.0
++	for i in 3:magnitude=AR._add(magnitude,AR._mul(absf(omega[i]),absf(product[i])))
++	# Include the scalar products used by inertia_mul, including cross terms.
++	var carrier_size:=absf(compact[0])+absf(compact[1])+absf(compact[2])+2.0*(absf(compact[3])+absf(compact[4])+absf(compact[5]))
++	var omega_sq:=0.0
++	for value:float in omega:omega_sq=AR._add(omega_sq,AR._mul(absf(value),absf(value)))
++	var arithmetic:=AR._roundoff(AR._mul(carrier_size,omega_sq),64)
++	energy2=AR._add(AR._add(maxf(0.0,energy2),arithmetic),AR._mul(schur_error,omega_sq))
++	var hgyro:=M.v3(0,0,0)
++	for i in rotor.axial.size():
++		var d:float=rotor.matrix[(3+i)*n+3+i]
++		var ell:float=d*rotor.velocity[3+i]
++		for k in 3:ell+=rotor.matrix[(3+i)*n+k]*omega[k]
++		for k in 3:hgyro[k]+=rotor.matrix[k*n+3+i]/d*ell
++	var omega_upper:=AR._add(M.sqrt_(AR._div(energy2,beta))*(1.0+4.0*AR.EPS),AR.ETA)
++	var q:=M.q_normalized(state.slice(RB.ATT,RB.ATT+4))
++	var cmv:=M.add(state.slice(RB.VEL,RB.VEL+3),M.cross(omega,config.properties.cg_body_m))
++	var normal_velocity:=M.dot(M.v3(0,0,-1),M.q_rotate(q,cmv))
++	var common_lower:float=normal_velocity-config.gravity*h
++	var velocity_operands:=AR._add(M.norm(state.slice(RB.VEL,RB.VEL+3)),AR._mul(M.norm(omega),M.norm(config.properties.cg_body_m)))
++	common_lower-=AR._roundoff(velocity_operands,256)
++	var supports:Array=[]
++	for support:Dictionary in config.ground_stage.normal.supports:
++		var arm:=M.sub(support.hub_body,config.properties.cg_body_m)
++		var arm_operands:=AR._add(M.norm(support.hub_body),M.norm(config.properties.cg_body_m))
++		var lever:=AR._add(AR._add(M.norm(arm),AR._roundoff(arm_operands,32)),support.radius_m)
++		var rate_lower:float=common_lower-AR._mul(lever,omega_upper)
++		rate_lower-=AR._roundoff(absf(normal_velocity)+config.gravity*h+lever*omega_upper,128)
++		if rate_lower<=0.0:return {ok=false,reason="strict outward gap-speed bound does not close",rate_lower=rate_lower}
++		var hub:=M.add(state.slice(0,3),M.q_rotate(q,support.hub_body))
++		var axis:=M.q_rotate(q,support.axle_body)
++		var geo:=Ring.plane(hub,axis,support.radius_m,M.v3(0,0,0),M.v3(0,0,-1))
++		if not geo.ok:return {ok=false,reason="state plane geometry refused"}
++		var kappa:=M.sqrt_(maxf(0.0,1.0-axis[2]*axis[2]))
++		var kappa_lower:float=kappa-AR._mul(h,omega_upper)-AR._roundoff(kappa+h*omega_upper,64)
++		if kappa_lower<config.minimum_kappa:return {ok=false,reason="protected kappa cannot close"}
++		var gap_operand:=AR._add(AR._add(M.norm(state.slice(0,3)),M.norm(support.hub_body)),support.radius_m)
++		var gap_error:float=geo.residual_m+AR._roundoff(gap_operand,256)
++		var xmax:float=maxf(0.0,-geo.signed_gap_m+gap_error)
++		var p:Dictionary=support.normal.values
++		if xmax>p.stroke:return {ok=false,reason="progressive stop is outside unloaded slice"}
++		var coefficient_upper:=0.0
++		if xmax>0.0:
++			var ramp:float=Normal._ramp(xmax,p.damping_onset)[0]
++			coefficient_upper=p.stiffness-p.rebound_damping*ramp/xmax*rate_lower
++			coefficient_upper+=AR._roundoff(p.stiffness+absf(p.rebound_damping*ramp/xmax*rate_lower),128)
++			if coefficient_upper>=0.0:return {ok=false,reason="rebound clipping cannot be proved",coefficient_upper=coefficient_upper}
++		supports.append({contact_id=support.contact_id,gap_m=geo.signed_gap_m,xmax=xmax,gap_rate_lower=rate_lower,
++			trial_force_per_compression_upper=coefficient_upper,kappa_lower=kappa_lower,
++			event_free=geo.signed_gap_m>gap_error,at_most_one_gap_root=true})
++	return {ok=true,exact_reference_flow_admitted=true,floating_rk_admitted=false,
++		scope="source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
++		reduced_rotational_energy_times_two_upper=energy2,schur_beta=beta,schur_error_bound=schur_error,
++		omega_upper=omega_upper,gyro_momentum_body=hgyro,supports=supports,schur_center=compact}
++
++static func _identity(config:Dictionary)->String:
++	var hash:=HashingContext.new()
++	hash.start(HashingContext.HASH_SHA256)
++	hash.update(LAW.to_utf8_buffer())
++	hash.update(var_to_bytes(config))
++	return hash.finish().hex_encode()
++
++static func _failure(reason:String)->Dictionary:
++	return {ok=false,reason=reason,law=LAW}
+--- a/app/tests/test_aircraft_ground_unloaded.gd
++++ b/app/tests/test_aircraft_ground_unloaded.gd
+@@ -0,0 +1,442 @@
++## Installed hardware; synthetic normal/material experiment, no fleet calibration.
++extends "res://tests/test_aircraft_ground_stage.gd"
++const Traction := preload("res://physics/aircraft_ground_traction.gd")
++const Step := preload("res://physics/aircraft_ground_step.gd")
++const Admission := preload("res://physics/normal_contact_admission.gd")
++const Rotor := preload("res://physics/rotor_coupling.gd")
++const Accuracy := preload("res://physics/aircraft_ground_accuracy.gd")
++const GRAVITY := 9.80665
++const X_MAX := 0.18
++const GAP_SPEED_MAX := 3.0
++const CM_NORMAL_SPEED_MAX := 3.0
++const OMEGA_MAX := 5.0
++const RIM_MAX := 15.0
++const KAPPA_MIN := 0.5
++var traction: Dictionary
++var lift_start := 100.0
++var lift_duration := 1.5
++var lift_ratio := 0.0
++var brake_start := 100.0
++var reject_endpoint := false
++var quality: Dictionary
++var selected_law := Step.TWO_SIDED_LAW
++const WORK_ABSOLUTE_J := 1e-6
++const TICK_ASSEMBLY_BUDGET_J := WORK_ABSOLUTE_J*1e-5
++
++func _options() -> Dictionary:
++	return {operator_law=selected_law,maximum_assembly_resolution_j=TICK_ASSEMBLY_BUDGET_J/32.0}
++
++func _prepare_composition() -> void:
++	# The fixture's authored geometry is explicitly synthetic. Balance the three
++	# fixed hub x arms for a neutral, symmetric initial support distribution.
++	var authored := authored_profile.duplicate(true)
++	var x := [-0.3, -0.3, 0.6]
++	for i in 3: authored.supports[i].hub_le.value[0] = model.cg_le[0] - x[i]
++	var resolved := Profile.resolve(authored, model)
++	check("symmetric composition fixture resolves without launch admission", resolved.ok and not resolved.launch_available)
++	if not resolved.ok: return
++	profile = resolved.profile
++	model = resolved.model
++	prepared = Stage.prepare(profile, model)
++	motion.clear()
++	for support: Dictionary in prepared.normal.supports:
++		motion.append({contact_id = support.contact_id, hub_body = support.hub_body.duplicate(), axle_body = support.axle_body.duplicate(),
++			carrier_rate_body = M.v3(0.0, 0.0, 0.0), carrier_accel_body = M.v3(0.0, 0.0, 0.0)})
++	var material := {format = Traction.MATERIAL_FORMAT, law = Traction.MATERIAL_LAW, material_id = "dry_pavement",
++		longitudinal_friction = _q(0.7, "1"), lateral_friction = _q(0.5, "1"), rolling_resistance = _q(0.02, "1")}
++	traction = Traction.prepare(prepared, model, [material])
++	check("real three-wheel traction binds selected hardware/material", prepared.ok and traction.ok, str(traction))
++	check("two installed main brakes remain available with unbraked tail", traction.hardware[0].brake_torque_nm > 0.0 \
++		and traction.hardware[1].brake_torque_nm > 0.0 and traction.hardware[2].brake_torque_nm == 0.0)
++
++func _initial(down: float, forward: float, vertical: float, rims: float) -> PackedFloat64Array:
++	var state := RB.make_state(M.v3(0.0, 0.0, down), M.v3(forward, 0.0, vertical), M.q_identity(), M.v3(0.0, 0.0, 0.0))
++	state.append_array(PackedFloat64Array([1400.0, rims, rims, rims]))
++	return state
++
++func _lift(at: float) -> float:
++	return live.mass_kg * GRAVITY * lift_ratio * clampf((at - lift_start) / lift_duration, 0.0, 1.0)
++
++func _snapshot(state: PackedFloat64Array, at: float) -> Dictionary:
++	var body := state.slice(0, RB.SIZE)
++	var q := M.q_normalized(body.slice(RB.ATT, RB.ATT + 4))
++	var velocity_cm := M.add(body.slice(RB.VEL, RB.VEL + 3), M.cross(body.slice(RB.RATE), live.cg_body_m))
++	if absf(M.q_rotate(q,velocity_cm)[2])>CM_NORMAL_SPEED_MAX or M.norm(body.slice(RB.RATE))>OMEGA_MAX \
++		or absf(state[13]*TAU/60.0)>260.0:
++		return {ok=false,reason="algebraic stage left declared CM-speed/rate envelope"}
++	for i in 3:
++		if absf(state[14+i])>RIM_MAX:return {ok=false,reason="algebraic rim envelope"}
++		var axis:=M.q_rotate(q,prepared.normal.supports[i].axle_body)
++		if 1.0-axis[2]*axis[2]<KAPPA_MIN*KAPPA_MIN:return {ok=false,reason="algebraic kappa envelope"}
++	var force := M.q_rotate(M.q_conj(q), M.v3(0.0, 0.0, -_lift(at)))
++	var external := force.duplicate()
++	external.append_array(M.cross(live.cg_body_m, force))
++	var physical := Stage.evaluate(prepared, body, state.slice(14, 17), state[13], motion, provider, at, live, GRAVITY,
++		external, M.v3(0.0, 0.0, 0.0), 0.0)
++	if not physical.ok: return {ok = false, reason = "stage " + str(physical)}
++	for contact:Dictionary in physical.ground.contacts:
++		if contact.geometry_evaluated and (-contact.gap_m>X_MAX or absf(contact.gap_rate_mps)>GAP_SPEED_MAX):
++			return {ok=false,reason="algebraic stage compression/gap-speed envelope"}
++	var brake := 0.7 if at >= brake_start else 0.0
++	var rows := Traction.evaluate(traction, body, live.cg_body_m, physical.ground, PackedFloat64Array([brake, brake, 0.0]))
++	if not rows.ok: return {ok = false, reason = "traction " + str(rows)}
++	var normal_loads := PackedFloat64Array()
++	var ids := PackedStringArray()
++	for contact: Dictionary in physical.ground.contacts:
++		normal_loads.append(contact.normal_load_n)
++		ids.append(contact.contact_id)
++	var derivative: PackedFloat64Array = physical.body_derivative.duplicate()
++	derivative.append(physical.shaft_rpm_rate)
++	derivative.append_array(physical.wheel_rim_rates)
++	var cm_position := M.add(body.slice(0, 3), M.q_rotate(q, live.cg_body_m))
++	return {ok = true, format = Step.SAMPLE_FORMAT, fixed_hubs = true, static_ground = true, source_policy = "none",
++		mass_kg = live.mass_kg, cg_body_m = live.cg_body_m, rotor_stage = physical.rotor.stage,
++		rotor_state_indices = PackedInt64Array([13, 14, 15, 16]),
++		sigma_per_state = PackedFloat64Array([TAU / 60.0, 1.0 / prepared.radii_m[0], 1.0 / prepared.radii_m[1], 1.0 / prepared.radii_m[2]]),
++		nonnegative_rotors = PackedInt64Array([0]), jacobian = rows.jacobian, slip_bias = rows.bias,
++		limit_rates = rows.limit_rates, groups = rows.groups, contact_ids = ids, normal_load_n = normal_loads,
++		potential_j = physical.ground.potential_j - live.mass_kg * GRAVITY * cm_position[2],
++		normal_dissipation_w = physical.ground.dissipation_w, external_power_w = M.dot(force, velocity_cm),
++		physical = physical, rows = rows, derivative = derivative, loads = physical.loads}
++
++func _derivative(state: PackedFloat64Array, at: float) -> PackedFloat64Array:
++	var point := _snapshot(state, at)
++	return point.derivative if point.ok else PackedFloat64Array([NAN])
++
++## Conditional fixed-live-mass plane envelope, protected at every RK sample by
++## _snapshot/_certificate and paired-path error checking. This is numerical
++## qualification of this bounded experiment, not a universal continuous proof.
++func _certificate(state: PackedFloat64Array, _at: float, h: float, point: Dictionary) -> Dictionary:
++	var identity := "composition-plane-X.18-V3-Omega5-kappa.5-v1"
++	var q := M.q_normalized(state.slice(RB.ATT, RB.ATT + 4))
++	var velocity_cm := M.add(state.slice(RB.VEL, RB.VEL + 3), M.cross(state.slice(RB.RATE), live.cg_body_m))
++	var vertical_speed: float = absf(M.q_rotate(q, velocity_cm)[2])
++	var omega := M.norm(state.slice(RB.RATE))
++	if vertical_speed > CM_NORMAL_SPEED_MAX or omega > OMEGA_MAX or absf(state[13] * TAU / 60.0) > 260.0:
++		return {ok = false, admitted = false, identity = identity}
++	var contacts: Array = []
++	for i in 3:
++		if absf(state[14 + i]) > RIM_MAX: return {ok = false, admitted = false, identity = identity}
++		var support: Dictionary = prepared.normal.supports[i]
++		var hub := M.add(state.slice(0, 3), M.q_rotate(q, support.hub_body))
++		var arm := M.norm(M.sub(support.hub_body, live.cg_body_m))
++		var swept := Admission.swept_clearance(-hub[2] - support.radius_m, CM_NORMAL_SPEED_MAX + OMEGA_MAX * arm, h)
++		if swept.ok and swept.proved_separated: continue
++		var axis := M.q_rotate(q, support.axle_body)
++		var kappa := sqrt(maxf(0.0, 1.0 - axis[2] * axis[2]))
++		if kappa - h * OMEGA_MAX < KAPPA_MIN: return {ok = true, admitted = false, identity = identity}
++		var record: Dictionary = point.physical.ground.contacts[i]
++		if record.geometry_evaluated:
++			if -record.gap_m + h * GAP_SPEED_MAX > X_MAX or absf(record.gap_rate_mps) > GAP_SPEED_MAX:
++				return {ok = true, admitted = false, identity = identity}
++		var bound := Normal.bounds(support.normal, X_MAX, GAP_SPEED_MAX)
++		var elastic := Normal.evaluate(support.normal, X_MAX, 0.0)
++		contacts.append({hub_body = support.hub_body, radius_m = support.radius_m,
++			kbar = bound.position_derivative_bound_npm, cbar = bound.rate_derivative_bound_nsm,
++			normal_load_bound_n = elastic.elastic_force_n + bound.rate_derivative_bound_nsm * GAP_SPEED_MAX, kappa_min = KAPPA_MIN})
++	if contacts.is_empty(): return {ok = true, admitted = true, identity = identity}
++	var admission := Admission.plane_envelope(live.mass_kg, live.cg_body_m, point.rotor_stage, contacts, h, 1)
++	return {ok = admission.ok or admission.get("status") == "budget_exceeded", admitted = admission.ok, identity = identity}
++
++func _error_gate(coarse: PackedFloat64Array, fine: PackedFloat64Array, cr: Dictionary, fr: Dictionary, dt: float) -> Dictionary:
++	var judged:=Accuracy.diagnose(quality,coarse,fine,cr,fr,dt)
++	if not judged.admitted and fr.accepted_substeps==16:
++		print("COMPOSITION_GATE_REFUSAL ",JSON.stringify(judged,"",true,true))
++	return {ok=judged.ok,admitted=judged.admitted,identity=judged.identity,normalized_error=judged.normalized_error}
++
++func _nq(value:float,unit:String)->Dictionary:
++	return {value=value,unit=unit,kind="estimated",source="Explicit three-wheel numerical experiment quality, not physical calibration"}
++
++func _tol(absolute:float,relative:float,floor_value:float,unit:String,sources:Array=[])->Dictionary:
++	var value:={absolute=_nq(absolute,unit),relative=_nq(relative,"1"),floor=_nq(floor_value,unit)}
++	if not sources.is_empty():value.scale_sources=sources.duplicate()
++	return value
++
++func _prepare_quality()->void:
++	var ids:=PackedStringArray()
++	var blocks:Array=[{id="shaft",indices=PackedInt64Array([13]),unit="rpm"}]
++	var tolerances:={shaft=_tol(.01,0.0,1e-12,"rad/s")}
++	for i in 3:
++		var id:String=prepared.normal.supports[i].contact_id
++		ids.append(id)
++		blocks.append({id="rim:"+id,indices=PackedInt64Array([14+i]),unit="m/s"})
++		# Retained same-input Sym16 vs128 evidence is below0.11%; original
++		# absolute-only1mm oracle remains retained as a stricter failed oracle.
++		tolerances["rim:"+id]=_tol(.001,.005,.01,"m/s")
++	var layout:={format=Accuracy.LAYOUT_FORMAT,identity=prepared.identity,state_layout_id="composition-three-wheels-shaft-frozen-P51-v2",
++		state_size=17,continuous_start=13,cg_body_m=live.cg_body_m.duplicate(),blocks=blocks,
++		contact_ids=ids,step_law=selected_law,operator_order=1}
++	var raw:={format=Accuracy.FORMAT,quality_name="three-wheel-symmetric-0.5percent-plus1mm-rim-v1",
++		source="Bounded same-input numerical experiment; quality choices qualified by retained64/128 reference, no fleet validation",
++		body={position=_tol(1e-6,0.0,.001,"m"),velocity_cm=_tol(.001,0.0,.01,"m/s"),
++			attitude=_tol(1e-5,0.0,1.0,"rad"),angular_rate=_tol(.0002,0.0,.01,"rad/s")},
++		continuous=tolerances,normal_peak=_tol(.01,.02,.1,"N"),time_tolerance=_nq(1e-9,"s"),
++		work={external_work_j=_tol(WORK_ABSOLUTE_J,.005,1e-12,"J",["external_work_j"]),
++			tangent_dissipation_j=_tol(WORK_ABSOLUTE_J,.005,1e-12,"J",["tangent_dissipation_j","external_work_j"]),
++			normal_dissipation_j=_tol(WORK_ABSOLUTE_J,.005,1e-12,"J",["normal_dissipation_j"]),
++			prescribed_contact_work_j=_tol(WORK_ABSOLUTE_J,.005,1e-12,"J",["prescribed_contact_work_j"])}}
++	quality=Accuracy.prepare(raw,layout)
++	check("actual selected operator/live CG/complete SI quality binds",quality.ok,str(quality))
++
++func _new_sim(initial: PackedFloat64Array) -> Node:
++	var vehicle := Model.new()
++	vehicle.aux_size = 13
++	vehicle.modes_size = 2
++	vehicle.continuous_size = 4
++	vehicle.state_layout_identity = "composition-v2:"+(selected_law+quality.identity).sha256_text()
++	vehicle.stage = func(body, values, at):
++		var combined: PackedFloat64Array = body.duplicate()
++		combined.append_array(values)
++		var point := _snapshot(combined, at)
++		if not point.ok: return {}
++		return {loads = point.loads, derivative = point.derivative.slice(RB.SIZE), rotor_momentum = M.v3(0.0, 0.0, 0.0), body_derivative = point.derivative.slice(0, RB.SIZE)}
++	vehicle.step_policy = func(state, at, dt, f, first): return Step.advance(state, at, dt, f, first, _snapshot, _certificate, _options(), _error_gate)
++	vehicle.endpoint_transition = func(_previous, candidate, context):
++		if context.body_filtered or not context.has("integration_receipt"): return {}
++		var receipt: Dictionary = context.integration_receipt
++		candidate.aux[0] += receipt.normal_dissipation_j
++		candidate.aux[1] += receipt.tangent_dissipation_j
++		candidate.aux[2] += receipt.external_work_j
++		candidate.aux[3] = maxf(candidate.aux[3], absf(receipt.energy_balance_residual_j))
++		candidate.aux[4] = receipt.accepted_substeps
++		candidate.aux[5] = 0.0
++		var loaded := 0
++		for load_n: float in receipt.normal_samples_n[-1]:
++			candidate.aux[5] += load_n
++			if load_n > 0.0: loaded += 1
++		candidate.aux[6] = receipt.error_control.normalized_error
++		candidate.aux[7] = maxf(candidate.aux[7], loaded)
++		candidate.aux[8] = maxf(candidate.aux[8], receipt.accepted_substeps)
++		candidate.aux[9] = maxf(candidate.aux[9], candidate.aux[5])
++		if receipt.has("assembly_resolution"):
++			var proof:Dictionary=receipt.assembly_resolution
++			var uncertainty:float=proof.combined_contact_uncertainty_sum_j
++			if uncertainty>TICK_ASSEMBLY_BUDGET_J:return {}
++			candidate.aux[10]+=uncertainty
++			candidate.aux[11]+=proof.accepted_at_resolution
++			candidate.aux[12]=maxf(candidate.aux[12],uncertainty)
++		candidate.events = []
++		if candidate.modes[0] == 0 and loaded > 0:
++			candidate.events.append({type = "composition_touchdown", time_s = context.time_s})
++			candidate.modes[1] = 1
++		elif candidate.modes[0] > 0 and loaded == 0:
++			candidate.events.append({type = "composition_last_contact_unloaded", time_s = context.time_s})
++		candidate.modes[0] = loaded
++		return {} if reject_endpoint else candidate
++	var sim := Sim.new()
++	sim.mass = live.mass_kg
++	sim.inertia = live.inertia.duplicate()
++	sim.gravity = GRAVITY
++	sim.aux = PackedFloat64Array()
++	sim.aux.resize(13)
++	sim.modes = PackedInt64Array([0, 0])
++	sim.continuous = initial.slice(RB.SIZE)
++	check("composed VehicleModel installs and resets", sim.set_model(vehicle) and sim.reset(initial.slice(0, RB.SIZE)))
++	return sim
++
++func _combined(sim: Node) -> PackedFloat64Array:
++	var state: PackedFloat64Array = sim.state.duplicate()
++	state.append_array(sim.continuous)
++	return state
++
++const Candidate:=preload("res://physics/aircraft_ground_step.gd")
++const Quality:=preload("res://physics/aircraft_ground_accuracy.gd")
++const Unloaded:=preload("res://physics/aircraft_ground_unloaded.gd")
++var binding:Dictionary
++var source_seal:PackedByteArray
++func _source()->Array:return [lift_start,lift_duration,lift_ratio,brake_start,selected_law]
++func _config()->Dictionary:
++	return {ground_stage=prepared,properties=live,provider=provider,motion=motion,gravity=GRAVITY,minimum_kappa=KAPPA_MIN,owner_dynamics_identity=var_to_bytes(_source()).hex_encode().sha256_text()}
++func _bind()->void:
++	source_seal=var_to_bytes(_source())
++	binding=Unloaded.prepare(_config())
++	check("actual owner fixed mechanical/source configuration binds",binding.ok,str(binding))
++func _sample_policy(state:PackedFloat64Array,at:float)->Dictionary:
++	# Revalidate captures at every actual evaluation, not just policy invocation.
++	if source_seal!=var_to_bytes(_source()) or var_to_bytes(binding.config)!=var_to_bytes(_config()):return {ok=false,reason="owner captured evaluator configuration changed"}
++	var sample:=_snapshot(state,at)
++	if sample.ok:
++		sample.normal_support_potential_j=sample.physical.ground.potential_j
++		sample.normal_support_identity=binding.identity
++	return sample
++func _policy(state:PackedFloat64Array,at:float,h:float,point:Dictionary)->Dictionary:
++	# This closure owns the ACTUAL evaluator above: Stage with fixed hubs/plane,
++	# only declared lift ramp and prescribed brakes, no aero/motor/heat feedback.
++	# Configuration mutation is refused even when instantaneous loads still zero.
++	if source_seal!=var_to_bytes(_source()):return {ok=false,eligible=false,identity=binding.identity}
++	if at+h>=brake_start or (lift_ratio!=0.0 and at+h>=lift_start):return {ok=true,eligible=false,identity=binding.identity}
++	var result:=Unloaded.qualify(binding,_config(),state,h,point)
++	return {ok=result.ok,eligible=result.get("eligible",false),identity=binding.identity}
++func _gate(a:PackedFloat64Array,b:PackedFloat64Array,ar:Dictionary,br:Dictionary,h:float)->Dictionary:
++	var result:=Quality.diagnose(quality,a,b,ar,br,h)
++	return {ok=result.ok,admitted=result.admitted,identity=result.identity,normalized_error=result.normalized_error}
++func _read(name:String)->Dictionary:
++	var f:=FileAccess.open("res://tests/fixtures/"+name,FileAccess.READ)
++	var raw:Dictionary=bytes_to_var(f.get_buffer(f.get_length()));f.close()
++	lift_start=raw.lift_start;lift_duration=raw.lift_duration;lift_ratio=raw.lift_ratio;brake_start=raw.brake_start
++	_bind()
++	return raw
++func _attempt(raw:Dictionary,count:int,policy:Callable)->Dictionary:
++	var initial:=_sample_policy(raw.state,raw.time_s)
++	if not initial.ok:return initial
++	return Candidate._attempt(raw.state,raw.time_s,raw.dt,_derivative,PackedFloat64Array(),_sample_policy,_certificate,initial,count,Candidate._settings(raw.options),policy,{})
++func _kernel(raw:Dictionary)->void:
++	var sim:=_new_sim(raw.state)
++	sim.model.step_policy=func(state,at,h,f,k1):return Candidate.advance(state,at,h,f,k1,_sample_policy,_certificate,_options(),_gate,_policy)
++	sim.model.state_layout_identity+="/normal-loss:"+binding.identity
++	check("policy owner layout reset validates",sim.reset(raw.state.slice(0,RB.SIZE)))
++	var original:Dictionary=sim.checkpoint()
++	original.tick=roundi(raw.time_s/raw.dt)
++	check("candidate kernel restores exact retained clock",sim.restore_checkpoint(original))
++	var emissions:={n=0}
++	sim.stepped.connect(func(_a,_b,_c,_d,_e,_f):emissions.n+=1)
++	sim.step()
++	check("kernel accepts actual policy complete step",sim.tick==original.tick+1 and sim.fault_reason.is_empty(),sim.fault_reason)
++	check("only accepted step publishes and accumulates heat",emissions.n==1 and sim.aux[0]>0.0)
++	var final:=var_to_bytes(sim.checkpoint())
++	check("kernel checkpoint restores for exact continuation",sim.restore_checkpoint(original))
++	sim.step()
++	check("kernel continued policy checkpoint bytes match",final==var_to_bytes(sim.checkpoint()))
++	check("rollback baseline restores",sim.restore_checkpoint(original))
++	var before:=var_to_bytes([sim.state,sim.previous,sim.continuous,sim.aux,sim.modes,sim.inputs,sim.last_loads])
++	var before_emissions:int=emissions.n
++	reject_endpoint=true
++	sim.step()
++	reject_endpoint=false
++	check("endpoint refusal rolls back full accepted frame",sim.tick==original.tick and before==var_to_bytes([sim.state,sim.previous,sim.continuous,sim.aux,sim.modes,sim.inputs,sim.last_loads]))
++	check("discarded policy heat/events do not publish",emissions.n==before_emissions and not sim.fault_reason.is_empty())
++	sim.free()
++func _initialize()->void:
++	_fixture();_prepare_composition();_prepare_quality()
++	var gentle:=_read("ground_unloaded_gentle.bin")
++	var paths:Array=[]
++	for count in [8,16]:
++		var original:=Step._attempt(gentle.state,gentle.time_s,gentle.dt,_derivative,PackedFloat64Array(),_sample_policy,_certificate,_sample_policy(gentle.state,gentle.time_s),count,Step._settings(gentle.options))
++		var unchanged:=_attempt(gentle,count,Callable())
++		check("default complete output byte parity n="+str(count),var_to_bytes(unchanged)==var_to_bytes(original))
++		var candidate:=_attempt(gentle,count,_policy)
++		check("qualified policy candidate accepted",candidate.ok,str(candidate))
++		if not candidate.ok:quit(1);return
++		check("qualified body/spin state bytes unchanged",var_to_bytes(candidate.state)==var_to_bytes(original.state))
++		check("all piece residuals recomputed under corrected method",candidate.integration_receipt.maximum_piece_energy_residual_j<1e-10)
++		paths.append(candidate)
++	var pair:=Quality.diagnose(quality,paths[0].state,paths[1].state,paths[0].integration_receipt,paths[1].integration_receipt,gentle.dt)
++	check("raw complete gate passes unchanged physical quality",pair.ok and pair.admitted,str(pair))
++	var result:=Candidate.advance(gentle.state,gentle.time_s,gentle.dt,_derivative,PackedFloat64Array(),_sample_policy,_certificate,gentle.options,_gate,_policy)
++	check("public advance accepts only complete finer path",result.ok and result.integration_receipt.accepted_substeps==16,str(result))
++	var wrong_arity:=func()->Dictionary:return {ok=true,eligible=true,identity=binding.identity}
++	var arity_refusal:=Candidate.advance(gentle.state,gentle.time_s,gentle.dt,_derivative,PackedFloat64Array(),_sample_policy,_certificate,gentle.options,Callable(),wrong_arity)
++	check("valid wrong-arity policy refuses before call",not arity_refusal.ok and arity_refusal.status=="invalid_normal_loss_policy")
++	var target:=Node.new()
++	var freed:=Callable(target,"get_name")
++	target.free()
++	check("freed optional policy refuses safely",not Candidate.advance(gentle.state,gentle.time_s,gentle.dt,_derivative,PackedFloat64Array(),_sample_policy,_certificate,gentle.options,Callable(),freed).ok)
++	var with_bound:=func(_s,_t,_h,_p,id)->Dictionary:return {ok=true,eligible=false,identity=id}
++	check("bound callable with effective arity4 remains valid",_attempt(gentle,8,with_bound.bind(binding.identity)).ok)
++	var lie_settings:=Candidate._settings(gentle.options)
++	lie_settings.operator_law=Candidate.LAW
++	var first:=_derivative(gentle.state,gentle.time_s)
++	var lie:=Candidate._attempt(gentle.state,gentle.time_s,gentle.dt,_derivative,first,_sample_policy,_certificate,_sample_policy(gentle.state,gentle.time_s),8,lie_settings,_policy,{})
++	check("Lie identity-prekick path supports trusted heat policy",lie.ok,str(lie))
++	first[RB.VEL]+=.001
++	var stale:=Candidate._attempt(gentle.state,gentle.time_s,gentle.dt,_derivative,first,_sample_policy,_certificate,_sample_policy(gentle.state,gentle.time_s),8,lie_settings,_policy,{})
++	check("eligible policy rejects stale supplied Lie k1",not stale.ok and stale.status=="invalid_normal_loss_policy",str(stale))
++	_kernel(gentle)
++	for bad:Variant in [null,true,[],{},3,3.2]:
++		var receipt:Dictionary=paths[1].integration_receipt.duplicate(true)
++		receipt.normal_loss_policy.format=bad
++		check("typed policy format refuses safely",not Quality.diagnose(quality,paths[0].state,paths[1].state,paths[0].integration_receipt,receipt,gentle.dt).ok)
++		receipt=paths[1].integration_receipt.duplicate(true)
++		receipt.normal_loss_policy.pieces[0].normal_dissipation_j=bad
++		check("typed piece loss refuses safely",not Quality.diagnose(quality,paths[0].state,paths[1].state,paths[0].integration_receipt,receipt,gentle.dt).ok)
++		var config:Dictionary=_config().duplicate(true)
++		config.provider.format=bad
++		check("typed provider format refuses safely",not Unloaded.prepare(config).ok)
++		config=_config().duplicate(true);config.provider.geometry_law=bad
++		check("typed provider law refuses safely",not Unloaded.prepare(config).ok)
++		config=_config().duplicate(true);config.motion[0].contact_id=bad
++		check("typed motion contact identity refuses safely",not Unloaded.prepare(config).ok)
++		var broken:Dictionary=binding.duplicate(true);broken.format=bad
++		check("typed binding format refuses safely",not Unloaded.qualify(broken,_config(),gentle.state,gentle.dt,_sample_policy(gentle.state,gentle.time_s)).ok)
++		broken=binding.duplicate(true);broken.law=bad
++		check("typed binding law refuses safely",not Unloaded.qualify(broken,_config(),gentle.state,gentle.dt,_sample_policy(gentle.state,gentle.time_s)).ok)
++		var point:=_sample_policy(gentle.state,gentle.time_s)
++		point.mass_kg=bad
++		check("typed live mass refuses safely",not Unloaded.qualify(binding,_config(),gentle.state,gentle.dt,point).ok)
++		point=_sample_policy(gentle.state,gentle.time_s);point.cg_body_m=bad
++		check("typed live CG refuses safely",not Unloaded.qualify(binding,_config(),gentle.state,gentle.dt,point).ok)
++		config=_config().duplicate(true);config.motion[0].hub_body=bad
++		check("typed fixed hub refuses safely",not Unloaded.prepare(config).ok)
++		config=_config().duplicate(true);config.motion[0].axle_body=bad
++		check("typed fixed axle refuses safely",not Unloaded.prepare(config).ok)
++		broken=binding.duplicate(true);broken.expected_matrix=bad
++		check("typed expected matrix refuses safely",not Unloaded.qualify(broken,_config(),gentle.state,gentle.dt,_sample_policy(gentle.state,gentle.time_s)).ok)
++		broken=binding.duplicate(true);broken.expected_carrier=bad
++		check("typed expected carrier refuses safely",not Unloaded.qualify(broken,_config(),gentle.state,gentle.dt,_sample_policy(gentle.state,gentle.time_s)).ok)
++	var mutated:=func(state:PackedFloat64Array,_at:float,_h:float,_s:Dictionary)->Dictionary:
++		state[0]+=1.0
++		return {ok=true,eligible=true,identity=binding.identity}
++	var refused:=_attempt(gentle,8,mutated)
++	check("policy input mutation refuses",not refused.ok and refused.status=="invalid_normal_loss_policy",str(refused))
++	var malformed:=func(_state,_at,_h,_s)->Dictionary:return {ok=true,eligible=1,identity=binding.identity}
++	check("malformed policy refuses",not _attempt(gentle,8,malformed).ok)
++	var unsupported:=func(_state,_at,_h,_s)->Dictionary:return {ok=false,eligible=false,identity=binding.identity}
++	check("owner refusal refuses whole attempt",not _attempt(gentle,8,unsupported).ok)
++	var identity_count:={n=0}
++	var unstable:=func(_state,_at,_h,_s)->Dictionary:
++		identity_count.n+=1
++		return {ok=true,eligible=false,identity=str(identity_count.n)}
++	check("changing owner identity refuses",not _attempt(gentle,8,unstable).ok)
++	var declined:=func(_state,_at,_h,_s)->Dictionary:return {ok=true,eligible=false,identity=binding.identity}
++	var declined_result:=_attempt(gentle,8,declined)
++	var default_result:=_attempt(gentle,8,Callable())
++	declined_result.integration_receipt.erase("normal_loss_policy")
++	declined_result.integration_receipt.quadrature_method="RK4_algebraic_stage_weights_not_damage_samples"
++	check("declining policy preserves complete numeric/default output",var_to_bytes(declined_result)==var_to_bytes(default_result))
++	var changed_sample:=func(state,at):
++		var sample:=_sample_policy(state,at)
++		if at>gentle.time_s:sample.normal_support_identity="changed"
++		return sample
++	var refused_identity:=Candidate._attempt(gentle.state,gentle.time_s,gentle.dt,_derivative,PackedFloat64Array(),changed_sample,_certificate,changed_sample.call(gentle.state,gentle.time_s),8,Candidate._settings(gentle.options),_policy,{})
++	check("mid-RK support identity mutation refuses",not refused_identity.ok and not refused_identity.has("state"))
++	var hidden_loaded:=func(state,at):
++		var sample:=_sample_policy(state,at)
++		if at>gentle.time_s:sample.normal_load_n[2]=.01
++		return sample
++	var refused_load:=Candidate._attempt(gentle.state,gentle.time_s,gentle.dt,_derivative,PackedFloat64Array(),hidden_loaded,_certificate,hidden_loaded.call(gentle.state,gentle.time_s),8,Candidate._settings(gentle.options),_policy,{})
++	check("actual loaded RK evaluation contradicts and refuses qualification",not refused_load.ok and not refused_load.has("state"))
++	var saved_material:String=provider.regions[0].material_id
++	var mutate_capture:=func(state,at):
++		if at>gentle.time_s:provider.regions[0].material_id="mid-RK-mutation"
++		return _sample_policy(state,at)
++	var initial_sample:=_sample_policy(gentle.state,gentle.time_s)
++	var mid_refusal:=Candidate._attempt(gentle.state,gentle.time_s,gentle.dt,_derivative,PackedFloat64Array(),mutate_capture,_certificate,initial_sample,8,Candidate._settings(gentle.options),_policy,{})
++	check("owner catches captured provider mutation during actual RK",not mid_refusal.ok and not mid_refusal.has("state"))
++	provider.regions[0].material_id=saved_material
++	var old_mass:float=live.mass_kg;live.mass_kg+=.01
++	check("captured live mass mutation refuses helper binding",not Unloaded.qualify(binding,_config(),gentle.state,gentle.dt,_sample_policy(gentle.state,gentle.time_s)).ok)
++	live.mass_kg=old_mass
++	var old_region:String=provider.regions[0].material_id;provider.regions[0].material_id="changed"
++	check("captured provider mutation refuses helper binding",not Unloaded.qualify(binding,_config(),gentle.state,gentle.dt,_sample_policy(gentle.state,gentle.time_s)).ok)
++	provider.regions[0].material_id=old_region
++	var old_hub:float=motion[0].hub_body[0];motion[0].hub_body[0]+=.001
++	check("captured fixed motion mutation refuses helper binding",not Unloaded.qualify(binding,_config(),gentle.state,gentle.dt,_sample_policy(gentle.state,gentle.time_s)).ok)
++	motion[0].hub_body[0]=old_hub
++	lift_ratio=.01
++	check("captured future source configuration mutation refuses",not _attempt(gentle,8,_policy).ok)
++	lift_ratio=gentle.lift_ratio
++	var hard:=_read("ground_unloaded_hard.bin")
++	var hard_paths:Array=[]
++	for count in [8,16]:
++		var candidate:=_attempt(hard,count,_policy)
++		var unchanged:=_attempt(hard,count,Callable())
++		check("mixed loaded/unloaded policy keeps state bytes",candidate.ok and unchanged.ok and var_to_bytes(candidate.state)==var_to_bytes(unchanged.state),str(candidate))
++		if not candidate.ok:quit(1);return
++		var methods:={}
++		for piece:Dictionary in candidate.integration_receipt.normal_loss_policy.pieces:methods[piece.method]=true
++		check("loaded and qualified pieces use distinct recorded methods",methods.size()==2,str(methods))
++		hard_paths.append(candidate)
++	var hard_pair:=Quality.diagnose(quality,hard_paths[0].state,hard_paths[1].state,hard_paths[0].integration_receipt,hard_paths[1].integration_receipt,hard.dt)
++	check("hard tangent raw failure is preserved",hard_pair.ok and not hard_pair.admitted,str(hard_pair))
++	print("Unloaded policy: %d checks, %d failed"%[checks,failed])
++	quit(1 if failed else 0)

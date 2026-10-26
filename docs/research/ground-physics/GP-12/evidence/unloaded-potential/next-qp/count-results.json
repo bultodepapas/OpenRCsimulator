@@ -1,0 +1,754 @@
+[
+	{
+		"paths": [
+			{
+				"count": 1,
+				"result": {
+					"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+					"ok": false,
+					"reason": "whole-piece refinement required",
+					"status": "refine"
+				}
+			},
+			{
+				"count": 2,
+				"result": {
+					"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+					"ok": false,
+					"reason": "whole-piece refinement required",
+					"status": "refine"
+				}
+			},
+			{
+				"count": 4,
+				"result": {
+					"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+					"ok": false,
+					"reason": "whole-piece refinement required",
+					"status": "refine"
+				}
+			},
+			{
+				"count": 8,
+				"result": {
+					"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+					"ok": false,
+					"reason": "half contact impulse refused: global KKT residual exceeds iteration budget",
+					"status": "traction_rejected"
+				}
+			},
+			{
+				"count": 16,
+				"result": {
+					"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+					"ok": false,
+					"reason": "half contact impulse refused: global KKT residual exceeds iteration budget",
+					"status": "traction_rejected"
+				}
+			}
+		],
+		"raw8_16": {},
+		"speed": 0.25,
+		"tick": 143
+	},
+	{
+		"paths": [
+			{
+				"count": 1,
+				"result": {
+					"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+					"ok": false,
+					"reason": "whole-piece refinement required",
+					"status": "refine"
+				}
+			},
+			{
+				"count": 2,
+				"result": {
+					"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+					"ok": false,
+					"reason": "whole-piece refinement required",
+					"status": "refine"
+				}
+			},
+			{
+				"count": 4,
+				"result": {
+					"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+					"ok": false,
+					"reason": "whole-piece refinement required",
+					"status": "refine"
+				}
+			},
+			{
+				"count": 8,
+				"result": {
+					"events": [],
+					"integration_receipt": {
+						"absolute_impulse_sum": 8.071659185451691e-05,
+						"accepted_substeps": 8,
+						"assembly_resolution": {
+							"accepted_at_resolution": 0,
+							"accepted_slip_roundoff": 0,
+							"accepted_work_roundoff": 0,
+							"ceiling_scope": "per_impulse_qp_not_tick",
+							"combined_contact_uncertainty_sum_j": 0.0,
+							"derived_gamma_sum_j": 0.0,
+							"maximum_assembly_resolution_j": 3.1250000000000003e-13,
+							"maximum_derived_gamma_j": 0.0,
+							"objective_gap_upper_sum_j": 0.0,
+							"slip_work_equivalent_sum_j": 0.0,
+							"work_consistency_sum_j": 0.0
+						},
+						"certificate_identities": [
+							"composition-plane-X.18-V3-Omega5-kappa.5-v1"
+						],
+						"contact_ids": [
+							"contact_main_left",
+							"contact_main_right",
+							"contact_tail"
+						],
+						"contact_operator_order": 1,
+						"energy_balance_residual_j": 2.6761762944582657e-11,
+						"external_work_j": 0.0,
+						"final_mechanical_energy_j": 356.3122068803497,
+						"format": "openrc-aircraft-ground-integration v1",
+						"initial_mechanical_energy_j": 356.4665098149306,
+						"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+						"maximum_piece_energy_residual_j": 2.6480846829153625e-11,
+						"normal_dissipation_j": 0.1541242967858451,
+						"normal_loss_policy": {
+							"format": "openrc-normal-loss-policy-receipt v1",
+							"identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+							"pieces": [
+								{
+									"energy_residual_j": 4.430898464975741e-14,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.02425698319349031
+								},
+								{
+									"energy_residual_j": 4.758902148217781e-15,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.022973849305371087
+								},
+								{
+									"energy_residual_j": 2.1645427556457944e-13,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.021704961699552022
+								},
+								{
+									"energy_residual_j": 2.6480846829153625e-11,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.020422809425670107
+								},
+								{
+									"end_support_potential_j": 0.10110877590030633,
+									"energy_residual_j": -4.5005665860742283e-14,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.01878401940804271,
+									"start_support_potential_j": 0.11989279530834904,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								},
+								{
+									"end_support_potential_j": 0.08406766773854024,
+									"energy_residual_j": 1.0259848526317228e-13,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.017041108161766086,
+									"start_support_potential_j": 0.10110877590030633,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								},
+								{
+									"end_support_potential_j": 0.06874767618708369,
+									"energy_residual_j": -5.08759701034478e-14,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.015319991551456552,
+									"start_support_potential_j": 0.08406766773854024,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								},
+								{
+									"end_support_potential_j": 0.055127102146587434,
+									"energy_residual_j": 8.701372955499664e-15,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.013620574040496256,
+									"start_support_potential_j": 0.06874767618708369,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								}
+							]
+						},
+						"normal_sample_times_s": [
+							0.325,
+							0.32552083333333337,
+							0.32604166666666673,
+							0.32656250000000003,
+							0.3270833333333334,
+							0.3276041666666667,
+							0.32812500000000006,
+							0.32864583333333336,
+							0.3291666666666667
+						],
+						"normal_samples_n": [
+							[
+								0.0,
+								0.0,
+								3.196101920769202
+							],
+							[
+								0.0,
+								0.0,
+								2.3230629125968676
+							],
+							[
+								0.0,
+								0.0,
+								1.4544584348579015
+							],
+							[
+								0.0,
+								0.0,
+								0.590320650444502
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							]
+						],
+						"normal_sampling_method": "accepted_substep_start_and_end_states_not_interval_maximum",
+						"post_contact_dissipation_j": 6.539367856854768e-05,
+						"post_prescribed_contact_work_j": 0.0,
+						"pre_contact_dissipation_j": 0.00011324414321718785,
+						"pre_prescribed_contact_work_j": 0.0,
+						"prescribed_contact_work_j": 0.0,
+						"quadrature_method": "RK4_external_work_piecewise_normal_loss_v1",
+						"sampled_peak_normal_n": [
+							0.0,
+							0.0,
+							3.196101920769202
+						],
+						"sampled_peak_times_s": [
+							0.325,
+							0.325,
+							0.325
+						],
+						"split_method": "two_sided_half_impulses_recomputed_k1_order1",
+						"tangent_dissipation_j": 0.00017863782178573553
+					},
+					"ok": true,
+					"state": [
+						0.9666070790232594,
+						1.1564156398373776e-06,
+						-0.19527128805390587,
+						2.8696886149231626,
+						-3.635927226668579e-06,
+						-1.1623494567972326,
+						0.9999985083879486,
+						3.026938358591505e-06,
+						-0.001727197936705172,
+						-5.5839426145140695e-08,
+						2.4012925912141958e-05,
+						0.0054277922149118035,
+						6.462548478978176e-06,
+						1399.9988647866123,
+						2.874701001038909,
+						2.874700965052926,
+						2.8747820321900512
+					],
+					"status": "accepted"
+				}
+			},
+			{
+				"count": 16,
+				"result": {
+					"events": [],
+					"integration_receipt": {
+						"absolute_impulse_sum": 8.26632384865302e-05,
+						"accepted_substeps": 16,
+						"assembly_resolution": {
+							"accepted_at_resolution": 0,
+							"accepted_slip_roundoff": 0,
+							"accepted_work_roundoff": 0,
+							"ceiling_scope": "per_impulse_qp_not_tick",
+							"combined_contact_uncertainty_sum_j": 0.0,
+							"derived_gamma_sum_j": 0.0,
+							"maximum_assembly_resolution_j": 3.1250000000000003e-13,
+							"maximum_derived_gamma_j": 0.0,
+							"objective_gap_upper_sum_j": 0.0,
+							"slip_work_equivalent_sum_j": 0.0,
+							"work_consistency_sum_j": 0.0
+						},
+						"certificate_identities": [
+							"composition-plane-X.18-V3-Omega5-kappa.5-v1"
+						],
+						"contact_ids": [
+							"contact_main_left",
+							"contact_main_right",
+							"contact_tail"
+						],
+						"contact_operator_order": 1,
+						"energy_balance_residual_j": 2.6363846273181474e-12,
+						"external_work_j": 0.0,
+						"final_mechanical_energy_j": 356.3122063937311,
+						"format": "openrc-aircraft-ground-integration v1",
+						"initial_mechanical_energy_j": 356.4665098149306,
+						"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+						"maximum_piece_energy_residual_j": 2.2728128805619155e-12,
+						"normal_dissipation_j": 0.15412683280260234,
+						"normal_loss_policy": {
+							"format": "openrc-normal-loss-policy-receipt v1",
+							"identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+							"pieces": [
+								{
+									"energy_residual_j": -5.6376331012374103e-14,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.012289774390121728
+								},
+								{
+									"energy_residual_j": 1.2710739714450262e-13,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.011967208939451758
+								},
+								{
+									"energy_residual_j": 1.2678671047067214e-13,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.011646425708004572
+								},
+								{
+									"energy_residual_j": 9.822469850288493e-14,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.011327423748592377
+								},
+								{
+									"energy_residual_j": 3.565674976959386e-14,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.011010202096516262
+								},
+								{
+									"energy_residual_j": -2.7206837179211477e-14,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.010694759769540442
+								},
+								{
+									"energy_residual_j": -4.3602518514165856e-14,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.010381095767866638
+								},
+								{
+									"energy_residual_j": 2.2728128805619155e-12,
+									"method": "RK4_normal_power_v1",
+									"normal_dissipation_j": 0.010044255330076366
+								},
+								{
+									"end_support_potential_j": 0.11028155450738421,
+									"energy_residual_j": 1.328520626842078e-13,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.009611238491648758,
+									"start_support_potential_j": 0.11989279299903297,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								},
+								{
+									"end_support_potential_j": 0.10110877554837427,
+									"energy_residual_j": 1.1782241848834474e-14,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.009172778959009933,
+									"start_support_potential_j": 0.11028155450738421,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								},
+								{
+									"end_support_potential_j": 0.09237172283618411,
+									"energy_residual_j": -7.283063041541027e-14,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.008737052712190163,
+									"start_support_potential_j": 0.10110877554837427,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								},
+								{
+									"end_support_potential_j": 0.08406766905603491,
+									"energy_residual_j": 6.938893903907228e-14,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.008304053780149201,
+									"start_support_potential_j": 0.09237172283618411,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								},
+								{
+									"end_support_potential_j": 0.07619389286418442,
+									"energy_residual_j": -1.064565102737447e-13,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.007873776191850493,
+									"start_support_potential_j": 0.08406766905603491,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								},
+								{
+									"end_support_potential_j": 0.0687476788879317,
+									"energy_residual_j": 4.3673398231192095e-14,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.007446213976252711,
+									"start_support_potential_j": 0.07619389286418442,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								},
+								{
+									"end_support_potential_j": 0.06172631772561181,
+									"energy_residual_j": -2.4522051056408145e-14,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.007021361162319897,
+									"start_support_potential_j": 0.0687476788879317,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								},
+								{
+									"end_support_potential_j": 0.055127105946600766,
+									"energy_residual_j": 4.909961326404755e-14,
+									"method": "unloaded_support_potential_difference_v1",
+									"normal_dissipation_j": 0.006599211779011044,
+									"start_support_potential_j": 0.06172631772561181,
+									"support_identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+									"zero_force_rk_samples": 4
+								}
+							]
+						},
+						"normal_sample_times_s": [
+							0.325,
+							0.32526041666666666,
+							0.3255208333333333,
+							0.32578125,
+							0.3260416666666667,
+							0.3263020833333333,
+							0.3265625,
+							0.3268229166666667,
+							0.32708333333333334,
+							0.32734375,
+							0.32760416666666664,
+							0.32786458333333335,
+							0.328125,
+							0.32838541666666665,
+							0.3286458333333333,
+							0.32890625,
+							0.32916666666666666
+						],
+						"normal_samples_n": [
+							[
+								0.0,
+								0.0,
+								3.196101920769202
+							],
+							[
+								0.0,
+								0.0,
+								2.7590301120683343
+							],
+							[
+								0.0,
+								0.0,
+								2.3230629000782894
+							],
+							[
+								0.0,
+								0.0,
+								1.8882043237524044
+							],
+							[
+								0.0,
+								0.0,
+								1.4544584096682236
+							],
+							[
+								0.0,
+								0.0,
+								1.0218291719905093
+							],
+							[
+								0.0,
+								0.0,
+								0.5903206124337448
+							],
+							[
+								0.0,
+								0.0,
+								0.15993672022534255
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							],
+							[
+								0.0,
+								0.0,
+								0.0
+							]
+						],
+						"normal_sampling_method": "accepted_substep_start_and_end_states_not_interval_maximum",
+						"post_contact_dissipation_j": 7.633158120615631e-05,
+						"post_prescribed_contact_work_j": 0.0,
+						"pre_contact_dissipation_j": 0.00010025681830015941,
+						"pre_prescribed_contact_work_j": 0.0,
+						"prescribed_contact_work_j": 0.0,
+						"quadrature_method": "RK4_external_work_piecewise_normal_loss_v1",
+						"sampled_peak_normal_n": [
+							0.0,
+							0.0,
+							3.196101920769202
+						],
+						"sampled_peak_times_s": [
+							0.325,
+							0.325,
+							0.325
+						],
+						"split_method": "two_sided_half_impulses_recomputed_k1_order1",
+						"tangent_dissipation_j": 0.00017658839950631574
+					},
+					"ok": true,
+					"state": [
+						0.9666070791977529,
+						1.1560293193230878e-06,
+						-0.19527128790131504,
+						2.869688647534701,
+						-3.759316290729447e-06,
+						-1.1623493565793006,
+						0.9999985083877768,
+						3.027139966065258e-06,
+						-0.0017271980358251496,
+						-5.608464367374999e-08,
+						2.4142410320702014e-05,
+						0.005427618768470271,
+						6.304421319036956e-06,
+						1399.9988636258986,
+						2.874700986174551,
+						2.874700950188567,
+						2.8747834460197494
+					],
+					"status": "accepted"
+				}
+			}
+		],
+		"raw8_16": {
+			"admitted": false,
+			"channels": {
+				"angular_rate:0": {
+					"absolute_difference": 1.2948440856005604e-07,
+					"bound": 0.0002,
+					"normalized_error": 0.0006474220428002802,
+					"scale": 0.01,
+					"unit": "rad/s"
+				},
+				"angular_rate:1": {
+					"absolute_difference": 1.7344644153219346e-07,
+					"bound": 0.0002,
+					"normalized_error": 0.0008672322076609673,
+					"scale": 0.01,
+					"unit": "rad/s"
+				},
+				"angular_rate:2": {
+					"absolute_difference": 1.581271599412198e-07,
+					"bound": 0.0002,
+					"normalized_error": 0.000790635799706099,
+					"scale": 0.01,
+					"unit": "rad/s"
+				},
+				"attitude": {
+					"absolute_difference": 6.65137607643972e-10,
+					"bound": 1e-05,
+					"normalized_error": 6.651376076439719e-05,
+					"scale": 1.0,
+					"unit": "rad"
+				},
+				"continuous:rim:contact_main_left:14": {
+					"absolute_difference": 1.4864357744670542e-08,
+					"bound": 0.015373505005194545,
+					"normalized_error": 9.668815107321351e-07,
+					"scale": 2.874701001038909,
+					"unit": "m/s"
+				},
+				"continuous:rim:contact_main_right:15": {
+					"absolute_difference": 1.4864358632848962e-08,
+					"bound": 0.01537350482526463,
+					"normalized_error": 9.66881579821737e-07,
+					"scale": 2.874700965052926,
+					"unit": "m/s"
+				},
+				"continuous:rim:contact_tail:16": {
+					"absolute_difference": 1.4138296982046938e-06,
+					"bound": 0.015373917230098746,
+					"normalized_error": 9.196287953448367e-05,
+					"scale": 2.8747834460197494,
+					"unit": "m/s"
+				},
+				"continuous:shaft:13": {
+					"absolute_difference": 1.2154967521382787e-07,
+					"bound": 0.01,
+					"normalized_error": 1.2154967521382787e-05,
+					"scale": 146.6075382882557,
+					"unit": "rad/s"
+				},
+				"position:0": {
+					"absolute_difference": 1.7449353073573093e-10,
+					"bound": 1e-06,
+					"normalized_error": 0.00017449353073573093,
+					"scale": 0.012900641561296385,
+					"unit": "m"
+				},
+				"position:1": {
+					"absolute_difference": 3.863205142897756e-10,
+					"bound": 1e-06,
+					"normalized_error": 0.0003863205142897756,
+					"scale": 0.012900641561296385,
+					"unit": "m"
+				},
+				"position:2": {
+					"absolute_difference": 1.5259082886132092e-10,
+					"bound": 1e-06,
+					"normalized_error": 0.00015259082886132092,
+					"scale": 0.012900641561296385,
+					"unit": "m"
+				},
+				"sampled_normal_peak:contact_main_left": {
+					"absolute_difference": 0.0,
+					"bound": 0.012,
+					"normalized_error": 0.0,
+					"scale": 0.1,
+					"unit": "N"
+				},
+				"sampled_normal_peak:contact_main_right": {
+					"absolute_difference": 0.0,
+					"bound": 0.012,
+					"normalized_error": 0.0,
+					"scale": 0.1,
+					"unit": "N"
+				},
+				"sampled_normal_peak:contact_tail": {
+					"absolute_difference": 0.0,
+					"bound": 0.07392203841538403,
+					"normalized_error": 0.0,
+					"scale": 3.196101920769202,
+					"unit": "N"
+				},
+				"velocity_cm:0": {
+					"absolute_difference": 3.2495095503293214e-08,
+					"bound": 0.001,
+					"normalized_error": 3.2495095503293214e-05,
+					"scale": 3.0961539747111324,
+					"unit": "m/s"
+				},
+				"velocity_cm:1": {
+					"absolute_difference": 1.2433905427978115e-07,
+					"bound": 0.001,
+					"normalized_error": 0.00012433905427978114,
+					"scale": 3.0961539747111324,
+					"unit": "m/s"
+				},
+				"velocity_cm:2": {
+					"absolute_difference": 1.0090859703382193e-07,
+					"bound": 0.001,
+					"normalized_error": 0.00010090859703382193,
+					"scale": 3.0961539747111324,
+					"unit": "m/s"
+				},
+				"work:external_work_j": {
+					"absolute_difference": 0.0,
+					"bound": 1.0000000049999999e-06,
+					"normalized_error": 0.0,
+					"scale": 1e-12,
+					"unit": "J"
+				},
+				"work:normal_dissipation_j": {
+					"absolute_difference": 2.536016757231918e-06,
+					"bound": 0.0007716341640130117,
+					"normalized_error": 0.003286553234038967,
+					"scale": 0.15412683280260234,
+					"unit": "J"
+				},
+				"work:prescribed_contact_work_j": {
+					"absolute_difference": 0.0,
+					"bound": 1.0000000049999999e-06,
+					"normalized_error": 0.0,
+					"scale": 1e-12,
+					"unit": "J"
+				},
+				"work:tangent_dissipation_j": {
+					"absolute_difference": 2.049422279419799e-06,
+					"bound": 1.8931891089286776e-06,
+					"normalized_error": 1.082523805865084,
+					"scale": 0.00017863782178573553,
+					"unit": "J"
+				}
+			},
+			"conservation_certificate": false,
+			"conservation_residuals_j": [
+				2.6761762944582657e-11,
+				2.6363846273181474e-12
+			],
+			"identity": "4e28450855f934194942ab3f9d0b16e178cb22eb38eb39e82b12be8f13005dd9",
+			"layout_identity": "85775edefb5a7a190bab180828ac1d0a4473eaedf21e1199cbd8b96117c88b2d",
+			"normalized_error": 1.082523805865084,
+			"ok": true,
+			"quality_name": "three-wheel-symmetric-0.5percent-plus1mm-rim-v1",
+			"scope": "one_tick_complete_path_accuracy_not_global_trajectory_or_conservation"
+		},
+		"speed": 1.2,
+		"tick": 78
+	}
+]

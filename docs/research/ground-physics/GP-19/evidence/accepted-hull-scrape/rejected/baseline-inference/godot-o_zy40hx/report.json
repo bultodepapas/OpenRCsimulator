@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f0e90f71-90a7-4f20-99e6-c2f226813fe4",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/baseline.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T19:05:52.974055+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\baseline\\godot-o_zy40hx\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\baseline\\godot-o_zy40hx\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Hull scrape audit: 10 checks, 0 failed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Cannot infer the type of \"power\" variable because the value doesn't have a set type.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/baseline.gd:19)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/baseline.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "Hull scrape audit: 10 checks, 0 failed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.328,
+  "log_bytes": 465,
+  "log_sha256": "9b4e5e831555f3ffa831002313ebaab95f65b2fee14b4c6225a13a8263d8a0b8"
+}

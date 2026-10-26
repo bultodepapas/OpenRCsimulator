@@ -1,0 +1,344 @@
+--- a/app/physics/contact_assembly_resolution.gd
++++ b/app/physics/contact_assembly_resolution.gd
+@@ -26,10 +26,10 @@
+ ## screen can skip costly witnesses; it NEVER substitutes for final admission.
+ static func _solve_with_work(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,groups:Array,
+ 		mass_matrix:PackedFloat64Array,jacobian:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,
+-		responses:PackedFloat64Array,maximum_resolution_j:float,iteration_budget:int,proof_screen:bool,memo:Dictionary={})->Dictionary:
++		responses:PackedFloat64Array,maximum_resolution_j:float,iteration_budget:int,proof_screen:bool,memo:Dictionary={},allow_unresolved_descent:bool=false)->Dictionary:
+ 	var work:={qp={},range_proposal_calls=0,work_candidate_calls=0,strict_publication_calls=0,assembly_witness_builds=0,assembly_certificates=0}
+ 	var before_builds:=int(memo.get("builds",0))
+-	var result:=_solve_core(a,v,limits,groups,mass_matrix,jacobian,z,bias,responses,maximum_resolution_j,iteration_budget,proof_screen,work,memo)
++	var result:=_solve_core(a,v,limits,groups,mass_matrix,jacobian,z,bias,responses,maximum_resolution_j,iteration_budget,proof_screen,work,memo,allow_unresolved_descent)
+ 	work.assembly_witness_requests=work.assembly_witness_builds
+ 	work.assembly_witness_builds=int(memo.get("builds",0))-before_builds
+ 	return {result=result,work=work}
+@@ -37,13 +37,13 @@
+ 
+ static func _solve_core(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,groups:Array,
+ 		mass_matrix:PackedFloat64Array,jacobian:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,
+-		responses:PackedFloat64Array,maximum_resolution_j:float,iteration_budget:int,proof_screen:bool,account:Dictionary,memo:Dictionary={})->Dictionary:
++		responses:PackedFloat64Array,maximum_resolution_j:float,iteration_budget:int,proof_screen:bool,account:Dictionary,memo:Dictionary={},allow_unresolved_descent:bool=false)->Dictionary:
+ 	if not is_finite(maximum_resolution_j) or maximum_resolution_j < 0.0:
+ 		return _failure("explicit finite nonnegative owner resolution budget required")
+ 	var strict:Dictionary
+ 	if account.is_empty():strict=QP._solve_for_assembly(a,v,limits,groups,iteration_budget)
+ 	else:
+-		var packet:=QP._solve_for_assembly_with_work(a,v,limits,groups,iteration_budget)
++		var packet:=QP._solve_for_assembly_with_work(a,v,limits,groups,iteration_budget,allow_unresolved_descent)
+ 		strict=packet.result
+ 		account.qp=packet.work
+ 	if strict.ok:return strict
+@@ -545,6 +545,10 @@
+ 			seen[i] = 1
+ 			if limits[i] == 0.0:
+ 				if impulse[i] != 0.0: return _failure("zero authority has impulse")
++			elif group.size()==1:
++				# For a binary64 interval endpoint this comparison is exact; an
++				# outward divided/squared upper bound cannot prove equality.
++				if absf(impulse[i])>limits[i]:return _failure("original interval capacity exceeded")
+ 			else:
+ 				var ratio := _div(absf(impulse[i]),limits[i])
+ 				length = _add(length,_mul(ratio,ratio))
+--- a/app/physics/contact_assembly_strategy.gd
++++ b/app/physics/contact_assembly_strategy.gd
+@@ -24,7 +24,7 @@
+     if remaining<1 or first.get("status","")!="nonconverged":return _annotate(first,work,budget,1)
+     # A deterministic restart uses ONLY the caller's REMAINING sweep budget.
+     # Probe and restart proposals/witness work are explicitly accumulated.
+-    var fallback:=Strict._solve_with_work(a,v,d,groups,mass,j,z,bias,responses,ceiling,remaining,false,memo)
++    var fallback:=Strict._solve_with_work(a,v,d,groups,mass,j,z,bias,responses,ceiling,remaining,false,memo,true)
+     var extra:=_work(fallback.work)
+     for key:String in work:work[key]+=extra[key]
+     return _annotate(fallback.result,work,budget,2)
+@@ -33,17 +33,20 @@
+     var qp:Dictionary=source.get("qp",{})
+     return {started_sweeps=int(qp.get("started_sweeps",0)),spd_proposal_calls=int(qp.get("spd_proposal_calls",0)),
+         interior_proposal_calls=int(qp.get("interior_proposal_calls",0)),extrapolation_calls=int(qp.get("extrapolation_calls",0)),
+-        range_proposal_calls=int(source.get("range_proposal_calls",0)),work_candidate_calls=int(source.get("work_candidate_calls",0))+int(source.get("strict_publication_calls",0))+int(qp.get("publication_work_calls",0)),
++        unresolved_descent_calls=int(qp.get("unresolved_descent_calls",0)),range_proposal_calls=int(source.get("range_proposal_calls",0)),work_candidate_calls=int(source.get("work_candidate_calls",0))+int(source.get("strict_publication_calls",0))+int(qp.get("publication_work_calls",0)),
+         publication_calls=int(source.get("strict_publication_calls",0))+int(qp.get("publication_work_calls",0)),assembly_witness_builds=int(source.get("assembly_witness_builds",0)),
+         assembly_certificates=int(source.get("assembly_certificates",0)),assembly_witness_requests=int(source.get("assembly_witness_requests",0))}
+ 
+ static func _annotate(result:Dictionary,work:Dictionary,budget:int,solves:int)->Dictionary:
+     result.iterations=work.started_sweeps
+-    result.numerical_strategy=STRATEGY
++    var selected:=STRATEGY
++    if work.get("unresolved_descent_calls",0)>0:selected="bounded-eight-KKT-probe-unresolved-descent-certified-fallback-v2"
++    result.numerical_strategy=selected
+     result.numerical_work=work.duplicate(true)
++    if result.numerical_work.get("unresolved_descent_calls",0)==0:result.numerical_work.erase("unresolved_descent_calls")
+     result.numerical_work.caller_sweep_budget=budget
+     result.numerical_work.strict_solve_calls=solves
+     if result.has("assembly_resolution"):
+-        result.assembly_resolution.selection_strategy=STRATEGY
++        result.assembly_resolution.selection_strategy=selected
+         result.assembly_resolution.total_started_sweeps=work.started_sweeps
+     return result
+--- a/app/physics/ground_traction.gd
++++ b/app/physics/ground_traction.gd
+@@ -7,6 +7,7 @@
+ const GC := preload("res://physics/generalized_coordinates.gd")
+ const LAW := "compact-mobility-block-kkt-impulse-v1"
+ const ACCELERATION_LAW := "bounded-interior-face-feasible-extrapolation-v1"
++const UNRESOLVED_DESCENT_LAW:="bounded-interior-face-unresolved-descent-feasible-extrapolation-v2"
+ const MAX_DIMENSION := 128
+ const MAX_ITERATIONS := 1024
+ const MULTIPLIER_ITERATIONS := 72
+@@ -29,20 +30,20 @@
+ ## Assembly-resolution owner only: retain a detached failed strict iterate;
+ ## this returns NO additional acceptance or tolerance and never changes solve().
+ static func _solve_for_assembly(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFloat64Array,
+-		groups:Array,iteration_budget:int=MAX_ITERATIONS)->Dictionary:
+-	return _solve(a,v,limits,groups,iteration_budget,true)
++		groups:Array,iteration_budget:int=MAX_ITERATIONS,allow_unresolved_descent:bool=false)->Dictionary:
++	return _solve(a,v,limits,groups,iteration_budget,true,{},allow_unresolved_descent)
+ 
+ 
+ ## Internal accounting wrapper; normal solve() dictionaries are untouched.
+ static func _solve_for_assembly_with_work(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,
+-		groups:Array,iteration_budget:int)->Dictionary:
++		groups:Array,iteration_budget:int,allow_unresolved_descent:bool=false)->Dictionary:
+ 	var work:={started_sweeps=0,spd_proposal_calls=0,interior_proposal_calls=0,extrapolation_calls=0,publication_work_calls=0}
+-	var result:=_solve(a,v,limits,groups,iteration_budget,true,work)
++	var result:=_solve(a,v,limits,groups,iteration_budget,true,work,allow_unresolved_descent)
+ 	return {result=result,work=work}
+ 
+ 
+ static func _solve(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFloat64Array,
+-		groups:Array,iteration_budget:int,retain_candidate:bool,work:Dictionary={})->Dictionary:
++		groups:Array,iteration_budget:int,retain_candidate:bool,work:Dictionary={},allow_unresolved_descent:bool=false)->Dictionary:
+ 	var n := v.size()
+ 	if n < 1 or n > MAX_DIMENSION or a.size() != n * n or limits.size() != n \
+ 		or not _finite(a) or not _finite(v) or not _finite(limits) \
+@@ -127,6 +128,7 @@
+ 	var previous_objective := 0.0
+ 	var maximum_increase := 0.0
+ 	var accelerated := 0
++	var unresolved_work:={calls=0,accepted=0}
+ 	for iteration in iteration_budget:
+ 		if not work.is_empty():work.started_sweeps+=1
+ 		var previous_y := y.duplicate()
+@@ -156,7 +158,8 @@
+ 		# diagonal, physical mass, force or impulse cap is regularized here.
+ 		if (iteration + 1) % 8 == 0:
+ 			if not work.is_empty():work.interior_proposal_calls+=1
+-			var polished := _interior_face(hs, bs, y, limits, groups, tolerance, retain_candidate)
++			var polished := _interior_face(hs, bs, y, limits, groups, tolerance, retain_candidate,unresolved_work,allow_unresolved_descent)
++			if not work.is_empty():work.unresolved_descent_calls=unresolved_work.calls
+ 			if polished != y:
+ 				y = polished
+ 				accelerated += 1
+@@ -179,6 +182,10 @@
+ 				published.method = "cyclic_exact_metric_blocks_feasible_acceleration"
+ 				published.acceleration_law = ACCELERATION_LAW
+ 				published.accepted_accelerations = accelerated
++			if unresolved_work.calls>0:
++				published.acceleration_law=UNRESOLVED_DESCENT_LAW
++				published.unresolved_descent_calls=unresolved_work.calls
++				published.accepted_unresolved_descents=unresolved_work.accepted
+ 			return published
+ 		if not is_finite(current_objective) or current_objective > previous_objective + 0.00000000000002 * (absf(previous_objective) + b_norm):
+ 			var refused:=_failure("block solve did not preserve monotone objective", "nonconverged", iteration + 1)
+@@ -205,7 +212,7 @@
+ ## A wrong active-face guess cannot publish: feasibility, original objective
+ ## and the unchanged global KKT certificate are evaluated after the proposal.
+ static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
+-		limits: PackedFloat64Array, groups: Array, tolerance: float, full_proposal_budget: bool = false) -> PackedFloat64Array:
++		limits: PackedFloat64Array, groups: Array, tolerance: float, full_proposal_budget: bool = false,proposal_work:Dictionary={},allow_unresolved_descent:bool=false) -> PackedFloat64Array:
+ 	var n := y.size()
+ 	var free: Array[int] = []
+ 	for group: PackedInt32Array in groups:
+@@ -225,6 +232,11 @@
+ 		rhs.append(value)
+ 		for j in size: matrix[i * size + j] = h[free[i] * n + free[j]]
+ 	var solved := _psd_correction(matrix, rhs, size, tolerance * (1.0 if full_proposal_budget else 0.25))
++	var unresolved_trial:=false
++	if solved.is_empty() and full_proposal_budget and allow_unresolved_descent:
++		if not proposal_work.is_empty():proposal_work.calls+=1
++		solved=_psd_correction(matrix,rhs,size,0.0,false,true)
++		unresolved_trial=not solved.is_empty()
+ 	if solved.size() != size or not _finite(solved): return y
+ 	var candidate := y.duplicate()
+ 	var delta := PackedFloat64Array()
+@@ -247,6 +259,21 @@
+ 		var root := M.sqrt_(maxf(0.0, discriminant))
+ 		var bound := -2.0 * minf(0.0, cc) / (bb + root) if bb > 0.0 else (-bb + root) / (2.0 * aa)
+ 		step = minf(step, maxf(0.0, bound))
++	if unresolved_trial:
++		# Numerically unresolved is NOT exact null. Keep its ORIGINAL curvature
++		# and gradient; minimize the actual quadratic along this bounded direction.
++		var slope:=0.0
++		var curvature:=0.0
++		var hd:=GC.matrix_vector(h,delta,n)
++		var gradient:=GC.matrix_vector(h,y,n)
++		for i in n:
++			slope+=(gradient[i]+b[i])*delta[i]
++			curvature+=delta[i]*hd[i]
++		if not is_finite(slope) or not is_finite(curvature) or slope>=0.0:return y
++		if curvature>0.0:
++			var optimum:float=-slope/curvature
++			if not is_finite(optimum) or optimum<=0.0:return y
++			step=minf(step,optimum)
+ 	for i in n: candidate[i] += step * delta[i]
+ 	var trial := _certificate(h, b, candidate, limits, groups, tolerance)
+ 	var current := _certificate(h, b, y, limits, groups, tolerance)
+@@ -257,15 +284,18 @@
+ 	if is_finite(value) and trial.feasibility <= FEASIBILITY_TOLERANCE \
+ 		and value <= objective + 0.00000000000001 * (absf(objective) + linear_scale) \
+ 		and (value < objective or (trial.stationarity < current.stationarity and trial.duality_gap <= current.duality_gap)):
++		if unresolved_trial and not proposal_work.is_empty():proposal_work.accepted+=1
+ 		return candidate
+ 	return y
+ 
+ 
+ ## Rank-revealing symmetric elimination on the diagonally equilibrated PSD
+-## face. Unresolved null coordinates have zero correction, not invented mass.
++## face. The ordinary range solve leaves unresolved coordinates zero. The opt-in
++## descent branch instead proposes a bounded weak direction; it invents no mass
++## and retains the original quadratic curvature and publication gates.
+ ## A linear term outside the range refuses via the ORIGINAL equation residual.
+ static func _psd_correction(matrix: PackedFloat64Array, rhs: PackedFloat64Array, size: int,
+-		tolerance: float, require_original_range: bool = true) -> PackedFloat64Array:
++		tolerance: float, require_original_range: bool = true, unresolved_descent:bool=false) -> PackedFloat64Array:
+ 	if size<1 or size>MAX_DIMENSION or matrix.size()!=size*size or rhs.size()!=size \
+ 		or not _finite(matrix) or not _finite(rhs) or not is_finite(tolerance) or tolerance<0.0:
+ 		return PackedFloat64Array()
+@@ -310,6 +340,25 @@
+ 			for j in range(k + 1, size): work[i * size + j] -= factor * work[k * size + j]
+ 	var pivot_solution := PackedFloat64Array()
+ 	pivot_solution.resize(size)
++	if unresolved_descent:
++		if rank==size:return PackedFloat64Array()
++		var chosen:=rank
++		for i in range(rank+1,size):
++			if absf(reduced[i])>absf(reduced[chosen]):chosen=i
++		if reduced[chosen]==0.0:return PackedFloat64Array()
++		pivot_solution[chosen]=signf(reduced[chosen])
++		for i in range(rank-1,-1,-1):
++			var value:=0.0
++			for j in range(i+1,size):value-=work[i*size+j]*pivot_solution[j]
++			pivot_solution[i]=value/work[i*size+i]
++		var direction:=PackedFloat64Array();direction.resize(size)
++		var magnitude:=0.0
++		for i in size:
++			direction[permutation[i]]=pivot_solution[i]/scale[permutation[i]]
++			magnitude=maxf(magnitude,absf(direction[permutation[i]]))
++		if not _finite(direction) or magnitude==0.0 or not is_finite(magnitude):return PackedFloat64Array()
++		for i in size:direction[i]/=magnitude
++		return direction
+ 	for i in range(rank - 1, -1, -1):
+ 		var value := reduced[i]
+ 		for j in range(i + 1, rank): value -= work[i * size + j] * pivot_solution[j]
+--- a/app/tests/test_contact_unresolved_descent.gd
++++ b/app/tests/test_contact_unresolved_descent.gd
+@@ -0,0 +1,109 @@
++extends SceneTree
++const S:=preload("res://physics/contact_assembly_strategy.gd")
++const I:=preload("res://physics/aircraft_ground_impulse.gd")
++const QP:=preload("res://physics/ground_traction.gd")
++const AR:=preload("res://physics/contact_assembly_resolution.gd")
++var checks:=0
++var failed:=0
++var controls:Dictionary
++const INPUT_SHA:={"ground_contact_unresolved_16.bin":"9d066b9e540d817e9a3d5d9770f46fe9d2b4f17da31d72a575629f50009e7e1f","ground_contact_unresolved_8.bin":"b565d3edd1b997704b75369e6e7f8c8e50b08ed63f8c3a268df9443cf0536bc6","ground_contact_unresolved_defaults.bin":"e9573e09f971d5d4dcc285e8038b034c3015c9bca57d5f9719ffd9acab759b52"}
++func check(label:String,condition:bool,detail:Variant="")->void:
++	checks+=1
++	if not condition:failed+=1;print("FAIL ",label," ",detail)
++func _initialize()->void:
++	var frozen:=FileAccess.open("res://tests/fixtures/ground_contact_unresolved_defaults.bin",FileAccess.READ)
++	var frozen_bytes:=frozen.get_buffer(frozen.get_length());frozen.close()
++	check("frozen default controls retain exact bytes",_digest(frozen_bytes)==INPUT_SHA["ground_contact_unresolved_defaults.bin"])
++	controls=bytes_to_var(frozen_bytes)
++	_scalar_cases()
++	var ordinary:Dictionary=controls.ordinary
++	check("ordinary <=8 default complete bytes frozen",var_to_bytes(QP.solve(ordinary.a,ordinary.v,ordinary.d,ordinary.groups))==var_to_bytes(ordinary.result))
++	# Independent symmetry oracle: two tire disks with a weak coupled lateral
++	# direction. Its positive curvature is kept, not regularized or made zero.
++	var c:=1.0-2e-13
++	var a:=PackedFloat64Array([1,0,0,0,0,1,0,c,0,0,1,0,0,c,0,1])
++	var b:=PackedFloat64Array([.2,1e-7,.2,-1e-7])
++	var d:=PackedFloat64Array([1,1,1,1])
++	var groups:=[PackedInt32Array([0,1]),PackedInt32Array([2,3])]
++	var result:=QP._solve_for_assembly(a,b,d,groups,1024,true)
++	check("coupled disks recover original strict KKT",result.ok,str(result))
++	if result.ok:
++		var lo:=0.0;var hi:=1.0
++		for iteration in 80:
++			var mid:=.5*(lo+hi)
++			var norm:float=pow(.2/(1.0+mid),2)+pow(1e-7/(1.0-c+mid),2)
++			if norm>1.0:lo=mid
++			else:hi=mid
++		var lambda:=.5*(lo+hi)
++		var x:float=-.2/(1.0+lambda)
++		var y:float=-1e-7/(1.0-c+lambda)
++		check("independent constrained optimum x agrees",absf(result.impulse[0]-x)<1e-8 and absf(result.impulse[2]-x)<1e-8)
++		check("independent constrained optimum y agrees",absf(result.impulse[1]-y)<1e-8 and absf(result.impulse[3]+y)<1e-8)
++	# A tiny but POSITIVE unresolved curvature has an interior line minimizer.
++	var weak:float=1.0-c
++	var toy:=PackedFloat64Array([1,c,c,1])
++	var linear:=PackedFloat64Array([weak*.25,-weak*.25])
++	var proposal:=QP._interior_face(toy,linear,PackedFloat64Array([0,0]),PackedFloat64Array([1,1]),[PackedInt32Array([0]),PackedInt32Array([1])],0.0,true,{},true)
++	check("positive weak curvature prevents a cap-only move",proposal.size()==2 and absf(proposal[0]+.25)<1e-6 and absf(proposal[1]-.25)<1e-6,str(proposal))
++	check("original full objective descends",QP._objective(toy,linear,proposal)<0.0)
++	var root:="res://tests/fixtures/"
++	var outputs:Array=[]
++	for name:String in DirAccess.get_files_at(root):
++		if not name.begins_with("ground_contact_unresolved_") or name=="ground_contact_unresolved_defaults.bin" or not name.ends_with(".bin"):continue
++		var f:=FileAccess.open(root+name,FileAccess.READ)
++		var bytes:=f.get_buffer(f.get_length());f.close()
++		check("lossless captured QP fixture exact bytes",_digest(bytes)==INPUT_SHA[name])
++		var q:Dictionary=bytes_to_var(bytes)
++		var input_before:=var_to_bytes(q)
++		var solve:=S.solve(q.a,q.v,q.limits,q.groups,q.mass_matrix,q.jacobian,q.z,q.bias,q.responses,q.ceiling,1024)
++		check("captured case strict acceptance after bounded fallback",solve.ok and not solve.has("assembly_resolution"),str(solve))
++		check("old and new pure strict defaults are byte-identical",var_to_bytes(controls.pure_results[name])==var_to_bytes(QP.solve(q.a,q.v,q.limits,q.groups,1024)))
++		for budget in [1,8,16,24,25]:
++			var bounded:=S.solve(q.a,q.v,q.limits,q.groups,q.mass_matrix,q.jacobian,q.z,q.bias,q.responses,q.ceiling,budget)
++			check("total proposal sweeps respect caller budget",bounded.iterations<=budget and bounded.numerical_work.started_sweeps<=budget)
++		var applied:=I.apply(q.stage,q.mass_matrix[0],q.z.slice(0,3),q.jacobian,q.bias,q.limits,q.groups,1024,{},q.ceiling)
++		check("actual common mass/slip/work impulse accepts",applied.ok,str(applied))
++		if applied.ok:
++			check("actual mass equation retains original target",applied.mass_solve_relative_residual<=I.RESIDUAL_RELATIVE_TOLERANCE)
++			check("actual slip retains original target",applied.slip_relative_residual<=I.RESIDUAL_RELATIVE_TOLERANCE)
++			check("actual independent impulse work closes",absf(applied.energy_balance_residual)<1e-12)
++		check("input arrays and frozen stage remain detached",input_before==var_to_bytes(q))
++		outputs.append({input=name,solve=solve,applied=applied})
++	# Zero preference must run BEFORE enabling the new unresolved trial.
++	var identity:=PackedFloat64Array([1,0,0,1])
++	var j:=PackedFloat64Array([1,0,c,sqrt(1-c*c)])
++	var gram:=PackedFloat64Array([1,c,c,c*c+(1-c*c)])
++	var zero:=PackedFloat64Array([0,0]);var tiny:=PackedFloat64Array([1e-25,-1e-25])
++	var responses:=PackedFloat64Array([1,0,c,sqrt(1-c*c)])
++	var scalar_groups:=[PackedInt32Array([0]),PackedInt32Array([1])]
++	var old_zero:Dictionary=controls.zero_result
++	var new_zero:=S.solve(gram,tiny,PackedFloat64Array([1,1]),scalar_groups,identity,j,zero,tiny,responses,1e-10,1024)
++	check("zero-optimal probe preserves complete result bytes",var_to_bytes(old_zero)==var_to_bytes(new_zero),str(new_zero))
++	print("Contact unresolved descent: %d checks, %d failed"%[checks,failed])
++	quit(1 if failed else 0)
++
++func _next(value:float)->float:
++	var bytes:=PackedByteArray();bytes.resize(8);bytes.encode_double(0,value)
++	bytes.encode_u64(0,bytes.decode_u64(0)+1)
++	return bytes.decode_double(0)
++func _certificate(d:float,p:float)->Dictionary:
++	var a:=PackedFloat64Array([1.0]);var v:=PackedFloat64Array([1.0]);var z:=PackedFloat64Array([1.0]);var zero:=PackedFloat64Array([0.0])
++	var assembly:=AR.bounds(a,v,a,a,z,zero,a)
++	return AR.certificate(a,v,PackedFloat64Array([d]),[PackedInt32Array([0])],PackedFloat64Array([p]),assembly)
++
++func _scalar_cases()->void:
++	for d:float in [AR.ETA,1e-200,.1,1.0]:
++		for sign_value:float in [-1.0,1.0]:
++			var equality:=_certificate(d,sign_value*d)
++			check("exact scalar equality not called infeasible",not equality.get("reason","").contains("capacity"),str(equality))
++			var outside:=_certificate(d,sign_value*_next(d))
++			check("oneULP outside exact scalar interval refuses",not outside.ok and outside.get("reason","").contains("capacity"),str(outside))
++	for p:float in [0.0,-0.0]:
++		check("signed zero obeys zero capacity",_certificate(0.0,p).ok)
++	check("subnormal nonzero cannot bypass zero cap",not _certificate(0.0,AR.ETA).ok)
++	check("infinite capacity refuses supported finite domain",not _certificate(INF,0.0).ok)
++	check("infinite impulse refuses supported finite domain",not _certificate(1.0,INF).ok)
++	check("finite energy overflow refuses",not _certificate(1.7e308,1.7e308).ok)
++
++func _digest(bytes:PackedByteArray)->String:
++	var hash:=HashingContext.new();hash.start(HashingContext.HASH_SHA256);hash.update(bytes);return hash.finish().hex_encode()

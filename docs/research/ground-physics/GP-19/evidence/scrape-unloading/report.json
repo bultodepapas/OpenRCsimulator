@@ -1,0 +1,8 @@
+{
+  "format": "openrc-scrape-unloading-v1",
+  "production_checks": 72,
+  "baseline_checks": 60,
+  "baseline_expected_failures": 2,
+  "draft_checks": 60,
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f"
+}

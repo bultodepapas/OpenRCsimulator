@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3a9b38af-ada6-4d15-897d-937c01c5fa71",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-unloaded-review/invalid_metadata_probe.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T18:21:10.701389+00:00",
+  "label": "resolved-negative-selector",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-unloaded-review\\checks\\resolved-negative-selector-9jaybmnq\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-unloaded-review\\checks\\resolved-negative-selector-9jaybmnq\\report.json",
+  "timeout_seconds": 15.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Unloaded malformed selector refuses cleanly"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.391,
+  "log_bytes": 321,
+  "log_sha256": "2919991e425ce18368fe107b5a6f9ba9f25c3542a2e501250477f8d7318cd5cd"
+}

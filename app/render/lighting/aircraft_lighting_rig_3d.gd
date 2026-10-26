@@ -148,7 +148,7 @@ func set_mode(mode: String, gain := 1.0) -> void:
 	var previous_frame_writes := _last_frame_writes
 	_last_frame_writes = 0
 	for binding: Dictionary in _materials:
-		var node: Node3D = binding.get("node")
+		var node: Node3D = binding.get("node") if is_instance_valid(binding.get("node")) else null
 		if not is_instance_valid(node):
 			continue
 		var group := str(binding.get("group", "orientation"))
@@ -181,7 +181,12 @@ func set_mode(mode: String, gain := 1.0) -> void:
 ## Advances all visual clocks from the already displayed pose; no simulation object is read here.
 func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 	_last_frame_writes = 0
-	if not _active or _disabled or not is_instance_valid(kit) or not is_finite(presentation_seconds):
+	if not _active:
+		return
+	if not is_instance_valid(root) or (not _disabled and not is_instance_valid(kit)):
+		dispose()
+		return
+	if _disabled or not is_finite(presentation_seconds):
 		return
 	_reapply_profile_visibility()
 	var seconds := maxf(0.0, presentation_seconds)
@@ -190,7 +195,7 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 	var exposure := _number_or(telemetry.get("exposure", 1.0), 1.0, 0.0001, 1000000.0)
 	_last_exposure = exposure
 	for binding: Dictionary in _materials:
-		var bound_node: Node3D = binding.get("node")
+		var bound_node: Node3D = binding.get("node") if is_instance_valid(binding.get("node")) else null
 		if not is_instance_valid(bound_node):
 			continue
 		if str(binding.get("kind", "")) == "spot":
@@ -284,15 +289,20 @@ func reset() -> void:
 		_vfx.reset()
 
 
-## Restores only resources and overrides owned by this facade; it never frees the aircraft root or kit.
-func dispose() -> void:
+## Tree teardown can lock the shared parent while detached effects are still siblings.
+func _exit_tree() -> void:
+	dispose(true)
+
+
+## Restores owned resources; it never frees the aircraft root or kit.
+func dispose(defer_node_free := false) -> void:
 	if _skins != null:
 		_skins.dispose()
 		_skins = null
 	_last_exposure = 1.0
 	_restore_materials()
 	if _vfx != null:
-		_vfx.dispose()
+		_vfx.dispose(defer_node_free)
 		_vfx = null
 	if _active and is_instance_valid(kit):
 		AircraftLights.set_mode(kit, _previous_mode if _previous_mode in MODE_IDS else "all")
@@ -625,7 +635,7 @@ func _apply_profile_materials() -> void:
 
 func _restore_materials() -> void:
 	for binding: Dictionary in _materials:
-		var node: Node3D = binding.get("node")
+		var node: Node3D = binding.get("node") if is_instance_valid(binding.get("node")) else null
 		if is_instance_valid(node):
 			if str(binding.get("kind", "")) == "spot":
 				var light := node as Light3D
@@ -783,7 +793,7 @@ func _supported_light_groups() -> Array:
 func _reapply_profile_visibility() -> void:
 	var supported := _supported_light_groups()
 	for binding: Dictionary in _materials:
-		var node: Node3D = binding.get("node")
+		var node: Node3D = binding.get("node") if is_instance_valid(binding.get("node")) else null
 		if not is_instance_valid(node):
 			continue
 		var group := str(binding.get("group", "orientation"))

@@ -1,0 +1,53 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/refusal-false.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/refusal-false.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/refusal-true.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/refusal-true.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/accepted-pending.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/accepted-pending.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-mass.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-mass.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-model.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-model.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-state.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-state.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-step.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-step.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-reset.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-reset.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-restore.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-restore.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-weather.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-weather.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-shaft.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-shaft.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-pause-step.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-pause-step.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-pause-resume.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-pause-resume.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-fault-mutation.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/observer-fault-mutation.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/validator-reentry.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592/validator-reentry.orfl (0 ticks)
+Weather publication: 196 checks, 0 failed; C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/weather-publication-2525592

@@ -1,0 +1,12 @@
+{
+  "before_session": "d680ba2ef0626b6f3eeae0f8de8d6523955b7da95767f065ede36baac373c964",
+  "patch_sha256": "a59c460733b8d1b6acb8f7ef22f01392b3fcafa1f1e657ca1cfb0a7f3fe856c7",
+  "after": {
+    "app/sim/flight_session.gd": "9b6de6144a1af3c8bf042e04173b3485196954da94b40fdd73c9f309802d0802",
+    "app/tests/test_field_replacement.gd": "837fc003e566b30cd1f462e22a70d63cf1cfd9e83fb2c3da625c74d4eeebabe4",
+    "app/sim/simulation.gd": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490",
+    "app/sim/environment.gd": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+    "app/physics/ground_surfaces.gd": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e",
+    "app/sim/flight_log.gd": "0646b053bae4a788883a7d13833ef24f3b43d8d30c07ea6edfc4715b038afaba"
+  }
+}

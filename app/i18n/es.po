@@ -37,6 +37,72 @@ msgstr "Festival / Fuegos artificiales"
 msgid "Use aircraft default"
 msgstr "Usar iluminación del avión"
 
+msgid "Use stock lighting in a new draft"
+msgstr "Usar iluminación estándar en un nuevo borrador"
+
+msgid "Create updated draft"
+msgstr "Crear borrador actualizado"
+
+msgid "Stored presentation profile is invalid."
+msgstr "El perfil de presentación guardado no es válido."
+
+msgid "A supported stored presentation profile is required."
+msgstr "Se requiere un perfil de presentación guardado compatible."
+
+msgid "Current presentation bindings are unavailable or malformed."
+msgstr "Los vínculos de presentación actuales no están disponibles o tienen un formato incorrecto."
+
+msgid "Current presentation bindings are invalid."
+msgstr "Los vínculos de presentación actuales no son válidos."
+
+msgid "Create a new draft with this aircraft's standard lighting. Compatible saved colors, markings, smoke and sound settings stay in the draft. If appearance bindings changed, review the preview because matching IDs do not prove their old placement. The original saved revision stays unchanged. Physical settings stay unchanged."
+msgstr "Crea un nuevo borrador con la iluminación estándar de este avión. Los colores, las marcas, el humo y los sonidos guardados que sean compatibles se conservarán en el borrador. Si cambiaron los vínculos de apariencia, revisa la vista previa: que los identificadores coincidan no demuestra que conserven su ubicación anterior. La revisión guardada original no cambiará. Los ajustes físicos tampoco cambiarán."
+
+msgid "Stock-lighting draft created. Inspect it, then save as a new build. The original is unchanged."
+msgstr "Se creó un borrador con la iluminación estándar. Revísalo y guárdalo como una nueva versión. El original no cambió."
+
+msgid "A newer presentation profile cannot be converted to stock lighting."
+msgstr "Esta versión no puede convertir un perfil de presentación más reciente para usar la iluminación estándar."
+
+msgid "A newer lighting profile cannot be converted to stock lighting."
+msgstr "Esta versión no puede convertir un perfil de iluminación más reciente para usar la iluminación estándar."
+
+msgid "Stock lighting drafts require a supported v3 or v4 profile; historical profiles already use stock lighting."
+msgstr "Los borradores con iluminación estándar requieren un perfil v3 o v4 compatible; los perfiles históricos ya usan la iluminación estándar."
+
+msgid "Saved lighting settings cannot be replaced safely."
+msgstr "No se pueden reemplazar de forma segura los ajustes de iluminación guardados."
+
+msgid "Saved lighting already uses the aircraft's stock equipment."
+msgstr "La iluminación guardada ya usa el equipo estándar del avión."
+
+msgid "An unbound default has no previous aircraft identity to update."
+msgstr "Una configuración predeterminada sin vínculos no tiene una identidad de avión anterior que actualizar."
+
+msgid "Stock lighting cannot change the aircraft visual family."
+msgstr "La iluminación estándar no puede cambiar la familia visual del avión."
+
+msgid "Stock lighting cannot change the physical model manifest."
+msgstr "La iluminación estándar no puede cambiar el manifiesto del modelo físico."
+
+msgid "Other saved appearance settings cannot be validated against the current companion."
+msgstr "No se pueden validar los demás ajustes de apariencia guardados con el complemento actual."
+
+msgid "The stock-lighting draft does not validate against the current companion."
+msgstr "El borrador con iluminación estándar no se valida con el complemento actual."
+
+msgid "Creating a stock-lighting draft would change other appearance settings; no proposal was created."
+msgstr "Crear un borrador con iluminación estándar cambiaría otros ajustes de apariencia; no se creó ninguna propuesta."
+
+msgid "Stock lighting cannot be applied while other appearance settings are unavailable."
+msgstr "No se puede aplicar la iluminación estándar mientras otros ajustes de apariencia no estén disponibles."
+
+msgid "The stock-lighting proposal changed. Review it again."
+msgstr "La propuesta de iluminación estándar cambió. Revísala de nuevo."
+
+msgid "The draft changed. Review the appearance update again."
+msgstr "El borrador cambió. Revisa de nuevo la actualización de apariencia."
+
 msgid "Lighting enabled"
 msgstr "Iluminación activada"
 

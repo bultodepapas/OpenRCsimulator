@@ -1,0 +1,3 @@
+# Exact captured source, state, return, report and log bytes.
+* -text whitespace=cr-at-eol
+*.log -whitespace

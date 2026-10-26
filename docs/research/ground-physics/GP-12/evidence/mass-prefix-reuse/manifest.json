@@ -1,0 +1,1785 @@
+{
+  "format": "openrc-gp12-mass-prefix-payload-v1",
+  "payloads": [
+    {
+      "path": ".gitattributes",
+      "bytes": 112,
+      "sha256": "d1fcfeb570bce0a80fd7bfd2a03e874d41431fb2ee8d37836897c85da9039c60"
+    },
+    {
+      "path": "hotspot/build.py",
+      "bytes": 9183,
+      "sha256": "54c587e4e479e36e5b69001dc628cdf484551c52fbbe3ebc9bf11b5957969a2a"
+    },
+    {
+      "path": "hotspot/checks/parse-driver-ready-bji7mvzn/engine.log",
+      "bytes": 72,
+      "sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7"
+    },
+    {
+      "path": "hotspot/checks/parse-driver-ready-bji7mvzn/report.json",
+      "bytes": 1224,
+      "sha256": "d923f708730a72d3a867b8a90ab8d6409a0137affb904f75889131fb772b72be"
+    },
+    {
+      "path": "hotspot/checks/plain-gentle-82ug2i_h/engine.log",
+      "bytes": 425,
+      "sha256": "55ca2ac515b5857a5e16627c5e2488b93046fca3f9908c1190b3c1181f440bff"
+    },
+    {
+      "path": "hotspot/checks/plain-gentle-82ug2i_h/report.json",
+      "bytes": 1264,
+      "sha256": "bf66639602431468d53c0b1cfe46357f2fdbf4481ad087fafb5d8e435f95c641"
+    },
+    {
+      "path": "hotspot/checks/plain-hard-8j5k57_h/engine.log",
+      "bytes": 504,
+      "sha256": "f9d100d316599d7d1082236693dda92ca837dec0500d5817995a20b9d1537f31"
+    },
+    {
+      "path": "hotspot/checks/plain-hard-8j5k57_h/report.json",
+      "bytes": 1256,
+      "sha256": "72912fb0c0baaa76ed08414f600c7b297b281392cb379c22660d876901b0fd4e"
+    },
+    {
+      "path": "hotspot/checks/plain-rest10-kt_4330n/engine.log",
+      "bytes": 425,
+      "sha256": "f12a82c9ff9e72bd3b09db505cbb67af5401414603c7d9b0115753b9a83113e9"
+    },
+    {
+      "path": "hotspot/checks/plain-rest10-kt_4330n/report.json",
+      "bytes": 1264,
+      "sha256": "869873fa27c5e5bc800a87e6d5f8cb5eea4799da99f05f6dd4d77f3f899fb2ed"
+    },
+    {
+      "path": "hotspot/checks/plain-rest6-xmf1nbt3/engine.log",
+      "bytes": 424,
+      "sha256": "2aa5f9f8c9fb5c8c715f7b30d1ebcf724531603e020274625602f47d6cc5012c"
+    },
+    {
+      "path": "hotspot/checks/plain-rest6-xmf1nbt3/report.json",
+      "bytes": 1260,
+      "sha256": "e6c2ffd4d6757c368559bca524614efd3ebf36743f9c72beb27244fc3c341ebe"
+    },
+    {
+      "path": "hotspot/checks/timed-gentle-y7ee8qs1/engine.log",
+      "bytes": 7294,
+      "sha256": "1d0bc110c9df32bd3ab28b232684397e881c85a9f26a6bdd601ad1e8e9957c2c"
+    },
+    {
+      "path": "hotspot/checks/timed-gentle-y7ee8qs1/report.json",
+      "bytes": 1265,
+      "sha256": "bfeaba669ccddf5d330e79f5e301db2bd81f5f9fffa2832e152b834aea467e27"
+    },
+    {
+      "path": "hotspot/checks/timed-hard-u90q345b/engine.log",
+      "bytes": 8104,
+      "sha256": "783f41ee2fb2ecd65ec81a3ed9f15917f09b52f499cdf8b412d5647e3701899b"
+    },
+    {
+      "path": "hotspot/checks/timed-hard-u90q345b/report.json",
+      "bytes": 1257,
+      "sha256": "6c4f4ff2ab9912ebef16f1f99c096d4ce1da83110b6cccab303c24acc8366601"
+    },
+    {
+      "path": "hotspot/checks/timed-rest10-asdzhg78/engine.log",
+      "bytes": 9413,
+      "sha256": "035fd6193607b9c77f7d0a93ee67c48824f8eb512198165c7fd20d2cdc91889e"
+    },
+    {
+      "path": "hotspot/checks/timed-rest10-asdzhg78/report.json",
+      "bytes": 1265,
+      "sha256": "e030c38de29cf3f697dc922d9aac81c0df96e975cbca7fb2885bf873238293c7"
+    },
+    {
+      "path": "hotspot/checks/timed-rest6-ubnhe42k/engine.log",
+      "bytes": 9417,
+      "sha256": "ec6bbb68e75bf23c89955246ec7199cbfbb1270b7fdfd863286eae82d6a52bdc"
+    },
+    {
+      "path": "hotspot/checks/timed-rest6-ubnhe42k/report.json",
+      "bytes": 1261,
+      "sha256": "47c82fb86a2b9efed12b3b08aade8f57bf4b3be10579f54c37fc80ec4b92e8b8"
+    },
+    {
+      "path": "hotspot/manifest.json",
+      "bytes": 43490,
+      "sha256": "8e5b1124b22051b738ce9f823c709be8521b41adce31dc37949f3768e4f7019b"
+    },
+    {
+      "path": "hotspot/README.md",
+      "bytes": 2921,
+      "sha256": "232e53f04f0615c3f2a1ec2b22a4435a6857ecc60bc4aaffa2d4e0075d42b70c"
+    },
+    {
+      "path": "hotspot/report.json",
+      "bytes": 19841,
+      "sha256": "7d18c10248b65deda2cf612ee40477ce9083a25f021954b4fd329a47e4067ecf"
+    },
+    {
+      "path": "hotspot/results/plain/gentle-policy.result.bin",
+      "bytes": 9240,
+      "sha256": "77b3d22cc3f416489ba66f57d759dfd712d2936b9fb46a835b196d51d7b1eaec"
+    },
+    {
+      "path": "hotspot/results/plain/gentle-policy.timings.json",
+      "bytes": 317,
+      "sha256": "418262d6a6b6eb52fe99d1e48d873aafa0416511ec8f4e87f44f259ae6fde587"
+    },
+    {
+      "path": "hotspot/results/plain/hard-policy.result.bin",
+      "bytes": 240,
+      "sha256": "a972e12b5e91e3d2c99c2712338f9ae1cefac50b6d31d3e930da5b58fd2edee8"
+    },
+    {
+      "path": "hotspot/results/plain/hard-policy.timings.json",
+      "bytes": 396,
+      "sha256": "98ad695074e0345a3253291b66237070b09097dc982c31d14053ad300484871a"
+    },
+    {
+      "path": "hotspot/results/plain/rest10-policy.result.bin",
+      "bytes": 5540,
+      "sha256": "c052b7dbcf19df8d72d26487811334d9e774d8f0a1e44e5e76f9f2704d225ec7"
+    },
+    {
+      "path": "hotspot/results/plain/rest10-policy.timings.json",
+      "bytes": 317,
+      "sha256": "f6caab3161d67f8ff7ed90c747ee3cf538111dbad47630a8e59a5f4cfce3c906"
+    },
+    {
+      "path": "hotspot/results/plain/rest6-policy.result.bin",
+      "bytes": 5540,
+      "sha256": "fb5eab3584e5633e40eae3c5951703ebd77df2251d7a5895a98d8568c6361ccf"
+    },
+    {
+      "path": "hotspot/results/plain/rest6-policy.timings.json",
+      "bytes": 316,
+      "sha256": "b86b8d364bf1b338e4bec0ff35738a5845a7dc0b4e126666a1b1c32cd950bed3"
+    },
+    {
+      "path": "hotspot/results/timed/gentle-policy.result.bin",
+      "bytes": 9240,
+      "sha256": "77b3d22cc3f416489ba66f57d759dfd712d2936b9fb46a835b196d51d7b1eaec"
+    },
+    {
+      "path": "hotspot/results/timed/gentle-policy.timings.json",
+      "bytes": 7914,
+      "sha256": "0d1d5c50e7b9f15e2b99a2acb448c3fc1a5b40aaaa213a7f6009e10ad8739bf8"
+    },
+    {
+      "path": "hotspot/results/timed/hard-policy.result.bin",
+      "bytes": 240,
+      "sha256": "a972e12b5e91e3d2c99c2712338f9ae1cefac50b6d31d3e930da5b58fd2edee8"
+    },
+    {
+      "path": "hotspot/results/timed/hard-policy.timings.json",
+      "bytes": 8796,
+      "sha256": "49196f66e3ea9943fe3e6956603208d3865e307fcf72816f0f5a088d21c006da"
+    },
+    {
+      "path": "hotspot/results/timed/rest10-policy.result.bin",
+      "bytes": 5540,
+      "sha256": "c052b7dbcf19df8d72d26487811334d9e774d8f0a1e44e5e76f9f2704d225ec7"
+    },
+    {
+      "path": "hotspot/results/timed/rest10-policy.timings.json",
+      "bytes": 10205,
+      "sha256": "d388766cd69598441e00c1563fe9372c9f2516b44d6c1c6e7183095062f41598"
+    },
+    {
+      "path": "hotspot/results/timed/rest6-policy.result.bin",
+      "bytes": 5540,
+      "sha256": "fb5eab3584e5633e40eae3c5951703ebd77df2251d7a5895a98d8568c6361ccf"
+    },
+    {
+      "path": "hotspot/results/timed/rest6-policy.timings.json",
+      "bytes": 10209,
+      "sha256": "7052b2ec95b359171f395567de69653fbd72b6d9b67bd08cdca59e3a1c8b30ff"
+    },
+    {
+      "path": "hotspot/source/plain/driver.gd",
+      "bytes": 2474,
+      "sha256": "c3930e38ab670c3be78ab31f97cd19d82063561a5e14331f7c5c31e606dc3537"
+    },
+    {
+      "path": "hotspot/source/plain/metrics.gd",
+      "bytes": 1063,
+      "sha256": "3c367670ecd140442cfc8fbe64245f85adc1ee0d0c1bbc14e7ea55c4c76b4441"
+    },
+    {
+      "path": "hotspot/source/plain/owner.gd",
+      "bytes": 30581,
+      "sha256": "b04d071148a57820533eafb425613b1fe808e675869596beedecf526783955b6"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aero.gd",
+      "bytes": 77571,
+      "sha256": "3b3c1f3737df6f4cf699d8d65330b6b909a2840b4f0ebfeb28a2be1f6d43e7c9"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_contract.gd",
+      "bytes": 19461,
+      "sha256": "e502d9ed2945425476690427d85f7dceb530c8d51ca365d6e681adec4dde9a69"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_data.gd",
+      "bytes": 154999,
+      "sha256": "f39108e480fad6b29abfaab13e22f64b72ceb9e1dac73d897c4217d6d4e291d8"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_ground_accuracy.gd",
+      "bytes": 29084,
+      "sha256": "bbadaccc21ceb9bc7cbf267ffe470b0b9c6434c054db3bb61461c8640f25d25e"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_ground_dynamics.gd",
+      "bytes": 18162,
+      "sha256": "66544623607f5ad88bcbcd87023cb37d1e1cc8111a5147cedb69a94351539a43"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_ground_impulse.gd",
+      "bytes": 28968,
+      "sha256": "bbdcec0b5cb30b9054849157f864bb34e616555baad4c14a91dd920d7e7fd5c6"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_ground_profile.gd",
+      "bytes": 18903,
+      "sha256": "64e54e3ed810eafe8f09d6569cdd6bdac0f87507ce92e496f1c9539d9544a33d"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_ground_stage.gd",
+      "bytes": 16121,
+      "sha256": "9bd1000a7b6adb82e8e3c191d410a34228fcb7a9d7615bdc00c7a2bedd71a23b"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_ground_step.gd",
+      "bytes": 44756,
+      "sha256": "9a87dab480c60ec8d9c2e4f20999831feb99f08111aee921c02703164345de5f"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_ground_traction.gd",
+      "bytes": 13215,
+      "sha256": "974fc0aec5c3b185d863ad765b63340265aa2728aa6868a9939e47150f8e859d"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_ground_unloaded.gd",
+      "bytes": 16042,
+      "sha256": "a8e5aaa823bda1b0e19dd4c5133a6bf3ed57d0871796e1e5ec62b70219969a5c"
+    },
+    {
+      "path": "hotspot/source/plain/physics/aircraft_modules.gd",
+      "bytes": 20066,
+      "sha256": "79b030030e92b35af5efe7e8f69149e6d498a6c7637aa212a926320803b1102a"
+    },
+    {
+      "path": "hotspot/source/plain/physics/battery/battery_data.gd",
+      "bytes": 16188,
+      "sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b"
+    },
+    {
+      "path": "hotspot/source/plain/physics/battery/esc_supervisor.gd",
+      "bytes": 5408,
+      "sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5"
+    },
+    {
+      "path": "hotspot/source/plain/physics/battery/pack_ecm.gd",
+      "bytes": 12967,
+      "sha256": "b4c9130bb8e2ad654a9e1a5beb236db46ee2515b2d211423fdcfbc63c6f1dff0"
+    },
+    {
+      "path": "hotspot/source/plain/physics/contact_assembly_resolution.gd",
+      "bytes": 40099,
+      "sha256": "64ca2b0a6d024cbf0a26cd120139b91df551965105dfb29defdd4875d93d15be"
+    },
+    {
+      "path": "hotspot/source/plain/physics/contact_assembly_strategy.gd",
+      "bytes": 3706,
+      "sha256": "d92eee5ce6f5f72c9eb44b9dae17f2c743272d28030505a9417b860646e46222"
+    },
+    {
+      "path": "hotspot/source/plain/physics/control_actuators.gd",
+      "bytes": 10792,
+      "sha256": "f583602df90138ed2067094513c1ba0fd9d20163033e6ab0c555d432ffdc4a03"
+    },
+    {
+      "path": "hotspot/source/plain/physics/control_surfaces.gd",
+      "bytes": 4143,
+      "sha256": "758de9a007b2d2f1bf819d6a8919e4e867f952097aa260c1f2c56405a9611beb"
+    },
+    {
+      "path": "hotspot/source/plain/physics/effective_mass.gd",
+      "bytes": 8451,
+      "sha256": "d943addccc9899b4a7356935497aaaf3d7badcf83dc39d7d51ab3b07a042a936"
+    },
+    {
+      "path": "hotspot/source/plain/physics/electric_motor.gd",
+      "bytes": 4926,
+      "sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8"
+    },
+    {
+      "path": "hotspot/source/plain/physics/electric_supply.gd",
+      "bytes": 15540,
+      "sha256": "3bb081c9fe2733595d6950335f4bd428ed15c1116e9c37c382cae859bef4eeb1"
+    },
+    {
+      "path": "hotspot/source/plain/physics/event_bracket.gd",
+      "bytes": 1409,
+      "sha256": "898b8556741b98f12416f1c4e5297b833f78be788f8b6c968138fdb437a031bc"
+    },
+    {
+      "path": "hotspot/source/plain/physics/event_step.gd",
+      "bytes": 7202,
+      "sha256": "4811bbe157753a033731cbf6c328d4e3d55aee3c7093ded8d6fe9d9e3ed5163b"
+    },
+    {
+      "path": "hotspot/source/plain/physics/fixed_datum_body.gd",
+      "bytes": 5712,
+      "sha256": "81a9e3d134c6a4b7e62bc6e513b1ed14b995959fa969c84bc9c013af253115b0"
+    },
+    {
+      "path": "hotspot/source/plain/physics/flaps.gd",
+      "bytes": 1247,
+      "sha256": "bf3f1ac5afc0b414d978f9f630afb12ba956635d66cf27c65d87d392ebb76b7d"
+    },
+    {
+      "path": "hotspot/source/plain/physics/fuel_properties.gd",
+      "bytes": 8955,
+      "sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4"
+    },
+    {
+      "path": "hotspot/source/plain/physics/generalized_coordinates.gd",
+      "bytes": 9747,
+      "sha256": "fb5ff09b986f3ea51e6dca968894caca6c05002c0014050cedd5acaaebc15689"
+    },
+    {
+      "path": "hotspot/source/plain/physics/glow/carburetor.gd",
+      "bytes": 8144,
+      "sha256": "176b7c4ff74a9a45e8909dd90cff9fbbcdda68eca276f7cc42dcbdb3e963126e"
+    },
+    {
+      "path": "hotspot/source/plain/physics/glow/four_stroke.gd",
+      "bytes": 16957,
+      "sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7"
+    },
+    {
+      "path": "hotspot/source/plain/physics/glow/fuel_feed.gd",
+      "bytes": 16317,
+      "sha256": "344cd59f2f1c3033ea769d7a02686a45cda3bb9c76c0101b6db272a1325d3b6b"
+    },
+    {
+      "path": "hotspot/source/plain/physics/glow/fuel_mass.gd",
+      "bytes": 4710,
+      "sha256": "756969c9e7af9acf3bd4c5de06e8606520c91002fea99d38f756ddab954197bd"
+    },
+    {
+      "path": "hotspot/source/plain/physics/glow/installation.gd",
+      "bytes": 38039,
+      "sha256": "76f3037db04ddeda9383c64cd724b1f3674687eb5b9591d5f57fca465c7a66fe"
+    },
+    {
+      "path": "hotspot/source/plain/physics/glow/operating_point.gd",
+      "bytes": 5235,
+      "sha256": "42181e5667b1d6701e4208a9735a00faf421c40c626fddcab3e389adeba69cfc"
+    },
+    {
+      "path": "hotspot/source/plain/physics/glow/profile.gd",
+      "bytes": 11686,
+      "sha256": "c52f639f3f28382bdd5a3bd8b30789d76e8ae6eb11864b5bd09eb0bff3855524"
+    },
+    {
+      "path": "hotspot/source/plain/physics/glow/propeller.gd",
+      "bytes": 7864,
+      "sha256": "8eaa968efde278354b5b19f6b2cfb26da0527b07201b8e9c7b68082a6214edfa"
+    },
+    {
+      "path": "hotspot/source/plain/physics/glow/source.gd",
+      "bytes": 9903,
+      "sha256": "b57633d3999c226726310edcc76bc352fcd4c6195ace8cd4043e8670d54984ed"
+    },
+    {
+      "path": "hotspot/source/plain/physics/glow/two_stroke.gd",
+      "bytes": 16115,
+      "sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6"
+    },
+    {
+      "path": "hotspot/source/plain/physics/ground_contact.gd",
+      "bytes": 26733,
+      "sha256": "dfc7bd937996f10dafa406b3471ef33beaaeb9f108bb6aad4272beeaf410cb5f"
+    },
+    {
+      "path": "hotspot/source/plain/physics/ground_effect.gd",
+      "bytes": 4886,
+      "sha256": "fcfec8ac9b9cc922f6bd2e5c3b4fa716fd0a565f754e0d2f61826ee00feb7473"
+    },
+    {
+      "path": "hotspot/source/plain/physics/ground_support.gd",
+      "bytes": 7566,
+      "sha256": "2bdb09d50f5f627fd2db040b0c1ab2c2c642d88b4656f43d12e877ae2c34a844"
+    },
+    {
+      "path": "hotspot/source/plain/physics/ground_terrain.gd",
+      "bytes": 13761,
+      "sha256": "224bc795b82677c311d26fb364ab3e5c3ec551e868220067dc23594b0a68d166"
+    },
+    {
+      "path": "hotspot/source/plain/physics/ground_traction.gd",
+      "bytes": 30041,
+      "sha256": "70e827c63c6f6c18095f10c086270a2c7fc4832d143666f71284bac0feb2c770"
+    },
+    {
+      "path": "hotspot/source/plain/physics/ground_wheels.gd",
+      "bytes": 12789,
+      "sha256": "90421fbad108d09d35faccf2ff1f9a8ed54a55d4a11ca392e769b1806f4da84a"
+    },
+    {
+      "path": "hotspot/source/plain/physics/hull_contact.gd",
+      "bytes": 42407,
+      "sha256": "c7cdb20b2e60838be77bc00d18d4e690aac0037c079ceae58d674221af3021a2"
+    },
+    {
+      "path": "hotspot/source/plain/physics/integrator.gd",
+      "bytes": 2476,
+      "sha256": "0fc48731511c4db30cba859f29e4f2a9df35862e04ce6a99197f2ad58538e3bc"
+    },
+    {
+      "path": "hotspot/source/plain/physics/intended_hull_support.gd",
+      "bytes": 14871,
+      "sha256": "b19bc334cdc4cba431a340f68f433624963f6b04d5f96c66fd06bf8f3afe84a7"
+    },
+    {
+      "path": "hotspot/source/plain/physics/lake_surface.gd",
+      "bytes": 36290,
+      "sha256": "eaaf4706abd9dab0d366f12ae0c9696f633ba31ccaaaea89fecb283572f3c347"
+    },
+    {
+      "path": "hotspot/source/plain/physics/liquid_fuel.gd",
+      "bytes": 9960,
+      "sha256": "545949f962e9a4753202f04b6cb29281c75fce044747d7e93585cc74cc691e6d"
+    },
+    {
+      "path": "hotspot/source/plain/physics/mass_inventory.gd",
+      "bytes": 25043,
+      "sha256": "202493a9c222422c67156d76370369dcbbffcd3a511471c6d4bbe934c92e4675"
+    },
+    {
+      "path": "hotspot/source/plain/physics/math3d.gd",
+      "bytes": 5514,
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb"
+    },
+    {
+      "path": "hotspot/source/plain/physics/normal_compliance.gd",
+      "bytes": 10671,
+      "sha256": "2d85ec6362df050f4d98759b911841a26cab8cb4572d9a73d5e8a74e337275ee"
+    },
+    {
+      "path": "hotspot/source/plain/physics/normal_contact_admission.gd",
+      "bytes": 18068,
+      "sha256": "b486107da60481456b1cc9eafb4a02f7de88bf4ade2aec7be60a7017f2b71d13"
+    },
+    {
+      "path": "hotspot/source/plain/physics/physical_identity.gd",
+      "bytes": 6946,
+      "sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8"
+    },
+    {
+      "path": "hotspot/source/plain/physics/propulsion.gd",
+      "bytes": 41433,
+      "sha256": "c0381622a7dfc2284c15a0a6cd8200fd01492287e0911589d235ae2485644efa"
+    },
+    {
+      "path": "hotspot/source/plain/physics/rigid_body.gd",
+      "bytes": 5637,
+      "sha256": "ba8fb96f32c841fd3936882b0090aa871d92ba9c49bc17b76772f55f1c782f7e"
+    },
+    {
+      "path": "hotspot/source/plain/physics/rotor_coupling.gd",
+      "bytes": 27556,
+      "sha256": "1c83c1a0b0a50b65f16e50df940410d3e36e2b720353a0428ea3a633b16f7543"
+    },
+    {
+      "path": "hotspot/source/plain/physics/turbine.gd",
+      "bytes": 10738,
+      "sha256": "099dd9d493ee840264f35524f52230668bdc6745c09bf78274ad6db99588c014"
+    },
+    {
+      "path": "hotspot/source/plain/physics/wheel_geometry.gd",
+      "bytes": 16395,
+      "sha256": "0a8e3b4ba022a99322215643db542170a7e5531bcc33b23cf52cd0ec902ef81f"
+    },
+    {
+      "path": "hotspot/source/plain/physics/wheel_profiles.gd",
+      "bytes": 13919,
+      "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748"
+    },
+    {
+      "path": "hotspot/source/plain/physics/wing_polar.gd",
+      "bytes": 5573,
+      "sha256": "772c1296571075fd0b11758d8be086fda56e4c5fe5dcc584b4767e55888e28f7"
+    },
+    {
+      "path": "hotspot/source/plain/sim/simulation.gd",
+      "bytes": 55173,
+      "sha256": "96878b266a93e5741e1bb8067920a3a99214f6cb99faa14f2e0b8ebc04f1cdc5"
+    },
+    {
+      "path": "hotspot/source/plain/sim/vehicle_model.gd",
+      "bytes": 12046,
+      "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2"
+    },
+    {
+      "path": "hotspot/source/plain/tests/test_aircraft_ground_stage.gd",
+      "bytes": 26583,
+      "sha256": "4b4573911eb5d2424d3d85b28a01fe00555da04299d9c4a85729a3f401657c4d"
+    },
+    {
+      "path": "hotspot/source/timed/driver.gd",
+      "bytes": 2474,
+      "sha256": "fb17270b377e94ab6463eb83ff71ebca6eadaf591b86c85aacf953ba755acbe6"
+    },
+    {
+      "path": "hotspot/source/timed/metrics.gd",
+      "bytes": 1063,
+      "sha256": "3c367670ecd140442cfc8fbe64245f85adc1ee0d0c1bbc14e7ea55c4c76b4441"
+    },
+    {
+      "path": "hotspot/source/timed/owner.gd",
+      "bytes": 32097,
+      "sha256": "5bdde76cd7673a131691ac15c9a5b8a3fe674c6f64fee65e8f26770964967b71"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aero.gd",
+      "bytes": 77669,
+      "sha256": "2e89e33563913d55b71a8ad803e43165b8a39245160eafc7835406d18005f409"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_contract.gd",
+      "bytes": 19559,
+      "sha256": "e9f56706df5d1731ceb75f0d034f26db298ea0d0012bd58325edecbfce2dbace"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_data.gd",
+      "bytes": 155097,
+      "sha256": "038469587520ac23f7c524c7d399b7eb3b8ed4c8a4808455d8c4a7def80fcec4"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_ground_accuracy.gd",
+      "bytes": 29788,
+      "sha256": "08e88c65cc7d35e9b801d5b34554ace823d8cb87b1b39c5459a9a913b416aa25"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_ground_dynamics.gd",
+      "bytes": 19173,
+      "sha256": "1dccf88aceec3d863f4b89afb7edbda3d6d2ce9cff2a85c3a2f1f542eb1e97ce"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_ground_impulse.gd",
+      "bytes": 30203,
+      "sha256": "2fe051ca90409e7faea421eab4dc2438a2edb3c8b3536dc9f4ea3e9053bb211d"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_ground_profile.gd",
+      "bytes": 19001,
+      "sha256": "f7f6f0e1570b6338e73fa1cd8801b89ad0636ace84b97a895f88b8eedf97d97f"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_ground_stage.gd",
+      "bytes": 17149,
+      "sha256": "28f4ac33c168e82cc6b5975e02574a3478c362390a6d2cf4ec7e11a54b4d2778"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_ground_step.gd",
+      "bytes": 46873,
+      "sha256": "14793dad1cba05e2cef71bd1c6fc0f9457369fa368cd9aa97c6761ebd0314d66"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_ground_traction.gd",
+      "bytes": 13861,
+      "sha256": "0aa77ca6b84c62e8f1bb19ac82f6e059bcf1f1e5a71b0e289b2050ccfe9fcbb8"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_ground_unloaded.gd",
+      "bytes": 17108,
+      "sha256": "c0b5e0fc543dd91bfb645b627db0a4d2d052b6ca21f38270c2b2586b7d67e760"
+    },
+    {
+      "path": "hotspot/source/timed/physics/aircraft_modules.gd",
+      "bytes": 20164,
+      "sha256": "b96b0f7128200dc9aa7d909830cc634297dd0068bd24079336a814685e76d1ed"
+    },
+    {
+      "path": "hotspot/source/timed/physics/battery/battery_data.gd",
+      "bytes": 16286,
+      "sha256": "abc7b935a39fc71cf355baf85b960523e56e4f6ae96295a451cedab1268ba2be"
+    },
+    {
+      "path": "hotspot/source/timed/physics/battery/esc_supervisor.gd",
+      "bytes": 5506,
+      "sha256": "7303a47bd5c749e95f10b21c9a84f8a43e8db487214b1a08b4308fdbbc449e8e"
+    },
+    {
+      "path": "hotspot/source/timed/physics/battery/pack_ecm.gd",
+      "bytes": 13065,
+      "sha256": "530e8c68fd6834845df502aa4e45b972d241a3e284a7f3ad813cf80a80e74c5d"
+    },
+    {
+      "path": "hotspot/source/timed/physics/contact_assembly_resolution.gd",
+      "bytes": 43141,
+      "sha256": "edf2385bc98194b18021448f7f13e0319b48103aded0327bbdbd29df2a20b27a"
+    },
+    {
+      "path": "hotspot/source/timed/physics/contact_assembly_strategy.gd",
+      "bytes": 3804,
+      "sha256": "d33e0cc3101283757af0b51fbbd65038c911fdb6aeeef72c3bb6638bf356496a"
+    },
+    {
+      "path": "hotspot/source/timed/physics/control_actuators.gd",
+      "bytes": 10890,
+      "sha256": "06a43286207fe134c9c9acdcb1430389394e082dd383d4fced8cfbe88141fdd5"
+    },
+    {
+      "path": "hotspot/source/timed/physics/control_surfaces.gd",
+      "bytes": 4241,
+      "sha256": "b633688daca3fab658e09727928f2f6313b93bd2b2b8fdedfcff51e7ac3dc45f"
+    },
+    {
+      "path": "hotspot/source/timed/physics/effective_mass.gd",
+      "bytes": 8549,
+      "sha256": "def21e56d85c080c399aa4ceb9071ce660f4ede709a90a7af675acae1640d7d1"
+    },
+    {
+      "path": "hotspot/source/timed/physics/electric_motor.gd",
+      "bytes": 5024,
+      "sha256": "9708e79fdb1b294e7e9f1b28d43239cdfaf0a8df53e2e4343274135c82534588"
+    },
+    {
+      "path": "hotspot/source/timed/physics/electric_supply.gd",
+      "bytes": 15638,
+      "sha256": "2bdd8a04bcc6a79b06d15731b5cefa565c615fc929b671835f7a883d3e9ac81e"
+    },
+    {
+      "path": "hotspot/source/timed/physics/event_bracket.gd",
+      "bytes": 1507,
+      "sha256": "62b3c9744a2aa5d26ef764eecc5f5ee102076567db7580d7697adacc376deb71"
+    },
+    {
+      "path": "hotspot/source/timed/physics/event_step.gd",
+      "bytes": 7300,
+      "sha256": "b8ca933bee34d54f208f688c934e682f6a01c3e06e75ceaccd5ac86e8f1c86ae"
+    },
+    {
+      "path": "hotspot/source/timed/physics/fixed_datum_body.gd",
+      "bytes": 5810,
+      "sha256": "be6f6eeb8d88ee634904731d8350df38fdf234e443f41aa09c9674fc8dd1fd83"
+    },
+    {
+      "path": "hotspot/source/timed/physics/flaps.gd",
+      "bytes": 1345,
+      "sha256": "007c29e28794e6d646401a3dcc5cbfa4b2b7262d1b52da43876120f6a7167485"
+    },
+    {
+      "path": "hotspot/source/timed/physics/fuel_properties.gd",
+      "bytes": 9053,
+      "sha256": "98b627ccc7fbe5bf66961c2efc4b0896731e53b767479efab74037992c64f945"
+    },
+    {
+      "path": "hotspot/source/timed/physics/generalized_coordinates.gd",
+      "bytes": 11359,
+      "sha256": "11f473c36791b7bc8ea5a0d26621a5f36d057060610ef747d58dcd15e2d3636a"
+    },
+    {
+      "path": "hotspot/source/timed/physics/glow/carburetor.gd",
+      "bytes": 8242,
+      "sha256": "e0ebc93a36f02354e32bd1cee497b8b899bd3d36287ff4641c26cf094b979ddc"
+    },
+    {
+      "path": "hotspot/source/timed/physics/glow/four_stroke.gd",
+      "bytes": 17055,
+      "sha256": "28eeaec6f10c094ef48b6427fb3d6a9e1c8ca869b64430f52361930a5d20cf33"
+    },
+    {
+      "path": "hotspot/source/timed/physics/glow/fuel_feed.gd",
+      "bytes": 16415,
+      "sha256": "1218a4b5bcd0a2fb7b7a3f7023c996782fb87b00f0f304af40653ce0f6c19ffa"
+    },
+    {
+      "path": "hotspot/source/timed/physics/glow/fuel_mass.gd",
+      "bytes": 4808,
+      "sha256": "a4af79720f23016e7a5e2c165175b0f32e82f9407f1a7689f79a9884d3c0fb65"
+    },
+    {
+      "path": "hotspot/source/timed/physics/glow/installation.gd",
+      "bytes": 38137,
+      "sha256": "efbc0e1053ea58a7ae2db0cd24d3dc674c005f26387ca1e386b143358f52afe6"
+    },
+    {
+      "path": "hotspot/source/timed/physics/glow/operating_point.gd",
+      "bytes": 5333,
+      "sha256": "cf421351c353c85c5f2678523bbe70a22a67c3a163a58591028d71d816654470"
+    },
+    {
+      "path": "hotspot/source/timed/physics/glow/profile.gd",
+      "bytes": 11784,
+      "sha256": "374b30e9c9b7676b95d87c1260d9d5e23e36a6bd027bb3e66ef326ac7bb2d449"
+    },
+    {
+      "path": "hotspot/source/timed/physics/glow/propeller.gd",
+      "bytes": 7962,
+      "sha256": "2ba0d7f16886cf5c8a4d0067ef251b247e003e78f49573a41667eab4d5fa61c7"
+    },
+    {
+      "path": "hotspot/source/timed/physics/glow/source.gd",
+      "bytes": 10001,
+      "sha256": "594bd9143ab84c6c7f3b649ab7fd1ae5b3d6c9a05a1c95513c553011f3e9c03d"
+    },
+    {
+      "path": "hotspot/source/timed/physics/glow/two_stroke.gd",
+      "bytes": 16213,
+      "sha256": "8ad4f38e97adf9df61dc8b5cf61143abf018c3df4e5cfdecfc06868afe76ff9a"
+    },
+    {
+      "path": "hotspot/source/timed/physics/ground_contact.gd",
+      "bytes": 26831,
+      "sha256": "f113d13761f9488553611387fd73df2fb24798d7967939fc6344bf89ddcb5603"
+    },
+    {
+      "path": "hotspot/source/timed/physics/ground_effect.gd",
+      "bytes": 4984,
+      "sha256": "77478b3c27754c475d9a8d78e9dea13d75d822620b5104b9894fb36d68a53b4e"
+    },
+    {
+      "path": "hotspot/source/timed/physics/ground_support.gd",
+      "bytes": 8230,
+      "sha256": "37052270422ce9bb384f76f0636131e1d92bb8c9583cc7342de9e16a43804e18"
+    },
+    {
+      "path": "hotspot/source/timed/physics/ground_terrain.gd",
+      "bytes": 13859,
+      "sha256": "a82b71b115505daa4231ba4d716f3dcda172bf80f78a25baa9ca8266dac881c5"
+    },
+    {
+      "path": "hotspot/source/timed/physics/ground_traction.gd",
+      "bytes": 32185,
+      "sha256": "76b88b994dbfe2514751415ea5275077b467dcdea9bab810dfb6e507c452046b"
+    },
+    {
+      "path": "hotspot/source/timed/physics/ground_wheels.gd",
+      "bytes": 12887,
+      "sha256": "4cc2f497c112953eaaaca6a8b9f45e276cc996b50e28219a8538304857bf2adb"
+    },
+    {
+      "path": "hotspot/source/timed/physics/hull_contact.gd",
+      "bytes": 42505,
+      "sha256": "92eeeb74a5136912042cb933acdc7c489e0390a1a73aa48b95a40f046e1eea4e"
+    },
+    {
+      "path": "hotspot/source/timed/physics/integrator.gd",
+      "bytes": 2574,
+      "sha256": "beb57a8675b10724f9dd27996b2e09e9c27d8e6f0c7fdc7e8e90f74492afd1c3"
+    },
+    {
+      "path": "hotspot/source/timed/physics/intended_hull_support.gd",
+      "bytes": 14977,
+      "sha256": "9cd62c1681c06eae342d9a5cdacbee437a1fde7df353ffce4a9d4225221c18ef"
+    },
+    {
+      "path": "hotspot/source/timed/physics/lake_surface.gd",
+      "bytes": 36388,
+      "sha256": "da85044fbe3c3022662c9b62ce7e74702f197b75bd79a52ae07edddca7d61895"
+    },
+    {
+      "path": "hotspot/source/timed/physics/liquid_fuel.gd",
+      "bytes": 10058,
+      "sha256": "053c34671e4e1c68a21edbd5c89cc9ee22ffb3a4279dc44b7591908c1cf7ac8b"
+    },
+    {
+      "path": "hotspot/source/timed/physics/mass_inventory.gd",
+      "bytes": 25141,
+      "sha256": "09d959536d08503a0e4277cff6e333121cbd8db40c908bb341c829623155535f"
+    },
+    {
+      "path": "hotspot/source/timed/physics/math3d.gd",
+      "bytes": 5612,
+      "sha256": "7023ee31a244b697311a204b3dfbd76c1a190341ac5ed5c52bb5436ddbe7fd0e"
+    },
+    {
+      "path": "hotspot/source/timed/physics/normal_compliance.gd",
+      "bytes": 11864,
+      "sha256": "2906b88b34c73564e5eb3c0d3b5accfabd59227e526ab51dd93aabf289282a33"
+    },
+    {
+      "path": "hotspot/source/timed/physics/normal_contact_admission.gd",
+      "bytes": 18166,
+      "sha256": "5c4961f465e7f1b323a2797a3610f08413152e52dd84cda265f0f5f37ce449fb"
+    },
+    {
+      "path": "hotspot/source/timed/physics/physical_identity.gd",
+      "bytes": 7044,
+      "sha256": "c482d8be40fbf29aa3024437f98b16d5be97342372b750d431d491f78ad217a5"
+    },
+    {
+      "path": "hotspot/source/timed/physics/propulsion.gd",
+      "bytes": 41531,
+      "sha256": "af24f244b0263e39de5461ee9b542f847ab7fa33de304681892263fb5f35d3c7"
+    },
+    {
+      "path": "hotspot/source/timed/physics/rigid_body.gd",
+      "bytes": 5735,
+      "sha256": "c3c44dc28d05b5c68bfe6442a997b28a90d5171b0c2873f2da25c9cc6fc66f73"
+    },
+    {
+      "path": "hotspot/source/timed/physics/rotor_coupling.gd",
+      "bytes": 30406,
+      "sha256": "b0d71abe400ba544cd4ca9906ee853c232b6725e9aebc5d20473af40f834e6e7"
+    },
+    {
+      "path": "hotspot/source/timed/physics/turbine.gd",
+      "bytes": 10836,
+      "sha256": "8c63576e5a010ca526d1ddb2acaeb455afab2a46587c28003af759236586f397"
+    },
+    {
+      "path": "hotspot/source/timed/physics/wheel_geometry.gd",
+      "bytes": 17854,
+      "sha256": "0d96e50859f50a1239b4116cfca4efc5ab24c20e1bccce8a0d74f42c3c87213d"
+    },
+    {
+      "path": "hotspot/source/timed/physics/wheel_profiles.gd",
+      "bytes": 14017,
+      "sha256": "cee4c20394a44a9bc9a42c4ab1a4099c8fbfac966e92b8be77216a268dfa1d46"
+    },
+    {
+      "path": "hotspot/source/timed/physics/wing_polar.gd",
+      "bytes": 5671,
+      "sha256": "b56045c4bab48e314c1c18984434e22c7a9c3dd541e162ce0c98a898767638ed"
+    },
+    {
+      "path": "hotspot/source/timed/sim/simulation.gd",
+      "bytes": 55283,
+      "sha256": "a7f3cb1b7c1b6e8cce29d394e31c5428454750a38df63f94f259a495616c66d7"
+    },
+    {
+      "path": "hotspot/source/timed/sim/vehicle_model.gd",
+      "bytes": 12144,
+      "sha256": "9a33a354e97e40a7ab4a19589f476b63dc129d12831cd056bbc8eddca6f23886"
+    },
+    {
+      "path": "hotspot/source/timed/tests/test_aircraft_ground_stage.gd",
+      "bytes": 26745,
+      "sha256": "a6f30e377a6651d9ab931604a19d50d24a3afd08adc458e4414015b1a9bad64c"
+    },
+    {
+      "path": "inputs/app/data/aircraft/p51d_mustang_120.json",
+      "bytes": 112806,
+      "sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c"
+    },
+    {
+      "path": "inputs/app/data/fuels/openrc-fuel-registry.json",
+      "bytes": 5563,
+      "sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1"
+    },
+    {
+      "path": "inputs/app/data/glow/profile_contract.json",
+      "bytes": 5102,
+      "sha256": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38"
+    },
+    {
+      "path": "inputs/app/data/ground/wheel_profiles.json",
+      "bytes": 36426,
+      "sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665"
+    },
+    {
+      "path": "inputs/app/data/schema/aircraft-contract-v2.json",
+      "bytes": 46245,
+      "sha256": "0de90c832a3e875cd162d6f7bf38241b6f11337edb5794bf22ce3afc2fb4a737"
+    },
+    {
+      "path": "inputs/app/tests/fixtures/ground_contact_default_outputs.bin",
+      "bytes": 53128,
+      "sha256": "85df6ec77ea772eb55a5d1b9942e4d828ea78fae25fd833b93d6a6af1ece5133"
+    },
+    {
+      "path": "inputs/app/tests/fixtures/ground_contact_rest_nonzero.bin",
+      "bytes": 5488,
+      "sha256": "92f54f5b19bc9cc23826747070ca924587825d53b5fee690afcd21adca237a98"
+    },
+    {
+      "path": "inputs/app/tests/fixtures/ground_contact_rest_proposal.bin",
+      "bytes": 5784,
+      "sha256": "3c75d979b6bd7d7b10dc534be2142312e4881548b7a11f2f34dfd61e4fbe9539"
+    },
+    {
+      "path": "inputs/app/tests/fixtures/ground_contact_rest_range.bin",
+      "bytes": 5760,
+      "sha256": "caa37119b408baabb46aa40fe5d76ab036cc0dfdcb42a5d2f093d8941f0657f5"
+    },
+    {
+      "path": "inputs/app/tests/fixtures/ground_contact_rest_slip.bin",
+      "bytes": 8876,
+      "sha256": "23471f7af97ea5c032a54e17c2e0cdc877fe55eaf13cef17609cc19ff4c5e449"
+    },
+    {
+      "path": "inputs/app/tests/fixtures/ground_contact_rest_work.bin",
+      "bytes": 11432,
+      "sha256": "cb529ae633cd76e5a2a52e1975d33da4a653344ae85b2c0f67b9fcec9b1122c4"
+    },
+    {
+      "path": "inputs/states/checkpoint-10s.bin",
+      "bytes": 992,
+      "sha256": "5ca3a1ce82d01b1467a175cfe0b529ee7027ebc00b29b7adf9369388e52ed028"
+    },
+    {
+      "path": "inputs/states/checkpoint-6s.bin",
+      "bytes": 992,
+      "sha256": "d6a190715ede37bb670e0cc8c760a86c4a0005a5b079f701f4a80ffdb9ce5e7d"
+    },
+    {
+      "path": "inputs/states/ground_unloaded_gentle.bin",
+      "bytes": 13952,
+      "sha256": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408"
+    },
+    {
+      "path": "inputs/states/ground_unloaded_hard.bin",
+      "bytes": 13952,
+      "sha256": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b"
+    },
+    {
+      "path": "optimization/baseline-bounds-hashes.json",
+      "bytes": 1369,
+      "sha256": "d93495c757639f5d8ea4c43f44af0344a2ab4b44abdd8916685607ab725f7f6e"
+    },
+    {
+      "path": "optimization/baseline-production-hashes.json",
+      "bytes": 1656,
+      "sha256": "68da4b773141c77c05e7c7a713a93ff365036f4104a1f75f15aa0f651750ecc1"
+    },
+    {
+      "path": "optimization/build.py",
+      "bytes": 6534,
+      "sha256": "a7c83c567b2c27a0d1d6054a97e6626babb1501bce9a880344a93061be37e420"
+    },
+    {
+      "path": "optimization/capture_production_returns.gd",
+      "bytes": 11636,
+      "sha256": "75034629e612f50ede3ffe4d94a131b66318dbaa6ff449dff1e27e844f69bdb1"
+    },
+    {
+      "path": "optimization/checks/actual-reuse-count-rt4soiym/engine.log",
+      "bytes": 522,
+      "sha256": "715960062e012a7150946e4e67eb60a3bc0effb55f1d948537764ab46c90e5f5"
+    },
+    {
+      "path": "optimization/checks/actual-reuse-count-rt4soiym/report.json",
+      "bytes": 1285,
+      "sha256": "a72d4ccad7f302b23ac17d221abdcf70ce574abde2ee98600637070dcd99bc6d"
+    },
+    {
+      "path": "optimization/checks/baseline-gentle-kk24nlkj/engine.log",
+      "bytes": 425,
+      "sha256": "5ed9c8241218c773ac50015d3338fc95652c96723e3e4477035b8e42d5681a54"
+    },
+    {
+      "path": "optimization/checks/baseline-gentle-kk24nlkj/report.json",
+      "bytes": 1285,
+      "sha256": "3ddb2fefa415393b29f970758ff8922f075700e20f715e6871af50a27c002628"
+    },
+    {
+      "path": "optimization/checks/baseline-hard-pcv25ruk/engine.log",
+      "bytes": 504,
+      "sha256": "d5ca2e5f6f986d34be69082ffee2a1d7665b53d2a2446f2f9bc82c9c8767704f"
+    },
+    {
+      "path": "optimization/checks/baseline-hard-pcv25ruk/report.json",
+      "bytes": 1277,
+      "sha256": "3b0237eaeec9f4ea044d9f599e82d782adf4112d5a322aec8fbea221c2fa0346"
+    },
+    {
+      "path": "optimization/checks/baseline-rest10-wrz1sbrf/engine.log",
+      "bytes": 425,
+      "sha256": "db33bd83c80396e2fcfc18256f1e547757dd1e99e08aeda3f80bf0a4f4db7e20"
+    },
+    {
+      "path": "optimization/checks/baseline-rest10-wrz1sbrf/report.json",
+      "bytes": 1285,
+      "sha256": "49efbbc382a30677e2dc32186dc3ce8855143685f51227297e3adb41c1c870a6"
+    },
+    {
+      "path": "optimization/checks/baseline-rest6-c_8x4s2w/engine.log",
+      "bytes": 424,
+      "sha256": "cd15262df7b56bd7633ad674545c6eb1a93fa8fb5180cab43d37294149a6e6af"
+    },
+    {
+      "path": "optimization/checks/baseline-rest6-c_8x4s2w/report.json",
+      "bytes": 1281,
+      "sha256": "2ef526c1bc588363019af97b5e29ee7156b4439f47d9ca33e0ac483f07634751"
+    },
+    {
+      "path": "optimization/checks/capture-public-step-fixed-parent-nbkyeaym/engine.log",
+      "bytes": 124,
+      "sha256": "7c939c899e4c1b4912938ad19c5894996338bb97f603c505f05b24a23970658b"
+    },
+    {
+      "path": "optimization/checks/capture-public-step-fixed-parent-nbkyeaym/report.json",
+      "bytes": 1310,
+      "sha256": "adde2c43bfc390e1e6a2d93e1972e150d12e12a09fa9cf0922423e1ce9b949b7"
+    },
+    {
+      "path": "optimization/checks/compat-ar-correct-marker-afqkauwv/engine.log",
+      "bytes": 643,
+      "sha256": "9e55e3e557183d19141dcb10ec12c270ef642f97a978245e030525d37a160e88"
+    },
+    {
+      "path": "optimization/checks/compat-ar-correct-marker-afqkauwv/report.json",
+      "bytes": 1309,
+      "sha256": "6089369ba1ac123d8eb1579526e5e526745fb0fe1368aec624ca640378fd2239"
+    },
+    {
+      "path": "optimization/checks/compat-test_aircraft_ground_impulse-rr77o1pd/engine.log",
+      "bytes": 119,
+      "sha256": "d1811c203c52d585943ca3747fcf66ff04452c5ef8fd506ef95c76504a7ef2d6"
+    },
+    {
+      "path": "optimization/checks/compat-test_aircraft_ground_impulse-rr77o1pd/report.json",
+      "bytes": 1321,
+      "sha256": "a15e583e52bdee1c9e3fed47d838003b46c3803bb9651d13093ec5a35ccfd179"
+    },
+    {
+      "path": "optimization/checks/compat-test_aircraft_ground_step-floc68j7/engine.log",
+      "bytes": 116,
+      "sha256": "2141d120ae5766d70ac6f424ba091ffcb6208f4e55bb34013379e8e5fb950248"
+    },
+    {
+      "path": "optimization/checks/compat-test_aircraft_ground_step-floc68j7/report.json",
+      "bytes": 1306,
+      "sha256": "8d2284271a5b65fdce1990ee8a79b4e39747371d86ba92fd465ef981f85bff9b"
+    },
+    {
+      "path": "optimization/checks/focused-proof-corrected-l9fzgsk8/engine.log",
+      "bytes": 115,
+      "sha256": "6b10fc72f530f5415d88d6f42d68ab0788327e0d27cf355daa11cd38c3d79f50"
+    },
+    {
+      "path": "optimization/checks/focused-proof-corrected-l9fzgsk8/report.json",
+      "bytes": 1285,
+      "sha256": "9b8a3501027ef26a7cffd4d6dfb10f3374ea024ebbc0d1f4cd8d2e023e1d2beb"
+    },
+    {
+      "path": "optimization/checks/optimized-gentle-eaip6fvi/engine.log",
+      "bytes": 449,
+      "sha256": "4f8f196a142ef14221f934408954355c759469b7672894cbcba06a0ca34e7ba4"
+    },
+    {
+      "path": "optimization/checks/optimized-gentle-eaip6fvi/report.json",
+      "bytes": 1289,
+      "sha256": "cfb6f4f7c1dba17b31f5ad329db5d1fe73f8b7e44c32deb51e4efa0bfc78dda9"
+    },
+    {
+      "path": "optimization/checks/optimized-hard-q_rxc43t/engine.log",
+      "bytes": 528,
+      "sha256": "b03cda42ec30d5506db650531e4721fa5ec8c3a2abcfb0aee0870cdaecfe2321"
+    },
+    {
+      "path": "optimization/checks/optimized-hard-q_rxc43t/report.json",
+      "bytes": 1281,
+      "sha256": "a0fc5ea4c6d30403fc91547751cf08a4eaa3ba9013245291f874a2b0679de79a"
+    },
+    {
+      "path": "optimization/checks/optimized-rest10-kns09qhw/engine.log",
+      "bytes": 449,
+      "sha256": "2deae95e41d963351a290096b84bfe48a9cbd4a6e50bc839f50d669b1439b035"
+    },
+    {
+      "path": "optimization/checks/optimized-rest10-kns09qhw/report.json",
+      "bytes": 1289,
+      "sha256": "c9da86a894eab146293a615f1ae11cb0bb69f01090a2dc24a0b26ce6c61b7655"
+    },
+    {
+      "path": "optimization/checks/optimized-rest6-cjtl4195/engine.log",
+      "bytes": 448,
+      "sha256": "f9760da12d5db0fdb15a5c231cac28ae8fb4fa25109eaaa98b69498cca4db892"
+    },
+    {
+      "path": "optimization/checks/optimized-rest6-cjtl4195/report.json",
+      "bytes": 1284,
+      "sha256": "69feee02a65020b95ece3e47c2f040a9d8a722a1c38e259360848c5224fc1564"
+    },
+    {
+      "path": "optimization/checks/parse-draft-glie_376/engine.log",
+      "bytes": 72,
+      "sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7"
+    },
+    {
+      "path": "optimization/checks/parse-draft-glie_376/report.json",
+      "bytes": 1216,
+      "sha256": "647024a00755ec25995691448f2ba88c407ccb6ec71aecee24dc73fc7ab80dad"
+    },
+    {
+      "path": "optimization/checks/parse-paired-renamed-vhhdh2fh/engine.log",
+      "bytes": 72,
+      "sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7"
+    },
+    {
+      "path": "optimization/checks/parse-paired-renamed-vhhdh2fh/report.json",
+      "bytes": 1233,
+      "sha256": "9880cfe45b4f092938c44635a0e4e8f9f6df0f364f927c4c5ed20b755d2b14fc"
+    },
+    {
+      "path": "optimization/checks/parse-self-contained-complete-5a2qmq9t/engine.log",
+      "bytes": 72,
+      "sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7"
+    },
+    {
+      "path": "optimization/checks/parse-self-contained-complete-5a2qmq9t/report.json",
+      "bytes": 1267,
+      "sha256": "e0c8587921207da5cc276cb2d159d7457125d2f6f6587a80eb6825ba3016743f"
+    },
+    {
+      "path": "optimization/checks/self-contained-complete-35me0_k3/engine.log",
+      "bytes": 124,
+      "sha256": "7c939c899e4c1b4912938ad19c5894996338bb97f603c505f05b24a23970658b"
+    },
+    {
+      "path": "optimization/checks/self-contained-complete-35me0_k3/report.json",
+      "bytes": 1291,
+      "sha256": "ecf07b1c8408db90d8568b9f14a7584f21f80e406372584e9b6fc3ef15dd2062"
+    },
+    {
+      "path": "optimization/checks/warmed-pairs-x0y5vfwy/engine.log",
+      "bytes": 1669,
+      "sha256": "c0e45e2fdcb6766bdee03835f6cc9021ffff2ec253ec3a59b8d89878ab782161"
+    },
+    {
+      "path": "optimization/checks/warmed-pairs-x0y5vfwy/report.json",
+      "bytes": 1224,
+      "sha256": "d2f9e2a1dc1a3b01df674deb2db50c92169e960dc90f8245342981d650b49631"
+    },
+    {
+      "path": "optimization/count-instrument/driver.gd",
+      "bytes": 3216,
+      "sha256": "34683e45eea59fcd523fb1eec6f016a99e82b6eecc0fca0f83b8de9ddaa24537"
+    },
+    {
+      "path": "optimization/count-instrument/metrics.gd",
+      "bytes": 1063,
+      "sha256": "3c367670ecd140442cfc8fbe64245f85adc1ee0d0c1bbc14e7ea55c4c76b4441"
+    },
+    {
+      "path": "optimization/count-instrument/physics/contact_assembly_resolution.gd",
+      "bytes": 42716,
+      "sha256": "fefe34ac41ead0dec1171f7d832234fa1573ce1b6711055cb92d59b7167eb189"
+    },
+    {
+      "path": "optimization/count-instrument/source-identities.json",
+      "bytes": 9100,
+      "sha256": "5ba1c52ec2848fc54081450d1e6871c107d7a6adf185292a601f71054e607484"
+    },
+    {
+      "path": "optimization/manifest.json",
+      "bytes": 14478,
+      "sha256": "bce9c0564f93ae5f44087e45527812910b93b68d65c4a2dd78c276a2505ac5f5"
+    },
+    {
+      "path": "optimization/paired-results.json",
+      "bytes": 2025,
+      "sha256": "a1d927d548fda0bbf34479db1f4e48ee5e4c905036f38e014cedb56858c02542"
+    },
+    {
+      "path": "optimization/paired.gd",
+      "bytes": 3494,
+      "sha256": "3d807ce5b19b0c56150923a008b7d0c2ae79d842664006083b0b9d2d339ae18a"
+    },
+    {
+      "path": "optimization/production-review.patch",
+      "bytes": 13775,
+      "sha256": "0be1b54bcb0531856388a4e07e16a84e0017034a5d9b4b6625f7a6b36c807c73"
+    },
+    {
+      "path": "optimization/promotion-manifest.json",
+      "bytes": 16334,
+      "sha256": "6437c79f710dc3f8759d2e340994ca7e3dd419b50960d05d91dbbac161c3a1b7"
+    },
+    {
+      "path": "optimization/README.md",
+      "bytes": 4382,
+      "sha256": "cc9c05140efb8ad25c7b551a3a72a144921d5faeb7e36b9a5fcea771ad34ba73"
+    },
+    {
+      "path": "optimization/report.json",
+      "bytes": 26651,
+      "sha256": "822b14a7b259416d5e64e94fa4ec1f9427fd14e877d68f2ee004d8f103a06c4c"
+    },
+    {
+      "path": "optimization/results/baseline/gentle-policy.result.bin",
+      "bytes": 9240,
+      "sha256": "77b3d22cc3f416489ba66f57d759dfd712d2936b9fb46a835b196d51d7b1eaec"
+    },
+    {
+      "path": "optimization/results/baseline/gentle-policy.timings.json",
+      "bytes": 317,
+      "sha256": "0c3365e2b87ab7c03c0a4afcc9697e62f9c6d9a2b83fffd6d16b7132cd2c8bcb"
+    },
+    {
+      "path": "optimization/results/baseline/hard-policy.result.bin",
+      "bytes": 240,
+      "sha256": "a972e12b5e91e3d2c99c2712338f9ae1cefac50b6d31d3e930da5b58fd2edee8"
+    },
+    {
+      "path": "optimization/results/baseline/hard-policy.timings.json",
+      "bytes": 396,
+      "sha256": "4a8613ae120b12d79c4605e587468bf82d30e89bd21a0a5713617b4864eb8004"
+    },
+    {
+      "path": "optimization/results/baseline/rest10-policy.result.bin",
+      "bytes": 5540,
+      "sha256": "c052b7dbcf19df8d72d26487811334d9e774d8f0a1e44e5e76f9f2704d225ec7"
+    },
+    {
+      "path": "optimization/results/baseline/rest10-policy.timings.json",
+      "bytes": 317,
+      "sha256": "1c41f98567b9fdf92e7c7bfccbdb1524ccb8ec1cd9ae4f8cafc09a71da95b03f"
+    },
+    {
+      "path": "optimization/results/baseline/rest6-policy.result.bin",
+      "bytes": 5540,
+      "sha256": "fb5eab3584e5633e40eae3c5951703ebd77df2251d7a5895a98d8568c6361ccf"
+    },
+    {
+      "path": "optimization/results/baseline/rest6-policy.timings.json",
+      "bytes": 316,
+      "sha256": "7d2884c9bd9955b615c41c6c916b57fc8f061539e8074bfee9557ec7e0690d49"
+    },
+    {
+      "path": "optimization/results/counted/rest6-policy.result.bin",
+      "bytes": 5540,
+      "sha256": "fb5eab3584e5633e40eae3c5951703ebd77df2251d7a5895a98d8568c6361ccf"
+    },
+    {
+      "path": "optimization/results/counted/rest6-policy.timings.json",
+      "bytes": 434,
+      "sha256": "3c30e705ba638c3b33c91648db895a6d0da3a7b2d9339152beb90f4029142b80"
+    },
+    {
+      "path": "optimization/results/optimized/gentle-policy.result.bin",
+      "bytes": 9240,
+      "sha256": "77b3d22cc3f416489ba66f57d759dfd712d2936b9fb46a835b196d51d7b1eaec"
+    },
+    {
+      "path": "optimization/results/optimized/gentle-policy.timings.json",
+      "bytes": 343,
+      "sha256": "496c494977bcafe152b7a3a1aa1aae7a68a45b807494001ee54b9ca4871e317c"
+    },
+    {
+      "path": "optimization/results/optimized/hard-policy.result.bin",
+      "bytes": 240,
+      "sha256": "a972e12b5e91e3d2c99c2712338f9ae1cefac50b6d31d3e930da5b58fd2edee8"
+    },
+    {
+      "path": "optimization/results/optimized/hard-policy.timings.json",
+      "bytes": 422,
+      "sha256": "c53146e7ffc95423dcee706f3dafa5534a217b5a234e6ac58ccba43dec60c0fb"
+    },
+    {
+      "path": "optimization/results/optimized/rest10-policy.result.bin",
+      "bytes": 5540,
+      "sha256": "c052b7dbcf19df8d72d26487811334d9e774d8f0a1e44e5e76f9f2704d225ec7"
+    },
+    {
+      "path": "optimization/results/optimized/rest10-policy.timings.json",
+      "bytes": 343,
+      "sha256": "50b8b82c4e1560c14fc7fba04b1a73344972772feb690abc47248bb5428b514e"
+    },
+    {
+      "path": "optimization/results/optimized/rest6-policy.result.bin",
+      "bytes": 5540,
+      "sha256": "fb5eab3584e5633e40eae3c5951703ebd77df2251d7a5895a98d8568c6361ccf"
+    },
+    {
+      "path": "optimization/results/optimized/rest6-policy.timings.json",
+      "bytes": 342,
+      "sha256": "d2afa17d0a48854a0ad84447001f0d99032f6ab3629c9134cf304a6fd2d88592"
+    },
+    {
+      "path": "optimization/review.patch",
+      "bytes": 16898,
+      "sha256": "1bc45cd94fbdc6f76f6d3fa787c747dfb7073c7df455f64ff30e49f976b3c02c"
+    },
+    {
+      "path": "optimization/root-promotion.json",
+      "bytes": 1642,
+      "sha256": "a618fa0cf11434c88dd8f529fdeb8c1fda436cf00a5a755e2195d919a665b5aa"
+    },
+    {
+      "path": "optimization/source/driver.gd",
+      "bytes": 3226,
+      "sha256": "c59cabdc666dcc6b9f5d5d5633051fbc48dccb8ffc37bb9b3d45c97d74a2e966"
+    },
+    {
+      "path": "optimization/source/metrics.gd",
+      "bytes": 1063,
+      "sha256": "3c367670ecd140442cfc8fbe64245f85adc1ee0d0c1bbc14e7ea55c4c76b4441"
+    },
+    {
+      "path": "optimization/source/owner.gd",
+      "bytes": 30644,
+      "sha256": "ac76f98247b26719020f988fd8f7f269c78d330456669aeb3caa9f7429281a96"
+    },
+    {
+      "path": "optimization/source/physics/aero.gd",
+      "bytes": 77613,
+      "sha256": "e20ae5ec30b11e27b9a6d37086cdffb26e4db2af0f71c1d561590e8ab26ecfa1"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_contract.gd",
+      "bytes": 19475,
+      "sha256": "35d2a1ad28035ee4278179d18738eefe3ebd9648e26522204dfc4fcf1d71dcc9"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_data.gd",
+      "bytes": 155111,
+      "sha256": "8a79e8a0506593318a91afd57e10c311ec81d7f11e44e398ae615b12fe23b1d6"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_ground_accuracy.gd",
+      "bytes": 29105,
+      "sha256": "3b86faf64717f6fb84a26cb2521e2d17ffb3e6c0bf36585a2b6da2099295ce87"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_ground_dynamics.gd",
+      "bytes": 18218,
+      "sha256": "fc55cc304ef0bfb373216c37b8a0454fdba797aa97509c8e2113083a7c019296"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_ground_impulse.gd",
+      "bytes": 29097,
+      "sha256": "0cc470f500e22a574cca105e79b313828df941f2fe8b9190cbf20f62964badd2"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_ground_profile.gd",
+      "bytes": 18952,
+      "sha256": "20faf4c1e926ad2a23c464d2ab28e064d4d264ade7135d7290eea739052e4925"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_ground_stage.gd",
+      "bytes": 16177,
+      "sha256": "f370a3cd999805c24087ac1ba956b42c3d3ea6579c671befb390d839c40a1cfe"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_ground_step.gd",
+      "bytes": 44965,
+      "sha256": "d8ee97b7b9526c4e0490aca40b82827a6db51ec693b019538e2a599f7cacca30"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_ground_traction.gd",
+      "bytes": 13257,
+      "sha256": "1190ffdf7e8823eb10e0308f63beb6cfc3e42c9ed11db2c0cf37e2321d0c014b"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_ground_unloaded.gd",
+      "bytes": 16119,
+      "sha256": "5b0170c9e7d2201ec8aecdbdaf5b1d81df15385bc92715eac7c166b917b982a5"
+    },
+    {
+      "path": "optimization/source/physics/aircraft_modules.gd",
+      "bytes": 20066,
+      "sha256": "79b030030e92b35af5efe7e8f69149e6d498a6c7637aa212a926320803b1102a"
+    },
+    {
+      "path": "optimization/source/physics/battery/battery_data.gd",
+      "bytes": 16188,
+      "sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b"
+    },
+    {
+      "path": "optimization/source/physics/battery/esc_supervisor.gd",
+      "bytes": 5408,
+      "sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5"
+    },
+    {
+      "path": "optimization/source/physics/battery/pack_ecm.gd",
+      "bytes": 12988,
+      "sha256": "eccebc1dc9c3488de4eb3a410d351b69269c2e39a33669a32ea61865eef67a25"
+    },
+    {
+      "path": "optimization/source/physics/contact_assembly_resolution.gd",
+      "bytes": 42008,
+      "sha256": "a3cb795c7ca8e07a32511d7b1b6bda0a686bc3190c0e7cd2cd6ef4f8bfff0d46"
+    },
+    {
+      "path": "optimization/source/physics/contact_assembly_strategy.gd",
+      "bytes": 3720,
+      "sha256": "df70499cb1f86dd8b9bcc3cee6b46591a53d27e77b38518c72c182856b86614b"
+    },
+    {
+      "path": "optimization/source/physics/control_actuators.gd",
+      "bytes": 10806,
+      "sha256": "d8a897dd9890fcd89c5bc9a39d5313878d8cd8751db3a963efd24747692907a5"
+    },
+    {
+      "path": "optimization/source/physics/control_surfaces.gd",
+      "bytes": 4143,
+      "sha256": "758de9a007b2d2f1bf819d6a8919e4e867f952097aa260c1f2c56405a9611beb"
+    },
+    {
+      "path": "optimization/source/physics/effective_mass.gd",
+      "bytes": 8472,
+      "sha256": "7af5b0686e2c27f5ad78526bcc240a84eece6f6245732986481fb4791c850176"
+    },
+    {
+      "path": "optimization/source/physics/electric_motor.gd",
+      "bytes": 4926,
+      "sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8"
+    },
+    {
+      "path": "optimization/source/physics/electric_supply.gd",
+      "bytes": 15547,
+      "sha256": "04675b0f1ee127f9c26e200ce2c08a519df8edc39c1ba1a53e146e3e680f8e2b"
+    },
+    {
+      "path": "optimization/source/physics/event_bracket.gd",
+      "bytes": 1409,
+      "sha256": "898b8556741b98f12416f1c4e5297b833f78be788f8b6c968138fdb437a031bc"
+    },
+    {
+      "path": "optimization/source/physics/event_step.gd",
+      "bytes": 7216,
+      "sha256": "a1abe07d0a54dee769e5d7862f83bc7ed10df54cb4f6b693302d1ca87bb7b3e5"
+    },
+    {
+      "path": "optimization/source/physics/fixed_datum_body.gd",
+      "bytes": 5733,
+      "sha256": "2945c1a57e8b6c946aab72439ba6bb1c869f996f803045310ed42f513497ddf7"
+    },
+    {
+      "path": "optimization/source/physics/flaps.gd",
+      "bytes": 1247,
+      "sha256": "bf3f1ac5afc0b414d978f9f630afb12ba956635d66cf27c65d87d392ebb76b7d"
+    },
+    {
+      "path": "optimization/source/physics/fuel_properties.gd",
+      "bytes": 8955,
+      "sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4"
+    },
+    {
+      "path": "optimization/source/physics/generalized_coordinates.gd",
+      "bytes": 9754,
+      "sha256": "d349b9ad91639e576f59af5e05ed14d62392bb858c4c2b47a2131a70cfdfee38"
+    },
+    {
+      "path": "optimization/source/physics/glow/carburetor.gd",
+      "bytes": 8151,
+      "sha256": "7ca40d11c2dd2350f1a8a713909d9018c8f23f1c58578624e35d7f18f66684d5"
+    },
+    {
+      "path": "optimization/source/physics/glow/four_stroke.gd",
+      "bytes": 16957,
+      "sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7"
+    },
+    {
+      "path": "optimization/source/physics/glow/fuel_feed.gd",
+      "bytes": 16324,
+      "sha256": "3f90a9edb0a88783d5f50c3667f582f6b80de0fde224a98732a9745ad02952aa"
+    },
+    {
+      "path": "optimization/source/physics/glow/fuel_mass.gd",
+      "bytes": 4724,
+      "sha256": "9954232737eed5d93679cff20de7d03441056b7b6ca16701f83647d5b11c0f1f"
+    },
+    {
+      "path": "optimization/source/physics/glow/installation.gd",
+      "bytes": 38074,
+      "sha256": "342ea1f145644e1462b551353e4cd34175c249822d2466aad2847f42201cacdf"
+    },
+    {
+      "path": "optimization/source/physics/glow/operating_point.gd",
+      "bytes": 5256,
+      "sha256": "1967da1f57d6a65b57e7df5cbc582743403efdf61cb87f86dee262f2ab7593d6"
+    },
+    {
+      "path": "optimization/source/physics/glow/profile.gd",
+      "bytes": 11686,
+      "sha256": "c52f639f3f28382bdd5a3bd8b30789d76e8ae6eb11864b5bd09eb0bff3855524"
+    },
+    {
+      "path": "optimization/source/physics/glow/propeller.gd",
+      "bytes": 7878,
+      "sha256": "691040973c881653db5fd18a1afd0cc4eac856c103680fec86e5b7a7308b48c6"
+    },
+    {
+      "path": "optimization/source/physics/glow/source.gd",
+      "bytes": 9924,
+      "sha256": "ce14918165a2bf64d35e59813c3835d66763a7ac8af3a18f8a03fa11a3744660"
+    },
+    {
+      "path": "optimization/source/physics/glow/two_stroke.gd",
+      "bytes": 16115,
+      "sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6"
+    },
+    {
+      "path": "optimization/source/physics/ground_contact.gd",
+      "bytes": 26768,
+      "sha256": "3b14ac289a3ade0626c5d165ae1fb4d4b4011b4ba4fd095daf8361f8904d2111"
+    },
+    {
+      "path": "optimization/source/physics/ground_effect.gd",
+      "bytes": 4900,
+      "sha256": "c789bdaacaa92f92c32abc22b7d8324389041690a26400db184aa9e36cc7f061"
+    },
+    {
+      "path": "optimization/source/physics/ground_support.gd",
+      "bytes": 7580,
+      "sha256": "273c71f5f6e1b71eec89b517c78c07d24468bdebabd0b7bdc878f3f2c76711e6"
+    },
+    {
+      "path": "optimization/source/physics/ground_terrain.gd",
+      "bytes": 13775,
+      "sha256": "73bcb3ff7041e1e8a5cedae4f42c3d28120e08586d017792f852e190407871a2"
+    },
+    {
+      "path": "optimization/source/physics/ground_traction.gd",
+      "bytes": 30055,
+      "sha256": "3e18d9f2573b8642462c331adaf3712c731cf1fe1eb79fb1639b4a169324f607"
+    },
+    {
+      "path": "optimization/source/physics/ground_wheels.gd",
+      "bytes": 12817,
+      "sha256": "f3ad3af43525a9bee49d63b7967812d769a7bd54d8d933430cb2602788f23b90"
+    },
+    {
+      "path": "optimization/source/physics/hull_contact.gd",
+      "bytes": 42442,
+      "sha256": "1ac52bc9b86322ec9d0ee8202e5062bd82556509cbf8c9fcfe2cebf12da99625"
+    },
+    {
+      "path": "optimization/source/physics/integrator.gd",
+      "bytes": 2490,
+      "sha256": "e8692be9c2b8af1443d16999a79bae69d8b7652006900570d91508dd56a4bba6"
+    },
+    {
+      "path": "optimization/source/physics/intended_hull_support.gd",
+      "bytes": 14892,
+      "sha256": "47f3413b545bb9c558c1c54fa971d248700d870609dad08daa454641475f6cb9"
+    },
+    {
+      "path": "optimization/source/physics/lake_surface.gd",
+      "bytes": 36297,
+      "sha256": "ae62502dfe6702dd3dfff213318647316bf41430d620015d9e655a44e91e21d0"
+    },
+    {
+      "path": "optimization/source/physics/liquid_fuel.gd",
+      "bytes": 9974,
+      "sha256": "29d82539ac7d749ec1f943759520bbe0663c7bae9ae0e5429af4b75916e6658b"
+    },
+    {
+      "path": "optimization/source/physics/mass_inventory.gd",
+      "bytes": 25057,
+      "sha256": "f5dcdb0c8ed5e19f87013d6d98f31bbd04b2c92fcaa386f1453b4ce21e43f349"
+    },
+    {
+      "path": "optimization/source/physics/math3d.gd",
+      "bytes": 5514,
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb"
+    },
+    {
+      "path": "optimization/source/physics/normal_compliance.gd",
+      "bytes": 10685,
+      "sha256": "cbc3c680a2448c9c72139ecb8bf02b15d6a801d5af5559683928ac6e25f6a41c"
+    },
+    {
+      "path": "optimization/source/physics/normal_contact_admission.gd",
+      "bytes": 18110,
+      "sha256": "9515bd10da83d079d85e2ca9de03c7c02ae0e0d4568bd4bcaa752088b19ddf17"
+    },
+    {
+      "path": "optimization/source/physics/physical_identity.gd",
+      "bytes": 6946,
+      "sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8"
+    },
+    {
+      "path": "optimization/source/physics/propulsion.gd",
+      "bytes": 41489,
+      "sha256": "1ef74168677e2415c14fea6cb1a7d2d5861df52a27415e69ab08991bb04f76c9"
+    },
+    {
+      "path": "optimization/source/physics/rigid_body.gd",
+      "bytes": 5644,
+      "sha256": "a245293aed4e3549f2f7855ccdbdb96fe626a942bbcf04bad552fe4bd2628436"
+    },
+    {
+      "path": "optimization/source/physics/rotor_coupling.gd",
+      "bytes": 27584,
+      "sha256": "ba2464e8e6b6b9578772325c0d9cb0583f7e17bd7132493401dda6cd62e94eba"
+    },
+    {
+      "path": "optimization/source/physics/turbine.gd",
+      "bytes": 10745,
+      "sha256": "64b317c04faa7bc533b2ebe4854b23fcffaadf66655a77da53b5354b702cb297"
+    },
+    {
+      "path": "optimization/source/physics/wheel_geometry.gd",
+      "bytes": 16416,
+      "sha256": "503010a84b16c6f16f7eb7d7cd08260523df3d67dd76c444d7b1cd4a7ad5fec3"
+    },
+    {
+      "path": "optimization/source/physics/wheel_profiles.gd",
+      "bytes": 13919,
+      "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748"
+    },
+    {
+      "path": "optimization/source/physics/wing_polar.gd",
+      "bytes": 5580,
+      "sha256": "1c547d853eb3410aa8b21d2ab6f2af62c2c50402fd2a4053bb0d101904f2ee7f"
+    },
+    {
+      "path": "optimization/source/sim/simulation.gd",
+      "bytes": 55208,
+      "sha256": "849979cbbea1053c37a9c11c0339def713d49afb9a7161a36320dde960a8239f"
+    },
+    {
+      "path": "optimization/source/sim/vehicle_model.gd",
+      "bytes": 12046,
+      "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2"
+    },
+    {
+      "path": "optimization/source/tests/test_aircraft_ground_stage.gd",
+      "bytes": 26681,
+      "sha256": "c4e7eb12e9b954e3b3a523a6a474589eb065d11c72b0cc291ee81a4b729bd512"
+    },
+    {
+      "path": "optimization/source/tests/test_aircraft_ground_step.gd",
+      "bytes": 47565,
+      "sha256": "25cdb72dca0fa1a18c22f8b3e6e41baddd3be5459e655c41ee77936e3b1a91ea"
+    },
+    {
+      "path": "optimization/test-payload-manifest.json",
+      "bytes": 6798,
+      "sha256": "10813e8e568c7c2b14355c4c255184b45de60167b536985729d1913aaef3ffd7"
+    },
+    {
+      "path": "optimization/test_mass_prefix.gd",
+      "bytes": 5118,
+      "sha256": "2bc62581e42553ae1caf97cdb863c342c059fcd4cf486ebd49e56a7502582146"
+    },
+    {
+      "path": "origins.json",
+      "bytes": 94084,
+      "sha256": "da23d5f647cf3b19d1f56d5512cb3beee165f6f76d3773e6b5f27b9c75a23126"
+    },
+    {
+      "path": "production/checks/accuracy-lfrzs69u/engine.log",
+      "bytes": 119,
+      "sha256": "29609f9a44da1a1ec1fb3a6d5dca20afd3e5068a369506f3751a810096942573"
+    },
+    {
+      "path": "production/checks/accuracy-lfrzs69u/report.json",
+      "bytes": 1230,
+      "sha256": "ea126db7b1dba6b32637853022a4ca1b722cba16116ddc0d4b72089414cf3120"
+    },
+    {
+      "path": "production/checks/assembly-cgmu1t7e/engine.log",
+      "bytes": 643,
+      "sha256": "9e55e3e557183d19141dcb10ec12c270ef642f97a978245e030525d37a160e88"
+    },
+    {
+      "path": "production/checks/assembly-cgmu1t7e/report.json",
+      "bytes": 1234,
+      "sha256": "403be2ec51a4d04e24efb21463e1e5565a1bf5a39074767635c297e0b8450496"
+    },
+    {
+      "path": "production/checks/impulse-ozu6ogci/engine.log",
+      "bytes": 119,
+      "sha256": "d1811c203c52d585943ca3747fcf66ff04452c5ef8fd506ef95c76504a7ef2d6"
+    },
+    {
+      "path": "production/checks/impulse-ozu6ogci/report.json",
+      "bytes": 1226,
+      "sha256": "1963ee716cb9597cc39294251cbd986c0c742f832bc5da6262999592361c952b"
+    },
+    {
+      "path": "production/checks/prefix-k_olsnit/engine.log",
+      "bytes": 124,
+      "sha256": "7c939c899e4c1b4912938ad19c5894996338bb97f603c505f05b24a23970658b"
+    },
+    {
+      "path": "production/checks/prefix-k_olsnit/report.json",
+      "bytes": 1223,
+      "sha256": "428c33fcc761f8d2d6f5106f1b83bc963f2fe3ed6f914b5aa4c36e85f8ceefce"
+    },
+    {
+      "path": "production/checks/step-4yslj4ba/engine.log",
+      "bytes": 116,
+      "sha256": "2141d120ae5766d70ac6f424ba091ffcb6208f4e55bb34013379e8e5fb950248"
+    },
+    {
+      "path": "production/checks/step-4yslj4ba/report.json",
+      "bytes": 1211,
+      "sha256": "bd3fe2b46fb1fddcf915f89285bc3a634d044a56597c832ff8cb23f48a84241e"
+    },
+    {
+      "path": "production/checks/unloaded-b_xrh423/engine.log",
+      "bytes": 111,
+      "sha256": "0fc47cd5393c71e2a32ffd4bad8602135ac8691467b8693a8bc11a41c3441c1e"
+    },
+    {
+      "path": "production/checks/unloaded-b_xrh423/report.json",
+      "bytes": 1222,
+      "sha256": "61b42158be27bb6adc25911b1909064256ffc679b8fb0c8e9b5168573f96a825"
+    },
+    {
+      "path": "production/source/app/physics/aircraft_ground_impulse.gd",
+      "bytes": 28725,
+      "sha256": "5bacc4e47b74db1a7d30428a0d570d53330d4c8c0d80ce93b40953b9b27063ce"
+    },
+    {
+      "path": "production/source/app/physics/aircraft_ground_step.gd",
+      "bytes": 44655,
+      "sha256": "e042c5933dc501d244684cbe8a6480db30a3a7056629a6c014db979dba889b77"
+    },
+    {
+      "path": "production/source/app/physics/contact_assembly_resolution.gd",
+      "bytes": 41822,
+      "sha256": "406b89fbe2a4a09754bf10a2db07d2dfb87fb86038d807cb22396a175a4b9831"
+    },
+    {
+      "path": "production/source/app/tests/test_contact_mass_prefix.gd",
+      "bytes": 11206,
+      "sha256": "841cc3c701c2895492bfa5e9234ad27d0c121b0a649edb6955ed954884a99f98"
+    },
+    {
+      "path": "production/source-before/app/physics/aircraft_ground_impulse.gd",
+      "bytes": 28638,
+      "sha256": "76c279a9fb58ffcbf5f69861cc2e817dd4bd8300c052504495e76a28c2211f69"
+    },
+    {
+      "path": "production/source-before/app/physics/aircraft_ground_step.gd",
+      "bytes": 44481,
+      "sha256": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366"
+    },
+    {
+      "path": "production/source-before/app/physics/contact_assembly_resolution.gd",
+      "bytes": 39934,
+      "sha256": "3cb14049fee9f7976fdac0b88b1129c2aca20c686b53e15fc188a44856d53f45"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7453,
+      "sha256": "2e56da1065a5d6078ace822b8742771211a3d070f82407b61154fdeb4c532b25"
+    },
+    {
+      "path": "report.json",
+      "bytes": 3538,
+      "sha256": "43f304cf0fc935282d066a77a0452c4da03e8543375610947d0503aca59feeb8"
+    },
+    {
+      "path": "retention/package.py",
+      "bytes": 5544,
+      "sha256": "d7028376f89d775bf81a2117463561ea448510a7528d7b47e9549d0e65902286"
+    },
+    {
+      "path": "retention/roundtrip.py",
+      "bytes": 3759,
+      "sha256": "4c1ca4d10dec25ad8a47a00da5d113423da675d1721a2fa28d2ad49bb1d982ac"
+    }
+  ],
+  "excluded": [
+    "manifest.json",
+    "attribute-roundtrip.json"
+  ],
+  "note": "Top manifest cannot hash itself; transfer receipt is written after its own immutable source snapshot."
+}

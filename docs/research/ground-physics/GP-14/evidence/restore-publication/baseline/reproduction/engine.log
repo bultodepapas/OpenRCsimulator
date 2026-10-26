@@ -1,0 +1,15 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-restore-transaction/artifacts-3097874/listener-mutation.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-restore-transaction/artifacts-3097874/listener-mutation.orfl (0 ticks)
+RESTORE_AUDIT {"accepted":false,"case":"listener-mutation","checkpoint_available":false,"fault":"","holds":{},"mass":0.0,"old_checkpoint_retained":false,"paused":false,"recording":false,"signals":[1,0,0],"tick":3}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-restore-transaction/artifacts-3097874/validator-hold.orfl
+RESTORE_AUDIT {"accepted":false,"case":"validator-hold","checkpoint_available":true,"fault":"","holds":{"restore-validator-hold":true},"mass":2.8786621383898,"old_checkpoint_retained":true,"paused":false,"recording":true,"signals":[0,0,0],"tick":3}
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-restore-transaction/artifacts-3097874/validator-hold.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-restore-transaction/artifacts-3097874/normal-control.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-restore-transaction/artifacts-3097874/normal-control.orfl (0 ticks)
+RESTORE_AUDIT {"accepted":true,"case":"normal-control","checkpoint_available":true,"fault":"","holds":{},"mass":2.8786621383898,"old_checkpoint_retained":false,"paused":true,"recording":false,"signals":[1,1,0],"tick":0}
+Restore audit: 7 checks, 0 failed; C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/gp-restore-transaction/artifacts-3097874

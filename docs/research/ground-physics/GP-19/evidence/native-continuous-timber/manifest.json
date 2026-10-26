@@ -1,0 +1,85 @@
+{
+  "format": "openrc-native-flight-audio-evidence-v1",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 49,
+      "sha256": "5c293bc4a8762da239e872f399f00ec843850aaa6fc9192ef734866aef22219b"
+    },
+    {
+      "path": "aggregation-correction.json",
+      "bytes": 1289,
+      "sha256": "9349588d5d4ae7c44f2926527d4ce0d919a964a2cd71c12f0549ca9b1a6f2e3c"
+    },
+    {
+      "path": "check_fleet_sequence.capture.py",
+      "bytes": 43497,
+      "sha256": "08dbd48702d5ebc40ca37ecd34847aea3040b2564ca08d2a90568b502eb599b9"
+    },
+    {
+      "path": "fleet_summary.json",
+      "bytes": 7319,
+      "sha256": "cf419614a752518b86475edced7bea153d75a34ddf03b908ca6c3688620d83ba"
+    },
+    {
+      "path": "launch-refusal.json",
+      "bytes": 220,
+      "sha256": "6c99bdc2cabc21de800b8e124c51afc58ddae60d9880e51822c7306bb5df5406"
+    },
+    {
+      "path": "pcm-identity.json",
+      "bytes": 403,
+      "sha256": "1a6b6b0ccaaa98847306d1c462eff3de3b7b88f5caeea0fd0cda458506b0fe7d"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3629,
+      "sha256": "c2c92f177e501ac1824d0706232382d702cf9369eff00a6317938384f884100e"
+    },
+    {
+      "path": "source/tools/audio/bench_analyze.py",
+      "bytes": 9056,
+      "sha256": "3f47a549a1b9ac88a9296c4212df3b9bdf8cd87f4152ba6b5326cdc60879bf94"
+    },
+    {
+      "path": "source/tools/audio/check_fleet_sequence.py",
+      "bytes": 44787,
+      "sha256": "fc405b1616ade4bd2fcc9c7243f64cea1dcb5565e5437f29ea64c671fc365e9e"
+    },
+    {
+      "path": "source/tools/audio/test_capture_checks.py",
+      "bytes": 13056,
+      "sha256": "35c17ed18d044cccc23f63fd5d5afb63feca3a4dc0df39b360c4a499dd9301f5"
+    },
+    {
+      "path": "true-peak.json",
+      "bytes": 451,
+      "sha256": "f2e109bb3854c7e6893bce6fd99f571cc169343f45bf1ebd966ad342e2c88759"
+    },
+    {
+      "path": "turbo-lumber-evolution.analysis.json",
+      "bytes": 248590,
+      "sha256": "64d293c4e67b4a6584202af95ac42f5e5da2aea92d6f761e5a1a2d600aa29f93"
+    },
+    {
+      "path": "turbo-lumber-evolution.json",
+      "bytes": 1796847,
+      "sha256": "37e33f3c1caf3b962f3939a90dadf518b5bc15f939ddc79ac32afd42c0745988"
+    },
+    {
+      "path": "turbo-lumber-evolution.log",
+      "bytes": 72,
+      "sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7"
+    },
+    {
+      "path": "wrapper-checks.json",
+      "bytes": 525,
+      "sha256": "b97bef3785dafe2d9edf2266786fa7f9a553acfb1c8c775d567bd3700cf3b202"
+    },
+    {
+      "path": "wrapper-checks.log",
+      "bytes": 1716,
+      "sha256": "b6754acc45868cc1cd8a6ddd1c80dd7a6993ace67d57c05b2205eeb2126777ec"
+    }
+  ]
+}

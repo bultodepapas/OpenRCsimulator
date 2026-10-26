@@ -1,0 +1,282 @@
+{
+  "format": "openrc-field-refusal-evidence v1",
+  "date": "2026-10-26",
+  "step": "GP-14g",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "counts": {
+    "focused": 70,
+    "surfaces": 29,
+    "contact": 63,
+    "log": 3247
+  },
+  "current_checks": 3409,
+  "source_scope": "Five original selected sources, six current selected sources unchanged through production checks, three supporting tests at retention. Not all loaded dependencies; accepted live-field recording semantics unchanged/unqualified.",
+  "files": [
+    {
+      "path": "baseline/reproduction/report.json",
+      "sha256": "a080124af29f155fec3b4aa1b008bc14af7f5eabc6b482288d3222c5a642c029",
+      "bytes": 1230,
+      "origin": "tmp\\gp-config-transactions\\checks\\baseline-01\\godot-9wzuqyi1\\report.json",
+      "scope": "15 assertions reproduce observed defects and controls; not correct-behavior acceptance"
+    },
+    {
+      "path": "baseline/reproduction/engine.log",
+      "sha256": "241a2cfffcacc136e483c4b0d335ea55e4ac43165af1d063f6be1557e759b47a",
+      "bytes": 1588,
+      "origin": "tmp\\gp-config-transactions\\checks\\baseline-01\\godot-9wzuqyi1\\engine.log",
+      "scope": "15 assertions reproduce observed defects and controls; not correct-behavior acceptance"
+    },
+    {
+      "path": "baseline/reproduce.gd",
+      "sha256": "81fdda5419784e175ff5fa1bb6af87710bafa9770378a14dee4c51ce76bdff84",
+      "bytes": 5393,
+      "origin": "tmp\\gp-config-transactions\\reproduce.gd",
+      "scope": "Original executed probe; selected original source bytes retained separately"
+    },
+    {
+      "path": "baseline/source-hashes.json",
+      "sha256": "8ffe7ceb3fdd472e32c0727588be5e17b3a15b938b8a2ec7e2fe437be695cb09",
+      "bytes": 587,
+      "origin": "tmp\\gp-config-transactions\\source-hashes.json",
+      "scope": "Original five-source snapshot identity"
+    },
+    {
+      "path": "baseline/source/app/physics/ground_surfaces.gd",
+      "sha256": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e",
+      "bytes": 8094,
+      "origin": "tmp\\gp-config-transactions\\source\\app\\physics\\ground_surfaces.gd",
+      "scope": "Original selected source bytes at audit"
+    },
+    {
+      "path": "baseline/source/app/sim/environment.gd",
+      "sha256": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+      "bytes": 8159,
+      "origin": "tmp\\gp-config-transactions\\source\\app\\sim\\environment.gd",
+      "scope": "Original selected source bytes at audit"
+    },
+    {
+      "path": "baseline/source/app/sim/flight_log.gd",
+      "sha256": "0646b053bae4a788883a7d13833ef24f3b43d8d30c07ea6edfc4715b038afaba",
+      "bytes": 12975,
+      "origin": "tmp\\gp-config-transactions\\source\\app\\sim\\flight_log.gd",
+      "scope": "Original selected source bytes at audit"
+    },
+    {
+      "path": "baseline/source/app/sim/flight_session.gd",
+      "sha256": "d680ba2ef0626b6f3eeae0f8de8d6523955b7da95767f065ede36baac373c964",
+      "bytes": 277334,
+      "origin": "tmp\\gp-config-transactions\\source\\app\\sim\\flight_session.gd",
+      "scope": "Original selected source bytes at audit"
+    },
+    {
+      "path": "baseline/source/app/sim/simulation.gd",
+      "sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490",
+      "bytes": 54898,
+      "origin": "tmp\\gp-config-transactions\\source\\app\\sim\\simulation.gd",
+      "scope": "Original selected source bytes at audit"
+    },
+    {
+      "path": "baseline/recordings/accepted-field-no-reset.orfl",
+      "sha256": "2e4a13ada2127a7492003b1bbcdb3e8defb2251dddf2e6c248782ca77ac86293",
+      "bytes": 29504,
+      "origin": "tmp\\config-publication-3114083\\accepted-field-no-reset.orfl",
+      "scope": "Original audit observations/recordings; fixture cleanup closes intentionally open recordings"
+    },
+    {
+      "path": "baseline/recordings/field-refusal.orfl",
+      "sha256": "93136a7facc6a9ac5721287c19a10f17cf3aa18b37954b37e03637f7140dea39",
+      "bytes": 28008,
+      "origin": "tmp\\config-publication-3114083\\field-refusal.orfl",
+      "scope": "Original audit observations/recordings; fixture cleanup closes intentionally open recordings"
+    },
+    {
+      "path": "baseline/recordings/live-weather-refusal.orfl",
+      "sha256": "f6771c4264829b92bd604881af7db431effed2008d6f0a250a277f05e1a85080",
+      "bytes": 29504,
+      "origin": "tmp\\config-publication-3114083\\live-weather-refusal.orfl",
+      "scope": "Original audit observations/recordings; fixture cleanup closes intentionally open recordings"
+    },
+    {
+      "path": "baseline/recordings/observations.json",
+      "sha256": "19fca4f444491f8d3901daded5fa675352ef101fba3a208617e7509a8b8a4052",
+      "bytes": 1227,
+      "origin": "tmp\\config-publication-3114083\\observations.json",
+      "scope": "Original audit observations/recordings; fixture cleanup closes intentionally open recordings"
+    },
+    {
+      "path": "baseline/recordings/weather-listener.orfl",
+      "sha256": "a807cc346dc68a4b272c9cfd9c83c6a7c741b7a939b28dab1858c7a1ab07ad14",
+      "bytes": 29552,
+      "origin": "tmp\\config-publication-3114083\\weather-listener.orfl",
+      "scope": "Original audit observations/recordings; fixture cleanup closes intentionally open recordings"
+    },
+    {
+      "path": "rejected/wrong-marker/report.json",
+      "sha256": "8e17f612f8ddf2d4556ed09ee676bb4eb97b6c902449b11d16bd065b93a850fd",
+      "bytes": 1312,
+      "origin": "tmp\\gp-config-transactions\\checks\\field-surfaces-01\\godot-a020su2a\\report.json",
+      "scope": "Runner rejected wrong completion marker despite29 passing assertions; no acceptance claimed"
+    },
+    {
+      "path": "rejected/wrong-marker/engine.log",
+      "sha256": "81dc269275ff38c85096a1ba361e776cfaebb322ce9f6111a3d220fe62ad3351",
+      "bytes": 3888,
+      "origin": "tmp\\gp-config-transactions\\checks\\field-surfaces-01\\godot-a020su2a\\engine.log",
+      "scope": "Runner rejected wrong completion marker despite29 passing assertions; no acceptance claimed"
+    },
+    {
+      "path": "rejected/wrong-marker/test_ground_surfaces.gd",
+      "sha256": "491c2d357d2398c51f4d660770baaa5ed8585a2eba659d8f1d194b574a5420f8",
+      "bytes": 13779,
+      "origin": "tmp\\gp-config-transactions\\field-regressions\\test_ground_surfaces.gd",
+      "scope": "Exact import-rewritten draft test; referenced draft Session bytes equal retained production Session"
+    },
+    {
+      "path": "current/checks/focused/report.json",
+      "sha256": "6bcc9a0895632d4d8344a0d57eba377002adddc8f050859e795fc9f97b436095",
+      "bytes": 1229,
+      "origin": "tmp\\gp-config-transactions\\checks\\field-main-focused\\godot-wgyg7l7h\\report.json",
+      "scope": "Accepted current production script, exact completion marker and warnings-as-errors"
+    },
+    {
+      "path": "current/checks/focused/engine.log",
+      "sha256": "aabeee390191c20f352437f18222b68fac8ab0135458beae12a3c3c5cd025eb0",
+      "bytes": 3014,
+      "origin": "tmp\\gp-config-transactions\\checks\\field-main-focused\\godot-wgyg7l7h\\engine.log",
+      "scope": "Accepted current production script, exact completion marker and warnings-as-errors"
+    },
+    {
+      "path": "current/checks/surfaces/report.json",
+      "sha256": "9934b2fdcab296d04b0f2037efd66edd41ceca925ec3335b96e1fdcf750f2c45",
+      "bytes": 1211,
+      "origin": "tmp\\gp-config-transactions\\checks\\field-main-surfaces\\godot-rc_fuof_\\report.json",
+      "scope": "Accepted current production script, exact completion marker and warnings-as-errors"
+    },
+    {
+      "path": "current/checks/surfaces/engine.log",
+      "sha256": "81dc269275ff38c85096a1ba361e776cfaebb322ce9f6111a3d220fe62ad3351",
+      "bytes": 3888,
+      "origin": "tmp\\gp-config-transactions\\checks\\field-main-surfaces\\godot-rc_fuof_\\engine.log",
+      "scope": "Accepted current production script, exact completion marker and warnings-as-errors"
+    },
+    {
+      "path": "current/checks/contact/report.json",
+      "sha256": "6204c186ba3b21e718abdfa71397407612c752df54c7605da80660b99dcdc12b",
+      "bytes": 1242,
+      "origin": "tmp\\gp-config-transactions\\checks\\field-main-contact\\godot-f58i9bvl\\report.json",
+      "scope": "Accepted current production script, exact completion marker and warnings-as-errors"
+    },
+    {
+      "path": "current/checks/contact/engine.log",
+      "sha256": "f58c91a8efccc93f3eb1e84e59a567de4209e3da67640112cb585f6fc62dc773",
+      "bytes": 1572,
+      "origin": "tmp\\gp-config-transactions\\checks\\field-main-contact\\godot-f58i9bvl\\engine.log",
+      "scope": "Accepted current production script, exact completion marker and warnings-as-errors"
+    },
+    {
+      "path": "current/checks/log/report.json",
+      "sha256": "23a8eb0966887aa1ac36010e3b0fe9e946626f3c8cdafd9e2ac4dc827362fa52",
+      "bytes": 1219,
+      "origin": "tmp\\gp-config-transactions\\checks\\field-main-log\\godot-kw6lkn0z\\report.json",
+      "scope": "Accepted current production script, exact completion marker and warnings-as-errors"
+    },
+    {
+      "path": "current/checks/log/engine.log",
+      "sha256": "92f888a5eef80160135efb7fb586e9a805b384c42ce77075e3459be6b1b51902",
+      "bytes": 5982,
+      "origin": "tmp\\gp-config-transactions\\checks\\field-main-log\\godot-kw6lkn0z\\engine.log",
+      "scope": "Accepted current production script, exact completion marker and warnings-as-errors"
+    },
+    {
+      "path": "current/source/app/sim/flight_session.gd",
+      "sha256": "9b6de6144a1af3c8bf042e04173b3485196954da94b40fdd73c9f309802d0802",
+      "bytes": 277660,
+      "origin": "app\\sim\\flight_session.gd",
+      "scope": "Selected source bytes unchanged between promotion and completed production checks"
+    },
+    {
+      "path": "current/source/app/tests/test_field_replacement.gd",
+      "sha256": "837fc003e566b30cd1f462e22a70d63cf1cfd9e83fb2c3da625c74d4eeebabe4",
+      "bytes": 7305,
+      "origin": "app\\tests\\test_field_replacement.gd",
+      "scope": "Selected source bytes unchanged between promotion and completed production checks"
+    },
+    {
+      "path": "current/source/app/sim/simulation.gd",
+      "sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490",
+      "bytes": 54898,
+      "origin": "app\\sim\\simulation.gd",
+      "scope": "Selected source bytes unchanged between promotion and completed production checks"
+    },
+    {
+      "path": "current/source/app/sim/environment.gd",
+      "sha256": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42",
+      "bytes": 8159,
+      "origin": "app\\sim\\environment.gd",
+      "scope": "Selected source bytes unchanged between promotion and completed production checks"
+    },
+    {
+      "path": "current/source/app/physics/ground_surfaces.gd",
+      "sha256": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e",
+      "bytes": 8094,
+      "origin": "app\\physics\\ground_surfaces.gd",
+      "scope": "Selected source bytes unchanged between promotion and completed production checks"
+    },
+    {
+      "path": "current/source/app/sim/flight_log.gd",
+      "sha256": "0646b053bae4a788883a7d13833ef24f3b43d8d30c07ea6edfc4715b038afaba",
+      "bytes": 12975,
+      "origin": "app\\sim\\flight_log.gd",
+      "scope": "Selected source bytes unchanged between promotion and completed production checks"
+    },
+    {
+      "path": "current/source/app/tests/test_ground_surfaces.gd",
+      "sha256": "8b8461bcac27bd5a13927ec8b4a7e218f593c0e9f6740bce109bb61e1c958e42",
+      "bytes": 13732,
+      "origin": "app\\tests\\test_ground_surfaces.gd",
+      "scope": "Supporting test source at retention; not a complete dependency snapshot"
+    },
+    {
+      "path": "current/source/app/tests/test_aircraft_contact_session.gd",
+      "sha256": "f4b9e35b40a307c8039a1938991465bf62bb08a900b36f025651f7fd837f5add",
+      "bytes": 15579,
+      "origin": "app\\tests\\test_aircraft_contact_session.gd",
+      "scope": "Supporting test source at retention; not a complete dependency snapshot"
+    },
+    {
+      "path": "current/source/app/tests/test_flight_log.gd",
+      "sha256": "e5d5aa102039487a16ed9e68e809d58d6cc1d4830af6f0a2a276678560f2fea6",
+      "bytes": 6810,
+      "origin": "app\\tests\\test_flight_log.gd",
+      "scope": "Supporting test source at retention; not a complete dependency snapshot"
+    },
+    {
+      "path": "current/field-promotion-hashes.json",
+      "sha256": "8ca105cb94004ec597a4c26f1563785ded238bdf63633211c5e58187b553cdcd",
+      "bytes": 816,
+      "origin": "tmp\\gp-config-transactions\\field-promotion-hashes.json",
+      "scope": "Exact reviewed promotion and pre/post source identities"
+    },
+    {
+      "path": "current/field-promotion.patch",
+      "sha256": "a59c460733b8d1b6acb8f7ef22f01392b3fcafa1f1e657ca1cfb0a7f3fe856c7",
+      "bytes": 9889,
+      "origin": "tmp\\gp-config-transactions\\field-promotion.patch",
+      "scope": "Exact reviewed promotion and pre/post source identities"
+    },
+    {
+      "path": "current/recordings/missing-moving.orfl",
+      "sha256": "ac4ba05ed55a707129c53ee6a45c9d82cc2717e8b8684d1f1d6611c2e4c9a7d8",
+      "bytes": 54864,
+      "origin": "tmp\\field-replacement-3561062\\missing-moving.orfl",
+      "scope": "Representative actual production recording; closes after32 paired accepted continuation ticks at explicit cleanup"
+    },
+    {
+      "path": "current/recordings/surface-held.orfl",
+      "sha256": "58bc12d36f8a51c89c910e824ecfc013b90cc3b52cf684127ad0397c5cdde353",
+      "bytes": 54864,
+      "origin": "tmp\\field-replacement-3561062\\surface-held.orfl",
+      "scope": "Representative actual production recording; closes after32 paired accepted continuation ticks at explicit cleanup"
+    }
+  ]
+}

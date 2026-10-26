@@ -1,0 +1,7 @@
+{
+  "app/physics/aircraft_data.gd": "4f57ee94329a090933b71c218e8e6f8dd5fbce040760fd215474dd60db54ea1a",
+  "app/physics/math3d.gd": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+  "app/data/aircraft/skywalker_x8.json": "9aa8e517d49779314ef48940a7695296d8018c6e474748616e43dfa5e41ab830",
+  "app/data/aircraft/battery/skywalker_x8_6s_pack.json": "7e3bfa65db9c259133345469c8d4846c1716421b4e8d8b30ad66860549f74b82",
+  "research/skywalker-x8/X8-06/derive_physics.py": "7af3658f487a43bc02026372b50bbd2aae01f7b8b401385e2b7ea0e856ece853"
+}

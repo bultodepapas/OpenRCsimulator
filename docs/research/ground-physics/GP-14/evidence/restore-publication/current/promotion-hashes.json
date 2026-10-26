@@ -1,0 +1,15 @@
+{
+  "before": {
+    "app/sim/simulation.gd": "b1b481b2cd278d997347959b8e6529d58aa23adf5494ca419f01a38d45f54042",
+    "app/sim/flight_session.gd": "e45d9a9a1f2637d9147daef47060333862d58c669c020c70dc34f2d2683ad491"
+  },
+  "after": {
+    "app/sim/simulation.gd": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490",
+    "app/sim/flight_session.gd": "d680ba2ef0626b6f3eeae0f8de8d6523955b7da95767f065ede36baac373c964",
+    "app/tests/test_restore_publication.gd": "d504edcaf43ab0993d362470991c847f4245333ecefb36406d53ee4ba6f6b021",
+    "app/sim/flight_log.gd": "0646b053bae4a788883a7d13833ef24f3b43d8d30c07ea6edfc4715b038afaba",
+    "app/ai/companions/fleet_record.gd": "95de3ae4935676a2e3105aae7d1dcdef3c4b5bd813bab696ee319d29477157e8",
+    "app/audio/flight_audio.gd": "7b58e36a4e8b855c1374d2a138241b31cef7fd4c22260ea8da2d098df559a4b6"
+  },
+  "patch_sha256": "8d7dc0997dd8150d94cddf19c54a6c13ac8f70c12405f9f789800a7f1e13a818"
+}

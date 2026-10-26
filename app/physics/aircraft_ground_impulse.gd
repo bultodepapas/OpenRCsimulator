@@ -27,7 +27,7 @@ const CAPTURE_RELATIVE_ROUNDOFF := 128.0 * 2.220446049250313e-16
 static func apply(stage: Dictionary, mass_kg: float, velocity_cm_body: PackedFloat64Array,
 		jacobian: PackedFloat64Array, prescribed_slip_bias: PackedFloat64Array,
 		limits: PackedFloat64Array, groups: Array, iteration_budget: int = QP.MAX_ITERATIONS,
-		capture: Dictionary = {}, maximum_assembly_resolution_j: float = -1.0) -> Dictionary:
+		capture: Dictionary = {}, maximum_assembly_resolution_j: float = -1.0, mass_proof:RefCounted=null) -> Dictionary:
 	if not is_finite(maximum_assembly_resolution_j) or (maximum_assembly_resolution_j < 0.0 and maximum_assembly_resolution_j != -1.0):
 		return _failure("invalid explicit assembly resolution ceiling")
 	var valid := _stage(stage)
@@ -67,6 +67,7 @@ static func apply(stage: Dictionary, mass_kg: float, velocity_cm_body: PackedFlo
 		group_impulses = [], post_slip = PackedFloat64Array(), dissipation = 0.0}
 	var assembly := {}
 	var local_evidence:Dictionary={}
+	if mass_proof!=null:local_evidence.mass_proof=mass_proof
 	var full_mass := PackedFloat64Array()
 	var responses := PackedFloat64Array()
 	if rows > 0:

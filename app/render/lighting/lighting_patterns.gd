@@ -115,9 +115,12 @@ static func uniforms(pattern: Dictionary) -> Dictionary:
 	if pattern_id == "sequence":
 		index = pattern_index("steady")
 	var colors := _palette(pattern)
-	var packed := PackedColorArray()
+	# Raw sRGB channels: RD automatically linearizes Color variants before upload.
+	# The shared shader performs the single explicit decode on every renderer.
+	var packed := PackedVector4Array()
 	for i in MAX_PALETTE:
-		packed.append(colors[mini(i, colors.size() - 1)] if i < colors.size() else colors[0])
+		var color: Color = colors[mini(i, colors.size() - 1)] if i < colors.size() else colors[0]
+		packed.append(Vector4(color.r, color.g, color.b, color.a))
 	return {
 		"pattern_settings": Vector4(float(maxi(index, 0)), float(colors.size()), clampf(float(pattern.get("floor", 0.2)), 0.0, 1.0), clampf(float(pattern.get("duty", 0.5)), 0.05, 0.95)),
 		"pattern_extras": Vector4(float(clampi(int(pattern.get("segments", 16)), 1, 256)), 1.0 if bool(pattern.get("reverse", false)) else 0.0, float(pattern.get("phase_turns", 0.0)), 0.0),

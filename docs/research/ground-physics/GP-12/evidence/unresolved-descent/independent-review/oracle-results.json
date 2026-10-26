@@ -1,0 +1,54 @@
+{
+	"checks": 64,
+	"failed": 0,
+	"weak_modes": [
+		{
+			"accepted": 1,
+			"calls": 1,
+			"curvature": 2.2737367544323206e-13,
+			"disk": false,
+			"drive": 5.684341886080802e-14,
+			"original_objective": -1.4210854715202004e-14,
+			"proposal": [
+				0.24999999999991473,
+				-0.24999999999997158
+			]
+		},
+		{
+			"accepted": 1,
+			"calls": 1,
+			"curvature": 2.2737367544323206e-13,
+			"disk": false,
+			"drive": 4.547473508864641e-13,
+			"original_objective": -6.821210263296962e-13,
+			"proposal": [
+				0.9999999999997726,
+				-1.0
+			]
+		},
+		{
+			"accepted": 1,
+			"calls": 1,
+			"curvature": 2.2737367544323206e-13,
+			"disk": true,
+			"drive": 4.547473508864641e-13,
+			"original_objective": -5.294653604437372e-13,
+			"proposal": [
+				0.7071067811864671,
+				-0.7071067811866278
+			]
+		},
+		{
+			"accepted": 1,
+			"calls": 1,
+			"curvature": 0.0,
+			"disk": false,
+			"drive": 1.0,
+			"original_objective": -2.0,
+			"proposal": [
+				1.0,
+				-1.0
+			]
+		}
+	]
+}

@@ -21,6 +21,29 @@ var _primary_played: bool = false
 var _secondary_cooldown: float = 0.0
 var _user_paused: bool = false
 var _dummy_audio_driver: bool = false
+## GP-19 authored presentation pacing/reference power, not acoustic calibration.
+const SCRAPE_INTERVAL_S := 0.12
+const SCRAPE_MAX_AGE_S := 0.25 # Cue age in accepted simulation time, not wall-clock latency.
+const SCRAPE_QUEUE_LIMIT := 64
+const SCRAPE_REFERENCE_POWER_W := 100.0
+# Render Vector3 uses float32; reject overflow without changing SI state storage.
+const SCRAPE_RENDER_POSITION_MAX := 3.4028234663852886e38
+var _accepted_hull_enabled := false
+var _scrape_tick := -1
+var _scrape_generation := -1
+var _scrape_rate := 0.0
+var _scrape_law := ""
+var _scrape_active := false
+var _scrape_cancel_pending := false
+var _scrape_last_grain_tick := -1
+var _scrape_queue: Array[Dictionary] = []
+var _scrape_tags := PackedByteArray()
+var _scrape_emitted := 0
+var _scrape_overflow := 0
+var _scrape_stale := 0
+var _scrape_invalid := 0
+var _scrape_captured := 0
+var _scrape_last_power_w := 0.0
 
 
 func setup() -> void:
@@ -44,6 +67,8 @@ func setup() -> void:
 			_voices.append(voice)
 		_voice_gain.resize(ONE_SHOT_VOICES)
 		_voice_gain.fill(0.0)
+		_scrape_tags.resize(ONE_SHOT_VOICES)
+		_scrape_tags.fill(0)
 	else:
 		for voice: AudioStreamPlayer3D in _voices:
 			voice.bus = _bus_name
@@ -107,6 +132,7 @@ func _make_voice(label: String) -> AudioStreamPlayer3D:
 func impact(position: Vector3, severity: Dictionary, turbine: bool) -> void:
 	if not _setup_complete or _primary_played or not bool(severity.get("valid", false)):
 		return
+	cancel_hull_scrape()
 	_primary_played = true
 	_fire_position = position
 	for layer: Dictionary in layers_for(severity, turbine):
@@ -175,6 +201,11 @@ func secondary(position: Vector3, strength: float) -> void:
 func update(delta: float, paused: bool, fire_strength: float) -> void:
 	if not _setup_complete:
 		return
+	if _accepted_hull_enabled:
+		if paused:
+			cancel_hull_scrape()
+		else:
+			_drain_hull_scrape()
 	var dt: float = clampf(delta, 0.0, 0.1)
 	_secondary_cooldown = maxf(0.0, _secondary_cooldown - dt)
 	# `paused` is the user pause/menu state, never the post-crash hold.
@@ -203,6 +234,11 @@ func update(delta: float, paused: bool, fire_strength: float) -> void:
 
 
 func reset() -> void:
+	cancel_hull_scrape()
+	_scrape_tick = -1
+	_scrape_generation = -1
+	_scrape_rate = 0.0
+	_scrape_law = ""
 	_primary_played = false
 	_secondary_cooldown = 0.0
 	_user_paused = false
@@ -264,12 +300,13 @@ static func _surface_sample(surface: String) -> String:
 	return "impact_grass"
 
 
-func _play(sample_name: String, position: Vector3, gain: float, pitch: float) -> void:
+func _play(sample_name: String, position: Vector3, gain: float, pitch: float, hull_scrape := false) -> void:
 	var stream: AudioStreamWAV = _streams.get(sample_name) as AudioStreamWAV
 	if _dummy_audio_driver or stream == null or gain <= 0.0001 or _voices.is_empty():
 		return
 	var slot: int = _choose_slot()
 	var voice: AudioStreamPlayer3D = _voices[slot]
+	_scrape_tags[slot] = 1 if hull_scrape else 0
 	voice.stop()
 	voice.stream = stream
 	voice.global_position = position
@@ -299,3 +336,203 @@ func _variation(range_value: float) -> float:
 
 func _exit_tree() -> void:
 	shutdown()
+
+
+## Opt-in: default legacy benches keep their original touch/update behavior.
+func set_accepted_hull_observation(enabled: bool) -> void:
+	if _accepted_hull_enabled == enabled:
+		return
+	reset()
+	_accepted_hull_enabled = enabled
+
+
+func accepted_hull_observation_enabled() -> bool:
+	return _accepted_hull_enabled
+
+
+## Capture-side cancellation never touches a player. Render applies the stop
+## before any later grains, so a transient bad/unavailable packet fails quiet.
+func request_hull_scrape_cancel() -> void:
+	_scrape_queue.clear()
+	_scrape_active = false
+	_scrape_last_grain_tick = -1
+	_scrape_cancel_pending = true
+
+
+## Immediate presentation lifecycle/terminal cancellation, outside capture.
+func cancel_hull_scrape() -> void:
+	request_hull_scrape_cancel()
+	_apply_hull_scrape_cancel()
+
+
+func _apply_hull_scrape_cancel() -> void:
+	if not _scrape_cancel_pending:
+		return
+	_scrape_cancel_pending = false
+	for i in _scrape_tags.size():
+		if _scrape_tags[i] == 0:
+			continue
+		_scrape_tags[i] = 0
+		if i < _voices.size():
+			_voices[i].stop()
+			_voices[i].stream = null
+			_voices[i].volume_db = -80.0
+			_voice_gain[i] = 0.0
+
+
+## Capture only detached SI observations; no players/bus/playback in this callback.
+## A grain uses instantaneous endpoint power, never an integrated heat/work claim.
+func observe_accepted(snapshot: Dictionary) -> bool:
+	if not _accepted_hull_enabled or not _valid_hull_snapshot(snapshot):
+		_scrape_invalid += 1
+		request_hull_scrape_cancel()
+		return false
+	var observation: Dictionary = snapshot.observation
+	var tick: int = observation.tick
+	var generation: int = observation.generation
+	var rate: float = snapshot.tick_rate
+	var law: String = observation.law_identity
+	if snapshot.terminal or snapshot.paused or not observation.available or _primary_played:
+		request_hull_scrape_cancel()
+		_scrape_tick = tick
+		_scrape_generation = generation
+		_scrape_rate = rate
+		_scrape_law = law
+		return true
+	if tick == _scrape_tick and generation == _scrape_generation and rate == _scrape_rate and law == _scrape_law:
+		return true
+	var continuous := tick == _scrape_tick + 1 and generation == _scrape_generation \
+		and rate == _scrape_rate and law == _scrape_law
+	if not continuous:
+		request_hull_scrape_cancel()
+	_scrape_tick = tick
+	_scrape_generation = generation
+	_scrape_rate = rate
+	_scrape_law = law
+	_scrape_captured += 1
+	if not continuous:
+		return true
+	var power := 0.0
+	var weighted := PackedFloat64Array([0.0, 0.0, 0.0])
+	for contact: Dictionary in observation.contacts:
+		var p: float = contact.friction_power_w
+		power += p
+		for axis in 3:
+			weighted[axis] += p * contact.point_ned[axis]
+	if not is_finite(power) or not _finite_triple(weighted):
+		_scrape_invalid += 1
+		request_hull_scrape_cancel()
+		return false
+	if power <= 0.0:
+		_scrape_active = false
+		return true
+	# The FIRST loaded sample queues immediately: a short brush never waits120ms.
+	if not _scrape_active or float(tick - _scrape_last_grain_tick) / rate >= SCRAPE_INTERVAL_S:
+		for axis in 3:
+			weighted[axis] /= power
+		if _scrape_queue.size() == SCRAPE_QUEUE_LIMIT:
+			_scrape_queue.pop_front()
+			_scrape_overflow += 1
+		_scrape_queue.append({tick = tick, point_ned = weighted, power_w = power})
+		_scrape_last_grain_tick = tick
+	_scrape_active = true
+	return true
+
+
+func _drain_hull_scrape() -> void:
+	_apply_hull_scrape_cancel()
+	for grain: Dictionary in _scrape_queue:
+		if float(_scrape_tick - int(grain.tick)) / _scrape_rate > SCRAPE_MAX_AGE_S:
+			_scrape_stale += 1
+			continue
+		var point: PackedFloat64Array = grain.point_ned
+		var level := clampf(sqrt(float(grain.power_w) / SCRAPE_REFERENCE_POWER_W), 0.0, 1.0)
+		# Authored amplitude approaches silence with friction power; no acoustic calibration.
+		_play("scrape", Vector3(point[1], -point[2], -point[0]), 0.28 * level,
+			0.95 + _variation(0.06), true)
+		_scrape_last_power_w = grain.power_w
+		_scrape_emitted += 1
+	_scrape_queue.clear()
+
+
+func hull_scrape_diagnostics() -> Dictionary:
+	var tagged := 0
+	for value in _scrape_tags:
+		tagged += int(value)
+	return {enabled = _accepted_hull_enabled, tick = _scrape_tick, generation = _scrape_generation,
+		queued = _scrape_queue.size(), emitted = _scrape_emitted, overflow = _scrape_overflow,
+		stale = _scrape_stale, invalid = _scrape_invalid, captured = _scrape_captured,
+		last_power_w = _scrape_last_power_w, tagged_voices = tagged, cancellation_pending = _scrape_cancel_pending}
+
+
+static func _finite_triple(value: Variant) -> bool:
+	if not value is PackedFloat64Array or value.size() != 3:
+		return false
+	for x in value:
+		if not is_finite(x):
+			return false
+	return true
+
+
+static func _nonnegative_integer(value: Variant) -> bool:
+	return typeof(value) == TYPE_INT and value >= 0
+
+
+static func _valid_hull_snapshot(snapshot: Dictionary) -> bool:
+	if snapshot.size() != 4 or not snapshot.get("observation") is Dictionary \
+		or typeof(snapshot.get("paused")) != TYPE_BOOL or typeof(snapshot.get("terminal")) != TYPE_BOOL \
+		or typeof(snapshot.get("tick_rate")) not in [TYPE_INT, TYPE_FLOAT]:
+		return false
+	var rate: float = snapshot.tick_rate
+	if not is_finite(rate) or rate <= 0.0 or rate > 10000.0:
+		return false
+	var packet: Dictionary = snapshot.observation
+	if packet.size() != 9 or typeof(packet.get("schema")) != TYPE_STRING \
+		or packet.schema != "openrc-hull-friction-observation" or typeof(packet.get("version")) != TYPE_INT \
+		or packet.version != 1 or not _nonnegative_integer(packet.get("tick")) \
+		or not _nonnegative_integer(packet.get("generation")) or typeof(packet.get("available")) != TYPE_BOOL \
+		or typeof(packet.get("sampling")) != TYPE_STRING or packet.sampling != "accepted_endpoint_instantaneous_power" \
+		or typeof(packet.get("law_identity")) != TYPE_STRING or packet.law_identity.is_empty() \
+		or typeof(packet.get("reason")) != TYPE_STRING or not packet.get("contacts") is Array \
+		or packet.contacts.size() > 256 or (not packet.available and not packet.contacts.is_empty()) \
+		or (packet.available and not packet.reason.is_empty()):
+		return false
+	var seen := {}
+	var total_power := 0.0
+	var weighted := PackedFloat64Array([0.0, 0.0, 0.0])
+	for value: Variant in packet.contacts:
+		if not value is Dictionary or value.size() != 7:
+			return false
+		var row: Dictionary = value
+		if typeof(row.get("contact_id")) != TYPE_STRING or row.contact_id.is_empty() \
+			or row.contact_id.length() > 256 or seen.has(row.contact_id) \
+			or typeof(row.get("material_id")) != TYPE_STRING or row.material_id.length() > 256 \
+			or not _finite_triple(row.get("point_ned")) or not _renderable_position(row.point_ned) \
+			or not _finite_triple(row.get("tangent_force_ned_n")) \
+			or not _finite_triple(row.get("relative_tangent_velocity_ned_mps")) \
+			or typeof(row.get("normal_force_n")) not in [TYPE_INT, TYPE_FLOAT] \
+			or typeof(row.get("friction_power_w")) not in [TYPE_INT, TYPE_FLOAT]:
+			return false
+		var normal: float = row.normal_force_n
+		var power: float = row.friction_power_w
+		if not is_finite(normal) or normal <= 0.0 or not is_finite(power) or power < 0.0:
+			return false
+		var dot := 0.0
+		for axis in 3:
+			dot += row.tangent_force_ned_n[axis] * row.relative_tangent_velocity_ned_mps[axis]
+		if not is_finite(dot) or absf(dot + power) > 1.0e-10 * maxf(1.0, power):
+			return false
+		total_power += power
+		for axis in 3:
+			weighted[axis] += power * row.point_ned[axis]
+		if not is_finite(total_power) or not _finite_triple(weighted):
+			return false
+		seen[row.contact_id] = true
+	return true
+
+
+static func _renderable_position(point: PackedFloat64Array) -> bool:
+	for coordinate in point:
+		if absf(coordinate) > SCRAPE_RENDER_POSITION_MAX:
+			return false
+	return true

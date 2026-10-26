@@ -1,0 +1,40 @@
+{
+  "scope": "exact draft source files used by terminal full-gentle-candidate run; independent before documentation-only header correction",
+  "source": [
+    {
+      "path": "traction_null.gd",
+      "bytes": 32462,
+      "sha256": "d84ce316908668749766436bd6be113c47a7a51117aa3983548b34ee71250731"
+    },
+    {
+      "path": "resolution_null.gd",
+      "bytes": 42229,
+      "sha256": "59abc82743aa5300465f4bf9198f4ee272a2705efa386d7f0c720632ec52b005"
+    },
+    {
+      "path": "strategy_null.gd",
+      "bytes": 4002,
+      "sha256": "c65d6810520ac4f8efb6b135023554d8188f9a408297f5b8e23563120e3414dc"
+    },
+    {
+      "path": "impulse_null.gd",
+      "bytes": 28807,
+      "sha256": "6ce64f2ecea1a2d9bebd11b563518214d3e625bd2477a0f5f6aa36d4c6317a15"
+    },
+    {
+      "path": "step_null.gd",
+      "bytes": 44680,
+      "sha256": "3dbd61f7e554f5885ceca09aecf6c1aa0255cc59b4ee665b3543a1ddd2fda05e"
+    },
+    {
+      "path": "runtime_fixture.gd",
+      "bytes": 30071,
+      "sha256": "bf563069462ee658fea45f5e41b23a071a8b96854dd8d32b5720a21423d29b98"
+    },
+    {
+      "path": "drop_driver.gd",
+      "bytes": 3896,
+      "sha256": "c52d53263fe528c30a68ca41617600fc42331ca12edc2bcb889a7498998e6cc9"
+    }
+  ]
+}

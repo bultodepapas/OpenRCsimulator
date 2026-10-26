@@ -1,0 +1,884 @@
+--- a/app/physics/aircraft_ground_damage.gd
++++ b/app/physics/aircraft_ground_damage.gd
+@@ -231,3 +231,66 @@
+ 
+ static func _failure(reason: String) -> Dictionary:
+ 	return {ok = false, law = LAW, errors = PackedStringArray([reason]), events = []}
++
++## Project already committed component state/events into detached observer facts.
++## No normal/geometry evaluation. Validate binding once at attach and on sparse
++## transition batches; an owner should return its valid empty packet between events.
++static func accepted_observation(prepared: Dictionary, modes: PackedInt64Array,
++		losses: PackedFloat64Array, raw_events: Variant, context: Dictionary, generation_id: String) -> Dictionary:
++	var initial_clock: bool = Damage._keys(context, ["tick", "time_s", "dt"]) \
++		and typeof(context.tick) == TYPE_INT and context.tick == 0 \
++		and typeof(context.time_s) == TYPE_FLOAT and context.time_s == 0.0 \
++		and typeof(context.dt) == TYPE_FLOAT and is_finite(context.dt) and context.dt > 0.0
++	if not _valid(prepared) or (not Damage._clock(context) and not initial_clock) or not Damage._id(generation_id) \
++		or not Damage.validate_state(prepared.damage_profile, modes, losses, context.tick) \
++		or not raw_events is Array or raw_events.size() > prepared.damage_profile.components.size(): return {}
++	var records: Array[Dictionary] = []
++	var seen := {}
++	var keys := ["type", "event_id", "time_s", "tick", "generation_id", "component_id", "support_ids",
++		"law", "profile_identity", "qualification", "criterion", "normal_load_n", "normal_failure_force_n",
++		"transition_loss_j", "potential_before_j", "potential_after_j", "loss_provenance", "terminal", "continuation",
++		"response_law", "response_identity", "sampling"]
++	for raw: Variant in raw_events:
++		if context.tick == 0: return {}
++		if not Damage._keys(raw, keys): return {}
++		for key: String in ["type", "event_id", "generation_id", "component_id", "law", "profile_identity",
++			"qualification", "criterion", "loss_provenance", "continuation", "response_law", "response_identity", "sampling"]:
++			if typeof(raw[key]) != TYPE_STRING: return {}
++		if raw.type != "gear_failure" or raw.law != Damage.LAW or raw.response_law != LAW \
++			or raw.profile_identity != prepared.damage_profile.identity or raw.response_identity != prepared.identity \
++			or raw.generation_id != generation_id or raw.qualification != Damage.QUALIFICATION \
++			or raw.criterion != "declared_normal_capacity_exceeded" \
++			or raw.loss_provenance != "elastic_normal_stop_and_anchor_potential_before_minus_after_at_same_body_state" \
++			or raw.continuation != "authored_weaker_fixed_hub_compliance" \
++			or raw.sampling != "accepted_boundary_only_not_interval_peak" \
++			or typeof(raw.terminal) != TYPE_BOOL or raw.terminal or typeof(raw.tick) != TYPE_INT \
++			or raw.tick != context.tick or typeof(raw.time_s) != TYPE_FLOAT or raw.time_s != context.time_s \
++			or typeof(raw.support_ids) != TYPE_PACKED_STRING_ARRAY or seen.has(raw.component_id): return {}
++		var index := -1
++		for i in prepared.damage_profile.components.size():
++			if prepared.damage_profile.components[i].component_id == raw.component_id: index = i
++		if index < 0: return {}
++		var component: Dictionary = prepared.damage_profile.components[index]
++		if not component.strength_known or raw.support_ids != component.support_ids \
++			or modes[index * Damage.MODE_STRIDE] != Damage.FAILED_ATTACHED \
++			or modes[index * Damage.MODE_STRIDE + 1] != context.tick \
++			or raw.event_id != "gd1:" + Damage._digest([Damage.LAW, generation_id, component.component_id, context.tick]): return {}
++		for key: String in ["normal_load_n", "normal_failure_force_n", "transition_loss_j", "potential_before_j", "potential_after_j"]:
++			if typeof(raw[key]) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(raw[key])) or raw[key] < 0.0: return {}
++		if raw.normal_failure_force_n != component.normal_failure_force.value or raw.normal_load_n <= raw.normal_failure_force_n \
++			or raw.potential_after_j > raw.potential_before_j or raw.transition_loss_j != losses[index]: return {}
++		var scale: float = maxf(raw.potential_before_j, maxf(raw.potential_after_j, raw.transition_loss_j))
++		if absf(raw.potential_before_j - raw.potential_after_j - raw.transition_loss_j) > 16.0 * Damage.FLOAT_EPSILON * maxf(scale, 1e-300): return {}
++		seen[raw.component_id] = true
++		records.append({component_id = raw.component_id, contact_ids = Array(component.support_ids),
++			law_identity = LAW, accepted_tick = context.tick,
++			physical_evidence = {source_event_id = raw.event_id, source_generation_id = generation_id,
++				damage_profile_identity = prepared.damage_profile.identity, response_identity = prepared.identity,
++				qualification = Damage.QUALIFICATION, sampling = raw.sampling, criterion = raw.criterion, response_mode = "failed_attached"},
++			measurements = {normal_load_n = float(raw.normal_load_n), normal_failure_force_n = float(raw.normal_failure_force_n),
++				potential_before_j = float(raw.potential_before_j), potential_after_j = float(raw.potential_after_j),
++				transition_loss_j = float(raw.transition_loss_j), confirmation_tick = context.tick, sample_interval_s = context.dt}})
++	records.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.component_id < b.component_id)
++	return {schema = "openrc-aircraft-component-failure-observation", version = 1, tick = context.tick,
++		generation_id = generation_id, identity = prepared.identity, available = true, events = records, reason = ""}
++
+--- a/app/statistics/flight_event.gd
++++ b/app/statistics/flight_event.gd
+@@ -34,7 +34,7 @@
+ 	return value if valid(value) else {}
+ 
+ 
+-static func valid(value: Variant) -> bool:
++static func _valid_v1(value: Variant) -> bool:
+ 	if not value is Dictionary or value.size() != KEYS.size() or not value.has_all(KEYS): return false
+ 	if typeof(value.format) != TYPE_STRING or typeof(value.version) != TYPE_INT \
+ 		or typeof(value.rules_version) != TYPE_STRING or typeof(value.type) != TYPE_STRING \
+@@ -94,3 +94,139 @@
+ 	elif value is Array:
+ 		for item: Variant in value: _freeze(item)
+ 		value.make_read_only()
++
++## V2 describes only the qualified physical attached-failure observation. V1
++## construction and validation remain unchanged for historical/endpoint events.
++const DAMAGE_VERSION := 2
++const DAMAGE_RULES := "ground-flight-events-v2"
++const DAMAGE_SCHEMA := "openrc-aircraft-component-failure-observation"
++const DAMAGE_LAW := "fixed-hub-weaker-compliance-attached-failure-v1"
++const DAMAGE_MEASUREMENTS := ["normal_load_n", "normal_failure_force_n", "potential_before_j",
++	"potential_after_j", "transition_loss_j", "confirmation_tick", "sample_interval_s"]
++const DAMAGE_EVIDENCE := ["source_event_id", "source_generation_id", "damage_profile_identity", "response_identity",
++	"qualification", "sampling", "criterion", "response_mode"]
++const DAMAGE_COVERAGE := ["accepted_boundary_component_transition", "same_state_potential_loss",
++	"experimental_unvalidated", "no_substep_timing", "strength_not_physically_calibrated"]
++
++
++static func valid(value: Variant) -> bool:
++	if typeof(value) != TYPE_DICTIONARY or typeof(value.get("version")) != TYPE_INT: return false
++	return _valid_damage(value) if value.version == DAMAGE_VERSION else _valid_v1(value)
++
++
++static func valid_damage_observation(value: Variant, tick: int, generation: Variant, identity: Variant, dt: float) -> bool:
++	var keys := ["schema", "version", "tick", "generation_id", "identity", "available", "events", "reason"]
++	if typeof(value) != TYPE_DICTIONARY or value.size() != keys.size() or not value.has_all(keys) \
++		or typeof(value.schema) != TYPE_STRING or value.schema != DAMAGE_SCHEMA \
++		or typeof(value.version) != TYPE_INT or value.version != 1 or typeof(value.tick) != TYPE_INT \
++		or value.tick != tick or tick < 0 or not _integer(tick) or not _id(generation, 128) or not _hash(identity) \
++		or typeof(value.generation_id) != TYPE_STRING or value.generation_id != generation \
++		or typeof(value.identity) != TYPE_STRING or value.identity != identity \
++		or typeof(value.available) != TYPE_BOOL or not value.available \
++		or typeof(value.reason) != TYPE_STRING or not value.reason.is_empty() \
++		or typeof(value.events) != TYPE_ARRAY or value.events.size() > 16 or not is_finite(dt) or dt <= 0.0: return false
++	var seen := {}
++	var contacts := {}
++	var previous := ""
++	for record: Variant in value.events:
++		if not valid_damage_record(record, tick, generation, identity, dt) or seen.has(record.component_id) \
++			or (not previous.is_empty() and record.component_id <= previous): return false
++		seen[record.component_id] = true
++		previous = record.component_id
++		for id: String in record.contact_ids:
++			if contacts.has(id): return false
++			contacts[id] = true
++	return true
++
++
++static func valid_damage_record(value: Variant, tick: int, generation: Variant, identity: Variant, dt: float) -> bool:
++	var keys := ["component_id", "contact_ids", "law_identity", "accepted_tick", "physical_evidence", "measurements"]
++	if typeof(value) != TYPE_DICTIONARY or value.size() != keys.size() or not value.has_all(keys) \
++		or not _id(value.component_id, 128) or not _strings(value.contact_ids) or value.contact_ids.is_empty() \
++		or value.contact_ids.size() > 16 or typeof(value.law_identity) != TYPE_STRING or value.law_identity != DAMAGE_LAW \
++		or typeof(value.accepted_tick) != TYPE_INT or value.accepted_tick != tick or tick < 1: return false
++	for id: String in value.contact_ids:
++		if not _id(id, 128): return false
++	var evidence: Variant = value.physical_evidence
++	if typeof(evidence) != TYPE_DICTIONARY or evidence.size() != DAMAGE_EVIDENCE.size() or not evidence.has_all(DAMAGE_EVIDENCE): return false
++	for key: String in DAMAGE_EVIDENCE:
++		if typeof(evidence[key]) != TYPE_STRING: return false
++	if evidence.source_generation_id != generation or evidence.response_identity != identity \
++		or not _id(generation, 128) or not _hash(identity) or not _hash(evidence.damage_profile_identity) \
++		or evidence.source_event_id.length() != 68 or not evidence.source_event_id.begins_with("gd1:") \
++		or not _hash(evidence.source_event_id.substr(4)) or evidence.qualification != "experimental_unvalidated" \
++		or evidence.sampling != "accepted_boundary_only_not_interval_peak" or evidence.criterion != "declared_normal_capacity_exceeded" \
++		or evidence.response_mode != "failed_attached": return false
++	var source_hash := HashingContext.new()
++	source_hash.start(HashingContext.HASH_SHA256)
++	source_hash.update(var_to_bytes(["experimental-brittle-normal-capacity-attached-v1", generation, value.component_id, tick]))
++	if evidence.source_event_id != "gd1:" + source_hash.finish().hex_encode(): return false
++	var values: Variant = value.measurements
++	if typeof(values) != TYPE_DICTIONARY or values.size() != DAMAGE_MEASUREMENTS.size() or not values.has_all(DAMAGE_MEASUREMENTS): return false
++	for key: String in DAMAGE_MEASUREMENTS:
++		if typeof(values[key]) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(values[key])) or values[key] < 0.0: return false
++	if not _integer(values.confirmation_tick) or values.confirmation_tick != tick or values.sample_interval_s != dt \
++		or not is_finite(dt) or dt <= 0.0 or values.normal_failure_force_n <= 0.0 \
++		or values.normal_load_n <= values.normal_failure_force_n or values.potential_after_j > values.potential_before_j: return false
++	var scale: float = maxf(values.potential_before_j, maxf(values.potential_after_j, values.transition_loss_j))
++	return absf(values.potential_before_j - values.potential_after_j - values.transition_loss_j) <= 16.0 * 2.220446049250313e-16 * maxf(scale, 1e-300)
++
++
++static func make_damage(profile: Dictionary, kind: String, record: Dictionary, sequence: int,
++		flight_id: String, episode_id: String, accident_id: String) -> Dictionary:
++	if kind not in ["COMPONENT_DAMAGE", "GEAR_FAILURE"]: return {}
++	if not _integer(record.get("accepted_tick")) or typeof(record.get("measurements")) != TYPE_DICTIONARY \
++		or typeof(record.get("physical_evidence")) != TYPE_DICTIONARY \
++		or typeof(record.measurements.get("sample_interval_s")) not in [TYPE_FLOAT, TYPE_INT]: return {}
++	if not valid_damage_record(record, int(record.accepted_tick), record.physical_evidence.get("source_generation_id"),
++		record.physical_evidence.get("response_identity"), float(record.measurements.sample_interval_s)): return {}
++	var value := make(profile, kind, int(record.get("accepted_tick", -1)), sequence, flight_id, episode_id, accident_id)
++	if value.is_empty(): return {}
++	value.version = DAMAGE_VERSION
++	value.rules_version = DAMAGE_RULES
++	value.law_identity = DAMAGE_LAW
++	value.contact_ids = record.get("contact_ids", []).duplicate()
++	value.component_ids = [record.get("component_id", "")]
++	value.evidence_coverage = DAMAGE_COVERAGE.duplicate()
++	value.physical_evidence = record.get("physical_evidence", {}).duplicate(true)
++	value.measurements = record.get("measurements", {}).duplicate(true)
++	value.cause.evidence_ids = [value.physical_evidence.get("source_event_id", "")]
++	return value if valid(value) else {}
++
++
++static func _valid_damage(value: Dictionary) -> bool:
++	if value.size() != KEYS.size() + 1 or not value.has_all(KEYS) or not value.has("physical_evidence") \
++		or typeof(value.rules_version) != TYPE_STRING or value.rules_version != DAMAGE_RULES \
++		or typeof(value.type) != TYPE_STRING or value.type not in ["COMPONENT_DAMAGE", "GEAR_FAILURE"] \
++		or typeof(value.terminal) != TYPE_BOOL or value.terminal or not _integer(value.revision) or value.revision != 0 \
++		or typeof(value.component_ids) != TYPE_ARRAY or value.component_ids.size() != 1 \
++		or typeof(value.measurements) != TYPE_DICTIONARY or typeof(value.physical_evidence) != TYPE_DICTIONARY: return false
++	if typeof(value.measurements.get("sample_interval_s")) not in [TYPE_FLOAT, TYPE_INT]: return false
++	var evidence: Dictionary = value.physical_evidence
++	var values: Dictionary = value.measurements
++	var record := {component_id = value.component_ids[0], contact_ids = value.contact_ids, law_identity = value.law_identity,
++		accepted_tick = value.accepted_tick, physical_evidence = evidence, measurements = values}
++	if not _integer(value.accepted_tick) or not valid_damage_record(record, int(value.accepted_tick),
++		evidence.get("source_generation_id"), evidence.get("response_identity"), float(values.get("sample_interval_s", NAN))): return false
++	var legacy := value.duplicate(false)
++	legacy.erase("physical_evidence")
++	legacy.version = VERSION
++	legacy.rules_version = RULES
++	legacy.measurements = {sample_interval_s = values.sample_interval_s, confirmation_tick = values.confirmation_tick}
++	if not _valid_v1(legacy) or value.evidence_coverage != DAMAGE_COVERAGE or not value.material_id.is_empty() \
++		or value.cause.evidence_ids != [evidence.source_event_id]: return false
++	if value.accident_id.is_empty() or value.event_id != "g%s:t%d:s%d:%s" % [value.generation_id, value.accepted_tick, value.sequence, value.type]: return false
++	return true
++
++
++static func _id(value: Variant, limit: int) -> bool:
++	return typeof(value) == TYPE_STRING and not value.is_empty() and value.length() <= limit \
++		and value == value.strip_edges() and not value.contains("\n") and not value.contains("\r") and not value.contains("\t")
++
++
++static func _hash(value: Variant) -> bool:
++	if typeof(value) != TYPE_STRING or value.length() != 64: return false
++	for letter: String in value:
++		if letter not in "0123456789abcdef": return false
++	return true
++
+--- a/app/statistics/fixed_wing_adapter.gd
++++ b/app/statistics/fixed_wing_adapter.gd
+@@ -1,6 +1,7 @@
+ ## UI-FS: detached accepted-tick observations; never evaluates forces or writes state.
+ extends RefCounted
+ 
++const FlightEvent := preload("res://statistics/flight_event.gd")
+ const M = preload("res://physics/math3d.gd")
+ const RB = preload("res://physics/rigid_body.gd")
+ const Terrain = preload("res://physics/ground_terrain.gd")
+@@ -18,6 +19,7 @@
+ 	profile.initial_tick = int(session.sim.tick)
+ 	profile.generation_id = str(session.statistics_generation)
+ 	_lake = session.lake_context()
++	_configure_damage_observation()
+ 
+ 
+ func attach() -> void:
+@@ -106,7 +108,7 @@
+ 		stop = bool(hull.facts.stop_support) if not hull.is_empty() else false
+ 		controlled = bool(hull.facts.controlled) if not hull.is_empty() else false
+ 	var reference_height: float = 0.0 if uses_hull else terrain[0]
+-	return {tick = int(session.sim.tick), dt = float(session.sim.dt()), valid = is_finite(terrain[0]) \
++	var result := {tick = int(session.sim.tick), dt = float(session.sim.dt()), valid = is_finite(terrain[0]) \
+ 		and is_finite(float(air.get("V", NAN))) and session.sim.fault_reason.is_empty() and hull_valid,
+ 		supported = physical, intended_support = intended and bool(profile.get("landing_available", false)),
+ 		stop_support = stop, clearance_ok = not physical and -s[2] - reference_height >= \
+@@ -117,6 +119,9 @@
+ 		incident = incident, gear_up_contact = gear_up,
+ 		terminal = not session.crash.is_empty() or bool(observation.get("terminal", false)),
+ 		ground_contact = ground_contact}
++	var damage := _damage_observation()
++	if not damage.is_empty() and not damage.events.is_empty(): result.component_failure_observation = damage
++	return result
+ 
+ 
+ ## Only an accepted physical receipt may open a nonterminal accident. Missing legacy
+@@ -189,3 +194,25 @@
+ 		if typeof(pose[key]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(pose[key])): return {}
+ 	if pose.angular_speed_radps < 0.0: return {}
+ 	return packet.duplicate(true)
++
++## Optional mechanical facts; absence preserves the legacy sample shape.
++## The physical owner validates prepared provenance at binding/transition, not
++## this observer on every sampled tick.
++func _configure_damage_observation() -> void:
++	if not session.has_method("damage_observation"): return
++	var packet: Variant = session.damage_observation()
++	if typeof(packet) != TYPE_DICTIONARY: return
++	if FlightEvent.valid_damage_observation(packet, int(session.sim.tick), str(session.statistics_generation),
++		packet.get("identity"), float(session.sim.dt())):
++		profile.damage_response_identity = packet.identity
++		profile.damage_source_generation = packet.generation_id
++
++
++func _damage_observation() -> Dictionary:
++	if not profile.has("damage_response_identity") or not session.has_method("damage_observation"): return {}
++	var packet: Variant = session.damage_observation()
++	if not FlightEvent.valid_damage_observation(packet, int(session.sim.tick), str(session.statistics_generation),
++		profile.damage_response_identity, float(session.sim.dt())) \
++		or packet.generation_id != profile.damage_source_generation: return {}
++	return packet.duplicate(true)
++
+--- a/app/statistics/detector.gd
++++ b/app/statistics/detector.gd
+@@ -41,6 +41,7 @@
+ var _hop_first_tick := -1
+ var _hop_seconds := 0.0
+ ## Derived per-call coverage; never resumed as durable observation history.
++var _accepted_component_events: Array[Dictionary] = [] # Derived per-call facts, never historical state.
+ var _accepted_observation_edge := false
+ var _speed_window: Array[Dictionary] = []
+ var _speed_head := 0
+@@ -89,12 +90,28 @@
+ 
+ func observe(sample: Dictionary) -> Array[Dictionary]:
+ 	_accepted_observation_edge = false
++	_accepted_component_events.clear()
++	var staged_component_events: Array[Dictionary] = []
+ 	var events: Array[Dictionary] = []
+ 	if _phase == "terminal":
+ 		return events
+ 	var tick_value: Variant = sample.get("tick", -1)
++	if sample.has("component_failure_observation") and not FlightEvent._integer(tick_value): return events
+ 	var tick := int(tick_value) if typeof(tick_value) in [TYPE_INT, TYPE_FLOAT] else -1
+ 	var terminal := bool(sample.get("terminal", false))
++	if tick == _last_tick + 1 and sample.has("component_failure_observation"):
++		var step_value: Variant = sample.get("dt")
++		if typeof(step_value) not in [TYPE_FLOAT, TYPE_INT]: return events
++		var packet: Variant = sample.component_failure_observation
++		if not FlightEvent.valid_damage_observation(packet, tick, _profile.get("damage_source_generation"),
++			_profile.get("damage_response_identity"), float(step_value)): return events
++		if not packet.events.is_empty():
++			# Reserve room for its complete pair batch plus existing accident/support annotations.
++			if _semantic_sequence > 9007199254740991 - 2 * packet.events.size() - 4: return events
++			for record: Dictionary in packet.events:
++				if FlightEvent.make_damage(_profile, "GEAR_FAILURE", record, _semantic_sequence,
++					_semantic_flight_id, "", "preflight").is_empty(): return events
++		for record: Dictionary in packet.events: staged_component_events.append(record.duplicate(true))
+ 
+ 	if tick == _last_tick:
+ 		if terminal:
+@@ -124,11 +141,12 @@
+ 		return events
+ 
+ 	_sample_interval_s = dt
++	_accepted_component_events = staged_component_events
+ 	_accepted_observation_edge = true
+ 	if _is_physically_supported(sample): _support_observed = true
+-	if bool(sample.get("incident", false)):
++	if bool(sample.get("incident", false)) or not _accepted_component_events.is_empty():
+ 		_incident_latched = true
+-	if bool(sample.get("gear_up_contact", false)) and not terminal:
++	if (bool(sample.get("gear_up_contact", false)) or not _accepted_component_events.is_empty()) and not terminal:
+ 		_record_accident(sample, tick, false, events)
+ 	_clock_s += dt
+ 	if not flight.is_empty() and _is_active_flight() and not _is_physically_supported(sample):
+@@ -217,6 +235,7 @@
+ 	if not _valid_snapshot(value):
+ 		return false
+ 	var copy: Dictionary = value.duplicate(true)
++	_accepted_component_events.clear()
+ 	_profile = copy.profile
+ 	_thresholds = Rules.resolve(_profile)
+ 	_air_start_requested = bool(copy.air_start_requested)
+@@ -439,7 +458,7 @@
+ 	if ground and _is_active_flight() and not _episode_open:
+ 		_open_episode(tick, sample, events, observe_edge)
+ 		_phase = "contact_pending"
+-	var cause := "gear_up_contact" if bool(sample.get("gear_up_contact", false)) else "terminal_crash"
++	var cause := "gear_up_contact" if bool(sample.get("gear_up_contact", false)) else ("gear_failure" if not _accepted_component_events.is_empty() else "terminal_crash")
+ 	if first or escalated:
+ 		events.append({"type": "accident" if first else "accident_updated", "kind": cause,
+ 			"accident_id": _accident_id, "event_id": _accident_id + (":crash" if first else ":terminal"),
+@@ -452,8 +471,12 @@
+ 	# M7 is a generation latch, independent of semantic accident grouping and terminal control.
+ 	if not _crash_emitted:
+ 		_crash_emitted = true
+-		events.append({"type": "crash", "kind": cause, "ground": ground, "tick": tick, "terminal": terminal,
+-			"accident_id": _accident_id, "event_id": _accident_id + ":m7", "rules_version": Rules.VERSION})
++		var crash_record := {"type": "crash", "kind": cause, "ground": ground, "tick": tick, "terminal": terminal,
++			"accident_id": _accident_id, "event_id": _accident_id + ":m7", "rules_version": Rules.VERSION}
++		if not _accepted_component_events.is_empty(): crash_record.damage_summary = _accepted_component_events.duplicate(true)
++		events.append(crash_record)
++	if observe_edge and _accepted_observation_edge:
++		_semantic_component_failures(tick, events)
+ 	_clear_speed_state()
+ 
+ 
+@@ -816,6 +839,9 @@
+ 		or typeof(value.speed_window) != TYPE_ARRAY or typeof(value.pending_speed) != TYPE_ARRAY \
+ 		or typeof(value.previous_speed) != TYPE_DICTIONARY or typeof(value.speed_reject_counts) != TYPE_DICTIONARY:
+ 		return false
++	if value.profile.has("damage_response_identity") or value.profile.has("damage_source_generation"):
++		if not FlightEvent._hash(value.profile.get("damage_response_identity")) \
++			or not FlightEvent._id(value.profile.get("damage_source_generation"), 128): return false
+ 	if typeof(value.phase) != TYPE_STRING or str(value.phase) not in PHASES:
+ 		return false
+ 	for key: String in ["air_start_requested", "episode_open", "qualified_support_seen", "incident_latched", "crash_emitted", "continuity_lost"]:
+@@ -988,3 +1014,20 @@
+ 	if not value.get("episode_open", false) and (value.episode_contact_seen or value.episode_supported \
+ 		or value.episode_support_known): return false
+ 	return true
++
++## Only the qualified accepted failure path calls this, through _record_accident.
++## These are factual annotations of its accident, never a second crash counter.
++func _semantic_component_failures(tick: int, events: Array[Dictionary]) -> void:
++	var episode_id := "g%s:e%d" % [str(_profile.get("generation_id", "0")), _episode_tick] if _episode_open else ""
++	var staged: Array[Dictionary] = []
++	var sequence := _semantic_sequence
++	for record: Dictionary in _accepted_component_events:
++		for kind: String in ["COMPONENT_DAMAGE", "GEAR_FAILURE"]:
++			var event := FlightEvent.make_damage(_profile, kind, record, sequence,
++				_semantic_flight_id, episode_id, _accident_id)
++			if event.is_empty(): return # No partial pair/batch can be published.
++			sequence += 1
++			staged.append({type = "semantic", event = event})
++	_semantic_sequence = sequence
++	events.append_array(staged)
++
+--- a/app/statistics/rules.gd
++++ b/app/statistics/rules.gd
+@@ -3,7 +3,8 @@
+ 
+ # V2 widens M7 to the first accepted accident per activity generation, including
+ # survivable gear-up contact; v1 historical records remain terminal-only coverage.
+-const VERSION := "flight-statistics-rules-v2"
++# V3 also observes qualified attached gear-capacity failure; older coverage is not retallied.
++const VERSION := "flight-statistics-rules-v3"
+ 
+ const DEFAULTS := {
+ 	"liftoff_clearance_s": 1.0,
+--- a/app/statistics/service.gd
++++ b/app/statistics/service.gd
+@@ -208,6 +208,7 @@
+ 				crash.metadata.activity_generation = _generation
+ 				for key: String in ["accident_id", "event_id", "rules_version", "kind"]:
+ 					if event.has(key): crash.metadata[key] = event[key]
++				if event.has("damage_summary"): _copy_damage_summary(crash.metadata, event.damage_summary)
+ 				data.records.append(crash)
+ 		_mark_dirty()
+ 		_flush_requested = true
+@@ -228,6 +229,11 @@
+ 		event_id = event.event_id, accident_id = event.accident_id, terminal = event.terminal,
+ 		rules_version = event.rules_version, contact_episode_id = event.contact_episode_id,
+ 		revision = event.revision, measurements = event.measurements.duplicate(true)}
++	if int(event.version) == FlightEvent.DAMAGE_VERSION:
++		compact.law_identity = event.law_identity
++		compact.contact_ids = event.contact_ids.duplicate()
++		compact.component_ids = event.component_ids.duplicate()
++		compact.physical_evidence = event.physical_evidence.duplicate(true)
+ 	_append_event(compact)
+ 
+ 
+@@ -241,7 +247,7 @@
+ 		return
+ 	var entry: Dictionary = {}
+ 	for key: String in ["type", "kind", "outcome", "reason", "tick", "first_contact_tick", "start_kind",
+-			"accident_id", "event_id", "rules_version", "terminal", "ground", "contact_episode_id", "revision", "measurements"]:
++			"accident_id", "event_id", "rules_version", "terminal", "ground", "contact_episode_id", "revision", "measurements", "law_identity", "contact_ids", "component_ids", "physical_evidence"]:
+ 		if event.has(key): entry[key] = event[key]
+ 	# Shared semantic detail contains longer identities and measurements. Preserve
+ 	# the existing store's byte contract as well as the 128-event count limit.
+@@ -578,3 +584,33 @@
+ 
+ func _exit_tree() -> void:
+ 	close()
++
++## Keep bounded first-failure detail on the existing M7 record even before a
++## flight timeline exists. This is not a separate per-accident archive.
++func _copy_damage_summary(metadata: Dictionary, values: Variant) -> void:
++	if typeof(values) != TYPE_ARRAY or values.size() > 16: return
++	for record: Variant in values:
++		if typeof(record) != TYPE_DICTIONARY or typeof(record.get("physical_evidence")) != TYPE_DICTIONARY \
++			or typeof(record.get("measurements")) != TYPE_DICTIONARY \
++			or typeof(record.measurements.get("sample_interval_s")) not in [TYPE_FLOAT, TYPE_INT] \
++			or not FlightEvent._integer(record.get("accepted_tick")): return
++		if not FlightEvent.valid_damage_record(record, int(record.accepted_tick), record.physical_evidence.get("source_generation_id"),
++			record.physical_evidence.get("response_identity"), float(record.measurements.sample_interval_s)): return
++	var retained: Array = []
++	var omitted := 0
++	for record: Dictionary in values:
++		var candidate := metadata.duplicate(true)
++		var expanded := retained.duplicate(true)
++		expanded.append(record.duplicate(true))
++		candidate.component_damage = expanded
++		candidate.component_damage_omitted = omitted
++		if var_to_bytes(candidate).size() > StoreSchema.MAX_METADATA_BYTES - 256:
++			omitted += 1
++		else: retained = expanded
++	var candidate := metadata.duplicate(true)
++	candidate.component_damage = retained
++	candidate.component_damage_omitted = omitted
++	if var_to_bytes(candidate).size() <= StoreSchema.MAX_METADATA_BYTES - 256:
++		metadata.component_damage = retained
++		metadata.component_damage_omitted = omitted
++
+--- a/app/tests/test_aircraft_ground_damage.gd
++++ b/app/tests/test_aircraft_ground_damage.gd
+@@ -327,8 +327,8 @@
+ 	var vehicle := Model.new()
+ 	vehicle.state_layout_identity = Response.LAW + ":" + bound.identity
+ 	vehicle.aux_size = 0
+-	vehicle.continuous_size = 5
+-	vehicle.modes_size = 2
++	vehicle.continuous_size = 4 + bound.damage_profile.components.size()
++	vehicle.modes_size = Damage.MODE_STRIDE * bound.damage_profile.components.size()
+ 	vehicle.state_validator = func(frame: Dictionary, context: Dictionary) -> bool:
+ 		return Damage.validate_state(bound.damage_profile, frame.modes, frame.continuous.slice(4), context.tick)
+ 	vehicle.stage = func(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+@@ -339,7 +339,7 @@
+ 		if not stage.ok: return {}
+ 		var derivative := PackedFloat64Array([stage.shaft_rpm_rate])
+ 		derivative.append_array(stage.wheel_rim_rates)
+-		derivative.append(0.0)
++		derivative.append_array(PackedFloat64Array(initial.losses))
+ 		return {loads = stage.loads, derivative = derivative, rotor_momentum = M.v3(0.0, 0.0, 0.0), body_derivative = stage.body_derivative}
+ 	vehicle.substeps = func(_b, _v, _t): return 4
+ 	vehicle.endpoint_transition = func(_previous, candidate, context):
+@@ -351,14 +351,15 @@
+ 			printerr("transition refusal ", applied)
+ 			return {}
+ 		candidate.modes = applied.modes
+-		candidate.continuous[4] = applied.losses[0]
++		for i in applied.losses.size(): candidate.continuous[4 + i] = applied.losses[i]
+ 		candidate.events = applied.events
+ 		return candidate
+ 	sim.mass = mass_kg
+ 	sim.inertia = properties.inertia.duplicate()
+ 	sim.gravity = 9.80665
+ 	sim.aux = PackedFloat64Array()
+-	sim.continuous = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0])
++	sim.continuous = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
++	sim.continuous.append_array(initial.losses)
+ 	sim.modes = initial.modes.duplicate()
+ 	check("damage normal-stage model installs", sim.set_model(vehicle))
+ 	check("drop initializes with healthy actual support", sim.reset(_body(0.0, speed_mps)))
+--- a/app/tests/test_ground_accidents.gd
++++ b/app/tests/test_ground_accidents.gd
+@@ -227,7 +227,7 @@
+ 	var migrated: RefCounted = Detector.new()
+ 	_check("legacy v1 checkpoint loads without invented accidents", migrated.restore(legacy)
+ 		and migrated.snapshot().accident_serial == 0 and migrated.snapshot().accident_id == "")
+-	_check("new rules explicitly version the widened M7 meaning", Rules.VERSION == "flight-statistics-rules-v2")
++	_check("new rules explicitly version the widened M7 meaning", Rules.VERSION == "flight-statistics-rules-v3")
+ 
+ 
+ func _test_rejected_and_duplicate_ticks() -> void:
+--- /dev/null
++++ b/app/tests/test_damage_flight_events.gd
+@@ -0,0 +1,353 @@
++## Accepted synthetic physical failures through the existing single classifier/service bus.
++extends "res://tests/test_aircraft_ground_damage.gd"
++const Event := preload("res://statistics/flight_event.gd")
++const Adapter := preload("res://statistics/fixed_wing_adapter.gd")
++const Detector := preload("res://statistics/detector.gd")
++const Service := preload("res://statistics/service.gd")
++const LegacySession := preload("res://sim/flight_session.gd")
++const LEGACY_EVENT_SHA := "146fb741db76bce8f3e5db66a6551d88b4ff8722a382e662e1ba11d1fde39830"
++const LEGACY_SAMPLE_SHA := "15622bd38ecd3f7bb101b0aa8d5d0c1e220a5da89836b2ab47c04072cb6488f1"
++const Rules := preload("res://statistics/rules.gd")
++
++class ObserverOwner:
++	extends Node
++	const Physical := preload("res://physics/aircraft_ground_damage.gd")
++	var sim: Node
++	var statistics_generation := "drop-fixture"
++	var binding: Dictionary
++	var empty_packet: Dictionary
++	func damage_observation() -> Dictionary:
++		# One binding validation on attach and on actual transition batches only.
++		# No force/geometry evaluation or rebuilding on ordinary accepted samples.
++		if empty_packet.is_empty() or not sim.last_events.is_empty():
++			var packet:=Physical.accepted_observation(binding,sim.modes,sim.continuous.slice(4),sim.last_events,
++				{tick=sim.tick,time_s=sim.time(),dt=sim.dt()},statistics_generation)
++			if packet.is_empty():return {}
++			if sim.last_events.is_empty():empty_packet=packet
++			return packet
++		var value:=empty_packet.duplicate(true)
++		value.tick=sim.tick
++		return value
++
++var good_packet: Dictionary
++var semantic_profile: Dictionary
++var output := ""
++
++func _initialize() -> void:
++	Engine.physics_ticks_per_second=240
++	output=ProjectSettings.globalize_path("res://../tmp/damage-flight-events-%d" % Time.get_ticks_usec())
++	DirAccess.make_dir_recursive_absolute(output)
++	_fixture();_bind()
++	if failed:quit(1);return
++	var initial:=Damage.initial_state(bound.damage_profile)
++	var transition:=_transition(initial,_body())
++	good_packet=Response.accepted_observation(bound,transition.modes,transition.losses,transition.events,_clock(),"response-fixture")
++	check("physical response projects one strict fact",not good_packet.is_empty() and good_packet.events.size()==1)
++	semantic_profile={generation_id="activity",activity_id="activity",aircraft_id="synthetic",configuration_hash="fixture",
++		landing_available=false,damage_source_generation="response-fixture",damage_response_identity=bound.identity}
++	_contracts()
++	_classifier()
++	_invalid_edges()
++	_components()
++	_absent_owner()
++	_service_bounds()
++	_kernel_bridge()
++	_asymmetric_kernel_boundary()
++	print("Damage flight events: %d checks, %d failed; %s" % [checks,failed,output])
++	quit(1 if failed else 0)
++
++func sample(tick: int,packet: Dictionary={},extra: Dictionary={}) -> Dictionary:
++	# Technical fixture has no reviewed landing geometry/credit. The accepted
++	# failure itself proves physical normal support at that boundary.
++	var value: Dictionary={tick=tick,dt=0.01,valid=true,supported=not packet.is_empty(),ground_contact=not packet.is_empty(),
++		intended_support=false,stop_support=false,controlled=false,clearance_ok=false,ground_speed_3d=1.0,
++		angular_speed=0.0,incident=false,gear_up_contact=false,terminal=false}
++	if not packet.is_empty():value.component_failure_observation=packet
++	value.merge(extra,true)
++	return value
++
++func semantic(events: Array,kind: String="") -> Array:
++	var values:=[]
++	for item: Dictionary in events:
++		if item.get("type")=="semantic" and (kind.is_empty() or item.event.type==kind):values.append(item.event)
++	return values
++
++func count(events: Array,kind: String) -> int:
++	var result:=0
++	for event: Dictionary in events:
++		if event.get("type")==kind:result+=1
++	return result
++
++func _contracts() -> void:
++	var initial:=Damage.initial_state(bound.damage_profile)
++	var result:=_transition(initial,_body())
++	var source: Dictionary=result.events[0]
++	for key: String in source:
++		var bad:=source.duplicate(true);bad.erase(key)
++		check("source required key "+key,Response.accepted_observation(bound,result.modes,result.losses,[bad],_clock(),"response-fixture").is_empty())
++	for key: String in ["type","component_id","law","profile_identity","response_identity","qualification","criterion","sampling","continuation","tick","time_s","normal_load_n","normal_failure_force_n","potential_before_j","transition_loss_j","terminal","support_ids"]:
++		var bad:=source.duplicate(true);bad[key]=[]
++		check("source primitive guard "+key,Response.accepted_observation(bound,result.modes,result.losses,[bad],_clock(),"response-fixture").is_empty())
++	for kind: String in ["generation","binding","loss","load","capacity","clock","mode"]:
++		var bad:=source.duplicate(true)
++		var modes: PackedInt64Array=result.modes.duplicate()
++		match kind:
++			"generation":bad.generation_id="stale"
++			"binding":bad.response_identity="0".repeat(64)
++			"loss":bad.transition_loss_j+=1.0
++			"load":bad.normal_load_n=bad.normal_failure_force_n
++			"capacity":bad.normal_failure_force_n*=0.5
++			"clock":bad.tick=2
++			"mode":modes=initial.modes
++		check("source rejects "+kind,Response.accepted_observation(bound,modes,result.losses,[bad],_clock(),"response-fixture").is_empty())
++	check("source batch duplicate is atomic",Response.accepted_observation(bound,result.modes,result.losses,[source,source],_clock(),"response-fixture").is_empty())
++	check("empty initial observation is available",not Response.accepted_observation(bound,initial.modes,initial.losses,[],{tick=0,time_s=0.0,dt=0.01},"response-fixture").is_empty())
++	for key: String in good_packet:
++		var bad:=good_packet.duplicate(true);bad.erase(key)
++		check("packet required key "+key,not Event.valid_damage_observation(bad,1,"response-fixture",bound.identity,0.01))
++	for key: String in ["schema","version","tick","generation_id","identity","available","events","reason"]:
++		var bad:=good_packet.duplicate(true);bad[key]=null
++		check("packet primitive "+key,not Event.valid_damage_observation(bad,1,"response-fixture",bound.identity,0.01))
++	for kind: String in ["COMPONENT_DAMAGE","GEAR_FAILURE"]:
++		var event:=Event.make_damage(semantic_profile,kind,good_packet.events[0],0,"","","accident")
++		check("strict v2 packet "+kind,Event.valid(event) and event.version==2 and not event.terminal
++			and event.component_ids==["assembly"] and not event.evidence_coverage.has("damage_unobserved"))
++		for key: String in Event.DAMAGE_EVIDENCE:
++			var bad:=event.duplicate(true);bad.physical_evidence[key]=[]
++			check("v2 evidence primitive "+key,not Event.valid(bad))
++		for key: String in Event.DAMAGE_MEASUREMENTS:
++			var bad:=event.duplicate(true);bad.measurements[key]=NAN
++			check("v2 finite measurement "+key,not Event.valid(bad))
++		for key: String in ["accepted_tick","revision","terminal","component_ids","cause","physical_evidence","measurements"]:
++			var bad:=event.duplicate(true);bad[key]=[]
++			check("v2 outer primitive "+key,not Event.valid(bad))
++		var bad:=event.duplicate(true);bad.measurements.speed_mps=2.0
++		check("v2 unknown measurements fail closed",not Event.valid(bad))
++		bad=event.duplicate(true);bad.measurements.transition_loss_j=-1.0
++		check("v2 negative heat fails closed",not Event.valid(bad))
++		bad=event.duplicate(true);bad.component_ids=["invented"]
++		check("v2 source ID binds component",not Event.valid(bad))
++		bad=event.duplicate(true);bad.event_id="tampered"
++		check("v2 canonical event identity required",not Event.valid(bad))
++		bad=event.duplicate(true);bad.accident_id=""
++		check("v2 always annotates an existing accident",not Event.valid(bad))
++		bad=event.duplicate(true);bad.cause.classification="mechanical_failure_confirmed"
++		check("v2 does not invent root cause",not Event.valid(bad))
++		bad=event.duplicate(true);bad.material_id="maintained_turf"
++		check("v2 cannot invent unobserved material",not Event.valid(bad))
++	var current:=Event.make({generation_id="frozen"},"TOUCHDOWN",3,0,"flight","episode","")
++	var hash:=HashingContext.new();hash.start(HashingContext.HASH_SHA256);hash.update(var_to_bytes(current))
++	check("v1 frozen historical payload bytes preserved",hash.finish().hex_encode()==LEGACY_EVENT_SHA)
++
++func _classifier() -> void:
++	var d:=Detector.new();d.configure(semantic_profile)
++	var events:=d.observe(sample(1,good_packet))
++	check("one qualified failure is one nonterminal accident",count(events,"crash")==1 and semantic(events,"CRASH").size()==1
++		and semantic(events,"COMPONENT_DAMAGE").size()==1 and semantic(events,"GEAR_FAILURE").size()==1)
++	var gear: Dictionary=semantic(events,"GEAR_FAILURE")[0]
++	check("factual pair shares source and accident",gear.physical_evidence==semantic(events,"COMPONENT_DAMAGE")[0].physical_evidence
++		and gear.accident_id==semantic(events,"CRASH")[0].accident_id and not gear.accident_id.is_empty())
++	check("duplicate clock is silent",d.observe(sample(1,good_packet)).is_empty())
++	var before:=var_to_bytes(d.snapshot())
++	var malformed:=good_packet.duplicate(true);malformed.tick=2
++	check("stale source rejects atomically",d.observe(sample(2,malformed)).is_empty() and var_to_bytes(d.snapshot())==before)
++	var saved:=d.snapshot();d.observe(sample(2));var after:=var_to_bytes(d.snapshot())
++	check("existing snapshot restore preserves damage accident latch",d.restore(saved) and d.observe(sample(1,good_packet)).is_empty())
++	d.observe(sample(2));check("snapshot continuation exact",var_to_bytes(d.snapshot())==after)
++	var terminal:=d.observe(sample(2,{}, {terminal=true}))
++	check("terminal escalation adds no M7 or physical pair",count(terminal,"crash")==0 and semantic(terminal,"CRASH").size()==1
++		and semantic(terminal,"CRASH")[0].revision==1 and semantic(terminal,"GEAR_FAILURE").is_empty())
++	check("new M7 coverage explicitly versioned",Rules.VERSION=="flight-statistics-rules-v3")
++	var broken:=Detector.new();broken.configure(semantic_profile)
++	var mixed:=good_packet.duplicate(true);mixed.events.append(mixed.events[0].duplicate(true))
++	check("duplicate source batch cannot partially count",broken.observe(sample(1,mixed)).is_empty() and broken.snapshot().last_tick==0)
++	for version: int in [1,2,3]:
++		var legacy:=Detector.new();legacy.configure({generation_id="historical",landing_available=false})
++		var state:=legacy.snapshot();state.version=version
++		check("historical snapshot remains readable without fabricated failure "+str(version),legacy.restore(state)
++			and not state.profile.has("damage_response_identity") and semantic(legacy.observe(sample(1)),"GEAR_FAILURE").is_empty())
++	var malformed_binding:=saved.duplicate(true);malformed_binding.profile.damage_response_identity=[]
++	var restored:=Detector.new();restored.configure(semantic_profile)
++	var original:=var_to_bytes(restored.snapshot())
++	check("malformed persisted optional binding rejects atomically",not restored.restore(malformed_binding) and original==var_to_bytes(restored.snapshot()))
++	var exhausted:=Detector.new();exhausted.configure(semantic_profile);exhausted._semantic_sequence=9007199254740991
++	original=var_to_bytes(exhausted.snapshot())
++	check("pair sequence budget rejects before accident/M7",exhausted.observe(sample(1,good_packet)).is_empty() and original==var_to_bytes(exhausted.snapshot()))
++	for tick: Variant in [1.5,NAN,INF,[]]:
++		var strict:=Detector.new();strict.configure(semantic_profile)
++		var before_tick:=var_to_bytes(strict.snapshot())
++		var value:=sample(1,good_packet);value.tick=tick
++		check("physical producer tick must be finite integral",strict.observe(value).is_empty() and before_tick==var_to_bytes(strict.snapshot()))
++
++func _invalid_edges() -> void:
++	for kind: String in ["invalid","oversize_dt","continuity"]:
++		var d:=Detector.new();d.configure(semantic_profile)
++		var packet:=good_packet.duplicate(true)
++		var value:=sample(1,packet,{terminal=true})
++		if kind=="invalid":value.valid=false
++		elif kind=="oversize_dt":
++			packet.events[0].measurements.sample_interval_s=0.3
++			value.dt=0.3
++		else:
++			d.observe(sample(1,{}, {valid=false}))
++			var result:=_transition(Damage.initial_state(bound.damage_profile),_body(),2)
++			packet=Response.accepted_observation(bound,result.modes,result.losses,result.events,_clock(2),"response-fixture")
++			value=sample(2,packet,{terminal=true})
++		var events:=d.observe(value)
++		var summaries:=false
++		for event: Dictionary in events:summaries=summaries or event.has("damage_summary") or event.get("kind")=="gear_failure"
++		check("unaccepted physical edge cannot leak attribution "+kind,not summaries and semantic(events,"GEAR_FAILURE").is_empty()
++			and semantic(events,"COMPONENT_DAMAGE").is_empty() and count(events,"crash")==1)
++
++func independent_binding(other_limit: float) -> Dictionary:
++	var raw:=authored_damage.duplicate(true)
++	var ids: PackedStringArray=bound.damage_profile.installed_support_ids
++	raw.damage.components=[{component_id="left",support_ids=[ids[0]],source="Synthetic left leg",normal_failure_force=_q(20.0,"N")},
++		{component_id="other",support_ids=[ids[1],ids[2]],source="Synthetic other legs",normal_failure_force=_q(other_limit,"N")}]
++	raw.component_axes=[{component_id="left",positive_load_axis_body=_q([0.0,0.0,-1.0],"1")},
++		{component_id="other",positive_load_axis_body=_q([0.0,0.0,-1.0],"1")}]
++	return Response.prepare(raw,profile,model)
++
++func _components() -> void:
++	var binding:=independent_binding(1000.0)
++	var first:=_transition(Damage.initial_state(binding.damage_profile),_body(),1,binding)
++	var packet:=Response.accepted_observation(binding,first.modes,first.losses,first.events,_clock(),"response-fixture")
++	var p:=semantic_profile.duplicate(true);p.damage_response_identity=binding.identity
++	var d:=Detector.new();d.configure(p)
++	var events:=d.observe(sample(1,packet))
++	var accident: String=semantic(events,"CRASH")[0].accident_id
++	var second:=_transition({modes=first.modes,losses=first.losses},_body(0.4),2,binding)
++	packet=Response.accepted_observation(binding,second.modes,second.losses,second.events,_clock(2),"response-fixture")
++	events=d.observe(sample(2,packet))
++	check("later new component emits pair in existing accident",semantic(events,"GEAR_FAILURE").size()==1
++		and semantic(events,"COMPONENT_DAMAGE").size()==1 and semantic(events,"CRASH").is_empty()
++		and count(events,"crash")==0 and semantic(events,"GEAR_FAILURE")[0].accident_id==accident)
++	binding=independent_binding(50.0)
++	var together:=_transition(Damage.initial_state(binding.damage_profile),_body(),1,binding)
++	packet=Response.accepted_observation(binding,together.modes,together.losses,together.events,_clock(),"response-fixture")
++	p.damage_response_identity=binding.identity;d=Detector.new();d.configure(p)
++	events=d.observe(sample(1,packet))
++	check("simultaneous components share one CRASH and M7",semantic(events,"GEAR_FAILURE").size()==2
++		and semantic(events,"COMPONENT_DAMAGE").size()==2 and semantic(events,"CRASH").size()==1 and count(events,"crash")==1)
++	check("component order and semantic identities deterministic",semantic(events,"GEAR_FAILURE")[0].component_ids==["left"]
++		and semantic(events,"GEAR_FAILURE")[1].component_ids==["other"]
++		and semantic(events,"GEAR_FAILURE")[0].event_id!=semantic(events,"GEAR_FAILURE")[1].event_id)
++
++func _absent_owner() -> void:
++	var session:=LegacySession.new();session.input_enabled=false;session.setup()
++	var before:=var_to_bytes(session.checkpoint())
++	var adapter:=Adapter.new();adapter.configure(session,"jensen-das-ugly-stik-60",func(_value):pass)
++	var value:=adapter.sample()
++	check("absent producer preserves sample shape and physics",not value.has("component_failure_observation")
++		and not adapter.profile.has("damage_response_identity") and before==var_to_bytes(session.checkpoint()))
++	var h:=HashingContext.new();h.start(HashingContext.HASH_SHA256);h.update(var_to_bytes(value))
++	check("absent producer sample matches frozen pre-change bytes",h.finish().hex_encode()==LEGACY_SAMPLE_SHA)
++	session.free()
++
++func service_for(p: Dictionary) -> Node:
++	var service:=Service.new();service.setup("",false);service._ensure_session()
++	service._generation=p.generation_id;service._aircraft_id="synthetic"
++	service.detector=Detector.new();service.detector.configure(p)
++	return service
++
++func _service_bounds() -> void:
++	var service:=service_for(semantic_profile)
++	var bus:=[]
++	service.flight_events_accepted.connect(func(batch):bus.append_array(batch))
++	service._observe(sample(1,good_packet))
++	check("one canonical bus and one M7 record",bus.size()==3 and service.data.records.size()==1 and service.data.records[0].kind=="crash")
++	check("ground-start first failure retains bounded evidence",service.data.records[0].metadata.component_damage.size()==1
++		and service.data.records[0].metadata.component_damage[0].component_id=="assembly")
++	check("bus recursively frozen",bus[0].is_read_only() and bus[1].physical_evidence.is_read_only()
++		and bus[1].measurements.is_read_only() and bus[1].contact_ids.is_read_only())
++	service._lifecycle({success=true,operation_id=1,cause="checkpoint_restore"})
++	var records:=var_to_bytes(service.data.records);var count_before:=bus.size()
++	service._observe(sample(2,good_packet))
++	check("checkpoint experiment remains noncredit/silent",service._branch and records==var_to_bytes(service.data.records) and bus.size()==count_before)
++	service.free()
++	service=service_for(semantic_profile)
++	service._active_record={metadata={events=[]}}
++	for i in 128:service._active_record.metadata.events.append({type="fixture"})
++	bus=[];service.flight_events_accepted.connect(func(batch):bus.append_array(batch))
++	service._observe(sample(1,good_packet))
++	check("timeline cap never truncates subscriber packet",service._active_record.metadata.events.size()==128
++		and service._active_record.metadata.events_omitted>0 and bus.size()==3)
++	service.free()
++	service=service_for(semantic_profile)
++	var record: Dictionary=good_packet.events[0]
++	var wrong:=record.duplicate(true);wrong.measurements.transition_loss_j=-1.0
++	var metadata: Dictionary={}
++	service._copy_damage_summary(metadata,[record,wrong])
++	check("first summary validates all records before appending",metadata.is_empty())
++	metadata={padding="x".repeat(65000)}
++	service._copy_damage_summary(metadata,[record])
++	check("first summary obeys metadata byte budget",metadata.component_damage.is_empty() and metadata.component_damage_omitted==1
++		and var_to_bytes(metadata).size()<=64*1024)
++	service.free()
++
++func _kernel_bridge() -> void:
++	for spec: Array in [["light",1.0,0.8],["heavy",4.0,0.8],["hard",1.0,2.0]]:
++		var run:=_simulate(spec[1],spec[2],0)
++		var owner:=ObserverOwner.new();owner.sim=run.sim;owner.binding=bound
++		var adapter:=Adapter.new();adapter.session=owner;adapter.profile={generation_id="kernel-"+str(spec[0]),landing_available=false}
++		adapter._configure_damage_observation()
++		check("fixture observer binds current generation",adapter.profile.get("damage_response_identity")==bound.identity)
++		var service:=service_for(adapter.profile)
++		var bus:=[];service.flight_events_accepted.connect(func(batch):bus.append_array(batch))
++		var core: Node=run.sim
++		core.stepped.connect(func(tick,_t,_body,_loads,_inputs,_aux):
++			var packet:=adapter._damage_observation()
++			var value:=sample(tick,packet if not packet.is_empty() and not packet.events.is_empty() else {})
++			value.dt=core.dt()
++			service._observe(value))
++		var healthy: Dictionary=core.checkpoint()
++		for i in 48:core.step()
++		var expected:=0 if spec[0]=="light" else 1
++		check("actual kernel to shared bus "+str(spec[0]),semantic_count(bus,"GEAR_FAILURE")==expected and semantic_count(bus,"COMPONENT_DAMAGE")==expected
++			and semantic_count(bus,"CRASH")==expected and service.data.records.size()==expected and core.tick==48 and core.fault_reason.is_empty())
++		check("kernel and observer did not stop failed body "+str(spec[0]),not core.paused and (expected==0 or absf(core.state[RB.POS+2]-run.failure_down[0])>0.001))
++		if spec[0]=="heavy":
++			var published:=var_to_bytes(bus);var recorded:=var_to_bytes(service.data.records)
++			check("actual healthy rewind accepted",core.restore_checkpoint(healthy))
++			service._lifecycle({success=true,operation_id=1,cause="checkpoint_restore"})
++			for i in 48:core.step()
++			check("actual repeated source ID remains noncredit after restore",run.events.size()==2 and run.events[0].event_id==run.events[1].event_id
++				and var_to_bytes(bus)==published and var_to_bytes(service.data.records)==recorded)
++		service.free();owner.free();core.free()
++	var run:=_simulate(1.0,2.0,0)
++	var owner:=ObserverOwner.new();owner.sim=run.sim;owner.binding=bound
++	var adapter:=Adapter.new();adapter.session=owner;adapter.profile={generation_id="rollback",landing_available=false};adapter._configure_damage_observation()
++	var service:=service_for(adapter.profile)
++	var bus:=[];service.flight_events_accepted.connect(func(batch):bus.append_array(batch))
++	var core: Node=run.sim
++	core.stepped.connect(func(tick,_t,_b,_l,_i,_a):service._observe(sample(tick,adapter._damage_observation())))
++	core.model.block_aux=func(_v,_a):return PackedFloat64Array([NAN])
++	core.step()
++	check("rejected final projection publishes no shared damage or M7",core.tick==0 and bus.is_empty() and service.data.records.is_empty()
++		and run.events.is_empty() and core.modes==PackedInt64Array([0,-1]))
++	service.free();owner.free();core.free()
++
++func _asymmetric_kernel_boundary() -> void:
++	var original_binding:=bound
++	bound=independent_binding(1000.0)
++	var run:=_simulate(1.0,0.0,0)
++	var core: Node=run.sim
++	check("asymmetric compressed initial state installs",core.reset(_body()))
++	var owner:=ObserverOwner.new();owner.sim=core;owner.binding=bound
++	var adapter:=Adapter.new();adapter.session=owner;adapter.profile={generation_id="asymmetric",landing_available=false};adapter._configure_damage_observation()
++	var service:=service_for(adapter.profile)
++	var bus:=[];service.flight_events_accepted.connect(func(batch):bus.append_array(batch))
++	core.stepped.connect(func(tick,_t,_b,_l,_i,_a):
++		var value:=sample(tick,adapter._damage_observation());value.dt=core.dt();service._observe(value))
++	core.step()
++	check("first asymmetric physical boundary reaches shared owner",core.tick==1 and core.modes==PackedInt64Array([1,1,0,-1])
++		and semantic_count(bus,"GEAR_FAILURE")==1 and semantic_count(bus,"CRASH")==1)
++	var count_before:=bus.size();core.step()
++	check("unqualified rolled continuation refuses without new events",core.tick==1 and not core.fault_reason.is_empty() and bus.size()==count_before)
++	service.free();owner.free();core.free();bound=original_binding
++
++func semantic_count(values: Array,kind: String) -> int:
++	var total:=0
++	for value: Dictionary in values:
++		if value.type==kind:total+=1
++	return total

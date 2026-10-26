@@ -1,0 +1,9 @@
+{
+  "format": "openrc-shaft-publication-promotion-v1",
+  "before": "dd8278224b72e52dac03b37545d48c9e798d653f9ea11496d06c786c7061b345",
+  "after": {
+    "app/sim/flight_session.gd": "2722c3d8d28382c38a81cf2f4311eb42f96430a765d4937e288bc91b3e7913d6",
+    "app/tests/test_shaft_publication.gd": "844ef55f977443395f3752d26e7b4d8c90ee7c87cade5f04d159b3fea4b3af94"
+  },
+  "staged_or_committed": false
+}

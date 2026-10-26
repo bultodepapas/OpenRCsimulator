@@ -1,0 +1,33 @@
+{
+  "format": "openrc-damage-event-bridge-baseline v1",
+  "checks": 43,
+  "scope": "Selected original sources + existing symmetric kernel fixture and separately labeled direct asymmetric boundary; not a stock launch or a new shared-event implementation.",
+  "observations_origin": "tmp\\damage-events-baseline-1061960\\observations.json",
+  "files": [
+    {
+      "path": "baseline.gd",
+      "sha256": "4bc27ceaca68355a00e01000aae025595fb1a8b4b6a5354e3f4f9338f44334f6",
+      "bytes": 7815
+    },
+    {
+      "path": "source-hashes.json",
+      "sha256": "ff43003d52c270817528b41101e285e71f2bef5cc19b21ab9f08c790980ec66e",
+      "bytes": 1060
+    },
+    {
+      "path": "baseline-artifacts\\observations.json",
+      "sha256": "49fadb1d7202109aa543b297c71ae8b1735d428b4f7692189fd211900758d7a3",
+      "bytes": 4993
+    },
+    {
+      "path": "checks\\baseline-01\\godot-trpfzy54\\report.json",
+      "sha256": "33dce0d9d4dc7d02253e352d213201233847c0510e673c9c99e3ad7bfe482b20",
+      "bytes": 1227
+    },
+    {
+      "path": "checks\\baseline-01\\godot-trpfzy54\\engine.log",
+      "sha256": "e105fa334eb6da14b0801f23b6278c6d7535e3f865374344adf75a3827b0ad3f",
+      "bytes": 197
+    }
+  ]
+}

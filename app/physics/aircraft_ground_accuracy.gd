@@ -163,7 +163,7 @@ static func _receipt(prepared: Dictionary, r: Dictionary, dt: float) -> Dictiona
 		or r.sampled_peak_normal_n.size() != m or r.sampled_peak_times_s.size() != m:
 		return _failure("receipt sample/peak dimensions disagree")
 	if r.get("normal_sampling_method") != "accepted_substep_start_and_end_states_not_interval_maximum" \
-		or r.get("quadrature_method") != "RK4_algebraic_stage_weights_not_damage_samples":
+		or r.get("quadrature_method") not in ["RK4_algebraic_stage_weights_not_damage_samples","RK4_external_work_piecewise_normal_loss_v1"]:
 		return _failure("receipt sampling/quadature contract differs")
 	var start: float = r.normal_sample_times_s[0]
 	if start < 0.0: return _failure("negative receipt clock")
@@ -185,6 +185,10 @@ static func _receipt(prepared: Dictionary, r: Dictionary, dt: float) -> Dictiona
 	for i in m:
 		if r.sampled_peak_times_s[i] < 0.0 or r.sampled_peak_normal_n[i] != peak[i] or absf(r.sampled_peak_times_s[i] - peak_times[i]) > prepared.time_tolerance_s:
 			return _failure("sampled peak was altered or is not an accepted boundary sample")
+	if r.quadrature_method=="RK4_external_work_piecewise_normal_loss_v1":
+		var normal_loss:=_normal_loss_receipt(r,n)
+		if not normal_loss.ok:return normal_loss
+	elif r.has("normal_loss_policy"):return _failure("normal loss metadata requires its explicit method")
 	for key: String in WORK_KEYS + ["initial_mechanical_energy_j", "final_mechanical_energy_j", "energy_balance_residual_j", "maximum_piece_energy_residual_j", "absolute_impulse_sum"]:
 		if not _number(r.get(key)): return _failure("missing/nonfinite work or energy diagnostic")
 	for key: String in ["tangent_dissipation_j", "normal_dissipation_j", "maximum_piece_energy_residual_j", "absolute_impulse_sum"]:
@@ -378,3 +382,47 @@ static func _bounded(value: Variant, depth: int, budget: Dictionary) -> bool:
 
 static func _failure(reason: String, id := LAW) -> Dictionary:
 	return {ok = false, admitted = false, identity = id, normalized_error = 0.0, reason = reason}
+
+
+## Structural accounting only. Callable owner qualification occurs in Step;
+## no receipt string, identity or count confers physical interval authority.
+static func _normal_loss_receipt(r:Dictionary,n:int)->Dictionary:
+	var policy:Variant=r.get("normal_loss_policy")
+	if not _keys(policy,["format","identity","pieces"]) or typeof(policy.format)!=TYPE_STRING or policy.format!="openrc-normal-loss-policy-receipt v1" \
+		or not _text(policy.identity,256) or not policy.pieces is Array or policy.pieces.size()!=n:
+		return _failure("invalid opted-in normal loss accounting")
+	var sum:=0.0
+	var maximum:=0.0
+	var support_identity:=""
+	var previous:Dictionary={}
+	for i in n:
+		var piece:Variant=policy.pieces[i]
+		if not piece is Dictionary or typeof(piece.get("method"))!=TYPE_STRING:return _failure("malformed normal loss piece")
+		var keys:=["method","normal_dissipation_j","energy_residual_j"]
+		if piece.method=="unloaded_support_potential_difference_v1":
+			keys.append_array(["start_support_potential_j","end_support_potential_j","support_identity","zero_force_rk_samples"])
+			if not _keys(piece,keys) or not _text(piece.support_identity,256) \
+				or typeof(piece.zero_force_rk_samples)!=TYPE_INT or piece.zero_force_rk_samples!=4 \
+				or not _number(piece.start_support_potential_j) or not _number(piece.end_support_potential_j) or not _number(piece.get("normal_dissipation_j")) \
+				or piece.start_support_potential_j<0.0 or piece.end_support_potential_j<0.0 \
+				or piece.get("normal_dissipation_j")!=piece.start_support_potential_j-piece.end_support_potential_j:
+				return _failure("unloaded piece potential/count algebra differs")
+			if not support_identity.is_empty() and support_identity!=piece.support_identity:return _failure("normal support binding changed")
+			support_identity=piece.support_identity
+			if previous.get("method")==piece.method and previous.end_support_potential_j!=piece.start_support_potential_j:
+				return _failure("adjacent unloaded potential chain differs")
+			for j in [i,i+1]:
+				for load:float in r.normal_samples_n[j]:
+					if load!=0.0:return _failure("unloaded heat piece has loaded boundary sample")
+		elif piece.method=="RK4_normal_power_v1":
+			if not _keys(piece,keys):return _failure("invalid RK normal piece accounting")
+		else:return _failure("unknown normal loss method")
+		if not _number(piece.get("normal_dissipation_j")) or piece.normal_dissipation_j<0.0 or not _number(piece.get("energy_residual_j")):
+			return _failure("invalid normal piece loss/residual")
+		sum+=piece.normal_dissipation_j
+		maximum=maxf(maximum,absf(piece.energy_residual_j))
+		previous=piece
+	if not _number(r.get("normal_dissipation_j")) or not _number(r.get("maximum_piece_energy_residual_j")) \
+		or sum!=r.normal_dissipation_j or maximum!=r.maximum_piece_energy_residual_j:
+		return _failure("normal piece heat sum/maximum differs")
+	return {ok=true}

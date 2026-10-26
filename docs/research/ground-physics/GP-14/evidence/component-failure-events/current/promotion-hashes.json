@@ -1,0 +1,60 @@
+{
+  "before": {
+    "app/physics/aircraft_ground_damage.gd": "d10ab36349a41983592d2020df0ef14c8aa45ee140f8f8ab3560b2921df7b628",
+    "app/statistics/flight_event.gd": "8b730b8f5a4ed6c42ae3113ce12fdddcdf37b00509c6e8e2b4494970b6e29407",
+    "app/statistics/fixed_wing_adapter.gd": "678a948cb26ca5e5427d9fa4a078d40f1849bd068cfd4dbc7a003993d2ab1708",
+    "app/statistics/detector.gd": "5887f57c851917c7a15ad0dfbd1e2ee7ab65c7da0557c53f6f22d19d7c78c1f2",
+    "app/statistics/rules.gd": "b52bb07a5cd4993233e69994359062b29b6f983e7b28a30b1c6a596af908bb0e",
+    "app/statistics/service.gd": "9f2afbdedb4e17c42a45034add7791d1e585d820a8a3d5bbb5d42a8d455414fe",
+    "app/tests/test_aircraft_ground_damage.gd": "7fac4b73873fa00ff94ddb76e891f9a2dbaf2a0e9b67b6548c4cedadd5cbe64d",
+    "app/tests/test_ground_accidents.gd": "d1c6bb825d383caf56a18ee5f61a5370081295bf9487dc01e5d007aa9a13b83f"
+  },
+  "after": {
+    "app/physics/aircraft_ground_damage.gd": "3424b5edeb019d5a177a32774bb1436950ef92a619198ad1767b30253831f9b1",
+    "app/statistics/flight_event.gd": "bcc16fb3c9c4c55aac12394d8495744386acd426798d479c8fd00302d769f063",
+    "app/statistics/fixed_wing_adapter.gd": "1cb6b345d90737da632c04252cb819f11ae758f7fc05a663a5dea55fa3c32525",
+    "app/statistics/detector.gd": "43ff1c448cd9faf0d89114a4d8c25d18f070ec9c748f2d8506f2fef9c5533aa2",
+    "app/statistics/rules.gd": "ff911bea727dd43a5b9ae7a459118c9a6c58bd86d58d78cf29666378f25f328f",
+    "app/statistics/service.gd": "46d54ae6e84ec5d92b5d325cd24cd94ddc7ec47c63647c46f122d73ded4081d0",
+    "app/tests/test_aircraft_ground_damage.gd": "ca51590a5f4ebbdb1f90e7fb129f1d76d14a3e22702dcac595063004f84e6a58",
+    "app/tests/test_ground_accidents.gd": "8ee935c4809bfbbb159c8ea11deba184fbe444f4ea4c8a07a29b20e6c34b4229",
+    "app/tests/test_damage_flight_events.gd": "95c59820cbd1355fc26ccacb0fdb9a92840567a682a8503c659d5e7568ff6051"
+  },
+  "patch_sha256": "99dcfc162e5f7f8db07b9a5f81ae3e75f1707630fde3d6661635e604de908b0d",
+  "initial_after": {
+    "app/physics/aircraft_ground_damage.gd": "da753d4f07e6d5f99f9be1fbbee24246c05b5c256956eea3543ebb1200a40c03",
+    "app/statistics/flight_event.gd": "3c94476849a315c7b1c64f5417053c3a0ae8a0a2f68dde10d8dc62c1e43aedce",
+    "app/statistics/fixed_wing_adapter.gd": "69a4598fa8178c0272c7567dd50275c2608cd2a0917359e3828a3b8f0d217268",
+    "app/statistics/detector.gd": "8ee4478276a97bd849f1ac12c3de9b32623076277f9e169b0acfd8e5cac2c6f0",
+    "app/statistics/rules.gd": "ff911bea727dd43a5b9ae7a459118c9a6c58bd86d58d78cf29666378f25f328f",
+    "app/statistics/service.gd": "e9674321c7735f2e34e64a8221e8b43f6a2e5a885987c8296d3aeb73f035b832",
+    "app/tests/test_aircraft_ground_damage.gd": "ca51590a5f4ebbdb1f90e7fb129f1d76d14a3e22702dcac595063004f84e6a58",
+    "app/tests/test_ground_accidents.gd": "8ee935c4809bfbbb159c8ea11deba184fbe444f4ea4c8a07a29b20e6c34b4229",
+    "app/tests/test_damage_flight_events.gd": "0d84e0d48b45ab346e377edaa08c56e32fdfc0f9373988bc61b6b5bf3d62da14"
+  },
+  "whitespace_cleanup": "Removed added blank EOF lines only, before final production checks.",
+  "pre_coverage_after": {
+    "app/physics/aircraft_ground_damage.gd": "3424b5edeb019d5a177a32774bb1436950ef92a619198ad1767b30253831f9b1",
+    "app/statistics/flight_event.gd": "bcc16fb3c9c4c55aac12394d8495744386acd426798d479c8fd00302d769f063",
+    "app/statistics/fixed_wing_adapter.gd": "1cb6b345d90737da632c04252cb819f11ae758f7fc05a663a5dea55fa3c32525",
+    "app/statistics/detector.gd": "fa700829e8bcbb120379b50286cb761c78c09f171beb04bbc0e108aa4ebe0203",
+    "app/statistics/rules.gd": "ff911bea727dd43a5b9ae7a459118c9a6c58bd86d58d78cf29666378f25f328f",
+    "app/statistics/service.gd": "46d54ae6e84ec5d92b5d325cd24cd94ddc7ec47c63647c46f122d73ded4081d0",
+    "app/tests/test_aircraft_ground_damage.gd": "ca51590a5f4ebbdb1f90e7fb129f1d76d14a3e22702dcac595063004f84e6a58",
+    "app/tests/test_ground_accidents.gd": "8ee935c4809bfbbb159c8ea11deba184fbe444f4ea4c8a07a29b20e6c34b4229",
+    "app/tests/test_damage_flight_events.gd": "0d84e0d48b45ab346e377edaa08c56e32fdfc0f9373988bc61b6b5bf3d62da14"
+  },
+  "coverage_patch_sha256": "439e5331b7dce24ae6a096ec111444c610a481fa17d8520f775e0f56afbfa5c2",
+  "before_evidence_test": {
+    "app/physics/aircraft_ground_damage.gd": "3424b5edeb019d5a177a32774bb1436950ef92a619198ad1767b30253831f9b1",
+    "app/statistics/flight_event.gd": "bcc16fb3c9c4c55aac12394d8495744386acd426798d479c8fd00302d769f063",
+    "app/statistics/fixed_wing_adapter.gd": "1cb6b345d90737da632c04252cb819f11ae758f7fc05a663a5dea55fa3c32525",
+    "app/statistics/detector.gd": "43ff1c448cd9faf0d89114a4d8c25d18f070ec9c748f2d8506f2fef9c5533aa2",
+    "app/statistics/rules.gd": "ff911bea727dd43a5b9ae7a459118c9a6c58bd86d58d78cf29666378f25f328f",
+    "app/statistics/service.gd": "46d54ae6e84ec5d92b5d325cd24cd94ddc7ec47c63647c46f122d73ded4081d0",
+    "app/tests/test_aircraft_ground_damage.gd": "ca51590a5f4ebbdb1f90e7fb129f1d76d14a3e22702dcac595063004f84e6a58",
+    "app/tests/test_ground_accidents.gd": "8ee935c4809bfbbb159c8ea11deba184fbe444f4ea4c8a07a29b20e6c34b4229",
+    "app/tests/test_damage_flight_events.gd": "b28a1518054f921eff7a2a3441bdfe0a642ae2fa8e5ecda999aed9152dd8b684"
+  },
+  "evidence_test_patch_sha256": "3e8a698a32ec06f6ff55f9b7e34419e4e3ee569bea8f73dad5876eeabc5a97f9"
+}

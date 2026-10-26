@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "77d34926-fd28-47e5-9da2-59fdb2c2a5e1",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-stage-factor/test_rotor_coupling.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T19:31:47.501556+00:00",
+  "label": "factor-rotor-coupling",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-stage-factor\\checks\\rotor-coupling\\factor-rotor-coupling-6lpjgttn\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-stage-factor\\checks\\rotor-coupling\\factor-rotor-coupling-6lpjgttn\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.86,
+  "log_bytes": 1072,
+  "log_sha256": "efa1779df7df58253e2dda741ce19cc6a6e196b8cdd4d3a092bdaea5ea44b356"
+}

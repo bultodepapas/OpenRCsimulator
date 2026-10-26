@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b3d2d733-7514-4d59-9148-7162b850c63e",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-independent-review/review_probe.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T18:14:42.187572+00:00",
+  "label": "consumer-combinations",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-weather-independent-review\\checks\\consumer-combinations-29uvcbg9\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-weather-independent-review\\checks\\consumer-combinations-29uvcbg9\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.547,
+  "log_bytes": 1287,
+  "log_sha256": "bb3405be0c3c48658b6a38df1a32b1f9476364ed96b969f2a2e21c17a09b601e"
+}

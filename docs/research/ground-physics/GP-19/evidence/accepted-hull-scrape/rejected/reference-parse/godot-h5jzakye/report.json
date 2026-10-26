@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "076b0cc5-9902-4741-a1e1-6c88147b40d8",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/freeze_reference.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T19:29:45.446473+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\reference-01\\godot-h5jzakye\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\reference-01\\godot-h5jzakye\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Frozen hull friction reference: complete"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Cannot find member \"resource_path\" in base \"C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/source/app/physics/hull_contact.gd\".",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/freeze_reference.gd:23)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/freeze_reference.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "Frozen hull friction reference: complete"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.328,
+  "log_bytes": 541,
+  "log_sha256": "9c839dc23e4b95a952d666a4791fc74f01bc03aee16bba363f0479d007366d70"
+}

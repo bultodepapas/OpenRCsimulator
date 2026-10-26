@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1909646a-1e19-41fb-891c-25e40a2b3b07",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-unloaded-review/constitutive_oracles.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T18:02:23.788124+00:00",
+  "label": "constitutive-oracles",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-unloaded-review\\checks\\constitutive-oracles-2boggmjy\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-unloaded-review\\checks\\constitutive-oracles-2boggmjy\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Independent unloaded heat review: 11 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.407,
+  "log_bytes": 336,
+  "log_sha256": "ded8928aa8b6a3c516ac08e9aba55cd0a15c660bffd6e7801e52b0f36ceaa11a"
+}

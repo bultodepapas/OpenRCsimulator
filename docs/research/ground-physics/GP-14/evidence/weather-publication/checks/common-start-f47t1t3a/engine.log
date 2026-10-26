@@ -1,0 +1,73 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/airborne-load.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/airborne-load.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/airborne-trim.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/airborne-trim.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/runway-trim.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/runway-trim.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reentry-refit.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reentry-refit.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reentry-airborne-prepare.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reentry-airborne-prepare.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reentry-airborne-commit.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reentry-airborne-commit.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reentry-reload-preparation.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reentry-reload-preparation.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/failure-rng-refusal.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/failure-rng-refusal.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reload-refusal-false.orfl
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reload-refusal-false.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reload-success-false.orfl
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reload-success-false.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reload-refusal-true.orfl
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reload-refusal-true.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reload-success-true.orfl
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/reload-success-true.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/observer-fault-airborne.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/observer-fault-airborne.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/observer-fault-reload-airborne.orfl
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/observer-fault-reload-airborne.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/observer-fault-reload-runway.orfl
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/observer-fault-reload-runway.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/observer-fault-fallback-airborne.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/observer-fault-fallback-airborne.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/fallback-false.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/fallback-false.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/fallback-true.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/fallback-true.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/boolean-probe.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/boolean-probe.orfl (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/hand-launch.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/hand-launch.orfl (0 ticks)
+trim: trim throttle must be within 0..1 (got 0.0)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/exact-continuation.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670/exact-continuation.orfl (0 ticks)
+Common flight reset: 148 checks, 0 failed; C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/common-reset-2851670

@@ -1,0 +1,153 @@
+{
+  "format": "openrc-independent-unloaded-heat-review v1",
+  "complete_physics_contract_review": true,
+  "production_approval": true,
+  "status": "final six-path payload reviewed; no remaining blocker within the explicit trusted source-free fixed-plane domain",
+  "conclusion": "valid exact constitutive antiderivative functional at numerical endpoints in the declared all-zero-normal branch; no floating-duration root-family theorem needed for uniform fixed-duration free-RHS RK4",
+  "concrete_issue_resolved": "stale maximum_piece_energy_residual_j replaced by per-piece corrected loss/residual/gate/maximum",
+  "mandatory_contract": "review.md",
+  "independent_oracle_checks": 11,
+  "independent_oracle": "checks/constitutive-oracles-2boggmjy/report.json",
+  "counterexample": {
+    "all_RK4_sample_normals_zero": true,
+    "hidden_interstage_normal_n": 0.140217956542969,
+    "hidden_cycle_heat_j": 1.72474467695897e-07,
+    "endpoint_potential_drop_j": 0.0
+  },
+  "source_snapshots_reviewed": [
+    {
+      "path": "tmp/gp12-branch-step/test_unloaded_reference_guard.gd",
+      "sha256": "0027efee0a7a869f68903292647279d90f5e2d6210fe2a90d7eba1fcde079c2d"
+    },
+    {
+      "path": "tmp/gp12-branch-step/test_unloaded_heat.gd",
+      "sha256": "b8ce1ade04a4775c6d7bc4f261d901c1b8166227fbe22a5524a567f7c0ecde49"
+    },
+    {
+      "path": "tmp/gp12-branch-step/heat_accuracy.gd",
+      "sha256": "2583d6682b3e5d255870d8978d1f3c5d9ec62204108be5a0aec16881c4147633"
+    },
+    {
+      "path": "tmp/gp12-branch-step/unloaded-heat-review.md",
+      "sha256": "c29e381ee776241e414aa64af67a71c194e004914d2556bdea9b76604b0ec022"
+    },
+    {
+      "path": "tmp/gp12-unloaded-policy/step.gd",
+      "sha256": "ebad5189be89c577e1850f756e32f74b53d02ad141ca2283614556a688711148"
+    },
+    {
+      "target": "app/physics/aircraft_ground_accuracy.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/physics/aircraft_ground_accuracy.gd",
+      "bytes": 28919,
+      "sha256": "8aefb92b1ae8441ab4d883b61c447e7d7864cb830a98ae2c82258cd0a0d5424a"
+    },
+    {
+      "target": "app/physics/aircraft_ground_step.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/physics/aircraft_ground_step.gd",
+      "bytes": 44481,
+      "sha256": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366"
+    },
+    {
+      "target": "app/physics/aircraft_ground_unloaded.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/physics/aircraft_ground_unloaded.gd",
+      "bytes": 15437,
+      "sha256": "eb8148c1f4d0e3dbf18d38fb18eedbca63fa5a04deb5fdf7e7ddc74261dd9a6f"
+    },
+    {
+      "target": "app/tests/test_aircraft_ground_unloaded.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/tests/test_aircraft_ground_unloaded.gd",
+      "bytes": 30021,
+      "sha256": "568a7753b9265d1a8a6c383b2dae2b41ddd335458485e031601c6ed1286ee1f3"
+    }
+  ],
+  "pending": "full original drop continuation, loaded/stock and performance qualification excluded",
+  "production_writes": [],
+  "production_manifest": {
+    "path": "tmp/gp12-unloaded-policy/manifest.json",
+    "sha256": "76ba1936985d61183f97c58d125c527de855d0d127777fc195b0e19f70127d7d"
+  },
+  "production_payload": [
+    {
+      "target": "app/physics/aircraft_ground_accuracy.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/physics/aircraft_ground_accuracy.gd",
+      "bytes": 28919,
+      "sha256": "8aefb92b1ae8441ab4d883b61c447e7d7864cb830a98ae2c82258cd0a0d5424a"
+    },
+    {
+      "target": "app/physics/aircraft_ground_step.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/physics/aircraft_ground_step.gd",
+      "bytes": 44481,
+      "sha256": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366"
+    },
+    {
+      "target": "app/physics/aircraft_ground_unloaded.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/physics/aircraft_ground_unloaded.gd",
+      "bytes": 15437,
+      "sha256": "eb8148c1f4d0e3dbf18d38fb18eedbca63fa5a04deb5fdf7e7ddc74261dd9a6f"
+    },
+    {
+      "target": "app/tests/fixtures/ground_unloaded_gentle.bin",
+      "path": "tmp/gp12-unloaded-policy/production/app/tests/fixtures/ground_unloaded_gentle.bin",
+      "bytes": 13952,
+      "sha256": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408"
+    },
+    {
+      "target": "app/tests/fixtures/ground_unloaded_hard.bin",
+      "path": "tmp/gp12-unloaded-policy/production/app/tests/fixtures/ground_unloaded_hard.bin",
+      "bytes": 13952,
+      "sha256": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b"
+    },
+    {
+      "target": "app/tests/test_aircraft_ground_unloaded.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/tests/test_aircraft_ground_unloaded.gd",
+      "bytes": 30021,
+      "sha256": "568a7753b9265d1a8a6c383b2dae2b41ddd335458485e031601c6ed1286ee1f3"
+    }
+  ],
+  "reviewed_targeted_checks": 381,
+  "reviewed_targeted_receipts": [
+    {
+      "checks": 130,
+      "report": {
+        "path": "tmp/gp12-unloaded-policy/checks/payload-policy-mjpg9duj/report.json",
+        "bytes": 1283,
+        "sha256": "ad23750e0eab8a7e2c17c9c1facb6c3f51b6c6f9d29e65a68a91e97c75d88340"
+      },
+      "log": {
+        "path": "tmp/gp12-unloaded-policy/checks/payload-policy-mjpg9duj/engine.log",
+        "bytes": 111,
+        "sha256": "0fc47cd5393c71e2a32ffd4bad8602135ac8691467b8693a8bc11a41c3441c1e"
+      }
+    },
+    {
+      "checks": 167,
+      "report": {
+        "path": "tmp/gp12-unloaded-policy/checks/payload-step-m02dcbg2/report.json",
+        "bytes": 1274,
+        "sha256": "5bc47c917fd24fabb2a12c6c709488384c3610987999d52b92201364e2ea3874"
+      },
+      "log": {
+        "path": "tmp/gp12-unloaded-policy/checks/payload-step-m02dcbg2/engine.log",
+        "bytes": 116,
+        "sha256": "2141d120ae5766d70ac6f424ba091ffcb6208f4e55bb34013379e8e5fb950248"
+      }
+    },
+    {
+      "checks": 84,
+      "report": {
+        "path": "tmp/gp12-unloaded-policy/checks/payload-accuracy-eyyvdjzp/report.json",
+        "bytes": 1291,
+        "sha256": "16685d475e3913d67306c36fc0d09a0796e99aa4196fcfce4633f7cb7138a34d"
+      },
+      "log": {
+        "path": "tmp/gp12-unloaded-policy/checks/payload-accuracy-eyyvdjzp/engine.log",
+        "bytes": 119,
+        "sha256": "29609f9a44da1a1ec1fb3a6d5dca20afd3e5068a369506f3751a810096942573"
+      }
+    }
+  ],
+  "promotion_conditions": [
+    "binary fixture -text attribute",
+    "production-location checks after root promotion"
+  ]
+}

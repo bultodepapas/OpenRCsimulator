@@ -1,0 +1,19 @@
+{
+  "format": "openrc-independent-stage-local-factor-review-v1",
+  "supported": true,
+  "scope": "No-hold solve reuses only current local assembly factor; no new trust/cache/resource identity",
+  "baseline_sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+  "candidate_sha256": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+  "manifest_matches": true,
+  "independent_checks": 7,
+  "receipts": [
+    {
+      "path": "tmp/gp12-stage-factor-review/checks/independent-supported-edges-afq8vmzz/report.json",
+      "sha256": "8ab64d5a40d9f5449a992c444297f30fb598b6a234ae40af58ed601363158e38",
+      "warnings_as_errors": true
+    }
+  ],
+  "review": "review.md",
+  "main_edits": [],
+  "performance_qualification": false
+}

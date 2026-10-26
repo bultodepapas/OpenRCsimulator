@@ -1,0 +1,31 @@
+{
+  "format": "openrc-audio-aggregation-correction-v1",
+  "original_summary_sha256": "cf419614a752518b86475edced7bea153d75a34ddf03b908ca6c3688620d83ba",
+  "capture_wrapper_sha256": "08dbd48702d5ebc40ca37ecd34847aea3040b2564ca08d2a90568b502eb599b9",
+  "current_wrapper_sha256": "fc405b1616ade4bd2fcc9c7243f64cea1dcb5565e5437f29ea64c671fc365e9e",
+  "catalog_source_unchanged": true,
+  "corrected_scope": {
+    "active_catalog_aircraft_ids": [
+      "jensen-das-ugly-stik-60",
+      "stik-glow-61fx-2t",
+      "stik-glow-55ax-2t",
+      "stik-glow-fs64v-4t",
+      "gp-extra-300s-60",
+      "p51d-mustang-120",
+      "f4u-corsair-250",
+      "sebart-avanti-s-a200-p100rx",
+      "turbo-lumber-evolution",
+      "skywalker-x8",
+      "xcell-60-research"
+    ],
+    "requested_aircraft_ids": [
+      "turbo-lumber-evolution"
+    ],
+    "catalog_coverage_complete": false,
+    "all_requested_live_contact_sequences_complete_without_route_failure": true,
+    "all_requested_continuous_flights_qualified": true,
+    "all_live_contact_sequences_complete_without_route_failure": false,
+    "all_continuous_flights_qualified": false
+  },
+  "scope": "post-capture metadata correction only; original PCM/raw reports/source hashes unchanged; no wholefleetqualification"
+}

@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ea473d9c-97ed-43a6-8ea8-478120b8c04e",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-restore-transaction/regressions/test_aircraft_contact_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T17:01:08.786782+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-restore-transaction\\checks\\draft-contact\\godot-cp05g5q0\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-restore-transaction\\checks\\draft-contact\\godot-cp05g5q0\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "AircraftContactSession: 63 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "AircraftContactSession: 63 checks, 0 failed"
+  ],
+  "reason": "missing_required_text",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 3.812,
+  "log_bytes": 1572,
+  "log_sha256": "f58c91a8efccc93f3eb1e84e59a567de4209e3da67640112cb585f6fc62dc773"
+}

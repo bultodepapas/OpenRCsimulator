@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1a76b2dc-80eb-43e6-8385-b360ba3398ad",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_aircraft_ground_impulse.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T19:43:22.756751+00:00",
+  "label": "joint-impulse",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-stage-factor\\production\\joint-impulse-yz26r4dw\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-stage-factor\\production\\joint-impulse-yz26r4dw\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.703,
+  "log_bytes": 119,
+  "log_sha256": "d1811c203c52d585943ca3747fcf66ff04452c5ef8fd506ef95c76504a7ef2d6"
+}

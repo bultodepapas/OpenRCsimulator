@@ -26,10 +26,10 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 ## screen can skip costly witnesses; it NEVER substitutes for final admission.
 static func _solve_with_work(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,groups:Array,
 		mass_matrix:PackedFloat64Array,jacobian:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,
-		responses:PackedFloat64Array,maximum_resolution_j:float,iteration_budget:int,proof_screen:bool,memo:Dictionary={})->Dictionary:
+		responses:PackedFloat64Array,maximum_resolution_j:float,iteration_budget:int,proof_screen:bool,memo:Dictionary={},allow_unresolved_descent:bool=false)->Dictionary:
 	var work:={qp={},range_proposal_calls=0,work_candidate_calls=0,strict_publication_calls=0,assembly_witness_builds=0,assembly_certificates=0}
 	var before_builds:=int(memo.get("builds",0))
-	var result:=_solve_core(a,v,limits,groups,mass_matrix,jacobian,z,bias,responses,maximum_resolution_j,iteration_budget,proof_screen,work,memo)
+	var result:=_solve_core(a,v,limits,groups,mass_matrix,jacobian,z,bias,responses,maximum_resolution_j,iteration_budget,proof_screen,work,memo,allow_unresolved_descent)
 	work.assembly_witness_requests=work.assembly_witness_builds
 	work.assembly_witness_builds=int(memo.get("builds",0))-before_builds
 	return {result=result,work=work}
@@ -37,13 +37,13 @@ static func _solve_with_work(a:PackedFloat64Array,v:PackedFloat64Array,limits:Pa
 
 static func _solve_core(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,groups:Array,
 		mass_matrix:PackedFloat64Array,jacobian:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,
-		responses:PackedFloat64Array,maximum_resolution_j:float,iteration_budget:int,proof_screen:bool,account:Dictionary,memo:Dictionary={})->Dictionary:
+		responses:PackedFloat64Array,maximum_resolution_j:float,iteration_budget:int,proof_screen:bool,account:Dictionary,memo:Dictionary={},allow_unresolved_descent:bool=false)->Dictionary:
 	if not is_finite(maximum_resolution_j) or maximum_resolution_j < 0.0:
 		return _failure("explicit finite nonnegative owner resolution budget required")
 	var strict:Dictionary
 	if account.is_empty():strict=QP._solve_for_assembly(a,v,limits,groups,iteration_budget)
 	else:
-		var packet:=QP._solve_for_assembly_with_work(a,v,limits,groups,iteration_budget)
+		var packet:=QP._solve_for_assembly_with_work(a,v,limits,groups,iteration_budget,allow_unresolved_descent)
 		strict=packet.result
 		account.qp=packet.work
 	if strict.ok:return strict
@@ -366,6 +366,10 @@ static func _spd_margin(matrix: PackedFloat64Array,lower: PackedFloat64Array,w: 
 static func bounds(a: PackedFloat64Array, v: PackedFloat64Array, mass_matrix: PackedFloat64Array,
 		jacobian: PackedFloat64Array, z: PackedFloat64Array, bias: PackedFloat64Array,
 		responses: PackedFloat64Array) -> Dictionary:
+	return _bounds_mass(a,v,mass_matrix,jacobian,z,bias,responses,null)
+
+static func _bounds_mass(a:PackedFloat64Array,v:PackedFloat64Array,mass_matrix:PackedFloat64Array,
+		jacobian:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,responses:PackedFloat64Array,proof:RefCounted)->Dictionary:
 	var n := v.size()
 	var w := z.size()
 	var gradual := ETA
@@ -381,44 +385,15 @@ static func bounds(a: PackedFloat64Array, v: PackedFloat64Array, mass_matrix: Pa
 		or bias.size() != n or not _finite(a) or not _finite(v) or not _finite(mass_matrix) \
 		or not _finite(jacobian) or not _finite(z) or not _finite(bias) or not _finite(responses):
 		return _failure("invalid complete assembly operands")
-	for i in w:
-		for j in w:
-			if mass_matrix[i*w+j] != mass_matrix[j*w+i]: return _failure("mass matrix is not symmetric")
-	var factor := GC.cholesky_factor(mass_matrix, w)
-	if not factor.ok: return _failure("mass matrix is not qualified SPD")
-	var spd := _spd_margin(mass_matrix,factor.lower,w)
-	if not spd.ok: return spd
-	# Inverse witness with an explicitly bounded ||I-M X||_infinity. The
-	# Neumann-series theorem then bounds the TRUE inverse, not merely X.
-	var inverse := PackedFloat64Array()
-	inverse.resize(w*w)
-	for col in w:
-		var rhs := PackedFloat64Array()
-		rhs.resize(w)
-		rhs[col] = 1.0
-		var solved := GC.solve_cholesky(factor.lower, rhs, w)
-		if solved.size() != w or not _finite(solved): return _failure("inverse witness failed")
-		for row in w: inverse[row*w+col] = solved[row]
-	var inverse_norm := 0.0
-	var inverse_residual := 0.0
-	for i in w:
-		var norm_row := 0.0
-		var error_row := 0.0
-		for j in w:
-			norm_row = _add(norm_row,absf(inverse[i*w+j]))
-			var value := -1.0 if i == j else 0.0
-			var magnitude := absf(value)
-			for k in w:
-				var term := mass_matrix[i*w+k] * inverse[k*w+j]
-				if not is_finite(term): return _failure("inverse product overflow")
-				value += term
-				magnitude = _add(magnitude,_mul(absf(mass_matrix[i*w+k]),absf(inverse[k*w+j])))
-			error_row = _add(error_row,_add(absf(value),_roundoff(magnitude,2*w+4)))
-		inverse_norm = maxf(inverse_norm, norm_row)
-		inverse_residual = maxf(inverse_residual, error_row)
-	if not is_finite(inverse_residual) or inverse_residual >= 1.0:
-		return _failure("inverse witness cannot bound true mass inverse")
-	var inverse_bound := _div(inverse_norm,_one_minus(inverse_residual))
+	var mass_packet:Dictionary
+	if proof is FixedMassProof and proof.matches(mass_matrix,w):mass_packet=proof._packet
+	else:mass_packet=_mass_prefix(mass_matrix,w)
+	if not mass_packet.ok:return mass_packet
+	var inverse:PackedFloat64Array=mass_packet.inverse
+	var inverse_residual:float=mass_packet.inverse_residual
+	var inverse_bound:float=mass_packet.inverse_bound
+	var spd:Dictionary=mass_packet.spd
+
 	var response_error := PackedFloat64Array()
 	response_error.resize(n*w)
 	for j in n:
@@ -570,6 +545,10 @@ static func _certificate_verified(a:PackedFloat64Array,v:PackedFloat64Array,limi
 			seen[i] = 1
 			if limits[i] == 0.0:
 				if impulse[i] != 0.0: return _failure("zero authority has impulse")
+			elif group.size()==1:
+				# For a binary64 interval endpoint this comparison is exact; an
+				# outward divided/squared upper bound cannot prove equality.
+				if absf(impulse[i])>limits[i]:return _failure("original interval capacity exceeded")
 			else:
 				var ratio := _div(absf(impulse[i]),limits[i])
 				length = _add(length,_mul(ratio,ratio))
@@ -732,7 +711,7 @@ static func _memo_bounds(memo:Dictionary,a:PackedFloat64Array,v:PackedFloat64Arr
 	if memo.has("source") and memo.source==source:return memo.assembly
 	# A different operand never hits an old witness. This object is fresh local
 	# call-chain data and never returned or accepted by a public API.
-	var verified:=bounds(a,v,mass,j,z,bias,responses)
+	var verified:=_bounds_mass(a,v,mass,j,z,bias,responses,memo.get("mass_proof"))
 	memo.source=source
 	memo.assembly=verified
 	memo.builds=int(memo.get("builds",0))+1
@@ -750,3 +729,66 @@ static func _work_local(memo:Dictionary,a:PackedFloat64Array,v:PackedFloat64Arra
 	var verified:=_memo_bounds(memo,a,v,mass,j,z,bias,responses)
 	if not verified.ok:return verified
 	return _work_verified(a,v,mass,j,z,bias,responses,p,g,delta,post,affine,objective,incremental,closure,verified)
+
+
+## Opaque locally prepared proof, owned by the trusted read-only model owner.
+## Its private packet is never accepted from an arbitrary caller dictionary.
+## There is no global cache. A complete matrix-byte/width mismatch recomputes
+## the original prefix; all J/z/A/response arithmetic is always recomputed.
+class FixedMassProof extends RefCounted:
+	var _matrix_bytes:PackedByteArray
+	var _width:int=0
+	var _packet:Dictionary={}
+	func matches(matrix:PackedFloat64Array,w:int)->bool:
+		return w==_width and matrix.to_byte_array()==_matrix_bytes and _packet.get("ok",false)
+
+static func prepare_mass(matrix:PackedFloat64Array,w:int)->Dictionary:
+	if w<1 or w>70 or matrix.size()!=w*w or not _finite(matrix):return _failure("invalid prepared mass matrix")
+	var packet:=_mass_prefix(matrix,w)
+	if not packet.ok:return packet
+	var proof:=FixedMassProof.new()
+	proof._matrix_bytes=matrix.to_byte_array()
+	proof._width=w
+	proof._packet=packet
+	return {ok=true,proof=proof}
+
+static func _mass_prefix(matrix:PackedFloat64Array,w:int)->Dictionary:
+	for i in w:
+		for j in w:
+			if matrix[i*w+j] != matrix[j*w+i]: return _failure("mass matrix is not symmetric")
+	var factor := GC.cholesky_factor(matrix, w)
+	if not factor.ok: return _failure("mass matrix is not qualified SPD")
+	var spd := _spd_margin(matrix,factor.lower,w)
+	if not spd.ok: return spd
+	# Inverse witness with an explicitly bounded ||I-M X||_infinity. The
+	# Neumann-series theorem then bounds the TRUE inverse, not merely X.
+	var inverse := PackedFloat64Array()
+	inverse.resize(w*w)
+	for col in w:
+		var rhs := PackedFloat64Array()
+		rhs.resize(w)
+		rhs[col] = 1.0
+		var solved := GC.solve_cholesky(factor.lower, rhs, w)
+		if solved.size() != w or not _finite(solved): return _failure("inverse witness failed")
+		for row in w: inverse[row*w+col] = solved[row]
+	var inverse_norm := 0.0
+	var inverse_residual := 0.0
+	for i in w:
+		var norm_row := 0.0
+		var error_row := 0.0
+		for j in w:
+			norm_row = _add(norm_row,absf(inverse[i*w+j]))
+			var value := -1.0 if i == j else 0.0
+			var magnitude := absf(value)
+			for k in w:
+				var term := matrix[i*w+k] * inverse[k*w+j]
+				if not is_finite(term): return _failure("inverse product overflow")
+				value += term
+				magnitude = _add(magnitude,_mul(absf(matrix[i*w+k]),absf(inverse[k*w+j])))
+			error_row = _add(error_row,_add(absf(value),_roundoff(magnitude,2*w+4)))
+		inverse_norm = maxf(inverse_norm, norm_row)
+		inverse_residual = maxf(inverse_residual, error_row)
+	if not is_finite(inverse_residual) or inverse_residual >= 1.0:
+		return _failure("inverse witness cannot bound true mass inverse")
+	var inverse_bound := _div(inverse_norm,_one_minus(inverse_residual))
+	return {ok=true,inverse=inverse,inverse_residual=inverse_residual,inverse_bound=inverse_bound,spd=spd}

@@ -134,6 +134,11 @@ func _run() -> void:
 
 	# 5. Aircraft without anchors keep the bounds-derived kit: no dynamic lights, no gates.
 	var stik: Dictionary = Builder.build(Builder.STIK_ID)
+	# Stik now ships creator navigation mounts. Exercise absence on this disposable instance,
+	# without changing its geometry, source metadata or the shipped customization contract.
+	for metadata_key: String in ["light_anchors", "lighting_layout"]:
+		if stik.root.has_meta(metadata_key):
+			stik.root.remove_meta(metadata_key)
 	root.add_child(stik.root)
 	var stik_kit := Kit.attach(stik.root)
 	var plain := not stik_kit.has_meta("dynamic")

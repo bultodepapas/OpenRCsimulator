@@ -1,0 +1,45 @@
+{
+  "format": "openrc-unloaded-root-promotion-v1",
+  "manifest_sha256": "76ba1936985d61183f97c58d125c527de855d0d127777fc195b0e19f70127d7d",
+  "payload": [
+    {
+      "target": "app/physics/aircraft_ground_accuracy.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/physics/aircraft_ground_accuracy.gd",
+      "bytes": 28919,
+      "sha256": "8aefb92b1ae8441ab4d883b61c447e7d7864cb830a98ae2c82258cd0a0d5424a"
+    },
+    {
+      "target": "app/physics/aircraft_ground_step.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/physics/aircraft_ground_step.gd",
+      "bytes": 44481,
+      "sha256": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366"
+    },
+    {
+      "target": "app/physics/aircraft_ground_unloaded.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/physics/aircraft_ground_unloaded.gd",
+      "bytes": 15437,
+      "sha256": "eb8148c1f4d0e3dbf18d38fb18eedbca63fa5a04deb5fdf7e7ddc74261dd9a6f"
+    },
+    {
+      "target": "app/tests/fixtures/ground_unloaded_gentle.bin",
+      "path": "tmp/gp12-unloaded-policy/production/app/tests/fixtures/ground_unloaded_gentle.bin",
+      "bytes": 13952,
+      "sha256": "6e737e71188ab0d23ccfdd437b20c6de45d91d7ff17be03e816ff947b2736408"
+    },
+    {
+      "target": "app/tests/fixtures/ground_unloaded_hard.bin",
+      "path": "tmp/gp12-unloaded-policy/production/app/tests/fixtures/ground_unloaded_hard.bin",
+      "bytes": 13952,
+      "sha256": "4e36e533d8e510cf9e2ab30c973e3669ea5d7cafe89350d7b5c72f4e5dd6489b"
+    },
+    {
+      "target": "app/tests/test_aircraft_ground_unloaded.gd",
+      "path": "tmp/gp12-unloaded-policy/production/app/tests/test_aircraft_ground_unloaded.gd",
+      "bytes": 30021,
+      "sha256": "568a7753b9265d1a8a6c383b2dae2b41ddd335458485e031601c6ed1286ee1f3"
+    }
+  ],
+  "attributes_before_sha256": "f35a346399eed029944d8283f96777413ebea422ed78ef5d8c4cdfbc45db9bb2",
+  "attributes_after_sha256": "fdbad548236f58e6f789ac45468ac51974dfa314d7ae038a327404088c538b3e",
+  "staged_or_committed": false
+}

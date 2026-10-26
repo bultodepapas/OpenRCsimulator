@@ -1,0 +1,14 @@
+{
+  "commit": "2130fe0a6327360ae0c2e3188508078cfd4ae6b5",
+  "selected_sources": {
+    "app/physics/aircraft_ground_damage.gd": "d10ab36349a41983592d2020df0ef14c8aa45ee140f8f8ab3560b2921df7b628",
+    "app/physics/gear_damage.gd": "8aa2cc1e966967ef191dfdad1d597253cecabefb741a3234158b081c258e5900",
+    "app/sim/simulation.gd": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490",
+    "app/sim/aircraft_contact_events.gd": "76532d5d4879a781abacc87298ccff9f6a1b0615499b64e52079064aa7110d90",
+    "app/statistics/flight_event.gd": "8b730b8f5a4ed6c42ae3113ce12fdddcdf37b00509c6e8e2b4494970b6e29407",
+    "app/statistics/detector.gd": "5887f57c851917c7a15ad0dfbd1e2ee7ab65c7da0557c53f6f22d19d7c78c1f2",
+    "app/statistics/fixed_wing_adapter.gd": "678a948cb26ca5e5427d9fa4a078d40f1849bd068cfd4dbc7a003993d2ab1708",
+    "app/statistics/service.gd": "9f2afbdedb4e17c42a45034add7791d1e585d820a8a3d5bbb5d42a8d455414fe",
+    "app/tests/test_aircraft_ground_damage.gd": "7fac4b73873fa00ff94ddb76e891f9a2dbaf2a0e9b67b6548c4cedadd5cbe64d"
+  }
+}

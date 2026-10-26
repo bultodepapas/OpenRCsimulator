@@ -54,26 +54,65 @@ uses neutral flight controls with the existing trimmed throttle plus 0.08 and a 
 `--shot=lighting-pilot` uses the same controls with the production pilot camera, auto-zoom off and
 the magnifier on. No previously recorded `.orfl` tape is replayed by these shots.
 
+Select either existing world with `--landscape=club_field|green_paradise` (default `club_field`).
+The harness validates the catalog ID and passes it to Main's normal landscape loader. Its manifest
+records the requested/resolved ID, actual field path and field-file hash. Keep the same landscape
+for paired cost or preset comparisons; a Green Paradise run cannot establish Club scenery cost.
+
+Lighting trials have **no smoke by default**: `--smoke-pump=on` cannot activate an empty profile.
+Add `--lighting-smoke=stock` to include the aircraft's existing authored stock source/show outlets
+in either a preset or custom lighting capture. The harness freezes the ordinary Workshop profile
+and verifies identical physical trial identity/data before and after adding smoke. Unsupported
+aircraft refuse the request; no outlet or smoke source is inferred. `--lighting-smoke=off` is the
+default. The manifest records the resolved stock preset and production smoke allocation/status;
+RGB frame records expose it as `smoke_effects` (the older `smoke` field describes legacy exhaust).
+
+The real-time mode also accepts this explicit stock-smoke workload and samples its production
+status/allocation once per second beside the RGB counters. Compare OFF/Classic/Festival with
+the **same** smoke option; the option changes presentation identity, not physical identity.
+This route cannot exercise companions: normal companion admission excludes Workshop trials,
+and normal flights have no configurable RGB input. Companion CLI options are rejected rather
+than silently ignored. A full companion/field/smoke qualification remains separate from these
+single-aircraft runs; do not bypass companion source pins or treat cinematic formation actors
+as qualified AI flights.
+
+For a custom Workshop lighting draft, `--lighting-profile=<absolute.json>` accepts one bounded
+data-only `openrc-aircraft-lighting` v1 profile (at most `LightingProfile.MAX_PROFILE_BYTES`).
+The existing LightingProfile validator and `Trial.freeze()` build the detached Workshop trial;
+the manifest records the input file SHA-256 and frozen Workshop presentation identity. This option
+is mutually exclusive with `--lighting-preset` and is offline-capture only; `--frametimes` remains
+preset-only. For a moving two-roll trail check, use the existing Extra director with
+`--aircraft=gp-extra-300s-60 --director-script=<absolute path to extra_rolls_director.gd>
+--shot=extra-roll --seconds=6`. The focused profile check can optionally write its admitted Night
+Aerobatics trail fixture with `--trail-profile-out=<new absolute path>`; see
+[`test_lighting_capture_profile.gd`](test_lighting_capture_profile.gd). The capture refuses an
+input profile path that aliases its output `manifest.json`.
+
 Each RGB frame records the actual rig allocation counters and world exposure. Pilot captures also record the visible
 inset's dimensions, camera and AA mode. The main view uses 4× MSAA; the production inset uses 2×.
 The manifest retains physical/presentation trial identities and capture/director/main/registry hashes.
 The prepared runtime uses source junctions; those hashes do not make a shared checkout immutable.
 These are offline moving-image checks,
 not real-time GPU benchmarks or pilot acceptance. Respect the renderer's distance/quality limits:
-the inset does not independently increase the primary camera's VFX birth or spill grants.
-Every `--lighting-preset` capture, including a custom director such as `extra_rolls_director.gd`,
-receives live RGB allocation and world-exposure fields from the harness. Its director must append
+the active pilot magnifier can improve aircraft-specific VFX birth detail and distance fading when
+its projected view is more useful, while fixed scene-wide grant caps and main-view spill distance
+rules remain unchanged. Every `--lighting-preset` or `--lighting-profile` capture, including a
+custom director such as `extra_rolls_director.gd`, receives live RGB allocation and world-exposure
+fields from the harness. Its director must append
 exactly one record for the current frame and simulation tick; missing or inconsistent evidence
 fails the capture. The existing Extra director uses `--shot=extra-roll --seconds=6` for its ordinary
 two-roll maneuver, so it can inspect `--lighting-preset=night_aerobatics` without a second controller.
-Lighting shots and all explicit lighting-preset captures reject pauses, faults, crashes or a stalled tick counter, retaining an incomplete
+Lighting shots and all explicit lighting-preset/profile captures reject pauses, faults, crashes or a stalled tick counter, retaining an incomplete
 manifest with the reason. This includes the simulator's normal pause on focus loss; a rendered
 movie with repeated frozen frames is not a completed moving-flight take.
 
-The capture now disposes its director and production scene before exit. Two process-frame waits
-allow teardown; the checked Movie Maker run presents one additional cleanup frame. Retain measured
-AVI frame counts and the manifest's expected lead/cleanup counts rather than assuming that every
-encoded frame belongs to the requested flight interval. Unmodified AVI is the source; an optional
+The capture disposes its director and production scene before exit, then observes a post-stop audio
+mix through the supported mix-age clock and permits a subsequent main-loop cleanup. A two-second
+watchdog fails the command and marks the manifest incomplete if teardown is not observed; elapsed
+time alone cannot establish success. `FLIGHT_CAPTURE_AUDIO_DRAIN` records observed frames/wall time.
+Cleanup frame count is variable (`movie_writer_cleanup_frames_expected = -1`). Retain measured
+AVI frame counts rather than assuming every encoded frame belongs to the requested flight interval.
+Unmodified AVI is the source; an optional
 MP4 review copy must retain its own identity and must not be used for source-pixel comparisons.
 
 ### Real-time lighting measurements
@@ -86,6 +125,18 @@ selects `low`, `standard` (default), or `high` without saving user preferences. 
 10 seconds and collection to 60 seconds; `--warmup` and `--t` use the existing collector bounds.
 The FW-RGB-13 acceptance protocol requires an explicit **30-second warmup** and at least
 60 measured seconds; the shorter default is useful for workload checks only.
+
+For a **separate workload audit**, add `--lighting-workload-audit=on` to that same real-time
+command. It observes RGB counters after every presented frame, including warmup, and retains
+bounded maxima with first peak tick/frame/time, positive-frame counts and rising edges. This
+catches brief Festival events that can fall between the ordinary one-second snapshots. The
+manifest records the helper source hash and cumulative audit observer time, and explicitly marks
+the run **ineligible for timing qualification**. Keep this audit's command, source, camera and
+profile matched to the timing set, then omit the option (default `off`) for the timed repeats.
+Never subtract observer time to manufacture corrected frame timings. Counts distinguish CPU live
+states from GPU capacity; they do not prove visible pixels, field-light overlap, smoke allocation
+peaks or companion coverage. The existing smoke snapshots remain once per second. A missing rig,
+invalid metric, skipped observation index, reversed clock or tick invalidates the audit.
 
 Run `prepare_runtime.ps1` after changing root application files such as `main.gd`: those files
 are copies, while the runtime's directories are junctions. For reproducible comparisons, prepare

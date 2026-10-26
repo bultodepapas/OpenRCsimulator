@@ -1,0 +1,5 @@
+{
+	"accepted_finite_float64_point": true,
+	"nonfinite_render_point": true,
+	"planned_grains": 1
+}

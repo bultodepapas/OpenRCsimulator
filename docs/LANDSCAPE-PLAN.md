@@ -72,6 +72,8 @@ The [tree and forest quality plan](plans/tree-forest-quality.md) owns source sel
 
 ## Landscape integration
 
+On Compatibility, the lake reflection probe follows the current world's explicit color ambient without applying camera exposure again. Sky ambient and other renderers retain environment-sourced probe ambient. This preserves the probe's specular reflection, masks and bounded refresh cadence while removing the bright night-water patch. [FW-RGB-06 / LU-25 diagnosis and matched day/night evidence](research/night-flight-lighting/implementation.md#fw-rgb-06--lu-25-compatibility-lake-ambient-2026-10-26).
+
 LU-00…30 adds licensed field assets, night lighting, imported vegetation, a finite lake, agricultural surroundings and downloaded transmission-line assets. [LU-30-R1](research/landscape-upgrade/LU-30-R1/README.md) brings the nearest transmission tower to 652 m from the field origin, expands the corridor to nine towers, reduces insulator geometry and adds 17 batched red markers. Use compatible existing distributable assets where available; record source, license and conversion steps. The [LU evidence index](research/landscape-upgrade/README.md) links the dated implementation and verification records.
 
 [LU-31](research/landscape-upgrade/LU-31/README.md) reduces botanical placement

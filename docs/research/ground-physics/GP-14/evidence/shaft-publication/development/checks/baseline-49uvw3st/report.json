@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "56cb7bcb-17a5-498f-a131-2b6ef8d24eea",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://../tmp/gp-shaft-publication/capture.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T18:35:19.986959+00:00",
+  "label": "baseline",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-shaft-publication\\checks\\baseline-49uvw3st\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-shaft-publication\\checks\\baseline-49uvw3st\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Shaft baseline: 55 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.625,
+  "log_bytes": 109,
+  "log_sha256": "2e3fc2b11afa420d752a7485d988768209bfd66109114162af52dff29d43fc79"
+}

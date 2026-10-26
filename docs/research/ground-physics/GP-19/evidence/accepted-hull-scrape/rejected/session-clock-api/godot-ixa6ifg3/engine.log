@@ -1,0 +1,227 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _settle_hull_observer (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:861)
+FAIL accepted observer primed after child bus setup 
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:79)
+FAIL accepted contact queued before any render { &"enabled": true, &"tick": -1, &"generation": -1, &"queued": 0, &"emitted": 0, &"overflow": 0, &"stale": 0, &"invalid": 0, &"captured": 0, &"last_power_w": 0.0, &"tagged_voices": 0 }
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_hull_pause (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:870)
+       [2] set_paused (res://sim/simulation.gd:260)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:105)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] step (res://sim/simulation.gd:514)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:107)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_hull_pause (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:870)
+       [2] set_paused (res://sim/simulation.gd:260)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:109)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_hull_pause (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:870)
+       [2] set_paused (res://sim/simulation.gd:260)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:221)
+       [4] restore_checkpoint (res://sim/simulation.gd:844)
+       [5] _restore_checkpoint_impl (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:5366)
+       [6] restore_checkpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:5119)
+       [7] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:111)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_hull_lifecycle (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:876)
+       [2] _statistics_committed (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:3072)
+       [3] restore_checkpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:5130)
+       [4] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:111)
+FAIL restore generation primes without replay 
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_hull_lifecycle (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:876)
+       [2] _statistics_committed (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:3072)
+       [3] restore_checkpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:5130)
+       [4] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:116)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _settle_hull_observer (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:861)
+FAIL reattach settles one prime and bounded bus/pool 
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_accepted_hull_tick (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:866)
+       [2] _publish_committed_boundary (res://sim/simulation.gd:230)
+       [3] commit_prepared_reset (res://sim/simulation.gd:199)
+       [4] _commit_start_candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:955)
+       [5] _reset_airborne_candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:3194)
+       [6] _reset_impl (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:3119)
+       [7] reset (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:3057)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:125)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_hull_pause (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:870)
+       [2] set_paused (res://sim/simulation.gd:260)
+       [3] _commit_start_candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:981)
+       [4] _reset_airborne_candidate (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:3194)
+       [5] _reset_impl (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:3119)
+       [6] reset (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:3057)
+       [7] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:125)
+SCRIPT ERROR: Invalid access to property or key 'tick_rate' on a base object of type 'Node (simulation.gd)'.
+   at: _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+   GDScript backtrace (most recent call first):
+       [0] _observe_hull_endpoint (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:888)
+       [1] _on_hull_lifecycle (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/director.gd:876)
+       [2] _statistics_committed (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:3072)
+       [3] reset (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/flight_session.gd:3065)
+       [4] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd:125)
+FAIL reset lifecycle clears grains and pins new generation 
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Hull scrape Session: 32 checks, 5 failed
+Hull scrape Session complete

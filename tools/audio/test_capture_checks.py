@@ -4,14 +4,17 @@ from __future__ import annotations
 import copy
 import json
 import math
+import subprocess
 import tempfile
 import unittest
 import wave
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 
 import check_captures
+import check_fleet_sequence
 import check_mechanical_capture
 
 
@@ -235,6 +238,57 @@ class CaptureCheckTests(unittest.TestCase):
         result = check_mechanical_capture.analyze(self.mechanical_dir)
         self.assertFalse(result["passed"])
         self.assertIn("Capture pushed/recorded/flushed frame counts do not balance", result["failures"])
+
+
+class FleetCatalogScopeTests(unittest.TestCase):
+    @staticmethod
+    def rows(ids: list[str]) -> list[dict]:
+        return [{"aircraft": value, "live_contact_sequence_complete_without_route_failure": True,
+                 "continuous_flight_qualified": True} for value in ids]
+
+    def test_listing_follows_catalog_growth_and_shrinkage(self) -> None:
+        for count in (1, 9, 11, 14):
+            with self.subTest(count=count):
+                ids = [f"fixture-{i}" for i in range(count)]
+                output = "\n".join("FLEET_AIRCRAFT_ID=" + value for value in ids)
+                with patch("check_fleet_sequence.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output, "")):
+                    self.assertEqual(check_fleet_sequence.list_aircraft(Path("fixture")), ids)
+
+    def test_invalid_listings_refuse(self) -> None:
+        for output in ("", "FLEET_AIRCRAFT_ID=", "FLEET_AIRCRAFT_ID=a\nFLEET_AIRCRAFT_ID=a"):
+            with self.subTest(output=output), patch("check_fleet_sequence.subprocess.run", return_value=subprocess.CompletedProcess([], 0, output, "")):
+                with self.assertRaises(RuntimeError):
+                    check_fleet_sequence.list_aircraft(Path("fixture"))
+
+    def test_full_catalog_qualification_has_no_historical_count(self) -> None:
+        for count in (1, 9, 11, 14):
+            ids = [f"fixture-{i}" for i in range(count)]
+            summary = check_fleet_sequence.batch_scope(ids, ids, self.rows(ids))
+            self.assertTrue(summary["catalog_coverage_complete"])
+            self.assertTrue(summary["all_continuous_flights_qualified"])
+            self.assertTrue(summary["all_live_contact_sequences_complete_without_route_failure"])
+
+    def test_selected_success_does_not_claim_whole_fleet(self) -> None:
+        summary = check_fleet_sequence.batch_scope(["a", "b"], ["a"], self.rows(["a"]))
+        self.assertTrue(summary["all_requested_continuous_flights_qualified"])
+        self.assertFalse(summary["catalog_coverage_complete"])
+        self.assertFalse(summary["all_continuous_flights_qualified"])
+        self.assertEqual(summary["requested_aircraft_ids"], ["a"])
+
+    def test_duplicate_missing_or_wrong_results_never_qualify(self) -> None:
+        for requested, observed in ((["a", "a"], ["a", "a"]), (["a", "b"], ["a"]),
+                                    (["a", "b"], ["a", "a"]), (["a"], ["b"]), ([], [])):
+            summary = check_fleet_sequence.batch_scope(["a", "b"], requested, self.rows(observed))
+            self.assertFalse(summary["all_requested_continuous_flights_qualified"])
+            self.assertFalse(summary["all_continuous_flights_qualified"])
+
+    def test_unmeasured_or_truthy_strings_are_not_success(self) -> None:
+        for value in (None, False, "true", 1):
+            rows = self.rows(["a"])
+            rows[0]["continuous_flight_qualified"] = value
+            summary = check_fleet_sequence.batch_scope(["a"], ["a"], rows)
+            self.assertFalse(summary["all_continuous_flights_qualified"])
+            self.assertTrue(summary["all_live_contact_sequences_complete_without_route_failure"])
 
 
 if __name__ == "__main__":

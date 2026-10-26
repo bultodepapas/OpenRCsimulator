@@ -1,0 +1,562 @@
+{
+	"accepted_archive_equal_excluding_elapsed": true,
+	"continued_accept": true,
+	"continued_candidate": {
+		"events": [],
+		"integration_receipt": {
+			"absolute_impulse_sum": 0.5663281116148764,
+			"accepted_substeps": 16,
+			"assembly_resolution": {
+				"accepted_at_resolution": 0,
+				"accepted_slip_roundoff": 0,
+				"accepted_work_roundoff": 0,
+				"ceiling_scope": "per_impulse_qp_not_tick",
+				"combined_contact_uncertainty_sum_j": 0.0,
+				"derived_gamma_sum_j": 0.0,
+				"maximum_assembly_resolution_j": 3.1250000000000003e-13,
+				"maximum_derived_gamma_j": 0.0,
+				"objective_gap_upper_sum_j": 0.0,
+				"slip_work_equivalent_sum_j": 0.0,
+				"work_consistency_sum_j": 0.0
+			},
+			"certificate_identities": [
+				"composition-plane-X.18-V3-Omega5-kappa.5-v1"
+			],
+			"contact_ids": [
+				"contact_main_left",
+				"contact_main_right",
+				"contact_tail"
+			],
+			"contact_operator_order": 1,
+			"energy_balance_residual_j": 8.341521917643036e-13,
+			"error_control": {
+				"coarse_substeps": 8,
+				"fine_substeps": 16,
+				"identity": "4e28450855f934194942ab3f9d0b16e178cb22eb38eb39e82b12be8f13005dd9",
+				"method": "complete_first_order_split_n_2n_no_Richardson",
+				"normalized_error": 0.00028613392268082827
+			},
+			"external_work_j": 0.0,
+			"final_mechanical_energy_j": 340.79644788275743,
+			"format": "openrc-aircraft-ground-integration v1",
+			"initial_mechanical_energy_j": 340.913487412965,
+			"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+			"maximum_piece_energy_residual_j": 2.633024007159257e-13,
+			"normal_dissipation_j": 0.026781266672597746,
+			"normal_loss_policy": {
+				"format": "openrc-normal-loss-policy-receipt v1",
+				"identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+				"pieces": [
+					{
+						"energy_residual_j": 9.427094521674562e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0015500741518111388
+					},
+					{
+						"energy_residual_j": 1.1546492928449226e-13,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.001566431701576491
+					},
+					{
+						"energy_residual_j": 1.3470127790959907e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0015828232396049057
+					},
+					{
+						"energy_residual_j": 2.3311214070176334e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0015992477464188727
+					},
+					{
+						"energy_residual_j": 2.3679842808821405e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0016157042015846816
+					},
+					{
+						"energy_residual_j": 4.831465089116804e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0016321915837711482
+					},
+					{
+						"energy_residual_j": 5.840727207440111e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0016487088708083328
+					},
+					{
+						"energy_residual_j": -7.771561172376096e-16,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.001665255039746264
+					},
+					{
+						"energy_residual_j": -2.959958667059226e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0016818290669136451
+					},
+					{
+						"energy_residual_j": 5.518328849429821e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0016984299279765652
+					},
+					{
+						"energy_residual_j": 2.633024007159257e-13,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0017150565979971802
+					},
+					{
+						"energy_residual_j": 1.910884644962252e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0017317080514923854
+					},
+					{
+						"energy_residual_j": 1.5078910342580798e-13,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.00174838326249247
+					},
+					{
+						"energy_residual_j": -8.977193988179977e-15,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.001765081204599745
+					},
+					{
+						"energy_residual_j": 4.825653765472282e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0017818008510471404
+					},
+					{
+						"energy_residual_j": -4.0049560889876545e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0017985411747567805
+					}
+				]
+			},
+			"normal_sample_times_s": [
+				0.75,
+				0.7502604166666667,
+				0.7505208333333333,
+				0.75078125,
+				0.7510416666666666,
+				0.7513020833333334,
+				0.7515625,
+				0.7518229166666667,
+				0.7520833333333333,
+				0.75234375,
+				0.7526041666666666,
+				0.7528645833333333,
+				0.7531249999999999,
+				0.7533854166666667,
+				0.7536458333333333,
+				0.75390625,
+				0.7541666666666667
+			],
+			"normal_samples_n": [
+				[
+					129.31635243592393,
+					129.29992542257037,
+					129.51109458577426
+				],
+				[
+					129.13065170423317,
+					129.11421659307555,
+					129.3288606016572
+				],
+				[
+					128.944192124759,
+					128.92774901014522,
+					129.14587848217107
+				],
+				[
+					128.75697667289174,
+					128.74052564924966,
+					128.96215115161073
+				],
+				[
+					128.56900833345446,
+					128.5525494952913,
+					128.7776815435599
+				],
+				[
+					128.38029010065645,
+					128.3638235425581,
+					128.59247260084535
+				],
+				[
+					128.1908249780467,
+					128.17435079467725,
+					128.40652727549096
+				],
+				[
+					128.00061597846724,
+					127.98413426456828,
+					128.2198485286719
+				],
+				[
+					127.80966612400645,
+					127.7931769743964,
+					128.03243933066835
+				],
+				[
+					127.617978445952,
+					127.60148195552557,
+					127.84430266081972
+				],
+				[
+					127.42555598474402,
+					127.40905224847154,
+					127.6554415074781
+				],
+				[
+					127.23240178992778,
+					127.21589090285467,
+					127.46585886796206
+				],
+				[
+					127.03851892010684,
+					127.02200097735283,
+					127.27555774850981
+				],
+				[
+					126.84391044289535,
+					126.82738553965412,
+					127.0845411642331
+				],
+				[
+					126.64857943487087,
+					126.63204766640902,
+					126.89281213907016
+				],
+				[
+					126.45252898152667,
+					126.4359904431836,
+					126.70037370573915
+				],
+				[
+					126.25576217722421,
+					126.23921696441104,
+					126.50722890569095
+				]
+			],
+			"normal_sampling_method": "accepted_substep_start_and_end_states_not_interval_maximum",
+			"post_contact_dissipation_j": 0.04509520028605972,
+			"post_prescribed_contact_work_j": 0.0,
+			"pre_contact_dissipation_j": 0.045163063249768404,
+			"pre_prescribed_contact_work_j": 0.0,
+			"prescribed_contact_work_j": 0.0,
+			"quadrature_method": "RK4_external_work_piecewise_normal_loss_v1",
+			"sampled_peak_normal_n": [
+				129.31635243592393,
+				129.29992542257037,
+				129.51109458577426
+			],
+			"sampled_peak_times_s": [
+				0.75,
+				0.75,
+				0.75
+			],
+			"split_method": "two_sided_half_impulses_recomputed_k1_order1",
+			"tangent_dissipation_j": 0.09025826353582812
+		},
+		"ok": true,
+		"state": [
+			2.1967345576473396,
+			1.5387564208011136e-05,
+			-0.11226527488495835,
+			2.8238108376608393,
+			-1.375075977755809e-07,
+			-0.4393337453811404,
+			0.9999999981002344,
+			-7.739030761237494e-06,
+			-5.8869715175728414e-05,
+			1.6552806728371114e-05,
+			-3.466690793575598e-05,
+			-0.009332642073096434,
+			-1.4467999326692202e-07,
+			1400.001885518168,
+			2.821996294042149,
+			2.821996398186081,
+			2.8219953571857515
+		],
+		"status": "accepted"
+	},
+	"continued_production": {
+		"events": [],
+		"integration_receipt": {
+			"absolute_impulse_sum": 0.5663281116148764,
+			"accepted_substeps": 16,
+			"assembly_resolution": {
+				"accepted_at_resolution": 0,
+				"accepted_slip_roundoff": 0,
+				"accepted_work_roundoff": 0,
+				"ceiling_scope": "per_impulse_qp_not_tick",
+				"combined_contact_uncertainty_sum_j": 0.0,
+				"derived_gamma_sum_j": 0.0,
+				"maximum_assembly_resolution_j": 3.1250000000000003e-13,
+				"maximum_derived_gamma_j": 0.0,
+				"objective_gap_upper_sum_j": 0.0,
+				"slip_work_equivalent_sum_j": 0.0,
+				"work_consistency_sum_j": 0.0
+			},
+			"certificate_identities": [
+				"composition-plane-X.18-V3-Omega5-kappa.5-v1"
+			],
+			"contact_ids": [
+				"contact_main_left",
+				"contact_main_right",
+				"contact_tail"
+			],
+			"contact_operator_order": 1,
+			"energy_balance_residual_j": 8.341521917643036e-13,
+			"error_control": {
+				"coarse_substeps": 8,
+				"fine_substeps": 16,
+				"identity": "4e28450855f934194942ab3f9d0b16e178cb22eb38eb39e82b12be8f13005dd9",
+				"method": "complete_first_order_split_n_2n_no_Richardson",
+				"normalized_error": 0.00028613392268082827
+			},
+			"external_work_j": 0.0,
+			"final_mechanical_energy_j": 340.79644788275743,
+			"format": "openrc-aircraft-ground-integration v1",
+			"initial_mechanical_energy_j": 340.913487412965,
+			"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+			"maximum_piece_energy_residual_j": 2.633024007159257e-13,
+			"normal_dissipation_j": 0.026781266672597746,
+			"normal_loss_policy": {
+				"format": "openrc-normal-loss-policy-receipt v1",
+				"identity": "2d3706ce1b29d47c8e8c3f7a6acd3ff6ccf2530ccc7c60eb2fdb4898ff064975",
+				"pieces": [
+					{
+						"energy_residual_j": 9.427094521674562e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0015500741518111388
+					},
+					{
+						"energy_residual_j": 1.1546492928449226e-13,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.001566431701576491
+					},
+					{
+						"energy_residual_j": 1.3470127790959907e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0015828232396049057
+					},
+					{
+						"energy_residual_j": 2.3311214070176334e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0015992477464188727
+					},
+					{
+						"energy_residual_j": 2.3679842808821405e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0016157042015846816
+					},
+					{
+						"energy_residual_j": 4.831465089116804e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0016321915837711482
+					},
+					{
+						"energy_residual_j": 5.840727207440111e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0016487088708083328
+					},
+					{
+						"energy_residual_j": -7.771561172376096e-16,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.001665255039746264
+					},
+					{
+						"energy_residual_j": -2.959958667059226e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0016818290669136451
+					},
+					{
+						"energy_residual_j": 5.518328849429821e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0016984299279765652
+					},
+					{
+						"energy_residual_j": 2.633024007159257e-13,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0017150565979971802
+					},
+					{
+						"energy_residual_j": 1.910884644962252e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0017317080514923854
+					},
+					{
+						"energy_residual_j": 1.5078910342580798e-13,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.00174838326249247
+					},
+					{
+						"energy_residual_j": -8.977193988179977e-15,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.001765081204599745
+					},
+					{
+						"energy_residual_j": 4.825653765472282e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0017818008510471404
+					},
+					{
+						"energy_residual_j": -4.0049560889876545e-14,
+						"method": "RK4_normal_power_v1",
+						"normal_dissipation_j": 0.0017985411747567805
+					}
+				]
+			},
+			"normal_sample_times_s": [
+				0.75,
+				0.7502604166666667,
+				0.7505208333333333,
+				0.75078125,
+				0.7510416666666666,
+				0.7513020833333334,
+				0.7515625,
+				0.7518229166666667,
+				0.7520833333333333,
+				0.75234375,
+				0.7526041666666666,
+				0.7528645833333333,
+				0.7531249999999999,
+				0.7533854166666667,
+				0.7536458333333333,
+				0.75390625,
+				0.7541666666666667
+			],
+			"normal_samples_n": [
+				[
+					129.31635243592393,
+					129.29992542257037,
+					129.51109458577426
+				],
+				[
+					129.13065170423317,
+					129.11421659307555,
+					129.3288606016572
+				],
+				[
+					128.944192124759,
+					128.92774901014522,
+					129.14587848217107
+				],
+				[
+					128.75697667289174,
+					128.74052564924966,
+					128.96215115161073
+				],
+				[
+					128.56900833345446,
+					128.5525494952913,
+					128.7776815435599
+				],
+				[
+					128.38029010065645,
+					128.3638235425581,
+					128.59247260084535
+				],
+				[
+					128.1908249780467,
+					128.17435079467725,
+					128.40652727549096
+				],
+				[
+					128.00061597846724,
+					127.98413426456828,
+					128.2198485286719
+				],
+				[
+					127.80966612400645,
+					127.7931769743964,
+					128.03243933066835
+				],
+				[
+					127.617978445952,
+					127.60148195552557,
+					127.84430266081972
+				],
+				[
+					127.42555598474402,
+					127.40905224847154,
+					127.6554415074781
+				],
+				[
+					127.23240178992778,
+					127.21589090285467,
+					127.46585886796206
+				],
+				[
+					127.03851892010684,
+					127.02200097735283,
+					127.27555774850981
+				],
+				[
+					126.84391044289535,
+					126.82738553965412,
+					127.0845411642331
+				],
+				[
+					126.64857943487087,
+					126.63204766640902,
+					126.89281213907016
+				],
+				[
+					126.45252898152667,
+					126.4359904431836,
+					126.70037370573915
+				],
+				[
+					126.25576217722421,
+					126.23921696441104,
+					126.50722890569095
+				]
+			],
+			"normal_sampling_method": "accepted_substep_start_and_end_states_not_interval_maximum",
+			"post_contact_dissipation_j": 0.04509520028605972,
+			"post_prescribed_contact_work_j": 0.0,
+			"pre_contact_dissipation_j": 0.045163063249768404,
+			"pre_prescribed_contact_work_j": 0.0,
+			"prescribed_contact_work_j": 0.0,
+			"quadrature_method": "RK4_external_work_piecewise_normal_loss_v1",
+			"sampled_peak_normal_n": [
+				129.31635243592393,
+				129.29992542257037,
+				129.51109458577426
+			],
+			"sampled_peak_times_s": [
+				0.75,
+				0.75,
+				0.75
+			],
+			"split_method": "two_sided_half_impulses_recomputed_k1_order1",
+			"tangent_dissipation_j": 0.09025826353582812
+		},
+		"ok": true,
+		"state": [
+			2.1967345576473396,
+			1.5387564208011136e-05,
+			-0.11226527488495835,
+			2.8238108376608393,
+			-1.375075977755809e-07,
+			-0.4393337453811404,
+			0.9999999981002344,
+			-7.739030761237494e-06,
+			-5.8869715175728414e-05,
+			1.6552806728371114e-05,
+			-3.466690793575598e-05,
+			-0.009332642073096434,
+			-1.4467999326692202e-07,
+			1400.001885518168,
+			2.821996294042149,
+			2.821996398186081,
+			2.8219953571857515
+		],
+		"status": "accepted"
+	},
+	"continued_result_equal": true,
+	"limitation": "full180archives retain frame and accumulated/last receipt summary; full transient receipt comparison is the independently accepted following tick",
+	"timings": {
+		"candidate_elapsed_ms": 72792,
+		"production_elapsed_ms": 68518
+	}
+}

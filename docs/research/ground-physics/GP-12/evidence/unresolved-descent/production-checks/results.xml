@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="9" failures="0" errors="0" skipped="0" time="17.794000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_accuracy.gd [accuracy-70plkk44]" time="3.578000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: accuracy-70plkk44/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_contact_assembly_resolution.gd [assembly-vk8maz2j]" time="1.890000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: assembly-vk8maz2j/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_contact_unresolved_descent.gd [descent-rxc874n2]" time="0.781000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: descent-rxc874n2/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_impulse.gd [impulse-8etnxtg4]" time="0.687000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: impulse-8etnxtg4/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_contact_mass_prefix.gd [mass-ue2zo35_]" time="0.968000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: mass-ue2zo35_/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_step.gd [step-upoff696]" time="3.750000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: step-upoff696/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_contact_assembly_strategy.gd [strategy-ok43p705]" time="0.890000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: strategy-ok43p705/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_ground_traction.gd [traction-d4a7d1i0]" time="0.687000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: traction-d4a7d1i0/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_ground_unloaded.gd [unloaded-ohft_dy3]" time="4.563000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: unloaded-ohft_dy3/report.json and engine.log</system-out></testcase></testsuite>

@@ -1,0 +1,743 @@
+{
+  "format": "openrc-accepted-hull-scrape-manifest-v1",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 104,
+      "sha256": "92702633c2f7fe5e64f2247f3bff487ddba0de4b1b73cc5e7063c72a70f1e3e1"
+    },
+    {
+      "path": "before/baseline.gd",
+      "bytes": 2149,
+      "sha256": "16f6c9adec324c2438646929848ab62593289d1e4d0cbc47cb51a3ed8b214903"
+    },
+    {
+      "path": "before/checks/godot-ss69e1jx/engine.log",
+      "bytes": 112,
+      "sha256": "32b300c65e59eda26af68ca985d4f75dd358adb41d6a1a30ac0a6aae58e5ee4e"
+    },
+    {
+      "path": "before/checks/godot-ss69e1jx/report.json",
+      "bytes": 1228,
+      "sha256": "d4b7967f945e2b31d06604ab64ef4f7a5272ad3ac53f365d4b073adae6ea088f"
+    },
+    {
+      "path": "before/observations.json",
+      "bytes": 1202,
+      "sha256": "d1c37d9d11cad62058036adc3f4310609943d191749907190eadd765c9a90f2f"
+    },
+    {
+      "path": "before/source-hashes.json",
+      "bytes": 750,
+      "sha256": "f3499b08701680420c03ccd257ff52affceda94ebed1cef1d3a5a965b4a26384"
+    },
+    {
+      "path": "before/sources/app/assets/audio/crash/sources.json",
+      "bytes": 7716,
+      "sha256": "e95188c532d1e6294a511c603360996894946cb0d9a031bf19dbc56dec954916"
+    },
+    {
+      "path": "before/sources/app/assets/audio/landing_gear/manifest.json",
+      "bytes": 5817,
+      "sha256": "4005fdedacf85a6cb79d2ebdabd21f6c890240d4130a1c1e19aa408176582d7b"
+    },
+    {
+      "path": "before/sources/app/audio/ground_audio_model.gd",
+      "bytes": 8674,
+      "sha256": "8b4a2de11d84ce2417c1269c6cfada6c5f6028393e9489d500660933b3975065"
+    },
+    {
+      "path": "before/sources/app/physics/hull_contact.gd",
+      "bytes": 42132,
+      "sha256": "aa9cd474975d8e529dea14fef46baa0c6208ca78652ba28e8203773a04024e92"
+    },
+    {
+      "path": "before/sources/app/render/crash/crash_audio.gd",
+      "bytes": 11749,
+      "sha256": "66e0a5b1d622eb27d257073447551c5346f20ca7f91c5d749b77dd6c8cb5d87f"
+    },
+    {
+      "path": "before/sources/app/render/crash/director.gd",
+      "bytes": 40104,
+      "sha256": "51865555f3147034979628ff20a88f372c25d049389a2b0b662dfd13f295af24"
+    },
+    {
+      "path": "before/sources/app/sim/flight_session.gd",
+      "bytes": 275663,
+      "sha256": "2722c3d8d28382c38a81cf2f4311eb42f96430a765d4937e288bc91b3e7913d6"
+    },
+    {
+      "path": "current/app/data/aircraft/jensen_ugly_stik_60.json",
+      "bytes": 63744,
+      "sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06"
+    },
+    {
+      "path": "current/app/data/aircraft/sebart_avanti_s_a200.json",
+      "bytes": 110552,
+      "sha256": "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1"
+    },
+    {
+      "path": "current/app/data/aircraft/stik_glow_61fx_2t.json",
+      "bytes": 62718,
+      "sha256": "babf709c6f8eda13af2bcb8dfc2753b98ae82aafaef048dee45610eeb799d458"
+    },
+    {
+      "path": "current/app/physics/effective_mass.gd",
+      "bytes": 8286,
+      "sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc"
+    },
+    {
+      "path": "current/app/physics/hull_contact.gd",
+      "bytes": 42832,
+      "sha256": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4"
+    },
+    {
+      "path": "current/app/physics/math3d.gd",
+      "bytes": 5514,
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb"
+    },
+    {
+      "path": "current/app/physics/rigid_body.gd",
+      "bytes": 5582,
+      "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+    },
+    {
+      "path": "current/app/render/crash/crash_audio.gd",
+      "bytes": 20888,
+      "sha256": "daf7bc27e4cbde8190d426c5f95aa9ef34fc231b739f0ae57ebe69c9b912b7a1"
+    },
+    {
+      "path": "current/app/render/crash/director.gd",
+      "bytes": 43101,
+      "sha256": "1ba07bd91a5e51c90dadf27d2707c86b08c4d71f442e5ea200a7120d84f8e763"
+    },
+    {
+      "path": "current/app/render/crash/presentation_context.gd",
+      "bytes": 1542,
+      "sha256": "a87281cabf0879f68d330b42b32d550f64cee6b9626b2a62cb82749c46f47cbb"
+    },
+    {
+      "path": "current/app/sim/environment.gd",
+      "bytes": 8159,
+      "sha256": "b8d1896d0657a586a174f002da8548f0866236d57aa6d1577d6c5439ddf27f42"
+    },
+    {
+      "path": "current/app/sim/flight_session.gd",
+      "bytes": 283825,
+      "sha256": "2ef72af8e0814bf44520a22741dce7a68a93ebdc611847b98c321460f0160c93"
+    },
+    {
+      "path": "current/app/sim/simulation.gd",
+      "bytes": 54898,
+      "sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490"
+    },
+    {
+      "path": "current/app/tests/fixtures/hull_friction_reference.bin",
+      "bytes": 9132,
+      "sha256": "66f4a8e91c6b5161db938ac3a3deadbed9993829703fcffdd00755937e082811"
+    },
+    {
+      "path": "current/app/tests/test_crash_audio.gd",
+      "bytes": 8714,
+      "sha256": "e9578c372208cfb40af2acc7e0567bec51940b052de07c8d53061205cfa7a652"
+    },
+    {
+      "path": "current/app/tests/test_hull_friction_observation.gd",
+      "bytes": 4183,
+      "sha256": "3542ef73bc52ceb3f362754af1fc621d863bc9ec2abf8320fee3a5c9b55b2297"
+    },
+    {
+      "path": "current/app/tests/test_hull_scrape_audio.gd",
+      "bytes": 9322,
+      "sha256": "8df6c9388ed570e473a1669ec2abfaabf7ea2b22c8d66e6811312bd339a706df"
+    },
+    {
+      "path": "current/app/tests/test_hull_scrape_session.gd",
+      "bytes": 13085,
+      "sha256": "96c7b2626481e6bd0f21cba2fbe3e360bf274fe570c1c56ddee1cd491f062a4d"
+    },
+    {
+      "path": "current/app/tests/test_soft_contact_feedback.gd",
+      "bytes": 6636,
+      "sha256": "e6ca79c547860df295c55fae778869b48bd31a515290b942b7e8cb63886e9808"
+    },
+    {
+      "path": "current/app/tests/test_soft_contacts.gd",
+      "bytes": 12803,
+      "sha256": "bf8fb6ccb7b1b3b4379e3a59a03eb222bab2815761165a0483a521d611eb5bb1"
+    },
+    {
+      "path": "current/app/tests/test_water_director.gd",
+      "bytes": 9512,
+      "sha256": "3dbd7661a9dac008e0c9f66eef40c8f319f4e4dc4b92a3a1023f7ed6ac907d58"
+    },
+    {
+      "path": "current/tools/audio/check_fleet_sequence.py",
+      "bytes": 43382,
+      "sha256": "2d36b4b57d6ecb3e62fac70e56cd6efea73bcf51a01c9d780e23f42d6c03dab1"
+    },
+    {
+      "path": "design/proposal.md",
+      "bytes": 9963,
+      "sha256": "7d0dc8d6fab3af59eefa007a1c4e6e69a3f5ac218681085233e23f2a1c2e9334"
+    },
+    {
+      "path": "draft501/checks/audio/godot-g196ezbj/engine.log",
+      "bytes": 140,
+      "sha256": "467670c53cdfbdc339b6ee5771bdad6514d0cf288bb50321245c11bd8175b953"
+    },
+    {
+      "path": "draft501/checks/audio/godot-g196ezbj/report.json",
+      "bytes": 1258,
+      "sha256": "6d8d0a1a5c4a19428711ae0671a1418a0373b97592a20d8438511faa1f4e8fc5"
+    },
+    {
+      "path": "draft501/checks/legacy-audio/godot-q7cldxx3/engine.log",
+      "bytes": 655,
+      "sha256": "7530f5664331e5ff321458e03340552726ac244d5b644da3927234c34d566e13"
+    },
+    {
+      "path": "draft501/checks/legacy-audio/godot-q7cldxx3/report.json",
+      "bytes": 1250,
+      "sha256": "2c0b2bbdbe8e266113dbfd7d05e4d49a0cba9ee5c2b8501aceca70565f095469"
+    },
+    {
+      "path": "draft501/checks/legacy-soft/godot-jvjtx4bc/engine.log",
+      "bytes": 2722,
+      "sha256": "7e054637e87c4ac007e07edc2be987b5982f7bb7c19f6fa3b006564dda3d68ff"
+    },
+    {
+      "path": "draft501/checks/legacy-soft/godot-jvjtx4bc/report.json",
+      "bytes": 1252,
+      "sha256": "c3955fb5efc893f883d5dd6538719af7cc8b072207c3c89c3687708e3b0e41e5"
+    },
+    {
+      "path": "draft501/checks/metrics/godot-dhyk3248/engine.log",
+      "bytes": 115,
+      "sha256": "8a8ddceded1639e717f2c5e037eed9c5a3c41e084cd44a6a5726afb5c95c5cc2"
+    },
+    {
+      "path": "draft501/checks/metrics/godot-dhyk3248/report.json",
+      "bytes": 1263,
+      "sha256": "249180ed736e2bc42fb64517dd6012e046c797c6ec34e19e4efb1a4b040a7d81"
+    },
+    {
+      "path": "draft501/checks/session/godot-fk0y5jzz/engine.log",
+      "bytes": 716,
+      "sha256": "9bca77d8c2e65a8316eec8c8340d13d4acacf01eb1ae7c6d3e4e4a11e196ff3b"
+    },
+    {
+      "path": "draft501/checks/session/godot-fk0y5jzz/report.json",
+      "bytes": 1257,
+      "sha256": "8b2e1437644cf58ac0b51fdd1af5b13eb502bf4e102cdf74ea30f6f215f3cbba"
+    },
+    {
+      "path": "draft501/identity/receipts.json",
+      "bytes": 7780,
+      "sha256": "d43873a0cd3592abec67078ef5c73337aa1e6b65b37950bdc1246d1a3be4e5ca"
+    },
+    {
+      "path": "draft501/identity/review.patch",
+      "bytes": 22497,
+      "sha256": "daec7bac21fb796c833b4397d99cda5e684005bff45b3be62fc43b9ea7d2d1e5"
+    },
+    {
+      "path": "draft501/identity/source-hashes.json",
+      "bytes": 1679,
+      "sha256": "f73cf8965bf0d047098214af3290f7bc99b3296920ecc9b3bd80b4bea58e0ca8"
+    },
+    {
+      "path": "draft501/legacy-harness/test_crash_audio.gd",
+      "bytes": 8753,
+      "sha256": "ac793aef29d08a22940e982848968f973b694b8009a6bd70ec16997b1c1d1151"
+    },
+    {
+      "path": "draft501/legacy-harness/test_soft_contacts.gd",
+      "bytes": 12895,
+      "sha256": "c8f4224441ae70092a547ba1e78ab696058ad7c3dc3cf8b53b7175548618f5c1"
+    },
+    {
+      "path": "draft501/source-reconciliation.json",
+      "bytes": 2063,
+      "sha256": "53a52c66ee4f378ff2447ecea034d7aae3d21d41d818ce54db8e054795c99819"
+    },
+    {
+      "path": "draft501/sources/app/physics/hull_contact.gd",
+      "bytes": 42832,
+      "sha256": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4"
+    },
+    {
+      "path": "draft501/sources/app/render/crash/crash_audio.gd",
+      "bytes": 20875,
+      "sha256": "d1cebf6abef1481183f3ccd3710b4702ee1b52c82249c5f5ed45157806d1edc0"
+    },
+    {
+      "path": "draft501/sources/app/render/crash/director.gd",
+      "bytes": 43117,
+      "sha256": "f54c1f0930326540aa777c9322b572904fb297de2e45c9bd8296736a45cbb020"
+    },
+    {
+      "path": "draft501/sources/app/sim/flight_session.gd",
+      "bytes": 283869,
+      "sha256": "5c6b1ba410a0431fac584fce273c20addab027eb314aa1c4052e4d2e3072ae7d"
+    },
+    {
+      "path": "draft501/sources/test_audio.gd",
+      "bytes": 9361,
+      "sha256": "cd1534d84ad739f9f941ec6c94f876ea3b5a8c1ed666dad03e397adf57a77212"
+    },
+    {
+      "path": "draft501/sources/test_metrics_fixture.gd",
+      "bytes": 4287,
+      "sha256": "1677860e0e4ff3dcf334f922c296edb5a6d9cb827af8625218e45b93813c20cb"
+    },
+    {
+      "path": "draft501/sources/test_session.gd",
+      "bytes": 12307,
+      "sha256": "22ccd709b2f2eaeacd366d75c6242616e872aaebcab00f9edee39979b489ac37"
+    },
+    {
+      "path": "final-guards/checks/godot-gojvgf5p/engine.log",
+      "bytes": 716,
+      "sha256": "3ff060cbf6da461437ab7e9f08939c7d11344a8fc85fa836df4465020871b9bc"
+    },
+    {
+      "path": "final-guards/checks/godot-gojvgf5p/report.json",
+      "bytes": 1249,
+      "sha256": "7fe2bab31f99bde1b8a650c1cc30519f7865151d95ef257ae1df0a12bbcfbac2"
+    },
+    {
+      "path": "final-guards/director.gd",
+      "bytes": 43179,
+      "sha256": "d4fa35e1f817e0534781c330602de1d091c06f0641da4ad144e31bf841bbf663"
+    },
+    {
+      "path": "final-guards/test_session.gd",
+      "bytes": 13255,
+      "sha256": "47b9719268d8aa9a013126ca9bafe9905ac5fdd58b316f476e12e88ed6aed099"
+    },
+    {
+      "path": "fixture/capture-check/godot-wehlsu4q/engine.log",
+      "bytes": 114,
+      "sha256": "b798464dc1969bfee1b987c04a88f84be8b6a61b71ecf71aaa85b7b6472cc1ce"
+    },
+    {
+      "path": "fixture/capture-check/godot-wehlsu4q/report.json",
+      "bytes": 1246,
+      "sha256": "3256106b9f3dadee1031f17e5d41463c5ebe1dd587cea004b45b1c5dffe2c007"
+    },
+    {
+      "path": "fixture/freeze_reference.gd",
+      "bytes": 1888,
+      "sha256": "0b3c2b1bf09f3f6325e1fbe340b701b11bcf4802a0ebb030af2ec554ef7ce439"
+    },
+    {
+      "path": "fixture/hull_friction_reference.bin",
+      "bytes": 9132,
+      "sha256": "66f4a8e91c6b5161db938ac3a3deadbed9993829703fcffdd00755937e082811"
+    },
+    {
+      "path": "independent/adversarial.gd",
+      "bytes": 3813,
+      "sha256": "9c654654c985b39719c5352460a08ebc0f4df4d598efd23f9e46b4d479bf2176"
+    },
+    {
+      "path": "independent/checks/existing-metrics-fixture-3sg89hcu/engine.log",
+      "bytes": 115,
+      "sha256": "8a8ddceded1639e717f2c5e037eed9c5a3c41e084cd44a6a5726afb5c95c5cc2"
+    },
+    {
+      "path": "independent/checks/existing-metrics-fixture-3sg89hcu/report.json",
+      "bytes": 1308,
+      "sha256": "aac00f49395072f0c39ed9809f0eac175ef1a446aa5f0080a92b88afe496cdc2"
+    },
+    {
+      "path": "independent/checks/existing-session-corrected-dvlr6gx1/engine.log",
+      "bytes": 716,
+      "sha256": "9bca77d8c2e65a8316eec8c8340d13d4acacf01eb1ae7c6d3e4e4a11e196ff3b"
+    },
+    {
+      "path": "independent/checks/existing-session-corrected-dvlr6gx1/report.json",
+      "bytes": 1305,
+      "sha256": "5e927d1ab8a1b4a4447de2a32a40fe4e9e51bf1b80048e14a15dba9751f59353"
+    },
+    {
+      "path": "independent/checks/existing-session-null-guards-t3m1nrkg/engine.log",
+      "bytes": 716,
+      "sha256": "3ff060cbf6da461437ab7e9f08939c7d11344a8fc85fa836df4465020871b9bc"
+    },
+    {
+      "path": "independent/checks/existing-session-null-guards-t3m1nrkg/report.json",
+      "bytes": 1311,
+      "sha256": "6d3cb8a79a0f3d86319238c2a665de64c848220927bd3c5e8496d0fe708e5fa4"
+    },
+    {
+      "path": "independent/checks/numeric-render-boundary-1qb8tpd8/engine.log",
+      "bytes": 225,
+      "sha256": "44693e9945ceaff1bd8023b8acf2a414eb5e22d4d05463225c6775facf698d11"
+    },
+    {
+      "path": "independent/checks/numeric-render-boundary-1qb8tpd8/report.json",
+      "bytes": 1306,
+      "sha256": "a2e703524fcfb8b45ae8a7ca4bf045d2527a3646bc19976ce7b76db5550f3474"
+    },
+    {
+      "path": "independent/checks/postfix-adversarial-correct-gain-yjj3zsus/engine.log",
+      "bytes": 120,
+      "sha256": "45ca29e2e5295789520fb4e69906c47387497f1a8e7c9201c583a72160365646"
+    },
+    {
+      "path": "independent/checks/postfix-adversarial-correct-gain-yjj3zsus/report.json",
+      "bytes": 1336,
+      "sha256": "5a6d2d34f8625daebceb271bc8f0be3704c21d5dfa9a31d032754182b9df93d2"
+    },
+    {
+      "path": "independent/checks/postfix-adversarial-w6v8xez5/engine.log",
+      "bytes": 174,
+      "sha256": "29df7c7ba18cd21a739dc599500ac989f46ddeb229c401b07ca27d6da473544b"
+    },
+    {
+      "path": "independent/checks/postfix-adversarial-w6v8xez5/report.json",
+      "bytes": 1284,
+      "sha256": "576c2d4be685066ab949355a7a31f8e0d0c8d0803039bab4d29c13269cbac21e"
+    },
+    {
+      "path": "independent/crash_audio_snapshot.gd",
+      "bytes": 20499,
+      "sha256": "0afc5c24ab81c98cdab6bfab7eaf71fcafb9a8b85a50bb8dba83f1622794e9ec"
+    },
+    {
+      "path": "independent/final/crash_audio.gd",
+      "bytes": 20888,
+      "sha256": "daf7bc27e4cbde8190d426c5f95aa9ef34fc231b739f0ae57ebe69c9b912b7a1"
+    },
+    {
+      "path": "independent/final/director.gd",
+      "bytes": 43179,
+      "sha256": "d4fa35e1f817e0534781c330602de1d091c06f0641da4ad144e31bf841bbf663"
+    },
+    {
+      "path": "independent/final/flight_session.gd",
+      "bytes": 283869,
+      "sha256": "5c6b1ba410a0431fac584fce273c20addab027eb314aa1c4052e4d2e3072ae7d"
+    },
+    {
+      "path": "independent/final/hull_contact.gd",
+      "bytes": 42832,
+      "sha256": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4"
+    },
+    {
+      "path": "independent/numeric-boundary.json",
+      "bytes": 97,
+      "sha256": "e86f47108d589a6b7221cd5eb8dde225da16ae5dc6060c051528b44f4dd311f4"
+    },
+    {
+      "path": "independent/numeric_boundary.gd",
+      "bytes": 1579,
+      "sha256": "2832c47055cff006a83f4522fe008214e1bc433727cf2a79d78748b86d20e507"
+    },
+    {
+      "path": "independent/postfix/crash_audio.gd",
+      "bytes": 20875,
+      "sha256": "d1cebf6abef1481183f3ccd3710b4702ee1b52c82249c5f5ed45157806d1edc0"
+    },
+    {
+      "path": "independent/report.json",
+      "bytes": 3400,
+      "sha256": "ed0231879487eac549d26d7352b8ee440d1c7addda13c90a98810092c579f471"
+    },
+    {
+      "path": "independent/review.md",
+      "bytes": 3459,
+      "sha256": "4a7f5c754c4a28d96926eed4b02e1293c0790f52c4681fd89dd15d53a2341454"
+    },
+    {
+      "path": "packaging-recipe.json",
+      "bytes": 8467,
+      "sha256": "a95e06d1c5b32ba4dcc315a4f13266136126939cbe9fa2b379c35e999259c5d9"
+    },
+    {
+      "path": "production/checks/crash-audio-47x7e5yl/engine.log",
+      "bytes": 655,
+      "sha256": "7530f5664331e5ff321458e03340552726ac244d5b644da3927234c34d566e13"
+    },
+    {
+      "path": "production/checks/crash-audio-47x7e5yl/report.json",
+      "bytes": 1188,
+      "sha256": "182ff34ff2ea97b8fb68fbed9cbcc16f2ee2af416903694fde8c73aa639987ab"
+    },
+    {
+      "path": "production/checks/hull-audio-lt15lb0t/engine.log",
+      "bytes": 140,
+      "sha256": "467670c53cdfbdc339b6ee5771bdad6514d0cf288bb50321245c11bd8175b953"
+    },
+    {
+      "path": "production/checks/hull-audio-lt15lb0t/report.json",
+      "bytes": 1210,
+      "sha256": "3bf79b06e6bbb386da401e869032a6d17364f262c8c64e07812df31acd39bd91"
+    },
+    {
+      "path": "production/checks/hull-force-r4znzrst/engine.log",
+      "bytes": 115,
+      "sha256": "8a8ddceded1639e717f2c5e037eed9c5a3c41e084cd44a6a5726afb5c95c5cc2"
+    },
+    {
+      "path": "production/checks/hull-force-r4znzrst/report.json",
+      "bytes": 1219,
+      "sha256": "57fc3d14d590ada6a1a8f83ace0a90e9d7e3950e1d5d074bcfcc4c2c67e86565"
+    },
+    {
+      "path": "production/checks/hull-session-xnxf3m0e/engine.log",
+      "bytes": 716,
+      "sha256": "3ff060cbf6da461437ab7e9f08939c7d11344a8fc85fa836df4465020871b9bc"
+    },
+    {
+      "path": "production/checks/hull-session-xnxf3m0e/report.json",
+      "bytes": 1220,
+      "sha256": "514f942c92ec1f591c31d1e971d7c9f42e915c63413c8859d1b0a054326d6a80"
+    },
+    {
+      "path": "production/checks/soft-contacts-3uol3syn/engine.log",
+      "bytes": 2722,
+      "sha256": "7e054637e87c4ac007e07edc2be987b5982f7bb7c19f6fa3b006564dda3d68ff"
+    },
+    {
+      "path": "production/checks/soft-contacts-3uol3syn/report.json",
+      "bytes": 1198,
+      "sha256": "b27ffaaf8a8063ad0d4f133fcc55dd4879544a046e86d44792e888bcb8a7430c"
+    },
+    {
+      "path": "production/checks/soft-feedback-oneg3yv9/engine.log",
+      "bytes": 1319,
+      "sha256": "c51d84958aad04685691a7608c2f6bfaad028acc3a1353a7239d77a23eed679c"
+    },
+    {
+      "path": "production/checks/soft-feedback-oneg3yv9/report.json",
+      "bytes": 1203,
+      "sha256": "d5fdfe94fabca02e6b2a3135ee4f690741697f97caf5fcd88af768e41760c36d"
+    },
+    {
+      "path": "production/checks/water-director-_sqc71ar/engine.log",
+      "bytes": 1790,
+      "sha256": "9719730c9f57d02e9e1bc78f4ab2fde1d8fce981bd06a12e71fe2ade399afa1d"
+    },
+    {
+      "path": "production/checks/water-director-_sqc71ar/report.json",
+      "bytes": 1199,
+      "sha256": "1dd02dfd4b8ac0ca648e7fbfa88b6a591320cc1ce3bfd3f68caca49dce7c80a3"
+    },
+    {
+      "path": "production/promote_root.py",
+      "bytes": 1740,
+      "sha256": "881701dfded5d90d97c53c80131f5dd8f29ce959e33be2d5f1bd5c320149f5c9"
+    },
+    {
+      "path": "production/promotion.json",
+      "bytes": 1737,
+      "sha256": "3de6df257bcfb7fa75239b489ea4a9e6d67de72c288a23fae309cd5c214c025d"
+    },
+    {
+      "path": "promotion/app/physics/hull_contact.gd",
+      "bytes": 42832,
+      "sha256": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4"
+    },
+    {
+      "path": "promotion/app/render/crash/crash_audio.gd",
+      "bytes": 20888,
+      "sha256": "daf7bc27e4cbde8190d426c5f95aa9ef34fc231b739f0ae57ebe69c9b912b7a1"
+    },
+    {
+      "path": "promotion/app/render/crash/director.gd",
+      "bytes": 43101,
+      "sha256": "1ba07bd91a5e51c90dadf27d2707c86b08c4d71f442e5ea200a7120d84f8e763"
+    },
+    {
+      "path": "promotion/app/sim/flight_session.gd",
+      "bytes": 283825,
+      "sha256": "2ef72af8e0814bf44520a22741dce7a68a93ebdc611847b98c321460f0160c93"
+    },
+    {
+      "path": "promotion/app/tests/fixtures/hull_friction_reference.bin",
+      "bytes": 9132,
+      "sha256": "66f4a8e91c6b5161db938ac3a3deadbed9993829703fcffdd00755937e082811"
+    },
+    {
+      "path": "promotion/app/tests/test_hull_friction_observation.gd",
+      "bytes": 4183,
+      "sha256": "3542ef73bc52ceb3f362754af1fc621d863bc9ec2abf8320fee3a5c9b55b2297"
+    },
+    {
+      "path": "promotion/app/tests/test_hull_scrape_audio.gd",
+      "bytes": 9322,
+      "sha256": "8df6c9388ed570e473a1669ec2abfaabf7ea2b22c8d66e6811312bd339a706df"
+    },
+    {
+      "path": "promotion/app/tests/test_hull_scrape_session.gd",
+      "bytes": 13085,
+      "sha256": "96c7b2626481e6bd0f21cba2fbe3e360bf274fe570c1c56ddee1cd491f062a4d"
+    },
+    {
+      "path": "promotion/attributes-snippet.txt",
+      "bytes": 127,
+      "sha256": "8fe03753fcc42f1ee02cac3dcb0269529dbc14506068dad881acc1a9f95f30a0"
+    },
+    {
+      "path": "promotion/manifest.json",
+      "bytes": 1570,
+      "sha256": "ec57acb3b6202fb48fe0ae0ab3aaa0678c5e22a693b62a5076bcdfa1e844e5fb"
+    },
+    {
+      "path": "promotion/production-commands.ps1",
+      "bytes": 2202,
+      "sha256": "5a53f9708c0a9bca2cf7aee6f967fbca0e151503267c78dda6217f7525e180a3"
+    },
+    {
+      "path": "promotion/README.md",
+      "bytes": 2981,
+      "sha256": "1de737fa7788857518b379fa544456a556dde8b320efc7e1622f71e1b02bc535"
+    },
+    {
+      "path": "README.md",
+      "bytes": 9030,
+      "sha256": "f7dd51410cc1747d683e62b69077d21eb30ccfc128b357e045d966a7bbc839ac"
+    },
+    {
+      "path": "rejected/audio-float32-oracle/godot-v9rdkf3i/engine.log",
+      "bytes": 211,
+      "sha256": "b3e33f7cb836675b7b9cfa23f133dc91b3eab8a5e36a9d46f9c523bc0651eb39"
+    },
+    {
+      "path": "rejected/audio-float32-oracle/godot-v9rdkf3i/report.json",
+      "bytes": 1243,
+      "sha256": "36c4ac2c8427b39edffe81673610b7e8777cb51c845190bce039771752aa038f"
+    },
+    {
+      "path": "rejected/audio-parse/godot-q3xjuayu/engine.log",
+      "bytes": 435,
+      "sha256": "5413d0c15d394048ffe968ef8626ab91e927c9d69fa75be246615e30c09f310b"
+    },
+    {
+      "path": "rejected/audio-parse/godot-q3xjuayu/report.json",
+      "bytes": 1907,
+      "sha256": "ee87e2c42b29d32a42b2f899ec597a778547fa3688c5e57f0c97549210ebed0d"
+    },
+    {
+      "path": "rejected/baseline-inference/godot-o_zy40hx/engine.log",
+      "bytes": 465,
+      "sha256": "9b4e5e831555f3ffa831002313ebaab95f65b2fee14b4c6225a13a8263d8a0b8"
+    },
+    {
+      "path": "rejected/baseline-inference/godot-o_zy40hx/report.json",
+      "bytes": 1955,
+      "sha256": "d11e973357218fbc5b5945d40dbada4c7e8820d76ff81d8eb60a5fe8acdc772e"
+    },
+    {
+      "path": "rejected/metrics-oracle/godot-o7f969gf/engine.log",
+      "bytes": 152,
+      "sha256": "043efa0207d7ece1e94308981a3a0803eedeb3914572957beab6b3e0fe3f3efc"
+    },
+    {
+      "path": "rejected/metrics-oracle/godot-o7f969gf/report.json",
+      "bytes": 1297,
+      "sha256": "869c064f070147c3f474c2aed69831693c44b75bc8b27bb85e4ba5c881ae514e"
+    },
+    {
+      "path": "rejected/metrics-parse/godot-cophsbkl/engine.log",
+      "bytes": 920,
+      "sha256": "483911b76949a83776fc4586824243f48b3b05cd9254880aaef4a91f888480c8"
+    },
+    {
+      "path": "rejected/metrics-parse/godot-cophsbkl/report.json",
+      "bytes": 2712,
+      "sha256": "8ef12354eace4390d20e8db5b4ade9b91ac420e79dd6d09df1fc5cab8892150a"
+    },
+    {
+      "path": "rejected/reference-parse/godot-h5jzakye/engine.log",
+      "bytes": 541,
+      "sha256": "9c839dc23e4b95a952d666a4791fc74f01bc03aee16bba363f0479d007366d70"
+    },
+    {
+      "path": "rejected/reference-parse/godot-h5jzakye/report.json",
+      "bytes": 2059,
+      "sha256": "8f28a5694b5460cd2381a1681adcce61789cd46857a29f2b2fa4648e28d920e4"
+    },
+    {
+      "path": "rejected/session-clock-api/godot-ixa6ifg3/engine.log",
+      "bytes": 20813,
+      "sha256": "002f4e66efad6f61c3a9ac45cb46b7336fa0c39d87a2f9c830dd2383c2dd558f"
+    },
+    {
+      "path": "rejected/session-clock-api/godot-ixa6ifg3/report.json",
+      "bytes": 11985,
+      "sha256": "99d8d7c96064a54e6985bd58549996b48cca05185b99aa5a792ab5215486ac53"
+    },
+    {
+      "path": "rejected/session-fuel-epoch/godot-w8b5w1ip/engine.log",
+      "bytes": 761,
+      "sha256": "6c589d2759ea8613c89c295e82f8cdd586bae80c01048178bd77944749dd4a28"
+    },
+    {
+      "path": "rejected/session-fuel-epoch/godot-w8b5w1ip/report.json",
+      "bytes": 1234,
+      "sha256": "db87138f3127248d1940653ae1f6a007569ebcfc9af4ee5510ef4b82006a2941"
+    },
+    {
+      "path": "rejected/session-parse/godot-wcnw89go/engine.log",
+      "bytes": 702,
+      "sha256": "86356a966a79e2ec7cf341f69d9fc80ae443407c22b2a752a416f24093814d76"
+    },
+    {
+      "path": "rejected/session-parse/godot-wcnw89go/report.json",
+      "bytes": 2326,
+      "sha256": "d5d2d721b197f3b19501e6661db7402dde9be11144e49c278a80282c3bf062f5"
+    },
+    {
+      "path": "report.json",
+      "bytes": 4762,
+      "sha256": "f43a2e896292768cab9196e34ea5c0ab303eca569a644e632a7f06ac4ab593c5"
+    },
+    {
+      "path": "superseded/immediate-cancellation-draft/crash_audio.gd",
+      "bytes": 19912,
+      "sha256": "d9e1ab29b830e2753fed126ab38b8cc7842330229dba70a159d4afa0396a12c5"
+    },
+    {
+      "path": "superseded/immediate-cancellation-draft/director.gd",
+      "bytes": 43109,
+      "sha256": "7b0978d57348b78eebbd1dfe1ea8ae5ae344b6b71fd31d2054db3bd581fc172e"
+    },
+    {
+      "path": "superseded/immediate-cancellation-draft/receipts.json",
+      "bytes": 7558,
+      "sha256": "f9a946c37bac87948c030e0d6702607da506d97ff526c5283a18494719451845"
+    },
+    {
+      "path": "superseded/immediate-cancellation-draft/review.md",
+      "bytes": 4058,
+      "sha256": "f6de03209195f5ed83a4ecdf108dbcfd0ee011d8ffc24f43068e88211245ba62"
+    },
+    {
+      "path": "superseded/immediate-cancellation-draft/review.patch",
+      "bytes": 21499,
+      "sha256": "edab6a3a1bfa8be19830ea679698b604350f8d9e63f3547095eee18218102e7f"
+    },
+    {
+      "path": "superseded/immediate-cancellation-draft/source-hashes.json",
+      "bytes": 1671,
+      "sha256": "e6149734da620632cafa73ba8f209390e42c7e102463bf38e45ca4b01ef2d3f6"
+    },
+    {
+      "path": "superseded/immediate-cancellation-draft/test_audio.gd",
+      "bytes": 7333,
+      "sha256": "33802ce5f550d429c68106990cbefe70e4f2a2c8b219dfc3f1f972cdbe96d7a0"
+    },
+    {
+      "path": "transport.json",
+      "bytes": 2286,
+      "sha256": "8178cfcc9a50f993923fbfd046ea0e692119287c7e5a627b3250f282454f1bf1"
+    }
+  ],
+  "file_count": 147,
+  "bytes": 2877923,
+  "scope": "selected exact source/receipt/fixture snapshot; manifest excludes itself; no native capture"
+}

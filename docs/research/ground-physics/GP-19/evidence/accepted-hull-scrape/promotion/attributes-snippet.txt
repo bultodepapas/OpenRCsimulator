@@ -1,0 +1,2 @@
+# Frozen GP19 pre-change force output must retain exact Variant bytes.
+/app/tests/fixtures/hull_friction_reference.bin -text

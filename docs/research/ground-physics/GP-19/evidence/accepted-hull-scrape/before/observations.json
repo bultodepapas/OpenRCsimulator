@@ -1,0 +1,88 @@
+[
+	{
+		"contacts": [
+			{
+				"depth_m": 0.002,
+				"index": 0,
+				"new": false,
+				"normal_speed_mps": 0.0,
+				"point_ned": [
+					0.0,
+					0.0,
+					0.002
+				],
+				"slide_speed_mps": 10.0,
+				"velocity_ned": [
+					10.0,
+					0.0,
+					0.0
+				]
+			}
+		],
+		"instantaneous_tangent_power_w": 28.800000000000004,
+		"loads": [
+			-2.8800000000000003,
+			0.0,
+			-7.2,
+			0.0,
+			0.0,
+			0.0
+		],
+		"scenario": "loaded_slide"
+	},
+	{
+		"contacts": [
+			{
+				"depth_m": 0.002,
+				"index": 0,
+				"new": false,
+				"normal_speed_mps": 0.0,
+				"point_ned": [
+					0.0,
+					0.0,
+					0.002
+				],
+				"slide_speed_mps": 10.0,
+				"velocity_ned": [
+					10.0,
+					0.0,
+					-1.0
+				]
+			}
+		],
+		"instantaneous_tangent_power_w": 0.0,
+		"loads": [],
+		"scenario": "unloaded_opening_slide"
+	},
+	{
+		"contacts": [
+			{
+				"depth_m": 0.002,
+				"index": 0,
+				"new": false,
+				"normal_speed_mps": 0.0,
+				"point_ned": [
+					0.0,
+					0.0,
+					0.002
+				],
+				"slide_speed_mps": 0.0,
+				"velocity_ned": [
+					0.0,
+					0.0,
+					0.0
+				]
+			}
+		],
+		"instantaneous_tangent_power_w": 0.0,
+		"loads": [
+			0.0,
+			0.0,
+			-7.2,
+			0.0,
+			0.0,
+			0.0
+		],
+		"scenario": "loaded_stationary"
+	}
+]

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "cc95877f-5f06-4874-8ab9-e3c91cba5c42",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-drop-diagnosis/probe.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T18:30:41.768075+00:00",
+  "label": "counts",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-drop-diagnosis\\checks\\counts-85extxky\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-drop-diagnosis\\checks\\counts-85extxky\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Drop count diagnosis: complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.531,
+  "log_bytes": 1109,
+  "log_sha256": "aaf3dab6d54ee13c585e03d76938183431f3d060ee037cd992fcb0d5049aa993"
+}

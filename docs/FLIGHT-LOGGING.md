@@ -35,8 +35,16 @@ closes that accepted boundary and pauses the new flight; it does not undo the
 physical reset. Reload uses the explicit commit receipt: refusal cannot be called
 reloaded, and a committed observer fault cannot claim the previous flight was
 retained. Intentional successful airborne fallback remains a separate accepted
-replacement. Historical restore/configuration publication retains its previous
-ordering. [Contract and retained checks](research/ground-physics/GP-14/README.md#common-start-and-reload-transactions-gp-14e).
+replacement. Restore uses the same transaction and old closing context: refusal
+leaves the old writer open, while accepted restore closes it before the kernel's
+automatic pause, without a stepped sample. It remains paused replay with disabled
+live input and the existing noncredit statistics branch. A committed observer
+fault remains an accepted, paused restored frame. Pending weather selection now
+closes the old recording through the same guarded context, without a tick or
+statistics credit; its subsequent explicit reset still owns the physical start.
+Pending shaft selection now uses the same guarded context and explicit physical reset requirement. [Shaft selection contract](research/ground-physics/GP-14/README.md#accepted-pending-shaft-selection-gp-14i). [Start contract](research/ground-physics/GP-14/README.md#common-start-and-reload-transactions-gp-14e),
+[restore contract](research/ground-physics/GP-14/README.md#accepted-restore-publication-gp-14f),
+[weather selection contract](research/ground-physics/GP-14/README.md#accepted-pending-weather-selection-gp-14h).
 
 After [developer setup](TOOLS.md#developer-setup), run from the repository root.
 Select your installed engine, then launch a recording:

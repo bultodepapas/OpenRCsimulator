@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c946a8cb-44b3-4a46-b604-6af0f7194ea5",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-accepted-ground/test_flight_ground_accepted.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T17:01:09.890545+00:00",
+  "label": "actual",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-accepted-ground\\checks\\actual01\\actual-9ioa9s_6\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-accepted-ground\\checks\\actual01\\actual-9ioa9s_6\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "checks, 0 failed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "checks, 0 failed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 3.547,
+  "log_bytes": 868,
+  "log_sha256": "09f5640733343d62445e8aaa5bb46bc0b47580bc5a48d2d3cbb6d8a09dc8a4ad"
+}

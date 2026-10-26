@@ -1,0 +1,40 @@
+{
+  "format": "openrc-x8-hull-rest-audit-v1",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "5c293bc4a8762da239e872f399f00ec843850aaa6fc9192ef734866aef22219b",
+      "bytes": 49
+    },
+    {
+      "path": "engine.log",
+      "sha256": "ac4c0aa3ff944c3b55828c55c656a4024af6cd2d2afc8913eb612227f79a7386",
+      "bytes": 412
+    },
+    {
+      "path": "geometry.gd",
+      "sha256": "cfe0789cac5c0f734dbfa540c3cc7c933d70bddf0e4bf3ba855a6f8ec1f897b1",
+      "bytes": 1462
+    },
+    {
+      "path": "geometry.json",
+      "sha256": "88c1f2ed3a09c3b54408d7bae93b9412494fdf7eec7cd5bfa69ccddf0e059226",
+      "bytes": 4102
+    },
+    {
+      "path": "README.md",
+      "sha256": "47ce3b805dbeff1cf2d061499ded47a5e5a3098024e62266b5720859a5773192",
+      "bytes": 1711
+    },
+    {
+      "path": "report.json",
+      "sha256": "6b59f9ead002c8a9634e6ba89394c31a49db4db3ac81a47692a688b8632708c8",
+      "bytes": 1168
+    },
+    {
+      "path": "source-identities.json",
+      "sha256": "d438a4b976c5c7aad35ab6f1fabfe3303591228476e726904be005695bd626f7",
+      "bytes": 560
+    }
+  ]
+}

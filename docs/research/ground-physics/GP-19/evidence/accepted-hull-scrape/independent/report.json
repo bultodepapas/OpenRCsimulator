@@ -1,0 +1,78 @@
+{
+  "format": "openrc-independent-hull-scrape-review-v1",
+  "supported": true,
+  "reproduced_remaining_blocker": false,
+  "scope": "Initialized Session, flat-solid support; no lake-enabled observation, native audio or performance qualification",
+  "source_snapshots": [
+    {
+      "target": "app/physics/hull_contact.gd",
+      "loaded_sha256": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4",
+      "metadata_matches": true,
+      "base_matches": true,
+      "promotion_file_sha256": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4",
+      "normalized_text_matches": true
+    },
+    {
+      "target": "app/sim/flight_session.gd",
+      "loaded_sha256": "5c6b1ba410a0431fac584fce273c20addab027eb314aa1c4052e4d2e3072ae7d",
+      "metadata_matches": true,
+      "base_matches": true,
+      "promotion_file_sha256": "2ef72af8e0814bf44520a22741dce7a68a93ebdc611847b98c321460f0160c93",
+      "normalized_text_matches": true
+    },
+    {
+      "target": "app/render/crash/director.gd",
+      "loaded_sha256": "d4fa35e1f817e0534781c330602de1d091c06f0641da4ad144e31bf841bbf663",
+      "metadata_matches": true,
+      "base_matches": true,
+      "promotion_file_sha256": "1ba07bd91a5e51c90dadf27d2707c86b08c4d71f442e5ea200a7120d84f8e763",
+      "normalized_text_matches": true
+    },
+    {
+      "target": "app/render/crash/crash_audio.gd",
+      "loaded_sha256": "daf7bc27e4cbde8190d426c5f95aa9ef34fc231b739f0ae57ebe69c9b912b7a1",
+      "metadata_matches": true,
+      "base_matches": true,
+      "promotion_file_sha256": "daf7bc27e4cbde8190d426c5f95aa9ef34fc231b739f0ae57ebe69c9b912b7a1",
+      "normalized_text_matches": true
+    }
+  ],
+  "promotion_manifest": {
+    "path": "tmp/gp19-hull-scrape/promotion/manifest.json",
+    "sha256": "ec57acb3b6202fb48fe0ae0ab3aaa0678c5e22a693b62a5076bcdfa1e844e5fb"
+  },
+  "independent_new_checks": 14,
+  "independent_existing_harness_checks": 411,
+  "passing_checked_reports": [
+    {
+      "path": "tmp/gp19-scrape-independent-review/checks/existing-metrics-fixture-3sg89hcu/report.json",
+      "sha256": "aac00f49395072f0c39ed9809f0eac175ef1a446aa5f0080a92b88afe496cdc2",
+      "label": "existing-metrics-fixture",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp19-scrape-independent-review/checks/existing-session-null-guards-t3m1nrkg/report.json",
+      "sha256": "6d3cb8a79a0f3d86319238c2a665de64c848220927bd3c5e8496d0fe708e5fa4",
+      "label": "existing-session-null-guards",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp19-scrape-independent-review/checks/postfix-adversarial-correct-gain-yjj3zsus/report.json",
+      "sha256": "5a6d2d34f8625daebceb271bc8f0be3704c21d5dfa9a31d032754182b9df93d2",
+      "label": "postfix-adversarial-correct-gain",
+      "warnings_as_errors": true
+    }
+  ],
+  "numeric_bug_reproduction": "checks/numeric-render-boundary-1qb8tpd8/report.json",
+  "review": "review.md",
+  "production_writes": [],
+  "remaining": [
+    "production-location checks after root promotion",
+    "binary fixture -text attribute",
+    "quiet-host native/listening gate",
+    "age bound is accepted simulation time, not wall time"
+  ],
+  "final_director_null_guards_reviewed": true,
+  "independent_audio_tested_code_matches_final_ignoring_comment": true,
+  "producer_selected_assertions": 505
+}
