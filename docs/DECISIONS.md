@@ -1085,6 +1085,9 @@ Keep each supported opaque material as an owned clone and attach a bounded addit
 
 Preserve PR #1’s ancestry and research, and integrate optional per-surface Workshop travel with global inheritance and normalized persistence. Defer its aerodynamic laws, stock tuning and replacement goldens: local forces, wake and ground-effect paths disagree, and the submitted reference flights do not reproduce the submitted runtime. Keep the existing solver and authoring pipelines unchanged. Revisit physical activation only with one explicit candidate, exact baseline replay and independent aircraft evidence. [Disposition and requirements](research/flight-mechanics-stall-hover-knife-edge-2026-10-18.md#integration-disposition-2026-10-26).
 
+### 2026-10-26 — Bind attached gear failure to actual weaker compliance (GP-16b/17b)
+
+Reuse the existing normal geometry and common-rotor stage. An authored failed spring/stop family must have no greater stored potential at the same compression; release that difference once with persistent modes and a nonterminal event. Preserve fixed geometry/inertia and distinguish this constitutive failure from moving-leg collapse. Qualify scalar structural axes explicitly and refuse discarded paths. Boundary samples do not establish interval peaks; accepted-path failure localization and stock activation remain separate gates. [Contract, kernel drops and limitations](research/ground-physics/GP-16/README.md#attached-effective-compliance-response-gp-16b17b).
 
 ### 2026-10-26 — D11-R1 / D6e-R5: consistent ailerons and sport dual rates
 

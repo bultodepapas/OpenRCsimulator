@@ -1,0 +1,231 @@
+{
+  "format": "openrc-attached-gear-response-evidence-v1",
+  "packaged_utc": "2026-10-26T14:03:01.742508+00:00",
+  "commit_at_packaging": "503fd5154f74df592a9483ca9d7eba62f057cb16",
+  "engine": "Godot 4.8.beta1.official.4d10419ca",
+  "checks": [
+    {
+      "label": "attached",
+      "checks": 125,
+      "report": "checks/attached/report.json"
+    },
+    {
+      "label": "core",
+      "checks": 113,
+      "report": "checks/core/report.json"
+    },
+    {
+      "label": "stage",
+      "checks": 145,
+      "report": "checks/stage/report.json"
+    },
+    {
+      "label": "endpoint",
+      "checks": 274,
+      "report": "checks/endpoint/report.json"
+    }
+  ],
+  "total_checks": 657,
+  "source_scope": "Selected source snapshot at packaging, not complete application dependencies or an isolated full suite. Two promoted source hashes verified unchanged; external concurrent source changes were not frozen by these main-tree runs.",
+  "qualification": "Synthetic software and fixture refinement only; no stock activation, calibration, moving-leg collapse, interval-peak localization or target-host performance qualification.",
+  "artifacts": [
+    {
+      "path": "source/app/physics/aircraft_ground_damage.gd",
+      "source": "app/physics/aircraft_ground_damage.gd",
+      "bytes": 13971,
+      "sha256": "d10ab36349a41983592d2020df0ef14c8aa45ee140f8f8ab3560b2921df7b628"
+    },
+    {
+      "path": "source/app/physics/gear_damage.gd",
+      "source": "app/physics/gear_damage.gd",
+      "bytes": 14685,
+      "sha256": "8aa2cc1e966967ef191dfdad1d597253cecabefb741a3234158b081c258e5900"
+    },
+    {
+      "path": "source/app/physics/normal_compliance.gd",
+      "source": "app/physics/normal_compliance.gd",
+      "bytes": 7979,
+      "sha256": "f25ab43bb9ffe6f120fe4480fc5173a7ccf1b2cb4d0cba7c93d7f0574da8708b"
+    },
+    {
+      "path": "source/app/physics/aircraft_ground_dynamics.gd",
+      "source": "app/physics/aircraft_ground_dynamics.gd",
+      "bytes": 17442,
+      "sha256": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d"
+    },
+    {
+      "path": "source/app/physics/aircraft_ground_stage.gd",
+      "source": "app/physics/aircraft_ground_stage.gd",
+      "bytes": 15439,
+      "sha256": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056"
+    },
+    {
+      "path": "source/app/physics/fixed_datum_body.gd",
+      "source": "app/physics/fixed_datum_body.gd",
+      "bytes": 5547,
+      "sha256": "a218c99f2d7079ae6788c98cf5dda24de6e3a6910fb35ab27b5c69d3f76e4293"
+    },
+    {
+      "path": "source/app/physics/rotor_coupling.gd",
+      "source": "app/physics/rotor_coupling.gd",
+      "bytes": 27336,
+      "sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b"
+    },
+    {
+      "path": "source/app/physics/generalized_coordinates.gd",
+      "source": "app/physics/generalized_coordinates.gd",
+      "bytes": 9692,
+      "sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8"
+    },
+    {
+      "path": "source/app/physics/wheel_geometry.gd",
+      "source": "app/physics/wheel_geometry.gd",
+      "bytes": 16230,
+      "sha256": "a92fda4198916ac89573aca1e58c879288c8b249146fac8de04713573fdba2f9"
+    },
+    {
+      "path": "source/app/physics/math3d.gd",
+      "source": "app/physics/math3d.gd",
+      "bytes": 5514,
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb"
+    },
+    {
+      "path": "source/app/physics/ground_support.gd",
+      "source": "app/physics/ground_support.gd",
+      "bytes": 7317,
+      "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e"
+    },
+    {
+      "path": "source/app/physics/ground_terrain.gd",
+      "source": "app/physics/ground_terrain.gd",
+      "bytes": 13651,
+      "sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26"
+    },
+    {
+      "path": "source/app/physics/aircraft_ground_profile.gd",
+      "source": "app/physics/aircraft_ground_profile.gd",
+      "bytes": 18518,
+      "sha256": "74bf7e19489666e05e6533e8ea5ef97a43b9ceb52ff8de3e33d55ac68a13d9ba"
+    },
+    {
+      "path": "source/app/physics/wheel_profiles.gd",
+      "source": "app/physics/wheel_profiles.gd",
+      "bytes": 13919,
+      "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748"
+    },
+    {
+      "path": "source/app/physics/integrator.gd",
+      "source": "app/physics/integrator.gd",
+      "bytes": 2366,
+      "sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83"
+    },
+    {
+      "path": "source/app/physics/rigid_body.gd",
+      "source": "app/physics/rigid_body.gd",
+      "bytes": 5582,
+      "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+    },
+    {
+      "path": "source/app/sim/simulation.gd",
+      "source": "app/sim/simulation.gd",
+      "bytes": 50371,
+      "sha256": "0c6849497e7777bd10336712371d8045390374bff5ff61aa901dad273410631d"
+    },
+    {
+      "path": "source/app/sim/vehicle_model.gd",
+      "source": "app/sim/vehicle_model.gd",
+      "bytes": 12046,
+      "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2"
+    },
+    {
+      "path": "source/app/tests/test_aircraft_ground_damage.gd",
+      "source": "app/tests/test_aircraft_ground_damage.gd",
+      "bytes": 24116,
+      "sha256": "7fac4b73873fa00ff94ddb76e891f9a2dbaf2a0e9b67b6548c4cedadd5cbe64d"
+    },
+    {
+      "path": "source/app/tests/test_gear_damage.gd",
+      "source": "app/tests/test_gear_damage.gd",
+      "bytes": 19864,
+      "sha256": "47b8c856446c88b33bd3bb9ca585facc62d3525a29497ce9825d5864e6701669"
+    },
+    {
+      "path": "source/app/tests/test_aircraft_ground_stage.gd",
+      "source": "app/tests/test_aircraft_ground_stage.gd",
+      "bytes": 25417,
+      "sha256": "75d30d115978c2146f46dd5db66df15303ba90605524469c9ba55667f420083a"
+    },
+    {
+      "path": "source/app/tests/test_endpoint_transition.gd",
+      "source": "app/tests/test_endpoint_transition.gd",
+      "bytes": 20482,
+      "sha256": "125ddcc482ccbdbace842f3af1a590c37835c814d9920e73e935da98c5c675b7"
+    },
+    {
+      "path": "source/app/data/aircraft/p51d_mustang_120.json",
+      "source": "app/data/aircraft/p51d_mustang_120.json",
+      "bytes": 112692,
+      "sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+    },
+    {
+      "path": "checks/attached/report.json",
+      "source": "tmp/gp16-attached-checks/main-attached/gp16-attached-xf7qw4cw/report.json",
+      "bytes": 1199,
+      "sha256": "7bcfd53f5dd3d9ee205115f856650a37964ca329781b0b1e4f3e0b2deaa960bb"
+    },
+    {
+      "path": "checks/attached/engine.log",
+      "source": "tmp/gp16-attached-checks/main-attached/gp16-attached-xf7qw4cw/engine.log",
+      "bytes": 118,
+      "sha256": "0eacfd46e1e87f71ebfa35b805f9176f20ea3b600b50e9ff6d72bcd9daace655"
+    },
+    {
+      "path": "checks/core/report.json",
+      "source": "tmp/gp16-attached-checks/main-core/gp16-core-0axkxjip/report.json",
+      "bytes": 1167,
+      "sha256": "06f28c98db29cfcaf8026ad5b6c34588086ca9d0bf2f4732e5ee1377ab45432c"
+    },
+    {
+      "path": "checks/core/engine.log",
+      "source": "tmp/gp16-attached-checks/main-core/gp16-core-0axkxjip/engine.log",
+      "bytes": 112,
+      "sha256": "a907696c9a4f083e2c38c215fec4f550b9c1e80e9cb9ef3fe647266b27c8e8d4"
+    },
+    {
+      "path": "checks/stage/report.json",
+      "source": "tmp/gp16-attached-checks/main-stage/gp16-stage-eehw4x98/report.json",
+      "bytes": 1181,
+      "sha256": "8e1d21237a1f5e1993f46464c80c23901bdcf7cd93d8491976c21f0be2f660f7"
+    },
+    {
+      "path": "checks/stage/engine.log",
+      "source": "tmp/gp16-attached-checks/main-stage/gp16-stage-eehw4x98/engine.log",
+      "bytes": 117,
+      "sha256": "029b3fffbaf4fba75f87cfd536a68bde0740b891686527d546c33820420b7159"
+    },
+    {
+      "path": "checks/endpoint/report.json",
+      "source": "tmp/gp16-attached-checks/main-endpoint/gp16-endpoint-n8izc2hb/report.json",
+      "bytes": 1195,
+      "sha256": "5877aa7ce047a0988103da799a4d66e807e3c145989d310ebc7854ddf8fc0236"
+    },
+    {
+      "path": "checks/endpoint/engine.log",
+      "source": "tmp/gp16-attached-checks/main-endpoint/gp16-endpoint-n8izc2hb/engine.log",
+      "bytes": 116,
+      "sha256": "aa63d3d6bcf1059df73f8bc6bd80b346e5e377433b3493ad9629cad3e8a5b3e0"
+    },
+    {
+      "path": "independent-review.md",
+      "source": "tmp/gp16-attached-response/independent-review.md",
+      "bytes": 3283,
+      "sha256": "9ac22acde7d5463a43593ae51add0ddfad0e85c072733f418e401d838310cff0"
+    },
+    {
+      "path": "promotion.json",
+      "source": "tmp/gp16-attached-response/promotion.json",
+      "bytes": 651,
+      "sha256": "e60556100224049d02560eec2e15c66db26b587fc58bcfda58269d2e05244cb2"
+    }
+  ]
+}

@@ -102,6 +102,22 @@ Results here are model predictions. They do not establish physical validation.
 | Modal dashboard | `python3 research/validation/dashboard.py --check` | Currently stale (exits 1). Red reference rows are diagnostics. [Validation tools](../../research/validation/README.md). |
 | Workshop experiment runner | [TOOLS → Aircraft Workshop](../TOOLS.md#aircraft-workshop) | Static, tape and sweep analysis of one aircraft or bundle. |
 
+### Spatial wind workload verification and timing
+
+Use `app/tests/bench_spatial_wind.gd` through the [checked runner](shared.md#one-godot-script). Its original provider-only mode remains separate from full aircraft sessions.
+
+```bash
+python3 tools/godot/run_checked.py --timeout 600 -- "$(app/get-godot.sh)" --headless --path app \
+  --script res://tests/bench_spatial_wind.gd -- --full-session --verify-only \
+  --aircraft=gp-extra-300s-60 --case=spatial-v5-gusts-thermals-24 --output=tmp/wind-verify-new.json
+```
+
+`--verify-only` runs the same production batches and reset/coverage checks without timing values or ratios. Defaults are three batches of 480 workload ticks, each preceded by 240 warmup ticks and a fixture reset. A separate untimed 480-tick instrumented replay checks actual gust/thermal query coverage and matching final state. The warmup does not advance the measured flight window. Use a fresh output path; invalid arguments and undersized full-session workloads are refused.
+
+Optional case IDs are `spatial-v5-gusts-24`, `spatial-v5-thermals-24` and `spatial-v5-gusts-thermals-24`. These explicitly authored workloads begin inside the gust/thermal lifecycle; they are not unmodified weather presets. Repeat `--case` or `--aircraft` to select multiple cases. `--aircraft=skywalker-x8 --battery` selects the accepted pack variant; omission uses ideal power. Original default aircraft/case lists and original control configurations remain unchanged.
+
+For timing, omit `--verify-only` and run alone on a controlled host with frozen sources. Reports contain actual solver, benchmark, preset and selected aircraft hashes; `--revision` and `--manifest-sha256` are optional caller annotations. Session report v2 distinguishes workload counts from timed counts. Timing arrays and their median/p95 contain **batch means**, not per-tick latency percentiles. The first-tick query count is separate from the full coverage replay count; query demand can change during flight. Headless batch timing does not qualify 1080p performance or the stricter physics budget. [R5 admission evidence and limits](../research/wind-implementation/M5-W05d-R5/README.md).
+
 ## Track verifiers
 
 Use fresh output directories. Fixture equivalence proves software preservation, not physical validity.

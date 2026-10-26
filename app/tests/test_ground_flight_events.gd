@@ -190,6 +190,15 @@ func _contract() -> void:
 	mutated.cause.classification="pilot_command"
 	check("unsupported causal certainty is rejected",not Event.valid(mutated))
 
+	for primitive: Variant in [null, true, 1, 1.0, [], {}]:
+		for selector: String in ["format", "version", "rules_version", "type", "continuation", "severity_status", "classification", "uncertainty"]:
+			# Integer version 1 is the valid control; all other replacements refuse.
+			if selector == "version" and typeof(primitive) == TYPE_INT: continue
+			var malformed := event.duplicate(true)
+			if selector in ["classification", "uncertainty"]: malformed.cause[selector] = primitive
+			else: malformed[selector] = primitive
+			check("primitive event selector cleanly refuses " + selector, not Event.valid(malformed))
+
 func _service() -> void:
 	var service := Service.new()
 	check("nonpersistent service initializes",service.setup("",false))

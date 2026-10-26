@@ -52,7 +52,12 @@ The prepared runtime uses source junctions; those hashes do not make a shared ch
 These are offline moving-image checks,
 not real-time GPU benchmarks or pilot acceptance. Respect the renderer's distance/quality limits:
 the inset does not independently increase the primary camera's VFX birth or spill grants.
-Lighting shots reject pauses, faults, crashes or a stalled tick counter, retaining an incomplete
+Every `--lighting-preset` capture, including a custom director such as `extra_rolls_director.gd`,
+receives live RGB allocation and world-exposure fields from the harness. Its director must append
+exactly one record for the current frame and simulation tick; missing or inconsistent evidence
+fails the capture. The existing Extra director uses `--shot=extra-roll --seconds=6` for its ordinary
+two-roll maneuver, so it can inspect `--lighting-preset=night_aerobatics` without a second controller.
+Lighting shots and all explicit lighting-preset captures reject pauses, faults, crashes or a stalled tick counter, retaining an incomplete
 manifest with the reason. This includes the simulator's normal pause on focus loss; a rendered
 movie with repeated frozen frames is not a completed moving-flight take.
 

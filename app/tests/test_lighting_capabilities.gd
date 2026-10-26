@@ -63,7 +63,7 @@ func _run() -> void:
 	_check("configured report includes only requested zones and canonicalizes paired landing hardware once", bool(configured.get("ok", false)) and report.get("state") == "configured" and report.get("zones", []).size() == profile.get("zones", []).size() and landing_rows.size() == 1 and landing_binding_count >= 2)
 	_check("zone and effect rows contain only detached scalar schema fields", _rows_follow_schema(report.get("zones", [])) and _rows_follow_schema(report.get("effects", [])))
 	_check("missing strip fitting is reported from the absent live binding", not bool(left_row.get("available", true)) and str(left_row.get("reason", "")) == "missing_fitting")
-	_check("unbound compatible mesh stays reported and visible through profile rendering", bool(right_row.get("available", false)) and bool(right_row.get("enabled", false)) and str(right_row.get("reason", "x")).is_empty() and (kit.get_node("strip_right") as MeshInstance3D).visible)
+	_check("unbound compatible mesh is unavailable even while its clone remains visible", not bool(right_row.get("available", true)) and bool(right_row.get("enabled", false)) and str(right_row.get("reason", "")) == "missing_fitting" and (kit.get_node("strip_right") as MeshInstance3D).visible)
 	_check("disabled zone reports its fitted hardware without becoming enabled", bool(top_left_row.get("available", false)) and not bool(top_left_row.get("enabled", true)) and str(top_left_row.get("reason", "x")).is_empty())
 	_check("disabled optional effect reports a live tip anchor and world host", not bool(left_effect.get("enabled", true)) and bool(left_effect.get("available", false)) and str(left_effect.get("reason", "x")).is_empty())
 
@@ -89,6 +89,50 @@ func _run() -> void:
 	var unsupported_nav_effect := _row(rig.capability_report().get("effects", []), "vfx_tip_left")
 	_check("effect anchor remains available when navigation lights are unsupported", bool(unsupported_nav_effect.get("available", false)) and str(unsupported_nav_effect.get("reason", "x")).is_empty())
 	kit.set_meta("supported_light_groups", AircraftLights.GROUPS.duplicate())
+
+	var authored_disabled_aircraft := _make_aircraft("AuthoredDisabledLightAircraft")
+	stage.add_child(authored_disabled_aircraft)
+	authored_disabled_aircraft.set_meta("light_groups", ["navigation", "strobe", "landing"])
+	authored_disabled_aircraft.set_meta("light_anchors", {
+		"nav_tail": {"position": Vector3(0.0, 0.05, 0.45), "enabled": false},
+		"strobe_left": {"position": Vector3(-0.25, 0.0, 0.35), "enabled": false},
+		"strobe_right": {"position": Vector3(0.25, 0.0, 0.35), "enabled": false},
+		"strobe_dorsal": {"position": Vector3(0.0, 0.06, 0.1)},
+		"strobe_ventral": {"position": Vector3(0.0, -0.06, 0.1)},
+	})
+	var authored_disabled_kit := AircraftLights.attach(authored_disabled_aircraft)
+	var group_bindings: Dictionary = authored_disabled_kit.get_meta("light_bindings", {})
+	var nav_members: Array = group_bindings.get("navigation", [])
+	var strobe_members: Array = group_bindings.get("strobe", [])
+	_check("disabled authored anchors remain in NightKit but outside accepted group bindings",
+		is_instance_valid(authored_disabled_kit.get_node_or_null("nav_tail"))
+		and is_instance_valid(authored_disabled_kit.get_node_or_null("strobe_left"))
+		and is_instance_valid(authored_disabled_kit.get_node_or_null("strobe_right"))
+		and not nav_members.has(authored_disabled_kit.get_node_or_null("nav_tail"))
+		and not strobe_members.has(authored_disabled_kit.get_node_or_null("strobe_left"))
+		and not strobe_members.has(authored_disabled_kit.get_node_or_null("strobe_right")))
+	var authored_disabled_rig := Rig.new()
+	var authored_disabled_result: Dictionary = authored_disabled_rig.configure(authored_disabled_aircraft, Profile.preset("classic_rc"))
+	var authored_disabled_report: Dictionary = authored_disabled_rig.capability_report()
+	var disabled_nav_tail := _row(authored_disabled_report.get("zones", []), "nav_tail")
+	var disabled_strobe_left := _row(authored_disabled_report.get("zones", []), "strobe_left")
+	var disabled_strobe_right := _row(authored_disabled_report.get("zones", []), "strobe_right")
+	var fitted_nav_left := _row(authored_disabled_report.get("zones", []), "nav_left")
+	_check("configured Timber-style report rejects authored-disabled anchors but retains fitted lights",
+		bool(authored_disabled_result.get("ok", false))
+		and authored_disabled_report.get("state") == "configured"
+		and not bool(disabled_nav_tail.get("available", true)) and str(disabled_nav_tail.get("reason", "")) == "missing_fitting"
+		and not bool(disabled_strobe_left.get("available", true)) and str(disabled_strobe_left.get("reason", "")) == "missing_fitting"
+		and not bool(disabled_strobe_right.get("available", true)) and str(disabled_strobe_right.get("reason", "")) == "missing_fitting"
+		and bool(fitted_nav_left.get("available", false)))
+	authored_disabled_rig.set_mode("off", 0.0)
+	var mode_independent_report: Dictionary = authored_disabled_rig.capability_report()
+	_check("availability follows accepted group membership, not current light mode",
+		bool(_row(mode_independent_report.get("zones", []), "nav_left").get("available", false))
+		and not bool(_row(mode_independent_report.get("zones", []), "nav_tail").get("available", true))
+		and str(_row(mode_independent_report.get("zones", []), "nav_tail").get("reason", "")) == "missing_fitting")
+	authored_disabled_rig.dispose()
+	authored_disabled_rig.free()
 
 	var removed_tip := _remove_kit_node(kit, "nav_left", false)
 	var missing_anchor := _row(rig.capability_report().get("effects", []), "vfx_tip_left")

@@ -1,0 +1,52 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "676a6eb9-7583-4726-90b2-505f2bc360df",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\snapshot\\app",
+    "--script",
+    "res://tests/bench_spatial_wind.gd",
+    "--",
+    "--full-session",
+    "--aircraft=missing",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\unused-aircraft.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:00:34.645976+00:00",
+  "label": "unknown-aircraft",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\cli-checks\\unknown-aircraft-4ag0ok54\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\cli-checks\\unknown-aircraft-4ag0ok54\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "unknown --aircraft ID: missing",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run_full_session_benchmark (res://tests/bench_spatial_wind.gd:230)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 6.016,
+  "log_bytes": 363,
+  "log_sha256": "28633e3ae0a9953c642f4c2f3c3d83fe4988db752f5c304508b7398273d85c9d"
+}

@@ -1,0 +1,52 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "977e720a-0e82-4817-97ee-ab7bd6f87bf0",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\snapshot\\app",
+    "--script",
+    "res://tests/bench_spatial_wind.gd",
+    "--",
+    "--full-session",
+    "--case=missing",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\unused-case.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:00:30.169362+00:00",
+  "label": "unknown-case",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\cli-checks\\unknown-case-pmvzkl1o\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\cli-checks\\unknown-case-pmvzkl1o\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "unknown --case ID: missing",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run_full_session_benchmark (res://tests/bench_spatial_wind.gd:241)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.328,
+  "log_bytes": 359,
+  "log_sha256": "5789cbc8146856192c35df54174d05dafb2b117e9c8964b83578363be25b749d"
+}

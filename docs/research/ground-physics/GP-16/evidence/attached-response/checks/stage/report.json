@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "06be5c89-97fd-4f81-a61d-c4327ef7d46a",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_aircraft_ground_stage.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:58:44.855887+00:00",
+  "label": "gp16-stage",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp16-attached-checks\\main-stage\\gp16-stage-eehw4x98\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp16-attached-checks\\main-stage\\gp16-stage-eehw4x98\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.75,
+  "log_bytes": 117,
+  "log_sha256": "029b3fffbaf4fba75f87cfd536a68bde0740b891686527d546c33820420b7159"
+}

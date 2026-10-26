@@ -3,6 +3,8 @@
 extends RefCounted
 
 const Rules := preload("res://statistics/rules.gd")
+const IntendedHullSupport := preload("res://physics/intended_hull_support.gd")
+const M := preload("res://physics/math3d.gd")
 const PROFILE_VERSION := "fixed-wing-contacts-v1"
 const _GEOMETRY_TOLERANCE_M := 0.000001
 
@@ -162,6 +164,8 @@ static func resolve(aircraft_id: String, model: Dictionary, bindings: Dictionary
 		"speed_cap_mps": speed_cap,
 		"initial_tick": 0,
 	}
+	if model.has("intended_hull_support"):
+		return _hull_profile(result, aircraft_id, model, bindings)
 	var review: Variant = _PROFILES.get(aircraft_id)
 	if typeof(review) != TYPE_DICTIONARY:
 		return result
@@ -197,6 +201,44 @@ static func resolve(aircraft_id: String, model: Dictionary, bindings: Dictionary
 	result.stop_ids = review.stop_ids.duplicate()
 	result.rest_height_m = rest_height
 	result.rest_pitch_rad = rest_pitch
+	return result
+
+
+static func _hull_profile(result: Dictionary, aircraft_id: String, model: Dictionary, bindings: Dictionary) -> Dictionary:
+	result.profile_version = "fixed-wing-authored-hull-contacts-v1"
+	result.support_kind = "authored_hull"
+	result.reason = "intended_hull_support_unavailable"
+	if typeof(model.get("id")) != TYPE_STRING or model.id != aircraft_id \
+		or typeof(bindings.get("ok")) != TYPE_BOOL or not bindings.ok:
+		return result
+	var prepared: Variant = model.intended_hull_support
+	var bound: Variant = bindings.get("intended_hull_support")
+	if not prepared is Dictionary or not bound is Dictionary or not IntendedHullSupport.matches_model(prepared, model) \
+		or var_to_bytes(prepared) != var_to_bytes(bound):
+		return result
+	var policy: Variant = bindings.get("policy")
+	var hull_policy: Variant = policy.get("hull") if policy is Dictionary else null
+	if not hull_policy is Dictionary or typeof(hull_policy.get("mode")) != TYPE_STRING or hull_policy.mode != "soft":
+		result.reason = "intended_hull_support_requires_soft_hull"
+		return result
+	if not str(bindings.get("lake_identity", "")).is_empty():
+		result.reason = "intended_hull_support_lake_scope_unavailable"
+		return result
+	var rest := M.q_from_euler(0.0, prepared.rest_pose.pitch, prepared.rest_pose.roll)
+	var height := -INF
+	for index: int in range(0, model.crash_hull.size(), 3):
+		height = maxf(height, M.q_rotate(rest, model.crash_hull.slice(index, index + 3))[2])
+	if not is_finite(height) or height <= 0.0:
+		result.reason = "intended_hull_rest_geometry_invalid"
+		return result
+	result.landing_available = true
+	result.reason = ""
+	result.hull_support_identity = prepared.identity
+	result.hull_support_scope = "legacy-flat-solid-only-v1"
+	result.hull_stop_group_count = prepared.stop_groups.size()
+	result.rest_height_m = height
+	result.rest_pitch_rad = prepared.rest_pose.pitch
+	result.rest_roll_rad = prepared.rest_pose.roll
 	return result
 
 

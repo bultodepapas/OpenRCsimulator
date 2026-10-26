@@ -40,6 +40,8 @@ RGB shader bindings are limited to the existing nine lamp meshes and five strips
 
 Initial semantic zones are `nav_left`, `nav_right`, `nav_tail`, `strobe_left`, `strobe_right`, `strobe_dorsal`, `strobe_ventral`, `strip_left`, `strip_right`, `strip_top_left`, `strip_top_right`, `strip_belly`, and `landing_lamp`. Wingtip show anchors are `vfx_tip_left` and `vfx_tip_right`. Aircraft equipment declarations and geometry determine availability; choosing a preset does not manufacture an unsupported lamp or a valid internal volume.
 
+The current Timber model deliberately declares factory navigation, strobe and landing equipment only. Its five fitted orientation-strip meshes remain unavailable in every RGB preset; the Workshop explains this limitation. X8 uses the ordinary fitted external strips. Neither aircraft receives inferred translucent skin. A creator-approved Timber retrofit requires an explicit authoring/capability change, not a player preset overriding the model declaration. Availability also requires membership in the kit's accepted group bindings: an authored-disabled lamp node does not count as usable hardware. The diagnostic `zones_resolved` counter counts material bindings and must not replace the capability report in UI.
+
 ## Global lighting preferences
 
 Settings → **Lighting** applies to every aircraft and Workshop preview. **Low** retains LEDs and landing lights while hiding decorative spill and show effects. **Standard** emits half the High particle count and samples show trails at 15 Hz; **High** retains the bounded 32-particle tip pools and 30 Hz trail sampling. These are workload controls, not hardware frame-rate guarantees.
@@ -175,3 +177,11 @@ python tools/godot/run_checked.py --label aircraft-lights --timeout 180 -- .tool
 ```
 
 For native before/after images, omit `--headless` and append `-- --capture-aircraft-lights=<absolute-output-directory>`. Use an isolated APPDATA directory for native test runs. The suite covers every fixed-wing visual family and the helicopter, actual input handlers, exact threshold crossings, manual precedence, dawn/daylight policy, new flights, resets, data reloads, Home changes, bounded attachment and configurable group references. Existing `test_night_kit.gd`, `test_p51_lights.gd` and `test_heli_night_lights.gd` retain geometry, motion, gate and emissive checks.
+
+For the six-preset night preview matrix, run the existing aircraft visual fixture on a native renderer:
+
+```powershell
+python tools/godot/run_checked.py --label lighting-fleet-night --warnings-as-errors --timeout 600 -- .tools/Godot_v4.8-beta1_win64_console.exe --path app --audio-driver Dummy --rendering-method gl_compatibility --script res://tests/test_lighting_aircraft_visuals.gd -- --capture-lighting-fleet=C:/DEVELOPMENT/OpenRCsimulator/tmp/lighting-fleet-night
+```
+
+Choose a new absolute output directory and isolated APPDATA profile for each run; run only one rendered application at a time. The fixture captures all six presets for one catalog representative per fixed-wing visual family at 1920×1080. Its manifest records capabilities, source identities, renderer, camera and budgets. The held Workshop clock/exposure is intentionally repeatable: it cannot establish moving trails, production-night exposure, pilot readability or real-time frame cost. Use the [existing flight capture route](../tools/trailer/README.md) for advancing flight and inset evidence. Substitute `forward_plus` or `mobile` only when qualifying those native paths separately.

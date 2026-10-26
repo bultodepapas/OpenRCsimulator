@@ -1,0 +1,201 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+SCRIPT ERROR: Invalid operands 'bool' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'bool' and 'int' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'bool' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'bool' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:48)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'bool' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:48)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'bool' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:58)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:58)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'bool' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:58)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:58)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'int' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'int' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'int' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:48)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'int' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:48)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'int' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:58)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:58)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'int' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:58)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:58)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'float' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'float' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'float' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:48)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'float' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:48)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'float' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:58)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:58)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'float' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:58)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:58)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Array' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Array' and 'int' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Array' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Array' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:48)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Array' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:48)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Array' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:58)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:58)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Array' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:58)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:58)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Dictionary' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Dictionary' and 'int' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Dictionary' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:39)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Dictionary' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:48)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Dictionary' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:48)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Dictionary' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:58)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:58)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+SCRIPT ERROR: Invalid operands 'Dictionary' and 'String' in operator '!='.
+   at: valid (res://statistics/flight_event.gd:58)
+   GDScript backtrace (most recent call first):
+       [0] valid (res://statistics/flight_event.gd:58)
+       [1] _contract (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:200)
+       [2] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/baseline_test.gd:13)
+Ground flight events: 135 checks, 0 failed

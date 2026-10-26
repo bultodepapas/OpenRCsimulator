@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "00743c88-2d82-4856-8fb2-bb48bce4fbe5",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-event-validation/test.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:09:46.343909+00:00",
+  "label": "primitive-draft",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp14-event-validation\\checks\\draft\\primitive-draft-y5fs5gpa\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp14-event-validation\\checks\\draft\\primitive-draft-y5fs5gpa\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.407,
+  "log_bytes": 116,
+  "log_sha256": "a57018228193fc3ea5ae4488db20ea67d1b0266f51773a47bcc8fdf9222207e7"
+}

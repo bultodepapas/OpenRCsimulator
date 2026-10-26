@@ -1,6 +1,6 @@
 # Wind, gusts and turbulence
 
-2026-10-26 · Revision 11 · Step prefix: **M5-W**.
+2026-10-26 · Revision 12 · Step prefix: **M5-W**.
 
 **Status:** Legacy uniform wind, repeating cosine gusts and seeded temporal OU turbulence remain supported. Weather v3 adds custom field-level atmosphere; v4 adds the dry reference altitude column. Opt-in v5 adds a flat-site spatial field, resolved smooth gusts, divergence-free finite-mode perturbations and optional balanced kinematic thermals, consumed through local aerodynamic/propulsion stages. See [atmosphere](ATMOSPHERE-PLAN.md), the [advanced masterplan](advanced-wind-atmospheric-physics-masterplan.md) and [spatial implementation, equations and evidence](research/wind-implementation/M5-W05d-R1/README.md). Owner flight gates W-A/W-B, physical/spectral acceptance, terrain and shared companion qualification remain open.
 
@@ -75,6 +75,7 @@ Weather metadata accompanies recorded rows. v4/v5 readers independently check wi
 | M5-W05d-R2 | Prepare immutable profile/gust values at construction and accumulate turbulence in float64 locals. [Parity, profiling and performance](research/wind-implementation/M5-W05d-R2/README.md) | Same field laws and sampling workload; performance qualification remains open |
 | M5-W05d-R3 | Explicit tailless spatial geometry/load admission and release-point wind/propeller inflow for hand launches. [Compatibility and replay evidence](research/wind-implementation/M5-W05d-R3/README.md) | X8 ideal and 6S pack software admission; physical/pilot/performance gates remain open |
 | M5-W05d-R4 | Lean production Air receipts and stage-local wash pose preparation. [Query/force parity and replay](research/wind-implementation/M5-W05d-R4/README.md) | Redundant diagnostic packing removed; quiet-host performance qualification remains open |
+| M5-W05d-R5 | Active gust/thermal full-session benchmark cases, X8 ideal/pack coverage and an untimed verification mode. [Workload admission](research/wind-implementation/M5-W05d-R5/README.md) | Nine workloads / 23,760 accepted ticks verified; timing and physical qualification remain open |
 | M5-ATM-4-R1 | Reconcile this guide with the implemented v4 dry altitude column and route-specific defaults. | Documentation corrected |
 | M5-W06a/b | Compare a Dryden reference; adopt another spectral backend only if evidence justifies it. | Conditional |
 | M5-W07 | Smoke/cloud/vegetation/audio wind consumers. | Per-consumer; physical/GPU proof required |

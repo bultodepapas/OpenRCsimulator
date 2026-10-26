@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b1dcead2-fef8-41cc-a7c5-3a4309db0ae4",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-bench-r5/snapshot/app",
+    "--script",
+    "res://tests/bench_spatial_wind.gd",
+    "--",
+    "--full-session",
+    "--verify-only",
+    "--aircraft=jensen-das-ugly-stik-60",
+    "--case=spatial-v5-gusts-thermals-24",
+    "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-bench-r5/draft-jensen.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:50:10.461547+00:00",
+  "label": "draft-active-jensen",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\checks\\draft-active-jensen-2origw4y\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\checks\\draft-active-jensen-2origw4y\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 18.469,
+  "log_bytes": 419,
+  "log_sha256": "9c81883058ae99af041a340525bded453f7fbe462900c475bae6f6030a240c51"
+}

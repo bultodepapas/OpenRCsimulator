@@ -18,6 +18,8 @@
 
 **Stage optimization M5-W05d-R4 (2026-10-26):** production callers request complete Air receipts without retaining diagnostic flow arrays; public/default diagnostic APIs remain available. Wash callbacks prepare the raw pose once per stage. All actual queries, local kinematics and numerical refusal checks remain in the common sampling loop. [Parity and replay evidence](research/wind-implementation/M5-W05d-R4/README.md) records twelve unchanged flight comparisons; quiet-host performance qualification remains open.
 
+**Workload admission M5-W05d-R5 (2026-10-26):** the existing benchmark now has explicit active gust, thermal and combined cases, X8 ideal/pack selection, and an untimed verification mode. Component probes at actual stage/wash queries establish that the requested effects are active; the instrumented replay must reproduce the production final state and restore the original provider. [Nine workloads and 23,760 accepted ticks](research/wind-implementation/M5-W05d-R5/README.md) prepare the next performance experiment. This changes test tooling only; no timing, handling or physical gate is closed.
+
 Weather v1–v4 retains its uniform law and existing default selection. Spatial modes are experimental authored scenarios, not physically validated site weather; no terrain solver, solar heat budget, dynamic stall or spatial wake evolution is implied. Helicopters and companions explicitly refuse the new weather law until separately qualified. Sections 1–3 describe the original audit baseline; subsequent design remains prospective except for the explicit implementation notes. P0/P1/P2 implementation progress does not close the physical, handling or hardware acceptance gates.
 
 ## 1. Executive summary and realism objectives
