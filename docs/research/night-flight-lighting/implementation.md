@@ -276,6 +276,12 @@ The strict checked verdict is **failed**: official Forward+ reports seven leaked
 
 Artifacts remain under ignored `tmp/fw-rgb-motion-20261026/{pilot-forward,off-forward-inset}/` and `tmp/fw-rgb-realtime-20261026/off-forward-near/`. The OFF movie additionally reports low disk space (3.18 GiB); it completed, but further large C-drive movies were stopped. No retained capture was deleted to make room.
 
+### FW-RGB-13 Mobile night-world visual failure (2026-10-26)
+
+`rgb-motion-pilot-mobile-4oz97x5m` completes 720 frame records and 2,884 physics rows matching the Compatibility pilot take, with all 720 inset records present. Both the source AVI and ungraded review MP4 decode at 1920×1080/60 with 724 encoded frames. Nevertheless, sampled source frames at 1 and 8.05 seconds show **black 3D viewports**, with only the inset's 2D border visible. This is a failed visual result, irrespective of the complete simulation manifest. The strict engine receipt also fails on seven Texture RIDs at shutdown. It is a desktop RTX 3090 Mobile-renderer run, not mobile-device qualification.
+
+Small native PNG controls isolate the visual failure from RGB, the inset and Movie Maker: `rgb-off-mobile-night-og6gtf5_` stays black with RGB OFF, the near camera and no movie writer; `rgb-off-mobile-noon-jst_jh87` renders the same aircraft and scenery visibly at noon. A disposable director forcing ACES during the night take (`rgb-mobile-night-aces-control-d3519ndo`) remains black, so changing AgX alone does not repair it. The production atmosphere and exposure are unchanged. The local motion board and `pilot-mobile/review-receipt.json` label both visual and lifecycle failures explicitly. Existing Mobile Workshop/isolated-shader passes do not qualify the production night world.
+
 ## Remaining masterplan work
 
 ### Active completion work (2026-10-25)
