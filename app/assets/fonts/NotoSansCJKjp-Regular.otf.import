@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://d5lnxwo61cxm"
-path="res://.godot/imported/OpenSans_SemiBold.woff2-8a0288a2ba0d20714c6041a4c9f2b69b.fontdata"
+uid="uid://h8xnjxkkc6os"
+path="res://.godot/imported/NotoSansCJKjp-Regular.otf-9f8460ebb544883da1f528f86149d6e0.fontdata"
 
 [deps]
 
-source_file="res://assets/fonts/OpenSans_SemiBold.woff2"
-dest_files=["res://.godot/imported/OpenSans_SemiBold.woff2-8a0288a2ba0d20714c6041a4c9f2b69b.fontdata"]
+source_file="res://assets/fonts/NotoSansCJKjp-Regular.otf"
+dest_files=["res://.godot/imported/NotoSansCJKjp-Regular.otf-9f8460ebb544883da1f528f86149d6e0.fontdata"]
 
 [params]
 

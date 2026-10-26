@@ -2,7 +2,7 @@
 # Product, aircraft and field proper names are not translated (the one exception is the Timber's fictional name,
 # "Turbo Lumber Evolution", which ui/home.gd passes through tr()). Keep placeholders (%s) and whole sentences.
 # Add a language: copy this file to <code>.po, translate msgstr, list it in project.godot
-# (internationalization/locale/translations) and in app_state/preferences.gd LANGUAGES.
+# (internationalization/locale/translations) and in i18n/languages.gd NAMES. See i18n/README.md.
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenRC Simulator\n"

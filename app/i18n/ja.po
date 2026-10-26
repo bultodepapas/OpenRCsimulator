@@ -1,0 +1,8055 @@
+# Japanese interface texts (UI-01k). Use concise standard Japanese and consistent RC terminology.
+# English msgid values are the source; preserve format arguments and technical identifiers.
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenRC Simulator\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "development build"
+msgstr "開発版ビルド"
+
+msgid "Lighting"
+msgstr "照明"
+
+msgid "Classic RC"
+msgstr "クラシックRC"
+
+msgid "Night Radian"
+msgstr "Night Radian"
+
+msgid "Neon RGB"
+msgstr "Neon RGB"
+
+msgid "Night Aerobatics"
+msgstr "ナイトアクロバット"
+
+msgid "Festival / Fireworks"
+msgstr "フェスティバル / 花火"
+
+msgid "Use aircraft default"
+msgstr "機体の標準照明を使用"
+
+msgid "Use stock lighting in a new draft"
+msgstr "標準照明で新しい下書きを作成"
+
+msgid "Create updated draft"
+msgstr "更新した下書きを作成"
+
+msgid "Stored presentation profile is invalid."
+msgstr "保存された表示プロファイルが無効です。"
+
+msgid "A supported stored presentation profile is required."
+msgstr "対応する保存済み表示プロファイルが必要です。"
+
+msgid "Current presentation bindings are unavailable or malformed."
+msgstr "現在の表示割り当てがないか、形式が正しくありません。"
+
+msgid "Current presentation bindings are invalid."
+msgstr "現在の表示割り当てが無効です。"
+
+msgid ""
+"Create a new draft with this aircraft's standard lighting. Compatible saved "
+"colors, markings, smoke and sound settings stay in the draft. If appearance "
+"bindings changed, review the preview because matching IDs do not prove their"
+" old placement. The original saved revision stays unchanged. Physical "
+"settings stay unchanged."
+msgstr ""
+"この機体の標準照明で新しい下書きを作成します。対応する保存済みの色、マーキング、煙、サウンド設定は下書きに引き継がれます。外観の割り当てが変わっている場合は、プレビューを確認してください。IDが一致しても以前の配置が維持されるとは限りません。元の保存リビジョンと物理設定は変更されません。"
+
+msgid ""
+"Stock-lighting draft created. Inspect it, then save as a new build. The "
+"original is unchanged."
+msgstr "標準照明の下書きを作成しました。内容を確認し、新しいビルドとして保存してください。元の機体は変更されていません。"
+
+msgid "A newer presentation profile cannot be converted to stock lighting."
+msgstr "新しい表示プロファイルは標準照明に変換できません。"
+
+msgid "A newer lighting profile cannot be converted to stock lighting."
+msgstr "新しい照明プロファイルは標準照明に変換できません。"
+
+msgid ""
+"Stock lighting drafts require a supported v3 or v4 profile; historical "
+"profiles already use stock lighting."
+msgstr "標準照明の下書きには対応するv3またはv4プロファイルが必要です。過去のプロファイルはすでに標準照明を使用しています。"
+
+msgid "Saved lighting settings cannot be replaced safely."
+msgstr "保存済みの照明設定を安全に置き換えられません。"
+
+msgid "Saved lighting already uses the aircraft's stock equipment."
+msgstr "保存済みの照明はすでに機体の標準装備を使用しています。"
+
+msgid "An unbound default has no previous aircraft identity to update."
+msgstr "未割り当ての既定設定には、更新前の機体情報がありません。"
+
+msgid "Stock lighting cannot change the aircraft visual family."
+msgstr "標準照明では機体のビジュアルファミリーを変更できません。"
+
+msgid "Stock lighting cannot change the physical model manifest."
+msgstr "標準照明では物理モデルのマニフェストを変更できません。"
+
+msgid ""
+"Other saved appearance settings cannot be validated against the current "
+"companion."
+msgstr "現在の連携データでは、ほかの保存済み外観設定を検証できません。"
+
+msgid ""
+"The stock-lighting draft does not validate against the current companion."
+msgstr "標準照明の下書きは現在の連携データで検証できません。"
+
+msgid ""
+"Creating a stock-lighting draft would change other appearance settings; no "
+"proposal was created."
+msgstr "標準照明の下書きを作成すると、ほかの外観設定も変わるため、提案は作成されませんでした。"
+
+msgid ""
+"Stock lighting cannot be applied while other appearance settings are "
+"unavailable."
+msgstr "ほかの外観設定を利用できないため、標準照明を適用できません。"
+
+msgid "The stock-lighting proposal changed. Review it again."
+msgstr "標準照明の提案が変更されました。もう一度確認してください。"
+
+msgid "The draft changed. Review the appearance update again."
+msgstr "下書きが変更されました。外観の更新内容をもう一度確認してください。"
+
+msgid "Lighting enabled"
+msgstr "照明を有効化"
+
+msgid "Lighting off"
+msgstr "照明オフ"
+
+msgid "Night lights: disabled by build"
+msgstr "夜間灯：このビルドでは無効"
+
+msgid "Brightness"
+msgstr "明るさ"
+
+msgid "Customize zones"
+msgstr "ゾーンをカスタマイズ"
+
+msgid "More effects"
+msgstr "追加エフェクト"
+
+msgid "Reset lighting"
+msgstr "照明をリセット"
+
+msgid "Zone enabled"
+msgstr "ゾーンを有効化"
+
+msgid "Apply zone"
+msgstr "ゾーンを適用"
+
+msgid "Reset zone"
+msgstr "ゾーンをリセット"
+
+msgid "Apply effects"
+msgstr "エフェクトを適用"
+
+msgid "Cycle duration applies to animated patterns."
+msgstr "サイクル時間はアニメーションパターンに適用されます。"
+
+msgid "Cycle: %.2f seconds"
+msgstr "サイクル時間：%.2f秒"
+
+msgid "Enter a six-digit hex color such as #20DFFF."
+msgstr "#20DFFFのような6桁の16進カラーを入力してください。"
+
+msgid ""
+"Choose a lighting style for this build. Preview time of day is temporary and"
+" does not change trial conditions."
+msgstr "このビルドの照明スタイルを選択してください。プレビューの時刻は一時的なもので、試験条件には影響しません。"
+
+msgid "Aircraft equipment"
+msgstr "機体装備"
+
+msgid "%d zones available"
+msgstr "利用可能なゾーン：%d"
+
+msgid "Zone changes applied to the draft."
+msgstr "ゾーンの変更を下書きに適用しました。"
+
+msgid "Effect changes applied to the draft."
+msgstr "エフェクトの変更を下書きに適用しました。"
+
+msgid "Pattern"
+msgstr "パターン"
+
+msgid "Intensity"
+msgstr "強度"
+
+msgid "Colors"
+msgstr "カラー"
+
+msgid "Add color"
+msgstr "カラーを追加"
+
+msgid "Cycle"
+msgstr "サイクル"
+
+msgid "Hex color"
+msgstr "16進カラー"
+
+msgid "Port navigation"
+msgstr "左舷ナビゲーション灯"
+
+msgid "Starboard navigation"
+msgstr "右舷ナビゲーション灯"
+
+msgid "Tail light"
+msgstr "尾灯"
+
+msgid "Port strobe"
+msgstr "左舷ストロボ"
+
+msgid "Starboard strobe"
+msgstr "右舷ストロボ"
+
+msgid "Dorsal spine"
+msgstr "背面部"
+
+msgid "Ventral bars"
+msgstr "下面バー"
+
+msgid "Port wing strip"
+msgstr "左翼ストリップ"
+
+msgid "Starboard wing strip"
+msgstr "右翼ストリップ"
+
+msgid "Port upper strip"
+msgstr "左上部ストリップ"
+
+msgid "Starboard upper strip"
+msgstr "右上部ストリップ"
+
+msgid "Belly strip"
+msgstr "胴体下面ストリップ"
+
+msgid "Landing lamp"
+msgstr "着陸灯"
+
+msgid "NEXT FLIGHT"
+msgstr "次のフライト"
+
+msgid "Test field · Free flight"
+msgstr "テストフィールド · フリーフライト"
+
+msgid "Starts in the air. A crash restarts the flight."
+msgstr "空中スタートです。墜落するとフライトを再開します。"
+
+msgid "FLY"
+msgstr "飛行開始"
+
+msgid "Quit"
+msgstr "終了"
+
+msgid "Language: %s"
+msgstr "言語：%s"
+
+msgid "CONTROLS"
+msgstr "操作"
+
+msgid "Keyboard — no radio connected."
+msgstr "キーボード — 送信機未接続"
+
+msgid ""
+"Radio “%s”. Lower the throttle to arm the engine. To fly with the keyboard, "
+"unplug it."
+msgstr "送信機「%s」。スロットルを下げるとエンジン始動が許可されます。キーボード操作では送信機を外してください。"
+
+msgid ""
+"Controller “%s”. Lower the throttle to arm the engine. To fly with the "
+"keyboard, unplug it."
+msgstr "コントローラー「%s」。スロットルを下げるとエンジン始動が許可されます。キーボード操作ではコントローラーを外してください。"
+
+msgid "Roll"
+msgstr "ロール"
+
+msgid "Pitch"
+msgstr "ピッチ"
+
+msgid "Rudder"
+msgstr "ラダー"
+
+msgid "Throttle"
+msgstr "スロットル"
+
+msgid "Could not save settings (error %d)."
+msgstr "設定を保存できませんでした（エラー%d）。"
+
+msgid "Weather"
+msgstr "天候"
+
+msgid "Reference air"
+msgstr "標準空気"
+
+msgid "Thin air"
+msgstr "低密度空気"
+
+msgid "Custom air"
+msgstr "カスタム空気"
+
+msgid "Turbulence"
+msgstr "乱気流"
+
+msgid "Calm"
+msgstr "無風"
+
+msgid "Gentle breeze"
+msgstr "そよ風"
+
+msgid "%s m/s from %03.0f°"
+msgstr "%s m/s · 風向 %03.0f°"
+
+msgid "gust %s m/s"
+msgstr "突風 %s m/s"
+
+msgid "up %s m/s"
+msgstr "上昇気流 %s m/s"
+
+msgid "%s m/s · %03.0f°"
+msgstr "%s m/s · %03.0f°"
+
+msgid "Gust %s m/s"
+msgstr "突風 %s m/s"
+
+msgid "Updraft %s m/s"
+msgstr "上昇気流 %s m/s"
+
+msgid "Downdraft %s m/s"
+msgstr "下降気流 %s m/s"
+
+msgid "Uniform wind with smooth repeating gusts."
+msgstr "一様な風と、滑らかに繰り返す突風。"
+
+msgid ""
+"Wind is uniform across the field; optional turbulence changes smoothly over "
+"time."
+msgstr "フィールド全体で風は一様です。乱気流を有効にすると、時間とともに滑らかに変化します。"
+
+msgid "Conditions"
+msgstr "条件"
+
+msgid ""
+"Uniform wind and smooth repeating gusts. No turbulence or spatial variation."
+msgstr "一様な風と滑らかに繰り返す突風。乱気流や空間的な変化はありません。"
+
+msgid "Uniform wind and repeating gusts with optional seeded turbulence."
+msgstr "一様な風と繰り返す突風に、シード値による乱気流を追加できます。"
+
+msgid ""
+"Seeded turbulence changes smoothly over time. RMS sets strength by "
+"direction; tau controls how quickly it changes."
+msgstr "シード値による乱気流は時間とともに滑らかに変化します。RMSは方向ごとの強さ、tauは変化の速さを設定します。"
+
+msgid "Uniform wind and repeating gusts, with optional seeded turbulence."
+msgstr "一様な風と繰り返す突風に、シード値による乱気流を追加できます。"
+
+msgid ""
+"Uniform wind and repeating gusts with optional seeded turbulence. Field "
+"atmosphere sets modeled air density."
+msgstr "一様な風と繰り返す突風に、シード値による乱気流を追加できます。フィールドの大気設定で空気密度を指定します。"
+
+msgid "Reference air · fixed density 1.225 kg/m³"
+msgstr "標準空気 · 密度固定 1.225 kg/m³"
+
+msgid ""
+"Field %s m · %s °C · QNH %s hPa · RH %s%% · density %s kg/m³ · density "
+"altitude %s m"
+msgstr "フィールド %s m · %s °C · QNH %s hPa · 相対湿度 %s%% · 密度 %s kg/m³ · 密度高度 %s m"
+
+msgid "Enable turbulence"
+msgstr "乱気流を有効化"
+
+msgid "Wind & Gusts"
+msgstr "風と突風"
+
+msgid "Atmosphere"
+msgstr "大気"
+
+msgid ""
+"Reference and custom field atmosphere are uniform; standard ISA changes with"
+" altitude."
+msgstr "標準とカスタムのフィールド大気は一様です。標準ISAでは高度に応じて変化します。"
+
+msgid "Atmosphere mode"
+msgstr "大気モード"
+
+msgid "Custom field conditions"
+msgstr "フィールド条件をカスタマイズ"
+
+msgid "Standard atmosphere by altitude"
+msgstr "高度別の標準大気"
+
+msgid "Reference air keeps the modeled density at 1.225 kg/m³."
+msgstr "標準空気では空気密度を1.225 kg/m³に固定します。"
+
+msgid "Custom field conditions set the modeled air density for this flight."
+msgstr "カスタムフィールド条件で、このフライトの空気密度を設定します。"
+
+msgid ""
+"Standard dry ISA density varies with geometric altitude from −500 to 11,000 "
+"m. This is a reference profile, not measured weather."
+msgstr "標準乾燥ISAの密度は幾何高度−500～11,000 mで変化します。実測天候ではなく、基準プロファイルです。"
+
+msgid "Standard atmosphere"
+msgstr "標準大気"
+
+msgid "Standard ISA at field %s m · density %s kg/m³"
+msgstr "フィールド高度%s mでの標準ISA · 密度%s kg/m³"
+
+msgid ""
+"Helicopter weather does not support %s. Use steady wind and repeating gusts."
+msgstr "ヘリコプターの天候では%sを使用できません。一定の風と周期的な突風を使用してください。"
+
+msgid ""
+"Helicopter weather uses steady wind and repeating gusts. Turbulence and "
+"altitude-varying atmosphere are not integrated yet."
+msgstr "ヘリコプターの天候では一定の風と周期的な突風を使用します。乱気流と高度による大気変化はまだ統合されていません。"
+
+msgid "Air density: %s kg/m³ · density altitude: %s m"
+msgstr "空気密度：%s kg/m³ · 密度高度：%s m"
+
+msgid "EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m"
+msgstr "EAS %.1f m/s  空気 %.3f kg/m³  密度高度 %.0f m"
+
+msgid "Density preview is unavailable until all field values are valid."
+msgstr "フィールドの値がすべて有効になるまで、密度をプレビューできません。"
+
+msgid "Preset"
+msgstr "プリセット"
+
+msgid "Custom"
+msgstr "カスタム"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Apply"
+msgstr "適用"
+
+msgid "Steady breeze"
+msgstr "安定したそよ風"
+
+msgid "Crosswind"
+msgstr "横風"
+
+msgid "Gusty"
+msgstr "突風あり"
+
+msgid "Updraft"
+msgstr "上昇気流"
+
+msgid "ground speed %.1f m/s  wind %.1f m/s from %s  up %+.1f m/s"
+msgstr "対地速度 %.1f m/s  風 %.1f m/s・%sから  上昇気流 %+.1f m/s"
+
+msgid "Wind speed (0–15 m/s)"
+msgstr "風速（0–15 m/s）"
+
+msgid "Direction FROM (0–360°)"
+msgstr "風向 FROM（0–360°）"
+
+msgid "Horizontal gust peak (0–8 m/s)"
+msgstr "水平突風の最大値（0–8 m/s）"
+
+msgid "Vertical gust, up (−8 to 8 m/s)"
+msgstr "上向きの垂直突風（−8～8 m/s）"
+
+msgid "Gust duration (0.5–20 s)"
+msgstr "突風の継続時間（0.5～20秒）"
+
+msgid "Gust period (0.5–120 s)"
+msgstr "突風の発生周期（0.5～120秒）"
+
+msgid "Field elevation (−500 to 4000 m)"
+msgstr "フィールド標高（−500～4000 m）"
+
+msgid "Temperature (−20 to 45 °C)"
+msgstr "気温（−20～45 °C）"
+
+msgid "QNH (870 to 1085 hPa)"
+msgstr "QNH（870～1085 hPa）"
+
+msgid "Relative humidity (0 to 100%)"
+msgstr "相対湿度（0～100%）"
+
+msgid "North RMS (0–3 m/s)"
+msgstr "北方向RMS（0～3 m/s）"
+
+msgid "East RMS (0–3 m/s)"
+msgstr "東方向RMS（0～3 m/s）"
+
+msgid "Up RMS (0–3 m/s)"
+msgstr "上方向RMS（0～3 m/s）"
+
+msgid "Correlation time tau (0.2–30 s)"
+msgstr "相関時間 tau（0.2～30秒）"
+
+msgid "Seed (0–4294967295)"
+msgstr "シード値（0～4294967295）"
+
+msgid "Turbulence RMS N/E/Up: %s / %s / %s m/s; tau %s s; seed %s"
+msgstr "乱気流RMS 北/東/上：%s / %s / %s m/s、tau %s秒、シード値 %s"
+
+msgid "Turbulence practice"
+msgstr "乱気流の練習"
+
+msgid "Hot and high"
+msgstr "高温・高地"
+
+msgid "Cool dense air"
+msgstr "冷たく密度の高い空気"
+
+msgid ""
+"Enter valid numbers within the shown limits; gust period must be at least "
+"its duration."
+msgstr "表示された範囲内の数値を入力してください。突風の周期は継続時間以上にしてください。"
+
+msgid ""
+"Enter values within the shown limits; gust period must be at least its "
+"duration. Seed must contain digits only."
+msgstr "表示された範囲内の値を入力してください。突風の周期は継続時間以上にし、シード値には数字のみを入力してください。"
+
+msgid ""
+"Check field elevation, temperature, QNH and humidity against the displayed "
+"limits."
+msgstr "フィールド標高、気温、QNH、湿度が表示範囲内か確認してください。"
+
+msgid ""
+"Flights start in the air. Wind is uniform across the field; smooth gusts "
+"repeat on a timer. No turbulence or spatial variation. Wheel landings are "
+"experimental; a crash restarts the flight."
+msgstr ""
+"フライトは空中から始まります。風はフィールド全体で一様で、滑らかな突風が周期的に発生します。乱気流や空間的な変化はありません。車輪での着陸は実験段階です。墜落するとフライトが再開します。"
+
+msgid ""
+"Flights start airborne. Configure wind, gusts, turbulence and field air "
+"density. Landings are experimental; crashes restart."
+msgstr "フライトは空中から始まります。風、突風、乱気流、フィールドの空気密度を設定してください。着陸は実験段階です。墜落すると再開します。"
+
+msgid "PAUSED"
+msgstr "一時停止中"
+
+msgid "Continue"
+msgstr "続行"
+
+msgid "Restart flight"
+msgstr "フライトを再起動"
+
+msgid "End flight"
+msgstr "フライトを終了"
+
+msgid "This flight cannot continue: %s"
+msgstr "このフライトは続行できません：%s"
+
+msgid "Crashed. The flight restarts by itself after you resume."
+msgstr "墜落しました。続行するとフライトが自動的に再開します。"
+
+msgid "Crashed. Resume to inspect the wreck, or restart the flight."
+msgstr "墜落しました。続行して残骸を確認するか、フライトを再起動してください。"
+
+msgid ""
+"The radio was disconnected: engine at idle, sticks centred. Resume flies "
+"with the keyboard, or plug the radio back in."
+msgstr "送信機が切断されました：エンジンはアイドル、スティックは中央です。続行してキーボードで飛行するか、送信機を再接続してください。"
+
+msgid "Radio calibration cancelled; the previous profile stays."
+msgstr "送信機のキャリブレーションをキャンセルしました。以前のプロファイルを維持します。"
+
+msgid ""
+"Could not save the flight trace (error %d). Press End flight again to end "
+"without it."
+msgstr "フライト記録を保存できませんでした（エラー%d）。もう一度「フライトを終了」を押すと、記録せずに終了します。"
+
+msgid ""
+"Could not save the flight trace (error %d). Press Quit again to quit without"
+" it."
+msgstr "フライト記録を保存できませんでした（エラー%d）。もう一度「終了」を押すと、記録せずに終了します。"
+
+msgid "Help"
+msgstr "ヘルプ"
+
+msgid "Close"
+msgstr "閉じる"
+
+msgid "WHILE FLYING"
+msgstr "飛行中"
+
+msgid "RADIO"
+msgstr "送信機"
+
+msgid "RIGHT NOW"
+msgstr "現在"
+
+msgid "ABOUT"
+msgstr "このソフトについて"
+
+msgid "Keys are shown as your keyboard layout prints them."
+msgstr "キー名はキーボードに印字された表記で表示されます。"
+
+msgid ""
+"Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, "
+"Joystick). It flies while connected; the engine starts once the throttle "
+"stick has been low. Unplugging it pauses the flight with the engine at idle."
+" K calibrates it. Assign gear AUX or the optional Toggle landing gear action"
+" in Controller settings."
+msgstr ""
+"EdgeTX送信機をUSBで接続してください（Model setup → USB Joystick: Advanced, "
+"Joystick）。接続中は飛行できます。スロットルスティックを下げた後、エンジンが始動します。送信機を外すとフライトが一時停止し、エンジンはアイドルになります。Kでキャリブレーションします。ギアのAUXまたはコントローラー設定のToggle"
+" landing gearを割り当ててください。"
+
+msgid "Pause menu (in the radio calibration: cancel it)"
+msgstr "一時停止メニュー（送信機のキャリブレーション中はキャンセル）"
+
+msgid "Restart the flight"
+msgstr "フライトを再起動"
+
+msgid "Resume after a radio failsafe"
+msgstr "送信機のフェイルセーフ後に続行"
+
+msgid "Views: next (Shift+C back), pilot, chase (again: 3D), fly-by, orbit"
+msgstr "ビュー：次へ（戻る：Shift+C）、パイロット、追跡（もう一度：3D）、通過、周回"
+
+msgid "Zoom: auto on/off, in, out, reset"
+msgstr "ズーム：自動オン/オフ、拡大、縮小、リセット"
+
+msgid "Backspace"
+msgstr "Backspace"
+
+msgid "Ground shadow · night lights"
+msgstr "地面の影 · 夜間灯"
+
+msgid "Night lights: all"
+msgstr "夜間灯：すべて"
+
+msgid "Night lights: nav"
+msgstr "夜間灯：航法灯"
+
+msgid "Night lights: off"
+msgstr "夜間灯：オフ"
+
+msgid "Record a flight trace (press again to save it)"
+msgstr "フライト記録を開始（もう一度押すと保存）"
+
+msgid "Calibrate the radio"
+msgstr "送信機をキャリブレーション"
+
+msgid "Next radio calibration step"
+msgstr "送信機キャリブレーションの次の手順"
+
+msgid "Reload the aircraft data file"
+msgstr "機体データファイルを再読み込み"
+
+msgid "Fly with the arrows"
+msgstr "矢印キーで飛行"
+
+msgid "Pause"
+msgstr "一時停止"
+
+msgid "Esc"
+msgstr "Esc"
+
+msgid "Enter"
+msgstr "Enter"
+
+msgid "Num Enter"
+msgstr "Num Enter"
+
+msgid "Left arrow"
+msgstr "左矢印"
+
+msgid "Right arrow"
+msgstr "右矢印"
+
+msgid "Up arrow"
+msgstr "上矢印"
+
+msgid "Down arrow"
+msgstr "下矢印"
+
+msgid "OpenRC Simulator %s (build %s, commit %s%s, %s)"
+msgstr "OpenRC Simulator %s（ビルド%s、コミット%s%s、%s）"
+
+msgid ", with local changes"
+msgstr "、ローカル変更あり"
+
+msgid "OpenRC Simulator %s, development build (run from the source tree)"
+msgstr "OpenRC Simulator %s、開発ビルド（ソースツリーから実行）"
+
+msgid "MIT licence"
+msgstr "MITライセンス"
+
+msgid "Ugly Stick designed by Phil Kraft · font Open Sans (SIL OFL)"
+msgstr "Phil Kraft設計のUgly Stick · フォント：Open Sans（SIL OFL）"
+
+msgid "Aircraft %d of %d"
+msgstr "機体%d / %d"
+
+msgid "Previous aircraft"
+msgstr "前の機体"
+
+msgid "Next aircraft"
+msgstr "次の機体"
+
+msgid "High-wing sport trainer · 1.52 m · .61 glow"
+msgstr "高翼スポーツトレーナー · 1.52 m · .61グローエンジン"
+
+msgid "Low-wing aerobat · 1.63 m · .61 glow"
+msgstr "低翼アクロ機 · 1.63 m · .61グローエンジン"
+
+msgid "Giant-scale warbird · 2.78 m · Moki 250 radial"
+msgstr "大型スケールの戦闘機モデル · 2.78 m · Moki 250星型エンジン"
+
+msgid ""
+"Experimental: estimated 1/4.5 physics (CARF-class kit, Moki S250 radial), "
+"not yet flight-tested. Runway or airborne start."
+msgstr ""
+"実験段階：CARFクラスのキットとMoki "
+"S250星型エンジンを想定した1/4.5スケールの推定物理モデルです。飛行試験は未実施です。滑走路または空中から開始します。"
+
+msgid "Sport jet · 2.00 m · JetCat P100-RX turbine"
+msgstr "スポーツジェット · 2.00 m · JetCat P100-RXタービン"
+
+msgid "Turbo Lumber Evolution"
+msgstr "Turbo Lumber Evolution"
+
+msgid "High-wing STOL · 1.55 m · 4S electric"
+msgstr "高翼STOL · 1.55 m · 4S電動"
+
+msgid ""
+"Experimental: estimated electric motor and borrowed propeller data. Fixed "
+"wheels, flaps up, assists off."
+msgstr "実験段階：電動モーターは推定値、プロペラは別機種のデータを使用しています。固定脚、フラップ収納、アシスト無効。"
+
+msgid "X8 Flying Wing"
+msgstr "X8 Flying Wing"
+
+msgid "X8 Wing"
+msgstr "X8 Wing"
+
+msgid "EPO flying wing · 2.12 m · 6S electric pusher"
+msgstr "EPO製全翼機 · 2.12 m · 6Sプッシャー式電動"
+
+msgid ""
+"Experimental: NTNU flight-identified aerodynamics with an estimated electric"
+" drive; elevons, no landing gear (airborne start), tougher foam airframe. "
+"Not flight-validated."
+msgstr ""
+"実験段階：NTNUの飛行同定データによる空力と、推定電動パワートレインを使用しています。エレボン、脚なし（空中スタート）、強化フォーム構造。飛行検証は未実施です。"
+
+msgid "Flight model under evaluation."
+msgstr "飛行モデルを評価中です。"
+
+msgid "Full-rudder sideslip and R02 yaw damping acceptance remain pending."
+msgstr "フルラダーでの横滑りとR02ヨーダンピングは、まだ承認されていません。"
+
+msgid ""
+"Experimental: first physics estimate from the plans, not yet flight-tested."
+msgstr "実験段階：設計図に基づく物理モデルの初期推定です。飛行試験は未実施です。"
+
+msgid ""
+"Experimental: first physics estimate (turbine, kit and owner data), not yet "
+"flight-tested. Runway or airborne start."
+msgstr "実験段階：タービン、キット、所有者データに基づく物理モデルの初期推定です。飛行試験は未実施です。滑走路または空中から開始します。"
+
+msgid "Preview only: turbine propulsion is not simulated yet."
+msgstr "プレビューのみ：タービン推進はまだシミュレートされていません。"
+
+msgid "The field could not be loaded."
+msgstr "フィールドを読み込めませんでした。"
+
+msgid ""
+"Flight is unavailable. Restore the field data and restart the simulator."
+msgstr "フライトを利用できません。フィールドデータを復元してシミュレーターを再起動してください。"
+
+msgid "Start: in the air"
+msgstr "空中スタート"
+
+msgid "Start: in the air at 50% throttle"
+msgstr "空中スタート · スロットル50%"
+
+msgid ""
+"Starts in level flight at 50% throttle. Trim stays fixed while you fly."
+msgstr "スロットル50%で水平飛行から開始します。飛行中、トリムは固定です。"
+
+msgid "Start: runway (experimental)"
+msgstr "滑走路スタート（実験段階）"
+
+msgid "Starts on the runway. Experimental ground handling."
+msgstr "滑走路から開始します。地上での挙動は実験段階です。"
+
+msgid ""
+"Starts on the runway, trimmed for level flight at 50% throttle. Experimental"
+" ground handling."
+msgstr "滑走路から開始し、スロットル50%の水平飛行に合わせてトリム調整済みです。地上での挙動は実験段階です。"
+
+msgid "Start: hand launch"
+msgstr "手投げスタート"
+
+msgid ""
+"Thrown by hand into the wind at full throttle, trimmed for level flight at "
+"50% throttle."
+msgstr "向かい風に向けて全開で手投げし、スロットル50%の水平飛行に合わせてトリム調整済みです。"
+
+msgid "Hand launch"
+msgstr "手投げ"
+
+msgid "Could not start flight: %s"
+msgstr "フライトを開始できませんでした：%s"
+
+msgid "Could not update Home lighting; the previous view remains active."
+msgstr "ホームの照明を更新できませんでした。前の画面を維持します。"
+
+msgid "Time of day"
+msgstr "時間"
+
+msgid ""
+"Choose the lighting for this flight. Apply updates the paused flight and its"
+" future restarts."
+msgstr "このフライトの照明を選択してください。「適用」で一時停止中のフライトと今後の再起動に反映します。"
+
+msgid ""
+"Could not apply lighting. The flight remains paused; check the values and "
+"try again."
+msgstr "照明を適用できませんでした。フライトは一時停止のままです。値を確認して再試行してください。"
+
+msgid "Lighting model"
+msgstr "照明モデル"
+
+msgid "Time preset"
+msgstr "時間プリセット"
+
+msgid "Local time"
+msgstr "現地時刻"
+
+msgid "Date (YYYY-MM-DD)"
+msgstr "日付（YYYY-MM-DD）"
+
+msgid "UTC offset (minutes)"
+msgstr "UTCオフセット（分）"
+
+msgid "Latitude (degrees)"
+msgstr "緯度（度）"
+
+msgid "Longitude (degrees)"
+msgstr "経度（度）"
+
+msgid "Location name"
+msgstr "場所の名前"
+
+msgid "Date and location (advanced)"
+msgstr "日付と場所（詳細設定）"
+
+msgid "Legacy daylight"
+msgstr "従来の日照"
+
+msgid "Astronomical time"
+msgstr "天文時刻"
+
+msgid "Dawn"
+msgstr "夜明け"
+
+msgid "Noon"
+msgstr "正午"
+
+msgid "Sunset"
+msgstr "日没"
+
+msgid "Night"
+msgstr "夜"
+
+msgid ""
+"Date, time and UTC offset are explicit. The selected time stays fixed during"
+" flight; OS time is not used."
+msgstr "日付、時刻、UTCオフセットを指定します。選択した時刻は飛行中に変わらず、OSの時刻も使用しません。"
+
+msgid ""
+"Legacy daylight keeps the original fixed daylight look; choose astronomical "
+"time to use the selected local time."
+msgstr "従来の日照では元の固定された昼間の見た目を維持します。選択した現地時刻を使うには天文時刻を選んでください。"
+
+msgid ""
+"The Sun is more than 6° below the horizon. There are no aircraft or field "
+"lights, so the airplane may be difficult to see."
+msgstr "太陽は地平線より6°以上低い位置にあります。機体とフィールドに照明がないため、機体が見えにくくなります。"
+
+msgid ""
+"Check the time, date, UTC offset and location. Apply will not save invalid "
+"lighting."
+msgstr "時刻、日付、UTCオフセット、場所を確認してください。無効な照明設定は保存されません。"
+
+msgid "Check the time, date, UTC offset and location."
+msgstr "時刻、日付、UTCオフセット、場所を確認してください。"
+
+msgid "Daylight"
+msgstr "昼間"
+
+msgid "Civil twilight"
+msgstr "市民薄明"
+
+msgid "Nautical twilight"
+msgstr "航海薄明"
+
+msgid "Astronomical twilight"
+msgstr "天文薄明"
+
+msgid "Local time %s"
+msgstr "現地時刻 %s"
+
+msgid "%s · Local time %s · %s · %s · %s"
+msgstr "%s · 現地時刻 %s · %s · %s · %s"
+
+msgid "Check the time, date and location to preview the lighting phase."
+msgstr "照明の段階をプレビューするには、時刻、日付、場所を確認してください。"
+
+msgid "Check the time, date and location."
+msgstr "時刻、日付、場所を確認してください。"
+
+msgid "Fix the time and location before choosing a preset."
+msgstr "プリセットを選ぶ前に時刻と場所を修正してください。"
+
+msgid "This preset is unavailable for the current date and location."
+msgstr "このプリセットは現在の日付と場所では使用できません。"
+
+msgid "Enter a local time as HH:MM or HH:MM:SS."
+msgstr "現地時刻をHH:MMまたはHH:MM:SS形式で入力してください。"
+
+msgid "Lighting phase unavailable."
+msgstr "照明の段階を利用できません。"
+
+msgid "Invalid saved time-of-day settings; using legacy daylight."
+msgstr "保存された時刻設定が無効です。従来の日照を使用します。"
+
+msgid ""
+"Flights start in the air. Wheel landings are experimental; a crash restarts "
+"the flight. No wind yet."
+msgstr "フライトは空中から始まります。車輪での着陸は実験段階です。墜落するとフライトが再開します。風はまだありません。"
+
+msgid "Time of day: %s"
+msgstr "時間：%s"
+
+msgid "Day"
+msgstr "昼間"
+
+msgid "Golden hour"
+msgstr "ゴールデンアワー"
+
+msgid "Blue hour"
+msgstr "ブルーアワー"
+
+msgid "Night, full moon"
+msgstr "満月の夜"
+
+msgid "Night, no moon"
+msgstr "月のない夜"
+
+msgid "Evening, time passing"
+msgstr "夕方 · 時間経過あり"
+
+msgid "End this flight to change its time-of-day settings."
+msgstr "時間設定を変えるには、フライトを終了してください。"
+
+msgid "Update available: %s"
+msgstr "アップデートがあります：%s"
+
+msgid "Download"
+msgstr "ダウンロード"
+
+msgid "Hide"
+msgstr "非表示"
+
+msgid "Opens the release page in your browser."
+msgstr "リリースページをブラウザーで開きます。"
+
+msgid "Hides this notice until a newer version is published."
+msgstr "新しいバージョンが公開されるまで、この通知を非表示にします。"
+
+msgid "Could not open the browser (error %d)."
+msgstr "ブラウザーを開けませんでした（エラー%d）。"
+
+msgid "Stik smoke pump (keyboard controls)"
+msgstr "Stikのスモークポンプ（キーボード操作）"
+
+msgid "Assign the active radio's smoke AUX"
+msgstr "使用中の送信機にスモーク用AUXを割り当て"
+
+msgid "Button: pump while held"
+msgstr "ボタン：押している間ポンプを作動"
+
+msgid "Button: toggle on press"
+msgstr "ボタン：押すたびに切り替え"
+
+msgid ""
+"Move exactly one unused control. Multiple controls are ambiguous; try again."
+msgstr "未割り当ての操作子を1つだけ動かしてください。複数あると判別できません。再試行してください。"
+
+msgid "The axis needs a larger OFF-to-ON sweep. Try again."
+msgstr "軸をOFFからONまで、さらに大きく動かしてください。再試行してください。"
+
+msgid ""
+"This assignment conflicts with the flight controls or has invalid endpoints."
+msgstr "この割り当ては飛行操作と競合しているか、端点が無効です。"
+
+msgid "The axis did not return to OFF. Return it to OFF and press Enter."
+msgstr "軸がOFFに戻りませんでした。OFFに戻してEnterを押してください。"
+
+msgid "The saved OFF and ON positions are too close. Repeat the assignment."
+msgstr "保存されたOFFとONの位置が近すぎます。割り当てをやり直してください。"
+
+msgid ""
+"Release the assigned button after entering this step, then press Enter."
+msgstr "この手順を始めたら割り当てたボタンを離し、Enterを押してください。"
+
+msgid ""
+"The current flight profile is invalid; the AUX assignment was not saved."
+msgstr "現在のフライトプロファイルが無効です。AUXの割り当ては保存されませんでした。"
+
+msgid ""
+"Smoke pump assignment\n"
+"Keep the intended control OFF, then press Enter."
+msgstr ""
+"スモークポンプの割り当て\n"
+"対象の操作子をOFFにしてから、Enterを押してください。"
+
+msgid ""
+"Turn the intended control ON\n"
+"Move or press exactly one unused control, then press Enter."
+msgstr ""
+"対象の操作子をONにしてください\n"
+"未割り当ての操作子を1つだけ動かすか押して、Enterを押してください。"
+
+msgid "axis %d"
+msgstr "軸 %d"
+
+msgid "button %d"
+msgstr "ボタン %d"
+
+msgid ""
+"Return %s to OFF, then press Enter. For a button, release it after this step"
+" begins."
+msgstr "%sをOFFに戻してEnterを押してください。ボタンの場合は、この手順が始まったら離してください。"
+
+msgid "Smoke pump assignment closed."
+msgstr "スモークポンプの割り当てを終了しました。"
+
+msgid "Detected live: %s. Use one control only; AETR axes are ignored."
+msgstr "入力を検出：%s。操作子は1つだけ使用してください。AETR軸は無視されます。"
+
+msgid "Selected: %s. Only events from the active device count."
+msgstr "選択：%s。有効なデバイスからの入力だけを使用します。"
+
+msgid ""
+"Only the active device is read. AETR axes cannot be assigned. Esc cancels."
+msgstr "アクティブなデバイスのみ読み取ります。AETR軸は割り当てできません。Escでキャンセルします。"
+
+msgid "[H] smoke pump %s  [J] assign radio AUX"
+msgstr "[H] スモークポンプ %s  [J] 送信機AUXを割り当て"
+
+msgid "Connect a radio before assigning smoke AUX."
+msgstr "スモーク用AUXを割り当てる前に、送信機を接続してください。"
+
+msgid ""
+"Smoke AUX assigned. Move throttle and smoke control to OFF before resuming."
+msgstr "スモーク用AUXを割り当てました。再開前にスロットルとスモーク操作をOFFにしてください。"
+
+msgid "Smoke AUX assigned for this flight; profile could not be saved."
+msgstr "このフライトではスモーク用AUXを割り当てましたが、プロファイルを保存できませんでした。"
+
+msgid ""
+"Could not save the updated controller profile; the existing profile is "
+"unchanged."
+msgstr "更新したコントローラープロファイルを保存できませんでした。以前のプロファイルは変更されていません。"
+
+msgid "The current controller profile could not be updated."
+msgstr "現在のコントローラープロファイルを更新できませんでした。"
+
+msgid "Stik smoke pump"
+msgstr "Stikのスモークポンプ"
+
+msgid "Assign smoke AUX"
+msgstr "スモーク用AUXを割り当て"
+
+msgid "Flight data"
+msgstr "フライトデータ"
+
+msgid "Transmitter"
+msgstr "送信機"
+
+msgid "Radio appearance"
+msgstr "送信機の外観"
+
+msgid "Stick mode"
+msgstr "スティックモード"
+
+msgid "Wind"
+msgstr "風"
+
+msgid "Telemetry"
+msgstr "テレメトリー"
+
+msgid "Diagnostics"
+msgstr "診断"
+
+msgid "Performance"
+msgstr "パフォーマンス"
+
+msgid "Airspeed"
+msgstr "対気速度"
+
+msgid "Airspeed dial"
+msgstr "対気速度計"
+
+msgid "Artificial horizon"
+msgstr "人工水平儀"
+
+msgid "Altimeter"
+msgstr "高度計"
+
+msgid "Heading indicator"
+msgstr "方位計"
+
+msgid "Vertical speed indicator"
+msgstr "昇降計"
+
+msgid "Nose pitch"
+msgstr "機首ピッチ"
+
+msgid "Bank"
+msgstr "バンク"
+
+msgid "True heading"
+msgstr "真方位"
+
+msgid "Height above datum"
+msgstr "基準面高度"
+
+msgid "True airspeed"
+msgstr "真対気速度"
+
+msgid "Climb / sink"
+msgstr "上昇 / 降下"
+
+msgid "Scale exceeded"
+msgstr "スケール超過"
+
+msgid "Dial range"
+msgstr "目盛範囲"
+
+msgid "No attitude data"
+msgstr "姿勢データなし"
+
+msgid "Datum"
+msgstr "基準面"
+
+msgid "Hundreds / thousands"
+msgstr "百 / 千"
+
+msgid "RECENT"
+msgstr "直近"
+
+msgid "NOW"
+msgstr "現在"
+
+msgid "Fuel tank"
+msgstr "燃料タンク"
+
+msgid "Trims"
+msgstr "トリム"
+
+msgid "All instruments"
+msgstr "すべての計器"
+
+msgid "Classic cockpit"
+msgstr "クラシックコックピット"
+
+msgid "Use cockpit layout"
+msgstr "コックピット配置を使用"
+
+msgid "Navigation"
+msgstr "ナビゲーション"
+
+msgid "RC navigation"
+msgstr "RCナビゲーション"
+
+msgid "Use RC navigation layout"
+msgstr "RCナビゲーション配置を使用"
+
+msgid ""
+"The RC navigation layout shows a north-up pilot radar, wind and drift, and "
+"cruise efficiency."
+msgstr "RCナビゲーションには、北を上にしたパイロットレーダー、風と偏流、巡航効率が表示されます。"
+
+msgid "Pilot radar"
+msgstr "パイロットレーダー"
+
+msgid "Wind & drift"
+msgstr "風と偏流"
+
+msgid "Cruise efficiency"
+msgstr "巡航効率"
+
+msgid "Training"
+msgstr "トレーニング"
+
+msgid "Use training layout"
+msgstr "トレーニング配置を使用"
+
+msgid "Maneuver meter"
+msgstr "マニューバー計"
+
+msgid "Glide monitor"
+msgstr "滑空モニター"
+
+msgid "Flight summary"
+msgstr "フライト概要"
+
+msgid "Flight tools"
+msgstr "フライトツール"
+
+msgid ""
+"Current airspeed, recent trend, flight maximum and ground speed. Dashes "
+"indicate missing readings."
+msgstr "現在の対気速度、最近の傾向、飛行中の最大値、対地速度を表示します。ダッシュはデータなしを示します。"
+
+msgid ""
+"Height above ground, distance to pilot, climb/sink rate and flight time. "
+"Dashes indicate missing telemetry."
+msgstr "地上高、パイロットまでの距離、上昇/降下率、飛行時間を表示します。ダッシュはテレメトリーなしを示します。"
+
+msgid ""
+"Battery remaining with voltage/current, or fuel level and reserve. "
+"Unavailable if valid power and finite fuel data are both missing."
+msgstr "電圧/電流を含むバッテリー残量、または燃料レベルと予備量を表示します。有効な電力データと有限燃料データが両方ない場合は利用できません。"
+
+msgid ""
+"Wind speed, direction it comes from and vertical airflow. Missing telemetry "
+"shows dashes; calm wind is labeled."
+msgstr "風速、風向、垂直気流を表示します。テレメトリーなしはダッシュ、無風はラベルで示します。"
+
+msgid ""
+"Remaining tank volume and fuel mass, plus a low-reserve warning. If finite "
+"fuel data is missing, shows “No finite fuel tank” and dashes."
+msgstr "タンクの残量と燃料質量、残量低下の警告を表示します。有限燃料データがない場合は「有限燃料タンクなし」とダッシュを表示します。"
+
+msgid ""
+"Roll, pitch and yaw trim offsets as % of full travel. Missing trim telemetry"
+" is marked unavailable."
+msgstr "ロール、ピッチ、ヨーのトリム量を全舵角に対する%で表示します。トリムのテレメトリーがない場合は利用不可と表示します。"
+
+msgid ""
+"Engine RPM, throttle command and flight load (g). RPM is unavailable without"
+" engine telemetry; other readings may remain."
+msgstr ""
+"エンジン回転数、スロットル指令、飛行荷重（g）を表示します。エンジンのテレメトリーがないと回転数は表示されませんが、ほかの値は表示される場合があります。"
+
+msgid ""
+"True airspeed and flight maximum on a dial. Blank when airspeed data is "
+"missing."
+msgstr "真対気速度と飛行中の最大値を計器に表示します。対気速度データがない場合は空欄です。"
+
+msgid ""
+"Nose pitch and bank angles. Blank unless both attitude readings are "
+"available."
+msgstr "機首ピッチ角とバンク角を表示します。両方の姿勢データが揃わない場合は空欄です。"
+
+msgid ""
+"Height above datum and above ground (AGL). Blank when datum height is "
+"unavailable."
+msgstr "基準面高度と地上高（AGL）を表示します。基準面高度がない場合は空欄です。"
+
+msgid ""
+"True nose heading (0–360°), referenced to N/E/S/W. No reading when heading "
+"data is missing."
+msgstr "真の機首方位（0～360°）をN/E/S/W基準で表示します。方位データがない場合は表示されません。"
+
+msgid ""
+"Vertical speed (climb/sink) on a dial. Blank when vertical-speed data is "
+"unavailable."
+msgstr "垂直速度（上昇/降下）を計器に表示します。データがない場合は空欄です。"
+
+msgid ""
+"North-up aircraft position and horizontal distance relative to the pilot, "
+"plus range ring and AGL. Requires a valid pilot-relative position sample."
+msgstr "北を上にした機体位置、パイロットからの水平距離、距離リング、AGLを表示します。パイロット基準位置の有効なサンプルが必要です。"
+
+msgid ""
+"Nose heading, ground track, drift angle, headwind and crosswind. Track is "
+"unavailable below 1 m/s or without ground-course data."
+msgstr ""
+"機首方位、対地航跡、偏流角、向かい風、横風を表示します。対地速度1 m/s未満、または対地コースのデータがない場合、対地航跡は表示されません。"
+
+msgid ""
+"10 s rolling electric energy per ground distance (Wh/km or Wh/mi), not "
+"range. Needs valid power, ≥3 m/s ground speed and 2 s of samples."
+msgstr ""
+"対地距離あたりの10秒移動平均電力量（Wh/kmまたはWh/mi）です。航続距離ではありません。有効な電力、対地速度≥3 "
+"m/s、2秒分のサンプルが必要です。"
+
+msgid ""
+"Current G load and flight minimum/maximum, bank angle and angle of attack. "
+"Dashes indicate missing readings."
+msgstr "現在のG荷重と飛行中の最小/最大値、バンク角、迎角を表示します。ダッシュはデータなしを示します。"
+
+msgid ""
+"Climb/sink history and ground glide ratio. Requires descending, low-power "
+"flight with little bank and enough speed. Wind affects the ratio; it is not "
+"aerodynamic L/D."
+msgstr ""
+"上昇/降下の履歴と地上滑空比を表示します。低出力でバンクが小さく、十分な速度を保った降下が必要です。風で値は変わります。空力L/Dではありません。"
+
+msgid ""
+"Since flight reset: elapsed time including ground time, peak airspeed, max "
+"AGL, ground-track distance and min/max body G. Dashes mark missing values; "
+"distance may be partial."
+msgstr ""
+"フライトのリセット以降：地上時間を含む経過時間、最大対気速度、最大AGL、対地航跡距離、機体軸G荷重の最小/最大値。ダッシュは欠損値を示し、距離は一部の可能性があります。"
+
+msgid ""
+"Unlocked: drag the header to move; double-click to restore its position. × "
+"closes; this switch reopens. Appearance applies to all widgets."
+msgstr ""
+"ロック解除中：見出しをドラッグして移動し、ダブルクリックで元の位置に戻します。×で閉じ、このスイッチで再表示します。外観設定は全ウィジェットに適用されます。"
+
+msgid ""
+"Body-axis load factor, not total acceleration. Flight extrema are sampled at"
+" 10 Hz."
+msgstr "機体軸の荷重係数であり、合計加速度ではありません。飛行中の極値は10 Hzでサンプリングされます。"
+
+msgid ""
+"Vertical speed history. Ground glide is distance over height lost, not "
+"aerodynamic L/D."
+msgstr "垂直速度の履歴です。地上滑空比は移動距離を高度損失で割った値で、空力L/Dではありません。"
+
+msgid ""
+"Sampled statistics since flight reset, including time on the ground. "
+"Distance follows the ground track."
+msgstr "フライトのリセット以降にサンプリングした統計です。地上時間を含み、距離は対地航跡に沿って計算されます。"
+
+msgid "MIN LOAD"
+msgstr "最小荷重"
+
+msgid "MAX LOAD"
+msgstr "最大荷重"
+
+msgid "Low throttle · ground glide"
+msgstr "低スロットル · 地上滑空"
+
+msgid "Reduce throttle to measure glide"
+msgstr "スロットルを下げて滑空を計測"
+
+msgid "Level the wings to measure glide"
+msgstr "翼を水平にして滑空を計測"
+
+msgid "Too slow to measure glide"
+msgstr "滑空計測には速度不足です"
+
+msgid "No descent to measure"
+msgstr "計測できる降下がありません"
+
+msgid "Glide data unavailable"
+msgstr "滑空データを利用できません"
+
+msgid "GROUND GLIDE"
+msgstr "地上滑空"
+
+msgid "This flight · sampled statistics"
+msgstr "このフライト · サンプリング統計"
+
+msgid "* Distance excludes missing samples"
+msgstr "* 欠損サンプル分の距離は含みません"
+
+msgid "MAX AIRSPEED"
+msgstr "最大対気速度"
+
+msgid "MAX AGL"
+msgstr "最大AGL"
+
+msgid "BODY LOAD"
+msgstr "機体荷重"
+
+msgid "TRACK DISTANCE"
+msgstr "対地航跡距離"
+
+msgid "LOAD MIN / MAX"
+msgstr "最小 / 最大荷重"
+
+msgid "North-up · aircraft position relative to the pilot"
+msgstr "北を上に表示 · パイロット基準の機体位置"
+
+msgid "White: nose heading · amber: ground track"
+msgstr "白：機首方位 · 琥珀色：対地航跡"
+
+msgid "Rolling consumption per ground distance; not remaining range"
+msgstr "対地距離あたりの移動平均消費量。残り航続距離ではありません。"
+
+msgid "Pilot at centre · north up"
+msgstr "中央にパイロット · 北を上に表示"
+
+msgid "Position unavailable"
+msgstr "位置データなし"
+
+msgid "RANGE RING"
+msgstr "距離リング"
+
+msgid "Horizontal distance to the pilot, not the launch point"
+msgstr "パイロットまでの水平距離。発進地点までの距離ではありません。"
+
+msgid "Track"
+msgstr "対地航跡"
+
+msgid "Track unavailable below 1 m/s"
+msgstr "対地速度1 m/s未満では表示できません"
+
+msgid "Ground track unavailable"
+msgstr "対地航跡データなし"
+
+msgid "Ground speed unavailable"
+msgstr "対地速度データなし"
+
+msgid "HEADWIND"
+msgstr "向かい風"
+
+msgid "TAILWIND"
+msgstr "追い風"
+
+msgid "WIND TO RIGHT"
+msgstr "右向きの風"
+
+msgid "WIND TO LEFT"
+msgstr "左向きの風"
+
+msgid "Ground track minus nose heading; positive is right"
+msgstr "対地航跡から機首方位を引いた値。正の値は右向きです。"
+
+msgid "10 s rolling window · lower uses less"
+msgstr "10秒移動平均 · 値が小さいほど消費が少ない"
+
+msgid "Collecting cruise data"
+msgstr "巡航データを収集中"
+
+msgid "Cruise above 3 m/s to measure"
+msgstr "3 m/sを超える巡航速度で計測してください"
+
+msgid "Electric power telemetry unavailable"
+msgstr "電力テレメトリーを利用できません"
+
+msgid "POWER"
+msgstr "電力"
+
+msgid "NOSE"
+msgstr "機首"
+
+msgid "Small"
+msgstr "小"
+
+msgid "Background"
+msgstr "背景"
+
+msgid "Balanced"
+msgstr "バランス"
+
+msgid "Solid"
+msgstr "不透明"
+
+msgid "Compact instruments"
+msgstr "コンパクト計器"
+
+msgid "Aileron"
+msgstr "エルロン"
+
+msgid "Elevator"
+msgstr "エレベーター"
+
+msgid "Trim offset · % of full travel"
+msgstr "全舵角に対するトリム量 · %"
+
+msgid "No trim data"
+msgstr "トリムデータなし"
+
+msgid "Engine RPM · throttle command"
+msgstr "エンジン回転数 · スロットル指令"
+
+msgid "Engine telemetry unavailable"
+msgstr "エンジンテレメトリーなし"
+
+msgid "THROTTLE"
+msgstr "スロットル"
+
+msgid "FLIGHT LOAD"
+msgstr "飛行荷重"
+
+msgid "No finite fuel tank"
+msgstr "有限燃料タンクなし"
+
+msgid "REMAINING"
+msgstr "残量"
+
+msgid "FUEL MASS"
+msgstr "燃料質量"
+
+msgid "Tank level · remaining fuel"
+msgstr "タンク残量 · 燃料"
+
+msgid "Estimated reserve · land soon"
+msgstr "推定予備量 · 早めに着陸してください"
+
+msgid "E"
+msgstr "東"
+
+msgid "S"
+msgstr "南"
+
+msgid "W"
+msgstr "西"
+
+msgid "Speed & flight maximum"
+msgstr "速度と飛行中の最大値"
+
+msgid "Height & flight"
+msgstr "高度と飛行"
+
+msgid "Energy"
+msgstr "エネルギー"
+
+msgid "Wind conditions"
+msgstr "風の状態"
+
+msgid "Drag to move · positions are saved"
+msgstr "ドラッグで移動 · 位置を保存"
+
+msgid "Drag to move · double-click to restore position"
+msgstr "ドラッグで移動 · ダブルクリックで元の位置に戻す"
+
+msgid "Widget position locked"
+msgstr "ウィジェット位置をロック"
+
+msgid "Airspeed · recent trend"
+msgstr "対気速度 · 最近の傾向"
+
+msgid "FLIGHT MAX"
+msgstr "飛行中の最大値"
+
+msgid "GROUND"
+msgstr "地上"
+
+msgid "Above terrain · %s from pilot"
+msgstr "地形上空 · パイロットから%s"
+
+msgid "CLIMB / SINK"
+msgstr "上昇 / 降下"
+
+msgid "FLIGHT TIME"
+msgstr "飛行時間"
+
+msgid "No telemetry"
+msgstr "テレメトリーなし"
+
+msgid "Direction wind comes from"
+msgstr "風が吹いてくる方向"
+
+msgid "FROM"
+msgstr "風向"
+
+msgid "VERTICAL AIR"
+msgstr "垂直気流"
+
+msgid "Battery · estimated remaining"
+msgstr "バッテリー · 推定残量"
+
+msgid "PACK VOLTAGE"
+msgstr "バッテリー電圧"
+
+msgid "CURRENT"
+msgstr "電流"
+
+msgid "Battery critical · land now"
+msgstr "バッテリー危険 · すぐに着陸してください"
+
+msgid "Battery warning · check pack"
+msgstr "バッテリー警告 · パックを確認してください"
+
+msgid "Fuel remaining"
+msgstr "燃料残量"
+
+msgid "FUEL"
+msgstr "燃料"
+
+msgid "RESERVE"
+msgstr "予備量"
+
+msgid "Normal"
+msgstr "正常"
+
+msgid "Fuel reserve · land soon"
+msgstr "燃料予備量 · 早めに着陸してください"
+
+msgid "Energy level unavailable"
+msgstr "エネルギー残量なし"
+
+msgid "Maximum sampled airspeed this flight (10 Hz). Resets with the flight."
+msgstr "このフライトの最大対気速度（10 Hz）。フライト開始時にリセットされます。"
+
+msgid "BATTERY"
+msgstr "バッテリー"
+
+msgid "N"
+msgstr "北"
+
+msgid "Ground speed"
+msgstr "対地速度"
+
+msgid "Height"
+msgstr "高度"
+
+msgid "Vertical speed"
+msgstr "垂直速度"
+
+msgid "Distance"
+msgstr "距離"
+
+msgid "Elapsed simulation time"
+msgstr "シミュレーション経過時間"
+
+msgid "Elapsed sim time"
+msgstr "シミュレーション時間"
+
+msgid "Statistics unavailable"
+msgstr "統計データなし"
+
+msgid "Session airborne time"
+msgstr "セッション中の飛行時間"
+
+msgid "Started (UTC)"
+msgstr "開始（UTC）"
+
+msgid "Ended (UTC)"
+msgstr "終了（UTC）"
+
+msgid "Ended"
+msgstr "終了"
+
+msgid "Type"
+msgstr "タイプ"
+
+msgid "Kind"
+msgstr "種別"
+
+msgid "Outcome"
+msgstr "結果"
+
+msgid "Reason"
+msgstr "理由"
+
+msgid "Tick: %d"
+msgstr "ティック：%d"
+
+msgid "First contact tick: %d"
+msgstr "最初の接触ティック：%d"
+
+msgid "Start kind: %s"
+msgstr "開始種別：%s"
+
+msgid "Type: %s"
+msgstr "タイプ：%s"
+
+msgid "Kind: %s"
+msgstr "種別：%s"
+
+msgid "Outcome: %s"
+msgstr "結果：%s"
+
+msgid "Reason: %s"
+msgstr "理由：%s"
+
+msgid "More events omitted: %d"
+msgstr "省略されたイベント：%d件"
+
+msgid "Uncontrolled stop"
+msgstr "制御不能な停止"
+
+msgid "Record %d"
+msgstr "記録%d"
+
+msgid "Ground crash"
+msgstr "地上での墜落"
+
+msgid "Flight crash"
+msgstr "飛行中の墜落"
+
+msgid "Crash"
+msgstr "墜落"
+
+msgid "Crash context"
+msgstr "墜落状況"
+
+msgid "On ground"
+msgstr "地上"
+
+msgid "In flight"
+msgstr "飛行中"
+
+msgid "Restart"
+msgstr "再起動"
+
+msgid "Restart: %s"
+msgstr "再起動：%s"
+
+msgid "Restart reason"
+msgstr "再起動の理由"
+
+msgid "Flight statistics are not available for this activity."
+msgstr "このアクティビティのフライト統計は利用できません。"
+
+msgid "Flight started"
+msgstr "フライト開始"
+
+msgid "Landing event"
+msgstr "着陸イベント"
+
+msgid "Flight ended"
+msgstr "フライト終了"
+
+msgid "Full stop"
+msgstr "完全停止"
+
+msgid "Touch-and-go"
+msgstr "タッチアンドゴー"
+
+msgid "Successful"
+msgstr "成功"
+
+msgid "Stable support"
+msgstr "安定して接地"
+
+msgid "Ended before resolution"
+msgstr "解決前に終了"
+
+msgid "Airborne start"
+msgstr "空中スタート"
+
+msgid "Takeoff"
+msgstr "離陸"
+
+msgid "Fuel"
+msgstr "燃料"
+
+msgid "%d mL · %d %%"
+msgstr "%d mL · %d %%"
+
+msgid "Reserve: %d%% (%s)"
+msgstr "予備量：%d%%（%s）"
+
+msgid "estimated reserve"
+msgstr "推定予備量"
+
+msgid "authored reserve"
+msgstr "設定予備量"
+
+msgid "Angle of attack"
+msgstr "迎角"
+
+msgid "Sideslip"
+msgstr "横滑り"
+
+msgid "Bank angle"
+msgstr "バンク角"
+
+msgid "Pitch angle"
+msgstr "ピッチ角"
+
+msgid "Heading"
+msgstr "方位"
+
+msgid "Load factor"
+msgstr "荷重倍数"
+
+msgid "Engine"
+msgstr "エンジン"
+
+msgid "%d rpm"
+msgstr "%d rpm"
+
+msgid "Mode %d"
+msgstr "モード%d"
+
+msgid "from %03d°"
+msgstr "%03d°から"
+
+msgid "up %s"
+msgstr "上昇%s"
+
+msgid "FAILSAFE · radio lost"
+msgstr "フェイルセーフ · 送信機との通信なし"
+
+msgid "RADIO SAFE · throttle low to arm"
+msgstr "始動禁止 · スロットルを下げて始動を許可"
+
+msgid "STALL"
+msgstr "失速"
+
+msgid "LOW · sinking"
+msgstr "低高度 · 降下中"
+
+msgid "FAR · come closer"
+msgstr "遠すぎます · 近づいてください"
+
+msgid "FUEL RESERVE"
+msgstr "燃料予備量"
+
+msgid "FUEL RESERVE · ESTIMATED"
+msgstr "燃料予備量 · 推定"
+
+msgid "BATTERY LOW"
+msgstr "バッテリー残量低下"
+
+msgid "EXPERIMENTAL MODEL"
+msgstr "実験モデル"
+
+msgid "Battery"
+msgstr "バッテリー"
+
+msgid "BATTERY EMPTY"
+msgstr "バッテリー切れ"
+
+msgid "BATTERY CRITICAL"
+msgstr "バッテリー危険"
+
+msgid "LVC · land now"
+msgstr "LVC · すぐに着陸してください"
+
+msgid "BATTERY HOT"
+msgstr "バッテリー高温"
+
+msgid "LVC"
+msgstr "LVC"
+
+msgid "%s V/cell"
+msgstr "%s V/cell"
+
+msgid "min %s"
+msgstr "最小%s"
+
+msgid "last 60 s"
+msgstr "直近60秒"
+
+msgid "True SOC %s"
+msgstr "実SOC %s"
+
+msgid "weakest cell %s"
+msgstr "最弱セル %s"
+
+msgid "Keyboard"
+msgstr "キーボード"
+
+msgid "Release the sticks, triggers and buttons, then select Continue."
+msgstr "スティック、トリガー、ボタンをすべて離してから「続行」を選択してください。"
+
+msgid "Controls ready. Select Resume to fly."
+msgstr "操作の準備ができました。「再開」を選択して飛行してください。"
+
+msgid "Could not restart flight: %s"
+msgstr "フライトを再起動できませんでした：%s"
+
+msgid "Flight restarted. Select Resume when the controls are ready."
+msgstr "フライトを再起動しました。操作の準備ができたら「再開」を選択してください。"
+
+msgid "Gamepad"
+msgstr "ゲームパッド"
+
+msgid "Radio"
+msgstr "送信機"
+
+msgid "ARMED"
+msgstr "始動許可"
+
+msgid "SAFE"
+msgstr "始動禁止"
+
+msgid "Rates: normal"
+msgstr "舵角：通常"
+
+msgid "Rates: full"
+msgstr "舵角：最大"
+
+msgid "Rates: normal / full"
+msgstr "舵角：通常 / 最大"
+
+msgid "The radio sets its own rates."
+msgstr "舵角は送信機側で設定します。"
+
+msgid "This aircraft has no rate profile."
+msgstr "この機体に舵角プロファイルはありません。"
+
+msgid "Flight overlays"
+msgstr "フライトオーバーレイ"
+
+msgid ""
+"Close any overlay with its × or press F2 to cycle presets; F3 shows the "
+"developer overlays."
+msgstr "×でオーバーレイを閉じるか、F2でプリセットを切り替えてください。F3で開発者用オーバーレイを表示します。"
+
+msgid "Off"
+msgstr "オフ"
+
+msgid "Pilot"
+msgstr "パイロット"
+
+msgid "Full"
+msgstr "すべて"
+
+msgid "Developer"
+msgstr "開発者"
+
+msgid "Player"
+msgstr "プレイヤー"
+
+msgid "Player instruments"
+msgstr "プレイヤー計器"
+
+msgid "Modern"
+msgstr "モダン"
+
+msgid "Classic"
+msgstr "クラシック"
+
+msgid "Use player layout"
+msgstr "プレイヤー配置を使用"
+
+msgid ""
+"Drag an instrument header during flight to move it. Close with ×; reopen it "
+"here."
+msgstr "飛行中に計器の見出しをドラッグして移動します。×で閉じ、ここから再表示できます。"
+
+msgid "Drag a header in flight to move an instrument."
+msgstr "飛行中に見出しをドラッグして計器を移動します。"
+
+msgid "F2 cycles presets; F3 shows developer overlays."
+msgstr "F2でプリセットを切り替えます。F3で開発者用オーバーレイを表示します。"
+
+msgid "Lock widget positions"
+msgstr "ウィジェット位置を固定"
+
+msgid "Reset widget positions"
+msgstr "ウィジェット位置をリセット"
+
+msgid "Other overlays & diagnostics"
+msgstr "その他のオーバーレイと診断"
+
+msgid "Other overlays"
+msgstr "その他のオーバーレイ"
+
+msgid "Warnings"
+msgstr "警告"
+
+msgid "Diagnostics (developer)"
+msgstr "診断（開発者用）"
+
+msgid "Performance (developer)"
+msgstr "パフォーマンス（開発者用）"
+
+msgid "Units"
+msgstr "単位"
+
+msgid "By language"
+msgstr "言語に合わせる"
+
+msgid "Metric (km/h, m)"
+msgstr "メートル法（km/h、m）"
+
+msgid "Imperial (mph, ft)"
+msgstr "ヤード・ポンド法（mph、ft）"
+
+msgid "SI (m/s, m)"
+msgstr "SI（m/s、m）"
+
+msgid "Mode 1 (throttle right)"
+msgstr "モード1（右スロットル）"
+
+msgid "Mode 2 (throttle left)"
+msgstr "モード2（左スロットル）"
+
+msgid "Done"
+msgstr "完了"
+
+msgid "Overlay preset · developer overlays"
+msgstr "オーバーレイプリセット · 開発者用"
+
+msgid "Elevator trim: nose down / up"
+msgstr "エレベータートリム：機首下げ / 上げ"
+
+msgid "PgUp"
+msgstr "PgUp"
+
+msgid "PgDn"
+msgstr "PgDn"
+
+msgid "Elevator trim: %+.1f° (PgUp down / PgDn up)"
+msgstr "エレベータートリム：%+.1f°（PgUpで下げ / PgDnで上げ）"
+
+msgid "Aircraft Workshop"
+msgstr "機体ワークショップ"
+
+msgid "Return to Workshop"
+msgstr "ワークショップに戻る"
+
+msgid "Experimental Workshop trial · Esc to return"
+msgstr "実験的なワークショップ試験 · Escで戻る"
+
+msgid "The source aircraft is not available in this catalog."
+msgstr "このカタログに元の機体がありません。"
+
+msgid ""
+"Build a variant from any aircraft in the catalog. Changes are experimental."
+msgstr "カタログ内の機体からバリエーションを作成できます。変更は実験段階です。"
+
+msgid "Reset"
+msgstr "リセット"
+
+msgid "Undo"
+msgstr "元に戻す"
+
+msgid "Test fly"
+msgstr "試験飛行"
+
+msgid "AIRCRAFT"
+msgstr "機体"
+
+msgid "SAVED BUILDS"
+msgstr "保存済みビルド"
+
+msgid "STARTING PRESETS"
+msgstr "開始プリセット"
+
+msgid "AIRFRAME RECIPE · EXPERIMENTAL"
+msgstr "機体レシピ · 実験段階"
+
+msgid "BUILD CHECK"
+msgstr "ビルド確認"
+
+msgid "Still preview · no flight simulation"
+msgstr "プレビューのみ · 飛行シミュレーションなし"
+
+msgid "Experimental simulation; handling may differ from a real aircraft."
+msgstr "シミュレーションは実験段階です。挙動は実機と異なる場合があります。"
+
+msgid "Name this build"
+msgstr "ビルド名"
+
+msgid "Save build"
+msgstr "ビルドを保存"
+
+msgid "Save a copy"
+msgstr "コピーを保存"
+
+msgid "Choose a saved build…"
+msgstr "保存済みビルドを選択…"
+
+msgid "Load"
+msgstr "読み込む"
+
+msgid "Delete"
+msgstr "削除"
+
+msgid "Mini"
+msgstr "ミニ"
+
+msgid "Giant"
+msgstr "大型"
+
+msgid "Light"
+msgstr "軽量"
+
+msgid "Heavy"
+msgstr "重量級"
+
+msgid "Fast"
+msgstr "高速"
+
+msgid "Agile"
+msgstr "機敏"
+
+msgid "Slow"
+msgstr "低速"
+
+msgid "Presets change only adjustments supported by the selected airframe."
+msgstr "プリセットは選択した機体で対応する調整項目のみ変更します。"
+
+msgid "Airframe scale"
+msgstr "機体スケール"
+
+msgid "Mass scaling"
+msgstr "質量スケーリング"
+
+msgid "Constant wing loading"
+msgstr "翼面荷重を一定にする"
+
+msgid "Geometric"
+msgstr "幾何学的"
+
+msgid ""
+"Constant wing loading preserves wing loading as size changes. Geometric "
+"scales mass with volume."
+msgstr "サイズを変えても翼面荷重を維持します。幾何学スケールでは体積に応じて質量が変わります。"
+
+msgid "1× keeps the original value. Changes apply to a new trial flight."
+msgstr "1×では元の値を維持します。変更は新しい試験飛行に適用されます。"
+
+msgid "Weight multiplier"
+msgstr "重量倍率"
+
+msgid "Power multiplier"
+msgstr "出力倍率"
+
+msgid "Control travel"
+msgstr "舵角"
+
+msgid "Tank capacity"
+msgstr "タンク容量"
+
+msgid "Range %.2f×–%.2f× · experimental adjustment."
+msgstr "範囲 %.2f×～%.2f× · 実験的な調整です。"
+
+msgid "Not available for this engine type."
+msgstr "このエンジン形式では使用できません。"
+
+msgid ""
+"Estimated sizing proposal; tank dimensions scale uniformly. Fill fraction "
+"and blend density are preserved."
+msgstr "サイズの推定案です。タンク寸法は均等に拡大縮小し、充填率と混合密度は維持されます。"
+
+msgid "No declared finite tank."
+msgstr "有限容量のタンクが定義されていません。"
+
+msgid ""
+"Try different sizes, weights, tank capacities and power levels. Values are "
+"estimates for experimentation."
+msgstr "サイズ、重量、タンク容量、出力を変えてみてください。値は実験用の推定値です。"
+
+msgid "scale"
+msgstr "スケール"
+
+msgid "mass and weight"
+msgstr "質量と重量"
+
+msgid "power"
+msgstr "出力"
+
+msgid "control travel"
+msgstr "舵角"
+
+msgid "tank capacity"
+msgstr "タンク容量"
+
+msgid "Unsupported adjustments: %s. Those values stay unchanged."
+msgstr "未対応の調整項目：%s。これらの値は変更されません。"
+
+msgid "Scaling unavailable: %s"
+msgstr "スケーリングを利用できません：%s"
+
+msgid "Mass and weight unavailable: %s"
+msgstr "質量と重量を利用できません：%s"
+
+msgid "Ready for a trial · start in the air"
+msgstr "試験の準備完了 · 空中スタート"
+
+msgid "Build blocked until the listed validation errors are resolved."
+msgstr "表示された検証エラーを解決するまでビルドできません。"
+
+msgid "No build values are available."
+msgstr "ビルド値がありません。"
+
+msgid ""
+"Scale %s%% · %s mass · weight ×%.2f · power ×%.2f · control travel ×%.2f"
+msgstr "スケール%s%% · 質量%s · 重量×%.2f · 出力×%.2f · 舵角×%.2f"
+
+msgid ""
+"Tank capacity ×%.2f · estimated sizing; fill and density are preserved."
+msgstr "タンク容量×%.2f · 寸法は推定値。充填率と密度は維持されます。"
+
+msgid "Base → proposed"
+msgstr "基準 → 提案"
+
+msgid "Wing span"
+msgstr "翼幅"
+
+msgid "Wing area"
+msgstr "翼面積"
+
+msgid "Mass"
+msgstr "質量"
+
+msgid "Wing loading"
+msgstr "翼面荷重"
+
+msgid "Maximum RPM"
+msgstr "最大RPM"
+
+msgid "Static thrust"
+msgstr "静止推力"
+
+msgid "Static power"
+msgstr "静止出力"
+
+msgid "CG (% chord)"
+msgstr "重心（% 翼弦）"
+
+msgid "n/a"
+msgstr "該当なし"
+
+msgid "Scale 100%"
+msgstr "スケール100%"
+
+msgid "Scale %s%%  ·  span %.2f m"
+msgstr "スケール%s%%  ·  翼幅%.2f m"
+
+msgid "Delete saved build?"
+msgstr "保存済みビルドを削除しますか？"
+
+msgid "Delete this saved build from this device?"
+msgstr "このデバイスから保存済みビルドを削除しますか？"
+
+msgid "Saved build loaded. Review the experimental values before a trial."
+msgstr "ビルドを読み込みました。試験前に実験値を確認してください。"
+
+msgid "Saved build: %s"
+msgstr "保存済みビルド：%s"
+
+msgid "Saved build deleted."
+msgstr "保存済みビルドを削除しました。"
+
+msgid "Applied the %s preset where this aircraft supports it."
+msgstr "この機体で対応する場合、プリセット%sを適用しました。"
+
+msgid "Recipe reset to defaults. Use Undo to restore the previous values."
+msgstr "レシピを既定値に戻しました。「元に戻す」で以前の値を復元できます。"
+
+msgid "Previous recipe restored."
+msgstr "以前のレシピを復元しました。"
+
+msgid "Resolve the build errors before starting a trial."
+msgstr "試験を始める前にビルドエラーを解決してください。"
+
+msgid "The saved build has no aircraft data."
+msgstr "保存済みビルドに機体データがありません。"
+
+msgid "The saved build has no exact aircraft source snapshot."
+msgstr "保存済みビルドに元機体の正確なスナップショットがありません。"
+
+msgid "The saved build refers to an unknown catalog aircraft."
+msgstr "保存済みビルドがカタログにない機体を参照しています。"
+
+msgid "This catalog aircraft has no flight model and cannot start a trial."
+msgstr "このカタログ機体には飛行モデルがなく、試験を開始できません。"
+
+msgid "This aircraft is a visual preview and has no flight data."
+msgstr "この機体はビジュアルプレビューのみで、飛行データがありません。"
+
+msgid "Undo delete"
+msgstr "削除を元に戻す"
+
+msgid "The saved build could not be restored."
+msgstr "保存済みビルドを復元できませんでした。"
+
+msgid "Saved build restored. Load it to continue editing that revision."
+msgstr "保存済みビルドを復元しました。このリビジョンの編集を続けるには読み込んでください。"
+
+msgid "Aircraft library"
+msgstr "機体ライブラリ"
+
+msgid "All values"
+msgstr "すべての値"
+
+msgid "Back to editor"
+msgstr "エディターに戻る"
+
+msgid "Back to Home"
+msgstr "ホームに戻る"
+
+msgid "Back to Pause"
+msgstr "一時停止画面に戻る"
+
+msgid "Build name"
+msgstr "ビルド名"
+
+msgid "Compare"
+msgstr "比較"
+
+msgid "Current"
+msgstr "現在"
+
+msgid "Custom settings"
+msgstr "カスタム設定"
+
+msgid "Delete %s · revision %d?"
+msgstr "%s · リビジョン%dを削除しますか？"
+
+msgid "Difference"
+msgstr "差分"
+
+msgid "Discard changes"
+msgstr "変更を破棄"
+
+msgid "Draft"
+msgstr "下書き"
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "Enter a value from %.2f to %.2f."
+msgstr "%.2f～%.2fの値を入力してください。"
+
+msgid ""
+"Experimental values · static estimates, not measured flight performance."
+msgstr "実験値 · 静的推定であり、飛行性能の実測値ではありません。"
+
+msgid "Flight setup"
+msgstr "フライト設定"
+
+msgid "Front"
+msgstr "前面"
+
+msgid "Grid spacing: %.2f m between adjacent lines."
+msgstr "グリッド間隔：隣接する線の間隔は%.2f mです。"
+
+msgid ""
+"Grid spacing: %.2f m between adjacent lines. Span is the model's X-axis tip-"
+"to-tip extent."
+msgstr "グリッド間隔：隣接する線の間隔は%.2f mです。翼幅はモデルのX軸方向の翼端間距離です。"
+
+msgid "Library"
+msgstr "ライブラリ"
+
+msgid "Lower the camera."
+msgstr "カメラを下げてください。"
+
+msgid "Mass (kg)"
+msgstr "質量（kg）"
+
+msgid "Name or rename this build"
+msgstr "このビルドの名前を設定または変更"
+
+msgid "Name this build before saving."
+msgstr "保存する前にビルド名を設定してください。"
+
+msgid "New build"
+msgstr "新しいビルド"
+
+msgid "New build from selected aircraft"
+msgstr "選択した機体から新しいビルドを作成"
+
+msgid "No changes from the original."
+msgstr "元の機体から変更されていません。"
+
+msgid "Open another aircraft"
+msgstr "別の機体を開く"
+
+msgid "Open saved build"
+msgstr "保存済みビルドを開く"
+
+msgid "Original"
+msgstr "オリジナル"
+
+msgid "Original and draft"
+msgstr "オリジナルと下書き"
+
+msgid "Orbit left."
+msgstr "左に回転してください。"
+
+msgid "Orbit right."
+msgstr "右に回転してください。"
+
+msgid "Preview"
+msgstr "プレビュー"
+
+msgid "Raise the camera."
+msgstr "カメラを上げてください。"
+
+msgid "Range %.2f×–%.2f×"
+msgstr "範囲 %.2f×～%.2f×"
+
+msgid "Reset this page"
+msgstr "このページをリセット"
+
+msgid "Reset the camera to its default fit."
+msgstr "カメラを既定の構図に戻します。"
+
+msgid "Resume trial"
+msgstr "試験を再開"
+
+msgid "Restart trial"
+msgstr "試験を再起動"
+
+msgid "Retry save"
+msgstr "保存を再試行"
+
+msgid "revision %d"
+msgstr "リビジョン%d"
+
+msgid "Save and continue"
+msgstr "保存して続行"
+
+msgid "Save this build before continuing?"
+msgstr "続行する前にこのビルドを保存しますか？"
+
+msgid "Saved"
+msgstr "保存済み"
+
+msgid "Saved build deleted. Its open draft is still available as a copy."
+msgstr "保存済みビルドを削除しました。開いている下書きはコピーとして引き続き利用できます。"
+
+msgid "Show the %s standard view."
+msgstr "%sの標準ビューを表示します。"
+
+msgid "Show the current draft in Compare mode."
+msgstr "現在の下書きを比較モードで表示します。"
+
+msgid "Show the unmodified 100% aircraft in Compare mode."
+msgstr "変更していない100%の機体を比較モードで表示します。"
+
+msgid "Side"
+msgstr "側面"
+
+msgid "Starting preset"
+msgstr "開始プリセット"
+
+msgid "Static power (W)"
+msgstr "静止出力（W）"
+
+msgid "Static thrust (N)"
+msgstr "静止推力（N）"
+
+msgid "Stock aircraft"
+msgstr "標準機体"
+
+msgid "Tank capacity (l)"
+msgstr "タンク容量（l）"
+
+msgid "Technical details"
+msgstr "技術情報"
+
+msgid "The saved build could not be loaded."
+msgstr "保存済みビルドを読み込めませんでした。"
+
+msgid "This build cannot be saved until its errors are resolved."
+msgstr "エラーを解決するまで、このビルドを保存できません。"
+
+msgid "Top"
+msgstr "上面"
+
+msgid "Trace not saved"
+msgstr "記録未保存"
+
+msgid ""
+"The recording stopped, but the manual flight trace was not saved (error %d)."
+" Choose Retry save, Discard trace and continue, or Stay."
+msgstr ""
+"録画は停止しましたが、手動フライト記録を保存できませんでした（エラー%d）。「保存を再試行」「記録を破棄して続行」「そのまま」を選択してください。"
+
+msgid "Stay"
+msgstr "そのまま"
+
+msgid "Discard trace and continue"
+msgstr "記録を破棄して続行"
+
+msgid ""
+"Experimental Workshop trial · Esc opens Pause · Return to Workshop is on "
+"Pause"
+msgstr "実験的なワークショップ試験 · Escで一時停止 · ワークショップへの復帰は一時停止画面にあります。"
+
+msgid "Unavailable aircraft"
+msgstr "機体を利用できません"
+
+msgid "Unsaved build"
+msgstr "未保存のビルド"
+
+msgid "Unsaved changes"
+msgstr "未保存の変更"
+
+msgid "Value"
+msgstr "値"
+
+msgid "View the draft at its fitted size."
+msgstr "調整したサイズで下書きを表示します。"
+
+msgid "View"
+msgstr "表示"
+
+msgid "Wing area (m²)"
+msgstr "翼面積（m²）"
+
+msgid "Wing loading (kg/m²)"
+msgstr "翼面荷重（kg/m²）"
+
+msgid "Wing span (m)"
+msgstr "翼幅（m）"
+
+msgid "Zoom in."
+msgstr "拡大"
+
+msgid "Zoom out."
+msgstr "縮小"
+
+msgid "Compare original and draft at the same world scale."
+msgstr "オリジナルと下書きを同じワールドスケールで比較します。"
+
+msgid "%s  ·  %s%%  ·  span %.2f m"
+msgstr "%s  ·  %s%%  ·  翼幅%.2f m"
+
+msgid "100% · span 0.00 m"
+msgstr "100% · 翼幅0.00 m"
+
+msgid "%s · %s%s · %s"
+msgstr "%s · %s%s · %s"
+
+msgid "More power"
+msgstr "出力を上げる"
+
+msgid "More travel"
+msgstr "舵角を増やす"
+
+msgid "Light / low power"
+msgstr "軽量 / 低出力"
+
+msgid "Redo"
+msgstr "やり直す"
+
+msgid "Recipe change reapplied."
+msgstr "レシピの変更を再適用しました。"
+
+msgid "Recovered revision %d from backup. Review it before saving."
+msgstr "バックアップからリビジョン%dを復元しました。保存前に確認してください。"
+
+msgid "Natural Random"
+msgstr "自然なランダム選択"
+
+msgid "Another flight"
+msgstr "別のフライト"
+
+msgid "Repeat last flight"
+msgstr "前回のフライトを再現"
+
+msgid "Back"
+msgstr "戻る"
+
+msgid "Paint schemes"
+msgstr "塗装パターン"
+
+msgid "Choose paint (%d)"
+msgstr "塗装を選択（%d）"
+
+msgid "View all paint schemes and select one directly."
+msgstr "すべての塗装パターンを表示し、直接選択します。"
+
+msgid "Choose a paint for your next flight."
+msgstr "次のフライトの塗装を選択してください。"
+
+msgid "Selected"
+msgstr "選択中"
+
+msgid "NATURAL RANDOM"
+msgstr "自然なランダム選択"
+
+msgid "Stock airplane"
+msgstr "標準機"
+
+msgid "Model status"
+msgstr "モデルの状態"
+
+msgid "Custom from Natural Random"
+msgstr "自然なランダム選択からカスタム"
+
+msgid "No mean wind · %s m/s"
+msgstr "平均風なし · %s m/s"
+
+msgid "Wind from %03.0f° · %s m/s"
+msgstr "風向 %03.0f° · %s m/s"
+
+msgid "Gust increment: %s m/s"
+msgstr "突風の増分：%s m/s"
+
+msgid "Airborne start · Current field"
+msgstr "空中スタート · 現在のフィールド"
+
+msgid "Show details"
+msgstr "詳細を表示"
+
+msgid "Hide details"
+msgstr "詳細を非表示"
+
+msgid "Flight details"
+msgstr "フライト詳細"
+
+msgid "Flight seed: %s"
+msgstr "フライトシード：%s"
+
+msgid "Gust duration %s s · repeat every %s s"
+msgstr "突風の継続時間 %s秒 · %s秒ごとに繰り返し"
+
+msgid "Vertical gust increment: %s m/s"
+msgstr "垂直突風の増分：%s m/s"
+
+msgid "Morning light"
+msgstr "朝の光"
+
+msgid "Late afternoon light"
+msgstr "夕方の光"
+
+msgid "Custom lighting"
+msgstr "カスタム照明"
+
+msgid "Calm air"
+msgstr "穏やかな空気"
+
+msgid "Lively breeze"
+msgstr "強めのそよ風"
+
+msgid "Windy day"
+msgstr "風の強い日"
+
+msgid "Preparing flight…"
+msgstr "フライトを準備中…"
+
+msgid "Could not prepare random flight: %s"
+msgstr "ランダムフライトを準備できませんでした：%s"
+
+msgid "Glow: cut, starter, lean/rich mixture"
+msgstr "グローエンジン：カット、スターター、混合気（薄め/濃いめ）"
+
+msgid "Restart / resume after radio failsafe"
+msgstr "送信機フェイルセーフ後に再起動 / 再開"
+
+msgid "RC cars · Bisonte MT8"
+msgstr "RCカー · Bisonte MT8"
+
+msgid "Workshop"
+msgstr "ワークショップ"
+
+msgid "Field lighting"
+msgstr "フィールド照明"
+
+msgid "Field light activation"
+msgstr "フィールド照明の作動"
+
+msgid "Automatic"
+msgstr "自動"
+
+msgid "Always on"
+msgstr "常にオン"
+
+msgid "Always off"
+msgstr "常にオフ"
+
+msgid "Campfire"
+msgstr "焚き火"
+
+msgid "Soft club"
+msgstr "ソフトなクラブ照明"
+
+msgid "Airfield"
+msgstr "飛行場"
+
+msgid "Field lights off"
+msgstr "フィールド灯オフ"
+
+msgid "Campfire off"
+msgstr "焚き火オフ"
+
+msgid "Campfire on"
+msgstr "焚き火オン"
+
+msgid ""
+"Choose the field lights and campfire for this paused flight. These visual "
+"options do not change flight behavior."
+msgstr "一時停止中のフライトのフィールド灯と焚き火を選択します。これらの見た目の設定は飛行挙動に影響しません。"
+
+msgid "Failures"
+msgstr "故障"
+
+msgid "Failure: %s"
+msgstr "故障：%s"
+
+msgid "FAILURES · NEXT FLIGHT"
+msgstr "次のフライトの故障"
+
+msgid "Probability of failure per flight"
+msgstr "フライトごとの故障発生率"
+
+msgid ""
+"Probability and failure type apply to the next flight only; changing them "
+"never rerolls the current flight."
+msgstr "発生率と故障の種類は次のフライトにのみ適用され、変更しても現在のフライトの抽選結果は変わりません。"
+
+msgid ""
+"0 turns failures off. At 100%, one event is always scheduled. It can "
+"activate after 20–120 seconds at least 5 m above the terrain, if you keep "
+"flying."
+msgstr ""
+"0%では故障は発生しません。100%では必ず1件が予定されます。飛行を続けていれば、地上から5m以上で20～120秒後に発生することがあります。"
+
+msgid ""
+"At most one training failure is assigned per flight. If you end the flight "
+"before activation, it did not occur."
+msgstr "練習用の故障は1フライトにつき最大1件です。発生前にフライトを終了した場合、故障は発生しません。"
+
+msgid "Include catastrophic failures"
+msgstr "重大な故障を含める"
+
+msgid "Available failures for this aircraft"
+msgstr "この機体で発生する故障"
+
+msgid "These are the failure events supported by this aircraft."
+msgstr "この機体で対応している故障イベントです。"
+
+msgid "Focus the list, then use arrow keys or Page Up/Down to scroll."
+msgstr "一覧にフォーカスして、矢印キーまたはPage Up/Downでスクロールしてください。"
+
+msgid "Available failure types"
+msgstr "発生可能な故障の種類"
+
+msgid "Availability details are unavailable."
+msgstr "発生条件の詳細はありません。"
+
+msgid "No failure events are available for this aircraft."
+msgstr "この機体で発生する故障はありません。"
+
+msgid "Power-loss failure unavailable"
+msgstr "動力喪失故障は利用できません"
+
+msgid "Turbine flameout and rotor rundown are not modeled."
+msgstr "タービンのフレームアウトとローターの回転低下はシミュレートされません。"
+
+msgid ""
+"This electric installation has no supported continuous motor and rotor "
+"state."
+msgstr "この電動機構では、モーターとローターの連続状態に対応していません。"
+
+msgid ""
+"Finite-glow lifecycle data is unavailable; the legacy RPM model has no "
+"qualified shutdown law."
+msgstr "グローエンジンの寿命データがありません。旧RPMモデルには、検証済みの停止動作がありません。"
+
+msgid "This propulsion family has no qualified engine shutdown law."
+msgstr "この動力系統では、検証済みのエンジン停止動作がありません。"
+
+msgid ""
+"Includes sustained radio-link loss with receiver failsafe. Recovery is not "
+"guaranteed."
+msgstr "受信機のフェイルセーフを伴う、無線リンクの継続的な喪失を含みます。復旧は保証されません。"
+
+msgid "Notify when a failure occurs"
+msgstr "故障発生時に通知する"
+
+msgid ""
+"Turning notices off hides labels and hints. The aircraft still responds to "
+"the failure."
+msgstr "通知をオフにするとラベルとヒントが非表示になります。機体は故障の影響を受けます。"
+
+msgid ""
+"Applying changes updates notices in this flight. Probability and "
+"catastrophic settings apply to the next flight."
+msgstr "変更を適用すると、このフライトの通知が更新されます。発生率と重大故障の設定は次のフライトから適用されます。"
+
+msgid "Airplanes only"
+msgstr "飛行機のみ"
+
+msgid "Failure practice currently supports airplanes only."
+msgstr "故障練習は現在、飛行機のみ対応しています。"
+
+msgid "%d%% · Catastrophic enabled"
+msgstr "%d%% · 重大な故障あり"
+
+msgid "%d%% · Standard"
+msgstr "%d%% · 標準"
+
+msgid "Failure settings · next flight"
+msgstr "故障設定 · 次のフライト"
+
+msgid "Next flight failures: Off"
+msgstr "次のフライトの故障：オフ"
+
+msgid "Next flight failures: %d%% · catastrophic allowed"
+msgstr "次のフライトの故障：%d%% · 重大な故障を許可"
+
+msgid "Next flight failures: %d%% · standard"
+msgstr "次のフライトの故障：%d%% · 標準"
+
+msgid "Current failure: %s"
+msgstr "現在の故障：%s"
+
+msgid "A failure is active."
+msgstr "故障が発生しています。"
+
+msgid "Hint: %s"
+msgstr "ヒント：%s"
+
+msgid "Ailerons jammed."
+msgstr "エルロンが固着しました。"
+
+msgid "Elevator jammed."
+msgstr "エレベーターが固着しました。"
+
+msgid "Rudder jammed."
+msgstr "ラダーが固着しました。"
+
+msgid "Aileron trim shifted."
+msgstr "エルロンのトリムがずれました。"
+
+msgid "Elevator trim shifted."
+msgstr "エレベーターのトリムがずれました。"
+
+msgid "Aileron servo is slow."
+msgstr "エルロンのサーボ応答が遅くなっています。"
+
+msgid "Throttle response is limited."
+msgstr "スロットルの応答が制限されています。"
+
+msgid "Throttle is stuck high."
+msgstr "スロットルが高い位置で固着しています。"
+
+msgid "Radio link lost."
+msgstr "無線リンクが切断されました。"
+
+msgid "Engine combustion stopped."
+msgstr "エンジンの燃焼が停止しました。"
+
+msgid ""
+"The engine cannot restart during this failure. Keep a safe airspeed and plan"
+" a glide landing."
+msgstr "この故障中はエンジンを再始動できません。安全な対気速度を保ち、滑空着陸を計画してください。"
+
+msgid "Electric motor power lost."
+msgstr "電動モーターの出力が失われました。"
+
+msgid ""
+"The motor is disconnected, while the propeller can coast or windmill. Keep a"
+" safe airspeed and plan a landing."
+msgstr "モーターは切り離されていますが、プロペラは惰性や風で回り続けることがあります。安全な対気速度を保ち、着陸を計画してください。"
+
+msgid ""
+"Keep adequate airspeed. Use gentle rudder inputs if effective; plan a wide "
+"approach."
+msgstr "十分な対気速度を保ってください。ラダーが効く場合は穏やかに操作し、余裕のある進入経路を計画してください。"
+
+msgid ""
+"Receiver holds the last control commands and sets throttle to idle. Stick "
+"inputs have no effect."
+msgstr "受信機は最後の操作指令を保持し、スロットルをアイドルにします。スティックを動かしても反応しません。"
+
+msgid "Flight ended before the scheduled failure."
+msgstr "予定された故障が発生する前にフライトが終了しました。"
+
+msgid "Last flight: %s"
+msgstr "前回のフライト：%s"
+
+msgid "Last flight: a failure activated."
+msgstr "前回のフライトで故障が発生しました。"
+
+msgid "No failure was assigned to the last flight."
+msgstr "前回のフライトに故障は設定されていません。"
+
+msgid "Aileron trim: %+.1f%%"
+msgstr "エルロンのトリム：%+.1f%%"
+
+msgid "Aileron trim: left / right"
+msgstr "エルロンのトリム：左 / 右"
+
+msgid "Sky & clouds"
+msgstr "空と雲"
+
+msgid "Sky and lighting"
+msgstr "空と照明"
+
+msgid "Wind preset"
+msgstr "風のプリセット"
+
+msgid "Choose the cloudscape. Time and flight wind stay as selected."
+msgstr "雲の種類を選んでください。時刻と飛行中の風の設定は変わりません。"
+
+msgid "Cloud motion"
+msgstr "雲の動き"
+
+msgid "Check the sky and cloud motion settings."
+msgstr "空と雲の動きを設定してください。"
+
+msgid "Classic motion"
+msgstr "クラシック"
+
+msgid "Follow wind"
+msgstr "風に追従"
+
+msgid "Still"
+msgstr "停止"
+
+msgid "Wind aloft"
+msgstr "上空の風"
+
+msgid "Wind aloft speed (m/s)"
+msgstr "上空の風速（m/s）"
+
+msgid "Wind aloft direction FROM (°)"
+msgstr "上空の風向（吹いてくる方向、°）"
+
+msgid ""
+"Still freezes cloud movement. Flight wind and storm flashes have separate "
+"controls."
+msgstr "「停止」では雲が動きません。飛行中の風と雷の発光は別に設定できます。"
+
+msgid "Flashes"
+msgstr "雷光"
+
+msgid "Reduced"
+msgstr "弱める"
+
+msgid "Thunder volume"
+msgstr "雷鳴の音量"
+
+msgid "View at night"
+msgstr "夜間表示"
+
+msgid "Classic clouds"
+msgstr "標準の雲"
+
+msgid "Clear blue"
+msgstr "快晴"
+
+msgid "High Cirrus"
+msgstr "高層巻雲"
+
+msgid "Fair-Weather Cumulus"
+msgstr "好天積雲"
+
+msgid "Broken Cloud"
+msgstr "ちぎれ雲"
+
+msgid "Overcast"
+msgstr "曇天"
+
+msgid "Building Storm"
+msgstr "発達中の嵐"
+
+msgid "Distant Storm"
+msgstr "遠方の嵐"
+
+msgid "Electrical Storm"
+msgstr "雷雨"
+
+msgid "The familiar blue sky with a modest layer of soft cumulus clouds."
+msgstr "おなじみの青空に、柔らかな積雲が薄く広がります。"
+
+msgid "A clean blue sky without clouds or cloud shadows."
+msgstr "雲や雲の影のない、澄んだ青空です。"
+
+msgid "Thin, high ice-cloud streaks against a luminous blue sky."
+msgstr "明るい青空に、氷晶雲の細い筋が高く伸びています。"
+
+msgid ""
+"Bright, separated cauliflower-shaped clouds with plenty of blue between "
+"them."
+msgstr "青空の広い隙間に、明るく独立したカリフラワー状の雲が浮かびます。"
+
+msgid "Several broad, broken cloud decks with shifting patches of sunlight."
+msgstr "広くちぎれた雲の層の間を、日差しが移動します。"
+
+msgid ""
+"A layered gray ceiling with broad, diffuse light and little direct sun."
+msgstr "灰色の雲が層をなし、光は広く拡散して、直射日光はほとんどありません。"
+
+msgid "A dense gray sky with dark, low cloud layers."
+msgstr "暗い低層雲に覆われた、厚い灰色の空です。"
+
+msgid ""
+"A distant towering cloud bank with a broad cap, dark base and rain shafts."
+msgstr "遠くに高くそびえる雲の塊。広い頂部、暗い底部、雨の筋が見えます。"
+
+msgid ""
+"A towering storm lit from within, with branching lightning, rain shafts and "
+"delayed thunder."
+msgstr "内側から光る高い嵐雲に、枝分かれした稲妻と雨の筋が走り、遅れて雷鳴が響きます。"
+
+msgid "Controller settings"
+msgstr "コントローラー設定"
+
+msgid "Controls"
+msgstr "操作"
+
+msgid ""
+"Release the controls to neutral before continuing; use Controls to select a "
+"disconnected device."
+msgstr "続行する前に操作を離し、中立位置に戻してください。切断済みのデバイスを選ぶには「操作」を開いてください。"
+
+msgid ""
+"Choose separate flight and menu controllers. Profile changes never send "
+"input to the aircraft while this screen is open."
+msgstr ""
+"フライト用とメニュー用に別々のコントローラーを選んでください。この画面を開いている間、プロフィールの変更が機体に入力されることはありません。"
+
+msgid ""
+"Apply devices changes the active selection. Save writes the profile. Cancel "
+"discards profile edits."
+msgstr "「デバイスを適用」で選択が有効になります。「保存」でプロフィールを保存し、「キャンセル」で編集を破棄します。"
+
+msgid "DEVICES"
+msgstr "デバイス"
+
+msgid "Flight controller"
+msgstr "フライトコントローラー"
+
+msgid "Menu controller"
+msgstr "メニューコントローラー"
+
+msgid ""
+"A radio can fly but cannot navigate menus. Menu navigation stays on the "
+"selected gamepad; keyboard and mouse remain available."
+msgstr "送信機で飛行できますが、メニューは操作できません。メニュー操作には選択したゲームパッドを使います。キーボードとマウスも使えます。"
+
+msgid "Only a recognized gamepad can navigate menus."
+msgstr "メニューを操作できるのは、認識済みのゲームパッドのみです。"
+
+msgid "Apply device selection"
+msgstr "デバイス選択を適用"
+
+msgid "Recover legacy profile…"
+msgstr "旧プロフィールを復元…"
+
+msgid "Calibrate selected radio"
+msgstr "選択した送信機をキャリブレーション"
+
+msgid "Keyboard + mouse"
+msgstr "キーボード＋マウス"
+
+msgid "No flight controller"
+msgstr "フライトコントローラーなし"
+
+msgid "Controller %d"
+msgstr "コントローラー %d"
+
+msgid "disconnected"
+msgstr "切断"
+
+msgid "Disconnected controller %d"
+msgstr "コントローラー %d（切断）"
+
+msgid "Legacy profile"
+msgstr "旧プロフィール"
+
+msgid ""
+"Legacy radio data stays unchanged. Choose how to copy it into a new profile."
+msgstr "旧送信機データは変更されません。新しいプロフィールにコピーする方法を選んでください。"
+
+msgid "Keep as radio profile"
+msgstr "送信機プロフィールとして保持"
+
+msgid "Restore gamepad Mode 2"
+msgstr "ゲームパッドのモード2を復元"
+
+msgid "PROFILE"
+msgstr "プロフィール"
+
+msgid "Saved profile"
+msgstr "保存済みプロフィール"
+
+msgid "Name"
+msgstr "名前"
+
+msgid "Profile type"
+msgstr "プロフィールの種類"
+
+msgid "Gamepad · Mode 2"
+msgstr "ゲームパッド · モード2"
+
+msgid "Radio transmitter · custom"
+msgstr "送信機 · カスタム"
+
+msgid "Joystick · custom"
+msgstr "ジョイスティック · カスタム"
+
+msgid ""
+"Choose the flight profile for this unknown controller. Gamepad starts in "
+"Mode 2; radio uses a custom profile. Calibration never starts automatically."
+msgstr ""
+"不明なコントローラーのフライト用プロフィールを選んでください。ゲームパッドはモード2、送信機はカスタムプロフィールで開始します。キャリブレーションは自動で始まりません。"
+
+msgid ""
+"Choose an unknown controller type explicitly. Gamepad starts in Mode 2; "
+"radio uses a custom profile. Calibration never starts automatically."
+msgstr ""
+"不明なコントローラーの種類を明示的に選んでください。ゲームパッドはモード2、送信機はカスタムプロフィールで開始します。キャリブレーションは自動で始まりません。"
+
+msgid "Could not create a profile for that controller type."
+msgstr "この種類のコントローラー用プロフィールを作成できませんでした。"
+
+msgid "Profile type changed. Save the profile to keep this draft."
+msgstr "プロフィールの種類が変更されました。下書きを保持するには保存してください。"
+
+msgid "Device selection changed; refresh and choose connected controllers."
+msgstr "デバイス選択が変更されました。更新して接続中のコントローラーを選んでください。"
+
+msgid "GAMEPAD SAFE · move controls, then release"
+msgstr "ゲームパッド安全確認 · スティックを動かしてから離してください"
+
+msgid "CONTROLLER LOST · select controls to continue"
+msgstr "コントローラー切断 · 操作を選んで続行してください"
+
+msgid ""
+"Controller unavailable. Select a connected device or keyboard in Controls."
+msgstr "コントローラーを使用できません。「操作」で接続中のデバイスかキーボードを選んでください。"
+
+msgid ""
+"Move each mapped control once, release sticks and triggers, then wait for "
+"neutral. Continue is an explicit action."
+msgstr "割り当てた各操作を一度ずつ動かし、スティックとトリガーを離して中立に戻してください。続行には明示的な操作が必要です。"
+
+msgid ""
+"Lower the throttle to arm. If the mapping is wrong, open Controls and "
+"calibrate the selected radio."
+msgstr "モーターの始動を許可するにはスロットルを下げてください。割り当てが違う場合は「操作」を開き、選択した送信機を調整してください。"
+
+msgid "Throttle on resume: %.0f%%"
+msgstr "再開時のスロットル：%.0f%%"
+
+msgid "Collective on resume: %.0f%%"
+msgstr "再開時のコレクティブピッチ：%.0f%%"
+
+msgid "Current throttle: %.0f%%"
+msgstr "現在のスロットル：%.0f%%"
+
+msgid "Current collective: %.0f%%"
+msgstr "現在のコレクティブピッチ：%.0f%%"
+
+msgid "Profile name"
+msgstr "プロフィール名"
+
+msgid "Gamepad preset"
+msgstr "ゲームパッドのプリセット"
+
+msgid "Mode 1 · rate throttle"
+msgstr "モード1 · 非センタリング式スロットル"
+
+msgid "Mode 2 · rate throttle"
+msgstr "モード2 · 非センタリング式スロットル"
+
+msgid "Trigger throttle"
+msgstr "トリガー式スロットル"
+
+msgid "Mode 1: left X yaw, left Y pitch; right X roll, right Y throttle."
+msgstr "モード1：左X＝ヨー、左Y＝ピッチ、右X＝ロール、右Y＝スロットル。"
+
+msgid "Mode 2: left X yaw, left Y throttle; right X roll, right Y pitch."
+msgstr "モード2：左X＝ヨー、左Y＝スロットル、右X＝ロール、右Y＝ピッチ。"
+
+msgid ""
+"Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle "
+"(axis 5). Release RT/R2 to arm."
+msgstr "トリガー式スロットル：左X＝ヨー、右X＝ロール、右Y＝ピッチ、RT/R2＝スロットル（軸5）。RT/R2を離すと始動が許可されます。"
+
+msgid "Use this custom mapping for flight"
+msgstr "このカスタム割り当てをフライトに使用"
+
+msgid "Unknown joystick"
+msgstr "不明なジョイスティック"
+
+msgid "Restore selected preset"
+msgstr "選択したプリセットを復元"
+
+msgid "Duplicate profile"
+msgstr "プロフィールを複製"
+
+msgid "AXIS MAPPING AND RESPONSE"
+msgstr "軸の割り当てと応答"
+
+msgid ""
+"Each channel uses its own scalar axis. Tune its deadzone, expo and "
+"inversion, then move the selected flight controller to preview the "
+"conditioned value."
+msgstr ""
+"各チャンネルは個別のスカラー軸を使います。デッドゾーン、EXPO、反転を調整し、選択したフライトコントローラーを動かして処理後の値を確認してください。"
+
+msgid "Channel"
+msgstr "チャンネル"
+
+msgid "Source axis"
+msgstr "入力軸"
+
+msgid "Deadzone"
+msgstr "デッドゾーン"
+
+msgid "Expo"
+msgstr "EXPO"
+
+msgid "Invert"
+msgstr "反転"
+
+msgid "LIVE PREVIEW"
+msgstr "ライブプレビュー"
+
+msgid "This read-only preview does not change flight commands."
+msgstr "この読み取り専用プレビューはフライト操作に影響しません。"
+
+msgid "%s · raw — · conditioned —"
+msgstr "%s · 生値 — · 処理後 —"
+
+msgid "Axis —"
+msgstr "軸 —"
+
+msgid "AUXILIARY CHANNELS"
+msgstr "補助チャンネル"
+
+msgid ""
+"Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. "
+"Availability and effect depend on the selected aircraft. Axis endpoints need"
+" at least 0.5 travel."
+msgstr ""
+"煙、フラップ、着陸装置の入力には軸またはボタンを使えます。利用可否と動作は選択した機体によって異なります。軸の端点まで0.5以上の移動量が必要です。"
+
+msgid "Smoke"
+msgstr "煙"
+
+msgid "Flaps"
+msgstr "フラップ"
+
+msgid "Landing gear"
+msgstr "着陸装置"
+
+msgid "Disabled"
+msgstr "無効"
+
+msgid "Axis"
+msgstr "軸"
+
+msgid "Button"
+msgstr "ボタン"
+
+msgid "Off endpoint"
+msgstr "オフ側端点"
+
+msgid "On endpoint"
+msgstr "オン側端点"
+
+msgid "Maintained"
+msgstr "押している間"
+
+msgid "Toggle per press"
+msgstr "押すたびに切り替え"
+
+msgid "Pressed"
+msgstr "押下"
+
+msgid "Released"
+msgstr "解放"
+
+msgid "Connect a flight controller to preview this input."
+msgstr "この入力をプレビューするにはフライトコントローラーを接続してください。"
+
+msgid "Invalid auxiliary axis mapping."
+msgstr "補助軸の割り当てが無効です。"
+
+msgid "Invalid auxiliary button mapping."
+msgstr "補助ボタンの割り当てが無効です。"
+
+msgid "Axis %d · raw %+.2f · request %.0f%%"
+msgstr "軸 %d · 生値 %+.2f · 指令 %.0f%%"
+
+msgid "Button %d · %s · %s"
+msgstr "ボタン %d · %s · %s"
+
+msgid "Auxiliary input updated. Save the profile to keep it."
+msgstr "補助入力を更新しました。保持するにはプロフィールを保存してください。"
+
+msgid "Clear"
+msgstr "消去"
+
+msgid "Action cleared. Save the profile to keep it."
+msgstr "操作を消去しました。変更を保持するにはプロフィールを保存してください。"
+
+msgid "Flaps request accepted."
+msgstr "フラップ指令を受け付けました。"
+
+msgid "Flaps request was refused."
+msgstr "フラップ指令は拒否されました。"
+
+msgid "Flaps are unavailable on this aircraft."
+msgstr "この機体ではフラップを使用できません。"
+
+msgid "Flaps are controlled by the radio AUX input."
+msgstr "フラップは送信機のAUX入力で操作します。"
+
+msgid "Flaps: %.1f° actual → %.1f° target"
+msgstr "フラップ：現在 %.1f° → 目標 %.1f°"
+
+msgid "Flaps above estimated speed limit: %.0f m/s EAS"
+msgstr "推定速度制限を超えたフラップ：%.0f m/s EAS"
+
+msgid "Requested %.0f%% · actual %.1f°"
+msgstr "指令 %.0f%% · 現在 %.1f°"
+
+msgid "Moving"
+msgstr "移動中"
+
+msgid "Overspeed advisory"
+msgstr "速度超過の警告"
+
+msgid "Landing gear request: %s — retraction is not simulated."
+msgstr "着陸装置の指令：%s — 格納はシミュレートされません。"
+
+msgid "Landing gear: %s"
+msgstr "着陸装置：%s"
+
+msgid "Landing gear is fixed on this aircraft."
+msgstr "この機体の着陸装置は固定式です。"
+
+msgid "Landing gear is controlled by its AUX input."
+msgstr "着陸装置はAUX入力で操作します。"
+
+msgid "Gear retraction is blocked while the aircraft is on its wheels."
+msgstr "機体が車輪で接地している間は着陸装置を格納できません。"
+
+msgid "Landing gear command was refused."
+msgstr "着陸装置の操作は拒否されました。"
+
+msgid "retraction blocked while on wheels"
+msgstr "接地中は格納不可"
+
+msgid "Extending"
+msgstr "展開中"
+
+msgid "Retracting"
+msgstr "格納中"
+
+msgid "Unknown"
+msgstr "不明"
+
+msgid "Gear toggle · wheel brake (hold)"
+msgstr "着陸装置切替 · 車輪ブレーキ（長押し）"
+
+msgid "Down"
+msgstr "展開"
+
+msgid "Up"
+msgstr "格納"
+
+msgid "Smoke is not available on this aircraft."
+msgstr "この機体では煙を使用できません。"
+
+msgid "Smoke pump: on"
+msgstr "煙ポンプ：オン"
+
+msgid "Smoke pump: off"
+msgstr "煙ポンプ：オフ"
+
+msgid "Toggle smoke pump"
+msgstr "煙ポンプを切り替え"
+
+msgid "Flaps up"
+msgstr "フラップを上げる"
+
+msgid "Flaps down"
+msgstr "フラップを下げる"
+
+msgid "Cycle flaps"
+msgstr "フラップ位置を切り替え"
+
+msgid "Toggle landing gear"
+msgstr "着陸装置を切り替え"
+
+msgid "Previous camera"
+msgstr "前のカメラ"
+
+msgid "Pilot camera"
+msgstr "パイロットカメラ"
+
+msgid "Chase camera"
+msgstr "追従カメラ"
+
+msgid "Orbit camera"
+msgstr "周回カメラ"
+
+msgid "Camera zoom in"
+msgstr "カメラをズームイン"
+
+msgid "Camera zoom out"
+msgstr "カメラをズームアウト"
+
+msgid "Toggle auto camera zoom"
+msgstr "カメラの自動ズームを切り替え"
+
+msgid "Cycle lights"
+msgstr "ライトを切り替え"
+
+msgid "Select a flight controller to preview mapped channels."
+msgstr "割り当て済みチャンネルをプレビューするには、フライトコントローラーを選んでください。"
+
+msgid "Select a connected flight controller to preview mapped channels."
+msgstr "割り当て済みチャンネルをプレビューするには、接続中のフライトコントローラーを選んでください。"
+
+msgid "ACTIONS"
+msgstr "操作"
+
+msgid ""
+"Bindings are saved by physical control. A different device cannot trigger "
+"them."
+msgstr "割り当ては物理コントロールごとに保存されます。別のデバイスでは実行できません。"
+
+msgid "Unbound"
+msgstr "未割り当て"
+
+msgid "Remap"
+msgstr "再割り当て"
+
+msgid "Press a key or selected controller input…"
+msgstr "キーまたは選択中のコントローラー入力を押してください…"
+
+msgid "Save profile"
+msgstr "プロフィールを保存"
+
+msgid "Controller services are not available."
+msgstr "コントローラーサービスを利用できません。"
+
+msgid "Controller profile storage is not available."
+msgstr "コントローラープロフィールの保存領域を利用できません。"
+
+msgid "Could not load controller profiles: %s"
+msgstr "コントローラープロフィールを読み込めませんでした：%s"
+
+msgid "Controller profiles recovered: %s"
+msgstr "コントローラープロフィールを復元しました：%s"
+
+msgid ""
+"This profile is not a gamepad preset. Use legacy recovery to change its "
+"controller semantics."
+msgstr "このプロフィールはゲームパッド用プリセットではありません。旧プロフィールの復元を使って操作方式を変更してください。"
+
+msgid "Could not restore the selected gamepad preset."
+msgstr "選択したゲームパッド用プリセットを復元できませんでした。"
+
+msgid "Preset restored. Save the profile to keep this mapping."
+msgstr "プリセットを復元しました。この割り当てを保持するにはプロフィールを保存してください。"
+
+msgid "Profile duplicated. Save it to add a separate profile."
+msgstr "プロフィールを複製しました。別のプロフィールとして追加するには保存してください。"
+
+msgid ""
+"Live values are read only. No controller input reaches the aircraft from "
+"this screen."
+msgstr "現在値は読み取り専用です。この画面からコントローラーの入力が機体に送られることはありません。"
+
+msgid ""
+"Press a keyboard key or an input on the selected flight controller. Escape "
+"cancels remapping."
+msgstr "キーボードのキーまたは選択中のフライトコントローラー入力を押してください。Escapeで再割り当てをキャンセルします。"
+
+msgid "That binding conflicts with another action or removes recovery."
+msgstr "その割り当ては別の操作と競合するか、復旧用の操作を削除します。"
+
+msgid "Binding updated. Save the profile to keep it."
+msgstr "割り当てを更新しました。保持するにはプロフィールを保存してください。"
+
+msgid "Remapping cancelled."
+msgstr "再割り当てをキャンセルしました。"
+
+msgid "The flight controller changed; remapping was cancelled."
+msgstr "フライトコントローラーが変更されたため、再割り当てをキャンセルしました。"
+
+msgid "The selected flight controller disconnected; remapping was cancelled."
+msgstr "選択中のフライトコントローラーが切断されたため、再割り当てをキャンセルしました。"
+
+msgid "Finish or cancel remapping before saving."
+msgstr "保存する前に再割り当てを完了するかキャンセルしてください。"
+
+msgid "The selected menu controller is disconnected."
+msgstr "選択中のメニューコントローラーが切断されています。"
+
+msgid "The selected flight controller is disconnected."
+msgstr "選択中のフライトコントローラーが切断されています。"
+
+msgid "Device selection applied. Profile changes still need Save."
+msgstr "デバイス選択を適用しました。プロフィールの変更は別途保存が必要です。"
+
+msgid "There is no controller profile to save."
+msgstr "保存するコントローラープロフィールがありません。"
+
+msgid "Apply the flight device selection before saving its profile."
+msgstr "プロフィールを保存する前に、フライトデバイスの選択を適用してください。"
+
+msgid "Enter a profile name before saving."
+msgstr "保存する前にプロフィール名を入力してください。"
+
+msgid "Action bindings need a valid Back and Pause recovery path."
+msgstr "「戻る」と「一時停止」には、有効な復旧用割り当てが必要です。"
+
+msgid "Profile cannot be saved: %s"
+msgstr "プロフィールを保存できません：%s"
+
+msgid "Profile was not saved: %s"
+msgstr "プロフィールは保存されませんでした：%s"
+
+msgid "storage error"
+msgstr "保存エラー"
+
+msgid ""
+"No valid legacy radio profiles were found. The original file was not "
+"changed."
+msgstr "有効な旧送信機プロフィールが見つかりません。元のファイルは変更されていません。"
+
+msgid ""
+"Choose whether to preserve this as radio control or restore a gamepad "
+"preset. The legacy file remains unchanged."
+msgstr "送信機操作として保持するか、ゲームパッド用プリセットに戻すか選んでください。旧ファイルは変更されません。"
+
+msgid ""
+"Legacy data remains unchanged until you explicitly Save a copied profile."
+msgstr "コピーしたプロフィールを明示的に保存するまで、旧データは変更されません。"
+
+msgid ""
+"Radio semantics and auxiliary data are preserved. Save writes a separate v2 "
+"profile."
+msgstr "送信機の操作方式と補助データは保持されます。「保存」で別個のv2プロフィールを作成します。"
+
+msgid ""
+"This draft uses gamepad Mode 2 rate throttle. Legacy radio calibration "
+"remains in the original file."
+msgstr "この下書きではゲームパッドのモード2と非センタリング式スロットルを使います。旧送信機の調整データは元のファイルに残ります。"
+
+msgid "Accept / launch"
+msgstr "決定 / 起動"
+
+msgid "Back / cancel"
+msgstr "戻る / キャンセル"
+
+msgid "Navigate up"
+msgstr "上へ移動"
+
+msgid "Navigate down"
+msgstr "下へ移動"
+
+msgid "Navigate left"
+msgstr "左へ移動"
+
+msgid "Navigate right"
+msgstr "右へ移動"
+
+msgid "Pause / resume"
+msgstr "一時停止 / 再開"
+
+msgid "Cycle camera"
+msgstr "カメラ切替"
+
+msgid "Reset view"
+msgstr "視点をリセット"
+
+msgid "Trim left"
+msgstr "トリム左"
+
+msgid "Trim right"
+msgstr "トリム右"
+
+msgid "Trim up"
+msgstr "トリム上"
+
+msgid "Trim down"
+msgstr "トリム下"
+
+msgid "Cycle flight overlays"
+msgstr "フライト表示を切り替え"
+
+msgid "Throttle cut (hold)"
+msgstr "スロットルカット（長押し）"
+
+msgid "Calibrate controller"
+msgstr "コントローラーを調整"
+
+msgid "Keyboard key"
+msgstr "キーボードキー"
+
+msgid "Controller prompts"
+msgstr "コントローラーアイコン"
+
+msgid "Auto"
+msgstr "自動"
+
+msgid "Xbox"
+msgstr "Xbox"
+
+msgid "PlayStation"
+msgstr "PlayStation"
+
+msgid "Nintendo"
+msgstr "Nintendo"
+
+msgid "Generic"
+msgstr "汎用"
+
+msgid "Select a connected, configured gamepad to navigate menus."
+msgstr "接続・設定済みのゲームパッドを選ぶと、メニューを操作できます。"
+
+msgid ""
+"Prompt symbols only affect presentation; they never change controller "
+"bindings."
+msgstr "ボタン記号は表示だけに使われ、コントローラーの割り当ては変わりません。"
+
+msgid "Controller prompt family changed. Save the profile to keep it."
+msgstr "コントローラーアイコンの種類が変更されました。保持するにはプロフィールを保存してください。"
+
+msgid "A"
+msgstr "A"
+
+msgid "B"
+msgstr "B"
+
+msgid "X"
+msgstr "X"
+
+msgid "Y"
+msgstr "Y"
+
+msgid "Cross"
+msgstr "Cross"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Square"
+msgstr "Square"
+
+msgid "Triangle"
+msgstr "Triangle"
+
+msgid "Bottom face button"
+msgstr "下側の正面ボタン"
+
+msgid "Right face button"
+msgstr "右側の正面ボタン"
+
+msgid "Left face button"
+msgstr "左側の正面ボタン"
+
+msgid "Top face button"
+msgstr "上側の正面ボタン"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Plus"
+msgstr "Plus"
+
+msgid "Share"
+msgstr "Share"
+
+msgid "Minus"
+msgstr "Minus"
+
+msgid "LB"
+msgstr "LB"
+
+msgid "RB"
+msgstr "RB"
+
+msgid "L1"
+msgstr "L1"
+
+msgid "R1"
+msgstr "R1"
+
+msgid "L"
+msgstr "L"
+
+msgid "R"
+msgstr "R"
+
+msgid "L3"
+msgstr "L3"
+
+msgid "R3"
+msgstr "R3"
+
+msgid "Axis %d %s"
+msgstr "軸 %d %s"
+
+msgid "Back / Share"
+msgstr "Back / Share"
+
+msgid "Menu / Options"
+msgstr "Menu / Options"
+
+msgid "Left stick press"
+msgstr "左スティック押し込み"
+
+msgid "Right stick press"
+msgstr "右スティック押し込み"
+
+msgid "Left shoulder"
+msgstr "左ショルダーボタン"
+
+msgid "Right shoulder"
+msgstr "右ショルダーボタン"
+
+msgid "D-pad up"
+msgstr "十字キー上"
+
+msgid "D-pad down"
+msgstr "十字キー下"
+
+msgid "D-pad left"
+msgstr "十字キー左"
+
+msgid "D-pad right"
+msgstr "十字キー右"
+
+msgid "Button %d"
+msgstr "ボタン %d"
+
+msgid "Flight: keyboard (no controller selected)."
+msgstr "フライト：キーボード（コントローラー未選択）"
+
+msgid "Flight controller: %s. Follow the arming prompt."
+msgstr "フライトコントローラー：%s。始動許可の指示に従ってください。"
+
+msgid "Press A / Cross to claim gamepad menu controls."
+msgstr "A / Crossを押すと、ゲームパッドでメニューを操作できます。"
+
+msgid "Menu controller: %s"
+msgstr "メニューコントローラー：%s"
+
+msgid "Joystick"
+msgstr "ジョイスティック"
+
+msgid "Yaw"
+msgstr "ヨー"
+
+msgid "Devices"
+msgstr "デバイス"
+
+msgid "Profile"
+msgstr "プロフィール"
+
+msgid "Flight axes"
+msgstr "フライト軸"
+
+msgid "Extra channels"
+msgstr "追加チャンネル"
+
+msgid "Buttons"
+msgstr "ボタン"
+
+msgid "Show actions"
+msgstr "操作を表示"
+
+msgid "All"
+msgstr "すべて"
+
+msgid "Flight"
+msgstr "フライト"
+
+msgid "Camera"
+msgstr "カメラ"
+
+msgid "Auxiliary"
+msgstr "補助"
+
+msgid "Listening…"
+msgstr "入力待ち…"
+
+msgid "Axis %d"
+msgstr "軸 %d"
+
+msgid "%s · raw %+.2f · conditioned %+.2f"
+msgstr "%s · 生値 %+.2f · 補正後 %+.2f"
+
+msgid "Flight: %s   ·   Menus: %s"
+msgstr "フライト：%s   ·   メニュー：%s"
+
+msgid ""
+"No controllers connected. Connect a gamepad or radio by USB or Bluetooth, "
+"then select it here. Keyboard and mouse remain available."
+msgstr ""
+"コントローラーが接続されていません。ゲームパッドまたは送信機をUSBかBluetoothで接続して選択してください。キーボードとマウスも使えます。"
+
+msgid "Profile edits stay in draft until you save."
+msgstr "プロフィールの編集内容は、保存するまで下書きのままです。"
+
+msgid ""
+"Apply device selection activates these choices. Save profile keeps mappings "
+"and response settings."
+msgstr "デバイス選択を適用すると選択内容が有効になります。「プロフィールを保存」で割り当てと応答設定を保存します。"
+
+msgid "New profile"
+msgstr "新しいプロフィール"
+
+msgid "Controller profile"
+msgstr "コントローラープロフィール"
+
+msgid ""
+"Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. "
+"Availability depends on the selected aircraft. Axis endpoints need at least "
+"0.5 travel."
+msgstr ""
+"煙、フラップ、着陸装置の入力には軸またはボタンを使えます。利用可否は選択した機体によって異なります。軸の端点まで0.5以上の移動量が必要です。"
+
+msgid "Action"
+msgstr "操作"
+
+msgid "Binding"
+msgstr "割り当て"
+
+msgid "Change"
+msgstr "変更"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Choose your controllers, then Save."
+msgstr "コントローラーを選び、「保存」を押してください。"
+
+msgid "Use a gamepad for menus. Keyboard and mouse are always available."
+msgstr "メニューにはゲームパッドを使ってください。キーボードとマウスも常に使えます。"
+
+msgid "Start: helicopter pad"
+msgstr "スタート：ヘリパッド"
+
+msgid "Choose a stopped rotor on the pad or a trimmed practice hover."
+msgstr "パッド上でローター停止状態から始めるか、トリム調整済みの練習用ホバリングを選んでください。"
+
+msgid ""
+"Experimental helicopter. On the pad: arm, release hold, wait for RPM, then "
+"raise collective."
+msgstr ""
+"実験中のヘリコプターです。パッド上では始動を許可し、Hでモーターロックを解除してローターを始動します。RPMが安定してからコレクティブピッチを上げてください。"
+
+msgid ""
+"Experimental: X-Cell .60 reference physics with an HX-700 visual surrogate; "
+"ground pad or practice hover; not flight-validated."
+msgstr ""
+"実験的な物理モデルです。X-Cell .60の物理特性をHX-700の外観で再現します。地上スタートまたは練習用ホバリングに対応。飛行検証は未完了です。"
+
+msgid "Restart the selected helicopter start"
+msgstr "選択したヘリコプターのスタート状態を再起動"
+
+msgid "Arm / disarm helicopter motor"
+msgstr "ヘリコプターの始動を許可 / 禁止"
+
+msgid "Arm, then release hold"
+msgstr "始動を許可してから、Hでローターを始動"
+
+msgid "Helicopter: arm / disarm"
+msgstr "ヘリコプター：始動を許可 / 禁止"
+
+msgid "Helicopter: toggle rotor hold"
+msgstr "ヘリコプター：モーターロックを切り替え"
+
+msgid "Helicopter: normal / idle-up"
+msgstr "ヘリコプター：通常 / idle-up"
+
+msgid "Helicopter: toggle trainer"
+msgstr "ヘリコプター：トレーナーモードを切り替え"
+
+msgid "RC HELICOPTER · EXPERIMENTAL RESEARCH TRAINER"
+msgstr "RCヘリコプター · 実験用トレーナー"
+
+msgid "Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm"
+msgstr "高度 %.2f m  速度 %.2f m/s  ローター %.0f / %.0f rpm"
+
+msgid "Collective %.1f deg (stick %.0f%%) · %s · %s"
+msgstr "コレクティブピッチ %.1f deg（スティック %.0f%%）· %s · %s"
+
+msgid "Arrows: cyclic · A/D: yaw · W/S: collective"
+msgstr "矢印キー：サイクリック · A/D：ヨー · W/S：コレクティブピッチ"
+
+msgid "B: arm/disarm · H: hold/start · I: flight mode · G: trainer"
+msgstr "B：始動許可/禁止 · H：ローター始動/モーターロック · I：飛行モード · G：トレーナー"
+
+msgid "R: restart · P: pause/resume · C: camera · Esc: menu"
+msgstr "R：再起動 · P：一時停止/再開 · C：カメラ · Esc：メニュー"
+
+msgid "TRAINER"
+msgstr "トレーナー"
+
+msgid "DIRECT CYCLIC"
+msgstr "ダイレクトサイクリック"
+
+msgid "DISARMED"
+msgstr "始動禁止"
+
+msgid "HOLD"
+msgstr "モーターロック"
+
+msgid "SPOOLING"
+msgstr "ローター回転上昇中"
+
+msgid "GOVERNED"
+msgstr "回転数制御中"
+
+msgid ""
+"Center cyclic/yaw and set zero pitch. B: arm, H: start; wait for governed "
+"RPM."
+msgstr ""
+"サイクリックとヨーを中央にし、ピッチをゼロにしてください。Bで始動を許可し、Hでローターを始動します。回転数が制御値に達するまで待ってください。"
+
+msgid "Outside the identified main-rotor envelope."
+msgstr "主ローターの検証済み範囲外です。"
+
+msgid "Resume with controls released before arming."
+msgstr "再開後、始動を許可する前に操作を離してください。"
+
+msgid ""
+"Arm: hold ON, cyclic/yaw centered, collective within 1 degree of zero pitch."
+msgstr "始動許可の条件：モーターロックON、サイクリックとヨーを中央、コレクティブピッチはゼロから1度以内。"
+
+msgid "Armed in hold. Release hold to start the rotor."
+msgstr "始動許可済み、モーターロック中。Hでロックを解除するとローターが始動します。"
+
+msgid "Motor is disarmed. Arm at zero collective pitch first."
+msgstr "モーター始動は禁止されています。まずコレクティブピッチをゼロにし、始動を許可してください。"
+
+msgid "Resume explicitly before releasing rotor hold."
+msgstr "ローターのロックを解除する前に、明示的にフライトを再開してください。"
+
+msgid "Soft start: wait for governed RPM, then raise collective."
+msgstr "ソフトスタート：回転数が制御値に達したら、コレクティブピッチを上げてください。"
+
+msgid "Mode changes pitch %.1f to %.1f deg. Press mode again to apply."
+msgstr "モードでピッチが %.1f deg から %.1f deg に変わります。適用するにはモードをもう一度押してください。"
+
+msgid ""
+"Helicopter: ground pad or practice hover. On the pad, center controls at "
+"zero pitch, arm with B, release hold with H, wait for RPM, then raise "
+"collective. Steady wind and gusts are available; flight validation is "
+"pending."
+msgstr ""
+"ヘリコプター：地上パッドまたは練習用ホバリング。パッド上では操作を中央に戻し、ピッチをゼロにして、Bで始動を許可し、Hでローターを始動します。RPMを待ってからコレクティブピッチを上げてください。定常風と突風を設定できます。飛行検証は未完了です。"
+
+msgid "Loading aircraft preview…"
+msgstr "機体のプレビューを読み込み中…"
+
+msgid "Aircraft preview could not be loaded."
+msgstr "機体のプレビューを読み込めませんでした。"
+
+msgid ""
+"USB radio: lower collective to arm the input, then match the displayed start"
+" pitch before motor arming. Gamepads retain the start collective. Assign "
+"Helicopter arm, hold and flight mode in Controls. Throttle cut latches hold;"
+" releasing it never starts the rotor. K calibrates."
+msgstr ""
+"USB送信機：入力を有効にするにはコレクティブピッチを下げ、エンジン始動の許可前に表示された始動ピッチに合わせてください。ゲームパッドでは始動時のコレクティブピッチが保持されます。「操作」で「ヘリコプター始動許可」「モーターロック」「飛行モード」を割り当ててください。スロットルカットはロックを維持します。解除してもローターは始動しません。Kで調整します。"
+
+msgid ""
+"USB radio (EdgeTX): select Advanced Joystick in Model setup. Lower throttle "
+"to arm; unplugging pauses. K: calibrate. Assign gear AUX or Toggle landing "
+"gear in Controls."
+msgstr ""
+"USB送信機（EdgeTX）：Model setupでAdvanced "
+"Joystickを選んでください。始動を許可するにはスロットルを下げます。切断するとフライトが一時停止します。K：調整。着陸装置は「操作」でAUXまたは「着陸装置を切り替え」に割り当ててください。"
+
+msgid "Night lights: auto"
+msgstr "夜間ライト：自動"
+
+msgid "Night lights: auto / all / navigation / off"
+msgstr "ライト：自動 / すべて / 航法灯 / オフ"
+
+msgid "Flight log: record/stop · mark maneuver"
+msgstr "フライト記録：記録/停止 · マヌーバーをマーク"
+
+msgid "RC cars · Open garage"
+msgstr "RCカー · ガレージを開く"
+
+msgid "RC car"
+msgstr "RCカー"
+
+msgid "Control guide"
+msgstr "操作ガイド"
+
+msgid "Controller"
+msgstr "コントローラー"
+
+msgid "Reopen: Esc → Flight overlays"
+msgstr "再表示：Esc → フライト表示"
+
+msgid "Keyboard shortcuts remain available."
+msgstr "キーボードショートカットは引き続き使用できます。"
+
+msgid "Active input · Keyboard"
+msgstr "現在の入力 · キーボード"
+
+msgid "Shortcuts"
+msgstr "ショートカット"
+
+msgid "↓ pulls the nose up. W adds power; S reduces it."
+msgstr "↓で機首が上がります。Wで出力を上げ、Sで下げます。"
+
+msgid "Flight axes use the selected controller."
+msgstr "フライト軸は選択中のコントローラーを使用します。"
+
+msgid "Throttle holds when you release the stick."
+msgstr "スティックを離してもスロットル位置は保持されます。"
+
+msgid "Release the trigger for idle throttle."
+msgstr "アイドルにするにはトリガーを離してください。"
+
+msgid "Smoke AUX"
+msgstr "煙 AUX"
+
+msgid "Flaps request"
+msgstr "フラップ指令"
+
+msgid "Gear request"
+msgstr "着陸装置指令"
+
+msgid "Use the Keyboard tab for flight shortcuts."
+msgstr "フライトショートカットは「キーボード」タブにあります。"
+
+msgid ""
+"Aircraft capabilities determine which auxiliary controls are available."
+msgstr "使用できる補助操作は機体の機能によって異なります。"
+
+msgid "Left stick ↔"
+msgstr "左スティック ↔"
+
+msgid "Left stick ↕"
+msgstr "左スティック ↕"
+
+msgid "Right stick ↔"
+msgstr "右スティック ↔"
+
+msgid "Right stick ↕"
+msgstr "右スティック ↕"
+
+msgid ""
+"Gamepads: B/Circle controls retractable gear and RB/R1 controls an installed"
+" smoke pump automatically. Flap actions depend on the selected aircraft. "
+"Existing assignments take priority; remap other joysticks to choose their "
+"buttons."
+msgstr ""
+"ゲームパッドではB/Circleで格納脚、RB/R1で搭載済み煙ポンプを操作します。フラップ操作は機体によって異なります。既存の割り当てが優先されます。他のジョイスティックを再割り当てするとボタンを選べます。"
+
+msgid "Flaps: next position (Shift+F previous)"
+msgstr "フラップ：次の位置（前の位置はShift+F）"
+
+msgid "This aircraft"
+msgstr "この機体"
+
+msgid "Not available"
+msgstr "利用不可"
+
+msgid "Assign in Controls"
+msgstr "「操作」で割り当て"
+
+msgid "On"
+msgstr "オン"
+
+msgid "Checking controller input. If it does not respond, open Controls."
+msgstr "コントローラー入力を確認中です。反応しない場合は「操作」を開いてください。"
+
+msgid "Flight controller: %s. Review your bindings in Controls."
+msgstr "フライトコントローラー：%s。「操作」で割り当てを確認してください。"
+
+msgid ""
+"Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle "
+"(axis 5)."
+msgstr "トリガー式スロットル：左X＝ヨー、右X＝ロール、右Y＝ピッチ、RT/R2＝スロットル（軸5）。"
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "PRACTICE"
+msgstr "練習"
+
+msgid "ACTIVITY"
+msgstr "アクティビティ"
+
+msgid "Session options"
+msgstr "セッション設定"
+
+msgid "Hide session options"
+msgstr "セッション設定を隠す"
+
+msgid "Exit options"
+msgstr "終了設定"
+
+msgid "Return to Home"
+msgstr "ホームに戻る"
+
+msgid ""
+"Choose a runway or airborne start on Home. Configure wind, gusts, turbulence"
+" and field air density before flying. Flight models are experimental."
+msgstr ""
+"「ホーム」で滑走路上または飛行中のスタートを選んでください。飛行前に風、突風、乱気流、飛行場の空気密度を設定してください。飛行モデルは実験段階です。"
+
+msgid "Display"
+msgstr "画面"
+
+msgid "Window mode"
+msgstr "ウィンドウモード"
+
+msgid "Windowed"
+msgstr "ウィンドウ"
+
+msgid "Borderless fullscreen"
+msgstr "ボーダーレス全画面"
+
+msgid "Interface scale"
+msgstr "インターフェースの拡大率"
+
+msgid "Panel background"
+msgstr "パネルの背景"
+
+msgid "Use opaque panels"
+msgstr "不透明なパネルを使う"
+
+msgid "Accessibility"
+msgstr "アクセシビリティ"
+
+msgid "Reduce interface motion"
+msgstr "画面の動きを減らす"
+
+msgid "Language"
+msgstr "言語"
+
+msgid "Interface language"
+msgstr "インターフェース言語"
+
+msgid "Help & About"
+msgstr "ヘルプと情報"
+
+msgid "Revert"
+msgstr "元に戻す"
+
+msgid "Keep changes"
+msgstr "保存"
+
+msgid ""
+"Changes apply immediately. Keep saves them; Revert or Back restores saved "
+"display settings."
+msgstr "変更はすぐに反映されます。「保存」で保持し、「元に戻す」または「戻る」で保存済みの画面設定を復元します。"
+
+msgid "Keep the display test within %d seconds."
+msgstr "画面設定を%d秒以内に確定してください。"
+
+msgid "Display test expired. Saved settings restored."
+msgstr "画面テストの時間切れです。保存済みの設定に戻しました。"
+
+msgid "Display settings saved."
+msgstr "画面設定を保存しました。"
+
+msgid "Changes reverted. Saved display settings restored."
+msgstr "変更を取り消し、保存済みの画面設定に戻しました。"
+
+msgid "Could not save display settings (error %d)."
+msgstr "画面設定を保存できませんでした（エラー%d）。"
+
+msgid "Text size"
+msgstr "文字サイズ"
+
+msgid "ACCIDENT REPORT"
+msgstr "事故レポート"
+
+msgid "AMOUNT UNKNOWN"
+msgstr "金額不明"
+
+msgid "Aircraft: %s"
+msgstr "機体：%s"
+
+msgid "Incident: %s"
+msgstr "事故：%s"
+
+msgid "Price date: %s"
+msgstr "価格日付：%s"
+
+msgid "Valuation: %s"
+msgstr "評価：%s"
+
+msgid ""
+"All amounts are estimates. Market prices, labor, and repair outcomes may "
+"differ."
+msgstr "金額はすべて推定です。市場価格、作業費、修理結果は異なる場合があります。"
+
+msgid "A complete amount was not supplied for this assessment."
+msgstr "この評価には合計金額が記載されていません。"
+
+msgid "Amount unavailable"
+msgstr "金額不明"
+
+msgid "Cost unavailable"
+msgstr "費用不明"
+
+msgid "COST UNAVAILABLE"
+msgstr "費用不明"
+
+msgid "Assumptions"
+msgstr "前提条件"
+
+msgid "At least %s"
+msgstr "最低 %s"
+
+msgid "Up to %s"
+msgstr "最大 %s"
+
+msgid "Complete estimated total"
+msgstr "推定合計額"
+
+msgid "Credit"
+msgstr "控除"
+
+msgid "DAMAGE REPORTED"
+msgstr "損傷を記録"
+
+msgid "DAMAGE REPORT"
+msgstr "損傷レポート"
+
+msgid "ESTIMATED LOSS"
+msgstr "推定損失額"
+
+msgid "Estimated total. Expand for cents, line items, and price assumptions."
+msgstr "推定合計額です。展開すると小数点以下、項目別内訳、価格の前提条件を確認できます。"
+
+msgid "Estimated prices and repair outcomes may differ."
+msgstr "推定価格と修理結果は異なる場合があります。"
+
+msgid "Hide accident report"
+msgstr "事故レポートを隠す"
+
+msgid "Hide damage report"
+msgstr "損傷レポートを隠す"
+
+msgid "Hide damage breakdown"
+msgstr "損傷の内訳を隠す"
+
+msgid "Show damage breakdown"
+msgstr "損傷の内訳を表示"
+
+msgid "INCOMPLETE ESTIMATE RANGE"
+msgstr "不完全な推定範囲"
+
+msgid "INCOMPLETE ESTIMATE · LOWER BOUND"
+msgstr "不完全な推定 · 下限"
+
+msgid "INCOMPLETE ESTIMATE · UPPER BOUND"
+msgstr "不完全な推定 · 上限"
+
+msgid "INSPECTION REQUIRED"
+msgstr "点検が必要"
+
+msgid "Inspect"
+msgstr "点検する"
+
+msgid "Inspect wreck"
+msgstr "残骸を点検"
+
+msgid "Inspect aircraft"
+msgstr "機体を点検"
+
+msgid "KNOWN SUBTOTAL · INCOMPLETE"
+msgstr "既知の小計 · 不完全"
+
+msgid "Known subtotal"
+msgstr "既知の小計"
+
+msgid "Known subtotal only. It is not the complete cost."
+msgstr "既知の小計のみです。総費用ではありません。"
+
+msgid "No complete amount or priced subtotal is available."
+msgstr "総額または価格付きの小計がありません。"
+
+msgid "No priced line items were supplied."
+msgstr "価格付きの項目がありません。"
+
+msgid "Not priced"
+msgstr "価格未設定"
+
+msgid "OUTCOME · INSPECTION"
+msgstr "結果 · 点検"
+
+msgid "OUTCOME · REPAIR"
+msgstr "結果 · 修理"
+
+msgid "OUTCOME · TOTAL LOSS"
+msgstr "結果 · 全損"
+
+msgid "OUTCOME · UNAVAILABLE"
+msgstr "結果 · 利用不可"
+
+msgid "Parts and actions"
+msgstr "部品と作業"
+
+msgid "REPAIR ESTIMATE"
+msgstr "修理費の見積もり"
+
+msgid "Range only. Some required costs or inspection results are unresolved."
+msgstr "範囲のみの推定です。必要な費用または点検結果が未確定です。"
+
+msgid "Repair"
+msgstr "修理"
+
+msgid "Replace"
+msgstr "交換"
+
+msgid "Replacement"
+msgstr "交換"
+
+msgid "Replacement quote ceiling (reference only)"
+msgstr "機体交換見積もりの上限（参考値）"
+
+msgid "Replacement reference reported"
+msgstr "報告された交換価格の参考値"
+
+msgid "Salvage"
+msgstr "残存価値"
+
+msgid "Salvage credit"
+msgstr "回収による控除"
+
+msgid "Salvage value reported"
+msgstr "報告された残存価値"
+
+msgid "Show accident report"
+msgstr "事故レポートを表示"
+
+msgid "View archived accident report"
+msgstr "保存済み事故レポートを表示"
+
+msgid "View damage report"
+msgstr "損傷レポートを表示"
+
+msgid "Some costs or inspection results remain unresolved."
+msgstr "未確定の費用または点検結果があります。"
+
+msgid "This is a lower bound; unresolved costs are excluded."
+msgstr "下限です。未確定の費用は含まれていません。"
+
+msgid "This is an upper bound; unresolved costs may change the result."
+msgstr "上限です。未確定の費用により結果が変わる場合があります。"
+
+msgid "Unresolved item"
+msgstr "未確定の項目"
+
+msgid "Unresolved items"
+msgstr "未確定の項目"
+
+msgid "Unspecified item"
+msgstr "不明な項目"
+
+msgid "method unavailable"
+msgstr "方法を利用できません"
+
+msgid "unavailable"
+msgstr "利用不可"
+
+msgid ""
+"Accident report could not be saved; it remains available for this session."
+msgstr "事故レポートを保存できませんでした。このセッション中は引き続き確認できます。"
+
+msgid "Complete-build replacement quote comparison (reference only)"
+msgstr "機体一式を交換する見積もりの比較（参考値）"
+
+msgid "Low reference"
+msgstr "参考下限額"
+
+msgid "High reference"
+msgstr "参考上限額"
+
+msgid "Price basis: %s"
+msgstr "価格の基準：%s"
+
+msgid "Observed: %s"
+msgstr "確認日：%s"
+
+msgid "Source: %s"
+msgstr "出典：%s"
+
+msgid "Central aileron servo"
+msgstr "エルロン中央サーボ"
+
+msgid "Airframe and installation hardware"
+msgstr "機体と取り付け部品"
+
+msgid "Engine and muffler"
+msgstr "エンジンとマフラー"
+
+msgid "Final assembly and commissioning"
+msgstr "最終組み立てと調整"
+
+msgid "Fuselage servos"
+msgstr "胴体サーボ"
+
+msgid "Onboard fuel system"
+msgstr "搭載燃料システム"
+
+msgid "Receiver battery"
+msgstr "受信機用バッテリー"
+
+msgid "Price proxy"
+msgstr "価格の参考品"
+
+msgid "Catalog snapshot"
+msgstr "カタログの記録"
+
+msgid "inspection required"
+msgstr "点検が必要"
+
+msgid "Inspection"
+msgstr "点検"
+
+msgid "Contact evidence is invalid; inspection required."
+msgstr "接触データが無効です。点検が必要です。"
+
+msgid "Contact journal limit reached; inspection required."
+msgstr "接触記録の上限に達しました。点検が必要です。"
+
+msgid "Impact or surface contact requires structural inspection."
+msgstr "衝突または地面との接触があったため、機体構造の点検が必要です。"
+
+msgid "Water exposure requires inspection of electronics and powertrain."
+msgstr "水にさらされたため、電子機器と動力系統の点検が必要です。"
+
+msgid ""
+"Session restored or aircraft reloaded: earlier damage history is "
+"unavailable."
+msgstr "セッション復元または機体再読み込みにより、以前の損傷履歴を確認できません。"
+
+msgid "Crash inspection pending; component survival is not yet established."
+msgstr "墜落後の点検待ちです。部品が損傷を免れたか確認できていません。"
+
+msgid ""
+"A propeller strike was recorded; no compatible replacement price is "
+"available."
+msgstr "プロペラの接触を記録しました。適合する交換価格がありません。"
+
+msgid ""
+"Propeller strike: inspect the powertrain, shaft and mount before return to "
+"service."
+msgstr "プロペラ接触：運航を再開する前に動力系統、シャフト、マウントを点検してください。"
+
+msgid "Compatible aircraft cost dossier is unavailable."
+msgstr "この機体に適合する費用資料がありません。"
+
+msgid "USD prices exclude tax, shipping and transmitter/field equipment."
+msgstr "USD価格には税、送料、送信機、飛行場用具が含まれません。"
+
+msgid "Propeller"
+msgstr "プロペラ"
+
+msgid "Receiver"
+msgstr "受信機"
+
+msgid "Estimated"
+msgstr "推定"
+
+msgid "Exact product price"
+msgstr "製品の正確な価格"
+
+msgid "Complete inventory coverage with cost estimates"
+msgstr "全在庫を対象とした費用推定"
+
+msgid "Incomplete aircraft valuation"
+msgstr "機体の評価は不完全です"
+
+msgid "condition is pending inspection"
+msgstr "点検待ちの状態"
+
+msgid "condition is unknown"
+msgstr "状態不明"
+
+msgid "salvage or condition is pending inspection"
+msgstr "回収可否または状態は点検待ち"
+
+msgid "replacement price is unknown"
+msgstr "交換価格不明"
+
+msgid "replacement price range is still uncertain"
+msgstr "交換価格の範囲は未確定"
+
+msgid "repair and replacement costs cannot be ranked exactly"
+msgstr "修理費と交換費を正確に比較できません"
+
+msgid "repair quote is unknown"
+msgstr "修理見積もり不明"
+
+msgid "no physical inventory binding; reuse cannot be credited"
+msgstr "現物在庫との対応がないため、再利用分を控除できません"
+
+msgid "reuse has no exact baseline unit price"
+msgstr "再利用部品の基準単価が不明です"
+
+msgid "terminal incident: component assessment is pending"
+msgstr "フライトを終了した事故：部品評価待ち"
+
+msgid "Changes apply immediately. Close to revert."
+msgstr "変更はすぐに反映されます。閉じると元に戻ります。"
+
+msgid "Practice"
+msgstr "練習"
+
+msgid "Garage"
+msgstr "ガレージ"
+
+msgid "Details"
+msgstr "詳細"
+
+msgid "AIRCRAFT CATALOG"
+msgstr "機体カタログ"
+
+msgid "Aircraft"
+msgstr "機体"
+
+msgid "Aircraft Workshop is not available for this rotorcraft yet."
+msgstr "機体工房は、この回転翼機ではまだ利用できません。"
+
+msgid ""
+"Choose a model. Flight capability and limitations are shown on each entry."
+msgstr "モデルを選んでください。各項目に飛行性能と制限が表示されます。"
+
+msgid "Experimental"
+msgstr "実験段階"
+
+msgid "Flight input: %s"
+msgstr "フライト入力：%s"
+
+msgid "Flight input: Keyboard"
+msgstr "フライト入力：キーボード"
+
+msgid "Flyable"
+msgstr "飛行可能"
+
+msgid "Hide flight details"
+msgstr "フライト詳細を隠す"
+
+msgid "Menu input: %s"
+msgstr "メニュー入力：%s"
+
+msgid "Menu input: Keyboard"
+msgstr "メニュー入力：キーボード"
+
+msgid "More flight details"
+msgstr "フライト詳細をさらに表示"
+
+msgid "Natural Random currently supports airplanes only."
+msgstr "ランダムフライト作成は現在、飛行機のみ対応しています。"
+
+msgid "Preview only"
+msgstr "プレビューのみ"
+
+msgid "RC garage"
+msgstr "RCガレージ"
+
+msgid "Select a vehicle before opening the garage."
+msgstr "ガレージを開く前に機体を選んでください。"
+
+msgid "Start: hover"
+msgstr "スタート：ホバリング"
+
+msgid "Start: runway"
+msgstr "スタート：滑走路"
+
+msgid "Start: 50% throttle"
+msgstr "スタート：スロットル50%"
+
+msgid "Evening"
+msgstr "夕方"
+
+msgid "Full moon"
+msgstr "満月"
+
+msgid "New moon"
+msgstr "新月"
+
+msgid "Interface"
+msgstr "インターフェース"
+
+msgid "Sound"
+msgstr "サウンド"
+
+msgid "Preview · Close to undo"
+msgstr "プレビュー · 閉じると元に戻ります"
+
+msgid "Fullscreen changes have a 15-second safety timer."
+msgstr "全画面の変更は15秒以内に確定してください。時間切れで元に戻ります。"
+
+msgid "Language is saved immediately."
+msgstr "言語はすぐに保存されます。"
+
+msgid "Game volume"
+msgstr "ゲーム音量"
+
+msgid "Everything you hear: aircraft, scenery, weather, crashes and menus."
+msgstr "機体、環境、天候、墜落、メニューのすべての音量。"
+
+msgid "Menu volume"
+msgstr "メニュー音量"
+
+msgid "Subtle cues for focus, selection and navigation."
+msgstr "フォーカス、選択、移動を知らせる控えめな音。"
+
+msgid "Test sound"
+msgstr "サウンドを試す"
+
+msgid "Muted"
+msgstr "ミュート"
+
+msgid "Settings saved."
+msgstr "設定を保存しました。"
+
+msgid "Changes reverted. Saved settings restored."
+msgstr "変更を取り消し、保存済みの設定に戻しました。"
+
+msgid "Open RC car garage"
+msgstr "RCカーガレージを開く"
+
+msgid ""
+"Natural Random creates a flight setup to review. Failure practice schedules "
+"system faults for your next flight."
+msgstr "ランダムフライト作成では確認用のフライト設定を作ります。故障練習では次のフライトにシステム故障を設定します。"
+
+msgid "Review a random setup, or practice with system failures."
+msgstr "ランダム設定を確認するか、システム故障の練習をしてください。"
+
+msgid "Failure practice"
+msgstr "故障練習"
+
+msgid "Next flight failures: Airplanes only"
+msgstr "次のフライトの故障：飛行機のみ"
+
+msgid "Next flight failures: %d%% · Standard"
+msgstr "次のフライトの故障：%d%% · 標準"
+
+msgid "Next flight failures: %d%% · Catastrophic enabled"
+msgstr "次のフライトの故障：%d%% · 重大な故障あり"
+
+msgid "Release throttle cut before releasing rotor hold."
+msgstr "ローターのロックを解除する前に、スロットルカットを解除してください。"
+
+msgid ""
+"Center cyclic/yaw and set zero pitch before arming; release hold and wait "
+"for governed RPM."
+msgstr "始動を許可する前にサイクリックとヨーを中央にし、ピッチをゼロにしてください。ロックを解除し、回転数が制御値に達するまで待ちます。"
+
+msgid "Replacement parts comparison"
+msgstr "交換部品の比較"
+
+msgid ""
+"Parts only. Inspection, repairs and labor are separate; this comparison is "
+"not added to the accident total."
+msgstr "部品のみ。点検、修理、作業費は別途です。この比較は事故の合計額に加算されません。"
+
+msgid "Lowest priced combination for these parts"
+msgstr "これらの部品を最も安くそろえる組み合わせ"
+
+msgid "Provisional parts estimate"
+msgstr "部品費の暫定見積もり"
+
+msgid "Some package prices are unknown; the cheapest option is unresolved."
+msgstr "一部のセット価格が不明なため、最安の選択肢を特定できません。"
+
+msgid "Comparison is incomplete; a cheaper combination may exist."
+msgstr "比較は不完全です。より安い組み合わせがある可能性があります。"
+
+msgid "No compatible combination covers all requested parts."
+msgstr "必要な部品すべてに対応する組み合わせがありません。"
+
+msgid "Parts estimate exceeds the supported amount range."
+msgstr "部品の推定額が対応上限を超えています。"
+
+msgid "Other damage or inspection costs remain unresolved."
+msgstr "その他の損傷または点検費用が未確定です。"
+
+msgid "Catalog estimates; availability and physical fit require confirmation."
+msgstr "カタログの推定価格です。在庫と物理的な適合性を確認してください。"
+
+msgid "Catalog snapshot: %s"
+msgstr "カタログの記録：%s"
+
+msgid "Availability when observed: %s"
+msgstr "確認時の在庫状況：%s"
+
+msgid "Historical estimate; itemized package coverage was not saved."
+msgstr "過去の見積もりです。セット内容の項目別情報は保存されていません。"
+
+msgid "Selected repair details"
+msgstr "選択した修理の詳細"
+
+msgid "Already included in the repair line above; not added again."
+msgstr "上記の修理項目に含まれています。重複して加算されません。"
+
+msgid "Costing basis: %s"
+msgstr "費用算定の基準：%s"
+
+msgid "Cash purchase"
+msgstr "現金購入"
+
+msgid "Consumption allocation"
+msgstr "使用量に応じた費用配分"
+
+msgid "Inspection basis: %s"
+msgstr "点検の根拠：%s"
+
+msgid "Scenario assumption"
+msgstr "シナリオの前提"
+
+msgid "Inspection evidence: %s"
+msgstr "点検結果：%s"
+
+msgid "Measurement: %s = %s"
+msgstr "測定値：%s = %s"
+
+msgid "Labor: %s · %d min"
+msgstr "作業：%s · %d分"
+
+msgid "DIY"
+msgstr "自分で作業"
+
+msgid "Paid"
+msgstr "有償作業"
+
+msgid "Labor cost"
+msgstr "作業費"
+
+msgid "Material: %s"
+msgstr "材料：%s"
+
+msgid "Required: %s"
+msgstr "必要数量：%s"
+
+msgid "Package: %s at %s each"
+msgstr "セット：%s、単価%s"
+
+msgid "Cash for %d packages"
+msgstr "セット%d個を購入"
+
+msgid "Consumed material allocation"
+msgstr "使用済み材料の配分額"
+
+msgid "Selected repair subtotal"
+msgstr "選択した修理の小計"
+
+msgid "Inspection fee"
+msgstr "点検料金"
+
+msgid "No separate inspection fee was itemized."
+msgstr "点検料金は別項目で記録されていません。"
+
+msgid ""
+"Full-package cash and consumed allocation are alternate material views."
+msgstr "セット一括購入額と使用量に応じた配分額は、材料費の別々の算定方法です。"
+
+msgid "Product: %s"
+msgstr "製品：%s"
+
+msgid "Source note: %s"
+msgstr "出典の注記：%s"
+
+msgid "Experimental: estimated quarter-scale physics, not yet flight-tested."
+msgstr "実験段階の物理モデルです。1/4スケールを想定しており、飛行試験は未実施です。"
+
+msgid "ESTIMATED LOSS · PROVISIONAL"
+msgstr "推定損失 · 暫定"
+
+msgid "Upper limit: replacing the whole aircraft. Inspection is pending."
+msgstr "上限は機体全体の交換費用です。点検待ちです。"
+
+msgid ""
+"Cost data is out of date for this aircraft version; no prices were applied."
+msgstr "この機体バージョンの費用データは古いため、価格は適用されていません。"
+
+msgid ""
+"Prices were authored for an earlier revision of this aircraft; its priced "
+"parts and contacts were verified unchanged."
+msgstr "旧バージョン用の価格ですが、価格付き部品と接触箇所に変更がないことを確認しています。"
+
+msgid ""
+"This registered battery configuration preserves the priced inventory and "
+"contact bindings."
+msgstr "この登録済みバッテリー構成では、価格付きの在庫情報と接触箇所の割り当てが保持されます。"
+
+msgid "Inspection pending"
+msgstr "点検待ち"
+
+msgid "Inspect the affected parts to determine repair costs."
+msgstr "修理費を判断するため、該当部品を点検してください。"
+
+msgid "No confirmed charges yet."
+msgstr "確定した費用はまだありません。"
+
+msgid "Moon"
+msgstr "月"
+
+msgid "Moon phase"
+msgstr "月の満ち欠け"
+
+msgid "Moon size"
+msgstr "月の大きさ"
+
+msgid "Moonlight"
+msgstr "月明かり"
+
+msgid "Real sky"
+msgstr "実際の空"
+
+msgid "Choose a phase"
+msgstr "月の満ち欠けを選択"
+
+msgid "No moon"
+msgstr "月なし"
+
+msgid "Waxing crescent"
+msgstr "三日月（満ちていく）"
+
+msgid "First quarter"
+msgstr "上弦の月"
+
+msgid "Waxing gibbous"
+msgstr "満ちていく月（満月前）"
+
+msgid "Waning gibbous"
+msgstr "欠けていく月（満月後）"
+
+msgid "Last quarter"
+msgstr "下弦の月"
+
+msgid "Waning crescent"
+msgstr "三日月（欠けていく）"
+
+msgid "Real size"
+msgstr "実際の大きさ"
+
+msgid "Large (cinematic, not real)"
+msgstr "大きめ（演出用、実際の大きさではありません）"
+
+msgid "Real moonlight"
+msgstr "実際の月明かり"
+
+msgid "Brighter (assist, not real)"
+msgstr "明るめ（補助表示、実際の明るさではありません）"
+
+msgid "No moon: a dark night with stars only, whatever the date."
+msgstr "月なし：日付にかかわらず、星だけが見える暗い夜です。"
+
+msgid "%d%% lit"
+msgstr "照らされている割合：%d%%"
+
+msgid "rises %s"
+msgstr "月の出：%s"
+
+msgid "no moonrise that day"
+msgstr "この日の月の出なし"
+
+msgid "sets %s"
+msgstr "月の入り：%s"
+
+msgid "no moonset that day"
+msgstr "この日の月の入りなし"
+
+msgid "Shown on %04d-%02d-%02d, the nearest night with this phase."
+msgstr "この月相に最も近い夜（%04d-%02d-%02d）に表示します。"
+
+msgid "Above the horizon at the chosen time."
+msgstr "選択した時刻には地平線より上にあります。"
+
+msgid "Below the horizon at the chosen time."
+msgstr "選択した時刻には地平線より下にあります。"
+
+msgid ""
+"Astronomical time does not draw the moon yet; Home's Evening and Night "
+"choices do."
+msgstr "天文時刻ではまだ月を表示しません。「ホーム」の「夕方」と「夜」では表示されます。"
+
+msgid ""
+"For Home's time choices (Evening, Night); at the full-moon Night preset."
+msgstr "「ホーム」の時刻設定（「夕方」「夜」）用です。「夜」の満月プリセットを使用します。"
+
+msgid "Moonrise, time passing"
+msgstr "月の出、時間経過"
+
+msgid "Moonrise"
+msgstr "月の出"
+
+msgid "Battery: finite pack (experimental)"
+msgstr "バッテリー：有限容量（実験段階）"
+
+msgid "Battery: ideal (never runs flat)"
+msgstr "バッテリー：理想（残量がなくなりません）"
+
+msgid ""
+"Finite pack: charge runs out, voltage sags under load and in the cold, the "
+"pack warms and the ESC cuts power at low voltage. Ideal: constant voltage."
+msgstr ""
+"有限容量：電荷がなくなり、負荷時や低温時に電圧が低下します。バッテリーは発熱し、低電圧時にはESCが出力を遮断します。理想設定では電圧は一定です。"
+
+msgid "Fuel: full tank"
+msgstr "燃料：満タン"
+
+msgid "Fuel: %d %% of the tank"
+msgstr "燃料：タンク容量の%d %%"
+
+msgid ""
+"Start fill of the engine's tank. Fuel burns in flight: the airplane gets "
+"lighter and its balance moves aft as the tank empties."
+msgstr "エンジンタンクの初期燃料量です。飛行中に燃料を消費すると機体が軽くなり、タンクが空になるにつれて重心が後方へ移動します。"
+
+msgid "Paint (%s): %s"
+msgstr "塗装（%s）：%s"
+
+msgid "Paint scheme for this aircraft. Every scheme flies the same model."
+msgstr "この機体の塗装パターンです。どのパターンでも同じ飛行モデルを使用します。"
+
+msgid "Landscape: %s"
+msgstr "風景：%s"
+
+msgid "Choose the landscape for your next flight."
+msgstr "次のフライトの風景を選んでください。"
+
+msgid "This landscape supports airborne starts only."
+msgstr "この風景では空中スタートのみ利用できます。"
+
+msgid "Natural Random requires Club field."
+msgstr "ランダムフライト作成にはClub fieldが必要です。"
+
+msgid "JETI radio family"
+msgstr "JETI送信機ファミリー"
+
+msgid "Device name: %s"
+msgstr "デバイス名：%s"
+
+msgid "Manufacturer: %s"
+msgstr "メーカー：%s"
+
+msgid ""
+"Backspace returns to the menu and Escape pauses. This action map changes "
+"only this draft until Save."
+msgstr "Backspaceでメニューに戻り、Escapeで一時停止します。この操作割り当ては「保存」するまで下書きだけに適用されます。"
+
+msgid "Use safe radio actions in draft"
+msgstr "下書きで安全な送信機操作を使う"
+
+msgid ""
+"Use Backspace for Back and Escape for Pause; all button and switch actions "
+"will be cleared in this draft."
+msgstr "Backspaceを「戻る」、Escapeを「一時停止」に割り当てます。下書き内のボタンとスイッチの操作はすべて消去されます。"
+
+msgid ""
+"Could not prepare the safe radio action map. The current draft is unchanged."
+msgstr "安全な送信機操作の割り当てを準備できませんでした。現在の下書きは変更されていません。"
+
+msgid "Could not prepare the safe radio action map: %s"
+msgstr "安全な送信機操作の割り当てを準備できませんでした：%s"
+
+msgid ""
+"Safe radio actions are in the draft. Save keeps them; Cancel discards them."
+msgstr "安全な送信機操作は下書きに反映されました。「保存」で保持し、「キャンセル」で破棄します。"
+
+msgid "Radio custom"
+msgstr "カスタム送信機"
+
+msgid "JETI Mode 2"
+msgstr "JETI Mode 2"
+
+msgid ""
+"JETI Mode 2: roll axis 0, inverted pitch axis 1, absolute throttle axis 2, "
+"yaw axis 3. Confirm your own stick and switch installation before flight."
+msgstr ""
+"JETI Mode "
+"2：軸0＝ロール、軸1＝ピッチ（反転）、軸2＝スロットル（絶対値）、軸3＝ヨー。飛行前にスティックとスイッチの取り付けを確認してください。"
+
+msgid ""
+"Custom radio mapping. Axis assignments and calibration stay in this profile."
+msgstr "カスタム送信機割り当てです。軸の割り当てと調整値はこのプロフィールに保存されます。"
+
+msgid "Could not restore the selected radio profile."
+msgstr "選択した送信機プロフィールを復元できませんでした。"
+
+msgid "Custom radio mapping restored. Save keeps this draft."
+msgstr "カスタム送信機割り当てを復元しました。下書きを保持するには保存してください。"
+
+msgid "Could not restore the JETI Mode 2 preset."
+msgstr "JETI Mode 2プリセットを復元できませんでした。"
+
+msgid "JETI Mode 2 is available only for a recognized JETI radio."
+msgstr "JETI Mode 2を使用できるのは、認識されたJETI送信機のみです。"
+
+msgid ""
+"JETI Mode 2 mapping is in the draft. Confirm your own switch installation, "
+"then Save to keep it."
+msgstr "JETI Mode 2の割り当てを下書きに反映しました。スイッチの取り付けを確認し、保存してください。"
+
+msgid "Switch positions"
+msgstr "スイッチ位置"
+
+msgid "2 positions"
+msgstr "2位置"
+
+msgid "3 positions"
+msgstr "3位置"
+
+msgid "Switch name (optional)"
+msgstr "スイッチ名（任意）"
+
+msgid "Reverse request"
+msgstr "指令を反転"
+
+msgid "Middle"
+msgstr "中間"
+
+msgid "Capture"
+msgstr "入力を取得"
+
+msgid "No conflict-free switch buttons are available for this channel."
+msgstr "このチャンネルに割り当て可能な競合のないスイッチボタンがありません。"
+
+msgid "Switch positions could not be changed without a conflict."
+msgstr "競合なしではスイッチ位置を変更できません。"
+
+msgid "Switch mapping was not changed: %s"
+msgstr "スイッチの割り当ては変更されませんでした：%s"
+
+msgid ""
+"Move the selected radio switch to this position. The next button press is "
+"captured; no other switch needs to be released."
+msgstr "選択した送信機スイッチをこの位置に動かしてください。次に押したボタンを取得します。他のスイッチを離す必要はありません。"
+
+msgid "That switch position is no longer available. Capture was cancelled."
+msgstr "そのスイッチ位置は使用できなくなりました。取得をキャンセルしました。"
+
+msgid ""
+"Button %d captured for this switch position. Save the profile to keep it."
+msgstr "このスイッチ位置にボタン%dを割り当てました。保持するにはプロフィールを保存してください。"
+
+msgid "Invalid switch group."
+msgstr "無効なスイッチグループです。"
+
+msgid "%s · multiple positions active"
+msgstr "%s · 複数の位置が有効"
+
+msgid "%s · no position active"
+msgstr "%s · 有効な位置なし"
+
+msgid "%s · %s · Button %d · request %.0f%%"
+msgstr "%s · %s · ボタン%d · 指令 %.0f%%"
+
+msgid "%s %s · Button %d"
+msgstr "%s %s · ボタン%d"
+
+msgid "Switch"
+msgstr "スイッチ"
+
+msgid "Review issues"
+msgstr "問題を確認"
+
+msgid "Open camera controls."
+msgstr "カメラ操作を開いてください。"
+
+msgid "Expand the preview for comfortable inspection."
+msgstr "プレビューを拡大すると確認しやすくなります。"
+
+msgid "Appearance"
+msgstr "外観"
+
+msgid "Paint changes only the selected registered region."
+msgstr "塗装は選択した登録領域だけに適用されます。"
+
+msgid ""
+"Show smoke is a visual effect. Source exhaust follows the running engine."
+msgstr "煙の表示は視覚効果です。実際の排気はエンジンの運転に連動します。"
+
+msgid "Choose a smoke preset…"
+msgstr "煙のプリセットを選んでください…"
+
+msgid "Clear Trainer"
+msgstr "トレーナー機・煙なし"
+
+msgid "Twin Ribbons"
+msgstr "2本のリボン"
+
+msgid "Tricolor"
+msgstr "トリコロール"
+
+msgid "Tail Comet"
+msgstr "テールコメット"
+
+msgid "Rainbow Burst"
+msgstr "虹色バースト"
+
+msgid "Classic Exhaust"
+msgstr "クラシック排気"
+
+msgid "No registered regions"
+msgstr "登録領域なし"
+
+msgid "No registered emitters"
+msgstr "登録済みのエミッターなし"
+
+msgid "This model has no registered customization for this page."
+msgstr "このモデルには、このページ用の登録済みカスタマイズがありません。"
+
+msgid "Enable this emitter"
+msgstr "このエミッターを有効化"
+
+msgid "White"
+msgstr "白"
+
+msgid "Red"
+msgstr "赤"
+
+msgid "Blue"
+msgstr "青"
+
+msgid "Gold"
+msgstr "金色"
+
+msgid "Green"
+msgstr "緑"
+
+msgid "Purple"
+msgstr "紫"
+
+msgid "Black"
+msgstr "黒"
+
+msgid "Custom color"
+msgstr "カスタムカラー"
+
+msgid "Apply color"
+msgstr "色を適用"
+
+msgid "Amount"
+msgstr "量"
+
+msgid "Width"
+msgstr "幅"
+
+msgid "Puff lifetime"
+msgstr "煙の持続時間"
+
+msgid "Shape"
+msgstr "形状"
+
+msgid "Ribbon"
+msgstr "リボン"
+
+msgid "Cloud"
+msgstr "雲"
+
+msgid "Fan"
+msgstr "扇形"
+
+msgid "Emission"
+msgstr "放出"
+
+msgid "Hold"
+msgstr "連続"
+
+msgid "Burst"
+msgstr "バースト"
+
+msgid "Pulse"
+msgstr "パルス"
+
+msgid "Burst duration"
+msgstr "バースト時間"
+
+msgid "Pulse period"
+msgstr "パルス周期"
+
+msgid "Pulse on fraction"
+msgstr "パルスのオン時間割合"
+
+msgid ""
+"Duration controls new emission; existing puffs fade for their full lifetime."
+msgstr "時間設定は新しい煙の放出に適用されます。放出済みの煙は寿命まで消えずに残ります。"
+
+msgid "Use #RRGGBBAA, for example #327DE8FF."
+msgstr "#RRGGBBAAを使用してください（例：#327DE8FF）。"
+
+msgid ""
+"This preset needs registered emitters that this model does not provide."
+msgstr "このプリセットに必要なエミッターがモデルに登録されていません。"
+
+msgid "Apply or cancel the edited color before saving or starting a trial."
+msgstr "保存または試行開始の前に、変更した色を適用するかキャンセルしてください。"
+
+msgid "Visual preview · no flight simulation"
+msgstr "視覚プレビュー · 飛行シミュレーションなし"
+
+msgid "Play smoke"
+msgstr "煙を再生"
+
+msgid "Stationary"
+msgstr "静止"
+
+msgid "Illustrative pass"
+msgstr "説明用の飛行"
+
+msgid ""
+"Six-second visual pass; residual smoke fades before pause. No flight "
+"simulation. Changing motion clears the puffs."
+msgstr "6秒間の視覚プレビューです。一時停止前に残りの煙が消えます。飛行シミュレーションは行いません。動きを変えると煙が消去されます。"
+
+msgid "Pause smoke"
+msgstr "煙を一時停止"
+
+msgid "Restart smoke"
+msgstr "煙を再起動"
+
+msgid "Light wind"
+msgstr "弱い風"
+
+msgid "Still air"
+msgstr "無風"
+
+msgid "Play the visual smoke preview."
+msgstr "視覚的な煙のプレビューを再生してください。"
+
+msgid "Clear puffs and restart the preview clock."
+msgstr "煙を消去し、プレビュー時間をリセットしてください。"
+
+msgid "Trial start"
+msgstr "試行のスタート"
+
+msgid "In the air"
+msgstr "空中"
+
+msgid "On the runway"
+msgstr "滑走路上"
+
+msgid "Trial field: %s"
+msgstr "試行飛行場：%s"
+
+msgid "Wind: %s"
+msgstr "風：%s"
+
+msgid "Light: %s"
+msgstr "照明：%s"
+
+msgid "Full fuel · normal control rates · current controller"
+msgstr "燃料満タン · 通常の舵角 · 現在のコントローラー"
+
+msgid "Choose an airborne or runway trial start."
+msgstr "空中または滑走路上のスタートを選んでください。"
+
+msgid "Import build…"
+msgstr "機体設定をインポート…"
+
+msgid "Export selected…"
+msgstr "選択項目をエクスポート…"
+
+msgid "Import aircraft build"
+msgstr "機体設定をインポート"
+
+msgid "Export aircraft build"
+msgstr "機体設定をエクスポート"
+
+msgid "Aircraft build"
+msgstr "機体設定"
+
+msgid "The build could not be exported."
+msgstr "機体設定をエクスポートできませんでした。"
+
+msgid "The build could not be imported."
+msgstr "機体設定をインポートできませんでした。"
+
+msgid "The exported file failed its readback check."
+msgstr "エクスポートしたファイルの読み戻し確認に失敗しました。"
+
+msgid "Aircraft build exported."
+msgstr "機体設定をエクスポートしました。"
+
+msgid "Aircraft build imported as a new local copy."
+msgstr "機体設定を新しいローカルコピーとしてインポートしました。"
+
+msgid "Fuselage"
+msgstr "胴体"
+
+msgid "Wing"
+msgstr "翼"
+
+msgid "Wing tips"
+msgstr "翼端"
+
+msgid "Tail"
+msgstr "尾翼"
+
+msgid "Left wingtip"
+msgstr "左翼端"
+
+msgid "Right wingtip"
+msgstr "右翼端"
+
+msgid "Engine exhaust"
+msgstr "エンジン排気"
+
+msgid "Visual only"
+msgstr "表示のみ"
+
+msgid "Stock"
+msgstr "標準"
+
+msgid "Paint"
+msgstr "塗装"
+
+msgid "Markings"
+msgstr "マーキング"
+
+msgid "Color steps"
+msgstr "色の段階"
+
+msgid "Add color step"
+msgstr "色の段階を追加"
+
+msgid "Remove last step"
+msgstr "最後の段階を削除"
+
+msgid "Use single color"
+msgstr "単色を使用"
+
+msgid "Color step duration"
+msgstr "色の段階の時間"
+
+msgid "Single color"
+msgstr "単色"
+
+msgid "Step %d"
+msgstr "段階 %d"
+
+msgid "Registration"
+msgstr "登録番号"
+
+msgid "Registration panels"
+msgstr "登録番号パネル"
+
+msgid "Apply inscription"
+msgstr "文字を適用"
+
+msgid ""
+"Up to 12 English or Spanish letters, digits, spaces or hyphens. Empty text "
+"removes the inscription."
+msgstr "英字（英語・スペイン語）、数字、スペース、ハイフンを最大12文字まで入力できます。空欄にすると登録文字を削除します。"
+
+msgid ""
+"Apply or cancel the edited color or inscription before saving or starting a "
+"trial."
+msgstr "保存または試験飛行の開始前に、色や文字の編集を適用するか取り消してください。"
+
+msgid "Ready for a trial · runway qualification required"
+msgstr "試験飛行可能 · 滑走路での適合確認が必要"
+
+msgid "Control travel multiplier"
+msgstr "舵角倍率"
+
+msgid "Tank capacity multiplier"
+msgstr "タンク容量倍率"
+
+msgid "[H] show smoke %s  [J] assign radio AUX"
+msgstr "[H] スモーク表示 %s  [J] 送信機のAUXを割り当て"
+
+msgid "Path:"
+msgstr "パス："
+
+msgid "File:"
+msgstr "ファイル："
+
+msgid "Open"
+msgstr "開く"
+
+msgid "Directories & Files:"
+msgstr "フォルダーとファイル："
+
+msgid "Illustrative running engine"
+msgstr "エンジン稼働時の参考表示"
+
+msgid "Restore selected region"
+msgstr "選択した領域を復元"
+
+msgid "Search saved builds"
+msgstr "保存済み構成を検索"
+
+msgid "Favorites only"
+msgstr "お気に入りのみ"
+
+msgid "Add favorite"
+msgstr "お気に入りに追加"
+
+msgid "Remove favorite"
+msgstr "お気に入りから削除"
+
+msgid "Favorite"
+msgstr "お気に入り"
+
+msgid "RGB profile"
+msgstr "RGBプロフィール"
+
+msgid "Favorites could not be read; existing metadata was preserved."
+msgstr "お気に入りを読み込めませんでした。既存のメタデータは保持されました。"
+
+msgid "Favorites could not be saved."
+msgstr "お気に入りを保存できませんでした。"
+
+msgid "Review compatible settings"
+msgstr "対応する設定を確認"
+
+msgid "Apply settings"
+msgstr "設定を適用"
+
+msgid "From %s · revision %d"
+msgstr "%sから · リビジョン %d"
+
+msgid ""
+"Only listed compatible settings will change. Physical adjustments stay "
+"unchanged."
+msgstr "一覧にある対応済みの設定のみ変更されます。物理的な調整値は変更されません。"
+
+msgid ""
+"This stock appearance profile will use the current format when applied."
+msgstr "この標準外観プロファイルは、適用時に現在の形式へ変換されます。"
+
+msgid "Settings to apply"
+msgstr "適用する設定"
+
+msgid "Settings skipped"
+msgstr "適用されない設定"
+
+msgid "The source build has no current presentation bindings."
+msgstr "元の機体構成には現在の表示設定の割り当てがありません。"
+
+msgid "These presentation settings cannot be copied."
+msgstr "これらの表示設定はコピーできません。"
+
+msgid "The draft changed. Review the settings again before applying them."
+msgstr "下書きが変更されました。適用する前に、設定をもう一度確認してください。"
+
+msgid ""
+"Compatible presentation settings copied. Undo restores the previous "
+"presentation."
+msgstr "対応する表示設定をコピーしました。「元に戻す」と以前の表示に戻ります。"
+
+msgid "Compatible"
+msgstr "対応"
+
+msgid "Source setting is unavailable."
+msgstr "元の設定は利用できません。"
+
+msgid "No matching region or emitter on this aircraft."
+msgstr "この機体に一致する領域またはエミッターがありません。"
+
+msgid "This pattern is unavailable."
+msgstr "このパターンは利用できません。"
+
+msgid "This region uses a different material."
+msgstr "この領域では別のマテリアルが使われています。"
+
+msgid "This accent is unavailable."
+msgstr "この装飾は利用できません。"
+
+msgid "This accent uses a different material."
+msgstr "この装飾では別のマテリアルが使われています。"
+
+msgid "These inscription characters cannot be verified."
+msgstr "この登録文字は検証できません。"
+
+msgid "The inscription exceeds this panel's limit."
+msgstr "文字数がパネルの上限を超えています。"
+
+msgid "The emitter has a different purpose or source."
+msgstr "エミッターの用途または発生源が異なります。"
+
+msgid "This setting is unavailable."
+msgstr "この設定は利用できません。"
+
+msgid ""
+"Unavailable favorites remain listed under Favorites only and can be removed."
+msgstr "利用できないお気に入りは「お気に入りのみ」の一覧に残り、削除できます。"
+
+msgid "Unavailable favorite %d"
+msgstr "利用できないお気に入り %d"
+
+msgid "Restore this saved build or remove its favorite."
+msgstr "この保存済み構成を復元するか、お気に入りから削除してください。"
+
+msgid "More options"
+msgstr "その他の設定"
+
+msgid "Fewer options"
+msgstr "設定を減らす"
+
+msgid "Apply or cancel the edited color before changing regions or emitters."
+msgstr "領域やエミッターを変更する前に、編集した色を適用するか取り消してください。"
+
+msgid "Apply or cancel the edited color before changing color steps."
+msgstr "色の段階を変更する前に、編集した色を適用するか取り消してください。"
+
+msgid "Apply or cancel the edited inscription before changing panels."
+msgstr "パネルを変更する前に、編集した文字を適用するか取り消してください。"
+
+msgid "Preparing thumbnail…"
+msgstr "サムネイルを準備中…"
+
+msgid "Thumbnail unavailable. Build details and actions are still available."
+msgstr "サムネイルは利用できません。構成の詳細や操作は引き続き利用できます。"
+
+msgid "Recovered draft…"
+msgstr "下書きを復元しました…"
+
+msgid "Recovered draft"
+msgstr "下書きを復元しました"
+
+msgid "Restore as a new build"
+msgstr "新しい構成として復元"
+
+msgid "Later"
+msgstr "後で"
+
+msgid "Discard recovered draft"
+msgstr "復元した下書きを破棄"
+
+msgid ""
+"Restore keeps the saved library unchanged. Review all values and save a new "
+"build."
+msgstr "復元しても保存済みライブラリは変更されません。すべての値を確認し、新しい構成として保存してください。"
+
+msgid ""
+"This draft is unavailable with the current dependencies. Its stored data "
+"remains unchanged."
+msgstr "現在の依存関係ではこの下書きを利用できません。保存データは変更されていません。"
+
+msgid "Restore recovered draft"
+msgstr "復元した下書きを適用"
+
+msgid "The recovered draft changed or is unavailable. Review it again."
+msgstr "復元した下書きが変更されたか、利用できなくなりました。もう一度確認してください。"
+
+msgid ""
+"A recovered numeric field is unavailable. The stored draft remains "
+"unchanged."
+msgstr "復元した数値フィールドは利用できません。保存済みの下書きは変更されていません。"
+
+msgid ""
+"A recovered text field is unavailable. The stored draft remains unchanged."
+msgstr "復元したテキストフィールドは利用できません。保存済みの下書きは変更されていません。"
+
+msgid "Draft restored. Review the values and save a new build."
+msgstr "下書きを復元しました。値を確認し、新しい構成として保存してください。"
+
+msgid "Measured components…"
+msgstr "測定済みコンポーネント…"
+
+msgid "Apply or cancel pending fields before editing measured components."
+msgstr "測定済みコンポーネントを編集する前に、保留中の項目を適用するか取り消してください。"
+
+msgid ""
+"The draft changed while measurements were open. Review the measurements "
+"again."
+msgstr "測定画面を開いている間に下書きが変更されました。測定値をもう一度確認してください。"
+
+msgid ""
+"Measured components applied to the draft. The saved build is unchanged."
+msgstr "測定済みコンポーネントを下書きに適用しました。保存済み構成は変更されていません。"
+
+msgid ""
+"Automatic draft recovery is paused until you restore or discard the "
+"recovered draft."
+msgstr "復元した下書きを復元または破棄するまで、自動復元は一時停止します。"
+
+msgid "Accepted settings"
+msgstr "適用済みの設定"
+
+msgid "Pending input"
+msgstr "保留中の入力"
+
+msgid "Size"
+msgstr "サイズ"
+
+msgid "Mass policy"
+msgstr "質量の扱い"
+
+msgid "Weight"
+msgstr "重量"
+
+msgid "Power"
+msgstr "出力"
+
+msgid "Setting"
+msgstr "設定"
+
+msgid ""
+"Recovery data cannot be safely replaced. Review the recovery files before "
+"retrying."
+msgstr "復元データを安全に置き換えられません。再試行する前に復元ファイルを確認してください。"
+
+msgid ""
+"Another session changed the recovered draft. Review it in Library before "
+"automatic recovery resumes."
+msgstr "別のセッションで復元した下書きが変更されました。自動復元を再開する前に、ライブラリで確認してください。"
+
+msgid "Measured component mass"
+msgstr "コンポーネントの測定質量"
+
+msgid "The recipe mass_edits value must be an array."
+msgstr "レシピのmass_edits値は配列である必要があります。"
+
+msgid "Apply to a new build"
+msgstr "新しい構成に適用"
+
+msgid ""
+"Record measured masses for existing source inventory components. Positions "
+"and geometry stay fixed; applying creates a new build."
+msgstr "元のインベントリにある既存コンポーネントの測定質量を記録します。位置と形状は変わりません。適用すると新しい構成が作成されます。"
+
+msgid "Measured component"
+msgstr "測定済みコンポーネント"
+
+msgid "Measurement source"
+msgstr "測定元"
+
+msgid "Scale and component identification"
+msgstr "はかりとコンポーネントの識別"
+
+msgid "Add or update measurement"
+msgstr "測定値を追加または更新"
+
+msgid "No measured components staged."
+msgstr "測定待ちのコンポーネントはありません。"
+
+msgid "Weighing comparison and fixed-station proposal"
+msgstr "計量比較と固定位置の質量提案"
+
+msgid "Weighing state: source declaration"
+msgstr "計量状態：測定元の申告"
+
+msgid "Observed total mass (kg)"
+msgstr "観測された総質量 (kg)"
+
+msgid "x aft (m)"
+msgstr "x 後方 (m)"
+
+msgid "y right (m)"
+msgstr "y 右方向 (m)"
+
+msgid "z up (m)"
+msgstr "z 上方向 (m)"
+
+msgid "Check mass and CG"
+msgstr "質量とCGを確認"
+
+msgid "Propose fixed-station mass"
+msgstr "固定位置の質量を提案"
+
+msgid "Unavailable: "
+msgstr "利用不可："
+
+msgid "Show source inventory details"
+msgstr "元のインベントリの詳細を表示"
+
+msgid "Hide source inventory details"
+msgstr "元インベントリの詳細を隠す"
+
+msgid "Weighing state (fixed to source declaration)"
+msgstr "計量状態（測定元の申告に固定）"
+
+msgid "Stage or correct the current measurement before changing components."
+msgstr "コンポーネントを変更する前に、現在の測定値を追加または修正してください。"
+
+msgid "Aircraft source is unavailable."
+msgstr "機体の測定元を利用できません。"
+
+msgid "No source inventory components are available for measurement."
+msgstr "測定可能な元インベントリのコンポーネントがありません。"
+
+msgid "Enter a finite component mass in kilograms within the source bounds."
+msgstr "測定元の範囲内で有限のコンポーネント質量をkg単位で入力してください。"
+
+msgid "The 32 component-measurement limit has been reached."
+msgstr "コンポーネント測定数が上限の32件に達しました。"
+
+msgid "Staged measurements"
+msgstr "追加済みの測定値"
+
+msgid "Enter a positive finite mass and three finite CG coordinates."
+msgstr "正の有限質量と、有限値のCG座標を3つ入力してください。"
+
+msgid "within tolerance"
+msgstr "許容範囲内"
+
+msgid "outside tolerance"
+msgstr "許容範囲外"
+
+msgid "inside source range"
+msgstr "測定元の範囲内"
+
+msgid "outside source range"
+msgstr "測定元の範囲外"
+
+msgid "Reference"
+msgstr "基準"
+
+msgid "state"
+msgstr "状態"
+
+msgid "Select an available source component first."
+msgstr "まず、利用可能な元コンポーネントを選択してください。"
+
+msgid "Proposal only"
+msgstr "提案のみ"
+
+msgid "Predicted CG x/y/z"
+msgstr "予測CG x/y/z"
+
+msgid "This derived value is not applied or labelled as a measurement."
+msgstr "この派生値は適用されず、測定値としても表示されません。"
+
+msgid "Stage at least one measured component before applying."
+msgstr "適用する前に、測定済みコンポーネントを1つ以上追加してください。"
+
+msgid ""
+"The candidate did not pass validation. Review source inventory details for "
+"the reason."
+msgstr "候補は検証に失敗しました。理由を確認するには元インベントリの詳細を確認してください。"
+
+msgid "Record a measured component mass. Geometry stays fixed."
+msgstr "コンポーネントの測定質量を記録してください。形状は変わりません。"
+
+msgid "Source mass: %.4f kg"
+msgstr "測定元の質量：%.4f kg"
+
+msgid ""
+"Another session cleared the recovered draft. Automatic recovery will resume "
+"on your next edit."
+msgstr "別のセッションで復元済みの下書きが消去されました。次回の編集時に自動復元を再開します。"
+
+msgid "Smaller"
+msgstr "小さく"
+
+msgid "Larger"
+msgstr "大きく"
+
+msgid "Tiny"
+msgstr "極小"
+
+msgid "Large"
+msgstr "大きい"
+
+msgid "Reduce aircraft size one step."
+msgstr "機体サイズを1段階小さくしてください。"
+
+msgid "Increase aircraft size one step."
+msgstr "機体サイズを1段階大きくしてください。"
+
+msgid "Set the aircraft to %s%% of its original size."
+msgstr "機体サイズを元の%s%%に設定してください。"
+
+msgid "The requested size is not a finite number."
+msgstr "指定サイズが有限数ではありません。"
+
+msgid "The requested size could not be applied."
+msgstr "指定サイズを適用できませんでした。"
+
+msgid "Size: %s%% · wingspan: %s m"
+msgstr "サイズ：%s%% · 翼幅：%s m"
+
+msgid "Proposed size: %s%% · wingspan pending validation."
+msgstr "サイズ案：%s%% · 翼幅は検証待ちです。"
+
+msgid ""
+"Each virtual size is simulated with scaled geometry; aerodynamic similarity "
+"is an estimate, especially at the smallest and largest sizes."
+msgstr "各仮想サイズは拡大縮小した形状でシミュレーションされます。空力的な相似性は推定値であり、特に最小・最大サイズでは誤差が大きくなります。"
+
+msgid "Radio calibration"
+msgstr "送信機のキャリブレーション"
+
+msgid "Step %d of %d"
+msgstr "%d / %d 段階"
+
+msgid "Centre the sticks, throttle LOW, hands off. Press Enter"
+msgstr "スティックを中央に戻し、スロットルを最小にして、操作を止めてください。Enterを押してください"
+
+msgid "Move the THROTTLE to FULL and back to LOW. Press Enter"
+msgstr "スロットルを最大まで動かしてから、最小に戻してください。Enterを押してください"
+
+msgid ""
+"Move the AILERON stick fully RIGHT, then LEFT, then centre. Press Enter"
+msgstr "エルロンのスティックを右端まで動かし、次に左端、最後に中央へ戻してください。Enterを押してください"
+
+msgid ""
+"Pull the ELEVATOR stick fully BACK, then FORWARD, then centre. Press Enter"
+msgstr "エレベーターのスティックを手前いっぱいまで引き、次に奥いっぱいへ押し、最後に中央へ戻してください。Enterを押してください"
+
+msgid "Move the RUDDER stick fully RIGHT, then LEFT, then centre. Press Enter"
+msgstr "ラダーのスティックを右端まで動かし、次に左端、最後に中央へ戻してください。Enterを押してください"
+
+msgid "Radio axes: %s"
+msgstr "送信機の軸：%s"
+
+msgid "Enter or controller Accept: next step · Esc or controller Back: cancel"
+msgstr "Enterまたはゲームパッドの決定：次へ · Escまたは戻る：キャンセル"
+
+msgid "Radio calibrated and saved."
+msgstr "送信機をキャリブレーションし、プロファイルを保存しました。"
+
+msgid "Radio calibrated for this flight, but the profile was not saved."
+msgstr "送信機はこのフライト用にキャリブレーションされましたが、プロファイルは保存されていません。"
+
+msgid "Radio calibration was not saved: %s"
+msgstr "送信機のキャリブレーションを保存できませんでした：%s"
+
+msgid "Close the other open window before continuing."
+msgstr "続行する前に、ほかの開いているウィンドウを閉じてください。"
+
+msgid "Change aircraft"
+msgstr "機体を変更"
+
+msgid "Workshop trial"
+msgstr "ワークショップで試験飛行"
+
+msgid "Resume"
+msgstr "再開"
+
+msgid "Quit to desktop"
+msgstr "デスクトップに戻る"
+
+msgid "Devices, profiles and radio calibration"
+msgstr "デバイス、プロファイル、送信機のキャリブレーション"
+
+msgid "Club field"
+msgstr "クラブ飛行場"
+
+msgid "Green paradise"
+msgstr "緑の楽園"
+
+msgid "Choose a model for the next flight."
+msgstr "次のフライトで使用する機体を選択してください。"
+
+msgid "Turbo Lumber"
+msgstr "Turbo Lumber"
+
+msgid "Problem: %s"
+msgstr "問題：%s"
+
+msgid "STICKS"
+msgstr "スティック"
+
+msgid "RECORDING AND DEVELOPER"
+msgstr "録画・開発者向け"
+
+msgid "Unsaved preview: Keep changes saves it, Close discards it."
+msgstr "未保存のプレビュー：「保存」で変更を保存し、「閉じる」で破棄します。"
+
+msgid "Changes preview at once. Keep changes saves them; Close discards them."
+msgstr "変更はすぐにプレビューされます。「保存」で保持し、「閉じる」で破棄します。"
+
+msgid "Next flight: %s"
+msgstr "次のフライト：%s"
+
+msgid "Affected parts"
+msgstr "影響するパーツ"
+
+msgid "Show parts and prices"
+msgstr "パーツと価格を表示"
+
+msgid "Hide parts and prices"
+msgstr "パーツと価格を隠す"
+
+msgid "Part"
+msgstr "パーツ"
+
+msgid "Qty"
+msgstr "数量"
+
+msgid "Estimate"
+msgstr "見積もり"
+
+msgid "Pending"
+msgstr "保留中"
+
+msgid "Reuse"
+msgstr "再利用"
+
+msgid "Reference: %s"
+msgstr "参照：%s"
+
+msgid "No assessed parts yet."
+msgstr "評価済みのパーツはありません。"
+
+msgid "Pending inspections and unpriced items are excluded from the subtotal."
+msgstr "保留中の点検と価格未設定の品目は小計に含まれません。"
+
+msgid "Price references"
+msgstr "価格の参照先"
+
+msgid ""
+"Commercial reference parts for this fictional aircraft; fit and installed "
+"hardware are unverified."
+msgstr "架空の機体向けの市販パーツの参考情報です。適合性と搭載済みの機器は未確認です。"
+
+msgid "Sold package: %s"
+msgstr "販売パッケージ：%s"
+
+msgid "Listed package price (reference only)"
+msgstr "パッケージ掲載価格（参考値）"
+
+msgid "Report assumptions"
+msgstr "レポートの前提"
+
+msgid ""
+"Some reference parts are excluded until fit and package contents are "
+"verified."
+msgstr "適合性とパッケージ内容を確認するまで、一部の参考パーツは除外されます。"
+
+msgid "Wing, flaps, ailerons and servos"
+msgstr "主翼、フラップ、エルロン、サーボ"
+
+msgid "Fuselage, canopy and fittings"
+msgstr "胴体、キャノピー、取付金具"
+
+msgid "Horizontal and vertical tail"
+msgstr "水平尾翼と垂直尾翼"
+
+msgid "Main landing gear and wheels"
+msgstr "主脚と車輪"
+
+msgid "Tailwheel and fork"
+msgstr "尾輪とフォーク"
+
+msgid "Three-blade propeller"
+msgstr "3枚ブレードのプロペラ"
+
+msgid "Propeller assembly"
+msgstr "プロペラ一式"
+
+msgid "Propeller and spinner"
+msgstr "プロペラとスピンナー"
+
+msgid "Spinner"
+msgstr "スピンナー"
+
+msgid "800 Kv motor"
+msgstr "800 Kvモーター"
+
+msgid "70 A speed controller"
+msgstr "70 A ESC"
+
+msgid "Elevator and rudder servos"
+msgstr "エレベーターとラダーのサーボ"
+
+msgid "Wiring and navigation lights"
+msgstr "配線と航法灯"
+
+msgid "4S 3200 mAh battery"
+msgstr "4S 3200 mAhバッテリー"
+
+msgid "Pastel Cloud"
+msgstr "パステルクラウド"
+
+msgid "Alternating Tips"
+msgstr "交互の翼端カラー"
+
+msgid "Monochrome Dark"
+msgstr "ダークモノクロ"
+
+msgid "Choose any sRGB color and alpha, then Apply color to keep it."
+msgstr "任意のsRGB色とアルファ値を選び、「色を適用」を押して保存してください。"
+
+msgid "Palette transition"
+msgstr "パレットの遷移"
+
+msgid "Step"
+msgstr "段階"
+
+msgid "Smooth"
+msgstr "滑らか"
+
+msgid "Step duration / palette period"
+msgstr "段階の長さ / パレット周期"
+
+msgid "Legacy amount"
+msgstr "旧形式の量"
+
+msgid ""
+"The v1 amount is shown for reference and is read-only. Edit density or "
+"emission rate to create a v2 draft; the saved v1 revision stays unchanged."
+msgstr ""
+"v1の値は参考表示で、編集できません。v2の下書きを作成するには、密度または放出率を編集してください。保存済みのv1リビジョンは変更されません。"
+
+msgid "Density"
+msgstr "密度"
+
+msgid "Emission rate"
+msgstr "放出率"
+
+msgid "Palette phase offset"
+msgstr "パレット位相オフセット"
+
+msgid "Jet speed"
+msgstr "噴流速度"
+
+msgid "Dispersion"
+msgstr "拡散"
+
+msgid "Buoyancy"
+msgstr "浮力"
+
+msgid "Drag"
+msgstr "抗力"
+
+msgid "Outlet velocity"
+msgstr "出口速度"
+
+msgid "Copy to another emitter…"
+msgstr "別の放出口にコピー…"
+
+msgid "Copy settings"
+msgstr "設定をコピー"
+
+msgid ""
+"Make a one-time copy of this emitter's settings. Later edits stay "
+"independent."
+msgstr "この放出口の設定を一度だけコピーします。以降の編集は個別に適用されます。"
+
+msgid "Stop emission"
+msgstr "放出を停止"
+
+msgid ""
+"Stop new smoke births. Existing puffs keep fading while the preview runs."
+msgstr "新しい煙の発生を止めます。プレビュー中、既存の煙は消えるまで流れ続けます。"
+
+msgid "Emission stopped"
+msgstr "放出を停止しました"
+
+msgid "Fit plume"
+msgstr "煙の範囲に合わせる"
+
+msgid "Fit the complete bounded smoke plume and aircraft in the preview."
+msgstr "プレビュー内の煙全体と機体が収まるように表示します。"
+
+msgid "Resolved preview rate is unavailable."
+msgstr "プレビューの算出放出率を取得できません。"
+
+msgid "No enabled emitters."
+msgstr "有効な放出口がありません。"
+
+msgid "Resolved preview rates: "
+msgstr "プレビューの算出放出率："
+
+msgid "%s: %.1f puffs/s"
+msgstr "%s：%.1f 個/秒"
+
+msgid "budget limited"
+msgstr "予算による制限あり"
+
+msgid ""
+"Created a v2 draft with %d enabled smoke outlet(s). Review density, rate, "
+"and motion before saving. The saved v1 revision is unchanged; v2 makes no "
+"claim of visual equivalence."
+msgstr ""
+"%d "
+"個の煙の放出口を有効にしたv2の下書きを作成しました。保存する前に密度、放出率、動きを確認してください。保存済みのv1リビジョンは変更されません。v2は見た目の同等性を保証しません。"
+
+msgid ""
+"Viewing a legacy smoke profile. New controls use v2 defaults; the first "
+"smoke edit creates a v2 draft."
+msgstr "旧形式の煙プロファイルを表示中です。新しいコントロールにはv2の既定値が表示されます。煙を初めて編集するとv2の下書きが作成されます。"
+
+msgid "Copied once. The emitters will remain independent."
+msgstr "一度だけコピーしました。放出口は個別に設定できます。"
+
+msgid "Settings were copied once; later edits remain independent."
+msgstr "設定を一度コピーしました。以降の編集は個別に適用されます。"
+
+msgid "Legacy smoke migration is unavailable for this model."
+msgstr "この機体では旧形式の煙を移行できません。"
+
+msgid "Flight companions"
+msgstr "僚機"
+
+msgid ""
+"Club field offers 1–3 experimental Ugly Stik companions flying circuits. "
+"They are Off by default; start with one. Open Flight companions under Home →"
+" More flight details or Pause → Session options."
+msgstr ""
+"クラブフィールドでは、Ugly Stikの僚機が1～3機、実験的に周回飛行します。初期設定ではオフです。まずは1機から始めてください。ホーム → "
+"飛行の詳細 → 僚機、または一時停止 → セッション設定から開けます。"
+
+msgid ""
+"Apply changes sound and labels immediately. Flight settings take effect "
+"after Restart flight. Remove companions now clears the current roster; "
+"disable companions and Apply to keep them off after restarting. Aircraft-to-"
+"aircraft contact is disabled."
+msgstr ""
+"変更を適用すると、音量とラベルはすぐに反映されます。飛行設定は飛行を再開した後に反映されます。今すぐ僚機を削除すると、現在の機体リストが消去されます。再開後も無効のままにするには、僚機をオフにして［適用］を選んでください。機体同士の接触は無効です。"
+
+msgid "Flight companions: %s · %d"
+msgstr "僚機：%s · %d"
+
+msgid "Flight companions: %s · %d companions · seed %d"
+msgstr "僚機：%s · %d機 · シード%d"
+
+msgid "Flight companions · next restart: %s · %d · seed %d"
+msgstr "僚機 · 次回再開時：%s · %d · シード%d"
+
+msgid "Available for airplanes at Club Field."
+msgstr "クラブフィールドの飛行機で利用できます。"
+
+msgid ""
+"Experimental companion flights. Start with one aircraft; additional aircraft"
+" increase CPU use."
+msgstr "僚機との飛行は実験的な機能です。まずは1機から始めてください。機体を増やすとCPU使用率が上がります。"
+
+msgid "Enable companions"
+msgstr "僚機を有効にする"
+
+msgid "Companion count"
+msgstr "僚機の数"
+
+msgid "1 companion"
+msgstr "1機"
+
+msgid "2 companions"
+msgstr "2機"
+
+msgid "3 companions"
+msgstr "3機"
+
+msgid "Traffic seed"
+msgstr "交通シード"
+
+msgid ""
+"Enter a whole-number seed from 0 to 4,294,967,295 to repeat the same "
+"companion choices."
+msgstr "0～4,294,967,295の整数を入力すると、同じ僚機の選択を再現できます。"
+
+msgid ""
+"Experienced Ugly Stik pilots fly circuits at Club field, in calm air or a "
+"gentle breeze. Alternate aircraft, aerobatics, runway operations, incidents,"
+" and aircraft-to-aircraft contact are unavailable."
+msgstr ""
+"経験豊富なUgly "
+"Stikのパイロットが、クラブフィールドで穏やかな風または無風の中、周回飛行します。別の機体、曲技飛行、滑走路での運用、事故、機体同士の接触には対応していません。"
+
+msgid "Companion engine volume"
+msgstr "僚機のエンジン音量"
+
+msgid "Show companion labels"
+msgstr "僚機のラベルを表示"
+
+msgid "Label distance"
+msgstr "ラベルの表示距離"
+
+msgid "Companion %d"
+msgstr "僚機%d"
+
+msgid "Traffic: %d airborne / %d active / %d requested"
+msgstr "飛行中：%d機 / 有効：%d機 / 要求：%d機"
+
+msgid ""
+"Flight settings apply after Restart flight. Sound and labels apply "
+"immediately. Remove now clears the current companions."
+msgstr "飛行設定は飛行を再開した後に反映されます。音量とラベルはすぐに反映されます。今すぐ削除すると、現在の僚機が消去されます。"
+
+msgid "%d companions stopped; restart or remove them."
+msgstr "%d機の僚機が停止しました。再開するか、削除してください。"
+
+msgid "Save these settings as the default"
+msgstr "この設定を既定値として保存"
+
+msgid "Remove companions now"
+msgstr "今すぐ僚機を削除"
+
+msgid "Enter a whole-number seed from 0 to 4,294,967,295."
+msgstr "0～4,294,967,295の整数を入力してください。"
+
+msgid "Choose between 1 and 3 companions."
+msgstr "僚機は1～3機から選んでください。"
+
+msgid "Graphics"
+msgstr "グラフィック"
+
+msgid "Window resolution"
+msgstr "ウィンドウ解像度"
+
+msgid "Display and graphics changes have a 15-second safety timer."
+msgstr "画面とグラフィックの設定は、15秒後に自動で元に戻ります。"
+
+msgid ""
+"Window sizes fit the available desktop. Fullscreen uses the desktop "
+"resolution."
+msgstr "ウィンドウサイズはデスクトップの表示領域に合わせます。全画面ではデスクトップの解像度を使います。"
+
+msgid "Frame rate limit"
+msgstr "フレームレート上限"
+
+msgid "Vertical synchronization"
+msgstr "垂直同期"
+
+msgid "Antialiasing (MSAA)"
+msgstr "アンチエイリアス（MSAA）"
+
+msgid ""
+"Higher antialiasing smooths edges at a higher GPU cost. VSync reduces "
+"tearing; a frame limit can save power. Test what feels smooth on your "
+"display."
+msgstr ""
+"アンチエイリアスを強くすると輪郭が滑らかになりますが、GPU負荷が増えます。VSyncは画面のちらつきを抑え、フレームレート制限は消費電力を節約できます。画面に合う設定をお試しください。"
+
+msgid "Restore graphics defaults"
+msgstr "グラフィック設定を初期値に戻す"
+
+msgid "Unlimited"
+msgstr "無制限"
+
+msgid "Output: %d × %d · VSync: %s"
+msgstr "出力：%d × %d · VSync：%s"
+
+msgid "The driver or desktop compositor may override VSync."
+msgstr "ドライバーやデスクトップコンポジターがVSync設定を上書きする場合があります。"
+
+msgid "Try High (restart)"
+msgstr "高画質を試す（再起動）"
+
+msgid "Restart in Standard"
+msgstr "標準で再起動"
+
+msgid ""
+"High is a temporary experiment. Keep your changes before restarting. A "
+"normal launch returns to Standard."
+msgstr "高画質モードは一時的な試験機能です。再起動する前に変更を保存してください。通常起動すると標準モードに戻ります。"
+
+msgid ""
+"Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ "
+"capable GPU."
+msgstr "柔らかい影、アンビエントオクルージョン、空の反射を使います。Forward+対応GPUが必要です。"
+
+msgid "Graphics mode: %s"
+msgstr "グラフィックモード：%s"
+
+msgid "High (experimental)"
+msgstr "高画質（実験的）"
+
+msgid "Standard"
+msgstr "標準"
+
+msgid ""
+"High is unavailable with the current renderer. Standard remains active."
+msgstr "現在のレンダラーでは高画質モードを利用できません。標準モードを引き続き使用します。"
+
+msgid "End your flight and return Home to change graphics mode."
+msgstr "飛行を終了してホームに戻ると、グラフィックモードを変更できます。"
+
+msgid "Scene detail"
+msgstr "シーンの描画品質"
+
+msgid "Low"
+msgstr "低"
+
+msgid "Medium"
+msgstr "中"
+
+msgid "High"
+msgstr "高"
+
+msgid "Extreme"
+msgstr "最高"
+
+msgid ""
+"Trees, props and model detail, from your next flight. Automatic picks a "
+"level for your GPU. Extreme draws every nearby field tree in 3D and needs a "
+"strong GPU."
+msgstr ""
+"次の飛行から、木、オブジェクト、機体モデルの描画品質を変更します。「自動」はGPUに合わせた品質を選びます。「最高」では近くのフィールドの木をすべて3Dで描画するため、高性能なGPUが必要です。"
+
+msgid "Automatic (%s)"
+msgstr "自動（%s）"
+
+msgid "Detected: %s (%s)."
+msgstr "検出：%s（%s）。"
+
+msgid "software renderer"
+msgstr "ソフトウェアレンダラー"
+
+msgid "mobile GPU"
+msgstr "モバイルGPU"
+
+msgid "entry-level GPU"
+msgstr "エントリークラスのGPU"
+
+msgid "dedicated GPU"
+msgstr "専用GPU"
+
+msgid "integrated GPU"
+msgstr "内蔵GPU"
+
+msgid "unrecognized GPU"
+msgstr "不明なGPU"
+
+msgid "no GPU reported"
+msgstr "GPU情報なし"
+
+msgid "Wings do not fold on this aircraft."
+msgstr "この機体の翼は折りたためません。"
+
+msgid "Wings fold only on the ground, stopped."
+msgstr "翼を折りたためるのは、地上で機体が停止しているときだけです。"
+
+msgid "Wings folding"
+msgstr "翼を折りたたんでいます"
+
+msgid "Wings spreading"
+msgstr "翼を広げています"
+
+msgid "Wings: spread  [O] fold"
+msgstr "翼：展開中  [O] 折りたたむ"
+
+msgid "Wings: folded  [O] spread"
+msgstr "翼：収納中  [O] 広げる"
+
+msgid "Wings: folding %d%%"
+msgstr "翼：折りたたみ中 %d%%"
+
+msgid "Wings: spreading %d%%"
+msgstr "翼：展開中 %d%%"
+
+msgid "throttle held at idle"
+msgstr "スロットルはアイドル位置に固定されています"
+
+msgid "Fold / spread folding wings (on the ground, stopped)"
+msgstr "折りたたみ翼を格納 / 展開（地上で停止中のみ）"
+
+msgid "Canopy open / close · tailhook lower / raise"
+msgstr "キャノピーを開閉 · 着艦フックを下げる / 上げる"
+
+msgid "This aircraft has no sliding canopy."
+msgstr "この機体には開閉式キャノピーがありません。"
+
+msgid "This aircraft has no tailhook."
+msgstr "この機体には着艦フックがありません。"
+
+msgid "Canopy opening"
+msgstr "キャノピーを開いています"
+
+msgid "Canopy closing"
+msgstr "キャノピーを閉じています"
+
+msgid "Tailhook lowering"
+msgstr "着艦フックを下げています"
+
+msgid "Tailhook raising"
+msgstr "着艦フックを上げています"
+
+msgid "Canopy: closed  [U] open"
+msgstr "キャノピー：閉  [U] 開く"
+
+msgid "Canopy: open  [U] close"
+msgstr "キャノピー：開  [U] 閉じる"
+
+msgid "Canopy: opening %d%%"
+msgstr "キャノピー：開いています %d%%"
+
+msgid "Canopy: closing %d%%"
+msgstr "キャノピー：閉じています %d%%"
+
+msgid "Tailhook: up  [Y] lower"
+msgstr "着艦フック：上  [Y] 下げる"
+
+msgid "Tailhook: down  [Y] raise"
+msgstr "着艦フック：下  [Y] 上げる"
+
+msgid "Tailhook: lowering %d%%"
+msgstr "着艦フックを下げています %d%%"
+
+msgid "Tailhook: raising %d%%"
+msgstr "着艦フックを上げています %d%%"
+
+msgid "Latency camera marker"
+msgstr "カメラ遅延測定マーカー"
+
+msgid ""
+"For filming stick-to-screen delay. White means the raw axis is at or above "
+"the threshold; this does not display milliseconds."
+msgstr "スティック操作から画面表示までの遅延を撮影して測定します。軸の生値がしきい値以上になると白く表示されます。ミリ秒は表示されません。"
+
+msgid "Raw axis %d · threshold %s"
+msgstr "生の軸値%d · しきい値%s"
+
+msgid ""
+"Camera test only, not milliseconds.\n"
+"White: at/above threshold.\n"
+"Black: below. Gray: inactive."
+msgstr ""
+"カメラでの測定専用です。ミリ秒は表示されません。\n"
+"白：しきい値以上\n"
+"黒：未満。灰：無効。"
+
+msgid "above threshold"
+msgstr "しきい値以上"
+
+msgid "below threshold"
+msgstr "しきい値未満"
+
+msgid "waiting for radio"
+msgstr "送信機を待機中"
+
+msgid "no flight"
+msgstr "飛行していません"
+
+msgid "input disabled"
+msgstr "入力は無効です"
+
+msgid "flight fault"
+msgstr "飛行エラー"
+
+msgid "calibrating"
+msgstr "調整中"
+
+msgid "flight paused"
+msgstr "飛行を一時停止中"
+
+msgid "move selected axis"
+msgstr "選択した軸を動かしてください"
+
+msgid "invalid axis sample"
+msgstr "軸のサンプル値が無効です"
+
+msgid "Preparing resources"
+msgstr "リソースを準備中"
+
+msgid "Checking landscape"
+msgstr "地形を確認中"
+
+msgid "Preparing aircraft"
+msgstr "機体を準備中"
+
+msgid "Building landscape"
+msgstr "地形を構築中"
+
+msgid "Preparing aircraft lighting"
+msgstr "機体の照明を準備中"
+
+msgid "Preparing instruments"
+msgstr "計器を準備中"
+
+msgid "Checking flight"
+msgstr "飛行を確認中"
+
+msgid "Preparing effects"
+msgstr "エフェクトを準備中"
+
+msgid "Preparing sound"
+msgstr "サウンドを準備中"
+
+msgid "Preparing companions"
+msgstr "僚機を準備中"
+
+msgid "Finishing flight"
+msgstr "飛行の準備を完了中"
+
+msgid "Cancelling…"
+msgstr "キャンセル中…"
+
+msgid "Flight preparation cancelled."
+msgstr "飛行の準備をキャンセルしました。"
+
+msgid "Flight scene could not be loaded."
+msgstr "飛行シーンを読み込めませんでした。"
+
+msgid "Runway"
+msgstr "滑走路"
+
+msgid "Airborne"
+msgstr "飛行中"
+
+msgid "Preparing world"
+msgstr "ワールドを準備中"
+
+msgid "Preparing sky"
+msgstr "空を準備中"
+
+msgid "Preparing field lighting"
+msgstr "フィールドの照明を準備中"
+
+msgid "Finalizing world"
+msgstr "ワールドを仕上げ中"
+
+msgid "Field ground"
+msgstr "フィールドの地面"
+
+msgid "Field trees"
+msgstr "フィールドの木"
+
+msgid "Flight cues"
+msgstr "飛行ガイド"
+
+msgid "Field scenery"
+msgstr "フィールドの風景"
+
+msgid "Near grass"
+msgstr "近くの草"
+
+msgid "Distant ridges"
+msgstr "遠くの尾根"
+
+msgid "Countryside"
+msgstr "田園風景"
+
+msgid "Projected shadows"
+msgstr "投影された影"
+
+msgid "Attaching landscape"
+msgstr "地形を配置中"
+
+msgid "Flight preparation did not produce a valid session."
+msgstr "有効な飛行セッションを準備できませんでした。"
+
+msgid "Flight cue shadows"
+msgstr "飛行ガイドの影"
+
+msgid "Resolving field scenery"
+msgstr "フィールドの風景を処理中"
+
+msgid "Building field scenery"
+msgstr "フィールドの風景を構築中"
+
+msgid "Building field lake"
+msgstr "フィールドの湖を構築中"
+
+msgid "Preparing field vegetation"
+msgstr "フィールドの植生を準備中"
+
+msgid "Preparing flight model"
+msgstr "飛行モデルを準備中"
+
+msgid "Preparing contacts"
+msgstr "接触面を準備中"
+
+msgid "Preparing start"
+msgstr "開始位置を準備中"
+
+msgid "Preparing effects resources"
+msgstr "エフェクトのリソースを準備中"
+
+msgid "Preparing safety resources"
+msgstr "安全機能のリソースを準備中"
+
+msgid "Preparing sound resources"
+msgstr "サウンドのリソースを準備中"
+
+msgid "Preparing instrument resources"
+msgstr "計器のリソースを準備中"
+
+msgid "Preparing companion resources"
+msgstr "僚機のリソースを準備中"
+
+msgid "Preparing flight scene"
+msgstr "飛行シーンを準備中"
+
+msgid "Birds"
+msgstr "鳥"
+
+msgid "Few"
+msgstr "少なめ"
+
+msgid "Many"
+msgstr "多め"
+
+msgid ""
+"Vultures and storks in thermals, kites, swallows and evening swifts, by time"
+" of day and weather. Changes apply at once: birds fly away or arrive. Normal"
+" follows Scene detail; Many keeps full flocks at every level."
+msgstr ""
+"時間帯や天候に応じて、上昇気流に乗るハゲワシやコウノトリ、トビ、ツバメ、夕方のアマツバメが飛びます。変更はすぐ反映され、鳥が飛び去ったり飛来したりします。「通常」はシーンの描画品質に合わせます。「多め」では、どの品質設定でも群れを最大数表示します。"
+
+msgid "Renderer: %s"
+msgstr "レンダラー：%s"
+
+msgid "3D reconstruction"
+msgstr "3D再構成"
+
+msgid "Native"
+msgstr "ネイティブ"
+
+msgid "FSR2 · Native AA"
+msgstr "FSR2 · Native AA"
+
+msgid "FSR2 · Quality"
+msgstr "FSR2 · 画質優先"
+
+msgid "FSR2 · 85%"
+msgstr "FSR2 · 85%"
+
+msgid "FSR2 · Balanced"
+msgstr "FSR2 · バランス"
+
+msgid "FSR2 · Performance"
+msgstr "FSR2 · パフォーマンス優先"
+
+msgid "FSR3 · Native AA"
+msgstr "FSR3 · Native AA"
+
+msgid "FSR3 · Quality"
+msgstr "FSR3 · 画質優先"
+
+msgid "FSR3 · 85%"
+msgstr "FSR3 · 85%"
+
+msgid "FSR3 · Balanced"
+msgstr "FSR3 · バランス"
+
+msgid "FSR3 · Performance"
+msgstr "FSR3 · パフォーマンス優先"
+
+msgid "DLSS · Native AA"
+msgstr "DLSS · Native AA"
+
+msgid "DLSS · Quality"
+msgstr "DLSS · 画質優先"
+
+msgid "DLSS · Balanced"
+msgstr "DLSS · バランス"
+
+msgid "DLSS · Performance"
+msgstr "DLSS · パフォーマンス優先"
+
+msgid "Unavailable"
+msgstr "利用不可"
+
+msgid "FSR sharpness"
+msgstr "FSRのシャープネス"
+
+msgid "FSR2 sharpness"
+msgstr "FSR2のシャープネス"
+
+msgid "3D input: about %d × %d (%d%%)."
+msgstr "3D入力：約%d × %d（%d%%）。"
+
+msgid ""
+"FSR2 works in High on compatible AMD, NVIDIA and Intel GPUs. At 1080p, try "
+"Native AA or 85% first. Lower scales can lose distant aircraft detail. "
+"Compare in motion."
+msgstr ""
+"FSR2は、対応するAMD、NVIDIA、Intel製GPUで高画質モード時に動作します。1080pでは、まずNative "
+"AAか85%をお試しください。低い解像度では遠くの機体の細部が失われることがあります。動かしながら見比べてください。"
+
+msgid ""
+"0% disables sharpening. Higher values sharpen edges but can exaggerate halos"
+" and shimmer. Only active with FSR2."
+msgstr ""
+"0%にするとシャープネスが無効になります。値を上げると輪郭が鮮明になりますが、光の輪やちらつきが目立つ場合があります。FSR2使用時のみ有効です。"
+
+msgid ""
+"Choose a reconstruction provider supported by this High renderer. Check "
+"distant aircraft detail in motion."
+msgstr "この高画質レンダラーに対応した再構成方式を選んでください。遠くの機体の細部を動かしながら確認してください。"
+
+msgid "Restart in High from Home to use reconstruction."
+msgstr "再構成機能を使うには、ホームから高画質モードで再起動してください。"
+
+msgid ""
+"Reconstruction is saved for High. Native rendering is active in Standard."
+msgstr "再構成方式は高画質モード用に保存されています。標準モードではネイティブ描画を使用します。"
+
+msgid ""
+"Saved %s is unavailable here. Native rendering is active; the saved choice "
+"is preserved."
+msgstr "保存した%sはここでは利用できません。ネイティブ描画に切り替えますが、保存した設定は保持されます。"
+
+msgid "FSR2 is unavailable in this engine or renderer."
+msgstr "このエンジンまたはレンダラーではFSR2を利用できません。"
+
+msgid ""
+"FSR3 requires the native FSR3 extension, its supported runtime and Forward+."
+msgstr "FSR3には、ネイティブFSR3拡張機能、対応ランタイム、Forward+が必要です。"
+
+msgid "DLSS requires the NVIDIA Streamline DLSS capability and Forward+."
+msgstr "DLSSには、NVIDIA StreamlineのDLSS機能とForward+が必要です。"
+
+msgid "This reconstruction option is unavailable in the current runtime."
+msgstr "現在のランタイムでは、この再構成方式を利用できません。"
+
+msgid ""
+"DLSS manages its own reconstruction sharpness. FSR sharpness is active only "
+"with FSR2 or FSR3."
+msgstr "DLSSは再構成のシャープネスを独自に調整します。FSRのシャープネスはFSR2またはFSR3使用時のみ有効です。"
+
+msgid ""
+"0% disables FSR sharpening. Higher values sharpen edges but can exaggerate "
+"halos and shimmer. Only active with FSR2 or FSR3."
+msgstr ""
+"0%にするとFSRのシャープネスが無効になります。値を上げると輪郭が鮮明になりますが、光の輪やちらつきが目立つ場合があります。FSR2またはFSR3使用時のみ有効です。"
+
+msgid ""
+"Temporal reconstruction provides antialiasing. Your MSAA choice returns with"
+" Native rendering."
+msgstr "時間方向の再構成にはアンチエイリアスが含まれます。ネイティブ描画に戻すと、MSAAの選択が適用されます。"
+
+msgid ""
+"FSR2 works in High on compatible AMD, NVIDIA and Intel GPUs. Quality renders"
+" 3D at two-thirds resolution; Native AA keeps full resolution. Check distant"
+" aircraft in motion."
+msgstr ""
+"FSR2は、対応するAMD、NVIDIA、Intel製GPUで高画質モード時に動作します。「画質優先」では3Dを通常の3分の2の解像度で描画します。「Native"
+" AA」は解像度を維持します。遠くの機体を動かしながら確認してください。"
+
+msgid "Restart in High from Home to use FSR2."
+msgstr "FSR2を使うには、ホームから高画質モードで再起動してください。"
+
+msgid ""
+"FSR2 provides antialiasing. Your MSAA choice returns with Native rendering."
+msgstr "FSR2にはアンチエイリアスが含まれます。ネイティブ描画に戻すと、MSAAの選択が適用されます。"
+
+msgid "FSR2 is saved for High. Native rendering is active in Standard."
+msgstr "FSR2は高画質モード用に保存されています。標準モードではネイティブ描画を使用します。"
+
+msgid ""
+"Choose a reconstruction option available in High graphics. Check distant "
+"aircraft detail in motion."
+msgstr "高画質設定で利用できる再構成方式を選んでください。遠くの機体の細部を動かしながら確認してください。"
+
+msgid ""
+"At 1080p, Quality uses about 1280 × 720 3D input; Performance uses 960 × "
+"540. Quality keeps more input detail than Balanced or Performance. Lower "
+"input may soften distant detail; compare while moving."
+msgstr ""
+"1080pの場合、「画質優先」は約1280 × 720、「パフォーマンス優先」は960 × "
+"540の3D入力を使います。「画質優先」は「バランス」や「パフォーマンス優先」より入力解像度が高くなります。入力解像度を下げると遠くの細部がぼやける場合があります。動かしながら比べてください。"
+
+msgid "Reconstruction: Requested %s → Active %s"
+msgstr "再構成：要求 %s → 有効 %s"
+
+msgid "Estimated 3D input: %d × %d → Output: %d × %d"
+msgstr "推定3D入力：%d × %d → 出力：%d × %d"
+
+msgid ""
+"DLSS controls its own reconstruction sharpness. This saved FSR value is kept"
+" for FSR2 or FSR3."
+msgstr "DLSSは再構成のシャープネスを独自に調整します。この保存済みFSR設定は、FSR2またはFSR3用に保持されます。"
+
+msgid ""
+"FSR sharpness is inactive while Native is active. This saved value stays for"
+" FSR2 or FSR3. DLSS controls sharpness when it is active."
+msgstr ""
+"ネイティブ描画中はFSRのシャープネスを使いません。この設定はFSR2またはFSR3用に保持されます。DLSS使用時はDLSS側でシャープネスを調整します。"
+
+msgid ""
+"Native rendering does not use FSR sharpness. This saved value is kept for "
+"FSR2 or FSR3."
+msgstr "ネイティブ描画ではFSRのシャープネスを使いません。この設定はFSR2またはFSR3用に保持されます。"
+
+msgid "Native keeps full-resolution 3D input and uses your MSAA choice."
+msgstr "ネイティブ描画は3D入力の解像度を維持し、選択したMSAAを使用します。"
+
+msgid ""
+"%s keeps full-resolution 3D input and provides antialiasing. Your MSAA "
+"choice returns with Native rendering."
+msgstr "%sは3D入力の解像度を維持し、アンチエイリアスを適用します。ネイティブ描画に戻すと、選択したMSAAが適用されます。"
+
+msgid ""
+"%s renders 3D at about %d × %d while output stays %d × %d. Lower input may "
+"soften distant detail; compare while moving."
+msgstr ""
+"%sは3Dを約%d × %dで描画し、出力解像度は%d × "
+"%dを維持します。入力解像度を下げると遠くの細部がぼやける場合があります。動かしながら比べてください。"
+
+msgid "The current game build does not offer %s reconstruction."
+msgstr "現在のゲームビルドでは%s再構成を利用できません。"
+
+msgid "FSR3 support is not included in this game build."
+msgstr "このゲームビルドにはFSR3のサポートが含まれていません。"
+
+msgid "The current graphics session does not report FSR3 support."
+msgstr "現在のグラフィックセッションではFSR3のサポートが確認できません。"
+
+msgid "FSR3 could not continue in this graphics session."
+msgstr "現在のグラフィックセッションでFSR3を続行できませんでした。"
+
+msgid "DLSS could not continue in this graphics session."
+msgstr "現在のグラフィックセッションでDLSSを続行できませんでした。"
+
+msgid "DLSS support is not included in this game build."
+msgstr "このゲームビルドにはDLSSのサポートが含まれていません。"
+
+msgid "The current graphics session does not report DLSS support."
+msgstr "現在のグラフィックセッションではDLSSのサポートが確認できません。"
+
+msgid "The current graphics session does not offer FSR2."
+msgstr "現在のグラフィックセッションではFSR2を利用できません。"
+
+msgid ""
+"This reconstruction option is unavailable in the current graphics session."
+msgstr "現在のグラフィックセッションでは、この再構成方式を利用できません。"
+
+msgid ""
+"High graphics is not active. Native rendering is active; restart in High to "
+"use your saved choice."
+msgstr "高画質モードは有効ではありません。ネイティブ描画を使用中です。保存した設定を使うには、高画質モードで再起動してください。"
+
+msgid "%s Native rendering is active, and your saved choice is kept."
+msgstr "%s ネイティブ描画を使用中です。保存した設定は保持されます。"
+
+msgid "Loading…"
+msgstr "読み込み中…"
+
+msgid "Preparing home…"
+msgstr "ホームを準備中…"
+
+msgid "Skip intro"
+msgstr "イントロをスキップ"
+
+msgid "Unable to load. Please restart."
+msgstr "読み込めません。再起動してください。"
+
+msgid "First view"
+msgstr "初期視点"
+
+msgid "Pilot field of view"
+msgstr "操縦者視点の視野角"
+
+msgid ""
+"The pilot view's widest angle; auto zoom narrows it for a distant airplane. "
+"About 30° shows the airplane at its real size on a 24–27-inch screen at "
+"arm's length."
+msgstr ""
+"操縦者視点で設定できる最大の画角です。遠くの機体を見るときは自動ズームで狭まります。24～27インチの画面を腕を伸ばした距離に置く場合、約30°なら機体を実寸大で表示できます。"
+
+msgid "Auto zoom (Z)"
+msgstr "自動ズーム（Z）"
+
+msgid "Chase distance"
+msgstr "追従距離"
+
+msgid "Orbit sensitivity"
+msgstr "周回視点の感度"
+
+msgid "Invert orbit up/down"
+msgstr "視点の上下を反転"
+
+msgid ""
+"The pilot view stays the reference for learning to fly; chase and orbit are "
+"aids. Right-drag turns the orbit; the wheel or +/− zooms."
+msgstr ""
+"飛行を学ぶときは操縦者視点を基準にしてください。追従視点と周回視点は補助用です。右ドラッグで周回し、ホイールまたは +/− でズームします。"
+
+msgid "Chase"
+msgstr "追従"
+
+msgid "Orbit"
+msgstr "周回"
+
+msgid "%s (default)"
+msgstr "%s（既定）"
+
+msgid "Constant size"
+msgstr "画面上の大きさを維持"
+
+msgid "Keeps looming"
+msgstr "接近感を維持"
+
+msgid "Gentle"
+msgstr "控えめ"
+
+msgid ""
+"Constant size keeps a distant airplane the same size on screen. Keeps "
+"looming lets it shrink slowly, so you still see it come and go. Gentle zooms"
+" least. Z turns auto zoom off and on in flight."
+msgstr ""
+"「画面上の大きさを維持」は、遠くの機体を同じ大きさで表示します。「接近感を維持」はゆっくり縮小し、機体が近づいたり遠ざかったりする様子が分かります。「控えめ」はズームを最小限にします。飛行中にZキーで自動ズームを切り替えられます。"
+
+msgid "Keep the horizon in view"
+msgstr "地平線を画面に保つ"
+
+msgid "Smooth overhead passes"
+msgstr "頭上通過時の視点を滑らかにする"
+
+msgid "Fly-by"
+msgstr "通過視点"
+
+msgid "Magnifier"
+msgstr "拡大鏡"
+
+msgid ""
+"Pilot view: a small window at the top shows the airplane up close, so its "
+"attitude reads while the main view keeps the real distance. Automatic shows "
+"it when the airplane gets small."
+msgstr ""
+"操縦者視点では、上部の小窓に機体を拡大表示します。メイン画面では実際の距離を保ちながら、機体の姿勢を確認できます。「自動」では機体が小さくなると小窓を表示します。"
+
+msgid "Pilot view aids"
+msgstr "操縦者視点の補助機能"
+
+msgid "Both"
+msgstr "両方"
+
+msgid ""
+"Keep the horizon in view: the view tilts down so the ground shows under a "
+"high airplane. Smooth overhead passes: the picture turns gradually instead "
+"of flipping when the airplane passes overhead."
+msgstr ""
+"「地平線を画面に保つ」では、機体が高い位置にあるとき、地面が見えるように視点を下げます。「頭上通過時の視点を滑らかにする」では、機体が頭上を通過しても画面を反転させず、徐々に回転させます。"
+
+msgid "Statistics"
+msgstr "統計"
+
+msgid "Aircraft scope"
+msgstr "機体の範囲"
+
+msgid "Statistics period"
+msgstr "統計期間"
+
+msgid "All aircraft"
+msgstr "すべての機体"
+
+msgid "This session"
+msgstr "このセッション"
+
+msgid "Lifetime history"
+msgstr "累計履歴"
+
+msgid "Since counter reset"
+msgstr "カウンターのリセット以降"
+
+msgid "Airborne time"
+msgstr "飛行時間"
+
+msgid "Completed flights"
+msgstr "完了した飛行"
+
+msgid "Successful landings"
+msgstr "着陸成功"
+
+msgid "Landing outcomes"
+msgstr "着陸結果"
+
+msgid "More statistics"
+msgstr "統計をさらに表示"
+
+msgid "Fewer statistics"
+msgstr "統計を減らす"
+
+msgid "Flight history"
+msgstr "飛行履歴"
+
+msgid "Manage counters"
+msgstr "カウンターを管理"
+
+msgid "Reset session counters…"
+msgstr "セッションのカウンターをリセット…"
+
+msgid "Reset this aircraft's counters…"
+msgstr "この機体のカウンターをリセット…"
+
+msgid "Reset pilot counters…"
+msgstr "パイロットのカウンターをリセット…"
+
+msgid "Manage history"
+msgstr "履歴を管理"
+
+msgid "Delete this aircraft's history…"
+msgstr "この機体の履歴を削除…"
+
+msgid "Delete all pilot history…"
+msgstr "パイロットの履歴をすべて削除…"
+
+msgid "Local pilot"
+msgstr "ローカルパイロット"
+
+msgid "Lifetime history remains available after counter resets."
+msgstr "カウンターをリセットしても累計履歴は残ります。"
+
+msgid "stops"
+msgstr "完全停止"
+
+msgid "touch-and-go"
+msgstr "タッチアンドゴー"
+
+msgid "Touchdown success: %d / %d resolved touchdowns · %d%%"
+msgstr "着陸成功：%d / 着地判定%d回 · %d%%"
+
+msgid "Touchdown success: no resolved touchdowns yet"
+msgstr "着地結果はまだ記録されていません"
+
+msgid "Flights brought to a clean stop: %d / %d ended flights"
+msgstr "完全停止で終了した飛行：%d / 終了した飛行%d回"
+
+msgid "Flights brought to a clean stop: %d · ended-flight total unavailable"
+msgstr "完全停止で終了した飛行：%d · 終了した飛行の総数は不明"
+
+msgid "Tracking begins with your next flight."
+msgstr "次の飛行から記録が始まります。"
+
+msgid ""
+"Completed in a row: %d · best %d · crash-free airborne time: %s · best %s"
+msgstr "連続完了：%d · 最長%d · 無事故飛行時間：%s · 最長%s"
+
+msgid "Flights started"
+msgstr "開始した飛行"
+
+msgid "Average airborne duration"
+msgstr "平均飛行時間"
+
+msgid "Average duration includes %d closed flights"
+msgstr "平均時間は終了済みの飛行%d回を対象にします"
+
+msgid "Maximum valid airspeed (TAS)"
+msgstr "最大有効対気速度（TAS）"
+
+msgid "Maximum horizontal groundspeed"
+msgstr "最大水平対地速度"
+
+msgid "Full-stop landings"
+msgstr "完全停止着陸"
+
+msgid "Touch-and-go landings"
+msgstr "タッチアンドゴー着陸"
+
+msgid "Failed touchdown episodes"
+msgstr "着地失敗"
+
+msgid "Unknown touchdown episodes"
+msgstr "着地結果不明"
+
+msgid "Active flights"
+msgstr "飛行中"
+
+msgid "Partial records"
+msgstr "一部記録"
+
+msgid ""
+"Touchdown success counts resolved surface contacts; the clean-stop fraction "
+"includes the end of each flight."
+msgstr "着陸成功率は判定済みの接地を集計します。完全停止率には各飛行の終了結果が含まれます。"
+
+msgid "No flight records in this view."
+msgstr "この表示に飛行記録はありません。"
+
+msgid "Page %d of %d · %d records"
+msgstr "%d / %dページ · %d件"
+
+msgid "Flight %d"
+msgstr "飛行%d"
+
+msgid "Takeoffs %d · Full stops %d · Touch-and-go %d"
+msgstr "離陸%d回 · 完全停止%d回 · タッチアンドゴー%d回"
+
+msgid "Coverage"
+msgstr "記録範囲"
+
+msgid "Scenario"
+msgstr "シナリオ"
+
+msgid "Events"
+msgstr "イベント"
+
+msgid ""
+"Counters and history management are available while no flight is active."
+msgstr "飛行中でないときに、カウンターや履歴を管理できます。"
+
+msgid "End the active flight before changing counters or history."
+msgstr "カウンターや履歴を変更するには、飛行を終了してください。"
+
+msgid "Some records are partial."
+msgstr "一部の記録は不完全です。"
+
+msgid "Partial records: %d"
+msgstr "不完全な記録：%d件"
+
+msgid "A flight is in progress."
+msgstr "飛行中です。"
+
+msgid "Flights in progress: %d"
+msgstr "飛行中：%d件"
+
+msgid "<1 min"
+msgstr "1分未満"
+
+msgid "%d h %02d min"
+msgstr "%d時間%02d分"
+
+msgid "%d min"
+msgstr "%d分"
+
+msgid "Session statistics"
+msgstr "セッション統計"
+
+msgid "Started"
+msgstr "開始"
+
+msgid "Completed"
+msgstr "完了"
+
+msgid "Landings"
+msgstr "着陸"
+
+msgid "Statistics widget scope"
+msgstr "統計ウィジェットの集計対象"
+
+msgid ""
+"This session's successful landings, crashes and restarts. Choose All "
+"aircraft or This aircraft. The service keeps recording when the widget is "
+"hidden."
+msgstr ""
+"このセッションの着陸成功、墜落、再開回数です。「すべての機体」または「この機体」を選んでください。ウィジェットを非表示にしても記録は続きます。"
+
+msgid "All aircraft combined"
+msgstr "全機体の合計"
+
+msgid "Remove %d records for %s (%s), covering %s, with %s airborne time."
+msgstr "記録%d件：%s（%s）、対象期間：%s、飛行時間：%s。"
+
+msgid "flight"
+msgstr "飛行"
+
+msgid "flights"
+msgstr "飛行"
+
+msgid "crash"
+msgstr "墜落"
+
+msgid "crashes"
+msgstr "墜落"
+
+msgid "restart"
+msgstr "再開"
+
+msgid "restarts"
+msgstr "再開"
+
+msgid "other record"
+msgstr "その他の記録"
+
+msgid "other records"
+msgstr "その他の記録"
+
+msgid "coverage gap"
+msgstr "記録の空白期間"
+
+msgid "coverage gaps"
+msgstr "記録の空白期間"
+
+msgid ""
+"This cannot be undone. Preferences, aircraft, Workshop builds, controller "
+"profiles and flight recordings stay in place."
+msgstr "この操作は取り消せません。設定、機体、工房の構成、コントローラープロファイル、飛行記録は保持されます。"
+
+msgid "Delete flight history?"
+msgstr "飛行履歴を削除しますか？"
+
+msgid "Delete history"
+msgstr "履歴を削除"
+
+msgid "I understand this history removal cannot be undone."
+msgstr "この履歴の削除を取り消せないことを理解しました。"
+
+msgid "Reset counters?"
+msgstr "カウンターをリセットしますか？"
+
+msgid "Reset counters"
+msgstr "カウンターをリセット"
+
+msgid "This session, all aircraft"
+msgstr "このセッション、全機体"
+
+msgid ""
+"Reset counters for %s? This starts a new counter window; saved flight "
+"history stays available."
+msgstr "%sのカウンターをリセットしますか？新しい集計期間が始まります。保存済みの飛行履歴は引き続き利用できます。"
+
+msgid "Flights %d · Completed %d · Crashes %d · Restarts %d · Airborne %s"
+msgstr "飛行%d · 完了%d · 墜落%d · 再開%d · 飛行時間%s"
+
+msgid "Counters and history cannot be changed right now."
+msgstr "現在、カウンターや履歴を変更できません。"
+
+msgid "Statistics changed. Review the updated preview and confirm again."
+msgstr "統計が変更されました。更新されたプレビューを確認し、もう一度確定してください。"
+
+msgid "Confirm that you want to remove the history shown above."
+msgstr "上に表示された履歴を削除することを確認してください。"
+
+msgid "The change could not be saved. Your statistics are still available."
+msgstr "変更を保存できませんでした。統計は引き続き利用できます。"
+
+msgid "tracked history"
+msgstr "記録済みの履歴"
+
+msgid "Statistics · Pilot total"
+msgstr "統計 · パイロット合計"
+
+msgid "Aircraft statistics"
+msgstr "機体の統計"
+
+msgid "Lifetime · %s airborne · %d completed · %d crashes"
+msgstr "累計 · 飛行時間%s · 完了%d · 墜落%d"
+
+msgid "Pilot total · %s airborne · %d completed · best streak %d"
+msgstr "パイロット合計 · 飛行時間%s · 完了%d · 最長連続%d"
+
+msgid "Flight statistics could not be saved"
+msgstr "飛行統計を保存できませんでした"
+
+msgid ""
+"The current flight has unsaved statistics. Retry saving, cancel, or leave "
+"without the unsaved changes."
+msgstr "現在の飛行統計が未保存です。保存を再試行するか、キャンセルするか、変更を保存せずに終了してください。"
+
+msgid "Leave without saving"
+msgstr "保存せずに終了"
+
+msgid "Interrupted flight recovered. Only saved airborne time is included."
+msgstr "中断した飛行を復元しました。保存済みの飛行時間のみが含まれます。"
+
+msgid ""
+"Checkpoint experiment: flight statistics are not recorded until Restart."
+msgstr "チェックポイントの実験機能：飛行統計は再開するまで記録されません。"
+
+msgid "Mechanical audio"
+msgstr "メカニカルサウンド"
+
+msgid "Servo type"
+msgstr "サーボの種類"
+
+msgid "Standard Servo"
+msgstr "標準サーボ"
+
+msgid "High-Torque Servo"
+msgstr "高トルクサーボ"
+
+msgid "Servo sound level"
+msgstr "サーボ音量"
+
+msgid "Retract type"
+msgstr "引込脚の種類"
+
+msgid "Mechanical / electric"
+msgstr "機械式 / 電動"
+
+msgid "Pneumatic"
+msgstr "空気圧式"
+
+msgid ""
+"Quiet onboard mechanisms follow actual surface and gear movement. Listen "
+"nearby with the engine off during Test fly."
+msgstr "機体に搭載された機構音は、舵面や脚の実際の動きに合わせて再生されます。試験飛行中、エンジンを停止して近くで聞いてください。"
+
+msgid ""
+"Migrate this build's legacy smoke profile before editing mechanical audio."
+msgstr "メカニカルサウンドを編集する前に、この構成の旧形式の煙プロファイルを移行してください。"
+
+msgid ""
+"Retract sounds are available on aircraft with retractable landing gear."
+msgstr "引込脚の音は、引込脚を備えた機体で利用できます。"
+
+msgid "Sound selection does not change the aircraft's installed physics."
+msgstr "サウンドを選んでも、機体に搭載された物理特性は変わりません。"
+
+msgid "Lock navigation colors and patterns"
+msgstr "航法灯の色と点滅パターンをロック"
+
+msgid "Zone brightness"
+msgstr "ゾーンの明るさ"
+
+msgid "Per-zone multiplier, independent of overall brightness."
+msgstr "全体の明るさとは別に設定するゾーンごとの倍率です。"
+
+msgid "Response source"
+msgstr "反応の入力元"
+
+msgid "Response strength"
+msgstr "反応の強さ"
+
+msgid ""
+"Telemetry reactions use accepted values when available; otherwise the zone "
+"stays steady."
+msgstr "テレメトリーの有効な値に応じて反応します。値がない場合、ゾーンは一定の状態を保ちます。"
+
+msgid "Sequence follows the saved cue list for this zone."
+msgstr "シーケンスは、このゾーンに保存されたガイドのリストに従います。"
+
+msgid ""
+"Sequence is available only when this profile has saved cues for the selected"
+" zone."
+msgstr "シーケンスを使うには、選択したゾーンのガイドがプロファイルに保存されている必要があります。"
+
+msgid ""
+"Orientation lock preserves the saved navigation cue colors and patterns. "
+"Turn it off to edit them."
+msgstr "方向灯をロックすると、保存済みの色と点滅パターンが維持されます。編集するにはロックを解除してください。"
+
+msgid "Unlock orientation cues to change their color or pattern."
+msgstr "方向灯の色や点滅パターンを変更するには、ロックを解除してください。"
+
+msgid ""
+"Navigation colors and patterns are available when orientation lock is off."
+msgstr "方向灯の色と点滅パターンは、ロックを解除すると変更できます。"
+
+msgid "Disabling an effect also removes that effect from saved sequence cues."
+msgstr "エフェクトを無効にすると、保存済みシーケンスのガイドからも削除されます。"
+
+msgid "Effect"
+msgstr "エフェクト"
+
+msgid "Lifetime"
+msgstr "持続時間"
+
+msgid "%d configured zones · %d enabled"
+msgstr "設定済みゾーン%d · 有効%d"
+
+msgid "Experimental spatial wind"
+msgstr "実験的な空間風"
+
+msgid "Spatial preset"
+msgstr "空間風プリセット"
+
+msgid "Enable spatial wind"
+msgstr "空間風を有効にする"
+
+msgid "Advanced spatial settings"
+msgstr "空間風の詳細設定"
+
+msgid "Custom spatial wind"
+msgstr "カスタム空間風"
+
+msgid ""
+"Choose a spatial preset or enable spatial wind to edit this separate draft."
+msgstr "空間風プリセットを選ぶか、空間風を有効にすると、独立した下書きを編集できます。"
+
+msgid "Custom spatial wind draft. Only the controls shown here are edited."
+msgstr "カスタム空間風の下書きです。ここに表示された項目だけが編集されます。"
+
+msgid ""
+"Spatial wind is active; standard wind controls are replaced while this mode "
+"is enabled."
+msgstr "空間風が有効です。このモード中は標準の風設定が置き換わります。"
+
+msgid ""
+"Flat-site spatial field; terrain lift, rotor flow, and valley channeling are"
+" unavailable."
+msgstr "平坦な場所を想定した空間風です。地形による上昇気流、ローター風、谷間の風の収束は再現されません。"
+
+msgid ""
+"Turbulence input is nominal; realized local variation can differ with "
+"height, wall taper, and the finite mode set."
+msgstr "乱流入力は公称値です。実際の局所的な変動は、高度、壁面での減衰、有限個のモードによって異なる場合があります。"
+
+msgid ""
+"Gusts are finite authored events. Editing these fields replaces the agenda "
+"with one event; the profile remains after it ends."
+msgstr ""
+"ガストはあらかじめ定義された有限のイベントです。これらの項目を編集すると、スケジュールが1つのイベントに置き換わります。イベント終了後もプロファイルは残ります。"
+
+msgid "Reference speed (0–20 m/s)"
+msgstr "基準風速（0～20 m/s）"
+
+msgid "Reference height AGL (0.1–200 m)"
+msgstr "基準高度 AGL（0.1～200 m）"
+
+msgid "Roughness length (0.001–0.5 m)"
+msgstr "粗度長（0.001～0.5 m）"
+
+msgid "Turbulence input (0–1 m/s)"
+msgstr "乱流入力（0～1 m/s）"
+
+msgid "First gust increase (0–3.54 m/s)"
+msgstr "最初のガストの増加量（0～3.54 m/s）"
+
+msgid "First gust start (0–86400 s)"
+msgstr "最初のガストの開始時刻（0～86400 s）"
+
+msgid "Gust duration (0.1–120 s)"
+msgstr "ガストの継続時間（0.1～120 s）"
+
+msgid "Time horizon (60–86400 s)"
+msgstr "時間範囲（60～86400 s）"
+
+msgid "Realistic · light breeze training"
+msgstr "リアルな微風トレーニング"
+
+msgid ""
+"1.5 m/s FROM 075° at 10 m, with 0.08 m/s nominal turbulence and a subdued "
+"finite gust agenda. Authored practice conditions, not a site measurement."
+msgstr ""
+"高度10 mで、075°から1.5 m/sの風。乱流入力は0.08 "
+"m/sで、控えめな有限ガストの予定があります。これは練習用に設定された条件で、現地の観測値ではありません。"
+
+msgid "Light breeze · 2.5 m/s FROM 090°"
+msgstr "微風 · 090°から2.5 m/s"
+
+msgid ""
+"A steady east wind at the reference height. This does not include terrain "
+"flow."
+msgstr "基準高度で一定の東風です。地形による風の変化は含まれません。"
+
+msgid "Crosswind training · 5 m/s FROM 000°"
+msgstr "横風トレーニング · 000°から5 m/s"
+
+msgid ""
+"A north wind. Headwind and crosswind components depend on the active runway "
+"heading."
+msgstr "北風です。向かい風と横風の成分は、使用中の滑走路の方位によって異なります。"
+
+msgid "Gusty · finite irregular agenda"
+msgstr "ガストあり · 不規則な有限スケジュール"
+
+msgid ""
+"A 30-minute training agenda with 24 finite events inside a one-day validity "
+"horizon; gusts stop after the last event and the profile remains."
+msgstr ""
+"30分間の練習スケジュールで、1日の有効期間内に有限のイベントが24回発生します。最後のイベント後にガストは止まり、プロファイルは残ります。"
+
+msgid "Vertical shear training · one smooth layer"
+msgstr "垂直シアートレーニング · 滑らかな層が1つ"
+
+msgid ""
+"A finite-height wind layer adds a smooth direction and speed change above "
+"the reference height."
+msgstr "有限の高さを持つ風の層により、基準高度より上で風向と風速が滑らかに変化します。"
+
+msgid "Thermal soaring training · finite kinematic cell"
+msgstr "サーマルソアリング練習 · 有限の運動学的セル"
+
+msgid ""
+"One prescribed finite updraft cell; no sun, terrain, or heating evolution is"
+" modeled."
+msgstr "指定した有限範囲の上昇気流セルが1つ発生します。日射、地形、加熱の変化はモデル化されません。"
+
+msgid "Strong wind · 8 m/s FROM 090°"
+msgstr "強風 · 090°から8 m/s"
+
+msgid ""
+"A steady east wind at the reference height. Use only when the selected "
+"aircraft and scenario support it."
+msgstr "基準高度で一定の東風です。選択した機体とシナリオが対応している場合にのみ使用してください。"
+
+msgid "Ridge lift (unavailable)"
+msgstr "斜面上昇気流（利用不可）"
+
+msgid ""
+"Terrain-driven ridge lift is not represented by the flat-site spatial-wind "
+"provider."
+msgstr "平坦地向けの空間風モデルでは、地形によって発生する斜面上昇気流を再現できません。"
+
+msgid "Thermal soaring (unavailable)"
+msgstr "サーマルソアリング（利用不可）"
+
+msgid ""
+"The spatial provider could not validate the finite thermal practice cell."
+msgstr "空間風モデルで、有限範囲の練習用サーマルセルを検証できませんでした。"
+
+msgid "Terrain rotor (unavailable)"
+msgstr "地形性ローター風（利用不可）"
+
+msgid ""
+"Terrain-driven rotor flow is not represented by the flat-site spatial-wind "
+"provider."
+msgstr "平坦地向けの空間風モデルでは、地形性ローター風を再現できません。"
+
+msgid "Valley channeling (unavailable)"
+msgstr "谷間の風の収束（利用不可）"
+
+msgid ""
+"Valley channeling is not represented by the flat-site spatial-wind provider."
+msgstr "平坦地向けの空間風モデルでは、谷間の風の収束を再現できません。"
+
+msgid "Check the spatial wind values against their displayed limits."
+msgstr "表示されている範囲内で空間風の値を確認してください。"
+
+msgid "Spatial wind"
+msgstr "空間風"
+
+msgid ""
+"Spatial wind varies with position and height. This flat-field model is "
+"experimental."
+msgstr "空間風は位置や高度によって変化します。この平坦地モデルは実験的な機能です。"
+
+msgid "Spatial domain: maximum height %s m AGL · time horizon %s s."
+msgstr "空間範囲：最大高度%s m AGL · 時間範囲%s s。"
+
+msgid "Time horizon (120–86400 s for a thermal field)"
+msgstr "時間範囲（サーマル場では120～86400 s）"
+
+msgid "Thermal field requires a time horizon of at least 120 s."
+msgstr "サーマル場には120 s以上の時間範囲が必要です。"
+
+msgid "Reference: %.1f m/s FROM %03.0f° at %.0f m AGL"
+msgstr "基準：%.1f m/s、%03.0f°から、高度%.0f m AGL"
+
+msgid "Aircraft lights"
+msgstr "機体のライト"
+
+msgid "Aircraft lighting"
+msgstr "機体の照明"
+
+msgid "Aircraft show effects"
+msgstr "機体のショー効果"
+
+msgid "Reduce aircraft flashes"
+msgstr "機体の点滅を減らす"
+
+msgid "Restore lighting defaults"
+msgstr "照明設定を初期値に戻す"
+
+msgid ""
+"Low keeps aircraft LEDs and landing lights. Standard adds nearby spill and "
+"fewer show particles. High uses the full bounded show effects."
+msgstr ""
+"「低」では機体のLEDと着陸灯を維持します。「標準」では近くを照らし、ショー用パーティクルを減らします。「高」では、上限内でショー効果をすべて使用します。"
+
+msgid ""
+"Keep aircraft lights steady and disable show effects. Saved aircraft colors "
+"and sequences are preserved."
+msgstr "機体のライトを点灯状態に保ち、ショー効果を無効にします。保存済みの機体カラーとシーケンスは保持されます。"
+
+msgid ""
+"These preferences apply to every aircraft and Workshop preview. Customize "
+"individual colors and sequences in Workshop."
+msgstr "この設定はすべての機体と工房のプレビューに適用されます。機体ごとの色とシーケンスは工房で設定してください。"
+
+msgid "Smoke preset"
+msgstr "煙のプリセット"
+
+msgid "Paint region"
+msgstr "塗装領域"
+
+msgid "Smoke emitter"
+msgstr "煙の放出口"
+
+msgid "Color"
+msgstr "色"
+
+msgid "Advanced smoke settings"
+msgstr "煙の詳細設定"
+
+msgid "Registration panel"
+msgstr "登録番号パネル"
+
+msgid "Registration text"
+msgstr "登録番号の文字"
+
+msgid "Lighting style"
+msgstr "照明スタイル"
+
+msgid "Detailed lighting"
+msgstr "詳細な照明設定"
+
+msgid "Lighting zone"
+msgstr "照明ゾーン"
+
+msgid "Sequence cues"
+msgstr "シーケンス項目"
+
+msgid "Selected cue"
+msgstr "選択項目"
+
+msgid "Timing and pattern"
+msgstr "タイミングとパターン"
+
+msgid "View aircraft support"
+msgstr "機体の対応状況を表示"
+
+msgid " s"
+msgstr " s"
+
+msgid "Shorter cycles run faster; this is the duration of one full cycle."
+msgstr "周期を短くすると動作が速くなります。この値は1周期全体の長さです。"
+
+msgid ""
+"Optional effects follow available registered anchors. Preview bursts start "
+"only when playback is requested."
+msgstr "オプションのエフェクトは、利用可能な登録済み取付位置に合わせて動作します。再生を開始したときだけ、プレビューの煙が発生します。"
+
+msgid "Hide zone controls"
+msgstr "ゾーン設定を隠す"
+
+msgid "Hide effects"
+msgstr "エフェクトを隠す"
+
+msgid "Apply or cancel the current lighting edit first."
+msgstr "先に現在の照明設定を適用するか、キャンセルしてください。"
+
+msgid "Apply or cancel the advanced edit before changing overall brightness."
+msgstr "全体の明るさを変更する前に、詳細設定を適用するかキャンセルしてください。"
+
+msgid "Apply or cancel the current lighting edit before changing panels."
+msgstr "パネルを切り替える前に、現在の照明設定を適用するかキャンセルしてください。"
+
+msgid "Choose a supported preset to see its registered lighting zones."
+msgstr "対応するプリセットを選ぶと、登録済みの照明ゾーンが表示されます。"
+
+msgid "Choose palette color %d"
+msgstr "パレットの色%dを選択"
+
+msgid "Remove this palette color"
+msgstr "このパレット色を削除"
+
+msgid "Correct the remaining color fields before applying this zone."
+msgstr "このゾーンを適用する前に、残りの色の項目を修正してください。"
+
+msgid "This profile has no saved sequence cue for the selected zone."
+msgstr "このプロファイルには、選択したゾーンのシーケンス項目が保存されていません。"
+
+msgid "This zone is no longer in the selected lighting profile."
+msgstr "選択した照明プロファイルに、このゾーンはありません。"
+
+msgid "Apply or cancel the current edits before resetting this zone."
+msgstr "このゾーンをリセットする前に、編集中の内容を適用するかキャンセルしてください。"
+
+msgid ""
+"This inherited profile has no editable zone default. Choose a preset first."
+msgstr "この継承プロファイルには、編集できるゾーンの既定値がありません。先にプリセットを選んでください。"
+
+msgid "The selected preset has no default for this zone."
+msgstr "選択したプリセットには、このゾーンの既定値がありません。"
+
+msgid "Zone reset to its preset default."
+msgstr "ゾーンをプリセットの既定値に戻しました。"
+
+msgid "%s effect"
+msgstr "%sのエフェクト"
+
+msgid "This preset has no registered show effects."
+msgstr "このプリセットには、登録済みのショー効果がありません。"
+
+msgid ""
+"Created a v3 lighting profile with %d migrated smoke outlet(s). Review their"
+" settings; the saved revision is unchanged."
+msgstr "%d個の煙の放出口を移行した照明プロファイルv3を作成しました。設定を確認してください。保存済みのリビジョンは変更されていません。"
+
+msgid "No lighting overrides"
+msgstr "照明の上書きなし"
+
+msgid "Lighting disabled"
+msgstr "照明は無効です"
+
+msgid " · %d effects enabled"
+msgstr " · 有効なエフェクト%d個"
+
+msgid "%s · %s"
+msgstr "%s · %s"
+
+msgid "%d of %d enabled zones available on this aircraft."
+msgstr "この機体で利用できる有効なゾーン：%d / %d"
+
+msgid "%d of %d enabled effects available."
+msgstr "利用できる有効なエフェクト：%d / %d"
+
+msgid ""
+"Availability follows applied settings. Daylight, gear position and playback "
+"can hide supported lights or effects. Unavailable choices remain saved."
+msgstr ""
+"利用状況は適用済みの設定に応じて変わります。日中の明るさ、脚の位置、再生状態によって、対応するライトやエフェクトが表示されない場合があります。利用できない設定も保存されます。"
+
+msgid "Using the aircraft's standard lighting equipment."
+msgstr "機体標準の照明装備を使用中です。"
+
+msgid "Lighting is disabled for this build."
+msgstr "この構成では照明が無効です。"
+
+msgid ""
+"Showing original aircraft lighting. Select Draft to check your lighting "
+"choices."
+msgstr "機体本来の照明を表示中です。照明設定を確認するには「下書き」を選んでください。"
+
+msgid "Lighting availability cannot be checked in this preview."
+msgstr "このプレビューでは照明の利用状況を確認できません。"
+
+msgid "%s (unavailable)"
+msgstr "%s（利用不可）"
+
+msgid "Available"
+msgstr "利用可能"
+
+msgid "Unavailable: this aircraft does not support this light group."
+msgstr "利用不可：この機体はこのライトグループに対応していません。"
+
+msgid "Unavailable: no effect attachment is fitted."
+msgstr "利用不可：エフェクト用の取付位置がありません。"
+
+msgid "Unavailable: no compatible light fitting."
+msgstr "利用不可：対応するライトが搭載されていません。"
+
+msgid "Off in applied settings · %s"
+msgstr "適用済みの設定ではオフ · %s"
+
+msgid "The lighting profile could not be applied."
+msgstr "照明プロファイルを適用できませんでした。"
+
+msgid "Edit sequence"
+msgstr "シーケンスを編集"
+
+msgid ""
+"Cues play in order. Use Restart preview, then Play preview to review their "
+"timing."
+msgstr "項目は順番に再生されます。「プレビューを再開」を選んでから「プレビューを再生」し、タイミングを確認してください。"
+
+msgid ""
+"Cue targets use the Sequence pattern. Zones left without cues return to "
+"steady lighting; Undo restores the prior profile."
+msgstr ""
+"各項目の対象ゾーンには「シーケンス」パターンが使われます。項目がないゾーンは点灯状態に戻ります。「元に戻す」を選ぶと、前のプロファイルに戻ります。"
+
+msgid "Add cue"
+msgstr "項目を追加"
+
+msgid "Duplicate cue"
+msgstr "項目を複製"
+
+msgid "Move earlier"
+msgstr "前へ移動"
+
+msgid "Move later"
+msgstr "後へ移動"
+
+msgid "Remove cue"
+msgstr "項目を削除"
+
+msgid "Cue duration (seconds)"
+msgstr "項目の継続時間（秒）"
+
+msgid "Seconds, up to 60"
+msgstr "秒（最大60）"
+
+msgid "Pattern cycle (seconds)"
+msgstr "パターン周期（秒）"
+
+msgid "0.25 to 60 seconds"
+msgstr "0.25～60秒"
+
+msgid "RGB palette"
+msgstr "RGBパレット"
+
+msgid "Target zones"
+msgstr "対象ゾーン"
+
+msgid "Enabled effects"
+msgstr "有効なエフェクト"
+
+msgid "Apply cue"
+msgstr "項目を適用"
+
+msgid "Lighting sequence profile is invalid."
+msgstr "照明シーケンスのプロファイルが無効です。"
+
+msgid "Apply or cancel this cue before changing sequence sections."
+msgstr "シーケンスのセクションを変更する前に、この項目を適用するかキャンセルしてください。"
+
+msgid "Hide sequence"
+msgstr "シーケンスを隠す"
+
+msgid "Apply or cancel the current cue before selecting another cue."
+msgstr "別の項目を選ぶ前に、現在の項目を適用するかキャンセルしてください。"
+
+msgid "Correct this cue before applying it."
+msgstr "この項目を適用する前に修正してください。"
+
+msgid "This cue change is not available."
+msgstr "この項目の変更は利用できません。"
+
+msgid "The cue change did not produce a valid lighting profile."
+msgstr "項目の変更によって、有効な照明プロファイルを作成できませんでした。"
+
+msgid "Cue %d · %s s · %s s"
+msgstr "項目%d · %s s · %s s"
+
+msgid "No cues yet. Add a cue to create a sequence for this lighting profile."
+msgstr "項目はまだありません。追加すると、この照明プロファイルのシーケンスを作成できます。"
+
+msgid "Cue %d starts at %s s; duration %s s. Total sequence: %s s."
+msgstr "項目%dは%s sから始まり、継続時間は%s sです。シーケンス全体：%s s。"
+
+msgid "Total sequence: %s s."
+msgstr "シーケンス全体：%s s。"
+
+msgid "Remove"
+msgstr "削除"
+
+msgid "Orientation lock preserves this navigation target."
+msgstr "方向ロックにより、この航法灯の対象位置が維持されます。"
+
+msgid "This effect anchor must be installed and enabled in Lighting effects."
+msgstr "このエフェクトの取付位置を搭載し、照明エフェクトで有効にしてください。"
+
+msgid "Steady"
+msgstr "点灯"
+
+msgid "Breath"
+msgstr "呼吸"
+
+msgid "Wave"
+msgstr "波"
+
+msgid "Rainbow"
+msgstr "虹"
+
+msgid "Segments"
+msgstr "セグメント"
+
+msgid "Sequence"
+msgstr "シーケンス"
+
+msgid "None"
+msgstr "なし"
+
+msgid "Roll Rate"
+msgstr "ロール角速度"
+
+msgid "Pitch Rate"
+msgstr "ピッチ角速度"
+
+msgid "Spark"
+msgstr "スパーク"
+
+msgid "Trail"
+msgstr "光跡"
+
+msgid "Adjust the airframe, then review the changes before a trial."
+msgstr "機体を調整し、試験飛行の前に変更内容を確認してください。"
+
+msgid "Trial conditions"
+msgstr "試験飛行の条件"
+
+msgid "Aircraft size"
+msgstr "機体サイズ"
+
+msgid "Mass and balance"
+msgstr "質量とバランス"
+
+msgid "Power and fuel"
+msgstr "動力と燃料"
+
+msgid "Control surfaces"
+msgstr "操舵面"
+
+msgid "Aircraft support"
+msgstr "機体の対応機能"
+
+msgid "Review this draft against the stock aircraft."
+msgstr "この下書きを標準機体と比較してください。"
+
+msgid "Selected saved build"
+msgstr "選択中の保存済み構成"
+
+msgid "Current draft"
+msgstr "現在の下書き"
+
+msgid "These actions use the build currently open in the editor."
+msgstr "この操作は、現在エディターで開いている構成に適用されます。"
+
+msgid "Build files"
+msgstr "構成ファイル"
+
+msgid "Enter a multiplier; 1 keeps the original value."
+msgstr "倍率を入力してください。1なら元の値が維持されます。"
+
+msgid "Changed"
+msgstr "変更あり"
+
+msgid "Unchanged"
+msgstr "変更なし"
+
+msgid "Sound only"
+msgstr "サウンドのみ"
+
+msgid "Servos"
+msgstr "サーボ"
+
+msgid "Retractable landing gear"
+msgstr "引込脚"
+
+msgid "Compare size"
+msgstr "サイズを比較"
+
+msgid "Play preview"
+msgstr "プレビューを再生"
+
+msgid "Restart preview"
+msgstr "プレビューを再開"
+
+msgid "Pause preview"
+msgstr "プレビューを一時停止"
+
+msgid "Play the isolated Workshop lighting and smoke preview."
+msgstr "工房の照明と煙の独立したプレビューを再生します。"
+
+msgid "Restart the isolated preview playhead."
+msgstr "プレビューの再生位置を最初に戻します。"
+
+msgid "Exhaust smoke pump"
+msgstr "排気煙ポンプ"
+
+msgid "Choose a preset or enable an emitter, then adjust its color and shape."
+msgstr "プリセットを選ぶか放出口を有効にし、色と形を調整してください。"
+
+msgid ""
+"This saved smoke profile uses older settings. Editing updates the draft; the"
+" saved build stays unchanged."
+msgstr "この保存済み煙プロファイルは旧設定を使用しています。編集すると下書きが更新されますが、保存済みの構成は変更されません。"
+
+msgid "Advanced control surface setup"
+msgstr "操舵面の詳細設定"
+
+msgid ""
+"Surface overrides inherit the Control travel value until changed "
+"individually."
+msgstr "個別に変更するまで、各操舵面は全体の舵角設定を引き継ぎます。"
+
+msgid "Aileron travel multiplier"
+msgstr "エルロンの舵角倍率"
+
+msgid "Elevator travel multiplier"
+msgstr "エレベーターの舵角倍率"
+
+msgid "Rudder travel multiplier"
+msgstr "ラダーの舵角倍率"
+
+msgid "Aileron throw"
+msgstr "エルロンの舵角"
+
+msgid "Elevator throw"
+msgstr "エレベーターの舵角"
+
+msgid "Rudder throw"
+msgstr "ラダーの舵角"
+
+msgid ""
+"Automatic draft recovery is unavailable for this older build. Save a copy to"
+" keep your changes."
+msgstr "この旧構成では下書きを自動復元できません。変更を残すにはコピーを保存してください。"
+
+msgid "Calibration stays in the draft until you Save controller settings."
+msgstr "コントローラー設定を保存するまで、キャリブレーションは下書きに保持されます。"
+
+msgid "Next"
+msgstr "次へ"
+
+msgid ""
+"Calibration cancelled because the application lost focus. The draft is "
+"unchanged."
+msgstr "アプリが非アクティブになったため、キャリブレーションをキャンセルしました。下書きは変更されていません。"
+
+msgid ""
+"The radio disconnected or changed. Calibration was cancelled; the draft is "
+"unchanged."
+msgstr "送信機が切断されたか、別のものに切り替わりました。キャリブレーションをキャンセルしました。下書きは変更されていません。"
+
+msgid "Calibration was interrupted. Start again; the draft is unchanged."
+msgstr "キャリブレーションが中断されました。やり直してください。下書きは変更されていません。"
+
+msgid ""
+"The radio returned an invalid axis reading. Calibration was cancelled; the "
+"draft is unchanged."
+msgstr "送信機から無効な軸の読み取り値が返されたため、キャリブレーションをキャンセルしました。下書きは変更されていません。"
+
+msgid "Calibration cancelled. The draft is unchanged."
+msgstr "キャリブレーションをキャンセルしました。下書きは変更されていません。"
+
+msgid "Calibration complete"
+msgstr "キャリブレーション完了"
+
+msgid ""
+"Use these ranges, then Save controller settings. Lower the throttle before "
+"flying."
+msgstr "この範囲を使い、コントローラー設定を保存してください。飛行前にスロットルを下げてください。"
+
+msgid "Use calibration"
+msgstr "キャリブレーションを使用"
+
+msgid "Finish or cancel remapping before calibrating."
+msgstr "割り当て変更を完了するかキャンセルしてから、キャリブレーションしてください。"
+
+msgid ""
+"The radio connection changed. Calibrate again before saving these settings."
+msgstr "送信機の接続が変わりました。設定を保存する前に、もう一度キャリブレーションしてください。"
+
+msgid "Invalid calibration. The draft is unchanged."
+msgstr "キャリブレーションが無効です。下書きは変更されていません。"
+
+msgid ""
+"Calibration is in the draft. Save controller settings to apply it; Cancel "
+"discards it."
+msgstr "キャリブレーションは下書きにあります。適用するにはコントローラー設定を保存してください。キャンセルすると破棄されます。"
+
+msgid "no stick moved enough (need a full sweep); try again"
+msgstr "スティックを十分に動かしていません（全範囲を動かしてください）。もう一度お試しください。"
+
+msgid ""
+"the stick did not return to centre before Enter (or moved only one way); try"
+" again"
+msgstr "Enterを押す前にスティックが中央に戻っていないか、片方向にしか動いていません。もう一度お試しください。"
+
+msgid ""
+"Existing flaps control overlaps a newly calibrated AETR axis; reassign that "
+"auxiliary channel."
+msgstr "既存のフラップ操作が新たにキャリブレーションしたAETR軸と重複しています。その補助チャンネルを割り当て直してください。"
+
+msgid ""
+"Existing gear control overlaps a newly calibrated AETR axis; reassign that "
+"auxiliary channel."
+msgstr "既存の脚操作が新たにキャリブレーションしたAETR軸と重複しています。その補助チャンネルを割り当て直してください。"
+
+msgid ""
+"Existing smoke control overlaps a newly calibrated AETR axis; smoke was "
+"disabled and needs reassignment."
+msgstr "既存の煙操作が新たにキャリブレーションしたAETR軸と重複しています。煙を無効にしました。再割り当てが必要です。"
+
+msgid "Shared input: %s."
+msgstr "入力の共有：%s。"
+
+msgid "Use either the action or the extra channel: %s."
+msgstr "操作または追加チャンネルのどちらかを使ってください：%s。"
+
+msgid "Choose a source axis from 0 to 9."
+msgstr "入力元の軸を0～9から選んでください。"
+
+msgid "Calibrate this channel or restore a preset."
+msgstr "このチャンネルをキャリブレーションするか、プリセットを復元してください。"
+
+msgid "Set the deadzone between 0 and 0.95."
+msgstr "デッドゾーンを0～0.95に設定してください。"
+
+msgid "Set expo between 0 and 1."
+msgstr "エクスポを0～1に設定してください。"
+
+msgid "Assign an input so you can return or pause."
+msgstr "戻るまたは一時停止に使う入力を割り当ててください。"
+
+msgid "Remap this action to a valid input."
+msgstr "この操作を有効な入力に割り当て直してください。"
+
+msgid ""
+"Check this input and its endpoints; keep it separate from the flight axes."
+msgstr "この入力と両端の値を確認してください。飛行軸とは別の入力を使ってください。"
+
+msgid "Check this setting or restore a preset."
+msgstr "この設定を確認するか、プリセットを復元してください。"
+
+msgid "Assignment not applied: %s"
+msgstr "割り当てを適用できませんでした：%s"
+
+msgid "Binding was not changed: %s"
+msgstr "割り当てを変更できませんでした：%s"
+
+msgid "Rates: sport"
+msgstr "舵角：スポーツ"
+
+msgid ""
+"Airplane dual rates: press the left stick (L3) on a gamepad, or remap Dual "
+"rates below for a joystick. Each press alternates normal and high rates. "
+"Existing assignments take priority. Radio profiles use the transmitter's "
+"rates."
+msgstr ""
+"飛行機のデュアルレート：ゲームパッドでは左スティック（L3）を押してください。ジョイスティックでは、下の「デュアルレート」に操作を割り当ててください。押すたびに通常と高舵角が切り替わります。既存の割り当てが優先されます。送信機プロファイルでは、送信機側の舵角設定が使われます。"
+
+msgid "Dual rates: normal / high"
+msgstr "デュアルレート：通常 / 高"
+
+msgid ""
+"No saved builds match these filters. Clear the search or turn off Favorites "
+"only."
+msgstr "条件に一致する保存済み構成がありません。検索条件を消すか、「お気に入りのみ」をオフにしてください。"
+
+msgid "No saved builds yet. Save the current build to add it here."
+msgstr "保存済みの構成はまだありません。現在の構成を保存すると、ここに追加されます。"
+
+msgid "Creates a separate saved build. The original stays unchanged."
+msgstr "元の構成を変更せずに、別の構成として保存します。"
+
+msgid "Saves the current edits and name as a new revision of this build."
+msgstr "現在の編集内容と名前を、この構成の新しいリビジョンとして保存します。"
+
+msgid "Creates a saved build in your local library."
+msgstr "ローカルライブラリに構成を保存します。"

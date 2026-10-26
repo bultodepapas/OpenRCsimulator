@@ -13,6 +13,11 @@ boot_splash/show_image=false
 boot_splash/bg_color=Color(0.003, 0.006, 0.012, 1)
 config/features=PackedStringArray("4.8")
 
+[autoload]
+
+; Install bundled CJK glyphs before startup without replacing the engine Latin font.
+InterfaceFonts="*res://i18n/fonts.gd"
+
 [display]
 
 ; GDU-03: the application owns fullscreen transitions and persisted display settings.
@@ -31,8 +36,6 @@ smoke_pump={
 
 ; Preserve the existing explicit keyboard-focus behavior across the engine upgrade.
 common/auto_focus_strategy=0
-; Keep the engine Latin face and bundle Chinese glyphs for offline use on every platform.
-theme/custom_font="res://assets/fonts/interface_font.tres"
 
 [input_devices]
 
@@ -70,7 +73,7 @@ textures/vram_compression/import_etc2_astc=true
 
 ; UI-01d: English is the source and default language (set by app_root, not the OS locale); one gettext .po per
 ; other language. .po files load without an import step and are exported with all_resources (probe 23).
-locale/translations=PackedStringArray("res://i18n/es.po")
+locale/translations=PackedStringArray("res://i18n/es.po", "res://i18n/zh_Hans.po", "res://i18n/pt_BR.po", "res://i18n/de.po", "res://i18n/fr.po", "res://i18n/it.po", "res://i18n/ru.po", "res://i18n/ja.po")
 
 [editor_plugins]
 

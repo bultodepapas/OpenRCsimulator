@@ -866,6 +866,8 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 		_advanced_controls_toggle = CheckButton.new()
 		_advanced_controls_toggle.name = "AdvancedControlThrows"
 		_advanced_controls_toggle.text = tr("Advanced control surface setup")
+		_advanced_controls_toggle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_advanced_controls_toggle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_advanced_controls_toggle.tooltip_text = tr("Surface overrides inherit the Control travel value until changed individually.")
 		_advanced_controls_toggle.focus_mode = Control.FOCUS_ALL
 		_advanced_controls_toggle.toggled.connect(_on_advanced_controls_toggled)
