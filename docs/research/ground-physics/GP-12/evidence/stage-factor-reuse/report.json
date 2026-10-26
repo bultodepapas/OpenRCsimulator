@@ -1,0 +1,51 @@
+{
+  "format": "openrc-stage-factor-evidence-v1",
+  "production_checks": {
+    "contact-step-tjcx76xu": 167,
+    "factor-pin-bi7e5y7a": 73,
+    "ground-stage-k176fktg": 145,
+    "joint-impulse-yz26r4dw": 314,
+    "rotor-fixed-zwc95dco": 17,
+    "rotor-system-1jl6ocbw": 60,
+    "wheel-transport-fzxlvd0_": 124,
+    "wheel-yea5gl8h": 84
+  },
+  "total_production_checks": 984,
+  "independent_checks": 7,
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "selected_source_paths": [
+    "app/physics/rotor_coupling.gd",
+    "app/physics/generalized_coordinates.gd",
+    "app/physics/math3d.gd",
+    "app/physics/mass_inventory.gd",
+    "app/physics/aircraft_ground_stage.gd",
+    "app/tests/test_rotor_stage_factor.gd",
+    "app/tests/fixtures/rotor_stage_factor.bin",
+    "app/tests/test_rotor_system.gd",
+    "app/tests/test_rotor_coupling.gd",
+    "app/tests/test_aircraft_ground_stage.gd",
+    "app/tests/test_wheel_coupling.gd",
+    "app/tests/test_wheel_coupling_transport.gd",
+    "app/tests/test_aircraft_ground_impulse.gd",
+    "app/tests/test_aircraft_ground_step.gd"
+  ],
+  "promotion": {
+    "format": "openrc-stage-factor-promotion-v1",
+    "before": {
+      "app/physics/rotor_coupling.gd": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+      "app/tests/test_rotor_stage_factor.gd": null,
+      "app/tests/fixtures/rotor_stage_factor.bin": null
+    },
+    "after": {
+      "app/physics/rotor_coupling.gd": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+      "app/tests/test_rotor_stage_factor.gd": "0cd4b22eb6d7f21d4696677d470e36611ed3889ab4b3d3788d272ee5083b4b73",
+      "app/tests/fixtures/rotor_stage_factor.bin": "1a860bae3e791f6a2f86f16baf4e7d6bd372e7d705ea17da6b4da401e4e04e4c"
+    },
+    "production_checks": "pending"
+  },
+  "microbenchmark": {
+    "baseline_median_us": 313.96666666666664,
+    "candidate_median_us": 290.64666666666665,
+    "reduction": 0.07427540078564598
+  }
+}

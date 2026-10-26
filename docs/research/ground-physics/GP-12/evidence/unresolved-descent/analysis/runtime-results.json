@@ -1,0 +1,824 @@
+[
+	{
+		"applied": {
+			"affine_carrier_work": 0.0,
+			"delta_omega": [
+				-1.272658496814149e-07,
+				-2.312872575544503e-05,
+				-2.1391570096064684e-06
+			],
+			"delta_spin": [
+				5.95977447459047e-07,
+				-0.0006787864879863719,
+				-0.0006788026633026868,
+				-0.0014345912590949777
+			],
+			"delta_velocity_cm_body": [
+				-5.665984792117403e-05,
+				-1.7201635556449537e-08,
+				3.757065655078216e-08
+			],
+			"dissipated_energy": 0.0035293046552117976,
+			"energy_balance_residual": -8.673617379884035e-19,
+			"energy_totals_residual": 5.169475958410885e-14,
+			"factor_rebuilt": true,
+			"fixed_centers": true,
+			"free_slip": [
+				3.857941075491311e-06,
+				6.50071981998873e-07,
+				33.627311278114675,
+				2.3590847875176735e-06,
+				6.500026562618463e-07,
+				33.627312107912815,
+				4.270007382789487e-06,
+				-1.2751888335665578e-06,
+				72.51619310618747
+			],
+			"frozen_pose": true,
+			"generalized_impulse": [
+				-0.0012183985303445611,
+				-3.6989946585558344e-07,
+				8.079095586214332e-07,
+				7.922184916819446e-08,
+				-0.0001576048512164296,
+				-2.122432051120777e-05,
+				0.0,
+				-2.4078965752154566e-07,
+				-2.40795597890287e-07,
+				-2.230195490428462e-08
+			],
+			"group_impulses": [
+				[
+					-0.00040427477549668075,
+					-0.01017301380581156
+				],
+				[
+					-3.4887137917587086e-05
+				],
+				[
+					-0.00040426893184016585,
+					0.010149679301433423
+				],
+				[
+					-3.48866430565925e-05
+				],
+				[
+					-0.0004098550908666155,
+					2.3704403843993144e-05
+				],
+				[
+					-1.631404181685225e-05
+				]
+			],
+			"impulse": [
+				-0.00040427477549668075,
+				-0.01017301380581156,
+				-3.4887137917587086e-05,
+				-0.00040426893184016585,
+				0.010149679301433423,
+				-3.48866430565925e-05,
+				-0.0004098550908666155,
+				2.3704403843993144e-05,
+				-1.631404181685225e-05
+			],
+			"kinetic_energy_after": 309.3491456722067,
+			"kinetic_energy_before": 309.35267497686186,
+			"kinetic_energy_change": -0.0035293046552117985,
+			"kinetic_energy_change_from_totals": -0.0035293046551601037,
+			"law": "fixed-center-cm-common-rotor-ground-impulse-v1",
+			"mass_solve_relative_residual": 1.4311877710053925e-16,
+			"mobility": [
+				20.05942445191034,
+				0.01107954216616074,
+				-233.35665992283165,
+				0.03605796311593526,
+				0.011079543427817343,
+				0.0,
+				0.04918531537909562,
+				-0.020676011837010958,
+				0.0,
+				0.011079542166160737,
+				0.06691470697901455,
+				1.7596640251084492e-23,
+				-0.011078897873941645,
+				0.06691473513651615,
+				0.0,
+				4.5355337034109273e-07,
+				0.03845885540532962,
+				0.0,
+				-233.35665992283168,
+				4.235164736271502e-22,
+				2722.94819046478,
+				0.0,
+				0.0,
+				0.0,
+				-3.469446951953614e-18,
+				0.0,
+				0.0,
+				0.03605796311593526,
+				-0.011078897873941645,
+				0.0,
+				20.05942437063976,
+				-0.011078899134044461,
+				-233.35665992283165,
+				0.04918525816818596,
+				0.020676531307872732,
+				0.0,
+				0.011079543427817345,
+				0.06691473513651615,
+				0.0,
+				-0.011078899134044461,
+				0.06691476329408762,
+				1.7596640251084492e-23,
+				4.535544641403845e-07,
+				0.03845888040158328,
+				0.0,
+				0.0,
+				4.235164736271502e-22,
+				0.0,
+				-233.35665992283165,
+				0.0,
+				2722.94819046478,
+				-3.469446951953614e-18,
+				0.0,
+				0.0,
+				0.04918531537909562,
+				4.535533703410928e-07,
+				0.0,
+				0.04918525816818596,
+				4.535544641403845e-07,
+				0.0,
+				100.05043742423025,
+				3.656846275175705e-07,
+				-2515.7272508638916,
+				-0.020676011837010958,
+				0.03845885540532962,
+				0.0,
+				0.02067653130787273,
+				0.03845888040158329,
+				0.0,
+				3.656846275175706e-07,
+				0.09165353973323837,
+				2.0449693478635397e-22,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				-2515.7272508638916,
+				4.235164736271502e-22,
+				63288.73587078972
+			],
+			"ok": true,
+			"omega": [
+				-0.00013456628597451338,
+				0.014139515611743085,
+				-1.0378967855105571e-08
+			],
+			"post_slip": [
+				1.410871419693649e-12,
+				6.938502830150714e-11,
+				33.62665562035244,
+				-3.552713678800501e-15,
+				-5.603368768231418e-15,
+				33.62665643397526,
+				0.0,
+				8.250855984150146e-19,
+				72.51478164365413
+			],
+			"prescribed_row_work": 0.0,
+			"qp": {
+				"acceleration_law": "bounded-interior-face-unresolved-descent-feasible-extrapolation-v2",
+				"accepted_accelerations": 2,
+				"accepted_unresolved_descents": 2,
+				"complementarity_scaled": 1.4056401224948526e-25,
+				"converged": true,
+				"diagonal_regularization": 0.0,
+				"dissipation": 0.0035293046552117976,
+				"duality_gap": 1.567679050960635e-17,
+				"feasibility_residual": 0.0,
+				"feasibility_roundoff_correction": 2.219552032144254e-15,
+				"group_impulses": [
+					[
+						-0.00040427477549668075,
+						-0.01017301380581156
+					],
+					[
+						-3.4887137917587086e-05
+					],
+					[
+						-0.00040426893184016585,
+						0.010149679301433423
+					],
+					[
+						-3.48866430565925e-05
+					],
+					[
+						-0.0004098550908666155,
+						2.3704403843993144e-05
+					],
+					[
+						-1.631404181685225e-05
+					]
+				],
+				"impulse": [
+					-0.00040427477549668075,
+					-0.01017301380581156,
+					-3.4887137917587086e-05,
+					-0.00040426893184016585,
+					0.010149679301433423,
+					-3.48866430565925e-05,
+					-0.0004098550908666155,
+					2.3704403843993144e-05,
+					-1.631404181685225e-05
+				],
+				"iterations": 25,
+				"kkt_residual_scaled": 2.762306842833841e-15,
+				"kkt_tolerance_scaled": 5.730501244458919e-12,
+				"law": "compact-mobility-block-kkt-impulse-v1",
+				"linear_work": -0.003529341197109425,
+				"maximum_objective_increase_scaled": 0.0,
+				"method": "cyclic_exact_metric_blocks_feasible_acceleration",
+				"mobility_work": 3.654189762762184e-08,
+				"normalized_impulse": [
+					-0.028374229692091805,
+					-0.9995973704894268,
+					-1.0,
+					-0.028374222029822482,
+					0.9973186754848559,
+					-1.0,
+					-0.028532370273141466,
+					0.002310279851864526,
+					-1.0
+				],
+				"numerical_strategy": "bounded-eight-KKT-probe-unresolved-descent-certified-fallback-v2",
+				"numerical_work": {
+					"assembly_certificates": 0,
+					"assembly_witness_builds": 0,
+					"assembly_witness_requests": 0,
+					"caller_sweep_budget": 1024,
+					"extrapolation_calls": 3,
+					"interior_proposal_calls": 3,
+					"publication_calls": 1,
+					"range_proposal_calls": 1,
+					"spd_proposal_calls": 2,
+					"started_sweeps": 25,
+					"strict_solve_calls": 2,
+					"unresolved_descent_calls": 2,
+					"work_candidate_calls": 4
+				},
+				"objective": -0.0035293046552117976,
+				"objective_scale": 0.02064448040871124,
+				"ok": true,
+				"post_slip": [
+					1.4106497808175056e-12,
+					6.938502842866816e-11,
+					33.626655620352444,
+					-3.001151234536918e-15,
+					-5.6033584212465334e-15,
+					33.62665643397527,
+					-6.938893903907228e-18,
+					8.506328372801311e-19,
+					72.51478164365413
+				],
+				"psd_rank": 8,
+				"psd_roundoff_residual": 3.3541368132403104e-16,
+				"psd_tolerance": 1e-12,
+				"status": "converged",
+				"symmetry_residual": 1.1102230246251565e-16,
+				"unresolved_descent_calls": 2,
+				"work_frame": "relative_to_prescribed_support_not_universal_closed_body_energy"
+			},
+			"slip_relative_residual": 2.1011626840409914e-16,
+			"spin": [
+				146.60754499741833,
+				33.64079513596418,
+				33.64079594958701,
+				72.52892115926588
+			],
+			"status": "converged",
+			"total_prescribed_work": 0.0,
+			"velocity_cm_body": [
+				2.880767526354229,
+				-2.6273230655711355e-05,
+				0.8685525148936343
+			],
+			"work_frame": "prescribed_support_and_carrier_balance_not_visual_steering_motor_credit"
+		},
+		"input": "qp-3c9f6c92a84c4e47d393c4f3965890f6871815aa232cf7e34d2afa3ef3b53d0f.bin",
+		"solve": {
+			"acceleration_law": "bounded-interior-face-unresolved-descent-feasible-extrapolation-v2",
+			"accepted_accelerations": 2,
+			"accepted_unresolved_descents": 2,
+			"complementarity_scaled": 1.4056401224948526e-25,
+			"converged": true,
+			"diagonal_regularization": 0.0,
+			"dissipation": 0.0035293046552117976,
+			"duality_gap": 1.567679050960635e-17,
+			"feasibility_residual": 0.0,
+			"feasibility_roundoff_correction": 2.219552032144254e-15,
+			"group_impulses": [
+				[
+					-0.00040427477549668075,
+					-0.01017301380581156
+				],
+				[
+					-3.4887137917587086e-05
+				],
+				[
+					-0.00040426893184016585,
+					0.010149679301433423
+				],
+				[
+					-3.48866430565925e-05
+				],
+				[
+					-0.0004098550908666155,
+					2.3704403843993144e-05
+				],
+				[
+					-1.631404181685225e-05
+				]
+			],
+			"impulse": [
+				-0.00040427477549668075,
+				-0.01017301380581156,
+				-3.4887137917587086e-05,
+				-0.00040426893184016585,
+				0.010149679301433423,
+				-3.48866430565925e-05,
+				-0.0004098550908666155,
+				2.3704403843993144e-05,
+				-1.631404181685225e-05
+			],
+			"iterations": 25,
+			"kkt_residual_scaled": 2.762306842833841e-15,
+			"kkt_tolerance_scaled": 5.730501244458919e-12,
+			"law": "compact-mobility-block-kkt-impulse-v1",
+			"linear_work": -0.003529341197109425,
+			"maximum_objective_increase_scaled": 0.0,
+			"method": "cyclic_exact_metric_blocks_feasible_acceleration",
+			"mobility_work": 3.654189762762184e-08,
+			"normalized_impulse": [
+				-0.028374229692091805,
+				-0.9995973704894268,
+				-1.0,
+				-0.028374222029822482,
+				0.9973186754848559,
+				-1.0,
+				-0.028532370273141466,
+				0.002310279851864526,
+				-1.0
+			],
+			"numerical_strategy": "bounded-eight-KKT-probe-unresolved-descent-certified-fallback-v2",
+			"numerical_work": {
+				"assembly_certificates": 0,
+				"assembly_witness_builds": 0,
+				"assembly_witness_requests": 0,
+				"caller_sweep_budget": 1024,
+				"extrapolation_calls": 3,
+				"interior_proposal_calls": 3,
+				"publication_calls": 1,
+				"range_proposal_calls": 1,
+				"spd_proposal_calls": 2,
+				"started_sweeps": 25,
+				"strict_solve_calls": 2,
+				"unresolved_descent_calls": 2,
+				"work_candidate_calls": 4
+			},
+			"objective": -0.0035293046552117976,
+			"objective_scale": 0.02064448040871124,
+			"ok": true,
+			"post_slip": [
+				1.4106497808175056e-12,
+				6.938502842866816e-11,
+				33.626655620352444,
+				-3.001151234536918e-15,
+				-5.6033584212465334e-15,
+				33.62665643397527,
+				-6.938893903907228e-18,
+				8.506328372801311e-19,
+				72.51478164365413
+			],
+			"psd_rank": 8,
+			"psd_roundoff_residual": 3.3541368132403104e-16,
+			"psd_tolerance": 1e-12,
+			"status": "converged",
+			"symmetry_residual": 1.1102230246251565e-16,
+			"unresolved_descent_calls": 2,
+			"work_frame": "relative_to_prescribed_support_not_universal_closed_body_energy"
+		}
+	},
+	{
+		"applied": {
+			"affine_carrier_work": 0.0,
+			"delta_omega": [
+				-6.316021669530857e-08,
+				-1.1515148547114331e-05,
+				-1.0698851559414972e-06
+			],
+			"delta_spin": [
+				2.966671647940146e-07,
+				-0.00033779487894806704,
+				-0.0003378032475232372,
+				-0.0007137853383960297
+			],
+			"delta_velocity_cm_body": [
+				-2.820913943781786e-05,
+				-9.008258368755145e-09,
+				1.8809148919169616e-08
+			],
+			"dissipated_energy": 0.001757150590055621,
+			"energy_balance_residual": 4.336808689942018e-19,
+			"energy_totals_residual": 7.468244772601551e-14,
+			"factor_rebuilt": true,
+			"fixed_centers": true,
+			"free_slip": [
+				1.9354277740468717e-06,
+				3.246637269291339e-07,
+				33.627654188294166,
+				1.1857601847076182e-06,
+				3.245911063891859e-07,
+				33.627655018140466,
+				2.1439158506275646e-06,
+				-6.382807610651533e-07,
+				72.51694583683735
+			],
+			"frozen_pose": true,
+			"generalized_impulse": [
+				-0.0006066019464284137,
+				-1.937112286768725e-07,
+				4.0446701219584554e-07,
+				4.147576433374719e-08,
+				-7.846718725788553e-05,
+				-1.0615331045329412e-05,
+				0.0,
+				-1.198259047100195e-07,
+				-1.1982897806088217e-07,
+				-1.1096290361726772e-08
+			],
+			"group_impulses": [
+				[
+					-0.00020126897494780898,
+					-0.005064639414943167
+				],
+				[
+					-1.736857705773725e-05
+				],
+				[
+					-0.00020126614698289712,
+					0.005052974441871645
+				],
+				[
+					-1.736833777449517e-05
+				],
+				[
+					-0.00020406695934193844,
+					1.1858684300198502e-05
+				],
+				[
+					-8.12275792420378e-06
+				]
+			],
+			"impulse": [
+				-0.00020126897494780898,
+				-0.005064639414943167,
+				-1.736857705773725e-05,
+				-0.00020126614698289712,
+				0.005052974441871645,
+				-1.736833777449517e-05,
+				-0.00020406695934193844,
+				1.1858684300198502e-05,
+				-8.12275792420378e-06
+			],
+			"kinetic_energy_after": 309.35804803413095,
+			"kinetic_energy_before": 309.3598051847209,
+			"kinetic_energy_change": -0.0017571505900556205,
+			"kinetic_energy_change_from_totals": -0.001757150589980938,
+			"law": "fixed-center-cm-common-rotor-ground-impulse-v1",
+			"mass_solve_relative_residual": 1.5909008402140066e-16,
+			"mobility": [
+				20.059424421310144,
+				0.011079601568154686,
+				-233.35665992283168,
+				0.036057919901878926,
+				0.011079602889760658,
+				0.0,
+				0.049185326282381155,
+				-0.020675954860242006,
+				0.0,
+				0.011079601568154688,
+				0.06691468565773419,
+				-1.7596640251084492e-23,
+				-0.011078956932175778,
+				0.06691471515059563,
+				0.0,
+				4.538060000574138e-07,
+				0.03845886882651352,
+				0.0,
+				-233.35665992283165,
+				0.0,
+				2722.94819046478,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.036057919901878926,
+				-0.01107895693217578,
+				0.0,
+				20.059424340032585,
+				-0.011078958252154285,
+				-233.35665992283168,
+				0.049185269065215136,
+				0.020676473626435467,
+				0.0,
+				0.011079602889760658,
+				0.06691471515059563,
+				0.0,
+				-0.011078958252154285,
+				0.06691474464353374,
+				-1.7596640251084492e-23,
+				4.538071457479161e-07,
+				0.03845889500838143,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				-233.3566599228317,
+				0.0,
+				2722.94819046478,
+				0.0,
+				0.0,
+				0.0,
+				0.049185326282381155,
+				4.5380600005741386e-07,
+				0.0,
+				0.049185269065215136,
+				4.5380714574791615e-07,
+				0.0,
+				100.0504375280866,
+				3.651971328332952e-07,
+				-2515.7272508638916,
+				-0.020675954860242013,
+				0.03845886882651352,
+				0.0,
+				0.020676473626435463,
+				0.03845889500838142,
+				0.0,
+				3.6519713283329507e-07,
+				0.09165355703301487,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				-2515.7272508638916,
+				0.0,
+				63288.73587078972
+			],
+			"ok": true,
+			"omega": [
+				-0.00013451564513127342,
+				0.014149163894451033,
+				-1.0878615564809623e-08
+			],
+			"post_slip": [
+				1.4765966227514582e-12,
+				7.264833906482474e-11,
+				33.627327908563764,
+				-3.1086244689504383e-15,
+				-5.929525161475904e-15,
+				33.627328730041484,
+				-4.440892098500626e-16,
+				-2.2298307772591967e-20,
+				72.51624356664752
+			],
+			"prescribed_row_work": 0.0,
+			"qp": {
+				"acceleration_law": "bounded-interior-face-unresolved-descent-feasible-extrapolation-v2",
+				"accepted_accelerations": 2,
+				"accepted_unresolved_descents": 2,
+				"complementarity_scaled": 0.0,
+				"converged": true,
+				"diagonal_regularization": 0.0,
+				"dissipation": 0.001757150590055621,
+				"duality_gap": 8.232829828173401e-18,
+				"feasibility_residual": 0.0,
+				"feasibility_roundoff_correction": 0.0,
+				"group_impulses": [
+					[
+						-0.00020126897494780898,
+						-0.005064639414943167
+					],
+					[
+						-1.736857705773725e-05
+					],
+					[
+						-0.00020126614698289712,
+						0.005052974441871645
+					],
+					[
+						-1.736833777449517e-05
+					],
+					[
+						-0.00020406695934193844,
+						1.1858684300198502e-05
+					],
+					[
+						-8.12275792420378e-06
+					]
+				],
+				"impulse": [
+					-0.00020126897494780898,
+					-0.005064639414943167,
+					-1.736857705773725e-05,
+					-0.00020126614698289712,
+					0.005052974441871645,
+					-1.736833777449517e-05,
+					-0.00020406695934193844,
+					1.1858684300198502e-05,
+					-8.12275792420378e-06
+				],
+				"iterations": 25,
+				"kkt_residual_scaled": 5.870259667596666e-15,
+				"kkt_tolerance_scaled": 1.1509466135372548e-11,
+				"law": "compact-mobility-block-kkt-impulse-v1",
+				"linear_work": -0.0017571596478154659,
+				"maximum_objective_increase_scaled": 0.0,
+				"method": "cyclic_exact_metric_blocks_feasible_acceleration",
+				"mobility_work": 9.057759844928153e-09,
+				"normalized_impulse": [
+					-0.02837431413505026,
+					-0.9995973680924563,
+					-1.0,
+					-0.028374306363655677,
+					0.9973088162859309,
+					-1.0,
+					-0.028532397878844075,
+					0.0023212938528097134,
+					-1.0
+				],
+				"numerical_strategy": "bounded-eight-KKT-probe-unresolved-descent-certified-fallback-v2",
+				"numerical_work": {
+					"assembly_certificates": 0,
+					"assembly_witness_builds": 0,
+					"assembly_witness_requests": 0,
+					"caller_sweep_budget": 1024,
+					"extrapolation_calls": 3,
+					"interior_proposal_calls": 3,
+					"publication_calls": 1,
+					"range_proposal_calls": 1,
+					"spd_proposal_calls": 2,
+					"started_sweeps": 25,
+					"strict_solve_calls": 2,
+					"unresolved_descent_calls": 2,
+					"work_candidate_calls": 4
+				},
+				"objective": -0.001757150590055621,
+				"objective_scale": 0.005117853334872864,
+				"ok": true,
+				"post_slip": [
+					1.477053138358161e-12,
+					7.2648339113555e-11,
+					33.627327908563764,
+					-3.1754517685987768e-15,
+					-5.929522592449109e-15,
+					33.62732873004149,
+					3.469446951953614e-18,
+					-9.317362419797304e-21,
+					72.5162435666475
+				],
+				"psd_rank": 8,
+				"psd_roundoff_residual": 3.892279015723976e-16,
+				"psd_tolerance": 1e-12,
+				"status": "converged",
+				"symmetry_residual": 2.220446049250313e-16,
+				"unresolved_descent_calls": 2,
+				"work_frame": "relative_to_prescribed_support_not_universal_closed_body_energy"
+			},
+			"slip_relative_residual": 2.1070652064452392e-16,
+			"spin": [
+				146.60754477851714,
+				33.641477072458216,
+				33.641477893935935,
+				72.53039273054196
+			],
+			"status": "converged",
+			"total_prescribed_work": 0.0,
+			"velocity_cm_body": [
+				2.8808274475176074,
+				-2.6232469397872116e-05,
+				0.868829341964649
+			],
+			"work_frame": "prescribed_support_and_carrier_balance_not_visual_steering_motor_credit"
+		},
+		"input": "qp-5cf650e80d5237f5d0578f3a628bf392cc7de279e85747b51af107cffb9b3f06.bin",
+		"solve": {
+			"acceleration_law": "bounded-interior-face-unresolved-descent-feasible-extrapolation-v2",
+			"accepted_accelerations": 2,
+			"accepted_unresolved_descents": 2,
+			"complementarity_scaled": 0.0,
+			"converged": true,
+			"diagonal_regularization": 0.0,
+			"dissipation": 0.001757150590055621,
+			"duality_gap": 8.232829828173401e-18,
+			"feasibility_residual": 0.0,
+			"feasibility_roundoff_correction": 0.0,
+			"group_impulses": [
+				[
+					-0.00020126897494780898,
+					-0.005064639414943167
+				],
+				[
+					-1.736857705773725e-05
+				],
+				[
+					-0.00020126614698289712,
+					0.005052974441871645
+				],
+				[
+					-1.736833777449517e-05
+				],
+				[
+					-0.00020406695934193844,
+					1.1858684300198502e-05
+				],
+				[
+					-8.12275792420378e-06
+				]
+			],
+			"impulse": [
+				-0.00020126897494780898,
+				-0.005064639414943167,
+				-1.736857705773725e-05,
+				-0.00020126614698289712,
+				0.005052974441871645,
+				-1.736833777449517e-05,
+				-0.00020406695934193844,
+				1.1858684300198502e-05,
+				-8.12275792420378e-06
+			],
+			"iterations": 25,
+			"kkt_residual_scaled": 5.870259667596666e-15,
+			"kkt_tolerance_scaled": 1.1509466135372548e-11,
+			"law": "compact-mobility-block-kkt-impulse-v1",
+			"linear_work": -0.0017571596478154659,
+			"maximum_objective_increase_scaled": 0.0,
+			"method": "cyclic_exact_metric_blocks_feasible_acceleration",
+			"mobility_work": 9.057759844928153e-09,
+			"normalized_impulse": [
+				-0.02837431413505026,
+				-0.9995973680924563,
+				-1.0,
+				-0.028374306363655677,
+				0.9973088162859309,
+				-1.0,
+				-0.028532397878844075,
+				0.0023212938528097134,
+				-1.0
+			],
+			"numerical_strategy": "bounded-eight-KKT-probe-unresolved-descent-certified-fallback-v2",
+			"numerical_work": {
+				"assembly_certificates": 0,
+				"assembly_witness_builds": 0,
+				"assembly_witness_requests": 0,
+				"caller_sweep_budget": 1024,
+				"extrapolation_calls": 3,
+				"interior_proposal_calls": 3,
+				"publication_calls": 1,
+				"range_proposal_calls": 1,
+				"spd_proposal_calls": 2,
+				"started_sweeps": 25,
+				"strict_solve_calls": 2,
+				"unresolved_descent_calls": 2,
+				"work_candidate_calls": 4
+			},
+			"objective": -0.001757150590055621,
+			"objective_scale": 0.005117853334872864,
+			"ok": true,
+			"post_slip": [
+				1.477053138358161e-12,
+				7.2648339113555e-11,
+				33.627327908563764,
+				-3.1754517685987768e-15,
+				-5.929522592449109e-15,
+				33.62732873004149,
+				3.469446951953614e-18,
+				-9.317362419797304e-21,
+				72.5162435666475
+			],
+			"psd_rank": 8,
+			"psd_roundoff_residual": 3.892279015723976e-16,
+			"psd_tolerance": 1e-12,
+			"status": "converged",
+			"symmetry_residual": 2.220446049250313e-16,
+			"unresolved_descent_calls": 2,
+			"work_frame": "relative_to_prescribed_support_not_universal_closed_body_energy"
+		}
+	}
+]

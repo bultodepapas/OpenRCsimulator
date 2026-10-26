@@ -51,6 +51,31 @@ Both elastic laws retain stroke, stop scale and stop exponent. Failed spring and
 
 The adapter returns detached modes, losses, actual before/after normal observations and existing nonterminal `gear_failure` events with response identity. It changes no live session itself. The caller commits through the existing endpoint transaction; no event escapes a rejected tick. Initial state and checkpoint/reset rules retain their existing owner. Prepared data is bounded before traversal, rebuilt from its authored response and consumed healthy stage/model inputs, then compared in full. A recomputed public hash alone cannot validate altered compiled forces or geometry.
 
-The [125-check adapter suite](../../../../app/tests/test_aircraft_ground_damage.gd) runs the existing common-rotor/RK kernel with synthetic symmetric supports: a light landing remains intact and rebounds, the same gear fails under a heavier dynamic load, and a harder landing fails the otherwise identical light structure. Failed motion continues. Other checks cover progressive-stop energy, an independent left-leg failure producing a roll moment, exact checkpoint continuation, rollback and malformed/tampered resources. The [retained 657-check cohort](evidence/attached-response/README.md) includes existing damage, stage and endpoint regressions.
+The [125-check adapter suite](../../../../app/tests/test_aircraft_ground_damage.gd) runs the existing common-rotor/RK kernel with synthetic symmetric supports: a light landing remains intact and rebounds, the same gear fails under a heavier dynamic load, and a harder landing fails the otherwise identical light structure. Failed motion continues. Other checks cover progressive-stop energy, an independent left-leg failure producing a roll moment, exact checkpoint continuation, rollback and malformed/tampered resources. The asymmetric case (`test_aircraft_ground_damage.gd:266–280`) calls the response directly at one boundary; it is not a committed asymmetric kernel continuation. The kernel drops (`_kernel:282`, `_simulate:319`) use the symmetric fixture. This clarifies the current scope of the immutable cohort; its artifacts remain unchanged. Rolled/shear normal loads outside the authored aligned-axis capacity law still refuse. The [retained 657-check cohort](evidence/attached-response/README.md) includes existing damage, stage and endpoint regressions.
 
 This API labels sampling `accepted_boundary_only_not_interval_peak`. The synthetic 240/480 Hz comparison does not solve the within-tick overload counterexample above. Locating failure along the accepted contact path, full session/source composition, force-aware hull continuation, moving geometry, calibrated stock capacities and performance remain open. The current correctness-first resource rebuilding is not a hot-path qualification; a runtime owner must safely reuse immutable selected stages across unchanged failure masks and rebind after lifecycle changes. Stock advanced ground profiles remain unavailable.
+
+## Accepted component event bridge (GP-16c)
+
+2026-10-26. `AircraftGroundDamage.accepted_observation(prepared, modes, losses,
+raw_events, context, generation_id)` projects committed facts without evaluating
+forces. Its exact eight keys are schema, version, tick, generation_id, identity,
+available, events and reason. Bound state/provenance, source IDs, capacity/load and
+same-state loss closure validate atomically. An owner validates binding and actual
+transition batches, then can reuse a detached valid empty packet between events.
+No mutable compiled-profile cache or hot-path performance claim was added.
+
+An optional damage_observation owner method feeds the existing statistics adapter,
+detector and frozen service bus. Qualified FAILED_ATTACHED transitions open one
+nonterminal accident/M7 and annotate it with paired COMPONENT_DAMAGE/GEAR_FAILURE
+events; they do not add a second crash producer. The strict FlightEvent v2 payload
+preserves experimental/boundary-only coverage and unknown cause/severity. Contact
+v1, the kernel and stock Session activation remain unchanged.
+
+The [GP14 evidence home](../GP-14/evidence/component-failure-events/README.md)
+retains 332 final affected checks and 616 preceding regressions with both exact
+source revisions. The final actual-kernel suite has 197 checks. Its new asymmetric
+first-boundary commit reaches the shared bus, then the rolled continuation is
+explicitly refused; the earlier 657-check cohort's asymmetric direct-response
+scope remains unchanged. General wrench/shear qualification, whole-path overload
+localization, calibrated stock resources and runtime activation remain open.

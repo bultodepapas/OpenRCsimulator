@@ -1,0 +1,87 @@
+{
+	"cases": [
+		{
+			"accepted_substeps": 16,
+			"case": "rest6",
+			"mass_prepare_us": 2131,
+			"pairs": [
+				{
+					"baseline_first": true,
+					"baseline_us": 891863,
+					"optimized_us": 779219,
+					"ratio": 0.8736980904017769
+				},
+				{
+					"baseline_first": false,
+					"baseline_us": 825382,
+					"optimized_us": 653844,
+					"ratio": 0.7921713824629081
+				},
+				{
+					"baseline_first": true,
+					"baseline_us": 775788,
+					"optimized_us": 753090,
+					"ratio": 0.9707420068369194
+				},
+				{
+					"baseline_first": false,
+					"baseline_us": 866143,
+					"optimized_us": 630064,
+					"ratio": 0.7274364625702684
+				},
+				{
+					"baseline_first": true,
+					"baseline_us": 896303,
+					"optimized_us": 747158,
+					"ratio": 0.8335997982825004
+				}
+			],
+			"result_hex_sha256": "218b1a361fcbdb563bb230d085543ad8b2181f4f31f7dc1f974e77a015d6268f",
+			"warmup_baseline_us": 664985,
+			"warmup_optimized_us": 686902
+		},
+		{
+			"accepted_substeps": 16,
+			"case": "rest10",
+			"mass_prepare_us": 3594,
+			"pairs": [
+				{
+					"baseline_first": true,
+					"baseline_us": 895014,
+					"optimized_us": 706068,
+					"ratio": 0.7888904531102306
+				},
+				{
+					"baseline_first": false,
+					"baseline_us": 907513,
+					"optimized_us": 630636,
+					"ratio": 0.6949057479066416
+				},
+				{
+					"baseline_first": true,
+					"baseline_us": 943475,
+					"optimized_us": 741554,
+					"ratio": 0.7859816105355203
+				},
+				{
+					"baseline_first": false,
+					"baseline_us": 898076,
+					"optimized_us": 766312,
+					"ratio": 0.8532819048721935
+				},
+				{
+					"baseline_first": true,
+					"baseline_us": 863918,
+					"optimized_us": 717149,
+					"ratio": 0.8301123486256797
+				}
+			],
+			"result_hex_sha256": "bbaab9486789c3a84841868a491588c48097625a46947832db659339b7d8c32d",
+			"warmup_baseline_us": 808288,
+			"warmup_optimized_us": 715248
+		}
+	],
+	"checks": 34,
+	"failed": 0,
+	"note": "Five warmed interleaved pairs in one process; shared-host headless diagnostic, no native or statistical qualification"
+}

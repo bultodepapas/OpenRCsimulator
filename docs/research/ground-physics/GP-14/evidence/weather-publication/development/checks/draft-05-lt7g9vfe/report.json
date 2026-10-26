@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c3b25da3-bc19-4a34-9c39-404fd6d6b1ea",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T18:09:43.461583+00:00",
+  "label": "draft-05",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-weather-publication\\checks\\draft-05-lt7g9vfe\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-weather-publication\\checks\\draft-05-lt7g9vfe\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Weather publication: 196 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.75,
+  "log_bytes": 5506,
+  "log_sha256": "c9307bf52fc36fc237ff38e167fe36870c3448bf6841e0e362d35e2d9a9c409a"
+}

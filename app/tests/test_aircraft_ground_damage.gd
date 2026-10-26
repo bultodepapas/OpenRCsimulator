@@ -327,8 +327,8 @@ func _simulate(mass_kg: float, speed_mps: float, ticks: int) -> Dictionary:
 	var vehicle := Model.new()
 	vehicle.state_layout_identity = Response.LAW + ":" + bound.identity
 	vehicle.aux_size = 0
-	vehicle.continuous_size = 5
-	vehicle.modes_size = 2
+	vehicle.continuous_size = 4 + bound.damage_profile.components.size()
+	vehicle.modes_size = Damage.MODE_STRIDE * bound.damage_profile.components.size()
 	vehicle.state_validator = func(frame: Dictionary, context: Dictionary) -> bool:
 		return Damage.validate_state(bound.damage_profile, frame.modes, frame.continuous.slice(4), context.tick)
 	vehicle.stage = func(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
@@ -339,7 +339,7 @@ func _simulate(mass_kg: float, speed_mps: float, ticks: int) -> Dictionary:
 		if not stage.ok: return {}
 		var derivative := PackedFloat64Array([stage.shaft_rpm_rate])
 		derivative.append_array(stage.wheel_rim_rates)
-		derivative.append(0.0)
+		derivative.append_array(PackedFloat64Array(initial.losses))
 		return {loads = stage.loads, derivative = derivative, rotor_momentum = M.v3(0.0, 0.0, 0.0), body_derivative = stage.body_derivative}
 	vehicle.substeps = func(_b, _v, _t): return 4
 	vehicle.endpoint_transition = func(_previous, candidate, context):
@@ -351,14 +351,15 @@ func _simulate(mass_kg: float, speed_mps: float, ticks: int) -> Dictionary:
 			printerr("transition refusal ", applied)
 			return {}
 		candidate.modes = applied.modes
-		candidate.continuous[4] = applied.losses[0]
+		for i in applied.losses.size(): candidate.continuous[4 + i] = applied.losses[i]
 		candidate.events = applied.events
 		return candidate
 	sim.mass = mass_kg
 	sim.inertia = properties.inertia.duplicate()
 	sim.gravity = 9.80665
 	sim.aux = PackedFloat64Array()
-	sim.continuous = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0])
+	sim.continuous = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	sim.continuous.append_array(initial.losses)
 	sim.modes = initial.modes.duplicate()
 	check("damage normal-stage model installs", sim.set_model(vehicle))
 	check("drop initializes with healthy actual support", sim.reset(_body(0.0, speed_mps)))

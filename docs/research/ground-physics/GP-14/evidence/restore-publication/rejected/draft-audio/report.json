@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "82f538ad-217e-4912-a4e1-37fee755c346",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-restore-transaction/regressions/test_flight_audio_accepted.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T17:01:08.784643+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-restore-transaction\\checks\\draft-audio\\godot-7udy_4k1\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-restore-transaction\\checks\\draft-audio\\godot-7udy_4k1\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "FlightAudio accepted: 35 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "FlightAudio accepted: 35 checks, 0 failed"
+  ],
+  "reason": "missing_required_text",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.656,
+  "log_bytes": 219,
+  "log_sha256": "0f67687c4654a77f2e0957de2e5aa7178a5714db94143dd1cb719cac94e2789f"
+}

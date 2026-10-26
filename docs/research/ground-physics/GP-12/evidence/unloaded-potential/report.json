@@ -1,0 +1,41 @@
+{
+  "format": "openrc-unloaded-potential-cohort-v1",
+  "production_checks": 381,
+  "production_failed": 0,
+  "production_scripts": 3,
+  "production_warnings_as_errors": true,
+  "independent_oracle_checks": 11,
+  "full_drop_checks": 24,
+  "full_drop_failed": 2,
+  "gentle": {
+    "accepted_ticks": 143,
+    "target_ticks": 180,
+    "previous_heat_barrier_tick": 98,
+    "failure": "QP nonconvergence at both8/16; exact input retained",
+    "mechanical_balance_j": -5.417303952981456e-06
+  },
+  "hard": {
+    "accepted_ticks": 78,
+    "target_ticks": 180,
+    "failure": "unchanged cap-area raw complete8/16 error gate"
+  },
+  "retained_tick_gate": {
+    "original_normalized_error": 1.3397203883977142,
+    "candidate_normalized_error": 2.8421709430404007e-12,
+    "state_bytes_unchanged": true
+  },
+  "claims": [
+    "fixed-duration all-zero-normal owner-qualified potential-loss ledger",
+    "default absent-policy complete output parity",
+    "mixed method accounting and corrected per-piece residual/max",
+    "actual Simulation rollback/checkpoint tests"
+  ],
+  "not_claimed": [
+    "full drop completion",
+    "loaded cap-area accuracy",
+    "stock/fleet activation",
+    "physical calibration",
+    "performance qualification",
+    "all-floating-duration root proof"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "format": "openrc-independent-gentle-QP-source-review-v1",
+  "sources": [
+    {
+      "origin": "tmp/gp12-gentle-qp/traction_null.gd",
+      "origin_sha256": "d84ce316908668749766436bd6be113c47a7a51117aa3983548b34ee71250731",
+      "snapshot": "tmp/gp12-gentle-qp-review/source/traction_null.gd",
+      "snapshot_sha256": "d84ce316908668749766436bd6be113c47a7a51117aa3983548b34ee71250731"
+    },
+    {
+      "origin": "tmp/gp12-gentle-qp/resolution_null.gd",
+      "origin_sha256": "59abc82743aa5300465f4bf9198f4ee272a2705efa386d7f0c720632ec52b005",
+      "snapshot": "tmp/gp12-gentle-qp-review/source/resolution_null.gd",
+      "snapshot_sha256": "d8fb86fbcc5527d1196bb5af36f59b2500aff0812331ebe2112e2dfd02fd0faa"
+    },
+    {
+      "origin": "tmp/gp12-gentle-qp/strategy_null.gd",
+      "origin_sha256": "c65d6810520ac4f8efb6b135023554d8188f9a408297f5b8e23563120e3414dc",
+      "snapshot": "tmp/gp12-gentle-qp-review/source/strategy_null.gd",
+      "snapshot_sha256": "b1e6239c9e61d340502c61fe0b7a6f7ad408d339fd4fd2cd79cebd261f46ceea"
+    }
+  ],
+  "scope": "Preliminary read-only review; reconcile final sealed manifest before final acceptance"
+}

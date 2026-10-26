@@ -1,0 +1,14 @@
+{
+  "format": "openrc-stage-factor-promotion-v1",
+  "before": {
+    "app/physics/rotor_coupling.gd": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+    "app/tests/test_rotor_stage_factor.gd": null,
+    "app/tests/fixtures/rotor_stage_factor.bin": null
+  },
+  "after": {
+    "app/physics/rotor_coupling.gd": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+    "app/tests/test_rotor_stage_factor.gd": "0cd4b22eb6d7f21d4696677d470e36611ed3889ab4b3d3788d272ee5083b4b73",
+    "app/tests/fixtures/rotor_stage_factor.bin": "1a860bae3e791f6a2f86f16baf4e7d6bd372e7d705ea17da6b4da401e4e04e4c"
+  },
+  "production_checks": "pending"
+}

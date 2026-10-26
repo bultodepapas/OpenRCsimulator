@@ -1,0 +1,281 @@
+--- before/physics/contact_assembly_resolution.gd
++++ after/physics/contact_assembly_resolution.gd
+@@ -366,6 +366,10 @@
+ static func bounds(a: PackedFloat64Array, v: PackedFloat64Array, mass_matrix: PackedFloat64Array,
+ 		jacobian: PackedFloat64Array, z: PackedFloat64Array, bias: PackedFloat64Array,
+ 		responses: PackedFloat64Array) -> Dictionary:
++	return _bounds_mass(a,v,mass_matrix,jacobian,z,bias,responses,null)
++
++static func _bounds_mass(a:PackedFloat64Array,v:PackedFloat64Array,mass_matrix:PackedFloat64Array,
++		jacobian:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,responses:PackedFloat64Array,proof:RefCounted)->Dictionary:
+ 	var n := v.size()
+ 	var w := z.size()
+ 	var gradual := ETA
+@@ -381,44 +385,15 @@
+ 		or bias.size() != n or not _finite(a) or not _finite(v) or not _finite(mass_matrix) \
+ 		or not _finite(jacobian) or not _finite(z) or not _finite(bias) or not _finite(responses):
+ 		return _failure("invalid complete assembly operands")
+-	for i in w:
+-		for j in w:
+-			if mass_matrix[i*w+j] != mass_matrix[j*w+i]: return _failure("mass matrix is not symmetric")
+-	var factor := GC.cholesky_factor(mass_matrix, w)
+-	if not factor.ok: return _failure("mass matrix is not qualified SPD")
+-	var spd := _spd_margin(mass_matrix,factor.lower,w)
+-	if not spd.ok: return spd
+-	# Inverse witness with an explicitly bounded ||I-M X||_infinity. The
+-	# Neumann-series theorem then bounds the TRUE inverse, not merely X.
+-	var inverse := PackedFloat64Array()
+-	inverse.resize(w*w)
+-	for col in w:
+-		var rhs := PackedFloat64Array()
+-		rhs.resize(w)
+-		rhs[col] = 1.0
+-		var solved := GC.solve_cholesky(factor.lower, rhs, w)
+-		if solved.size() != w or not _finite(solved): return _failure("inverse witness failed")
+-		for row in w: inverse[row*w+col] = solved[row]
+-	var inverse_norm := 0.0
+-	var inverse_residual := 0.0
+-	for i in w:
+-		var norm_row := 0.0
+-		var error_row := 0.0
+-		for j in w:
+-			norm_row = _add(norm_row,absf(inverse[i*w+j]))
+-			var value := -1.0 if i == j else 0.0
+-			var magnitude := absf(value)
+-			for k in w:
+-				var term := mass_matrix[i*w+k] * inverse[k*w+j]
+-				if not is_finite(term): return _failure("inverse product overflow")
+-				value += term
+-				magnitude = _add(magnitude,_mul(absf(mass_matrix[i*w+k]),absf(inverse[k*w+j])))
+-			error_row = _add(error_row,_add(absf(value),_roundoff(magnitude,2*w+4)))
+-		inverse_norm = maxf(inverse_norm, norm_row)
+-		inverse_residual = maxf(inverse_residual, error_row)
+-	if not is_finite(inverse_residual) or inverse_residual >= 1.0:
+-		return _failure("inverse witness cannot bound true mass inverse")
+-	var inverse_bound := _div(inverse_norm,_one_minus(inverse_residual))
++	var mass_packet:Dictionary
++	if proof is FixedMassProof and proof.matches(mass_matrix,w):mass_packet=proof._packet
++	else:mass_packet=_mass_prefix(mass_matrix,w)
++	if not mass_packet.ok:return mass_packet
++	var inverse:PackedFloat64Array=mass_packet.inverse
++	var inverse_residual:float=mass_packet.inverse_residual
++	var inverse_bound:float=mass_packet.inverse_bound
++	var spd:Dictionary=mass_packet.spd
++
+ 	var response_error := PackedFloat64Array()
+ 	response_error.resize(n*w)
+ 	for j in n:
+@@ -732,7 +707,7 @@
+ 	if memo.has("source") and memo.source==source:return memo.assembly
+ 	# A different operand never hits an old witness. This object is fresh local
+ 	# call-chain data and never returned or accepted by a public API.
+-	var verified:=bounds(a,v,mass,j,z,bias,responses)
++	var verified:=_bounds_mass(a,v,mass,j,z,bias,responses,memo.get("mass_proof"))
+ 	memo.source=source
+ 	memo.assembly=verified
+ 	memo.builds=int(memo.get("builds",0))+1
+@@ -750,3 +725,67 @@
+ 	var verified:=_memo_bounds(memo,a,v,mass,j,z,bias,responses)
+ 	if not verified.ok:return verified
+ 	return _work_verified(a,v,mass,j,z,bias,responses,p,g,delta,post,affine,objective,incremental,closure,verified)
++
++
++## Opaque locally prepared proof, owned by the trusted read-only model owner.
++## Its private packet is never accepted from an arbitrary caller dictionary.
++## There is no global cache. A complete matrix-byte/width mismatch recomputes
++## the original prefix; all J/z/A/response arithmetic is always recomputed.
++class FixedMassProof extends RefCounted:
++	var _matrix_bytes:PackedByteArray
++	var _width:int=0
++	var _packet:Dictionary={}
++	func matches(matrix:PackedFloat64Array,w:int)->bool:
++		return w==_width and matrix.to_byte_array()==_matrix_bytes and _packet.get("ok",false)
++
++static func prepare_mass(matrix:PackedFloat64Array,w:int)->Dictionary:
++	if w<1 or w>70 or matrix.size()!=w*w or not _finite(matrix):return _failure("invalid prepared mass matrix")
++	var packet:=_mass_prefix(matrix,w)
++	if not packet.ok:return packet
++	var proof:=FixedMassProof.new()
++	proof._matrix_bytes=matrix.to_byte_array()
++	proof._width=w
++	proof._packet=packet
++	return {ok=true,proof=proof}
++
++static func _mass_prefix(matrix:PackedFloat64Array,w:int)->Dictionary:
++	for i in w:
++		for j in w:
++			if matrix[i*w+j] != matrix[j*w+i]: return _failure("mass matrix is not symmetric")
++	var factor := GC.cholesky_factor(matrix, w)
++	if not factor.ok: return _failure("mass matrix is not qualified SPD")
++	var spd := _spd_margin(matrix,factor.lower,w)
++	if not spd.ok: return spd
++	# Inverse witness with an explicitly bounded ||I-M X||_infinity. The
++	# Neumann-series theorem then bounds the TRUE inverse, not merely X.
++	var inverse := PackedFloat64Array()
++	inverse.resize(w*w)
++	for col in w:
++		var rhs := PackedFloat64Array()
++		rhs.resize(w)
++		rhs[col] = 1.0
++		var solved := GC.solve_cholesky(factor.lower, rhs, w)
++		if solved.size() != w or not _finite(solved): return _failure("inverse witness failed")
++		for row in w: inverse[row*w+col] = solved[row]
++	var inverse_norm := 0.0
++	var inverse_residual := 0.0
++	for i in w:
++		var norm_row := 0.0
++		var error_row := 0.0
++		for j in w:
++			norm_row = _add(norm_row,absf(inverse[i*w+j]))
++			var value := -1.0 if i == j else 0.0
++			var magnitude := absf(value)
++			for k in w:
++				var term := matrix[i*w+k] * inverse[k*w+j]
++				if not is_finite(term): return _failure("inverse product overflow")
++				value += term
++				magnitude = _add(magnitude,_mul(absf(matrix[i*w+k]),absf(inverse[k*w+j])))
++			error_row = _add(error_row,_add(absf(value),_roundoff(magnitude,2*w+4)))
++		inverse_norm = maxf(inverse_norm, norm_row)
++		inverse_residual = maxf(inverse_residual, error_row)
++	if not is_finite(inverse_residual) or inverse_residual >= 1.0:
++		return _failure("inverse witness cannot bound true mass inverse")
++	var inverse_bound := _div(inverse_norm,_one_minus(inverse_residual))
++	return {ok=true,inverse=inverse,inverse_residual=inverse_residual,inverse_bound=inverse_bound,spd=spd}
++
+--- before/physics/aircraft_ground_impulse.gd
++++ after/physics/aircraft_ground_impulse.gd
+@@ -27,7 +27,7 @@
+ static func apply(stage: Dictionary, mass_kg: float, velocity_cm_body: PackedFloat64Array,
+ 		jacobian: PackedFloat64Array, prescribed_slip_bias: PackedFloat64Array,
+ 		limits: PackedFloat64Array, groups: Array, iteration_budget: int = QP.MAX_ITERATIONS,
+-		capture: Dictionary = {}, maximum_assembly_resolution_j: float = -1.0) -> Dictionary:
++		capture: Dictionary = {}, maximum_assembly_resolution_j: float = -1.0, mass_proof:RefCounted=null) -> Dictionary:
+ 	if not is_finite(maximum_assembly_resolution_j) or (maximum_assembly_resolution_j < 0.0 and maximum_assembly_resolution_j != -1.0):
+ 		return _failure("invalid explicit assembly resolution ceiling")
+ 	var valid := _stage(stage)
+@@ -67,6 +67,7 @@
+ 		group_impulses = [], post_slip = PackedFloat64Array(), dissipation = 0.0}
+ 	var assembly := {}
+ 	var local_evidence:Dictionary={}
++	if mass_proof!=null:local_evidence.mass_proof=mass_proof
+ 	var full_mass := PackedFloat64Array()
+ 	var responses := PackedFloat64Array()
+ 	if rows > 0:
+--- before/physics/aircraft_ground_step.gd
++++ after/physics/aircraft_ground_step.gd
+@@ -56,7 +56,7 @@
+ static func advance(initial: PackedFloat64Array, time_s: float, dt: float,
+ 		derivative: Callable, first: PackedFloat64Array, evaluate: Callable,
+ 		certificate: Callable, options: Dictionary = {}, error_gate: Callable = Callable(),
+-		normal_loss_policy: Callable = Callable()) -> Dictionary:
++		normal_loss_policy: Callable = Callable(),mass_proof:RefCounted=null) -> Dictionary:
+ 	var settings := _settings(options)
+ 	if not settings.ok: return _operator_failure(settings,options)
+ 	if not _state(initial) or not is_finite(time_s) or time_s < 0.0 or not is_finite(dt) \
+@@ -76,7 +76,7 @@
+ 	var gate_identity := ""
+ 	for attempt in 5:
+ 		if count > settings.max_substeps: break
+-		var trial := _attempt(initial, time_s, dt, derivative, first, evaluate, certificate, start, count, settings,normal_loss_policy,policy_pin)
++		var trial := _attempt(initial, time_s, dt, derivative, first, evaluate, certificate, start, count, settings,normal_loss_policy,policy_pin,mass_proof)
+ 		if settings.operator_law!=LAW and not trial.ok: trial.law=settings.operator_law
+ 		if trial.ok:
+ 			had_admissible = true
+@@ -134,9 +134,9 @@
+ 
+ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
+ 		first: PackedFloat64Array, evaluate: Callable, certificate: Callable,
+-		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={}) -> Dictionary:
++		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={},mass_proof:RefCounted=null) -> Dictionary:
+ 	if settings.operator_law==TWO_SIDED_LAW:
+-		return _operator_failure(_attempt_two_sided(initial,time_s,dt,derivative,first,evaluate,certificate,start,count,settings,normal_loss_policy,policy_pin),settings)
++		return _operator_failure(_attempt_two_sided(initial,time_s,dt,derivative,first,evaluate,certificate,start,count,settings,normal_loss_policy,policy_pin,mass_proof),settings)
+ 	var state := initial.duplicate()
+ 	var sample := start
+ 	var h := dt / count
+@@ -219,7 +219,7 @@
+ 				return _failure("impulse time scaling underflow")
+ 		var applied := Impulse.apply(before_impulse.rotor_stage, before_impulse.mass_kg, velocity_cm,
+ 			before_impulse.jacobian, before_impulse.slip_bias, limits, before_impulse.groups, settings.qp_iterations,
+-			before_impulse.get("capture", {}), settings.maximum_assembly_resolution_j)
++			before_impulse.get("capture", {}), settings.maximum_assembly_resolution_j,mass_proof)
+ 		if not applied.ok: return _failure("simultaneous contact impulse refused: " + str(applied.get("reason", "invalid")), "traction_rejected")
+ 		if not _record_resolution(resolution_stats,applied): return _failure("assembly resolution diagnostic overflow")
+ 		var next := candidate.duplicate()
+@@ -293,7 +293,7 @@
+ 
+ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
+ 		_first: PackedFloat64Array, evaluate: Callable, certificate: Callable,
+-		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={}) -> Dictionary:
++		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={},mass_proof:RefCounted=null) -> Dictionary:
+ 	var state := initial.duplicate()
+ 	var sample := start
+ 	var h := dt / count
+@@ -320,7 +320,7 @@
+ 	for piece in count:
+ 		var at := time_s + piece * h
+ 		var before_energy := _energy(state, sample)
+-		var pre := _half_impulse(state, sample, at, 0.5 * h, evaluate, start, settings)
++		var pre := _half_impulse(state, sample, at, 0.5 * h, evaluate, start, settings,mass_proof)
+ 		if not pre.ok: return pre
+ 		var kicked: PackedFloat64Array = pre.state
+ 		var kicked_sample: Dictionary = pre.sample
+@@ -372,7 +372,7 @@
+ 			return _failure("normal/free RK interval failed: " + str(tracker.reason))
+ 		var after_flow := _sample(evaluate, candidate, at + h)
+ 		if not after_flow.ok or not _same_binding(start, after_flow): return _failure("controlled endpoint snapshot refused")
+-		var post := _half_impulse(candidate, after_flow, at + h, 0.5 * h, evaluate, start, settings)
++		var post := _half_impulse(candidate, after_flow, at + h, 0.5 * h, evaluate, start, settings,mass_proof)
+ 		if not post.ok: return post
+ 		var next: PackedFloat64Array = post.state
+ 		var accepted: Dictionary = post.sample
+@@ -441,14 +441,14 @@
+ 
+ 
+ static func _half_impulse(state: PackedFloat64Array, sample: Dictionary, at: float, half_h: float,
+-		evaluate: Callable, start: Dictionary, settings: Dictionary) -> Dictionary:
++		evaluate: Callable, start: Dictionary, settings: Dictionary,mass_proof:RefCounted=null) -> Dictionary:
+ 	var velocity_cm := M.add(state.slice(RB.VEL, RB.VEL + 3), M.cross(state.slice(RB.RATE, RB.RATE + 3), sample.cg_body_m))
+ 	var limits: PackedFloat64Array = sample.limit_rates.duplicate()
+ 	for i in limits.size():
+ 		limits[i] *= half_h
+ 		if sample.limit_rates[i] > 0.0 and limits[i] == 0.0: return _failure("half impulse scaling underflow")
+ 	var applied := Impulse.apply(sample.rotor_stage, sample.mass_kg, velocity_cm, sample.jacobian, sample.slip_bias,
+-		limits, sample.groups, settings.qp_iterations, sample.get("capture",{}), settings.maximum_assembly_resolution_j)
++		limits, sample.groups, settings.qp_iterations, sample.get("capture",{}), settings.maximum_assembly_resolution_j,mass_proof)
+ 	if not applied.ok: return _failure("half contact impulse refused: " + str(applied.get("reason", "invalid")), "traction_rejected")
+ 	var next := state.duplicate()
+ 	if not limits.is_empty():
+--- before/driver.gd
++++ after/driver.gd
+@@ -1,4 +1,5 @@
+ extends "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/owner.gd"
++const MassAR:=preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/physics/contact_assembly_resolution.gd")
+ const ProfileTiming:=preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/metrics.gd")
+ func _initialize()->void:
+ 	_fixture();_prepare_composition();_prepare_quality()
+@@ -17,11 +18,22 @@
+ 		lift_ratio=0.0;brake_start=100.0;_bind()
+ 	else:
+ 		raw=_read("ground_unloaded_gentle.bin" if which=="gentle" else "ground_unloaded_hard.bin")
++	var at_point:=_sample_policy(raw.state,raw.time_s)
++	var angular:PackedFloat64Array=at_point.rotor_stage.matrix
++	var w:int=6+at_point.rotor_stage.axial.size()
++	var mass:=PackedFloat64Array();mass.resize(w*w)
++	for i in 3:mass[i*w+i]=at_point.mass_kg
++	for i in w-3:
++		for j in w-3:mass[(i+3)*w+j+3]=angular[i*(w-3)+j]
++	var prep_started:=Time.get_ticks_usec()
++	var prepared_mass:=MassAR.prepare_mass(mass,w)
++	var prep_elapsed:=Time.get_ticks_usec()-prep_started
++	check("fixed mass proof prepares",prepared_mass.ok,str(prepared_mass))
+ 	ProfileTiming.clear()
+ 	var started:=Time.get_ticks_usec()
+-	var result:=Candidate.advance(raw.state,raw.time_s,raw.dt,_derivative,PackedFloat64Array(),_sample_policy,_certificate,raw.options,_gate,_policy if use_policy else Callable())
++	var result:=Candidate.advance(raw.state,raw.time_s,raw.dt,_derivative,PackedFloat64Array(),_sample_policy,_certificate,raw.options,_gate,_policy if use_policy else Callable(),prepared_mass.proof)
+ 	var elapsed:=Time.get_ticks_usec()-started
+-	var timings:={case=which,policy=use_policy,elapsed_us=elapsed,inclusive_us=ProfileTiming.totals.duplicate(),exclusive_us=ProfileTiming.exclusive.duplicate(),calls=ProfileTiming.counts.duplicate(),serialized_bytes=ProfileTiming.serial_bytes.duplicate(),ok=result.ok,status=result.get("status"),accepted_substeps=result.get("integration_receipt",{}).get("accepted_substeps"),reason=result.get("reason"),note="Diagnostic wrapper timings include overhead; no native or performance qualification"}
++	var timings:={mass_prepare_us=prep_elapsed,case=which,policy=use_policy,elapsed_us=elapsed,inclusive_us=ProfileTiming.totals.duplicate(),exclusive_us=ProfileTiming.exclusive.duplicate(),calls=ProfileTiming.counts.duplicate(),serialized_bytes=ProfileTiming.serial_bytes.duplicate(),ok=result.ok,status=result.get("status"),accepted_substeps=result.get("integration_receipt",{}).get("accepted_substeps"),reason=result.get("reason"),note="Diagnostic wrapper timings include overhead; no native or performance qualification"}
+ 	var suffix:=which+("-policy" if use_policy else "-default")
+ 	var f:=FileAccess.open("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/"+suffix+".result.bin",FileAccess.WRITE);f.store_buffer(var_to_bytes(result));f.close()
+ 	f=FileAccess.open("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/"+suffix+".timings.json",FileAccess.WRITE);f.store_string(JSON.stringify(timings,"\t",true,true));f.close()

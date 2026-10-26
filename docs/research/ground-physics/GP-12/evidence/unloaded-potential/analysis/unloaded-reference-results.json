@@ -1,0 +1,159 @@
+{
+	"outcomes": [
+		{
+			"actual_rk_samples": [
+				{
+					"duration": 0.0,
+					"omega": 0.00988280214224545,
+					"tail_gap": -0.0004966702871150447
+				},
+				{
+					"duration": 0.00026041666666666666,
+					"omega": 0.009882801177043833,
+					"tail_gap": -0.00031715885945758637
+				},
+				{
+					"duration": 0.0005208333333333333,
+					"omega": 0.009882800186199876,
+					"tail_gap": -0.00013831248724267137
+				},
+				{
+					"duration": 0.00078125,
+					"omega": 0.0098827991697136,
+					"tail_gap": 3.9868829516898074e-05
+				},
+				{
+					"duration": 0.0010416666666666667,
+					"omega": 0.009882798127585041,
+					"tail_gap": 0.00021738509080826418
+				},
+				{
+					"duration": 0.0013020833333333333,
+					"omega": 0.009882797059814222,
+					"tail_gap": 0.0003942362966186455
+				},
+				{
+					"duration": 0.0015625,
+					"omega": 0.009882795966401178,
+					"tail_gap": 0.0005704224469352051
+				},
+				{
+					"duration": 0.0018229166666666667,
+					"omega": 0.009882794847345937,
+					"tail_gap": 0.000745943541745106
+				},
+				{
+					"duration": 0.0020833333333333333,
+					"omega": 0.009882793702648529,
+					"tail_gap": 0.0009207995810355668
+				},
+				{
+					"duration": 0.00234375,
+					"omega": 0.009882792532308988,
+					"tail_gap": 0.0010949905647937228
+				},
+				{
+					"duration": 0.0026041666666666665,
+					"omega": 0.009882791336327346,
+					"tail_gap": 0.001268516493006716
+				},
+				{
+					"duration": 0.002864583333333333,
+					"omega": 0.009882790114703636,
+					"tail_gap": 0.0014413773656617723
+				},
+				{
+					"duration": 0.003125,
+					"omega": 0.009882788867437894,
+					"tail_gap": 0.0016135731827460476
+				},
+				{
+					"duration": 0.0033854166666666668,
+					"omega": 0.009882787594530151,
+					"tail_gap": 0.0017851039442467256
+				},
+				{
+					"duration": 0.0036458333333333334,
+					"omega": 0.009882786295980444,
+					"tail_gap": 0.0019559696501509974
+				},
+				{
+					"duration": 0.00390625,
+					"omega": 0.009882784971788808,
+					"tail_gap": 0.002126170300445991
+				},
+				{
+					"duration": 0.004166666666666667,
+					"omega": 0.00988278362195528,
+					"tail_gap": 0.002295705895118974
+				}
+			],
+			"bound": {
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869892,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752449,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.001967530857430788,
+						"gap_rate_lower": 0.6362913969996363,
+						"kappa_lower": 0.999944088045027,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0019637444797901,
+						"gap_rate_lower": 0.6362913969996363,
+						"kappa_lower": 0.999944088045027,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": false,
+						"gap_m": -0.0004966702871150447,
+						"gap_rate_lower": 0.6349487565778402,
+						"kappa_lower": 0.999944088045027,
+						"trial_force_per_compression_upper": -5173.3045350315915,
+						"xmax": 0.0004966702872219766
+					}
+				]
+			},
+			"input": "failure-98-3596a0b58e5e.bin",
+			"maximum_cm_ballistic_position_difference_m": 2.238542298307873e-16,
+			"maximum_cm_ballistic_velocity_difference_mps": 8.95090418282e-16,
+			"maximum_reduced_energy_times_two_difference": 2.168404344971009e-19
+		},
+		{
+			"bound": {
+				"ok": false,
+				"reason": "not empty initial impulse map"
+			},
+			"input": "failure-78-1633bdd0c6f1.bin"
+		}
+	]
+}

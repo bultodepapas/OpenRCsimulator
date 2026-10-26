@@ -231,3 +231,65 @@ static func _bounded(value: Variant, depth: int, budget: Dictionary) -> bool:
 
 static func _failure(reason: String) -> Dictionary:
 	return {ok = false, law = LAW, errors = PackedStringArray([reason]), events = []}
+
+## Project already committed component state/events into detached observer facts.
+## No normal/geometry evaluation. Validate binding once at attach and on sparse
+## transition batches; an owner should return its valid empty packet between events.
+static func accepted_observation(prepared: Dictionary, modes: PackedInt64Array,
+		losses: PackedFloat64Array, raw_events: Variant, context: Dictionary, generation_id: String) -> Dictionary:
+	var initial_clock: bool = Damage._keys(context, ["tick", "time_s", "dt"]) \
+		and typeof(context.tick) == TYPE_INT and context.tick == 0 \
+		and typeof(context.time_s) == TYPE_FLOAT and context.time_s == 0.0 \
+		and typeof(context.dt) == TYPE_FLOAT and is_finite(context.dt) and context.dt > 0.0
+	if not _valid(prepared) or (not Damage._clock(context) and not initial_clock) or not Damage._id(generation_id) \
+		or not Damage.validate_state(prepared.damage_profile, modes, losses, context.tick) \
+		or not raw_events is Array or raw_events.size() > prepared.damage_profile.components.size(): return {}
+	var records: Array[Dictionary] = []
+	var seen := {}
+	var keys := ["type", "event_id", "time_s", "tick", "generation_id", "component_id", "support_ids",
+		"law", "profile_identity", "qualification", "criterion", "normal_load_n", "normal_failure_force_n",
+		"transition_loss_j", "potential_before_j", "potential_after_j", "loss_provenance", "terminal", "continuation",
+		"response_law", "response_identity", "sampling"]
+	for raw: Variant in raw_events:
+		if context.tick == 0: return {}
+		if not Damage._keys(raw, keys): return {}
+		for key: String in ["type", "event_id", "generation_id", "component_id", "law", "profile_identity",
+			"qualification", "criterion", "loss_provenance", "continuation", "response_law", "response_identity", "sampling"]:
+			if typeof(raw[key]) != TYPE_STRING: return {}
+		if raw.type != "gear_failure" or raw.law != Damage.LAW or raw.response_law != LAW \
+			or raw.profile_identity != prepared.damage_profile.identity or raw.response_identity != prepared.identity \
+			or raw.generation_id != generation_id or raw.qualification != Damage.QUALIFICATION \
+			or raw.criterion != "declared_normal_capacity_exceeded" \
+			or raw.loss_provenance != "elastic_normal_stop_and_anchor_potential_before_minus_after_at_same_body_state" \
+			or raw.continuation != "authored_weaker_fixed_hub_compliance" \
+			or raw.sampling != "accepted_boundary_only_not_interval_peak" \
+			or typeof(raw.terminal) != TYPE_BOOL or raw.terminal or typeof(raw.tick) != TYPE_INT \
+			or raw.tick != context.tick or typeof(raw.time_s) != TYPE_FLOAT or raw.time_s != context.time_s \
+			or typeof(raw.support_ids) != TYPE_PACKED_STRING_ARRAY or seen.has(raw.component_id): return {}
+		var index := -1
+		for i in prepared.damage_profile.components.size():
+			if prepared.damage_profile.components[i].component_id == raw.component_id: index = i
+		if index < 0: return {}
+		var component: Dictionary = prepared.damage_profile.components[index]
+		if not component.strength_known or raw.support_ids != component.support_ids \
+			or modes[index * Damage.MODE_STRIDE] != Damage.FAILED_ATTACHED \
+			or modes[index * Damage.MODE_STRIDE + 1] != context.tick \
+			or raw.event_id != "gd1:" + Damage._digest([Damage.LAW, generation_id, component.component_id, context.tick]): return {}
+		for key: String in ["normal_load_n", "normal_failure_force_n", "transition_loss_j", "potential_before_j", "potential_after_j"]:
+			if typeof(raw[key]) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(raw[key])) or raw[key] < 0.0: return {}
+		if raw.normal_failure_force_n != component.normal_failure_force.value or raw.normal_load_n <= raw.normal_failure_force_n \
+			or raw.potential_after_j > raw.potential_before_j or raw.transition_loss_j != losses[index]: return {}
+		var scale: float = maxf(raw.potential_before_j, maxf(raw.potential_after_j, raw.transition_loss_j))
+		if absf(raw.potential_before_j - raw.potential_after_j - raw.transition_loss_j) > 16.0 * Damage.FLOAT_EPSILON * maxf(scale, 1e-300): return {}
+		seen[raw.component_id] = true
+		records.append({component_id = raw.component_id, contact_ids = Array(component.support_ids),
+			law_identity = LAW, accepted_tick = context.tick,
+			physical_evidence = {source_event_id = raw.event_id, source_generation_id = generation_id,
+				damage_profile_identity = prepared.damage_profile.identity, response_identity = prepared.identity,
+				qualification = Damage.QUALIFICATION, sampling = raw.sampling, criterion = raw.criterion, response_mode = "failed_attached"},
+			measurements = {normal_load_n = float(raw.normal_load_n), normal_failure_force_n = float(raw.normal_failure_force_n),
+				potential_before_j = float(raw.potential_before_j), potential_after_j = float(raw.potential_after_j),
+				transition_loss_j = float(raw.transition_loss_j), confirmation_tick = context.tick, sample_interval_s = context.dt}})
+	records.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.component_id < b.component_id)
+	return {schema = "openrc-aircraft-component-failure-observation", version = 1, tick = context.tick,
+		generation_id = generation_id, identity = prepared.identity, available = true, events = records, reason = ""}

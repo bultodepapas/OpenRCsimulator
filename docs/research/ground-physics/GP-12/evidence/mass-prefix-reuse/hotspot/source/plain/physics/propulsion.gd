@@ -1,0 +1,739 @@
+# Propulsion v0 (D5): glow engine rpm with a first-order lag, propeller thrust and torque from Ct(J), Cp(J).
+# 64-bit floats only (guarded). Data: AircraftData model.propulsion.
+# Optional, per aircraft (absent = the D5 behaviour, bit for bit):
+#  - shaft balance (G2 first slice, P51-06): rpm from J_rot·dω/dt = Q_engine(n, throttle) − Q_prop(J, n), so the
+#    propeller unloads with airspeed, windmills and brakes at idle, and spools up at a torque-limited rate;
+#  - thrust axis angles (down/right thrust): thrust, reaction torque and rotor momentum along the tilted shaft;
+#  - propeller normal force at a disc angle of attack (the "fin effect" and P-factor), see normal_force().
+# Not yet: fuel, engine stop/start in flight, sound physics — see ROADMAP G2–G4.
+extends RefCounted
+
+const M := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/physics/math3d.gd")
+const RB := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/physics/rigid_body.gd")
+const GlowProp := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/physics/glow/propeller.gd")
+const GlowOperating := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/physics/glow/operating_point.gd")
+const Turbine := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/physics/turbine.gd")
+const ElectricMotor := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/physics/electric_motor.gd")
+const ElectricSupply: Script = preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/physics/electric_supply.gd")
+const PackEcm: Script = preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/plain/physics/battery/pack_ecm.gd")
+## BAT-06: trim and equilibrium evaluate the rested pack at the ISA sea-level temperature.
+const PACK_TRIM_AMBIENT_K: float = 288.15
+
+## Below this, the engine produces nothing (stopped).
+const STOPPED_RPM := 1.0
+## EL1d-R1: electric propeller laws sample rigid-point velocity at the hub.
+const ELECTRIC_INFLOW_LAW := "electric-propeller-local-hub-inflow-v1"
+## Experimental stage Air key: complete local hub/intake relative velocity in body FRD.
+## It already includes omega × r and must not pass through a second point-velocity transform.
+const STAGE_PROPULSION_AIR_KEY := "propulsion_air_body"
+## Beyond the table, coefficients extrapolate linearly but never below these floors (windmilling).
+const CT_FLOOR := -0.1
+const CP_FLOOR := 0.0
+## Shaft balance: the rpm search bracket's top, as a multiple of the power curve's last rpm row.
+const SHAFT_RPM_CEILING := 1.6
+## Numerical torque-balance tolerance (N·m absolute, relative above 1 N·m); not a physical accuracy claim.
+const SHAFT_TORQUE_TOL := 1e-10
+const RHO_REFERENCE := 1.225 # reference calibration of the existing power curve
+## The electric root search is bounded numerically, not by its no-load Kv × V reference.
+const ELECTRIC_SEARCH_SAMPLES := 48
+const ELECTRIC_SEARCH_EXPANSIONS := 16
+const ELECTRIC_ROOT_TORQUE_TOL := 1e-10
+
+
+## Piecewise-linear table [J0, v0, J1, v1, …]. J < 0 (flying backwards) uses the J = 0 value;
+## beyond the last row, linear extrapolation from the last two rows, floored at `floor_value`.
+static func coefficient(table: PackedFloat64Array, J: float, floor_value: float) -> float:
+	var n := table.size() / 2
+	if J <= table[0]:
+		return table[1]
+	for i in range(1, n):
+		if J <= table[2 * i]:
+			var j0 := table[2 * i - 2]
+			var j1 := table[2 * i]
+			return lerpf(table[2 * i - 1], table[2 * i + 1], (J - j0) / (j1 - j0))
+	var ja := table[2 * n - 4]
+	var jb := table[2 * n - 2]
+	var slope := (table[2 * n - 1] - table[2 * n - 3]) / (jb - ja)
+	return maxf(floor_value, table[2 * n - 1] + slope * (J - jb))
+
+
+## Throttle (0…1) → target rpm between idle and the static maximum (D5 lag model).
+static func target_rpm(throttle: float, prop: Dictionary) -> float:
+	return prop.idle_rpm + clampf(throttle, 0.0, 1.0) * (prop.max_rpm - prop.idle_rpm)
+
+
+## Exact first-order lag over one step: independent of how the time is split into steps.
+static func rpm_step(rpm: float, throttle: float, dt: float, prop: Dictionary) -> float:
+	var target := target_rpm(throttle, prop)
+	return target + (rpm - target) * M.exp_(-dt / prop.lag)
+
+
+## True when the aircraft declares a shaft model (rpm from the torque balance instead of the throttle lag).
+static func has_shaft(prop: Dictionary) -> bool:
+	return is_glow(prop) or not prop.get("shaft", {}).is_empty()
+
+
+static func is_glow(prop: Dictionary) -> bool:
+	return prop.has("glow")
+
+
+## Explicit normalized source identity. Missing kind remains the legacy glow source.
+static func source_kind(prop: Dictionary) -> String:
+	var kind: Variant = prop.get("kind", "glow_prop")
+	if kind == "electric_prop" or kind == "turbine" or kind == "glow_prop":
+		return str(kind)
+	return "unsupported"
+
+
+static func is_electric(prop: Dictionary) -> bool:
+	return source_kind(prop) == "electric_prop"
+
+
+## Continuous rotor state is a capability, independent of a combustion power-curve layout.
+static func has_rotor_dynamics(prop: Dictionary) -> bool:
+	return is_electric(prop) or (not Turbine.is_turbine(prop) and has_shaft(prop))
+
+
+## Motor and ideal ESC output for one trial/accepted RPM and command.
+## The returned fields include shaft_torque_nm, motor_current_a, battery_current_a,
+## command_voltage_v, motor_voltage_v, bus_power_w and loss powers for session telemetry.
+static func has_dynamic_battery(prop: Dictionary) -> bool:
+	var battery: Variant = prop.get("battery")
+	return is_electric(prop) and battery is Dictionary and battery.get("kind") in ["ocv_resistance", "pack_ecm"]
+
+
+## BAT-06: the Thevenin pack with RC, temperature and ESC-supervisor states in the session's battery block.
+static func has_pack_ecm(prop: Dictionary) -> bool:
+	var battery: Variant = prop.get("battery")
+	return is_electric(prop) and battery is Dictionary and battery.get("kind") == "pack_ecm"
+
+
+## Stage or endpoint source state for a pack_ecm battery block (spec §4). `ambient_k` and `cooling_speed_mps`
+## come from the stage's atmosphere and air data; trim callers use the rested initial block instead.
+static func electric_pack_state(rpm: float, duty: float, prop: Dictionary, enabled: bool, block: PackedFloat64Array,
+		ambient_k: float, cooling_speed_mps: float, available_at_zero: bool = false, dynamics_only: bool = false) -> Dictionary:
+	if not has_pack_ecm(prop):
+		return {ok = false, message = "source is not a pack_ecm electric_prop"}
+	var point: Dictionary = PackEcm.evaluate(rpm, duty, enabled, block, prop.battery, prop.motor, ambient_k,
+		cooling_speed_mps, available_at_zero, dynamics_only)
+	if point.get("ok", false) and not dynamics_only:
+		point.source_kind = "electric_prop"
+		point.enabled = enabled
+	return point
+
+
+## Rested initial pack at the ISA reference temperature: the trim and equilibrium operating point.
+static func pack_trim_block(prop: Dictionary) -> PackedFloat64Array:
+	var made: Dictionary = PackEcm.initial_block(prop.battery, prop.motor, prop.esc.low_voltage_cutoff, PACK_TRIM_AMBIENT_K)
+	return made.block if made.get("ok", false) else PackedFloat64Array()
+
+
+## SOC omitted: initial-charge operating point for trim only. Flight passes its stage SOC.
+## available_at_zero is the connected left limit used only during exhaustion localization.
+static func electric_source_state(rpm: float, duty: float, prop: Dictionary, enabled: bool = true,
+		soc: Variant = null, available_at_zero: bool = false, dynamics_only: bool = false) -> Dictionary:
+	if not is_electric(prop):
+		return {ok = false, message = "source is not electric_prop"}
+	var motor_value: Variant = prop.get("motor", {})
+	var battery_value: Variant = prop.get("battery", {})
+	var esc_value: Variant = prop.get("esc", {})
+	if typeof(motor_value) != TYPE_DICTIONARY or typeof(battery_value) != TYPE_DICTIONARY \
+			or typeof(esc_value) != TYPE_DICTIONARY:
+		return {ok = false, message = "electric source needs motor, battery and esc dictionaries"}
+	var motor: Dictionary = motor_value
+	var battery: Dictionary = battery_value
+	var esc: Dictionary = esc_value
+	if battery.get("kind") not in ["fixed_voltage", "ocv_resistance", "pack_ecm"] or esc.get("kind") != "ideal_motoring" \
+			or esc.get("command_mapping") != "identity":
+		return {ok = false, message = "unsupported electric battery or ESC mode"}
+	if battery.get("kind") == "pack_ecm":
+		# Without a session block (trim, equilibrium, reference voltage) use the rested initial pack.
+		var block: PackedFloat64Array = pack_trim_block(prop)
+		if block.is_empty():
+			return {ok = false, message = "pack_ecm initial block could not be built"}
+		return electric_pack_state(rpm, duty, prop, enabled, block, PACK_TRIM_AMBIENT_K, 0.0, available_at_zero, dynamics_only)
+	if battery.get("kind") == "ocv_resistance":
+		var pack: Dictionary = {}
+		for key: String in ["ocv_points", "capacity_ah", "resistance_ohm", "auxiliary_current_a"]:
+			pack[key] = battery.get(key)
+		var charge_fraction: Variant = battery.get("initial_soc") if soc == null else soc
+		if dynamics_only:
+			return ElectricSupply.evaluate_dynamics(rpm, duty, charge_fraction, pack, motor, enabled, available_at_zero)
+		var point: Dictionary = ElectricSupply.evaluate_available(rpm, duty, charge_fraction, pack, motor, enabled) if available_at_zero else ElectricSupply.evaluate(rpm, duty, charge_fraction, pack, motor, enabled)
+		if not point.get("ok", false):
+			return point
+		var supplied: Dictionary = point.source.duplicate()
+		supplied.merge(point, true)
+		supplied.source_kind = "electric_prop"
+		supplied.enabled = enabled
+		return supplied
+	var voltage_value: Variant = battery.get("voltage_v")
+	if typeof(voltage_value) not in [TYPE_INT, TYPE_FLOAT]:
+		return {ok = false, message = "fixed_voltage battery needs numeric voltage_v"}
+	var state: Dictionary = ElectricMotor.evaluate(rpm, duty, float(voltage_value), motor, enabled)
+	state["bus_voltage_v"] = float(voltage_value)
+	if not state.get("ok", false):
+		state["source_kind"] = "electric_prop"
+		state["enabled"] = enabled
+		return state
+	state["source_kind"] = "electric_prop"
+	state["enabled"] = enabled
+	return state
+
+
+## Torque-balance equilibrium for an electric source and the shared Ct/Cp propeller.
+## Kv × V sets only the first search scale. The finite geometric search expands above it,
+## allowing airflow-driven RPM above electrical no-load speed without imposing a governor.
+## A root is accepted only when its residual is small and both local one-sided slopes are restoring.
+static func steady_operating_point(duty: float, u: float, prop: Dictionary, rho: float) -> Dictionary:
+	if not is_electric(prop):
+		return _electric_operating_failure("invalid", "source is not electric_prop", NAN, NAN, 0)
+	if not is_finite(duty) or duty < 0.0 or duty > 1.0:
+		return _electric_operating_failure("invalid", "electric duty must be finite and in [0,1]", NAN, NAN, 0)
+	if not is_finite(u) or not is_finite(rho) or rho <= 0.0:
+		return _electric_operating_failure("invalid", "electric equilibrium needs finite axial speed and positive density", NAN, NAN, 0)
+	var diameter_value: Variant = prop.get("diameter")
+	if typeof(diameter_value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(diameter_value)) \
+			or float(diameter_value) <= 0.0 or typeof(prop.get("cp")) != TYPE_PACKED_FLOAT64_ARRAY:
+		return _electric_operating_failure("invalid", "electric equilibrium needs finite diameter and Cp table", NAN, NAN, 0)
+	var motor_value: Variant = prop.get("motor", {})
+	var battery_value: Variant = prop.get("battery", {})
+	if typeof(motor_value) != TYPE_DICTIONARY or typeof(battery_value) != TYPE_DICTIONARY:
+		return _electric_operating_failure("invalid", "electric equilibrium needs motor and battery dictionaries", NAN, NAN, 0)
+	var motor: Dictionary = motor_value
+	var kv_value: Variant = motor.get("kv_rpm_per_volt")
+	var equilibrium_context: Dictionary = {uses_pack_ecm = has_pack_ecm(prop)}
+	var voltage_value: Variant = _electric_reference_voltage(prop, equilibrium_context)
+	if typeof(kv_value) not in [TYPE_INT, TYPE_FLOAT] or typeof(voltage_value) not in [TYPE_INT, TYPE_FLOAT]:
+		return _electric_operating_failure("invalid", "electric equilibrium needs numeric Kv and source voltage", NAN, NAN, 0)
+	var reference_rpm: float = float(kv_value) * float(voltage_value)
+	if not is_finite(reference_rpm) or reference_rpm <= 0.0:
+		return _electric_operating_failure("invalid", "electric no-load reference must be finite and positive", NAN, NAN, 0)
+	var lower_rpm: float = STOPPED_RPM
+	var lower_residual: float = _electric_net_torque(lower_rpm, duty, u, prop, rho, equilibrium_context)
+	if not is_finite(lower_residual):
+		return _electric_operating_failure("invalid", "electric source or propeller evaluation failed at stopped cutoff", lower_rpm, NAN, 0)
+	var cutoff_tolerance: float = _electric_torque_tolerance(lower_rpm, duty, u, prop, rho, equilibrium_context)
+	var stopped_cutoff_root: bool = is_finite(cutoff_tolerance) and absf(lower_residual) <= cutoff_tolerance
+	var unstable_count: int = 0
+	var last_upper_rpm: float = lower_rpm
+	for expansion in ELECTRIC_SEARCH_EXPANSIONS:
+		var upper_rpm: float = reference_rpm * M.pow_(2.0, float(expansion))
+		if not is_finite(upper_rpm) or upper_rpm <= lower_rpm:
+			return _electric_operating_failure("unbracketed", "electric RPM search exceeded its finite numerical bound", lower_rpm, last_upper_rpm, unstable_count)
+		last_upper_rpm = upper_rpm
+		var points: Array[float] = _electric_search_points(lower_rpm, upper_rpm, u, prop, duty, equilibrium_context)
+		var previous_rpm: float = points[0]
+		var previous_residual: float = _electric_net_torque(previous_rpm, duty, u, prop, rho, equilibrium_context)
+		if previous_rpm == lower_rpm and stopped_cutoff_root:
+			previous_residual = 0.0
+		if not is_finite(previous_residual):
+			return _electric_operating_failure("invalid", "electric torque residual became nonfinite", lower_rpm, upper_rpm, unstable_count)
+		for point_index in range(1, points.size()):
+			var rpm: float = points[point_index]
+			var residual: float = _electric_net_torque(rpm, duty, u, prop, rho, equilibrium_context)
+			if not is_finite(residual):
+				return _electric_operating_failure("invalid", "electric torque residual became nonfinite", lower_rpm, upper_rpm, unstable_count)
+			if rpm > lower_rpm and residual == 0.0:
+				var exact: Dictionary = _electric_root_result(rpm, duty, u, prop, rho, upper_rpm, 0, equilibrium_context)
+				if exact.ok:
+					return exact
+				if exact.status == "unstable":
+					unstable_count += 1
+			elif _opposite_signs(previous_residual, residual):
+				var bracket: Dictionary = _bisect_electric_root(previous_rpm, rpm, previous_residual, duty, u, prop, rho, upper_rpm, equilibrium_context)
+				if bracket.ok:
+					return bracket
+				if bracket.status == "unstable":
+					unstable_count += 1
+			previous_rpm = rpm
+			previous_residual = residual
+	if unstable_count > 0:
+		return _electric_operating_failure("unstable", "electric torque balance has no stable root in the bounded search; an unstable root was found", lower_rpm, last_upper_rpm, unstable_count)
+	if stopped_cutoff_root:
+		return _electric_operating_failure("stopped_cutoff", "equilibrium at the stopped-prop cutoff is not a positive-RPM operating point", lower_rpm, last_upper_rpm, 0)
+	return _electric_operating_failure("unbracketed", "no stable electric torque equilibrium in the bounded RPM search", lower_rpm, last_upper_rpm, 0)
+
+
+static func _electric_operating_failure(status: String, message: String, lower_rpm: float, upper_rpm: float, unstable_roots: int) -> Dictionary:
+	return {
+		ok = false, status = status, message = message, rpm = NAN, residual = NAN,
+		stability_slope = NAN, lower_rpm = lower_rpm, upper_rpm = upper_rpm,
+		unstable_roots = unstable_roots,
+	}
+
+
+## The rested pack is immutable throughout one steady equilibrium search. Retain its block locally
+## so every RPM probe uses the same initial condition without rebuilding it from the source dictionaries.
+static func _electric_equilibrium_source_state(rpm: float, duty: float, prop: Dictionary,
+		equilibrium_context: Dictionary, dynamics_only: bool = false) -> Dictionary:
+	if not equilibrium_context.get("uses_pack_ecm", false):
+		return electric_source_state(rpm, duty, prop)
+	var motor_value: Variant = prop.get("motor", {})
+	var battery_value: Variant = prop.get("battery", {})
+	var esc_value: Variant = prop.get("esc", {})
+	if typeof(motor_value) != TYPE_DICTIONARY or typeof(battery_value) != TYPE_DICTIONARY \
+			or typeof(esc_value) != TYPE_DICTIONARY:
+		return {ok = false, message = "electric source needs motor, battery and esc dictionaries"}
+	var battery: Dictionary = battery_value
+	var esc: Dictionary = esc_value
+	if battery.get("kind") not in ["fixed_voltage", "ocv_resistance", "pack_ecm"] or esc.get("kind") != "ideal_motoring" \
+			or esc.get("command_mapping") != "identity":
+		return {ok = false, message = "unsupported electric battery or ESC mode"}
+	var block: PackedFloat64Array = equilibrium_context.get("pack_trim_block", PackedFloat64Array())
+	if block.is_empty():
+		block = pack_trim_block(prop)
+		if block.is_empty():
+			return {ok = false, message = "pack_ecm initial block could not be built"}
+		equilibrium_context["pack_trim_block"] = block
+	return electric_pack_state(rpm, duty, prop, true, block, PACK_TRIM_AMBIENT_K, 0.0, false, dynamics_only)
+
+
+static func _electric_search_points(lower_rpm: float, upper_rpm: float, u: float, prop: Dictionary,
+		duty: float, equilibrium_context: Dictionary) -> Array[float]:
+	var points: Array[float] = []
+	var log_span: float = M.log_(upper_rpm / lower_rpm)
+	for i in range(ELECTRIC_SEARCH_SAMPLES + 1):
+		var fraction: float = float(i) / float(ELECTRIC_SEARCH_SAMPLES)
+		points.append(lower_rpm * M.exp_(log_span * fraction))
+	var motor: Dictionary = prop.get("motor", {})
+	var current_cutoff_rpm: float = duty * float(_electric_reference_voltage(prop, equilibrium_context)) * float(motor.get("kv_rpm_per_volt", 0.0))
+	if current_cutoff_rpm > lower_rpm and current_cutoff_rpm < upper_rpm:
+		points.append(current_cutoff_rpm)
+	var diameter: float = float(prop.get("diameter", 0.0))
+	var cp: PackedFloat64Array = prop.get("cp", PackedFloat64Array())
+	if u > 0.0 and diameter > 0.0:
+		for table_index in range(0, cp.size(), 2):
+			var J: float = cp[table_index]
+			if J > 0.0:
+				var knot_rpm: float = 60.0 * u / (J * diameter)
+				if is_finite(knot_rpm) and knot_rpm > lower_rpm and knot_rpm < upper_rpm:
+					points.append(knot_rpm)
+	points.sort()
+	var unique: Array[float] = []
+	for point in points:
+		if unique.is_empty() or absf(point - unique[unique.size() - 1]) > maxf(1e-9, absf(point) * 1e-12):
+			unique.append(point)
+	return unique
+
+
+static func _electric_reference_voltage(prop: Dictionary, equilibrium_context: Dictionary) -> Variant:
+	if not has_dynamic_battery(prop):
+		return prop.get("battery", {}).get("voltage_v")
+	# Zero motor duty includes auxiliary sag, which sets the no-current cutoff.
+	var point: Dictionary = _electric_equilibrium_source_state(0.0, 0.0, prop, equilibrium_context)
+	return point.bus_voltage_v if point.get("ok", false) else NAN
+
+
+## Bisection and root validation consume both values at the same point. Evaluate the source and
+## propeller once, preserving the residual subtraction and tolerance arithmetic without a probe cache.
+static func _electric_residual_and_tolerance(rpm: float, duty: float, u: float, prop: Dictionary,
+		rho: float, equilibrium_context: Dictionary) -> PackedFloat64Array:
+	var source: Dictionary = _electric_equilibrium_source_state(rpm, duty, prop, equilibrium_context, true)
+	if not source.get("ok", false):
+		return PackedFloat64Array([NAN, NAN])
+	var load: float = prop_torque(rpm, u, prop, rho)
+	var residual: float = float(source.shaft_torque_nm) - load
+	var tolerance: float = ELECTRIC_ROOT_TORQUE_TOL * maxf(1.0, maxf(absf(float(source.shaft_torque_nm)), absf(load)))
+	return PackedFloat64Array([residual if is_finite(residual) else NAN, tolerance])
+
+
+static func _electric_net_torque(rpm: float, duty: float, u: float, prop: Dictionary, rho: float, equilibrium_context: Dictionary) -> float:
+	var source: Dictionary = _electric_equilibrium_source_state(rpm, duty, prop, equilibrium_context, true)
+	if not source.get("ok", false):
+		return NAN
+	var load: float = prop_torque(rpm, u, prop, rho)
+	var residual: float = float(source.shaft_torque_nm) - load
+	return residual if is_finite(residual) else NAN
+
+
+static func _opposite_signs(a: float, b: float) -> bool:
+	return (a > 0.0 and b < 0.0) or (a < 0.0 and b > 0.0)
+
+
+static func _bisect_electric_root(low_rpm: float, high_rpm: float, low_residual: float, duty: float,
+		u: float, prop: Dictionary, rho: float, search_upper_rpm: float, equilibrium_context: Dictionary) -> Dictionary:
+	var lo: float = low_rpm
+	var hi: float = high_rpm
+	var flo: float = low_residual
+	var root: float = 0.5 * (lo + hi)
+	var residual: float = NAN
+	for iteration in range(80):
+		root = 0.5 * (lo + hi)
+		var probe: PackedFloat64Array = _electric_residual_and_tolerance(root, duty, u, prop, rho, equilibrium_context)
+		residual = probe[0]
+		if not is_finite(residual):
+			return _electric_operating_failure("invalid", "electric torque residual became nonfinite during bisection", STOPPED_RPM, search_upper_rpm, 0)
+		if absf(residual) <= probe[1]:
+			return _electric_root_result(root, duty, u, prop, rho, search_upper_rpm, iteration + 1, equilibrium_context)
+		if (flo > 0.0 and residual > 0.0) or (flo < 0.0 and residual < 0.0):
+			lo = root
+			flo = residual
+		else:
+			hi = root
+		if hi - lo <= maxf(1e-10, absf(root) * 1e-13):
+			break
+	return _electric_root_result(root, duty, u, prop, rho, search_upper_rpm, 80, equilibrium_context)
+
+
+static func _electric_root_result(rpm: float, duty: float, u: float, prop: Dictionary, rho: float,
+		search_upper_rpm: float, iterations: int, equilibrium_context: Dictionary) -> Dictionary:
+	var probe: PackedFloat64Array = _electric_residual_and_tolerance(rpm, duty, u, prop, rho, equilibrium_context)
+	var residual: float = probe[0]
+	var tolerance: float = probe[1]
+	var slopes: PackedFloat64Array = _electric_one_sided_slopes(rpm, duty, u, prop, rho, equilibrium_context)
+	if not is_finite(residual) or absf(residual) > tolerance or slopes.size() != 2 \
+			or not is_finite(slopes[0]) or not is_finite(slopes[1]):
+		return _electric_operating_failure("invalid", "electric root failed residual or local-slope validation", STOPPED_RPM, search_upper_rpm, 0)
+	var stable: bool = slopes[0] < 0.0 and slopes[1] < 0.0
+	if not stable:
+		var failed: Dictionary = _electric_operating_failure("unstable", "electric torque root is not restoring on both sides", STOPPED_RPM, search_upper_rpm, 1)
+		failed.rpm = rpm
+		failed.residual = residual
+		failed.stability_slope = maxf(slopes[0], slopes[1])
+		return failed
+	return {
+		ok = true, status = "equilibrium", message = "stable electric torque equilibrium",
+		rpm = rpm, residual = residual, stability_slope = maxf(slopes[0], slopes[1]),
+		lower_rpm = STOPPED_RPM, upper_rpm = search_upper_rpm, unstable_roots = 0,
+		iterations = iterations,
+	}
+
+
+static func _electric_one_sided_slopes(rpm: float, duty: float, u: float, prop: Dictionary,
+		rho: float, equilibrium_context: Dictionary) -> PackedFloat64Array:
+	var h: float = maxf(1e-5, absf(rpm) * 1e-7)
+	var low: float = maxf(STOPPED_RPM, rpm - h)
+	var high: float = rpm + h
+	if low >= rpm or high <= rpm:
+		return PackedFloat64Array()
+	var at_root: float = _electric_net_torque(rpm, duty, u, prop, rho, equilibrium_context)
+	var low_value: float = _electric_net_torque(low, duty, u, prop, rho, equilibrium_context)
+	var high_value: float = _electric_net_torque(high, duty, u, prop, rho, equilibrium_context)
+	if not is_finite(at_root) or not is_finite(low_value) or not is_finite(high_value):
+		return PackedFloat64Array()
+	var rpm_per_omega: float = 60.0 / TAU
+	var left_slope: float = (at_root - low_value) / ((rpm - low) / rpm_per_omega)
+	var right_slope: float = (high_value - at_root) / ((high - rpm) / rpm_per_omega)
+	return PackedFloat64Array([left_slope, right_slope])
+
+
+static func _electric_torque_tolerance(rpm: float, duty: float, u: float, prop: Dictionary, rho: float, equilibrium_context: Dictionary) -> float:
+	var source: Dictionary = _electric_equilibrium_source_state(rpm, duty, prop, equilibrium_context, true)
+	if not source.get("ok", false):
+		return NAN
+	var load: float = prop_torque(rpm, u, prop, rho)
+	return ELECTRIC_ROOT_TORQUE_TOL * maxf(1.0, maxf(absf(float(source.shaft_torque_nm)), absf(load)))
+
+
+## Cp floor: 0 for the D5 tables (no windmilling torque), the table's own minimum when it tabulates windmilling.
+static func _cp_floor(prop: Dictionary) -> float:
+	return minf(CP_FLOOR, float(prop.get("cp_min", 0.0)))
+
+
+## Propeller shaft torque (N·m, positive = absorbs engine power) at rpm and axial airspeed u (m/s).
+static func prop_torque(rpm: float, u: float, prop: Dictionary, rho: float) -> float:
+	if is_glow(prop):
+		var point: Dictionary = GlowProp.evaluate(rpm, u, rho, prop.glow.propeller)
+		return point.torque_nm if point.ok else NAN
+	if rpm < STOPPED_RPM:
+		return 0.0
+	var D: float = prop.diameter
+	var n := rpm / 60.0
+	var J := maxf(u, 0.0) / (n * D)
+	return coefficient(prop.cp, J, _cp_floor(prop)) * rho * n * n * M.pow_(D, 5) / TAU
+
+
+## Engine output torque (N·m) at rpm for throttle 0…1 (shaft model). The throttle admits indicated power
+## P_adm = P_idle + θ·(P_peak_ind − P_idle) (air flow through the carburettor); the engine delivers
+## Q = min(Q_full_ind(n), P_adm/ω) − Q_friction(n). Q_full_ind is the full-throttle brake torque curve plus friction.
+static func engine_torque(rpm: float, throttle: float, prop: Dictionary, charge_ratio: float = 1.0) -> float:
+	if is_glow(prop):
+		var point: Dictionary = GlowOperating.source(prop, rpm, throttle, RHO_REFERENCE * charge_ratio)
+		return point.shaft_torque_nm if point.ok else NAN
+	if is_electric(prop):
+		var source: Dictionary = electric_source_state(rpm, throttle, prop)
+		return float(source.shaft_torque_nm) if source.get("ok", false) else NAN
+	if not is_finite(charge_ratio) or charge_ratio < 0.0:
+		return NAN
+	var sh: Dictionary = prop.shaft
+	var omega := maxf(rpm, 0.0) * TAU / 60.0
+	var friction: float = sh.friction[0] + sh.friction[1] * rpm / 1000.0
+	var curve: PackedFloat64Array = sh.power_curve # [rpm0, W0, rpm1, W1, …], brake power at full throttle
+	var brake_full: float
+	if rpm <= curve[0]:
+		brake_full = curve[1] / (curve[0] * TAU / 60.0) # constant torque below the first row
+	else:
+		brake_full = coefficient(curve, rpm, 0.0) / omega
+	var admitted: float = sh.idle_power + clampf(throttle, 0.0, 1.0) * (sh.peak_indicated_power - sh.idle_power)
+	var indicated := minf(brake_full + friction, admitted / maxf(omega, 1.0))
+	# Estimated naturally aspirated correction: oxygen-bearing dry-air charge scales indicated torque, not friction.
+	if charge_ratio != 1.0:
+		indicated *= charge_ratio
+	return indicated - friction
+
+
+## Shaft model step: J_rot·dω/dt = Q_engine − Q_prop, explicit over one tick (τ ≈ 0.2 s ≫ dt). rpm ≥ 0.
+static func shaft_step(rpm: float, throttle: float, u: float, dt: float, prop: Dictionary, rho: float, engine_charge_ratio: float = 1.0) -> float:
+	var ratio: float = engine_charge_ratio
+	var net := engine_torque(rpm, throttle, prop, ratio) - prop_torque(rpm, u, prop, rho)
+	return maxf(0.0, rpm + net / float(prop.rotor_inertia) * dt * 60.0 / TAU)
+
+
+## G2a: continuous shaft derivative (rpm/s), evaluated with stage-local RPM and axial airspeed.
+## Engine-off retains windmilling and mechanical friction. The legacy source holds below its cutoff;
+## electric relative spin reaches zero through the session stop event, never through this derivative clamp.
+static func shaft_rate(rpm: float, throttle: float, u: float, prop: Dictionary, rho: float,
+		engine_charge_ratio: float = 1.0, running: bool = true) -> float:
+	if not is_finite(rpm) or rpm < 0.0 or not is_finite(throttle) or not is_finite(u) \
+			or not is_finite(rho) or rho <= 0.0 or not is_finite(engine_charge_ratio) or engine_charge_ratio < 0.0 \
+			or not has_rotor_dynamics(prop) or not is_finite(float(prop.rotor_inertia)) or prop.rotor_inertia <= 0.0:
+		return NAN
+	var engine: float
+	if is_electric(prop):
+		var source: Dictionary = electric_source_state(rpm, throttle, prop, running)
+		if not source.get("ok", false):
+			return NAN
+		engine = float(source.shaft_torque_nm)
+	else:
+		engine = engine_torque(rpm, throttle, prop, engine_charge_ratio) if running else (
+			-float(prop.shaft.friction[0]) - float(prop.shaft.friction[1]) * rpm / 1000.0)
+	var net: float = engine - prop_torque(rpm, u, prop, rho)
+	if not is_electric(prop) and rpm <= STOPPED_RPM and net < 0.0:
+		return 0.0
+	return net / float(prop.rotor_inertia) * 60.0 / TAU
+
+
+## Steady rpm for a throttle at axial airspeed u: the lag model's target, or the shaft model's torque balance
+## Bisection requires positive-to-negative net torque across the supported bracket. Returns NAN if no
+## finite equilibrium is established there; callers must refuse that start, not use a bracket endpoint.
+## Assumes a structurally valid loader model. Does not establish root uniqueness or measured engine validity.
+static func steady_rpm(throttle: float, u: float, prop: Dictionary, rho: float, engine_charge_ratio: float = 1.0) -> float:
+	if is_glow(prop):
+		var point: Dictionary = GlowOperating.solve(prop, throttle, u, rho, RHO_REFERENCE * engine_charge_ratio)
+		return point.rpm if point.ok else NAN
+	if is_electric(prop):
+		var operating_point: Dictionary = steady_operating_point(throttle, u, prop, rho)
+		return float(operating_point.rpm) if operating_point.get("ok", false) else NAN
+	if Turbine.is_turbine(prop): # AV-05
+		return Turbine.steady_rpm(throttle, prop)
+	if not has_shaft(prop):
+		return target_rpm(throttle, prop)
+	if not is_finite(throttle) or not is_finite(u) or not is_finite(rho) or rho < 0.0:
+		return NAN
+	var ratio: float = engine_charge_ratio
+	if not is_finite(ratio) or ratio < 0.0:
+		return NAN
+	var curve: PackedFloat64Array = prop.shaft.power_curve
+	var lo := STOPPED_RPM
+	var hi := curve[curve.size() - 2] * SHAFT_RPM_CEILING
+	if not is_finite(hi) or hi <= lo:
+		return NAN
+	var low_torque := _shaft_net_torque(lo, throttle, u, prop, rho, ratio)
+	var high_torque := _shaft_net_torque(hi, throttle, u, prop, rho, ratio)
+	if not is_finite(low_torque) or not is_finite(high_torque) or low_torque < 0.0 or high_torque > 0.0:
+		return NAN
+	if low_torque == 0.0:
+		return lo
+	if high_torque == 0.0:
+		return hi
+	for _i in 80:
+		var mid := 0.5 * (lo + hi)
+		var net := _shaft_net_torque(mid, throttle, u, prop, rho, ratio)
+		if not is_finite(net):
+			return NAN
+		if net > 0.0:
+			lo = mid
+		else:
+			hi = mid
+	var rpm := 0.5 * (lo + hi)
+	var engine := engine_torque(rpm, throttle, prop, ratio)
+	var torque_load := prop_torque(rpm, u, prop, rho)
+	var residual := engine - torque_load
+	if not is_finite(engine) or not is_finite(torque_load) or not is_finite(residual):
+		return NAN
+	if absf(residual) > SHAFT_TORQUE_TOL * maxf(1.0, maxf(absf(engine), absf(torque_load))):
+		return NAN
+	return rpm
+
+
+static func _shaft_net_torque(rpm: float, throttle: float, u: float, prop: Dictionary, rho: float, ratio: float) -> float:
+	var engine := engine_torque(rpm, throttle, prop, ratio)
+	var torque_load := prop_torque(rpm, u, prop, rho)
+	return engine - torque_load if is_finite(engine) and is_finite(torque_load) else NAN
+
+
+## Unit shaft axis in body FRD: +x tilted down (down thrust: +z) and right (right thrust: +y). [1, 0, 0] by default.
+static func axis(prop: Dictionary) -> PackedFloat64Array:
+	return prop.get("axis", PackedFloat64Array([1.0, 0.0, 0.0]))
+
+
+## Velocity at the propeller hub relative to locally uniform air, in FRD axes.
+## offset uses the aircraft-data convention [aft, right, up] from the fixed datum.
+static func hub_air_velocity(body: PackedFloat64Array, datum_air: PackedFloat64Array, offset: PackedFloat64Array) -> PackedFloat64Array:
+	var x: float=-offset[0]
+	var y: float=offset[1]
+	var z: float=-offset[2]
+	var p: float=body[RB.RATE]
+	var q: float=body[RB.RATE+1]
+	var r: float=body[RB.RATE+2]
+	return PackedFloat64Array([datum_air[0]+q*z-r*y,datum_air[1]+r*x-p*z,datum_air[2]+p*y-q*x])
+
+
+## Resolve one stage's propulsion inflow. The explicit experimental field is a complete local velocity at the hub/intake:
+## datum air-relative velocity + omega × r + the sampler's ambient spatial delta, in body FRD. It is used as-is, even
+## when the sampled field is uniform; never add rotation to it again or toggle its use by gradient magnitude.
+## With no explicit field, preserve the existing Dynamics fallback exactly: turbine intake, glow/electric hub, or datum.
+static func stage_air_velocity(state: PackedFloat64Array, air: Dictionary, prop: Dictionary) -> Dictionary:
+	if air.has(STAGE_PROPULSION_AIR_KEY):
+		var explicit_value: Variant = air[STAGE_PROPULSION_AIR_KEY]
+		if typeof(explicit_value) != TYPE_PACKED_FLOAT64_ARRAY or explicit_value.size() != 3:
+			return {ok = false, message = STAGE_PROPULSION_AIR_KEY + " must be a three-component PackedFloat64Array"}
+		var explicit_air: PackedFloat64Array = explicit_value
+		for component: float in explicit_air:
+			if not is_finite(component):
+				return {ok = false, message = STAGE_PROPULSION_AIR_KEY + " must contain finite components"}
+		return {ok = true, velocity_body = explicit_air.duplicate()}
+
+	var datum_value: Variant = air.get("v_air", null)
+	if typeof(datum_value) != TYPE_PACKED_FLOAT64_ARRAY or datum_value.size() != 3:
+		return {ok = false, message = "stage Air.v_air must be a three-component PackedFloat64Array"}
+	var datum_air: PackedFloat64Array = datum_value
+	for component: float in datum_air:
+		if not is_finite(component):
+			return {ok = false, message = "stage Air.v_air must contain finite components"}
+	var velocity: PackedFloat64Array = datum_air
+	if Turbine.is_turbine(prop):
+		if state.size() < RB.RATE + 3:
+			return {ok = false, message = "turbine stage inflow needs body rates"}
+		velocity = Turbine.local_intake_velocity(datum_air, state.slice(RB.RATE, RB.RATE + 3), prop)
+	elif is_glow(prop) or is_electric(prop):
+		if state.size() < RB.RATE + 3:
+			return {ok = false, message = "propeller stage inflow needs body rates"}
+		velocity = hub_air_velocity(state, datum_air, prop.offset)
+	for component: float in velocity:
+		if not is_finite(component):
+			return {ok = false, message = "stage propulsion inflow is nonfinite"}
+	return {ok = true, velocity_body = velocity}
+
+## Propeller normal force and P-factor moment at a disc angle of attack (McCormick's blade-element result as used by
+## Selig 2010, AIAA 2010-7938; Ribner NACA TR 819 agrees within ~20 %). With the crossflow v_c (air-relative body
+## velocity minus its shaft component) and sin α_p = |v_c|/V:
+##   force  F = −C_N(J)·ρn²D⁴·v_c/V   (in the disc plane, like a fin at the propeller: up at positive α)
+##   moment M = −s·C_M(J)·ρn²D⁵·v_c/V (s = +1 clockwise from behind: positive α yaws the nose LEFT, flow from the
+##   right pitches it down: the descending blade carries more thrust)
+## C_N and C_M are the data's normal_force and pfactor_moment tables (per radian of α_p). Empty tables → zero.
+static func normal_force(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
+	return _crossflow(v_air, rpm, prop, rho, "normal_force", 4)
+
+
+static func pfactor_moment(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
+	return _crossflow(v_air, rpm, prop, rho, "pfactor_moment", 5)
+
+
+static func _crossflow(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float, key: String,
+		power: int) -> PackedFloat64Array:
+	var table: PackedFloat64Array = prop.get(key, PackedFloat64Array())
+	var speed := M.sqrt_(M.dot(v_air, v_air))
+	if table.is_empty() or rpm < STOPPED_RPM or speed < 1e-6:
+		return M.v3(0.0, 0.0, 0.0)
+	var ax := axis(prop)
+	var along := M.dot(v_air, ax)
+	var cross := M.sub(v_air, M.scale(ax, along))
+	var D: float = prop.diameter
+	var n := rpm / 60.0
+	var J := maxf(along, 0.0) / (n * D)
+	return M.scale(cross, -coefficient(table, J, 0.0) * rho * n * n * M.pow_(D, power) / speed)
+
+
+## Thrust (N, along the shaft), shaft torque (N·m) and advance ratio for air-relative body velocity v_air.
+static func thrust_torque(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
+	if is_glow(prop):
+		var speed: float = M.dot(v_air, axis(prop))
+		var point: Dictionary = GlowProp.evaluate(rpm, speed, rho, prop.glow.propeller)
+		return PackedFloat64Array([point.thrust_n, point.torque_nm, speed/(maxf(rpm,1.0)/60.0*prop.diameter)]) if point.ok else PackedFloat64Array([NAN,NAN,NAN])
+	if rpm < STOPPED_RPM:
+		return PackedFloat64Array([0.0, 0.0, 0.0])
+	var D: float = prop.diameter
+	var n := rpm / 60.0
+	var u := v_air[0] if not prop.has("axis") else M.dot(v_air, prop.axis)
+	var J := maxf(u, 0.0) / (n * D)
+	var thrust := coefficient(prop.ct, J, CT_FLOOR) * rho * n * n * M.pow_(D, 4)
+	var power := coefficient(prop.cp, J, _cp_floor(prop)) * rho * n * n * n * M.pow_(D, 5)
+	return PackedFloat64Array([thrust, power / (TAU * n), J])
+
+
+## Body loads about the CG [Fx, Fy, Fz, Mx, My, Mz] for air-relative body velocity v_air.
+## Thrust along the shaft (body +x unless tilted) on the thrust line; the reaction to a clockwise (from behind) prop
+## rolls the airplane left. With a normal-force table, the in-plane force acts at the propeller disc.
+static func loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
+	if Turbine.is_turbine(prop): # AV-05
+		return Turbine.loads(v_air, rpm, prop, rho)
+	if rpm < STOPPED_RPM and not is_glow(prop):
+		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var tq := thrust_torque(v_air, rpm, prop, rho)
+	return loads_from_thrust_torque(v_air, rpm, prop, rho, tq[0], tq[1])
+
+
+## Reuse an already evaluated propeller at this exact RK stage. The caller must
+## supply thrust/torque for the same air velocity, RPM, density and installation.
+## No result is retained across stages; geometry and crossflow arithmetic match loads().
+static func loads_from_thrust_torque(v_air: PackedFloat64Array, rpm: float, prop: Dictionary,
+		rho: float, thrust: float, torque: float) -> PackedFloat64Array:
+	var r: PackedFloat64Array = prop.offset # [x_aft, y_right, z_up] from the CG
+	var at := M.v3(-r[0], r[1], -r[2])
+	if not prop.has("axis"):
+		var arm := M.cross(at, M.v3(thrust, 0.0, 0.0))
+		return PackedFloat64Array([thrust, 0.0, 0.0, -torque + arm[0], arm[1], arm[2]])
+	return _tilted_loads(v_air, rpm, prop, rho, thrust, torque, at)
+
+
+## H14: scalar form of the tilted-shaft loads (thrust, reaction torque, normal_force and pfactor_moment) in the
+## frozen oracle's arithmetic order (tests/propulsion_reference.gd); the two crossflow terms share one projection.
+## Zero crossflow terms are still added (+0.0), as in the oracle; test_propulsion_scalar.gd compares bytes.
+static func _tilted_loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float, thrust: float,
+		torque: float, at: PackedFloat64Array) -> PackedFloat64Array:
+	var ax: PackedFloat64Array = prop.axis
+	var a0: float = ax[0]
+	var a1: float = ax[1]
+	var a2: float = ax[2]
+	var v0: float = v_air[0]
+	var v1: float = v_air[1]
+	var v2: float = v_air[2]
+	var nf0 := 0.0
+	var nf1 := 0.0
+	var nf2 := 0.0
+	var pf0 := 0.0
+	var pf1 := 0.0
+	var pf2 := 0.0
+	var speed := M.sqrt_(v0 * v0 + v1 * v1 + v2 * v2)
+	if not speed < 1e-6 and rpm != 0.0: # legacy oracle branch; stopped glow has no supported side-force tables
+		var along: float = v0 * a0 + v1 * a1 + v2 * a2
+		var c0: float = v0 - a0 * along
+		var c1: float = v1 - a1 * along
+		var c2: float = v2 - a2 * along
+		var D: float = prop.diameter
+		var n := rpm / 60.0
+		var J := maxf(along, 0.0) / (n * D)
+		var nf_table: PackedFloat64Array = prop.get("normal_force", PackedFloat64Array())
+		if not nf_table.is_empty():
+			var k: float = -coefficient(nf_table, J, 0.0) * rho * n * n * M.pow_(D, 4) / speed
+			nf0 = c0 * k
+			nf1 = c1 * k
+			nf2 = c2 * k
+		var pf_table: PackedFloat64Array = prop.get("pfactor_moment", PackedFloat64Array())
+		if not pf_table.is_empty():
+			var k: float = -coefficient(pf_table, J, 0.0) * rho * n * n * M.pow_(D, 5) / speed
+			pf0 = c0 * k
+			pf1 = c1 * k
+			pf2 = c2 * k
+	var f0: float = a0 * thrust + nf0
+	var f1: float = a1 * thrust + nf1
+	var f2: float = a2 * thrust + nf2
+	var t0: float = at[0]
+	var t1: float = at[1]
+	var t2: float = at[2]
+	return PackedFloat64Array([f0, f1, f2,
+		((t1 * f2 - t2 * f1) - a0 * torque) + pf0,
+		((t2 * f0 - t0 * f2) - a1 * torque) + pf1,
+		((t0 * f1 - t1 * f0) - a2 * torque) + pf2])

@@ -14,6 +14,8 @@ func request_refresh() -> void:
 func _process(_delta: float) -> void:
 	if water_material == null:
 		return
+	_sync_color_ambient(get_world_3d().environment,
+		RenderingServer.get_current_rendering_method() == "gl_compatibility")
 	if not _static_layers_ready:
 		# Reflect the field, excluding the moving flight aircraft and the water surface itself.
 		var pending: Array[Node] = [get_parent().get_parent()]
@@ -38,6 +40,23 @@ func _process(_delta: float) -> void:
 	position.x += _offset_sign * 0.001
 	_offset_sign = -_offset_sign
 	set_meta("refreshes", int(get_meta("refreshes", 0)) + 1)
+
+
+## Compatibility's environment-ambient probe path bypasses the world's color-only
+## night policy. Reuse that world's accepted ambient instead of its exposed sky cube.
+## Reflection intensity, masks and cube refresh cadence remain independently owned.
+func _sync_color_ambient(environment: Environment, compatibility: bool) -> void:
+	var use_color := compatibility and environment != null \
+		and environment.ambient_light_source == Environment.AMBIENT_SOURCE_COLOR
+	var wanted_mode := ReflectionProbe.AMBIENT_COLOR if use_color else ReflectionProbe.AMBIENT_ENVIRONMENT
+	if ambient_mode != wanted_mode:
+		ambient_mode = wanted_mode
+	if not use_color:
+		return
+	if ambient_color != environment.ambient_light_color:
+		ambient_color = environment.ambient_light_color
+	if not is_equal_approx(ambient_color_energy, environment.ambient_light_energy):
+		ambient_color_energy = environment.ambient_light_energy
 
 
 ## End-of-collection evidence only; installation and current activity are distinct.

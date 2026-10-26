@@ -1,0 +1,392 @@
+{
+  "format": "openrc-mass-prefix-review-payload-v1",
+  "production_promoted": false,
+  "artifacts": [
+    {
+      "path": "tmp/gp12-mass-prefix-draft/baseline/gentle-policy.result.bin",
+      "sha256": "77b3d22cc3f416489ba66f57d759dfd712d2936b9fb46a835b196d51d7b1eaec",
+      "bytes": 9240
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/baseline/gentle-policy.timings.json",
+      "sha256": "0c3365e2b87ab7c03c0a4afcc9697e62f9c6d9a2b83fffd6d16b7132cd2c8bcb",
+      "bytes": 317
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/baseline/hard-policy.result.bin",
+      "sha256": "a972e12b5e91e3d2c99c2712338f9ae1cefac50b6d31d3e930da5b58fd2edee8",
+      "bytes": 240
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/baseline/hard-policy.timings.json",
+      "sha256": "4a8613ae120b12d79c4605e587468bf82d30e89bd21a0a5713617b4864eb8004",
+      "bytes": 396
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/baseline/rest10-policy.result.bin",
+      "sha256": "c052b7dbcf19df8d72d26487811334d9e774d8f0a1e44e5e76f9f2704d225ec7",
+      "bytes": 5540
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/baseline/rest10-policy.timings.json",
+      "sha256": "1c41f98567b9fdf92e7c7bfccbdb1524ccb8ec1cd9ae4f8cafc09a71da95b03f",
+      "bytes": 317
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/baseline/rest6-policy.result.bin",
+      "sha256": "fb5eab3584e5633e40eae3c5951703ebd77df2251d7a5895a98d8568c6361ccf",
+      "bytes": 5540
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/baseline/rest6-policy.timings.json",
+      "sha256": "7d2884c9bd9955b615c41c6c916b57fc8f061539e8074bfee9557ec7e0690d49",
+      "bytes": 316
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/baseline-production-hashes.json",
+      "sha256": "68da4b773141c77c05e7c7a713a93ff365036f4104a1f75f15aa0f651750ecc1",
+      "bytes": 1656
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/build.py",
+      "sha256": "a7c83c567b2c27a0d1d6054a97e6626babb1501bce9a880344a93061be37e420",
+      "bytes": 6534
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/capture_production_returns.gd",
+      "sha256": "75034629e612f50ede3ffe4d94a131b66318dbaa6ff449dff1e27e844f69bdb1",
+      "bytes": 11636
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/actual-reuse-count-rt4soiym/engine.log",
+      "sha256": "715960062e012a7150946e4e67eb60a3bc0effb55f1d948537764ab46c90e5f5",
+      "bytes": 522
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/actual-reuse-count-rt4soiym/report.json",
+      "sha256": "a72d4ccad7f302b23ac17d221abdcf70ce574abde2ee98600637070dcd99bc6d",
+      "bytes": 1285
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-gentle-kk24nlkj/engine.log",
+      "sha256": "5ed9c8241218c773ac50015d3338fc95652c96723e3e4477035b8e42d5681a54",
+      "bytes": 425
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-gentle-kk24nlkj/report.json",
+      "sha256": "3ddb2fefa415393b29f970758ff8922f075700e20f715e6871af50a27c002628",
+      "bytes": 1285
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-hard-pcv25ruk/engine.log",
+      "sha256": "d5ca2e5f6f986d34be69082ffee2a1d7665b53d2a2446f2f9bc82c9c8767704f",
+      "bytes": 504
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-hard-pcv25ruk/report.json",
+      "sha256": "3b0237eaeec9f4ea044d9f599e82d782adf4112d5a322aec8fbea221c2fa0346",
+      "bytes": 1277
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-rest10-wrz1sbrf/engine.log",
+      "sha256": "db33bd83c80396e2fcfc18256f1e547757dd1e99e08aeda3f80bf0a4f4db7e20",
+      "bytes": 425
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-rest10-wrz1sbrf/report.json",
+      "sha256": "49efbbc382a30677e2dc32186dc3ce8855143685f51227297e3adb41c1c870a6",
+      "bytes": 1285
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-rest6-c_8x4s2w/engine.log",
+      "sha256": "cd15262df7b56bd7633ad674545c6eb1a93fa8fb5180cab43d37294149a6e6af",
+      "bytes": 424
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-rest6-c_8x4s2w/report.json",
+      "sha256": "2ef526c1bc588363019af97b5e29ee7156b4439f47d9ca33e0ac483f07634751",
+      "bytes": 1281
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/capture-public-step-fixed-parent-nbkyeaym/engine.log",
+      "sha256": "7c939c899e4c1b4912938ad19c5894996338bb97f603c505f05b24a23970658b",
+      "bytes": 124
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/capture-public-step-fixed-parent-nbkyeaym/report.json",
+      "sha256": "adde2c43bfc390e1e6a2d93e1972e150d12e12a09fa9cf0922423e1ce9b949b7",
+      "bytes": 1310
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/compat-ar-correct-marker-afqkauwv/engine.log",
+      "sha256": "9e55e3e557183d19141dcb10ec12c270ef642f97a978245e030525d37a160e88",
+      "bytes": 643
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/compat-ar-correct-marker-afqkauwv/report.json",
+      "sha256": "6089369ba1ac123d8eb1579526e5e526745fb0fe1368aec624ca640378fd2239",
+      "bytes": 1309
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/compat-test_aircraft_ground_impulse-rr77o1pd/engine.log",
+      "sha256": "d1811c203c52d585943ca3747fcf66ff04452c5ef8fd506ef95c76504a7ef2d6",
+      "bytes": 119
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/compat-test_aircraft_ground_impulse-rr77o1pd/report.json",
+      "sha256": "a15e583e52bdee1c9e3fed47d838003b46c3803bb9651d13093ec5a35ccfd179",
+      "bytes": 1321
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/compat-test_aircraft_ground_step-floc68j7/engine.log",
+      "sha256": "2141d120ae5766d70ac6f424ba091ffcb6208f4e55bb34013379e8e5fb950248",
+      "bytes": 116
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/compat-test_aircraft_ground_step-floc68j7/report.json",
+      "sha256": "8d2284271a5b65fdce1990ee8a79b4e39747371d86ba92fd465ef981f85bff9b",
+      "bytes": 1306
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/focused-proof-corrected-l9fzgsk8/engine.log",
+      "sha256": "6b10fc72f530f5415d88d6f42d68ab0788327e0d27cf355daa11cd38c3d79f50",
+      "bytes": 115
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/focused-proof-corrected-l9fzgsk8/report.json",
+      "sha256": "9b8a3501027ef26a7cffd4d6dfb10f3374ea024ebbc0d1f4cd8d2e023e1d2beb",
+      "bytes": 1285
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-gentle-eaip6fvi/engine.log",
+      "sha256": "4f8f196a142ef14221f934408954355c759469b7672894cbcba06a0ca34e7ba4",
+      "bytes": 449
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-gentle-eaip6fvi/report.json",
+      "sha256": "cfb6f4f7c1dba17b31f5ad329db5d1fe73f8b7e44c32deb51e4efa0bfc78dda9",
+      "bytes": 1289
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-hard-q_rxc43t/engine.log",
+      "sha256": "b03cda42ec30d5506db650531e4721fa5ec8c3a2abcfb0aee0870cdaecfe2321",
+      "bytes": 528
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-hard-q_rxc43t/report.json",
+      "sha256": "a0fc5ea4c6d30403fc91547751cf08a4eaa3ba9013245291f874a2b0679de79a",
+      "bytes": 1281
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-rest10-kns09qhw/engine.log",
+      "sha256": "2deae95e41d963351a290096b84bfe48a9cbd4a6e50bc839f50d669b1439b035",
+      "bytes": 449
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-rest10-kns09qhw/report.json",
+      "sha256": "c9da86a894eab146293a615f1ae11cb0bb69f01090a2dc24a0b26ce6c61b7655",
+      "bytes": 1289
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-rest6-cjtl4195/engine.log",
+      "sha256": "f9760da12d5db0fdb15a5c231cac28ae8fb4fa25109eaaa98b69498cca4db892",
+      "bytes": 448
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-rest6-cjtl4195/report.json",
+      "sha256": "69feee02a65020b95ece3e47c2f040a9d8a722a1c38e259360848c5224fc1564",
+      "bytes": 1284
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/parse-draft-glie_376/engine.log",
+      "sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7",
+      "bytes": 72
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/parse-draft-glie_376/report.json",
+      "sha256": "647024a00755ec25995691448f2ba88c407ccb6ec71aecee24dc73fc7ab80dad",
+      "bytes": 1216
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/parse-paired-renamed-vhhdh2fh/engine.log",
+      "sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7",
+      "bytes": 72
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/parse-paired-renamed-vhhdh2fh/report.json",
+      "sha256": "9880cfe45b4f092938c44635a0e4e8f9f6df0f364f927c4c5ed20b755d2b14fc",
+      "bytes": 1233
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/parse-self-contained-complete-5a2qmq9t/engine.log",
+      "sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7",
+      "bytes": 72
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/parse-self-contained-complete-5a2qmq9t/report.json",
+      "sha256": "e0c8587921207da5cc276cb2d159d7457125d2f6f6587a80eb6825ba3016743f",
+      "bytes": 1267
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/self-contained-complete-35me0_k3/engine.log",
+      "sha256": "7c939c899e4c1b4912938ad19c5894996338bb97f603c505f05b24a23970658b",
+      "bytes": 124
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/self-contained-complete-35me0_k3/report.json",
+      "sha256": "ecf07b1c8408db90d8568b9f14a7584f21f80e406372584e9b6fc3ef15dd2062",
+      "bytes": 1291
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/warmed-pairs-x0y5vfwy/engine.log",
+      "sha256": "c0e45e2fdcb6766bdee03835f6cc9021ffff2ec253ec3a59b8d89878ab782161",
+      "bytes": 1669
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/warmed-pairs-x0y5vfwy/report.json",
+      "sha256": "d2f9e2a1dc1a3b01df674deb2db50c92169e960dc90f8245342981d650b49631",
+      "bytes": 1224
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/counted/rest6-policy.result.bin",
+      "sha256": "fb5eab3584e5633e40eae3c5951703ebd77df2251d7a5895a98d8568c6361ccf",
+      "bytes": 5540
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/counted/rest6-policy.timings.json",
+      "sha256": "3c30e705ba638c3b33c91648db895a6d0da3a7b2d9339152beb90f4029142b80",
+      "bytes": 434
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/manifest.json",
+      "sha256": "bce9c0564f93ae5f44087e45527812910b93b68d65c4a2dd78c276a2505ac5f5",
+      "bytes": 14478
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/optimized/gentle-policy.result.bin",
+      "sha256": "77b3d22cc3f416489ba66f57d759dfd712d2936b9fb46a835b196d51d7b1eaec",
+      "bytes": 9240
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/optimized/gentle-policy.timings.json",
+      "sha256": "496c494977bcafe152b7a3a1aa1aae7a68a45b807494001ee54b9ca4871e317c",
+      "bytes": 343
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/optimized/hard-policy.result.bin",
+      "sha256": "a972e12b5e91e3d2c99c2712338f9ae1cefac50b6d31d3e930da5b58fd2edee8",
+      "bytes": 240
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/optimized/hard-policy.timings.json",
+      "sha256": "c53146e7ffc95423dcee706f3dafa5534a217b5a234e6ac58ccba43dec60c0fb",
+      "bytes": 422
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/optimized/rest10-policy.result.bin",
+      "sha256": "c052b7dbcf19df8d72d26487811334d9e774d8f0a1e44e5e76f9f2704d225ec7",
+      "bytes": 5540
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/optimized/rest10-policy.timings.json",
+      "sha256": "50b8b82c4e1560c14fc7fba04b1a73344972772feb690abc47248bb5428b514e",
+      "bytes": 343
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/optimized/rest6-policy.result.bin",
+      "sha256": "fb5eab3584e5633e40eae3c5951703ebd77df2251d7a5895a98d8568c6361ccf",
+      "bytes": 5540
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/optimized/rest6-policy.timings.json",
+      "sha256": "d2afa17d0a48854a0ad84447001f0d99032f6ab3629c9134cf304a6fd2d88592",
+      "bytes": 342
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/paired-results.json",
+      "sha256": "a1d927d548fda0bbf34479db1f4e48ee5e4c905036f38e014cedb56858c02542",
+      "bytes": 2025
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/paired.gd",
+      "sha256": "3d807ce5b19b0c56150923a008b7d0c2ae79d842664006083b0b9d2d339ae18a",
+      "bytes": 3494
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/production-review.patch",
+      "sha256": "0be1b54bcb0531856388a4e07e16a84e0017034a5d9b4b6625f7a6b36c807c73",
+      "bytes": 13775
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/aircraft_ground_impulse.gd",
+      "sha256": "5bacc4e47b74db1a7d30428a0d570d53330d4c8c0d80ce93b40953b9b27063ce",
+      "bytes": 28725
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/aircraft_ground_step.gd",
+      "sha256": "e042c5933dc501d244684cbe8a6480db30a3a7056629a6c014db979dba889b77",
+      "bytes": 44655
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/contact_assembly_resolution.gd",
+      "sha256": "406b89fbe2a4a09754bf10a2db07d2dfb87fb86038d807cb22396a175a4b9831",
+      "bytes": 41822
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/tests/test_contact_mass_prefix.gd",
+      "sha256": "841cc3c701c2895492bfa5e9234ad27d0c121b0a649edb6955ed954884a99f98",
+      "bytes": 11206
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/README.md",
+      "sha256": "cc9c05140efb8ad25c7b551a3a72a144921d5faeb7e36b9a5fcea771ad34ba73",
+      "bytes": 4382
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/report.json",
+      "sha256": "822b14a7b259416d5e64e94fa4ec1f9427fd14e877d68f2ee004d8f103a06c4c",
+      "bytes": 26651
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/review.patch",
+      "sha256": "1bc45cd94fbdc6f76f6d3fa787c747dfb7073c7df455f64ff30e49f976b3c02c",
+      "bytes": 16898
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/test-payload-manifest.json",
+      "sha256": "10813e8e568c7c2b14355c4c255184b45de60167b536985729d1913aaef3ffd7",
+      "bytes": 6798
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/test_mass_prefix.gd",
+      "sha256": "2bc62581e42553ae1caf97cdb863c342c059fcd4cf486ebd49e56a7502582146",
+      "bytes": 5118
+    }
+  ],
+  "payload": [
+    {
+      "target": "app/physics/contact_assembly_resolution.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/contact_assembly_resolution.gd",
+      "sha256": "406b89fbe2a4a09754bf10a2db07d2dfb87fb86038d807cb22396a175a4b9831",
+      "main_prehash": "3cb14049fee9f7976fdac0b88b1129c2aca20c686b53e15fc188a44856d53f45"
+    },
+    {
+      "target": "app/physics/aircraft_ground_impulse.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/aircraft_ground_impulse.gd",
+      "sha256": "5bacc4e47b74db1a7d30428a0d570d53330d4c8c0d80ce93b40953b9b27063ce",
+      "main_prehash": "76c279a9fb58ffcbf5f69861cc2e817dd4bd8300c052504495e76a28c2211f69"
+    },
+    {
+      "target": "app/physics/aircraft_ground_step.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/aircraft_ground_step.gd",
+      "sha256": "e042c5933dc501d244684cbe8a6480db30a3a7056629a6c014db979dba889b77",
+      "main_prehash": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366"
+    },
+    {
+      "target": "app/tests/test_contact_mass_prefix.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/tests/test_contact_mass_prefix.gd",
+      "sha256": "841cc3c701c2895492bfa5e9234ad27d0c121b0a649edb6955ed954884a99f98",
+      "main_prehash": null
+    }
+  ]
+}

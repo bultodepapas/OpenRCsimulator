@@ -1,0 +1,133 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0516e5a5-d866-4b55-9d7d-b3176a97c4ea",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-restore-transaction/regressions/test_atmosphere_column_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T17:02:01.859681+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-restore-transaction\\checks\\final-column\\godot-q07ebng4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-restore-transaction\\checks\\final-column\\godot-q07ebng4\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "M5-ATM-4 session: 114 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 10,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Cannot open file 'res://.godot/imported/OpenSans_SemiBold.woff2-8a0288a2ba0d20714c6041a4c9f2b69b.fontdata'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1138)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed loading resource: res://.godot/imported/OpenSans_SemiBold.woff2-8a0288a2ba0d20714c6041a4c9f2b69b.fontdata.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Failed loading resource: res://assets/fonts/OpenSans_SemiBold.woff2.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 9,
+      "message": "Cannot open file 'res://.godot/imported/NotoSansCJKsc-Regular.otf-234b66ec4f6090cf3cb4fe9bcf1a8765.fontdata'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1138)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 11,
+      "message": "Failed loading resource: res://.godot/imported/NotoSansCJKsc-Regular.otf-234b66ec4f6090cf3cb4fe9bcf1a8765.fontdata.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 13,
+      "message": "Failed loading resource: res://assets/fonts/NotoSansCJKsc-Regular.otf.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 15,
+      "message": "res://assets/fonts/interface_font.tres:7 - Parse Error: [ext_resource] referenced non-existent resource at: res://assets/fonts/OpenSans_SemiBold.woff2.",
+      "context": [
+        "   at: _parse_ext_resource (scene/resources/resource_format_text.cpp:156)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 17,
+      "message": "res://assets/fonts/interface_font.tres:7 - Parse Error: [ext_resource] referenced non-existent resource at: res://assets/fonts/OpenSans_SemiBold.woff2.",
+      "context": [
+        "   at: load (scene/resources/resource_format_text.cpp:767)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 19,
+      "message": "Failed loading resource: res://assets/fonts/interface_font.tres.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 21,
+      "message": "Error loading custom project font 'res://assets/fonts/interface_font.tres'",
+      "context": [
+        "   at: initialize_theme (scene/theme/theme_db.cpp:84)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 15.656,
+  "log_bytes": 3230,
+  "log_sha256": "c6cc6d3e391b18e4349f929f7abcfad0671de76dd5f76be90cb5d21ddf63831d"
+}

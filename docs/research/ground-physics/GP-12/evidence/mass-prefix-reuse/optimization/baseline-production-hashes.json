@@ -1,0 +1,23 @@
+{
+	"bounds": {
+		"ground_contact_rest_nonzero.bin": "4e6058052843f2e2cbfcf08160b699a615de60f53d155b055b8cc422e18c21bf",
+		"ground_contact_rest_proposal.bin": "cf3aebf160130b1099c6ba35df76d43426e55e649fc3c2e829ca6a10736027e4",
+		"ground_contact_rest_range.bin": "7d8a3f7bc29e1199a1426e0033308722ef471bfeecb177c7d6cb7802ea0f8a54",
+		"ground_contact_rest_slip.bin": "9f8d431738f2bf8038a0e436966d608e7fef309b6ded8e4c6435dcdd37651145",
+		"ground_contact_rest_work.bin": "889f0ab9b847c6eef4852b78e73a10ec59f7bd7d5f4d73779b81c3762200c377",
+		"signed_zero": "e7f9300b44e1779426bd63dad74a279d6c618aaefcc435149072392d677710b2",
+		"three.base": "d5ec51ad45d12d4662593e94820114dbedb29787edd4b940e8fb2fdb3da8d0c8",
+		"three.changed": "caca24f613d03ff729d51009c251304848aeb5f6c327029e4243c97619541d82",
+		"three.invalid_mobility": "7778ec18f1bd55413c0b95a400100dfdfc1bb1f3c2ddadd5f4e00c262282532d",
+		"three.wider": "68d47b2cbc922a577f695c9a3c5d56d01ed3012349c9bc63dbc7b1f0394d4390",
+		"two.base": "89903fcbc7a36589c26e9f4e5d0107688b1528829a0e9f593e70ec45e187a30c",
+		"two.changed": "851f242847c0e1f8fd06fb2cb056075ba06a68b7e8fde8b334f9bda99f2edb48",
+		"two.invalid_mobility": "7778ec18f1bd55413c0b95a400100dfdfc1bb1f3c2ddadd5f4e00c262282532d",
+		"two.wider": "ae0fc13d36b03af57d94a16773ccac867fb9f2472df2afe1cd200b3918fabc96",
+		"zero_mass": "378cc67252f84710d8aedae8a98fd620ccf7a418db2a3a93808e0b1fca1111dd"
+	},
+	"steps": {
+		"fixed-hub-half-impulse-rk4-normal-half-impulse-v1": "c7947513f02059f604a3c5f4c8495f3e41e6260a5569ab4cc1940c5368ecf1e6",
+		"fixed-hub-rk4-normal-endpoint-impulse-lie-v1": "243f6c851503981f0e0b4b150f2a7886ddf9c9728f24071e68e25e3e38564474"
+	}
+}

@@ -3,7 +3,8 @@ extends RefCounted
 
 # V2 widens M7 to the first accepted accident per activity generation, including
 # survivable gear-up contact; v1 historical records remain terminal-only coverage.
-const VERSION := "flight-statistics-rules-v2"
+# V3 also observes qualified attached gear-capacity failure; older coverage is not retallied.
+const VERSION := "flight-statistics-rules-v3"
 
 const DEFAULTS := {
 	"liftoff_clearance_s": 1.0,

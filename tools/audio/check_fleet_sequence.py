@@ -44,6 +44,13 @@ SOURCE_IDENTITY_PATHS = [
     "app/audio/glow_audio_pump.gd",
     "app/audio/ground_audio.gd",
     "app/audio/ground_audio_model.gd",
+    "app/audio/ground_audio_motion.gd",
+    "app/audio/mechanical_audio.gd",
+    "app/audio/mechanical_motion.gd",
+    "app/audio/mechanical_profile.gd",
+    "app/physics/hull_contact.gd",
+    "app/render/crash/director.gd",
+    "app/render/crash/crash_audio.gd",
     "app/sim/landing_maneuver.gd",
     "app/scenery/takeoff_pilot.gd",
     "app/physics/ground_start.gd",
@@ -63,6 +70,7 @@ SOURCE_IDENTITY_PATHS = [
     "app/assets/audio/powertrains/BANKS.json",
     "app/assets/audio/powertrains/manifest.json",
     "app/assets/audio/landing_gear/manifest.json",
+    "app/assets/audio/mechanical/manifest.json",
     "tools/audio/fleet_sequence.gd",
     "tools/audio/check_fleet_sequence.py",
 ]
@@ -135,9 +143,28 @@ def list_aircraft(godot: Path) -> list[str]:
         raise RuntimeError(f"catalog listing failed ({result.returncode}):\n{result.stdout}\n{result.stderr}")
     ids = [line.split("=", 1)[1].strip() for line in result.stdout.splitlines()
            if line.startswith("FLEET_AIRCRAFT_ID=")]
-    if len(ids) != 9 or len(set(ids)) != len(ids):
-        raise RuntimeError(f"expected 8 fixed-wing plus the active helicopter; got {ids!r}")
+    # The live catalog owns membership; new aircraft must not stale this tool.
+    if not ids or any(not aircraft_id for aircraft_id in ids) or len(set(ids)) != len(ids):
+        raise RuntimeError(f"expected nonempty unique active catalog IDs; got {ids!r}")
     return ids
+
+
+def batch_scope(active_ids: list[str], requested_ids: list[str], results: list[dict[str, Any]]) -> dict[str, Any]:
+    """Distinguish success for selected captures from coverage of the live catalog."""
+    observed_ids = [row.get("aircraft") for row in results]
+    complete = bool(requested_ids) and len(set(requested_ids)) == len(requested_ids) \
+        and len(results) == len(requested_ids) and all(isinstance(value, str) for value in observed_ids) \
+        and set(observed_ids) == set(requested_ids)
+    covers_catalog = bool(active_ids) and len(set(active_ids)) == len(active_ids) \
+        and len(requested_ids) == len(active_ids) and set(requested_ids) == set(active_ids)
+    selected_contacts = complete and all(row.get("live_contact_sequence_complete_without_route_failure") is True for row in results)
+    selected_continuous = complete and all(row.get("continuous_flight_qualified") is True for row in results)
+    return {"active_catalog_aircraft_ids": list(active_ids), "requested_aircraft_ids": list(requested_ids),
+            "catalog_coverage_complete": covers_catalog,
+            "all_requested_live_contact_sequences_complete_without_route_failure": selected_contacts,
+            "all_requested_continuous_flights_qualified": selected_continuous,
+            "all_live_contact_sequences_complete_without_route_failure": covers_catalog and selected_contacts,
+            "all_continuous_flights_qualified": covers_catalog and selected_continuous}
 
 
 def wav_samples(path: Path) -> tuple[dict[str, Any], array.array]:
@@ -556,12 +583,14 @@ def main() -> int:
     godot = args.godot.resolve()
     out_dir = args.out_dir.resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
-    ids = args.aircraft or list_aircraft(godot)
+    active_ids = list_aircraft(godot)
+    ids = args.aircraft or active_ids
     if args.aircraft:
-        active_ids = set(list_aircraft(godot))
-        unknown = [item for item in ids if item not in active_ids]
+        unknown = [item for item in ids if item not in set(active_ids)]
         if unknown:
             parser.error(f"unknown or inactive aircraft IDs: {unknown}")
+        if len(set(ids)) != len(ids):
+            parser.error("each requested aircraft must appear only once")
     results: list[dict[str, Any]] = []
     failed = False
     for index, aircraft in enumerate(ids, start=1):
@@ -626,8 +655,7 @@ def main() -> int:
     aggregate = {"format": "openrc-audio-fleet-batch-v1", "created_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                  "godot": str(godot), "driver_requested": "WASAPI", "aircraft_count": len(ids),
                  "all_audio_captures_valid": not failed and len(results) == len(ids),
-                 "all_live_contact_sequences_complete_without_route_failure": len(results) == 9 and all(bool(row.get("live_contact_sequence_complete_without_route_failure")) for row in results),
-                 "all_continuous_flights_qualified": len(results) == 9 and all(bool(row.get("continuous_flight_qualified")) for row in results),
+                 **batch_scope(active_ids, ids, results),
                   "continuous_mode": any(continuous_modes),
                  "source_loop_metrics": source_loop_metrics(), "results": results,
                  "meaning": "Audio capture validity covers measured native driver, file, useful signal, logs, timeline, and PCM gates. A null check is explicitly unmeasured and is listed per aircraft; this does not count as positive evidence. Contact-sequence observations require liftoff, landing contact, and fixed-wing rollout or rotorcraft settle with no route failure. Continuous-flight qualification also excludes staged landing fixtures."}

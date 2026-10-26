@@ -1,0 +1,275 @@
+{
+  "format": "openrc-prepared-mass-prefix-draft-v1",
+  "base_hotspot_manifest_sha256": "8e5b1124b22051b738ce9f823c709be8521b41adce31dc37949f3768e4f7019b",
+  "scope": "pure fixed-matrix prefix only; default public bounds API preserved; no QP/Strategy source edits",
+  "files": [
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/driver.gd",
+      "sha256": "c59cabdc666dcc6b9f5d5d5633051fbc48dccb8ffc37bb9b3d45c97d74a2e966"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/metrics.gd",
+      "sha256": "3c367670ecd140442cfc8fbe64245f85adc1ee0d0c1bbc14e7ea55c4c76b4441"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/owner.gd",
+      "sha256": "ac76f98247b26719020f988fd8f7f269c78d330456669aeb3caa9f7429281a96"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aero.gd",
+      "sha256": "e20ae5ec30b11e27b9a6d37086cdffb26e4db2af0f71c1d561590e8ab26ecfa1"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_contract.gd",
+      "sha256": "35d2a1ad28035ee4278179d18738eefe3ebd9648e26522204dfc4fcf1d71dcc9"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_data.gd",
+      "sha256": "8a79e8a0506593318a91afd57e10c311ec81d7f11e44e398ae615b12fe23b1d6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_accuracy.gd",
+      "sha256": "3b86faf64717f6fb84a26cb2521e2d17ffb3e6c0bf36585a2b6da2099295ce87"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_dynamics.gd",
+      "sha256": "fc55cc304ef0bfb373216c37b8a0454fdba797aa97509c8e2113083a7c019296"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_impulse.gd",
+      "sha256": "0cc470f500e22a574cca105e79b313828df941f2fe8b9190cbf20f62964badd2"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_profile.gd",
+      "sha256": "20faf4c1e926ad2a23c464d2ab28e064d4d264ade7135d7290eea739052e4925"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_stage.gd",
+      "sha256": "f370a3cd999805c24087ac1ba956b42c3d3ea6579c671befb390d839c40a1cfe"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_step.gd",
+      "sha256": "d8ee97b7b9526c4e0490aca40b82827a6db51ec693b019538e2a599f7cacca30"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_traction.gd",
+      "sha256": "1190ffdf7e8823eb10e0308f63beb6cfc3e42c9ed11db2c0cf37e2321d0c014b"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_unloaded.gd",
+      "sha256": "5b0170c9e7d2201ec8aecdbdaf5b1d81df15385bc92715eac7c166b917b982a5"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_modules.gd",
+      "sha256": "79b030030e92b35af5efe7e8f69149e6d498a6c7637aa212a926320803b1102a"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/battery/battery_data.gd",
+      "sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/battery/esc_supervisor.gd",
+      "sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/battery/pack_ecm.gd",
+      "sha256": "eccebc1dc9c3488de4eb3a410d351b69269c2e39a33669a32ea61865eef67a25"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/contact_assembly_resolution.gd",
+      "sha256": "a3cb795c7ca8e07a32511d7b1b6bda0a686bc3190c0e7cd2cd6ef4f8bfff0d46"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/contact_assembly_strategy.gd",
+      "sha256": "df70499cb1f86dd8b9bcc3cee6b46591a53d27e77b38518c72c182856b86614b"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/control_actuators.gd",
+      "sha256": "d8a897dd9890fcd89c5bc9a39d5313878d8cd8751db3a963efd24747692907a5"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/control_surfaces.gd",
+      "sha256": "758de9a007b2d2f1bf819d6a8919e4e867f952097aa260c1f2c56405a9611beb"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/effective_mass.gd",
+      "sha256": "7af5b0686e2c27f5ad78526bcc240a84eece6f6245732986481fb4791c850176"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/electric_motor.gd",
+      "sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/electric_supply.gd",
+      "sha256": "04675b0f1ee127f9c26e200ce2c08a519df8edc39c1ba1a53e146e3e680f8e2b"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/event_bracket.gd",
+      "sha256": "898b8556741b98f12416f1c4e5297b833f78be788f8b6c968138fdb437a031bc"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/event_step.gd",
+      "sha256": "a1abe07d0a54dee769e5d7862f83bc7ed10df54cb4f6b693302d1ca87bb7b3e5"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/fixed_datum_body.gd",
+      "sha256": "2945c1a57e8b6c946aab72439ba6bb1c869f996f803045310ed42f513497ddf7"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/flaps.gd",
+      "sha256": "bf3f1ac5afc0b414d978f9f630afb12ba956635d66cf27c65d87d392ebb76b7d"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/fuel_properties.gd",
+      "sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/generalized_coordinates.gd",
+      "sha256": "d349b9ad91639e576f59af5e05ed14d62392bb858c4c2b47a2131a70cfdfee38"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/carburetor.gd",
+      "sha256": "7ca40d11c2dd2350f1a8a713909d9018c8f23f1c58578624e35d7f18f66684d5"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/four_stroke.gd",
+      "sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/fuel_feed.gd",
+      "sha256": "3f90a9edb0a88783d5f50c3667f582f6b80de0fde224a98732a9745ad02952aa"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/fuel_mass.gd",
+      "sha256": "9954232737eed5d93679cff20de7d03441056b7b6ca16701f83647d5b11c0f1f"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/installation.gd",
+      "sha256": "342ea1f145644e1462b551353e4cd34175c249822d2466aad2847f42201cacdf"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/operating_point.gd",
+      "sha256": "1967da1f57d6a65b57e7df5cbc582743403efdf61cb87f86dee262f2ab7593d6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/profile.gd",
+      "sha256": "c52f639f3f28382bdd5a3bd8b30789d76e8ae6eb11864b5bd09eb0bff3855524"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/propeller.gd",
+      "sha256": "691040973c881653db5fd18a1afd0cc4eac856c103680fec86e5b7a7308b48c6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/source.gd",
+      "sha256": "ce14918165a2bf64d35e59813c3835d66763a7ac8af3a18f8a03fa11a3744660"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/two_stroke.gd",
+      "sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_contact.gd",
+      "sha256": "3b14ac289a3ade0626c5d165ae1fb4d4b4011b4ba4fd095daf8361f8904d2111"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_effect.gd",
+      "sha256": "c789bdaacaa92f92c32abc22b7d8324389041690a26400db184aa9e36cc7f061"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_support.gd",
+      "sha256": "273c71f5f6e1b71eec89b517c78c07d24468bdebabd0b7bdc878f3f2c76711e6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_terrain.gd",
+      "sha256": "73bcb3ff7041e1e8a5cedae4f42c3d28120e08586d017792f852e190407871a2"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_traction.gd",
+      "sha256": "3e18d9f2573b8642462c331adaf3712c731cf1fe1eb79fb1639b4a169324f607"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_wheels.gd",
+      "sha256": "f3ad3af43525a9bee49d63b7967812d769a7bd54d8d933430cb2602788f23b90"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/hull_contact.gd",
+      "sha256": "1ac52bc9b86322ec9d0ee8202e5062bd82556509cbf8c9fcfe2cebf12da99625"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/integrator.gd",
+      "sha256": "e8692be9c2b8af1443d16999a79bae69d8b7652006900570d91508dd56a4bba6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/intended_hull_support.gd",
+      "sha256": "47f3413b545bb9c558c1c54fa971d248700d870609dad08daa454641475f6cb9"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/lake_surface.gd",
+      "sha256": "ae62502dfe6702dd3dfff213318647316bf41430d620015d9e655a44e91e21d0"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/liquid_fuel.gd",
+      "sha256": "29d82539ac7d749ec1f943759520bbe0663c7bae9ae0e5429af4b75916e6658b"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/mass_inventory.gd",
+      "sha256": "f5dcdb0c8ed5e19f87013d6d98f31bbd04b2c92fcaa386f1453b4ce21e43f349"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/math3d.gd",
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/normal_compliance.gd",
+      "sha256": "cbc3c680a2448c9c72139ecb8bf02b15d6a801d5af5559683928ac6e25f6a41c"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/normal_contact_admission.gd",
+      "sha256": "9515bd10da83d079d85e2ca9de03c7c02ae0e0d4568bd4bcaa752088b19ddf17"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/physical_identity.gd",
+      "sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/propulsion.gd",
+      "sha256": "1ef74168677e2415c14fea6cb1a7d2d5861df52a27415e69ab08991bb04f76c9"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/rigid_body.gd",
+      "sha256": "a245293aed4e3549f2f7855ccdbdb96fe626a942bbcf04bad552fe4bd2628436"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/rotor_coupling.gd",
+      "sha256": "ba2464e8e6b6b9578772325c0d9cb0583f7e17bd7132493401dda6cd62e94eba"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/turbine.gd",
+      "sha256": "64b317c04faa7bc533b2ebe4854b23fcffaadf66655a77da53b5354b702cb297"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/wheel_geometry.gd",
+      "sha256": "503010a84b16c6f16f7eb7d7cd08260523df3d67dd76c444d7b1cd4a7ad5fec3"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/wheel_profiles.gd",
+      "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/wing_polar.gd",
+      "sha256": "1c547d853eb3410aa8b21d2ab6f2af62c2c50402fd2a4053bb0d101904f2ee7f"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/sim/simulation.gd",
+      "sha256": "849979cbbea1053c37a9c11c0339def713d49afb9a7161a36320dde960a8239f"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/sim/vehicle_model.gd",
+      "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/tests/test_aircraft_ground_stage.gd",
+      "sha256": "c4e7eb12e9b954e3b3a523a6a474589eb065d11c72b0cc291ee81a4b729bd512"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Expected expression as dictionary key.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_audio.gd:79)
+ERROR: Failed to load script "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_audio.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)

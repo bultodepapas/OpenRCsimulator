@@ -1,0 +1,7 @@
+{
+  "scope": "Git apply core.autocrlf checkout conversion only; restore original LF format on owned Normal module",
+  "before_sha256": "74ef42459c7f82b848b77e5be76e2497c8f11e6f4a4f1affd06a9e8b7506be78",
+  "after_sha256": "9f05b8cb1395c54539b281ac120770c2353caef384a6fca2a857b144e7ec0beb",
+  "crlf_before": 187,
+  "normalized_bytes_equal_reviewed_payload": true
+}

@@ -1,0 +1,217 @@
+{
+  "metrics-03": {
+    "path": "tmp/gp19-hull-scrape/checks/metrics-03/godot-nszqstzf/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "e2b76519-e7d0-4396-895f-726146ca68e6",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_metrics.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-26T19:17:52.709608+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\metrics-03\\godot-nszqstzf\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\metrics-03\\godot-nszqstzf\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [
+        "Hull scrape metrics: 366 checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.407,
+      "log_bytes": 115,
+      "log_sha256": "55c55ccf8000a8c32f2b695dbf424c1ef873a1288c1e2e2a36d09090ae3b9166"
+    }
+  },
+  "audio-02": {
+    "path": "tmp/gp19-hull-scrape/checks/audio-02/godot-g20i9r72/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "3ea293a5-0c4b-49df-9952-63e5fe0209d6",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_audio.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-26T19:18:49.478496+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\audio-02\\godot-g20i9r72\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\audio-02\\godot-g20i9r72\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [
+        "Hull scrape audio complete"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.296,
+      "log_bytes": 140,
+      "log_sha256": "b7050f59ae5f932f8948adcbe56d0cdc18f09aa63ceb6525863940e383ad2c97"
+    }
+  },
+  "session-06": {
+    "path": "tmp/gp19-hull-scrape/checks/session-06/godot-ryyr5g8e/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "a428214b-5eaa-4b7c-9c0a-04c38990e2e1",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-26T19:23:17.513898+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\session-06\\godot-ryyr5g8e\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\session-06\\godot-ryyr5g8e\\report.json",
+      "timeout_seconds": 150.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [
+        "Hull scrape Session: 40 checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.781,
+      "log_bytes": 716,
+      "log_sha256": "9bca77d8c2e65a8316eec8c8340d13d4acacf01eb1ae7c6d3e4e4a11e196ff3b"
+    }
+  },
+  "legacy-audio-01": {
+    "path": "tmp/gp19-hull-scrape/checks/legacy-audio-01/godot-cx7784wf/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "dbce8732-2e79-4a46-96e5-beb413cff2ec",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_crash_audio.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-26T19:22:03.322712+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\legacy-audio-01\\godot-cx7784wf\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\legacy-audio-01\\godot-cx7784wf\\report.json",
+      "timeout_seconds": 150.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [
+        "checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.422,
+      "log_bytes": 655,
+      "log_sha256": "7530f5664331e5ff321458e03340552726ac244d5b644da3927234c34d566e13"
+    }
+  },
+  "legacy-soft-01": {
+    "path": "tmp/gp19-hull-scrape/checks/legacy-soft-01/godot-z2cu4fol/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "1af93847-ff3d-4e98-92f1-3333cc1c9fd9",
+      "command": [
+        ".tools/Godot_v4.8-beta1_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_soft_contacts.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-26T19:22:03.323718+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\legacy-soft-01\\godot-z2cu4fol\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-hull-scrape\\checks\\legacy-soft-01\\godot-z2cu4fol\\report.json",
+      "timeout_seconds": 150.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": true,
+      "required_text": [
+        "checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 11.953,
+      "log_bytes": 2722,
+      "log_sha256": "7e054637e87c4ac007e07edc2be987b5982f7bb7c19f6fa3b006564dda3d68ff"
+    }
+  }
+}

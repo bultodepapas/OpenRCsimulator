@@ -1,0 +1,10 @@
+{
+  "file": "turbo-lumber-evolution.wav",
+  "sha256": "c5e5a6c2ac2a0fc27a1ec4e05a9c1f63d62f1bd95b5c44408cf4648f066b0cd5",
+  "bytes": 12652588,
+  "frames": 3163136,
+  "rate_hz": 48000,
+  "channels": 2,
+  "bits": 16,
+  "retention": "Raw PCM remains in ignored tmp/gp19-native-accepted-20261026-retry; not copied into Git. Native reruns reproduce the scenario, not identical wall-timed bytes."
+}

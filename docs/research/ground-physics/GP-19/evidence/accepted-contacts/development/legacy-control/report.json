@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a533b2c8-024b-4fae-bd36-727c4b195132",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ground_audio.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T16:51:31.092765+00:00",
+  "label": "baseline",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-accepted-ground\\checks\\baseline\\baseline-dvud_zg7\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-accepted-ground\\checks\\baseline\\baseline-dvud_zg7\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "33 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.266,
+  "log_bytes": 2375,
+  "log_sha256": "aeac2c46f18c68b178084d11b10c2b7520c8db978874271ea54bb762eadde57a"
+}

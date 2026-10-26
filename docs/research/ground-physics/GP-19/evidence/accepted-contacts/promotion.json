@@ -1,0 +1,32 @@
+{
+  "format": "openrc-accepted-ground-audio-promotion-v1",
+  "before": {
+    "app/audio/ground_audio.gd": "fd43b4f400ef96b91b086d83388cc1b8337497e57fa3b0048944159aa26be3ea",
+    "app/audio/flight_audio.gd": "a211c24eab64a31156249b5cd0cdc31a12116a0b65c754166968023cb2955651",
+    "app/tests/test_ground_audio.gd": "48071a60df339328028322801f2c29daa01c38797712950fb99fc04c973a7499",
+    "app/tests/test_flight_audio_accepted.gd": "bb02dc9e6272a72dcae1a086292379a6c236b462ed5f46a121459e2aa5a82659"
+  },
+  "payload": {
+    "app/audio/ground_audio.gd": {
+      "sha256": "76a979123d1b79cd88212f8f373f09b454d4ab3df53042f779f39afb4db08311",
+      "bytes": 19316
+    },
+    "app/audio/ground_audio_motion.gd": {
+      "sha256": "38b174ed59c83177dbc8962d88140380bd9108746a4bb407fd715c4e68b87222",
+      "bytes": 2708
+    },
+    "app/audio/flight_audio.gd": {
+      "sha256": "7b58e36a4e8b855c1374d2a138241b31cef7fd4c22260ea8da2d098df559a4b6",
+      "bytes": 22082
+    },
+    "app/tests/test_ground_accepted_ticks.gd": {
+      "sha256": "10ea1910f278e8b65ff350516cf920e04f199c3f9bde7b42102768dae7d06599",
+      "bytes": 10208
+    },
+    "app/tests/test_flight_ground_accepted.gd": {
+      "sha256": "eb954bef574cc2adabf04f3192e4aab141160fb9bc0f021a47343759ff90bcea",
+      "bytes": 4890
+    }
+  },
+  "scope": "shared presentation classifier + accepted legacy-contact capture; no physics or recordings changed"
+}

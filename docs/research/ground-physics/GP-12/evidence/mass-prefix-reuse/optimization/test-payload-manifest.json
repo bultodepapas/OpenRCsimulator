@@ -1,0 +1,147 @@
+{
+  "format": "openrc-contact-mass-prefix-test-payload-v1",
+  "test_target": "app/tests/test_contact_mass_prefix.gd",
+  "test_sha256": "841cc3c701c2895492bfa5e9234ad27d0c121b0a649edb6955ed954884a99f98",
+  "baseline_bounds": {
+    "source": "tmp/gp12-hotspot-review/plain/physics/contact_assembly_resolution.gd",
+    "sha256": "64ca2b0a6d024cbf0a26cd120139b91df551965105dfb29defdd4875d93d15be",
+    "complete_returns": 15
+  },
+  "baseline_step": {
+    "source": "tmp/gp12-hotspot-review/plain/physics/aircraft_ground_step.gd",
+    "sha256": "9a87dab480c60ec8d9c2e4f20999831feb99f08111aee921c02703164345de5f",
+    "complete_returns": 2
+  },
+  "new_binary_fixtures": false,
+  "files": [
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/aircraft_ground_impulse.gd",
+      "sha256": "5bacc4e47b74db1a7d30428a0d570d53330d4c8c0d80ce93b40953b9b27063ce"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/aircraft_ground_step.gd",
+      "sha256": "e042c5933dc501d244684cbe8a6480db30a3a7056629a6c014db979dba889b77"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/contact_assembly_resolution.gd",
+      "sha256": "406b89fbe2a4a09754bf10a2db07d2dfb87fb86038d807cb22396a175a4b9831"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/contact_assembly_strategy.gd",
+      "sha256": "ec89cd594e810188092647165961ddaf2b6da854e2c3ce05ed03badfb24123fb"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/event_bracket.gd",
+      "sha256": "898b8556741b98f12416f1c4e5297b833f78be788f8b6c968138fdb437a031bc"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/event_step.gd",
+      "sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/fixed_datum_body.gd",
+      "sha256": "a218c99f2d7079ae6788c98cf5dda24de6e3a6910fb35ab27b5c69d3f76e4293"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/generalized_coordinates.gd",
+      "sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/ground_support.gd",
+      "sha256": "f4669cbf30ceadc2f6ed2c77360f5cb5fd08a6b04348b0d2a9945a8e250a054d"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/ground_terrain.gd",
+      "sha256": "149f18026c32a1966b9090823bd4ab321f37214fcb32895843fbe690166e4d26"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/ground_traction.gd",
+      "sha256": "77393b81f6d6676aea5f679a48dd7b408996cf509fb6945e70b3ebc9d662ada1"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/integrator.gd",
+      "sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/lake_surface.gd",
+      "sha256": "8c3f51ce336ca7ad674cc77ec8af8d697aa254f77ac9ae28e814ed860ba68152"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/mass_inventory.gd",
+      "sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/math3d.gd",
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/normal_compliance.gd",
+      "sha256": "74ef42459c7f82b848b77e5be76e2497c8f11e6f4a4f1affd06a9e8b7506be78"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/normal_contact_admission.gd",
+      "sha256": "fc64d263d0a1badc6a10949503c3c7a95b820638e4e9d39a9d0f5675def77541"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/rigid_body.gd",
+      "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/rotor_coupling.gd",
+      "sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/wheel_geometry.gd",
+      "sha256": "a92fda4198916ac89573aca1e58c879288c8b249146fac8de04713573fdba2f9"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/physics/wheel_profiles.gd",
+      "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/project.godot",
+      "sha256": "9ae2fee84a9b636fda505ec82ffd1a1508a96e2a6786ce6ff348cd6403e78220"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/sim/simulation.gd",
+      "sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/sim/vehicle_model.gd",
+      "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/tests/fixtures/ground_contact_default_outputs.bin",
+      "sha256": "85df6ec77ea772eb55a5d1b9942e4d828ea78fae25fd833b93d6a6af1ece5133"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/tests/fixtures/ground_contact_rest_nonzero.bin",
+      "sha256": "92f54f5b19bc9cc23826747070ca924587825d53b5fee690afcd21adca237a98"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/tests/fixtures/ground_contact_rest_proposal.bin",
+      "sha256": "3c75d979b6bd7d7b10dc534be2142312e4881548b7a11f2f34dfd61e4fbe9539"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/tests/fixtures/ground_contact_rest_range.bin",
+      "sha256": "caa37119b408baabb46aa40fe5d76ab036cc0dfdcb42a5d2f093d8941f0657f5"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/tests/fixtures/ground_contact_rest_slip.bin",
+      "sha256": "23471f7af97ea5c032a54e17c2e0cdc877fe55eaf13cef17609cc19ff4c5e449"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/tests/fixtures/ground_contact_rest_work.bin",
+      "sha256": "cb529ae633cd76e5a2a52e1975d33da4a653344ae85b2c0f67b9fcec9b1122c4"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/tests/test_aircraft_ground_step.gd",
+      "sha256": "ffc0abce7db26f2e026fab9a1cd27d5d07db8048e27dab915a6ce68bda59d2b7"
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/res-project/tests/test_contact_mass_prefix.gd",
+      "sha256": "841cc3c701c2895492bfa5e9234ad27d0c121b0a649edb6955ed954884a99f98"
+    }
+  ],
+  "hashes_capture": "tmp/gp12-mass-prefix-draft/checks/capture-public-step-fixed-parent-nbkyeaym/report.json"
+}

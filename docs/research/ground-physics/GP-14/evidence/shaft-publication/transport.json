@@ -1,0 +1,282 @@
+{
+  "format": "openrc-shaft-publication-transport-v1",
+  "ok": true,
+  "core_autocrlf": true,
+  "files_checked": 68,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "5c293bc4a8762da239e872f399f00ec843850aaa6fc9192ef734866aef22219b"
+    },
+    {
+      "path": "checks/audio-d7aziozc/engine.log",
+      "sha256": "0f67687c4654a77f2e0957de2e5aa7178a5714db94143dd1cb719cac94e2789f"
+    },
+    {
+      "path": "checks/audio-d7aziozc/report.json",
+      "sha256": "a9bd3df503828b58c628616b209e40bc616d1cab59be8f3bf13f70389ade4a47"
+    },
+    {
+      "path": "checks/common-reset-rhc1_jvj/engine.log",
+      "sha256": "4877214ed2bd087af2032681dc67169ea5cfb2c0783091583cbc8a324566f5d7"
+    },
+    {
+      "path": "checks/common-reset-rhc1_jvj/report.json",
+      "sha256": "55ee5bf703e073dcd1a0e70946b04c5f07646b631406a7df5c43eaa17f79e819"
+    },
+    {
+      "path": "checks/coupled-ncf6ukio/engine.log",
+      "sha256": "43ba9147d54ee1f8250dec591458afa5650dae7d732433b9cecb718aae2cf307"
+    },
+    {
+      "path": "checks/coupled-ncf6ukio/report.json",
+      "sha256": "9492048d4ab763586cd0d309e0d10ab52e68a4891495afddecbc996b156f98d5"
+    },
+    {
+      "path": "checks/log-t7yj9irw/engine.log",
+      "sha256": "de0f9e27bc37ce0ee2f7438635a5aba10771acf8b1827bed771a3919fec6b1bd"
+    },
+    {
+      "path": "checks/log-t7yj9irw/report.json",
+      "sha256": "67b63db0d3f820be37fbc77bcd55ab7516054880063e183f30487a18bc6c1d34"
+    },
+    {
+      "path": "checks/restore-q1ejio_q/engine.log",
+      "sha256": "0459beaa4b5c1af4be1451b01212b813f8036b093dbdbba4890f3c74c864cfb6"
+    },
+    {
+      "path": "checks/restore-q1ejio_q/report.json",
+      "sha256": "e44e3022fd653734ac5ffa27de3025c93807278da303478f753fcd99c3290d39"
+    },
+    {
+      "path": "checks/shaft-unvz4w72/engine.log",
+      "sha256": "3d7492f7e58b2b6b84a6abe0f5ca2e9a692929e97c0f7e0a0092892b36245b84"
+    },
+    {
+      "path": "checks/shaft-unvz4w72/report.json",
+      "sha256": "28e1819a8976421e1a583d8bdfb17192504fbb4d9bdcfeca3409c7088d346ecb"
+    },
+    {
+      "path": "checks/weather-egebzhiv/engine.log",
+      "sha256": "1f4bf01f8f6f61079ac437b9fd328e2ff3ea2b63764857035a2c34b81510fad5"
+    },
+    {
+      "path": "checks/weather-egebzhiv/report.json",
+      "sha256": "04460b9c79384a5bec7a009ae9f1e6b1f7132422f7278290c20189f8a79ee7ed"
+    },
+    {
+      "path": "development/baseline.json",
+      "sha256": "061ec509d169481dd4a10092b41c1080f3729dd58d3772a5207396ee4cff4240"
+    },
+    {
+      "path": "development/before.json",
+      "sha256": "b897d7b809af1ff88e5202d34ac3c7397011a83df0849b37aebb8b86b81c0516"
+    },
+    {
+      "path": "development/build.py",
+      "sha256": "4bb3bd1f51f8336085172c8b1d2cb2d98868f24b4d0d30ffdd1ff09e734e4aa8"
+    },
+    {
+      "path": "development/capture.gd",
+      "sha256": "00d4f9ef5b5e837ec0a4e0737bf0ffce66ff5e22e63d36ebdcf665c7fc340e34"
+    },
+    {
+      "path": "development/checks/baseline-49uvw3st/engine.log",
+      "sha256": "2e3fc2b11afa420d752a7485d988768209bfd66109114162af52dff29d43fc79"
+    },
+    {
+      "path": "development/checks/baseline-49uvw3st/report.json",
+      "sha256": "227f707279ae35b215152a48e6b6908be867b98c123c849cab73f1dd8c9e54aa"
+    },
+    {
+      "path": "development/checks/coupled-draft-68qza9_7/engine.log",
+      "sha256": "43ba9147d54ee1f8250dec591458afa5650dae7d732433b9cecb718aae2cf307"
+    },
+    {
+      "path": "development/checks/coupled-draft-68qza9_7/report.json",
+      "sha256": "9145ecaff431edba30ce84735f9c78e303a1c7c54e2a86ad1c58a7488ef8c28d"
+    },
+    {
+      "path": "development/checks/draft01-mhp27mhf/engine.log",
+      "sha256": "aaddd4109d589e858d8d765e458ea3c8058bb0deeb20d658c161369b6bdd4b96"
+    },
+    {
+      "path": "development/checks/draft01-mhp27mhf/report.json",
+      "sha256": "02a507852280a6b728b7936c8754e9cee9ea096cb0a1bf10e5ee87e7822446d7"
+    },
+    {
+      "path": "development/checks/draft02-z2gq9ik5/engine.log",
+      "sha256": "08191f783d5b89e2a595c63d1a9fe244d7f6e472cf8571335639f2b98e08671d"
+    },
+    {
+      "path": "development/checks/draft02-z2gq9ik5/report.json",
+      "sha256": "b47dfec318d9d06d6d3e1da4f69d662e2dd1ed059547ac7484f2d625f0a7bb52"
+    },
+    {
+      "path": "development/draft.py",
+      "sha256": "a3caba8af69300f3d214f7b9ed580cae489b53615205c6a2370b57f80364fae3"
+    },
+    {
+      "path": "development/flight_session.before.gd",
+      "sha256": "dd8278224b72e52dac03b37545d48c9e798d653f9ea11496d06c786c7061b345"
+    },
+    {
+      "path": "development/flight_session.gd",
+      "sha256": "2722c3d8d28382c38a81cf2f4311eb42f96430a765d4937e288bc91b3e7913d6"
+    },
+    {
+      "path": "development/independent-review.md",
+      "sha256": "3fcffd3825101df9d3d4c1e7dd6a6f45625cbe80888c19581ddec8be2a5ef78b"
+    },
+    {
+      "path": "development/promote.py",
+      "sha256": "893bc074c1619cb1ec377d21dde096caf4d8da0c9677c1b4ef6b4e9f7465ef9e"
+    },
+    {
+      "path": "development/promotion.json",
+      "sha256": "6faa0247f988feee153f59b8c375eb62ebf6ee0a7ebdea386e8a9c46048e542b"
+    },
+    {
+      "path": "development/promotion.patch",
+      "sha256": "17349f7d8ca723fb41a071aa421b0f4176f10726448095ec44150fae1c7be294"
+    },
+    {
+      "path": "development/test_shaft_publication.gd",
+      "sha256": "844ef55f977443395f3752d26e7b4d8c90ee7c87cade5f04d159b3fea4b3af94"
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "55cd43cd74dc87a30cf41b2509e009f184b6241bf6fc30c0ebfb9b244dbda5b8"
+    },
+    {
+      "path": "origins.json",
+      "sha256": "404aa34fca89bc0c10f4740632b1e6f63c800ec0337d9b62dc69f43dc5ab76f5"
+    },
+    {
+      "path": "README.md",
+      "sha256": "f62be4ade49aa3b32088f9be8fab239e836286a4306d4e5150f331cceb3739d6"
+    },
+    {
+      "path": "recordings/finite-refusal.orfl",
+      "sha256": "d54066c3e48770665760ca9b6cfa754ed31eb62012cc0c072f1b6fc6c1be3b3d"
+    },
+    {
+      "path": "recordings/observer-fault-mutation.orfl",
+      "sha256": "b5983c91393da3545492d9db90e3d34240e21cbd72494412982be3f4713a6b78"
+    },
+    {
+      "path": "recordings/observer-mass.orfl",
+      "sha256": "d31b920d62be7489ed0cb924a38ad377f2896784a4c41cd5274a2edc97a69f7e"
+    },
+    {
+      "path": "recordings/observer-model.orfl",
+      "sha256": "d31b920d62be7489ed0cb924a38ad377f2896784a4c41cd5274a2edc97a69f7e"
+    },
+    {
+      "path": "recordings/observer-pause-resume.orfl",
+      "sha256": "b5983c91393da3545492d9db90e3d34240e21cbd72494412982be3f4713a6b78"
+    },
+    {
+      "path": "recordings/observer-pause-step.orfl",
+      "sha256": "bd909b9823cf863339ee3cc2042ea9d8ba93aa0e2464b1afc115cf4af2d7ae05"
+    },
+    {
+      "path": "recordings/observer-reset.orfl",
+      "sha256": "a7417e66e375b393b5faa390aae4972a80a878703a27d952c40c707dcaa5d2ba"
+    },
+    {
+      "path": "recordings/observer-restore.orfl",
+      "sha256": "a7417e66e375b393b5faa390aae4972a80a878703a27d952c40c707dcaa5d2ba"
+    },
+    {
+      "path": "recordings/observer-shaft.orfl",
+      "sha256": "a7417e66e375b393b5faa390aae4972a80a878703a27d952c40c707dcaa5d2ba"
+    },
+    {
+      "path": "recordings/observer-state.orfl",
+      "sha256": "d31b920d62be7489ed0cb924a38ad377f2896784a4c41cd5274a2edc97a69f7e"
+    },
+    {
+      "path": "recordings/observer-step.orfl",
+      "sha256": "358463033c17dc7be23ee364400a6badabcb1d7ded9e55732e0179a28bbc66d6"
+    },
+    {
+      "path": "recordings/observer-weather.orfl",
+      "sha256": "a7417e66e375b393b5faa390aae4972a80a878703a27d952c40c707dcaa5d2ba"
+    },
+    {
+      "path": "recordings/pending-coupled-rk4.orfl",
+      "sha256": "8a74719d87c736780e73bb93e1555d729f91250ccb6d5a2307bab7d9661b257c"
+    },
+    {
+      "path": "recordings/pending-split.orfl",
+      "sha256": "880fa75f5c508550b4f26a0940b32609eb0266c1ff7adbac185873891dd49ed5"
+    },
+    {
+      "path": "recordings/preparation.orfl",
+      "sha256": "4b835eb31114548a2052285813ecb8d5adb3501375f35b24d2c09cbc0d673649"
+    },
+    {
+      "path": "recordings/refusal-false.orfl",
+      "sha256": "c810fba54c33991acfdcb7a6ba24c35b11ebeb48d4a35ead06c9a083a6704ec9"
+    },
+    {
+      "path": "recordings/refusal-true.orfl",
+      "sha256": "b4bf96f5ca6231f868a738d553e6bc835e4cb52c394d0455f151f23fdc2ae230"
+    },
+    {
+      "path": "recordings/reselection.orfl",
+      "sha256": "d31b920d62be7489ed0cb924a38ad377f2896784a4c41cd5274a2edc97a69f7e"
+    },
+    {
+      "path": "report.json",
+      "sha256": "225eb9c6ea728ec1b7c980d40aebbf76be01db18c032ebd4da44bbee701b1508"
+    },
+    {
+      "path": "source/app/sim/aircraft_propulsion_runtime.gd",
+      "sha256": "9fce4984366708ce7433e6501460dbf479deb9960f1839082541cb86c8e10444"
+    },
+    {
+      "path": "source/app/sim/flight_log.gd",
+      "sha256": "0646b053bae4a788883a7d13833ef24f3b43d8d30c07ea6edfc4715b038afaba"
+    },
+    {
+      "path": "source/app/sim/flight_session.gd",
+      "sha256": "2722c3d8d28382c38a81cf2f4311eb42f96430a765d4937e288bc91b3e7913d6"
+    },
+    {
+      "path": "source/app/sim/simulation.gd",
+      "sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490"
+    },
+    {
+      "path": "source/app/tests/test_flight_audio_accepted.gd",
+      "sha256": "bb02dc9e6272a72dcae1a086292379a6c236b462ed5f46a121459e2aa5a82659"
+    },
+    {
+      "path": "source/app/tests/test_flight_log.gd",
+      "sha256": "e5d5aa102039487a16ed9e68e809d58d6cc1d4830af6f0a2a276678560f2fea6"
+    },
+    {
+      "path": "source/app/tests/test_flight_reset_transaction.gd",
+      "sha256": "f69f28d57caae76655fdcf0d29554dbe494a18d62df00846bb38e7a3d6a06986"
+    },
+    {
+      "path": "source/app/tests/test_restore_publication.gd",
+      "sha256": "d504edcaf43ab0993d362470991c847f4245333ecefb36406d53ee4ba6f6b021"
+    },
+    {
+      "path": "source/app/tests/test_shaft_coupled.gd",
+      "sha256": "047cdd7c297d96833bef827b162469654e208eede83b2861996e30ed9177b60b"
+    },
+    {
+      "path": "source/app/tests/test_shaft_publication.gd",
+      "sha256": "844ef55f977443395f3752d26e7b4d8c90ee7c87cade5f04d159b3fea4b3af94"
+    },
+    {
+      "path": "source/app/tests/test_weather_publication.gd",
+      "sha256": "d702e3020475e7e3ced239b15ca7fdbd6bb0681ea58a79e4d0e20200e5e561c7"
+    }
+  ],
+  "scratch": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp14i-transport-gg71p152",
+  "scope": "Disposable cohort-only git repository and fresh clone; actual repository not staged or committed."
+}

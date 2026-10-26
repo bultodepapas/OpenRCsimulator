@@ -1,0 +1,54 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3ca03d8d-a5dc-4c2d-91f2-57133e5c2eea",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-gentle-qp-review/oracle.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T19:05:34.602619+00:00",
+  "label": "independent-weak-mode",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-gentle-qp-review\\checks\\independent-weak-mode-j4p8j3pn\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-gentle-qp-review\\checks\\independent-weak-mode-j4p8j3pn\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Independent weak-mode oracle:"
+  ],
+  "process_exit": 1,
+  "complete": false,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Invalid access to property or key 'full_mass' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-gentle-qp-review/oracle.gd:62)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-gentle-qp-review/oracle.gd:62)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "Independent weak-mode oracle:"
+  ],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 90.172,
+  "log_bytes": 409,
+  "log_sha256": "0ba14c27d0a5fcaa1bf7b177a1f6f366210c6b038b74da8c4b7e1d773b819bf8"
+}

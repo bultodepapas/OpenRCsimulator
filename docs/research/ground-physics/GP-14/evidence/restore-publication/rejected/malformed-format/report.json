@@ -1,0 +1,52 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1fddea4b-cd03-489d-a214-e7f606f055a4",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-restore-transaction/malformed_probe.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T16:50:30.283744+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-restore-transaction\\checks\\malformed-before\\godot-puaxf0vi\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-restore-transaction\\checks\\malformed-before\\godot-puaxf0vi\\report.json",
+  "timeout_seconds": 15.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Malformed restore completed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 4,
+      "message": "Invalid operands 'Array' and 'String' in operator '=='.",
+      "context": [
+        "   at: _restore_checkpoint_impl (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-restore-transaction/flight_session.gd:4994)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _restore_checkpoint_impl (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-restore-transaction/flight_session.gd:4994)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 2.984,
+  "log_bytes": 844,
+  "log_sha256": "fbb2357551f3d18688f074592b1ab6da414330244626fae9bece62af0483d674"
+}

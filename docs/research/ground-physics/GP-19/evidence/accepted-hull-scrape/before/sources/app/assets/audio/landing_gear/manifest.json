@@ -1,0 +1,174 @@
+{
+  "assets": [
+    {
+      "channels": 1,
+      "duration_s": 5.6,
+      "edits": {
+        "crossfade_s": 0.55,
+        "duration_s": 6.15,
+        "highpass_hz": 55.0,
+        "lowpass_hz": 4200.0,
+        "peak_cap": 0.42,
+        "source": "hard",
+        "start_s": 0.35,
+        "target_rms": 0.025
+      },
+      "file": "hard_roll.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_step_p99": 0.010986328125,
+        "peak": 0.18817138671875,
+        "rms": 0.024999257468261923,
+        "seam_step": 0.00433349609375
+      },
+      "sample_count": 123480,
+      "sample_rate_hz": 22050,
+      "sha256": "1b7dd9db16a78bc639ff1bb3b50a35113698950771c0f31e196f20da1c43c41b",
+      "source": "hard"
+    },
+    {
+      "channels": 1,
+      "duration_s": 2.8299773242630386,
+      "edits": {
+        "crossfade_s": 0.42,
+        "duration_s": 3.25,
+        "highpass_hz": 80.0,
+        "lowpass_hz": 2600.0,
+        "peak_cap": 0.38,
+        "source": "grass",
+        "start_s": 0.18,
+        "target_rms": 0.012
+      },
+      "file": "grass_roll.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_step_p99": 0.006561279296875,
+        "peak": 0.328369140625,
+        "rms": 0.011999676929929494,
+        "seam_step": 0.0
+      },
+      "sample_count": 62401,
+      "sample_rate_hz": 22050,
+      "sha256": "7d4b39a86131e77930f03b6c3d95e6dcc22fa28413e3ad9fa72de2efb14c6538",
+      "source": "grass"
+    },
+    {
+      "channels": 1,
+      "duration_s": 1.5699773242630386,
+      "edits": {
+        "crossfade_s": 0.28,
+        "duration_s": 1.85,
+        "highpass_hz": 70.0,
+        "lowpass_hz": 4800.0,
+        "peak_cap": 0.42,
+        "source": "gravel",
+        "start_s": 0.28,
+        "target_rms": 0.035
+      },
+      "file": "gravel_roll.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_step_p99": 0.0152587890625,
+        "peak": 0.183746337890625,
+        "rms": 0.03499890626077103,
+        "seam_step": 0.000274658203125
+      },
+      "sample_count": 34618,
+      "sample_rate_hz": 22050,
+      "sha256": "44d6454490c4aa9cd4231b4436fd80e1f961e4fe5addd1741d603ee1bf785bea",
+      "source": "gravel"
+    },
+    {
+      "channels": 1,
+      "duration_s": 0.48,
+      "edits": {
+        "duration_s": 0.48,
+        "fade_in_s": 0.004,
+        "fade_out_s": 0.055,
+        "highpass_hz": 28.0,
+        "lowpass_hz": 5200.0,
+        "peak_cap": 0.72,
+        "source": "touchdown",
+        "start_s": 1.86,
+        "target_rms": 0.105
+      },
+      "file": "touchdown.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": false,
+      "metrics": {
+        "interior_step_p99": 0.01910400390625,
+        "peak": 0.510223388671875,
+        "rms": 0.10499683612471081,
+        "seam_step": 0.0
+      },
+      "sample_count": 10584,
+      "sample_rate_hz": 22050,
+      "sha256": "402673266e32ae4a2e6bdc46cc81375ef38bc5dd0ca2d403773e41f8e23981dd",
+      "source": "touchdown"
+    }
+  ],
+  "decoded_pcm_bytes": 462166,
+  "dependencies": {
+    "miniaudio": "1.71",
+    "numpy": "2.4.6"
+  },
+  "format": "openrc-landing-gear-audio v1",
+  "generator": "tools/audio/import_landing_gear.py",
+  "sources": {
+    "grass": {
+      "author": "FOSSarts",
+      "decoded_duration_s": 3.6253514739229025,
+      "download": "https://cdn.freesound.org/previews/740/740144_14631530-hq.mp3",
+      "file": "grass_footstep_texture_hq.mp3",
+      "format": "public HQ MP3 preview; original upload not bundled",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/FOSSarts/sounds/740144/",
+      "retrieved": "2026-10-20",
+      "sha256": "c622700a7953800eeda4fc3075f5ce26f2d7ea1739bdf528b903fbf403e07747",
+      "title": "stepping on grass 1"
+    },
+    "gravel": {
+      "author": "alexftw123",
+      "decoded_duration_s": 6.5,
+      "download": "https://cdn.freesound.org/previews/152/152657_2475830-hq.mp3",
+      "file": "gravel_wheel_spin_hq.mp3",
+      "format": "public HQ MP3 preview; original upload not bundled",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/alexftw123/sounds/152657/",
+      "retrieved": "2026-10-20",
+      "sha256": "bdcbb4e2fb5998673f9034140b0fdd29e4d913fcb066886f83a607843618088d",
+      "title": "Wheel Spin on Gravel.wav"
+    },
+    "hard": {
+      "author": "FOSSarts",
+      "decoded_duration_s": 7.316009070294784,
+      "download": "https://cdn.freesound.org/previews/740/740125_14631530-hq.mp3",
+      "file": "hard_skateboard_roll_hq.mp3",
+      "format": "public HQ MP3 preview; original upload not bundled",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/FOSSarts/sounds/740125/",
+      "retrieved": "2026-10-20",
+      "sha256": "3ca0b4ea4e6d5df0c91aeedebb12793f675d0b8ffc1a22aec57872492c09c584",
+      "title": "skateboard rolling slow 2"
+    },
+    "touchdown": {
+      "author": "Grotelue",
+      "decoded_duration_s": 12.408163265306122,
+      "download": "https://cdn.freesound.org/previews/204/204737_1858978-hq.mp3",
+      "file": "sailplane_landing_hq.mp3",
+      "format": "public HQ MP3 preview; original upload not bundled",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/Grotelue/sounds/204737/",
+      "retrieved": "2026-10-20",
+      "sha256": "940a614406ed262135727d0b29664e75c9fe936a0d57ad80d951f1f18962a0ab",
+      "title": "Sailplane Landing.wav"
+    }
+  }
+}

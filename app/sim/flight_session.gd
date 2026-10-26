@@ -125,17 +125,51 @@ func setup_shaft_integrator(mode: Variant) -> bool:
 	if mode == "split" and aircraft.get("ok", false) and (Propulsion.is_electric(aircraft.model.propulsion) or glow_is_active() or (liquid_fuel_is_active() and not Turbine.is_turbine(aircraft.model.propulsion))):
 		shaft_error = "finite propeller propulsion requires coupled-rk4"
 		return false
-	_shaft_explicit = true
 	if mode == _shaft_integrator:
+		_shaft_explicit = true
 		shaft_error = ""
 		return true
-	resetting.emit()
+	if sim == null:
+		_shaft_explicit = true
+		_shaft_integrator = mode
+		_shaft_pending_reset = false
+		shaft_error = ""
+		return true
+	var transaction := _begin_start_transaction()
+	# Capture the old recorder boundary before selecting the new layout. Reading
+	# that checkpoint may invoke a model validator, so preparation is guarded too.
+	var intact: bool = sim._endpoint_guard_matches(transaction.kernel)
+	for field: String in _START_OWNER_FIELDS:
+		intact = intact and Sim._guard_values_equal(get(field), transaction.owner[field])
+	if _reset_transaction_reentry or not intact:
+		_refuse_start_transaction(transaction, "shaft preparation changed the installed owner")
+		shaft_error = "shaft preparation changed the installed owner"
+		return false
+	_shaft_explicit = true
 	_shaft_integrator = mode
-	_shaft_pending_reset = sim != null
-	if sim != null:
-		_configure_continuous_callbacks()
-		sim.set_paused(true)
+	_shaft_pending_reset = true
+	var callbacks: Dictionary = PropulsionRuntime.prepare_callbacks(self)
+	if not callbacks.ok:
+		_refuse_start_transaction(transaction, "shaft callback preparation failed")
+		shaft_error = "shaft callback preparation failed: " + str(callbacks.get("errors", []))
+		return false
+	_install_continuous_callbacks(callbacks)
 	shaft_error = ""
+	# Pending selection is accepted now. The explicit reset still constructs the
+	# physical layout and owns statistics credit; no sample is published here.
+	transaction.committed = true
+	_reset_physical_committed = true
+	sim.reset_observer_fault = ""
+	sim._publish_committed_boundary(func() -> void:
+		_reset_publication_active = true
+		_reset_closing_context = transaction.closing
+		resetting.emit()
+		_reset_closing_context = {}
+		_reset_publication_active = false, false, "shaft configuration", true)
+	_end_start_transaction(transaction)
+	if not sim.reset_observer_fault.is_empty():
+		shaft_error = sim.reset_observer_fault
+		pause_reason = "simulation fault: " + shaft_error
 	return true
 
 
@@ -366,12 +400,40 @@ func setup_weather(settings: Variant) -> bool:
 	if sim != null and sim.tick > 0:
 		weather_error = "weather changes require a new flight or reset boundary"
 		return false
-	resetting.emit() # a recording cannot span an environment-identity change
+	# Before setup there is no installed flight or recorder to close.
+	if sim == null:
+		_weather = built.field
+		_weather_pending_reset = false
+		weather_error = ""
+		return true
+	var transaction := _begin_start_transaction()
+	# Even obtaining the old closing checkpoint can invoke the model validator.
+	# Refuse before notification if that read attempted to change the owner.
+	var intact: bool = sim._endpoint_guard_matches(transaction.kernel)
+	for field: String in _START_OWNER_FIELDS:
+		intact = intact and Sim._guard_values_equal(get(field), transaction.owner[field])
+	if _reset_transaction_reentry or not intact:
+		_refuse_start_transaction(transaction, "weather preparation changed the installed owner")
+		weather_error = "weather preparation changed the installed owner"
+		return false
 	_weather = built.field
-	_weather_pending_reset = sim != null
-	if sim != null:
-		sim.set_paused(true)
+	_weather_pending_reset = true
 	weather_error = ""
+	# This accepts a pending configuration, not a new physical start. Keep the
+	# historical setup_weather(); reset() contract, with no tick or credit here.
+	transaction.committed = true
+	_reset_physical_committed = true # Post-acceptance presentation holds are legal.
+	sim.reset_observer_fault = ""
+	sim._publish_committed_boundary(func() -> void:
+		_reset_publication_active = true
+		_reset_closing_context = transaction.closing
+		resetting.emit()
+		_reset_closing_context = {}
+		_reset_publication_active = false, false, "weather configuration", true)
+	_end_start_transaction(transaction)
+	if not sim.reset_observer_fault.is_empty():
+		weather_error = sim.reset_observer_fault
+		pause_reason = "simulation fault: " + weather_error
 	return true
 
 
@@ -808,10 +870,12 @@ func _trim_model(model: Dictionary) -> Dictionary:
 	query.trim_mass_properties = properties
 	return query
 
-## Closes the previous flight's observers before the reset tick0 sample. On the
-## prepared start routes physical commit has already succeeded; old recorders
+## Closes the previous observers after accepted start/restore commit. Starts
+## notify before tick0; restore notifies before its pause, without a tick sample.
+## Physical commit has already succeeded; old recorders
 ## read reset_closing_context(), and a presentation hold may pause the new flight.
-## Historical restore/configuration routes retain their established ordering.
+## Pending weather selection uses the same guarded closure without a tick.
+## Shaft configuration retains its historical ordering pending migration.
 signal resetting
 var _reset_publication_active := false
 var _reset_transaction_active := false
@@ -826,11 +890,11 @@ func reset_closing_context() -> Dictionary:
 	return _reset_closing_context.duplicate(true) if _reset_publication_active else {}
 
 
-## One Session owner for start preparation and publication. The kernel guard
+## One Session owner for start/restore preparation and publication. The kernel guard
 ## restores its declared fields/model; this bounded owner list covers the staged
 ## aircraft, initial-state builders and accepted histories. It is not a sandbox
 ## for arbitrary external data captured by a callback.
-const _START_OWNER_FIELDS := ["aircraft", "start", "trims", "commands", "raw", "pause_reason", "start_error",
+const _START_OWNER_FIELDS := ["_weather", "fuel_start_fill", "input_enabled", "aircraft", "start", "trims", "commands", "raw", "pause_reason", "start_error",
 	"_launch_metadata", "_failures", "_gear_requested_down", "_wheel_brake_demand", "_gear_request_inhibited",
 	"_gear_cache_fraction", "_gear_cache", "_flap_requested", "_weather_pending_reset", "_shaft_pending_reset",
 	"_shaft_integrator", "_shaft_explicit", "_turbulence_aux_index", "_trim_density", "_trim_charge",
@@ -1092,6 +1156,9 @@ var ground_field_id := ""
 ## M5-GE-1: CG height above the ground beyond which no wing strip is in ground effect; 0 = no aero.ground_effect module.
 var _ground_effect_reach: float = 0.0
 var surface_error := ""
+## Last refused replacement; unlike surface_error this does not invalidate the installed field.
+var field_update_error := ""
+var _field_installed := false
 ## Detached scalar proxy inventory; empty keeps the legacy no-world path byte-for-byte unchanged.
 var _collision_world: Dictionary = {}
 var _last_scenery_event: SceneryCollision.Event = null
@@ -1498,8 +1565,9 @@ func set_controller_cut(held: bool) -> void:
 	if held: controller_throttle_cut()
 
 
-## E3a: the wheels roll on this field's surfaces (a validated FieldLoader field). Invalid surface data refuses the
-## flight (like invalid aircraft data). Returns false on failure; call reset() afterwards to restart on them.
+## E3a: the wheels roll on this field's surfaces (a validated FieldLoader field).
+## Initial invalid data refuses flight; a refused replacement retains the installed field.
+## Accepted installation emits no reset; call reset() afterwards to restart on it.
 func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> bool:
 	if _reject_reset_publication_reentry(): return false
 	var table := GroundSurfaces.load_table(table_path)
@@ -1507,7 +1575,10 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 	var airframe := GroundSurfaces.build_airframe(table.table, field) if built.ok else built
 	if not built.ok or not airframe.ok:
 		built = built if not built.ok else airframe
-		surface_error = "ground surfaces invalid: " + str(built.errors[0] if not built.errors.is_empty() else "unknown")
+		field_update_error = "ground surfaces invalid: " + str(built.errors[0] if not built.errors.is_empty() else "unknown")
+		if _field_installed:
+			return false
+		surface_error = field_update_error
 		ground_surfaces = PackedFloat64Array()
 		airframe_surfaces = PackedFloat64Array()
 		ground_field_id = ""
@@ -1517,6 +1588,7 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 		printerr(surface_error)
 		return false
 	surface_error = ""
+	field_update_error = ""
 	ground_surfaces = built.rects
 	airframe_surfaces = airframe.rects
 	# The builder validated this provenance against the exact legacy rectangles.
@@ -1524,6 +1596,7 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 	environment.install_ground_registry(built.regions)
 	ground_field_id = str(field.get("id", "?"))
 	_runway_field = field.duplicate(true)
+	_field_installed = true
 	return true
 
 
@@ -1870,6 +1943,11 @@ func _configure_continuous_callbacks() -> void:
 	if not prepared.ok:
 		push_error("Cannot prepare aircraft propulsion: " + str(prepared.get("errors", [])))
 		return
+	_install_continuous_callbacks(prepared)
+
+
+## Install only an already prepared callback set; this does not advance state.
+func _install_continuous_callbacks(prepared: Dictionary) -> void:
 	for field: String in PropulsionRuntime.CALLBACK_FIELDS:
 		sim.model.set(field, prepared[field])
 	if sim.model.stage.is_valid() and _substep_preview_supported():
@@ -1991,6 +2069,65 @@ func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 	contact_events_changed.emit()
 	if failure_activated:
 		failure_changed.emit() # owner contact/scenery state is now checkpointable at the same accepted tick
+
+
+## GP-19 derived presentation cache, never serialized or used by physics.
+var _hull_scrape_cache_key := PackedByteArray()
+var _hull_scrape_cache := {}
+
+
+## Accepted endpoint instantaneous friction power. Guard pending configuration
+## BEFORE reading live mass/source layouts. First scope is flat solid ground.
+func hull_scrape_observation() -> Dictionary:
+	var result := {schema = "openrc-hull-friction-observation", version = 1,
+		tick = _contact_tick, generation = statistics_generation, law_identity = HullContact.law(),
+		available = false, sampling = "accepted_endpoint_instantaneous_power", contacts = [], reason = "flight_not_ready"}
+	if sim == null or not _flight_ready():
+		return result
+	if not soft_hull_contacts or _hull_contact.is_empty():
+		result.reason = "soft_hull_unavailable"
+		return result
+	if _contact_tick < 0 or _contact_tick != sim.tick:
+		result.reason = "no_current_accepted_hull_tick"
+		return result
+	# State/layout/field binding changes invalidate even at the same clock value.
+	# The owner-supplied accepted state is observed once; render only drains audio.
+	var key := var_to_bytes([sim.tick, statistics_generation, sim.state, sim.continuous,
+		_hull_contact, _contact_bindings, _lake, environment.surfaces, environment._ground_support])
+	if key == _hull_scrape_cache_key:
+		return _hull_scrape_cache.duplicate(true)
+	var diagnostics := {}
+	if finite_fuel_is_active():
+		var properties := mass_properties()
+		var sampled := HullContact.loads_at_properties(sim.state, _hull_contact, properties, diagnostics)
+		if not sampled.ok:
+			result.reason = "live_mass_contact_unavailable"
+			return result
+	else:
+		HullContact.loads(sim.state, _hull_contact, [], diagnostics)
+	if not diagnostics.available:
+		result.reason = str(diagnostics.reason)
+		return result
+	var probes: Array = _contact_bindings.get("hull_probes", [])
+	var rows: Array = []
+	for diagnostic: Dictionary in diagnostics.rows:
+		var index: int = diagnostic.index
+		if index < 0 or index >= probes.size():
+			result.reason = "hull_binding_unavailable"
+			return result
+		var support := environment.sample_support(diagnostic.point_ned,
+			diagnostic.relative_tangent_velocity_ned_mps, sim.time())
+		var row := diagnostic.duplicate(true)
+		row.erase("index")
+		row.contact_id = str(probes[index].id)
+		row.material_id = str(support.get("material_id", "")) if support.get("ok", false) else ""
+		rows.append(row)
+	result.contacts = rows
+	result.available = true
+	result.reason = ""
+	_hull_scrape_cache_key = key
+	_hull_scrape_cache = result.duplicate(true)
+	return result
 
 
 func contact_events() -> Dictionary:
@@ -2120,6 +2257,8 @@ func _clear_pending_contacts() -> void:
 
 
 func _reset_contact_history() -> void:
+	_hull_scrape_cache_key = PackedByteArray()
+	_hull_scrape_cache = {}
 	_contact_tick = -1
 	_soft_contacts_cache_tick = -1
 	_contact_events.clear()
@@ -2128,6 +2267,8 @@ func _reset_contact_history() -> void:
 
 
 func _restore_contact_history(record: Dictionary) -> void:
+	_hull_scrape_cache_key = PackedByteArray()
+	_hull_scrape_cache = {}
 	_contact_tick = int(record.tick)
 	_soft_contacts_cache_tick = -1
 	_active_hull_ids = record.active_hull_ids.duplicate()
@@ -4972,13 +5113,26 @@ func _configuration_for_weather(field: WeatherField) -> String:
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
 func restore_checkpoint(candidate: Dictionary) -> bool:
 	if _reject_reset_publication_reentry(): return false
-	var restored: bool = _restore_checkpoint_impl(candidate)
-	if restored:
-		_statistics_committed("checkpoint_restore")
-	return restored
+	var transaction := _begin_start_transaction()
+	var restored := false
+	if not _reset_transaction_reentry:
+		restored = _restore_checkpoint_impl(candidate, transaction)
+	if not restored:
+		_refuse_start_transaction(transaction, "checkpoint restore refused")
+		return false
+	_end_start_transaction(transaction)
+	if not sim.reset_observer_fault.is_empty():
+		start_error = sim.reset_observer_fault
+		pause_reason = "simulation fault: " + start_error
+		_launch_metadata.launch_error = start_error
+	# This existing receipt enters the service's noncredit replay branch; it
+	# does not credit a restarted flight or restored flight time.
+	_statistics_committed("checkpoint_restore")
+	return true
 
 
-func _restore_checkpoint_impl(candidate: Dictionary) -> bool:
+func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) -> bool:
+	if typeof(candidate.get("format")) != TYPE_STRING: return false
 	var spatial_boundary: bool = candidate.get("format") == SPATIAL_CHECKPOINT_FORMAT
 	if spatial_boundary:
 		var spatial_built := WeatherField.build(candidate.get("weather_config"))
@@ -5204,53 +5358,55 @@ func _restore_checkpoint_impl(candidate: Dictionary) -> bool:
 		restored_contacts = candidate.contact_state.duplicate(true)
 	else:
 		restored_contacts = _legacy_contact_history(snapshot)
-	resetting.emit() # close recording before the clock moves backwards
-	# Layout was fully preflighted above; resize only at this owner-controlled environment boundary.
-	var old_aux: PackedFloat64Array = sim.aux
-	var old_modes: PackedInt64Array = sim.modes
+	if _reset_transaction_reentry: return false
+	# Final kernel validation uses the existing owner-controlled width staging.
+	# The common transaction restores it silently on any precommit refusal.
 	sim.aux = snapshot.aux.duplicate()
 	sim.modes = snapshot.modes.duplicate()
-	if not sim.restore_checkpoint(snapshot):
-		sim.aux = old_aux
-		sim.modes = old_modes
-		return false
-	if gear_is_retractable():
-		_gear_requested_down = snapshot.inputs[4] == 1.0
-		_wheel_brake_demand = snapshot.inputs[5]
-		_gear_cache_fraction = -1.0
-		_gear_request_inhibited = false
-	_flap_requested = snapshot.inputs[flap_input_index()] if flaps_available() else 0.0
-	fuel_start_fill = restored_fuel_fill
-	_fuel_start_fill_known = restored_fuel_fill_known
-	_failures = restored_failures
-	_scenery_damage = restored_damage
-	_restore_contact_history(restored_contacts)
-	if soft_hull_contacts:
-		_refresh_soft_contacts()
-	else:
-		soft_contacts = []
-		_soft_contacts_cache_tick = -1
-	_clear_pending_scenery_damage()
-	_weather = restored_weather
-	_weather_pending_reset = false
-	_shaft_pending_reset = false
-	_turbulence_aux_index = expected_aux - 7 if turbulent else -1
-	# v1 checkpoints contain physics only, not the source flight's launch provenance. Never attribute the
-	# restored state to this destination session's earlier launch. reset() will establish a new known launch.
-	_launch_metadata = {
-		selected_start_choice = "unknown", launch_choice = "unknown", launch_kind = "checkpoint_restore",
-		launch_field_id = "", launch_state = "[]", launch_aux = "[]", launch_ground_anchors = "[]",
-		launch_engine_running = "unknown", launch_trim_throttle = "unknown", launch_error = "",
-	}
-	input_enabled = false
-	crash = {}
-	_last_scenery_event = null
-	_last_lake_event = null
-	pause_reason = "checkpoint restored (recorded inputs)"
-	_deflection_key = PackedFloat64Array()
-	scenery_damage_changed.emit()
-	contact_events_changed.emit()
-	return true
+	return sim.restore_checkpoint(snapshot, func() -> void:
+		transaction.committed = true
+		_reset_physical_committed = true
+		_reset_publication_active = true
+		_reset_closing_context = transaction.closing
+		resetting.emit()
+		if gear_is_retractable():
+			_gear_requested_down = snapshot.inputs[4] == 1.0
+			_wheel_brake_demand = snapshot.inputs[5]
+			_gear_cache_fraction = -1.0
+			_gear_request_inhibited = false
+		_flap_requested = snapshot.inputs[flap_input_index()] if flaps_available() else 0.0
+		fuel_start_fill = restored_fuel_fill
+		_fuel_start_fill_known = restored_fuel_fill_known
+		_failures = restored_failures
+		_scenery_damage = restored_damage
+		_restore_contact_history(restored_contacts)
+		if soft_hull_contacts:
+			_refresh_soft_contacts()
+		else:
+			soft_contacts = []
+			_soft_contacts_cache_tick = -1
+		_clear_pending_scenery_damage()
+		_weather = restored_weather
+		_weather_pending_reset = false
+		_shaft_pending_reset = false
+		_turbulence_aux_index = expected_aux - 7 if turbulent else -1
+		# v1 checkpoints contain physics only, not the source flight's launch provenance. Never attribute the
+		# restored state to this destination session's earlier launch. reset() will establish a new known launch.
+		_launch_metadata = {
+			selected_start_choice = "unknown", launch_choice = "unknown", launch_kind = "checkpoint_restore",
+			launch_field_id = "", launch_state = "[]", launch_aux = "[]", launch_ground_anchors = "[]",
+			launch_engine_running = "unknown", launch_trim_throttle = "unknown", launch_error = "",
+		}
+		input_enabled = false
+		crash = {}
+		_last_scenery_event = null
+		_last_lake_event = null
+		pause_reason = "checkpoint restored (recorded inputs)"
+		_deflection_key = PackedFloat64Array()
+		scenery_damage_changed.emit()
+		contact_events_changed.emit()
+		_reset_closing_context = {}
+		_reset_publication_active = false)
 
 
 func _scenery_damage_is_valid(damage: Dictionary, snapshot_tick: int) -> bool:

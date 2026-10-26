@@ -43,9 +43,20 @@ const MAX_STATE_SIZE := 256
 ## The owner allocates its tick budget over at most 2*16 accepted solves, e.g.
 ## tick_budget/32. Discarded attempts publish no proof or work. The accepted
 ## opt-in receipt retains outward sums of actual Gamma/objective-gap bounds.
+## Optional normal_loss_policy(s,t,h,sample)->EXACT {ok,eligible,identity} is
+## trusted OWNER authority, like derivative/certificate, not receipt metadata.
+## It runs after the actual prekick and must bind/revalidate its actual evaluator,
+## fixed mechanics/provider and interval source/brake/external-wrench exclusions.
+## Generic Step cannot authenticate captured closures. Eligible samples provide
+## normal_support_potential_j>=0 and a stable normal_support_identity; all actual
+## RK normal evaluations and endpoint loads must be zero. Heat is the per-piece
+## support-potential decrease (no gravity/clamp), before piece-energy admission.
+## Otherwise RK heat is unchanged. Opted-in receipts explicitly record every
+## piece method/loss/residual; an absent policy preserves legacy receipt bytes.
 static func advance(initial: PackedFloat64Array, time_s: float, dt: float,
 		derivative: Callable, first: PackedFloat64Array, evaluate: Callable,
-		certificate: Callable, options: Dictionary = {}, error_gate: Callable = Callable()) -> Dictionary:
+		certificate: Callable, options: Dictionary = {}, error_gate: Callable = Callable(),
+		normal_loss_policy: Callable = Callable(),mass_proof:RefCounted=null) -> Dictionary:
 	var settings := _settings(options)
 	if not settings.ok: return _operator_failure(settings,options)
 	if not _state(initial) or not is_finite(time_s) or time_s < 0.0 or not is_finite(dt) \
@@ -53,6 +64,9 @@ static func advance(initial: PackedFloat64Array, time_s: float, dt: float,
 		or not derivative.is_valid() or not evaluate.is_valid() or not certificate.is_valid() \
 		or (not first.is_empty() and (first.size() != initial.size() or not _finite(first))):
 		return _operator_failure(_failure("invalid bounded state, time or callbacks"),settings)
+	if not normal_loss_policy.is_null() and (not normal_loss_policy.is_valid() or normal_loss_policy.get_argument_count()!=4):
+		return _operator_failure(_failure("normal loss policy requires exactly four arguments", "invalid_normal_loss_policy"),settings)
+	var policy_pin:Dictionary={}
 	var start := _sample(evaluate, initial, time_s)
 	if not start.ok: return _operator_failure(start,settings)
 	if not _domain(initial, start): return _operator_failure(_failure("initial reverse rotor state is unsupported", "unsupported_reverse"),settings)
@@ -62,7 +76,7 @@ static func advance(initial: PackedFloat64Array, time_s: float, dt: float,
 	var gate_identity := ""
 	for attempt in 5:
 		if count > settings.max_substeps: break
-		var trial := _attempt(initial, time_s, dt, derivative, first, evaluate, certificate, start, count, settings)
+		var trial := _attempt(initial, time_s, dt, derivative, first, evaluate, certificate, start, count, settings,normal_loss_policy,policy_pin,mass_proof)
 		if settings.operator_law!=LAW and not trial.ok: trial.law=settings.operator_law
 		if trial.ok:
 			had_admissible = true
@@ -120,9 +134,9 @@ static func _error_control(gate: Callable, coarse: Dictionary, fine: Dictionary,
 
 static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
 		first: PackedFloat64Array, evaluate: Callable, certificate: Callable,
-		start: Dictionary, count: int, settings: Dictionary) -> Dictionary:
+		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={},mass_proof:RefCounted=null) -> Dictionary:
 	if settings.operator_law==TWO_SIDED_LAW:
-		return _operator_failure(_attempt_two_sided(initial,time_s,dt,derivative,first,evaluate,certificate,start,count,settings),settings)
+		return _operator_failure(_attempt_two_sided(initial,time_s,dt,derivative,first,evaluate,certificate,start,count,settings,normal_loss_policy,policy_pin,mass_proof),settings)
 	var state := initial.duplicate()
 	var sample := start
 	var h := dt / count
@@ -132,6 +146,7 @@ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, deri
 	var peak_times := PackedFloat64Array()
 	peak_times.resize(peaks.size())
 	peak_times.fill(time_s)
+	var loss_pieces:Array=[]
 	var normal_loss := 0.0
 	var external_work := 0.0
 	var tangent_loss := 0.0
@@ -151,9 +166,16 @@ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, deri
 		if not certified.ok: return _failure("whole-piece certificate is unsupported", "unsupported_certificate")
 		if not certified.admitted: return _failure("whole-piece refinement required", "refine")
 		if not certificate_ids.has(certified.identity): certificate_ids.append(certified.identity)
+		var loss_policy:=_loss_policy(normal_loss_policy,state,at,h,sample,policy_pin)
+		if not loss_policy.ok:return loss_policy
+		if loss_policy.eligible and not _loss_same_potential(sample,sample):return _failure("prekick changed support potential or identity","invalid_normal_loss_policy")
 		# These are RK algebraic evaluations ONLY. Store quadrature power, never
 		# damage maxima. A rejected attempt discards every sample and integral.
 		var quadrature: Array = [PackedFloat64Array([sample.normal_dissipation_w, sample.external_power_w])]
+		var zero_samples:={count=0}
+		if loss_policy.eligible:
+			if not _loss_zero_sample(sample,sample):return _failure("eligible initial normal sample is loaded or malformed","invalid_normal_loss_policy")
+			zero_samples.count=1
 		var tracker := {ok = true, reason = ""}
 		var tracked := func(values: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
 			if not _state(values):
@@ -165,6 +187,10 @@ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, deri
 				tracker.ok = false
 				tracker.reason = "stage snapshot refused or changed the fixed binding"
 				return _zeros(initial.size())
+			if loss_policy.eligible:
+				if not _loss_zero_sample(sample,point):
+					tracker.ok=false;tracker.reason="qualified RK normal sample is loaded or binding changed";return _zeros(initial.size())
+				zero_samples.count+=1
 			quadrature.append(PackedFloat64Array([point.normal_dissipation_w, point.external_power_w]))
 			var raw: Variant = derivative.call(values.duplicate(), stage_t)
 			if typeof(raw) != TYPE_PACKED_FLOAT64_ARRAY or raw.size() != initial.size() or not _finite(raw):
@@ -175,6 +201,9 @@ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, deri
 		var raw_k1: Variant = first if piece == 0 and not first.is_empty() else derivative.call(state.duplicate(), at)
 		if typeof(raw_k1) != TYPE_PACKED_FLOAT64_ARRAY or raw_k1.size() != initial.size() or not _finite(raw_k1):
 			return _failure("malformed initial continuous derivative")
+		if loss_policy.eligible and piece==0 and not first.is_empty():
+			var verified_k1:Variant=derivative.call(state.duplicate(),at)
+			if typeof(verified_k1)!=TYPE_PACKED_FLOAT64_ARRAY or verified_k1!=raw_k1:return _failure("qualified owner k1 disagrees with supplied derivative","invalid_normal_loss_policy")
 		var k1: PackedFloat64Array = raw_k1
 		var candidate := RK.rk4_step_at(state, at, h, tracked, k1)
 		if not tracker.ok or quadrature.size() != 4 or not _state(candidate):
@@ -190,7 +219,7 @@ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, deri
 				return _failure("impulse time scaling underflow")
 		var applied := Impulse.apply(before_impulse.rotor_stage, before_impulse.mass_kg, velocity_cm,
 			before_impulse.jacobian, before_impulse.slip_bias, limits, before_impulse.groups, settings.qp_iterations,
-			before_impulse.get("capture", {}), settings.maximum_assembly_resolution_j)
+			before_impulse.get("capture", {}), settings.maximum_assembly_resolution_j,mass_proof)
 		if not applied.ok: return _failure("simultaneous contact impulse refused: " + str(applied.get("reason", "invalid")), "traction_rejected")
 		if not _record_resolution(resolution_stats,applied): return _failure("assembly resolution diagnostic overflow")
 		var next := candidate.duplicate()
@@ -209,6 +238,10 @@ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, deri
 		if absf(potential_change) > 1e-12 * maxf(1.0, maxf(absf(accepted.potential_j), absf(before_impulse.potential_j))):
 			return _failure("velocity-only impulse changed recoverable potential")
 		var piece_normal: float = h / 6.0 * (quadrature[0][0] + 2 * quadrature[1][0] + 2 * quadrature[2][0] + quadrature[3][0])
+		if loss_policy.eligible:
+			if not _loss_zero_sample(sample,before_impulse) or not _loss_same_potential(before_impulse,accepted):return _failure("qualified endpoint/potential binding changed","invalid_normal_loss_policy")
+			piece_normal=sample.normal_support_potential_j-before_impulse.normal_support_potential_j
+			if not is_finite(piece_normal) or piece_normal<0.0:return _failure("qualified support potential increased; no heat clamp","invalid_normal_loss_policy")
 		var piece_work: float = h / 6.0 * (quadrature[0][1] + 2 * quadrature[1][1] + 2 * quadrature[2][1] + quadrature[3][1])
 		var before_energy := _energy(state, sample)
 		var after_energy := _energy(next, accepted)
@@ -218,6 +251,11 @@ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, deri
 			return _failure("normal/contact work overflow")
 		if absf(residual) > settings.energy_absolute_tolerance_j + settings.energy_relative_tolerance * scale:
 			return _failure("normal/contact work accuracy requires refinement", "refine")
+		if normal_loss_policy.is_valid():
+			var entry:={method="unloaded_support_potential_difference_v1" if loss_policy.eligible else "RK4_normal_power_v1",normal_dissipation_j=piece_normal,energy_residual_j=residual}
+			if loss_policy.eligible:
+				entry.merge({start_support_potential_j=sample.normal_support_potential_j,end_support_potential_j=before_impulse.normal_support_potential_j,support_identity=sample.normal_support_identity,zero_force_rk_samples=zero_samples.count})
+			loss_pieces.append(entry)
 		largest_piece_residual = maxf(largest_piece_residual, absf(residual))
 		normal_loss += piece_normal
 		external_work += piece_work
@@ -246,13 +284,16 @@ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, deri
 		initial_mechanical_energy_j = initial_energy, final_mechanical_energy_j = final_energy,
 		energy_balance_residual_j = final_energy - initial_energy + normal_loss + tangent_loss - external_work - prescribed_work,
 		maximum_piece_energy_residual_j = largest_piece_residual}}
+	if normal_loss_policy.is_valid():
+		result.integration_receipt.quadrature_method="RK4_external_work_piecewise_normal_loss_v1"
+		result.integration_receipt.normal_loss_policy={format="openrc-normal-loss-policy-receipt v1",identity=policy_pin.identity,pieces=loss_pieces}
 	if not resolution_stats.is_empty(): result.integration_receipt.assembly_resolution=resolution_stats
 	return result
 
 
 static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
 		_first: PackedFloat64Array, evaluate: Callable, certificate: Callable,
-		start: Dictionary, count: int, settings: Dictionary) -> Dictionary:
+		start: Dictionary, count: int, settings: Dictionary,normal_loss_policy:Callable=Callable(),policy_pin:Dictionary={},mass_proof:RefCounted=null) -> Dictionary:
 	var state := initial.duplicate()
 	var sample := start
 	var h := dt / count
@@ -262,6 +303,7 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 	var peak_times := PackedFloat64Array()
 	peak_times.resize(peaks.size())
 	peak_times.fill(time_s)
+	var loss_pieces:Array=[]
 	var normal_loss := 0.0
 	var external_work := 0.0
 	var tangent_loss := 0.0
@@ -278,7 +320,7 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 	for piece in count:
 		var at := time_s + piece * h
 		var before_energy := _energy(state, sample)
-		var pre := _half_impulse(state, sample, at, 0.5 * h, evaluate, start, settings)
+		var pre := _half_impulse(state, sample, at, 0.5 * h, evaluate, start, settings,mass_proof)
 		if not pre.ok: return pre
 		var kicked: PackedFloat64Array = pre.state
 		var kicked_sample: Dictionary = pre.sample
@@ -290,9 +332,16 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 		if not certified.ok: return _failure("whole-piece certificate is unsupported", "unsupported_certificate")
 		if not certified.admitted: return _failure("whole-piece refinement required", "refine")
 		if not certificate_ids.has(certified.identity): certificate_ids.append(certified.identity)
+		var loss_policy:=_loss_policy(normal_loss_policy,kicked,at,h,kicked_sample,policy_pin)
+		if not loss_policy.ok:return loss_policy
+		if loss_policy.eligible and not _loss_same_potential(sample,kicked_sample):return _failure("prekick changed support potential or identity","invalid_normal_loss_policy")
 		# The preimpulse changes body/spin velocities. Caller k1 is stale even on
 		# piece0; recompute both force snapshot and derivative after the halfkick.
 		var quadrature: Array = [PackedFloat64Array([kicked_sample.normal_dissipation_w, kicked_sample.external_power_w])]
+		var zero_samples:={count=0}
+		if loss_policy.eligible:
+			if not _loss_zero_sample(kicked_sample,kicked_sample):return _failure("eligible initial normal sample is loaded or malformed","invalid_normal_loss_policy")
+			zero_samples.count=1
 		var tracker := {ok = true, reason = ""}
 		var tracked := func(values: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
 			if not _state(values):
@@ -304,6 +353,10 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 				tracker.ok = false
 				tracker.reason = "stage snapshot refused or changed fixed binding"
 				return _zeros(initial.size())
+			if loss_policy.eligible:
+				if not _loss_zero_sample(kicked_sample,point):
+					tracker.ok=false;tracker.reason="qualified RK normal sample is loaded or binding changed";return _zeros(initial.size())
+				zero_samples.count+=1
 			quadrature.append(PackedFloat64Array([point.normal_dissipation_w, point.external_power_w]))
 			var raw: Variant = derivative.call(values.duplicate(), stage_t)
 			if typeof(raw) != TYPE_PACKED_FLOAT64_ARRAY or raw.size() != initial.size() or not _finite(raw):
@@ -319,11 +372,15 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 			return _failure("normal/free RK interval failed: " + str(tracker.reason))
 		var after_flow := _sample(evaluate, candidate, at + h)
 		if not after_flow.ok or not _same_binding(start, after_flow): return _failure("controlled endpoint snapshot refused")
-		var post := _half_impulse(candidate, after_flow, at + h, 0.5 * h, evaluate, start, settings)
+		var post := _half_impulse(candidate, after_flow, at + h, 0.5 * h, evaluate, start, settings,mass_proof)
 		if not post.ok: return post
 		var next: PackedFloat64Array = post.state
 		var accepted: Dictionary = post.sample
 		var piece_normal: float = h / 6.0 * (quadrature[0][0] + 2 * quadrature[1][0] + 2 * quadrature[2][0] + quadrature[3][0])
+		if loss_policy.eligible:
+			if not _loss_zero_sample(kicked_sample,after_flow) or not _loss_same_potential(after_flow,accepted):return _failure("qualified endpoint/potential binding changed","invalid_normal_loss_policy")
+			piece_normal=kicked_sample.normal_support_potential_j-after_flow.normal_support_potential_j
+			if not is_finite(piece_normal) or piece_normal<0.0:return _failure("qualified support potential increased; no heat clamp","invalid_normal_loss_policy")
 		var piece_work: float = h / 6.0 * (quadrature[0][1] + 2 * quadrature[1][1] + 2 * quadrature[2][1] + quadrature[3][1])
 		var after_energy := _energy(next, accepted)
 		var loss: float = pre.loss + post.loss
@@ -334,6 +391,11 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 			return _failure("normal/contact work overflow")
 		if absf(residual) > settings.energy_absolute_tolerance_j + settings.energy_relative_tolerance * scale:
 			return _failure("normal/contact work accuracy requires refinement", "refine")
+		if normal_loss_policy.is_valid():
+			var entry:={method="unloaded_support_potential_difference_v1" if loss_policy.eligible else "RK4_normal_power_v1",normal_dissipation_j=piece_normal,energy_residual_j=residual}
+			if loss_policy.eligible:
+				entry.merge({start_support_potential_j=kicked_sample.normal_support_potential_j,end_support_potential_j=after_flow.normal_support_potential_j,support_identity=kicked_sample.normal_support_identity,zero_force_rk_samples=zero_samples.count})
+			loss_pieces.append(entry)
 		largest_piece_residual = maxf(largest_piece_residual, absf(residual))
 		normal_loss += piece_normal
 		external_work += piece_work
@@ -371,19 +433,22 @@ static func _attempt_two_sided(initial: PackedFloat64Array, time_s: float, dt: f
 		pre_contact_dissipation_j=pre_loss,post_contact_dissipation_j=post_loss,
 		pre_prescribed_contact_work_j=pre_work,post_prescribed_contact_work_j=post_work,
 		split_method="two_sided_half_impulses_recomputed_k1_order1"}}
+	if normal_loss_policy.is_valid():
+		result.integration_receipt.quadrature_method="RK4_external_work_piecewise_normal_loss_v1"
+		result.integration_receipt.normal_loss_policy={format="openrc-normal-loss-policy-receipt v1",identity=policy_pin.identity,pieces=loss_pieces}
 	if not resolution_stats.is_empty(): result.integration_receipt.assembly_resolution=resolution_stats
 	return result
 
 
 static func _half_impulse(state: PackedFloat64Array, sample: Dictionary, at: float, half_h: float,
-		evaluate: Callable, start: Dictionary, settings: Dictionary) -> Dictionary:
+		evaluate: Callable, start: Dictionary, settings: Dictionary,mass_proof:RefCounted=null) -> Dictionary:
 	var velocity_cm := M.add(state.slice(RB.VEL, RB.VEL + 3), M.cross(state.slice(RB.RATE, RB.RATE + 3), sample.cg_body_m))
 	var limits: PackedFloat64Array = sample.limit_rates.duplicate()
 	for i in limits.size():
 		limits[i] *= half_h
 		if sample.limit_rates[i] > 0.0 and limits[i] == 0.0: return _failure("half impulse scaling underflow")
 	var applied := Impulse.apply(sample.rotor_stage, sample.mass_kg, velocity_cm, sample.jacobian, sample.slip_bias,
-		limits, sample.groups, settings.qp_iterations, sample.get("capture",{}), settings.maximum_assembly_resolution_j)
+		limits, sample.groups, settings.qp_iterations, sample.get("capture",{}), settings.maximum_assembly_resolution_j,mass_proof)
 	if not applied.ok: return _failure("half contact impulse refused: " + str(applied.get("reason", "invalid")), "traction_rejected")
 	var next := state.duplicate()
 	if not limits.is_empty():
@@ -590,3 +655,40 @@ static func _zeros(size: int) -> PackedFloat64Array:
 
 static func _failure(reason: String, status := "invalid") -> Dictionary:
 	return {ok = false, status = status, reason = reason, law = LAW}
+
+
+## Trusted owner authority, like derivative/certificate. Receipt data cannot
+## activate this policy. Captured source/config binding is the OWNER's duty.
+static func _loss_policy(policy:Callable,state:PackedFloat64Array,at:float,h:float,sample:Dictionary,pin:Dictionary)->Dictionary:
+	if policy.is_null():return {ok=true,eligible=false,identity=""}
+	if not policy.is_valid() or policy.get_argument_count()!=4:return _failure("normal loss policy requires exactly four arguments","invalid_normal_loss_policy")
+	var a:=state.duplicate()
+	var b:=sample.duplicate(true)
+	var before:=var_to_bytes([a,b])
+	var raw:Variant=policy.call(a,at,h,b)
+	if before!=var_to_bytes([a,b]):return _failure("normal loss policy mutated read-only inputs","invalid_normal_loss_policy")
+	if not raw is Dictionary or raw.size()!=3 or not raw.has_all(["ok","eligible","identity"]) \
+		or typeof(raw.ok)!=TYPE_BOOL or typeof(raw.eligible)!=TYPE_BOOL or typeof(raw.identity)!=TYPE_STRING \
+		or raw.identity.is_empty() or raw.identity.length()>256:
+		return _failure("malformed normal loss policy result","invalid_normal_loss_policy")
+	if not raw.ok:return _failure("normal loss owner refused its binding/domain","unsupported_normal_loss_policy")
+	if pin.has("identity") and pin.identity!=raw.identity:return _failure("normal loss policy identity changed","invalid_normal_loss_policy")
+	pin.identity=raw.identity
+	return raw.duplicate(true)
+
+
+static func _loss_support(sample:Dictionary)->bool:
+	return _number(sample.get("normal_support_potential_j")) and sample.normal_support_potential_j>=0.0 \
+		and typeof(sample.get("normal_support_identity"))==TYPE_STRING and not sample.normal_support_identity.is_empty() and sample.normal_support_identity.length()<=256
+
+
+static func _loss_same_potential(a:Dictionary,b:Dictionary)->bool:
+	return _loss_support(a) and _loss_support(b) and a.normal_support_identity==b.normal_support_identity \
+		and a.normal_support_potential_j==b.normal_support_potential_j
+
+
+static func _loss_zero_sample(a:Dictionary,b:Dictionary)->bool:
+	if not _loss_support(a) or not _loss_support(b) or a.normal_support_identity!=b.normal_support_identity:return false
+	for load:float in b.normal_load_n:
+		if load!=0.0:return false
+	return true

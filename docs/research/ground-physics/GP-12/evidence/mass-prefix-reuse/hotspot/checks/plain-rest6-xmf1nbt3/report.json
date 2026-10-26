@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "16305d9d-d7ac-447d-88f5-739b10a8a1f3",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-hotspot-review\\plain\\driver.gd",
+    "--",
+    "--case=rest6"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T18:32:42.653630+00:00",
+  "label": "plain-rest6",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-hotspot-review\\checks\\plain-rest6-xmf1nbt3\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-hotspot-review\\checks\\plain-rest6-xmf1nbt3\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Hotspot snapshot completed:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.954,
+  "log_bytes": 424,
+  "log_sha256": "2aa5f9f8c9fb5c8c715f7b30d1ebcf724531603e020274625602f47d6cc5012c"
+}

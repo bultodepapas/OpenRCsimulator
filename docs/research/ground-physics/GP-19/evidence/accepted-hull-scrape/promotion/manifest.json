@@ -1,0 +1,24 @@
+{
+  "format": "openrc-gp19-hull-scrape-promotion-v1",
+  "base_sha256": {
+    "app/physics/hull_contact.gd": "aa9cd474975d8e529dea14fef46baa0c6208ca78652ba28e8203773a04024e92",
+    "app/sim/flight_session.gd": "2722c3d8d28382c38a81cf2f4311eb42f96430a765d4937e288bc91b3e7913d6",
+    "app/render/crash/director.gd": "51865555f3147034979628ff20a88f372c25d049389a2b0b662dfd13f295af24",
+    "app/render/crash/crash_audio.gd": "66e0a5b1d622eb27d257073447551c5346f20ca7f91c5d749b77dd6c8cb5d87f"
+  },
+  "payload_sha256": {
+    "app/physics/hull_contact.gd": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4",
+    "app/sim/flight_session.gd": "2ef72af8e0814bf44520a22741dce7a68a93ebdc611847b98c321460f0160c93",
+    "app/render/crash/director.gd": "1ba07bd91a5e51c90dadf27d2707c86b08c4d71f442e5ea200a7120d84f8e763",
+    "app/render/crash/crash_audio.gd": "daf7bc27e4cbde8190d426c5f95aa9ef34fc231b739f0ae57ebe69c9b912b7a1",
+    "app/tests/test_hull_friction_observation.gd": "3542ef73bc52ceb3f362754af1fc621d863bc9ec2abf8320fee3a5c9b55b2297",
+    "app/tests/test_hull_scrape_audio.gd": "8df6c9388ed570e473a1669ec2abfaabf7ea2b22c8d66e6811312bd339a706df",
+    "app/tests/test_hull_scrape_session.gd": "96c7b2626481e6bd0f21cba2fbe3e360bf274fe570c1c56ddee1cd491f062a4d"
+  },
+  "fixture": {
+    "path": "app/tests/fixtures/hull_friction_reference.bin",
+    "sha256": "66f4a8e91c6b5161db938ac3a3deadbed9993829703fcffdd00755937e082811",
+    "bytes": 9132,
+    "source_sha256": "aa9cd474975d8e529dea14fef46baa0c6208ca78652ba28e8203773a04024e92"
+  }
+}

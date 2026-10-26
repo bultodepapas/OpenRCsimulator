@@ -1,0 +1,104 @@
+{
+  "format": "openrc-unresolved-descent-cohort-v1",
+  "date": "2026-10-26",
+  "production_assertions": 1607,
+  "production_scripts": 9,
+  "production_failed": 0,
+  "production_warnings_as_errors": true,
+  "production_checks": [
+    {
+      "label": "accuracy",
+      "required_text": [
+        "Aircraft ground accuracy: 84 checks, 0 failed"
+      ],
+      "report": "production-checks/accuracy-70plkk44/report.json"
+    },
+    {
+      "label": "assembly",
+      "required_text": [
+        "GP-12 assembly resolution: 53 checks, 0 failed"
+      ],
+      "report": "production-checks/assembly-vk8maz2j/report.json"
+    },
+    {
+      "label": "descent",
+      "required_text": [
+        "Contact unresolved descent: 56 checks, 0 failed"
+      ],
+      "report": "production-checks/descent-rxc874n2/report.json"
+    },
+    {
+      "label": "impulse",
+      "required_text": [
+        "Aircraft ground impulse: 314 checks, 0 failed"
+      ],
+      "report": "production-checks/impulse-8etnxtg4/report.json"
+    },
+    {
+      "label": "mass",
+      "required_text": [
+        "Prepared contact mass prefix: 110 checks, 0 failed"
+      ],
+      "report": "production-checks/mass-ue2zo35_/report.json"
+    },
+    {
+      "label": "step",
+      "required_text": [
+        "Aircraft ground step: 167 checks, 0 failed"
+      ],
+      "report": "production-checks/step-upoff696/report.json"
+    },
+    {
+      "label": "strategy",
+      "required_text": [
+        "Contact assembly strategy: 34 checks, 0 failed"
+      ],
+      "report": "production-checks/strategy-ok43p705/report.json"
+    },
+    {
+      "label": "traction",
+      "required_text": [
+        "GP-12 traction: 659 checks, 0 failed"
+      ],
+      "report": "production-checks/traction-d4a7d1i0/report.json"
+    },
+    {
+      "label": "unloaded",
+      "required_text": [
+        "Unloaded policy: 130 checks, 0 failed"
+      ],
+      "report": "production-checks/unloaded-ohft_dy3/report.json"
+    }
+  ],
+  "independent_assertions": 64,
+  "candidate_compatibility_assertions": 1116,
+  "candidate_full_assertions": 16,
+  "production_full_assertions": 16,
+  "production_comparison_assertions": 13,
+  "gentle": {
+    "accepted_ticks": 180,
+    "target_ticks": 180,
+    "duration_s": 0.75,
+    "mechanical_balance_j": -5.417275588115444e-06,
+    "maximum_compression_m": 0.12696077516897103,
+    "events": [
+      "composition_touchdown",
+      "composition_last_contact_unloaded",
+      "composition_touchdown"
+    ]
+  },
+  "comparison": {
+    "archive_equal_excluding_elapsed_ms": true,
+    "next_tick_complete_result_and_receipt_equal": true,
+    "limitation": "Full180 archive retains final state/modes/aux and cumulative/last receipt diagnostics, not the transient complete last per-piece receipt. Full receipt equality is checked on accepted tick181."
+  },
+  "solver_identity_requirement": "Advanced owner start/checkpoint solver identity must include selected fallback algorithm version before first use; conditional numerical_strategy v2 receipt records usage only.",
+  "hard_status": "Original hard tape still refuses tick78 raw cap-area accuracy; no change to quality/caps/physical coefficients.",
+  "not_claimed": [
+    "universal convergence",
+    "stock advanced owner activation",
+    "fleet calibration",
+    "hard drop completion",
+    "real-time or performance qualification"
+  ]
+}

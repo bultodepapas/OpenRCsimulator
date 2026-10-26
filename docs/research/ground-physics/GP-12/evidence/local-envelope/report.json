@@ -1,0 +1,159 @@
+{
+  "format": "openrc-local-normal-envelope-cohort v1",
+  "complete": true,
+  "overall": "passed-scoped-regressions",
+  "captured_utc": "2026-10-26T17:00:16.664702+00:00",
+  "production_assertions": 553,
+  "production_parse_invocations": 1,
+  "original_draft_assertions": 575,
+  "review_assertions": 465,
+  "counts_are_repeated_scoped_checks_not_distinct_assertions": true,
+  "production_checked": [
+    {
+      "label": "existing-normal-production",
+      "receipt": "main-checks/existing-normal-production/report.json",
+      "sha256": "fa8e2209c2474e5695e10e4da2dfc12edd0070beb1353258af8dee022d7bfaef"
+    },
+    {
+      "label": "interval-parse",
+      "receipt": "main-checks/interval-parse/report.json",
+      "sha256": "5e98455f071c50d7fa68794f10e80a2452a29a89a528dbec3373c7cd8c3cca15"
+    },
+    {
+      "label": "interval-production",
+      "receipt": "main-checks/interval-production/report.json",
+      "sha256": "845da35438bf7d0502bd203a373978af11fe1656b156d8a1ff180cfab5baf7ec"
+    }
+  ],
+  "engine": "4.8.beta1.official.4d10419ca",
+  "warnings_as_errors": true,
+  "promoted_paths": [
+    {
+      "path": "app/physics/normal_compliance.gd",
+      "sha256": "9f05b8cb1395c54539b281ac120770c2353caef384a6fca2a857b144e7ec0beb"
+    },
+    {
+      "path": "app/tests/test_normal_compliance_interval.gd",
+      "sha256": "da81cc01a3b1e937030a013a198400a84d215c7328863ec2b1539bb67811cc51"
+    }
+  ],
+  "original_api_complete_output_hashes": 36,
+  "original_api_hash_fixture": "legacy-function-hashes.json",
+  "original465source": "reconstructed from retained development edits and verified against recorded pre-change b6913c... SHA256; raw original receipt unchanged",
+  "runtime_integration_changed": false,
+  "force_law_changed": false,
+  "default_output_changed": false,
+  "draft_preserves_old_functions_by_insertion_only": true,
+  "conditional_comparison": {
+    "checks": 22,
+    "experiments": [
+      {
+        "baseline": {
+          "accepted_substeps": [
+            16.0,
+            16.0,
+            16.0,
+            16.0
+          ],
+          "ending_tick": 1444,
+          "fault": "",
+          "maximum_incremental_accounted_energy_drift_j": 1.3073986337985843e-12,
+          "normalized_errors": [
+            8.532805626892895e-05,
+            8.532275700136316e-05,
+            8.531745873831659e-05,
+            8.531215913021828e-05
+          ],
+          "ok": true,
+          "starting_tick": 1440
+        },
+        "checkpoint_s": 6,
+        "comparison": {
+          "body_rate_difference_radps": 2.98590561043865e-10,
+          "body_velocity_difference_mps": 2.2252021693585654e-09,
+          "maximum_rim_difference_mps": 8.157297721859879e-17,
+          "position_difference_m": 1.881461210614714e-11,
+          "shaft_difference_radps": 2.987505393972176e-10
+        },
+        "interval": {
+          "accepted_substeps": [
+            4.0,
+            4.0,
+            4.0,
+            4.0
+          ],
+          "ending_tick": 1444,
+          "fault": "",
+          "maximum_incremental_accounted_energy_drift_j": 3.694822225952521e-13,
+          "normalized_errors": [
+            0.00034089848331402846,
+            0.00034081388679646436,
+            0.0003407293139625733,
+            0.0003406447638548463
+          ],
+          "ok": true,
+          "starting_tick": 1440
+        }
+      },
+      {
+        "baseline": {
+          "accepted_substeps": [
+            16.0,
+            16.0,
+            16.0,
+            16.0
+          ],
+          "ending_tick": 2404,
+          "fault": "",
+          "maximum_incremental_accounted_energy_drift_j": 1.7905676941154525e-12,
+          "normalized_errors": [
+            8.03891863508975e-05,
+            8.038418820230457e-05,
+            8.037920030009621e-05,
+            8.03742050567083e-05
+          ],
+          "ok": true,
+          "starting_tick": 2400
+        },
+        "checkpoint_s": 10,
+        "comparison": {
+          "body_rate_difference_radps": 5.647696316481552e-11,
+          "body_velocity_difference_mps": 2.0955730752035896e-09,
+          "maximum_rim_difference_mps": 6.649930930586534e-17,
+          "position_difference_m": 1.77218966489864e-11,
+          "shaft_difference_radps": 5.6740458705951195e-11
+        },
+        "interval": {
+          "accepted_substeps": [
+            4.0,
+            4.0,
+            4.0,
+            4.0
+          ],
+          "ending_tick": 2404,
+          "fault": "",
+          "maximum_incremental_accounted_energy_drift_j": 8.526512829121202e-13,
+          "normalized_errors": [
+            0.00032116693866731885,
+            0.00032108723497742593,
+            0.00032100755485735944,
+            0.00032092789881573694
+          ],
+          "ok": true,
+          "starting_tick": 2400
+        }
+      }
+    ],
+    "failures": 0,
+    "motion_envelope": "same conditional GAP_SPEED_MAX3 OMEGA_MAX5 CM_NORMAL_SPEED_MAX3 X_MAX.18; complete paired-path gate unchanged",
+    "scope": "four ticks per route from each unchanged frozen checkpoint; no full tape rerun or performance claim"
+  },
+  "attribution": "combined local compression interval/load envelope and swept kappa lower bound; not onset-only ablation",
+  "limits": [
+    "four ticks per route from6s/10s checkpoints; no full tape rerun",
+    "same conditional declared speed/rate/kappa/X bounds; not universal nonlinear trajectory enclosure",
+    "no stock activation, physical calibration or performance qualification"
+  ],
+  "raw_receipts": "copied byte exact with original commands/paths unchanged",
+  "baseline_unchanged_except_approved_main_method_insertion": true
+}

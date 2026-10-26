@@ -1,0 +1,39 @@
+{
+  "format": "openrc-weather-publication-evidence-v1",
+  "complete": true,
+  "checks": {
+    "audio-1039fh89": 35,
+    "common-start-f47t1t3a": 148,
+    "flight-log-xkrubg_l": 3247,
+    "focused-o6ntj00f": 196,
+    "restore-qcd3o5gy": 137,
+    "spatial-weather-d2r8ubrg": 101,
+    "wind-2mcfsdi0": 51
+  },
+  "total_production_checks": 3915,
+  "independent_review_checks": 19,
+  "baseline_checks": 108,
+  "engine_sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+  "selected_source_scope": [
+    "app/sim/flight_session.gd",
+    "app/sim/simulation.gd",
+    "app/sim/flight_log.gd",
+    "app/physics/wind_field.gd",
+    "app/physics/wind_config.gd",
+    "app/tests/test_weather_publication.gd",
+    "app/tests/test_wind_flight.gd",
+    "app/tests/test_spatial_weather_session.gd",
+    "app/tests/test_restore_publication.gd",
+    "app/tests/test_flight_reset_transaction.gd",
+    "app/tests/test_flight_log.gd",
+    "app/tests/test_flight_audio_accepted.gd"
+  ],
+  "promotion": {
+    "before": "9b6de6144a1af3c8bf042e04173b3485196954da94b40fdd73c9f309802d0802",
+    "after": {
+      "app/sim/flight_session.gd": "dd8278224b72e52dac03b37545d48c9e798d653f9ea11496d06c786c7061b345",
+      "app/tests/test_weather_publication.gd": "d702e3020475e7e3ced239b15ca7fdbd6bb0681ea58a79e4d0e20200e5e561c7"
+    }
+  },
+  "no_full_suite_or_physical_performance_claim": true
+}

@@ -224,3 +224,14 @@
 # Frozen numerical contact evidence binds original source and receipt bytes.
 /docs/research/ground-physics/GP-12/evidence/numerical-foundation/** -text whitespace=cr-at-eol
 /docs/research/ground-physics/GP-12/evidence/numerical-foundation/**/*.log -whitespace
+/app/tests/fixtures/ground_unloaded_*.bin -text
+/docs/research/ground-physics/GP-12/evidence/unloaded-potential/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-12/evidence/unloaded-potential/**/*.log -whitespace
+/docs/research/ground-physics/GP-12/evidence/unresolved-descent/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-12/evidence/unresolved-descent/**/*.log -whitespace
+/app/tests/fixtures/hull_friction_reference.bin -text
+/app/tests/fixtures/rotor_stage_factor.bin -text
+/docs/research/ground-physics/GP-12/evidence/stage-factor-reuse/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-12/evidence/stage-factor-reuse/**/*.log -whitespace
+/docs/research/ground-physics/GP-19/evidence/native-continuous-timber/** -text whitespace=cr-at-eol
+/docs/research/ground-physics/GP-19/evidence/native-continuous-timber/**/*.log -whitespace

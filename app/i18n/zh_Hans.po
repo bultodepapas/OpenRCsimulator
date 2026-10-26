@@ -7937,3 +7937,69 @@ msgstr "将当前更改和名称另存为此配置的新修订版。"
 
 msgid "Creates a saved build in your local library."
 msgstr "在本地资料库中保存一份飞机配置。"
+
+msgid "Use stock lighting in a new draft"
+msgstr "在新草稿中使用原厂灯光"
+
+msgid "Create updated draft"
+msgstr "创建更新后的草稿"
+
+msgid "Stored presentation profile is invalid."
+msgstr "已保存的外观配置无效。"
+
+msgid "A supported stored presentation profile is required."
+msgstr "需要受支持的已保存外观配置。"
+
+msgid "Current presentation bindings are unavailable or malformed."
+msgstr "当前外观绑定不可用或格式错误。"
+
+msgid "Current presentation bindings are invalid."
+msgstr "当前外观绑定无效。"
+
+msgid "Create a new draft with this aircraft's standard lighting. Compatible saved colors, markings, smoke and sound settings stay in the draft. If appearance bindings changed, review the preview because matching IDs do not prove their old placement. The original saved revision stays unchanged. Physical settings stay unchanged."
+msgstr "使用此飞机的标准灯光创建新草稿。草稿会保留兼容的已保存颜色、标识、烟雾和声音设置。如果外观绑定发生变化，请检查预览，因为相同的标识符并不保证原来的位置不变。原先保存的修订版和物理设置保持不变。"
+
+msgid "Stock-lighting draft created. Inspect it, then save as a new build. The original is unchanged."
+msgstr "已创建原厂灯光草稿。检查后可另存为新配置。原配置保持不变。"
+
+msgid "A newer presentation profile cannot be converted to stock lighting."
+msgstr "较新版本的外观配置无法转换为原厂灯光。"
+
+msgid "A newer lighting profile cannot be converted to stock lighting."
+msgstr "较新版本的灯光配置无法转换为原厂灯光。"
+
+msgid "Stock lighting drafts require a supported v3 or v4 profile; historical profiles already use stock lighting."
+msgstr "原厂灯光草稿需要受支持的 v3 或 v4 配置；历史版本的配置已使用原厂灯光。"
+
+msgid "Saved lighting settings cannot be replaced safely."
+msgstr "无法安全替换已保存的灯光设置。"
+
+msgid "Saved lighting already uses the aircraft's stock equipment."
+msgstr "已保存的灯光设置已使用此飞机的原厂设备。"
+
+msgid "An unbound default has no previous aircraft identity to update."
+msgstr "未绑定的默认配置没有可更新的原飞机标识。"
+
+msgid "Stock lighting cannot change the aircraft visual family."
+msgstr "原厂灯光不能更改飞机外观系列。"
+
+msgid "Stock lighting cannot change the physical model manifest."
+msgstr "原厂灯光不能更改物理模型清单。"
+
+msgid "Other saved appearance settings cannot be validated against the current companion."
+msgstr "无法根据当前配套数据验证其他已保存的外观设置。"
+
+msgid "The stock-lighting draft does not validate against the current companion."
+msgstr "原厂灯光草稿未通过当前配套数据的验证。"
+
+msgid "Creating a stock-lighting draft would change other appearance settings; no proposal was created."
+msgstr "创建原厂灯光草稿会更改其他外观设置，因此未生成方案。"
+
+msgid "Stock lighting cannot be applied while other appearance settings are unavailable."
+msgstr "其他外观设置不可用时，无法应用原厂灯光。"
+
+msgid "The stock-lighting proposal changed. Review it again."
+msgstr "原厂灯光方案已更改。请重新检查。"
+
+msgid "The draft changed. Review the appearance update again."
+msgstr "草稿已更改。请重新检查外观更新。"

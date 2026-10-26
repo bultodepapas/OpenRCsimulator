@@ -1,0 +1,528 @@
+--- a/app/physics/hull_contact.gd
++++ b/app/physics/hull_contact.gd
+@@ -183,7 +183,10 @@
+ 
+ ## Stage loads for live mass properties, returning failure separately from a valid no-contact result.
+ ## Geometry and output torque arms remain about fixed datum O, matching the state integration contract.
+-static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, properties: Dictionary) -> Dictionary:
++static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, properties: Dictionary,
++		diagnostics_out: Variant = null) -> Dictionary:
++	if diagnostics_out is Array:
++		diagnostics_out.clear()
+ 	var valid: Dictionary = EffectiveMass.validate_properties(properties)
+ 	if not bool(valid.get("ok", false)):
+ 		return {ok = false, loads = PackedFloat64Array(), reason = str(valid.get("reason", "invalid_mass_properties"))}
+@@ -287,13 +290,15 @@
+ 	if geometry.has("lake"):
+ 		prepared["lake"] = geometry.lake
+ 		prepared["lake_bounds_ne_m"] = geometry.get("lake_bounds_ne_m", PackedFloat64Array())
+-	return {ok = true, loads = loads(s, prepared, lake_samples), reason = ""}
++	return {ok = true, loads = loads(s, prepared, lake_samples, diagnostics_out), reason = ""}
+ 
+ 
+ ## Body loads [Fx, Fy, Fz, Mx, My, Mz] from every touching hull point, or EMPTY when none touches (callers add
+ ## nothing, so flight away from the ground is bit-identical).
+ static func loads(s: PackedFloat64Array, prepared: Dictionary,
+-		lake_samples: Array[Dictionary] = []) -> PackedFloat64Array:
++		lake_samples: Array[Dictionary] = [], diagnostics_out: Variant = null) -> PackedFloat64Array:
++	if diagnostics_out is Array:
++		diagnostics_out.clear()
+ 	if prepared.is_empty() or -s[RB.POS + 2] > float(prepared.reach):
+ 		return PackedFloat64Array()
+ 	var hull: PackedFloat64Array = prepared.points
+@@ -367,6 +372,13 @@
+ 		out[3] += ry * fz - rz * fy
+ 		out[4] += rz * fx - rx * fz
+ 		out[5] += rx * fy - ry * fx
++		# GP-19 optional endpoint diagnostics use the SAME computed force/velocity.
++		# No allocation on ordinary RK loads; no interval-work or heat claim.
++		if diagnostics_out is Array and lake.is_empty():
++			diagnostics_out.append({index = point, point_ned = _point_ned(s, body_point),
++				normal_force_n = f_up, tangent_force_ned_n = PackedFloat64Array([f_n, f_e, 0.0]),
++				relative_tangent_velocity_ned_mps = PackedFloat64Array([vn, ve, 0.0]),
++				friction_power_w = -(f_n * vn + f_e * ve)})
+ 		touched = true
+ 	return out if touched else PackedFloat64Array()
+ 
+--- a/app/sim/flight_session.gd
++++ b/app/sim/flight_session.gd
+@@ -2071,6 +2071,65 @@
+ 		failure_changed.emit() # owner contact/scenery state is now checkpointable at the same accepted tick
+ 
+ 
++## GP-19 derived presentation cache, never serialized or used by physics.
++var _hull_scrape_cache_key := PackedByteArray()
++var _hull_scrape_cache := {}
++
++
++## Accepted endpoint instantaneous friction power. Guard pending configuration
++## BEFORE reading live mass/source layouts. First scope is flat solid ground.
++func hull_scrape_observation() -> Dictionary:
++	var result := {schema = "openrc-hull-friction-observation", version = 1,
++		tick = _contact_tick, generation = statistics_generation, law_identity = HullContact.law(),
++		available = false, sampling = "accepted_endpoint_instantaneous_power", contacts = [], reason = "flight_not_ready"}
++	if sim == null or not _flight_ready():
++		return result
++	if not soft_hull_contacts or _hull_contact.is_empty():
++		result.reason = "soft_hull_unavailable"
++		return result
++	if not _lake.is_empty():
++		result.reason = "flat_solid_scope_lake_unavailable"
++		return result
++	if _contact_tick < 0 or _contact_tick != sim.tick:
++		result.reason = "no_current_accepted_hull_tick"
++		return result
++	# State/layout/field binding changes invalidate even at the same clock value.
++	# The owner-supplied accepted state is observed once; render only drains audio.
++	var key := var_to_bytes([sim.tick, statistics_generation, sim.state, sim.continuous,
++		_hull_contact, _contact_bindings, environment.surfaces, environment._ground_support])
++	if key == _hull_scrape_cache_key:
++		return _hull_scrape_cache.duplicate(true)
++	var diagnostics: Array = []
++	if finite_fuel_is_active():
++		var properties := mass_properties()
++		var sampled := HullContact.loads_at_properties(sim.state, _hull_contact, properties, diagnostics)
++		if not sampled.ok:
++			result.reason = "live_mass_contact_unavailable"
++			return result
++	else:
++		HullContact.loads(sim.state, _hull_contact, [], diagnostics)
++	var probes: Array = _contact_bindings.get("hull_probes", [])
++	var rows: Array = []
++	for diagnostic: Dictionary in diagnostics:
++		var index: int = diagnostic.index
++		if index < 0 or index >= probes.size():
++			result.reason = "hull_binding_unavailable"
++			return result
++		var support := environment.sample_support(diagnostic.point_ned,
++			diagnostic.relative_tangent_velocity_ned_mps, sim.time())
++		var row := diagnostic.duplicate(true)
++		row.erase("index")
++		row.contact_id = str(probes[index].id)
++		row.material_id = str(support.get("material_id", "")) if support.get("ok", false) else ""
++		rows.append(row)
++	result.contacts = rows
++	result.available = true
++	result.reason = ""
++	_hull_scrape_cache_key = key
++	_hull_scrape_cache = result.duplicate(true)
++	return result
++
++
+ func contact_events() -> Dictionary:
+ 	return {format = "openrc-aircraft-contact-state v1", tick = _contact_tick,
+ 		active_hull_ids = _active_hull_ids.duplicate(), events = _contact_events.duplicate(true),
+@@ -2198,6 +2257,8 @@
+ 
+ 
+ func _reset_contact_history() -> void:
++	_hull_scrape_cache_key = PackedByteArray()
++	_hull_scrape_cache = {}
+ 	_contact_tick = -1
+ 	_soft_contacts_cache_tick = -1
+ 	_contact_events.clear()
+@@ -2206,6 +2267,8 @@
+ 
+ 
+ func _restore_contact_history(record: Dictionary) -> void:
++	_hull_scrape_cache_key = PackedByteArray()
++	_hull_scrape_cache = {}
+ 	_contact_tick = int(record.tick)
+ 	_soft_contacts_cache_tick = -1
+ 	_active_hull_ids = record.active_hull_ids.duplicate()
+--- a/app/render/crash/director.gd
++++ b/app/render/crash/director.gd
+@@ -63,6 +63,7 @@
+ var _water_blur: Node3D
+ var _water_blur_was_processing := false
+ var _configured := false
++var _hull_capture_ready := false
+ ## CR-01e: the last CrashCause.HISTORY_S of flight, sampled every SAMPLE_INTERVAL_S of sim time (oldest first).
+ var history: Array = []
+ const TOUCH_TRAIL_S := 0.12
+@@ -86,6 +87,7 @@
+ 	audio = CrashAudio.new()
+ 	add_child(audio)
+ 	audio.setup()
++	audio.set_accepted_hull_observation(_audio_enabled)
+ 	water_effects = WaterEffects.new()
+ 	water_effects.name = "WaterEffects"
+ 	add_child(water_effects)
+@@ -118,12 +120,14 @@
+ 
+ 
+ func _connect_reset_signal() -> void:
++	_connect_hull_signals()
+ 	if context != null and is_instance_valid(context.session) and context.session.has_signal("resetting") \
+ 			and not context.session.resetting.is_connected(reset):
+ 		context.session.resetting.connect(reset)
+ 
+ 
+ func _disconnect_reset_signal() -> void:
++	_disconnect_hull_signals()
+ 	if context != null and is_instance_valid(context.session) and context.session.has_signal("resetting") \
+ 			and context.session.resetting.is_connected(reset):
+ 		context.session.resetting.disconnect(reset)
+@@ -153,10 +157,12 @@
+ 		_record_sample()
+ 		_prop_strike_feedback()
+ 		_touch_feedback()
++		audio.update(delta, context.session.sim.paused or not context.session.holds.is_empty(), 0.0)
+ 		return
+ 	if _water_checkpoint_latched:
+ 		# A later replayed collision supersedes the restored render-only aftermath.
+ 		reset()
++	audio.cancel_hull_scrape()
+ 	if not active:
+ 		_start()
+ 	if not active:
+@@ -699,12 +705,12 @@
+ 			effects.touch(point, velocity, strength, surface)
+ 			if not contact.has("normal_ned"):
+ 				scuffs.add(context.model_bindings.root, point, velocity, strength, surface)
+-			if _audio_enabled:
++			if _audio_enabled and (slide <= TOUCH_SLIDE_MPS or not audio.accepted_hull_observation_enabled()):
+ 				audio.touch(point, strength, slide > TOUCH_SLIDE_MPS, surface)
+ 			_touch_marks[contact.index] = now
+ 		elif slide > TOUCH_SLIDE_MPS and now - float(_touch_marks.get(contact.index, -INF)) >= TOUCH_TRAIL_S:
+ 			effects.mark(Vector3(point.x, 0.0, point.z), velocity, 0.08)
+-			if _audio_enabled:
++			if _audio_enabled and not audio.accepted_hull_observation_enabled():
+ 				audio.touch(point, clampf(slide / 15.0, 0.05, 0.6), true, surface)
+ 			_touch_marks[contact.index] = now
+ 
+@@ -815,3 +821,69 @@
+ 		if is_instance_valid(ring) and ring.visible:
+ 			visible += 1
+ 	return visible
++
++
++## Session owns the earlier stepped connection and commits contact IDs first.
++func _connect_hull_signals() -> void:
++	_hull_capture_ready = false
++	if context == null or not is_instance_valid(context.session):
++		return
++	var session := context.session
++	if not session.sim.stepped.is_connected(_on_accepted_hull_tick):
++		session.sim.stepped.connect(_on_accepted_hull_tick)
++	if not session.sim.paused_changed.is_connected(_on_hull_pause):
++		session.sim.paused_changed.connect(_on_hull_pause)
++	if not session.statistics_lifecycle.is_connected(_on_hull_lifecycle):
++		session.statistics_lifecycle.connect(_on_hull_lifecycle)
++	# Reattach creates the audio bus after children enter. Prime after that reset;
++	# the interval before this single settle-prime is deliberately silent.
++	call_deferred("_settle_hull_observer")
++
++
++func _disconnect_hull_signals() -> void:
++	_hull_capture_ready = false
++	if context == null or not is_instance_valid(context.session):
++		return
++	var session := context.session
++	if session.sim.stepped.is_connected(_on_accepted_hull_tick):
++		session.sim.stepped.disconnect(_on_accepted_hull_tick)
++	if session.sim.paused_changed.is_connected(_on_hull_pause):
++		session.sim.paused_changed.disconnect(_on_hull_pause)
++	if session.statistics_lifecycle.is_connected(_on_hull_lifecycle):
++		session.statistics_lifecycle.disconnect(_on_hull_lifecycle)
++
++
++func _settle_hull_observer() -> void:
++	if not is_inside_tree() or not _configured or audio == null:
++		return
++	audio.setup()
++	_hull_capture_ready = true
++	_observe_hull_endpoint()
++
++
++func _on_accepted_hull_tick(_tick: int, _time_s: float, _state: PackedFloat64Array,
++		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
++	_observe_hull_endpoint()
++
++
++func _on_hull_pause(_paused: bool) -> void:
++	_observe_hull_endpoint()
++
++
++func _on_hull_lifecycle(receipt: Dictionary) -> void:
++	if receipt.get("success", false) and audio != null:
++		audio.reset()
++		_observe_hull_endpoint()
++
++
++func _observe_hull_endpoint() -> void:
++	if not _hull_capture_ready or not _audio_enabled or context == null or audio == null:
++		return
++	var session := context.session
++	if not is_instance_valid(session) or session.sim == null:
++		return
++	if not session.crash.is_empty():
++		audio.cancel_hull_scrape()
++		return
++	audio.observe_accepted({observation = session.hull_scrape_observation(),
++		tick_rate = 1.0 / session.sim.dt(), paused = session.sim.paused or not session.holds.is_empty(), terminal = false})
+--- a/app/render/crash/crash_audio.gd
++++ b/app/render/crash/crash_audio.gd
+@@ -21,6 +21,26 @@
+ var _secondary_cooldown: float = 0.0
+ var _user_paused: bool = false
+ var _dummy_audio_driver: bool = false
++## GP-19 authored presentation pacing/reference power, not acoustic calibration.
++const SCRAPE_INTERVAL_S := 0.12
++const SCRAPE_MAX_AGE_S := 0.25 # Presentation latency bound, not physics memory.
++const SCRAPE_QUEUE_LIMIT := 64
++const SCRAPE_REFERENCE_POWER_W := 100.0
++var _accepted_hull_enabled := false
++var _scrape_tick := -1
++var _scrape_generation := -1
++var _scrape_rate := 0.0
++var _scrape_law := ""
++var _scrape_active := false
++var _scrape_last_grain_tick := -1
++var _scrape_queue: Array[Dictionary] = []
++var _scrape_tags := PackedByteArray()
++var _scrape_emitted := 0
++var _scrape_overflow := 0
++var _scrape_stale := 0
++var _scrape_invalid := 0
++var _scrape_captured := 0
++var _scrape_last_power_w := 0.0
+ 
+ 
+ func setup() -> void:
+@@ -44,6 +64,8 @@
+ 			_voices.append(voice)
+ 		_voice_gain.resize(ONE_SHOT_VOICES)
+ 		_voice_gain.fill(0.0)
++		_scrape_tags.resize(ONE_SHOT_VOICES)
++		_scrape_tags.fill(0)
+ 	else:
+ 		for voice: AudioStreamPlayer3D in _voices:
+ 			voice.bus = _bus_name
+@@ -107,6 +129,7 @@
+ func impact(position: Vector3, severity: Dictionary, turbine: bool) -> void:
+ 	if not _setup_complete or _primary_played or not bool(severity.get("valid", false)):
+ 		return
++	cancel_hull_scrape()
+ 	_primary_played = true
+ 	_fire_position = position
+ 	for layer: Dictionary in layers_for(severity, turbine):
+@@ -175,6 +198,11 @@
+ func update(delta: float, paused: bool, fire_strength: float) -> void:
+ 	if not _setup_complete:
+ 		return
++	if _accepted_hull_enabled:
++		if paused:
++			cancel_hull_scrape()
++		else:
++			_drain_hull_scrape()
+ 	var dt: float = clampf(delta, 0.0, 0.1)
+ 	_secondary_cooldown = maxf(0.0, _secondary_cooldown - dt)
+ 	# `paused` is the user pause/menu state, never the post-crash hold.
+@@ -203,6 +231,11 @@
+ 
+ 
+ func reset() -> void:
++	cancel_hull_scrape()
++	_scrape_tick = -1
++	_scrape_generation = -1
++	_scrape_rate = 0.0
++	_scrape_law = ""
+ 	_primary_played = false
+ 	_secondary_cooldown = 0.0
+ 	_user_paused = false
+@@ -264,12 +297,13 @@
+ 	return "impact_grass"
+ 
+ 
+-func _play(sample_name: String, position: Vector3, gain: float, pitch: float) -> void:
++func _play(sample_name: String, position: Vector3, gain: float, pitch: float, hull_scrape := false) -> void:
+ 	var stream: AudioStreamWAV = _streams.get(sample_name) as AudioStreamWAV
+ 	if _dummy_audio_driver or stream == null or gain <= 0.0001 or _voices.is_empty():
+ 		return
+ 	var slot: int = _choose_slot()
+ 	var voice: AudioStreamPlayer3D = _voices[slot]
++	_scrape_tags[slot] = 1 if hull_scrape else 0
+ 	voice.stop()
+ 	voice.stream = stream
+ 	voice.global_position = position
+@@ -299,3 +333,179 @@
+ 
+ func _exit_tree() -> void:
+ 	shutdown()
++
++
++## Opt-in: default legacy benches keep their original touch/update behavior.
++func set_accepted_hull_observation(enabled: bool) -> void:
++	if _accepted_hull_enabled == enabled:
++		return
++	reset()
++	_accepted_hull_enabled = enabled
++
++
++func accepted_hull_observation_enabled() -> bool:
++	return _accepted_hull_enabled
++
++
++## Stops only continuing-flight scrape slots; terminal layers own the pool next.
++func cancel_hull_scrape() -> void:
++	_scrape_queue.clear()
++	_scrape_active = false
++	_scrape_last_grain_tick = -1
++	for i in _scrape_tags.size():
++		if _scrape_tags[i] == 0:
++			continue
++		_scrape_tags[i] = 0
++		if i < _voices.size():
++			_voices[i].stop()
++			_voices[i].stream = null
++			_voices[i].volume_db = -80.0
++			_voice_gain[i] = 0.0
++
++
++## Capture only detached SI observations; no players/bus/playback in this callback.
++## A grain uses instantaneous endpoint power, never an integrated heat/work claim.
++func observe_accepted(snapshot: Dictionary) -> bool:
++	if not _accepted_hull_enabled or not _valid_hull_snapshot(snapshot):
++		_scrape_invalid += 1
++		return false
++	var observation: Dictionary = snapshot.observation
++	var tick: int = observation.tick
++	var generation: int = observation.generation
++	var rate: float = snapshot.tick_rate
++	var law: String = observation.law_identity
++	if snapshot.terminal or snapshot.paused or not observation.available or _primary_played:
++		cancel_hull_scrape()
++		_scrape_tick = tick
++		_scrape_generation = generation
++		_scrape_rate = rate
++		_scrape_law = law
++		return true
++	if tick == _scrape_tick and generation == _scrape_generation and rate == _scrape_rate and law == _scrape_law:
++		return true
++	var continuous := tick == _scrape_tick + 1 and generation == _scrape_generation \
++		and rate == _scrape_rate and law == _scrape_law
++	if not continuous:
++		cancel_hull_scrape()
++	_scrape_tick = tick
++	_scrape_generation = generation
++	_scrape_rate = rate
++	_scrape_law = law
++	_scrape_captured += 1
++	if not continuous:
++		return true
++	var power := 0.0
++	var weighted := PackedFloat64Array([0.0, 0.0, 0.0])
++	for contact: Dictionary in observation.contacts:
++		var p: float = contact.friction_power_w
++		power += p
++		for axis in 3:
++			weighted[axis] += p * contact.point_ned[axis]
++	if not is_finite(power) or not _finite_triple(weighted):
++		_scrape_invalid += 1
++		cancel_hull_scrape()
++		return false
++	if power <= 0.0:
++		_scrape_active = false
++		return true
++	# The FIRST loaded sample queues immediately: a short brush never waits120ms.
++	if not _scrape_active or float(tick - _scrape_last_grain_tick) / rate >= SCRAPE_INTERVAL_S:
++		for axis in 3:
++			weighted[axis] /= power
++		if _scrape_queue.size() == SCRAPE_QUEUE_LIMIT:
++			_scrape_queue.pop_front()
++			_scrape_overflow += 1
++		_scrape_queue.append({tick = tick, point_ned = weighted, power_w = power})
++		_scrape_last_grain_tick = tick
++	_scrape_active = true
++	return true
++
++
++func _drain_hull_scrape() -> void:
++	for grain: Dictionary in _scrape_queue:
++		if float(_scrape_tick - int(grain.tick)) / _scrape_rate > SCRAPE_MAX_AGE_S:
++			_scrape_stale += 1
++			continue
++		var point: PackedFloat64Array = grain.point_ned
++		var level := clampf(sqrt(float(grain.power_w) / SCRAPE_REFERENCE_POWER_W), 0.0, 1.0)
++		# Existing authored scrape envelope and sample; no material calibration.
++		_play("scrape", Vector3(point[1], -point[2], -point[0]), 0.06 + 0.22 * level,
++			0.95 + _variation(0.06), true)
++		_scrape_last_power_w = grain.power_w
++		_scrape_emitted += 1
++	_scrape_queue.clear()
++
++
++func hull_scrape_diagnostics() -> Dictionary:
++	var tagged := 0
++	for value in _scrape_tags:
++		tagged += int(value)
++	return {enabled = _accepted_hull_enabled, tick = _scrape_tick, generation = _scrape_generation,
++		queued = _scrape_queue.size(), emitted = _scrape_emitted, overflow = _scrape_overflow,
++		stale = _scrape_stale, invalid = _scrape_invalid, captured = _scrape_captured,
++		last_power_w = _scrape_last_power_w, tagged_voices = tagged}
++
++
++static func _finite_triple(value: Variant) -> bool:
++	if not value is PackedFloat64Array or value.size() != 3:
++		return false
++	for x in value:
++		if not is_finite(x):
++			return false
++	return true
++
++
++static func _nonnegative_integer(value: Variant) -> bool:
++	return typeof(value) == TYPE_INT and value >= 0
++
++
++static func _valid_hull_snapshot(snapshot: Dictionary) -> bool:
++	if snapshot.size() != 4 or not snapshot.get("observation") is Dictionary \
++		or typeof(snapshot.get("paused")) != TYPE_BOOL or typeof(snapshot.get("terminal")) != TYPE_BOOL \
++		or typeof(snapshot.get("tick_rate")) not in [TYPE_INT, TYPE_FLOAT]:
++		return false
++	var rate: float = snapshot.tick_rate
++	if not is_finite(rate) or rate <= 0.0 or rate > 10000.0:
++		return false
++	var packet: Dictionary = snapshot.observation
++	if packet.size() != 9 or typeof(packet.get("schema")) != TYPE_STRING \
++		or packet.schema != "openrc-hull-friction-observation" or typeof(packet.get("version")) != TYPE_INT \
++		or packet.version != 1 or not _nonnegative_integer(packet.get("tick")) \
++		or not _nonnegative_integer(packet.get("generation")) or typeof(packet.get("available")) != TYPE_BOOL \
++		or typeof(packet.get("sampling")) != TYPE_STRING or packet.sampling != "accepted_endpoint_instantaneous_power" \
++		or typeof(packet.get("law_identity")) != TYPE_STRING or packet.law_identity.is_empty() \
++		or typeof(packet.get("reason")) != TYPE_STRING or not packet.get("contacts") is Array \
++		or packet.contacts.size() > 256 or (not packet.available and not packet.contacts.is_empty()) \
++		or (packet.available and not packet.reason.is_empty()):
++		return false
++	var seen := {}
++	var total_power := 0.0
++	var weighted := PackedFloat64Array([0.0, 0.0, 0.0])
++	for value: Variant in packet.contacts:
++		if not value is Dictionary or value.size() != 7:
++			return false
++		var row: Dictionary = value
++		if typeof(row.get("contact_id")) != TYPE_STRING or row.contact_id.is_empty() \
++			or row.contact_id.length() > 256 or seen.has(row.contact_id) \
++			or typeof(row.get("material_id")) != TYPE_STRING or row.material_id.length() > 256 \
++			or not _finite_triple(row.get("point_ned")) or not _finite_triple(row.get("tangent_force_ned_n")) \
++			or not _finite_triple(row.get("relative_tangent_velocity_ned_mps")) \
++			or typeof(row.get("normal_force_n")) not in [TYPE_INT, TYPE_FLOAT] \
++			or typeof(row.get("friction_power_w")) not in [TYPE_INT, TYPE_FLOAT]:
++			return false
++		var normal: float = row.normal_force_n
++		var power: float = row.friction_power_w
++		if not is_finite(normal) or normal <= 0.0 or not is_finite(power) or power < 0.0:
++			return false
++		var dot := 0.0
++		for axis in 3:
++			dot += row.tangent_force_ned_n[axis] * row.relative_tangent_velocity_ned_mps[axis]
++		if not is_finite(dot) or absf(dot + power) > 1.0e-10 * maxf(1.0, power):
++			return false
++		total_power += power
++		for axis in 3:
++			weighted[axis] += power * row.point_ned[axis]
++		if not is_finite(total_power) or not _finite_triple(weighted):
++			return false
++		seen[row.contact_id] = true
++	return true

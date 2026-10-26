@@ -1,6 +1,7 @@
 ## Spatial wheel/skid roll and impact playback. It consumes snapshots only and never owns physics state.
 extends Node3D
 
+const Motion := preload("res://audio/ground_audio_motion.gd")
 const Soundscape := preload("res://audio/soundscape.gd")
 const DistanceModel := preload("res://audio/powertrain_audio.gd")
 const HARD_ROLL: AudioStreamWAV = preload("res://assets/audio/landing_gear/hard_roll.wav")
@@ -10,9 +11,26 @@ const TOUCHDOWN: AudioStreamWAV = preload("res://assets/audio/landing_gear/touch
 
 const MAX_CONTACTS := 8
 const ROLL_SPEED_ON_MPS := 0.35
-const TOUCHDOWN_MIN_AIRBORNE_S := 0.14
-const TOUCHDOWN_MIN_APPROACH_MPS := 0.2
-const TOUCHDOWN_DEBOUNCE_S := 0.65
+const TOUCHDOWN_MIN_AIRBORNE_S := Motion.TOUCHDOWN_MIN_AIRBORNE_S
+const TOUCHDOWN_MIN_APPROACH_MPS := Motion.TOUCHDOWN_MIN_APPROACH_MPS
+const TOUCHDOWN_DEBOUNCE_S := Motion.TOUCHDOWN_DEBOUNCE_S
+
+const MAX_ACCEPTED_EVENTS := 64
+const MAX_ACCEPTED_RATE_HZ := 10000.0
+const ACCEPTED_OBSERVATION_LAW := "accepted-tick-ground-audio-v1"
+const MAX_EVENT_AGE_S := 0.25 # Presentation latency bound; not a landing/event window.
+var _accepted_tick_observation := false
+var _accepted_tick := -1
+var _accepted_rate := 0.0
+var _accepted_paused := true
+var _accepted_states: Dictionary = {}
+var _accepted_contacts: Array = []
+var _accepted_events: Array[Dictionary] = []
+var _accepted_observed := 0
+var _accepted_drained := 0
+var _accepted_discarded := 0
+var _accepted_overflowed := 0
+var _accepted_refused := 0
 
 var _owner: Node
 var _soundscape: Node
@@ -29,6 +47,110 @@ var touchdown_events: int = 0
 var contact_slot_count: int:
 	get:
 		return _slots.size()
+
+
+## Direct presentation callers retain render sampling. Production supplies every
+## accepted endpoint; capture never creates players, touches buses or plays audio.
+func set_accepted_tick_observation(enabled: bool) -> void:
+	if enabled == _accepted_tick_observation: return
+	_accepted_tick_observation = enabled
+	reset()
+
+
+func observe_accepted(snapshot: Dictionary) -> bool:
+	if not _accepted_tick_observation: return false
+	if not _valid_accepted_snapshot(snapshot):
+		_clear_accepted_observation()
+		_accepted_refused += 1
+		return false
+	var tick: int = snapshot.tick
+	var rate: float = snapshot.tick_rate
+	if tick == _accepted_tick and rate == _accepted_rate and not snapshot.paused: return true
+	var discontinuity := tick != _accepted_tick + 1 or rate != _accepted_rate
+	var seed_only: bool = _accepted_tick < 0 or discontinuity or snapshot.paused or _accepted_paused
+	if discontinuity or snapshot.paused: _clear_accepted_observation()
+	var next_states := {}
+	var detached_contacts: Array = []
+	for supplied: Dictionary in snapshot.contacts:
+		# Retain only the bounded presentation contract, never arbitrary nested
+		# input data, physics objects or callers' mutable dictionaries.
+		var contact := {id = supplied.id, position = supplied.position,
+			normal_force_n = supplied.normal_force_n, reference_load_n = supplied.reference_load_n,
+			approach_speed_mps = supplied.approach_speed_mps, rolling_speed_mps = supplied.rolling_speed_mps,
+			surface = supplied.surface, roll_enabled = supplied.get("roll_enabled", true)}
+		detached_contacts.append(contact)
+		var observed := Motion.advance(contact, _accepted_states.get(contact.id, {}),
+			0.0 if seed_only else 1.0 / rate, seed_only, not seed_only)
+		next_states[contact.id] = observed.state
+		if observed.impact_approach >= 0.0:
+			_accepted_observed += 1
+			if _accepted_events.size() == MAX_ACCEPTED_EVENTS:
+				_accepted_events.pop_front()
+				_accepted_overflowed += 1
+				_accepted_discarded += 1
+			_accepted_events.append({tick = tick, contact = contact.duplicate(true),
+				force = observed.force, reference = observed.reference, approach = observed.impact_approach})
+	_accepted_states = next_states
+	_accepted_contacts = detached_contacts
+	_accepted_tick = tick
+	_accepted_rate = rate
+	_accepted_paused = snapshot.paused
+	return true
+
+
+static func _valid_accepted_snapshot(snapshot: Dictionary) -> bool:
+	if typeof(snapshot.get("tick")) != TYPE_INT or snapshot.tick < 0 or snapshot.tick > 9007199254740991 \
+		or typeof(snapshot.get("tick_rate")) not in [TYPE_INT, TYPE_FLOAT] \
+		or not is_finite(float(snapshot.tick_rate)) or snapshot.tick_rate < 1.0 or snapshot.tick_rate > MAX_ACCEPTED_RATE_HZ \
+		or typeof(snapshot.get("paused")) != TYPE_BOOL or not snapshot.get("contacts") is Array \
+		or snapshot.contacts.size() > MAX_CONTACTS: return false
+	var ids := {}
+	for contact: Variant in snapshot.contacts:
+		if not contact is Dictionary or typeof(contact.get("id")) != TYPE_STRING \
+			or contact.id.is_empty() or contact.id.length() > 128 or ids.has(contact.id): return false
+		ids[contact.id] = true
+		for key: String in ["normal_force_n", "reference_load_n", "approach_speed_mps", "rolling_speed_mps"]:
+			if typeof(contact.get(key)) not in [TYPE_INT, TYPE_FLOAT] \
+				or not is_finite(float(contact[key])) or contact[key] < 0.0: return false
+		if not contact.get("position") is Vector3 or not contact.position.is_finite() \
+			or typeof(contact.get("surface")) != TYPE_STRING or contact.surface.length() > 64: return false
+		for key: String in ["grounded", "roll_enabled"]:
+			if contact.has(key) and typeof(contact[key]) != TYPE_BOOL: return false
+	return true
+
+
+func _discard_accepted_events() -> void:
+	_accepted_discarded += _accepted_events.size()
+	_accepted_events.clear()
+
+
+func _clear_accepted_observation() -> void:
+	_discard_accepted_events()
+	_accepted_states.clear()
+	_accepted_contacts.clear()
+	_accepted_tick = -1
+	_accepted_rate = 0.0
+	_accepted_paused = true
+
+
+func _drain_accepted_events(tick: int, rate: float) -> void:
+	for event: Dictionary in _accepted_events:
+		if tick < event.tick or float(tick - event.tick) / maxf(rate, 1.0) > MAX_EVENT_AGE_S:
+			_accepted_discarded += 1
+			continue
+		var slot := _slot_for(event.contact.id, _slots.size())
+		if slot.is_empty():
+			_accepted_discarded += 1
+			continue
+		_play_touchdown(event.contact, event.force, event.reference, event.approach, slot)
+		_accepted_drained += 1
+	_accepted_events.clear()
+
+
+func accepted_diagnostics() -> Dictionary:
+	return {law = ACCEPTED_OBSERVATION_LAW, tick = _accepted_tick, states = _accepted_states.size(),
+		queued = _accepted_events.size(), observed = _accepted_observed, drained = _accepted_drained,
+		discarded = _accepted_discarded, overflowed = _accepted_overflowed, refused = _accepted_refused}
 
 
 ## Adds this spatial rig below owner; source distance follows the same bounded manual law as the powertrain.
@@ -80,7 +202,13 @@ func rebind(bus: StringName) -> void:
 func update_contacts(tick: int, paused: bool, contacts: Array, engine_power: float, delta: float,
 		listener: Vector3 = Vector3.ZERO, tick_rate_hz: float = 240.0) -> void:
 	if tick < _last_tick:
-		reset()
+		if _accepted_tick_observation:
+			_reset_playback() # Keep legitimate post-rewind cues captured before rendering.
+		else:
+			reset()
+	if _accepted_tick_observation:
+		contacts = _accepted_contacts if tick == _accepted_tick else []
+		if paused or tick != _accepted_tick: _discard_accepted_events()
 	var tick_delta: int = maxi(tick - _last_tick, 0)
 	var tick_advanced: bool = tick_delta > 0
 	_last_tick = tick
@@ -109,6 +237,7 @@ func update_contacts(tick: int, paused: bool, contacts: Array, engine_power: flo
 	var state_dt: float = float(tick_delta) / maxf(tick_rate_hz, 1.0)
 	var target_mask: float = 1.0 - 0.42 * smoothstep(0.12, 0.9, clampf(engine_power, 0.0, 1.0))
 	_engine_mask += (target_mask - _engine_mask) * (1.0 - exp(-dt / 0.25))
+	if _accepted_tick_observation: _drain_accepted_events(tick, _accepted_rate)
 	var active_ids: Dictionary = {}
 	for i: int in range(contacts.size()):
 		var contact: Dictionary = contacts[i]
@@ -132,44 +261,21 @@ func _update_contact(contact: Dictionary, slot: Dictionary, state_delta: float, 
 	if point is Vector3:
 		for player: AudioStreamPlayer3D in slot.get("roll", []):
 			player.global_position = point
-	var state: Dictionary = slot.get("state", {})
-	var force: float = maxf(0.0, float(contact.get("normal_force_n", contact.get("normal_force", 0.0))))
-	var reference: float = maxf(1.0, float(contact.get("reference_load_n", maxf(force, 100.0))))
-	var force_on: float = maxf(3.0, reference * 0.035)
-	var force_off: float = maxf(1.0, reference * 0.018)
-	var candidate_grounded: bool = bool(contact.get("grounded", force >= force_on)) if not contact.has("normal_force_n") else force >= force_on
-	var approach_now: float = maxf(0.0, float(contact.get("approach_speed_mps", 0.0)))
-	var was_grounded: bool = bool(state.get("grounded", false))
-	var cooldown: float = maxf(0.0, float(state.get("cooldown_s", 0.0)) - state_delta)
-	var airborne: float = float(state.get("airborne_s", 0.0))
-	var previous_approach: float = float(state.get("previous_approach_mps", 0.0))
-	if seed_only or not bool(state.get("initialized", false)):
-		was_grounded = force >= force_on if contact.has("normal_force_n") else candidate_grounded
-		state["grounded"] = was_grounded
-		state["airborne_s"] = 0.0
-		state["previous_approach_mps"] = 0.0
-		state["cooldown_s"] = 0.0
-		state["initialized"] = true
+	var observed: Dictionary
+	if _accepted_tick_observation:
+		var identity: String = str(contact.get("id", ""))
+		observed = Motion.advance(contact, _accepted_states.get(identity, {}).duplicate(true), 0.0, false, false)
 	else:
-		var next_grounded: bool = force >= force_off if was_grounded else candidate_grounded
-		if next_grounded and not was_grounded:
-			# The accepted contact state may already be rebounding. Retain only the last
-			# airborne sample, never a descent peak from an earlier part of the flight.
-			var approach: float = maxf(previous_approach, approach_now)
-			if tick_advanced and not seed_only and airborne >= TOUCHDOWN_MIN_AIRBORNE_S and cooldown <= 0.0 and approach >= TOUCHDOWN_MIN_APPROACH_MPS:
-				_play_touchdown(contact, force, reference, approach, slot)
-				cooldown = TOUCHDOWN_DEBOUNCE_S
-			airborne = 0.0
-			previous_approach = 0.0
-		elif not next_grounded:
-			airborne += state_delta
-			if tick_advanced:
-				previous_approach = approach_now
-		state["grounded"] = next_grounded
-		state["airborne_s"] = airborne
-		state["previous_approach_mps"] = previous_approach
-		state["cooldown_s"] = cooldown
-		state["initialized"] = true
+		observed = Motion.advance(contact, slot.get("state", {}), state_delta, seed_only, tick_advanced)
+		if observed.impact_approach >= 0.0:
+			_play_touchdown(contact, observed.force, observed.reference, observed.impact_approach, slot)
+	var state: Dictionary = observed.state
+	# Roll pitch belongs to render smoothing, not accepted physical history.
+	if _accepted_tick_observation and slot.get("state", {}).has("roll_pitch"):
+		state.roll_pitch = slot.state.roll_pitch
+	var force: float = observed.force
+	var reference: float = observed.reference
+	var force_off: float = observed.force_off
 	var load_ratio: float = clampf(force / reference, 0.0, 1.5)
 	var rolling_speed: float = maxf(0.0, float(contact.get("rolling_speed_mps", 0.0)))
 	var can_roll: bool = bool(contact.get("roll_enabled", true)) and bool(state.get("grounded", false)) \
@@ -182,6 +288,7 @@ func _update_contact(contact: Dictionary, slot: Dictionary, state_delta: float, 
 			* pow(clampf(rolling_speed / 12.0, 0.0, 1.0), 0.6)
 		var load_mix: float = clampf(sqrt(load_ratio), 0.0, 1.0)
 		target = 0.42 * speed_mix * load_mix * _engine_mask
+	if _accepted_tick_observation: slot["state"] = state
 	_set_roll_targets(slot, str(contact.get("surface", "hard")), target, visual_delta, rolling_speed)
 	var impact_player: AudioStreamPlayer3D = slot.get("impact") as AudioStreamPlayer3D
 	if impact_player != null and impact_player.playing:
@@ -287,6 +394,16 @@ func stop() -> void:
 
 
 func reset() -> void:
+	_clear_accepted_observation()
+	_accepted_observed = 0
+	_accepted_drained = 0
+	_accepted_discarded = 0
+	_accepted_overflowed = 0
+	_accepted_refused = 0
+	_reset_playback()
+
+
+func _reset_playback() -> void:
 	stop()
 	_last_tick = -1
 	_needs_seed = true
@@ -299,6 +416,7 @@ func reset() -> void:
 
 
 func _on_buses_releasing() -> void:
+	_clear_accepted_observation()
 	stop()
 	_bus = StringName()
 	_needs_seed = true

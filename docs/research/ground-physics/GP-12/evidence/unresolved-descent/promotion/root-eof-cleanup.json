@@ -1,0 +1,6 @@
+{
+  "path": "app\\physics\\contact_assembly_resolution.gd",
+  "before": "f5190d8683f6a1818beed06b93403d3e0b22638c3dfb71893c605a4d49a6fcb5",
+  "after": "c121d641a6e8fd05efbe2fd7ffb28d91e4809a983e3fb6486a4dfc38cb7f79db",
+  "change": "trailing blank lines only; executable code unchanged"
+}

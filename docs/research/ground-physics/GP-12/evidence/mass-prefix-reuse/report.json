@@ -1,0 +1,86 @@
+{
+  "format": "openrc-gp12-mass-prefix-retained-v1",
+  "captured_utc": "2026-10-26T18:56:49.530460+00:00",
+  "production_checks": 858,
+  "production_invocations": [
+    {
+      "label": "accuracy",
+      "report": "production/checks/accuracy-lfrzs69u/report.json",
+      "required_text": [
+        "Aircraft ground accuracy: 84 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "assembly",
+      "report": "production/checks/assembly-cgmu1t7e/report.json",
+      "required_text": [
+        "GP-12 assembly resolution: 53 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "impulse",
+      "report": "production/checks/impulse-ozu6ogci/report.json",
+      "required_text": [
+        "Aircraft ground impulse: 314 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "prefix",
+      "report": "production/checks/prefix-k_olsnit/report.json",
+      "required_text": [
+        "Prepared contact mass prefix: 110 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "step",
+      "report": "production/checks/step-4yslj4ba/report.json",
+      "required_text": [
+        "Aircraft ground step: 167 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "unloaded",
+      "report": "production/checks/unloaded-b_xrh423/report.json",
+      "required_text": [
+        "Unloaded policy: 130 checks, 0 failed"
+      ]
+    }
+  ],
+  "hotspot_invocations": 9,
+  "optimization_passing_invocations": 19,
+  "hotspot_complete_result_equalities": 4,
+  "optimization_complete_result_equalities": 4,
+  "warmed_pairs": 10,
+  "production_payload": [
+    {
+      "target": "app/physics/contact_assembly_resolution.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/contact_assembly_resolution.gd",
+      "sha256": "406b89fbe2a4a09754bf10a2db07d2dfb87fb86038d807cb22396a175a4b9831",
+      "main_prehash": "3cb14049fee9f7976fdac0b88b1129c2aca20c686b53e15fc188a44856d53f45"
+    },
+    {
+      "target": "app/physics/aircraft_ground_impulse.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/aircraft_ground_impulse.gd",
+      "sha256": "5bacc4e47b74db1a7d30428a0d570d53330d4c8c0d80ce93b40953b9b27063ce",
+      "main_prehash": "76c279a9fb58ffcbf5f69861cc2e817dd4bd8300c052504495e76a28c2211f69"
+    },
+    {
+      "target": "app/physics/aircraft_ground_step.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/aircraft_ground_step.gd",
+      "sha256": "e042c5933dc501d244684cbe8a6480db30a3a7056629a6c014db979dba889b77",
+      "main_prehash": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366"
+    },
+    {
+      "target": "app/tests/test_contact_mass_prefix.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/tests/test_contact_mass_prefix.gd",
+      "sha256": "841cc3c701c2895492bfa5e9234ad27d0c121b0a649edb6955ed954884a99f98",
+      "main_prehash": null
+    }
+  ],
+  "source_before_reconstruction": "Literal imports restored from captured plain sources and original CRLF restored; each complete SHA256 exactly equals recorded main_prehash.",
+  "physical_or_realtime_qualification": false,
+  "scope": "Fixed mass prefix computation reuse; no change to physical laws, objective, bounds arithmetic, state or receipt values. Actual resting tick remains about0.7s; shared-host bounded diagnostic, no real-time qualification.",
+  "later_scalar_capacity_or_QP_patch_included": false,
+  "main_runtime_writes_by_packager": [],
+  "checked_copy_count": 345
+}

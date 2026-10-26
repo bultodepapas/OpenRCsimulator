@@ -1,0 +1,72 @@
+--- a/app/sim/flight_session.gd
++++ b/app/sim/flight_session.gd
+@@ -125,17 +125,51 @@
+ 	if mode == "split" and aircraft.get("ok", false) and (Propulsion.is_electric(aircraft.model.propulsion) or glow_is_active() or (liquid_fuel_is_active() and not Turbine.is_turbine(aircraft.model.propulsion))):
+ 		shaft_error = "finite propeller propulsion requires coupled-rk4"
+ 		return false
+-	_shaft_explicit = true
+ 	if mode == _shaft_integrator:
++		_shaft_explicit = true
+ 		shaft_error = ""
+ 		return true
+-	resetting.emit()
++	if sim == null:
++		_shaft_explicit = true
++		_shaft_integrator = mode
++		_shaft_pending_reset = false
++		shaft_error = ""
++		return true
++	var transaction := _begin_start_transaction()
++	# Capture the old recorder boundary before selecting the new layout. Reading
++	# that checkpoint may invoke a model validator, so preparation is guarded too.
++	var intact: bool = sim._endpoint_guard_matches(transaction.kernel)
++	for field: String in _START_OWNER_FIELDS:
++		intact = intact and Sim._guard_values_equal(get(field), transaction.owner[field])
++	if _reset_transaction_reentry or not intact:
++		_refuse_start_transaction(transaction, "shaft preparation changed the installed owner")
++		shaft_error = "shaft preparation changed the installed owner"
++		return false
++	_shaft_explicit = true
+ 	_shaft_integrator = mode
+-	_shaft_pending_reset = sim != null
+-	if sim != null:
+-		_configure_continuous_callbacks()
+-		sim.set_paused(true)
++	_shaft_pending_reset = true
++	var callbacks: Dictionary = PropulsionRuntime.prepare_callbacks(self)
++	if not callbacks.ok:
++		_refuse_start_transaction(transaction, "shaft callback preparation failed")
++		shaft_error = "shaft callback preparation failed: " + str(callbacks.get("errors", []))
++		return false
++	_install_continuous_callbacks(callbacks)
+ 	shaft_error = ""
++	# Pending selection is accepted now. The explicit reset still constructs the
++	# physical layout and owns statistics credit; no sample is published here.
++	transaction.committed = true
++	_reset_physical_committed = true
++	sim.reset_observer_fault = ""
++	sim._publish_committed_boundary(func() -> void:
++		_reset_publication_active = true
++		_reset_closing_context = transaction.closing
++		resetting.emit()
++		_reset_closing_context = {}
++		_reset_publication_active = false, false, "shaft configuration", true)
++	_end_start_transaction(transaction)
++	if not sim.reset_observer_fault.is_empty():
++		shaft_error = sim.reset_observer_fault
++		pause_reason = "simulation fault: " + shaft_error
+ 	return true
+ 
+ 
+@@ -1909,6 +1943,11 @@
+ 	if not prepared.ok:
+ 		push_error("Cannot prepare aircraft propulsion: " + str(prepared.get("errors", [])))
+ 		return
++	_install_continuous_callbacks(prepared)
++
++
++## Install only an already prepared callback set; this does not advance state.
++func _install_continuous_callbacks(prepared: Dictionary) -> void:
+ 	for field: String in PropulsionRuntime.CALLBACK_FIELDS:
+ 		sim.model.set(field, prepared[field])
+ 	if sim.model.stage.is_valid() and _substep_preview_supported():

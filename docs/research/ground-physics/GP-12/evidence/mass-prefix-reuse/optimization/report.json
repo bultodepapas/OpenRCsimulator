@@ -1,0 +1,600 @@
+{
+  "format": "openrc-mass-prefix-reuse-draft-review-v1",
+  "complete": true,
+  "production_promoted": false,
+  "scope": "Only fixed actual mass-matrix prefix reuse; every variable assembly/slip/work proof unchanged; public default and laws unchanged",
+  "opaque_proof_contract": "Produced locally by prepare_mass, held by trusted read-only owner; no arbitrary Dictionary accepted as authority. Private fields are implementation detail, not a sandbox against malicious GDScript reflection/subclassing. Complete matrix to_byte_array plus width match; mismatch falls back to original prefix without mutating prepared proof. One proof, no global cache; owner reprepare on reset/hot reload/mass-axis config changes.",
+  "payload": [
+    {
+      "target": "app/physics/contact_assembly_resolution.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/contact_assembly_resolution.gd",
+      "sha256": "406b89fbe2a4a09754bf10a2db07d2dfb87fb86038d807cb22396a175a4b9831",
+      "main_prehash": "3cb14049fee9f7976fdac0b88b1129c2aca20c686b53e15fc188a44856d53f45"
+    },
+    {
+      "target": "app/physics/aircraft_ground_impulse.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/aircraft_ground_impulse.gd",
+      "sha256": "5bacc4e47b74db1a7d30428a0d570d53330d4c8c0d80ce93b40953b9b27063ce",
+      "main_prehash": "76c279a9fb58ffcbf5f69861cc2e817dd4bd8300c052504495e76a28c2211f69"
+    },
+    {
+      "target": "app/physics/aircraft_ground_step.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/physics/aircraft_ground_step.gd",
+      "sha256": "e042c5933dc501d244684cbe8a6480db30a3a7056629a6c014db979dba889b77",
+      "main_prehash": "5efd9c34ab422d1ba09818d22f22aac8c257b89e9bb51a8f7baf9660b59de366"
+    },
+    {
+      "target": "app/tests/test_contact_mass_prefix.gd",
+      "draft": "tmp/gp12-mass-prefix-draft/promotion-candidate/app/tests/test_contact_mass_prefix.gd",
+      "sha256": "841cc3c701c2895492bfa5e9234ad27d0c121b0a649edb6955ed954884a99f98",
+      "main_prehash": null
+    }
+  ],
+  "four_states": [
+    {
+      "case": "rest6",
+      "baseline_us": 623484,
+      "optimized_us": 734455,
+      "one_time_prepare_us": 3234,
+      "complete_result_byte_equal": true,
+      "same_as_original_hotspot_result": true,
+      "result_sha256": "fb5eab3584e5633e40eae3c5951703ebd77df2251d7a5895a98d8568c6361ccf",
+      "ok": true,
+      "status": "accepted"
+    },
+    {
+      "case": "rest10",
+      "baseline_us": 653428,
+      "optimized_us": 525425,
+      "one_time_prepare_us": 2136,
+      "complete_result_byte_equal": true,
+      "same_as_original_hotspot_result": true,
+      "result_sha256": "c052b7dbcf19df8d72d26487811334d9e774d8f0a1e44e5e76f9f2704d225ec7",
+      "ok": true,
+      "status": "accepted"
+    },
+    {
+      "case": "gentle",
+      "baseline_us": 192133,
+      "optimized_us": 182602,
+      "one_time_prepare_us": 2117,
+      "complete_result_byte_equal": true,
+      "same_as_original_hotspot_result": true,
+      "result_sha256": "77b3d22cc3f416489ba66f57d759dfd712d2936b9fb46a835b196d51d7b1eaec",
+      "ok": true,
+      "status": "accepted"
+    },
+    {
+      "case": "hard",
+      "baseline_us": 253314,
+      "optimized_us": 390263,
+      "one_time_prepare_us": 3686,
+      "complete_result_byte_equal": true,
+      "same_as_original_hotspot_result": true,
+      "result_sha256": "a972e12b5e91e3d2c99c2712338f9ae1cefac50b6d31d3e930da5b58fd2edee8",
+      "ok": false,
+      "status": "error_control_exhausted"
+    }
+  ],
+  "warmed_interleaved": [
+    {
+      "case": "rest6",
+      "pairs": 5,
+      "baseline_median_us": 866143,
+      "optimized_median_us": 747158,
+      "baseline_range_us": [
+        775788,
+        896303
+      ],
+      "optimized_range_us": [
+        630064,
+        779219
+      ],
+      "ratio_range": [
+        0.7274364625702684,
+        0.9707420068369194
+      ],
+      "one_time_prepare_us": 2131,
+      "all_full_result_bytes_equal": true
+    },
+    {
+      "case": "rest10",
+      "pairs": 5,
+      "baseline_median_us": 898076,
+      "optimized_median_us": 717149,
+      "baseline_range_us": [
+        863918,
+        943475
+      ],
+      "optimized_range_us": [
+        630636,
+        766312
+      ],
+      "ratio_range": [
+        0.6949057479066416,
+        0.8532819048721935
+      ],
+      "one_time_prepare_us": 3594,
+      "all_full_result_bytes_equal": true
+    }
+  ],
+  "actual_reuse_counts": {
+    "report": "tmp/gp12-mass-prefix-draft/checks/actual-reuse-count-rt4soiym/report.json",
+    "bounds_calls": 51,
+    "prefix_rebuilds_after_preparation": 0,
+    "note": "Use actual checked path from passing_checked_reports list, label actual-reuse-count"
+  },
+  "focused_checks": 41,
+  "compatibility_checks": {
+    "assembly_resolution": 53,
+    "impulse": 314,
+    "step": 167
+  },
+  "paired_checks": 34,
+  "passing_checked_reports": [
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/actual-reuse-count-rt4soiym/report.json",
+      "sha256": "a72d4ccad7f302b23ac17d221abdcf70ce574abde2ee98600637070dcd99bc6d",
+      "label": "actual-reuse-count",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-gentle-kk24nlkj/report.json",
+      "sha256": "3ddb2fefa415393b29f970758ff8922f075700e20f715e6871af50a27c002628",
+      "label": "baseline-gentle",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-hard-pcv25ruk/report.json",
+      "sha256": "3b0237eaeec9f4ea044d9f599e82d782adf4112d5a322aec8fbea221c2fa0346",
+      "label": "baseline-hard",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-rest10-wrz1sbrf/report.json",
+      "sha256": "49efbbc382a30677e2dc32186dc3ce8855143685f51227297e3adb41c1c870a6",
+      "label": "baseline-rest10",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/baseline-rest6-c_8x4s2w/report.json",
+      "sha256": "2ef526c1bc588363019af97b5e29ee7156b4439f47d9ca33e0ac483f07634751",
+      "label": "baseline-rest6",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/compat-ar-correct-marker-afqkauwv/report.json",
+      "sha256": "6089369ba1ac123d8eb1579526e5e526745fb0fe1368aec624ca640378fd2239",
+      "label": "compat-ar-correct-marker",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/compat-test_aircraft_ground_impulse-rr77o1pd/report.json",
+      "sha256": "a15e583e52bdee1c9e3fed47d838003b46c3803bb9651d13093ec5a35ccfd179",
+      "label": "compat-test_aircraft_ground_impulse",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/compat-test_aircraft_ground_step-floc68j7/report.json",
+      "sha256": "8d2284271a5b65fdce1990ee8a79b4e39747371d86ba92fd465ef981f85bff9b",
+      "label": "compat-test_aircraft_ground_step",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/focused-proof-corrected-l9fzgsk8/report.json",
+      "sha256": "9b8a3501027ef26a7cffd4d6dfb10f3374ea024ebbc0d1f4cd8d2e023e1d2beb",
+      "label": "focused-proof-corrected",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-gentle-eaip6fvi/report.json",
+      "sha256": "cfb6f4f7c1dba17b31f5ad329db5d1fe73f8b7e44c32deb51e4efa0bfc78dda9",
+      "label": "optimized-gentle",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-hard-q_rxc43t/report.json",
+      "sha256": "a0fc5ea4c6d30403fc91547751cf08a4eaa3ba9013245291f874a2b0679de79a",
+      "label": "optimized-hard",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-rest10-kns09qhw/report.json",
+      "sha256": "c9da86a894eab146293a615f1ae11cb0bb69f01090a2dc24a0b26ce6c61b7655",
+      "label": "optimized-rest10",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/optimized-rest6-cjtl4195/report.json",
+      "sha256": "69feee02a65020b95ece3e47c2f040a9d8a722a1c38e259360848c5224fc1564",
+      "label": "optimized-rest6",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/parse-draft-glie_376/report.json",
+      "sha256": "647024a00755ec25995691448f2ba88c407ccb6ec71aecee24dc73fc7ab80dad",
+      "label": "parse-draft",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/parse-paired-renamed-vhhdh2fh/report.json",
+      "sha256": "9880cfe45b4f092938c44635a0e4e8f9f6df0f364f927c4c5ed20b755d2b14fc",
+      "label": "parse-paired-renamed",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/warmed-pairs-x0y5vfwy/report.json",
+      "sha256": "d2f9e2a1dc1a3b01df674deb2db50c92169e960dc90f8245342981d650b49631",
+      "label": "warmed-pairs",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/capture-public-step-fixed-parent-nbkyeaym/report.json",
+      "sha256": "adde2c43bfc390e1e6a2d93e1972e150d12e12a09fa9cf0922423e1ce9b949b7",
+      "label": "capture-public-step-fixed-parent",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/parse-self-contained-complete-5a2qmq9t/report.json",
+      "sha256": "e0c8587921207da5cc276cb2d159d7457125d2f6f6587a80eb6825ba3016743f",
+      "label": "parse-self-contained-complete",
+      "warnings_as_errors": true
+    },
+    {
+      "path": "tmp/gp12-mass-prefix-draft/checks/self-contained-complete-35me0_k3/report.json",
+      "sha256": "ecf07b1c8408db90d8568b9f14a7584f21f80e406372584e9b6fc3ef15dd2062",
+      "label": "self-contained-complete",
+      "warnings_as_errors": true
+    }
+  ],
+  "prepared_source_after": [
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/driver.gd",
+      "same": true,
+      "sha256": "c59cabdc666dcc6b9f5d5d5633051fbc48dccb8ffc37bb9b3d45c97d74a2e966"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/metrics.gd",
+      "same": true,
+      "sha256": "3c367670ecd140442cfc8fbe64245f85adc1ee0d0c1bbc14e7ea55c4c76b4441"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/owner.gd",
+      "same": true,
+      "sha256": "ac76f98247b26719020f988fd8f7f269c78d330456669aeb3caa9f7429281a96"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aero.gd",
+      "same": true,
+      "sha256": "e20ae5ec30b11e27b9a6d37086cdffb26e4db2af0f71c1d561590e8ab26ecfa1"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_contract.gd",
+      "same": true,
+      "sha256": "35d2a1ad28035ee4278179d18738eefe3ebd9648e26522204dfc4fcf1d71dcc9"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_data.gd",
+      "same": true,
+      "sha256": "8a79e8a0506593318a91afd57e10c311ec81d7f11e44e398ae615b12fe23b1d6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_accuracy.gd",
+      "same": true,
+      "sha256": "3b86faf64717f6fb84a26cb2521e2d17ffb3e6c0bf36585a2b6da2099295ce87"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_dynamics.gd",
+      "same": true,
+      "sha256": "fc55cc304ef0bfb373216c37b8a0454fdba797aa97509c8e2113083a7c019296"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_impulse.gd",
+      "same": true,
+      "sha256": "0cc470f500e22a574cca105e79b313828df941f2fe8b9190cbf20f62964badd2"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_profile.gd",
+      "same": true,
+      "sha256": "20faf4c1e926ad2a23c464d2ab28e064d4d264ade7135d7290eea739052e4925"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_stage.gd",
+      "same": true,
+      "sha256": "f370a3cd999805c24087ac1ba956b42c3d3ea6579c671befb390d839c40a1cfe"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_step.gd",
+      "same": true,
+      "sha256": "d8ee97b7b9526c4e0490aca40b82827a6db51ec693b019538e2a599f7cacca30"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_traction.gd",
+      "same": true,
+      "sha256": "1190ffdf7e8823eb10e0308f63beb6cfc3e42c9ed11db2c0cf37e2321d0c014b"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_ground_unloaded.gd",
+      "same": true,
+      "sha256": "5b0170c9e7d2201ec8aecdbdaf5b1d81df15385bc92715eac7c166b917b982a5"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/aircraft_modules.gd",
+      "same": true,
+      "sha256": "79b030030e92b35af5efe7e8f69149e6d498a6c7637aa212a926320803b1102a"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/battery/battery_data.gd",
+      "same": true,
+      "sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/battery/esc_supervisor.gd",
+      "same": true,
+      "sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/battery/pack_ecm.gd",
+      "same": true,
+      "sha256": "eccebc1dc9c3488de4eb3a410d351b69269c2e39a33669a32ea61865eef67a25"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/contact_assembly_resolution.gd",
+      "same": true,
+      "sha256": "a3cb795c7ca8e07a32511d7b1b6bda0a686bc3190c0e7cd2cd6ef4f8bfff0d46"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/contact_assembly_strategy.gd",
+      "same": true,
+      "sha256": "df70499cb1f86dd8b9bcc3cee6b46591a53d27e77b38518c72c182856b86614b"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/control_actuators.gd",
+      "same": true,
+      "sha256": "d8a897dd9890fcd89c5bc9a39d5313878d8cd8751db3a963efd24747692907a5"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/control_surfaces.gd",
+      "same": true,
+      "sha256": "758de9a007b2d2f1bf819d6a8919e4e867f952097aa260c1f2c56405a9611beb"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/effective_mass.gd",
+      "same": true,
+      "sha256": "7af5b0686e2c27f5ad78526bcc240a84eece6f6245732986481fb4791c850176"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/electric_motor.gd",
+      "same": true,
+      "sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/electric_supply.gd",
+      "same": true,
+      "sha256": "04675b0f1ee127f9c26e200ce2c08a519df8edc39c1ba1a53e146e3e680f8e2b"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/event_bracket.gd",
+      "same": true,
+      "sha256": "898b8556741b98f12416f1c4e5297b833f78be788f8b6c968138fdb437a031bc"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/event_step.gd",
+      "same": true,
+      "sha256": "a1abe07d0a54dee769e5d7862f83bc7ed10df54cb4f6b693302d1ca87bb7b3e5"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/fixed_datum_body.gd",
+      "same": true,
+      "sha256": "2945c1a57e8b6c946aab72439ba6bb1c869f996f803045310ed42f513497ddf7"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/flaps.gd",
+      "same": true,
+      "sha256": "bf3f1ac5afc0b414d978f9f630afb12ba956635d66cf27c65d87d392ebb76b7d"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/fuel_properties.gd",
+      "same": true,
+      "sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/generalized_coordinates.gd",
+      "same": true,
+      "sha256": "d349b9ad91639e576f59af5e05ed14d62392bb858c4c2b47a2131a70cfdfee38"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/carburetor.gd",
+      "same": true,
+      "sha256": "7ca40d11c2dd2350f1a8a713909d9018c8f23f1c58578624e35d7f18f66684d5"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/four_stroke.gd",
+      "same": true,
+      "sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/fuel_feed.gd",
+      "same": true,
+      "sha256": "3f90a9edb0a88783d5f50c3667f582f6b80de0fde224a98732a9745ad02952aa"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/fuel_mass.gd",
+      "same": true,
+      "sha256": "9954232737eed5d93679cff20de7d03441056b7b6ca16701f83647d5b11c0f1f"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/installation.gd",
+      "same": true,
+      "sha256": "342ea1f145644e1462b551353e4cd34175c249822d2466aad2847f42201cacdf"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/operating_point.gd",
+      "same": true,
+      "sha256": "1967da1f57d6a65b57e7df5cbc582743403efdf61cb87f86dee262f2ab7593d6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/profile.gd",
+      "same": true,
+      "sha256": "c52f639f3f28382bdd5a3bd8b30789d76e8ae6eb11864b5bd09eb0bff3855524"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/propeller.gd",
+      "same": true,
+      "sha256": "691040973c881653db5fd18a1afd0cc4eac856c103680fec86e5b7a7308b48c6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/source.gd",
+      "same": true,
+      "sha256": "ce14918165a2bf64d35e59813c3835d66763a7ac8af3a18f8a03fa11a3744660"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/glow/two_stroke.gd",
+      "same": true,
+      "sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_contact.gd",
+      "same": true,
+      "sha256": "3b14ac289a3ade0626c5d165ae1fb4d4b4011b4ba4fd095daf8361f8904d2111"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_effect.gd",
+      "same": true,
+      "sha256": "c789bdaacaa92f92c32abc22b7d8324389041690a26400db184aa9e36cc7f061"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_support.gd",
+      "same": true,
+      "sha256": "273c71f5f6e1b71eec89b517c78c07d24468bdebabd0b7bdc878f3f2c76711e6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_terrain.gd",
+      "same": true,
+      "sha256": "73bcb3ff7041e1e8a5cedae4f42c3d28120e08586d017792f852e190407871a2"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_traction.gd",
+      "same": true,
+      "sha256": "3e18d9f2573b8642462c331adaf3712c731cf1fe1eb79fb1639b4a169324f607"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/ground_wheels.gd",
+      "same": true,
+      "sha256": "f3ad3af43525a9bee49d63b7967812d769a7bd54d8d933430cb2602788f23b90"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/hull_contact.gd",
+      "same": true,
+      "sha256": "1ac52bc9b86322ec9d0ee8202e5062bd82556509cbf8c9fcfe2cebf12da99625"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/integrator.gd",
+      "same": true,
+      "sha256": "e8692be9c2b8af1443d16999a79bae69d8b7652006900570d91508dd56a4bba6"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/intended_hull_support.gd",
+      "same": true,
+      "sha256": "47f3413b545bb9c558c1c54fa971d248700d870609dad08daa454641475f6cb9"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/lake_surface.gd",
+      "same": true,
+      "sha256": "ae62502dfe6702dd3dfff213318647316bf41430d620015d9e655a44e91e21d0"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/liquid_fuel.gd",
+      "same": true,
+      "sha256": "29d82539ac7d749ec1f943759520bbe0663c7bae9ae0e5429af4b75916e6658b"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/mass_inventory.gd",
+      "same": true,
+      "sha256": "f5dcdb0c8ed5e19f87013d6d98f31bbd04b2c92fcaa386f1453b4ce21e43f349"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/math3d.gd",
+      "same": true,
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/normal_compliance.gd",
+      "same": true,
+      "sha256": "cbc3c680a2448c9c72139ecb8bf02b15d6a801d5af5559683928ac6e25f6a41c"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/normal_contact_admission.gd",
+      "same": true,
+      "sha256": "9515bd10da83d079d85e2ca9de03c7c02ae0e0d4568bd4bcaa752088b19ddf17"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/physical_identity.gd",
+      "same": true,
+      "sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/propulsion.gd",
+      "same": true,
+      "sha256": "1ef74168677e2415c14fea6cb1a7d2d5861df52a27415e69ab08991bb04f76c9"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/rigid_body.gd",
+      "same": true,
+      "sha256": "a245293aed4e3549f2f7855ccdbdb96fe626a942bbcf04bad552fe4bd2628436"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/rotor_coupling.gd",
+      "same": true,
+      "sha256": "ba2464e8e6b6b9578772325c0d9cb0583f7e17bd7132493401dda6cd62e94eba"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/turbine.gd",
+      "same": true,
+      "sha256": "64b317c04faa7bc533b2ebe4854b23fcffaadf66655a77da53b5354b702cb297"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/wheel_geometry.gd",
+      "same": true,
+      "sha256": "503010a84b16c6f16f7eb7d7cd08260523df3d67dd76c444d7b1cd4a7ad5fec3"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/wheel_profiles.gd",
+      "same": true,
+      "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/physics/wing_polar.gd",
+      "same": true,
+      "sha256": "1c547d853eb3410aa8b21d2ab6f2af62c2c50402fd2a4053bb0d101904f2ee7f"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/sim/simulation.gd",
+      "same": true,
+      "sha256": "849979cbbea1053c37a9c11c0339def713d49afb9a7161a36320dde960a8239f"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/sim/vehicle_model.gd",
+      "same": true,
+      "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2"
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-mass-prefix-draft/optimized/tests/test_aircraft_ground_stage.gd",
+      "same": true,
+      "sha256": "c4e7eb12e9b954e3b3a523a6a474589eb065d11c72b0cc291ee81a4b729bd512"
+    }
+  ],
+  "limits": "One shared host, bounded headless diagnostic, no statistical/native/rendered or physical qualification; single-process medians support local target only; first independent pairs were noisy and retained. No full tape rerun; hard78 remains raw accuracy refusal.",
+  "source_files_changed_in_main": [],
+  "gp08_boundary": "QP/Strategy unedited; AR._solve_core candidate callsite unchanged and reserved for independent gentle143 proposal draft",
+  "persistent_test": {
+    "checks": 110,
+    "new_binary_fixtures": false,
+    "tmp_or_absolute_imports": false,
+    "frozen_complete_bounds_returns": 15,
+    "frozen_complete_step_returns": 2,
+    "existing_actual_impulse_pairs": 5,
+    "method": "Exact res:// production payload, disposable25-script dependency project plus6existing fixture copies; no main writes",
+    "manifest": "tmp/gp12-mass-prefix-draft/test-payload-manifest.json"
+  }
+}

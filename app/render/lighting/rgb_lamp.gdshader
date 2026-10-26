@@ -17,6 +17,8 @@ uniform float local_exposure = 1.0;
 uniform float local_clock = 0.0;
 uniform float vfx_mode = 0.0; // 0 = projection-aware billboard, 1 = pre-oriented VFX instances
 uniform float radial_shape = 1.0; // VFX only: 1 = spark, 0 = ribbon
+uniform float ribbon_min_width_px = 1.25;
+uniform float ribbon_max_width_m = 0.35;
 
 varying float billboard_gain;
 
@@ -41,7 +43,23 @@ void vertex() {
 			gain *= on ? 1.0 : 0.0;
 		}
 	} else {
-		VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+		vec3 position = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+		if (radial_shape < 0.5) {
+			vec3 side_axis_view = (MODELVIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz;
+			float side_width_m = length(side_axis_view);
+			if (side_width_m > 0.000001) {
+				float depth_scale = PROJECTION_MATRIX[3][3] == 0.0 ? max(-centre.z, 0.001) : 1.0;
+				float metres_per_pixel = 2.0 * depth_scale / (VIEWPORT_SIZE.y * abs(PROJECTION_MATRIX[1][1]));
+				float requested_width_m = max(side_width_m, ribbon_min_width_px * metres_per_pixel);
+				float maximum_width_m = max(ribbon_max_width_m, side_width_m);
+				float expanded_width_m = min(requested_width_m, maximum_width_m);
+				if (expanded_width_m > side_width_m) {
+					position += side_axis_view * VERTEX.y * (expanded_width_m / side_width_m - 1.0);
+					gain = side_width_m / expanded_width_m;
+				}
+			}
+		}
+		VERTEX = position;
 	}
 	NORMAL = vec3(0.0, 0.0, 1.0);
 	billboard_gain = gain;
@@ -55,7 +73,7 @@ void fragment() {
 		float ribbon_mask = 1.0 - smoothstep(0.62, 1.0, abs(p.y));
 		float mask = mix(ribbon_mask, spark_mask, clamp(radial_shape, 0.0, 1.0));
 		ALBEDO = encode_for_engine(to_linear_srgb(COLOR.rgb) * min(max(radiance, 0.0), cap) * max(effect_gain, 0.0));
-		ALPHA = mask * COLOR.a;
+		ALPHA = mask * COLOR.a * (radial_shape < 0.5 ? billboard_gain : 1.0);
 	} else {
 		vec2 p = UV * 2.0 - 1.0;
 		ALBEDO = encode_for_engine(light_color * min(max(radiance * billboard_gain, 0.0), cap) * max(effect_gain, 0.0));

@@ -7,6 +7,7 @@ const M := preload("res://physics/math3d.gd")
 const GC := preload("res://physics/generalized_coordinates.gd")
 const LAW := "compact-mobility-block-kkt-impulse-v1"
 const ACCELERATION_LAW := "bounded-interior-face-feasible-extrapolation-v1"
+const UNRESOLVED_DESCENT_LAW:="bounded-interior-face-unresolved-descent-feasible-extrapolation-v2"
 const MAX_DIMENSION := 128
 const MAX_ITERATIONS := 1024
 const MULTIPLIER_ITERATIONS := 72
@@ -29,20 +30,20 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 ## Assembly-resolution owner only: retain a detached failed strict iterate;
 ## this returns NO additional acceptance or tolerance and never changes solve().
 static func _solve_for_assembly(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFloat64Array,
-		groups:Array,iteration_budget:int=MAX_ITERATIONS)->Dictionary:
-	return _solve(a,v,limits,groups,iteration_budget,true)
+		groups:Array,iteration_budget:int=MAX_ITERATIONS,allow_unresolved_descent:bool=false)->Dictionary:
+	return _solve(a,v,limits,groups,iteration_budget,true,{},allow_unresolved_descent)
 
 
 ## Internal accounting wrapper; normal solve() dictionaries are untouched.
 static func _solve_for_assembly_with_work(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,
-		groups:Array,iteration_budget:int)->Dictionary:
+		groups:Array,iteration_budget:int,allow_unresolved_descent:bool=false)->Dictionary:
 	var work:={started_sweeps=0,spd_proposal_calls=0,interior_proposal_calls=0,extrapolation_calls=0,publication_work_calls=0}
-	var result:=_solve(a,v,limits,groups,iteration_budget,true,work)
+	var result:=_solve(a,v,limits,groups,iteration_budget,true,work,allow_unresolved_descent)
 	return {result=result,work=work}
 
 
 static func _solve(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFloat64Array,
-		groups:Array,iteration_budget:int,retain_candidate:bool,work:Dictionary={})->Dictionary:
+		groups:Array,iteration_budget:int,retain_candidate:bool,work:Dictionary={},allow_unresolved_descent:bool=false)->Dictionary:
 	var n := v.size()
 	if n < 1 or n > MAX_DIMENSION or a.size() != n * n or limits.size() != n \
 		or not _finite(a) or not _finite(v) or not _finite(limits) \
@@ -127,6 +128,7 @@ static func _solve(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFlo
 	var previous_objective := 0.0
 	var maximum_increase := 0.0
 	var accelerated := 0
+	var unresolved_work:={calls=0,accepted=0}
 	for iteration in iteration_budget:
 		if not work.is_empty():work.started_sweeps+=1
 		var previous_y := y.duplicate()
@@ -156,7 +158,8 @@ static func _solve(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFlo
 		# diagonal, physical mass, force or impulse cap is regularized here.
 		if (iteration + 1) % 8 == 0:
 			if not work.is_empty():work.interior_proposal_calls+=1
-			var polished := _interior_face(hs, bs, y, limits, groups, tolerance, retain_candidate)
+			var polished := _interior_face(hs, bs, y, limits, groups, tolerance, retain_candidate,unresolved_work,allow_unresolved_descent)
+			if not work.is_empty():work.unresolved_descent_calls=unresolved_work.calls
 			if polished != y:
 				y = polished
 				accelerated += 1
@@ -179,6 +182,10 @@ static func _solve(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFlo
 				published.method = "cyclic_exact_metric_blocks_feasible_acceleration"
 				published.acceleration_law = ACCELERATION_LAW
 				published.accepted_accelerations = accelerated
+			if unresolved_work.calls>0:
+				published.acceleration_law=UNRESOLVED_DESCENT_LAW
+				published.unresolved_descent_calls=unresolved_work.calls
+				published.accepted_unresolved_descents=unresolved_work.accepted
 			return published
 		if not is_finite(current_objective) or current_objective > previous_objective + 0.00000000000002 * (absf(previous_objective) + b_norm):
 			var refused:=_failure("block solve did not preserve monotone objective", "nonconverged", iteration + 1)
@@ -205,7 +212,7 @@ static func _solve(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFlo
 ## A wrong active-face guess cannot publish: feasibility, original objective
 ## and the unchanged global KKT certificate are evaluated after the proposal.
 static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
-		limits: PackedFloat64Array, groups: Array, tolerance: float, full_proposal_budget: bool = false) -> PackedFloat64Array:
+		limits: PackedFloat64Array, groups: Array, tolerance: float, full_proposal_budget: bool = false,proposal_work:Dictionary={},allow_unresolved_descent:bool=false) -> PackedFloat64Array:
 	var n := y.size()
 	var free: Array[int] = []
 	for group: PackedInt32Array in groups:
@@ -225,6 +232,11 @@ static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: Pack
 		rhs.append(value)
 		for j in size: matrix[i * size + j] = h[free[i] * n + free[j]]
 	var solved := _psd_correction(matrix, rhs, size, tolerance * (1.0 if full_proposal_budget else 0.25))
+	var unresolved_trial:=false
+	if solved.is_empty() and full_proposal_budget and allow_unresolved_descent:
+		if not proposal_work.is_empty():proposal_work.calls+=1
+		solved=_psd_correction(matrix,rhs,size,0.0,false,true)
+		unresolved_trial=not solved.is_empty()
 	if solved.size() != size or not _finite(solved): return y
 	var candidate := y.duplicate()
 	var delta := PackedFloat64Array()
@@ -247,6 +259,21 @@ static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: Pack
 		var root := M.sqrt_(maxf(0.0, discriminant))
 		var bound := -2.0 * minf(0.0, cc) / (bb + root) if bb > 0.0 else (-bb + root) / (2.0 * aa)
 		step = minf(step, maxf(0.0, bound))
+	if unresolved_trial:
+		# Numerically unresolved is NOT exact null. Keep its ORIGINAL curvature
+		# and gradient; minimize the actual quadratic along this bounded direction.
+		var slope:=0.0
+		var curvature:=0.0
+		var hd:=GC.matrix_vector(h,delta,n)
+		var gradient:=GC.matrix_vector(h,y,n)
+		for i in n:
+			slope+=(gradient[i]+b[i])*delta[i]
+			curvature+=delta[i]*hd[i]
+		if not is_finite(slope) or not is_finite(curvature) or slope>=0.0:return y
+		if curvature>0.0:
+			var optimum:float=-slope/curvature
+			if not is_finite(optimum) or optimum<=0.0:return y
+			step=minf(step,optimum)
 	for i in n: candidate[i] += step * delta[i]
 	var trial := _certificate(h, b, candidate, limits, groups, tolerance)
 	var current := _certificate(h, b, y, limits, groups, tolerance)
@@ -257,15 +284,18 @@ static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: Pack
 	if is_finite(value) and trial.feasibility <= FEASIBILITY_TOLERANCE \
 		and value <= objective + 0.00000000000001 * (absf(objective) + linear_scale) \
 		and (value < objective or (trial.stationarity < current.stationarity and trial.duality_gap <= current.duality_gap)):
+		if unresolved_trial and not proposal_work.is_empty():proposal_work.accepted+=1
 		return candidate
 	return y
 
 
 ## Rank-revealing symmetric elimination on the diagonally equilibrated PSD
-## face. Unresolved null coordinates have zero correction, not invented mass.
+## face. The ordinary range solve leaves unresolved coordinates zero. The opt-in
+## descent branch instead proposes a bounded weak direction; it invents no mass
+## and retains the original quadratic curvature and publication gates.
 ## A linear term outside the range refuses via the ORIGINAL equation residual.
 static func _psd_correction(matrix: PackedFloat64Array, rhs: PackedFloat64Array, size: int,
-		tolerance: float, require_original_range: bool = true) -> PackedFloat64Array:
+		tolerance: float, require_original_range: bool = true, unresolved_descent:bool=false) -> PackedFloat64Array:
 	if size<1 or size>MAX_DIMENSION or matrix.size()!=size*size or rhs.size()!=size \
 		or not _finite(matrix) or not _finite(rhs) or not is_finite(tolerance) or tolerance<0.0:
 		return PackedFloat64Array()
@@ -310,6 +340,25 @@ static func _psd_correction(matrix: PackedFloat64Array, rhs: PackedFloat64Array,
 			for j in range(k + 1, size): work[i * size + j] -= factor * work[k * size + j]
 	var pivot_solution := PackedFloat64Array()
 	pivot_solution.resize(size)
+	if unresolved_descent:
+		if rank==size:return PackedFloat64Array()
+		var chosen:=rank
+		for i in range(rank+1,size):
+			if absf(reduced[i])>absf(reduced[chosen]):chosen=i
+		if reduced[chosen]==0.0:return PackedFloat64Array()
+		pivot_solution[chosen]=signf(reduced[chosen])
+		for i in range(rank-1,-1,-1):
+			var value:=0.0
+			for j in range(i+1,size):value-=work[i*size+j]*pivot_solution[j]
+			pivot_solution[i]=value/work[i*size+i]
+		var direction:=PackedFloat64Array();direction.resize(size)
+		var magnitude:=0.0
+		for i in size:
+			direction[permutation[i]]=pivot_solution[i]/scale[permutation[i]]
+			magnitude=maxf(magnitude,absf(direction[permutation[i]]))
+		if not _finite(direction) or magnitude==0.0 or not is_finite(magnitude):return PackedFloat64Array()
+		for i in size:direction[i]/=magnitude
+		return direction
 	for i in range(rank - 1, -1, -1):
 		var value := reduced[i]
 		for j in range(i + 1, rank): value -= work[i * size + j] * pivot_solution[j]

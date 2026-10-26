@@ -1,0 +1,13 @@
+--- a/app/physics/contact_assembly_resolution.gd
++++ b/app/physics/contact_assembly_resolution.gd
+@@ -545,6 +545,10 @@
+ 			seen[i] = 1
+ 			if limits[i] == 0.0:
+ 				if impulse[i] != 0.0: return _failure("zero authority has impulse")
++			elif group.size()==1:
++				# For a binary64 interval endpoint this comparison is exact; an
++				# outward divided/squared upper bound cannot prove equality.
++				if absf(impulse[i])>limits[i]:return _failure("original interval capacity exceeded")
+ 			else:
+ 				var ratio := _div(absf(impulse[i]),limits[i])
+ 				length = _add(length,_mul(ratio,ratio))

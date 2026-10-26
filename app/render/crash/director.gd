@@ -63,6 +63,7 @@ var _water_shadow_was_visible := false
 var _water_blur: Node3D
 var _water_blur_was_processing := false
 var _configured := false
+var _hull_capture_ready := false
 ## CR-01e: the last CrashCause.HISTORY_S of flight, sampled every SAMPLE_INTERVAL_S of sim time (oldest first).
 var history: Array = []
 const TOUCH_TRAIL_S := 0.12
@@ -86,6 +87,7 @@ func configure(next_context: PresentationContext, audio_enabled: bool = true) ->
 	audio = CrashAudio.new()
 	add_child(audio)
 	audio.setup()
+	audio.set_accepted_hull_observation(_audio_enabled)
 	water_effects = WaterEffects.new()
 	water_effects.name = "WaterEffects"
 	add_child(water_effects)
@@ -118,12 +120,14 @@ func _exit_tree() -> void:
 
 
 func _connect_reset_signal() -> void:
+	_connect_hull_signals()
 	if context != null and is_instance_valid(context.session) and context.session.has_signal("resetting") \
 			and not context.session.resetting.is_connected(reset):
 		context.session.resetting.connect(reset)
 
 
 func _disconnect_reset_signal() -> void:
+	_disconnect_hull_signals()
 	if context != null and is_instance_valid(context.session) and context.session.has_signal("resetting") \
 			and context.session.resetting.is_connected(reset):
 		context.session.resetting.disconnect(reset)
@@ -153,10 +157,12 @@ func update(delta: float) -> void:
 		_record_sample()
 		_prop_strike_feedback()
 		_touch_feedback()
+		audio.update(delta, context.session.sim.paused or not context.session.holds.is_empty(), 0.0)
 		return
 	if _water_checkpoint_latched:
 		# A later replayed collision supersedes the restored render-only aftermath.
 		reset()
+	audio.cancel_hull_scrape()
 	if not active:
 		_start()
 	if not active:
@@ -699,12 +705,12 @@ func _touch_feedback() -> void:
 			effects.touch(point, velocity, strength, surface)
 			if not contact.has("normal_ned"):
 				scuffs.add(context.model_bindings.root, point, velocity, strength, surface)
-			if _audio_enabled:
+			if _audio_enabled and (slide <= TOUCH_SLIDE_MPS or not audio.accepted_hull_observation_enabled()):
 				audio.touch(point, strength, slide > TOUCH_SLIDE_MPS, surface)
 			_touch_marks[contact.index] = now
 		elif slide > TOUCH_SLIDE_MPS and now - float(_touch_marks.get(contact.index, -INF)) >= TOUCH_TRAIL_S:
 			effects.mark(Vector3(point.x, 0.0, point.z), velocity, 0.08)
-			if _audio_enabled:
+			if _audio_enabled and not audio.accepted_hull_observation_enabled():
 				audio.touch(point, clampf(slide / 15.0, 0.05, 0.6), true, surface)
 			_touch_marks[contact.index] = now
 
@@ -815,3 +821,69 @@ func _visible_water_rings() -> int:
 		if is_instance_valid(ring) and ring.visible:
 			visible += 1
 	return visible
+
+
+## Session owns the earlier stepped connection and commits contact IDs first.
+func _connect_hull_signals() -> void:
+	_hull_capture_ready = false
+	if context == null or not is_instance_valid(context.session) or context.session.sim == null:
+		return
+	var session := context.session
+	if not session.sim.stepped.is_connected(_on_accepted_hull_tick):
+		session.sim.stepped.connect(_on_accepted_hull_tick)
+	if not session.sim.paused_changed.is_connected(_on_hull_pause):
+		session.sim.paused_changed.connect(_on_hull_pause)
+	if not session.statistics_lifecycle.is_connected(_on_hull_lifecycle):
+		session.statistics_lifecycle.connect(_on_hull_lifecycle)
+	# Reattach creates the audio bus after children enter. Prime after that reset;
+	# the interval before this single settle-prime is deliberately silent.
+	call_deferred("_settle_hull_observer")
+
+
+func _disconnect_hull_signals() -> void:
+	_hull_capture_ready = false
+	if context == null or not is_instance_valid(context.session) or context.session.sim == null:
+		return
+	var session := context.session
+	if session.sim.stepped.is_connected(_on_accepted_hull_tick):
+		session.sim.stepped.disconnect(_on_accepted_hull_tick)
+	if session.sim.paused_changed.is_connected(_on_hull_pause):
+		session.sim.paused_changed.disconnect(_on_hull_pause)
+	if session.statistics_lifecycle.is_connected(_on_hull_lifecycle):
+		session.statistics_lifecycle.disconnect(_on_hull_lifecycle)
+
+
+func _settle_hull_observer() -> void:
+	if not is_inside_tree() or not _configured or audio == null:
+		return
+	audio.setup()
+	_hull_capture_ready = true
+	_observe_hull_endpoint()
+
+
+func _on_accepted_hull_tick(_tick: int, _time_s: float, _state: PackedFloat64Array,
+		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	_observe_hull_endpoint()
+
+
+func _on_hull_pause(_paused: bool) -> void:
+	_observe_hull_endpoint()
+
+
+func _on_hull_lifecycle(receipt: Dictionary) -> void:
+	if receipt.get("success", false) and audio != null:
+		audio.reset()
+		_observe_hull_endpoint()
+
+
+func _observe_hull_endpoint() -> void:
+	if not _hull_capture_ready or not _audio_enabled or context == null or audio == null:
+		return
+	var session := context.session
+	if not is_instance_valid(session) or session.sim == null:
+		return
+	if not session.crash.is_empty():
+		audio.request_hull_scrape_cancel()
+		return
+	audio.observe_accepted({observation = session.hull_scrape_observation(),
+		tick_rate = 1.0 / session.sim.dt(), paused = session.sim.paused or not session.holds.is_empty(), terminal = false})

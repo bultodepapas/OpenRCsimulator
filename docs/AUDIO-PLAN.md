@@ -26,6 +26,14 @@ Landing-gear audio reads accepted gear contacts and surface type. Rolling and to
 
 Fixed-wing rolling now uses authored material from the shared solid-support provider: the default turf runway and long grass use the grass recording. Unknown material retains an explicit hard-roll playback fallback, without inferring pavement from runway usage. The helicopter's historical usage helper is unchanged. [GP-19b scope and checks](research/ground-physics/GP-19/evidence/material-routing/README.md).
 
+Fixed-wing ground cues also capture accepted physics endpoints between render frames. The existing presentation classifier and playback pool remain shared with legacy callers; capture stores at most eight contact states and 64 detached cues, while players run only during render updates. Pause/reset/rewind clear stale history and preserve legitimate new-interval cues. The accepted snapshot currently re-evaluates the legacy contact law read-only; advanced solver impulse/work input, new damage layers and native/performance qualification remain open. [GP-19c contract and checks](research/ground-physics/GP-19/evidence/accepted-contacts/README.md).
+
+GP-19d also observes loaded hull friction at accepted endpoints of the existing flat-solid soft-contact law. The optional force-owner diagnostic reports instantaneous `-Ft dot vt` power, including live fuel mass properties; it does not integrate contact work, heat or damage. Short grains use the existing generic scrape sample and eight-voice crash pool. Capture only queues data/cancellation; render stops tagged voices before fresh grains, while terminal/water/reset keep exclusive aftermath ownership. Zero loaded friction is silent. Cue age is at most 0.25 accepted simulation seconds, without a wall-clock latency guarantee. [Contract, 550 production checks and independent review](research/ground-physics/GP-19/evidence/accepted-hull-scrape/README.md). Lake-enabled observation, calibrated material sound, native output/listening and performance remain open.
+
+The [scrape unloading correction](research/ground-physics/GP-19/evidence/scrape-unloading/README.md) makes accepted-grain amplitude approach silence with friction power while preserving maximum gain. Its 72 focused production checks establish the envelope and lifecycle behavior, not acoustic calibration.
+
+The [native continuous Turbo Lumber capture](research/ground-physics/GP-19/evidence/native-continuous-timber/README.md) verifies one production flight's mixer clocks, headroom and source stability at its recorded source version. It predates the unloading-envelope correction and does not establish isolated scrape audibility, human listening or full-fleet coverage.
+
 | Aircraft | Installed audio profile |
 | --- | --- |
 | Jensen Das Ugly Stik .60 | Phase-aware two-stroke fallback; accepted legacy shaft RPM |

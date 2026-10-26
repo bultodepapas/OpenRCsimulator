@@ -29,6 +29,7 @@ var _last_tick: int = -1
 var _mechanical_session: Node
 var _mechanical_sim: Node
 var _accepted_mechanical_mode := false
+var _accepted_ground_mode := false
 var _windsock: WeakRef
 var last_update_usec: int = 0
 var last_mechanical_update_usec: int = 0
@@ -87,11 +88,14 @@ func _connect_mechanical_observer() -> void:
 	_mechanical_sim = _mechanical_session.sim
 	mechanical_audio.set_accepted_tick_observation(true)
 	_accepted_mechanical_mode = true
+	_accepted_ground_mode = is_instance_valid(ground_audio)
+	if _accepted_ground_mode: ground_audio.set_accepted_tick_observation(true)
 	# FlightSession installs its commit handler during setup, before this rig.
 	_mechanical_sim.stepped.connect(_on_accepted_mechanical_tick)
 	_mechanical_sim.paused_changed.connect(_on_mechanical_pause_changed)
 	_mechanical_session.resetting.connect(_on_resetting)
 	_observe_mechanical_endpoint()
+	_observe_ground_endpoint()
 
 
 func _disconnect_mechanical_observer() -> void:
@@ -105,12 +109,14 @@ func _disconnect_mechanical_observer() -> void:
 	_mechanical_sim = null
 	_mechanical_session = null
 	_accepted_mechanical_mode = false
+	_accepted_ground_mode = false
 
 
 func _enter_tree() -> void:
 	if is_instance_valid(flight) and is_instance_valid(mechanical_audio):
 		_disconnect_mechanical_observer()
 		mechanical_audio.reset()
+		if is_instance_valid(ground_audio): ground_audio.reset()
 		call_deferred("_resume_mechanical_observer")
 
 
@@ -118,7 +124,9 @@ func _resume_mechanical_observer() -> void:
 	if not is_inside_tree() or not is_instance_valid(flight) or not is_instance_valid(mechanical_audio): return
 	# Children have re-entered by now. Bind synchronously before priming, so a
 	# deferred bus refresh cannot reset and erase newly captured endpoint motion.
-	if is_instance_valid(soundscape): mechanical_audio.bind_soundscape(soundscape)
+	if is_instance_valid(soundscape):
+		mechanical_audio.bind_soundscape(soundscape)
+		if is_instance_valid(ground_audio): ground_audio.bind_soundscape(soundscape)
 	_connect_mechanical_observer()
 
 
@@ -132,10 +140,12 @@ func _on_accepted_mechanical_tick(_tick: int, _time: float, _state: PackedFloat6
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	if is_instance_valid(_mechanical_sim) and _tick == _mechanical_sim.tick:
 		_observe_mechanical_endpoint()
+		_observe_ground_endpoint()
 
 
 func _on_mechanical_pause_changed(_paused: bool) -> void:
 	_observe_mechanical_endpoint()
+	_observe_ground_endpoint()
 
 
 func _observe_mechanical_endpoint() -> void:
@@ -143,6 +153,18 @@ func _observe_mechanical_endpoint() -> void:
 		or not is_instance_valid(flight) or flight.session != _mechanical_session: return
 	var endpoint := accepted_mechanical_snapshot()
 	if not endpoint.is_empty(): mechanical_audio.observe_accepted(endpoint)
+
+
+## The legacy contact law is re-evaluated read-only at accepted endpoints until
+## the advanced contact owner supplies its accepted receipt. No players run here.
+func _observe_ground_endpoint() -> void:
+	if not _accepted_ground_mode or not is_instance_valid(ground_audio) \
+		or not is_instance_valid(flight) or flight.session != _mechanical_session: return
+	var active: bool = _mechanical_session.physics_enabled and bool(_mechanical_session.aircraft.get("ok", false))
+	var paused: bool = _mechanical_sim.paused or not active
+	var contacts: Array = [] if paused else contact_snapshot()
+	ground_audio.observe_accepted({tick = _mechanical_sim.tick, tick_rate = 1.0 / _mechanical_sim.dt(),
+		paused = paused, contacts = contacts})
 
 
 ## Actual accepted actuator values only. This path has no render transforms,
@@ -394,7 +416,7 @@ func _process(delta: float) -> void:
 	soundscape.update_sound(sound_snapshot, delta)
 	var paused: bool = bool(sound_snapshot.get("paused", false))
 	var ground_contacts: Array[Dictionary] = []
-	if not paused:
+	if not paused and not _accepted_ground_mode:
 		ground_contacts = contact_snapshot()
 	var engine_power: float = float(sound_snapshot.get("throttle", 0.0)) if bool(sound_snapshot.get("running", false)) else 0.0
 	ground_audio.update_contacts(tick, paused, ground_contacts,

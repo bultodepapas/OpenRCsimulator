@@ -1,0 +1,56 @@
+{
+  "format": "openrc-independent-accepted-ground-review v1",
+  "complete": true,
+  "findings": "No additional blocking defect reproduced in reviewed promoted payload",
+  "source": [
+    {
+      "path": "app/audio/ground_audio.gd",
+      "sha256": "76a979123d1b79cd88212f8f373f09b454d4ab3df53042f779f39afb4db08311",
+      "matches_promotion": true
+    },
+    {
+      "path": "app/audio/ground_audio_motion.gd",
+      "sha256": "38b174ed59c83177dbc8962d88140380bd9108746a4bb407fd715c4e68b87222",
+      "matches_promotion": true
+    },
+    {
+      "path": "app/audio/flight_audio.gd",
+      "sha256": "7b58e36a4e8b855c1374d2a138241b31cef7fd4c22260ea8da2d098df559a4b6",
+      "matches_promotion": true
+    },
+    {
+      "path": "app/tests/test_ground_accepted_ticks.gd",
+      "sha256": "10ea1910f278e8b65ff350516cf920e04f199c3f9bde7b42102768dae7d06599",
+      "matches_promotion": true
+    },
+    {
+      "path": "app/tests/test_flight_ground_accepted.gd",
+      "sha256": "eb954bef574cc2adabf04f3192e4aab141160fb9bc0f021a47343759ff90bcea",
+      "matches_promotion": true
+    }
+  ],
+  "independent_probe_checks": 11,
+  "engine": "4.8.beta1.official.4d10419ca",
+  "audio_driver": "Dummy",
+  "probe": "tmp/gp19-independent-review/adversarial.gd",
+  "covered": [
+    "capture creates no players or buses",
+    "global RNG unchanged",
+    "caller snapshot detached",
+    "render leaves accepted history unchanged",
+    "same endpoint cue drains once",
+    "authoritative source rate controls expiry with deliberately wrong render rate",
+    "legitimate new-epoch cue survives render rewind after contact detaches",
+    "finite extreme force/reference/approach/rim inputs keep gains and pitches finite and pool bounded"
+  ],
+  "resolved_before_promotion": [
+    "accepted/render pitch-state alias",
+    "first-render rewind losing new cues",
+    "event expiry using nominal render rate"
+  ],
+  "limits": [
+    "source audit and headless software probe only",
+    "native listening and frame budget not qualified",
+    "no production/docs edits by reviewer"
+  ]
+}

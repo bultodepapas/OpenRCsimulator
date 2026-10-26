@@ -1,0 +1,45 @@
+{
+  "format": "openrc-accepted-ground-audio-evidence-v1",
+  "date": "2026-10-26",
+  "step": "GP-19c",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "driver": "Dummy",
+  "production_checks": 202,
+  "counts": {
+    "accepted_contact_observer": 93,
+    "actual_session_drop": 18,
+    "legacy_ground_audio": 33,
+    "accepted_mechanical_flight": 35,
+    "material_provider": 23
+  },
+  "selected_sources_unchanged_after_main_checks": true,
+  "scope": "Accepted legacy-contact presentation capture; not new physics, acoustic realism, native mixer or frame budget qualification.",
+  "source_identity_scope": "Five promoted paths verified against pre-run promotion hashes; four existing audio dependencies captured for review. Not a full application source snapshot.",
+  "physical_fixture": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "initial_wheel_clearance_m": 0.4,
+    "forward_speed_mps": 3.0,
+    "initial_sink_mps": 0.2,
+    "first_touchdown_tick": 67,
+    "last_tick": 79,
+    "queued_before_render": 3,
+    "pair_full_checkpoints_exact": true
+  },
+  "presentation_bounds": {
+    "contact_states": 8,
+    "queued_events": 64,
+    "players": 32,
+    "maximum_cue_age_simulation_s": 0.25
+  },
+  "baseline_legacy_trace_sha256": "a0e755d2caa50a5e8515d16ad96d83ccfd00ff554319794588bf0799c171fb40",
+  "development_notes": [
+    "Initial actual-drop fixture used the wrong catalog ID, failed two assertions, and is retained rejected. Corrected fixture explicitly asserts aircraft admission.",
+    "An initial summarize call targeted the nested temporary parent and reported missing direct child receipts. Canonical main-checks flattens exact report/log pairs for the documented collection layout; no engine run is relabelled."
+  ],
+  "open_gates": [
+    "Advanced accepted wheel impulse/slip/work receipt adapter",
+    "Suspension/scrape/damage layers and source matching",
+    "Native output/listening",
+    "Combined production and 1080p performance"
+  ]
+}

@@ -73,7 +73,17 @@ func _run() -> void:
 		and int(helper.budget_info().get("active_emission_passes", 0)) == 2)
 	_check("the paint-tinted transmission map keeps bay paint color",
 		overlay_a != null and _transmitted_color_is_preserved(overlay_a))
+	var span_uv: Vector2 = overlay_a.get_shader_parameter("span_uv_range")
+	var expected_root := Finish.uv(Vector3.ZERO, "wing").x
+	var expected_tip := Finish.uv(Vector3(-float(Geometry.DATA.wing.span) * 0.5, 0.0, 0.0), "wing").x
+	_check("left covering maps its registered UVs from root to tip with a signed length",
+		is_equal_approx(span_uv.x, expected_root) and span_uv.y < 0.0
+		and is_equal_approx(span_uv.x + span_uv.y, expected_tip))
 	helper.advance(0.1, {"exposure": 100.0, "throttle": 0.0}, "all", 1.0)
+	_check("covering receives the full pulse pattern and bounded phase instead of one sampled color",
+		int(Vector4(overlay_a.get_shader_parameter("pattern_settings")).x) == 2
+		and is_equal_approx(float(overlay_a.get_shader_parameter("pattern_phase")), 0.4)
+		and (overlay_a.get_shader_parameter("palette") as PackedVector4Array).size() == 8)
 	_check("high exposure lowers emission to the exposure cap",
 		overlay_a != null and is_equal_approx(float(overlay_a.get_shader_parameter("energy")), 0.012))
 	helper.advance(0.2, {"exposure": 46868.4609375, "throttle": 0.0}, "all", 1.0)
@@ -85,11 +95,12 @@ func _run() -> void:
 		overlay_a != null and float(overlay_a.get_shader_parameter("energy")) > flight_energy * 3.8)
 	LightingPolicy.reduced_flashes = true
 	helper.advance(0.4, {"exposure": 1.0, "throttle": 1.0}, "all", 1.0)
-	var reduced_color: Color = overlay_a.get_shader_parameter("emission_color")
+	var reduced_palette: PackedVector4Array = overlay_a.get_shader_parameter("palette")
 	var reduced_energy := float(overlay_a.get_shader_parameter("energy"))
 	helper.advance(0.8, {"exposure": 1.0, "throttle": 1.0}, "all", 1.0)
 	_check("reduced flashes use a stable base pattern and unit reaction gain",
-		overlay_a != null and Color(overlay_a.get_shader_parameter("emission_color")).is_equal_approx(reduced_color) \
+		overlay_a != null and overlay_a.get_shader_parameter("palette") == reduced_palette \
+		and int(Vector4(overlay_a.get_shader_parameter("pattern_settings")).x) == 0 \
 		and is_equal_approx(float(overlay_a.get_shader_parameter("energy")), reduced_energy))
 	LightingPolicy.reduced_flashes = old_reduced_flashes
 	helper.advance(0.9, {"exposure": 1.0}, "nav", 1.0)

@@ -41,6 +41,7 @@ var _episode_support_known := false
 var _hop_first_tick := -1
 var _hop_seconds := 0.0
 ## Derived per-call coverage; never resumed as durable observation history.
+var _accepted_component_events: Array[Dictionary] = [] # Derived per-call facts, never historical state.
 var _accepted_observation_edge := false
 var _speed_window: Array[Dictionary] = []
 var _speed_head := 0
@@ -89,12 +90,28 @@ func configure(profile: Dictionary, air_start: bool = false) -> void:
 
 func observe(sample: Dictionary) -> Array[Dictionary]:
 	_accepted_observation_edge = false
+	_accepted_component_events.clear()
+	var staged_component_events: Array[Dictionary] = []
 	var events: Array[Dictionary] = []
 	if _phase == "terminal":
 		return events
 	var tick_value: Variant = sample.get("tick", -1)
+	if sample.has("component_failure_observation") and not FlightEvent._integer(tick_value): return events
 	var tick := int(tick_value) if typeof(tick_value) in [TYPE_INT, TYPE_FLOAT] else -1
 	var terminal := bool(sample.get("terminal", false))
+	if tick == _last_tick + 1 and sample.has("component_failure_observation"):
+		var step_value: Variant = sample.get("dt")
+		if typeof(step_value) not in [TYPE_FLOAT, TYPE_INT]: return events
+		var packet: Variant = sample.component_failure_observation
+		if not FlightEvent.valid_damage_observation(packet, tick, _profile.get("damage_source_generation"),
+			_profile.get("damage_response_identity"), float(step_value)): return events
+		if not packet.events.is_empty():
+			# Reserve room for its complete pair batch plus existing accident/support annotations.
+			if _semantic_sequence > 9007199254740991 - 2 * packet.events.size() - 4: return events
+			for record: Dictionary in packet.events:
+				if FlightEvent.make_damage(_profile, "GEAR_FAILURE", record, _semantic_sequence,
+					_semantic_flight_id, "", "preflight").is_empty(): return events
+		for record: Dictionary in packet.events: staged_component_events.append(record.duplicate(true))
 
 	if tick == _last_tick:
 		if terminal:
@@ -124,11 +141,12 @@ func observe(sample: Dictionary) -> Array[Dictionary]:
 		return events
 
 	_sample_interval_s = dt
+	_accepted_component_events = staged_component_events
 	_accepted_observation_edge = true
 	if _is_physically_supported(sample): _support_observed = true
-	if bool(sample.get("incident", false)):
+	if bool(sample.get("incident", false)) or not _accepted_component_events.is_empty():
 		_incident_latched = true
-	if bool(sample.get("gear_up_contact", false)) and not terminal:
+	if (bool(sample.get("gear_up_contact", false)) or not _accepted_component_events.is_empty()) and not terminal:
 		_record_accident(sample, tick, false, events)
 	_clock_s += dt
 	if not flight.is_empty() and _is_active_flight() and not _is_physically_supported(sample):
@@ -217,6 +235,7 @@ func restore(value: Dictionary) -> bool:
 	if not _valid_snapshot(value):
 		return false
 	var copy: Dictionary = value.duplicate(true)
+	_accepted_component_events.clear()
 	_profile = copy.profile
 	_thresholds = Rules.resolve(_profile)
 	_air_start_requested = bool(copy.air_start_requested)
@@ -439,7 +458,7 @@ func _record_accident(sample: Dictionary, tick: int, terminal: bool, events: Arr
 	if ground and _is_active_flight() and not _episode_open:
 		_open_episode(tick, sample, events, observe_edge)
 		_phase = "contact_pending"
-	var cause := "gear_up_contact" if bool(sample.get("gear_up_contact", false)) else "terminal_crash"
+	var cause := "gear_up_contact" if bool(sample.get("gear_up_contact", false)) else ("gear_failure" if not _accepted_component_events.is_empty() else "terminal_crash")
 	if first or escalated:
 		events.append({"type": "accident" if first else "accident_updated", "kind": cause,
 			"accident_id": _accident_id, "event_id": _accident_id + (":crash" if first else ":terminal"),
@@ -452,8 +471,12 @@ func _record_accident(sample: Dictionary, tick: int, terminal: bool, events: Arr
 	# M7 is a generation latch, independent of semantic accident grouping and terminal control.
 	if not _crash_emitted:
 		_crash_emitted = true
-		events.append({"type": "crash", "kind": cause, "ground": ground, "tick": tick, "terminal": terminal,
-			"accident_id": _accident_id, "event_id": _accident_id + ":m7", "rules_version": Rules.VERSION})
+		var crash_record := {"type": "crash", "kind": cause, "ground": ground, "tick": tick, "terminal": terminal,
+			"accident_id": _accident_id, "event_id": _accident_id + ":m7", "rules_version": Rules.VERSION}
+		if not _accepted_component_events.is_empty(): crash_record.damage_summary = _accepted_component_events.duplicate(true)
+		events.append(crash_record)
+	if observe_edge and _accepted_observation_edge:
+		_semantic_component_failures(tick, events)
 	_clear_speed_state()
 
 
@@ -816,6 +839,9 @@ func _valid_snapshot(value: Dictionary) -> bool:
 		or typeof(value.speed_window) != TYPE_ARRAY or typeof(value.pending_speed) != TYPE_ARRAY \
 		or typeof(value.previous_speed) != TYPE_DICTIONARY or typeof(value.speed_reject_counts) != TYPE_DICTIONARY:
 		return false
+	if value.profile.has("damage_response_identity") or value.profile.has("damage_source_generation"):
+		if not FlightEvent._hash(value.profile.get("damage_response_identity")) \
+			or not FlightEvent._id(value.profile.get("damage_source_generation"), 128): return false
 	if typeof(value.phase) != TYPE_STRING or str(value.phase) not in PHASES:
 		return false
 	for key: String in ["air_start_requested", "episode_open", "qualified_support_seen", "incident_latched", "crash_emitted", "continuity_lost"]:
@@ -937,6 +963,11 @@ func _semantic(kind: String, tick: int, events: Array[Dictionary], measurements:
 	if not _accepted_observation_edge:
 		event.evidence_coverage.erase("accepted_endpoint_support")
 		event.evidence_coverage.append("outcome_without_new_valid_interval")
+	if kind == "CRASH" and _accepted_observation_edge and not _accepted_component_events.is_empty():
+		event.evidence_coverage.erase("damage_unobserved")
+		event.evidence_coverage.append("component_failure_observed")
+		for record: Dictionary in _accepted_component_events:
+			event.cause.evidence_ids.append(record.physical_evidence.source_event_id)
 	if terminal: event.evidence_coverage.append("terminal_guard_outcome")
 	if _continuity_lost: event.evidence_coverage.append("discontinuous_observation")
 	_semantic_sequence += 1
@@ -988,3 +1019,19 @@ func _valid_semantic_snapshot(value: Dictionary) -> bool:
 	if not value.get("episode_open", false) and (value.episode_contact_seen or value.episode_supported \
 		or value.episode_support_known): return false
 	return true
+
+## Only the qualified accepted failure path calls this, through _record_accident.
+## These are factual annotations of its accident, never a second crash counter.
+func _semantic_component_failures(tick: int, events: Array[Dictionary]) -> void:
+	var episode_id := "g%s:e%d" % [str(_profile.get("generation_id", "0")), _episode_tick] if _episode_open else ""
+	var staged: Array[Dictionary] = []
+	var sequence := _semantic_sequence
+	for record: Dictionary in _accepted_component_events:
+		for kind: String in ["COMPONENT_DAMAGE", "GEAR_FAILURE"]:
+			var event := FlightEvent.make_damage(_profile, kind, record, sequence,
+				_semantic_flight_id, episode_id, _accident_id)
+			if event.is_empty(): return # No partial pair/batch can be published.
+			sequence += 1
+			staged.append({type = "semantic", event = event})
+	_semantic_sequence = sequence
+	events.append_array(staged)

@@ -24,7 +24,7 @@ static func _solve_local(a:PackedFloat64Array,v:PackedFloat64Array,d:PackedFloat
     if remaining<1 or first.get("status","")!="nonconverged":return _annotate(first,work,budget,1)
     # A deterministic restart uses ONLY the caller's REMAINING sweep budget.
     # Probe and restart proposals/witness work are explicitly accumulated.
-    var fallback:=Strict._solve_with_work(a,v,d,groups,mass,j,z,bias,responses,ceiling,remaining,false,memo)
+    var fallback:=Strict._solve_with_work(a,v,d,groups,mass,j,z,bias,responses,ceiling,remaining,false,memo,true)
     var extra:=_work(fallback.work)
     for key:String in work:work[key]+=extra[key]
     return _annotate(fallback.result,work,budget,2)
@@ -33,17 +33,20 @@ static func _work(source:Dictionary)->Dictionary:
     var qp:Dictionary=source.get("qp",{})
     return {started_sweeps=int(qp.get("started_sweeps",0)),spd_proposal_calls=int(qp.get("spd_proposal_calls",0)),
         interior_proposal_calls=int(qp.get("interior_proposal_calls",0)),extrapolation_calls=int(qp.get("extrapolation_calls",0)),
-        range_proposal_calls=int(source.get("range_proposal_calls",0)),work_candidate_calls=int(source.get("work_candidate_calls",0))+int(source.get("strict_publication_calls",0))+int(qp.get("publication_work_calls",0)),
+        unresolved_descent_calls=int(qp.get("unresolved_descent_calls",0)),range_proposal_calls=int(source.get("range_proposal_calls",0)),work_candidate_calls=int(source.get("work_candidate_calls",0))+int(source.get("strict_publication_calls",0))+int(qp.get("publication_work_calls",0)),
         publication_calls=int(source.get("strict_publication_calls",0))+int(qp.get("publication_work_calls",0)),assembly_witness_builds=int(source.get("assembly_witness_builds",0)),
         assembly_certificates=int(source.get("assembly_certificates",0)),assembly_witness_requests=int(source.get("assembly_witness_requests",0))}
 
 static func _annotate(result:Dictionary,work:Dictionary,budget:int,solves:int)->Dictionary:
     result.iterations=work.started_sweeps
-    result.numerical_strategy=STRATEGY
+    var selected:=STRATEGY
+    if work.get("unresolved_descent_calls",0)>0:selected="bounded-eight-KKT-probe-unresolved-descent-certified-fallback-v2"
+    result.numerical_strategy=selected
     result.numerical_work=work.duplicate(true)
+    if result.numerical_work.get("unresolved_descent_calls",0)==0:result.numerical_work.erase("unresolved_descent_calls")
     result.numerical_work.caller_sweep_budget=budget
     result.numerical_work.strict_solve_calls=solves
     if result.has("assembly_resolution"):
-        result.assembly_resolution.selection_strategy=STRATEGY
+        result.assembly_resolution.selection_strategy=selected
         result.assembly_resolution.total_started_sweeps=work.started_sweeps
     return result

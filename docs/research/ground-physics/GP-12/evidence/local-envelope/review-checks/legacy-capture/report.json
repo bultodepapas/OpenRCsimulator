@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ef138d0b-dbf5-420f-901b-ed29cf20e85f",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-local-envelope/capture_legacy_functions.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T16:53:27.923583+00:00",
+  "label": "legacy-function-capture",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-local-envelope\\checks\\legacy-function-capture-8ki18nxy\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-local-envelope\\checks\\legacy-function-capture-8ki18nxy\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Legacy function hash capture complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.406,
+  "log_bytes": 2567,
+  "log_sha256": "53aca58805dd2fe21337a8ad143bd6e982c1f7dbb91b5d3b72eea2ecf5f9d720"
+}

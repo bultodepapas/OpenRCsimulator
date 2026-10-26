@@ -1,0 +1,575 @@
+{
+  "format": "openrc-restore-publication-evidence v1",
+  "date": "2026-10-26",
+  "step": "GP-14f",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "current_checks": 4398,
+  "counts": {
+    "restore": 137,
+    "endpoint": 274,
+    "reset": 180,
+    "start": 148,
+    "checkpoint": 149,
+    "statistics": 51,
+    "column": 114,
+    "log": 3247,
+    "audio": 35,
+    "contact": 63
+  },
+  "source_scope": "Six selected production runtime/test sources are pinned from promotion through completed checks; nine supporting test sources copied at retention. Not all loaded application sources or a broad-suite/build qualification. Failed imports remain failed.",
+  "files": [
+    {
+      "path": "baseline/reproduction/report.json",
+      "sha256": "f31b46eae50f30fd9684f2c31fbee278e68f62516f277acc7201376475ac8717",
+      "bytes": 1243,
+      "origin": "tmp\\gp-restore-transaction\\checks\\baseline-01\\godot-segpi8jz\\report.json",
+      "scope": "Seven observed-defect/control assertions; reproduction success is not correctness"
+    },
+    {
+      "path": "baseline/reproduction/engine.log",
+      "sha256": "0b3da92023947d51ea8ecb9a2d056601280b53015b90acc885e1cdc349963b72",
+      "bytes": 1921,
+      "origin": "tmp\\gp-restore-transaction\\checks\\baseline-01\\godot-segpi8jz\\engine.log",
+      "scope": "Seven observed-defect/control assertions; reproduction success is not correctness"
+    },
+    {
+      "path": "baseline/reproduce.gd",
+      "sha256": "f7bd65f78a5e0086e9bd8c8e571df92075afa482ef7b68cc35bc5b07a80943c5",
+      "bytes": 3699,
+      "origin": "tmp\\gp-restore-transaction\\reproduce.gd",
+      "scope": "Exact original selected production source or reproduction/sentinel source"
+    },
+    {
+      "path": "baseline/simulation.baseline.txt",
+      "sha256": "b1b481b2cd278d997347959b8e6529d58aa23adf5494ca419f01a38d45f54042",
+      "bytes": 53032,
+      "origin": "tmp\\gp-restore-transaction\\simulation.baseline.txt",
+      "scope": "Exact original selected production source or reproduction/sentinel source"
+    },
+    {
+      "path": "baseline/flight_session.baseline.txt",
+      "sha256": "e45d9a9a1f2637d9147daef47060333862d58c669c020c70dc34f2d2683ad491",
+      "bytes": 276417,
+      "origin": "tmp\\gp-restore-transaction\\flight_session.baseline.txt",
+      "scope": "Exact original selected production source or reproduction/sentinel source"
+    },
+    {
+      "path": "baseline/baseline-hashes.json",
+      "sha256": "99d2e244999d977588c2dbd70a62be0f8825ead952ed66102f1652ae56fe6283",
+      "bytes": 177,
+      "origin": "tmp\\gp-restore-transaction\\baseline-hashes.json",
+      "scope": "Exact original selected production source or reproduction/sentinel source"
+    },
+    {
+      "path": "baseline/default_sentinel.gd",
+      "sha256": "d2b921bb5c43949e3aba056544b8ab6d707a92e39380d821c56397ee4f32924c",
+      "bytes": 698,
+      "origin": "tmp\\gp-restore-transaction\\default_sentinel.gd",
+      "scope": "Exact original selected production source or reproduction/sentinel source"
+    },
+    {
+      "path": "baseline/default-restore/report.json",
+      "sha256": "2365aa8ade6c633e3f13fff6ddbb6e83f337ba31bed7412e798f4d66683f812d",
+      "bytes": 1254,
+      "origin": "tmp\\gp-restore-transaction\\checks\\default-before\\godot-hb_uupdy\\report.json",
+      "scope": "Frozen pre-change direct-kernel checkpoint digest"
+    },
+    {
+      "path": "baseline/default-restore/engine.log",
+      "sha256": "76dd7c1af26096c9081ba5b371a6183944f67f1f369c61e3e4229015db91e83c",
+      "bytes": 171,
+      "origin": "tmp\\gp-restore-transaction\\checks\\default-before\\godot-hb_uupdy\\engine.log",
+      "scope": "Frozen pre-change direct-kernel checkpoint digest"
+    },
+    {
+      "path": "baseline/recordings/listener-mutation.orfl",
+      "sha256": "d87d7d13eaf106b101a121a78ac52fa32582fbc7b81ecb14dc98f5f754eaa357",
+      "bytes": 29088,
+      "origin": "tmp\\gp-restore-transaction\\artifacts-3097874\\listener-mutation.orfl",
+      "scope": "Actual original reproduction recording/observation; fixture cleanup may close an intentionally open writer"
+    },
+    {
+      "path": "baseline/recordings/normal-control.orfl",
+      "sha256": "d87d7d13eaf106b101a121a78ac52fa32582fbc7b81ecb14dc98f5f754eaa357",
+      "bytes": 29088,
+      "origin": "tmp\\gp-restore-transaction\\artifacts-3097874\\normal-control.orfl",
+      "scope": "Actual original reproduction recording/observation; fixture cleanup may close an intentionally open writer"
+    },
+    {
+      "path": "baseline/recordings/observations.json",
+      "sha256": "a9478b95cb2b2e23536819873630095c4e3c95386a8151cebb519805675cf38a",
+      "bytes": 1043,
+      "origin": "tmp\\gp-restore-transaction\\artifacts-3097874\\observations.json",
+      "scope": "Actual original reproduction recording/observation; fixture cleanup may close an intentionally open writer"
+    },
+    {
+      "path": "baseline/recordings/validator-hold.orfl",
+      "sha256": "03696fb8c235f0f0db8ea49f699056fe159ac55917d119c3c76a0e950ffde845",
+      "bytes": 29184,
+      "origin": "tmp\\gp-restore-transaction\\artifacts-3097874\\validator-hold.orfl",
+      "scope": "Actual original reproduction recording/observation; fixture cleanup may close an intentionally open writer"
+    },
+    {
+      "path": "rejected/malformed-format/report.json",
+      "sha256": "9c38abb7479a49c7a2de08c34ed4a5fbeb799352a328e1f1fe19447ca8296366",
+      "bytes": 1777,
+      "origin": "tmp\\gp-restore-transaction\\checks\\malformed-before\\godot-puaxf0vi\\report.json",
+      "scope": "Original Array/String parser engine error; exact executed pre-guard draft core was not retained"
+    },
+    {
+      "path": "rejected/malformed-format/engine.log",
+      "sha256": "fbb2357551f3d18688f074592b1ab6da414330244626fae9bece62af0483d674",
+      "bytes": 844,
+      "origin": "tmp\\gp-restore-transaction\\checks\\malformed-before\\godot-puaxf0vi\\engine.log",
+      "scope": "Original Array/String parser engine error; exact executed pre-guard draft core was not retained"
+    },
+    {
+      "path": "rejected/malformed-format/probe.gd",
+      "sha256": "98f01198d368422d0953ea33c18cca47d0702396dde41b41b1c7b5d1853e3b33",
+      "bytes": 551,
+      "origin": "tmp\\gp-restore-transaction\\malformed_probe.gd",
+      "scope": "Probe source; its referenced draft core later changed"
+    },
+    {
+      "path": "rejected/final-endpoint/report.json",
+      "sha256": "415696609985f416598e55aa2430428a820cf8112e4ce34b0d459842120664cc",
+      "bytes": 4379,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-endpoint\\godot-8981m47u\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-endpoint/engine.log",
+      "sha256": "eda908e26f84264db32be73a2aff8adae6505c75562f0e9f74f85bb04ce04371",
+      "bytes": 1768,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-endpoint\\godot-8981m47u\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-reset/report.json",
+      "sha256": "c787ec7378b8fd1bb6c88d90d759c1164af5e5c1d360fe9c970b74da85115944",
+      "bytes": 4536,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-reset\\godot-cbm0p89y\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-reset/engine.log",
+      "sha256": "7a7ea3f029d9ae54ab5db16f65604c7e3915ef731aebdc33d78eaa7351fff495",
+      "bytes": 6611,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-reset\\godot-cbm0p89y\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-start/report.json",
+      "sha256": "76a7ecb8e4b9845807094899dc52f4d9c9af66d3f10d83c15c99d28fa75f53dc",
+      "bytes": 4545,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-start\\godot-6fyb_z9n\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-start/engine.log",
+      "sha256": "9cf58b7126e9104a56a7022d5db4ad792a6e37306f3ad602cbb36eba9fcd3c66",
+      "bytes": 9088,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-start\\godot-6fyb_z9n\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-checkpoint/report.json",
+      "sha256": "a41886a4dddf0fcbcc02eafffabc48df28b5d9d6a45bb560b901664e2b819157",
+      "bytes": 4396,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-checkpoint\\godot-xg878grl\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-checkpoint/engine.log",
+      "sha256": "3360450fbae6dcd62daea60f86b7d40bcbfdfe4580ad872073dcc22a7e51f7c7",
+      "bytes": 1774,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-checkpoint\\godot-xg878grl\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-statistics/report.json",
+      "sha256": "e4b1b47def62d798f022b94efd78931041ca27ce2d20272d282bddf3ac5d6714",
+      "bytes": 4568,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-statistics\\godot-v3sbhi5y\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-statistics/engine.log",
+      "sha256": "5334fdf7c8ec749ba5161a8ecbb72e4469e7597c428f505560927a4affca51ab",
+      "bytes": 2150,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-statistics\\godot-v3sbhi5y\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-column/report.json",
+      "sha256": "7eca60ce06fae879735a237230a999d1fc65a8307661b963933ff06a1808cfea",
+      "bytes": 4549,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-column\\godot-q07ebng4\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/final-column/engine.log",
+      "sha256": "c6cc6d3e391b18e4349f929f7abcfad0671de76dd5f76be90cb5d21ddf63831d",
+      "bytes": 3230,
+      "origin": "tmp\\gp-restore-transaction\\checks\\final-column\\godot-q07ebng4\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/font-import/report.json",
+      "sha256": "3ff3c598bf9ec0bf42df48746a5dcac0800444c5a4a72e3e15e1c57a8308bea7",
+      "bytes": 7945,
+      "origin": "tmp\\gp-restore-transaction\\checks\\font-import\\godot-oo0tm1ks\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/font-import/engine.log",
+      "sha256": "656232d9957d34daa62236580ffe44821656a733ba1a1dbe88e093ba15c4a78c",
+      "bytes": 109812,
+      "origin": "tmp\\gp-restore-transaction\\checks\\font-import\\godot-oo0tm1ks\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/font-import-02/report.json",
+      "sha256": "b5f3a56de3def851fcd6f0b544a8ea56400595370058a4b25f56d64297968925",
+      "bytes": 3289,
+      "origin": "tmp\\gp-restore-transaction\\checks\\font-import-02\\godot-86sk2srx\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/font-import-02/engine.log",
+      "sha256": "54b45f210e58bf111f4c2a75c192aa857110541633b200b43bdc25fbff2ed019",
+      "bytes": 104743,
+      "origin": "tmp\\gp-restore-transaction\\checks\\font-import-02\\godot-86sk2srx\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/draft-audio/report.json",
+      "sha256": "0ccd53934361497cc7f1b4e25427907592f3c67cd192dcdfc84f18bb5577952c",
+      "bytes": 1348,
+      "origin": "tmp\\gp-restore-transaction\\checks\\draft-audio\\godot-7udy_4k1\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/draft-audio/engine.log",
+      "sha256": "0f67687c4654a77f2e0957de2e5aa7178a5714db94143dd1cb719cac94e2789f",
+      "bytes": 219,
+      "origin": "tmp\\gp-restore-transaction\\checks\\draft-audio\\godot-7udy_4k1\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/draft-contact/report.json",
+      "sha256": "fc187a84a249711fdecd0c0d6312d96fbe101144ef6c6bb4d486104317ab6735",
+      "bytes": 1360,
+      "origin": "tmp\\gp-restore-transaction\\checks\\draft-contact\\godot-cp05g5q0\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/draft-contact/engine.log",
+      "sha256": "f58c91a8efccc93f3eb1e84e59a567de4209e3da67640112cb585f6fc62dc773",
+      "bytes": 1572,
+      "origin": "tmp\\gp-restore-transaction\\checks\\draft-contact\\godot-cp05g5q0\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/draft-log/report.json",
+      "sha256": "c68b7e8011fb3f9ebfbe932b461637e77d71fcb290d977070c81de35a27ab348",
+      "bytes": 1319,
+      "origin": "tmp\\gp-restore-transaction\\checks\\draft-log\\godot-y5fyoshr\\report.json",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "rejected/draft-log/engine.log",
+      "sha256": "3f7dc1fcf8ebecc903e4e075ce0ff89e6f3e2b2e0520013872ca665178c580a9",
+      "bytes": 5982,
+      "origin": "tmp\\gp-restore-transaction\\checks\\draft-log\\godot-y5fyoshr\\engine.log",
+      "scope": "Failed/unqualified checked run: missing cache, import failure/overlap, or incorrect completion marker; not accepted evidence"
+    },
+    {
+      "path": "current/checks/restore/report.json",
+      "sha256": "453a355a6e7b1fac566dff5789902eb100ee668a581c3744550f528d07c4ddbd",
+      "bytes": 1222,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-restore\\godot-53q9uawg\\report.json",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/restore/engine.log",
+      "sha256": "0aeab5fcd294475582fa532710f0a65e4ed9480d953c381e0d8dbd7bb95757d7",
+      "bytes": 5908,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-restore\\godot-53q9uawg\\engine.log",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/endpoint/report.json",
+      "sha256": "3a36751bd3be3c7f863539839375cfd58a7fe745306b3741c78f1fb55f7c2926",
+      "bytes": 1224,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-endpoint\\godot-_4q3nok6\\report.json",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/endpoint/engine.log",
+      "sha256": "aa63d3d6bcf1059df73f8bc6bd80b346e5e377433b3493ad9629cad3e8a5b3e0",
+      "bytes": 116,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-endpoint\\godot-_4q3nok6\\engine.log",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/reset/report.json",
+      "sha256": "b2e96fa2027adfb89a46854e2dd2dcc245c7661ea599a36088978574da3ec564",
+      "bytes": 1214,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-reset\\godot-1jylutdq\\report.json",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/reset/engine.log",
+      "sha256": "489c355994e85d51c8a3511c5a564d54d4fa0ec68675032fb0f9e95c615eb6d2",
+      "bytes": 4959,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-reset\\godot-1jylutdq\\engine.log",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/start/report.json",
+      "sha256": "b99fe0ad5fcfd99ff551303d890962d3fad5b5460e58ecd1e879513237e22d48",
+      "bytes": 1223,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-start\\godot-z858_9of\\report.json",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/start/engine.log",
+      "sha256": "647eb61e280b62fefcee7098beaf0d834fd960adba4f51116d487b93859a4863",
+      "bytes": 7436,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-start\\godot-z858_9of\\engine.log",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/checkpoint/report.json",
+      "sha256": "dc54bcce7b6fd310c6717ad13399d62d4ad16c5157829992085ea2ffcdc7ffc3",
+      "bytes": 1235,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-checkpoint\\godot-peua5pqg\\report.json",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/checkpoint/engine.log",
+      "sha256": "31c337e2aded57641bcbe65f0a829437c00eb9592bc9d1e2c6d21ba497aa65e6",
+      "bytes": 122,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-checkpoint\\godot-peua5pqg\\engine.log",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/statistics/report.json",
+      "sha256": "cde5159e3e696acde114a0beeb9cef9dbb25b249da22257301853896908223ec",
+      "bytes": 1242,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-statistics\\godot-f3c5lwff\\report.json",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/statistics/engine.log",
+      "sha256": "c5ccca9c3fc98f9d822c22c1bad9db1e827a7487fdd5538a9be1be4957a09397",
+      "bytes": 498,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-statistics\\godot-f3c5lwff\\engine.log",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/column/report.json",
+      "sha256": "1da1658be70ae566be95fac1a6af70a84b77c568c3e65b8c3c1ca0b12c74a828",
+      "bytes": 1223,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-column\\godot-kz56ylf6\\report.json",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/column/engine.log",
+      "sha256": "067bc61af4787f4de2bf5e5801d2e5bcac8c1bcd8f24f414b38731d1b1a01f19",
+      "bytes": 1578,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-column\\godot-kz56ylf6\\engine.log",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/log/report.json",
+      "sha256": "16d33ea5b4932fc1253f07b4ea7acdbd005426c02fa5b86ef05d99543352765f",
+      "bytes": 1207,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-log\\godot-ahks1rt3\\report.json",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/log/engine.log",
+      "sha256": "c2466507d38b1464c803fabf8cdf3e9b38ba0965882e8ed842beea88c4878f7f",
+      "bytes": 5982,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-log\\godot-ahks1rt3\\engine.log",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/audio/report.json",
+      "sha256": "3f9a02362ec7ff3ada0814cd36001ae8ecb6aede2a7dac9b99fd914aa348d978",
+      "bytes": 1229,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-audio\\godot-zpymqsna\\report.json",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/audio/engine.log",
+      "sha256": "0f67687c4654a77f2e0957de2e5aa7178a5714db94143dd1cb719cac94e2789f",
+      "bytes": 219,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-audio\\godot-zpymqsna\\engine.log",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/contact/report.json",
+      "sha256": "aabca44b4f38bdfc9338e1aa97e362673177ee828c7bb03ebb349b2cf6661d60",
+      "bytes": 1230,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-contact\\godot-44qf20pp\\report.json",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/checks/contact/engine.log",
+      "sha256": "f58c91a8efccc93f3eb1e84e59a567de4209e3da67640112cb585f6fc62dc773",
+      "bytes": 1572,
+      "origin": "tmp\\gp-restore-transaction\\checks\\main-contact\\godot-44qf20pp\\engine.log",
+      "scope": "Accepted production script, complete, warnings-as-errors and exact completion marker"
+    },
+    {
+      "path": "current/source/app/sim/simulation.gd",
+      "sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490",
+      "bytes": 54898,
+      "origin": "app\\sim\\simulation.gd",
+      "scope": "Selected loaded production source; unchanged between promotion and completed checks"
+    },
+    {
+      "path": "current/source/app/sim/flight_session.gd",
+      "sha256": "d680ba2ef0626b6f3eeae0f8de8d6523955b7da95767f065ede36baac373c964",
+      "bytes": 277334,
+      "origin": "app\\sim\\flight_session.gd",
+      "scope": "Selected loaded production source; unchanged between promotion and completed checks"
+    },
+    {
+      "path": "current/source/app/tests/test_restore_publication.gd",
+      "sha256": "d504edcaf43ab0993d362470991c847f4245333ecefb36406d53ee4ba6f6b021",
+      "bytes": 13838,
+      "origin": "app\\tests\\test_restore_publication.gd",
+      "scope": "Selected loaded production source; unchanged between promotion and completed checks"
+    },
+    {
+      "path": "current/source/app/sim/flight_log.gd",
+      "sha256": "0646b053bae4a788883a7d13833ef24f3b43d8d30c07ea6edfc4715b038afaba",
+      "bytes": 12975,
+      "origin": "app\\sim\\flight_log.gd",
+      "scope": "Selected loaded production source; unchanged between promotion and completed checks"
+    },
+    {
+      "path": "current/source/app/ai/companions/fleet_record.gd",
+      "sha256": "95de3ae4935676a2e3105aae7d1dcdef3c4b5bd813bab696ee319d29477157e8",
+      "bytes": 12137,
+      "origin": "app\\ai\\companions\\fleet_record.gd",
+      "scope": "Selected loaded production source; unchanged between promotion and completed checks"
+    },
+    {
+      "path": "current/source/app/audio/flight_audio.gd",
+      "sha256": "7b58e36a4e8b855c1374d2a138241b31cef7fd4c22260ea8da2d098df559a4b6",
+      "bytes": 22082,
+      "origin": "app\\audio\\flight_audio.gd",
+      "scope": "Selected loaded production source; unchanged between promotion and completed checks"
+    },
+    {
+      "path": "current/source/app/tests/test_endpoint_transition.gd",
+      "sha256": "709d085ee1d0c0fbfdfaa867b89af37c8250eaaa102a79f6aa3e8a7e1b35d17d",
+      "bytes": 20976,
+      "origin": "app\\tests\\test_endpoint_transition.gd",
+      "scope": "Supporting test source at retention; no complete dependency-build snapshot claimed"
+    },
+    {
+      "path": "current/source/app/tests/test_reset_publication.gd",
+      "sha256": "a5a45b198cd1f1e182b55ee88b201b1cf9a31a2527e4cc8a927ce5f3ce7a7e21",
+      "bytes": 19864,
+      "origin": "app\\tests\\test_reset_publication.gd",
+      "scope": "Supporting test source at retention; no complete dependency-build snapshot claimed"
+    },
+    {
+      "path": "current/source/app/tests/test_flight_reset_transaction.gd",
+      "sha256": "f69f28d57caae76655fdcf0d29554dbe494a18d62df00846bb38e7a3d6a06986",
+      "bytes": 11031,
+      "origin": "app\\tests\\test_flight_reset_transaction.gd",
+      "scope": "Supporting test source at retention; no complete dependency-build snapshot claimed"
+    },
+    {
+      "path": "current/source/app/tests/test_checkpoint_integrity.gd",
+      "sha256": "cfc900ab607dbf05e875224603a877a0854926be951c803a2b89aae62b8e9bc0",
+      "bytes": 7159,
+      "origin": "app\\tests\\test_checkpoint_integrity.gd",
+      "scope": "Supporting test source at retention; no complete dependency-build snapshot claimed"
+    },
+    {
+      "path": "current/source/app/tests/test_flight_statistics_lifecycle.gd",
+      "sha256": "9fb7668400b5f8b30d907aa2bec29d1eddd3f141980975e511824aa9e3b9eada",
+      "bytes": 9156,
+      "origin": "app\\tests\\test_flight_statistics_lifecycle.gd",
+      "scope": "Supporting test source at retention; no complete dependency-build snapshot claimed"
+    },
+    {
+      "path": "current/source/app/tests/test_atmosphere_column_session.gd",
+      "sha256": "2e3f5ad82655499410fa1687890df35d9a564bdffe4580ab20da249940da771d",
+      "bytes": 12828,
+      "origin": "app\\tests\\test_atmosphere_column_session.gd",
+      "scope": "Supporting test source at retention; no complete dependency-build snapshot claimed"
+    },
+    {
+      "path": "current/source/app/tests/test_flight_log.gd",
+      "sha256": "e5d5aa102039487a16ed9e68e809d58d6cc1d4830af6f0a2a276678560f2fea6",
+      "bytes": 6810,
+      "origin": "app\\tests\\test_flight_log.gd",
+      "scope": "Supporting test source at retention; no complete dependency-build snapshot claimed"
+    },
+    {
+      "path": "current/source/app/tests/test_flight_audio_accepted.gd",
+      "sha256": "bb02dc9e6272a72dcae1a086292379a6c236b462ed5f46a121459e2aa5a82659",
+      "bytes": 13464,
+      "origin": "app\\tests\\test_flight_audio_accepted.gd",
+      "scope": "Supporting test source at retention; no complete dependency-build snapshot claimed"
+    },
+    {
+      "path": "current/source/app/tests/test_aircraft_contact_session.gd",
+      "sha256": "f4b9e35b40a307c8039a1938991465bf62bb08a900b36f025651f7fd837f5add",
+      "bytes": 15579,
+      "origin": "app\\tests\\test_aircraft_contact_session.gd",
+      "scope": "Supporting test source at retention; no complete dependency-build snapshot claimed"
+    },
+    {
+      "path": "current/promotion-hashes.json",
+      "sha256": "355f7a4341d60842949ca88cf057b8dd141c43e4f9c88fffd13670050b1bc4ae",
+      "bytes": 955,
+      "origin": "tmp\\gp-restore-transaction\\promotion-hashes.json",
+      "scope": "Approved minimal three-path promotion/prehash record"
+    },
+    {
+      "path": "current/review.patch",
+      "sha256": "8d7dc0997dd8150d94cddf19c54a6c13ac8f70c12405f9f789800a7f1e13a818",
+      "bytes": 26550,
+      "origin": "tmp\\gp-restore-transaction\\review.patch",
+      "scope": "Approved minimal three-path promotion/prehash record"
+    },
+    {
+      "path": "current/recordings/old-writer.orfl",
+      "sha256": "102e78de34378fa1d9d08e50d1e5927cecd95443d8d1c09b8e0981cb987e2963",
+      "bytes": 29748,
+      "origin": "tmp\\restore-publication-4048539\\old-writer.orfl",
+      "scope": "Actual focused production recording; refusal recordings close only at fixture cleanup"
+    },
+    {
+      "path": "current/recordings/refusal-mass.orfl",
+      "sha256": "82f5ad0025ba322067a861246774135e70b486673f92ca5115f5e763066b3bb9",
+      "bytes": 29504,
+      "origin": "tmp\\restore-publication-4048539\\refusal-mass.orfl",
+      "scope": "Actual focused production recording; refusal recordings close only at fixture cleanup"
+    },
+    {
+      "path": "current/recordings/observer-mass.orfl",
+      "sha256": "7582178d92d54953540ff77c54eec9ed8f2d4e0a420ee24e1e30d235181cd021",
+      "bytes": 29552,
+      "origin": "tmp\\restore-publication-4048539\\observer-mass.orfl",
+      "scope": "Actual focused production recording; refusal recordings close only at fixture cleanup"
+    },
+    {
+      "path": "current/recordings/reentry-final.orfl",
+      "sha256": "e598f366e354a41185b671750d69e1f85dd27a321969da756de9889cb0734ca1",
+      "bytes": 29656,
+      "origin": "tmp\\restore-publication-4048539\\reentry-final.orfl",
+      "scope": "Actual focused production recording; refusal recordings close only at fixture cleanup"
+    }
+  ]
+}

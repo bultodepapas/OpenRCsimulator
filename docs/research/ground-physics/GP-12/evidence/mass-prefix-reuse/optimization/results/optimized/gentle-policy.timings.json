@@ -1,0 +1,15 @@
+{
+	"accepted_substeps": 16,
+	"calls": {},
+	"case": "gentle",
+	"elapsed_us": 182602,
+	"exclusive_us": {},
+	"inclusive_us": {},
+	"mass_prepare_us": 2117,
+	"note": "Diagnostic wrapper timings include overhead; no native or performance qualification",
+	"ok": true,
+	"policy": true,
+	"reason": null,
+	"serialized_bytes": {},
+	"status": "accepted"
+}

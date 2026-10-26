@@ -41,6 +41,8 @@ func _run() -> void:
 	material.set_shader_parameter("local_exposure", 1.0)
 	ribbon.set_surface_override_material(0, material)
 	var source := FileAccess.get_file_as_string("res://render/lighting/rgb_strip.gdshader")
+	source = source.replace('#include "res://render/lighting/rgb_patterns.gdshaderinc"',
+		FileAccess.get_file_as_string("res://render/lighting/rgb_patterns.gdshaderinc"))
 	check("baseline replaces only the filtering call in a disposable shader", source.contains(FILTER_LINE))
 	baseline = material.duplicate(true)
 	baseline.shader = Shader.new()

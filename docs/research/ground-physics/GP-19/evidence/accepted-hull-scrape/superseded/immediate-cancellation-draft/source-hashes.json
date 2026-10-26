@@ -1,0 +1,31 @@
+{
+  "app/physics/hull_contact.gd": {
+    "base_sha256": "aa9cd474975d8e529dea14fef46baa0c6208ca78652ba28e8203773a04024e92",
+    "draft_loaded_sha256": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4",
+    "promotion_text_sha256": "ec4c979b2d2c3d104214177b35720e374b706f01c43a6447543c8db1e73c556d"
+  },
+  "app/sim/flight_session.gd": {
+    "base_sha256": "2722c3d8d28382c38a81cf2f4311eb42f96430a765d4937e288bc91b3e7913d6",
+    "draft_loaded_sha256": "5c6b1ba410a0431fac584fce273c20addab027eb314aa1c4052e4d2e3072ae7d",
+    "promotion_text_sha256": "a871dfb4e5a8d97d9b2bfbed08b36473a42ea137bd741887d581e11f880bde16"
+  },
+  "app/render/crash/director.gd": {
+    "base_sha256": "51865555f3147034979628ff20a88f372c25d049389a2b0b662dfd13f295af24",
+    "draft_loaded_sha256": "7b0978d57348b78eebbd1dfe1ea8ae5ae344b6b71fd31d2054db3bd581fc172e",
+    "promotion_text_sha256": "4899f71510e716dcc1484ad55a208072b6d7b515ad5037128cd1063b59da1cd7"
+  },
+  "app/render/crash/crash_audio.gd": {
+    "base_sha256": "66e0a5b1d622eb27d257073447551c5346f20ca7f91c5d749b77dd6c8cb5d87f",
+    "draft_loaded_sha256": "d9e1ab29b830e2753fed126ab38b8cc7842330229dba70a159d4afa0396a12c5",
+    "promotion_text_sha256": "2787e867746db8df6f39838addac7858b017ae2f7d75778b9461c7018a8201ff"
+  },
+  "test_metrics.gd": {
+    "draft_loaded_sha256": "d2e761f451ddfcf65ef09ba056c25837ab975c8be56a00a9d893a6d48518f805"
+  },
+  "test_audio.gd": {
+    "draft_loaded_sha256": "33802ce5f550d429c68106990cbefe70e4f2a2c8b219dfc3f1f972cdbe96d7a0"
+  },
+  "test_session.gd": {
+    "draft_loaded_sha256": "22ccd709b2f2eaeacd366d75c6242616e872aaebcab00f9edee39979b489ac37"
+  }
+}

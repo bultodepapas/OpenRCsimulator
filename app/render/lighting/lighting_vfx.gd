@@ -14,6 +14,10 @@ const BURST_SPARKS_PER_EVENT := 32
 const MAX_TRAIL_SEGMENTS := 63
 const MAX_TRAIL_SAMPLES := MAX_TRAIL_SEGMENTS + 1
 const TRAIL_SAMPLE_INTERVAL := 1.0 / 30.0
+const TRAIL_BASE_WIDTH_M := 0.035
+const TRAIL_MIN_WIDTH_PX := 1.25
+const TRAIL_MAX_WIDTH_M := 0.35
+const TRAIL_MAX_WIDTH_BOUNDS_PAD_M := (TRAIL_MAX_WIDTH_M - TRAIL_BASE_WIDTH_M) * 0.5
 const MANEUVER_TRIGGER := 0.72
 const TRAIL_MANEUVER_THRESHOLD := 0.35
 const SPARK_COOLDOWN_S := 0.45
@@ -133,11 +137,11 @@ func set_mode(mode: String, gain := 1.0) -> void:
 	_gain = clampf(gain, 0.0, 2.0)
 	var show_all := _mode == "all" and _gain > 0.0 and is_instance_valid(_kit) and _kit.visible
 	for binding: Dictionary in _spills:
-		var spill: OmniLight3D = binding.get("light")
+		var spill: OmniLight3D = binding.get("light") if is_instance_valid(binding.get("light")) else null
 		if is_instance_valid(spill):
 			binding["wants_visible"] = show_all and LightingPolicy.quality != "low" and _spill_fade > 0.0 and bool(spill.get_meta("gate_open", true))
 	for pool: Dictionary in _effects:
-		var instance: MultiMeshInstance3D = pool.get("instance")
+		var instance: MultiMeshInstance3D = pool.get("instance") if is_instance_valid(pool.get("instance")) else null
 		if is_instance_valid(instance):
 			pool["wants_visible"] = show_all and LightingPolicy.effects_allowed()
 	if not show_all:
@@ -169,7 +173,7 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 	var active := show_all and effects_allowed and LightingPolicy.effects_allowed()
 	if not LightingPolicy.effects_allowed(): _clear_transients()
 	for pool: Dictionary in _effects:
-		var instance: MultiMeshInstance3D = pool.get("instance")
+		var instance: MultiMeshInstance3D = pool.get("instance") if is_instance_valid(pool.get("instance")) else null
 		if is_instance_valid(instance): pool["wants_visible"] = show_all and LightingPolicy.effects_allowed()
 	var cue_state := _sequence_state(seconds)
 	var cue := cue_state.get("cue", {}) as Dictionary
@@ -180,23 +184,27 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 	var cue_active_anchors: Array = cue.get("effect_anchor_ids", [])
 	var cue_start := float(cue_state.get("cue_start_seconds", -1.0))
 	for pool: Dictionary in _effects:
-		var anchor: Node3D = pool.get("anchor")
-		if not is_instance_valid(anchor):
-			continue
+		var anchor: Node3D = pool.get("anchor") if is_instance_valid(pool.get("anchor")) else null
+		# Missing/detached emitters stop births; detached world-space residuals still age.
+		var can_emit := active and anchor != null and anchor.is_inside_tree() and _kit.is_ancestor_of(anchor)
 		var kind := str(pool.get("kind", "spark"))
 		var cue_trigger := str(pool.get("anchor_id", "")) in cue_anchors
 		var cue_active := str(pool.get("anchor_id", "")) in cue_active_anchors
-		if active and _distance_fade > 0.0 and cue_trigger and kind in ["spark", "burst"] and cue_start >= 0.0:
+		if can_emit and _distance_fade > 0.0 and cue_trigger and kind in ["spark", "burst"] and cue_start >= 0.0:
 			_trigger_sparks(pool, cue_start, seconds, true, _distance_fade)
-		elif active and _distance_fade > 0.0 and maneuver_rising and kind in ["spark", "burst"]:
+		elif can_emit and _distance_fade > 0.0 and maneuver_rising and kind in ["spark", "burst"]:
 			_trigger_sparks(pool, seconds, seconds, false, _distance_fade)
 		if kind == "trail":
-			var trail_active := active and _lod_birth_density > 0.0 and _distance_fade > 0.0 \
+			var trail_active := can_emit and _lod_birth_density > 0.0 and _distance_fade > 0.0 \
 				and (cue_active or maneuver >= TRAIL_MANEUVER_THRESHOLD)
+			var trail_head := Vector3.ZERO
+			var trail_head_active := false
 			if trail_active:
 				pool["trail_until"] = seconds + float(pool.get("lifetime_s", 0.6))
-				_sample_trail(pool, seconds, anchor.global_position)
-			_update_trail(pool, seconds, exposure, _distance_fade)
+				trail_head = anchor.global_position
+				trail_head_active = trail_head.is_finite()
+				_sample_trail(pool, seconds, trail_head)
+			_update_trail(pool, seconds, exposure, _distance_fade, trail_head, trail_head_active)
 		else:
 			_update_sparks(pool, seconds, exposure, _distance_fade)
 	_update_spills(seconds, telemetry, exposure)
@@ -216,24 +224,33 @@ func reset() -> void:
 		pool["last_sample_time"] = -INF
 		pool["trail_until"] = -INF
 		pool["samples"] = []
+		_clear_trail_head(pool)
 		pool["particles"] = []
 		_clear_pool_visuals(pool)
 	_refresh_scene_budget()
 
 
-func dispose() -> void:
+func dispose(defer_node_free := false) -> void:
 	_clear_world_root_link()
 	if _scene_budget != null:
 		_scene_budget.unregister_owner(self)
 	_scene_budget = null
 	_scene_grant = {"spill_lights": 0, "vfx_anchors": 0}
 	for binding: Dictionary in _spills:
-		var spill: OmniLight3D = binding.get("light")
+		var spill: OmniLight3D = binding.get("light") if is_instance_valid(binding.get("light")) else null
 		if is_instance_valid(spill):
-			spill.free()
+			spill.visible = false
+			if defer_node_free:
+				spill.queue_free()
+			else:
+				spill.free()
 	_spills.clear()
 	if is_instance_valid(_world_root):
-		_world_root.free()
+		_world_root.visible = false
+		if defer_node_free:
+			_world_root.queue_free()
+		else:
+			_world_root.free()
 	_world_root = null
 	_world_host = null
 	_effects.clear()
@@ -276,6 +293,10 @@ func _clear_world_root_link() -> void:
 
 
 func budget_info() -> Dictionary:
+	var spill_allocated := 0
+	for binding: Dictionary in _spills:
+		if is_instance_valid(binding.get("light")):
+			spill_allocated += 1
 	var spark_particles := 0
 	var trail_samples := 0
 	var spark_gpu_capacity := 0
@@ -293,7 +314,7 @@ func budget_info() -> Dictionary:
 			if particle_state is Array:
 				spark_particles += particle_state.size()
 		gpu_instance_writes += int(pool.get("gpu_instance_writes", 0))
-		var instance: MultiMeshInstance3D = pool.get("instance")
+		var instance: MultiMeshInstance3D = pool.get("instance") if is_instance_valid(pool.get("instance")) else null
 		if not is_instance_valid(instance) or instance.multimesh == null:
 			continue
 		var allocated_instances := instance.multimesh.instance_count
@@ -317,7 +338,7 @@ func budget_info() -> Dictionary:
 		"gpu_anchors_allocated": gpu_anchors,
 		"gpu_instance_capacity_allocated": spark_gpu_capacity + trail_gpu_capacity,
 		"gpu_instance_writes": gpu_instance_writes,
-		"spill_lights_allocated": _spills.size(),
+		"spill_lights_allocated": spill_allocated,
 		"spark_limit": MAX_EFFECTS * SPARK_POOL_CAPACITY,
 		"trail_sample_limit": MAX_EFFECTS * MAX_TRAIL_SAMPLES,
 		"spill_light_limit": SPILL_LIMIT,
@@ -336,7 +357,7 @@ func apply_scene_budget(grant: Dictionary) -> void:
 	_scene_grant = grant.duplicate()
 	var spill_left := int(grant.get("spill_lights", 0))
 	for binding: Dictionary in _spills:
-		var light: OmniLight3D = binding.get("light")
+		var light: OmniLight3D = binding.get("light") if is_instance_valid(binding.get("light")) else null
 		if not is_instance_valid(light): continue
 		light.visible = bool(binding.get("wants_visible", false)) and spill_left > 0
 		if light.visible: spill_left -= 1
@@ -345,13 +366,15 @@ func apply_scene_budget(grant: Dictionary) -> void:
 	for pool: Dictionary in _effects:
 		if effects_left <= 0:
 			break
-		if bool(pool.get("wants_visible", false)) and int(pool.get("live_visual_count", 0)) > 0:
+		var instance: MultiMeshInstance3D = pool.get("instance") if is_instance_valid(pool.get("instance")) else null
+		if instance != null and instance.is_inside_tree() \
+				and bool(pool.get("wants_visible", false)) and int(pool.get("live_visual_count", 0)) > 0:
 			desired_pool_ids[int(pool.get("pool_id", -1))] = true
 			effects_left -= 1
 
 	# Drop every revoked buffer before allocating any newly granted buffer on this rig.
 	for pool: Dictionary in _effects:
-		var instance: MultiMeshInstance3D = pool.get("instance")
+		var instance: MultiMeshInstance3D = pool.get("instance") if is_instance_valid(pool.get("instance")) else null
 		if not is_instance_valid(instance) or instance.multimesh == null:
 			continue
 		if not desired_pool_ids.has(int(pool.get("pool_id", -1))):
@@ -359,7 +382,7 @@ func apply_scene_budget(grant: Dictionary) -> void:
 
 	# Grant callbacks allocate capacity only. The next advance repopulates it from CPU state.
 	for pool: Dictionary in _effects:
-		var instance: MultiMeshInstance3D = pool.get("instance")
+		var instance: MultiMeshInstance3D = pool.get("instance") if is_instance_valid(pool.get("instance")) else null
 		if not is_instance_valid(instance) or instance.multimesh == null:
 			continue
 		var desired := desired_pool_ids.has(int(pool.get("pool_id", -1)))
@@ -372,10 +395,14 @@ func apply_scene_budget(grant: Dictionary) -> void:
 func _refresh_scene_budget() -> void:
 	var spill_count := 0
 	for binding: Dictionary in _spills:
-		if bool(binding.get("wants_visible", false)): spill_count += 1
+		var light: OmniLight3D = binding.get("light") if is_instance_valid(binding.get("light")) else null
+		if light != null and light.is_inside_tree() and bool(binding.get("wants_visible", false)):
+			spill_count += 1
 	var effects_count := 0
 	for pool: Dictionary in _effects:
-		if bool(pool.get("wants_visible", false)) and int(pool.get("live_visual_count", 0)) > 0:
+		var instance: MultiMeshInstance3D = pool.get("instance") if is_instance_valid(pool.get("instance")) else null
+		if instance != null and instance.is_inside_tree() \
+				and bool(pool.get("wants_visible", false)) and int(pool.get("live_visual_count", 0)) > 0:
 			effects_count += 1
 	if _scene_budget == null:
 		apply_scene_budget({"spill_lights": 0, "vfx_anchors": 0})
@@ -422,6 +449,9 @@ func _create_effect_pool(effect: Dictionary, anchor: Node3D) -> void:
 	material.set_shader_parameter("vfx_mode", 1.0)
 	material.set_shader_parameter("radial_shape", 0.0 if kind == "trail" else 1.0)
 	material.set_shader_parameter("radiance", 1.8 if kind == "trail" else 2.4)
+	if kind == "trail":
+		material.set_shader_parameter("ribbon_min_width_px", TRAIL_MIN_WIDTH_PX)
+		material.set_shader_parameter("ribbon_max_width_m", TRAIL_MAX_WIDTH_M)
 	var instance := MultiMeshInstance3D.new()
 	instance.name = "show_%s" % str(effect.get("anchor_id", "tip"))
 	instance.multimesh = multi
@@ -443,6 +473,9 @@ func _create_effect_pool(effect: Dictionary, anchor: Node3D) -> void:
 		"last_sample_time": -INF,
 		"trail_until": -INF,
 		"samples": [],
+		"trail_head_position": Vector3.ZERO,
+		"trail_head_time": -INF,
+		"trail_head_valid": false,
 		"particles": [],
 		"visual_transforms": [],
 		"visual_colors": [],
@@ -521,7 +554,7 @@ func _trigger_sparks(pool: Dictionary, birth_seconds: float, current_seconds: fl
 	if count <= 0:
 		return
 	pool["last_event_time"] = birth_seconds
-	var anchor: Node3D = pool.get("anchor")
+	var anchor: Node3D = pool.get("anchor") if is_instance_valid(pool.get("anchor")) else null
 	if not is_instance_valid(anchor):
 		return
 	var particles: Array = []
@@ -595,18 +628,36 @@ func _update_sparks(pool: Dictionary, seconds: float, exposure: float, distance_
 
 
 func _sample_trail(pool: Dictionary, seconds: float, point: Vector3) -> void:
+	var samples: Array = pool.get("samples", [])
+	if not is_finite(seconds) or not point.is_finite():
+		samples.clear()
+		pool["samples"] = samples
+		pool["last_sample_time"] = -INF
+		_clear_trail_head(pool)
+		return
 	var last_sample_time := float(pool.get("last_sample_time", -INF))
 	var sample_interval := TRAIL_SAMPLE_INTERVAL / maxf(LightingPolicy.effect_density() * _lod_birth_density, 0.01)
-	if seconds - last_sample_time < sample_interval:
-		return
-	var samples: Array = pool.get("samples", [])
+	var restart_after_discontinuity := false
 	if not samples.is_empty():
 		var previous: Dictionary = samples[-1]
-		var previous_point: Vector3 = previous.get("position", point)
-		if previous_point.distance_to(point) > 5.0:
+		var previous_point: Variant = previous.get("position", point)
+		var previous_time := float(previous.get("time", seconds))
+		if not (previous_point is Vector3) or not previous_point.is_finite() or not is_finite(previous_time):
 			samples.clear() # A camera/aircraft teleport never draws a bridge across the world.
-		elif seconds - float(previous.get("time", seconds)) < TRAIL_SAMPLE_INTERVAL * 0.5:
-			return
+			pool["last_sample_time"] = -INF
+			_clear_trail_head(pool)
+			restart_after_discontinuity = true
+		else:
+			var distance: float = previous_point.distance_to(point)
+			if not is_finite(distance) or distance > 5.0:
+				samples.clear() # A camera/aircraft teleport never draws a bridge across the world.
+				pool["last_sample_time"] = -INF
+				_clear_trail_head(pool)
+				restart_after_discontinuity = true
+			elif seconds - previous_time < TRAIL_SAMPLE_INTERVAL * 0.5:
+				return
+	if not restart_after_discontinuity and is_finite(last_sample_time) and seconds - last_sample_time < sample_interval:
+		return
 	samples.append({"time": seconds, "position": point})
 	while samples.size() > MAX_TRAIL_SAMPLES:
 		samples.pop_front()
@@ -614,29 +665,71 @@ func _sample_trail(pool: Dictionary, seconds: float, point: Vector3) -> void:
 	pool["last_sample_time"] = seconds
 
 
-func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_fade: float) -> void:
+func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_fade: float,
+		head_position := Vector3.ZERO, head_active := false) -> void:
 	var material: ShaderMaterial = pool.get("material")
 	_set_exposure(material, pool, exposure)
 	var samples: Array = pool.get("samples", [])
 	var life := maxf(0.001, float(pool.get("lifetime_s", 0.6)))
-	while not samples.is_empty() and seconds - float(samples[0].get("time", seconds)) > life:
-		samples.pop_front()
+	while not samples.is_empty():
+		var first: Dictionary = samples[0]
+		var first_time := float(first.get("time", seconds))
+		if not is_finite(first_time) or seconds - first_time > life:
+			samples.pop_front()
+		else:
+			break
 	pool["samples"] = samples
 	var camera_position := _camera_position()
 	var transforms: Array[Transform3D] = []
 	var colors: Array[Color] = []
 	var live_bounds := AABB()
 	var has_live_bounds := false
-	for index in MAX_TRAIL_SEGMENTS:
-		if index + 1 >= samples.size():
-			break
-		var before: Dictionary = samples[index]
-		var after: Dictionary = samples[index + 1]
-		var from: Vector3 = before.get("position", Vector3.ZERO)
-		var to: Vector3 = after.get("position", Vector3.ZERO)
+	var history_segments := maxi(0, samples.size() - 1)
+	var head_segment := false
+	if head_active and head_position.is_finite():
+		pool["trail_head_position"] = head_position
+		pool["trail_head_time"] = seconds
+		pool["trail_head_valid"] = true
+	var rendered_head: Variant = pool.get("trail_head_position", Vector3.ZERO)
+	var rendered_head_time := float(pool.get("trail_head_time", -INF))
+	var rendered_head_active: bool = bool(pool.get("trail_head_valid", false)) \
+		and rendered_head is Vector3 and rendered_head.is_finite() and is_finite(rendered_head_time) \
+		and seconds >= rendered_head_time and seconds - rendered_head_time <= life
+	if not rendered_head_active:
+		_clear_trail_head(pool)
+	if rendered_head_active and not samples.is_empty():
+		var last_sample: Dictionary = samples[-1]
+		var last_position: Variant = last_sample.get("position", Vector3.ZERO)
+		if last_position is Vector3 and last_position.is_finite() and rendered_head is Vector3:
+			var head_length: float = last_position.distance_to(rendered_head)
+			head_segment = is_finite(head_length) and head_length >= 0.001 and head_length <= 5.0
+	var segment_count := history_segments + int(head_segment)
+	var first_segment := maxi(0, segment_count - MAX_TRAIL_SEGMENTS)
+	for segment_index in range(first_segment, segment_count):
+		var before: Dictionary
+		var after: Dictionary
+		var from_value: Variant
+		var to_value: Variant
+		var after_time: float
+		if segment_index < history_segments:
+			before = samples[segment_index]
+			after = samples[segment_index + 1]
+			from_value = before.get("position", Vector3.ZERO)
+			to_value = after.get("position", Vector3.ZERO)
+			after_time = float(after.get("time", seconds))
+		else:
+			before = samples[-1]
+			from_value = before.get("position", Vector3.ZERO)
+			to_value = rendered_head
+			after_time = rendered_head_time
+		if not (from_value is Vector3) or not from_value.is_finite() \
+				or not (to_value is Vector3) or not to_value.is_finite() or not is_finite(after_time):
+			continue
+		var from: Vector3 = from_value
+		var to: Vector3 = to_value
 		var delta := to - from
 		var length := delta.length()
-		if length < 0.001 or length > 5.0:
+		if not is_finite(length) or length < 0.001 or length > 5.0:
 			continue
 		var tangent := delta / length
 		var midpoint := (from + to) * 0.5
@@ -647,17 +740,18 @@ func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_f
 			side = Vector3.RIGHT.cross(tangent)
 		side = side.normalized()
 		var normal := tangent.cross(side).normalized()
-		var fade := clampf(1.0 - maxf(0.0, seconds - float(after.get("time", seconds))) / life, 0.0, 1.0)
+		var fade := clampf(1.0 - maxf(0.0, seconds - after_time) / life, 0.0, 1.0)
 		fade *= float(pool.get("intensity", 0.5)) * _gain * distance_fade
 		if fade <= 0.0:
 			continue
-		var basis := Basis(tangent * length, side * 0.035, normal)
+		var basis := Basis(tangent * length, side * TRAIL_BASE_WIDTH_M, normal)
 		var local_transform := _local_transform(Transform3D(basis, midpoint))
 		if not local_transform.is_finite():
 			continue
 		var segment_bounds := local_transform * EFFECT_QUAD_LOCAL_AABB
 		if not segment_bounds.is_finite():
 			continue
+		segment_bounds = segment_bounds.grow(TRAIL_MAX_WIDTH_BOUNDS_PAD_M)
 		transforms.append(local_transform)
 		live_bounds = segment_bounds if not has_live_bounds else live_bounds.merge(segment_bounds)
 		has_live_bounds = true
@@ -671,8 +765,9 @@ func _update_trail(pool: Dictionary, seconds: float, exposure: float, distance_f
 
 func _update_spills(seconds: float, telemetry: Dictionary, exposure: float) -> void:
 	for binding: Dictionary in _spills:
-		var light: OmniLight3D = binding.get("light")
-		if not is_instance_valid(light):
+		var light: OmniLight3D = binding.get("light") if is_instance_valid(binding.get("light")) else null
+		if light == null or not light.is_inside_tree():
+			binding["wants_visible"] = false
 			continue
 		var zone: Dictionary = binding.get("zone", {})
 		var zone_id := str(binding.get("zone_id", ""))
@@ -1025,7 +1120,14 @@ func _clear_transients() -> void:
 		pool["samples"] = []
 		pool["last_sample_time"] = -INF
 		pool["trail_until"] = -INF
+		_clear_trail_head(pool)
 		_clear_pool_visuals(pool)
+
+
+func _clear_trail_head(pool: Dictionary) -> void:
+	pool["trail_head_position"] = Vector3.ZERO
+	pool["trail_head_time"] = -INF
+	pool["trail_head_valid"] = false
 
 
 func _clear_pool_visuals(pool: Dictionary) -> void:
@@ -1036,7 +1138,7 @@ func _clear_pool_visuals(pool: Dictionary) -> void:
 
 
 func _write_pool_visuals(pool: Dictionary) -> void:
-	var instance: MultiMeshInstance3D = pool.get("instance")
+	var instance: MultiMeshInstance3D = pool.get("instance") if is_instance_valid(pool.get("instance")) else null
 	if not is_instance_valid(instance) or instance.multimesh == null:
 		return
 	var multi := instance.multimesh

@@ -1,0 +1,16 @@
+{
+  "base_sha256": {
+    "app/render/crash/crash_audio.gd": "daf7bc27e4cbde8190d426c5f95aa9ef34fc231b739f0ae57ebe69c9b912b7a1",
+    "app/tests/test_hull_scrape_audio.gd": "8df6c9388ed570e473a1669ec2abfaabf7ea2b22c8d66e6811312bd339a706df"
+  },
+  "payloads": {
+    "app/render/crash/crash_audio.gd": {
+      "source": "promotion/crash_audio.gd",
+      "sha256": "6a3c5855a3ed3d550a57904fb199f782761fb382e0d53f3901e4c295ea188978"
+    },
+    "app/tests/test_hull_scrape_audio.gd": {
+      "source": "promotion/test_hull_scrape_audio.gd",
+      "sha256": "61dce56560d0439c8bca6219b976685c50c16dc034d668feee5ab14b8a2afa5c"
+    }
+  }
+}

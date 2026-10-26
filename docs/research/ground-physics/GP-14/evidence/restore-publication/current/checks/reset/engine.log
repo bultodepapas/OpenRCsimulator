@@ -1,0 +1,50 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/rejected.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/rejected.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-reset.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-reset.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-runway_wrapper.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-runway_wrapper.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-field.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-field.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-hold.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-hold.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-release.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-release.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-resume.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/prepare-resume.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/commit-validator.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/commit-validator.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/accepted.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435/accepted.orfl (6 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/reset-publication-4312435/fleet/player.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/reset-publication-4312435/fleet/companion-1.orfl
+Companion capture REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/reset-publication-4312435/fleet
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/reset-publication-4312435/fleet/player.orfl (4 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/reset-publication-4312435/fleet/companion-1.orfl (4 ticks)
+Companion capture closed: C:/DEVELOPMENT/OpenRCsimulator/tmp/reset-publication-4312435/fleet (complete=true, tick=4)
+Reset publication: 180 checks, 0 failed; C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/reset-publication-4312435

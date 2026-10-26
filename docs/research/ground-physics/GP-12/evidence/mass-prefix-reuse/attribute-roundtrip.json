@@ -1,0 +1,40 @@
+{
+  "format": "openrc-mass-prefix-attributes-roundtrip-v1",
+  "ok": true,
+  "complete": true,
+  "created_utc": "2026-10-26T18:59:03.874960+00:00",
+  "fixture": "tmp/gp12-mass-prefix-roundtrip-ea964aabf8b74478b6af57be166972ec",
+  "fixture_commit": "833bff3d63270498ac9daa42daecc12ca4803020",
+  "core_autocrlf_source": "true",
+  "core_autocrlf_clone": "true",
+  "fresh_clone": true,
+  "no_hardlinks": true,
+  "root_meta_only_info_attribute": "/.gitattributes -text in source and clone; no evidence-path overrides",
+  "actual_repository_staged_or_committed": false,
+  "artifacts_compared": 356,
+  "sha256_mismatches": [],
+  "source_stable": true,
+  "manifest_sha256": "a53251e57037efb0a9e01478a384006c64fb7c953e907db48819177200a250a5",
+  "root_gitattributes_sha256": "6891ae0a70e42fe95740fe67808d6250b9ba3c5d6a50f2f7882d9c870cabaec3",
+  "cloned_summaries": [
+    {
+      "collection": "production/checks",
+      "exit_code": 0,
+      "stdout": "6 invocations: 6 passed, 0 failed or invalid.\n",
+      "stderr": ""
+    },
+    {
+      "collection": "hotspot/checks",
+      "exit_code": 0,
+      "stdout": "9 invocations: 9 passed, 0 failed or invalid.\n",
+      "stderr": ""
+    },
+    {
+      "collection": "optimization/checks",
+      "exit_code": 0,
+      "stdout": "19 invocations: 19 passed, 0 failed or invalid.\n",
+      "stderr": ""
+    }
+  ],
+  "receipt_written_after_snapshot_excluded_from_itself": true
+}

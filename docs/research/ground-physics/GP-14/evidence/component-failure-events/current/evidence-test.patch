@@ -1,0 +1,41 @@
+--- a/app/tests/test_damage_flight_events.gd
++++ b/app/tests/test_damage_flight_events.gd
+@@ -32,6 +32,7 @@
+ var good_packet: Dictionary
+ var semantic_profile: Dictionary
+ var output := ""
++var observations: Array[Dictionary] = []
+ 
+ func _initialize() -> void:
+ 	Engine.physics_ticks_per_second=240
+@@ -53,6 +54,8 @@
+ 	_service_bounds()
+ 	_kernel_bridge()
+ 	_asymmetric_kernel_boundary()
++	var evidence_file:=FileAccess.open(output.path_join("accepted-batches.json"),FileAccess.WRITE)
++	evidence_file.store_string(JSON.stringify(observations,"\t",true,true));evidence_file.close()
+ 	print("Damage flight events: %d checks, %d failed; %s" % [checks,failed,output])
+ 	quit(1 if failed else 0)
+ 
+@@ -310,6 +313,12 @@
+ 		check("actual kernel to shared bus "+str(spec[0]),semantic_count(bus,"GEAR_FAILURE")==expected and semantic_count(bus,"COMPONENT_DAMAGE")==expected
+ 			and semantic_count(bus,"CRASH")==expected and service.data.records.size()==expected and core.tick==48 and core.fault_reason.is_empty())
+ 		check("kernel and observer did not stop failed body "+str(spec[0]),not core.paused and (expected==0 or absf(core.state[RB.POS+2]-run.failure_down[0])>0.001))
++		if expected>0:
++			var shared: Dictionary=bus.filter(func(e):return e.type=="GEAR_FAILURE")[0]
++			check("actual source identity and loss preserved "+str(spec[0]),shared.physical_evidence.source_event_id==run.events[0].event_id
++				and shared.accepted_tick==run.events[0].tick and shared.measurements.transition_loss_j==run.events[0].transition_loss_j)
++		observations.append({scenario=spec[0],accepted_tick=core.tick,source_events=run.events.duplicate(true),shared_events=bus.duplicate(true),
++			modes=Array(core.modes),qualification="synthetic_symmetric_kernel_fixture_not_stock_activation"})
+ 		if spec[0]=="heavy":
+ 			var published:=var_to_bytes(bus);var recorded:=var_to_bytes(service.data.records)
+ 			check("actual healthy rewind accepted",core.restore_checkpoint(healthy))
+@@ -348,6 +357,8 @@
+ 		and semantic_count(bus,"GEAR_FAILURE")==1 and semantic_count(bus,"CRASH")==1)
+ 	var count_before:=bus.size();core.step()
+ 	check("unqualified rolled continuation refuses without new events",core.tick==1 and not core.fault_reason.is_empty() and bus.size()==count_before)
++	observations.append({scenario="asymmetric_first_boundary",accepted_tick=core.tick,source_events=run.events.duplicate(true),shared_events=bus.duplicate(true),
++		modes=Array(core.modes),qualification="first_boundary_only_rolled_continuation_refused",continuation_fault=core.fault_reason})
+ 	service.free();owner.free();core.free();bound=original_binding
+ 
+ func semantic_count(values: Array,kind: String) -> int:

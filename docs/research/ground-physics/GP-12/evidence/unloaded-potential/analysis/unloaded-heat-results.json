@@ -1,0 +1,2614 @@
+{
+	"candidate_raw_gate": {
+		"admitted": true,
+		"channels": {
+			"angular_rate:0": {
+				"absolute_difference": 1.6940658945086007e-21,
+				"bound": 0.0002,
+				"normalized_error": 8.470329472543003e-18,
+				"scale": 0.01,
+				"unit": "rad/s"
+			},
+			"angular_rate:1": {
+				"absolute_difference": 1.734723475976807e-18,
+				"bound": 0.0002,
+				"normalized_error": 8.673617379884035e-15,
+				"scale": 0.01,
+				"unit": "rad/s"
+			},
+			"angular_rate:2": {
+				"absolute_difference": 6.776263578034403e-21,
+				"bound": 0.0002,
+				"normalized_error": 3.3881317890172014e-17,
+				"scale": 0.01,
+				"unit": "rad/s"
+			},
+			"attitude": {
+				"absolute_difference": 5.522510448895902e-19,
+				"bound": 1e-05,
+				"normalized_error": 5.522510448895902e-14,
+				"scale": 1.0,
+				"unit": "rad"
+			},
+			"continuous:rim:contact_main_left:14": {
+				"absolute_difference": 4.440892098500626e-16,
+				"bound": 0.0154417475365149,
+				"normalized_error": 2.875899951089931e-14,
+				"scale": 2.88834950730298,
+				"unit": "m/s"
+			},
+			"continuous:rim:contact_main_right:15": {
+				"absolute_difference": 4.440892098500626e-16,
+				"bound": 0.015441747620067343,
+				"normalized_error": 2.875899935528968e-14,
+				"scale": 2.888349524013469,
+				"unit": "m/s"
+			},
+			"continuous:rim:contact_tail:16": {
+				"absolute_difference": 8.881784197001252e-16,
+				"bound": 0.015442201048244786,
+				"normalized_error": 5.751630981394837e-14,
+				"scale": 2.888440209648957,
+				"unit": "m/s"
+			},
+			"continuous:shaft:13": {
+				"absolute_difference": 2.842170943040401e-14,
+				"bound": 0.01,
+				"normalized_error": 2.8421709430404007e-12,
+				"scale": 146.60747210252092,
+				"unit": "rad/s"
+			},
+			"position:0": {
+				"absolute_difference": 0.0,
+				"bound": 1e-06,
+				"normalized_error": 0.0,
+				"scale": 0.012322400627158524,
+				"unit": "m"
+			},
+			"position:1": {
+				"absolute_difference": 8.470329472543003e-22,
+				"bound": 1e-06,
+				"normalized_error": 8.470329472543003e-16,
+				"scale": 0.012322400627158524,
+				"unit": "m"
+			},
+			"position:2": {
+				"absolute_difference": 0.0,
+				"bound": 1e-06,
+				"normalized_error": 0.0,
+				"scale": 0.012322400627158524,
+				"unit": "m"
+			},
+			"sampled_normal_peak:contact_main_left": {
+				"absolute_difference": 0.0,
+				"bound": 0.012,
+				"normalized_error": 0.0,
+				"scale": 0.1,
+				"unit": "N"
+			},
+			"sampled_normal_peak:contact_main_right": {
+				"absolute_difference": 0.0,
+				"bound": 0.012,
+				"normalized_error": 0.0,
+				"scale": 0.1,
+				"unit": "N"
+			},
+			"sampled_normal_peak:contact_tail": {
+				"absolute_difference": 0.0,
+				"bound": 0.012,
+				"normalized_error": 0.0,
+				"scale": 0.1,
+				"unit": "N"
+			},
+			"velocity_cm:0": {
+				"absolute_difference": 4.440892098500626e-16,
+				"bound": 0.001,
+				"normalized_error": 4.440892098500626e-13,
+				"scale": 2.9573761505180456,
+				"unit": "m/s"
+			},
+			"velocity_cm:1": {
+				"absolute_difference": 1.6940658945086007e-21,
+				"bound": 0.001,
+				"normalized_error": 1.6940658945086007e-18,
+				"scale": 2.9573761505180456,
+				"unit": "m/s"
+			},
+			"velocity_cm:2": {
+				"absolute_difference": 1.1102230246251565e-16,
+				"bound": 0.001,
+				"normalized_error": 1.1102230246251565e-13,
+				"scale": 2.9573761505180456,
+				"unit": "m/s"
+			},
+			"work:external_work_j": {
+				"absolute_difference": 0.0,
+				"bound": 1.0000000049999999e-06,
+				"normalized_error": 0.0,
+				"scale": 1e-12,
+				"unit": "J"
+			},
+			"work:normal_dissipation_j": {
+				"absolute_difference": 0.0,
+				"bound": 1.9250551528860286e-06,
+				"normalized_error": 0.0,
+				"scale": 0.0001850110305772057,
+				"unit": "J"
+			},
+			"work:prescribed_contact_work_j": {
+				"absolute_difference": 0.0,
+				"bound": 1.0000000049999999e-06,
+				"normalized_error": 0.0,
+				"scale": 1e-12,
+				"unit": "J"
+			},
+			"work:tangent_dissipation_j": {
+				"absolute_difference": 0.0,
+				"bound": 1.0000000049999999e-06,
+				"normalized_error": 0.0,
+				"scale": 1e-12,
+				"unit": "J"
+			}
+		},
+		"conservation_certificate": false,
+		"conservation_residuals_j": [
+			-1.0326516117903362e-13,
+			-2.1695199890064965e-13
+		],
+		"identity": "4e28450855f934194942ab3f9d0b16e178cb22eb38eb39e82b12be8f13005dd9",
+		"layout_identity": "85775edefb5a7a190bab180828ac1d0a4473eaedf21e1199cbd8b96117c88b2d",
+		"normalized_error": 2.8421709430404007e-12,
+		"ok": true,
+		"quality_name": "three-wheel-symmetric-0.5percent-plus1mm-rim-v1",
+		"scope": "one_tick_complete_path_accuracy_not_global_trajectory_or_conservation"
+	},
+	"coarse": {
+		"baseline": {
+			"elapsed": 0.004166666666666667,
+			"located": false,
+			"ok": true,
+			"physical_pieces": 8,
+			"receipt": {
+				"absolute_impulse_sum": 0.0,
+				"accepted_substeps": 8,
+				"assembly_resolution": {
+					"accepted_at_resolution": 0,
+					"accepted_slip_roundoff": 0,
+					"accepted_work_roundoff": 0,
+					"ceiling_scope": "per_impulse_qp_not_tick",
+					"combined_contact_uncertainty_sum_j": 0.0,
+					"derived_gamma_sum_j": 0.0,
+					"maximum_assembly_resolution_j": 3.1250000000000003e-13,
+					"maximum_derived_gamma_j": 0.0,
+					"objective_gap_upper_sum_j": 0.0,
+					"slip_work_equivalent_sum_j": 0.0,
+					"work_consistency_sum_j": 0.0
+				},
+				"certificate_identities": [
+					"composition-plane-X.18-V3-Omega5-kappa.5-v1"
+				],
+				"contact_ids": [
+					"contact_main_left",
+					"contact_main_right",
+					"contact_tail"
+				],
+				"contact_operator_order": 1,
+				"energy_balance_residual_j": -2.0024112794266653e-06,
+				"external_work_j": 0.0,
+				"final_mechanical_energy_j": 349.0510981832552,
+				"format": "openrc-aircraft-ground-integration v1",
+				"initial_mechanical_energy_j": 349.0512831942859,
+				"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+				"maximum_piece_energy_residual_j": 2.002411077513518e-06,
+				"normal_dissipation_j": 0.0001830086194010442,
+				"normal_sample_times_s": [
+					0.4083333333333333,
+					0.4088541666666667,
+					0.40937500000000004,
+					0.40989583333333335,
+					0.4104166666666667,
+					0.4109375,
+					0.41145833333333337,
+					0.4119791666666667,
+					0.41250000000000003
+				],
+				"normal_samples_n": [
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					]
+				],
+				"normal_sampling_method": "accepted_substep_start_and_end_states_not_interval_maximum",
+				"post_contact_dissipation_j": 0.0,
+				"post_prescribed_contact_work_j": 0.0,
+				"pre_contact_dissipation_j": 0.0,
+				"pre_prescribed_contact_work_j": 0.0,
+				"prescribed_contact_work_j": 0.0,
+				"quadrature_method": "RK4_algebraic_stage_weights_not_damage_samples",
+				"sampled_peak_normal_n": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"sampled_peak_times_s": [
+					0.4083333333333333,
+					0.4083333333333333,
+					0.4083333333333333
+				],
+				"split_method": "two_sided_half_impulses_recomputed_k1_order1",
+				"tangent_dissipation_j": 0.0
+			},
+			"roots": [],
+			"scope": "known_root_experiment_missing_owner_single_root_and_event_free_guards",
+			"state": [
+				1.2157204287619643,
+				9.885328104015908e-07,
+				-0.2039120705579691,
+				2.8847015219993377,
+				-5.720915862174214e-06,
+				-0.6515908299167417,
+				0.9999990921760756,
+				2.728456227882305e-06,
+				-0.0013474567049272018,
+				9.22549672031272e-08,
+				1.1436938463140505e-05,
+				0.009882693749688993,
+				4.056556032195192e-05,
+				1399.9982327594012,
+				2.88834950730298,
+				2.888349524013469,
+				2.888440209648956
+			]
+		},
+		"guards": [
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869892,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752449,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.001967530857430788,
+						"gap_rate_lower": 0.6720448084579707,
+						"kappa_lower": 0.9999930109928153,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0019637444797901,
+						"gap_rate_lower": 0.6720448084579707,
+						"kappa_lower": 0.9999930109928153,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": false,
+						"gap_m": -0.0004966702871150447,
+						"gap_rate_lower": 0.6707021680361746,
+						"kappa_lower": 0.9999930109928153,
+						"trial_force_per_compression_upper": -5549.072501117063,
+						"xmax": 0.0004966702872219766
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.88418634521829,
+					0.02444811492786989,
+					0.08813328584079323
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752449,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.00232125887541694,
+						"gap_rate_lower": 0.6669371782496375,
+						"kappa_lower": 0.999993010992783,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0023174683105108007,
+						"gap_rate_lower": 0.6669371782496375,
+						"kappa_lower": 0.999993010992783,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": false,
+						"gap_m": -0.00013831248724267137,
+						"gap_rate_lower": 0.6655945378278413,
+						"kappa_lower": 0.999993010992783,
+						"trial_force_per_compression_upper": -6210.954345653822,
+						"xmax": 0.00013831248734969085
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869892,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752449,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.002672326669530753,
+						"gap_rate_lower": 0.6618295480413043,
+						"kappa_lower": 0.9999930109927506,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.002668531925031775,
+						"gap_rate_lower": 0.6618295480413043,
+						"kappa_lower": 0.9999930109927506,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.00021738509080826418,
+						"gap_rate_lower": 0.6604869076195082,
+						"kappa_lower": 0.9999930109927506,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869895,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752449,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0030207342398262255,
+						"gap_rate_lower": 0.6567219178329712,
+						"kappa_lower": 0.9999930109927183,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0030169353234019425,
+						"gap_rate_lower": 0.6567219178329712,
+						"kappa_lower": 0.9999930109927183,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0005704224469352051,
+						"gap_rate_lower": 0.6553792774111751,
+						"kappa_lower": 0.9999930109927183,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.88418634521829,
+					0.02444811492786989,
+					0.08813328584079323
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.000667676009075245,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0033664815863573283,
+						"gap_rate_lower": 0.6516142876246382,
+						"kappa_lower": 0.999993010992686,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.003362678505670083,
+						"gap_rate_lower": 0.6516142876246382,
+						"kappa_lower": 0.999993010992686,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0009207995810355668,
+						"gap_rate_lower": 0.650271647202842,
+						"kappa_lower": 0.999993010992686,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869892,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.000667676009075245,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0037095687091780183,
+						"gap_rate_lower": 0.646506657416305,
+						"kappa_lower": 0.9999930109926537,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0037057614718850745,
+						"gap_rate_lower": 0.646506657416305,
+						"kappa_lower": 0.9999930109926537,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.001268516493006716,
+						"gap_rate_lower": 0.6451640169945089,
+						"kappa_lower": 0.9999930109926537,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869892,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752449,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0040499956083422245,
+						"gap_rate_lower": 0.6413990272079718,
+						"kappa_lower": 0.9999930109926215,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.004046184222095711,
+						"gap_rate_lower": 0.6413990272079718,
+						"kappa_lower": 0.9999930109926215,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0016135731827460476,
+						"gap_rate_lower": 0.6400563867861757,
+						"kappa_lower": 0.9999930109926215,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.88418634521829,
+					0.024448114927869885,
+					0.08813328584079323
+				],
+				"ok": true,
+				"omega_upper": 0.01341886567908636,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752448,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.004387762283903918,
+						"gap_rate_lower": 0.6362913969996389,
+						"kappa_lower": 0.9999930109925893,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.004383946756350773,
+						"gap_rate_lower": 0.6362913969996389,
+						"kappa_lower": 0.9999930109925893,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0019559696501509974,
+						"gap_rate_lower": 0.6349487565778427,
+						"kappa_lower": 0.9999930109925893,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			}
+		],
+		"independent_endpoint_potentials": [
+			{
+				"analytic_potential_j": 0.0001850110305772057,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0001850110305772057,
+				"uncertainty_j": 7.967008914164208e-14
+			},
+			{
+				"analytic_potential_j": 1.4347758095440598e-05,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 1.4347758095440598e-05,
+				"uncertainty_j": 2.2203606686647207e-14
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4031295511386222e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4072023060400767e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4112773689596302e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4153547353205083e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4194344005940684e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4235163602996808e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.427600610004626e-23
+			}
+		],
+		"ok": true,
+		"receipt": {
+			"absolute_impulse_sum": 0.0,
+			"accepted_substeps": 8,
+			"assembly_resolution": {
+				"accepted_at_resolution": 0,
+				"accepted_slip_roundoff": 0,
+				"accepted_work_roundoff": 0,
+				"ceiling_scope": "per_impulse_qp_not_tick",
+				"combined_contact_uncertainty_sum_j": 0.0,
+				"derived_gamma_sum_j": 0.0,
+				"maximum_assembly_resolution_j": 3.1250000000000003e-13,
+				"maximum_derived_gamma_j": 0.0,
+				"objective_gap_upper_sum_j": 0.0,
+				"slip_work_equivalent_sum_j": 0.0,
+				"work_consistency_sum_j": 0.0
+			},
+			"certificate_identities": [
+				"composition-plane-X.18-V3-Omega5-kappa.5-v1"
+			],
+			"contact_ids": [
+				"contact_main_left",
+				"contact_main_right",
+				"contact_tail"
+			],
+			"contact_operator_order": 1,
+			"energy_balance_residual_j": -1.0326516117903362e-13,
+			"external_work_j": 0.0,
+			"final_mechanical_energy_j": 349.0510981832552,
+			"format": "openrc-aircraft-ground-integration v1",
+			"initial_mechanical_energy_j": 349.0512831942859,
+			"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+			"maximum_piece_energy_residual_j": 1.450602333565032e-13,
+			"normal_dissipation_j": 0.0001850110305772057,
+			"normal_sample_times_s": [
+				0.4083333333333333,
+				0.4088541666666667,
+				0.40937500000000004,
+				0.40989583333333335,
+				0.4104166666666667,
+				0.4109375,
+				0.41145833333333337,
+				0.4119791666666667,
+				0.41250000000000003
+			],
+			"normal_samples_n": [
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				]
+			],
+			"normal_sampling_method": "accepted_substep_start_and_end_states_not_interval_maximum",
+			"post_contact_dissipation_j": 0.0,
+			"post_prescribed_contact_work_j": 0.0,
+			"pre_contact_dissipation_j": 0.0,
+			"pre_prescribed_contact_work_j": 0.0,
+			"prescribed_contact_work_j": 0.0,
+			"quadrature_method": "RK4_external_work_unloaded_normal_potential_difference_v1",
+			"sampled_peak_normal_n": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"sampled_peak_times_s": [
+				0.4083333333333333,
+				0.4083333333333333,
+				0.4083333333333333
+			],
+			"split_method": "two_sided_half_impulses_recomputed_k1_order1",
+			"tangent_dissipation_j": 0.0,
+			"unloaded_normal_loss": {
+				"actual_zero_force_rk_samples": 40,
+				"end_support_potential_j": 0.0,
+				"law": "all-zero-normal-support-potential-loss-v1",
+				"owner_scope": "exact_reference_guard_and_actual_zero_force_RK_samples_not_general_loaded_admission",
+				"piece_end_support_potentials_j": [
+					1.4347758095440598e-05,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"piece_energy_residuals_j": [
+					-1.450602333565032e-13,
+					9.863849612047528e-14,
+					-5.684341886080802e-14,
+					-5.684341886080802e-14,
+					-5.684341886080802e-14,
+					5.684341886080802e-14,
+					-5.684341886080802e-14,
+					1.1368683772161603e-13
+				],
+				"piece_losses_j": [
+					0.0001706632724817651,
+					1.4347758095440598e-05,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"piece_start_support_potentials_j": [
+					0.0001850110305772057,
+					1.4347758095440598e-05,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"qualified_pieces": 8,
+				"start_support_potential_j": 0.0001850110305772057
+			}
+		},
+		"scope": "ledger_only_same_uniform_split_states_no_production_admission",
+		"state": [
+			1.2157204287619643,
+			9.885328104015908e-07,
+			-0.2039120705579691,
+			2.8847015219993377,
+			-5.720915862174214e-06,
+			-0.6515908299167417,
+			0.9999990921760756,
+			2.728456227882305e-06,
+			-0.0013474567049272018,
+			9.22549672031272e-08,
+			1.1436938463140505e-05,
+			0.009882693749688993,
+			4.056556032195192e-05,
+			1399.9982327594012,
+			2.88834950730298,
+			2.888349524013469,
+			2.888440209648956
+		]
+	},
+	"current_validator_candidate_refusal": {
+		"admitted": false,
+		"identity": "4e28450855f934194942ab3f9d0b16e178cb22eb38eb39e82b12be8f13005dd9",
+		"normalized_error": 0.0,
+		"ok": false,
+		"reason": "receipt sampling/quadature contract differs"
+	},
+	"fine": {
+		"baseline": {
+			"elapsed": 0.004166666666666667,
+			"located": false,
+			"ok": true,
+			"physical_pieces": 16,
+			"receipt": {
+				"absolute_impulse_sum": 0.0,
+				"accepted_substeps": 16,
+				"assembly_resolution": {
+					"accepted_at_resolution": 0,
+					"accepted_slip_roundoff": 0,
+					"accepted_work_roundoff": 0,
+					"ceiling_scope": "per_impulse_qp_not_tick",
+					"combined_contact_uncertainty_sum_j": 0.0,
+					"derived_gamma_sum_j": 0.0,
+					"maximum_assembly_resolution_j": 3.1250000000000003e-13,
+					"maximum_derived_gamma_j": 0.0,
+					"objective_gap_upper_sum_j": 0.0,
+					"slip_work_equivalent_sum_j": 0.0,
+					"work_consistency_sum_j": 0.0
+				},
+				"certificate_identities": [
+					"composition-plane-X.18-V3-Omega5-kappa.5-v1"
+				],
+				"contact_ids": [
+					"contact_main_left",
+					"contact_main_right",
+					"contact_tail"
+				],
+				"contact_operator_order": 1,
+				"energy_balance_residual_j": 5.805128700901989e-07,
+				"external_work_j": 0.0,
+				"final_mechanical_energy_j": 349.0510981832551,
+				"format": "openrc-aircraft-ground-integration v1",
+				"initial_mechanical_energy_j": 349.0512831942859,
+				"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+				"maximum_piece_energy_residual_j": 5.805130719952115e-07,
+				"normal_dissipation_j": 0.0001855915436642479,
+				"normal_sample_times_s": [
+					0.4083333333333333,
+					0.40859375,
+					0.40885416666666663,
+					0.40911458333333334,
+					0.409375,
+					0.40963541666666664,
+					0.4098958333333333,
+					0.41015625,
+					0.41041666666666665,
+					0.4106770833333333,
+					0.41093749999999996,
+					0.41119791666666666,
+					0.4114583333333333,
+					0.41171874999999997,
+					0.4119791666666666,
+					0.4122395833333333,
+					0.4125
+				],
+				"normal_samples_n": [
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					],
+					[
+						0.0,
+						0.0,
+						0.0
+					]
+				],
+				"normal_sampling_method": "accepted_substep_start_and_end_states_not_interval_maximum",
+				"post_contact_dissipation_j": 0.0,
+				"post_prescribed_contact_work_j": 0.0,
+				"pre_contact_dissipation_j": 0.0,
+				"pre_prescribed_contact_work_j": 0.0,
+				"prescribed_contact_work_j": 0.0,
+				"quadrature_method": "RK4_algebraic_stage_weights_not_damage_samples",
+				"sampled_peak_normal_n": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"sampled_peak_times_s": [
+					0.4083333333333333,
+					0.4083333333333333,
+					0.4083333333333333
+				],
+				"split_method": "two_sided_half_impulses_recomputed_k1_order1",
+				"tangent_dissipation_j": 0.0
+			},
+			"roots": [],
+			"scope": "known_root_experiment_missing_owner_single_root_and_event_free_guards",
+			"state": [
+				1.2157204287619643,
+				9.885328104015916e-07,
+				-0.2039120705579691,
+				2.884701521999338,
+				-5.720915862174215e-06,
+				-0.6515908299167418,
+				0.9999990921760757,
+				2.7284562278823063e-06,
+				-0.0013474567049272022,
+				9.225496720312718e-08,
+				1.1436938463140503e-05,
+				0.009882693749688995,
+				4.0565560321951925e-05,
+				1399.998232759401,
+				2.8883495073029795,
+				2.8883495240134685,
+				2.888440209648957
+			]
+		},
+		"guards": [
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869892,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752449,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.001967530857430788,
+						"gap_rate_lower": 0.6745986235621375,
+						"kappa_lower": 0.9999965054890859,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0019637444797901,
+						"gap_rate_lower": 0.6745986235621375,
+						"kappa_lower": 0.9999965054890859,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": false,
+						"gap_m": -0.0004966702871150447,
+						"gap_rate_lower": 0.6732559831403414,
+						"kappa_lower": 0.9999965054890859,
+						"trial_force_per_compression_upper": -5575.91307012317,
+						"xmax": 0.0004966702872219766
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182896,
+					0.02444811492786988,
+					0.08813328584079322
+				],
+				"ok": true,
+				"omega_upper": 0.01341886567908636,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752446,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0021447273944112527,
+						"gap_rate_lower": 0.6720448084579709,
+						"kappa_lower": 0.9999965054890697,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0021409389221784536,
+						"gap_rate_lower": 0.6720448084579709,
+						"kappa_lower": 0.9999965054890697,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": false,
+						"gap_m": -0.00031715885945758637,
+						"gap_rate_lower": 0.6707021680361747,
+						"kappa_lower": 0.9999965054890697,
+						"trial_force_per_compression_upper": -5910.268612268346,
+						"xmax": 0.00031715885956456205
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.88418634521829,
+					0.024448114927869892,
+					0.08813328584079323
+				],
+				"ok": true,
+				"omega_upper": 0.01341886567908636,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752448,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.00232125887541694,
+						"gap_rate_lower": 0.6694909933538044,
+						"kappa_lower": 0.9999965054890536,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0023174683105108007,
+						"gap_rate_lower": 0.6694909933538044,
+						"kappa_lower": 0.9999965054890536,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": false,
+						"gap_m": -0.00013831248724267137,
+						"gap_rate_lower": 0.6681483529320082,
+						"kappa_lower": 0.9999965054890536,
+						"trial_force_per_compression_upper": -6240.54045334596,
+						"xmax": 0.00013831248734969085
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869895,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.01341886567908636,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752448,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0024971253004545113,
+						"gap_rate_lower": 0.6669371782496379,
+						"kappa_lower": 0.9999965054890374,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.002493332644793192,
+						"gap_rate_lower": 0.6669371782496379,
+						"kappa_lower": 0.9999965054890374,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 3.9868829516898074e-05,
+						"gap_rate_lower": 0.6655945378278418,
+						"kappa_lower": 0.9999965054890374,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.88418634521829,
+					0.024448114927869892,
+					0.08813328584079323
+				],
+				"ok": true,
+				"omega_upper": 0.01341886567908636,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752448,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.002672326669530753,
+						"gap_rate_lower": 0.6643833631454713,
+						"kappa_lower": 0.9999965054890212,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.002668531925031775,
+						"gap_rate_lower": 0.6643833631454713,
+						"kappa_lower": 0.9999965054890212,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.00021738509080826418,
+						"gap_rate_lower": 0.6630407227236751,
+						"kappa_lower": 0.9999965054890212,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182896,
+					0.024448114927869885,
+					0.08813328584079322
+				],
+				"ok": true,
+				"omega_upper": 0.01341886567908636,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752448,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0028468629826524233,
+						"gap_rate_lower": 0.6618295480413047,
+						"kappa_lower": 0.9999965054890051,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0028430661512326705,
+						"gap_rate_lower": 0.6618295480413047,
+						"kappa_lower": 0.9999965054890051,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0003942362966186455,
+						"gap_rate_lower": 0.6604869076195086,
+						"kappa_lower": 0.9999965054890051,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.0244481149278699,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752449,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0030207342398262255,
+						"gap_rate_lower": 0.6592757329371381,
+						"kappa_lower": 0.9999965054889889,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0030169353234019425,
+						"gap_rate_lower": 0.6592757329371381,
+						"kappa_lower": 0.9999965054889889,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0005704224469352051,
+						"gap_rate_lower": 0.657933092515342,
+						"kappa_lower": 0.9999965054889889,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182896,
+					0.024448114927869885,
+					0.08813328584079322
+				],
+				"ok": true,
+				"omega_upper": 0.01341886567908636,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752448,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0031939404410589872,
+						"gap_rate_lower": 0.6567219178329715,
+						"kappa_lower": 0.9999965054889728,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.003190139441545739,
+						"gap_rate_lower": 0.6567219178329715,
+						"kappa_lower": 0.9999965054889728,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0007459435417451338,
+						"gap_rate_lower": 0.6553792774111753,
+						"kappa_lower": 0.9999965054889728,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.88418634521829,
+					0.024448114927869892,
+					0.08813328584079323
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.000667676009075245,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0033664815863573283,
+						"gap_rate_lower": 0.6541681027288051,
+						"kappa_lower": 0.9999965054889566,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.003362678505670083,
+						"gap_rate_lower": 0.6541681027288051,
+						"kappa_lower": 0.9999965054889566,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0009207995810355668,
+						"gap_rate_lower": 0.652825462307009,
+						"kappa_lower": 0.9999965054889566,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.88418634521829,
+					0.02444811492786989,
+					0.08813328584079323
+				],
+				"ok": true,
+				"omega_upper": 0.01341886567908636,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752446,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.003538357675728118,
+						"gap_rate_lower": 0.6516142876246385,
+						"kappa_lower": 0.9999965054889405,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.003534552515781192,
+						"gap_rate_lower": 0.6516142876246385,
+						"kappa_lower": 0.9999965054889405,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0010949905647937228,
+						"gap_rate_lower": 0.6502716472028424,
+						"kappa_lower": 0.9999965054889405,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869892,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.000667676009075245,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0037095687091780183,
+						"gap_rate_lower": 0.6490604725204719,
+						"kappa_lower": 0.9999965054889243,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0037057614718850745,
+						"gap_rate_lower": 0.6490604725204719,
+						"kappa_lower": 0.9999965054889243,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.001268516493006716,
+						"gap_rate_lower": 0.6477178320986757,
+						"kappa_lower": 0.9999965054889243,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869892,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.000667676009075245,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0038801146867138286,
+						"gap_rate_lower": 0.6465066574163052,
+						"kappa_lower": 0.9999965054889082,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.0038763053739878928,
+						"gap_rate_lower": 0.6465066574163052,
+						"kappa_lower": 0.9999965054889082,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0014413773656618,
+						"gap_rate_lower": 0.6451640169945091,
+						"kappa_lower": 0.9999965054889082,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182905,
+					0.024448114927869895,
+					0.08813328584079325
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086364,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752451,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.004049995608342252,
+						"gap_rate_lower": 0.6439528423121388,
+						"kappa_lower": 0.9999965054888921,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.004046184222095739,
+						"gap_rate_lower": 0.6439528423121388,
+						"kappa_lower": 0.9999965054888921,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0016135731827460753,
+						"gap_rate_lower": 0.6426102018903427,
+						"kappa_lower": 0.9999965054888921,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.88418634521829,
+					0.02444811492786989,
+					0.08813328584079323
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.000667676009075245,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.004219211474070034,
+						"gap_rate_lower": 0.6413990272079723,
+						"kappa_lower": 0.999996505488876,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.004215398016214664,
+						"gap_rate_lower": 0.6413990272079723,
+						"kappa_lower": 0.999996505488876,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0017851039442467534,
+						"gap_rate_lower": 0.640056386786176,
+						"kappa_lower": 0.999996505488876,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182896,
+					0.02444811492786988,
+					0.08813328584079322
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086364,
+				"reduced_rotational_energy_times_two_upper": 0.0006676760090752451,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.004387762283903918,
+						"gap_rate_lower": 0.6388452121038057,
+						"kappa_lower": 0.9999965054888599,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.004383946756350773,
+						"gap_rate_lower": 0.6388452121038057,
+						"kappa_lower": 0.9999965054888599,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.0019559696501509974,
+						"gap_rate_lower": 0.6375025716820096,
+						"kappa_lower": 0.9999965054888599,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			},
+			{
+				"exact_reference_flow_admitted": true,
+				"floating_rk_admitted": false,
+				"gyro_momentum_body": [
+					2.8841863452182896,
+					0.024448114927869878,
+					0.08813328584079322
+				],
+				"ok": true,
+				"omega_upper": 0.013418865679086362,
+				"reduced_rotational_energy_times_two_upper": 0.000667676009075245,
+				"schur_beta": 3.707952483005213,
+				"schur_center": [
+					3.8120034696884835,
+					6.836036113961385,
+					9.937403591141937,
+					-0.00034317794951219864,
+					-0.2601129503576646,
+					-1.048663182556146e-05
+				],
+				"schur_error_bound": 5.434353630895197e-14,
+				"scope": "source_free_fixed_mass_fixed_body_axes_plane_unloaded_reference_flow_only",
+				"supports": [
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_left",
+						"event_free": true,
+						"gap_m": 0.0045556480378506625,
+						"gap_rate_lower": 0.6362913969996392,
+						"kappa_lower": 0.9999965054888438,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_main_right",
+						"event_free": true,
+						"gap_m": 0.004551830442510257,
+						"gap_rate_lower": 0.6362913969996392,
+						"kappa_lower": 0.9999965054888438,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					},
+					{
+						"at_most_one_gap_root": true,
+						"contact_id": "contact_tail",
+						"event_free": true,
+						"gap_m": 0.002126170300445991,
+						"gap_rate_lower": 0.6349487565778431,
+						"kappa_lower": 0.9999965054888438,
+						"trial_force_per_compression_upper": 0.0,
+						"xmax": 0.0
+					}
+				]
+			}
+		],
+		"independent_endpoint_potentials": [
+			{
+				"analytic_potential_j": 0.0001850110305772057,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0001850110305772057,
+				"uncertainty_j": 7.967008914164208e-14
+			},
+			{
+				"analytic_potential_j": 7.544230659932447e-05,
+				"difference_j": 3.2932640989247197e-18,
+				"ok": true,
+				"owned_potential_j": 7.544230659932777e-05,
+				"uncertainty_j": 5.0894576144800084e-14
+			},
+			{
+				"analytic_potential_j": 1.4347758095440598e-05,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 1.4347758095440598e-05,
+				"uncertainty_j": 2.2203606686647207e-14
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4010940406381115e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4031295511386222e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4051656397991562e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4072023060400767e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.409239549284769e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4112773689596302e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.413315764494071e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4153547353205083e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4173942808743672e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4194344005940684e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4214750939210354e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4235163602996808e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.4255581991774136e-23
+			},
+			{
+				"analytic_potential_j": 0.0,
+				"difference_j": 0.0,
+				"ok": true,
+				"owned_potential_j": 0.0,
+				"uncertainty_j": 2.427600610004626e-23
+			}
+		],
+		"ok": true,
+		"receipt": {
+			"absolute_impulse_sum": 0.0,
+			"accepted_substeps": 16,
+			"assembly_resolution": {
+				"accepted_at_resolution": 0,
+				"accepted_slip_roundoff": 0,
+				"accepted_work_roundoff": 0,
+				"ceiling_scope": "per_impulse_qp_not_tick",
+				"combined_contact_uncertainty_sum_j": 0.0,
+				"derived_gamma_sum_j": 0.0,
+				"maximum_assembly_resolution_j": 3.1250000000000003e-13,
+				"maximum_derived_gamma_j": 0.0,
+				"objective_gap_upper_sum_j": 0.0,
+				"slip_work_equivalent_sum_j": 0.0,
+				"work_consistency_sum_j": 0.0
+			},
+			"certificate_identities": [
+				"composition-plane-X.18-V3-Omega5-kappa.5-v1"
+			],
+			"contact_ids": [
+				"contact_main_left",
+				"contact_main_right",
+				"contact_tail"
+			],
+			"contact_operator_order": 1,
+			"energy_balance_residual_j": -2.1695199890064965e-13,
+			"external_work_j": 0.0,
+			"final_mechanical_energy_j": 349.0510981832551,
+			"format": "openrc-aircraft-ground-integration v1",
+			"initial_mechanical_energy_j": 349.0512831942859,
+			"law": "fixed-hub-half-impulse-rk4-normal-half-impulse-v1",
+			"maximum_piece_energy_residual_j": 1.7802830065173636e-13,
+			"normal_dissipation_j": 0.0001850110305772057,
+			"normal_sample_times_s": [
+				0.4083333333333333,
+				0.40859375,
+				0.40885416666666663,
+				0.40911458333333334,
+				0.409375,
+				0.40963541666666664,
+				0.4098958333333333,
+				0.41015625,
+				0.41041666666666665,
+				0.4106770833333333,
+				0.41093749999999996,
+				0.41119791666666666,
+				0.4114583333333333,
+				0.41171874999999997,
+				0.4119791666666666,
+				0.4122395833333333,
+				0.4125
+			],
+			"normal_samples_n": [
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					0.0
+				]
+			],
+			"normal_sampling_method": "accepted_substep_start_and_end_states_not_interval_maximum",
+			"post_contact_dissipation_j": 0.0,
+			"post_prescribed_contact_work_j": 0.0,
+			"pre_contact_dissipation_j": 0.0,
+			"pre_prescribed_contact_work_j": 0.0,
+			"prescribed_contact_work_j": 0.0,
+			"quadrature_method": "RK4_external_work_unloaded_normal_potential_difference_v1",
+			"sampled_peak_normal_n": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"sampled_peak_times_s": [
+				0.4083333333333333,
+				0.4083333333333333,
+				0.4083333333333333
+			],
+			"split_method": "two_sided_half_impulses_recomputed_k1_order1",
+			"tangent_dissipation_j": 0.0,
+			"unloaded_normal_loss": {
+				"actual_zero_force_rk_samples": 80,
+				"end_support_potential_j": 0.0,
+				"law": "all-zero-normal-support-potential-loss-v1",
+				"owner_scope": "exact_reference_guard_and_actual_zero_force_RK_samples_not_general_loaded_admission",
+				"piece_end_support_potentials_j": [
+					7.544230659932777e-05,
+					1.4347758095440598e-05,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"piece_energy_residuals_j": [
+					-1.7802830065173636e-13,
+					3.296806729523316e-14,
+					-1.5048341601140748e-14,
+					0.0,
+					-5.684341886080802e-14,
+					1.1368683772161603e-13,
+					-5.684341886080802e-14,
+					0.0,
+					1.1368683772161603e-13,
+					-1.7053025658242404e-13,
+					1.7053025658242404e-13,
+					-5.684341886080802e-14,
+					5.684341886080802e-14,
+					-1.7053025658242404e-13,
+					5.684341886080802e-14,
+					-5.684341886080802e-14
+				],
+				"piece_losses_j": [
+					0.00010956872397787794,
+					6.109454850388718e-05,
+					1.4347758095440598e-05,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"piece_start_support_potentials_j": [
+					0.0001850110305772057,
+					7.544230659932777e-05,
+					1.4347758095440598e-05,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"qualified_pieces": 16,
+				"start_support_potential_j": 0.0001850110305772057
+			}
+		},
+		"scope": "ledger_only_same_uniform_split_states_no_production_admission",
+		"state": [
+			1.2157204287619643,
+			9.885328104015916e-07,
+			-0.2039120705579691,
+			2.884701521999338,
+			-5.720915862174215e-06,
+			-0.6515908299167418,
+			0.9999990921760757,
+			2.7284562278823063e-06,
+			-0.0013474567049272022,
+			9.225496720312718e-08,
+			1.1436938463140503e-05,
+			0.009882693749688995,
+			4.0565560321951925e-05,
+			1399.998232759401,
+			2.8883495073029795,
+			2.8883495240134685,
+			2.888440209648957
+		]
+	},
+	"limit": "exact reference-flow guard plus actual RK force samples; no universal floating-family proof or production policy",
+	"original_raw_gate": {
+		"admitted": false,
+		"channels": {
+			"angular_rate:0": {
+				"absolute_difference": 1.6940658945086007e-21,
+				"bound": 0.0002,
+				"normalized_error": 8.470329472543003e-18,
+				"scale": 0.01,
+				"unit": "rad/s"
+			},
+			"angular_rate:1": {
+				"absolute_difference": 1.734723475976807e-18,
+				"bound": 0.0002,
+				"normalized_error": 8.673617379884035e-15,
+				"scale": 0.01,
+				"unit": "rad/s"
+			},
+			"angular_rate:2": {
+				"absolute_difference": 6.776263578034403e-21,
+				"bound": 0.0002,
+				"normalized_error": 3.3881317890172014e-17,
+				"scale": 0.01,
+				"unit": "rad/s"
+			},
+			"attitude": {
+				"absolute_difference": 5.522510448895902e-19,
+				"bound": 1e-05,
+				"normalized_error": 5.522510448895902e-14,
+				"scale": 1.0,
+				"unit": "rad"
+			},
+			"continuous:rim:contact_main_left:14": {
+				"absolute_difference": 4.440892098500626e-16,
+				"bound": 0.0154417475365149,
+				"normalized_error": 2.875899951089931e-14,
+				"scale": 2.88834950730298,
+				"unit": "m/s"
+			},
+			"continuous:rim:contact_main_right:15": {
+				"absolute_difference": 4.440892098500626e-16,
+				"bound": 0.015441747620067343,
+				"normalized_error": 2.875899935528968e-14,
+				"scale": 2.888349524013469,
+				"unit": "m/s"
+			},
+			"continuous:rim:contact_tail:16": {
+				"absolute_difference": 8.881784197001252e-16,
+				"bound": 0.015442201048244786,
+				"normalized_error": 5.751630981394837e-14,
+				"scale": 2.888440209648957,
+				"unit": "m/s"
+			},
+			"continuous:shaft:13": {
+				"absolute_difference": 2.842170943040401e-14,
+				"bound": 0.01,
+				"normalized_error": 2.8421709430404007e-12,
+				"scale": 146.60747210252092,
+				"unit": "rad/s"
+			},
+			"position:0": {
+				"absolute_difference": 0.0,
+				"bound": 1e-06,
+				"normalized_error": 0.0,
+				"scale": 0.012322400627158524,
+				"unit": "m"
+			},
+			"position:1": {
+				"absolute_difference": 8.470329472543003e-22,
+				"bound": 1e-06,
+				"normalized_error": 8.470329472543003e-16,
+				"scale": 0.012322400627158524,
+				"unit": "m"
+			},
+			"position:2": {
+				"absolute_difference": 0.0,
+				"bound": 1e-06,
+				"normalized_error": 0.0,
+				"scale": 0.012322400627158524,
+				"unit": "m"
+			},
+			"sampled_normal_peak:contact_main_left": {
+				"absolute_difference": 0.0,
+				"bound": 0.012,
+				"normalized_error": 0.0,
+				"scale": 0.1,
+				"unit": "N"
+			},
+			"sampled_normal_peak:contact_main_right": {
+				"absolute_difference": 0.0,
+				"bound": 0.012,
+				"normalized_error": 0.0,
+				"scale": 0.1,
+				"unit": "N"
+			},
+			"sampled_normal_peak:contact_tail": {
+				"absolute_difference": 0.0,
+				"bound": 0.012,
+				"normalized_error": 0.0,
+				"scale": 0.1,
+				"unit": "N"
+			},
+			"velocity_cm:0": {
+				"absolute_difference": 4.440892098500626e-16,
+				"bound": 0.001,
+				"normalized_error": 4.440892098500626e-13,
+				"scale": 2.9573761505180456,
+				"unit": "m/s"
+			},
+			"velocity_cm:1": {
+				"absolute_difference": 1.6940658945086007e-21,
+				"bound": 0.001,
+				"normalized_error": 1.6940658945086007e-18,
+				"scale": 2.9573761505180456,
+				"unit": "m/s"
+			},
+			"velocity_cm:2": {
+				"absolute_difference": 1.1102230246251565e-16,
+				"bound": 0.001,
+				"normalized_error": 1.1102230246251565e-13,
+				"scale": 2.9573761505180456,
+				"unit": "m/s"
+			},
+			"work:external_work_j": {
+				"absolute_difference": 0.0,
+				"bound": 1.0000000049999999e-06,
+				"normalized_error": 0.0,
+				"scale": 1e-12,
+				"unit": "J"
+			},
+			"work:normal_dissipation_j": {
+				"absolute_difference": 2.582924263203702e-06,
+				"bound": 1.9279577183212395e-06,
+				"normalized_error": 1.3397203883977142,
+				"scale": 0.0001855915436642479,
+				"unit": "J"
+			},
+			"work:prescribed_contact_work_j": {
+				"absolute_difference": 0.0,
+				"bound": 1.0000000049999999e-06,
+				"normalized_error": 0.0,
+				"scale": 1e-12,
+				"unit": "J"
+			},
+			"work:tangent_dissipation_j": {
+				"absolute_difference": 0.0,
+				"bound": 1.0000000049999999e-06,
+				"normalized_error": 0.0,
+				"scale": 1e-12,
+				"unit": "J"
+			}
+		},
+		"conservation_certificate": false,
+		"conservation_residuals_j": [
+			-2.0024112794266653e-06,
+			5.805128700901989e-07
+		],
+		"identity": "4e28450855f934194942ab3f9d0b16e178cb22eb38eb39e82b12be8f13005dd9",
+		"layout_identity": "85775edefb5a7a190bab180828ac1d0a4473eaedf21e1199cbd8b96117c88b2d",
+		"normalized_error": 1.3397203883977142,
+		"ok": true,
+		"quality_name": "three-wheel-symmetric-0.5percent-plus1mm-rim-v1",
+		"scope": "one_tick_complete_path_accuracy_not_global_trajectory_or_conservation"
+	}
+}

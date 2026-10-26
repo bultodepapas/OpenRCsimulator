@@ -1,6 +1,7 @@
 ## UI-FS: detached accepted-tick observations; never evaluates forces or writes state.
 extends RefCounted
 
+const FlightEvent := preload("res://statistics/flight_event.gd")
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
@@ -18,6 +19,7 @@ func configure(owner: Node, aircraft_id: String, consumer: Callable) -> void:
 	profile.initial_tick = int(session.sim.tick)
 	profile.generation_id = str(session.statistics_generation)
 	_lake = session.lake_context()
+	_configure_damage_observation()
 
 
 func attach() -> void:
@@ -106,7 +108,7 @@ func sample() -> Dictionary:
 		stop = bool(hull.facts.stop_support) if not hull.is_empty() else false
 		controlled = bool(hull.facts.controlled) if not hull.is_empty() else false
 	var reference_height: float = 0.0 if uses_hull else terrain[0]
-	return {tick = int(session.sim.tick), dt = float(session.sim.dt()), valid = is_finite(terrain[0]) \
+	var result := {tick = int(session.sim.tick), dt = float(session.sim.dt()), valid = is_finite(terrain[0]) \
 		and is_finite(float(air.get("V", NAN))) and session.sim.fault_reason.is_empty() and hull_valid,
 		supported = physical, intended_support = intended and bool(profile.get("landing_available", false)),
 		stop_support = stop, clearance_ok = not physical and -s[2] - reference_height >= \
@@ -117,6 +119,9 @@ func sample() -> Dictionary:
 		incident = incident, gear_up_contact = gear_up,
 		terminal = not session.crash.is_empty() or bool(observation.get("terminal", false)),
 		ground_contact = ground_contact}
+	var damage := _damage_observation()
+	if not damage.is_empty() and not damage.events.is_empty(): result.component_failure_observation = damage
+	return result
 
 
 ## Only an accepted physical receipt may open a nonterminal accident. Missing legacy
@@ -188,4 +193,25 @@ func _hull_support_observation(contacts: Dictionary) -> Dictionary:
 	for key: String in pose_keys:
 		if typeof(pose[key]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(pose[key])): return {}
 	if pose.angular_speed_radps < 0.0: return {}
+	return packet.duplicate(true)
+
+## Optional mechanical facts; absence preserves the legacy sample shape.
+## The physical owner validates prepared provenance at binding/transition, not
+## this observer on every sampled tick.
+func _configure_damage_observation() -> void:
+	if not session.has_method("damage_observation"): return
+	var packet: Variant = session.damage_observation()
+	if typeof(packet) != TYPE_DICTIONARY: return
+	if FlightEvent.valid_damage_observation(packet, int(session.sim.tick), str(session.statistics_generation),
+		packet.get("identity"), float(session.sim.dt())):
+		profile.damage_response_identity = packet.identity
+		profile.damage_source_generation = packet.generation_id
+
+
+func _damage_observation() -> Dictionary:
+	if not profile.has("damage_response_identity") or not session.has_method("damage_observation"): return {}
+	var packet: Variant = session.damage_observation()
+	if not FlightEvent.valid_damage_observation(packet, int(session.sim.tick), str(session.statistics_generation),
+		profile.damage_response_identity, float(session.sim.dt())) \
+		or packet.generation_id != profile.damage_source_generation: return {}
 	return packet.duplicate(true)

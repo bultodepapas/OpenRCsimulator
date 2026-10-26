@@ -1,0 +1,27 @@
+--- a/app/statistics/detector.gd
++++ b/app/statistics/detector.gd
+@@ -963,6 +963,11 @@
+ 	if not _accepted_observation_edge:
+ 		event.evidence_coverage.erase("accepted_endpoint_support")
+ 		event.evidence_coverage.append("outcome_without_new_valid_interval")
++	if kind == "CRASH" and _accepted_observation_edge and not _accepted_component_events.is_empty():
++		event.evidence_coverage.erase("damage_unobserved")
++		event.evidence_coverage.append("component_failure_observed")
++		for record: Dictionary in _accepted_component_events:
++			event.cause.evidence_ids.append(record.physical_evidence.source_event_id)
+ 	if terminal: event.evidence_coverage.append("terminal_guard_outcome")
+ 	if _continuity_lost: event.evidence_coverage.append("discontinuous_observation")
+ 	_semantic_sequence += 1
+--- a/app/tests/test_damage_flight_events.gd
++++ b/app/tests/test_damage_flight_events.gd
+@@ -144,6 +144,10 @@
+ 	var events:=d.observe(sample(1,good_packet))
+ 	check("one qualified failure is one nonterminal accident",count(events,"crash")==1 and semantic(events,"CRASH").size()==1
+ 		and semantic(events,"COMPONENT_DAMAGE").size()==1 and semantic(events,"GEAR_FAILURE").size()==1)
++	var crash: Dictionary=semantic(events,"CRASH")[0]
++	check("qualified CRASH reports observed failure without causal certainty",not crash.evidence_coverage.has("damage_unobserved")
++		and crash.evidence_coverage.has("component_failure_observed") and crash.cause.classification=="unknown"
++		and crash.cause.evidence_ids==[good_packet.events[0].physical_evidence.source_event_id])
+ 	var gear: Dictionary=semantic(events,"GEAR_FAILURE")[0]
+ 	check("factual pair shares source and accident",gear.physical_evidence==semantic(events,"COMPONENT_DAMAGE")[0].physical_evidence
+ 		and gear.accident_id==semantic(events,"CRASH")[0].accident_id and not gear.accident_id.is_empty())

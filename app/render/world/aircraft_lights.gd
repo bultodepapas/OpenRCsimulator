@@ -563,7 +563,7 @@ static func set_mode(kit: Node3D, mode: String) -> void:
 	var supported: Array = kit.get_meta("supported_light_groups", GROUPS)
 	for group: String in groups:
 		var enabled := mode != "off" and group in supported and (mode == "all" or group in ["navigation", "strobe"])
-		for light: Node3D in groups[group]:
+		for light: Variant in groups[group]:
 			if is_instance_valid(light):
 				light.visible = enabled and bool(light.get_meta("gate_open", true))
 	kit.set_meta("mode", mode)

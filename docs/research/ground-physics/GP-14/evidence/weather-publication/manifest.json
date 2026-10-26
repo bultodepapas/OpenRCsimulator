@@ -1,0 +1,359 @@
+{
+  "format": "openrc-weather-publication-manifest-v1",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 125,
+      "sha256": "bc830b94e62d20d8aa825f51a83e42db1dc81ecde8e625cc7a96e89b9a6e775e"
+    },
+    {
+      "path": "checks/audio-1039fh89/engine.log",
+      "bytes": 219,
+      "sha256": "0f67687c4654a77f2e0957de2e5aa7178a5714db94143dd1cb719cac94e2789f"
+    },
+    {
+      "path": "checks/audio-1039fh89/report.json",
+      "bytes": 1214,
+      "sha256": "ff64b66294358e4b510be3498c8d6dddc7b97b633f7bb91d3735ffa5c4b21df8"
+    },
+    {
+      "path": "checks/common-start-f47t1t3a/engine.log",
+      "bytes": 7436,
+      "sha256": "0fc3ac4b9dd535cd728eaf8f79d218a327d853214a737b48326beda7ed5a98a4"
+    },
+    {
+      "path": "checks/common-start-f47t1t3a/report.json",
+      "bytes": 1229,
+      "sha256": "03bb4c81817cf5145d9d9e205629f5e55c3ac10aaee7802a54a63501dcb56130"
+    },
+    {
+      "path": "checks/flight-log-xkrubg_l/engine.log",
+      "bytes": 5982,
+      "sha256": "cb8f56ce2cb3ceb805fe1a05b02cf4638f7118428a8b65238d678934be552d1a"
+    },
+    {
+      "path": "checks/flight-log-xkrubg_l/report.json",
+      "bytes": 1211,
+      "sha256": "b521457e68af73eaaaefe37378b6132fef0f575a9d741358a272b5e9006c1c74"
+    },
+    {
+      "path": "checks/focused-o6ntj00f/engine.log",
+      "bytes": 5506,
+      "sha256": "b94e998e4da5197f2dd5db40f674f148ae6be143193310bb570f4a65ac9abe12"
+    },
+    {
+      "path": "checks/focused-o6ntj00f/report.json",
+      "bytes": 1209,
+      "sha256": "2a0f7151e5281ef6c3559582a8ecf34614d73048303d01db9252fa3f6cd9d9c9"
+    },
+    {
+      "path": "checks/restore-qcd3o5gy/engine.log",
+      "bytes": 5908,
+      "sha256": "a6cf85dcd83cffd5e8a080569281219a3d043272e5d6489f36f5f921d114a62e"
+    },
+    {
+      "path": "checks/restore-qcd3o5gy/report.json",
+      "bytes": 1209,
+      "sha256": "fefa7e236de1da4cac1f7b52aee124b962301dac07be33207a7ab365866295aa"
+    },
+    {
+      "path": "checks/spatial-weather-d2r8ubrg/engine.log",
+      "bytes": 7786,
+      "sha256": "076114fb9d8e25d4ef39e39c4c8432c471e360f4a5ff8dd7cad86820c1378f2c"
+    },
+    {
+      "path": "checks/spatial-weather-d2r8ubrg/report.json",
+      "bytes": 1232,
+      "sha256": "fa339b13e6e9d57d8405f8c96d9658862110739b7091faa0948a09984cce7708"
+    },
+    {
+      "path": "checks/wind-2mcfsdi0/engine.log",
+      "bytes": 8770,
+      "sha256": "5b7fd9e15f2858d5460c3e85f275357e0b792c063520467fd28898c119949201"
+    },
+    {
+      "path": "checks/wind-2mcfsdi0/report.json",
+      "bytes": 1163,
+      "sha256": "78c8f8ea9846c4c61a9f07bf8669de5e0ad979c02f47a3390a7301f127cc7ed4"
+    },
+    {
+      "path": "development/baseline.json",
+      "bytes": 322,
+      "sha256": "747717ca78a1cc5b49e1c70043934f283e53eff4d6ec0aed248082171aae8cde"
+    },
+    {
+      "path": "development/build.py",
+      "bytes": 2427,
+      "sha256": "6f6889450e55345fb6065f7786264c50e023280a2b58656022bccf930170fe8e"
+    },
+    {
+      "path": "development/capture.gd",
+      "bytes": 1317,
+      "sha256": "237dfe5777582f4e1fc7ea731bcc6a3071f90394b879144837f8eb851283c2d4"
+    },
+    {
+      "path": "development/checks/baseline-tdyzu8lx/engine.log",
+      "bytes": 488,
+      "sha256": "786be7a6be7efad96f12e5a4666c18fb8fcb33196ae57c95f11140aa9f1c1996"
+    },
+    {
+      "path": "development/checks/baseline-tdyzu8lx/report.json",
+      "bytes": 1229,
+      "sha256": "24c242d91b3767e72ca104be97c3b0d24f8d5c0ca672e2b78ef0c3f12b892a97"
+    },
+    {
+      "path": "development/checks/draft-01-b_qielen/engine.log",
+      "bytes": 464,
+      "sha256": "f73dee7c44b3007aeb956aaec0b994c9c530d7194ca8e0b6687b9558b68f849a"
+    },
+    {
+      "path": "development/checks/draft-01-b_qielen/report.json",
+      "bytes": 1940,
+      "sha256": "4aaaa3b372bc4cacb9ccbfd814aea8de657bbe67f86c276d38a6f4de5e3b59fe"
+    },
+    {
+      "path": "development/checks/draft-02-zul12k2n/engine.log",
+      "bytes": 519,
+      "sha256": "d1edb3ece8a950d1b13c46fdde7acea4fef45f469e9cf1347680d24fa9a3b9f6"
+    },
+    {
+      "path": "development/checks/draft-02-zul12k2n/report.json",
+      "bytes": 1997,
+      "sha256": "f0c79a19e3ee2aa17049e1687733263bc30cf8dd2c097041a73d7bf8578add69"
+    },
+    {
+      "path": "development/checks/draft-03-jwtqvbrj/engine.log",
+      "bytes": 9315,
+      "sha256": "40603a0708060a0631869132bf4422da050e14efa03f56173aaa9d2926cf693a"
+    },
+    {
+      "path": "development/checks/draft-03-jwtqvbrj/report.json",
+      "bytes": 10050,
+      "sha256": "7485c297f8c7687245269840b4d82717de8f630d92b7b33a4492fe4c4165c2e3"
+    },
+    {
+      "path": "development/checks/draft-04-f9haaalp/engine.log",
+      "bytes": 5412,
+      "sha256": "6e2b5db5685556d6912ba4192ccd926f0a117b0f5aa38c3bc99c6407f7e74d7f"
+    },
+    {
+      "path": "development/checks/draft-04-f9haaalp/report.json",
+      "bytes": 1229,
+      "sha256": "fef5607a971741feb8f4ad752bde02c59c01a4fc3ff6a1c46f64eefb326139a2"
+    },
+    {
+      "path": "development/checks/draft-05-lt7g9vfe/engine.log",
+      "bytes": 5506,
+      "sha256": "c9307bf52fc36fc237ff38e167fe36870c3448bf6841e0e362d35e2d9a9c409a"
+    },
+    {
+      "path": "development/checks/draft-05-lt7g9vfe/report.json",
+      "bytes": 1249,
+      "sha256": "60b50be96cd01a659a371b462099492aa3fa9d2b11b03e62859d29c4b771b619"
+    },
+    {
+      "path": "development/flight_session.before.gd",
+      "bytes": 277660,
+      "sha256": "9b6de6144a1af3c8bf042e04173b3485196954da94b40fdd73c9f309802d0802"
+    },
+    {
+      "path": "development/flight_session.gd",
+      "bytes": 273730,
+      "sha256": "cb37851164451a4f04d019775ebce64041c59bfe55f03786821b983f8cc1a64b"
+    },
+    {
+      "path": "development/promote.py",
+      "bytes": 1686,
+      "sha256": "dd7b37898d21f98ae8d9af0fe517323ecc9dcdf473918c4021b34454a6b55228"
+    },
+    {
+      "path": "development/promotion.json",
+      "bytes": 321,
+      "sha256": "7c12453c4aa9125d96900bd9d2ee992cae0a43cee0473ec7f69ca4e716684953"
+    },
+    {
+      "path": "development/source-hashes.json",
+      "bytes": 166,
+      "sha256": "336d4dcf76271a9518f6d76c736c794b03be41d76d98d579cad327523a7a75b5"
+    },
+    {
+      "path": "development/test_weather_publication.gd",
+      "bytes": 8720,
+      "sha256": "11bb295e870e1f393ba74db4cdb69c6e1d80e94703beb12c5975821362b18a12"
+    },
+    {
+      "path": "origins.json",
+      "bytes": 6629,
+      "sha256": "2bdf20cc108345513d029563f102b3f1515a9624636a962ba20b465152c27c07"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3101,
+      "sha256": "b75c9cafdf5bb4eb266272dc6deed361f684df88d52d99f5e12c28661f431ca1"
+    },
+    {
+      "path": "recordings/accepted-pending.orfl",
+      "bytes": 29552,
+      "sha256": "e8b6d70edf38593f06f89f0fbd3fe9167884e99e5a0867732f9c2555ac638248"
+    },
+    {
+      "path": "recordings/observer-fault-mutation.orfl",
+      "bytes": 29552,
+      "sha256": "a94789c8ecf8c2796bf4d95ca978c6aad94fd8c9310a8fe7be4fa9ae0d603e74"
+    },
+    {
+      "path": "recordings/observer-mass.orfl",
+      "bytes": 29552,
+      "sha256": "e8b6d70edf38593f06f89f0fbd3fe9167884e99e5a0867732f9c2555ac638248"
+    },
+    {
+      "path": "recordings/observer-model.orfl",
+      "bytes": 29552,
+      "sha256": "e8b6d70edf38593f06f89f0fbd3fe9167884e99e5a0867732f9c2555ac638248"
+    },
+    {
+      "path": "recordings/observer-pause-resume.orfl",
+      "bytes": 29552,
+      "sha256": "a94789c8ecf8c2796bf4d95ca978c6aad94fd8c9310a8fe7be4fa9ae0d603e74"
+    },
+    {
+      "path": "recordings/observer-pause-step.orfl",
+      "bytes": 29552,
+      "sha256": "a94789c8ecf8c2796bf4d95ca978c6aad94fd8c9310a8fe7be4fa9ae0d603e74"
+    },
+    {
+      "path": "recordings/observer-reset.orfl",
+      "bytes": 29552,
+      "sha256": "a94789c8ecf8c2796bf4d95ca978c6aad94fd8c9310a8fe7be4fa9ae0d603e74"
+    },
+    {
+      "path": "recordings/observer-restore.orfl",
+      "bytes": 29552,
+      "sha256": "a94789c8ecf8c2796bf4d95ca978c6aad94fd8c9310a8fe7be4fa9ae0d603e74"
+    },
+    {
+      "path": "recordings/observer-shaft.orfl",
+      "bytes": 29552,
+      "sha256": "a94789c8ecf8c2796bf4d95ca978c6aad94fd8c9310a8fe7be4fa9ae0d603e74"
+    },
+    {
+      "path": "recordings/observer-state.orfl",
+      "bytes": 29552,
+      "sha256": "e8b6d70edf38593f06f89f0fbd3fe9167884e99e5a0867732f9c2555ac638248"
+    },
+    {
+      "path": "recordings/observer-step.orfl",
+      "bytes": 29552,
+      "sha256": "e8b6d70edf38593f06f89f0fbd3fe9167884e99e5a0867732f9c2555ac638248"
+    },
+    {
+      "path": "recordings/observer-weather.orfl",
+      "bytes": 29552,
+      "sha256": "a94789c8ecf8c2796bf4d95ca978c6aad94fd8c9310a8fe7be4fa9ae0d603e74"
+    },
+    {
+      "path": "recordings/refusal-false.orfl",
+      "bytes": 29496,
+      "sha256": "57449aa8e08af1b98ccdc4b38467b6062eea0216577376b1ca888941542e6f3c"
+    },
+    {
+      "path": "recordings/refusal-true.orfl",
+      "bytes": 29496,
+      "sha256": "6e953e9c6243c57f88d59ff17236f9cc83497bdbd74b529ff6fd3f08b210f046"
+    },
+    {
+      "path": "recordings/validator-reentry.orfl",
+      "bytes": 29648,
+      "sha256": "d927d3670af287de37852b4c767c97717cae7b10baca9c460cf09505826d879c"
+    },
+    {
+      "path": "report.json",
+      "bytes": 1427,
+      "sha256": "292eb6fffca6afcffe1bfa28cc9938162e2bb5fe0a484f47a7a346e533640c5f"
+    },
+    {
+      "path": "review/checks/consumer-combinations-29uvcbg9/engine.log",
+      "bytes": 1287,
+      "sha256": "bb3405be0c3c48658b6a38df1a32b1f9476364ed96b969f2a2e21c17a09b601e"
+    },
+    {
+      "path": "review/checks/consumer-combinations-29uvcbg9/report.json",
+      "bytes": 1245,
+      "sha256": "21cfa6bed874b753afb8c720b144e0f0b55cad856af5c5b71c3889892bfce06d"
+    },
+    {
+      "path": "review/report.json",
+      "bytes": 1660,
+      "sha256": "711ce7936e32962368b8f56dfcd99a29ab8d552dc44e544dbb3666b565131f2f"
+    },
+    {
+      "path": "review/review_probe.gd",
+      "bytes": 3689,
+      "sha256": "1933a55c8eeebe4ec63027819ee3260253b8f14a979c26218400274e2d521ad8"
+    },
+    {
+      "path": "source/app/physics/wind_config.gd",
+      "bytes": 14363,
+      "sha256": "8abf4d7247f92369db79f866b30c4add37dcc53173d5991ae88c5ae498aa31a9"
+    },
+    {
+      "path": "source/app/physics/wind_field.gd",
+      "bytes": 7044,
+      "sha256": "949fbd5c5927df4f5213e08b3a72f164c7bb02b9c038601ff4a5f152c968ef79"
+    },
+    {
+      "path": "source/app/sim/flight_log.gd",
+      "bytes": 12975,
+      "sha256": "0646b053bae4a788883a7d13833ef24f3b43d8d30c07ea6edfc4715b038afaba"
+    },
+    {
+      "path": "source/app/sim/flight_session.gd",
+      "bytes": 273809,
+      "sha256": "dd8278224b72e52dac03b37545d48c9e798d653f9ea11496d06c786c7061b345"
+    },
+    {
+      "path": "source/app/sim/simulation.gd",
+      "bytes": 54898,
+      "sha256": "4b7ed9d9ea8a4bf3349b029505add370d15eed246eb4263b30d44e7f5455b490"
+    },
+    {
+      "path": "source/app/tests/test_flight_audio_accepted.gd",
+      "bytes": 13464,
+      "sha256": "bb02dc9e6272a72dcae1a086292379a6c236b462ed5f46a121459e2aa5a82659"
+    },
+    {
+      "path": "source/app/tests/test_flight_log.gd",
+      "bytes": 6810,
+      "sha256": "e5d5aa102039487a16ed9e68e809d58d6cc1d4830af6f0a2a276678560f2fea6"
+    },
+    {
+      "path": "source/app/tests/test_flight_reset_transaction.gd",
+      "bytes": 11031,
+      "sha256": "f69f28d57caae76655fdcf0d29554dbe494a18d62df00846bb38e7a3d6a06986"
+    },
+    {
+      "path": "source/app/tests/test_restore_publication.gd",
+      "bytes": 13838,
+      "sha256": "d504edcaf43ab0993d362470991c847f4245333ecefb36406d53ee4ba6f6b021"
+    },
+    {
+      "path": "source/app/tests/test_spatial_weather_session.gd",
+      "bytes": 14829,
+      "sha256": "35842c01f336af0c05e7b0c9aee5bf1c87ef7413ede0bde840caebd5eff9b98e"
+    },
+    {
+      "path": "source/app/tests/test_weather_publication.gd",
+      "bytes": 8945,
+      "sha256": "d702e3020475e7e3ced239b15ca7fdbd6bb0681ea58a79e4d0e20200e5e561c7"
+    },
+    {
+      "path": "source/app/tests/test_wind_flight.gd",
+      "bytes": 24837,
+      "sha256": "730a2f291d89f2b4949d6234c31f027e2139d5847e7715045734e1ba47e07911"
+    }
+  ],
+  "excludes": [
+    "manifest.json (self)",
+    "transport.json (post-verification)"
+  ]
+}

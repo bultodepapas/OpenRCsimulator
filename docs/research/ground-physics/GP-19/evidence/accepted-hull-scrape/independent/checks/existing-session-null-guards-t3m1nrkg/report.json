@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6252fecb-7545-4cd2-8f35-8ad6d2630bed",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-hull-scrape/draft/test_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T19:40:07.483854+00:00",
+  "label": "existing-session-null-guards",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-scrape-independent-review\\checks\\existing-session-null-guards-t3m1nrkg\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-scrape-independent-review\\checks\\existing-session-null-guards-t3m1nrkg\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Hull scrape Session: 44 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.656,
+  "log_bytes": 716,
+  "log_sha256": "3ff060cbf6da461437ab7e9f08939c7d11344a8fc85fa836df4465020871b9bc"
+}

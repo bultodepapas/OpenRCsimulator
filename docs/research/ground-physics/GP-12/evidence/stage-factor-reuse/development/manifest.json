@@ -1,0 +1,5 @@
+{
+  "base_sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+  "candidate_sha256": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+  "scope": "reuse only current assembled no-hold factor; no cache, law/receipt or matrix arithmetic changes"
+}

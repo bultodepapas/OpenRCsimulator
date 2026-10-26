@@ -1,0 +1,155 @@
+[
+	{
+		"case": "light",
+		"continued_after_failure": true,
+		"events": [],
+		"loss_j": 0.0,
+		"modes": [
+			0,
+			-1
+		],
+		"tick": 48
+	},
+	{
+		"case": "heavy",
+		"continued_after_failure": true,
+		"events": [
+			{
+				"component_id": "assembly",
+				"continuation": "authored_weaker_fixed_hub_compliance",
+				"criterion": "declared_normal_capacity_exceeded",
+				"event_id": "gd1:81a209f2688da8cae4c3945a5e42df22aec09fb1c2f4fb752f58fec8a683e7e8",
+				"generation_id": "drop-fixture",
+				"law": "experimental-brittle-normal-capacity-attached-v1",
+				"loss_provenance": "elastic_normal_stop_and_anchor_potential_before_minus_after_at_same_body_state",
+				"normal_failure_force_n": 100.0,
+				"normal_load_n": 104.33921881209913,
+				"potential_after_j": 0.05190063809746036,
+				"potential_before_j": 0.5190063809746036,
+				"profile_identity": "b98f068374796d9c3373de1005c3fe2c8c88a4c8db8301376c8f4b13f8f4cb21",
+				"qualification": "experimental_unvalidated",
+				"response_identity": "5c5dd7a19dd391d7aff5731b9d6fe8e5561374a95449eaea1f7054aae9419da3",
+				"response_law": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"sampling": "accepted_boundary_only_not_interval_peak",
+				"support_ids": [
+					"contact_main_left",
+					"contact_main_right",
+					"contact_tail"
+				],
+				"terminal": false,
+				"tick": 5,
+				"time_s": 0.020833333333333332,
+				"transition_loss_j": 0.46710574287714324,
+				"type": "gear_failure"
+			}
+		],
+		"loss_j": 0.46710574287714324,
+		"modes": [
+			1,
+			5
+		],
+		"tick": 48
+	},
+	{
+		"case": "hard",
+		"continued_after_failure": true,
+		"events": [
+			{
+				"component_id": "assembly",
+				"continuation": "authored_weaker_fixed_hub_compliance",
+				"criterion": "declared_normal_capacity_exceeded",
+				"event_id": "gd1:1bcaa9dd4fc1a7f0bf74d49e9a6dd6d60ba570873a7035c1827d51916de408a4",
+				"generation_id": "drop-fixture",
+				"law": "experimental-brittle-normal-capacity-attached-v1",
+				"loss_provenance": "elastic_normal_stop_and_anchor_potential_before_minus_after_at_same_body_state",
+				"normal_failure_force_n": 100.0,
+				"normal_load_n": 127.17989186224403,
+				"potential_after_j": 0.012631873435019026,
+				"potential_before_j": 0.12631873435019025,
+				"profile_identity": "b98f068374796d9c3373de1005c3fe2c8c88a4c8db8301376c8f4b13f8f4cb21",
+				"qualification": "experimental_unvalidated",
+				"response_identity": "5c5dd7a19dd391d7aff5731b9d6fe8e5561374a95449eaea1f7054aae9419da3",
+				"response_law": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"sampling": "accepted_boundary_only_not_interval_peak",
+				"support_ids": [
+					"contact_main_left",
+					"contact_main_right",
+					"contact_tail"
+				],
+				"terminal": false,
+				"tick": 1,
+				"time_s": 0.004166666666666667,
+				"transition_loss_j": 0.11368686091517123,
+				"type": "gear_failure"
+			}
+		],
+		"loss_j": 0.11368686091517123,
+		"modes": [
+			1,
+			1
+		],
+		"tick": 48
+	},
+	{
+		"case": "healthy-rewind",
+		"meaning": "kernel source identity repeats; service checkpoint branch must suppress credit, not randomize source identity",
+		"raw_event_ids": [
+			"gd1:81a209f2688da8cae4c3945a5e42df22aec09fb1c2f4fb752f58fec8a683e7e8",
+			"gd1:81a209f2688da8cae4c3945a5e42df22aec09fb1c2f4fb752f58fec8a683e7e8"
+		],
+		"same_checkpoint": true
+	},
+	{
+		"accepted_tick": 0,
+		"case": "rejected-final-projection",
+		"event_count": 0,
+		"failure_loss_j": 0.0,
+		"fault": "step rejected: continuous auxiliary projection is nonfinite or malformed",
+		"modes": [
+			0,
+			-1
+		],
+		"original_checkpoint_bytes": 924
+	},
+	{
+		"case": "asymmetric-direct-boundary",
+		"events": [
+			{
+				"component_id": "left",
+				"continuation": "authored_weaker_fixed_hub_compliance",
+				"criterion": "declared_normal_capacity_exceeded",
+				"event_id": "gd1:9b19a2a05a9672811a4af9d6ecd58a71fda6acc853ab93a5aeb2a91e559c61b7",
+				"generation_id": "response-fixture",
+				"law": "experimental-brittle-normal-capacity-attached-v1",
+				"loss_provenance": "elastic_normal_stop_and_anchor_potential_before_minus_after_at_same_body_state",
+				"normal_failure_force_n": 20.0,
+				"normal_load_n": 45.0,
+				"potential_after_j": 0.0675,
+				"potential_before_j": 0.6749999999999999,
+				"profile_identity": "aaad4803e82030efad2ea04cdc9fbbee1fecfea9725a7d57090f87b582caca62",
+				"qualification": "experimental_unvalidated",
+				"response_identity": "afe9f7a2a90dd6aa602692c838bd6fd2b66b7f799a1abff2ebc7e9d572ab8b82",
+				"response_law": "fixed-hub-weaker-compliance-attached-failure-v1",
+				"sampling": "accepted_boundary_only_not_interval_peak",
+				"support_ids": [
+					"contact_main_left"
+				],
+				"terminal": false,
+				"tick": 1,
+				"time_s": 0.01,
+				"transition_loss_j": 0.6074999999999999,
+				"type": "gear_failure"
+			}
+		],
+		"kernel_committed": false,
+		"meaning": "physical direct boundary response only; no accepted dynamic publication claim",
+		"modes": [
+			1,
+			1,
+			0,
+			-1
+		],
+		"normal_force_z_n": -94.49999999999999,
+		"roll_moment_nm": -14.174999999999999
+	}
+]

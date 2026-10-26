@@ -52,7 +52,7 @@ These receipts are unit evidence for that candidate run, not complete applicatio
 
 ## Remaining scope
 
-The original GP-14a slice did not include the shared subscriber bus; GP-14b below adds its endpoint-observation contract and eight producers. Physical component-damage/gear-failure producers, nonpersistent semantic observers for technical routes, comprehensive per-accident archive, full physical observation identity/evidence envelope, mechanical/damage causality, general taxi-incident grouping and physically calibrated damage remain open. Neither slice qualifies physical realism, audibility, hardware performance or rendered presentation.
+The original GP-14a slice did not include the shared subscriber bus; GP-14b below adds its endpoint-observation contract and eight producers. GP-16c below adds qualified attached-component failure producers and a nonpersistent kernel fixture through the existing owner. General technical-route adapters, comprehensive per-accident archive, the full physical observation envelope, mechanical/damage causality, general taxi-incident grouping and physically calibrated damage remain open. Neither slice qualifies physical realism, audibility, hardware performance or rendered presentation.
 
 ## Integrated receipts
 
@@ -64,7 +64,7 @@ The [55-check pure suite](../GP-08/evidence/integration/test_ground_accidents/en
 
 ## Shared semantic events (GP-14b)
 
-2026-10-26. [flight_event.gd](../../../../app/statistics/flight_event.gd) defines `openrc-ground-flight-event` v1 with a closed vocabulary, generation/tick/sequence identity, flight/contact-episode/accident IDs, explicit coverage, unknown severity/cause and continuation independent of crash classification. The **existing** detector supplies eight event types; there is no second takeoff/landing state machine. `COMPONENT_DAMAGE` and `GEAR_FAILURE` are reserved names, not implemented physical emitters.
+2026-10-26. [flight_event.gd](../../../../app/statistics/flight_event.gd) defines `openrc-ground-flight-event` v1 with a closed vocabulary, generation/tick/sequence identity, flight/contact-episode/accident IDs, explicit coverage, unknown severity/cause and continuation independent of crash classification. The first shared-event slice supplies eight event types; there is no second takeoff/landing state machine. GP-16c below adds the two physical failure types through that same detector for a qualified attached-support producer; absent producers retain the original behavior.
 
 | Producer | Behavior |
 | --- | --- |
@@ -144,8 +144,8 @@ discarded harness parse failure and seven current production checks: **3882 pass
 zero engine diagnostics**. The focused suite has 180 checks, including the actual
 writer/footer replay and bounded fleet consumer. No force law or checkpoint schema
 changed. GP-14d covered the **prepared runway route only**. GP-14e below extends
-the same owner to other start/reload routes; restore/configuration publication
-remains open.
+the same owner to other start/reload routes; GP-14f below covers restore.
+Configuration publication remains open.
 It does not activate advanced aircraft ground physics or qualify physical behavior,
 native audio, whole-suite coverage or target-host performance.
 
@@ -177,6 +177,126 @@ warnings-as-errors and zero engine diagnostics. The new 148-check suite covers r
 reentry, failure/RNG preservation, actual recorder footers, accepted observer faults,
 X8 hand launch and exact continuation. Two old failed-reload fixtures now inject a
 precommit candidate refusal; their original invariants remain unchanged. Prior
-cohorts remain historical. Restore/weather/shaft publication migration, full-suite,
+cohorts remain historical. GP-14f below covers restore; weather/shaft configuration
+publication migration, full-suite,
 physical and performance qualification remain open; no force law, checkpoint schema,
 stock hull role or advanced ground activation changed.
+
+
+## Accepted restore publication (GP-14f)
+
+2026-10-26. Restore now reuses the same Session transaction and generic guarded
+publication owner. The existing kernel restore parser accepts and installs the
+physical frame before the optional synchronous notification, which precedes the
+automatic pause and emits no stepped sample. The old closing checkpoint/tick
+closes the previous writer without exposing the restored clock. Empty hooks keep
+the frozen legacy bytes and pause order.
+
+Before-commit refusal preserves the original protected kernel/model, declared
+owner context, commands, holds, detached resource state and open recorder without
+notifications or generation changes. An accepted observer fault cannot roll back:
+the accepted frame remains paused/faulted, including protected repair after pause
+or fault listeners. Paused replay, disabled live input, unknown launch provenance
+and the existing single checkpoint-restore bookkeeping boundary remain; the
+statistics service retains its noncredit replay branch.
+
+The [immutable cohort](evidence/restore-publication/README.md) retains the original
+seven-assertion defect/control reproduction, malformed-selector engine error,
+failed cache/import/marker receipts, frozen default-restore digest and **4398 passing
+production checks** across ten scripts, all complete with exact markers,
+warnings-as-errors and zero diagnostics. The new focused suite has 137 checks,
+including exact old recording replay and detached weather/failure continuation.
+No force law, serializer or checkpoint schema changed. Weather/shaft configuration
+setters, whole-suite, physical and performance qualification remain open.
+
+
+## Refused field replacement (GP-14g)
+
+2026-10-26. A failed `set_field` replacement now retains an already successfully
+installed field, including physical tables, registry/hull binding, checkpoint,
+model, commands, holds and open recorder. The request returns false and reports
+`field_update_error` without setting the active blocking `surface_error` or
+emitting reset/pause/sample/statistics notifications. An explicit private marker
+recognizes valid empty descriptions/IDs; no checkpoint state is added. First
+invalid installation remains fail-closed; successful correction clears both errors.
+
+The [immutable cohort](evidence/field-refusal/README.md) retains the original
+15-assertion defect/control reproduction and a rejected completion-marker command,
+followed by **3409 passing production checks** across four suites with exact
+markers, warnings-as-errors and zero diagnostics. The focused 70 checks include
+held/moving refusals, actual recorder footers and 32 paired continuation ticks per
+case. Accepted installation keeps its existing no-reset semantics; this slice
+does not qualify live changed-field recording identity. Weather/shaft pending
+configuration migration and physical/performance qualification remain open.
+
+## Accepted pending-weather selection (GP-14h)
+
+2026-10-26. `setup_weather` now uses the existing Session transaction and guarded
+publication helper. It installs validated pending weather before notifying
+observers, closes the old recording with its detached previous checkpoint, then
+pauses without a tick or statistics generation. The separate `reset()` call still
+owns the physical start and readiness. Pre-setup selection has no installed flight
+to notify. Rejected selection preserves the existing flight and recording.
+
+The [cohort](evidence/weather-publication/README.md) contains **3915 passing
+production checks** across seven scripts and **19 independent review checks**.
+Four frozen 25-endpoint traces preserve motion exactly; actual recording footers,
+successive pending selections, explicit-reset recovery, and callback mutation or
+reentry are covered. Accepted observer faults retain the pending selection and
+protected old frame, paused with a fault. Protection covers the declared kernel
+state/model and Session transition entry points, not arbitrary object internals.
+Shaft configuration publication, live changed-field recording identity and the
+full physical/performance gates remain open.
+
+
+## Accepted component-failure events (GP-16c)
+
+2026-10-26. The existing attached-response owner projects accepted component
+modes/losses/source IDs into an optional strict observation; the adapter pins its
+binding and generation. The existing classifier's accident helper alone opens
+CRASH/M7 and emits COMPONENT_DAMAGE plus GEAR_FAILURE per newly failed component.
+Later components share its accident without another CRASH; terminal escalation
+retains one M7. Physics continues without calling the Session crash/pause path.
+
+FlightEvent v2 carries closed factual evidence and force/potential/loss quantities
+for this qualified pair; v1 bytes stay unchanged. Material, severity and root cause
+remain unknown. Qualified CRASH coverage links source evidence. Rules v3 versions
+the expanded observed M7 scope; snapshot v1–v3 and the existing noncredit replay
+branch remain. The same frozen service bus and bounded timeline/M7 detail are
+used; a full general accident archive remains open.
+
+The [sealed cohort](evidence/component-failure-events/README.md) has 332 final-source
+affected checks and 616 preceding-source regressions, each with exact source scope,
+plus original 43-check bridge-gap evidence and rejected draft/harness receipts.
+Its 197-check final integration retains actual heavy/hard source/shared batches,
+deterministic rewind IDs, failure silence, later components and an asymmetric
+first accepted boundary whose rolled continuation explicitly refuses. Stock
+FlightSession has no producer installed: this is no stock activation, calibrated
+strength, universal overload timing, moving collapse or performance qualification.
+
+## Accepted pending-shaft selection (GP-14i)
+
+2026-10-26. `FlightSession.setup_shaft_integrator` now uses the guarded pending
+configuration boundary. It captures the old checkpoint before changing mode,
+prepares existing propulsion callbacks, then installs the pending choice before
+notifying observers. `_install_continuous_callbacks` preserves callback ordering;
+the explicit reset still constructs the physical layout and credits a generation.
+
+Preparation refusal preserves the old owner and recording without notification.
+Accepted observer faults retain the choice, repair protected kernel state and
+pause. Same-mode selection is silent; pre-setup selection has no installed-flight
+notification. Finite propeller sources still reject split mode. Pending selections
+cannot advance or serialize a ready flight. Repeated choices expose an unavailable
+second closing checkpoint without altering the first recording footer. Arbitrary
+Session-internal mutation is outside this bounded transaction contract.
+
+The [4,017-check cohort](evidence/shaft-publication/README.md) includes frozen
+25-endpoint split/coupled traces, actual ORFL footers, reset recovery, callback
+mutation/reentry and existing propulsion, weather, reset, log and audio regressions.
+Independent source/receipt review added no test count. Live changed-field recording
+identity, stock advanced contact and full physical/performance qualification remain
+open.
+
+## X8 intended-support qualification
+
+The [X8 rest-geometry audit](evidence/x8-rest-geometry/README.md) found that the existing lower-hull support facet includes the motor mount and an elevon, with only a 2.445 mm CG margin. This rigid geometric diagnostic is not a compliant landing test. Stock intended-support authoring remains gated on resolving those roles and validating continuation; no benign engine/elevon contact is inferred.

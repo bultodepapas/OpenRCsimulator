@@ -1,11 +1,13 @@
 extends SceneTree
 
 const Rig := preload("res://render/lighting/aircraft_lighting_rig_3d.gd")
+const LightingVfx := preload("res://render/lighting/lighting_vfx.gd")
 const Profile := preload("res://render/lighting/lighting_profile.gd")
 const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
 const SceneBudget := preload("res://render/lighting/lighting_scene_budget.gd")
 const Magnifier := preload("res://render/camera/magnifier.gd")
+const ShaderClock := preload("res://render/shader_clock.gd")
 
 var _checks := 0
 var _failures := 0
@@ -19,9 +21,14 @@ func _run() -> void:
 	var saved_quality: String = LightingPolicy.quality
 	var saved_reduced_flashes: bool = LightingPolicy.reduced_flashes
 	var saved_show_vfx: bool = LightingPolicy.show_vfx
+	var saved_shader_clock: float = ShaderClock.last_clock
+	var saved_shader_wind: Vector3 = ShaderClock.last_wind
 	LightingPolicy.quality = "high"
 	LightingPolicy.reduced_flashes = false
 	LightingPolicy.show_vfx = true
+	# NightKit compiles RGB shaders during aircraft attachment; use its owner before that point.
+	ShaderClock.register()
+	ShaderClock.update(saved_shader_clock, saved_shader_wind)
 
 	var world := World3D.new()
 	var viewport := SubViewport.new()
@@ -54,6 +61,15 @@ func _run() -> void:
 	var vfx: Variant = rig._vfx
 	var spark_pool: Dictionary = _pool_for_kind(vfx, "spark")
 	var trail_pool: Dictionary = _pool_for_kind(vfx, "trail")
+	var spark_material: ShaderMaterial = spark_pool.get("material")
+	var trail_material: ShaderMaterial = trail_pool.get("material")
+	_check("only the ribbon material receives the per-view width target and world cap",
+		absf(float(trail_material.get_shader_parameter("ribbon_min_width_px")) - float(vfx.TRAIL_MIN_WIDTH_PX)) < 0.000001
+			and absf(float(trail_material.get_shader_parameter("ribbon_max_width_m")) - float(vfx.TRAIL_MAX_WIDTH_M)) < 0.000001
+			and float(trail_material.get_shader_parameter("radial_shape")) == 0.0)
+	_check("spark VFX keeps its radial shape and original radiance material path",
+		float(spark_material.get_shader_parameter("radial_shape")) == 1.0
+			and float(spark_material.get_shader_parameter("radiance")) == 2.4)
 	_check("idle LOD rig keeps its configured CPU pools without GPU instance buffers",
 		int(vfx.budget_info().effects_cpu_allocated) == 2
 			and int(vfx.budget_info().gpu_anchors_allocated) == 0
@@ -128,6 +144,7 @@ func _run() -> void:
 	rig.advance(1.05, _telemetry(10.0, 0.5))
 	aircraft.position.x = 2.0
 	rig.advance(1.15, _telemetry(10.0, 0.5))
+	aircraft.position.x = 2.2
 	rig.advance(1.16, _telemetry(10.0, 0.5))
 	var trail_samples: Array = trail_pool.get("samples", [])
 	var trail_instance: MultiMeshInstance3D = trail_pool.get("instance")
@@ -141,6 +158,80 @@ func _run() -> void:
 		int(vfx.budget_info().trails_allocated) == trail_instance.multimesh.instance_count
 			and int(vfx.budget_info().trails_cpu_live) == trail_samples.size()
 			and int(vfx.budget_info().gpu_anchors_allocated) == 1)
+	var live_head_position := _trail_world_endpoint(vfx, trail_pool, trail_instance.multimesh.visible_instance_count - 1)
+	var trail_anchor: Node3D = trail_pool.get("anchor")
+	var live_segment_transform: Transform3D = trail_pool.visual_transforms[-1]
+	_check("ribbon CPU transform preserves the 3.5cm source width for per-view shader scaling",
+		absf(live_segment_transform.basis.y.length() - float(vfx.TRAIL_BASE_WIDTH_M)) < 0.000001)
+	_check("active trail's newest segment reaches the live anchor between samples",
+		trail_instance.multimesh.visible_instance_count > 0
+			and live_head_position.distance_to(trail_anchor.global_position) < 0.0001,
+		"endpoint=%s anchor=%s" % [str(live_head_position), str(trail_anchor.global_position)])
+	var samples_before_pause: Array = trail_samples.duplicate(true)
+	var paused_telemetry := _telemetry(10.0, 0.5)
+	paused_telemetry["effects_allowed"] = false
+	rig.advance(1.16, paused_telemetry)
+	_check("same-time pause holds trail samples and the terminal world endpoint",
+		trail_pool.samples == samples_before_pause
+			and _trail_world_endpoint(vfx, trail_pool, trail_instance.multimesh.visible_instance_count - 1)
+			.distance_to(live_head_position) < 0.0001)
+	aircraft.position.x += 0.5
+	rig.advance(1.17, paused_telemetry)
+	var paused_endpoint := _trail_world_endpoint(vfx, trail_pool, trail_instance.multimesh.visible_instance_count - 1)
+	_check("inactive trail retains its last world head without following the moved aircraft",
+		trail_pool.samples == samples_before_pause and paused_endpoint.distance_to(live_head_position) < 0.0001
+			and paused_endpoint.distance_to(trail_anchor.global_position) > 0.1)
+	rig.advance(1.17, paused_telemetry)
+	_check("repeated pause keeps the displayed terminal endpoint fixed",
+		trail_pool.samples == samples_before_pause
+			and _trail_world_endpoint(vfx, trail_pool, trail_instance.multimesh.visible_instance_count - 1)
+			.distance_to(paused_endpoint) < 0.0001)
+	var active_trail_telemetry := _telemetry(10.0, 0.5)
+	rig.advance(1.18, active_trail_telemetry)
+	aircraft.position.x += 6.0
+	rig.advance(1.181, active_trail_telemetry)
+	_check("mid-interval teleport resets trail history and does not draw a bridge",
+		trail_pool.samples.size() == 1 and trail_pool.samples[0].position.distance_to(trail_anchor.global_position) < 0.0001
+			and trail_instance.multimesh.visible_instance_count == 0
+			and trail_pool.visual_transforms.is_empty())
+	aircraft.position.x += 0.2
+	rig.advance(1.182, active_trail_telemetry)
+	_check("post-teleport live head resumes inside the next sampling interval",
+		trail_pool.samples.size() == 1 and trail_pool.visual_transforms.size() == 1
+			and _trail_world_endpoint(vfx, trail_pool, 0).distance_to(trail_anchor.global_position) < 0.0001)
+	rig.advance(1.182, active_trail_telemetry)
+	_check("allocated trail buffer publishes the resumed live-head segment",
+		trail_instance.multimesh.visible_instance_count == 1
+			and _trail_world_endpoint(vfx, trail_pool, 0).distance_to(trail_anchor.global_position) < 0.0001)
+	vfx._sample_trail(trail_pool, 1.183, Vector3(NAN, 0.0, 0.0))
+	vfx._update_trail(trail_pool, 1.183, 1.0, 1.0)
+	_check("non-finite mid-interval sample clears trail history, head metadata, and visuals",
+		trail_pool.samples.is_empty() and not bool(trail_pool.get("trail_head_valid", true))
+			and trail_pool.visual_transforms.is_empty() and trail_instance.multimesh.visible_instance_count == 0)
+	var capacity_samples: Array = []
+	var test_life := float(trail_pool.get("lifetime_s", 0.6))
+	for index in LightingVfx.MAX_TRAIL_SAMPLES:
+		capacity_samples.append({"time": 3.0 - test_life * 0.5 + test_life * 0.25 * float(index) / 63.0,
+			"position": Vector3(float(index) * 0.1, 0.0, 0.0)})
+	trail_pool["samples"] = capacity_samples
+	var last_capacity_sample: Dictionary = capacity_samples[-1]
+	var stationary_head: Vector3 = last_capacity_sample.get("position", Vector3.ZERO)
+	vfx._update_trail(trail_pool, 3.0, 1.0, 1.0, stationary_head, true)
+	_check("stationary active head keeps all 63 valid history segments",
+		trail_pool.visual_transforms.size() == LightingVfx.MAX_TRAIL_SEGMENTS
+			and _trail_world_endpoint(vfx, trail_pool, 0, false).distance_to(Vector3.ZERO) < 0.0001
+			and _trail_world_endpoint(vfx, trail_pool, trail_pool.visual_transforms.size() - 1).distance_to(stationary_head) < 0.0001)
+	_check("trail culling bounds enclose the shader's maximum world width",
+		trail_pool.visual_bounds.size.z >= float(vfx.TRAIL_MAX_WIDTH_M) - 0.000001
+			and trail_instance.custom_aabb.size.z >= float(vfx.TRAIL_MAX_WIDTH_M))
+	var extended_head := stationary_head + Vector3.RIGHT * 0.1
+	vfx._update_trail(trail_pool, 3.0, 1.0, 1.0, extended_head, true)
+	_check("64 history plus live-head segments keep the newest 63 within the fixed render cap",
+		trail_pool.visual_transforms.size() == LightingVfx.MAX_TRAIL_SEGMENTS
+			and trail_instance.multimesh.instance_count == LightingVfx.MAX_TRAIL_SEGMENTS
+			and _trail_world_endpoint(vfx, trail_pool, 0, false).distance_to(Vector3(0.1, 0.0, 0.0)) < 0.0001
+			and _trail_world_endpoint(vfx, trail_pool, trail_pool.visual_transforms.size() - 1).distance_to(extended_head) < 0.0001)
+	vfx.reset()
 
 	rig.advance(1.6, _telemetry(10.0, 1.0))
 	rig.advance(1.61, _telemetry(10.0, 1.0))
@@ -282,9 +373,12 @@ func _run() -> void:
 
 	rig.dispose()
 	rig.free()
+	_test_missing_anchors(stage, profile)
+	await _test_lost_kit(stage, profile)
 	viewport.free()
 	world = null
 	SceneBudget._prune_world_registry()
+	ShaderClock.update(saved_shader_clock, saved_shader_wind)
 	LightingPolicy.quality = saved_quality
 	LightingPolicy.reduced_flashes = saved_reduced_flashes
 	LightingPolicy.show_vfx = saved_show_vfx
@@ -366,8 +460,121 @@ func _telemetry(distance_m: float, maneuver: float) -> Dictionary:
 	return {"distance_m": distance_m, "maneuver": maneuver, "effects_allowed": true, "exposure": 1.0}
 
 
+func _trail_world_endpoint(vfx: Variant, pool: Dictionary, index: int, positive_x := true) -> Vector3:
+	var transforms: Array = pool.get("visual_transforms", [])
+	if transforms.is_empty() or index < 0 or index >= transforms.size():
+		return Vector3(NAN, NAN, NAN)
+	var local_transform: Transform3D = transforms[index]
+	var world_transform: Transform3D = vfx._world_root.global_transform * local_transform
+	var quad_max_x := LightingVfx.EFFECT_QUAD_LOCAL_AABB.position.x + LightingVfx.EFFECT_QUAD_LOCAL_AABB.size.x
+	var endpoint_x := quad_max_x if positive_x else LightingVfx.EFFECT_QUAD_LOCAL_AABB.position.x
+	return world_transform * Vector3(endpoint_x, 0.0, 0.0)
+
+
 func _check(label: String, ok: bool, detail := "") -> void:
 	_checks += 1
 	if not ok:
 		_failures += 1
 		printerr("FAIL %s %s" % [label, detail])
+
+
+func _test_missing_anchors(stage: Node3D, profile: Dictionary) -> void:
+	var actor := _make_aircraft(stage)
+	var rig := Rig.new()
+	stage.add_child(rig)
+	var configured: Dictionary = rig.configure(actor, profile)
+	_check("missing-host fixture configures", bool(configured.get("ok", false)))
+	if not bool(configured.get("ok", false)):
+		rig.free()
+		actor.free()
+		return
+	var vfx: Variant = rig._vfx
+	var trail := _pool_for_kind(vfx, "trail")
+	var spark := _pool_for_kind(vfx, "spark")
+	rig.advance(1.0, _telemetry(10.0, 1.0))
+	actor.position.x += 0.2
+	rig.advance(1.1, _telemetry(10.0, 1.0))
+	rig.advance(1.11, _telemetry(10.0, 1.0))
+	_check("missing-host fixture starts with live trail and spark buffers",
+		int(trail.live_visual_count) > 0 and int(spark.live_visual_count) > 0
+			and int(vfx.budget_info().gpu_anchors_allocated) == 2)
+	var detached_anchor: Node3D = trail.anchor
+	detached_anchor.get_parent().remove_child(detached_anchor)
+	stage.add_child(detached_anchor) # Still live, but no longer an attachment belonging to this kit.
+	var removed_anchor: Node3D = spark.anchor
+	removed_anchor.free()
+	var samples_before: Array = trail.samples.duplicate(true)
+	var head_before: Vector3 = trail.trail_head_position
+	var spark_point_before: Vector3 = spark.visual_transforms[0].origin
+	var events_before := int(spark.event_count)
+	rig.advance(1.2, _telemetry(10.0, 1.0))
+	_check("detached trail anchor stops births and retains its last world-space head",
+		trail.samples == samples_before and trail.trail_head_position == head_before)
+	_check("freed spark anchor stops births while its existing particles keep moving",
+		int(spark.event_count) == events_before and not spark.visual_transforms.is_empty()
+			and spark.visual_transforms[0].origin.distance_to(spark_point_before) > 0.0001)
+	rig.advance(4.0, _telemetry(10.0, 1.0))
+	_check("missing anchors let all residual history and GPU buffers expire",
+		trail.samples.is_empty() and spark.particles.is_empty()
+			and int(vfx.budget_info().gpu_anchors_allocated) == 0
+			and int(vfx.budget_info().scene_grant.vfx_anchors) == 0
+			and not bool(trail.trail_head_valid))
+	var removed_spill: OmniLight3D = vfx._spills[0].light
+	removed_spill.free()
+	rig.advance(4.01, _telemetry(10.0, 0.0))
+	_check("freed spill light no longer requests a scene grant or counts as allocated",
+		int(vfx.budget_info().scene_grant.spill_lights) == 1
+			and int(vfx.budget_info().spill_lights_allocated) == 1)
+	detached_anchor.get_parent().remove_child(detached_anchor)
+	rig.kit.add_child(detached_anchor)
+	var removed_instance: MultiMeshInstance3D = trail.instance
+	removed_instance.free()
+	rig.advance(4.1, _telemetry(10.0, 1.0))
+	actor.position.x += 0.2
+	rig.advance(4.2, _telemetry(10.0, 1.0))
+	_check("missing effect mesh can age CPU history without reserving a GPU anchor",
+		not trail.samples.is_empty() and int(trail.live_visual_count) > 0
+			and int(vfx.budget_info().gpu_anchors_allocated) == 0
+			and int(vfx.budget_info().scene_grant.vfx_anchors) == 0)
+	rig.dispose()
+	rig.free()
+	detached_anchor.free()
+	actor.free()
+
+
+func _test_lost_kit(stage: Node3D, profile: Dictionary) -> void:
+	var actor := _make_aircraft(stage)
+	var rig := Rig.new()
+	stage.add_child(rig)
+	var configured: Dictionary = rig.configure(actor, profile)
+	_check("lost-kit fixture configures", bool(configured.get("ok", false)))
+	if not bool(configured.get("ok", false)):
+		rig.free()
+		actor.free()
+		return
+	rig.advance(1.0, _telemetry(10.0, 1.0))
+	rig.advance(1.01, _telemetry(10.0, 1.0))
+	var old_vfx: Variant = rig._vfx
+	var detached_world: Node3D = old_vfx._world_root
+	var budget: Variant = old_vfx._scene_budget
+	rig.kit.free()
+	rig.advance(1.02, _telemetry(10.0, 1.0))
+	_check("lost kit disposes detached effects and unregisters scene grants on the next advance",
+		not bool(rig.budget_info().active) and rig._vfx == null
+			and not is_instance_valid(detached_world) and budget.receipt().grants.is_empty())
+	var rebuilt: Dictionary = rig.configure(actor, profile)
+	_check("explicit reconfigure can rebuild the missing kit without freeing its aircraft",
+		bool(rebuilt.get("ok", false)) and is_instance_valid(actor) and is_instance_valid(rig.kit))
+	if bool(rebuilt.get("ok", false)):
+		rig.advance(2.0, _telemetry(10.0, 1.0))
+		var new_vfx: Variant = rig._vfx
+		var new_world: Node3D = new_vfx._world_root
+		var retained_kit: Node3D = rig.kit
+		rig.free()
+		await process_frame
+		_check("freeing a rig node cleans its detached resources without freeing aircraft or kit",
+			not is_instance_valid(new_world) and new_vfx._scene_budget == null
+				and is_instance_valid(actor) and is_instance_valid(retained_kit))
+	else:
+		rig.free()
+	actor.free()

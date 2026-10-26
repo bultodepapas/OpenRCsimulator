@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "43127a46-c12a-425c-904d-356b5c595897",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-scrape-independent-review/adversarial.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T19:34:08.697441+00:00",
+  "label": "postfix-adversarial-correct-gain",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-scrape-independent-review\\checks\\postfix-adversarial-correct-gain-yjj3zsus\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-scrape-independent-review\\checks\\postfix-adversarial-correct-gain-yjj3zsus\\report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Independent scrape review: 14 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.422,
+  "log_bytes": 120,
+  "log_sha256": "45ca29e2e5295789520fb4e69906c47387497f1a8e7c9201c583a72160365646"
+}

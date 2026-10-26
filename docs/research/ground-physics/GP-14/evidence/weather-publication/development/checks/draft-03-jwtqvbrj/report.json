@@ -1,0 +1,244 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "17d40c28-2fa6-45d6-a937-81a4cd7d10e4",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T18:08:29.940041+00:00",
+  "label": "draft-03",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-weather-publication\\checks\\draft-03-jwtqvbrj\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp-weather-publication\\checks\\draft-03-jwtqvbrj\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Weather publication:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 19,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Cannot infer the type of \"intact\" variable because the value doesn't have a set type.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/flight_session.gd:378)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd\" with error \"Compilation failed\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 9,
+      "message": "Invalid call. Nonexistent function 'new' in base 'GDScript'.",
+      "context": [
+        "   at: flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:16)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:16)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 15,
+      "message": "Invalid call. Nonexistent function 'setup_weather' in base 'Nil'.",
+      "context": [
+        "   at: _parity (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:48)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _parity (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:48)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 20,
+      "message": "Invalid call. Nonexistent function 'new' in base 'GDScript'.",
+      "context": [
+        "   at: flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:16)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:16)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 26,
+      "message": "Invalid call. Nonexistent function 'checkpoint' in base 'Nil'.",
+      "context": [
+        "   at: start (res://sim/flight_log.gd:43)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] start (res://sim/flight_log.gd:43)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 33,
+      "message": "Invalid access to property or key 'resetting' on a base object of type 'Nil'.",
+      "context": [
+        "   at: tracked (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:27)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] tracked (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:27)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 39,
+      "message": "Invalid call. Nonexistent function 'checkpoint' in base 'Nil'.",
+      "context": [
+        "   at: _refusals (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:63)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _refusals (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:63)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 44,
+      "message": "Invalid call. Nonexistent function 'new' in base 'GDScript'.",
+      "context": [
+        "   at: flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:16)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:16)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 50,
+      "message": "Invalid call. Nonexistent function 'checkpoint' in base 'Nil'.",
+      "context": [
+        "   at: start (res://sim/flight_log.gd:43)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] start (res://sim/flight_log.gd:43)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 57,
+      "message": "Invalid access to property or key 'resetting' on a base object of type 'Nil'.",
+      "context": [
+        "   at: tracked (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:27)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] tracked (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:27)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 63,
+      "message": "Invalid access to property or key 'resetting' on a base object of type 'Nil'.",
+      "context": [
+        "   at: _pending (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:75)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _pending (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:75)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 68,
+      "message": "Invalid call. Nonexistent function 'new' in base 'GDScript'.",
+      "context": [
+        "   at: flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:16)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:16)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 74,
+      "message": "Invalid call. Nonexistent function 'checkpoint' in base 'Nil'.",
+      "context": [
+        "   at: start (res://sim/flight_log.gd:43)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] start (res://sim/flight_log.gd:43)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 81,
+      "message": "Invalid access to property or key 'resetting' on a base object of type 'Nil'.",
+      "context": [
+        "   at: tracked (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:27)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] tracked (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:27)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 87,
+      "message": "Invalid access to property or key 'sim' on a base object of type 'Nil'.",
+      "context": [
+        "   at: _faults (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:100)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _faults (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:100)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 92,
+      "message": "Invalid call. Nonexistent function 'new' in base 'GDScript'.",
+      "context": [
+        "   at: flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:16)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:16)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 98,
+      "message": "Invalid access to property or key 'sim' on a base object of type 'Nil'.",
+      "context": [
+        "   at: _preparation (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:123)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _preparation (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-weather-publication/test_weather_publication.gd:123)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 2.797,
+  "log_bytes": 9315,
+  "log_sha256": "40603a0708060a0631869132bf4422da050e14efa03f56173aaa9d2926cf693a"
+}

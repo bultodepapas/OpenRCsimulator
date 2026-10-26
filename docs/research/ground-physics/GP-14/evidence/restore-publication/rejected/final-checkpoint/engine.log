@@ -1,0 +1,23 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ERROR: Cannot open file 'res://.godot/imported/OpenSans_SemiBold.woff2-8a0288a2ba0d20714c6041a4c9f2b69b.fontdata'.
+   at: load (core/io/resource_format_binary.cpp:1138)
+ERROR: Failed loading resource: res://.godot/imported/OpenSans_SemiBold.woff2-8a0288a2ba0d20714c6041a4c9f2b69b.fontdata.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/fonts/OpenSans_SemiBold.woff2.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://.godot/imported/NotoSansCJKsc-Regular.otf-234b66ec4f6090cf3cb4fe9bcf1a8765.fontdata'.
+   at: load (core/io/resource_format_binary.cpp:1138)
+ERROR: Failed loading resource: res://.godot/imported/NotoSansCJKsc-Regular.otf-234b66ec4f6090cf3cb4fe9bcf1a8765.fontdata.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/fonts/NotoSansCJKsc-Regular.otf.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: res://assets/fonts/interface_font.tres:7 - Parse Error: [ext_resource] referenced non-existent resource at: res://assets/fonts/OpenSans_SemiBold.woff2.
+   at: _parse_ext_resource (scene/resources/resource_format_text.cpp:156)
+ERROR: res://assets/fonts/interface_font.tres:7 - Parse Error: [ext_resource] referenced non-existent resource at: res://assets/fonts/OpenSans_SemiBold.woff2.
+   at: load (scene/resources/resource_format_text.cpp:767)
+ERROR: Failed loading resource: res://assets/fonts/interface_font.tres.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Error loading custom project font 'res://assets/fonts/interface_font.tres'
+   at: initialize_theme (scene/theme/theme_db.cpp:84)
+H8-R1 checkpoint integrity: 149 checks, 0 failed

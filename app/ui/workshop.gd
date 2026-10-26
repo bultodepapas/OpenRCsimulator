@@ -13,6 +13,7 @@ const LibraryPreferences := preload("res://workshop/library_preferences.gd")
 const LibrarySearch := preload("res://workshop/library_search.gd")
 const ProfileTransfer := preload("res://workshop/profile_transfer.gd")
 const Presentation := preload("res://workshop/presentation.gd")
+const PresentationRebind := preload("res://workshop/presentation_rebind.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const CustomizationPanel := preload("res://ui/workshop_customization.gd")
 const LightingPanel := preload("res://ui/workshop_lighting.gd")
@@ -69,11 +70,13 @@ var _presentation_bindings: Dictionary = {}
 var _presentation_errors := PackedStringArray()
 var _presentation_buffers: Dictionary = {}
 var _rebind_button: Button
+var _stock_lighting_button: Button
 var _rebind_dialog: ConfirmationDialog
 var _rebind_text: Label
 var _rebind_snapshot: Dictionary = {}
 var _rebind_proposal: Dictionary = {}
 var _rebind_base_id := ""
+var _rebind_is_stock_action := false
 var _customization_panels: Array = []
 var _servo_type: OptionButton
 var _servo_level: HSlider
@@ -567,6 +570,11 @@ func _build_ui() -> void:
 	_rebind_button.visible = false
 	_rebind_button.pressed.connect(_review_appearance_update)
 	notes.add_child(_rebind_button)
+	_stock_lighting_button = _button("Use stock lighting in a new draft", "", "UseStockLightingDraft")
+	_stock_lighting_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_stock_lighting_button.visible = false
+	_stock_lighting_button.pressed.connect(_use_stock_lighting_in_new_draft)
+	notes.add_child(_stock_lighting_button)
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
 	_footer.add_child(actions)
@@ -2021,6 +2029,7 @@ func dismiss_modal_for_exit() -> bool:
 		_rebind_dialog.hide()
 		_rebind_proposal.clear()
 		_rebind_snapshot.clear()
+		_rebind_is_stock_action = false
 		return true
 	if is_instance_valid(_mass_dialog) and _mass_dialog.visible:
 		_mass_dialog.hide()
@@ -2616,7 +2625,35 @@ func _refresh_issues() -> void:
 	_review_button.visible = not _edit_valid()
 	_rebind_button.visible = not _presentation_errors.is_empty() and not _presentation_bindings.is_empty()
 	_rebind_button.disabled = not _presentation_buffers.is_empty() or not _pending_numbers.is_empty()
+	var pending_presentation_edit := not _presentation_buffers.is_empty() or not _pending_numbers.is_empty()
+	var can_offer_stock_lighting := _has_stock_lighting_issue()
+	var stock_proposal: Dictionary = PresentationRebind.propose_stock_lighting(_presentation, _presentation_bindings) \
+		if can_offer_stock_lighting and not _presentation_bindings.is_empty() else {"ok": false}
+	_stock_lighting_button.visible = can_offer_stock_lighting and bool(stock_proposal.get("ok", false))
+	_stock_lighting_button.disabled = pending_presentation_edit
 	_validation_label.text = tr("Ready for a trial · runway qualification required" if trial_start_choice == "runway" else "Ready for a trial · start in the air") if _edit_valid() else tr("Build blocked until the listed validation errors are resolved.")
+
+
+func _has_stock_lighting_issue() -> bool:
+	if not _presentation_errors.is_empty():
+		return true
+	if not is_instance_valid(_preview):
+		return false
+	var report := _preview.get_lighting_capability_report()
+	var state := str(report.get("state", ""))
+	var lighting: Dictionary = _presentation.get("lighting", {})
+	var selection := str(lighting.get("selection", "inherit"))
+	if state == "unavailable" and selection in ["preset", "custom"]:
+		return true
+	if state != "configured":
+		return false
+	for row: Dictionary in report.get("zones", []):
+		if bool(row.get("enabled", false)) and not bool(row.get("available", false)):
+			return true
+	for row: Dictionary in report.get("effects", []):
+		if bool(row.get("enabled", false)) and not bool(row.get("available", false)):
+			return true
+	return false
 
 
 func _review_issues() -> void:
@@ -2733,19 +2770,31 @@ func get_presentation() -> Dictionary:
 ## Explicit repair creates an unsaved copy; original revisions and their pins are never rewritten.
 func _review_appearance_update() -> void:
 	if not _presentation_buffers.is_empty() or not _pending_numbers.is_empty(): return
-	var service: Script = load("res://workshop/presentation_rebind.gd")
-	var proposal: Dictionary = service.propose(_presentation, _presentation_bindings)
+	var proposal: Dictionary = PresentationRebind.propose(_presentation, _presentation_bindings)
 	if not proposal.get("ok", false):
 		set_note(_messages(proposal.get("errors", []), "These appearance settings cannot be updated safely."))
 		return
+	_open_appearance_draft_confirmation(proposal, false)
+
+
+func _use_stock_lighting_in_new_draft() -> void:
+	if not _presentation_buffers.is_empty() or not _pending_numbers.is_empty(): return
+	var proposal: Dictionary = PresentationRebind.propose_stock_lighting(_presentation, _presentation_bindings)
+	if not proposal.get("ok", false):
+		set_note(_messages(proposal.get("errors", []), "Stock lighting cannot be applied while other appearance settings are unavailable."))
+		_refresh_issues()
+		return
+	_open_appearance_draft_confirmation(proposal, true)
+
+
+func _open_appearance_draft_confirmation(proposal: Dictionary, stock_action: bool) -> void:
 	_rebind_snapshot = _presentation.duplicate(true)
 	_rebind_proposal = proposal.profile.duplicate(true)
 	_rebind_base_id = _base_id
+	_rebind_is_stock_action = stock_action
 	if not is_instance_valid(_rebind_dialog):
 		_rebind_dialog = ConfirmationDialog.new()
 		_rebind_dialog.name = "ReviewAppearanceUpdateDialog"
-		_rebind_dialog.title = tr("Review appearance update")
-		_rebind_dialog.ok_button_text = tr("Create updated draft")
 		_rebind_dialog.theme = _screen.theme
 		_rebind_dialog.exclusive = true
 		var scroll := ScrollContainer.new()
@@ -2758,10 +2807,13 @@ func _review_appearance_update() -> void:
 		_rebind_dialog.confirmed.connect(_apply_appearance_update)
 		_rebind_dialog.canceled.connect(func() -> void:
 			_rebind_proposal.clear()
-			_rebind_snapshot.clear())
+			_rebind_snapshot.clear()
+			_rebind_is_stock_action = false)
 		add_child(_rebind_dialog)
 	_rebind_dialog.theme = _screen.theme
-	_rebind_text.text = tr("This aircraft's appearance has been updated. Keep the saved colors, markings, lighting sequences and sound settings with the current aircraft model. Their placement or appearance may differ.\n\nReview the preview before saving or flying. Save will create a new build; the original saved revision stays unchanged. Physical settings stay unchanged.")
+	_rebind_dialog.title = tr("Use stock lighting in a new draft" if stock_action else "Review appearance update")
+	_rebind_dialog.ok_button_text = tr("Create updated draft")
+	_rebind_text.text = tr("Create a new draft with this aircraft's standard lighting. Compatible saved colors, markings, smoke and sound settings stay in the draft. If appearance bindings changed, review the preview because matching IDs do not prove their old placement. The original saved revision stays unchanged. Physical settings stay unchanged." if stock_action else "This aircraft's appearance has been updated. Keep the saved colors, markings, lighting sequences and sound settings with the current aircraft model. Their placement or appearance may differ.\n\nReview the preview before saving or flying. Save will create a new build; the original saved revision stays unchanged. Physical settings stay unchanged.")
 	_rebind_dialog.popup_centered_clamped(Vector2i(850, 420), 0.9)
 	_rebind_dialog.get_cancel_button().grab_focus()
 
@@ -2769,13 +2821,26 @@ func _review_appearance_update() -> void:
 func _apply_appearance_update() -> void:
 	if is_instance_valid(_rebind_dialog): _rebind_dialog.hide()
 	if _rebind_proposal.is_empty(): return
+	var stock_action := _rebind_is_stock_action
 	if _base_id != _rebind_base_id or _presentation != _rebind_snapshot or not _presentation_buffers.is_empty() or not _pending_numbers.is_empty():
 		_rebind_proposal.clear()
+		_rebind_snapshot.clear()
+		_rebind_is_stock_action = false
 		set_note("The draft changed. Review the appearance update again.")
 		return
+	if stock_action:
+		var fresh: Dictionary = PresentationRebind.propose_stock_lighting(_rebind_snapshot, _presentation_bindings)
+		if not fresh.get("ok", false) or fresh.get("profile", {}) != _rebind_proposal:
+			_rebind_proposal.clear()
+			_rebind_snapshot.clear()
+			_rebind_is_stock_action = false
+			set_note(_messages(fresh.get("errors", []), "The stock-lighting proposal changed. Review it again."))
+			return
 	var checked := Presentation.validate(_rebind_proposal, _presentation_bindings)
 	if not checked.ok:
 		_rebind_proposal.clear()
+		_rebind_snapshot.clear()
+		_rebind_is_stock_action = false
 		set_note(_messages(checked.errors, "The current aircraft bindings changed. Review again."))
 		return
 	_saved_variant_id = ""
@@ -2784,8 +2849,9 @@ func _apply_appearance_update() -> void:
 	set_presentation(checked.profile)
 	_rebind_proposal.clear()
 	_rebind_snapshot.clear()
+	_rebind_is_stock_action = false
 	_sync_variant_actions()
-	set_note("Updated appearance draft created. Inspect it, then save as a new build. The original is unchanged.")
+	set_note(tr("Stock-lighting draft created. Inspect it, then save as a new build. The original is unchanged." if stock_action else "Updated appearance draft created. Inspect it, then save as a new build. The original is unchanged."))
 
 
 func _presentation_validity_changed(page: String, pending: bool) -> void:

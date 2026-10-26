@@ -1,0 +1,48 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2d973c41-2abf-489e-aeeb-31dc63f47273",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-unloaded-review/invalid_metadata_probe.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T18:18:35.826786+00:00",
+  "label": "expected-negative-selector",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-unloaded-review\\checks\\expected-negative-selector-6rgl3x2z\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-unloaded-review\\checks\\expected-negative-selector-6rgl3x2z\\report.json",
+  "timeout_seconds": 15.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Invalid operands 'Array' and 'String' in operator '!='.",
+      "context": [
+        "   at: _normal_loss_receipt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-unloaded-policy/accuracy.gd:391)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _normal_loss_receipt (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-unloaded-policy/accuracy.gd:391)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.297,
+  "log_bytes": 542,
+  "log_sha256": "7560f60696dac741845852858c9f2f2565c540b33bab50385a9b4567220928c6"
+}

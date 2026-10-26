@@ -80,8 +80,8 @@ var _endpoint_callback_active := false
 var _endpoint_reentry_attempted := false
 var _reset_publication_active := false
 var _reset_publication_reentry := false
-## Diagnostic for an accepted reset whose publication observer violated its contract.
-## This is not physical state and is cleared by the next accepted reset.
+## Diagnostic for an accepted reset/restore whose publication observer violated its contract.
+## Not physical state; reset or restore with a publication hook clears it.
 var reset_observer_fault := ""
 
 const MIN_QUATERNION_NORM_SQ := 1e-24
@@ -196,24 +196,51 @@ func commit_prepared_reset(candidate: Dictionary, before_sample: Callable = Call
 	if before_sample.is_null():
 		stepped.emit(tick, time(), state, last_loads, inputs, aux)
 		return true
+	_publish_committed_boundary(before_sample, true, "reset")
+	return true
+
+
+## Shared synchronous publication for accepted reset and restore boundaries.
+## This helper does not parse, validate or install a physical frame.
+func _publish_committed_boundary(notification: Callable, publish_sample: bool, kind: String,
+		pause_after := false) -> void:
 	var committed_guard := _capture_endpoint_guard()
 	_reset_publication_reentry = false
 	_reset_publication_active = true
-	before_sample.call()
+	notification.call()
 	# A presentation hold is legal after physical commit. Preserve its actual
 	# paused value while restoring any forbidden direct state/model mutation.
 	committed_guard.owner.paused = paused
 	if not _endpoint_guard_unchanged(committed_guard):
-		reset_observer_fault = "reset publication observer mutated protected state or model"
+		reset_observer_fault = "%s publication observer mutated protected state or model" % kind
 	if _reset_publication_reentry:
-		reset_observer_fault = "reset publication observer attempted transition reentry"
-	stepped.emit(tick, time(), state, last_loads, inputs, aux)
+		reset_observer_fault = "%s publication observer attempted transition reentry" % kind
+	if pause_after:
+		# Old owner notifications have closed their recorders. Guard pause
+		# observers too, so they cannot step the new clock during publication.
+		set_paused(true)
+		if not paused:
+			# A pause listener cannot resume a restore that must remain paused.
+			paused = true
+			reset_observer_fault = "%s publication observer resumed a paused restore" % kind
+		committed_guard.owner.paused = paused
+		if not _endpoint_guard_unchanged(committed_guard):
+			reset_observer_fault = "%s publication observer mutated protected state or model" % kind
+	if publish_sample:
+		stepped.emit(tick, time(), state, last_loads, inputs, aux)
 	if _reset_publication_reentry:
-		reset_observer_fault = "reset publication observer attempted transition reentry"
-	_reset_publication_active = false
+		reset_observer_fault = "%s publication observer attempted transition reentry" % kind
 	if not reset_observer_fault.is_empty():
-		_fail_safe(reset_observer_fault)
-	return true
+		var publication_fault := reset_observer_fault
+		var fault_guard := _capture_endpoint_guard()
+		fault_guard.owner.paused = true
+		fault_guard.owner.fault_reason = publication_fault
+		_fail_safe(publication_fault)
+		# Final protected-frame restore covers pause/fault listeners too.
+		# Do not emit a second fault recursively while reporting an observer fault.
+		_endpoint_guard_unchanged(fault_guard)
+		reset_observer_fault = publication_fault
+	_reset_publication_active = false
 
 
 func dt() -> float:
@@ -786,8 +813,12 @@ func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, 
 
 
 ## Explicit recovery restores all dynamic state and pauses. No tick/trace sample is emitted.
-func restore_checkpoint(candidate: Dictionary) -> bool:
+## A supplied synchronous zero-argument hook observes only an accepted restore.
+## It runs before the automatic pause signal and emits no stepped sample.
+func restore_checkpoint(candidate: Dictionary, after_commit: Callable = Callable()) -> bool:
 	if _reject_endpoint_reentry() or _reject_reset_publication_reentry(): return false
+	if not after_commit.is_null() and (not after_commit.is_valid() or after_commit.get_argument_count() != 0):
+		return false
 	if not can_restore_checkpoint(candidate):
 		return false
 	continuous = candidate.get("continuous", PackedFloat64Array()).duplicate()
@@ -806,7 +837,11 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	last_events = []
 	_state_layout_identity = model.state_layout_identity
 	_remember_valid_state()
-	set_paused(true)
+	if after_commit.is_null():
+		set_paused(true) # Historical direct kernel behavior/bytes/order.
+	else:
+		reset_observer_fault = ""
+		_publish_committed_boundary(after_commit, false, "restore", true)
 	return true
 
 

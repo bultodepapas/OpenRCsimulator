@@ -1,0 +1,204 @@
+## GP-12: bind explicit tire/material parameters to physical wheel contact rows.
+## Emits finite FORCE/TORQUE rates; the single integration policy multiplies by h
+## and sends all rows to the existing simultaneous impulse solver exactly once.
+extends RefCounted
+const Timing:=preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/timed/metrics.gd")
+
+const Stage := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/timed/physics/aircraft_ground_stage.gd")
+const Impulse := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/timed/physics/aircraft_ground_impulse.gd")
+const Quantities := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/timed/physics/wheel_profiles.gd")
+const M := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/timed/physics/math3d.gd")
+const RB := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/timed/physics/rigid_body.gd")
+const Geometry := preload("C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-hotspot-review/timed/physics/wheel_geometry.gd")
+const LAW := "fixed-hub-wheel-material-impulse-rows-v1"
+const MATERIAL_FORMAT := "openrc-tire-surface-traction v1"
+const MATERIAL_LAW := "equal-static-kinetic-coulomb-ellipse-v1"
+const MATERIAL_SPECS := {
+	"longitudinal_friction": ["1", 0.0, 3.0],
+	"lateral_friction": ["1", 0.0, 3.0],
+	"rolling_resistance": ["1", 0.0, 1.0],
+}
+
+
+## Coefficients describe an explicitly supplied installed-tire/material pair,
+## not a universal material constant. This first Coulomb law deliberately uses
+## the SAME static/kinetic ellipse; it has no hidden Stribeck/relaxation state.
+## No material is inferred from runway usage, field position or friction factors.
+static func prepare(stage: Dictionary, model: Dictionary, materials: Array) -> Dictionary:
+	if not Stage._prepared_shape(stage) or not model.get("landing_gear") is Dictionary \
+		or not model.landing_gear.get("contacts") is Array or not model.get("wheel_profile") is Dictionary \
+		or model.landing_gear.contacts.size() != stage.radii_m.size() or materials.is_empty() or materials.size() > 64:
+		return _failure("prepared stage, selected wheel hardware and explicit material pairs are required")
+	for key: String in ["format", "profile_id", "profile_sha256", "input_sha256"]:
+		if model.wheel_profile.get(key) != stage.normal.wheel_profile_identity.get(key):
+			return _failure("traction hardware pin differs from normal stage")
+	var pairs := {}
+	for raw: Variant in materials:
+		if not raw is Dictionary or raw.size() != 3 + MATERIAL_SPECS.size() \
+			or not raw.has_all(["format", "law", "material_id"]) or raw.format != MATERIAL_FORMAT or raw.law != MATERIAL_LAW \
+			or typeof(raw.material_id) != TYPE_STRING or raw.material_id.strip_edges().is_empty() \
+			or raw.material_id.length() > 128 or raw.material_id == "unspecified" or pairs.has(raw.material_id):
+			return _failure("material pair needs a unique resolved ID and the explicit Coulomb law")
+		var errors := PackedStringArray()
+		var coefficients := {}
+		for key: String in MATERIAL_SPECS:
+			Quantities._validate_quantity("tire material " + key, raw.get(key), MATERIAL_SPECS[key], errors)
+			if errors.is_empty(): coefficients[key] = float(raw[key].value)
+		if not errors.is_empty(): return _failure("invalid tire/material quantity", errors)
+		pairs[raw.material_id] = {identity = JSON.stringify(raw, "", true, true).sha256_text(),
+			values = coefficients, provenance = raw.duplicate(true)}
+	var hardware: Array = []
+	for index in stage.radii_m.size():
+		var contact: Variant = model.landing_gear.contacts[index]
+		var support: Dictionary = stage.normal.supports[index]
+		if not contact is Dictionary or contact.get("id") != support.contact_id \
+			or contact.get("wheel_radius") != stage.radii_m[index] or not contact.get("wheel_provenance") is Dictionary \
+			or contact.get("brake_availability") not in ["none", "unspecified", "available"]:
+			return _failure("wheel ID, radius or brake availability differs from selected hardware")
+		var errors := PackedStringArray()
+		Quantities._validate_quantity("wheel brake torque", contact.wheel_provenance.get("brake_torque"), Quantities.QUANTITIES.brake_torque, errors)
+		if not errors.is_empty() or contact.get("brake_torque") != contact.wheel_provenance.brake_torque.value \
+			or contact.brake_availability != contact.wheel_provenance.get("brake_availability") \
+			or (contact.brake_availability != "available" and contact.brake_torque != 0.0) \
+			or (contact.brake_availability == "available" and contact.brake_torque <= 0.0):
+			return _failure("brake torque lacks matching installed provenance", errors)
+		hardware.append({contact_id = support.contact_id, hub_body = support.hub_body.duplicate(),
+			radius_m = float(contact.wheel_radius), brake_torque_nm = float(contact.brake_torque),
+			brake_availability = str(contact.brake_availability)})
+	return {ok = true, law = LAW, profile_identity = stage.profile_identity, normal_identity = stage.normal.identity,
+		identity = (LAW + stage.identity + JSON.stringify(hardware, "", true, true) + JSON.stringify(pairs, "", true, true)).sha256_text(),
+		hardware = hardware, materials = pairs, rotor_count = hardware.size() + 1}
+
+
+## ground is one successful AircraftGroundStage.ground result at this body pose.
+## Live CG converts an O arm to CM ONCE; returned rows are [V_CM,omega,all sigma].
+## Only the current static solid provider is supported. Airborne brake rows still
+## exist; tire and rolling rows require positive actual normal load and material.
+static func _profiled_evaluate(prepared: Dictionary, body: PackedFloat64Array, cg_body_m: PackedFloat64Array,
+		ground: Dictionary, brake_demands: PackedFloat64Array) -> Dictionary:
+	if not _prepared(prepared) or not Stage._finite_shape(body, RB.SIZE) or not Stage._finite_shape(cg_body_m, 3) \
+		or not ground.get("ok", false) or ground.get("identity") != prepared.normal_identity \
+		or not ground.get("contacts") is Array or ground.contacts.size() != prepared.hardware.size() \
+		or not Stage._finite_shape(ground.get("axes_body"), 3 * prepared.hardware.size()) \
+		or not Stage._finite_shape(ground.get("carrier_rates_body"), 3 * prepared.hardware.size()) \
+		or not Stage._finite_shape(brake_demands, prepared.hardware.size()):
+		return _failure("invalid body, CG, normal-stage receipt or brake layout")
+	var q := body.slice(RB.ATT, RB.ATT + 4)
+	var norm_sq := 0.0
+	for value: float in q: norm_sq += value * value
+	if not is_finite(norm_sq) or norm_sq <= 1e-24: return _failure("invalid stage attitude")
+	q = M.q_normalized(q)
+	var inverse := PackedFloat64Array([q[0], -q[1], -q[2], -q[3]])
+	var jacobian := PackedFloat64Array()
+	var bias := PackedFloat64Array()
+	var rates := PackedFloat64Array()
+	var groups: Array = []
+	var labels: Array = []
+	for index in prepared.hardware.size():
+		var wheel: Dictionary = prepared.hardware[index]
+		var record: Variant = ground.contacts[index]
+		if not record is Dictionary or record.get("contact_id") != wheel.contact_id or record.get("contact_index") != index \
+			or not _number(record.get("normal_load_n")) or record.normal_load_n < 0.0 \
+			or typeof(record.get("loaded")) != TYPE_BOOL or record.loaded != (record.normal_load_n > 0.0) \
+			or brake_demands[index] < 0.0 or brake_demands[index] > 1.0:
+			return _failure("invalid normal load, contact binding or proportional brake command")
+		var axis: PackedFloat64Array = ground.axes_body.slice(3 * index, 3 * index + 3)
+		var carrier: PackedFloat64Array = ground.carrier_rates_body.slice(3 * index, 3 * index + 3)
+		if absf(M.dot(axis, axis) - 1.0) > 1e-9: return _failure("invalid wheel axle")
+		axis = M.scale(axis, 1.0 / M.norm(axis))
+		if record.loaded:
+			if not record.get("geometry_evaluated", false) or record.get("geometry_status") != "stationary_support" \
+				or not record.get("material_resolved", false) or not prepared.materials.has(record.get("material_id")) \
+				or not Stage._finite_shape(record.get("normal_ned"), 3) or not Stage._finite_shape(record.get("rho_body_m"), 3) \
+				or not Stage._finite_shape(record.get("arm_datum_body_m"), 3):
+				return _failure("loaded wheel lacks supported geometry or an explicit tire/material pair")
+			var normal := M.q_rotate(inverse, record.normal_ned)
+			if absf(M.dot(normal, normal) - 1.0) > 1e-9 \
+				or absf(M.norm(record.rho_body_m) - wheel.radius_m) > 1e-9 * maxf(1.0, wheel.radius_m) \
+				or absf(M.dot(axis, record.rho_body_m)) > 1e-9 * wheel.radius_m \
+				or M.norm(M.sub(record.arm_datum_body_m, M.add(wheel.hub_body, record.rho_body_m))) > 1e-9:
+				return _failure("contact geometry disagrees with the installed ring/hub")
+			normal = M.scale(normal, 1.0 / M.norm(normal))
+			var longitudinal := M.cross(axis, normal)
+			var tangent_length := M.norm(longitudinal)
+			if tangent_length < Geometry.MIN_AXLE_PROJECTION: return _failure("ring rolling direction is outside the supported camber domain")
+			longitudinal = M.scale(longitudinal, 1.0 / tangent_length)
+			var lateral := M.cross(normal, longitudinal)
+			lateral = M.scale(lateral, 1.0 / M.norm(lateral))
+			var coefficients: Dictionary = prepared.materials[record.material_id].values
+			var start := bias.size()
+			for tangent_index in 2:
+				var tangent := longitudinal if tangent_index == 0 else lateral
+				var row := Impulse.point_tangent(M.sub(record.arm_datum_body_m, cg_body_m), record.rho_body_m,
+					axis, index + 1, tangent, prepared.rotor_count, carrier)
+				if not row.ok: return _failure("wheel tangent row refused")
+				jacobian.append_array(row.row)
+				bias.append(row.bias)
+				rates.append(record.normal_load_n * coefficients.longitudinal_friction if tangent_index == 0 else record.normal_load_n * coefficients.lateral_friction)
+				labels.append({contact_id = wheel.contact_id, kind = "longitudinal" if tangent_index == 0 else "lateral", material_id = record.material_id})
+			groups.append(PackedInt32Array([start, start + 1]))
+			var rolling := Impulse.external_rolling(axis, index + 1, prepared.rotor_count, carrier)
+			if not rolling.ok: return _failure("wheel rolling row refused")
+			groups.append(PackedInt32Array([bias.size()]))
+			jacobian.append_array(rolling.row)
+			bias.append(rolling.bias)
+			rates.append(coefficients.rolling_resistance * record.normal_load_n * wheel.radius_m)
+			labels.append({contact_id = wheel.contact_id, kind = "rolling_moment", material_id = record.material_id})
+		if wheel.brake_torque_nm > 0.0 and brake_demands[index] > 0.0:
+			var brake := Impulse.internal_brake(index + 1, prepared.rotor_count)
+			if not brake.ok: return _failure("wheel brake row refused")
+			groups.append(PackedInt32Array([bias.size()]))
+			jacobian.append_array(brake.row)
+			bias.append(brake.bias)
+			rates.append(wheel.brake_torque_nm * brake_demands[index])
+			labels.append({contact_id = wheel.contact_id, kind = "internal_brake"})
+	if not Stage._finite_shape(rates, bias.size()) or bias.size() > Impulse.MAX_ROWS:
+		return _failure("wheel impulse-rate envelope overflow")
+	return {ok = true, law = LAW, identity = prepared.identity, jacobian = jacobian, bias = bias,
+		limit_rates = rates, groups = groups, labels = labels, rotor_count = prepared.rotor_count,
+		limit_units = "N for tire rows; N*m for rolling/brake rows; multiply all by accepted piece seconds once"}
+
+
+static func _profiled__prepared(value: Dictionary) -> bool:
+	if not value.get("ok", false) or value.get("law") != LAW or not value.get("hardware") is Array \
+		or value.hardware.is_empty() or value.hardware.size() > 16 or not value.get("materials") is Dictionary \
+		or value.materials.is_empty() or value.materials.size() > 64 \
+		or typeof(value.get("rotor_count")) != TYPE_INT or value.rotor_count != value.hardware.size() + 1 \
+		or typeof(value.get("identity")) != TYPE_STRING or typeof(value.get("normal_identity")) != TYPE_STRING: return false
+	var seen := {}
+	for wheel: Variant in value.hardware:
+		if not wheel is Dictionary or typeof(wheel.get("contact_id")) != TYPE_STRING or seen.has(wheel.contact_id) \
+			or not Stage._finite_shape(wheel.get("hub_body"), 3) or not _number(wheel.get("radius_m")) \
+			or wheel.radius_m < Geometry.MIN_RADIUS_M or wheel.radius_m > Geometry.MAX_RADIUS_M \
+			or not _number(wheel.get("brake_torque_nm")) or wheel.brake_torque_nm < 0.0 \
+			or wheel.get("brake_availability") not in ["none", "unspecified", "available"] \
+			or (wheel.brake_availability == "available") != (wheel.brake_torque_nm > 0.0): return false
+		seen[wheel.contact_id] = true
+	for id: Variant in value.materials:
+		var pair: Variant = value.materials[id]
+		if typeof(id) != TYPE_STRING or not pair is Dictionary or not pair.get("values") is Dictionary: return false
+		for key: String in MATERIAL_SPECS:
+			var coefficient: Variant = pair.values.get(key)
+			if not _number(coefficient) or coefficient < MATERIAL_SPECS[key][1] or coefficient > MATERIAL_SPECS[key][2]: return false
+	return true
+
+
+static func _number(value: Variant) -> bool:
+	return typeof(value) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(value))
+
+
+static func _failure(reason: String, errors := PackedStringArray()) -> Dictionary:
+	return {ok = false, law = LAW, reason = reason, errors = errors}
+
+static func evaluate(prepared: Dictionary, body: PackedFloat64Array, cg_body_m: PackedFloat64Array,
+		ground: Dictionary, brake_demands: PackedFloat64Array) -> Dictionary:
+	Timing.enter("aircraft_ground_traction.evaluate")
+	var measured:=_profiled_evaluate(prepared,body,cg_body_m,ground,brake_demands)
+	Timing.leave()
+	return measured
+
+static func _prepared(value: Dictionary) -> bool:
+	Timing.enter("aircraft_ground_traction._prepared")
+	var measured:=_profiled__prepared(value)
+	Timing.leave()
+	return measured
