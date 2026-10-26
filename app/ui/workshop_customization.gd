@@ -43,10 +43,11 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 12)
 	var heading := Label.new()
 	heading.text = tr("Appearance" if page_kind == "appearance" else "Smoke")
-	heading.theme_type_variation = "SectionLabel"
+	heading.theme_type_variation = "CardTitle"
 	add_child(heading)
 	_note = label("Paint changes only the selected registered region." if page_kind == "appearance" else "Show smoke is a visual effect. Source exhaust follows the running engine.")
 	if page_kind == "smoke":
+		label("Smoke preset").theme_type_variation = "SectionLabel"
 		var presets := OptionButton.new()
 		presets.name = "SmokePreset"
 		for text: String in ["Choose a smoke preset…", "Clear Trainer", "Twin Ribbons", "Tricolor", "Tail Comet", "Rainbow Burst", "Classic Exhaust", "Pastel Cloud", "Alternating Tips", "Monochrome Dark"]: presets.add_item(tr(text))
@@ -54,9 +55,11 @@ func _ready() -> void:
 			if index > 0: apply_preset(index)
 			presets.select(0))
 		add_child(presets)
+	label("Paint region" if page_kind == "appearance" else "Smoke emitter").theme_type_variation = "SectionLabel"
 	_slot = OptionButton.new()
 	_slot.name = "PaintRegion" if page_kind == "appearance" else "SmokeEmitter"
 	_slot.fit_to_longest_item = false
+	_slot.clip_text = true
 	_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_slot.item_selected.connect(_select_slot)
 	add_child(_slot)
@@ -68,6 +71,7 @@ func _ready() -> void:
 		_enabled.text = tr("Enable this emitter")
 		_enabled.toggled.connect(func(value: bool) -> void: change("enabled", value))
 		_controls.add_child(_enabled)
+	var color_label := label("Color", _controls)
 	_color = OptionButton.new()
 	for text: String in COLORS: _color.add_item(tr(text))
 	_color.add_item(tr("Custom color"))
@@ -171,20 +175,23 @@ func _ready() -> void:
 		number_field("velocity_inheritance", "Outlet velocity", 0.0, 1.0, 0.05, "×")
 		_build_copy_controls()
 		label("Duration controls new emission; existing puffs fade for their full lifetime.", _controls)
-		_build_advanced_group(custom)
+		_build_advanced_group(custom, color_label)
 	_error = label("")
 	_error.theme_type_variation = "ErrorLabel"
 	configure(_bindings, _profile)
 
-func _build_advanced_group(color_row: Control) -> void:
+func _build_advanced_group(color_row: Control, color_label: Control) -> void:
 	_advanced = VBoxContainer.new()
 	_advanced.name = "SmokeMoreOptions"
 	_advanced.add_theme_constant_override("separation", 10)
 	_advanced.visible = false
-	var basic: Array = [_enabled, _color, color_row, _legacy_amount_row, _legacy_amount_note, _field_rows.density,
-		_field_rows.emission_rate_hz, _field_rows.width_m, _field_rows.lifetime_s, _shape]
+	_advanced.add_child(HSeparator.new())
+	label("Advanced smoke settings", _advanced).theme_type_variation = "SectionLabel"
+	var basic: Array = [_enabled, color_label, _color, color_row, _legacy_amount_row, _legacy_amount_note, _field_rows.density,
+		_field_rows.emission_rate_hz, _field_rows.width_m, _field_rows.lifetime_s, _shape,
+		_controls.get_child(_shape.get_index() - 1)]
 	for child: Node in _controls.get_children():
-		if child in basic or (child is Label and child.text == "Shape"): continue
+		if child in basic: continue
 		_controls.remove_child(child)
 		_advanced.add_child(child)
 	_advanced_button = Button.new()
@@ -215,6 +222,7 @@ func _build_copy_controls() -> void:
 func label(text: String, parent: Node = self) -> Label:
 	var result := Label.new()
 	result.text = tr(text)
+	result.theme_type_variation = "SecondaryLabel"
 	result.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	parent.add_child(result)
 	return result
@@ -625,11 +633,16 @@ func build_markings() -> void:
 	_marking_box = VBoxContainer.new()
 	_marking_box.add_theme_constant_override("separation", 10)
 	_controls.add_child(_marking_box)
-	label("Registration", _marking_box)
+	_marking_box.add_child(HSeparator.new())
+	label("Registration", _marking_box).theme_type_variation = "SectionLabel"
+	label("Registration panel", _marking_box)
 	_marking_slot = OptionButton.new()
 	_marking_slot.name = "RegistrationPanel"
+	_marking_slot.fit_to_longest_item = false
+	_marking_slot.clip_text = true
 	_marking_slot.item_selected.connect(_select_marking_slot)
 	_marking_box.add_child(_marking_slot)
+	label("Registration text", _marking_box)
 	_marking_text = LineEdit.new()
 	_marking_text.name = "RegistrationText"
 	_marking_text.placeholder_text = "RC-27"
@@ -637,6 +650,7 @@ func build_markings() -> void:
 		if not _syncing: validity_changed.emit(page_kind, has_pending_color() or has_pending_marking()))
 	_marking_text.text_submitted.connect(func(_text: String) -> void: apply_marking())
 	_marking_box.add_child(_marking_text)
+	label("Color", _marking_box)
 	_marking_color = OptionButton.new()
 	for text: String in COLORS: _marking_color.add_item(tr(text))
 	_marking_color.add_item("Custom color")

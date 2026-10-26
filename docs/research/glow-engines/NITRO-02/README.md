@@ -32,6 +32,52 @@ The ground solver correctly refused stationary idle starts when calculated idle 
 - [Long-duration stand](endurance.json), [per-second log](endurance.log): full throttle, nominal mixture, 0.12 kg initial fuel, 240 Hz and a 900 s cap. MAX-55AX exhausted its tank at 292.408 s; FS-64V exhausted at 601.071 s. Both ended at exactly zero fuel and stopped with no simulator fault; neither run accepted negative fuel. Head-temperature proxies reached approximately 472.9 K and 433.4 K respectively. These are inferred-model results, not comparative manufacturer endurance or temperature claims. The artificial stand restores body position/attitude/velocity after each accepted tick; engine states evolve continuously, but support impulses preclude treating its work trace as a free-flight or physically constrained dynamometer energy balance.
 - The corrected [stand rerun](endurance-momentum.json), with [log](endurance-momentum.log), uses the same initial fuel, throttle, temperature and kinematic-support method. Both reach exactly zero fuel and extinguish combustion without a simulator fault: MAX-55AX at **292.408 s**, FS-64V at **645.150 s**, with final head proxies **472.870 K / 427.626 K**. Shaft motion persists at the recorded depletion instant; the test does not claim an instantaneous propeller stop. Source/input hashes are unchanged throughout each run. The earlier 601.071 s 4T result above belongs to the superseded propeller estimate.
 
+## Cruise-trim preparation (NITRO-04, 2026-10-26)
+
+The operating-point search now prepares the existing engine and propeller evaluators
+once per solve. Previously every RPM sample revalidated the engine tables and rebuilt
+the propeller geometry. Preparation is local: no cross-request cache, changed profile
+identity or altered flight model. Profiles modified outside their provenance retain
+the public guarded evaluator. The complete RPM-knot plus 128-interval mesh, restoring
+root enumeration, highest-root selection and torque tolerance are unchanged. Bisection
+stops when its midpoint rounds to an endpoint; subsequent iterations cannot change it.
+
+Three alternating baseline/candidate rounds on Linux, Intel Core i5-10500, official Godot
+4.8-beta1 measured uncached 50%-throttle cruise trims. Baseline physics comes from
+`e2b4f901d856cbc020b47458ebed4cfdc345f71e`; only `glow/operating_point.gd` differs in
+the physics dependency files present in both snapshots. Rendering and aircraft loading
+are outside the timer. [Results and source/input hashes](trim-performance.json) retain
+all samples, complete-result SHA-256 values and host limitations.
+
+| Installation | Baseline median (s) | Candidate median (s) | Reduction |
+| --- | ---: | ---: | ---: |
+| MAX-61FX Stik | 4.841 | 2.729 | 43.6% |
+| MAX-55AX, 12×7 | 4.951 | 2.885 | 41.7% |
+| FS-64V, 14×6 | 2.934 | 1.679 | 42.8% |
+| MAX-55AX, 13×6 | 4.106 | 2.351 | 42.7% |
+| FS-64V, 13×6 | 3.787 | 2.224 | 41.3% |
+| Extra 300S, MAX-61FX | 5.620 | 3.334 | 40.7% |
+
+All 18 complete trim results are byte-identical, including flight state, controls,
+RPM, residuals and iteration counts. The host was shared: the third 61FX candidate
+took 4.807 s and failed the individual 0.75 ratio gate; all six median ratios pass.
+The baseline-against-baseline control fails the same gate as expected. These measurements
+establish a local median improvement, not a worst-case latency or target-hardware gate.
+Reproduction: [trim probe](../../../../research/glow-engines/perf/README.md#cruise-trim-benchmark-2026-10-26).
+
+`test_glow_operating_reuse.gd` compares against the original mesh and 64-step
+bisection using public guarded residuals. It covers all six installations, reverse
+inflow, differing air/charge densities, modified installations, two narrow roots,
+no root, invalid tables/propellers/queries, input immutability and successive solves
+after input changes. Aircraft parameters and golden recordings are unchanged.
+
+All 33 selected checked-runner scripts passed: every `test_glow_*.gd`, trim,
+density/integrity/cruise/throttle checks, four golden-flight replays and launch-cache/
+asynchronous-trim checks. The new operating-point regression has 114 passing checks.
+Final compiler diagnostics report zero errors and warnings in both changed scripts;
+the 114-check regression also passes after the local-variable warning cleanup.
+The full `app/test.sh`, exported packages and rendered UI acceptance were not run.
+
 ## Momentum-bound correction
 
 The earlier 4T polar estimates were passive but physically inconsistent in static thrust. For the surrogate's quasi-steady forward inflow `V ≥ 0` and thrust `T > 0`, ideal momentum theory gives disk speed `Vd = (V + sqrt(V² + 2T/(ρA)))/2`, with `A = πD²/4`, and minimum shaft power `Pideal = T Vd`. This follows from the momentum/Bernoulli relations in [NASA's propeller-thrust derivation](https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/); the static form is `T^1.5/sqrt(2ρA)`. Real losses require additional power. `QΩ − TV ≥ 0` alone misses the static requirement. The bound does not model transient energy storage in a wake.

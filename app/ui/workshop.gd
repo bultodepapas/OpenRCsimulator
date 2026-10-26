@@ -139,6 +139,9 @@ var _compact := false
 var _compact_view := false
 var _view_button: Button
 var _inspector: ScrollContainer
+var _inspector_column: VBoxContainer
+var _history_bar: HBoxContainer
+var _reset_button: Button
 var _header: BoxContainer
 var _footer: BoxContainer
 var _identity_line: BoxContainer
@@ -369,6 +372,10 @@ func _build_ui() -> void:
 	_build_identity.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	heading.add_child(_build_identity)
 	_header.add_child(heading)
+	_library_button = _button("Library", "", "OpenLibrary")
+	_library_button.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	_library_button.pressed.connect(_open_library)
+	_header.add_child(_library_button)
 	var back := _button("Back to Pause" if return_destination == "Pause" else "Back to Home", "", "CloseWorkshop")
 	back.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	back.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -378,15 +385,19 @@ func _build_ui() -> void:
 	_identity_line = BoxContainer.new()
 	_identity_line.add_theme_constant_override("separation", 8)
 	page.add_child(_identity_line)
-	_library_button = _button("Library", "", "OpenLibrary")
-	_library_button.pressed.connect(_open_library)
-	_identity_line.add_child(_library_button)
 	var group := ButtonGroup.new()
 	for spec: Array in [["appearance", "Appearance"], ["lighting", "Lighting"], ["smoke", "Smoke"], ["audio", "Mechanical audio"], ["setup", "Flight setup"], ["compare", "Compare"]]:
 		var tab := _button(spec[1], "", "Page" + str(spec[0]).capitalize())
 		tab.toggle_mode = true
 		tab.button_group = group
 		tab.button_pressed = spec[0] == "setup"
+		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tab.add_theme_font_size_override("font_size", UiTheme._font_size(UiTheme.SIZE.small))
+		var selected_style: StyleBoxFlat = _screen.theme.get_stylebox("normal", "Button").duplicate()
+		selected_style.bg_color = UiTheme.PRIMARY.normal
+		selected_style.border_color = UiTheme.FOCUS
+		selected_style.border_width_bottom = 3
+		tab.add_theme_stylebox_override("pressed", selected_style)
 		tab.pressed.connect(_set_page.bind(spec[0]))
 		_identity_line.add_child(tab)
 		_page_buttons[spec[0]] = tab
@@ -399,9 +410,6 @@ func _build_ui() -> void:
 	_page_selector.select(PAGE_IDS.find(_active_page))
 	_page_selector.item_selected.connect(func(index: int) -> void: _set_page(PAGE_IDS[index]))
 	_identity_line.add_child(_page_selector)
-	var flexible := Control.new()
-	flexible.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_identity_line.add_child(flexible)
 	_view_button = _button("Preview", "", "CompactPreview")
 	_view_button.pressed.connect(_toggle_compact_view)
 	_identity_line.add_child(_view_button)
@@ -426,6 +434,10 @@ func _build_ui() -> void:
 	caption.name = "PreviewCaption"
 	_aircraft_column.add_child(caption)
 
+	_inspector_column = VBoxContainer.new()
+	_inspector_column.name = "InspectorColumn"
+	_inspector_column.add_theme_constant_override("separation", 12)
+	_columns.add_child(_inspector_column)
 	_inspector = ScrollContainer.new()
 	_inspector.name = "WorkshopScroll"
 	_body_scroll = _inspector
@@ -433,7 +445,7 @@ func _build_ui() -> void:
 	_inspector.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	_inspector.follow_focus = true
 	_inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_columns.add_child(_inspector)
+	_inspector_column.add_child(_inspector)
 	var inspector_body := VBoxContainer.new()
 	inspector_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector_body.add_theme_constant_override("separation", 16)
@@ -472,10 +484,15 @@ func _build_ui() -> void:
 	setup.add_theme_constant_override("separation", 16)
 	inspector_body.add_child(setup)
 	_page_nodes.setup = setup
+	setup.add_child(_label("Flight setup", "CardTitle", true))
+	setup.add_child(_label("Adjust the airframe, then review the changes before a trial.", "SecondaryLabel", true))
+	_build_presets_panel(setup)
+	_build_recipe_panel(setup)
+	var trial_settings: VBoxContainer = _section(setup, "TrialSettings", "Trial conditions")
 	_trial_conditions_label = _label(trial_conditions, "SecondaryLabel", true)
 	_trial_conditions_label.visible = not trial_conditions.is_empty()
-	setup.add_child(_trial_conditions_label)
-	setup.add_child(_label("Trial start", "SectionLabel"))
+	trial_settings.add_child(_trial_conditions_label)
+	trial_settings.add_child(_label("Trial start", "SectionLabel"))
 	var start := OptionButton.new()
 	start.name = "WorkshopTrialStart"
 	start.add_item("In the air")
@@ -483,26 +500,23 @@ func _build_ui() -> void:
 	start.item_selected.connect(func(index: int) -> void:
 		trial_start_choice = "airborne" if index == 0 else "runway"
 		_refresh_issues())
-	setup.add_child(start)
-	_build_presets_panel(setup)
-	_mass_button = _button("Measured components…", "", "MeasuredComponents")
-	_mass_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_mass_button.pressed.connect(_show_mass_editor)
-	setup.add_child(_mass_button)
-	_build_recipe_panel(setup)
-	var history := HBoxContainer.new()
-	history.add_theme_constant_override("separation", 8)
-	for action: Array in [["Reset this page", "ResetRecipe", _reset_recipe], ["Undo", "UndoRecipe", _undo], ["Redo", "RedoRecipe", _redo]]:
+	trial_settings.add_child(start)
+	_history_bar = HBoxContainer.new()
+	_history_bar.name = "WorkshopHistory"
+	_history_bar.add_theme_constant_override("separation", 8)
+	for action: Array in [["Undo", "UndoRecipe", _undo], ["Redo", "RedoRecipe", _redo], ["Reset this page", "ResetRecipe", _reset_recipe]]:
 		var button := _button(action[0], "", action[1])
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		button.pressed.connect(action[2])
-		history.add_child(button)
+		_history_bar.add_child(button)
 		if action[1] == "UndoRecipe": _undo_button = button
 		if action[1] == "RedoRecipe": _redo_button = button
-	inspector_body.add_child(history)
+		if action[1] == "ResetRecipe": _reset_button = button
+	_inspector_column.add_child(_history_bar)
 	var compare := VBoxContainer.new()
 	compare.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	compare.add_theme_constant_override("separation", 14)
 	inspector_body.add_child(compare)
 	_page_nodes.compare = compare
 	_build_results_panel(compare)
@@ -555,13 +569,16 @@ func _build_ui() -> void:
 
 func _resize_layout() -> void:
 	if not is_inside_tree(): return
+	var old_focus: Control = get_viewport().gui_get_focus_owner()
 	Widgets.fit_title(find_child("WorkshopTitle", true, false) as Label, UiTheme._font_size(UiTheme.SIZE.body))
 	Widgets.fit_title(_build_identity, UiTheme._font_size(UiTheme.SIZE.small), UiTheme._font_size(UiTheme.SIZE.card_title))
 	var available := _screen.size - Vector2(48, 36)
 	_layout_panel.custom_minimum_size = Vector2(maxf(0, available.x), maxf(0, available.y))
 	var enlarged := preload("res://ui/ui_theme.gd").text_scale > 1.25
 	var tight := enlarged and available.y < 600
-	_compact = available.x < 1050 or enlarged
+	var navigation_width: float = 52.0 + 8.0 * (PAGE_IDS.size() - 1)
+	for tab: Button in _page_buttons.values(): navigation_width += tab.get_combined_minimum_size().x
+	_compact = available.x < maxf(1050, navigation_width) or enlarged
 	var inspecting := _compact and _compact_view
 	_header.visible = not inspecting
 	_action_notes.visible = not inspecting
@@ -576,11 +593,11 @@ func _resize_layout() -> void:
 	_library_button.visible = not inspecting
 	_identity_line.vertical = available.x < 650
 	_footer.vertical = available.x < 1100 or enlarged
-	_inspector.custom_minimum_size.x = 0 if _compact else (520 if available.x >= 1550 else 400)
-	_inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL if _compact else Control.SIZE_FILL
+	_inspector_column.custom_minimum_size.x = 0 if _compact else (620 if available.x >= 1550 else 440)
+	_inspector_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL if _compact else Control.SIZE_FILL
 	_preview.custom_minimum_size.y = 0 if _compact else 240
 	_aircraft_column.visible = not _compact or _compact_view
-	_inspector.visible = not _compact or not _compact_view
+	_inspector_column.visible = not _compact or not _compact_view
 	_view_button.visible = _compact
 	_view_button.text = tr("Edit") if _compact_view else (tr("View") if enlarged else tr("Preview"))
 	_save_button.text = tr("Save") if available.x < 1100 and enlarged else tr("Save build")
@@ -590,6 +607,11 @@ func _resize_layout() -> void:
 		if not tight: _footer.move_child(_action_notes, 0)
 	_recipe_selectors.columns = 1 if enlarged else 2
 	_trial_button.custom_minimum_size.x = 0 if enlarged else 190
+	if old_focus != null and _screen.is_ancestor_of(old_focus) and not old_focus.is_visible_in_tree():
+		if inspecting: _view_button.grab_focus()
+		elif _compact: _page_selector.grab_focus()
+		else: _page_buttons[_active_page].grab_focus()
+	_wire_page_navigation()
 	
 
 
@@ -641,22 +663,21 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	add_child(_thumbnail)
 
 	var variant_actions := HFlowContainer.new()
-	variant_actions.add_theme_constant_override("separation", 8)
-	_load_button = _button("Load", "", "LoadVariant")
+	variant_actions.add_theme_constant_override("h_separation", 8)
+	variant_actions.add_theme_constant_override("v_separation", 8)
+	content.add_child(_label("Selected saved build", "SectionLabel"))
+	_load_button = _button("Load", "CompactPrimaryButton", "LoadVariant")
 	_load_button.disabled = true
 	_load_button.pressed.connect(_load_selected_variant)
 	variant_actions.add_child(_load_button)
-	_delete_button = _button("Delete", "", "DeleteVariant")
+	_delete_button = _button("Delete", "DestructiveButton", "DeleteVariant")
 	_delete_button.disabled = true
 	_delete_button.pressed.connect(_confirm_delete_selected)
-	variant_actions.add_child(_delete_button)
 	_restore_button = _button("Undo delete", "", "RestoreVariant")
 	_restore_button.disabled = true
 	_restore_button.pressed.connect(_restore_last_deleted)
-	variant_actions.add_child(_restore_button)
 	var import_button := _button("Import build…", "", "ImportBuild")
 	import_button.pressed.connect(_choose_bundle_import)
-	variant_actions.add_child(import_button)
 	_export_button = _button("Export selected…", "", "ExportBuild")
 	_export_button.disabled = true
 	_export_button.pressed.connect(_choose_bundle_export)
@@ -668,6 +689,14 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_copy_profile_button.pressed.connect(_review_profile_transfer)
 	variant_actions.add_child(_copy_profile_button)
 	content.add_child(variant_actions)
+	var delete_actions: HFlowContainer = HFlowContainer.new()
+	delete_actions.add_theme_constant_override("h_separation", 8)
+	delete_actions.add_theme_constant_override("v_separation", 8)
+	delete_actions.add_child(_delete_button)
+	delete_actions.add_child(_restore_button)
+	content.add_child(delete_actions)
+	var draft_actions: VBoxContainer = _section(parent, "CurrentDraftActions", "Current draft")
+	draft_actions.add_child(_label("These actions use the build currently open in the editor.", "SecondaryLabel", true))
 
 	_variant_name = LineEdit.new()
 	_variant_name.name = "VariantName"
@@ -679,11 +708,13 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	content.add_child(_variant_name)
 	_copy_button = _button("Save a copy", "", "CopyVariant")
 	_copy_button.pressed.connect(_request_copy)
-	content.add_child(_copy_button)
+	draft_actions.add_child(_copy_button)
 	var rename := _button("Name or rename this build", "", "RenameBuild")
 	rename.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rename.pressed.connect(func() -> void: _show_name_dialog(false))
-	content.add_child(rename)
+	draft_actions.add_child(rename)
+	var file_actions: VBoxContainer = _section(parent, "BuildFileActions", "Build files")
+	file_actions.add_child(import_button)
 
 
 func _build_presets_panel(parent: VBoxContainer) -> void:
@@ -706,10 +737,7 @@ func _build_presets_panel(parent: VBoxContainer) -> void:
 
 
 func _build_recipe_panel(parent: VBoxContainer) -> void:
-	var card := _card("RecipeCard")
-	parent.add_child(card)
-	var content := _card_content(card)
-	content.add_child(_section_label("AIRFRAME RECIPE · EXPERIMENTAL"))
+	var content: VBoxContainer = _section(parent, "RecipeCard", "Aircraft size")
 
 	var selector_grid := GridContainer.new()
 	_recipe_selectors = selector_grid
@@ -786,24 +814,35 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 	_scale_readout.name = "ScaleReadout"
 	content.add_child(_scale_readout)
 
-	var factor_hint := _label("1× keeps the original value. Changes apply to a new trial flight.", "SecondaryLabel", true)
-	content.add_child(factor_hint)
+	var mass: VBoxContainer = _section(parent, "MassSettings", "Mass and balance")
+	var power: VBoxContainer = _section(parent, "PowerSettings", "Power and fuel")
+	var controls: VBoxContainer = _section(parent, "ControlSettings", "Control surfaces")
+	mass.add_child(_label("1× keeps the original value. Changes apply to a new trial flight.", "SecondaryLabel", true))
 	for definition: Dictionary in Parameters.definitions().parameters:
-		if _factor_capabilities.has(definition.key): _add_factor_row(content, definition.key, definition.label)
+		if not _factor_capabilities.has(definition.key): continue
+		var target: VBoxContainer = controls if definition.key == "control_multiplier" else (mass if definition.key == "weight_multiplier" else power)
+		_add_factor_row(target, definition.key, definition.label)
+	_mass_button = _button("Measured components…", "", "MeasuredComponents")
+	_mass_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_mass_button.pressed.connect(_show_mass_editor)
+	mass.add_child(_mass_button)
+	var support: VBoxContainer = _section(parent, "AdjustmentSupport", "Aircraft support")
 
 	_scale_support_hint = _label("", "SecondaryLabel", true)
 	_scale_support_hint.name = "ScaleSupport"
-	content.add_child(_scale_support_hint)
+	support.add_child(_scale_support_hint)
 	_mass_support_hint = _label("", "SecondaryLabel", true)
 	_mass_support_hint.name = "MassSupport"
-	content.add_child(_mass_support_hint)
+	support.add_child(_mass_support_hint)
 
 	_capabilities_label = _label("", "SecondaryLabel", true)
 	_capabilities_label.name = "Capabilities"
-	content.add_child(_capabilities_label)
+	support.add_child(_capabilities_label)
 
 
 func _build_results_panel(parent: VBoxContainer) -> void:
+	parent.add_child(_label("Compare", "CardTitle", true))
+	parent.add_child(_label("Review this draft against the stock aircraft.", "SecondaryLabel", true))
 	_all_values = CheckButton.new()
 	_all_values.text = "All values"
 	_all_values.name = "AllBuildValues"
@@ -833,6 +872,8 @@ func _add_factor_row(parent: VBoxContainer, key: String, caption: String) -> voi
 	caption_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	heading.add_child(caption_label)
 	var value_label := _label("1.00×", "SecondaryLabel")
+	# Exact entry already shows this value; keep the shared readback handle without duplicate copy.
+	value_label.visible = false
 	value_label.name = key.capitalize() + "Value"
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	heading.add_child(value_label)
@@ -840,6 +881,7 @@ func _add_factor_row(parent: VBoxContainer, key: String, caption: String) -> voi
 	entry.name = key.capitalize() + "Entry"
 	entry.custom_minimum_size.x = 100
 	entry.expand_to_text_length = false
+	entry.tooltip_text = tr("Enter a multiplier; 1 keeps the original value.")
 	entry.text_changed.connect(_number_changed.bind(key))
 	entry.text_submitted.connect(func(_value: String) -> void: _commit_number(key))
 	entry.focus_exited.connect(_commit_number.bind(key))
@@ -1489,7 +1531,7 @@ func _apply_preset(preset_id: String) -> void:
 
 
 func _reset_recipe() -> void:
-	if _base.is_empty():
+	if _base.is_empty() or _active_page == "compare":
 		return
 	if _active_page == "audio":
 		_set_mechanical_audio(Presentation.MechanicalProfile.defaults())
@@ -1901,18 +1943,62 @@ func _button(text: String, variation := "", node_name := "") -> Button:
 func _card(node_name: String) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.name = node_name
-	panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	var style: StyleBoxFlat = _screen.theme.get_stylebox("panel", "Card").duplicate()
+	style.shadow_size = 0
+	style.border_color = Color(UiTheme.EDGE, 0.4)
+	style.content_margin_left = 14
+	style.content_margin_right = 14
+	style.content_margin_top = 14
+	style.content_margin_bottom = 14
+	panel.add_theme_stylebox_override("panel", style)
 	return panel
 
 
 func _card_content(panel: PanelContainer) -> VBoxContainer:
 	var content := VBoxContainer.new()
 	content.name = "CardContent"
-	content.add_theme_constant_override("separation", 8)
+	content.add_theme_constant_override("separation", 12)
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(content)
 	return content
+
+
+func _section(parent: VBoxContainer, node_name: String, title: String) -> VBoxContainer:
+	var panel: PanelContainer = _card(node_name)
+	parent.add_child(panel)
+	var content: VBoxContainer = _card_content(panel)
+	content.add_child(_label(title, "SectionTitle", true))
+	return content
+
+
+func _wire_page_navigation() -> void:
+	var first: Control = _first_editor_control(_page_nodes.get(_active_page))
+	for index: int in PAGE_IDS.size():
+		var tab: Button = _page_buttons[PAGE_IDS[index]]
+		tab.focus_neighbor_left = tab.get_path_to(_page_buttons[PAGE_IDS[maxi(0, index - 1)]])
+		tab.focus_neighbor_right = tab.get_path_to(_page_buttons[PAGE_IDS[mini(PAGE_IDS.size() - 1, index + 1)]])
+		if first != null:
+			tab.focus_neighbor_bottom = tab.get_path_to(first)
+			if tab.button_pressed: tab.focus_next = tab.get_path_to(first)
+	if first != null:
+		var navigation: Control = _page_selector if _compact else _page_buttons[_active_page]
+		navigation.focus_next = navigation.get_path_to(first)
+		first.focus_previous = first.get_path_to(navigation)
+		_page_selector.focus_neighbor_bottom = _page_selector.get_path_to(first)
+
+
+func _first_editor_control(parent: Node) -> Control:
+	if parent == null: return null
+	for child: Node in parent.get_children():
+		if child is Control and not child.is_visible_in_tree(): continue
+		if child is Control and child.focus_mode == Control.FOCUS_ALL:
+			if child is BaseButton and child.disabled: continue
+			if child is LineEdit and not child.editable: continue
+			return child
+		var nested: Control = _first_editor_control(child)
+		if nested != null: return nested
+	return null
 
 
 func _build_library() -> void:
@@ -1935,7 +2021,7 @@ func _build_library() -> void:
 	_library_dialog.add_child(scroll)
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(body)
-	body.add_child(_label("Stock aircraft", "CardTitle"))
+	var stock: VBoxContainer = _section(body, "StockAircraft", "Stock aircraft")
 	_base_selector = OptionButton.new()
 	_base_selector.name = "BaseAircraft"
 	_base_selector.fit_to_longest_item = false
@@ -1944,18 +2030,18 @@ func _build_library() -> void:
 		_base_selector.add_item(str(entry.get("name", entry.get("id", "Aircraft"))))
 		_base_selector.set_item_metadata(_base_selector.item_count - 1, str(entry.id))
 	_base_selector.item_selected.connect(_on_base_selected)
-	body.add_child(_base_selector)
+	stock.add_child(_base_selector)
 	var open_stock := _button("New build from selected aircraft", "", "OpenStockAircraft")
 	open_stock.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	open_stock.pressed.connect(func() -> void:
 		var target := str(_base_selector.get_item_metadata(_base_selector.selected))
 		_close_library()
 		request_navigation("Open another aircraft", _replace_aircraft.bind(target)))
-	body.add_child(open_stock)
+	stock.add_child(open_stock)
 	_aircraft_summary_label = _label("", "SecondaryLabel", true)
 	_aircraft_status_label = _label("", "SecondaryLabel", true)
-	body.add_child(_aircraft_summary_label)
-	body.add_child(_aircraft_status_label)
+	stock.add_child(_aircraft_summary_label)
+	stock.add_child(_aircraft_status_label)
 	_build_variants_panel(body)
 	_library_note = _label("", "SecondaryLabel", true)
 	_library_note.visible = false
@@ -2041,7 +2127,7 @@ func _open_library() -> void:
 	_refresh_variants()
 	_select_base(_base_id)
 	_trial_button.disabled = true
-	_library_dialog.popup_centered_clamped(Vector2i(680, 520), 0.9)
+	_library_dialog.popup_centered_clamped(Vector2i(880, 780), 0.9)
 	_refresh_thumbnail()
 	_base_selector.grab_focus()
 
@@ -2115,6 +2201,7 @@ func _set_page(page: String) -> void:
 			_body_scroll.ensure_control_visible(pending)
 		return
 	_active_page = page
+	_reset_button.visible = page != "compare"
 	_page_selector.select(PAGE_IDS.find(page))
 	_compact_view = false
 	for id: String in _page_nodes:
@@ -2315,7 +2402,7 @@ func _refresh_issues() -> void:
 	if not _presentation_errors.is_empty(): messages += ("\n" if not messages.is_empty() else "") + "\n".join(_presentation_errors)
 	for key: String in _factor_inputs:
 		var entry: LineEdit = _factor_inputs[key]
-		entry.tooltip_text = str(_invalid_fields.get(key, ""))
+		entry.tooltip_text = str(_invalid_fields.get(key, tr("Enter a multiplier; 1 keeps the original value.")))
 		if _invalid_fields.has(key):
 			entry.add_theme_color_override("font_color", _screen.theme.get_color("font_color", "ErrorLabel"))
 			messages += ("\n" if not messages.is_empty() else "") + str(_invalid_fields[key])
@@ -2353,7 +2440,7 @@ func _refresh_comparison() -> void:
 		_comparison_grid.remove_child(child)
 		child.queue_free()
 	for title: String in ["Value", "Original", "Draft", "Difference"]:
-		_comparison_cell(tr(title))
+		_comparison_cell(tr(title), true)
 	var summary: Dictionary = _compiled.get("summary", {})
 	var rows := 0
 	for spec: Array in [["wing_span_m", "Wing span (m)"], ["wing_area_m2", "Wing area (m²)"], ["mass_kg", "Mass (kg)"], ["wing_loading_kg_m2", "Wing loading (kg/m²)"], ["fuel_capacity_l", "Tank capacity (l)"], ["max_rpm", "Maximum RPM"], ["static_thrust_n", "Static thrust (N)"], ["static_power_w", "Static power (W)"]]:
@@ -2367,17 +2454,59 @@ func _refresh_comparison() -> void:
 		_comparison_cell(_format_metric_number(after, 2))
 		_comparison_cell(("+" if after >= before else "−") + _format_metric_number(absf(after - before), 2))
 		rows += 1
+	# Show existing recipe edits even when static summary metrics do not change.
+	for definition: Dictionary in Parameters.definitions().parameters:
+		if definition.kind != "number": continue
+		var value: float = float(_recipe.get(definition.key, definition.default))
+		var original: float = float(definition.default)
+		if not _all_values.button_pressed and is_equal_approx(value, original): continue
+		for cell: String in [tr(definition.label), _format_metric_number(original, 2) + "×", _format_metric_number(value, 2) + "×", ("+" if value >= original else "−") + _format_metric_number(absf(value - original), 2) + "×"]:
+			_comparison_cell(cell)
+		rows += 1
+	var policy: String = str(_recipe.get("mass_policy", "constant_wing_loading"))
+	if policy != "constant_wing_loading" or _all_values.button_pressed:
+		for cell: String in [tr("Mass scaling"), tr("Constant wing loading"), tr("Geometric" if policy == "geometric" else "Constant wing loading"), tr("Changed" if policy != "constant_wing_loading" else "Unchanged")]:
+			_comparison_cell(cell)
+		rows += 1
+	var measurements: int = _recipe.get("mass_edits", []).size()
+	if measurements > 0 or _all_values.button_pressed:
+		for cell: String in [tr("Measured components…"), "0", str(measurements), tr("Changed" if measurements > 0 else "Unchanged")]: _comparison_cell(cell)
+		rows += 1
 	for key: String in ["paint", "markings", "smoke"]:
 		var count: int = _presentation.get(key, []).size()
 		if count > 0 or _all_values.button_pressed:
 			for value: String in [tr(key.capitalize()), tr("Stock"), str(count), tr("Visual only")]: _comparison_cell(value)
 			rows += 1
+	var lighting: Dictionary = _presentation.get("lighting", Presentation.LightingProfile.defaults())
+	var lighting_changed: bool = lighting != Presentation.LightingProfile.defaults()
+	if lighting_changed or _all_values.button_pressed:
+		var lighting_label: String = tr("Use aircraft default")
+		if str(lighting.get("selection", "inherit")) == "disabled": lighting_label = tr("Disabled")
+		elif lighting_changed:
+			lighting_label = tr(Presentation.LightingProfile.label(str(lighting.get("preset_id", ""))))
+			if lighting_label.is_empty(): lighting_label = tr("Custom")
+		for cell: String in [tr("Lighting"), tr("Use aircraft default"), lighting_label, tr("Visual only")]: _comparison_cell(cell)
+		rows += 1
+	var audio: Dictionary = Presentation.MechanicalProfile.resolve(_presentation)
+	var stock_audio: Dictionary = Presentation.MechanicalProfile.defaults()
+	for spec: Array in [["servo_type", "Servo type"], ["servo_level", "Servo sound level"], ["retract_type", "Retract type"]]:
+		var key: String = spec[0]
+		if audio[key] == stock_audio[key] and not _all_values.button_pressed: continue
+		for cell: String in [tr(spec[1]), _audio_comparison_value(key, stock_audio[key]), _audio_comparison_value(key, audio[key]), tr("Sound only")]: _comparison_cell(cell)
+		rows += 1
 	if rows == 0: _comparison_cell(tr("No changes from the original."))
 
 
-func _comparison_cell(value: String) -> void:
-	var cell := _label(value, "SecondaryLabel", true, false)
+func _audio_comparison_value(key: String, value: Variant) -> String:
+	if key == "servo_level": return "%d%%" % roundi(float(value) * 100.0)
+	if key == "servo_type": return tr("High-Torque Servo" if value == "high_torque" else "Standard Servo")
+	return tr("Pneumatic" if value == "pneumatic" else "Mechanical / electric")
+
+
+func _comparison_cell(value: String, heading: bool = false) -> void:
+	var cell := _label(value, "SectionLabel" if heading else "SecondaryLabel", true, false)
 	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if heading: cell.add_theme_color_override("font_color", UiTheme.CRYSTAL)
 	_comparison_grid.add_child(cell)
 
 
@@ -2655,9 +2784,10 @@ func _build_audio_panel(parent: VBoxContainer) -> void:
 	panel.visible = false
 	parent.add_child(panel)
 	_page_nodes.audio = panel
-	panel.add_child(_label("Mechanical audio", "SectionLabel"))
+	panel.add_child(_label("Mechanical audio", "CardTitle", true))
 	panel.add_child(_label("Quiet onboard mechanisms follow actual surface and gear movement. Listen nearby with the engine off during Test fly.", "SecondaryLabel", true))
-	panel.add_child(_label("Servo type"))
+	var servos: VBoxContainer = _section(panel, "ServoAudioSettings", "Servos")
+	servos.add_child(_label("Servo type"))
 	_servo_type = OptionButton.new()
 	_servo_type.name = "ServoSoundType"
 	_servo_type.add_item(tr("Standard Servo"))
@@ -2666,9 +2796,9 @@ func _build_audio_panel(parent: VBoxContainer) -> void:
 		var config := Presentation.MechanicalProfile.resolve(_presentation)
 		config.servo_type = Presentation.MechanicalProfile.SERVO_TYPES[index]
 		_set_mechanical_audio(config))
-	panel.add_child(_servo_type)
+	servos.add_child(_servo_type)
 	_servo_level_label = _label("Servo sound level")
-	panel.add_child(_servo_level_label)
+	servos.add_child(_servo_level_label)
 	_servo_level = HSlider.new()
 	_servo_level.name = "ServoSoundLevel"
 	_servo_level.min_value = 0
@@ -2681,8 +2811,9 @@ func _build_audio_panel(parent: VBoxContainer) -> void:
 	_servo_level.drag_ended.connect(func(_changed: bool) -> void:
 		_servo_level_dragging = false
 		_commit_servo_level())
-	panel.add_child(_servo_level)
-	panel.add_child(_label("Retract type"))
+	servos.add_child(_servo_level)
+	var retracts: VBoxContainer = _section(panel, "RetractAudioSettings", "Retractable landing gear")
+	retracts.add_child(_label("Retract type"))
 	_retract_type = OptionButton.new()
 	_retract_type.name = "RetractSoundType"
 	_retract_type.add_item(tr("Mechanical / electric"))
@@ -2691,7 +2822,7 @@ func _build_audio_panel(parent: VBoxContainer) -> void:
 		var config := Presentation.MechanicalProfile.resolve(_presentation)
 		config.retract_type = Presentation.MechanicalProfile.RETRACT_TYPES[index]
 		_set_mechanical_audio(config))
-	panel.add_child(_retract_type)
+	retracts.add_child(_retract_type)
 	_audio_note = _label("", "SecondaryLabel", true)
 	panel.add_child(_audio_note)
 

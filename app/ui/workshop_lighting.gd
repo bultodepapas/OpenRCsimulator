@@ -82,16 +82,23 @@ func _ready() -> void:
 func _build_ui() -> void:
 	var title := Label.new()
 	title.text = tr("Lighting")
-	title.theme_type_variation = "SectionLabel"
+	title.theme_type_variation = "CardTitle"
 	add_child(title)
 	var note := Label.new()
 	note.text = tr("Choose a lighting style for this build. Preview time of day is temporary and does not change trial conditions.")
+	note.theme_type_variation = "SecondaryLabel"
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(note)
+	var style_label := Label.new()
+	style_label.text = tr("Lighting style")
+	style_label.theme_type_variation = "SectionLabel"
+	style_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	add_child(style_label)
 	_preset = OptionButton.new()
 	_preset.name = "LightingPreset"
 	_preset.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_preset.fit_to_longest_item = false
+	_preset.clip_text = true
 	_preset.add_item(tr("Use aircraft default"))
 	_preset.set_item_metadata(0, "inherit")
 	for preset_id: String in Profile.PRESET_IDS:
@@ -107,6 +114,7 @@ func _build_ui() -> void:
 	var brightness_row := HBoxContainer.new()
 	var brightness_label := Label.new()
 	brightness_label.text = tr("Brightness")
+	brightness_label.theme_type_variation = "SecondaryLabel"
 	brightness_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	brightness_row.add_child(brightness_label)
 	_brightness_value = Label.new()
@@ -130,6 +138,7 @@ func _build_ui() -> void:
 	add_child(_brightness_timer)
 	_summary = Label.new()
 	_summary.name = "LightingSummary"
+	_summary.theme_type_variation = "SecondaryLabel"
 	_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_summary)
 	_availability = Label.new()
@@ -148,6 +157,12 @@ func _build_ui() -> void:
 	_availability_details.visible = false
 	add_child(_availability_details)
 	_availability_button.toggled.connect(func(open: bool) -> void: _availability_details.visible = open)
+	add_child(HSeparator.new())
+	var details_label := Label.new()
+	details_label.text = tr("Detailed lighting")
+	details_label.theme_type_variation = "SectionLabel"
+	details_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	add_child(details_label)
 	_zone_button = Button.new()
 	_zone_button.name = "CustomizeLightingZones"
 	_zone_button.text = tr("Customize zones")
@@ -199,6 +214,11 @@ func _build_zone_controls() -> void:
 	_orientation_hint.name = "LightingOrientationHint"
 	_orientation_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_zone_section.add_child(_orientation_hint)
+	var zone_label := Label.new()
+	zone_label.text = tr("Lighting zone")
+	zone_label.theme_type_variation = "SectionLabel"
+	zone_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_zone_section.add_child(zone_label)
 	_zone_selector = OptionButton.new()
 	_zone_selector.name = "LightingZone"
 	_zone_selector.fit_to_longest_item = false
@@ -337,10 +357,12 @@ func _build_zone_controls() -> void:
 func _build_effect_controls() -> void:
 	var note := Label.new()
 	note.text = tr("Optional effects follow available registered anchors. Preview bursts start only when playback is requested.")
+	note.theme_type_variation = "SecondaryLabel"
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_effects_section.add_child(note)
 	var effect_hint := Label.new()
 	effect_hint.name = "LightingEffectHint"
+	effect_hint.theme_type_variation = "SecondaryLabel"
 	effect_hint.text = tr("Disabling an effect also removes that effect from saved sequence cues.")
 	effect_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_effects_section.add_child(effect_hint)

@@ -672,7 +672,7 @@ func _build_toolbar() -> void:
 	_inspect_button.toggle_mode = true
 	_inspect_button.pressed.connect(set_view_mode.bind("inspect"))
 	_mode_row.add_child(_inspect_button)
-	_compare_button = _make_button("Compare", "Compare original and draft at the same world scale.", "CompareMode")
+	_compare_button = _make_button("Compare size", "Compare original and draft at the same world scale.", "CompareMode")
 	_compare_button.toggle_mode = true
 	_compare_button.pressed.connect(set_view_mode.bind("compare"))
 	_mode_row.add_child(_compare_button)

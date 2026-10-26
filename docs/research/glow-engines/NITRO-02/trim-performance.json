@@ -1,0 +1,1032 @@
+{
+  "date": "2026-10-26",
+  "track": "NITRO-04",
+  "baseline_commit": "e2b4f901d856cbc020b47458ebed4cfdc345f71e",
+  "engine": "4.8-beta1 (official)",
+  "os": "Linux",
+  "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+  "conditions": {
+    "reference_speed_mps": 15.0,
+    "target_throttle": 0.5,
+    "max_speed_mps": 40.0,
+    "elevator_aileron_rudder_degrees": [
+      20,
+      20,
+      25
+    ],
+    "rounds": 3,
+    "sequence": "baseline, candidate, repeated three times; no agent test workloads overlapped timing",
+    "host_isolation": "not guaranteed; concurrent repository activity and observed load variation",
+    "timed_scope": "CruiseTrim.solve_level_at_throttle only, excluding load and serialization"
+  },
+  "cases": {
+    "gp_extra_300s_60": {
+      "baseline_seconds": [
+        5.530932,
+        5.620285,
+        9.092537
+      ],
+      "candidate_seconds": [
+        3.169978,
+        3.403088,
+        3.333727
+      ],
+      "baseline_median_seconds": 5.620285,
+      "candidate_median_seconds": 3.333727,
+      "median_reduction_percent": 40.68402225154062,
+      "all_results_byte_identical": true,
+      "result_sha256": "6ca0bacdde434425bfe48da892fc9844c4a830952d863941cef8b4e1c64a325f",
+      "individual_ratio_gate_075": [
+        true,
+        true,
+        true
+      ]
+    },
+    "stik_glow_55ax_2t": {
+      "baseline_seconds": [
+        4.740317,
+        5.369858,
+        4.950773
+      ],
+      "candidate_seconds": [
+        2.754399,
+        2.929445,
+        2.884669
+      ],
+      "baseline_median_seconds": 4.950773,
+      "candidate_median_seconds": 2.884669,
+      "median_reduction_percent": 41.73295766135914,
+      "all_results_byte_identical": true,
+      "result_sha256": "04204834176f1687ddb52be59500ecf6600b3009b57549607e5f06d4034fea15",
+      "individual_ratio_gate_075": [
+        true,
+        true,
+        true
+      ]
+    },
+    "stik_glow_55ax_2t_apc_13x6": {
+      "baseline_seconds": [
+        3.954725,
+        4.18748,
+        4.105528
+      ],
+      "candidate_seconds": [
+        2.254897,
+        2.379496,
+        2.351481
+      ],
+      "baseline_median_seconds": 4.105528,
+      "candidate_median_seconds": 2.351481,
+      "median_reduction_percent": 42.7240296497795,
+      "all_results_byte_identical": true,
+      "result_sha256": "f4b0e30a7a1dd57006f65837efbfc2c45674a1e64563e617ad72ba3ddfb39469",
+      "individual_ratio_gate_075": [
+        true,
+        true,
+        true
+      ]
+    },
+    "stik_glow_61fx_2t": {
+      "baseline_seconds": [
+        4.661916,
+        7.080075,
+        4.841017
+      ],
+      "candidate_seconds": [
+        2.680401,
+        2.728811,
+        4.807126
+      ],
+      "baseline_median_seconds": 4.841017,
+      "candidate_median_seconds": 2.728811,
+      "median_reduction_percent": 43.63145182097068,
+      "all_results_byte_identical": true,
+      "result_sha256": "8e3887b49164b28ff3a61d5b2f1e50eded6d605a4eade2b480708fc501b13c9e",
+      "individual_ratio_gate_075": [
+        true,
+        true,
+        false
+      ]
+    },
+    "stik_glow_fs64v_4t": {
+      "baseline_seconds": [
+        2.769467,
+        2.945811,
+        2.933762
+      ],
+      "candidate_seconds": [
+        1.607098,
+        1.67856,
+        1.679404
+      ],
+      "baseline_median_seconds": 2.933762,
+      "candidate_median_seconds": 1.67856,
+      "median_reduction_percent": 42.7847248686158,
+      "all_results_byte_identical": true,
+      "result_sha256": "360ab8f8ed20a9a4d1c01ec8c3492e31f456c09814ea4e6a149873265d4a7f13",
+      "individual_ratio_gate_075": [
+        true,
+        true,
+        true
+      ]
+    },
+    "stik_glow_fs64v_4t_apc_13x6": {
+      "baseline_seconds": [
+        3.727388,
+        3.786903,
+        3.881692
+      ],
+      "candidate_seconds": [
+        2.086356,
+        2.22356,
+        2.298761
+      ],
+      "baseline_median_seconds": 3.786903,
+      "candidate_median_seconds": 2.22356,
+      "median_reduction_percent": 41.282890002727825,
+      "all_results_byte_identical": true,
+      "result_sha256": "03b39b489532e26610723af70a0400551d0f98442b6c906ad93a67c2ddbf49e4",
+      "individual_ratio_gate_075": [
+        true,
+        true,
+        true
+      ]
+    }
+  },
+  "source_sha256": {
+    "app/physics/aero.gd": {
+      "baseline": "32e988fa1c850be8d171dcc90779951dbd0921dc1ca80be8c181e82e64b11131",
+      "candidate": "32e988fa1c850be8d171dcc90779951dbd0921dc1ca80be8c181e82e64b11131"
+    },
+    "app/physics/air_data.gd": {
+      "baseline": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b",
+      "candidate": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b"
+    },
+    "app/physics/aircraft_contact_contract.gd": {
+      "baseline": "ac53acf606d9c32b3ebabf603619a85b0d6f195361a7dd8acd9dd2b01e392fd2",
+      "candidate": "ac53acf606d9c32b3ebabf603619a85b0d6f195361a7dd8acd9dd2b01e392fd2"
+    },
+    "app/physics/aircraft_contract.gd": {
+      "baseline": "0214575e620a44c358a52c4605eaed3adc2a413a8c221847c56cf5929b492f74",
+      "candidate": "0214575e620a44c358a52c4605eaed3adc2a413a8c221847c56cf5929b492f74"
+    },
+    "app/physics/aircraft_data.gd": {
+      "baseline": "6774d52bc57267c0fa28529402cedd51244dbe09ecd1594e58d86d22e0a0fe47",
+      "candidate": "6774d52bc57267c0fa28529402cedd51244dbe09ecd1594e58d86d22e0a0fe47"
+    },
+    "app/physics/aircraft_ground_dynamics.gd": {
+      "baseline": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d",
+      "candidate": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d"
+    },
+    "app/physics/aircraft_ground_electric.gd": {
+      "baseline": null,
+      "candidate": "c2469baef28ee9bd635b2dfbd021cf065719c66918befbf2df07151be3086901"
+    },
+    "app/physics/aircraft_ground_impulse.gd": {
+      "baseline": "6d30c94a0f9043db8728cf4b794bbeb0f1eb49f3919a200f2fdd5f0738e5ce3e",
+      "candidate": "6d30c94a0f9043db8728cf4b794bbeb0f1eb49f3919a200f2fdd5f0738e5ce3e"
+    },
+    "app/physics/aircraft_ground_profile.gd": {
+      "baseline": "b51fa509a7c9685444f3cdf9cf27ed864dd6a1c25f38ab2eb5a54c324f790af2",
+      "candidate": "b51fa509a7c9685444f3cdf9cf27ed864dd6a1c25f38ab2eb5a54c324f790af2"
+    },
+    "app/physics/aircraft_ground_source.gd": {
+      "baseline": "5288f2c768e9efe25cb237c374c793a91fc1007c49c8da6f1227f2e78478f55f",
+      "candidate": "5288f2c768e9efe25cb237c374c793a91fc1007c49c8da6f1227f2e78478f55f"
+    },
+    "app/physics/aircraft_ground_stage.gd": {
+      "baseline": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056",
+      "candidate": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056"
+    },
+    "app/physics/aircraft_ground_step.gd": {
+      "baseline": "a94d756a1e8a41cf87aee94daeaacab9d7b834ca197ce0d7d60a5d76569816e0",
+      "candidate": "a94d756a1e8a41cf87aee94daeaacab9d7b834ca197ce0d7d60a5d76569816e0"
+    },
+    "app/physics/aircraft_ground_traction.gd": {
+      "baseline": "86987e1e3b036fca2c4b3dd7368308399a38fe14695adaffa0935b9863bc1b9c",
+      "candidate": "86987e1e3b036fca2c4b3dd7368308399a38fe14695adaffa0935b9863bc1b9c"
+    },
+    "app/physics/aircraft_modules.gd": {
+      "baseline": "b6601333e649e5a3bba4a0b5640c34a73d2d26d63b6e2b6022455d94f37370d5",
+      "candidate": "b6601333e649e5a3bba4a0b5640c34a73d2d26d63b6e2b6022455d94f37370d5"
+    },
+    "app/physics/atmosphere.gd": {
+      "baseline": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be",
+      "candidate": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be"
+    },
+    "app/physics/battery/battery_data.gd": {
+      "baseline": "d0649c7113284496c3257a10313e697f201452c514d28a098c179eba090efc3c",
+      "candidate": "d0649c7113284496c3257a10313e697f201452c514d28a098c179eba090efc3c"
+    },
+    "app/physics/battery/esc_supervisor.gd": {
+      "baseline": "df32dc65f89501f8ebe07c173abe821a8a5c569c79c97bbd003c9629b2e58c5d",
+      "candidate": "df32dc65f89501f8ebe07c173abe821a8a5c569c79c97bbd003c9629b2e58c5d"
+    },
+    "app/physics/battery/pack_ecm.gd": {
+      "baseline": "e8864ec2f991d711813851ee02f1075917a1dbe3d81668d60850c22a79333aa8",
+      "candidate": "e8864ec2f991d711813851ee02f1075917a1dbe3d81668d60850c22a79333aa8"
+    },
+    "app/physics/control_actuators.gd": {
+      "baseline": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+      "candidate": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988"
+    },
+    "app/physics/control_surfaces.gd": {
+      "baseline": "8c0054a2abe900225d0e0fafa7b3df3586e9d1de0e6dca5457be11635a0dd447",
+      "candidate": "8c0054a2abe900225d0e0fafa7b3df3586e9d1de0e6dca5457be11635a0dd447"
+    },
+    "app/physics/cruise_trim.gd": {
+      "baseline": "1efe9c4772551532dcf2c833a3ed19a79c88bd0c9ffd8323f84e9f6de11b3e0f",
+      "candidate": "1efe9c4772551532dcf2c833a3ed19a79c88bd0c9ffd8323f84e9f6de11b3e0f"
+    },
+    "app/physics/dynamics.gd": {
+      "baseline": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+      "candidate": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f"
+    },
+    "app/physics/effective_mass.gd": {
+      "baseline": "3ef462e14bc65ebcf4a99a78b8a064b9ec07715aaba60cd1fe30ab7453f9949f",
+      "candidate": "3ef462e14bc65ebcf4a99a78b8a064b9ec07715aaba60cd1fe30ab7453f9949f"
+    },
+    "app/physics/electric_battery_step.gd": {
+      "baseline": "abc7c83fa52b01120e9baaefef453564f5044b18a198127c3c5b2134f7472409",
+      "candidate": "abc7c83fa52b01120e9baaefef453564f5044b18a198127c3c5b2134f7472409"
+    },
+    "app/physics/electric_motor.gd": {
+      "baseline": "4abd3455f49d59dc26e51843225a617fcb36f0c74ff4fabc81d2f1a015b5de10",
+      "candidate": "4abd3455f49d59dc26e51843225a617fcb36f0c74ff4fabc81d2f1a015b5de10"
+    },
+    "app/physics/electric_stop.gd": {
+      "baseline": "b77284044eb4f890d8f83b5b282a12e0f36272b11ecd596d2b9512d1ae6b24ab",
+      "candidate": "b77284044eb4f890d8f83b5b282a12e0f36272b11ecd596d2b9512d1ae6b24ab"
+    },
+    "app/physics/electric_supply.gd": {
+      "baseline": "ebe6a97d19194bc397ab91cefa4a4afcb1a174b64b53efd741f8b41e22c81229",
+      "candidate": "ebe6a97d19194bc397ab91cefa4a4afcb1a174b64b53efd741f8b41e22c81229"
+    },
+    "app/physics/event_bracket.gd": {
+      "baseline": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "candidate": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf"
+    },
+    "app/physics/event_step.gd": {
+      "baseline": "92a5a1ed9d0505efb6b0db4397543a923b6088f22cdf2155c84ca56559141cc3",
+      "candidate": "92a5a1ed9d0505efb6b0db4397543a923b6088f22cdf2155c84ca56559141cc3"
+    },
+    "app/physics/fixed_datum_body.gd": {
+      "baseline": "769237849adb324297e36a5cc7ef3f1ed561329baaa08f259c375e23a8bbbf80",
+      "candidate": "769237849adb324297e36a5cc7ef3f1ed561329baaa08f259c375e23a8bbbf80"
+    },
+    "app/physics/flaps.gd": {
+      "baseline": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+      "candidate": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9"
+    },
+    "app/physics/flight_modes.gd": {
+      "baseline": "f38479967502a8735598c9a03e1c641f7809542e497c655bd5d3458b2406e7d1",
+      "candidate": "f38479967502a8735598c9a03e1c641f7809542e497c655bd5d3458b2406e7d1"
+    },
+    "app/physics/fuel_properties.gd": {
+      "baseline": "eabd2f37920f83936e869d28b1be5975d8d329e98906fe52b0da4af5cdece014",
+      "candidate": "eabd2f37920f83936e869d28b1be5975d8d329e98906fe52b0da4af5cdece014"
+    },
+    "app/physics/gear_damage.gd": {
+      "baseline": "8aa2cc1e966967ef191dfdad1d597253cecabefb741a3234158b081c258e5900",
+      "candidate": "8aa2cc1e966967ef191dfdad1d597253cecabefb741a3234158b081c258e5900"
+    },
+    "app/physics/generalized_coordinates.gd": {
+      "baseline": "7867bf12a92c07f6deb272977ac33516a522142801cddbe813c7e1b927f4c4bf",
+      "candidate": "7867bf12a92c07f6deb272977ac33516a522142801cddbe813c7e1b927f4c4bf"
+    },
+    "app/physics/glow/carburetor.gd": {
+      "baseline": "a09ccf8997001d4887517d8393d8fca9f401a997d2b40083a7a527ff29e71222",
+      "candidate": "a09ccf8997001d4887517d8393d8fca9f401a997d2b40083a7a527ff29e71222"
+    },
+    "app/physics/glow/flight.gd": {
+      "baseline": "37b5e2d58ffb3615a8aabcaceb26db4408835135723200d07fb5f6b4dd8b60a0",
+      "candidate": "37b5e2d58ffb3615a8aabcaceb26db4408835135723200d07fb5f6b4dd8b60a0"
+    },
+    "app/physics/glow/four_stroke.gd": {
+      "baseline": "a9d9a4151713955e2a3247349527f5181a0821b10770f4ae6f196ed1b3e22978",
+      "candidate": "a9d9a4151713955e2a3247349527f5181a0821b10770f4ae6f196ed1b3e22978"
+    },
+    "app/physics/glow/fuel_feed.gd": {
+      "baseline": "59f7138f9b3d15ac4f90c28a4bf107f07b63cdc57143b33094c6fe6082aaa81e",
+      "candidate": "59f7138f9b3d15ac4f90c28a4bf107f07b63cdc57143b33094c6fe6082aaa81e"
+    },
+    "app/physics/glow/fuel_mass.gd": {
+      "baseline": "43187d7495fcc2f1d19acfc511c8de8a7512b87cf094616e87ff4c2e47cb4f55",
+      "candidate": "43187d7495fcc2f1d19acfc511c8de8a7512b87cf094616e87ff4c2e47cb4f55"
+    },
+    "app/physics/glow/installation.gd": {
+      "baseline": "3573998883b3198a429b84dd66357d3cc50a45a65de4aaafac4fa8e900ab6d86",
+      "candidate": "3573998883b3198a429b84dd66357d3cc50a45a65de4aaafac4fa8e900ab6d86"
+    },
+    "app/physics/glow/lifecycle.gd": {
+      "baseline": "8cd07c65e6616f00fe2d701c00072e918e7dc884fc511b6bb20acbc637ab1e93",
+      "candidate": "8cd07c65e6616f00fe2d701c00072e918e7dc884fc511b6bb20acbc637ab1e93"
+    },
+    "app/physics/glow/operating_point.gd": {
+      "baseline": "bde850136dca7de8fa3fe43cd5f41cfa44ebe74c320ee84426dffb0290559c54",
+      "candidate": "6816403c17822303afd174783d64e4d794db99671bf63a1a7288e76b6420c71a",
+      "final_after_identifier_cleanup": "fe8f7718eaae59cb17279cb3b4fc2d4072e7e80e2e84376d0250ef55d7f45e7b"
+    },
+    "app/physics/glow/profile.gd": {
+      "baseline": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+      "candidate": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522"
+    },
+    "app/physics/glow/propeller.gd": {
+      "baseline": "fc6972d33b83e6926196671221654026043bc746bc0a2c4f39474d998538fa60",
+      "candidate": "fc6972d33b83e6926196671221654026043bc746bc0a2c4f39474d998538fa60"
+    },
+    "app/physics/glow/source.gd": {
+      "baseline": "57f729133ee2ab08843ab5adcdf06c1ca5bbed845f25655340118e5011dd0338",
+      "candidate": "57f729133ee2ab08843ab5adcdf06c1ca5bbed845f25655340118e5011dd0338"
+    },
+    "app/physics/glow/thermal.gd": {
+      "baseline": "597c51aec355366decafe6d70668f61156ca77f69330b72f554a34b98bb48e65",
+      "candidate": "597c51aec355366decafe6d70668f61156ca77f69330b72f554a34b98bb48e65"
+    },
+    "app/physics/glow/two_stroke.gd": {
+      "baseline": "10dc8b59d92e5335c7d5167adb9c4f29978618591db8fe8928ba21e45480b622",
+      "candidate": "10dc8b59d92e5335c7d5167adb9c4f29978618591db8fe8928ba21e45480b622"
+    },
+    "app/physics/glow/vibration.gd": {
+      "baseline": "d36c8159cca6a79aebea17676917b6e68b409fbc0028471f8a8071d9ac547a11",
+      "candidate": "d36c8159cca6a79aebea17676917b6e68b409fbc0028471f8a8071d9ac547a11"
+    },
+    "app/physics/ground_contact.gd": {
+      "baseline": "e1032b6109b32c2b27d86d5632873ca6ffdfc4767dae01db2fac84831cc95f79",
+      "candidate": "e1032b6109b32c2b27d86d5632873ca6ffdfc4767dae01db2fac84831cc95f79"
+    },
+    "app/physics/ground_effect.gd": {
+      "baseline": "6a894daae49ce8be335b6628549df9ef7886a2b379adb90ea2441e631dae0555",
+      "candidate": "6a894daae49ce8be335b6628549df9ef7886a2b379adb90ea2441e631dae0555"
+    },
+    "app/physics/ground_start.gd": {
+      "baseline": "7885f2bc4833dc1071236b623259da4ca99eabdf01d01377927754ff0f8b35a9",
+      "candidate": "7885f2bc4833dc1071236b623259da4ca99eabdf01d01377927754ff0f8b35a9"
+    },
+    "app/physics/ground_support.gd": {
+      "baseline": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+      "candidate": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e"
+    },
+    "app/physics/ground_surfaces.gd": {
+      "baseline": "0bc7f3638920841a294690c81b5b19d90bfb14431bf6f7788e6f2ac708758128",
+      "candidate": "0bc7f3638920841a294690c81b5b19d90bfb14431bf6f7788e6f2ac708758128"
+    },
+    "app/physics/ground_terrain.gd": {
+      "baseline": "be73da9cc010283b0e5a95b6be56febbf90af58ea567b17b957b0396050ee2e7",
+      "candidate": "be73da9cc010283b0e5a95b6be56febbf90af58ea567b17b957b0396050ee2e7"
+    },
+    "app/physics/ground_traction.gd": {
+      "baseline": "f62986759a84c674c9624c0ddc083f8d4e2650b284dd1ec1f90ae46b2fa65566",
+      "candidate": "f62986759a84c674c9624c0ddc083f8d4e2650b284dd1ec1f90ae46b2fa65566"
+    },
+    "app/physics/ground_vehicle/airfield_course.gd": {
+      "baseline": "3d441a46b7344ab17a78d187e95acffa0589acc4b44a21b37f743b75bc676db1",
+      "candidate": "3d441a46b7344ab17a78d187e95acffa0589acc4b44a21b37f743b75bc676db1"
+    },
+    "app/physics/ground_vehicle/airfield_track.gd": {
+      "baseline": "13dac138e7228145fa55fd7db44102c4ae942d6e6a148cedb0199904b0b03629",
+      "candidate": "13dac138e7228145fa55fd7db44102c4ae942d6e6a148cedb0199904b0b03629"
+    },
+    "app/physics/ground_vehicle/course.gd": {
+      "baseline": "313b43fe7e4816c54d4647c21644a2337640e1510536dcaaa95794f884bf0ca6",
+      "candidate": "313b43fe7e4816c54d4647c21644a2337640e1510536dcaaa95794f884bf0ca6"
+    },
+    "app/physics/ground_vehicle/four_corner.gd": {
+      "baseline": "1c5107890b587bbea988534cd50f3515545c9faec88b46c70bb9813adcb3ca6f",
+      "candidate": "1c5107890b587bbea988534cd50f3515545c9faec88b46c70bb9813adcb3ca6f"
+    },
+    "app/physics/ground_vehicle/nitro_dynamics.gd": {
+      "baseline": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+      "candidate": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa"
+    },
+    "app/physics/ground_vehicle/quarter_car.gd": {
+      "baseline": "8ff27ae9d66f50f2b6f60b6532f01d27944037a8fa54ff5d951e8e81d8ba37ad",
+      "candidate": "8ff27ae9d66f50f2b6f60b6532f01d27944037a8fa54ff5d951e8e81d8ba37ad"
+    },
+    "app/physics/ground_vehicle/support_bench_data.gd": {
+      "baseline": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289",
+      "candidate": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289"
+    },
+    "app/physics/ground_vehicle/suspension_bench_data.gd": {
+      "baseline": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb",
+      "candidate": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb"
+    },
+    "app/physics/ground_vehicle/vehicle_damage.gd": {
+      "baseline": "682a41701ec516f55cf8250f0ef6755efdddb5ad77538f8cc7b62fc725f0ae56",
+      "candidate": "682a41701ec516f55cf8250f0ef6755efdddb5ad77538f8cc7b62fc725f0ae56"
+    },
+    "app/physics/ground_vehicle/vehicle_data.gd": {
+      "baseline": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae",
+      "candidate": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae"
+    },
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": {
+      "baseline": "a8d6c1d6790160ff180803ccacae997219c57b1aaa1a345c996a8abb515bb460",
+      "candidate": "a8d6c1d6790160ff180803ccacae997219c57b1aaa1a345c996a8abb515bb460"
+    },
+    "app/physics/ground_vehicle/vehicle_environment.gd": {
+      "baseline": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+      "candidate": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"
+    },
+    "app/physics/ground_wheels.gd": {
+      "baseline": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da",
+      "candidate": "a91217bd580700b5b130f057902248f8ed1da3650632c9653fa3c9a4f37600da"
+    },
+    "app/physics/hull_contact.gd": {
+      "baseline": "90af5a58ca83954f717a8f7964453d5a3609493b7c502e5b9ba51bbbcd9f4845",
+      "candidate": "90af5a58ca83954f717a8f7964453d5a3609493b7c502e5b9ba51bbbcd9f4845"
+    },
+    "app/physics/hull_crossing.gd": {
+      "baseline": "81a326470188b0d249e512150352e9fb2b4a2bea467650e9356c9d719c15c650",
+      "candidate": "81a326470188b0d249e512150352e9fb2b4a2bea467650e9356c9d719c15c650"
+    },
+    "app/physics/impact_snapshot.gd": {
+      "baseline": "ead4ce710cd26ad0c20a1188d5232ebd62351662880c29c645be904869c01dd0",
+      "candidate": "ead4ce710cd26ad0c20a1188d5232ebd62351662880c29c645be904869c01dd0"
+    },
+    "app/physics/integrator.gd": {
+      "baseline": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
+      "candidate": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311"
+    },
+    "app/physics/lake_surface.gd": {
+      "baseline": "6d4b6e68076bc852bbcc13b32e61bec36fbb67db7786145eb7bd32f0e2845049",
+      "candidate": "6d4b6e68076bc852bbcc13b32e61bec36fbb67db7786145eb7bd32f0e2845049"
+    },
+    "app/physics/linearize.gd": {
+      "baseline": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1",
+      "candidate": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1"
+    },
+    "app/physics/liquid_fuel.gd": {
+      "baseline": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+      "candidate": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a"
+    },
+    "app/physics/mass_inventory.gd": {
+      "baseline": "1fa317ae0258b4d48e1d6e14396b3e3adc6b29e31e1082ec6a0565b20bf1366d",
+      "candidate": "1fa317ae0258b4d48e1d6e14396b3e3adc6b29e31e1082ec6a0565b20bf1366d"
+    },
+    "app/physics/math3d.gd": {
+      "baseline": "0900f64c04a913ebbd5cd0a3836a77338da1945c8a515d1a032fb7f6c104f3d1",
+      "candidate": "0900f64c04a913ebbd5cd0a3836a77338da1945c8a515d1a032fb7f6c104f3d1"
+    },
+    "app/physics/multirotor/airframe.gd": {
+      "baseline": "50787469821ef326206a42d37eb604edcaf9a4d9b529b2bf5896c79e8be1a9af",
+      "candidate": "50787469821ef326206a42d37eb604edcaf9a4d9b529b2bf5896c79e8be1a9af"
+    },
+    "app/physics/multirotor/plant.gd": {
+      "baseline": "c11a5900c02d311fd8222917123ebcdae931bff25bf861d8a5a1969f4b8a0ce4",
+      "candidate": "c11a5900c02d311fd8222917123ebcdae931bff25bf861d8a5a1969f4b8a0ce4"
+    },
+    "app/physics/multirotor/powertrain.gd": {
+      "baseline": "027ab3cc2cf3f446d70eec96a7c7f00d7781a1e15230fce2b50a6ef6df53d39b",
+      "candidate": "027ab3cc2cf3f446d70eec96a7c7f00d7781a1e15230fce2b50a6ef6df53d39b"
+    },
+    "app/physics/multirotor/rotor.gd": {
+      "baseline": "7ecac47974f6d9661c5f45a19689150100cc550d52c0017795dc7fa806101167",
+      "candidate": "7ecac47974f6d9661c5f45a19689150100cc550d52c0017795dc7fa806101167"
+    },
+    "app/physics/normal_compliance.gd": {
+      "baseline": "f25ab43bb9ffe6f120fe4480fc5173a7ccf1b2cb4d0cba7c93d7f0574da8708b",
+      "candidate": "f25ab43bb9ffe6f120fe4480fc5173a7ccf1b2cb4d0cba7c93d7f0574da8708b"
+    },
+    "app/physics/normal_contact_admission.gd": {
+      "baseline": "da30e0f08c2cbee2c484b7107297770f20349255980e7d64ae56bc0997f308cc",
+      "candidate": "da30e0f08c2cbee2c484b7107297770f20349255980e7d64ae56bc0997f308cc"
+    },
+    "app/physics/physical_identity.gd": {
+      "baseline": "af80165c937ea486858265da2c6d560d534319c399dbf8d2326c49547c83f628",
+      "candidate": "af80165c937ea486858265da2c6d560d534319c399dbf8d2326c49547c83f628"
+    },
+    "app/physics/propulsion.gd": {
+      "baseline": "e515fb3eaa513cb2508cad7c9a8ed8cf164f9196c69ba11ec52795cb8cc9dcf8",
+      "candidate": "e515fb3eaa513cb2508cad7c9a8ed8cf164f9196c69ba11ec52795cb8cc9dcf8"
+    },
+    "app/physics/resource_event_step.gd": {
+      "baseline": "f19951bf468ad3c9f45197c7427600922c555ffcb0d8b3fb622c1c02aab819f7",
+      "candidate": "f19951bf468ad3c9f45197c7427600922c555ffcb0d8b3fb622c1c02aab819f7"
+    },
+    "app/physics/retractable_gear.gd": {
+      "baseline": "3a08b68085e2aab67dca9a591bf7bdb3d85d51a209353e1d96415af1576123a4",
+      "candidate": "3a08b68085e2aab67dca9a591bf7bdb3d85d51a209353e1d96415af1576123a4"
+    },
+    "app/physics/rigid_body.gd": {
+      "baseline": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+      "candidate": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce"
+    },
+    "app/physics/rotor_coupling.gd": {
+      "baseline": "374ec8f4f47a36ab4256d95898dd2ef4a656c016be9280eb0cb187ec32d9bcff",
+      "candidate": "374ec8f4f47a36ab4256d95898dd2ef4a656c016be9280eb0cb187ec32d9bcff"
+    },
+    "app/physics/rotorcraft/aerodynamic_stage.gd": {
+      "baseline": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd",
+      "candidate": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd"
+    },
+    "app/physics/rotorcraft/airframe.gd": {
+      "baseline": "3b621913524ddf502b801f794c84c13366ce777dd4dca9efc28d340781078832",
+      "candidate": "3b621913524ddf502b801f794c84c13366ce777dd4dca9efc28d340781078832"
+    },
+    "app/physics/rotorcraft/drive.gd": {
+      "baseline": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e",
+      "candidate": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e"
+    },
+    "app/physics/rotorcraft/dynamic_inflow.gd": {
+      "baseline": "cf5f381cf4f1a4de4efe844e9c3a4b1c4f6d1a780973f768431940fccb02b975",
+      "candidate": "cf5f381cf4f1a4de4efe844e9c3a4b1c4f6d1a780973f768431940fccb02b975"
+    },
+    "app/physics/rotorcraft/electronics.gd": {
+      "baseline": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+      "candidate": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f"
+    },
+    "app/physics/rotorcraft/flight_dynamics.gd": {
+      "baseline": "5ba3df0b9ea867a615a8d93e53a5a3ce207559d26f17867e5667cb3d8de26514",
+      "candidate": "5ba3df0b9ea867a615a8d93e53a5a3ce207559d26f17867e5667cb3d8de26514"
+    },
+    "app/physics/rotorcraft/geared_coupling.gd": {
+      "baseline": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1",
+      "candidate": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1"
+    },
+    "app/physics/rotorcraft/ground_start.gd": {
+      "baseline": "4c65de9104610526d0aa1fec0e6480fd8b5b9b967a7dbeaa51a0468a58bdd92b",
+      "candidate": "4c65de9104610526d0aa1fec0e6480fd8b5b9b967a7dbeaa51a0468a58bdd92b"
+    },
+    "app/physics/rotorcraft/hx700_flex_bench.gd": {
+      "baseline": "26a14fbc18feded9abbd710c53ce589d9c98d0e8ef6c128f00fb0317449dcfef",
+      "candidate": "26a14fbc18feded9abbd710c53ce589d9c98d0e8ef6c128f00fb0317449dcfef"
+    },
+    "app/physics/rotorcraft/impact_detector.gd": {
+      "baseline": "9f2bda0bea24955765251b04a6e5f98d48b4321596d9c18bdac66a70b48fb5f6",
+      "candidate": "9f2bda0bea24955765251b04a6e5f98d48b4321596d9c18bdac66a70b48fb5f6"
+    },
+    "app/physics/rotorcraft/inflow.gd": {
+      "baseline": "8b33aaf47d5515f8074d1041b1749b21860e3c008c4744ba72c4570b38c8a29d",
+      "candidate": "8b33aaf47d5515f8074d1041b1749b21860e3c008c4744ba72c4570b38c8a29d"
+    },
+    "app/physics/rotorcraft/lifecycle.gd": {
+      "baseline": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c",
+      "candidate": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c"
+    },
+    "app/physics/rotorcraft/main_rotor.gd": {
+      "baseline": "7387c530f86e1e8a1ef0c33d42e0f3f1796d0df52b43ff1ef8e6c70a7a5c8b87",
+      "candidate": "7387c530f86e1e8a1ef0c33d42e0f3f1796d0df52b43ff1ef8e6c70a7a5c8b87"
+    },
+    "app/physics/rotorcraft/main_rotor_stage.gd": {
+      "baseline": "c94e0951df0400b71d8ef33c5e53007d11f2cdb8b6c97fa692f6c8ad81ac921d",
+      "candidate": "c94e0951df0400b71d8ef33c5e53007d11f2cdb8b6c97fa692f6c8ad81ac921d"
+    },
+    "app/physics/rotorcraft/performance_context.gd": {
+      "baseline": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0",
+      "candidate": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0"
+    },
+    "app/physics/rotorcraft/simulation_step_adapter.gd": {
+      "baseline": "1655d08242b70ff2646a5813d61f46d46fafa705b4e9db0feed9dc0002a0d13c",
+      "candidate": "1655d08242b70ff2646a5813d61f46d46fafa705b4e9db0feed9dc0002a0d13c"
+    },
+    "app/physics/rotorcraft/skid_contact.gd": {
+      "baseline": "9207684b706216dadf5e83e66b4bce00793a6978b7b0938f3cecc3460d9e1adc",
+      "candidate": "9207684b706216dadf5e83e66b4bce00793a6978b7b0938f3cecc3460d9e1adc"
+    },
+    "app/physics/rotorcraft/swash.gd": {
+      "baseline": "f8f8aaacb7c1592ae2fce4e1d96b5868693501edd18a4b2ebdf0c845c8003944",
+      "candidate": "f8f8aaacb7c1592ae2fce4e1d96b5868693501edd18a4b2ebdf0c845c8003944"
+    },
+    "app/physics/rotorcraft/tail_rotor.gd": {
+      "baseline": "bddf7219cfe66250d0f8744496f371cb7981f4dc67b1bae4382322b321993357",
+      "candidate": "bddf7219cfe66250d0f8744496f371cb7981f4dc67b1bae4382322b321993357"
+    },
+    "app/physics/rotorcraft/trim.gd": {
+      "baseline": "7013bcd37be312dc30656b59dfdd6b487a7fc8f0f23fc89ba19b5f1e60992c9c",
+      "candidate": "7013bcd37be312dc30656b59dfdd6b487a7fc8f0f23fc89ba19b5f1e60992c9c"
+    },
+    "app/physics/rotorcraft_data.gd": {
+      "baseline": "248884bb77039fcf7d3485b7b2dac59c1b441dcbc30de51f1a7197cd0779bffe",
+      "candidate": "248884bb77039fcf7d3485b7b2dac59c1b441dcbc30de51f1a7197cd0779bffe"
+    },
+    "app/physics/slipstream.gd": {
+      "baseline": "83cf72444ea59a315cbdcda579c9d72e7ff2590af3e666339fe968f68c04f01b",
+      "candidate": "83cf72444ea59a315cbdcda579c9d72e7ff2590af3e666339fe968f68c04f01b"
+    },
+    "app/physics/swirl_loads.gd": {
+      "baseline": "c0213ca06cfe9e265f2c442aa144524f3ea8b29a17724845116359235dc8a0eb",
+      "candidate": "c0213ca06cfe9e265f2c442aa144524f3ea8b29a17724845116359235dc8a0eb"
+    },
+    "app/physics/trim.gd": {
+      "baseline": "91fd8aa614c20219da9edf50aebd7ad62cd3db4b08ef28e4ef9d00dcedd79f66",
+      "candidate": "91fd8aa614c20219da9edf50aebd7ad62cd3db4b08ef28e4ef9d00dcedd79f66"
+    },
+    "app/physics/turbine.gd": {
+      "baseline": "0f3c9cecab831ed6894637bb92c50bb15e0139127165ec6b8c857f0ba528b8a2",
+      "candidate": "0f3c9cecab831ed6894637bb92c50bb15e0139127165ec6b8c857f0ba528b8a2"
+    },
+    "app/physics/wash_transport.gd": {
+      "baseline": "e71e2ffa272a81a1591900a506b0a9ce1234e9949ac8787d34ab1e19139b5606",
+      "candidate": "e71e2ffa272a81a1591900a506b0a9ce1234e9949ac8787d34ab1e19139b5606"
+    },
+    "app/physics/wheel_coupling.gd": {
+      "baseline": "da6e39d0109f56963194e4609a7d3d4f8c40cb2db1db4058c5b1aca59c9e9e0f",
+      "candidate": "da6e39d0109f56963194e4609a7d3d4f8c40cb2db1db4058c5b1aca59c9e9e0f"
+    },
+    "app/physics/wheel_geometry.gd": {
+      "baseline": "9f13c3692266b22f0d8d613761f2d207b04c5110ca08f32fcb6af00f7cef8a21",
+      "candidate": "9f13c3692266b22f0d8d613761f2d207b04c5110ca08f32fcb6af00f7cef8a21"
+    },
+    "app/physics/wheel_profiles.gd": {
+      "baseline": "7cc4f860c23b5127bba1959a85d7dde601378cfa98284fa3b3579f75dabee26d",
+      "candidate": "7cc4f860c23b5127bba1959a85d7dde601378cfa98284fa3b3579f75dabee26d"
+    },
+    "app/physics/wind_aircraft_flow.gd": {
+      "baseline": "9ac737f85a105b0afe0524204e56d0b5824bad1f731d71662ef02d2ab8e0cea7",
+      "candidate": "9ac737f85a105b0afe0524204e56d0b5824bad1f731d71662ef02d2ab8e0cea7"
+    },
+    "app/physics/wind_config.gd": {
+      "baseline": "ded77f0060cf8336f51ae47ed7fea0452e7b3d8047cbdd816b0b3c2404807884",
+      "candidate": "ded77f0060cf8336f51ae47ed7fea0452e7b3d8047cbdd816b0b3c2404807884"
+    },
+    "app/physics/wind_field.gd": {
+      "baseline": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+      "candidate": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776"
+    },
+    "app/physics/wind_spatial_config.gd": {
+      "baseline": "75486c40764a625fc89836fb8362b420dc82d9c1929cd2588200bd08a869188f",
+      "candidate": "75486c40764a625fc89836fb8362b420dc82d9c1929cd2588200bd08a869188f"
+    },
+    "app/physics/wind_spatial_field.gd": {
+      "baseline": "218908e722fa89347ccdd20423bedac9f0358f970b47661a4ec42cfa1bcf3130",
+      "candidate": "218908e722fa89347ccdd20423bedac9f0358f970b47661a4ec42cfa1bcf3130"
+    },
+    "app/physics/wind_spatial_presets.gd": {
+      "baseline": "e30f098e75fbba3e65e59d469c64b0b08727cad20e8bf9dddc3041ac89d23150",
+      "candidate": "e30f098e75fbba3e65e59d469c64b0b08727cad20e8bf9dddc3041ac89d23150"
+    },
+    "app/physics/wind_thermal_field.gd": {
+      "baseline": "7952776560fbd6e3cb4379d47ee7d77da97720605b7b64f0c9a838114fa54d66",
+      "candidate": "7952776560fbd6e3cb4379d47ee7d77da97720605b7b64f0c9a838114fa54d66"
+    },
+    "app/physics/wind_turbulence.gd": {
+      "baseline": "460fca93f7df0ef3ff2dbb6d3cdd5ca8e6f6f16bf7124a513d872aa8f49375cc",
+      "candidate": "460fca93f7df0ef3ff2dbb6d3cdd5ca8e6f6f16bf7124a513d872aa8f49375cc"
+    },
+    "app/physics/wing_polar.gd": {
+      "baseline": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+      "candidate": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be"
+    },
+    "research/glow-engines/perf/trim_probe.gd": {
+      "candidate": "1f2b8d20417dec0d734fd33ced1c8e7d4a7f747e7498c96b5d0ebe6e9198c451"
+    },
+    "app/tests/test_glow_operating_reuse.gd": {
+      "candidate": "27e539cb508dcd8496f3dae08f44a3fda059cd097c3fa856fde7be033220c785",
+      "final_after_identifier_cleanup": "44bddcc3cdcd44370c49a4d4a9660f6a6e55be478be365f0537af912d0758912"
+    }
+  },
+  "input_sha256": {
+    "app/data/glow/extra_61fx_2t.json": "84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8",
+    "app/data/glow/openrc-glow-engine-v1.schema.json": "cb19a66c457c87c4092be9bd86be33f0781712aef6a1bbcf3412eb0ceb1cb0fc",
+    "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+    "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+    "app/data/glow/os_max_61fx_candidate.json": "5e6fec165cf5b5a122a9dc1672436dac5004714cc3534cb075e94aad86ef4df4",
+    "app/data/glow/os_max_61fx_installed_candidate.json": "462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e",
+    "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+    "app/data/glow/stik_55ax_2t.json": "0da0ff8f8dcaf8e877009819916a2c84f62863afafc130f4b4b0811a5aa0814d",
+    "app/data/glow/stik_55ax_2t_apc_13x6.json": "eb54135e02036286ea78d5fc8f96bed1b4f58c9aab2aa811377db39dbc08db86",
+    "app/data/glow/stik_61fx_2t.json": "03d8412fa7dd579b4853264d3987a164a7c34cb558332f621ae90c98fe035c0e",
+    "app/data/glow/stik_fs64v_4t.json": "d143392e35da1149c58d06e9f5b45afeaaba0140f2fba52efd3367d4a940657e",
+    "app/data/glow/stik_fs64v_4t_apc_13x6.json": "18745638156c3981313d6d38fc5b56ce6b87f872aad1d7fe93b9c3eebdabe619",
+    "app/data/aircraft/gp_extra_300s_60.json": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
+    "app/data/aircraft/stik_glow_55ax_2t.json": "742a19d5411c01f81d9fa4c5627803bfde059c3d4ed1082fe82e089dbf55397a",
+    "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "1537bfcd00b52690c87c921eca0ad5d744b70e9225951993dfd390238f9a8c03",
+    "app/data/aircraft/stik_glow_61fx_2t.json": "ff43a548cbf8b080a720ab3f912bf6aef0cb9f1c52410c0b022f797294cb5be1",
+    "app/data/aircraft/stik_glow_fs64v_4t.json": "942cca1364cacf61c9a5c0d066ef9bfc99dc9be9c86b0c30cefec19eb3c9c182",
+    "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "bd2b66db059c19b07446e57bd11b94bca44f301059b8ac4228a9ab7ab462e232"
+  },
+  "notes": [
+    "Baseline-vs-baseline ratio gate intentionally failed, reproducing the performance regression signal.",
+    "Candidate round 3 failed the per-pair ratio gate for 61FX (0.993) during concurrent host activity; retain this outlier. All six median ratios pass 0.75.",
+    "Complete trim serialization is identical, including state, all result fields and iteration counts. No aircraft data or golden flights re-recorded.",
+    "This is software parity and local CPU latency evidence, not physical or release qualification.",
+    "After the measured/33-test version, renamed local variables load to propeller_load in the runtime and root to root_rpm in the frozen test to clear compiler warnings; no expressions or control flow changed. The 114-check operating-point regression was rerun on the final source."
+  ],
+  "verification": {
+    "checked_runner_command": "python3 tools/godot/run_checked.py --timeout 300 -- <pinned godot> --headless --path app --script res://tests/<test>",
+    "scripts": [
+      {
+        "test": "test_glow_audio.gd",
+        "exit": 0,
+        "seconds": 0.897,
+        "log_sha256": "ef6cb596243e86190532f0ba66288889624c9dd9e600ba7de59bacdddda182d5",
+        "summary": [
+          "42 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_audio_pump.gd",
+        "exit": 0,
+        "seconds": 1.274,
+        "log_sha256": "d42e49424e03c54ffdd60c206ac47ea595cd62be3a00d4188e00fcf76e20366a",
+        "summary": [
+          "20 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_carburetor.gd",
+        "exit": 0,
+        "seconds": 0.332,
+        "log_sha256": "335dc70ba05d478b9966e0eed91718e8bd81faf0c867d27ee4de49a24a460d24",
+        "summary": [
+          "Glow carburettor: 58 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_coupling.gd",
+        "exit": 0,
+        "seconds": 4.152,
+        "log_sha256": "d97bd9ce7e2beac3faf10661a218a34c479fd6854638e6a05aefb8c18d642137",
+        "summary": [
+          "glow shaft/prop coupling: 65 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_dive_support.gd",
+        "exit": 0,
+        "seconds": 24.607,
+        "log_sha256": "8fafb4e8949df0a2b4e87854f484185942346c6691e31204da83f32e41781983",
+        "summary": [
+          "NITRO-61FX-R1 dive support: 10 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_equilibrium.gd",
+        "exit": 0,
+        "seconds": 2.204,
+        "log_sha256": "6308440846dbbea34357382bebff7e7710192c7b5873630001b128f53d8f7be0",
+        "summary": [
+          "Glow equilibria: 196 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_flight_physics.gd",
+        "exit": 0,
+        "seconds": 1.54,
+        "log_sha256": "b0046c7ebecf22f7b3e34d0c66e8b82bd417f42c62e7f8fb683b9b65e4946a87",
+        "summary": [
+          "glow flight physics: 110 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_four_stroke.gd",
+        "exit": 0,
+        "seconds": 0.325,
+        "log_sha256": "2ec4b19b78558bd4a344199fea52df854ed9a0ff0c23d217d9c8454d9d15149d",
+        "summary": [
+          "304 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_fuel_feed.gd",
+        "exit": 0,
+        "seconds": 5.928,
+        "log_sha256": "6d41af19b2dffcdb23cab55866b21702ecf39a36eafa1b5f90f625c3ccfe853a",
+        "summary": [
+          "NITRO-05 fuel feed: 41 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_hub_inflow.gd",
+        "exit": 0,
+        "seconds": 1.538,
+        "log_sha256": "e630ab2befa01eeac824cd164dd691199d3b26eafb1c9abe55343f8f988bcb18",
+        "summary": [
+          "Glow hub inflow: 168 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_installation.gd",
+        "exit": 0,
+        "seconds": 1.823,
+        "log_sha256": "8afa6443db5d759e87dce8c0a22b9d87e4c28d6b44d8ec985664879732206a9e",
+        "summary": [
+          "glow installation contract: 362 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_lifecycle.gd",
+        "exit": 0,
+        "seconds": 0.312,
+        "log_sha256": "e69819cac7aa71de7169936b746aa19bf1d5ed2760412bc7fc8ef365030dfa51",
+        "summary": [
+          "NITRO lifecycle: 52 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_operating_reuse.gd",
+        "exit": 0,
+        "seconds": 3.419,
+        "log_sha256": "1b916fb30bf4fbfbe1fa647f61eabdc987ffec6b7eeeea9f245fc2b745c2251d",
+        "summary": [
+          "Glow operating-point reuse: 114 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_oracle.gd",
+        "exit": 0,
+        "seconds": 0.335,
+        "log_sha256": "815e68a9cfbe3947bf22e4358fd02ff4374ef327005b45db756ac8c307825223",
+        "summary": [
+          "723 checks, 0 failed (36 oracle vectors)"
+        ]
+      },
+      {
+        "test": "test_glow_prepared.gd",
+        "exit": 0,
+        "seconds": 0.512,
+        "log_sha256": "700f2dbeeed08acf6b5555ed422ab90bc4e4f0eed4e9f4e620aeb63cfd713a8a",
+        "summary": [
+          "NITRO prepared evaluator: 580 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_profiles.gd",
+        "exit": 0,
+        "seconds": 0.311,
+        "log_sha256": "4fb2f1bd3c30850356cd40f20cc69347a1a8c1dd5a303bda3cd26d1a89592295",
+        "summary": [
+          "NITRO profiles: 53 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_propeller_camber.gd",
+        "exit": 0,
+        "seconds": 0.327,
+        "log_sha256": "fb9e7f333e3e629214b0fbc4484bd591900cd5f50aedfe569d94d37873895c8c",
+        "summary": [
+          "EX-14f propeller camber: 10 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_propeller_momentum.gd",
+        "exit": 0,
+        "seconds": 1.439,
+        "log_sha256": "30ec2709046a1f798ba41b1a55103500895961a6c708a9d0394d43bc14c9acac",
+        "summary": [
+          "glow propeller momentum: 63 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_propeller_prepared.gd",
+        "exit": 0,
+        "seconds": 1.253,
+        "log_sha256": "3cee61aa82fecaee6a0c1a443458627379cf2e0ffd99b68f340bd8bd7afc6ce2",
+        "summary": [
+          "glow propeller prepared: 38 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_session.gd",
+        "exit": 0,
+        "seconds": 48.022,
+        "log_sha256": "980c2c3bc1b07962708bc89c4eb7e8d8128db7b20ebb2240b183431cdbde3cf1",
+        "summary": [
+          "Glow session: 140 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_stage_reuse.gd",
+        "exit": 0,
+        "seconds": 4.143,
+        "log_sha256": "49005664c55701b38e2a854ae2eb8ac1e30c70e757706e3ac062d6fa4e14a2e2",
+        "summary": [
+          "Glow stage reuse: 2005 comparisons, 0 failed (2000 byte-exact load checks)"
+        ]
+      },
+      {
+        "test": "test_glow_thermal.gd",
+        "exit": 0,
+        "seconds": 0.335,
+        "log_sha256": "8ffed6e38c1a94d8bcf345cc735d6d53afc996b860a28f02c207e4386b5cf43c",
+        "summary": [
+          "NITRO thermal: 15 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_trace.gd",
+        "exit": 0,
+        "seconds": 4.712,
+        "log_sha256": "eac5b699b670f547b3020e1766ddafb2fc3d41df22d5720d124bb5333fec10b1",
+        "summary": [
+          "NITRO-TRACE: 286 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_two_stroke.gd",
+        "exit": 0,
+        "seconds": 0.337,
+        "log_sha256": "8972e46bd31e652bb768bf590bb61b2b189085f72af2958b898f8a2ef969cbda",
+        "summary": [
+          "50 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_glow_vibration.gd",
+        "exit": 0,
+        "seconds": 0.326,
+        "log_sha256": "7545c03add0244dd7b3fb8e1d4a5391be9b29162876f47e5676ee38f8a22f81a",
+        "summary": [
+          "NITRO vibration source observer: 37 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_trim.gd",
+        "exit": 0,
+        "seconds": 3.574,
+        "log_sha256": "111f5b409a23ffadae0772deaf029d83c736d67e6d82a6793610f4336943cc31",
+        "summary": [
+          "14 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_trim_density.gd",
+        "exit": 0,
+        "seconds": 2.182,
+        "log_sha256": "be82cf3f248968b0b56f5a71c4a6ab433a5cef2c9f55229ff2a3b5bc4aa79fac",
+        "summary": [
+          "M5-ATM-2 trim density: 35 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_trim_integrity.gd",
+        "exit": 0,
+        "seconds": 8.158,
+        "log_sha256": "e0c54b3777d9c564222cf9ebadcb4ba1a0b7741aeff9bc803929f084418028bd",
+        "summary": [
+          "D4-R2 trim integrity: 731 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_cruise_trim.gd",
+        "exit": 0,
+        "seconds": 1.716,
+        "log_sha256": "f8e992476779e832091a9e2e7d3d55ec44270b0d7a0453ecd8a62c4265aa36c6",
+        "summary": [
+          "ok    propagates unavailable slow-speed trim failure  level trim failed at 5.00 m/s: singular or nonfinite Jacobian (no trim near this condition)",
+          "22 checks, 0 failed"
+        ]
+      },
+      {
+        "test": "test_trim_throttle.gd",
+        "exit": 0,
+        "seconds": 53.875,
+        "log_sha256": "5b46183f64a842245ce5d9b112a4836518f553c2ddb5b43a511e5909608ae36d",
+        "summary": [
+          "TRIM_THROTTLE_CHECKS 47 failures=0"
+        ]
+      },
+      {
+        "test": "test_golden.gd",
+        "exit": 0,
+        "seconds": 6.236,
+        "log_sha256": "3eb53b8c1fe64d6108f417c4000fb36fce4bca2777e9628cd482e8d73f3f4255",
+        "summary": [
+          "ok   golden roll_15 replays (600 ticks): worst error: position 7.105427357601002e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 2.7755575615628914e-16, rate 2.220446049250313e-16 rad/s; auxiliary/discrete ok",
+          "ok   golden pull_throttle replays (720 ticks): worst error: position 7.105427357601002e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 2.7755575615628914e-17, rate 1.1102230246251565e-16 rad/s; auxiliary/discrete ok",
+          "ok   golden rudder_doublet replays (720 ticks): worst error: position 2.1316282072803006e-14 m, velocity 1.7763568394002505e-15 m/s, attitude 6.661338147750939e-16, rate 2.220446049250313e-16 rad/s; auxiliary/discrete ok",
+          "ok   golden glide_15 replays (1200 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 8.673617379884035e-18, rate 3.344299557222418e-18 rad/s; auxiliary/discrete ok",
+          "4 golden flights, 0 failed"
+        ]
+      },
+      {
+        "test": "test_launch_trim_cache.gd",
+        "exit": 0,
+        "seconds": 3.497,
+        "log_sha256": "3d95a4cbd7e91531d7cf9d22e387082926567e1b54f501f03c07f64cd6394699",
+        "summary": [
+          "Stik trim-cache fixture: 47 checks, 0 failures; stats={ &\"hits\": 0, &\"misses\": 1, &\"bypasses\": 0, &\"has_entry\": true, &\"entries\": 1, &\"entry_limit\": 2, &\"retained_key_bytes\": 16380, &\"retained_key_limit_bytes\": 1048576, &\"staged_worker_active\": false, &\"staged_workers_started\": 0, &\"menu_starts\": 0, &\"menu_adoptions\": 0, &\"menu_discarded\": 0, &\"menu_completed\": 0, &\"menu_skipped\": 0, &\"managed_owner\": \"\", &\"managed_token\": 0 }",
+          "Stik trim-cache fixture complete: 47 checks, 0 failures"
+        ]
+      },
+      {
+        "test": "test_launch_trim_async.gd",
+        "exit": 0,
+        "seconds": 2.372,
+        "log_sha256": "89eadbc8865a655e7997e12b55b27ba4e9bad890a0f0fbc601642a2d7e5398a6",
+        "summary": [
+          "Launch trim async fixture: 24 checks, 0 failed; stats={ &\"hits\": 4, &\"misses\": 4, &\"bypasses\": 1, &\"has_entry\": true, &\"entries\": 1, &\"entry_limit\": 2, &\"retained_key_bytes\": 20780, &\"retained_key_limit_bytes\": 1048576, &\"staged_worker_active\": false, &\"staged_workers_started\": 2, &\"menu_starts\": 0, &\"menu_adoptions\": 0, &\"menu_discarded\": 0, &\"menu_completed\": 0, &\"menu_skipped\": 0, &\"managed_owner\": \"\", &\"managed_token\": 0 }"
+        ]
+      }
+    ],
+    "passed": 33,
+    "failed": 0,
+    "full_app_suite_run": false,
+    "golden_recordings_changed": false,
+    "final_regression": {
+      "test": "test_glow_operating_reuse.gd",
+      "checks": 114,
+      "failed": 0,
+      "log_sha256": "1b916fb30bf4fbfbe1fa647f61eabdc987ffec6b7eeeea9f245fc2b745c2251d"
+    },
+    "final_compiler_diagnostics": {
+      "scripts": [
+        "app/physics/glow/operating_point.gd",
+        "app/tests/test_glow_operating_reuse.gd"
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "report_sha256": "d0bd16ff918311542edd793684fbe0b7f5598540935b3d748fec6aef14b136d8"
+    }
+  }
+}

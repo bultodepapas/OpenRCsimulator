@@ -77,9 +77,9 @@ func _reference_solve(prop: Dictionary, throttle: float, u: float, rho: float, d
 				if not is_finite(fm): return {ok=false,roots=roots}
 				if fm>0.0: left=mid
 				else: right=mid
-			var root: float=(left+right)*0.5
-			if absf(OP.residual(prop,root,throttle,u,rho,dry_density))>1e-10: return {ok=false,roots=roots}
-			roots.append(root)
+			var root_rpm: float=(left+right)*0.5
+			if absf(OP.residual(prop,root_rpm,throttle,u,rho,dry_density))>1e-10: return {ok=false,roots=roots}
+			roots.append(root_rpm)
 		lo=hi
 		flo=fhi
 	return {ok=not roots.is_empty(),roots=roots,rpm=roots[roots.size()-1] if not roots.is_empty() else NAN,
