@@ -1,0 +1,20 @@
+{
+  "reason": "Normal import regenerated embedded texture defaults; preserve pre-import authored mipmaps/compression/UID settings",
+  "files": [
+    {
+      "path": "app/assets/landscape/track-signage/flagCheckersSmall_checkers.png.import",
+      "automatic_import_sha256": "8ae1a11c744ebade8810cc5890b36d813338a6e44bfdb1b9ad4f0bc3d6d266c8",
+      "restored_authored_sha256": "630a6205f465a65e0bd6dd916fa7662bdda76cdbd94d4d75c82254a855578e25"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_1.png.import",
+      "automatic_import_sha256": "06db1913f0800b1dc2a299010a8098d65d6e7c5b28d4ea9697b8460b039f382b",
+      "restored_authored_sha256": "77e71ff97b070a9b3a1843c984d5fb365f92e01fd115d33286edcc7b1a5f589f"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_1.png.import",
+      "automatic_import_sha256": "6fa34ebe4de0bc6a74adce1a2858154ce13b8fff5eebecc84debbac8dc6134bf",
+      "restored_authored_sha256": "378f7a29aa580e8142880845884926fedb36ca7cc0eff3b3184f0fd1aa625528"
+    }
+  ]
+}

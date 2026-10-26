@@ -1,0 +1,135 @@
+{
+  "format": "openrc-fixed-brake-import-evidence v1",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 53,
+      "sha256": "9f02a1db6594afd98263a72329fd1654785bc00312ee2a3f15bb516b6326e695"
+    },
+    {
+      "path": "clone/.gitattributes",
+      "bytes": 25,
+      "sha256": "d676638b45ef21728c730f0c82fb5d66301c312c797713350710038e369f6764"
+    },
+    {
+      "path": "clone/project.godot",
+      "bytes": 184,
+      "sha256": "b62412880d3dcb79b6de18c100f1b97001b488d5ca6309003703d0526370cc5c"
+    },
+    {
+      "path": "construction/before-flaps.csv.import",
+      "bytes": 234,
+      "sha256": "afdae64054fcb1f8240abbd80fc85120db92a8af0960c14e2c924cfa7626cf3f"
+    },
+    {
+      "path": "construction/before-stik.csv.import",
+      "bytes": 233,
+      "sha256": "ada864f8de79eda497dd8d028715f3d16f2cbae57117a3d4c2ec8c706d339790"
+    },
+    {
+      "path": "construction/checks/fresh-clone-raw-csv-wfaly5v8/engine.log",
+      "bytes": 1411,
+      "sha256": "78c00f0ea4cb70a497c1df2885653e2fbb11e4539f5dcbe5ffc23d60c0d2ad14"
+    },
+    {
+      "path": "construction/checks/fresh-clone-raw-csv-wfaly5v8/report.json",
+      "bytes": 1227,
+      "sha256": "c01e38d67088318a0bbcdac8e6b5931eb2056caa9420aa2953f8993847d37123"
+    },
+    {
+      "path": "construction/checks/keep-csv-standard-import-6nc6whcb/engine.log",
+      "bytes": 3342,
+      "sha256": "0181cd6c3b09c96c658f3351f4bd70e5d4a751166612f3d383b89567eb3a3d3a"
+    },
+    {
+      "path": "construction/checks/keep-csv-standard-import-6nc6whcb/report.json",
+      "bytes": 1206,
+      "sha256": "1cac6c3d1ee82790d9d26a134de11f2bb5662b43d478f8a08ca3cb7fdcf35cd8"
+    },
+    {
+      "path": "construction/clone-result.json",
+      "bytes": 203,
+      "sha256": "3b3f76f8cfc8d215868a79d87f282b45b0eb0f9767529b4fbe2162cd9f7ac259"
+    },
+    {
+      "path": "construction/clone.json",
+      "bytes": 934,
+      "sha256": "ec9026dc8898feec5c76b86c41c129a3ca98ab8db879a22f5efcef6e983e6ecf"
+    },
+    {
+      "path": "construction/generated-texture-settings/flagCheckersSmall_checkers.png.import",
+      "bytes": 1117,
+      "sha256": "8ae1a11c744ebade8810cc5890b36d813338a6e44bfdb1b9ad4f0bc3d6d266c8"
+    },
+    {
+      "path": "construction/generated-texture-settings/pine_joined_Image_1.png.import",
+      "bytes": 1129,
+      "sha256": "06db1913f0800b1dc2a299010a8098d65d6e7c5b28d4ea9697b8460b039f382b"
+    },
+    {
+      "path": "construction/generated-texture-settings/quercus_Image_1.png.import",
+      "bytes": 1120,
+      "sha256": "6fa34ebe4de0bc6a74adce1a2858154ce13b8fff5eebecc84debbac8dc6134bf"
+    },
+    {
+      "path": "construction/keep_fixture_csv.py",
+      "bytes": 445,
+      "sha256": "32c4f7322ce4271470b5ddd368f5abb8217b93a2d411a477bb2da47f70b760bb"
+    },
+    {
+      "path": "construction/prepare_clone.py",
+      "bytes": 1838,
+      "sha256": "da199436a766b73bfab4cfe8016b96979634126314a8558ea1f4218a2a619644"
+    },
+    {
+      "path": "construction/restore_texture_settings.py",
+      "bytes": 1772,
+      "sha256": "d274daf8274e96dab160271dc2709bc895a2fbfd60564f0afcbf4cdba8a5e447"
+    },
+    {
+      "path": "construction/seal.py",
+      "bytes": 4134,
+      "sha256": "92228f17b89422ad5cac0b3116feba60b095da40ed393c6abd2dacb1b176bd7e"
+    },
+    {
+      "path": "construction/texture-settings.json",
+      "bytes": 1134,
+      "sha256": "388fe455ac83b2abd8b05c39700c8876f8fdc409903634adbbdc1afa284fc256"
+    },
+    {
+      "path": "initial-main-import/standard-import-6hl3tnw4/engine.log",
+      "bytes": 128720,
+      "sha256": "11007a12ee79b43f0e5cc34b4a85206e41f0594bead1f2f152ef66612dadc936"
+    },
+    {
+      "path": "initial-main-import/standard-import-6hl3tnw4/report.json",
+      "bytes": 5450,
+      "sha256": "af20443bbd11c462231dc765e48d7733344c4f1fdbcce108a1f49b08a9a89771"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1819,
+      "sha256": "44cbf715490356e60c3863697659517148325a5640a9e162413c48573fc81903"
+    },
+    {
+      "path": "source/fixed_brake_trace_flaps.csv",
+      "bytes": 7044,
+      "sha256": "4d70221c43000717e03d833a1ca6bdf6f25159f55fb4ae54d627b6290cc29ba1"
+    },
+    {
+      "path": "source/fixed_brake_trace_flaps.csv.import",
+      "bytes": 28,
+      "sha256": "eb38ca201d91973448a11295b3b42bad12344f887c8b2257cddf993b738c2c78"
+    },
+    {
+      "path": "source/fixed_brake_trace_stik.csv",
+      "bytes": 5428,
+      "sha256": "c36767d27dcbd955ffec68ccf4935b617b57b3a746f4d18f65453e53d2e86ccc"
+    },
+    {
+      "path": "source/fixed_brake_trace_stik.csv.import",
+      "bytes": 28,
+      "sha256": "eb38ca201d91973448a11295b3b42bad12344f887c8b2257cddf993b738c2c78"
+    }
+  ]
+}

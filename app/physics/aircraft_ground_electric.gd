@@ -206,3 +206,64 @@ static func _prepared(value: Dictionary) -> bool:
 
 static func _failure(reason: String, context: Dictionary = {}) -> Dictionary:
 	return {ok = false, law = LAW, reason = reason, context = context}
+
+
+const Capacity := preload("res://physics/contact_capacity.gd")
+const CAPACITY_LAW := "fixed-voltage-independent-shaft-capacity-wrapper-v1"
+
+
+## Explicit evaluator context only; no source/contact integration or launch.
+static func prepare_capacity(prepared: Dictionary, provider: Dictionary, owner_identity: String) -> Dictionary:
+	if typeof(prepared.get("law")) != TYPE_STRING or prepared.law != LAW or not _prepared(prepared) \
+		or not Capacity._text(owner_identity): return _failure("closed fixed-voltage capacity owner required")
+	var wheel := Traction.prepare_capacity(prepared.traction, prepared.ground.normal, provider, prepared.motion, owner_identity)
+	if not wheel.ok: return _failure("fixed wheel capacity context refused", wheel)
+	var row_id := JSON.stringify([CAPACITY_LAW, prepared.identity, prepared.model.propulsion.id, "shaft-bearing"]).sha256_text()
+	var group_id := JSON.stringify([CAPACITY_LAW, prepared.identity, prepared.model.propulsion.id, "shaft-bearing-group"]).sha256_text()
+	# This is a trusted locally prepared context, not authentication of arbitrary
+	# dictionaries. Bind the ACTUAL captured source/mechanics, not only its label.
+	var prepared_sha256 := var_to_bytes(prepared).hex_encode().sha256_text()
+	var identity := JSON.stringify([CAPACITY_LAW, wheel.identity, prepared.identity, prepared_sha256, row_id, group_id, Capacity.CAPTURE_LAW]).sha256_text()
+	return {ok = true, law = CAPACITY_LAW, prepared_identity = prepared.identity, owner_identity = owner_identity,
+		prepared_sha256 = prepared_sha256, wheel_context = wheel, row_id = row_id, group_id = group_id, identity = identity}
+
+
+## Exactly one existing source/aero/prop/wash/common-stage evaluation. The old
+## sample rows and capture ordinal remain untouched; only the new law uses the
+## appended packet row. Finite battery is deliberately not admitted here.
+static func evaluate_capacity(prepared: Dictionary, context: Dictionary, body: PackedFloat64Array,
+		values: PackedFloat64Array, time_s: float, air: Dictionary, density: float, deflections: Dictionary,
+		duty: float, enabled: bool, provider: Dictionary, gravity: float, brakes: PackedFloat64Array,
+		downwash_cl := NAN, ground_up := NAN, trial_extension := false) -> Dictionary:
+	if typeof(context.get("law")) != TYPE_STRING or context.law != CAPACITY_LAW \
+		or not Capacity._text(context.get("owner_identity")):
+		return _failure("explicit shaft capacity context required")
+	var bound := prepare_capacity(prepared, provider, context.owner_identity)
+	if not bound.ok or var_to_bytes(bound) != var_to_bytes(context): return _failure("shaft capacity source binding changed")
+	var result := evaluate(prepared, body, values, time_s, air, density, deflections, duty, enabled,
+		provider, gravity, brakes, downwash_cl, ground_up, trial_extension)
+	if not result.ok: return result
+	var built := Traction.capacity_packet(context.wheel_context, body, prepared.properties.cg_body_m, time_s, brakes)
+	if not built.ok: return built
+	var packet: Dictionary = built.packet
+	var shaft := Impulse.internal_brake(0, prepared.rotor_state_indices.size())
+	if not shaft.ok: return _failure("existing shaft bearing row refused", shaft)
+	var index: int = packet.bias.size()
+	packet.binding_identity = context.identity
+	packet.row_ids.append(context.row_id)
+	packet.group_ids.append(context.group_id)
+	packet.groups.append(PackedInt32Array([index]))
+	packet.jacobian.append_array(shaft.row)
+	packet.bias.append(shaft.bias)
+	packet.row_contact_indices.append(-1)
+	packet.normal_first.append(0.0)
+	packet.normal_last.append(0.0)
+	packet.independent_rates.append(result.source.shaft_friction_capacity_nm)
+	var state := body.duplicate(); state.append_array(values)
+	var valid := Capacity.validate(packet, state, time_s, prepared.rotor_state_indices.size(), result.sample.contact_ids)
+	if not valid.ok: return valid
+	result.sample.interval_capacity = packet
+	result.sample.interval_capture = {rotor_index = 0, row_id = context.row_id}
+	var mapped := Capacity.capture_mapping(result.sample, packet, prepared.rotor_state_indices.size())
+	if not mapped.ok: return mapped
+	return result

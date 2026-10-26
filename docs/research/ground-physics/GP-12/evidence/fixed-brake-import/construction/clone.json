@@ -1,0 +1,24 @@
+{
+  "format": "openrc-raw-csv-clone v1",
+  "origin": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-csv-import-clone-f0cdpeoe\\origin",
+  "clone": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-csv-import-clone-f0cdpeoe\\clone",
+  "files": [
+    {
+      "path": "tests/fixtures/fixed_brake_trace_stik.csv",
+      "sha256": "c36767d27dcbd955ffec68ccf4935b617b57b3a746f4d18f65453e53d2e86ccc"
+    },
+    {
+      "path": "tests/fixtures/fixed_brake_trace_stik.csv.import",
+      "sha256": "eb38ca201d91973448a11295b3b42bad12344f887c8b2257cddf993b738c2c78"
+    },
+    {
+      "path": "tests/fixtures/fixed_brake_trace_flaps.csv",
+      "sha256": "4d70221c43000717e03d833a1ca6bdf6f25159f55fb4ae54d627b6290cc29ba1"
+    },
+    {
+      "path": "tests/fixtures/fixed_brake_trace_flaps.csv.import",
+      "sha256": "eb38ca201d91973448a11295b3b42bad12344f887c8b2257cddf993b738c2c78"
+    }
+  ],
+  "shared_tree_staged": false
+}

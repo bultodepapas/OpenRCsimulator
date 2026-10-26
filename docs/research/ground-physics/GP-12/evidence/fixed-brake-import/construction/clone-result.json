@@ -1,0 +1,7 @@
+{
+  "format": "openrc-raw-csv-clone-result v1",
+  "unchanged_files": 4,
+  "generated_translation_files": 0,
+  "check": "fresh-clone-raw-csv strict checked import",
+  "shared_tree_staged": false
+}

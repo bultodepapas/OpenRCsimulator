@@ -108,6 +108,26 @@ Each record includes `camera.inspection_framing` and the existing projected mesh
 Those conservative bounds support a framing check; they are not measured lit-pixel coverage,
 wing span or pilot readability. Keep source clips and inspect the complete motion as well.
 
+For a continuous ground/departure lighting take, use
+`--aircraft=jensen-das-ugly-stik-60 --start=runway --shot=lighting-takeoff --seconds=12`
+with `--director-script=<absolute path to takeoff_director.gd>` and a lighting preset/profile.
+This adapter reuses `app/scenery/takeoff_pilot.gd` through production Main: idle, throttle ramp,
+rotation and climb, with ordinary pilot commands and a close chase camera. It is an estimated
+Stik test scenario, not a general autopilot or an approach controller. Other aircraft, shots and
+airborne starts are refused. Both catalog landscapes remain available.
+
+Its `runway_departure` fields describe the accepted tick endpoint, explicitly labeled with
+`state_sample` and `state_tick`; the base frame's visual pose remains interpolated. Records retain
+pilot phase/time, speed, altitude, heading error, gear compression/support/clearance, hull contact
+and the pilot-source hash. Wheel support uses positive gear compression; hull contact is a separate
+crash predicate. Generic capture completion does not certify liftoff: check the recorded wheel
+clearance, phase progression and advancing climb alongside the source movie.
+
+An external director may expose `configuration_error() -> String`. A nonempty result after
+`configure()` rejects the capture before the director enters the scene, writes a zero-frame
+incomplete manifest and uses the normal scene/audio teardown. Directors should validate before
+changing input/camera state. Existing directors without this optional method retain their route.
+
 Each RGB frame records the actual rig allocation counters and world exposure. Pilot captures also record the visible
 inset's dimensions, camera and AA mode. The main view uses 4× MSAA; the production inset uses 2×.
 The manifest retains physical/presentation trial identities and capture/director/main/registry hashes.

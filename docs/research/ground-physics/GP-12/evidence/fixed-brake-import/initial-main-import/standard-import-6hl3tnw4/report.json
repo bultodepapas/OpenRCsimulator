@@ -1,0 +1,165 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c8f0d9c3-c318-4b4c-bf8c-fccb695fef60",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--editor",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T21:41:47.325272+00:00",
+  "label": "standard-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\main-import-repair\\standard-import-6hl3tnw4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-shaft-capacity\\main-import-repair\\standard-import-6hl3tnw4\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 10,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 1027,
+      "message": "CSV file 'res://tests/fixtures/fixed_brake_trace_stik.csv' does not contain any translation.",
+      "context": [
+        "   at: import (editor/import/resource_importer_csv_translation.cpp:125)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 1029,
+      "message": "CSV file 'res://tests/fixtures/fixed_brake_trace_flaps.csv' does not contain any translation.",
+      "context": [
+        "   at: import (editor/import/resource_importer_csv_translation.cpp:125)",
+        "[   0% ] reimport | fixed_brake_trace_flaps.csv",
+        "[   0% ] reimport | NotoSansCJKjp-Regular.otf"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1042,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1044,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[   2% ] reimport | flower_empodium_a_arm_1k.jpg",
+        "[   3% ] reimport | flower_empodium_a_base_color_alpha_1k.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1057,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1059,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[   5% ] reimport | Quercus_A_1024.png",
+        "[   5% ] reimport | Quercus_A_1024.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1065,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[   6% ] reimport | maple_leaves_basecolor.png",
+        "[   6% ] reimport | maple_bark_normal.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1073,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[   8% ] reimport | Flowers.png",
+        "[   8% ] reimport | Leaves.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1130,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  21% ] reimport | grass_lolipop_tall_normal.png",
+        "[  21% ] reimport | grass_lolipop_tall_mrao.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1155,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  27% ] reimport | f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png",
+        "[  27% ] reimport | ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1325,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  68% ] reimport | old-tyre-1k_old_tyre_arm_1k.jpg",
+        "[  68% ] reimport | old-tyre-1k_old_tyre_diff_1k.jpg"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1367,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  77% ] reimport | old-tyre-1k_old_tyre_nor_gl_1k.jpg",
+        "[  78% ] reimport | hx-700_hx700_carenado_v7_A_2.png"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 54.672,
+  "log_bytes": 128720,
+  "log_sha256": "11007a12ee79b43f0e5cc34b4a85206e41f0594bead1f2f152ef66612dadc936"
+}

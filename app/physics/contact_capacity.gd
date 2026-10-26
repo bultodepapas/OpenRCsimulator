@@ -494,3 +494,56 @@ static func receipt_groups(packet: Dictionary) -> Array:
 			indices.append(index)
 		out.append(indices)
 	return out
+
+
+const CAPTURE_LAW := "stable-independent-shaft-row-capture-v1"
+
+
+## Packet has already passed validate(). Legacy rows still identify the same
+## finite physical friction source; their ordinal is local to this sample.
+static func capture_mapping(sample: Dictionary, packet: Dictionary, rotors: int) -> Dictionary:
+	var legacy: Variant = sample.get("capture", {})
+	var stable: Variant = sample.get("interval_capture", {})
+	if typeof(legacy) != TYPE_DICTIONARY or typeof(stable) != TYPE_DICTIONARY:
+		return _packet_failure("capture mappings must be dictionaries")
+	if legacy.is_empty() and stable.is_empty(): return {ok = true, capture = {}, binding = {}}
+	if legacy.is_empty() or stable.is_empty() or stable.size() != 2 \
+		or not stable.has_all(["rotor_index", "row_id"]) \
+		or typeof(stable.rotor_index) != TYPE_INT or not _text(stable.row_id):
+		return _packet_failure("paired explicit stable shaft mapping required")
+	if rotors < 1 or rotors > Impulse.MAX_ROTORS \
+		or typeof(sample.get("nonnegative_rotors")) != TYPE_PACKED_INT64_ARRAY \
+		or not sample.nonnegative_rotors.has(stable.rotor_index):
+		return _packet_failure("capture must identify a declared nonnegative rotor")
+	for key: String in ["jacobian", "slip_bias", "limit_rates"]:
+		if typeof(sample.get(key)) != TYPE_PACKED_FLOAT64_ARRAY or not _finite(sample[key]):
+			return _packet_failure("legacy capture rows malformed")
+	var rows: int = sample.slip_bias.size()
+	if rows > Impulse.MAX_ROWS or sample.jacobian.size() != rows * (6 + rotors) \
+		or sample.limit_rates.size() != rows or typeof(sample.get("groups")) != TYPE_ARRAY:
+		return _packet_failure("legacy capture dimensions malformed")
+	var original := Impulse._capture_mapping(legacy, rotors, sample.jacobian, sample.slip_bias, sample.groups)
+	if not original.ok or legacy.rotor_index != stable.rotor_index:
+		return _packet_failure("legacy and stable capture identify different rotor rows")
+	if typeof(packet.get("row_ids")) != TYPE_PACKED_STRING_ARRAY \
+		or typeof(packet.get("groups")) != TYPE_ARRAY \
+		or typeof(packet.get("row_contact_indices")) != TYPE_PACKED_INT64_ARRAY:
+		return _packet_failure("stable capture packet malformed")
+	var n: int = packet.row_ids.size()
+	for key: String in ["jacobian", "bias", "independent_rates", "normal_first", "normal_last"]:
+		if typeof(packet.get(key)) != TYPE_PACKED_FLOAT64_ARRAY or not _finite(packet[key]) \
+			or packet[key].size() != (n * (6 + rotors) if key == "jacobian" else n):
+			return _packet_failure("stable capture numeric dimensions")
+	if n > Impulse.MAX_ROWS or packet.row_contact_indices.size() != n \
+		or packet.row_ids.count(stable.row_id) != 1:
+		return _packet_failure("stable shaft row must be unique")
+	var index: int = packet.row_ids.find(stable.row_id)
+	var mapped := {rotor_index = stable.rotor_index, impulse_row = index}
+	var checked := Impulse._capture_mapping(mapped, rotors, packet.jacobian, packet.bias, packet.groups)
+	if not checked.ok or packet.row_contact_indices[index] != -1 \
+		or packet.normal_first[index] != 0.0 or packet.normal_last[index] != 0.0 \
+		or packet.independent_rates[index] < 0.0 \
+		or var_to_bytes(packet.independent_rates[index]) != var_to_bytes(sample.limit_rates[legacy.impulse_row]):
+		return _packet_failure("stable shaft row is not the same finite independent bearing")
+	return {ok = true, capture = mapped,
+		binding = {rotor_index = stable.rotor_index, row_id = stable.row_id, rate = packet.independent_rates[index]}}

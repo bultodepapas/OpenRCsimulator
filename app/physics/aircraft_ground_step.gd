@@ -11,8 +11,9 @@
 ## owner refusal may refine. Malformed data/mutation is fatal, never refinement.
 ## predictor_rhs_budget bounds direct predictor calls (default124); receipts
 ## distinguish shared setup, discarded trials and the final accepted attempt.
-## This domain initially refuses nonempty capture mappings; existing laws keep
-## their original capture contract. No stock selection or CPU claim is implied.
+## Stable packet capture requires the explicit interval_capture mapping and
+## the same finite independent legacy bearing row. Existing laws keep their
+## original capture contract. No stock selection or CPU claim is implied.
 extends RefCounted
 
 const Capacity:=preload("res://physics/contact_capacity.gd")
@@ -40,6 +41,8 @@ const MAX_STATE_SIZE := 256
 ## Optional capture={rotor_index:int,impulse_row:int} names the same finite
 ## internal friction row as GroundImpulse. The rotor must be declared
 ## nonnegative; its row ordinal may change as physical wheel rows load/unload.
+## The integrated law instead requires paired interval_capture={rotor_index:int,
+## row_id:String}, pinned to an independent +e_sigma packet row and source rate.
 ## certificate(s,t,h,sample)->{ok,admitted,identity:String}; its owner certifies
 ## the WHOLE free interval, including entry/geometry and constitutive envelopes.
 ## The initial slice supports no source events, moving hubs or carrier motion.
@@ -847,6 +850,8 @@ static func _attempt_two_sided(
 			group_columns = PackedStringArray(Capacity.COLUMNS),
 			pieces = cap_integrals
 		}
+		if not start.get("capture", {}).is_empty():
+			result.integration_receipt.interval_capture = {law = Capacity.CAPTURE_LAW, rotor_index = start.interval_capture.rotor_index, row_id = start.interval_capture.row_id}
 		result.integration_receipt.capacity_computation = {
 			accepted = _work_difference(_work_counts(runtime.work), work_before),
 			accepted_pieces = count
@@ -876,6 +881,7 @@ static func _half_impulse(
 	var jacobian: PackedFloat64Array = sample.jacobian
 	var bias: PackedFloat64Array = sample.slip_bias
 	var groups: Array = sample.groups
+	var capture: Dictionary = sample.get("capture", {})
 	if capacity.is_empty():
 		limits = sample.limit_rates.duplicate()
 		for i in limits.size():
@@ -883,8 +889,9 @@ static func _half_impulse(
 			if sample.limit_rates[i] > 0.0 and limits[i] == 0.0:
 				return _failure("half impulse scaling underflow")
 	else:
-		if not sample.get("capture", {}).is_empty():
-			return _failure("integrated packet capture is not yet qualified", "unsupported_capture")
+		var mapped := Capacity.capture_mapping(sample, capacity, sample.rotor_state_indices.size())
+		if not mapped.ok: return _failure(str(mapped.reason), "invalid_capture")
+		capture = mapped.capture
 		if explicit_limits.size() != capacity.bias.size() or not _finite(explicit_limits):
 			return _failure("invalid explicit capacity limits")
 		for value: float in explicit_limits:
@@ -904,7 +911,7 @@ static func _half_impulse(
 		limits,
 		groups,
 		settings.qp_iterations,
-		sample.get("capture", {}),
+		capture,
 		settings.maximum_assembly_resolution_j,
 		mass_proof
 	)
@@ -1315,9 +1322,18 @@ static func _capacity_evaluator(
 			work.fatal_capacity_failure = true
 			return valid
 		var packet: Dictionary = result.interval_capacity
+		var mapped := Capacity.capture_mapping(result, packet, result.rotor_state_indices.size())
+		if not mapped.ok:
+			work.fatal_capacity_failure = true
+			return mapped
 		if pin.is_empty():
 			pin.packet = packet.duplicate(true)
 		elif not Capacity.same_binding(pin.packet, packet):
+			work.fatal_capacity_failure = true
+			return {ok = false}
+		if not pin.has("capture_binding"):
+			pin.capture_binding = mapped.binding.duplicate(true)
+		elif var_to_bytes(pin.capture_binding) != var_to_bytes(mapped.binding):
 			work.fatal_capacity_failure = true
 			return {ok = false}
 		return result

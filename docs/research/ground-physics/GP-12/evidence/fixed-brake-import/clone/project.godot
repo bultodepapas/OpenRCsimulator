@@ -1,0 +1,8 @@
+config_version=5
+
+[application]
+config/name="Fixed Brake CSV Import Fixture"
+config/features=PackedStringArray("4.8")
+
+[rendering]
+renderer/rendering_method="gl_compatibility"

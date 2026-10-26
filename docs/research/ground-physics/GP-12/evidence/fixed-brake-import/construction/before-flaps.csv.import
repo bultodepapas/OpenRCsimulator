@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://co17ff5voxwl1"
+
+[deps]
+
+source_file="res://tests/fixtures/fixed_brake_trace_flaps.csv"
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

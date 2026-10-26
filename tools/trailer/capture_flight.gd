@@ -288,6 +288,11 @@ func _run() -> void:
 		_director.record_tick_evidence = false
 	_director.name = "TrailerFlightDirector"
 	_director.configure(_main, _shot, _seconds, _fps)
+	if _director.has_method("configuration_error"):
+		var director_error: String = str(_director.configuration_error())
+		if not director_error.is_empty():
+			await _abort_live_capture("Flight director refused capture: " + director_error, 2)
+			return
 	root.add_child(_director)
 	# Let the real world, interpolated airplane, particles, and camera finish one full presented interval.
 	await process_frame
