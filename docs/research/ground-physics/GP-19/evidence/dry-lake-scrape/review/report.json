@@ -1,0 +1,79 @@
+{
+  "format": "openrc-gp19-dry-hull-collector-independent-review-v1",
+  "scope": "Current two-path draft source; final producer manifest reconciliation pending.",
+  "supported": true,
+  "reproduced_blockers": [],
+  "own_checks": 43,
+  "main_writes": [],
+  "source_identities": [
+    {
+      "path": "tmp/gp19-hull-lake/draft/hull_contact.gd",
+      "sha256": "04490fc097e8a35f32ec2881ea8263cc4c094bea6bcae80ef31073066b7066a2",
+      "main": "app/physics/hull_contact.gd",
+      "main_sha256": "5100ce2dfa65138c1036ece22df0f387fad89149b755e0b4321d9daf2244b3d4"
+    },
+    {
+      "path": "tmp/gp19-hull-lake/draft/flight_session.gd",
+      "sha256": "7dc7c17c551ec8d44550055b436e9c1cffc1206b84831152f33d65810d4cbb38",
+      "main": "app/sim/flight_session.gd",
+      "main_sha256": "2ef72af8e0814bf44520a22741dce7a68a93ebdc611847b98c321460f0160c93"
+    }
+  ],
+  "checks": [
+    {
+      "path": "tmp/gp19-hull-lake-review/checks/collector-independent-28-11yx8o1s/report.json",
+      "sha256": "51005ea264d1a879ea73819cd07181ede59bae91ef50d666bf16dba62dad3a82",
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "tmp/gp19-hull-lake-review/checks/collector-independent-_9frzug8/report.json",
+      "sha256": "ad897005ad8d093f682a32ef7181d516e4638b04867ede0332cb2160480e3c52",
+      "ok": false,
+      "reason": "missing_required_text",
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "tmp/gp19-hull-lake-review/checks/session-independent-112xoag7/report.json",
+      "sha256": "17f811c1f6b14161c612b74d3f9204e53fe86f101b2760d6855d5b12c39a2ddb",
+      "ok": true,
+      "reason": "passed",
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "tmp/gp19-hull-lake-review/review.md",
+      "sha256": "abbe30ea7ddef1536ebed088a69dd3842919203741a32621829e5a5a1924a7fc"
+    },
+    {
+      "path": "tmp/gp19-hull-lake-review/probe.gd",
+      "sha256": "29dd79c0c35eba6369fcf68fb0b1f1743f43c59286bb3b3c1387e21620683117"
+    },
+    {
+      "path": "tmp/gp19-hull-lake-review/session_probe.gd",
+      "sha256": "2cb3a2fb10706fb6132cb83d7ad0516c3cce3a0da11804de9c7d09d4a95e7c30"
+    },
+    {
+      "path": "tmp/gp19-hull-lake-review/hull_contact.gd.patch",
+      "sha256": "e5eeef6c47b55ac7eef9d3d290b6058c2206bb30070d273a14c97e884d0bd13f"
+    },
+    {
+      "path": "tmp/gp19-hull-lake-review/flight_session.gd.patch",
+      "sha256": "658680a68eacc5cb18fc717489bc51d83c4bd029fdf826bcc5b7f4c84beff116"
+    }
+  ]
+}
