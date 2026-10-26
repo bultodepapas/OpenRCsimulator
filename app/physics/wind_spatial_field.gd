@@ -33,6 +33,7 @@ var _wall_scale := 0.0
 var _wall_scale_slope := 0.0
 var _gust_transition_height := 0.0
 var _gust_values := PackedFloat64Array()
+var _gust_max_duration := 0.0
 var _turbulence_rms := 0.0
 
 
@@ -83,12 +84,14 @@ func _prepare_profile_and_gusts() -> void:
 	_wall_scale_slope = 1.0 / ((_wall_height - _displacement_height) * _log_denominator)
 	_gust_transition_height = float(_config.domain.ground_transition_height_m)
 	var gust_values := PackedFloat64Array()
+	_gust_max_duration = 0.0
 	# Preserve authored order, including tied starts: summation order is observable.
 	for event: Dictionary in _config.gusts.events:
 		gust_values.append(float(event.start_s))
 		gust_values.append(float(event.duration_s))
 		gust_values.append(float(event.amplitude_ned_mps[0]))
 		gust_values.append(float(event.amplitude_ned_mps[1]))
+		_gust_max_duration = maxf(_gust_max_duration, float(event.duration_s))
 	_gust_values = gust_values
 	_turbulence_rms = float(_config.turbulence.rms_mps)
 
@@ -271,13 +274,20 @@ func _gust_wind(height_agl: float, epoch_time: float) -> PackedFloat64Array:
 	var result := PackedFloat64Array([0.0, 0.0, 0.0])
 	if _gust_values.is_empty():
 		return result
+	if epoch_time - _gust_values[0] < 0.0:
+		return result
+	var first_offset := _first_possible_gust(epoch_time) * GUST_SCALAR_COUNT
+	if first_offset == _gust_values.size():
+		return result
 	var transition := _gust_transition_height
 	var wall_weight := _smooth5(clampf(height_agl / transition, 0.0, 1.0))
-	for event_offset: int in range(0, _gust_values.size(), GUST_SCALAR_COUNT):
+	for event_offset: int in range(first_offset, _gust_values.size(), GUST_SCALAR_COUNT):
 		var start: float = _gust_values[event_offset]
 		var duration: float = _gust_values[event_offset + 1]
 		var elapsed := epoch_time - start
-		if elapsed < 0.0 or elapsed >= duration:
+		if elapsed < 0.0:
+			break # Validated start times are sorted, including tied starts.
+		if elapsed >= duration:
 			continue
 		var s := elapsed / duration
 		var one_minus_s := 1.0 - s
@@ -286,6 +296,20 @@ func _gust_wind(height_agl: float, epoch_time: float) -> PackedFloat64Array:
 		result[0] += _gust_values[event_offset + 2] * pulse * wall_weight
 		result[1] += _gust_values[event_offset + 3] * pulse * wall_weight
 	return result
+
+
+## Pure lower bound: every skipped event has elapsed >= max_duration >= its duration.
+## Keep the runtime subtraction; comparing time with start + duration can round differently.
+func _first_possible_gust(epoch_time: float) -> int:
+	var first := 0
+	var last: int = _gust_values.size() / GUST_SCALAR_COUNT
+	while first < last:
+		var middle := (first + last) >> 1
+		if epoch_time - _gust_values[middle * GUST_SCALAR_COUNT] >= _gust_max_duration:
+			first = middle + 1
+		else:
+			last = middle
+	return first
 
 
 func _turbulence_wind(north_m: float, east_m: float, height_agl: float, epoch_time: float) -> PackedFloat64Array:

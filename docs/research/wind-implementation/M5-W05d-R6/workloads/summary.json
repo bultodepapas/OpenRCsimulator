@@ -1,0 +1,173 @@
+[
+  {
+    "aircraft": "jensen-das-ugly-stik-60",
+    "power_variant": "ideal",
+    "case": "legacy-v4-steady",
+    "coverage": {
+      "accepted_ticks": 480,
+      "final_state_sha256": "b6e00f11e3ef85fb90edb9a667a601b17b2ddf6bc7017c634fe7cf9a550718b0",
+      "first_query_time_s": 0.0,
+      "gust_peak_mps": 0.0,
+      "gust_queries_above_1e_minus_6_mps": 0,
+      "last_query_time_s": 2.0,
+      "matches_production": true,
+      "required_active_peak_mps": 0.01,
+      "thermal_peak_mps": 0.0,
+      "thermal_queries_above_1e_minus_6_mps": 0,
+      "wind_queries": 2880
+    },
+    "first_tick_queries": 6
+  },
+  {
+    "aircraft": "jensen-das-ugly-stik-60",
+    "power_variant": "ideal",
+    "case": "spatial-v5-modes-24",
+    "coverage": {
+      "accepted_ticks": 480,
+      "final_state_sha256": "9fe7a5cb7de3c174411e7dc2d115f882aab09d494d79cd80b80600fb2c915856",
+      "first_query_time_s": 0.0,
+      "gust_peak_mps": 0.0,
+      "gust_queries_above_1e_minus_6_mps": 0,
+      "last_query_time_s": 2.0,
+      "matches_production": true,
+      "required_active_peak_mps": 0.01,
+      "thermal_peak_mps": 0.0,
+      "thermal_queries_above_1e_minus_6_mps": 0,
+      "wind_queries": 28800
+    },
+    "first_tick_queries": 60
+  },
+  {
+    "aircraft": "jensen-das-ugly-stik-60",
+    "power_variant": "ideal",
+    "case": "spatial-v5-gusts-24",
+    "coverage": {
+      "accepted_ticks": 480,
+      "final_state_sha256": "9e97898f06fa3f4cd70b4bee68129395e4436a49d879e01025e1a5cee96b0525",
+      "first_query_time_s": 0.0,
+      "gust_peak_mps": 0.27999999999999997,
+      "gust_queries_above_1e_minus_6_mps": 28800,
+      "last_query_time_s": 2.0,
+      "matches_production": true,
+      "required_active_peak_mps": 0.01,
+      "thermal_peak_mps": 0.0,
+      "thermal_queries_above_1e_minus_6_mps": 0,
+      "wind_queries": 28800
+    },
+    "first_tick_queries": 60
+  },
+  {
+    "aircraft": "jensen-das-ugly-stik-60",
+    "power_variant": "ideal",
+    "case": "spatial-v5-thermals-24",
+    "coverage": {
+      "accepted_ticks": 480,
+      "final_state_sha256": "bdba2a3ddff8227c75fd73c390cf130329dc703805700280597c770dcedf350f",
+      "first_query_time_s": 0.0,
+      "gust_peak_mps": 0.0,
+      "gust_queries_above_1e_minus_6_mps": 0,
+      "last_query_time_s": 2.0,
+      "matches_production": true,
+      "required_active_peak_mps": 0.01,
+      "thermal_peak_mps": 0.14219587510055162,
+      "thermal_queries_above_1e_minus_6_mps": 28800,
+      "wind_queries": 28800
+    },
+    "first_tick_queries": 60
+  },
+  {
+    "aircraft": "jensen-das-ugly-stik-60",
+    "power_variant": "ideal",
+    "case": "spatial-v5-gusts-thermals-24",
+    "coverage": {
+      "accepted_ticks": 480,
+      "final_state_sha256": "228cec435a7e23136bc48f84f8042d4ea8835c1f4fafd7dea0424c62695fad78",
+      "first_query_time_s": 0.0,
+      "gust_peak_mps": 0.27999999999999997,
+      "gust_queries_above_1e_minus_6_mps": 28800,
+      "last_query_time_s": 2.0,
+      "matches_production": true,
+      "required_active_peak_mps": 0.01,
+      "thermal_peak_mps": 0.14251655613499747,
+      "thermal_queries_above_1e_minus_6_mps": 28800,
+      "wind_queries": 28800
+    },
+    "first_tick_queries": 60
+  },
+  {
+    "aircraft": "gp-extra-300s-60",
+    "power_variant": "ideal",
+    "case": "spatial-v5-gusts-thermals-24",
+    "coverage": {
+      "accepted_ticks": 480,
+      "final_state_sha256": "aed78b6dde63934de9e9f781c2aaa6de458e869fb6bd3d5f0931eb08548051ce",
+      "first_query_time_s": 0.0,
+      "gust_peak_mps": 0.27999999999999997,
+      "gust_queries_above_1e_minus_6_mps": 47524,
+      "last_query_time_s": 2.0,
+      "matches_production": true,
+      "required_active_peak_mps": 0.01,
+      "thermal_peak_mps": 0.14282921188592468,
+      "thermal_queries_above_1e_minus_6_mps": 47524,
+      "wind_queries": 47524
+    },
+    "first_tick_queries": 98
+  },
+  {
+    "aircraft": "turbo-lumber-evolution",
+    "power_variant": "ideal",
+    "case": "spatial-v5-gusts-thermals-24",
+    "coverage": {
+      "accepted_ticks": 480,
+      "final_state_sha256": "63ee83d2774ef157a137240c1e84ea1e1830f90600386b24c39f594c3f4f2911",
+      "first_query_time_s": 0.0,
+      "gust_peak_mps": 0.27999999999999997,
+      "gust_queries_above_1e_minus_6_mps": 28800,
+      "last_query_time_s": 2.0,
+      "matches_production": true,
+      "required_active_peak_mps": 0.01,
+      "thermal_peak_mps": 0.1422330798199645,
+      "thermal_queries_above_1e_minus_6_mps": 28800,
+      "wind_queries": 28800
+    },
+    "first_tick_queries": 60
+  },
+  {
+    "aircraft": "skywalker-x8",
+    "power_variant": "ideal",
+    "case": "spatial-v5-gusts-thermals-24",
+    "coverage": {
+      "accepted_ticks": 480,
+      "final_state_sha256": "82d828a5e719d7d2e6161d22ade808776a98f7183278b51b4a1cd52d9e8283c5",
+      "first_query_time_s": 0.0,
+      "gust_peak_mps": 0.27999999999999997,
+      "gust_queries_above_1e_minus_6_mps": 17280,
+      "last_query_time_s": 2.0,
+      "matches_production": true,
+      "required_active_peak_mps": 0.01,
+      "thermal_peak_mps": 0.14318573530466838,
+      "thermal_queries_above_1e_minus_6_mps": 17280,
+      "wind_queries": 17280
+    },
+    "first_tick_queries": 36
+  },
+  {
+    "aircraft": "skywalker-x8",
+    "power_variant": "pack",
+    "case": "spatial-v5-gusts-thermals-24",
+    "coverage": {
+      "accepted_ticks": 480,
+      "final_state_sha256": "0fc1115c0ceec27ad2eafe950d9b4dae5b1c1935390afa2070075fd2f2bbd079",
+      "first_query_time_s": 0.0,
+      "gust_peak_mps": 0.27999999999999997,
+      "gust_queries_above_1e_minus_6_mps": 17280,
+      "last_query_time_s": 2.0,
+      "matches_production": true,
+      "required_active_peak_mps": 0.01,
+      "thermal_peak_mps": 0.14318405580752372,
+      "thermal_queries_above_1e_minus_6_mps": 17280,
+      "wind_queries": 17280
+    },
+    "first_tick_queries": 36
+  }
+]

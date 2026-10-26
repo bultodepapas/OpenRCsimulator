@@ -1,0 +1,27 @@
+[
+  {
+    "group": "trainer",
+    "case_count": 5,
+    "all_aircraft_report_values_equal": true
+  },
+  {
+    "group": "aerobatic",
+    "case_count": 1,
+    "all_aircraft_report_values_equal": true
+  },
+  {
+    "group": "turbo",
+    "case_count": 1,
+    "all_aircraft_report_values_equal": true
+  },
+  {
+    "group": "x8-ideal",
+    "case_count": 1,
+    "all_aircraft_report_values_equal": true
+  },
+  {
+    "group": "x8-pack",
+    "case_count": 1,
+    "all_aircraft_report_values_equal": true
+  }
+]

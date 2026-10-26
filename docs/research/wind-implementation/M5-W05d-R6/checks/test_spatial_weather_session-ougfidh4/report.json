@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8a5aec12-da2c-43dc-84ba-ee625bcae19e",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\candidate\\app",
+    "--script",
+    "res://tests/test_spatial_weather_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:36:46.610909+00:00",
+  "label": "test_spatial_weather_session",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\checks\\test_spatial_weather_session-ougfidh4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\checks\\test_spatial_weather_session-ougfidh4\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 48.719,
+  "log_bytes": 7786,
+  "log_sha256": "076114fb9d8e25d4ef39e39c4c8432c471e360f4a5ff8dd7cad86820c1378f2c"
+}

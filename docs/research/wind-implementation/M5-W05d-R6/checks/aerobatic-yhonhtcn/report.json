@@ -1,0 +1,48 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "627e1a36-d73d-4fb5-aa98-5c4e553a9e82",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/bench_spatial_wind.gd",
+    "--",
+    "--full-session",
+    "--verify-only",
+    "--aircraft=gp-extra-300s-60",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\candidate-workloads\\aerobatic.json",
+    "--revision=61e1dd9895f83b42a6427af26b22bddd4d156b08",
+    "--manifest-sha256=4dbef48659daa29f7e47b39391fd0cb725315daa5123fc27fd1f356fa7d96743",
+    "--case=spatial-v5-gusts-thermals-24"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:28:56.379716+00:00",
+  "label": "aerobatic",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\checks\\aerobatic-yhonhtcn\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\checks\\aerobatic-yhonhtcn\\report.json",
+  "timeout_seconds": 600.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "wrote "
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 27.109,
+  "log_bytes": 603,
+  "log_sha256": "5af6452f3212d82dbc7075f528d6edb60902289aa4ac8012a148513939c6f501"
+}

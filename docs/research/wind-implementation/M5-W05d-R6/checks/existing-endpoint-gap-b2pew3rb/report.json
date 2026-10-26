@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "01349fff-65c3-4f05-9bdc-e7abc9d731a6",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-gust-r6/baseline/app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-gust-r6/check_existing_endpoint_gap.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:39:46.978609+00:00",
+  "label": "existing-endpoint-gap",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\checks\\existing-endpoint-gap-b2pew3rb\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-gust-r6\\checks\\existing-endpoint-gap-b2pew3rb\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.469,
+  "log_bytes": 222,
+  "log_sha256": "aa7f07ba594fb7d9873c6d8894248101690eab053a48aa089c80ff10715abc5c"
+}

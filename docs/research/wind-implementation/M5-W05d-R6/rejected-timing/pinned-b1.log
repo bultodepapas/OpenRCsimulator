@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+starting full-session case gp-extra-300s-60 / spatial-v5-modes-24
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+measured gp-extra-300s-60 / spatial-v5-modes-24 / median 8060.80416666667 µs/tick / first-tick wind queries 98
+starting full-session case gp-extra-300s-60 / spatial-v5-gusts-thermals-24
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+measured gp-extra-300s-60 / spatial-v5-gusts-thermals-24 / median 8961.33333333333 µs/tick / first-tick wind queries 98
+wrote C:\DEVELOPMENT\OpenRCsimulator\tmp\wind-gust-r6\pinned-b1.json
