@@ -508,6 +508,15 @@ msgstr "Empieza en pista. Rodaje experimental."
 msgid "Starts on the runway, trimmed for level flight at 50% throttle. Experimental ground handling."
 msgstr "Empieza en pista, con el trim ajustado para vuelo nivelado al 50 % de acelerador. Rodaje experimental."
 
+msgid "Start: hand launch"
+msgstr "Inicio: lanzamiento a mano"
+
+msgid "Thrown by hand into the wind at full throttle, trimmed for level flight at 50% throttle."
+msgstr "Lanzado a mano contra el viento a todo gas, con el trim para vuelo nivelado al 50 % de acelerador."
+
+msgid "Hand launch"
+msgstr "Lanzamiento a mano"
+
 msgid "Could not start flight: %s"
 msgstr "No se pudo iniciar el vuelo: %s"
 

@@ -170,11 +170,11 @@ func _run() -> void:
 	_check("Timber: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == TIMBER and ui.focus_name() == "NextAircraft", ui.focus_name())
 	_check("Timber: catalog counter", home.aircraft_count_label.text == _aircraft_counter(TIMBER), home.aircraft_count_label.text)
 	_check("Timber selection is saved without starting a session", Preferences.load_from(PREFS).aircraft == TIMBER and app.flight == null)
-	# X8-09: the X8 flying wing follows the Timber; without landing gear it starts in the air.
+	# X8-09: the X8 flying wing follows the Timber; without landing gear it starts by hand (X8-07).
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("X8: shown, experimental, Fly enabled, starts in the air", home.aircraft_id == X8 and not home.fly_button.disabled
-		and home.aircraft_status_label.text.begins_with("Experimental") and home.start_choice == "airborne"
+	_check("X8: shown, experimental, Fly enabled, starts by hand", home.aircraft_id == X8 and not home.fly_button.disabled
+		and home.aircraft_status_label.text.begins_with("Experimental") and home.start_choice == "hand_launch"
 		and app.home_scene.airplane.aircraft_id == X8, "%s / %s / %s" % [home.aircraft_id, home.start_choice, home.aircraft_status_label.text])
 	_check("X8: catalog counter", home.aircraft_count_label.text == _aircraft_counter(X8), home.aircraft_count_label.text)
 	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before the X8.

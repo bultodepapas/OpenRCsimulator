@@ -358,7 +358,7 @@ Replacing a sampled lift maximum with a continuous optimizer can change a stall 
 
 ## 2026-10-07 · E3c1a — stopping is not proof of runway landing
 
-A soft touchdown followed by a stop can hide a runway overrun: rough ground supplied the stopping force in early approach trials. Check every wheel throughout rollout and require a stable idle hold inside the strip. Run the actual session crash detector at each committed boundary; calling only the integrator bypasses it and lets an initially penetrating aircraft advance. [Trajectories and rejection controls](research/ground-contact/E3c1a/README.md).
+A soft touchdown followed by a stop can hide a runway overrun: rough ground supplied the stopping force in early approach trials. Check every wheel throughout rollout and require a stable idle hold inside the strip. Run the actual session crash detector at each committed boundary; calling only the integrator bypasses it and lets an initially penetrating aircraft advance. [Trajectories and rejection controls](research/ground-contact/E3c1a/README.md). The detector is `FlightSession._session_after_input()`: a probe loop calls it before each `sim.step()` and stops when it returns false. A hand-launch probe without it fell 40 m below the field with no crash ([X8-07](research/skywalker-x8/X8-07/README.md)).
 
 ## 2026-10-08 · G1b1 — verify the sampled command and the recorded query
 
