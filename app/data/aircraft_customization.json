@@ -4,7 +4,7 @@
   "families": [
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 3,
+      "version": 4,
       "source_proof_version": 3,
       "visual_family": "f4u-corsair-250",
       "model_manifest_sha256": "5d03cb3989a6d5829f8ae1d048e47022fb801a00a21eccb3a7b0b5b438ef126e",
@@ -329,6 +329,11 @@
           "anchor_id": "physical_exit"
         }
       ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      },
       "presentation_engine_version": "4.8.0",
       "presentation_sources": [
         {
@@ -337,11 +342,11 @@
         },
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+          "sha256": "7721e9795084d935fa8a9065f69c607f052bad443a602800f6662abc55677fd2"
         },
         {
           "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
-          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+          "sha256": "19ee90891e1b2ba4c2e88cc79cc03365e60f3915599815257966435851b0e80e"
         },
         {
           "path": "res://render/lighting/lighting_patterns.gd",
@@ -401,7 +406,7 @@
         },
         {
           "path": "res://render/world/aircraft_lights.gd",
-          "sha256": "e484d262cd88085bbf144115c4be5c09ef1dd88a365a18fcaf56ae755457c04f"
+          "sha256": "9a08c0978c12ce3cbf8d4c3f4eca98a4f477c55c060a2d262b2720c546329726"
         },
         {
           "path": "res://render/world/engine_srgb.gdshaderinc",
@@ -421,14 +426,14 @@
         },
         {
           "path": "res://workshop/presentation.gd",
-          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+          "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "5b24897cd59a68858eda3d98b45a623fd8fd69cfb7e0f40d0421039293a53327"
+      "slots_sha256": "2b3e4bf4aa928fa5dab1950a3a128089b968ac36e3310374694b3421398fbf77"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 3,
+      "version": 4,
       "source_proof_version": 3,
       "visual_family": "gp-extra-300s-60",
       "model_manifest_sha256": "2a2f1cc898cb8ac3a9f96e8d6331cd80db8f8f95ecdb0956aa9caffa75f25371",
@@ -659,6 +664,11 @@
           "provenance": "authored"
         }
       ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      },
       "presentation_engine_version": "4.8.0",
       "presentation_sources": [
         {
@@ -667,11 +677,11 @@
         },
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+          "sha256": "7721e9795084d935fa8a9065f69c607f052bad443a602800f6662abc55677fd2"
         },
         {
           "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
-          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+          "sha256": "19ee90891e1b2ba4c2e88cc79cc03365e60f3915599815257966435851b0e80e"
         },
         {
           "path": "res://render/lighting/lighting_patterns.gd",
@@ -731,7 +741,7 @@
         },
         {
           "path": "res://render/world/aircraft_lights.gd",
-          "sha256": "e484d262cd88085bbf144115c4be5c09ef1dd88a365a18fcaf56ae755457c04f"
+          "sha256": "9a08c0978c12ce3cbf8d4c3f4eca98a4f477c55c060a2d262b2720c546329726"
         },
         {
           "path": "res://render/world/engine_srgb.gdshaderinc",
@@ -751,14 +761,14 @@
         },
         {
           "path": "res://workshop/presentation.gd",
-          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+          "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "ec65a25a44230b47559dca9408584e9f2f65d3093b66aec0b42e98155acf7f48"
+      "slots_sha256": "4dc74b6551b162fcb17b32ac6c2848b66e38ab320dbd264aeab97484f2351fe1"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 3,
+      "version": 4,
       "source_proof_version": 3,
       "visual_family": "jensen-das-ugly-stik-60",
       "model_manifest_sha256": "912bee8177251ecf7ed58cb50ee05439d2806ca181c41f86b397b40555b40e55",
@@ -1103,6 +1113,11 @@
           "anchor_id": "physical_exit"
         }
       ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      },
       "presentation_engine_version": "4.8.0",
       "presentation_sources": [
         {
@@ -1111,11 +1126,11 @@
         },
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+          "sha256": "7721e9795084d935fa8a9065f69c607f052bad443a602800f6662abc55677fd2"
         },
         {
           "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
-          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+          "sha256": "19ee90891e1b2ba4c2e88cc79cc03365e60f3915599815257966435851b0e80e"
         },
         {
           "path": "res://render/lighting/lighting_patterns.gd",
@@ -1175,7 +1190,7 @@
         },
         {
           "path": "res://render/world/aircraft_lights.gd",
-          "sha256": "e484d262cd88085bbf144115c4be5c09ef1dd88a365a18fcaf56ae755457c04f"
+          "sha256": "9a08c0978c12ce3cbf8d4c3f4eca98a4f477c55c060a2d262b2720c546329726"
         },
         {
           "path": "res://render/world/engine_srgb.gdshaderinc",
@@ -1195,14 +1210,14 @@
         },
         {
           "path": "res://workshop/presentation.gd",
-          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+          "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "715c7c56232d67ff0f3c1a06a8a4fdef726e55265f3ac23b3f9a0e6150f7b321"
+      "slots_sha256": "6327e94c30452a54c61e7ac2b5cea43578c63366d354743da3c6e6389fb665d1"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 3,
+      "version": 4,
       "source_proof_version": 3,
       "visual_family": "p51d-mustang-120",
       "model_manifest_sha256": "6665f7160b277923d48c16ae345ae269fd5a5b9ad9f8c4a68a034cce367fce83",
@@ -1472,6 +1487,11 @@
           "anchor_id": "physical_exit"
         }
       ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      },
       "presentation_engine_version": "4.8.0",
       "presentation_sources": [
         {
@@ -1480,11 +1500,11 @@
         },
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+          "sha256": "7721e9795084d935fa8a9065f69c607f052bad443a602800f6662abc55677fd2"
         },
         {
           "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
-          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+          "sha256": "19ee90891e1b2ba4c2e88cc79cc03365e60f3915599815257966435851b0e80e"
         },
         {
           "path": "res://render/lighting/lighting_patterns.gd",
@@ -1544,7 +1564,7 @@
         },
         {
           "path": "res://render/world/aircraft_lights.gd",
-          "sha256": "e484d262cd88085bbf144115c4be5c09ef1dd88a365a18fcaf56ae755457c04f"
+          "sha256": "9a08c0978c12ce3cbf8d4c3f4eca98a4f477c55c060a2d262b2720c546329726"
         },
         {
           "path": "res://render/world/engine_srgb.gdshaderinc",
@@ -1564,14 +1584,14 @@
         },
         {
           "path": "res://workshop/presentation.gd",
-          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+          "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "d76a10269359077ff40689e2d07828b3af42f6579b7d6441c039fcd9dd7e9356"
+      "slots_sha256": "da4b70b5ee353bc72783e702ca4bc5631b25f8733c835fc5f9edbfe2a79f0234"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 3,
+      "version": 4,
       "source_proof_version": 3,
       "visual_family": "sebart-avanti-s-a200-p100rx",
       "model_manifest_sha256": "8fdcaff2d691dc597fcbddb5b52f7b30a51eb539ad97189812cdc241f06a6b23",
@@ -1738,6 +1758,11 @@
           "provenance": "authored"
         }
       ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      },
       "presentation_engine_version": "4.8.0",
       "presentation_sources": [
         {
@@ -1746,11 +1771,11 @@
         },
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+          "sha256": "7721e9795084d935fa8a9065f69c607f052bad443a602800f6662abc55677fd2"
         },
         {
           "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
-          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+          "sha256": "19ee90891e1b2ba4c2e88cc79cc03365e60f3915599815257966435851b0e80e"
         },
         {
           "path": "res://render/lighting/lighting_patterns.gd",
@@ -1810,7 +1835,7 @@
         },
         {
           "path": "res://render/world/aircraft_lights.gd",
-          "sha256": "e484d262cd88085bbf144115c4be5c09ef1dd88a365a18fcaf56ae755457c04f"
+          "sha256": "9a08c0978c12ce3cbf8d4c3f4eca98a4f477c55c060a2d262b2720c546329726"
         },
         {
           "path": "res://render/world/engine_srgb.gdshaderinc",
@@ -1830,14 +1855,14 @@
         },
         {
           "path": "res://workshop/presentation.gd",
-          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+          "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "dc2bd991bafea4651c35021dfad031534f0ab4e1894a12620c5c0d03a60df040"
+      "slots_sha256": "67eec10a59593bd937bf67d3f1d7168905d3abb6f766d3b68af082811e966a1f"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 3,
+      "version": 4,
       "source_proof_version": 3,
       "visual_family": "skywalker-x8",
       "model_manifest_sha256": "f735c4192228e5863323d7fa72a1d888c1ee98a4a36c4ffc40cff84d19cc7ae1",
@@ -1897,6 +1922,11 @@
       ],
       "marking_slots": [],
       "smoke_slots": [],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      },
       "presentation_engine_version": "4.8.0",
       "presentation_sources": [
         {
@@ -1905,11 +1935,11 @@
         },
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+          "sha256": "7721e9795084d935fa8a9065f69c607f052bad443a602800f6662abc55677fd2"
         },
         {
           "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
-          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+          "sha256": "19ee90891e1b2ba4c2e88cc79cc03365e60f3915599815257966435851b0e80e"
         },
         {
           "path": "res://render/lighting/lighting_patterns.gd",
@@ -1969,7 +1999,7 @@
         },
         {
           "path": "res://render/world/aircraft_lights.gd",
-          "sha256": "e484d262cd88085bbf144115c4be5c09ef1dd88a365a18fcaf56ae755457c04f"
+          "sha256": "9a08c0978c12ce3cbf8d4c3f4eca98a4f477c55c060a2d262b2720c546329726"
         },
         {
           "path": "res://render/world/engine_srgb.gdshaderinc",
@@ -1989,14 +2019,14 @@
         },
         {
           "path": "res://workshop/presentation.gd",
-          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+          "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "bf7324cf1a31fa56a5de3b0aa0347ef870daa9b1203d09d1342cc3f148889a91"
+      "slots_sha256": "7960998661803ebadaefaf06d74560727ba416e1c5e86e08f9b53b3bade2cd17"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 3,
+      "version": 4,
       "source_proof_version": 3,
       "visual_family": "turbo-lumber-evolution",
       "model_manifest_sha256": "6b815eef6d54214b29d61b4338bf65168f1384f7beaa09074e1c5f517f120a40",
@@ -2213,6 +2243,11 @@
           "provenance": "authored"
         }
       ],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      },
       "presentation_engine_version": "4.8.0",
       "presentation_sources": [
         {
@@ -2221,11 +2256,11 @@
         },
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+          "sha256": "7721e9795084d935fa8a9065f69c607f052bad443a602800f6662abc55677fd2"
         },
         {
           "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
-          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+          "sha256": "19ee90891e1b2ba4c2e88cc79cc03365e60f3915599815257966435851b0e80e"
         },
         {
           "path": "res://render/lighting/lighting_patterns.gd",
@@ -2285,7 +2320,7 @@
         },
         {
           "path": "res://render/world/aircraft_lights.gd",
-          "sha256": "e484d262cd88085bbf144115c4be5c09ef1dd88a365a18fcaf56ae755457c04f"
+          "sha256": "9a08c0978c12ce3cbf8d4c3f4eca98a4f477c55c060a2d262b2720c546329726"
         },
         {
           "path": "res://render/world/engine_srgb.gdshaderinc",
@@ -2305,10 +2340,10 @@
         },
         {
           "path": "res://workshop/presentation.gd",
-          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+          "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "f87b1388febf855bcf131c2c92638ec059fb4324fb6457ac7ab5dd8d02b49980"
+      "slots_sha256": "56d708c9b3dd28c6836ab69d7b85953125272f47aa1c8eb054cff49a292fc841"
     }
   ]
 }
