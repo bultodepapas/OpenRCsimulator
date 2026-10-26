@@ -233,7 +233,7 @@ msgid "Landing lamp"
 msgstr "着陸灯"
 
 msgid "NEXT FLIGHT"
-msgstr "次のフライト"
+msgstr "次の飛行"
 
 msgid "Test field · Free flight"
 msgstr "テストフィールド · フリーフライト"
@@ -532,7 +532,7 @@ msgid ""
 msgstr "フライトは空中から始まります。風、突風、乱気流、フィールドの空気密度を設定してください。着陸は実験段階です。墜落すると再開します。"
 
 msgid "PAUSED"
-msgstr "一時停止中"
+msgstr "一時停止"
 
 msgid "Continue"
 msgstr "続行"
@@ -1991,13 +1991,13 @@ msgid "Elevator trim: %+.1f° (PgUp down / PgDn up)"
 msgstr "エレベータートリム：%+.1f°（PgUpで下げ / PgDnで上げ）"
 
 msgid "Aircraft Workshop"
-msgstr "機体ワークショップ"
+msgstr "機体工房"
 
 msgid "Return to Workshop"
-msgstr "ワークショップに戻る"
+msgstr "工房に戻る"
 
 msgid "Experimental Workshop trial · Esc to return"
-msgstr "実験的なワークショップ試験 · Escで戻る"
+msgstr "実験的な工房試験 · Escで戻る"
 
 msgid "The source aircraft is not available in this catalog."
 msgstr "このカタログに元の機体がありません。"
@@ -2458,7 +2458,7 @@ msgstr "記録を破棄して続行"
 msgid ""
 "Experimental Workshop trial · Esc opens Pause · Return to Workshop is on "
 "Pause"
-msgstr "実験的なワークショップ試験 · Escで一時停止 · ワークショップへの復帰は一時停止画面にあります。"
+msgstr "実験的な工房試験 · Escで一時停止 · 工房への復帰は一時停止画面にあります。"
 
 msgid "Unavailable aircraft"
 msgstr "機体を利用できません"
@@ -2626,7 +2626,7 @@ msgid "RC cars · Bisonte MT8"
 msgstr "RCカー · Bisonte MT8"
 
 msgid "Workshop"
-msgstr "ワークショップ"
+msgstr "工房"
 
 msgid "Field lighting"
 msgstr "フィールド照明"
@@ -3834,7 +3834,7 @@ msgid "Arm / disarm helicopter motor"
 msgstr "ヘリコプターの始動を許可 / 禁止"
 
 msgid "Arm, then release hold"
-msgstr "始動を許可してから、Hでローターを始動"
+msgstr "始動を許可してからモーターロックを解除"
 
 msgid "Helicopter: arm / disarm"
 msgstr "ヘリコプター：始動を許可 / 禁止"
@@ -3891,7 +3891,7 @@ msgstr ""
 "サイクリックとヨーを中央にし、ピッチをゼロにしてください。Bで始動を許可し、Hでローターを始動します。回転数が制御値に達するまで待ってください。"
 
 msgid "Outside the identified main-rotor envelope."
-msgstr "主ローターの検証済み範囲外です。"
+msgstr "主ローターの特定された範囲外です。"
 
 msgid "Resume with controls released before arming."
 msgstr "再開後、始動を許可する前に操作を離してください。"
@@ -3901,7 +3901,7 @@ msgid ""
 msgstr "始動許可の条件：モーターロックON、サイクリックとヨーを中央、コレクティブピッチはゼロから1度以内。"
 
 msgid "Armed in hold. Release hold to start the rotor."
-msgstr "始動許可済み、モーターロック中。Hでロックを解除するとローターが始動します。"
+msgstr "始動許可済み、モーターロック中。ロックを解除するとローターが始動します。"
 
 msgid "Motor is disarmed. Arm at zero collective pitch first."
 msgstr "モーター始動は禁止されています。まずコレクティブピッチをゼロにし、始動を許可してください。"
@@ -5592,7 +5592,7 @@ msgstr "新しい構成に適用"
 msgid ""
 "Record measured masses for existing source inventory components. Positions "
 "and geometry stay fixed; applying creates a new build."
-msgstr "元のインベントリにある既存コンポーネントの測定質量を記録します。位置と形状は変わりません。適用すると新しい構成が作成されます。"
+msgstr "元の部品一覧にある既存の部品の測定質量を記録します。位置と形状は変わりません。適用すると新しい構成が作成されます。"
 
 msgid "Measured component"
 msgstr "測定済みコンポーネント"
@@ -5637,10 +5637,10 @@ msgid "Unavailable: "
 msgstr "利用不可："
 
 msgid "Show source inventory details"
-msgstr "元のインベントリの詳細を表示"
+msgstr "元の部品一覧の詳細を表示"
 
 msgid "Hide source inventory details"
-msgstr "元インベントリの詳細を隠す"
+msgstr "元の部品一覧の詳細を隠す"
 
 msgid "Weighing state (fixed to source declaration)"
 msgstr "計量状態（測定元の申告に固定）"
@@ -5652,7 +5652,7 @@ msgid "Aircraft source is unavailable."
 msgstr "機体の測定元を利用できません。"
 
 msgid "No source inventory components are available for measurement."
-msgstr "測定可能な元インベントリのコンポーネントがありません。"
+msgstr "測定できる元の部品がありません。"
 
 msgid "Enter a finite component mass in kilograms within the source bounds."
 msgstr "測定元の範囲内で有限のコンポーネント質量をkg単位で入力してください。"
@@ -5702,7 +5702,7 @@ msgstr "適用する前に、測定済みコンポーネントを1つ以上追�
 msgid ""
 "The candidate did not pass validation. Review source inventory details for "
 "the reason."
-msgstr "候補は検証に失敗しました。理由を確認するには元インベントリの詳細を確認してください。"
+msgstr "候補は検証に失敗しました。理由を確認するには、元の部品一覧を確認してください。"
 
 msgid "Record a measured component mass. Geometry stays fixed."
 msgstr "コンポーネントの測定質量を記録してください。形状は変わりません。"
@@ -5798,7 +5798,7 @@ msgid "Change aircraft"
 msgstr "機体を変更"
 
 msgid "Workshop trial"
-msgstr "ワークショップで試験飛行"
+msgstr "工房で試験飛行"
 
 msgid "Resume"
 msgstr "再開"
@@ -5834,7 +5834,7 @@ msgid "Unsaved preview: Keep changes saves it, Close discards it."
 msgstr "未保存のプレビュー：「保存」で変更を保存し、「閉じる」で破棄します。"
 
 msgid "Changes preview at once. Keep changes saves them; Close discards them."
-msgstr "変更はすぐにプレビューされます。「保存」で保持し、「閉じる」で破棄します。"
+msgstr "変更は即時反映。「保存」で確定、「閉じる」で取消。"
 
 msgid "Next flight: %s"
 msgstr "次のフライト：%s"
@@ -6066,7 +6066,7 @@ msgid ""
 " More flight details or Pause → Session options."
 msgstr ""
 "クラブフィールドでは、Ugly Stikの僚機が1～3機、実験的に周回飛行します。初期設定ではオフです。まずは1機から始めてください。ホーム → "
-"飛行の詳細 → 僚機、または一時停止 → セッション設定から開けます。"
+"フライト詳細 → 僚機、または一時停止 → セッション設定から開けます。"
 
 msgid ""
 "Apply changes sound and labels immediately. Flight settings take effect "
@@ -7089,7 +7089,7 @@ msgid "All aircraft combined"
 msgstr "全機体の合計"
 
 msgid "Remove %d records for %s (%s), covering %s, with %s airborne time."
-msgstr "記録%d件：%s（%s）、対象期間：%s、飛行時間：%s。"
+msgstr "記録%d件を削除します。対象：%s（%s）、期間：%s、飛行時間：%s。"
 
 msgid "flight"
 msgstr "飛行"

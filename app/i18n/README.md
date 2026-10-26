@@ -11,15 +11,13 @@ English-only, preference-independent behavior.
 
 - `languages.gd` owns codes and native names. Preferences, startup, Home and Settings
   share it. Preserve script subtags: `zh_Hans` must not be reduced to `zh`.
-- `es.po` contains the existing source-message inventory; `zh_Hans.po`,
-  `pt_BR.po`, `de.po`, `fr.po` and `it.po` cover the original 2,439 unique messages.
-  `ru.po` covers all 2,461 messages in the current inventory, including the 22 stock-lighting
-  messages added concurrently on 2026-10-26. Those additions still need translations
-  in the other added catalogs (the Spanish file has 11 repeated message IDs).
-  Add new user-facing messages to every catalog. English text stays
-  in code and `msgid`; translate complete `msgstr` sentences, not fragments.
+- `es.po` contains the source-message inventory. Chinese, Portuguese, German,
+  French, Italian, Russian and Japanese use separate catalogs. Add new user-facing
+  messages to every catalog; see the dated verification sections for coverage gaps.
+  English text stays in code and `msgid`; translate complete `msgstr` sentences,
+  not fragments. Do not copy repeated source IDs into new catalogs.
 - Preserve formatting arguments, their order, BBCode, file/URL identifiers,
-  aircraft/product names and control/key identifiers. Chinese has one plural form.
+  aircraft/product names and control/key identifiers. Chinese and Japanese each have one plural form.
 - `project.godot` registers the catalogs. Verify glyph coverage in the existing
   or a bundled font, with corresponding layout/interaction checks.
 - `fonts.gd` adds [Noto Sans CJK SC](../assets/fonts/README.md) to the engine font
@@ -312,4 +310,40 @@ messages and checks Cyrillic coverage from that pack. A disk-space failure durin
 an earlier export was resolved by writing the temporary pack to shared memory.
 Manual build metadata remains the expected export warning. No public installer or
 release was produced. Logs, captures and the pack hash are in ignored `tmp/ui-ru/`;
+the large temporary pack was removed after verification.
+
+
+## UI-01k verification — 2026-10-26
+
+Japanese covers all **2,461** source messages with nonempty translations and exact
+keys, ordered format arguments, markup, named arguments and explicit line breaks.
+Review distinguishes arming from rotor startup and preserves physical Latin key
+labels. Concise Pause, next-flight and Settings-preview labels fit enlarged text;
+Workshop uses **工房** consistently.
+
+Japanese language checks pass for ninth-option selection, immediate updates,
+saved `ja`, restart persistence, regional locale names and all non-ASCII catalog
+glyphs. Font switching checks cover Japanese → Chinese → English, using the JP
+and SC variants exclusively and restoring the original Latin font. Settings
+integration and startup checks pass. The whole language suite still reports four
+coverage failures: Portuguese, German, French and Italian lack the 22 stock-lighting
+messages recorded under UI-01j; Japanese and Chinese cover the current inventory.
+
+Home layout passes for all nine languages and eleven aircraft, including 1080p,
+720p and 200% text. The final modal matrix passes **3,024 cases** across all nine
+languages. Pause passes **1,857 checks**. Static lint adds no diagnostics
+relative to the starting tree. The full simulator suite and the legacy Home test
+with the known failures recorded under UI-01j were not rerun.
+
+Native Home and Settings were inspected at 1920×1080 with normal and 200% text.
+The captured Japanese glyphs render legibly, and the restarted isolated profile
+retains Japanese. Both sessions exited through Home's Quit action without crashes
+or leaked objects. This is software layout evidence, not performance qualification
+or a claim that the earlier general rendering observation is resolved.
+
+The Linux preset exports the full catalog, Noto Sans CJK JP 2.004 and the shared
+OFL license. A runtime pack probe checks every translated message and non-ASCII
+glyph, disabled system-font fallback, and Japanese/Chinese/English font switching.
+The export uses manual build metadata; no new public installer or release was
+published. Logs, captures and the export hash remain under ignored `tmp/ui-ja/`;
 the large temporary pack was removed after verification.

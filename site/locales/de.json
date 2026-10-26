@@ -4,15 +4,15 @@
     "description": "Lade OpenRC Simulator herunter, einen kostenlosen RC-Flugsimulator mit offenem Quellcode für Windows, Linux und macOS. Entdecke den Modellflug in einem Desktop-Simulator in der frühen Alpha-Phase."
   },
   "translations": {
-    "actualModel": "RENDERINGS DES TATSÄCHLICHEN MODELLS",
+    "actualModel": "RENDERINGS DES PROJEKTMODELLS",
     "aeroBody": "Ein eigener Solver mit sechs Freiheitsgraden, RK4-Integration bei 240 Hz und float64-Zustand. Lokale Lasten an Tragflächen und Leitwerk, Trimmung, Strömungsabrisse, Trudeln und Ruderdynamik.",
     "aeroDetail1": "Abwind, Nickdämpfung und Propellerstrahl, sofern konfiguriert.",
     "aeroDetail2": "Optionaler Bodeneffekt an Tragfläche und Leitwerk, für die Stik ausgewiesen.",
-    "aeroDetail3": "Eigenständiger Sitzungsablauf für Rumpf, Rotor, induzierte Strömung und Steuerung des Hubschraubers.",
+    "aeroDetail3": "Eigene Hubschraubersitzung für Rumpf, Rotor, Rotoranströmung und Steuerung.",
     "aeroTitle": "Aerodynamik und Flugdynamik",
-    "airBody": "Gleichmäßiger Wind, wiederkehrende Böen und Turbulenz mit Startwert. Konfigurierbare Platzhöhe, Temperatur, QNH-Luftdruck und Luftfeuchtigkeit für die physikalische Atmosphäre.",
-    "airDetail1": "Morgendämmerung, Tag, Abenddämmerung, Nacht und einsetzender Abend; Datum, Uhrzeit und Ort sind änderbar.",
-    "airDetail2": "Wolken, Regen und Blitze sind visuelle Darstellung ohne räumlich wirkende Sturmkräfte.",
+    "airBody": "Gleichmäßiger Wind, wiederkehrende Böen und Turbulenz mit festgelegtem Zufallsstartwert. Konfigurierbare Platzhöhe, Temperatur, QNH-Luftdruck und Luftfeuchtigkeit für die physikalische Atmosphäre.",
+    "airDetail1": "Morgendämmerung, Tag, Abenddämmerung, Nacht und der allmähliche Übergang zum Abend; Datum, Uhrzeit und Ort sind änderbar.",
+    "airDetail2": "Wolken, Regen und Blitze sind rein visuelle Effekte; räumlich veränderliche Sturmkräfte werden nicht simuliert.",
     "airDetail3": "Platzbeleuchtung, Sterne, Mondlicht und das Nachtset des Hubschraubers.",
     "airLink": "Atmosphäre ↗",
     "airTitle": "Luft, Licht und Flugbedingungen",
@@ -47,7 +47,7 @@
     "communityHeading": "Die nächste Verbesserung<br>könnte mit dir beginnen.",
     "communityKicker": "EIN OFFENES PROJEKT. GEMEINSAME ARBEIT.",
     "communityThanks": "Aloft Hobbies hat das Projekt in seinem Forum geteilt und Wissen sowie Rückmeldungen angeboten.",
-    "contractLink": "Flugzeugvertrag ↗",
+    "contractLink": "Datenvertrag für Flugzeugmodelle ↗",
     "contribute": "Auf GitHub mitarbeiten",
     "controlBody": "USB-Sender, Gamepad und Tastatur mit Kalibrierung, Freigabe und Failsafe. Flugzeugspezifische Rate- und Expo-Einstellungen für Tastatur und Gamepad; Fernsteuerungen behalten ihre eigenen Einstellungen.",
     "controlDetail1": "Piloten-, Verfolger-, Orbit- und Nahaufnahmekameras mit manuellem oder automatischem Zoom.",
@@ -108,10 +108,10 @@
     "gear": "Fahrwerk",
     "gemfanScope": "Propellernamen und vereinfachte 3D-Darstellungen; Integration steht noch aus.",
     "glowLink": "Glühzünder und Grenzen ↗",
-    "groundBody": "Einzelraddrehung, Federung, Lenkung, Rollwiderstand und Reifenschlupf. Gepflegtes Gras und unebenes Gelände haben unterschiedliche Oberflächenprofile.",
+    "groundBody": "Unabhängige Drehung jedes Rads, Federung, Lenkung, Rollwiderstand und Reifenschlupf. Gepflegtes Gras und unebenes Gelände haben unterschiedliche Oberflächenprofile.",
     "groundDetail1": "Experimentelle Pistenstarts für die Stik und den Turbo Lumber.",
     "groundDetail2": "Kufenkontakte und Start von der Bodenplattform beim Hubschrauber.",
-    "groundDetail3": "Kollisionskörper für die Szenerie, Trümmer, Spuren und Effekte; die physikalische Kalibrierung steht noch aus.",
+    "groundDetail3": "Vereinfachte Kollisionsmodelle für die Szenerie, Trümmer, Spuren und Effekte; die physikalische Kalibrierung steht noch aus.",
     "groundLink": "Bodenkontaktmodell ↗",
     "groundTitle": "Fliegen beginnt auch am Boden",
     "hangarHeading": "Jedes Flugzeug.<br>Ein eigener Charakter.",
@@ -143,7 +143,7 @@
     "jetStudyHeading": "Ventage Jet.<br>Ganz nah.",
     "jetStudyIntro": "Kabinenhaube, Tragfläche und Leitwerk. Drei Ansichten des Modells zum Erkunden in 3D.",
     "jetStudyKicker": "VENTAGE JET / AUS DER NÄHE",
-    "jetStudyNote": "TATSÄCHLICHES MODELL · STUDIORENDERING",
+    "jetStudyNote": "PROJEKTMODELL · STUDIORENDERING",
     "jetTail": "Leitwerk",
     "jetWing": "Tragfläche",
     "kontronikScope": "Nachgebildete Antriebsprodukte und Markenname; Integration steht noch aus.",
@@ -202,7 +202,7 @@
     "spinHint": "Zum Erkunden ziehen · Mit dem Schieberegler den Winkel ändern.",
     "spinPlay": "Drehen",
     "stikVariants": "AUCH IN DER STIK: MAX-61FX · MAX-55AX · FS-64V. Drei experimentelle Zwei- und Viertakt-Glühzünder-Installationen.",
-    "studio": "FLUGZEUGSTUDIE / OPENRC",
+    "studio": "FLUGZEUGVORSTELLUNG / OPENRC",
     "supportCopy": "OpenAI unterstützt dieses Projekt mit einem ChatGPT-Pro-Abonnement. Diese Unterstützung gibt uns mehr Spielraum, um zu recherchieren, zu entwickeln und OpenRC mit der Modellflug-Community zu teilen.",
     "supportHeading": "Danke für deine Unterstützung<br>für unsere offene Arbeit.",
     "supportKicker": "DIE UNTERSTÜTZUNG HINTER DEM PROJEKT",
@@ -255,7 +255,7 @@
       "category": "DER KLASSIKER",
       "description": "Hochdecker, klare Linien und der unverwechselbare Charakter des Modellflugs. Das Referenzflugzeug im Herzen von OpenRC.",
       "gear": "Dreibeinfahrwerk",
-      "status": "Referenz · in Bewertung"
+      "status": "Referenz · in Prüfung"
     },
     "extra": {
       "category": "KUNSTFLUGGEIST",
@@ -327,6 +327,6 @@
     "wingAlt": "Tragfläche des Ventage Jet und ihr Übergang zum Rumpf",
     "tailAlt": "Seitenleitwerk und Höhenleitwerke des Ventage Jet",
     "earlyAlpha": "FRÜHE ALPHA-PHASE",
-    "modelStudy": "FLUGZEUGSTUDIE / OPENRC"
+    "modelStudy": "FLUGZEUGVORSTELLUNG / OPENRC"
   }
 }

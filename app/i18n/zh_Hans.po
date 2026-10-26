@@ -3031,10 +3031,10 @@ msgid "Gamepad preset"
 msgstr "游戏手柄预设"
 
 msgid "Mode 1 · rate throttle"
-msgstr "模式 1 · 油门舵量"
+msgstr "模式 1 · 增量油门"
 
 msgid "Mode 2 · rate throttle"
-msgstr "模式 2 · 油门舵量"
+msgstr "模式 2 · 增量油门"
 
 msgid "Trigger throttle"
 msgstr "扳机油门"
@@ -3413,7 +3413,7 @@ msgstr "遥控器控制方式和辅助数据均会保留。保存时会写入独
 msgid ""
 "This draft uses gamepad Mode 2 rate throttle. Legacy radio calibration "
 "remains in the original file."
-msgstr "此草稿使用游戏手柄模式 2 油门舵量。旧版遥控器校准数据仍保留在原文件中。"
+msgstr "此草稿使用游戏手柄模式 2 增量油门。旧版遥控器校准数据仍保留在原文件中。"
 
 msgid "Accept / launch"
 msgstr "确认 / 开始"
@@ -3729,13 +3729,13 @@ msgid "Restart the selected helicopter start"
 msgstr "重新开始所选直升机起飞情境"
 
 msgid "Arm / disarm helicopter motor"
-msgstr "解锁 / 关闭直升机电机"
+msgstr "解锁 / 锁定直升机电机"
 
 msgid "Arm, then release hold"
 msgstr "先解锁，再解除保持"
 
 msgid "Helicopter: arm / disarm"
-msgstr "直升机：解锁 / 关闭"
+msgstr "直升机：解锁 / 锁定"
 
 msgid "Helicopter: toggle rotor hold"
 msgstr "直升机：切换旋翼保持"
@@ -3759,7 +3759,7 @@ msgid "Arrows: cyclic · A/D: yaw · W/S: collective"
 msgstr "方向键：周期变距 · A/D：偏航 · W/S：总距"
 
 msgid "B: arm/disarm · H: hold/start · I: flight mode · G: trainer"
-msgstr "B：解锁/关闭 · H：保持/启动 · I：飞行模式 · G：教练模式"
+msgstr "B：解锁/锁定 · H：保持/启动 · I：飞行模式 · G：教练模式"
 
 msgid "R: restart · P: pause/resume · C: camera · Esc: menu"
 msgstr "R：重新开始 · P：暂停/继续 · C：摄像机 · Esc：菜单"
@@ -3771,7 +3771,7 @@ msgid "DIRECT CYCLIC"
 msgstr "直接周期变距"
 
 msgid "DISARMED"
-msgstr "已关闭"
+msgstr "未解锁"
 
 msgid "HOLD"
 msgstr "保持"
@@ -3801,7 +3801,7 @@ msgid "Armed in hold. Release hold to start the rotor."
 msgstr "已在保持模式下解锁。解除保持即可启动旋翼。"
 
 msgid "Motor is disarmed. Arm at zero collective pitch first."
-msgstr "电机已关闭。请先将总距设为零桨距，再解锁。"
+msgstr "电机尚未解锁。请先将总距设为零桨距，再解锁。"
 
 msgid "Resume explicitly before releasing rotor hold."
 msgstr "解除旋翼保持前，请先明确继续。"

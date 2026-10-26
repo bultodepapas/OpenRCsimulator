@@ -1626,7 +1626,7 @@ msgid "FAILSAFE · radio lost"
 msgstr "FAILSAFE · emisora perdida"
 
 msgid "RADIO SAFE · throttle low to arm"
-msgstr "EMISORA SEGURA · motor abajo para armar"
+msgstr "EMISORA SEGURA · baja el acelerador para habilitar"
 
 msgid "STALL"
 msgstr "PÉRDIDA"
@@ -3635,7 +3635,7 @@ msgstr "RPM ESTABILIZADAS"
 
 #. HELI-20 ground lifecycle
 msgid "Center cyclic/yaw and set zero pitch. B: arm, H: start; wait for governed RPM."
-msgstr "Centra cíclico/guiñada y ajusta paso cero. B: armar, H: arrancar; espera las RPM."
+msgstr "Centra cíclico y guiñada y ajusta el paso a cero. B: armar, H: arrancar; espera a que se estabilicen las RPM."
 
 #. HELI-20 ground lifecycle
 msgid "Outside the identified main-rotor envelope."
@@ -3643,7 +3643,7 @@ msgstr "Fuera del rango identificado del rotor principal."
 
 #. HELI-20 ground lifecycle
 msgid "Resume with controls released before arming."
-msgstr "Continúa con los controles centrados antes de armar."
+msgstr "Continúa con los controles sueltos antes de armar."
 
 #. HELI-20 ground lifecycle
 msgid "Arm: hold ON, cyclic/yaw centered, collective within 1 degree of zero pitch."
