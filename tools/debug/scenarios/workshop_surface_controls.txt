@@ -1,0 +1,18 @@
+# AE-01-R1: optional surface travel survives master edits, undo and comparison.
+press text=Workshop
+wait until="screens.is_top('workshop')" timeout_s=60
+call node=AppRoot/Workshop method=_set_page args=["setup"]
+press text="Advanced control surface setup"
+assert expr='app.get_node("Workshop").get("_advanced_controls_box").visible' message="advanced controls visible"
+eval expr='app.get_node("Workshop").get("_factor_sliders").control_multiplier_aileron.set_value(1.2)'
+assert expr='is_equal_approx(app.get_node("Workshop").get_compiled().summary.control_multiplier_aileron, 1.2)' message="individual aileron travel compiles"
+eval expr='app.get_node("Workshop").get("_factor_sliders").control_multiplier.set_value(1.1)'
+assert expr='not app.get_node("Workshop").get_recipe().has("control_multiplier_aileron")' message="master clears override"
+assert expr='is_equal_approx(app.get_node("Workshop").get("_factor_sliders").control_multiplier_aileron.value, 1.1)' message="surface inherits master"
+press text=Undo
+assert expr='is_equal_approx(app.get_node("Workshop").get_recipe().get("control_multiplier_aileron", 0), 1.2)' message="undo restores override"
+call node=AppRoot/Workshop method=_set_page args=["compare"]
+assert expr='app.get_node("Workshop").get("_active_page") == "compare"' message="comparison opens with optional values"
+press text=CloseWorkshop
+press text="Discard changes"
+assert expr="screens.is_top('home')" message="surface editing returns safely to Home"

@@ -53,9 +53,21 @@
       "bytes": 55684,
       "sha256": "8a087e0410a06f92467c8b6f3ea34edf14f10960c484a6395cc12a338cf63964"
     },
+    "native-ui.json": {
+      "bytes": 17512,
+      "sha256": "c391828fbe8ca83dea31bc7e595bd4710def39d2786916c343507043a3156cd2"
+    },
     "recipe.json": {
       "bytes": 36,
       "sha256": "790997ade0abdda82c4ab4386b47943579363a4172f277ee624377ff96e2f8b8"
+    },
+    "verification-logs.json.gz": {
+      "bytes": 23816,
+      "sha256": "cd8ffaeb8ace58cc1d8a45da60e6c61e4ff2338d19d6bf03fc4368bef359de15"
+    },
+    "verification.json": {
+      "bytes": 75830,
+      "sha256": "d6c979c256f24f5950d07a007c4a1f41a1362cad0788f6562dd35908ebc5377f"
     }
   }
 }
