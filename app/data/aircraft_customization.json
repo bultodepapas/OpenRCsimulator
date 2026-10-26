@@ -682,7 +682,28 @@
       ],
       "lighting_layout": {
         "version": 1,
-        "anchors": [],
+        "anchors": [
+          {
+            "id": "nav_left",
+            "node_path": ".",
+            "position_m": [
+              -0.8198,
+              -0.0525,
+              -0.0735
+            ],
+            "gear_gated": false
+          },
+          {
+            "id": "nav_right",
+            "node_path": ".",
+            "position_m": [
+              0.8198,
+              -0.0525,
+              -0.0735
+            ],
+            "gear_gated": false
+          }
+        ],
         "strips": []
       },
       "presentation_engine_version": "4.8.0",
@@ -796,7 +817,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "ae7941a1f6e713a87b9ecf63e270d303f6831734f62c0be71923d2ba6f6b0c28"
+      "slots_sha256": "1158ba0c47aa6f2fcd4f7b43c2af775b566f95eb8e2d7d3fcf8f6014c8e4dc0a"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1153,7 +1174,28 @@
       ],
       "lighting_layout": {
         "version": 2,
-        "anchors": [],
+        "anchors": [
+          {
+            "id": "nav_left",
+            "node_path": "wing_frame_left",
+            "position_m": [
+              -0.705948,
+              0,
+              -0.003
+            ],
+            "gear_gated": false
+          },
+          {
+            "id": "nav_right",
+            "node_path": "wing_frame_right",
+            "position_m": [
+              0.705948,
+              0,
+              -0.003
+            ],
+            "gear_gated": false
+          }
+        ],
         "strips": [],
         "skins": [
           {
@@ -1289,7 +1331,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "cc70808699e71702a4c467fb2d2dbdb8676f36d18e7ca312503e75531215f355"
+      "slots_sha256": "39718f29ee4e664d288b9693e9005d56174634bb139dc37ef3bf3c2c4c0a7350"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -2032,7 +2074,18 @@
       "smoke_slots": [],
       "lighting_layout": {
         "version": 1,
-        "anchors": [],
+        "anchors": [
+          {
+            "id": "nav_tail",
+            "node_path": "SkywalkerX8/wing_right_fixed",
+            "position_m": [
+              1.041819453,
+              0.176201046,
+              0.670886615
+            ],
+            "gear_gated": false
+          }
+        ],
         "strips": []
       },
       "presentation_engine_version": "4.8.0",
@@ -2146,7 +2199,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "e207c817534280288175d9107569d62e6cc3b1d6b36b7f4e92bdfc2f374d05cf"
+      "slots_sha256": "09aa9043697b3c4334f983f670d358ada073d740f0ab65bc49adbbd6fd51869d"
     },
     {
       "format": "openrc-aircraft-customization-bindings",

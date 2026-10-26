@@ -324,6 +324,22 @@ Native Compatibility captures cover **seven families × six presets × seven vie
 
 Inspection found missing frontal navigation cues on the Ugly Stik and Extra despite visible emitters from other angles. Their generic midpoint tip mounts are likely occluded by wing geometry in the close front view; the point shader has no directional rejection. The X8's generic white tail lamp also appears detached above/aft of its pusher in the upper view. These are unresolved placement findings pending measured creator-anchor corrections and before/after captures. Existing P-51/Timber mounts and normal depth testing remain unchanged. The matrix is retained as baseline evidence, not labeled fleet art acceptance.
 
+### FW-RGB-12 measured navigation mounts (2026-10-26)
+
+The fleet fixture now also records actual nav/strobe root-local positions and the cached tip/bounds measurements as numeric JSON arrays. Baseline frontal measurements place Stik's navigation lamps at `(±0.771051, 0.089435, 0.117865)` m and Extra's at `(±0.821800, −0.052500, 0.031889)` m. Their mid-chord positions project behind the wing's leading edge in the close frontal camera. X8's generic tail fallback is `(0, 0.088587, 0.690419)` m: its centerline position inherits the distant winglet's rear extent and has no supporting airframe surface.
+
+Five creator mounts in `assets/aircraft/customization-bindings.json` correct these cases through the existing layout contract:
+
+| Aircraft / point | Host-local position in metres | Source and clearance |
+| --- | --- | --- |
+| Stik `nav_left/right` | `(±0.705948, 0, −0.003)` in `wing_frame_left/right` | Existing wing recipe's leading-tip span `0.699948`, plus 6 mm outboard and 3 mm forward. The host applies root height, leading-edge datum and dihedral once. |
+| Extra `nav_left/right` | `(±0.819800, −0.052500, −0.073500)` in aircraft root | Existing half-span `0.811800`, tip leading edge `−0.070500` and chord-plane height; 8 mm outboard and 3 mm forward. |
+| X8 `nav_tail` | `(1.041819453, 0.176201046, 0.670886615)` in `SkywalkerX8/wing_right_fixed` | Midpoint of actual fixed-winglet rear-edge vertices `(1.041289687, 0.176482722, 0.667886615)` and `(1.042349219, 0.175919369, 0.667886615)`, plus 3 mm aft. Runtime GLB hash `3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac`; measured with the existing GLB reader. The identity-transform fixed host is clear of the pusher disk. |
+
+The two procedural recipes remain unchanged. The GLB, physics data, shared fitter, shaders, depth testing and P-51/Timber equipment remain unchanged. The customization generator refreshes the three affected companion identities; existing saved builds retain their normal source-change review behavior rather than being silently rewritten. This is an authored simulator installation, not a claim about full-scale navigation sectors or real X8 hardware.
+
+The initial Stik/Extra front candidate restores both colored navigation emitters; the other five families' six front images are pixel-identical to the measured baseline. Upper views retain attached lamps. After adding the X8 mount, its upper view no longer has the floating centerline lamp, and the rear view shows the mounted white lamp. Root checks pass **28 layout**, **38 NightKit**, and **227 presentation-source** assertions, plus generator freshness. The original matrix, measured baseline and intermediate candidate captures remain separate at `D:/OpenRCsimulator-experiments/fw-rgb-fleet-views-20261026/`; the three-aircraft correction uses `mounts-final/`. Full placement review and motion/pilot acceptance are separate gates.
+
 ## Remaining masterplan work
 
 ### Active completion work (2026-10-25)

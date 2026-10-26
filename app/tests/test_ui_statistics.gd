@@ -391,6 +391,9 @@ func _run() -> void:
 
 
 func _test_history_refresh() -> void:
+	# Set the real window after initialization; headless startup otherwise replaces
+	# the size assigned in _initialize with its 64x64 default.
+	root.size = Vector2i(1920, 1080)
 	var service := FakeStatisticsService.new()
 	var screen: CanvasLayer = StatisticsScreen.new()
 	screen.configure(service, "")
@@ -401,18 +404,10 @@ func _test_history_refresh() -> void:
 		screen.queue_free()
 		await process_frame
 		return
-	# The headless SceneTree script root is 64x64; give the statistics ScrollContainer
-	# a real clipped viewport so focus-follow and row visibility can be measured.
-	var scroll_host := Control.new()
-	scroll_host.name = "StatisticsScrollTestViewport"
-	scroll_host.size = Vector2(800.0, 500.0)
-	scroll_host.clip_contents = true
-	root.add_child(scroll_host)
-	var old_parent := scroll.get_parent()
-	old_parent.remove_child(scroll)
-	scroll_host.add_child(scroll)
-	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 	await _settle_ui()
+	_check("history refresh uses the full 1080p screen and its normal scroll layout",
+		root.size == Vector2i(1920, 1080) and screen.is_ancestor_of(scroll)
+		and Rect2(Vector2.ZERO, Vector2(root.size)).encloses(scroll.get_global_rect()))
 	screen.call("_on_history_toggled", true)
 	await _settle_ui()
 	var legacy_flight_id: String = str(screen.call("_history_record_id", {"kind": "flight", "flight_id": "shared-flight"}))
@@ -537,7 +532,6 @@ func _test_history_refresh() -> void:
 	_check("changed history refresh does not steal focus from a filter",
 		screen._period_picker.has_focus())
 	screen.queue_free()
-	scroll_host.queue_free()
 	await process_frame
 
 

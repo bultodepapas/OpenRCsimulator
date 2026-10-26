@@ -1221,5 +1221,16 @@
     "Only selected material checked receipts retained; exploratory ignored-directory history not copied.",
     "Profile times are nested wall diagnostics with concurrent load; no performance qualification.",
     "Source snapshot is exact original bytes; relocation necessarily changes absolute import strings and must be recorded."
-  ]
+  ],
+  "reproduction": {
+    "mode": "isolated physics snapshot,6s reaction",
+    "checks": 45,
+    "failed": 0,
+    "complete_trace_bytes_equal": true,
+    "trace_sha256": "d471b877a83c5113bafd6223734af1db6308597ed43de0c0f2cabab77bc50ab4",
+    "scope": "Absolute import relocation and UI/editor omissions declared; captured physics settings preserved.",
+    "receipts": "reproduction/checks",
+    "rejected_initial_missing_ui_import": "reproduction/rejected/missing-ui-import"
+  },
+  "transport": "transport.json"
 }

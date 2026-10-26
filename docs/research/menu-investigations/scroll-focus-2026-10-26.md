@@ -34,12 +34,16 @@ qualification is inferred from these tests.
   failed 36 assertions before repair, without reselecting a section to mask lost focus.
 - `test_controller_capture_scroll.gd`: 1,344 checks passed, retaining the original JETI capture
   and manual-scroll regression coverage.
-- `test_ui_statistics.gd`: service-signal regressions cover unchanged history, reordered/removed/
-  off-page records, expansion, filters, units and locale. See the retained checked-runner report.
+- `test_ui_statistics.gd`: 63 checks passed. Service-signal regressions cover unchanged history,
+  reordered/removed/off-page records, expansion, filters, units and locale. The actual 1080p screen
+  retains the exact scroll offset on unchanged history and keeps the reordered focused row visible.
 - Focused Settings, Settings integration, Pause, Companions, Weather, Weather sliders,
   Time of day and Overlay manager checks passed; Overlay manager reports 204 checks.
 - The reusable [debug bridge scenario](../../../tools/debug/scenarios/menu_focus_retention.txt)
   exercises both Workshop rejection directions and axis reflow in the application with unsaved drafts.
+- Final debug bridge smoke passed all 46 stages with 60 seeded UI steps, two lifecycle cycles,
+  zero growing counters/errors and zero leaked objects at exit. This headless routing/lifecycle
+  smoke is separate from the explicitly sized layout fixtures above.
 
 Local logs and checked-runner JSON are retained under ignored `tmp/menu-scroll-audit/`.
 The baseline copies of the two edited panels were taken before this audit's runtime changes.

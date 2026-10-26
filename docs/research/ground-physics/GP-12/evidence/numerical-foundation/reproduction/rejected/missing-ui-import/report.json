@@ -1,0 +1,154 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7e54b1ef-52e0-463a-8921-7a442b91ac8c",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-foundation-restored\\app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T16:49:04.628779+00:00",
+  "label": "snapshot-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-foundation-restored\\checks\\snapshot-import-8sre53id\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-foundation-restored\\checks\\snapshot-import-8sre53id\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 10,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Cannot open file 'res://i18n/es.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed loading resource: res://i18n/es.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Cannot open file 'res://i18n/es.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 9,
+      "message": "Failed loading resource: res://i18n/es.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "[   0% ] first_scan_filesystem | Started Inicializaci\u00f3n del proyecto (5 steps)",
+        "[   0% ] first_scan_filesystem | Escaneando la estructura del archivo..."
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 17,
+      "message": "Addon 'res://addons/build_info/plugin.cfg' failed to load. No directory found. Removing from enabled plugins.",
+      "context": [
+        "   at: set_addon_plugin_enabled (editor/editor_node.cpp:4597)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 19,
+      "message": "Addon 'res://addons/aircraft_contract/plugin.cfg' failed to load. No directory found. Removing from enabled plugins.",
+      "context": [
+        "   at: set_addon_plugin_enabled (editor/editor_node.cpp:4597)",
+        "[  83% ] first_scan_filesystem | Iniciando escaneo de archivos...",
+        "[ DONE ] first_scan_filesystem"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 24,
+      "message": "Cannot open file 'res://i18n/es.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 26,
+      "message": "Failed loading resource: res://i18n/es.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "[   0% ] update_scripts_classes | Started Registrando clases globales... (61 steps)",
+        "[   0% ] update_scripts_classes | "
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 97,
+      "message": "Cannot open file 'res://ui/startup.tscn'.",
+      "context": [
+        "   at: load (scene/resources/resource_format_text.cpp:1404)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 99,
+      "message": "Failed loading resource: res://ui/startup.tscn.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "While attempting to print an error, another error was printed:"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 102,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "While attempting to print an error, another error was printed:"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 105,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 5.109,
+  "log_bytes": 6398,
+  "log_sha256": "96b8efb49562f93197325a23343c2597d3a2c79ffbfcf0b0e9cc20e4619bcb9f"
+}
