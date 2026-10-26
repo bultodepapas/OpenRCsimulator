@@ -8,8 +8,8 @@ import tempfile
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 OUT = ROOT / 'docs/research/ground-physics/GP-12/evidence/fixed-brake-input'
-assert not OUT.exists(), 'Never overwrite a sealed cohort'
-OUT.mkdir(parents=True)
+assert not (OUT / 'manifest.json').exists(), 'Never overwrite a sealed cohort'
+OUT.mkdir(parents=True, exist_ok=True)
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 def copy(source, relative):
@@ -17,8 +17,18 @@ def copy(source, relative):
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(source, target)
 promotion = json.loads((HERE / 'root-promotion.json').read_text())
+test_path = 'app/tests/test_fixed_gear_brake_input.gd'
+assert sha(HERE / 'before-retention-test.gd') == promotion['files'][test_path]
+retention = {'format': 'openrc-fixed-brake-test-retention v1', 'path': test_path,
+    'before_sha256': promotion['files'][test_path], 'after_sha256': sha(ROOT / test_path),
+    'change': 'Optional --retain-evidence skips deletion of generated test outputs; default cleanup unchanged',
+    'reason': 'Initial packaging found the default test had deleted both already-verified ORFLs; rerun retains actual artifacts',
+    'runtime_changed': False}
+(HERE / 'root-retention-followup.json').write_text(json.dumps(retention, indent=2) + '\n', encoding='utf-8')
 for path, expected in promotion['files'].items():
     source = ROOT / path
+    if path == test_path:
+        expected = retention['after_sha256']
     assert sha(source) == expected, path
     copy(source, 'source/' + path)
 copy(ROOT / 'app/test.sh', 'source/app/test.sh')
@@ -32,8 +42,12 @@ for group in ['checks', 'production-checks']:
     for source in (HERE / group).rglob('*'):
         if source.is_file() and source.name in ['engine.log', 'report.json']:
             copy(source, group + '/' + source.relative_to(HERE / group).as_posix())
-for name in ['candidate-7461546.orfl', 'candidate-7679400.orfl']:
-    copy(HERE / name, 'recordings/' + name)
+recordings = sorted(HERE.glob('candidate-*.orfl'))
+assert len(recordings) == 2, 'Retain exactly the two installed fixture recordings'
+for source in recordings:
+    copy(source, 'recordings/' + source.name)
+for source in HERE.glob('trace-*.csv'):
+    copy(source, 'production-checks/' + source.name)
 copy(ROOT / 'tmp/flight-log-2558929/verification.json', 'production-checks/existing-flight-log-verification.json')
 copy(HERE / 'evidence-readme.md', 'README.md')
 (OUT / '.gitattributes').write_text('** -text whitespace=cr-at-eol\n**/*.log -whitespace\n', encoding='utf-8')

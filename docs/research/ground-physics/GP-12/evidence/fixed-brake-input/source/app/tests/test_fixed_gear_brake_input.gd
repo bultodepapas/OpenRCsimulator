@@ -41,8 +41,9 @@ func run_all() -> void:
 	for flaps: bool in [false, true]:
 		for brakes: bool in [false, true]:
 			candidate(flaps, brakes)
-	for path: String in cleanup:
-		DirAccess.remove_absolute(path)
+	if not OS.get_cmdline_user_args().has("--retain-evidence"):
+		for path: String in cleanup:
+			DirAccess.remove_absolute(path)
 	print("Fixed brake candidate: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 

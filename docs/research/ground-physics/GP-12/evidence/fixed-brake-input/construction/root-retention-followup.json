@@ -1,0 +1,9 @@
+{
+  "format": "openrc-fixed-brake-test-retention v1",
+  "path": "app/tests/test_fixed_gear_brake_input.gd",
+  "before_sha256": "08f2a013f5f7a609d7b4e0319bcfaede82949d9639c1763fa1c44713392f1fdd",
+  "after_sha256": "850ef9f7778f712c3ce65761def579def042ea1fd31eaa14c61ec901f205cb07",
+  "change": "Optional --retain-evidence skips deletion of generated test outputs; default cleanup unchanged",
+  "reason": "Initial packaging found the default test had deleted both already-verified ORFLs; rerun retains actual artifacts",
+  "runtime_changed": false
+}
