@@ -2,7 +2,7 @@ const translations = {
   releaseHighlights: 'v0.1.8 adds the experimental F4U Corsair, a Scene detail setting, 3D field trees and far woods, and an optional High graphics profile. Flight behavior still needs real-world evaluation.',
   skip: 'Skip to content', navHangar: 'The hangar', navField: 'The field', navProject: 'The project', download: 'Download',
   heroEyebrow: 'MODEL AVIATION · OPEN SOURCE', renderNote: 'SIMULATOR MODEL · STUDIO VIEW',
-  heroHeading: 'The flying field<br>is open.', heroCopy: 'Your transmitter. Your next flight.<br>An RC simulator we’re building in the open.', heroCta: 'Download',
+  heroHeading: 'The flying field<br>is open.', heroCopy: 'A free, open-source RC flight simulator.<br>For Windows, Linux and macOS. Early alpha.', heroCta: 'Download',
   platforms: 'WINDOWS / LINUX / macOS', explore: 'EXPLORE THE PROJECT', free: 'FREE. FROM YOUR FIRST FLIGHT.',
   hangarKicker: '01 / THE HANGAR', hangarHeading: 'Every aircraft.<br>A different character.', hangarIntro: 'From a wooden classic to a jet.<br>Five fixed-wing aircraft in current source, each with its own configuration.',
   studio: 'AIRCRAFT STUDY / OPENRC', actualModel: 'ACTUAL PROJECT MODEL', span: 'Wingspan', power: 'Powerplant', gear: 'Landing gear', aircraftDetails: 'Explore the model',
@@ -17,7 +17,7 @@ const translations = {
   downloadKicker: '02 / YOUR NEXT TAKEOFF', downloadHeading: 'Less watching.<br>More flying.', downloadIntro: 'Download, extract the ZIP and launch.<br>No Godot installation needed.', downloadNote: 'Stable software release v0.1.8. The ZIPs have no installer or archive signature; the macOS app is ad-hoc signed but not notarized.<br>Aircraft and ground-vehicle models remain experimental and need independent measurements and pilot evaluation.', firstFlight: 'First-flight guide ↗', releaseNotes: 'Release notes ↗',
   candidateKicker: 'LATEST STABLE SOFTWARE RELEASE · v0.1.8', candidateTitle: 'v0.1.8 is available', candidateIntro: 'Download v0.1.8 for Windows, Linux or macOS. This stable software release is an early-alpha simulator; aircraft and ground-vehicle models remain experimental.', candidateLimitsNote: 'Independent evaluation of some experimental aircraft remains open:', candidateStikLimit: 'The Stik’s 240 Hz sideslip-limit check remains open; it is an estimated boundary check.', candidateYawLimit: 'The R02 yaw-damping comparison remains open; its model comparison is not a physical measurement.', candidateRelease: 'v0.1.8 release notes ↗',
   communityKicker: 'AN OPEN PROJECT. A SHARED EFFORT.', communityHeading: 'The next improvement<br>could start with you.', communityCopy: 'A test with your transmitter. A real measurement. A code improvement. Every contribution helps build the next flight.', contribute: 'Contribute on GitHub', feedback: 'Share your experience',
-  thanks: 'With OpenAI’s support for development.<br>Thanks to the participating manufacturers and RC community.', license: 'MIT CODE · ASSETS RETAIN THEIR OWN LICENSES', credits: 'Project imagery & credits ↗', backTop: 'Back to top ↑'
+  thanks: 'With OpenAI’s support for development.<br>Thanks to the participating manufacturers and RC community.', license: 'MIT CODE · ASSETS RETAIN THEIR OWN LICENSES', credits: 'Project imagery & credits ↗', sitemap: 'Sitemap', backTop: 'Back to top ↑'
 };
 
 const aircraft = {
@@ -41,6 +41,10 @@ const aircraftOrder = [...document.querySelectorAll('[data-aircraft]')].map(butt
 let currentTime = 'day';
 const languageButton = document.querySelector('.language');
 const originalCopy = new Map([...document.querySelectorAll('[data-i18n]')].map(el => [el, el.innerHTML]));
+const originalTitle = document.title;
+const originalDescription = document.querySelector('meta[name="description"]').content;
+const softwareSchema = document.querySelector('#software-schema');
+const softwareData = JSON.parse(softwareSchema.textContent);
 
 function renderAircraft() {
   const model = aircraft[currentAircraft];
@@ -75,11 +79,15 @@ function renderLanguage() {
   document.querySelectorAll('[data-alt]').forEach(el => {el.alt = alts[el.dataset.alt][index];});
   languageButton.textContent = index ? 'ES' : 'EN';
   languageButton.setAttribute('aria-label', index ? 'Cambiar a español' : 'Switch to English');
-  document.title = index ? 'OpenRC Simulator — The flying field is open.' : 'OpenRC Simulator — El campo de vuelo está abierto.';
+  document.title = index ? 'OpenRC Simulator | Free Open-Source RC Flight Simulator' : originalTitle;
   document.querySelector('meta[property="og:title"]').content = document.title;
-  const description = index ? 'An open-source RC simulator. Explore six aircraft in 360°, discover the simulation and download OpenRC for Windows, Linux and macOS.' : 'Un simulador RC de código abierto. Explora seis aeronaves en 360°, descubre la simulación y descarga OpenRC para Windows, Linux y macOS.';
+  document.querySelector('meta[name="twitter:title"]').content = document.title;
+  const description = index ? 'Download OpenRC Simulator, a free, open-source RC flight simulator for Windows, Linux and macOS. Explore model aviation in an early-alpha desktop simulator.' : originalDescription;
   document.querySelector('meta[name="description"]').content = description;
   document.querySelector('meta[property="og:description"]').content = description;
+  document.querySelector('meta[name="twitter:description"]').content = description;
+  softwareData.description = description;
+  softwareSchema.textContent = JSON.stringify(softwareData);
   renderAircraft();
   document.dispatchEvent(new CustomEvent('openrc-language'));
 }
