@@ -338,6 +338,7 @@ func step() -> void:
 		_fail_safe("step rejected: " + stage_error.message)
 		return
 	var tick_events: Array[Dictionary] = []
+	var integration_receipt: Dictionary = {}
 	var next_state: PackedFloat64Array = PackedFloat64Array()
 	if policy_result is Dictionary:
 		var unpacked: Dictionary = _unpack_policy_result(policy_result, t)
@@ -347,6 +348,7 @@ func step() -> void:
 			return
 		next_state = unpacked.state
 		tick_events = unpacked.events
+		integration_receipt = unpacked.get("integration_receipt", {})
 	elif policy_result is PackedFloat64Array:
 		next_state = policy_result
 	else:
@@ -386,6 +388,8 @@ func step() -> void:
 		var candidate_frame := _endpoint_frame(accepted_body_state, accepted_continuous, aux, modes)
 		var context := {tick = tick + 1, time_s = t + dt(), dt = dt(), events = tick_events.duplicate(true),
 			body_filtered = integrated_body_state.to_byte_array() != accepted_body_state.to_byte_array()}
+		if not integration_receipt.is_empty():
+			context.integration_receipt = integration_receipt.duplicate(true)
 		var previous_copy: Dictionary = endpoint_previous.duplicate(true)
 		var context_copy: Dictionary = context.duplicate(true)
 		var transition_guard := _capture_endpoint_guard()
@@ -608,11 +612,20 @@ func _locate_substeps(combined: PackedFloat64Array, t: float, dt_tick: float, f:
 	return {state = current, events = events}
 
 
-## A policy's {state, events} result: the state is validated by the caller; events need a type and a time inside
-## the tick window (plus rounding slack). Events are copied, so a policy cannot alias the record.
+## A policy's {state, events[, integration_receipt]} result. State is validated by
+## the caller; events need a type/time inside the tick. Optional accepted-path
+## evidence is bounded/detached and requires an explicit endpoint owner. Its
+## physical meaning stays with that model; it is not published or checkpointed.
 func _unpack_policy_result(result: Dictionary, t: float) -> Dictionary:
 	if typeof(result.get("state")) != TYPE_PACKED_FLOAT64_ARRAY:
 		return {ok = false, message = "step policy returned no state"}
+	var integration_receipt := {}
+	if result.has("integration_receipt"):
+		if not _endpoint_enabled() or not model.endpoint_transition.is_valid() \
+			or typeof(result.integration_receipt) != TYPE_DICTIONARY \
+			or not _endpoint_event_value(result.integration_receipt, 0, {left = 4096}):
+			return {ok = false, message = "integration receipt requires an opt-in endpoint owner and bounded finite payload"}
+		integration_receipt = result.integration_receipt.duplicate(true)
 	var raw: Variant = result.get("events", [])
 	if typeof(raw) != TYPE_ARRAY:
 		return {ok = false, message = "step policy returned malformed events"}
@@ -625,7 +638,9 @@ func _unpack_policy_result(result: Dictionary, t: float) -> Dictionary:
 				or float(item.time_s) < earliest or float(item.time_s) > latest:
 			return {ok = false, message = "step policy returned malformed events"}
 		events.append(item.duplicate(true))
-	return {ok = true, state = result.state, events = events}
+	var unpacked := {ok = true, state = result.state, events = events}
+	if not integration_receipt.is_empty(): unpacked.integration_receipt = integration_receipt
+	return unpacked
 
 
 func _zero_derivative() -> PackedFloat64Array:

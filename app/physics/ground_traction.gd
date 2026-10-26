@@ -6,7 +6,7 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const GC := preload("res://physics/generalized_coordinates.gd")
 const LAW := "compact-mobility-block-kkt-impulse-v1"
-const MAX_DIMENSION := 64
+const MAX_DIMENSION := 128
 const MAX_ITERATIONS := 1024
 const MULTIPLIER_ITERATIONS := 72
 const SYMMETRY_TOLERANCE := 1.0e-12

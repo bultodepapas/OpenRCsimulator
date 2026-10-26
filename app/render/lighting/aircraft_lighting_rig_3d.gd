@@ -373,12 +373,9 @@ func _effect_capability(effect: Dictionary) -> Dictionary:
 	var reason := ""
 	if host_name.is_empty():
 		reason = "missing_anchor"
-	elif "navigation" not in _supported_light_groups():
-		reason = "unsupported_group"
 	else:
 		var anchor := kit.get_node_or_null(NodePath(host_name)) as Node3D
-		if not is_instance_valid(anchor) or not kit.is_ancestor_of(anchor) or not _has_live_zone_binding(host_name, "navigation") \
-				or not _has_usable_vfx_world_parent():
+		if not is_instance_valid(anchor) or not kit.is_ancestor_of(anchor) or not _has_usable_vfx_world_parent():
 			reason = "missing_anchor"
 		else:
 			available = true
@@ -391,13 +388,14 @@ func _effect_capability(effect: Dictionary) -> Dictionary:
 
 
 func _has_live_zone_binding(zone_id: String, group: String) -> bool:
-	var group_bindings: Variant = kit.get_meta("light_bindings", {})
-	var group_nodes: Variant = group_bindings.get(group, []) if group_bindings is Dictionary else []
 	for binding: Dictionary in _materials:
 		if str(binding.get("zone_id", "")) != zone_id or str(binding.get("group", "")) != group:
 			continue
-		var node: Node3D = binding.get("node")
-		if not is_instance_valid(node) or node.get_parent() != kit or not (group_nodes is Array and node in group_nodes):
+		var node_value: Variant = binding.get("node")
+		if not is_instance_valid(node_value) or not node_value is Node3D:
+			continue
+		var node := node_value as Node3D
+		if node.get_parent() != kit:
 			continue
 		if str(binding.get("kind", "")) == "spot":
 			if node is Light3D:
@@ -406,7 +404,10 @@ func _has_live_zone_binding(zone_id: String, group: String) -> bool:
 		if not node is MeshInstance3D:
 			continue
 		var mesh_node := node as MeshInstance3D
-		var mesh_material: ShaderMaterial = binding.get("material") as ShaderMaterial
+		var material_value: Variant = binding.get("material")
+		if not is_instance_valid(material_value) or not material_value is ShaderMaterial:
+			continue
+		var mesh_material := material_value as ShaderMaterial
 		var surface := int(binding.get("surface", 0))
 		if mesh_node.mesh != null and surface >= 0 and surface < mesh_node.mesh.get_surface_count() \
 				and is_instance_valid(mesh_material) and mesh_node.get_surface_override_material(surface) == mesh_material:

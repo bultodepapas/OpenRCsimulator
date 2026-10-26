@@ -20,6 +20,7 @@ func _initialize() -> void:
 	_circles_and_ellipse()
 	_dense_and_coupled()
 	_semidefinite()
+	_capacity()
 	_validation()
 	_common_wheel_energy()
 	print("GP-12 traction: %d checks, %d failed" % [_checks, _failures])
@@ -244,6 +245,36 @@ func _semidefinite() -> void:
 		and _distance(redundant.impulse, expected) < 1e-8 and redundant.psd_rank == 2)
 	var all_zero := T.solve(_p([0, 0, 0, 0]), _p([0, 0]), _p([1, 1]), disk)
 	_check("flat zero objective selects deterministic zero impulse", all_zero.ok and all_zero.impulse == _p([0, 0]))
+
+
+func _capacity() -> void:
+	# Sixteen supports can require 64 tire/brake/rolling rows plus a shaft row.
+	# Independent diagonal blocks have a closed-form disk/interval optimum.
+	var count := 65
+	var matrix := PackedFloat64Array()
+	matrix.resize(count * count)
+	var v := PackedFloat64Array()
+	var limits := PackedFloat64Array()
+	var expected := PackedFloat64Array()
+	var groups: Array = []
+	for i in count:
+		matrix[i * count + i] = 1.0
+		limits.append(1.0)
+		v.append(-3.0 if i % 2 == 0 else 4.0)
+		expected.append(.6 if i % 2 == 0 else -.8)
+	for i in 32: groups.append(PackedInt32Array([2 * i, 2 * i + 1]))
+	groups.append(PackedInt32Array([64]))
+	expected[64] = 1.0
+	var out := T.solve(matrix, v, limits, groups)
+	_verify("65-row structured analytic capacity", matrix, v, limits, groups, out)
+	_check("65 rows recover independent saturated disk/shaft answers", out.get("ok", false)
+		and _distance(out.impulse, expected) < 1e-12 and T.MAX_DIMENSION == 128)
+	var too_many := PackedFloat64Array()
+	too_many.resize(129)
+	var oversized_matrix := PackedFloat64Array()
+	oversized_matrix.resize(129 * 129)
+	var rejected := T.solve(oversized_matrix, too_many, too_many, _groups(129))
+	_check("129 rows fail closed without publishing impulse", not rejected.ok and not rejected.has("impulse"))
 
 
 func _validation() -> void:

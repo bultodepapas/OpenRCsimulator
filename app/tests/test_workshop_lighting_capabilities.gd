@@ -22,11 +22,17 @@ func _run() -> void:
 		and not panel._availability_button.visible)
 	var presentation := Presentation.defaults(editor._presentation_bindings, 3)
 	presentation.lighting = Profile.preset("custom")
+	for zone: Dictionary in presentation.lighting.zones:
+		zone.enabled = true
 	editor.set_presentation(presentation)
 	var accepted: Dictionary = editor.get_presentation()
 	var report: Dictionary = preview.get_lighting_capability_report()
 	check("preview reports all requested zones to the Workshop", report.state == "configured" and report.zones.size() == 13
 		and panel._capability_report == report and panel._availability_button.visible)
+	if report.state != "configured" or not is_instance_valid(preview._lighting_rig):
+		editor.free()
+		quit(1)
+		return
 	check("aircraft support details start collapsed", not panel._availability_details.visible)
 	panel._availability_button.button_pressed = true
 	check("details reveal named hardware limitations without editing the profile", panel._availability_details.visible

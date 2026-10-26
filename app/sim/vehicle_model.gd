@@ -24,7 +24,9 @@ var state_layout_identity: String = ""
 ## Pure endpoint_transition(previous, candidate, context) -> {body, continuous, aux, modes, events}.
 ## Frames contain exactly body/continuous/aux/modes. Candidate is a detached working copy;
 ## previous and context are read-only. Context has tick, time_s (endpoint), dt, events and
-## body_filtered. Events returned here append to existing located events, in model order.
+## body_filtered, plus optional opaque integration_receipt from the accepted step policy.
+## A body filter may invalidate the receipt's trajectory; the model must handle/refuse it.
+## Events returned here append to existing located events, in model order.
 ## Every output keeps its declared size. No inputs, mass, inertia or model edits are allowed.
 ## Runs after the legacy body filter, before final block_aux projection and validation.
 var endpoint_transition: Callable = Callable()
@@ -66,6 +68,11 @@ var block_aux: Callable
 ## step_policy(combined, t, dt, f, k1) -> combined or {state: combined, events: [{type, time_s, ...}]}: optional
 ## bounded integration/event policy for the whole tick (composed boundaries, the rotorcraft stop predictor).
 ## f(combined, stage_t) is the kernel's validated stage derivative. Located events are recorded by the kernel.
+## An opt-in endpoint owner may also return integration_receipt:Dictionary, a bounded
+## finite detached payload describing ONLY the accepted integration path. It passes
+## to endpoint_transition, never observers/checkpoints as a second state or fake event.
+## The kernel validates transport, not the physical truth of a model's receipt. Trial
+## stages, abandoned subdivisions and filtered body paths must not establish damage.
 var step_policy: Callable
 ## SF-04: declared tick events for the kernel's locator (physics/event_step.gd): [{type: String, index: int,
 ## transition: Callable}]. `index` addresses a continuous value (combined index at or beyond the body) held at or
