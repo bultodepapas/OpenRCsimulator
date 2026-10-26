@@ -48,3 +48,6 @@ html:lang(zh-Hans) h2,html:lang(ru) h2 { letter-spacing:-.02em; }
   .hero-copy h2 { overflow-wrap:anywhere; }
   .faq-list h3,.section-heading h2,.development h2 { overflow-wrap:anywhere; }
 }
+@media(max-width:700px) {
+  html:not(:lang(es)):not(:lang(en)) .download h2 { font-size:clamp(40px,14vw,64px); overflow-wrap:anywhere; }
+}

@@ -165,7 +165,9 @@ def build():
         # Only interactive text is embedded. The full page is already translated HTML.
         payload = {key: copy[key] for key in ("aircraft", "alts", "ui")}
         soup.select_one('#locale-data').string = json.dumps(payload, ensure_ascii=False, separators=(',', ':')).replace('<', '\\u003c')
-        outputs[config["file"]] = str(soup).rstrip() + "\n"
+        # Normalize adjacent whitespace left by replaced head elements in the
+        # same pass, so rebuilding the Spanish source is immediately idempotent.
+        outputs[config["file"]] = str(BeautifulSoup(str(soup), "html.parser")).rstrip() + "\n"
     outputs["sitemap.xml"] = '\n'.join([
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',

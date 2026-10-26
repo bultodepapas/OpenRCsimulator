@@ -2,4 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://bultodepapas.github.io/OpenRCsimulator/</loc></url>
   <url><loc>https://bultodepapas.github.io/OpenRCsimulator/en.html</loc></url>
+  <url><loc>https://bultodepapas.github.io/OpenRCsimulator/pt.html</loc></url>
+  <url><loc>https://bultodepapas.github.io/OpenRCsimulator/zh-Hans.html</loc></url>
+  <url><loc>https://bultodepapas.github.io/OpenRCsimulator/de.html</loc></url>
+  <url><loc>https://bultodepapas.github.io/OpenRCsimulator/ru.html</loc></url>
 </urlset>

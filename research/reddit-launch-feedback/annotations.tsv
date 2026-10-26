@@ -1,0 +1,116 @@
+id	kind	exposure	themes	requests	note
+phcxh0v	meta	unknown	AI,CREDIBILITY,COMMUNICATION	-	AI dismissal combined with a concrete question about endorsements.
+phcyzwn	offtopic	unknown	OFF_TOPIC	-	Reaction only; no product request.
+phd47gg	question	unknown	AI	-	Asks extent of AI use; quality matters more than provenance.
+phdhrsz	question	unknown	AI,CREDIBILITY	-	Requests experimental validation of realism claims.
+phgrbxf	support	unknown	AI,CREDIBILITY,SUPPORT	-	AI opponent appreciates transparency and allows careful use.
+phdimcy	meta	unknown	AI,VALUE,SUPPORT	-	Defends potential community value of AI-assisted niche software.
+phdyzfq	impression	video	AI,CREDIBILITY,PHYSICS,COMMUNICATION	-	Uses AI personally but criticizes perceived sloppiness and physics.
+phd3c28	request	unknown	ACTIVITIES,CAMERAS	fpv,drones	Asks about drone or FPV support.
+phd4i9t	question	unknown	AI	-	Neutral question about proportion of vibe coding.
+phdnkfx	meta	unknown	AI,CREDIBILITY	-	Defends an honest OP answer in the AI discussion.
+phd5en6	impression	unknown	AI,COMMUNICATION	-	Attributes appearance to Claude.
+phd6bbe	meta	unknown	AI	-	Clarifies preceding AI remark was criticism; same author.
+phdb7gl	meta	unknown	AI,VALUE,SUPPORT	-	Supports free community-improvable project and defends AI use.
+phd5v2k	meta	unknown	AI,SUPPORT	-	Defense against AI criticism; no feature request.
+phd8ci1	meta	unknown	AI,VALUE	-	Further AI defense by same author.
+phd99eu	meta	unknown	AI	-	AI-discussion retort; not an OpenRC UAV request.
+phda1pl	meta	unknown	AI	-	Distinguishes supervised AI development from uncomprehending generation.
+phdkfr9	meta	other_product	AI	-	Personal AI-tool experience outside OpenRC.
+pherbvk	meta	unknown	AI,COMMUNICATION	-	Emphasizes process and human editing of AI-style product language.
+phge6wl	meta	unknown	AI,COMMUNICATION	-	Supports AI development with review and editing; same author as phda1pl.
+phi7uje	meta	unknown	CREDIBILITY,COMMUNICATION,SUPPORT	-	Skeptical of hyper-realistic marketing; intends to try.
+phfxtj3	meta	unknown	AI	-	Criticizes categorical opposition to AI.
+phhin1p	meta	unknown	AI	-	General AI-adoption claims; no product evidence.
+phd65w3	question	unknown	VALUE,SUPPORT	-	Asks differentiation from RealFlight.
+phd7a19	meta	unknown	VALUE	-	Names free and open source as differentiators.
+phdmisz	meta	unknown	VALUE,AI,CREDIBILITY	-	Explains alpha limitations and uncertain project longevity.
+phd75pn	offer	unknown	COLLABORATION,SUPPORT	-	Tentative developer offer and engine-choice question; not an Unreal migration demand.
+phd7isp	meta	unknown	AI	-	AI attribution without a concrete product issue.
+phddnf3	meta	unknown	AI	-	Defends AI against software-assembly analogy.
+phervbn	meta	unknown	AI	-	Agrees with preceding analogy; no new demand.
+phdbo1a	comparison	other_product	VALUE,SUPPORT	-	Likes alternative to ad-supported mobile sim; does not explicitly request a mobile port.
+phdlfxz	meta	unknown	VALUE,AI	-	Defends free/open-source project against AI criticism.
+phdji1f	question	unknown	PHYSICS	-	Asks about rigid-body and rotational representation.
+phdofoe	technical	other_product	PHYSICS,COLLABORATION	-	Shares AVL approach and asks turbulence details; not a direct custom-import request.
+phdte0k	technical	other_product	PHYSICS,COLLABORATION	-	Describes spectral 3D turbulence construction in own work.
+phdtx9z	technical	other_product	PHYSICS	-	Adds incompressibility detail; same contributor.
+phdkhcy	experience	firsthand	PRACTICE,SUPPORT	-	Played with keyboard; plans to teach child and later test radio.
+phdlwn4	offer	unknown	COLLABORATION,SUPPORT	-	Offers time and tokens; later provides actual contribution reports.
+phdpfpr	request	unknown	COLLABORATION,PHYSICS,PRACTICE	flightcoach	Proposes real-flight import/export with FlightCoach and FlightScore.
+phkf8p7	technical	other_product	PHYSICS,COLLABORATION	-	Suggests ArduPilot logging for system identification; not a separate FlightScore request.
+phe2ol3	experience	firsthand	PHYSICS,PRACTICE,CONTROLS,COLLABORATION,SUPPORT	radio_setup	Post-stall reversal and menu issues; praises trainer flight and EdgeTX; requests move-to-bind mapping.
+phenubh	experience	firsthand	PHYSICS,COLLABORATION	-	Reports candidate progress and remaining stall/propwash issues; not a second tester.
+phg0fnf	experience	firsthand	PERFORMANCE,COLLABORATION	-	PR submission and possible frame-rate cost; tooling confound explicitly noted.
+phdnffp	request	unknown	SCENERY,AUTHORING,PLATFORMS,COLLABORATION,SUPPORT	aircraft_import,local_fields,vr,multiplayer,scenery_packs,field_mcp	Multi-feature wishlist with scenery criticism and model praise; score cannot be split among features.
+phe1v11	request	unknown	AUTHORING,SCENERY	field_mcp	Same author confirms interest in field-generation skill.
+phhrbbr	question	other_product	OFF_TOPIC	-	Asks about local LLM home automation.
+phiaijj	technical	other_product	OFF_TOPIC	-	Local LLM tutorial and personal automation anecdotes; not new simulator requirements.
+phds52r	request	unknown	SCENERY,AUTHORING	local_fields	Wants to import own lake; does not explicitly request a boat simulator.
+phdo6kf	request	other_product	PHYSICS,AI	structural_damage	Wants airframe-specific gust response and continued flight after deformation; competitor and real-flight comparisons.
+phgvf83	context	other_product	CONTROLS	-	Own Spektrum dongle problem before trying OpenRC; not an OpenRC defect report.
+phdo7r8	request	unknown	PLATFORMS,CONTROLS,AUTHORING,PHYSICS,ACTIVITIES	mac,spektrum,aircraft_import,autopilot	Asks about Mac, radio dongle, aircraft import/tuning and mixed manual/ArduPilot control.
+phftb68	followup	unknown	COMMUNICATION	-	Asks OP to answer remaining questions; do not count as another independent requester.
+phdobys	request	video	AUTHORING,CAMERAS,PHYSICS,CREDIBILITY,COMMUNICATION	aircraft_import,ground_view,fpv,structural_damage	Questions importer, visible controls, camera, despawn and flex; suspects commercialization while encouraging work.
+19reby2v0rjoh	meta	unknown	AI,COMMUNICATION,CREDIBILITY	-	Generated reply reduces confidence.
+phdquq7	question	unknown	PHYSICS,CREDIBILITY	-	Asks about polars, provenance and validation.
+phdtr17	technical	other_product	PHYSICS,COLLABORATION	-	Describes own soaring simulator; not a direct request for OpenRC gliders.
+phk7gzu	question	other_product	PHYSICS,COLLABORATION	-	Asks another developer about CRRCsim sources.
+phl0vdr	technical	other_product	PHYSICS,COLLABORATION	-	Explains CRRCsim-derived approach in own work.
+phnhw1z	support	other_product	COLLABORATION	-	Encourages other soaring developer.
+phni8sl	context	other_product	COLLABORATION	-	Other developer plans to share own project.
+phduope	request	other_product	ACTIVITIES,SCENERY	external_games	Wants RC physics in existing game worlds; not a multiplayer request.
+phkih9z	offtopic	unknown	OFF_TOPIC	-	Conversation about commenter identity.
+phkxlol	offtopic	unknown	OFF_TOPIC	-	Reply to identity joke.
+phe35xw	technical	unknown	AI,CREDIBILITY,PHYSICS,PRACTICE,COMMUNICATION	-	Urges modest validity claims and training utility; self-described engineering experience.
+phe6uyv	support	unknown	SUPPORT	-	Same critic explicitly encourages continuing the project.
+phnqyo3	technical	unknown	PHYSICS,CREDIBILITY,COMMUNICATION	-	Discusses model limits and criticizes hyper-realism marketing.
+phoo93o	technical	unknown	PHYSICS,CREDIBILITY	-	Same critic expands on modeling uncertainty.
+php9jtb	technical	other_product	PHYSICS,CREDIBILITY	-	Aerobatics enthusiast describes limits across simulators and LLT/VLM research.
+phegytf	impression	video	COMMUNICATION	-	Windows 95 comparison without specific reproducible issue.
+phei02k	experience	website	COMMUNICATION	-	Reports non-clickable download link.
+phf0heq	experience	website	COMMUNICATION	-	Same user reports link now works; cause unknown.
+phek26y	comparison	unknown	VALUE	-	FMS nostalgia; not necessarily criticism or feature demand.
+pher5ay	request	unknown	ACTIVITIES,PHYSICS	soaring	Requests combined thermals/wind and high-start; asks inertia derivation.
+phes36u	offer	other_product	VALUE,COLLABORATION,SUPPORT	-	Refunded RealFlight; intends OpenRC trial and possible contributions.
+phf2r84	request	other_product	CONTROLS,VALUE	radio_setup	Requests easy calibration wizard based on competitor friction; later submits OpenRC trial.
+phfuqlh	comparison	other_product	CONTROLS,VALUE	-	Reports Heli-X and wireless TX16s success; not an OpenRC test.
+phfysod	question	other_product	CONTROLS	-	Asks how wireless operation works in competitor discussion.
+phg323z	technical	other_product	CONTROLS	-	Explains ELRS BLE joystick procedure; no OpenRC qualification.
+phg3pmf	context	other_product	OFF_TOPIC	-	Returning hobbyist discusses modern radio price/features.
+19rd1h8je3bs2	context	other_product	OFF_TOPIC	-	RC electronics price nostalgia.
+19rd1nixkajc3	context	other_product	OFF_TOPIC	-	Radio crystals and printed-airplane nostalgia.
+19rdf70csl4yt	context	other_product	OFF_TOPIC	-	Modern helicopter hardware discussion.
+19re7ll5vi0yo	context	other_product	OFF_TOPIC	-	Comments on observed helicopter performance outside simulator.
+pheu933	request	unknown	ACTIVITIES	soaring	Explicit sailplane request.
+phev6pm	request	unknown	AUTHORING	aircraft_import	Requests importing Flyout projects.
+phey7nc	support	unknown	SUPPORT	-	Intends to try; no completed test claimed.
+phfj1uu	request	unknown	ACTIVITIES	rockets	Requests rockets.
+phlic90	request	unknown	ACTIVITIES	rockets	Same user clarifies steerable rockets; count one requester.
+phg2kxv	request	video	CAMERAS,COMMUNICATION,SUPPORT	ground_view	Requests ground camera from viewing trailer; availability unclear to viewer.
+phg4jn8	impression	video	VALUE,COMMUNICATION	-	Questions differentiation versus older paid simulators.
+phg538c	question	unknown	COMMUNICATION,PLATFORMS	language	Asks why Spanish; potential language discoverability gap.
+phg5uh6	impression	video	PHYSICS	-	General low-gravity impression; later clarified as RC car footage.
+phi50rw	impression	video	PHYSICS,SUPPORT	-	Clarifies car footage at 0:30; not an aircraft flight-test report.
+phiib7m	support	unknown	SUPPORT	-	Intends future trial; no completed test.
+phgcuuq	request	unknown	SCENERY,AUTHORING	local_fields,panorama	Explicit 360-photo import of familiar airfields.
+phhk8lm	request	unknown	SCENERY,AUTHORING	local_fields,panorama	Distinct author endorses parent panorama request.
+phhzp7n	meta	unknown	CREDIBILITY	-	General skepticism about all simulators; not a specific OpenRC bug.
+phi06oh	request	unknown	CONTROLS	spektrum	Requests Spektrum compatibility without identifying failure or tested build.
+phi9buu	offer	unknown	CONTROLS,COLLABORATION	-	Offers contact for follow-up; not independent evidence of a radio bug.
+phi1hc7	impression	video	PHYSICS,CREDIBILITY	-	Helicopter hover looks too stable; not a hands-on report.
+phiirnq	offer	unknown	COLLABORATION,SUPPORT	-	Other sim developer suggests comparing approaches; downloading not completed testing.
+phj8c6j	experience	firsthand	PHYSICS	-	Reports helicopter inertia/cyclic coupling and airplane low-speed problems after quick trial.
+phjthbc	support	unknown	SUPPORT	-	General visual praise.
+phl3c4y	experience	firsthand	CONTROLS,PRACTICE,PHYSICS,COMMUNICATION,SUPPORT	radio_setup,crash_optional	Left after five minutes; input/start/restart/damage/Timber/landing/copy issues with encouragement.
+phm1s3y	request	unknown	PRACTICE	crash_optional	Objects to paying on crash; cannot infer actual money charged.
+phmdt4b	support	unknown	SUPPORT	-	Brief positive reaction.
+phpottm	support	unknown	SUPPORT	-	Looks fun; no usage claim.
+phqde5f	impression	video	CREDIBILITY,PHYSICS,SCENERY,COMMUNICATION	-	Challenges realism claim and helicopter footage; criticizes scenery.
+phqeene	support	unknown	SUPPORT	-	Positive text and linked roast image; image content not analyzed.
+19rf767gfvkh1	impression	video	AI,COMMUNICATION	-	Attributes overlay text style to AI; explicitly says not hating.
+19rhm45cp6543	offer	unknown	COLLABORATION,SUPPORT	-	Offers Blender work with portfolio-use condition; not unconditional asset transfer.
+19rjg49nlanvn	request	unknown	SCENERY,ACTIVITIES	terrain	Requests variable terrain and mountain surfing.
+19rjlwas5d6qs	support	unknown	SUPPORT	-	Portuguese congratulations.
+19rjlwu08zdr8	question	unknown	PLATFORMS,COMMUNICATION	mobile	Asks desktop/mobile availability and game name.
+19rjoxaui7zaa	meta	unknown	AI,COMMUNICATION	-	AI dismissal aimed at game and post.
