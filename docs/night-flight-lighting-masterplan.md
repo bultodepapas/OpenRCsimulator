@@ -641,7 +641,7 @@ Each package is independently reviewable. Implementation was subsequently author
 
 Critical path: 00→01→02→03→04→05→06→08→09→12→13→14→15→16. Internal skin (07) and reactive/VFX work (10–11) follow stable bindings/clocks and may proceed independently with separate file ownership. Deliver Classic/Neon and save/load before Festival complexity. Do not block a useful baseline on a custom particle renderer or a new aircraft asset.
 
-The initial schema/rig and animated-strip slices are implemented. Continue in independently checked packages: author and qualify fleet layouts using the implemented creator contract, then qualify skin treatments on an eligible asset and whole-scene performance. Do not treat delivered code as closure of the capture, hardware or pilot gates.
+The initial schema/rig and animated-strip slices are implemented. Workshop now reports actual supported/skipped zones and effects, including Original/Draft and pending-edit behavior; the FW-RGB-12 preset art pass remains open. Continue in independently checked packages: author and qualify fleet layouts using the implemented creator contract, then qualify skin treatments on an eligible asset and whole-scene performance. Do not treat delivered code as closure of the capture, hardware or pilot gates.
 
 ## 13. Risks, decisions requiring evidence and handoff
 

@@ -8,10 +8,11 @@ const ThermalField := preload("res://physics/wind_thermal_field.gd")
 const TAU_F64 := 6.283185307179586476925286766559
 const U32_MASK := 0xffffffff
 const U32_SCALE := 4294967296.0
+const MODE_SCALAR_COUNT := 9
 
 var _config: Dictionary = {}
 var _content_hash := ""
-var _modes: Array[Dictionary] = []
+var _modes := PackedFloat64Array()
 var _rng_state: int = 0
 var _thermal_field: Variant = null
 var _thermal_content_hash := ""
@@ -259,13 +260,22 @@ func _turbulence_wind(north_m: float, east_m: float, height_agl: float, epoch_ti
 	var result := PackedFloat64Array([0.0, 0.0, 0.0])
 	if float(_config.turbulence.rms_mps) == 0.0:
 		return result
-	for mode: Dictionary in _modes:
-		var spatial_phase := float(mode.k_n) * north_m + float(mode.k_e) * east_m + float(mode.phase)
-		var temporal_phase := float(mode.omega) * epoch_time
+	for mode_offset in range(0, _modes.size(), MODE_SCALAR_COUNT):
+		var k_north: float = _modes[mode_offset]
+		var k_east: float = _modes[mode_offset + 1]
+		var k_down: float = _modes[mode_offset + 2]
+		var axis_north: float = _modes[mode_offset + 3]
+		var axis_east: float = _modes[mode_offset + 4]
+		var cross_wavenumber: float = _modes[mode_offset + 5]
+		var amplitude: float = _modes[mode_offset + 6]
+		var phase_offset: float = _modes[mode_offset + 7]
+		var omega: float = _modes[mode_offset + 8]
+		var spatial_phase := k_north * north_m + k_east * east_m + phase_offset
+		var temporal_phase := omega * epoch_time
 		var phase := fposmod(fposmod(spatial_phase, TAU_F64) + fposmod(temporal_phase, TAU_F64), TAU_F64)
 		var cosine_phase := cos(phase)
 		var sine_phase := sin(phase)
-		var vertical_phase := float(mode.k_down) * height_agl
+		var vertical_phase := k_down * height_agl
 		var sine_vertical := sin(vertical_phase)
 		var cosine_vertical := cos(vertical_phase)
 		# A per-mode C2 potential taper reaches one over one vertical wavelength.
@@ -274,20 +284,19 @@ func _turbulence_wind(north_m: float, east_m: float, height_agl: float, epoch_ti
 		var wall_weight := _smooth5(wall_fraction)
 		var wall_derivative := 0.0
 		if wall_fraction > 0.0 and wall_fraction < 1.0:
-			wall_derivative = _smooth5_derivative(wall_fraction) * float(mode.k_down) / TAU_F64
+			wall_derivative = _smooth5_derivative(wall_fraction) * k_down / TAU_F64
 		var potential_height := wall_weight * sine_vertical
-		var potential_height_derivative := wall_derivative * sine_vertical + wall_weight * float(mode.k_down) * cosine_vertical
-		var amplitude := float(mode.potential_amplitude)
+		var potential_height_derivative := wall_derivative * sine_vertical + wall_weight * k_down * cosine_vertical
 		var horizontal_derivative := amplitude * potential_height_derivative * cosine_phase
-		var vertical_velocity := amplitude * potential_height * float(mode.cross_wavenumber) * sine_phase
-		result[0] += float(mode.axis_east) * horizontal_derivative
-		result[1] -= float(mode.axis_north) * horizontal_derivative
+		var vertical_velocity := amplitude * potential_height * cross_wavenumber * sine_phase
+		result[0] += axis_east * horizontal_derivative
+		result[1] -= axis_north * horizontal_derivative
 		result[2] += vertical_velocity
 	return result
 
 
-func _resolve_modes() -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
+func _resolve_modes() -> PackedFloat64Array:
+	var result := PackedFloat64Array()
 	var turbulence: Dictionary = _config.turbulence
 	var count := int(turbulence.mode_count)
 	if count <= 0:
@@ -333,17 +342,15 @@ func _resolve_modes() -> Array[Dictionary]:
 		# Frozen-reference advection keeps the same Eulerian world field moving with
 		# the declared reference mean, without height-sliced aircraft-speed advection.
 		var omega := intrinsic_omega - k_north * reference_north - k_east * reference_east
-		result.append({
-			"k_n": k_north,
-			"k_e": k_east,
-			"k_down": k_down,
-			"axis_north": axis_north,
-			"axis_east": axis_east,
-			"cross_wavenumber": cross_wavenumber,
-			"potential_amplitude": potential_amplitude,
-			"phase": phase,
-			"omega": omega,
-		})
+		result.append(k_north)
+		result.append(k_east)
+		result.append(k_down)
+		result.append(axis_north)
+		result.append(axis_east)
+		result.append(cross_wavenumber)
+		result.append(potential_amplitude)
+		result.append(phase)
+		result.append(omega)
 	return result
 
 

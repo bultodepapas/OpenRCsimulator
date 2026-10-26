@@ -1057,3 +1057,7 @@ Extend the existing companion with bounded point mounts and strip paths, resolve
 ### 2026-10-25 — Preserve authored LED paths and complete bounded cue updates (FW-RGB-05)
 
 Use cumulative host-local distance for creator strip patterns while retaining fitted strip placement. Bound shader work by the exact nine-lamp/five-strip contract, with separate animation and synchronous mode allowances. Commit a cue signature only after every pattern uniform succeeds; report and retry skipped writes. Keep operation bounds distinct from measured GPU/frame-time performance. [Contract](AIRCRAFT-LIGHTING.md#creator-authored-layouts-fw-rgb-04), [three-renderer 1080p checks and regressions](research/night-flight-lighting/implementation.md#fw-rgb-05-authored-path-progression-and-complete-cue-updates).
+
+### 2026-10-25 — Report the lighting that the preview can actually provide (FW-RGB-12)
+
+Derive Workshop support feedback from live rig bindings and effect anchors. Keep availability separate from enabled settings, temporary visibility and flight validation. Report missing equipment without rewriting or disabling saved choices; preserve pending edits and make Original comparison explicit. Reuse the existing preview lifecycle instead of adding a second aircraft-capability registry. [Operating contract](AIRCRAFT-LIGHTING.md#programmable-rgb-builds-fw-rgb), [focused and native evidence](research/night-flight-lighting/implementation.md#fw-rgb-12-aircraft-support-feedback).

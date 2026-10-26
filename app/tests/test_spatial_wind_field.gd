@@ -3,6 +3,7 @@ extends SceneTree
 const Config := preload("res://physics/wind_spatial_config.gd")
 const SpatialField := preload("res://physics/wind_spatial_field.gd")
 const ThermalConfig := preload("res://physics/wind_thermal_field.gd")
+const MODE_GRID_FIXTURE_PATH := "res://tests/fixtures/spatial_wind_mode_grid_before.json"
 
 var _checks := 0
 var _failures := 0
@@ -355,6 +356,116 @@ func _determinism_coherence_and_divergence() -> void:
 		and _near(ground_normal.wind_ned_mps, PackedFloat64Array([0.0, 0.0, 0.0]), 0.0))
 
 
+func _packed_mode_grid_byte_parity() -> void:
+	var fixture_raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(MODE_GRID_FIXTURE_PATH))
+	_check("pre-packed-mode sample grid fixture loads", typeof(fixture_raw) == TYPE_DICTIONARY)
+	if typeof(fixture_raw) != TYPE_DICTIONARY:
+		return
+	var fixture: Dictionary = fixture_raw
+	_check("sample grid is anchored to the frozen pre-packed-mode candidate",
+		fixture.get("format", "") == "openrc-spatial-mode-grid-before-opt v1"
+		and fixture.get("candidate_manifest_sha256", "") == "7ae3ff0b3c03c0e68ba5e5c5e37139b4e36a4f68923ac4f899d4481671ba990c")
+	var config_by_id := {}
+	for item: Dictionary in _mode_grid_fixture_configs():
+		config_by_id[item.id] = item.raw
+	var fixture_cases: Array = fixture.get("fixtures", [])
+	_check("sample grid covers the four authored mode/config variants", fixture_cases.size() == 4)
+	var compared_samples := 0
+	for fixture_case: Dictionary in fixture_cases:
+		var case_id: String = str(fixture_case.get("id", ""))
+		if not config_by_id.has(case_id):
+			_check("fixture config exists for " + case_id, false)
+			continue
+		var built: Dictionary = SpatialField.build(config_by_id[case_id])
+		_check("fixture config resolves identically for " + case_id, built.ok
+			and built.field.content_hash() == str(fixture_case.get("spatial_hash", ""))
+			and built.field.thermal_content_hash() == str(fixture_case.get("thermal_hash", "")))
+		if not built.ok:
+			continue
+		var samples: Array = fixture_case.get("samples", [])
+		for sample_index: int in samples.size():
+			var sample_fixture: Dictionary = samples[sample_index]
+			var position := PackedFloat64Array(sample_fixture.get("position_ned_m", []))
+			var time_s := float(sample_fixture.get("time_s", NAN))
+			var actual: Dictionary = built.field.sample_world(position, time_s)
+			var actual_hex := ""
+			if actual.get("ok", false):
+				var wind: PackedFloat64Array = actual.get("wind_ned_mps", PackedFloat64Array())
+				actual_hex = wind.to_byte_array().hex_encode()
+			var expected_hex := str(sample_fixture.get("wind_bytes_hex", ""))
+			_check("packed mode preserves exact pre-opt bytes: %s sample %d" % [case_id, sample_index],
+				actual.get("ok", false) and actual_hex == expected_hex, "expected %s got %s" % [expected_hex, actual_hex])
+			compared_samples += 1
+	_check("exact pre-opt parity grid compares all 48 configured samples", compared_samples == 48, str(compared_samples))
+
+
+func _mode_grid_fixture_configs() -> Array[Dictionary]:
+	var zero_mean := Config.defaults()
+	zero_mean.identity.seed_u32 = 8
+	zero_mean.identity.world_epoch_id_u32 = 101
+	zero_mean.turbulence.rms_mps = 0.2
+	zero_mean.turbulence.mode_count = 8
+
+	var reference_flow := Config.defaults()
+	reference_flow.identity.seed_u32 = 73423
+	reference_flow.identity.world_epoch_id_u32 = 194
+	reference_flow.profile.reference_speed_mps = 3.0
+	reference_flow.profile.reference_from_deg = 270.0
+	reference_flow.profile.free_air_wind_ned_mps = [1.0, -0.25, 0.0]
+	reference_flow.profile.layers = [{"id": "shear", "center_agl_m": 32.0, "half_thickness_m": 6.0, "delta_wind_ned_mps": [0.4, -0.2, 0.0]}]
+	reference_flow.gusts.events = [{"id": "gust-a", "start_s": 1.0, "duration_s": 5.0, "amplitude_ned_mps": [-0.4, 0.25, 0.0]}]
+	reference_flow.turbulence.rms_mps = 0.2
+	reference_flow.turbulence.min_wavelength_m = 4.0
+	reference_flow.turbulence.max_wavelength_m = 20.0
+	reference_flow.turbulence.mode_count = 24
+	reference_flow.turbulence.coherence_time_s = 3.0
+
+	var dense_modes := Config.defaults()
+	dense_modes.identity.seed_u32 = 20261025
+	dense_modes.identity.world_epoch_id_u32 = 451
+	dense_modes.identity.epoch_offset_s = 1.25
+	dense_modes.profile.reference_speed_mps = 5.75
+	dense_modes.profile.reference_from_deg = 127.0
+	dense_modes.profile.free_air_wind_ned_mps = [1.2, -0.3, 0.0]
+	dense_modes.profile.layers = [{"id": "upper-shear", "center_agl_m": 60.0, "half_thickness_m": 12.0, "delta_wind_ned_mps": [-0.35, 0.18, 0.0]}]
+	dense_modes.gusts.events = [{"id": "resolved-64", "start_s": 2.0, "duration_s": 12.0, "amplitude_ned_mps": [0.7, -0.2, 0.0]}]
+	dense_modes.turbulence.rms_mps = 0.3
+	dense_modes.turbulence.min_wavelength_m = 5.0
+	dense_modes.turbulence.max_wavelength_m = 50.0
+	dense_modes.turbulence.mode_count = 64
+	dense_modes.turbulence.coherence_time_s = 4.0
+
+	var thermal_base := Config.defaults()
+	thermal_base.identity.seed_u32 = 88217
+	thermal_base.identity.world_epoch_id_u32 = 435
+	thermal_base.identity.epoch_offset_s = 2.5
+	thermal_base.profile.reference_speed_mps = 2.75
+	thermal_base.profile.reference_from_deg = 23.0
+	thermal_base.gusts.events = [{"id": "base-gust", "start_s": 0.0, "duration_s": 8.0, "amplitude_ned_mps": [0.2, -0.1, 0.0]}]
+	thermal_base.turbulence.rms_mps = 0.09
+	var thermal_upgrade: Dictionary = Config.thermal_defaults(thermal_base)
+	if not thermal_upgrade.ok:
+		return []
+	var thermal: Dictionary = thermal_upgrade.config
+	thermal.thermal_field.cells = [{
+		"id": "thermal-a",
+		"birth_s": 0.0,
+		"duration_s": 120.0,
+		"center_ne_m": [0.0, 0.0],
+		"drift_ne_mps": [0.25, -0.15],
+		"radius_m": 30.0,
+		"top_agl_m": 200.0,
+		"peak_updraft_mps": 1.0,
+	}]
+
+	return [
+		{"id": "seed8-8modes-calm-mean", "raw": zero_mean},
+		{"id": "seed73423-24modes-layer-gust", "raw": reference_flow},
+		{"id": "seed20261025-64modes-upper-shear", "raw": dense_modes},
+		{"id": "seed88217-24modes-thermal-v2", "raw": thermal},
+	]
+
+
 func _invalid_samples() -> void:
 	var field: Variant = _field(Config.defaults())
 	_check("wrong position dimension is structured failure", not field.sample_world(PackedFloat64Array([0.0, 1.0]), 0.0).ok)
@@ -486,6 +597,7 @@ func _initialize() -> void:
 	_wall_and_join_continuity()
 	_layers_and_gust_timeline()
 	_determinism_coherence_and_divergence()
+	_packed_mode_grid_byte_parity()
 	_invalid_samples()
 	_v2_thermal_integration()
 	print("spatial wind field: %d checks, %d failed" % [_checks, _failures])

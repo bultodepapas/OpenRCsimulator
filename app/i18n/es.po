@@ -6975,3 +6975,6 @@ msgstr "Horizonte de tiempo (120–86400 s para un campo térmico)"
 
 msgid "Thermal field requires a time horizon of at least 120 s."
 msgstr "El campo térmico requiere un horizonte de tiempo de al menos 120 s."
+
+msgid "Reference: %.1f m/s FROM %03.0f° at %.0f m AGL"
+msgstr "Referencia: %.1f m/s DESDE %03.0f° a %.0f m AGL"

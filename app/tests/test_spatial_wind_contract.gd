@@ -58,6 +58,12 @@ func _check_legacy_compatibility() -> void:
 	var times: Array[float] = [0.0, 3.25, 19.75, 128.5]
 	for preset: Dictionary in WindConfig.presets():
 		var config: Dictionary = preset.config
+		if config.format == WindConfig.SPATIAL_FORMAT:
+			# Explicit spatial laws deliberately refuse the positionless legacy API.
+			var spatial_field: Variant = WindField.build(config).field
+			_check("spatial preset requires a position: " + str(preset.id),
+				not _finite3(spatial_field.sample(0.0)) and _finite3(spatial_field.sample_world(points[0], 0.0)))
+			continue
 		formats[str(config.format)] = true
 		var built: Dictionary = WindField.build(config)
 		_check("preset %s builds" % str(preset.id), built.ok, str(built.errors))
