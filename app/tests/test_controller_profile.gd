@@ -137,7 +137,7 @@ func _initialize() -> void:
 	invalid.actions = {"camera_previous": {"type": "button", "button": 8}}
 	invalid.aux = {"smoke": {"type": "button", "button": 8, "mode": "level"}}
 	var action_aux_report := Profile.validate(invalid)
-	_check("action and AUX physical conflict identifies both editors", _has_issue(action_aux_report, "action_aux_conflict", ["actions.camera_previous", "aux.smoke.button"]))
+	_check("action and AUX physical conflict identifies both editors", _has_issue(action_aux_report, "action_aux_source_conflict", ["actions.camera_previous", "aux.smoke.button"]))
 	invalid = mode2.duplicate(true)
 	invalid.actions = {"smoke_toggle": {"type": "button", "button": 9}}
 	invalid.aux = {"smoke": {"type": "button", "button": 8, "mode": "level"}}

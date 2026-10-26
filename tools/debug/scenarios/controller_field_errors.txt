@@ -1,0 +1,23 @@
+# Correct a controller mapping through the actual keyboard UI; leave storage untouched.
+eval expr="controllers.set_process(false)"
+open screen=controls
+eval expr="screens.top()._set_draft_profile(screens.top().ControllerProfile.defaults())"
+eval expr="screens.top()._axis_controls.pitch.axis.set_value(screens.top()._axis_controls.roll.axis.value)"
+press text=Save
+wait frames=3
+assert expr="screens.top()._selected_section == 'axes' and screens.top()._axis_controls.roll.axis.get_line_edit().has_focus()" message="Save brings the conflicting axis into focus"
+assert expr="screens.top()._axis_controls.pitch.axis.get_line_edit().has_theme_stylebox_override('normal')" message="both conflicting channels are marked"
+key name=Up hold_s=0
+wait frames=3
+assert expr="not screens.top()._axis_controls.pitch.axis.get_line_edit().has_theme_stylebox_override('normal') and screens.top().status_label.text.is_empty()" message="keyboard correction clears the resolved error"
+eval expr="screens.top()._set_draft_profile(screens.top().ControllerProfile.defaults().merged({'actions':{'pause':{'type':'button','button':1}}},true))"
+eval expr="screens.top().action_filter.select(3)"
+eval expr="screens.top()._on_action_filter_selected(3)"
+press text=Save
+wait frames=3
+assert expr="screens.top()._selected_section == 'buttons' and screens.top().action_filter.selected == 0 and not screens.top()._is_capture_active()" message="hidden action errors are exposed without starting capture"
+assert expr="screens.top().find_child('Remap_back',true,false).has_focus() or screens.top().find_child('Remap_pause',true,false).has_focus()" message="a conflicting action receives focus"
+press text=Cancel
+eval expr="controllers.set_process(true)"
+eval expr="controllers.refresh()"
+assert expr="screens.is_top('home')" message="Cancel returns to Home"

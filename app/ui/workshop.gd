@@ -2505,7 +2505,7 @@ func _commit_number(key: String) -> void:
 	if not _pending_numbers.has(key) or _invalid_fields.has(key): return
 	var value := str(_pending_numbers[key]).to_float()
 	_pending_numbers.erase(key)
-	if not is_equal_approx(_effective_factor_value(key), value):
+	if _effective_factor_value(key) != value:
 		_set_factor_value(key, value)
 		return
 	_refresh_issues()

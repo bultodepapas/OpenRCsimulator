@@ -691,6 +691,18 @@ func _guarded_journey(editor: Node, store_root: String) -> void:
 		"compiler calls=%d history=%d/%d pending=%s invalid=%s" % [
 			int(editor.get("compile_count")), int(editor.get("_undo_history").size()), history_before_noop,
 			editor.get("_pending_numbers"), editor.get("_invalid_fields")])
+	editor.set("compile_count", 0)
+	power_entry.text = "1.237001"
+	power_entry.text_changed.emit(power_entry.text)
+	power_entry.text_submitted.emit(power_entry.text)
+	_check("nearby distinct numeric value commits exactly once instead of being discarded",
+		editor.get_recipe().power_multiplier == 1.237001
+		and int(editor.get("compile_count")) == 1
+		and editor.get("_undo_history").size() == history_before_noop + 1
+		and not editor.get("_pending_numbers").has("power_multiplier")
+		and editor.get("_pending_numbers").has("weight_multiplier")
+		and editor.save_button.disabled,
+		"value=%.9f compiler calls=%d" % [editor.get_recipe().power_multiplier, int(editor.get("compile_count"))])
 	editor.call("_review_issues")
 	_check("Review issues focuses the invalid input on its page", entry.has_focus()
 		and editor.get("_active_page") == "setup")

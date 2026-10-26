@@ -166,12 +166,14 @@ func request_close() -> void:
 	if _is_capture_active():
 		_cancel_capture()
 		return
+	_reset_validation()
 	close_requested.emit()
 
 
 func _cancel_edits() -> void:
 	if _is_capture_active():
 		_capture_done()
+	_reset_validation()
 	close_requested.emit()
 
 
@@ -2115,6 +2117,7 @@ func _update_action_controls() -> void:
 	# regardless of the Cancel button's relative width in the current language.
 	if is_inside_tree() and last_change_button != null:
 		last_change_button.focus_neighbor_bottom = last_change_button.get_path_to(save_button)
+	_repaint_validation_feedback()
 
 
 func _update_glyph_family_picker() -> void:
@@ -2232,6 +2235,7 @@ func _capture_aux_button(button_index: int) -> void:
 	_capture_done()
 	if committed:
 		_set_status(tr("Button %d captured for this switch position. Save the profile to keep it.") % button_index, false)
+		_draft_validation_changed()
 	get_viewport().set_input_as_handled()
 
 
@@ -2486,6 +2490,13 @@ func _refresh_validation_feedback() -> void:
 		_show_validation(_validate_candidate(_profile_candidate()), false)
 
 
+func _repaint_validation_feedback() -> void:
+	if not _rejected_issues.is_empty():
+		_render_validation_fields(_rejected_issues, false, true)
+	elif _validation_active and not _draft_profile.is_empty():
+		_render_validation_fields(_validate_candidate(_profile_candidate()).issues, false)
+
+
 func _show_validation(report: Dictionary, focus_error: bool) -> void:
 	_render_validation_fields(report.get("issues", []), focus_error)
 	# An unrelated storage/disconnection error owns the footer until explicitly retried.
@@ -2513,9 +2524,13 @@ func _show_rejected_validation(report: Dictionary, message: String) -> void:
 
 
 func _validation_field_keys(path: String) -> Array[String]:
+	var parts := path.split(".")
+	if parts.size() == 3 and parts[0] == "aux" and parts[2] == "invert":
+		var aux: Variant = _draft_profile.get("aux", {})
+		if aux is Dictionary and aux.get(parts[1], {}) is Dictionary and aux.get(parts[1], {}).get("type", "") == "switch":
+			return ["aux." + parts[1] + ".switch_invert"]
 	if _validation_fields.has(path):
 		return [path]
-	var parts := path.split(".")
 	if parts[0] == "aux" and parts.size() >= 2 and _aux_controls.has(parts[1]):
 		var base := "aux." + parts[1] + "."
 		var member := parts[2] if parts.size() > 2 else "type"
@@ -2546,7 +2561,7 @@ func _validation_message(issue: Dictionary) -> String:
 				names.append(caption)
 	match str(issue.get("code", "")):
 		"name_invalid": return tr("Enter a profile name before saving.")
-		"axis_conflict", "binding_conflict", "aux_conflict", "action_flight_axis_conflict":
+		"axis_conflict", "binding_conflict", "aux_conflict", "action_flight_axis_conflict", "action_aux_source_conflict":
 			return tr("Choose separate inputs for %s.") % ", ".join(names)
 		"action_aux_conflict": return tr("Use either the action or the extra channel: %s.") % ", ".join(names)
 		"axis_invalid": return tr("Choose a source axis from 0 to 9.")

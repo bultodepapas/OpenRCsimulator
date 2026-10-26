@@ -263,7 +263,7 @@ static func validate_profile_bindings(profile: Dictionary, capabilities: Diction
 			if _same_aux_control(binding, aux_entry.binding):
 				var error: String = "Action %s conflicts with aux.%s" % [action_id, aux_entry.name]
 				_append_error(errors, error)
-				_append_issue(issues, "action_aux_conflict", [
+				_append_issue(issues, "action_aux_source_conflict", [
 					"actions.%s" % action_id,
 					_aux_control_path(aux_entry.name, aux_entry.binding),
 				], error)
