@@ -51,3 +51,47 @@ html:lang(zh-Hans) h2,html:lang(ru) h2 { letter-spacing:-.02em; }
 @media(max-width:700px) {
   html:not(:lang(es)):not(:lang(en)) .download h2 { font-size:clamp(40px,14vw,64px); overflow-wrap:anywhere; }
 }
+
+/* WEB-11: longer language lists, CJK fallbacks and native RTL reading order. */
+.header .language-options { right:auto; inset-inline-end:0; max-height:min(70vh,460px); overflow-y:auto; overscroll-behavior:contain; }
+html:lang(ja) body { font-family:DM,"Noto Sans CJK JP","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif; }
+html:lang(ko) body { font-family:DM,"Noto Sans CJK KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif; word-break:keep-all; overflow-wrap:anywhere; }
+html:lang(ar) body { font-family:Arial,"Noto Sans Arabic","IBM Plex Sans Arabic",sans-serif; }
+html:lang(ja) h2,html:lang(ko) h2 { letter-spacing:0; }
+html[dir=rtl] h2,html[dir=rtl] h3,html[dir=rtl] h4,html[dir=rtl] .eyebrow,html[dir=rtl] .alpha,html[dir=rtl] .footer-bottom { letter-spacing:0; }
+html[dir=rtl] .download h2 { font-family:inherit; line-height:1.2; }
+html[dir=rtl] .hero-copy { left:auto; right:var(--pad); }
+html[dir=rtl] .hero-aircraft { right:auto; left:0; }
+html[dir=rtl] .hero-scene-caption { right:auto; left:var(--pad); }
+html[dir=rtl] .hero-scene-caption .aircraft-note { text-align:start; }
+html[dir=rtl] .field-shade { background:linear-gradient(270deg,#071e16d9,#0a20173d 70%,#0a201710),linear-gradient(0deg,#0819129c,transparent 30%); }
+html[dir=rtl] .download-intro { left:auto; right:61%; }
+html[dir=rtl] .download-links a { padding:30px 60px 30px 20px; }
+html[dir=rtl] .download-links a+a { border-left:0; border-right:1px solid #ffffff40; padding-right:75px; }
+html[dir=rtl] .download-links .os-symbol { left:auto; right:8px; }
+html[dir=rtl] .download-links a+a .os-symbol { left:auto; right:20px; }
+html[dir=rtl] .download-arrow { right:auto; left:24px; }
+html[dir=rtl] .aircraft-info dd { text-align:end; }
+html[dir=rtl] .aircraft-selector button span { margin-right:0; margin-left:8px; }
+html[dir=rtl] .inspect-launch,html[dir=rtl] .jet-detail-choices button,html[dir=rtl] .inspector-details button { text-align:start; }
+html[dir=rtl] .inspect-tag,html[dir=rtl] .jet-detail-choices button>span:last-child { margin-left:0; margin-right:auto; }
+html[dir=rtl] .system-body { padding-left:0; padding-right:43px; }
+html[dir=rtl] .inspector-details { left:auto; right:var(--pad); }
+html[dir=rtl] .inspector-details button { border-left:0; border-right:1px solid #56645f; }
+html[dir=rtl] .inspector-details button[aria-pressed=true] { border-right-color:var(--lime); }
+html[dir=rtl] .model-inspector model-viewer { direction:ltr; }
+@media(max-width:1050px) { html[dir=rtl] .download-intro { right:59%; } }
+@media(max-width:700px) {
+  html[dir=rtl] .hero-copy { left:var(--pad); right:var(--pad); }
+  html[dir=rtl] .hero-aircraft { left:-2%; }
+  html[dir=rtl] .aircraft-selector { margin-right:0; margin-left:calc(-1*var(--pad)); padding-right:0; padding-left:var(--pad); }
+  html[dir=rtl] .download-intro { right:auto; }
+  html[dir=rtl] .download-links a,html[dir=rtl] .download-links a+a { padding:25px 50px; border-right:0; }
+  html[dir=rtl] .download-links .os-symbol,html[dir=rtl] .download-links a+a .os-symbol { right:0; }
+  html[dir=rtl] .download-arrow { left:4px; }
+  html[dir=rtl] .system-body { padding:0 29px 25px 5px; }
+  html[dir=rtl] .inspector-details { left:22px; right:22px; }
+  html[dir=rtl] .inspector-details button { border-right:0; text-align:center; }
+}
+html[dir=rtl] #aircraft-name,html[dir=rtl] #inspector-title { text-align:right; }
+html[dir=rtl] .product-credit>span:last-child { margin-left:0; margin-right:auto; }
