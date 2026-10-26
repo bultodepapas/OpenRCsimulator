@@ -58,7 +58,7 @@ const ACTIONS: Array[Dictionary] = [
 	{"id": "camera_zoom_out", "label": "Camera zoom out", "context": "flight", "mode": "press"},
 	{"id": "camera_auto_zoom", "label": "Toggle auto camera zoom", "context": "flight", "mode": "press"},
 	{"id": "lights_cycle", "label": "Cycle lights", "context": "flight", "mode": "press"},
-	{"id": "rates_toggle", "label": "Rates: normal / full", "context": "flight", "mode": "press"},
+	{"id": "rates_toggle", "label": "Dual rates: normal / high", "context": "flight", "mode": "press"},
 	{"id": "helicopter_arm", "label": "Helicopter: arm / disarm", "context": "flight", "mode": "press"},
 	{"id": "helicopter_hold", "label": "Helicopter: toggle rotor hold", "context": "flight", "mode": "press"},
 	{"id": "helicopter_mode", "label": "Helicopter: normal / idle-up", "context": "flight", "mode": "press"},

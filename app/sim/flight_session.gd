@@ -861,8 +861,12 @@ var trims := { roll = 0.0, pitch = 0.0, yaw = 0.0 }
 ## D6e: the sticks' rate profile. "full": the data's maximum throws, no expo (scripted maneuvers, tests, radios).
 ## "normal": the aircraft's controls.rates.normal (the manual's normal-flight dual rates and expo) shapes the keyboard
 ## sticks, and the travel alone the gamepad's (it has its own expo); a radio always passes through with its own rates.
-## Aircraft without controls.rates fly their maximum throws under either name. The flight scene sets it (--rates=full).
+## "sport": full roll travel with normal expo, pitch and yaw. Aircraft without rates fly full throws.
+## The live scene starts in sport; the technical session default stays full.
 var rate_profile := "full"
+## D6e-R5: keep the two-position switch paired with the selected high profile.
+## Sport uses full aileron travel and the normal elevator/rudder response.
+var _high_rate_profile := "full"
 ## Stick commands after shaping (−1…1, throttle 0…1), and the raw input sample they came from.
 var commands := Commands.neutral_commands()
 var raw := Commands.neutral_raw()
@@ -3194,18 +3198,34 @@ func _flight_ready() -> bool:
 
 ## D6e: true while the aircraft's normal rate profile shapes the sticks (see rate_profile).
 func rates_active() -> bool:
-	return rate_profile == "normal" and aircraft.get("ok", false) and aircraft.model.controls.has("rates") \
+	return rate_profile in ["normal", "sport"] and aircraft.get("ok", false) and aircraft.model.controls.has("rates") \
 		and not (radio.connected and not radio.is_gamepad())
 
 
-## D6e-R2: the transmitter's dual-rate switch for keyboard and gamepad sticks (normal ⇄ full). Refused when the aircraft
+## Effective shaping profile, also used by the HUD and recorder. External drivers provide post-rate commands.
+func effective_rate_profile() -> String:
+	return rate_profile if rates_active() and not external_driver_enabled else "full"
+
+
+func rate_profile_label() -> String:
+	match effective_rate_profile():
+		"normal": return "Rates: normal"
+		"sport": return "Rates: sport"
+	return "Rates: full"
+
+
+## D6e-R5: two-position dual rates: normal ⇄ the selected high profile (sport or full). Refused when the aircraft
 ## has no controls.rates or a radio is connected (it keeps its own rates). Only the input layer changes: the next tick
 ## samples the new shaping, and flight logs record post-rate inputs, so a replay reproduces the switch exactly.
 func toggle_rate_profile() -> bool:
 	if not aircraft.get("ok", false) or not aircraft.model.controls.has("rates") \
 			or (radio.connected and not radio.is_gamepad()):
 		return false
-	rate_profile = "full" if rate_profile == "normal" else "normal"
+	if rate_profile == "normal":
+		rate_profile = _high_rate_profile
+	else:
+		_high_rate_profile = rate_profile
+		rate_profile = "normal"
 	rate_profile_changed.emit(rates_active())
 	return true
 
@@ -3234,7 +3254,11 @@ func adjust_aileron_trim(delta_units: float) -> bool:
 func flown_commands() -> Dictionary:
 	var c := commands.duplicate()
 	if rates_active() and not external_driver_enabled:
-		c = Commands.shape_sticks(c, aircraft.model.controls.rates.normal, not radio.connected)
+		var profile: Dictionary = aircraft.model.controls.rates.normal
+		c = Commands.shape_sticks(c, profile, not radio.connected)
+		if rate_profile == "sport":
+			# Preserve the centre response and device expo; only the roll travel limit changes.
+			c.roll = Commands.expo(commands.roll, profile.aileron_expo if not radio.connected else 0.0)
 		# Short gamepad sticks may have aircraft-specific normal pitch/yaw travel.
 		# This is a fixed device setting; trim and physical radio travel remain independent.
 		if radio.connected and radio.is_gamepad():

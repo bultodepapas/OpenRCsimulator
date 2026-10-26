@@ -7473,8 +7473,8 @@ msgstr "El control del tren coincide con un eje de vuelo recién calibrado; reas
 msgid "Existing smoke control overlaps a newly calibrated AETR axis; smoke was disabled and needs reassignment."
 msgstr "El control de humo coincide con un eje de vuelo recién calibrado; se ha desactivado y necesita reasignarse."
 
-msgid "Choose separate inputs for %s."
-msgstr "Elige entradas distintas para %s."
+msgid "Shared input: %s."
+msgstr "Entrada compartida: %s."
 
 msgid "Use either the action or the extra channel: %s."
 msgstr "Usa la acción o el canal adicional: %s."
@@ -7508,3 +7508,9 @@ msgstr "Asignación no aplicada: %s"
 
 msgid "Binding was not changed: %s"
 msgstr "La asignación no se ha cambiado: %s"
+
+msgid "Rates: sport"
+msgstr "Recorridos: deportivos"
+
+msgid "Dual rates: normal / high"
+msgstr "Doble recorrido: normal / alto"

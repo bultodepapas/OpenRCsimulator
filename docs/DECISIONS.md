@@ -1084,3 +1084,18 @@ Keep each supported opaque material as an owned clone and attach a bounded addit
 ### 2026-10-26 — Integrate independent surface travel while retaining the flight baseline (AE-01-R1)
 
 Preserve PR #1’s ancestry and research, and integrate optional per-surface Workshop travel with global inheritance and normalized persistence. Defer its aerodynamic laws, stock tuning and replacement goldens: local forces, wake and ground-effect paths disagree, and the submitted reference flights do not reproduce the submitted runtime. Keep the existing solver and authoring pipelines unchanged. Revisit physical activation only with one explicit candidate, exact baseline replay and independent aircraft evidence. [Disposition and requirements](research/flight-mechanics-stall-hover-knife-edge-2026-10-18.md#integration-disposition-2026-10-26).
+
+
+### 2026-10-26 — D11-R1 / D6e-R5: consistent ailerons and sport dual rates
+
+Re-derive conventional stock aircraft aileron effectiveness through the existing
+induced-flow map instead of the obsolete uncoupled whole-aircraft lift slope.
+Keep the authored parameter, runtime load law and custom-variant semantics intact.
+This matches each aircraft's existing small-angle roll derivative; it does not
+establish measured roll performance or unchanged control-induced stall behavior.
+
+Use full aileron travel by default with normal pitch/yaw and expo (`sport`). Keep
+two-position dual rates, remembering the chosen sport/full high position. The
+historical uncontrolled-roll trigger was elevator overpull into stall; preserve
+its normal pitch response and radio bypass. The owner requested both stronger
+roll response and coherent dual rates. [Evidence and limits](research/aero-consistency/D11-R1/README.md).

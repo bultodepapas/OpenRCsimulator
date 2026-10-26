@@ -97,6 +97,9 @@ python3 "$HERE/../research/helicopter/assets/compile_hx700_articulated.py"
 python3 "$HERE/../research/helicopter/assets/compile_hx700_motion.py" --check
 python3 "$HERE/../research/helicopter/assets/test_compile_hx700_motion.py"
 
+echo "== D11-R1: induced-flow aileron derivation"
+python3 -m unittest discover -s "$HERE/../research/aero" -p "test_aileron_effectiveness.py"
+
 echo "== AS-01/02: versioned aircraft contract and migration stay current"
 python3 "$HERE/../research/aircraft-standardization/build_schema.py" --check
 python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --check

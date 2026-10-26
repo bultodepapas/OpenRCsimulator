@@ -271,6 +271,8 @@ func _test_mapping_error_recovery() -> void:
 	var with_aux := original.duplicate(true)
 	with_aux.aux = {"smoke": {"type": "button", "button": 15, "mode": "level"}}
 	setup._set_draft_profile(with_aux)
+	pitch.value = roll.value
+	setup._save_profile(false)
 	var previous := setup.current_profile()
 	var remap := setup.find_child("Remap_camera_previous", true, false) as Button
 	var remap_style := remap.get_theme_stylebox("normal")
@@ -282,6 +284,7 @@ func _test_mapping_error_recovery() -> void:
 	setup._capture_binding(event)
 	_check("rejected action/AUX remap leaves the accepted draft intact", setup.current_profile() == previous and not setup._is_capture_active() and setup.status_label.text.contains("Binding was not changed"))
 	_check("rejected remap highlights the attempted action and conflicting AUX", remap.has_theme_stylebox_override("normal") and setup._aux_controls.smoke.button.get_line_edit().has_theme_stylebox_override("normal"))
+	_check("rejected remap retains unrelated draft errors", roll.get_line_edit().has_theme_stylebox_override("normal") and setup._axis_channel_labels.roll.text.contains("Roll, Pitch"))
 	setup._start_capture("camera_previous", remap)
 	event.button_index = 16
 	setup._capture_binding(event)
@@ -292,7 +295,7 @@ func _test_mapping_error_recovery() -> void:
 	setup._save_profile(false)
 	TranslationServer.set_locale("es")
 	await process_frame
-	_check("language changes refresh inline feedback", setup._axis_channel_labels.roll.text.contains("Elige entradas distintas"))
+	_check("language changes refresh inline feedback", setup._axis_channel_labels.roll.text.contains("Entrada compartida"))
 	for viewport_size: Vector2i in [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160), Vector2i(1280, 720)]:
 		root.size = viewport_size
 		setup._save_profile(false)

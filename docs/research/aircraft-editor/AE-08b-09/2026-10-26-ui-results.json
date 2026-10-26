@@ -1196,6 +1196,29 @@
         1080
       ],
       "source_scope": "Bool-return commit implementation before the final no-op display sync; the final display sync is covered by the accepted focused UI suite."
-    }
+    },
+    "rendered_preview": {
+      "resolution": [
+        1920,
+        1080
+      ],
+      "backend": "Xvfb/OpenGL Compatibility, Mesa llvmpipe",
+      "log": "tmp/workshop-inquisition-20261026/rendered-preview-accepted.log",
+      "capture": "tmp/workshop-inquisition-20261026/replacement-1080.png",
+      "capture_sha256": "a7a8b835a2dd9ad46064cde2c4b8bea7632a0b75d320ada94f6ffd8141bfd6cc",
+      "runtime_source_hashes": {
+        "workshop": "f9b20a3ed05d26f0a81c05d46b1245e55497c8e1382a4b6a14c176351ec5aa41",
+        "preview": "5a9bf2c43354551e2e4c56f990883e7d36a74e8fef4f5218fdaac01867c35c03"
+      },
+      "engine_errors": 0,
+      "exit": {
+        "stopped": true,
+        "pid": 2080001,
+        "crash": null,
+        "leaked_objects": 0
+      },
+      "visual_review": "Replacement model, size badge, page controls, footer and aircraft area fit at native 1080p. Preview source matches final; Workshop source predates only the final inherited-value display sync."
+    },
+    "source_snapshot_cache": "Owned .godot import cache removed after validation to release disk space; source copies and all logs/captures retained. Reimport before rerunning snapshot."
   }
 }

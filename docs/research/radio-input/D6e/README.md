@@ -45,3 +45,17 @@ Only the input layer changes. The `.orfl` input boundary is post-rates, so the l
 ## Limits
 
 Transmitter curves differ between radios (expo sign and shape), and the manuals' percentages are starting points, not measured setups. Owners flying a radio see no change. Acceptance of the feel is the Gate 2 owner session.
+
+
+## D6e-R5: sport ailerons with two-position dual rates (2026-10-26)
+
+The live scene now starts in `sport`: full aileron travel with normal keyboard expo,
+normal elevator/rudder travel, and the existing gamepad scaling. The original D6e
+abnormal-roll trigger was elevator-induced stall, so those pitch protections remain.
+The technical session default stays `full`; physical radios retain their own rates.
+
+The switch remembers its selected high profile: sport ↔ normal for the default
+launch, full ↔ normal after `--rates=full`. Explicit `--rates=normal` keeps the
+legacy normal/full pair. HUD, help and recording metadata name the actual profile;
+post-rate replay inputs retain their existing meaning. [Investigation, comparisons
+and checks](../../aero-consistency/D11-R1/README.md) are the authoritative evidence.

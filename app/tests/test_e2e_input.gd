@@ -89,14 +89,13 @@ func _run() -> void:
 	_key(KEY_RIGHT, true)
 	await create_timer(0.5).timeout # limiter needs 0.25 s
 	var r := _row("roll")
-	var normal_rates: Dictionary = _main.session.aircraft.model.controls.rates.normal
-	var expected_aileron_deg: float = clampf(float(normal_rates.aileron) + _main.session.trims.roll, -1.0, 1.0) \
+	var expected_aileron_deg: float = clampf(1.0 + _main.session.trims.roll, -1.0, 1.0) \
 		* _main.session.throws_deg().aileron
 	var indicated_aileron_deg := float(r.get_slice("R ail ", 1).get_slice("°", 0).strip_edges())
-	_check("hold -> roll +1 uses aircraft normal rate and trim", "+1.00" in r and _main.session.rates_active()
+	_check("hold -> roll +1 uses sport full travel and trim", "+1.00" in r and _main.session.effective_rate_profile() == "sport"
 		and absf(indicated_aileron_deg - expected_aileron_deg) < 0.1,
 		"%s (expected %+.2f° from rate %.4f + trim %.4f)" % [r, expected_aileron_deg,
-		float(normal_rates.aileron), _main.session.trims.roll])
+		1.0, _main.session.trims.roll])
 	_key(KEY_RIGHT, false)
 	await create_timer(0.5).timeout
 	r = _row("roll")
