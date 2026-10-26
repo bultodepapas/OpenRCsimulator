@@ -40,6 +40,8 @@ RGB shader bindings are limited to the existing nine lamp meshes and five strips
 
 Initial semantic zones are `nav_left`, `nav_right`, `nav_tail`, `strobe_left`, `strobe_right`, `strobe_dorsal`, `strobe_ventral`, `strip_left`, `strip_right`, `strip_top_left`, `strip_top_right`, `strip_belly`, and `landing_lamp`. Wingtip show anchors are `vfx_tip_left` and `vfx_tip_right`. Aircraft equipment declarations and geometry determine availability; choosing a preset does not manufacture an unsupported lamp or a valid internal volume.
 
+The current Timber model deliberately declares factory navigation, strobe and landing equipment only. Its five fitted orientation-strip meshes remain unavailable in every RGB preset; the Workshop explains this limitation. X8 uses the ordinary fitted external strips. Neither aircraft receives inferred translucent skin. A creator-approved Timber retrofit requires an explicit authoring/capability change, not a player preset overriding the model declaration. Availability also requires membership in the kit's accepted group bindings: an authored-disabled lamp node does not count as usable hardware. The diagnostic `zones_resolved` counter counts material bindings and must not replace the capability report in UI.
+
 ## Global lighting preferences
 
 Settings → **Lighting** applies to every aircraft and Workshop preview. **Low** retains LEDs and landing lights while hiding decorative spill and show effects. **Standard** emits half the High particle count and samples show trails at 15 Hz; **High** retains the bounded 32-particle tip pools and 30 Hz trail sampling. These are workload controls, not hardware frame-rate guarantees.
