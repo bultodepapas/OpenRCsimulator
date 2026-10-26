@@ -70,10 +70,15 @@ func _build_ui() -> void:
 
 	_body = VBoxContainer.new()
 	_body.name = "LightingSequenceEditor"
-	_body.add_theme_constant_override("separation", 8)
+	_body.add_theme_constant_override("separation", 12)
 	_body.visible = false
 	add_child(_body)
 
+	var cue_heading := Label.new()
+	cue_heading.text = tr("Sequence cues")
+	cue_heading.theme_type_variation = "SectionLabel"
+	cue_heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_body.add_child(cue_heading)
 	var preview_note := Label.new()
 	preview_note.name = "LightingSequencePreviewNote"
 	preview_note.text = tr("Cues play in order. Use Restart preview, then Play preview to review their timing.")
@@ -87,15 +92,22 @@ func _build_ui() -> void:
 	target_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_body.add_child(target_note)
 
+	var cue_label := Label.new()
+	cue_label.text = tr("Selected cue")
+	cue_label.theme_type_variation = "SecondaryLabel"
+	cue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_body.add_child(cue_label)
 	_cue_selector = OptionButton.new()
 	_cue_selector.name = "LightingSequenceCue"
 	_cue_selector.fit_to_longest_item = false
+	_cue_selector.clip_text = true
 	_cue_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_cue_selector.item_selected.connect(_on_cue_selected)
 	_body.add_child(_cue_selector)
 
 	_cue_summary = Label.new()
 	_cue_summary.name = "LightingSequenceSummary"
+	_cue_summary.theme_type_variation = "SecondaryLabel"
 	_cue_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_body.add_child(_cue_summary)
 
@@ -110,8 +122,15 @@ func _build_ui() -> void:
 	_add_structure_button(cue_actions, "MoveLightingCueLater", "Move later", _move_later)
 	_add_structure_button(cue_actions, "RemoveLightingCue", "Remove cue", _remove_cue)
 
+	_body.add_child(HSeparator.new())
+	var timing_heading := Label.new()
+	timing_heading.text = tr("Timing and pattern")
+	timing_heading.theme_type_variation = "SectionLabel"
+	timing_heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_body.add_child(timing_heading)
 	var duration_label := Label.new()
 	duration_label.text = tr("Cue duration (seconds)")
+	duration_label.theme_type_variation = "SecondaryLabel"
 	_body.add_child(duration_label)
 	_duration = LineEdit.new()
 	_duration.name = "LightingSequenceDuration"
@@ -123,6 +142,7 @@ func _build_ui() -> void:
 
 	var cycle_label := Label.new()
 	cycle_label.text = tr("Pattern cycle (seconds)")
+	cycle_label.theme_type_variation = "SecondaryLabel"
 	_body.add_child(cycle_label)
 	_period = LineEdit.new()
 	_period.name = "LightingSequenceCycle"
@@ -134,6 +154,7 @@ func _build_ui() -> void:
 
 	var pattern_label := Label.new()
 	pattern_label.text = tr("Pattern")
+	pattern_label.theme_type_variation = "SecondaryLabel"
 	_body.add_child(pattern_label)
 	_pattern_selector = OptionButton.new()
 	_pattern_selector.name = "LightingSequencePattern"
@@ -147,9 +168,10 @@ func _build_ui() -> void:
 	_pattern_selector.item_selected.connect(_on_pattern_selected)
 	_body.add_child(_pattern_selector)
 
+	_body.add_child(HSeparator.new())
 	var palette_heading := Label.new()
 	palette_heading.text = tr("RGB palette")
-	palette_heading.theme_type_variation = "SecondaryLabel"
+	palette_heading.theme_type_variation = "SectionLabel"
 	_body.add_child(palette_heading)
 	_palette_list = VBoxContainer.new()
 	_palette_list.name = "LightingSequencePalette"
@@ -163,7 +185,7 @@ func _build_ui() -> void:
 
 	var zones_heading := Label.new()
 	zones_heading.text = tr("Target zones")
-	zones_heading.theme_type_variation = "SecondaryLabel"
+	zones_heading.theme_type_variation = "SectionLabel"
 	_body.add_child(zones_heading)
 	_zone_targets = FlowContainer.new()
 	_zone_targets.name = "LightingSequenceZones"
@@ -173,7 +195,7 @@ func _build_ui() -> void:
 
 	var effects_heading := Label.new()
 	effects_heading.text = tr("Enabled effects")
-	effects_heading.theme_type_variation = "SecondaryLabel"
+	effects_heading.theme_type_variation = "SectionLabel"
 	_body.add_child(effects_heading)
 	_effect_targets = FlowContainer.new()
 	_effect_targets.name = "LightingSequenceEffects"

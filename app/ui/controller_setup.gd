@@ -100,6 +100,7 @@ var _devices: Array[Dictionary] = []
 var _draft_profile: Dictionary = {}
 var _drafts_by_context: Dictionary = {}
 var _draft_context_key := ""
+var _calibration_origins: Dictionary = {} # draft context -> connection that supplied its ranges
 var _base_actions: Dictionary = {}
 var _action_bindings: Dictionary = {}
 var action_capabilities: Dictionary = ControllerActions.SUPPORTED_AUX.duplicate()
@@ -127,6 +128,7 @@ var _preset_ids: Array[String] = []
 var _clean_radio_actions_button: Button
 var _clean_radio_actions_help_label: Label
 var _prompt_texture_cache: Dictionary = {}
+var _error_field_controls: Array[Control] = []
 
 
 func _init() -> void:
@@ -166,6 +168,39 @@ func _cancel_edits() -> void:
 
 func current_profile() -> Dictionary:
 	return _draft_profile.duplicate(true)
+
+
+## A preflight wizard never saves or changes selection. Keep edits outside its four channels intact.
+func apply_calibration_draft(calibration: Dictionary, device_id: int, generation: int, warning: String = "") -> bool:
+	if _draft_flight_device_id != device_id or _draft_profile.get("kind", "") != "radio" \
+		or not _calibration_connection_matches(device_id, generation):
+		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
+		return false
+	var calibrated: Dictionary = ControllerProfile.upgrade_legacy(calibration)
+	if calibrated.is_empty() or calibrated.get("kind", "") != "radio":
+		_set_status(tr("Invalid calibration. The draft is unchanged."), true)
+		return false
+	for channel: String in CHANNELS:
+		_draft_profile[channel] = calibrated[channel].duplicate(true)
+	# The wizard retains valid AUX and reports bindings consumed by newly assigned flight axes.
+	_draft_profile["aux"] = calibrated.get("aux", {}).duplicate(true)
+	_calibration_origins[_draft_context_key] = {"id": device_id, "generation": generation}
+	_update_axis_controls()
+	_update_aux_controls()
+	_update_preview()
+	_remember_current_draft()
+	draft_changed.emit()
+	var message: String = tr("Calibration is in the draft. Save controller settings to apply it; Cancel discards it.")
+	if not warning.is_empty():
+		message += " " + tr(warning)
+	_set_status(message, false)
+	return true
+
+
+func _calibration_connection_matches(device_id: int, generation: int) -> bool:
+	return registry != null and generation > 0 \
+		and bool(registry.device_for_id(device_id).get("connected", false)) \
+		and int(registry.connection_generation(device_id)) == generation
 
 
 func load_selected_profile(profile_or_id: Variant) -> bool:
@@ -319,6 +354,7 @@ func _build() -> void:
 	profile_name_edit.name = "ProfileName"
 	profile_name_edit.max_length = 80
 	profile_name_edit.placeholder_text = TranslationServer.translate("Profile name")
+	profile_name_edit.text_changed.connect(func(_t: String) -> void: _clear_field_errors())
 	_add_field(profile_row, "Saved profile", profile_picker)
 	_add_field(profile_row, "Name", profile_name_edit)
 	glyph_family_picker = _option("Controller prompts")
@@ -2195,15 +2231,24 @@ func _capture_done() -> void:
 
 
 func _save_profile(close_on_success := true) -> bool:
+	_clear_field_errors()
 	if _is_capture_active():
 		_set_status(tr("Finish or cancel remapping before saving."), true)
 		return false
 	if _draft_profile.is_empty() or profile_store == null:
 		_set_status(tr("There is no controller profile to save."), true)
 		return false
+	var calibration_origin: Dictionary = _calibration_origins.get(_draft_context_key, {})
+	if not calibration_origin.is_empty() and (_draft_flight_device_id != int(calibration_origin.id) \
+		or not _calibration_connection_matches(int(calibration_origin.id), int(calibration_origin.generation))):
+		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
+		return false
 	var candidate := _draft_profile.duplicate(true)
 	var profile_name := profile_name_edit.text.strip_edges()
 	if profile_name.is_empty():
+		_mark_field_error(profile_name_edit)
+		select_section("profile")
+		profile_name_edit.grab_focus()
 		_set_status(tr("Enter a profile name before saving."), true)
 		return false
 	candidate["name"] = profile_name
@@ -2352,6 +2397,29 @@ func _set_status(text: String, is_error: bool) -> void:
 	status_label.add_theme_color_override("font_color", ScreenTheme.ERROR if is_error else Color(0.86, 0.9, 0.94))
 	if is_error and not text.is_empty():
 		status_label.text = tr("Problem: %s") % text
+
+
+func _mark_field_error(control: Control) -> void:
+	if not is_instance_valid(control) or control in _error_field_controls:
+		return
+	_error_field_controls.append(control)
+	var style := StyleBoxFlat.new()
+	style.border_color = ScreenTheme.ERROR
+	for side: int in [SIDE_LEFT, SIDE_RIGHT, SIDE_TOP, SIDE_BOTTOM]:
+		style.set_border_width(side, 2)
+	style.set_corner_radius_all(4)
+	style.bg_color = Color(ScreenTheme.ERROR.r, ScreenTheme.ERROR.g, ScreenTheme.ERROR.b, 0.08)
+	control.add_theme_stylebox_override("normal", style)
+	if control is LineEdit:
+		control.add_theme_stylebox_override("focus", style)
+
+
+func _clear_field_errors() -> void:
+	for control: Control in _error_field_controls:
+		if is_instance_valid(control):
+			control.remove_theme_stylebox_override("normal")
+			control.remove_theme_stylebox_override("focus")
+	_error_field_controls.clear()
 
 
 static func _section_label(text: String) -> Label:

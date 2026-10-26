@@ -29,8 +29,8 @@ static func residual(prop: Dictionary, rpm: float, throttle: float, u: float, rh
 static func _residual(prop: Dictionary, rpm: float, throttle: float, u: float, rho: float, dry_density: float,
 		engine_evaluator: Source.PreparedEvaluator, propeller_evaluator: Prop.PreparedEvaluator) -> float:
 	var engine: Dictionary = _source(prop,rpm,throttle,dry_density,engine_evaluator)
-	var load: Dictionary = Prop.evaluate_prepared(propeller_evaluator,rpm,u,rho) if propeller_evaluator != null else Prop.evaluate(rpm,u,rho,prop.glow.propeller)
-	return engine.shaft_torque_nm-load.torque_nm if engine.ok and load.ok else NAN
+	var propeller_load: Dictionary = Prop.evaluate_prepared(propeller_evaluator,rpm,u,rho) if propeller_evaluator != null else Prop.evaluate(rpm,u,rho,prop.glow.propeller)
+	return engine.shaft_torque_nm-propeller_load.torque_nm if engine.ok and propeller_load.ok else NAN
 
 static func solve(prop: Dictionary, throttle: float, u: float, rho: float, dry_density: float) -> Dictionary:
 	for v in [throttle,u,rho,dry_density]:

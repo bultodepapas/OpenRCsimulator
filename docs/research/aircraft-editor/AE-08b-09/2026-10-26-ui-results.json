@@ -1,0 +1,340 @@
+{
+  "step": "AE-09b/d",
+  "date": "2026-10-26",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "platform": "Linux / Xvfb / OpenGL Compatibility / Mesa llvmpipe",
+  "source_context": {
+    "initial_review_commit": "3c1a8b78",
+    "shared_head_at_record": "e85db55484bf22a52f79a6042e0aff1bae89c10e",
+    "isolated_app_snapshot": true,
+    "concurrent_shared_changes": true
+  },
+  "ui_source_sha256": {
+    "ui/workshop.gd": "c2290e570e07a5932ca9a25a014f7f8420eee4cce04dca98b2190b047306eb75",
+    "ui/workshop_preview.gd": "07939fa943138bfdeb946687e00665b4ced6b15a4de65e1bcb0e1dc325696247",
+    "ui/workshop_customization.gd": "6752945ed54cc5a1c8c66b297468c8aed8f95b027ba4127ba145139f78d23e36",
+    "ui/workshop_lighting.gd": "f3b96a90a6de82b3f352a8230cab0ad48e57555c3daedb32e501a876cfb7f415",
+    "ui/workshop_lighting_sequence.gd": "20c8f8208093439d55fd0f06938e854b43f4d2d0876cd0ee2ed811e254f07f99",
+    "i18n/es.po": "b7938eb38a1208eb2a1d4b0888a27eef8d7216db43a55e41da8a10fa4f87dce4",
+    "tests/test_workshop_ui.gd": "b55ee42b80af82868ad0bb10245cf746ccc673fd54ed73f44e6db428f0bf16a9",
+    "tests/test_workshop_preview.gd": "f157d366ba0c2a0000919c22e8263020d81702950a7a3436ce70b7fb34e24088",
+    "tests/test_workshop_smoke_controls.gd": "14620cc755128de53d2ddad39a83ffff1f4f35b0be69c6687ca8b304ce1f1d43"
+  },
+  "suites": [
+    {
+      "suite": "test_workshop_ui.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "fac67bd15fdf6d87317d90a78489181bffc772490ca38b8f0f2a7db0589ec32b"
+    },
+    {
+      "suite": "test_workshop_preview.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "65769ea9142715454633b257910535efabe9929269fa5b5ff8e9d9936d3e487c"
+    },
+    {
+      "suite": "test_workshop_customization.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "ee35df8a4d4e24d121060c3189f7bfb55909db6f4ad2efacb720207521ccf182"
+    },
+    {
+      "suite": "test_lighting_sequence_ui.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "1d44e03d3e3e2c8ec123dabba6a72d464ac28284a516d0034fb5fcab82ba3f76"
+    },
+    {
+      "suite": "test_mechanical_configuration.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "9106462dd10d23c7be9b3eedf5c854f6f43617e68834ece290083700c5cfd7af"
+    },
+    {
+      "suite": "test_ui_language.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "adb2c97464bec5657c364e457c1bddc0ccf2d7cee9524de7a69a878b1c0693af"
+    },
+    {
+      "suite": "test_workshop_smoke_controls.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "6632e0cc4c74853aaca863404d0508e61069405eed065833e8acf097b564b3ca"
+    },
+    {
+      "suite": "test_workshop_lighting.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "92912e2303d10dd6a5151b2212ad97567e510dde5841dc8e2702e902b791216f"
+    },
+    {
+      "suite": "test_workshop_recovery_ui.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "4eabbcfefdc00f8f04719e9eee8a7c12adae690d894a95c0ce78fa9de129cb3a"
+    },
+    {
+      "suite": "test_workshop_mass_ui.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "0686391d780862cfe0fe9d2017473b9f77b14b127bf824f42c4382229caf4488"
+    },
+    {
+      "suite": "test_workshop_reuse.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "bb1e95e3bbae3871561f7216649564db18fad1a689f5694ea0166abe7b63f32c"
+    },
+    {
+      "suite": "test_workshop_integration.gd",
+      "passed": true,
+      "complete": true,
+      "engine_errors": 0,
+      "log_sha256": "5258ff615705269400bb7c180dd330a4773a48eebb36f73188a0dbbc429c46f6"
+    }
+  ],
+  "captures": [
+    {
+      "case": "setup-1080-es",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "a07ae99ac404186731ddd219bc0f2bc2dd3fc2fbf8eec6974c3fc7dd8970b766"
+    },
+    {
+      "case": "appearance-1080-es",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "fc0e1ef6dffe87aed06eee35909dbeb62eb1a65e0305ed85f25090cd6c87a7e2"
+    },
+    {
+      "case": "lighting-1080-es",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "f28718cf2f58fbcc60ee81c3ceb4824ae2c0a3cd1e4b012bc952712c4138a146"
+    },
+    {
+      "case": "smoke-1080-es",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "30b32c58593e4e8ffe553ec1002666d09dd978f991f662d0c18d265931919d4c"
+    },
+    {
+      "case": "audio-1080-es",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "742e25682d681b1ea3618bb61f85f42d7ea1bec79cf077dcefb4e4908f221351"
+    },
+    {
+      "case": "compare-1080-es",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "28560729a4e1927cc548403c1375be233e8eb0e69f2a2ef310843ea050ec9c61"
+    },
+    {
+      "case": "library-1080-es",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "7e454c3128d8fbf33146761cd4b5f70a05a172cb3831a617ebff0745e972c6f9"
+    },
+    {
+      "case": "save-1080-es",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "5ab565f6928a3a040582175ce3781191213b44c5e632bb9c484d1b5ad8ea901c"
+    },
+    {
+      "case": "guard-1080-es",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "ac97b407cea88ddd5ba57b475ecb2407f5d3ad149440ee46ad6ff118fcc44d38"
+    },
+    {
+      "case": "smoke-1080-es-200",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 2.0,
+      "compact": true,
+      "overflow": [],
+      "image_sha256": "79219a4b97c9e11d8ae226fe871e80628f3a72c1e1f41651b8b928146845afb5"
+    },
+    {
+      "case": "compare-1440-en",
+      "pixels": [
+        2560,
+        1440
+      ],
+      "language": "en",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "0332a19e61760aaf0d82c589d86d16c4d5e2c9ff555ef1f46a4eeebcfaab5fac"
+    },
+    {
+      "case": "appearance-4k-en",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "language": "en",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "3d72511443b86dcc2ccad317e3a2426babd301b98745683912b162bcfb13e51d"
+    },
+    {
+      "case": "library-720-es-200",
+      "pixels": [
+        1280,
+        720
+      ],
+      "language": "es",
+      "text_scale": 2.0,
+      "compact": true,
+      "overflow": [],
+      "image_sha256": "15e63eeb7be52e27079d741972a352acc088f43c7391f510bc278be2736e239d"
+    },
+    {
+      "case": "preview-720-es-200",
+      "pixels": [
+        1280,
+        720
+      ],
+      "language": "es",
+      "text_scale": 2.0,
+      "compact": true,
+      "overflow": [],
+      "image_sha256": "b064081a91ce907f333170520ed0eb7b9a4a26305c6c773d928713b6202c7b9d"
+    },
+    {
+      "case": "setup-720-es-200",
+      "pixels": [
+        1280,
+        720
+      ],
+      "language": "es",
+      "text_scale": 2.0,
+      "compact": true,
+      "overflow": [],
+      "image_sha256": "4668f37bbc75fafe023d419833fd7e5b55e98307badc6c36ba9ff29f5a356a56"
+    },
+    {
+      "case": "invalid-1080-es",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "es",
+      "text_scale": 1.0,
+      "compact": false,
+      "overflow": [],
+      "image_sha256": "da55cc88ade0a7362ae0b77dc4ccc8bc7f9fb4e2d167c5562c119be0688705c1"
+    },
+    {
+      "case": "compare-1080-en-150",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "language": "en",
+      "text_scale": 1.5,
+      "compact": true,
+      "overflow": [],
+      "image_sha256": "77ded4d6cc74b79342670620d1249932f13b628bba1bfebccc40beee6db02cbc"
+    }
+  ],
+  "smoke": {
+    "ok": true,
+    "failed": [],
+    "steps": 30,
+    "leaked_objects_at_exit": 0
+  },
+  "final_workshop_scenario": {
+    "passed": true,
+    "log_sha256": "7546f00a53535d939683d563444125709d94d17c3a9368b1dbf04f5b71a7617b"
+  },
+  "final_keyboard_journey": {
+    "passed": true,
+    "log_sha256": "8d2111aef53bf8a4a53e498b1a3c086073ed12bd1651bd9006d900e99e211859"
+  },
+  "compiler": {
+    "errors": 0,
+    "preexisting_warning_sites": 17,
+    "new_warning_sites": 0
+  },
+  "limitations": [
+    "Full app/test.sh not run",
+    "No target-GPU performance qualification",
+    "No physical controller or formative user acceptance",
+    "Hidden compact preview geometry excluded from inspection claims"
+  ]
+}

@@ -6,3 +6,15 @@ press text="Back to Home"
 press text="Discard changes"
 wait frames=3
 assert expr="screens.is_top('home')" message="back at Home after discarding"
+
+# Compare is read-only; shared history remains available without a page reset.
+press text="Workshop"
+set_value text="Control MultiplierSlider" value=1.2
+call node=AppRoot/Workshop method=_set_page args=["compare"]
+assert expr="not screens.top().find_child('ResetRecipe', true, false).is_visible_in_tree()" message="Compare offers no destructive page reset"
+call node=AppRoot/Workshop method=_reset_recipe
+assert expr="is_equal_approx(screens.top().get_recipe().control_multiplier, 1.2)" message="Compare cannot reset flight setup"
+press text="Undo"
+assert expr="is_equal_approx(screens.top().get_recipe().control_multiplier, 1.0)" message="pinned Undo restores the original control travel"
+press text="Back to Home"
+assert expr="screens.is_top('home')" message="clean draft returns to Home"

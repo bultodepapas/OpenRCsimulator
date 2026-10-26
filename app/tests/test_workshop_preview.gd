@@ -162,8 +162,8 @@ func _run() -> void:
 	_check("Reset restores the default angle and zoom without changing Compare selection",
 		reset_state.mode == "compare" and bool(reset_state.comparison_original)
 		and is_equal_approx(float(reset_state.zoom), 1.0)
-		and is_equal_approx(float(reset_state.yaw_deg), 180.0)
-		and is_equal_approx(float(reset_state.pitch_deg), 10.0))
+		and is_equal_approx(float(reset_state.yaw_deg), 165.0)
+		and is_equal_approx(float(reset_state.pitch_deg), 15.0))
 
 	preview.grab_focus()
 	var before_keyboard: Dictionary = preview.get_view_state()

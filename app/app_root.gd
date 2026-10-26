@@ -34,6 +34,7 @@ const TimeOfDayDialog := preload("res://ui/time_of_day_dialog.gd")
 const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
 const CalibrationCard := preload("res://ui/calibration_card.gd")
+const RadioCalibrationSetup := preload("res://ui/radio_calibration_setup.gd")
 const UpdateChecker := preload("res://app_state/update_checker.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
@@ -1464,7 +1465,10 @@ func open_controls(from: Control = null) -> void:
 	_update_controller_calibration_button(setup)
 	setup.draft_changed.connect(func() -> void: _update_controller_calibration_button(setup))
 	setup.calibration_requested.connect(func() -> void:
-		if not screens.is_top("controls") or flight == null: return
+		if not screens.is_top("controls"): return
+		if flight == null:
+			_open_radio_calibration(setup)
+			return
 		if not setup._save_profile(false): return
 		screens.pop()
 		if screens.is_top("settings"): screens.get_screen("settings").close()
@@ -1481,9 +1485,33 @@ func open_controls(from: Control = null) -> void:
 
 func _update_controller_calibration_button(setup: Node) -> void:
 	var device: Dictionary = controllers.registry.device_for_id(setup.selected_flight_device_id())
-	var available: bool = flight != null and bool(device.get("connected", false)) and setup.current_profile().get("kind", "") == "radio"
+	var available: bool = bool(device.get("connected", false)) and setup.current_profile().get("kind", "") == "radio"
 	setup.calibrate_button.visible = available
 	setup.calibrate_button.disabled = not available
+
+
+## Home calibration edits only the setup draft; its existing Save commits both device roles.
+func _open_radio_calibration(setup: Node) -> void:
+	if setup._is_capture_active():
+		setup._set_status(tr("Finish or cancel remapping before calibrating."), true)
+		return
+	var device_id: int = setup.selected_flight_device_id()
+	var generation: int = controllers.registry.connection_generation(device_id)
+	var wizard: CanvasLayer = RadioCalibrationSetup.new()
+	if not wizard.configure(controllers.registry, device_id, setup.current_profile()):
+		wizard.free()
+		_update_controller_calibration_button(setup)
+		return
+	wizard.completed.connect(func(profile: Dictionary, warning: String) -> void:
+		if not screens.is_top("radio_calibration"): return
+		screens.pop()
+		setup.apply_calibration_draft(profile, device_id, generation, warning))
+	wizard.cancelled.connect(func(reason: String) -> void:
+		if not screens.is_top("radio_calibration"): return
+		screens.pop()
+		setup._set_status(reason, false))
+	if not screens.push("radio_calibration", wizard, setup.calibrate_button):
+		wizard.free()
 
 
 func _controller_bindings(id: int, flight_context := false) -> Dictionary:
