@@ -47,17 +47,20 @@ const ADVANCED_KEYS: Array[String] = [
 	"roughness_length_m", "turbulence_rms_mps", "seed_u32", "gust_intensity_mps",
 	"gust_start_s", "gust_duration_s", "time_horizon_s",
 ]
-const EXPERIMENTAL_NOTE := "Spatial mode replaces legacy mean wind, repeating gusts, and session turbulence in the applied draft."
+const SPATIAL_ACTIVE_NOTE := "Spatial wind is active; standard wind controls are replaced while this mode is enabled."
 const FIELD_NOTE := "Flat-site spatial field; terrain lift, rotor flow, and valley channeling are unavailable."
 const TURBULENCE_NOTE := "Turbulence input is nominal; realized local variation can differ with height, wall taper, and the finite mode set."
 const GUST_NOTE := "Gusts are finite authored events. Editing these fields replaces the agenda with one event; the profile remains after it ends."
 const INACTIVE_NOTE := "Choose a spatial preset or enable spatial wind to edit this separate draft."
+const DOMAIN_SUMMARY := "Spatial domain: maximum height %s m AGL · time horizon %s s."
+const THERMAL_HORIZON_ERROR := "Thermal field requires a time horizon of at least 120 s."
 
 var title_label: Label
 var preset_label: Label
 var preset_picker: OptionButton
 var enable_check: CheckBox
 var status_label: Label
+var domain_summary_label: Label
 var spatial_note: Label
 var advanced_check: CheckBox
 var turbulence_note: Label
@@ -101,8 +104,12 @@ func _init(initial_spatial: Variant = null, enabled: bool = false) -> void:
 	status_label.name = "SpatialStatus"
 	status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	add_child(status_label)
+	domain_summary_label = _label("", "SecondaryLabel", true)
+	domain_summary_label.name = "SpatialDomainSummary"
+	domain_summary_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	add_child(domain_summary_label)
 
-	spatial_note = _label(EXPERIMENTAL_NOTE + " " + FIELD_NOTE, "SecondaryLabel", true)
+	spatial_note = _label(SPATIAL_ACTIVE_NOTE + " " + FIELD_NOTE, "SecondaryLabel", true)
 	spatial_note.name = "SpatialExperimentalNote"
 	spatial_note.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	add_child(spatial_note)
@@ -190,10 +197,11 @@ func read_draft() -> Dictionary:
 		else:
 			values[key] = parsed.value
 	if not errors.is_empty():
-		return {"ok": false, "enabled": true, "spatial_wind": {}, "errors": errors}
+		return _failure(str(errors[0]))
+	if _source_spatial.has("thermal_field") and float(values.time_horizon_s) < 120.0:
+		return _failure(THERMAL_HORIZON_ERROR)
 	if float(values.gust_start_s) + float(values.gust_duration_s) > float(values.time_horizon_s):
-		errors.append("gust end must be inside the selected time horizon")
-		return {"ok": false, "enabled": true, "spatial_wind": {}, "errors": errors}
+		return _failure("gust end must be inside the selected time horizon")
 
 	var spatial: Dictionary = _source_spatial.duplicate(true)
 	_ensure_sections(spatial)
@@ -351,7 +359,8 @@ func _apply_visibility() -> void:
 	advanced_grid.visible = _spatial_enabled and advanced_check.button_pressed
 	turbulence_note.visible = advanced_grid.visible
 	gust_note.visible = advanced_grid.visible
-	spatial_note.visible = true
+	spatial_note.visible = _spatial_enabled
+	domain_summary_label.visible = _spatial_enabled
 	for edit: LineEdit in _field_inputs.values():
 		edit.editable = _spatial_enabled
 		edit.focus_mode = Control.FOCUS_ALL if _spatial_enabled else Control.FOCUS_NONE
@@ -367,16 +376,24 @@ func _refresh_texts() -> void:
 	preset_label.text = tr("Spatial preset")
 	enable_check.text = tr("Enable spatial wind")
 	advanced_check.text = tr("Advanced spatial settings")
-	spatial_note.text = tr(EXPERIMENTAL_NOTE) + " " + tr(FIELD_NOTE)
+	spatial_note.text = tr(SPATIAL_ACTIVE_NOTE) + " " + tr(FIELD_NOTE)
 	turbulence_note.text = tr(TURBULENCE_NOTE)
 	gust_note.text = tr(GUST_NOTE)
 	for key: String in FIELDS:
 		var label: Label = _field_labels[key]
-		label.text = tr(str(FIELDS[key].label))
+		var label_text: String = str(FIELDS[key].label)
+		if key == "time_horizon_s" and _source_spatial.has("thermal_field"):
+			label_text = "Time horizon (120–86400 s for a thermal field)"
+		label.text = tr(label_text)
 	var selected_index := preset_picker.selected
 	_fill_presets()
 	if selected_index >= 0 and selected_index < preset_picker.item_count:
 		preset_picker.select(selected_index)
+	var domain: Dictionary = _section(_source_spatial, "domain")
+	var max_height_text := _format_number(float(domain.get("max_height_agl_m", 200.0)))
+	var horizon_text: String = _field_inputs["time_horizon_s"].text if _field_inputs.has("time_horizon_s") \
+		else _format_number(float(domain.get("time_horizon_s", 86400.0)))
+	domain_summary_label.text = tr(DOMAIN_SUMMARY) % [max_height_text, horizon_text]
 	status_label.text = tr(_status_message) if not _status_message.is_empty() else _description_for_selection()
 
 
@@ -579,6 +596,8 @@ func _digits_only(text: String) -> bool:
 
 
 func _failure(message: String) -> Dictionary:
+	_status_message = message
+	_refresh_texts()
 	return {"ok": false, "enabled": true, "spatial_wind": {}, "errors": PackedStringArray([message])}
 
 

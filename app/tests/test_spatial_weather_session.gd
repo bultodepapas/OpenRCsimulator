@@ -1,4 +1,4 @@
-## M5-W05c-R2: v5 weather ownership at real session start, replay and rollback boundaries.
+## M5-W05d-R1: v5 weather ownership at real session start, replay and rollback boundaries.
 extends SceneTree
 
 const Flight := preload("res://sim/flight_session.gd")

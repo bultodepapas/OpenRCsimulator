@@ -455,6 +455,8 @@ func _build_ui() -> void:
 	lighting_panel.visible = false
 	inspector_body.add_child(lighting_panel)
 	_page_nodes["lighting"] = lighting_panel
+	_preview.lighting_capability_changed.connect(lighting_panel.set_capability_report)
+	lighting_panel.set_capability_report(_preview.get_lighting_capability_report())
 	var smoke_panel := CustomizationPanel.new()
 	smoke_panel.page_kind = "smoke"
 	smoke_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2637,6 +2639,8 @@ func _sync_presentation(source_page: String = "") -> void:
 		_page_nodes["lighting"].configure(_presentation_bindings, _presentation)
 	_sync_audio_panel()
 	if is_instance_valid(_preview): _preview.set_presentation(_presentation)
+	if is_instance_valid(_preview) and _page_nodes.has("lighting"):
+		_page_nodes.lighting.set_capability_report(_preview.get_lighting_capability_report())
 	for page: String in pending_states:
 		if _page_nodes[page].restore_editor_state(pending_states[page]):
 			continue

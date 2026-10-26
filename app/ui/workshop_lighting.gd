@@ -32,6 +32,11 @@ var _brightness_value: Label
 var _brightness_timer: Timer
 var _brightness_pending := false
 var _summary: Label
+var _capability_report: Dictionary = {}
+var _availability: Label
+var _availability_button: Button
+var _availability_details: Label
+var _zone_availability: Label
 var _status: Label
 var _orientation_lock: CheckButton
 var _orientation_hint: Label
@@ -127,11 +132,22 @@ func _build_ui() -> void:
 	_summary.name = "LightingSummary"
 	_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_summary)
-	var fitting_note := Label.new()
-	fitting_note.text = tr("Zones and effects without a registered aircraft fitting are skipped.")
-	fitting_note.theme_type_variation = "SecondaryLabel"
-	fitting_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	add_child(fitting_note)
+	_availability = Label.new()
+	_availability.name = "LightingAvailability"
+	_availability.theme_type_variation = "SecondaryLabel"
+	_availability.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	add_child(_availability)
+	_availability_button = Button.new()
+	_availability_button.name = "LightingSupportDetails"
+	_availability_button.text = tr("View aircraft support")
+	_availability_button.toggle_mode = true
+	add_child(_availability_button)
+	_availability_details = Label.new()
+	_availability_details.name = "LightingSupportList"
+	_availability_details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_availability_details.visible = false
+	add_child(_availability_details)
+	_availability_button.toggled.connect(func(open: bool) -> void: _availability_details.visible = open)
 	_zone_button = Button.new()
 	_zone_button.name = "CustomizeLightingZones"
 	_zone_button.text = tr("Customize zones")
@@ -190,6 +206,11 @@ func _build_zone_controls() -> void:
 	_zone_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_zone_selector.item_selected.connect(_on_zone_selected)
 	_zone_section.add_child(_zone_selector)
+	_zone_availability = Label.new()
+	_zone_availability.name = "LightingZoneAvailability"
+	_zone_availability.theme_type_variation = "SecondaryLabel"
+	_zone_availability.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_zone_section.add_child(_zone_availability)
 	_zone_enabled = CheckButton.new()
 	_zone_enabled.text = tr("Zone enabled")
 	_zone_enabled.toggled.connect(func(value: bool) -> void: _update_zone_draft("enabled", value))
@@ -340,6 +361,7 @@ func _build_effect_controls() -> void:
 
 func configure(bindings: Dictionary, presentation: Dictionary) -> void:
 	var saved_zone := _selected_zone_id
+	_capability_report = {}
 	_bindings = bindings.duplicate(true)
 	_presentation = presentation.duplicate(true)
 	var raw: Variant = _presentation.get("lighting", Profile.defaults())
@@ -360,6 +382,7 @@ func configure(bindings: Dictionary, presentation: Dictionary) -> void:
 	_rebuild_effect_controls()
 	_sequence_editor.configure(_profile)
 	_sync_summary()
+	_refresh_capability_feedback()
 	_syncing = false
 	_emit_validity()
 
@@ -644,6 +667,7 @@ func _on_zone_selected(index: int) -> void:
 
 func _sync_zone_editor() -> void:
 	_zone_draft = _zone_for_id(_selected_zone_id)
+	_refresh_capability_feedback()
 	_zone_pending = false
 	_zone_text_pending = false
 	_zone_text_invalid = false
@@ -1119,6 +1143,11 @@ func _rebuild_effect_controls() -> void:
 		toggle.button_pressed = bool(entry.get("enabled", false))
 		toggle.toggled.connect(func(value: bool) -> void: _set_effect_value(anchor, "enabled", value))
 		row.add_child(toggle)
+		var availability := Label.new()
+		availability.name = "EffectAvailability_" + anchor
+		availability.theme_type_variation = "SecondaryLabel"
+		availability.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row.add_child(availability)
 		var kind_row := HBoxContainer.new()
 		var kind_label := Label.new()
 		kind_label.text = tr("Effect")
@@ -1167,7 +1196,7 @@ func _rebuild_effect_controls() -> void:
 		lifetime_row.add_child(lifetime)
 		row.add_child(lifetime_row)
 		_effects_controls.add_child(row)
-		_effects_controls_by_anchor[anchor] = {"enabled": toggle, "kind": kind_selector, "intensity": intensity, "lifetime": lifetime}
+		_effects_controls_by_anchor[anchor] = {"enabled": toggle, "kind": kind_selector, "intensity": intensity, "lifetime": lifetime, "availability": availability}
 	var has_effects := not _effects_draft.is_empty()
 	_effects_controls.visible = has_effects
 	_effects_apply.disabled = not _effects_pending or not has_effects
@@ -1177,6 +1206,7 @@ func _rebuild_effect_controls() -> void:
 		empty.text = tr("This preset has no registered show effects.")
 		empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_effects_controls.add_child(empty)
+	_refresh_capability_feedback()
 
 
 func _effect_anchor_label(anchor_id: String) -> String:
@@ -1270,6 +1300,88 @@ func _sync_summary() -> void:
 	if selection in ["preset", "custom"]:
 		state += tr(" · %d effects enabled") % enabled_effect_count
 	_summary.text = tr("%s · %s") % [style, state]
+
+
+## Feedback from the isolated preview only; never edits accepted or pending settings.
+func set_capability_report(report: Dictionary) -> void:
+	_capability_report = report.duplicate(true)
+	_refresh_capability_feedback()
+
+
+func _refresh_capability_feedback() -> void:
+	if not is_instance_valid(_availability):
+		return
+	var state := str(_capability_report.get("state", "unavailable"))
+	var configured := state == "configured"
+	var details := PackedStringArray()
+	if configured:
+		var zones := _available_counts("zones")
+		var effects := _available_counts("effects")
+		_availability.text = tr("%d of %d enabled zones available on this aircraft.") % [zones.x, zones.y]
+		if effects.y > 0:
+			_availability.text += "\n" + tr("%d of %d enabled effects available.") % [effects.x, effects.y]
+		for row: Dictionary in _capability_report.get("zones", []):
+			var label := tr(str(ZONE_LABELS.get(str(row.get("id", "")), "Light")))
+			details.append("%s — %s" % [label, _capability_status(row)])
+		for row: Dictionary in _capability_report.get("effects", []):
+			details.append("%s — %s" % [_effect_anchor_label(str(row.get("id", ""))), _capability_status(row)])
+		details.append("")
+		details.append(tr("Availability follows applied settings. Daylight, gear position and playback can hide supported lights or effects. Unavailable choices remain saved."))
+	else:
+		match state:
+			"inherit": _availability.text = tr("Using the aircraft's standard lighting equipment.")
+			"disabled": _availability.text = tr("Lighting is disabled for this build.")
+			"original": _availability.text = tr("Showing original aircraft lighting. Select Draft to check your lighting choices.")
+			_: _availability.text = tr("Lighting availability cannot be checked in this preview.")
+	_availability_button.visible = configured
+	_availability_details.text = "\n".join(details)
+	_availability_details.visible = configured and _availability_button.button_pressed
+	if is_instance_valid(_zone_selector):
+		for index in _zone_selector.item_count:
+			var id := str(_zone_selector.get_item_metadata(index))
+			var row := _capability_row("zones", id)
+			var label := tr(str(ZONE_LABELS.get(id, id)))
+			if configured and not row.is_empty() and not bool(row.get("available", false)):
+				label = tr("%s (unavailable)") % label
+			_zone_selector.set_item_text(index, label)
+	if is_instance_valid(_zone_availability):
+		var zone := _capability_row("zones", _selected_zone_id)
+		_zone_availability.text = _capability_status(zone) if configured and not zone.is_empty() else ""
+		_zone_availability.visible = not _zone_availability.text.is_empty()
+	for anchor: String in _effects_controls_by_anchor:
+		var hint: Label = _effects_controls_by_anchor[anchor].get("availability")
+		if not is_instance_valid(hint):
+			continue
+		var effect := _capability_row("effects", anchor)
+		hint.text = _capability_status(effect) if configured and not effect.is_empty() else ""
+		hint.visible = not hint.text.is_empty()
+
+
+func _available_counts(key: String) -> Vector2i:
+	var counts := Vector2i.ZERO
+	for row: Dictionary in _capability_report.get(key, []):
+		if bool(row.get("enabled", false)):
+			counts.y += 1
+			if bool(row.get("available", false)): counts.x += 1
+	return counts
+
+
+func _capability_row(key: String, id: String) -> Dictionary:
+	for row: Dictionary in _capability_report.get(key, []):
+		if str(row.get("id", "")) == id: return row
+	return {}
+
+
+func _capability_status(row: Dictionary) -> String:
+	var status := tr("Available")
+	if not bool(row.get("available", false)):
+		match str(row.get("reason", "")):
+			"unsupported_group": status = tr("Unavailable: this aircraft does not support this light group.")
+			"missing_anchor": status = tr("Unavailable: no effect attachment is fitted.")
+			_: status = tr("Unavailable: no compatible light fitting.")
+	if not bool(row.get("enabled", false)):
+		status = tr("Off in applied settings · %s") % status
+	return status
 
 
 func _emit_validity() -> void:

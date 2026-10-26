@@ -1,5 +1,5 @@
-# M5-W05c-R1: diagnostic station-flow bundle for a fixed-datum aircraft state.
-# Experimental input seam only; this does not admit a spatial weather scenario or integrate local forces.
+# Fixed-datum station-flow bundle and ephemeral Air receipt for explicit spatial weather.
+# The aircraft dynamics owns forces; this module samples ambient air and local kinematics only.
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
@@ -45,7 +45,7 @@ class StagePointSampler:
 		return true
 
 
-## Experimental stage-local Air contract, not a persisted scenario. Always selects physical point inflow,
+## Stage-local Air contract, not a checkpoint. Always selects physical point inflow,
 ## including in uniform air; do not toggle the law when the instantaneous gradient happens to be zero.
 ## No caller may reuse this result for another body stage, density, model or time.
 static func stage_air(s: PackedFloat64Array, model: Dictionary, environment: Object, time_s: float,

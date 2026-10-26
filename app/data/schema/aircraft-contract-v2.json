@@ -1163,7 +1163,8 @@
         "capabilities",
         "wheel_profile_ref",
         "normal_profiles",
-        "supports"
+        "supports",
+        "rotor_partition"
       ],
       "when": {
         "path": "/ground/law",
@@ -1252,6 +1253,38 @@
         "width_model",
         "normal_profile_id"
       ]
+    },
+    {
+      "path": "/ground/rotor_partition",
+      "required": [
+        "format",
+        "partition_id",
+        "reference_pose_id",
+        "kind",
+        "source",
+        "center_model",
+        "rotors"
+      ],
+      "allowed": [
+        "format",
+        "partition_id",
+        "reference_pose_id",
+        "kind",
+        "source",
+        "center_model",
+        "rotors"
+      ]
+    },
+    {
+      "path": "/ground/rotor_partition/rotors/*",
+      "required": [
+        "rotor_id",
+        "transverse_inertia"
+      ],
+      "allowed": [
+        "rotor_id",
+        "transverse_inertia"
+      ]
     }
   ],
   "quantity_paths": [
@@ -1324,7 +1357,8 @@
     "/ground/normal_profiles/*/parameters/stop_exponent",
     "/ground/normal_profiles/*/parameters/stop_damping",
     "/ground/supports/*/hub_le",
-    "/ground/supports/*/axle_le"
+    "/ground/supports/*/axle_le",
+    "/ground/rotor_partition/rotors/*/transverse_inertia"
   ],
   "array_rules": [
     {
@@ -1361,6 +1395,10 @@
     },
     {
       "path": "/ground/supports",
+      "min_items": 1
+    },
+    {
+      "path": "/ground/rotor_partition/rotors",
       "min_items": 1
     }
   ],
@@ -1503,6 +1541,22 @@
     },
     {
       "path": "/ground/supports/*/normal_profile_id",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/rotor_partition/partition_id",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/rotor_partition/reference_pose_id",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/rotor_partition/source",
+      "nonempty": true
+    },
+    {
+      "path": "/ground/rotor_partition/rotors/*/rotor_id",
       "nonempty": true
     }
   ],
@@ -1739,6 +1793,18 @@
     {
       "path": "/ground/supports/*/width_model",
       "value": "zero_width"
+    },
+    {
+      "path": "/ground/rotor_partition/format",
+      "value": "openrc-aircraft-rotor-partition v1"
+    },
+    {
+      "path": "/ground/rotor_partition/kind",
+      "value": "estimated"
+    },
+    {
+      "path": "/ground/rotor_partition/center_model",
+      "value": "fixed_hubs"
     }
   ]
 }

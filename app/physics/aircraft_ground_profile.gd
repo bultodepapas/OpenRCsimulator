@@ -1,17 +1,21 @@
 ## GP-20/11: immutable authored ground-module resolution. This does not install a
-## solver or declare a mass/rotor partition. The coupled law remains unavailable.
+## solver. An optional explicit aggregate rotor partition reserves intrinsic
+## inertia from the original locked tensor; coupled launch stays unavailable.
 extends RefCounted
 
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const NormalCompliance := preload("res://physics/normal_compliance.gd")
 const WheelGeometry := preload("res://physics/wheel_geometry.gd")
 const M := preload("res://physics/math3d.gd")
+const RotorSystem := preload("res://physics/rotor_coupling.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
 const FORMAT := "openrc-aircraft-ground v1"
 const LEGACY_LAW := "legacy_wheels_v1"
 const COUPLED_LAW := "coupled_thin_ring_compliance_v1"
 const MAX_SUPPORTS := 16
 const MAX_NORMAL_PROFILES := 16
 const CAPABILITIES := {"support": "wheels", "shape": "thin_ring", "normal": "effective_leg_tire"}
+const PARTITION_FORMAT := "openrc-aircraft-rotor-partition v1"
 
 
 ## Call after physical identities are bound. `model` is the detached AircraftData
@@ -29,7 +33,12 @@ static func resolve(raw: Dictionary, model: Dictionary) -> Dictionary:
 			profile = {format = FORMAT, law = LEGACY_LAW, launch_available = true}}
 	if raw.get("law") != COUPLED_LAW:
 		return _failure("unsupported ground module law")
-	_check_keys(raw, ["format", "law", "capabilities", "wheel_profile_ref", "normal_profiles", "supports"], "ground", errors)
+	var required := ["format", "law", "capabilities", "wheel_profile_ref", "normal_profiles", "supports"]
+	var allowed := required.duplicate()
+	allowed.append("rotor_partition")
+	if not raw.has_all(required): errors.append("ground: missing required fields")
+	for key: Variant in raw:
+		if key not in allowed: errors.append("ground: unsupported field " + str(key))
 	if typeof(raw.get("capabilities")) != TYPE_DICTIONARY or raw.capabilities != CAPABILITIES:
 		errors.append("ground.capabilities: only wheels/thin_ring/effective_leg_tire are authored in v1")
 	var reference: Variant = raw.get("wheel_profile_ref")
@@ -124,6 +133,10 @@ static func resolve(raw: Dictionary, model: Dictionary) -> Dictionary:
 		if not used_normals.has(id): errors.append("ground.normal_profiles.%s is unused" % id)
 	if seen.size() != contacts.size(): errors.append("ground.supports: installed contacts are unbound")
 	if not errors.is_empty(): return _errors(errors)
+	var partition := {}
+	if raw.has("rotor_partition"):
+		partition = _rotor_partition(raw.rotor_partition, selected_model, normalized)
+		if not partition.ok: return _errors(partition.errors)
 	# Geometry/resource identities describe authored data; no rotor partition or
 	# physical launch qualification is inferred from these immutable records.
 	var identity := (FORMAT + ":" + COUPLED_LAW + ":" + WheelGeometry.LAW + ":" + NormalCompliance.LAW \
@@ -132,7 +145,77 @@ static func resolve(raw: Dictionary, model: Dictionary) -> Dictionary:
 		status = "authoring_valid_launch_unavailable", identity = identity,
 		wheel_profile_identity = applied.identity.duplicate(true), normal_profiles = normals,
 		support_order = support_order, supports = normalized}
+	if not partition.is_empty():
+		profile.rotor_system = partition.system
+		profile.rotor_order = partition.rotor_order
+		profile.rotor_partition = partition.raw
 	return {ok = true, errors = errors, model = selected_model, profile = profile, launch_available = false}
+
+
+## The coarse existing inventory cannot resolve individual wheel/gear tensor
+## ownership. This declared estimated AGGREGATE reservation preserves its full
+## reference tensor, mass and CG exactly. It adds no orbital wheel inertia and
+## never pretends to split a named inventory component. Transverse inertias are
+## authored explicitly; J, axes and contact identities retain their sole owners.
+## Closed propeller shaft first, then hardware contact order; source order cannot
+## rebind state slots. Open-system turbine rotors need their own flux adapter.
+static func _rotor_partition(value: Variant, model: Dictionary, supports: Array[Dictionary]) -> Dictionary:
+	var errors := PackedStringArray()
+	if typeof(value) != TYPE_DICTIONARY: return _errors(PackedStringArray(["ground.rotor_partition must be an object"]))
+	_check_keys(value, ["format", "partition_id", "reference_pose_id", "kind", "source", "center_model", "rotors"], "ground.rotor_partition", errors)
+	if value.get("format") != PARTITION_FORMAT or value.get("kind") != "estimated" or value.get("center_model") != "fixed_hubs":
+		errors.append("ground.rotor_partition requires the estimated fixed-hub aggregate law")
+	for field: String in ["partition_id", "reference_pose_id", "source"]:
+		if typeof(value.get(field)) != TYPE_STRING or str(value[field]).strip_edges().is_empty() or str(value[field]).length() > 4096:
+			errors.append("ground.rotor_partition requires bounded identity and provenance")
+	var records: Variant = value.get("rotors")
+	if typeof(records) != TYPE_ARRAY or records.is_empty() or records.size() > MAX_SUPPORTS + 1:
+		errors.append("ground.rotor_partition.rotors needs a bounded complete binding")
+	var prop: Dictionary = model.get("propulsion", {})
+	if not Propulsion.has_rotor_dynamics(prop):
+		errors.append("ground.rotor_partition requires a closed dynamic propeller shaft; prescribed/open rotors are unsupported")
+	if not errors.is_empty(): return _errors(errors)
+	var transverse_by_id := {}
+	for record: Variant in records:
+		if typeof(record) != TYPE_DICTIONARY:
+			errors.append("ground.rotor_partition.rotors must contain objects")
+			continue
+		_check_keys(record, ["rotor_id", "transverse_inertia"], "ground.rotor_partition.rotors", errors)
+		var id_value: Variant = record.get("rotor_id")
+		if typeof(id_value) != TYPE_STRING or not _identifier(id_value) or transverse_by_id.has(id_value):
+			errors.append("ground.rotor_partition has an invalid or duplicate rotor ID")
+			continue
+		var quantity: Variant = record.get("transverse_inertia")
+		var quantity_errors := PackedStringArray()
+		WheelProfiles._validate_quantity("ground.rotor_partition transverse inertia", quantity, ["kg·m2", 1.0e-15, 1.0e6], quantity_errors)
+		if not quantity_errors.is_empty():
+			errors.append_array(quantity_errors)
+			continue
+		transverse_by_id[id_value] = float(quantity.value)
+	var order: Array[String] = [str(prop.get("id", ""))]
+	var axial := PackedFloat64Array([float(prop.get("rotor_inertia", NAN))])
+	var axes := Propulsion.axis(prop).duplicate()
+	var by_index := {}
+	for support: Dictionary in supports: by_index[int(support.contact_index)] = support
+	var contacts: Array = model.landing_gear.contacts
+	for index in contacts.size():
+		order.append(str(contacts[index].get("id", "")))
+		axial.append(float(contacts[index].get("wheel_inertia", NAN)))
+		axes.append_array(by_index[index].axle_body)
+	var transverse := PackedFloat64Array()
+	var seen := {}
+	for id: String in order:
+		if not _identifier(id) or seen.has(id) or not transverse_by_id.has(id):
+			errors.append("ground.rotor_partition must bind each installed rotor exactly once")
+			continue
+		seen[id] = true
+		transverse.append(transverse_by_id[id])
+	if seen.size() != transverse_by_id.size(): errors.append("ground.rotor_partition has unused rotor records")
+	if not errors.is_empty(): return _errors(errors)
+	var partition := {partition_id = value.partition_id, reference_pose_id = value.reference_pose_id, kind = value.kind, source = value.source}
+	var system := RotorSystem.prepare_system(model.inertia, axial, transverse, axes, partition)
+	if not system.ok: return _errors(PackedStringArray(["ground.rotor_partition: " + str(system.get("error", "invalid aggregate reservation"))]))
+	return {ok = true, errors = errors, system = system, rotor_order = order, raw = value.duplicate(true)}
 
 
 static func _vector_quantity(value: Variant, unit: String, label: String, errors: PackedStringArray) -> PackedFloat64Array:

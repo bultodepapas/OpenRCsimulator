@@ -6850,8 +6850,8 @@ msgstr "Elige un preajuste espacial o activa el viento espacial para editar este
 msgid "Custom spatial wind draft. Only the controls shown here are edited."
 msgstr "Borrador de viento espacial personalizado. Solo se modifican los controles mostrados aquí."
 
-msgid "Spatial mode replaces legacy mean wind, repeating gusts, and session turbulence in the applied draft."
-msgstr "Al aplicar el borrador, el modo espacial sustituye el viento medio heredado, las ráfagas repetitivas y la turbulencia de sesión."
+msgid "Spatial wind is active; standard wind controls are replaced while this mode is enabled."
+msgstr "El viento espacial está activo; mientras este modo esté habilitado, sustituye los controles estándar de viento."
 
 msgid "Flat-site spatial field; terrain lift, rotor flow, and valley channeling are unavailable."
 msgstr "Campo espacial sobre terreno plano; no incluye sustentación orográfica, flujo de rotor ni canalización de valles."
@@ -6966,3 +6966,12 @@ msgstr "Viento espacial"
 
 msgid "Spatial wind varies with position and height. This flat-field model is experimental."
 msgstr "El viento espacial varía con la posición y la altura. Este modelo de campo plano es experimental."
+
+msgid "Spatial domain: maximum height %s m AGL · time horizon %s s."
+msgstr "Dominio espacial: altura máxima %s m AGL · horizonte de tiempo %s s."
+
+msgid "Time horizon (120–86400 s for a thermal field)"
+msgstr "Horizonte de tiempo (120–86400 s para un campo térmico)"
+
+msgid "Thermal field requires a time horizon of at least 120 s."
+msgstr "El campo térmico requiere un horizonte de tiempo de al menos 120 s."

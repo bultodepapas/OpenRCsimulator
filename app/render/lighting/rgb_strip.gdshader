@@ -10,6 +10,7 @@ uniform vec4 pattern_settings = vec4(0.0, 1.0, 1.0, 0.5); // id, palette count, 
 uniform vec4 pattern_extras = vec4(1.0, 0.0, 0.0, 0.0); // segments, reverse, spatial phase turns, reserved
 uniform vec3 axis_dir = vec3(1.0, 0.0, 0.0);
 uniform vec2 axis_range = vec2(0.0, 1.0); // projected start and length in the strip mesh's local frame
+uniform bool use_path_uv = false; // authored centerline arc length; legacy fitted strips retain axis projection
 uniform vec3 face_dir = vec3(0.0, -1.0, 0.0);
 uniform float pattern_phase = 0.0; // bounded phase in [0,1), supplied from presentation time
 uniform float effect_gain = 1.0;
@@ -53,7 +54,7 @@ void vertex() {
 	width_gain = width_m / width;
 	vec3 facing = normalize(mat3(MODELVIEW_MATRIX) * face_dir);
 	underside = dot(facing, normalize(-centre));
-	arc_u = clamp((projected - axis_range.x) / max(axis_range.y, 0.00001), 0.0, 1.0);
+	arc_u = use_path_uv ? clamp(UV.y, 0.0, 1.0) : clamp((projected - axis_range.x) / max(axis_range.y, 0.00001), 0.0, 1.0);
 }
 
 void fragment() {

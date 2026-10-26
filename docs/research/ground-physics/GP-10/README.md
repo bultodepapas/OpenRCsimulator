@@ -88,6 +88,14 @@ x_dot = -n.v - x * L_dot/L
 
 Correcting the lake normal sign does not remove this mismatch, make a vertical footpoint the closest point, or qualify generic hills and deep penetration. Exact distance/normal/work agreement requires a closest-point formulation or a separately qualified approximation envelope. Lake slopes also retain their provider finite-difference stencil.
 
+## GP-10c: round-wheel geometry
+
+Continuation, 2026-10-25/26: [WheelGeometry](../../../../app/physics/wheel_geometry.gd) adds an exact plane envelope for a zero-width circular ring and a bounded local stationary normal-footpoint solve for the existing analytic GP-01 terrain. It uses axle-centre hubs, not the historical level-attitude bottom points. For unit axle `a`, outward unit normal `n` and radius `R`, the support arm is `rho=-R*(n-a*(a.n))/|n-a*(a.n)|`; the gap Jacobian is `[n, rho x n]` about the hub. Spin about the axle performs no normal-gap work.
+
+The curved-terrain path proves conservative gradient/Hessian bounds across the search box, including exact smoothstep feather derivatives. Its bounded Newton solve publishes residual, iteration count, derivative method, normal reach and strict local ring-minimum certificates. It does not claim a global distance field or finite tire width. Nearly degenerate axle/normal configurations, unqualified curvature and lake finite-difference providers are refused. Negative gap is a compliant support coordinate, not a measured tire strain or automatically a broken gear leg; it is not arbitrarily limited to a fraction of wheel radius.
+
+[The 281-check geometry suite](../../../../app/tests/test_wheel_geometry.gd) covers analytic planes, arbitrary attitude/axle signs, finite-difference virtual work, curved terrain, feather boundaries, deterministic results and bounded refusal. The module remains separate from stock forces until the [coupled GP-11 adapter](../GP-11/README.md) is admitted. Material identity is sampled at the solved terrain footpoint by that adapter; a ring solve alone does not assign surface properties.
+
 Whole-hull relief migration remains pending: ordinary hull support still uses its historical flat field outside the lake, while wheel terrain includes microrelief. Prop strikes intentionally distinguish the moving water interface from the solid bed/bank. No full round-wheel geometry, moving gear work, new material coefficients, soil model, hardware validation, rendered/audio acceptance or target-host performance qualification is established here.
 
 ## Combined integration receipts

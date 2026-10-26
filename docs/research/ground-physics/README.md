@@ -16,6 +16,8 @@ The pre-implementation plan is consolidated into [GP-05](GP-05/README.md). The p
 - [GP-09a](GP-09/README.md): fixed-axis relative-wheel/body coupling foundation, actual legacy power-balance counterexample and independent energy/momentum tests. Stock flight law and moving-axis/shaft migration remain unchanged/open.
 - [GP-10a/b](GP-10/README.md): typed solid-support observations and material provenance, independent relief-profile adapter, and corrected hull normals on lake banks. Round-wheel geometry, complete hull relief migration and live explicit profiles remain open.
 - [GP-14a](GP-14/README.md): accepted survivable gear-up accidents, scrape/bounce deduplication, terminal escalation, rules-version coverage and real session/persistence checks. Full shared event vocabulary and physical component failure remain open.
+- [GP-11 integration cohort](GP-11/README.md): exact compliant spring/stop potential and rebound dissipation, common shaft/wheel and round-wheel dependencies, optional aircraft ground authoring, and an explicit aggregate inertia reservation. Executable foundations; stock migration and physical calibration remain open.
+- [GP-16/17 foundation](GP-16/README.md): persistent attached-gear capacity failure, potential-release ledger and generic atomic endpoint/checkpoint contracts. Actual failed support geometry and peak-load runtime integration remain open.
 
 The delivered GP records are software and numerical checks. No independent physical RC rollout, drop or taxi calibration was available.
 

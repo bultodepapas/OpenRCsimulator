@@ -9,6 +9,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const M := preload("res://physics/math3d.gd")
 const LAW := "fixed-axis-relative-rim-coupling-v1"
 const MassInventory := preload("res://physics/mass_inventory.gd")
+const RotorSystem := preload("res://physics/rotor_coupling.gd")
 const TRANSPORT_LAW := "fixed-center-prescribed-carrier-axisymmetric-rim-v1"
 
 
@@ -137,109 +138,18 @@ static func evaluate_transport(prepared: Dictionary, omega: PackedFloat64Array, 
 	if not prepared.get("ok", false) or prepared.get("law", "") != TRANSPORT_LAW:
 		return {ok = false, error = "unprepared transport coupling"}
 	var count: int = prepared.count
-	if omega.size() != 3 or moment_external.size() != 3 or rims.size() != count \
-			or internal_spin_torques.size() != count or axes.size() != 3 * count \
-			or carrier_rates.size() != 3 * count or carrier_accels.size() != 3 * count \
-			or external_rotor_couples.size() != 3 * count or not _finite(omega) or not _finite(rims) \
-			or not _finite(axes) or not _finite(carrier_rates) or not _finite(carrier_accels) \
-			or not _finite(moment_external) or not _finite(external_rotor_couples) or not _finite(internal_spin_torques):
-		return {ok = false, error = "invalid transport stage dimensions or non-finite values"}
-	var radii: PackedFloat64Array = prepared.radii
-	var axial: PackedFloat64Array = prepared.axial
-	var transverse: PackedFloat64Array = prepared.transverse
-	var locked: PackedFloat64Array = prepared.carrier_inertia.duplicate()
-	var affine_momentum := M.v3(0.0, 0.0, 0.0)
-	var body_bias := M.v3(0.0, 0.0, 0.0)
-	var axle := PackedFloat64Array()
-	axle.resize(count)
+	if rims.size() != count or not _finite(rims):
+		return {ok = false, error = "invalid relative rim layout"}
+	var spin := PackedFloat64Array()
 	for i in count:
-		var a := axes.slice(3 * i, 3 * i + 3)
-		var nu := carrier_rates.slice(3 * i, 3 * i + 3)
-		var nu_dot := carrier_accels.slice(3 * i, 3 * i + 3)
-		var a_dot := M.cross(nu, a)
-		var sigma := rims[i] / radii[i]
-		var carrier_absolute := M.add(omega, nu)
-		_add_rotor_tensor(locked, a, axial[i], transverse[i])
-		affine_momentum = M.add(affine_momentum, _rotor_mul(a, axial[i], transverse[i], nu))
-		# h_dot bias = C_dot*(omega+nu) + C*nu_dot + J*sigma*a_dot.
-		var bias := M.add(_rotor_rate_mul(a, a_dot, axial[i], transverse[i], carrier_absolute),
-			_rotor_mul(a, axial[i], transverse[i], nu_dot))
-		body_bias = M.add(body_bias, M.add(bias, M.scale(a_dot, axial[i] * sigma)))
-		# d[J*(a.(omega+nu)+sigma)]/dt = external_axial + internal_spin.
-		axle[i] = M.dot(a, external_rotor_couples.slice(3 * i, 3 * i + 3)) + internal_spin_torques[i] \
-			- axial[i] * (M.dot(a, nu_dot) + M.dot(a_dot, omega))
-	# Reuse GP-09a's validated full/Schur-SPD assembly and structured solve. The
-	# diagonal local block is exact for these independent axisymmetric spin DOFs.
-	var stage := prepare(locked, radii, axial, axes)
-	if not stage.ok:
-		return stage
-	var effective_moment := M.sub(M.sub(moment_external, body_bias), M.cross(omega, affine_momentum))
-	var solved := evaluate(stage, omega, rims, effective_moment, axle)
-	if not solved.ok:
-		return solved
-	var alpha: PackedFloat64Array = solved.angular_acceleration
-	var rim_rates: PackedFloat64Array = solved.derivative
-	var carrier_h := RB.inertia_mul(prepared.carrier_inertia, omega)
-	var momentum := carrier_h.duplicate()
-	var energy := 0.5 * M.dot(omega, carrier_h)
-	var energy_rate := M.dot(omega, RB.inertia_mul(prepared.carrier_inertia, alpha))
-	var external_power := M.dot(omega, moment_external)
-	var internal_power := 0.0
-	var actuator_power := 0.0
-	var actuator_torques := PackedFloat64Array()
-	actuator_torques.resize(3 * count)
+		spin.append(rims[i] / prepared.radii[i])
+	var out := RotorSystem._evaluate_carrier(prepared.carrier_inertia, prepared.axial, prepared.transverse,
+		omega, spin, axes, carrier_rates, carrier_accels, moment_external, external_rotor_couples, internal_spin_torques)
+	if not out.ok:
+		return out
+	var rim_rates := PackedFloat64Array()
 	for i in count:
-		var a := axes.slice(3 * i, 3 * i + 3)
-		var nu := carrier_rates.slice(3 * i, 3 * i + 3)
-		var nu_dot := carrier_accels.slice(3 * i, 3 * i + 3)
-		var external := external_rotor_couples.slice(3 * i, 3 * i + 3)
-		var a_dot := M.cross(nu, a)
-		var sigma := rims[i] / radii[i]
-		var absolute := M.add(M.add(omega, nu), M.scale(a, sigma))
-		var absolute_rate := M.add(M.add(alpha, nu_dot),
-			M.add(M.scale(a, rim_rates[i] / radii[i]), M.scale(a_dot, sigma)))
-		var h := _rotor_mul(a, axial[i], transverse[i], absolute)
-		var h_geometry_rate := _rotor_rate_mul(a, a_dot, axial[i], transverse[i], absolute)
-		var h_velocity_rate := _rotor_mul(a, axial[i], transverse[i], absolute_rate)
-		var h_rate_inertial := M.add(M.add(h_geometry_rate, h_velocity_rate), M.cross(omega, h))
-		var demand := M.sub(h_rate_inertial, external)
-		for k in 3:
-			actuator_torques[3 * i + k] = demand[k]
-		momentum = M.add(momentum, h)
-		energy += 0.5 * M.dot(absolute, h)
-		# Differentiate component kinetic energy directly, separately from the
-		# torque/power ledger. This includes all affine/prescribed-rate terms.
-		energy_rate += M.dot(absolute, h_velocity_rate) + 0.5 * M.dot(absolute, h_geometry_rate)
-		external_power += M.dot(M.add(nu, M.scale(a, sigma)), external)
-		internal_power += internal_spin_torques[i] * sigma
-		# Massless carrier actuator includes the brake stator reaction. For axial
-		# nu this supplies tau_spin*nu in addition to relative tau_spin*sigma.
-		actuator_power += M.dot(nu, demand)
-	var residual := energy_rate - external_power - internal_power - actuator_power
-	if not _finite(momentum) or not _finite(actuator_torques) \
-			or not _finite(PackedFloat64Array([energy, energy_rate, external_power, internal_power, actuator_power, residual])):
-		return {ok = false, error = "transport energy or momentum overflow"}
-	return {ok = true, angular_acceleration = alpha, derivative = rim_rates,
-		angular_momentum = momentum, kinetic_energy = energy, kinetic_energy_rate = energy_rate,
-		external_power = external_power, internal_spin_power = internal_power,
-		actuator_power = actuator_power, actuator_torques = actuator_torques, power_residual = residual}
-
-
-static func _rotor_mul(a: PackedFloat64Array, axial: float, transverse: float,
-		value: PackedFloat64Array) -> PackedFloat64Array:
-	return M.add(M.scale(value, transverse), M.scale(a, (axial - transverse) * M.dot(a, value)))
-
-
-static func _rotor_rate_mul(a: PackedFloat64Array, a_dot: PackedFloat64Array, axial: float,
-		transverse: float, value: PackedFloat64Array) -> PackedFloat64Array:
-	return M.scale(M.add(M.scale(a_dot, M.dot(a, value)), M.scale(a, M.dot(a_dot, value))), axial - transverse)
-
-
-static func _add_rotor_tensor(tensor: PackedFloat64Array, a: PackedFloat64Array, axial: float, transverse: float) -> void:
-	var difference := axial - transverse
-	tensor[0] += transverse + difference * a[0] * a[0]
-	tensor[1] += transverse + difference * a[1] * a[1]
-	tensor[2] += transverse + difference * a[2] * a[2]
-	tensor[3] += difference * a[0] * a[1]
-	tensor[4] += difference * a[0] * a[2]
-	tensor[5] += difference * a[1] * a[2]
+		rim_rates.append(out.spin_acceleration[i] * prepared.radii[i])
+	out.erase("spin_acceleration")
+	out.derivative = rim_rates
+	return out

@@ -183,6 +183,19 @@ def add_ground_profile(schema: dict):
                             "items": obj({"id": identifier, "parameters": obj(normal)})},
         "supports": {"type": "array", "minItems": 1, "maxItems": 16, "items": support},
     })
+    # Optional explicit aggregate inertia reservation. Omission remains valid
+    # authoring with unavailable coupled launch; numeric cross-tensor admission
+    # stays in RotorSystem, not a fictitious per-component inventory split.
+    text = {"type": "string", "minLength": 1, "maxLength": 4096, "pattern": r"\S"}
+    coupled["properties"]["rotor_partition"] = obj({
+        "format": {"const": "openrc-aircraft-rotor-partition v1"},
+        "partition_id": text, "reference_pose_id": text, "source": text,
+        "kind": {"const": "estimated"}, "center_model": {"const": "fixed_hubs"},
+        "rotors": {"type": "array", "minItems": 1, "maxItems": 17, "items": obj({
+            "rotor_id": identifier,
+            "transverse_inertia": quantity("kg·m2", {"type": "number", "minimum": 1e-15, "maximum": 1e6}),
+        })},
+    })
     schema["properties"]["ground"] = {"oneOf": [legacy, coupled]}
     schema.setdefault("allOf", []).append({
         "if": {"required": ["ground"], "properties": {"ground": {"required": ["law"], "properties": {"law": {"const": "coupled_thin_ring_compliance_v1"}}}}},

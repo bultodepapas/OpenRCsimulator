@@ -21,6 +21,8 @@ const LAYER: int = 12
 const PANEL_MAX_WIDTH: float = 960.0
 const PANEL_VIEWPORT_GUTTER: float = 16.0
 const SELECTOR_MAX_WIDTH: float = 360.0
+const LEGACY_WIND_SUBTITLE := "Uniform wind and repeating gusts with optional seeded turbulence."
+const SPATIAL_WIND_SUBTITLE := "Spatial wind varies with position and height. This flat-field model is experimental."
 const DEFAULT_TURBULENCE_RMS: Array[float] = [0.6, 0.6, 0.4]
 const TURBULENCE_DEFAULT_TAU: float = 2.0
 const TURBULENCE_DEFAULT_SEED: int = 20261009
@@ -150,7 +152,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	column.add_child(header)
-	subtitle_label = _label("Uniform wind and repeating gusts with optional seeded turbulence.", "SecondaryLabel", true)
+	subtitle_label = _label(LEGACY_WIND_SUBTITLE, "SecondaryLabel", true)
 
 	var preset_row: HBoxContainer = HBoxContainer.new()
 	preset_row.add_theme_constant_override("separation", 12)
@@ -335,6 +337,7 @@ func _notification(what: int) -> void:
 		_set_atmosphere_field_labels()
 		_update_atmosphere_controls()
 		_update_atmosphere_preview()
+		_update_spatial_mode_controls()
 		if error_label.visible:
 			_show_error()
 		_schedule_scroll_height_update()
@@ -534,9 +537,11 @@ func _on_spatial_draft_changed() -> void:
 
 
 func _update_spatial_mode_controls() -> void:
-	if spatial_controls == null or field_inputs.is_empty():
+	if spatial_controls == null or field_inputs.is_empty() or subtitle_label == null or wind_grid == null:
 		return
 	var spatial_enabled: bool = spatial_controls.spatial_enabled()
+	wind_grid.visible = not spatial_enabled
+	subtitle_label.text = tr(SPATIAL_WIND_SUBTITLE if spatial_enabled else LEGACY_WIND_SUBTITLE)
 	for key: String in EDITED_KEYS:
 		(field_inputs[key] as LineEdit).editable = not spatial_enabled
 		(field_inputs[key] as LineEdit).focus_mode = Control.FOCUS_NONE if spatial_enabled else Control.FOCUS_ALL
@@ -751,7 +756,8 @@ func _on_apply() -> void:
 	var raw: Dictionary = _base_config.duplicate(true)
 	for key: String in EDITED_KEYS:
 		if spatial_enabled:
-			raw[key] = 0.0
+			if key in ["speed_mps", "gust_mps", "gust_up_mps"]:
+				raw[key] = 0.0
 		else:
 			var edit: LineEdit = field_inputs[key]
 			if edit.text == String(_initial_text[key]):

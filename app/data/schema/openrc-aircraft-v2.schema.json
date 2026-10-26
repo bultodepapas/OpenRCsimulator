@@ -3068,6 +3068,84 @@
                 },
                 "additionalProperties": false
               }
+            },
+            "rotor_partition": {
+              "type": "object",
+              "required": [
+                "format",
+                "partition_id",
+                "reference_pose_id",
+                "source",
+                "kind",
+                "center_model",
+                "rotors"
+              ],
+              "properties": {
+                "format": {
+                  "const": "openrc-aircraft-rotor-partition v1"
+                },
+                "partition_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "\\S"
+                },
+                "reference_pose_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "\\S"
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "\\S"
+                },
+                "kind": {
+                  "const": "estimated"
+                },
+                "center_model": {
+                  "const": "fixed_hubs"
+                },
+                "rotors": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 17,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "rotor_id",
+                      "transverse_inertia"
+                    ],
+                    "properties": {
+                      "rotor_id": {
+                        "type": "string",
+                        "maxLength": 80,
+                        "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+                        "not": {
+                          "pattern": "\\s"
+                        }
+                      },
+                      "transverse_inertia": {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "unit": {
+                            "const": "kg·m2"
+                          },
+                          "value": {
+                            "type": "number",
+                            "minimum": 1e-15,
+                            "maximum": 1000000.0
+                          }
+                        }
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false

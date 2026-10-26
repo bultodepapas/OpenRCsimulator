@@ -379,17 +379,26 @@ static func _is_vertical_dominant_face_normal(normal: Vector3) -> bool:
 	return vertical * vertical > horizontal_x * horizontal_x + horizontal_z * horizontal_z
 
 
-## A ribbon mesh through `line` for render/world/led_strip.gdshader (vertices on the line, NORMAL across, UV.x side).
+## Ribbon vertices lie on the centerline; NORMAL is across and UV.x is side.
+## Authored ribbons store normalized host-local path distance in UV.y for RGB patterns.
 static func strip(name: String, line: PackedVector3Array, color := STRIP_COLOR, face := Vector3.DOWN, authored_across := false) -> MeshInstance3D:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var distances := PackedFloat64Array()
+	distances.resize(line.size())
+	if authored_across:
+		for i in range(1, line.size()):
+			distances[i] = distances[i - 1] + line[i - 1].distance_to(line[i])
+	var length := maxf(distances[-1], 0.00001) if not distances.is_empty() else 1.0
 	for i in line.size() - 1:
 		var a := line[i]
 		var b := line[i + 1]
 		var across := (b - a).cross(face if authored_across else Vector3.UP).normalized()
-		for corner: Array in [[a, -1.0], [b, -1.0], [b, 1.0], [a, -1.0], [b, 1.0], [a, 1.0]]:
+		var u0 := distances[i] / length
+		var u1 := distances[i + 1] / length
+		for corner: Array in [[a, -1.0, u0], [b, -1.0, u1], [b, 1.0, u1], [a, -1.0, u0], [b, 1.0, u1], [a, 1.0, u0]]:
 			st.set_normal(across)
-			st.set_uv(Vector2(corner[1], 0.0))
+			st.set_uv(Vector2(corner[1], corner[2]))
 			st.add_vertex(corner[0])
 	var material := ShaderMaterial.new()
 	material.shader = STRIP_SHADER
@@ -402,6 +411,8 @@ static func strip(name: String, line: PackedVector3Array, color := STRIP_COLOR, 
 	var mi := MeshInstance3D.new()
 	mi.name = name
 	mi.mesh = mesh
+	if authored_across:
+		mi.set_meta("lighting_path_uv", true)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mi.extra_cull_margin = 4.0 # the ribbon widens with distance
 	return mi

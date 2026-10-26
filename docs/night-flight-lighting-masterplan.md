@@ -664,4 +664,4 @@ The initial schema/rig and animated-strip slices are implemented. Continue in in
 
 Open measurements are renderer-specific glow tuning, Compatibility particle fidelity/limits on the exact beta, practical spill cost alongside field lights, internal mask appearance on an eligible existing aircraft, and independent pilot preference. The Jase Dussia reference is confirmed by the user; exact light hardware, program and aircraft configuration for any chosen performance still require their own evidence before a replica claim.
 
-The engineering handoff consists of this plan, its dated source ledger, the current contract links and the ordered evidence gates. It contains no claim that these new profiles, classes, schemas, menus or budgets already exist or have passed runtime tests.
+The engineering handoff consists of this plan, its dated source ledger, the current contract links and the ordered evidence gates. The [implementation record](research/night-flight-lighting/implementation.md) identifies delivered code and checked behavior; unfulfilled proposals and acceptance gates in this plan remain open.

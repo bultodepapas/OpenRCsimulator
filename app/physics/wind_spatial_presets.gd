@@ -143,7 +143,8 @@ static func _thermal_soaring() -> Dictionary:
 		"birth_s": 15.0,
 		"duration_s": 360.0,
 		"center_ne_m": [220.0, -120.0],
-		"drift_ne_mps": [0.25, -0.1],
+		# Cell mid-height is the profile's upper join (100 m); advect with that background.
+		"drift_ne_mps": [float(spatial.profile.free_air_wind_ned_mps[0]), float(spatial.profile.free_air_wind_ned_mps[1])],
 		"radius_m": 35.0,
 		"top_agl_m": 200.0,
 		"peak_updraft_mps": 1.2,

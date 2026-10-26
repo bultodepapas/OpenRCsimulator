@@ -1,5 +1,7 @@
 extends Control
 
+signal lighting_capability_changed(report: Dictionary)
+
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
@@ -49,6 +51,7 @@ var _lighting_profile: Dictionary = {}
 var _preview_night := false
 var _daynight_button: Button
 var _lighting_is_original_view := false
+var _lighting_capability: Dictionary = {"state": "unavailable", "zones": [], "effects": [], "warnings": []}
 var _smoke: Node3D
 var _playing := false
 var _playhead_tick := 0
@@ -342,6 +345,7 @@ func _refresh_model_presentation() -> void:
 
 func _configure_lighting() -> void:
 	if not is_instance_valid(_airplane_root) or not is_instance_valid(_stage):
+		_publish_lighting_capability({"state": "unavailable", "zones": [], "effects": [], "warnings": []})
 		return
 	if not is_instance_valid(_lighting_rig):
 		_lighting_rig = LightingRig.new()
@@ -365,6 +369,26 @@ func _configure_lighting() -> void:
 	elif str(selected.get("selection", "inherit")) != "disabled":
 		_lighting_rig.set_mode("all", 1.0)
 	_advance_lighting()
+	var report: Dictionary = _lighting_rig.capability_report()
+	if not bool(configured.get("ok", false)):
+		report = {"state": "unavailable", "zones": [], "effects": [], "warnings": []}
+	elif _lighting_is_original_view:
+		report = {"state": "original", "zones": [], "effects": [], "warnings": []}
+	elif str(_lighting_profile.get("selection", "inherit")) == "inherit":
+		# The night adapter materializes a preview profile, not a player override.
+		report = {"state": "inherit", "zones": [], "effects": [], "warnings": []}
+	_publish_lighting_capability(report)
+
+
+func get_lighting_capability_report() -> Dictionary:
+	return _lighting_capability.duplicate(true)
+
+
+func _publish_lighting_capability(report: Dictionary) -> void:
+	if _lighting_capability == report:
+		return
+	_lighting_capability = report.duplicate(true)
+	lighting_capability_changed.emit(_lighting_capability.duplicate(true))
 
 
 func _inherited_preview_lighting() -> Dictionary:
@@ -395,6 +419,7 @@ func _advance_lighting(effects_allowed: bool = false) -> void:
 
 
 func _dispose_lighting_rig() -> void:
+	_publish_lighting_capability({"state": "unavailable", "zones": [], "effects": [], "warnings": []})
 	if not is_instance_valid(_lighting_rig):
 		return
 	_lighting_rig.dispose()

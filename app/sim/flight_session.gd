@@ -471,8 +471,8 @@ func _restart_weather_aux() -> PackedFloat64Array:
 
 
 ## Reset-time wind independent of the old tick/window (also used by transactional runway preflight).
-## Runway equilibrium still accepts a uniform vector. Its no-argument query is at the field datum;
-## accepting spatial weather for runway solves requires a candidate-state callback in a later slice.
+## The no-argument legacy datum sample remains available; spatial runway equilibrium also receives
+## a fresh candidate-state Air callback so it never uses this one vector for all surfaces.
 func _initial_wind(position_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])) -> PackedFloat64Array:
 	var wind: PackedFloat64Array = _weather.sample_world(position_ned, 0.0)
 	var initial: Dictionary = _initial_turbulence()
@@ -3488,7 +3488,10 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 			if not is_finite(value):
 				return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	if retractable:
-		hull = _add_loads(hull, RetractableGear.drag_loads(s, stage_air.v_air, aircraft.model.landing_gear, aux[gear_aux_index()], air_density(s)))
+		var drag_delta := PackedFloat64Array()
+		if stage_air.has("spatial_air_law") and aux[gear_aux_index()] > 0.0:
+			drag_delta = stage_air.ambient_delta_body_at.call(aircraft.model.landing_gear.retraction.drag_center)
+		hull = _add_loads(hull, RetractableGear.drag_loads(s, stage_air.v_air, aircraft.model.landing_gear, aux[gear_aux_index()], air_density(s), drag_delta))
 	var wheel_total: int = wheel_count()
 	if wheel_total == 0:
 		return {ok = true, loads = _add_loads(Ground.loads(s, gear, steer, ground_surfaces, anchors,

@@ -67,16 +67,64 @@ static func pose(gear: Dictionary, extension: float) -> Dictionary:
 ## Estimated exposed-gear drag area, zero exactly when stowed. The declared
 ## application point gives its moment; no hidden change to clean-aircraft coefficients.
 static func drag_loads(state: PackedFloat64Array, air_velocity: PackedFloat64Array,
-		gear: Dictionary, extension: float, density: float) -> PackedFloat64Array:
+		gear: Dictionary, extension: float, density: float,
+		ambient_delta_body: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
 	if not enabled(gear) or extension == 0.0:
 		return PackedFloat64Array()
 	if not valid_fraction(extension) or not is_finite(density) or density <= 0.0:
 		return PackedFloat64Array([NAN])
+	var has_spatial_delta := not ambient_delta_body.is_empty()
+	var has_local_delta := false
+	var local_air: PackedFloat64Array = air_velocity
+	if has_spatial_delta:
+		if ambient_delta_body.size() != 3 or not _finite3(ambient_delta_body):
+			return PackedFloat64Array([NAN])
+		if not _finite3(air_velocity):
+			return PackedFloat64Array([NAN])
+		if state.size() < RB.RATE + 3:
+			return PackedFloat64Array([NAN])
+		var retraction_value: Variant = gear.get("retraction", {})
+		if typeof(retraction_value) != TYPE_DICTIONARY:
+			return PackedFloat64Array([NAN])
+		var retraction: Dictionary = retraction_value
+		var arm_value: Variant = retraction.get("drag_center", PackedFloat64Array())
+		var area_value: Variant = retraction.get("drag_area", NAN)
+		if typeof(arm_value) != TYPE_PACKED_FLOAT64_ARRAY or not _finite3(arm_value):
+			return PackedFloat64Array([NAN])
+		if typeof(area_value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(area_value)) or float(area_value) < 0.0:
+			return PackedFloat64Array([NAN])
+		for axis in 3:
+			if not is_finite(state[RB.RATE + axis]):
+				return PackedFloat64Array([NAN])
+		# Preserve the exact zero-gradient result even when a spatial provider returns an explicit zero vector.
+		has_local_delta = ambient_delta_body[0] != 0.0 or ambient_delta_body[1] != 0.0 or ambient_delta_body[2] != 0.0
+	if has_local_delta:
+		local_air = air_velocity.duplicate()
+		for axis in 3:
+			local_air[axis] += ambient_delta_body[axis]
+			if not is_finite(local_air[axis]):
+				return PackedFloat64Array([NAN])
 	var arm: PackedFloat64Array = gear.retraction.drag_center
 	var rates := PackedFloat64Array([state[RB.RATE], state[RB.RATE + 1], state[RB.RATE + 2]])
-	var velocity: PackedFloat64Array = M.add(air_velocity, M.cross(rates, arm))
+	# Ambient point delta is applied before the one existing body-rate term; it never includes omega × r.
+	var velocity: PackedFloat64Array = M.add(local_air, M.cross(rates, arm))
+	if has_spatial_delta and not _finite3(velocity):
+		return PackedFloat64Array([NAN])
 	var speed: float = M.norm(velocity)
+	if has_spatial_delta and not is_finite(speed):
+		return PackedFloat64Array([NAN])
 	var force: PackedFloat64Array = M.scale(velocity, -0.5 * density * gear.retraction.drag_area * extension * speed)
 	var moment: PackedFloat64Array = M.cross(arm, force)
+	if has_spatial_delta and (not _finite3(force) or not _finite3(moment)):
+		return PackedFloat64Array([NAN])
 	force.append_array(moment)
 	return force
+
+
+static func _finite3(values: PackedFloat64Array) -> bool:
+	if values.size() != 3:
+		return false
+	for value: float in values:
+		if not is_finite(value):
+			return false
+	return true

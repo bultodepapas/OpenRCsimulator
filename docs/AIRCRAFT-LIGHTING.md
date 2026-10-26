@@ -30,6 +30,8 @@ Colored strip emission and lamp sprites make the emitters visible. Short-range, 
 
 `AircraftLightingRig3D` receives the aircraft root and a validated lighting dictionary. Its `configure`, `set_mode`, `advance`, `reset`, `dispose` and `budget_info` methods remain on the rendering side. `advance` consumes displayed simulation time plus detached telemetry; preview uses its own accepted clock. Materials and VFX resources belong to the instance. Imported assets and shared resources are never rewritten.
 
+RGB shader bindings are limited to the existing nine lamp meshes and five strips. Each `advance` allows at most 84 changed shader parameters (six per material); `set_mode` has an independent allowance of 23 so an animation update cannot delay a light-mode brightness change. Cached unchanged values cost no writes. A cue's pattern identity is accepted only after all its pattern uniforms are written. `budget_info` reports the most recent advance and mode operation separately; these are operation bounds, not a measured total frame-time budget. Unrecognized kit meshes keep their original materials and produce a diagnostic.
+
 Initial semantic zones are `nav_left`, `nav_right`, `nav_tail`, `strobe_left`, `strobe_right`, `strobe_dorsal`, `strobe_ventral`, `strip_left`, `strip_right`, `strip_top_left`, `strip_top_right`, `strip_belly`, and `landing_lamp`. Wingtip show anchors are `vfx_tip_left` and `vfx_tip_right`. Aircraft equipment declarations and geometry determine availability; choosing a preset does not manufacture an unsupported lamp or a valid internal volume.
 
 ## Shared selection interface
@@ -82,6 +84,8 @@ The layout is creator data, separate from player lighting choices:
 ```
 
 These coordinates illustrate the schema; measure the actual aircraft before using them. The shipped six families currently use `{ "version": 1, "anchors": [], "strips": [] }`, preserving their existing fits and builder-owned mounts. This package enables authoring; it does not claim a new manual placement art pass across the fleet.
+
+Authored strip patterns follow cumulative centerline distance in the host's local frame, from the first point to the last. Unequal segments receive proportional pattern space; bends and paths returning along an axis do not restart or fold the animation. Pattern `reverse` reverses travel along that same path. Host transforms move the strip while preserving its LED station colors; nonuniform scale stretches their world spacing. Legacy automatically fitted strips retain their existing axis-based pattern placement.
 
 | Field | Contract |
 | --- | --- |

@@ -375,7 +375,8 @@ static func _accelerations(s: PackedFloat64Array, model: Dictionary, inv: Packed
 			if candidate_air.is_empty():
 				drag = RetractableGear.drag_loads(s, Air.compute(s, wind_ned, rho).v_air, gear, 1.0, rho)
 			else:
-				drag = RetractableGear.drag_loads(s, candidate_air.v_air, gear, 1.0, rho)
+				var ambient_delta: PackedFloat64Array = candidate_air.ambient_delta_body_at.call(gear.retraction.drag_center)
+				drag = RetractableGear.drag_loads(s, candidate_air.v_air, gear, 1.0, rho, ambient_delta)
 			for i in drag.size(): loads[i] += drag[i]
 	var wheels := PackedFloat64Array()
 	if enhanced:

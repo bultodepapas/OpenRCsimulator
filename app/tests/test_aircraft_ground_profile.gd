@@ -34,6 +34,7 @@ func _initialize() -> void:
 	_test_legacy_compatibility()
 	_test_rejections()
 	_test_classifier_and_launch_boundary()
+	_test_rotor_partition()
 	print("Aircraft ground profile: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
 
@@ -140,6 +141,79 @@ func _test_legacy_compatibility() -> void:
 	_check("absent module adds no ground law or module", classified.ok
 		and not classified.modules.has("aircraft.ground.thin_ring_compliance.v1")
 		and classified.laws.has("gear.point_contacts.v1"))
+
+
+func _test_rotor_partition() -> void:
+	# Use an installed closed-shaft aircraft, not the Stik's prescribed RPM law.
+	_raw = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/p51d_mustang_120.json"))
+	var derived := Data.validate_and_derive(_raw)
+	_check("partition fixture uses valid installed dynamic-shaft data", derived.ok, str(derived.get("errors", [])))
+	if not derived.ok: return
+	_model = derived.model
+	_ground = _ground_fixture()
+	var ground := _ground.duplicate(true)
+	var applied := Wheels.apply_to_model(_model)
+	var records: Array = [{rotor_id = _model.propulsion.id,
+		transverse_inertia = _q(0.5 * _model.propulsion.rotor_inertia, "kg·m2")}]
+	for contact: Dictionary in applied.model.landing_gear.contacts:
+		records.append({rotor_id = contact.id, transverse_inertia = _q(0.5 * contact.wheel_inertia, "kg·m2")})
+	ground.rotor_partition = {format = Profile.PARTITION_FORMAT, partition_id = "test_aggregate", reference_pose_id = "authored_hubs",
+		kind = "estimated", source = "test-only thin rotors; no component inventory or measured inertia claim", center_model = "fixed_hubs", rotors = records}
+	var before := var_to_bytes([ground, _model])
+	var resolved := Profile.resolve(ground, _model)
+	_check("explicit aggregate partition validates but does not authorize launch", resolved.ok and not resolved.launch_available, str(resolved.errors))
+	if not resolved.ok: return
+	var authored := _raw.duplicate(true)
+	authored.ground = ground
+	_check("partition passes closed runtime authoring structure", Contract.validate(authored).is_empty(), str(Contract.validate(authored)))
+	var admitted := Data.validate_and_derive(authored)
+	_check("prepared partition does not bypass session launch boundary", not admitted.ok and admitted.model.is_empty()
+		and admitted.has("ground_profile") and admitted.ground_profile.has("rotor_system"), str(admitted.get("errors", [])))
+	_check("aggregate reservation preserves locked tensor, mass and CG", resolved.profile.rotor_system.locked_reference == _model.inertia
+		and resolved.model.mass_kg == _model.mass_kg and resolved.model.cg_le == _model.cg_le)
+	_check("partition never mutates input", before == var_to_bytes([ground, _model]))
+	_check("shaft comes first then hardware contact order", resolved.profile.rotor_order[0] == _model.propulsion.id
+		and resolved.profile.rotor_order[1] == applied.model.landing_gear.contacts[0].id)
+	var reverse := ground.duplicate(true)
+	reverse.rotor_partition.rotors.reverse()
+	reverse.supports.reverse()
+	var reordered := Profile.resolve(reverse, _model)
+	_check("record/source order cannot change tensor binding or rotor system identity", reordered.ok
+		and reordered.profile.rotor_system.identity == resolved.profile.rotor_system.identity)
+	_check("partition affects aircraft ground identity", resolved.profile.identity != Profile.resolve(_ground, _model).profile.identity)
+	var altered := ground.duplicate(true)
+	altered.rotor_partition.source += "; other source"
+	_check("partition provenance is pinned", Profile.resolve(altered, _model).profile.rotor_system.identity != resolved.profile.rotor_system.identity)
+	var mutations := [
+		func(g: Dictionary) -> void: g.rotor_partition.kind = "measured",
+		func(g: Dictionary) -> void: g.rotor_partition.center_model = "moving_hubs",
+		func(g: Dictionary) -> void: g.rotor_partition.source = " ",
+		func(g: Dictionary) -> void: g.rotor_partition.extra = 1,
+		func(g: Dictionary) -> void: g.rotor_partition.rotors.pop_back(),
+		func(g: Dictionary) -> void: g.rotor_partition.rotors.append(g.rotor_partition.rotors[0].duplicate(true)),
+		func(g: Dictionary) -> void: g.rotor_partition.rotors[0].rotor_id = "unknown",
+		func(g: Dictionary) -> void: g.rotor_partition.rotors[0].axial_inertia = _q(0.1, "kg·m2"),
+		func(g: Dictionary) -> void: g.rotor_partition.rotors[0].transverse_inertia.value = NAN,
+		func(g: Dictionary) -> void: g.rotor_partition.rotors[0].transverse_inertia.value = 0.0,
+		func(g: Dictionary) -> void: g.rotor_partition.rotors[0].transverse_inertia.value = 1000.0,
+		func(g: Dictionary) -> void: g.rotor_partition.rotors[0].transverse_inertia.value = _model.propulsion.rotor_inertia * 0.1,
+		func(g: Dictionary) -> void: g.rotor_partition.rotors[0].transverse_inertia.unit = "kg",
+		func(g: Dictionary) -> void: g.rotor_partition.rotors[0].transverse_inertia.source = "",
+	]
+	for index in mutations.size():
+		altered = ground.duplicate(true)
+		mutations[index].call(altered)
+		_check("invalid/duplicate/unowned/nonphysical partition rejects %d" % index, not Profile.resolve(altered, _model).ok)
+	var prescribed := _model.duplicate(true)
+	prescribed.propulsion.erase("shaft")
+	_check("prescribed propeller is not silently converted to a closed shaft", not Profile.resolve(ground, prescribed).ok)
+	resolved.profile.rotor_partition.rotors[0].transverse_inertia.value = 1000.0
+	resolved.profile.rotor_system.axial[0] = 1000.0
+	_check("partition outputs are detached", before == var_to_bytes([ground, _model]))
+	if OS.get_cmdline_user_args().has("--emit-partition-fixture"):
+		var raw := _raw.duplicate(true)
+		raw.ground = ground
+		print("GROUND_PARTITION_FIXTURE=" + JSON.stringify(raw))
 
 
 func _reject(label: String, mutate: Callable) -> void:

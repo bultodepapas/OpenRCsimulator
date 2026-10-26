@@ -9,8 +9,20 @@ const LightingVfx := preload("res://render/lighting/lighting_vfx.gd")
 const RGB_STRIP_SHADER := preload("res://render/lighting/rgb_strip.gdshader")
 const RGB_LAMP_SHADER := preload("res://render/lighting/rgb_lamp.gdshader")
 
-const MAX_FRAME_PARAMETER_WRITES := 48
+# NightKit's closed render surface set is nine lamp meshes and five strips:
+# three navigation lamps, four strobes (including optional mounts), paired landing lamps, and five strips.
+# A frame advance can change six parameters per material at a cue boundary.
+const MAX_LAMP_MATERIAL_BINDINGS := 9
+const MAX_STRIP_MATERIAL_BINDINGS := 5
+const MAX_ADVANCE_WRITES_PER_MATERIAL := 6
+const MAX_MODE_WRITES_PER_LAMP := 2
+const MAX_MODE_WRITES_PER_STRIP := 1
+const MAX_FRAME_PARAMETER_WRITES := (MAX_LAMP_MATERIAL_BINDINGS + MAX_STRIP_MATERIAL_BINDINGS) * MAX_ADVANCE_WRITES_PER_MATERIAL
+# set_mode is a separate synchronous operation; its bounded writes must not be
+# starved by an animation pass that already used its frame allowance.
+const MAX_MODE_PARAMETER_WRITES := MAX_LAMP_MATERIAL_BINDINGS * MAX_MODE_WRITES_PER_LAMP + MAX_STRIP_MATERIAL_BINDINGS * MAX_MODE_WRITES_PER_STRIP
 const STRIP_NAMES := ["strip_left", "strip_right", "strip_top_left", "strip_top_right", "strip_belly"]
+const LAMP_NAMES := ["nav_left", "nav_right", "nav_tail", "strobe_left", "strobe_right", "strobe_dorsal", "strobe_ventral", "landing_lamp", "landing_lamp_right"]
 const MODE_IDS := ["all", "nav", "off"]
 
 var root: Node3D
@@ -26,6 +38,7 @@ var _disabled := false
 var _active := false
 var _last_seconds := -1.0
 var _last_frame_writes := 0
+var _last_mode_writes := 0
 var _vfx: RefCounted
 var _emission_bindings: Dictionary = {}
 var _previous_emission_mode := "all"
@@ -121,6 +134,8 @@ func set_mode(mode: String, gain := 1.0) -> void:
 	_apply_emission_mode()
 	_reapply_profile_visibility()
 	var supported_groups := _supported_light_groups()
+	var previous_frame_writes := _last_frame_writes
+	_last_frame_writes = 0
 	for binding: Dictionary in _materials:
 		var node: Node3D = binding.get("node")
 		if not is_instance_valid(node):
@@ -141,10 +156,12 @@ func set_mode(mode: String, gain := 1.0) -> void:
 		if not is_instance_valid(material):
 			continue
 		if str(binding.get("kind", "")) == "strip":
-			_set_param(material, binding, "effect_gain", _zone_gain(str(binding.get("zone_id", ""))))
+			_set_param(material, binding, "effect_gain", _zone_gain(str(binding.get("zone_id", ""))), MAX_MODE_PARAMETER_WRITES)
 		else:
-			_set_param(material, binding, "radiance", float(binding.get("base_radiance", 1.0)))
-			_set_param(material, binding, "effect_gain", _zone_gain(str(binding.get("zone_id", ""))))
+			_set_param(material, binding, "radiance", float(binding.get("base_radiance", 1.0)), MAX_MODE_PARAMETER_WRITES)
+			_set_param(material, binding, "effect_gain", _zone_gain(str(binding.get("zone_id", ""))), MAX_MODE_PARAMETER_WRITES)
+	_last_mode_writes = _last_frame_writes
+	_last_frame_writes = previous_frame_writes
 	if _vfx != null:
 		_vfx.set_mode(_mode, _gain)
 
@@ -209,11 +226,7 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 		var active_pattern: Dictionary = resolved.get("pattern", {})
 		var signature := JSON.stringify(active_pattern)
 		if signature != str(binding.get("pattern_signature", "")):
-			var shader_state := Patterns.uniforms(active_pattern)
-			_set_param(material, binding, "pattern_settings", shader_state.pattern_settings)
-			_set_param(material, binding, "pattern_extras", shader_state.pattern_extras)
-			_set_param(material, binding, "palette", shader_state.palette)
-			binding["pattern_signature"] = signature
+			_apply_pattern_uniforms(material, binding, active_pattern, signature)
 		_set_param(material, binding, "pattern_phase", float(resolved.get("phase", 0.0)))
 		_set_param(material, binding, "local_exposure", exposure)
 		var reaction := Patterns.reactive_multiplier(zone.get("reactive", {}), telemetry)
@@ -229,15 +242,12 @@ func advance(presentation_seconds: float, telemetry: Dictionary = {}) -> void:
 	if _vfx != null:
 		_vfx.advance(seconds, telemetry)
 	_last_seconds = seconds
-	if _last_frame_writes > MAX_FRAME_PARAMETER_WRITES:
-		var warning := "frame parameter update limit exceeded; later updates were skipped"
-		if not _warnings.has(warning):
-			_warnings.append(warning)
 
 
 func reset() -> void:
 	_last_seconds = -1.0
 	_last_frame_writes = 0
+	_last_mode_writes = 0
 	for binding: Dictionary in _materials:
 		var material: ShaderMaterial = binding.get("material")
 		if not is_instance_valid(material):
@@ -276,6 +286,7 @@ func dispose() -> void:
 	_disabled = false
 	_last_seconds = -1.0
 	_last_frame_writes = 0
+	_last_mode_writes = 0
 	_warnings.clear()
 
 
@@ -293,9 +304,128 @@ func budget_info() -> Dictionary:
 		"zones_resolved": _materials.filter(func(item: Dictionary) -> bool: return str(item.get("kind", "")) == "strip" and bool(item.get("enabled", false))).size(),
 		"frame_parameter_writes": _last_frame_writes,
 		"frame_parameter_limit": MAX_FRAME_PARAMETER_WRITES,
+		"mode_parameter_writes": _last_mode_writes,
+		"mode_parameter_limit": MAX_MODE_PARAMETER_WRITES,
 		"warnings": _warnings.duplicate(),
 		"vfx": vfx_info,
 	}
+
+
+## Describes requested RGB zones and effects using the rig's live configured bindings.
+## This read-only report never creates kit geometry, materials, or effect pools.
+func capability_report() -> Dictionary:
+	var report := {
+		"state": "unavailable",
+		"zones": [],
+		"effects": [],
+		"warnings": _warnings.duplicate(),
+	}
+	if not is_instance_valid(root):
+		return report
+
+	var selection := str(_profile.get("selection", ""))
+	if selection == "inherit" and not _profile.is_empty():
+		report["state"] = "inherit"
+		return report
+	if selection == "disabled" and _disabled:
+		report["state"] = "disabled"
+		return report
+	if selection not in ["preset", "custom"] or not _active or _disabled or not is_instance_valid(kit) \
+			or not root.is_ancestor_of(kit):
+		return report
+
+	report["state"] = "configured"
+	var zone_ids: Array = _zones.keys()
+	zone_ids.sort()
+	for zone_id: String in zone_ids:
+		var zone: Dictionary = _zones[zone_id]
+		(report["zones"] as Array).append(_zone_capability(zone_id, zone))
+	var effects: Variant = _profile.get("effects", [])
+	if effects is Array:
+		for effect: Variant in effects:
+			if effect is Dictionary:
+				(report["effects"] as Array).append(_effect_capability(effect))
+	return report
+
+
+func _zone_capability(zone_id: String, zone: Dictionary) -> Dictionary:
+	var group := _group_for(zone_id)
+	var available := false
+	var reason := ""
+	if group not in _supported_light_groups():
+		reason = "unsupported_group"
+	elif _has_live_zone_binding(zone_id, group):
+		available = true
+	else:
+		reason = "missing_fitting"
+	return {
+		"id": zone_id,
+		"enabled": bool(zone.get("enabled", true)),
+		"available": available,
+		"reason": reason,
+	}
+
+
+func _effect_capability(effect: Dictionary) -> Dictionary:
+	var anchor_id := str(effect.get("anchor_id", ""))
+	var host_name := str(LightingVfx.TIP_ANCHORS.get(anchor_id, ""))
+	var available := false
+	var reason := ""
+	if host_name.is_empty():
+		reason = "missing_anchor"
+	elif "navigation" not in _supported_light_groups():
+		reason = "unsupported_group"
+	else:
+		var anchor := kit.get_node_or_null(NodePath(host_name)) as Node3D
+		if not is_instance_valid(anchor) or not kit.is_ancestor_of(anchor) or not _has_live_zone_binding(host_name, "navigation") \
+				or not _has_usable_vfx_world_parent():
+			reason = "missing_anchor"
+		else:
+			available = true
+	return {
+		"id": anchor_id,
+		"enabled": bool(effect.get("enabled", false)),
+		"available": available,
+		"reason": reason,
+	}
+
+
+func _has_live_zone_binding(zone_id: String, group: String) -> bool:
+	var group_bindings: Variant = kit.get_meta("light_bindings", {})
+	var group_nodes: Variant = group_bindings.get(group, []) if group_bindings is Dictionary else []
+	for binding: Dictionary in _materials:
+		if str(binding.get("zone_id", "")) != zone_id or str(binding.get("group", "")) != group:
+			continue
+		var node: Node3D = binding.get("node")
+		if not is_instance_valid(node) or node.get_parent() != kit or not (group_nodes is Array and node in group_nodes):
+			continue
+		if str(binding.get("kind", "")) == "spot":
+			if node is Light3D:
+				return true
+			continue
+		if not node is MeshInstance3D:
+			continue
+		var mesh_node := node as MeshInstance3D
+		var mesh_material: ShaderMaterial = binding.get("material") as ShaderMaterial
+		var surface := int(binding.get("surface", 0))
+		if mesh_node.mesh != null and surface >= 0 and surface < mesh_node.mesh.get_surface_count() \
+				and is_instance_valid(mesh_material) and mesh_node.get_surface_override_material(surface) == mesh_material:
+			return true
+	return false
+
+
+func _has_usable_vfx_world_parent() -> bool:
+	var world_host: Node3D = null
+	var cursor: Node = root.get_parent()
+	while cursor != null and world_host == null:
+		world_host = cursor as Node3D
+		cursor = cursor.get_parent()
+	if world_host == null:
+		world_host = root
+	if not is_instance_valid(world_host) or not world_host.is_inside_tree():
+		return false
+	var viewport := world_host.get_viewport()
+	return viewport != null and viewport.find_world_3d() != null
 
 
 func get_kit() -> Node3D:
@@ -345,6 +475,11 @@ func _apply_profile_materials() -> void:
 			continue
 		var mesh_node := node as MeshInstance3D
 		var node_zone_id := str(mesh_node.name)
+		if not STRIP_NAMES.has(node_zone_id) and not LAMP_NAMES.has(node_zone_id):
+			var unsupported_warning := "lighting kit mesh '%s' is outside the supported semantic bindings; it was skipped" % node_zone_id
+			if not _warnings.has(unsupported_warning):
+				_warnings.append(unsupported_warning)
+			continue
 		var zone_id := _canonical_zone_id(node_zone_id)
 		var zone: Dictionary = _zones.get(zone_id, {})
 		var enabled := bool(zone.get("enabled", true))
@@ -396,6 +531,7 @@ func _apply_profile_materials() -> void:
 			var axis := _axis_for(zone_id)
 			material.set_shader_parameter("axis_dir", axis)
 			material.set_shader_parameter("axis_range", _axis_range(mesh_node.mesh, axis))
+			material.set_shader_parameter("use_path_uv", bool(mesh_node.get_meta("lighting_path_uv", false)))
 			mesh_node.set_surface_override_material(0, material)
 			_materials.append({
 				"node": mesh_node,
@@ -470,16 +606,30 @@ func _restore_materials() -> void:
 	_materials.clear()
 
 
-func _set_param(material: ShaderMaterial, binding: Dictionary, key: StringName, value: Variant) -> void:
+func _set_param(material: ShaderMaterial, binding: Dictionary, key: StringName, value: Variant, write_limit := MAX_FRAME_PARAMETER_WRITES) -> bool:
 	var cache: Dictionary = binding.get("cache", {})
 	if cache.has(key) and cache[key] == value:
-		return
-	if _last_frame_writes >= MAX_FRAME_PARAMETER_WRITES:
-		return
+		return true
+	if _last_frame_writes >= write_limit:
+		var warning := "lighting parameter write budget was exceeded; skipped values will retry on the next update"
+		if not _warnings.has(warning):
+			_warnings.append(warning)
+		return false
 	material.set_shader_parameter(key, value)
 	cache[key] = value
 	binding["cache"] = cache
 	_last_frame_writes += 1
+	return true
+
+
+func _apply_pattern_uniforms(material: ShaderMaterial, binding: Dictionary, pattern: Dictionary, signature: String, write_limit := MAX_FRAME_PARAMETER_WRITES) -> bool:
+	var shader_state := Patterns.uniforms(pattern)
+	var complete := _set_param(material, binding, "pattern_settings", shader_state.pattern_settings, write_limit)
+	complete = _set_param(material, binding, "pattern_extras", shader_state.pattern_extras, write_limit) and complete
+	complete = _set_param(material, binding, "palette", shader_state.palette, write_limit) and complete
+	if complete:
+		binding["pattern_signature"] = signature
+	return complete
 
 
 func _zone_gain(zone_id: String) -> float:
