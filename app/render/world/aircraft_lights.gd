@@ -53,6 +53,128 @@ const STRIP_GAP_M := 0.004
 const LANDING_ENERGY := 0.02
 const LANDING_RANGE_M := 80.0
 const LANDING_ANGLE_DEG := 16.0
+const AUTHORED_ANCHORS := ["nav_left", "nav_right", "nav_tail", "strobe_left", "strobe_right", "strobe_dorsal", "strobe_ventral", "landing", "landing_right"]
+const AUTHORED_STRIPS := ["strip_left", "strip_right", "strip_top_left", "strip_top_right", "strip_belly"]
+
+
+## FW-RGB-04: creator-only, node-local metres. Player lighting profiles never contain these paths.
+static func empty_authored_layout() -> Dictionary:
+	return {"version": 1, "anchors": [], "strips": []}
+
+
+static func validate_authored_layout(raw: Variant) -> Dictionary:
+	var errors := PackedStringArray()
+	if not _layout_keys(raw, ["version", "anchors", "strips"]):
+		return {"ok": false, "errors": PackedStringArray(["lighting layout fields are missing or unsupported"])}
+	if typeof(raw.version) not in [TYPE_INT, TYPE_FLOAT] or float(raw.version) != 1.0:
+		errors.append("lighting layout version is unsupported")
+	if not raw.anchors is Array or raw.anchors.size() > AUTHORED_ANCHORS.size() or not raw.strips is Array or raw.strips.size() > AUTHORED_STRIPS.size():
+		return {"ok": false, "errors": PackedStringArray(["lighting layout exceeds its anchor or strip limit"])}
+	for group: String in ["anchors", "strips"]:
+		var seen := {}
+		for row: Variant in raw[group]:
+			var fields := ["id", "node_path", "position_m", "gear_gated"] if group == "anchors" else ["id", "node_path", "points_m", "face", "width_m"]
+			if not _layout_keys(row, fields):
+				errors.append("lighting %s row fields are missing or unsupported" % group)
+				continue
+			var allowed: Array = AUTHORED_ANCHORS if group == "anchors" else AUTHORED_STRIPS
+			if not row.id is String or row.id not in allowed or seen.has(row.id):
+				errors.append("lighting %s id is unsupported or duplicated" % group)
+				continue
+			seen[row.id] = true
+			if not _layout_path(row.node_path): errors.append("lighting host path is invalid")
+			if group == "anchors":
+				if not _layout_vector(row.position_m): errors.append("lighting anchor position is invalid")
+				if typeof(row.gear_gated) != TYPE_BOOL or (row.gear_gated and row.id not in ["landing", "landing_right"]):
+					errors.append("only landing anchors support gear gating")
+			else:
+				if not _layout_number(row.width_m, 0.001, 0.05): errors.append("lighting strip width must be in [0.001, 0.05] metres")
+				if not _layout_vector(row.face) or not _layout_vector_unit(row.face):
+					errors.append("lighting strip face must be a unit vector")
+					continue
+				if not row.points_m is Array or row.points_m.size() < 2 or row.points_m.size() > 32:
+					errors.append("lighting strips require 2 to 32 points")
+					continue
+				var previous := Vector3.ZERO
+				var previous_valid := false
+				for point: Variant in row.points_m:
+					if not _layout_vector(point):
+						errors.append("lighting strip point is invalid")
+						previous_valid = false
+						continue
+					var current := _layout_v3(point)
+					if previous_valid:
+						var segment := current - previous
+						if segment.length() < 0.00001 or segment.normalized().cross(_layout_v3(row.face)).length() < 0.01:
+							errors.append("lighting strip segment is collapsed or parallel to its face")
+					previous = current
+					previous_valid = true
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func _layout_keys(value: Variant, keys: Array) -> bool:
+	if not value is Dictionary or value.size() != keys.size(): return false
+	for key: String in keys:
+		if not value.has(key): return false
+	return true
+
+
+static func _layout_number(value: Variant, minimum: float, maximum: float) -> bool:
+	return typeof(value) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(value)) and float(value) >= minimum and float(value) <= maximum
+
+
+static func _layout_vector(value: Variant) -> bool:
+	if not value is Array or value.size() != 3: return false
+	for part: Variant in value:
+		if not _layout_number(part, -5.0, 5.0): return false
+	return true
+
+
+static func _layout_vector_unit(value: Array) -> bool:
+	var length := _layout_v3(value).length()
+	return length >= 0.999 and length <= 1.001
+
+
+static func _layout_v3(value: Array) -> Vector3:
+	return Vector3(float(value[0]), float(value[1]), float(value[2]))
+
+
+static func _layout_path(value: Variant) -> bool:
+	if not value is String or value.is_empty() or value.length() > 160: return false
+	if value == ".": return true
+	var pattern := RegEx.new()
+	pattern.compile("^[A-Za-z0-9_]+(/[A-Za-z0-9_]+)*$")
+	return pattern.search(value) != null
+
+
+## Resolve per instance, after cached geometry fitting, so paths and moving poses are never cached across roots.
+static func resolve_authored_layout(root: Node3D) -> Dictionary:
+	var result := {"anchors": {}, "strips": {}, "warnings": PackedStringArray()}
+	var raw: Variant = root.get_meta("lighting_layout", empty_authored_layout())
+	var checked := validate_authored_layout(raw)
+	if not checked.ok:
+		result.warnings.append_array(checked.errors)
+		return result
+	var existing: Dictionary = root.get_meta("light_anchors", {})
+	for group: String in ["anchors", "strips"]:
+		for row: Dictionary in raw[group]:
+			if group == "anchors" and existing.has(row.id):
+				result.warnings.append("%s already belongs to the aircraft builder; keeping that anchor" % row.id)
+				continue
+			var host := root if row.node_path == "." else root.get_node_or_null(NodePath(row.node_path)) as Node3D
+			if host == null or (host != root and not root.is_ancestor_of(host)) or host.name == "NightKit":
+				result.warnings.append("%s host is missing; keeping automatic fitting" % row.id)
+				continue
+			var transform := _root_local(host, root)
+			if not transform.is_finite() or absf(transform.basis.determinant()) < 0.000001:
+				result.warnings.append("%s host transform is invalid; keeping automatic fitting" % row.id)
+				continue
+			if group == "anchors":
+				var offset := _layout_v3(row.position_m)
+				result.anchors[row.id] = {"position": transform * offset, "follow": NodePath(row.node_path), "follow_offset": offset, "gear_gated": row.gear_gated}
+			else:
+				result.strips[row.id] = row.duplicate(true)
+	return result
 
 
 ## The model's bounds in its root frame, and the widest mesh's (the wing's) bounds.

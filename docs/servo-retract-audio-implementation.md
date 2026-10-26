@@ -81,7 +81,7 @@ The fixed Dummy benchmark uses 1,000 warmup calls and 10,000 measured calls per 
 | Four moving servos plus retract | 240.5 → 196 | 385 → 245 |
 | Paused | 116 → 73 | 186 → 93 |
 | Distant | 22 → 16 | 29 → 20 |
-| Repeated accepted tick | 148 → 82 | 285 → 140 |
+| Repeated accepted tick (`dt=0`, observer refresh) | 148 → 82 | 285 → 140 |
 
 All measured loops had zero Godot object-count growth and zero voice-pool growth, using at most five movement/two transient voices for these fixtures. Object counts do not measure temporary dictionary allocations. These are bounded host observations, not native mixer or rendered performance acceptance; other sessions were active on this shared machine. The lock-reservation and silent-voice regressions were each observed failing before their fixes and passing afterwards.
 
