@@ -7,9 +7,10 @@ press text=Save
 wait frames=3
 assert expr="screens.top()._selected_section == 'axes' and screens.top()._axis_controls.roll.axis.get_line_edit().has_focus()" message="Save brings the conflicting axis into focus"
 assert expr="screens.top()._axis_controls.pitch.axis.get_line_edit().has_theme_stylebox_override('normal')" message="both conflicting channels are marked"
-key name=Up hold_s=0
+eval expr="screens.top()._axis_controls.roll.axis.get_line_edit().clear()"
+type text=3 submit=true
 wait frames=3
-assert expr="not screens.top()._axis_controls.pitch.axis.get_line_edit().has_theme_stylebox_override('normal') and screens.top().status_label.text.is_empty()" message="keyboard correction clears the resolved error"
+assert expr="screens.top()._axis_controls.roll.axis.value == 3 and not screens.top()._axis_controls.pitch.axis.get_line_edit().has_theme_stylebox_override('normal') and screens.top().status_label.text.is_empty()" message="keyboard correction clears the resolved error"
 eval expr="screens.top()._set_draft_profile(screens.top().ControllerProfile.defaults().merged({'actions':{'pause':{'type':'button','button':1}}},true))"
 eval expr="screens.top().action_filter.select(3)"
 eval expr="screens.top()._on_action_filter_selected(3)"

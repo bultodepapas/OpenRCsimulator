@@ -1352,10 +1352,10 @@
         "source": "D10-R5 (docs/research/flight-dynamics/stik-roll-sideslip-2026-10-19, research/flight-dynamics/stik-lateral-directional/directional_prediction.py, roll_regimes.gd): borrowed Clb -0.0545 less the vertical-fin term about the ARP -0.00082, so the local law matches the oracle; independently predicted -0.0537 (lifting-line dihedral -0.0134 per deg of the estimated 2.86 deg plus DATCOM high-wing interference -0.0155); not measured"
       },
       "wing_aileron_effectiveness": {
-        "value": 0.144,
+        "value": 0.21511460134103116,
         "unit": "1",
         "kind": "derived",
-        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; |Clda_right|/(0.125*CLa), rounded"
+        "source": "D11-R1: research/aero/aileron_effectiveness.py; matches the borrowed Clda_right through the calibrated section slope and induced-flow map (six equal-area strips). Replaces uncoupled CLa estimate 0.144; model consistency, not measured flight calibration. docs/research/aero-consistency/D11-R1/README.md"
       },
       "attached_limit": {
         "value": 8.0,

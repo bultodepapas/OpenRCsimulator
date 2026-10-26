@@ -1764,10 +1764,10 @@
     },
     "surfaces": {
       "wing_aileron_effectiveness": {
-        "value": 0.276018,
+        "value": 0.38063,
         "unit": "1",
         "kind": "derived",
-        "source": "research/avanti-s/av06/derive_physics.py: |Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips"
+        "source": "research/avanti-s/av06/derive_physics.py: D11-R1: research/aero/aileron_effectiveness.py; Clda_right matched through the calibrated section slope and induced-flow map (six equal-area strips); model consistency, not flight calibration"
       },
       "attached_limit": {
         "value": 8.0,

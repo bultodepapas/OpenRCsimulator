@@ -20,6 +20,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "research/aero"))
+from aileron_effectiveness import derive_effectiveness  # noqa: E402
 MIGRATOR_DIR = ROOT / "research/aircraft-standardization"
 if str(MIGRATOR_DIR) not in sys.path:
     sys.path.insert(0, str(MIGRATOR_DIR))
@@ -412,19 +414,8 @@ e_osw = note("drag", "Oswald e", 0.78, "estimated: Stik/UltraStick identified va
 k_ind = 1 / (math.pi * e_osw * AR)
 
 # Local-model aileron effectiveness: equal-area strips (as the loader builds them) must give Clda_right.
-def station_centres(span, root, tip, n=3):
-    h = span / 2
-    slope = (tip - root) / h
-    area = lambda y: root * y + slope * y * y / 2
-    mom = lambda y: root * y * y / 2 + slope * y ** 3 / 3
-    out, y0 = [], 0.0
-    for k in range(n):
-        y1 = h if k == n - 1 else (-root + math.sqrt(root * root + 2 * slope * area(h) * (k + 1) / n)) / slope
-        out.append((mom(y1) - mom(y0)) / (area(y1) - area(y0)))
-        y0 = y1
-    return out
-sum_y = sum(station_centres(b, cr, ct))
-wing_ail_eff = abs(Clda) * 6 * b / (CLa * sum_y)
+# D11-R1: match the authored roll derivative through the current induced-flow map.
+wing_ail_eff = derive_effectiveness(S, b, CLa, slope_h * Sh / S, Clda, (cr, ct))
 
 # --- E5a: fixed taildragger contacts from the model's wheel bottoms --------------------------------------------
 main_pos = [le(GEAR["main_axle"][0], GEAR["main_axle"][1] - GEAR["main_wheel_diameter"] / 2,
@@ -713,7 +704,7 @@ data = {
         "conventions": stik["aero"]["conventions"],
         "coefficients": coefficients,
         "surfaces": {
-            "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("|Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips")),
+            "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("D11-R1: research/aero/aileron_effectiveness.py; Clda_right matched through the calibrated section slope and induced-flow map (six equal-area strips); model consistency, not flight calibration")),
             "body_cy_beta": q(CYb_B, "1/rad", "derived", D("EX-14d (D10-R3): the DATCOM body side-force slope -2 K_i S0/S (K_i 1.3 low wing), as in the oracle's CYb; NACA TN 3551 fuselage-alone -1.5/rad on A_max x K_i gives -0.116")),
             "body_crossflow_area": q(body_cda, "m2", "derived", D("EX-14d (D10-R3): Allen-Perkins eta 0.65 x c_d 1.4 (Polhamus TR R-29, subcritical rounded rectangle) x fuselage side area from geometry.json; estimated factors")),
             "attached_limit": same("attached_limit"),

@@ -708,11 +708,11 @@ func _prepare_flight() -> void:
 			_rig.set_span(_extent.x)
 		elif startup_checkpoint.is_valid():
 			Shadow.bind_model(_shadow, _airplane.root)
-	# D6e: keyboard and gamepad flights use the aircraft's normal rates and expo (controls.rates.normal) unless
-	# --rates=full asks for the maximum throws; radios keep their own rates either way.
-	var rates := str(args.get("rates", "normal"))
-	if rates != "normal" and rates != "full":
-		printerr("--rates must be normal or full")
+	# D6e-R5: sport gives keyboard/gamepad full roll travel with normal pitch/yaw.
+	# --rates selects the high/low starting profile; radios retain transmitter rates.
+	var rates := str(args.get("rates", "sport"))
+	if rates not in ["normal", "sport", "full"]:
+		printerr("--rates must be normal, sport or full")
 		session.free()
 		session = null
 		set_process(false)
@@ -1401,7 +1401,7 @@ func _status() -> String:
 	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s  engine %5.0f rpm" % [sim.time(), -s[RB.POS + 2], speed, sim.aux[0]]
 	if session.rates_active():
-		line += "  rates: normal"
+		line += "  " + tr(session.rate_profile_label())
 	if not _electric_demo.is_empty():
 		line = "Synthetic electric test airframe (%s)\n" % _electric_demo.to_upper() + line
 		if session.battery_is_dynamic():
@@ -1521,7 +1521,7 @@ func controller_action(action: String) -> bool:
 			if _overlays != null: _overlays.cycle_preset()
 		"rates_toggle":
 			if session.toggle_rate_profile():
-				_note = tr("Rates: normal") if session.rates_active() else tr("Rates: full")
+				_note = tr(session.rate_profile_label())
 			elif session.radio.connected and not session.radio.is_gamepad():
 				_note = tr("The radio sets its own rates.")
 			else:
@@ -2652,7 +2652,7 @@ func _restart_companions() -> void:
 ## --quick-flight (runway default; every airplane trimmed for 50 % throttle like Home, D6e-R4),
 ## --start=runway|airborne|airborne_half_power|hand_launch (explicit launch override; without --quick-flight the reference trim;
 ## hand_launch only for airplanes without landing gear, X8-07),
-## --rates=normal|full (D6e: the aircraft's normal-flight rates and expo on the keyboard/gamepad sticks, or the maximum throws),
+## --rates=normal|sport|full (D6e-R5: low rates, full roll with normal pitch/yaw, or all maximum throws),
 ## --field-lighting=club|airfield|off, --field-activation=auto|on|off, --campfire=on|off (FW-71 visual options; direct routes ignore saved preferences),
 ## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)
 func _user_args() -> Dictionary:

@@ -21,6 +21,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "research/aero"))
+from aileron_effectiveness import derive_effectiveness  # noqa: E402
 MIGRATOR_DIR = ROOT / "research/aircraft-standardization"
 if str(MIGRATOR_DIR) not in sys.path:
     sys.path.insert(0, str(MIGRATOR_DIR))
@@ -535,21 +537,8 @@ Cnb_body = note("lateral", "Cnb body, flight-calibrated (1/rad)", Cnb - Cnb_fin,
                 f"CALIBRATED (P51-25): total Cnb {Cnb:.4f} about the ARP ({Cnb + _rx / b * _CY_beta:.4f} about the CG) gives {RUDDER_PER_SIDESLIP} deg rudder per deg sideslip (P-51D, RM L6J25, 200 mph); fin {Cnb_fin:.4f}; the DATCOM fuselage estimate {Cnb_body_datcom:.4f} supplies {Cnb_body_datcom / (Cnb - Cnb_fin):.0%}, the rest lumps spinner, bubble canopy and propeller-in-yaw. Munk-type couple in the local model, faded over the declared sideslip blend")
 
 
-def station_centres(span, root, tip, n=3):
-    h = span / 2
-    slope = (tip - root) / h
-    area = lambda y: root * y + slope * y * y / 2
-    mom = lambda y: root * y * y / 2 + slope * y ** 3 / 3
-    out, y0 = [], 0.0
-    for k in range(n):
-        y1 = h if k == n - 1 else (-root + math.sqrt(root * root + 2 * slope * area(h) * (k + 1) / n)) / slope
-        out.append((mom(y1) - mom(y0)) / (area(y1) - area(y0)))
-        y0 = y1
-    return out
-
-
-sum_y = sum(station_centres(b, cr, ct))
-wing_ail_eff = abs(Clda) * 6 * b / (CLa * sum_y)
+# D11-R1: match the authored roll derivative through the current induced-flow map.
+wing_ail_eff = derive_effectiveness(S, b, CLa, slope_h * Sh / S, Clda, (cr, ct))
 
 
 # --- Propeller: blade-element / momentum model (research/p51/p51-06/bem.py), calibrated on Mejzlik tables -------
@@ -963,7 +952,7 @@ data = {
         "conventions": stik["aero"]["conventions"],
         "coefficients": coefficients,
         "surfaces": {
-            "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("|Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips")),
+            "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("D11-R1: research/aero/aileron_effectiveness.py; Clda_right matched through the calibrated section slope and induced-flow map (six equal-area strips); model consistency, not flight calibration")),
             "wing_station_incidence": q([float(x) for x in strip_inc], "rad", "derived", D("per-strip angle offsets root -> tip, zero mean: linear washout + Schrenk loading + Re-dependent section clmax (NACA TN 1945); see derivation.md 'stall'")),
             # D11j: the cambered section's pitching moment about its aerodynamic centre, carried by every strip of the
             # local wing as a pure couple; the oracle's Cm0 already contains cm_ac x MAC / c_ref, so the two regimes

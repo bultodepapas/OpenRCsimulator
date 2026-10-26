@@ -1088,3 +1088,17 @@ Preserve PR #1’s ancestry and research, and integrate optional per-surface Wor
 ### 2026-10-26 — Bind attached gear failure to actual weaker compliance (GP-16b/17b)
 
 Reuse the existing normal geometry and common-rotor stage. An authored failed spring/stop family must have no greater stored potential at the same compression; release that difference once with persistent modes and a nonterminal event. Preserve fixed geometry/inertia and distinguish this constitutive failure from moving-leg collapse. Qualify scalar structural axes explicitly and refuse discarded paths. Boundary samples do not establish interval peaks; accepted-path failure localization and stock activation remain separate gates. [Contract, kernel drops and limitations](research/ground-physics/GP-16/README.md#attached-effective-compliance-response-gp-16b17b).
+
+### 2026-10-26 — D11-R1 / D6e-R5: consistent ailerons and sport dual rates
+
+Re-derive conventional stock aircraft aileron effectiveness through the existing
+induced-flow map instead of the obsolete uncoupled whole-aircraft lift slope.
+Keep the authored parameter, runtime load law and custom-variant semantics intact.
+This matches each aircraft's existing small-angle roll derivative; it does not
+establish measured roll performance or unchanged control-induced stall behavior.
+
+Use full aileron travel by default with normal pitch/yaw and expo (`sport`). Keep
+two-position dual rates, remembering the chosen sport/full high position. The
+historical uncontrolled-roll trigger was elevator overpull into stall; preserve
+its normal pitch response and radio bypass. The owner requested both stronger
+roll response and coherent dual rates. [Evidence and limits](research/aero-consistency/D11-R1/README.md).

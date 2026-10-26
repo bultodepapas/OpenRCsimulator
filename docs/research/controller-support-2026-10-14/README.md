@@ -218,6 +218,19 @@ Linux software evidence with Godot `4.8.beta1.official.4d10419ca`:
 
 Focused sources were reviewed independently and the final generation/merge checks had no remaining finding. No physical Interlink was available; USB mapping, real endpoints and native-device acceptance remain open. Local diagnostic artifacts are under `tmp/issue5-checks/`, `tmp/issue5-regressions/` and `tmp/issue5-work/`; the tests and debug scenario are the retained reproduction instructions.
 
+## Controller field errors (2026-10-26, GitHub #3)
+
+D6-GP-02-I3 / UI-15-GP-01-I3 completes the remaining axis/action/AUX feedback. Validator reports add structured `issues` (`code`, `paths`, `message`) while preserving validation decisions and the existing `ok`, `errors` and `bindings` fields. Physical source collisions and semantic action/AUX conflicts have distinct remedies. The setup screen highlights participants, adds localized row explanations, reveals filtered actions and focuses the first usable editor. Edits refresh remaining errors without moving focus; rejected captures/switch edits retain accepted assignments. Original control styles and unrelated storage/disconnection messages are preserved.
+
+Checked with repository-pinned Godot 4.8-beta1:
+
+- Profile diagnostics: 65 checks passed; action diagnostics passed. Setup/AUX tests cover multiple errors, correction, style restoration, hidden actions, rejection, endpoints, maintained switches, replacement and EN/ES feedback. Existing section/responsive, setup-safety, settings-save, preflight-calibration, profile-hardening, language, binding-audit and extended-action suites passed.
+- Error focus and label bounds pass at 1920×1080, 2560×1440, 3840×2160 and 1280×720. Numeric editors retain normal height when explanations wrap. These are headless layout checks; rendered readability and physical controller navigation remain part of the existing native qualification gate.
+- The maintained `tools/debug/scenarios/controller_field_errors.txt` exercises Save focus, correction, hidden-action reveal and Cancel in the running app. The debug smoke pass completed 40 steps with no failures, no growing soak counters and no leaked objects at exit. Local run: `tmp/debug-bridge/20261026-134727-47870`.
+- The whole-project load/parse pass loaded 1,450 scripts / 1,543 resources with zero failures. The full `app/test.sh` attempt stopped at the 180-second resource-import timeout; a complete suite pass is not claimed. Local logs: `/tmp/openrc-issue3-parse.log`, `/tmp/openrc-issue3-full-suite.log`; focused batch: `tmp/issue3-checks-20261026-133839/`.
+
+Current player instructions live in [First launch](../../FIRST-LAUNCH.md#controller-settings-current-source). The implementation plan has been consolidated here; the controller plan retains native qualification work.
+
 ## Current upstream findings
 
 1. **Use the existing desktop backend.** Godot uses SDL 3 for Windows, Linux and macOS controller input from 4.5. Specialized HOTAS/pedals/wheels have less coverage. The pinned engine vendors SDL 3.2.28. Keep SDL device mapping separate from OpenRC command assignment. [Godot controller guide](https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html), [pinned third-party manifest](https://github.com/godotengine/godot/blob/4.7.2-stable/thirdparty/README.md#sdl).

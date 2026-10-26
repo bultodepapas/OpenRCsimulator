@@ -2,3 +2,4 @@
 **/*.log -whitespace
 README.md text eol=lf
 .gitattributes text eol=lf
+source-overlays/** -whitespace

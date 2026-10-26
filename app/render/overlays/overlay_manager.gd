@@ -588,5 +588,5 @@ static func radio_status(session: Node) -> String:
 		parts.append(TranslationServer.translate(kind))
 		if kind == "Radio":
 			parts.append(TranslationServer.translate("ARMED") if radio.armed else TranslationServer.translate("SAFE"))
-	parts.append(TranslationServer.translate("Rates: normal") if session.rates_active() else TranslationServer.translate("Rates: full"))
+	parts.append(TranslationServer.translate(session.rate_profile_label()))
 	return " · ".join(parts)

@@ -28,6 +28,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "research/aero"))
+from aileron_effectiveness import derive_effectiveness  # noqa: E402
 HERE = Path(__file__).resolve().parent
 for extra in ("research/aircraft-standardization", "research/fuel-systems", "research/p51/p51-06"):
     if str(ROOT / extra) not in sys.path:
@@ -581,21 +583,8 @@ th_a = math.acos(2 * cf_a - 1)
 cp_frac = 0.25 + 0.5 * math.sin(th_a) * (1 - math.cos(th_a)) / (2 * (math.pi - th_a + math.sin(th_a)))
 x_cp_ail = integral(lambda y: (at(y, les) + cp_frac * chord(y)) * chord(y), y1a, y2a) / integral(chord, y1a, y2a)
 Cmda = -CLda_each * (x_cp_ail - x_arp) / c_ref
-def station_centres(span, root, tip, n=3):
-    """Area centroids of the loader's equal-area strips on a trapezoid (as the P-51)."""
-    h = span / 2
-    slope = (tip - root) / h
-    area = lambda y: root * y + slope * y * y / 2
-    mom = lambda y: root * y * y / 2 + slope * y ** 3 / 3
-    out, y0 = [], 0.0
-    for k in range(n):
-        y1 = h if k == n - 1 else (-root + math.sqrt(root * root + 2 * slope * area(h) * (k + 1) / n)) / slope
-        out.append((mom(y1) - mom(y0)) / (area(y1) - area(y0)))
-        y0 = y1
-    return out
-
-
-wing_ail_eff = abs(Clda) * 6 * b / (CLa * sum(station_centres(b, cr, ct)))
+# D11-R1: match the authored roll derivative through the current induced-flow map.
+wing_ail_eff = derive_effectiveness(S, b, CLa, slope_h * Sh / S, Clda, (cr, ct))
 pb2v = note("lateral", "steady pb/2V at full aileron (rad)", abs(2 * Clda * math.radians(throws["aileron"]) / Clp), f"check: NACA RM A7C05 full-size 0.064 at the full-size throw (not recovered); this is the RC high-rate throw of {throws['aileron']:.1f} deg")
 
 # --- Drag build-up --------------------------------------------------------------------------------------------------
@@ -926,7 +915,7 @@ data = {
         "conventions": stik["aero"]["conventions"],
         "coefficients": coefficients,
         "surfaces": {
-            "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("|Clda| 2n b / (CLa sum(y)) over the loader's equal-area strips")),
+            "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("D11-R1: research/aero/aileron_effectiveness.py; Clda_right matched through the calibrated section slope and induced-flow map (six equal-area strips); model consistency, not flight calibration")),
             "wing_station_incidence": q([float(x) for x in strip_inc], "rad", "derived", D("per-strip offsets root -> tip, zero mean: measured twist + Schrenk/Re stall order")),
             "wing_section_cm_ac": q(cm_ac, "1", "derived", D("XFOIL 230-series section moment, chord-weighted")),
             "attached_limit": same("attached_limit"), "tail_local_limit": same("tail_local_limit"), "tail_stall_end": same("tail_stall_end"),

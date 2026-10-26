@@ -718,10 +718,10 @@
     },
     "surfaces": {
       "wing_aileron_effectiveness": {
-        "value": 0.2214589868656957,
+        "value": 0.3054078629360949,
         "unit": "1",
         "kind": "derived",
-        "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        "source": "research/timber/tt07/derive_physics.py: D11-R1 research/aero/aileron_effectiveness.py; match Clda_right through calibrated section slope and induced-flow map; model consistency, not flight calibration"
       },
       "wing_section_cm_ac": {
         "value": -0.035,

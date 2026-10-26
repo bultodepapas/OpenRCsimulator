@@ -75,7 +75,7 @@ func start(destination := "") -> Error:
 		collision_world = _session.collision_world(), lake = _session.lake_context(),
 		weather = _session.weather_configuration(), shaft_integrator = _session.shaft_integrator(),
 		soft_hull_contacts = _session.soft_hull_contacts,
-		rates = "normal" if _session.rates_active() else "full",
+		rates = _session.effective_rate_profile(),
 		input_boundary = "post conditioning/rates/trim, before failure and servo; drives interval ending at tick",
 		loads_boundary = "RK4 k1, interval start; initial row uses initial loads",
 		layout = {state = 13, loads = 6, inputs = _session.sim.inputs.size(), aux = _session.sim.aux.size(),
@@ -218,9 +218,9 @@ func _paused(value: bool) -> void:
 
 
 ## D6e-R2: the rate switch takes effect at the next tick's input sample, which the recorded inputs already carry.
-func _rates(active: bool) -> void:
+func _rates(_active: bool) -> void:
 	if recording:
-		_event("rates", "normal" if active else "full")
+		_event("rates", _session.effective_rate_profile())
 
 
 func _faulted(reason: String) -> void:

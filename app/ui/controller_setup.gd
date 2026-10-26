@@ -2439,8 +2439,10 @@ func _set_status(text: String, is_error: bool) -> void:
 
 func _register_validation_field(path: String, section: String, control: Control, labels: Array, caption: String) -> void:
 	_validation_fields[path] = {"section": section, "control": control, "labels": labels, "caption": caption}
+	control.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	for label: Label in labels:
 		_validation_label_captions[label] = caption
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 
 func _validate_candidate(candidate: Dictionary) -> Dictionary:
@@ -2562,7 +2564,7 @@ func _validation_message(issue: Dictionary) -> String:
 	match str(issue.get("code", "")):
 		"name_invalid": return tr("Enter a profile name before saving.")
 		"axis_conflict", "binding_conflict", "aux_conflict", "action_flight_axis_conflict", "action_aux_source_conflict":
-			return tr("Choose separate inputs for %s.") % ", ".join(names)
+			return tr("Shared input: %s.") % ", ".join(names)
 		"action_aux_conflict": return tr("Use either the action or the extra channel: %s.") % ", ".join(names)
 		"axis_invalid": return tr("Choose a source axis from 0 to 9.")
 		"range_invalid", "channel_invalid": return tr("Calibrate this channel or restore a preset.")
@@ -2577,9 +2579,18 @@ func _validation_message(issue: Dictionary) -> String:
 func _render_validation_fields(issues: Array, focus_error: bool, rejected := false) -> void:
 	_clear_field_errors()
 	var messages: Dictionary = {}
-	for issue: Dictionary in issues:
+	var displayed_issues: Array = issues.duplicate()
+	var draft_issue_keys: Dictionary = {}
+	if rejected and _validation_active:
+		# Rejected attempts must not hide errors already present in the accepted draft.
+		var draft_report := _validate_candidate(_profile_candidate())
+		for issue: Dictionary in draft_report.issues:
+			draft_issue_keys[str(issue.code) + str(issue.paths)] = true
+			if not displayed_issues.has(issue):
+				displayed_issues.append(issue)
+	for issue: Dictionary in displayed_issues:
 		var explanation := _validation_message(issue)
-		if rejected:
+		if rejected and not draft_issue_keys.has(str(issue.code) + str(issue.paths)):
 			explanation = tr("Assignment not applied: %s") % explanation
 		for path: String in issue.get("paths", []):
 			for key: String in _validation_field_keys(path):
@@ -2603,7 +2614,7 @@ func _render_validation_fields(issues: Array, focus_error: bool, rejected := fal
 				if not label_messages[label].has(message):
 					label_messages[label].append(message)
 	for label: Label in label_messages:
-		label.text = tr(str(_validation_label_captions[label])) + "\n" + tr("Problem: %s") % "\n".join(label_messages[label])
+		label.text = tr(str(_validation_label_captions[label])) + "\n" + "\n".join(label_messages[label])
 
 
 func _focus_validation_field(key: String) -> bool:

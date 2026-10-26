@@ -118,14 +118,43 @@ func _initialize() -> void:
 		timber_session.commands = { roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = timber_session.start.throttle }
 		_check("Timber under 'normal': no profile, so the maximum throws", not timber_session.rates_active()
 			and timber_session.flown_commands().pitch == clampf(1.0 + timber_session.trims.pitch, -1.0, 1.0))
+	_sport(session, stik_session, timber_session)
 	_rate_switch(session, timber_session)
+	_rate_switch(session, timber_session, "sport")
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
 
+func _sport(avanti: Node, stik: Node, timber: Node) -> void:
+	for flight in [avanti, stik]:
+		flight.commands = {roll = 1.0, pitch = 0.6, yaw = -0.4, throttle = 0.5}
+		flight.rate_profile = "normal"
+		var low: Dictionary = flight.flown_commands()
+		flight.rate_profile = "sport"
+		var high: Dictionary = flight.flown_commands()
+		_check("sport: full roll, same normal pitch/yaw and throttle", high.roll == clampf(1.0 + flight.trims.roll, -1.0, 1.0)
+			and high.pitch == low.pitch and high.yaw == low.yaw and high.throttle == low.throttle)
+		flight.commands.roll = 0.4
+		var expected := Commands.expo(0.4, flight.aircraft.model.controls.rates.normal.aileron_expo)
+		_check("sport keeps keyboard roll expo and adds trim afterwards", absf(float(flight.flown_commands().roll) - clampf(expected + flight.trims.roll, -1.0, 1.0)) < 1e-12)
+		_check("sport labels its effective profile", flight.effective_rate_profile() == "sport" and flight.rate_profile_label() == "Rates: sport")
+		flight.radio.connected = true
+		flight.radio.profile = {kind = "gamepad"}
+		_check("sport gamepad does not apply a second roll expo", absf(float(flight.flown_commands().roll) - clampf(0.4 + flight.trims.roll, -1.0, 1.0)) < 1e-12)
+		flight.radio.profile = {kind = "radio"}
+		_check("sport never changes transmitter rates", not flight.rates_active() and flight.effective_rate_profile() == "full"
+			and absf(float(flight.flown_commands().pitch) - clampf(0.6 + flight.trims.pitch, -1.0, 1.0)) < 1e-12
+			and not flight.toggle_rate_profile())
+		flight.radio.connected = false
+		_check("sport switches to normal", flight.toggle_rate_profile() and flight.rate_profile == "normal")
+		_check("normal returns to the chosen sport high rate", flight.toggle_rate_profile() and flight.rate_profile == "sport")
+	timber.rate_profile = "sport"
+	_check("no profile means full travel and no dual-rate switch", timber.effective_rate_profile() == "full" and not timber.toggle_rate_profile())
+
+
 ## D6e-R2: the in-flight rate switch. It toggles only where a profile exists, reports the effective state, and a
 ## flight log that crosses a switch records it as an event and still replays exactly (inputs are post-rates).
-func _rate_switch(avanti: Node, timber: Node) -> void:
+func _rate_switch(avanti: Node, timber: Node, high_profile := "full") -> void:
 	var seen: Array = []
 	avanti.rate_profile_changed.connect(func(active: bool) -> void: seen.append(active))
 	avanti.rate_profile = "full"
@@ -146,31 +175,42 @@ func _rate_switch(avanti: Node, timber: Node) -> void:
 	var directory := ProjectSettings.globalize_path("res://../tmp/rate-switch-%d" % Time.get_ticks_usec())
 	DirAccess.make_dir_recursive_absolute(directory)
 	var path := directory.path_join("switch.orfl")
+	flight.rate_profile = high_profile
 	var logger := FlightLog.new(flight)
 	_check("switch log starts", logger.start(path) == OK)
 	var first_tick: int = flight.sim.tick
 	flight.commands = { roll = 0.3, pitch = 0.6, yaw = 0.0, throttle = flight.start.throttle }
 	var pitch_before := 0.0
 	var pitch_after := 0.0
+	var roll_before := 0.0
+	var roll_after := 0.0
 	for tick in 120:
 		if tick == 40:
 			_check("switch accepted mid-flight", flight.toggle_rate_profile() and flight.rates_active())
+		if tick == 80 and high_profile == "sport":
+			_check("sport switch restores the high position", flight.toggle_rate_profile() and flight.rate_profile == "sport")
 		flight.sim.inputs = flight._inputs() # the session's own sampling of the shaped sticks
-		if tick == 39: pitch_before = flight.sim.inputs[1]
-		if tick == 40: pitch_after = flight.sim.inputs[1]
+		if tick == 39:
+			pitch_before = flight.sim.inputs[1]
+			roll_before = flight.sim.inputs[0]
+		if tick == 40:
+			pitch_after = flight.sim.inputs[1]
+			roll_after = flight.sim.inputs[0]
 		flight.sim.step()
 	_check("the same stick flies %.4f before and %.4f after the switch" % [pitch_before, pitch_after],
-		pitch_after < pitch_before - 0.1)
+		(pitch_after == pitch_before and roll_after < roll_before) if high_profile == "sport" else pitch_after < pitch_before - 0.1)
 	_check("switch log stops", logger.stop() == OK)
 	var read: Dictionary = Reader.inspect(path)
 	_check("switch log is complete", read.ok and read.get("complete", false))
 	if not read.ok:
 		flight.free()
 		return
-	_check("header records the starting rates", read.header.get("rates", "") == "full")
+	_check("header records the starting rates", read.header.get("rates", "") == high_profile)
 	var events: Array = read.events.filter(func(event: Dictionary) -> bool: return event.kind == "rates")
-	_check("the switch is one logged event at its tick", events.size() == 1 and events[0].detail == "normal"
+	_check("the switch is logged with its actual profile at its tick", events.size() == (2 if high_profile == "sport" else 1) and events[0].detail == "normal"
 		and int(events[0].tick) == first_tick + 40, str(events))
+	if high_profile == "sport":
+		_check("sport return event has its own name", events.size() == 2 and events[1].detail == "sport" and int(events[1].tick) == first_tick + 80)
 	var replay: Dictionary = Reader.prepare_replay(read.header)
 	_check("switch log replay prepares", replay.ok)
 	if replay.ok:
