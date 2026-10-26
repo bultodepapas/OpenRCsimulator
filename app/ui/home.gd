@@ -638,9 +638,11 @@ func _init() -> void:
 	primary_actions.add_child(_fly_caption)
 	primary_actions.add_child(fly_button)
 	primary_actions.add_child(ground_vehicle_button)
-	var utility_row := HBoxContainer.new()
+	# Long translated labels wrap as whole buttons while preserving the text size.
+	var utility_row := HFlowContainer.new()
 	utility_row.name = "HomeUtilities"
-	utility_row.add_theme_constant_override("separation", 4)
+	utility_row.add_theme_constant_override("h_separation", 4)
+	utility_row.add_theme_constant_override("v_separation", 4)
 	_left_layout.add_child(utility_row)
 	controls_button = _button("Controls", "QuietButton")
 	controls_button.name = "ControllerSettings"
@@ -935,7 +937,8 @@ func _apply_responsive_layout() -> void:
 	var rail_width := minf(viewport_size.x * 0.48, 500.0) if large_text else \
 		clampf(viewport_size.x * 0.24, 280.0, 304.0) if compact else clampf(viewport_size.x * 0.167, 280.0, 340.0)
 	var header_top := 14.0 if compact else 20.0
-	var navigation_in_scroll := viewport_size.y < 720.0 or (large_text and _pages[1].visible)
+	# Enlarged translations must leave room for the selected page on compact windows.
+	var navigation_in_scroll := viewport_size.y < 720.0 or (large_text and (compact or _pages[1].visible))
 	if _livery_row != null:
 		var paint_parent: Node = _pages[1] if navigation_in_scroll or large_text else _left_layout
 		if _livery_row.get_parent() != paint_parent:
@@ -967,9 +970,12 @@ func _apply_responsive_layout() -> void:
 		livery_button.autowrap_mode = TextServer.AUTOWRAP_OFF if large_text else int(livery_button.get_meta(HOME_AUTOWRAP_META))
 		livery_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if large_text else TextServer.OVERRUN_NO_TRIMMING
 	for utility: Button in [controls_button, help_button, quit_button]:
-		if large_text:
+		if compact:
+			# Keep translated utility labels inside the compact rail without truncation.
+			_set_responsive_font(utility, 20 if large_text else 18)
+		elif large_text:
 			# Keep the pinned utility row legible at 200% without letting its labels force a wide sidebar.
-			_set_responsive_font(utility, 20 if compact else UiTheme.SIZE.small)
+			_set_responsive_font(utility, UiTheme.SIZE.small)
 		else:
 			utility.remove_theme_font_size_override("font_size")
 	language_button.custom_minimum_size.x = maxf(200.0, language_button.get_theme_font("font").get_string_size(

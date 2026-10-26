@@ -1,4 +1,4 @@
-# UI-01d: English by default (whatever the OS locale), Spanish and Simplified Chinese available, the choice remembered in a versioned
+# UI-01d: English by default (whatever the OS locale), eight translated languages available, the choice remembered in a versioned
 # settings file that automation never reads or writes. Settings files here are test-only paths under user://.
 # Run: godot --headless --path . --script res://tests/test_ui_language.gd
 extends SceneTree
@@ -28,7 +28,7 @@ func _initialize() -> void:
 func _run() -> void:
 	await process_frame # Autoloads install bundled fonts before screens enter the tree.
 	_preferences_file()
-	_catalog()
+	await _catalog()
 	await _default_and_switch()
 	await _direct_route()
 	for f in [PREFS, PREFS + ".bad"]:
@@ -60,7 +60,7 @@ func _preferences_file() -> void:
 		and not Preferences.load_from(PREFS).latency_marker)
 	p.latency_marker = "off"
 	_check("diagnostic preference rejects the wrong type", Preferences.save_to(PREFS, p) == ERR_INVALID_DATA)
-	_write("[meta]\nschema=1\n[ui]\nlanguage=\"fr\"\n")
+	_write("[meta]\nschema=1\n[ui]\nlanguage=\"zz\"\n")
 	_check("unsupported language -> English", Preferences.load_from(PREFS).language == "en")
 	_write("[meta]\nschema=1\n[ui]\nlanguage=7\n")
 	_check("wrong type -> English (ConfigFile keeps the file's type)", Preferences.load_from(PREFS).language == "en")
@@ -81,13 +81,15 @@ func _preferences_file() -> void:
 func _catalog() -> void:
 	var source: Translation = load("res://i18n/es.po")
 	var chinese_font: Font = load("res://assets/fonts/NotoSansCJKsc-Regular.otf")
+	var japanese_font: Font = load("res://assets/fonts/NotoSansCJKjp-Regular.otf")
 	var placeholder := RegEx.new()
 	placeholder.compile("%[-+0-9.#]*[sdfxXocgeE]|%%")
 	for code: String in Preferences.LANGUAGES:
 		_check("language %s has a catalog or is the source" % code, code == "en" or code in TranslationServer.get_loaded_locales())
 		if code == "en":
 			continue
-		var catalog: Translation = load("res://i18n/%s.po" % code)
+		var catalog_path: String = "res://i18n/%s.po" % code
+		var catalog: Translation = load(catalog_path)
 		var missing := PackedStringArray()
 		var invalid_formats := PackedStringArray()
 		var missing_glyphs := {}
@@ -95,8 +97,8 @@ func _catalog() -> void:
 			var translated: String = catalog.get_message(message)
 			if translated.is_empty():
 				missing.append(message)
-			# Test the Chinese addition; existing Spanish catalog is maintained separately.
-			if code != "zh_Hans":
+			# Check added catalogs; existing Spanish wording is maintained separately.
+			if code == "es":
 				continue
 			var before: Array[String] = []
 			var after: Array[String] = []
@@ -108,15 +110,75 @@ func _catalog() -> void:
 				invalid_formats.append(message)
 			for character: String in translated:
 				var point: int = character.unicode_at(0)
-				if point >= 0x3400 and point <= 0x9fff and not chinese_font.has_char(point):
+				if code == "zh_Hans" and point >= 0x3400 and point <= 0x9fff and not chinese_font.has_char(point):
+					missing_glyphs[character] = true
+				if code == "ja" and point > 0x7f and not japanese_font.has_char(point):
+					missing_glyphs[character] = true
+				if code == "ru" and point >= 0x0400 and point <= 0x052f and not ThemeDB.fallback_font.has_char(point):
 					missing_glyphs[character] = true
 		_check("%s catalog covers all %d source messages" % [code, source.get_message_count()],
 			catalog.get_message_count() == source.get_message_count() and missing.is_empty(), str(missing))
-		_check("%s format arguments remain ordered and intact" % code, invalid_formats.is_empty(), str(invalid_formats))
-		_check("%s Chinese glyphs are bundled" % code, missing_glyphs.is_empty(), str(missing_glyphs.keys()))
-	_check("global font includes the bundled Chinese fallback", chinese_font in ThemeDB.fallback_font.fallbacks)
+		if code != "es":
+			_check("%s format arguments remain ordered and intact" % code, invalid_formats.is_empty(), str(invalid_formats))
+		if code == "zh_Hans":
+			_check("Chinese glyphs are bundled", missing_glyphs.is_empty(), str(missing_glyphs.keys()))
+		if code == "ja":
+			_check("all Japanese non-ASCII glyphs are bundled", missing_glyphs.is_empty(), str(missing_glyphs.keys()))
+		if code == "ru":
+			_check("all Russian catalog Cyrillic glyphs use the original font", missing_glyphs.is_empty(), str(missing_glyphs.keys()))
+	_check("Latin UI keeps its original fallback metrics", chinese_font not in ThemeDB.fallback_font.fallbacks)
+	TranslationServer.set_locale("zh_Hans")
+	await process_frame
+	_check("Chinese UI includes the bundled fallback", chinese_font in ThemeDB.fallback_font.fallbacks)
+	TranslationServer.set_locale("ja")
+	await process_frame
+	_check("Japanese uses Japanese glyph forms without the Chinese fallback", japanese_font in ThemeDB.fallback_font.fallbacks
+		and chinese_font not in ThemeDB.fallback_font.fallbacks)
+	TranslationServer.set_locale("zh_Hans")
+	await process_frame
+	_check("switching back to Chinese removes the Japanese font", chinese_font in ThemeDB.fallback_font.fallbacks
+		and japanese_font not in ThemeDB.fallback_font.fallbacks)
+	TranslationServer.set_locale("en")
+	await process_frame
+	_check("returning to English restores the font", chinese_font not in ThemeDB.fallback_font.fallbacks
+		and japanese_font not in ThemeDB.fallback_font.fallbacks)
+	_check("regional Japanese locales resolve to Japanese", Preferences.Languages.supported_locale("ja_JP") == "ja")
 	_check("script-qualified Chinese locale remains Chinese", Preferences.Languages.supported_locale("zh_Hans_CN") == "zh_Hans")
 	_check("traditional Chinese is not mislabeled as simplified", Preferences.Languages.supported_locale("zh_Hant_TW") == "en")
+	_check("Brazilian Portuguese region is retained", Preferences.Languages.supported_locale("pt-BR") == "pt_BR")
+	var portuguese_glyphs := PackedStringArray()
+	for character: String in "ÀÁÂÃÇÉÊÍÓÔÕÚÜàáâãçéêíóôõúü":
+		if not ThemeDB.fallback_font.has_char(character.unicode_at(0)):
+			portuguese_glyphs.append(character)
+	_check("Portuguese accents are in the original font", portuguese_glyphs.is_empty(), str(portuguese_glyphs))
+	_check("regional German locales resolve to German", Preferences.Languages.supported_locale("de_DE") == "de"
+		and Preferences.Languages.supported_locale("de_AT") == "de" and Preferences.Languages.supported_locale("de_CH") == "de")
+	var german_glyphs := PackedStringArray()
+	for character: String in "ÄÖÜäöüßẞ":
+		if not ThemeDB.fallback_font.has_char(character.unicode_at(0)):
+			german_glyphs.append(character)
+	_check("German umlauts and sharp s are in the original font", german_glyphs.is_empty(), str(german_glyphs))
+	_check("regional French locales resolve to French", Preferences.Languages.supported_locale("fr_FR") == "fr"
+		and Preferences.Languages.supported_locale("fr_CA") == "fr" and Preferences.Languages.supported_locale("fr_CH") == "fr")
+	var french_glyphs := PackedStringArray()
+	for character: String in "ÀÂÆÇÉÈÊËÎÏÔŒÙÛÜŸàâæçéèêëîïôœùûüÿ«»’":
+		if not ThemeDB.fallback_font.has_char(character.unicode_at(0)):
+			french_glyphs.append(character)
+	_check("French accents and ligatures are in the original font", french_glyphs.is_empty(), str(french_glyphs))
+	_check("regional Italian locales resolve to Italian", Preferences.Languages.supported_locale("it_IT") == "it"
+		and Preferences.Languages.supported_locale("it_CH") == "it")
+	var italian_glyphs := PackedStringArray()
+	for character: String in "ÀÈÉÌÒÙàèéìòù«»’":
+		if not ThemeDB.fallback_font.has_char(character.unicode_at(0)):
+			italian_glyphs.append(character)
+	_check("Italian accented letters are in the original font", italian_glyphs.is_empty(), str(italian_glyphs))
+	_check("regional Russian locales resolve to Russian", Preferences.Languages.supported_locale("ru_RU") == "ru"
+		and Preferences.Languages.supported_locale("ru_KZ") == "ru")
+	var russian_glyphs := PackedStringArray()
+	for character: String in "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя№«»—":
+		if not ThemeDB.fallback_font.has_char(character.unicode_at(0)):
+			russian_glyphs.append(character)
+	_check("complete Russian alphabet is in the original font", russian_glyphs.is_empty(), str(russian_glyphs))
 
 
 func _default_and_switch() -> void:
@@ -177,6 +239,83 @@ func _default_and_switch() -> void:
 	await ui.settle()
 	_check("next start remembers Chinese", TranslationServer.get_locale() == "zh_Hans"
 		and again.home.language_button.text == "语言：简体中文")
+	again.home.language_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("fourth option switches to Brazilian Portuguese", TranslationServer.get_locale() == "pt_BR"
+		and again.home.language_button.text == "Idioma: Português (Brasil)"
+		and again.home.fly_button.atr(again.home.fly_button.text) == "VOAR")
+	_check("Portuguese choice saved", Preferences.load_from(PREFS).language == "pt_BR")
+	_check("Portuguese uses the original Latin font", ThemeDB.fallback_font.fallbacks.is_empty())
+	await ui.close_app(again)
+	again = _app(PackedStringArray())
+	root.add_child(again)
+	await ui.settle()
+	_check("next start remembers Portuguese", TranslationServer.get_locale() == "pt_BR"
+		and again.home.language_button.text == "Idioma: Português (Brasil)")
+	again.home.language_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("fifth option switches to German", TranslationServer.get_locale() == "de"
+		and again.home.language_button.text == "Sprache: Deutsch"
+		and again.home.fly_button.atr(again.home.fly_button.text) == "FLIEGEN")
+	_check("German choice saved", Preferences.load_from(PREFS).language == "de")
+	_check("German uses the original Latin font", ThemeDB.fallback_font.fallbacks.is_empty())
+	await ui.close_app(again)
+	again = _app(PackedStringArray())
+	root.add_child(again)
+	await ui.settle()
+	_check("next start remembers German", TranslationServer.get_locale() == "de"
+		and again.home.language_button.text == "Sprache: Deutsch")
+	again.home.language_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("sixth option switches to French", TranslationServer.get_locale() == "fr"
+		and again.home.language_button.text == "Langue : Français"
+		and again.home.fly_button.atr(again.home.fly_button.text) == "VOLER")
+	_check("French choice saved", Preferences.load_from(PREFS).language == "fr")
+	_check("French uses the original Latin font", ThemeDB.fallback_font.fallbacks.is_empty())
+	await ui.close_app(again)
+	again = _app(PackedStringArray())
+	root.add_child(again)
+	await ui.settle()
+	_check("next start remembers French", TranslationServer.get_locale() == "fr"
+		and again.home.language_button.text == "Langue : Français")
+	again.home.language_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("seventh option switches to Italian", TranslationServer.get_locale() == "it"
+		and again.home.language_button.text == "Lingua: Italiano"
+		and again.home.fly_button.atr(again.home.fly_button.text) == "VOLA")
+	_check("Italian choice saved", Preferences.load_from(PREFS).language == "it")
+	_check("Italian uses the original Latin font", ThemeDB.fallback_font.fallbacks.is_empty())
+	await ui.close_app(again)
+	again = _app(PackedStringArray())
+	root.add_child(again)
+	await ui.settle()
+	_check("next start remembers Italian", TranslationServer.get_locale() == "it"
+		and again.home.language_button.text == "Lingua: Italiano")
+	again.home.language_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("eighth option switches to Russian", TranslationServer.get_locale() == "ru"
+		and again.home.language_button.text == "Язык: Русский"
+		and again.home.fly_button.atr(again.home.fly_button.text) == "ЛЕТЕТЬ")
+	_check("Russian choice saved", Preferences.load_from(PREFS).language == "ru")
+	_check("Russian uses the original font without a CJK fallback", ThemeDB.fallback_font.fallbacks.is_empty())
+	await ui.close_app(again)
+	again = _app(PackedStringArray())
+	root.add_child(again)
+	await ui.settle()
+	_check("next start remembers Russian", TranslationServer.get_locale() == "ru"
+		and again.home.language_button.text == "Язык: Русский")
+	again.home.language_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("ninth option switches to Japanese", TranslationServer.get_locale() == "ja"
+		and again.home.language_button.text == "言語：日本語"
+		and again.home.fly_button.atr(again.home.fly_button.text) == "飛行開始")
+	_check("Japanese choice saved", Preferences.load_from(PREFS).language == "ja")
+	await ui.close_app(again)
+	again = _app(PackedStringArray())
+	root.add_child(again)
+	await ui.settle()
+	_check("next start remembers Japanese", TranslationServer.get_locale() == "ja"
+		and again.home.language_button.text == "言語：日本語")
 	again.home.language_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("and cycles back to English", TranslationServer.get_locale() == "en" and Preferences.load_from(PREFS).language == "en")

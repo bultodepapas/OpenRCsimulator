@@ -177,7 +177,7 @@ func _run() -> void:
 		"locale=%s, close=%s, status=%s, mode=%s" % [TranslationServer.get_locale(), settings._close_button.text,
 		settings._status.text, settings._window_picker.get_item_text(0)])
 
-	_check("Settings offers Chinese as its third language", settings._language_picker.item_count == 3
+	_check("Settings offers Chinese as its third language", settings._language_picker.item_count == 9
 		and settings._language_picker.get_item_text(2) == "简体中文"
 		and settings._language_picker.get_item_metadata(2) == "zh_Hans")
 	settings._language_picker.grab_focus()
@@ -188,9 +188,75 @@ func _run() -> void:
 	_check("Chinese selection refreshes open Settings and persists", TranslationServer.get_locale() == "zh_Hans"
 		and Preferences.load_from(PREFS).language == "zh_Hans" and settings._close_button.text == "关闭"
 		and app.home.language_button.text == "语言：简体中文")
+	_check("Settings offers Brazilian Portuguese fourth", settings._language_picker.get_item_text(3) == "Português (Brasil)"
+		and settings._language_picker.get_item_metadata(3) == "pt_BR")
+	settings._language_picker.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN)
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("Portuguese updates Settings and persists immediately", TranslationServer.get_locale() == "pt_BR"
+		and Preferences.load_from(PREFS).language == "pt_BR" and settings._close_button.text == "Fechar"
+		and app.home.language_button.text == "Idioma: Português (Brasil)")
+	_check("Settings offers German fifth", settings._language_picker.get_item_text(4) == "Deutsch"
+		and settings._language_picker.get_item_metadata(4) == "de")
+	settings._language_picker.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN)
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("German updates Settings and persists immediately", TranslationServer.get_locale() == "de"
+		and Preferences.load_from(PREFS).language == "de" and settings._close_button.text == "Schließen"
+		and app.home.language_button.text == "Sprache: Deutsch")
+	_check("Settings offers French sixth", settings._language_picker.get_item_text(5) == "Français"
+		and settings._language_picker.get_item_metadata(5) == "fr")
+	settings._language_picker.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN)
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("French updates Settings and persists immediately", TranslationServer.get_locale() == "fr"
+		and Preferences.load_from(PREFS).language == "fr" and settings._close_button.text == "Fermer"
+		and app.home.language_button.text == "Langue : Français")
+	_check("Settings offers Italian seventh", settings._language_picker.get_item_text(6) == "Italiano"
+		and settings._language_picker.get_item_metadata(6) == "it")
+	settings._language_picker.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN)
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("Italian updates Settings and persists immediately", TranslationServer.get_locale() == "it"
+		and Preferences.load_from(PREFS).language == "it" and settings._close_button.text == "Chiudi"
+		and app.home.language_button.text == "Lingua: Italiano")
+	_check("Settings offers Russian eighth", settings._language_picker.get_item_text(7) == "Русский"
+		and settings._language_picker.get_item_metadata(7) == "ru")
+	settings._language_picker.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN)
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("Russian updates Settings and persists immediately", TranslationServer.get_locale() == "ru"
+		and Preferences.load_from(PREFS).language == "ru" and settings._close_button.text == "Закрыть"
+		and app.home.language_button.text == "Язык: Русский")
+	_check("Settings offers Japanese ninth", settings._language_picker.get_item_text(8) == "日本語"
+		and settings._language_picker.get_item_metadata(8) == "ja")
+	settings._language_picker.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN)
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("Japanese updates Settings and persists immediately", TranslationServer.get_locale() == "ja"
+		and Preferences.load_from(PREFS).language == "ja" and settings._close_button.text == "閉じる"
+		and app.home.language_button.text == "言語：日本語")
 	# Return to Spanish for the existing nested-screen and pause checks.
 	settings._language_picker.grab_focus()
 	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_UP)
+	await ui.tap(KEY_UP)
+	await ui.tap(KEY_UP)
+	await ui.tap(KEY_UP)
+	await ui.tap(KEY_UP)
+	await ui.tap(KEY_UP)
 	await ui.tap(KEY_UP)
 	await ui.tap(KEY_ENTER)
 	await ui.settle()

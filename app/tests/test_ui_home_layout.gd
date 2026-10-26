@@ -1,4 +1,4 @@
-# UI-25: Home reflows for every catalog aircraft and all three languages. Long content scrolls while Fly and utility
+# UI-25: Home reflows for every catalog aircraft and all nine languages. Long content scrolls while Fly and utility
 # actions stay pinned and visible, including at 200% text size on the 720p logical canvas.
 #
 # Layout only: no flight, no settings file.
@@ -29,7 +29,7 @@ func _run() -> void:
 	await process_frame
 	var worst_720 := 0.0
 	var worst_720_case := ""
-	for lang in ["en", "es", "zh_Hans"]:
+	for lang in ["en", "es", "zh_Hans", "pt_BR", "de", "fr", "it", "ru", "ja"]:
 		TranslationServer.set_locale(lang)
 		for id in Catalog.ids():
 			for defaults in [false, true]:
@@ -62,7 +62,7 @@ func _run() -> void:
 					_check("%s: controls legend stays reachable in the scroll viewport" % case,
 						m.legend_bottom_scrolled <= m.scroll_bottom + 0.5,
 						"%.0f > %.0f" % [m.legend_bottom_scrolled, m.scroll_bottom])
-	for lang in ["en", "es", "zh_Hans"]:
+	for lang in ["en", "es", "zh_Hans", "pt_BR", "de", "fr", "it", "ru", "ja"]:
 		TranslationServer.set_locale(lang)
 		for id in Catalog.ids():
 			var m := await _measure(id, false, Vector2(1280, 720), 2.0)

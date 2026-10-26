@@ -1,7 +1,17 @@
 ## UI-01e: small shared locale registry; safe to preload before the application shell.
 extends RefCounted
 
-const NAMES := {"en": "English", "es": "Español", "zh_Hans": "简体中文"}
+const NAMES := {
+	"en": "English",
+	"es": "Español",
+	"zh_Hans": "简体中文",
+	"pt_BR": "Português (Brasil)",
+	"de": "Deutsch",
+	"fr": "Français",
+	"it": "Italiano",
+	"ru": "Русский",
+	"ja": "日本語",
+}
 
 
 static func supported_locale(locale: String) -> String:

@@ -28,6 +28,7 @@ signal graphics_restart_requested(profile: String)
 
 const DISPLAY_TEST_SECONDS := 15
 const Languages := preload("res://i18n/languages.gd")
+const InterfaceFont := preload("res://i18n/fonts.gd")
 const SCALE_CHOICES: Array[int] = [100, 125, 150, 175, 200]
 
 var display_preferences: DisplayPreferences
@@ -362,6 +363,8 @@ func _build() -> void:
 
 	_language_picker = OptionButton.new()
 	_language_picker.name = "Language"
+	_language_picker.add_theme_font_override("font", InterfaceFont.language_names_font())
+	_language_picker.get_popup().add_theme_font_override("font", InterfaceFont.language_names_font())
 	for code: String in Languages.NAMES:
 		_language_picker.add_item(Languages.NAMES[code])
 		_language_picker.set_item_metadata(_language_picker.item_count - 1, code)

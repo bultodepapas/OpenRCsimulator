@@ -73,7 +73,7 @@ textures/vram_compression/import_etc2_astc=true
 
 ; UI-01d: English is the source and default language (set by app_root, not the OS locale); one gettext .po per
 ; other language. .po files load without an import step and are exported with all_resources (probe 23).
-locale/translations=PackedStringArray("res://i18n/es.po", "res://i18n/zh_Hans.po")
+locale/translations=PackedStringArray("res://i18n/es.po", "res://i18n/zh_Hans.po", "res://i18n/pt_BR.po", "res://i18n/de.po", "res://i18n/fr.po", "res://i18n/it.po", "res://i18n/ru.po", "res://i18n/ja.po")
 
 [editor_plugins]
 

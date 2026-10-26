@@ -176,12 +176,12 @@ msgstr "键盘操控 — 未连接遥控器。"
 msgid ""
 "Radio “%s”. Lower the throttle to arm the engine. To fly with the keyboard, "
 "unplug it."
-msgstr "遥控器“%s”。将油门杆拉低以启用引擎。若要使用键盘飞行，请拔下遥控器。"
+msgstr "遥控器“%s”。请将油门杆收至最低以解锁。若要使用键盘飞行，请拔下遥控器。"
 
 msgid ""
 "Controller “%s”. Lower the throttle to arm the engine. To fly with the "
 "keyboard, unplug it."
-msgstr "控制器“%s”。将油门杆拉低以启用引擎。若要使用键盘飞行，请拔下控制器。"
+msgstr "控制器“%s”。请将油门杆收至最低以解锁。若要使用键盘飞行，请拔下控制器。"
 
 msgid "Roll"
 msgstr "横滚"
@@ -658,7 +658,7 @@ msgid "Flight model under evaluation."
 msgstr "飞行模型评估中。"
 
 msgid "Full-rudder sideslip and R02 yaw damping acceptance remain pending."
-msgstr "全舵量侧滑和 R02 偏航阻尼验收仍待完成。"
+msgstr "方向舵打满时的侧滑和 R02 偏航阻尼验收仍待完成。"
 
 msgid ""
 "Experimental: first physics estimate from the plans, not yet flight-tested."
@@ -1695,7 +1695,7 @@ msgid "FAILSAFE · radio lost"
 msgstr "失控保护 · 遥控器信号丢失"
 
 msgid "RADIO SAFE · throttle low to arm"
-msgstr "遥控器安全状态 · 油门低位以启用引擎"
+msgstr "遥控器安全锁定 · 油门收至最低以解锁"
 
 msgid "STALL"
 msgstr "失速"
@@ -1773,7 +1773,7 @@ msgid "Radio"
 msgstr "遥控器"
 
 msgid "ARMED"
-msgstr "已就绪"
+msgstr "已解锁"
 
 msgid "SAFE"
 msgstr "安全"
@@ -7714,7 +7714,7 @@ msgid "These actions use the build currently open in the editor."
 msgstr "这些操作会使用编辑器中当前打开的配置。"
 
 msgid "Build files"
-msgstr "配置文件"
+msgstr "飞机方案文件"
 
 msgid "Enter a multiplier; 1 keeps the original value."
 msgstr "输入倍数；1 表示保留原值。"
@@ -7924,10 +7924,10 @@ msgstr "双舵量：普通 / 高舵量"
 msgid ""
 "No saved builds match these filters. Clear the search or turn off Favorites "
 "only."
-msgstr "没有已保存的配置符合这些筛选条件。请清除搜索内容，或关闭“仅收藏”。"
+msgstr "没有已保存的方案符合这些筛选条件。请清除搜索内容，或关闭“仅收藏”。"
 
 msgid "No saved builds yet. Save the current build to add it here."
-msgstr "还没有已保存的配置。保存当前配置即可将其添加到此处。"
+msgstr "还没有已保存的方案。保存当前方案即可将其添加到此处。"
 
 msgid "Creates a separate saved build. The original stays unchanged."
 msgstr "这会创建一份独立保存的配置。原配置保持不变。"
