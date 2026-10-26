@@ -110,16 +110,16 @@ static func validate(bindings: Dictionary) -> Dictionary:
 	var definitions := _definition_map()
 	for action_id in ["back", "pause"]:
 		if not bindings.has(action_id) or not _valid_binding(bindings[action_id]) or _is_unbound(bindings.get(action_id)):
-			var error := "Missing recovery binding: %s" % action_id
+			var error: String = "Missing recovery binding: %s" % action_id
 			errors.append(error)
 			_append_issue(issues, "recovery_binding_missing", ["actions.%s" % action_id], error)
 	for action_id: Variant in bindings:
 		if not definitions.has(str(action_id)):
-			var error := "Unknown action: %s" % str(action_id)
+			var error: String = "Unknown action: %s" % str(action_id)
 			errors.append(error)
 			_append_issue(issues, "action_unknown", ["actions.%s" % str(action_id)], error)
 		elif not _valid_binding(bindings[action_id]):
-			var error := "Invalid binding: %s" % str(action_id)
+			var error: String = "Invalid binding: %s" % str(action_id)
 			errors.append(error)
 			_append_issue(issues, "binding_invalid", ["actions.%s" % str(action_id)], error)
 	var ids: Array = bindings.keys()
@@ -133,7 +133,7 @@ static func validate(bindings: Dictionary) -> Dictionary:
 				continue
 			if _contexts_overlap(definitions[left_id].context, definitions[right_id].context) \
 					and _same_binding(bindings[ids[i]], bindings[ids[j]]):
-				var error := "Binding conflict: %s and %s" % [left_id, right_id]
+				var error: String = "Binding conflict: %s and %s" % [left_id, right_id]
 				errors.append(error)
 				_append_issue(issues, "binding_conflict", ["actions.%s" % left_id, "actions.%s" % right_id], error)
 	return {"ok": errors.is_empty(), "errors": errors, "issues": issues}
@@ -208,12 +208,12 @@ static func validate_profile_bindings(profile: Dictionary, capabilities: Diction
 	var issues: Array[Dictionary] = []
 	var actions_value: Variant = _dict_value(profile, "actions", {})
 	if not actions_value is Dictionary:
-		var error := "actions must be a dictionary"
+		var error: String = "actions must be a dictionary"
 		errors.append(error)
 		_append_issue(issues, "profile_invalid", ["actions"], error)
 	var aux_value: Variant = _dict_value(profile, "aux", {})
 	if not aux_value is Dictionary:
-		var error := "aux must be a dictionary"
+		var error: String = "aux must be a dictionary"
 		errors.append(error)
 		_append_issue(issues, "aux_invalid", ["aux"], error)
 	var bindings := effective_bindings(profile, capabilities)
@@ -228,13 +228,13 @@ static func validate_profile_bindings(profile: Dictionary, capabilities: Diction
 		for aux_id in AUX_CHANNEL_IDS:
 			var aux_binding: Variant = _dict_value(aux_value, aux_id, null)
 			if _has_key(aux_value, aux_id) and not SmokeAux.valid_binding(aux_binding, flight_axes):
-				var error := "aux.%s is invalid or overlaps a flight axis" % aux_id
+				var error: String = "aux.%s is invalid or overlaps a flight axis" % aux_id
 				_append_error(errors, error)
 				_append_issue(issues, "aux_invalid", _aux_invalid_paths(str(aux_id), aux_binding, profile), error)
 	for i in configured_aux.size():
 		for j in range(i + 1, configured_aux.size()):
 			if _same_aux_control(configured_aux[i].binding, configured_aux[j].binding):
-				var error := "AUX binding conflict: aux.%s and aux.%s" % [
+				var error: String = "AUX binding conflict: aux.%s and aux.%s" % [
 					configured_aux[i].name, configured_aux[j].name,
 				]
 				_append_error(errors, error)
@@ -254,14 +254,14 @@ static func validate_profile_bindings(profile: Dictionary, capabilities: Diction
 		if context not in ["flight", "both"]:
 			continue
 		if str(binding.get("type", "")) == "axis" and flight_axes.has(int(binding.axis)):
-			var error := "Action %s uses primary flight axis %d" % [action_id, int(binding.axis)]
+			var error: String = "Action %s uses primary flight axis %d" % [action_id, int(binding.axis)]
 			_append_error(errors, error)
 			var axis_paths := _flight_axis_paths(profile, int(binding.axis))
 			axis_paths.push_front("actions.%s" % action_id)
 			_append_issue(issues, "action_flight_axis_conflict", axis_paths, error)
 		for aux_entry in configured_aux:
 			if _same_aux_control(binding, aux_entry.binding):
-				var error := "Action %s conflicts with aux.%s" % [action_id, aux_entry.name]
+				var error: String = "Action %s conflicts with aux.%s" % [action_id, aux_entry.name]
 				_append_error(errors, error)
 				_append_issue(issues, "action_aux_conflict", [
 					"actions.%s" % action_id,
@@ -269,7 +269,7 @@ static func validate_profile_bindings(profile: Dictionary, capabilities: Diction
 				], error)
 		for aux_id in AUX_CHANNEL_IDS:
 			if _aux_is_configured(aux_value, aux_id) and _action_aux_semantic_conflict(action_id, aux_id):
-				var error := "Action %s conflicts with aux.%s" % [action_id, aux_id]
+				var error: String = "Action %s conflicts with aux.%s" % [action_id, aux_id]
 				_append_error(errors, error)
 				var aux_binding: Variant = _dict_value(aux_value, aux_id, null)
 				_append_issue(issues, "action_aux_conflict", [

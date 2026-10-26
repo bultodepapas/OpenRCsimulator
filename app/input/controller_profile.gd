@@ -243,86 +243,86 @@ static func validate(value: Variant) -> Dictionary:
 	var errors: Array[String] = []
 	var issues: Array[Dictionary] = []
 	if typeof(value) != TYPE_DICTIONARY:
-		var error := "profile must be a Dictionary"
+		var error: String = "profile must be a Dictionary"
 		_append_validation_issue(errors, issues, "profile_invalid", ["profile"], error)
 		return {"ok": false, "errors": errors, "issues": issues}
 	if not _valid_variant_tree(value, 0):
-		var error := "profile contains a non-finite or unsupported value"
+		var error: String = "profile contains a non-finite or unsupported value"
 		_append_validation_issue(errors, issues, "profile_invalid", [_invalid_variant_path(value, "", 0)], error)
 	if typeof(value.get("schema_version")) != TYPE_INT or value.get("schema_version") != SCHEMA_VERSION:
-		var error := "schema_version must be 2"
+		var error: String = "schema_version must be 2"
 		_append_validation_issue(errors, issues, "profile_invalid", ["schema_version"], error)
 	var profile_id: Variant = value.get("profile_id")
 	if typeof(profile_id) != TYPE_STRING or not _is_uuid(profile_id):
-		var error := "profile_id must be a UUID"
+		var error: String = "profile_id must be a UUID"
 		_append_validation_issue(errors, issues, "profile_invalid", ["profile_id"], error)
 	var profile_name: Variant = value.get("name")
 	if typeof(profile_name) != TYPE_STRING or profile_name.strip_edges().is_empty() or profile_name.length() > 80:
-		var error := "name must contain 1 to 80 characters"
+		var error: String = "name must contain 1 to 80 characters"
 		_append_validation_issue(errors, issues, "name_invalid", ["name"], error)
 	var kind_value: Variant = value.get("kind")
 	if typeof(kind_value) != TYPE_STRING or not VALID_KINDS.has(kind_value):
-		var error := "kind must be gamepad, radio, or joystick"
+		var error: String = "kind must be gamepad, radio, or joystick"
 		_append_validation_issue(errors, issues, "profile_invalid", ["kind"], error)
 	var configured: Variant = value.get("configured", true)
 	if typeof(configured) != TYPE_BOOL or not configured:
-		var error := "unconfigured profile cannot drive flight commands"
+		var error: String = "unconfigured profile cannot drive flight commands"
 		_append_validation_issue(errors, issues, "profile_invalid", ["configured"], error)
 	var preset: Variant = value.get("preset")
 	if typeof(preset) != TYPE_STRING or preset.is_empty() or preset.length() > 40:
-		var error := "preset must be a non-empty string"
+		var error: String = "preset must be a non-empty string"
 		_append_validation_issue(errors, issues, "profile_invalid", ["preset"], error)
 	if typeof(value.get("preset_revision")) != TYPE_INT or int(value.get("preset_revision", 0)) < 1:
-		var error := "preset_revision must be a positive integer"
+		var error: String = "preset_revision must be a positive integer"
 		_append_validation_issue(errors, issues, "profile_invalid", ["preset_revision"], error)
 	var mode_value: Variant = value.get("throttle_mode")
 	if typeof(mode_value) != TYPE_STRING or not VALID_THROTTLE_MODES.has(mode_value):
-		var error := "throttle_mode is unsupported"
+		var error: String = "throttle_mode is unsupported"
 		_append_validation_issue(errors, issues, "profile_invalid", ["throttle_mode"], error)
 	elif typeof(kind_value) == TYPE_STRING:
 		if kind_value == "radio" and mode_value != "radio_absolute":
-			var error := "radio profiles require radio_absolute throttle"
+			var error: String = "radio profiles require radio_absolute throttle"
 			_append_validation_issue(errors, issues, "profile_invalid", ["throttle_mode"], error)
 		if kind_value == "gamepad" and not ["stick_rate", "trigger_absolute"].has(mode_value):
-			var error := "gamepad profiles require stick_rate or trigger_absolute throttle"
+			var error: String = "gamepad profiles require stick_rate or trigger_absolute throttle"
 			_append_validation_issue(errors, issues, "profile_invalid", ["throttle_mode"], error)
 		if kind_value == "joystick" and mode_value == "trigger_absolute":
-			var error := "trigger_absolute is reserved for gamepad profiles"
+			var error: String = "trigger_absolute is reserved for gamepad profiles"
 			_append_validation_issue(errors, issues, "profile_invalid", ["throttle_mode"], error)
 	for numeric_field in ["throttle_rate", "idle_threshold", "rumble_intensity"]:
 		if value.has(numeric_field) and not _is_number(value[numeric_field]):
-			var error := numeric_field + " must be finite"
+			var error: String = numeric_field + " must be finite"
 			_append_validation_issue(errors, issues, "profile_invalid", [numeric_field], error)
 	if value.has("throttle_rate") and _is_number(value.throttle_rate) and (float(value.throttle_rate) <= 0.0 or float(value.throttle_rate) > 5.0):
-		var error := "throttle_rate must be greater than 0 and at most 5"
+		var error: String = "throttle_rate must be greater than 0 and at most 5"
 		_append_validation_issue(errors, issues, "profile_invalid", ["throttle_rate"], error)
 	if value.has("idle_threshold") and _is_number(value.idle_threshold) and (float(value.idle_threshold) < 0.0 or float(value.idle_threshold) > 0.2):
-		var error := "idle_threshold must be between 0 and 0.2"
+		var error: String = "idle_threshold must be between 0 and 0.2"
 		_append_validation_issue(errors, issues, "profile_invalid", ["idle_threshold"], error)
 	if typeof(value.get("neutral_duration_ms")) != TYPE_INT or int(value.get("neutral_duration_ms", -1)) < 1 or int(value.get("neutral_duration_ms", -1)) > 5000:
-		var error := "neutral_duration_ms must be from 1 to 5000"
+		var error: String = "neutral_duration_ms must be from 1 to 5000"
 		_append_validation_issue(errors, issues, "profile_invalid", ["neutral_duration_ms"], error)
 	if typeof(value.get("require_release")) != TYPE_BOOL:
-		var error := "require_release must be a boolean"
+		var error: String = "require_release must be a boolean"
 		_append_validation_issue(errors, issues, "profile_invalid", ["require_release"], error)
 	if typeof(value.get("association")) != TYPE_DICTIONARY:
-		var error := "association must be a Dictionary"
+		var error: String = "association must be a Dictionary"
 		_append_validation_issue(errors, issues, "profile_invalid", ["association"], error)
 	elif not _valid_association(value.get("association")):
-		var error := "association contains invalid device identity data"
+		var error: String = "association contains invalid device identity data"
 		_append_validation_issue(errors, issues, "profile_invalid", ["association"], error)
 	var action_values: Variant = value.get("actions")
 	if typeof(action_values) != TYPE_DICTIONARY:
-		var error := "actions must be a Dictionary"
+		var error: String = "actions must be a Dictionary"
 		_append_validation_issue(errors, issues, "profile_invalid", ["actions"], error)
 	else:
 		for action_id in action_values:
 			if typeof(action_id) != TYPE_STRING or ControllerActions.action_definition(str(action_id)).is_empty():
-				var error := "actions contains an unknown semantic action"
+				var error: String = "actions contains an unknown semantic action"
 				_append_validation_issue(errors, issues, "action_unknown", ["actions.%s" % str(action_id)], error)
 				continue
 			if not _valid_action_binding(action_values[action_id]):
-				var error := "actions.%s has an invalid binding" % str(action_id)
+				var error: String = "actions.%s has an invalid binding" % str(action_id)
 				_append_validation_issue(errors, issues, "binding_invalid", ["actions.%s" % str(action_id)], error)
 		var action_validation: Dictionary = ControllerActions.validate_profile_bindings(value)
 		for action_error in action_validation.errors:
@@ -331,17 +331,17 @@ static func validate(value: Variant) -> Dictionary:
 			issues.append(action_issue.duplicate(true))
 	var presentation: Variant = value.get("presentation")
 	if typeof(presentation) != TYPE_DICTIONARY:
-		var error := "presentation must be a Dictionary"
+		var error: String = "presentation must be a Dictionary"
 		_append_validation_issue(errors, issues, "profile_invalid", ["presentation"], error)
 	else:
 		if typeof(presentation.get("glyph_family")) != TYPE_STRING or not VALID_GLYPHS.has(presentation.get("glyph_family")):
-			var error := "presentation.glyph_family is unsupported"
+			var error: String = "presentation.glyph_family is unsupported"
 			_append_validation_issue(errors, issues, "profile_invalid", ["presentation.glyph_family"], error)
 		if typeof(presentation.get("rumble_enabled")) != TYPE_BOOL:
-			var error := "presentation.rumble_enabled must be a boolean"
+			var error: String = "presentation.rumble_enabled must be a boolean"
 			_append_validation_issue(errors, issues, "profile_invalid", ["presentation.rumble_enabled"], error)
 		if not _is_number(presentation.get("rumble_intensity")) or float(presentation.get("rumble_intensity", -1.0)) < 0.0 or float(presentation.get("rumble_intensity", 2.0)) > 1.0:
-			var error := "presentation.rumble_intensity must be between 0 and 1"
+			var error: String = "presentation.rumble_intensity must be between 0 and 1"
 			_append_validation_issue(errors, issues, "profile_invalid", ["presentation.rumble_intensity"], error)
 
 	var axes: Dictionary = {}
@@ -349,16 +349,16 @@ static func validate(value: Variant) -> Dictionary:
 	for channel_name in ["roll", "pitch", "yaw", "throttle"]:
 		var channel: Variant = value.get(channel_name)
 		if typeof(channel) != TYPE_DICTIONARY:
-			var error := channel_name + " must be a Dictionary"
+			var error: String = channel_name + " must be a Dictionary"
 			_append_validation_issue(errors, issues, "channel_invalid", [str(channel_name)], error)
 			continue
 		if typeof(channel.get("axis")) != TYPE_INT or int(channel.get("axis", -1)) < 0 or int(channel.get("axis", 99)) >= AXIS_COUNT:
-			var error := channel_name + ".axis must be an integer from 0 to 9"
+			var error: String = channel_name + ".axis must be an integer from 0 to 9"
 			_append_validation_issue(errors, issues, "axis_invalid", ["%s.axis" % channel_name], error)
 		else:
 			var source_axis: int = channel.axis
 			if axes.has(source_axis):
-				var error := "flight channels must use separate source axes"
+				var error: String = "flight channels must use separate source axes"
 				errors.append(error)
 				var conflict_paths: Array[String] = []
 				for participant in axis_channels[source_axis]:
@@ -370,57 +370,57 @@ static func validate(value: Variant) -> Dictionary:
 				axis_channels[source_axis] = []
 			axis_channels[source_axis].append(channel_name)
 		if typeof(channel.get("invert")) != TYPE_BOOL:
-			var error := channel_name + ".invert must be a boolean"
+			var error: String = channel_name + ".invert must be a boolean"
 			_append_validation_issue(errors, issues, "channel_invalid", ["%s.invert" % channel_name], error)
 		if typeof(channel.get("range_kind")) != TYPE_STRING or not ["centered", "absolute"].has(channel.get("range_kind")):
-			var error := channel_name + ".range_kind must be centered or absolute"
+			var error: String = channel_name + ".range_kind must be centered or absolute"
 			_append_validation_issue(errors, issues, "range_invalid", ["%s.range_kind" % channel_name], error)
 		for endpoint in ["min", "center", "max"]:
 			if not _is_number(channel.get(endpoint)) or float(channel.get(endpoint, 2.0)) < -1.0 or float(channel.get(endpoint, 2.0)) > 1.0:
-				var error := channel_name + "." + endpoint + " must be finite and within -1 to 1"
+				var error: String = channel_name + "." + endpoint + " must be finite and within -1 to 1"
 				_append_validation_issue(errors, issues, "range_invalid", ["%s.%s" % [channel_name, endpoint]], error)
 		if _is_number(channel.get("min")) and _is_number(channel.get("center")) and _is_number(channel.get("max")):
 			var lo: float = float(channel.min)
 			var center: float = float(channel.center)
 			var hi: float = float(channel.max)
 			if lo >= hi:
-				var error := channel_name + " has zero or reversed range"
+				var error: String = channel_name + " has zero or reversed range"
 				_append_validation_issue(errors, issues, "range_invalid", ["%s.min" % channel_name, "%s.max" % channel_name], error)
 			elif channel.get("range_kind") == "centered" and channel_name != "throttle" and not (lo < center and center < hi):
-				var error := channel_name + " requires travel on both sides of center"
+				var error: String = channel_name + " requires travel on both sides of center"
 				_append_validation_issue(errors, issues, "range_invalid", ["%s.min" % channel_name, "%s.center" % channel_name, "%s.max" % channel_name], error)
 			elif channel.get("range_kind") == "centered" and channel_name == "throttle" and mode_value == "stick_rate" and not (lo < center and center < hi):
-				var error := "stick_rate throttle requires travel on both sides of center"
+				var error: String = "stick_rate throttle requires travel on both sides of center"
 				_append_validation_issue(errors, issues, "range_invalid", ["throttle.min", "throttle.center", "throttle.max"], error)
 			elif channel.get("range_kind") == "centered" and channel_name == "throttle" and mode_value != "stick_rate" and not (lo <= center and center <= hi):
-				var error := "throttle center must be within its endpoints"
+				var error: String = "throttle center must be within its endpoints"
 				_append_validation_issue(errors, issues, "range_invalid", ["throttle.min", "throttle.center", "throttle.max"], error)
 			elif channel.get("range_kind") == "absolute" and not (lo <= center and center <= hi):
-				var error := channel_name + " absolute range requires center within endpoints"
+				var error: String = channel_name + " absolute range requires center within endpoints"
 				_append_validation_issue(errors, issues, "range_invalid", ["%s.min" % channel_name, "%s.center" % channel_name, "%s.max" % channel_name], error)
 		if kind_value == "gamepad" and channel.get("range_kind") == "centered":
 			if not _is_number(channel.get("deadzone")) or float(channel.get("deadzone", -1.0)) < 0.0 or float(channel.get("deadzone", 2.0)) >= 1.0:
-				var error := channel_name + ".deadzone must be in [0, 1)"
+				var error: String = channel_name + ".deadzone must be in [0, 1)"
 				_append_validation_issue(errors, issues, "deadzone_invalid", ["%s.deadzone" % channel_name], error)
 			if not _is_number(channel.get("expo")) or float(channel.get("expo", -1.0)) < 0.0 or float(channel.get("expo", 2.0)) > 1.0:
-				var error := channel_name + ".expo must be in [0, 1]"
+				var error: String = channel_name + ".expo must be in [0, 1]"
 				_append_validation_issue(errors, issues, "expo_invalid", ["%s.expo" % channel_name], error)
 	if typeof(mode_value) == TYPE_STRING and mode_value == "stick_rate" and typeof(value.get("throttle")) == TYPE_DICTIONARY and value.throttle.get("range_kind") != "centered":
-		var error := "stick_rate throttle must use a centered range"
+		var error: String = "stick_rate throttle must use a centered range"
 		_append_validation_issue(errors, issues, "range_invalid", ["throttle.range_kind"], error)
 	if typeof(mode_value) == TYPE_STRING and mode_value == "trigger_absolute" and typeof(value.get("throttle")) == TYPE_DICTIONARY and value.throttle.get("range_kind") != "absolute":
-		var error := "trigger_absolute throttle must use an absolute range"
+		var error: String = "trigger_absolute throttle must use an absolute range"
 		_append_validation_issue(errors, issues, "range_invalid", ["throttle.range_kind"], error)
 	if typeof(mode_value) == TYPE_STRING and mode_value == "radio_absolute" and typeof(value.get("throttle")) == TYPE_DICTIONARY and value.throttle.get("range_kind") != "absolute":
-		var error := "radio_absolute throttle must use an absolute range"
+		var error: String = "radio_absolute throttle must use an absolute range"
 		_append_validation_issue(errors, issues, "range_invalid", ["throttle.range_kind"], error)
 	if value.has("aux") and typeof(value.get("aux")) != TYPE_DICTIONARY:
-		var error := "aux must be a Dictionary"
+		var error: String = "aux must be a Dictionary"
 		_append_validation_issue(errors, issues, "aux_invalid", ["aux"], error)
 	elif typeof(value.get("aux", {})) == TYPE_DICTIONARY:
 		var aux: Dictionary = value.get("aux", {})
 		if aux.has("smoke") and not SmokeAux.valid_binding(aux.smoke, axes.keys()):
-			var error := "aux.smoke is invalid or overlaps a flight axis"
+			var error: String = "aux.smoke is invalid or overlaps a flight axis"
 			errors.append(error)
 			_append_issue(issues, "aux_invalid", ControllerActions._aux_invalid_paths("smoke", aux.smoke, value), error)
 	return {"ok": errors.is_empty(), "errors": errors, "issues": issues}

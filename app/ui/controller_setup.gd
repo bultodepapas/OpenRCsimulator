@@ -134,8 +134,10 @@ var _validation_label_captions: Dictionary = {}
 var _error_field_styles: Dictionary = {}
 var _validation_active := false
 var _validation_status := ""
+var _status_is_error := false
 var _rejected_issues: Array = []
 var _rejected_message := ""
+var _rejected_errors: Array = []
 
 
 func _init() -> void:
@@ -2419,6 +2421,7 @@ func _registry_selected(role: String) -> int:
 
 
 func _set_status(text: String, is_error: bool) -> void:
+	_status_is_error = is_error and not text.is_empty()
 	if status_label == null:
 		return
 	status_label.tooltip_text = text
@@ -2430,27 +2433,217 @@ func _set_status(text: String, is_error: bool) -> void:
 		status_label.text = tr("Problem: %s") % text
 
 
+func _register_validation_field(path: String, section: String, control: Control, labels: Array, caption: String) -> void:
+	_validation_fields[path] = {"section": section, "control": control, "labels": labels, "caption": caption}
+	for label: Label in labels:
+		_validation_label_captions[label] = caption
+
+
+func _validate_candidate(candidate: Dictionary) -> Dictionary:
+	var actions := ControllerActions.validate_profile_bindings(candidate, action_capabilities)
+	var profile := ControllerProfile.validate(candidate)
+	var issues: Array = []
+	var seen: Dictionary = {}
+	for report: Dictionary in [profile, actions]:
+		for issue: Dictionary in report.get("issues", []):
+			var key: String = str(issue.code) + str(issue.paths)
+			if not seen.has(key):
+				seen[key] = true
+				issues.append(issue)
+	return {"ok": bool(actions.ok) and bool(profile.ok), "issues": issues,
+		"errors": actions.errors if not bool(actions.ok) else profile.errors}
+
+
+func _reset_validation() -> void:
+	_clear_field_errors()
+	_validation_active = false
+	_rejected_issues.clear()
+	_rejected_message = ""
+	_rejected_errors.clear()
+	if status_label != null and status_label.text == _validation_status:
+		_set_status("", false)
+	_validation_status = ""
+
+
+func _draft_validation_changed() -> void:
+	if not _rejected_issues.is_empty():
+		_rejected_issues.clear()
+		_rejected_message = ""
+		_rejected_errors.clear()
+		_clear_field_errors()
+		if status_label.text == _validation_status:
+			_set_status("", false)
+	_refresh_validation_feedback()
+
+
+func _refresh_validation_feedback() -> void:
+	if not _rejected_issues.is_empty():
+		_render_validation_fields(_rejected_issues, false, true)
+		if status_label.text == _validation_status:
+			_set_status(tr(_rejected_message) % "; ".join(_rejected_errors), true)
+			_validation_status = status_label.text
+	elif _validation_active and not _draft_profile.is_empty():
+		_show_validation(_validate_candidate(_profile_candidate()), false)
+
+
+func _show_validation(report: Dictionary, focus_error: bool) -> void:
+	_render_validation_fields(report.get("issues", []), focus_error)
+	# An unrelated storage/disconnection error owns the footer until explicitly retried.
+	if not focus_error and status_label.text != _validation_status and _status_is_error:
+		return
+	if bool(report.ok):
+		if status_label.text == _validation_status:
+			_set_status("", false)
+	else:
+		var errors: Array = report.get("errors", [])
+		var text := tr("Profile cannot be saved: %s") % "; ".join(errors)
+		if profile_name_edit.text.strip_edges().is_empty():
+			text = tr("Enter a profile name before saving.")
+		_set_status(text, true)
+	_validation_status = status_label.text
+
+
+func _show_rejected_validation(report: Dictionary, message: String) -> void:
+	_rejected_issues = report.get("issues", []).duplicate(true)
+	_rejected_message = message
+	_rejected_errors = report.get("errors", []).duplicate()
+	_render_validation_fields(_rejected_issues, false, true)
+	_set_status(tr(message) % "; ".join(report.get("errors", [])), true)
+	_validation_status = status_label.text
+
+
+func _validation_field_keys(path: String) -> Array[String]:
+	if _validation_fields.has(path):
+		return [path]
+	var parts := path.split(".")
+	if parts[0] == "aux" and parts.size() >= 2 and _aux_controls.has(parts[1]):
+		var base := "aux." + parts[1] + "."
+		var member := parts[2] if parts.size() > 2 else "type"
+		if member == "mode":
+			return [base + "button_mode"]
+		if member == "label":
+			return [base + "switch_label"]
+		if member == "buttons":
+			var binding: Dictionary = _draft_profile.get("aux", {}).get(parts[1], {})
+			var buttons: Array = binding.get("buttons", [])
+			var keys: Array[String] = []
+			for index: int in _switch_row_indices(buttons.size()):
+				keys.append(base + "buttons.%d" % index)
+			return keys
+		return [base + "type"]
+	if parts[0] in CHANNELS or path == "throttle_mode":
+		# Calibration ranges have no direct editor. The row explains the repair route.
+		return [parts[0] + ".axis"] if parts[0] in CHANNELS else ["throttle.axis"]
+	return []
+
+
+func _validation_message(issue: Dictionary) -> String:
+	var names: Array[String] = []
+	for path: String in issue.get("paths", []):
+		for key: String in _validation_field_keys(path):
+			var caption: String = tr(str(_validation_fields[key].caption))
+			if not names.has(caption):
+				names.append(caption)
+	match str(issue.get("code", "")):
+		"name_invalid": return tr("Enter a profile name before saving.")
+		"axis_conflict", "binding_conflict", "aux_conflict", "action_flight_axis_conflict":
+			return tr("Choose separate inputs for %s.") % ", ".join(names)
+		"action_aux_conflict": return tr("Use either the action or the extra channel: %s.") % ", ".join(names)
+		"axis_invalid": return tr("Choose a source axis from 0 to 9.")
+		"range_invalid", "channel_invalid": return tr("Calibrate this channel or restore a preset.")
+		"deadzone_invalid": return tr("Set the deadzone between 0 and 0.95.")
+		"expo_invalid": return tr("Set expo between 0 and 1.")
+		"recovery_binding_missing": return tr("Assign an input so you can return or pause.")
+		"binding_invalid", "action_unknown": return tr("Remap this action to a valid input.")
+		"aux_invalid": return tr("Check this input and its endpoints; keep it separate from the flight axes.")
+	return tr("Check this setting or restore a preset.")
+
+
+func _render_validation_fields(issues: Array, focus_error: bool, rejected := false) -> void:
+	_clear_field_errors()
+	var messages: Dictionary = {}
+	for issue: Dictionary in issues:
+		var explanation := _validation_message(issue)
+		if rejected:
+			explanation = tr("Assignment not applied: %s") % explanation
+		for path: String in issue.get("paths", []):
+			for key: String in _validation_field_keys(path):
+				if not messages.has(key):
+					messages[key] = []
+				if not messages[key].has(explanation):
+					messages[key].append(explanation)
+	if focus_error:
+		for key: String in _validation_fields:
+			if messages.has(key) and _focus_validation_field(key):
+				break
+	var label_messages: Dictionary = {}
+	for key: String in messages:
+		var entry: Dictionary = _validation_fields[key]
+		var control: Control = entry.control
+		_mark_field_error(control.get_line_edit() if control is SpinBox else control)
+		for label: Label in entry.labels:
+			if not label_messages.has(label):
+				label_messages[label] = []
+			for message: String in messages[key]:
+				if not label_messages[label].has(message):
+					label_messages[label].append(message)
+	for label: Label in label_messages:
+		label.text = tr(str(_validation_label_captions[label])) + "\n" + tr("Problem: %s") % "\n".join(label_messages[label])
+
+
+func _focus_validation_field(key: String) -> bool:
+	var entry: Dictionary = _validation_fields[key]
+	select_section(str(entry.section))
+	var control: Control = entry.control
+	if entry.section == "buttons" and not control.is_visible_in_tree():
+		action_filter.select(0)
+		_update_action_controls()
+	if control is SpinBox:
+		control = control.get_line_edit()
+	if not control.is_visible_in_tree() or (control is BaseButton and control.disabled) or (control is LineEdit and not control.editable):
+		return false
+	_initial_focus_wait_frames = 0
+	control.grab_focus()
+	(_section_body.get_parent() as ScrollContainer).ensure_control_visible.call_deferred(control)
+	return true
+
+
 func _mark_field_error(control: Control) -> void:
 	if not is_instance_valid(control) or control in _error_field_controls:
 		return
 	_error_field_controls.append(control)
-	var style := StyleBoxFlat.new()
-	style.border_color = ScreenTheme.ERROR
-	for side: int in [SIDE_LEFT, SIDE_RIGHT, SIDE_TOP, SIDE_BOTTOM]:
-		style.set_border_width(side, 2)
-	style.set_corner_radius_all(4)
-	style.bg_color = Color(ScreenTheme.ERROR.r, ScreenTheme.ERROR.g, ScreenTheme.ERROR.b, 0.08)
-	control.add_theme_stylebox_override("normal", style)
-	if control is LineEdit:
-		control.add_theme_stylebox_override("focus", style)
+	var saved_styles: Dictionary = {}
+	var style_names: Array[String] = ["normal", "focus"]
+	if control is BaseButton:
+		style_names.append_array(["hover", "pressed", "hover_pressed"])
+	for style_name: String in style_names:
+		var original := control.get_theme_stylebox(style_name)
+		saved_styles[style_name] = original if control.has_theme_stylebox_override(style_name) else null
+		var style: StyleBoxFlat = original.duplicate() as StyleBoxFlat
+		if style == null:
+			style = StyleBoxFlat.new()
+			style.bg_color = Color.TRANSPARENT
+		style.border_color = ScreenTheme.ERROR
+		for side: int in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+			style.set_border_width(side, maxi(2, style.get_border_width(side)))
+		control.add_theme_stylebox_override(style_name, style)
+	_error_field_styles[control] = saved_styles
 
 
 func _clear_field_errors() -> void:
 	for control: Control in _error_field_controls:
 		if is_instance_valid(control):
-			control.remove_theme_stylebox_override("normal")
-			control.remove_theme_stylebox_override("focus")
+			for style_name: String in _error_field_styles.get(control, {}):
+				var original: StyleBox = _error_field_styles[control][style_name]
+				if original != null:
+					control.add_theme_stylebox_override(style_name, original)
+				else:
+					control.remove_theme_stylebox_override(style_name)
 	_error_field_controls.clear()
+	_error_field_styles.clear()
+	for label: Label in _validation_label_captions:
+		if is_instance_valid(label):
+			label.text = tr(str(_validation_label_captions[label]))
 
 
 static func _section_label(text: String) -> Label:
