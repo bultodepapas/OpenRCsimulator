@@ -1,5 +1,8 @@
 # UI-15-JETI-04: remapping a lower row must not navigate back to the section top.
 # Use the isolated draft and actual keyboard event route; leave storage untouched.
+eval expr="app.set_meta('jeti_repro_window_size',tree.root.size)"
+eval expr="tree.root.set_size(Vector2i(1920,1080))"
+wait frames=4
 eval expr="controllers.set_process(false)"
 open screen=controls
 eval expr="screens.top()._set_draft_profile(screens.top().ControllerProfile.defaults('radio','jeti_mode2'))"
@@ -23,3 +26,5 @@ press text=Cancel
 eval expr="controllers.set_process(true)"
 eval expr="controllers.refresh()"
 assert expr="screens.is_top('home')" message="Cancel returns to Home"
+eval expr="tree.root.set_size(app.get_meta('jeti_repro_window_size'))"
+eval expr="app.remove_meta('jeti_repro_window_size')"

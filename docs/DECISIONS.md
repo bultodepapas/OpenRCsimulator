@@ -1102,3 +1102,21 @@ two-position dual rates, remembering the chosen sport/full high position. The
 historical uncontrolled-roll trigger was elevator overpull into stall; preserve
 its normal pitch response and radio bypass. The owner requested both stronger
 roll response and coherent dual rates. [Evidence and limits](research/aero-consistency/D11-R1/README.md).
+
+### 2026-10-26 — Preserve Mobile night light before tonemapping (FW-RGB-13)
+
+Enable HDR 2D for Mobile world and magnifier viewports, retaining faint scene-linear values that the default RGB10A2 buffer rounds away before night exposure. Keep that precision across day/night transitions and account for its memory in the baseline. Do not compensate by changing physical light/exposure or aircraft emission. Encode HDR image readback to sRGB before 8-bit storage; the pinned engine's RGBAH image conversion is defective, so use the tested per-pixel capture helper and PNG/FFmpeg instead of Mobile Movie Maker. Compatibility/Forward+ settings and flight physics are unchanged. Probe lifetime, hardware budgets and pilot acceptance remain open. [Evidence and engine boundaries](research/night-flight-lighting/implementation.md#fw-rgb-13-mobile-viewport-precision-repair-2026-10-26).
+
+
+### 2026-10-26 — Publish runway reset notifications after physical acceptance (GP-14d)
+
+Complete all refusal-capable reset checks before physical commit, then run a
+synchronous owner notification hook before tick0 publication. Capture an explicit
+detached old closing checkpoint/tick before staging new state so recorder footers,
+pause events and fleet alignment cannot mix flights. Precommit owner reentry
+rejects without notifications; a forbidden post-commit observer edit restores the
+protected committed frame and faults/pauses with physical acceptance and one new
+generation retained. Allow legitimate post-commit presentation holds. Keep ordinary
+empty-hook bytes and successful result keys compatible. This migrates the prepared
+runway route; airborne/reload/restore migration remains separate. [Contract and
+original failure/current evidence](research/ground-physics/GP-14/README.md#accepted-runway-reset-publication-gp-14d).

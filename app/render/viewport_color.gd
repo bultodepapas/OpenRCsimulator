@@ -14,6 +14,8 @@ static func configure(viewport: Viewport) -> void:
 static func display_image(source: Image, linear_hdr: bool) -> Image:
 	if source == null or source.is_empty() or not linear_hdr:
 		return source
+	# 4.8-beta1 Image::_lin2srgb_hft4 writes the wrong destination pixel. Use Color's
+	# conversion until that engine defect is fixed; converting to RGB8 first loses shadows.
 	var result := Image.create(source.get_width(), source.get_height(), false, Image.FORMAT_RGBA8)
 	for y in source.get_height():
 		for x in source.get_width():

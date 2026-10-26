@@ -69,6 +69,12 @@ func _initialize() -> void:
 func _run() -> void:
 	_options = _parse_options(OS.get_cmdline_user_args())
 	_realtime = _options.has("frametimes")
+	# Mobile world rendering needs HDR. The pinned engine's Movie Maker corrupts
+	# RGBAH-to-sRGB conversion; use this harness's correctly encoded PNG sequence.
+	if RenderingServer.get_current_rendering_method() == "mobile" and not Engine.get_write_movie_path().is_empty():
+		push_error("Mobile HDR movie capture is unavailable on the pinned engine; capture PNG frames and encode them with FFmpeg.")
+		quit(2)
+		return
 	_out_dir = str(_options.get("out-dir", ""))
 	if _out_dir.is_empty():
 		push_error("capture_flight requires --out-dir=<absolute path>")

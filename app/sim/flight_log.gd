@@ -120,7 +120,7 @@ func stop(reason := "stopped") -> Error:
 	if recording:
 		var footer := {kind = "footer", rows = rows_written, final_tick = _last_tick,
 			reason = reason, chain_sha256 = _chain.hex_encode(), observer_usec = observer_usec,
-			peak_buffer_rows = peak_buffer_rows, checkpoint = _session.checkpoint()}
+			peak_buffer_rows = peak_buffer_rows, checkpoint = _closing_checkpoint()}
 		_write_packet(footer)
 	_disconnect()
 	recording = false
@@ -205,8 +205,20 @@ func _stepped(tick: int, _t: float, _s: PackedFloat64Array, _l: PackedFloat64Arr
 		stop("recording limit reached")
 
 
+## Publication occurs after physical commit. Old writer events/footer must retain
+## their own accepted boundary, including a pause sent before _resetting.
+func _closing_context() -> Dictionary:
+	return _session.reset_closing_context() if _session.has_method("reset_closing_context") else {}
+
+
+func _closing_checkpoint() -> Dictionary:
+	var closing := _closing_context()
+	return closing.checkpoint.duplicate(true) if not closing.is_empty() else _session.checkpoint()
+
+
 func _event(kind: String, detail: String) -> void:
-	_events.append({tick = _session.sim.tick, kind = kind, detail = detail})
+	var closing := _closing_context()
+	_events.append({tick = int(closing.tick) if not closing.is_empty() else _session.sim.tick, kind = kind, detail = detail})
 	if _events.size() >= CHUNK_TICKS:
 		_flush_rows()
 

@@ -4,6 +4,8 @@ Date: 2026-10-19. Scope: D6-JETI-01…03 and UI-15-JETI-01…02 software. The [a
 
 ## Delivered behavior
 
+Follow-up: [UI-15-JETI-04 scroll and focus repair, 2026-10-26](scroll-repair-2026-10-26.md) addresses the manufacturer's latest remapping feedback. The original evidence below remains dated to its own engine/source revision.
+
 - Strict VID `0x0483` / PID `0xA07C` plus corroborating JETI identity selects the DC/DS family starter. Missing, contradictory, emulated or duplicate identity cannot acquire that starter or inherit gamepad defaults. Display names remain separate from raw metadata; metadata/ambiguity changes invalidate cached connection ownership.
 - The Mode 2 starter uses roll 0, inverted pitch 1, absolute throttle 2 and yaw 3. Its buttons are explicitly unbound, with Backspace/Escape recovery. Saved V2/legacy profiles take precedence. Existing JETI joystick profiles retain their kind, identity and calibration; cleanup is an explicit Save/Cancel draft.
 - Shared V2 AUX accepts two-/three-position switch groups, inversion and optional physical names. Coherent polling produces absolute requests; malformed or contradictory groups fail closed. Startup/focus/reconnect require deliberate OFF evidence after a baseline. Radio low-throttle arming and Continue remain separate.

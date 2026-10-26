@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-reset-transaction/hold-4039848.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-reset-transaction/hold-4039848.orfl (0 ticks)
+RESET_AUDIT {"action":"hold","after_tick":2,"aux_unchanged":false,"before_tick":2,"checkpoint_available":false,"contacts_unchanged":false,"fault":"","holds":{"companions-reset":true},"mass":2.8786621383898,"paused":true,"prior_mass":2.8786621383898,"recorder_still_recording":false,"reported_ok":true,"resetting":1,"state_unchanged":true,"status":"converged","stepped":0}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-reset-transaction/mass-4230138.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp-reset-transaction/mass-4230138.orfl (0 ticks)
+RESET_AUDIT {"action":"mass","after_tick":2,"aux_unchanged":false,"before_tick":2,"checkpoint_available":false,"contacts_unchanged":false,"fault":"","holds":{},"mass":0.0,"paused":false,"prior_mass":2.8786621383898,"recorder_still_recording":false,"reported_ok":true,"resetting":1,"state_unchanged":true,"status":"converged","stepped":0}
+Reset transaction audit: 14 checks, 0 failed

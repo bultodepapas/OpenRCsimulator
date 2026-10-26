@@ -1,0 +1,120 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "04c69747-1b3d-43f2-8e16-9d1703a81db9",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp14-observation-validation/reproduce.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T16:04:25.161418+00:00",
+  "label": "before",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp14-observation-validation\\checks\\before\\before-9n4trnwa\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp14-observation-validation\\checks\\before\\before-9n4trnwa\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "13 checks, 0 failed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 7,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Invalid operands 'bool' and 'String' in operator '!='.",
+      "context": [
+        "   at: _accident_observation (res://statistics/fixed_wing_adapter.gd:130)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _accident_observation (res://statistics/fixed_wing_adapter.gd:130)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 8,
+      "message": "Invalid operands 'int' and 'String' in operator '!='.",
+      "context": [
+        "   at: _accident_observation (res://statistics/fixed_wing_adapter.gd:130)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _accident_observation (res://statistics/fixed_wing_adapter.gd:130)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 13,
+      "message": "Invalid operands 'float' and 'String' in operator '!='.",
+      "context": [
+        "   at: _accident_observation (res://statistics/fixed_wing_adapter.gd:130)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _accident_observation (res://statistics/fixed_wing_adapter.gd:130)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 18,
+      "message": "Invalid operands 'Array' and 'String' in operator '!='.",
+      "context": [
+        "   at: _accident_observation (res://statistics/fixed_wing_adapter.gd:130)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _accident_observation (res://statistics/fixed_wing_adapter.gd:130)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 23,
+      "message": "Invalid operands 'Dictionary' and 'String' in operator '!='.",
+      "context": [
+        "   at: _accident_observation (res://statistics/fixed_wing_adapter.gd:130)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _accident_observation (res://statistics/fixed_wing_adapter.gd:130)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 28,
+      "message": "Invalid operands 'PackedStringArray' and 'String' in operator '!='.",
+      "context": [
+        "   at: _accident_observation (res://statistics/fixed_wing_adapter.gd:130)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _accident_observation (res://statistics/fixed_wing_adapter.gd:130)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 33,
+      "message": "Invalid operands 'PackedFloat64Array' and 'String' in operator '!='.",
+      "context": [
+        "   at: _accident_observation (res://statistics/fixed_wing_adapter.gd:130)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _accident_observation (res://statistics/fixed_wing_adapter.gd:130)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "13 checks, 0 failed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.297,
+  "log_bytes": 2802,
+  "log_sha256": "136bb662b2df7b48166315eb654756064d72ba43afcaf80c596ccc39688c188b"
+}

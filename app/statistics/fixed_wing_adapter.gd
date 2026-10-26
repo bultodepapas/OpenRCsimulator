@@ -127,7 +127,8 @@ func _accident_observation(contacts: Dictionary) -> Dictionary:
 	if typeof(value) != TYPE_DICTIONARY:
 		return {}
 	var observation: Dictionary = value
-	if observation.size() != 8 or observation.get("schema") != "openrc-aircraft-accident-observation" \
+	if observation.size() != 8 or typeof(observation.get("schema")) != TYPE_STRING \
+		or observation.schema != "openrc-aircraft-accident-observation" \
 		or typeof(observation.get("version")) != TYPE_INT or observation.version != 1:
 		return {}
 	if typeof(observation.get("tick")) != TYPE_INT or observation.tick < 0 or observation.tick != int(session.sim.tick) \
