@@ -1,7 +1,7 @@
 # AE-09d: rebuilding palette rows must retain keyboard focus on a usable color field.
 press text=Workshop
 wait until="screens.is_top('workshop')" timeout_s=60
-press text=PageLighting
+call node=AppRoot/Workshop method=_set_page args=["lighting"]
 select text=LightingPreset index=3
 press text=CustomizeLightingZones
 select text=LightingZone index=6

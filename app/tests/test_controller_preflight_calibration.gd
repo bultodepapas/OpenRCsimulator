@@ -43,9 +43,10 @@ func _run() -> void:
 	var original: Dictionary = setup.current_profile()
 	original.presentation.glyph_family = "generic"
 	original.throttle_rate = 1.7
-	original.roll.expo = 0.35
-	original.roll.deadzone = 0.1
+	original.roll["expo"] = 0.35
+	original.roll["deadzone"] = 0.1
 	original.aux = {"smoke": {"type": "button", "button": 20, "mode": "level"}, "flaps": {"type": "axis", "axis": 4, "off": -1.0, "on": 1.0, "invert": false}}
+	check("custom radio fixture uses valid V2 data", Profile.validate(original).ok)
 	setup._set_draft_profile(original)
 	setup.profile_name_edit.text = "My limited radio"
 	var selection_before: int = app.controllers.registry.selected_device_id("flight")
@@ -113,7 +114,12 @@ func _run() -> void:
 	setup.profile_name_edit.text = "My limited radio"
 	await _open_wizard()
 	await _complete_wizard()
-	check("normal Save commits calibrated settings", setup._save_profile(false))
+	var saved_ok: bool = setup._save_profile(false)
+	check("normal Save commits calibrated settings", saved_ok)
+	if not saved_ok:
+		printerr("Save rejected: ", setup.status_label.text)
+		await _finish()
+		return
 	var saved: Dictionary = app.controllers.store.load_all().profiles[0]
 	check("saved identity and calibration match the edited draft", saved.name == "My limited radio" and saved.profile_id == original.profile_id and saved.throttle.min == -0.6 and saved.throttle.max == 0.6)
 	app.screens.pop()
