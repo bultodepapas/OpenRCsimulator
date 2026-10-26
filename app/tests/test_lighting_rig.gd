@@ -43,6 +43,8 @@ func _run() -> void:
 
 	var telemetry := {"effects_allowed": true, "distance_m": 0.0, "exposure": 10000.0, "maneuver": 0.0, "throttle": 0.6}
 	rig.advance(8.02, telemetry)
+	# The first update obtains a scene allocation; the next displayed update fills it.
+	rig.advance(8.02, telemetry)
 	var fx_root := stage.get_node_or_null("AircraftLightingWorldVfx") as Node3D
 	var spark_nodes := _children_of_type(fx_root, "MultiMeshInstance3D")
 	_check("sequence burst uses a bounded 32 point pool per tip", spark_nodes.size() == 2 and spark_nodes.all(func(node: Node) -> bool: return (node as MultiMeshInstance3D).multimesh.visible_instance_count == 32))

@@ -32,9 +32,11 @@ func _run() -> void:
 	check("full quality configures the accepted Festival profile", rig.configure(aircraft, profile).ok)
 	var telemetry := {"effects_allowed": true, "distance_m": 0.0, "exposure": 1.0, "throttle": 1.0}
 	rig.advance(8.02, telemetry)
+	rig.advance(8.02, telemetry) # Populate the newly granted scene buffer without replaying the cue.
 	check("High emits 64 particles across two tips", _particle_count(stage) == 64)
 	Policy.apply({"aircraft_lighting_quality": "standard"})
 	rig.reset()
+	rig.advance(8.02, telemetry)
 	rig.advance(8.02, telemetry)
 	check("Standard emits 32 particles across two tips", _particle_count(stage) == 32)
 	Policy.apply({"aircraft_lighting_show_vfx": false})

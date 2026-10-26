@@ -47,20 +47,31 @@ func _run() -> void:
 		companion.rig._vfx._scene_budget == player.rig._vfx._scene_budget)
 	_check("Workshop World3D owns an isolated runtime coordinator",
 		workshop.rig._vfx._scene_budget != companion.rig._vfx._scene_budget)
+	_check("idle effect pools retain CPU records without allocating GPU instance buffers",
+		_allocated_effect_anchors([companion, player]) == 0 and _allocated_effect_anchors([workshop]) == 0
+			and int(companion.rig.budget_info().vfx.gpu_instance_capacity_allocated) == 0)
 	_watch_shared_visibility([companion, player])
 	LightingPolicy.quality = "standard"
 
 	var workshop_telemetry := _telemetry(3.0, 0)
 	workshop.rig.advance(1.0, workshop_telemetry)
 	companion.rig.advance(1.0, _telemetry(1.0, 0))
+	workshop.rig.advance(1.01, workshop_telemetry)
+	companion.rig.advance(1.01, _telemetry(1.0, 0))
 	_check("Workshop gets its own actual Omni and MultiMesh quota",
 		_visible_spills(workshop.rig) == 2 and _visible_effect_anchors(workshop.rig) == 2
 			and _visible_particles(workshop.rig) > 0)
 	_check("closer companion initially renders both decorative categories",
 		_visible_spills(companion.rig) == 2 and _visible_effect_anchors(companion.rig) == 2
 			and _visible_particles(companion.rig) > 0)
+	_check("standard quality limits the shared world to two allocated effect buffers",
+		_allocated_effect_anchors([companion, player]) <= 2
+			and _allocated_effect_anchors([workshop]) <= 2
+			and _gpu_capacity([companion, player], "spark") <= 64
+			and _gpu_capacity([companion, player], "trail") <= 126)
 
 	player.rig.advance(1.0, _telemetry(10.0, 100))
+	player.rig.advance(1.01, _telemetry(10.0, 100))
 	_check("player priority preempts a closer companion in actual light visibility",
 		_visible_spills(player.rig) == 2 and _visible_spills(companion.rig) == 0)
 	_check("player priority preempts a closer companion in actual MultiMesh visibility and count",
@@ -71,10 +82,39 @@ func _run() -> void:
 	_check("actual scene totals never exceed two visible decorative resources per category",
 		_visible_spills(player.rig) + _visible_spills(companion.rig) <= 2
 			and _visible_effect_anchors(player.rig) + _visible_effect_anchors(companion.rig) <= 2)
+	var companion_spark_pool := _pool_for_kind(companion.rig, "spark")
+	var companion_particles: Array = companion_spark_pool.get("particles", [])
+	if not companion_particles.is_empty():
+		var retained_particle: Dictionary = companion_particles[0]
+		retained_particle["life"] = 4.0
+		companion_particles[0] = retained_particle
+		companion_spark_pool["particles"] = companion_particles
+	var denied_spark_origin := Vector3.ZERO
+	if not companion_spark_pool.get("visual_transforms", []).is_empty():
+		denied_spark_origin = companion_spark_pool.visual_transforms[0].origin
+	var denied_writes := _gpu_instance_writes(companion.rig)
+	companion.rig.advance(1.02, _telemetry(1.0, 0, 0.0))
+	var aged_spark_origin := Vector3.ZERO
+	if not companion_spark_pool.get("visual_transforms", []).is_empty():
+		aged_spark_origin = companion_spark_pool.visual_transforms[0].origin
+	var companion_spark_instance: MultiMeshInstance3D = companion_spark_pool.get("instance")
+	_check("revoked owner ages residual CPU particles without writing its unallocated buffer",
+		int(companion_spark_pool.get("live_visual_count", 0)) > 0
+			and int(companion.rig.budget_info().vfx.sparks_cpu_live) > 0
+			and denied_spark_origin.distance_to(aged_spark_origin) > 0.0001
+			and _gpu_instance_writes(companion.rig) == denied_writes
+			and companion_spark_instance.multimesh.instance_count == 0
+			and companion_spark_instance.multimesh.visible_instance_count == 0
+			and companion_spark_instance.custom_aabb == AABB()
+			and companion_spark_instance.multimesh.custom_aabb == AABB())
 	_check("synchronous actual visibility callbacks never create an over-cap overlap",
 		_overlap_spill_events == 0 and _overlap_effect_events == 0)
 
 	player.rig.set_mode("nav")
+	_check("regranted pools allocate capacity hidden until the owner's next advance",
+		_allocated_effect_anchors([companion]) == 2 and _visible_effect_anchors(companion.rig) == 0
+			and _total_particle_instances(companion.rig) == 0)
+	companion.rig.advance(1.03, _telemetry(1.0, 0, 0.0))
 	_check("NAV mode hides actual spills and VFX and returns both grants",
 		_visible_spills(player.rig) == 0 and _visible_effect_anchors(player.rig) == 0
 			and _total_particle_instances(player.rig) == 0
@@ -82,22 +122,37 @@ func _run() -> void:
 	player.rig.set_mode("all")
 	player.rig.advance(1.6, _telemetry(10.0, 100, 0.0))
 	player.rig.advance(1.7, _telemetry(10.0, 100, 1.0))
+	player.rig.advance(1.71, _telemetry(10.0, 100, 1.0))
 	_check("returning to ALL mode reclaims actual pools after a displayed update",
 		_visible_spills(player.rig) == 2 and _visible_effect_anchors(player.rig) == 2
 			and _visible_effect_anchors(companion.rig) == 0)
 
 	player.rig.reset()
+	companion.rig.advance(1.72, _telemetry(1.0, 0, 0.0))
 	var reset_grant: Dictionary = player.rig._vfx._scene_budget.grant_for(player.rig._vfx)
 	_check("reset clears MultiMesh counts and synchronously gives the VFX quota to companion",
 		_visible_particles(player.rig) == 0 and _total_particle_instances(player.rig) == 0
 			and _visible_effect_nodes(player.rig) == 0
 			and int(reset_grant.get("vfx_anchors", -1)) == 0
-			and _visible_effect_nodes(companion.rig) == 2
-			and _visible_effect_anchors(companion.rig) == 2 and _visible_particles(companion.rig) > 0)
+			and _visible_effect_nodes(companion.rig) > 0
+			and _visible_effect_anchors(companion.rig) > 0 and _visible_particles(companion.rig) > 0
+			and _allocated_effect_anchors([companion, player]) <= 2)
 	player.rig.advance(2.0, _telemetry(10.0, 100, 1.0))
+	player.rig.advance(2.01, _telemetry(10.0, 100, 1.0))
 	_check("advance after reset can reacquire visible effect anchors",
 		_visible_effect_anchors(player.rig) == 2 and _visible_particles(player.rig) > 0
 			and _visible_effect_anchors(companion.rig) == 0)
+	LightingPolicy.quality = "high"
+	companion.rig.advance(2.03, _telemetry(1.0, 0, 1.0))
+	player.rig.advance(2.03, _telemetry(10.0, 100, 1.0))
+	companion.rig.advance(2.04, _telemetry(1.0, 0, 1.0))
+	player.rig.advance(2.04, _telemetry(10.0, 100, 1.0))
+	_check("high quality allows four allocated shared-world buffers and honest GPU capacities",
+		_allocated_effect_anchors([companion, player]) <= 4
+			and _gpu_capacity([companion, player], "spark") <= 128
+			and _gpu_capacity([companion, player], "trail") <= 252
+			and int(companion.rig.budget_info().vfx.sparks_allocated) == _gpu_capacity([companion], "spark")
+			and int(companion.rig.budget_info().vfx.trails_allocated) == _gpu_capacity([companion], "trail"))
 
 	player.rig.dispose()
 	_check("disposing player unregisters and immediately restores companion actual lights and effects",
@@ -267,6 +322,52 @@ func _total_particle_instances(rig: Variant) -> int:
 		if is_instance_valid(instance) and instance.multimesh != null:
 			total += instance.multimesh.visible_instance_count
 	return total
+
+
+func _allocated_effect_anchors(fixtures: Array) -> int:
+	var total := 0
+	for fixture: Dictionary in fixtures:
+		var rig: Variant = fixture.get("rig")
+		if rig == null or rig._vfx == null:
+			continue
+		for pool: Dictionary in rig._vfx._effects:
+			var instance: MultiMeshInstance3D = pool.get("instance")
+			if is_instance_valid(instance) and instance.multimesh != null and instance.multimesh.instance_count > 0:
+				total += 1
+	return total
+
+
+func _gpu_capacity(fixtures: Array, kind: String) -> int:
+	var total := 0
+	for fixture: Dictionary in fixtures:
+		var rig: Variant = fixture.get("rig")
+		if rig == null or rig._vfx == null:
+			continue
+		for pool: Dictionary in rig._vfx._effects:
+			if str(pool.get("kind", "")) != kind:
+				continue
+			var instance: MultiMeshInstance3D = pool.get("instance")
+			if is_instance_valid(instance) and instance.multimesh != null:
+				total += instance.multimesh.instance_count
+	return total
+
+
+func _gpu_instance_writes(rig: Variant) -> int:
+	var total := 0
+	if rig == null or rig._vfx == null:
+		return total
+	for pool: Dictionary in rig._vfx._effects:
+		total += int(pool.get("gpu_instance_writes", 0))
+	return total
+
+
+func _pool_for_kind(rig: Variant, kind: String) -> Dictionary:
+	if rig == null or rig._vfx == null:
+		return {}
+	for pool: Dictionary in rig._vfx._effects:
+		if str(pool.get("kind", "")) == kind:
+			return pool
+	return {}
 
 
 func _has_no_spill_nodes(fixture: Dictionary) -> bool:

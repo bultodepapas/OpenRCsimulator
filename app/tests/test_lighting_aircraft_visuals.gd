@@ -3,12 +3,13 @@ extends SceneTree
 # Functional checks exercise the real WorkshopPreview and its actual Ugly Stik builder.
 # Headless functional checks:
 # python tools/godot/run_checked.py --timeout 180 -- .tools/Godot_v4.8-beta1_win64_console.exe --headless --path app --script res://tests/test_lighting_aircraft_visuals.gd
-# Native 1920x1080 captures (PowerShell, output under %TEMP%):
-# $capture = Join-Path $env:TEMP "openrc-lighting-aircraft-visuals"
-# python tools/godot/run_checked.py --timeout 240 -- .tools/Godot_v4.8-beta1_win64_console.exe --path app --script res://tests/test_lighting_aircraft_visuals.gd -- --capture-lighting-aircraft=$capture
+# Native 1920x1080 captures (PowerShell, output under ignored tmp/):
+# $capture = Join-Path (Resolve-Path .\tmp).Path ("lighting-aircraft-" + [guid]::NewGuid())
+# python tools/godot/run_checked.py --timeout 240 -- .tools/Godot_v4.8-beta1_win64_console.exe --path app --script res://tests/test_lighting_aircraft_visuals.gd -- "--capture-lighting-aircraft=$capture"
 const WorkshopPreview := preload("res://ui/workshop_preview.gd")
 const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 const Presentation := preload("res://workshop/presentation.gd")
+const ShaderClock := preload("res://render/shader_clock.gd")
 
 const AIRCRAFT_ID := "jensen-das-ugly-stik-60"
 const CAPTURE_SIZE := Vector2i(1920, 1080)
@@ -23,6 +24,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	ShaderClock.register()
 	_capture_directory = _capture_directory_from_args()
 	root.size = CAPTURE_SIZE
 	var preview := WorkshopPreview.new()
@@ -315,10 +317,13 @@ func _capture_directory_from_args() -> String:
 			continue
 		var raw_path := argument.trim_prefix("--capture-lighting-aircraft=").strip_edges()
 		var normalized := raw_path.replace("\\", "/").simplify_path()
-		var repository := ProjectSettings.globalize_path("res://").replace("\\", "/").trim_suffix("/").to_lower()
+		var repository := ProjectSettings.globalize_path("res://..").replace("\\", "/").trim_suffix("/").to_lower()
+		var ignored_tmp := repository.path_join("tmp")
 		var normalized_lower := normalized.to_lower()
-		if not raw_path.is_absolute_path() or normalized_lower == repository or normalized_lower.begins_with(repository + "/"):
-			_check("capture path is absolute and outside the repository", false, raw_path)
+		var inside_repository := normalized_lower == repository or normalized_lower.begins_with(repository + "/")
+		var inside_ignored_tmp := normalized_lower == ignored_tmp or normalized_lower.begins_with(ignored_tmp + "/")
+		if not raw_path.is_absolute_path() or (inside_repository and not inside_ignored_tmp):
+			_check("capture path is absolute and either outside the repository or under ignored tmp/", false, raw_path)
 			return ""
 		if DisplayServer.get_name() == "headless":
 			_check("native lighting captures require a display session", false)
@@ -345,12 +350,15 @@ func _capture_native(preview: Control, base_presentation: Dictionary, records: A
 		return
 	container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	await _settle(2)
-	viewport.size = CAPTURE_SIZE
 	container.stretch = false
+	viewport.size = CAPTURE_SIZE
 	preview.call("reset_view")
+	preview.call("orbit_by", 32.0, -24.0)
 	var fixed_view := preview.call("get_view_state") as Dictionary
 	var neon_presentation := _with_lighting(base_presentation, LightingProfile.preset("neon_rgb"))
 	preview.call("set_preview_night", true)
+	preview.call("_refresh_camera")
+	preview.call("_request_redraw")
 
 	_check("native lighting capture uses exact 1920x1080 root and aircraft viewports",
 		root.size == CAPTURE_SIZE and viewport.size == CAPTURE_SIZE,
@@ -363,15 +371,19 @@ func _capture_native(preview: Control, base_presentation: Dictionary, records: A
 		preview.call("set_presentation", _with_lighting(base_presentation, profile))
 		preview.call("reset_playback")
 		preview.call("restore_view_state", fixed_view)
+		_set_fixture_clock(preview)
 		await _settle_capture()
 		var same_view: bool = preview.call("get_view_state") == fixed_view
-		var at_same_clock := int(preview.get("_playhead_tick")) == 0 and not bool(preview.get("_playing"))
-		_check("%s capture uses the shared camera and zero-second clock" % preset_id, same_view and at_same_clock)
+		var at_same_clock: bool = int(preview.get("_playhead_tick")) == 1925 \
+			and is_equal_approx(float(preview.get("_playhead_seconds")), 1925.0 / 240.0) \
+			and not bool(preview.get("_playing"))
+		_check("%s capture uses the shared camera and held 8.0208-second fixture clock" % preset_id,
+			same_view and at_same_clock)
 		_check("%s capture is a full 1920x1080 rendered frame" % preset_id,
-			await _save_capture(_capture_directory.path_join("%s-night.png" % preset_id)))
+			await _save_capture(viewport, _capture_directory.path_join("%s-night.png" % preset_id)))
 
-	preview.call("set_presentation", neon_presentation)
-	preview.call("reset_playback")
+	var disabled := LightingProfile.defaults()
+	disabled.selection = "disabled"
 	for view: Dictionary in [
 		{"name": "upper", "pitch": 62.0},
 		{"name": "lower", "pitch": -62.0},
@@ -380,21 +392,50 @@ func _capture_native(preview: Control, base_presentation: Dictionary, records: A
 		view_state["pitch_deg"] = float(view.pitch)
 		view_state["standard_view"] = "custom"
 		preview.call("restore_view_state", view_state)
+		preview.call("set_presentation", _with_lighting(base_presentation, disabled))
+		preview.call("reset_playback")
 		preview.call("set_preview_night", false)
+		_set_fixture_clock(preview)
 		await _settle_capture()
-		_check("%s daytime film view keeps all six real skins configured" % view.name,
-			_enabled_skin_count(records) == 6 and int(preview.get("_playhead_tick")) == 0)
-		_check("%s daytime film comparison saves at 1920x1080" % view.name,
-			await _save_capture(_capture_directory.path_join("film-%s-day.png" % view.name)))
+		_check("%s daytime unlit film shows the opaque source surfaces" % view.name,
+			_all_skin_surfaces_off(records) and _surfaces_match_originals(records))
+		_check("%s daytime unlit film comparison saves at 1920x1080" % view.name,
+			await _save_capture(viewport, _capture_directory.path_join("film-%s-unlit-day.png" % view.name)))
 		preview.call("set_preview_night", true)
+		_set_fixture_clock(preview)
 		await _settle_capture()
-		_check("%s nighttime film comparison saves at 1920x1080" % view.name,
-			await _save_capture(_capture_directory.path_join("film-%s-night.png" % view.name)))
+		_check("%s nighttime unlit film comparison saves at 1920x1080" % view.name,
+			await _save_capture(viewport, _capture_directory.path_join("film-%s-unlit-night.png" % view.name)))
+
+		preview.call("set_presentation", neon_presentation)
+		preview.call("reset_playback")
+		preview.call("restore_view_state", view_state)
+		preview.call("set_preview_night", false)
+		_set_fixture_clock(preview)
+		await _settle_capture()
+		_check("%s daytime lit film enables all six real skins" % view.name,
+			_enabled_skin_count(records) == 6 and int(preview.get("_playhead_tick")) == 1925)
+		_check("%s daytime lit film comparison saves at 1920x1080" % view.name,
+			await _save_capture(viewport, _capture_directory.path_join("film-%s-lit-day.png" % view.name)))
+		preview.call("set_preview_night", true)
+		_set_fixture_clock(preview)
+		await _settle_capture()
+		_check("%s nighttime lit film comparison saves at 1920x1080" % view.name,
+			await _save_capture(viewport, _capture_directory.path_join("film-%s-lit-night.png" % view.name)))
 
 
-func _save_capture(path: String) -> bool:
+func _set_fixture_clock(preview: Control) -> void:
+	preview.set("_playing", false)
+	preview.set("_playhead_tick", 1925)
+	preview.set("_playhead_seconds", 1925.0 / 240.0)
+	preview.call("_advance_lighting", true)
+	preview.call("_advance_lighting", true)
+	preview.call("_request_redraw")
+
+
+func _save_capture(viewport: SubViewport, path: String) -> bool:
 	await RenderingServer.frame_post_draw
-	var image := root.get_texture().get_image()
+	var image := viewport.get_texture().get_image()
 	if image == null or image.get_size() != CAPTURE_SIZE:
 		_check("capture frame has exact 1920x1080 dimensions", false,
 			"%s: %s" % [path, image.get_size() if image != null else Vector2i.ZERO])

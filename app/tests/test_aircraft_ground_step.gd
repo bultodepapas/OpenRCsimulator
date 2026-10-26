@@ -23,6 +23,10 @@ var _grip := .6
 var _rolling := .02
 var _brake := 0.0
 var _highest_algebraic_load := 0.0
+var _shaft_capture_selected := false
+var _shaft_friction_rate := 0.0
+var _shaft_drive_torque := 0.0
+var _cull_unloaded_wheel_rows := false
 
 
 func _check(label: String, yes: bool, detail := "") -> void:
@@ -43,6 +47,8 @@ func _initialize() -> void:
 		_rejections()
 		_paired_paths()
 		_error_gate_rejections()
+		_capture_passthrough()
+		_capture_bindings()
 	print("Aircraft ground step: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed else 0)
 
@@ -94,7 +100,7 @@ func _evaluate(s: PackedFloat64Array, _t: float) -> Dictionary:
 	var moment := M.cross(rho, force)
 	var spin := _p([s[13] * TAU / 60.0, s[14] / RADIUS])
 	var rotor := Rotor.evaluate_system(_rotors, _p([1, 1, 1, 0, 0, 0]), s.slice(RB.RATE, RB.RATE + 3),
-		spin, _rotors.reference_axes, _zeros(6), _zeros(6), moment, _p([0, 0, 0, moment[0], moment[1], moment[2]]), _zeros(2))
+		spin, _rotors.reference_axes, _zeros(6), _zeros(6), moment, _p([0, 0, 0, moment[0], moment[1], moment[2]]), _p([_shaft_drive_torque, 0]))
 	if not rotor.ok: return {ok = false}
 	var body_rate := Datum.derivative_with_angular_acceleration(s.slice(0, RB.SIZE),
 		{mass_kg = MASS, cg_body_m = _zeros(3), inertia = _p([1, 1, 1, 0, 0, 0]), inverse = _p([1, 1, 1, 0, 0, 0])},
@@ -109,19 +115,33 @@ func _evaluate(s: PackedFloat64Array, _t: float) -> Dictionary:
 		Impulse.external_rolling(axle, 1, 2), Impulse.internal_brake(1, 2)]
 	var jac := PackedFloat64Array()
 	var bias := PackedFloat64Array()
+	var limits := _p([_grip * normal.normal_load_n, _grip * normal.normal_load_n, _rolling * normal.normal_load_n * RADIUS, _brake])
+	var groups: Array = [PackedInt32Array([0, 1]), PackedInt32Array([2]), PackedInt32Array([3])]
+	if _cull_unloaded_wheel_rows and normal.normal_load_n == 0.0 and _brake == 0.0:
+		rows.clear()
+		limits = PackedFloat64Array()
+		groups = []
 	for row: Dictionary in rows:
 		if not row.ok: return {ok = false}
 		jac.append_array(row.row)
 		bias.append(row.bias)
-	return {ok = true, format = Step.SAMPLE_FORMAT, fixed_hubs = true, static_ground = true, source_policy = "none",
+	var capture_row := bias.size()
+	if _shaft_capture_selected:
+		var shaft := Impulse.internal_brake(0, 2)
+		jac.append_array(shaft.row)
+		bias.append(0.0)
+		limits.append(_shaft_friction_rate)
+		groups.append(PackedInt32Array([capture_row]))
+	var sample := {ok = true, format = Step.SAMPLE_FORMAT, fixed_hubs = true, static_ground = true, source_policy = "none",
 		mass_kg = MASS, cg_body_m = _zeros(3), rotor_stage = rotor.stage,
 		rotor_state_indices = PackedInt64Array([13, 14]), sigma_per_state = _p([TAU / 60.0, 1.0 / RADIUS]),
 		nonnegative_rotors = PackedInt64Array([0]), jacobian = jac, slip_bias = bias,
-		limit_rates = _p([_grip * normal.normal_load_n, _grip * normal.normal_load_n, _rolling * normal.normal_load_n * RADIUS, _brake]),
-		groups = [PackedInt32Array([0, 1]), PackedInt32Array([2]), PackedInt32Array([3])],
+		limit_rates = limits, groups = groups,
 		contact_ids = PackedStringArray(["fixture_wheel"]), normal_load_n = _p([normal.normal_load_n]),
-		potential_j = normal.potential_j - MASS * _gravity * s[2], normal_dissipation_w = normal.dissipation_w, external_power_w = 0.0,
+		potential_j = normal.potential_j - MASS * _gravity * s[2], normal_dissipation_w = normal.dissipation_w, external_power_w = _shaft_drive_torque * spin[0],
 		derivative = rate, loads = force + moment}
+	if _shaft_capture_selected: sample.capture = {rotor_index = 0, impulse_row = capture_row}
+	return sample
 
 
 func _derivative(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
@@ -257,7 +277,7 @@ func _joint(body: PackedFloat64Array, continuous: PackedFloat64Array, t: float) 
 	return {loads = sample.loads, derivative = sample.derivative.slice(RB.SIZE), body_derivative = sample.derivative.slice(0, RB.SIZE), rotor_momentum = _zeros(3)}
 
 
-func _simulation(initial: PackedFloat64Array, error_gate: Callable = Callable()) -> Node:
+func _simulation(initial: PackedFloat64Array, error_gate: Callable = Callable(), strict_shaft_domain := false) -> Node:
 	var sim := Sim.new()
 	sim.mass = MASS
 	sim.inertia = _p([1, 1, 1, 0, 0, 0])
@@ -270,6 +290,9 @@ func _simulation(initial: PackedFloat64Array, error_gate: Callable = Callable())
 	model.modes_size = 1
 	model.continuous_size = 2
 	model.state_layout_identity = "analytic-passive-plane-contact-step-fixture-v1"
+	if strict_shaft_domain:
+		model.state_layout_identity += ":finite-shaft-capture"
+		model.state_validator = func(frame, _context): return frame.continuous[0] >= 0.0
 	model.stage = _joint
 	model.step_policy = func(s, t, h, f, k1): return Step.advance(s, t, h, f, k1, _evaluate, _certificate, {}, error_gate)
 	model.endpoint_transition = func(_previous, candidate, context):
@@ -497,3 +520,132 @@ func _error_gate_rejections() -> void:
 	_check("actual kernel rejects mutating pair gate without publication", sim.tick == 0 and not sim.fault_reason.is_empty() and published[0] == 0
 		and before == var_to_bytes([sim.state, sim.previous, sim.continuous, sim.aux, sim.modes]))
 	sim.free()
+
+
+func _fixture_angular_momentum(s: PackedFloat64Array) -> PackedFloat64Array:
+	# Independent locked-tensor plus axial cross terms, in the frozen body frame.
+	return M.add(s.slice(RB.RATE, RB.RATE + 3), M.scale(_p([0, -1, 0]), .02 * s[13] * TAU / 60.0 + .01 * s[14] / RADIUS))
+
+
+func _capture_passthrough() -> void:
+	# Absent and explicitly empty capture both keep the original complete output.
+	var normal_initial := _initial(-.08, _p([3, 0, .3]))
+	var ordinary := _advance(normal_initial, 0, .004)
+	var empty := func(s, t):
+		var point := _evaluate(s, t)
+		point.capture = {}
+		return point
+	var explicit_empty := Step.advance(normal_initial, 0, .004, _derivative, PackedFloat64Array(), empty, _certificate)
+	_check("absent/empty capture preserve complete default result bytes", ordinary.ok and var_to_bytes(ordinary) == var_to_bytes(explicit_empty))
+	_gravity = 0
+	_shaft_capture_selected = true
+	_shaft_friction_rate = 100.0
+	var picked := _initial(-.8, _zeros(3))
+	var recovered_negative_roundoff := 0
+	for rpm: float in [.1, .2, .3, 1, 2, 3, 7, 11, 30, 100]:
+		var initial := _initial(-.8, _zeros(3))
+		initial[13] = rpm
+		var uncaptured := func(s, t):
+			var point := _evaluate(s, t)
+			point.erase("capture")
+			return point
+		var raw := Step.advance(initial, 0, 1.0 / 240.0, _derivative, PackedFloat64Array(), uncaptured, _certificate)
+		var out := _advance(initial, 0, 1.0 / 240.0)
+		_check("finite shaft capture composes to exact-zero RPM", out.ok and out.state[13] == 0.0, str(out))
+		if out.ok:
+			var q0 := M.q_normalized(initial.slice(RB.ATT, RB.ATT + 4))
+			var q1 := M.q_normalized(out.state.slice(RB.ATT, RB.ATT + 4))
+			_check("complete capture conserves world body+shaft+wheel momentum", M.norm(M.sub(M.q_rotate(q1, _fixture_angular_momentum(out.state)), M.q_rotate(q0, _fixture_angular_momentum(initial)))) < 1e-12)
+			_check("shaft capture updates body and unbraked wheel with positive finite loss", absf(out.state[RB.RATE + 1]) > 0 and absf(out.state[14]) > 0
+				and out.integration_receipt.tangent_dissipation_j > 0 and absf(out.integration_receipt.energy_balance_residual_j) < 1e-12)
+		if not raw.ok and raw.status == "unsupported_reverse":
+			recovered_negative_roundoff += 1
+			picked = initial
+	_check("step passthrough resolves actual negative-roundoff domain refusals", recovered_negative_roundoff > 0)
+	var sim := _simulation(picked, Callable(), true)
+	sim.step()
+	_check("strict nonnegative kernel admits finite captured endpoint", sim.tick == 1 and sim.fault_reason.is_empty() and sim.continuous[0] == 0.0, sim.fault_reason)
+	var checkpoint: Dictionary = sim.checkpoint()
+	_check("captured complete step exports strict valid checkpoint", checkpoint.get("format", "") == Sim.ENDPOINT_CHECKPOINT_FORMAT and checkpoint.continuous[0] == 0.0)
+	sim.step()
+	var expected := var_to_bytes(sim.checkpoint())
+	_check("captured complete-step checkpoint restores", sim.restore_checkpoint(checkpoint))
+	sim.step()
+	_check("captured complete-step replay is byte-exact", sim.tick == 2 and expected == var_to_bytes(sim.checkpoint()), sim.fault_reason)
+	sim.free()
+	_shaft_friction_rate = 1e-6
+	var insufficient := _initial(-.8, _zeros(3))
+	insufficient[13] = 1.0
+	var moving := _advance(insufficient, 0, 1.0 / 240.0)
+	_check("insufficient positive friction budget preserves moving shaft", moving.ok and moving.state[13] > 0.0 and moving.state[13] < 1.0)
+	# A smooth internal negative drive overwhelms finite friction in the free
+	# predictor; this is unsupported reverse, not a numerical one-way clutch.
+	_shaft_drive_torque = -1.0
+	_shaft_friction_rate = .01
+	var driven := _initial(-.8, _zeros(3))
+	driven[13] = .01
+	var rejected := _advance(driven, 0, 1.0 / 240.0)
+	_check("finite capture cannot clamp real reverse under insufficient capacity", not rejected.ok and not rejected.has("state") and not rejected.has("integration_receipt"))
+	sim = _simulation(driven, Callable(), true)
+	var before := var_to_bytes([sim.state, sim.previous, sim.continuous, sim.aux, sim.modes])
+	var publications := [0]
+	sim.stepped.connect(func(_a, _b, _c, _d, _e, _f): publications[0] += 1)
+	sim.step()
+	_check("reverse breakaway rolls back complete kernel frame without publication", sim.tick == 0 and not sim.fault_reason.is_empty()
+		and publications[0] == 0 and before == var_to_bytes([sim.state, sim.previous, sim.continuous, sim.aux, sim.modes]))
+	sim.free()
+	_shaft_capture_selected = false
+	_shaft_friction_rate = 0
+	_shaft_drive_torque = 0
+	_gravity = 9.80665
+
+
+func _capture_bindings() -> void:
+	_gravity = 0
+	_grip = 0
+	_rolling = 0
+	_shaft_capture_selected = true
+	_shaft_friction_rate = 100
+	_cull_unloaded_wheel_rows = true
+	# Exact undamped plane solution unloads at t=.02, a retained boundary for
+	# every admissible power-of-two mesh here; this isolates row-layout binding.
+	var omega := sqrt(STIFFNESS / MASS)
+	var initial := _initial(-.08, _p([0, 0, -omega * .02 / tan(omega * .02)]))
+	initial[13] = 1.0
+	var ordinals := []
+	var changing_rows := func(s, t):
+		var point := _evaluate(s, t)
+		ordinals.append(point.capture.impulse_row)
+		return point
+	var out := Step.advance(initial, 0, .04, _derivative, PackedFloat64Array(), changing_rows, _certificate)
+	_check("capture row ordinal may change with loaded contact rows", out.ok and out.state[13] == 0.0 and ordinals.has(4) and ordinals.has(0), str(out))
+	_cull_unloaded_wheel_rows = false
+	var rest := _initial(-.8, _zeros(3))
+	rest[13] = 1.0
+	for kind: String in ["wrong_type", "extra", "outside", "wheel_domain", "wrong_row", "target_switch", "disappear", "source_event"]:
+		var sample := func(s, t):
+			var p := _evaluate(s, t)
+			match kind:
+				"wrong_type": p.capture = []
+				"extra": p.capture.force_clamp = true
+				"outside": p.capture.rotor_index = 2
+				"wheel_domain":
+					p.capture.rotor_index = 1
+					for i in 8: p.jacobian[4 * 8 + i] = 1.0 if i == 7 else 0.0
+				"wrong_row": p.capture.impulse_row = 0
+				"target_switch":
+					p.nonnegative_rotors = PackedInt64Array([0, 1])
+					if t > 0:
+						p.capture.rotor_index = 1
+						for i in 8: p.jacobian[4 * 8 + i] = 1.0 if i == 7 else 0.0
+				"disappear":
+					if t > 0: p.erase("capture")
+				"source_event": p.source_events = [{type = "forbidden"}]
+			return p
+		var rejected := Step.advance(rest, 0, 1.0 / 240.0, _derivative, PackedFloat64Array(), sample, _certificate)
+		_check("capture mapping/domain inconsistency fails atomically: " + kind, not rejected.ok and not rejected.has("state") and not rejected.has("integration_receipt"))
+	_shaft_capture_selected = false
+	_shaft_friction_rate = 0
+	_gravity = 9.80665
+	_grip = .6
+	_rolling = .02

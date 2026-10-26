@@ -49,6 +49,34 @@ func _run() -> void:
 	var vfx: Variant = rig._vfx
 	var spark_pool: Dictionary = _pool_for_kind(vfx, "spark")
 	var trail_pool: Dictionary = _pool_for_kind(vfx, "trail")
+	_check("idle LOD rig keeps its configured CPU pools without GPU instance buffers",
+		int(vfx.budget_info().effects_cpu_allocated) == 2
+			and int(vfx.budget_info().gpu_anchors_allocated) == 0
+			and int(spark_pool.instance.multimesh.instance_count) == 0
+			and int(trail_pool.instance.multimesh.instance_count) == 0)
+	var synthetic_particle := {
+		"origin": Vector3.ZERO,
+		"velocity": Vector3.RIGHT,
+		"size": 0.025,
+		"start": 0.0,
+		"life": 2.0,
+		"color": Color.WHITE,
+	}
+	spark_pool["particles"] = [synthetic_particle]
+	var writes_before_denied_update := int(spark_pool.get("gpu_instance_writes", 0))
+	vfx._update_sparks(spark_pool, 0.25, 1.0, 1.0)
+	var denied_origin: Vector3 = spark_pool.visual_transforms[0].origin
+	vfx._update_sparks(spark_pool, 0.5, 1.0, 1.0)
+	_check("unallocated spark buffer tracks and ages bounded CPU particles without instance writes",
+		int(spark_pool.get("live_visual_count", 0)) == 1
+			and denied_origin.distance_to(spark_pool.visual_transforms[0].origin) > 0.1
+			and int(spark_pool.instance.multimesh.instance_count) == 0
+			and int(spark_pool.instance.multimesh.visible_instance_count) == 0
+			and int(spark_pool.get("gpu_instance_writes", 0)) == writes_before_denied_update
+			and int(vfx.budget_info().sparks_allocated) == 0
+			and int(vfx.budget_info().sparks_cpu_live) == 1)
+	spark_pool["particles"] = []
+	vfx._update_sparks(spark_pool, 0.6, 1.0, 1.0)
 
 	var perspective: Dictionary = vfx._measure_projected_view()
 	_check("perspective projection measures the actual viewport span",
@@ -94,6 +122,7 @@ func _run() -> void:
 	rig.advance(1.05, _telemetry(10.0, 0.5))
 	aircraft.position.x = 2.0
 	rig.advance(1.15, _telemetry(10.0, 0.5))
+	rig.advance(1.16, _telemetry(10.0, 0.5))
 	var trail_samples: Array = trail_pool.get("samples", [])
 	var trail_instance: MultiMeshInstance3D = trail_pool.get("instance")
 	var trail_bounds: AABB = trail_instance.custom_aabb
@@ -102,8 +131,13 @@ func _run() -> void:
 			and trail_bounds.is_finite() and trail_bounds.has_point(trail_samples[0].position)
 			and trail_bounds.has_point(trail_samples[-1].position)
 			and trail_instance.multimesh.custom_aabb == trail_bounds)
+	_check("budget reports the actual allocated trail capacity and separate CPU samples",
+		int(vfx.budget_info().trails_allocated) == trail_instance.multimesh.instance_count
+			and int(vfx.budget_info().trails_cpu_live) == trail_samples.size()
+			and int(vfx.budget_info().gpu_anchors_allocated) == 1)
 
 	rig.advance(1.6, _telemetry(10.0, 1.0))
+	rig.advance(1.61, _telemetry(10.0, 1.0))
 	_check("spark pool has active residual particles", spark_pool.particles.size() > 0
 		and int(spark_pool.instance.multimesh.visible_instance_count) > 0)
 	var particles: Array = spark_pool.particles

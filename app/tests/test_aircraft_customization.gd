@@ -127,6 +127,9 @@ func _test_skin_binding_contract() -> void:
 	checked = Customization.validate_authored_lighting_layout(duplicate_target, paint_slots,
 		"jensen-das-ugly-stik-60")
 	_check("skin binding rejects duplicate surface use", not checked.get("ok", false))
+	for malformed: Array in [[false], [{"id": "wing", "targets": false}], [{"id": "wing", "targets": [false]}]]:
+		checked = Customization.validate_authored_lighting_layout(layout, malformed, "jensen-das-ugly-stik-60")
+		_check("skin binding rejects malformed paint descriptors without a script error", not checked.get("ok", false))
 
 
 func _test_material_isolation_and_reset(id: String) -> void:
