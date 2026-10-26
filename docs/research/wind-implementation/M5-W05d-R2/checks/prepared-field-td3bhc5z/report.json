@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "43c34dbc-9d5c-4a9f-a231-2519bb47898a",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-optimization-r2/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_spatial_wind_field.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T11:49:40.147769+00:00",
+  "label": "prepared-field",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-optimization-r2\\checks\\prepared-field-td3bhc5z\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-optimization-r2\\checks\\prepared-field-td3bhc5z\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.297,
+  "log_bytes": 114,
+  "log_sha256": "e66a25defd002ba570166df7590d7bd1d098c4925566c93e83a2ae162c4d107e"
+}

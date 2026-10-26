@@ -5,6 +5,7 @@ extends RefCounted
 const RC := preload("res://physics/rotor_coupling.gd")
 const GC := preload("res://physics/generalized_coordinates.gd")
 const QP := preload("res://physics/ground_traction.gd")
+const AR := preload("res://physics/contact_assembly_resolution.gd")
 const M := preload("res://physics/math3d.gd")
 const LAW := "fixed-center-cm-common-rotor-ground-impulse-v1"
 const MAX_ROTORS := 64
@@ -25,7 +26,9 @@ const CAPTURE_RELATIVE_ROUNDOFF := 128.0 * 2.220446049250313e-16
 static func apply(stage: Dictionary, mass_kg: float, velocity_cm_body: PackedFloat64Array,
 		jacobian: PackedFloat64Array, prescribed_slip_bias: PackedFloat64Array,
 		limits: PackedFloat64Array, groups: Array, iteration_budget: int = QP.MAX_ITERATIONS,
-		capture: Dictionary = {}) -> Dictionary:
+		capture: Dictionary = {}, maximum_assembly_resolution_j: float = -1.0) -> Dictionary:
+	if not is_finite(maximum_assembly_resolution_j) or (maximum_assembly_resolution_j < 0.0 and maximum_assembly_resolution_j != -1.0):
+		return _failure("invalid explicit assembly resolution ceiling")
 	var valid := _stage(stage)
 	if not valid.ok: return valid
 	var count: int = stage.axial.size()
@@ -61,8 +64,22 @@ static func apply(stage: Dictionary, mass_kg: float, velocity_cm_body: PackedFlo
 			mobility[i * rows + j] = value
 	var qp := {ok = true, converged = true, method = "empty_rows", impulse = PackedFloat64Array(),
 		group_impulses = [], post_slip = PackedFloat64Array(), dissipation = 0.0}
+	var assembly := {}
 	if rows > 0:
-		qp = QP.solve(mobility, free_slip, limits, groups, iteration_budget)
+		if maximum_assembly_resolution_j >= 0.0:
+			var full_mass := PackedFloat64Array()
+			full_mass.resize(n*n)
+			for i in 3: full_mass[i*n+i] = mass_kg
+			for i in n-3:
+				for j in n-3: full_mass[(3+i)*n+3+j] = stage.matrix[i*(n-3)+j]
+			var responses := PackedFloat64Array()
+			for response: PackedFloat64Array in response_columns: responses.append_array(response)
+			qp = AR.solve(mobility,free_slip,limits,groups,full_mass,jacobian,z,prescribed_slip_bias,
+				responses,maximum_assembly_resolution_j,iteration_budget)
+			if qp.get("certificate_kind", "") == AR.LAW:
+				assembly = AR.bounds(mobility,free_slip,full_mass,jacobian,z,prescribed_slip_bias,responses)
+		else:
+			qp = QP.solve(mobility, free_slip, limits, groups, iteration_budget)
 		if not qp.ok: return {ok = false, status = "traction_nonconverged", reason = qp.get("reason", "traction rejected"), qp = qp}
 	elif iteration_budget < 1 or iteration_budget > QP.MAX_ITERATIONS:
 		return _failure("invalid iteration budget")
@@ -75,7 +92,7 @@ static func apply(stage: Dictionary, mass_kg: float, velocity_cm_body: PackedFlo
 	var capture_receipt := {}
 	if not capture.is_empty():
 		var polished := _capture_polish(stage, mass_kg, z, jacobian, prescribed_slip_bias, limits,
-			groups, mobility, qp, generalized_impulse, delta, capture)
+			groups, mobility, qp, generalized_impulse, delta, capture, assembly)
 		if not polished.ok: return polished
 		qp = polished.qp
 		generalized_impulse = polished.generalized_impulse
@@ -165,7 +182,7 @@ static func _capture_mapping(capture: Dictionary, count: int, jacobian: PackedFl
 static func _capture_polish(stage: Dictionary, mass: float, z: PackedFloat64Array,
 		jacobian: PackedFloat64Array, bias: PackedFloat64Array, limits: PackedFloat64Array,
 		groups: Array, mobility: PackedFloat64Array, qp: Dictionary,
-		generalized: PackedFloat64Array, delta: PackedFloat64Array, capture: Dictionary) -> Dictionary:
+		generalized: PackedFloat64Array, delta: PackedFloat64Array, capture: Dictionary, assembly: Dictionary = {}) -> Dictionary:
 	var rotor: int = capture.rotor_index
 	var row: int = capture.impulse_row
 	var count: int = stage.axial.size()
@@ -223,7 +240,7 @@ static func _capture_polish(stage: Dictionary, mass: float, z: PackedFloat64Arra
 		return _decline_capture(unchanged, raw_sigma, "finite capture correction exceeds its floating-roundoff envelope", "nonconverged")
 	var impulse: PackedFloat64Array = qp.impulse.duplicate()
 	impulse[row] = required
-	var recertified := _recertify(qp, mobility, bias, z, jacobian, limits, groups, impulse)
+	var recertified := _recertify(qp, mobility, bias, z, jacobian, limits, groups, impulse, assembly)
 	if not recertified.ok: return _decline_capture(unchanged, raw_sigma, str(recertified.reason), "nonconverged")
 	var polished_generalized := other.duplicate()
 	polished_generalized[coordinate] += required
@@ -249,7 +266,7 @@ static func _decline_capture(unchanged: Dictionary, raw_sigma: float, reason: St
 ## bounds, with the SAME tolerances. Refresh every dependent QP diagnostic.
 static func _recertify(base: Dictionary, mobility: PackedFloat64Array, bias: PackedFloat64Array,
 		z: PackedFloat64Array, jacobian: PackedFloat64Array, limits: PackedFloat64Array,
-		groups: Array, impulse: PackedFloat64Array) -> Dictionary:
+		groups: Array, impulse: PackedFloat64Array, assembly: Dictionary = {}) -> Dictionary:
 	var rows := limits.size()
 	var validated := QP._validate_psd(mobility, rows)
 	if not validated.ok: return _failure("capture original mobility failed validation", "nonconverged")
@@ -270,7 +287,13 @@ static func _recertify(base: Dictionary, mobility: PackedFloat64Array, bias: Pac
 			h[i * rows + j] = validated.correlation[i * rows + j] * left * right / base.objective_scale
 	if not _finite(y) or not _finite(h) or not _finite(b): return _failure("capture normalized verification overflow", "nonconverged")
 	var certified := QP._certificate(h, b, y, limits, groups, base.kkt_tolerance_scaled)
-	if not certified.ok: return _failure("capture failed global KKT/feasibility/complementarity verification", "nonconverged")
+	var resolution := {}
+	if base.get("certificate_kind", "") == AR.LAW:
+		resolution = AR.certificate(mobility,free_slip,limits,groups,impulse,assembly)
+		if not resolution.get("ok",false) or resolution.assembly_objective_resolution_j > base.assembly_resolution.assembly_resolution_budget_j:
+			return _failure("capture failed same assembly-resolution certificate", "nonconverged")
+	elif not certified.ok:
+		return _failure("capture failed global KKT/feasibility/complementarity verification", "nonconverged")
 	var result := base.duplicate(true)
 	var post := GC.matrix_vector(validated.matrix, impulse, rows)
 	var linear := 0.0
@@ -298,6 +321,10 @@ static func _recertify(base: Dictionary, mobility: PackedFloat64Array, bias: Pac
 	result.complementarity_scaled = certified.complementarity
 	result.feasibility_residual = certified.feasibility
 	result.duality_gap = certified.duality_gap * base.objective_scale
+	if not resolution.is_empty():
+		resolution.assembly_resolution_budget_j = base.assembly_resolution.assembly_resolution_budget_j
+		result.assembly_resolution = resolution
+		result.strict_kkt_passed = certified.ok
 	result.method = str(base.method) + ":finite_capture_polish"
 	var correction := float(base.feasibility_roundoff_correction)
 	for i in rows: correction = maxf(correction, absf(y[i] - base.normalized_impulse[i]))

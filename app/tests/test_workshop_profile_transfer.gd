@@ -24,6 +24,7 @@ func _test_cross_family_preview() -> void:
 	var source_bindings: Dictionary = _bindings_fixture("source-family", "a", true)
 	var target_bindings: Dictionary = _bindings_fixture("target-family", "b", false)
 	var source_profile: Dictionary = _source_profile(source_bindings)
+	source_profile.lighting = Presentation.LightingProfile.preset("festival")
 	var target_profile: Dictionary = _target_profile(target_bindings)
 	var source_before: Dictionary = source_profile.duplicate(true)
 	var target_before: Dictionary = target_profile.duplicate(true)
@@ -34,11 +35,17 @@ func _test_cross_family_preview() -> void:
 	if not bool(preview.get("ok", false)):
 		return
 	_check("compatible-only preview reports each applied domain slot",
-		preview.applied.size() == 4
+		preview.applied.size() == 5
 		and _has_row(preview.applied, "paint", "body", "compatible")
 		and _has_row(preview.applied, "markings", "unit_code", "compatible")
+		and _has_row(preview.applied, "lighting", "lighting", "compatible")
 		and _has_row(preview.applied, "smoke", "smoke_left", "compatible")
 		and _has_row(preview.applied, "smoke", "smoke_source", "compatible"), str(preview.applied))
+	_check("cross-family transfer preserves semantic lighting choices for target capability feedback",
+		preview.profile.lighting == source_profile.lighting
+		and preview.profile.lighting.sequence.size() > 0
+		and preview.profile.lighting.effects.size() == 2
+		and preview.profile.lighting.zones.any(func(zone: Dictionary) -> bool: return zone.id == "strip_belly"))
 	_check("incompatible or missing slots receive explicit skip reasons",
 		preview.skipped.size() == 6
 		and _has_row(preview.skipped, "paint", "glass", "paint_kind_mismatch")

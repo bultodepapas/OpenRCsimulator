@@ -29,7 +29,7 @@ func _run() -> void:
 	if show_slots.size() < 2:
 		_finish()
 		return
-	var profile: Dictionary = Presentation.defaults(bindings)
+	var profile: Dictionary = Presentation.defaults(bindings, 2)
 	var left := _smoke_entry(str(show_slots[0].id), "#F53A9BFF")
 	left.density = 1.35
 	left.emission_rate_hz = 78.0
@@ -152,11 +152,9 @@ func _run() -> void:
 	page.call("change", "emission_rate_hz", 241.0)
 	_check("strict validation refuses rates above the v2 limit", page.get("_profile") == accepted_before_invalid)
 
-	var legacy: Dictionary = checked.profile.duplicate(true)
-	legacy.version = Presentation.LEGACY_VERSION
-	# v1 predates the lighting and mechanical-audio fields of current defaults.
-	legacy.erase("lighting")
-	legacy.erase("mechanical_audio")
+	# Construct the actual historical envelope; current defaults also contain RGB/audio.
+	var legacy: Dictionary = Presentation.defaults(bindings, Presentation.LEGACY_VERSION)
+	legacy.smoke = checked.profile.smoke.duplicate(true)
 	for entry: Dictionary in legacy.smoke:
 		for key: String in Presentation.smoke_v2_defaults(): entry.erase(key)
 	var legacy_checked: Dictionary = Presentation.validate(legacy, bindings)

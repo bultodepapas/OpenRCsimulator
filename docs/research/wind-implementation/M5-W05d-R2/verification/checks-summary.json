@@ -1,0 +1,50 @@
+[
+  {
+    "test": "test_spatial_wind_prepared",
+    "exit_code": 0
+  },
+  {
+    "test": "test_spatial_wind_field",
+    "exit_code": 0
+  },
+  {
+    "test": "test_balanced_thermal_field",
+    "exit_code": 0
+  },
+  {
+    "test": "test_spatial_weather_session",
+    "exit_code": 0
+  },
+  {
+    "test": "test_spatial_thermal_response",
+    "exit_code": 0
+  },
+  {
+    "test": "test_spatial_weather_trace",
+    "exit_code": 0
+  },
+  {
+    "test": "test_spatial_wind_contract",
+    "exit_code": 0
+  },
+  {
+    "test": "test_wind_field",
+    "exit_code": 0
+  },
+  {
+    "test": "test_wind_aircraft_flow",
+    "exit_code": 0
+  },
+  {
+    "test": "test_spatial_aero_continuation",
+    "exit_code": 0
+  },
+  {
+    "test": "test_spatial_powered_stage",
+    "exit_code": 0
+  },
+  {
+    "test": "test_spatial_wash",
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,90 @@
+[
+  {
+    "log": "gp_extra_300s_60.orfl",
+    "rows": 261,
+    "columns": 89,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  },
+  {
+    "log": "jensen_spatial.orfl",
+    "rows": 61,
+    "columns": 62,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  },
+  {
+    "log": "jensen_ugly_stik_60.orfl",
+    "rows": 261,
+    "columns": 62,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  },
+  {
+    "log": "p51d_mustang_120.orfl",
+    "rows": 261,
+    "columns": 71,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  },
+  {
+    "log": "sebart_avanti_s_a200.orfl",
+    "rows": 261,
+    "columns": 71,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  },
+  {
+    "log": "stik_glow_61fx_2t.orfl",
+    "rows": 261,
+    "columns": 81,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  },
+  {
+    "log": "turbo_lumber_evolution.orfl",
+    "rows": 261,
+    "columns": 63,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  },
+  {
+    "log": "skywalker_x8-airborne-legacy.orfl",
+    "rows": 121,
+    "columns": 58,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  },
+  {
+    "log": "skywalker_x8-hand_launch-legacy.orfl",
+    "rows": 121,
+    "columns": 58,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  },
+  {
+    "log": "skywalker_x8_6s_pack-airborne-legacy.orfl",
+    "rows": 121,
+    "columns": 69,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  },
+  {
+    "log": "skywalker_x8_6s_pack-hand_launch-legacy.orfl",
+    "rows": 121,
+    "columns": 69,
+    "all_csv_cells_equal": true,
+    "exact_solver_changed": false,
+    "candidate_solver_changed": true
+  }
+]

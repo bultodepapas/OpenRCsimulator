@@ -38,6 +38,10 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 - [Documentation audit, 2026-10-06](documentation-audit-2026-10-06.md) preserves the earlier navigation and consistency findings; the [documentation map](../README.md) owns current roles and track boundaries.
 - [Graveacre asset workflow review](graveacre-ai-workflow-2026-10-09.md) records primary links, access limits and practical asset-pipeline findings.
 
+## Contributor flight-mechanics investigation
+
+[Stall and 3D diagnosis, 2026-10-18](stall-and-3d-aerobatics-findings-2026-10-18.md) and the [proposed equations and integration disposition](flight-mechanics-stall-hover-knife-edge-2026-10-18.md) preserve PR #1’s research. Independent Workshop surface travel is retained; proposed aerodynamic changes remain deferred pending consistent laws and validation.
+
 ## Entry points per track
 
 ### Cinematic trailer

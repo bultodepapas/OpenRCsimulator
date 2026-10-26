@@ -1,0 +1,41 @@
+# 4 samples: frame 148.397 ms, script 345.741 ms per sample
+   75.110 self   187.466 total ms      1015 calls  res://audio/glow_voice.gd:171 render_telemetry
+    0.004 self   140.443 total ms        48 calls  res://sim/simulation.gd:357 _physics_process
+    0.201 self   140.408 total ms        48 calls  res://sim/simulation.gd:179 step
+    0.340 self    93.434 total ms       192 calls  res://physics/glow/flight.gd:667 evaluate
+    0.099 self    82.750 total ms        48 calls  res://physics/glow/flight.gd:718 step
+    0.153 self    72.157 total ms        48 calls  res://physics/resource_event_step.gd:21 advance
+    0.099 self    71.687 total ms        48 calls  res://physics/resource_event_step.gd:171 _trial
+    0.013 self    71.460 total ms        48 calls  res://physics/integrator.gd:31 rk4_step_at
+   71.294 self    71.294 total ms    223706 calls  res://audio/glow_voice.gd:325 _exhaust_wave
+    0.136 self    71.266 total ms       144 calls  res://physics/resource_event_step.gd:183 <anonymous lambda>(lambda)
+    0.067 self    70.797 total ms       144 calls  res://sim/simulation.gd:249 <anonymous lambda>(lambda)
+    0.845 self    70.284 total ms      5619 calls  res://sim/environment.gd:47 wind_world
+    0.659 self    65.908 total ms      5619 calls  res://physics/wind_field.gd:100 WindField.sample_world
+    2.792 self    64.502 total ms      5619 calls  res://physics/wind_spatial_field.gd:118 WindSpatialField.sample_world
+    0.081 self    63.428 total ms       397 calls  res://sim/flight_session.gd:485 air_data
+    0.655 self    63.011 total ms       397 calls  res://physics/wind_aircraft_flow.gd:53 stage_air
+    2.668 self    61.819 total ms       397 calls  res://physics/wind_aircraft_flow.gd:251 sample
+    0.157 self    51.072 total ms       192 calls  res://physics/glow/flight.gd:653 _airframe
+    0.488 self    50.616 total ms       244 calls  res://physics/glow/flight.gd:409 point
+    0.016 self    48.777 total ms       192 calls  res://physics/dynamics.gd:82 loads_from_air
+    0.172 self    48.732 total ms       192 calls  res://physics/dynamics.gd:90 _components_from_air
+   33.865 self    46.946 total ms      5619 calls  res://physics/wind_spatial_field.gd:260 WindSpatialField._turbulence_wind
+    0.901 self    31.833 total ms       192 calls  res://physics/slipstream.gd:62 stage_loads
+   28.218 self    29.817 total ms     13510 calls  res://debug/debug_bridge.gd:270 _read_client
+    2.389 self    29.726 total ms       768 calls  res://physics/slipstream.gd:504 _segmented_increment
+    0.360 self    23.616 total ms      1536 calls  res://physics/slipstream.gd:287 _point_air
+   20.063 self    22.898 total ms      1536 calls  res://physics/wind_aircraft_flow.gd:25 StagePointSampler.delta_at
+    0.094 self    16.853 total ms        48 calls  res://sim/flight_session.gd:4079 _pre_step
+   16.712 self    16.712 total ms      5710 calls  res://debug/debug_log.gd:32 _log_message
+    0.841 self    16.114 total ms       192 calls  res://physics/aero.gd:1012 ambient_spatial_continuation_loads
+    0.012 self    10.500 total ms        48 calls  res://statistics/fixed_wing_adapter.gd:42 _stepped
+    8.796 self     9.364 total ms      5619 calls  res://physics/wind_spatial_field.gd:240 WindSpatialField._gust_wind
+    0.134 self     9.307 total ms        48 calls  res://statistics/fixed_wing_adapter.gd:53 sample
+    0.008 self     8.606 total ms        48 calls  res://sim/flight_session.gd:4199 _wing_cl
+    8.206 self     8.206 total ms    223706 calls  res://audio/glow_voice.gd:336 _bandlimited_sine
+    2.246 self     7.416 total ms       384 calls  res://physics/aero.gd:371 _local_loads
+    0.037 self     7.416 total ms       244 calls  res://physics/glow/flight.gd:589 _lifecycle_evaluate
+    0.056 self     7.262 total ms       244 calls  res://physics/glow/lifecycle.gd:237 evaluate_prepared
+    1.269 self     6.769 total ms      7743 calls  res://debug/debug_bridge.gd:519 _write_log_file
+    0.617 self     6.546 total ms       244 calls  res://physics/glow/lifecycle.gd:262 _evaluate_validated

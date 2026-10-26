@@ -34,6 +34,30 @@ for a closer front-quarter sunset view. Its accepted take uses native field ligh
 `--time=21:51` (the world's reference location/date, not the computer's local timezone).
 Use `--movie-only` with Movie Maker and inspect extracted AVI frames; optional viewport PNGs
 can inherit a decorated window's client size even when Movie Maker records native 1920×1080.
+Create the `--write-movie` parent directory before launching Godot: Movie Maker opens its file
+before the capture script runs, so the script's output-directory creation is too late for that file.
+
+For RGB acceptance captures, `capture_flight.gd --lighting-preset=<id>` freezes an ordinary
+Workshop trial from the chosen stock aircraft and built-in preset (`classic_rc`, `night_radian`,
+`neon_rgb`, `night_aerobatics`, `festival`, `custom`). It does not save a build or modify physics.
+Pass `--time_of_day=night` to the capture process for the existing moonlit world. `--shot=lighting-pass`
+uses neutral flight controls with the existing trimmed throttle plus 0.08 and a moving close camera;
+`--shot=lighting-pilot` uses the same controls with the production pilot camera, auto-zoom off and
+the magnifier on. No previously recorded `.orfl` tape is replayed by these shots.
+
+Each RGB frame records the actual rig allocation counters and world exposure. Pilot captures also record the visible
+inset's dimensions, camera and AA mode. The main view uses 4× MSAA; the production inset uses 2×.
+The manifest retains physical/presentation trial identities and capture/director/main/registry hashes.
+The prepared runtime uses source junctions; those hashes do not make a shared checkout immutable.
+These are offline moving-image checks,
+not real-time GPU benchmarks or pilot acceptance. Respect the renderer's distance/quality limits:
+the inset does not independently increase the primary camera's VFX birth or spill grants.
+
+The capture now disposes its director and production scene before exit. Two process-frame waits
+allow teardown; the checked Movie Maker run presents one additional cleanup frame. Retain measured
+AVI frame counts and the manifest's expected lead/cleanup counts rather than assuming that every
+encoded frame belongs to the requested flight interval. Unmodified AVI is the source; an optional
+MP4 review copy must retain its own identity and must not be used for source-pixel comparisons.
 
 `capture_formation.gd` renders 420 PNGs using the production Stik models, field, smoke and propeller
 blur. Four render actors follow authored paths. Its manifest records camera framing and separation.

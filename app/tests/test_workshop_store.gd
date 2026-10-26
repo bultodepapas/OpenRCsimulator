@@ -21,18 +21,28 @@ func _initialize() -> void:
 	_test_first_publication_recovery(base_bytes)
 	_test_interrupted_first_save_retry(base_bytes)
 	var integer_recipe: Dictionary = _recipe()
-	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier",
+		"control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder",
+		"tank_capacity_multiplier"]:
 		integer_recipe[key] = 1
 	var integer_saved: Dictionary = Store.save_variant("Integer recipe", "jensen-das-ugly-stik-60", base_bytes, integer_recipe, "", _root)
 	_check("integer-valued recipes survive their own disk round-trip", bool(integer_saved["ok"]), str(integer_saved["errors"]))
 	if integer_saved["ok"]:
-		_check("integer recipe remains loadable", Store.load_variant(integer_saved.variant.id, _root).ok)
+		var integer_loaded: Dictionary = Store.load_variant(integer_saved.variant.id, _root)
+		_check("integer recipe remains loadable", integer_loaded.ok)
+		_check("integer surface overrides remain valid through JSON hashing",
+			integer_loaded.ok
+			and integer_loaded.variant.recipe.get("control_multiplier_aileron", 0.0) == 1.0
+			and integer_loaded.variant.recipe.get("control_multiplier_elevator", 0.0) == 1.0
+			and integer_loaded.variant.recipe.get("control_multiplier_rudder", 0.0) == 1.0)
 		_check("saving does not normalize the caller's recipe in place", typeof(integer_recipe["scale"]) == TYPE_INT)
 		integer_recipe["power_multiplier"] = 1.25
+		integer_recipe["control_multiplier_elevator"] = 1.25
 		var mixed_saved: Dictionary = Store.save_variant("Mixed numeric recipe", "jensen-das-ugly-stik-60",
 			base_bytes, integer_recipe, integer_saved.variant.id, _root, {}, {}, 1)
 		_check("mixed numeric recipe update remains readable", mixed_saved.ok
-			and Store.load_variant(integer_saved.variant.id, _root).variant.revision == 2,
+			and Store.load_variant(integer_saved.variant.id, _root).variant.revision == 2
+			and is_equal_approx(float(Store.load_variant(integer_saved.variant.id, _root).variant.recipe.control_multiplier_elevator), 1.25),
 			str(mixed_saved.errors))
 		Store.delete_variant(integer_saved.variant.id, _root)
 	var saved: Dictionary = Store.save_variant("Store test Stik", "jensen-das-ugly-stik-60", base_bytes, recipe, "", _root)
@@ -67,17 +77,51 @@ func _initialize() -> void:
 	if legacy_saved.get("ok", false):
 		var legacy_loaded: Dictionary = Store.load_variant(legacy_saved.variant.id, _root)
 		_check("omitted tank-size field survives variant load without rewriting history",
-			legacy_loaded.get("ok", false) and not legacy_loaded.variant.recipe.has("tank_capacity_multiplier"))
+			legacy_loaded.get("ok", false) and not legacy_loaded.variant.recipe.has("tank_capacity_multiplier")
+			and not legacy_loaded.variant.recipe.has("control_multiplier_aileron")
+			and not legacy_loaded.variant.recipe.has("control_multiplier_elevator")
+			and not legacy_loaded.variant.recipe.has("control_multiplier_rudder"))
 		Store.delete_variant(legacy_saved.variant.id, _root)
+	var out_of_range_control: Dictionary = _recipe()
+	out_of_range_control["control_multiplier_aileron"] = 1.51
+	var refused_control: Dictionary = Store.save_variant("Invalid surface recipe", "jensen-das-ugly-stik-60",
+		base_bytes, out_of_range_control, "", _root)
+	_check("store validates optional surface multiplier bounds before hashing",
+		not refused_control.ok and _has_error(refused_control.errors, "control_multiplier_aileron"),
+		str(refused_control.errors))
 	_check("generated ID is a lowercase UUID", id.length() == 36 and id[14] == "4")
 	_check("revision starts at one", int(first["revision"]) == 1)
 	_check("new variants pin the current compiler version", str(first.get("compiler_version", "")) == WorkshopCompiler.COMPILER_VERSION)
+	_check("legacy recipe without surface keys keeps the historical compiler identity",
+		str(first.get("compiler_version", "")) == WorkshopCompiler.COMPILER_VERSION
+		and not first.recipe.has("control_multiplier_aileron")
+		and not first.recipe.has("control_multiplier_elevator")
+		and not first.recipe.has("control_multiplier_rudder"))
 	_check("exact base bytes are returned", first["base_bytes"] == base_bytes)
 	_check("base SHA-256 covers exact source bytes", str(first["base_sha256"]) == _sha256(base_bytes))
 	_check("parsed base retains its aircraft identity", str(first["base"].get("id", "")) == "jensen-das-ugly-stik-60")
 	_check("catalog descriptor is pinned with the exact source snapshot", typeof(first.get("workshop_descriptor", null)) == TYPE_DICTIONARY and str(first["workshop_descriptor"].get("base_sha256", "")) == _sha256(base_bytes))
 	_check("dependency manifest is pinned with the variant", typeof(first.get("dependencies", null)) == TYPE_DICTIONARY and str(first["dependencies"].get("format", "")) == "openrc-aircraft-workshop-dependencies v1")
 	_check("variant list discovers the saved item", _contains_variant(Store.list_variants(_root), id))
+	var surface_recipe: Dictionary = _recipe()
+	surface_recipe["control_multiplier_aileron"] = 1.2
+	var pinned_edit: Dictionary = Store.save_variant("Store test Stik", "jensen-das-ugly-stik-60",
+		base_bytes, surface_recipe, id, _root, first["workshop_descriptor"], first["dependencies"], 1)
+	_check("adding a surface override to an old compiler pin requests Save a copy",
+		not pinned_edit.ok and _has_error(pinned_edit.errors, "create a new variant with Save a copy"),
+		str(pinned_edit.errors))
+	_check("refused compiler migration leaves the original revision unchanged",
+		Store.load_variant(id, _root).variant.revision == 1)
+	var surface_copy: Dictionary = Store.save_variant("Surface control copy", "jensen-das-ugly-stik-60",
+		base_bytes, surface_recipe, "", _root, first["workshop_descriptor"], first["dependencies"])
+	_check("surface override can be saved as a new variant with its compiler pin",
+		surface_copy.ok and surface_copy.variant.compiler_version == WorkshopCompiler.SURFACE_CONTROLS_COMPILER_VERSION,
+		str(surface_copy.errors))
+	if surface_copy.ok:
+		_check("surface copy retains the explicit recipe override",
+			surface_copy.variant.recipe.has("control_multiplier_aileron")
+			and is_equal_approx(float(surface_copy.variant.recipe.control_multiplier_aileron), 1.2))
+		Store.delete_variant(surface_copy.variant.id, _root)
 	_test_exclusive_lock(id, first, base_bytes)
 
 	var renamed_recipe: Dictionary = _recipe()

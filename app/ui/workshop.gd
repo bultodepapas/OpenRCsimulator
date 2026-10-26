@@ -192,6 +192,10 @@ var _mass_policy_selector: OptionButton
 var _factor_sliders: Dictionary = {}
 var _factor_values: Dictionary = {}
 var _factor_hints: Dictionary = {}
+var _inherited_factor_keys: Dictionary = {}
+var _advanced_controls_toggle: CheckButton
+var _advanced_controls_box: VBoxContainer
+var _advanced_controls_expanded := false
 var _summary_label: Label
 var _errors_label: Label
 var _status_label: Label
@@ -232,7 +236,12 @@ var _trial_pending := false
 
 func _init() -> void:
 	for definition: Dictionary in Parameters.definitions().parameters:
-		if definition.kind == "number" and definition.key != "scale": _factor_capabilities[definition.key] = definition.capability
+		if definition.kind == "number" and definition.key != "scale":
+			_factor_capabilities[definition.key] = definition.capability
+			if bool(definition.get("inherited", false)):
+				var inherit_key := str(definition.get("inherit_key", ""))
+				if not inherit_key.is_empty():
+					_inherited_factor_keys[str(definition.key)] = inherit_key
 	name = "Workshop"
 	layer = LAYER
 	_screen = Screen.mount(self, "Screen")
@@ -689,7 +698,7 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_favorite_button = _button("Add favorite", "", "FavoriteBuild")
 	_favorite_button.pressed.connect(_toggle_favorite)
 	variant_actions.add_child(_favorite_button)
-	_copy_profile_button = _button("Copy appearance and smoke…", "", "CopyBuildProfile")
+	_copy_profile_button = _button("Review compatible settings", "", "CopyBuildProfile")
 	_copy_profile_button.pressed.connect(_review_profile_transfer)
 	variant_actions.add_child(_copy_profile_button)
 	content.add_child(variant_actions)
@@ -822,10 +831,30 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 	var power: VBoxContainer = _section(parent, "PowerSettings", "Power and fuel")
 	var controls: VBoxContainer = _section(parent, "ControlSettings", "Control surfaces")
 	mass.add_child(_label("1× keeps the original value. Changes apply to a new trial flight.", "SecondaryLabel", true))
+	var advanced_control_definitions: Array[Dictionary] = []
 	for definition: Dictionary in Parameters.definitions().parameters:
 		if not _factor_capabilities.has(definition.key): continue
+		if str(definition.get("group", "")) == "control_surfaces" \
+				and _inherited_factor_keys.has(definition.key):
+			advanced_control_definitions.append(definition)
+			continue
 		var target: VBoxContainer = controls if definition.key == "control_multiplier" else (mass if definition.key == "weight_multiplier" else power)
 		_add_factor_row(target, definition.key, definition.label)
+	if not advanced_control_definitions.is_empty():
+		_advanced_controls_toggle = CheckButton.new()
+		_advanced_controls_toggle.name = "AdvancedControlThrows"
+		_advanced_controls_toggle.text = tr("Advanced control surface setup")
+		_advanced_controls_toggle.tooltip_text = tr("Surface overrides inherit the Control travel value until changed individually.")
+		_advanced_controls_toggle.focus_mode = Control.FOCUS_ALL
+		_advanced_controls_toggle.toggled.connect(_on_advanced_controls_toggled)
+		controls.add_child(_advanced_controls_toggle)
+		_advanced_controls_box = VBoxContainer.new()
+		_advanced_controls_box.name = "AdvancedControlsBox"
+		_advanced_controls_box.add_theme_constant_override("separation", 6)
+		_advanced_controls_box.visible = false
+		controls.add_child(_advanced_controls_box)
+		for definition: Dictionary in advanced_control_definitions:
+			_add_factor_row(_advanced_controls_box, str(definition.key), str(definition.label))
 	_mass_button = _button("Measured components…", "", "MeasuredComponents")
 	_mass_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_mass_button.pressed.connect(_show_mass_editor)
@@ -1483,18 +1512,68 @@ func _on_mass_policy_selected(index: int) -> void:
 func _on_factor_value_changed(value: float, key: String) -> void:
 	if _syncing_controls or _base.is_empty():
 		return
-	if is_equal_approx(float(_recipe.get(key, 1.0)), value):
+	_set_factor_value(key, value)
+
+
+func _effective_factor_value(key: String) -> float:
+	var inherit_key := str(_inherited_factor_keys.get(key, ""))
+	if not inherit_key.is_empty():
+		return float(_recipe.get(key, _recipe.get(inherit_key, 1.0)))
+	return float(_recipe.get(key, 1.0))
+
+
+func _set_factor_value(key: String, requested_value: float) -> void:
+	var bounds := _factor_bounds(key)
+	var value := clampf(requested_value, bounds.x, bounds.y)
+	var next: Dictionary = _recipe.duplicate(true)
+	var inherit_key := str(_inherited_factor_keys.get(key, ""))
+	if key == "control_multiplier":
+		next[key] = value
+		for inherited_key: String in _inherited_factor_keys:
+			if str(_inherited_factor_keys[inherited_key]) == key:
+				next.erase(inherited_key)
+	elif not inherit_key.is_empty():
+		if is_equal_approx(value, float(next.get(inherit_key, 1.0))):
+			next.erase(key)
+		else:
+			next[key] = value
+	else:
+		next[key] = value
+	if next == _recipe:
 		return
 	if not _slider_gesture:
 		_capture_undo()
 		_slider_gesture = _slider_dragging
-	var bounds := _factor_bounds(key)
-	_recipe[key] = clampf(value, bounds.x, bounds.y)
-	_factor_values[key].text = String.num(value, 4) + "×"
+	_recipe = next
 	_invalid_fields.erase(key)
 	_pending_numbers.erase(key)
-	_factor_inputs[key].text = String.num(value, 4)
+	_sync_factor_control(key)
+	if key == "control_multiplier":
+		for inherited_key: String in _inherited_factor_keys:
+			if str(_inherited_factor_keys[inherited_key]) != key:
+				continue
+			_invalid_fields.erase(inherited_key)
+			_pending_numbers.erase(inherited_key)
+			_sync_factor_control(inherited_key)
 	_compile_recipe()
+
+
+func _sync_factor_control(key: String) -> void:
+	if not _factor_sliders.has(key) or not _factor_inputs.has(key):
+		return
+	var value := _effective_factor_value(key)
+	var slider: HSlider = _factor_sliders[key]
+	slider.step = 0.0
+	slider.set_value_no_signal(value)
+	slider.step = FACTOR_STEP
+	_factor_values[key].text = String.num(value, 4) + "×"
+	_factor_inputs[key].text = String.num(value, 4)
+
+
+func _on_advanced_controls_toggled(pressed: bool) -> void:
+	_advanced_controls_expanded = pressed
+	if is_instance_valid(_advanced_controls_box):
+		_advanced_controls_box.visible = pressed
 
 
 func _on_slider_drag_started() -> void:
@@ -1523,6 +1602,10 @@ func _apply_preset(preset_id: String) -> void:
 			next[key] = preset.get(key, next[key])
 	for key: String in _factor_capabilities:
 		var capability := str(_factor_capabilities[key])
+		if _inherited_factor_keys.has(key):
+			if not bool(caps.get(capability, false)) and _recipe.has(key):
+				next[key] = _recipe[key]
+			continue
 		next[key] = preset.get(key, next.get(key, 1.0)) if bool(caps.get(capability, false)) else _recipe.get(key, next.get(key, 1.0))
 	if float(next.get("scale", 1.0)) != float(_recipe.get("scale", 1.0)):
 		next["size_model"] = Parameters.VIRTUAL_SIZE_MODEL
@@ -1652,7 +1735,7 @@ func _sync_controls() -> void:
 	_mass_policy_selector.disabled = not bool(_capabilities.get("weight", false))
 	for key: String in _factor_capabilities:
 		var bounds := _factor_bounds(key)
-		var value := float(_recipe.get(key, 1.0))
+		var value := _effective_factor_value(key)
 		# Range preserves its exact value when step is restored; avoid quantizing a loaded recipe.
 		_factor_sliders[key].step = 0.0
 		_factor_sliders[key].set_value_no_signal(value)
@@ -1671,6 +1754,16 @@ func _sync_controls() -> void:
 				tr("Range %.2f×–%.2f×") % [bounds.x, bounds.y]
 				if supported else tr("Not available for this engine type.")
 			)
+	if is_instance_valid(_advanced_controls_toggle):
+		var supported_surface := false
+		for key: String in _inherited_factor_keys:
+			if bool(_capabilities.get(str(_factor_capabilities.get(key, "")), false)):
+				supported_surface = true
+				break
+		_advanced_controls_toggle.disabled = not supported_surface
+		_advanced_controls_toggle.set_pressed_no_signal(_advanced_controls_expanded)
+		if is_instance_valid(_advanced_controls_box):
+			_advanced_controls_box.visible = _advanced_controls_expanded
 	_syncing_controls = false
 	_sync_presentation()
 	_update_capabilities()
@@ -1771,6 +1864,24 @@ func _format_summary(summary_value: Variant, model: Dictionary) -> String:
 	var current_cg_percent := _cg_percent(model)
 	if is_finite(base_cg_percent) and is_finite(current_cg_percent):
 		lines.append(_format_metric_change(tr("CG (% chord)"), base_cg_percent, current_cg_percent, "%", 1))
+	var base_controls: Dictionary = _base_model.get("controls", {})
+	var current_controls: Dictionary = model.get("controls", {})
+	var base_throws: Variant = base_controls.get("throw_deg", {})
+	var current_throws: Variant = current_controls.get("throw_deg", {})
+	if base_throws is Dictionary and current_throws is Dictionary:
+		var surface_labels := {
+			"aileron": "Aileron throw",
+			"elevator": "Elevator throw",
+			"rudder": "Rudder throw",
+		}
+		for surface: String in ["aileron", "elevator", "rudder"]:
+			if base_throws.has(surface) and current_throws.has(surface):
+				lines.append(_format_metric_change(
+					tr(str(surface_labels[surface])),
+					float(base_throws[surface]),
+					float(current_throws[surface]),
+					"°", 1
+				))
 	return "\n".join(lines)
 
 
@@ -1867,7 +1978,7 @@ func _request_close() -> void:
 		if focused == _factor_inputs[key] and (_pending_numbers.has(key) or _invalid_fields.has(key)):
 			_pending_numbers.erase(key)
 			_invalid_fields.erase(key)
-			_factor_inputs[key].text = String.num(float(_recipe.get(key, 1.0)), 4)
+			_factor_inputs[key].text = String.num(_effective_factor_value(key), 4)
 			_compile_recipe()
 			return
 	if _compact and _compact_view:
@@ -2381,7 +2492,7 @@ func _number_changed(value: String, key: String) -> void:
 		_invalid_fields[key] = tr("Enter a value from %.2f to %.2f.") % [bounds.x, bounds.y]
 	else:
 		_invalid_fields.erase(key)
-	if value == String.num(float(_recipe.get(key, 1.0)), 4):
+	if value == String.num(_effective_factor_value(key), 4):
 		_pending_numbers.erase(key)
 	else:
 		_pending_numbers[key] = value
@@ -2394,13 +2505,8 @@ func _commit_number(key: String) -> void:
 	if not _pending_numbers.has(key) or _invalid_fields.has(key): return
 	var value := str(_pending_numbers[key]).to_float()
 	_pending_numbers.erase(key)
-	if float(_recipe.get(key, 1.0)) != value:
-		_capture_undo()
-		_recipe[key] = value
-		_factor_values[key].text = String.num(value, 4) + "×"
-		_factor_sliders[key].step = 0.0
-		_factor_sliders[key].set_value_no_signal(value)
-		_factor_sliders[key].step = FACTOR_STEP
+	if not is_equal_approx(_effective_factor_value(key), value):
+		_set_factor_value(key, value)
 	_compile_recipe()
 
 
@@ -2466,8 +2572,8 @@ func _refresh_comparison() -> void:
 	# Show existing recipe edits even when static summary metrics do not change.
 	for definition: Dictionary in Parameters.definitions().parameters:
 		if definition.kind != "number": continue
-		var value: float = float(_recipe.get(definition.key, definition.default))
-		var original: float = float(definition.default)
+		var value: float = _effective_factor_value(str(definition.key))
+		var original: float = 1.0 if bool(definition.get("inherited", false)) else float(definition.default)
 		if not _all_values.button_pressed and is_equal_approx(value, original): continue
 		for cell: String in [tr(definition.label), _format_metric_number(original, 2) + "×", _format_metric_number(value, 2) + "×", ("+" if value >= original else "−") + _format_metric_number(absf(value - original), 2) + "×"]:
 			_comparison_cell(cell)
@@ -2657,14 +2763,17 @@ func _apply_profile_transfer() -> void:
 	_transfer_snapshot.clear()
 	_close_library()
 	set_presentation(accepted)
-	set_note("Compatible appearance and smoke settings copied. Undo restores the previous presentation.")
+	set_note("Compatible presentation settings copied. Undo restores the previous presentation.")
 
 
 func _transfer_setting_label(row: Dictionary, source_bindings: Dictionary) -> String:
 	var fields := {paint = "paint_slots", markings = "marking_slots", smoke = "smoke_slots"}
 	var title := ""
-	for slot: Dictionary in source_bindings.get(fields.get(row.domain, ""), []):
-		if slot.id == row.slot: title = tr(str(slot.label))
+	if row.domain == "lighting":
+		title = tr("RGB profile")
+	else:
+		for slot: Dictionary in source_bindings.get(fields.get(row.domain, ""), []):
+			if slot.id == row.slot: title = tr(str(slot.label))
 	var reasons := {
 		compatible = "Compatible", source_slot_missing = "Source setting is unavailable.",
 		target_slot_missing = "No matching region or emitter on this aircraft.",
@@ -2929,6 +3038,19 @@ func _autosave_draft() -> bool:
 		return false
 	if not has_unsaved_changes(): return _discard_current_recovery()
 	var build := _draft_payload()
+	var baseline_recipe: Variant = _baseline.get("recipe", {})
+	var baseline_compiler := str(_baseline.get("compiler", ""))
+	if not baseline_compiler.is_empty():
+		if not baseline_recipe is Dictionary:
+			set_note("Automatic draft recovery is unavailable for this older build. Save a copy to keep your changes.")
+			return false
+		var pinned_recipe: Dictionary = baseline_recipe
+		if baseline_compiler != Compiler.version_for_recipe(pinned_recipe):
+			set_note("Automatic draft recovery is unavailable for this older build. Save a copy to keep your changes.")
+			return false
+	# Recovery is a detached candidate. Keep the library pin on the loaded build,
+	# but bind this snapshot to the current evaluator for its edited recipe.
+	build.compiler = Compiler.version_for_recipe(_recipe)
 	var state := _recovery_editor_state()
 	var snapshot := {"build": build, "editor": state}
 	if snapshot == _recovery_last: return true
@@ -2944,7 +3066,6 @@ func _autosave_draft() -> bool:
 			set_note("Automatic draft recovery is unavailable: " + _messages(dependencies.errors, "Dependency pins could not be read."))
 			return false
 		build.dependencies = dependencies.manifest
-	if str(build.compiler).is_empty(): build.compiler = Compiler.version_for_recipe(_recipe)
 	var result: Dictionary = load("res://workshop/draft_store.gd").save_snapshot(recovery_root, build, state, "", _recovery_digest)
 	if not result.ok:
 		if result.get("conflict", false):
@@ -3023,7 +3144,20 @@ func _show_recovery() -> void:
 
 
 func _parameter_label(key: String) -> String:
-	return tr(str({"scale": "Size", "mass_policy": "Mass policy", "weight_multiplier": "Weight", "power_multiplier": "Power", "control_multiplier": "Control travel", "tank_capacity_multiplier": "Tank capacity"}.get(key, "Setting")))
+	var labels := {
+		"scale": "Size",
+		"mass_policy": "Mass policy",
+		"weight_multiplier": "Weight",
+		"power_multiplier": "Power",
+		"control_multiplier": "Control travel",
+		"tank_capacity_multiplier": "Tank capacity",
+	}
+	if labels.has(key):
+		return tr(str(labels[key]))
+	for definition: Dictionary in Parameters.definitions().parameters:
+		if str(definition.get("key", "")) == key:
+			return tr(str(definition.get("label", key)))
+	return tr("Setting")
 
 
 func _request_recovery_restore() -> void:

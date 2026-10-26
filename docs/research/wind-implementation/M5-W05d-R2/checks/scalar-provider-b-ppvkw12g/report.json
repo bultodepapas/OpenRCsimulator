@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b9c4737b-8af6-4cb4-a4d4-506b92e68ee3",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-optimization-r2/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/bench_spatial_wind.gd",
+    "--",
+    "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-optimization-r2/scalar-provider-b.json",
+    "--revision=e3a0b48c567126efea35cabf4bbd39cf04f86b9fc0fbd8e103684a1d81e806e9"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T11:47:49.430221+00:00",
+  "label": "scalar-provider-b",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-optimization-r2\\checks\\scalar-provider-b-ppvkw12g\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-optimization-r2\\checks\\scalar-provider-b-ppvkw12g\\report.json",
+  "timeout_seconds": 100.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.578,
+  "log_bytes": 1012,
+  "log_sha256": "9400b08f75f4a5defbfa3f91864e75f6b7a3370068f70e9d244691aae7dd351a"
+}

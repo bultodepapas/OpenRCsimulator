@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+X8 0.0 m/s from 0.0°, trim 50%: min height 1.79 m, min airspeed 6.54 m/s, height 29.98 m after 4 s
+X8 1.5 m/s from 90.0°, trim 50%: min height 1.90 m, min airspeed 8.21 m/s, height 33.48 m after 4 s
+X8 4.0 m/s from 270.0°, trim 50%: min height 1.90 m, min airspeed 10.52 m/s, height 37.44 m after 4 s
+X8 4.0 m/s from 0.0°, trim 50%: min height 1.82 m, min airspeed 7.66 m/s, height 31.97 m after 4 s
+X8 0.0 m/s from 0.0°, trim reference: min height 1.81 m, min airspeed 6.54 m/s, height 30.45 m after 4 s
+X8 1.5 m/s from 90.0°, trim reference: min height 1.90 m, min airspeed 8.21 m/s, height 33.86 m after 4 s
+X8 4.0 m/s from 270.0°, trim reference: min height 1.90 m, min airspeed 10.52 m/s, height 37.70 m after 4 s
+X8 4.0 m/s from 0.0°, trim reference: min height 1.82 m, min airspeed 7.66 m/s, height 32.35 m after 4 s
+CRASH at 8.3 m/s (sink 4.2 m/s, airframe contact (hull point 8), point speed 8.3 m/s at detected tick) - [R] restart
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+X8-07 hand launch: 136 checks, 0 failed

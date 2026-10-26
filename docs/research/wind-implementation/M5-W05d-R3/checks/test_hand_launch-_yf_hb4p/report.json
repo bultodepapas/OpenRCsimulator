@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "16240189-4fbf-4c69-92cb-b7a269de5dcb",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-tailless-r3/candidate/app",
+    "--script",
+    "res://tests/test_hand_launch.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T12:46:25.825628+00:00",
+  "label": "test_hand_launch",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\test_hand_launch-_yf_hb4p\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\test_hand_launch-_yf_hb4p\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.985,
+  "log_bytes": 1165,
+  "log_sha256": "be077442c19a92a3b4cf419742094d934f87e25b5efeae9acecc6fd70bd81485"
+}

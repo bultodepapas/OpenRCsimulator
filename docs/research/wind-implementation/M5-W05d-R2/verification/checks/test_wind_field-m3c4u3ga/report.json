@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "691483a0-1fb3-4ed5-94b2-15379aa276ea",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-optimization-r2\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_wind_field.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T12:01:48.854126+00:00",
+  "label": "test_wind_field",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-optimization-r2\\verification\\checks\\test_wind_field-m3c4u3ga\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-optimization-r2\\verification\\checks\\test_wind_field-m3c4u3ga\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.375,
+  "log_bytes": 105,
+  "log_sha256": "7a9ac35a2a2a1632b62b574fdc9544b439552799466c72b893e72138a9f4df69"
+}

@@ -56,35 +56,53 @@ func _run() -> void:
 		and clone_a.normal_texture == source.normal_texture \
 		and clone_a.roughness_texture == source.roughness_texture \
 		and is_equal_approx(clone_a.roughness, source.roughness) \
+		and clone_a.next_pass == null \
 		and unrelated_panel.get_active_material(0) == source)
-	_check("the paint-tinted transmission map keeps bay paint color",
-		clone_a != null and _transmitted_color_is_preserved(clone_a))
 	var budget: Dictionary = helper.budget_info()
 	_check("composed atlas textures are shared within this aircraft and bounded",
 		budget.get("targets", 0) == 2 and budget.get("max_targets", 0) == 12 \
 		and budget.get("composed_textures", 0) == 1 \
+		and budget.get("active_emission_passes", -1) == 0 \
 		and budget.get("composed_texture_pixel_bytes", 0) == 512 * 512 * 4 \
 		and budget.get("composed_texture_mipped_bytes", 0) <= 1400000)
 	var advanced: Dictionary = helper.advance(0.0, {"exposure": 1.0, "throttle": 0.0}, "all", 1.0)
-	_check("profile emission uses the adapted cap", advanced.get("writes", 0) > 0 \
-		and clone_a.emission_enabled and is_equal_approx(clone_a.emission_energy_multiplier, 0.15))
+	var overlay_a := clone_a.next_pass as ShaderMaterial
+	_check("profile attaches its bounded additive pass and uses the adapted cap",
+		advanced.get("writes", 0) > 0 and overlay_a != null and not clone_a.emission_enabled \
+		and is_equal_approx(float(overlay_a.get_shader_parameter("energy")), 0.15) \
+		and int(helper.budget_info().get("active_emission_passes", 0)) == 2)
+	_check("the paint-tinted transmission map keeps bay paint color",
+		overlay_a != null and _transmitted_color_is_preserved(overlay_a))
 	helper.advance(0.1, {"exposure": 100.0, "throttle": 0.0}, "all", 1.0)
 	_check("high exposure lowers emission to the exposure cap",
-		is_equal_approx(clone_a.emission_energy_multiplier, 0.012))
+		overlay_a != null and is_equal_approx(float(overlay_a.get_shader_parameter("energy")), 0.012))
+	helper.advance(0.2, {"exposure": 46868.4609375, "throttle": 0.0}, "all", 1.0)
+	var flight_energy := float(overlay_a.get_shader_parameter("energy")) if overlay_a != null else 0.0
+	_check("very high flight exposure keeps a small positive linear energy value",
+		flight_energy > 0.000025 and flight_energy < 0.000026)
+	helper.advance(0.3, {"exposure": 12157.033203125, "throttle": 0.0}, "all", 1.0)
+	_check("skin energy follows a falling flight exposure below the old absolute epsilon",
+		overlay_a != null and float(overlay_a.get_shader_parameter("energy")) > flight_energy * 3.8)
 	LightingPolicy.reduced_flashes = true
-	helper.advance(0.0, {"exposure": 1.0, "throttle": 1.0}, "all", 1.0)
-	var reduced_color := clone_a.emission
-	var reduced_energy := clone_a.emission_energy_multiplier
 	helper.advance(0.4, {"exposure": 1.0, "throttle": 1.0}, "all", 1.0)
+	var reduced_color: Color = overlay_a.get_shader_parameter("emission_color")
+	var reduced_energy := float(overlay_a.get_shader_parameter("energy"))
+	helper.advance(0.8, {"exposure": 1.0, "throttle": 1.0}, "all", 1.0)
 	_check("reduced flashes use a stable base pattern and unit reaction gain",
-		clone_a.emission.is_equal_approx(reduced_color) \
-		and is_equal_approx(clone_a.emission_energy_multiplier, reduced_energy))
+		overlay_a != null and Color(overlay_a.get_shader_parameter("emission_color")).is_equal_approx(reduced_color) \
+		and is_equal_approx(float(overlay_a.get_shader_parameter("energy")), reduced_energy))
 	LightingPolicy.reduced_flashes = old_reduced_flashes
-	helper.advance(0.5, {"exposure": 1.0}, "nav", 1.0)
-	_check("nav mode hides skin emission", not clone_a.emission_enabled \
-		and is_equal_approx(clone_a.emission_energy_multiplier, 0.0))
-	helper.advance(0.6, {"exposure": 1.0}, "all", 0.0)
-	_check("zero night gain hides skin emission", not clone_a.emission_enabled)
+	helper.advance(0.9, {"exposure": 1.0}, "nav", 1.0)
+	_check("nav mode detaches both skin passes",
+		clone_a.next_pass == null and clone_b.next_pass == null
+		and int(helper.budget_info().get("active_emission_passes", -1)) == 0)
+	helper.advance(1.0, {"exposure": 1.0}, "all", 0.0)
+	_check("zero night gain keeps the skin passes detached",
+		clone_a.next_pass == null and clone_b.next_pass == null)
+	helper.advance(1.1, {"exposure": 1.0}, "all", 1.0)
+	_check("all mode restores the owned skin passes",
+		clone_a.next_pass == overlay_a and clone_b.next_pass is ShaderMaterial
+		and int(helper.budget_info().get("active_emission_passes", -1)) == 2)
 	var external_override := StandardMaterial3D.new()
 	panel_a.set_surface_override_material(0, external_override)
 	helper.dispose()
@@ -110,21 +128,46 @@ func _run() -> void:
 	var emissive_primitive := QuadMesh.new()
 	emissive_primitive.material = emissive_material
 	var emissive_mesh := _mesh_instance("emissive", emissive_primitive, unsupported)
+	var next_pass_source := StandardMaterial3D.new()
+	next_pass_source.next_pass = StandardMaterial3D.new()
+	var next_pass_primitive := QuadMesh.new()
+	next_pass_primitive.material = next_pass_source
+	var next_pass_mesh := _mesh_instance("next_pass", next_pass_primitive, unsupported)
+	var two_sided_material := StandardMaterial3D.new()
+	two_sided_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var two_sided_primitive := QuadMesh.new()
+	two_sided_primitive.material = two_sided_material
+	var two_sided_mesh := _mesh_instance("two_sided", two_sided_primitive, unsupported)
+	var vertex_color_material := StandardMaterial3D.new()
+	vertex_color_material.vertex_color_use_as_albedo = true
+	var vertex_color_primitive := QuadMesh.new()
+	vertex_color_primitive.material = vertex_color_material
+	var vertex_color_mesh := _mesh_instance("vertex_color", vertex_color_primitive, unsupported)
+	var transparent_material := StandardMaterial3D.new()
+	transparent_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	var transparent_primitive := QuadMesh.new()
+	transparent_primitive.material = transparent_material
+	var transparent_mesh := _mesh_instance("transparent", transparent_primitive, unsupported)
 	var shader := ShaderMaterial.new()
 	var unsupported_primitive := QuadMesh.new()
 	unsupported_primitive.material = shader
 	var unsupported_mesh := _mesh_instance("shader", unsupported_primitive, unsupported)
 	var unsupported_projection: Dictionary = Skins.project_bindings(unsupported,
-		_companion(["material_override", "uv_transform", "emissive", "shader"]))
+		_companion(["material_override", "uv_transform", "emissive", "next_pass",
+			"two_sided", "vertex_color", "transparent", "shader"]))
 	unsupported.set_meta("lighting_skin_bindings", unsupported_projection.get("bindings", []))
 	var fallback = Skins.new()
 	var fallback_result: Dictionary = fallback.configure(unsupported, _profile())
 	_check("unsupported surfaces warn and retain their original override/material",
-		fallback_result.get("warnings", []).size() >= 4 \
+		fallback_result.get("warnings", []).size() >= 8 \
 		and override_mesh.get_surface_override_material(0) == null \
 		and override_mesh.get_active_material(0) == override_mesh.material_override \
 		and uv_mesh.get_surface_override_material(0) == null and uv_mesh.get_active_material(0) == uv_material \
 		and emissive_mesh.get_surface_override_material(0) == null and emissive_mesh.get_active_material(0) == emissive_material \
+		and next_pass_mesh.get_surface_override_material(0) == null and next_pass_mesh.get_active_material(0) == next_pass_source \
+		and two_sided_mesh.get_surface_override_material(0) == null and two_sided_mesh.get_active_material(0) == two_sided_material \
+		and vertex_color_mesh.get_surface_override_material(0) == null and vertex_color_mesh.get_active_material(0) == vertex_color_material \
+		and transparent_mesh.get_surface_override_material(0) == null and transparent_mesh.get_active_material(0) == transparent_material \
 		and unsupported_mesh.get_surface_override_material(0) == null \
 		and unsupported_mesh.get_active_material(0) == shader)
 	fallback.dispose()
@@ -148,8 +191,8 @@ func _test_mask() -> bool:
 		and false_rib < 0.05 and false_rib_bay > 0.95 and solid_tip < 0.05 and uv_sample > 0.95
 
 
-func _transmitted_color_is_preserved(material: StandardMaterial3D) -> bool:
-	var texture := material.emission_texture as Texture2D
+func _transmitted_color_is_preserved(material: ShaderMaterial) -> bool:
+	var texture := material.get_shader_parameter("emission_map") as Texture2D
 	if texture == null:
 		return false
 	var image := texture.get_image()

@@ -203,7 +203,7 @@
     },
     {
       "path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb.import",
-      "sha256": "d0c94eea920a9193e349ec5eccdf3ef65f98cbfc74cd5da5e9a52c28752c83b6",
+      "sha256": "a25822325cc792e13f94f20348af900084df347a5bc04f87a7e98e1cc7bef5f1",
       "hash_mode": "lf_text",
       "role": "resource_dependency"
     }

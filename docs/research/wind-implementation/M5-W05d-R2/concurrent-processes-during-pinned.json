@@ -1,0 +1,18 @@
+[
+  {
+    "ProcessId": 59108,
+    "CommandLine": ".tools/Godot_v4.8-beta1_win64_console.exe --path app --audio-driver Dummy --rendering-method gl_compatibility --resolution 1920x1080 --fullscreen --script res://tests/test_aircraft_light_control.gd -- --capture-aircraft-lights=C:/DEVELOPMENT/OpenRCsimulator/tmp/fw-rgb-fleet-20261026/compat"
+  },
+  {
+    "ProcessId": 7280,
+    "CommandLine": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64.exe --path app --audio-driver Dummy --rendering-method gl_compatibility --resolution 1920x1080 --fullscreen --script res://tests/test_aircraft_light_control.gd -- --capture-aircraft-lights=C:/DEVELOPMENT/OpenRCsimulator/tmp/fw-rgb-fleet-20261026/compat"
+  },
+  {
+    "ProcessId": 54828,
+    "CommandLine": "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe --headless --path C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app --audio-driver Dummy --check-only --script res://tests/test_flight_cue_shadows.gd"
+  },
+  {
+    "ProcessId": 17476,
+    "CommandLine": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite\\.tools\\Godot_v4.8-beta1_win64.exe --headless --path C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app --audio-driver Dummy --check-only --script res://tests/test_flight_cue_shadows.gd"
+  }
+]

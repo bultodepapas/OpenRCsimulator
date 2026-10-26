@@ -6,6 +6,11 @@ extends SceneTree
 const MainScene := preload("res://main.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const WorldConditions := preload("res://render/world/conditions.gd")
+const Presentation := preload("res://workshop/presentation.gd")
+const Trial := preload("res://workshop/trial.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Customization := preload("res://render/aircraft_customization.gd")
+const CameraSettings := preload("res://render/camera/camera_settings.gd")
 
 const DEFAULT_FPS := 60
 const DEFAULT_WIDTH := 1920
@@ -81,7 +86,31 @@ func _run() -> void:
 	_main.name = "Main"
 	_main.interactive_start = true
 	_main.aircraft_id = str(_options.get("aircraft", "jensen-das-ugly-stik-60"))
+	# Build the same validated, detached presentation snapshot used by Workshop trials.
+	# This capture-only option never saves a variant or changes aircraft physics.
+	if _options.has("lighting-preset"):
+		var lighting := Presentation.LightingProfile.preset(str(_options["lighting-preset"]))
+		var described := Customization.describe(_main.aircraft_id)
+		if lighting.is_empty() or not described.get("ok", false):
+			push_error("Capture requires a known lighting preset and an admitted aircraft companion.")
+			_main.free()
+			quit(2)
+			return
+		var profile := Presentation.defaults(described.bindings)
+		profile.lighting = lighting
+		var frozen := Trial.freeze({"base_id": _main.aircraft_id,
+			"base_bytes": FileAccess.get_file_as_bytes(Catalog.entry(_main.aircraft_id).data),
+			"recipe": {}, "presentation_profile": profile})
+		if not frozen.get("ok", false):
+			push_error("Lighting capture trial refused: " + str(frozen.get("errors", [])))
+			_main.free()
+			quit(2)
+			return
+		_main.workshop_trial = frozen
 	_main.start_choice = str(_options.get("start", "airborne"))
+	if _shot == "lighting-pilot":
+		_main.camera_preferences = CameraSettings.normalized({
+			"camera_view": "pilot", "camera_auto_zoom": false, "camera_magnifier": "on"})
 	_main.overlays_enabled = _shot == "controls"
 	if _options.has("sky"):
 		_main.sky_config = SkyConfig.for_preset(str(_options.sky))
@@ -99,7 +128,7 @@ func _run() -> void:
 		_main.user_args.append("--alt=" + str(_options.alt))
 	if _options.has("sky"):
 		_main.user_args.append("--sky=" + str(_options.sky))
-	for key: String in ["wind-speed", "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period", "gust-delay"]:
+	for key: String in ["wind-speed", "wind-from", "gust-speed", "gust-up", "gust-duration", "gust-period", "gust-delay", "time_of_day"]:
 		if _options.has(key):
 			_main.user_args.append("--%s=%s" % [key, str(_options[key])])
 	root.add_child(_main)
@@ -130,9 +159,10 @@ func _run() -> void:
 		_main._panel.visible = _shot == "controls"
 	if _main._hud != null:
 		_main._hud.visible = _shot == "controls"
-	_main._rig.set_view("chase")
-	_main._rig.auto_zoom = false
-	_main._camera.fov = 38.0
+	if _shot != "lighting-pilot":
+		_main._rig.set_view("chase")
+		_main._rig.auto_zoom = false
+		_main._camera.fov = 38.0
 	var project_root: String = ProjectSettings.globalize_path("res://")
 	var director_path: String = project_root.path_join("../tools/trailer/flight_director.gd").simplify_path()
 	if _options.has("director-script"):
@@ -162,6 +192,14 @@ func _run() -> void:
 		await _capture_frames(int(round(_seconds * _fps)), 0)
 	if _failure.is_empty():
 		_write_manifest(true)
+	# Let production exit hooks dispose lighting, audio and scene-owned resources.
+	# The director must stop first because its process callback reads the live scene.
+	if is_instance_valid(_director):
+		_director.free()
+	if is_instance_valid(_main):
+		_main.queue_free()
+	await process_frame
+	await process_frame
 	quit(1 if not _failure.is_empty() else 0)
 
 
@@ -254,6 +292,7 @@ func _write_manifest(ok: bool) -> void:
 		image_sequence_enabled = _save_images,
 		movie_file = str(_options.get("movie-file", "")),
 		movie_writer_lead_frames_expected = lead_frames,
+		movie_writer_cleanup_frames_expected = 1,
 		movie_impact_frame_estimate = impact_movie_frame,
 		movie_eight_second_clip_start_frame_estimate = clip_start_frame,
 		movie_eight_second_clip_end_frame_estimate_exclusive = impact_movie_frame + CRASH_CLIP_POST_IMPACT_FRAMES if impact_movie_frame >= 0 else -1,
@@ -271,6 +310,15 @@ func _write_manifest(ok: bool) -> void:
 		world_conditions = WorldConditions.resolve(),
 		field_world_lighting = bool(_main._field_world_lighting) if _main != null else false,
 		lighting_config = _main.lighting_config.duplicate(true) if _main != null else {},
+		lighting_preset = str(_options.get("lighting-preset", "inherit")),
+		capture_script_sha256 = FileAccess.get_sha256(get_script().resource_path),
+		director_script_sha256 = FileAccess.get_sha256(_director.get_script().resource_path) if is_instance_valid(_director) else "",
+		main_source_sha256 = FileAccess.get_sha256("res://main.gd"),
+		customization_registry_sha256 = FileAccess.get_sha256("res://data/aircraft_customization.json"),
+		camera_preferences = _main.camera_preferences.duplicate(true) if _main != null else {},
+		root_msaa_3d = root.msaa_3d,
+		workshop_identity = session.workshop_identity.duplicate(true) if session != null else {},
+		workshop_presentation_identity = session.workshop_presentation_identity.duplicate(true) if session != null else {},
 		director_script = str(_options.get("director-script", "tools/trailer/flight_director.gd")),
 		weather_config = session.weather_configuration() if session != null else {},
 		flight_tick_end = int(session.sim.tick) if session != null else -1,

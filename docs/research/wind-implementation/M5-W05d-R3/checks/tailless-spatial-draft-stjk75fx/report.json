@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c981fe71-acef-4aee-b55e-908113ea4f9a",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-tailless-r3/candidate/app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/test_tailless_spatial_wind.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T12:44:15.682235+00:00",
+  "label": "tailless-spatial-draft",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\tailless-spatial-draft-stjk75fx\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\tailless-spatial-draft-stjk75fx\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.906,
+  "log_bytes": 117,
+  "log_sha256": "a7c842eb845a2b46c4dda87409269bb3a37d900e3923e0e52234fd3d6b13fd60"
+}

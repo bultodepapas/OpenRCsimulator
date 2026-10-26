@@ -1,0 +1,211 @@
+{
+	"cases": [
+		{
+			"field_content_hash": "b6d11ca787b5dabf8fe85bcd8ebb63d98a8fe51dff38fdfe0b4ff8955736e765",
+			"max_batch_mean_us_per_tick": 19.777083333333334,
+			"median_us_per_query": 19.254166666666666,
+			"median_us_per_tick": 19.254166666666666,
+			"min_batch_mean_us_per_tick": 18.858333333333334,
+			"mode_count": 8,
+			"nested_thermal_content_hash": "b515d41e13b74b4272a7f5f5cc4c26867c8eef5c0d4b7345d3ca857d90909666",
+			"p95_batch_mean_us_per_tick": 19.777083333333334,
+			"queries_per_accepted_tick": 1,
+			"sample_checksum": 860.181799713539,
+			"samples_us_per_tick": [
+				19.254166666666666,
+				18.858333333333334,
+				19.777083333333334
+			],
+			"station_count": 1,
+			"timed_query_count_per_case": 1440
+		},
+		{
+			"field_content_hash": "b6d11ca787b5dabf8fe85bcd8ebb63d98a8fe51dff38fdfe0b4ff8955736e765",
+			"max_batch_mean_us_per_tick": 148.89375,
+			"median_us_per_query": 18.328385416666666,
+			"median_us_per_tick": 146.62708333333333,
+			"min_batch_mean_us_per_tick": 144.26875,
+			"mode_count": 8,
+			"nested_thermal_content_hash": "b515d41e13b74b4272a7f5f5cc4c26867c8eef5c0d4b7345d3ca857d90909666",
+			"p95_batch_mean_us_per_tick": 148.89375,
+			"queries_per_accepted_tick": 8,
+			"sample_checksum": 9629.927824858007,
+			"samples_us_per_tick": [
+				148.89375,
+				146.62708333333333,
+				144.26875
+			],
+			"station_count": 8,
+			"timed_query_count_per_case": 11520
+		},
+		{
+			"field_content_hash": "b6d11ca787b5dabf8fe85bcd8ebb63d98a8fe51dff38fdfe0b4ff8955736e765",
+			"max_batch_mean_us_per_tick": 594.3625,
+			"median_us_per_query": 18.1474609375,
+			"median_us_per_tick": 580.71875,
+			"min_batch_mean_us_per_tick": 578.775,
+			"mode_count": 8,
+			"nested_thermal_content_hash": "b515d41e13b74b4272a7f5f5cc4c26867c8eef5c0d4b7345d3ca857d90909666",
+			"p95_batch_mean_us_per_tick": 594.3625,
+			"queries_per_accepted_tick": 32,
+			"sample_checksum": 38656.78935813577,
+			"samples_us_per_tick": [
+				594.3625,
+				578.775,
+				580.71875
+			],
+			"station_count": 32,
+			"timed_query_count_per_case": 46080
+		},
+		{
+			"field_content_hash": "f77b74f9e0889503d15b17da7ff46f519c8ab28497844bf47fd2b2a37756b7a7",
+			"max_batch_mean_us_per_tick": 35.672916666666666,
+			"median_us_per_query": 35.39791666666667,
+			"median_us_per_tick": 35.39791666666667,
+			"min_batch_mean_us_per_tick": 35.32083333333333,
+			"mode_count": 24,
+			"nested_thermal_content_hash": "b515d41e13b74b4272a7f5f5cc4c26867c8eef5c0d4b7345d3ca857d90909666",
+			"p95_batch_mean_us_per_tick": 35.672916666666666,
+			"queries_per_accepted_tick": 1,
+			"sample_checksum": 937.1507617198142,
+			"samples_us_per_tick": [
+				35.39791666666667,
+				35.32083333333333,
+				35.672916666666666
+			],
+			"station_count": 1,
+			"timed_query_count_per_case": 1440
+		},
+		{
+			"field_content_hash": "f77b74f9e0889503d15b17da7ff46f519c8ab28497844bf47fd2b2a37756b7a7",
+			"max_batch_mean_us_per_tick": 279.925,
+			"median_us_per_query": 33.47083333333333,
+			"median_us_per_tick": 267.76666666666665,
+			"min_batch_mean_us_per_tick": 265.8666666666667,
+			"mode_count": 24,
+			"nested_thermal_content_hash": "b515d41e13b74b4272a7f5f5cc4c26867c8eef5c0d4b7345d3ca857d90909666",
+			"p95_batch_mean_us_per_tick": 279.925,
+			"queries_per_accepted_tick": 8,
+			"sample_checksum": 10075.004009711134,
+			"samples_us_per_tick": [
+				267.76666666666665,
+				265.8666666666667,
+				279.925
+			],
+			"station_count": 8,
+			"timed_query_count_per_case": 11520
+		},
+		{
+			"field_content_hash": "f77b74f9e0889503d15b17da7ff46f519c8ab28497844bf47fd2b2a37756b7a7",
+			"max_batch_mean_us_per_tick": 1065.4479166666667,
+			"median_us_per_query": 32.215234375,
+			"median_us_per_tick": 1030.8875,
+			"min_batch_mean_us_per_tick": 1030.3020833333333,
+			"mode_count": 24,
+			"nested_thermal_content_hash": "b515d41e13b74b4272a7f5f5cc4c26867c8eef5c0d4b7345d3ca857d90909666",
+			"p95_batch_mean_us_per_tick": 1065.4479166666667,
+			"queries_per_accepted_tick": 32,
+			"sample_checksum": 40582.791452603386,
+			"samples_us_per_tick": [
+				1030.3020833333333,
+				1030.8875,
+				1065.4479166666667
+			],
+			"station_count": 32,
+			"timed_query_count_per_case": 46080
+		},
+		{
+			"field_content_hash": "d10c34424046ccd2518bb63dd1b1beb270ef7cada2b16224b2e76ecf4dd8aed9",
+			"max_batch_mean_us_per_tick": 100.33333333333333,
+			"median_us_per_query": 87.49375,
+			"median_us_per_tick": 87.49375,
+			"min_batch_mean_us_per_tick": 76.71458333333334,
+			"mode_count": 64,
+			"nested_thermal_content_hash": "b515d41e13b74b4272a7f5f5cc4c26867c8eef5c0d4b7345d3ca857d90909666",
+			"p95_batch_mean_us_per_tick": 100.33333333333333,
+			"queries_per_accepted_tick": 1,
+			"sample_checksum": 951.0992021840057,
+			"samples_us_per_tick": [
+				100.33333333333333,
+				87.49375,
+				76.71458333333334
+			],
+			"station_count": 1,
+			"timed_query_count_per_case": 1440
+		},
+		{
+			"field_content_hash": "d10c34424046ccd2518bb63dd1b1beb270ef7cada2b16224b2e76ecf4dd8aed9",
+			"max_batch_mean_us_per_tick": 585.1458333333334,
+			"median_us_per_query": 71.81796875,
+			"median_us_per_tick": 574.54375,
+			"min_batch_mean_us_per_tick": 559.8958333333334,
+			"mode_count": 64,
+			"nested_thermal_content_hash": "b515d41e13b74b4272a7f5f5cc4c26867c8eef5c0d4b7345d3ca857d90909666",
+			"p95_batch_mean_us_per_tick": 585.1458333333334,
+			"queries_per_accepted_tick": 8,
+			"sample_checksum": 9609.619966498109,
+			"samples_us_per_tick": [
+				585.1458333333334,
+				574.54375,
+				559.8958333333334
+			],
+			"station_count": 8,
+			"timed_query_count_per_case": 11520
+		},
+		{
+			"field_content_hash": "d10c34424046ccd2518bb63dd1b1beb270ef7cada2b16224b2e76ecf4dd8aed9",
+			"max_batch_mean_us_per_tick": 2276.539583333333,
+			"median_us_per_query": 68.59576822916667,
+			"median_us_per_tick": 2195.0645833333333,
+			"min_batch_mean_us_per_tick": 2187.84375,
+			"mode_count": 64,
+			"nested_thermal_content_hash": "b515d41e13b74b4272a7f5f5cc4c26867c8eef5c0d4b7345d3ca857d90909666",
+			"p95_batch_mean_us_per_tick": 2276.539583333333,
+			"queries_per_accepted_tick": 32,
+			"sample_checksum": 37761.740463676026,
+			"samples_us_per_tick": [
+				2195.0645833333333,
+				2187.84375,
+				2276.539583333333
+			],
+			"station_count": 32,
+			"timed_query_count_per_case": 46080
+		}
+	],
+	"composition": "3 m/s neutral mean, seeded vector-potential turbulence and one active balanced thermal agenda cell; no aircraft, RNG-at-query or session callbacks.",
+	"format": "openrc-spatial-wind-stage-bench v1",
+	"machine": {
+		"architecture": "x86_64",
+		"godot": {
+			"build": "official",
+			"hash": "4d10419cacd6d3009976e8f9fd3abd970fd58018",
+			"hex": 264192,
+			"major": 4,
+			"minor": 8,
+			"patch": 0,
+			"status": "beta1",
+			"string": "4.8-beta1 (official)",
+			"timestamp": 0
+		},
+		"logical_cpu_count": 24,
+		"os": "Windows",
+		"processor": "AMD Ryzen 9 5900X 12-Core Processor"
+	},
+	"mode_counts": [
+		8,
+		24,
+		64
+	],
+	"provider_format": "openrc-spatial-wind v2 + balanced thermal field v1",
+	"samples": 3,
+	"source_revision": "cba4552d2749e19ace9483de73a6114adb7beb15ce7e70922b05a2a02fe27904",
+	"stations_per_accepted_tick": [
+		1,
+		8,
+		32
+	],
+	"tick_hz": 240.0,
+	"ticks_per_sample": 480,
+	"timing_method": "Warm each immutable provider with untimed 240 Hz accepted-tick queries, then time batches of accepted ticks. Every accepted tick samples all authored wind stations exactly once. Setup, config resolution, receipts, aircraft work and rendering are excluded; this isolates provider sample cost.",
+	"warmup_ticks": 240
+}

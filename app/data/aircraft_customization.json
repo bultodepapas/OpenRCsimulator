@@ -7,7 +7,7 @@
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "f4u-corsair-250",
-      "model_manifest_sha256": "5d03cb3989a6d5829f8ae1d048e47022fb801a00a21eccb3a7b0b5b438ef126e",
+      "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
       "paint_slots": [
         {
           "id": "body",
@@ -366,7 +366,7 @@
         },
         {
           "path": "res://render/lighting/lighting_skins.gd",
-          "sha256": "e3d839c49aa83a183835933591e16eeb9ec9b99a747214ffbee6d5b1a93963d5"
+          "sha256": "d56b295c0c1c364c3e72e0bcb12d59f418487bfa42dffccd2d10a4039fc7bd1b"
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
@@ -377,12 +377,16 @@
           "sha256": "960b0a1048c6e96bc1938fef48940e6c79b314c5419e6bc954de7bbd8f526c4d"
         },
         {
+          "path": "res://render/lighting/rgb_skin.gdshader",
+          "sha256": "9f9c84c0919f7d5e05295f26d3713776ce0550e9307c078ad28726696cb509c5"
+        },
+        {
           "path": "res://render/lighting/rgb_strip.gdshader",
           "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "791dca78282c1aa7d39ebf4cc90bdfe12fc598ccbe4e72e5ca150c9ebd8bbca1"
+          "sha256": "5889362e47518973fe5ec35e78e18b92156bb40e5f38799afdd4c66e39a7fe5b"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -441,7 +445,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "57842e7f0f9319a5c2a91ad509931578d0ada86926c82e804a3549925193c956"
+      "slots_sha256": "fd815f0df73a1c28f2a1da239214e9472708e4cbc99ff9429565a33462a39913"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -713,7 +717,7 @@
         },
         {
           "path": "res://render/lighting/lighting_skins.gd",
-          "sha256": "e3d839c49aa83a183835933591e16eeb9ec9b99a747214ffbee6d5b1a93963d5"
+          "sha256": "d56b295c0c1c364c3e72e0bcb12d59f418487bfa42dffccd2d10a4039fc7bd1b"
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
@@ -724,12 +728,16 @@
           "sha256": "960b0a1048c6e96bc1938fef48940e6c79b314c5419e6bc954de7bbd8f526c4d"
         },
         {
+          "path": "res://render/lighting/rgb_skin.gdshader",
+          "sha256": "9f9c84c0919f7d5e05295f26d3713776ce0550e9307c078ad28726696cb509c5"
+        },
+        {
           "path": "res://render/lighting/rgb_strip.gdshader",
           "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "791dca78282c1aa7d39ebf4cc90bdfe12fc598ccbe4e72e5ca150c9ebd8bbca1"
+          "sha256": "5889362e47518973fe5ec35e78e18b92156bb40e5f38799afdd4c66e39a7fe5b"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -788,7 +796,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "2477bd39808316c32215d0c4b38e8ea66e5628a6de9a9001b77b1c3b4a29d56d"
+      "slots_sha256": "11a14949344302accfec6c9c610fa92b2423b1d1e0a13c32b4cdfde88bf3abd2"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1202,7 +1210,7 @@
         },
         {
           "path": "res://render/lighting/lighting_skins.gd",
-          "sha256": "e3d839c49aa83a183835933591e16eeb9ec9b99a747214ffbee6d5b1a93963d5"
+          "sha256": "d56b295c0c1c364c3e72e0bcb12d59f418487bfa42dffccd2d10a4039fc7bd1b"
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
@@ -1213,12 +1221,16 @@
           "sha256": "960b0a1048c6e96bc1938fef48940e6c79b314c5419e6bc954de7bbd8f526c4d"
         },
         {
+          "path": "res://render/lighting/rgb_skin.gdshader",
+          "sha256": "9f9c84c0919f7d5e05295f26d3713776ce0550e9307c078ad28726696cb509c5"
+        },
+        {
           "path": "res://render/lighting/rgb_strip.gdshader",
           "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "791dca78282c1aa7d39ebf4cc90bdfe12fc598ccbe4e72e5ca150c9ebd8bbca1"
+          "sha256": "5889362e47518973fe5ec35e78e18b92156bb40e5f38799afdd4c66e39a7fe5b"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -1277,7 +1289,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "c220fb381003de4fc7a5f3eee0fa3567a9fe0831e4b069c23c0cef20fa90c7eb"
+      "slots_sha256": "98369ff3df68656c200a7124d8db587cb9d23c88e15124e6789fdf87753e8963"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1588,7 +1600,7 @@
         },
         {
           "path": "res://render/lighting/lighting_skins.gd",
-          "sha256": "e3d839c49aa83a183835933591e16eeb9ec9b99a747214ffbee6d5b1a93963d5"
+          "sha256": "d56b295c0c1c364c3e72e0bcb12d59f418487bfa42dffccd2d10a4039fc7bd1b"
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
@@ -1599,12 +1611,16 @@
           "sha256": "960b0a1048c6e96bc1938fef48940e6c79b314c5419e6bc954de7bbd8f526c4d"
         },
         {
+          "path": "res://render/lighting/rgb_skin.gdshader",
+          "sha256": "9f9c84c0919f7d5e05295f26d3713776ce0550e9307c078ad28726696cb509c5"
+        },
+        {
           "path": "res://render/lighting/rgb_strip.gdshader",
           "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "791dca78282c1aa7d39ebf4cc90bdfe12fc598ccbe4e72e5ca150c9ebd8bbca1"
+          "sha256": "5889362e47518973fe5ec35e78e18b92156bb40e5f38799afdd4c66e39a7fe5b"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -1663,14 +1679,14 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "7a98ffccb9f397b5f4c4aefc419a1d33edaf239f947b9ade4a8dfef201dd9749"
+      "slots_sha256": "9705cb263c00de872994ef2ab4eb5f0ba63044b2108a875663fb182691750f0d"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "sebart-avanti-s-a200-p100rx",
-      "model_manifest_sha256": "8fdcaff2d691dc597fcbddb5b52f7b30a51eb539ad97189812cdc241f06a6b23",
+      "model_manifest_sha256": "b2196e4dfe6b5f7077e3ee5bdab6a435331cb68ea11f78cb69f46263bb10a82c",
       "paint_slots": [
         {
           "id": "body",
@@ -1871,7 +1887,7 @@
         },
         {
           "path": "res://render/lighting/lighting_skins.gd",
-          "sha256": "e3d839c49aa83a183835933591e16eeb9ec9b99a747214ffbee6d5b1a93963d5"
+          "sha256": "d56b295c0c1c364c3e72e0bcb12d59f418487bfa42dffccd2d10a4039fc7bd1b"
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
@@ -1882,12 +1898,16 @@
           "sha256": "960b0a1048c6e96bc1938fef48940e6c79b314c5419e6bc954de7bbd8f526c4d"
         },
         {
+          "path": "res://render/lighting/rgb_skin.gdshader",
+          "sha256": "9f9c84c0919f7d5e05295f26d3713776ce0550e9307c078ad28726696cb509c5"
+        },
+        {
           "path": "res://render/lighting/rgb_strip.gdshader",
           "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "791dca78282c1aa7d39ebf4cc90bdfe12fc598ccbe4e72e5ca150c9ebd8bbca1"
+          "sha256": "5889362e47518973fe5ec35e78e18b92156bb40e5f38799afdd4c66e39a7fe5b"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -1946,7 +1966,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "7d7cc84a498833da010c5c573c5897b5410de78a48543cf51fb698d60c009919"
+      "slots_sha256": "63c89065f17ab2b3328f469850cb2c27c396eaf9c2affb283063c60c07f9dcf7"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -2047,7 +2067,7 @@
         },
         {
           "path": "res://render/lighting/lighting_skins.gd",
-          "sha256": "e3d839c49aa83a183835933591e16eeb9ec9b99a747214ffbee6d5b1a93963d5"
+          "sha256": "d56b295c0c1c364c3e72e0bcb12d59f418487bfa42dffccd2d10a4039fc7bd1b"
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
@@ -2058,12 +2078,16 @@
           "sha256": "960b0a1048c6e96bc1938fef48940e6c79b314c5419e6bc954de7bbd8f526c4d"
         },
         {
+          "path": "res://render/lighting/rgb_skin.gdshader",
+          "sha256": "9f9c84c0919f7d5e05295f26d3713776ce0550e9307c078ad28726696cb509c5"
+        },
+        {
           "path": "res://render/lighting/rgb_strip.gdshader",
           "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "791dca78282c1aa7d39ebf4cc90bdfe12fc598ccbe4e72e5ca150c9ebd8bbca1"
+          "sha256": "5889362e47518973fe5ec35e78e18b92156bb40e5f38799afdd4c66e39a7fe5b"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -2122,14 +2146,14 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "bd87de4fbcfac697d2aa65367c1fa542f96be8a03201df962da3df5e5cff1f01"
+      "slots_sha256": "897c4cfaae51e857c90915787917d42f389f12226f562a17774370979502f00f"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "turbo-lumber-evolution",
-      "model_manifest_sha256": "6b815eef6d54214b29d61b4338bf65168f1384f7beaa09074e1c5f517f120a40",
+      "model_manifest_sha256": "b4ac6781aa61ee376d75e41b4b6824f452ff83bd12e5787077bb3f5ff11ae669",
       "paint_slots": [
         {
           "id": "body",
@@ -2380,7 +2404,7 @@
         },
         {
           "path": "res://render/lighting/lighting_skins.gd",
-          "sha256": "e3d839c49aa83a183835933591e16eeb9ec9b99a747214ffbee6d5b1a93963d5"
+          "sha256": "d56b295c0c1c364c3e72e0bcb12d59f418487bfa42dffccd2d10a4039fc7bd1b"
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
@@ -2391,12 +2415,16 @@
           "sha256": "960b0a1048c6e96bc1938fef48940e6c79b314c5419e6bc954de7bbd8f526c4d"
         },
         {
+          "path": "res://render/lighting/rgb_skin.gdshader",
+          "sha256": "9f9c84c0919f7d5e05295f26d3713776ce0550e9307c078ad28726696cb509c5"
+        },
+        {
           "path": "res://render/lighting/rgb_strip.gdshader",
           "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "791dca78282c1aa7d39ebf4cc90bdfe12fc598ccbe4e72e5ca150c9ebd8bbca1"
+          "sha256": "5889362e47518973fe5ec35e78e18b92156bb40e5f38799afdd4c66e39a7fe5b"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -2455,7 +2483,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "02dae9391d6dbcde714310121e849361456bec7b6c27b65c8501fc6c3d14a745"
+      "slots_sha256": "7c26b0a01225ea0ee19d09c585031a28a8e152e0b50fe3ea2835c354907a8f4d"
     }
   ]
 }

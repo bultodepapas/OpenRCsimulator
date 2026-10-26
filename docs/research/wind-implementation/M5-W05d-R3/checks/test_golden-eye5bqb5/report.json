@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "62d3af5c-a0a4-4095-91c3-825ffeb83bba",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-tailless-r3/candidate/app",
+    "--script",
+    "res://tests/test_golden.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T12:46:38.966861+00:00",
+  "label": "test_golden",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\test_golden-eye5bqb5\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\test_golden-eye5bqb5\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.875,
+  "log_bytes": 1070,
+  "log_sha256": "19cbc5d8b74aca746c81dd146b8afbbfe29ee9e8f3aeedb6caddbe98a3e79f98"
+}

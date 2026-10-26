@@ -8,6 +8,7 @@ const Parameters := preload("res://workshop/parameters.gd")
 const COMPILER_VERSION := "openrc-aircraft-workshop-v1-generic-compiler-2"
 const MEASURED_MASS_COMPILER_VERSION := "openrc-aircraft-workshop-v1-measured-mass-1"
 const VIRTUAL_SIZE_COMPILER_VERSION := "openrc-aircraft-workshop-v1-virtual-size-1"
+const SURFACE_CONTROLS_COMPILER_VERSION := "openrc-aircraft-workshop-v1-surface-controls-1"
 const DOMAIN_TAG := "_workshop_quantity_domain"
 const REFERENCE_DENSITY_KG_M3 := 1.225
 ## FUEL-11a: tank volume follows airframe scale and an independent estimated capacity ratio;
@@ -46,6 +47,16 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 	var weight_multiplier: float = float(values.weight_multiplier)
 	var power_multiplier: float = float(values.power_multiplier)
 	var control_multiplier: float = float(values.control_multiplier)
+	var surface_control_multipliers := {}
+	var any_control_change: bool = control_multiplier != 1.0
+	for surface: String in Parameters.CONTROL_SURFACES:
+		var key := "control_multiplier_" + surface
+		var multiplier: float = float(values.get(key, control_multiplier))
+		surface_control_multipliers[surface] = multiplier
+		if values.has(key) and not bool(support.get("control_" + surface, false)):
+			parsed.errors.append("%s: unsupported because this aircraft has no declared %s surface throw" % [key, surface])
+		if multiplier != 1.0:
+			any_control_change = true
 	var tank_capacity_multiplier: float = float(values.tank_capacity_multiplier)
 	var scale_power: float = 2.0 if values.mass_policy == "constant_wing_loading" else 3.0
 	var mass_ratio: float = pow(scale, scale_power) * weight_multiplier
@@ -71,10 +82,11 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 		if not measured.ok: return _failure(measured.errors)
 		candidate_raw = measured.raw.duplicate(true)
 	var mass_source: Dictionary = candidate_raw.duplicate(true) if not mass_edits.is_empty() else base_raw
-	if scale != 1.0 or mass_ratio != 1.0 or power_multiplier != 1.0 or control_multiplier != 1.0 \
+	if scale != 1.0 or mass_ratio != 1.0 or power_multiplier != 1.0 or any_control_change \
 			or tank_capacity_multiplier != 1.0:
 		_transform_candidate(candidate_raw, base_id, scale, mass_ratio, power_multiplier,
-			control_multiplier, tank_capacity_multiplier, str(values.mass_policy), virtual_size)
+			control_multiplier, surface_control_multipliers, tank_capacity_multiplier,
+			str(values.mass_policy), virtual_size)
 	if values.has("id"):
 		candidate_raw.id = effective_id
 
@@ -118,6 +130,9 @@ static func capabilities(base: Dictionary) -> Dictionary:
 			"weight": false,
 			"power": false,
 			"controls": false,
+			"control_aileron": false,
+			"control_elevator": false,
+			"control_rudder": false,
 			"tank_capacity": false,
 			"note": "Base data fails openrc-aircraft v2 validation: %s" % "; ".join(checked.errors),
 		}
@@ -130,6 +145,9 @@ static func defaults() -> Dictionary:
 
 ## Extensions select their own evaluator identity; legacy recipes retain compiler-2.
 static func version_for_recipe(recipe: Dictionary) -> String:
+	for surface: String in Parameters.CONTROL_SURFACES:
+		if recipe.has("control_multiplier_" + surface):
+			return SURFACE_CONTROLS_COMPILER_VERSION
 	var edits: Variant = recipe.get("mass_edits", [])
 	if edits is Array and not edits.is_empty(): return MEASURED_MASS_COMPILER_VERSION
 	return VIRTUAL_SIZE_COMPILER_VERSION if uses_virtual_size(recipe) else COMPILER_VERSION
@@ -148,6 +166,9 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 			"weight": false,
 			"power": false,
 			"controls": false,
+			"control_aileron": false,
+			"control_elevator": false,
+			"control_rudder": false,
 			"tank_capacity": false,
 			"note": "Aircraft modules could not be classified: %s" % "; ".join(classification.errors),
 			"classification": classification,
@@ -160,6 +181,13 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 	var control_shape_ok: bool = raw_controls.get("max_throw", {}) is Dictionary
 	var controls_supported: bool = bool(transform_support.get("controls", false)) \
 		and control_shape_ok and model.get("controls", {}).has("throw_deg")
+	var declared_throws: Variant = raw_controls.get("max_throw", {})
+	var model_controls: Dictionary = model.get("controls", {})
+	var model_throws: Variant = model_controls.get("throw_deg", {})
+	var surface_support := {}
+	for surface: String in Parameters.CONTROL_SURFACES:
+		surface_support[surface] = controls_supported and declared_throws is Dictionary \
+			and declared_throws.has(surface) and model_throws is Dictionary and model_throws.has(surface)
 	var fuel_system: Variant = raw.get("fuel_system", {})
 	var tank_capacity_supported: bool = fuel_system is Dictionary and fuel_system.get("tanks") is Array \
 		and not fuel_system.tanks.is_empty() and model.get("fuel_system", {}).get("tanks", []).size() == fuel_system.tanks.size()
@@ -176,6 +204,9 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 		"weight": weight_supported,
 		"power": power_supported,
 		"controls": controls_supported,
+		"control_aileron": bool(surface_support.get("aileron", false)),
+		"control_elevator": bool(surface_support.get("elevator", false)),
+		"control_rudder": bool(surface_support.get("rudder", false)),
 		"tank_capacity": tank_capacity_supported,
 		"note": note,
 		"classification": classification,
@@ -183,7 +214,8 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 
 
 static func _transform_candidate(raw: Dictionary, base_id: String, scale: float, mass_ratio: float,
-		power_multiplier: float, control_multiplier: float, tank_capacity_multiplier: float,
+		power_multiplier: float, control_multiplier: float, surface_control_multipliers: Dictionary,
+		tank_capacity_multiplier: float,
 		mass_policy: String, virtual_size := false) -> void:
 	var geometry_policy := "uniform " + mass_policy + " virtual scale s=" + str(scale)
 	_transform_q(raw.reference, "wing_area", scale * scale, base_id, geometry_policy + ": area × s²")
@@ -294,8 +326,10 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 	var controls: Dictionary = raw.get("controls", {})
 	var throws: Dictionary = controls.get("max_throw", {})
 	for throw_key: Variant in throws.keys():
-		_transform_q(throws, str(throw_key), control_multiplier, base_id,
-			"virtual surface travel × " + str(control_multiplier) + "; normalized servo timing retained")
+		var key_str := str(throw_key)
+		var factor: float = float(surface_control_multipliers.get(key_str, control_multiplier))
+		_transform_q(throws, key_str, factor, base_id,
+			"virtual surface travel × " + str(factor) + "; normalized servo timing retained")
 
 
 ## FUEL-11a: liquid inventory ids of the declared tanks.
@@ -530,6 +564,9 @@ static func _summary(base_model: Dictionary, model: Dictionary, values: Dictiona
 		"capabilities": support.duplicate(true),
 		"compiler_version": version_for_recipe(values),
 	}
+	for surface: String in Parameters.CONTROL_SURFACES:
+		var key := "control_multiplier_" + surface
+		summary[key] = float(values.get(key, values.control_multiplier))
 	var propulsion: Dictionary = model.get("propulsion", {})
 	if support.power and propulsion.has("max_rpm") and propulsion.has("idle_rpm") and propulsion.has("diameter") \
 			and propulsion.has("ct") and propulsion.has("cp"):

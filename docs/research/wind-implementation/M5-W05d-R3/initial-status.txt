@@ -1,0 +1,35 @@
+ M .gitattributes
+M  app/app_root.gd
+ M app/data/economy/catalog.json
+M  app/i18n/es.po
+A  app/physics/aircraft_ground_electric.gd.uid
+M  app/physics/glow/operating_point.gd
+ M app/tests/test_aircraft_ground_electric.gd
+A  app/tests/test_aircraft_ground_electric.gd.uid
+M  app/tests/test_glow_operating_reuse.gd
+A  app/tests/test_glow_operating_reuse.gd.uid
+M  app/tests/test_workshop_preview.gd
+M  app/tests/test_workshop_ui.gd
+M  app/ui/controller_setup.gd
+A  app/ui/radio_calibration_setup.gd
+M  app/ui/workshop.gd
+M  app/ui/workshop_customization.gd
+M  app/ui/workshop_lighting.gd
+M  app/ui/workshop_lighting_sequence.gd
+M  app/ui/workshop_preview.gd
+M  docs/AIRCRAFT-WORKSHOP.md
+M  docs/GLOW-ENGINES.md
+M  docs/TOOLS.md
+ M docs/advanced-ground-flight-physics-masterplan.md
+M  docs/plans/aircraft-editor.md
+A  docs/research/aircraft-editor/AE-08b-09/2026-10-26-ui-results.json
+M  docs/research/aircraft-editor/AE-08b-09/README.md
+M  docs/research/glow-engines/NITRO-02/README.md
+A  docs/research/glow-engines/NITRO-02/trim-performance.json
+ M docs/research/ground-physics/GP-12/README.md
+ M docs/research/ground-physics/GP-12/evidence/traction-acceleration/README.md
+ M docs/research/night-flight-lighting/implementation.md
+M  tools/debug/scenarios/workshop_discard_keyboard.txt
+ M tools/trailer/capture_flight.gd
+ M tools/trailer/flight_director.gd
+?? docs/research/ground-physics/GP-12/evidence/traction-acceleration/checkout-verification.json

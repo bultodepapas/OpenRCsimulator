@@ -103,7 +103,8 @@ static func matches_stage(air: Dictionary, s: PackedFloat64Array, rho: float) ->
 
 
 ## Build immutable station arms in body FRD from the authored datum O.
-## Order: main-wing envelope stations, horizontal tail, vertical tail, then optional propeller hub or turbine intake.
+## Order: main-wing envelope stations, horizontal slot, vertical tail, then optional hub/intake.
+## Explicit tailless models reserve the horizontal slot at O but never sample it or apply a load there.
 static func geometry(model: Variant) -> Dictionary:
 	var errors := PackedStringArray()
 	if typeof(model) != TYPE_DICTIONARY:
@@ -160,16 +161,21 @@ static func geometry(model: Variant) -> Dictionary:
 		errors.append("model.surfaces must be a Dictionary")
 		return _geometry_failure(errors)
 	var surfaces: Dictionary = surfaces_value
+	var layout_error := Aero.spatial_layout_error(model, wing_count)
+	if not layout_error.is_empty():
+		errors.append(layout_error)
+		return _geometry_failure(errors)
+	var tailless := surfaces.has("tailless")
+	var station_x: PackedFloat64Array = surfaces.get("tailless", {}).get("station_x", PackedFloat64Array())
 	var horizontal_value: Variant = surfaces.get("horizontal", null)
 	var vertical_value: Variant = surfaces.get("vertical", null)
-	if typeof(horizontal_value) != TYPE_DICTIONARY or typeof(vertical_value) != TYPE_DICTIONARY:
+	if (not tailless and typeof(horizontal_value) != TYPE_DICTIONARY) or typeof(vertical_value) != TYPE_DICTIONARY:
 		errors.append("model.surfaces.horizontal and vertical must be Dictionaries")
 		return _geometry_failure(errors)
-	var horizontal: Dictionary = horizontal_value
 	var vertical: Dictionary = vertical_value
-	var horizontal_position: Variant = horizontal.get("position", null)
+	var horizontal_position: Variant = null if tailless else horizontal_value.get("position", null)
 	var vertical_position: Variant = vertical.get("position", null)
-	if not _finite3(horizontal_position):
+	if not tailless and not _finite3(horizontal_position):
 		errors.append("model.surfaces.horizontal.position must be three finite LE coordinates")
 	if not _finite3(vertical_position):
 		errors.append("model.surfaces.vertical.position must be three finite LE coordinates")
@@ -181,13 +187,14 @@ static func geometry(model: Variant) -> Dictionary:
 	if not _finite3(wing_arm):
 		errors.append("main-wing aerodynamic reference arm is nonfinite")
 		return _geometry_failure(errors)
-	for y in station_ys:
-		offsets.append(wing_arm[0])
-		offsets.append(wing_arm[1] + y)
+	for i in wing_count:
+		# Match the derived, swept force/rotation arms in Aero._wing_flow/_local_loads.
+		offsets.append(wing_arm[0] if not tailless else -(station_x[i] - cg[0]) + 0.0)
+		offsets.append(wing_arm[1] + station_ys[i])
 		offsets.append(wing_arm[2])
 
-	var horizontal_index: int = wing_count
-	var horizontal_arm: PackedFloat64Array = Aero._arm(horizontal_position, cg)
+	var horizontal_index: int = -1 if tailless else wing_count
+	var horizontal_arm: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]) if tailless else Aero._arm(horizontal_position, cg)
 	var vertical_index: int = wing_count + 1
 	var vertical_arm: PackedFloat64Array = Aero._arm(vertical_position, cg)
 	if not _finite3(horizontal_arm):
@@ -286,6 +293,14 @@ static func sample(s: Variant, model: Variant, environment: Variant, time_s: flo
 	var omega: PackedFloat64Array = state.slice(RB.RATE, RB.RATE + 3)
 	var uniform := true
 	for i in station_count:
+		if i == int(station_geometry.wing_count) and int(station_geometry.horizontal_index) < 0:
+			# Reserved ABI slot, not a physical surface. Do not create a weather probe,
+			# angular-flow contribution or extra domain/refusal point for an absent tail.
+			positions_ned.append_array(position_ned)
+			wind_ned.append_array(reference_wind)
+			relative_body.append_array(reference_air_body)
+			delta_body.append_array(PackedFloat64Array([0.0, 0.0, 0.0]))
+			continue
 		var arm := offsets.slice(i * 3, i * 3 + 3)
 		var station_position: PackedFloat64Array = M.add(position_ned, M.q_rotate(q_body_to_ned, arm))
 		if not _finite3(station_position):

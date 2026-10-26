@@ -1,0 +1,10 @@
+{
+  "changed_sources": [
+    "app/physics/wind_spatial_field.gd"
+  ],
+  "all_other_solver_source_hashes_identical": true,
+  "identical_failures": [
+    "FAIL skywalker_x8 airborne start accepts v5 local airflow",
+    "FAIL skywalker_x8_6s_pack airborne start accepts v5 local airflow"
+  ]
+}

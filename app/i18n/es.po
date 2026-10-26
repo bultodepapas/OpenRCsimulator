@@ -5024,8 +5024,8 @@ msgstr "Quitar favorito"
 msgid "Favorite"
 msgstr "Favorito"
 
-msgid "Copy appearance and smoke…"
-msgstr "Copiar apariencia y humo…"
+msgid "RGB profile"
+msgstr "Perfil RGB"
 
 msgid "Favorites could not be read; existing metadata was preserved."
 msgstr "No se pudieron leer los favoritos; se conservaron los datos existentes."
@@ -5063,8 +5063,8 @@ msgstr "No se pueden copiar estos ajustes visuales."
 msgid "The draft changed. Review the settings again before applying them."
 msgstr "El borrador cambió. Revisa de nuevo los ajustes antes de aplicarlos."
 
-msgid "Compatible appearance and smoke settings copied. Undo restores the previous presentation."
-msgstr "Se copiaron la apariencia y el humo compatibles. Deshacer restaura el estado anterior."
+msgid "Compatible presentation settings copied. Undo restores the previous presentation."
+msgstr "Se copiaron los ajustes compatibles. Deshacer restaura la presentación anterior."
 
 msgid "Compatible"
 msgstr "Compatible"
@@ -7388,6 +7388,33 @@ msgstr "Elige un preajuste o activa un emisor y ajusta su color y forma."
 
 msgid "This saved smoke profile uses older settings. Editing updates the draft; the saved build stays unchanged."
 msgstr "Este perfil de humo usa ajustes antiguos. La edición actualiza el borrador; la variante guardada se conserva."
+
+msgid "Advanced control surface setup"
+msgstr "Ajustes avanzados de superficies de control"
+
+msgid "Surface overrides inherit the Control travel value until changed individually."
+msgstr "Los ajustes de cada superficie heredan el recorrido global hasta que los cambies individualmente."
+
+msgid "Aileron travel multiplier"
+msgstr "Multiplicador de recorrido de alerones"
+
+msgid "Elevator travel multiplier"
+msgstr "Multiplicador de recorrido del elevador"
+
+msgid "Rudder travel multiplier"
+msgstr "Multiplicador de recorrido del timón"
+
+msgid "Aileron throw"
+msgstr "Recorrido de alerones"
+
+msgid "Elevator throw"
+msgstr "Recorrido del elevador"
+
+msgid "Rudder throw"
+msgstr "Recorrido del timón"
+
+msgid "Automatic draft recovery is unavailable for this older build. Save a copy to keep your changes."
+msgstr "La recuperación automática no está disponible para esta variante antigua. Guarda una copia para conservar tus cambios."
 
 msgid "Calibration stays in the draft until you Save controller settings."
 msgstr "La calibración permanece en el borrador hasta que guardes los ajustes del mando."

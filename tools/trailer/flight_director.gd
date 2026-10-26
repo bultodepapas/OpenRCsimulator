@@ -3,6 +3,7 @@
 extends Node
 
 const RB := preload("res://physics/rigid_body.gd")
+const Exposure := preload("res://render/world/exposure.gd")
 
 var main: Node
 var shot := "stik-bank"
@@ -23,8 +24,9 @@ func configure(flight_main: Node, shot_name: String, shot_duration_s: float, out
 	process_priority = 10 # Main renders first; this node then places the cinematic camera before draw.
 	main.session.input_enabled = false
 	main.session.sim.stepped.connect(_on_sim_stepped)
-	main._rig.set_view("chase")
-	main._rig.auto_zoom = false
+	if shot != "lighting-pilot":
+		main._rig.set_view("chase")
+		main._rig.auto_zoom = false
 
 
 func resume_after_report_restart() -> void:
@@ -47,6 +49,8 @@ func _process(_delta: float) -> void:
 		return
 	if main.session != null and not main.session.crash.is_empty():
 		return # The live CrashDirector owns the camera once the physical incident occurs.
+	if shot == "lighting-pilot":
+		return # Production pilot rig and magnifier own both cameras for this acceptance view.
 	_place_camera(float(main.session.sim.time()))
 
 
@@ -101,6 +105,19 @@ func record_presented_frame(frame_index: int, preroll_frames: int) -> void:
 			fov_deg = float(camera.fov),
 		},
 	})
+	var lighting: Node = main.get("_rgb_lighting")
+	if is_instance_valid(lighting):
+		frame_records[-1]["aircraft_lighting"] = lighting.budget_info()
+		frame_records[-1]["world_exposure"] = Exposure.last
+	var magnifier: Node = main.get("_magnifier")
+	if is_instance_valid(magnifier) and magnifier.shown:
+		frame_records[-1]["magnifier"] = {
+			"shown": true, "mode": magnifier.mode,
+			"viewport_size": [magnifier.camera.get_viewport().size.x, magnifier.camera.get_viewport().size.y],
+			"msaa_3d": magnifier.camera.get_viewport().msaa_3d,
+			"camera_position_m": _v3(magnifier.camera.global_position),
+			"camera_fov_deg": magnifier.camera.fov,
+		}
 
 
 func _commands_at(t: float) -> Dictionary:
@@ -111,6 +128,8 @@ func _commands_at(t: float) -> Dictionary:
 		# Resume the native reset into its trimmed airborne start for the final two source seconds.
 		return c
 	match shot:
+		"lighting-pass", "lighting-pilot":
+			pass # Same trimmed start and neutral controls for matched lighting-only captures.
 		"stik-bank", "wind", "storm":
 			c.roll = 0.36 if t >= 0.42 and t < 1.55 else (-0.16 if t >= 1.95 and t < 2.45 else 0.0)
 			c.pitch = 0.025

@@ -9,6 +9,7 @@ const BASE_PATH: String = "res://data/aircraft/jensen_ugly_stik_60.json"
 
 var _library_root: String = ""
 var _draft_root: String = ""
+var _surface_root: String = ""
 var _stale_root: String = ""
 var _fault_root: String = ""
 var _fault_roots: Array[String] = []
@@ -24,6 +25,7 @@ func _initialize() -> void:
 	var suffix: String = "%d_%d" % [int(Time.get_unix_time_from_system()), int(Time.get_ticks_usec())]
 	_library_root = "user://workshop_draft_library_%s" % suffix
 	_draft_root = "user://workshop_draft_primary_%s" % suffix
+	_surface_root = "user://workshop_draft_surfaces_%s" % suffix
 	_stale_root = "user://workshop_draft_stale_%s" % suffix
 	_fault_root = "user://workshop_draft_fault_%s" % suffix
 	_collision_root = "user://workshop_draft_collision_%s" % suffix
@@ -65,6 +67,7 @@ func _initialize() -> void:
 	lighting_editor.presentation_buffers.lighting.zone = "res://unsafe.gd"
 	_check("lighting recovery rejects nonsemantic zone paths", not DraftStore.validate_editor_state(lighting_editor).get("ok", false))
 	_test_save_read_and_discard(build, editor, variant)
+	_test_surface_control_pending_buffer(build, editor)
 	_test_recipe_specific_compiler_pin(build, editor)
 	_test_stale_dependencies(build, editor, variant)
 	_test_fault_matrix(build, editor, variant)
@@ -148,6 +151,35 @@ func _test_save_read_and_discard(build: Dictionary, editor: Dictionary, variant:
 		and not DraftStore.load_snapshot(_draft_root).exists)
 	_check("discard leaves the original library entry intact",
 		Store.load_variant(str(variant.id), _library_root).ok)
+
+
+func _test_surface_control_pending_buffer(build: Dictionary, editor: Dictionary) -> void:
+	var surface_build: Dictionary = build.duplicate(true)
+	surface_build.recipe["control_multiplier"] = 1.15
+	surface_build.recipe["control_multiplier_aileron"] = 1.3
+	var accepted_recipe: Dictionary = surface_build.recipe.duplicate(true)
+	var surface_editor: Dictionary = editor.duplicate(true)
+	var pending_text := "unfinished surface value"
+	surface_editor.numeric_buffers["control_multiplier_elevator"] = pending_text
+	var saved: Dictionary = DraftStore.save_snapshot(_surface_root, surface_build, surface_editor)
+	_check("surface override and invalid pending input save as separate recovery state",
+		saved.get("ok", false), str(saved.get("errors", [])))
+	_check("pending surface text does not mutate the accepted recipe before save",
+		surface_build.recipe == accepted_recipe
+		and not surface_build.recipe.has("control_multiplier_elevator"))
+	if not saved.get("ok", false):
+		return
+	var loaded: Dictionary = DraftStore.load_snapshot(_surface_root)
+	var loaded_recipe: Dictionary = loaded.get("payload", {}).get("recipe", {})
+	var loaded_buffers: Dictionary = loaded.get("editor", {}).get("numeric_buffers", {})
+	_check("surface override round-trips while invalid text remains a pending editor buffer",
+		loaded.get("ok", false) and loaded.get("compatible", false)
+		and is_equal_approx(float(loaded_recipe.get("control_multiplier", 0.0)), 1.15)
+		and is_equal_approx(float(loaded_recipe.get("control_multiplier_aileron", 0.0)), 1.3)
+		and not loaded_recipe.has("control_multiplier_elevator")
+		and loaded_buffers.get("control_multiplier_elevator", "") == pending_text)
+	var discarded: Dictionary = DraftStore.discard_snapshot(_surface_root)
+	_check("surface-control recovery fixture can be discarded", discarded.ok and discarded.discarded)
 
 
 func _test_stale_dependencies(build: Dictionary, editor: Dictionary, variant: Dictionary) -> void:
@@ -437,7 +469,7 @@ func _check(label: String, condition: bool, detail: String = "") -> void:
 
 
 func _finish() -> void:
-	for root: String in [_library_root, _draft_root, _stale_root, _fault_root, _collision_root,
+	for root: String in [_library_root, _draft_root, _surface_root, _stale_root, _fault_root, _collision_root,
 			_cas_root, _cas_backup_root, _cas_artifact_root] + _fault_roots:
 		_remove_tree(ProjectSettings.globalize_path(root))
 	print("%d checks, %d failed" % [_checks, _failures])

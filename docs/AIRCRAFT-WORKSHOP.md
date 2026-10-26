@@ -50,7 +50,10 @@ If saving a manual trace fails during Return/Quit, recording has stopped. **Stay
 | Tank capacity | 0.50–2.00× | Compiler sizing proposal for validated tanks; trial mass/fill integration remains under verification |
 | Power | 0.50–2.00× | Virtual prescribed-RPM propeller static-power multiplier after size/mass scaling |
 | Control travel | 0.50–1.50× | Surface throw limits; does not change transmitter expo or servo speed |
+| Aileron / elevator / rudder travel | 0.50–1.50× each | Optional overrides for declared surface throws; omitted values inherit Control travel |
 | Measured component mass | 0.001–5 kg per eligible existing inventory ID; at most 32 entries | Original stations and geometry; measurement source required; complete aircraft validation still applies |
+
+**Advanced control surface setup** exposes the individual travel controls and compiled throws in degrees. Missing recipe keys `control_multiplier_aileron`, `control_multiplier_elevator` and `control_multiplier_rudder` inherit the current global multiplier, including in older saved builds and presets. Changing **Control travel** resets the individual overrides; Undo restores them. Opening or closing the advanced controls only changes their visibility. Unsupported surfaces remain unavailable. Explicit surface overrides use compiler identity `openrc-aircraft-workshop-v1-surface-controls-1`; recipes without these keys retain their existing compiler identity. Adding an individual override to a build pinned to an older compiler requires **Save a copy**; the original remains readable. These are virtual control adjustments, not new aerodynamic laws or aircraft validation.
 
 The size shortcuts are Tiny (10%), Mini (50%), Original (100%), Large (200%) and Giant (500%). **Smaller** divides size by 1.1; **Larger** multiplies it by 1.1, with explicit limits. Each action selects the virtual size model and adds one Undo entry without changing the other adjustments. The selector includes intermediate sizes and retains exact loaded recipe values. The wingspan readout uses the validated model; pending or invalid edits are labeled proposed. Invalid imported recipe inputs are refused before replacing the draft. The separate Starting preset menu retains its existing sizes.
 
@@ -161,6 +164,7 @@ Use the [focused commands](TOOLS.md#aircraft-workshop) before the full `app/test
 
 | Dated evidence | Scope |
 | --- | --- |
+| [AE-01-R1 surface travel, 2026-10-26](research/aircraft-editor/AE-01-R1/README.md) | Optional per-surface controls, inherited legacy recipes, persistence/recovery, bounded experiments and same-tape software response evidence from PR #1 integration |
 | [AE-23b virtual size, 2026-10-19](research/aircraft-editor/AE-23b/README.md) | 10–500% controls, strict stock import, saved builds/bundles, both endpoint mass policies, same-tape replay, 240/480/960 Hz refinement and native EN/ES layouts; existing golden mismatches disclosed |
 | [AE-03a library save boundaries, 2026-10-19](research/aircraft-editor/AE-03a/README.md) | 35 injected and native Windows abrupt-writer cases; complete records, immutable retries, backup recovery and orphan-lock/Save a copy behavior |
 | [AE-03c recovery, 2026-10-19](research/aircraft-editor/AE-03c/README.md) | Bounded snapshots, interruption/lock/collision matrix, invalid-field restore and native recovery dialog |

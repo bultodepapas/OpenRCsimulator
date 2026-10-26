@@ -1,0 +1,108 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok v5 spatial profile and frozen turbulence config validate
+ok v5 rejects a second legacy mean-wind source
+ok v5 rejects legacy session OU turbulence
+ok v5 rejects unknown spatial provider settings
+ok catalog includes the expected real-aircraft matrix
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok jensen_ugly_stik_60 real aircraft setup accepts v5 weather
+ok jensen_ugly_stik_60 airborne start accepts v5 local airflow
+ok jensen_ugly_stik_60 v5 has no session OU process
+ok jensen_ugly_stik_60 environment adds no second turbulence vector
+ok jensen_ugly_stik_60 powered v5 run accepts two simulation seconds
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik_glow_61fx_2t real aircraft setup accepts v5 weather
+ok stik_glow_61fx_2t airborne start accepts v5 local airflow
+ok stik_glow_61fx_2t v5 has no session OU process
+ok stik_glow_61fx_2t environment adds no second turbulence vector
+ok stik_glow_61fx_2t powered v5 run accepts two simulation seconds
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik_glow_55ax_2t real aircraft setup accepts v5 weather
+ok stik_glow_55ax_2t airborne start accepts v5 local airflow
+ok stik_glow_55ax_2t v5 has no session OU process
+ok stik_glow_55ax_2t environment adds no second turbulence vector
+ok stik_glow_55ax_2t powered v5 run accepts two simulation seconds
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik_glow_fs64v_4t real aircraft setup accepts v5 weather
+ok stik_glow_fs64v_4t airborne start accepts v5 local airflow
+ok stik_glow_fs64v_4t v5 has no session OU process
+ok stik_glow_fs64v_4t environment adds no second turbulence vector
+ok stik_glow_fs64v_4t powered v5 run accepts two simulation seconds
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok gp_extra_300s_60 real aircraft setup accepts v5 weather
+ok gp_extra_300s_60 airborne start accepts v5 local airflow
+ok gp_extra_300s_60 v5 has no session OU process
+ok gp_extra_300s_60 environment adds no second turbulence vector
+ok gp_extra_300s_60 powered v5 run accepts two simulation seconds
+ok p51d_mustang_120 real aircraft setup accepts v5 weather
+ok p51d_mustang_120 airborne start accepts v5 local airflow
+ok p51d_mustang_120 v5 has no session OU process
+ok p51d_mustang_120 environment adds no second turbulence vector
+ok p51d_mustang_120 powered v5 run accepts two simulation seconds
+ok f4u_corsair_250 real aircraft setup accepts v5 weather
+ok f4u_corsair_250 airborne start accepts v5 local airflow
+ok f4u_corsair_250 v5 has no session OU process
+ok f4u_corsair_250 environment adds no second turbulence vector
+ok f4u_corsair_250 powered v5 run accepts two simulation seconds
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok sebart_avanti_s_a200 real aircraft setup accepts v5 weather
+ok sebart_avanti_s_a200 airborne start accepts v5 local airflow
+ok sebart_avanti_s_a200 v5 has no session OU process
+ok sebart_avanti_s_a200 environment adds no second turbulence vector
+ok sebart_avanti_s_a200 powered v5 run accepts two simulation seconds
+ok turbo_lumber_evolution real aircraft setup accepts v5 weather
+ok turbo_lumber_evolution airborne start accepts v5 local airflow
+ok turbo_lumber_evolution v5 has no session OU process
+ok turbo_lumber_evolution environment adds no second turbulence vector
+ok turbo_lumber_evolution powered v5 run accepts two simulation seconds
+ok turbo_lumber_evolution_4s_pack real aircraft setup accepts v5 weather
+ok turbo_lumber_evolution_4s_pack airborne start accepts v5 local airflow
+ok turbo_lumber_evolution_4s_pack v5 has no session OU process
+ok turbo_lumber_evolution_4s_pack environment adds no second turbulence vector
+ok turbo_lumber_evolution_4s_pack powered v5 run accepts two simulation seconds
+ok default runway field loads
+ok default runway threshold resolves
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok real aircraft solves a runway start with per-candidate v5 Air
+ok runway start v5 has no session OU process
+ok runway start environment adds no second turbulence vector
+ok runway source first tick accepts
+ok runway checkpoint JSON carries a complete v12 weather receipt
+ok runway destination accepts exact v12 checkpoint JSON
+ok runway JSON restore reproduces exact snapshot
+ok runway checkpoint continuation is byte-exact
+ok runway tampered v12 receipt refuses transactionally
+ok runway valid-but-different v5 config refuses transactionally
+ok runway invalid restore leaves prior replay JSON unchanged
+ok runway restore begins from a complete destination snapshot
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok real aircraft accepts an airborne v5 start
+ok airborne start v5 has no session OU process
+ok airborne start environment adds no second turbulence vector
+ok airborne source first tick accepts
+ok airborne checkpoint JSON carries a complete v12 weather receipt
+ok airborne destination accepts exact v12 checkpoint JSON
+ok airborne JSON restore reproduces exact snapshot
+ok airborne checkpoint continuation is byte-exact
+ok airborne tampered v12 receipt refuses transactionally
+ok airborne valid-but-different v5 config refuses transactionally
+ok airborne invalid restore leaves prior replay JSON unchanged
+ok airborne restore begins from a complete destination snapshot
+ok thermal helper creates a complete v2 candidate
+ok thermal agenda resolves under the shared spatial domain
+ok weather v5 carries a validated thermal-v2 provider
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok thermal-v2 session resets on the real aircraft
+ok thermal-v2 checkpoint retains its agenda and receipt
+ok thermal-v2 checkpoint restores byte-exactly
+ok thermal-v2 continuation remains exact
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok near-boundary current stage is accepted before the RK midpoint
+ok RK midpoint lies outside the configured spatial weather domain
+ok midpoint out-of-domain sample rolls back the full simulation transaction
+M5-W05c-R2 spatial weather session: 91 checks, 0 failures

@@ -3,6 +3,8 @@ const Workshop := preload("res://ui/workshop.gd")
 const Store := preload("res://workshop/store.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
+const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
+const Presentation := preload("res://workshop/presentation.gd")
 var failures := 0
 func _initialize() -> void: run.call_deferred()
 func check(label: String, condition: bool) -> void:
@@ -21,7 +23,7 @@ func run() -> void:
 	root.add_child(editor)
 	await process_frame
 	var bindings: Dictionary = Customization.describe(Catalog.DEFAULT_ID).bindings
-	var profile: Dictionary = editor.get_presentation()
+	var profile: Dictionary = Presentation.defaults(bindings)
 	profile.paint = [{"slot": bindings.paint_slots[0].id, "color": "#327DE8FF", "pattern": "solid", "accent": "none"}]
 	profile.markings = [{"slot": bindings.marking_slots[0].id, "text": "ÁVION-12", "color": "#FFFFFFFF"}]
 	editor.set_presentation(profile)
@@ -33,7 +35,9 @@ func run() -> void:
 	var source_entry: Dictionary = profile.smoke[0].duplicate(true)
 	source_entry.slot = source_id
 	profile.smoke.append(source_entry)
+	profile.lighting = LightingProfile.preset("festival")
 	editor.set_presentation(profile)
+	profile = editor.get_presentation()
 	editor.set_variant_name("Reusable blue airshow")
 	editor.save_named_variant()
 	var id: String = editor.get("_saved_variant_id")
@@ -81,7 +85,7 @@ func run() -> void:
 	editor.call("_review_profile_transfer")
 	var dialog: ConfirmationDialog = editor.get("_transfer_dialog")
 	var description: String = editor.get("_transfer_text").text
-	check("copy previews accepted and skipped domains before mutation", dialog.visible and description.contains("Settings to apply") and description.contains("Settings skipped") and description.contains("Engine exhaust") and description.contains("stock appearance profile") and editor.get_presentation() == target_before)
+	check("copy previews accepted and skipped domains before mutation", dialog.visible and description.contains("Settings to apply") and description.contains("Settings skipped") and description.contains("Engine exhaust") and description.contains("Lighting / RGB profile") and description.contains("stock appearance profile") and editor.get_presentation() == target_before)
 	check("Cancel is the initial review focus", dialog.gui_get_focus_owner() == dialog.get_cancel_button())
 	editor.call("dismiss_modal_for_exit")
 	check("closing copy review preserves draft and library", not dialog.visible and editor.get("_library_dialog").visible and editor.get_presentation() == target_before)
@@ -89,6 +93,8 @@ func run() -> void:
 	editor.call("_apply_profile_transfer")
 	var copied: Dictionary = editor.get_presentation()
 	check("copy accepts registration and preserves paint with a different material contract", copied.paint == target_before.paint and copied.markings == profile.markings)
+	check("cross-aircraft copy preserves the complete semantic lighting profile", copied.lighting == profile.lighting)
+	check("copy confirmation describes the full presentation transfer", editor.get("_status_label").text.contains("Compatible presentation settings copied"))
 	check("source exhaust absent on Extra is skipped explicitly", copied.smoke.size() == 2 and not copied.smoke.any(func(entry: Dictionary) -> bool: return entry.slot == source_id))
 	check("copy preserves physical recipe and counts as one Undo edit", editor.get_recipe() == recipe_before and editor.get("_undo_history").size() == history_size + 1)
 	editor.call("_undo")

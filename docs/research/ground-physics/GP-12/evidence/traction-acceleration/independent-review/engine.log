@@ -1,0 +1,8 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+MIXED_SINGULAR iterations=73 accelerations=14
+JSON_ROUNDTRIP mobility numeric_mismatches=27 max_ulp=5 byte_equal=false
+JSON_ROUNDTRIP free_slip numeric_mismatches=2 max_ulp=1 byte_equal=false
+JSON_ROUNDTRIP limits numeric_mismatches=5 max_ulp=61 byte_equal=false
+ACTUAL_BINARY iterations=8 stationarity_original=0.00000000001378 tolerance=0.0000000000319
+Independent QP review: 34 checks, 0 failed

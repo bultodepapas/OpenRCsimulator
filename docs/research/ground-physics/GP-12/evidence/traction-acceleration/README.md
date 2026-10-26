@@ -1,0 +1,15 @@
+# GP-12 bounded traction-optimizer acceleration
+
+2026-10-26, pinned Godot `4.8.beta1.official.4d10419ca`. This cohort contains **1,134 passing production checks**: traction QP 607, common impulse 314, contact step 127, wheel/material rows 86. The separate [independent review](independent-review/review.md) passes 34 focused checks. Every retained checked-engine invocation completed with exit 0 and zero diagnostics. [Manifest](manifest.json) binds source snapshots, the lossless failing input, reports and logs; 200 observed source/input files were byte-identical before and after the four production suites. This is not a claim that all 200 files or the full application were tested.
+
+The actual three-wheel braking experiment previously exhausted 1,024 cyclic sweeps: stationarity `3.24279e-11` exceeded its `3.19022e-11` tolerance. The new optimizer solves the **same captured binary input in 8 sweeps**. Neither physical mobility, material coefficient, impulse cap, KKT tolerance nor iteration budget changed. Bounded interior-face corrections and feasible extrapolation accelerate optimization; the original full-mobility objective, feasibility, KKT, complementarity, gap and passive-work certificates still authorize publication. No physical diagonal regularization is introduced.
+
+The rank-revealing face solve retains consistent nullspace freedom, rejects unresolved incompatible equations, and stops an oversized descent correction at the first feasible group boundary. A projected trial iterate is an optimization proposal; it is not a replacement for the physical mobility-metric solution. Tests cover the exact braking input, altered row units, reversed sweep order, singular range equations, independent prescribed KKT solutions, common body/wheel energy, finite shaft capture, checkpoint continuation and rollback.
+
+The `.bin` fixture is the authoritative floating-point reproduction, SHA-256 `459f0d36c8f721b394aa11c0daa9fc6c5b6c2b1fee2f715e5a182a2894a47bb8`. The adjacent JSON is readable supporting data. Godot's JSON parser changed some entries by several ULP even though the decimal file preserved enough digits; it must not replace the binary when reproducing this narrow convergence failure.
+
+This cohort follows the immutable [GP-11 cohort](../../../GP-11/evidence/README.md). It includes later impulse residual scaling and finite capture/step composition. It **does not activate advanced stock-aircraft ground handling**, establish complete three-wheel touchdown accuracy, validate aircraft coefficients, qualify rendering performance or complete the broad application suite. Touchdown refinement experiments remain separately reported in the [GP-12 record](../../README.md).
+
+The local `.gitattributes` keeps evidence bytes unchanged during checkout. Raw checker reports retain their original workspace command paths and capture IDs; copied source paths and hashes identify the retained implementation.
+
+[Fresh-clone verification](checkout-verification.json) preserved all 26 original evidence files byte-for-byte with `core.autocrlf=true` and `--no-hardlinks`. This verifies artifact preservation, not runtime or rendering behavior.

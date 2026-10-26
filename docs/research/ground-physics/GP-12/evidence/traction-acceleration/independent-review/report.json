@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "990eeddf-5947-4b15-98b5-7737d1c5c02a",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp12-independent-review/review.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T11:58:32.894243+00:00",
+  "label": "candidate-final-identity",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-independent-review\\checks\\candidate-final-identity-48j1igzy\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp12-independent-review\\checks\\candidate-final-identity-48j1igzy\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "34 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.313,
+  "log_bytes": 476,
+  "log_sha256": "1b4b1305778841a769720788c409373322cc643a13696d2907852a23c99523dd"
+}
