@@ -561,6 +561,7 @@ func _rebuild_grid() -> void:
 	mesh.surface_end()
 	_grid.mesh = mesh
 	_grid.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_grid.visible = not _preview_night
 	_stage.add_child(_grid)
 	_grid_fit_scale = _fit_model_scale()
 	_grid.position.y = -_model_bounds.get_center().y * _fit_model_scale() - _model_bounds.size.y * 0.5 * _fit_model_scale() - 0.06
@@ -643,6 +644,8 @@ func _apply_preview_environment() -> void:
 	_preview_environment.ambient_light_color = NIGHT_AMBIENT if _preview_night else AMBIENT
 	_preview_environment.ambient_light_energy = 0.025 if _preview_night else 0.62
 	_preview_environment.tonemap_exposure = 8.0 if _preview_night else 0.65
+	if is_instance_valid(_grid):
+		_grid.visible = not _preview_night
 	if is_instance_valid(_preview_key_light):
 		_preview_key_light.light_energy = 0.025 if _preview_night else 1.25
 	if is_instance_valid(_preview_fill_light):

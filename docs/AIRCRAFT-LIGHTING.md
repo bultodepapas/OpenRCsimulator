@@ -46,6 +46,14 @@ Settings → **Lighting** applies to every aircraft and Workshop preview. **Low*
 
 The existing reversible Settings Keep/Revert/Close flow persists optional schema-1 keys in `display.cfg [aircraft_lighting]`: `quality` (`low`, `standard`, `high`; default `standard`), `reduced_flashes` (default false), and `show_vfx` (default true). Old files receive defaults, invalid individual lighting values fall back independently with a diagnostic, and future-version files remain read-only. Previewing these preferences changes presentation only.
 
+### Scene grants and projected effects
+
+`LightingSceneBudget` shares one weakly registered coordinator per actual `World3D`. A Workshop viewport with its own world has its own coordinator. Low/Standard/High permit respectively **0/2/4 decorative OmniLights and 0/2/4 allocated VFX anchor buffers per world**, with at most two of either per owner. Existing landing spots use the field's separate spot reservation. Higher explicit priority wins, then shorter camera distance, then stable owner identity; the active player supplies priority 100. Grants persist during pause and are released on disposal/reset or loss of eligible residuals. Decreases are published before increases, so handoff does not temporarily exceed the grant count.
+
+Denied and idle effects retain no per-instance MultiMesh buffer. Their bounded CPU particles/trail samples can age while denied; a newly granted buffer is filled on the next presentation update. This can delay its first rendered frame by one update. Live CPU state drives requests independently of allocated GPU buffers, so a denied effect can regain capacity while its residuals remain alive. `budget_info().vfx` reports live CPU records, allocated GPU anchors/capacities, current grants and scene totals separately. Mesh/material resources and CPU pools remain instance-owned; this is not a total scene RAM/VRAM guarantee.
+
+New VFX births use the aircraft bounds projected through the owning viewport's current camera. Near (>180 px), medium (60–180 px), far (12–60 px) and tiny (<12 px) tiers multiply quality density by 1, 0.5, 0.25 and 0. Thresholds have 10% hysteresis. Camera changes reset tier history without resetting the show clock. Missing camera/bounds retain the near fallback. Offscreen aircraft stop new births; existing particles and ribbons keep aging and use finite bounds derived from their own live geometry, so leaving the aircraft's screen rectangle does not hide a still-visible trail. Physical distance fades remain in effect. Shared-world inset views still require separate native qualification; the birth policy samples the owning viewport camera, not an aggregate of all views.
+
 ## Shared selection interface
 
 [`aircraft_light_state.gd`](../app/render/world/aircraft_light_state.gd) is a persistent, flight-owned `RefCounted`. It owns timing and precedence; adapters own luminous nodes and rendering.

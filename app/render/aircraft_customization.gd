@@ -668,9 +668,13 @@ static func _validate_authored_skin_bindings(raw_skins: Variant, paint_slots: Ar
 	if not (raw_skins is Array) or raw_skins.size() > MAX_AUTHORED_SKINS:
 		return _failure("lighting skins must be an array of at most %d entries" % MAX_AUTHORED_SKINS)
 	var paint_targets_by_slot := {}
-	for slot: Dictionary in paint_slots:
+	for slot: Variant in paint_slots:
+		if not (slot is Dictionary) or not (slot.get("targets") is Array):
+			return _failure("lighting skin paint slot is malformed")
 		var targets_by_id := {}
-		for target: Dictionary in slot.get("targets", []):
+		for target: Variant in slot.get("targets", []):
+			if not (target is Dictionary):
+				return _failure("lighting skin paint target is malformed")
 			if target.has("target_id"):
 				targets_by_id[str(target.target_id)] = target
 		paint_targets_by_slot[str(slot.id)] = targets_by_id

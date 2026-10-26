@@ -14,7 +14,8 @@ const MAX_TARGETS := 12
 const MAX_INPUT_TEXTURE_SIZE := 2048
 const MASK_SIZE := 512
 const EMISSION_CAP := 0.15
-const EXPOSURE_ENERGY_CAP := 0.4
+# Keep broad film bays legible in the night preview without raising the daytime material cap.
+const EXPOSURE_ENERGY_CAP := 1.2
 
 static var _structural_mask: Image
 

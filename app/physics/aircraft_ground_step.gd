@@ -22,6 +22,9 @@ const MAX_STATE_SIZE := 256
 ## normal_dissipation_w,external_power_w, fixed_hubs/static_ground=true,
 ## source_policy="none". potential_j is ALL recoverable nonkinetic energy,
 ## external_power_w excludes conservative forces and normal dissipation.
+## Optional capture={rotor_index:int,impulse_row:int} names the same finite
+## internal friction row as GroundImpulse. The rotor must be declared
+## nonnegative; its row ordinal may change as physical wheel rows load/unload.
 ## certificate(s,t,h,sample)->{ok,admitted,identity:String}; its owner certifies
 ## the WHOLE free interval, including entry/geometry and constitutive envelopes.
 ## The initial slice supports no source events, moving hubs or carrier motion.
@@ -163,7 +166,8 @@ static func _attempt(initial: PackedFloat64Array, time_s: float, dt: float, deri
 			if before_impulse.limit_rates[i] > 0.0 and limits[i] == 0.0:
 				return _failure("impulse time scaling underflow")
 		var applied := Impulse.apply(before_impulse.rotor_stage, before_impulse.mass_kg, velocity_cm,
-			before_impulse.jacobian, before_impulse.slip_bias, limits, before_impulse.groups, settings.qp_iterations)
+			before_impulse.jacobian, before_impulse.slip_bias, limits, before_impulse.groups, settings.qp_iterations,
+			before_impulse.get("capture", {}))
 		if not applied.ok: return _failure("simultaneous contact impulse refused: " + str(applied.get("reason", "invalid")), "traction_rejected")
 		var next := candidate.duplicate()
 		var datum_velocity := M.sub(applied.velocity_cm_body, M.cross(applied.omega, before_impulse.cg_body_m))
@@ -266,6 +270,13 @@ static func _sample(evaluate: Callable, state: PackedFloat64Array, at: float) ->
 		if value < 0: return _failure("negative impulse-rate limit")
 	for value: float in s.slip_bias:
 		if value != 0.0: return _failure("prescribed support/carrier slip needs separate qualification", "unsupported_domain")
+	if s.has("capture"):
+		if typeof(s.capture) != TYPE_DICTIONARY: return _failure("capture must be an explicit mapping", "invalid_capture")
+		if not s.capture.is_empty():
+			var mapping := Impulse._capture_mapping(s.capture, count, s.jacobian, s.slip_bias, s.groups)
+			if not mapping.ok: return _failure(str(mapping.reason), "invalid_capture")
+			if not s.nonnegative_rotors.has(s.capture.rotor_index):
+				return _failure("capture rotor must match a declared nonnegative shaft domain", "invalid_capture")
 	seen = {}
 	for id: String in s.contact_ids:
 		if id.is_empty() or id.length() > 128 or seen.has(id): return _failure("invalid contact identity")
@@ -283,6 +294,12 @@ static func _same_binding(a: Dictionary, b: Dictionary) -> bool:
 		if a[key] != b[key]: return false
 	for key: String in ["carrier", "axial", "transverse", "axes", "matrix", "system_identity"]:
 		if a.rotor_stage[key] != b.rotor_stage[key]: return false
+	var ac: Dictionary = a.get("capture", {})
+	var bc: Dictionary = b.get("capture", {})
+	if ac.is_empty() != bc.is_empty(): return false
+	# Capture belongs to one physical rotor. Its scalar row index is local to
+	# the current contact set and is validated afresh, not a permanent binding.
+	if not ac.is_empty() and ac.rotor_index != bc.rotor_index: return false
 	return true
 
 
