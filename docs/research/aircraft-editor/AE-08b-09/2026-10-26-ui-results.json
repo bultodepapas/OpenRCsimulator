@@ -1220,5 +1220,165 @@
       "visual_review": "Replacement model, size badge, page controls, footer and aircraft area fit at native 1080p. Preview source matches final; Workshop source predates only the final inherited-value display sync."
     },
     "source_snapshot_cache": "Owned .godot import cache removed after validation to release disk space; source copies and all logs/captures retained. Reimport before rerunning snapshot."
+  },
+  "save_load_flow_review": {
+    "step": "AE-09d",
+    "date": "2026-10-26",
+    "scope": "Existing Workshop save, copy, load, naming, Library feedback and cancellation flows; no storage-format or physics changes.",
+    "engine": "4.8.beta1.official.4d10419ca",
+    "reviewers": [
+      "luna_save_flow",
+      "luna_load_library",
+      "luna_unsaved_journeys"
+    ],
+    "final_sources": [
+      {
+        "path": "app/ui/workshop.gd",
+        "sha256": "2227395af1c73dc8938f6dea720288d0dc56b5d665f45246d22d32f8e75365da"
+      },
+      {
+        "path": "app/tests/test_workshop_ui.gd",
+        "sha256": "c8a558ba28225cdbb14b6683535f5d4b67541fbd2d2ce4948ea772e23358ab07"
+      },
+      {
+        "path": "app/tests/test_workshop_document_flow.gd",
+        "sha256": "0e0db03cb132298d198923bd9dfc42c39d631b10b8887c2301533fe38b5f423c"
+      },
+      {
+        "path": "tools/debug/scenarios/workshop_document_flow.txt",
+        "sha256": "fbc69c1e053044b743dcbff717e4b6f86bc2d0d71ae2f87755beafb19b767940"
+      }
+    ],
+    "localization": {
+      "source": {
+        "path": "app/i18n/es.po",
+        "sha256": "b79ee3147aeb72661f15a02faf65101f33cc2856a66e7b8b86d325f91764b404"
+      },
+      "validated_snapshot": {
+        "path": "tmp/workshop-ui-20261026/snapshot/app/i18n/es.po",
+        "sha256": "b79ee3147aeb72661f15a02faf65101f33cc2856a66e7b8b86d325f91764b404"
+      },
+      "scope": "Five added Spanish messages; unrelated concurrent translation edits are outside this review."
+    },
+    "baseline_sources": [
+      {
+        "path": "tmp/workshop-saveflow-20261026/baseline-source/test_workshop_document_flow.gd",
+        "sha256": "b93aa86ad79785d2a2a8d3454c90db78dfc6f823df9536d5f87f47410e7645bc"
+      },
+      {
+        "path": "tmp/workshop-saveflow-20261026/baseline-source/test_workshop_ui.gd",
+        "sha256": "456a94ef7dbeba8e0e9f77027599c300fc93ca3ca9a742a5e50bb5d35d58eb2a"
+      },
+      {
+        "path": "tmp/workshop-saveflow-20261026/baseline-source/workshop.gd",
+        "sha256": "ca55db3a66f3e575b75145ca50a8aba474a74b4166d9a769783a39b34e95e4cc"
+      }
+    ],
+    "reproductions": [
+      {
+        "report": "tmp/workshop-saveflow-20261026/baseline-tests/document-flow-muo12bhp/report.json",
+        "checks": 15,
+        "assertion_failures": 6,
+        "engine_errors": 0
+      },
+      {
+        "report": "tmp/workshop-saveflow-20261026/baseline-tests/library-cancel-vjg_6674/report.json",
+        "assertion_failures": 1,
+        "engine_errors": 0
+      }
+    ],
+    "changes": [
+      "Registered Enter submission on both name fields; one save/navigation per key.",
+      "Failed guarded save restores prior draft name and keeps the attempted name available for retry.",
+      "Name/copy dialog has action-specific context and labels, selected name text, primary emphasis and safe return focus.",
+      "Cancel of guarded load/stock replacement preserves Library candidate and context.",
+      "Saved-build search is first; empty-library and unmatched-filter feedback differ.",
+      "Current-draft identity is visible in Library; operation feedback remains outside scroll, with bounded text and full tooltip.",
+      "Delete confirmation names the action; navigation guard names its load target."
+    ],
+    "focused_tests": [
+      {
+        "suite": "test_workshop_document_flow",
+        "report": "tmp/workshop-saveflow-20261026/accepted-tests/test_workshop_document_flow-vie6gns_/report.json",
+        "log_sha256": "4a019ed1caedfd7049a227db29af17396f5a4d866dae2f83d1d4b291ab2f2405",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_workshop_ui",
+        "report": "tmp/workshop-saveflow-20261026/accepted-tests/test_workshop_ui-dhhls69g/report.json",
+        "log_sha256": "b75695e664d68f66bce7f411689262a1908e771ec9d01eabf7280decd0141866",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_workshop_recovery_ui",
+        "report": "tmp/workshop-saveflow-20261026/final-tests/test_workshop_recovery_ui-4wgqnwxg/report.json",
+        "log_sha256": "23f8f4b0401eb07b6e2160397675a8d476295531e345091f2e52c8d1bbff4e89",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_workshop_reuse",
+        "report": "tmp/workshop-saveflow-20261026/final-tests/test_workshop_reuse-_8fw9xhz/report.json",
+        "log_sha256": "b14f4d7100ad8b4f37a09ac6f4e0c150ea84a956fdbb5db28015fa22b43a559f",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_workshop_trial",
+        "report": "tmp/workshop-saveflow-20261026/accepted-tests/test_workshop_trial-b4bb03vl/report.json",
+        "log_sha256": "54def2206214ea4d0e30a6c20af24429ca2f59a42d7646b0af23a8939ea69d70",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "process_exit": 0
+      },
+      {
+        "suite": "test_ui_quit",
+        "report": "tmp/workshop-saveflow-20261026/accepted-tests/test_ui_quit-kiz_1fe5/report.json",
+        "log_sha256": "832d7fbd65a0e4bb8312decf74f6653d96312a3c8c400db7a919a5d121efc4f5",
+        "ok": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "process_exit": 0
+      }
+    ],
+    "document_flow_checks": 20,
+    "trial_warning": "One existing deliberate warning verifies stale presentation is rejected after a frozen trial.",
+    "source_snapshot": "tmp/workshop-ui-20261026/snapshot/app",
+    "deferred_candidates": [
+      "Recovery-cleanup I/O failure exit semantics need separate failure injection and ownership/concurrency review.",
+      "Nested color-picker exit handling was a source-review concern, not reproduced in this save/load pass."
+    ],
+    "development_failures": [
+      "Initial new test had a continuation indentation parse error, fixed before integration.",
+      "Initial rendered scenario asked a 0.05-step slider for 1.22; observed 1.2. Fixture corrected to 1.25; production slider unchanged."
+    ],
+    "limits": [
+      "Full app/test.sh and general smoke were not run for this follow-up; targeted UI, recovery, reuse, trial and quit suites were run.",
+      "Native GPU performance and power-loss durability were not qualified.",
+      "Parallel aircraft/controller changes remain outside the isolated snapshot evidence."
+    ]
   }
 }
