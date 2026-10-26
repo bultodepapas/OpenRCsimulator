@@ -1,0 +1,27 @@
+{
+  "scope": "Current-source narrow companion qualification; circuit samples compared byte-for-byte with D11-R1 qualification. Not parity with old-engine encounter tapes.",
+  "matrix_checks": 148,
+  "matrix_failures": 0,
+  "matrix_sample_csv_identical": true,
+  "matrix_metrics_csv_identical": true,
+  "production": {
+    "complete": true,
+    "count": 3,
+    "engine": "4.8-beta1 (official)",
+    "failure": "",
+    "format": "openrc-companions-production v1",
+    "min_clearance_m": 34.5677852280569,
+    "physics_hz": 240,
+    "requested_ticks": 28800,
+    "scope": "Full production manager/session callbacks, Club collision inventory and lake context. No rendering/audio or long-session resource-soak claim.",
+    "seed": 1,
+    "ticks": 28800,
+    "weather": "calm"
+  },
+  "solver": {
+    "errors": [],
+    "ok": true,
+    "sha256": "b7173d8a8d30ec42002dfda9f7378cc8c751959d5f29749245e0a8a15e606e6c",
+    "source_count": 159
+  }
+}

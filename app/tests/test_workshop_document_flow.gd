@@ -5,6 +5,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Store := preload("res://workshop/store.gd")
 const Workshop := preload("res://ui/workshop.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 
 var _checks := 0
 var _failures := 0
@@ -112,6 +113,9 @@ func _run() -> void:
 		name_dialog.visible and name_dialog.title == "Save a copy"
 		and name_dialog.get_ok_button().text == "Save a copy",
 		"title=%s button=%s" % [name_dialog.title, name_dialog.get_ok_button().text])
+	_check("copy dialog and primary actions fit the target viewport", name_dialog.size.x <= root.size.x
+		and name_dialog.size.y <= root.size.y
+		and Rect2(Vector2.ZERO, Vector2(name_dialog.size)).encloses(name_dialog.get_ok_button().get_global_rect()))
 	var copy_name := "Copied build"
 	name_field.text = copy_name
 	name_field.grab_focus()
@@ -293,6 +297,29 @@ func _run() -> void:
 	root.remove_child(workshop)
 	workshop.free()
 	await _ui.settle()
+	# A fresh translated dialog must not inherit an oversized wrapped-label minimum.
+	for factor: float in [1.0, 2.0]:
+		TranslationServer.set_locale("es")
+		UiTheme.text_scale = factor
+		var scaled_editor: Variant = Workshop.new()
+		scaled_editor.variants_root = _variants_root
+		scaled_editor.recovery_enabled = false
+		root.add_child(scaled_editor)
+		await _ui.settle()
+		scaled_editor.set_variant_name("Variante de entrenamiento para comprobar el diálogo")
+		scaled_editor.save_named_variant()
+		scaled_editor.call("_show_name_dialog", true)
+		for frame in 6: await process_frame
+		var scaled_dialog: ConfirmationDialog = scaled_editor.get("_name_dialog")
+		_check("fresh Spanish copy dialog fits at %d percent text" % int(factor * 100),
+			scaled_dialog.size.x <= root.size.x and scaled_dialog.size.y <= root.size.y
+			and Rect2(Vector2.ZERO, Vector2(scaled_dialog.size)).encloses(scaled_dialog.get_ok_button().get_global_rect())
+			and Rect2(Vector2.ZERO, Vector2(scaled_dialog.size)).encloses(scaled_dialog.get_cancel_button().get_global_rect()),
+			"size=%s" % scaled_dialog.size)
+		scaled_editor.free()
+		await _ui.settle()
+	UiTheme.text_scale = 1.0
+	TranslationServer.set_locale("en")
 	_remove_tree(ProjectSettings.globalize_path(_variants_root))
 	print("Workshop document flow: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

@@ -1,0 +1,10 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+failsafe: Controller selected; check controls and continue.
+failsafe: calibrating radio
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+Controller menu: 53/53 checks passed

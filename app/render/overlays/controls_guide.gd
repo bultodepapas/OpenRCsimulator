@@ -130,10 +130,11 @@ func _controller_rows() -> void:
 		_note(tr("Throttle holds when you release the stick."))
 	elif profile.get("throttle_mode", "") == "trigger_absolute":
 		_note(tr("Release the trigger for idle throttle."))
+	_rates_row(profile, bindings, family, info)
 	_section(tr("Shortcuts"))
 	for action: Dictionary in Actions.ACTIONS:
 		var action_id := str(action.id)
-		if action.context == "menu" or action_id.begins_with("helicopter_"):
+		if action.context == "menu" or action_id.begins_with("helicopter_") or action_id == "rates_toggle":
 			continue
 		if _context.has("capabilities") and action_id in ["gear_toggle", "smoke_toggle", "flaps_cycle"]:
 			continue # already shown with availability in the aircraft section
@@ -159,6 +160,22 @@ func _controller_rows() -> void:
 	_row(tr("Pause"), Keys.label(KEY_ESCAPE))
 	_row(tr("Restart flight"), Keys.label(KEY_R))
 	_note(tr("Aircraft capabilities determine which auxiliary controls are available."))
+
+
+func _rates_row(profile: Dictionary, bindings: Dictionary, family: String, info: Dictionary) -> void:
+	var caption := tr("Dual rates: normal / high")
+	if profile.get("kind", "radio") == "radio":
+		_row(caption + "\n" + tr("The radio sets its own rates."), "—")
+		return
+	if not bool(_context.get("capabilities", {}).get("rates", false)):
+		_row(caption + "\n" + tr("This aircraft has no rate profile."), "—")
+		return
+	var binding: Dictionary = bindings.get("rates_toggle", {})
+	var prompt := Prompts.prompt(binding, family, info, profile)
+	if binding.get("type", "unbound") == "unbound":
+		caption += "\n" + tr("Assign in Controls")
+	var label := _row(caption, prompt.text, prompt.texture_path)
+	_equipment_labels.rates = {label = label, caption = caption}
 
 
 func _equipment_rows(profile: Dictionary, bindings: Dictionary, gamepad: bool, family: String, info: Dictionary) -> void:
@@ -193,6 +210,9 @@ func _update_equipment_state() -> void:
 	for channel: String in _equipment_labels:
 		var entry: Dictionary = _equipment_labels[channel]
 		var state: Variant = _equipment_state.get(channel, "")
+		if channel == "rates":
+			entry.label.text = entry.caption + ("\n" + tr(str(state)) if not str(state).is_empty() else "")
+			continue
 		if channel == "flaps" and state is Dictionary:
 			var state_line := tr("Requested %.0f%% · actual %.1f°") % [float(state.get("requested", 0.0)) * 100.0, float(state.get("angle_deg", 0.0))]
 			if bool(state.get("moving", false)):

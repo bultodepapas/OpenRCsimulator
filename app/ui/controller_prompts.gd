@@ -51,6 +51,8 @@ static func prompt(binding: Dictionary, requested_family: String, device_info: D
 		profile: Dictionary = {}) -> Dictionary:
 	if str(binding.get("type", "")) == "switch":
 		return {"text": _switch_binding_text(binding), "texture_path": ""}
+	if str(profile.get("kind", "")) == "joystick" and str(binding.get("type", "")) == "button":
+		return {"text": TranslationServer.translate("Button %d") % int(binding.get("button", -1)), "texture_path": ""}
 	if _is_radio(binding, device_info, profile) and str(binding.get("type", "")) == "button":
 		return {"text": _radio_button_text(binding, profile), "texture_path": ""}
 	var family := resolve_family(requested_family, device_info)

@@ -1,0 +1,17 @@
+{
+  "app/app_root.gd": "32f517da17d34d85aa5a4e64c9d289f3a879666879aa04ff1ceb162a6931b247",
+  "app/i18n/es.po": "e89bd33fbf8d42a1c512af719477817973d434d61fd9ba8736c06be3e1dd7c8e",
+  "app/input/controller_actions.gd": "c4966f961678122432cb93e414347a44ab1f7799742e31606d6990a0e60059f5",
+  "app/main.gd": "a6d0a7526c306ef2569c5953ba0681bd0d5e06cb7091e93cb9b8ccdc5dc5928e",
+  "app/render/overlays/controls_guide.gd": "932889b3eb3b30562ba329f84165cb2ae2d962070c02bbb88f5441315caaaf57",
+  "app/sim/flight_session.gd": "9d4c894798491e88ce5dfd96293226ab66dc3b6184b08855c9ccb54ed897a717",
+  "app/tests/test_controller_menu.gd": "50bf31380f537d022606a1177adf4fe29aa4a20eb5a353d24657b44ddde0bb65",
+  "app/tests/test_controller_prompts.gd": "e663f7d6a574b2ec3f5b5f652692b6d700a4d722ad3ff68e005552459b22ef98",
+  "app/tests/test_controller_rates.gd": "ae6f642b6850d440b601b8e9a0bdb5e8790b97a4fdd00c40c34b0e83cc7d3a04",
+  "app/tests/test_controller_rates.gd.uid": "009f8be4c5bc4c36f3f1969b5894db46bd03749515c1019e6b9d09cb3672848a",
+  "app/tests/test_overlay_manager.gd": "7f8a60ed7691adaa1e55edfc7b7a548a062177b96e80c9be123e679cbdb15b89",
+  "app/tests/test_rates.gd": "887eab623f9bbdf16799bfdb90603dc6dfe6d3b9c922333cffadabda220130c6",
+  "app/ui/controller_prompts.gd": "c25f6d4a28c74f1333c0528a448645dc2a544d62f865cbe49b6b3078b1e42875",
+  "app/ui/controller_setup.gd": "a4ad3b3b0ac0cb6394e1801c19e30ea99ddf78294fc021c6dc16545e91a653a4",
+  "docs/FIRST-LAUNCH.md": "1ab2c716356627b4d4dbceb783be7727e6334a6827748accfde41744b46e4b9c"
+}

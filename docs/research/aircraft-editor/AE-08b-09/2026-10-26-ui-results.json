@@ -1234,7 +1234,7 @@
     "final_sources": [
       {
         "path": "app/ui/workshop.gd",
-        "sha256": "2227395af1c73dc8938f6dea720288d0dc56b5d665f45246d22d32f8e75365da"
+        "sha256": "9df6367b62be0af2cc9a9a86d14dc15813a0e63237a63823223f646be48efa0b"
       },
       {
         "path": "app/tests/test_workshop_ui.gd",
@@ -1242,7 +1242,7 @@
       },
       {
         "path": "app/tests/test_workshop_document_flow.gd",
-        "sha256": "0e0db03cb132298d198923bd9dfc42c39d631b10b8887c2301533fe38b5f423c"
+        "sha256": "8c231d09b78d6b8eaf08c1809d101afa1d24b524c93f4142903dc9ea856d1fb6"
       },
       {
         "path": "tools/debug/scenarios/workshop_document_flow.txt",
@@ -1285,6 +1285,31 @@
         "report": "tmp/workshop-saveflow-20261026/baseline-tests/library-cancel-vjg_6674/report.json",
         "assertion_failures": 1,
         "engine_errors": 0
+      },
+      {
+        "report": "tmp/workshop-saveflow-20261026/baseline-tests/spanish-name-layout-80gbhpud/report.json",
+        "checks": 23,
+        "assertion_failures": 2,
+        "engine_errors": 0,
+        "subject": "Intermediate translated-dialog regression before bounded scroll container",
+        "before_dialog_sizes_at_100_and_200_percent": [
+          [
+            396,
+            2419
+          ],
+          [
+            712,
+            4498
+          ]
+        ],
+        "workshop_source": {
+          "path": "tmp/workshop-saveflow-20261026/baseline-source/workshop-before-name-layout.gd",
+          "sha256": "2227395af1c73dc8938f6dea720288d0dc56b5d665f45246d22d32f8e75365da"
+        },
+        "test_source": {
+          "path": "tmp/workshop-saveflow-20261026/drafts/test_workshop_document_flow.gd",
+          "sha256": "8c231d09b78d6b8eaf08c1809d101afa1d24b524c93f4142903dc9ea856d1fb6"
+        }
       }
     ],
     "changes": [
@@ -1294,13 +1319,14 @@
       "Cancel of guarded load/stock replacement preserves Library candidate and context.",
       "Saved-build search is first; empty-library and unmatched-filter feedback differ.",
       "Current-draft identity is visible in Library; operation feedback remains outside scroll, with bounded text and full tooltip.",
-      "Delete confirmation names the action; navigation guard names its load target."
+      "Delete confirmation names the action; navigation guard names its load target.",
+      "Name-dialog contents use a bounded scroll container and scale their requested size with text; primary actions stay outside the scroll."
     ],
     "focused_tests": [
       {
         "suite": "test_workshop_document_flow",
-        "report": "tmp/workshop-saveflow-20261026/accepted-tests/test_workshop_document_flow-vie6gns_/report.json",
-        "log_sha256": "4a019ed1caedfd7049a227db29af17396f5a4d866dae2f83d1d4b291ab2f2405",
+        "report": "tmp/workshop-saveflow-20261026/layout-final-tests/test_workshop_document_flow-98xrr8cf/report.json",
+        "log_sha256": "b5be4206e23490b5fc28c7ac52666119645ae342c3a22f0187420a815e1e4ab5",
         "ok": true,
         "counts": {
           "error": 0,
@@ -1310,7 +1336,7 @@
       },
       {
         "suite": "test_workshop_ui",
-        "report": "tmp/workshop-saveflow-20261026/accepted-tests/test_workshop_ui-dhhls69g/report.json",
+        "report": "tmp/workshop-saveflow-20261026/layout-final-tests/test_workshop_ui-p8aahb2u/report.json",
         "log_sha256": "b75695e664d68f66bce7f411689262a1908e771ec9d01eabf7280decd0141866",
         "ok": true,
         "counts": {
@@ -1364,7 +1390,7 @@
         "process_exit": 0
       }
     ],
-    "document_flow_checks": 20,
+    "document_flow_checks": 23,
     "trial_warning": "One existing deliberate warning verifies stale presentation is rejected after a frozen trial.",
     "source_snapshot": "tmp/workshop-ui-20261026/snapshot/app",
     "deferred_candidates": [
@@ -1373,12 +1399,103 @@
     ],
     "development_failures": [
       "Initial new test had a continuation indentation parse error, fixed before integration.",
-      "Initial rendered scenario asked a 0.05-step slider for 1.22; observed 1.2. Fixture corrected to 1.25; production slider unchanged."
+      "Initial rendered scenario asked a 0.05-step slider for 1.22; observed 1.2. Fixture corrected to 1.25; production slider unchanged.",
+      "Visual review caught the new wrapped explanation expanding a fresh Spanish dialog beyond the viewport. Fresh 100%/200% regression reproduced it; bounded content and final reruns resolve it.",
+      "Reusing the isolated capture profile exposed its unfinished recovery prompt. Only that fixture recovery was explicitly discarded before final captures; no real user profile was used."
     ],
     "limits": [
       "Full app/test.sh and general smoke were not run for this follow-up; targeted UI, recovery, reuse, trial and quit suites were run.",
       "Native GPU performance and power-loss durability were not qualified.",
       "Parallel aircraft/controller changes remain outside the isolated snapshot evidence."
-    ]
+    ],
+    "rendered_document_journey": {
+      "log": "tmp/workshop-saveflow-20261026/document-flow-rendered.log",
+      "passed": true,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "scenario": "tools/debug/scenarios/workshop_document_flow.txt",
+      "scope": "Save/update/copy/guarded-load cancellation and exact reload passed before the final bounded-dialog layout adjustment; final layout is covered by 23-check suite and accepted captures."
+    },
+    "accepted_visual_review": {
+      "backend": "Xvfb/OpenGL Compatibility, Mesa llvmpipe",
+      "locale": "es",
+      "captures": [
+        {
+          "path": "tmp/workshop-saveflow-20261026/library-es-1080.png",
+          "sha256": "01a0c1d25cff005adca268de97ac64298cb38736fcd8ace16cd0499ea27918a0",
+          "pixels": [
+            1920,
+            1080
+          ],
+          "text_scale": 1
+        },
+        {
+          "path": "tmp/workshop-saveflow-20261026/copy-es-1080.png",
+          "sha256": "b57dc4db38c7b81a3a128fb902d5f7be7d7190e158326b1710ffc004ff644bce",
+          "pixels": [
+            1920,
+            1080
+          ],
+          "text_scale": 1
+        },
+        {
+          "path": "tmp/workshop-saveflow-20261026/search-empty-es-1080.png",
+          "sha256": "4bd9c7a4975ffa857f28f0c5cf09a7d765c4e2daf9cdc9921a8b955117378e48",
+          "pixels": [
+            1920,
+            1080
+          ],
+          "text_scale": 1
+        },
+        {
+          "path": "tmp/workshop-saveflow-20261026/delete-es-1080.png",
+          "sha256": "fc912ef137360ea2566ed575c6fea6fa472c09f961bd918d8f53cf81b90083da",
+          "pixels": [
+            1920,
+            1080
+          ],
+          "text_scale": 1
+        },
+        {
+          "path": "tmp/workshop-saveflow-20261026/save-es-200-1080.png",
+          "sha256": "7c70f397df2415ce230a47ae0ebc161b53a0510e61ed179ff37e11eba8ea1a5b",
+          "pixels": [
+            1920,
+            1080
+          ],
+          "text_scale": 2
+        },
+        {
+          "path": "tmp/workshop-saveflow-20261026/library-es-200-1080.png",
+          "sha256": "beac13fc00b2ecaf6a04e4bbe30164d0963a375860f2071156f3a5c5fc4e50a7",
+          "pixels": [
+            1920,
+            1080
+          ],
+          "text_scale": 2
+        }
+      ],
+      "logs": [
+        {
+          "path": "tmp/workshop-saveflow-20261026/visual-copy-final.log",
+          "sha256": "5a94fbe59ed97d13d62ac25a0e312134191f5ea5e3d419bd5a43092afb40d71d"
+        },
+        {
+          "path": "tmp/workshop-saveflow-20261026/visual-rest-final.log",
+          "sha256": "de49b5637554b352afd03ecc5afa6b9db950db1a9b85ac1aa55aa690a2d0e528"
+        }
+      ],
+      "engine_errors": 0,
+      "exit": {
+        "stopped": true,
+        "pid": 2157063,
+        "crash": null,
+        "leaked_objects": 0
+      },
+      "review": "All six captures inspected. Save/copy fields and both actions fit at native 1080p, including 200% text. Library search/empty feedback and explicit Delete confirmation are readable; lower library content scrolls."
+    },
+    "snapshot_cache": "Owned regenerable import cache removed after all validation and clean rendered exit; source copies and artifacts retained. Reimport before rerunning."
   }
 }

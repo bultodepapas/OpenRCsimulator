@@ -267,3 +267,100 @@ The output confirms six standardized axes, ten supported axis slots and 128 butt
 The older investigation-12 probe was also attempted. Its API section ran, but its repository-root load of RcInput now fails because RcInput preloads `res://input/smoke_aux.gd`; that legacy invocation does not use the application resource root. It was stopped and is not counted as a passing app check. The standalone probe above avoids that dependency.
 
 No physical Xbox, DualSense, generic controller, transport, firmware or end-to-end latency was validated during the initial review or subsequent software implementation. Hardware rows remain untested; the implementation evidence above supersedes the runtime findings only where explicitly stated.
+
+
+## Airplane dual rates across controllers (2026-10-26, D6-GP-06-R4 / D6e-R6)
+
+The owner requested the D6e-R5 sport/normal switch throughout the controller flow.
+The plan was to reuse semantic action routing and saved overrides, give standard
+pads a conflict-free default, distinguish calibrated joysticks from transmitters,
+and verify held inputs, menu transitions, persistence and recording. A Sol High
+controls reviewer traced the chain and independently reviewed the final behavior.
+
+Standard mapped gamepads now inherit left-stick press (L3) for `rates_toggle`
+only when the aircraft has a rate profile. The default remains additive: explicit
+Clear/remaps, other flight actions and AUX ownership win. Menu L3 retains its
+Controls shortcut; helicopter L3 retains trainer, and ground controls are unchanged.
+A configured generic joystick has no guessed button and can bind an unused button
+or auxiliary axis through the existing Buttons page. Bindings survive profile
+storage without persisting a connection handle. The selected high profile remains
+sport by default, or full after the explicit CLI selection; the switch has two
+positions, not a three-mode cycle. [FIRST-LAUNCH](../../FIRST-LAUNCH.md) owns the
+player instructions.
+
+The old eligibility test treated every non-gamepad as a transmitter. Simulator
+rates now apply to joystick profiles too. Joystick calibration supplies linear
+axes, so aircraft expo is applied once; gamepad deadzone/expo stays upstream and
+is not repeated. Joysticks do not inherit short-gamepad pitch/yaw scaling. Radio
+profiles retain transmitter shaping, and external post-rate drivers cannot toggle
+simulator rates. Trims remain after shaping. No aircraft data, solver law or
+actuator limits change.
+
+The controls guide displays the effective profile and actual binding, or an
+assignment/bypass/unavailable explanation. Joystick buttons use observed numeric
+indices even if an old glyph-family setting names Xbox. Setup retains translated
+instructions beside the rate action without lengthening the page's introduction.
+
+Review reproduced a held-axis defect: an axis activated during a menu could
+select a rate on the next jitter sample after resume. The shell now observes rate
+edges through menus, calibration and the accident report, even with a separate
+menu device. Opening nested Controls preserves those edges. Release rearms a
+button or axis; hysteresis suppresses threshold jitter. Both restart and rate
+observers see every event, including opposite directions on one axis. This is
+press/toggle behavior, not an absolute maintained-switch position assignment.
+
+Evidence is retained under [dual-rates-2026-10-26](dual-rates-2026-10-26/manifest.json).
+The new controller regression passes **67 checks** covering effective defaults,
+collision precedence,
+store reload, real shell → flight action → session routing, menu edges, axis
+hysteresis, shaping and refusal paths. Native `Input.parse_input_event` menu tests
+pass **53 checks**, including L3
+sport → normal → sport and preserved helicopter trainer behavior. The rate/log
+regression passes **86 checks**, including the new joystick recording.
+The guide/setup, prompt, profile, routing, persistence, ground, localization and
+responsive-layout suites also pass, including the primary 1920×1080 layout checks.
+These are synthetic-device software checks; no physical Xbox/USB/Bluetooth or
+generic joystick hardware qualification is claimed.
+
+A pre-change sport recording has a complete exact replay. Candidate replay of
+its identical post-rate tape has zero state difference, with `solver_changed=true`
+as expected after the session-source edit. A separate current-source joystick
+recording crosses sport → normal → sport and has a complete exact replay with
+`solver_changed=false`. The 120-tick recordings check software reproducibility,
+not handling realism or physical latency. Flight logging/rate regressions retain
+these boundaries. The whole repository acceptance remains blocked by the existing
+unassigned `intended_hull_support.control_envelope.max_angular_speed` parameter;
+both its standalone register check and `app/test.sh` were rerun and the failure
+retained.
+
+
+The companion admission gates were rerun on the current source: the full matrix
+passes **148 checks**, with six 120-second calm/gentle cases and deterministic
+three-plane repeats. Its 1 Hz sample CSV and scenario metrics are byte-identical
+to the [D11-R1 qualification](../ai-companions/AFC-02/aileron-2026-10-26/README.md).
+The production manager completes 28,800 ticks with three companions, Club
+collision/lake context and minimum clearance 34.567785 m. Admission was staged in
+a disposable copy; the live source identity was checked again after both runs.
+[Comparison](dual-rates-2026-10-26/companions-comparison.json).
+
+The existing rebind utility could not replay its retained 4.7.2 encounter tapes
+under the current 4.8 beta engine. The current-source matrix and production check
+renew only the existing narrow circuit scope; they do not claim encounter-wide
+parity with those tapes. The first rebind attempt also exhausted temporary-copy
+space; a retry reused unchanged assets/cache through symlinks and reached the
+explicit engine-version refusal. Neither rejected attempt establishes a pass.
+
+
+The companion profile is admitted against source commit
+`577c803193943376b2f55480f82235e89b43d3e0`, solver `b7173d8a…e606e6c`;
+[accepted identity](dual-rates-2026-10-26/accepted-source.json). The aircraft/field
+scope and observed metrics are unchanged. The source commit deliberately precedes
+the admission/evidence update so the accepted revision reproduces the source hash.
+
+
+All **1,457 application scripts** pass checked parsing in the shared tree. The
+final shell edit was parsed again after the edge fixes, and its integrated input
+regressions pass. Companion profile, pilot, manager, airspace and recording suites
+pass with the renewed identity; the admission tool reports it current. No images
+are retained in the repository. Decompress `.orfl.gz` / `.csv.gz` before using the
+existing flight-log commands; keep each CSV beside its JSON report.

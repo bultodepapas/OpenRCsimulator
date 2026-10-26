@@ -2282,7 +2282,14 @@ func _build_name_dialog() -> void:
 	_name_body.add_child(_label("Build name", "SecondaryLabel"))
 	_name_error = _label("", "ErrorLabel", true)
 	_name_body.add_child(_name_error)
-	_name_dialog.add_child(_name_body)
+	var scroll := ScrollContainer.new()
+	scroll.name = "SaveBuildScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	scroll.custom_minimum_size = Vector2(300, 100)
+	_name_dialog.add_child(scroll)
+	_name_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(_name_body)
 	# The name field is created with library controls; saving a new draft can show it here.
 
 
@@ -2347,7 +2354,7 @@ func _show_name_dialog(as_copy: bool) -> void:
 		_name_context.text = tr("Creates a separate saved build. The original stays unchanged.")
 	else:
 		_name_context.text = tr("Saves the current edits and name as a new revision of this build.")
-	_name_dialog.popup_centered_clamped(Vector2i(680, 260), 0.9)
+	_name_dialog.popup_centered_clamped(Vector2i(roundi(680 * UiTheme.text_scale), roundi(260 * UiTheme.text_scale)), 0.9)
 	_variant_name.grab_focus()
 	_variant_name.select_all()
 

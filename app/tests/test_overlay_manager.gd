@@ -611,6 +611,25 @@ func _controls_guide() -> void:
 	profile.actions.smoke_toggle = {type = "unbound"}
 	guide.refresh(context)
 	_check("guide explains how to bind an available but cleared function", _guide_text(guide).contains("Assign in Controls") and not _guide_text(guide).contains("R1"))
+	context.capabilities.rates = true
+	context.equipment_state.rates = "Rates: sport"
+	guide.refresh(context)
+	_check("guide shows the dual-rate button and effective sport profile", guide._equipment_labels.has("rates") and _guide_text(guide).contains("L3") and _guide_text(guide).contains("Rates: sport"))
+	guide.scroll.scroll_vertical = 90
+	scroll_before = guide.scroll.scroll_vertical
+	context.equipment_state.rates = "Rates: normal"
+	guide.refresh(context)
+	_check("rate changes update without moving the guide scroll", _guide_text(guide).contains("Rates: normal") and not _guide_text(guide).contains("Rates: sport") and guide.scroll.scroll_vertical == scroll_before)
+	profile.actions.rates_toggle = {type = "button", button = 42}
+	guide.refresh(context)
+	_check("guide displays the remapped rate button", _guide_text(guide).contains("Button 42") and not _guide_text(guide).contains("L3"))
+	profile.actions.rates_toggle = {type = "unbound"}
+	guide.refresh(context)
+	_check("cleared dual rates remain discoverable", guide._equipment_labels.rates.caption.contains("Assign in Controls") and not _guide_text(guide).contains("Button 42"))
+	context.profile = Profile.defaults("joystick", "radio_custom")
+	context.profile.actions.rates_toggle = {type = "button", button = 0}
+	guide.refresh(context)
+	_check("joystick guide uses the actual button index for dual rates", guide._equipment_labels.has("rates") and _guide_text(guide).contains("Button 0"))
 	var radio := Profile.defaults("radio", "jeti_mode2")
 	radio.aux = {
 		smoke = {type = "switch", buttons = [81, 82, 83], invert = false, label = "Sa"},
@@ -622,6 +641,7 @@ func _controls_guide() -> void:
 		profile = radio, capabilities = {gear = true, smoke = true, flaps = true},
 		equipment_state = {gear = "extending", smoke = "on"}}
 	guide.refresh(context)
+	_check("radio guide explains transmitter-owned rates", _guide_text(guide).contains("The radio sets its own rates.") and not guide._equipment_labels.has("rates"))
 	_check("maintained switch AUX appears as assigned equipment in the guide",
 		guide._equipment_labels.has("smoke") and guide._equipment_labels.has("flaps") and guide._equipment_labels.has("gear")
 		and not _guide_text(guide).contains("Assign in Controls"))

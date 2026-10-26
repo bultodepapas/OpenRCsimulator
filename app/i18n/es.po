@@ -7512,6 +7512,9 @@ msgstr "La asignación no se ha cambiado: %s"
 msgid "Rates: sport"
 msgstr "Recorridos: deportivos"
 
+msgid "Airplane dual rates: press the left stick (L3) on a gamepad, or remap Dual rates below for a joystick. Each press alternates normal and high rates. Existing assignments take priority. Radio profiles use the transmitter's rates."
+msgstr "Doble recorrido del avión: pulsa el stick izquierdo (L3) del mando, o asigna Doble recorrido más abajo para un joystick. Cada pulsación alterna el recorrido normal y el alto. Se respetan las asignaciones existentes. Los perfiles de emisora usan los recorridos de la propia emisora."
+
 msgid "Dual rates: normal / high"
 msgstr "Doble recorrido: normal / alto"
 

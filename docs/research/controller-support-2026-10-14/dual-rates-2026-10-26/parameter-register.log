@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/bulto/OpenRCsimulator/research/aircraft-standardization/parameter_register.py", line 209, in <module>
+    text = render()
+           ^^^^^^^^
+  File "/home/bulto/OpenRCsimulator/research/aircraft-standardization/parameter_register.py", line 200, in render
+    rows.append(f"| `{path}` | {unit} | {limits} | {consumer(path)} |")
+                                                    ^^^^^^^^^^^^^^
+  File "/home/bulto/OpenRCsimulator/research/aircraft-standardization/parameter_register.py", line 127, in consumer
+    raise ValueError(f"Unassigned parameter consumer: {path}")
+ValueError: Unassigned parameter consumer: intended_hull_support.control_envelope.max_angular_speed
