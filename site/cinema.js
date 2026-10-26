@@ -16,9 +16,8 @@
   let geometry = null, measureRequested = 0;
 
   function filmLabel() {
-    const english = document.documentElement.lang === 'en';
     const active = allowed && !film.paused;
-    toggle.querySelector('.film-label').textContent = active ? (english ? 'Pause scene' : 'Pausar escena') : (english ? 'Play scene' : 'Reproducir escena');
+    toggle.querySelector('.film-label').textContent = active ? siteText.filmPause : siteText.filmPlay;
     toggle.querySelector('.film-icon').textContent = active ? 'Ⅱ' : '▷';
   }
 
@@ -114,16 +113,11 @@
   const image = document.querySelector('#jet-detail-image');
   const detailLink = document.querySelector('.jet-detail-open');
   const status = document.querySelector('#jet-study-status');
-  const labels = {
-    cockpit:['Primer plano de la cabina del Ventage Jet','Close-up of the Ventage Jet canopy'],
-    wing:['Ala y unión al fuselaje del Ventage Jet','Ventage Jet wing and its fuselage junction'],
-    tail:['Deriva y estabilizadores del Ventage Jet','Ventage Jet fin and stabilizers']
-  };
+  const labels = {cockpit:siteText.cockpitAlt, wing:siteText.wingAlt, tail:siteText.tailAlt};
   let selected = 'cockpit', generation = 0;
   function localize() {
-    const english = document.documentElement.lang === 'en';
-    image.alt = labels[selected][english ? 1 : 0];
-    choices.setAttribute('aria-label',english ? 'Jet detail views' : 'Detalles del jet');
+    image.alt = labels[selected];
+    choices.setAttribute('aria-label',siteText.jetDetails);
   }
   choices.hidden = false;
   choices.querySelectorAll('button').forEach(button => button.addEventListener('click',async () => {
@@ -142,7 +136,7 @@
       localize();
       if(!matchMedia('(prefers-reduced-motion:reduce)').matches) image.animate([{opacity:.15,transform:'scale(1.025)'},{opacity:1,transform:'scale(1)'}],{duration:650,easing:'cubic-bezier(.2,.7,.2,1)'});
     } catch {
-      if(current === generation) status.textContent = document.documentElement.lang === 'en' ? 'This detail could not load. Please try another view.' : 'No se pudo cargar este detalle. Prueba otra vista.';
+      if(current === generation) status.textContent = siteText.detailFailed;
     } finally { if(current === generation) choices.removeAttribute('aria-busy'); }
   }));
   document.addEventListener('openrc-language',localize);localize();

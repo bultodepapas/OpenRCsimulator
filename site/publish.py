@@ -4,12 +4,13 @@ import argparse
 import json
 import shutil
 import subprocess
+import sys
 import tempfile
 
 SITE = Path(__file__).resolve().parent
 REPOSITORY = "bultodepapas/OpenRCsimulator"
 REMOTE = f"https://github.com/{REPOSITORY}.git"
-FILES = ("index.html", "sitemap.xml", "style.css", "details.css", "cinema.css", "main.js", "details.js", "viewer.js", "cinema.js", "inspector.js", "favicon.svg", ".nojekyll")
+FILES = ("index.html", "en.html", "pt.html", "zh-Hans.html", "de.html", "ru.html", "sitemap.xml", "style.css", "details.css", "cinema.css", "content.js", "main.js", "details.js", "viewer.js", "cinema.js", "inspector.js", "favicon.svg", ".nojekyll")
 
 
 def run(*args, cwd=None):
@@ -20,6 +21,8 @@ def run(*args, cwd=None):
 
 
 def publish(message):
+    # Fail before touching GitHub if a translation or sitemap update was missed.
+    run(sys.executable, str(SITE / "build_locales.py"), "--check")
     # Check authority and existing Pages configuration before writing to GitHub.
     info = json.loads(run("gh", "api", f"repos/{REPOSITORY}"))
     if not info["permissions"].get("admin"):

@@ -1,63 +1,11 @@
-const websiteCopy = {
-  exploreJet:'Explore the jet',jetStudyKicker:'VENTAGE JET / A CLOSER LOOK',jetStudyHeading:'Ventage Jet.<br>Up close.',jetStudyIntro:'Canopy, wing and empennage. Three views of the model that you can explore in 3D.',jetCockpit:'Canopy',jetWing:'Wing',jetTail:'Empennage',jetOverview:'Overview',jetStudyCta:'Explore this detail in 3D',jetStudyNote:'ACTUAL MODEL · STUDIO RENDER',jetDetailsLabel:'DETAIL VIEWS',
-  inspectCta:'Closer. Explore in 3D.',inspectSub:'Orbit freely, change the view and discover the details.',inspectKicker:'THE HANGAR / 3D STUDIO',inspectClose:'Close',inspectAircraft:'Aircraft',viewPerspective:'Perspective',viewSide:'Side',viewTop:'Top',inspectHelp:'Drag to orbit · Scroll or pinch to zoom · Arrow keys to rotate',inspectNote:'PROJECT MODEL · VISUALIZATION, NOT FLIGHT',
-  helicopterTab:'Helicopter',
-  navPartners:'Partners', supportedBy:'SUPPORTED BY', supportKicker:'THE SUPPORT BEHIND THE PROJECT', mainSponsor:'PRINCIPAL SPONSOR',
-  supportHeading:'Thank you for supporting<br>what we build in the open.', supportCopy:'OpenAI supports this project with a ChatGPT Pro subscription. That support gives us more room to research, build and share OpenRC with the model aviation community.', supportLink:'Thank you, OpenAI ↗',
-  supportProducts:'Ideas to explore.<br>Code to share.', chatgptRole:'Support for open-source development', codexRole:'AI development contributor', alongside:'ALSO ALONG FOR THE FLIGHT', savoxEarly:'Thank you, Savox, for welcoming your products into the project.',
-  hangarHeading:'Every aircraft.<br>A different character.',hangarIntro:'Five airplanes and an experimental helicopter.<br>Choose a model and explore it from every angle.', actualModel:'RENDERS OF THE ACTUAL MODEL',
-  spinPlay:'Rotate', spinAngle:'Camera angle', spinHint:'Drag to explore · Use the slider to change the angle.',stikVariants:'ALSO IN THE STIK: MAX-61FX · MAX-55AX · FS-64V. Three experimental two- and four-stroke glow installations.',
-  fieldKicker:'03 / SEE YOU AT THE FIELD',projectKicker:'04 / UNDER THE COWLING',downloadKicker:'02 / YOUR NEXT TAKEOFF',
-  systemsKicker:'ANATOMY OF THE SIMULATION',systemsHeading:'From a movement of the stick<br>to the response of the aircraft.',systemsIntro:'Explore the systems already in the source. Each area links to its documentation and current limits.',
-  aeroTitle:'Aerodynamics and flight dynamics',aeroBody:'A custom six-degree-of-freedom solver with RK4 integration at 240 Hz and float64 state. Local wing and tail loads, trim, stalls, spins and control-surface dynamics.',aeroDetail1:'Downwash, pitch damping and propeller wake where configured.',aeroDetail2:'Optional wing and tail ground effect, declared for the Stik.',aeroDetail3:'A dedicated body, rotor, inflow and control session for the helicopter.',architectureLink:'Simulator architecture ↗',
-  propTitle:'Four ways to make power',propBody:'Two- and four-stroke glow engines, gasoline, electric propulsion and a spooling turbine. Torque, gyroscopic effects, P-factor and propwash depend on each aircraft’s modules.',propDetail1:'Experimental glow installations: finite fuel, mixture and tank feed.',propDetail2:'Coupled motor, ESC and battery models; Turbo Lumber uses a prescribed 4S bus without depletion.',propDetail3:'Estimated and borrowed parameters are documented as such.',glowLink:'Glow engines and limits ↗',electricLink:'Electric propulsion ↗',
-  groundTitle:'Flight starts on the ground, too',groundBody:'Individual wheel rotation, suspension, steering, rolling resistance and tire slip. Maintained grass and rough ground have different surface profiles.',groundDetail1:'Experimental runway starts for the Stik and Turbo Lumber.',groundDetail2:'Skid contacts and ground-pad startup for the helicopter.',groundDetail3:'Scenery collision proxies, wreckage, marks and effects; physical calibration remains open.',groundLink:'Ground contact model ↗',
-  airTitle:'Air, light and flying conditions',airBody:'Uniform wind, repeating gusts and seeded turbulence. Configurable elevation, temperature, QNH pressure and humidity for the physical atmosphere.',airDetail1:'Dawn, day, dusk, night and passing evening; editable date, time and location.',airDetail2:'Clouds, rain and lightning are visual presentation, without spatial storm forces.',airDetail3:'Field lights, stars, moonlight and the helicopter’s night kit.',airLink:'Atmosphere ↗',lightLink:'Time and lighting ↗',
-  controlTitle:'Transmitters, instruments and practice',controlBody:'USB transmitter, gamepad and keyboard, with calibration, arming and failsafe. Aircraft-specific rates and expo for keyboard and gamepad; radios retain their own settings.',controlDetail1:'Pilot, chase, orbit and close-up cameras, with manual or automatic zoom.',controlDetail2:'Independent flight data, sticks, trims, wind, telemetry and diagnostic panels.',controlDetail3:'Aircraft Workshop variants, repeatable randomized conditions and optional emergency practice.',controlsLink:'Controls and first flight ↗',workshopLink:'Aircraft Workshop ↗',
-  worldTitle:'A field you can see and hear',worldBody:'Grass, trees, a lake, club buildings, vehicles, people and birds. Positional engine, propeller, wind, foliage and wildlife sound, with motion-dependent Doppler.',worldDetail1:'Glow exhaust and optional smoke drifting with the wind.',worldDetail2:'Impact effects, debris and visual damage persist until restart.',worldDetail3:'Water does not simulate buoyancy; in-flight aircraft structural failure is not implemented.',worldLink:'World and scenery ↗',audioLink:'Audio ↗',
-  evidenceTitle:'Sourced data. Repeatable flights.',evidenceBody:'The openrc-aircraft v2 contract requires units, evidence type and source. Invalid configurations cannot fly. Geometry and physical data are regenerated from their sources.',evidenceDetail1:'F10 records fixed-wing flights; F11 marks maneuvers. CSV export and comparisons use the same input tape.',evidenceDetail2:'Regression tests, golden flights, captures and export checks.',evidenceDetail3:'Software equivalence does not demonstrate physical realism: measurements and pilots are needed.',contractLink:'Aircraft contract ↗',logLink:'Flight logging and replay ↗',
-  inventoryKicker:'05 / THE OPENRC WORLD',inventoryHeading:'Much more<br>than a runway.',inventoryIntro:'Models, scenery, sounds and instruments. Original and freely available resources with their sources and licenses.',
-  clubKicker:'THE FIELD / GODOT CAPTURE',clubHeading:'A small world of model aviation.',clubCopy:'Clubhouse, pits, parked aircraft, vehicles, people, trees and a lake. Vegetation and materials from free sources, with credits preserved.',assetCredits:'Explore assets and credits ↗',
-  truckKicker:'ALSO ON WHEELS / MODEL RENDER',truckCopy:'Two experimental RC vehicles in current source: a garage, driving course, suspension and separate physics. Bisonte is shown here; Monster Car 2 extends the activity with nitro propulsion.',truckLink:'Explore the RC vehicle activity ↗',
-  assetModels:'Models and geometry',assetModelsSub:'Sources, generators and articulation',assetAudio:'The soundscape',assetAudioSub:'Engines, wind, foliage and wildlife',assetInstruments:'Flight instrumentation',assetInstrumentsSub:'Telemetry, sticks, warnings and diagnostics',
-  partnersKicker:'06 / PROJECT PARTNERS',partnersHeading:'Support moves<br>the controls, too.',partnersIntro:'Thank you to the people who make room for an open project to keep growing.',savoxRole:'PARTNER / RC SERVOS',savoxCopy:'Savox has authorized us to include representations of its products in OpenRC Simulator. Thank you for supporting the project and connecting RC hardware with open simulation.',savoxStatus:'Servo catalogue selection is planned. This support does not establish validation of our physical models.',savoxLink:'Explore the planned integration ↗',
-  developmentKicker:'07 / DEVELOPMENT IN THE OPEN',developmentHeading:'A project moving forward.<br>Without skipping the questions.',devAvailable:'AVAILABLE',devAvailableTitle:'Download and fly.',devAvailableCopy:'Stable desktop software release. Its notes describe exactly what the package contains.',devDownload:'Go to downloads ↑',devActive:'IN DEVELOPMENT',devActiveTitle:'Test and refine.',devActiveCopy:'Experimental aircraft, engines, ground, controls, helicopter and RC vehicles. Current source keeps evolving.',devChanges:'Project changes ↗',devOpen:'STILL TO DEMONSTRATE',devOpenTitle:'Measure in the real world.',devOpenCopy:'Mass, center of gravity, inertia, propulsion, maneuvers and pilot evaluation. The next step needs evidence.',devRoadmap:'Roadmap and acceptance gates ↗',droneNote:'IN RESEARCH: FPV racing. A flyable drone and race mode are not yet available.'
-};
-
-Object.assign(websiteCopy, {
-  "savoxEarly": "Thanks to the manufacturers and community members helping OpenRC grow.",
-  "partnersIntro": "Thank you to the manufacturers who have authorized representations of their products.",
-  "savoxCopy": "Savox authorizes representations of its products. Thank you for opening the catalogue to simulation and offering an engineering contact.",
-  "savoxStatus": "Servo catalogue selection is planned.",
-  "sonicmodellRole": "PARTNER / FPV AIRCRAFT",
-  "sonicmodellCopy": "SonicModell authorizes the appearance, names and branding of the models covered by our request, including Skyhunter models.",
-  "sonicmodellStatus": "Permission is limited to the agreed use. Integration is pending.",
-  "hitecRole": "PARTNER / RC SERVOS",
-  "hitecCopy": "Hitec authorizes OpenRC Simulator to feature servos published on its websites, with references and official product links.",
-  "hitecStatus": "Integration is pending. This permission does not announce radio compatibility.",
-  "partnerVisit": "Visit the manufacturer ↗",
-  "partnersNote": "Permissions have specific scopes. They do not imply financial sponsorship or validation of our physical models.",
-  "partnerMoreTitle": "More participating brands",
-  "flywingLogoScope": "Exterior model permission; integration pending.",
-  "revocLogoScope": "Community support with approved logo and link.",
-  "flywingScope": "Aircraft names and simplified exterior models; integration pending.",
-  "gemfanScope": "Propeller names and simplified 3D representations; integration pending.",
-  "kontronikScope": "Recreated propulsion products and name; integration pending.",
-  "leomotionScope": "Selected products; renders require approval before publication.",
-  "communityThanks": "Aloft Hobbies shared the project on its forum and offered knowledge and feedback."
-});
-
-Object.assign(websiteCopy, {alongside:'MANUFACTURERS ALONG FOR THE FLIGHT', alliesCopy:'Real products.<br> New possibilities in the simulator.', alliesLink:'Meet our partners ↗'});
-
 const themeButton = document.querySelector('.theme-toggle');
 let theme = 'day';
 try {theme = localStorage.getItem('openrc-theme') === 'night' ? 'night' : 'day';} catch {}
 function applyTheme() {
   document.documentElement.dataset.theme = theme;
-  const english = document.documentElement.lang === 'en';
   const night = theme === 'night';
   themeButton.firstElementChild.textContent = night ? '☀' : '☾';
-  themeButton.setAttribute('aria-label', english ? (night ? 'Switch to day theme' : 'Switch to night theme') : (night ? 'Activar modo día' : 'Activar modo noche'));
+  themeButton.setAttribute('aria-label', night ? siteText.themeDay : siteText.themeNight);
   document.querySelectorAll('img[src*="brands/"]:not(.partner-logo img):not(.allies-logos img)').forEach(img => {
     const source = img.getAttribute('src');
     const next = source.replace(night ? 'Black' : 'White', night ? 'White' : 'Black');

@@ -36,25 +36,24 @@
   }
 
   function localize() {
-    const en = document.documentElement.lang === 'en';
-    document.querySelector('.camera-presets').setAttribute('aria-label',en ? 'Camera views' : 'Vistas de cámara');
-    document.querySelector('#inspect-zoom-in').setAttribute('aria-label',en ? 'Zoom in' : 'Acercar');
-    document.querySelector('#inspect-zoom-out').setAttribute('aria-label',en ? 'Zoom out' : 'Alejar');
-    detailPanel.querySelector('[role=group]').setAttribute('aria-label',en ? 'Jet detail views' : 'Detalles del jet');
+    document.querySelector('.camera-presets').setAttribute('aria-label',siteText.cameraViews);
+    document.querySelector('#inspect-zoom-in').setAttribute('aria-label',siteText.zoomIn);
+    document.querySelector('#inspect-zoom-out').setAttribute('aria-label',siteText.zoomOut);
+    detailPanel.querySelector('[role=group]').setAttribute('aria-label',siteText.jetDetails);
     const detailStatus = document.querySelector('#detail-unavailable');
     detailStatus.hidden = !ready || select.value !== 'jet' || Boolean(jetViews);
-    detailStatus.textContent = en ? 'Detail views are unavailable. You can still orbit and zoom.' : 'Los encuadres de detalle no están disponibles. Puedes girar y acercarte.';
-    state.textContent = failed ? (en ? 'The 3D view could not load. Close to return to the 360° view.' : 'No se pudo cargar el modelo 3D. Cierra para volver a la vista 360°.') : (en ? 'Preparing your aircraft…' : 'Preparando tu aeronave…');
+    detailStatus.textContent = siteText.detailUnavailable;
+    state.textContent = failed ? siteText.modelFailed : siteText.modelPreparing;
     if (viewer) {
-      viewer.alt = `${names[select.value]} — ${en ? 'interactive 3D model' : 'modelo 3D interactivo'}`;
-      const views = en ? {front:'Front',back:'Rear',left:'Left side',right:'Right side'} : {front:'Frente',back:'Parte trasera',left:'Lado izquierdo',right:'Lado derecho'};
+      viewer.alt = `${names[select.value]} — ${siteText.interactiveModel}`;
+      const views = {front:siteText.front,back:siteText.back,left:siteText.left,right:siteText.right};
       const descriptions = {};
       for (const [key,value] of Object.entries(views)) {
         descriptions[key] = `${value}: ${names[select.value]}`;
-        descriptions[`upper-${key}`] = `${en ? 'From above' : 'Desde arriba'}. ${descriptions[key]}`;
-        descriptions[`lower-${key}`] = `${en ? 'From below' : 'Desde abajo'}. ${descriptions[key]}`;
+        descriptions[`upper-${key}`] = `${siteText.above}. ${descriptions[key]}`;
+        descriptions[`lower-${key}`] = `${siteText.below}. ${descriptions[key]}`;
       }
-      descriptions['interaction-prompt'] = en ? 'Use the mouse, touch or arrow keys to orbit. Scroll or pinch to zoom.' : 'Usa el ratón, la pantalla táctil o las flechas para girar. Rueda o pellizca para acercar.';
+      descriptions['interaction-prompt'] = siteText.interactionPrompt;
       viewer.a11y = descriptions;
     }
   }

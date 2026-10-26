@@ -1,95 +1,27 @@
-const translations = {
-  releaseHighlights: 'v0.1.8 adds the experimental F4U Corsair, a Scene detail setting, 3D field trees and far woods, and an optional High graphics profile. Flight behavior still needs real-world evaluation.',
-  skip: 'Skip to content', navHangar: 'The hangar', navField: 'The field', navProject: 'The project', download: 'Download',
-  heroEyebrow: 'MODEL AVIATION · OPEN SOURCE', renderNote: 'SIMULATOR MODEL · STUDIO VIEW',
-  heroHeading: 'The flying field<br>is open.', heroCopy: 'A free, open-source RC flight simulator.<br>For Windows, Linux and macOS. Early alpha.', heroCta: 'Download',
-  platforms: 'WINDOWS / LINUX / macOS', explore: 'EXPLORE THE PROJECT', free: 'FREE. FROM YOUR FIRST FLIGHT.',
-  hangarKicker: '01 / THE HANGAR', hangarHeading: 'Every aircraft.<br>A different character.', hangarIntro: 'From a wooden classic to a jet.<br>Five fixed-wing aircraft in current source, each with its own configuration.',
-  studio: 'AIRCRAFT STUDY / OPENRC', actualModel: 'ACTUAL PROJECT MODEL', span: 'Wingspan', power: 'Powerplant', gear: 'Landing gear', aircraftDetails: 'Explore the model',
-  sourceNote: 'CURRENT SOURCE CATALOGUE. Models are experimental and still need measurements and pilot evaluation. The v0.1.8 download is its own snapshot and may differ from current source.',
-  fieldKicker: '02 / SEE YOU AT THE FIELD', fieldHeading: 'That place<br>you always<br>come back to.', fieldCopy: 'The grass runway. The trees on the horizon.<br>Fly from the pilot’s position or follow your aircraft with the flight cameras.',
-  capture: 'IN-SIMULATOR CAPTURE · GODOT', day: 'Day', night: 'Night',
-  projectKicker: '03 / UNDER THE COWLING', projectHeading: 'Physics matters.<br>So does evidence.', projectIntro: 'We’re building an RC simulator one step at a time. With code you can read, flights you can repeat, and questions we’re still working through.', source: 'Explore the source', sourceKicker: 'IMPLEMENTED IN CURRENT SOURCE',
-  physicsHeading: 'A flight solver of its own.', physicsCopy: 'Six degrees of freedom, calculated in float64. Local aerodynamic loads, servo dynamics and aircraft-specific propulsion.',
-  radioHeading: 'Your controls, in the loop.', radioCopy: 'USB transmitter, gamepad or keyboard. Saved calibration, throttle arming and a disconnection failsafe.',
-  replayHeading: 'Fly. Record. Compare.', replayCopy: 'Flight logs, exact replay and CSV export to study aircraft behavior with the same recorded inputs.',
-  honesty: 'Software is checked. Realism must be demonstrated. Independent physical validation and pilot evaluation remain open.', roadmap: 'See what’s next',
-  downloadKicker: '02 / YOUR NEXT TAKEOFF', downloadHeading: 'Less watching.<br>More flying.', downloadIntro: 'Download, extract the ZIP and launch.<br>No Godot installation needed.', downloadNote: 'Stable software release v0.1.8. The ZIPs have no installer or archive signature; the macOS app is ad-hoc signed but not notarized.<br>Aircraft and ground-vehicle models remain experimental and need independent measurements and pilot evaluation.', firstFlight: 'First-flight guide ↗', releaseNotes: 'Release notes ↗',
-  candidateKicker: 'LATEST STABLE SOFTWARE RELEASE · v0.1.8', candidateTitle: 'v0.1.8 is available', candidateIntro: 'Download v0.1.8 for Windows, Linux or macOS. This stable software release is an early-alpha simulator; aircraft and ground-vehicle models remain experimental.', candidateLimitsNote: 'Independent evaluation of some experimental aircraft remains open:', candidateStikLimit: 'The Stik’s 240 Hz sideslip-limit check remains open; it is an estimated boundary check.', candidateYawLimit: 'The R02 yaw-damping comparison remains open; its model comparison is not a physical measurement.', candidateRelease: 'v0.1.8 release notes ↗',
-  communityKicker: 'AN OPEN PROJECT. A SHARED EFFORT.', communityHeading: 'The next improvement<br>could start with you.', communityCopy: 'A test with your transmitter. A real measurement. A code improvement. Every contribution helps build the next flight.', contribute: 'Contribute on GitHub', feedback: 'Share your experience',
-  thanks: 'With OpenAI’s support for development.<br>Thanks to the participating manufacturers and RC community.', license: 'MIT CODE · ASSETS RETAIN THEIR OWN LICENSES', credits: 'Project imagery & credits ↗', sitemap: 'Sitemap', backTop: 'Back to top ↑'
-};
-
-const aircraft = {
-  stik: {name:'Jensen Das<br>Ugly Stik 60',span:'1.52 m',power:'.61 glow',guide:'UGLY-STIK-PLAN',category:['EL CLÁSICO','THE CLASSIC'],description:['Ala alta, líneas sencillas y toda la personalidad del aeromodelismo. El avión de referencia con el que empieza OpenRC.','A high wing, simple lines and the unmistakable character of model aviation. The reference aircraft at the heart of OpenRC.'],gear:['Triciclo','Tricycle'],status:['Referencia · en evaluación','Reference · under evaluation']},
-  extra: {name:'Great Planes<br>Extra 300S .60',span:'1.63 m',power:'.61 glow',guide:'EXTRA-300-PLAN',category:['ESPÍRITU ACROBÁTICO','AEROBATIC SPIRIT'],description:['Un ala baja acrobático con motor glow y tren de cola. Otra forma de explorar los mandos y el comportamiento en vuelo.','A low-wing aerobatic model with glow power and taildragger gear. A different way to explore the controls and flight behavior.'],gear:['Tren de cola','Taildragger']},
-  mustang: {name:'P-51D Mustang<br>1/4',span:'2.82 m',power:'120 cc',guide:'P51-PLAN',category:['PRESENCIA A ESCALA','SCALE PRESENCE'],description:['Mustang experimental de gasolina a escala 1/4. Las comprobaciones de software no demuestran la precisión física del modelo.','Experimental 1/4-scale gasoline Mustang. Software checks do not establish physical accuracy.'],gear:['Tren de cola','Taildragger']},
-  jet: {name:'Ventage<br>Jet',span:'2.00 m',power:'JetCat P100-RX',guide:'AVANTI-S-PLAN',category:['OTRO RITMO','A DIFFERENT PACE'],description:['Propulsión por turbina y una silueta limpia. La configuración experimental comienza en el aire, con flaps y tren recogidos.','Turbine propulsion and a clean silhouette. This experimental configuration starts airborne, with flaps and landing gear retracted.'],gear:['Recogido al inicio','Retracted at start']},
-  timber: {name:'Turbo Lumber<br>Evolution',span:'1.55 m',power:'800 Kv / 4S',guide:'TIMBER-INTEGRATION-PLAN',category:['EL LADO ELÉCTRICO','THE ELECTRIC SIDE'],description:['Un ala alta eléctrico con ruedas fijas y sonido propio. Inicio en el aire o en pista, sin asistencias; su propulsión aún usa datos estimados.','An electric high-wing model with fixed wheels and its own sound. Airborne or runway starts, assists off; propulsion still uses estimated data.'],gear:['Ruedas fijas','Fixed wheels']}
-};
-
-Object.assign(translations, websiteCopy);
-aircraft.heli = {name:'RC Helicopter<br>Research Trainer',span:'HX-700',power:'X-Cell .60',guide:'HELICOPTER',category:['ALAS QUE GIRAN','ROTATING WINGS'],description:['Visual HX-700 y física de referencia X-Cell .60 SE. Un entrenador experimental con arranque en plataforma, vuelo estacionario y kit nocturno; no es un modelo HX-700 calibrado.','HX-700 visuals with X-Cell .60 SE reference physics. An experimental trainer with ground-pad startup, hover practice and a night kit; not a calibrated HX-700 flight model.'],gear:['Patines','Skids']};
-
-const labels = {navigation:['Principal','Main navigation'],aircraftSelect:['Seleccionar avión','Select an aircraft'],fieldSwitch:['Iluminación del campo','Field lighting'],savoxPartner:['Savox, aliados','Savox, project partners']};
-const alts = {heroAlt:['Ventage Jet naranja y violeta, render del modelo del simulador','Orange and violet Ventage Jet, a render of the simulator model'],fieldDayAlt:['Vista aérea del campo de vuelo de OpenRC, con pista de césped y zona de pilotos','Aerial view of the OpenRC flying field, grass runway and pilot area'],fieldNightAlt:['Umbral de la pista y club iluminados de noche en OpenRC','Illuminated runway threshold and club at night in OpenRC']};
-alts.clubAlt = ['Club de aeromodelismo, boxes, pilotos y vehículos en OpenRC','OpenRC model flying club, pits, pilots and parked vehicles'];
-alts.truckAlt = ['Render del modelo naranja Bisonte MT8 con suspensión y neumáticos todoterreno','Orange Bisonte MT8 model render with suspension and off-road tires'];
-let language = 'es';
+const language = document.documentElement.lang;
 let currentAircraft = 'jet';
 const aircraftOrder = [...document.querySelectorAll('[data-aircraft]')].map(button => button.dataset.aircraft);
 let currentTime = 'day';
-const languageButton = document.querySelector('.language');
-const originalCopy = new Map([...document.querySelectorAll('[data-i18n]')].map(el => [el, el.innerHTML]));
-const originalTitle = document.title;
-const originalDescription = document.querySelector('meta[name="description"]').content;
-const softwareSchema = document.querySelector('#software-schema');
-const softwareData = JSON.parse(softwareSchema.textContent);
-
 function renderAircraft() {
   const model = aircraft[currentAircraft];
-  const index = language === 'es' ? 0 : 1;
+  const localized = localeCopy.aircraft[currentAircraft];
   const image = document.querySelector('#aircraft-image');
   const source = `assets/turntables/${currentAircraft}-poster.webp`;
   if(image.getAttribute('src') !== source) image.src = source;
-  image.alt = `${model.name.replace('<br>',' ')} — ${index ? 'studio view' : 'vista de estudio'}`;
+  image.alt = `${model.name.replace('<br>',' ')} — ${siteText.studioView}`;
   document.querySelector('#aircraft-name').innerHTML = model.name;
-  document.querySelector('#aircraft-category').textContent = model.category[index];
-  document.querySelector('#aircraft-description').textContent = model.description[index];
+  document.querySelector('#aircraft-category').textContent = localized.category;
+  document.querySelector('#aircraft-description').textContent = localized.description;
   document.querySelector('#aircraft-span').textContent = model.span;
-  document.querySelector('[data-i18n="span"]').textContent = currentAircraft === 'heli' ? (index ? 'Visual model' : 'Modelo visual') : (index ? 'Wingspan' : 'Envergadura');
-  document.querySelector('[data-i18n="power"]').textContent = currentAircraft === 'heli' ? (index ? 'Flight reference' : 'Referencia de vuelo') : (index ? 'Powerplant' : 'Propulsión');
+  document.querySelector('[data-i18n="span"]').textContent = currentAircraft === 'heli' ? siteText.visualModel : siteText.wingspan;
+  document.querySelector('[data-i18n="power"]').textContent = currentAircraft === 'heli' ? siteText.flightReference : siteText.powerplant;
   document.querySelector('#aircraft-power').textContent = model.power;
-  document.querySelector('#aircraft-gear').textContent = model.gear[index];
-  document.querySelector('#aircraft-status').textContent = model.status?.[index] ?? (index ? 'Experimental' : 'Experimental');
+  document.querySelector('#aircraft-gear').textContent = localized.gear;
+  document.querySelector('#aircraft-status').textContent = localized.status;
   document.querySelector('#aircraft-link').href = `https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/${model.guide}.md`;
   document.querySelector('#aircraft-number').textContent = `0${aircraftOrder.indexOf(currentAircraft)+1} / 06`;
   document.querySelectorAll('[data-aircraft]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.aircraft === currentAircraft)));
   window.OpenRCViewer?.select(currentAircraft,model.name.replace('<br>',' '));
-}
-
-function renderLanguage() {
-  const index = language === 'es' ? 0 : 1;
-  document.documentElement.lang = language;
-  originalCopy.forEach((value, el) => {
-    const copy = index ? translations[el.dataset.i18n] : value;
-    if(el.innerHTML !== copy) el.innerHTML = copy;
-  });
-  document.querySelectorAll('[data-label]').forEach(el => el.setAttribute('aria-label',labels[el.dataset.label][index]));
-  document.querySelectorAll('[data-alt]').forEach(el => {el.alt = alts[el.dataset.alt][index];});
-  languageButton.textContent = index ? 'ES' : 'EN';
-  languageButton.setAttribute('aria-label', index ? 'Cambiar a español' : 'Switch to English');
-  document.title = index ? 'OpenRC Simulator | Free Open-Source RC Flight Simulator' : originalTitle;
-  document.querySelector('meta[property="og:title"]').content = document.title;
-  document.querySelector('meta[name="twitter:title"]').content = document.title;
-  const description = index ? 'Download OpenRC Simulator, a free, open-source RC flight simulator for Windows, Linux and macOS. Explore model aviation in an early-alpha desktop simulator.' : originalDescription;
-  document.querySelector('meta[name="description"]').content = description;
-  document.querySelector('meta[property="og:description"]').content = description;
-  document.querySelector('meta[name="twitter:description"]').content = description;
-  softwareData.description = description;
-  softwareSchema.textContent = JSON.stringify(softwareData);
-  renderAircraft();
-  document.dispatchEvent(new CustomEvent('openrc-language'));
 }
 
 document.querySelectorAll('[data-aircraft]').forEach(button => button.addEventListener('click', () => {
@@ -109,19 +41,33 @@ document.querySelectorAll('[data-time]').forEach(button => button.addEventListen
   const image = document.querySelector('#field-image');
   image.src = next.src;
   image.dataset.alt = currentTime === 'day' ? 'fieldDayAlt' : 'fieldNightAlt';
-  image.alt = alts[image.dataset.alt][language === 'es' ? 0 : 1];
+  image.alt = localeCopy.alts[image.dataset.alt];
   document.querySelector('#field-index').textContent = currentTime === 'day' ? '01 / 02' : '02 / 02';
   document.querySelectorAll('[data-time]').forEach(el => el.setAttribute('aria-pressed', String(el === button)));
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) image.animate([{opacity:.25},{opacity:1}],{duration:650,easing:'ease-out'});
 }));
-languageButton.hidden = false;
-languageButton.addEventListener('click', () => {
-  language = language === 'es' ? 'en' : 'es';
-  try {localStorage.setItem('openrc-language', language);} catch { /* Language works without storage. */ }
-  renderLanguage();
+// Each locale has a static URL. Preserve section links when switching languages.
+const languageMenu = document.querySelector('.language-menu');
+function updateLanguageLinks() {
+  document.querySelectorAll('[data-locale]').forEach(link => {
+    const target = new URL(link.getAttribute('href'), location.href);
+    target.hash = location.hash;
+    link.href = target.href;
+  });
+}
+window.addEventListener('hashchange', updateLanguageLinks);
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && languageMenu.open) {
+    languageMenu.open = false;
+    languageMenu.querySelector('summary').focus();
+  }
 });
-try {if (localStorage.getItem('openrc-language') === 'en') language = 'en';} catch { /* Use Spanish by default. */ }
-renderLanguage();
+document.addEventListener('click', event => {
+  if (!languageMenu.contains(event.target)) languageMenu.open = false;
+});
+updateLanguageLinks();
+renderAircraft();
+document.dispatchEvent(new CustomEvent('openrc-language'));
 
 if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const observer = new IntersectionObserver(entries => {
