@@ -55,8 +55,11 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	var configs := _accepted_airplane_models()
-	_check("ten accepted fixed-wing configurations, including the finite battery pack", configs.size() == 10,
+	_check("accepted fixed-wing matrix retains conventional and tailless variants", configs.size() >= 12,
 		"loaded %d" % configs.size())
+	for mode: String in ["ideal", "pack"]:
+		_check("X8 " + mode + " is covered by uniform parity",
+			not _model_for(configs, "skywalker-x8", mode).is_empty())
 	_check("finite Timber battery-pack model is normalized",
 		not _model_for(configs, BATTERY_AIRCRAFT, "pack").is_empty())
 	for config: Dictionary in configs:

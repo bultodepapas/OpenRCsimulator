@@ -84,7 +84,10 @@ func _initialize() -> void:
 func _run() -> void:
 	var configs := _catalog_models()
 	_check("fleet fixtures include every admitted fixed-wing model and the finite battery pack",
-		configs.size() == 10, "loaded %d" % configs.size())
+		configs.size() >= 12, "loaded %d" % configs.size())
+	for mode: String in ["ideal", "pack"]:
+		_check("X8 " + mode + " is covered by powered point flow",
+			not _model_for(configs, "skywalker-x8", mode).is_empty())
 	_check("finite Timber pack configuration is present",
 		not _model_for(configs, "turbo-lumber-evolution", "pack").is_empty())
 	_check_stage_air_fleet(configs)

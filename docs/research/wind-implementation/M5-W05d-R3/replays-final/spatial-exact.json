@@ -1,0 +1,30 @@
+[
+  {
+    "log": "skywalker_x8-airborne-spatial-v5.orfl",
+    "rows": 121,
+    "columns": 50,
+    "all_csv_cells_equal": true,
+    "solver_changed": false
+  },
+  {
+    "log": "skywalker_x8-hand_launch-spatial-v5.orfl",
+    "rows": 121,
+    "columns": 50,
+    "all_csv_cells_equal": true,
+    "solver_changed": false
+  },
+  {
+    "log": "skywalker_x8_6s_pack-airborne-spatial-v5.orfl",
+    "rows": 121,
+    "columns": 61,
+    "all_csv_cells_equal": true,
+    "solver_changed": false
+  },
+  {
+    "log": "skywalker_x8_6s_pack-hand_launch-spatial-v5.orfl",
+    "rows": 121,
+    "columns": 61,
+    "all_csv_cells_equal": true,
+    "solver_changed": false
+  }
+]

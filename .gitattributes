@@ -1,4 +1,8 @@
 # Keep hashed glow profiles, schemas and flight evidence byte-stable across checkouts.
+# Audio bus generation compares Godot's LF serialization after removing the root UID.
+/app/default_bus_layout.tres text eol=lf
+# The population manifest pins Godot's generated people import descriptors byte-for-byte.
+/app/assets/scenery/population/people/**/*.import text eol=lf
 # AUD-15 recording recipes compare generated metadata byte-for-byte on Windows and Linux.
 /app/assets/audio/powertrains/*.json text eol=lf
 /app/assets/audio/powertrains/LICENSE.txt text eol=lf

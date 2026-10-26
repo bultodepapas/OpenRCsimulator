@@ -25,8 +25,24 @@ func _initialize() -> void:
 	_common_wheel_energy()
 	_actual_braking_regression()
 	_psd_face_regressions()
+	_resting_regressions()
 	print("GP-12 traction: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
+
+
+func _resting_regressions() -> void:
+	for name: String in ["lie64", "symmetric16", "symmetric128"]:
+		var path := "res://tests/fixtures/ground_traction_rest_" + name + ".bin"
+		var file := FileAccess.open(path, FileAccess.READ)
+		_check("captured low-speed fixture opens: " + name, file != null)
+		if file == null: continue
+		var raw: Dictionary = bytes_to_var(file.get_buffer(file.get_length()))
+		file.close()
+		var result := T.solve(raw.mobility, raw.free_slip, raw.limits, raw.groups)
+		if name == "symmetric16":
+			_check("strict context-absent Sym16 oracle still refuses",not result.ok)
+		else:
+			_verify("captured low-speed originalQP " + name, raw.mobility, raw.free_slip, raw.limits, raw.groups, result)
 
 
 func _psd_face_regressions() -> void:

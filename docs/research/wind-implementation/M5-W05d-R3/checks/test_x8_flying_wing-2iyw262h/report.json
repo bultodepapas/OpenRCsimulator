@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fafa9d9b-eda6-4e2d-ad7f-4e1dc7f8a22b",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-tailless-r3/candidate/app",
+    "--script",
+    "res://tests/test_x8_flying_wing.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T12:46:23.772964+00:00",
+  "label": "test_x8_flying_wing",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\test_x8_flying_wing-2iyw262h\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\test_x8_flying_wing-2iyw262h\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.875,
+  "log_bytes": 111,
+  "log_sha256": "df42bee1e4b0f0e48084e6727b8be6405362e1d7d8a10d21db36c767cb9fbed4"
+}

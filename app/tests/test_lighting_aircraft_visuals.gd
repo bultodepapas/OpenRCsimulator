@@ -10,6 +10,7 @@ const WorkshopPreview := preload("res://ui/workshop_preview.gd")
 const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 const Presentation := preload("res://workshop/presentation.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
+const SkinShader := preload("res://render/lighting/rgb_skin.gdshader")
 
 const AIRCRAFT_ID := "jensen-das-ugly-stik-60"
 const CAPTURE_SIZE := Vector2i(1920, 1080)
@@ -82,9 +83,12 @@ func _run() -> void:
 	_check("the preview configures RGB lighting on the actual aircraft",
 		lighting_report.get("state", "") == "configured"
 		and is_instance_valid(preview.get("_lighting_rig")), str(lighting_report))
-	_check("Neon RGB enables per-instance film emission on all six actual targets",
+	_check("Neon RGB enables an additive film pass on all six actual targets",
 		_enabled_skin_count(surface_records) == 6 and _skin_budget_targets(preview) == 6,
 		"enabled=%d budget=%d" % [_enabled_skin_count(surface_records), _skin_budget_targets(preview)])
+	_check("active additive-pass budget matches the six film surfaces",
+		_skin_budget_active_passes(preview) == 6,
+		"active passes=%d" % _skin_budget_active_passes(preview))
 	_check("film emission clones preserve the original paint and leave shared materials unchanged",
 		_active_skin_clones_are_isolated(surface_records))
 
@@ -210,6 +214,15 @@ func _skin_budget_targets(preview: Control) -> int:
 	return int(skins.get("targets", 0)) if skins is Dictionary else 0
 
 
+func _skin_budget_active_passes(preview: Control) -> int:
+	var rig := preview.get("_lighting_rig") as Node3D
+	if not is_instance_valid(rig):
+		return 0
+	var budget: Variant = rig.call("budget_info")
+	var skins: Variant = budget.get("skins", {}) if budget is Dictionary else {}
+	return int(skins.get("active_emission_passes", 0)) if skins is Dictionary else 0
+
+
 func _enabled_skin_count(records: Array[Dictionary]) -> int:
 	var count := 0
 	for record: Dictionary in records:
@@ -218,8 +231,11 @@ func _enabled_skin_count(records: Array[Dictionary]) -> int:
 		if not is_instance_valid(mesh) or surface < 0 or mesh.mesh == null or surface >= mesh.mesh.get_surface_count():
 			continue
 		var material := mesh.get_active_material(surface) as StandardMaterial3D
-		if material != null and material != record.get("source") and material.emission_enabled \
-				and material.emission_texture != null and material.emission_energy_multiplier > 0.0:
+		if material == null or material == record.get("source"):
+			continue
+		var overlay := material.next_pass as ShaderMaterial
+		if overlay != null and overlay.shader == SkinShader \
+				and float(overlay.get_shader_parameter("energy")) > 0.0:
 			count += 1
 	return count
 
@@ -233,7 +249,7 @@ func _all_skin_surfaces_off(records: Array[Dictionary]) -> bool:
 		var material := mesh.get_active_material(surface) as StandardMaterial3D
 		if material == null or material.emission_enabled:
 			return false
-		if material != record.get("source") and material.emission_energy_multiplier > 0.000001:
+		if material != record.get("source") and material.next_pass != null:
 			return false
 	return true
 
@@ -246,9 +262,17 @@ func _active_skin_clones_are_isolated(records: Array[Dictionary]) -> bool:
 		var surface := int(record.get("surface", -1))
 		var source := record.get("source") as StandardMaterial3D
 		var clone := mesh.get_active_material(surface) as StandardMaterial3D if is_instance_valid(mesh) else null
+		var overlay := clone.next_pass as ShaderMaterial if clone != null else null
 		if source == null or clone == null or clone == source or mesh.get_surface_override_material(surface) != clone:
 			return false
-		if clone.albedo_texture != source.albedo_texture or not clone.albedo_color.is_equal_approx(source.albedo_color):
+		if overlay == null or overlay.shader != SkinShader:
+			return false
+		if clone.albedo_texture != source.albedo_texture or not clone.albedo_color.is_equal_approx(source.albedo_color) \
+				or clone.normal_texture != source.normal_texture or clone.roughness_texture != source.roughness_texture \
+				or not is_equal_approx(clone.roughness, source.roughness) \
+				or clone.emission_enabled != source.emission_enabled \
+				or clone.emission_texture != source.emission_texture \
+				or clone.next_pass == source.next_pass:
 			return false
 		if not _material_matches_snapshot(source, record.get("source_snapshot", {})):
 			return false
@@ -290,6 +314,10 @@ func _material_snapshot(material: StandardMaterial3D) -> Dictionary:
 		"roughness_texture": material.roughness_texture,
 		"roughness": material.roughness,
 		"metallic": material.metallic,
+		"transparency": material.transparency,
+		"cull_mode": material.cull_mode,
+		"vertex_color_use_as_albedo": material.vertex_color_use_as_albedo,
+		"next_pass": material.next_pass,
 		"emission_enabled": material.emission_enabled,
 		"emission_texture": material.emission_texture,
 		"emission": material.emission,
@@ -305,6 +333,10 @@ func _material_matches_snapshot(material: StandardMaterial3D, snapshot: Dictiona
 		and material.roughness_texture == snapshot.get("roughness_texture") \
 		and is_equal_approx(material.roughness, float(snapshot.get("roughness", NAN))) \
 		and is_equal_approx(material.metallic, float(snapshot.get("metallic", NAN))) \
+		and material.transparency == int(snapshot.get("transparency", -1)) \
+		and material.cull_mode == int(snapshot.get("cull_mode", -1)) \
+		and material.vertex_color_use_as_albedo == bool(snapshot.get("vertex_color_use_as_albedo", true)) \
+		and material.next_pass == snapshot.get("next_pass") \
 		and material.emission_enabled == bool(snapshot.get("emission_enabled", true)) \
 		and material.emission_texture == snapshot.get("emission_texture") \
 		and material.emission.is_equal_approx(snapshot.get("emission", Color.BLACK)) \
@@ -422,6 +454,120 @@ func _capture_native(preview: Control, base_presentation: Dictionary, records: A
 		await _settle_capture()
 		_check("%s nighttime lit film comparison saves at 1920x1080" % view.name,
 			await _save_capture(viewport, _capture_directory.path_join("film-%s-lit-night.png" % view.name)))
+
+	await _check_skin_exposure_parity(preview, base_presentation, fixed_view, viewport)
+
+
+func _check_skin_exposure_parity(
+	preview: Control,
+	base_presentation: Dictionary,
+	fixed_view: Dictionary,
+	viewport: SubViewport
+) -> void:
+	var environment := preview.get("_preview_environment") as Environment
+	var aircraft_root := preview.get("_airplane_root") as Node3D
+	var kit := aircraft_root.get_node_or_null("NightKit") as Node3D if is_instance_valid(aircraft_root) else null
+	if not is_instance_valid(environment) or not is_instance_valid(kit):
+		_check("exposure parity fixture has the preview environment and aircraft kit", false)
+		return
+	var profile := LightingProfile.preset("night_radian")
+	profile["selection"] = "custom"
+	profile["brightness"] = 1.0
+	var zones: Array = profile.get("zones", []).duplicate(true)
+	for index in zones.size():
+		var zone: Dictionary = zones[index].duplicate(true)
+		var zone_id := str(zone.get("id", ""))
+		if zone_id in ["strip_left", "strip_right"]:
+			zone["enabled"] = true
+			zone["brightness"] = 1.0
+			var pattern: Dictionary = zone.get("pattern", {}).duplicate(true)
+			pattern["id"] = "steady"
+			pattern["palette"] = ["#FFFFFF"]
+			pattern["floor"] = 1.0
+			pattern["duty"] = 0.5
+			zone["pattern"] = pattern
+		else:
+			zone["enabled"] = false
+		zones[index] = zone
+	profile["zones"] = zones
+	profile["effects"] = []
+	preview.call("set_presentation", _with_lighting(base_presentation, profile))
+	preview.call("reset_playback")
+	preview.call("restore_view_state", fixed_view)
+	preview.call("set_preview_night", true)
+	_set_fixture_clock(preview)
+
+	var key_light := preview.get("_preview_key_light") as DirectionalLight3D
+	var fill_light := preview.get("_preview_fill_light") as DirectionalLight3D
+	var original_background_mode := environment.background_mode
+	var original_background := environment.background_color
+	var original_ambient_color := environment.ambient_light_color
+	var original_ambient := environment.ambient_light_energy
+	var original_key_energy := key_light.light_energy if is_instance_valid(key_light) else 0.0
+	var original_fill_energy := fill_light.light_energy if is_instance_valid(fill_light) else 0.0
+	environment.background_mode = Environment.BG_COLOR
+	environment.background_color = Color.BLACK
+	environment.ambient_light_energy = 0.0
+	if is_instance_valid(key_light):
+		key_light.light_energy = 0.0
+	if is_instance_valid(fill_light):
+		fill_light.light_energy = 0.0
+
+	var child_visibility: Array[Dictionary] = []
+	for child in kit.get_children():
+		if child is Node3D:
+			child_visibility.append({"node": child, "visible": child.visible})
+			child.visible = false
+	var signals: Array[float] = []
+	for exposure in [8.0, 12157.033203125]:
+		environment.tonemap_exposure = exposure
+		preview.call("_advance_lighting", false)
+		for child in kit.get_children():
+			if child is Node3D:
+				child.visible = false
+		await _settle_capture()
+		signals.append(_skin_glow_mean(viewport.get_texture().get_image()))
+
+	var reference_signal := signals[0] if signals.size() > 0 else 0.0
+	var flight_signal := signals[1] if signals.size() > 1 else 0.0
+	var relative_error := absf(reference_signal - flight_signal) / maxf(maxf(reference_signal, flight_signal), 0.000001)
+	print("Skin emission signal at exposure 8 and 12157: %.6f / %.6f" % [reference_signal, flight_signal])
+	_check("skin additive signal is exposure-invariant from preview 8 to captured flight exposure",
+		reference_signal > 0.001 and flight_signal > 0.001 and relative_error <= 0.15,
+		"signal8=%.6f signal12157=%.6f relative_error=%.4f" % [
+			reference_signal, flight_signal, relative_error,
+		])
+
+	for state: Dictionary in child_visibility:
+		var child := state.get("node") as Node3D
+		if is_instance_valid(child):
+			child.visible = bool(state.get("visible", true))
+	environment.background_mode = original_background_mode
+	environment.background_color = original_background
+	environment.ambient_light_color = original_ambient_color
+	environment.ambient_light_energy = original_ambient
+	environment.tonemap_exposure = 8.0
+	if is_instance_valid(key_light):
+		key_light.light_energy = original_key_energy
+	if is_instance_valid(fill_light):
+		fill_light.light_energy = original_fill_energy
+
+
+func _skin_glow_mean(image: Image) -> float:
+	if image == null or image.is_empty():
+		return 0.0
+	var x0 := image.get_width() / 4
+	var x1 := image.get_width() * 3 / 4
+	var y0 := image.get_height() / 4
+	var y1 := image.get_height() * 3 / 4
+	var total := 0.0
+	var samples := 0
+	for y in range(y0, y1, 2):
+		for x in range(x0, x1, 2):
+			var color := image.get_pixel(x, y)
+			total += color.r * 0.2126 + color.g * 0.7152 + color.b * 0.0722
+			samples += 1
+	return total / float(samples) if samples > 0 else 0.0
 
 
 func _set_fixture_clock(preview: Control) -> void:

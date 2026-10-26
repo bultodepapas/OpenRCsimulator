@@ -1,0 +1,58 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7975aae7-800d-41ac-b286-9dfcb514184e",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-tailless-r3/candidate/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T12:43:43.184492+00:00",
+  "label": "candidate-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\candidate-import-cw8zmj9m\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\candidate-import-cw8zmj9m\\report.json",
+  "timeout_seconds": 360.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 12,
+      "message": "Missing .uid file for path \"res://tests/test_spatial_wind_prepared.gd\". The file was re-created from cache.",
+      "context": [
+        "   at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 14,
+      "message": "Missing .uid file for path \"res://ui/radio_calibration_setup.gd\". The file was re-created from cache.",
+      "context": [
+        "   at: _process_file_system (editor/file_system/editor_file_system.cpp:1388)",
+        "[   0% ] update_scripts_classes | Started Registrando clases globales... (2 steps)",
+        "[   0% ] update_scripts_classes | "
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 27.203,
+  "log_bytes": 2122,
+  "log_sha256": "e6cbc143772ca606f88524d24af26708758473b5f2bb22c9c089f29d214d1246"
+}

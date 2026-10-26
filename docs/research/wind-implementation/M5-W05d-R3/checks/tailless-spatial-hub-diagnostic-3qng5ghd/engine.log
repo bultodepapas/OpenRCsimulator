@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/x8-spatial-hub-diagnostic/skywalker_x8-airborne-spatial-v5.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/x8-spatial-hub-diagnostic/skywalker_x8-airborne-spatial-v5.orfl (120 ticks)
+FAIL skywalker_x8 hand_launch opt-in spatial v5 starting motor solve uses local hub airspeed — axial=7.57388500352802 expected=10589.6603692512 actual=10589.6717662089
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/x8-spatial-hub-diagnostic/skywalker_x8-hand_launch-spatial-v5.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/x8-spatial-hub-diagnostic/skywalker_x8-hand_launch-spatial-v5.orfl (120 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/x8-spatial-hub-diagnostic/skywalker_x8_6s_pack-airborne-spatial-v5.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/x8-spatial-hub-diagnostic/skywalker_x8_6s_pack-airborne-spatial-v5.orfl (120 ticks)
+FAIL skywalker_x8_6s_pack hand_launch opt-in spatial v5 starting motor solve uses local hub airspeed — axial=7.57032511333966 expected=11379.2214533367 actual=11379.2371790305
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/x8-spatial-hub-diagnostic/skywalker_x8_6s_pack-hand_launch-spatial-v5.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/x8-spatial-hub-diagnostic/skywalker_x8_6s_pack-hand_launch-spatial-v5.orfl (120 ticks)
+tailless spatial session (opt-in spatial v5): 77 checks, 2 failures; ORFL directory C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/x8-spatial-hub-diagnostic

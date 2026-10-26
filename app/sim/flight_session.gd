@@ -662,7 +662,7 @@ static func _hand_launch_model_supported(model: Dictionary) -> bool:
 
 ## X8-07: where and which way the helper throws: the runway edge nearest the pilot, at the pilot's east coordinate
 ## (clamped to the runway), along the runway in the direction with a headwind component (east-bound in calm air and
-## in a pure crosswind). wind_ned is the mean wind at the field; heights are added by the caller.
+## in a pure crosswind). wind_ned is the selected wind at release; heights are added by the caller.
 static func hand_launch_release(field: Dictionary, wind_ned: PackedFloat64Array) -> Dictionary:
 	if wind_ned.size() != 3 or not is_finite(wind_ned[1]):
 		return {ok = false, message = "hand launch needs a finite field wind"}
@@ -2953,13 +2953,23 @@ func _reset_hand_launch_start() -> Dictionary:
 		return {ok = false, message = "hand launch is offered to airplanes without landing gear"}
 	if _runway_field.is_empty():
 		return {ok = false, message = "hand launch needs a loaded field"}
-	var release: Dictionary = hand_launch_release(_runway_field, _weather.sample(0.0))
+	# Placement is independent of wind direction. Spatial weather needs its actual release
+	# location and height before selecting the along-runway heading; it has no time-only sample.
+	var release: Dictionary = hand_launch_release(_runway_field,
+		M.v3(0.0, 0.0, 0.0) if _weather.is_spatial() else _weather.sample(0.0))
 	if not release.ok:
 		return release
 	var terrain: PackedFloat64Array = environment.terrain(release.north, release.east)
 	if terrain.is_empty() or not is_finite(terrain[0]):
 		return {ok = false, message = "hand launch: no terrain height at the release point"}
 	var down: float = -(float(terrain[0]) + HAND_LAUNCH_RELEASE_HEIGHT_M)
+	if _weather.is_spatial():
+		var local_wind: PackedFloat64Array = _weather.sample_world(M.v3(release.north, release.east, down), 0.0)
+		if local_wind.size() != 3 or not Aero._spatial_finite(local_wind, 3):
+			return {ok = false, message = "hand launch: spatial wind is invalid at the release point"}
+		release = hand_launch_release(_runway_field, local_wind)
+		if not release.ok:
+			return release
 	var state: PackedFloat64Array = Scenarios.Trim.state_for(HAND_LAUNCH_SPEED_MPS, 0.0,
 		HAND_LAUNCH_CLIMB_RAD, float(release.heading), M.v3(release.north, release.east, down))
 	if not Sim.state_is_valid(state):
@@ -2979,6 +2989,15 @@ func _hand_launch_rpm(state: PackedFloat64Array) -> float:
 	var prop: Dictionary = aircraft.model.propulsion
 	var u: float = M.dot(M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]), Propulsion.axis(prop))
 	var rho: float = air_density(state)
+	if _weather.is_spatial():
+		var stage := WindFlow.stage_air(state, aircraft.model, environment, 0.0, rho,
+			Aero.SPATIAL_CONTINUATION_LAW)
+		if not stage.ok:
+			return NAN
+		var inflow := Propulsion.stage_air_velocity(state, stage.air, prop)
+		if not inflow.get("ok", false):
+			return NAN
+		u = M.dot(inflow.velocity_body, Propulsion.axis(prop))
 	if Propulsion.is_electric(prop):
 		var point: Dictionary = Propulsion.steady_operating_point(HAND_LAUNCH_THROTTLE, u, prop, rho)
 		return float(point.rpm) if point.get("ok", false) else NAN

@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "83c067f0-5b72-47e6-9c29-ffcc6ef10faa",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-tailless-r3/candidate/app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/test_tailless_spatial_session.gd",
+    "--",
+    "--out-dir=C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-tailless-r3/x8-spatial-accepted"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T12:56:25.648245+00:00",
+  "label": "tailless-spatial-session-accepted",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\tailless-spatial-session-accepted-_bttff00\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-tailless-r3\\checks\\tailless-spatial-session-accepted-_bttff00\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 15.61,
+  "log_bytes": 1345,
+  "log_sha256": "9cb77215ef2f83c92bfc41d4fa796818fafe9d65dcdf2a7991784f0fb00e8851"
+}

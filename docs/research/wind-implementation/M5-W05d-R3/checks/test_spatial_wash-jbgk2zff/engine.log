@@ -1,0 +1,33 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok legacy fixture validates (segmented=false) []
+ok legacy fixture validates (segmented=true) []
+ok smooth-profile fixture validates (swirl=true) []
+ok smooth-profile fixture validates (swirl=false) []
+ok legacy centroid zero/absent sampler is byte-identical with the same stage TQ calls=3
+ok legacy centroid zero sampler preserves the held transport input 
+ok legacy segmented zero/absent sampler is byte-identical with the same stage TQ calls=7
+ok legacy segmented zero sampler preserves the held transport input 
+ok smooth profile zero/absent sampler is byte-identical with the same stage TQ calls=178
+ok smooth profile zero sampler preserves the held transport input 
+ok smooth transported zero/absent sampler is byte-identical with the same stage TQ calls=3
+ok smooth transported zero sampler preserves the held transport input 
+ok single-piece oracle fixture is immersed 0.016
+ok one-point washed-minus-free matches independent section wrench error=0 samples=1
+ok one-piece pair samples its actual shifted force arm once [[-0.73150756264802, 0.04, 0.04084837596465]]
+ok legacy segmented ambient wash samples active load points and returns finite loads calls=7 unique=7 pieces=3
+ok legacy segmented evaluates more than one actual spanwise force arm calls=7 unique=7
+ok smooth swirl ambient wash samples active load points and returns finite loads calls=188 unique=188 pieces=3
+ok smooth swirl evaluates more than one actual spanwise force arm calls=188 unique=188
+ok smooth swirl applies constant ambient delta at every active Gauss load node error=0 calls=165
+ok segmented wash applies constant ambient delta once to both free and washed passes error=0 centroid samples=2
+ok transport target uses hub-point TQ and ambient-only wake source error=0
+ok transport derivative uses the matched source target and held lag state error=0
+ok legacy transport target remains byte-identical without explicit fields 
+ok legacy transport derivative remains byte-identical without explicit fields 
+ok malformed explicit propulsion point refuses transport target and derivative 
+ok hub ambient source delta is applied once; tail samples stay local error=1.1102230246251565e-16 candidate calls=3
+ok same stage source and transported wash are held read-only across the pair dv=[1.1, 1.45, 1.8]
+ok nonfinite point sampler refuses the whole wash wrench without a partial result [nan, nan, nan, nan, nan, nan]
+ok wrong-size ambient delta refuses the whole wash wrench [nan, nan, nan, nan, nan, nan]
+M5-W05c-R2 spatial wash: 30 checks, 0 failed

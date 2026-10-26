@@ -5,6 +5,7 @@ const Appearance := preload("res://aircraft/ugly_stik_appearance.gd")
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const Finish := preload("res://aircraft/ugly_stik_finish.gd")
 const LightingPolicy := preload("res://render/lighting/lighting_policy.gd")
+const SkinShader := preload("res://render/lighting/rgb_skin.gdshader")
 
 const MASK_PROFILE_ID := "jensen_stik_film_bays_v1"
 const MASK_PROFILE_IDS := [MASK_PROFILE_ID]
@@ -27,6 +28,7 @@ var _bindings: Array[Dictionary] = []
 var _composed_textures: Dictionary = {}
 var _warnings: Array[String] = []
 var _last_advance_writes := 0
+var _active_emission_passes := 0
 
 
 ## Projects validated companion IDs to live mesh/surface references. Skin rows never accept raw paths.
@@ -192,28 +194,36 @@ func configure(root: Node3D, profile: Dictionary) -> Dictionary:
 			if mesh.material_override != null:
 				_warnings.append("lighting skin target '%s' has a mesh-wide material override; surface kept unchanged" % target_id)
 				continue
+			if original.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
+				_warnings.append("lighting skin target '%s' is not opaque; surface kept unchanged" % target_id)
+				continue
+			if original.cull_mode != BaseMaterial3D.CULL_BACK:
+				_warnings.append("lighting skin target '%s' uses unsupported culling; surface kept unchanged" % target_id)
+				continue
+			if original.vertex_color_use_as_albedo:
+				_warnings.append("lighting skin target '%s' uses vertex color as albedo; surface kept unchanged" % target_id)
+				continue
+			if original.next_pass != null:
+				_warnings.append("lighting skin target '%s' already has a next pass; surface kept unchanged" % target_id)
+				continue
 			if not _supports_uv1_transform(original):
 				_warnings.append("lighting skin target '%s' uses an unsupported UV1 transform; surface kept unchanged" % target_id)
 				continue
 			if original.emission_enabled or original.emission_texture != null:
 				_warnings.append("lighting skin target '%s' already has authored emission; surface kept unchanged" % target_id)
 				continue
-			if original.emission_operator not in [BaseMaterial3D.EMISSION_OP_ADD, BaseMaterial3D.EMISSION_OP_MULTIPLY]:
-				_warnings.append("lighting skin target '%s' uses an unsupported emission operator; surface kept unchanged" % target_id)
-				continue
 			var composed_texture := _emission_texture_for(original)
 			if composed_texture == null:
 				_warnings.append("lighting skin target '%s' has no composable albedo image; opaque surface kept" % target_id)
 				continue
+			var overlay := ShaderMaterial.new()
+			overlay.shader = SkinShader
+			overlay.set_shader_parameter("emission_map", composed_texture)
 			var clone := original.duplicate() as StandardMaterial3D
 			if clone == null:
 				_warnings.append("lighting skin target '%s' material could not be duplicated; opaque surface kept" % target_id)
 				continue
 			var previous_override := mesh.get_surface_override_material(surface)
-			clone.emission_texture = composed_texture
-			clone.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
-			clone.emission_enabled = false
-			clone.emission_energy_multiplier = 0.0
 			mesh.set_surface_override_material(surface, clone)
 			_bindings.append({
 				"zone_id": zone_id,
@@ -222,14 +232,20 @@ func configure(root: Node3D, profile: Dictionary) -> Dictionary:
 				"surface": surface,
 				"original_override": previous_override,
 				"material": clone,
+				"overlay": overlay,
+				"last_color": Color.WHITE,
+				"color_set": false,
+				"last_energy": 0.0,
+				"energy_set": false,
 			})
 			target_count += 1
 	return _result()
 
 
-## Updates only the clone's emission color and bounded energy; textures and meshes are static after configure.
+## Updates the owned additive pass; the cloned opaque material keeps all source shading intact.
 func advance(seconds: float, telemetry: Dictionary, mode: String, gain: float) -> Dictionary:
 	_last_advance_writes = 0
+	_active_emission_passes = 0
 	if _root == null or not is_instance_valid(_root):
 		return {"writes": 0}
 	var clock := _bounded_number(seconds, 0.0, 0.0, 1.0e12)
@@ -239,7 +255,8 @@ func advance(seconds: float, telemetry: Dictionary, mode: String, gain: float) -
 	var sequence: Array = _profile.get("sequence", []) if _profile.get("sequence", []) is Array else []
 	for binding: Dictionary in _bindings:
 		var material := binding.get("material") as StandardMaterial3D
-		if material == null or not is_instance_valid(material):
+		var overlay := binding.get("overlay") as ShaderMaterial
+		if material == null or not is_instance_valid(material) or overlay == null or not is_instance_valid(overlay):
 			continue
 		var zone_id := str(binding.get("zone_id", ""))
 		var zone: Dictionary = _zones.get(zone_id, {})
@@ -255,14 +272,26 @@ func advance(seconds: float, telemetry: Dictionary, mode: String, gain: float) -
 			var exposure_cap := minf(EMISSION_CAP, EXPOSURE_ENERGY_CAP / exposure)
 			energy = exposure_cap * _profile_brightness * zone_brightness * user_gain * reaction_gain
 			show = energy > 0.0
-		if material.emission_enabled != show:
-			material.emission_enabled = show
-			_last_advance_writes += 1
-		if not material.emission.is_equal_approx(color):
-			material.emission = color
-			_last_advance_writes += 1
-		if absf(material.emission_energy_multiplier - energy) > 0.000001:
-			material.emission_energy_multiplier = energy
+		if show:
+			if material.next_pass != overlay:
+				material.next_pass = overlay
+				_last_advance_writes += 1
+			_active_emission_passes += 1
+			var previous_color: Color = binding.get("last_color", Color.WHITE)
+			if not bool(binding.get("color_set", false)) or not previous_color.is_equal_approx(color):
+				overlay.set_shader_parameter("emission_color", color)
+				binding["last_color"] = color
+				binding["color_set"] = true
+				_last_advance_writes += 1
+			var previous_energy := float(binding.get("last_energy", 0.0))
+			var energy_tolerance := maxf(0.000000001, maxf(absf(previous_energy), absf(energy)) * 0.001)
+			if not bool(binding.get("energy_set", false)) or absf(previous_energy - energy) > energy_tolerance:
+				overlay.set_shader_parameter("energy", energy)
+				binding["last_energy"] = energy
+				binding["energy_set"] = true
+				_last_advance_writes += 1
+		elif material.next_pass == overlay:
+			material.next_pass = null
 			_last_advance_writes += 1
 	return {"writes": _last_advance_writes}
 
@@ -284,6 +313,7 @@ func dispose() -> void:
 	_profile.clear()
 	_profile_brightness = 1.0
 	_last_advance_writes = 0
+	_active_emission_passes = 0
 	_root = null
 
 
@@ -293,6 +323,7 @@ func budget_info() -> Dictionary:
 	var composed_mipped_bytes := _composed_textures.size() * _mipped_image_bytes(MASK_SIZE, MASK_SIZE, 4)
 	return {
 		"targets": _bindings.size(),
+		"active_emission_passes": _active_emission_passes,
 		"max_targets": MAX_TARGETS,
 		"composed_textures": _composed_textures.size(),
 		"structural_mask_pixel_bytes": mask.get_width() * mask.get_height() if mask != null else 0,

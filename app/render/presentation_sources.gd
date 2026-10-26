@@ -39,6 +39,7 @@ const SOURCE_PATHS_V3 := [
 	"res://render/lighting/lighting_skins.gd",
 	"res://render/lighting/lighting_vfx.gd",
 	"res://render/lighting/rgb_lamp.gdshader",
+	"res://render/lighting/rgb_skin.gdshader",
 	"res://render/lighting/rgb_strip.gdshader",
 	"res://render/presentation_sources.gd",
 	"res://render/smoke/exhaust.gd",

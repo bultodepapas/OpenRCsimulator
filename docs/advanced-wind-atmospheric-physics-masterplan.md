@@ -14,6 +14,8 @@
 
 **Field optimization M5-W05d-R2 (2026-10-26):** profile constants and ordered gust values are prepared once per immutable provider; turbulence accumulates in scalar float64 locals. Boundary fixtures, replay and full-session comparisons retain the existing equations, event order and point sampling. [Optimization evidence and performance limits](research/wind-implementation/M5-W05d-R2/README.md) distinguishes numerical parity from hardware qualification.
 
+**Tailless compatibility M5-W05d-R3 (2026-10-26):** both X8 configurations now consume spatial air at their derived swept wing stations, with the absent horizontal-tail slot inactive. The existing vertical aggregate and pusher retain their established indices and force ownership. Spatial hand launches select direction from release-point wind and initialize RPM from local hub inflow without adding wind to the ground-relative throw. [Regression and replay evidence](research/wind-implementation/M5-W05d-R3/README.md) closes the known X8 software-admission gap; it does not qualify winglet gradients, pilot handling, spectra or performance.
+
 Weather v1–v4 retains its uniform law and existing default selection. Spatial modes are experimental authored scenarios, not physically validated site weather; no terrain solver, solar heat budget, dynamic stall or spatial wake evolution is implied. Helicopters and companions explicitly refuse the new weather law until separately qualified. Sections 1–3 describe the original audit baseline; subsequent design remains prospective except for the explicit implementation notes. P0/P1/P2 implementation progress does not close the physical, handling or hardware acceptance gates.
 
 ## 1. Executive summary and realism objectives

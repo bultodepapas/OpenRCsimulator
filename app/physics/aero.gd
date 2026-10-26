@@ -1003,6 +1003,11 @@ static func ambient_spatial_loads(s: PackedFloat64Array, air: Dictionary, d: Dic
 	var ys: PackedFloat64Array = env.get("station_ys", PackedFloat64Array())
 	if ys.is_empty() or not _spatial_finite(station_delta_body, 3*(ys.size()+2)):
 		return _spatial_failure("spatial air needs one finite delta per wing and tail station")
+	var layout_error := spatial_layout_error(model, ys.size())
+	if not layout_error.is_empty():
+		return _spatial_failure(layout_error)
+	if model.surfaces.has("tailless") and not _spatial_inactive_tail_is_zero(station_delta_body, ys.size()):
+		return _spatial_failure("tailless horizontal slot must remain zero")
 	var uniform := true
 	for value: float in station_delta_body:
 		if value != 0.0:
@@ -1088,7 +1093,13 @@ static func ambient_spatial_continuation_loads(s: PackedFloat64Array, air: Dicti
 			or not arp is PackedFloat64Array or not _spatial_finite(arp, 3) \
 			or not ys is PackedFloat64Array or ys.is_empty() or not _spatial_finite(ys, ys.size()):
 		return _continuation_failure("invalid aircraft datum or wing stations")
+	var layout_error := spatial_layout_error(model, ys.size())
+	if not layout_error.is_empty():
+		return _continuation_failure(layout_error)
+	var tailless := surfaces.has("tailless")
 	for name: String in ["horizontal", "vertical"]:
+		if tailless and name == "horizontal":
+			continue
 		var tail: Variant = surfaces.get(name)
 		if not tail is Dictionary or not tail.get("position", PackedFloat64Array()) is PackedFloat64Array \
 				or not _spatial_finite(tail.position, 3):
@@ -1096,6 +1107,8 @@ static func ambient_spatial_continuation_loads(s: PackedFloat64Array, air: Dicti
 	if station_delta_body.size() != 3 * (ys.size() + 2) \
 			or not _spatial_finite(station_delta_body, 3 * (ys.size() + 2)):
 		return _continuation_failure("spatial air needs one finite delta per wing and tail station")
+	if tailless and not _spatial_inactive_tail_is_zero(station_delta_body, ys.size()):
+		return _continuation_failure("tailless horizontal slot must remain zero")
 	for component: float in station_delta_body:
 		if absf(component) > SPATIAL_CONTINUATION_MAX_DELTA_MPS:
 			return _continuation_failure("station wind delta exceeds the defensive numerical bound")
@@ -1120,6 +1133,8 @@ static func ambient_spatial_continuation_loads(s: PackedFloat64Array, air: Dicti
 		return _continuation_failure("wing station flow is nonfinite or exceeds the defensive numerical bound")
 	# Bound both tail planes before their section law squares velocity components.
 	for tail_index in 2:
+		if tailless and tail_index == 0:
+			continue
 		var vertical := tail_index == 1
 		var tail: Dictionary = surfaces.vertical if vertical else surfaces.horizontal
 		var arm := _arm(tail.position, cg)
@@ -1221,11 +1236,16 @@ static func _spatial_domain(s: PackedFloat64Array, air: Dictionary, d: Dictionar
 	var max_alpha := 0.0
 	var max_beta := 0.0
 	var max_pressure := 0.0
+	var station_x: PackedFloat64Array = surfaces.get("tailless", {}).get("station_x", PackedFloat64Array())
 	for i in n+2:
+		if i == n and surfaces.has("tailless"):
+			continue
 		var vertical := i == n+1
 		var arm: PackedFloat64Array
 		if i < n:
 			arm = _arm(model.reference.arp_le, model.cg_le)
+			if not station_x.is_empty():
+				arm[0] = -(station_x[i] - model.cg_le[0]) + 0.0
 			arm[1] += ys[i]
 		else:
 			arm = _arm(surfaces.vertical.position if vertical else surfaces.horizontal.position, model.cg_le)
@@ -1278,6 +1298,60 @@ static func _spatial_domain(s: PackedFloat64Array, air: Dictionary, d: Dictionar
 					return _spatial_failure("tail station is outside the attached domain")
 	return {ok = true, max_alpha_change_rad = max_alpha, max_beta_change_rad = max_beta,
 		max_plane_pressure_fraction = max_pressure}
+
+
+## Spatial adapters admit only the existing normalized tailless/elevon capability.
+## An absent horizontal surface alone never selects a different aircraft law.
+## The 8-slot aero ABI is retained: slot 6 is inactive, slot 7 is the vertical surface.
+static func spatial_layout_error(model: Dictionary, wing_count: int) -> String:
+	var capabilities: Variant = model.get("capabilities", {})
+	var surfaces: Variant = model.get("surfaces", {})
+	if not capabilities is Dictionary or not surfaces is Dictionary:
+		return "invalid spatial layout dictionaries"
+	var layout: String = str(capabilities.get("airframe_layout", ""))
+	if layout not in ["", "tailless"]:
+		return "unsupported spatial airframe layout"
+	if layout.is_empty():
+		return "tailless geometry requires its declared capability" if surfaces.has("tailless") else ""
+	if surfaces.has("horizontal"):
+		return "tailless layout cannot contain a horizontal tail"
+	var vertical: Variant = surfaces.get("vertical")
+	if not vertical is Dictionary:
+		return "invalid tailless vertical surface"
+	var vertical_position: Variant = vertical.get("position")
+	if not vertical_position is PackedFloat64Array or not _spatial_finite(vertical_position, 3):
+		return "invalid tailless vertical position"
+	var controls: Variant = model.get("controls", {})
+	if capabilities.get("controls", "") != "elevon" or not controls is Dictionary or controls.get("layout", "") != "elevon":
+		return "tailless spatial layout requires normalized elevon controls"
+	var block: Variant = surfaces.get("tailless")
+	if not block is Dictionary:
+		return "tailless spatial layout requires its normalized surface block"
+	for key: String in ["station_x", "elevon_coverage"]:
+		var values: Variant = block.get(key)
+		if not values is PackedFloat64Array or not _spatial_finite(values, wing_count):
+			return "invalid tailless " + key
+	for key: String in ["tau", "moment_per_rad"]:
+		var value: Variant = block.get(key)
+		if typeof(value) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(value)):
+			return "invalid tailless " + key
+	var envelope: Variant = model.get("envelope", {})
+	if not envelope is Dictionary:
+		return "invalid tailless envelope"
+	var chords: Variant = envelope.get("station_chords")
+	if not chords is PackedFloat64Array or not _spatial_finite(chords, wing_count):
+		return "invalid tailless station chords"
+	for chord: float in chords:
+		if chord <= 0.0:
+			return "tailless station chords must be positive"
+	for coverage: float in block.elevon_coverage:
+		if coverage < 0.0 or coverage > 1.0:
+			return "tailless elevon coverage must lie in [0, 1]"
+	return ""
+
+
+static func _spatial_inactive_tail_is_zero(deltas: PackedFloat64Array, wing_count: int) -> bool:
+	return deltas[3 * wing_count] == 0.0 and deltas[3 * wing_count + 1] == 0.0 and deltas[3 * wing_count + 2] == 0.0
 
 
 static func _spatial_finite(values: PackedFloat64Array, size: int) -> bool:

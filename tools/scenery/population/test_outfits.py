@@ -8,8 +8,15 @@ import hashlib
 import json
 import re
 import struct
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
+
+if __package__:
+    from . import install_people
+else:
+    import install_people
 
 ROOT = Path(__file__).resolve().parents[3]
 OUTFITS_DIR = ROOT / "tools/scenery/population/outfits"
@@ -135,6 +142,119 @@ class Manifests(unittest.TestCase):
                 text = path.read_text()
                 self.assertIn("compress/mode=2", text)
                 self.assertIn("mipmaps/generate=true", text)
+
+
+class ManifestRefresh(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        base = Path(self.temp.name)
+        self.runtime_root = base / "app/assets/scenery/population"
+        self.people_dir = self.runtime_root / "people"
+        self.manifest_path = base / "assets/scenery/population/RUNTIME_MANIFEST.json"
+        self.human_sources = base / "assets/scenery/population/HUMAN_SOURCES.json"
+        self.packaged = base / ".tools/sc-hum-authoring/packaged-people/people"
+        self.packaged.mkdir(parents=True)
+        self.people_dir.mkdir(parents=True)
+        (self.people_dir / "textures").mkdir()
+        self.manifest_path.parent.mkdir(parents=True)
+        self.human_sources.write_bytes(b"leave source provenance unchanged\n")
+
+        self.runtime_files = {
+            "people/member.glb": b"test glb bytes",
+            "people/member.glb.import": b"model importer settings\n",
+            "people/textures/albedo.png": b"test texture bytes",
+            "people/textures/albedo.png.import": b"texture importer settings\n",
+        }
+        for relative, contents in self.runtime_files.items():
+            path = self.runtime_root.joinpath(*relative.split("/"))
+            path.write_bytes(contents)
+
+        self.assets = {
+            "people/member.glb": {"step": "unchanged people provenance"},
+            "scenery/other.glb": {"step": "unchanged nonpeople provenance"},
+        }
+        self.nonpeople_files = [
+            {"path": "aircraft/other.json", "bytes": 4, "sha256": "preserve-this-row"},
+        ]
+        self.manifest = {
+            "schema": "fixture",
+            "assets": self.assets,
+            "files": self.nonpeople_files + [
+                {"path": path, "bytes": 0, "sha256": "stale"}
+                for path in self.runtime_files
+            ],
+        }
+        self.manifest_path.write_bytes((json.dumps(self.manifest, indent=2) + "\r\n").encode("utf-8"))
+
+    def _run_refresh(self):
+        with patch.multiple(
+            install_people,
+            RUNTIME_ROOT=self.runtime_root,
+            PEOPLE=self.people_dir,
+            RUNTIME_MANIFEST=self.manifest_path,
+            HUMAN_SOURCES=self.human_sources,
+            PACKAGED=self.packaged,
+        ):
+            return install_people.main(["--refresh-manifest"])
+
+    def test_refresh_uses_portable_paths_and_preserves_other_manifest_data(self):
+        original_runtime_bytes = {
+            relative: self.runtime_root.joinpath(*relative.split("/")).read_bytes()
+            for relative in self.runtime_files
+        }
+        original_sources = self.human_sources.read_bytes()
+
+        self.assertEqual(self._run_refresh(), 0)
+
+        raw = self.manifest_path.read_bytes()
+        self.assertTrue(raw.endswith(b"\n"))
+        self.assertNotIn(b"\r\n", raw)
+        refreshed = json.loads(raw)
+        self.assertEqual(refreshed["assets"], self.assets)
+        self.assertEqual(
+            [record for record in refreshed["files"] if not install_people._is_people_path(record["path"])],
+            self.nonpeople_files,
+        )
+
+        people_records = [record for record in refreshed["files"] if install_people._is_people_path(record["path"])]
+        self.assertEqual({record["path"] for record in people_records}, set(self.runtime_files))
+        self.assertEqual(len(people_records), len(self.runtime_files))
+        for record in people_records:
+            with self.subTest(path=record["path"]):
+                self.assertNotIn("\\", record["path"])
+                path = self.runtime_root.joinpath(*record["path"].split("/"))
+                contents = path.read_bytes()
+                self.assertEqual(record["bytes"], len(contents))
+                self.assertEqual(record["sha256"], hashlib.sha256(contents).hexdigest())
+        self.assertEqual(original_runtime_bytes, {
+            relative: self.runtime_root.joinpath(*relative.split("/")).read_bytes()
+            for relative in self.runtime_files
+        })
+        self.assertEqual(self.human_sources.read_bytes(), original_sources)
+
+    def test_refresh_refuses_missing_expected_file_without_writing_manifest(self):
+        missing_path = self.people_dir / "member.glb.import"
+        missing_path.unlink()
+        original_manifest = self.manifest_path.read_bytes()
+
+        with self.assertRaisesRegex(SystemExit, "missing: people/member.glb.import"):
+            self._run_refresh()
+
+        self.assertEqual(self.manifest_path.read_bytes(), original_manifest)
+
+    def test_refresh_refuses_empty_expected_inventory(self):
+        for path in self.people_dir.rglob("*"):
+            if path.is_file():
+                path.unlink()
+        self.manifest["files"] = self.nonpeople_files
+        self.manifest_path.write_bytes((json.dumps(self.manifest, indent=2) + "\n").encode("utf-8"))
+        original_manifest = self.manifest_path.read_bytes()
+
+        with self.assertRaisesRegex(SystemExit, "no expected people file paths"):
+            self._run_refresh()
+
+        self.assertEqual(self.manifest_path.read_bytes(), original_manifest)
 
 
 if __name__ == "__main__":

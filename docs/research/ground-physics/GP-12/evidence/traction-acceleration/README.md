@@ -11,3 +11,5 @@ The `.bin` fixture is the authoritative floating-point reproduction, SHA-256 `45
 This cohort follows the immutable [GP-11 cohort](../../../GP-11/evidence/README.md). It includes later impulse residual scaling and finite capture/step composition. It **does not activate advanced stock-aircraft ground handling**, establish complete three-wheel touchdown accuracy, validate aircraft coefficients, qualify rendering performance or complete the broad application suite. Touchdown refinement experiments remain separately reported in the [GP-12 record](../../README.md).
 
 The local `.gitattributes` keeps evidence bytes unchanged during checkout. Raw checker reports retain their original workspace command paths and capture IDs; copied source paths and hashes identify the retained implementation.
+
+[Fresh-clone verification](checkout-verification.json) preserved all 26 original evidence files byte-for-byte with `core.autocrlf=true` and `--no-hardlinks`. This verifies artifact preservation, not runtime or rendering behavior.

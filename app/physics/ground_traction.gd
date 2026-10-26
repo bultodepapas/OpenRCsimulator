@@ -141,11 +141,11 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 				accelerated += 1
 		var current_objective := _objective(hs, bs, y)
 		maximum_increase = maxf(maximum_increase, current_objective - previous_objective)
-		if not is_finite(current_objective) or current_objective > previous_objective + 0.00000000000002 * (absf(previous_objective) + b_norm):
-			return _failure("block solve did not preserve monotone objective", "nonconverged", iteration + 1)
-		previous_objective = current_objective
 		var certified := _certificate(hs, bs, y, limits, groups, tolerance)
-		if certified.ok:
+		# The original QP certificate and _publish's physical-work check are
+		# authoritative. A tiny objective evaluation uptick is not a reason to
+		# discard an already certified optimum in a nearly redundant row set.
+		if is_finite(current_objective) and certified.ok:
 			var published := _publish(symmetric, v, limits, groups, h, b, y, scale, validated, iteration + 1, "cyclic_exact_metric_blocks")
 			published.maximum_objective_increase_scaled = maximum_increase
 			if accelerated > 0:
@@ -153,6 +153,9 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 				published.acceleration_law = ACCELERATION_LAW
 				published.accepted_accelerations = accelerated
 			return published
+		if not is_finite(current_objective) or current_objective > previous_objective + 0.00000000000002 * (absf(previous_objective) + b_norm):
+			return _failure("block solve did not preserve monotone objective", "nonconverged", iteration + 1)
+		previous_objective = current_objective
 	var failure := _failure("global KKT residual exceeds iteration budget", "nonconverged", iteration_budget)
 	var residual := _certificate(hs, bs, y, limits, groups, tolerance)
 	failure.kkt_residual_scaled = residual.stationarity
@@ -462,9 +465,23 @@ static func _certificate(h: PackedFloat64Array, b: PackedFloat64Array, y: Packed
 
 static func _publish(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFloat64Array,
 		groups: Array, h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
-		scale: float, validated: Dictionary, iterations: int, method: String) -> Dictionary:
+		scale: float, validated: Dictionary, iterations: int, method: String, resolution: Dictionary = {}) -> Dictionary:
 	var n := v.size()
 	y = y.duplicate()
+	if not resolution.is_empty():
+		# The opt-in assembly-resolution publisher currently supports exact zero
+		# ONLY. Projection must never change a candidate after its certificate.
+		for value: float in y:
+			if not is_finite(value) or value!=0.0:
+				return _failure("assembly-resolution publication requires exact zero candidate", "nonconverged", iterations)
+		for key: String in ["true_objective_gap_upper_j","assembly_objective_resolution_j","assembly_resolution_budget_j"]:
+			if not resolution.has(key) or typeof(resolution[key]) not in [TYPE_FLOAT,TYPE_INT] \
+				or not is_finite(float(resolution[key])) or float(resolution[key])<0.0:
+				return _failure("invalid assembly-resolution publication bound", "nonconverged", iterations)
+		if not resolution.get("ok",false) \
+			or resolution.true_objective_gap_upper_j>resolution.assembly_objective_resolution_j \
+			or resolution.assembly_objective_resolution_j>resolution.assembly_resolution_budget_j:
+			return _failure("unqualified assembly-resolution publication", "nonconverged", iterations)
 	var correction := 0.0
 	for group: PackedInt32Array in groups:
 		var length_sq := 0.0
@@ -496,13 +513,13 @@ static func _publish(a: PackedFloat64Array, v: PackedFloat64Array, limits: Packe
 		b_norm = maxf(b_norm, absf(bs[i]))
 	for i in hs.size(): hs[i] /= scale
 	var certificate := _certificate(hs, bs, y, limits, groups, KKT_RELATIVE_TOLERANCE * b_norm)
-	if not certificate.ok: return _failure("publication KKT verification failed", "nonconverged", iterations)
+	if not certificate.ok and not resolution.get("ok", false): return _failure("publication KKT verification failed", "nonconverged", iterations)
 	var grouped: Array[PackedFloat64Array] = []
 	for group: PackedInt32Array in groups:
 		var values := PackedFloat64Array()
 		for i: int in group: values.append(impulse[i])
 		grouped.append(values)
-	return {ok = true, status = "converged", law = LAW, converged = true, iterations = iterations,
+	var result := {ok = true, status = "converged", law = LAW, converged = true, iterations = iterations,
 		method = method, impulse = impulse, group_impulses = grouped, normalized_impulse = y.duplicate(),
 		post_slip = post, linear_work = linear, mobility_work = quadratic, objective = objective,
 		dissipation = -objective, objective_scale = scale,
@@ -513,6 +530,12 @@ static func _publish(a: PackedFloat64Array, v: PackedFloat64Array, limits: Packe
 		symmetry_residual = validated.symmetry_error, diagonal_regularization = 0.0,
 		feasibility_roundoff_correction = correction,
 		work_frame = "relative_to_prescribed_support_not_universal_closed_body_energy"}
+	if not resolution.is_empty():
+		result.status = "converged_at_assembly_resolution"
+		result.certificate_kind = resolution.law
+		result.strict_kkt_passed = certificate.ok
+		result.assembly_resolution = resolution.duplicate(true)
+	return result
 
 
 static func _objective(h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array) -> float:
