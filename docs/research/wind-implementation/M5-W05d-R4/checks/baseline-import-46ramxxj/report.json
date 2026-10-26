@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0237a017-df8d-4225-b0a6-06ffabaadef4",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-stage-r4/baseline/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:15:16.269368+00:00",
+  "label": "baseline-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\baseline-import-46ramxxj\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\baseline-import-46ramxxj\\report.json",
+  "timeout_seconds": 360.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.047,
+  "log_bytes": 4216,
+  "log_sha256": "3b2726e11a91a3dfada7fe3ddffc7ea945948c471d368bb50f64b80e77e2fda3"
+}

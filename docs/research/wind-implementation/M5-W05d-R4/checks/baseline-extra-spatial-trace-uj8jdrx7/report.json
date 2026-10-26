@@ -1,0 +1,39 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "081af6b1-79ef-4e8f-96d8-d4f8ec1a18f5",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-stage-r4/baseline/app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-stage-r4/candidate/app/tests/test_spatial_weather_trace.gd",
+    "--",
+    "--aircraft=res://data/aircraft/gp_extra_300s_60.json",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-stage-r4/baseline-logs/extra_spatial.orfl"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:22:03.761480+00:00",
+  "label": "baseline-extra-spatial-trace",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\baseline-extra-spatial-trace-uj8jdrx7\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-stage-r4\\checks\\baseline-extra-spatial-trace-uj8jdrx7\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.829,
+  "log_bytes": 965,
+  "log_sha256": "d51b4e08cca0d78150efb76d2466c62c6c73b8f53932cdd1874b7a3c336d444a"
+}

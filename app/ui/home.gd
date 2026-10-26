@@ -963,6 +963,9 @@ func _apply_responsive_layout() -> void:
 		if not button.has_meta(HOME_AUTOWRAP_META):
 			button.set_meta(HOME_AUTOWRAP_META, button.autowrap_mode)
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if large_text else int(button.get_meta(HOME_AUTOWRAP_META))
+	if livery_button != null:
+		livery_button.autowrap_mode = TextServer.AUTOWRAP_OFF if large_text else int(livery_button.get_meta(HOME_AUTOWRAP_META))
+		livery_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if large_text else TextServer.OVERRUN_NO_TRIMMING
 	for utility: Button in [controls_button, help_button, quit_button]:
 		if large_text:
 			# Keep the pinned utility row legible at 200% without letting its labels force a wide sidebar.
@@ -1318,8 +1321,12 @@ func _update_livery() -> void:
 	if not livery_button.visible:
 		return
 	var shown: Dictionary = _livery_choices[_livery_index()]
-	livery_button.text = tr("Choose paint (%d)") % _livery_choices.size() + "\n" + str(shown.label)
-	livery_button.tooltip_text = tr("View all paint schemes and select one directly.")
+	var action_text := tr("Choose paint (%d)") % _livery_choices.size()
+	var selected_paint := str(shown.label)
+	# At large text scales keep the selected scheme on one line; the tooltip retains its complete name and action.
+	# The button still opens the complete gallery, while ellipsis keeps it reachable in short rails.
+	livery_button.text = selected_paint if UiTheme.text_scale >= 1.5 else action_text + "\n" + selected_paint
+	livery_button.tooltip_text = "%s\n%s\n%s" % [action_text, selected_paint, tr("View all paint schemes and select one directly.")]
 
 
 func _update_livery_row() -> void:

@@ -1,0 +1,43 @@
+M  app/i18n/es.po
+ M app/physics/aircraft_ground_step.gd
+ M app/tests/test_aircraft_ground_step.gd
+M  app/tests/test_workshop_compiler.gd
+M  app/tests/test_workshop_drafts.gd
+M  app/tests/test_workshop_experiments.gd
+M  app/tests/test_workshop_parameters.gd
+M  app/tests/test_workshop_recovery_ui.gd
+M  app/tests/test_workshop_store.gd
+M  app/tests/test_workshop_ui.gd
+M  app/ui/workshop.gd
+M  app/workshop/compiler.gd
+M  app/workshop/draft_store.gd
+M  app/workshop/experiments.gd
+M  app/workshop/parameters.gd
+M  app/workshop/store.gd
+M  docs/AIRCRAFT-WORKSHOP.md
+UU docs/DECISIONS.md
+M  docs/research/README.md
+A  docs/research/aircraft-editor/AE-01-R1/README.md
+A  docs/research/flight-mechanics-stall-hover-knife-edge-2026-10-18.md
+ M docs/research/ground-physics/GP-12/README.md
+A  docs/research/stall-and-3d-aerobatics-findings-2026-10-18.md
+A  research/aircraft-editor/AE-01-R1/baseline-comparison.json
+A  research/aircraft-editor/AE-01-R1/baseline-export.json
+A  research/aircraft-editor/AE-01-R1/baseline-replay.csv.gz
+A  research/aircraft-editor/AE-01-R1/baseline-replay.json
+A  research/aircraft-editor/AE-01-R1/baseline.csv.gz
+A  research/aircraft-editor/AE-01-R1/baseline.orfl
+A  research/aircraft-editor/AE-01-R1/candidate-comparison.json
+A  research/aircraft-editor/AE-01-R1/candidate-replay.json
+A  research/aircraft-editor/AE-01-R1/candidate.csv.gz
+A  research/aircraft-editor/AE-01-R1/candidate.json
+A  research/aircraft-editor/AE-01-R1/manifest.json
+A  research/aircraft-editor/AE-01-R1/native-ui.json
+A  research/aircraft-editor/AE-01-R1/recipe.json
+A  research/aircraft-editor/AE-01-R1/verification-logs.json.gz
+A  research/aircraft-editor/AE-01-R1/verification.json
+A  tools/debug/scenarios/workshop_surface_controls.txt
+ M tools/trailer/README.md
+ M tools/trailer/capture_flight.gd
+?? docs/research/ground-physics/GP-12/evidence/rest-resolution/
+?? docs/research/ground-physics/GP-14/evidence/shared-events/README.md

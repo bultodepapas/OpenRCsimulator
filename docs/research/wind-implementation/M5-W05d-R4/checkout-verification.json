@@ -1,0 +1,15 @@
+{
+  "scope": "Fresh evidence-only clones; no shared index changes; not full-app clone qualification",
+  "clones": [
+    {
+      "core.autocrlf": "true",
+      "payload_files": 192,
+      "all_bytes_equal": true
+    },
+    {
+      "core.autocrlf": "false",
+      "payload_files": 192,
+      "all_bytes_equal": true
+    }
+  ]
+}

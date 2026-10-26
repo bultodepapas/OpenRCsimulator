@@ -65,6 +65,7 @@ func _run() -> void:
 	if not _out_dir.is_absolute_path():
 		push_error("--out-dir must be an absolute path")
 		quit(2)
+		return
 	var directory_error := DirAccess.make_dir_recursive_absolute(_out_dir)
 	if directory_error != OK:
 		push_error("Could not create capture directory: %s (%s)" % [_out_dir, error_string(directory_error)])
