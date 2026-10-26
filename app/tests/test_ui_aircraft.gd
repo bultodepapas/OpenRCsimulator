@@ -19,6 +19,7 @@ const GLOW_61FX := "stik-glow-61fx-2t"
 const GLOW_55AX := "stik-glow-55ax-2t"
 const GLOW_FS64V := "stik-glow-fs64v-4t"
 const HELI := "xcell-60-research"
+const X8 := "skywalker-x8"
 
 var _failures := 0
 var ui: RefCounted
@@ -169,7 +170,14 @@ func _run() -> void:
 	_check("Timber: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == TIMBER and ui.focus_name() == "NextAircraft", ui.focus_name())
 	_check("Timber: catalog counter", home.aircraft_count_label.text == _aircraft_counter(TIMBER), home.aircraft_count_label.text)
 	_check("Timber selection is saved without starting a session", Preferences.load_from(PREFS).aircraft == TIMBER and app.flight == null)
-	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before Timber.
+	# X8-09: the X8 flying wing follows the Timber; without landing gear it starts by hand (X8-07).
+	await ui.tap(KEY_ENTER)
+	await _preview(app)
+	_check("X8: shown, experimental, Fly enabled, starts by hand", home.aircraft_id == X8 and not home.fly_button.disabled
+		and home.aircraft_status_label.text.begins_with("Experimental") and home.start_choice == "hand_launch"
+		and app.home_scene.airplane.aircraft_id == X8, "%s / %s / %s" % [home.aircraft_id, home.start_choice, home.aircraft_status_label.text])
+	_check("X8: catalog counter", home.aircraft_count_label.text == _aircraft_counter(X8), home.aircraft_count_label.text)
+	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before the X8.
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("helicopter is last in the catalog with the HX-700 preview and pad start",
@@ -188,7 +196,10 @@ func _run() -> void:
 	_check("previous arrow from the Stik reaches the last helicopter", home.aircraft_id == HELI, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("previous from the helicopter returns to the Timber", home.aircraft_id == TIMBER, home.aircraft_id)
+	_check("previous from the helicopter returns to the X8", home.aircraft_id == X8, home.aircraft_id)
+	await ui.tap(KEY_ENTER)
+	await _preview(app)
+	_check("previous again: the Timber", home.aircraft_id == TIMBER, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("previous again: the Ventage Jet", home.aircraft_id == AVANTI, home.aircraft_id)

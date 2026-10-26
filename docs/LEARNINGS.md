@@ -60,6 +60,22 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-26 · X8-12 — an accepted trim can still burn its iteration cap
+
+The X8 and Timber electric trims returned `ok` while every launch spent 50 Newton steps: the source equilibrium leaves a residual floor near 1e-10, just above the 1e-10 goal, so Newton converged in three steps and then alternated between two states until the cap. A tolerance below an evaluation's noise floor costs time silently, and `ok` hides it.
+
+- When adding an aircraft or changing a residual, record trim `iterations` across the speed range; a count at the cap on an accepted trim is a stalled solve.
+- Stop when an accepted residual no longer improves, rather than loosening the goal for everyone; prove parity with digests of the full results across the fleet.
+- A residual input that a Jacobian probe does not change (steady rpm under a surface probe) can be reused bit-identically. [X8-12](research/skywalker-x8/X8-12/README.md)
+
+## 2026-10-25 · X8-04 — a new control topology reaches every consumer that assumed four surfaces, a rudder and a tractor
+
+The X8 (elevons, no rudder, no horizontal tail, pusher) loaded and trimmed in the physics core long before it could fly: the session's model check, the contact contract's surface IDs, the cruise trim's throw validation, the legacy v1 comparison, the offline schema's sign rules, the render and manifest tests and the hull-label rules each hard-coded the conventional layout. A fleet test that hit a missing key did not fail; it raised a script error and hung until the runner's timeout.
+
+- Before registering an aircraft with a new topology, search for `rudder`, `single_tractor`, `surfaces.horizontal` and the four surface names, and run a session setup and the flight-test battery, not only the loader.
+- When a suite iterates the catalog, a script error is a hang: run new-aircraft fleet suites with a short timeout and read the first script error.
+- Make an opt-in layout refuse the historical paths that cannot represent it (the v1 adapter refuses elevons) instead of excluding it from their tests. [X8-04](research/skywalker-x8/X8-04/README.md)
+
 ## 2026-10-25 · GP-07 — gate contact geometry on the drawn model, and measure restitution as integrated
 
 The Stik's hand-placed crash hull drifted from its evolving model until the drawing could sink 104 mm into the ground before physics touched, and an inverted airplane rested 89 mm up on a phantom fin; no test compared hull points with the drawing (GP-06 did so only for wheels). The soft contact's restitution, assumed near 0.05 from ζ = 0.7, measured 0.22–0.44 as integrated: the non-pulling clamp ends the contact while the damper still brakes the rebound.
@@ -350,7 +366,7 @@ Replacing a sampled lift maximum with a continuous optimizer can change a stall 
 
 ## 2026-10-07 · E3c1a — stopping is not proof of runway landing
 
-A soft touchdown followed by a stop can hide a runway overrun: rough ground supplied the stopping force in early approach trials. Check every wheel throughout rollout and require a stable idle hold inside the strip. Run the actual session crash detector at each committed boundary; calling only the integrator bypasses it and lets an initially penetrating aircraft advance. [Trajectories and rejection controls](research/ground-contact/E3c1a/README.md).
+A soft touchdown followed by a stop can hide a runway overrun: rough ground supplied the stopping force in early approach trials. Check every wheel throughout rollout and require a stable idle hold inside the strip. Run the actual session crash detector at each committed boundary; calling only the integrator bypasses it and lets an initially penetrating aircraft advance. [Trajectories and rejection controls](research/ground-contact/E3c1a/README.md). The detector is `FlightSession._session_after_input()`: a probe loop calls it before each `sim.step()` and stops when it returns false. A hand-launch probe without it fell 40 m below the field with no crash ([X8-07](research/skywalker-x8/X8-07/README.md)).
 
 ## 2026-10-08 · G1b1 — verify the sampled command and the recorded query
 

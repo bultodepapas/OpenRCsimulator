@@ -25,11 +25,31 @@ static func independent_deflections_deg(positions: PackedFloat64Array, throws_de
 ## Positive roll raises the right aileron; aileron_down optionally sets the down-going throw.
 static func surface_deflections_deg(c: Dictionary, throws_deg: Dictionary) -> Dictionary:
 	var t: Dictionary = throws_deg
+	if t.has("elevon"):
+		return elevon_deflections_deg(c, t)
 	return {
 		aileron_right = _aileron(c.roll, t),
 		aileron_left = _aileron(-c.roll, t),
 		elevator = c.pitch * t.elevator,
 		rudder = c.yaw * t.rudder,
+	}
+
+
+## X8-03: a radio's elevon mix. Each elevon (trailing edge up +) takes pitch × elevator share ± roll × aileron share,
+## clipped at the servo end point `elevon`; the yaw stick moves nothing. The result is the exact symmetric (elevator)
+## and antisymmetric (aileron) decomposition of the two clipped elevons, so physics and the rendered elevons
+## (elevon = elevator + that side's aileron) see the same surfaces, saturation included.
+static func elevon_deflections_deg(c: Dictionary, t: Dictionary) -> Dictionary:
+	var pitch: float = c.pitch * t.elevator
+	var roll: float = c.roll * t.aileron
+	var limit: float = t.elevon
+	var right := clampf(pitch + roll, -limit, limit)
+	var left := clampf(pitch - roll, -limit, limit)
+	return {
+		aileron_right = 0.5 * (right - left),
+		aileron_left = 0.5 * (left - right),
+		elevator = 0.5 * (right + left),
+		rudder = 0.0,
 	}
 
 

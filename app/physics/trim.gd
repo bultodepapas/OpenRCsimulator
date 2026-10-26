@@ -1,6 +1,8 @@
 # Trim solver: steady, wings-level, straight flight on the REAL simulation equations (D4, six-axis since D5).
 # Newton–Raphson, finite-difference Jacobian, Gaussian elimination with partial pivoting. 64-bit only (guarded).
 # Unknowns x = [alpha, elevator, X, beta, aileron, rudder] with residuals = all six accelerations
+#   X8-03: an elevon aircraft has no rudder; its sixth unknown is the bank angle phi (steady straight flight with a
+#   small bank and sideslip balancing any asymmetric yaw), and its elevon sums must fit the servo end point.
 #   level: X = throttle (0…1); engine rpm = its steady value (lag target, or the shaft torque balance at the trimmed
 #   airspeed); the prop's torque is trimmed out by aileron/rudder.
 #   glide: X = flight-path angle gamma; engine stopped.
@@ -16,27 +18,43 @@ const Dynamics := preload("res://physics/dynamics.gd")
 const FixedDatum := preload("res://physics/fixed_datum_body.gd")
 
 const N := 6
+## X8-03: a rudderless trim's bank stays a small correction, never a turn.
+const MAX_TRIM_BANK := 0.2617993877991494 # 15 degrees
 
 
-## Trimmed state: airspeed V, angle of attack alpha, sideslip beta, path angle gamma, heading yaw, wings level.
-static func state_for(V: float, alpha: float, gamma: float, yaw: float, pos_ned: PackedFloat64Array, beta := 0.0) -> PackedFloat64Array:
+## Trimmed state: airspeed V, angle of attack alpha, sideslip beta, path angle gamma, heading yaw; wings level unless a
+## bank angle phi is given (X8-03 rudderless trim), in which case the pitch angle keeps the flight-path angle gamma.
+static func state_for(V: float, alpha: float, gamma: float, yaw: float, pos_ned: PackedFloat64Array, beta := 0.0, phi := 0.0) -> PackedFloat64Array:
 	var u := V * M.cos_(alpha) * M.cos_(beta)
 	var v := V * M.sin_(beta)
 	var w := V * M.sin_(alpha) * M.cos_(beta)
-	return RB.make_state(pos_ned, M.v3(u, v, w), M.q_from_euler(yaw, gamma + alpha, 0.0), M.v3(0, 0, 0))
+	if phi == 0.0:
+		return RB.make_state(pos_ned, M.v3(u, v, w), M.q_from_euler(yaw, gamma + alpha, 0.0), M.v3(0, 0, 0))
+	# Down velocity −u·sinθ + (v·sinφ + w·cosφ)·cosθ = −V·sinγ.
+	var c := v * M.sin_(phi) + w * M.cos_(phi)
+	var theta := M.atan2_(c, u) + M.asin_(V * M.sin_(gamma) / M.sqrt_(u * u + c * c))
+	return RB.make_state(pos_ned, M.v3(u, v, w), M.q_from_euler(yaw, theta, phi), M.v3(0, 0, 0))
 
 
-static func _deflections(x: PackedFloat64Array) -> Dictionary:
-	return { elevator = x[1], aileron_right = x[4], aileron_left = -x[4], rudder = x[5] }
+## X8-03: an elevon aircraft (controls.layout "elevon") trims its sixth unknown as the bank angle.
+static func banked(model: Dictionary) -> bool:
+	return model.get("controls", {}).get("layout", "") == "elevon"
+
+
+static func _deflections(x: PackedFloat64Array, rudderless := false) -> Dictionary:
+	return { elevator = x[1], aileron_right = x[4], aileron_left = -x[4], rudder = 0.0 if rudderless else x[5] }
 
 
 ## Shared loads/derivative and state for unknowns x. Unknown control angles remain in Aero's data convention.
-static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, rho: float, engine_charge_ratio: float) -> Dictionary:
+## `steady_rpm` is the steady rpm at x when the caller already has it (`_rpm_at`); NAN solves it here.
+static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, rho: float, engine_charge_ratio: float,
+		steady_rpm := NAN) -> Dictionary:
 	var gamma := 0.0 if mode == "level" else x[2]
-	var s := state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3])
+	var bank := banked(model)
+	var s := state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3], x[5] if bank else 0.0)
 	var throttle := x[2] if mode == "level" else 0.0
-	var rpm := _rpm(throttle, s, mode, model, rho, engine_charge_ratio)
-	var result: Dictionary = Dynamics.evaluate(s, model, _deflections(x), rpm, rho, M.v3(0, 0, 0), g)
+	var rpm: float = steady_rpm if not is_nan(steady_rpm) else _rpm(throttle, s, mode, model, rho, engine_charge_ratio)
+	var result: Dictionary = Dynamics.evaluate(s, model, _deflections(x, bank), rpm, rho, M.v3(0, 0, 0), g)
 	if Propulsion.is_electric(model.propulsion):
 		result["rpm"] = rpm
 	# A session may freeze its launch inventory for a static trim query. The original
@@ -58,8 +76,19 @@ static func _rpm(throttle: float, s: PackedFloat64Array, mode: String, model: Di
 	return Propulsion.steady_rpm(throttle, u, model.propulsion, rho, engine_charge_ratio)
 
 
-static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, rho: float, engine_charge_ratio: float) -> PackedFloat64Array:
-	var e := _evaluate(x, mode, V, model, g, rho, engine_charge_ratio)
+## The steady rpm `_evaluate` uses at x. It depends on alpha, throttle and sideslip only: elevator, aileron and rudder
+## (or bank) Jacobian probes reuse it, which saves three of seven shaft solves per Newton step (a glow operating
+## point scans the whole rpm envelope) and leaves every result bit-identical.
+static func _rpm_at(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, rho: float, engine_charge_ratio: float) -> float:
+	if mode != "level":
+		return 0.0
+	var s := state_for(V, x[0], 0.0, 0.0, M.v3(0, 0, -100), x[3], x[5] if banked(model) else 0.0)
+	return _rpm(x[2], s, mode, model, rho, engine_charge_ratio)
+
+
+static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, rho: float, engine_charge_ratio: float,
+		steady_rpm := NAN) -> PackedFloat64Array:
+	var e := _evaluate(x, mode, V, model, g, rho, engine_charge_ratio, steady_rpm)
 	var dot: PackedFloat64Array = e.derivative
 	return PackedFloat64Array([dot[RB.VEL], dot[RB.VEL + 2], dot[RB.RATE + 1], dot[RB.VEL + 1], dot[RB.RATE], dot[RB.RATE + 2]])
 
@@ -79,7 +108,7 @@ static func solve(mode: String, V: float, model: Dictionary, g: float, throws: D
 		return _numerical_failure("trim needs finite positive air density", mode, V, 0)
 	if not is_finite(engine_charge_ratio) or engine_charge_ratio < 0.0:
 		return _numerical_failure("trim needs a finite nonnegative engine charge ratio", mode, V, 0)
-	for axis in ["elevator", "aileron", "rudder"]:
+	for axis in (["elevator", "aileron", "elevon"] if banked(model) else ["elevator", "aileron", "rudder"]):
 		var limit: Variant = throws.get(axis)
 		if (typeof(limit) != TYPE_FLOAT and typeof(limit) != TYPE_INT) or not is_finite(limit) or limit <= 0.0:
 			return _numerical_failure("trim needs a finite positive " + axis + " throw", mode, V, 0)
@@ -113,7 +142,8 @@ static func solve(mode: String, V: float, model: Dictionary, g: float, throws: D
 static func _solve_from(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, x2: float, rho: float, engine_charge_ratio: float, x0: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
 	var x := x0.duplicate() if x0.size() == N else PackedFloat64Array([0.05, -0.05, x2, 0.0, 0.0, 0.0])
 	var bounded_glow_level: bool = mode == "level" and Propulsion.is_glow(model.propulsion)
-	var r := _residual(x, mode, V, model, g, rho, engine_charge_ratio)
+	var x_rpm: float = _rpm_at(x, mode, V, model, rho, engine_charge_ratio)
+	var r := _residual(x, mode, V, model, g, rho, engine_charge_ratio, x_rpm)
 	var iterations := 0
 	var residual_norm: float = _norm(r)
 	if not is_finite(residual_norm):
@@ -130,7 +160,7 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 				direction = -1.0
 			var xp := x.duplicate()
 			xp[k] += direction * h
-			var rp := _residual(xp, mode, V, model, g, rho, engine_charge_ratio)
+			var rp := _residual(xp, mode, V, model, g, rho, engine_charge_ratio, x_rpm if k == 1 or k == 4 or k == 5 else NAN)
 			if not _all_finite(rp):
 				return _numerical_failure("nonfinite perturbed trim residual", mode, V, iterations)
 			for i in N:
@@ -160,11 +190,13 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 				if not is_nan(bound) and step_scale == bounded_scale:
 					candidate[2] = bound # x + ((b - x)/dx)·dx is not b in floating point
 				if candidate[2] >= 0.0 and candidate[2] <= 1.0 and _all_finite(candidate):
-					var candidate_residual: PackedFloat64Array = _residual(candidate, mode, V, model, g, rho, engine_charge_ratio)
+					var candidate_rpm: float = _rpm_at(candidate, mode, V, model, rho, engine_charge_ratio)
+					var candidate_residual: PackedFloat64Array = _residual(candidate, mode, V, model, g, rho, engine_charge_ratio, candidate_rpm)
 					var candidate_norm: float = _norm(candidate_residual)
 					# Accept only a decreasing step; otherwise halve it (the residual must stay the iterate's own).
 					if is_finite(candidate_norm) and candidate_norm < residual_norm:
 						x = candidate
+						x_rpm = candidate_rpm
 						r = candidate_residual
 						residual_norm = candidate_norm
 						accepted_step = true
@@ -177,15 +209,16 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 			x[k] += dx[k]
 		if not _all_finite(x):
 			return _numerical_failure("nonfinite Newton iterate", mode, V, iterations)
-		r = _residual(x, mode, V, model, g, rho, engine_charge_ratio)
+		x_rpm = _rpm_at(x, mode, V, model, rho, engine_charge_ratio)
+		r = _residual(x, mode, V, model, g, rho, engine_charge_ratio, x_rpm)
 		residual_norm = _norm(r)
 		if not is_finite(residual_norm):
 			return _numerical_failure("nonfinite iterated trim residual", mode, V, iterations)
 	if residual_norm > 1e-8:
 		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(residual_norm), x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
-	for check in [[x[1], throws.elevator, "elevator"], [x[4], throws.aileron, "aileron"], [x[5], throws.rudder, "rudder"]]:
-		if absf(check[0]) > check[1]:
-			return _result(false, "needs %.1f° of %s, more than the %.1f° throw" % [rad_to_deg(absf(check[0])), check[2], rad_to_deg(check[1])], x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
+	var limit_message := _throw_limit_message(x, throws, model)
+	if not limit_message.is_empty():
+		return _result(false, limit_message, x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
 	if mode == "level" and (x[2] < 0.0 or x[2] > 1.0):
 		return _result(false, "needs throttle %.2f, outside 0…1" % x[2], x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
 	return _result(true, "trimmed", x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
@@ -206,6 +239,7 @@ static func _solve_electric_from(mode: String, V: float, model: Dictionary, g: f
 		return _numerical_failure("nonfinite initial electric trim residual", mode, V, iterations)
 	while iterations < 50 and residual_norm > 1e-10:
 		iterations += 1
+		var previous_norm: float = residual_norm
 		var jac: Array = []
 		for i in N:
 			jac.append(PackedFloat64Array([0, 0, 0, 0, 0, 0]))
@@ -253,11 +287,15 @@ static func _solve_electric_from(mode: String, V: float, model: Dictionary, g: f
 		residual_norm = _norm(r)
 		if not is_finite(residual_norm):
 			return _numerical_failure("nonfinite iterated electric trim residual", mode, V, iterations)
+		# The source equilibrium leaves a residual floor near 1e-10 (X8, Timber above 1.2 start speed): an accepted
+		# residual that a Newton step no longer halves ends the solve instead of cycling to the iteration cap.
+		if residual_norm <= 1e-8 and residual_norm > 0.5 * previous_norm:
+			break
 	if residual_norm > 1e-8:
 		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(residual_norm), x, mode, V, r, iterations, throws, model, g, rho, 1.0)
-	for check in [[x[1], throws.elevator, "elevator"], [x[4], throws.aileron, "aileron"], [x[5], throws.rudder, "rudder"]]:
-		if absf(check[0]) > check[1]:
-			return _result(false, "needs %.1f° of %s, more than the %.1f° throw" % [rad_to_deg(absf(check[0])), check[2], rad_to_deg(check[1])], x, mode, V, r, iterations, throws, model, g, rho, 1.0)
+	var limit_message := _throw_limit_message(x, throws, model)
+	if not limit_message.is_empty():
+		return _result(false, limit_message, x, mode, V, r, iterations, throws, model, g, rho, 1.0)
 	if mode == "level" and (x[2] < 0.0 or x[2] > 1.0):
 		return _result(false, "needs throttle %.2f, outside 0…1" % x[2], x, mode, V, r, iterations, throws, model, g, rho, 1.0)
 	return _result(true, "trimmed", x, mode, V, r, iterations, throws, model, g, rho, 1.0)
@@ -266,7 +304,8 @@ static func _solve_electric_from(mode: String, V: float, model: Dictionary, g: f
 static func _evaluate_electric(x: PackedFloat64Array, mode: String, V: float, model: Dictionary,
 		g: float, rho: float, reused_rpm := NAN) -> Dictionary:
 	var gamma: float = 0.0 if mode == "level" else x[2]
-	var state: PackedFloat64Array = state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3])
+	var bank := banked(model)
+	var state: PackedFloat64Array = state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3], x[5] if bank else 0.0)
 	var throttle: float = x[2] if mode == "level" else 0.0
 	var rpm: float = 0.0
 	if mode == "level":
@@ -279,7 +318,7 @@ static func _evaluate_electric(x: PackedFloat64Array, mode: String, V: float, mo
 			if not operating_point.get("ok", false):
 				return {ok = false, message = str(operating_point.get("message", "no stable electric equilibrium")), operating_point = operating_point}
 			rpm = float(operating_point.rpm)
-	var result: Dictionary = Dynamics.evaluate(state, model, _deflections(x), rpm, rho, M.v3(0, 0, 0), g)
+	var result: Dictionary = Dynamics.evaluate(state, model, _deflections(x, bank), rpm, rho, M.v3(0, 0, 0), g)
 	result["ok"] = true
 	result["rpm"] = rpm
 	return result
@@ -300,6 +339,7 @@ static func _evaluate_electric_perturbation(base_x: PackedFloat64Array, perturbe
 
 static func _same_electric_steady_point_inputs(base_x: PackedFloat64Array, candidate_x: PackedFloat64Array,
 		mode: String) -> bool:
+	# The X8-03 bank unknown turns the attitude, not the body-axis inflow, so it reuses the equilibrium like a surface.
 	return mode == "level" and base_x.size() == N and candidate_x.size() == N \
 		and base_x[0] == candidate_x[0] and base_x[2] == candidate_x[2] and base_x[3] == candidate_x[3]
 
@@ -315,17 +355,20 @@ static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: Stri
 	var e := _evaluate(x, mode, V, model, g, rho, engine_charge_ratio)
 	var rpm: float = float(e.rpm) if Propulsion.is_electric(model.propulsion) else _rpm(throttle, e.state, mode, model, rho, engine_charge_ratio)
 	var thrust: float = e.propulsion_loads[0]
+	var bank := banked(model)
 	var result: Dictionary = {
 		ok = ok, message = message, mode = mode, V = V,
 		alpha = x[0], beta = x[3], gamma = gamma, throttle = throttle, thrust = thrust, rpm = rpm,
-		elevator = x[1], aileron = x[4], rudder = x[5],
+		elevator = x[1], aileron = x[4], rudder = 0.0 if bank else x[5],
 		# Pilot side (input/commands.gd): +pitch = elevator TE up; +roll = right aileron TE up; +yaw = rudder TE right.
 		pitch_command = -x[1] / throws.elevator,
 		roll_command = -x[4] / throws.aileron,
-		yaw_command = -x[5] / throws.rudder,
+		yaw_command = 0.0 if bank else -x[5] / throws.rudder,
 		state = e.state,
 		residual = _norm(r), iterations = iterations,
 	}
+	if bank:
+		result.bank = x[5] # X8-03: the rudderless trim's bank angle (rad, right wing down +); state carries it
 	if ok:
 		for value in result.values():
 			if typeof(value) == TYPE_FLOAT and not is_finite(value):
@@ -333,6 +376,22 @@ static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: Stri
 		if not _all_finite(result.state):
 			return _numerical_failure("nonfinite trim state", mode, V, iterations)
 	return result
+
+
+## A converged trim beyond the available surfaces, or "" when it fits. Elevon aircraft (X8-03): each elevon carries
+## elevator ± aileron, so their sum must fit the servo end point, and the bank stays a small trim angle.
+static func _throw_limit_message(x: PackedFloat64Array, throws: Dictionary, model: Dictionary) -> String:
+	var checks := [[x[1], throws.elevator, "elevator"], [x[4], throws.aileron, "aileron"]]
+	if banked(model):
+		checks.append([absf(x[1]) + absf(x[4]), throws.elevon, "elevon"])
+	else:
+		checks.append([x[5], throws.rudder, "rudder"])
+	for check in checks:
+		if absf(check[0]) > check[1]:
+			return "needs %.1f° of %s, more than the %.1f° throw" % [rad_to_deg(absf(check[0])), check[2], rad_to_deg(check[1])]
+	if banked(model) and absf(x[5]) > MAX_TRIM_BANK:
+		return "needs %.1f° of bank, more than a %.0f° straight-flight trim" % [rad_to_deg(absf(x[5])), rad_to_deg(MAX_TRIM_BANK)]
+	return ""
 
 
 ## Do not evaluate a failed numerical candidate again or divide by invalid throws to build its diagnostic.

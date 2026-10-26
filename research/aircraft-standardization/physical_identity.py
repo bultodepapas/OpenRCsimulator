@@ -14,6 +14,8 @@ from typing import Any
 
 IDENTIFIER_PATTERN = re.compile(r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
 SURFACE_ID_KEYS = frozenset({"aileron_left", "aileron_right", "elevator", "rudder"})
+# X8-03: an elevon aircraft identifies its two physical surfaces instead of the four conventional ones.
+ELEVON_SURFACE_ID_KEYS = frozenset({"elevon_left", "elevon_right"})
 MAX_IDENTIFIER_LENGTH = 80
 
 
@@ -100,12 +102,15 @@ def validate_physical_identity(data: Mapping[str, Any]) -> None:
     surface_ids = controls.get("surface_ids")
     if not isinstance(surface_ids, Mapping):
         raise ValueError("/controls/surface_ids: expected object")
-    if set(surface_ids) != SURFACE_ID_KEYS:
+    capabilities = data.get("capabilities")
+    elevon = isinstance(capabilities, Mapping) and capabilities.get("controls") == "elevon"
+    expected = ELEVON_SURFACE_ID_KEYS if elevon else SURFACE_ID_KEYS
+    if set(surface_ids) != expected:
         raise ValueError(
             "/controls/surface_ids: expected exactly "
-            + ", ".join(sorted(SURFACE_ID_KEYS))
+            + ", ".join(sorted(expected))
         )
-    for key in sorted(SURFACE_ID_KEYS):
+    for key in sorted(expected):
         add_id(surface_ids[key], f"/controls/surface_ids/{key}")
 
 

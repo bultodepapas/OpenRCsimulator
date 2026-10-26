@@ -98,8 +98,10 @@ func _initialize() -> void:
 		for i in raw.inventory.size():
 			var part_id: String = raw.inventory[i].id
 			check("reordered ID locates same component " + part_id, renamed.inventory[ids.inventory_index_by_id[part_id]].mass == raw.inventory[i].mass)
-		loaded.model.controls.surface_ids.elevator = "changed_in_derived_copy"
-		check("metadata detached from source", raw.controls.surface_ids.elevator != "changed_in_derived_copy")
+		# X8-03: an elevon aircraft identifies elevons, not an elevator; probe whichever surface comes first.
+		var surface_key: String = str(raw.controls.surface_ids.keys()[0])
+		loaded.model.controls.surface_ids[surface_key] = "changed_in_derived_copy"
+		check("metadata detached from source", raw.controls.surface_ids[surface_key] != "changed_in_derived_copy")
 	var base: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(Catalog.DEFAULT_ID).data))
 	checkpoint_identity(base)
 	var preidentity_with_orphan: Dictionary = legacy(base)

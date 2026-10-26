@@ -126,6 +126,10 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 [TT-22](timber-integration/TT-22/README.md) records the Turbo Lumber parts/price audit, separated propeller and spinner billing, and the parts-first accident report with native English, Spanish and crash verification.
 
+### X8 flying wing
+
+[X8-01](skywalker-x8/X8-01/README.md) collects the NTNU Skywalker X8 tunnel, CFD and flight-identification sources, measured masses and inertia, retail data, UIUC propeller tables and EPO data. [X8-02](skywalker-x8/X8-02/README.md) binds the r4 model with elevon roles; [X8-04](skywalker-x8/X8-04/README.md) records the elevon, tailless, pusher and tolerant-hull contract extensions; [X8-06](skywalker-x8/X8-06/README.md) derives the physics data; [X8-07](skywalker-x8/X8-07/README.md) the hand-launch start and its throw sources; [X8-12](skywalker-x8/X8-12/README.md) the optimization round (trim solver stagnation, steady-rpm reuse); [X8-09](skywalker-x8/X8-09/economy.md) the cost dossier; [X8-10](skywalker-x8/X8-10/README.md) the verification and flight-test card. Remaining work lives in the [integration plan](../X8-PLAN.md).
+
 ### Desktop delivery
 
 Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [DT-00-R1](desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](desktop-delivery-investigations/DT-00-R2/README.md) for platform, installer, display, performance and native-test research. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) tracks acceptance.

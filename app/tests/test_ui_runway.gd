@@ -24,6 +24,8 @@ const P51 := "p51d-mustang-120"
 const AVANTI := "sebart-avanti-s-a200-p100rx"
 const AIRBORNE := "airborne"
 const RUNWAY := "runway"
+const HAND_LAUNCH := "hand_launch"
+const X8 := "skywalker-x8"
 
 var _failures: int = 0
 var ui: RefCounted
@@ -78,10 +80,18 @@ func _preferences_cases() -> void:
 	_check("runway preference is valid for qualified Avanti", _write_preferences(PREFS, 1, "en", AVANTI, RUNWAY) == OK
 		and Preferences.load_from(PREFS).aircraft == AVANTI and Preferences.load_from(PREFS).start_choice == RUNWAY)
 	for id in Catalog.airplane_flyable_ids():
-		_check("%s defaults to runway with no saved start" % id, _write_preferences(PREFS, 1, "en", id, AIRBORNE, false) == OK
-			and Preferences.load_from(PREFS).start_choice == RUNWAY)
+		# X8-07: an airplane without landing gear defaults to the hand launch.
+		var default_start: String = RUNWAY if Catalog.runway_supported(id) else HAND_LAUNCH if Catalog.hand_launch_supported(id) else AIRBORNE
+		_check("%s defaults to %s with no saved start" % [id, default_start], _write_preferences(PREFS, 1, "en", id, AIRBORNE, false) == OK
+			and Preferences.load_from(PREFS).start_choice == default_start)
 		_check("%s retains explicit airborne preference" % id, _write_preferences(PREFS, 1, "en", id, AIRBORNE) == OK
 			and Preferences.load_from(PREFS).start_choice == AIRBORNE)
+	_check("hand-launch preference is valid for the gearless X8", _write_preferences(PREFS, 1, "en", X8, HAND_LAUNCH) == OK
+		and Preferences.load_from(PREFS).aircraft == X8 and Preferences.load_from(PREFS).start_choice == HAND_LAUNCH)
+	_check("hand-launch preference falls back to the runway default for the Stik", _write_preferences(PREFS, 1, "en", STIK, HAND_LAUNCH) == OK
+		and Preferences.load_from(PREFS).start_choice == RUNWAY)
+	_check("runway preference falls back to the hand-launch default for the X8", _write_preferences(PREFS, 1, "en", X8, RUNWAY) == OK
+		and Preferences.load_from(PREFS).start_choice == HAND_LAUNCH)
 
 	var future_text: String = "[meta]\nschema=99\n[ui]\nlanguage=\"es\"\nfirst_flight_hint_seen=true\n[flight]\naircraft=\"%s\"\nstart_choice=\"runway\"\n" % STIK
 	_write_text(FUTURE_PREFS, future_text)
@@ -409,6 +419,28 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	for aircraft: String in Catalog.airplane_flyable_ids():
 		app.call("set_aircraft", aircraft)
 		await ui.settle()
+		if not Catalog.runway_supported(aircraft):
+			# X8-07: a gearless airplane shows the hand launch where others show the runway, and the airborne start second.
+			_check("changing to %s shows the hand launch" % aircraft, home.get("aircraft_id") == aircraft
+				and home.get("start_choice") == HAND_LAUNCH and not home.get("start_button").disabled
+				and home.get("start_button").text == "Start: hand launch" and Preferences.load_from(PREFS).start_choice == HAND_LAUNCH)
+			home.get("start_button").grab_focus()
+			await ui.tap(KEY_ENTER)
+			_check("%s offers airborne as the secondary choice" % aircraft, home.get("start_choice") == AIRBORNE
+				and home.get("start_button").text == "Start: in the air")
+			await ui.tap(KEY_ENTER)
+			_check("%s cycles back to the hand launch" % aircraft, home.get("start_choice") == HAND_LAUNCH)
+			app.start_flight()
+			_check("%s Home Fly starts by hand at full throttle" % aircraft, app.flight != null
+				and app.flight.startup_error.is_empty() and app.flight.session.trace_meta().launch_choice == HAND_LAUNCH
+				and app.flight.session.trace_meta().launch_kind == "hand_launch_release"
+				and app.flight.session.commands.throttle == 1.0)
+			if app.flight != null:
+				app.open_pause()
+				app.end_flight()
+				await ui.settle()
+				home = app.home
+			continue
 		_check("changing to %s keeps runway" % aircraft, home.get("aircraft_id") == aircraft
 			and home.get("start_choice") == RUNWAY and not home.get("start_button").disabled
 			and Preferences.load_from(PREFS).start_choice == RUNWAY)

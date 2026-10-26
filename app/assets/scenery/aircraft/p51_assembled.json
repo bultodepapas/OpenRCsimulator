@@ -118,8 +118,8 @@
 	"source_identity": {
 		"manifest": {
 			"path": "res://data/aircraft_models/p51d-mustang-120.json",
-			"sha256": "6dd631d2e69d358f05b2639def51db22ccb5c8d81365b81d4a57b588ea561354",
-			"pinned_sha256": "6dd631d2e69d358f05b2639def51db22ccb5c8d81365b81d4a57b588ea561354",
+			"sha256": "6665f7160b277923d48c16ae345ae269fd5a5b9ad9f8c4a68a034cce367fce83",
+			"pinned_sha256": "6665f7160b277923d48c16ae345ae269fd5a5b9ad9f8c4a68a034cce367fce83",
 			"matches_pin": true
 		},
 		"builder": {
@@ -130,8 +130,8 @@
 		},
 		"geometry_script": {
 			"path": "res://aircraft/p51d_geometry.gd",
-			"sha256": "fdb4ac1c349da8896d358ae52aadd9e65a28978faab6f31d1bb0e255fb2178c7",
-			"pinned_sha256": "fdb4ac1c349da8896d358ae52aadd9e65a28978faab6f31d1bb0e255fb2178c7",
+			"sha256": "6a31d46fcef43d2bf0c0a0a36d3ab2b25b3ea5275f6ce7024eb246c079396208",
+			"pinned_sha256": "6a31d46fcef43d2bf0c0a0a36d3ab2b25b3ea5275f6ce7024eb246c079396208",
 			"matches_pin": true
 		},
 		"fleet_collector": {
@@ -142,8 +142,8 @@
 		},
 		"airplane_snapshot_builder": {
 			"path": "res://render/airplane.gd",
-			"sha256": "d8df826777cf69dc23f551b1958e7d7ec2c8ab7a82ffcbb4867e53dd4235017c",
-			"pinned_sha256": "d8df826777cf69dc23f551b1958e7d7ec2c8ab7a82ffcbb4867e53dd4235017c",
+			"sha256": "b395edee0199f290accef2a1da93a4364ce418e8ff8ae90e1be43b89a68ae04d",
+			"pinned_sha256": "b395edee0199f290accef2a1da93a4364ce418e8ff8ae90e1be43b89a68ae04d",
 			"matches_pin": true
 		},
 		"baker": {

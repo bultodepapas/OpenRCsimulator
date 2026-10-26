@@ -1,0 +1,317 @@
+{
+ "description": "Independent full rebuild with source/scripts/release.py (--skip-views) in an empty folder that held only source/scripts, textures/shared/x8_airframe_occlusion.png, export-map.json and metadata.json, followed by a byte comparison with the delivered files.",
+ "command": "python source/scripts/release.py --master <Skywalker_X8.blend> --baseline <r3> --skip-views",
+ "minutes": 20.3,
+ "rebuild_release_passed": true,
+ "files_compared": 51,
+ "identical": true,
+ "different": [],
+ "files": [
+  {
+   "file": "export/aircraft.glb",
+   "delivered": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+   "rebuilt": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac",
+   "identical": true
+  },
+  {
+   "file": "export/bolido.glb",
+   "delivered": "9ecaf7b49aec555bbea178b3b582378bb362bec3f816448932438db2c8da8f93",
+   "rebuilt": "9ecaf7b49aec555bbea178b3b582378bb362bec3f816448932438db2c8da8f93",
+   "identical": true
+  },
+  {
+   "file": "previews/demo/aircraft_demo.glb",
+   "delivered": "0354732da7cbcf1a44dbe44a9841a46c27f0b7c85da7046a071d41581a4d0c2c",
+   "rebuilt": "0354732da7cbcf1a44dbe44a9841a46c27f0b7c85da7046a071d41581a4d0c2c",
+   "identical": true
+  },
+  {
+   "file": "textures/shared/x8_airframe_occlusion.png",
+   "delivered": "7322ab2f8067c8d8464a8cf8e44ed968b0b3a1485798f0014234dca044267ec3",
+   "rebuilt": "7322ab2f8067c8d8464a8cf8e44ed968b0b3a1485798f0014234dca044267ec3",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/x8_abisal_base_color.jpg",
+   "delivered": "99eee6bf2fd358a9867e96ed0ab64b9c053aced18ab6f5d0367e514153dd9247",
+   "rebuilt": "99eee6bf2fd358a9867e96ed0ab64b9c053aced18ab6f5d0367e514153dd9247",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/x8_abisal_emission.jpg",
+   "delivered": "8373cdbd8e77509b30d3554967f7592a48cf019e9a2d3c03abff6210acf70279",
+   "rebuilt": "8373cdbd8e77509b30d3554967f7592a48cf019e9a2d3c03abff6210acf70279",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/x8_abisal_normal.png",
+   "delivered": "65e948823877ca80d95084efb1043ea681f316f0658fb3ea48e483ae212e12d3",
+   "rebuilt": "65e948823877ca80d95084efb1043ea681f316f0658fb3ea48e483ae212e12d3",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/x8_abisal_orm.png",
+   "delivered": "c224112fe48707da084bf4f3c5e0bedd91719ca542a0c398f6d0c15c87f1d5cc",
+   "rebuilt": "c224112fe48707da084bf4f3c5e0bedd91719ca542a0c398f6d0c15c87f1d5cc",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/x8_abisal_base_color.png",
+   "delivered": "cc43c07ee3605eafd0af3d7fada8af327cb46f2ffc9edb144afff600cc47b031",
+   "rebuilt": "cc43c07ee3605eafd0af3d7fada8af327cb46f2ffc9edb144afff600cc47b031",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/x8_abisal_coat.png",
+   "delivered": "801a264acf4faa0a72298a24eebccbf7d59e2580a9a42f8469380c0e2334aadb",
+   "rebuilt": "801a264acf4faa0a72298a24eebccbf7d59e2580a9a42f8469380c0e2334aadb",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/x8_abisal_emission.png",
+   "delivered": "44545d011db96e3b5d5d75106879ab54b94f01afadd9a9edef7356eab804105d",
+   "rebuilt": "44545d011db96e3b5d5d75106879ab54b94f01afadd9a9edef7356eab804105d",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/x8_abisal_height.png",
+   "delivered": "8b163e84b070eec929dd9b88e07dd5a47b964dd17f6a326b886dc2800446e635",
+   "rebuilt": "8b163e84b070eec929dd9b88e07dd5a47b964dd17f6a326b886dc2800446e635",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/x8_abisal_iridescence.png",
+   "delivered": "9d950709ef2b789ae3f83c823b0bdecf3fb6cc88e4cc3ccd6f3047593ae8c896",
+   "rebuilt": "9d950709ef2b789ae3f83c823b0bdecf3fb6cc88e4cc3ccd6f3047593ae8c896",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/x8_abisal_metallic.png",
+   "delivered": "114e6316c7ea332542e405dc074e75fad4743f63cb9b22d2a36888a539f830a3",
+   "rebuilt": "114e6316c7ea332542e405dc074e75fad4743f63cb9b22d2a36888a539f830a3",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/x8_abisal_normal.png",
+   "delivered": "9a52abc0fd83fd8bbade4affbf5314c3b8c5323ae20f4661b9b222df1d15d241",
+   "rebuilt": "9a52abc0fd83fd8bbade4affbf5314c3b8c5323ae20f4661b9b222df1d15d241",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/x8_abisal_roughness.png",
+   "delivered": "789615178de2dcb1634c24ad0950bfe21567d2d415fe87241cc08e713be381a2",
+   "rebuilt": "789615178de2dcb1634c24ad0950bfe21567d2d415fe87241cc08e713be381a2",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/layers/compose_report.json",
+   "delivered": "fd2c9b0b590f76f64f3c816f957b4c4ff23ed30b5844e0ed191be626693014af",
+   "rebuilt": "fd2c9b0b590f76f64f3c816f957b4c4ff23ed30b5844e0ed191be626693014af",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/layers/x8_abisal_markings.png",
+   "delivered": "7058ea15da7c489b5bd1bc2fce1bd06b8918e38fa0ea168213d139a0390be8d8",
+   "rebuilt": "7058ea15da7c489b5bd1bc2fce1bd06b8918e38fa0ea168213d139a0390be8d8",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/layers/x8_abisal_paint_base.png",
+   "delivered": "267639a523b810f7faae2c5a9825d10aa7edc485d6e99a5849c8dface2181f3f",
+   "rebuilt": "267639a523b810f7faae2c5a9825d10aa7edc485d6e99a5849c8dface2181f3f",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/masks/chips.png",
+   "delivered": "5cd6f395a6163edf33c805485ac09d9dcdc30822d3f53eba3f149e389eee37f8",
+   "rebuilt": "5cd6f395a6163edf33c805485ac09d9dcdc30822d3f53eba3f149e389eee37f8",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/masks/grime.png",
+   "delivered": "2606663d2b7139ecf7dbcd2e63b944860e9c4755d27d05fd9641c50fe5c42587",
+   "rebuilt": "2606663d2b7139ecf7dbcd2e63b944860e9c4755d27d05fd9641c50fe5c42587",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/masks/height_preview.png",
+   "delivered": "7c86c00c13fcccfb9956aad9cbac3413da5694046bf9693cd457983ba6435817",
+   "rebuilt": "7c86c00c13fcccfb9956aad9cbac3413da5694046bf9693cd457983ba6435817",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/masks/insignia_alpha.png",
+   "delivered": "62f93e2e3442600e1d8cff32859f3583f24b5364ac649c1d4dd166b5e6123d28",
+   "rebuilt": "62f93e2e3442600e1d8cff32859f3583f24b5364ac649c1d4dd166b5e6123d28",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/masks/marking_alpha.png",
+   "delivered": "561d1eb51597222aa2f0f1194d1a11c71e7dea230cf844c795f13677f7051184",
+   "rebuilt": "561d1eb51597222aa2f0f1194d1a11c71e7dea230cf844c795f13677f7051184",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/masks/scale_edges.png",
+   "delivered": "70b5e7bcb7c7c46039d89860032ff913c44e7c98dbcacf301009fdfca94d5cf4",
+   "rebuilt": "70b5e7bcb7c7c46039d89860032ff913c44e7c98dbcacf301009fdfca94d5cf4",
+   "identical": true
+  },
+  {
+   "file": "textures/abisal/source/masks/seam.png",
+   "delivered": "3733cb4bacf57cf9db6e6d015d00e9278c5579f6de3037c7200e2ca254eaae03",
+   "rebuilt": "3733cb4bacf57cf9db6e6d015d00e9278c5579f6de3037c7200e2ca254eaae03",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/x8_bolido_base_color.jpg",
+   "delivered": "93c090dfb468aadaccbd238a51d55b77f8ce9c925e1df8205e3eae7dee6ac1bb",
+   "rebuilt": "93c090dfb468aadaccbd238a51d55b77f8ce9c925e1df8205e3eae7dee6ac1bb",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/x8_bolido_emission.jpg",
+   "delivered": "c5d77a06e6dd29e046caef75e09f356c7ce00ace5645513f1c545c6c4cd0ebb0",
+   "rebuilt": "c5d77a06e6dd29e046caef75e09f356c7ce00ace5645513f1c545c6c4cd0ebb0",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/x8_bolido_normal.png",
+   "delivered": "1cce8dd5fc5f19ae5b985d68f2576d0e3dfb2bc5f30a1f114086c2230ccf36bb",
+   "rebuilt": "1cce8dd5fc5f19ae5b985d68f2576d0e3dfb2bc5f30a1f114086c2230ccf36bb",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/x8_bolido_orm.png",
+   "delivered": "23ed9b748b25859857192d6945f974c91bdd301aba16e0183f4ff9b815101fd5",
+   "rebuilt": "23ed9b748b25859857192d6945f974c91bdd301aba16e0183f4ff9b815101fd5",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/x8_bolido_base_color.png",
+   "delivered": "56e0b5cfd908ae4930a827369fc7f8d5e8f3e1116d21edd655b05affd0c5cb73",
+   "rebuilt": "56e0b5cfd908ae4930a827369fc7f8d5e8f3e1116d21edd655b05affd0c5cb73",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/x8_bolido_coat.png",
+   "delivered": "cb0136e15bf723e15ca6153a9a62d972e4176773494f23105d6294eee495dd2a",
+   "rebuilt": "cb0136e15bf723e15ca6153a9a62d972e4176773494f23105d6294eee495dd2a",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/x8_bolido_emission.png",
+   "delivered": "762b0a6da544ac84210872d26da7899b4a1aedcc14629dd00c78b395ee4ebbdf",
+   "rebuilt": "762b0a6da544ac84210872d26da7899b4a1aedcc14629dd00c78b395ee4ebbdf",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/x8_bolido_heat.png",
+   "delivered": "13d3747c557fd52b9303ac65015c0a27fb96f846162eaf5040f7abfa17e56fe9",
+   "rebuilt": "13d3747c557fd52b9303ac65015c0a27fb96f846162eaf5040f7abfa17e56fe9",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/x8_bolido_height.png",
+   "delivered": "46647d55978f5386c499e062f8856963efb2eb35906809fa4692991cfdac80a5",
+   "rebuilt": "46647d55978f5386c499e062f8856963efb2eb35906809fa4692991cfdac80a5",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/x8_bolido_iridescence.png",
+   "delivered": "c04a9f73449ec4717d13dee8351e4c7b7f96b581fd3850a293cb70e8acdfdc9b",
+   "rebuilt": "c04a9f73449ec4717d13dee8351e4c7b7f96b581fd3850a293cb70e8acdfdc9b",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/x8_bolido_metallic.png",
+   "delivered": "18b60d279da2b17b25a26384d7e4ad0a0262de9c8525cfc5ea4ac1394dd39cd0",
+   "rebuilt": "18b60d279da2b17b25a26384d7e4ad0a0262de9c8525cfc5ea4ac1394dd39cd0",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/x8_bolido_normal.png",
+   "delivered": "71c6c23e51ea115edfc8efc869ff6b2ed3585214fbccd3668f30d4dc3811c1fd",
+   "rebuilt": "71c6c23e51ea115edfc8efc869ff6b2ed3585214fbccd3668f30d4dc3811c1fd",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/x8_bolido_roughness.png",
+   "delivered": "bc6d08fe1d4ffb8907c94d4a15ecffc88cd48c2f4e158c24d8086d1b2c082494",
+   "rebuilt": "bc6d08fe1d4ffb8907c94d4a15ecffc88cd48c2f4e158c24d8086d1b2c082494",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/layers/compose_report.json",
+   "delivered": "f8e38f5bb37d78c9b7824006dc1a227950b53776194b832732158cbbc8700f2c",
+   "rebuilt": "f8e38f5bb37d78c9b7824006dc1a227950b53776194b832732158cbbc8700f2c",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/layers/x8_bolido_insignia.png",
+   "delivered": "b7e8abca663896ac78411f6f9d2f12917c953dc1b55dd3dc46e67860d5174764",
+   "rebuilt": "b7e8abca663896ac78411f6f9d2f12917c953dc1b55dd3dc46e67860d5174764",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/layers/x8_bolido_markings.png",
+   "delivered": "7679bc85df4aa41a75aa16b78417918aa92f342450cce8c75230a6b3494ce6d1",
+   "rebuilt": "7679bc85df4aa41a75aa16b78417918aa92f342450cce8c75230a6b3494ce6d1",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/layers/x8_bolido_paint_base.png",
+   "delivered": "b5d2bcb83125a547038b05bc401c0ea18f8dd5164f5081082314a9188e56c0cc",
+   "rebuilt": "b5d2bcb83125a547038b05bc401c0ea18f8dd5164f5081082314a9188e56c0cc",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/masks/emblem.png",
+   "delivered": "b5071959e5f1632ab9e3d68c5ffc5218316d4349e6413061c02974c46d3d670f",
+   "rebuilt": "b5071959e5f1632ab9e3d68c5ffc5218316d4349e6413061c02974c46d3d670f",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/masks/fresh_tiles.png",
+   "delivered": "52284be8e2163ab6a42cfbfc6e508aa35bbcea76402566a8a0958ab35a976f2e",
+   "rebuilt": "52284be8e2163ab6a42cfbfc6e508aa35bbcea76402566a8a0958ab35a976f2e",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/masks/heat_flux.png",
+   "delivered": "4fda4676147b521669171c9f10633e8d0704a026f3d5bfe377d0bd5d32c54976",
+   "rebuilt": "4fda4676147b521669171c9f10633e8d0704a026f3d5bfe377d0bd5d32c54976",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/masks/height_preview.png",
+   "delivered": "62a8c475d0926a06e8756574d2a67809a2026b329b53bd54034f3bcece30cbff",
+   "rebuilt": "62a8c475d0926a06e8756574d2a67809a2026b329b53bd54034f3bcece30cbff",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/masks/insignia_alpha.png",
+   "delivered": "867987a07d004984abf096bc405d6488b5ef3a3727586cc2d2673baffe1cab8a",
+   "rebuilt": "867987a07d004984abf096bc405d6488b5ef3a3727586cc2d2673baffe1cab8a",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/masks/light_lenses.json",
+   "delivered": "e7843bfb3a2a8d1f586bbfbd2577f631f95f625ede71c54696bfd36f66b91a23",
+   "rebuilt": "e7843bfb3a2a8d1f586bbfbd2577f631f95f625ede71c54696bfd36f66b91a23",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/masks/marking_alpha.png",
+   "delivered": "72e96eb2f11c46d2a0de1948c2751661ab647c6178bea3b2ca1a3d918312dbcb",
+   "rebuilt": "72e96eb2f11c46d2a0de1948c2751661ab647c6178bea3b2ca1a3d918312dbcb",
+   "identical": true
+  },
+  {
+   "file": "textures/bolido/source/masks/tps_zones.png",
+   "delivered": "117a9248f513dbefc5e718b131bb687f2f58810c33fa81f7184ebcc71338b5db",
+   "rebuilt": "117a9248f513dbefc5e718b131bb687f2f58810c33fa81f7184ebcc71338b5db",
+   "identical": true
+  }
+ ]
+}

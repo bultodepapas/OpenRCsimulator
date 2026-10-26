@@ -820,7 +820,8 @@ func start_flight(request: Dictionary = {}) -> void:
 		_loading_screen = FlightLoading.new(departing_home.theme if departing_home != null else null)
 		_loading_screen.name = "FlightLoading"
 		_loading_screen.configure("%s · %s · %s" % [tr(Catalog.short_name(route_aircraft_id)),
-			tr(Landscapes.entry(launch_landscape).name), tr("Runway" if chosen_start == "runway" else "Airborne")])
+			tr(Landscapes.entry(launch_landscape).name), tr("Runway" if chosen_start == "runway" else "Hand launch" \
+			if chosen_start == FlightSession.START_HAND_LAUNCH else "Airborne")])
 		_loading_screen.cancel_requested.connect(cancel_flight_loading)
 		screens.push("loading", _loading_screen, null, false)
 		last_flight_loading.surface_prepare_usec = Time.get_ticks_usec() - _loading_started_usec

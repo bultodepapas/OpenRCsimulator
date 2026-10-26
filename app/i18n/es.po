@@ -592,6 +592,19 @@ msgstr "STOL de ala alta · 1,55 m · eléctrico 4S"
 msgid "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off."
 msgstr "Experimental: motor eléctrico estimado y datos de otra hélice. Tren fijo, flaps arriba y asistencias desactivadas."
 
+# X8-09: the X8's working name is descriptive (owner decision D1 pending), so it is translated like the Timber's.
+msgid "X8 Flying Wing"
+msgstr "Ala volante X8"
+
+msgid "X8 Wing"
+msgstr "Ala X8"
+
+msgid "EPO flying wing · 2.12 m · 6S electric pusher"
+msgstr "Ala volante de EPO · 2,12 m · eléctrico propulsor 6S"
+
+msgid "Experimental: NTNU flight-identified aerodynamics with an estimated electric drive; elevons, no landing gear (airborne start), tougher foam airframe. Not flight-validated."
+msgstr "Experimental: aerodinámica identificada en vuelo por la NTNU con motorización eléctrica estimada; elevones, sin tren de aterrizaje (inicio en el aire), estructura de espuma más resistente. Sin validar en vuelo."
+
 msgid "Flight model under evaluation."
 msgstr "Modelo de vuelo en evaluación."
 
@@ -630,6 +643,15 @@ msgstr "Empieza en pista. Rodaje experimental."
 
 msgid "Starts on the runway, trimmed for level flight at 50% throttle. Experimental ground handling."
 msgstr "Empieza en pista, con el trim ajustado para vuelo nivelado al 50 % de acelerador. Rodaje experimental."
+
+msgid "Start: hand launch"
+msgstr "Inicio: a mano"
+
+msgid "Thrown by hand into the wind at full throttle, trimmed for level flight at 50% throttle."
+msgstr "Lanzado a mano contra el viento a todo gas, con el trim para vuelo nivelado al 50 % de acelerador."
+
+msgid "Hand launch"
+msgstr "Lanzamiento a mano"
 
 msgid "Could not start flight: %s"
 msgstr "No se pudo iniciar el vuelo: %s"

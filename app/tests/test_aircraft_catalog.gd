@@ -36,11 +36,12 @@ func _press_key(flight: Node, physical_keycode: int) -> void:
 
 func _initialize() -> void:
 	_check("default is the Ugly Stik and it is in the catalog", Catalog.DEFAULT_ID == AirplaneBuilder.STIK_ID and Catalog.has(Catalog.DEFAULT_ID))
-	_check("ten catalog entries, unique IDs", Catalog.ids().size() == 10 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 10, str(Catalog.ids()))
-	_check("nine airplane configurations remain available to airplane solvers", Catalog.airplane_flyable_ids().size() == 9 and Catalog.airplane_flyable_ids().has(AirplaneBuilder.TIMBER_ID))
+	_check("eleven catalog entries, unique IDs", Catalog.ids().size() == 11 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 11, str(Catalog.ids()))
+	_check("ten airplane configurations remain available to airplane solvers", Catalog.airplane_flyable_ids().size() == 10 and Catalog.airplane_flyable_ids().has(AirplaneBuilder.TIMBER_ID)
+		and Catalog.airplane_flyable_ids().has(AirplaneBuilder.X8_ID))
 	var expected_airplane_families := PackedStringArray([
 		AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.CORSAIR_ID,
-		AirplaneBuilder.AVANTI_ID, AirplaneBuilder.TIMBER_ID,
+		AirplaneBuilder.AVANTI_ID, AirplaneBuilder.TIMBER_ID, AirplaneBuilder.X8_ID,
 	])
 	var airplane_families := Catalog.airplane_visual_families()
 	var all_airplane_families_registered := true
@@ -53,7 +54,7 @@ func _initialize() -> void:
 		and not airplane_families.has("hx-700")
 		and all_airplane_families_registered,
 		str(airplane_families))
-	_check("ten simulated entries include the experimental helicopter", Catalog.flyable_ids().size() == 10 and Catalog.flyable_ids().has("xcell-60-research")
+	_check("eleven simulated entries include the experimental helicopter", Catalog.flyable_ids().size() == 11 and Catalog.flyable_ids().has("xcell-60-research")
 		and Catalog.flyable_entries().all(func(e): return e.data != "" and e.status != Catalog.PREVIEW), str(Catalog.flyable_ids()))
 	_check("Extra's finite glow store is exposed to fill selection", Catalog.has_finite_fuel(AirplaneBuilder.EXTRA_ID))
 	var helicopter_entry: Dictionary = Catalog.entry("xcell-60-research")
@@ -71,8 +72,8 @@ func _initialize() -> void:
 		and Catalog.entry(AirplaneBuilder.STIK_GLOW_FS64V_ID).status_note.contains("inferred"))
 	_check("unknown ID: no entry, cannot fly", Catalog.entry("nope").is_empty() and not Catalog.can_fly("nope"))
 	_check("step wraps both ways", Catalog.step(Catalog.ids()[-1], 1) == Catalog.ids()[0] and Catalog.step(Catalog.ids()[0], -1) == Catalog.ids()[-1])
-	_check("the airplane render adapter retains its nine catalog IDs",
-		[AirplaneBuilder.STIK_ID, AirplaneBuilder.STIK_GLOW_61FX_ID, AirplaneBuilder.STIK_GLOW_55AX_ID, AirplaneBuilder.STIK_GLOW_FS64V_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.CORSAIR_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.TIMBER_ID] == Array(Catalog.airplane_flyable_ids()))
+	_check("the airplane render adapter retains its ten catalog IDs",
+		[AirplaneBuilder.STIK_ID, AirplaneBuilder.STIK_GLOW_61FX_ID, AirplaneBuilder.STIK_GLOW_55AX_ID, AirplaneBuilder.STIK_GLOW_FS64V_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.CORSAIR_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.TIMBER_ID, AirplaneBuilder.X8_ID] == Array(Catalog.airplane_flyable_ids()))
 
 	for id in Catalog.ids():
 		var e := Catalog.entry(id)
@@ -86,8 +87,11 @@ func _initialize() -> void:
 			if airplane.get("root") is Node:
 				airplane.root.free()
 			continue
+		# X8-02: an elevon family binds exactly its two elevon roles; conventional families at least four surfaces.
+		var hinges: Dictionary = airplane.get("hinges", {})
+		var surfaces_bound: bool = hinges.size() == 2 if hinges.has("elevon_left") else hinges.size() >= 4
 		var ok_contract: bool = airplane.get("root") is Node3D and airplane.root.name == "airplane" and airplane.get("propeller") is Node3D \
-			and airplane.get("hinges", {}).size() >= 4 and airplane.aircraft_id == id
+			and surfaces_bound and airplane.aircraft_id == id
 		_check("%s: builds root/propeller/hinges" % id, ok_contract)
 		var extent := Shadow.model_extent(airplane.root)
 		AirplaneBuilder.apply_surfaces(airplane, Commands.hinge_rotations({ roll = 1.0, pitch = -1.0, yaw = 1.0, throttle = 0.0 }, { aileron = 20.0, elevator = 20.0, rudder = 20.0 }))

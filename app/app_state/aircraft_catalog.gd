@@ -14,7 +14,7 @@ const PREVIEW := "preview"
 const DEFAULT_ID := "jensen-das-ugly-stik-60"
 ## Per-ID answers read from stock data files, which never change while the application runs.
 static var _finite_fuel_cache := {}
-static var _runway_cache := {}
+static var _ground_start_cache := {}
 
 ## In menu order. `short_name` (UI-34b) is the one-line label for the Home card and catalog list; `name` stays complete in
 ## details and tooltips. `name` is a proper name (never translated; the Timber's fictional name is the one exception: es.po carries
@@ -120,6 +120,21 @@ const ENTRIES := [
 		battery_data = "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
 	},
 	{
+		# X8-09: the author's r4 model (assets/aircraft/skywalker-x8), inspired by the Skywalker X8: NTNU flight-identified
+		# aerodynamics on the tailless strip law (X8-04), elevon mixing (X8-03), pusher (X8-05), no landing gear, EPO
+		# tolerant hull (X8-08). Working display name pending the owner's decision (docs/X8-PLAN.md D1).
+		id = "skywalker-x8",
+		visual_family = "skywalker-x8",
+		name = "X8 Flying Wing",
+		short_name = "X8 Wing",
+		summary = "EPO flying wing · 2.12 m · 6S electric pusher",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: NTNU flight-identified aerodynamics with an estimated electric drive; elevons, no landing gear (airborne start), tougher foam airframe. Not flight-validated.",
+		data = "res://data/aircraft/skywalker_x8.json",
+		# The finite 6S 5000 mAh class pack is the default battery mode, as on the Turbo Lumber.
+		battery_data = "res://data/aircraft/battery/skywalker_x8_6s_pack.json",
+	},
+	{
 		id = "xcell-60-research",
 		vehicle = "rotorcraft",
 		visual_family = "hx-700",
@@ -216,9 +231,19 @@ static func has_finite_fuel(id: String) -> bool:
 
 ## Whether a runway start is supported (FlightSession validates the aircraft data's gear), cached per stock ID.
 static func runway_supported(id: String) -> bool:
-	if not _runway_cache.has(id):
-		_runway_cache[id] = bool(load("res://sim/flight_session.gd").runway_aircraft_supported(id))
-	return _runway_cache[id]
+	return bool(_ground_starts(id).runway)
+
+
+## X8-07: an airplane without landing gear starts by hand from the field instead of on the runway.
+static func hand_launch_supported(id: String) -> bool:
+	return bool(_ground_starts(id).hand_launch)
+
+
+## Both ground-start answers come from one load of the data file.
+static func _ground_starts(id: String) -> Dictionary:
+	if not _ground_start_cache.has(id):
+		_ground_start_cache[id] = load("res://sim/flight_session.gd").ground_start_support(id)
+	return _ground_start_cache[id]
 
 
 ## The one-line label for the Home card and catalog list; falls back to the full name.

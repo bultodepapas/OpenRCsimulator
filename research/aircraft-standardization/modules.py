@@ -99,10 +99,12 @@ def classify(base: Any) -> dict[str, Any]:
     if not isinstance(capabilities, dict):
         issue("module.capabilities.type", "capabilities", "must be an object")
         capabilities = {}
-    expected_capability_keys = set(registry.get("capability_keys", []))
+    # X8-04: optional fields select a law only when present; absence keeps the historical law and adds nothing.
+    optional_keys = list(registry.get("optional_capability_keys", []))
+    expected_capability_keys = set(registry.get("capability_keys", [])) | set(optional_keys)
     for key in sorted(set(capabilities) - expected_capability_keys):
         issue("module.capability.unknown_field", f"capabilities.{key}", "is not a registered capability field")
-    for key in registry.get("capability_keys", []):
+    for key in list(registry.get("capability_keys", [])) + [key for key in optional_keys if key in capabilities]:
         if key not in capabilities:
             issue("module.capability.missing", f"capabilities.{key}", "is required")
             continue

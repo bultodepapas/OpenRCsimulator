@@ -1,0 +1,10 @@
+# X8-07: hand-launch the gearless X8, let it climb hands-off, restart (same release), return Home.
+fly aircraft=skywalker-x8 start=hand_launch
+assert expr="flight.session.trace_meta().launch_kind == 'hand_launch_release' and flight.session.commands.throttle == 1.0" message="hand launch at full throttle"
+wait until="flight.session.sim.tick > 960" timeout_s=300
+assert expr="flight.session.crash.is_empty() and -flight.session.sim.state[2] > 12.0" message="climbed away without a crash"
+restart
+wait until="flight.session.sim.tick > 30" timeout_s=120
+assert expr="flight.session.trace_meta().launch_kind == 'hand_launch_release' and flight.session.crash.is_empty()" message="restart repeats the hand launch"
+home
+assert expr="flight == null and screens.is_top('home')" message="back at Home"

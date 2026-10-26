@@ -20,7 +20,7 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "345cb32177915fd869aaa227576661b9cb9477ee6691b79217361080f24b897e",
+    "sha256": "5670bc4def715502007bd06bc2303391da34b7c8866affeb0ae480df6a9682de",
     "hash_mode": "lf_text"
   },
   "geometry": {
@@ -167,7 +167,7 @@
   "dependencies": [
     {
       "path": "res://aircraft/imported_model.gd",
-      "sha256": "76889f694b7fae6fc75394d1af2feff5c6492c7a2075c4a89e6463d54a3ac18c",
+      "sha256": "9c652ba260167d5b89346f051a8e5b5dd01447265928afe34a0d3544a76ea464",
       "hash_mode": "lf_text",
       "role": "builder"
     },
@@ -179,7 +179,7 @@
     },
     {
       "path": "res://aircraft/model_manifest.gd",
-      "sha256": "7390e3d6a808fa96fd990c54deabb0151ff13a2d1b0f7b229368485cd3d68f7d",
+      "sha256": "6c6a7a0a3f20a862c302088e40c58a547f05abc2a1475f1924d7a30edc0815e4",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },

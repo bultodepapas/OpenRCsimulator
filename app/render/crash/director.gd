@@ -229,12 +229,14 @@ func _start() -> void:
 		else:
 			effective_mass = EffectiveMass.at_point(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), mass, context.session.sim.inertia)
 	# The CG's own normal velocity bounds the slapdown that follows a first contact off the CG.
-	report = Severity.estimate(mass, normal_speed,tangent_speed,rad_to_deg(atan2(normal_speed,tangent_speed)),surface,component,effective_mass,1.0,v_ned[2])
+	# X8-08: a tolerant airframe (EPO foam) declares its presentation durability; balsa/ply keep 1.
+	var durability := float(model.get("crash_tolerance", {}).get("presentation_durability", 1.0))
+	report = Severity.estimate(mass, normal_speed,tangent_speed,rad_to_deg(atan2(normal_speed,tangent_speed)),surface,component,effective_mass,durability,v_ned[2])
 	if impact.trigger == "scenery":
 		# Preserve the actual obstacle normal and height; ground-only projections would misreport a wall hit.
 		surface = str(impact.obstacle_kind)
 		var cg_normal := -M.dot(v_ned, impact.normal_ned) if impact.normal_ned.size() == 3 else -1.0
-		report = Severity.estimate_snapshot(impact, mass, surface, component, PackedFloat64Array(), float(impact.effective_mass_kg), 1.0, cg_normal)
+		report = Severity.estimate_snapshot(impact, mass, surface, component, PackedFloat64Array(), float(impact.effective_mass_kg), durability, cg_normal)
 		report["obstacle_id"] = str(impact.obstacle_id)
 		report["response_class"] = str(impact.response_class)
 		report["mass_basis"] = "rigid-body effective mass at the swept contact; material transfer remains estimated"

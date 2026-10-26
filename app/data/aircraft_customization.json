@@ -7,7 +7,7 @@
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "f4u-corsair-250",
-      "model_manifest_sha256": "444f2841fc3c13bea183ec7085cb2563a1b9bc7a2eefdfda79dd5cc6260f5fc5",
+      "model_manifest_sha256": "5d03cb3989a6d5829f8ae1d048e47022fb801a00a21eccb3a7b0b5b438ef126e",
       "paint_slots": [
         {
           "id": "body",
@@ -441,14 +441,14 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "8ac503b76460dc4a5e093fec834fbaa7f4fdf199ba32b48ffae0bcd1533b7d9f"
+      "slots_sha256": "4630de84d1f6a0f222f4c92f45f4fd2f4655fb43bcc2a92edcc38738ff1c386b"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "gp-extra-300s-60",
-      "model_manifest_sha256": "f8280cd02c96759a389438e632c05cb9c1a8b6e4f03d74dbdcc505e50d66f7a4",
+      "model_manifest_sha256": "2a2f1cc898cb8ac3a9f96e8d6331cd80db8f8f95ecdb0956aa9caffa75f25371",
       "paint_slots": [
         {
           "id": "body",
@@ -788,14 +788,14 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "5e6384b5a1427f6052ba7e1566989d82cde8f7af81d07a54a86c24ab5fbc9f0f"
+      "slots_sha256": "8e0d4bf5ea168e8174ebe4f158b4d1bf627535da00c36775bc93ed9523416bf0"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "jensen-das-ugly-stik-60",
-      "model_manifest_sha256": "79dad6e96cd12374c322aac2399708022dd1507e223ebcff40240ae467ef14de",
+      "model_manifest_sha256": "912bee8177251ecf7ed58cb50ee05439d2806ca181c41f86b397b40555b40e55",
       "paint_slots": [
         {
           "id": "body",
@@ -1277,14 +1277,14 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "da9291459003469d6fc2a6b54207052543172741fe23f80d8269dd98d9f0b489"
+      "slots_sha256": "7f055c3f2301b566eeb16366607236dd84c47e68f61c01705e074000de4ccbe2"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "p51d-mustang-120",
-      "model_manifest_sha256": "6dd631d2e69d358f05b2639def51db22ccb5c8d81365b81d4a57b588ea561354",
+      "model_manifest_sha256": "6665f7160b277923d48c16ae345ae269fd5a5b9ad9f8c4a68a034cce367fce83",
       "paint_slots": [
         {
           "id": "body",
@@ -1663,14 +1663,14 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "5a22e2a234620b7175d0711a899c1b0b7a31eccbfde38a78879199a8516bf49f"
+      "slots_sha256": "4be3ece1a7b0de088a8fc3f8b6de897f9e4551f6576c544ab74c3ab868ce1244"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "sebart-avanti-s-a200-p100rx",
-      "model_manifest_sha256": "81e87a8c463fc28369885f782ab9a19dc19223337ef50d2b99a8f05cbf75e54d",
+      "model_manifest_sha256": "8fdcaff2d691dc597fcbddb5b52f7b30a51eb539ad97189812cdc241f06a6b23",
       "paint_slots": [
         {
           "id": "body",
@@ -1946,14 +1946,190 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "6242febd64630af31493a4e76d6a95230ddb9697119591aef1150676e82d7a15"
+      "slots_sha256": "b95a9faabd0fd62c0ae0157d4765350e6bed8ed121aa57bbac065c24e6eaa193"
+    },
+    {
+      "format": "openrc-aircraft-customization-bindings",
+      "version": 4,
+      "source_proof_version": 3,
+      "visual_family": "skywalker-x8",
+      "model_manifest_sha256": "f735c4192228e5863323d7fa72a1d888c1ee98a4a36c4ffc40cff84d19cc7ae1",
+      "paint_slots": [
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "SkywalkerX8/fuselage_core",
+              "surface": 3,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/canopy_hatch",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/camera_door_left_hinge/camera_door_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/camera_door_right_hinge/camera_door_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "SkywalkerX8/wing_left_fixed",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/wing_right_fixed",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/elevon_left_hinge/elevon_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "SkywalkerX8/elevon_right_hinge/elevon_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
+      ],
+      "marking_slots": [],
+      "smoke_slots": [],
+      "lighting_layout": {
+        "version": 1,
+        "anchors": [],
+        "strips": []
+      },
+      "presentation_engine_version": "4.8.0",
+      "presentation_sources": [
+        {
+          "path": "res://audio/mechanical_profile.gd",
+          "sha256": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb"
+        },
+        {
+          "path": "res://render/aircraft_customization.gd",
+          "sha256": "1d58d2000d746f37927b7a5a267f397bfe07b3b12d0e61a839540b2c42988d88"
+        },
+        {
+          "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
+          "sha256": "73f26fe7df637aaf815a6d87d3f8a17816b7c0458a0ee941c34e0dcc1fbe534d"
+        },
+        {
+          "path": "res://render/lighting/lighting_patterns.gd",
+          "sha256": "c142706c39e005515b724b6fb94098bb08a2f6edba0b2e00ad5c13c99cce99a6"
+        },
+        {
+          "path": "res://render/lighting/lighting_policy.gd",
+          "sha256": "8e1722281534a5ea5e288b57b2a67c892adb6ebc09f02e8ccdd7f6add8cf9d8b"
+        },
+        {
+          "path": "res://render/lighting/lighting_profile.gd",
+          "sha256": "a6c3e19e8d4545fce2462717d9bce62cdf8a73f05bebf0c455355b4bf50edfe4"
+        },
+        {
+          "path": "res://render/lighting/lighting_scene_budget.gd",
+          "sha256": "09477e9e900b37050e422ae90427e6d5cb54823e562c8f44c94ce316e4ef2d26"
+        },
+        {
+          "path": "res://render/lighting/lighting_skins.gd",
+          "sha256": "7290368236912404506d074661bf041e5ff8a642518bcf0f4f0fff64fe55779f"
+        },
+        {
+          "path": "res://render/lighting/lighting_vfx.gd",
+          "sha256": "f170558418e851eebd212f759c8302d7c469101fa8646ec7d9db68f47ef4dc1f"
+        },
+        {
+          "path": "res://render/lighting/rgb_lamp.gdshader",
+          "sha256": "960b0a1048c6e96bc1938fef48940e6c79b314c5419e6bc954de7bbd8f526c4d"
+        },
+        {
+          "path": "res://render/lighting/rgb_strip.gdshader",
+          "sha256": "93e6e1a978722932fcccb6a020e31eb93e98df1d31fa94544999d79b12f8582b"
+        },
+        {
+          "path": "res://render/presentation_sources.gd",
+          "sha256": "791dca78282c1aa7d39ebf4cc90bdfe12fc598ccbe4e72e5ca150c9ebd8bbca1"
+        },
+        {
+          "path": "res://render/smoke/exhaust.gd",
+          "sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+        },
+        {
+          "path": "res://render/smoke/process.gdshader",
+          "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+        },
+        {
+          "path": "res://render/smoke/profile_process.gdshader",
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke.gd",
+          "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke_schedule.gd",
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
+        },
+        {
+          "path": "res://render/world/aircraft_light_state.gd",
+          "sha256": "fb36c123dc7fce796fe7d35fe92f3fb5536f560783283cc102e063d01eac47ec"
+        },
+        {
+          "path": "res://render/world/aircraft_lights.gd",
+          "sha256": "e27c245fcedbee70d7883753e4e442f32f4e3e0ba1339dc16486cc63d65e92b7"
+        },
+        {
+          "path": "res://render/world/engine_srgb.gdshaderinc",
+          "sha256": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799"
+        },
+        {
+          "path": "res://render/world/exposure.gd",
+          "sha256": "c25487774ecec2d0957eef4825f43884594b3bfc365fbeefdc4ad6c80a518e19"
+        },
+        {
+          "path": "res://render/world/led_strip.gdshader",
+          "sha256": "d91e18eb224b8636897be40c83f3c2af781964f2d0ff031fca2bb3c2c73430dc"
+        },
+        {
+          "path": "res://render/world/light_sprite.gdshader",
+          "sha256": "28b1a7fdd18009e9243e1a288700a16acaa945f47352b43df2b0ebd2dd33e3d9"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
+        }
+      ],
+      "slots_sha256": "0fd52c6aa760e3d6a13d9be82ea9e0530bc1d9d065fcfb888098539c64fe79e9"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "turbo-lumber-evolution",
-      "model_manifest_sha256": "5ea663ac036b56aa4d561f3c375717fffbb53d65e1ce1ce3ad525507225a2569",
+      "model_manifest_sha256": "6b815eef6d54214b29d61b4338bf65168f1384f7beaa09074e1c5f517f120a40",
       "paint_slots": [
         {
           "id": "body",
@@ -2279,7 +2455,7 @@
           "sha256": "743454707d271b1a3f0fb5baa88974bed73b368426cd0808cd2a0863672551eb"
         }
       ],
-      "slots_sha256": "98893eab1ae9c0a62581c0b609146a9027c793a5f28a487c6ea81b9a29efc66d"
+      "slots_sha256": "46cb7571630357929ddedf5a57e9525876f8ec13859381067c54e3402b49a97b"
     }
   ]
 }

@@ -1,0 +1,45 @@
+{
+ "base": "r3/aircraft_game.blend",
+ "new": "r4/aircraft_game.blend",
+ "samples": {
+  "elevon_left_hinge": {
+   "count": 59,
+   "first": -40.0,
+   "last": 40.0
+  },
+  "elevon_right_hinge": {
+   "count": 59,
+   "first": -40.0,
+   "last": 40.0
+  },
+  "camera_door_left_hinge": {
+   "count": 23,
+   "first": 0.0,
+   "last": 110.0
+  },
+  "camera_door_right_hinge": {
+   "count": 23,
+   "first": 0.0,
+   "last": 110.0
+  },
+  "propeller_spin": {
+   "count": 36,
+   "first": 0.0,
+   "last": 350.0
+  }
+ },
+ "poses_compared": 201,
+ "vertices_per_pose": 19324,
+ "max_vertex_diff_m": 0.0,
+ "max_vertex_diff_m_by_pivot": {
+  "rest": 0.0,
+  "elevon_left_hinge": 0.0,
+  "elevon_right_hinge": 0.0,
+  "camera_door_left_hinge": 0.0,
+  "camera_door_right_hinge": 0.0,
+  "propeller_spin": 0.0
+ },
+ "tolerance_m": 1e-06,
+ "errors": [],
+ "passed": true
+}

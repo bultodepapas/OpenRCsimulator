@@ -1,0 +1,1623 @@
+{
+  "format": "openrc-aircraft v2",
+  "physical_identity_version": 1,
+  "id": "skywalker-x8",
+  "description": "EPO flying wing inspired by the Skywalker X8 (2.12 m, elevons, winglets, electric pusher, no gear) in the r4 delivery's UAV build. NTNU flight-identified aerodynamics, measured part masses and inertia reference, estimated electric drive. Experimental; not flight validated.",
+  "convention_id": "openrc-le-frd-v1",
+  "capabilities": {
+    "controls": "elevon",
+    "gear": "locked_up",
+    "propulsion_layout": "single_pusher",
+    "energy": "fixed_voltage",
+    "damage": "tolerant_hull",
+    "flaps": "not_simulated",
+    "airframe_layout": "tailless"
+  },
+  "frames": {
+    "le_frame": "D0 (r4 delivery): [x_aft, y_right, z_up] = [Godot z, Godot x, Godot y], metres; root-rib leading edge at thrust-axis height",
+    "body": "FRD about inventory CG"
+  },
+  "reference": {
+    "wing_area": {
+      "value": 0.75,
+      "unit": "m2",
+      "kind": "borrowed",
+      "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): reference area (planform witness 0.705 m² in the author's tables, retail 0.80 m²)"
+    },
+    "wing_span": {
+      "value": 2.1,
+      "unit": "m",
+      "kind": "borrowed",
+      "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): reference span (retail 2.12 m)"
+    },
+    "mean_chord": {
+      "value": 0.357142857143,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/skywalker-x8/X8-06/derive_physics.py: S/b"
+    },
+    "aero_reference_point": {
+      "value": [
+        0.125419,
+        0.0,
+        0.007
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "estimated NTNU flight CG: 425 mm from the nose (Winter 2019 model CG) puts the flight-identified AC 27 mm aft, at the tunnel neutral point (~451 mm, S01); wing chord plane height"
+    },
+    "planform": "tapered",
+    "root_chord": {
+      "value": 0.544285714286,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/skywalker-x8/X8-06/derive_physics.py: S/b-consistent trapezoid for the strip split: 2S/b − tip"
+    },
+    "tip_chord": {
+      "value": 0.17,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/skywalker-x8/X8-06/derive_physics.py: r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) tip chord ~171 mm at 935 mm span; NTNU scan 177 mm at 1050 mm"
+    }
+  },
+  "balance": {
+    "plan_cg": {
+      "value": [
+        0.135419,
+        0.0,
+        0.004255534
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/skywalker-x8/X8-06/derive_physics.py: inventory CG: 435 mm from the nose (manual 430-440 mm, mid-range); vertical from the inventory"
+    },
+    "firewall": {
+      "value": [
+        0.490419,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "pusher motor mount plate, r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view)"
+    },
+    "configuration": "x8-uav-mapping-6s-v1",
+    "cg_tolerance": {
+      "value": 0.001,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "reference build tolerance (fleet value)"
+    },
+    "cg_range": {
+      "forward": {
+        "value": 0.130419,
+        "unit": "m",
+        "kind": "manual",
+        "source": "Skywalker X8 retail listings (S20-S24): 2120 mm, 80 dm2, flying weight 2.5-3.0 kg, max AUW 3.5 kg, CG 430-440 mm (forward limit)"
+      },
+      "aft": {
+        "value": 0.140419,
+        "unit": "m",
+        "kind": "manual",
+        "source": "Skywalker X8 retail listings (S20-S24): 2120 mm, 80 dm2, flying weight 2.5-3.0 kg, max AUW 3.5 kg, CG 430-440 mm (aft limit)"
+      }
+    }
+  },
+  "inventory": [
+    {
+      "id": "wing_left",
+      "name": "left wing panel, winglet and elevon (EPO)",
+      "mass": {
+        "value": 0.459,
+        "unit": "kg",
+        "kind": "measured",
+        "source": "Gryte 2015 MSc thesis (NTNU) Tables 6.2/H.1 measured X8 part masses (S11): left 464 g / right 454 g incl. winglet, mean 459 g; centroid of the author's outer-panel planform"
+      },
+      "position": {
+        "value": [
+          0.270644543652,
+          -0.537699204252,
+          0.0329002717
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "Gryte 2015 MSc thesis (NTNU) Tables 6.2/H.1 measured X8 part masses (S11): left 464 g / right 454 g incl. winglet, mean 459 g; centroid of the author's outer-panel planform; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.27,
+          0.7,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Gryte 2015 MSc thesis (NTNU) Tables 6.2/H.1 measured X8 part masses (S11): left 464 g / right 454 g incl. winglet, mean 459 g; centroid of the author's outer-panel planform; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "wing_right",
+      "name": "right wing panel, winglet and elevon (EPO)",
+      "mass": {
+        "value": 0.459,
+        "unit": "kg",
+        "kind": "measured",
+        "source": "Gryte 2015 MSc thesis (NTNU) Tables 6.2/H.1 measured X8 part masses (S11): mean of both wings; mirrored"
+      },
+      "position": {
+        "value": [
+          0.270644543652,
+          0.537699204252,
+          0.0329002717
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "Gryte 2015 MSc thesis (NTNU) Tables 6.2/H.1 measured X8 part masses (S11): mean of both wings; mirrored; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.27,
+          0.7,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Gryte 2015 MSc thesis (NTNU) Tables 6.2/H.1 measured X8 part masses (S11): mean of both wings; mirrored; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "body_main",
+      "name": "centre body, hatch and root ribs (painted EPO)",
+      "mass": {
+        "value": 0.439,
+        "unit": "kg",
+        "kind": "measured",
+        "source": "Gryte 2015 MSc thesis (NTNU) Tables 6.2/H.1 measured X8 part masses (S11): painted body 439 g; centroid of the author's centre-body planform"
+      },
+      "position": {
+        "value": [
+          0.090852527729,
+          0.0,
+          0.012
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "Gryte 2015 MSc thesis (NTNU) Tables 6.2/H.1 measured X8 part masses (S11): painted body 439 g; centroid of the author's centre-body planform; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.7,
+          0.47,
+          0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Gryte 2015 MSc thesis (NTNU) Tables 6.2/H.1 measured X8 part masses (S11): painted body 439 g; centroid of the author's centre-body planform; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "spars_main",
+      "name": "carbon wing spars and joiners",
+      "mass": {
+        "value": 0.04,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "two carbon tubes about 1.3 m at ~15 g/m plus joiners; not weighed"
+      },
+      "position": {
+        "value": [
+          0.170419,
+          0.0,
+          0.006
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "two carbon tubes about 1.3 m at ~15 g/m plus joiners; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.03,
+          1.3,
+          0.012
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "two carbon tubes about 1.3 m at ~15 g/m plus joiners; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "motor_main",
+      "name": "520 Kv outrunner (3530/4250 class)",
+      "mass": {
+        "value": 0.19,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 190 g at 818 mm (motor 4250 500 Kv class)"
+      },
+      "position": {
+        "value": [
+          0.518419,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 190 g at 818 mm (motor 4250 500 Kv class); D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.045,
+          0.042,
+          0.042
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 190 g at 818 mm (motor 4250 500 Kv class); aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "propeller_main",
+      "name": "APC 12x6E pusher propeller and adapter",
+      "mass": {
+        "value": 0.03,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 12 in propeller and adapter 30 g at 846 mm"
+      },
+      "position": {
+        "value": [
+          0.546419,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 12 in propeller and adapter 30 g at 846 mm; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.01,
+          0.3,
+          0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 12 in propeller and adapter 30 g at 846 mm; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "motor_mount",
+      "name": "motor mount plate",
+      "mass": {
+        "value": 0.02,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "plywood/plastic pusher mount; not weighed"
+      },
+      "position": {
+        "value": [
+          0.490419,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plywood/plastic pusher mount; not weighed; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.006,
+          0.05,
+          0.05
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plywood/plastic pusher mount; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "esc_main",
+      "name": "60 A ESC",
+      "mass": {
+        "value": 0.06,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: ESC 60 A, 60 g at 662 mm"
+      },
+      "position": {
+        "value": [
+          0.362419,
+          0.0,
+          -0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: ESC 60 A, 60 g at 662 mm; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.07,
+          0.03,
+          0.015
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: ESC 60 A, 60 g at 662 mm; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "flight_controller",
+      "name": "autopilot / flight controller",
+      "mass": {
+        "value": 0.03,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 30 g at 455 mm"
+      },
+      "position": {
+        "value": [
+          0.155419,
+          0.0,
+          -0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 30 g at 455 mm; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.052,
+          0.036,
+          0.015
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 30 g at 455 mm; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "receiver_telemetry",
+      "name": "receiver and telemetry radio",
+      "mass": {
+        "value": 0.018,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 18 g at 420 mm; its 55 mm side offset is dropped for a symmetric CG (fleet convention, 0.3 mm)"
+      },
+      "position": {
+        "value": [
+          0.120419,
+          0.0,
+          -0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 18 g at 420 mm; its 55 mm side offset is dropped for a symmetric CG (fleet convention, 0.3 mm); D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.022,
+          0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 18 g at 420 mm; its 55 mm side offset is dropped for a symmetric CG (fleet convention, 0.3 mm); aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "gps_compass",
+      "name": "GPS and compass",
+      "mass": {
+        "value": 0.03,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 30 g at 640 mm under the top skin"
+      },
+      "position": {
+        "value": [
+          0.340419,
+          0.0,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 30 g at 640 mm under the top skin; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.028,
+          0.028,
+          0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 30 g at 640 mm under the top skin; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "fpv_camera",
+      "name": "FPV camera and video transmitter",
+      "mass": {
+        "value": 0.03,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 30 g at 52 mm"
+      },
+      "position": {
+        "value": [
+          -0.247581,
+          0.0,
+          0.005
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 30 g at 52 mm; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.022,
+          0.022,
+          0.024
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 30 g at 52 mm; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "mapping_camera",
+      "name": "mapping camera",
+      "mass": {
+        "value": 0.24,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 240 g at 539 mm above the ventral doors"
+      },
+      "position": {
+        "value": [
+          0.239419,
+          0.0,
+          -0.022
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 240 g at 539 mm above the ventral doors; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.102,
+          0.058,
+          0.041
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 240 g at 539 mm above the ventral doors; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "parachute_pack",
+      "name": "recovery parachute pack",
+      "mass": {
+        "value": 0.15,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 150 g at 370 mm under the hatch"
+      },
+      "position": {
+        "value": [
+          0.070419,
+          0.0,
+          0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 150 g at 370 mm under the hatch; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.088,
+          0.08,
+          0.055
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 150 g at 370 mm under the hatch; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "servo_elevon_left",
+      "name": "left elevon servo (17 g digital)",
+      "mass": {
+        "value": 0.017,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 17 g ES3054-class servo at 515 mm span, servo bay 558 mm"
+      },
+      "position": {
+        "value": [
+          0.258419,
+          -0.515,
+          0.012
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 17 g ES3054-class servo at 515 mm span, servo bay 558 mm; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.023,
+          0.012,
+          0.024
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 17 g ES3054-class servo at 515 mm span, servo bay 558 mm; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "servo_elevon_right",
+      "name": "right elevon servo (17 g digital)",
+      "mass": {
+        "value": 0.017,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: mirrored"
+      },
+      "position": {
+        "value": [
+          0.258419,
+          0.515,
+          0.012
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: mirrored; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.023,
+          0.012,
+          0.024
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: mirrored; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "wiring_main",
+      "name": "wiring, connectors and magnets",
+      "mass": {
+        "value": 0.06,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 60 g at 420 mm"
+      },
+      "position": {
+        "value": [
+          0.120419,
+          0.0,
+          -0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 60 g at 420 mm; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.3,
+          0.1,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) COMPONENTS/FIXED_MASSES ledger: 60 g at 420 mm; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "nose_ballast",
+      "name": "nose ballast (lead) to the manual CG",
+      "mass": {
+        "value": 0.069203764775,
+        "unit": "kg",
+        "kind": "derived",
+        "source": "balance: with the pack at the front of its tray (175.5 mm) the measured airframe needs 69 g of lead 80 mm from the nose for the 435 mm CG; owner builds may move or omit it"
+      },
+      "position": {
+        "value": [
+          -0.219581,
+          0.0,
+          -0.005
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "balance: with the pack at the front of its tray (175.5 mm) the measured airframe needs 69 g of lead 80 mm from the nose for the 435 mm CG; owner builds may move or omit it; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.02,
+          0.03,
+          0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "balance: with the pack at the front of its tray (175.5 mm) the measured airframe needs 69 g of lead 80 mm from the nose for the 435 mm CG; owner builds may move or omit it; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "battery_main",
+      "name": "6S 5000 mAh LiPo (30C class)",
+      "mass": {
+        "value": 0.7734375,
+        "unit": "kg",
+        "kind": "derived",
+        "source": "lipo-6s1p-5000-30c-class mass and box; centre 175.5 mm from the nose on the author's tray (175.5-338.5 mm) for the 435 mm target CG"
+      },
+      "position": {
+        "value": [
+          -0.124081,
+          0.0,
+          -0.022
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "lipo-6s1p-5000-30c-class mass and box; centre 175.5 mm from the nose on the author's tray (175.5-338.5 mm) for the 435 mm target CG; D0 structural frame"
+      },
+      "size": {
+        "value": [
+          0.162455609176,
+          0.049897079961,
+          0.055699066003
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "lipo-6s1p-5000-30c-class mass and box; centre 175.5 mm from the nose on the author's tray (175.5-338.5 mm) for the 435 mm target CG; aligned box inertia envelope"
+      },
+      "energy_source": "lipo"
+    }
+  ],
+  "start": {
+    "level_speed": {
+      "value": 12.76697465436,
+      "unit": "m/s",
+      "kind": "derived",
+      "source": "research/skywalker-x8/X8-06/derive_physics.py: 1.6 × clean 1-g stall (8.0 m/s) at 3.13 kg, CL_max 1.05 (fleet practice, Turbo Lumber)"
+    }
+  },
+  "controls": {
+    "surface_ids": {
+      "elevon_left": "surface_elevon_left",
+      "elevon_right": "surface_elevon_right"
+    },
+    "max_throw": {
+      "aileron": {
+        "value": 23.26,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) radio mix: roll share 0.85 of the servo travel, 23.26° per elevon at full roll (r4 rig)"
+      },
+      "elevator": {
+        "value": 19.47,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) radio mix: pitch share 0.70, 19.47° at full pitch (r4 rig); NTNU flew ±19° (S05)"
+      },
+      "elevon": {
+        "value": 26.76,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) full servo travel −26.76/+26.85°; the smaller magnitude clips both directions"
+      }
+    },
+    "servo_full_throw_time": {
+      "value": 0.075,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "17 g digital elevon servo (ES3054 class, ~0.10 s/60° at 4.8 V) turning 45° for full travel (r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) servo_throw); estimated"
+    },
+    "rates": {
+      "normal": {
+        "aileron": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "full mixed throw on the normal rate; X8 manual unavailable (403)"
+        },
+        "elevator": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "full mixed throw on the normal rate; X8 manual unavailable (403)"
+        },
+        "aileron_expo": {
+          "value": 0.3,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "common flying-wing setup expo; not from an X8 manual"
+        },
+        "elevator_expo": {
+          "value": 0.3,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "common flying-wing setup expo; not from an X8 manual"
+        }
+      }
+    }
+  },
+  "aero": {
+    "source": "NTNU Skywalker X8 flight identification (S05) on the tailless strip law; see docs/research/skywalker-x8/X8-01/README.md",
+    "conventions": {
+      "alpha_beta": "rad",
+      "rates": "p_hat = p·b/(2V), q_hat = q·c/(2V), r_hat = r·b/(2V)",
+      "elevator": "per radian of the elevons' symmetric part (δel+δer)/2, positive = trailing edge DOWN (dCm/dElev < 0)",
+      "aileron": "per radian of each elevon's antisymmetric part, positive = trailing edge DOWN; right and left listed separately",
+      "rudder": "none: rudderless winglets, every rudder term is 0",
+      "drag": "CD = CD0 + k·(CL - CL_minD)² + sum |dCD/dδ·δ|",
+      "axes": "lift, drag, side force in wind axes; roll, pitch, yaw moments in body axes about the aero reference point"
+    },
+    "coefficients": {
+      "CL0": {
+        "value": 0.1523,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): CL0"
+      },
+      "CLa": {
+        "value": 4.3993,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): CLα"
+      },
+      "CLq": {
+        "value": 0.447552,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) CLq 0.444 (±31 %) × c̄ 0.36/(S/b) for q̂ on the S/b chord"
+      },
+      "CLde": {
+        "value": 0.5011,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): CLδe, δe = (δel+δer)/2, trailing edge down"
+      },
+      "CLda_each": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: elevons: the symmetric part is δe (CLde); no separate aileron lift term"
+      },
+      "CD0": {
+        "value": 0.038715936942,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: CD0 + k·CL² through Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) flight drag 0.0411 − 0.0032·CL + 0.0373·CL² at its trim CL 0.246 (L/D 5.8), k below"
+      },
+      "CL_minD": {
+        "value": 0.0,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: symmetric drag polar about CL 0 (fitted minimum-drag CL 0.043 is within the fit noise)"
+      },
+      "k_induced": {
+        "value": 0.063687452218,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: 1/(π·e·AR), AR = b²/S = 5.88, span efficiency e 0.85 estimated (swept wing with winglets); the flight fit's 0.0373 is below the theoretical bound"
+      },
+      "CDda_each": {
+        "value": 0.006,
+        "unit": "1/rad",
+        "kind": "estimated",
+        "source": "Gryte et al. 2018, ICUAS doi:10.1109/ICUAS.2018.8453370, Table V wind tunnel (S01) CDδe 0.0633/rad² linearised at ~11°, halved per elevon; estimated"
+      },
+      "CDdr": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: no rudder"
+      },
+      "CDde": {
+        "value": 0.012,
+        "unit": "1/rad",
+        "kind": "estimated",
+        "source": "Gryte et al. 2018, ICUAS doi:10.1109/ICUAS.2018.8453370, Table V wind tunnel (S01) CDδe 0.0633/rad² linearised at ~11°; estimated"
+      },
+      "CYb": {
+        "value": -0.27,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): CYβ (winglets + body; split below)"
+      },
+      "CYp": {
+        "value": -0.192,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): CYp"
+      },
+      "CYr": {
+        "value": 0.108,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2025 (S04) Table 8 CYr; the 2026 clean value 0.539 is five times XFLR5's 0.084 (S01) and 2024's 0.186, treated as an outlier"
+      },
+      "CYdr": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: no rudder"
+      },
+      "Clb": {
+        "value": -0.0644,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): Clβ (winglets + wing-body sweep; split below)"
+      },
+      "Clp": {
+        "value": -0.2124,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): Clp"
+      },
+      "Clr": {
+        "value": 0.1135,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): Clr"
+      },
+      "Clda_right": {
+        "value": -0.04325,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) Clδa 0.0865 with δa = (δel−δer)/2: per-elevon antisymmetric right term −Clδa/2"
+      },
+      "Clda_left": {
+        "value": 0.04325,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) Clδa 0.0865: left term +Clδa/2"
+      },
+      "Cldr": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: no rudder"
+      },
+      "Cm0": {
+        "value": 0.0067536,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) Cm0 0.0067 × c̄ 0.36/(S/b), about the ARP (estimated NTNU flight CG)"
+      },
+      "Cma": {
+        "value": -0.3333456,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) Cmα −0.3307 × c̄/(S/b)"
+      },
+      "Cmq": {
+        "value": -0.8171186688,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) Cmq −0.8042 × (c̄/(S/b))²"
+      },
+      "Cmde": {
+        "value": -0.2334528,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) Cmδe −0.2316 × c̄/(S/b)"
+      },
+      "Cmda_each": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: elevons: the symmetric part is δe (Cmde)"
+      },
+      "Cnb": {
+        "value": 0.0198,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): Cnβ (the winglets carry it; no body yaw term)"
+      },
+      "Cnp": {
+        "value": -0.0204,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): Cnp"
+      },
+      "Cnr": {
+        "value": -0.1069,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0): Cnr"
+      },
+      "Cnda_right": {
+        "value": 0.00215,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) Cnδa −0.0043 with δa = (δel−δer)/2: right term −Cnδa/2"
+      },
+      "Cnda_left": {
+        "value": -0.00215,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) Cnδa −0.0043: left term +Cnδa/2"
+      },
+      "Cndr": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: no rudder"
+      }
+    },
+    "reference_coefficients": {
+      "CLadot": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "estimated",
+        "source": "not identified for the X8; reference only, no consumer"
+      }
+    },
+    "envelope": {
+      "CL_max": {
+        "value": 1.05,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Gryte et al. 2018, ICUAS doi:10.1109/ICUAS.2018.8453370, Table V wind tunnel (S01) lift linear to ~12°; CFD clean CLmax 1.1 at 18° (Winter 2019, S06)"
+      },
+      "CL_min": {
+        "value": -0.7,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "reflexed thin section inverted; unmeasured"
+      },
+      "stall_blend_width": {
+        "value": 8.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "attached-to-flat-plate width; unmeasured"
+      },
+      "CD90": {
+        "value": 1.2,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "low-aspect flat plate normal force (fleet value)"
+      },
+      "sideslip_blend": {
+        "value": [
+          15,
+          25
+        ],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Gryte et al. 2018, ICUAS doi:10.1109/ICUAS.2018.8453370, Table V wind tunnel (S01) tunnel β ±15° linear; fleet blend end"
+      }
+    },
+    "surfaces": {
+      "wing_station_incidence": {
+        "value": [
+          0.014701404423,
+          0.004503191552,
+          -0.019204595975
+        ],
+        "unit": "rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) washout −2.5° linear from the root rib to the tip at the strips' centroids; zero mean (CL0 carries it)"
+      },
+      "body_cy_beta": {
+        "value": -0.154417720603,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: CYβ minus the winglets' side force (the centre body and swept wing carry the rest)"
+      },
+      "body_crossflow_area": {
+        "value": 0.057,
+        "unit": "m2",
+        "kind": "estimated",
+        "source": "Allen-Perkins crossflow η·c_d·S_side: centre-body side area 0.79 m × ~0.10 m (r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view)), c_d 1.2, η 0.6; estimated"
+      },
+      "wing_body_cl_beta": {
+        "value": -0.059242291287,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: Clβ minus the winglets' rolling term: the swept wing's dihedral effect"
+      },
+      "attached_limit": {
+        "value": 8.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "fleet value (Ugly Stik, Turbo Lumber): local attached-flow/oracle boundary"
+      },
+      "tail_local_limit": {
+        "value": 12.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "fleet value (Ugly Stik, Turbo Lumber): fin attached-flow limit"
+      },
+      "tail_stall_end": {
+        "value": 24.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "fleet value (Ugly Stik, Turbo Lumber): fin flat-plate transition end"
+      },
+      "tail_CD0": {
+        "value": 0.012,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "fleet value (Ugly Stik, Turbo Lumber): fin profile drag, symmetric winglet section"
+      },
+      "tail_k": {
+        "value": 0.08,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "fleet value (Ugly Stik, Turbo Lumber): fin induced drag"
+      },
+      "tail_CD90": {
+        "value": 1.2,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "fleet value (Ugly Stik): flat-plate normal force of the winglets"
+      },
+      "vertical": {
+        "area": {
+          "value": 0.067864066565,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py: both winglets' projected side areas from the author's winglet formulas (LE/TE, 183 mm high, 28° cant)"
+        },
+        "position": {
+          "value": [
+            0.4851627273,
+            0.0,
+            0.1007097655
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py: winglets' area-weighted quarter-chord station and mid-height, one centreline element"
+        },
+        "lift_slope": {
+          "value": 1.277358017801,
+          "unit": "1/rad",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py: solved so the winglets carry Løw-Hansen et al. 2026, Aeronautical Journal doi:10.1017/aer.2026.10234, Tables 11-12 clean X8 (S05, CC BY 4.0) Cnβ 0.0198 at their arm (no body yaw term); low-aspect canted fins"
+        },
+        "control_effectiveness": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py: no rudder: the X8's winglets are fixed"
+        },
+        "incidence": {
+          "value": 0.0,
+          "unit": "rad",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py: r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view): winglets without toe"
+        }
+      },
+      "tailless": {
+        "station_x": {
+          "value": [
+            -0.0398282024,
+            0.16484140677,
+            0.315305610726
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py: r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) planform quarter chord at the equal-area strips of the S/b-consistent trapezoid (root 0.5443 m, tip 0.17 m), root → tip; the loader shifts all stations together to the oracle's neutral point"
+        },
+        "elevon_coverage": {
+          "value": [
+            0.024583155842,
+            1.0,
+            0.646688570847
+          ],
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py: r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) elevons from 244 to 878 mm span over the equal-area strips of the S/b-consistent trapezoid (root 0.5443 m, tip 0.17 m), root → tip"
+        },
+        "elevon_chord_fraction": {
+          "value": 0.220870153147,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py: r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view) elevon chord 70→58 mm over the local planform chord, span-averaged"
+        }
+      }
+    }
+  },
+  "propulsion": {
+    "kind": "electric_prop",
+    "motor": {
+      "kv_rpm_per_volt": {
+        "value": 520,
+        "unit": "rpm/V",
+        "kind": "manual",
+        "source": "Skywalker X8 PNP 3530 520 Kv motor (retail listing S21)"
+      },
+      "resistance_scope": "motor_winding_equivalent",
+      "resistance_ohm": {
+        "value": 0.06,
+        "unit": "ohm",
+        "kind": "estimated",
+        "source": "35-42 mm 500 Kv-class outrunner winding resistance (comparable catalogue motors 0.045-0.07 Ω); not measured"
+      },
+      "no_load_current_a": {
+        "value": 1.0,
+        "unit": "A",
+        "kind": "estimated",
+        "source": "500 Kv-class outrunner no-load current near 10 V; not measured"
+      },
+      "no_load_context": {
+        "voltage_v": {
+          "value": 22.2,
+          "unit": "V",
+          "kind": "estimated",
+          "source": "6S nominal"
+        },
+        "rpm": {
+          "value": 11512.800000000001,
+          "unit": "rpm",
+          "kind": "derived",
+          "source": "research/skywalker-x8/X8-06/derive_physics.py: Kv·(V − R·I0)"
+        },
+        "temperature_c": {
+          "value": 25.0,
+          "unit": "°C",
+          "kind": "estimated",
+          "source": "context only; no thermal model"
+        }
+      }
+    },
+    "battery": {
+      "kind": "fixed_voltage",
+      "voltage_v": {
+        "value": 22.2,
+        "unit": "V",
+        "kind": "estimated",
+        "source": "6S nominal fixed bus (ideal-bus configuration); no sag or depletion"
+      }
+    },
+    "esc": {
+      "kind": "ideal_motoring",
+      "command_mapping": "identity"
+    },
+    "propeller": {
+      "diameter": {
+        "value": 0.3048,
+        "unit": "m",
+        "kind": "manual",
+        "source": "APC 12x6E(P) nominal 12 in (Skywalker kit recommendation 12x6E, S20/S22); drawn propeller 0.3049 m"
+      },
+      "ct_table": {
+        "value": [
+          [
+            0.0,
+            0.10546
+          ],
+          [
+            0.333913,
+            0.071653
+          ],
+          [
+            0.359762,
+            0.06577
+          ],
+          [
+            0.373361,
+            0.061892
+          ],
+          [
+            0.392495,
+            0.056601
+          ],
+          [
+            0.413002,
+            0.051841
+          ],
+          [
+            0.433129,
+            0.046902
+          ],
+          [
+            0.452355,
+            0.042453
+          ],
+          [
+            0.473059,
+            0.037347
+          ],
+          [
+            0.494232,
+            0.032514
+          ],
+          [
+            0.515098,
+            0.027579
+          ],
+          [
+            0.533862,
+            0.023112
+          ],
+          [
+            0.554337,
+            0.018253
+          ],
+          [
+            0.573423,
+            0.013719
+          ],
+          [
+            0.592478,
+            0.009348
+          ],
+          [
+            0.614674,
+            0.004821
+          ],
+          [
+            0.633612,
+            -0.000128
+          ],
+          [
+            0.653931,
+            -0.005268
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC propeller database Vol. 4 APC 12x6E (thin electric), measured: static apce_12x6_static_0629od.txt (sha256 e392a17a430a…, 7546 rpm row) and tunnel apce_12x6_0635od_6044.txt at 6044 rpm (sha256 7e969b7089fc…, repeated end rows dropped); local copy references/rc-propellers-12x6/uiuc. A pusher APC 12x6EP is the mirror image (same CT/CP); the X8 turns ~10,000 rpm (higher Reynolds number than the 6044 rpm run); J 0-0.334 bridged linearly"
+      },
+      "cp_table": {
+        "value": [
+          [
+            0.0,
+            0.033643
+          ],
+          [
+            0.333913,
+            0.03451
+          ],
+          [
+            0.359762,
+            0.033095
+          ],
+          [
+            0.373361,
+            0.031991
+          ],
+          [
+            0.392495,
+            0.030368
+          ],
+          [
+            0.413002,
+            0.028904
+          ],
+          [
+            0.433129,
+            0.027258
+          ],
+          [
+            0.452355,
+            0.025746
+          ],
+          [
+            0.473059,
+            0.023903
+          ],
+          [
+            0.494232,
+            0.022177
+          ],
+          [
+            0.515098,
+            0.02035
+          ],
+          [
+            0.533862,
+            0.01863
+          ],
+          [
+            0.554337,
+            0.016692
+          ],
+          [
+            0.573423,
+            0.014801
+          ],
+          [
+            0.592478,
+            0.0129
+          ],
+          [
+            0.614674,
+            0.010874
+          ],
+          [
+            0.633612,
+            0.008654
+          ],
+          [
+            0.653931,
+            0.006382
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC propeller database Vol. 4 APC 12x6E (thin electric), measured: static apce_12x6_static_0629od.txt (sha256 e392a17a430a…, 7546 rpm row) and tunnel apce_12x6_0635od_6044.txt at 6044 rpm (sha256 7e969b7089fc…, repeated end rows dropped); local copy references/rc-propellers-12x6/uiuc. A pusher APC 12x6EP is the mirror image (same CT/CP); the X8 turns ~10,000 rpm (higher Reynolds number than the 6044 rpm run); J 0-0.334 bridged linearly"
+      },
+      "rotating_inertia": {
+        "value": 0.00022,
+        "unit": "kg·m2",
+        "kind": "estimated",
+        "source": "APC 12x6E (~32 g, ~1.5e-4 kg·m²) plus adapter and outrunner bell; not measured (NTNU 14x8: 3.46e-4, S03)"
+      },
+      "thrust_angles": {
+        "value": [
+          0.0,
+          0.0
+        ],
+        "unit": "deg",
+        "kind": "measured",
+        "source": "r4 delivery source/scripts/x8_skywalker_blender.py (author's parametric master from the Skywalker three-view): motor axis along the body axis, no down or side thrust"
+      },
+      "thrust_line_offset": {
+        "value": [
+          0.411,
+          0.0,
+          -0.004255534
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/skywalker-x8/X8-06/derive_physics.py: delivery propeller hub (846 mm from the nose, thrust-axis height) minus inventory CG; pusher aft of the CG"
+      }
+    },
+    "id": "propulsion_main"
+  },
+  "crash_hull": {
+    "value": [
+      [
+        -0.3007,
+        0.006,
+        0.0088
+      ],
+      [
+        -0.2787,
+        -0.0616,
+        0.0171
+      ],
+      [
+        -0.2787,
+        0.0616,
+        0.0171
+      ],
+      [
+        -0.2787,
+        -0.0616,
+        -0.003
+      ],
+      [
+        -0.2787,
+        0.0616,
+        -0.003
+      ],
+      [
+        -0.2628,
+        0.0,
+        0.0393
+      ],
+      [
+        -0.0489,
+        0.0,
+        0.083
+      ],
+      [
+        -0.2628,
+        0.0,
+        -0.0233
+      ],
+      [
+        -0.0489,
+        0.0,
+        -0.0485
+      ],
+      [
+        0.5119,
+        0.0,
+        -0.021
+      ],
+      [
+        -0.0015,
+        -0.2345,
+        0.007
+      ],
+      [
+        -0.0015,
+        0.2345,
+        0.007
+      ],
+      [
+        0.1298,
+        -0.2345,
+        -0.011
+      ],
+      [
+        0.1298,
+        0.2345,
+        -0.011
+      ],
+      [
+        0.4957,
+        -0.8779,
+        0.0275
+      ],
+      [
+        0.4957,
+        0.8779,
+        0.0275
+      ],
+      [
+        0.6804,
+        -1.0575,
+        0.207
+      ],
+      [
+        0.6804,
+        1.0575,
+        0.207
+      ],
+      [
+        0.5886,
+        -1.051,
+        0.1916
+      ],
+      [
+        0.5886,
+        1.051,
+        0.1916
+      ],
+      [
+        0.3498,
+        -0.9628,
+        0.0292
+      ],
+      [
+        0.3498,
+        0.9628,
+        0.0292
+      ],
+      [
+        0.63,
+        -0.9933,
+        0.0836
+      ],
+      [
+        0.63,
+        0.9933,
+        0.0836
+      ],
+      [
+        0.4566,
+        1.0173,
+        0.1301
+      ],
+      [
+        0.4566,
+        -1.0173,
+        0.1301
+      ],
+      [
+        0.5324,
+        -0.958,
+        0.0358
+      ],
+      [
+        0.5324,
+        0.958,
+        0.0358
+      ]
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "research/skywalker-x8/X8-06/derive_physics.py: the drawn r4 model's extreme points per feature (GP-07 method); worst sink of the drawn airframe through the hull 11.7 mm over 6000 attitudes, propeller excluded (strike test); features: probe_nose, probe_nose_left, probe_nose_right, probe_nose_left_low, probe_nose_right_low, probe_canopy_front, probe_canopy, probe_belly_front, probe_belly, probe_engine, probe_wing_left_root_le, probe_wing_right_root_le, probe_wing_left_bottom, probe_wing_right_bottom, probe_elevon_left_te, probe_elevon_right_te, probe_winglet_left_top, probe_winglet_right_top, probe_winglet_left_outer, probe_winglet_right_outer, probe_wing_left_tip_le, probe_wing_right_tip_le, probe_wing_left_tip_te, probe_wing_right_tip_te, probe_winglet_right_fill_1, probe_winglet_left_fill_1, probe_wing_left_fill_2, probe_wing_right_fill_2"
+  },
+  "crash_hull_ids": [
+    "probe_nose",
+    "probe_nose_left",
+    "probe_nose_right",
+    "probe_nose_left_low",
+    "probe_nose_right_low",
+    "probe_canopy_front",
+    "probe_canopy",
+    "probe_belly_front",
+    "probe_belly",
+    "probe_engine",
+    "probe_wing_left_root_le",
+    "probe_wing_right_root_le",
+    "probe_wing_left_bottom",
+    "probe_wing_right_bottom",
+    "probe_elevon_left_te",
+    "probe_elevon_right_te",
+    "probe_winglet_left_top",
+    "probe_winglet_right_top",
+    "probe_winglet_left_outer",
+    "probe_winglet_right_outer",
+    "probe_wing_left_tip_le",
+    "probe_wing_right_tip_le",
+    "probe_wing_left_tip_te",
+    "probe_wing_right_tip_te",
+    "probe_winglet_right_fill_1",
+    "probe_winglet_left_fill_1",
+    "probe_wing_left_fill_2",
+    "probe_wing_right_fill_2"
+  ],
+  "crash_hull_components": [
+    "nose",
+    "nose",
+    "nose",
+    "nose",
+    "nose",
+    "canopy",
+    "canopy",
+    "belly",
+    "belly",
+    "engine",
+    "left_wing_root",
+    "right_wing_root",
+    "left_wing_root",
+    "right_wing_root",
+    "left_wing_root",
+    "right_wing_root",
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip"
+  ],
+  "crash_tolerance": {
+    "terminal_specific_energy": {
+      "value": 12.5,
+      "unit": "J/kg",
+      "kind": "estimated",
+      "source": "EPO foam airframe: five times the shared 2.5 J/kg (about 5 m/s normal impact instead of 2.2 m/s); EPO crush ~80 kJ/m³ (0.16 MPa to ~50 % strain, Xometry EPO sheet S30) absorbs a 3 kg X8's 37 J in ~0.5 L of nose foam; owner drop tests pending"
+    },
+    "crash_depth": {
+      "value": 0.12,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "a foam belly can bury ~12 cm in turf before structure fails; shared 0.08 m for balsa/glow; estimated"
+    },
+    "presentation_durability": {
+      "value": 4.0,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "crash presentation's specific-energy divisor for EPO against balsa/ply (CR-08b); estimated"
+    }
+  },
+  "plausibility": {
+    "mass_range": {
+      "value": [
+        2.5,
+        3.5
+      ],
+      "unit": "kg",
+      "kind": "manual",
+      "source": "Skywalker X8 retail listings (S20-S24): 2120 mm, 80 dm2, flying weight 2.5-3.0 kg, max AUW 3.5 kg, CG 430-440 mm"
+    },
+    "inertia_reference": {
+      "value": [
+        0.071349692927,
+        0.029817782119,
+        0.085193663197
+      ],
+      "unit": "kg·m2",
+      "kind": "derived",
+      "source": "research/skywalker-x8/X8-06/derive_physics.py: Gryte 2020 PhD thesis (NTNU) Table 6.1 bifilar-pendulum X8 inertia (S12) measured 0.335/0.140/0.40 kg·m² at 3.364 kg, 2.10 m, divided by the loader's UltraStick mass·span² scale so the warning compares this inventory with the measured X8"
+    }
+  }
+}

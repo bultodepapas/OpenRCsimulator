@@ -410,11 +410,14 @@ func _prepare_flight() -> void:
 		if args.has("start"):
 			start_choice = str(args.start)
 		elif args.has("quick-flight"):
-			start_choice = FlightSession.START_RUNWAY
+			# X8-07: Quick Flight's ground start is the hand launch for an airplane without landing gear.
+			var quick_id: String = aircraft_id if not aircraft_id.is_empty() else str(args.get("aircraft", Catalog.DEFAULT_ID))
+			start_choice = FlightSession.START_HAND_LAUNCH if Catalog.hand_launch_supported(quick_id) else FlightSession.START_RUNWAY
 		if args.has("quick-flight"):
 			trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE # D6e-R4: the player's shortcut launches trimmed like Home
-		if start_choice not in [FlightSession.START_RUNWAY, FlightSession.START_AIRBORNE, FlightSession.START_HALF_POWER]:
-			printerr("--start must be runway, airborne or airborne_half_power")
+		if start_choice not in [FlightSession.START_RUNWAY, FlightSession.START_AIRBORNE, FlightSession.START_HALF_POWER,
+				FlightSession.START_HAND_LAUNCH]:
+			printerr("--start must be runway, airborne, airborne_half_power or hand_launch")
 			set_process(false)
 			set_process_unhandled_input(false)
 			get_tree().quit(ERR_INVALID_PARAMETER)
@@ -2647,7 +2650,8 @@ func _restart_companions() -> void:
 ## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
 ## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted),
 ## --quick-flight (runway default; every airplane trimmed for 50 % throttle like Home, D6e-R4),
-## --start=runway|airborne|airborne_half_power (explicit launch override; without --quick-flight the reference trim),
+## --start=runway|airborne|airborne_half_power|hand_launch (explicit launch override; without --quick-flight the reference trim;
+## hand_launch only for airplanes without landing gear, X8-07),
 ## --rates=normal|full (D6e: the aircraft's normal-flight rates and expo on the keyboard/gamepad sticks, or the maximum throws),
 ## --field-lighting=club|airfield|off, --field-activation=auto|on|off, --campfire=on|off (FW-71 visual options; direct routes ignore saved preferences),
 ## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)

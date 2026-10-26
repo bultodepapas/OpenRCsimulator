@@ -1,0 +1,37 @@
+Skywalker X8 game asset r4 (skins abisal and bolido) — authorship and terms
+
+Authorship
+  3D model, scripts and documentation prepared for Estudiante 4
+  (estudiante4@bootcampinnovaitors.com, Innovaitors SAS) with Claude (Anthropic), 2026.
+  Geometry is an independent parametric approximation built from public information: the
+  Skywalker official three-view and spec sheet, kit photographs, and Gryte et al.,
+  "Aerodynamic modeling of the Skywalker X8 Fixed-Wing Unmanned Aerial Vehicle", ICUAS 2018.
+  The liveries ABISAL and BOLIDO (textures, renders and painter scripts) are original designs
+  made procedurally for this package. They contain no third-party artwork, logos, insignia or
+  registrations; the names ABISAL, X8-08, ABISAL-08, BOLIDO, VR-08, the mission emblem and all
+  stencils are invented. BOLIDO is inspired by the general construction of the Space Shuttle
+  thermal protection system (tiles, blankets, carbon-carbon); no NASA marking or artwork is
+  reproduced, and the package is not affiliated with or endorsed by NASA. References were only
+  consulted (Wikipedia article on the Space Shuttle thermal protection system; NASA photographs of
+  Endeavour and Columbia viewed on Wikimedia Commons); nothing was copied, traced or embedded, and
+  no reference image is part of this package.
+
+Components
+  Every file in this package was produced for it by the scripts in source/scripts (geometry,
+  paint, layers, textures, renders, checks). No third-party models, textures or images are
+  embedded. Each skin's provenance is also recorded in metadata.json -> skins[].provenance.
+
+Fonts
+  Text in the textures was rasterised with DejaVu Sans / DejaVu Sans Mono (Bitstream Vera
+  licence with DejaVu changes; free to embed in images). Only the pixels are included, not
+  the font files.
+
+Asset terms
+  NOT YET SET. The owner has not chosen the terms under which this asset may be used,
+  modified or redistributed. Until the owner writes them here, no licence is granted by this
+  file. Do not infer the terms from the simulator's code licence.
+
+Trademarks
+  "Skywalker" and "X8" are names of products of Skywalker Technology Co., Ltd. This package
+  is not affiliated with or endorsed by that company. The simulator team may choose a
+  different display name.

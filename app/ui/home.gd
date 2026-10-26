@@ -1228,14 +1228,18 @@ func _show_start_choice(choice: String) -> void:
 			launch_setup_changed.emit()
 		return
 	var supported: bool = Catalog.runway_supported(aircraft_id) and runway_available
+	# X8-07: an airplane without landing gear starts from the field by hand; a remembered ground start shows as this one.
+	var hand: bool = Catalog.hand_launch_supported(aircraft_id)
 	# D6e-R4: every airplane launches trimmed for level flight at 50 % throttle, in the air or after the runway
 	# takeoff, so the former explicit "50% throttle" choice is this airborne start and is shown as such.
 	var airborne: bool = choice == "airborne" or choice == FlightSession.START_HALF_POWER
-	start_choice = "runway" if supported and not airborne else "airborne"
-	start_button.disabled = not supported
-	start_button.text = tr("Start: runway") if start_choice == "runway" else tr("Start: in the air")
+	start_choice = "runway" if supported and not airborne else FlightSession.START_HAND_LAUNCH if hand and not airborne else "airborne"
+	start_button.disabled = not supported and not hand
+	start_button.text = tr("Start: runway") if start_choice == "runway" else tr("Start: hand launch") \
+		if start_choice == FlightSession.START_HAND_LAUNCH else tr("Start: in the air")
 	limits_label.text = "Starts on the runway, trimmed for level flight at 50% throttle. Experimental ground handling." if start_choice == "runway" \
-		else "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
+		else "Thrown by hand into the wind at full throttle, trimmed for level flight at 50% throttle." \
+		if start_choice == FlightSession.START_HAND_LAUNCH else "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
 	start_button.tooltip_text = tr(limits_label.text)
 	if start_choice != previous:
 		launch_setup_changed.emit()
@@ -1351,6 +1355,8 @@ func _cycle_start_choice() -> void:
 	var choices: Array[String] = []
 	if Catalog.runway_supported(aircraft_id) and runway_available:
 		choices.append("runway")
+	elif Catalog.hand_launch_supported(aircraft_id):
+		choices.append(FlightSession.START_HAND_LAUNCH)
 	choices.append("airborne")
 	start_requested.emit(choices[(choices.find(start_choice) + 1) % choices.size()])
 

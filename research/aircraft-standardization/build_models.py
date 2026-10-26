@@ -24,9 +24,11 @@ LIVERY_LABEL_LIMIT = 48
 RESOURCE_RE = re.compile(r"\b(?:preload|load)\s*\(\s*[\"']res://([^\"']+)[\"']\s*\)")
 TEXT_SUFFIXES = {".cfg", ".gd", ".godot", ".import", ".json", ".md", ".svg", ".tres", ".tscn", ".txt"}
 ADAPTERS = {"euler_hinges", "axis_hinges", "imported_glb"}
-CONTROL_ROLES = {"aileron_left", "aileron_right", "elevator", "rudder", "flap_left", "flap_right"}
+CONTROL_ROLES = {"aileron_left", "aileron_right", "elevator", "rudder", "flap_left", "flap_right", "elevon_left", "elevon_right"}
 GEAR_ROLES = {"left", "right", "tail", "steering", "nose"}
+# X8-02: a family declares the four conventional roles or exactly both elevons (model_manifest.gd); flaps stay optional.
 REQUIRED_CONTROL_ROLES = {"aileron_left", "aileron_right", "elevator", "rudder"}
+ELEVON_ROLES = {"elevon_left", "elevon_right"}
 SHARED_IMPORTED_BUILDER = "res://aircraft/imported_model.gd"
 CONSTRUCTION_ROLES = {"left", "right", "tail", "steering", "nose"}
 MECHANISM_KEYS = ("canopy", "tailhook", "cowl_flaps")  # imported_model_contract.gd MECHANISM_KEYS
@@ -333,7 +335,11 @@ def validate_registry(registry: Any) -> list[dict[str, str]]:
             controls = bindings["controls"]
             if not isinstance(controls, dict) or not controls or set(controls) - CONTROL_ROLES:
                 raise ModelManifestError(f"{label}.bindings.controls has an unsupported or empty role set")
-            if not REQUIRED_CONTROL_ROLES <= set(controls):
+            if ELEVON_ROLES & set(controls):
+                if not ELEVON_ROLES <= set(controls) or REQUIRED_CONTROL_ROLES & set(controls):
+                    raise ModelManifestError(f"{label}.bindings.controls must declare both {', '.join(sorted(ELEVON_ROLES))} "
+                                             f"and none of {', '.join(sorted(REQUIRED_CONTROL_ROLES))}")
+            elif not REQUIRED_CONTROL_ROLES <= set(controls):
                 raise ModelManifestError(f"{label}.bindings.controls must declare {', '.join(sorted(REQUIRED_CONTROL_ROLES))}")
             seen_hinges: set[str] = set()
             seen_nodes: set[str] = set()

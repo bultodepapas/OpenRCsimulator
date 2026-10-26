@@ -1,0 +1,465 @@
+{
+ "blend": "aircraft_game.blend",
+ "livery": "abisal",
+ "checks": [
+  {
+   "id": "A1_export_collection",
+   "ok": true,
+   "mandatory": true,
+   "detail": "EXPORT_aircraft"
+  },
+  {
+   "id": "A2_only_export_content",
+   "ok": true,
+   "mandatory": true,
+   "detail": "objetos fuera de la coleccion: []; tipos: ['EMPTY', 'MESH']"
+  },
+  {
+   "id": "A3_names_ascii_unique",
+   "ok": true,
+   "mandatory": true,
+   "detail": "malos: []"
+  },
+  {
+   "id": "A4_self_contained",
+   "ok": true,
+   "mandatory": true,
+   "detail": "bibliotecas 0, imagenes 4"
+  },
+  {
+   "id": "B1_hierarchy",
+   "ok": true,
+   "mandatory": true,
+   "detail": "faltan [], sobran [], padre/tipo mal []"
+  },
+  {
+   "id": "B2_section_tags",
+   "ok": true,
+   "mandatory": true,
+   "detail": "todas las mallas y pivotes moviles llevan una seccion valida; raiz y thrust_frame sin etiqueta"
+  },
+  {
+   "id": "B3_section_subtrees",
+   "ok": true,
+   "mandatory": true,
+   "detail": "cada nodo etiquetado solo contiene su propia seccion (secciones como ramas hermanas)"
+  },
+  {
+   "id": "B4_root_identity",
+   "ok": true,
+   "mandatory": true,
+   "detail": "raiz en D0 con traslacion y rotacion nulas y escala 1"
+  },
+  {
+   "id": "C1_transforms",
+   "ok": true,
+   "mandatory": true,
+   "detail": "escalas (1,1,1), sin reflexion ni cizalla"
+  },
+  {
+   "id": "D1_positive_directions",
+   "ok": true,
+   "mandatory": true,
+   "detail": "elevones + = borde de salida abajo; compuertas + = abren; eje de empuje +X = nariz; el paso de las palas empuja hacia la nariz con giro positivo"
+  },
+  {
+   "id": "E0_neutral_no_interpenetration",
+   "ok": true,
+   "mandatory": true,
+   "detail": "ningun par de mallas se cruza en la pose neutra"
+  },
+  {
+   "id": "E1_elevon_clearance",
+   "ok": true,
+   "mandatory": true,
+   "detail": "barrido de -40.0 a 40.0 grados; libre: elevon_left [-40.0, 31.0], elevon_right [-40.0, 31.0]; requerido [-26.76, 26.85]",
+   "data": {
+    "elevon_left": {
+     "clear_deg": [
+      -40.0,
+      31.0
+     ],
+     "step_deg": 1.0,
+     "first_contact_positive": [
+      32.0,
+      [
+       "wing_left_fixed"
+      ]
+     ],
+     "first_contact_negative": null
+    },
+    "elevon_right": {
+     "clear_deg": [
+      -40.0,
+      31.0
+     ],
+     "step_deg": 1.0,
+     "first_contact_positive": [
+      32.0,
+      [
+       "wing_right_fixed"
+      ]
+     ],
+     "first_contact_negative": null
+    }
+   }
+  },
+  {
+   "id": "E2_door_clearance",
+   "ok": true,
+   "mandatory": true,
+   "detail": "0-110 grados cada 5: sin cruces"
+  },
+  {
+   "id": "E3_propeller_clearance",
+   "ok": true,
+   "mandatory": true,
+   "detail": "vuelta completa cada 10 grados: sin cruces"
+  },
+  {
+   "id": "F1_return_to_neutral",
+   "ok": true,
+   "mandatory": true,
+   "detail": "todos los pivotes vuelven exactamente al reposo guardado"
+  },
+  {
+   "id": "G1_mesh_quality",
+   "ok": true,
+   "mandatory": true,
+   "detail": "sin triangulos degenerados ni vertices sueltos; todas las islas cerradas hacia afuera",
+   "data": {
+    "bay_equipment": {
+     "triangles": 504,
+     "materials": [
+      "x8_battery",
+      "x8_black",
+      "x8_electronics",
+      "x8_foam_interior",
+      "x8_glass",
+      "x8_orange"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 14,
+     "inward_islands": 0,
+     "smooth_faces": 68,
+     "uv_layers": 0
+    },
+    "camera_door_left": {
+     "triangles": 168,
+     "materials": [
+      "x8_livery"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 1,
+     "inward_islands": 0,
+     "smooth_faces": 141,
+     "uv_layers": 1
+    },
+    "camera_door_right": {
+     "triangles": 166,
+     "materials": [
+      "x8_livery"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 1,
+     "inward_islands": 0,
+     "smooth_faces": 139,
+     "uv_layers": 1
+    },
+    "canopy_hatch": {
+     "triangles": 4458,
+     "materials": [
+      "x8_foam_interior",
+      "x8_livery"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 1,
+     "inward_islands": 0,
+     "smooth_faces": 3349,
+     "uv_layers": 1
+    },
+    "elevon_left": {
+     "triangles": 2576,
+     "materials": [
+      "x8_livery"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 3,
+     "inward_islands": 0,
+     "smooth_faces": 1383,
+     "uv_layers": 1
+    },
+    "elevon_right": {
+     "triangles": 2576,
+     "materials": [
+      "x8_livery"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 3,
+     "inward_islands": 0,
+     "smooth_faces": 1383,
+     "uv_layers": 1
+    },
+    "fuselage_core": {
+     "triangles": 13592,
+     "materials": [
+      "x8_foam_interior",
+      "x8_glass",
+      "x8_livery",
+      "x8_metal"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 4,
+     "inward_islands": 0,
+     "smooth_faces": 7990,
+     "uv_layers": 1
+    },
+    "motor_mount": {
+     "triangles": 184,
+     "materials": [
+      "x8_black"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 2,
+     "inward_islands": 0,
+     "smooth_faces": 136,
+     "uv_layers": 1
+    },
+    "propeller_rotor": {
+     "triangles": 1400,
+     "materials": [
+      "x8_livery",
+      "x8_metal",
+      "x8_motor_bell"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 6,
+     "inward_islands": 0,
+     "smooth_faces": 818,
+     "uv_layers": 1
+    },
+    "wing_left_fixed": {
+     "triangles": 6440,
+     "materials": [
+      "x8_foam_interior",
+      "x8_livery"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 3,
+     "inward_islands": 0,
+     "smooth_faces": 3520,
+     "uv_layers": 1
+    },
+    "wing_right_fixed": {
+     "triangles": 6440,
+     "materials": [
+      "x8_foam_interior",
+      "x8_livery"
+     ],
+     "degenerate": 0,
+     "loose_verts": 0,
+     "non_manifold_edges": 0,
+     "islands": 3,
+     "inward_islands": 0,
+     "smooth_faces": 3520,
+     "uv_layers": 1
+    }
+   }
+  },
+  {
+   "id": "G2_closed_shells",
+   "ok": true,
+   "mandatory": false,
+   "detail": "aristas no variedad: 0"
+  },
+  {
+   "id": "H1_materials_exportable",
+   "ok": true,
+   "mandatory": true,
+   "detail": "9 materiales Principled con backface culling; solo x8_livery usa texturas"
+  },
+  {
+   "id": "H4_livery_textures",
+   "ok": true,
+   "mandatory": true,
+   "detail": "4 imagenes empaquetadas de 2048x2048; 19473 caras pintadas con UV dentro del atlas"
+  },
+  {
+   "id": "H2_material_budget",
+   "ok": true,
+   "mandatory": false,
+   "detail": "9 materiales (objetivo <= 10)"
+  },
+  {
+   "id": "H3_surface_budget",
+   "ok": true,
+   "mandatory": false,
+   "detail": "24 superficies malla x material (objetivo <= 40)"
+  },
+  {
+   "id": "I1_triangle_ceiling",
+   "ok": true,
+   "mandatory": true,
+   "detail": "38504 triangulos (techo 100000)"
+  },
+  {
+   "id": "I2_triangle_target",
+   "ok": true,
+   "mandatory": false,
+   "detail": "38504 triangulos (objetivo 30000-50000)"
+  },
+  {
+   "id": "J1_glb_contract",
+   "ok": true,
+   "mandatory": true,
+   "detail": "glTF 2.0 sin extensiones, camaras, luces ni animacion; 18 nodos con jerarquia y extras correctos; 24 primitivas; triangulos iguales al .blend; 4 imagenes embebidas; atlas con color, ORM, normales y emision; 9 primitivas del atlas con UV, normales y tangentes"
+  },
+  {
+   "id": "J2_glb_reimport",
+   "ok": true,
+   "mandatory": true,
+   "detail": "reimportado en escena limpia: misma jerarquia, secciones y materiales; marcas de metadata.json en tolerancia; desvio maximo 0.0000 mm en pivotes, 0.0000 mm en cajas de malla, 0.00000 grados en ejes",
+   "data": {
+    "max_pivot_mm": 3.3333022460664216e-05,
+    "max_bbox_mm": 2.9802322387695312e-05,
+    "max_axis_deg": 0.0
+   }
+  },
+  {
+   "id": "K1_metadata_consistency",
+   "ok": true,
+   "mandatory": true,
+   "detail": "pivotes, ejes, secciones, hash del GLB y texturas de metadata.json coinciden con el .blend, el GLB y textures/"
+  }
+ ],
+ "mandatory_failed": [],
+ "warnings": [],
+ "counts": {
+  "triangles": 38504,
+  "surfaces": 24,
+  "materials": 9,
+  "textures": 4,
+  "meshes": 11,
+  "nodes": 18,
+  "per_mesh": {
+   "bay_equipment": {
+    "triangles": 504,
+    "surfaces": 6
+   },
+   "camera_door_left": {
+    "triangles": 168,
+    "surfaces": 1
+   },
+   "camera_door_right": {
+    "triangles": 166,
+    "surfaces": 1
+   },
+   "canopy_hatch": {
+    "triangles": 4458,
+    "surfaces": 2
+   },
+   "elevon_left": {
+    "triangles": 2576,
+    "surfaces": 1
+   },
+   "elevon_right": {
+    "triangles": 2576,
+    "surfaces": 1
+   },
+   "fuselage_core": {
+    "triangles": 13592,
+    "surfaces": 4
+   },
+   "motor_mount": {
+    "triangles": 184,
+    "surfaces": 1
+   },
+   "propeller_rotor": {
+    "triangles": 1400,
+    "surfaces": 3
+   },
+   "wing_left_fixed": {
+    "triangles": 6440,
+    "surfaces": 2
+   },
+   "wing_right_fixed": {
+    "triangles": 6440,
+    "surfaces": 2
+   }
+  }
+ },
+ "clearance": {
+  "elevons": {
+   "elevon_left": {
+    "clear_deg": [
+     -40.0,
+     31.0
+    ],
+    "step_deg": 1.0,
+    "first_contact_positive": [
+     32.0,
+     [
+      "wing_left_fixed"
+     ]
+    ],
+    "first_contact_negative": null
+   },
+   "elevon_right": {
+    "clear_deg": [
+     -40.0,
+     31.0
+    ],
+    "step_deg": 1.0,
+    "first_contact_positive": [
+     32.0,
+     [
+      "wing_right_fixed"
+     ]
+    ],
+    "first_contact_negative": null
+   }
+  },
+  "doors_deg": [
+   0.0,
+   110.0
+  ]
+ },
+ "glb": {
+  "file": "aircraft.glb",
+  "bytes": 8547120,
+  "sha256": "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac"
+ },
+ "landmark_deviation_mm": {
+  "nose_tip": 0.00049,
+  "fuselage_tail": 0.00018,
+  "spinner_tip": 0.00018,
+  "wingtip_left": 0.00058,
+  "wingtip_right": 0.00058,
+  "winglet_top_left": 0.00025,
+  "winglet_top_right": 0.00025,
+  "propeller_hub": 0.00024,
+  "lowest_point": 0.00051,
+  "highest_point": 0.00025
+ },
+ "passed": true
+}

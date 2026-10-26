@@ -94,7 +94,8 @@ def capability_schema(spec: dict):
         props[name] = {"type": "string", "enum": values}
     return {
         "type": "object",
-        "required": list(spec["capabilities"].keys()),
+        # X8-04: optional capability fields keep the historical law when absent.
+        "required": [name for name in spec["capabilities"] if name not in spec.get("optional_capabilities", [])],
         "properties": props,
         "additionalProperties": False,
     }
@@ -114,9 +115,10 @@ def add_physical_identity(schema: dict):
     for branch in ("glowPropulsion", "turbinePropulsion", "electricPropulsion"):
         schema["$defs"][branch]["properties"]["id"] = copy.deepcopy(identifier)
     props["propulsion"]["properties"]["id"] = copy.deepcopy(identifier)
-    roles = ["aileron_left", "aileron_right", "elevator", "rudder"]
+    # X8-03: the conventional four or the two elevons; the capability rules in add_v2_overlay select which.
+    roles = ["aileron_left", "aileron_right", "elevator", "rudder", "elevon_left", "elevon_right"]
     props["controls"]["properties"]["surface_ids"] = {
-        "type": "object", "required": roles, "additionalProperties": False,
+        "type": "object", "minProperties": 2, "additionalProperties": False,
         "properties": {key: copy.deepcopy(identifier) for key in roles}}
     required = {
         "inventory": {"items": {"required": ["id"]}},
@@ -559,6 +561,41 @@ def add_v2_overlay(schema: dict, spec: dict):
         "type": "array", "minItems": 6, "maxItems": 1539,
         "items": {"type": "number", "minimum": -3, "maximum": 3}})
 
+    # X8-03/04/08: elevon throws and rates, the tailless wing stations and the tolerant hull. The conventional
+    # rudder, horizontal tail and aileron-effectiveness requirements move to the capability rules below.
+    def x8_quantity(unit, value):
+        return {"$ref": "#/$defs/evidence", "properties": {"value": value, "unit": {"const": unit}}}
+    max_throw = controls["properties"]["max_throw"]
+    max_throw["properties"]["elevon"] = x8_quantity("deg", {"type": "number", "minimum": 1.0, "maximum": 60.0})
+    max_throw["required"] = ["aileron", "elevator"]
+    rates_normal = controls["properties"]["rates"]["properties"]["normal"]
+    rates_normal["required"] = ["aileron", "elevator", "aileron_expo", "elevator_expo"]
+    surfaces = aero_props["surfaces"]
+    surfaces["required"] = [name for name in surfaces["required"] if name not in ("wing_aileron_effectiveness", "horizontal")]
+    station_triplet = {"type": "array", "minItems": 3, "maxItems": 3}
+    surfaces["properties"]["tailless"] = {
+        "type": "object", "required": ["station_x", "elevon_coverage", "elevon_chord_fraction"],
+        "properties": {
+            "station_x": x8_quantity("m", {**station_triplet, "items": {"type": "number", "minimum": -2.0, "maximum": 2.0}}),
+            "elevon_coverage": x8_quantity("1", {**station_triplet, "items": {"type": "number", "minimum": 0.0, "maximum": 1.0}}),
+            "elevon_chord_fraction": x8_quantity("1", {"type": "number", "minimum": 0.05, "maximum": 0.6}),
+        },
+        "additionalProperties": False,
+    }
+    # A rudderless (elevon) aircraft declares Cndr exactly 0: the stable-airplane sign moves to the conventional branch.
+    aero_props["coefficients"]["properties"]["Cndr"]["properties"]["value"].pop("exclusiveMaximum", None)
+    # The vertical element's rudder effectiveness may be exactly zero only for an elevon (rudderless) aircraft.
+    surfaces["properties"]["vertical"]["properties"]["control_effectiveness"]["properties"]["value"]["minimum"] = 0.0
+    root_props["crash_tolerance"] = {
+        "type": "object", "required": ["terminal_specific_energy", "crash_depth", "presentation_durability"],
+        "properties": {
+            "terminal_specific_energy": x8_quantity("J/kg", {"type": "number", "minimum": 2.5, "maximum": 50.0}),
+            "crash_depth": x8_quantity("m", {"type": "number", "minimum": 0.08, "maximum": 0.3}),
+            "presentation_durability": x8_quantity("1", {"type": "number", "minimum": 1.0, "maximum": 10.0}),
+        },
+        "additionalProperties": False,
+    }
+
     # A zero inertia reference causes the legacy warning normalization to divide
     # by zero. Make every declared axis strictly positive in v2.
     inertia_value = root_props["plausibility"]["properties"]["inertia_reference"]["properties"]["value"]
@@ -634,7 +671,7 @@ def add_v2_overlay(schema: dict, spec: dict):
                   "then": {"required": ["fuel_system"]}})
     for battery_kind, energy in [("fixed_voltage", "fixed_voltage"), ("ocv_resistance", "ocv_resistance"), ("pack_ecm", "pack_ecm")]:
         condition = {"properties": {"propulsion": {"properties": {"kind": {"const": "electric_prop"}, "battery": {"properties": {"kind": {"const": battery_kind}}}}}}}
-        rules.append({"if": condition, "then": {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_tractor"}, "energy": {"const": energy}}}}}})
+        rules.append({"if": condition, "then": {"properties": {"capabilities": {"properties": {"propulsion_layout": {"enum": ["single_tractor", "single_pusher"]}, "energy": {"const": energy}}}}}})
     for gear_kind in ["fixed_tricycle", "fixed_taildragger", "locked_down_taildragger", "retractable_tricycle", "retractable_taildragger"]:
         rules.append({"if": {"properties": {"capabilities": {"properties": {"gear": {"const": gear_kind}}}}}, "then": {"required": ["landing_gear"]}})
     rules.append({"if": {"properties": {"capabilities": {"properties": {"gear": {"const": "locked_up"}}}}}, "then": {"not": {"required": ["landing_gear"]}}})
@@ -647,6 +684,49 @@ def add_v2_overlay(schema: dict, spec: dict):
                       "contacts": {"items": {"required": ["retraction_path"]}}}}}},
                   "else": {"properties": {"landing_gear": {"not": {"required": ["retraction"]}, "properties": {
                       "contacts": {"items": {"not": {"required": ["retraction_path"]}}}}}}}})
+    # X8-03/04/08: elevons replace the conventional surfaces on the tailless law only; the rudderless branch zeroes
+    # every rudder term. The runtime contract repeats these relations; AircraftData derives the tailless strips.
+    conventional_roles = ["aileron_left", "aileron_right", "elevator", "rudder"]
+    zero = {"properties": {"value": {"const": 0}}}
+    rules.append({"if": branch_condition(["capabilities", "controls"], "elevon"),
+                  "then": {"properties": {
+                      "capabilities": {"required": ["airframe_layout"]},
+                      "controls": {"properties": {
+                          "max_throw": {"required": ["elevon"], "not": {"anyOf": [
+                              {"required": ["rudder"]}, {"required": ["aileron_down"]}]}},
+                          "rates": {"properties": {"normal": {"not": {"anyOf": [
+                              {"required": ["rudder"]}, {"required": ["rudder_expo"]}]}}}},
+                          "surface_ids": {"required": ["elevon_left", "elevon_right"],
+                                          "not": {"anyOf": [{"required": [role]} for role in conventional_roles]}},
+                      }},
+                      "aero": {"properties": {
+                          "coefficients": {"properties": {name: zero for name in ("CYdr", "Cldr", "Cndr", "CDdr")}},
+                          "surfaces": {"properties": {"vertical": {"properties": {"control_effectiveness": zero}}}},
+                      }},
+                  }},
+                  "else": {"properties": {
+                      "capabilities": {"not": {"required": ["airframe_layout"]}},
+                      "controls": {"properties": {
+                          "max_throw": {"required": ["rudder"], "not": {"required": ["elevon"]}},
+                          "rates": {"properties": {"normal": {"required": ["rudder", "rudder_expo"]}}},
+                          "surface_ids": {"required": conventional_roles, "not": {"anyOf": [
+                              {"required": ["elevon_left"]}, {"required": ["elevon_right"]}]}},
+                      }},
+                      "aero": {"properties": {
+                          "coefficients": {"properties": {"Cndr": {"properties": {"value": {"exclusiveMaximum": 0}}}}},
+                          "surfaces": {"properties": {"vertical": {"properties": {
+                              "control_effectiveness": {"properties": {"value": {"minimum": 0.01}}}}}}}}},
+                  }}})
+    rules.append({"if": {"properties": {"capabilities": {"required": ["airframe_layout"]}}},
+                  "then": {"properties": {"aero": {"not": {"required": ["ground_effect"]}, "properties": {"surfaces": {
+                      "required": ["tailless"], "not": {"anyOf": [
+                          {"required": ["horizontal"]}, {"required": ["wing_aileron_effectiveness"]},
+                          {"required": ["wing_section_cm_ac"]}]}}}}}},
+                  "else": {"properties": {"aero": {"properties": {"surfaces": {
+                      "required": ["horizontal", "wing_aileron_effectiveness"], "not": {"required": ["tailless"]}}}}}}})
+    rules.append({"if": branch_condition(["capabilities", "damage"], "tolerant_hull"),
+                  "then": {"required": ["crash_tolerance"]},
+                  "else": {"not": {"required": ["crash_tolerance"]}}})
     schema["allOf"] = list(schema.get("allOf", [])) + rules
     add_physical_identity(schema)
     return schema

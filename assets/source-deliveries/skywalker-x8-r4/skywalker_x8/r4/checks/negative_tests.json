@@ -1,0 +1,73 @@
+{
+ "cases": [
+  {
+   "case": "base",
+   "expected": "exit 0",
+   "exit_code": 0,
+   "ok": true,
+   "failed_checks": []
+  },
+  {
+   "case": "sin_bisagra",
+   "expected": "nonzero exit",
+   "exit_code": 1,
+   "ok": true,
+   "failed_checks": [
+    "B1_hierarchy: faltan ['elevon_left_hinge'], sobran ["
+   ]
+  },
+  {
+   "case": "etiqueta_invalida",
+   "expected": "nonzero exit",
+   "exit_code": 1,
+   "ok": true,
+   "failed_checks": [
+    "B2_section_tags: wing_left_fixed: 'wing_lft' en vez "
+   ]
+  },
+  {
+   "case": "sin_etiqueta",
+   "expected": "nonzero exit",
+   "exit_code": 1,
+   "ok": true,
+   "failed_checks": [
+    "B2_section_tags: canopy_hatch: None en vez de 'canop"
+   ]
+  },
+  {
+   "case": "sin_textura_blend",
+   "expected": "nonzero exit",
+   "exit_code": 1,
+   "ok": true,
+   "failed_checks": [
+    "H4_livery_textures: imagenes ['x8_abisal_base_color."
+   ]
+  },
+  {
+   "case": "skin_base_bolido",
+   "expected": "exit 0",
+   "exit_code": 0,
+   "ok": true,
+   "failed_checks": []
+  },
+  {
+   "case": "skin_geometria_bolido",
+   "expected": "nonzero exit",
+   "exit_code": 1,
+   "ok": true,
+   "failed_checks": [
+    "L1_skin_parity: wing_left_fixed: POSITION difiere ha"
+   ]
+  },
+  {
+   "case": "skin_sin_textura_bolido",
+   "expected": "nonzero exit",
+   "exit_code": 1,
+   "ok": true,
+   "failed_checks": [
+    "J1_glb_contract: 3 imagenes en el GLB; imagenes ['x8"
+   ]
+  }
+ ],
+ "passed": true
+}

@@ -1,0 +1,224 @@
+{
+ "renderer": "Cycles CPU, 16 samples + OpenImageDenoise, AgX (no look), Blender 5.2.2 LTS",
+ "material": "x8_livery runtime textures (2048, as embedded in the GLBs); same lights and exposure for every skin",
+ "hardware": "Intel(R) Xeon(R) Processor @ 2.10GHz, 2 CPU threads available to the container",
+ "status": "provisional views: OpenRC camera distances and fields of view were not supplied",
+ "views": [
+  {
+   "skin": "abisal",
+   "view": "workshop_3q",
+   "purpose": "provisional Workshop/Home 3/4 view, whole aircraft in frame",
+   "file": "checks/views/abisal_workshop_3q_1080p.png",
+   "resolution": [
+    1920,
+    1080
+   ],
+   "camera_m": [
+    -1.4555,
+    1.8889,
+    1.2423
+   ],
+   "target_m": [
+    0.0,
+    -0.1898,
+    0.059
+   ],
+   "distance_m": 2.8,
+   "hfov_deg": 50,
+   "vfov_deg": 29.39,
+   "pose": "neutral rest pose",
+   "pixel_footprint_at_target_mm": 1.36,
+   "atlas_texel_mm": 0.87,
+   "texels_per_pixel": 1.563
+  },
+  {
+   "skin": "abisal",
+   "view": "inspection_nose",
+   "purpose": "provisional closest inspection view (nose, hatch, markings)",
+   "file": "checks/views/abisal_inspection_nose_1080p.png",
+   "resolution": [
+    1920,
+    1080
+   ],
+   "camera_m": [
+    0.3897,
+    0.845,
+    0.48
+   ],
+   "target_m": [
+    0.0,
+    0.17,
+    0.03
+   ],
+   "distance_m": 0.9,
+   "hfov_deg": 40,
+   "vfov_deg": 23.14,
+   "pose": "neutral rest pose",
+   "pixel_footprint_at_target_mm": 0.341,
+   "atlas_texel_mm": 0.87,
+   "texels_per_pixel": 0.392
+  },
+  {
+   "skin": "abisal",
+   "view": "chase",
+   "purpose": "provisional flight chase view",
+   "file": "checks/views/abisal_chase_1080p.png",
+   "resolution": [
+    1920,
+    1080
+   ],
+   "camera_m": [
+    0.0,
+    -3.5706,
+    0.9648
+   ],
+   "target_m": [
+    0.0,
+    -0.1898,
+    0.059
+   ],
+   "distance_m": 3.5,
+   "hfov_deg": 70,
+   "vfov_deg": 43.0,
+   "pose": "neutral rest pose",
+   "pixel_footprint_at_target_mm": 2.553,
+   "atlas_texel_mm": 0.87,
+   "texels_per_pixel": 2.934
+  },
+  {
+   "skin": "abisal",
+   "view": "inspection_nose",
+   "purpose": "same closest view at 2560 x 1440",
+   "file": "checks/views/abisal_inspection_nose_1440p.png",
+   "resolution": [
+    2560,
+    1440
+   ],
+   "camera_m": [
+    0.3897,
+    0.845,
+    0.48
+   ],
+   "target_m": [
+    0.0,
+    0.17,
+    0.03
+   ],
+   "distance_m": 0.9,
+   "hfov_deg": 40,
+   "vfov_deg": 23.14,
+   "pose": "neutral rest pose",
+   "pixel_footprint_at_target_mm": 0.256,
+   "atlas_texel_mm": 0.87,
+   "texels_per_pixel": 0.294
+  },
+  {
+   "skin": "bolido",
+   "view": "workshop_3q",
+   "purpose": "provisional Workshop/Home 3/4 view, whole aircraft in frame",
+   "file": "checks/views/bolido_workshop_3q_1080p.png",
+   "resolution": [
+    1920,
+    1080
+   ],
+   "camera_m": [
+    -1.4555,
+    1.8889,
+    1.2423
+   ],
+   "target_m": [
+    0.0,
+    -0.1898,
+    0.059
+   ],
+   "distance_m": 2.8,
+   "hfov_deg": 50,
+   "vfov_deg": 29.39,
+   "pose": "neutral rest pose",
+   "pixel_footprint_at_target_mm": 1.36,
+   "atlas_texel_mm": 0.87,
+   "texels_per_pixel": 1.563
+  },
+  {
+   "skin": "bolido",
+   "view": "inspection_nose",
+   "purpose": "provisional closest inspection view (nose, hatch, markings)",
+   "file": "checks/views/bolido_inspection_nose_1080p.png",
+   "resolution": [
+    1920,
+    1080
+   ],
+   "camera_m": [
+    0.3897,
+    0.845,
+    0.48
+   ],
+   "target_m": [
+    0.0,
+    0.17,
+    0.03
+   ],
+   "distance_m": 0.9,
+   "hfov_deg": 40,
+   "vfov_deg": 23.14,
+   "pose": "neutral rest pose",
+   "pixel_footprint_at_target_mm": 0.341,
+   "atlas_texel_mm": 0.87,
+   "texels_per_pixel": 0.392
+  },
+  {
+   "skin": "bolido",
+   "view": "chase",
+   "purpose": "provisional flight chase view",
+   "file": "checks/views/bolido_chase_1080p.png",
+   "resolution": [
+    1920,
+    1080
+   ],
+   "camera_m": [
+    0.0,
+    -3.5706,
+    0.9648
+   ],
+   "target_m": [
+    0.0,
+    -0.1898,
+    0.059
+   ],
+   "distance_m": 3.5,
+   "hfov_deg": 70,
+   "vfov_deg": 43.0,
+   "pose": "neutral rest pose",
+   "pixel_footprint_at_target_mm": 2.553,
+   "atlas_texel_mm": 0.87,
+   "texels_per_pixel": 2.934
+  },
+  {
+   "skin": "bolido",
+   "view": "inspection_nose",
+   "purpose": "same closest view at 2560 x 1440",
+   "file": "checks/views/bolido_inspection_nose_1440p.png",
+   "resolution": [
+    2560,
+    1440
+   ],
+   "camera_m": [
+    0.3897,
+    0.845,
+    0.48
+   ],
+   "target_m": [
+    0.0,
+    0.17,
+    0.03
+   ],
+   "distance_m": 0.9,
+   "hfov_deg": 40,
+   "vfov_deg": 23.14,
+   "pose": "neutral rest pose",
+   "pixel_footprint_at_target_mm": 0.256,
+   "atlas_texel_mm": 0.87,
+   "texels_per_pixel": 0.294
+  }
+ ]
+}

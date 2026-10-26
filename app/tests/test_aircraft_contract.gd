@@ -52,8 +52,14 @@ func _initialize() -> void:
 		check("actual input digest", loaded.input_identity.sha256 == FileAccess.get_sha256(path))
 		check("explicit capabilities retained", loaded.model.capabilities == raw.capabilities)
 		var old: Dictionary = AD.validate_and_derive(AD.legacy_v1_input(raw))
-		check("explicit legacy adapter loads", old.ok, old.errors)
-		if old.ok:
+		# X8-03/04: elevons and the tailless law exist only in v2 (the shared parser needs the capability selections);
+		# the historical adapter must refuse such a file rather than derive a different airplane.
+		var v2_only_layout: bool = raw.capabilities.get("controls", "") == "elevon" or raw.capabilities.has("airframe_layout")
+		if v2_only_layout:
+			check(path + " v2-only layout refused by the legacy adapter", not old.ok)
+		else:
+			check("explicit legacy adapter loads", old.ok, old.errors)
+		if old.ok and not v2_only_layout:
 			# The v1 historical comparator cannot derive v2 tank bindings. Supply the
 			# normalized view from this same validated v2 input as test adapter glue;
 			# this does not make raw v2 data a supported v1 runtime contract.

@@ -559,6 +559,15 @@ const LakeCollision := preload("res://sim/lake_collision.gd")
 const START_AIRBORNE := "airborne"
 const START_RUNWAY := "runway"
 const START_HALF_POWER := "airborne_half_power"
+## X8-07: a standing overhand throw from the runway edge in front of the pilot, for airplanes without landing gear. The
+## airplane is placed at the release: wings level, body along the throw (angle of attack zero to it), slightly nose up,
+## moving along the runway into its wind component at a ground-relative throw speed, motor already at full throttle.
+## Estimated and borrowed values with sources: docs/research/skywalker-x8/X8-07/README.md.
+const START_HAND_LAUNCH := "hand_launch"
+const HAND_LAUNCH_RELEASE_HEIGHT_M := 1.9
+const HAND_LAUNCH_SPEED_MPS := 6.5
+const HAND_LAUNCH_CLIMB_RAD := 0.08726646259971647 # 5 degrees
+const HAND_LAUNCH_THROTTLE := 1.0
 const EXTERNAL_SPAWN_MAX_OFFSET_M := 100000.0
 const EXTERNAL_SPAWN_MIN_HEIGHT_M := 1.0
 const EXTERNAL_SPAWN_MAX_HEIGHT_M := 10000.0
@@ -611,13 +620,22 @@ static func launch_trim_cache_stats() -> Dictionary:
 	return _launch_trim_cache.stats()
 
 
-## Menu hint from accepted data. The selected field, equilibrium and clearance are checked on each launch.
-static func runway_aircraft_supported(aircraft_id: String) -> bool:
+## Menu hints from one load of the accepted data: {runway, hand_launch}. The selected field, equilibrium and clearance
+## are checked on each launch. AircraftCatalog caches the answer per stock ID.
+static func ground_start_support(aircraft_id: String) -> Dictionary:
 	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
 	var entry: Dictionary = catalog.entry(aircraft_id)
-	if entry.is_empty() or catalog.is_rotorcraft(aircraft_id) or str(entry.get("data", "")).is_empty(): return false
+	if entry.is_empty() or catalog.is_rotorcraft(aircraft_id) or str(entry.get("data", "")).is_empty():
+		return {runway = false, hand_launch = false}
 	var data := AircraftData.load_file(str(entry.data))
-	return data.get("ok", false) and _runway_model_supported(data.get("model", {}))
+	if not data.get("ok", false):
+		return {runway = false, hand_launch = false}
+	var model: Dictionary = data.get("model", {})
+	return {runway = _runway_model_supported(model), hand_launch = _hand_launch_model_supported(model)}
+
+
+static func runway_aircraft_supported(aircraft_id: String) -> bool:
+	return ground_start_support(aircraft_id).runway
 
 
 static func runway_aircraft_ids() -> PackedStringArray:
@@ -631,6 +649,37 @@ static func runway_aircraft_ids() -> PackedStringArray:
 static func _runway_model_supported(model: Dictionary) -> bool:
 	var gear: Dictionary = model.get("landing_gear", {})
 	return not gear.is_empty() and gear.has("breakaway_factor") and not gear.get("contacts", []).is_empty()
+
+
+## X8-07: a fixed-wing airplane without landing gear starts by hand instead of on the runway.
+static func hand_launch_aircraft_supported(aircraft_id: String) -> bool:
+	return ground_start_support(aircraft_id).hand_launch
+
+
+static func _hand_launch_model_supported(model: Dictionary) -> bool:
+	return not model.is_empty() and model.get("landing_gear", {}).is_empty()
+
+
+## X8-07: where and which way the helper throws: the runway edge nearest the pilot, at the pilot's east coordinate
+## (clamped to the runway), along the runway in the direction with a headwind component (east-bound in calm air and
+## in a pure crosswind). wind_ned is the mean wind at the field; heights are added by the caller.
+static func hand_launch_release(field: Dictionary, wind_ned: PackedFloat64Array) -> Dictionary:
+	if wind_ned.size() != 3 or not is_finite(wind_ned[1]):
+		return {ok = false, message = "hand launch needs a finite field wind"}
+	var pilot: Dictionary = field.get("pilot", {})
+	for s in field.get("surfaces", []):
+		if s.get("type", "") != "runway" or str(s.get("id", "")) != str(field.get("runway", s.get("id", ""))):
+			continue
+		var half_width: float = float(s.width_north_south) / 2.0
+		var half_length: float = float(s.length_east_west) / 2.0
+		var pilot_north: float = float(pilot.get("north", 0.0))
+		var north: float = float(s.center_north) - half_width if pilot_north <= float(s.center_north) else float(s.center_north) + half_width
+		var east: float = clampf(float(pilot.get("east", 0.0)), float(s.center_east) - half_length, float(s.center_east) + half_length)
+		var heading: float = -PI / 2.0 if wind_ned[1] > 0.0 else PI / 2.0
+		if not is_finite(north) or not is_finite(east):
+			return {ok = false, message = "hand launch needs a finite runway and pilot position"}
+		return {ok = true, north = north, east = east, heading = heading, message = ""}
+	return {ok = false, message = "hand launch needs the field's runway to place the throw"}
 
 
 ## D6e-R1: explicitly selected operating point, not an aircraft cruise-speed claim. D6e-R3 offers it to every
@@ -687,7 +736,7 @@ func _place_cruise_trim_result(trim_result: Dictionary) -> Dictionary:
 	var placed: Dictionary = trim_result.duplicate(true)
 	if placed.get("ok", false):
 		placed.state = Scenarios.Trim.state_for(placed.V, placed.alpha, placed.gamma,
-			PI / 2.0, M.v3(60.0, -40.0, -30.0), placed.beta)
+			PI / 2.0, M.v3(60.0, -40.0, -30.0), placed.beta, float(placed.get("bank", 0.0)))
 	return placed
 
 
@@ -1407,9 +1456,11 @@ func _sync_post_step() -> void:
 
 
 func _prepare_hull_contact() -> Dictionary:
+	# X8-08: a tolerant (foam) hull carries its own terminal thresholds; absent, the shared ones apply.
+	var tolerance: Dictionary = aircraft.model.get("crash_tolerance", {})
 	if finite_fuel_is_active():
-		return HullContact.prepare_geometry(aircraft.model.crash_hull, _lake, airframe_surfaces)
-	return HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake, airframe_surfaces)
+		return HullContact.prepare_geometry(aircraft.model.crash_hull, _lake, airframe_surfaces, tolerance)
+	return HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake, airframe_surfaces, tolerance)
 
 
 ## Installs one normalized, detached world at a flight boundary. Proxy data contains scalar NED geometry only.
@@ -1726,9 +1777,13 @@ func _model_is_valid(model: Dictionary) -> bool:
 		return false
 	var controls: Dictionary = model.get("controls", {})
 	var throws: Dictionary = controls.get("throw_rad", {})
-	for axis in ["aileron", "elevator", "rudder"]:
+	# X8-03: an elevon aircraft has an elevon end point and an exactly zero rudder throw instead of a rudder.
+	var elevon: bool = controls.get("layout", "") == "elevon"
+	for axis in (["aileron", "elevator", "elevon"] if elevon else ["aileron", "elevator", "rudder"]):
 		if not throws.has(axis) or not is_finite(float(throws[axis])) or throws[axis] <= 0.0:
 			return false
+	if elevon and float(throws.get("rudder", NAN)) != 0.0:
+		return false
 	return true
 
 
@@ -2120,6 +2175,8 @@ func _reload_impl() -> String:
 		return "aircraft reload failed during reset; simulation paused: %s" % reason
 	if str(_launch_metadata.get("launch_choice", "")) == "runway":
 		return "aircraft reloaded: runway start on field '%s'" % str(_launch_metadata.get("launch_field_id", ""))
+	if str(_launch_metadata.get("launch_choice", "")) == START_HAND_LAUNCH:
+		return "aircraft reloaded: hand launch on field '%s'" % str(_launch_metadata.get("launch_field_id", ""))
 	return "aircraft reloaded: trimmed at %.0f m/s, throttle %d %%" % [start.V, roundi(start.throttle * 100.0)]
 
 
@@ -2798,6 +2855,10 @@ func _reset_impl(preserve_radio_readiness := false) -> void:
 		trims = {roll = start.roll_command, pitch = start.pitch_command, yaw = start.get("yaw_command", 0.0)}
 	if start_choice == START_AIRBORNE or start_choice == START_HALF_POWER:
 		_reset_airborne_start()
+	elif start_choice == START_HAND_LAUNCH:
+		var launched: Dictionary = _reset_hand_launch_start()
+		if not launched.ok:
+			_fail_selected_start(str(launched.message))
 	elif start_choice == START_RUNWAY:
 		var result: Dictionary = _reset_selected_runway_start()
 		if not result.ok:
@@ -2811,37 +2872,43 @@ func _reset_impl(preserve_radio_readiness := false) -> void:
 		pause_reason = "Restart ready. Release controls and continue explicitly."
 
 
-## Rebuilds the ordinary trimmed flight without emitting a second reset signal.
-func _reset_airborne_start() -> bool:
+## Rebuilds the ordinary trimmed flight without emitting a second reset signal. X8-07: a hand launch passes its
+## ground-relative release state (no wind added), throttle and rpm, and its launch identity.
+func _reset_airborne_start(release := PackedFloat64Array(), release_throttle := NAN, release_rpm := NAN,
+		launch := ["airborne", "trimmed_airborne", ""]) -> bool:
 	_flap_requested = 0.0
 	var gear_aux := _initial_gear_aux(false)
 	if _failures != null:
 		_failures.restart()
 	var weather_aux: PackedFloat64Array = _restart_weather_aux()
+	var thrown: bool = release.size() == RB.SIZE
 	var initial: PackedFloat64Array = start.state.duplicate() if _has_valid_start() else PackedFloat64Array()
-	if _external_spawn_heading_set and initial.size() == RB.SIZE:
+	if thrown and _has_valid_start():
+		initial = release.duplicate()
+	if _external_spawn_heading_set and initial.size() == RB.SIZE and not thrown:
 		var trim_euler: PackedFloat64Array = M.q_to_euler(M.quat(initial[RB.ATT], initial[RB.ATT + 1],
 			initial[RB.ATT + 2], initial[RB.ATT + 3]))
 		var spawned_attitude: PackedFloat64Array = M.q_from_euler(_external_spawn_heading_rad,
 			trim_euler[1], trim_euler[2])
 		for axis: int in 4:
 			initial[RB.ATT + axis] = spawned_attitude[axis]
-	if _has_valid_start() and not weather_is_calm():
+	if _has_valid_start() and not weather_is_calm() and not thrown:
 		var attitude: PackedFloat64Array = M.quat(initial[RB.ATT], initial[RB.ATT + 1], initial[RB.ATT + 2], initial[RB.ATT + 3])
 		var wind_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), _initial_wind(initial.slice(RB.POS, RB.POS + 3)))
 		for axis: int in 3:
 			initial[RB.VEL + axis] += wind_body[axis]
 	commands = Commands.neutral_commands()
 	if _has_valid_start():
-		commands.throttle = start.throttle
-		engine_running = start.get("mode", "level") != "glide"
+		commands.throttle = release_throttle if thrown else start.throttle
+		engine_running = commands.throttle > 0.0 if thrown else start.get("mode", "level") != "glide"
 	else:
 		commands.throttle = 0.0
 		engine_running = false
 	# Inputs first: synchronous paths (capture, --trace) never tick this node, so they must start trimmed too.
 	sim.inputs = _inputs()
 	# Engine at its trimmed rpm and servos already at the trimmed surface positions.
-	var aux := PackedFloat64Array([start.get("rpm", 0.0) if _has_valid_start() else 0.0, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
+	var start_rpm: float = (release_rpm if thrown else float(start.get("rpm", 0.0))) if _has_valid_start() else 0.0
+	var aux := PackedFloat64Array([start_rpm, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 	aux.resize(AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE) # E3b1: every wheel starts sliding
 	if downwash_index() >= 0 and _has_valid_start():
 		aux.append(0.0)
@@ -2861,7 +2928,7 @@ func _reset_airborne_start() -> bool:
 			return false
 		pause_reason = ""
 		sim.set_paused(not holds.is_empty())
-		_capture_launch("airborne", "trimmed_airborne", "", "")
+		_capture_launch(str(launch[0]), str(launch[1]), str(launch[2]), "")
 		return true
 	else:
 		# An invalid initial candidate is parked in a valid, inert state. It never enters the throw/flying fallback.
@@ -2875,6 +2942,47 @@ func _reset_airborne_start() -> bool:
 		start_error = pause_reason
 		_capture_launch("failed", "failed", "", start_error)
 		return false
+
+
+## X8-07: installs the hand-launch release through the airborne start. A refusal installs nothing; the caller fails
+## the selected start instead of falling back.
+func _reset_hand_launch_start() -> Dictionary:
+	if not aircraft.get("ok", false) or not _has_valid_start():
+		return {ok = false, message = _start_failure_reason()}
+	if not _hand_launch_model_supported(aircraft.model):
+		return {ok = false, message = "hand launch is offered to airplanes without landing gear"}
+	if _runway_field.is_empty():
+		return {ok = false, message = "hand launch needs a loaded field"}
+	var release: Dictionary = hand_launch_release(_runway_field, _weather.sample(0.0))
+	if not release.ok:
+		return release
+	var terrain: PackedFloat64Array = environment.terrain(release.north, release.east)
+	if terrain.is_empty() or not is_finite(terrain[0]):
+		return {ok = false, message = "hand launch: no terrain height at the release point"}
+	var down: float = -(float(terrain[0]) + HAND_LAUNCH_RELEASE_HEIGHT_M)
+	var state: PackedFloat64Array = Scenarios.Trim.state_for(HAND_LAUNCH_SPEED_MPS, 0.0,
+		HAND_LAUNCH_CLIMB_RAD, float(release.heading), M.v3(release.north, release.east, down))
+	if not Sim.state_is_valid(state):
+		return {ok = false, message = "hand launch: invalid release state"}
+	var rpm: float = _hand_launch_rpm(state)
+	if not is_finite(rpm) or rpm < 0.0:
+		return {ok = false, message = "hand launch: no full-throttle motor operating point at the release"}
+	var field_id: String = str(_runway_field.get("id", ""))
+	if not _reset_airborne_start(state, HAND_LAUNCH_THROTTLE, rpm, [START_HAND_LAUNCH, "hand_launch_release", field_id]):
+		return {ok = false, message = start_error}
+	return {ok = true, message = ""}
+
+
+## The motor already runs at the launch throttle when the airplane leaves the hand (steady shaft speed at the throw's
+## axial airspeed). Non-electric shafts use the steady torque balance.
+func _hand_launch_rpm(state: PackedFloat64Array) -> float:
+	var prop: Dictionary = aircraft.model.propulsion
+	var u: float = M.dot(M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]), Propulsion.axis(prop))
+	var rho: float = air_density(state)
+	if Propulsion.is_electric(prop):
+		var point: Dictionary = Propulsion.steady_operating_point(HAND_LAUNCH_THROTTLE, u, prop, rho)
+		return float(point.rpm) if point.get("ok", false) else NAN
+	return Propulsion.steady_rpm(HAND_LAUNCH_THROTTLE, u, prop, rho, engine_charge_ratio(state))
 
 
 func _reset_selected_runway_start() -> Dictionary:
@@ -4358,6 +4466,9 @@ func trace_meta() -> Dictionary:
 		metadata.mass_reference = "mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum"
 	if soft_hull_contacts:
 		metadata.hull_contact_model = HullContact.law()
+		if aircraft.model.has("crash_tolerance"):
+			# X8-08: the aircraft's own terminal thresholds replace the law's shared ones.
+			metadata.hull_contact_tolerance = aircraft.model.crash_tolerance.duplicate()
 		if not _lake.is_empty():
 			metadata.hull_lake_normal_model = HullContact.LAKE_NORMAL_LAW
 	if not _collision_world.is_empty():

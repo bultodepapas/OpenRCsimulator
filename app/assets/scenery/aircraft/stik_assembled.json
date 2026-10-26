@@ -5,7 +5,7 @@
 	"size": [
 		1.522,
 		0.442,
-		1.325
+		1.327
 	],
 	"collision_parts": [
 		{
@@ -13,24 +13,24 @@
 			"center": [
 				0.0,
 				0.239848554134369,
-				-0.0336649715900421
+				0.0108179748058319
 			],
 			"size": [
 				0.54610002040863,
 				0.193925768136978,
-				1.19846487045288
+				1.19397175312042
 			]
 		},
 		{
 			"part": "left_wing",
 			"center": [
 				-0.379999965429306,
-				0.327881872653961,
-				-0.197358965873718
+				0.328705430030823,
+				-0.155122518539429
 			],
 			"size": [
 				0.762343466281891,
-				0.085238128900528,
+				0.0835909768939018,
 				0.305360019207001
 			]
 		},
@@ -38,12 +38,12 @@
 			"part": "right_wing",
 			"center": [
 				0.380004972219467,
-				0.327881872653961,
-				-0.197358965873718
+				0.328705668449402,
+				-0.155122518539429
 			],
 			"size": [
 				0.762333393096924,
-				0.085238128900528,
+				0.0835904777050018,
 				0.305360019207001
 			]
 		},
@@ -52,24 +52,24 @@
 			"center": [
 				0.0,
 				0.307463347911835,
-				0.233381122350693
+				0.302458465099335
 			],
 			"size": [
 				0.558807373046875,
 				0.270909011363983,
-				0.861068546772003
+				0.807386755943298
 			]
 		},
 		{
 			"part": "gear",
 			"center": [
 				0.0,
-				0.178902149200439,
-				-0.306076854467392
+				0.178912997245789,
+				-0.263840407133102
 			],
 			"size": [
 				0.390000015497208,
-				0.358493030071259,
+				0.358514726161957,
 				0.424943685531616
 			]
 		},
@@ -78,22 +78,22 @@
 			"center": [
 				-0.000148467719554901,
 				0.248495817184448,
-				-0.645871162414551
+				-0.57662034034729
 			],
 			"size": [
 				0.0379462614655495,
 				0.304995566606522,
-				0.0330740213394165
+				0.0908872485160828
 			]
 		}
 	],
-	"source_triangles": 51204,
-	"triangles": 25504,
+	"source_triangles": 176364,
+	"triangles": 21178,
 	"lod_triangles": [
-		10952,
-		8388
+		19362,
+		19228
 	],
-	"surfaces": 29,
+	"surfaces": 39,
 	"ground_pitch_deg": -0.52,
 	"ground_wheel_level_error_m": 0.0,
 	"ground_support_wheels": 3,
@@ -101,37 +101,37 @@
 		[
 			-0.183000013232231,
 			0.0,
-			-0.131703466176987
+			-0.0894670188426971
 		],
 		[
 			0.177000001072884,
 			0.0,
-			-0.131703466176987
+			-0.0894670188426971
 		],
 		[
 			-0.00274999998509884,
 			0.0,
-			-0.482993841171265
+			-0.440757393836975
 		]
 	],
 	"source_builder": "res://render/airplane.gd::build(jensen-das-ugly-stik-60)",
 	"source_identity": {
 		"manifest": {
 			"path": "res://data/aircraft_models/jensen-das-ugly-stik-60.json",
-			"sha256": "e92959a792c7963561643a2e221f7508d150ce8f4578802b8ffc61f2c344ef3d",
-			"pinned_sha256": "e92959a792c7963561643a2e221f7508d150ce8f4578802b8ffc61f2c344ef3d",
+			"sha256": "912bee8177251ecf7ed58cb50ee05439d2806ca181c41f86b397b40555b40e55",
+			"pinned_sha256": "912bee8177251ecf7ed58cb50ee05439d2806ca181c41f86b397b40555b40e55",
 			"matches_pin": true
 		},
 		"builder": {
 			"path": "res://aircraft/ugly_stik_model.gd",
-			"sha256": "3966784259031fdcb939e9449c345228884f9cc26cc62709273a8588077b67ed",
-			"pinned_sha256": "3966784259031fdcb939e9449c345228884f9cc26cc62709273a8588077b67ed",
+			"sha256": "bccbe905a3d72a6ba75bad0f2cc1f733b4f2d17959257345f95a5a0770dca759",
+			"pinned_sha256": "bccbe905a3d72a6ba75bad0f2cc1f733b4f2d17959257345f95a5a0770dca759",
 			"matches_pin": true
 		},
 		"geometry_script": {
 			"path": "res://aircraft/ugly_stik_geometry.gd",
-			"sha256": "a7b5555500a5059ebdf9ad29ec63a5a5c463733b8cb80e5a688250d5ce22b01f",
-			"pinned_sha256": "a7b5555500a5059ebdf9ad29ec63a5a5c463733b8cb80e5a688250d5ce22b01f",
+			"sha256": "9d3d4fc3ed499e4658f41d17b0003cb99fbb832bcde41272ab3a3e54ea0c51ed",
+			"pinned_sha256": "9d3d4fc3ed499e4658f41d17b0003cb99fbb832bcde41272ab3a3e54ea0c51ed",
 			"matches_pin": true
 		},
 		"fleet_collector": {
@@ -142,8 +142,8 @@
 		},
 		"airplane_snapshot_builder": {
 			"path": "res://render/airplane.gd",
-			"sha256": "c4ab99076ada552ce26b6a9d74346073d0a227d5cc272e23bc73a461426cc1ed",
-			"pinned_sha256": "c4ab99076ada552ce26b6a9d74346073d0a227d5cc272e23bc73a461426cc1ed",
+			"sha256": "b395edee0199f290accef2a1da93a4364ce418e8ff8ae90e1be43b89a68ae04d",
+			"pinned_sha256": "b395edee0199f290accef2a1da93a4364ce418e8ff8ae90e1be43b89a68ae04d",
 			"matches_pin": true
 		},
 		"baker": {
@@ -154,8 +154,8 @@
 		},
 		"geometry_source": {
 			"path": "assets/aircraft/ugly-stik-60/geometry.json",
-			"sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108",
-			"pinned_sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108",
+			"sha256": "800d58b7e94ff3a4c29a008316dda3bd062f1a79d4ea06bfd529463407552631",
+			"pinned_sha256": "800d58b7e94ff3a4c29a008316dda3bd062f1a79d4ea06bfd529463407552631",
 			"matches_pin": true
 		},
 		"asset": {

@@ -1,0 +1,29 @@
+{
+ "views": {
+  "front": {
+   "iou": 0.99654,
+   "changed_area_mm2": 308.5,
+   "master_area_mm2": 89255.6,
+   "max_outline_gap_mm": 8.44,
+   "pixel_mm": 0.938
+  },
+  "side": {
+   "iou": 0.99754,
+   "changed_area_mm2": 272.2,
+   "master_area_mm2": 110431.3,
+   "max_outline_gap_mm": 3.33,
+   "pixel_mm": 0.417
+  },
+  "top": {
+   "iou": 0.99935,
+   "changed_area_mm2": 472.9,
+   "master_area_mm2": 732379.4,
+   "max_outline_gap_mm": 3.75,
+   "pixel_mm": 0.938
+  }
+ },
+ "legend": "gris = ambos, rojo = solo maestro, azul = solo juego",
+ "master": "Skywalker_X8.blend",
+ "game": "aircraft_game.blend",
+ "note": "maestro sin LED, rotulos, marcador de CG, palanca RC, suelo ni cortadores"
+}

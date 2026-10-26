@@ -45,6 +45,8 @@ const KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
 const MAX_FINITE := 1.7976931348623157e308
 
 ## Coefficient name → [unit, required sign (+1, -1 or 0 = any)]. Signs encode a statically stable airplane.
+## X8-03: the rudder terms an elevon (rudderless) aircraft must declare as exactly zero.
+const RUDDER_TERMS := ["CYdr", "Cldr", "Cndr", "CDdr"]
 const COEFFICIENTS := {
 	CL0 = ["1", 0], CLa = ["1/rad", 1], CLadot = ["1/rad", 0], CLq = ["1/rad", 0], CLde = ["1/rad", 1], CLda_each = ["1/rad", 0],
 	CD0 = ["1", 1], CL_minD = ["1", 0], k_induced = ["1", 1], CDda_each = ["1/rad", 0], CDdr = ["1/rad", 0], CDde = ["1/rad", 0],
@@ -215,12 +217,29 @@ static func _validate_with_domain(raw: Dictionary, domain: Dictionary) -> Dictio
 	var structural: PackedStringArray = Contract.validate(raw)
 	if not structural.is_empty():
 		return {ok = false, errors = structural, warnings = PackedStringArray(), model = {}}
-	var result: Dictionary = _validate_legacy(legacy_v1_input(raw), domain)
+	# X8-03/04: the shared numerical parser needs the control topology and airframe law; absent keys keep the
+	# historical conventional wing-tail path untouched.
+	var layout := {}
+	for key: String in ["controls", "airframe_layout"]:
+		if raw.capabilities.has(key):
+			layout[key] = raw.capabilities[key]
+	var result: Dictionary = _validate_legacy(legacy_v1_input(raw), domain, layout)
 	if result.ok:
 		# Identity describes authored v2, never the internal compatibility representation.
 		result.model.data_sha256 = JSON.stringify(raw, "", true).sha256_text()
 		result.model.capabilities = raw.capabilities.duplicate(true)
 		result.model.convention_id = raw.convention_id
+		if raw.capabilities.propulsion_layout == "single_pusher":
+			# X8-05: a pusher's propeller sits behind the CG and pushes forward along the body axis.
+			var offset: PackedFloat64Array = result.model.propulsion.get("offset", PackedFloat64Array())
+			if offset.size() != 3 or offset[0] <= 0.0:
+				return {ok=false,errors=PackedStringArray(["propulsion.propeller.thrust_line_offset: a single_pusher propeller must sit aft of the CG"]),warnings=result.warnings,model={}}
+		if raw.has("crash_tolerance"):
+			var tolerance_errors := PackedStringArray()
+			var tolerance := _crash_tolerance(tolerance_errors, raw.get("crash_tolerance"))
+			if not tolerance_errors.is_empty():
+				return {ok=false,errors=tolerance_errors,warnings=result.warnings,model={}}
+			result.model.crash_tolerance = tolerance
 		if raw.has("flaps"):
 			var flap_errors := PackedStringArray()
 			var flap_model := _flaps(flap_errors, raw.get("flaps"), result.model.reference, result.model.envelope)
@@ -373,6 +392,7 @@ static func legacy_v1_input(raw: Dictionary) -> Dictionary:
 	out.erase("capabilities")
 	out.erase("convention_id")
 	out.erase("flaps")
+	out.erase("crash_tolerance") # X8-08: v2-only, parsed after the shared numerical parse
 	# Identity metadata belongs to v2; the shared historical numerical parser
 	# keeps its closed propulsion shape and receives only its original inputs.
 	out.erase("physical_identity_version")
@@ -409,9 +429,12 @@ static func legacy_v1_input(raw: Dictionary) -> Dictionary:
 	return out
 
 
-static func _validate_legacy(raw: Dictionary, domain: Dictionary = {}) -> Dictionary:
+## layout (X8-03/04, v2 only): optional {controls, airframe_layout} capability selections; empty = conventional wing-tail.
+static func _validate_legacy(raw: Dictionary, domain: Dictionary = {}, layout: Dictionary = {}) -> Dictionary:
 	var errors := PackedStringArray()
 	var warnings := PackedStringArray()
+	var elevon: bool = layout.get("controls", "") == "elevon"
+	var tailless: bool = layout.get("airframe_layout", "") == "tailless"
 	if raw.get("format") != LEGACY_FORMAT:
 		errors.append("format must be '%s', got '%s'" % [LEGACY_FORMAT, raw.get("format")])
 		return { ok = false, errors = errors, warnings = warnings, model = {} }
@@ -476,7 +499,10 @@ static func _validate_legacy(raw: Dictionary, domain: Dictionary = {}) -> Dictio
 		var x = _dq(domain, errors, "aero.coefficients." + name, coeffs.get(name), spec[0], -100.0, 100.0)
 		if x != null:
 			aero[name] = x
-			if spec[1] != 0 and signf(x) != float(spec[1]):
+			if elevon and RUDDER_TERMS.has(name):
+				if x != 0.0:
+					errors.append("aero.coefficients.%s = %s: an elevon aircraft has no rudder; the term must be 0" % [name, x])
+			elif spec[1] != 0 and signf(x) != float(spec[1]):
 				errors.append("aero.coefficients.%s = %s: sign must be %s for a statically stable airplane" % [name, x, "positive" if spec[1] > 0 else "negative"])
 	for name in coeffs:
 		if not COEFFICIENTS.has(name):
@@ -485,15 +511,19 @@ static func _validate_legacy(raw: Dictionary, domain: Dictionary = {}) -> Dictio
 	var envelope := _envelope(errors, aero_node.get("envelope"), aero) if errors.is_empty() else {}
 	if not envelope.is_empty():
 		envelope.station_ys = station_ys(span, chords)
-	var surfaces := _surfaces(errors, aero_node.get("surfaces"), aero, area, span, arp, envelope, domain)
+	var surfaces := _surfaces(errors, aero_node.get("surfaces"), aero, area, span, arp, envelope, domain, layout)
 	if errors.is_empty() and not envelope.is_empty() and not surfaces.is_empty():
 		if not _induced_map(envelope, surfaces, aero, area, span, chords):
 			errors.append("aero.surfaces: induced wing calibration cannot reproduce CLa with a finite positive section slope in [0.1, 50] 1/rad")
+		elif tailless:
+			_derive_tailless(errors, envelope, surfaces, aero, chord, arp)
 	if errors.is_empty() and aero_node.has("wing_polar"):
 		var polar := _wing_polar(errors, aero_node.wing_polar, envelope, aero)
 		if not polar.is_empty():
 			envelope.wing_polar = polar
 			warnings.append("Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed")
+	if tailless and aero_node.has("ground_effect"):
+		errors.append("aero.ground_effect: the tailless airframe law has no ground-effect coupling yet")
 	if errors.is_empty() and aero_node.has("ground_effect"):
 		var ground_effect := _ground_effect(errors, aero_node.ground_effect, envelope, surfaces)
 		if not ground_effect.is_empty():
@@ -501,7 +531,7 @@ static func _validate_legacy(raw: Dictionary, domain: Dictionary = {}) -> Dictio
 	var prop := _propulsion(errors, raw.get("propulsion"), domain)
 	var hull := _crash_hull(errors, raw.get("crash_hull"), float(domain.get("crash_hull", 1.0)))
 	var hull_components := _crash_hull_components(errors, raw.get("crash_hull_components"), hull.size() / 3)
-	var controls := _controls(errors, raw.get("controls"))
+	var controls := _controls(errors, raw.get("controls"), elevon)
 
 	if not errors.is_empty():
 		return { ok = false, errors = errors, warnings = warnings, model = {} }
@@ -860,8 +890,9 @@ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dicti
 		var y: float = absf(ys[j])
 		chord.append(area / span if chords.is_empty() else chords[0] + (chords[1] - chords[0]) * y / h)
 	var k_map := strip_influence(edges, ys, chord)
-	var horizontal: Dictionary = surfaces.horizontal
-	var tail_share: float = float(horizontal.area) / area * float(horizontal.lift_slope)
+	# X8-04: a tailless airframe has no horizontal element; its strips carry all of CLa.
+	var horizontal: Dictionary = surfaces.get("horizontal", {})
+	var tail_share: float = 0.0 if horizontal.is_empty() else float(horizontal.area) / area * float(horizontal.lift_slope)
 	var target: float = float(aero.CLa) - tail_share
 	if not is_finite(target) or target <= 0.0:
 		return false
@@ -895,7 +926,8 @@ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dicti
 		for k in n:
 			twist_lift += e_map[i * n + k] * (twist[k] if not twist.is_empty() else 0.0)
 	twist_lift *= a0 / float(n)
-	var alpha_s: float = (float(aero.CL0) - tail_share * float(horizontal.incidence) - twist_lift) / (a0 * wsum)
+	var alpha_s: float = (float(aero.CL0) - tail_share * float(horizontal.incidence) - twist_lift) / (a0 * wsum) \
+		if not horizontal.is_empty() else (float(aero.CL0) - twist_lift) / (a0 * wsum)
 	if not is_finite(alpha_s):
 		return false
 	var cl0 := PackedFloat64Array()
@@ -935,6 +967,98 @@ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dicti
 		# E0a2b: the wake travels from the wing's quarter chord to the tail's pressure centre (le frame, x aft).
 		horizontal.downwash_lag_length = float(horizontal.position[0]) - 0.25 * area / span
 	return true
+
+
+## X8-04: the tailless strip law reproduces the static oracle at small angles, as _induced_map does for CLa and CL0.
+## The strips act at their own swept quarter-chord stations (aero.surfaces.tailless.station_x, root → tip); elevons
+## shift the covered strips' angle and add a section camber couple. Solved here, with E the induced map:
+##   τ   elevon strip-angle effectiveness per radian: the strips' symmetric-elevon lift equals CLδe;
+##   Δx  one chordwise shift of every station: the strips' neutral point equals the oracle's (Cmα about the ARP);
+##   cm  the section moment on every strip: the strips' Cm at α 0 equals Cm0 (camber, reflex and washout together);
+##   km  the elevon camber couple per radian of deflection on covered strips: the strips' symmetric-elevon pitch
+##       equals Cmδe.
+## Clδa, Cmq and Clp stay predictions of the strip geometry (tests compare them with the oracle); nothing else is fitted.
+static func _derive_tailless(errors: PackedStringArray, envelope: Dictionary, surfaces: Dictionary, aero: Dictionary,
+		chord: float, arp: PackedFloat64Array) -> void:
+	var block: Dictionary = surfaces.tailless
+	var e_map: PackedFloat64Array = envelope.induced_map
+	var n: int = envelope.station_ys.size()
+	var a0: float = envelope.strip_slope
+	var cl0: PackedFloat64Array = envelope.strip_cl0
+	var chords: PackedFloat64Array = envelope.station_chords
+	var x0: PackedFloat64Array = block.station_x_authored
+	var cover: PackedFloat64Array = block.elevon_coverage
+	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
+	var slope := PackedFloat64Array() # section lift per radian of uniform angle of attack
+	var elevon := PackedFloat64Array() # section lift per radian of symmetric elevon with τ = 1
+	var lift0 := PackedFloat64Array() # section lift at α 0
+	for i in n:
+		var row := 0.0
+		var covered := 0.0
+		var twisted := 0.0
+		for k in n:
+			row += e_map[i * n + k]
+			covered += e_map[i * n + k] * cover[k]
+			twisted += e_map[i * n + k] * (twist[k] if not twist.is_empty() else 0.0)
+		slope.append(a0 * row)
+		elevon.append(a0 * covered)
+		lift0.append(cl0[i] + a0 * twisted)
+	var slope_sum := 0.0
+	var elevon_sum := 0.0
+	var slope_moment := 0.0
+	for i in n:
+		slope_sum += slope[i]
+		elevon_sum += elevon[i]
+		slope_moment += slope[i] * (x0[i] - arp[0])
+	var tau: float = float(aero.CLde) * n / elevon_sum
+	# The elevon's chord fraction E bounds τ against thin-airfoil flap theory, τ_ta = 1 − (θ − sin θ)/π with
+	# cos θ = 2E − 1: measured plain-flap effectiveness falls below τ_ta (viscous losses, gaps), never far above it.
+	var theta: float = M.acos_(2.0 * float(block.elevon_chord_fraction) - 1.0)
+	var tau_thin: float = 1.0 - (theta - M.sin_(theta)) / PI
+	if not is_finite(tau) or tau < 0.2 * tau_thin or tau > 1.5 * tau_thin:
+		errors.append("aero.surfaces.tailless: elevon strip effectiveness %s needed for CLde lies outside 0.2–1.5 of the thin-airfoil %s for chord fraction %s (coverage or CLde inconsistent)" % [tau, tau_thin, block.elevon_chord_fraction])
+		return
+	var shift: float = (-float(aero.Cma) * n * chord - slope_moment) / slope_sum
+	if not is_finite(shift) or absf(shift) > 0.25 * chord:
+		errors.append("aero.surfaces.tailless.station_x: the oracle's neutral point needs a %.4f m station shift, beyond a quarter chord (geometry and Cma disagree)" % shift)
+		return
+	var xs := PackedFloat64Array()
+	var lift_moment := 0.0
+	var elevon_moment := 0.0
+	var chord_sum := 0.0
+	var covered_chord := 0.0
+	for i in n:
+		xs.append(x0[i] + shift)
+		lift_moment += lift0[i] * (xs[i] - arp[0])
+		elevon_moment += tau * elevon[i] * (xs[i] - arp[0])
+		chord_sum += chords[i] / chord
+		covered_chord += cover[i] * chords[i] / chord
+	var cm_ac: float = (float(aero.Cm0) * n + lift_moment / chord) / chord_sum
+	var km: float = (float(aero.Cmde) * n + elevon_moment / chord) / covered_chord
+	if not is_finite(cm_ac) or absf(cm_ac) > 0.3:
+		errors.append("aero.surfaces.tailless: the section moment %s needed for Cm0 lies outside ±0.3" % cm_ac)
+		return
+	if not is_finite(km) or km < -2.0 or km > 0.5:
+		errors.append("aero.surfaces.tailless: the elevon camber couple %s per rad needed for Cmde lies outside −2…0.5" % km)
+		return
+	block.station_x = xs
+	block.station_shift = shift
+	block.tau = tau
+	block.thin_airfoil_tau = tau_thin
+	block.moment_per_rad = km
+	surfaces.wing_cm_ac = cm_ac
+
+
+## X8-08: a tolerant hull's own contact thresholds; terminal hulls keep HullContact's shared ones (2.5 J/kg, 0.08 m).
+## presentation_durability divides the crash presentation's specific energy (CR-08b); it never changes physics.
+static func _crash_tolerance(errors: PackedStringArray, node: Variant) -> Dictionary:
+	var block := _dictionary(errors, "crash_tolerance", node)
+	var energy = _q(errors, "crash_tolerance.terminal_specific_energy", block.get("terminal_specific_energy"), "J/kg", 2.5, 50.0)
+	var depth = _q(errors, "crash_tolerance.crash_depth", block.get("crash_depth"), "m", 0.08, 0.3)
+	var durability = _q(errors, "crash_tolerance.presentation_durability", block.get("presentation_durability"), "1", 1.0, 10.0)
+	if energy == null or depth == null or durability == null:
+		return {}
+	return {terminal_specific_energy = float(energy), crash_depth = float(depth), presentation_durability = float(durability)}
 
 
 ## D11d: Weissinger influence matrix K (row-major n×n) for strips with the given edges (2n + 1), control-point y and
@@ -1994,20 +2118,30 @@ static func _xy_table(errors: PackedStringArray, path: String, node: Variant, un
 
 
 ## Maximum surface throws (each surface's deflection at full stick), degrees in the file.
-static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
+## X8-03 (elevon): `aileron` and `elevator` are the roll and pitch shares of each elevon at full stick (the radio mix),
+## `elevon` the servo end point that clips their sum; the rudder throw is exactly 0 (yaw stick has no surface).
+static func _controls(errors: PackedStringArray, node: Variant, elevon := false) -> Dictionary:
 	if typeof(node) != TYPE_DICTIONARY:
 		errors.append("controls: missing")
 		return {}
 	var throws := _dictionary(errors, "controls.max_throw", node.get("max_throw", {}))
 	var deg := {}
 	var rad := {}
-	for surface in ["aileron", "elevator", "rudder"]:
+	for surface in (["aileron", "elevator", "elevon"] if elevon else ["aileron", "elevator", "rudder"]):
 		var x = _q(errors, "controls.max_throw." + surface, throws.get(surface), "deg", 1.0, 60.0)
 		if x != null:
 			deg[surface] = x
 			rad[surface] = deg_to_rad(x)
+	if elevon:
+		deg.rudder = 0.0
+		rad.rudder = 0.0
+		for share in ["aileron", "elevator"]:
+			if deg.has(share) and deg.has("elevon") and deg[share] > deg.elevon:
+				errors.append("controls.max_throw.%s %s exceeds the elevon end point %s" % [share, deg[share], deg.elevon])
+		if throws.has("aileron_down") or throws.has("rudder"):
+			errors.append("controls.max_throw: an elevon aircraft declares no aileron_down or rudder throw")
 	# Optional (AV-06): differential ailerons, the down-going aileron's maximum (≤ the up throw, `aileron`).
-	if throws.has("aileron_down"):
+	elif throws.has("aileron_down"):
 		var down = _q(errors, "controls.max_throw.aileron_down", throws.get("aileron_down"), "deg", 1.0, 60.0)
 		if down != null and deg.has("aileron") and down > deg.aileron:
 			errors.append("controls.max_throw.aileron_down %s exceeds the up throw %s (a differential throws less down)" % [down, deg.aileron])
@@ -2016,19 +2150,25 @@ static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
 			rad.aileron_down = deg_to_rad(down)
 	var t = _q(errors, "controls.servo_full_throw_time", node.get("servo_full_throw_time"), "s", 0.01, 2.0)
 	var out := { throw_deg = deg, throw_rad = rad, servo_rate = 1.0 / t if t != null else 0.0 }
+	if elevon:
+		out.layout = "elevon"
 	# Optional (D6e): the manual's normal-flight dual rates and expo as stick shaping (travel fraction of the maximum
 	# throw per axis, expo per axis). Absent = the maximum throws with no expo. Never an aerodynamic quantity.
 	if node.has("rates"):
 		var rates := _dictionary(errors, "controls.rates", node.get("rates"))
 		var normal := _dictionary(errors, "controls.rates.normal", rates.get("normal"))
 		var profile := {}
-		for axis in ["aileron", "elevator", "rudder"]:
+		for axis in (["aileron", "elevator"] if elevon else ["aileron", "elevator", "rudder"]):
 			var travel = _q(errors, "controls.rates.normal." + axis, normal.get(axis), "1", 0.05, 1.0)
 			var expo = _q(errors, "controls.rates.normal." + axis + "_expo", normal.get(axis + "_expo"), "1", 0.0, 0.9)
 			if travel != null:
 				profile[axis] = float(travel)
 			if expo != null:
 				profile[axis + "_expo"] = float(expo)
+		if elevon:
+			# The yaw stick moves no surface; full travel without expo keeps the shared stick shaping well defined.
+			profile.rudder = 1.0
+			profile.rudder_expo = 0.0
 		if profile.size() == 6:
 			out.rates = { normal = profile }
 	# Optional device response, never a servo or aerodynamic coefficient. Full/radio modes bypass it.
@@ -2358,7 +2498,7 @@ static func _hull_body(hull: PackedFloat64Array, cg: Variant) -> PackedFloat64Ar
 ## Local-surface data has explicit evidence like the reference derivatives. Linked rudder
 ## derivatives are about ARP, not CG; the final load transfer supplies the remaining arm.
 static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary,
-		area: Variant, span: Variant, arp: Variant, env: Dictionary, domain: Dictionary = {}) -> Dictionary:
+		area: Variant, span: Variant, arp: Variant, env: Dictionary, domain: Dictionary = {}, layout: Dictionary = {}) -> Dictionary:
 	if typeof(node) != TYPE_DICTIONARY:
 		errors.append("aero.surfaces: expected an object")
 		return {}
@@ -2374,6 +2514,15 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		tail_stall_end = ["deg", 10.0, 60.0], tail_CD0 = ["1", 0.001, 0.2],
 		tail_k = ["1", 0.0, 2.0], tail_CD90 = ["1", 0.5, 2.5],
 	}
+	# X8-04: the tailless law has no horizontal element; its elevons replace the aileron effectiveness and its section
+	# moment is derived (_derive_tailless), so neither is authored. X8-03: a rudderless fin has zero control effectiveness.
+	var tailless: bool = layout.get("airframe_layout", "") == "tailless"
+	var elevon: bool = layout.get("controls", "") == "elevon"
+	if tailless:
+		specs.erase("wing_aileron_effectiveness")
+		for key in ["horizontal", "wing_aileron_effectiveness", "wing_section_cm_ac"]:
+			if node.has(key):
+				errors.append("aero.surfaces.%s: not part of the tailless airframe law" % key)
 	for key in specs:
 		var spec: Array = specs[key]
 		var value = _dq(domain, errors, "aero.surfaces." + key, node.get(key), spec[0], spec[1], spec[2])
@@ -2427,20 +2576,46 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		var body_cda = _dq(domain, errors, "aero.surfaces.body_crossflow_area", node.get("body_crossflow_area"), "m2", 0.0, 1.0)
 		if body_cda != null:
 			out.body_crossflow_area = float(body_cda)
-	for name in ["horizontal", "vertical"]:
+	for name in (["vertical"] if tailless else ["horizontal", "vertical"]):
 		var tail := _dictionary(errors, "aero.surfaces." + name, node.get(name, {}))
 		var label: String = "aero.surfaces." + name
+		var effectiveness_floor := 0.0 if elevon and name == "vertical" else 0.01
 		out[name] = {
 			area = _dq(domain, errors, label + ".area", tail.get("area"), "m2", 0.001, 1.0),
 			position = _dq(domain, errors, label + ".position", tail.get("position"), "m", -2.0, 2.0, 3),
 			lift_slope = _dq(domain, errors, label + ".lift_slope", tail.get("lift_slope"), "1/rad", 0.1, 6.3),
-			control_effectiveness = _dq(domain, errors, label + ".control_effectiveness", tail.get("control_effectiveness"), "1", 0.01, 1.5),
+			control_effectiveness = _dq(domain, errors, label + ".control_effectiveness", tail.get("control_effectiveness"), "1", effectiveness_floor, 1.5),
 			incidence = _dq(domain, errors, label + ".incidence", tail.get("incidence"), "rad", -0.2, 0.2),
 		}
+	if elevon and out.vertical.control_effectiveness != null and out.vertical.control_effectiveness != 0.0:
+		errors.append("aero.surfaces.vertical.control_effectiveness: an elevon aircraft has no rudder; it must be 0")
+	if tailless:
+		out.wing_aileron_effectiveness = 0.0 # the elevon strip law below acts instead (Aero._strip_control)
+		var block := _dictionary(errors, "aero.surfaces.tailless", node.get("tailless", {}))
+		var n: int = Aero.WING_STATIONS_PER_SIDE
+		var xs = _dq(domain, errors, "aero.surfaces.tailless.station_x", block.get("station_x"), "m", -2.0, 2.0, n)
+		var cover = _dq(domain, errors, "aero.surfaces.tailless.elevon_coverage", block.get("elevon_coverage"), "1", 0.0, 1.0, n)
+		var chord_fraction = _dq(domain, errors, "aero.surfaces.tailless.elevon_chord_fraction", block.get("elevon_chord_fraction"), "1", 0.05, 0.6)
+		if xs != null and cover != null and chord_fraction != null:
+			# Authored root → tip like wing_station_incidence; stored in station_ys order (left tip … right tip).
+			var station_x := PackedFloat64Array()
+			var coverage := PackedFloat64Array()
+			for k in range(n - 1, -1, -1):
+				station_x.append(xs[k])
+				coverage.append(cover[k])
+			for k in n:
+				station_x.append(xs[k])
+				coverage.append(cover[k])
+			var covered := 0.0
+			for c in cover:
+				covered += c
+			if covered <= 0.0:
+				errors.append("aero.surfaces.tailless.elevon_coverage: no wing strip carries an elevon")
+			out.tailless = {station_x_authored = station_x, elevon_coverage = coverage, elevon_chord_fraction = float(chord_fraction)}
 	# E0a2 (optional): the wing's downwash gradient at the horizontal tail. With it, lift_slope, control_effectiveness
 	# and incidence keep their meaning (the effective, downwash-reduced static values the oracle was matched with) and
 	# _induced_map derives the free tail law: downwash follows the wing's lift, pitch rate and elevator do not.
-	var horizontal_raw := _dictionary(errors, "aero.surfaces.horizontal", node.get("horizontal", {}))
+	var horizontal_raw := _dictionary(errors, "aero.surfaces.horizontal", node.get("horizontal", {})) if not tailless else {}
 	if horizontal_raw.get("downwash_gradient") != null:
 		var gradient = _dq(domain, errors, "aero.surfaces.horizontal.downwash_gradient", horizontal_raw.get("downwash_gradient"), "1", 0.0, 0.9)
 		if gradient != null:

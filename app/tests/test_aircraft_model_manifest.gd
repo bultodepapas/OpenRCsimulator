@@ -196,7 +196,9 @@ func _test_builders() -> void:
 			var malformed: Dictionary = Registry.validate_derived(description.manifest, broken)
 			_check("builder missing hinge rejects", not malformed.ok and _has_code(malformed.diagnostics, "MODEL_BUILD_HINGE_MISSING"))
 		if description.manifest.builder.adapter != "euler_hinges":
-			var key: String = description.manifest.bindings.controls.rudder.hinges[0].key
+			# X8-02: an elevon family has no rudder role; probe its first elevon hinge instead.
+			var controls: Dictionary = description.manifest.bindings.controls
+			var key: String = (controls.rudder if controls.has("rudder") else controls.elevon_left).hinges[0].key
 			var invalid: Dictionary = built.duplicate(false)
 			invalid.hinges = built.hinges.duplicate()
 			invalid.hinges[key] = built.hinges[key].duplicate()

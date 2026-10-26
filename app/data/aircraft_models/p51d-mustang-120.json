@@ -20,7 +20,7 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "345cb32177915fd869aaa227576661b9cb9477ee6691b79217361080f24b897e",
+    "sha256": "5670bc4def715502007bd06bc2303391da34b7c8866affeb0ae480df6a9682de",
     "hash_mode": "lf_text"
   },
   "geometry": {

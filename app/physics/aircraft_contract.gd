@@ -146,8 +146,19 @@ static func _validate_relations(root: Dictionary, spec: Dictionary, issues: Pack
 	var gear_kind := String(capabilities.get("gear", ""))
 	var propulsion_kind := String(propulsion.get("kind", ""))
 	var layout_expected := "single_centerline_jet" if propulsion_kind == "turbine" else "single_tractor"
-	if capabilities.get("propulsion_layout", "") != layout_expected:
+	# X8-05: an electric propeller may also sit aft of the CG as a pusher; its geometry is checked by AircraftData.
+	var layout_allowed := [layout_expected, "single_pusher"] if propulsion_kind == "electric_prop" else [layout_expected]
+	if not layout_allowed.has(capabilities.get("propulsion_layout", "")):
 		_issue(issues, "/capabilities/propulsion_layout", "does not match propulsion.kind")
+	# X8-03/04: elevons exist only on the tailless law, whose pitch control they are; neither stands alone.
+	var tailless: bool = capabilities.get("airframe_layout", "") == "tailless"
+	if (capabilities.get("controls", "") == "elevon") != tailless:
+		_issue(issues, "/capabilities/controls", "elevon controls require airframe_layout tailless, and tailless requires elevons")
+	if tailless and root.get("aero", {}) is Dictionary and root.get("aero", {}).has("ground_effect"):
+		_issue(issues, "/aero/ground_effect", "is not supported by the tailless airframe law")
+	# X8-08: a tolerant hull declares its own evidence-bearing thresholds; a terminal hull uses the shared ones.
+	if (capabilities.get("damage", "") == "tolerant_hull") != root.has("crash_tolerance"):
+		_issue(issues, "/crash_tolerance", "must be present exactly when capabilities.damage is tolerant_hull")
 	var energy_expected := "prescribed_fuel"
 	var fuel_consumption: Variant = propulsion.get("fuel_consumption", null)
 	var has_liquid_adapter: bool = fuel_consumption is Dictionary

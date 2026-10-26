@@ -41,6 +41,7 @@ EXPECTED_FLEET = {
     "stik_glow_fs64v_4t",
     "stik_glow_fs64v_4t_apc_13x6",
     "turbo_lumber_evolution",
+    "skywalker_x8",
 }
 ENGINE_ERROR = re.compile(r"(?:SCRIPT ERROR:|Parse Error:|ERROR:)")
 @dataclass

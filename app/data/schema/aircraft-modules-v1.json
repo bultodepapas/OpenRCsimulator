@@ -13,6 +13,13 @@
         "compiler_transforms": {
           "controls": true
         }
+      },
+      "elevon": {
+        "module": "controls.elevon.v1",
+        "law": "controls.elevon_mixing.v1",
+        "compiler_transforms": {
+          "controls": false
+        }
       }
     },
     "gear": {
@@ -105,6 +112,10 @@
       "single_centerline_jet": {
         "module": "propulsion_layout.single_centerline_jet.v1",
         "law": "propulsion_layout.single_centerline_jet.v1"
+      },
+      "single_pusher": {
+        "module": "propulsion_layout.single_pusher.v1",
+        "law": "propulsion_layout.single_pusher.v1"
       }
     },
     "energy": {
@@ -147,7 +158,22 @@
     },
     "damage": {
       "terminal_hull": {
-        "law": "damage.terminal_hull.v1"
+        "law": "damage.terminal_hull.v1",
+        "presence_relations": [
+          {
+            "path": "crash_tolerance",
+            "present": false
+          }
+        ]
+      },
+      "tolerant_hull": {
+        "law": "damage.tolerant_hull.v1",
+        "presence_relations": [
+          {
+            "path": "crash_tolerance",
+            "present": true
+          }
+        ]
       }
     },
     "flaps": {
@@ -170,6 +196,22 @@
           }
         ]
       }
+    },
+    "airframe_layout": {
+      "tailless": {
+        "module": "aero.tailless.v1",
+        "law": "aero.tailless_swept_strips.v1",
+        "presence_relations": [
+          {
+            "path": "aero.surfaces.horizontal",
+            "present": false
+          },
+          {
+            "path": "aero.surfaces.tailless",
+            "present": true
+          }
+        ]
+      }
     }
   },
   "capability_keys": [
@@ -179,6 +221,9 @@
     "energy",
     "damage",
     "flaps"
+  ],
+  "optional_capability_keys": [
+    "airframe_layout"
   ],
   "propulsion": {
     "glow_prop": {
@@ -343,7 +388,8 @@
       "module": "propulsion.electric_prop.v1",
       "allowed_capabilities": {
         "propulsion_layout": [
-          "single_tractor"
+          "single_tractor",
+          "single_pusher"
         ],
         "energy": [
           "fixed_voltage",
