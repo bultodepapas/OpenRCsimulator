@@ -1,0 +1,50 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c2503aae-8922-44b9-bb3d-a152d1d53703",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-flight-audio/test_flight_audio_accepted.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T15:00:31.755937+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-flight-audio\\checks\\draft-01\\godot-b5eu81ap\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-flight-audio\\checks\\draft-01\\godot-b5eu81ap\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": false,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 8,
+      "message": "Invalid type in function 'observer_connections' in base 'SceneTree (test_flight_audio_accepted.gd)'. The Object-derived class of argument 2 (previously freed) is not a subclass of the expected argument class.",
+      "context": [
+        "   at: _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-flight-audio/test_flight_audio_accepted.gd:219)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-flight-audio/test_flight_audio_accepted.gd:219)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 120.406,
+  "log_bytes": 903,
+  "log_sha256": "90b94e10d517d0d41bcfe0db34a2f735695b7eebc54ba9e3c436079410403dc5"
+}

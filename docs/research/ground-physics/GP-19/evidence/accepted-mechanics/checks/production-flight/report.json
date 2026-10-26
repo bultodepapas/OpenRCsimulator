@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "91f2f733-cacf-4463-ac54-a324b8ef529a",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_mechanical_integration.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T15:12:01.036718+00:00",
+  "label": "mechanical-integration",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-accepted-mechanics\\checks\\main-integration\\mechanical-integration-jvjzk233\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-accepted-mechanics\\checks\\main-integration\\mechanical-integration-jvjzk233\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 24.031,
+  "log_bytes": 2018,
+  "log_sha256": "36d654849eaa1a691dd560d1eacbbb6b64de41a5665ea61d22da2163fec34952"
+}
