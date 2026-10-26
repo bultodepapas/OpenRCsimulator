@@ -1,0 +1,316 @@
+{
+  "format": "openrc-gp14-shared-event-evidence-v1",
+  "captured_utc": "2026-10-26T13:10:15.232510+00:00",
+  "packaging_commit": "49122f444a994ac1dd500cbf4611dbee0793f419",
+  "scope": "Selected main-tree checked runs; not full-suite or complete dependency-frozen replay. Source snapshots are captured at packaging; promoted event-runtime hashes are checked against pre-run promotion identity.",
+  "runs": {
+    "events": {
+      "checks": 88,
+      "files": [
+        {
+          "source": "tmp/gp14-events-checks/main/test_ground_flight_events-4umi3uwk/report.json",
+          "retained": "checks/events/report.json",
+          "sha256": "619a7ef3f2af18d34c77383c8204365a5bfa8589a9a761ddd922b81dc275cda1",
+          "bytes": 1210
+        },
+        {
+          "source": "tmp/gp14-events-checks/main/test_ground_flight_events-4umi3uwk/engine.log",
+          "retained": "checks/events/engine.log",
+          "sha256": "28c996585cdce22a26f2d7650531b331083770f20818991c46cde18cfacee159",
+          "bytes": 115
+        }
+      ]
+    },
+    "accidents": {
+      "checks": 55,
+      "files": [
+        {
+          "source": "tmp/gp14-events-checks/main/test_ground_accidents-gf95xth2/report.json",
+          "retained": "checks/accidents/report.json",
+          "sha256": "eb3bb6826b2166265377558bb0dabe7a4662d1bd94cb075b4e90e53d22481c47",
+          "bytes": 1194
+        },
+        {
+          "source": "tmp/gp14-events-checks/main/test_ground_accidents-gf95xth2/engine.log",
+          "retained": "checks/accidents/engine.log",
+          "sha256": "27805b86f5073a54509bd144f1f5ce8e4276c523a1a011abf295b6a9e55ffa7e",
+          "bytes": 110
+        }
+      ]
+    },
+    "live_session": {
+      "checks": 33,
+      "files": [
+        {
+          "source": "tmp/gp14-events-checks/main/live-shared-events-z5yhuz_5/report.json",
+          "retained": "checks/live_session/report.json",
+          "sha256": "199e12d964a61a90a551d15cd1595061ea60aa700074ed90ad7cdfb6f1ec7ece",
+          "bytes": 1193
+        },
+        {
+          "source": "tmp/gp14-events-checks/main/live-shared-events-z5yhuz_5/engine.log",
+          "retained": "checks/live_session/engine.log",
+          "sha256": "0bc1858073b97d4a4e6a0c6e1c6d7fa28fe3c7ec3f17f9eaf4a51d5d38b9cc83",
+          "bytes": 732
+        }
+      ]
+    },
+    "lifecycle": {
+      "checks": 51,
+      "files": [
+        {
+          "source": "tmp/gp14-events-checks/main/test_flight_statistics_lifecycle-bvqtov_n/report.json",
+          "retained": "checks/lifecycle/report.json",
+          "sha256": "abd0eee181c7e045cb26ac55c29553b8cb8a35daf9e3d32fcfc5d68791a51387",
+          "bytes": 1238
+        },
+        {
+          "source": "tmp/gp14-events-checks/main/test_flight_statistics_lifecycle-bvqtov_n/engine.log",
+          "retained": "checks/lifecycle/engine.log",
+          "sha256": "8c9eb1845f23c89ec3c955a4a0d7e9a42a8f300db392469f1ad7b7ea0dd80668",
+          "bytes": 592
+        }
+      ]
+    },
+    "resets": {
+      "checks": 48,
+      "files": [
+        {
+          "source": "tmp/gp14-events-checks/main/test_flight_statistics_resets-dhvlgblf/report.json",
+          "retained": "checks/resets/report.json",
+          "sha256": "b70721ea29e0406c664c6092b8817f7ecc40c1a1632077901b957613711e8cce",
+          "bytes": 1225
+        },
+        {
+          "source": "tmp/gp14-events-checks/main/test_flight_statistics_resets-dhvlgblf/engine.log",
+          "retained": "checks/resets/engine.log",
+          "sha256": "0242ae7ac143d4ee6f9816fba66d58a44ae3fbd0e8724437587840cf4e1925cd",
+          "bytes": 93
+        }
+      ]
+    },
+    "store": {
+      "checks": 49,
+      "files": [
+        {
+          "source": "tmp/gp14-events-checks/main/test_flight_statistics_store-rm85yt0j/report.json",
+          "retained": "checks/store/report.json",
+          "sha256": "a9c9cf68980693d93b70d187479e5758b0eb416da5a62c6f13618bea8500c2e3",
+          "bytes": 1221
+        },
+        {
+          "source": "tmp/gp14-events-checks/main/test_flight_statistics_store-rm85yt0j/engine.log",
+          "retained": "checks/store/engine.log",
+          "sha256": "ea9e157a43ffce574abfb371062af0bf18ebafd0c727972f03f3ca180f943d16",
+          "bytes": 93
+        }
+      ]
+    },
+    "writer": {
+      "checks": 18,
+      "files": [
+        {
+          "source": "tmp/gp14-events-checks/main/test_flight_statistics_writer-od6lgk2v/report.json",
+          "retained": "checks/writer/report.json",
+          "sha256": "027ba66f2bfab360e89d138a0a3d8994632974cc982e70a94237d577dc665b9c",
+          "bytes": 1226
+        },
+        {
+          "source": "tmp/gp14-events-checks/main/test_flight_statistics_writer-od6lgk2v/engine.log",
+          "retained": "checks/writer/engine.log",
+          "sha256": "08de208c1f07262d853ae1b6e1f129bcc057a5678a015ae5c51a62e7de4b6284",
+          "bytes": 119
+        }
+      ]
+    },
+    "detector_fleet": {
+      "checks": 111,
+      "files": [
+        {
+          "source": "tmp/gp14-x8-checks/main/godot-lxa57g5p/report.json",
+          "retained": "checks/detector_fleet/report.json",
+          "sha256": "01825afc90fd00dc0507e82de2effdc86ba16965cf7fc52766902965ec1de60c",
+          "bytes": 1090
+        },
+        {
+          "source": "tmp/gp14-x8-checks/main/godot-lxa57g5p/engine.log",
+          "retained": "checks/detector_fleet/engine.log",
+          "sha256": "f0ed75c61239086b51118f3f2751ccf0b395df2cd3653c28606ee2cab7de806b",
+          "bytes": 94
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "source": "app/statistics/detector.gd",
+      "retained": "source/app/statistics/detector.gd",
+      "sha256": "5887f57c851917c7a15ad0dfbd1e2ee7ab65c7da0557c53f6f22d19d7c78c1f2",
+      "bytes": 38618
+    },
+    {
+      "source": "app/statistics/fixed_wing_adapter.gd",
+      "retained": "source/app/statistics/fixed_wing_adapter.gd",
+      "sha256": "732f1389ee20e6602319788f4aa617f62024a694e28a01d5e802417a2285366c",
+      "bytes": 6762
+    },
+    {
+      "source": "app/statistics/flight_event.gd",
+      "retained": "source/app/statistics/flight_event.gd",
+      "sha256": "69b809a535102c5573b37e6cd4db5610dbedda0c0d7e83e0319fb705bf7136c1",
+      "bytes": 5251
+    },
+    {
+      "source": "app/statistics/profiles.gd",
+      "retained": "source/app/statistics/profiles.gd",
+      "sha256": "c44523671017b4b84bdb1aed2fcb49c935bc7b337daaaeb11c6366009942e97d",
+      "bytes": 12963
+    },
+    {
+      "source": "app/statistics/reducer.gd",
+      "retained": "source/app/statistics/reducer.gd",
+      "sha256": "5fb34cda0b199b7c9e0a510453b9547b5b1f2d5d5ed7470afa3b43a62e11d823",
+      "bytes": 11828
+    },
+    {
+      "source": "app/statistics/rules.gd",
+      "retained": "source/app/statistics/rules.gd",
+      "sha256": "b52bb07a5cd4993233e69994359062b29b6f983e7b28a30b1c6a596af908bb0e",
+      "bytes": 1467
+    },
+    {
+      "source": "app/statistics/schema.gd",
+      "retained": "source/app/statistics/schema.gd",
+      "sha256": "967f6466480843498aa4c393cc6f0106db6eb7ef5a88fa07db6119904a16e5e0",
+      "bytes": 22045
+    },
+    {
+      "source": "app/statistics/service.gd",
+      "retained": "source/app/statistics/service.gd",
+      "sha256": "9f2afbdedb4e17c42a45034add7791d1e585d820a8a3d5bbb5d42a8d455414fe",
+      "bytes": 20570
+    },
+    {
+      "source": "app/statistics/store.gd",
+      "retained": "source/app/statistics/store.gd",
+      "sha256": "47db5ab2cabdf7dd391836ff200adc2fecd5b36eb40f79cfe80be297e051c3cb",
+      "bytes": 37416
+    },
+    {
+      "source": "app/statistics/writer.gd",
+      "retained": "source/app/statistics/writer.gd",
+      "sha256": "ebd46d2cb8729004f46d14fdc8efac156605c3c5c2eaaed2ad03b88dd8e0db08",
+      "bytes": 1858
+    },
+    {
+      "source": "app/tests/test_ground_flight_events.gd",
+      "retained": "source/app/tests/test_ground_flight_events.gd",
+      "sha256": "3b91976e991d1425a1cd111b466b5ae4bd86fddb3f49d38c1e9fe9fcb38b2062",
+      "bytes": 12710
+    },
+    {
+      "source": "app/tests/test_ground_accidents.gd",
+      "retained": "source/app/tests/test_ground_accidents.gd",
+      "sha256": "75e8ac58a42051a1b926e47289be02592e39291841c9a99e47fcd39f3aa6125e",
+      "bytes": 15247
+    },
+    {
+      "source": "app/tests/test_ground_accident_session.gd",
+      "retained": "source/app/tests/test_ground_accident_session.gd",
+      "sha256": "e6bf4f4f07097e5b83f9ac7680845ed62cd468600e7df614c97f026afd3006a4",
+      "bytes": 10258
+    },
+    {
+      "source": "app/tests/test_flight_statistics_lifecycle.gd",
+      "retained": "source/app/tests/test_flight_statistics_lifecycle.gd",
+      "sha256": "6dac231906a2073d7e5af44ea091a4d783aedf7ec39567ecd490848a13e58a03",
+      "bytes": 8474
+    },
+    {
+      "source": "app/tests/test_flight_statistics_resets.gd",
+      "retained": "source/app/tests/test_flight_statistics_resets.gd",
+      "sha256": "89fa7994f0a98703b83559a236cf56a62ef68433ca3f6c39fde5ba061a813742",
+      "bytes": 11374
+    },
+    {
+      "source": "app/tests/test_flight_statistics_store.gd",
+      "retained": "source/app/tests/test_flight_statistics_store.gd",
+      "sha256": "60e01bce85787821020d10ae05787c946a47fa7690c7315065a9a0852c832be2",
+      "bytes": 17298
+    },
+    {
+      "source": "app/tests/test_flight_statistics_writer.gd",
+      "retained": "source/app/tests/test_flight_statistics_writer.gd",
+      "sha256": "a3e9c935513ebe2118ea3e328d0fe60723f6623ed5a79a9a359b5734851b0295",
+      "bytes": 5537
+    },
+    {
+      "source": "app/tests/test_flight_statistics_detector.gd",
+      "retained": "source/app/tests/test_flight_statistics_detector.gd",
+      "sha256": "fc83209a7f15c1eb90c3f5503f02bc28a9012e884b9701c838cc7737d15fd7d2",
+      "bytes": 19478
+    }
+  ],
+  "review": [
+    {
+      "source": "tmp/gp14-events-review.md",
+      "retained": "review/gp14-events-review.md",
+      "sha256": "fcca7cab77e6cd57967591d236578ac115e511c6f40175dbbc7d077d7f8bc585",
+      "bytes": 2132
+    },
+    {
+      "source": "tmp/gp14-x8-audit.md",
+      "retained": "review/gp14-x8-audit.md",
+      "sha256": "83d9eb1284f31fa8ee5c803db659b6cbc7689cbbe69e82839e557d4f4255fbfc",
+      "bytes": 2759
+    }
+  ],
+  "promotion": {
+    "before": {
+      "app/statistics/detector.gd": "43d47f18a36442b3bd5697672568f4cbf0a4b03cfe5916c3069e730e05d3f799",
+      "app/statistics/service.gd": "9f06d78c81dce1ad826f4dbfea5859362503141ddb65b0ae8e7dd819a8303b48"
+    },
+    "source_commit": "e9714f284b482f10239ffa49b13f259ab9e8fc3d",
+    "promoted_utc": "2026-10-26T13:03:21.008573+00:00",
+    "after": {
+      "app/statistics/detector.gd": "5887f57c851917c7a15ad0dfbd1e2ee7ab65c7da0557c53f6f22d19d7c78c1f2",
+      "app/statistics/service.gd": "9f2afbdedb4e17c42a45034add7791d1e585d820a8a3d5bbb5d42a8d455414fe",
+      "app/statistics/flight_event.gd": "69b809a535102c5573b37e6cd4db5610dbedda0c0d7e83e0319fb705bf7136c1",
+      "app/tests/test_ground_flight_events.gd": "3b91976e991d1425a1cd111b466b5ae4bd86fddb3f49d38c1e9fe9fcb38b2062"
+    }
+  },
+  "total_checks": 453,
+  "baseline_detector_failure": [
+    {
+      "source": "tmp/gp14-events-checks/unchanged-detector-baseline-hic9uuv2/report.json",
+      "retained": "prior-failures/baseline_detector_failure/report.json",
+      "sha256": "64fa6f4e4ebccde00f7522e79165f005148f05393c46a23d6a0f8ac0c755d346",
+      "bytes": 1235
+    },
+    {
+      "source": "tmp/gp14-events-checks/unchanged-detector-baseline-hic9uuv2/engine.log",
+      "retained": "prior-failures/baseline_detector_failure/engine.log",
+      "sha256": "a259791a9fba607b8f4d790594bf98ff95fb1ede7fb8904481115219586b413f",
+      "bytes": 313
+    }
+  ],
+  "candidate_detector_failure": [
+    {
+      "source": "tmp/gp14-events-checks/test_flight_statistics_detector-4hn02nqv/report.json",
+      "retained": "prior-failures/candidate_detector_failure/report.json",
+      "sha256": "e0c8496305da3ccb65133782f8c109838dc34450001558ec7369f3ca81805576",
+      "bytes": 1288
+    },
+    {
+      "source": "tmp/gp14-events-checks/test_flight_statistics_detector-4hn02nqv/engine.log",
+      "retained": "prior-failures/candidate_detector_failure/engine.log",
+      "sha256": "a259791a9fba607b8f4d790594bf98ff95fb1ede7fb8904481115219586b413f",
+      "bytes": 313
+    }
+  ],
+  "engine": {
+    "path": ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+    "version": "4.8.beta1.official.4d10419ca"
+  }
+}

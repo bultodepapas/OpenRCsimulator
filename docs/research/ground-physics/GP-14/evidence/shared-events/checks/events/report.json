@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a389394b-802b-4a4e-b961-7a56dd06ea0e",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ground_flight_events.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:03:21.536944+00:00",
+  "label": "test_ground_flight_events",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp14-events-checks\\main\\test_ground_flight_events-4umi3uwk\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp14-events-checks\\main\\test_ground_flight_events-4umi3uwk\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.406,
+  "log_bytes": 115,
+  "log_sha256": "28c996585cdce22a26f2d7650531b331083770f20818991c46cde18cfacee159"
+}

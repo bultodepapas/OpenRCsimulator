@@ -7,6 +7,21 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const ContactContract := preload("res://physics/aircraft_contact_contract.gd")
 
 const DT := 1.0 / 240.0
+## Review coverage is explicit: a future catalog addition must receive a support
+## review instead of silently inheriting either the wheel or gearless exception.
+const REVIEWED_WHEEL_IDS := ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t",
+	"stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60",
+	"p51d-mustang-120", "f4u-corsair-250", "sebart-avanti-s-a200-p100rx",
+	"turbo-lumber-evolution"]
+const X8_HULL_IDS := ["probe_nose", "probe_nose_left", "probe_nose_right",
+	"probe_nose_left_low", "probe_nose_right_low", "probe_canopy_front", "probe_canopy",
+	"probe_belly_front", "probe_belly", "probe_engine", "probe_wing_left_root_le",
+	"probe_wing_right_root_le", "probe_wing_left_bottom", "probe_wing_right_bottom",
+	"probe_elevon_left_te", "probe_elevon_right_te", "probe_winglet_left_top",
+	"probe_winglet_right_top", "probe_winglet_left_outer", "probe_winglet_right_outer",
+	"probe_wing_left_tip_le", "probe_wing_right_tip_le", "probe_wing_left_tip_te",
+	"probe_wing_right_tip_te", "probe_winglet_right_fill_1", "probe_winglet_left_fill_1",
+	"probe_wing_left_fill_2", "probe_wing_right_fill_2"]
 
 var _checks := 0
 var _failures := 0
@@ -97,7 +112,9 @@ func _events_of(events: Array[Dictionary], event_type: String) -> Array[Dictiona
 
 func _test_profiles_for_catalog_fleet() -> void:
 	var ids: PackedStringArray = AircraftCatalog.airplane_flyable_ids()
-	_check("catalog has fixed-wing aircraft for the reviewed profile table", ids.size() >= 8, str(ids.size()))
+	for reviewed_id: String in REVIEWED_WHEEL_IDS:
+		_check("reviewed wheel aircraft remains covered: %s" % reviewed_id, reviewed_id in ids)
+	_check("explicit gearless X8 remains covered", "skywalker-x8" in ids)
 	for aircraft_id: String in ids:
 		var entry: Dictionary = AircraftCatalog.entry(aircraft_id)
 		var loaded: Dictionary = AircraftData.load_file(str(entry.get("data", "")))
@@ -107,6 +124,20 @@ func _test_profiles_for_catalog_fleet() -> void:
 		var model: Dictionary = loaded.model
 		var bindings: Dictionary = ContactContract.describe(model, true)
 		var profile: Dictionary = Profiles.resolve(aircraft_id, model, bindings)
+		_check("%s has valid physical contact bindings" % aircraft_id, bool(bindings.get("ok", false)), str(bindings.get("errors", [])))
+		if aircraft_id == "skywalker-x8":
+			_test_x8_unreviewed_hull(str(entry.data), model, bindings, profile)
+			var pack_path := str(entry.get("battery_data", ""))
+			var pack: Dictionary = AircraftData.load_file(pack_path)
+			_check("X8 default finite-pack data loads for support review", bool(pack.get("ok", false)), str(pack.get("errors", [])))
+			if bool(pack.get("ok", false)):
+				var pack_bindings := ContactContract.describe(pack.model, true)
+				_test_x8_unreviewed_hull(pack_path, pack.model, pack_bindings,
+					Profiles.resolve(aircraft_id, pack.model, pack_bindings))
+			continue
+		_check("%s is an explicitly reviewed wheel profile" % aircraft_id, aircraft_id in REVIEWED_WHEEL_IDS)
+		if aircraft_id not in REVIEWED_WHEEL_IDS:
+			continue
 		_check("%s has reviewed landing support metadata" % aircraft_id,
 			bool(profile.get("landing_available", false)), str(profile.get("reason", "")))
 		_check("%s maps two main contacts and a three-contact stop set" % aircraft_id,
@@ -128,6 +159,34 @@ func _test_profiles_for_catalog_fleet() -> void:
 			var changed_bindings: Dictionary = ContactContract.describe(changed_model, true)
 			var changed_profile: Dictionary = Profiles.resolve(aircraft_id, changed_model, changed_bindings)
 			_check("changed support geometry disables landing credit", not bool(changed_profile.landing_available))
+
+
+func _test_x8_unreviewed_hull(path: String, model: Dictionary, bindings: Dictionary, profile: Dictionary) -> void:
+	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	_check("X8 source is readable for authored support coverage: %s" % path, raw is Dictionary)
+	if not raw is Dictionary:
+		return
+	_check("X8 authors locked-up gear with no installed wheels", raw.get("capabilities", {}).get("gear") == "locked_up"
+		and not raw.has("landing_gear") and model.get("landing_gear", {}).is_empty())
+	_check("X8 landing credit is explicitly unavailable pending support review", profile.get("landing_available") == false
+		and profile.get("reason") == "unreviewed_aircraft_profile", str(profile.get("reason")))
+	_check("X8 has no fabricated main/stop wheel maps", profile.get("main_indices", []).is_empty()
+		and profile.get("stop_indices", []).is_empty() and profile.get("main_ids", []).is_empty()
+		and profile.get("stop_ids", []).is_empty() and profile.get("rest_height_m") == -1.0)
+	_check("X8 contact contract has zero wheel support bindings", bool(bindings.get("ok", false))
+		and bindings.get("support_points", []).is_empty() and model.get("physical_identity", {}).get("support_ids", []).is_empty())
+	var bound_ids: Array[String] = []
+	var roles_absent := true
+	for probe: Dictionary in bindings.get("hull_probes", []):
+		bound_ids.append(str(probe.get("id", "")))
+		roles_absent = roles_absent and not probe.has("role") and not probe.has("intended_support")
+	_check("X8 retains all 28 authored stable hull IDs", X8_HULL_IDS.size() == 28
+		and raw.get("crash_hull_ids") == X8_HULL_IDS and bound_ids == X8_HULL_IDS
+		and model.get("physical_identity", {}).get("hull_ids") == PackedStringArray(X8_HULL_IDS))
+	_check("X8 belly geometry has crash labels without an authored landing role", not raw.has("ground")
+		and not raw.has("landing_support") and not raw.get("capabilities", {}).has("landing_support")
+		and roles_absent and raw.get("crash_hull_components", [])[7] == "belly"
+		and raw.get("crash_hull_components", [])[8] == "belly")
 
 
 func _test_takeoff_backfill_and_air_start() -> void:

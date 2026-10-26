@@ -62,6 +62,13 @@ func _belly_continues() -> void:
 		and reference.sim.reset(_belly(reference, 0.01)))
 	var service := Service.new()
 	check("memory-only statistics opens", service.setup("", false))
+	var semantic: Array[Dictionary] = []
+	var readonly := {ok = true}
+	service.flight_events_accepted.connect(func(batch: Array) -> void:
+		readonly.ok = readonly.ok and batch.is_read_only()
+		for event: Dictionary in batch:
+			readonly.ok = readonly.ok and event.is_read_only() and event.measurements.is_read_only()
+			semantic.append(event.duplicate(true)))
 	service.begin_activity(player, AVANTI_ID, "Avanti")
 	check("persistent episode namespace uses activity UUID, not a reused session counter",
 		service.detector.snapshot().profile.generation_id == service._generation
@@ -96,6 +103,13 @@ func _belly_continues() -> void:
 		and rows[0].metadata.kind == "gear_up_contact" and not rows[0].metadata.terminal
 		and rows[0].metadata.rules_version == Rules.VERSION)
 	check("real accident ledger validates and counts exactly once", service.query().ok and service.query().crashes == 1)
+	var gear_events := semantic.filter(func(event: Dictionary) -> bool: return event.type == "GEAR_UP_CONTACT")
+	var crash_events := semantic.filter(func(event: Dictionary) -> bool: return event.type == "CRASH")
+	check("real accepted slide publishes one gear-up and one semantic crash", gear_events.size() == 1 and crash_events.size() == 1)
+	check("shared physical outcome is immutable and nonterminal", readonly.ok and crash_events.size() == 1
+		and not crash_events[0].terminal and crash_events[0].continuation == "continues")
+	check("semantic identity uses activity and accepted physical tick", gear_events.size() == 1
+		and gear_events[0].generation_id == service._generation and gear_events[0].accepted_tick == first_tick)
 	check("gear-up contact cannot earn a successful landing", service.query().completed == 0)
 	var receipt: Dictionary = player.accident_observation()
 	var before_receipt := var_to_bytes(receipt)
@@ -136,6 +150,8 @@ func _rejected_interval() -> void:
 	session.sim.reset(_belly(session, -0.00001))
 	var service := Service.new()
 	service.setup("", false)
+	var semantic: Array = []
+	service.flight_events_accepted.connect(func(batch: Array) -> void: semantic.append_array(batch))
 	service.begin_activity(session, AVANTI_ID, "Avanti")
 	var before := var_to_bytes(session.accident_observation())
 	session.sim.model.post_tick = func(_previous: PackedFloat64Array, _candidate: PackedFloat64Array,
@@ -144,6 +160,7 @@ func _rejected_interval() -> void:
 	check("rejected physical interval has no accepted accident receipt", session.sim.tick == 0
 		and not session.sim.fault_reason.is_empty() and var_to_bytes(session.accident_observation()) == before)
 	check("rejected interval cannot persist a crash", service.query().crashes == 0)
+	check("rejected interval cannot emit shared semantic evidence", semantic.is_empty())
 	service.end_activity()
 	service.close()
 	service.free()

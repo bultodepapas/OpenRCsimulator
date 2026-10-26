@@ -2,7 +2,8 @@
 extends RefCounted
 
 const Rules := preload("res://statistics/rules.gd")
-const SNAPSHOT_VERSION := 2
+const FlightEvent := preload("res://statistics/flight_event.gd")
+const SNAPSHOT_VERSION := 3
 const PHASES := ["ground_ready", "takeoff_pending", "airborne", "contact_pending", "terminal"]
 
 var flight: Dictionary = {}
@@ -29,6 +30,18 @@ var _accident_serial := 0
 var _accident_id := ""
 var _accident_terminal := false
 var _continuity_lost := false
+var _semantic_sequence := 0
+var _semantic_flight_id := ""
+var _support_observed := false
+var _first_unsupported_tick := -1
+var _sample_interval_s := 0.0
+var _episode_contact_seen := false
+var _episode_supported := false
+var _episode_support_known := false
+var _hop_first_tick := -1
+var _hop_seconds := 0.0
+## Derived per-call coverage; never resumed as durable observation history.
+var _accepted_observation_edge := false
 var _speed_window: Array[Dictionary] = []
 var _speed_head := 0
 var _speed_window_s := 0.0
@@ -66,9 +79,16 @@ func configure(profile: Dictionary, air_start: bool = false) -> void:
 	_clear_speed_state()
 	_speed_reject_counts.clear()
 	flight = {}
+	_semantic_sequence = 0
+	_semantic_flight_id = ""
+	_support_observed = false
+	_first_unsupported_tick = -1
+	_sample_interval_s = 0.0
+	_clear_hop()
 
 
 func observe(sample: Dictionary) -> Array[Dictionary]:
+	_accepted_observation_edge = false
 	var events: Array[Dictionary] = []
 	if _phase == "terminal":
 		return events
@@ -103,6 +123,9 @@ func observe(sample: Dictionary) -> Array[Dictionary]:
 			_handle_terminal(sample, tick, events)
 		return events
 
+	_sample_interval_s = dt
+	_accepted_observation_edge = true
+	if _is_physically_supported(sample): _support_observed = true
 	if bool(sample.get("incident", false)):
 		_incident_latched = true
 	if bool(sample.get("gear_up_contact", false)) and not terminal:
@@ -111,13 +134,17 @@ func observe(sample: Dictionary) -> Array[Dictionary]:
 	if not flight.is_empty() and _is_active_flight() and not _is_physically_supported(sample):
 		flight.airborne_seconds = float(flight.airborne_seconds) + dt
 	if terminal:
-		_handle_terminal(sample, tick, events)
+		# A newly accepted terminal endpoint can also complete a physical hop.
+		# Same-tick guard escalation and discontinuous samples return above and
+		# must not advance this edge history a second time.
+		if _episode_open: _observe_hop(sample, dt, tick, events)
+		_handle_terminal(sample, tick, events, true)
 		return events
 
 	if _phase == "ground_ready" or _phase == "takeoff_pending":
 		_process_takeoff(sample, dt, tick, events)
 	elif _phase == "airborne":
-		_process_airborne(sample, tick)
+		_process_airborne(sample, tick, events)
 	elif _phase == "contact_pending":
 		_process_contact(sample, dt, tick, events)
 	if _phase == "airborne" and _is_active_flight():
@@ -146,6 +173,16 @@ func end(reason: String) -> Array[Dictionary]:
 func snapshot() -> Dictionary:
 	return {
 		"version": SNAPSHOT_VERSION,
+		"semantic_sequence": _semantic_sequence,
+		"semantic_flight_id": _semantic_flight_id,
+		"support_observed": _support_observed,
+		"first_unsupported_tick": _first_unsupported_tick,
+		"sample_interval_s": _sample_interval_s,
+		"episode_contact_seen": _episode_contact_seen,
+		"episode_supported": _episode_supported,
+		"episode_support_known": _episode_support_known,
+		"hop_first_tick": _hop_first_tick,
+		"hop_seconds": _hop_seconds,
 		"profile": _json_safe(_profile),
 		"air_start_requested": _air_start_requested,
 		"phase": _phase,
@@ -200,10 +237,22 @@ func restore(value: Dictionary) -> bool:
 	_crash_emitted = bool(copy.crash_emitted)
 	# Historical v1 checkpoints did not observe survivable accident groups.
 	# Never infer or accept new group fields disguised as legacy coverage.
-	var has_accidents := int(copy.version) == SNAPSHOT_VERSION
+	var has_accidents := int(copy.version) >= 2
 	_accident_serial = int(copy.accident_serial) if has_accidents else 0
 	_accident_id = str(copy.accident_id) if has_accidents else ""
 	_accident_terminal = bool(copy.accident_terminal) if has_accidents else false
+	# V1/v2 had no semantic support-edge history. Do not invent a past hop or takeoff.
+	var has_semantics := int(copy.version) >= 3
+	_semantic_sequence = int(copy.semantic_sequence) if has_semantics else 0
+	_semantic_flight_id = str(copy.semantic_flight_id) if has_semantics else ""
+	_support_observed = bool(copy.support_observed) if has_semantics else false
+	_first_unsupported_tick = int(copy.first_unsupported_tick) if has_semantics else -1
+	_sample_interval_s = float(copy.sample_interval_s) if has_semantics else 0.0
+	_episode_contact_seen = bool(copy.episode_contact_seen) if has_semantics else _episode_open
+	_episode_supported = bool(copy.episode_supported) if has_semantics else false
+	_episode_support_known = bool(copy.episode_support_known) if has_semantics else false
+	_hop_first_tick = int(copy.hop_first_tick) if has_semantics else -1
+	_hop_seconds = float(copy.hop_seconds) if has_semantics else 0.0
 	_continuity_lost = bool(copy.continuity_lost)
 	flight = copy.flight
 	_speed_window = []
@@ -236,8 +285,10 @@ func _process_takeoff(sample: Dictionary, dt: float, tick: int, events: Array[Di
 	if _is_physically_supported(sample):
 		_candidate_air_s = 0.0
 		_candidate_clearance_s = 0.0
+		_first_unsupported_tick = -1
 		_phase = "takeoff_pending" if _air_start_requested else "ground_ready"
 		return
+	if _first_unsupported_tick < 0: _first_unsupported_tick = tick
 	_candidate_air_s += dt
 	if bool(sample.get("clearance_ok", false)):
 		_candidate_clearance_s += dt
@@ -255,13 +306,14 @@ func _process_takeoff(sample: Dictionary, dt: float, tick: int, events: Array[Di
 	_clear_accident_group()
 
 
-func _process_airborne(sample: Dictionary, tick: int) -> void:
+func _process_airborne(sample: Dictionary, tick: int, events: Array[Dictionary]) -> void:
 	if _is_physically_supported(sample) or bool(sample.get("intended_support", false)):
-		_open_episode(tick)
+		_open_episode(tick, sample, events)
 		_phase = "contact_pending"
 
 
 func _process_contact(sample: Dictionary, dt: float, tick: int, events: Array[Dictionary]) -> void:
+	_observe_hop(sample, dt, tick, events)
 	var supported := _is_physically_supported(sample)
 	var intended := bool(sample.get("intended_support", false)) \
 		and bool(_profile.get("landing_available", false))
@@ -336,6 +388,7 @@ func _process_contact(sample: Dictionary, dt: float, tick: int, events: Array[Di
 
 
 func _finish_full_stop(tick: int, events: Array[Dictionary]) -> void:
+	_semantic("GROUND_STOP", tick, events)
 	if _incident_latched:
 		_resolve_episode("failed", "full_stop", tick, "disqualifying_incident", events)
 		_close_flight("damaged_stop", tick, events)
@@ -356,6 +409,7 @@ func _finish_full_stop(tick: int, events: Array[Dictionary]) -> void:
 
 
 func _resolve_full_stop_failure(tick: int, reason: String, events: Array[Dictionary]) -> void:
+	_semantic("GROUND_STOP", tick, events)
 	if not bool(_profile.get("landing_available", false)) or _continuity_lost:
 		_resolve_episode("unknown", "full_stop", tick, "classification_unavailable", events)
 		_close_flight("interrupted", tick, events)
@@ -372,7 +426,7 @@ func _resolve_full_stop_failure(tick: int, reason: String, events: Array[Diction
 	_clear_speed_state()
 
 
-func _record_accident(sample: Dictionary, tick: int, terminal: bool, events: Array[Dictionary]) -> void:
+func _record_accident(sample: Dictionary, tick: int, terminal: bool, events: Array[Dictionary], observe_edge := true) -> void:
 	_incident_latched = true
 	var ground := _is_physically_supported(sample)
 	var first := _accident_id.is_empty()
@@ -382,19 +436,24 @@ func _record_accident(sample: Dictionary, tick: int, terminal: bool, events: Arr
 		_accident_terminal = false
 	var escalated := terminal and not _accident_terminal
 	_accident_terminal = _accident_terminal or terminal
+	if ground and _is_active_flight() and not _episode_open:
+		_open_episode(tick, sample, events, observe_edge)
+		_phase = "contact_pending"
 	var cause := "gear_up_contact" if bool(sample.get("gear_up_contact", false)) else "terminal_crash"
 	if first or escalated:
 		events.append({"type": "accident" if first else "accident_updated", "kind": cause,
 			"accident_id": _accident_id, "event_id": _accident_id + (":crash" if first else ":terminal"),
 			"terminal": terminal, "ground": ground, "tick": tick, "rules_version": Rules.VERSION})
+	if first:
+		if bool(sample.get("gear_up_contact", false)): _semantic("GEAR_UP_CONTACT", tick, events, {}, terminal)
+		_semantic("CRASH", tick, events, {}, terminal)
+	elif escalated:
+		_semantic("CRASH", tick, events, {}, true, 1)
 	# M7 is a generation latch, independent of semantic accident grouping and terminal control.
 	if not _crash_emitted:
 		_crash_emitted = true
 		events.append({"type": "crash", "kind": cause, "ground": ground, "tick": tick, "terminal": terminal,
 			"accident_id": _accident_id, "event_id": _accident_id + ":m7", "rules_version": Rules.VERSION})
-	if ground and _is_active_flight() and not _episode_open:
-		_open_episode(tick)
-		_phase = "contact_pending"
 	_clear_speed_state()
 
 
@@ -403,10 +462,10 @@ func _clear_accident_group() -> void:
 	_accident_terminal = false
 
 
-func _handle_terminal(sample: Dictionary, tick: int, events: Array[Dictionary]) -> void:
+func _handle_terminal(sample: Dictionary, tick: int, events: Array[Dictionary], accepted_edge := false) -> void:
 	if _phase == "terminal":
 		return
-	_record_accident(sample, tick, true, events)
+	_record_accident(sample, tick, true, events, accepted_edge)
 	if _is_active_flight():
 		if _episode_open:
 			_resolve_episode("failed", "terminal_contact", tick, "terminal_crash", events)
@@ -432,15 +491,20 @@ func _start_flight(start_kind: String, backfill_s: float, tick: int, events: Arr
 		"complete_observation": not _continuity_lost,
 	}
 	_speed_reject_counts.clear()
+	_semantic_flight_id = "g%s:f%d" % [str(_profile.get("generation_id", "0")), tick]
 	events.append({"type": "started", "start_kind": start_kind,
 		"tick": tick, "flight": flight.duplicate(true)})
+	if start_kind == "takeoff" and _support_observed and _first_unsupported_tick >= 0:
+		_semantic("TAKEOFF", tick, events, {first_loss_support_tick = _first_unsupported_tick, confirmation_tick = tick})
 
 
-func _open_episode(tick: int) -> void:
+func _open_episode(tick: int, sample: Dictionary, events: Array[Dictionary], observe_edge := true) -> void:
 	if _episode_open:
 		return
 	_episode_open = true
 	_episode_tick = tick
+	_clear_hop()
+	if observe_edge: _observe_hop(sample, 0.0, tick, events)
 	_stable_support_s = 0.0
 	_qualified_support_seen = false
 	_stop_s = 0.0
@@ -454,6 +518,9 @@ func _resolve_episode(outcome: String, kind: String, tick: int, reason: String,
 		events: Array[Dictionary]) -> void:
 	if not _episode_open:
 		return
+	if outcome == "success":
+		_semantic("LANDING_SUCCESS", tick, events, {first_contact_tick = _episode_tick})
+		if kind == "touch_and_go": _semantic("TOUCH_AND_GO", tick, events, {first_contact_tick = _episode_tick})
 	if not flight.is_empty():
 		match outcome:
 			"success":
@@ -485,9 +552,11 @@ func _close_flight(outcome: String, tick: int, events: Array[Dictionary]) -> voi
 	events.append({"type": "closed", "outcome": outcome,
 		"tick": tick, "flight": closed_flight})
 	flight = {}
+	_semantic_flight_id = ""
 
 
 func _clear_episode() -> void:
+	_clear_hop()
 	_episode_open = false
 	_episode_tick = -1
 	_stable_support_s = 0.0
@@ -723,9 +792,9 @@ func _json_safe(value: Variant) -> Variant:
 
 func _valid_snapshot(value: Dictionary) -> bool:
 	if not _json_only(value, 0) or not _finite_integer(value.get("version")) \
-		or int(value.version) not in [1, SNAPSHOT_VERSION]:
+		or int(value.version) not in [1, 2, SNAPSHOT_VERSION]:
 		return false
-	if int(value.version) == SNAPSHOT_VERSION:
+	if int(value.version) >= 2:
 		if not _finite_integer(value.get("accident_serial")) or int(value.accident_serial) < 0 \
 			or typeof(value.get("accident_id")) != TYPE_STRING or str(value.accident_id).length() > 192 \
 			or typeof(value.get("accident_terminal")) != TYPE_BOOL:
@@ -776,6 +845,7 @@ func _valid_snapshot(value: Dictionary) -> bool:
 		if typeof(key) != TYPE_STRING or not _finite_integer(value.speed_reject_counts[key]) \
 			or int(value.speed_reject_counts[key]) < 0:
 			return false
+	if int(value.version) >= 3 and not _valid_semantic_snapshot(value): return false
 	return true
 
 
@@ -854,3 +924,67 @@ func _json_only(value: Variant, depth: int) -> bool:
 			return true
 		_:
 			return false
+
+
+func _semantic(kind: String, tick: int, events: Array[Dictionary], measurements: Dictionary = {},
+		terminal := false, revision := 0) -> void:
+	var values := measurements.duplicate(true)
+	values.sample_interval_s = _sample_interval_s
+	var episode_id := "g%s:e%d" % [str(_profile.get("generation_id", "0")), _episode_tick] if _episode_open else ""
+	var event := FlightEvent.make(_profile, kind, tick, _semantic_sequence, _semantic_flight_id,
+		episode_id, _accident_id, values, terminal, revision)
+	if event.is_empty(): return
+	if not _accepted_observation_edge:
+		event.evidence_coverage.erase("accepted_endpoint_support")
+		event.evidence_coverage.append("outcome_without_new_valid_interval")
+	if terminal: event.evidence_coverage.append("terminal_guard_outcome")
+	if _continuity_lost: event.evidence_coverage.append("discontinuous_observation")
+	_semantic_sequence += 1
+	events.append({type = "semantic", event = event})
+
+
+func _clear_hop() -> void:
+	_episode_contact_seen = false
+	_episode_supported = false
+	_episode_support_known = false
+	_hop_first_tick = -1
+	_hop_seconds = 0.0
+
+
+func _observe_hop(sample: Dictionary, dt: float, tick: int, events: Array[Dictionary]) -> void:
+	var supported := _is_physically_supported(sample)
+	if supported and not _episode_contact_seen:
+		_episode_contact_seen = true
+		_semantic("TOUCHDOWN", tick, events, {first_contact_tick = tick}, bool(sample.get("terminal", false)))
+	elif supported and _episode_support_known and not _episode_supported and _hop_first_tick >= 0:
+		_semantic("BOUNCE", tick, events, {first_loss_support_tick = _hop_first_tick,
+			unsupported_seconds = _hop_seconds, first_contact_tick = _episode_tick}, bool(sample.get("terminal", false)))
+	if not supported and _episode_contact_seen and _episode_support_known:
+		if _episode_supported: _hop_first_tick = tick
+		if _hop_first_tick >= 0: _hop_seconds += dt
+	else:
+		_hop_first_tick = -1
+		_hop_seconds = 0.0
+	_episode_supported = supported
+	_episode_support_known = true
+
+
+func _valid_semantic_snapshot(value: Dictionary) -> bool:
+	for key: String in ["semantic_sequence", "first_unsupported_tick", "hop_first_tick"]:
+		if not _finite_integer(value.get(key)): return false
+	if value.semantic_sequence < 0 or value.first_unsupported_tick < -1 or value.hop_first_tick < -1 \
+		or value.first_unsupported_tick > value.get("last_tick", -1) or value.hop_first_tick > value.get("last_tick", -1): return false
+	if typeof(value.get("semantic_flight_id")) != TYPE_STRING or value.semantic_flight_id.length() > 192: return false
+	for key: String in ["support_observed", "episode_contact_seen", "episode_supported", "episode_support_known"]:
+		if typeof(value.get(key)) != TYPE_BOOL: return false
+	for key: String in ["sample_interval_s", "hop_seconds"]:
+		if not _finite_nonnegative(value.get(key)): return false
+	if value.hop_first_tick >= 0 and (not value.get("episode_open", false) or not value.episode_contact_seen \
+		or not value.episode_support_known or value.episode_supported or value.hop_seconds <= 0.0): return false
+	if value.hop_first_tick >= 0 and value.hop_first_tick < value.episode_tick: return false
+	if value.hop_seconds > value.clock_s + 64.0 * 2.220446049250313e-16 * maxf(1.0, value.clock_s): return false
+	if value.episode_supported and (not value.episode_support_known or not value.episode_contact_seen): return false
+	if value.hop_first_tick < 0 and value.hop_seconds != 0.0: return false
+	if not value.get("episode_open", false) and (value.episode_contact_seen or value.episode_supported \
+		or value.episode_support_known): return false
+	return true

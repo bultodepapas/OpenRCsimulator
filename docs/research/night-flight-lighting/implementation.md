@@ -198,6 +198,22 @@ The full-suite attempt `rgb-full-suite-catalog-current.log` stopped at audio-bus
 
 The population follow-up adopts only those **13** pinned-engine outputs: eleven people GLB imports add the mesh-library default; two atlas imports add three texture defaults. The existing installer now offers a guarded `--refresh-manifest` path, requiring an exact nonempty people inventory before changing its file records. It preserves all provenance/assets and nonpeople rows. Regeneration changes only those thirteen byte counts/hashes; no GLB or image changes. All **10 population Python tests** pass in the root and isolated snapshot. A fresh isolated-index checkout inside that snapshot with `core.autocrlf=true` preserves all thirteen descriptors exactly after their scoped LF attribute (`tmp/rgb-people-checkout-lf/verification.json`); the user index is untouched. The broader import-default churn remains outside this repair.
 
+### FW-RGB-07 flight-exposure correction (2026-10-26)
+
+The real-flight inspection exposed a defect missed by the Workshop-only material checks. Workshop night uses exposure 8; the four-second production capture measured **46,868 → 12,157**. The old StandardMaterial emission energy was reduced before Compatibility's color decoding, suppressing the film signal. The pinned engine generates emission by multiplying color/texture and energy before its GLES scene shader converts emission to linear light. [Material generator](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/scene/resources/material.cpp#L1648), [GLES conversion](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/drivers/gles3/shaders/scene.glsl#L2264).
+
+`rgb_skin.gdshader` now applies bounded energy in linear light and uses the existing renderer encoding helper in an additive next pass. The owned StandardMaterial clone retains opaque paint, normals and shading. The shipped Stik adds six active passes per view; the contract permits at most twelve. NAV/OFF/zero detach the pass. The material admission guards reject pre-existing next passes, unsupported culling and vertex-color albedo. Relative energy-update tolerance replaces the old absolute threshold that could leave a substantial stale value at night. Brightness, the 0.15 daytime cap and the 1.2 exposed-energy cap are unchanged.
+
+Headless skin ownership/policy tests pass **16 checks**, actual-aircraft integration **13**, customization generator tests **18**, and source closure **227** with **27 ordered sources** over seven families. The native fixture now isolates emission from background, ambient, key/fill lights and kit lamps, requires a positive pixel signal, and compares exposure 8 with 12,157. It passes **53 checks per renderer at 1920×1080**, including the six presets and eight upper/lower, day/night film comparisons:
+
+| Renderer on RTX 3090 | Checked label | Mean signal at exposure 8 / 12,157 |
+| --- | --- | --- |
+| Compatibility | `rgb-skin-linear-native-compat` | 0.028489 / 0.028489 |
+| Forward+ | `rgb-skin-linear-native-forward` | 0.028461 / 0.028461 |
+| Mobile | `rgb-skin-linear-native-mobile` | 0.025983 / 0.025983 |
+
+Native outputs are under ignored `tmp/fw-rgb-skin-linear-20261026/`. These are exposure-invariance and material integration results, not a complete art or hardware-performance acceptance. The same four-second near-flight view now shows cyan wing bays (`radian-linear-fullscreen/frame_00239.png`); its strict receipt fails on unrelated population texture UID cache warnings in the shared runtime, so it is retained as inspection evidence rather than a clean acceptance run. The full suite has restarted on the isolated snapshot with these source changes and the population repair (`tmp/rgb-full-suite-linear-current.log`); its verdict is pending.
+
 ## Remaining masterplan work
 
 ### Active completion work (2026-10-25)

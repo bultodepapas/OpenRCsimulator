@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+FAIL skywalker-x8 has reviewed landing support metadata unreviewed_aircraft_profile
+FAIL skywalker-x8 maps two main contacts and a three-contact stop set 
+FAIL skywalker-x8 derives finite rest geometry and clearance 
+71 checks, 3 failed

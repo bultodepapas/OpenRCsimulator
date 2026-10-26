@@ -2,8 +2,13 @@
 extends Node
 
 const Rules := preload("res://statistics/rules.gd")
+const StoreSchema := preload("res://statistics/schema.gd")
+const FlightEvent := preload("res://statistics/flight_event.gd")
 
 signal changed
+## One detached ordered batch after classifier output is ingested. Subscribers
+## share this service's classifier; they must not instantiate parallel timers.
+signal flight_events_accepted(events: Array)
 var note := ""
 var revision: int = 0
 var data: Dictionary = {}
@@ -116,6 +121,7 @@ func begin_activity(session: Node, aircraft_id: String, aircraft_name: String, m
 	# Session receipt generations are local counters. Persisted event identity uses
 	# this service's globally unique activity namespace, including fresh sessions.
 	adapter.profile.generation_id = _generation
+	_set_event_identity()
 	detector = load("res://statistics/detector.gd").new()
 	detector.configure(adapter.profile, session.start_choice != "runway")
 	_session.statistics_lifecycle.connect(_lifecycle)
@@ -147,8 +153,13 @@ func _record(kind: String) -> Dictionary:
 
 
 func _ingest(events: Array) -> void:
+	var semantic: Array[Dictionary] = []
 	for event: Dictionary in events:
 		match str(event.get("type", "")):
+			"semantic":
+				if not FlightEvent.valid(event.get("event")): continue
+				semantic.append(event.event.duplicate(true))
+				_append_semantic_event(event.event)
 			"started":
 				_active_record = _record("flight")
 				_active_record.end_seq = -1
@@ -200,6 +211,24 @@ func _ingest(events: Array) -> void:
 				data.records.append(crash)
 		_mark_dirty()
 		_flush_requested = true
+	if not semantic.is_empty(): flight_events_accepted.emit(FlightEvent.frozen_batch(semantic))
+
+
+func _set_event_identity() -> void:
+	adapter.profile.activity_id = _generation
+	adapter.profile.aircraft_id = _aircraft_id
+	adapter.profile.configuration_hash = str(_metadata.get("config_hash", ""))
+	adapter.profile.field_hash = str(_metadata.get("field_hash", ""))
+
+
+## This is bounded flight detail, not a comprehensive accident archive. Keep
+## the full semantic packet on the subscriber bus and a compact record here.
+func _append_semantic_event(event: Dictionary) -> void:
+	var compact := {type = event.type, tick = event.accepted_tick,
+		event_id = event.event_id, accident_id = event.accident_id, terminal = event.terminal,
+		rules_version = event.rules_version, contact_episode_id = event.contact_episode_id,
+		revision = event.revision, measurements = event.measurements.duplicate(true)}
+	_append_event(compact)
 
 
 func _append_event(event: Dictionary) -> void:
@@ -212,8 +241,18 @@ func _append_event(event: Dictionary) -> void:
 		return
 	var entry: Dictionary = {}
 	for key: String in ["type", "kind", "outcome", "reason", "tick", "first_contact_tick", "start_kind",
-			"accident_id", "event_id", "rules_version", "terminal", "ground"]:
+			"accident_id", "event_id", "rules_version", "terminal", "ground", "contact_episode_id", "revision", "measurements"]:
 		if event.has(key): entry[key] = event[key]
+	# Shared semantic detail contains longer identities and measurements. Preserve
+	# the existing store's byte contract as well as the 128-event count limit.
+	var candidate: Dictionary = _active_record.metadata.duplicate(true)
+	var expanded: Array = timeline.duplicate(true)
+	expanded.append(entry.duplicate(true))
+	candidate.events = expanded
+	candidate.events_omitted = int(candidate.get("events_omitted", 0))
+	if var_to_bytes(candidate).size() > StoreSchema.MAX_METADATA_BYTES - 256:
+		_active_record.metadata.events_omitted = int(_active_record.metadata.get("events_omitted", 0)) + 1
+		return
 	timeline.append(entry)
 	_active_record.metadata.events = timeline
 
@@ -269,6 +308,7 @@ func _lifecycle(receipt: Dictionary) -> void:
 		adapter.configure(_session, _aircraft_id, Callable(self, "_observe"))
 		adapter.profile.generation_id = _generation
 		_metadata.config_hash = str(_session.aircraft.get("input_identity", {}).get("sha256", ""))
+		_set_event_identity()
 		detector.configure(adapter.profile, _session.start_choice != "runway")
 		_last_flush_time = float(_session.sim.time())
 	_mark_dirty()
