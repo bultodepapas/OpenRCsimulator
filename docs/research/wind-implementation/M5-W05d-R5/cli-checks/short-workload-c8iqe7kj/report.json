@@ -1,0 +1,52 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b802d45e-8dc7-40a0-b3e4-f85a8b64c3e5",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\snapshot\\app",
+    "--script",
+    "res://tests/bench_spatial_wind.gd",
+    "--",
+    "--full-session",
+    "--verify-only",
+    "--ticks-per-sample=1"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:00:25.873756+00:00",
+  "label": "short-workload",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\cli-checks\\short-workload-c8iqe7kj\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\cli-checks\\short-workload-c8iqe7kj\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "full-session workloads require at least 480 batch ticks and 240 warmup ticks",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _parse_args (res://tests/bench_spatial_wind.gd:193)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.14,
+  "log_bytes": 392,
+  "log_sha256": "51ccd86a3990aaf70214bf1383ff0110e9277b8d92066695e71c14622ea189f2"
+}

@@ -1,0 +1,56 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7365b862-8887-4430-aba2-63367bb934f8",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-bench-r5/snapshot/app",
+    "--check-only",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-bench-r5/test_spatial_wind_benchmark.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:53:34.848195+00:00",
+  "label": "test-draft-parse",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\checks\\test-draft-parse-94pa8bls\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\checks\\test-draft-parse-94pa8bls\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Static function \"from_config()\" not found in base \"WindField\".",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-bench-r5/test_spatial_wind_benchmark.gd:56)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-bench-r5/test_spatial_wind_benchmark.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.313,
+  "log_bytes": 475,
+  "log_sha256": "be9311479d2743e6bf49a57fcf2a7c751995dcc52c62e00540e4fe29412f97fa"
+}

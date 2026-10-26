@@ -290,8 +290,8 @@ func _v2_pipeline() -> void:
 	check("unqualified compiler transforms fail closed", not installed.compiler_transforms.scale
 		and not installed.compiler_transforms.weight and not installed.compiler_transforms.power and not installed.compiler_transforms.controls)
 	var profile := Profiles.resolve(str(source.id), parsed.model, Contacts.describe(parsed.model, true))
-	check("loader registration alone never enables stock statistics credit", profile.landing_available == false
-		and profile.reason == "unreviewed_aircraft_profile")
+	check("explicit synthetic hull profile maps no fabricated wheels", profile.landing_available == true
+		and profile.support_kind == "authored_hull" and profile.main_indices.is_empty() and profile.stop_indices.is_empty())
 	var other_role := source.duplicate(true)
 	other_role.intended_hull_support.role = "skid"
 	var skid := AircraftData.validate_and_derive(other_role)

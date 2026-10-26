@@ -1,0 +1,7 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ERROR: benchmark output already exists: C:\DEVELOPMENT\OpenRCsimulator\tmp\wind-bench-r5\existing-output.json
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _parse_args (res://tests/bench_spatial_wind.gd:199)
+       [1] _initialize (res://tests/bench_spatial_wind.gd:97)

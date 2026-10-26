@@ -12,22 +12,71 @@ const Commands := preload("res://input/commands.gd")
 const Simulation := preload("res://sim/simulation.gd")
 const WindFlow := preload("res://physics/wind_aircraft_flow.gd")
 const WashTransport := preload("res://physics/wash_transport.gd")
+const SpatialPresets := preload("res://physics/wind_spatial_presets.gd")
+const ThermalField := preload("res://physics/wind_thermal_field.gd")
+const FlightLog := preload("res://sim/flight_log.gd")
 const TICK_HZ := 240.0
 const MODE_COUNTS := [8, 24, 64]
 const STATION_COUNTS := [1, 8, 32]
 const AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "turbo-lumber-evolution"]
 const SESSION_WEATHER_CASES := ["legacy-v4-steady", "spatial-v5-modes-8", "spatial-v5-modes-24", "spatial-v5-modes-64"]
 
+const EXTRA_AIRCRAFT_IDS := ["skywalker-x8"]
+const ACTIVE_WEATHER_CASES := ["spatial-v5-gusts-24", "spatial-v5-thermals-24", "spatial-v5-gusts-thermals-24"]
 
-## Instrumented clone used only for one untimed query-count tick after each scenario is timed.
+
+## Instrumented clone used only for an untimed workload replay after production batches.
 ## The timed path keeps the production WindField object and call overhead unchanged.
 class CountingWindField:
 	extends "res://physics/wind_field.gd"
 	var sample_world_calls := 0
+	var gust_probe: RefCounted
+	var thermal_probe: RefCounted
+	var gust_nonzero_queries := 0
+	var thermal_nonzero_queries := 0
+	var gust_peak_mps := 0.0
+	var thermal_peak_mps := 0.0
+	var first_query_time_s := INF
+	var last_query_time_s := -INF
+	var coverage_error := ""
 
 	func sample_world(position_ned: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
 		sample_world_calls += 1
+		first_query_time_s = minf(first_query_time_s, time_s)
+		last_query_time_s = maxf(last_query_time_s, time_s)
+		if gust_probe != null:
+			var magnitude := _probe_magnitude(gust_probe, position_ned, time_s)
+			gust_peak_mps = maxf(gust_peak_mps, magnitude)
+			if magnitude > 1e-6:
+				gust_nonzero_queries += 1
+		if thermal_probe != null:
+			var magnitude := _probe_magnitude(thermal_probe, position_ned, time_s)
+			thermal_peak_mps = maxf(thermal_peak_mps, magnitude)
+			if magnitude > 1e-6:
+				thermal_nonzero_queries += 1
 		return super.sample_world(position_ned, time_s)
+
+	func _probe_magnitude(probe: RefCounted, position: PackedFloat64Array, time_s: float) -> float:
+		var sampled: Dictionary = probe.sample_world(position, time_s)
+		if not sampled.ok:
+			coverage_error = str(sampled.error)
+			return 0.0
+		var v: PackedFloat64Array = sampled.wind_ned_mps
+		var magnitude := sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+		if not is_finite(magnitude):
+			coverage_error = "nonfinite component probe"
+			return 0.0
+		return magnitude
+
+	func reset_observations() -> void:
+		sample_world_calls = 0
+		gust_nonzero_queries = 0
+		thermal_nonzero_queries = 0
+		gust_peak_mps = 0.0
+		thermal_peak_mps = 0.0
+		first_query_time_s = INF
+		last_query_time_s = -INF
+		coverage_error = ""
 
 var _samples := 3
 var _ticks_per_sample := 480
@@ -35,6 +84,8 @@ var _warmup_ticks := 240
 var _output_path := ""
 var _full_session := false
 var _compile_only := false
+var _verify_only := false
+var _battery := false
 var _source_revision := "workspace-uncommitted"
 var _source_manifest_sha256 := ""
 var _requested_aircraft_ids: Array[String] = []
@@ -92,10 +143,14 @@ func _run_provider_benchmark() -> void:
 	_write_report(report)
 
 
-func _parse_args() -> bool:
-	for arg in OS.get_cmdline_user_args():
+func _parse_args(arguments: PackedStringArray = OS.get_cmdline_user_args()) -> bool:
+	for arg in arguments:
 		if arg == "--full-session":
 			_full_session = true
+		elif arg == "--verify-only":
+			_verify_only = true
+		elif arg == "--battery":
+			_battery = true
 		elif arg == "--compile-only":
 			_compile_only = true
 		elif arg.begins_with("--revision="):
@@ -111,23 +166,46 @@ func _parse_args() -> bool:
 			if case_id not in _requested_case_ids:
 				_requested_case_ids.append(case_id)
 		elif arg.begins_with("--samples="):
-			_samples = clampi(int(arg.trim_prefix("--samples=")), 3, 20)
+			if not _integer_argument(arg, 3, 20):
+				return false
+			_samples = int(arg.get_slice("=", 1))
 		elif arg.begins_with("--ticks-per-sample="):
-			_ticks_per_sample = clampi(int(arg.trim_prefix("--ticks-per-sample=")), 1, 10000)
+			if not _integer_argument(arg, 1, 10000):
+				return false
+			_ticks_per_sample = int(arg.get_slice("=", 1))
 		elif arg.begins_with("--warmup-ticks="):
-			_warmup_ticks = clampi(int(arg.trim_prefix("--warmup-ticks=")), 0, 2000)
+			if not _integer_argument(arg, 0, 2000):
+				return false
+			_warmup_ticks = int(arg.get_slice("=", 1))
 		elif arg.begins_with("--output="):
 			_output_path = arg.trim_prefix("--output=")
+		else:
+			push_error("unknown benchmark argument: " + arg)
+			return false
+	if (_verify_only or _battery) and not _full_session:
+		push_error("--verify-only and --battery require --full-session")
+		return false
 	if _warmup_ticks + _samples * _ticks_per_sample > int(86400.0 * TICK_HZ):
 		push_error("benchmark tick range exceeds the declared weather horizon")
 		return false
 	if _full_session:
-		_samples = maxi(_samples, 3)
-		_ticks_per_sample = maxi(_ticks_per_sample, 480)
-		_warmup_ticks = maxi(_warmup_ticks, 240)
+		if _ticks_per_sample < 480 or _warmup_ticks < 240:
+			push_error("full-session workloads require at least 480 batch ticks and 240 warmup ticks")
+			return false
 		if not _compile_only and _output_path.is_empty():
 			push_error("--full-session requires --output so progress JSON is retained")
 			return false
+	if not _compile_only and not _output_path.is_empty() and FileAccess.file_exists(_output_path):
+		push_error("benchmark output already exists: " + _output_path)
+		return false
+	return true
+
+
+func _integer_argument(argument: String, minimum: int, maximum: int) -> bool:
+	var value := argument.get_slice("=", 1)
+	if argument.count("=") != 1 or not value.is_valid_int() or int(value) < minimum or int(value) > maximum:
+		push_error("invalid benchmark integer argument: " + argument)
+		return false
 	return true
 
 
@@ -148,7 +226,7 @@ func _run_full_session_benchmark() -> void:
 			selected_aircraft_ids.append(aircraft_id)
 	else:
 		for aircraft_id: String in _requested_aircraft_ids:
-			if aircraft_id not in AIRCRAFT_IDS:
+			if aircraft_id not in AIRCRAFT_IDS and aircraft_id not in EXTRA_AIRCRAFT_IDS:
 				push_error("unknown --aircraft ID: " + aircraft_id)
 				quit(1)
 				return
@@ -159,13 +237,19 @@ func _run_full_session_benchmark() -> void:
 			selected_case_ids.append(case_id)
 	else:
 		for case_id: String in _requested_case_ids:
-			if case_id not in SESSION_WEATHER_CASES:
+			if case_id not in SESSION_WEATHER_CASES and case_id not in ACTIVE_WEATHER_CASES:
 				push_error("unknown --case ID: " + case_id)
 				quit(1)
 				return
 			selected_case_ids.append(case_id)
 	var report := {
-		"format": "openrc-spatial-wind-full-session-bench v1",
+		"format": "openrc-spatial-wind-full-session-bench v2",
+		"measurement_mode": "verification-only" if _verify_only else "batch-timing",
+		"power_variant": "pack" if _battery else "ideal",
+		"solver_sha256": FlightLog.solver_identity(),
+		"benchmark_sha256": FileAccess.get_sha256("res://tests/bench_spatial_wind.gd"),
+		"preset_factory_sha256": FileAccess.get_sha256("res://physics/wind_spatial_presets.gd"),
+		"identity_scope": "Solver, harness, preset factory and aircraft hashes are read from actual files. Revision and external manifest hash are caller-supplied annotations.",
 		"source_revision": _source_revision,
 		"source_manifest_sha256": _source_manifest_sha256,
 		"progress_directory": _progress_directory,
@@ -179,13 +263,14 @@ func _run_full_session_benchmark() -> void:
 		},
 		"tick_hz": TICK_HZ,
 		"samples": _samples,
+		"timing_statistic": "Timing arrays contain batch arithmetic means; their median and p95 are not per-tick latency percentiles. Verification-only contains no timing arrays or ratios.",
 		"warmup_ticks_per_sample": _warmup_ticks,
-		"timed_ticks_per_sample": _ticks_per_sample,
-		"comparison": "openrc-weather v4 steady 3 m/s from 270 deg versus v5 spatial neutral mean matched at 10 m AGL with 0.3 m/s nominal turbulence RMS and 8, 24, or 64 modes; no thermal cells or session OU turbulence",
-		"timing_method": "For each aircraft/weather scenario, FlightSession setup, v5 install, trim/reset and fixture capture happen before timing. Each sequential batch restores the exact fixture, advances 240 warmup ticks, restores again, then times 480 direct Simulation.step calls. State validation, reset checks, final hashing and the separate query-count diagnostic tick are outside the timed interval. Rendering and UI are absent.",
+		"workload_ticks_per_sample": _ticks_per_sample,
+		"comparison": "Original mean/mode controls retain their configurations. Optional active cases add an explicit 24-event practice gust agenda and/or one mature drifting thermal at the origin; complete configurations and actual query coverage are recorded per case.",
+		"timing_method": "Verification-only records no timing values. Otherwise: for each aircraft/weather scenario, FlightSession setup, v5 install, trim/reset and fixture capture happen before timing. Each sequential batch restores the exact fixture, advances the requested warmup ticks, restores again, then times the requested batch of direct Simulation.step calls. State validation, reset checks, final hashing and the separate query-count diagnostic tick are outside the timed interval. Rendering and UI are absent.",
 		"accepted_state_validation": "Every warmup and timed batch must advance exactly the requested Simulation.tick count with no fault, no crash, and finite accepted body, input, auxiliary, continuous and load arrays. Reset checks compare packed state/input/aux/mode/continuous/load bytes against the captured scenario fixture.",
 		"session_order": "Sequential only; explicit --aircraft and --case filter order is retained. Defaults are Jensen Ugly Stick, Extra 300S, Turbo Lumber, each with legacy steady then spatial 8, 24, and 64 modes.",
-		"wind_query_counter": "A one-tick untimed diagnostic replaces the installed WindField with an equivalent counting subclass after measurement; the reported count is all position-aware WindField.sample_world calls through the full stage and wash path.",
+		"wind_query_counter": "After batches, an untimed equivalent counting field repeats the entire workload. Its final state must equal production. Isolated gust/thermal probes at each actual stage/wash query establish nonzero component coverage. The original field and tick-zero fixture are restored before return.",
 		"aircraft": [],
 	}
 	for aircraft_id: String in selected_aircraft_ids:
@@ -194,6 +279,13 @@ func _run_full_session_benchmark() -> void:
 			push_error("unknown or non-fixed-wing aircraft catalog ID: " + aircraft_id)
 			quit(1)
 			return
+		entry = entry.duplicate(true)
+		if _battery:
+			if str(entry.get("battery_data", "")).is_empty():
+				push_error("aircraft has no accepted battery variant: " + aircraft_id)
+				quit(1)
+				return
+			entry.data = AircraftCatalog.data_for(aircraft_id, "pack")
 		var cases: Array[Dictionary] = []
 		for case_id: String in selected_case_ids:
 			print("starting full-session case ", aircraft_id, " / ", case_id)
@@ -213,15 +305,20 @@ func _run_full_session_benchmark() -> void:
 				push_error("could not write completion progress for %s / %s" % [aircraft_id, case_id])
 				quit(1)
 				return
-			print("measured ", aircraft_id, " / ", case_id, " / median ", measured.result.median_us_per_tick,
-				" µs/tick / wind queries ", measured.result.queries_per_accepted_tick_untimed)
+			if _verify_only:
+				print("verified ", aircraft_id, " / ", case_id, " / accepted workload ticks ", measured.result.accepted_workload_ticks)
+			else:
+				print("measured ", aircraft_id, " / ", case_id, " / median ", measured.result.median_us_per_tick,
+					" µs/tick / first-tick wind queries ", measured.result.queries_per_accepted_tick_untimed)
 		var legacy_baseline_us := -1.0
 		for item: Dictionary in cases:
-			if item.case_id == "legacy-v4-steady":
+			if not _verify_only and item.case_id == "legacy-v4-steady":
 				legacy_baseline_us = float(item.median_us_per_tick)
 				break
 		for index: int in cases.size():
 			var item: Dictionary = cases[index]
+			if _verify_only:
+				continue
 			if item.case_id == "legacy-v4-steady":
 				item["ratio_to_legacy_v4"] = 1.0
 				item["increase_pct_vs_legacy_v4"] = 0.0
@@ -236,9 +333,15 @@ func _run_full_session_benchmark() -> void:
 			"id": aircraft_id,
 			"name": str(entry.get("name", aircraft_id)),
 			"data": str(entry.get("data", "")),
+			"data_sha256": FileAccess.get_sha256(str(entry.data)),
 			"stage_wash_consumers": cases[0].stage_wash_consumers,
 			"cases": cases,
 		})
+	if FlightLog.solver_identity() != report.solver_sha256 \
+			or FileAccess.get_sha256("res://tests/bench_spatial_wind.gd") != report.benchmark_sha256:
+		push_error("benchmark or solver sources changed during the run")
+		quit(1)
+		return
 	_write_report(report)
 
 
@@ -254,6 +357,7 @@ func _session_weather_config(case_id: String) -> Dictionary:
 			"spatial-v5-modes-8": mode_count = 8
 			"spatial-v5-modes-24": mode_count = 24
 			"spatial-v5-modes-64": mode_count = 64
+			"spatial-v5-gusts-24", "spatial-v5-thermals-24", "spatial-v5-gusts-thermals-24": mode_count = 24
 			_: return {"ok": false, "config": {}, "errors": PackedStringArray(["unknown session weather case"])}
 		raw = WindConfig.spatial_defaults()
 		raw.spatial_wind.identity.seed_u32 = 20261025
@@ -262,6 +366,26 @@ func _session_weather_config(case_id: String) -> Dictionary:
 		raw.spatial_wind.profile.reference_from_deg = 270.0
 		raw.spatial_wind.turbulence.rms_mps = 0.3
 		raw.spatial_wind.turbulence.mode_count = mode_count
+		if case_id in ACTIVE_WEATHER_CASES:
+			var needs_thermal := "thermals" in case_id
+			# Begin inside the first pulse, or at thermal half-life. Preserve the complete agenda.
+			var epoch := 360.0 if needs_thermal else 7.0
+			raw.spatial_wind.identity.epoch_offset_s = epoch
+			if "gusts" in case_id:
+				var preset: Dictionary = SpatialPresets.get_preset("spatial-realistic-v1")
+				raw.spatial_wind.gusts.events = preset.spatial_wind.gusts.events.duplicate(true)
+				for event: Dictionary in raw.spatial_wind.gusts.events:
+					event.start_s += epoch - 7.0
+			if needs_thermal:
+				var upgraded: Dictionary = Config.thermal_defaults(raw.spatial_wind)
+				if not upgraded.ok:
+					return upgraded
+				raw.spatial_wind = upgraded.config
+				raw.spatial_wind.thermal_field.cells = [{
+					"id": "bench-mature-drifting-cell", "birth_s": 0.0, "duration_s": 720.0,
+					"center_ne_m": [-72.0, 36.0], "drift_ne_mps": [0.2, -0.1],
+					"radius_m": 60.0, "top_agl_m": 200.0, "peak_updraft_mps": 1.0,
+				}]
 	return WindConfig.validate(raw)
 
 
@@ -290,7 +414,7 @@ func _run_session_case(entry: Dictionary, aircraft_id: String, case_id: String) 
 	if installed_config != weather_result.config:
 		session.free()
 		return {"ok": false, "error": "installed weather config differs from the validated request"}
-	var consumers: Dictionary = _stage_wash_contract(session, case_id)
+	var consumers: Dictionary = _stage_wash_contract(session)
 	if not consumers.ok:
 		var consumer_error := str(consumers.error)
 		session.free()
@@ -321,7 +445,7 @@ func _run_session_case(entry: Dictionary, aircraft_id: String, case_id: String) 
 		if not _write_progress_snapshot(aircraft_id, case_id, "warmup-%02d" % sample_index, {
 			"status": "warmup_complete", "batch_index": sample_index,
 			"accepted_warmup_ticks_total": total_warmup_accepted,
-			"accepted_timed_ticks_total": total_timed_accepted,
+			"accepted_workload_ticks_total": total_timed_accepted,
 		}):
 			session.free()
 			return {"ok": false, "error": "could not write warmup progress snapshot for batch %d" % sample_index}
@@ -332,14 +456,14 @@ func _run_session_case(entry: Dictionary, aircraft_id: String, case_id: String) 
 			return {"ok": false, "error": "before timed batch reset: " + restore_error}
 		reset_checks += 1
 		var first_tick := int(session.sim.tick)
-		var started := Time.get_ticks_usec()
+		var started := Time.get_ticks_usec() if not _verify_only else 0
 		var timed_fault := ""
 		for _tick: int in _ticks_per_sample:
 			session.sim.step()
 			if not session.sim.fault_reason.is_empty():
 				timed_fault = str(session.sim.fault_reason)
 				break
-		var elapsed_us := float(Time.get_ticks_usec() - started)
+		var elapsed_us := float(Time.get_ticks_usec() - started) if not _verify_only else 0.0
 		var accepted_ticks := int(session.sim.tick) - first_tick
 		if not timed_fault.is_empty() or accepted_ticks != _ticks_per_sample:
 			var acceptance_error := timed_fault if not timed_fault.is_empty() else "accepted %d / %d ticks" % [accepted_ticks, _ticks_per_sample]
@@ -348,17 +472,19 @@ func _run_session_case(entry: Dictionary, aircraft_id: String, case_id: String) 
 		if not _session_state_is_finite(session) or not session.crash.is_empty():
 			session.free()
 			return {"ok": false, "error": "timed batch %d ended with a crash or nonfinite accepted state" % sample_index}
-		timings.append(elapsed_us / float(_ticks_per_sample))
+		if not _verify_only:
+			timings.append(elapsed_us / float(_ticks_per_sample))
 		total_timed_accepted += accepted_ticks
 		final_hashes.append(_snapshot_hash(session.sim))
-		if not _write_progress_snapshot(aircraft_id, case_id, "batch-%02d" % sample_index, {
-			"status": "timed_batch_complete", "batch_index": sample_index,
+		var batch_progress := {
+			"status": "workload_batch_complete", "batch_index": sample_index,
 			"accepted_warmup_ticks_total": total_warmup_accepted,
-			"accepted_timed_ticks_total": total_timed_accepted,
-			"samples_us_per_tick": _float64_array(timings),
-			"median_us_per_tick": _median(timings),
+			"accepted_workload_ticks_total": total_timed_accepted,
 			"final_state_sha256_per_batch": _string_array(final_hashes),
-		}):
+		}
+		if not _verify_only:
+			batch_progress.merge(_timing_summary(timings))
+		if not _write_progress_snapshot(aircraft_id, case_id, "batch-%02d" % sample_index, batch_progress):
 			session.free()
 			return {"ok": false, "error": "could not write timed-batch progress snapshot for batch %d" % sample_index}
 	if not _all_strings_equal(final_hashes):
@@ -370,38 +496,47 @@ func _run_session_case(entry: Dictionary, aircraft_id: String, case_id: String) 
 		session.free()
 		return {"ok": false, "error": "final reset validation failed: " + final_error}
 	reset_checks += 1
-	var query_diagnostic: Dictionary = _measure_world_query_count(session, fixture)
+	var query_diagnostic: Dictionary = _measure_world_query_count(session, fixture, final_hashes[0], case_id)
 	if not query_diagnostic.ok:
 		var query_error := str(query_diagnostic.error)
 		session.free()
 		return {"ok": false, "error": "untimed query-count diagnostic failed: " + query_error}
-	reset_checks += 1
+	reset_checks += 2 # counting-field reset and restored original-field reset
 	var result := {
 		"case_id": case_id,
 		"weather_format": str(installed_config.format),
 		"mode_count": 0 if case_id == "legacy-v4-steady" else int(installed_config.spatial_wind.turbulence.mode_count),
 		"weather_configuration": installed_config,
 		"weather_receipt": session.call("_spatial_weather_receipt", session.environment.weather) if session.environment.weather.is_spatial() else {},
-		"samples_us_per_tick": _float64_array(timings),
-		"median_us_per_tick": _median(timings),
-		"p95_batch_mean_us_per_tick": _percentile(timings, 0.95),
-		"min_batch_mean_us_per_tick": _minimum(timings),
-		"max_batch_mean_us_per_tick": _maximum(timings),
+		"measurement_mode": "verification-only" if _verify_only else "batch-timing",
+		"workload_coverage": query_diagnostic.coverage,
 		"queries_per_accepted_tick_untimed": query_diagnostic.sample_world_calls,
-		"timed_ticks_per_batch": _ticks_per_sample,
+		"workload_ticks_per_batch": _ticks_per_sample,
 		"warmup_ticks_per_batch": _warmup_ticks,
-		"accepted_timed_ticks": total_timed_accepted,
+		"accepted_workload_ticks": total_timed_accepted,
 		"accepted_warmup_ticks": total_warmup_accepted,
 		"reset_checks_passed": reset_checks,
-		"reset_checks_expected": 2 * _samples + 2,
+		"reset_checks_expected": 2 * _samples + 3,
 		"final_state_sha256_per_batch": _string_array(final_hashes),
 		"final_states_repeatable": _all_strings_equal(final_hashes),
 		"stage_wash_consumers": consumers.result,
 		"setup_start_state": _float64_array(fixture.state.state),
 		"aircraft_status": str(entry.get("status", "")),
 	}
+	if not _verify_only:
+		result.merge(_timing_summary(timings))
+		result["accepted_timed_ticks"] = total_timed_accepted
+		result["timed_ticks_per_batch"] = _ticks_per_sample
 	session.free()
 	return {"ok": true, "result": result}
+
+
+func _timing_summary(timings: PackedFloat64Array) -> Dictionary:
+	return {
+		"samples_us_per_tick": _float64_array(timings), "median_us_per_tick": _median(timings),
+		"p95_batch_mean_us_per_tick": _percentile(timings, 0.95),
+		"min_batch_mean_us_per_tick": _minimum(timings), "max_batch_mean_us_per_tick": _maximum(timings),
+	}
 
 
 func _session_start_is_valid(session: Node) -> bool:
@@ -423,7 +558,7 @@ func _session_state_is_finite(session: Node) -> bool:
 	return is_finite(sim.time())
 
 
-func _stage_wash_contract(session: Node, case_id: String) -> Dictionary:
+func _stage_wash_contract(session: Node) -> Dictionary:
 	var model: Dictionary = session.aircraft.model
 	var propulsion: Dictionary = model.get("propulsion", {})
 	var slipstream: Dictionary = propulsion.get("slipstream", {})
@@ -436,7 +571,7 @@ func _stage_wash_contract(session: Node, case_id: String) -> Dictionary:
 	var stage_air_probe: Dictionary = session.air_data(session.sim.state, 0.0)
 	var spatial_contract_valid := true
 	var sampler_valid := false
-	if case_id.begins_with("spatial-"):
+	if session.environment.weather.is_spatial():
 		var sampler: Variant = stage_air_probe.get("ambient_delta_body_at", Callable())
 		sampler_valid = sampler is Callable and sampler.is_valid()
 		spatial_contract_valid = stage_air_probe.get("spatial_air_law", "") == WindFlow.STAGE_AIR_LAW and sampler_valid
@@ -456,11 +591,11 @@ func _stage_wash_contract(session: Node, case_id: String) -> Dictionary:
 			"lagged_wash_transport_piece_count": pieces.size() if wash_transport_enabled else 0,
 			"continuous_state_size": session.sim.continuous.size(),
 			"wind_flow_station_count": int(geometry.offsets_body.size() / 3),
-			"provider_queries_per_wind_flow_sample": 1 + int(geometry.offsets_body.size() / 3),
+			"provider_queries_per_wind_flow_sample": 1 + int(geometry.offsets_body.size() / 3) - (1 if geometry.horizontal_index < 0 else 0),
 			"simulation_stage_callback": stage_active,
 			"simulation_split_load_route": split_load_route_active,
 			"stage_air_probe_contract_valid": spatial_contract_valid,
-			"stage_point_sampler_valid": sampler_valid if case_id.begins_with("spatial-") else false,
+			"stage_point_sampler_valid": sampler_valid if session.environment.weather.is_spatial() else false,
 			"actual_full_simulation_step_used": true,
 		},
 	}
@@ -537,7 +672,43 @@ func _snapshot_hash(sim: Node) -> String:
 	return digest.finish().hex_encode()
 
 
-func _measure_world_query_count(session: Node, fixture: Dictionary) -> Dictionary:
+func _prepare_coverage_probes(counted: CountingWindField, configuration: Dictionary) -> Dictionary:
+	if configuration.format != WindConfig.SPATIAL_FORMAT:
+		return {"ok": true}
+	var spatial: Dictionary = configuration.spatial_wind
+	if not spatial.gusts.events.is_empty():
+		# Isolate the exact authored gust component without changing the installed provider.
+		var gust: Dictionary = spatial.duplicate(true)
+		gust.profile.reference_speed_mps = 0.0
+		gust.profile.free_air_wind_ned_mps = [0.0, 0.0, 0.0]
+		gust.profile.layers = []
+		gust.turbulence.rms_mps = 0.0
+		if gust.has("thermal_field"):
+			gust.thermal_field.cells = []
+		var built: Dictionary = SpatialField.build(gust)
+		if not built.ok:
+			return {"ok": false, "error": "isolated gust provider rejected: " + str(built.errors)}
+		counted.gust_probe = built.field
+	if spatial.has("thermal_field") and not spatial.thermal_field.cells.is_empty():
+		var built: Dictionary = ThermalField.build(spatial.thermal_field)
+		if not built.ok:
+			return {"ok": false, "error": "isolated thermal provider rejected: " + str(built.errors)}
+		counted.thermal_probe = built.field
+	return {"ok": true}
+
+
+func _coverage_is_valid(counted: CountingWindField, case_id: String) -> bool:
+	if not counted.coverage_error.is_empty() or counted.sample_world_calls <= 0:
+		return false
+	if case_id in ACTIVE_WEATHER_CASES:
+		if "gusts" in case_id and counted.gust_peak_mps < 0.01:
+			return false
+		if "thermals" in case_id and counted.thermal_peak_mps < 0.01:
+			return false
+	return true
+
+
+func _measure_world_query_count(session: Node, fixture: Dictionary, expected_hash: String, case_id: String) -> Dictionary:
 	var original: Variant = session.environment.weather
 	var original_configuration: Dictionary = original.configuration()
 	var counted: CountingWindField = CountingWindField.new()
@@ -545,18 +716,41 @@ func _measure_world_query_count(session: Node, fixture: Dictionary) -> Dictionar
 		return {"ok": false, "error": "equivalent counting field rejected the installed weather config"}
 	if counted.configuration() != original_configuration or counted.spatial_content_hash() != original.spatial_content_hash():
 		return {"ok": false, "error": "counting field changed the installed weather identity"}
+	var prepared: Dictionary = _prepare_coverage_probes(counted, original_configuration)
+	if not prepared.ok:
+		return prepared
 	session.environment.weather = counted
 	var restored: Dictionary = _restore_fixture(session, fixture)
-	if not restored.ok:
-		return {"ok": false, "error": "counting field fixture reset failed: " + str(restored.error)}
-	counted.sample_world_calls = 0
-	session.sim.step()
-	if not session.sim.fault_reason.is_empty() or session.sim.tick != 1 or not _session_state_is_finite(session):
-		return {"ok": false, "error": "counting diagnostic tick was not accepted"}
-	var calls := counted.sample_world_calls
-	if calls <= 0:
-		return {"ok": false, "error": "full session did not invoke position-aware wind sampling"}
-	return {"ok": true, "sample_world_calls": calls}
+	counted.reset_observations() # reset samples do not count as flight-workload coverage
+	var run: Dictionary = restored
+	var first_tick_calls := 0
+	if restored.ok:
+		run = _run_accepted_ticks(session, 1)
+		first_tick_calls = counted.sample_world_calls
+		if run.ok:
+			run = _run_accepted_ticks(session, _ticks_per_sample - 1)
+	var repeated_hash := _snapshot_hash(session.sim)
+	var coverage := {
+		"accepted_ticks": int(session.sim.tick), "wind_queries": counted.sample_world_calls,
+		"gust_queries_above_1e_minus_6_mps": counted.gust_nonzero_queries,
+		"thermal_queries_above_1e_minus_6_mps": counted.thermal_nonzero_queries,
+		"gust_peak_mps": counted.gust_peak_mps, "thermal_peak_mps": counted.thermal_peak_mps,
+		"first_query_time_s": counted.first_query_time_s, "last_query_time_s": counted.last_query_time_s,
+		"final_state_sha256": repeated_hash, "matches_production": repeated_hash == expected_hash,
+		"required_active_peak_mps": 0.01,
+	}
+	# The instrumentation must not escape this diagnostic, including on failure.
+	session.environment.weather = original
+	var cleanup: Dictionary = _restore_fixture(session, fixture)
+	if not cleanup.ok:
+		return {"ok": false, "error": "original-field fixture restore failed: " + str(cleanup.error)}
+	if not run.ok:
+		return {"ok": false, "error": "counting workload was not accepted: " + str(run.error)}
+	if repeated_hash != expected_hash:
+		return {"ok": false, "error": "instrumented workload differs from production"}
+	if not _coverage_is_valid(counted, case_id):
+		return {"ok": false, "error": "actual query coverage did not exercise required wind components: " + str(coverage) + counted.coverage_error}
+	return {"ok": true, "sample_world_calls": first_tick_calls, "coverage": coverage}
 
 
 func _write_report(report: Dictionary) -> void:

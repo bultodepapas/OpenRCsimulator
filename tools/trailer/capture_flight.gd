@@ -11,6 +11,7 @@ const Trial := preload("res://workshop/trial.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
+const Exposure := preload("res://render/world/exposure.gd")
 
 const DEFAULT_FPS := 60
 const DEFAULT_WIDTH := 1920
@@ -221,6 +222,7 @@ func _capture_crash_report() -> void:
 
 func _capture_frames(count: int, preroll: int) -> void:
 	var previous_lighting_tick := -1
+	var lighting_capture_requested := _lighting_capture_requested()
 	for index: int in range(count):
 		if _shot == "crash" and index == 60:
 			# Let the viewer see the actual impact and wreck for one second before revealing the native report.
@@ -247,7 +249,7 @@ func _capture_frames(count: int, preroll: int) -> void:
 			_director.resume_after_report_restart()
 		await process_frame
 		await RenderingServer.frame_post_draw
-		if _shot in ["lighting-pass", "lighting-pilot"]:
+		if lighting_capture_requested:
 			var sim: Node = _main.session.sim
 			if sim.paused or not sim.fault_reason.is_empty() or not _main.session.crash.is_empty() \
 					or (previous_lighting_tick >= 0 and sim.tick <= previous_lighting_tick):
@@ -256,7 +258,10 @@ func _capture_frames(count: int, preroll: int) -> void:
 				push_error(_failure)
 				return
 			previous_lighting_tick = sim.tick
+		var director_record_count_before := _director_frame_record_count() if lighting_capture_requested else -1
 		_director.record_presented_frame(index, preroll)
+		if lighting_capture_requested and not _ensure_lighting_frame_evidence(index, director_record_count_before):
+			return
 		_frame_count += 1
 		if not _save_images:
 			if index % _fps == 0:
@@ -278,6 +283,65 @@ func _capture_frames(count: int, preroll: int) -> void:
 		_image_count += 1
 		if index % _fps == 0:
 			print("FLIGHT_CAPTURE_FRAME ", index, " tick=", _main.session.sim.tick)
+
+
+func _lighting_capture_requested() -> bool:
+	return _options.has("lighting-preset") or _shot in ["lighting-pass", "lighting-pilot"]
+
+
+func _director_frame_record_count() -> int:
+	if not is_instance_valid(_director):
+		return -1
+	var records: Variant = _director.get("frame_records")
+	return records.size() if typeof(records) == TYPE_ARRAY else -1
+
+
+func _ensure_lighting_frame_evidence(frame_index: int, record_count_before: int) -> bool:
+	if record_count_before < 0:
+		return _lighting_capture_failure("Lighting capture director has no readable frame_records array.")
+	var records: Variant = _director.get("frame_records")
+	if typeof(records) != TYPE_ARRAY or records.size() != record_count_before + 1:
+		return _lighting_capture_failure("Lighting capture director did not append exactly one record for frame %d." % frame_index)
+	var record_index: int = records.size() - 1
+	var record_value: Variant = records[record_index]
+	if typeof(record_value) != TYPE_DICTIONARY:
+		return _lighting_capture_failure("Lighting capture director's frame %d record is not a dictionary." % frame_index)
+	var record: Dictionary = record_value
+	if typeof(record.get("frame")) != TYPE_INT or int(record.frame) != frame_index:
+		return _lighting_capture_failure("Lighting capture director's last record does not match frame %d." % frame_index)
+	var current_tick: int = int(_main.session.sim.tick)
+	if typeof(record.get("sim_tick")) != TYPE_INT or int(record.sim_tick) != current_tick:
+		return _lighting_capture_failure("Lighting capture director's frame %d record does not match live tick %d." % [frame_index, current_tick])
+	var lighting: Variant = _main.get("_rgb_lighting")
+	if not is_instance_valid(lighting) or not lighting.has_method("budget_info"):
+		return _lighting_capture_failure("Lighting capture has no live RGB lighting budget source.")
+	var budget_value: Variant = lighting.call("budget_info")
+	if typeof(budget_value) != TYPE_DICTIONARY or budget_value.is_empty():
+		return _lighting_capture_failure("Lighting capture's live RGB budget information is missing or invalid.")
+	var actual_exposure: float = Exposure.last
+	if not is_finite(actual_exposure):
+		return _lighting_capture_failure("Lighting capture's live world exposure is not finite.")
+	if record.has("aircraft_lighting"):
+		if typeof(record.aircraft_lighting) != TYPE_DICTIONARY or record.aircraft_lighting != budget_value:
+			return _lighting_capture_failure("Frame %d records aircraft_lighting inconsistent with the live RGB budget." % frame_index)
+	else:
+		record["aircraft_lighting"] = budget_value.duplicate(true)
+	if record.has("world_exposure"):
+		var recorded_exposure: Variant = record.world_exposure
+		if typeof(recorded_exposure) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(recorded_exposure)) \
+				or float(recorded_exposure) != actual_exposure:
+			return _lighting_capture_failure("Frame %d records world_exposure inconsistent with the live world exposure." % frame_index)
+	else:
+		record["world_exposure"] = actual_exposure
+	records[record_index] = record
+	_director.set("frame_records", records)
+	return true
+
+
+func _lighting_capture_failure(message: String) -> bool:
+	_failure = message
+	push_error(_failure)
+	return false
 
 
 func _write_manifest(ok: bool) -> void:

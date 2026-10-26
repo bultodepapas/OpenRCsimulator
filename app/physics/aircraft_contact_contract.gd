@@ -6,6 +6,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const HullContact := preload("res://physics/hull_contact.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const PhysicalIdentity := preload("res://physics/physical_identity.gd")
+const IntendedHullSupport := preload("res://physics/intended_hull_support.gd")
 
 
 ## Describes the normalized model returned by AircraftData. Authored physical identity is used
@@ -131,6 +132,9 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 
 	var wheel_profile_result := _wheel_profile(model, aircraft_id, support_points, wheel_profile_contact_names,
 		errors, diagnostics)
+	if model.has("intended_hull_support"):
+		if not model.intended_hull_support is Dictionary or not IntendedHullSupport.matches_model(model.intended_hull_support, model):
+			_add_error(errors, diagnostics, "invalid_intended_hull_support", "intended_hull_support", "prepared intent differs from the current authored hull/model")
 	if errors.is_empty():
 		for support: Dictionary in support_points:
 			for probe: Dictionary in hull_points:
@@ -173,7 +177,7 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 		contact_ids = "hull probe IDs",
 		commit_boundary = "caller supplies the prior accepted tick IDs; this description stores no lifecycle state",
 	}
-	return {
+	var result := {
 		ok = true,
 		errors = errors,
 		diagnostics = diagnostics,
@@ -187,6 +191,9 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 		policy = policy,
 		contact_lifecycle = lifecycle,
 	}
+	if model.has("intended_hull_support"):
+		result.intended_hull_support = model.intended_hull_support.duplicate(true)
+	return result
 
 
 ## Maps the read-only HullContact.contacts feed without changing its geometry or source `new` field.

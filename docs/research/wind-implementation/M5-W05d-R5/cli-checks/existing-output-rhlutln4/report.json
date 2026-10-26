@@ -1,0 +1,52 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1e2c51cf-b232-4e81-bdeb-757c13682c5e",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\snapshot\\app",
+    "--script",
+    "res://tests/bench_spatial_wind.gd",
+    "--",
+    "--full-session",
+    "--verify-only",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\existing-output.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T14:00:40.822890+00:00",
+  "label": "existing-output",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\cli-checks\\existing-output-rhlutln4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\cli-checks\\existing-output-rhlutln4\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "benchmark output already exists: C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\existing-output.json",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _parse_args (res://tests/bench_spatial_wind.gd:199)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.984,
+  "log_bytes": 418,
+  "log_sha256": "2c66fc6f5d15ef57020c2feaf838cbc864c7d492f0ddf2cc12c9e04c9c8d51c0"
+}

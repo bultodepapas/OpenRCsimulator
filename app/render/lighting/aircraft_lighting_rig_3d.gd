@@ -413,6 +413,12 @@ func _effect_capability(effect: Dictionary) -> Dictionary:
 
 
 func _has_live_zone_binding(zone_id: String, group: String) -> bool:
+	var groups_value: Variant = kit.get_meta("light_bindings", {}) if is_instance_valid(kit) else {}
+	if not groups_value is Dictionary:
+		return false
+	var members_value: Variant = groups_value.get(group, [])
+	if not members_value is Array:
+		return false
 	for binding: Dictionary in _materials:
 		if str(binding.get("zone_id", "")) != zone_id or str(binding.get("group", "")) != group:
 			continue
@@ -420,7 +426,7 @@ func _has_live_zone_binding(zone_id: String, group: String) -> bool:
 		if not is_instance_valid(node_value) or not node_value is Node3D:
 			continue
 		var node := node_value as Node3D
-		if node.get_parent() != kit:
+		if node.get_parent() != kit or not members_value.has(node):
 			continue
 		if str(binding.get("kind", "")) == "spot":
 			if node is Light3D:

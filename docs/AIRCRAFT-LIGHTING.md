@@ -175,3 +175,11 @@ python tools/godot/run_checked.py --label aircraft-lights --timeout 180 -- .tool
 ```
 
 For native before/after images, omit `--headless` and append `-- --capture-aircraft-lights=<absolute-output-directory>`. Use an isolated APPDATA directory for native test runs. The suite covers every fixed-wing visual family and the helicopter, actual input handlers, exact threshold crossings, manual precedence, dawn/daylight policy, new flights, resets, data reloads, Home changes, bounded attachment and configurable group references. Existing `test_night_kit.gd`, `test_p51_lights.gd` and `test_heli_night_lights.gd` retain geometry, motion, gate and emissive checks.
+
+For the six-preset night preview matrix, run the existing aircraft visual fixture on a native renderer:
+
+```powershell
+python tools/godot/run_checked.py --label lighting-fleet-night --warnings-as-errors --timeout 600 -- .tools/Godot_v4.8-beta1_win64_console.exe --path app --audio-driver Dummy --rendering-method gl_compatibility --script res://tests/test_lighting_aircraft_visuals.gd -- --capture-lighting-fleet=C:/DEVELOPMENT/OpenRCsimulator/tmp/lighting-fleet-night
+```
+
+Choose a new absolute output directory and isolated APPDATA profile for each run; run only one rendered application at a time. The fixture captures all six presets for one catalog representative per fixed-wing visual family at 1920×1080. Its manifest records capabilities, source identities, renderer, camera and budgets. The held Workshop clock/exposure is intentionally repeatable: it cannot establish moving trails, production-night exposure, pilot readability or real-time frame cost. Use the [existing flight capture route](../tools/trailer/README.md) for advancing flight and inset evidence. Substitute `forward_plus` or `mobile` only when qualifying those native paths separately.

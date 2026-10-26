@@ -1,0 +1,58 @@
+[
+  {
+    "case": "compile",
+    "expected_checked_exit": 0,
+    "actual_checked_exit": 0,
+    "required_message": "benchmark script parsed",
+    "passed": true
+  },
+  {
+    "case": "typo",
+    "expected_checked_exit": 1,
+    "actual_checked_exit": 1,
+    "required_message": "unknown benchmark argument",
+    "passed": true
+  },
+  {
+    "case": "missing-mode",
+    "expected_checked_exit": 1,
+    "actual_checked_exit": 1,
+    "required_message": "require --full-session",
+    "passed": true
+  },
+  {
+    "case": "bad-integer",
+    "expected_checked_exit": 1,
+    "actual_checked_exit": 1,
+    "required_message": "invalid benchmark integer argument",
+    "passed": true
+  },
+  {
+    "case": "short-workload",
+    "expected_checked_exit": 1,
+    "actual_checked_exit": 1,
+    "required_message": "at least 480 batch ticks",
+    "passed": true
+  },
+  {
+    "case": "unknown-case",
+    "expected_checked_exit": 1,
+    "actual_checked_exit": 1,
+    "required_message": "unknown --case ID",
+    "passed": true
+  },
+  {
+    "case": "unknown-aircraft",
+    "expected_checked_exit": 1,
+    "actual_checked_exit": 1,
+    "required_message": "unknown --aircraft ID",
+    "passed": true
+  },
+  {
+    "case": "existing-output",
+    "expected_checked_exit": 1,
+    "actual_checked_exit": 1,
+    "required_message": "benchmark output already exists",
+    "passed": true
+  }
+]

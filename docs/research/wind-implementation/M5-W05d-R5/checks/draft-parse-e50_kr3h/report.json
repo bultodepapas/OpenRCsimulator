@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "02f2e04f-45be-40d1-bf58-da95b3c2516b",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-bench-r5/snapshot/app",
+    "--check-only",
+    "--script",
+    "res://tests/bench_spatial_wind.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:48:52.320906+00:00",
+  "label": "draft-parse",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\checks\\draft-parse-e50_kr3h\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\checks\\draft-parse-e50_kr3h\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.719,
+  "log_bytes": 72,
+  "log_sha256": "f6b8ebc165a60ec8f6999cc3cc00f97653fe502d98eaae026be9d85099fe24c7"
+}

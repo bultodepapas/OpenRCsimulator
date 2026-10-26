@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f0c4ca08-a106-4333-b7bb-837e76cd3346",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/wind-bench-r5/snapshot/app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/wind-bench-r5/baseline_configs.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T13:51:30.972885+00:00",
+  "label": "original-control-identities",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\checks\\original-control-identities-25qouk_c\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wind-bench-r5\\checks\\original-control-identities-25qouk_c\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.797,
+  "log_bytes": 412,
+  "log_sha256": "0088b20619556035178f08fc410176d7c5dab53fb75e31dda1c8879b2d8932ad"
+}

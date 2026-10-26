@@ -546,6 +546,7 @@ const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const HullContact := preload("res://physics/hull_contact.gd")
+const IntendedHullSupport := preload("res://physics/intended_hull_support.gd")
 const ContactContract := preload("res://physics/aircraft_contact_contract.gd")
 const ContactEvents := preload("res://sim/aircraft_contact_events.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
@@ -1871,12 +1872,49 @@ func accident_observation() -> Dictionary:
 		# Current retract law has an exact fully-down endpoint, not a 95% mechanical lock.
 		# Pilot intent is irrelevant: a deliberately commanded gear-up landing is an accident.
 		gear_up = sim.aux[gear_aux_index()] < 1.0
-	# Legacy hull probes have no declared intended skid/belly role. New authored roles
-	# must extend this contract explicitly; an absent wheel alone does not invent one.
+	var intended := hull_support_observation()
 	return {schema = "openrc-aircraft-accident-observation", version = 1,
 		tick = _contact_tick, generation = statistics_generation,
 		gear_up_contact = gear_up, ground_contact = touching,
-		intended_support = false, terminal = not crash.is_empty()}
+		intended_support = bool(intended.facts.get("intended_support", false)) if intended.available else false,
+		terminal = not crash.is_empty()}
+
+
+## Optional authored intent over the SAME accepted hull IDs. Initial scope is the
+## declared flat solid hull law: its unit normal/height are [0,0,-1]/0m, not the
+## separate wheel micro-relief gradient. No trial geometry or history is evaluated.
+func hull_support_observation() -> Dictionary:
+	var result := {schema = "openrc-aircraft-hull-support-observation", version = 1,
+		tick = _contact_tick, generation = statistics_generation, available = false,
+		identity = "", facts = {}, reason = "intended_hull_support_absent"}
+	if sim == null or not aircraft.get("ok", false) or not aircraft.model.has("intended_hull_support"):
+		return result
+	var prepared: Variant = _contact_bindings.get("intended_hull_support")
+	var authored: Variant = aircraft.model.intended_hull_support
+	result.reason = "intended_hull_support_binding_invalid"
+	if not prepared is Dictionary or not authored is Dictionary \
+		or not IntendedHullSupport.matches_model(authored, aircraft.model) or var_to_bytes(prepared) != var_to_bytes(authored):
+		return result
+	result.identity = str(prepared.identity)
+	if not soft_hull_contacts:
+		result.reason = "intended_hull_support_requires_soft_hull"
+		return result
+	if not _lake.is_empty():
+		result.reason = "intended_hull_support_lake_scope_unavailable"
+		return result
+	if _contact_tick <= 0 or _contact_tick != sim.tick:
+		result.reason = "no_current_accepted_hull_tick"
+		return result
+	var facts := IntendedHullSupport.evaluate(prepared, _active_hull_ids,
+		sim.state.slice(RB.ATT, RB.ATT + 4), PackedFloat64Array([0.0, 0.0, -1.0]),
+		sim.state.slice(RB.RATE, RB.RATE + 3), HullContact.law())
+	if not facts.ok:
+		result.reason = "intended_hull_support_query_invalid"
+		return result
+	result.available = true
+	result.facts = facts
+	result.reason = ""
+	return result
 
 
 ## The observer owns the accepted-tick presentation sample; the next input guard can reuse it.
@@ -4485,6 +4523,10 @@ func trace_meta() -> Dictionary:
 		metadata.mass_reference = "mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum"
 	if soft_hull_contacts:
 		metadata.hull_contact_model = HullContact.law()
+		if model.get("intended_hull_support") is Dictionary:
+			metadata.intended_hull_support_model = IntendedHullSupport.LAW
+			metadata.intended_hull_support_identity = str(model.intended_hull_support.identity)
+			metadata.intended_hull_support_scope = "legacy-flat-solid-only-v1"
 		if aircraft.model.has("crash_tolerance"):
 			# X8-08: the aircraft's own terminal thresholds replace the law's shared ones.
 			metadata.hull_contact_tolerance = aircraft.model.crash_tolerance.duplicate()

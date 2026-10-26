@@ -1,0 +1,8 @@
+{
+  "solver_sources_unchanged_during_final_check": true,
+  "differences_from_frozen_snapshot": [
+    "app/physics/aircraft_contact_contract.gd",
+    "app/physics/aircraft_ground_damage.gd",
+    "app/sim/flight_session.gd"
+  ]
+}
