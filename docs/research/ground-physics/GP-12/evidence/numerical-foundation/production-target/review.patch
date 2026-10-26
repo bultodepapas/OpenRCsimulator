@@ -1,0 +1,1158 @@
+--- a/app/physics/aircraft_ground_impulse.gd
++++ b/app/physics/aircraft_ground_impulse.gd
+@@ -6,6 +6,7 @@
+ const GC := preload("res://physics/generalized_coordinates.gd")
+ const QP := preload("res://physics/ground_traction.gd")
+ const AR := preload("res://physics/contact_assembly_resolution.gd")
++const Strategy := preload("res://physics/contact_assembly_strategy.gd")
+ const M := preload("res://physics/math3d.gd")
+ const LAW := "fixed-center-cm-common-rotor-ground-impulse-v1"
+ const MAX_ROTORS := 64
+@@ -65,19 +66,20 @@
+ 	var qp := {ok = true, converged = true, method = "empty_rows", impulse = PackedFloat64Array(),
+ 		group_impulses = [], post_slip = PackedFloat64Array(), dissipation = 0.0}
+ 	var assembly := {}
++	var local_evidence:Dictionary={}
++	var full_mass := PackedFloat64Array()
++	var responses := PackedFloat64Array()
+ 	if rows > 0:
+ 		if maximum_assembly_resolution_j >= 0.0:
+-			var full_mass := PackedFloat64Array()
+ 			full_mass.resize(n*n)
+ 			for i in 3: full_mass[i*n+i] = mass_kg
+ 			for i in n-3:
+ 				for j in n-3: full_mass[(3+i)*n+3+j] = stage.matrix[i*(n-3)+j]
+-			var responses := PackedFloat64Array()
+ 			for response: PackedFloat64Array in response_columns: responses.append_array(response)
+-			qp = AR.solve(mobility,free_slip,limits,groups,full_mass,jacobian,z,prescribed_slip_bias,
+-				responses,maximum_assembly_resolution_j,iteration_budget)
++			qp = Strategy._solve_local(mobility,free_slip,limits,groups,full_mass,jacobian,z,prescribed_slip_bias,
++				responses,maximum_assembly_resolution_j,iteration_budget,local_evidence)
+ 			if qp.get("certificate_kind", "") == AR.LAW:
+-				assembly = AR.bounds(mobility,free_slip,full_mass,jacobian,z,prescribed_slip_bias,responses)
++				assembly = AR._memo_bounds(local_evidence,mobility,free_slip,full_mass,jacobian,z,prescribed_slip_bias,responses)
+ 		else:
+ 			qp = QP.solve(mobility, free_slip, limits, groups, iteration_budget)
+ 		if not qp.ok: return {ok = false, status = "traction_nonconverged", reason = qp.get("reason", "traction rejected"), qp = qp}
+@@ -136,10 +138,44 @@
+ 		var scale := maxf(1.0e-12, maxf(row_magnitude, maxf(response_magnitude, absf(qp.post_slip[row]))))
+ 		slip_residual = maxf(slip_residual, absf(value - qp.post_slip[row]) / scale)
+ 		if not is_finite(row_magnitude) or not is_finite(response_magnitude): slip_residual = INF
++	var slip_roundoff:Dictionary={}
++	var numerical_slip_valid:=false
++	if is_finite(slip_residual) and slip_residual>RESIDUAL_RELATIVE_TOLERANCE and maximum_assembly_resolution_j>=0.0:
++		var proof:=AR._slip_local(local_evidence,mobility,free_slip,full_mass,jacobian,z,prescribed_slip_bias,
++			responses,qp.impulse,generalized_impulse,delta,qp.post_slip)
++		if proof.get("ok",false):
++			var objective_uncertainty:=0.0
++			if qp.has("assembly_resolution"):objective_uncertainty=qp.assembly_resolution.assembly_objective_resolution_j
++			var combined_uncertainty:=AR._add(objective_uncertainty,proof.work_equivalent_bound_j)
++			if is_finite(combined_uncertainty) and combined_uncertainty<=maximum_assembly_resolution_j:
++				proof.legacy_relative_residual=slip_residual
++				proof.legacy_relative_tolerance=RESIDUAL_RELATIVE_TOLERANCE
++				proof.qp_objective_uncertainty_j=objective_uncertainty
++				proof.combined_contact_uncertainty_j=combined_uncertainty
++				proof.owner_per_qp_ceiling_j=maximum_assembly_resolution_j
++				slip_roundoff=proof
++				numerical_slip_valid=true
++	var work_roundoff:Dictionary={}
++	var numerical_work_valid:=false
++	if is_finite(closure) and absf(closure)>RESIDUAL_RELATIVE_TOLERANCE*work_scale and maximum_assembly_resolution_j>=0.0:
++		var proof:=AR._work_local(local_evidence,mobility,free_slip,full_mass,jacobian,z,prescribed_slip_bias,responses,
++			qp.impulse,generalized_impulse,delta,qp.post_slip,stage.affine_momentum,qp.objective,incremental_change,closure)
++		if proof.get("ok",false):
++			var objective_uncertainty:=0.0
++			if qp.has("assembly_resolution"):objective_uncertainty=qp.assembly_resolution.assembly_objective_resolution_j
++			var slip_uncertainty:=0.0
++			if not slip_roundoff.is_empty():slip_uncertainty=slip_roundoff.work_equivalent_bound_j
++			var combined:=AR._add(AR._add(objective_uncertainty,slip_uncertainty),proof.work_equivalent_bound_j)
++			if is_finite(combined) and combined<=maximum_assembly_resolution_j:
++				proof.legacy_work_target_j=RESIDUAL_RELATIVE_TOLERANCE*work_scale
++				proof.combined_contact_uncertainty_j=combined
++				proof.owner_per_qp_ceiling_j=maximum_assembly_resolution_j
++				work_roundoff=proof
++				numerical_work_valid=true
+ 	if not _finite(PackedFloat64Array([before, after, affine_work, bias_work, incremental_change, closure, totals_residual, mass_residual, slip_residual])) \
+-		or absf(closure) > RESIDUAL_RELATIVE_TOLERANCE * work_scale \
++		or (absf(closure) > RESIDUAL_RELATIVE_TOLERANCE * work_scale and not numerical_work_valid) \
+ 		or absf(totals_residual) > RESIDUAL_RELATIVE_TOLERANCE * totals_scale \
+-		or mass_residual > RESIDUAL_RELATIVE_TOLERANCE or slip_residual > RESIDUAL_RELATIVE_TOLERANCE:
++		or mass_residual > RESIDUAL_RELATIVE_TOLERANCE or (slip_residual > RESIDUAL_RELATIVE_TOLERANCE and not numerical_slip_valid):
+ 		return _failure("generalized impulse, slip or energy closure could not be certified", "nonconverged")
+ 	var result := {ok = true, status = "converged", law = LAW, fixed_centers = true, frozen_pose = true,
+ 		velocity_cm_body = next.slice(0, 3), omega = next.slice(3, 6), spin = next.slice(6),
+@@ -153,6 +189,8 @@
+ 		mass_solve_relative_residual = mass_residual, slip_relative_residual = slip_residual,
+ 		factor_rebuilt = true, work_frame = "prescribed_support_and_carrier_balance_not_visual_steering_motor_credit"}
+ 	if not capture_receipt.is_empty(): result.capture = capture_receipt
++	if not slip_roundoff.is_empty():result.slip_roundoff=slip_roundoff
++	if not work_roundoff.is_empty():result.work_roundoff=work_roundoff
+ 	return result
+ 
+ 
+@@ -331,6 +369,8 @@
+ 	result.feasibility_roundoff_correction = correction
+ 	if result.has("maximum_objective_increase_scaled"):
+ 		result.maximum_objective_increase_scaled = maxf(result.maximum_objective_increase_scaled, (objective - base.objective) / base.objective_scale)
++	if not resolution.is_empty() and resolution.certified_impulse_sha256!=AR.impulse_digest(result.impulse):
++		return _failure("capture final impulse differs from recertified bytes", "nonconverged")
+ 	return result
+ 
+ 
+--- a/app/physics/aircraft_ground_step.gd
++++ b/app/physics/aircraft_ground_step.gd
+@@ -469,26 +469,51 @@
+ 
+ 
+ static func _resolution_stats(settings: Dictionary) -> Dictionary:
+-	if settings.maximum_assembly_resolution_j<0.0: return {}
++	if settings.maximum_assembly_resolution_j<0.0:return {}
+ 	return {maximum_assembly_resolution_j=settings.maximum_assembly_resolution_j,ceiling_scope="per_impulse_qp_not_tick",
+-		accepted_at_resolution=0,maximum_derived_gamma_j=0.0,derived_gamma_sum_j=0.0,
+-		objective_gap_upper_sum_j=0.0}
+-
+-
+-static func _record_resolution(stats: Dictionary,applied: Dictionary) -> bool:
+-	if stats.is_empty() or not applied.qp.has("assembly_resolution"): return true
+-	var proof: Dictionary = applied.qp.assembly_resolution
+-	if not proof.get("ok",false) or not _number(proof.get("assembly_objective_resolution_j")) \
+-		or not _number(proof.get("true_objective_gap_upper_j")) \
+-		or proof.true_objective_gap_upper_j<0.0 \
+-		or proof.true_objective_gap_upper_j>proof.assembly_objective_resolution_j \
+-		or proof.assembly_objective_resolution_j>stats.maximum_assembly_resolution_j:
+-		return false
+-	stats.accepted_at_resolution+=1
+-	stats.maximum_derived_gamma_j=maxf(stats.maximum_derived_gamma_j,proof.assembly_objective_resolution_j)
+-	stats.derived_gamma_sum_j=Impulse.AR._add(stats.derived_gamma_sum_j,proof.assembly_objective_resolution_j)
+-	stats.objective_gap_upper_sum_j=Impulse.AR._add(stats.objective_gap_upper_sum_j,proof.true_objective_gap_upper_j)
+-	return _number(stats.derived_gamma_sum_j) and _number(stats.objective_gap_upper_sum_j)
++		accepted_at_resolution=0,accepted_slip_roundoff=0,accepted_work_roundoff=0,maximum_derived_gamma_j=0.0,derived_gamma_sum_j=0.0,
++		objective_gap_upper_sum_j=0.0,slip_work_equivalent_sum_j=0.0,work_consistency_sum_j=0.0,combined_contact_uncertainty_sum_j=0.0}
++
++
++static func _record_resolution(stats:Dictionary,applied:Dictionary)->bool:
++	if stats.is_empty():return true
++	var gamma:=0.0
++	var gap:=0.0
++	var slip:=0.0
++	var work:=0.0
++	if applied.qp.has("assembly_resolution"):
++		var proof:Dictionary=applied.qp.assembly_resolution
++		if not proof.get("ok",false) or not _number(proof.get("assembly_objective_resolution_j")) \
++			or not _number(proof.get("true_objective_gap_upper_j")) or proof.true_objective_gap_upper_j<0.0 \
++			or proof.true_objective_gap_upper_j>proof.assembly_objective_resolution_j:return false
++		gamma=proof.assembly_objective_resolution_j
++		gap=proof.true_objective_gap_upper_j
++		stats.accepted_at_resolution+=1
++	if applied.has("slip_roundoff"):
++		var proof:Dictionary=applied.slip_roundoff
++		if not proof.get("ok",false) or not _number(proof.get("work_equivalent_bound_j")) \
++			or proof.work_equivalent_bound_j<0.0 \
++			or proof.certified_impulse_sha256!=Impulse.AR.impulse_digest(applied.impulse):return false
++		slip=proof.work_equivalent_bound_j
++		stats.accepted_slip_roundoff+=1
++	if applied.has("work_roundoff"):
++		var proof:Dictionary=applied.work_roundoff
++		if not proof.get("ok",false) or not _number(proof.get("work_equivalent_bound_j")) \
++			or proof.work_equivalent_bound_j<0.0 or not _number(proof.get("actual_relative_work_upper_j")) \
++			or proof.actual_relative_work_upper_j>0.0 \
++			or proof.certified_impulse_sha256!=Impulse.AR.impulse_digest(applied.impulse):return false
++		work=proof.work_equivalent_bound_j
++		stats.accepted_work_roundoff+=1
++	var combined:=Impulse.AR._add(Impulse.AR._add(gamma,slip),work)
++	if not is_finite(combined) or combined>stats.maximum_assembly_resolution_j:return false
++	stats.maximum_derived_gamma_j=maxf(stats.maximum_derived_gamma_j,gamma)
++	stats.derived_gamma_sum_j=Impulse.AR._add(stats.derived_gamma_sum_j,gamma)
++	stats.objective_gap_upper_sum_j=Impulse.AR._add(stats.objective_gap_upper_sum_j,gap)
++	stats.slip_work_equivalent_sum_j=Impulse.AR._add(stats.slip_work_equivalent_sum_j,slip)
++	stats.work_consistency_sum_j=Impulse.AR._add(stats.work_consistency_sum_j,work)
++	stats.combined_contact_uncertainty_sum_j=Impulse.AR._add(stats.combined_contact_uncertainty_sum_j,combined)
++	return _number(stats.derived_gamma_sum_j) and _number(stats.objective_gap_upper_sum_j) \
++		and _number(stats.slip_work_equivalent_sum_j) and _number(stats.work_consistency_sum_j) and _number(stats.combined_contact_uncertainty_sum_j)
+ 
+ 
+ static func _same_binding(a: Dictionary, b: Dictionary) -> bool:
+--- a/app/physics/contact_assembly_resolution.gd
++++ b/app/physics/contact_assembly_resolution.gd
+@@ -19,38 +19,236 @@
+ 		groups: Array, mass_matrix: PackedFloat64Array, jacobian: PackedFloat64Array,
+ 		z: PackedFloat64Array, bias: PackedFloat64Array, responses: PackedFloat64Array,
+ 		maximum_resolution_j: float, iteration_budget: int = QP.MAX_ITERATIONS) -> Dictionary:
++	return _solve_core(a,v,limits,groups,mass_matrix,jacobian,z,bias,responses,maximum_resolution_j,iteration_budget,false,{})
++
++
++## Detached accounting, used by the separate bounded-probe strategy. A proof
++## screen can skip costly witnesses; it NEVER substitutes for final admission.
++static func _solve_with_work(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,groups:Array,
++		mass_matrix:PackedFloat64Array,jacobian:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,
++		responses:PackedFloat64Array,maximum_resolution_j:float,iteration_budget:int,proof_screen:bool,memo:Dictionary={})->Dictionary:
++	var work:={qp={},range_proposal_calls=0,work_candidate_calls=0,strict_publication_calls=0,assembly_witness_builds=0,assembly_certificates=0}
++	var before_builds:=int(memo.get("builds",0))
++	var result:=_solve_core(a,v,limits,groups,mass_matrix,jacobian,z,bias,responses,maximum_resolution_j,iteration_budget,proof_screen,work,memo)
++	work.assembly_witness_requests=work.assembly_witness_builds
++	work.assembly_witness_builds=int(memo.get("builds",0))-before_builds
++	return {result=result,work=work}
++
++
++static func _solve_core(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,groups:Array,
++		mass_matrix:PackedFloat64Array,jacobian:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,
++		responses:PackedFloat64Array,maximum_resolution_j:float,iteration_budget:int,proof_screen:bool,account:Dictionary,memo:Dictionary={})->Dictionary:
+ 	if not is_finite(maximum_resolution_j) or maximum_resolution_j < 0.0:
+ 		return _failure("explicit finite nonnegative owner resolution budget required")
+-	var strict := QP.solve(a, v, limits, groups, iteration_budget)
+-	if strict.ok: return strict
+-	if strict.get("status", "") != "nonconverged": return strict
+-	var assembly := bounds(a, v, mass_matrix, jacobian, z, bias, responses)
+-	if not assembly.ok: return assembly
+-	var zero := PackedFloat64Array()
++	var strict:Dictionary
++	if account.is_empty():strict=QP._solve_for_assembly(a,v,limits,groups,iteration_budget)
++	else:
++		var packet:=QP._solve_for_assembly_with_work(a,v,limits,groups,iteration_budget)
++		strict=packet.result
++		account.qp=packet.work
++	if strict.ok:return strict
++	if strict.get("status","")!="nonconverged":return strict
++	var assembly:Dictionary={}
++	var strict_diagnostic:=strict.duplicate(true)
++	strict_diagnostic.erase("numerical_candidate")
++	var candidates:Array[PackedFloat64Array]=[]
++	var zero:=PackedFloat64Array()
+ 	zero.resize(v.size())
+-	var resolved := certificate(a, v, limits, groups, zero, assembly)
+-	if not resolved.ok or resolved.assembly_objective_resolution_j > maximum_resolution_j:
+-		strict.assembly_resolution = resolved
+-		strict.assembly_resolution_budget_j = maximum_resolution_j
+-		return strict
+-	var validated := QP._validate_psd(a, v.size())
+-	var h := PackedFloat64Array()
+-	var b := PackedFloat64Array()
+-	var scale := 0.0
++	candidates.append(zero)
++	if strict.has("numerical_candidate"):
++		var retained:Variant=strict.numerical_candidate.get("normalized_impulse")
++		if typeof(retained)==TYPE_PACKED_FLOAT64_ARRAY and retained.size()==v.size() and _finite(retained):
++			candidates.append(retained.duplicate())
++	var validated:=QP._validate_psd(a,v.size())
++	var h:=PackedFloat64Array()
++	var b:=PackedFloat64Array()
++	var scale:=0.0
+ 	for i in v.size():
+ 		b.append(limits[i]*v[i])
+-		scale = maxf(scale, absf(b[i]))
++		scale=maxf(scale,absf(b[i]))
+ 		for j in v.size():
+-			var value: float = validated.correlation[i*v.size()+j] \
++			var value:float=validated.correlation[i*v.size()+j] \
+ 				*(limits[i]*validated.diagonal_roots[i])*(limits[j]*validated.diagonal_roots[j])
+ 			h.append(value)
+-			scale = maxf(scale, absf(value))
+-	resolved.strict_failure = strict.duplicate(true)
+-	resolved.assembly_resolution_budget_j = maximum_resolution_j
+-	resolved.correlation_error_bound = assembly.correlation_error_bound
+-	return QP._publish(validated.matrix, v, limits, groups, h, b, zero,
+-		scale if scale > 0.0 else 1.0, validated, strict.get("iterations",0),
+-		"minimum_impulse_at_verified_assembly_resolution", resolved)
++			scale=maxf(scale,absf(value))
++	var hs:=h.duplicate()
++	var bs:=b.duplicate()
++	for i in hs.size():hs[i]/=scale if scale>0.0 else 1.0
++	for i in bs.size():bs[i]/=scale if scale>0.0 else 1.0
++	if not account.is_empty():account.range_proposal_calls+=1
++	var range_trial:=QP._range_proposal(hs,bs,limits,groups)
++	if not range_trial.is_empty():candidates.append(range_trial)
++	var last_proof:={}
++	for choice in candidates.size():
++		var method:="minimum_impulse_at_verified_assembly_resolution" if choice==0 else "strict_iterate_at_verified_assembly_resolution"
++		if choice==candidates.size()-1 and not range_trial.is_empty():method="rank_range_trial_at_verified_assembly_resolution"
++		if not account.is_empty():account.work_candidate_calls+=1
++		var work:=QP._work_candidate(validated.matrix,v,limits,groups,h,b,candidates[choice],
++			scale if scale>0.0 else 1.0,validated,strict.get("iterations",0),method)
++		if not work.ok:continue
++		if work.raw_certificate.ok:
++			# A proposal may recover ORIGINAL strict acceptance without needing
++			# any numerical epsilon budget. The strict publisher rechecks it.
++			if not account.is_empty():account.strict_publication_calls+=1
++			return QP._publish(validated.matrix,v,limits,groups,h,b,work.normalized_impulse,
++				scale if scale>0.0 else 1.0,validated,strict.get("iterations",0),"range_trial_with_original_strict_KKT")
++		if proof_screen and (not is_finite(work.duality_gap) or work.duality_gap>maximum_resolution_j):continue
++		if assembly.is_empty():
++			if not account.is_empty():account.assembly_witness_builds+=1
++			assembly=_memo_bounds(memo,a,v,mass_matrix,jacobian,z,bias,responses)
++			if not assembly.ok:return assembly
++		# This is the FINAL physical impulse AFTER any existing feasibility
++		# roundoff projection. Never certify a pre-projection y and publish p'.
++		var final_bytes:=var_to_bytes(work.impulse)
++		if not account.is_empty():
++			account.assembly_certificates+=1
++			account.assembly_witness_builds+=1
++		var proof:=_certificate_verified(a,v,limits,groups,work.impulse,assembly)
++		last_proof=proof
++		if not proof.get("ok",false) or proof.assembly_objective_resolution_j>maximum_resolution_j:continue
++		if proof.certified_impulse_sha256!=impulse_digest(work.impulse):
++			return _failure("final impulse differs from certified physical bytes")
++		proof.strict_failure=strict_diagnostic.duplicate(true)
++		proof.assembly_resolution_budget_j=maximum_resolution_j
++		proof.correlation_error_bound=assembly.correlation_error_bound
++		if strict.has("numerical_candidate"):
++			proof.failed_candidate_raw_certificate=strict.numerical_candidate.raw_certificate.duplicate(true)
++		work.status="converged_at_assembly_resolution"
++		work.converged=true
++		work.certificate_kind=LAW
++		work.strict_kkt_passed=bool(work.raw_certificate.ok)
++		work.erase("raw_certificate")
++		work.assembly_resolution=proof
++		if final_bytes!=var_to_bytes(work.impulse):return _failure("post-certificate impulse mutation")
++		return work
++	strict_diagnostic.assembly_resolution=last_proof
++	strict_diagnostic.assembly_resolution_budget_j=maximum_resolution_j
++	return strict_diagnostic
++
++
++static func impulse_digest(impulse:PackedFloat64Array)->String:
++	var hash:=HashingContext.new()
++	if hash.start(HashingContext.HASH_SHA256)!=OK:return ""
++	if hash.update(var_to_bytes(impulse))!=OK:return ""
++	return hash.finish().hex_encode()
++
++
++## Independent absolute roundoff bound for the two actual post-slip paths:
++## J*fl(z+delta)+bias versus fl(v+A*p). If r_c=M*delta-g and
++## r_j=M*x_j-J_j^T, then M*(delta-sum(x_j*p_j))
++## = r_c+(g-J^T*p)-sum(r_j*p_j). Each row J_i*M^-1 is the
++## transposed verified basis response x_i, since true M is symmetric SPD.
++## No vanished result, fixed velocity floor, or unrelated shaft energy sets
++## this bound. Numerical work-equivalent uncertainty is sum(|p_i|*bound_i).
++static func slip_consistency(a:PackedFloat64Array,v:PackedFloat64Array,mass:PackedFloat64Array,
++		j:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,responses:PackedFloat64Array,
++		p:PackedFloat64Array,g:PackedFloat64Array,delta:PackedFloat64Array,post:PackedFloat64Array)->Dictionary:
++	var assembly:=bounds(a,v,mass,j,z,bias,responses)
++	if not assembly.ok:return assembly
++	return _slip_verified(a,v,mass,j,z,bias,responses,p,g,delta,post,assembly)
++
++
++static func _slip_verified(a:PackedFloat64Array,v:PackedFloat64Array,mass:PackedFloat64Array,
++		j:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,responses:PackedFloat64Array,
++		p:PackedFloat64Array,g:PackedFloat64Array,delta:PackedFloat64Array,post:PackedFloat64Array,assembly:Dictionary)->Dictionary:
++	var n:=v.size()
++	var w:=z.size()
++	if p.size()!=n or post.size()!=n or g.size()!=w or delta.size()!=w \
++		or not _finite(p) or not _finite(post) or not _finite(g) or not _finite(delta):
++		return _failure("invalid independent slip operands")
++	var combined:=PackedFloat64Array()
++	var combined_error:=PackedFloat64Array()
++	var column_residual:=PackedFloat64Array()
++	var column_error:=PackedFloat64Array()
++	column_residual.resize(n*w)
++	column_error.resize(n*w)
++	var next:=z.duplicate()
++	var addition_error:=PackedFloat64Array()
++	for i in w:
++		var generated:=0.0
++		var generated_magnitude:=0.0
++		for row in n:
++			generated+=j[row*w+i]*p[row]
++			generated_magnitude=_add(generated_magnitude,_mul(absf(j[row*w+i]),absf(p[row])))
++		if var_to_bytes(generated)!=var_to_bytes(g[i]):return _failure("combined impulse does not match exact declared dot operands")
++		var value:float=-g[i]
++		var magnitude:=absf(g[i])
++		for k in w:
++			value+=mass[i*w+k]*delta[k]
++			magnitude=_add(magnitude,_mul(absf(mass[i*w+k]),absf(delta[k])))
++		if not is_finite(value) or absf(value)>_roundoff(magnitude,16*w+32):
++			return _failure("actual combined response is not a qualified backward-stable solve")
++		combined.append(value)
++		combined_error.append(_add(_roundoff(magnitude,2*w+4),_roundoff(generated_magnitude,2*n+4)))
++		next[i]+=delta[i]
++		addition_error.append(_roundoff(_add(absf(z[i]),absf(delta[i])),1))
++		for row in n:
++			value=-j[row*w+i]
++			magnitude=absf(j[row*w+i])
++			for k in w:
++				value+=mass[i*w+k]*responses[row*w+k]
++				magnitude=_add(magnitude,_mul(absf(mass[i*w+k]),absf(responses[row*w+k])))
++			column_residual[row*w+i]=value
++			column_error[row*w+i]=_roundoff(magnitude,2*w+4)
++	if not _finite(next) or not _finite(column_residual) or not _finite(column_error):return _failure("slip response residual overflow")
++	var superposition:=PackedFloat64Array()
++	for i in w:
++		var center:=combined[i]
++		var magnitude:=absf(center)
++		var error:=combined_error[i]
++		for row in n:
++			center-=column_residual[row*w+i]*p[row]
++			magnitude=_add(magnitude,_mul(absf(column_residual[row*w+i]),absf(p[row])))
++			error=_add(error,_mul(column_error[row*w+i],absf(p[row])))
++		superposition.append(_add(absf(center),_add(error,_roundoff(magnitude,2*n+4))))
++	var row_bounds:=PackedFloat64Array()
++	var differences:=PackedFloat64Array()
++	var references:=PackedFloat64Array()
++	var energy_bound:=0.0
++	var consistent:=true
++	for row in n:
++		var predicted:=0.0
++		var predicted_magnitude:=0.0
++		for other in n:
++			var symmetric:float=.5*a[row*n+other]+.5*a[other*n+row]
++			predicted+=symmetric*p[other]
++			predicted_magnitude=_add(predicted_magnitude,_mul(absf(symmetric),absf(p[other])))
++		predicted+=v[row]
++		predicted_magnitude=_add(predicted_magnitude,absf(v[row]))
++		if var_to_bytes(predicted)!=var_to_bytes(post[row]):return _failure("QP post slip is not bound to original mobility operands")
++		var direct:=bias[row]
++		var direct_magnitude:=absf(bias[row])
++		var reference:=_add(absf(bias[row]),predicted_magnitude)
++		var bound:float=assembly.slip_error[row]
++		for k in w:
++			direct+=j[row*w+k]*next[k]
++			direct_magnitude=_add(direct_magnitude,_mul(absf(j[row*w+k]),absf(next[k])))
++			reference=_add(reference,_mul(absf(j[row*w+k]),_add(absf(z[k]),absf(delta[k]))))
++			bound=_add(bound,_mul(absf(j[row*w+k]),addition_error[k]))
++			# x_row^T bounds the exact projected inverse row, preserving the
++			# physical sparsity of an external wheel-spin response port.
++			bound=_add(bound,_mul(_add(absf(responses[row*w+k]),assembly.response_error[row*w+k]),superposition[k]))
++		for other in n:
++			var dot_magnitude:=0.0
++			for k in w:dot_magnitude=_add(dot_magnitude,_mul(absf(j[row*w+k]),absf(responses[other*w+k])))
++			# For scalar p^T A p the antisymmetric part cancels; for a ROW
++			# of post slip it does not. Bound against the forward J*x row.
++			var dot_error:=_roundoff(dot_magnitude,2*w+4)
++			var sym_difference:=_mul(.5,absf(a[row*n+other]-a[other*n+row]))
++			var average_error:=_roundoff(_add(absf(a[row*n+other]),absf(a[other*n+row])),8)
++			bound=_add(bound,_mul(_add(dot_error,_add(sym_difference,average_error)),absf(p[other])))
++		bound=_add(bound,_add(_roundoff(direct_magnitude,2*w+4),_roundoff(predicted_magnitude,2*n+4)))
++		var difference:=absf(direct-post[row])
++		if not is_finite(difference) or not is_finite(bound) or difference>bound:consistent=false
++		row_bounds.append(bound)
++		differences.append(difference)
++		references.append(reference)
++		energy_bound=_add(energy_bound,_mul(absf(p[row]),bound))
++	if not _finite(row_bounds) or not _finite(differences) or not is_finite(energy_bound):return _failure("independent slip bound overflow")
++	return {ok=consistent,law="verified-binary64-common-mass-post-slip-consistency-v1",
++		row_absolute_bounds=row_bounds,row_absolute_differences=differences,uncancelled_operand_references=references,
++		work_equivalent_bound_j=energy_bound,scope="post_slip_arithmetic_not_material_calibration_or_passivity_relaxation",
++		inverse_witness_residual=assembly.inverse_witness_residual,certified_impulse_sha256=impulse_digest(p)}
+ 
+ 
+ static func _gamma(operations: int) -> float:
+@@ -329,6 +527,12 @@
+ 		return _failure("certificate is not bound to original matrix and free slip")
+ 	assembly=bounds(source.a,source.v,source.mass_matrix,source.jacobian,source.z,source.bias,source.responses)
+ 	if not assembly.ok: return assembly
++	return _certificate_verified(a,v,limits,groups,impulse,assembly)
++
++
++static func _certificate_verified(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,
++		groups:Array,impulse:PackedFloat64Array,assembly:Dictionary)->Dictionary:
++	var n:=v.size()
+ 	var verified := QP._validate_psd(a, n)
+ 	if not verified.ok: return verified
+ 	var da: PackedFloat64Array = assembly.mobility_error
+@@ -381,8 +585,168 @@
+ 	var gap_upper := _add(_add(dual_gap,allowance),evaluation)
+ 	var resolution := uncertainty
+ 	if not is_finite(gap_upper) or not is_finite(resolution): return _failure("certificate overflow")
++	var fingerprint:=impulse_digest(impulse)
++	if fingerprint.length()!=64:return _failure("exact final impulse byte binding unavailable")
+ 	return {ok = gap_upper <= resolution, law = LAW,
+ 		strict_kkt_claim = false, certificate_contract = "assembled-objective-epsilon-optimality",
+ 		original_dual_gap_j = dual_gap, true_objective_gap_upper_j = gap_upper,
+ 		assembly_objective_resolution_j = resolution,
+-		gradient_uncertainty_gap_j = allowance, capacities_unchanged = true}
++		gradient_uncertainty_gap_j = allowance, capacities_unchanged = true,
++		certified_impulse_sha256=fingerprint}
++
++## Error-free sum under the same verified IEEE binary64 round-to-nearest,
++## finite/no-overflow and gradual-underflow contract used by bounds(). The
++## returned low part satisfies a+b = high+low as REAL numbers; no state edit.
++static func two_sum(a:float,b:float)->PackedFloat64Array:
++	if not is_finite(a) or not is_finite(b):return PackedFloat64Array()
++	var high:=a+b
++	if not is_finite(high):return PackedFloat64Array()
++	var bv:=high-a
++	var av:=high-bv
++	var br:=b-bv
++	var ar:=a-av
++	var low:=ar+br
++	if not _finite(PackedFloat64Array([bv,av,br,ar,low])):return PackedFloat64Array()
++	return PackedFloat64Array([high,low])
++
++
++## A distinct arithmetic consistency certificate, NOT a physical work floor.
++## All reported scalars are bound to the actual repeated dot/add path. Original
++## caps/QP passivity remain separate. The published next-state energy is also
++## bounded independently, including error-free recovered velocity additions.
++static func work_consistency(a:PackedFloat64Array,v:PackedFloat64Array,mass:PackedFloat64Array,
++		j:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,responses:PackedFloat64Array,
++		p:PackedFloat64Array,g:PackedFloat64Array,delta:PackedFloat64Array,post:PackedFloat64Array,
++		affine_momentum:PackedFloat64Array,objective:float,incremental:float,closure:float)->Dictionary:
++	var assembly:=bounds(a,v,mass,j,z,bias,responses)
++	if not assembly.ok:return assembly
++	return _work_verified(a,v,mass,j,z,bias,responses,p,g,delta,post,affine_momentum,objective,incremental,closure,assembly)
++
++
++static func _work_verified(a:PackedFloat64Array,v:PackedFloat64Array,mass:PackedFloat64Array,
++		j:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,responses:PackedFloat64Array,
++		p:PackedFloat64Array,g:PackedFloat64Array,delta:PackedFloat64Array,post:PackedFloat64Array,
++		affine_momentum:PackedFloat64Array,objective:float,incremental:float,closure:float,assembly:Dictionary)->Dictionary:
++	var n:=v.size()
++	var w:=z.size()
++	if affine_momentum.size()!=w-3 or not _finite(affine_momentum) \
++		or not is_finite(objective) or not is_finite(incremental) or not is_finite(closure) or objective>0.0:
++		return _failure("invalid work consistency operands or nonpassive QP")
++	var slip:=_slip_verified(a,v,mass,j,z,bias,responses,p,g,delta,post,assembly)
++	if not slip.get("ok",false):return slip
++	var validated:=QP._validate_psd(a,n)
++	if not validated.ok:return validated
++	var symmetric:PackedFloat64Array=validated.matrix
++	var ap:=GC.matrix_vector(symmetric,p,n)
++	var qlinear:=0.0
++	var qquadratic:=0.0
++	var qlinear_mag:=0.0
++	var qquadratic_mag:=0.0
++	var exact_identity_bound:=0.0
++	for row in n:
++		qlinear+=v[row]*p[row]
++		qquadratic+=.5*p[row]*ap[row]
++		qlinear_mag=_add(qlinear_mag,_mul(absf(v[row]),absf(p[row])))
++		var rowmag:=0.0
++		for other in n:rowmag=_add(rowmag,_mul(absf(symmetric[row*n+other]),absf(p[other])))
++		qquadratic_mag=_add(qquadratic_mag,_mul(_mul(.5,absf(p[row])),rowmag))
++		exact_identity_bound=_add(exact_identity_bound,_mul(_mul(.5,absf(p[row])),
++			_add(slip.row_absolute_bounds[row],assembly.slip_error[row])))
++	if var_to_bytes(qlinear+qquadratic)!=var_to_bytes(objective):return _failure("work objective is not bound to original evaluated operands")
++	var linear:=GC.dot(z,g,w)
++	var quadratic:=.5*GC.dot(g,delta,w)
++	var affine:=GC.dot(affine_momentum,delta.slice(3),w-3)
++	var bias_work:=-GC.dot(bias,p,n)
++	var expected_incremental:=linear+quadratic+affine
++	var expected_closure:=expected_incremental-objective-(affine+bias_work)
++	if var_to_bytes(expected_incremental)!=var_to_bytes(incremental) or var_to_bytes(expected_closure)!=var_to_bytes(closure):
++		return _failure("work receipt is not bound to actual incremental dot/add path")
++	var linear_mag:=0.0
++	var quadratic_mag:=0.0
++	var bias_mag:=0.0
++	var mass_work_bound:=0.0
++	var next:=z.duplicate()
++	var update:=PackedFloat64Array()
++	for i in w:
++		linear_mag=_add(linear_mag,_mul(absf(z[i]),absf(g[i])))
++		quadratic_mag=_add(quadratic_mag,_mul(_mul(.5,absf(g[i])),absf(delta[i])))
++		var gm:=0.0
++		for row in n:gm=_add(gm,_mul(absf(j[row*w+i]),absf(p[row])))
++		exact_identity_bound=_add(exact_identity_bound,_mul(_add(absf(z[i]),_mul(.5,absf(delta[i]))),_roundoff(gm,2*n+4)))
++		var residual:float=-g[i]
++		var magnitude:=absf(g[i])
++		for k in w:
++			residual+=mass[i*w+k]*delta[k]
++			magnitude=_add(magnitude,_mul(absf(mass[i*w+k]),absf(delta[k])))
++		mass_work_bound=_add(mass_work_bound,_mul(_add(absf(z[i]),_mul(.5,absf(delta[i]))),
++			_add(absf(residual),_roundoff(magnitude,2*w+4))))
++		var sum:=two_sum(z[i],delta[i])
++		if sum.size()!=2:return _failure("state addition cannot meet finite TwoSum contract")
++		next[i]=sum[0]
++		update.append(-sum[1])
++	for row in n:bias_mag=_add(bias_mag,_mul(absf(bias[row]),absf(p[row])))
++	var direct_error:=_add(_roundoff(linear_mag,2*w+4),_roundoff(quadratic_mag,2*w+6))
++	var bias_error:=_roundoff(bias_mag,2*n+4)
++	var qp_error:=_add(_add(_roundoff(qlinear_mag,2*n+4),_roundoff(qquadratic_mag,4*n+8)),
++		_roundoff(_add(absf(qlinear),absf(qquadratic)),1))
++	var outer_magnitude:=_add(_add(absf(linear),absf(quadratic)),
++		_add(_mul(2.0,absf(affine)),_add(absf(objective),absf(bias_work))))
++	var closure_bound:=_add(exact_identity_bound,_add(qp_error,_add(direct_error,_add(bias_error,_roundoff(outer_magnitude,12)))))
++	# Exact actual-state correction: e=next-z-delta (TwoSum low sign),
++	# K(next)-K(z+delta)=next^T M e-.5 e^T M e. Include constant carrier
++	# affine momentum against e, since prescribed_work used the original delta.
++	var me:=GC.matrix_vector(mass,update,w)
++	var update_work:=GC.dot(next,me,w)-.5*GC.dot(update,me,w)+GC.dot(affine_momentum,update.slice(3),w-3)
++	var update_error:=0.0
++	var update_mag:=0.0
++	for i in w:
++		var rowmag:=0.0
++		for k in w:rowmag=_add(rowmag,_mul(absf(mass[i*w+k]),absf(update[k])))
++		update_error=_add(update_error,_mul(_add(absf(next[i]),_mul(.5,absf(update[i]))),_roundoff(rowmag,2*w+4)))
++		update_mag=_add(update_mag,_mul(_add(absf(next[i]),_mul(.5,absf(update[i]))),absf(me[i])))
++		if i>=3:update_mag=_add(update_mag,_mul(absf(affine_momentum[i-3]),absf(update[i])))
++	update_error=_add(update_error,_roundoff(update_mag,4*w+12))
++	var ideal_relative_work:=linear+quadratic-bias_work
++	var relative_error:=_add(direct_error,_add(bias_error,_roundoff(_add(_add(absf(linear),absf(quadratic)),absf(bias_work)),4)))
++	var physical_work:=ideal_relative_work+update_work
++	var physical_error:=_add(mass_work_bound,_add(relative_error,_add(update_error,
++		_roundoff(_add(absf(ideal_relative_work),absf(update_work)),1))))
++	physical_error=_add(physical_error,_roundoff(_add(absf(physical_work),physical_error),4))
++	var physical_upper:=physical_work+physical_error
++	# Charge the full state-addition correction magnitude as well as its error.
++	# This keeps genuine tiny positive work distinguishable from algebraic proof.
++	var work_charge:=_add(closure_bound,_add(absf(update_work),physical_error))
++	if not _finite(PackedFloat64Array([closure_bound,work_charge,physical_work,physical_error,physical_upper,update_work])):
++		return _failure("work consistency bound overflow")
++	return {ok=absf(closure)<=closure_bound and physical_upper<=0.0,
++		law="verified-binary64-common-mass-work-consistency-actual-state-passivity-v1",
++		raw_closure_j=closure,closure_absolute_bound_j=closure_bound,work_equivalent_bound_j=work_charge,
++		actual_relative_work_j=physical_work,actual_relative_work_error_j=physical_error,
++		actual_relative_work_upper_j=physical_upper,state_addition_work_j=update_work,
++		state_addition_work_error_j=update_error,mass_response_work_bound_j=mass_work_bound,
++		certified_impulse_sha256=impulse_digest(p),state_addition_residual=update,
++		scope="arithmetic_consistency_and_nonpositive_actual_state_work_not_a_material_tolerance"}
++
++static func _memo_bounds(memo:Dictionary,a:PackedFloat64Array,v:PackedFloat64Array,mass:PackedFloat64Array,j:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,responses:PackedFloat64Array)->Dictionary:
++	var source:=var_to_bytes([a,v,mass,j,z,bias,responses])
++	if memo.has("source") and memo.source==source:return memo.assembly
++	# A different operand never hits an old witness. This object is fresh local
++	# call-chain data and never returned or accepted by a public API.
++	var verified:=bounds(a,v,mass,j,z,bias,responses)
++	memo.source=source
++	memo.assembly=verified
++	memo.builds=int(memo.get("builds",0))+1
++	return verified
++
++static func _solve_local(a:PackedFloat64Array,v:PackedFloat64Array,d:PackedFloat64Array,groups:Array,mass:PackedFloat64Array,j:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,responses:PackedFloat64Array,ceiling:float,budget:int,memo:Dictionary)->Dictionary:
++	return _solve_core(a,v,d,groups,mass,j,z,bias,responses,ceiling,budget,false,{},memo)
++
++static func _slip_local(memo:Dictionary,a:PackedFloat64Array,v:PackedFloat64Array,mass:PackedFloat64Array,j:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,responses:PackedFloat64Array,p:PackedFloat64Array,g:PackedFloat64Array,delta:PackedFloat64Array,post:PackedFloat64Array)->Dictionary:
++	var verified:=_memo_bounds(memo,a,v,mass,j,z,bias,responses)
++	if not verified.ok:return verified
++	return _slip_verified(a,v,mass,j,z,bias,responses,p,g,delta,post,verified)
++
++static func _work_local(memo:Dictionary,a:PackedFloat64Array,v:PackedFloat64Array,mass:PackedFloat64Array,j:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,responses:PackedFloat64Array,p:PackedFloat64Array,g:PackedFloat64Array,delta:PackedFloat64Array,post:PackedFloat64Array,affine:PackedFloat64Array,objective:float,incremental:float,closure:float)->Dictionary:
++	var verified:=_memo_bounds(memo,a,v,mass,j,z,bias,responses)
++	if not verified.ok:return verified
++	return _work_verified(a,v,mass,j,z,bias,responses,p,g,delta,post,affine,objective,incremental,closure,verified)
+--- a/app/physics/contact_assembly_strategy.gd
++++ b/app/physics/contact_assembly_strategy.gd
+@@ -0,0 +1,49 @@
++## Bounded proposal-work policy; all physical acceptance stays with AR/QP.
++extends RefCounted
++const Strict:=preload("res://physics/contact_assembly_resolution.gd")
++const QP:=preload("res://physics/ground_traction.gd")
++const STRATEGY:="bounded-eight-original-KKT-probe-certified-candidates-total-budget-v1"
++
++static func solve(a:PackedFloat64Array,v:PackedFloat64Array,d:PackedFloat64Array,groups:Array,
++        mass:PackedFloat64Array,j:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,
++        responses:PackedFloat64Array,ceiling:float,budget:int=QP.MAX_ITERATIONS)->Dictionary:
++    return _solve_local(a,v,d,groups,mass,j,z,bias,responses,ceiling,budget,{})
++
++static func _solve_local(a:PackedFloat64Array,v:PackedFloat64Array,d:PackedFloat64Array,groups:Array,
++        mass:PackedFloat64Array,j:PackedFloat64Array,z:PackedFloat64Array,bias:PackedFloat64Array,
++        responses:PackedFloat64Array,ceiling:float,budget:int,memo:Dictionary)->Dictionary:
++    if budget<1 or budget>QP.MAX_ITERATIONS or not is_finite(ceiling) or ceiling<0.0:
++        return Strict.solve(a,v,d,groups,mass,j,z,bias,responses,ceiling,budget)
++    var probe:=Strict._solve_with_work(a,v,d,groups,mass,j,z,bias,responses,ceiling,mini(8,budget),true,memo)
++    var first:Dictionary=probe.result
++    # Every ordinary strict success <=8 retains COMPLETE original result bytes.
++    if first.get("ok",false) and not first.has("assembly_resolution") and probe.work.range_proposal_calls==0:return first
++    var work:=_work(probe.work)
++    if first.get("ok",false):return _annotate(first,work,budget,1)
++    var remaining:=budget-int(work.started_sweeps)
++    if remaining<1 or first.get("status","")!="nonconverged":return _annotate(first,work,budget,1)
++    # A deterministic restart uses ONLY the caller's REMAINING sweep budget.
++    # Probe and restart proposals/witness work are explicitly accumulated.
++    var fallback:=Strict._solve_with_work(a,v,d,groups,mass,j,z,bias,responses,ceiling,remaining,false,memo)
++    var extra:=_work(fallback.work)
++    for key:String in work:work[key]+=extra[key]
++    return _annotate(fallback.result,work,budget,2)
++
++static func _work(source:Dictionary)->Dictionary:
++    var qp:Dictionary=source.get("qp",{})
++    return {started_sweeps=int(qp.get("started_sweeps",0)),spd_proposal_calls=int(qp.get("spd_proposal_calls",0)),
++        interior_proposal_calls=int(qp.get("interior_proposal_calls",0)),extrapolation_calls=int(qp.get("extrapolation_calls",0)),
++        range_proposal_calls=int(source.get("range_proposal_calls",0)),work_candidate_calls=int(source.get("work_candidate_calls",0))+int(source.get("strict_publication_calls",0))+int(qp.get("publication_work_calls",0)),
++        publication_calls=int(source.get("strict_publication_calls",0))+int(qp.get("publication_work_calls",0)),assembly_witness_builds=int(source.get("assembly_witness_builds",0)),
++        assembly_certificates=int(source.get("assembly_certificates",0)),assembly_witness_requests=int(source.get("assembly_witness_requests",0))}
++
++static func _annotate(result:Dictionary,work:Dictionary,budget:int,solves:int)->Dictionary:
++    result.iterations=work.started_sweeps
++    result.numerical_strategy=STRATEGY
++    result.numerical_work=work.duplicate(true)
++    result.numerical_work.caller_sweep_budget=budget
++    result.numerical_work.strict_solve_calls=solves
++    if result.has("assembly_resolution"):
++        result.assembly_resolution.selection_strategy=STRATEGY
++        result.assembly_resolution.total_started_sweeps=work.started_sweeps
++    return result
+--- a/app/physics/ground_traction.gd
++++ b/app/physics/ground_traction.gd
+@@ -23,6 +23,26 @@
+ ## it is not universally the decrease of a closed body's kinetic energy.
+ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFloat64Array,
+ 		groups: Array, iteration_budget: int = MAX_ITERATIONS) -> Dictionary:
++	return _solve(a,v,limits,groups,iteration_budget,false)
++
++
++## Assembly-resolution owner only: retain a detached failed strict iterate;
++## this returns NO additional acceptance or tolerance and never changes solve().
++static func _solve_for_assembly(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFloat64Array,
++		groups:Array,iteration_budget:int=MAX_ITERATIONS)->Dictionary:
++	return _solve(a,v,limits,groups,iteration_budget,true)
++
++
++## Internal accounting wrapper; normal solve() dictionaries are untouched.
++static func _solve_for_assembly_with_work(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,
++		groups:Array,iteration_budget:int)->Dictionary:
++	var work:={started_sweeps=0,spd_proposal_calls=0,interior_proposal_calls=0,extrapolation_calls=0,publication_work_calls=0}
++	var result:=_solve(a,v,limits,groups,iteration_budget,true,work)
++	return {result=result,work=work}
++
++
++static func _solve(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFloat64Array,
++		groups:Array,iteration_budget:int,retain_candidate:bool,work:Dictionary={})->Dictionary:
+ 	var n := v.size()
+ 	if n < 1 or n > MAX_DIMENSION or a.size() != n * n or limits.size() != n \
+ 		or not _finite(a) or not _finite(v) or not _finite(limits) \
+@@ -64,6 +84,7 @@
+ 	var y := PackedFloat64Array()
+ 	y.resize(n)
+ 	if scale == 0.0:
++		if not work.is_empty():work.publication_work_calls+=1
+ 		return _publish(symmetric, v, limits, groups, h, b, y, 1.0, validated, 0, "zero_objective")
+ 	var hs := h.duplicate()
+ 	var bs := b.duplicate()
+@@ -83,6 +104,7 @@
+ 	for i in n:
+ 		if limits[i] > 0.0: active.append(i)
+ 	if not active.is_empty():
++		if not work.is_empty():work.spd_proposal_calls+=1
+ 		var dense := PackedFloat64Array()
+ 		var rhs := PackedFloat64Array()
+ 		dense.resize(active.size() * active.size())
+@@ -96,6 +118,7 @@
+ 				for i in active.size(): y[active[i]] = free[i]
+ 				var certified := _certificate(hs, bs, y, limits, groups, tolerance)
+ 				if certified.ok:
++					if not work.is_empty():work.publication_work_calls+=1
+ 					return _publish(symmetric, v, limits, groups, h, b, y, scale, validated, 0, "feasible_spd_stationary")
+ 				y.fill(0.0)
+ 	# Cyclic exact block minimization monotonically optimizes the FULL coupled
+@@ -105,6 +128,7 @@
+ 	var maximum_increase := 0.0
+ 	var accelerated := 0
+ 	for iteration in iteration_budget:
++		if not work.is_empty():work.started_sweeps+=1
+ 		var previous_y := y.duplicate()
+ 		for group: PackedInt32Array in groups:
+ 			var indices: Array[int] = []
+@@ -131,10 +155,12 @@
+ 		# the original full mobility, limits and unchanged KKT tolerance. No
+ 		# diagonal, physical mass, force or impulse cap is regularized here.
+ 		if (iteration + 1) % 8 == 0:
+-			var polished := _interior_face(hs, bs, y, limits, groups, tolerance)
++			if not work.is_empty():work.interior_proposal_calls+=1
++			var polished := _interior_face(hs, bs, y, limits, groups, tolerance, retain_candidate)
+ 			if polished != y:
+ 				y = polished
+ 				accelerated += 1
++			if not work.is_empty():work.extrapolation_calls+=1
+ 			var extrapolated := _extrapolate(hs, bs, y, previous_y, limits, groups, tolerance)
+ 			if extrapolated != y:
+ 				y = extrapolated
+@@ -146,6 +172,7 @@
+ 		# authoritative. A tiny objective evaluation uptick is not a reason to
+ 		# discard an already certified optimum in a nearly redundant row set.
+ 		if is_finite(current_objective) and certified.ok:
++			if not work.is_empty():work.publication_work_calls+=1
+ 			var published := _publish(symmetric, v, limits, groups, h, b, y, scale, validated, iteration + 1, "cyclic_exact_metric_blocks")
+ 			published.maximum_objective_increase_scaled = maximum_increase
+ 			if accelerated > 0:
+@@ -154,7 +181,10 @@
+ 				published.accepted_accelerations = accelerated
+ 			return published
+ 		if not is_finite(current_objective) or current_objective > previous_objective + 0.00000000000002 * (absf(previous_objective) + b_norm):
+-			return _failure("block solve did not preserve monotone objective", "nonconverged", iteration + 1)
++			var refused:=_failure("block solve did not preserve monotone objective", "nonconverged", iteration + 1)
++			if retain_candidate:
++				refused.numerical_candidate={normalized_impulse=y.duplicate(),raw_certificate=certified.duplicate(true)}
++			return refused
+ 		previous_objective = current_objective
+ 	var failure := _failure("global KKT residual exceeds iteration budget", "nonconverged", iteration_budget)
+ 	var residual := _certificate(hs, bs, y, limits, groups, tolerance)
+@@ -163,7 +193,10 @@
+ 	failure.complementarity_scaled = residual.complementarity
+ 	failure.feasibility_residual = residual.feasibility
+ 	failure.duality_gap_scaled = residual.duality_gap
++	if retain_candidate:
++		failure.numerical_candidate={normalized_impulse=y.duplicate(),raw_certificate=residual.duplicate(true)}
+ 	return failure
++
+ 
+ 
+ ## Resolve all currently interior groups together while holding saturated
+@@ -172,7 +205,7 @@
+ ## A wrong active-face guess cannot publish: feasibility, original objective
+ ## and the unchanged global KKT certificate are evaluated after the proposal.
+ static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
+-		limits: PackedFloat64Array, groups: Array, tolerance: float) -> PackedFloat64Array:
++		limits: PackedFloat64Array, groups: Array, tolerance: float, full_proposal_budget: bool = false) -> PackedFloat64Array:
+ 	var n := y.size()
+ 	var free: Array[int] = []
+ 	for group: PackedInt32Array in groups:
+@@ -191,7 +224,7 @@
+ 		for j in n: value -= h[free[i] * n + j] * y[j]
+ 		rhs.append(value)
+ 		for j in size: matrix[i * size + j] = h[free[i] * n + free[j]]
+-	var solved := _psd_correction(matrix, rhs, size, tolerance * 0.25)
++	var solved := _psd_correction(matrix, rhs, size, tolerance * (1.0 if full_proposal_budget else 0.25))
+ 	if solved.size() != size or not _finite(solved): return y
+ 	var candidate := y.duplicate()
+ 	var delta := PackedFloat64Array()
+@@ -232,7 +265,10 @@
+ ## face. Unresolved null coordinates have zero correction, not invented mass.
+ ## A linear term outside the range refuses via the ORIGINAL equation residual.
+ static func _psd_correction(matrix: PackedFloat64Array, rhs: PackedFloat64Array, size: int,
+-		tolerance: float) -> PackedFloat64Array:
++		tolerance: float, require_original_range: bool = true) -> PackedFloat64Array:
++	if size<1 or size>MAX_DIMENSION or matrix.size()!=size*size or rhs.size()!=size \
++		or not _finite(matrix) or not _finite(rhs) or not is_finite(tolerance) or tolerance<0.0:
++		return PackedFloat64Array()
+ 	var scale := PackedFloat64Array()
+ 	var permutation := PackedInt32Array()
+ 	var work := matrix.duplicate()
+@@ -282,6 +318,7 @@
+ 	result.resize(size)
+ 	for i in size: result[permutation[i]] = pivot_solution[i] / scale[permutation[i]]
+ 	if not _finite(result): return PackedFloat64Array()
++	if not require_original_range:return result
+ 	var residual := GC.matrix_vector(matrix, result, size)
+ 	for i in size:
+ 		if not is_finite(residual[i]) or absf(residual[i] - rhs[i]) > tolerance:
+@@ -336,6 +373,49 @@
+ 			certificate = trial
+ 		alpha *= 0.5
+ 	return best
++
++
++## Opt-in optimization trial ONLY. Numerical PSD rank truncation may leave
++## a null-RHS residual, so this deliberately does not claim range consistency.
++## Publication still requires original strict KKT or the independent physical
++## true-gap proof on the final original-cap/passive-work impulse.
++static func _range_proposal(h:PackedFloat64Array,b:PackedFloat64Array,limits:PackedFloat64Array,groups:Array)->PackedFloat64Array:
++	var n:=b.size()
++	if n<1 or n>MAX_DIMENSION or h.size()!=n*n or limits.size()!=n or not _finite(h) or not _finite(b) or not _finite(limits):
++		return PackedFloat64Array()
++	var active:Array[int]=[]
++	for i in n:
++		if limits[i]<0.0:return PackedFloat64Array()
++		if limits[i]>0.0:
++			if h[i*n+i]>0.0:active.append(i)
++			elif b[i]!=0.0:return PackedFloat64Array()
++	var y:=PackedFloat64Array()
++	y.resize(n)
++	if active.is_empty():return y
++	var dense:=PackedFloat64Array()
++	var rhs:=PackedFloat64Array()
++	for i in active:
++		rhs.append(-b[i])
++		for j in active:dense.append(h[i*n+j])
++	var proposed:=_psd_correction(dense,rhs,active.size(),0.0,false)
++	if proposed.size()!=active.size() or not _finite(proposed):return PackedFloat64Array()
++	for i in active.size():y[active[i]]=proposed[i]
++	var seen:=PackedByteArray()
++	seen.resize(n)
++	var maximum:=1.0
++	for group:Variant in groups:
++		if typeof(group)!=TYPE_PACKED_INT32_ARRAY or group.size() not in [1,2]:return PackedFloat64Array()
++		var length:=0.0
++		for i:int in group:
++			if i<0 or i>=n or seen[i]!=0:return PackedFloat64Array()
++			seen[i]=1
++			length=_hypot(length,y[i])
++		maximum=maxf(maximum,length)
++	if not is_finite(maximum):return PackedFloat64Array()
++	for i in n:
++		if not seen[i]:return PackedFloat64Array()
++		y[i]/=maximum
++	return y
+ 
+ 
+ ## Unit-invariant congruence validation; no fictitious diagonal is introduced.
+@@ -466,22 +546,25 @@
+ static func _publish(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFloat64Array,
+ 		groups: Array, h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
+ 		scale: float, validated: Dictionary, iterations: int, method: String, resolution: Dictionary = {}) -> Dictionary:
++	if not resolution.is_empty():
++		return _failure("a receipt dictionary cannot bypass strict publication", "nonconverged", iterations)
++	var result:=_work_candidate(a,v,limits,groups,h,b,y,scale,validated,iterations,method)
++	if not result.ok:return result
++	if not result.raw_certificate.ok:return _failure("publication KKT verification failed", "nonconverged", iterations)
++	result.erase("raw_certificate")
++	result.status="converged"
++	result.converged=true
++	return result
++
++
++## Work/feasibility result ONLY. No global optimum is claimed or published.
++## A numerical owner must verify the EXACT returned final impulse, after the
++## existing feasibility roundoff projection, before reporting convergence.
++static func _work_candidate(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFloat64Array,
++		groups: Array, h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
++		scale: float, validated: Dictionary, iterations: int, method: String) -> Dictionary:
+ 	var n := v.size()
+ 	y = y.duplicate()
+-	if not resolution.is_empty():
+-		# The opt-in assembly-resolution publisher currently supports exact zero
+-		# ONLY. Projection must never change a candidate after its certificate.
+-		for value: float in y:
+-			if not is_finite(value) or value!=0.0:
+-				return _failure("assembly-resolution publication requires exact zero candidate", "nonconverged", iterations)
+-		for key: String in ["true_objective_gap_upper_j","assembly_objective_resolution_j","assembly_resolution_budget_j"]:
+-			if not resolution.has(key) or typeof(resolution[key]) not in [TYPE_FLOAT,TYPE_INT] \
+-				or not is_finite(float(resolution[key])) or float(resolution[key])<0.0:
+-				return _failure("invalid assembly-resolution publication bound", "nonconverged", iterations)
+-		if not resolution.get("ok",false) \
+-			or resolution.true_objective_gap_upper_j>resolution.assembly_objective_resolution_j \
+-			or resolution.assembly_objective_resolution_j>resolution.assembly_resolution_budget_j:
+-			return _failure("unqualified assembly-resolution publication", "nonconverged", iterations)
+ 	var correction := 0.0
+ 	for group: PackedInt32Array in groups:
+ 		var length_sq := 0.0
+@@ -513,13 +596,12 @@
+ 		b_norm = maxf(b_norm, absf(bs[i]))
+ 	for i in hs.size(): hs[i] /= scale
+ 	var certificate := _certificate(hs, bs, y, limits, groups, KKT_RELATIVE_TOLERANCE * b_norm)
+-	if not certificate.ok and not resolution.get("ok", false): return _failure("publication KKT verification failed", "nonconverged", iterations)
+ 	var grouped: Array[PackedFloat64Array] = []
+ 	for group: PackedInt32Array in groups:
+ 		var values := PackedFloat64Array()
+ 		for i: int in group: values.append(impulse[i])
+ 		grouped.append(values)
+-	var result := {ok = true, status = "converged", law = LAW, converged = true, iterations = iterations,
++	var result := {ok = true, status = "candidate_not_certified", law = LAW, converged = false, iterations = iterations,
+ 		method = method, impulse = impulse, group_impulses = grouped, normalized_impulse = y.duplicate(),
+ 		post_slip = post, linear_work = linear, mobility_work = quadratic, objective = objective,
+ 		dissipation = -objective, objective_scale = scale,
+@@ -530,11 +612,7 @@
+ 		symmetry_residual = validated.symmetry_error, diagonal_regularization = 0.0,
+ 		feasibility_roundoff_correction = correction,
+ 		work_frame = "relative_to_prescribed_support_not_universal_closed_body_energy"}
+-	if not resolution.is_empty():
+-		result.status = "converged_at_assembly_resolution"
+-		result.certificate_kind = resolution.law
+-		result.strict_kkt_passed = certificate.ok
+-		result.assembly_resolution = resolution.duplicate(true)
++	result.raw_certificate=certificate.duplicate(true)
+ 	return result
+ 
+ 
+--- a/app/tests/test_contact_assembly_strategy.gd
++++ b/app/tests/test_contact_assembly_strategy.gd
+@@ -0,0 +1,47 @@
++extends SceneTree
++const I:=preload("res://physics/aircraft_ground_impulse.gd")
++const R:=preload("res://physics/contact_assembly_resolution.gd")
++var checks:=0
++var failures:=0
++func check(label:String,value:bool,detail:Variant="")->void:
++	checks+=1
++	if not value:
++		failures+=1
++		printerr("FAIL ",label," ",detail)
++func _initialize()->void:
++
++	var golden_path:="res://tests/fixtures/ground_contact_default_outputs.bin"
++	check("frozen result bytes retain exact identity",FileAccess.get_sha256(golden_path)=="85df6ec77ea772eb55a5d1b9942e4d828ea78fae25fd833b93d6a6af1ece5133")
++	var golden_file:=FileAccess.open(golden_path,FileAccess.READ)
++	var golden:Dictionary=bytes_to_var(golden_file.get_buffer(golden_file.get_length())).cases
++	golden_file.close()
++	var paths:PackedStringArray=["res://tests/fixtures/ground_contact_rest_nonzero.bin",
++		"res://tests/fixtures/ground_contact_rest_proposal.bin","res://tests/fixtures/ground_contact_rest_range.bin",
++		"res://tests/fixtures/ground_contact_rest_slip.bin","res://tests/fixtures/ground_contact_rest_work.bin"]
++	for path in paths:
++		var file:=FileAccess.open(path,FileAccess.READ)
++		var d:Dictionary=bytes_to_var(file.get_buffer(file.get_length()))
++		file.close()
++		var frozen:=var_to_bytes(d)
++		var old:Dictionary=golden[path.get_file()].candidate
++		var actual:=I.apply(d.stage,d.mass_kg,d.velocity_cm_body,d.jacobian,d.prescribed_slip_bias,d.limits,d.groups,1024,{},3.125e-13)
++		check("retained case accepts before/after local reuse "+path,old.ok and actual.ok,actual)
++		check("all public mathematical/state/certificate bytes equal "+path,var_to_bytes(old)==var_to_bytes(actual))
++		check("complete strict-default bytes equal "+path,var_to_bytes(golden[path.get_file()].strict)
++			==var_to_bytes(I.apply(d.stage,d.mass_kg,d.velocity_cm_body,d.jacobian,d.prescribed_slip_bias,d.limits,d.groups)))
++		check("captured inputs remain detached "+path,var_to_bytes(d)==frozen)
++		check("fixture byte identity "+path,FileAccess.get_sha256(path)==golden[path.get_file()].input_sha256)
++		if actual.ok:check("total proposal sweeps honor caller budget "+path,actual.qp.get("iterations",0)<=1024)
++		if path==paths[-1]:
++			var memo:Dictionary={}
++			var first:=R._memo_bounds(memo,d.mobility,d.free_slip,d.full_mass,d.jacobian,d.z,d.prescribed_slip_bias,d.flat_responses)
++			var second:=R._memo_bounds(memo,d.mobility,d.free_slip,d.full_mass,d.jacobian,d.z,d.prescribed_slip_bias,d.flat_responses)
++			check("same exact local operands reuse one verified build",first.ok and var_to_bytes(first)==var_to_bytes(second) and memo.builds==1)
++			var changed:PackedFloat64Array=d.jacobian.duplicate()
++			changed[0]+=1e-6
++			var third:=R._memo_bounds(memo,d.mobility,d.free_slip,d.full_mass,changed,d.z,d.prescribed_slip_bias,d.flat_responses)
++			check("changed operands never reuse old witness",memo.builds==2 and not third.ok)
++			check("memo retains one operand set only",memo.size()==3)
++			if actual.ok:print("REUSE_WORK ",actual.qp.numerical_work)
++	print("Contact assembly strategy: %d checks, %d failed"%[checks,failures])
++	quit(1 if failures else 0)
+--- a/app/tests/test_contact_slip_consistency.gd
++++ b/app/tests/test_contact_slip_consistency.gd
+@@ -0,0 +1,84 @@
++extends SceneTree
++const I:=preload("res://physics/aircraft_ground_impulse.gd")
++const R:=preload("res://physics/contact_assembly_resolution.gd")
++var checks:=0
++var failures:=0
++func check(label:String,value:bool,detail:Variant="")->void:
++	checks+=1
++	if not value:
++		failures+=1
++		printerr("FAIL ",label," ",detail)
++func _initialize()->void:
++
++	var golden_path:="res://tests/fixtures/ground_contact_default_outputs.bin"
++	check("frozen result bytes retain exact identity",FileAccess.get_sha256(golden_path)=="85df6ec77ea772eb55a5d1b9942e4d828ea78fae25fd833b93d6a6af1ece5133")
++	var golden_file:=FileAccess.open(golden_path,FileAccess.READ)
++	var golden:Dictionary=bytes_to_var(golden_file.get_buffer(golden_file.get_length())).cases
++	golden_file.close()
++	var file:=FileAccess.open("res://tests/fixtures/ground_contact_rest_slip.bin",FileAccess.READ)
++	var raw:Dictionary=bytes_to_var(file.get_buffer(file.get_length()))
++	file.close()
++	check("frozen input byte identity",FileAccess.get_sha256("res://tests/fixtures/ground_contact_rest_slip.bin")==golden["ground_contact_rest_slip.bin"].input_sha256)
++	var frozen:=var_to_bytes(raw)
++	var old:Dictionary=golden["ground_contact_rest_slip.bin"].legacy_optin
++	check("retained actual tick26 failure remains reproducible",not old.ok)
++	var actual:=I.apply(raw.stage,raw.mass_kg,raw.velocity_cm_body,raw.jacobian,raw.prescribed_slip_bias,
++		raw.limits,raw.groups,1024,{},raw.maximum_assembly_resolution_j)
++	check("actual tick26 slip difference has a verified operand bound",actual.ok,actual)
++	if actual.ok:
++		check("same impulse and generalized impulse bytes, no new force or clamp",var_to_bytes(actual.impulse)==var_to_bytes(raw.qp.impulse)
++			and var_to_bytes(actual.generalized_impulse)==var_to_bytes(raw.generalized_impulse))
++		var delta:PackedFloat64Array=actual.delta_velocity_cm_body.duplicate()
++		delta.append_array(actual.delta_omega)
++		delta.append_array(actual.delta_spin)
++		check("same actual mass-response delta bytes",var_to_bytes(delta)==var_to_bytes(raw.delta))
++		check("old measured slip failure stays visible",actual.slip_relative_residual>1e-10
++			and actual.slip_roundoff.legacy_relative_residual==actual.slip_relative_residual)
++		check("work and mass acceptance remain unchanged",actual.mass_solve_relative_residual<=1e-10
++			and absf(actual.energy_balance_residual)<=1e-10*raw.work_scale and actual.dissipated_energy>0.0)
++		check("row2 discrepancy is below independently derived absolute bound",actual.slip_roundoff.row_absolute_differences[2]
++			<=actual.slip_roundoff.row_absolute_bounds[2])
++		check("combined numerical uncertainty fits same per-QP owner ceiling",actual.slip_roundoff.combined_contact_uncertainty_j
++			<=raw.maximum_assembly_resolution_j)
++		var too_tight:float=actual.slip_roundoff.qp_objective_uncertainty_j+.5*actual.slip_roundoff.work_equivalent_bound_j
++		check("separate individually fitting proofs cannot overspend combined ceiling",not I.apply(raw.stage,raw.mass_kg,
++			raw.velocity_cm_body,raw.jacobian,raw.prescribed_slip_bias,raw.limits,raw.groups,1024,{},too_tight).ok)
++		print("SLIP_PROOF ",JSON.stringify(actual.slip_roundoff,"",true,true))
++	check("default absent opt-in keeps strict refusal",not I.apply(raw.stage,raw.mass_kg,raw.velocity_cm_body,raw.jacobian,
++		raw.prescribed_slip_bias,raw.limits,raw.groups).ok)
++	check("all actual captured input bytes remain detached",frozen==var_to_bytes(raw))
++	var w:int=raw.z.size()
++	var mass:=PackedFloat64Array()
++	mass.resize(w*w)
++	for i in 3:mass[i*w+i]=raw.mass_kg
++	for i in w-3:
++		for j in w-3:mass[(3+i)*w+3+j]=raw.stage.matrix[i*(w-3)+j]
++	var responses:=PackedFloat64Array()
++	for row:PackedFloat64Array in raw.responses:responses.append_array(row)
++	var bad:PackedFloat64Array=raw.delta.duplicate()
++	bad[0]+=1e-6
++	check("meaningful incorrect mass response cannot be explained as roundoff",not R.slip_consistency(raw.mobility,raw.free_slip,
++		mass,raw.jacobian,raw.z,raw.prescribed_slip_bias,responses,raw.qp.impulse,raw.generalized_impulse,bad,raw.qp.post_slip).ok)
++	bad=raw.qp.post_slip.duplicate()
++	bad[2]+=1e-6
++	check("incorrect algebraic post slip cannot inflate its own tolerance",not R.slip_consistency(raw.mobility,raw.free_slip,
++		mass,raw.jacobian,raw.z,raw.prescribed_slip_bias,responses,raw.qp.impulse,raw.generalized_impulse,raw.delta,bad).ok)
++	bad=raw.generalized_impulse.duplicate()
++	bad[0]+=1e-6
++	check("forged generalized impulse refuses exact dot binding",not R.slip_consistency(raw.mobility,raw.free_slip,
++		mass,raw.jacobian,raw.z,raw.prescribed_slip_bias,responses,raw.qp.impulse,bad,raw.delta,raw.qp.post_slip).ok)
++	bad=raw.delta.duplicate()
++	bad[0]=INF
++	check("nonfinite response refuses before bound arithmetic",not R.slip_consistency(raw.mobility,raw.free_slip,
++		mass,raw.jacobian,raw.z,raw.prescribed_slip_bias,responses,raw.qp.impulse,raw.generalized_impulse,bad,raw.qp.post_slip).ok)
++	var original:Dictionary=golden["ground_contact_rest_slip.bin"].strict
++	var ordinary:=I.apply(raw.stage,raw.mass_kg,raw.velocity_cm_body,raw.jacobian,raw.prescribed_slip_bias,raw.limits,raw.groups)
++	check("default strict caller complete failure bytes unchanged",var_to_bytes(original)==var_to_bytes(ordinary))
++	var shaft:=I.internal_brake(0,raw.stage.axial.size())
++	var one:Array=[PackedInt32Array([0])]
++	original=golden["ground_contact_rest_slip.bin"].ordinary
++	ordinary=I.apply(raw.stage,raw.mass_kg,raw.velocity_cm_body,shaft.row,PackedFloat64Array([0]),PackedFloat64Array([.001]),one)
++	check("default strict caller complete successful output bytes unchanged",original.ok and ordinary.ok
++		and var_to_bytes(original)==var_to_bytes(ordinary))
++	print("Contact slip consistency: %d checks, %d failed"%[checks,failures])
++	quit(1 if failures else 0)
+--- a/app/tests/test_contact_work_consistency.gd
++++ b/app/tests/test_contact_work_consistency.gd
+@@ -0,0 +1,84 @@
++extends SceneTree
++const R:=preload("res://physics/contact_assembly_resolution.gd")
++const I:=preload("res://physics/aircraft_ground_impulse.gd")
++var checks:=0
++var failures:=0
++func check(label:String,value:bool,detail:Variant="")->void:
++	checks+=1
++	if not value:
++		failures+=1
++		printerr("FAIL ",label," ",detail)
++func _initialize()->void:
++
++	var golden_path:="res://tests/fixtures/ground_contact_default_outputs.bin"
++	check("frozen result bytes retain exact identity",FileAccess.get_sha256(golden_path)=="85df6ec77ea772eb55a5d1b9942e4d828ea78fae25fd833b93d6a6af1ece5133")
++	var golden_file:=FileAccess.open(golden_path,FileAccess.READ)
++	var golden:Dictionary=bytes_to_var(golden_file.get_buffer(golden_file.get_length())).cases
++	golden_file.close()
++	var file:=FileAccess.open("res://tests/fixtures/ground_contact_rest_work.bin",FileAccess.READ)
++	var d:Dictionary=bytes_to_var(file.get_buffer(file.get_length()))
++	file.close()
++	check("frozen input byte identity",FileAccess.get_sha256("res://tests/fixtures/ground_contact_rest_work.bin")==golden["ground_contact_rest_work.bin"].input_sha256)
++	var frozen:=var_to_bytes(d)
++	var p:=R.work_consistency(d.mobility,d.free_slip,d.full_mass,d.jacobian,d.z,d.prescribed_slip_bias,
++		d.flat_responses,d.qp.impulse,d.generalized_impulse,d.delta,d.qp.post_slip,d.stage.affine_momentum,
++		d.qp.objective,d.incremental_change,d.closure)
++	check("retained tick262 raw work target fails",absf(d.closure)>1e-10*d.work_scale)
++	check("actual operands explain closure and independently certify actual-state passivity",p.get("ok",false),p)
++	check("reported operands remain detached",var_to_bytes(d)==frozen)
++	if p.get("ok",false):
++		check("raw actual work difference stays visible",p.raw_closure_j==d.closure and p.closure_absolute_bound_j>=absf(d.closure))
++		check("actual updated-state physical work is provably negative",p.actual_relative_work_upper_j<0.0)
++		check("arithmetic budget remains much smaller than owner ceiling",p.work_equivalent_bound_j+d.qp.assembly_resolution.assembly_objective_resolution_j<d.maximum_assembly_resolution_j)
++		print("WORK_PROOF ",JSON.stringify(p,"",true,true))
++	check("fabricated reported closure refuses exact arithmetic binding",not R.work_consistency(d.mobility,d.free_slip,d.full_mass,d.jacobian,d.z,d.prescribed_slip_bias,
++		d.flat_responses,d.qp.impulse,d.generalized_impulse,d.delta,d.qp.post_slip,d.stage.affine_momentum,d.qp.objective,d.incremental_change,d.closure+1e-12).ok)
++	check("fabricated QP objective refuses exact arithmetic binding",not R.work_consistency(d.mobility,d.free_slip,d.full_mass,d.jacobian,d.z,d.prescribed_slip_bias,
++		d.flat_responses,d.qp.impulse,d.generalized_impulse,d.delta,d.qp.post_slip,d.stage.affine_momentum,d.qp.objective-1e-12,d.incremental_change,d.closure).ok)
++	var bad:PackedFloat64Array=d.delta.duplicate()
++	bad[0]+=1e-6
++	check("nonphysical common-mass response cannot masquerade as arithmetic work",not R.work_consistency(d.mobility,d.free_slip,d.full_mass,d.jacobian,d.z,d.prescribed_slip_bias,
++		d.flat_responses,d.qp.impulse,d.generalized_impulse,bad,d.qp.post_slip,d.stage.affine_momentum,d.qp.objective,d.incremental_change,d.closure).ok)
++	var eta:float=R.M.MIN_NORMAL_FLOAT64*R.EPS
++	var pairs:Array=[PackedFloat64Array([1.0,R.EPS/2.0,1.0,R.EPS/2.0]),PackedFloat64Array([1.0,-1.0+R.EPS,R.EPS,0.0]),
++		PackedFloat64Array([1.0,eta,1.0,eta]),PackedFloat64Array([R.M.MIN_NORMAL_FLOAT64,eta,R.M.MIN_NORMAL_FLOAT64+eta,0.0]),
++		PackedFloat64Array([-1.0,-R.EPS/2.0,-1.0,-R.EPS/2.0]),PackedFloat64Array([R.M.MIN_NORMAL_FLOAT64,-R.M.MIN_NORMAL_FLOAT64,0.0,0.0])]
++	for i in pairs.size():
++		var pair:PackedFloat64Array=pairs[i]
++		var sum:=R.two_sum(pair[0],pair[1])
++		check("TwoSum exact independent expected high/low "+str(i),sum.size()==2 and sum[0]==pair[2] and sum[1]==pair[3],sum)
++	check("TwoSum unsupported overflow/nonfinite refuses",R.two_sum(1.7976931348623157e308,1.7976931348623157e308).is_empty() and R.two_sum(INF,1.0).is_empty())
++	var applied:=I.apply(d.stage,d.mass_kg,d.velocity_cm_body,d.jacobian,d.prescribed_slip_bias,d.limits,d.groups,1024,{},d.maximum_assembly_resolution_j)
++	check("actual captured work refusal now has explicit arithmetic proof",applied.ok,applied)
++	if applied.ok:
++		var actual_delta:PackedFloat64Array=applied.delta_velocity_cm_body.duplicate()
++		actual_delta.append_array(applied.delta_omega)
++		actual_delta.append_array(applied.delta_spin)
++		check("same published physical impulse/generalized impulse/delta bytes",var_to_bytes(applied.impulse)==var_to_bytes(d.qp.impulse)
++			and var_to_bytes(applied.generalized_impulse)==var_to_bytes(d.generalized_impulse) and var_to_bytes(actual_delta)==var_to_bytes(d.delta))
++		check("raw old work refusal remains visible",applied.energy_balance_residual==d.closure and applied.work_roundoff.legacy_work_target_j<absf(d.closure))
++		var tight:float=d.qp.assembly_resolution.assembly_objective_resolution_j+.5*applied.work_roundoff.work_equivalent_bound_j
++		check("combined QP and actual-state work allowance cannot double spend",not I.apply(d.stage,d.mass_kg,d.velocity_cm_body,d.jacobian,d.prescribed_slip_bias,d.limits,d.groups,1024,{},tight).ok)
++	check("strict-default complete refusal bytes remain unchanged",var_to_bytes(I.apply(d.stage,d.mass_kg,d.velocity_cm_body,d.jacobian,d.prescribed_slip_bias,d.limits,d.groups))
++		==var_to_bytes(golden["ground_contact_rest_work.bin"].strict))
++	# Independent SPD construction: a tiny first-coordinate correction has a
++	# free second-coordinate response below one ulp of its unit velocity. The
++	# ORIGINAL ideal QP is passive, but rounding the actual state creates genuine
++	# positive common-mass work. Arithmetic consistency alone must not accept it.
++	var mass:=PackedFloat64Array([1.0,.1,0.0,.1,1.0,0.0,0.0,0.0,1.0])
++	var factor:=R.GC.cholesky_factor(mass,3)
++	var j:=PackedFloat64Array([1.0,0.0,0.0])
++	var response:=R.GC.solve_cholesky(factor.lower,j,3)
++	var z:=PackedFloat64Array([-1e-20,1.0,0.0])
++	var impulse:=PackedFloat64Array([1e-20/response[0]])
++	var g:=PackedFloat64Array([impulse[0],0.0,0.0])
++	var delta:=R.GC.solve_cholesky(factor.lower,g,3)
++	var a:=PackedFloat64Array([response[0]])
++	var v:=PackedFloat64Array([z[0]])
++	var post:=PackedFloat64Array([a[0]*impulse[0]+v[0]])
++	var objective:float=v[0]*impulse[0]+.5*impulse[0]*(a[0]*impulse[0])
++	var incremental:float=R.GC.dot(z,g,3)+.5*R.GC.dot(g,delta,3)
++	var proof:=R.work_consistency(a,v,mass,j,z,PackedFloat64Array([0.0]),response,impulse,g,delta,post,PackedFloat64Array(),objective,incremental,incremental-objective)
++	check("passive ideal QP cannot hide positive published-state common-mass work",not proof.ok and proof.get("actual_relative_work_j",0.0)>0.0,proof)
++	print("Contact work consistency: %d checks, %d failed"%[checks,failures])
++	quit(1 if failures else 0)

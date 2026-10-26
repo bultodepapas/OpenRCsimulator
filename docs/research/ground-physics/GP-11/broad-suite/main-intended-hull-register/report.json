@@ -1,0 +1,35 @@
+{
+  "format": "openrc-main-intended-hull-register-check v1",
+  "utc": "2026-10-26T15:29:22.575628+00:00",
+  "existing_rows_preserved": 235,
+  "rows_after": 240,
+  "added_paths": [
+    "`intended_hull_support.control_envelope.max_angular_speed`",
+    "`intended_hull_support.control_envelope.pitch_tolerance`",
+    "`intended_hull_support.control_envelope.roll_tolerance`",
+    "`intended_hull_support.rest_pose.pitch`",
+    "`intended_hull_support.rest_pose.roll`"
+  ],
+  "unknown_future_quantity_rejected": true,
+  "consumer_semantics": "Authored accepted-hull pose/control observations only; max angular speed affects controlled fact separately from intended/stop support. No force, damage, dwell or structural-capacity law changes.",
+  "consumer_sources": [
+    "app/physics/intended_hull_support.gd prepare/_compile/evaluate",
+    "app/physics/aircraft_data.gd validate_and_derive/_validate_with_domain",
+    "app/sim/flight_session.gd hull_support_observation"
+  ],
+  "sources": [
+    {
+      "path": "research/aircraft-standardization/parameter_register.py",
+      "sha256": "c3434bd060f3b17d84c574c8670497002d18ec4c818b9cdcea6e999ec855192e",
+      "bytes": 16430
+    },
+    {
+      "path": "docs/research/aircraft-standardization/AS-01/parameters.md",
+      "sha256": "d6f499b50de82c04c1db8831ce6fc4ef602de82b125c2f64c0ee87149515399f",
+      "bytes": 45984
+    }
+  ],
+  "scope": "Current main register/doc only; NOT overlaid into frozen GP10/11 suite.",
+  "final_check_exit_code": 0,
+  "final_checked_utc": "2026-10-26T15:54:56.862477+00:00"
+}

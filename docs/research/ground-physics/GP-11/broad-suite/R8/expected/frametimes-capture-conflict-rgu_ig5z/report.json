@@ -1,0 +1,53 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6a4f58d8-b741-49aa-a272-b08835f0d54a",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--",
+    "--frametimes=nul",
+    "--capture"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T15:43:17.017249+00:00",
+  "label": "frametimes-capture-conflict",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R8\\expected\\frametimes-capture-conflict-rgu_ig5z\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R8\\expected\\frametimes-capture-conflict-rgu_ig5z\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "--frametimes cannot be combined with --trace or --capture"
+  ],
+  "process_exit": 31,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "--frametimes cannot be combined with --trace or --capture",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1024)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _prepare_flight (res://main.gd:502)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 31,
+  "ok": false,
+  "elapsed_seconds": 7.406,
+  "log_bytes": 425,
+  "log_sha256": "1229be585a3225e78ccd5d8a885a6e9477053cf9285a9470dcc11e21d4a6a814"
+}

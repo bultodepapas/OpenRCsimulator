@@ -1,0 +1,21 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ERROR: player widget settings: legacy defaults retain their exact shape
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_player_widget_settings.gd:175)
+       [1] _run (res://tests/test_player_widget_settings.gd:19)
+       [2] _initialize (res://tests/test_player_widget_settings.gd:12)
+ERROR: player widget settings: widget IDs append to the existing overlay IDs
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_player_widget_settings.gd:175)
+       [1] _run (res://tests/test_player_widget_settings.gd:23)
+       [2] _initialize (res://tests/test_player_widget_settings.gd:12)
+ERROR: player widget settings: training preset validates to warnings and exactly three training widgets
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_player_widget_settings.gd:175)
+       [1] _run (res://tests/test_player_widget_settings.gd:53)
+       [2] _initialize (res://tests/test_player_widget_settings.gd:12)
+player widget settings checks=27 failures=3

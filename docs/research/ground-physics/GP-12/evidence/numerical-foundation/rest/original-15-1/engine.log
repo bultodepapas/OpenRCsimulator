@@ -1,0 +1,15 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+COMPOSITION_REST_PROGRESS t=1.0 drift_J=0.0000000001335 resolution_count=6891.0
+COMPOSITION_REST_PROGRESS t=2.0 drift_J=0.00000000026674 resolution_count=14328.0
+COMPOSITION_REST_PROGRESS t=3.0 drift_J=0.00000000040077 resolution_count=21574.0
+COMPOSITION_REST_PROGRESS t=4.0 drift_J=0.00000000053592 resolution_count=28715.0
+COMPOSITION_REST_PROGRESS t=5.0 drift_J=0.00000000067749 resolution_count=36307.0
+COMPOSITION_REST_PROGRESS t=6.0 drift_J=0.00000000081226 resolution_count=43880.0
+COMPOSITION_REST_PROGRESS t=7.0 drift_J=0.00000000094602 resolution_count=51526.0
+COMPOSITION_REST_PROGRESS t=8.0 drift_J=0.00000000106911 resolution_count=59104.0
+COMPOSITION_REST_PROGRESS t=9.0 drift_J=0.00000000119951 resolution_count=66740.0
+COMPOSITION_REST_PROGRESS t=10.0 drift_J=0.00000000133096 resolution_count=74411.0
+FAIL six-second physical rest balances force and moment { &"speed_mps": 0.00000000003744, &"rate_radps": 0.00000000016274, &"force_residual_n": 0.00000098193007, &"moment_residual_nm": 0.01075622830968 }
+COMPOSITION_REST {"assembly_count":74411.0,"contact_numerical_certificate_sum_j":4.564368847315449e-12,"max_drift_j":1.3309602309163893e-09,"max_positive_tick_j":1.7621459846850485e-12,"rest_at6s":{"force_residual_n":9.819300714752899e-07,"moment_residual_nm":0.010756228309678342,"rate_radps":1.627430588924645e-10,"speed_mps":3.743968666301344e-11},"tick":2400}
+Aircraft ground composition: 15 checks, 1 failed

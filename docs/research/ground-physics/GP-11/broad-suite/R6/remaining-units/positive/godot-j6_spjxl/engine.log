@@ -1,0 +1,41 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok    55AX 12x7 installation loads  []
+ok    55AX 12x7 preparation succeeds
+ok    55AX 12x7 evaluator is typed
+ok    55AX 12x7 public/prepared results match the frozen pre-optimization evaluator exactly (72 samples)
+ok    55AX 12x7 evaluator is detached from later installation mutation
+ok    55AX 13x6 installation loads  []
+ok    55AX 13x6 preparation succeeds
+ok    55AX 13x6 evaluator is typed
+ok    55AX 13x6 public/prepared results match the frozen pre-optimization evaluator exactly (72 samples)
+ok    55AX 13x6 evaluator is detached from later installation mutation
+ok    FS64V 14x6 installation loads  []
+ok    FS64V 14x6 preparation succeeds
+ok    FS64V 14x6 evaluator is typed
+ok    FS64V 14x6 public/prepared results match the frozen pre-optimization evaluator exactly (72 samples)
+ok    FS64V 14x6 evaluator is detached from later installation mutation
+ok    FS64V 13x6 installation loads  []
+ok    FS64V 13x6 preparation succeeds
+ok    FS64V 13x6 evaluator is typed
+ok    FS64V 13x6 public/prepared results match the frozen pre-optimization evaluator exactly (72 samples)
+ok    FS64V 13x6 evaluator is detached from later installation mutation
+ok    malformed parameter set 0 cannot prepare
+ok    malformed parameter set 0 remains rejected by public path
+ok    malformed parameter set 1 cannot prepare
+ok    malformed parameter set 1 remains rejected by public path
+ok    malformed parameter set 2 cannot prepare
+ok    malformed parameter set 2 remains rejected by public path
+ok    malformed parameter set 3 cannot prepare
+ok    malformed parameter set 3 remains rejected by public path
+ok    invalid dynamic query 0 rejected on both routes
+ok    invalid dynamic query 1 rejected on both routes
+ok    invalid dynamic query 2 rejected on both routes
+ok    invalid dynamic query 3 rejected on both routes
+ok    invalid dynamic query 4 rejected on both routes
+ok    finite angular/section overflow 100000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.0 preserves refusal
+ok    finite angular/section overflow 100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.0 preserves refusal
+ok    finite force overflow preserves refusal and reason
+ok    arbitrary dictionary cannot bypass public validation
+ok    direct construction from malformed parameters cannot bypass validation
+glow propeller prepared: 38 checks, 0 failed

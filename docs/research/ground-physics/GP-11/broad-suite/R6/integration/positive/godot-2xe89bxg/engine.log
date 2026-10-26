@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+clearance: min gap 1.75 mm at manual throws { &"aileron": 17.6006649098975, &"elevator": 23.92194317248, &"rudder": 30.0260709855021 }; rudder limited to 43.0 deg by the elevator relief
+extra preview: 32 meshes, 19502 triangles, extent 1.624 x 0.552 x 1.386 m
+verify_extra: 123 checks, 0 failures

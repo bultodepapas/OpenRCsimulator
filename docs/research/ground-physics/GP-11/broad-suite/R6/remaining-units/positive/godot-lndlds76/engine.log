@@ -1,0 +1,52 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   default filters show all aircraft and this session
+ok   unavailable storage is distinct from zero
+ok   an empty session window with lifetime history says no records are in this view
+ok   authoritative no-history flag wins over an old tracking timestamp
+ok   legacy tracking timestamp still indicates existing lifetime history
+ok   tracking-begins copy appears only before lifetime history exists
+ok   configured imperial statistics speed uses mph
+ok   configured SI statistics speed keeps m/s
+ok   touchdown success shows the resolved-contact denominator
+ok   clean stops are shown separately from touchdown success
+ok   summary cards show airborne time, completions and landings
+ok   expanded details show separate TAS and groundspeed
+ok   history is bounded to 50 rows per page
+ok   real service timestamps are preferred in the history row
+ok   history renders bounded metadata events and UTC endpoints instead of fixture timeline
+ok   actual start_kind derives takeoffs when no legacy count exists
+ok   airborne-start history records do not count as takeoffs
+ok   next history page retains the filter and shows the remaining rows
+ok   crash history records show ground context without fake flight metrics
+ok   restart history records show the stored cause without a flight duration
+ok   history expansion exposes record details
+ok   aircraft filter queries the selected stable ID
+ok   period filter can select the counter-reset window
+ok   Back returns through the ScreenStack signal
+ok   destructive management starts with Cancel focused
+ok   cancelling a counter reset does not mutate the service
+ok   changed revisions block the old confirmation
+ok   a current preview can reset only the selected counter scope
+ok   aircraft counter reset remains aircraft-scoped
+ok   pilot counter reset advances the combined account window
+ok   history deletion preview pins its store revision and exact count
+ok   history deletion requires confirmation and names its aircraft
+ok   pilot deletion preview counts coverage gaps that the purge removes
+ok   management controls disable when the service is read-only
+ok   session statistics switch is in the existing training section
+ok   overlay scope preference validates and persists
+ok   HUD summary prefers the service summary and keeps all three counters visible
+ok   HUD falls back to query for older service fixtures
+ok   compact HUD retains session time and all three counters
+ok   200% text stacks filters and summary cards without hiding them
+ok   Spanish localizes the screen and all-aircraft filter
+ok   Escape routes back from the Spanish keyboard screen
+ok   Spanish counter confirmation retains a Cancel-first action
+ok   history labels failed stop as an uncontrolled stop
+ok   failed stops count as ended flights in fallback history
+ok   flight crash history localizes the recorded ground/flight context
+ok   history sorts real records newest-first but preserves sequence-free fixture order
+ok   CanvasLayer statistics screen is accepted by ScreenStack
+ok   Back pops the statistics layer and restores opener focus
+49 checks, 0 failed

@@ -1,0 +1,55 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   the disc sits at the thrust hub (body FRD)
+ok   level: the lowest blade tip is one radius below the hub  -0.9
+ok   nose straight down: the whole rim is at hub depth  -0.6
+ok   a turbine has no propeller disc
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   jensen-das-ugly-stik-60 runway start solves
+ok   jensen-das-ugly-stik-60 propeller clears the runway at rest  0.066 m
+ok   jensen-das-ugly-stik-60 full-throttle takeoff run does not strike the propeller  strike -, crash -
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-61fx-2t runway start solves
+ok   stik-glow-61fx-2t propeller clears the runway at rest  0.062 m
+ok   stik-glow-61fx-2t runway starter succeeds
+ok   stik-glow-61fx-2t full-throttle takeoff run does not strike the propeller  strike -, crash -
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-55ax-2t runway start solves
+ok   stik-glow-55ax-2t propeller clears the runway at rest  0.064 m
+ok   stik-glow-55ax-2t runway starter succeeds
+ok   stik-glow-55ax-2t full-throttle takeoff run does not strike the propeller  strike -, crash -
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-fs64v-4t runway start solves
+ok   stik-glow-fs64v-4t propeller clears the runway at rest  0.044 m
+ok   stik-glow-fs64v-4t runway starter succeeds
+ok   stik-glow-fs64v-4t full-throttle takeoff run does not strike the propeller  strike -, crash -
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   gp-extra-300s-60 runway start solves
+ok   gp-extra-300s-60 propeller clears the runway at rest  0.146 m
+ok   gp-extra-300s-60 runway starter succeeds
+ok   gp-extra-300s-60 full-throttle takeoff run does not strike the propeller  strike -, crash -
+ok   p51d-mustang-120 runway start solves
+ok   p51d-mustang-120 propeller clears the runway at rest  0.294 m
+ok   p51d-mustang-120 full-throttle takeoff run does not strike the propeller  strike -, crash -
+ok   f4u-corsair-250 runway start solves
+ok   f4u-corsair-250 propeller clears the runway at rest  0.261 m
+ok   f4u-corsair-250 full-throttle takeoff run does not strike the propeller  strike -, crash -
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx runway start solves
+ok   sebart-avanti-s-a200-p100rx propeller clears the runway at rest  inf m
+ok   sebart-avanti-s-a200-p100rx full-throttle takeoff run does not strike the propeller  strike -, crash -
+ok   turbo-lumber-evolution runway start solves
+ok   turbo-lumber-evolution propeller clears the runway at rest  0.137 m
+ok   turbo-lumber-evolution full-throttle takeoff run does not strike the propeller  strike -, crash -
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+PROP STRIKE at 9255 rpm, 2.1 m/s: engine stopped
+ok   a nose-over at full power strikes the propeller  tick 89
+ok   the strike records its rpm and place
+ok   the strike stops the engine  rpm 0
+ok   a prop strike alone is not a crash
+PROP STRIKE at 9255 rpm, 2.1 m/s: engine stopped
+ok   a prop strike repeats exactly
+CRASH at 2.7 m/s (sink -0.3 m/s, airframe contact (hull point 1), point speed 3.5 m/s at detected tick) - restarting
+ok   the legacy route never registers a prop strike
+41 checks, 0 failed

@@ -1,0 +1,25 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   the club field's collision world builds
+ok   a boom through a building stops short of it
+ok   a boom through a tree_trunk stops short of it
+ok   a boom through a tree_foliage stops short of it
+ok   a boom through a runway threshold stake: in its path (control) but too small to count
+ok   a boom in clear air is free
+ok   no world: always free
+ok   guard: clear boom keeps its length
+ok   guard: an obstacle pulls in at once
+ok   guard: waits 0.3 s of clear way before lengthening
+ok   guard: then eases back out (most of the way within 1 s, all of it within 4 s)
+ok   guard: a post swept past costs one pull-in, then a steady recovery
+ok   chase fixture: the aircraft is outside the building
+ok   chase without a world (control): the full boom puts the camera inside
+ok   chase: the camera comes in front of the building instead of inside it, aircraft near the centre
+ok   chase: once clear, the boom returns to its full length
+ok   orbit fixture (control): without a world the camera is inside the building
+ok   orbit: turned into a building, the camera stays in front of it
+ok   fly-by fixture (control): without a world the spot is behind the building
+ok   fly-by: the spot sees the aim point past every proxy, outside the building
+ok   clearance query within the plan's 30 µs budget near buildings (VM)
+ok   clearance query within 30 µs over the pilot area, the densest part of the field (VM)
+all 22 camera collision checks passed

@@ -1,0 +1,473 @@
+{
+  "format": "openrc-ground-numerical-foundation-review-v1",
+  "captured_utc": "2026-10-26T16:25:07.709119+00:00",
+  "status": "review_only_no_production_promotion",
+  "original_full_rest": {
+    "receipt": {
+      "path": "tmp/gp12-local-reuse/rest-checks/full-rest-general-work-local-witness-3th8qya1/report.json",
+      "sha256": "6ef3af57ba73689598301a269b2217ecd3d97bd51894354038b14e7cbda69cce",
+      "bytes": 1372
+    },
+    "complete": true,
+    "ok": false,
+    "checks": 15,
+    "failed": 1,
+    "accepted_ticks": 2400,
+    "duration_s": 10,
+    "runtime_refusals": 0,
+    "elapsed_seconds": 1741.875,
+    "failed_observable": "normal-only moment omits tangent/rolling reactions; original receipt is retained unchanged"
+  },
+  "corrected_observable": {
+    "qualification": "postprocess complete frozen tape with independent accepted-state full-reaction audit; no unchanged integration rerun",
+    "physical_force_scale": "1e-6*m*g",
+    "physical_moment_scale": "1e-6*m*g*0.9m",
+    "original_passing_checks": 14,
+    "replacement_total_reaction_gate_passed": true,
+    "derived_corrected_fixture_checks": 15,
+    "derived_corrected_fixture_failed": 0,
+    "not_an_original_runner_receipt": true,
+    "six_second": {
+      "accepted_substeps": 16,
+      "actual_angular_momentum_change": [
+        -1.5045964474325046e-10,
+        5.995204332975845e-15,
+        2.4668329878796413e-09
+      ],
+      "actual_linear_momentum_change": [
+        -7.866155978830367e-16,
+        -8.488210187287708e-11,
+        -2.0932758004427744e-12
+      ],
+      "actual_work_audit_count": 32,
+      "angular_momentum_closure": 6.933081871471868e-16,
+      "dt": 0.004166666666666667,
+      "energy_residual_j": 5.710701448748342e-14,
+      "integrated_external_angular_impulse": [
+        -1.5045895150265717e-10,
+        6.00001548011625e-15,
+        2.4668329794787462e-09
+      ],
+      "integrated_external_linear_impulse": [
+        -7.866156101933494e-16,
+        -8.488210187287674e-11,
+        -2.0934957471278418e-12
+      ],
+      "internal_shaft_source_nm": 0.0,
+      "linear_momentum_closure": 2.1994668506737908e-16,
+      "maximum_actual_work_point_j": 0.0,
+      "maximum_actual_work_upper_j": 0.0,
+      "normal_force_average_ned": [
+        -8.333979007816086e-21,
+        4.458612418371236e-25,
+        -210.87963321494877
+      ],
+      "normal_moment_average_ned": [
+        -5.3353238990136395e-08,
+        -0.010753983831882695,
+        -1.424095878778662e-22
+      ],
+      "numerical_allowance": {
+        "accepted_at_resolution": 32,
+        "accepted_slip_roundoff": 2,
+        "accepted_work_roundoff": 0,
+        "ceiling_scope": "per_impulse_qp_not_tick",
+        "combined_contact_uncertainty_sum_j": 1.9145547202828905e-15,
+        "derived_gamma_sum_j": 1.9144500118774264e-15,
+        "maximum_assembly_resolution_j": 3.1250000000000003e-13,
+        "maximum_derived_gamma_j": 6.017780127289807e-17,
+        "objective_gap_upper_sum_j": 6.958993565343471e-17,
+        "slip_work_equivalent_sum_j": 1.0470840546082601e-19,
+        "work_consistency_sum_j": 0.0
+      },
+      "positive_actual_work_point_count": 0,
+      "positive_actual_work_upper_count": 0,
+      "prescribed_carrier_work_j": 0.0,
+      "qp_count": 32,
+      "tangent_force_average_ned": [
+        -1.8878773811242483e-13,
+        -2.0371704449490418e-08,
+        -1.0731671983590515e-23
+      ],
+      "tangent_loss_j": 9.178293723215355e-12,
+      "tangent_moment_average_ned": [
+        1.724309062949867e-08,
+        0.010753983833322699,
+        5.920399150748992e-07
+      ],
+      "tick": 1440,
+      "time_s": 6.0,
+      "total_force_residual_n": 2.0377899478134624e-08,
+      "total_moment_residual_nm": 5.931401216058433e-07
+    },
+    "ten_second": {
+      "accepted_substeps": 16,
+      "actual_angular_momentum_change": [
+        3.732658626631746e-11,
+        2.5892482602429823e-13,
+        2.3117465441924168e-09
+      ],
+      "actual_linear_momentum_change": [
+        -6.207269168176437e-14,
+        1.2207668901158575e-10,
+        -1.7593008606440091e-12
+      ],
+      "actual_work_audit_count": 32,
+      "angular_momentum_closure": 1.6373268935800382e-15,
+      "dt": 0.004166666666666667,
+      "energy_residual_j": 3.3251181989196787e-13,
+      "integrated_external_angular_impulse": [
+        3.7324950853546686e-11,
+        2.588789913774564e-13,
+        2.3117464796663696e-09
+      ],
+      "integrated_external_linear_impulse": [
+        -6.207269185200055e-14,
+        1.2207668901158658e-10,
+        -1.7595406613205947e-12
+      ],
+      "internal_shaft_source_nm": 0.0,
+      "linear_momentum_closure": 2.3980067658562935e-16,
+      "maximum_actual_work_point_j": 0.0,
+      "maximum_actual_work_upper_j": 0.0,
+      "normal_force_average_ned": [
+        -7.517764114512026e-22,
+        8.657950251715523e-25,
+        -210.87963321486862
+      ],
+      "normal_moment_average_ned": [
+        -8.557977971977432e-08,
+        -0.010131532380348503,
+        -1.3169596551979986e-21
+      ],
+      "numerical_allowance": {
+        "accepted_at_resolution": 32,
+        "accepted_slip_roundoff": 2,
+        "accepted_work_roundoff": 0,
+        "ceiling_scope": "per_impulse_qp_not_tick",
+        "combined_contact_uncertainty_sum_j": 1.913865669310976e-15,
+        "derived_gamma_sum_j": 1.9137727899367383e-15,
+        "maximum_assembly_resolution_j": 3.1250000000000003e-13,
+        "maximum_derived_gamma_j": 5.98109156152965e-17,
+        "objective_gap_upper_sum_j": 2.0318184822453883e-16,
+        "slip_work_equivalent_sum_j": 9.287937423400844e-20,
+        "work_consistency_sum_j": 0.0
+      },
+      "positive_actual_work_point_count": 0,
+      "positive_actual_work_upper_count": 0,
+      "prescribed_carrier_work_j": 0.0,
+      "qp_count": 32,
+      "tangent_force_average_ned": [
+        -1.4897446043728354e-11,
+        2.929840536278078e-08,
+        8.808152864550486e-24
+      ],
+      "tangent_loss_j": 8.146545226857299e-12,
+      "tangent_moment_average_ned": [
+        9.453776792462552e-08,
+        0.010131532442479461,
+        5.548191551199301e-07
+      ],
+      "tick": 2400,
+      "time_s": 10.0,
+      "total_force_residual_n": 2.9301452308307817e-08,
+      "total_moment_residual_nm": 5.548914707408339e-07
+    }
+  },
+  "full_rest_metrics": {
+    "maximum_drift_j": 1.3309602309163893e-09,
+    "maximum_positive_tick_j": 1.7621459846850485e-12,
+    "maximum_tick_numerical_sum_j": 3.250452812668506e-14,
+    "numerical_sum_j": 4.564368847315449e-12,
+    "tick": 2400,
+    "time_s": 10.0
+  },
+  "checkpoints": [
+    {
+      "path": "tmp/gp12-local-reuse/checkpoint-6s.bin",
+      "sha256": "d6a190715ede37bb670e0cc8c760a86c4a0005a5b079f701f4a80ffdb9ce5e7d",
+      "bytes": 992
+    },
+    {
+      "path": "tmp/gp12-local-reuse/checkpoint-10s.bin",
+      "sha256": "5ca3a1ce82d01b1467a175cfe0b529ee7027ebc00b29b7adf9369388e52ed028",
+      "bytes": 992
+    }
+  ],
+  "reaction_evidence": [
+    {
+      "path": "tmp/gp12-reaction-trace/trace-6s.bin",
+      "sha256": "d471b877a83c5113bafd6223734af1db6308597ed43de0c0f2cabab77bc50ab4",
+      "bytes": 185204
+    },
+    {
+      "path": "tmp/gp12-reaction-trace/trace-10s.bin",
+      "sha256": "1e69685d7346f2296f9b15bb00f1b0c55a9917391ca69c968e34fe096292e297",
+      "bytes": 185204
+    },
+    {
+      "path": "tmp/gp12-reaction-trace/review.gd",
+      "sha256": "3923e1470b5e043f86716333c99deac5eaaa2f4e83f281a28b104f570545d9c6",
+      "bytes": 5588
+    },
+    {
+      "path": "tmp/gp12-reaction-trace/step.gd",
+      "sha256": "165e207669e2deb6d5c3be5beb18b7a9fdd59e9a8948cc71dc5e82c13fb3c951",
+      "bytes": 37963
+    },
+    {
+      "path": "tmp/gp12-reaction-trace/impulse.gd",
+      "sha256": "5f2e5abc6e1de87178e149f31b421d79ef46ba8b9d18518d81175a8f2630e669",
+      "bytes": 28912
+    },
+    {
+      "path": "tmp/gp12-reaction-trace/frame.gd",
+      "sha256": "be8e3fa533c4740e655671a8ca001571c4b9a3e262f597cde1f278cfe16338cb",
+      "bytes": 749
+    }
+  ],
+  "source_identity": {
+    "path": "tmp/gp12-local-reuse/live-identities.json",
+    "sha256": "fc16dbd475c7ea48c799a2dc656c26786e8984b3fc8e229b33604c4aabf52f9a",
+    "bytes": 13718
+  },
+  "source_closure_unchanged_after_full_rest": true,
+  "compatibility": {
+    "checks": 1428,
+    "failed": 0,
+    "scripts": {
+      "QP": 659,
+      "Impulse": 314,
+      "Step": 167,
+      "Accuracy": 84,
+      "Electric": 196,
+      "strict_default_bytes": 8
+    }
+  },
+  "focused": {
+    "slip": 17,
+    "work": 22,
+    "local_reuse": 23,
+    "reaction6s": 45,
+    "reaction10s": 45
+  },
+  "scope": "Explicit opt-in finite-precision proof. Default pure QP/Impulse strict behavior unchanged. State/impulses preserved. No caps/laws/quality tolerances changed.",
+  "open_gates": [
+    "uniform-grid gentle/hard drops still refuse raw work accuracy",
+    "branch localization prototype not runtime implemented",
+    "loaded braking/lift full tape and240/480/960 still pending",
+    "~0.7s per tick diagnostic workload is unqualified performance"
+  ],
+  "receipts": [
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/compat-checks/accuracy_test-0xht565l/report.json",
+        "sha256": "6041c909dafc605c39e8044f005b4f0ca84ecf0c8afca36300f0251e1d03f3d6",
+        "bytes": 1265
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/compat-checks/corrected-default_equivalence-duzzqve7/report.json",
+        "sha256": "95ef9e4e728fed27de6d10e3a468ebecffebb737a867a524e9cfd120d8d13818",
+        "bytes": 1329
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/compat-checks/corrected-electric_test-hieufjpy/report.json",
+        "sha256": "c00dd4f7b3a7a5ef6a942f661b114b108a4080375df10d14de418478943b583f",
+        "bytes": 1297
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/compat-checks/corrected-strict_test-00_szubj/report.json",
+        "sha256": "064d29c933cac6982e6f7b76bb1c7c9f261b84ff03e9cb12d55677e477b5bed4",
+        "bytes": 1277
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/compat-checks/default_equivalence-i2nnwpn5/report.json",
+        "sha256": "c59f427a2bdfd31b1315ae8dc04714de937323abe92c55faf83b4429e2380f1b",
+        "bytes": 1346
+      },
+      "ok": false,
+      "complete": true,
+      "reason": "missing_required_text"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/compat-checks/impulse_test-xejkoq46/report.json",
+        "sha256": "00fde5224816b31dc77810d00a600c349e8e2b6423e4b35096373070211d0070",
+        "bytes": 1260
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/compat-checks/step_test-dc9ni1mn/report.json",
+        "sha256": "38ffa86496e1258f2bbaa2af546b201e17146582fb04624dc6a3466426a069d3",
+        "bytes": 1245
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/compat-checks/strict_test-g47rr1rf/report.json",
+        "sha256": "ef247ce0729e5a6121ecc488a78142aa5741331b86d4059b7e07b9f0bb9a1ab5",
+        "bytes": 1292
+      },
+      "ok": false,
+      "complete": true,
+      "reason": "missing_required_text"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/compat-checks/test-2vw7xyyl/report.json",
+        "sha256": "9dab44c35d96ec820dc6322082584e961e373cd40539da3702c93f9eea7b96b2",
+        "bytes": 1228
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/compat-checks/work_test-tb8rlxqv/report.json",
+        "sha256": "d35bbf880fd2cb96037455f651d28c3699b60049073236e5db355be96c2c7335",
+        "bytes": 1246
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/checks/accepted-six-second-equilibrium-u_2uzw49/report.json",
+        "sha256": "ed37c658c9bb5579ef47a060e8dcc0472d077e4e0e4caf5eeff3f974e716970d",
+        "bytes": 1318
+      },
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/checks/clipped-gap-exit-partition-os10y28s/report.json",
+        "sha256": "a9d33ffdcebc1c21f8a8752ddf1ae5540c3b7a70ceaa8c329475a16089efc1c6",
+        "bytes": 1824
+      },
+      "ok": false,
+      "complete": false,
+      "reason": "timeout"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/checks/clipped-gap-exit-plane-query-kgng9l1e/report.json",
+        "sha256": "b1853eef8373160bcbb051d08f49a0c9e8bb9474a3740e92f691dc3a68846f06",
+        "bytes": 1292
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/checks/detached-default-argument-j90e5ow0/report.json",
+        "sha256": "6e9bab2b28edbaab340142bf8a607b8d0fb5e00b4d3c6ab8b07a691f80840b49",
+        "bytes": 1298
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/checks/exact-numeric-and-source-binding-klzzcga5/report.json",
+        "sha256": "5fee7ce3b8f1a0bf869011c020d285a47249af6bf8c0d9601af9c3d57863a0bf",
+        "bytes": 1299
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/checks/loaded-force-clip-partition-253_ju3h/report.json",
+        "sha256": "3d7ed4ee705e922d935a391d071317526a54c8bdfe2b8f7516b5f1a7a45ee700",
+        "bytes": 1291
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/checks/prefix-math-comparison-dp02x5la/report.json",
+        "sha256": "68acc80216a2f58df6f9917de272a7638e49dbc3557d1197dd49618428060bca",
+        "bytes": 1276
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/checks/prefix-math-precise-e6scsu3b/report.json",
+        "sha256": "f215ea0602e3fc8113a79d97cc8f990a21d22ac03e759da414b36f0dd16cf89d",
+        "bytes": 1267
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-local-reuse/checks/work-and-positive-controls-iairt7so/report.json",
+        "sha256": "167fac49045a1351ead722e83b1eb401adc1b83f93bdbe127f678dfd49fbe0fc",
+        "bytes": 1282
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-reaction-trace/checks/full-reaction-six-seconds-pqi95enh/report.json",
+        "sha256": "28ba04a33b44550cc54397de5fd9a83d4c29d85c452d1b7cb94fc63b908ce459",
+        "bytes": 1291
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "identity": {
+        "path": "tmp/gp12-reaction-trace/checks/full-reaction-ten-seconds-ogpl9wb3/report.json",
+        "sha256": "f97b00f60f388be43d2e4758368393a2033ac76736506c3b5f10872888b11afc",
+        "bytes": 1318
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    }
+  ]
+}

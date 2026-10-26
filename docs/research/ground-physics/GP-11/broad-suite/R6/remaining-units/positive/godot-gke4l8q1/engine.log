@@ -1,0 +1,17 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   Gaussian elimination solves a known system 8.881784197001252e-16
+ok   level 15 m/s trims (six axes, with throttle) trimmed
+ok   trim alpha 4.26° ± 0.5° 4.20°
+ok   thrust ≈ drag ≈ 3 N 3.083 N at throttle 0.283 (5159 rpm)
+ok   up elevator trim (borrowed Cm0 < 0) pitch trim 0.138
+ok   prop torque trimmed out with small aileron/rudder roll trim 0.0210, yaw trim 0.0189, beta -0.121°
+ok   converged tightly residual 1.460233528890739e-13 in 4 iterations
+ok   level flight holds ±1 m for 30 s Δalt -0.0000 m
+ok   no spiral: heading holds within 1° for 30 s Δheading -0.0000°
+ok   25 m/s: less alpha, more throttle alpha 0.66°, throttle 0.680
+ok   glide 15 m/s trims trimmed
+ok   glide ratio ≈ 9.1 L/D 9.21, glide angle -6.20°
+ok   glide: no lateral trim needed 
+ok   5 m/s is impossible and says why singular or nonfinite Jacobian (no trim near this condition)
+14 checks, 0 failed

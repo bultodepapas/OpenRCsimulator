@@ -1,0 +1,25 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok changing demand does not teleport the animated pose
+ok quarter-second collective follows the analytic step response
+ok rotor phase integrates the acceleration instead of using endpoint RPM
+ok rotor speed follows the independent analytic step value
+ok interrupted reversal preserves both position and velocity
+ok identical timed commands agree at 1, 30, 60 and 144 Hz including shaft phase
+TIMING maximum_state_difference=0.00000000000001
+ok a half-second render stall does not discard animation time
+ok advanced geometry admits the animated trajectory
+ok rapid full-travel reversals remain inside all four mechanical limits
+ok all nine rods close throughout 960 animated combined poses
+ANIMATION poses=960 maximum_rod_residual_m=0.00000016240186
+ok azimuth scrub crosses north without resetting twelve shaft revolutions
+ok manual azimuth stops automatic rotation for precise inspection
+ok reverse azimuth scrub preserves transmission history
+ok antipodal forward scrub follows the positive slider direction
+ok antipodal reverse scrub retraces the same transmission path
+ok invalid time and azimuth leave the accepted state unchanged
+ok invalid controls and RPM retain the previous demand
+ok exact inspection mode applies unfiltered control poses
+ok exact rotation mode integrates constant RPM
+ok rotor stopping remains forward and approaches rest smoothly
+20 checks, 0 failed

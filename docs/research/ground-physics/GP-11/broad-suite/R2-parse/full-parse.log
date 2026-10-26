@@ -1,0 +1,14 @@
+parsed 100 scripts: ./economy/checkpoint.gd
+parsed 200 scripts: ./physics/ground_vehicle/suspension_bench_data.gd
+parsed 300 scripts: ./render/ground_gear.gd
+parsed 400 scripts: ./render/world/moon_glare.gd
+parsed 500 scripts: ./tests/capture_engine_smoke.gd
+parsed 600 scripts: ./tests/test_club_furniture_colors.gd
+parsed 700 scripts: ./tests/test_economy_replacement_quote.gd
+parsed 800 scripts: ./tests/test_glow_propeller_prepared.gd
+parsed 900 scripts: ./tests/test_lake_planar_reflection.gd
+parsed 1000 scripts: ./tests/test_rates.gd
+parsed 1100 scripts: ./tests/test_smoke_aux.gd
+parsed 1200 scripts: ./tests/test_ui_weather_sliders.gd
+parsed 1300 scripts: ./ui/flight_loading.gd
+all-script parse: 1374 scripts passed

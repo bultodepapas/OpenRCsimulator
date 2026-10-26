@@ -1,0 +1,25 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok production field normalizes
+ok landscape-upgrade off builds an empty collision world
+ok scenery-off collision world builds
+ok scenery off retains both proxies for every field tree
+ok scenery off retains default field lamps
+ok scenery off excludes cars, people, buildings, and parked aircraft
+ok normalized scenery and default lamps load for quality comparison
+ok low retained visible placement IDs are a subset of high
+ok low quality drops ornament placements
+ok independently filtered high and low collision inventories build
+ok high-quality collision setup builds
+ok high proxy IDs match high visible placements
+ok repeated high build keeps identity stable
+ok repeated high build keeps proxy IDs stable
+ok low-quality collision setup builds
+ok low proxy IDs match low retained visible placements
+ok quality option changes collision-world identity
+ok quality option changes the retained collision inventory
+ok environment restored: OPENRC_LANDSCAPE_UPGRADE
+ok environment restored: OPENRC_SCENERY
+ok environment restored: OPENRC_SCENERY_QUALITY
+ok environment restored: OPENRC_SCENERY_FILE
+landscape collision setup: 22 checks, 0 failures

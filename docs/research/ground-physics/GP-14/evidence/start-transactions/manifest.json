@@ -1,0 +1,357 @@
+{
+  "format": "openrc-ground-start-transaction-evidence v1",
+  "date": "2026-10-26",
+  "step": "GP-14e",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "counts": {
+    "common-reset": 148,
+    "runway-publication": 180,
+    "endpoint": 274,
+    "statistics": 51,
+    "contact": 63,
+    "starts": 36,
+    "log": 3247,
+    "audio": 35,
+    "runway-transaction": 32
+  },
+  "current_checks": 4066,
+  "source_scope": "Seven selected production runtime/test sources, not a complete application build. Unchanged dependencies/full selected GP14d kernel are in the earlier immutable cohort; ORFL retains its own solver/aircraft identity.",
+  "files": [
+    {
+      "path": "baseline/audit/report.json",
+      "sha256": "e02cd1dc1b2644212e9bbafc975bb6d585970ce72240b49ede2fe809ddb88a5f",
+      "bytes": 1183,
+      "origin": "tmp\\gp-reset-followup\\checks\\current-05\\godot-_onjqr36\\report.json",
+      "scope": "Original48 assertions of known defective behavior and controls; not a correctness acceptance"
+    },
+    {
+      "path": "baseline/audit/engine.log",
+      "sha256": "3ff4f0176a2e1a437d33efa2b84596885b14cfd43b894faac89ea290e08cdbf0",
+      "bytes": 11676,
+      "origin": "tmp\\gp-reset-followup\\checks\\current-05\\godot-_onjqr36\\engine.log",
+      "scope": "Original48 assertions of known defective behavior and controls; not a correctness acceptance"
+    },
+    {
+      "path": "baseline/reproduce.gd",
+      "sha256": "8e88321b75b7023415fea99d52b1b295ffa8d8c61d627d01053f48a0b4a758bd",
+      "bytes": 9824,
+      "origin": "tmp\\gp-reset-followup\\reproduce.gd",
+      "scope": "Source of original48-case audit; historical imports use GP14d Session"
+    },
+    {
+      "path": "baseline/observations.json",
+      "sha256": "bfd989cbb17be5b03158f3017b4f496a3fe4bc14451ec8be975ed5872a304cd3",
+      "bytes": 8451,
+      "origin": "tmp\\gp-reset-followup\\artifacts-2711885\\observations.json",
+      "scope": "Original observed statuses/signals/recorder state"
+    },
+    {
+      "path": "baseline/recordings/reload-late-refusal.orfl",
+      "sha256": "ccc069cecc483ce0d934ec8d9ade3bf07abf12007f80c99d81f2d1b95a2c67fe",
+      "bytes": 29556,
+      "origin": "tmp\\gp-reset-followup\\artifacts-2711885\\reload-late-refusal.orfl",
+      "scope": "Original actual recording; audit cleanup closes writers still open at observation"
+    },
+    {
+      "path": "baseline/recordings/reload-runway-refused-candidate.orfl",
+      "sha256": "92093308b2199d304ee9c1f86e856ba46a30012d58be2bb78168b2e3e47cb31c",
+      "bytes": 29504,
+      "origin": "tmp\\gp-reset-followup\\artifacts-2711885\\reload-runway-refused-candidate.orfl",
+      "scope": "Original actual recording; audit cleanup closes writers still open at observation"
+    },
+    {
+      "path": "baseline/recordings/reload-committed-observer-fault.orfl",
+      "sha256": "675a7f6120f41ff7c8092c3fedec8c0a8dfb68c349d80b2c8df559da5900355f",
+      "bytes": 29552,
+      "origin": "tmp\\gp-reset-followup\\artifacts-2711885\\reload-committed-observer-fault.orfl",
+      "scope": "Original actual recording; audit cleanup closes writers still open at observation"
+    },
+    {
+      "path": "baseline/flight_session.gd",
+      "sha256": "74b7dfadb84c5a59e5b1d95131d041298e818a90a5aff72a56844daa94fed865",
+      "bytes": 276381,
+      "origin": "tmp\\gp-reset-followup\\flight_session.baseline.txt",
+      "scope": "Selected exact pre-migration Session source"
+    },
+    {
+      "path": "historical-fixture-mismatch/report.json",
+      "sha256": "390a8eb7c17e94859f00eda23d773bbd5072877e653e3030bc3d1c8324f561b8",
+      "bytes": 1256,
+      "origin": "tmp\\gp-reset-followup\\checks\\statistics-lifecycle-draft\\godot-m1_8fx1v\\report.json",
+      "scope": "Original51-check/4-failure receipt before refusal-trigger adaptation; no engine diagnostics, exact then-loaded draft source not retained"
+    },
+    {
+      "path": "historical-fixture-mismatch/engine.log",
+      "sha256": "2c74ec0a0de13ef978b9d5253db79d7f902c24a8c1d4e7715635f6b9c0e4a5e9",
+      "bytes": 660,
+      "origin": "tmp\\gp-reset-followup\\checks\\statistics-lifecycle-draft\\godot-m1_8fx1v\\engine.log",
+      "scope": "Original51-check/4-failure receipt before refusal-trigger adaptation; no engine diagnostics, exact then-loaded draft source not retained"
+    },
+    {
+      "path": "historical-fixture-mismatch/original_production_test.gd",
+      "sha256": "6dac231906a2073d7e5af44ea091a4d783aedf7ec39567ecd490848a13e58a03",
+      "bytes": 8474,
+      "origin": "docs\\research\\ground-physics\\GP-14\\evidence\\reset-publication\\current\\supporting-tests\\test_flight_statistics_lifecycle.gd",
+      "scope": "Original production fixture; failed run used an import-rewritten draft copy subsequently edited, not claimed byte-identical"
+    },
+    {
+      "path": "current/checks/common-reset/report.json",
+      "sha256": "d4831feb22887657cb3c789295a8c8a176101967445ce1c5ea7d861f452f7608",
+      "bytes": 1229,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-common-reset\\godot-e61mugtq\\report.json",
+      "scope": "Current production imports; 148 passing checks"
+    },
+    {
+      "path": "current/checks/common-reset/engine.log",
+      "sha256": "44c01eac7482ceca5f4abbae75f174d74038a43510f9b8dae757a8bd0a998132",
+      "bytes": 7436,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-common-reset\\godot-e61mugtq\\engine.log",
+      "scope": "Current production imports; 148 passing checks"
+    },
+    {
+      "path": "current/checks/runway-publication/report.json",
+      "sha256": "ca54620da7df568c7c6fd4703b69769d3f2e4a1f63f1b258193efbb90e769a0c",
+      "bytes": 1232,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-runway-publication\\godot-tqpwy2s6\\report.json",
+      "scope": "Current production imports; 180 passing checks"
+    },
+    {
+      "path": "current/checks/runway-publication/engine.log",
+      "sha256": "d1a99f363efcbe1bacafe88bb2ceb8dba254de0a8c06e3f55fa49c1e6e1b7377",
+      "bytes": 4959,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-runway-publication\\godot-tqpwy2s6\\engine.log",
+      "scope": "Current production imports; 180 passing checks"
+    },
+    {
+      "path": "current/checks/endpoint/report.json",
+      "sha256": "ce72220c4377fc578cec1de86c60035bf8aee99e17164b17f26c481c26fc865e",
+      "bytes": 1216,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-endpoint\\godot-n8heq5xb\\report.json",
+      "scope": "Current production imports; 274 passing checks"
+    },
+    {
+      "path": "current/checks/endpoint/engine.log",
+      "sha256": "aa63d3d6bcf1059df73f8bc6bd80b346e5e377433b3493ad9629cad3e8a5b3e0",
+      "bytes": 116,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-endpoint\\godot-n8heq5xb\\engine.log",
+      "scope": "Current production imports; 274 passing checks"
+    },
+    {
+      "path": "current/checks/statistics/report.json",
+      "sha256": "aff86e86a3de86615af4c2c276028f07abbed7dc513c1a0b1e0e6c36f399ac9b",
+      "bytes": 1234,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-statistics\\godot-0yzkpocw\\report.json",
+      "scope": "Current production imports; 51 passing checks"
+    },
+    {
+      "path": "current/checks/statistics/engine.log",
+      "sha256": "c5ccca9c3fc98f9d822c22c1bad9db1e827a7487fdd5538a9be1be4957a09397",
+      "bytes": 498,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-statistics\\godot-0yzkpocw\\engine.log",
+      "scope": "Current production imports; 51 passing checks"
+    },
+    {
+      "path": "current/checks/contact/report.json",
+      "sha256": "1b34ec28b736c14543a8c708423afa6891c7595d49abd866820ca50f07ce6317",
+      "bytes": 1222,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-contact\\godot-fbod6tkn\\report.json",
+      "scope": "Current production imports; 63 passing checks"
+    },
+    {
+      "path": "current/checks/contact/engine.log",
+      "sha256": "f58c91a8efccc93f3eb1e84e59a567de4209e3da67640112cb585f6fc62dc773",
+      "bytes": 1572,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-contact\\godot-fbod6tkn\\engine.log",
+      "scope": "Current production imports; 63 passing checks"
+    },
+    {
+      "path": "current/checks/starts/report.json",
+      "sha256": "45fe5b774a29e0bbd8aa096ffa8d4585e7ebf054a13d97140aa737e9dd7788b4",
+      "bytes": 1191,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-starts\\godot-fitpl9wr\\report.json",
+      "scope": "Current production imports; 36 passing checks"
+    },
+    {
+      "path": "current/checks/starts/engine.log",
+      "sha256": "76d493f53180e5496c0388809e7fe63d5cf21f44f9d93367539937f42d087c5d",
+      "bytes": 665,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-starts\\godot-fitpl9wr\\engine.log",
+      "scope": "Current production imports; 36 passing checks"
+    },
+    {
+      "path": "current/checks/log/report.json",
+      "sha256": "c01885975aa3304bd198755f0833564bd246cd60f4bc9e94ff5dd0dc3d5f1181",
+      "bytes": 1200,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-log\\godot-0hxrd5zk\\report.json",
+      "scope": "Current production imports; 3247 passing checks"
+    },
+    {
+      "path": "current/checks/log/engine.log",
+      "sha256": "21631f828aa0dac5d1b086bf783bf52ccb8424d414b5cf3d1575ff25e0934731",
+      "bytes": 5982,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-log\\godot-0hxrd5zk\\engine.log",
+      "scope": "Current production imports; 3247 passing checks"
+    },
+    {
+      "path": "current/checks/audio/report.json",
+      "sha256": "fa5b95cadd93cb9548d42fb9043505d9d6777001a2fb5c2f3e3c6022f3d503ee",
+      "bytes": 1221,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-audio\\godot-0d2ru3h6\\report.json",
+      "scope": "Current production imports; 35 passing checks"
+    },
+    {
+      "path": "current/checks/audio/engine.log",
+      "sha256": "0f67687c4654a77f2e0957de2e5aa7178a5714db94143dd1cb719cac94e2789f",
+      "bytes": 219,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-audio\\godot-0d2ru3h6\\engine.log",
+      "scope": "Current production imports; 35 passing checks"
+    },
+    {
+      "path": "current/checks/runway-transaction/report.json",
+      "sha256": "b4f71f211f480da94277a032b032994ca5e19eef96e96f3292173025faa381b8",
+      "bytes": 1244,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-runway-transaction\\godot-49lax2hu\\report.json",
+      "scope": "Current production imports; 32 passing checks"
+    },
+    {
+      "path": "current/checks/runway-transaction/engine.log",
+      "sha256": "67cd83060b31454e36355e2829a3af32238bc08666cd3454854f36564ca14b9a",
+      "bytes": 350,
+      "origin": "tmp\\gp-reset-followup\\checks\\final-runway-transaction\\godot-49lax2hu\\engine.log",
+      "scope": "Current production imports; 32 passing checks"
+    },
+    {
+      "path": "current/source/app/ai/companions/fleet_record.gd",
+      "sha256": "95de3ae4935676a2e3105aae7d1dcdef3c4b5bd813bab696ee319d29477157e8",
+      "bytes": 12137,
+      "origin": "tmp\\gp-reset-followup\\main-source\\app\\ai\\companions\\fleet_record.gd",
+      "scope": "Selected production source, captured before final checks and byte-equal after"
+    },
+    {
+      "path": "current/source/app/sim/flight_log.gd",
+      "sha256": "0646b053bae4a788883a7d13833ef24f3b43d8d30c07ea6edfc4715b038afaba",
+      "bytes": 12975,
+      "origin": "tmp\\gp-reset-followup\\main-source\\app\\sim\\flight_log.gd",
+      "scope": "Selected production source, captured before final checks and byte-equal after"
+    },
+    {
+      "path": "current/source/app/sim/flight_session.gd",
+      "sha256": "e45d9a9a1f2637d9147daef47060333862d58c669c020c70dc34f2d2683ad491",
+      "bytes": 276417,
+      "origin": "tmp\\gp-reset-followup\\main-source\\app\\sim\\flight_session.gd",
+      "scope": "Selected production source, captured before final checks and byte-equal after"
+    },
+    {
+      "path": "current/source/app/sim/simulation.gd",
+      "sha256": "b1b481b2cd278d997347959b8e6529d58aa23adf5494ca419f01a38d45f54042",
+      "bytes": 53032,
+      "origin": "tmp\\gp-reset-followup\\main-source\\app\\sim\\simulation.gd",
+      "scope": "Selected production source, captured before final checks and byte-equal after"
+    },
+    {
+      "path": "current/source/app/tests/test_aircraft_contact_session.gd",
+      "sha256": "f4b9e35b40a307c8039a1938991465bf62bb08a900b36f025651f7fd837f5add",
+      "bytes": 15579,
+      "origin": "tmp\\gp-reset-followup\\main-source\\app\\tests\\test_aircraft_contact_session.gd",
+      "scope": "Selected production source, captured before final checks and byte-equal after"
+    },
+    {
+      "path": "current/source/app/tests/test_flight_reset_transaction.gd",
+      "sha256": "f69f28d57caae76655fdcf0d29554dbe494a18d62df00846bb38e7a3d6a06986",
+      "bytes": 11031,
+      "origin": "tmp\\gp-reset-followup\\main-source\\app\\tests\\test_flight_reset_transaction.gd",
+      "scope": "Selected production source, captured before final checks and byte-equal after"
+    },
+    {
+      "path": "current/source/app/tests/test_flight_statistics_lifecycle.gd",
+      "sha256": "9fb7668400b5f8b30d907aa2bec29d1eddd3f141980975e511824aa9e3b9eada",
+      "bytes": 9156,
+      "origin": "tmp\\gp-reset-followup\\main-source\\app\\tests\\test_flight_statistics_lifecycle.gd",
+      "scope": "Selected production source, captured before final checks and byte-equal after"
+    },
+    {
+      "path": "current/supporting-tests/test_reset_publication.gd",
+      "sha256": "a5a45b198cd1f1e182b55ee88b201b1cf9a31a2527e4cc8a927ce5f3ce7a7e21",
+      "bytes": 19864,
+      "origin": "app\\tests\\test_reset_publication.gd",
+      "scope": "Supporting existing test at retention"
+    },
+    {
+      "path": "current/supporting-tests/test_endpoint_transition.gd",
+      "sha256": "709d085ee1d0c0fbfdfaa867b89af37c8250eaaa102a79f6aa3e8a7e1b35d17d",
+      "bytes": 20976,
+      "origin": "app\\tests\\test_endpoint_transition.gd",
+      "scope": "Supporting existing test at retention"
+    },
+    {
+      "path": "current/supporting-tests/test_runway_transaction.gd",
+      "sha256": "ed0051f4885eb67036919522684c3816906a693ae2d7058fc17f986d47cd0821",
+      "bytes": 4061,
+      "origin": "app\\tests\\test_runway_transaction.gd",
+      "scope": "Supporting existing test at retention"
+    },
+    {
+      "path": "current/supporting-tests/test_start_choice.gd",
+      "sha256": "41c86889981026c5c0017e8f8bf9f39d695fac9aa294ccabeed755df62ca76f6",
+      "bytes": 15031,
+      "origin": "app\\tests\\test_start_choice.gd",
+      "scope": "Supporting existing test at retention"
+    },
+    {
+      "path": "current/supporting-tests/test_flight_log.gd",
+      "sha256": "e5d5aa102039487a16ed9e68e809d58d6cc1d4830af6f0a2a276678560f2fea6",
+      "bytes": 6810,
+      "origin": "app\\tests\\test_flight_log.gd",
+      "scope": "Supporting existing test at retention"
+    },
+    {
+      "path": "current/supporting-tests/test_flight_audio_accepted.gd",
+      "sha256": "bb02dc9e6272a72dcae1a086292379a6c236b462ed5f46a121459e2aa5a82659",
+      "bytes": 13464,
+      "origin": "app\\tests\\test_flight_audio_accepted.gd",
+      "scope": "Supporting existing test at retention"
+    },
+    {
+      "path": "current/recordings/reload-refusal-false.orfl",
+      "sha256": "0382d861a8f8640a843bf07e87fea536735d0ee240d650c12cf5a2fa6095c49b",
+      "bytes": 29532,
+      "origin": "tmp\\common-reset-3398110\\reload-refusal-false.orfl",
+      "scope": "Actual final148 fixture output; refused-writer recordings close only at explicit test cleanup"
+    },
+    {
+      "path": "current/recordings/reload-success-false.orfl",
+      "sha256": "945d14d76b75010a9371455d52ded1978bb171249b1a81f0f62b46772d6fc9c0",
+      "bytes": 29552,
+      "origin": "tmp\\common-reset-3398110\\reload-success-false.orfl",
+      "scope": "Actual final148 fixture output; refused-writer recordings close only at explicit test cleanup"
+    },
+    {
+      "path": "current/recordings/reload-success-true.orfl",
+      "sha256": "f27675734188373a9888e6abd2d5b4176cbba2d1c525a74bf2e8893faabd02af",
+      "bytes": 29552,
+      "origin": "tmp\\common-reset-3398110\\reload-success-true.orfl",
+      "scope": "Actual final148 fixture output; refused-writer recordings close only at explicit test cleanup"
+    },
+    {
+      "path": "current/recordings/observer-fault-reload-runway.orfl",
+      "sha256": "f27675734188373a9888e6abd2d5b4176cbba2d1c525a74bf2e8893faabd02af",
+      "bytes": 29552,
+      "origin": "tmp\\common-reset-3398110\\observer-fault-reload-runway.orfl",
+      "scope": "Actual final148 fixture output; refused-writer recordings close only at explicit test cleanup"
+    },
+    {
+      "path": "current/recordings/failure-rng-refusal.orfl",
+      "sha256": "a33ee7832fa9e26e0a2a0b2afa8f31e0d02516c8bb65692f9628e3d7f70461ef",
+      "bytes": 36184,
+      "origin": "tmp\\common-reset-3398110\\failure-rng-refusal.orfl",
+      "scope": "Actual final148 fixture output; refused-writer recordings close only at explicit test cleanup"
+    },
+    {
+      "path": "current/recordings/hand-launch.orfl",
+      "sha256": "0fe8a3e03d057db1cfa812fd3d0876d3314919847f3805ba82e785aec6907d6d",
+      "bytes": 22236,
+      "origin": "tmp\\common-reset-3398110\\hand-launch.orfl",
+      "scope": "Actual final148 fixture output; refused-writer recordings close only at explicit test cleanup"
+    }
+  ]
+}

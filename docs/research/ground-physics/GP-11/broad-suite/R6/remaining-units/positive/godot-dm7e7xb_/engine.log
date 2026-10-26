@@ -1,0 +1,72 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   catalog order keeps the Stik glow variants before the Extra
+ok   default: the Ugly Stik on the card and in the backdrop
+ok   default: Fly enabled and focused, catalog counter
+ok   Next aircraft arrow is keyboard reachable
+ok   preview preparation completes
+ok   MAX-61FX Stik: experimental 2-stroke on card and backdrop
+ok   MAX-61FX selection does not start a flight
+ok   preview preparation completes
+ok   55AX glow Stik: experimental 2-stroke on card and backdrop
+ok   55AX selection does not start a flight
+ok   preview preparation completes
+ok   FS-64V glow Stik: experimental true 4-stroke on card and backdrop
+ok   FS-64V selection does not start a flight
+ok   preview preparation completes
+ok   Enter on the arrow: the Extra on the card, in the backdrop and saved
+ok   Extra: Fly enabled, its status says experimental
+ok   choosing never starts a flight
+ok   preview preparation completes
+ok   P-51: shown, experimental, Fly enabled
+ok   preview preparation completes
+ok   F4U Corsair: shown, experimental, Fly enabled
+ok   preview preparation completes
+ok   Ventage Jet: shown, experimental, Fly enabled
+ok   Ventage Jet: the backdrop shows it, focus stays on the arrow
+ok   choosing the Ventage Jet never starts a flight
+ok   preview preparation completes
+ok   Timber: shown, experimental, Fly enabled
+ok   Timber status states the estimated electric, flaps-up configuration
+ok   Timber: the backdrop shows it, focus stays on the arrow
+ok   Timber: catalog counter
+ok   Timber selection is saved without starting a session
+ok   preview preparation completes
+ok   helicopter is last in the catalog with the HX-700 preview and pad start
+ok   helicopter selection is saved without starting a session
+ok   preview preparation completes
+ok   next wraps around to the Ugly Stik
+ok   preview preparation completes
+ok   previous arrow from the Stik reaches the last helicopter
+ok   preview preparation completes
+ok   previous from the helicopter returns to the Timber
+ok   preview preparation completes
+ok   previous again: the Ventage Jet
+ok   Spanish: catalog counter and status translated
+ok   Spanish: the Timber card shows its Spanish name
+ok   Spanish: Ventage Jet keeps its name
+ok   English: the Timber card shows its English name
+ok   restart: the saved Ventage Jet comes back, Fly enabled
+ok   reselected Timber: Fly enabled and choice saved
+ok   preview preparation completes
+ok   Fly starts Timber with its own model and physics
+ok   Timber flight pauses from the keyboard
+ok   Restart is keyboard reachable
+ok   preview preparation completes
+ok   Restart restores a fresh trimmed Timber flight
+ok   Exit options is keyboard reachable
+ok   End flight is keyboard reachable inside Exit options
+ok   preview preparation completes
+ok   End returns to Home and releases the old session
+ok   preview preparation completes
+ok   reselect after End starts Timber again
+ok   new app remembers Timber and keeps Fly enabled
+ok   preview preparation completes
+ok   persisted Timber choice flies its matching physics
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   preview preparation completes
+ok   Fly with the Extra still starts the matching model and physics
+ok   unknown saved aircraft -> default
+ok   saved aircraft of the wrong type -> default
+all UI aircraft checks passed

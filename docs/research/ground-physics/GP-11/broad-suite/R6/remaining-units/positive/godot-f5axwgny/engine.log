@@ -1,0 +1,23 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok camera enters the tree already at the configured pilot eye
+ok camera becomes current at the pilot eye before any process frame
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok runway: staged startup completes with a valid held session
+ok runway: instruments checkpoint already has the pilot eye
+ok runway: completion signal observes the first validated tick-zero pose
+ok runway: priming neither processes nor polls input nor changes session state
+ok runway: first camera is at the pilot eye looking at the aircraft
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok airborne: staged startup completes with a valid held session
+ok airborne: instruments checkpoint already has the pilot eye
+ok airborne: completion signal observes the first validated tick-zero pose
+ok airborne: priming neither processes nor polls input nor changes session state
+ok airborne: first camera is at the pilot eye looking at the aircraft
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok quick-flight readiness signal observes the first validated tick-zero runway pose
+ok quick-flight camera and aircraft are placed before the first process
+ok quick-flight priming preserves checkpoint bytes without processing, input or time
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok direct technical startup retains deferred render priming
+Initial flight camera: 16 checks, 0 failed

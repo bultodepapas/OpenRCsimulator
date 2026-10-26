@@ -1,0 +1,38 @@
+{
+  "format": "openrc-baseline-aircraft-flow-isolation v1",
+  "utc": "2026-10-26T14:11:23.441863+00:00",
+  "baseline_report": "tmp\\gp11-full-suite-checks\\R6\\baseline-ui\\aircraft-flow\\godot-3wt3inwt\\report.json",
+  "candidate_report": "tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-8a_wdkfu\\report.json",
+  "test_dependencies": [
+    {
+      "path": "app/tests/test_ui_aircraft_flow.gd",
+      "baseline_sha256": "8fadba02461785dcebd0331f1e5f8658ec4dade9c9f8da82cdc7732973e151ce",
+      "candidate_sha256": "8fadba02461785dcebd0331f1e5f8658ec4dade9c9f8da82cdc7732973e151ce",
+      "byte_equal": true
+    },
+    {
+      "path": "app/tests/ui_driver.gd",
+      "baseline_sha256": "8d250337b7aa647679ad106b97a68df22a46398b7e4de7800875b0f97c944ba2",
+      "candidate_sha256": "8d250337b7aa647679ad106b97a68df22a46398b7e4de7800875b0f97c944ba2",
+      "byte_equal": true
+    },
+    {
+      "path": "app/app_state/aircraft_catalog.gd",
+      "baseline_sha256": "89f56f2a769a2cd1eff8b2f7f0215c9b6a9e1a7d954556b60b5331ce00544f7c",
+      "candidate_sha256": "89f56f2a769a2cd1eff8b2f7f0215c9b6a9e1a7d954556b60b5331ce00544f7c",
+      "byte_equal": true
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "baseline_sha256": "9fec024814d484ea0620e2d2d811170b0e69261ab6b44125dbefadf9291ec2d3",
+      "candidate_sha256": "9fec024814d484ea0620e2d2d811170b0e69261ab6b44125dbefadf9291ec2d3",
+      "byte_equal": true
+    }
+  ],
+  "same_results": [
+    "FAIL helicopter Flight page fits without scrolling at 1080p scroll=(320.0, 487.0) page=(250.0, 508.0) viewport=(1920.0, 1080.0)",
+    "UI aircraft flow: 1 failed"
+  ],
+  "failure_messages_byte_equal": true,
+  "attribution": "Inherited GP10 helicopter Flight page fit failure at1080p, reproduced with byte-equal overflow sizes. No UI edits or product qualification claims."
+}

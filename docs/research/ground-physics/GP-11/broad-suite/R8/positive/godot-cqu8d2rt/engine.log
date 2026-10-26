@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+fitted knots (fraction of the strip peak) at [18.0, 24.0, 30.0, 36.0] deg: [1.0, 0.82, 0.82, 0.82] after 49 evaluations
+J 4.232: RMS retention error 0.0367, RMS Clp error 0.1654; whole-aircraft CLmax 1.080 at 18.0 deg
+post-stall v2 candidate verified; NOT selected for production

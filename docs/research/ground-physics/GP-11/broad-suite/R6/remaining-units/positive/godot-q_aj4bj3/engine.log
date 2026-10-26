@@ -1,0 +1,12 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok default field normalizes
+ok default scenery normalizes against the field
+ok default field lights normalize
+ok production obstacle world builds from normalized inputs
+ok production inventory includes the complete field canopy and trunk sets
+ok production inventory includes vehicles, lights, and every parked-aircraft placement
+ok production aircraft contract supplies the real crash hull
+landscape collision production: proxies=6092 bins=1078 build=217.5ms; full contacts p95(us): empty=43 car=1234 tree=1711; first_hit p95(us): car=1163 tree=1693
+landscape collision production: p50(us) empty=22 car=1032 tree=1477; target=100us at 240Hz
+landscape collision production: 0 failures

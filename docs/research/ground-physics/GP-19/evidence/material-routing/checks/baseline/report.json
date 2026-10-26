@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b04058ea-4c03-4e7e-8b84-aad0ed1e60f0",
+  "command": [
+    ".tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp19-material-audio/baseline.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-26T16:14:15.014808+00:00",
+  "label": "baseline",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-material-audio\\checks\\baseline\\baseline-h83iumpv\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp19-material-audio\\checks\\baseline\\baseline-h83iumpv\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Turf-as-pavement defect reproduced: true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.125,
+  "log_bytes": 208,
+  "log_sha256": "d3bb9c40128eca2c9c7d00e0522e79a461acc7ecaabf48cd40b9f40e36ee9ca0"
+}

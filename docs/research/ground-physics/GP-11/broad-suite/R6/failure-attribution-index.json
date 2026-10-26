@@ -1,0 +1,165 @@
+{
+  "format": "openrc-unit-failure-attribution-index v1",
+  "utc": "2026-10-26T15:10:11.617102+00:00",
+  "total_scripts": 751,
+  "passed": 734,
+  "failed": 17,
+  "failures": [
+    {
+      "test": "test_aircraft_liveries.gd",
+      "candidate_report": "units/positive/godot-hq3nzkd_/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "baseline-ui/result.json",
+      "baseline_exact_test_replayed": true,
+      "classification": "Exact failure reproduced on independent GP10 baseline",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_companions_airspace.gd",
+      "candidate_report": "remaining-units/positive/godot-1ykhsw4k/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "companions-attribution.json",
+      "baseline_exact_test_replayed": false,
+      "classification": "Inherited admission gate reproduced on GP10; downstream assertions not independently replayed",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_companions_lifecycle.gd",
+      "candidate_report": "remaining-units/positive/godot-psxur8n4/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "companions-attribution.json",
+      "baseline_exact_test_replayed": false,
+      "classification": "Inherited admission gate reproduced on GP10; downstream assertions not independently replayed",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_companions_manager.gd",
+      "candidate_report": "remaining-units/positive/godot-asnun1ee/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "companions-attribution.json",
+      "baseline_exact_test_replayed": false,
+      "classification": "Inherited admission gate reproduced on GP10; downstream assertions not independently replayed",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_companions_observation.gd",
+      "candidate_report": "remaining-units/positive/godot-40xxde3r/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "companions-attribution.json",
+      "baseline_exact_test_replayed": false,
+      "classification": "Inherited admission gate reproduced on GP10; downstream assertions not independently replayed",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_companions_presentation.gd",
+      "candidate_report": "remaining-units/positive/godot-3elxadr7/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "companions-attribution.json",
+      "baseline_exact_test_replayed": false,
+      "classification": "Inherited admission gate reproduced on GP10; downstream assertions not independently replayed",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_companions_profiles.gd",
+      "candidate_report": "remaining-units/positive/godot-thruah4e/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "companions-attribution.json",
+      "baseline_exact_test_replayed": true,
+      "classification": "Exact failure reproduced on independent GP10 baseline",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_companions_record.gd",
+      "candidate_report": "remaining-units/positive/godot-tyjtxq86/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "companions-attribution.json",
+      "baseline_exact_test_replayed": false,
+      "classification": "Inherited admission gate reproduced on GP10; downstream assertions not independently replayed",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_companions_shell.gd",
+      "candidate_report": "remaining-units/positive/godot-ntid9nv_/report.json",
+      "candidate_reason": "timeout",
+      "attribution": "companions-attribution.json",
+      "baseline_exact_test_replayed": false,
+      "classification": "Inherited admission gate reproduced on GP10; downstream assertions not independently replayed",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_lake_geometry_bake.gd",
+      "candidate_report": "remaining-units/positive/godot-4n63hq_r/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "lake-bake-attribution.json",
+      "baseline_exact_test_replayed": true,
+      "classification": "Exact failure reproduced on independent GP10 baseline",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_player_widget_settings.gd",
+      "candidate_report": "remaining-units/positive/godot-sy4jw62r/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "player-widgets-attribution.json",
+      "baseline_exact_test_replayed": true,
+      "classification": "Exact failure reproduced on independent GP10 baseline",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_training_widgets.gd",
+      "candidate_report": "remaining-units/positive/godot-vuyurx1_/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "training-widgets-attribution.json",
+      "baseline_exact_test_replayed": true,
+      "classification": "Exact failure reproduced on independent GP10 baseline",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_ui_aircraft_flow.gd",
+      "candidate_report": "remaining-units/positive/godot-8a_wdkfu/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "aircraft-flow-attribution.json",
+      "baseline_exact_test_replayed": true,
+      "classification": "Exact failure reproduced on independent GP10 baseline",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_ui_help.gd",
+      "candidate_report": "remaining-units/positive/godot-422axulw/report.json",
+      "candidate_reason": "timeout",
+      "attribution": "home-help-attribution.json",
+      "baseline_exact_test_replayed": true,
+      "classification": "Exact failure reproduced on independent GP10 baseline",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_ui_home.gd",
+      "candidate_report": "remaining-units/positive/godot-jarq431l/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "home-help-attribution.json",
+      "baseline_exact_test_replayed": true,
+      "classification": "Exact failure reproduced on independent GP10 baseline",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_ui_language.gd",
+      "candidate_report": "remaining-units/positive/godot-0ssas3sy/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "ui-language-attribution.json",
+      "baseline_exact_test_replayed": true,
+      "classification": "Exact failure reproduced on independent GP10 baseline",
+      "source_or_expectation_modified": false
+    },
+    {
+      "test": "test_workshop_smoke_controls.gd",
+      "candidate_report": "remaining-units/positive/godot-hojwiqxd/report.json",
+      "candidate_reason": "process_exit",
+      "attribution": "workshop-smoke-attribution.json",
+      "baseline_exact_test_replayed": true,
+      "classification": "Exact failure reproduced on independent GP10 baseline",
+      "source_or_expectation_modified": false
+    }
+  ],
+  "baseline_scope": "Copied GP10 app: all 1,354 GDScripts byte-identical to immutable GP10, with the same isolated rendering/import metadata repair needed to reach tests; no GP11 kernel/profile/steering source. Original GP10 worktree remains untouched.",
+  "conclusion": "No GP11-specific numeric/kernel failure was observed in this frozen unit cohort. Nine non-companion failed scripts and the companion-profile gate were independently replayed; seven other companion failures share refused admission and were not independently replayed.",
+  "limits": "All 17 failures remain failures. Two explicitly named physical gates remain pending under original harness flags. This is headless software evidence, not physical or product-resolution/performance qualification."
+}

@@ -1,0 +1,22 @@
+{
+  "format": "openrc-composite-integration-continuation v1",
+  "status": "failed",
+  "complete": true,
+  "normalization": "normalization.json",
+  "source_before": "source-before.json",
+  "app_source_before": "app-source-before.json",
+  "harness": "continue-integration.sh",
+  "one_command_full_suite_pass": false,
+  "session_id": 71133,
+  "started_utc": "2026-10-26T15:02:21.001617+00:00",
+  "log": "full-suite.log",
+  "scope": "Composite continuation of the unchanged frozen GP11 runtime, with only canonical-LF authoring JSON normalization outside app.",
+  "exit_code": 1,
+  "stop": "D8b synthetic-polar candidate freshness check; first stale candidate steep.json",
+  "failure_report": "positive/godot-0ml8g61y/report.json",
+  "C7_trace_acceptance": "19 tests passed",
+  "source_unchanged": true,
+  "app_source_dependency_paths_verified": 4034,
+  "selected_source_paths_verified": 165,
+  "generated_python_cache_additions_excluded": 5
+}

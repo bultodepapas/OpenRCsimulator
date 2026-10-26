@@ -1,0 +1,163 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   no preferences -> runway start
+ok   write old preferences without a start choice
+ok   old schema-1 preferences without start choice -> current runway default
+ok   write invalid start preference taxi
+ok   invalid start preference taxi -> runway
+ok   write invalid start preference 7
+ok   invalid start preference 7 -> runway
+ok   write invalid start preference true
+ok   invalid start preference true -> runway
+ok   runway preference is valid for the Stik
+ok   runway preference is valid for qualified Timber
+ok   runway preference is valid for qualified Avanti
+ok   jensen-das-ugly-stik-60 defaults to runway with no saved start
+ok   jensen-das-ugly-stik-60 retains explicit airborne preference
+ok   stik-glow-61fx-2t defaults to runway with no saved start
+ok   stik-glow-61fx-2t retains explicit airborne preference
+ok   stik-glow-55ax-2t defaults to runway with no saved start
+ok   stik-glow-55ax-2t retains explicit airborne preference
+ok   stik-glow-fs64v-4t defaults to runway with no saved start
+ok   stik-glow-fs64v-4t retains explicit airborne preference
+ok   gp-extra-300s-60 defaults to runway with no saved start
+ok   gp-extra-300s-60 retains explicit airborne preference
+ok   p51d-mustang-120 defaults to runway with no saved start
+ok   p51d-mustang-120 retains explicit airborne preference
+ok   f4u-corsair-250 defaults to runway with no saved start
+ok   f4u-corsair-250 retains explicit airborne preference
+ok   sebart-avanti-s-a200-p100rx defaults to runway with no saved start
+ok   sebart-avanti-s-a200-p100rx retains explicit airborne preference
+ok   turbo-lumber-evolution defaults to runway with no saved start
+ok   turbo-lumber-evolution retains explicit airborne preference
+ok   future schema reads a valid runway choice and stays read-only
+ok   future schema refuses save without changing its bytes
+ok   save failure is reported for a path below an existing file
+ok   seed preferences with the first-flight hint suppressed
+ok   Home restores explicit airborne preference
+ok   Home starts focused on Fly
+ok   Up from Fly focuses the start selector
+ok   a real Enter event selects runway
+ok   runway caption names the 50 % trim (D6e-R4)
+ok   changing start choice does not save it
+ok   radio axis cannot navigate Home or change the start
+ok   Extra keeps runway available and selected
+ok   aircraft change retains the saved start until Fly
+ok   returning to Stik keeps runway
+ok   runway cycles to the secondary airborne choice
+ok   airborne caption describes the trimmed level start
+ok   runway can be selected again on the supported Stik
+ok   selection is still not persisted before Fly
+ok   Down from the selector returns focus to Fly
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Fly creates one flight and removes Home
+ok   Fly saves the selected runway choice
+ok   main and session receive the selected choice
+ok   runway launch succeeded without fallback
+ok   D6e-R4: the Home runway launch carries the 50 % cruise trim
+ok   trace metadata identifies the launch choice
+ok   R restarts on runway
+ok   pause navigation reaches Restart
+ok   Pause Restart retains runway
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 13), point speed 0.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 1.6 m/s, pitch -2°, bank -0° (throttle closed, low airspeed)
+ok   ground contact enters the crash hold
+ok   crash recovery restarts on runway
+ok   pause navigation reaches End
+ok   flight -> Home preserves runway and saves no active session
+ok   Home focus returns to Fly
+ok   fake radio still cannot move Home focus or selection
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Home -> flight again uses runway
+ok   fake radio is registered without implicit flight selection
+failsafe: Controller selected; check controls and continue.
+ok   fake radio can be explicitly selected for flight
+ok   selected fake radio connects while preserving runway launch
+ok   fake radio throttle low arms the transmitter
+ok   P resumes after the selected radio is armed
+ok   radio roll reaches flight controls with solved trim
+ok   radio throttle reaches full power after arming
+failsafe: Controller selected; check controls and continue.
+ok   keyboard can be explicitly selected after the fake radio flight
+ok   manual radio flight can end back at Home
+ok   runway cycles to airborne
+ok   airborne label explains the fixed 50 % trim
+ok   the airplane cycle has two choices
+ok   new choice is not saved before Fly
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   airborne Home launch succeeds
+ok   main installs the 50 % equilibrium before flight
+ok   new choice persists after successful Fly
+ok   trace records the airborne launch and its trim throttle
+ok   restart retains the 50 % trim
+ok   return to Home preserves the airborne choice
+ok   changing airplane keeps the airborne choice
+ok   a saved half-power preference is shown as the airborne start
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   the legacy preference flies the trimmed airborne start and is saved as airborne
+ok   write Spanish airborne preferences
+ok   saved Spanish Home defaults to airborne
+ok   Spanish Home focuses the start selector
+ok   real Spanish Home event selects runway without saving
+ok   Down returns focus to Fly after choosing runway
+ok   rejected runway launch leaves Home active and no session behind
+ok   rejection clears Fly latch and keeps Fly usable
+ok   rejection displays a Spanish reason
+ok   rejected start does not save or overwrite the preference file
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Fly can be retried after rejection
+ok   retry starts the selected runway choice
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future preferences still show valid runway choice
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   future-schema settings do not block the flight
+ok   failed save reason stays on the flight
+ok   failed save reason remains visible on returned Home
+ok   future preference bytes are preserved after failed save
+ok   alternate field fixture is valid
+ok   write runway preference for alternate-field probe
+ok   runway is disabled outside the existing default field
+ok   alternate field offers the airborne start only, trimmed like every launch (D6e-R4)
+ok   write runway preference before aircraft sanitization
+ok   changing to jensen-das-ugly-stik-60 keeps runway
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   jensen-das-ugly-stik-60 Home Fly starts on the runway
+ok   jensen-das-ugly-stik-60 launches at idle with gear supported
+ok   changing to stik-glow-61fx-2t keeps runway
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-61fx-2t Home Fly starts on the runway
+ok   stik-glow-61fx-2t launches at idle with gear supported
+ok   changing to stik-glow-55ax-2t keeps runway
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-55ax-2t Home Fly starts on the runway
+ok   stik-glow-55ax-2t launches at idle with gear supported
+ok   changing to stik-glow-fs64v-4t keeps runway
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-fs64v-4t Home Fly starts on the runway
+ok   stik-glow-fs64v-4t launches at idle with gear supported
+ok   changing to gp-extra-300s-60 keeps runway
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   gp-extra-300s-60 Home Fly starts on the runway
+ok   gp-extra-300s-60 launches at idle with gear supported
+ok   changing to p51d-mustang-120 keeps runway
+ok   p51d-mustang-120 Home Fly starts on the runway
+ok   p51d-mustang-120 launches at idle with gear supported
+ok   changing to f4u-corsair-250 keeps runway
+ok   f4u-corsair-250 Home Fly starts on the runway
+ok   f4u-corsair-250 launches at idle with gear supported
+ok   changing to sebart-avanti-s-a200-p100rx keeps runway
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx Home Fly starts on the runway
+ok   sebart-avanti-s-a200-p100rx launches at idle with gear supported
+ok   changing to turbo-lumber-evolution keeps runway
+ok   turbo-lumber-evolution Home Fly starts on the runway
+ok   turbo-lumber-evolution launches at idle with gear supported
+ok   switching back to the Stik keeps runway
+ok   qualified P-51 enables the runway selector (P51-21)
+ok   qualified Timber enables the runway selector
+ok   Timber offers airborne as the secondary choice
+ok   Home can select runway for qualified Timber
+ok   write qualified Avanti runway preference
+ok   qualified Avanti enables and restores the runway selector
+all UI runway checks passed

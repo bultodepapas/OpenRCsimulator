@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+WARNING: ImportedVegetation option bark_lod_error_px must be 1 to 16 pixels; using 1
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] _warn_option_once (res://scenery/imported_vegetation.gd:405)
+       [1] _bark_lod_error_from_options (res://scenery/imported_vegetation.gd:371)
+       [2] build (res://scenery/imported_vegetation.gd:160)
+       [3] _test_lod_error (res://tests/test_field_tree_detail.gd:163)
+       [4] _initialize (res://tests/test_field_tree_detail.gd:39)
+field tree detail tests passed

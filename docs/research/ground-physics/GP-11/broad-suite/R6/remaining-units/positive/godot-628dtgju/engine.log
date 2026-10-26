@@ -1,0 +1,37 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   visiting Lighting leaves the stored profile untouched
+ok   stored presentation keeps the fields required by its historical version
+ok   inherited night preview retains the stock orientation strips without editing the build
+ok   Original night comparison shows the same stock equipment
+ok   Original day comparison switches the fitted kit off
+ok   preset menu lists each registered preset once, including Custom
+ok   Custom provides all semantic zones and optional effect entries
+ok   lighting edit upgrades only historical v1/v2 and preserves newer fields
+ok   Custom starts with orientation lock and blocks ineffective navigation palette/pattern edits
+ok   sequence requires a saved cue for the selected zone
+ok   unlocking makes navigation palette and pattern controls editable
+ok   invalid hex remains visible and blocks Save and Test fly
+ok   a pending lighting edit holds page navigation
+ok   cancel restores accepted palette text and launch validity
+ok   ColorPicker applies canonical six-digit HTML colors
+ok   Lighting participates in shared Undo
+ok   shared Redo restores the lighting edit
+ok   per-zone brightness is an explicit pending edit
+ok   zone brightness applies independently of global brightness
+ok   zone slider stays synchronized after commit
+ok   pattern, cycle speed and telemetry response save through the advanced editor
+ok   zones without saved cues keep Sequence disabled
+ok   Festival enables Sequence on cue-backed zones
+ok   effects expose Wingtip spark/trail/burst, intensity and lifetime controls
+ok   lighting recovery state uses the bounded four-field contract
+ok   valid lighting editor state restores
+ok   lighting recovery rejects unknown editor-state fields
+ok   lighting recovery rejects more than eight raw color fields
+ok   v1 profile visit does not migrate or inject lighting
+ok   v1 lighting edit promotes additively and preserves smoke
+ok   v2 profile visit does not migrate or inject lighting
+ok   v2 lighting edit promotes additively and preserves smoke
+ok   v4 profile visit does not migrate or inject lighting
+ok   v4 lighting edit promotes additively and preserves smoke
+Workshop lighting checks: 0 failures

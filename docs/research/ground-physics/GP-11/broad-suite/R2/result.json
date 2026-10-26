@@ -1,0 +1,21 @@
+{
+  "format": "openrc-frozen-full-suite-launch v1",
+  "utc": "2026-10-26T11:39:55.120492+00:00",
+  "attempt": "R2-register-consumers-plus-R1-wrappers",
+  "status": "failed",
+  "worktree": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "command": "app/test.sh",
+  "scope": "b85 + GP10 final9 + GP11 exact36 + R1 two math wrappers + exact main register generator; generated register uses frozen schema; later GP12 runtime/X8/Step/source/admission excluded",
+  "source_before": "source-before.json",
+  "log": "full-suite.log",
+  "positive_collection": "positive",
+  "expected_failure_collection": "expected",
+  "complete": true,
+  "exit_code": 1,
+  "stop": "AS-07/09 build_models.py --check stale generated imported model manifests; before all-script parse and units",
+  "attribution": "same3 failures reproduced read-only GP10 baseline; native import added .glb.import metadata changing dependency/livery source hashes",
+  "source_unchanged": true,
+  "source_paths_verified": 153,
+  "parameter_register_gate": "passed",
+  "manifest_attribution": "model-manifest-attribution.json"
+}

@@ -6,6 +6,7 @@ const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 const Presentation := preload("res://workshop/presentation.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const ThemeSpec := preload("res://ui/ui_theme.gd")
 
 var _failures := 0
 var _probe_profiles: Array[Dictionary] = []
@@ -198,6 +199,7 @@ func _run() -> void:
 		and int(saved_effect.lifetime_ticks) == 180,
 		"effect=%s" % saved_effect)
 
+	await _test_rejected_edit_focus(editor, lighting)
 	_test_configuration_reuse(bindings)
 	_test_recovery_state(lighting)
 	_test_sequence_integration(editor, lighting)
@@ -211,6 +213,90 @@ func _run() -> void:
 	await process_frame
 	print("Workshop lighting checks: %d failures" % _failures)
 	quit(1 if _failures else 0)
+
+
+func _test_rejected_edit_focus(editor: Node, lighting: Control) -> void:
+	var original_size := root.size
+	var original_scale := ThemeSpec.text_scale
+	var original_locale := TranslationServer.get_locale()
+	var scroll := editor.find_child("WorkshopScroll", true, false) as ScrollContainer
+	# A rejected cross-panel edit must leave the existing input and draft intact.
+	for pixels in [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160), Vector2i(1280, 720)]:
+		root.size = pixels
+		for locale: String in ["en", "es"]:
+			TranslationServer.set_locale(locale)
+			for scale: float in [1.0, 2.0]:
+				ThemeSpec.text_scale = scale
+				editor.get("_screen").theme = ThemeSpec.build()
+				lighting.call("cancel_pending_edit")
+				lighting.call("_toggle_zones", true)
+				lighting.call("_toggle_effects", true)
+				await _settle(6)
+				var tag := "%s/%s/%s" % [pixels, locale, scale]
+				var before: Dictionary = editor.get_presentation()
+				lighting.call("_set_effect_value", "vfx_tip_left", "intensity", 0.8)
+				var hex := lighting.find_child("LightingPaletteHex0", true, false) as LineEdit
+				var accepted_color := hex.text
+				hex.grab_focus()
+				await _settle(6)
+				var offset := scroll.scroll_vertical
+				hex.text = "#123456"
+				hex.text_changed.emit(hex.text)
+				await _settle(6)
+				_check(tag + " rejected color keeps its input and focus", is_instance_valid(hex) and hex.has_focus())
+				_check(tag + " rejected color keeps scroll", scroll.scroll_vertical == offset)
+				_check(tag + " rejected color restores accepted text without discarding effects", lighting.get("_effects_pending")
+					and lighting.find_child("LightingPaletteHex0", true, false).text == accepted_color
+					and editor.get_presentation() == before and editor.save_button.disabled)
+				var picker := lighting.find_child("LightingPalettePicker0", true, false) as ColorPickerButton
+				picker.grab_focus()
+				await _settle(6)
+				offset = scroll.scroll_vertical
+				picker.color = Color("#ABCDEF")
+				picker.color_changed.emit(picker.color)
+				await _settle(6)
+				_check(tag + " rejected picker edit keeps its control, focus and scroll",
+					is_instance_valid(picker) and picker.has_focus() and scroll.scroll_vertical == offset)
+				_check(tag + " rejected picker restores the accepted color",
+					lighting.find_child("LightingPalettePicker0", true, false).color == Color(accepted_color)
+					and editor.get_presentation() == before)
+				lighting.call("cancel_pending_edit")
+				hex = lighting.find_child("LightingPaletteHex0", true, false) as LineEdit
+				hex.text = "#BAD"
+				hex.text_changed.emit(hex.text)
+				for field: String in ["enabled", "kind", "intensity", "lifetime"]:
+					var controls: Dictionary = lighting.get("_effects_controls_by_anchor")["vfx_tip_left"]
+					var control: Control = controls[field]
+					var focus_target: Control = control.get_line_edit() if control is SpinBox else control
+					focus_target.grab_focus()
+					await _settle(6)
+					offset = scroll.scroll_vertical
+					var accepted: Variant
+					if control is SpinBox:
+						accepted = control.value
+						control.value = 0.9
+					elif control is OptionButton:
+						accepted = control.selected
+						control.select((control.selected + 1) % control.item_count)
+						control.item_selected.emit(control.selected)
+					else:
+						accepted = control.button_pressed
+						control.button_pressed = not control.button_pressed
+					await _settle(6)
+					var restored: Control = lighting.get("_effects_controls_by_anchor")["vfx_tip_left"][field]
+					_check(tag + "/" + field + " rejection keeps input, focus and scroll",
+						is_instance_valid(control) and restored == control and focus_target.has_focus()
+						and scroll.scroll_vertical == offset)
+					var actual: Variant = restored.value if restored is SpinBox else (restored.selected if restored is OptionButton else restored.button_pressed)
+					_check(tag + "/" + field + " rejection restores value and preserves pending color",
+						actual == accepted and hex.text == "#BAD" and lighting.get("_zone_text_invalid")
+						and editor.get_presentation() == before and editor.save_button.disabled)
+	lighting.call("cancel_pending_edit")
+	TranslationServer.set_locale(original_locale)
+	ThemeSpec.text_scale = original_scale
+	root.size = original_size
+	editor.get("_screen").theme = ThemeSpec.build()
+	await _settle(6)
 
 
 func _select_preset(panel: Control, selector: OptionButton, index: int) -> void:

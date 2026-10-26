@@ -1,0 +1,28 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   requested native run has a native display
+ok   headless and macOS Compatibility timing exclusions are explicit
+ok   pre-start sample has stable finite schema
+ok   observer begins disabled
+ok   invalid measurement becomes zero and is counted
+ok   invalid measurement becomes zero and is counted
+ok   invalid measurement becomes zero and is counted
+ok   invalid measurement becomes zero and is counted
+ok   diagnostics record main-view reconstruction
+ok   start records device identity and scope
+ok   timing availability is explicit for this display and renderer
+ok   repeated start does not reset or duplicate polls
+ok   active samples keep a stable finite schema
+ok   GPU polling counters match observations including warm-up
+ok   unavailable timing performs no GPU polls
+ok   available native timing samples the GPU
+ok   stopped diagnostics retain final reconstruction
+ok   stop is idempotent and disables measurement
+ok   stopped samples do not poll again
+ok   stopped sample retains finite schema
+ok   CPU and GPU readings stop after stop
+ok   observer does not retain its viewport node
+ok   sampling after viewport deletion keeps finite schema
+ok   freed viewport is marked unavailable before another RID poll
+ok   stop after viewport deletion is safe
+25 checks, 0 failed

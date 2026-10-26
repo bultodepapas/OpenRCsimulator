@@ -1,0 +1,13 @@
+{
+  "head": "41a252e7b0022b4a6ced77a63b781c3cdbef8528",
+  "files": [
+    {
+      "path": "app/physics/aircraft_ground_electric.gd",
+      "sha256": "c2469baef28ee9bd635b2dfbd021cf065719c66918befbf2df07151be3086901"
+    },
+    {
+      "path": "app/physics/aircraft_ground_source.gd",
+      "sha256": "5288f2c768e9efe25cb237c374c793a91fc1007c49c8da6f1227f2e78478f55f"
+    }
+  ]
+}

@@ -1,0 +1,333 @@
+{
+  "format": "openrc-ground-foundation-production-target-v1",
+  "utc": "2026-10-26T16:30:05.159061+00:00",
+  "commit": "41a252e7b0022b4a6ced77a63b781c3cdbef8528",
+  "main_before": [
+    {
+      "path": "app/physics/ground_traction.gd",
+      "sha256": "1e4ab42e03dc960dbc78b3b26060c4829b9836040b15ab96df20100f79cbbf6d",
+      "bytes": 26386
+    },
+    {
+      "path": "app/physics/contact_assembly_resolution.gd",
+      "sha256": "92e23b6df1ad433dc0c8b08526713764b18f0828dbe35074a3faaec8a270316a",
+      "bytes": 18396
+    },
+    {
+      "path": "app/physics/aircraft_ground_impulse.gd",
+      "sha256": "ed2db610d1e8570069040b362dd751a089d539a1a00101041b2680c0f52f5f03",
+      "bytes": 25869
+    },
+    {
+      "path": "app/physics/aircraft_ground_step.gd",
+      "sha256": "17d6e88c5fccccd909c5e5bad179cba37bbb68aa85127ddf76081b91fa9b2a88",
+      "bytes": 34892
+    },
+    {
+      "path": "app/tests/test_contact_assembly_resolution.gd",
+      "sha256": "69f3566eb0437cb866381f37e3600d323194d69fbf319bb9345f2ffd0556f02d",
+      "bytes": 12283
+    }
+  ],
+  "candidate": [
+    {
+      "path": "tmp/gp12-production-target/app/physics/aircraft_ground_impulse.gd",
+      "sha256": "76c279a9fb58ffcbf5f69861cc2e817dd4bd8300c052504495e76a28c2211f69",
+      "bytes": 28638
+    },
+    {
+      "path": "tmp/gp12-production-target/app/physics/aircraft_ground_step.gd",
+      "sha256": "d2132788978a9a6581ee5611498a450534d80aea5b5ba5ac9b1e5275f4a251fa",
+      "bytes": 36450
+    },
+    {
+      "path": "tmp/gp12-production-target/app/physics/contact_assembly_resolution.gd",
+      "sha256": "3cb14049fee9f7976fdac0b88b1129c2aca20c686b53e15fc188a44856d53f45",
+      "bytes": 39934
+    },
+    {
+      "path": "tmp/gp12-production-target/app/physics/contact_assembly_strategy.gd",
+      "sha256": "ec89cd594e810188092647165961ddaf2b6da854e2c3ce05ed03badfb24123fb",
+      "bytes": 3596
+    },
+    {
+      "path": "tmp/gp12-production-target/app/physics/ground_traction.gd",
+      "sha256": "77393b81f6d6676aea5f679a48dd7b408996cf509fb6945e70b3ebc9d662ada1",
+      "bytes": 29931
+    }
+  ],
+  "fixtures": [
+    {
+      "source": {
+        "path": "tmp/gp-composition-draft/rest-qp-3d3da63775c470f8.bin",
+        "sha256": "92f54f5b19bc9cc23826747070ca924587825d53b5fee690afcd21adca237a98",
+        "bytes": 5488
+      },
+      "target": {
+        "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_nonzero.bin",
+        "sha256": "92f54f5b19bc9cc23826747070ca924587825d53b5fee690afcd21adca237a98",
+        "bytes": 5488
+      }
+    },
+    {
+      "source": {
+        "path": "tmp/gp12-rest-candidate/next-qp-da3b6f85dc9b37d7.bin",
+        "sha256": "3c75d979b6bd7d7b10dc534be2142312e4881548b7a11f2f34dfd61e4fbe9539",
+        "bytes": 5784
+      },
+      "target": {
+        "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_proposal.bin",
+        "sha256": "3c75d979b6bd7d7b10dc534be2142312e4881548b7a11f2f34dfd61e4fbe9539",
+        "bytes": 5784
+      }
+    },
+    {
+      "source": {
+        "path": "tmp/gp12-rest-range/range-next-qp-e2221db0ea8f576c.bin",
+        "sha256": "caa37119b408baabb46aa40fe5d76ab036cc0dfdcb42a5d2f093d8941f0657f5",
+        "bytes": 5760
+      },
+      "target": {
+        "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_range.bin",
+        "sha256": "caa37119b408baabb46aa40fe5d76ab036cc0dfdcb42a5d2f093d8941f0657f5",
+        "bytes": 5760
+      }
+    },
+    {
+      "source": {
+        "path": "tmp/gp12-range-proposal/work-failed-01a80fe127bb29e8.bin",
+        "sha256": "23471f7af97ea5c032a54e17c2e0cdc877fe55eaf13cef17609cc19ff4c5e449",
+        "bytes": 8876
+      },
+      "target": {
+        "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_slip.bin",
+        "sha256": "23471f7af97ea5c032a54e17c2e0cdc877fe55eaf13cef17609cc19ff4c5e449",
+        "bytes": 8876
+      }
+    },
+    {
+      "source": {
+        "path": "tmp/gp12-slip-proof/next-failed-2a96aa6b3041b237.bin",
+        "sha256": "cb529ae633cd76e5a2a52e1975d33da4a653344ae85b2c0f67b9fcec9b1122c4",
+        "bytes": 11432
+      },
+      "target": {
+        "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_work.bin",
+        "sha256": "cb529ae633cd76e5a2a52e1975d33da4a653344ae85b2c0f67b9fcec9b1122c4",
+        "bytes": 11432
+      }
+    }
+  ],
+  "cleanup": "Imports only; Impulse uses separate AR core and Strategy solve wrapper. Strategy forwards no proof API.",
+  "foundation_report": {
+    "path": "tmp/gp12-local-reuse/foundation-report.json",
+    "sha256": "2eb88600091735ea0b8d8e9cbc450971fb272ab4a94b12f48c726496d8ca8306",
+    "bytes": 16053
+  },
+  "production_changed": false,
+  "finalized_utc": "2026-10-26T16:36:07.070938+00:00",
+  "payload": [
+    {
+      "path": "tmp/gp12-production-target/app/physics/aircraft_ground_impulse.gd",
+      "sha256": "76c279a9fb58ffcbf5f69861cc2e817dd4bd8300c052504495e76a28c2211f69",
+      "bytes": 28638,
+      "target": "app/physics/aircraft_ground_impulse.gd"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/physics/aircraft_ground_step.gd",
+      "sha256": "d2132788978a9a6581ee5611498a450534d80aea5b5ba5ac9b1e5275f4a251fa",
+      "bytes": 36450,
+      "target": "app/physics/aircraft_ground_step.gd"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/physics/contact_assembly_resolution.gd",
+      "sha256": "3cb14049fee9f7976fdac0b88b1129c2aca20c686b53e15fc188a44856d53f45",
+      "bytes": 39934,
+      "target": "app/physics/contact_assembly_resolution.gd"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/physics/contact_assembly_strategy.gd",
+      "sha256": "ec89cd594e810188092647165961ddaf2b6da854e2c3ce05ed03badfb24123fb",
+      "bytes": 3596,
+      "target": "app/physics/contact_assembly_strategy.gd"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/physics/ground_traction.gd",
+      "sha256": "77393b81f6d6676aea5f679a48dd7b408996cf509fb6945e70b3ebc9d662ada1",
+      "bytes": 29931,
+      "target": "app/physics/ground_traction.gd"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_default_outputs.bin",
+      "sha256": "85df6ec77ea772eb55a5d1b9942e4d828ea78fae25fd833b93d6a6af1ece5133",
+      "bytes": 53128,
+      "target": "app/tests/fixtures/ground_contact_default_outputs.bin"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_nonzero.bin",
+      "sha256": "92f54f5b19bc9cc23826747070ca924587825d53b5fee690afcd21adca237a98",
+      "bytes": 5488,
+      "target": "app/tests/fixtures/ground_contact_rest_nonzero.bin"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_proposal.bin",
+      "sha256": "3c75d979b6bd7d7b10dc534be2142312e4881548b7a11f2f34dfd61e4fbe9539",
+      "bytes": 5784,
+      "target": "app/tests/fixtures/ground_contact_rest_proposal.bin"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_range.bin",
+      "sha256": "caa37119b408baabb46aa40fe5d76ab036cc0dfdcb42a5d2f093d8941f0657f5",
+      "bytes": 5760,
+      "target": "app/tests/fixtures/ground_contact_rest_range.bin"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_slip.bin",
+      "sha256": "23471f7af97ea5c032a54e17c2e0cdc877fe55eaf13cef17609cc19ff4c5e449",
+      "bytes": 8876,
+      "target": "app/tests/fixtures/ground_contact_rest_slip.bin"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/tests/fixtures/ground_contact_rest_work.bin",
+      "sha256": "cb529ae633cd76e5a2a52e1975d33da4a653344ae85b2c0f67b9fcec9b1122c4",
+      "bytes": 11432,
+      "target": "app/tests/fixtures/ground_contact_rest_work.bin"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/tests/test_contact_assembly_resolution.gd",
+      "sha256": "69f3566eb0437cb866381f37e3600d323194d69fbf319bb9345f2ffd0556f02d",
+      "bytes": 12283,
+      "target": "app/tests/test_contact_assembly_resolution.gd"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/tests/test_contact_assembly_strategy.gd",
+      "sha256": "6a403a127fa4270481d04a62e1b91b327cf77be41b7a770e0c23c942a4827021",
+      "bytes": 3117,
+      "target": "app/tests/test_contact_assembly_strategy.gd"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/tests/test_contact_slip_consistency.gd",
+      "sha256": "95fcd5b51fa1418350e5a020735a30f8435ea87f7bb892f823cc38c8941f2b80",
+      "bytes": 5774,
+      "target": "app/tests/test_contact_slip_consistency.gd"
+    },
+    {
+      "path": "tmp/gp12-production-target/app/tests/test_contact_work_consistency.gd",
+      "sha256": "7fb49c45a9c5bc35adbb910790eb48a7f4a734a7239ed4526acd8cdc2db20d69",
+      "bytes": 6844,
+      "target": "app/tests/test_contact_work_consistency.gd"
+    }
+  ],
+  "main_preconditions_still_match": true,
+  "focused_checks": {
+    "existing_core": 53,
+    "strategy": 34,
+    "slip": 19,
+    "work": 24,
+    "total": 130,
+    "failed": 0
+  },
+  "step_import_parity": {
+    "checks": 14,
+    "failed": 0,
+    "complete_public_outputs_identical_at": "retained6s and10s checkpoints"
+  },
+  "checks": [
+    {
+      "report": {
+        "path": "tmp/gp12-production-target/checks/final-test_contact_assembly_strategy-_4e1lz34/report.json",
+        "sha256": "7702cfa81f07b05f1953d0801c1481de52dac65c87eb2da6ee4e67c15b27ee73",
+        "bytes": 1366
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "report": {
+        "path": "tmp/gp12-production-target/checks/final-test_contact_slip_consistency-f2yvnq_0/report.json",
+        "sha256": "1a7d80a74c3225601458416c33fd9b0bb3e58d82cfd8de92e508c0eb9d1a1727",
+        "bytes": 1362
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "report": {
+        "path": "tmp/gp12-production-target/checks/final-test_contact_work_consistency-4qtzbiu7/report.json",
+        "sha256": "5045913054873bfa8080c6e440d3b7505fa720783c2a3234c4df7cadd74df870",
+        "bytes": 1361
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "report": {
+        "path": "tmp/gp12-production-target/checks/frozen-default-inputs-rntm6s3s/report.json",
+        "sha256": "2e4bfca10832ded987c8926bdb5174d5ad2e47ee884eb532a979219fb6f4d1b7",
+        "bytes": 1306
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "report": {
+        "path": "tmp/gp12-production-target/checks/step-import-whole-output-parity-7ztwb087/report.json",
+        "sha256": "d182823fc07fe8b853660c4bfda0d10635c788aba898d6781b9c870f8f8f964d",
+        "bytes": 1331
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "report": {
+        "path": "tmp/gp12-production-target/checks/test_contact_assembly_resolution-l9gnyrpi/report.json",
+        "sha256": "da800afeb5247f975f07cd03d5e9604412d9274ffbcd3ce4a7086b38a24e7f7b",
+        "bytes": 1356
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "report": {
+        "path": "tmp/gp12-production-target/checks/test_contact_assembly_strategy-djb7_jnj/report.json",
+        "sha256": "1ed69293f66a61ddf135472418dfdb1bb69c92de4d06997f467f2a282ed1b49a",
+        "bytes": 1348
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "report": {
+        "path": "tmp/gp12-production-target/checks/test_contact_slip_consistency-zkvr9jgb/report.json",
+        "sha256": "41fdb3115ae024611df61214873a4ec2dc7d3643896563f602426b2ab6ec33ea",
+        "bytes": 1344
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    },
+    {
+      "report": {
+        "path": "tmp/gp12-production-target/checks/test_contact_work_consistency-olz7m3d6/report.json",
+        "sha256": "f553f55f1e558cb7cdf49172e6438e1c575f4b47ebf7ea110ddc6078360a7b28",
+        "bytes": 1343
+      },
+      "ok": true,
+      "complete": true,
+      "reason": "passed"
+    }
+  ],
+  "review_patch": {
+    "path": "tmp/gp12-production-target/review.patch",
+    "sha256": "682c45bfd1e5015751fbe8d47805cb0ce685660c4d56e8a4e683bfcc02e4e79c",
+    "bytes": 70899
+  },
+  "binary_attribute_recommendation": "/app/tests/fixtures/ground_contact_*.bin -text"
+}

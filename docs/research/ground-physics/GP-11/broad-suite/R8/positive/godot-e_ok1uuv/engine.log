@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+knots [18.0, 24.0, 30.0, 36.0] deg: [1.0, 0.86, 0.86, 0.82]; 49 evaluations
+J 10.397: RMS retention error 0.0593, RMS Clp error 0.2548; whole-aircraft CLmax 1.002 at 14.0 deg; verified

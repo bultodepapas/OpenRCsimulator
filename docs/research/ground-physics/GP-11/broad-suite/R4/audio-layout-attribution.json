@@ -1,0 +1,12 @@
+{
+  "expected_sha256": "8194e00426eb8deac6fd565f59d1e6fb9050ece5c5b6d517a83becab02b58287",
+  "generated_sha256": "0d271cbb07b5b32fd8a546b1a93d4404896f0a8044727397b00947c4d28f68a7",
+  "expected_crlf": 10,
+  "expected_lf": 10,
+  "generated_crlf": 0,
+  "generated_lf": 10,
+  "equal_with_uid_ignored": false,
+  "equal_with_uid_ignored_and_eol_normalized": true,
+  "gp10_expected_resource_identical": true,
+  "gp10_generator_source_identical": true
+}

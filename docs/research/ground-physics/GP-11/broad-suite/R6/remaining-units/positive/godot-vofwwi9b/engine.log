@@ -1,0 +1,25 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   default field loads  []
+ok   default runway threshold resolves  { &"ok": true, &"north": 15.0, &"east": -47.0, &"heading": 1.5707963267949, &"message": "" }
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   240 Hz Extra data prepares
+ok   240 Hz default field installs
+ok   240 Hz runway equilibrium starts   
+ok   240 Hz all three wheel anchors begin stuck  [1.0, 1.0, 1.0]
+ok   240 Hz uses the requested solver step
+ok   240 Hz six-second idle stays parked  speed 0.00000000 m/s, drift 0.00000000 m, crash={  } prop_strike={  } fault=
+ok   240 Hz glow engine starts on the runway
+ok   240 Hz 5 s takeoff clears runway with session crash/prop-strike checks  lifted at 3.071 s; speed 15.92 m/s, altitude +7.54 m, anchors=[0.0, 0.0, 0.0], crash={  }, prop_strike={  }, fault=
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   480 Hz Extra data prepares
+ok   480 Hz default field installs
+ok   480 Hz runway equilibrium starts   
+ok   480 Hz all three wheel anchors begin stuck  [1.0, 1.0, 1.0]
+ok   480 Hz uses the requested solver step
+ok   480 Hz six-second idle stays parked  speed 0.00000000 m/s, drift 0.00000000 m, crash={  } prop_strike={  } fault=
+ok   480 Hz glow engine starts on the runway
+ok   480 Hz 5 s takeoff clears runway with session crash/prop-strike checks  lifted at 3.071 s; speed 15.92 m/s, altitude +7.54 m, anchors=[0.0, 0.0, 0.0], crash={  }, prop_strike={  }, fault=
+Extra runway: 18 checks, 0 failed; factor is estimated, not measured

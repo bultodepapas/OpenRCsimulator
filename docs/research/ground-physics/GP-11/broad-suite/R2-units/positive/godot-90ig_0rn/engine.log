@@ -1,0 +1,123 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   resolution starts recovery and is not saved
+ok   fullscreen locks the window-size selector
+ok   fullscreen timeout restores the saved draft
+ok   8x MSAA reaches the real viewport
+ok   reconstruction menu follows active High renderer
+ok   1080p help compares Quality and Performance input sizes
+ok   reconstruction option availability is provider-specific: native
+ok   reconstruction option availability is provider-specific: fsr2_native
+ok   reconstruction option availability is provider-specific: fsr2_85
+ok   reconstruction option availability is provider-specific: fsr2_quality
+ok   reconstruction option availability is provider-specific: fsr2_balanced
+ok   reconstruction option availability is provider-specific: fsr2_performance
+ok   reconstruction option availability is provider-specific: fsr3_native
+ok   reconstruction option availability is provider-specific: fsr3_85
+ok   reconstruction option availability is provider-specific: fsr3_quality
+ok   reconstruction option availability is provider-specific: fsr3_balanced
+ok   reconstruction option availability is provider-specific: fsr3_performance
+ok   reconstruction option availability is provider-specific: dlss_native
+ok   reconstruction option availability is provider-specific: dlss_quality
+ok   reconstruction option availability is provider-specific: dlss_balanced
+ok   reconstruction option availability is provider-specific: dlss_performance
+ok   Native disables FSR sharpness and explains the saved value
+ok   DLSS preference remains selected regardless of availability
+ok   DLSS sharpness slider stays disabled and explains its saved FSR value
+ok   graphics status shows requested and effective providers
+ok   graphics status shows the current 3D input and output sizes
+ok   unsupported provider explanation names the actual graphics limitation in player language
+ok   FSR3 runtime rollback is described as a runtime failure
+ok   fallback status says Native is active and the saved request is kept
+ok   sharpening preview reaches viewport without saving
+ok   sharpening UI follows the effective FSR provider
+ok   drag updates its label without reconfiguring the renderer
+ok   release applies the final sharpening preview
+ok   reconstruction preview starts recovery without saving
+ok   FSR2 activates only when its provider is available and preserves saved MSAA choice
+ok   FSR2 timeout restores native resolution and saved MSAA
+ok   timeout restores sharpening and disables slider
+ok   live reconstruction switch: native
+ok   live reconstruction switch: fsr2_native
+ok   live reconstruction switch: fsr2_85
+ok   live reconstruction switch: fsr2_quality
+ok   live reconstruction switch: fsr2_balanced
+ok   live reconstruction switch: fsr2_performance
+ok   live reconstruction switch: fsr3_native
+ok   live reconstruction switch: fsr3_85
+ok   live reconstruction switch: fsr3_quality
+ok   live reconstruction switch: fsr3_balanced
+ok   live reconstruction switch: fsr3_performance
+ok   live reconstruction switch: dlss_native
+ok   live reconstruction switch: dlss_quality
+ok   live reconstruction switch: dlss_balanced
+ok   live reconstruction switch: dlss_performance
+ok   failed Keep preserves recovery and saved values
+ok   reopened settings keep accepted graphics values
+ok   Keep updates the geometry rollback checkpoint
+ok   restore defaults resets renderer and persistence
+ok   en 100% category 0 stays on screen
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   settings body remains usable
+ok   sharpening slider has usable width
+ok   en 100% category 3 stays on screen
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   settings body remains usable
+ok   en 200% category 0 stays on screen
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   settings body remains usable
+ok   sharpening slider has usable width
+ok   en 200% category 3 stays on screen
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   settings body remains usable
+ok   es 100% category 0 stays on screen
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   settings body remains usable
+ok   sharpening slider has usable width
+ok   es 100% category 3 stays on screen
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   settings body remains usable
+ok   es 200% category 0 stays on screen
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   settings body remains usable
+ok   sharpening slider has usable width
+ok   es 200% category 3 stays on screen
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   category button remains inside panel
+ok   settings body remains usable
+ok   shell relaunch applies kept FPS and MSAA
+ok   kept FSR2 preserves native MSAA preference
+ok   shell relaunch applies FSR2 or safe native fallback
+ok   shell relaunch preserves disabled sharpening
+advanced graphics: 120 checks, 0 failed

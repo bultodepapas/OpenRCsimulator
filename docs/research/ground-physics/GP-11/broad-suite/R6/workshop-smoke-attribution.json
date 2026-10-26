@@ -1,0 +1,31 @@
+{
+  "format": "openrc-baseline-smoke-profile-isolation v1",
+  "utc": "2026-10-26T14:30:14.280662+00:00",
+  "baseline_report": "tmp\\gp11-full-suite-checks\\R6\\baseline-ui\\workshop-smoke\\godot-3mbymqz_\\report.json",
+  "candidate_report": "tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-hojwiqxd\\report.json",
+  "identical_test_dependencies": [
+    {
+      "path": "app/tests/test_workshop_smoke_controls.gd",
+      "sha256": "4134e55ef049d73858dff0e6af189993c9341f44ca0834ce270a353772cedbbb"
+    },
+    {
+      "path": "app/ui/workshop_customization.gd",
+      "sha256": "a54285c1570c6d56126f74f7b889bc6a1d8776b1a30ebc2f91270a9638a41793"
+    },
+    {
+      "path": "app/workshop/presentation.gd",
+      "sha256": "3fb4e992a9b742a6073dc40290695c6d8645915e257ea1db14de0bcbfed78176"
+    },
+    {
+      "path": "app/render/presentation_sources.gd",
+      "sha256": "128eab31b7e4aa959fb5fdab6cab273fcb75f6a5b847226b0a9cf311d7a6e2f0"
+    }
+  ],
+  "same_results": [
+    "FAIL v1 fixture validates through the explicit legacy reader ",
+    "FAIL legacy profile migration fixture is available [\"Presentation profile has missing or unsupported fields.\"]",
+    "Workshop smoke controls: 24 checks, 2 failures"
+  ],
+  "failure_messages_byte_equal": true,
+  "attribution": "Inherited presentation smoke-profile v1 migration fixture failure, not aircraft-v1 or physics. Both baseline and candidate24checks2fail; no presentation edits made."
+}

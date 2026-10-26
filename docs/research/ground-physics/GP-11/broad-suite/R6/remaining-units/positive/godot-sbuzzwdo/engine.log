@@ -1,0 +1,41 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   no preferences -> passing evening
+ok   invalid time midnight -> passing evening
+ok   invalid time 3 -> passing evening
+ok   invalid time true -> passing evening
+ok   invalid time noon -> passing evening
+ok   time choice round-trips
+ok   the button cycles every choice and wraps to day
+ok   choice day is day, a solvable preset or a flowing start
+ok   choice dawn is day, a solvable preset or a flowing start
+ok   choice golden_hour is day, a solvable preset or a flowing start
+ok   choice sunset is day, a solvable preset or a flowing start
+ok   choice blue_hour is day, a solvable preset or a flowing start
+ok   choice evening is day, a solvable preset or a flowing start
+ok   choice moonrise is day, a solvable preset or a flowing start
+ok   choice night is day, a solvable preset or a flowing start
+ok   choice night_dark is day, a solvable preset or a flowing start
+ok   session choice applies without arguments
+ok   arguments win over the session choice
+ok   day keeps the fixed sun
+ok   Home shows the saved compact choice
+ok   Home backdrop receives the saved field-lighting profile and campfire
+ok   the backdrop is night: stars and field lights
+ok   time-of-day action is keyboard reachable
+ok   the button advances and wraps to day
+ok   day backdrop: calibrated fixed sun, no stars
+ok   one backdrop, drawn under the menu
+ok   Home keeps the keyboard focus
+ok   choice saved at once
+ok   Spanish compact label
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Fly uses the chosen hour
+ok   the flight has the dusk field lights
+ok   Fly uses the same night settings as the Home backdrop
+ok   field-world flights expose a Sky and lighting action
+ok   Sky and lighting is reachable inside Session options
+ok   Field lighting opens compact profile and activation selectors without numeric time controls
+ok   paused field selection updates the flight and saves all three options
+ok   field-lighting Apply leaves the paused simulation untouched
+all UI time-of-day checks passed

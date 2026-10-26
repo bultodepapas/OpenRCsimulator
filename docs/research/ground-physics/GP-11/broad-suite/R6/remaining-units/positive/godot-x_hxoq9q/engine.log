@@ -1,0 +1,37 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   surface classifier keeps runway precedence inside mown grass
+ok   surface classifier maps mown areas to grass
+ok   surface classifier maps rough/outside ground to gravel
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   airborne start is well above landing-gear reach in the flat test field
+ok   real FlightSession snapshot returns one row per installed contact — rows=3 contacts=3
+ok   contact rows expose world-space point forces and velocities
+ok   snapshot leaves accepted state, aux and continuous arrays unchanged
+ok   spawn snapshot does not invent wheel loading in the airborne start — normal forces=[0.0, 0.0, 0.0]
+ok   airborne audio fallback leaves nested landing gear data unchanged
+ok   loaded audio snapshot reports force at a gear contact
+ok   loaded audio snapshot leaves nested landing gear data unchanged
+ok   spawn on loaded gear seeds the contact without a phantom touchdown
+ok   parked gear is silent at zero wheel speed
+ok   loaded taxi speed starts a spatial hard-surface roll layer
+ok   roll source is positioned at its gear point before playback
+ok   ground audio uses the common manual path law without Godot double attenuation
+ok   walking-speed taxi retains an audible roll envelope
+ok   faster rolling grows smoothly above the taxi level
+ok   mown terrain crossfades to the grass recording
+ok   airborne-to-loaded contact creates one touchdown impact
+ok   touchdown is emitted at the individual nose gear point
+ok   brief taxi chatter cannot retrigger the touchdown one-shot
+ok   an earlier dive cannot turn a later settled contact into a hard touchdown
+ok   a gentle skid touchdown emits an impact
+ok   skids never emit wheel rolling even with lateral speed
+ok   reset re-seeds loaded contacts without replaying their spawn impact
+ok   repeated render snapshots do not age airborne time into a touchdown
+ok   resuming into contact re-seeds without a paused-frame touchdown
+ok   per-contact voice pool remains bounded
+ok   FlightAudio skips contact snapshot while paused
+ok   FlightAudio refreshes contacts after resume
+ok   reattachment seeds contact instead of replaying a landing during detachment
+ok   a new landing after reattachment still emits its impact
+33 checks, 0 failed

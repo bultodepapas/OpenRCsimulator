@@ -1,0 +1,16 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   the P-51 model builds (manifest current)
+ok   the P-51 publishes anchors for both tip lights, the tail light and the landing lamp  ["nav_left", "nav_right", "nav_tail", "landing"]
+ok   tip lights sit just outboard of their red/green lenses  left 0.0155 m from the lens; right 0.0155 m from the lens; 
+ok   the tail light keeps 11 mm behind its lens as the rudder swings ±26°  worst 4.7557055949526417e-08 m
+ok   landing light is the lamp lens's face on the left gear leg  0.0035 m, host main_gear_left_pivot/main_gear_left_parts/landing_lamp_left
+ok   gear up: landing light off and stowed with the leg, navigation lights on  gap 0.0035 m
+ok   gear in transit (0.999): landing light still off
+ok   selecting ALL does not override the gear gate
+ok   gear down and locked: landing light and lamp on
+ok   NAV mode still turns the landing light off with the gear down
+ok   the landing beam aims forward and slightly down  (0.0, -0.104528, -0.994522)
+ok   session: dark with the gear up and through the 4 s extension, lit once down and locked  { &"available": true, &"extension": 1.0, &"target_down": true, &"status": "down", &"brake": 0.0, &"inhibited": false }
+ok   an aircraft without anchors has no following or gated lights, and gear state never changes its kit
+P51-V13 lights: 13 checks, 0 failed

@@ -15,14 +15,17 @@ const LightingProfile := preload("res://render/lighting/lighting_profile.gd")
 const Presentation := preload("res://workshop/presentation.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const SkinShader := preload("res://render/lighting/rgb_skin.gdshader")
+const ViewportColor := preload("res://render/viewport_color.gd")
 
 const AIRCRAFT_ID := "jensen-das-ugly-stik-60"
 const CAPTURE_SIZE := Vector2i(1920, 1080)
+const FLEET_VIEWS: Array[String] = ["overview", "upper", "lower", "front", "rear", "left", "right"]
 
 var _checks := 0
 var _failures := 0
 var _capture_directory := ""
 var _fleet_capture_directory := ""
+var _fleet_view := "overview"
 
 
 func _initialize() -> void:
@@ -33,6 +36,13 @@ func _run() -> void:
 	ShaderClock.register()
 	_capture_directory = _capture_directory_from_args()
 	_fleet_capture_directory = _capture_directory_from_args("--capture-lighting-fleet=")
+	for argument: String in OS.get_cmdline_user_args():
+		if argument.begins_with("--lighting-fleet-view="):
+			_fleet_view = argument.trim_prefix("--lighting-fleet-view=")
+	if not FLEET_VIEWS.has(_fleet_view):
+		_check("fleet view is one of the declared inspection views", false, _fleet_view)
+		quit(1)
+		return
 	root.size = CAPTURE_SIZE
 	var preview := WorkshopPreview.new()
 	preview.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -375,6 +385,114 @@ func _fleet_representatives() -> Array[Dictionary]:
 	return result
 
 
+func _set_fleet_view(preview: Control, view_id: String) -> Dictionary:
+	preview.call("reset_view")
+	# Preserve the original fleet overview; every other view uses the same framing API.
+	preview.call("orbit_by", 32.0, -24.0)
+	var state := preview.call("get_view_state") as Dictionary
+	match view_id:
+		"upper": state["pitch_deg"] = 62.0
+		"lower": state["pitch_deg"] = -62.0
+		"front":
+			preview.call("set_standard_view", "front")
+			return preview.call("get_view_state") as Dictionary
+		"rear":
+			state["yaw_deg"] = 0.0
+			state["pitch_deg"] = 0.0
+		"left", "right":
+			state["yaw_deg"] = 270.0 if view_id == "left" else 90.0
+			state["pitch_deg"] = 0.0
+	preview.call("restore_view_state", state)
+	return preview.call("get_view_state") as Dictionary
+
+
+func _fleet_camera_evidence(preview: Control, view_id: String) -> Dictionary:
+	var camera := preview.get("_camera") as Camera3D
+	var model_root := preview.get("_airplane_root") as Node3D
+	var bounds: AABB = preview.get("_model_bounds")
+	if not is_instance_valid(camera) or not is_instance_valid(model_root) or not bounds.is_finite():
+		return {"valid": false}
+	var position := camera.position
+	var direction_valid := position.is_finite() and position.length() > 0.0
+	match view_id:
+		"upper": direction_valid = direction_valid and position.y > 0.0
+		"lower": direction_valid = direction_valid and position.y < 0.0
+		"front": direction_valid = direction_valid and position.z < 0.0
+		"rear": direction_valid = direction_valid and position.z > 0.0
+		"left": direction_valid = direction_valid and position.x < 0.0
+		"right": direction_valid = direction_valid and position.x > 0.0
+	var corners_in_view := 0
+	var projected_corners: Array = []
+	for index in 8:
+		var point := model_root.global_transform * bounds.get_endpoint(index)
+		var pixel := camera.unproject_position(point)
+		var depth := -camera.to_local(point).z
+		if pixel.is_finite() and depth >= camera.near and depth <= camera.far \
+				and pixel.x >= 0.0 and pixel.y >= 0.0 and pixel.x <= CAPTURE_SIZE.x and pixel.y <= CAPTURE_SIZE.y:
+			corners_in_view += 1
+		projected_corners.append([pixel.x, pixel.y])
+	return {"valid": direction_valid and corners_in_view == 8,
+		"bounds_corners_in_view": corners_in_view, "projected_bounds_corners_px": projected_corners,
+		"position_m": [position.x, position.y, position.z],
+		"fov_deg": camera.fov, "near_m": camera.near, "far_m": camera.far,
+		"viewport_hdr_2d": camera.get_viewport().use_hdr_2d}
+
+
+func _fleet_placement_vector(value: Variant) -> Variant:
+	if typeof(value) != TYPE_VECTOR3:
+		return null
+	var point: Vector3 = value
+	return [float(point.x), float(point.y), float(point.z)]
+
+
+func _fleet_tip_layout(value: Variant) -> Dictionary:
+	if not value is Dictionary:
+		return {}
+	var tip: Dictionary = value
+	return {
+		"centre_m": _fleet_placement_vector(tip.get("centre")),
+		"trailing_m": _fleet_placement_vector(tip.get("trailing")),
+		"leading_z_m": float(tip.get("leading_z", 0.0)),
+	}
+
+
+func _fleet_placement_evidence(aircraft_root: Node3D) -> Dictionary:
+	var kit := aircraft_root.get_node_or_null("NightKit") as Node3D
+	var evidence := {
+		"night_kit_present": is_instance_valid(kit),
+		"node_positions_root_local_m": {},
+		"geometry_layout_root_local_m": {},
+	}
+	if not is_instance_valid(kit):
+		return evidence
+
+	var node_positions: Dictionary = {}
+	for node_name: String in ["nav_left", "nav_right", "nav_tail", "strobe_left", "strobe_right", "strobe_dorsal", "strobe_ventral"]:
+		var node := kit.get_node_or_null(node_name) as Node3D
+		node_positions[node_name] = _fleet_placement_vector(aircraft_root.to_local(node.global_position)) \
+			if is_instance_valid(node) else null
+	evidence["node_positions_root_local_m"] = node_positions
+
+	var layout_value: Variant = kit.get_meta("geometry_layout", {})
+	if typeof(layout_value) != TYPE_DICTIONARY:
+		return evidence
+	var layout: Dictionary = layout_value
+	var bounds_value: Variant = layout.get("bounds")
+	if typeof(bounds_value) != TYPE_AABB:
+		return evidence
+	var bounds: AABB = bounds_value
+	evidence["geometry_layout_root_local_m"] = {
+		"bounds": {
+			"position_m": _fleet_placement_vector(bounds.position),
+			"size_m": _fleet_placement_vector(bounds.size),
+			"end_m": _fleet_placement_vector(bounds.end),
+		},
+		"left": _fleet_tip_layout(layout.get("left")),
+		"right": _fleet_tip_layout(layout.get("right")),
+	}
+	return evidence
+
+
 func _capture_fleet(preview: Control) -> void:
 	if DisplayServer.get_name() == "headless":
 		_check("native fleet capture has a display session", false)
@@ -457,9 +575,7 @@ func _capture_fleet(preview: Control) -> void:
 			and not str(source_identities.model_manifest_sha256).is_empty()
 			and not str(source_identities.customization_slots_sha256).is_empty(), str(source_identities))
 
-		preview.call("reset_view")
-		preview.call("orbit_by", 32.0, -24.0)
-		var fixed_view := preview.call("get_view_state") as Dictionary
+		var fixed_view := _set_fleet_view(preview, _fleet_view)
 		for preset_id: String in LightingProfile.PRESET_IDS:
 			var profile := LightingProfile.preset(preset_id)
 			if profile.is_empty():
@@ -479,11 +595,14 @@ func _capture_fleet(preview: Control) -> void:
 			var capture_path := _fleet_capture_directory.path_join(image_name)
 			var saved := await _save_capture(viewport, capture_path)
 			var same_view: bool = preview.call("get_view_state") == fixed_view
+			var camera_evidence := _fleet_camera_evidence(preview, _fleet_view)
+			var placement_evidence := _fleet_placement_evidence(root_node)
 			var at_fixture_clock: bool = int(preview.get("_playhead_tick")) == 1925 \
 				and is_equal_approx(float(preview.get("_playhead_seconds")), 1925.0 / 240.0) \
 				and not bool(preview.get("_playing"))
 			_check("fleet frame %s / %s holds preview clock, local exposure and camera" % [aircraft_id, preset_id],
-				same_view and at_fixture_clock and is_equal_approx(preview_environment.tonemap_exposure, preview_exposure),
+				same_view and bool(camera_evidence.get("valid", false)) and at_fixture_clock
+				and is_equal_approx(preview_environment.tonemap_exposure, preview_exposure),
 			"view=%s tick=%s exposure=%s" % [same_view, preview.get("_playhead_tick"), preview_environment.tonemap_exposure])
 			captures.append({
 				"aircraft_id": aircraft_id,
@@ -498,6 +617,9 @@ func _capture_fleet(preview: Control) -> void:
 				"exposure_context": "WorkshopPreview local night preview; not real-flight exposure",
 				"fixture_clock": fixture_clock,
 				"camera": fixed_view,
+				"view_id": _fleet_view,
+				"camera_evidence": camera_evidence,
+				"placement_evidence": placement_evidence,
 				"capability_report": capability,
 				"rig_budget": rig_budget,
 				"source_identities": source_identities,
@@ -515,6 +637,7 @@ func _capture_fleet(preview: Control) -> void:
 		"representative_rule": "first non-rotorcraft catalog ID in each Catalog.airplane_visual_families() family",
 		"aircraft_visual_families": family_ids,
 		"preset_ids": LightingProfile.PRESET_IDS,
+		"view_id": _fleet_view,
 		"capture_dimensions": {"width": CAPTURE_SIZE.x, "height": CAPTURE_SIZE.y},
 		"renderer": renderer_identity,
 		"preview_exposure": preview_exposure,
@@ -793,6 +916,7 @@ func _set_fixture_clock(preview: Control) -> void:
 func _save_capture(viewport: SubViewport, path: String) -> bool:
 	await RenderingServer.frame_post_draw
 	var image := viewport.get_texture().get_image()
+	image = ViewportColor.display_image(image, viewport.use_hdr_2d)
 	if image == null or image.get_size() != CAPTURE_SIZE:
 		_check("capture frame has exact 1920x1080 dimensions", false,
 			"%s: %s" % [path, image.get_size() if image != null else Vector2i.ZERO])

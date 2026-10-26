@@ -1,0 +1,615 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   flight matrix uses the production 240 Hz solver clock  240
+ok   default field resolves for session setup  []
+ok   Natural Random policy resolves for standalone probe bounds
+ok   seed search finds all 20 aircraft/recipe cells  found 20 before seed 65536
+ok   named seed regenerates jensen-das-ugly-stik-60|calm_air  []
+ok   seed 35 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   jensen-das-ugly-stik-60 resolves to packaged aircraft data
+ok   jensen-das-ugly-stik-60|calm_air weather validates  []
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   jensen-das-ugly-stik-60|calm_air actual session accepts generated weather
+ok   jensen-das-ugly-stik-60|calm_air actual session accepts the default field
+ok   jensen-das-ugly-stik-60|calm_air weather handoff preserves generated configuration
+ok   jensen-das-ugly-stik-60|calm_air weather handoff leaves source configuration unchanged
+ok   jensen-das-ugly-stik-60|calm_air initial turbulence seed resolves
+ok   jensen-das-ugly-stik-60|calm_air session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   jensen-das-ugly-stik-60|calm_air density is finite, positive and matches weather  1.17536796161745
+ok   jensen-das-ugly-stik-60|calm_air stock aircraft and trim are accepted  trimmed
+ok   jensen-das-ugly-stik-60|calm_air start is finite and has positive trimmed speed
+ok   jensen-das-ugly-stik-60|calm_air session reset commits a valid airborne state
+ok   jensen-das-ugly-stik-60|calm_air wind handoff preserves the trimmed airspeed  air 15.000000000 m/s; trim 15.000000000 m/s
+ok   jensen-das-ugly-stik-60|calm_air advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   jensen-das-ugly-stik-60|calm_air 240 Hz trace state, loads, wind and ranges remain finite  air 14.960–15.008 m/s; altitude 30.0–30.1 m; wind 0.256–0.312 m/s
+NR-03 row jensen-das-ugly-stik-60|calm_air seed=35 simulated=1.000 s ticks=240
+ok   named seed regenerates jensen-das-ugly-stik-60|gentle_breeze  []
+ok   seed 3 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   jensen-das-ugly-stik-60 resolves to packaged aircraft data
+ok   jensen-das-ugly-stik-60|gentle_breeze weather validates  []
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   jensen-das-ugly-stik-60|gentle_breeze actual session accepts generated weather
+ok   jensen-das-ugly-stik-60|gentle_breeze actual session accepts the default field
+ok   jensen-das-ugly-stik-60|gentle_breeze weather handoff preserves generated configuration
+ok   jensen-das-ugly-stik-60|gentle_breeze weather handoff leaves source configuration unchanged
+ok   jensen-das-ugly-stik-60|gentle_breeze initial turbulence seed resolves
+ok   jensen-das-ugly-stik-60|gentle_breeze session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   jensen-das-ugly-stik-60|gentle_breeze density is finite, positive and matches weather  1.21958768306983
+ok   jensen-das-ugly-stik-60|gentle_breeze stock aircraft and trim are accepted  trimmed
+ok   jensen-das-ugly-stik-60|gentle_breeze start is finite and has positive trimmed speed
+ok   jensen-das-ugly-stik-60|gentle_breeze session reset commits a valid airborne state
+ok   jensen-das-ugly-stik-60|gentle_breeze wind handoff preserves the trimmed airspeed  air 15.000000000 m/s; trim 15.000000000 m/s
+ok   jensen-das-ugly-stik-60|gentle_breeze advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   jensen-das-ugly-stik-60|gentle_breeze 240 Hz trace state, loads, wind and ranges remain finite  air 14.890–15.018 m/s; altitude 30.0–30.1 m; wind 2.233–2.362 m/s
+NR-03 row jensen-das-ugly-stik-60|gentle_breeze seed=3 simulated=1.000 s ticks=240
+ok   named seed regenerates jensen-das-ugly-stik-60|lively_afternoon  []
+ok   seed 71 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   jensen-das-ugly-stik-60 resolves to packaged aircraft data
+ok   jensen-das-ugly-stik-60|lively_afternoon weather validates  []
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   jensen-das-ugly-stik-60|lively_afternoon actual session accepts generated weather
+ok   jensen-das-ugly-stik-60|lively_afternoon actual session accepts the default field
+ok   jensen-das-ugly-stik-60|lively_afternoon weather handoff preserves generated configuration
+ok   jensen-das-ugly-stik-60|lively_afternoon weather handoff leaves source configuration unchanged
+ok   jensen-das-ugly-stik-60|lively_afternoon initial turbulence seed resolves
+ok   jensen-das-ugly-stik-60|lively_afternoon session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   jensen-das-ugly-stik-60|lively_afternoon density is finite, positive and matches weather  1.21543962034042
+ok   jensen-das-ugly-stik-60|lively_afternoon stock aircraft and trim are accepted  trimmed
+ok   jensen-das-ugly-stik-60|lively_afternoon start is finite and has positive trimmed speed
+ok   jensen-das-ugly-stik-60|lively_afternoon session reset commits a valid airborne state
+ok   jensen-das-ugly-stik-60|lively_afternoon wind handoff preserves the trimmed airspeed  air 15.000000000 m/s; trim 15.000000000 m/s
+ok   jensen-das-ugly-stik-60|lively_afternoon advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   jensen-das-ugly-stik-60|lively_afternoon 240 Hz trace state, loads, wind and ranges remain finite  air 14.816–15.025 m/s; altitude 30.0–30.0 m; wind 3.908–4.082 m/s
+NR-03 row jensen-das-ugly-stik-60|lively_afternoon seed=71 simulated=1.000 s ticks=240
+ok   named seed regenerates jensen-das-ugly-stik-60|windy_day  []
+ok   seed 54 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   jensen-das-ugly-stik-60 resolves to packaged aircraft data
+ok   jensen-das-ugly-stik-60|windy_day weather validates  []
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   jensen-das-ugly-stik-60|windy_day actual session accepts generated weather
+ok   jensen-das-ugly-stik-60|windy_day actual session accepts the default field
+ok   jensen-das-ugly-stik-60|windy_day weather handoff preserves generated configuration
+ok   jensen-das-ugly-stik-60|windy_day weather handoff leaves source configuration unchanged
+ok   jensen-das-ugly-stik-60|windy_day initial turbulence seed resolves
+ok   jensen-das-ugly-stik-60|windy_day session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   jensen-das-ugly-stik-60|windy_day density is finite, positive and matches weather  1.19072623933505
+ok   jensen-das-ugly-stik-60|windy_day stock aircraft and trim are accepted  trimmed
+ok   jensen-das-ugly-stik-60|windy_day start is finite and has positive trimmed speed
+ok   jensen-das-ugly-stik-60|windy_day session reset commits a valid airborne state
+ok   jensen-das-ugly-stik-60|windy_day wind handoff preserves the trimmed airspeed  air 15.000000000 m/s; trim 15.000000000 m/s
+ok   jensen-das-ugly-stik-60|windy_day has a finite horizontal aircraft heading
+ok   jensen-das-ugly-stik-60|windy_day headwind standalone probe passes strict weather validation  []
+ok   jensen-das-ugly-stik-60|windy_day headwind standalone probe is accepted at the real session reset boundary
+ok   jensen-das-ugly-stik-60|windy_day headwind standalone probe reset has a finite airborne state and positive density
+ok   jensen-das-ugly-stik-60|windy_day headwind standalone probe session adopts the separately supplied weather
+ok   jensen-das-ugly-stik-60|windy_day actual session wind is headwind relative to its airborne heading  along-course -3.000000000 m/s; sample error 0.000000000 m/s
+ok   jensen-das-ugly-stik-60|windy_day crosswind-left standalone probe passes strict weather validation  []
+ok   jensen-das-ugly-stik-60|windy_day crosswind-left standalone probe is accepted at the real session reset boundary
+ok   jensen-das-ugly-stik-60|windy_day crosswind-left standalone probe reset has a finite airborne state and positive density
+ok   jensen-das-ugly-stik-60|windy_day crosswind-left standalone probe session adopts the separately supplied weather
+ok   jensen-das-ugly-stik-60|windy_day actual session wind is crosswind-left relative to its airborne heading  along-course 0.000000000 m/s; sample error 0.000000000 m/s
+ok   jensen-das-ugly-stik-60|windy_day tailwind standalone probe passes strict weather validation  []
+ok   jensen-das-ugly-stik-60|windy_day tailwind standalone probe is accepted at the real session reset boundary
+ok   jensen-das-ugly-stik-60|windy_day tailwind standalone probe reset has a finite airborne state and positive density
+ok   jensen-das-ugly-stik-60|windy_day tailwind standalone probe session adopts the separately supplied weather
+ok   jensen-das-ugly-stik-60|windy_day actual session wind is tailwind relative to its airborne heading  along-course 3.000000000 m/s; sample error 0.000000000 m/s
+ok   jensen-das-ugly-stik-60|windy_day crosswind-right standalone probe passes strict weather validation  []
+ok   jensen-das-ugly-stik-60|windy_day crosswind-right standalone probe is accepted at the real session reset boundary
+ok   jensen-das-ugly-stik-60|windy_day crosswind-right standalone probe reset has a finite airborne state and positive density
+ok   jensen-das-ugly-stik-60|windy_day crosswind-right standalone probe session adopts the separately supplied weather
+ok   jensen-das-ugly-stik-60|windy_day actual session wind is crosswind-right relative to its airborne heading  along-course -0.000000000 m/s; sample error 0.000000000 m/s
+ok   jensen-das-ugly-stik-60|windy_day daylight band resolves for atmosphere corners
+ok   jensen-das-ugly-stik-60|windy_day cool-humid-low-pressure standalone atmosphere passes strict weather validation  []
+ok   jensen-das-ugly-stik-60|windy_day cool-humid-low-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   jensen-das-ugly-stik-60|windy_day cool-humid-low-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   jensen-das-ugly-stik-60|windy_day cool-humid-low-pressure standalone atmosphere session adopts the separately supplied weather
+ok   jensen-das-ugly-stik-60|windy_day trims at the cool-humid-low-pressure atmosphere corner  air 15.000000000 m/s; trim 15.000000000 m/s
+ok   jensen-das-ugly-stik-60|windy_day warm-dry-high-pressure standalone atmosphere passes strict weather validation  []
+ok   jensen-das-ugly-stik-60|windy_day warm-dry-high-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   jensen-das-ugly-stik-60|windy_day warm-dry-high-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   jensen-das-ugly-stik-60|windy_day warm-dry-high-pressure standalone atmosphere session adopts the separately supplied weather
+ok   jensen-das-ugly-stik-60|windy_day trims at the warm-dry-high-pressure atmosphere corner  air 15.000000000 m/s; trim 15.000000000 m/s
+ok   jensen-das-ugly-stik-60|windy_day restores its untouched generated weather
+ok   jensen-das-ugly-stik-60|windy_day standalone probes leave scenario and session weather unchanged
+ok   jensen-das-ugly-stik-60|windy_day advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   jensen-das-ugly-stik-60|windy_day 240 Hz trace state, loads, wind and ranges remain finite  air 14.817–15.145 m/s; altitude 30.0–30.2 m; wind 5.141–5.753 m/s
+NR-03 row jensen-das-ugly-stik-60|windy_day seed=54 simulated=1.000 s ticks=240
+ok   named seed regenerates gp-extra-300s-60|calm_air  []
+ok   seed 16 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   gp-extra-300s-60 resolves to packaged aircraft data
+ok   gp-extra-300s-60|calm_air weather validates  []
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   gp-extra-300s-60|calm_air actual session accepts generated weather
+ok   gp-extra-300s-60|calm_air actual session accepts the default field
+ok   gp-extra-300s-60|calm_air weather handoff preserves generated configuration
+ok   gp-extra-300s-60|calm_air weather handoff leaves source configuration unchanged
+ok   gp-extra-300s-60|calm_air session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   gp-extra-300s-60|calm_air density is finite, positive and matches weather  1.18557034045033
+ok   gp-extra-300s-60|calm_air stock aircraft and trim are accepted  trimmed
+ok   gp-extra-300s-60|calm_air start is finite and has positive trimmed speed
+ok   gp-extra-300s-60|calm_air session reset commits a valid airborne state
+ok   gp-extra-300s-60|calm_air wind handoff preserves the trimmed airspeed  air 22.000000000 m/s; trim 22.000000000 m/s
+ok   gp-extra-300s-60|calm_air active mean wind matches the generated weather
+ok   gp-extra-300s-60|calm_air advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   gp-extra-300s-60|calm_air 240 Hz trace state, loads, wind and ranges remain finite  air 21.880–22.000 m/s; altitude 30.0–30.2 m; wind 0.000–0.000 m/s
+NR-03 row gp-extra-300s-60|calm_air seed=16 simulated=1.000 s ticks=240
+ok   named seed regenerates gp-extra-300s-60|gentle_breeze  []
+ok   seed 10 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   gp-extra-300s-60 resolves to packaged aircraft data
+ok   gp-extra-300s-60|gentle_breeze weather validates  []
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   gp-extra-300s-60|gentle_breeze actual session accepts generated weather
+ok   gp-extra-300s-60|gentle_breeze actual session accepts the default field
+ok   gp-extra-300s-60|gentle_breeze weather handoff preserves generated configuration
+ok   gp-extra-300s-60|gentle_breeze weather handoff leaves source configuration unchanged
+ok   gp-extra-300s-60|gentle_breeze initial turbulence seed resolves
+ok   gp-extra-300s-60|gentle_breeze session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   gp-extra-300s-60|gentle_breeze density is finite, positive and matches weather  1.22212953285457
+ok   gp-extra-300s-60|gentle_breeze stock aircraft and trim are accepted  trimmed
+ok   gp-extra-300s-60|gentle_breeze start is finite and has positive trimmed speed
+ok   gp-extra-300s-60|gentle_breeze session reset commits a valid airborne state
+ok   gp-extra-300s-60|gentle_breeze wind handoff preserves the trimmed airspeed  air 22.000000000 m/s; trim 22.000000000 m/s
+ok   gp-extra-300s-60|gentle_breeze advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   gp-extra-300s-60|gentle_breeze 240 Hz trace state, loads, wind and ranges remain finite  air 21.913–22.031 m/s; altitude 30.0–30.2 m; wind 0.889–1.036 m/s
+NR-03 row gp-extra-300s-60|gentle_breeze seed=10 simulated=1.000 s ticks=240
+ok   named seed regenerates gp-extra-300s-60|lively_afternoon  []
+ok   seed 1 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   gp-extra-300s-60 resolves to packaged aircraft data
+ok   gp-extra-300s-60|lively_afternoon weather validates  []
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   gp-extra-300s-60|lively_afternoon actual session accepts generated weather
+ok   gp-extra-300s-60|lively_afternoon actual session accepts the default field
+ok   gp-extra-300s-60|lively_afternoon weather handoff preserves generated configuration
+ok   gp-extra-300s-60|lively_afternoon weather handoff leaves source configuration unchanged
+ok   gp-extra-300s-60|lively_afternoon initial turbulence seed resolves
+ok   gp-extra-300s-60|lively_afternoon session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   gp-extra-300s-60|lively_afternoon density is finite, positive and matches weather  1.20169415565104
+ok   gp-extra-300s-60|lively_afternoon stock aircraft and trim are accepted  trimmed
+ok   gp-extra-300s-60|lively_afternoon start is finite and has positive trimmed speed
+ok   gp-extra-300s-60|lively_afternoon session reset commits a valid airborne state
+ok   gp-extra-300s-60|lively_afternoon wind handoff preserves the trimmed airspeed  air 22.000000000 m/s; trim 22.000000000 m/s
+ok   gp-extra-300s-60|lively_afternoon advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   gp-extra-300s-60|lively_afternoon 240 Hz trace state, loads, wind and ranges remain finite  air 21.885–22.064 m/s; altitude 30.0–30.4 m; wind 3.879–4.035 m/s
+NR-03 row gp-extra-300s-60|lively_afternoon seed=1 simulated=1.000 s ticks=240
+ok   named seed regenerates gp-extra-300s-60|windy_day  []
+ok   seed 0 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   gp-extra-300s-60 resolves to packaged aircraft data
+ok   gp-extra-300s-60|windy_day weather validates  []
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   gp-extra-300s-60|windy_day actual session accepts generated weather
+ok   gp-extra-300s-60|windy_day actual session accepts the default field
+ok   gp-extra-300s-60|windy_day weather handoff preserves generated configuration
+ok   gp-extra-300s-60|windy_day weather handoff leaves source configuration unchanged
+ok   gp-extra-300s-60|windy_day initial turbulence seed resolves
+ok   gp-extra-300s-60|windy_day session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   gp-extra-300s-60|windy_day density is finite, positive and matches weather  1.16363912579891
+ok   gp-extra-300s-60|windy_day stock aircraft and trim are accepted  trimmed
+ok   gp-extra-300s-60|windy_day start is finite and has positive trimmed speed
+ok   gp-extra-300s-60|windy_day session reset commits a valid airborne state
+ok   gp-extra-300s-60|windy_day wind handoff preserves the trimmed airspeed  air 22.000000000 m/s; trim 22.000000000 m/s
+ok   gp-extra-300s-60|windy_day has a finite horizontal aircraft heading
+ok   gp-extra-300s-60|windy_day headwind standalone probe passes strict weather validation  []
+ok   gp-extra-300s-60|windy_day headwind standalone probe is accepted at the real session reset boundary
+ok   gp-extra-300s-60|windy_day headwind standalone probe reset has a finite airborne state and positive density
+ok   gp-extra-300s-60|windy_day headwind standalone probe session adopts the separately supplied weather
+ok   gp-extra-300s-60|windy_day actual session wind is headwind relative to its airborne heading  along-course -3.000000000 m/s; sample error 0.000000000 m/s
+ok   gp-extra-300s-60|windy_day crosswind-left standalone probe passes strict weather validation  []
+ok   gp-extra-300s-60|windy_day crosswind-left standalone probe is accepted at the real session reset boundary
+ok   gp-extra-300s-60|windy_day crosswind-left standalone probe reset has a finite airborne state and positive density
+ok   gp-extra-300s-60|windy_day crosswind-left standalone probe session adopts the separately supplied weather
+ok   gp-extra-300s-60|windy_day actual session wind is crosswind-left relative to its airborne heading  along-course 0.000000000 m/s; sample error 0.000000000 m/s
+ok   gp-extra-300s-60|windy_day tailwind standalone probe passes strict weather validation  []
+ok   gp-extra-300s-60|windy_day tailwind standalone probe is accepted at the real session reset boundary
+ok   gp-extra-300s-60|windy_day tailwind standalone probe reset has a finite airborne state and positive density
+ok   gp-extra-300s-60|windy_day tailwind standalone probe session adopts the separately supplied weather
+ok   gp-extra-300s-60|windy_day actual session wind is tailwind relative to its airborne heading  along-course 3.000000000 m/s; sample error 0.000000000 m/s
+ok   gp-extra-300s-60|windy_day crosswind-right standalone probe passes strict weather validation  []
+ok   gp-extra-300s-60|windy_day crosswind-right standalone probe is accepted at the real session reset boundary
+ok   gp-extra-300s-60|windy_day crosswind-right standalone probe reset has a finite airborne state and positive density
+ok   gp-extra-300s-60|windy_day crosswind-right standalone probe session adopts the separately supplied weather
+ok   gp-extra-300s-60|windy_day actual session wind is crosswind-right relative to its airborne heading  along-course -0.000000000 m/s; sample error 0.000000000 m/s
+ok   gp-extra-300s-60|windy_day daylight band resolves for atmosphere corners
+ok   gp-extra-300s-60|windy_day cool-humid-low-pressure standalone atmosphere passes strict weather validation  []
+ok   gp-extra-300s-60|windy_day cool-humid-low-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   gp-extra-300s-60|windy_day cool-humid-low-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   gp-extra-300s-60|windy_day cool-humid-low-pressure standalone atmosphere session adopts the separately supplied weather
+ok   gp-extra-300s-60|windy_day trims at the cool-humid-low-pressure atmosphere corner  air 22.000000000 m/s; trim 22.000000000 m/s
+ok   gp-extra-300s-60|windy_day warm-dry-high-pressure standalone atmosphere passes strict weather validation  []
+ok   gp-extra-300s-60|windy_day warm-dry-high-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   gp-extra-300s-60|windy_day warm-dry-high-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   gp-extra-300s-60|windy_day warm-dry-high-pressure standalone atmosphere session adopts the separately supplied weather
+ok   gp-extra-300s-60|windy_day trims at the warm-dry-high-pressure atmosphere corner  air 22.000000000 m/s; trim 22.000000000 m/s
+ok   gp-extra-300s-60|windy_day restores its untouched generated weather
+ok   gp-extra-300s-60|windy_day standalone probes leave scenario and session weather unchanged
+ok   gp-extra-300s-60|windy_day advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   gp-extra-300s-60|windy_day 240 Hz trace state, loads, wind and ranges remain finite  air 21.648–22.076 m/s; altitude 30.0–30.2 m; wind 6.132–6.523 m/s
+NR-03 row gp-extra-300s-60|windy_day seed=0 simulated=1.000 s ticks=240
+ok   named seed regenerates p51d-mustang-120|calm_air  []
+ok   seed 9 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   p51d-mustang-120 resolves to packaged aircraft data
+ok   p51d-mustang-120|calm_air weather validates  []
+ok   p51d-mustang-120|calm_air actual session accepts generated weather
+ok   p51d-mustang-120|calm_air actual session accepts the default field
+ok   p51d-mustang-120|calm_air weather handoff preserves generated configuration
+ok   p51d-mustang-120|calm_air weather handoff leaves source configuration unchanged
+ok   p51d-mustang-120|calm_air initial turbulence seed resolves
+ok   p51d-mustang-120|calm_air session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   p51d-mustang-120|calm_air density is finite, positive and matches weather  1.16335380702191
+ok   p51d-mustang-120|calm_air stock aircraft and trim are accepted  trimmed
+ok   p51d-mustang-120|calm_air start is finite and has positive trimmed speed
+ok   p51d-mustang-120|calm_air session reset commits a valid airborne state
+ok   p51d-mustang-120|calm_air wind handoff preserves the trimmed airspeed  air 25.000000000 m/s; trim 25.000000000 m/s
+ok   p51d-mustang-120|calm_air advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   p51d-mustang-120|calm_air 240 Hz trace state, loads, wind and ranges remain finite  air 24.864–25.001 m/s; altitude 30.0–30.1 m; wind 0.053–0.148 m/s
+NR-03 row p51d-mustang-120|calm_air seed=9 simulated=1.000 s ticks=240
+ok   named seed regenerates p51d-mustang-120|gentle_breeze  []
+ok   seed 6 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   p51d-mustang-120 resolves to packaged aircraft data
+ok   p51d-mustang-120|gentle_breeze weather validates  []
+ok   p51d-mustang-120|gentle_breeze actual session accepts generated weather
+ok   p51d-mustang-120|gentle_breeze actual session accepts the default field
+ok   p51d-mustang-120|gentle_breeze weather handoff preserves generated configuration
+ok   p51d-mustang-120|gentle_breeze weather handoff leaves source configuration unchanged
+ok   p51d-mustang-120|gentle_breeze initial turbulence seed resolves
+ok   p51d-mustang-120|gentle_breeze session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   p51d-mustang-120|gentle_breeze density is finite, positive and matches weather  1.20887384448632
+ok   p51d-mustang-120|gentle_breeze stock aircraft and trim are accepted  trimmed
+ok   p51d-mustang-120|gentle_breeze start is finite and has positive trimmed speed
+ok   p51d-mustang-120|gentle_breeze session reset commits a valid airborne state
+ok   p51d-mustang-120|gentle_breeze wind handoff preserves the trimmed airspeed  air 25.000000000 m/s; trim 25.000000000 m/s
+ok   p51d-mustang-120|gentle_breeze advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   p51d-mustang-120|gentle_breeze 240 Hz trace state, loads, wind and ranges remain finite  air 24.957–25.071 m/s; altitude 30.0–30.1 m; wind 1.781–1.938 m/s
+NR-03 row p51d-mustang-120|gentle_breeze seed=6 simulated=1.000 s ticks=240
+ok   named seed regenerates p51d-mustang-120|lively_afternoon  []
+ok   seed 13 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   p51d-mustang-120 resolves to packaged aircraft data
+ok   p51d-mustang-120|lively_afternoon weather validates  []
+ok   p51d-mustang-120|lively_afternoon actual session accepts generated weather
+ok   p51d-mustang-120|lively_afternoon actual session accepts the default field
+ok   p51d-mustang-120|lively_afternoon weather handoff preserves generated configuration
+ok   p51d-mustang-120|lively_afternoon weather handoff leaves source configuration unchanged
+ok   p51d-mustang-120|lively_afternoon initial turbulence seed resolves
+ok   p51d-mustang-120|lively_afternoon session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   p51d-mustang-120|lively_afternoon density is finite, positive and matches weather  1.21624966179554
+ok   p51d-mustang-120|lively_afternoon stock aircraft and trim are accepted  trimmed
+ok   p51d-mustang-120|lively_afternoon start is finite and has positive trimmed speed
+ok   p51d-mustang-120|lively_afternoon session reset commits a valid airborne state
+ok   p51d-mustang-120|lively_afternoon wind handoff preserves the trimmed airspeed  air 25.000000000 m/s; trim 25.000000000 m/s
+ok   p51d-mustang-120|lively_afternoon advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   p51d-mustang-120|lively_afternoon 240 Hz trace state, loads, wind and ranges remain finite  air 24.672–25.073 m/s; altitude 30.0–30.2 m; wind 3.294–3.591 m/s
+NR-03 row p51d-mustang-120|lively_afternoon seed=13 simulated=1.000 s ticks=240
+ok   named seed regenerates p51d-mustang-120|windy_day  []
+ok   seed 5 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   p51d-mustang-120 resolves to packaged aircraft data
+ok   p51d-mustang-120|windy_day weather validates  []
+ok   p51d-mustang-120|windy_day actual session accepts generated weather
+ok   p51d-mustang-120|windy_day actual session accepts the default field
+ok   p51d-mustang-120|windy_day weather handoff preserves generated configuration
+ok   p51d-mustang-120|windy_day weather handoff leaves source configuration unchanged
+ok   p51d-mustang-120|windy_day initial turbulence seed resolves
+ok   p51d-mustang-120|windy_day session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   p51d-mustang-120|windy_day density is finite, positive and matches weather  1.17485731189031
+ok   p51d-mustang-120|windy_day stock aircraft and trim are accepted  trimmed
+ok   p51d-mustang-120|windy_day start is finite and has positive trimmed speed
+ok   p51d-mustang-120|windy_day session reset commits a valid airborne state
+ok   p51d-mustang-120|windy_day wind handoff preserves the trimmed airspeed  air 25.000000000 m/s; trim 25.000000000 m/s
+ok   p51d-mustang-120|windy_day has a finite horizontal aircraft heading
+ok   p51d-mustang-120|windy_day headwind standalone probe passes strict weather validation  []
+ok   p51d-mustang-120|windy_day headwind standalone probe is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day headwind standalone probe reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day headwind standalone probe session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day actual session wind is headwind relative to its airborne heading  along-course -3.000000000 m/s; sample error 0.000000000 m/s
+ok   p51d-mustang-120|windy_day crosswind-left standalone probe passes strict weather validation  []
+ok   p51d-mustang-120|windy_day crosswind-left standalone probe is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day crosswind-left standalone probe reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day crosswind-left standalone probe session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day actual session wind is crosswind-left relative to its airborne heading  along-course 0.000000000 m/s; sample error 0.000000000 m/s
+ok   p51d-mustang-120|windy_day tailwind standalone probe passes strict weather validation  []
+ok   p51d-mustang-120|windy_day tailwind standalone probe is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day tailwind standalone probe reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day tailwind standalone probe session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day actual session wind is tailwind relative to its airborne heading  along-course 3.000000000 m/s; sample error 0.000000000 m/s
+ok   p51d-mustang-120|windy_day crosswind-right standalone probe passes strict weather validation  []
+ok   p51d-mustang-120|windy_day crosswind-right standalone probe is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day crosswind-right standalone probe reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day crosswind-right standalone probe session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day actual session wind is crosswind-right relative to its airborne heading  along-course -0.000000000 m/s; sample error 0.000000000 m/s
+ok   p51d-mustang-120|windy_day daylight band resolves for atmosphere corners
+ok   p51d-mustang-120|windy_day cool-humid-low-pressure standalone atmosphere passes strict weather validation  []
+ok   p51d-mustang-120|windy_day cool-humid-low-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day cool-humid-low-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day cool-humid-low-pressure standalone atmosphere session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day trims at the cool-humid-low-pressure atmosphere corner  air 25.000000000 m/s; trim 25.000000000 m/s
+ok   p51d-mustang-120|windy_day warm-dry-high-pressure standalone atmosphere passes strict weather validation  []
+ok   p51d-mustang-120|windy_day warm-dry-high-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day warm-dry-high-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day warm-dry-high-pressure standalone atmosphere session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day trims at the warm-dry-high-pressure atmosphere corner  air 25.000000000 m/s; trim 25.000000000 m/s
+ok   p51d-mustang-120|windy_day restores its untouched generated weather
+ok   p51d-mustang-120|windy_day standalone probes leave scenario and session weather unchanged
+ok   p51d-mustang-120|windy_day advances exactly 1200 fixed ticks  advanced 1200; fault ''
+ok   p51d-mustang-120|windy_day 240 Hz trace state, loads, wind and ranges remain finite  air 24.615–25.519 m/s; altitude 30.0–31.2 m; wind 5.524–6.480 m/s
+NR-03 row p51d-mustang-120|windy_day seed=5 simulated=5.000 s ticks=1200
+ok   windy replay reset restores the exact accepted launch
+ok   windy replay repeats every fixed input and complete solver trace exactly  first 820480 bytes; repeat 820480 bytes
+ok   named seed regenerates sebart-avanti-s-a200-p100rx|calm_air  []
+ok   seed 80 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   sebart-avanti-s-a200-p100rx resolves to packaged aircraft data
+ok   sebart-avanti-s-a200-p100rx|calm_air weather validates  []
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx|calm_air actual session accepts generated weather
+ok   sebart-avanti-s-a200-p100rx|calm_air actual session accepts the default field
+ok   sebart-avanti-s-a200-p100rx|calm_air weather handoff preserves generated configuration
+ok   sebart-avanti-s-a200-p100rx|calm_air weather handoff leaves source configuration unchanged
+ok   sebart-avanti-s-a200-p100rx|calm_air initial turbulence seed resolves
+ok   sebart-avanti-s-a200-p100rx|calm_air session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|calm_air density is finite, positive and matches weather  1.17089398553762
+ok   sebart-avanti-s-a200-p100rx|calm_air stock aircraft and trim are accepted  trimmed
+ok   sebart-avanti-s-a200-p100rx|calm_air start is finite and has positive trimmed speed
+ok   sebart-avanti-s-a200-p100rx|calm_air session reset commits a valid airborne state
+ok   sebart-avanti-s-a200-p100rx|calm_air wind handoff preserves the trimmed airspeed  air 29.000000000 m/s; trim 29.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|calm_air advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   sebart-avanti-s-a200-p100rx|calm_air 240 Hz trace state, loads, wind and ranges remain finite  air 28.900–29.008 m/s; altitude 30.0–30.2 m; wind 0.209–0.253 m/s
+NR-03 row sebart-avanti-s-a200-p100rx|calm_air seed=80 simulated=1.000 s ticks=240
+ok   named seed regenerates sebart-avanti-s-a200-p100rx|gentle_breeze  []
+ok   seed 11 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   sebart-avanti-s-a200-p100rx resolves to packaged aircraft data
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze weather validates  []
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze actual session accepts generated weather
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze actual session accepts the default field
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze weather handoff preserves generated configuration
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze weather handoff leaves source configuration unchanged
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze initial turbulence seed resolves
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze density is finite, positive and matches weather  1.17548973610077
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze stock aircraft and trim are accepted  trimmed
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze start is finite and has positive trimmed speed
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze session reset commits a valid airborne state
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze wind handoff preserves the trimmed airspeed  air 29.000000000 m/s; trim 29.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   sebart-avanti-s-a200-p100rx|gentle_breeze 240 Hz trace state, loads, wind and ranges remain finite  air 28.825–29.024 m/s; altitude 30.0–30.2 m; wind 1.098–1.229 m/s
+NR-03 row sebart-avanti-s-a200-p100rx|gentle_breeze seed=11 simulated=1.000 s ticks=240
+ok   named seed regenerates sebart-avanti-s-a200-p100rx|lively_afternoon  []
+ok   seed 26 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   sebart-avanti-s-a200-p100rx resolves to packaged aircraft data
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon weather validates  []
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon actual session accepts generated weather
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon actual session accepts the default field
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon weather handoff preserves generated configuration
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon weather handoff leaves source configuration unchanged
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon initial turbulence seed resolves
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon density is finite, positive and matches weather  1.17795273022744
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon stock aircraft and trim are accepted  trimmed
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon start is finite and has positive trimmed speed
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon session reset commits a valid airborne state
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon wind handoff preserves the trimmed airspeed  air 29.000000000 m/s; trim 29.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   sebart-avanti-s-a200-p100rx|lively_afternoon 240 Hz trace state, loads, wind and ranges remain finite  air 28.915–29.238 m/s; altitude 30.0–30.2 m; wind 3.613–3.940 m/s
+NR-03 row sebart-avanti-s-a200-p100rx|lively_afternoon seed=26 simulated=1.000 s ticks=240
+ok   named seed regenerates sebart-avanti-s-a200-p100rx|windy_day  []
+ok   seed 55 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   sebart-avanti-s-a200-p100rx resolves to packaged aircraft data
+ok   sebart-avanti-s-a200-p100rx|windy_day weather validates  []
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx|windy_day actual session accepts generated weather
+ok   sebart-avanti-s-a200-p100rx|windy_day actual session accepts the default field
+ok   sebart-avanti-s-a200-p100rx|windy_day weather handoff preserves generated configuration
+ok   sebart-avanti-s-a200-p100rx|windy_day weather handoff leaves source configuration unchanged
+ok   sebart-avanti-s-a200-p100rx|windy_day initial turbulence seed resolves
+ok   sebart-avanti-s-a200-p100rx|windy_day session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|windy_day density is finite, positive and matches weather  1.1903133717815
+ok   sebart-avanti-s-a200-p100rx|windy_day stock aircraft and trim are accepted  trimmed
+ok   sebart-avanti-s-a200-p100rx|windy_day start is finite and has positive trimmed speed
+ok   sebart-avanti-s-a200-p100rx|windy_day session reset commits a valid airborne state
+ok   sebart-avanti-s-a200-p100rx|windy_day wind handoff preserves the trimmed airspeed  air 29.000000000 m/s; trim 29.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|windy_day has a finite horizontal aircraft heading
+ok   sebart-avanti-s-a200-p100rx|windy_day headwind standalone probe passes strict weather validation  []
+ok   sebart-avanti-s-a200-p100rx|windy_day headwind standalone probe is accepted at the real session reset boundary
+ok   sebart-avanti-s-a200-p100rx|windy_day headwind standalone probe reset has a finite airborne state and positive density
+ok   sebart-avanti-s-a200-p100rx|windy_day headwind standalone probe session adopts the separately supplied weather
+ok   sebart-avanti-s-a200-p100rx|windy_day actual session wind is headwind relative to its airborne heading  along-course -3.000000000 m/s; sample error 0.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|windy_day crosswind-left standalone probe passes strict weather validation  []
+ok   sebart-avanti-s-a200-p100rx|windy_day crosswind-left standalone probe is accepted at the real session reset boundary
+ok   sebart-avanti-s-a200-p100rx|windy_day crosswind-left standalone probe reset has a finite airborne state and positive density
+ok   sebart-avanti-s-a200-p100rx|windy_day crosswind-left standalone probe session adopts the separately supplied weather
+ok   sebart-avanti-s-a200-p100rx|windy_day actual session wind is crosswind-left relative to its airborne heading  along-course 0.000000000 m/s; sample error 0.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|windy_day tailwind standalone probe passes strict weather validation  []
+ok   sebart-avanti-s-a200-p100rx|windy_day tailwind standalone probe is accepted at the real session reset boundary
+ok   sebart-avanti-s-a200-p100rx|windy_day tailwind standalone probe reset has a finite airborne state and positive density
+ok   sebart-avanti-s-a200-p100rx|windy_day tailwind standalone probe session adopts the separately supplied weather
+ok   sebart-avanti-s-a200-p100rx|windy_day actual session wind is tailwind relative to its airborne heading  along-course 3.000000000 m/s; sample error 0.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|windy_day crosswind-right standalone probe passes strict weather validation  []
+ok   sebart-avanti-s-a200-p100rx|windy_day crosswind-right standalone probe is accepted at the real session reset boundary
+ok   sebart-avanti-s-a200-p100rx|windy_day crosswind-right standalone probe reset has a finite airborne state and positive density
+ok   sebart-avanti-s-a200-p100rx|windy_day crosswind-right standalone probe session adopts the separately supplied weather
+ok   sebart-avanti-s-a200-p100rx|windy_day actual session wind is crosswind-right relative to its airborne heading  along-course -0.000000000 m/s; sample error 0.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|windy_day daylight band resolves for atmosphere corners
+ok   sebart-avanti-s-a200-p100rx|windy_day cool-humid-low-pressure standalone atmosphere passes strict weather validation  []
+ok   sebart-avanti-s-a200-p100rx|windy_day cool-humid-low-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   sebart-avanti-s-a200-p100rx|windy_day cool-humid-low-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   sebart-avanti-s-a200-p100rx|windy_day cool-humid-low-pressure standalone atmosphere session adopts the separately supplied weather
+ok   sebart-avanti-s-a200-p100rx|windy_day trims at the cool-humid-low-pressure atmosphere corner  air 29.000000000 m/s; trim 29.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|windy_day warm-dry-high-pressure standalone atmosphere passes strict weather validation  []
+ok   sebart-avanti-s-a200-p100rx|windy_day warm-dry-high-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   sebart-avanti-s-a200-p100rx|windy_day warm-dry-high-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   sebart-avanti-s-a200-p100rx|windy_day warm-dry-high-pressure standalone atmosphere session adopts the separately supplied weather
+ok   sebart-avanti-s-a200-p100rx|windy_day trims at the warm-dry-high-pressure atmosphere corner  air 29.000000000 m/s; trim 29.000000000 m/s
+ok   sebart-avanti-s-a200-p100rx|windy_day restores its untouched generated weather
+ok   sebart-avanti-s-a200-p100rx|windy_day standalone probes leave scenario and session weather unchanged
+ok   sebart-avanti-s-a200-p100rx|windy_day advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   sebart-avanti-s-a200-p100rx|windy_day 240 Hz trace state, loads, wind and ranges remain finite  air 28.918–29.234 m/s; altitude 30.0–30.5 m; wind 6.575–6.922 m/s
+NR-03 row sebart-avanti-s-a200-p100rx|windy_day seed=55 simulated=1.000 s ticks=240
+ok   named seed regenerates turbo-lumber-evolution|calm_air  []
+ok   seed 7 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   turbo-lumber-evolution resolves to packaged aircraft data
+ok   turbo-lumber-evolution|calm_air weather validates  []
+ok   turbo-lumber-evolution|calm_air actual session accepts generated weather
+ok   turbo-lumber-evolution|calm_air actual session accepts the default field
+ok   turbo-lumber-evolution|calm_air weather handoff preserves generated configuration
+ok   turbo-lumber-evolution|calm_air weather handoff leaves source configuration unchanged
+ok   turbo-lumber-evolution|calm_air session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   turbo-lumber-evolution|calm_air density is finite, positive and matches weather  1.17350944208483
+ok   turbo-lumber-evolution|calm_air stock aircraft and trim are accepted  trimmed
+ok   turbo-lumber-evolution|calm_air start is finite and has positive trimmed speed
+ok   turbo-lumber-evolution|calm_air session reset commits a valid airborne state
+ok   turbo-lumber-evolution|calm_air wind handoff preserves the trimmed airspeed  air 13.098175807 m/s; trim 13.098175807 m/s
+ok   turbo-lumber-evolution|calm_air active mean wind matches the generated weather
+ok   turbo-lumber-evolution|calm_air advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   turbo-lumber-evolution|calm_air 240 Hz trace state, loads, wind and ranges remain finite  air 13.049–13.098 m/s; altitude 30.0–30.1 m; wind 0.000–0.000 m/s
+NR-03 row turbo-lumber-evolution|calm_air seed=7 simulated=1.000 s ticks=240
+ok   named seed regenerates turbo-lumber-evolution|gentle_breeze  []
+ok   seed 4 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   turbo-lumber-evolution resolves to packaged aircraft data
+ok   turbo-lumber-evolution|gentle_breeze weather validates  []
+ok   turbo-lumber-evolution|gentle_breeze actual session accepts generated weather
+ok   turbo-lumber-evolution|gentle_breeze actual session accepts the default field
+ok   turbo-lumber-evolution|gentle_breeze weather handoff preserves generated configuration
+ok   turbo-lumber-evolution|gentle_breeze weather handoff leaves source configuration unchanged
+ok   turbo-lumber-evolution|gentle_breeze initial turbulence seed resolves
+ok   turbo-lumber-evolution|gentle_breeze session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   turbo-lumber-evolution|gentle_breeze density is finite, positive and matches weather  1.16598500600524
+ok   turbo-lumber-evolution|gentle_breeze stock aircraft and trim are accepted  trimmed
+ok   turbo-lumber-evolution|gentle_breeze start is finite and has positive trimmed speed
+ok   turbo-lumber-evolution|gentle_breeze session reset commits a valid airborne state
+ok   turbo-lumber-evolution|gentle_breeze wind handoff preserves the trimmed airspeed  air 13.098175807 m/s; trim 13.098175807 m/s
+ok   turbo-lumber-evolution|gentle_breeze advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   turbo-lumber-evolution|gentle_breeze 240 Hz trace state, loads, wind and ranges remain finite  air 13.051–13.130 m/s; altitude 30.0–30.1 m; wind 2.199–2.272 m/s
+NR-03 row turbo-lumber-evolution|gentle_breeze seed=4 simulated=1.000 s ticks=240
+ok   named seed regenerates turbo-lumber-evolution|lively_afternoon  []
+ok   seed 20 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   turbo-lumber-evolution resolves to packaged aircraft data
+ok   turbo-lumber-evolution|lively_afternoon weather validates  []
+ok   turbo-lumber-evolution|lively_afternoon actual session accepts generated weather
+ok   turbo-lumber-evolution|lively_afternoon actual session accepts the default field
+ok   turbo-lumber-evolution|lively_afternoon weather handoff preserves generated configuration
+ok   turbo-lumber-evolution|lively_afternoon weather handoff leaves source configuration unchanged
+ok   turbo-lumber-evolution|lively_afternoon initial turbulence seed resolves
+ok   turbo-lumber-evolution|lively_afternoon session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   turbo-lumber-evolution|lively_afternoon density is finite, positive and matches weather  1.1731971106111
+ok   turbo-lumber-evolution|lively_afternoon stock aircraft and trim are accepted  trimmed
+ok   turbo-lumber-evolution|lively_afternoon start is finite and has positive trimmed speed
+ok   turbo-lumber-evolution|lively_afternoon session reset commits a valid airborne state
+ok   turbo-lumber-evolution|lively_afternoon wind handoff preserves the trimmed airspeed  air 13.098175807 m/s; trim 13.098175807 m/s
+ok   turbo-lumber-evolution|lively_afternoon advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   turbo-lumber-evolution|lively_afternoon 240 Hz trace state, loads, wind and ranges remain finite  air 12.893–13.110 m/s; altitude 30.0–30.0 m; wind 4.227–4.425 m/s
+NR-03 row turbo-lumber-evolution|lively_afternoon seed=20 simulated=1.000 s ticks=240
+ok   named seed regenerates turbo-lumber-evolution|windy_day  []
+ok   seed 105 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   turbo-lumber-evolution resolves to packaged aircraft data
+ok   turbo-lumber-evolution|windy_day weather validates  []
+ok   turbo-lumber-evolution|windy_day actual session accepts generated weather
+ok   turbo-lumber-evolution|windy_day actual session accepts the default field
+ok   turbo-lumber-evolution|windy_day weather handoff preserves generated configuration
+ok   turbo-lumber-evolution|windy_day weather handoff leaves source configuration unchanged
+ok   turbo-lumber-evolution|windy_day initial turbulence seed resolves
+ok   turbo-lumber-evolution|windy_day session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   turbo-lumber-evolution|windy_day density is finite, positive and matches weather  1.17057054830792
+ok   turbo-lumber-evolution|windy_day stock aircraft and trim are accepted  trimmed
+ok   turbo-lumber-evolution|windy_day start is finite and has positive trimmed speed
+ok   turbo-lumber-evolution|windy_day session reset commits a valid airborne state
+ok   turbo-lumber-evolution|windy_day wind handoff preserves the trimmed airspeed  air 13.098175807 m/s; trim 13.098175807 m/s
+ok   turbo-lumber-evolution|windy_day has a finite horizontal aircraft heading
+ok   turbo-lumber-evolution|windy_day headwind standalone probe passes strict weather validation  []
+ok   turbo-lumber-evolution|windy_day headwind standalone probe is accepted at the real session reset boundary
+ok   turbo-lumber-evolution|windy_day headwind standalone probe reset has a finite airborne state and positive density
+ok   turbo-lumber-evolution|windy_day headwind standalone probe session adopts the separately supplied weather
+ok   turbo-lumber-evolution|windy_day actual session wind is headwind relative to its airborne heading  along-course -3.000000000 m/s; sample error 0.000000000 m/s
+ok   turbo-lumber-evolution|windy_day crosswind-left standalone probe passes strict weather validation  []
+ok   turbo-lumber-evolution|windy_day crosswind-left standalone probe is accepted at the real session reset boundary
+ok   turbo-lumber-evolution|windy_day crosswind-left standalone probe reset has a finite airborne state and positive density
+ok   turbo-lumber-evolution|windy_day crosswind-left standalone probe session adopts the separately supplied weather
+ok   turbo-lumber-evolution|windy_day actual session wind is crosswind-left relative to its airborne heading  along-course 0.000000000 m/s; sample error 0.000000000 m/s
+ok   turbo-lumber-evolution|windy_day tailwind standalone probe passes strict weather validation  []
+ok   turbo-lumber-evolution|windy_day tailwind standalone probe is accepted at the real session reset boundary
+ok   turbo-lumber-evolution|windy_day tailwind standalone probe reset has a finite airborne state and positive density
+ok   turbo-lumber-evolution|windy_day tailwind standalone probe session adopts the separately supplied weather
+ok   turbo-lumber-evolution|windy_day actual session wind is tailwind relative to its airborne heading  along-course 3.000000000 m/s; sample error 0.000000000 m/s
+ok   turbo-lumber-evolution|windy_day crosswind-right standalone probe passes strict weather validation  []
+ok   turbo-lumber-evolution|windy_day crosswind-right standalone probe is accepted at the real session reset boundary
+ok   turbo-lumber-evolution|windy_day crosswind-right standalone probe reset has a finite airborne state and positive density
+ok   turbo-lumber-evolution|windy_day crosswind-right standalone probe session adopts the separately supplied weather
+ok   turbo-lumber-evolution|windy_day actual session wind is crosswind-right relative to its airborne heading  along-course -0.000000000 m/s; sample error 0.000000000 m/s
+ok   turbo-lumber-evolution|windy_day daylight band resolves for atmosphere corners
+ok   turbo-lumber-evolution|windy_day cool-humid-low-pressure standalone atmosphere passes strict weather validation  []
+ok   turbo-lumber-evolution|windy_day cool-humid-low-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   turbo-lumber-evolution|windy_day cool-humid-low-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   turbo-lumber-evolution|windy_day cool-humid-low-pressure standalone atmosphere session adopts the separately supplied weather
+ok   turbo-lumber-evolution|windy_day trims at the cool-humid-low-pressure atmosphere corner  air 13.098175807 m/s; trim 13.098175807 m/s
+ok   turbo-lumber-evolution|windy_day warm-dry-high-pressure standalone atmosphere passes strict weather validation  []
+ok   turbo-lumber-evolution|windy_day warm-dry-high-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   turbo-lumber-evolution|windy_day warm-dry-high-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   turbo-lumber-evolution|windy_day warm-dry-high-pressure standalone atmosphere session adopts the separately supplied weather
+ok   turbo-lumber-evolution|windy_day trims at the warm-dry-high-pressure atmosphere corner  air 13.098175807 m/s; trim 13.098175807 m/s
+ok   turbo-lumber-evolution|windy_day restores its untouched generated weather
+ok   turbo-lumber-evolution|windy_day standalone probes leave scenario and session weather unchanged
+ok   turbo-lumber-evolution|windy_day advances exactly 240 fixed ticks  advanced 240; fault ''
+ok   turbo-lumber-evolution|windy_day 240 Hz trace state, loads, wind and ranges remain finite  air 12.836–13.463 m/s; altitude 30.0–30.3 m; wind 6.353–7.079 m/s
+NR-03 row turbo-lumber-evolution|windy_day seed=105 simulated=1.000 s ticks=240
+NR-03 numerical flight qualification: 576 checks, 0 failed

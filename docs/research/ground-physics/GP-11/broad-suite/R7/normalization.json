@@ -1,0 +1,45 @@
+{
+  "format": "openrc-F4U-checkout-EOL-repair v1",
+  "utc": "2026-10-26T14:59:10.013250+00:00",
+  "normalizations": [
+    {
+      "path": "assets/aircraft/f4u-corsair-250/gear-samples.json",
+      "before_sha256": "1f1621ba9a3709c0f86c3a7efc68b697498382b6b5ac4cae168ef69f4226ecd0",
+      "after_sha256": "7bd3eb6be284f4929033b904e1b2923c3dc63a118c956a196442fc98fc91e8bc",
+      "before_CRLF_lines": 24416,
+      "canonical_Git_blob": true,
+      "only_CRLF_to_LF": true,
+      "JSON_semantic_equality": true
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/wing-fold-r59.json",
+      "before_sha256": "d83664ce6473f19979d89ef492f042c922e7d1265e919d53c4a63e0e65a7b71e",
+      "after_sha256": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89",
+      "before_CRLF_lines": 71,
+      "canonical_Git_blob": true,
+      "only_CRLF_to_LF": true,
+      "JSON_semantic_equality": true
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/mechanisms-r59.json",
+      "before_sha256": "b3dec2a59cf7e2d1c840c18c827e146c0e662c39a6c8ca938f6e124af35e5fe3",
+      "after_sha256": "4aa349793219b077f4f310e232d04e3b6e9fc933e6d492b9479f40f451a561b5",
+      "before_CRLF_lines": 433,
+      "canonical_Git_blob": true,
+      "only_CRLF_to_LF": true,
+      "JSON_semantic_equality": true
+    }
+  ],
+  "generated_geometry_JSON_and_GDScript_unchanged": true,
+  "all1374_GDScripts_unchanged": true,
+  "all4034_app_source_dependency_files_unchanged": true,
+  "selected_source_paths": 165,
+  "preceding_integration_receipt": "../R6/integration/result.json",
+  "preceding_units": "../R6/unit-coverage.json",
+  "preceding_parse": "../R2-parse/result.json",
+  "continuation_tail_byte_identical": true,
+  "continuation_tail_sha256": "de12010d1e43ba5db7347d5bc826705e1fe5aa75c4451f83bb69305ef3e79df2",
+  "scope": "Same frozen GP11 runtime. Three outside-app authoring JSONs canonical LF only; every physical/semantic value unchanged. Reuse completed app parse/units and preceding original gates; resume exact original tail from failed F4U section. Not one uninterrupted full-suite pass.",
+  "main_modified": false,
+  "flight_goldens_rerecorded": false
+}

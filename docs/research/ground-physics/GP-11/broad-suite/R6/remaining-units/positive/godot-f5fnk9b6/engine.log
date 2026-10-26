@@ -1,0 +1,27 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   fracture detail exists and is hidden in the flying model 
+ok   the flying fuselage stays one mesh with a crash section map 
+ok   raw balsa lines the fuselage and splits with it 
+ok   the wing root cap is a bare balsa rib 
+ok   Stik twin prepares 
+ok   gear flies as separate physical parts (main strap + wheels, nose leg, tail skid) 3
+ok   each wheel is its own part (pops off in a destroying crash) 
+ok   hinged surfaces are their own parts 
+ok   same-kind parts split the kind's weight (no mass doubling) 1.0
+ok   the fuselage boom is its own section 
+ok   C3 tail hit releases the boom 
+ok   C3 tail hit carries stab, fin, elevator and rudder on the boom 
+ok   C3 tail hit shows both sides of the fuselage break 
+ok   C3 tail hit keeps the wing roots unbroken 
+ok   C3 left wing hit shows only the left root splinters 
+ok   C3 wing hit: the aileron rides on its wing half 
+ok   C2 gear hit releases only the struck (nose) leg 
+ok   C2 gear hit: the nose wheel rides on its leg 
+ok   C2 aileron hit tears off only that aileron 
+ok   a torn-off aileron shows its broken hinges, the other aileron does not 
+ok   C4 shows every fracture 
+ok   C4 breaks the tail surfaces off the boom 
+ok   C4 tears every hinged surface and wheel off 
+ok   reset hides the fracture detail again 
+CR-09e fracture: 24 checks, 0 failed

@@ -1,0 +1,14 @@
+{
+  "format": "openrc-frozen-full-suite-launch v1",
+  "utc": "2026-10-26T02:27:25.297246+00:00",
+  "status": "running",
+  "attempt": "R1-two-math-wrapper-fixes-only",
+  "worktree": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "source_before": "source-before.json",
+  "command": "app/test.sh",
+  "log": "full-suite.log",
+  "positive_collection": "positive",
+  "expected_failure_collection": "expected",
+  "original_attempt": "../original-result.json",
+  "scope": "same canonical GP11 snapshot except ControlActuators and NormalCompliance math3d wrapper corrections; subsequent admission/step/traction/source modules excluded"
+}

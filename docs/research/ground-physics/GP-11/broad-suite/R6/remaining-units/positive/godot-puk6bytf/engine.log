@@ -1,0 +1,15 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   Atmosphere picker exposes the standard-column mode
+ok   v3 custom source opens in its existing mode
+ok   standard-column mode enables the field datum
+ok   editable field datum retains its validated −500..4000 m range
+ok   temperature, QNH, and humidity remain disabled
+ok   standard-column note states the dry ISA geometric range and its reference status
+ok   Spanish translates the new mode and its standard-atmosphere note
+ok   selecting standard column promotes v3 to v4 and retains inert weather drafts
+ok   standard-column preview samples the shared atmosphere kernel
+ok   Home summarizes standard-column conditions and their reference status
+ok   Home marks the altitude-varying mode as unsupported for helicopters
+ok   wind-only editing never downgrades v4 or changes its atmosphere mode
+all standard-column UI checks passed

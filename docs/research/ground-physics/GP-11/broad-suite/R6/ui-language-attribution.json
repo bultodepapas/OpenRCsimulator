@@ -1,0 +1,38 @@
+{
+  "format": "openrc-baseline-ui-language-isolation v1",
+  "utc": "2026-10-26T14:18:47.691021+00:00",
+  "baseline_report": "tmp\\gp11-full-suite-checks\\R6\\baseline-ui\\ui-language\\godot-5nlhf2m1\\report.json",
+  "candidate_report": "tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-0ssas3sy\\report.json",
+  "test_dependencies": [
+    {
+      "path": "app/tests/test_ui_language.gd",
+      "baseline_sha256": "5d17e5ed6e1109214e36eb8a4984dacb3f40ca92d396e39fea5a9e9b158a90c9",
+      "candidate_sha256": "5d17e5ed6e1109214e36eb8a4984dacb3f40ca92d396e39fea5a9e9b158a90c9",
+      "byte_equal": true
+    },
+    {
+      "path": "app/app_state/preferences.gd",
+      "baseline_sha256": "4103ef09b67864e6313a0445e22378893286b115e2a75b32f39a93a393870a07",
+      "candidate_sha256": "4103ef09b67864e6313a0445e22378893286b115e2a75b32f39a93a393870a07",
+      "byte_equal": true
+    },
+    {
+      "path": "app/ui/home.gd",
+      "baseline_sha256": "609685fd2ec23aecc7eace3ff1bf29af15441b3380df6d760e486ee34985a1a5",
+      "candidate_sha256": "609685fd2ec23aecc7eace3ff1bf29af15441b3380df6d760e486ee34985a1a5",
+      "byte_equal": true
+    },
+    {
+      "path": "app/tests/ui_driver.gd",
+      "baseline_sha256": "8d250337b7aa647679ad106b97a68df22a46398b7e4de7800875b0f97c944ba2",
+      "candidate_sha256": "8d250337b7aa647679ad106b97a68df22a46398b7e4de7800875b0f97c944ba2",
+      "byte_equal": true
+    }
+  ],
+  "same_results": [
+    "FAIL every Home text resolves from English or matches an explicit Spanish translation [\"Historial \u00b7 0 h 00 min en el aire \u00b7 0 completados \u00b7 0 choques\", \"Total del piloto \u00b7 0 h 00 min en el aire \u00b7 0 completados \u00b7 mejor racha 0\"]",
+    "1 failed"
+  ],
+  "failure_messages_byte_equal": true,
+  "attribution": "Inherited GP10 dynamic Home translation assertion failure; both candidate and baseline report1failure on the same two history summary strings. No localization changes made."
+}

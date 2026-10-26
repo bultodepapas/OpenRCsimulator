@@ -1,0 +1,166 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   standing/casual_shirt has a head rig
+ok   standing/casual_shirt pivot below the eyes
+ok   standing/casual_shirt part transform is identity rotation
+ok   standing/casual_shirt eyes turn rigidly
+ok   standing/casual_shirt hair and brows above the eyes are mostly rigid
+ok   standing/casual_shirt shoes never move
+ok   standing/casual_shirt clothing below the neck band is fixed
+ok   standing/casual_shirt plain garments below the neck band are fixed
+ok   standing/casual_shirt body below the neck band is fixed
+ok   standing/woman_tee has a head rig
+ok   standing/woman_tee pivot below the eyes
+ok   standing/woman_tee part transform is identity rotation
+ok   standing/woman_tee eyes turn rigidly
+ok   standing/woman_tee hair and brows above the eyes are mostly rigid
+ok   standing/woman_tee shoes never move
+ok   standing/woman_tee clothing below the neck band is fixed
+ok   standing/woman_tee plain garments below the neck band are fixed
+ok   standing/woman_tee body below the neck band is fixed
+ok   standing/casual_jacket has a head rig
+ok   standing/casual_jacket pivot below the eyes
+ok   standing/casual_jacket part transform is identity rotation
+ok   standing/casual_jacket eyes turn rigidly
+ok   standing/casual_jacket hair and brows above the eyes are mostly rigid
+ok   standing/casual_jacket shoes never move
+ok   standing/casual_jacket clothing below the neck band is fixed
+ok   standing/casual_jacket plain garments below the neck band are fixed
+ok   standing/casual_jacket body below the neck band is fixed
+ok   standing/mechanic_overalls has a head rig
+ok   standing/mechanic_overalls pivot below the eyes
+ok   standing/mechanic_overalls part transform is identity rotation
+ok   standing/mechanic_overalls eyes turn rigidly
+ok   standing/mechanic_overalls hair and brows above the eyes are mostly rigid
+ok   standing/mechanic_overalls shoes never move
+ok   standing/mechanic_overalls clothing below the neck band is fixed
+ok   standing/mechanic_overalls plain garments below the neck band are fixed
+ok   standing/mechanic_overalls body below the neck band is fixed
+ok   sitting/woman_tee has a head rig
+ok   sitting/woman_tee pivot below the eyes
+ok   sitting/woman_tee part transform is identity rotation
+ok   sitting/woman_tee eyes turn rigidly
+ok   sitting/woman_tee hair and brows above the eyes are mostly rigid
+ok   sitting/woman_tee shoes never move
+ok   sitting/woman_tee clothing below the neck band is fixed
+ok   sitting/woman_tee plain garments below the neck band are fixed
+ok   sitting/woman_tee body below the neck band is fixed
+ok   sitting/veteran_cap has a head rig
+ok   sitting/veteran_cap pivot below the eyes
+ok   sitting/veteran_cap part transform is identity rotation
+ok   sitting/veteran_cap eyes turn rigidly
+ok   sitting/veteran_cap hair and brows above the eyes are mostly rigid
+ok   sitting/veteran_cap shoes never move
+ok   sitting/veteran_cap clothing below the neck band is fixed
+ok   sitting/veteran_cap plain garments below the neck band are fixed
+ok   sitting/veteran_cap body below the neck band is fixed
+ok   pilot/pilot_polo has a head rig
+ok   pilot/pilot_polo pivot below the eyes
+ok   pilot/pilot_polo part transform is identity rotation
+ok   pilot/pilot_polo eyes turn rigidly
+ok   pilot/pilot_polo hair and brows above the eyes are mostly rigid
+ok   pilot/pilot_polo shoes never move
+ok   pilot/pilot_polo holds a transmitter that never moves
+ok   pilot/pilot_polo clothing below the neck band is fixed
+ok   pilot/pilot_polo plain garments below the neck band are fixed
+ok   pilot/pilot_polo body below the neck band is fixed
+ok   pilot/veteran_cap has a head rig
+ok   pilot/veteran_cap pivot below the eyes
+ok   pilot/veteran_cap part transform is identity rotation
+ok   pilot/veteran_cap eyes turn rigidly
+ok   pilot/veteran_cap hair and brows above the eyes are mostly rigid
+ok   pilot/veteran_cap shoes never move
+ok   pilot/veteran_cap holds a transmitter that never moves
+ok   pilot/veteran_cap clothing below the neck band is fixed
+ok   pilot/veteran_cap plain garments below the neck band are fixed
+ok   pilot/veteran_cap body below the neck band is fixed
+ok   working/mechanic_overalls has a head rig
+ok   working/mechanic_overalls pivot below the eyes
+ok   working/mechanic_overalls part transform is identity rotation
+ok   working/mechanic_overalls eyes turn rigidly
+ok   working/mechanic_overalls hair and brows above the eyes are mostly rigid
+ok   working/mechanic_overalls shoes never move
+ok   working/mechanic_overalls clothing below the neck band is fixed
+ok   working/mechanic_overalls plain garments below the neck band are fixed
+ok   working/mechanic_overalls body below the neck band is fixed
+ok   working/casual_shirt has a head rig
+ok   working/casual_shirt pivot below the eyes
+ok   working/casual_shirt part transform is identity rotation
+ok   working/casual_shirt eyes turn rigidly
+ok   working/casual_shirt hair and brows above the eyes are mostly rigid
+ok   working/casual_shirt shoes never move
+ok   working/casual_shirt clothing below the neck band is fixed
+ok   working/casual_shirt plain garments below the neck band are fixed
+ok   working/casual_shirt body below the neck band is fixed
+ok   working/woman_tee has a head rig
+ok   working/woman_tee pivot below the eyes
+ok   working/woman_tee part transform is identity rotation
+ok   working/woman_tee eyes turn rigidly
+ok   working/woman_tee hair and brows above the eyes are mostly rigid
+ok   working/woman_tee shoes never move
+ok   working/woman_tee clothing below the neck band is fixed
+ok   working/woman_tee plain garments below the neck band are fixed
+ok   working/woman_tee body below the neck band is fixed
+ok   pilot settles on a static target
+ok   pilot tracks a crossing aircraft
+ok   pilot looks up at the aircraft
+ok   head rate stays limited
+ok   spectator holds inside the dead zone
+ok   spectator turns once outside the dead zone
+ok   spectator holds after a small creep
+ok   a target behind returns the head to rest
+ok   a target past the limit clamps the yaw
+ok   spectators ignore a distant aircraft
+ok   pilots keep watching a distant aircraft
+ok   identical inputs give identical head states
+ok   two people do not move in sync
+ok   update rate does not change the head path
+ok   repeated timestamps (pause) change nothing
+ok   a backward time jump resets to rest
+ok   pilots take companion slots in order
+ok   pilot 0 watches its companion
+ok   pilot 1 without a companion watches the player
+ok   spectators watch the player
+ok   a removed companion returns its pilot to the player
+ok   a new companion target has no velocity spike
+ok   a distant aircraft is ignored before the crash
+ok   the crash glance starts after the startle delay
+ok   the pits member looks at the crash
+ok   interest fades after the alert window
+ok   restart clears the alert
+ok   a worker ignores a distant aircraft
+ok   a near pass lifts the worker's head past the baked tilt
+ok   standing/casual_shirt mirror: positive yaw turns the face to its left
+ok   standing/casual_shirt mirror: positive pitch raises the face
+ok   standing/woman_tee mirror: positive yaw turns the face to its left
+ok   standing/woman_tee mirror: positive pitch raises the face
+ok   standing/casual_jacket mirror: positive yaw turns the face to its left
+ok   standing/casual_jacket mirror: positive pitch raises the face
+ok   standing/mechanic_overalls mirror: positive yaw turns the face to its left
+ok   standing/mechanic_overalls mirror: positive pitch raises the face
+ok   sitting/woman_tee mirror: positive yaw turns the face to its left
+ok   sitting/woman_tee mirror: positive pitch raises the face
+ok   sitting/veteran_cap mirror: positive yaw turns the face to its left
+ok   sitting/veteran_cap mirror: positive pitch raises the face
+ok   pilot/pilot_polo mirror: positive yaw turns the face to its left
+ok   pilot/pilot_polo mirror: positive pitch raises the face
+ok   pilot/veteran_cap mirror: positive yaw turns the face to its left
+ok   pilot/veteran_cap mirror: positive pitch raises the face
+ok   working/mechanic_overalls mirror: positive yaw turns the face to its left
+ok   working/mechanic_overalls mirror: positive pitch raises the face
+ok   working/casual_shirt mirror: positive yaw turns the face to its left
+ok   working/casual_shirt mirror: positive pitch raises the face
+ok   working/woman_tee mirror: positive yaw turns the face to its left
+ok   working/woman_tee mirror: positive pitch raises the face
+ok   rotated fixture faces east
+ok   rotated person looks 45° to its left
+ok   a teleported target restarts without a velocity spike
+ok   non-finite times are ignored
+ok   the model keeps advancing after a non-finite time
+ok   no head sweeps while the target hovers at the rear gate
+ok   default scenery has a population
+ok   gaze model built
+ok   default roles
+ok   both flight-line pilots fly companion slots 0 and 1
+skip MultiMesh readback under the headless dummy renderer
+people gaze: PASS

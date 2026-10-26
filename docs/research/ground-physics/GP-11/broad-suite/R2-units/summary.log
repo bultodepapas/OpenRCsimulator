@@ -1,0 +1,15 @@
+11 invocations: 10 passed, 1 failed or invalid.
+
+res://tests/test_aircraft_catalog.gd [timeout]
+Inspect the last output for a hang before increasing the deadline.
+process_exit=1; complete=False; errors=2; warnings=0
+
+Evidence: godot-dr650ytn/report.json and engine.log
+log:56 ERROR: Aircraft model contract: ["SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb.import"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:57)
+log:62 SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+   at: _initialize (res://tests/test_aircraft_catalog.gd:92)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/test_aircraft_catalog.gd:92)

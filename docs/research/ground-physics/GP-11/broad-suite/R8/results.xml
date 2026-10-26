@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="19" failures="0" errors="0" skipped="0" time="170.047000"><testcase classname="OpenRC.GodotCommand" name="godot [godot-0xypwah8]" time="12.422000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-0xypwah8/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="godot [godot-5q8gf8pp]" time="12.703000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-5q8gf8pp/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/flight-robustness/d8b-r2/analog/make_analog.gd [godot-7vg8usc7]" time="1.500000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-7vg8usc7/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/flight-robustness/d8b-r2/make_candidates.gd [godot-87rhsvqf]" time="1.031000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-87rhsvqf/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/run_fixed_step.gd [godot-93kbf5wj]" time="9.922000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-93kbf5wj/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="godot [godot-a27o4lox]" time="11.204000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-a27o4lox/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="godot [godot-bh38z0lk]" time="11.282000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-bh38z0lk/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/flight-robustness/d8b-r2/analog/make_v2.gd [godot-cqu8d2rt]" time="1.969000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-cqu8d2rt/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/run_fixed_step.gd [godot-dr4g0cyw]" time="10.656000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-dr4g0cyw/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/run_fixed_step.gd [godot-e5s7e10g]" time="9.922000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-e5s7e10g/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/extra-300/ex14/fit_wing_polar.gd [godot-e_ok1uuv]" time="2.516000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-e_ok1uuv/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="resource import [godot-eo_ood4g]" time="5.625000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-eo_ood4g/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="godot [godot-gnqp2v9f]" time="11.406000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-gnqp2v9f/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="godot [godot-moqvc5fj]" time="14.640000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-moqvc5fj/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/run_fixed_step.gd [godot-pv46rn1c]" time="10.953000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-pv46rn1c/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="godot [godot-s2toea25]" time="9.718000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-s2toea25/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/run_fixed_step.gd [godot-wbkfrump]" time="10.672000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-wbkfrump/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="godot [godot-xmax2prq]" time="12.453000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-xmax2prq/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/run_fixed_step.gd [godot-yn8z6ob2]" time="9.453000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-yn8z6ob2/report.json and engine.log</system-out></testcase></testsuite>

@@ -1,0 +1,73 @@
+{
+	"accepted_substeps": 16,
+	"actual_angular_momentum_change": [
+		-1.5045964474325046e-10,
+		5.995204332975845e-15,
+		2.4668329878796413e-09
+	],
+	"actual_linear_momentum_change": [
+		-7.866155978830367e-16,
+		-8.488210187287708e-11,
+		-2.0932758004427744e-12
+	],
+	"actual_work_audit_count": 32,
+	"angular_momentum_closure": 6.933081871471868e-16,
+	"dt": 0.004166666666666667,
+	"energy_residual_j": 5.710701448748342e-14,
+	"integrated_external_angular_impulse": [
+		-1.5045895150265717e-10,
+		6.00001548011625e-15,
+		2.4668329794787462e-09
+	],
+	"integrated_external_linear_impulse": [
+		-7.866156101933494e-16,
+		-8.488210187287674e-11,
+		-2.0934957471278418e-12
+	],
+	"internal_shaft_source_nm": 0.0,
+	"linear_momentum_closure": 2.1994668506737908e-16,
+	"maximum_actual_work_point_j": 0.0,
+	"maximum_actual_work_upper_j": 0.0,
+	"normal_force_average_ned": [
+		-8.333979007816086e-21,
+		4.458612418371236e-25,
+		-210.87963321494877
+	],
+	"normal_moment_average_ned": [
+		-5.3353238990136395e-08,
+		-0.010753983831882695,
+		-1.424095878778662e-22
+	],
+	"numerical_allowance": {
+		"accepted_at_resolution": 32,
+		"accepted_slip_roundoff": 2,
+		"accepted_work_roundoff": 0,
+		"ceiling_scope": "per_impulse_qp_not_tick",
+		"combined_contact_uncertainty_sum_j": 1.9145547202828905e-15,
+		"derived_gamma_sum_j": 1.9144500118774264e-15,
+		"maximum_assembly_resolution_j": 3.1250000000000003e-13,
+		"maximum_derived_gamma_j": 6.017780127289807e-17,
+		"objective_gap_upper_sum_j": 6.958993565343471e-17,
+		"slip_work_equivalent_sum_j": 1.0470840546082601e-19,
+		"work_consistency_sum_j": 0.0
+	},
+	"positive_actual_work_point_count": 0,
+	"positive_actual_work_upper_count": 0,
+	"prescribed_carrier_work_j": 0.0,
+	"qp_count": 32,
+	"tangent_force_average_ned": [
+		-1.8878773811242483e-13,
+		-2.0371704449490418e-08,
+		-1.0731671983590515e-23
+	],
+	"tangent_loss_j": 9.178293723215355e-12,
+	"tangent_moment_average_ned": [
+		1.724309062949867e-08,
+		0.010753983833322699,
+		5.920399150748992e-07
+	],
+	"tick": 1440,
+	"time_s": 6.0,
+	"total_force_residual_n": 2.0377899478134624e-08,
+	"total_moment_residual_nm": 5.931401216058433e-07
+}

@@ -1,0 +1,117 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   pilot view (auto-zoom true) is exactly PilotCamera.aim
+ok   pilot view (auto-zoom false) is exactly PilotCamera.aim
+ok   close-up view is exactly PilotCamera.aim(inspect)
+ok   landscape look view is exactly PilotCamera.look
+ok   pilot vertical target remains aimed (0.0, 30.0, 0.0)
+ok   pilot vertical basis stays orthonormal
+ok   pilot pole keeps the preceding screen-right direction
+ok   pilot vertical target remains aimed (0.0, -30.0, 0.0)
+ok   pilot vertical basis stays orthonormal
+ok   pilot pole keeps the preceding screen-right direction
+ok   pilot vertical target remains aimed (0.000001, 30.0, 0.0)
+ok   pilot vertical basis stays orthonormal
+ok   pilot pole keeps the preceding screen-right direction
+ok   pilot vertical target remains aimed (0.00024, 30.0, 0.00024)
+ok   pilot vertical basis stays orthonormal
+ok   pilot pole keeps the preceding screen-right direction
+ok   parallel or nearly parallel preceding right axis falls back to finite aimed basis
+ok   parallel or nearly parallel preceding right axis falls back to north-up
+ok   parallel or nearly parallel preceding right axis falls back to finite aimed basis
+ok   parallel or nearly parallel preceding right axis falls back to north-up
+ok   coincident pilot target preserves last orientation
+ok   ordinary pilot target retains exact look_at basis
+ok   CAM-23 pilot view: FOV from the reference height, not the viewport (64 px tall)
+ok   far airplane: the auto-zoom law is narrower than the base FOV
+ok   Z: the first frame after the toggle keeps the FOV (no jump)
+ok   Z: settles on the base FOV within 2 s
+ok   Z: no frame changes the FOV by more than 3°
+ok   Z back on: the law's exact FOV again after 3 s
+ok   two zoom-in steps narrow tan(fov/2) by √2
+ok   pilot zoom stops at its limit
+ok   Backspace: back to the law's exact FOV
+ok   CAM-06 constant law is today's auto-zoom, bit for bit
+ok   CAM-06 partial law: span ∝ d^-0.5 from 59 to 300 m within 5 %
+ok   CAM-06 partial law never zooms in more than the constant law
+ok   CAM-06 gentle law reproduces CRRCSim (35/26/20°)
+ok   CAM-06 the rig shows the chosen law
+ok   CAM-06b off by default: the aircraft is centred
+ok   CAM-06b tilt eases in (first frame turns a fraction)
+ok   CAM-06b the horizon shows: the frame's lower edge is below eye level by the margin
+ok   CAM-06b keeps the aircraft in the upper frame, level horizon
+ok   CAM-06b a low aircraft is looked at directly
+ok   CAM-28 off: the exact pass beside the zenith flips the picture (> 1000°/s)
+ok   CAM-28 on: the picture turns at most ~180°/s and the aircraft stays exactly centred
+ok   C cycles pilot → chase → fly-by → orbit → close-up → pilot
+ok   Shift+C goes back
+ok   unknown view refused
+ok   names keep the historical panel text
+ok   CAM-02b near planes: pilot 0.5, chase 0.25, close-up 0.25, orbit 0.25 at its default distance
+ok   CAM-02b orbit at its closest: 5 cm near plane (a wing tip can be ~0.2 m away)
+ok   CAM-02b landscape look views use the pilot's near plane
+ok   chase: first frame is settled behind and above (south of a northbound airplane)
+ok   chase: looks at the airplane
+ok   chase: no roll (world up stays up)
+ok   chase: straight flight, same camera offset at 30/60/144 fps (≤ 1 cm)
+ok   chase: straight flight, exactly one boom behind and above (no speed lag)
+ok   chase: 12 s circle stays finite and within 0.5–2.5 booms
+ok   chase: circle keeps the airplane near the centre (look-ahead ≤ 10°)
+ok   chase: vertical climb holds the last heading, no NaN
+ok   chase: sliding backwards follows the nose
+ok   chase: slow (taxi) follows the nose
+ok   chase: fast track wins over the nose (crab)
+ok   chase: clearance above terrain
+ok   chase: unknown terrain reads as flat, never NaN
+ok   chase: a teleport snaps behind the new position
+ok   chase: frozen while paused
+ok   CAM-24 chase (state velocity): 60° bank, camera at 30 and 144 fps within 1 cm
+ok   CAM-24 chase (state velocity): loop, camera at 30 and 144 fps within 2 cm
+ok   CAM-24 chase (estimated velocity): 60° bank, camera at 30 and 144 fps within 1 cm
+ok   CAM-24 chase (estimated velocity): loop, camera at 30 and 144 fps within 2 cm
+ok   CAM-24 chase: no slide after entry with the state velocity (≤ 0.01°)
+ok   CAM-24 chase: the airplane stays in frame through a loop
+ok   CAM-24 chase: a hard touchdown turns the aim ≤ 0.6° per 60 fps frame
+ok   CAM-24 chase: hovering pirouette, 30 and 144 fps within 1 cm
+ok   CAM-09 the chase key selects the horizon-locked chase first
+ok   CAM-09 pressed again it switches to 3D follow, named so
+ok   CAM-09 set_view (settings, command line) never toggles
+ok   CAM-09 and once more back to horizon lock
+ok   CAM-09 3D follow: a loop turns the camera far less than horizon lock (no whip over the top)
+ok   CAM-09 3D follow: the aircraft stays in frame through the loop
+ok   CAM-09 3D follow: an axial roll leans the picture only partly, aircraft in frame
+ok   CAM-09 horizon lock: the same roll keeps the horizon level
+ok   CAM-09 3D follow: a vertical line stays defined (no NaN)
+ok   CAM-09 3D follow: loop at 30 and 144 fps within 2 cm
+ok   orbit: starts exactly where the previous view was
+ok   orbit: elevation clamps below the zenith
+ok   orbit: near the zenith the basis stays finite and aimed
+ok   orbit: distance limit
+ok   orbit: low airplane, camera kept above the ground
+ok   rig: pilot → orbit keeps the eye when within reach
+ok   rig: pilot → orbit from far keeps the direction at the default distance
+ok   rig: a flight that starts in orbit sees it from behind-left, above
+ok   CAM-14 fly-by: first placement waits exactly 0.8 × 3.5 s × speed ahead (the deviation is across the course)
+ok   CAM-14 fly-by: deviated 0.7–1.2 × D from the course
+ok   CAM-14 fly-by: re-placed after each pass (20 s at 20 m/s → several shots)
+ok   CAM-14 fly-by: a new spot only once the aircraft is 1.7 × D past the old one
+ok   CAM-14 fly-by: placements repeat exactly (own fixed seed, presentation only)
+ok   CAM-14 fly-by: framed like a photographer (span ≈ 12 % of the frame height)
+ok   CAM-14 fly-by: a low aircraft is watched from the side
+ok   CAM-14 fly-by: the sun (east) stays behind the camera
+ok   CAM-14 fly-by: sun in the west, camera on the west side
+ok   CAM-14 fly-by: never below the terrain + 2 m
+ok   CAM-14 fly-by: holds its spot while paused
+ok   CAM-14 fly-by: a teleport is placed again ahead
+ok   CAM-14 fly-by: a hovering aircraft keeps one spot about D away
+ok   CAM-27 orbit: looks at the wreck, not the impact
+ok   CAM-27 orbit: at the orbit distance from the wreck
+ok   CAM-27 orbit: a drag still turns the camera around the wreck
+ok   CAM-27 chase: holds its position and turns to the wreck
+ok   CAM-27 chase: narrows so the slid wreck spans a quarter of the frame height
+ok   CAM-27 chase: a wreck still near the impact keeps the chase FOV (no jump on entry)
+ok   CAM-27 orbit entered after the slide starts where the chase was (no jump)
+ok   CAM-27 close-up: keeps its offset from the wreck, above the terrain
+ok   CAM-27 close-up: lifted clear of terrain higher than its offset
+ok   CAM-27 pilot: focus leaves the pilot view to the crash director
+all 114 camera view checks passed

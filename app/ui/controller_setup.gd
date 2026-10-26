@@ -799,6 +799,7 @@ func _build() -> void:
 func _resize_panel() -> void:
 	if not is_instance_valid(_settings_panel) or not is_instance_valid(_screen):
 		return
+	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
 	_settings_panel.custom_minimum_size = Vector2(minf(1160.0, maxf(0.0, _screen.size.x - 40.0)), minf(780.0, maxf(0.0, _screen.size.y - 40.0)))
 	var scale := maxf(0.5, ScreenTheme.text_scale)
 	var effective_width := _screen.size.x / scale
@@ -816,13 +817,11 @@ func _resize_panel() -> void:
 			_section_navigation.get_parent().remove_child(_section_navigation)
 		_section_body.add_child(_section_navigation)
 		_section_body.move_child(_section_navigation, 0)
-		(_section_body.get_parent() as ScrollContainer).scroll_vertical = 0
 	elif not navigation_in_scroll and _section_navigation.get_parent() != _shell:
 		if _section_navigation.get_parent() != null:
 			_section_navigation.get_parent().remove_child(_section_navigation)
 		_shell.add_child(_section_navigation)
 		_shell.move_child(_section_navigation, 2)
-		(_section_body.get_parent() as ScrollContainer).scroll_vertical = 0
 	var compact_fields := effective_width < 1280.0
 	_device_roles.columns = 1 if compact_fields else 2
 	_profile_fields.columns = 1 if compact_fields else 2
@@ -850,6 +849,12 @@ func _resize_panel() -> void:
 		row.vertical = effective_width < 820.0
 		(row.get_parent() as VBoxContainer).add_theme_constant_override("separation", 1 if effective_width >= 1100.0 else 3)
 	_preview_grid.columns = 1 if effective_width < 1100.0 else 2
+	# Reparenting navigation or axis fields removes native focus. Keep the same
+	# control through reflow; follow its final bounds after containers have settled.
+	if is_instance_valid(focused) and _screen.is_ancestor_of(focused) and focused.is_visible_in_tree() \
+		and get_viewport().gui_get_focus_owner() == null:
+		focused.grab_focus()
+	_queue_mapping_focus_visibility()
 
 
 func _set_axis_grid_layout(use_table: bool) -> void:
@@ -930,9 +935,12 @@ func _keep_mapping_focus_visible() -> void:
 	if focused == null or not focused.is_visible_in_tree():
 		return
 	# Capture/status text can resize the viewport without changing focus.
-	# Follow only a focused mapping control, never a tab or a stale capture target.
+	# Follow the current mapping control, never a stale capture target. Navigation
+	# can also move into the scroll body when the available height changes.
 	if (_selected_section == "buttons" and action_grid.is_ancestor_of(focused)) \
-		or (_selected_section == "aux" and aux_grid.is_ancestor_of(focused)):
+		or (_selected_section == "aux" and aux_grid.is_ancestor_of(focused)) \
+		or (_selected_section == "axes" and _section_pages.axes.is_ancestor_of(focused)) \
+		or (_section_navigation.get_parent() == _section_body and _section_navigation.is_ancestor_of(focused)):
 		(_section_body.get_parent() as ScrollContainer).ensure_control_visible(focused)
 
 

@@ -1,0 +1,182 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   the Corsair manifest describes
+ok   13 liveries in the author's order, default first
+ok   the first livery is the default asset
+ok   menus list every scheme with the author's names
+ok   a one-paint family lists no schemes
+ok   resolve: a non-default scheme stays, default and stale ones are the default paint
+ok   manifest rejects liveries with one livery
+ok   manifest rejects liveries with more liveries than the limit
+ok   manifest rejects liveries with duplicate id
+ok   manifest rejects liveries with invalid id
+ok   manifest rejects liveries with empty label
+ok   manifest rejects liveries with control character in label
+ok   manifest rejects liveries with long label
+ok   manifest rejects liveries with duplicate path
+ok   manifest rejects liveries with path outside aircraft assets
+ok   manifest rejects liveries with parent path
+ok   manifest rejects liveries with not a GLB
+ok   manifest rejects liveries with bad hash
+ok   manifest rejects liveries with bad import hash
+ok   manifest rejects liveries with unknown field
+ok   manifest rejects liveries with missing field
+ok   manifest rejects liveries with default not first
+ok   manifest rejects liveries with not an array
+ok   a version 1 manifest cannot declare liveries
+ok   no id selects the default asset
+ok   a delivered livery verifies on use
+ok   an unknown livery is refused
+ok   a one-paint model refuses any livery
+ok   a GLB that differs from its pin is refused
+ok   an import sidecar that differs from its pin is refused
+ok   (no id) builds through the production adapter
+ok   (no id) carries its livery and GLB identity
+ok   (no id) keeps every binding: hinges, gear rig, folds, propeller
+ok   (no id) passes the derived model check
+ok   midnight builds through the production adapter
+ok   midnight carries its livery and GLB identity
+ok   midnight keeps every binding: hinges, gear rig, folds, propeller
+ok   midnight passes the derived model check
+ok   the explicit default paints like no id
+ok   three_tone builds through the production adapter
+ok   three_tone carries its livery and GLB identity
+ok   three_tone keeps every binding: hinges, gear rig, folds, propeller
+ok   three_tone passes the derived model check
+ok   three_tone paints the fuselage differently from the default
+ok   scarlet builds through the production adapter
+ok   scarlet carries its livery and GLB identity
+ok   scarlet keeps every binding: hinges, gear rig, folds, propeller
+ok   scarlet passes the derived model check
+ok   scarlet paints the fuselage differently from the default
+ok   splash builds through the production adapter
+ok   splash carries its livery and GLB identity
+ok   splash keeps every binding: hinges, gear rig, folds, propeller
+ok   splash passes the derived model check
+ok   splash paints the fuselage differently from the default
+ok   spectrum builds through the production adapter
+ok   spectrum carries its livery and GLB identity
+ok   spectrum keeps every binding: hinges, gear rig, folds, propeller
+ok   spectrum passes the derived model check
+ok   spectrum paints the fuselage differently from the default
+ok   blueangels builds through the production adapter
+ok   blueangels carries its livery and GLB identity
+ok   blueangels keeps every binding: hinges, gear rig, folds, propeller
+ok   blueangels passes the derived model check
+ok   blueangels paints the fuselage differently from the default
+ok   a root naming an unknown livery fails the derived check
+ok   a root whose GLB is not its livery's fails the derived check
+ok   thunderbirds builds through the production adapter
+ok   thunderbirds carries its livery and GLB identity
+ok   thunderbirds keeps every binding: hinges, gear rig, folds, propeller
+ok   thunderbirds passes the derived model check
+ok   thunderbirds paints the fuselage differently from the default
+ok   chrome builds through the production adapter
+ok   chrome carries its livery and GLB identity
+ok   chrome keeps every binding: hinges, gear rig, folds, propeller
+ok   chrome passes the derived model check
+ok   chrome paints the fuselage differently from the default
+ok   p40 builds through the production adapter
+ok   p40 carries its livery and GLB identity
+ok   p40 keeps every binding: hinges, gear rig, folds, propeller
+ok   p40 passes the derived model check
+ok   p40 paints the fuselage differently from the default
+ok   japan builds through the production adapter
+ok   japan carries its livery and GLB identity
+ok   japan keeps every binding: hinges, gear rig, folds, propeller
+ok   japan passes the derived model check
+ok   japan paints the fuselage differently from the default
+ok   luftwaffe builds through the production adapter
+ok   luftwaffe carries its livery and GLB identity
+ok   luftwaffe keeps every binding: hinges, gear rig, folds, propeller
+ok   luftwaffe passes the derived model check
+ok   luftwaffe paints the fuselage differently from the default
+ok   italy builds through the production adapter
+ok   italy carries its livery and GLB identity
+ok   italy keeps every binding: hinges, gear rig, folds, propeller
+ok   italy passes the derived model check
+ok   italy paints the fuselage differently from the default
+ok   carbon builds through the production adapter
+ok   carbon carries its livery and GLB identity
+ok   carbon keeps every binding: hinges, gear rig, folds, propeller
+ok   carbon passes the derived model check
+ok   carbon paints the fuselage differently from the default
+ok   the importer refuses an unknown livery
+ok   fresh preferences choose no paint scheme
+ok   a paint scheme saves
+ok   and loads back for its aircraft
+ok   save refuses { "unknown-aircraft": "scarlet" }
+ok   save refuses { "f4u-corsair-250": "Blue Angels" }
+ok   save refuses { "f4u-corsair-250": 3 }
+ok   load drops unknown aircraft and malformed IDs
+ok   Home shows no paint row for a one-paint aircraft
+ok   Home shows the Corsair's saved scheme
+ok   the row opens a gallery without changing paint
+ok   any paint can be selected directly without rereading menu choices
+ok   choosing the default shows it with no livery ID
+ok   a stale saved scheme shows the default paint
+ok   paint remains visible after revealing the Corsair: en (1920, 1080) 100%
+ok   Aircraft navigation reaches paint by keyboard: en (1920, 1080) 100%
+ok   paint hides outside Aircraft: en (1920, 1080) 100%
+ok   single-paint aircraft leaves no pinned paint row: en (1920, 1080) 100%
+ok   large-text keyboard navigation reaches paint: en (1920, 1080) 200%
+ok   large-text paint remains reachable: en (1920, 1080) 200%
+ok   paint hides outside Aircraft: en (1920, 1080) 200%
+ok   single-paint aircraft leaves no pinned paint row: en (1920, 1080) 200%
+ok   paint remains visible after revealing the Corsair: en (2560, 1440) 100%
+ok   Aircraft navigation reaches paint by keyboard: en (2560, 1440) 100%
+ok   paint hides outside Aircraft: en (2560, 1440) 100%
+ok   single-paint aircraft leaves no pinned paint row: en (2560, 1440) 100%
+ok   large-text keyboard navigation reaches paint: en (2560, 1440) 200%
+ok   large-text paint remains reachable: en (2560, 1440) 200%
+ok   paint hides outside Aircraft: en (2560, 1440) 200%
+ok   single-paint aircraft leaves no pinned paint row: en (2560, 1440) 200%
+ok   paint remains visible after revealing the Corsair: en (3840, 2160) 100%
+ok   Aircraft navigation reaches paint by keyboard: en (3840, 2160) 100%
+ok   paint hides outside Aircraft: en (3840, 2160) 100%
+ok   single-paint aircraft leaves no pinned paint row: en (3840, 2160) 100%
+ok   large-text keyboard navigation reaches paint: en (3840, 2160) 200%
+ok   large-text paint remains reachable: en (3840, 2160) 200%
+ok   paint hides outside Aircraft: en (3840, 2160) 200%
+ok   single-paint aircraft leaves no pinned paint row: en (3840, 2160) 200%
+ok   paint remains visible after revealing the Corsair: en (1280, 720) 100%
+ok   Aircraft navigation reaches paint by keyboard: en (1280, 720) 100%
+ok   paint hides outside Aircraft: en (1280, 720) 100%
+ok   single-paint aircraft leaves no pinned paint row: en (1280, 720) 100%
+ok   large-text keyboard navigation reaches paint: en (1280, 720) 200%
+ok   large-text paint remains reachable: en (1280, 720) 200%
+ok   paint hides outside Aircraft: en (1280, 720) 200%
+ok   single-paint aircraft leaves no pinned paint row: en (1280, 720) 200%
+ok   paint remains visible after revealing the Corsair: es (1920, 1080) 100%
+ok   Aircraft navigation reaches paint by keyboard: es (1920, 1080) 100%
+ok   paint hides outside Aircraft: es (1920, 1080) 100%
+ok   single-paint aircraft leaves no pinned paint row: es (1920, 1080) 100%
+ok   large-text keyboard navigation reaches paint: es (1920, 1080) 200%
+ok   large-text paint remains reachable: es (1920, 1080) 200%
+ok   paint hides outside Aircraft: es (1920, 1080) 200%
+ok   single-paint aircraft leaves no pinned paint row: es (1920, 1080) 200%
+ok   paint remains visible after revealing the Corsair: es (2560, 1440) 100%
+ok   Aircraft navigation reaches paint by keyboard: es (2560, 1440) 100%
+ok   paint hides outside Aircraft: es (2560, 1440) 100%
+ok   single-paint aircraft leaves no pinned paint row: es (2560, 1440) 100%
+ok   large-text keyboard navigation reaches paint: es (2560, 1440) 200%
+ok   large-text paint remains reachable: es (2560, 1440) 200%
+ok   paint hides outside Aircraft: es (2560, 1440) 200%
+ok   single-paint aircraft leaves no pinned paint row: es (2560, 1440) 200%
+ok   paint remains visible after revealing the Corsair: es (3840, 2160) 100%
+ok   Aircraft navigation reaches paint by keyboard: es (3840, 2160) 100%
+ok   paint hides outside Aircraft: es (3840, 2160) 100%
+ok   single-paint aircraft leaves no pinned paint row: es (3840, 2160) 100%
+ok   large-text keyboard navigation reaches paint: es (3840, 2160) 200%
+ok   large-text paint remains reachable: es (3840, 2160) 200%
+ok   paint hides outside Aircraft: es (3840, 2160) 200%
+ok   single-paint aircraft leaves no pinned paint row: es (3840, 2160) 200%
+ok   paint remains visible after revealing the Corsair: es (1280, 720) 100%
+ok   Aircraft navigation reaches paint by keyboard: es (1280, 720) 100%
+ok   paint hides outside Aircraft: es (1280, 720) 100%
+ok   single-paint aircraft leaves no pinned paint row: es (1280, 720) 100%
+ok   large-text keyboard navigation reaches paint: es (1280, 720) 200%
+FAIL large-text paint remains reachable: es (1280, 720) 200% ([P: (24.0, 151.0), S: (494.0, 216.0)] in [P: (24.0, 151.0), S: (500.0, 107.0)])
+ok   paint hides outside Aircraft: es (1280, 720) 200%
+ok   single-paint aircraft leaves no pinned paint row: es (1280, 720) 200%
+Aircraft liveries: 179 checks, 1 failures

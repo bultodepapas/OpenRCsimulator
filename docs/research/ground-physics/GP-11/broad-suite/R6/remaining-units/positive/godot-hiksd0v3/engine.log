@@ -1,0 +1,262 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   loader vocabulary equals the contract enum path
+ok   catalog vehicle class is supported: jensen-das-ugly-stik-60
+ok   catalog vehicle query agrees with the explicit class: jensen-das-ugly-stik-60
+ok   catalog aircraft data path is unique: jensen-das-ugly-stik-60
+ok   catalog vehicle class is supported: stik-glow-61fx-2t
+ok   catalog vehicle query agrees with the explicit class: stik-glow-61fx-2t
+ok   catalog aircraft data path is unique: stik-glow-61fx-2t
+ok   catalog vehicle class is supported: stik-glow-55ax-2t
+ok   catalog vehicle query agrees with the explicit class: stik-glow-55ax-2t
+ok   catalog aircraft data path is unique: stik-glow-55ax-2t
+ok   catalog vehicle class is supported: stik-glow-fs64v-4t
+ok   catalog vehicle query agrees with the explicit class: stik-glow-fs64v-4t
+ok   catalog aircraft data path is unique: stik-glow-fs64v-4t
+ok   catalog vehicle class is supported: gp-extra-300s-60
+ok   catalog vehicle query agrees with the explicit class: gp-extra-300s-60
+ok   catalog aircraft data path is unique: gp-extra-300s-60
+ok   catalog vehicle class is supported: p51d-mustang-120
+ok   catalog vehicle query agrees with the explicit class: p51d-mustang-120
+ok   catalog aircraft data path is unique: p51d-mustang-120
+ok   catalog vehicle class is supported: f4u-corsair-250
+ok   catalog vehicle query agrees with the explicit class: f4u-corsair-250
+ok   catalog aircraft data path is unique: f4u-corsair-250
+ok   catalog vehicle class is supported: sebart-avanti-s-a200-p100rx
+ok   catalog vehicle query agrees with the explicit class: sebart-avanti-s-a200-p100rx
+ok   catalog aircraft data path is unique: sebart-avanti-s-a200-p100rx
+ok   catalog vehicle class is supported: turbo-lumber-evolution
+ok   catalog vehicle query agrees with the explicit class: turbo-lumber-evolution
+ok   catalog aircraft data path is unique: turbo-lumber-evolution
+ok   catalog vehicle class is supported: xcell-60-research
+ok   catalog vehicle query agrees with the explicit class: xcell-60-research
+ok   catalog aircraft data path is unique: xcell-60-research
+ok   noncatalog airplane data is explicitly classified: stik_glow_55ax_2t_apc_13x6.json
+ok   noncatalog airplane data is explicitly classified: stik_glow_fs64v_4t_apc_13x6.json
+ok   noncatalog airplane data is explicitly classified: synthetic_stik_electric_4s.json
+ok   noncatalog airplane data is explicitly classified: synthetic_stik_electric_4s_battery.json
+ok   noncatalog airplane data is explicitly classified: synthetic_stik_electric_6s.json
+ok   noncatalog airplane data is explicitly classified: synthetic_stik_electric_6s_battery.json
+ok   laboratory rotorcraft stays outside the playable catalog: hx700-electric-3d-experimental
+ok   aircraft JSON has an explicit vehicle/schema classification: f4u_corsair_250.json
+ok   aircraft JSON has an explicit vehicle/schema classification: gp_extra_300s_60.json
+ok   aircraft JSON has an explicit vehicle/schema classification: hx700_electric_3d_experimental.json
+ok   aircraft JSON has an explicit vehicle/schema classification: jensen_ugly_stik_60.json
+ok   aircraft JSON has an explicit vehicle/schema classification: p51d_mustang_120.json
+ok   aircraft JSON has an explicit vehicle/schema classification: sebart_avanti_s_a200.json
+ok   aircraft JSON has an explicit vehicle/schema classification: stik_glow_55ax_2t.json
+ok   aircraft JSON has an explicit vehicle/schema classification: stik_glow_55ax_2t_apc_13x6.json
+ok   aircraft JSON has an explicit vehicle/schema classification: stik_glow_61fx_2t.json
+ok   aircraft JSON has an explicit vehicle/schema classification: stik_glow_fs64v_4t.json
+ok   aircraft JSON has an explicit vehicle/schema classification: stik_glow_fs64v_4t_apc_13x6.json
+ok   aircraft JSON has an explicit vehicle/schema classification: synthetic_stik_electric_4s.json
+ok   aircraft JSON has an explicit vehicle/schema classification: synthetic_stik_electric_4s_battery.json
+ok   aircraft JSON has an explicit vehicle/schema classification: synthetic_stik_electric_6s.json
+ok   aircraft JSON has an explicit vehicle/schema classification: synthetic_stik_electric_6s_battery.json
+ok   aircraft JSON has an explicit vehicle/schema classification: turbo_lumber_evolution.json
+ok   aircraft JSON has an explicit vehicle/schema classification: xcell_60_research.json
+ok   classified aircraft JSON exists: jensen_ugly_stik_60.json
+ok   classified aircraft JSON exists: stik_glow_61fx_2t.json
+ok   classified aircraft JSON exists: stik_glow_55ax_2t.json
+ok   classified aircraft JSON exists: stik_glow_fs64v_4t.json
+ok   classified aircraft JSON exists: gp_extra_300s_60.json
+ok   classified aircraft JSON exists: p51d_mustang_120.json
+ok   classified aircraft JSON exists: f4u_corsair_250.json
+ok   classified aircraft JSON exists: sebart_avanti_s_a200.json
+ok   classified aircraft JSON exists: turbo_lumber_evolution.json
+ok   classified aircraft JSON exists: xcell_60_research.json
+ok   classified aircraft JSON exists: stik_glow_55ax_2t_apc_13x6.json
+ok   classified aircraft JSON exists: stik_glow_fs64v_4t_apc_13x6.json
+ok   classified aircraft JSON exists: synthetic_stik_electric_4s.json
+ok   classified aircraft JSON exists: synthetic_stik_electric_4s_battery.json
+ok   classified aircraft JSON exists: synthetic_stik_electric_6s.json
+ok   classified aircraft JSON exists: synthetic_stik_electric_6s_battery.json
+ok   classified aircraft JSON exists: hx700_electric_3d_experimental.json
+ok   f4u_corsair_250 loads
+ok   f4u_corsair_250 matches its classified airplane ID
+ok   f4u_corsair_250 names every hull point
+ok   f4u_corsair_250 left/right names match the side of the CG
+ok   f4u_corsair_250 wing-tip names sit at the span ends
+ok   f4u_corsair_250 centreline names sit on the centreline
+ok   f4u_corsair_250 tail names are aft and nose names forward of the CG
+ok   f4u_corsair_250 fin top is the highest hull point
+ok   f4u_corsair_250 canopy names sit above and belly names below the CG
+ok   f4u_corsair_250 names both wing tips
+ok   gp_extra_300s_60 loads
+ok   gp_extra_300s_60 matches its classified airplane ID
+ok   gp_extra_300s_60 names every hull point
+ok   gp_extra_300s_60 left/right names match the side of the CG
+ok   gp_extra_300s_60 wing-tip names sit at the span ends
+ok   gp_extra_300s_60 centreline names sit on the centreline
+ok   gp_extra_300s_60 tail names are aft and nose names forward of the CG
+ok   gp_extra_300s_60 fin top is the highest hull point
+ok   gp_extra_300s_60 canopy names sit above and belly names below the CG
+ok   gp_extra_300s_60 names both wing tips
+ok   hx700-electric-3d-experimental loads through the rotorcraft data schema
+ok   hx700-electric-3d-experimental keeps its catalog and data identities aligned
+ok   jensen_ugly_stik_60 loads
+ok   jensen_ugly_stik_60 matches its classified airplane ID
+ok   jensen_ugly_stik_60 names every hull point
+ok   jensen_ugly_stik_60 left/right names match the side of the CG
+ok   jensen_ugly_stik_60 wing-tip names sit at the span ends
+ok   jensen_ugly_stik_60 centreline names sit on the centreline
+ok   jensen_ugly_stik_60 tail names are aft and nose names forward of the CG
+ok   jensen_ugly_stik_60 fin top is the highest hull point
+ok   jensen_ugly_stik_60 canopy names sit above and belly names below the CG
+ok   jensen_ugly_stik_60 names both wing tips
+ok   p51d_mustang_120 loads
+ok   p51d_mustang_120 matches its classified airplane ID
+ok   p51d_mustang_120 names every hull point
+ok   p51d_mustang_120 left/right names match the side of the CG
+ok   p51d_mustang_120 wing-tip names sit at the span ends
+ok   p51d_mustang_120 centreline names sit on the centreline
+ok   p51d_mustang_120 tail names are aft and nose names forward of the CG
+ok   p51d_mustang_120 fin top is the highest hull point
+ok   p51d_mustang_120 canopy names sit above and belly names below the CG
+ok   p51d_mustang_120 names both wing tips
+ok   sebart_avanti_s_a200 loads
+ok   sebart_avanti_s_a200 matches its classified airplane ID
+ok   sebart_avanti_s_a200 names every hull point
+ok   sebart_avanti_s_a200 left/right names match the side of the CG
+ok   sebart_avanti_s_a200 wing-tip names sit at the span ends
+ok   sebart_avanti_s_a200 centreline names sit on the centreline
+ok   sebart_avanti_s_a200 tail names are aft and nose names forward of the CG
+ok   sebart_avanti_s_a200 fin top is the highest hull point
+ok   sebart_avanti_s_a200 canopy names sit above and belly names below the CG
+ok   sebart_avanti_s_a200 names both wing tips
+ok   stik_glow_55ax_2t loads
+ok   stik_glow_55ax_2t matches its classified airplane ID
+ok   stik_glow_55ax_2t names every hull point
+ok   stik_glow_55ax_2t left/right names match the side of the CG
+ok   stik_glow_55ax_2t wing-tip names sit at the span ends
+ok   stik_glow_55ax_2t centreline names sit on the centreline
+ok   stik_glow_55ax_2t tail names are aft and nose names forward of the CG
+ok   stik_glow_55ax_2t fin top is the highest hull point
+ok   stik_glow_55ax_2t canopy names sit above and belly names below the CG
+ok   stik_glow_55ax_2t names both wing tips
+ok   stik_glow_55ax_2t_apc_13x6 loads
+ok   stik_glow_55ax_2t_apc_13x6 matches its classified airplane ID
+ok   stik_glow_55ax_2t_apc_13x6 names every hull point
+ok   stik_glow_55ax_2t_apc_13x6 left/right names match the side of the CG
+ok   stik_glow_55ax_2t_apc_13x6 wing-tip names sit at the span ends
+ok   stik_glow_55ax_2t_apc_13x6 centreline names sit on the centreline
+ok   stik_glow_55ax_2t_apc_13x6 tail names are aft and nose names forward of the CG
+ok   stik_glow_55ax_2t_apc_13x6 fin top is the highest hull point
+ok   stik_glow_55ax_2t_apc_13x6 canopy names sit above and belly names below the CG
+ok   stik_glow_55ax_2t_apc_13x6 names both wing tips
+ok   stik_glow_61fx_2t loads
+ok   stik_glow_61fx_2t matches its classified airplane ID
+ok   stik_glow_61fx_2t names every hull point
+ok   stik_glow_61fx_2t left/right names match the side of the CG
+ok   stik_glow_61fx_2t wing-tip names sit at the span ends
+ok   stik_glow_61fx_2t centreline names sit on the centreline
+ok   stik_glow_61fx_2t tail names are aft and nose names forward of the CG
+ok   stik_glow_61fx_2t fin top is the highest hull point
+ok   stik_glow_61fx_2t canopy names sit above and belly names below the CG
+ok   stik_glow_61fx_2t names both wing tips
+ok   stik_glow_fs64v_4t loads
+ok   stik_glow_fs64v_4t matches its classified airplane ID
+ok   stik_glow_fs64v_4t names every hull point
+ok   stik_glow_fs64v_4t left/right names match the side of the CG
+ok   stik_glow_fs64v_4t wing-tip names sit at the span ends
+ok   stik_glow_fs64v_4t centreline names sit on the centreline
+ok   stik_glow_fs64v_4t tail names are aft and nose names forward of the CG
+ok   stik_glow_fs64v_4t fin top is the highest hull point
+ok   stik_glow_fs64v_4t canopy names sit above and belly names below the CG
+ok   stik_glow_fs64v_4t names both wing tips
+ok   stik_glow_fs64v_4t_apc_13x6 loads
+ok   stik_glow_fs64v_4t_apc_13x6 matches its classified airplane ID
+ok   stik_glow_fs64v_4t_apc_13x6 names every hull point
+ok   stik_glow_fs64v_4t_apc_13x6 left/right names match the side of the CG
+ok   stik_glow_fs64v_4t_apc_13x6 wing-tip names sit at the span ends
+ok   stik_glow_fs64v_4t_apc_13x6 centreline names sit on the centreline
+ok   stik_glow_fs64v_4t_apc_13x6 tail names are aft and nose names forward of the CG
+ok   stik_glow_fs64v_4t_apc_13x6 fin top is the highest hull point
+ok   stik_glow_fs64v_4t_apc_13x6 canopy names sit above and belly names below the CG
+ok   stik_glow_fs64v_4t_apc_13x6 names both wing tips
+ok   synthetic_stik_electric_4s loads
+ok   synthetic_stik_electric_4s matches its classified airplane ID
+ok   synthetic_stik_electric_4s names every hull point
+ok   synthetic_stik_electric_4s left/right names match the side of the CG
+ok   synthetic_stik_electric_4s wing-tip names sit at the span ends
+ok   synthetic_stik_electric_4s centreline names sit on the centreline
+ok   synthetic_stik_electric_4s tail names are aft and nose names forward of the CG
+ok   synthetic_stik_electric_4s fin top is the highest hull point
+ok   synthetic_stik_electric_4s canopy names sit above and belly names below the CG
+ok   synthetic_stik_electric_4s names both wing tips
+ok   synthetic_stik_electric_4s_battery loads
+ok   synthetic_stik_electric_4s_battery matches its classified airplane ID
+ok   synthetic_stik_electric_4s_battery names every hull point
+ok   synthetic_stik_electric_4s_battery left/right names match the side of the CG
+ok   synthetic_stik_electric_4s_battery wing-tip names sit at the span ends
+ok   synthetic_stik_electric_4s_battery centreline names sit on the centreline
+ok   synthetic_stik_electric_4s_battery tail names are aft and nose names forward of the CG
+ok   synthetic_stik_electric_4s_battery fin top is the highest hull point
+ok   synthetic_stik_electric_4s_battery canopy names sit above and belly names below the CG
+ok   synthetic_stik_electric_4s_battery names both wing tips
+ok   synthetic_stik_electric_6s loads
+ok   synthetic_stik_electric_6s matches its classified airplane ID
+ok   synthetic_stik_electric_6s names every hull point
+ok   synthetic_stik_electric_6s left/right names match the side of the CG
+ok   synthetic_stik_electric_6s wing-tip names sit at the span ends
+ok   synthetic_stik_electric_6s centreline names sit on the centreline
+ok   synthetic_stik_electric_6s tail names are aft and nose names forward of the CG
+ok   synthetic_stik_electric_6s fin top is the highest hull point
+ok   synthetic_stik_electric_6s canopy names sit above and belly names below the CG
+ok   synthetic_stik_electric_6s names both wing tips
+ok   synthetic_stik_electric_6s_battery loads
+ok   synthetic_stik_electric_6s_battery matches its classified airplane ID
+ok   synthetic_stik_electric_6s_battery names every hull point
+ok   synthetic_stik_electric_6s_battery left/right names match the side of the CG
+ok   synthetic_stik_electric_6s_battery wing-tip names sit at the span ends
+ok   synthetic_stik_electric_6s_battery centreline names sit on the centreline
+ok   synthetic_stik_electric_6s_battery tail names are aft and nose names forward of the CG
+ok   synthetic_stik_electric_6s_battery fin top is the highest hull point
+ok   synthetic_stik_electric_6s_battery canopy names sit above and belly names below the CG
+ok   synthetic_stik_electric_6s_battery names both wing tips
+ok   turbo_lumber_evolution loads
+ok   turbo_lumber_evolution matches its classified airplane ID
+ok   turbo_lumber_evolution names every hull point
+ok   turbo_lumber_evolution left/right names match the side of the CG
+ok   turbo_lumber_evolution wing-tip names sit at the span ends
+ok   turbo_lumber_evolution centreline names sit on the centreline
+ok   turbo_lumber_evolution tail names are aft and nose names forward of the CG
+ok   turbo_lumber_evolution fin top is the highest hull point
+ok   turbo_lumber_evolution canopy names sit above and belly names below the CG
+ok   turbo_lumber_evolution names both wing tips
+ok   xcell-60-research loads through the rotorcraft data schema
+ok   xcell-60-research keeps its catalog and data identities aligned
+ok   labels are optional: absent loads with no names
+ok   a label list shorter than the hull is refused
+ok   an unknown name is refused by the contract
+ok   a non-string name is refused
+ok   a non-array value is refused
+ok   the legacy path refuses a mismatched list too
+ok   the legacy path refuses an unknown name
+ok   a labelled struck point names the component
+ok   scenery contacts use the same hull label
+ok   gear overtravel stays the gear
+ok   without labels the geometric estimate remains and is marked
+ok   an index outside the labels falls back to the estimate
+ok   no struck point and no label is unknown
+ok   the group table covers the whole vocabulary
+ok   left_wing_tip grades in the wingtip group
+ok   right_wing_tip grades in the wingtip group
+ok   spinner grades in the propeller group
+ok   propeller grades in the propeller group
+ok   nose grades in the fuselage group
+ok   tail_end grades in the tail group
+ok   left_stab_tip grades in the tail group
+ok   right_stab_tip grades in the tail group
+ok   fin_top grades in the tail group
+ok   canopy grades in the canopy group
+ok   belly grades in the fuselage group
+ok   engine grades in the engine group
+ok   left_wing_root grades in the wing group
+ok   right_wing_root grades in the wing group
+ok   wreck releases the left wing first for a left tip
+ok   wreck releases the propeller for a spinner hit
+ok   wreck releases the tailplane for a stab tip
+ok   wreck releases the fin for a fin-top hit
+ok   wreck releases the engine for an engine hit
+259 checks, 0 failed

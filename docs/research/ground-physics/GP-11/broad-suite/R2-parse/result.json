@@ -1,0 +1,14 @@
+{
+  "command": "bash.exe R2-parse/parse.sh",
+  "basis": "exact app/test.sh find/check-only loop; progress count only",
+  "script_sha256": "c6bcaaf23bfbe7db9cc82364956c2f1154b37c4a6f94e58ac37bd1d5d53356b7",
+  "runtime_source_before": "../R2/source-before.json",
+  "scope": "unchanged R2 runtime; read-only parse, no source regeneration",
+  "status": "passed",
+  "complete": true,
+  "exit_code": 0,
+  "scripts_passed": 1374,
+  "source_paths_verified": 153,
+  "source_unchanged": true,
+  "summary": "summary.log"
+}

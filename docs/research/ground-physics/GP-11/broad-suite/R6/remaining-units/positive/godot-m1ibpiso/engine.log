@@ -1,0 +1,21 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   prepare caches the selected aircraft mesh 
+ok   prepared cache supports a live mark 
+ok   add reuses the prepared BVH 
+ok   clear removes marks but retains the prepared BVH 
+ok   static surface_hit observes live visibility 
+ok   instance add skips a currently hidden surface 
+ok   showing a prepared mesh makes it queryable again 
+ok   surface_hit uses the panel's current transform 
+ok   Resource.changed invalidates an in-place mesh edit 
+ok   the edited mesh rebuilds a usable BVH 
+ok   the rebuilt BVH follows changed vertices 
+ok   a replacement mesh gets its own BVH 
+ok   the detached mesh and its watcher leave the selected cache 
+ok   prepare switches the cache to the selected aircraft 
+ok   an old aircraft resource cannot invalidate the new cache 
+ok   the selected aircraft remains queryable after a root switch 
+ok   cache signal connections do not retain the scuff owner 
+ok   released scuff caches do not retain mesh resources 
+airframe scuff cache: 18 checks, 0 failed

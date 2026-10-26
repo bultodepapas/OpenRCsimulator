@@ -23,6 +23,26 @@ const FEASIBILITY_TOLERANCE := 1.0e-12
 ## it is not universally the decrease of a closed body's kinetic energy.
 static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFloat64Array,
 		groups: Array, iteration_budget: int = MAX_ITERATIONS) -> Dictionary:
+	return _solve(a,v,limits,groups,iteration_budget,false)
+
+
+## Assembly-resolution owner only: retain a detached failed strict iterate;
+## this returns NO additional acceptance or tolerance and never changes solve().
+static func _solve_for_assembly(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFloat64Array,
+		groups:Array,iteration_budget:int=MAX_ITERATIONS)->Dictionary:
+	return _solve(a,v,limits,groups,iteration_budget,true)
+
+
+## Internal accounting wrapper; normal solve() dictionaries are untouched.
+static func _solve_for_assembly_with_work(a:PackedFloat64Array,v:PackedFloat64Array,limits:PackedFloat64Array,
+		groups:Array,iteration_budget:int)->Dictionary:
+	var work:={started_sweeps=0,spd_proposal_calls=0,interior_proposal_calls=0,extrapolation_calls=0,publication_work_calls=0}
+	var result:=_solve(a,v,limits,groups,iteration_budget,true,work)
+	return {result=result,work=work}
+
+
+static func _solve(a: PackedFloat64Array,v: PackedFloat64Array,limits: PackedFloat64Array,
+		groups:Array,iteration_budget:int,retain_candidate:bool,work:Dictionary={})->Dictionary:
 	var n := v.size()
 	if n < 1 or n > MAX_DIMENSION or a.size() != n * n or limits.size() != n \
 		or not _finite(a) or not _finite(v) or not _finite(limits) \
@@ -64,6 +84,7 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 	var y := PackedFloat64Array()
 	y.resize(n)
 	if scale == 0.0:
+		if not work.is_empty():work.publication_work_calls+=1
 		return _publish(symmetric, v, limits, groups, h, b, y, 1.0, validated, 0, "zero_objective")
 	var hs := h.duplicate()
 	var bs := b.duplicate()
@@ -83,6 +104,7 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 	for i in n:
 		if limits[i] > 0.0: active.append(i)
 	if not active.is_empty():
+		if not work.is_empty():work.spd_proposal_calls+=1
 		var dense := PackedFloat64Array()
 		var rhs := PackedFloat64Array()
 		dense.resize(active.size() * active.size())
@@ -96,6 +118,7 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 				for i in active.size(): y[active[i]] = free[i]
 				var certified := _certificate(hs, bs, y, limits, groups, tolerance)
 				if certified.ok:
+					if not work.is_empty():work.publication_work_calls+=1
 					return _publish(symmetric, v, limits, groups, h, b, y, scale, validated, 0, "feasible_spd_stationary")
 				y.fill(0.0)
 	# Cyclic exact block minimization monotonically optimizes the FULL coupled
@@ -105,6 +128,7 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 	var maximum_increase := 0.0
 	var accelerated := 0
 	for iteration in iteration_budget:
+		if not work.is_empty():work.started_sweeps+=1
 		var previous_y := y.duplicate()
 		for group: PackedInt32Array in groups:
 			var indices: Array[int] = []
@@ -131,10 +155,12 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 		# the original full mobility, limits and unchanged KKT tolerance. No
 		# diagonal, physical mass, force or impulse cap is regularized here.
 		if (iteration + 1) % 8 == 0:
-			var polished := _interior_face(hs, bs, y, limits, groups, tolerance)
+			if not work.is_empty():work.interior_proposal_calls+=1
+			var polished := _interior_face(hs, bs, y, limits, groups, tolerance, retain_candidate)
 			if polished != y:
 				y = polished
 				accelerated += 1
+			if not work.is_empty():work.extrapolation_calls+=1
 			var extrapolated := _extrapolate(hs, bs, y, previous_y, limits, groups, tolerance)
 			if extrapolated != y:
 				y = extrapolated
@@ -146,6 +172,7 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 		# authoritative. A tiny objective evaluation uptick is not a reason to
 		# discard an already certified optimum in a nearly redundant row set.
 		if is_finite(current_objective) and certified.ok:
+			if not work.is_empty():work.publication_work_calls+=1
 			var published := _publish(symmetric, v, limits, groups, h, b, y, scale, validated, iteration + 1, "cyclic_exact_metric_blocks")
 			published.maximum_objective_increase_scaled = maximum_increase
 			if accelerated > 0:
@@ -154,7 +181,10 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 				published.accepted_accelerations = accelerated
 			return published
 		if not is_finite(current_objective) or current_objective > previous_objective + 0.00000000000002 * (absf(previous_objective) + b_norm):
-			return _failure("block solve did not preserve monotone objective", "nonconverged", iteration + 1)
+			var refused:=_failure("block solve did not preserve monotone objective", "nonconverged", iteration + 1)
+			if retain_candidate:
+				refused.numerical_candidate={normalized_impulse=y.duplicate(),raw_certificate=certified.duplicate(true)}
+			return refused
 		previous_objective = current_objective
 	var failure := _failure("global KKT residual exceeds iteration budget", "nonconverged", iteration_budget)
 	var residual := _certificate(hs, bs, y, limits, groups, tolerance)
@@ -163,7 +193,10 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 	failure.complementarity_scaled = residual.complementarity
 	failure.feasibility_residual = residual.feasibility
 	failure.duality_gap_scaled = residual.duality_gap
+	if retain_candidate:
+		failure.numerical_candidate={normalized_impulse=y.duplicate(),raw_certificate=residual.duplicate(true)}
 	return failure
+
 
 
 ## Resolve all currently interior groups together while holding saturated
@@ -172,7 +205,7 @@ static func solve(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFl
 ## A wrong active-face guess cannot publish: feasibility, original objective
 ## and the unchanged global KKT certificate are evaluated after the proposal.
 static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
-		limits: PackedFloat64Array, groups: Array, tolerance: float) -> PackedFloat64Array:
+		limits: PackedFloat64Array, groups: Array, tolerance: float, full_proposal_budget: bool = false) -> PackedFloat64Array:
 	var n := y.size()
 	var free: Array[int] = []
 	for group: PackedInt32Array in groups:
@@ -191,7 +224,7 @@ static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: Pack
 		for j in n: value -= h[free[i] * n + j] * y[j]
 		rhs.append(value)
 		for j in size: matrix[i * size + j] = h[free[i] * n + free[j]]
-	var solved := _psd_correction(matrix, rhs, size, tolerance * 0.25)
+	var solved := _psd_correction(matrix, rhs, size, tolerance * (1.0 if full_proposal_budget else 0.25))
 	if solved.size() != size or not _finite(solved): return y
 	var candidate := y.duplicate()
 	var delta := PackedFloat64Array()
@@ -232,7 +265,10 @@ static func _interior_face(h: PackedFloat64Array, b: PackedFloat64Array, y: Pack
 ## face. Unresolved null coordinates have zero correction, not invented mass.
 ## A linear term outside the range refuses via the ORIGINAL equation residual.
 static func _psd_correction(matrix: PackedFloat64Array, rhs: PackedFloat64Array, size: int,
-		tolerance: float) -> PackedFloat64Array:
+		tolerance: float, require_original_range: bool = true) -> PackedFloat64Array:
+	if size<1 or size>MAX_DIMENSION or matrix.size()!=size*size or rhs.size()!=size \
+		or not _finite(matrix) or not _finite(rhs) or not is_finite(tolerance) or tolerance<0.0:
+		return PackedFloat64Array()
 	var scale := PackedFloat64Array()
 	var permutation := PackedInt32Array()
 	var work := matrix.duplicate()
@@ -282,6 +318,7 @@ static func _psd_correction(matrix: PackedFloat64Array, rhs: PackedFloat64Array,
 	result.resize(size)
 	for i in size: result[permutation[i]] = pivot_solution[i] / scale[permutation[i]]
 	if not _finite(result): return PackedFloat64Array()
+	if not require_original_range:return result
 	var residual := GC.matrix_vector(matrix, result, size)
 	for i in size:
 		if not is_finite(residual[i]) or absf(residual[i] - rhs[i]) > tolerance:
@@ -336,6 +373,49 @@ static func _extrapolate(h: PackedFloat64Array, b: PackedFloat64Array, y: Packed
 			certificate = trial
 		alpha *= 0.5
 	return best
+
+
+## Opt-in optimization trial ONLY. Numerical PSD rank truncation may leave
+## a null-RHS residual, so this deliberately does not claim range consistency.
+## Publication still requires original strict KKT or the independent physical
+## true-gap proof on the final original-cap/passive-work impulse.
+static func _range_proposal(h:PackedFloat64Array,b:PackedFloat64Array,limits:PackedFloat64Array,groups:Array)->PackedFloat64Array:
+	var n:=b.size()
+	if n<1 or n>MAX_DIMENSION or h.size()!=n*n or limits.size()!=n or not _finite(h) or not _finite(b) or not _finite(limits):
+		return PackedFloat64Array()
+	var active:Array[int]=[]
+	for i in n:
+		if limits[i]<0.0:return PackedFloat64Array()
+		if limits[i]>0.0:
+			if h[i*n+i]>0.0:active.append(i)
+			elif b[i]!=0.0:return PackedFloat64Array()
+	var y:=PackedFloat64Array()
+	y.resize(n)
+	if active.is_empty():return y
+	var dense:=PackedFloat64Array()
+	var rhs:=PackedFloat64Array()
+	for i in active:
+		rhs.append(-b[i])
+		for j in active:dense.append(h[i*n+j])
+	var proposed:=_psd_correction(dense,rhs,active.size(),0.0,false)
+	if proposed.size()!=active.size() or not _finite(proposed):return PackedFloat64Array()
+	for i in active.size():y[active[i]]=proposed[i]
+	var seen:=PackedByteArray()
+	seen.resize(n)
+	var maximum:=1.0
+	for group:Variant in groups:
+		if typeof(group)!=TYPE_PACKED_INT32_ARRAY or group.size() not in [1,2]:return PackedFloat64Array()
+		var length:=0.0
+		for i:int in group:
+			if i<0 or i>=n or seen[i]!=0:return PackedFloat64Array()
+			seen[i]=1
+			length=_hypot(length,y[i])
+		maximum=maxf(maximum,length)
+	if not is_finite(maximum):return PackedFloat64Array()
+	for i in n:
+		if not seen[i]:return PackedFloat64Array()
+		y[i]/=maximum
+	return y
 
 
 ## Unit-invariant congruence validation; no fictitious diagonal is introduced.
@@ -466,22 +546,25 @@ static func _certificate(h: PackedFloat64Array, b: PackedFloat64Array, y: Packed
 static func _publish(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFloat64Array,
 		groups: Array, h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
 		scale: float, validated: Dictionary, iterations: int, method: String, resolution: Dictionary = {}) -> Dictionary:
+	if not resolution.is_empty():
+		return _failure("a receipt dictionary cannot bypass strict publication", "nonconverged", iterations)
+	var result:=_work_candidate(a,v,limits,groups,h,b,y,scale,validated,iterations,method)
+	if not result.ok:return result
+	if not result.raw_certificate.ok:return _failure("publication KKT verification failed", "nonconverged", iterations)
+	result.erase("raw_certificate")
+	result.status="converged"
+	result.converged=true
+	return result
+
+
+## Work/feasibility result ONLY. No global optimum is claimed or published.
+## A numerical owner must verify the EXACT returned final impulse, after the
+## existing feasibility roundoff projection, before reporting convergence.
+static func _work_candidate(a: PackedFloat64Array, v: PackedFloat64Array, limits: PackedFloat64Array,
+		groups: Array, h: PackedFloat64Array, b: PackedFloat64Array, y: PackedFloat64Array,
+		scale: float, validated: Dictionary, iterations: int, method: String) -> Dictionary:
 	var n := v.size()
 	y = y.duplicate()
-	if not resolution.is_empty():
-		# The opt-in assembly-resolution publisher currently supports exact zero
-		# ONLY. Projection must never change a candidate after its certificate.
-		for value: float in y:
-			if not is_finite(value) or value!=0.0:
-				return _failure("assembly-resolution publication requires exact zero candidate", "nonconverged", iterations)
-		for key: String in ["true_objective_gap_upper_j","assembly_objective_resolution_j","assembly_resolution_budget_j"]:
-			if not resolution.has(key) or typeof(resolution[key]) not in [TYPE_FLOAT,TYPE_INT] \
-				or not is_finite(float(resolution[key])) or float(resolution[key])<0.0:
-				return _failure("invalid assembly-resolution publication bound", "nonconverged", iterations)
-		if not resolution.get("ok",false) \
-			or resolution.true_objective_gap_upper_j>resolution.assembly_objective_resolution_j \
-			or resolution.assembly_objective_resolution_j>resolution.assembly_resolution_budget_j:
-			return _failure("unqualified assembly-resolution publication", "nonconverged", iterations)
 	var correction := 0.0
 	for group: PackedInt32Array in groups:
 		var length_sq := 0.0
@@ -513,13 +596,12 @@ static func _publish(a: PackedFloat64Array, v: PackedFloat64Array, limits: Packe
 		b_norm = maxf(b_norm, absf(bs[i]))
 	for i in hs.size(): hs[i] /= scale
 	var certificate := _certificate(hs, bs, y, limits, groups, KKT_RELATIVE_TOLERANCE * b_norm)
-	if not certificate.ok and not resolution.get("ok", false): return _failure("publication KKT verification failed", "nonconverged", iterations)
 	var grouped: Array[PackedFloat64Array] = []
 	for group: PackedInt32Array in groups:
 		var values := PackedFloat64Array()
 		for i: int in group: values.append(impulse[i])
 		grouped.append(values)
-	var result := {ok = true, status = "converged", law = LAW, converged = true, iterations = iterations,
+	var result := {ok = true, status = "candidate_not_certified", law = LAW, converged = false, iterations = iterations,
 		method = method, impulse = impulse, group_impulses = grouped, normalized_impulse = y.duplicate(),
 		post_slip = post, linear_work = linear, mobility_work = quadratic, objective = objective,
 		dissipation = -objective, objective_scale = scale,
@@ -530,11 +612,7 @@ static func _publish(a: PackedFloat64Array, v: PackedFloat64Array, limits: Packe
 		symmetry_residual = validated.symmetry_error, diagonal_regularization = 0.0,
 		feasibility_roundoff_correction = correction,
 		work_frame = "relative_to_prescribed_support_not_universal_closed_body_energy"}
-	if not resolution.is_empty():
-		result.status = "converged_at_assembly_resolution"
-		result.certificate_kind = resolution.law
-		result.strict_kkt_passed = certificate.ok
-		result.assembly_resolution = resolution.duplicate(true)
+	result.raw_certificate=certificate.duplicate(true)
 	return result
 
 

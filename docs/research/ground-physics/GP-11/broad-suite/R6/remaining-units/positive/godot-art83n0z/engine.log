@@ -1,0 +1,18 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   Extra data loads and trims at its own start speed  22.0
+ok   Extra session attaches its finite 61FX glow profile and full tank  { &"id": "main_tank", &"fuel": "glow_10n_18castor", &"family": "glow", &"density_kg_m3": 856.92, &"capacity_m3": 0.000355, &"capacity_kg": 0.3042066, &"unusable_kg": 0.0042846, &"reserve_kg": 0.03470526, &"reserve_fraction": 0.11408450704225, &"reserve_estimated": true, &"liquid_inventory_id": "fuel_flight", &"shell_inventory_id": "fuel_tank", &"liquid_mass_kg": 0.3042066, &"start_fill": 1.0, &"pickup": "clunk", &"feed": "suction_muffler" }
+ok   hands-off 30 s: finite  
+ok   hands-off 30 s: altitude within 1 m, speed within 0.2 m/s  Δalt 0.0958 m, Δspeed -0.08090 m/s
+ok   coordinated roll at 22 m/s: 271°/s ± 7 % (single-axis prediction)  274.4°/s
+ok   coordinated roll at 22 m/s: 271°/s ± 7 % (single-axis prediction)  274.4°/s
+ok   inside loop at 0.3 stick: 360° of pitch within 6 s, finite  366° (5.9 s)
+ok   inside loop: faster than the 1-g stall speed over the top  min 11.3 m/s (1-g stall 11.0)
+ok   full high-rate up elevator at 20 m/s stalls the wing, finite  α max 25.3° (stall start 13.3°)
+ok   full-up power-off: α passes the stall start, finite  α max 26.9° (stall start 13.3°)
+ok   spin: right rudder + full up yaws right  r max 1.81 rad/s
+ok   spin recovery: yaw rate below 0.5 rad/s 3 s after recovery input, finite  0.23 rad/s
+ok   spin: still above the ground at the end (the check is not measured underground)  70 m
+13 checks, 0 failed

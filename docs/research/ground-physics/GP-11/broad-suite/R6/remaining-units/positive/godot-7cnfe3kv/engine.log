@@ -1,0 +1,23 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   only one active resource and latest queued intent
+ok   broker finishes without blocking get
+ok   obsolete requests never call completion
+ok   obsolete active resource is not retained
+ok   broker finishes without blocking get
+ok   broker finishes without blocking get
+ok   resource cache is bounded to two
+ok   foreground scene shares the two-resource bound
+ok   retained accessor returns only an owned scene
+ok   foreground scene is reusable without a worker request
+ok   cached completion preserves active drain ownership
+ok   broker finishes without blocking get
+ok   cached intent suppresses obsolete callback
+ok   cached resource completes synchronously
+ok   broker finishes without blocking get
+ok   Home exit drains without applying or retaining
+ok   procedural completion preserves active drain ownership
+ok   broker finishes without blocking get
+ok   procedural request supersedes older completion
+ok   shutdown drains without callback
+Preview resources: 20 checks, 0 failed

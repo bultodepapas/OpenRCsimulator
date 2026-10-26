@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+15 m/s level trim: α 4.196°; law section-plane-source-weighted-wake-velocity-v2
+| α° | Cmq about CG | CLq | Cnr about CG |
+| 0 | -7.8828 | 2.4658 | -0.13681 |
+| 2 | -7.8959 | 2.4103 | -0.13546 |
+| 4 | -7.9251 | 2.3618 | -0.13377 |
+| 6 | -7.9701 | 2.3207 | -0.13173 |
+about CG at trim: Cmq -7.92882, CLq 2.35743, Cnr -0.13358
+about ARP at trim: Cmq -8.08210, CLq 2.35743, Cnr -0.13604
+4 significant digits to store: Cmq -8.082, CLq 2.357, Cnr -0.136
+This is a model consistency derivation, not physical validation.
+data check: current

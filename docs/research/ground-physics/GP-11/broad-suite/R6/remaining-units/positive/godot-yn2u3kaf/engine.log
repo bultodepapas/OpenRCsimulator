@@ -1,0 +1,26 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   every aircraft mesh joins the magnifier layer, nested ones too
+ok   and keeps its own layer for the main camera
+ok   scenery stays off the magnifier layer
+ok   the magnifier layer is not crash debris's (1 << 19)
+ok   auto: hidden while large, shown below 4 %, kept until above 5 %
+ok   on: shown whatever the size
+ok   never outside the pilot view
+ok   off: never
+ok   on: the inset shows and renders
+ok   its camera sees only the aircraft layer
+ok   on the pilot's line of sight, looking the same way at the aircraft
+ok   the span fills 60 % of the inset
+ok   a tight depth range around the aircraft
+ok   a close aircraft is framed from the pilot's eye with a wider FOV
+ok   the passed model was tagged
+ok   off: hidden and not rendering
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Home flight with the magnifier on: shown in the pilot view
+ok   every mesh of the flown airplane is on the magnifier layer
+ok   no field mesh is on it
+ok   hidden in the chase view
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   a command-line flight never shows it
+all 21 magnifier checks passed

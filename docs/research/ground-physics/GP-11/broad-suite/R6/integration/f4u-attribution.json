@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-26T14:52:50.163655+00:00",
+  "changes": [
+    {
+      "path": "/inputs/gear_samples_sha256",
+      "old": "7bd3eb6be284f4929033b904e1b2923c3dc63a118c956a196442fc98fc91e8bc",
+      "new": "1f1621ba9a3709c0f86c3a7efc68b697498382b6b5ac4cae168ef69f4226ecd0"
+    },
+    {
+      "path": "/inputs/wing_fold_sha256",
+      "old": "a631434fa5b3efc740d6535bf90e4d46fa2522503d6bd87303fcb16f2b16ef89",
+      "new": "d83664ce6473f19979d89ef492f042c922e7d1265e919d53c4a63e0e65a7b71e"
+    },
+    {
+      "path": "/inputs/mechanisms_sha256",
+      "old": "4aa349793219b077f4f310e232d04e3b6e9fc933e6d492b9479f40f451a561b5",
+      "new": "b3dec2a59cf7e2d1c840c18c827e146c0e662c39a6c8ca938f6e124af35e5fe3"
+    }
+  ],
+  "all_changes_sha256_strings_only": true,
+  "all_other_values_bit_exact": true,
+  "gp10_readonly_baseline_check": {
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "stale: model-geometry.json, f4u_corsair_geometry.gd (run research/f4u-corsair/F4U-05/compile_model.py)\n"
+  },
+  "generator_sha256": "a99b98d1f7a0d0a9355604bf642b28bb505a7e033e269a0eaeda2dd471fa9666"
+}

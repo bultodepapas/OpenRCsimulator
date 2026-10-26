@@ -1,0 +1,34 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok synthetic lamp collision world builds
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok session remains flyable with scalar collision world
+ok subterminal fixture produces a nonfatal scenery event
+ok frangible impulse reverses the incoming normal motion
+ok nonfatal pose stops at TOI instead of the integrated endpoint
+ok trace records the accepted post-impulse state
+ok configured collision world upgrades checkpoint identity to v7
+ok matching v7 checkpoint restores collision-enabled state
+ok collision world cannot be removed after the flight advances
+ok synthetic lamp collision world builds
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok session remains flyable with scalar collision world
+ok different obstacle identity rejects restore without mutating simulation
+ok reset clears transient nonfatal contact state but keeps world identity
+ok synthetic lamp collision world builds
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok session remains flyable with scalar collision world
+CRASH at 2400.0 m/s (sink 0.0 m/s, lamp impact (lamp:lamp:pole), normal speed 2400.0 m/s) - restarting
+ok hard high-speed fixture routes through scenery crash presentation
+ok crash state is rewound to the first thin-pole contact
+ok terminal impact retains contact pose and normal
+ok reset clears terminal event and keeps the installed world
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok session remains flyable with scalar collision world
+ok synthetic lamp collision world builds
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok session remains flyable with scalar collision world
+ok no-world checkpoint keeps the legacy version family
+ok no-hit contact world preserves exact simulation state
+ok no-hit world emits no transient event
+landscape collision session: 25 checks, 0 failures

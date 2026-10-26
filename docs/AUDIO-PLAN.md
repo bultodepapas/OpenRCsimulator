@@ -24,6 +24,8 @@ These are authored audio profiles, not recordings of every installed engine: the
 
 Landing-gear audio reads accepted gear contacts and surface type. Rolling and touchdown events have separate envelopes and bounded players. Loaded moving wheels create rolling sound; airborne and stationary gear do not. Lower engine power exposes the quieter ground layer. Spawn, reset and pause prime the contact observer without inventing a landing. [Ground assets and contact contract](research/audio/AUD-15/landing-gear.md), [verification](research/audio/AUD-15/validation.md).
 
+Fixed-wing rolling now uses authored material from the shared solid-support provider: the default turf runway and long grass use the grass recording. Unknown material retains an explicit hard-roll playback fallback, without inferring pavement from runway usage. The helicopter's historical usage helper is unchanged. [GP-19b scope and checks](research/ground-physics/GP-19/evidence/material-routing/README.md).
+
 | Aircraft | Installed audio profile |
 | --- | --- |
 | Jensen Das Ugly Stik .60 | Phase-aware two-stroke fallback; accepted legacy shaft RPM |

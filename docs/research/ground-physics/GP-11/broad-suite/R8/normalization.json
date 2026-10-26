@@ -1,0 +1,52 @@
+{
+  "format": "openrc-synthetic-fixture-checkout-EOL v1",
+  "utc": "2026-10-26T15:16:47.073059+00:00",
+  "files": [
+    {
+      "path": "research/flight-robustness/d8b-r2/candidates/faser-analog.json",
+      "before_sha256": "898fad5b950a33af4cee06c017459fdc341196f4571ba22881eb6b71235fe4b5",
+      "after_sha256": "82e8e805e291e01d1ac7617284597fea82be0ff2adc038300bdabacb9f6b6b5e",
+      "before_CRLF_lines": 1815,
+      "only_CRLF_to_LF": true,
+      "JSON_semantic_equality": true
+    },
+    {
+      "path": "research/flight-robustness/d8b-r2/candidates/intermediate.json",
+      "before_sha256": "e40529c1990fc88c3e17df96f060c0c2d35b7b73b8d2dda7feaad8fc3abf6a1b",
+      "after_sha256": "19c3c977b34b9add5d12aa7f841a60e91d9ada7694eba9c99fb0750d7816eacc",
+      "before_CRLF_lines": 1783,
+      "only_CRLF_to_LF": true,
+      "JSON_semantic_equality": true
+    },
+    {
+      "path": "research/flight-robustness/d8b-r2/candidates/post-stall-v2.json",
+      "before_sha256": "3c55c4518f8eddbee4a33a1b62647a1a4ff696cb5cd35bb78455ebe5950cd821",
+      "after_sha256": "c6ae5f856595a686bb16263b7d1c1679081599a63af8648289da960cc22b4b57",
+      "before_CRLF_lines": 1813,
+      "only_CRLF_to_LF": true,
+      "JSON_semantic_equality": true
+    },
+    {
+      "path": "research/flight-robustness/d8b-r2/candidates/retained.json",
+      "before_sha256": "2321b52307c2b2adc7092412d548591c1a18772343a8c6b99bee09438030341f",
+      "after_sha256": "2142748286d5ce8b8f16591360ee843c3245dc1658ebc675bd9f0958cf3dd3f1",
+      "before_CRLF_lines": 1783,
+      "only_CRLF_to_LF": true,
+      "JSON_semantic_equality": true
+    },
+    {
+      "path": "research/flight-robustness/d8b-r2/candidates/steep.json",
+      "before_sha256": "b9ffef465d842615267ed50d03630c1f013f712ed84a528dbc1d447994107b9c",
+      "after_sha256": "b20255639015bec1d8aac752b37f52d69fd68b80198f3fa09b11e4bb6dd2af42",
+      "before_CRLF_lines": 1783,
+      "only_CRLF_to_LF": true,
+      "JSON_semantic_equality": true
+    }
+  ],
+  "all_app_source_dependency_files_unchanged": true,
+  "all_GDScripts_unchanged": true,
+  "physical_coefficients_unchanged": true,
+  "no_candidate_regenerated": true,
+  "no_golden_rerecorded": true,
+  "generated_python_caches_excluded": 5
+}

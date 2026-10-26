@@ -1,0 +1,92 @@
+[
+  {
+    "path": "source/app/physics/aircraft_ground_electric.gd",
+    "original": "app/physics/aircraft_ground_electric.gd",
+    "sha256": "33361dc677a3369d80d60df99241da58b8a597bcfe9a6ae2730cb921084c6870"
+  },
+  {
+    "path": "source/app/physics/aircraft_ground_source.gd",
+    "original": "app/physics/aircraft_ground_source.gd",
+    "sha256": "7f0a95021be7405eaaed7314e1861e463fbf14bfb677f2b62acd06b2019dce0e"
+  },
+  {
+    "path": "source/app/physics/aircraft_ground_battery.gd",
+    "original": "app/physics/aircraft_ground_battery.gd",
+    "sha256": "928dd024a55b13987e4fd7aaf1e007be45b8815694c33842db9c9244738b2fbd"
+  },
+  {
+    "path": "source/app/tests/test_aircraft_ground_battery.gd",
+    "original": "app/tests/test_aircraft_ground_battery.gd",
+    "sha256": "bb44c5c757a45a1b61ded2d7269e7ea32ab1abe7f482eda51c06d377c9c51487"
+  },
+  {
+    "path": "source-before/app/physics/aircraft_ground_electric.gd",
+    "original": "tmp/gp12-finite-battery-checks/main-before/app/physics/aircraft_ground_electric.gd",
+    "sha256": "c2469baef28ee9bd635b2dfbd021cf065719c66918befbf2df07151be3086901"
+  },
+  {
+    "path": "source-before/app/physics/aircraft_ground_source.gd",
+    "original": "tmp/gp12-finite-battery-checks/main-before/app/physics/aircraft_ground_source.gd",
+    "sha256": "5288f2c768e9efe25cb237c374c793a91fc1007c49c8da6f1227f2e78478f55f"
+  },
+  {
+    "path": "drivers/capture_fixed_before.gd",
+    "original": "tmp/gp12-finite-battery-drafts/capture_fixed_before.gd",
+    "sha256": "21449f75a48c3f53a65246b75c3382303f650a990e728b23f45349b1daa986e9"
+  },
+  {
+    "path": "promotion-before.json",
+    "original": "tmp/gp12-finite-battery-checks/promotion-before.json",
+    "sha256": "80989b730f5e1e5b9bdd6cf305864be43bd695c74885b4f4da91e67fb15c5a96"
+  },
+  {
+    "path": "main-source-before.json",
+    "original": "tmp/gp12-finite-battery-checks/main-source-before.json",
+    "sha256": "18959b7cab3dc9baeccfe3c87c588c71282e264a7633decbd2ba83c56f57a402"
+  },
+  {
+    "path": "main-source-after.json",
+    "original": "tmp/gp12-finite-battery-checks/main-source-after.json",
+    "sha256": "cfa71f09e7f4f1817a12b23f952feaf74bab624bea1f63ea430060102d6cfa69"
+  },
+  {
+    "path": "checks/test_aircraft_ground_battery/report.json",
+    "original": "tmp/gp12-finite-battery-checks/main-battery-sealed-7rfn9xn4/report.json",
+    "sha256": "d988320c7381be41587ab929b390ba8682ff7f34075ac2b220e046336422835c"
+  },
+  {
+    "path": "checks/test_aircraft_ground_battery/engine.log",
+    "original": "tmp/gp12-finite-battery-checks/main-battery-sealed-7rfn9xn4/engine.log",
+    "sha256": "d26a97e0eae4e43ffd7f098456aa908feefe3853296fada40e8cbb335b61081f"
+  },
+  {
+    "path": "checks/test_aircraft_ground_source/report.json",
+    "original": "tmp/gp12-finite-battery-checks/main-source-sealed-9pz9pg2g/report.json",
+    "sha256": "118256654a70f47de3cc2655067618b65714964f17b963dcdceeeeb57015c756"
+  },
+  {
+    "path": "checks/test_aircraft_ground_source/engine.log",
+    "original": "tmp/gp12-finite-battery-checks/main-source-sealed-9pz9pg2g/engine.log",
+    "sha256": "d1581bd18ad1a76c7cb1f31c2db5fd31877921d6c59c13f017322381bcfefdf5"
+  },
+  {
+    "path": "checks/test_aircraft_ground_electric/report.json",
+    "original": "tmp/gp12-finite-battery-checks/main-electric-sealed-8ga65fgr/report.json",
+    "sha256": "a97c614d73ba94cdf31ed49f42555ad1507958b657a3ddde8acfe11d5658eacb"
+  },
+  {
+    "path": "checks/test_aircraft_ground_electric/engine.log",
+    "original": "tmp/gp12-finite-battery-checks/main-electric-sealed-8ga65fgr/engine.log",
+    "sha256": "dbddc9bb0a1a441d50b6fc658cc5e11748885cdc536d07a295c48b6340ed5b1a"
+  },
+  {
+    "path": "before-checks/fixed-before-capture/report.json",
+    "original": "tmp/gp12-finite-battery-checks/fixed-before-capture-zp0lbrj_/report.json",
+    "sha256": "067fcbbcf4091399f62890259e0c075de49570afd8cd79b14298d1abdad7f3e5"
+  },
+  {
+    "path": "before-checks/fixed-before-capture/engine.log",
+    "original": "tmp/gp12-finite-battery-checks/fixed-before-capture-zp0lbrj_/engine.log",
+    "sha256": "66de86eac72991ace2dd90ee3f8d9239874dba399e7f379d9b091ad9f16de519"
+  }
+]

@@ -1,0 +1,60 @@
+{
+  "format": "openrc-gp12-finite-source-evaluation v1",
+  "complete": true,
+  "overall": "passed-scoped-evaluation-regressions",
+  "created_utc": "2026-10-26T16:37:34.278893+00:00",
+  "engine": "4.8.beta1.official.4d10419ca",
+  "head_at_promotion": "41a252e7b0022b4a6ced77a63b781c3cdbef8528",
+  "scope": "four promoted source paths; normalized finite-source evaluation, no source-boundary integration",
+  "production_checks": 742,
+  "checked_invocations": [
+    {
+      "path": "checks/test_aircraft_ground_battery/report.json",
+      "checks": 384
+    },
+    {
+      "path": "checks/test_aircraft_ground_source/report.json",
+      "checks": 162
+    },
+    {
+      "path": "checks/test_aircraft_ground_electric/report.json",
+      "checks": 196
+    }
+  ],
+  "dependency_paths_before_after": 269,
+  "dependency_changes": [],
+  "source_files": [
+    {
+      "path": "app/physics/aircraft_ground_electric.gd",
+      "sha256": "33361dc677a3369d80d60df99241da58b8a597bcfe9a6ae2730cb921084c6870"
+    },
+    {
+      "path": "app/physics/aircraft_ground_source.gd",
+      "sha256": "7f0a95021be7405eaaed7314e1861e463fbf14bfb677f2b62acd06b2019dce0e"
+    },
+    {
+      "path": "app/physics/aircraft_ground_battery.gd",
+      "sha256": "928dd024a55b13987e4fd7aaf1e007be45b8815694c33842db9c9244738b2fbd"
+    },
+    {
+      "path": "app/tests/test_aircraft_ground_battery.gd",
+      "sha256": "bb44c5c757a45a1b61ded2d7269e7ea32ab1abe7f482eda51c06d377c9c51487"
+    }
+  ],
+  "fixed_outputs": "complete prepared and three stage records match independent pre-promotion Variant-hex SHA256 fixtures",
+  "maximum_motor_port_residual_w": 4.54747350886464e-13,
+  "maximum_pack_port_residual_w": 4.38760139331862e-13,
+  "maximum_stage_mechanical_residual_w": 5.6843418860808e-14,
+  "excluded": [
+    "source-boundary localization",
+    "finite-battery contact integration",
+    "stock advanced-ground launch",
+    "moving hubs",
+    "steering-carrier integration",
+    "liquid-fuel/turbine sources",
+    "physical calibration",
+    "full-suite pass",
+    "native rendering/audio/performance qualification"
+  ],
+  "raw_reports": "copied byte-exactly, with original invocation paths and timestamps unchanged"
+}

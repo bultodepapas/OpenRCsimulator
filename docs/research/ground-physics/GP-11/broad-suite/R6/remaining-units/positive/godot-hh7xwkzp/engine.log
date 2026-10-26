@@ -1,0 +1,28 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   Extra loads with its D10-R3 fuselage side force  []
+ok   Extra declares an attached slope and a crossflow area  CYb_B -0.1242/rad, eta cd S_side 0.1567 m2
+ok   increment equals the formula at the ARP over 84 states (incl. rates, reverse sideslip)  max error 4.993423680641411e-17 q S
+ok   side force opposes sideslip and is odd in beta  -23.6241 N / 23.6241 N at +/-22 deg
+ok   crossflow side force grows with alpha (Letko & Williams' deep-body trend)  CY body -0.0311 at alpha 0, -0.0414 at alpha 20
+ok   local side force at beta 2 deg within 3 % of the oracle  local -2.4942 N, oracle -2.5530 N, fin only -1.7674 N
+ok   fuselage + fin side force exceeds the knife-edge need at beta 25 deg, 0.8 Vmax  |CY| 0.1615 against W/qS 0.1184
+ok   loader refuses a CYb that is not fin + body_cy_beta  ["aero.coefficients.CYb: inconsistent with vertical surface force/arm, body_cn_beta, wing_body_cl_beta and body_cy_beta (expected -0.47929923)"]
+ok   loader refuses a negative crossflow area  
+ok   without the fields the old data form (CYb free) still loads  
+ok   Stik model carries no fuselage side force (opt-in)  
+ok   reverse-flow fixture loads: res://data/aircraft/gp_extra_300s_60.json  
+ok   reverse fixture declares both nonzero body terms: res://data/aircraft/gp_extra_300s_60.json  
+ok   tail-first body force resists lateral translation: res://data/aircraft/gp_extra_300s_60.json  160 zero-rate states; max positive body work 0.000000000 W
+ok   reverse flow retains crossflow without extrapolated attached loads: res://data/aircraft/gp_extra_300s_60.json  max six-load difference 0.000000000
+ok   reverse crossflow remains nonzero with its ARP moments: res://data/aircraft/gp_extra_300s_60.json  max six-load error 0.000000000
+ok   body-force jump tends to zero at axial-flow reversal: res://data/aircraft/gp_extra_300s_60.json  one-sided differences [0.00003651178393, 0.00000003651178, 0.00000000003651] N
+ok   forward body-side law preserved: res://data/aircraft/gp_extra_300s_60.json  0.0
+ok   reverse-flow fixture loads: res://data/aircraft/f4u_corsair_250.json  
+ok   reverse fixture declares both nonzero body terms: res://data/aircraft/f4u_corsair_250.json  
+ok   tail-first body force resists lateral translation: res://data/aircraft/f4u_corsair_250.json  160 zero-rate states; max positive body work 0.000000000 W
+ok   reverse flow retains crossflow without extrapolated attached loads: res://data/aircraft/f4u_corsair_250.json  max six-load difference 0.000000000
+ok   reverse crossflow remains nonzero with its ARP moments: res://data/aircraft/f4u_corsair_250.json  max six-load error 0.000000000
+ok   body-force jump tends to zero at axial-flow reversal: res://data/aircraft/f4u_corsair_250.json  one-sided differences [0.00017045408699, 0.00000017045409, 0.00000000017045] N
+ok   forward body-side law preserved: res://data/aircraft/f4u_corsair_250.json  0.00000000000001
+D10-R3 body side force: 25 checks, 0 failed

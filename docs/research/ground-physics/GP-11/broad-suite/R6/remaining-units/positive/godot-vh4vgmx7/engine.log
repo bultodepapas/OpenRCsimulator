@@ -1,0 +1,35 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   Avanti customization bindings are accepted
+ok   stock factory returns a full Avanti presentation profile
+ok   stock factory refuses unrelated visual families
+ok   stock factory refuses missing tailpipe mount
+ok   show_tailpipe transform follows generated turbine outlet coordinates
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   normal Avanti route selects the stock smoke profile
+ok   stock evidence identifies preset and one bounded show pool
+ok   --smoke=off keeps the stock identity but creates no profile renderer
+ok   stock renderer primes its pool at the authored turbine outlet
+ok   Avanti source is running for the smoke request fixture
+ok   H enables stock smoke and the request reaches its configured maximum
+ok   key echo does not toggle the held smoke request
+ok   a second H press turns stock smoke off
+ok   H can turn stock smoke back on for lifecycle and parity checks
+ok   stock request is gated when accepted propulsion is stopped
+ok   Avanti fixture has an accepted finite-fuel source latch
+ok   accepted fuel exhaustion gates smoke while engine mode stays on
+ok   stock request is gated after crash
+ok   stock request is gated after simulation fault
+ok   stock hold request activates its bounded tailpipe emitter
+ok   pause freezes stock smoke clock and history
+ok   reset clears H and puff history, then records the accepted tick-zero source
+ok   stock smoke-on and --smoke=off sessions start from identical states
+ok   parity fixture advances exactly 240 fault-free ticks with accepted inputs
+ok   stock hold request emits at least one scheduled tailpipe interval
+ok   stock smoke leaves every simulation channel bit-identical after 240 equal ticks
+ok   Workshop can freeze an Avanti trial with an explicit empty smoke choice
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   explicit empty Workshop choice suppresses the Avanti stock smoke default
+ok   Tricolor exposes all four show mounts but authors only three entries
+Avanti smoke: 29 checks, 0 failed

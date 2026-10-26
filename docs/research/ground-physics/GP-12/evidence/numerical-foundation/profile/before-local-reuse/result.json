@@ -1,0 +1,40 @@
+{
+	"accepted_substeps": 16.0,
+	"calls": {
+		"resolution.bounds": 162,
+		"resolution.certificate": 51,
+		"resolution.slip_consistency": 9,
+		"screened_impulse.apply": 51,
+		"screened_step._attempt_two_sided": 5,
+		"screened_step._error_control": 1,
+		"screened_step._sample": 148,
+		"screened_step.advance": 1,
+		"stage._prepared_shape": 245,
+		"stage.evaluate": 245,
+		"traction._certificate": 813,
+		"traction._range_proposal": 51,
+		"traction._solve_for_assembly_with_work": 51,
+		"traction._work_candidate": 99
+	},
+	"elapsed_us": 1195321,
+	"error": 9.193053867724945e-05,
+	"fault": "",
+	"note": "nested inclusive diagnostic timings, not production qualification",
+	"tick": 241,
+	"timings_us": {
+		"resolution.bounds": 850065,
+		"resolution.certificate": 283180,
+		"resolution.slip_consistency": 62182,
+		"screened_impulse.apply": 946683,
+		"screened_step._attempt_two_sided": 1191503,
+		"screened_step._error_control": 1407,
+		"screened_step._sample": 145961,
+		"screened_step.advance": 1193941,
+		"stage._prepared_shape": 2247,
+		"stage.evaluate": 165609,
+		"traction._certificate": 9126,
+		"traction._range_proposal": 3336,
+		"traction._solve_for_assembly_with_work": 32084,
+		"traction._work_candidate": 2966
+	}
+}

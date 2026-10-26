@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="20" failures="0" errors="0" skipped="0" time="132.768000"><testcase classname="OpenRC.GodotCommand" name="res://aircraft/verify_timber.gd [godot-194g3gun]" time="1.156000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-194g3gun/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://aircraft/verify_model.gd [godot-2on_f7n9]" time="10.344000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-2on_f7n9/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://aircraft/verify_extra.gd [godot-2xe89bxg]" time="11.422000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-2xe89bxg/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/timber/tt02/measure_mesh.gd [godot-7tw5rqbt]" time="0.484000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-7tw5rqbt/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_inflow.gd [godot-8i5pyqty]" time="0.422000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-8i5pyqty/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://aircraft/verify_p51.gd [godot-9z839pxx]" time="4.781000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-9z839pxx/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_dynamic_inflow.gd [godot-axi3y35a]" time="0.422000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-axi3y35a/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/rc-monster-truck/visual/test_preview.gd [godot-b10bhmwt]" time="0.609000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-b10bhmwt/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/aero/d11g/derive_rate_derivatives.gd [godot-egydah8y]" time="1.907000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-egydah8y/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_aerodynamic_stage.gd [godot-gj6wbl8b]" time="2.172000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-gj6wbl8b/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/rc-monster-truck/visual/test_preview.gd [godot-i7o7lnna]" time="0.516000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-i7o7lnna/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://aircraft/verify_avanti.gd [godot-len2i1eg]" time="2.907000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-len2i1eg/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tools/audio/make_bus_layout.gd [godot-lzec7k7x]" time="0.328000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-lzec7k7x/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_airframe.gd [godot-ngk9mnhy]" time="0.313000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-ngk9mnhy/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_tail_rotor.gd [godot-rf1f0flk]" time="0.313000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-rf1f0flk/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/rc-monster-truck/visual/test_mt8_visual.gd [godot-s5ye4fvd]" time="0.625000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-s5ye4fvd/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../research/battery/bat-06/law_probe.gd [godot-sp00d7y1]" time="0.532000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-sp00d7y1/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://aircraft/verify_p51_clearance.gd [godot-vljdx4n5]" time="85.375000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-vljdx4n5/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_heli_main_rotor.gd [godot-y3l1f9dk]" time="0.328000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-y3l1f9dk/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="resource import [godot-ytd660pe]" time="7.812000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-ytd660pe/report.json and engine.log</system-out></testcase></testsuite>

@@ -1,0 +1,49 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   builds an independent still model and viewport
+ok   preview stays idle outside one-shot viewport redraws
+ok   fits every model bound inside the inspection viewport
+ok   size label names the actual scale and span
+ok   default inspection uses the target width while retaining margin
+ok   preview controls and size badge follow the shared 200% text scale
+ok   200% toolbar keeps the comparison side and camera reachable without wrapping duplicates
+ok   200% size badge grows to fit its span text inside the preview
+ok   single high-scale comparison control toggles Original and Draft
+ok   grid uses the declared half-meter world spacing
+ok   qualified 10% scale retains all model bounds
+ok   qualified 35% scale retains all model bounds
+ok   qualified 50% scale retains all model bounds
+ok   qualified 200% scale retains all model bounds
+ok   qualified 225% scale retains all model bounds
+ok   qualified 500% scale retains all model bounds
+ok   Inspect refits the effective draft scale without changing its value
+ok   Compare fits the larger original member and keeps draft scale intact
+ok   original toggle shows 100% at the identical camera and grid
+ok   comparison size label reports original span in world units
+ok   draft toggle shows its actual 60% scale without refitting the pair
+ok   switching view mode leaves the recipe value unchanged
+ok   front standard view retains all tips
+ok   side standard view retains all tips
+ok   top standard view retains all tips
+ok   zoom clamps while retaining all projected bounds
+ok   orbit wraps yaw and clamps pitch
+ok   view state restore preserves presentation state only
+ok   Reset restores the default angle and zoom without changing Compare selection
+ok   focused arrow keys orbit without a pointer
+ok   focusable standard-view controls activate from the keyboard
+ok   Front standard view looks toward the aircraft's -Z nose
+ok   focusable orbit controls provide a pointer-free menu-pad action
+ok   camera toolbar drag does not orbit the model beneath its overlay
+ok   mouse drag inside the viewport orbits the aircraft
+ok   drag that starts outside the image does not change the camera
+ok   mouse wheel zooms only inside the viewport
+ok   mouse wheel over toolbar does not change zoom
+ok   720p preview retains at least 320 px of image height
+ok   short preview keeps a camera menu and an explicit inspection-size notice reachable
+ok   200% toolbar refits when the preview widens across a row-wrap breakpoint
+ok   compact camera popup opens from its focused menu-pad control
+ok   large-font camera popup uses scaled text and stays below the window height cap
+ok   compact preview keeps image and every pointer-free control inside its bounds
+ok   compact resize retains all model bounds at the saved zoom
+ok   one-shot preview rendering settles to idle
+workshop preview checks: 0 failures

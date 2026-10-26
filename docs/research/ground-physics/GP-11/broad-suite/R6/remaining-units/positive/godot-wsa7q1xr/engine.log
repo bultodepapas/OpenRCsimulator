@@ -1,0 +1,48 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   normalized lake loads  []
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   empty context leaves post-step callback unset
+ok   lake context accepts normalized geometry and attaches callback
+ok   lake-only callback survives empty scenery-world installation
+ok   lake getter returns detached geometry
+ok   stale normalized identity is rejected
+ok   empty context disables callback at tick zero
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   session receives normalized lake
+ok   lake sweep is installed without scenery proxies
+ok   direct session state resets
+CRASH at 408.3 m/s (sink 408.3 m/s, water impact (lake:near_runway:water), normal speed 418.4 m/s) - [R] restart
+ok   high-speed sim.step enters water through the session callback  <RefCounted#-9223371911092763028>
+ok   water crash stops the engine
+ok   water impact is retained and pauses at the swept contact
+ok   reset keeps lake identity and clears event/crash state
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   session receives normalized lake
+ok   lake checkpoint records format, identity, and trace header
+ok   identity mismatch cannot restore another basin
+ok   matching basin checkpoint restores paused and retains context
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   collision fixture installs lake after its point probes
+ok   later scenery proxy installs
+ok   direct session state resets
+ok   unaccepted sweep keeps impact private
+CRASH at 100.0 m/s (sink 0.0 m/s, lake bank impact (lake:near_runway:bank_ground), normal speed 0.0 m/s) - [R] restart
+ok   controlled sweep commits
+ok   earlier bank TOI wins over later scenery
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   collision fixture installs lake after its point probes
+ok   earlier water-path scenery proxy installs
+ok   direct session state resets
+ok   unaccepted sweep keeps impact private
+CRASH at 480.0 m/s (sink 480.0 m/s, test obstacle impact (early-water-scenery), normal speed 480.0 m/s) - [R] restart
+ok   controlled sweep commits
+ok   earlier scenery TOI wins over later water entry
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   session receives normalized lake
+ok   dry and lake sessions accept identical airborne reset
+ok   airborne tick outside lake bank is bit-identical
+ok   dry-ground hull semantics remain unchanged outside lake
+ok   outside-bank gear compression remains bit-identical
+35 lake session checks, 0 failed

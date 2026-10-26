@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"command_opposite":0.0,"completed":true,"finite":true,"hold_s":1.0,"late_beta":0.0660427558790601,"peak_beta":2.91043091495765,"peak_roll_rate":11.8286031551679,"peak_yaw_rate":9.96075849809534,"return_yaw_rate":-4.95615319942548,"rudder_opposite":0.0,"speed":29.0,"unwanted_command":0.0,"yaw":0.5}
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"command_opposite":0.0,"completed":true,"finite":true,"hold_s":1.0,"late_beta":0.0352202680521393,"peak_beta":2.78331107558431,"peak_roll_rate":17.1066921409251,"peak_yaw_rate":13.6073463813481,"return_yaw_rate":-11.3989942386766,"rudder_opposite":0.0,"speed":45.0,"unwanted_command":0.0,"yaw":0.5}
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"command_opposite":0.0,"completed":true,"finite":true,"hold_s":1.0,"late_beta":0.0244581954880471,"peak_beta":2.60795125895414,"peak_roll_rate":20.8592445627335,"peak_yaw_rate":16.1817596661416,"return_yaw_rate":-13.0021138576336,"rudder_opposite":0.0,"speed":60.0,"unwanted_command":0.0,"yaw":0.5}
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"command_opposite":0.0,"completed":true,"finite":true,"hold_s":1.0,"late_beta":0.035887919508649,"peak_beta":2.78217708685069,"peak_roll_rate":17.0962111403706,"peak_yaw_rate":13.6070842425707,"return_yaw_rate":-11.3743647367834,"rudder_opposite":0.0,"speed":45.0,"unwanted_command":0.0,"yaw":-0.5}
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+{"command_opposite":0.0,"completed":true,"finite":true,"hold_s":1.0,"late_beta":0.0869071051430111,"peak_beta":7.98281037881493,"peak_roll_rate":48.9892205828656,"peak_yaw_rate":39.0817749930161,"return_yaw_rate":-32.6938934553942,"rudder_opposite":0.0,"speed":45.0,"unwanted_command":0.0,"yaw":1.0}
+AV-17-R3 yaw flight: 28 checks, 0 failed

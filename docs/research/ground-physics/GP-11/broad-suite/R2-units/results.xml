@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="11" failures="0" errors="1" skipped="0" time="667.096000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_accident_integration.gd [godot-08uahv0u]" time="25.438000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-08uahv0u/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_advanced_graphics_settings.gd [godot-90ig_0rn]" time="14.625000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-90ig_0rn/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_air_data.gd [godot-__7h7kqe]" time="0.297000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-__7h7kqe/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aircraft_catalog.gd [godot-dr650ytn]" time="600.313000"><error type="timeout" message="Inspect the last output for a hang before increasing the deadline.">Inspect the last output for a hang before increasing the deadline.
+process_exit=1; complete=False; errors=2; warnings=0
+
+Evidence: godot-dr650ytn/report.json and engine.log
+log:56 ERROR: Aircraft model contract: ["SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb.import"]
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:57)
+log:62 SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+   at: _initialize (res://tests/test_aircraft_catalog.gd:92)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/test_aircraft_catalog.gd:92)</error></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_accident_report.gd [godot-eqejgy5y]" time="1.766000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-eqejgy5y/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aero_continuity.gd [godot-jgayz463]" time="1.329000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-jgayz463/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_air_density.gd [godot-jy2kyy4u]" time="0.297000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-jy2kyy4u/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aero.gd [godot-kcrowcbu]" time="1.485000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-kcrowcbu/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_aero_flow.gd [godot-kydd568l]" time="15.719000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-kydd568l/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_accident_settlement.gd [godot-ndmtc6cs]" time="0.296000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-ndmtc6cs/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="resource import [godot-vr62rra6]" time="5.531000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: godot-vr62rra6/report.json and engine.log</system-out></testcase></testsuite>

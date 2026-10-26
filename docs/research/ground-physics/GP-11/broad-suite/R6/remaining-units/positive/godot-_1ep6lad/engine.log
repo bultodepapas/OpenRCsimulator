@@ -1,0 +1,118 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   authored lake fixture loads
+ok   reference fixture is valid
+ok   candidate fixture is valid
+ok   format StringName keeps reference semantics
+ok   id StringName is rejected
+ok   id integer is rejected
+ok   identity StringName is rejected
+ok   identity integer is rejected
+ok   water boolean is rejected
+ok   water numeric string is rejected
+ok   water int remains valid under the reference predicate
+ok   shoreline PackedFloat32Array is rejected
+ok   bank PackedFloat32Array is rejected
+ok   profile Dictionary is rejected
+ok   bounds Array is rejected
+ok   waves PackedFloat64Array is rejected
+ok   profile row String is rejected
+ok   wave row String is rejected
+ok   bounds boolean scalar is rejected
+ok   wave boolean scalar is rejected
+ok   water NaN is rejected
+ok   water infinity is rejected
+ok   shoreline NaN is rejected
+ok   bank infinity is rejected
+ok   profile NaN is rejected
+ok   profile infinity is rejected
+ok   bounds NaN max_amplitude_m is rejected
+ok   bounds infinity max_amplitude_m is rejected
+ok   bounds NaN min_wavelength_m is rejected
+ok   bounds infinity min_wavelength_m is rejected
+ok   bounds NaN max_wavelength_m is rejected
+ok   bounds infinity max_wavelength_m is rejected
+ok   bounds NaN min_period_s is rejected
+ok   bounds infinity min_period_s is rejected
+ok   bounds NaN max_period_s is rejected
+ok   bounds infinity max_period_s is rejected
+ok   bounds NaN shore_fade_m is rejected
+ok   bounds infinity shore_fade_m is rejected
+ok   wave NaN amplitude_m is rejected
+ok   wave infinity amplitude_m is rejected
+ok   wave NaN wavelength_m is rejected
+ok   wave infinity wavelength_m is rejected
+ok   wave NaN period_s is rejected
+ok   wave infinity period_s is rejected
+ok   wave NaN heading_rad is rejected
+ok   wave infinity heading_rad is rejected
+ok   wave NaN phase_rad is rejected
+ok   wave infinity phase_rad is rejected
+ok   empty dictionary is rejected
+ok   missing required field format is rejected
+ok   missing required field id is rejected
+ok   missing required field identity is rejected
+ok   missing required field water_level_down_m is rejected
+ok   missing required field shoreline_ne_m is rejected
+ok   missing required field bank_ne_m is rejected
+ok   missing required field bed_profile is rejected
+ok   missing required field wave_bounds is rejected
+ok   missing required field waves is rejected
+ok   short shoreline is rejected
+ok   odd shoreline shape is rejected
+ok   short bank is rejected
+ok   odd bank shape is rejected
+ok   one-point profile is rejected
+ok   nine-point profile is rejected
+ok   three waves are rejected
+ok   profile non-monotonic inset is rejected
+ok   profile non-monotonic depth is rejected
+ok   negative maximum wave amplitude is rejected
+ok   reversed wavelength interval is rejected
+ok   zero shore fade is rejected
+ok   warm cache from baseline
+ok   valid profile edit after warm remains valid
+ok   profile edit leaves identity untouched
+ok   invalid profile edit after warm is rejected
+ok   restored profile after invalid edit is valid
+ok   profile restoration leaves identity untouched
+ok   invalid nested bounds edit after warm is rejected
+ok   restored nested bounds are valid
+ok   bounds edit leaves identity untouched
+ok   valid wave added after warm remains valid
+ok   valid nested wave edit after warm remains valid
+ok   wave edit leaves identity untouched
+ok   invalid nested wave edit after warm is rejected
+ok   restored nested waves are valid
+ok   wave restoration leaves identity untouched
+ok   valid packed polygon edit after warm remains valid
+ok   polygon edit leaves identity untouched
+ok   invalid packed polygon edit after warm is rejected
+ok   restored packed polygon is valid
+ok   polygon restoration leaves identity untouched
+ok   warm cache before literal in-place polygon edit
+ok   literal in-place PackedFloat64Array edit after warm is rejected
+ok   literal in-place polygon restoration remains valid
+ok   alternating definition A
+ok   alternating definition B with unchanged identity
+ok   alternation does not require identity edits
+ok   alternating back to definition A
+ok   negative zero follows reference validator semantics
+ok   negative zero water level remains below minimum
+ok   positive zero water level remains below minimum
+ok   joined concurrent valid/invalid callers match reference (3 valid, 3 invalid)
+ok   cyclic ignored metadata preserves validation result
+ok   cyclic metadata is not retained in the cache
+ok   cycle is broken and definition remains valid
+ok   oversized ignored metadata preserves validation result
+ok   oversized metadata is not retained in the cache
+ok   too-deep ignored metadata preserves validation result
+ok   too-deep metadata is not retained in the cache
+ok   over-budget ignored metadata preserves validation result
+ok   over-budget metadata is not retained in the cache
+ok   Object ignored metadata preserves validation result
+ok   Object metadata is not retained in the cache
+ok   uncacheable Object is not retained by the successful snapshot
+ok   Callable ignored metadata preserves validation result
+ok   Callable metadata is not retained in the cache
+lake definition cache parity: 0 failures

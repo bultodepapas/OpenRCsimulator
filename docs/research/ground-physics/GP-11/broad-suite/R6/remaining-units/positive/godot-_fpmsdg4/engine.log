@@ -1,0 +1,724 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 720p: Home rail stays bounded at 304 px or less
+ok   en jensen-das-ugly-stik-60 720p: Fly visible above the pinned footer, focus on Fly
+ok   en jensen-das-ugly-stik-60 720p: Flight page opens at the top with its title visible
+ok   en jensen-das-ugly-stik-60 720p: header actions, Help and utilities remain inside the viewport
+ok   en jensen-das-ugly-stik-60 720p: Language and Controls labels cannot ellipsize
+ok   en jensen-das-ugly-stik-60 720p: scroll bar tracks actual Flight-page overflow
+ok   en jensen-das-ugly-stik-60 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 1080p: Home rail stays bounded at 340 px or less
+ok   en jensen-das-ugly-stik-60 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en jensen-das-ugly-stik-60 1080p: Flight page opens at the top with its title visible
+ok   en jensen-das-ugly-stik-60 1080p: header actions, Help and utilities remain inside the viewport
+ok   en jensen-das-ugly-stik-60 1080p: Language and Controls labels cannot ellipsize
+ok   en jensen-das-ugly-stik-60 1080p: scroll bar tracks actual Flight-page overflow
+ok   en jensen-das-ugly-stik-60 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 defaults 720p: Home rail stays bounded at 304 px or less
+ok   en jensen-das-ugly-stik-60 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en jensen-das-ugly-stik-60 defaults 720p: Flight page opens at the top with its title visible
+ok   en jensen-das-ugly-stik-60 defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   en jensen-das-ugly-stik-60 defaults 720p: Language and Controls labels cannot ellipsize
+ok   en jensen-das-ugly-stik-60 defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   en jensen-das-ugly-stik-60 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 defaults 1080p: Home rail stays bounded at 340 px or less
+ok   en jensen-das-ugly-stik-60 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en jensen-das-ugly-stik-60 defaults 1080p: Flight page opens at the top with its title visible
+ok   en jensen-das-ugly-stik-60 defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   en jensen-das-ugly-stik-60 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en jensen-das-ugly-stik-60 defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   en jensen-das-ugly-stik-60 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t 720p: Home rail stays bounded at 304 px or less
+ok   en stik-glow-61fx-2t 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-61fx-2t 720p: Flight page opens at the top with its title visible
+ok   en stik-glow-61fx-2t 720p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-61fx-2t 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-61fx-2t 720p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-61fx-2t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t 1080p: Home rail stays bounded at 340 px or less
+ok   en stik-glow-61fx-2t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-61fx-2t 1080p: Flight page opens at the top with its title visible
+ok   en stik-glow-61fx-2t 1080p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-61fx-2t 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-61fx-2t 1080p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-61fx-2t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t defaults 720p: Home rail stays bounded at 304 px or less
+ok   en stik-glow-61fx-2t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-61fx-2t defaults 720p: Flight page opens at the top with its title visible
+ok   en stik-glow-61fx-2t defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-61fx-2t defaults 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-61fx-2t defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-61fx-2t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t defaults 1080p: Home rail stays bounded at 340 px or less
+ok   en stik-glow-61fx-2t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-61fx-2t defaults 1080p: Flight page opens at the top with its title visible
+ok   en stik-glow-61fx-2t defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-61fx-2t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-61fx-2t defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-61fx-2t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t 720p: Home rail stays bounded at 304 px or less
+ok   en stik-glow-55ax-2t 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-55ax-2t 720p: Flight page opens at the top with its title visible
+ok   en stik-glow-55ax-2t 720p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-55ax-2t 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-55ax-2t 720p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-55ax-2t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t 1080p: Home rail stays bounded at 340 px or less
+ok   en stik-glow-55ax-2t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-55ax-2t 1080p: Flight page opens at the top with its title visible
+ok   en stik-glow-55ax-2t 1080p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-55ax-2t 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-55ax-2t 1080p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-55ax-2t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t defaults 720p: Home rail stays bounded at 304 px or less
+ok   en stik-glow-55ax-2t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-55ax-2t defaults 720p: Flight page opens at the top with its title visible
+ok   en stik-glow-55ax-2t defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-55ax-2t defaults 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-55ax-2t defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-55ax-2t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t defaults 1080p: Home rail stays bounded at 340 px or less
+ok   en stik-glow-55ax-2t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-55ax-2t defaults 1080p: Flight page opens at the top with its title visible
+ok   en stik-glow-55ax-2t defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-55ax-2t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-55ax-2t defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-55ax-2t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t 720p: Home rail stays bounded at 304 px or less
+ok   en stik-glow-fs64v-4t 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-fs64v-4t 720p: Flight page opens at the top with its title visible
+ok   en stik-glow-fs64v-4t 720p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-fs64v-4t 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-fs64v-4t 720p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-fs64v-4t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t 1080p: Home rail stays bounded at 340 px or less
+ok   en stik-glow-fs64v-4t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-fs64v-4t 1080p: Flight page opens at the top with its title visible
+ok   en stik-glow-fs64v-4t 1080p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-fs64v-4t 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-fs64v-4t 1080p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-fs64v-4t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t defaults 720p: Home rail stays bounded at 304 px or less
+ok   en stik-glow-fs64v-4t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-fs64v-4t defaults 720p: Flight page opens at the top with its title visible
+ok   en stik-glow-fs64v-4t defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-fs64v-4t defaults 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-fs64v-4t defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-fs64v-4t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t defaults 1080p: Home rail stays bounded at 340 px or less
+ok   en stik-glow-fs64v-4t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-fs64v-4t defaults 1080p: Flight page opens at the top with its title visible
+ok   en stik-glow-fs64v-4t defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   en stik-glow-fs64v-4t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-fs64v-4t defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   en stik-glow-fs64v-4t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 720p: Home rail stays bounded at 304 px or less
+ok   en gp-extra-300s-60 720p: Fly visible above the pinned footer, focus on Fly
+ok   en gp-extra-300s-60 720p: Flight page opens at the top with its title visible
+ok   en gp-extra-300s-60 720p: header actions, Help and utilities remain inside the viewport
+ok   en gp-extra-300s-60 720p: Language and Controls labels cannot ellipsize
+ok   en gp-extra-300s-60 720p: scroll bar tracks actual Flight-page overflow
+ok   en gp-extra-300s-60 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 1080p: Home rail stays bounded at 340 px or less
+ok   en gp-extra-300s-60 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en gp-extra-300s-60 1080p: Flight page opens at the top with its title visible
+ok   en gp-extra-300s-60 1080p: header actions, Help and utilities remain inside the viewport
+ok   en gp-extra-300s-60 1080p: Language and Controls labels cannot ellipsize
+ok   en gp-extra-300s-60 1080p: scroll bar tracks actual Flight-page overflow
+ok   en gp-extra-300s-60 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 defaults 720p: Home rail stays bounded at 304 px or less
+ok   en gp-extra-300s-60 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en gp-extra-300s-60 defaults 720p: Flight page opens at the top with its title visible
+ok   en gp-extra-300s-60 defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   en gp-extra-300s-60 defaults 720p: Language and Controls labels cannot ellipsize
+ok   en gp-extra-300s-60 defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   en gp-extra-300s-60 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 defaults 1080p: Home rail stays bounded at 340 px or less
+ok   en gp-extra-300s-60 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en gp-extra-300s-60 defaults 1080p: Flight page opens at the top with its title visible
+ok   en gp-extra-300s-60 defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   en gp-extra-300s-60 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en gp-extra-300s-60 defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   en gp-extra-300s-60 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 720p: Home rail stays bounded at 304 px or less
+ok   en p51d-mustang-120 720p: Fly visible above the pinned footer, focus on Fly
+ok   en p51d-mustang-120 720p: Flight page opens at the top with its title visible
+ok   en p51d-mustang-120 720p: header actions, Help and utilities remain inside the viewport
+ok   en p51d-mustang-120 720p: Language and Controls labels cannot ellipsize
+ok   en p51d-mustang-120 720p: scroll bar tracks actual Flight-page overflow
+ok   en p51d-mustang-120 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 1080p: Home rail stays bounded at 340 px or less
+ok   en p51d-mustang-120 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en p51d-mustang-120 1080p: Flight page opens at the top with its title visible
+ok   en p51d-mustang-120 1080p: header actions, Help and utilities remain inside the viewport
+ok   en p51d-mustang-120 1080p: Language and Controls labels cannot ellipsize
+ok   en p51d-mustang-120 1080p: scroll bar tracks actual Flight-page overflow
+ok   en p51d-mustang-120 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 defaults 720p: Home rail stays bounded at 304 px or less
+ok   en p51d-mustang-120 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en p51d-mustang-120 defaults 720p: Flight page opens at the top with its title visible
+ok   en p51d-mustang-120 defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   en p51d-mustang-120 defaults 720p: Language and Controls labels cannot ellipsize
+ok   en p51d-mustang-120 defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   en p51d-mustang-120 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 defaults 1080p: Home rail stays bounded at 340 px or less
+ok   en p51d-mustang-120 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en p51d-mustang-120 defaults 1080p: Flight page opens at the top with its title visible
+ok   en p51d-mustang-120 defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   en p51d-mustang-120 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en p51d-mustang-120 defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   en p51d-mustang-120 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (f4u-corsair-250)
+ok   en f4u-corsair-250 720p: Home rail stays bounded at 304 px or less
+ok   en f4u-corsair-250 720p: Fly visible above the pinned footer, focus on Fly
+ok   en f4u-corsair-250 720p: Flight page opens at the top with its title visible
+ok   en f4u-corsair-250 720p: header actions, Help and utilities remain inside the viewport
+ok   en f4u-corsair-250 720p: Language and Controls labels cannot ellipsize
+ok   en f4u-corsair-250 720p: scroll bar tracks actual Flight-page overflow
+ok   en f4u-corsair-250 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (f4u-corsair-250)
+ok   en f4u-corsair-250 1080p: Home rail stays bounded at 340 px or less
+ok   en f4u-corsair-250 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en f4u-corsair-250 1080p: Flight page opens at the top with its title visible
+ok   en f4u-corsair-250 1080p: header actions, Help and utilities remain inside the viewport
+ok   en f4u-corsair-250 1080p: Language and Controls labels cannot ellipsize
+ok   en f4u-corsair-250 1080p: scroll bar tracks actual Flight-page overflow
+ok   en f4u-corsair-250 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (f4u-corsair-250)
+ok   en f4u-corsair-250 defaults 720p: Home rail stays bounded at 304 px or less
+ok   en f4u-corsair-250 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en f4u-corsair-250 defaults 720p: Flight page opens at the top with its title visible
+ok   en f4u-corsair-250 defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   en f4u-corsair-250 defaults 720p: Language and Controls labels cannot ellipsize
+ok   en f4u-corsair-250 defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   en f4u-corsair-250 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (f4u-corsair-250)
+ok   en f4u-corsair-250 defaults 1080p: Home rail stays bounded at 340 px or less
+ok   en f4u-corsair-250 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en f4u-corsair-250 defaults 1080p: Flight page opens at the top with its title visible
+ok   en f4u-corsair-250 defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   en f4u-corsair-250 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en f4u-corsair-250 defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   en f4u-corsair-250 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx 720p: Home rail stays bounded at 304 px or less
+ok   en sebart-avanti-s-a200-p100rx 720p: Fly visible above the pinned footer, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx 720p: Flight page opens at the top with its title visible
+ok   en sebart-avanti-s-a200-p100rx 720p: header actions, Help and utilities remain inside the viewport
+ok   en sebart-avanti-s-a200-p100rx 720p: Language and Controls labels cannot ellipsize
+ok   en sebart-avanti-s-a200-p100rx 720p: scroll bar tracks actual Flight-page overflow
+ok   en sebart-avanti-s-a200-p100rx 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx 1080p: Home rail stays bounded at 340 px or less
+ok   en sebart-avanti-s-a200-p100rx 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx 1080p: Flight page opens at the top with its title visible
+ok   en sebart-avanti-s-a200-p100rx 1080p: header actions, Help and utilities remain inside the viewport
+ok   en sebart-avanti-s-a200-p100rx 1080p: Language and Controls labels cannot ellipsize
+ok   en sebart-avanti-s-a200-p100rx 1080p: scroll bar tracks actual Flight-page overflow
+ok   en sebart-avanti-s-a200-p100rx 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: Home rail stays bounded at 304 px or less
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: Flight page opens at the top with its title visible
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: Language and Controls labels cannot ellipsize
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: Home rail stays bounded at 340 px or less
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: Flight page opens at the top with its title visible
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution 720p: Home rail stays bounded at 304 px or less
+ok   en turbo-lumber-evolution 720p: Fly visible above the pinned footer, focus on Fly
+ok   en turbo-lumber-evolution 720p: Flight page opens at the top with its title visible
+ok   en turbo-lumber-evolution 720p: header actions, Help and utilities remain inside the viewport
+ok   en turbo-lumber-evolution 720p: Language and Controls labels cannot ellipsize
+ok   en turbo-lumber-evolution 720p: scroll bar tracks actual Flight-page overflow
+ok   en turbo-lumber-evolution 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution 1080p: Home rail stays bounded at 340 px or less
+ok   en turbo-lumber-evolution 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en turbo-lumber-evolution 1080p: Flight page opens at the top with its title visible
+ok   en turbo-lumber-evolution 1080p: header actions, Help and utilities remain inside the viewport
+ok   en turbo-lumber-evolution 1080p: Language and Controls labels cannot ellipsize
+ok   en turbo-lumber-evolution 1080p: scroll bar tracks actual Flight-page overflow
+ok   en turbo-lumber-evolution 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution defaults 720p: Home rail stays bounded at 304 px or less
+ok   en turbo-lumber-evolution defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en turbo-lumber-evolution defaults 720p: Flight page opens at the top with its title visible
+ok   en turbo-lumber-evolution defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   en turbo-lumber-evolution defaults 720p: Language and Controls labels cannot ellipsize
+ok   en turbo-lumber-evolution defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   en turbo-lumber-evolution defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution defaults 1080p: Home rail stays bounded at 340 px or less
+ok   en turbo-lumber-evolution defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en turbo-lumber-evolution defaults 1080p: Flight page opens at the top with its title visible
+ok   en turbo-lumber-evolution defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   en turbo-lumber-evolution defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en turbo-lumber-evolution defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   en turbo-lumber-evolution defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research 720p: Home rail stays bounded at 304 px or less
+ok   en xcell-60-research 720p: Fly visible above the pinned footer, focus on Fly
+ok   en xcell-60-research 720p: Flight page opens at the top with its title visible
+ok   en xcell-60-research 720p: header actions, Help and utilities remain inside the viewport
+ok   en xcell-60-research 720p: Language and Controls labels cannot ellipsize
+ok   en xcell-60-research 720p: scroll bar tracks actual Flight-page overflow
+ok   en xcell-60-research 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research 1080p: Home rail stays bounded at 340 px or less
+ok   en xcell-60-research 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en xcell-60-research 1080p: Flight page opens at the top with its title visible
+ok   en xcell-60-research 1080p: header actions, Help and utilities remain inside the viewport
+ok   en xcell-60-research 1080p: Language and Controls labels cannot ellipsize
+ok   en xcell-60-research 1080p: scroll bar tracks actual Flight-page overflow
+ok   en xcell-60-research 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research defaults 720p: Home rail stays bounded at 304 px or less
+ok   en xcell-60-research defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en xcell-60-research defaults 720p: Flight page opens at the top with its title visible
+ok   en xcell-60-research defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   en xcell-60-research defaults 720p: Language and Controls labels cannot ellipsize
+ok   en xcell-60-research defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   en xcell-60-research defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research defaults 1080p: Home rail stays bounded at 340 px or less
+ok   en xcell-60-research defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en xcell-60-research defaults 1080p: Flight page opens at the top with its title visible
+ok   en xcell-60-research defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   en xcell-60-research defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en xcell-60-research defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   en xcell-60-research defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 720p: Home rail stays bounded at 304 px or less
+ok   es jensen-das-ugly-stik-60 720p: Fly visible above the pinned footer, focus on Fly
+ok   es jensen-das-ugly-stik-60 720p: Flight page opens at the top with its title visible
+ok   es jensen-das-ugly-stik-60 720p: header actions, Help and utilities remain inside the viewport
+ok   es jensen-das-ugly-stik-60 720p: Language and Controls labels cannot ellipsize
+ok   es jensen-das-ugly-stik-60 720p: scroll bar tracks actual Flight-page overflow
+ok   es jensen-das-ugly-stik-60 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 1080p: Home rail stays bounded at 340 px or less
+ok   es jensen-das-ugly-stik-60 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es jensen-das-ugly-stik-60 1080p: Flight page opens at the top with its title visible
+ok   es jensen-das-ugly-stik-60 1080p: header actions, Help and utilities remain inside the viewport
+ok   es jensen-das-ugly-stik-60 1080p: Language and Controls labels cannot ellipsize
+ok   es jensen-das-ugly-stik-60 1080p: scroll bar tracks actual Flight-page overflow
+ok   es jensen-das-ugly-stik-60 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 defaults 720p: Home rail stays bounded at 304 px or less
+ok   es jensen-das-ugly-stik-60 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es jensen-das-ugly-stik-60 defaults 720p: Flight page opens at the top with its title visible
+ok   es jensen-das-ugly-stik-60 defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   es jensen-das-ugly-stik-60 defaults 720p: Language and Controls labels cannot ellipsize
+ok   es jensen-das-ugly-stik-60 defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   es jensen-das-ugly-stik-60 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 defaults 1080p: Home rail stays bounded at 340 px or less
+ok   es jensen-das-ugly-stik-60 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es jensen-das-ugly-stik-60 defaults 1080p: Flight page opens at the top with its title visible
+ok   es jensen-das-ugly-stik-60 defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   es jensen-das-ugly-stik-60 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es jensen-das-ugly-stik-60 defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   es jensen-das-ugly-stik-60 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t 720p: Home rail stays bounded at 304 px or less
+ok   es stik-glow-61fx-2t 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-61fx-2t 720p: Flight page opens at the top with its title visible
+ok   es stik-glow-61fx-2t 720p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-61fx-2t 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-61fx-2t 720p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-61fx-2t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t 1080p: Home rail stays bounded at 340 px or less
+ok   es stik-glow-61fx-2t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-61fx-2t 1080p: Flight page opens at the top with its title visible
+ok   es stik-glow-61fx-2t 1080p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-61fx-2t 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-61fx-2t 1080p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-61fx-2t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t defaults 720p: Home rail stays bounded at 304 px or less
+ok   es stik-glow-61fx-2t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-61fx-2t defaults 720p: Flight page opens at the top with its title visible
+ok   es stik-glow-61fx-2t defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-61fx-2t defaults 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-61fx-2t defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-61fx-2t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t defaults 1080p: Home rail stays bounded at 340 px or less
+ok   es stik-glow-61fx-2t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-61fx-2t defaults 1080p: Flight page opens at the top with its title visible
+ok   es stik-glow-61fx-2t defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-61fx-2t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-61fx-2t defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-61fx-2t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t 720p: Home rail stays bounded at 304 px or less
+ok   es stik-glow-55ax-2t 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-55ax-2t 720p: Flight page opens at the top with its title visible
+ok   es stik-glow-55ax-2t 720p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-55ax-2t 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-55ax-2t 720p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-55ax-2t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t 1080p: Home rail stays bounded at 340 px or less
+ok   es stik-glow-55ax-2t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-55ax-2t 1080p: Flight page opens at the top with its title visible
+ok   es stik-glow-55ax-2t 1080p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-55ax-2t 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-55ax-2t 1080p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-55ax-2t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t defaults 720p: Home rail stays bounded at 304 px or less
+ok   es stik-glow-55ax-2t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-55ax-2t defaults 720p: Flight page opens at the top with its title visible
+ok   es stik-glow-55ax-2t defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-55ax-2t defaults 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-55ax-2t defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-55ax-2t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t defaults 1080p: Home rail stays bounded at 340 px or less
+ok   es stik-glow-55ax-2t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-55ax-2t defaults 1080p: Flight page opens at the top with its title visible
+ok   es stik-glow-55ax-2t defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-55ax-2t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-55ax-2t defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-55ax-2t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t 720p: Home rail stays bounded at 304 px or less
+ok   es stik-glow-fs64v-4t 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-fs64v-4t 720p: Flight page opens at the top with its title visible
+ok   es stik-glow-fs64v-4t 720p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-fs64v-4t 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-fs64v-4t 720p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-fs64v-4t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t 1080p: Home rail stays bounded at 340 px or less
+ok   es stik-glow-fs64v-4t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-fs64v-4t 1080p: Flight page opens at the top with its title visible
+ok   es stik-glow-fs64v-4t 1080p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-fs64v-4t 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-fs64v-4t 1080p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-fs64v-4t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t defaults 720p: Home rail stays bounded at 304 px or less
+ok   es stik-glow-fs64v-4t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-fs64v-4t defaults 720p: Flight page opens at the top with its title visible
+ok   es stik-glow-fs64v-4t defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-fs64v-4t defaults 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-fs64v-4t defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-fs64v-4t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t defaults 1080p: Home rail stays bounded at 340 px or less
+ok   es stik-glow-fs64v-4t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-fs64v-4t defaults 1080p: Flight page opens at the top with its title visible
+ok   es stik-glow-fs64v-4t defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   es stik-glow-fs64v-4t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-fs64v-4t defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   es stik-glow-fs64v-4t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 720p: Home rail stays bounded at 304 px or less
+ok   es gp-extra-300s-60 720p: Fly visible above the pinned footer, focus on Fly
+ok   es gp-extra-300s-60 720p: Flight page opens at the top with its title visible
+ok   es gp-extra-300s-60 720p: header actions, Help and utilities remain inside the viewport
+ok   es gp-extra-300s-60 720p: Language and Controls labels cannot ellipsize
+ok   es gp-extra-300s-60 720p: scroll bar tracks actual Flight-page overflow
+ok   es gp-extra-300s-60 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 1080p: Home rail stays bounded at 340 px or less
+ok   es gp-extra-300s-60 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es gp-extra-300s-60 1080p: Flight page opens at the top with its title visible
+ok   es gp-extra-300s-60 1080p: header actions, Help and utilities remain inside the viewport
+ok   es gp-extra-300s-60 1080p: Language and Controls labels cannot ellipsize
+ok   es gp-extra-300s-60 1080p: scroll bar tracks actual Flight-page overflow
+ok   es gp-extra-300s-60 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 defaults 720p: Home rail stays bounded at 304 px or less
+ok   es gp-extra-300s-60 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es gp-extra-300s-60 defaults 720p: Flight page opens at the top with its title visible
+ok   es gp-extra-300s-60 defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   es gp-extra-300s-60 defaults 720p: Language and Controls labels cannot ellipsize
+ok   es gp-extra-300s-60 defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   es gp-extra-300s-60 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 defaults 1080p: Home rail stays bounded at 340 px or less
+ok   es gp-extra-300s-60 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es gp-extra-300s-60 defaults 1080p: Flight page opens at the top with its title visible
+ok   es gp-extra-300s-60 defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   es gp-extra-300s-60 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es gp-extra-300s-60 defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   es gp-extra-300s-60 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 720p: Home rail stays bounded at 304 px or less
+ok   es p51d-mustang-120 720p: Fly visible above the pinned footer, focus on Fly
+ok   es p51d-mustang-120 720p: Flight page opens at the top with its title visible
+ok   es p51d-mustang-120 720p: header actions, Help and utilities remain inside the viewport
+ok   es p51d-mustang-120 720p: Language and Controls labels cannot ellipsize
+ok   es p51d-mustang-120 720p: scroll bar tracks actual Flight-page overflow
+ok   es p51d-mustang-120 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 1080p: Home rail stays bounded at 340 px or less
+ok   es p51d-mustang-120 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es p51d-mustang-120 1080p: Flight page opens at the top with its title visible
+ok   es p51d-mustang-120 1080p: header actions, Help and utilities remain inside the viewport
+ok   es p51d-mustang-120 1080p: Language and Controls labels cannot ellipsize
+ok   es p51d-mustang-120 1080p: scroll bar tracks actual Flight-page overflow
+ok   es p51d-mustang-120 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 defaults 720p: Home rail stays bounded at 304 px or less
+ok   es p51d-mustang-120 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es p51d-mustang-120 defaults 720p: Flight page opens at the top with its title visible
+ok   es p51d-mustang-120 defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   es p51d-mustang-120 defaults 720p: Language and Controls labels cannot ellipsize
+ok   es p51d-mustang-120 defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   es p51d-mustang-120 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 defaults 1080p: Home rail stays bounded at 340 px or less
+ok   es p51d-mustang-120 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es p51d-mustang-120 defaults 1080p: Flight page opens at the top with its title visible
+ok   es p51d-mustang-120 defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   es p51d-mustang-120 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es p51d-mustang-120 defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   es p51d-mustang-120 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (f4u-corsair-250)
+ok   es f4u-corsair-250 720p: Home rail stays bounded at 304 px or less
+ok   es f4u-corsair-250 720p: Fly visible above the pinned footer, focus on Fly
+ok   es f4u-corsair-250 720p: Flight page opens at the top with its title visible
+ok   es f4u-corsair-250 720p: header actions, Help and utilities remain inside the viewport
+ok   es f4u-corsair-250 720p: Language and Controls labels cannot ellipsize
+ok   es f4u-corsair-250 720p: scroll bar tracks actual Flight-page overflow
+ok   es f4u-corsair-250 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (f4u-corsair-250)
+ok   es f4u-corsair-250 1080p: Home rail stays bounded at 340 px or less
+ok   es f4u-corsair-250 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es f4u-corsair-250 1080p: Flight page opens at the top with its title visible
+ok   es f4u-corsair-250 1080p: header actions, Help and utilities remain inside the viewport
+ok   es f4u-corsair-250 1080p: Language and Controls labels cannot ellipsize
+ok   es f4u-corsair-250 1080p: scroll bar tracks actual Flight-page overflow
+ok   es f4u-corsair-250 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (f4u-corsair-250)
+ok   es f4u-corsair-250 defaults 720p: Home rail stays bounded at 304 px or less
+ok   es f4u-corsair-250 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es f4u-corsair-250 defaults 720p: Flight page opens at the top with its title visible
+ok   es f4u-corsair-250 defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   es f4u-corsair-250 defaults 720p: Language and Controls labels cannot ellipsize
+ok   es f4u-corsair-250 defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   es f4u-corsair-250 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (f4u-corsair-250)
+ok   es f4u-corsair-250 defaults 1080p: Home rail stays bounded at 340 px or less
+ok   es f4u-corsair-250 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es f4u-corsair-250 defaults 1080p: Flight page opens at the top with its title visible
+ok   es f4u-corsair-250 defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   es f4u-corsair-250 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es f4u-corsair-250 defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   es f4u-corsair-250 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx 720p: Home rail stays bounded at 304 px or less
+ok   es sebart-avanti-s-a200-p100rx 720p: Fly visible above the pinned footer, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx 720p: Flight page opens at the top with its title visible
+ok   es sebart-avanti-s-a200-p100rx 720p: header actions, Help and utilities remain inside the viewport
+ok   es sebart-avanti-s-a200-p100rx 720p: Language and Controls labels cannot ellipsize
+ok   es sebart-avanti-s-a200-p100rx 720p: scroll bar tracks actual Flight-page overflow
+ok   es sebart-avanti-s-a200-p100rx 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx 1080p: Home rail stays bounded at 340 px or less
+ok   es sebart-avanti-s-a200-p100rx 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx 1080p: Flight page opens at the top with its title visible
+ok   es sebart-avanti-s-a200-p100rx 1080p: header actions, Help and utilities remain inside the viewport
+ok   es sebart-avanti-s-a200-p100rx 1080p: Language and Controls labels cannot ellipsize
+ok   es sebart-avanti-s-a200-p100rx 1080p: scroll bar tracks actual Flight-page overflow
+ok   es sebart-avanti-s-a200-p100rx 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: Home rail stays bounded at 304 px or less
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: Flight page opens at the top with its title visible
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: Language and Controls labels cannot ellipsize
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: Home rail stays bounded at 340 px or less
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: Flight page opens at the top with its title visible
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution 720p: Home rail stays bounded at 304 px or less
+ok   es turbo-lumber-evolution 720p: Fly visible above the pinned footer, focus on Fly
+ok   es turbo-lumber-evolution 720p: Flight page opens at the top with its title visible
+ok   es turbo-lumber-evolution 720p: header actions, Help and utilities remain inside the viewport
+ok   es turbo-lumber-evolution 720p: Language and Controls labels cannot ellipsize
+ok   es turbo-lumber-evolution 720p: scroll bar tracks actual Flight-page overflow
+ok   es turbo-lumber-evolution 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution 1080p: Home rail stays bounded at 340 px or less
+ok   es turbo-lumber-evolution 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es turbo-lumber-evolution 1080p: Flight page opens at the top with its title visible
+ok   es turbo-lumber-evolution 1080p: header actions, Help and utilities remain inside the viewport
+ok   es turbo-lumber-evolution 1080p: Language and Controls labels cannot ellipsize
+ok   es turbo-lumber-evolution 1080p: scroll bar tracks actual Flight-page overflow
+ok   es turbo-lumber-evolution 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution defaults 720p: Home rail stays bounded at 304 px or less
+ok   es turbo-lumber-evolution defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es turbo-lumber-evolution defaults 720p: Flight page opens at the top with its title visible
+ok   es turbo-lumber-evolution defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   es turbo-lumber-evolution defaults 720p: Language and Controls labels cannot ellipsize
+ok   es turbo-lumber-evolution defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   es turbo-lumber-evolution defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution defaults 1080p: Home rail stays bounded at 340 px or less
+ok   es turbo-lumber-evolution defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es turbo-lumber-evolution defaults 1080p: Flight page opens at the top with its title visible
+ok   es turbo-lumber-evolution defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   es turbo-lumber-evolution defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es turbo-lumber-evolution defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   es turbo-lumber-evolution defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research 720p: Home rail stays bounded at 304 px or less
+ok   es xcell-60-research 720p: Fly visible above the pinned footer, focus on Fly
+ok   es xcell-60-research 720p: Flight page opens at the top with its title visible
+ok   es xcell-60-research 720p: header actions, Help and utilities remain inside the viewport
+ok   es xcell-60-research 720p: Language and Controls labels cannot ellipsize
+ok   es xcell-60-research 720p: scroll bar tracks actual Flight-page overflow
+ok   es xcell-60-research 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research 1080p: Home rail stays bounded at 340 px or less
+ok   es xcell-60-research 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es xcell-60-research 1080p: Flight page opens at the top with its title visible
+ok   es xcell-60-research 1080p: header actions, Help and utilities remain inside the viewport
+ok   es xcell-60-research 1080p: Language and Controls labels cannot ellipsize
+ok   es xcell-60-research 1080p: scroll bar tracks actual Flight-page overflow
+ok   es xcell-60-research 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research defaults 720p: Home rail stays bounded at 304 px or less
+ok   es xcell-60-research defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es xcell-60-research defaults 720p: Flight page opens at the top with its title visible
+ok   es xcell-60-research defaults 720p: header actions, Help and utilities remain inside the viewport
+ok   es xcell-60-research defaults 720p: Language and Controls labels cannot ellipsize
+ok   es xcell-60-research defaults 720p: scroll bar tracks actual Flight-page overflow
+ok   es xcell-60-research defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research defaults 1080p: Home rail stays bounded at 340 px or less
+ok   es xcell-60-research defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es xcell-60-research defaults 1080p: Flight page opens at the top with its title visible
+ok   es xcell-60-research defaults 1080p: header actions, Help and utilities remain inside the viewport
+ok   es xcell-60-research defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es xcell-60-research defaults 1080p: scroll bar tracks actual Flight-page overflow
+ok   es xcell-60-research defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en jensen-das-ugly-stik-60 720p 200%: 200% text leaves a usable scroll body
+ok   en jensen-das-ugly-stik-60 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en stik-glow-61fx-2t 720p 200%: 200% text leaves a usable scroll body
+ok   en stik-glow-61fx-2t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en stik-glow-55ax-2t 720p 200%: 200% text leaves a usable scroll body
+ok   en stik-glow-55ax-2t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en stik-glow-fs64v-4t 720p 200%: 200% text leaves a usable scroll body
+ok   en stik-glow-fs64v-4t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en gp-extra-300s-60 720p 200%: 200% text leaves a usable scroll body
+ok   en gp-extra-300s-60 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en p51d-mustang-120 720p 200%: 200% text leaves a usable scroll body
+ok   en p51d-mustang-120 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (f4u-corsair-250)
+ok   en f4u-corsair-250 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en f4u-corsair-250 720p 200%: 200% text leaves a usable scroll body
+ok   en f4u-corsair-250 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en sebart-avanti-s-a200-p100rx 720p 200%: 200% text leaves a usable scroll body
+ok   en sebart-avanti-s-a200-p100rx 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en turbo-lumber-evolution 720p 200%: 200% text leaves a usable scroll body
+ok   en turbo-lumber-evolution 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en xcell-60-research 720p 200%: 200% text leaves a usable scroll body
+ok   en xcell-60-research 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es jensen-das-ugly-stik-60 720p 200%: 200% text leaves a usable scroll body
+ok   es jensen-das-ugly-stik-60 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es stik-glow-61fx-2t 720p 200%: 200% text leaves a usable scroll body
+ok   es stik-glow-61fx-2t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es stik-glow-55ax-2t 720p 200%: 200% text leaves a usable scroll body
+ok   es stik-glow-55ax-2t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es stik-glow-fs64v-4t 720p 200%: 200% text leaves a usable scroll body
+ok   es stik-glow-fs64v-4t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es gp-extra-300s-60 720p 200%: 200% text leaves a usable scroll body
+ok   es gp-extra-300s-60 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es p51d-mustang-120 720p 200%: 200% text leaves a usable scroll body
+ok   es p51d-mustang-120 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (f4u-corsair-250)
+ok   es f4u-corsair-250 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es f4u-corsair-250 720p 200%: 200% text leaves a usable scroll body
+ok   es f4u-corsair-250 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es sebart-avanti-s-a200-p100rx 720p 200%: 200% text leaves a usable scroll body
+ok   es sebart-avanti-s-a200-p100rx 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es turbo-lumber-evolution 720p 200%: 200% text leaves a usable scroll body
+ok   es turbo-lumber-evolution 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es xcell-60-research 720p 200%: 200% text leaves a usable scroll body
+ok   es xcell-60-research 720p 200%: utility labels fit without clipping or ellipses
+worst 720p overflow: 103 px (es jensen-das-ugly-stik-60 720p)
+all UI home layout checks passed

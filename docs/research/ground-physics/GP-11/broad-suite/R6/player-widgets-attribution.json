@@ -1,0 +1,28 @@
+{
+  "format": "openrc-baseline-player-widget-isolation v1",
+  "utc": "2026-10-26T13:46:30.759556+00:00",
+  "baseline_report": "tmp\\gp11-full-suite-checks\\R6\\baseline-ui\\player-widgets\\godot-dlcldu3k\\report.json",
+  "candidate_report": "tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-sy4jw62r\\report.json",
+  "identical_test_dependencies": [
+    {
+      "path": "app/tests/test_player_widget_settings.gd",
+      "sha256": "7858b186aa458bc14a4491cb52dc6743c4f65c883d4403202625fde33ebdfb35"
+    },
+    {
+      "path": "app/render/overlays/overlay_settings.gd",
+      "sha256": "0e366d1d94fe5d0810705b6e59607485d590a3c84dc86591c8d8f0ad4a1590e2"
+    },
+    {
+      "path": "app/app_state/preferences.gd",
+      "sha256": "4103ef09b67864e6313a0445e22378893286b115e2a75b32f39a93a393870a07"
+    }
+  ],
+  "same_results": [
+    "ERROR: player widget settings: legacy defaults retain their exact shape",
+    "ERROR: player widget settings: widget IDs append to the existing overlay IDs",
+    "ERROR: player widget settings: training preset validates to warnings and exactly three training widgets",
+    "player widget settings checks=27 failures=3"
+  ],
+  "failure_messages_byte_equal": true,
+  "attribution": "Inherited GP10 widget defaults/preset expectation failure,27checks3fail in baseline and GP11 candidate; no UI changes made."
+}

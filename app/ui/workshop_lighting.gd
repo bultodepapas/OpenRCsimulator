@@ -822,9 +822,7 @@ func _set_palette_color(index: int, color_text: String) -> void:
 	if _syncing:
 		return
 	if _brightness_pending or _effects_pending or _sequence_pending():
-		_syncing = true
-		_sync_zone_editor()
-		_syncing = false
+		_restore_palette_color(index)
 		_set_status(tr("Apply or cancel the current lighting edit first."))
 		return
 	var pattern: Dictionary = _zone_draft.get("pattern", {}).duplicate(true)
@@ -834,6 +832,18 @@ func _set_palette_color(index: int, color_text: String) -> void:
 	palette[index] = color_text
 	pattern.palette = palette
 	_zone_draft.pattern = pattern
+	_sync_palette_color(index, color_text)
+	_refresh_zone_pending()
+
+
+func _restore_palette_color(index: int) -> void:
+	var palette: Array = _zone_draft.get("pattern", {}).get("palette", [])
+	if index >= 0 and index < palette.size():
+		_sync_palette_color(index, str(palette[index]))
+
+
+func _sync_palette_color(index: int, color_text: String) -> void:
+	# Rejection must not destroy the focused field or an open color picker.
 	_syncing = true
 	if index < _zone_hex_fields.size():
 		_zone_hex_fields[index].text = color_text
@@ -841,16 +851,13 @@ func _set_palette_color(index: int, color_text: String) -> void:
 	if picker != null:
 		picker.color = Color.from_string(color_text, Color.WHITE)
 	_syncing = false
-	_refresh_zone_pending()
 
 
 func _on_zone_hex_changed(value: String, index: int) -> void:
 	if _syncing:
 		return
 	if _brightness_pending or _effects_pending or _sequence_pending():
-		_syncing = true
-		_sync_zone_editor()
-		_syncing = false
+		_restore_palette_color(index)
 		_set_status(tr("Apply or cancel the current lighting edit first."))
 		return
 	_zone_text_pending = true
@@ -1270,9 +1277,7 @@ func _set_effect_value(anchor_id: String, key: String, value: Variant) -> void:
 	if _syncing:
 		return
 	if _brightness_pending or _zone_pending or _zone_text_pending or _sequence_pending():
-		_syncing = true
-		_rebuild_effect_controls()
-		_syncing = false
+		_restore_effect_value(anchor_id, key)
 		_set_status(tr("Apply or cancel the current lighting edit first."))
 		return
 	for index in _effects_draft.size():
@@ -1283,6 +1288,22 @@ func _set_effect_value(anchor_id: String, key: String, value: Variant) -> void:
 			_effects_cancel.disabled = not _effects_pending
 			_emit_validity()
 			return
+
+
+func _restore_effect_value(anchor_id: String, key: String) -> void:
+	# Keep the same input (including SpinBox's LineEdit) through rejected edits.
+	var controls: Dictionary = _effects_controls_by_anchor.get(anchor_id, {})
+	if controls.is_empty():
+		return
+	for entry: Dictionary in _effects_draft:
+		if str(entry.get("anchor_id", "")) != anchor_id:
+			continue
+		match key:
+			"enabled": controls.enabled.set_pressed_no_signal(bool(entry.get("enabled", false)))
+			"kind": controls.kind.select(maxi(_find_item_metadata(controls.kind, str(entry.get("kind", "spark"))), 0))
+			"intensity": controls.intensity.set_value_no_signal(float(entry.get("intensity", 0.0)))
+			"lifetime_ticks": controls.lifetime.set_value_no_signal(float(entry.get("lifetime_ticks", 96)) / 240.0)
+		return
 
 
 func _zone_for_id(zone_id: String) -> Dictionary:

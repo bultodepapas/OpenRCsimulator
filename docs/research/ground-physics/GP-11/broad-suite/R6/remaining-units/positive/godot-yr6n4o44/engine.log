@@ -1,0 +1,66 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok    55AX 12x7 aircraft loads  []
+ok    55AX 12x7 retains explicit family
+ok    55AX 12x7 uses the audited section-loss coefficient  K=0.06
+ok    55AX 12x7 RPM envelope is nonempty
+ok    55AX 12x7 has finite positive-thrust forward range  V/(omega R) zero=0.1848605447847
+ok    55AX 12x7 static bound reduces to T^1.5/sqrt(2 rho A)
+ok    55AX 12x7 matches independent 12-annulus oracle (108 points)
+ok    55AX 12x7 preserves nonnegative section dissipation/passivity
+ok    55AX 12x7 accepts all forward samples meeting the independent bound
+ok    55AX 12x7 sampled forward-flow margin >= 1.05  minimum Pshaft/Pideal=1.216687
+ok    55AX 12x7 does not apply forward-thrust bound past zero thrust  T=-0.79181547355295 N
+ok    55AX 13x6 aircraft loads  []
+ok    55AX 13x6 retains explicit family
+ok    55AX 13x6 uses the audited section-loss coefficient  K=0.06
+ok    55AX 13x6 RPM envelope is nonempty
+ok    55AX 13x6 has finite positive-thrust forward range  V/(omega R) zero=0.14628642879429
+ok    55AX 13x6 static bound reduces to T^1.5/sqrt(2 rho A)
+ok    55AX 13x6 matches independent 12-annulus oracle (108 points)
+ok    55AX 13x6 preserves nonnegative section dissipation/passivity
+ok    55AX 13x6 accepts all forward samples meeting the independent bound
+ok    55AX 13x6 sampled forward-flow margin >= 1.05  minimum Pshaft/Pideal=1.097672
+ok    55AX 13x6 does not apply forward-thrust bound past zero thrust  T=-0.87808812698072 N
+ok    FS64V 14x6 aircraft loads  []
+ok    FS64V 14x6 retains explicit family
+ok    FS64V 14x6 uses the audited section-loss coefficient  K=0.075
+ok    FS64V 14x6 RPM envelope is nonempty
+ok    FS64V 14x6 has finite positive-thrust forward range  V/(omega R) zero=0.13584243212923
+ok    FS64V 14x6 static bound reduces to T^1.5/sqrt(2 rho A)
+ok    FS64V 14x6 matches independent 12-annulus oracle (108 points)
+ok    FS64V 14x6 preserves nonnegative section dissipation/passivity
+ok    FS64V 14x6 accepts all forward samples meeting the independent bound
+ok    FS64V 14x6 sampled forward-flow margin >= 1.05  minimum Pshaft/Pideal=1.083137
+ok    FS64V 14x6 does not apply forward-thrust bound past zero thrust  T=-0.7928365253873 N
+ok    FS64V 13x6 aircraft loads  []
+ok    FS64V 13x6 retains explicit family
+ok    FS64V 13x6 uses the audited section-loss coefficient  K=0.075
+ok    FS64V 13x6 RPM envelope is nonempty
+ok    FS64V 13x6 has finite positive-thrust forward range  V/(omega R) zero=0.14628641542937
+ok    FS64V 13x6 static bound reduces to T^1.5/sqrt(2 rho A)
+ok    FS64V 13x6 matches independent 12-annulus oracle (108 points)
+ok    FS64V 13x6 preserves nonnegative section dissipation/passivity
+ok    FS64V 13x6 accepts all forward samples meeting the independent bound
+ok    FS64V 13x6 sampled forward-flow margin >= 1.05  minimum Pshaft/Pideal=1.110097
+ok    FS64V 13x6 does not apply forward-thrust bound past zero thrust  T=-0.63211725831282 N
+ok    previous FS64V K=0.06 static point is refused  Forward thrust requires more power than the shaft supplies
+ok    previous FS64V K=0.06 static point is refused  Forward thrust requires more power than the shaft supplies
+ok    55AX 12x7 rest remains a finite zero-power state
+ok    55AX 12x7 stopped propeller in forward flow remains valid
+ok    55AX 12x7 forward-flow windmilling remains valid and extracts shaft power
+ok    55AX 12x7 reverse inflow remains outside the forward bound
+ok    55AX 13x6 rest remains a finite zero-power state
+ok    55AX 13x6 stopped propeller in forward flow remains valid
+ok    55AX 13x6 forward-flow windmilling remains valid and extracts shaft power
+ok    55AX 13x6 reverse inflow remains outside the forward bound
+ok    FS64V 14x6 rest remains a finite zero-power state
+ok    FS64V 14x6 stopped propeller in forward flow remains valid
+ok    FS64V 14x6 forward-flow windmilling remains valid and extracts shaft power
+ok    FS64V 14x6 reverse inflow remains outside the forward bound
+ok    FS64V 13x6 rest remains a finite zero-power state
+ok    FS64V 13x6 stopped propeller in forward flow remains valid
+ok    FS64V 13x6 forward-flow windmilling remains valid and extracts shaft power
+ok    FS64V 13x6 reverse inflow remains outside the forward bound
+ok    finite inputs that overflow angular speed are rejected
+glow propeller momentum: 63 checks, 0 failed

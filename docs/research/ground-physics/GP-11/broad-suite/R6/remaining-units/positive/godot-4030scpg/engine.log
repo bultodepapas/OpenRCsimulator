@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   absent and zero_lift_angle_rad 0 are byte-identical (symmetric section unchanged)  
+ok   refuses zero_lift_angle_rad 0.01  Invalid propeller parameter: zero_lift_angle_rad
+ok   refuses zero_lift_angle_rad -0.31  Invalid propeller parameter: zero_lift_angle_rad
+ok   refuses zero_lift_angle_rad nan  Invalid propeller parameter: zero_lift_angle_rad
+ok   refuses zero_lift_angle_rad x  Invalid propeller parameter: zero_lift_angle_rad
+ok   symmetric section: zero thrust at the geometric pitch ratio  J0 0.498
+ok   cambered section (-0.1 rad): zero thrust well past it  J0 0.734
+ok   cambered section absorbs more static power at the same rpm  0.8234 vs 0.5130 N·m
+ok   runtime equals the Python mirror at 4 operating points  max relative error 0
+ok   cambered evaluations pass the actuator-disk power bound over 30 points  
+EX-14f propeller camber: 10 checks, 0 failed

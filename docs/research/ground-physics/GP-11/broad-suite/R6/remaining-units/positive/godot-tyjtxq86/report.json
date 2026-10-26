@@ -1,0 +1,72 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "eda156ae-975d-40b9-8a81-4f2270721c23",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/.tools/Godot_v4.8-beta1_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_record.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite",
+  "started_utc": "2026-10-26T12:56:24.793688+00:00",
+  "label": "godot",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-tyjtxq86\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite-checks\\R6\\remaining-units\\positive\\godot-tyjtxq86\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 3,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 31,
+      "message": "Invalid access of index '0' on a base object of type: 'Array[Node]'.",
+      "context": [
+        "   at: _run_recorded_parity_and_replay (res://tests/test_companions_record.gd:273)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run_recorded_parity_and_replay (res://tests/test_companions_record.gd:273)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 62,
+      "message": "Invalid access to property or key '_logs' on a base object of type 'Nil'.",
+      "context": [
+        "   at: _run_writer_failure (res://tests/test_companions_record.gd:447)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run_writer_failure (res://tests/test_companions_record.gd:447)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 84,
+      "message": "Invalid call. Nonexistent function 'status' in base 'Nil'.",
+      "context": [
+        "   at: _run_detached_manager_free (res://tests/test_companions_record.gd:542)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run_detached_manager_free (res://tests/test_companions_record.gd:542)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 9.828,
+  "log_bytes": 11743,
+  "log_sha256": "70f1e318afae4ef334a27e2434d9547311fdb82854466597bc9bb95ef2583561"
+}

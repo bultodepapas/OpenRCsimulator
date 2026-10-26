@@ -1,0 +1,25 @@
+--- original unit block
++++ remaining unit block
+@@ -1,6 +1,7 @@
+ unit_index=0
+ selected_units=0
+ for t in "$HERE"/tests/test_*.gd; do
++  [[ "$(basename "$t")" > "test_aircraft_liveries.gd" ]] || continue
+   shard_for_test=$((unit_index % UNIT_SHARDS))
+   unit_index=$((unit_index + 1))
+   [[ "$shard_for_test" == "$UNIT_SHARD" ]] || continue
+@@ -45,7 +46,13 @@
+     test_rudder_authority.gd) test_args=(-- --allow-known-stik-rudder-sideslip) ;;
+     test_yaw_damping.gd) test_args=(-- --allow-known-r02-yaw-alpha11) ;;
+   esac
+-  run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"
++  if run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"; then
++    printf '%s\t0\n' "$(basename "$t")" >> "$OPENRC_UNIT_STATUS_FILE"
++  else
++    actual_exit=$?
++    printf '%s\t%s\n' "$(basename "$t")" "$actual_exit" >> "$OPENRC_UNIT_STATUS_FILE"
++    remaining_failures=$((remaining_failures+1))
++  fi
+   # run_with_timeout checks every invocation for engine/script/shader errors,
+   # including errors printed with a successful process exit.
+ done

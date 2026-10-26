@@ -1,0 +1,39 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   decoration preserves button geometry and minimum size
+ok   glass stays behind text and cannot intercept input
+ok   panel underlay fills the whole panel outside its content margins
+ok   effects have no frame or physics processing loop
+ok   panels animate their reflection without unused button energy
+ok   focus remains a native visible pair of brackets
+ok   light text meets 4.5:1 at the brightest translucent glass interior
+ok   keyboard focus starts a finite shine
+ok   the reflection advances through the surface
+ok   disabling an active button settles its motion
+ok   suspending a screen kills its decorative motion
+ok   live reduced motion settles an active effect without a theme rebuild
+ok   reduced motion does not restart a shine
+ok   theme replacement retains decoration and opaque surfaces
+ok   a screen-specific style override is preserved
+ok   screen teardown releases all decorative tweens
+ok   pointer entry engages the actual native button
+ok   pointer position drives a local glass reflection
+ok   click focus does not restart an existing hover sweep
+ok   leaving a focused button centers its gamepad/keyboard reflection
+ok   a cancelled press does not activate or play confirmation
+ok   keyboard acceptance confirms exactly one native activation
+ok   confirmation returns to rest without a loop
+ok   selected gamepad moves focus and lights a secondary action
+ok   secondary actions keep neutral material and native geometry
+ok   gamepad selection retains the native toggle and confirms
+ok   secondary selection does not allocate unused press shading
+ok   rapid navigation releases the old focus without moving controls
+ok   live reduced motion settles color, pointer and activation together
+ok   a burst of 200 pointer targets allocates one replacement and keeps the newest
+ok   interrupting a color transition starts from its current value
+ok   suspension settles every interaction channel
+ok   changing material kind retains focus feedback and cancels unused pointer work
+ok   screen-owned surfaces neither get replaced nor run hidden effects
+ok   flat idle buttons keep their empty native background
+ok   extended interaction teardown leaves no active tweens
+Crystal UI: 0 failed

@@ -1,0 +1,20 @@
+{
+  "format": "openrc-frozen-composite-suite v1",
+  "status": "failed",
+  "complete": true,
+  "scope": "R2 sealed1374script parse + R3 original offline/units/integration harness with exact HERE adjustment and parse-loop omission; GP11 frozen runtime+R1 wrappers+register fix+3import model pins; later GP12/Electric/Step excluded",
+  "source_before": "source-before.json",
+  "app_source_before": "app-source-after-model-generation.json",
+  "parse_reuse": "parse-reuse.json",
+  "harness": "harness-no-repeat-parse.sh",
+  "log": "full-suite.log",
+  "command": "OPENRC_TEST_PART=all bash.exe harness-no-repeat-parse.sh",
+  "one_command_app_test_pass": false,
+  "session_id": 58679,
+  "started_utc": "2026-10-26T12:21:42.323913+00:00",
+  "exit_code": 1,
+  "stop": "AE-01 generated Workshop descriptors stale after approved model import pins; before units/integration",
+  "source_unchanged": true,
+  "app_source_dependency_paths_verified": 4034,
+  "source_paths_verified": 156
+}

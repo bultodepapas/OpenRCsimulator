@@ -1,0 +1,45 @@
+{
+  "format": "openrc-raw-evidence-Git-attribute-roundtrip v1",
+  "utc": "2026-10-26T16:13:08.497551+00:00",
+  "core_autocrlf": true,
+  "fixture_commit": "9f39b8690e069776e935270ff7e8c44e5ff10c16",
+  "fixture_path": "tmp\\gp11-full-suite-checks\\attribute-roundtrip-9d17f6a813494aceb208298ae3a296e7",
+  "fresh_clone_no_hardlinks": true,
+  "artifacts_compared": 4684,
+  "evidence_files_compared": 4683,
+  "root_gitattributes_sha256": "d5f25def9d5e7905f7084f261a38fbe2065883d63c0098a453bfa41f4971bed3",
+  "mismatches": [],
+  "checked_summaries": [
+    {
+      "collection": "R2-parse/positive",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "first_line": "1374 invocations: 1374 passed, 0 failed or invalid.",
+      "raw_log": "tmp\\gp11-full-suite-checks\\attribute-roundtrip-9d17f6a813494aceb208298ae3a296e7\\summary-R2-parse-positive.log"
+    },
+    {
+      "collection": "R6/units/positive",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "first_line": "23 invocations: 22 passed, 1 failed or invalid.",
+      "raw_log": "tmp\\gp11-full-suite-checks\\attribute-roundtrip-9d17f6a813494aceb208298ae3a296e7\\summary-R6-units-positive.log"
+    },
+    {
+      "collection": "R6/remaining-units/positive",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "first_line": "730 invocations: 714 passed, 16 failed or invalid.",
+      "raw_log": "tmp\\gp11-full-suite-checks\\attribute-roundtrip-9d17f6a813494aceb208298ae3a296e7\\summary-R6-remaining-units-positive.log"
+    },
+    {
+      "collection": "R8/positive",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "first_line": "19 invocations: 19 passed, 0 failed or invalid.",
+      "raw_log": "tmp\\gp11-full-suite-checks\\attribute-roundtrip-9d17f6a813494aceb208298ae3a296e7\\summary-R8-positive.log"
+    }
+  ],
+  "manifest_sha256": "2ad6249eb5f1372384f52e81adc754dc6458f7f070d5f00928e5b770823f6848",
+  "receipt_scope": "Snapshot excludes this post-verification receipt itself; manifest binds all prior payloads. Main repository was not staged or committed. Unit failure collections correctly remain nonzero.",
+  "source_checkout_unchanged": true
+}

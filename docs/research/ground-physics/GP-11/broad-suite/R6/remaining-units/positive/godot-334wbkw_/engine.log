@@ -1,0 +1,41 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+PASS: off-center effective mass uses r_C=r_O-c
+PASS: contact at current CG has translational effective mass
+PASS: normal is rotated back into body axes
+PASS: mixed yaw-pitch-roll quaternion is checked with all four components
+PASS: non-unit four-component quaternion is rejected
+PASS: zero CG shift recovers the legacy formula
+PASS: mismatched inertia inverse is rejected
+PASS: properties carrying explicit failure status are rejected
+PASS: SPD tensor outside physical triangle inequalities is rejected
+PASS: rotated impossible tensor is rejected through second-moment PSD
+PASS: physically valid semidefinite second moment is accepted
+PASS: near-hull dynamic loads return success plus force/moment array
+PASS: load moments retain fixed datum-O contact arms
+PASS: hull inside broad-phase reach but clear of ground has no contact load
+PASS: geometry reach gate returns a valid empty load without stage contact work
+PASS: invalid mass sample fails explicitly even when the hull is far away
+PASS: soft terminal impact uses explicit prior-state properties sample
+PASS: invalid soft-terminal sample cannot become a valid no-event
+PASS: sampled scenery hit uses one mass snapshot at its TOI
+PASS: off-center impact impulse updates fixed-datum velocity and dissipates energy
+PASS: fixed-datum impulse conserves linear impulse at current CG
+PASS: angular impulse uses current-CG arm and sampled inverse tensor
+PASS: stationary-surface restitution has the analytic CG energy loss
+PASS: invalid event-time sample fails instead of disappearing as no hit
+PASS: invalid scenery world is distinguished from valid no-hit
+PASS: invalid scenery state is reported as failure
+PASS: invalid scenery hull is reported as failure
+PASS: valid scenery no-hit succeeds without sampling mass properties
+PASS: authored lake fixture loads
+PASS: covered hull below the flat datum but above the lake bed stays clear
+PASS: hull above the lake bank and flat datum has no contact load
+PASS: mixed lake-bed, clear-bed and dry-ground hull loads retain force and moment
+PASS: lake event samples properties at swept contact fraction
+PASS: invalid lake TOI sample is a failure, not a no-contact result
+PASS: invalid lake definition is distinguished from valid no-hit
+PASS: invalid lake state is reported as failure
+PASS: invalid lake hull is reported as failure
+PASS: valid lake no-hit succeeds without sampling mass properties
+R05-B draft: 38 checks, 0 failures

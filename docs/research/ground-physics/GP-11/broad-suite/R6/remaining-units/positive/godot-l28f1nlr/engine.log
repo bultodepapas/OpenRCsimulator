@@ -1,0 +1,16 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   gp-extra-300s-60 loads with its 61FX glow installation  
+ok   gp-extra-300s-60 dive: no simulation fault  
+ok   gp-extra-300s-60 dive: all ticks recorded and finite  2881 rows
+ok   gp-extra-300s-60 dive: steeper than 70 deg and faster than its 41 m/s-class level Vmax  pitch -78.8 deg, peak 65.2 m/s
+ok   gp-extra-300s-60 dive: rpm above 17000 rpm yet inside the windmill support  peak 17887 rpm
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-61fx-2t loads with its 61FX glow installation  
+ok   stik-glow-61fx-2t dive: no simulation fault  
+ok   stik-glow-61fx-2t dive: all ticks recorded and finite  2881 rows
+ok   stik-glow-61fx-2t dive: steeper than 70 deg and faster than its 41 m/s-class level Vmax  pitch -79.2 deg, peak 49.5 m/s
+ok   stik-glow-61fx-2t dive: rpm above 20000 rpm yet inside the windmill support  peak 20072 rpm
+NITRO-61FX-R1 dive support: 10 checks, 0 failed

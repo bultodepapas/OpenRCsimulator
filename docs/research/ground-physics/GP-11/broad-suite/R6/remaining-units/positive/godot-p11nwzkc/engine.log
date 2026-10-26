@@ -1,0 +1,23 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   electric identity is a rotor-dynamics capability, not a combustion shaft layout 
+ok   analytic static quadratic gives a stable equilibrium { &"ok": true, &"status": "equilibrium", &"message": "stable electric torque equilibrium", &"rpm": 8797.67497039035, &"residual": 0.00000000000964, &"stability_slope": -0.00105748448292, &"lower_rpm": 1.0, &"upper_rpm": 12000.0, &"unstable_roots": 0, &"iterations": 27 }
+ok   equilibrium matches independently solved quadratic 8797.674970 rpm vs 8797.674970 rpm
+ok   equilibrium residual and restoring slopes are checked -0.00105748448292
+ok   legacy float steady_rpm wrapper uses the same electric source 
+ok   density changes propeller load and equilibrium RPM 
+ok   motor constants and source output remain independent of density 
+ok   windmilling prop can establish a stable root above Kv × V status=equilibrium rpm=16988.404338297285 reference=12000.0
+ok   unbracketed zero-duty static case fails explicitly no stable electric torque equilibrium in the bounded RPM search
+ok   stopped-prop cutoff zero is not reported as a steady root equilibrium at the stopped-prop cutoff is not a positive-RPM operating point
+ok   mathematical negative-Cp control detects an unstable-only root electric torque balance has no stable root in the bounded search; an unstable root was found
+ok   pure source rejects negative RPM and invalid duty 
+ok   steady solver reports invalid duty as an input failure 
+ok   source-off coasts with motor loss, no current or combustion friction -49.73181430444747 rpm/s
+ok   electric coast below prop cutoff still approaches the physical rest boundary 
+ok   source-off at exact rest does not initiate reverse rotation 
+ok   motor can provide breakaway torque at rest 
+ok   electric torque dispatch does not require shaft.power_curve 
+ok   powered electric in-air trim uses the same stable source equilibrium trimmed
+ok   electric trim reports an in-range duty, positive RPM and small residual duty=0.8260 rpm=9066.00 residual=4.011445344364092e-11
+20 checks, 0 failed

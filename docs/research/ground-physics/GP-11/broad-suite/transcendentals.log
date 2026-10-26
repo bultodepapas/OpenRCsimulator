@@ -1,0 +1,8 @@
+direct transcendental calls found outside physics/math3d.gd:
+physics/control_actuators.gd:141: bare cos( call
+physics/control_actuators.gd:142: bare sin( call
+physics/normal_compliance.gd:61: bare pow( call
+physics/normal_compliance.gd:63: bare pow( call
+physics/normal_compliance.gd:66: bare pow( call
+physics/normal_compliance.gd:102: bare pow( call
+physics/normal_compliance.gd:129: bare sqrt( call

@@ -1,0 +1,30 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   headless (no layout): QWERTY names
+ok   AZERTY: physical A, W, Z print Q, Z, W
+ok   Russian: physical A, W print Ф, Ц
+ok   named keys get names, arrows are drawn
+ok   named keys are translated
+FAIL Home: Help reachable by keyboard Language
+FAIL Enter opens Help, focus on Close Language
+SCRIPT ERROR: Cannot call method 'find_children' on a null value.
+   at: _caps_text (res://tests/test_ui_help.gd:35)
+   GDScript backtrace (most recent call first):
+       [0] _caps_text (res://tests/test_ui_help.gd:35)
+       [1] _run (res://tests/test_ui_help.gd:83)
+       [2] tap (res://tests/ui_driver.gd:24)
+       [3] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Cannot call method 'find_children' on a null value.
+   at: _caps_text (res://tests/test_ui_help.gd:35)
+   GDScript backtrace (most recent call first):
+       [0] _caps_text (res://tests/test_ui_help.gd:35)
+       [1] _run (res://tests/test_ui_help.gd:83)
+       [2] tap (res://tests/ui_driver.gd:24)
+       [3] settle (res://tests/ui_driver.gd:55)
+FAIL Help shows every key of the shared table (48) []
+SCRIPT ERROR: Invalid access to property or key 'about_label' on a base object of type 'Nil'.
+   at: _run (res://tests/test_ui_help.gd:86)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_help.gd:86)
+       [1] tap (res://tests/ui_driver.gd:24)
+       [2] settle (res://tests/ui_driver.gd:55)

@@ -1,0 +1,10 @@
+{
+  "format": "openrc-frozen-units-launch v1",
+  "utc": "2026-10-26T11:46:40.567052+00:00",
+  "session_id": 50221,
+  "command": "OPENRC_TEST_PART=units app/test.sh",
+  "source_before": "../R2/source-before.json",
+  "scope": "unchanged R2 frozen runtime; documented units partition skips failed offline manifest gate; full suite is not passing",
+  "status": "running",
+  "complete": false
+}

@@ -1,0 +1,150 @@
+== import resource dependencies
+== LU-30: downloaded power-line extracts stay current
+Cable profile matches the source extraction; all 128 faces point outward
+Verified app\data\scenery\power_insulator.json: 244 vertices, 372 triangles (from 1488), 47 source components, 8 retained shells
+Source bounds [[0.935499966, 1.104499936], [8.520000458, 8.760000229], [0.111938365, 0.280938357]]; output dimensions 0.3 × 1.1 × 0.3 m
+== PT1h-R1: real-engine diagnostic failure matrix
+.
+----------------------------------------------------------------------
+Ran 1 test in 3.138s
+
+OK
+...
+----------------------------------------------------------------------
+Ran 3 tests in 31.682s
+
+OK
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 5.181s
+
+OK
+== HELI-03a/04: independent mean-inflow reference stays current
+.................
+----------------------------------------------------------------------
+Ran 17 tests in 0.115s
+
+OK
+oracle check: OK (oracle.json)
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-04 inflow: 4153 checks, 0 failed
+== HELI-04-R1/05: transient flow and main-rotor references stay current
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 32.196s
+
+OK
+................
+----------------------------------------------------------------------
+Ran 16 tests in 0.112s
+
+OK
+dynamic oracle check: OK (dynamic_oracle.json)
+oracle check: OK (main_rotor_oracle.json)
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-04-R1 dynamic inflow: 240 checks, 0 failed
+DYNAMIC_QUALIFICATION=[{"fixture":"hover_target_step","known_seam_refined_peak_error_mps":0.00000199654892085732,"raw_peak_error_mps":0.00552203634030835},{"fixture":"C_increasing","known_seam_refined_peak_error_mps":0.000000136527718908042,"raw_peak_error_mps":0.000194617379269957},{"fixture":"C_decreasing","known_seam_refined_peak_error_mps":0.00000015784688667253,"raw_peak_error_mps":0.000200262391818917},{"fixture":"M_increasing","known_seam_refined_peak_error_mps":0.000108233512220224,"raw_peak_error_mps":0.00979315979599704},{"fixture":"M_decreasing","known_seam_refined_peak_error_mps":0.000376269988705324,"raw_peak_error_mps":0.0115563480526628},{"fixture":"feedback_flow_ramp","known_seam_refined_peak_error_mps":0.000000217608251418255,"raw_peak_error_mps":0.000000217608251418255}]
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-05 main rotor: 768 checks, 0 failed
+== HELI-06a: linearized tail-rotor reference stays current
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.108s
+
+OK
+tail rotor oracle is current
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-06a tail rotor: 917 checks, 0 failed
+== HELI-06b/c: passive airframe and joint aerodynamic stage
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.113s
+
+OK
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-06b airframe: 1799 checks, 0 failed
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-06c aerodynamic stage: 49 checks, 0 failed
+== HELI-16: generated experimental rotorcraft quantities stay current
+checked C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\app\data\aircraft\xcell_60_research.json
+checked C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\app\data\aircraft\hx700_electric_3d_experimental.json
+checked C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\app\data\schema\openrc-rotorcraft-v2.schema.json
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.003s
+
+OK
+== HELI-36a: advanced laboratory candidate identity and admission
+checked C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\app\data\aircraft\hx700_electric_3d_experimental.json
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
+== HELI-25c: articulated inspection source, bindings and copy identity
+{
+  "source_unchanged": true,
+  "bindings": 108,
+  "linkages": 9,
+  "max_source_basis_error": 3.324650580942279e-06,
+  "max_source_position_error_m": 2.741410369822006e-07,
+  "max_rod_error_m": 3.26312243892346e-08,
+  "glb_sha256": "f5f7de25a586b65b0f77ab17497665cc5f47cc409de6c531cadf490676159e47",
+  "profile_sha256": "0fc621542b5ed523f903518fdbb3508c4c98672de59f0cdeea089eeb6c469d23"
+}
+HX-700 mechanical equations match source
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.162s
+
+OK
+== AS-01/02: versioned aircraft contract and migration stay current
+Schema is current: C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\app\data\schema\openrc-aircraft-v2.schema.json
+parameter register is current
+app/data/aircraft/jensen_ugly_stik_60.json: jensen-das-ugly-stik-60 v2, glow_prop, prescribed_fuel
+app/data/aircraft/gp_extra_300s_60.json: gp-extra-300s-60 v2, glow_prop, finite_glow_fuel
+app/data/aircraft/p51d_mustang_120.json: p51d-mustang-120 v2, glow_prop, finite_liquid_fuel
+app/data/aircraft/sebart_avanti_s_a200.json: sebart-avanti-s-a200-p100rx v2, turbine, finite_liquid_fuel
+app/data/aircraft/synthetic_stik_electric_4s.json: synthetic_stik_electric_4s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_6s.json: synthetic_stik_electric_6s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_4s_battery.json: synthetic_stik_electric_4s_battery v2, electric_prop, ocv_resistance
+app/data/aircraft/synthetic_stik_electric_6s_battery.json: synthetic_stik_electric_6s_battery v2, electric_prop, ocv_resistance
+test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity (__main__.AircraftMigration.test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity) ... ok
+test_check_requires_v2_source_instead_of_upgrading_v1_in_memory (__main__.AircraftMigration.test_check_requires_v2_source_instead_of_upgrading_v1_in_memory) ... ok
+test_current_extra_finite_glow_v2_is_idempotent (__main__.AircraftMigration.test_current_extra_finite_glow_v2_is_idempotent) ... ok
+test_current_finite_gasoline_v2_is_idempotent_with_historical_v1_gear_policy (__main__.AircraftMigration.test_current_finite_gasoline_v2_is_idempotent_with_historical_v1_gear_policy) ... ok
+test_current_finite_turbine_v2_is_idempotent_with_historical_v1_gear_policy (__main__.AircraftMigration.test_current_finite_turbine_v2_is_idempotent_with_historical_v1_gear_policy) ... ok
+test_empty_tank_projection_uses_full_inventory_cg_for_v1 (__main__.AircraftMigration.test_empty_tank_projection_uses_full_inventory_cg_for_v1) ... ok
+test_finite_current_routes_keep_explicit_historical_v1_projection (__main__.AircraftMigration.test_finite_current_routes_keep_explicit_historical_v1_projection) ... ok
+test_legacy_omissions_become_only_the_reviewed_explicit_defaults (__main__.AircraftMigration.test_legacy_omissions_become_only_the_reviewed_explicit_defaults) ... ok
+test_legacy_projection_preserves_malformed_plan_cg (__main__.AircraftMigration.test_legacy_projection_preserves_malformed_plan_cg) ... ok
+test_legacy_projection_removes_v2_physical_identity_metadata (__main__.AircraftMigration.test_legacy_projection_removes_v2_physical_identity_metadata) ... ok
+test_unknown_id_format_and_legacy_conflicts_fail_closed (__main__.AircraftMigration.test_unknown_id_format_and_legacy_conflicts_fail_closed) ... ok
+test_v2_conflicts_are_rejected_without_mutation (__main__.AircraftMigration.test_v2_conflicts_are_rejected_without_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.237s
+
+OK
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.020s
+
+OK
+== AS-07/09: shared aircraft modules and generated model bindings
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.324s
+
+OK
+stale generated aircraft model manifests:
+  app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json
+  app/data/aircraft_models/turbo-lumber-evolution.json
+  app/data/aircraft_models/f4u-corsair-250.json
+run: python research/aircraft-standardization/build_models.py

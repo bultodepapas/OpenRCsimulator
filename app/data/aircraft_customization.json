@@ -370,7 +370,7 @@
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
-          "sha256": "0c9439c4161c27caadf62d556ac4b7e05e3eb56ffbd19487257d849040edbde0"
+          "sha256": "da665d21248bd0a12ef94907b3dbda6e1d91ed9cf26813c5d1f36481ab6e8aaa"
         },
         {
           "path": "res://render/lighting/rgb_lamp.gdshader",
@@ -445,7 +445,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "514539eddfa80873603d6be5debd1f458cf0ad5186c3cbd7432aff6434c02a19"
+      "slots_sha256": "093e524ea56621d291ba299975cd91c920d30fe50a10cf4c8775e484be846ad8"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -721,7 +721,7 @@
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
-          "sha256": "0c9439c4161c27caadf62d556ac4b7e05e3eb56ffbd19487257d849040edbde0"
+          "sha256": "da665d21248bd0a12ef94907b3dbda6e1d91ed9cf26813c5d1f36481ab6e8aaa"
         },
         {
           "path": "res://render/lighting/rgb_lamp.gdshader",
@@ -796,7 +796,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "387f54488533a5020a29dba35f7ceae6df85f17a348a9f984c4b4f92adfbcc0c"
+      "slots_sha256": "ae7941a1f6e713a87b9ecf63e270d303f6831734f62c0be71923d2ba6f6b0c28"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1214,7 +1214,7 @@
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
-          "sha256": "0c9439c4161c27caadf62d556ac4b7e05e3eb56ffbd19487257d849040edbde0"
+          "sha256": "da665d21248bd0a12ef94907b3dbda6e1d91ed9cf26813c5d1f36481ab6e8aaa"
         },
         {
           "path": "res://render/lighting/rgb_lamp.gdshader",
@@ -1289,7 +1289,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "0820ed9bdc437e8049c0762c180c5686efdad615288906d04efb434b615c4369"
+      "slots_sha256": "cc70808699e71702a4c467fb2d2dbdb8676f36d18e7ca312503e75531215f355"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1604,7 +1604,7 @@
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
-          "sha256": "0c9439c4161c27caadf62d556ac4b7e05e3eb56ffbd19487257d849040edbde0"
+          "sha256": "da665d21248bd0a12ef94907b3dbda6e1d91ed9cf26813c5d1f36481ab6e8aaa"
         },
         {
           "path": "res://render/lighting/rgb_lamp.gdshader",
@@ -1679,7 +1679,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "7d3b664e425d650bb10d8f7bf32fab9ffa5eb5f6b2531a144f2b0b2fecf9f57e"
+      "slots_sha256": "f482c6c1c6f3a4f6d2b494555a99e55d4fcf360c024f577e8e70a1edaf53cddd"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1891,7 +1891,7 @@
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
-          "sha256": "0c9439c4161c27caadf62d556ac4b7e05e3eb56ffbd19487257d849040edbde0"
+          "sha256": "da665d21248bd0a12ef94907b3dbda6e1d91ed9cf26813c5d1f36481ab6e8aaa"
         },
         {
           "path": "res://render/lighting/rgb_lamp.gdshader",
@@ -1966,7 +1966,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "3d4829bb9fe4b29611268a47ea999887b5c43bc2bfcdf2780c6b5f3469be4df0"
+      "slots_sha256": "6647224079818ad61a1d85b2921e7d9f3075a21aaae34305e2b938f0976f1791"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -2071,7 +2071,7 @@
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
-          "sha256": "0c9439c4161c27caadf62d556ac4b7e05e3eb56ffbd19487257d849040edbde0"
+          "sha256": "da665d21248bd0a12ef94907b3dbda6e1d91ed9cf26813c5d1f36481ab6e8aaa"
         },
         {
           "path": "res://render/lighting/rgb_lamp.gdshader",
@@ -2146,7 +2146,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "698957ee943200579d34575075f956c9893d2e276778c01ea73b7f92fc00e2ab"
+      "slots_sha256": "e207c817534280288175d9107569d62e6cc3b1d6b36b7f4e92bdfc2f374d05cf"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -2408,7 +2408,7 @@
         },
         {
           "path": "res://render/lighting/lighting_vfx.gd",
-          "sha256": "0c9439c4161c27caadf62d556ac4b7e05e3eb56ffbd19487257d849040edbde0"
+          "sha256": "da665d21248bd0a12ef94907b3dbda6e1d91ed9cf26813c5d1f36481ab6e8aaa"
         },
         {
           "path": "res://render/lighting/rgb_lamp.gdshader",
@@ -2483,7 +2483,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "783bedb7635b62d32e3194fb75fba2077b2242fd3031be80d86ad7ae65a57b29"
+      "slots_sha256": "fa8f071d26e2b8e387fbeaec151db5594a6928cdefb61a6e51b4a009192b4d89"
     }
   ]
 }

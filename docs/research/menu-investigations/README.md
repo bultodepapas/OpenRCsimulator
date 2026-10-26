@@ -1,5 +1,11 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-15-JETI-05 — scroll and focus audit, 2026-10-26
+
+[Cross-menu findings and regression evidence](scroll-focus-2026-10-26.md): rejected Workshop lighting edits,
+controller-layout reflow and Statistics history refresh could lose the active control. The repair preserves
+focus and reading position, with explicit limits and separately reproduced existing layout failures.
+
 ## UI-34c-R1 — Home/Fly loading audit, 2026-10-24
 
 [Native 1080p audit and measurements](UI-34c-R1/README.md): first Stik Fly blocks one frame for 4.67 s; five warm repeats have a 1.73 s median maximum frame. The existing loading probe separately records 4.64 s to the first draw (paused), then 2.04/2.33 s on active warm draws. Audited button feedback, cache boundaries, rejected preloading and source-tree limits are explicit. This audit contains no runtime changes or screenshots.

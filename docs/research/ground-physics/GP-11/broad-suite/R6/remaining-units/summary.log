@@ -1,0 +1,149 @@
+730 invocations: 714 passed, 16 failed or invalid.
+
+res://tests/test_ui_language.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-0ssas3sy/report.json and engine.log
+
+res://tests/test_companions_airspace.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-1ykhsw4k/report.json and engine.log
+
+res://tests/test_companions_presentation.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-3elxadr7/report.json and engine.log
+
+res://tests/test_companions_observation.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-40xxde3r/report.json and engine.log
+
+res://tests/test_ui_help.gd [timeout]
+Inspect the last output for a hang before increasing the deadline.
+process_exit=1; complete=False; errors=3; warnings=0
+
+Evidence: godot-422axulw/report.json and engine.log
+log:10 SCRIPT ERROR: Cannot call method 'find_children' on a null value.
+   at: _caps_text (res://tests/test_ui_help.gd:35)
+   GDScript backtrace (most recent call first):
+       [0] _caps_text (res://tests/test_ui_help.gd:35)
+log:17 SCRIPT ERROR: Cannot call method 'find_children' on a null value.
+   at: _caps_text (res://tests/test_ui_help.gd:35)
+   GDScript backtrace (most recent call first):
+       [0] _caps_text (res://tests/test_ui_help.gd:35)
+log:25 SCRIPT ERROR: Invalid access to property or key 'about_label' on a base object of type 'Nil'.
+   at: _run (res://tests/test_ui_help.gd:86)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_help.gd:86)
+
+res://tests/test_lake_geometry_bake.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-4n63hq_r/report.json and engine.log
+
+res://tests/test_ui_aircraft_flow.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-8a_wdkfu/report.json and engine.log
+
+res://tests/test_companions_manager.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-asnun1ee/report.json and engine.log
+
+res://tests/test_workshop_smoke_controls.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-hojwiqxd/report.json and engine.log
+
+res://tests/test_ui_home.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-jarq431l/report.json and engine.log
+
+res://tests/test_companions_shell.gd [timeout]
+Inspect the last output for a hang before increasing the deadline.
+process_exit=1; complete=False; errors=1; warnings=0
+
+Evidence: godot-ntid9nv_/report.json and engine.log
+log:21 SCRIPT ERROR: Cannot call method 'get' on a null value.
+   at: _run (res://tests/test_companions_shell.gd:113)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_companions_shell.gd:113)
+
+res://tests/test_companions_lifecycle.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=51; warnings=0
+
+Evidence: godot-psxur8n4/report.json and engine.log
+log:5 SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+log:11 SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+log:17 SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+
+res://tests/test_player_widget_settings.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=3; warnings=0
+
+Evidence: godot-sy4jw62r/report.json and engine.log
+log:3 ERROR: player widget settings: legacy defaults retain their exact shape
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_player_widget_settings.gd:175)
+log:9 ERROR: player widget settings: widget IDs append to the existing overlay IDs
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_player_widget_settings.gd:175)
+log:15 ERROR: player widget settings: training preset validates to warnings and exactly three training widgets
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_player_widget_settings.gd:175)
+
+res://tests/test_companions_profiles.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-thruah4e/report.json and engine.log
+
+res://tests/test_companions_record.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=3; warnings=0
+
+Evidence: godot-tyjtxq86/report.json and engine.log
+log:31 SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _run_recorded_parity_and_replay (res://tests/test_companions_record.gd:273)
+   GDScript backtrace (most recent call first):
+       [0] _run_recorded_parity_and_replay (res://tests/test_companions_record.gd:273)
+log:62 SCRIPT ERROR: Invalid access to property or key '_logs' on a base object of type 'Nil'.
+   at: _run_writer_failure (res://tests/test_companions_record.gd:447)
+   GDScript backtrace (most recent call first):
+       [0] _run_writer_failure (res://tests/test_companions_record.gd:447)
+log:84 SCRIPT ERROR: Invalid call. Nonexistent function 'status' in base 'Nil'.
+   at: _run_detached_manager_free (res://tests/test_companions_record.gd:542)
+   GDScript backtrace (most recent call first):
+       [0] _run_detached_manager_free (res://tests/test_companions_record.gd:542)
+
+res://tests/test_training_widgets.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-vuyurx1_/report.json and engine.log

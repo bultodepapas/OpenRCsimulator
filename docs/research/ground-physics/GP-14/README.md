@@ -143,7 +143,40 @@ original real-session defect reproduction, source hashes, actual recordings,
 discarded harness parse failure and seven current production checks: **3882 passed,
 zero engine diagnostics**. The focused suite has 180 checks, including the actual
 writer/footer replay and bounded fleet consumer. No force law or checkpoint schema
-changed. This correction covers the **prepared runway route only**; historical
-airborne/reload/restore and configuration reset paths are not automatically fixed.
+changed. GP-14d covered the **prepared runway route only**. GP-14e below extends
+the same owner to other start/reload routes; restore/configuration publication
+remains open.
 It does not activate advanced aircraft ground physics or qualify physical behavior,
 native audio, whole-suite coverage or target-host performance.
+
+
+## Common start and reload transactions (GP-14e)
+
+2026-10-26. The same Session owner now starts before trim selection and model
+staging for runway, airborne/half-power, hand launch, explicit fallback and reload.
+A precommit refusal restores the original protected kernel/model reference,
+declared owner context, commands, failure resource/RNG and old recording without
+notifications or generation changes. Rollback performs no old-model reset or
+force evaluation. The existing generic kernel hook still owns physical commit,
+old closing-context notification and tick0 publication.
+
+Reload consumes an explicit commit receipt: quiet refusal cannot be reported as
+reloaded, and accepted observer fault cannot restore the old flight or claim it
+was retained. Accepted faults remain paused/nonready with one generation. Ordinary
+public result keys and successful reload strings stay compatible. The explicit
+airborne fallback remains distinct from refusal of the requested runway; failed
+fallback preserves the old flight, while committed fallback faults expose
+nonreadiness. The existing technical airborne helper retains a Boolean wrapper
+over the shared receipt helper. Only initial invalid initialization may park an
+inert failed start.
+
+The [new immutable cohort](evidence/start-transactions/README.md) retains the
+original 48-case defect/control audit and original 51-check/four-failure fixture mismatch, followed by
+**4066 passing production checks** across nine scripts with completion markers,
+warnings-as-errors and zero engine diagnostics. The new 148-check suite covers refusal,
+reentry, failure/RNG preservation, actual recorder footers, accepted observer faults,
+X8 hand launch and exact continuation. Two old failed-reload fixtures now inject a
+precommit candidate refusal; their original invariants remain unchanged. Prior
+cohorts remain historical. Restore/weather/shaft publication migration, full-suite,
+physical and performance qualification remain open; no force law, checkpoint schema,
+stock hull role or advanced ground activation changed.

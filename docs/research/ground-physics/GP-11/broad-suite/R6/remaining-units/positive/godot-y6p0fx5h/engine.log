@@ -1,0 +1,425 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   en 100% 960×540 keeps the sidebar within its intended width
+ok   en 100% 960×540 keeps the pause reason readable from the top of the body
+ok   en 100% 960×540 does not clip the pause reason
+ok   en 100% 960×540 keeps title, status, and Resume together when the text scale fits
+ok   en 100% 960×540 keeps Resume enabled and reachable
+ok   en 100% 960×540 Session options stay open and its last action is reachable
+ok   en 100% 960×540 Exit options keep End flight reachable
+ok   en 100% 960×540 Exit options keep Quit reachable
+ok   en 100% 960×540 Back collapses Exit options and keeps its disclosure reachable
+ok   en 100% 960×540 Back from Pause requests Resume
+ok   en 100% 960×540 Resume remains visible after Back
+ok   en 100% 1024×576 keeps the sidebar within its intended width
+ok   en 100% 1024×576 keeps the pause reason readable from the top of the body
+ok   en 100% 1024×576 does not clip the pause reason
+ok   en 100% 1024×576 keeps title, status, and Resume together when the text scale fits
+ok   en 100% 1024×576 keeps Resume enabled and reachable
+ok   en 100% 1024×576 Session options stay open and its last action is reachable
+ok   en 100% 1024×576 Exit options keep End flight reachable
+ok   en 100% 1024×576 Exit options keep Quit reachable
+ok   en 100% 1024×576 Back collapses Exit options and keeps its disclosure reachable
+ok   en 100% 1024×576 Back from Pause requests Resume
+ok   en 100% 1024×576 Resume remains visible after Back
+ok   en 100% 1024×768 keeps the sidebar within its intended width
+ok   en 100% 1024×768 keeps the pause reason readable from the top of the body
+ok   en 100% 1024×768 does not clip the pause reason
+ok   en 100% 1024×768 keeps title, status, and Resume together when the text scale fits
+ok   en 100% 1024×768 keeps Resume enabled and reachable
+ok   en 100% 1024×768 avoids scrolling in the default menu when height allows
+ok   en 100% 1024×768 Session options stay open and its last action is reachable
+ok   en 100% 1024×768 Exit options keep End flight reachable
+ok   en 100% 1024×768 Exit options keep Quit reachable
+ok   en 100% 1024×768 Back collapses Exit options and keeps its disclosure reachable
+ok   en 100% 1024×768 Back from Pause requests Resume
+ok   en 100% 1024×768 Resume remains visible after Back
+ok   en 100% 1280×800 keeps the sidebar within its intended width
+ok   en 100% 1280×800 keeps the pause reason readable from the top of the body
+ok   en 100% 1280×800 does not clip the pause reason
+ok   en 100% 1280×800 keeps title, status, and Resume together when the text scale fits
+ok   en 100% 1280×800 keeps Resume enabled and reachable
+ok   en 100% 1280×800 avoids scrolling in the default menu when height allows
+ok   en 100% 1280×800 Session options stay open and its last action is reachable
+ok   en 100% 1280×800 Exit options keep End flight reachable
+ok   en 100% 1280×800 Exit options keep Quit reachable
+ok   en 100% 1280×800 Back collapses Exit options and keeps its disclosure reachable
+ok   en 100% 1280×800 Back from Pause requests Resume
+ok   en 100% 1280×800 Resume remains visible after Back
+ok   en 100% 1366×768 keeps the sidebar within its intended width
+ok   en 100% 1366×768 keeps the pause reason readable from the top of the body
+ok   en 100% 1366×768 does not clip the pause reason
+ok   en 100% 1366×768 keeps title, status, and Resume together when the text scale fits
+ok   en 100% 1366×768 keeps Resume enabled and reachable
+ok   en 100% 1366×768 avoids scrolling in the default menu when height allows
+ok   en 100% 1366×768 Session options stay open and its last action is reachable
+ok   en 100% 1366×768 Exit options keep End flight reachable
+ok   en 100% 1366×768 Exit options keep Quit reachable
+ok   en 100% 1366×768 Back collapses Exit options and keeps its disclosure reachable
+ok   en 100% 1366×768 Back from Pause requests Resume
+ok   en 100% 1366×768 Resume remains visible after Back
+ok   en 100% 1920×1200 keeps the sidebar within its intended width
+ok   en 100% 1920×1200 keeps the pause reason readable from the top of the body
+ok   en 100% 1920×1200 does not clip the pause reason
+ok   en 100% 1920×1200 keeps title, status, and Resume together when the text scale fits
+ok   en 100% 1920×1200 keeps Resume enabled and reachable
+ok   en 100% 1920×1200 avoids scrolling in the default menu when height allows
+ok   en 100% 1920×1200 Session options stay open and its last action is reachable
+ok   en 100% 1920×1200 Exit options keep End flight reachable
+ok   en 100% 1920×1200 Exit options keep Quit reachable
+ok   en 100% 1920×1200 Back collapses Exit options and keeps its disclosure reachable
+ok   en 100% 1920×1200 Back from Pause requests Resume
+ok   en 100% 1920×1200 Resume remains visible after Back
+ok   en 100% 2560×1080 keeps the sidebar within its intended width
+ok   en 100% 2560×1080 keeps the pause reason readable from the top of the body
+ok   en 100% 2560×1080 does not clip the pause reason
+ok   en 100% 2560×1080 keeps title, status, and Resume together when the text scale fits
+ok   en 100% 2560×1080 keeps Resume enabled and reachable
+ok   en 100% 2560×1080 avoids scrolling in the default menu when height allows
+ok   en 100% 2560×1080 Session options stay open and its last action is reachable
+ok   en 100% 2560×1080 Exit options keep End flight reachable
+ok   en 100% 2560×1080 Exit options keep Quit reachable
+ok   en 100% 2560×1080 Back collapses Exit options and keeps its disclosure reachable
+ok   en 100% 2560×1080 Back from Pause requests Resume
+ok   en 100% 2560×1080 Resume remains visible after Back
+ok   en 100% 3440×1440 keeps the sidebar within its intended width
+ok   en 100% 3440×1440 keeps the pause reason readable from the top of the body
+ok   en 100% 3440×1440 does not clip the pause reason
+ok   en 100% 3440×1440 keeps title, status, and Resume together when the text scale fits
+ok   en 100% 3440×1440 keeps Resume enabled and reachable
+ok   en 100% 3440×1440 avoids scrolling in the default menu when height allows
+ok   en 100% 3440×1440 Session options stay open and its last action is reachable
+ok   en 100% 3440×1440 Exit options keep End flight reachable
+ok   en 100% 3440×1440 Exit options keep Quit reachable
+ok   en 100% 3440×1440 Back collapses Exit options and keeps its disclosure reachable
+ok   en 100% 3440×1440 Back from Pause requests Resume
+ok   en 100% 3440×1440 Resume remains visible after Back
+ok   en 100% 3840×2160 keeps the sidebar within its intended width
+ok   en 100% 3840×2160 keeps the pause reason readable from the top of the body
+ok   en 100% 3840×2160 does not clip the pause reason
+ok   en 100% 3840×2160 keeps title, status, and Resume together when the text scale fits
+ok   en 100% 3840×2160 keeps Resume enabled and reachable
+ok   en 100% 3840×2160 avoids scrolling in the default menu when height allows
+ok   en 100% 3840×2160 Session options stay open and its last action is reachable
+ok   en 100% 3840×2160 Exit options keep End flight reachable
+ok   en 100% 3840×2160 Exit options keep Quit reachable
+ok   en 100% 3840×2160 Back collapses Exit options and keeps its disclosure reachable
+ok   en 100% 3840×2160 Back from Pause requests Resume
+ok   en 100% 3840×2160 Resume remains visible after Back
+ok   es 100% 960×540 keeps the sidebar within its intended width
+ok   es 100% 960×540 keeps the pause reason readable from the top of the body
+ok   es 100% 960×540 does not clip the pause reason
+ok   es 100% 960×540 keeps title, status, and Resume together when the text scale fits
+ok   es 100% 960×540 keeps Resume enabled and reachable
+ok   es 100% 960×540 Session options stay open and its last action is reachable
+ok   es 100% 960×540 Exit options keep End flight reachable
+ok   es 100% 960×540 Exit options keep Quit reachable
+ok   es 100% 960×540 Back collapses Exit options and keeps its disclosure reachable
+ok   es 100% 960×540 Back from Pause requests Resume
+ok   es 100% 960×540 Resume remains visible after Back
+ok   es 100% 1024×576 keeps the sidebar within its intended width
+ok   es 100% 1024×576 keeps the pause reason readable from the top of the body
+ok   es 100% 1024×576 does not clip the pause reason
+ok   es 100% 1024×576 keeps title, status, and Resume together when the text scale fits
+ok   es 100% 1024×576 keeps Resume enabled and reachable
+ok   es 100% 1024×576 Session options stay open and its last action is reachable
+ok   es 100% 1024×576 Exit options keep End flight reachable
+ok   es 100% 1024×576 Exit options keep Quit reachable
+ok   es 100% 1024×576 Back collapses Exit options and keeps its disclosure reachable
+ok   es 100% 1024×576 Back from Pause requests Resume
+ok   es 100% 1024×576 Resume remains visible after Back
+ok   es 100% 1024×768 keeps the sidebar within its intended width
+ok   es 100% 1024×768 keeps the pause reason readable from the top of the body
+ok   es 100% 1024×768 does not clip the pause reason
+ok   es 100% 1024×768 keeps title, status, and Resume together when the text scale fits
+ok   es 100% 1024×768 keeps Resume enabled and reachable
+ok   es 100% 1024×768 avoids scrolling in the default menu when height allows
+ok   es 100% 1024×768 Session options stay open and its last action is reachable
+ok   es 100% 1024×768 Exit options keep End flight reachable
+ok   es 100% 1024×768 Exit options keep Quit reachable
+ok   es 100% 1024×768 Back collapses Exit options and keeps its disclosure reachable
+ok   es 100% 1024×768 Back from Pause requests Resume
+ok   es 100% 1024×768 Resume remains visible after Back
+ok   es 100% 1280×800 keeps the sidebar within its intended width
+ok   es 100% 1280×800 keeps the pause reason readable from the top of the body
+ok   es 100% 1280×800 does not clip the pause reason
+ok   es 100% 1280×800 keeps title, status, and Resume together when the text scale fits
+ok   es 100% 1280×800 keeps Resume enabled and reachable
+ok   es 100% 1280×800 avoids scrolling in the default menu when height allows
+ok   es 100% 1280×800 Session options stay open and its last action is reachable
+ok   es 100% 1280×800 Exit options keep End flight reachable
+ok   es 100% 1280×800 Exit options keep Quit reachable
+ok   es 100% 1280×800 Back collapses Exit options and keeps its disclosure reachable
+ok   es 100% 1280×800 Back from Pause requests Resume
+ok   es 100% 1280×800 Resume remains visible after Back
+ok   es 100% 1366×768 keeps the sidebar within its intended width
+ok   es 100% 1366×768 keeps the pause reason readable from the top of the body
+ok   es 100% 1366×768 does not clip the pause reason
+ok   es 100% 1366×768 keeps title, status, and Resume together when the text scale fits
+ok   es 100% 1366×768 keeps Resume enabled and reachable
+ok   es 100% 1366×768 avoids scrolling in the default menu when height allows
+ok   es 100% 1366×768 Session options stay open and its last action is reachable
+ok   es 100% 1366×768 Exit options keep End flight reachable
+ok   es 100% 1366×768 Exit options keep Quit reachable
+ok   es 100% 1366×768 Back collapses Exit options and keeps its disclosure reachable
+ok   es 100% 1366×768 Back from Pause requests Resume
+ok   es 100% 1366×768 Resume remains visible after Back
+ok   es 100% 1920×1200 keeps the sidebar within its intended width
+ok   es 100% 1920×1200 keeps the pause reason readable from the top of the body
+ok   es 100% 1920×1200 does not clip the pause reason
+ok   es 100% 1920×1200 keeps title, status, and Resume together when the text scale fits
+ok   es 100% 1920×1200 keeps Resume enabled and reachable
+ok   es 100% 1920×1200 avoids scrolling in the default menu when height allows
+ok   es 100% 1920×1200 Session options stay open and its last action is reachable
+ok   es 100% 1920×1200 Exit options keep End flight reachable
+ok   es 100% 1920×1200 Exit options keep Quit reachable
+ok   es 100% 1920×1200 Back collapses Exit options and keeps its disclosure reachable
+ok   es 100% 1920×1200 Back from Pause requests Resume
+ok   es 100% 1920×1200 Resume remains visible after Back
+ok   es 100% 2560×1080 keeps the sidebar within its intended width
+ok   es 100% 2560×1080 keeps the pause reason readable from the top of the body
+ok   es 100% 2560×1080 does not clip the pause reason
+ok   es 100% 2560×1080 keeps title, status, and Resume together when the text scale fits
+ok   es 100% 2560×1080 keeps Resume enabled and reachable
+ok   es 100% 2560×1080 avoids scrolling in the default menu when height allows
+ok   es 100% 2560×1080 Session options stay open and its last action is reachable
+ok   es 100% 2560×1080 Exit options keep End flight reachable
+ok   es 100% 2560×1080 Exit options keep Quit reachable
+ok   es 100% 2560×1080 Back collapses Exit options and keeps its disclosure reachable
+ok   es 100% 2560×1080 Back from Pause requests Resume
+ok   es 100% 2560×1080 Resume remains visible after Back
+ok   es 100% 3440×1440 keeps the sidebar within its intended width
+ok   es 100% 3440×1440 keeps the pause reason readable from the top of the body
+ok   es 100% 3440×1440 does not clip the pause reason
+ok   es 100% 3440×1440 keeps title, status, and Resume together when the text scale fits
+ok   es 100% 3440×1440 keeps Resume enabled and reachable
+ok   es 100% 3440×1440 avoids scrolling in the default menu when height allows
+ok   es 100% 3440×1440 Session options stay open and its last action is reachable
+ok   es 100% 3440×1440 Exit options keep End flight reachable
+ok   es 100% 3440×1440 Exit options keep Quit reachable
+ok   es 100% 3440×1440 Back collapses Exit options and keeps its disclosure reachable
+ok   es 100% 3440×1440 Back from Pause requests Resume
+ok   es 100% 3440×1440 Resume remains visible after Back
+ok   es 100% 3840×2160 keeps the sidebar within its intended width
+ok   es 100% 3840×2160 keeps the pause reason readable from the top of the body
+ok   es 100% 3840×2160 does not clip the pause reason
+ok   es 100% 3840×2160 keeps title, status, and Resume together when the text scale fits
+ok   es 100% 3840×2160 keeps Resume enabled and reachable
+ok   es 100% 3840×2160 avoids scrolling in the default menu when height allows
+ok   es 100% 3840×2160 Session options stay open and its last action is reachable
+ok   es 100% 3840×2160 Exit options keep End flight reachable
+ok   es 100% 3840×2160 Exit options keep Quit reachable
+ok   es 100% 3840×2160 Back collapses Exit options and keeps its disclosure reachable
+ok   es 100% 3840×2160 Back from Pause requests Resume
+ok   es 100% 3840×2160 Resume remains visible after Back
+ok   en 200% 960×540 keeps the sidebar within its intended width
+ok   en 200% 960×540 keeps the pause reason readable from the top of the body
+ok   en 200% 960×540 lets the full pause reason be read by scrolling
+ok   en 200% 960×540 keeps title, status, and Resume together when the text scale fits
+ok   en 200% 960×540 keeps Resume enabled and reachable
+ok   en 200% 960×540 Session options stay open and its last action is reachable
+ok   en 200% 960×540 Exit options keep End flight reachable
+ok   en 200% 960×540 Exit options keep Quit reachable
+ok   en 200% 960×540 Back collapses Exit options and keeps its disclosure reachable
+ok   en 200% 960×540 Back from Pause requests Resume
+ok   en 200% 960×540 Resume remains visible after Back
+ok   en 200% 1024×576 keeps the sidebar within its intended width
+ok   en 200% 1024×576 keeps the pause reason readable from the top of the body
+ok   en 200% 1024×576 lets the full pause reason be read by scrolling
+ok   en 200% 1024×576 keeps title, status, and Resume together when the text scale fits
+ok   en 200% 1024×576 keeps Resume enabled and reachable
+ok   en 200% 1024×576 Session options stay open and its last action is reachable
+ok   en 200% 1024×576 Exit options keep End flight reachable
+ok   en 200% 1024×576 Exit options keep Quit reachable
+ok   en 200% 1024×576 Back collapses Exit options and keeps its disclosure reachable
+ok   en 200% 1024×576 Back from Pause requests Resume
+ok   en 200% 1024×576 Resume remains visible after Back
+ok   en 200% 1024×768 keeps the sidebar within its intended width
+ok   en 200% 1024×768 keeps the pause reason readable from the top of the body
+ok   en 200% 1024×768 does not clip the pause reason
+ok   en 200% 1024×768 keeps title, status, and Resume together when the text scale fits
+ok   en 200% 1024×768 keeps Resume enabled and reachable
+ok   en 200% 1024×768 Session options stay open and its last action is reachable
+ok   en 200% 1024×768 Exit options keep End flight reachable
+ok   en 200% 1024×768 Exit options keep Quit reachable
+ok   en 200% 1024×768 Back collapses Exit options and keeps its disclosure reachable
+ok   en 200% 1024×768 Back from Pause requests Resume
+ok   en 200% 1024×768 Resume remains visible after Back
+ok   en 200% 1280×800 keeps the sidebar within its intended width
+ok   en 200% 1280×800 keeps the pause reason readable from the top of the body
+ok   en 200% 1280×800 does not clip the pause reason
+ok   en 200% 1280×800 keeps title, status, and Resume together when the text scale fits
+ok   en 200% 1280×800 keeps Resume enabled and reachable
+ok   en 200% 1280×800 Session options stay open and its last action is reachable
+ok   en 200% 1280×800 Exit options keep End flight reachable
+ok   en 200% 1280×800 Exit options keep Quit reachable
+ok   en 200% 1280×800 Back collapses Exit options and keeps its disclosure reachable
+ok   en 200% 1280×800 Back from Pause requests Resume
+ok   en 200% 1280×800 Resume remains visible after Back
+ok   en 200% 1366×768 keeps the sidebar within its intended width
+ok   en 200% 1366×768 keeps the pause reason readable from the top of the body
+ok   en 200% 1366×768 does not clip the pause reason
+ok   en 200% 1366×768 keeps title, status, and Resume together when the text scale fits
+ok   en 200% 1366×768 keeps Resume enabled and reachable
+ok   en 200% 1366×768 Session options stay open and its last action is reachable
+ok   en 200% 1366×768 Exit options keep End flight reachable
+ok   en 200% 1366×768 Exit options keep Quit reachable
+ok   en 200% 1366×768 Back collapses Exit options and keeps its disclosure reachable
+ok   en 200% 1366×768 Back from Pause requests Resume
+ok   en 200% 1366×768 Resume remains visible after Back
+ok   en 200% 1920×1200 keeps the sidebar within its intended width
+ok   en 200% 1920×1200 keeps the pause reason readable from the top of the body
+ok   en 200% 1920×1200 does not clip the pause reason
+ok   en 200% 1920×1200 keeps title, status, and Resume together when the text scale fits
+ok   en 200% 1920×1200 keeps Resume enabled and reachable
+ok   en 200% 1920×1200 Session options stay open and its last action is reachable
+ok   en 200% 1920×1200 Exit options keep End flight reachable
+ok   en 200% 1920×1200 Exit options keep Quit reachable
+ok   en 200% 1920×1200 Back collapses Exit options and keeps its disclosure reachable
+ok   en 200% 1920×1200 Back from Pause requests Resume
+ok   en 200% 1920×1200 Resume remains visible after Back
+ok   en 200% 2560×1080 keeps the sidebar within its intended width
+ok   en 200% 2560×1080 keeps the pause reason readable from the top of the body
+ok   en 200% 2560×1080 does not clip the pause reason
+ok   en 200% 2560×1080 keeps title, status, and Resume together when the text scale fits
+ok   en 200% 2560×1080 keeps Resume enabled and reachable
+ok   en 200% 2560×1080 Session options stay open and its last action is reachable
+ok   en 200% 2560×1080 Exit options keep End flight reachable
+ok   en 200% 2560×1080 Exit options keep Quit reachable
+ok   en 200% 2560×1080 Back collapses Exit options and keeps its disclosure reachable
+ok   en 200% 2560×1080 Back from Pause requests Resume
+ok   en 200% 2560×1080 Resume remains visible after Back
+ok   en 200% 3440×1440 keeps the sidebar within its intended width
+ok   en 200% 3440×1440 keeps the pause reason readable from the top of the body
+ok   en 200% 3440×1440 does not clip the pause reason
+ok   en 200% 3440×1440 keeps title, status, and Resume together when the text scale fits
+ok   en 200% 3440×1440 keeps Resume enabled and reachable
+ok   en 200% 3440×1440 Session options stay open and its last action is reachable
+ok   en 200% 3440×1440 Exit options keep End flight reachable
+ok   en 200% 3440×1440 Exit options keep Quit reachable
+ok   en 200% 3440×1440 Back collapses Exit options and keeps its disclosure reachable
+ok   en 200% 3440×1440 Back from Pause requests Resume
+ok   en 200% 3440×1440 Resume remains visible after Back
+ok   en 200% 3840×2160 keeps the sidebar within its intended width
+ok   en 200% 3840×2160 keeps the pause reason readable from the top of the body
+ok   en 200% 3840×2160 does not clip the pause reason
+ok   en 200% 3840×2160 keeps title, status, and Resume together when the text scale fits
+ok   en 200% 3840×2160 keeps Resume enabled and reachable
+ok   en 200% 3840×2160 Session options stay open and its last action is reachable
+ok   en 200% 3840×2160 Exit options keep End flight reachable
+ok   en 200% 3840×2160 Exit options keep Quit reachable
+ok   en 200% 3840×2160 Back collapses Exit options and keeps its disclosure reachable
+ok   en 200% 3840×2160 Back from Pause requests Resume
+ok   en 200% 3840×2160 Resume remains visible after Back
+ok   es 200% 960×540 keeps the sidebar within its intended width
+ok   es 200% 960×540 keeps the pause reason readable from the top of the body
+ok   es 200% 960×540 lets the full pause reason be read by scrolling
+ok   es 200% 960×540 keeps title, status, and Resume together when the text scale fits
+ok   es 200% 960×540 keeps Resume enabled and reachable
+ok   es 200% 960×540 Session options stay open and its last action is reachable
+ok   es 200% 960×540 Exit options keep End flight reachable
+ok   es 200% 960×540 Exit options keep Quit reachable
+ok   es 200% 960×540 Back collapses Exit options and keeps its disclosure reachable
+ok   es 200% 960×540 Back from Pause requests Resume
+ok   es 200% 960×540 Resume remains visible after Back
+ok   es 200% 1024×576 keeps the sidebar within its intended width
+ok   es 200% 1024×576 keeps the pause reason readable from the top of the body
+ok   es 200% 1024×576 lets the full pause reason be read by scrolling
+ok   es 200% 1024×576 keeps title, status, and Resume together when the text scale fits
+ok   es 200% 1024×576 keeps Resume enabled and reachable
+ok   es 200% 1024×576 Session options stay open and its last action is reachable
+ok   es 200% 1024×576 Exit options keep End flight reachable
+ok   es 200% 1024×576 Exit options keep Quit reachable
+ok   es 200% 1024×576 Back collapses Exit options and keeps its disclosure reachable
+ok   es 200% 1024×576 Back from Pause requests Resume
+ok   es 200% 1024×576 Resume remains visible after Back
+ok   es 200% 1024×768 keeps the sidebar within its intended width
+ok   es 200% 1024×768 keeps the pause reason readable from the top of the body
+ok   es 200% 1024×768 does not clip the pause reason
+ok   es 200% 1024×768 keeps title, status, and Resume together when the text scale fits
+ok   es 200% 1024×768 keeps Resume enabled and reachable
+ok   es 200% 1024×768 Session options stay open and its last action is reachable
+ok   es 200% 1024×768 Exit options keep End flight reachable
+ok   es 200% 1024×768 Exit options keep Quit reachable
+ok   es 200% 1024×768 Back collapses Exit options and keeps its disclosure reachable
+ok   es 200% 1024×768 Back from Pause requests Resume
+ok   es 200% 1024×768 Resume remains visible after Back
+ok   es 200% 1280×800 keeps the sidebar within its intended width
+ok   es 200% 1280×800 keeps the pause reason readable from the top of the body
+ok   es 200% 1280×800 does not clip the pause reason
+ok   es 200% 1280×800 keeps title, status, and Resume together when the text scale fits
+ok   es 200% 1280×800 keeps Resume enabled and reachable
+ok   es 200% 1280×800 Session options stay open and its last action is reachable
+ok   es 200% 1280×800 Exit options keep End flight reachable
+ok   es 200% 1280×800 Exit options keep Quit reachable
+ok   es 200% 1280×800 Back collapses Exit options and keeps its disclosure reachable
+ok   es 200% 1280×800 Back from Pause requests Resume
+ok   es 200% 1280×800 Resume remains visible after Back
+ok   es 200% 1366×768 keeps the sidebar within its intended width
+ok   es 200% 1366×768 keeps the pause reason readable from the top of the body
+ok   es 200% 1366×768 does not clip the pause reason
+ok   es 200% 1366×768 keeps title, status, and Resume together when the text scale fits
+ok   es 200% 1366×768 keeps Resume enabled and reachable
+ok   es 200% 1366×768 Session options stay open and its last action is reachable
+ok   es 200% 1366×768 Exit options keep End flight reachable
+ok   es 200% 1366×768 Exit options keep Quit reachable
+ok   es 200% 1366×768 Back collapses Exit options and keeps its disclosure reachable
+ok   es 200% 1366×768 Back from Pause requests Resume
+ok   es 200% 1366×768 Resume remains visible after Back
+ok   es 200% 1920×1200 keeps the sidebar within its intended width
+ok   es 200% 1920×1200 keeps the pause reason readable from the top of the body
+ok   es 200% 1920×1200 does not clip the pause reason
+ok   es 200% 1920×1200 keeps title, status, and Resume together when the text scale fits
+ok   es 200% 1920×1200 keeps Resume enabled and reachable
+ok   es 200% 1920×1200 Session options stay open and its last action is reachable
+ok   es 200% 1920×1200 Exit options keep End flight reachable
+ok   es 200% 1920×1200 Exit options keep Quit reachable
+ok   es 200% 1920×1200 Back collapses Exit options and keeps its disclosure reachable
+ok   es 200% 1920×1200 Back from Pause requests Resume
+ok   es 200% 1920×1200 Resume remains visible after Back
+ok   es 200% 2560×1080 keeps the sidebar within its intended width
+ok   es 200% 2560×1080 keeps the pause reason readable from the top of the body
+ok   es 200% 2560×1080 does not clip the pause reason
+ok   es 200% 2560×1080 keeps title, status, and Resume together when the text scale fits
+ok   es 200% 2560×1080 keeps Resume enabled and reachable
+ok   es 200% 2560×1080 Session options stay open and its last action is reachable
+ok   es 200% 2560×1080 Exit options keep End flight reachable
+ok   es 200% 2560×1080 Exit options keep Quit reachable
+ok   es 200% 2560×1080 Back collapses Exit options and keeps its disclosure reachable
+ok   es 200% 2560×1080 Back from Pause requests Resume
+ok   es 200% 2560×1080 Resume remains visible after Back
+ok   es 200% 3440×1440 keeps the sidebar within its intended width
+ok   es 200% 3440×1440 keeps the pause reason readable from the top of the body
+ok   es 200% 3440×1440 does not clip the pause reason
+ok   es 200% 3440×1440 keeps title, status, and Resume together when the text scale fits
+ok   es 200% 3440×1440 keeps Resume enabled and reachable
+ok   es 200% 3440×1440 Session options stay open and its last action is reachable
+ok   es 200% 3440×1440 Exit options keep End flight reachable
+ok   es 200% 3440×1440 Exit options keep Quit reachable
+ok   es 200% 3440×1440 Back collapses Exit options and keeps its disclosure reachable
+ok   es 200% 3440×1440 Back from Pause requests Resume
+ok   es 200% 3440×1440 Resume remains visible after Back
+ok   es 200% 3840×2160 keeps the sidebar within its intended width
+ok   es 200% 3840×2160 keeps the pause reason readable from the top of the body
+ok   es 200% 3840×2160 does not clip the pause reason
+ok   es 200% 3840×2160 keeps title, status, and Resume together when the text scale fits
+ok   es 200% 3840×2160 keeps Resume enabled and reachable
+ok   es 200% 3840×2160 Session options stay open and its last action is reachable
+ok   es 200% 3840×2160 Exit options keep End flight reachable
+ok   es 200% 3840×2160 Exit options keep Quit reachable
+ok   es 200% 3840×2160 Back collapses Exit options and keeps its disclosure reachable
+ok   es 200% 3840×2160 Back from Pause requests Resume
+ok   es 200% 3840×2160 Resume remains visible after Back
+ok   live 200% resize to 3440×1440 recomputes the rail width
+ok   live 200% resize to 3440×1440 preserves the focused Resume
+ok   live 200% resize to 960×540 recomputes the rail width
+ok   live 200% resize to 960×540 preserves the focused Resume
+ok   live 200% resize to 3440×1440 recomputes the rail width
+ok   live 200% resize to 3440×1440 preserves the focused Resume
+ok   live 200% → theme change → 100% recomputes the rail width
+ok   live 100% theme keeps Resume visible
+ok   live 100% → theme change → 200% recomputes the rail width
+ok   live 200% theme keeps Resume visible
+ok   live 200% → theme change → 100% recomputes the rail width
+ok   live 100% theme keeps Resume visible
+all responsive Pause checks passed (422)

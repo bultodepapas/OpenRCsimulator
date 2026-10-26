@@ -1,0 +1,52 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   declared-event model resets 
+ok   reset clears the event record 
+ok   tick accepted 
+ok   one event located 
+ok   event time is the analytic crossing within the locator tolerance at 0.002083333333333 expected 0.002083333333333
+ok   boundary value is exactly zero after the transition 
+ok   transition applied at the boundary 
+ok   events_located emitted once with the tick 
+ok   quiet tick clears the record and emits nothing 
+ok   checkpoint excludes the diagnostic event record 
+ok   twin resets 
+ok   twin replays the same bytes and events 
+ok   policy model resets 
+ok   policy events at the tick end are recorded 
+ok   an event outside the tick window faults the tick step rejected: step policy returned malformed events
+ok   the faulted tick rolled back 
+ok   reset clears the fault and the record 
+ok   an event without a type faults the tick 
+ok   reset again 
+ok   a policy result without a state faults the tick step rejected: step policy returned no state
+ok   declared event validates 
+ok   a declared event with a step_policy is refused 
+ok   two declared events are refused: compose them in a policy 
+ok   a body index is refused 
+ok   a missing transition is refused 
+ok   an index beyond the continuous block is refused at reset 
+ok   a model cannot select both substep callback forms vehicle model selects at most one of substeps and substeps_joint
+ok   a joint substep callback requires the joint stage evaluator vehicle model substeps_joint requires a joint stage evaluator
+ok   joint substep model installs before live layout is known 
+ok   simulation configuration rejects joint substeps without continuous state reset rejected: mass, gravity, or inertia is invalid
+ok   joint substep model with a stage installs 
+ok   simulation configuration rejects joint substeps after the joint stage is removed reset rejected: mass, gravity, or inertia is invalid
+ok   joint substep model installs before callback mutation 
+ok   simulation configuration rejects both substep callback forms after model mutation reset rejected: mass, gravity, or inertia is invalid
+ok   adapter returns a dictionary with state and events 
+ok   adapter located the stop inside the tick [{ "type": "rotor_stop", "time_s": 2.00208333333321, "time_error_bound_s": 0.00000000000073 }]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   fixed-bus electric fixture flies 
+ok   fixed-bus route declares the rotor stop and owns no step policy 
+ok   source off at rest: the kernel locates the rotor stop { "type": "rotor_stop", "time_s": 0.10920054752962 }
+ok   rotor stop time lies inside its tick 
+ok   rotor rests at exactly zero after the stop 
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   finite-battery fixture flies 
+ok   battery route keeps its composed policy and declares no kernel event 
+ok   source off at rest: the composed policy reports the rotor stop { "type": "rotor_stop", "time_s": 0.10920054752962 }
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   glow Stik flies 
+ok   the tank running dry is located as a fuel_exhausted boundary and a glow_stopped transition [{ &"type": "fuel_exhausted", &"time_s": 0.10176326413537, &"id": "main_tank_unusable", &"surface_residual": -0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_exhausted", &"resource": "main_tank", &"resource_id": "main_tank", &"fuel_residual_kg": 0.0042846, &"main_fuel_residual_kg": 0.0042846 }, { "type": "glow_stopped", "reason": "fuel_exhausted", "time_s": 0.10176326413537 }] fuel_exhausted
+46 checks, 0 failed

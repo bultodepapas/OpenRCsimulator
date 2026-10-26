@@ -1,0 +1,76 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok default field loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok reference trim stays the default
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok airborne start with the cruise trim is the 50 % level trim
+ok it equals the explicit half-power start
+ok metadata keeps the selected choice and names the trim throttle
+ok the cruise start flies faster than the reference start
+ok restart restores the solved cruise trim
+ok denser launch atmosphere accepted
+ok atmosphere refit keeps the selected trim throttle
+trim: trim throttle must be within 0..1 (got 1.5)
+ok trim throttle 1.5 is refused before flight  trim: trim throttle must be within 0..1 (got 1.5)
+trim: trim throttle must be within 0..1 (got 0.0)
+ok trim throttle 0.0 is refused before flight  trim: trim throttle must be within 0..1 (got 0.0)
+trim: trim throttle must be within 0..1 (got -0.25)
+ok trim throttle -0.25 is refused before flight  trim: trim throttle must be within 0..1 (got -0.25)
+trim: trim throttle must be within 0..1 (got inf)
+ok trim throttle inf is refused before flight  trim: trim throttle must be within 0..1 (got inf)
+aircraft data invalid: /: missing required field 'frames'
+ok the fixed-wing session refuses rotorcraft data (xcell-60-research)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok a trim throttle selected after setup refits before the airborne launch
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok reference runway start is unchanged
+ok a trim throttle selected after the runway setup is solved on reset
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok jensen-das-ugly-stik-60 runway start is trimmed for 50 % throttle
+ok jensen-das-ugly-stik-60 parks at idle with the elevator at its flying trim
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik-glow-61fx-2t runway start is trimmed for 50 % throttle
+ok stik-glow-61fx-2t parks at idle with the elevator at its flying trim
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik-glow-55ax-2t runway start is trimmed for 50 % throttle
+ok stik-glow-55ax-2t parks at idle with the elevator at its flying trim
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik-glow-fs64v-4t runway start is trimmed for 50 % throttle
+ok stik-glow-fs64v-4t parks at idle with the elevator at its flying trim
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok gp-extra-300s-60 runway start is trimmed for 50 % throttle
+ok gp-extra-300s-60 parks at idle with the elevator at its flying trim
+ok p51d-mustang-120 runway start is trimmed for 50 % throttle
+ok p51d-mustang-120 parks at idle with the elevator at its flying trim
+ok f4u-corsair-250 runway start is trimmed for 50 % throttle
+ok f4u-corsair-250 parks at idle with the elevator at its flying trim
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok sebart-avanti-s-a200-p100rx runway start is trimmed for 50 % throttle
+ok sebart-avanti-s-a200-p100rx parks at idle with the elevator at its flying trim
+ok turbo-lumber-evolution runway start is trimmed for 50 % throttle
+ok turbo-lumber-evolution parks at idle with the elevator at its flying trim
+TRIM_THROTTLE_FLEET [{"cruise_speed_mps":20.6,"elevator_up_deg":1.36,"id":"jensen-das-ugly-stik-60"},{"cruise_speed_mps":30.54,"elevator_up_deg":0.89,"id":"stik-glow-61fx-2t"},{"cruise_speed_mps":29.36,"elevator_up_deg":0.93,"id":"stik-glow-55ax-2t"},{"cruise_speed_mps":22.93,"elevator_up_deg":1.15,"id":"stik-glow-fs64v-4t"},{"cruise_speed_mps":32.46,"elevator_up_deg":0.64,"id":"gp-extra-300s-60"},{"cruise_speed_mps":46.02,"elevator_up_deg":0.43,"id":"p51d-mustang-120"},{"cruise_speed_mps":49.34,"elevator_up_deg":-1.65,"id":"f4u-corsair-250"},{"cruise_speed_mps":55.99,"elevator_up_deg":0.81,"id":"sebart-avanti-s-a200-p100rx"},{"cruise_speed_mps":16.18,"elevator_up_deg":-0.55,"id":"turbo-lumber-evolution"}]
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok reference airborne start is flyable
+TRIM_THROTTLE_HOLD_REFERENCE {"climb_rate":1.3493988443248,"complete":true,"crashed":false,"h_end":92.821591862739,"h_mid":65.833614976243,"max_h":92.8361126548644,"min_h":30.0000000200158,"pitch_end_deg":3.067023124698,"v_end":19.3226016305539,"v_mid":19.4214200764243}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok cruise airborne start is flyable
+TRIM_THROTTLE_HOLD_CRUISE {"climb_rate":0.0000000201509260833177,"complete":true,"crashed":false,"h_end":30.0000006772105,"h_mid":30.000000274192,"max_h":30.0000006772105,"min_h":30.0,"pitch_end_deg":1.60360312709809,"v_end":20.5970697610732,"v_mid":20.5970697653417}
+ok both airborne holds complete without a crash
+ok airborne hold: the reference-trimmed Stik climbs away at half throttle (1.35 m/s)
+ok airborne hold: the cruise-trimmed Stik holds its height at half throttle (0.0000 m/s)
+ok airborne hold: the cruise-trimmed Stik stays at its trimmed speed (20.60 m/s)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok reference runway start is flyable
+TRIM_THROTTLE_TAKEOFF_REFERENCE {"airborne_t":1.85,"climb_rate":1.45062976103398,"complete":true,"crashed":false,"h_end":99.8970480458671,"h_mid":70.8844528251875,"h_release":40.02,"max_h":99.8970480458671,"min_h":40.2850547406041,"pitch_end_deg":12.5850241039363,"release_t":8.6125,"v_end":19.3358432985648,"v_mid":19.8234520965367,"v_release":29.84}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok cruise runway start is flyable
+TRIM_THROTTLE_TAKEOFF_CRUISE {"airborne_t":1.94166666666667,"climb_rate":0.0130918623936036,"complete":true,"crashed":false,"h_end":39.4064521083402,"h_mid":39.1446148604681,"h_release":40.01,"max_h":52.5572054015923,"min_h":36.1683372165067,"pitch_end_deg":1.69740238221806,"release_t":9.24166666666667,"v_end":20.5654849398968,"v_mid":20.3570603934432,"v_release":30.17}
+ok both takeoffs lift off, climb out to the release height and fly the hold without a crash
+ok after the takeoff the reference-trimmed Stik climbs away at half throttle (1.45 m/s)
+ok after the takeoff the cruise-trimmed Stik holds its height at half throttle (0.01 m/s, 36..53 m)
+ok after the takeoff the cruise-trimmed Stik settles near its trimmed speed (20.6 m/s)
+TRIM_THROTTLE_CHECKS 47 failures=0

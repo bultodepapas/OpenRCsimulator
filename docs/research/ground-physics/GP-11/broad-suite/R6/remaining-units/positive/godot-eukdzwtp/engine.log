@@ -1,0 +1,59 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   asphalt throws no dust
+ok   concrete throws no dust
+ok   building throws no dust
+ok   the mown runway strip throws turf
+ok   no sparks on the runway strip, even for an engine sliding fast
+ok   grass throws turf, not soil
+ok   rough ground throws soil
+ok   a tree trunk throws bark, foliage throws leaves
+ok   no sparks on grass, even for a hot turbine
+ok   a wood wing sliding on asphalt does not spark
+ok   an engine sliding fast on asphalt sparks
+ok   a slow engine scrape does not spark
+ok   a hot turbine casing sparks in a structural crash on paving
+ok   a touch or scrape never sparks
+ok   no chips below C2
+ok   C2 sheds a few chips from the struck part
+ok   chips grow with class and severity
+ok   chips stay inside the pool
+ok   grass C3 throws dust
+ok   dust leans along the slide instead of bursting  (0.6, 0.8, 0.0)
+ok   chips trail along the slide  per chip: along 4.90, across 0.76, lift 1.83 m/s
+ok   chips take the airframe's colours
+ok   a hot turbine adds dark casing chips
+ok   asphalt C3 wing hit: no dust, no sparks
+ok   runway-strip C3 wing hit throws turf, no sparks
+ok   a C0 touch throws no crash dust and no chips
+ok   empty colours restore the default chip colour
+ok   C0 is a body thud only
+ok   C1 adds a scrape tail, no crack
+ok   C2 wing hit cracks lightly and rattles, engine keeps running  ["crack_light", "impact_hard", "debris", "scrape"]
+ok   C2 propeller strike cuts the engine  ["crack_light", "impact_grass", "debris", "scrape", "engine_cut"]
+ok   C3 cracks heavily, tears and runs the engine down  ["crack_heavy", "impact_dirt", "tear", "debris", "scrape", "engine_cut"]
+ok   a turbine runs down instead of cutting
+ok   the body thud grows with the outcome  0.029 < 0.513
+ok   every layer gain stays inside the mix bound
+     jensen-das-ugly-stik-60: 6 chip colours ["99a6a6", "ffffff", "595966", "d9bf8c", "262626", "bfbfbf"]
+ok   jensen-das-ugly-stik-60 chip colours are bounded, non-empty and not dark
+     stik-glow-61fx-2t: 6 chip colours ["99a6a6", "ffffff", "595966", "d9bf8c", "262626", "bfbfbf"]
+ok   stik-glow-61fx-2t chip colours are bounded, non-empty and not dark
+     stik-glow-55ax-2t: 6 chip colours ["99a6a6", "ffffff", "595966", "d9bf8c", "262626", "bfbfbf"]
+ok   stik-glow-55ax-2t chip colours are bounded, non-empty and not dark
+     stik-glow-fs64v-4t: 6 chip colours ["99a6a6", "ffffff", "595966", "d9bf8c", "262626", "bfbfbf"]
+ok   stik-glow-fs64v-4t chip colours are bounded, non-empty and not dark
+     gp-extra-300s-60: 6 chip colours ["8c8c99", "bf1a26", "1a264d", "262626", "d9a680", "e6e6f2"]
+ok   gp-extra-300s-60 chip colours are bounded, non-empty and not dark
+     p51d-mustang-120: 6 chip colours ["8c8c99", "e6bf26", "262626", "404d26", "a6a6b3", "b32626"]
+ok   p51d-mustang-120 chip colours are bounded, non-empty and not dark
+     f4u-corsair-250: 6 chip colours ["ffffff", "99a6a6", "a6b399", "4d594d", "595959", "0db326"]
+ok   f4u-corsair-250 chip colours are bounded, non-empty and not dark
+     sebart-avanti-s-a200-p100rx: 6 chip colours ["bfbfbf", "ffffff", "bf9966", "ff4d0d", "8c59e6", "8c6640"]
+ok   sebart-avanti-s-a200-p100rx chip colours are bounded, non-empty and not dark
+     turbo-lumber-evolution: 6 chip colours ["262626", "f2f2f2", "b31a1a", "e6e6e6", "40404d", "b3b3b3"]
+ok   turbo-lumber-evolution chip colours are bounded, non-empty and not dark
+     xcell-60-research: 6 chip colours ["e6e6e6", "ffffff", "4d4d59", "1a59ff", "ffbf00", "f2bf00"]
+ok   xcell-60-research chip colours are bounded, non-empty and not dark
+ok   the Stik yields its own covering colours
+46 checks, 0 failed

@@ -1,0 +1,39 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   an obstacle hit names the obstacle
+ok   gear overtravel in a landing attitude is a collapsed-gear hard landing
+ok   gear overtravel at the end of a dive is still a dive
+ok   a long nose-up stall straight ahead is a stall
+ok   a stall with a fast roll-off is a tip stall
+ok   a stall with a large bank change is a tip stall
+ok   a stall with sustained yaw rate is a spin
+ok   a steep fast dive
+ok   a pull-out that starts too late is still a dive  Too late to pull out of a dive path -67° → -15°, 32.0 m/s
+ok   a fast shallow descent is not a dive
+ok   a level heavy sink is a hard landing
+ok   a steep bank near the ground
+ok   a controlled descent into the ground
+ok   an engine stopped for seconds is a dead stick
+ok   an airplane on the ground noses over
+ok   a propeller hit on the ground is a prop strike
+ok   a brief α spike is not a stall
+ok   α measured below the minimum airspeed is ignored
+ok   the stall threshold comes from the aircraft data
+ok   an engine that just stopped is not yet a dead stick
+ok   a ground run needs the whole window on the ground
+ok   no history still yields a cause
+ok   the line names cause, height, α, speed and bank  Tip stall at 4 m: α 18°, 8.2 m/s, bank 35° (throttle closed, low airspeed)
+ok   the line lists contributing factors  Tip stall at 4 m: α 18°, 8.2 m/s, bank 35° (throttle closed, low airspeed)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+PROP STRIKE at 2801 rpm, 13.8 m/s: engine stopped
+CRASH at 12.1 m/s (sink 9.9 m/s, airframe contact (hull point 25), point speed 12.1 m/s at detected tick) - [R] restart
+CRASH CAUSE: Stall at 8 m: α 11°, 6.8 m/s, bank -1° (throttle closed, after a prop strike)
+ok   real stall flight ends in a crash
+ok   real stall flight is explained as a stall  Stall at 8 m: α 11°, 6.8 m/s, bank -1° (throttle closed, after a prop strike)
+ok   the crash card shows the cause  Cause: Stall at 8 m: α 11°, 6.8 m/s, bank -1° (throttle closed, after a prop strike)
+ok   restart starts a fresh history
+PROP STRIKE at 10998 rpm, 36.2 m/s: engine stopped
+CRASH at 34.8 m/s (sink 20.7 m/s, airframe contact (hull point 25), point speed 34.9 m/s at detected tick) - [R] restart
+CRASH CAUSE: Too late to pull out of a dive path -64° → -35°, 36.2 m/s (after a prop strike)
+ok   real dive is explained as a dive  Too late to pull out of a dive path -64° → -35°, 36.2 m/s (after a prop strike)
+29 checks, 0 failed

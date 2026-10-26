@@ -1,0 +1,433 @@
+{
+ "format": "openrc-f4u-mechanisms v1",
+ "source": {
+  "file": "F4U_Corsair_R59.blend",
+  "sha256": "94edd59b44f578b5a1f7c1fe4004c736dff47a63e2866e4b8a04532851cf4dc3",
+  "blender": "5.2.2 LTS",
+  "script": "research/f4u-corsair/F4U-21/extract_mechanisms.py"
+ },
+ "frame": "R59 root frame [x_aft, y_right, z_up], metres, full size",
+ "canopy": {
+  "control": "CABINA | apertura 0 cerrada 1 abierta",
+  "law": {
+   "location[0]": ".70*apertura",
+   "location[2]": "-.0385*apertura"
+  },
+  "offset": [
+   0.699999988,
+   0.0,
+   -0.0385
+  ],
+  "glass_centre": [
+   -0.118981555,
+   0.0,
+   3.461060047
+  ],
+  "parts_centre": [
+   -0.410000026,
+   0.0,
+   3.207499981
+  ],
+  "parts": [
+   "Cubierta R7 | acrilico curvo",
+   "Cubierta R7 | arco delantero",
+   "Cubierta R7 | arco posterior",
+   "Cubierta R7 | faldon inferior",
+   "Cubierta R7 | faldon inferior.001",
+   "Cubierta R7 | junta arco delantero",
+   "Cubierta R7 | junta arco posterior",
+   "Cubierta R7 | manilla",
+   "Cubierta R7 | manilla.001",
+   "Cubierta R7 | patin",
+   "Cubierta R7 | patin.001",
+   "Cubierta R7 | patin.002",
+   "Cubierta R7 | patin.003",
+   "Cubierta R7 | pestillo",
+   "Cubierta R7 | pestillo.001",
+   "Cubierta R7 | tornillo de marco",
+   "Cubierta R7 | tornillo de marco.001",
+   "Cubierta R7 | tornillo de marco.002",
+   "Cubierta R7 | tornillo de marco.003",
+   "Cubierta R7 | tornillo de marco.004",
+   "Cubierta R7 | tornillo de marco.005",
+   "Cubierta R7 | tornillo de marco.006",
+   "Cubierta R7 | tornillo de marco.007",
+   "Cubierta R7 | tornillo de marco.008",
+   "Cubierta R7 | tornillo de marco.009",
+   "Cubierta R7 | tornillo de marco.010",
+   "Cubierta R7 | tornillo de marco.011",
+   "Cubierta R7 | tornillo de marco.012",
+   "Cubierta R7 | tornillo de marco.013",
+   "Cubierta R7 | tornillo de marco.014",
+   "Cubierta R7 | tornillo de marco.015",
+   "Cubierta R7 | tornillo de marco.016",
+   "Cubierta R7 | tornillo de marco.017",
+   "Cubierta R7 | tornillo de marco.018",
+   "Cubierta R7 | tornillo de marco.019",
+   "Cubierta R7 | tornillo de marco.020",
+   "Cubierta R7 | tornillo de marco.021",
+   "Cubierta R7 | tornillo de marco.022",
+   "Cubierta R7 | tornillo de marco.023",
+   "Cubierta R7 | tornillo de marco.024",
+   "Cubierta R7 | tornillo de marco.025",
+   "Cubierta R7 | tornillo de marco.026",
+   "Cubierta R7 | tornillo de marco.027",
+   "Cubierta R7 | tornillo de marco.028",
+   "Cubierta R7 | tornillo de marco.029"
+  ],
+  "check_open_matrix_error": 5.960464477539063e-08
+ },
+ "tailhook": {
+  "pivot_object": "R27 | pivote gancho",
+  "law": "g*0.01745329252",
+  "pivot": [
+   2.880000114,
+   0.0,
+   2.859999895
+  ],
+  "axis": [
+   0.0,
+   1.0,
+   0.0
+  ],
+  "max_angle_deg": 45.0,
+  "parts": [
+   "R27 | asta gancho",
+   "R27 | punta curva gancho"
+  ],
+  "parts_centre": [
+   3.903000116,
+   0.0,
+   2.684999943
+  ],
+  "check_lowered_matrix_error": 5.960464477539063e-08
+ },
+ "cowl_flaps": {
+  "control": "F4U CORSAIR | avion completo[cowl_flaps_deg]",
+  "law": "-min(28,max(0,q))*pi/180",
+  "max_angle_deg": 28.0,
+  "check_open_matrix_error": 2.384185791015625e-07,
+  "sectors": [
+   {
+    "sector": "01",
+    "hinge": "R14 | bisagra sector 01",
+    "pivot": [
+     -3.63499999,
+     0.725783527,
+     2.580333233
+    ],
+    "axis": [
+     0.0,
+     -0.19509019,
+     0.98078531
+    ],
+    "gate": "R14 | compuerta curva 01",
+    "gate_centre": [
+     -3.476003647,
+     0.733990788,
+     2.573581696
+    ]
+   },
+   {
+    "sector": "02",
+    "hinge": "R14 | bisagra sector 02",
+    "pivot": [
+     -3.63499999,
+     0.615289569,
+     2.852569342
+    ],
+    "axis": [
+     0.0,
+     -0.555570066,
+     0.831469715
+    ],
+    "gate": "R14 | compuerta curva 02",
+    "gate_centre": [
+     -3.476033688,
+     0.621908844,
+     2.844824791
+    ]
+   },
+   {
+    "sector": "03",
+    "hinge": "R14 | bisagra sector 03",
+    "pivot": [
+     -3.63499999,
+     0.411123365,
+     3.060929775
+    ],
+    "axis": [
+     0.0,
+     -0.831469536,
+     0.555570424
+    ],
+    "gate": "R14 | compuerta curva 03",
+    "gate_centre": [
+     -3.476054668,
+     0.415730447,
+     3.05230999
+    ]
+   },
+   {
+    "sector": "04",
+    "hinge": "R14 | bisagra sector 04",
+    "pivot": [
+     -3.63499999,
+     0.144367322,
+     3.173693657
+    ],
+    "axis": [
+     0.0,
+     -0.980785251,
+     0.195090353
+    ],
+    "gate": "R14 | compuerta curva 04",
+    "gate_centre": [
+     -3.476062298,
+     0.146340311,
+     3.16489315
+    ]
+   },
+   {
+    "sector": "05",
+    "hinge": "R14 | bisagra sector 05",
+    "pivot": [
+     -3.63499999,
+     -0.144367322,
+     3.173693657
+    ],
+    "axis": [
+     0.0,
+     -0.980785251,
+     -0.195090353
+    ],
+    "gate": "R14 | compuerta curva 05",
+    "gate_centre": [
+     -3.476062298,
+     -0.146340311,
+     3.16489315
+    ]
+   },
+   {
+    "sector": "06",
+    "hinge": "R14 | bisagra sector 06",
+    "pivot": [
+     -3.63499999,
+     -0.411123365,
+     3.060929775
+    ],
+    "axis": [
+     0.0,
+     -0.831469536,
+     -0.555570424
+    ],
+    "gate": "R14 | compuerta curva 06",
+    "gate_centre": [
+     -3.476054668,
+     -0.415730447,
+     3.05230999
+    ]
+   },
+   {
+    "sector": "07",
+    "hinge": "R14 | bisagra sector 07",
+    "pivot": [
+     -3.63499999,
+     -0.615289569,
+     2.852569342
+    ],
+    "axis": [
+     0.0,
+     -0.555570066,
+     -0.831469715
+    ],
+    "gate": "R14 | compuerta curva 07",
+    "gate_centre": [
+     -3.476033688,
+     -0.621908844,
+     2.844824791
+    ]
+   },
+   {
+    "sector": "08",
+    "hinge": "R14 | bisagra sector 08",
+    "pivot": [
+     -3.63499999,
+     -0.725783527,
+     2.580333233
+    ],
+    "axis": [
+     0.0,
+     -0.19509019,
+     -0.98078531
+    ],
+    "gate": "R14 | compuerta curva 08",
+    "gate_centre": [
+     -3.476003647,
+     -0.733990788,
+     2.573581696
+    ]
+   },
+   {
+    "sector": "09",
+    "hinge": "R14 | bisagra sector 09",
+    "pivot": [
+     -3.63499999,
+     -0.725783527,
+     2.285666943
+    ],
+    "axis": [
+     0.0,
+     0.195090264,
+     -0.98078531
+    ],
+    "gate": "R14 | compuerta curva 09",
+    "gate_centre": [
+     -3.475987196,
+     -0.734379172,
+     2.279302597
+    ]
+   },
+   {
+    "sector": "10",
+    "hinge": "R14 | bisagra sector 10",
+    "pivot": [
+     -3.63499999,
+     -0.615289569,
+     2.013430834
+    ],
+    "axis": [
+     0.0,
+     0.555570364,
+     -0.831469536
+    ],
+    "gate": "R14 | compuerta curva 10",
+    "gate_centre": [
+     -3.475986958,
+     -0.622524738,
+     2.007048368
+    ]
+   },
+   {
+    "sector": "11",
+    "hinge": "R14 | bisagra sector 11",
+    "pivot": [
+     -3.63499999,
+     -0.411123365,
+     1.805070281
+    ],
+    "axis": [
+     0.0,
+     0.831469595,
+     -0.555570245
+    ],
+    "gate": "R14 | compuerta curva 11",
+    "gate_centre": [
+     -3.475990534,
+     -0.415616572,
+     1.798333764
+    ]
+   },
+   {
+    "sector": "12",
+    "hinge": "R14 | bisagra sector 12",
+    "pivot": [
+     -3.63499999,
+     -0.144367322,
+     1.692306399
+    ],
+    "axis": [
+     0.0,
+     0.980785251,
+     -0.195090353
+    ],
+    "gate": "R14 | compuerta curva 12",
+    "gate_centre": [
+     -3.475996971,
+     -0.146271825,
+     1.685451508
+    ]
+   },
+   {
+    "sector": "13",
+    "hinge": "R14 | bisagra sector 13",
+    "pivot": [
+     -3.63499999,
+     0.144367322,
+     1.692306399
+    ],
+    "axis": [
+     0.0,
+     0.980785251,
+     0.195090353
+    ],
+    "gate": "R14 | compuerta curva 13",
+    "gate_centre": [
+     -3.475996971,
+     0.146271825,
+     1.685451508
+    ]
+   },
+   {
+    "sector": "14",
+    "hinge": "R14 | bisagra sector 14",
+    "pivot": [
+     -3.63499999,
+     0.411123365,
+     1.805070281
+    ],
+    "axis": [
+     0.0,
+     0.831469595,
+     0.555570245
+    ],
+    "gate": "R14 | compuerta curva 14",
+    "gate_centre": [
+     -3.475990534,
+     0.415616572,
+     1.798333764
+    ]
+   },
+   {
+    "sector": "15",
+    "hinge": "R14 | bisagra sector 15",
+    "pivot": [
+     -3.63499999,
+     0.615289569,
+     2.013430834
+    ],
+    "axis": [
+     0.0,
+     0.555570364,
+     0.831469536
+    ],
+    "gate": "R14 | compuerta curva 15",
+    "gate_centre": [
+     -3.475986958,
+     0.622524738,
+     2.007048368
+    ]
+   },
+   {
+    "sector": "16",
+    "hinge": "R14 | bisagra sector 16",
+    "pivot": [
+     -3.63499999,
+     0.725783527,
+     2.285666943
+    ],
+    "axis": [
+     0.0,
+     0.195090264,
+     0.98078531
+    ],
+    "gate": "R14 | compuerta curva 16",
+    "gate_centre": [
+     -3.475987196,
+     0.734379172,
+     2.279302597
+    ]
+   }
+  ]
+ }
+}

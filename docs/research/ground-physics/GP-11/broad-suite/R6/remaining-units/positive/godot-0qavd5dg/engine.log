@@ -1,0 +1,33 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+PASS: Monster Car 2 data loads  []
+PASS: Nitro backend identity pins both adapter and body GDScript artifacts
+PASS: preload derives from estimated sprung mass at nominal gravity
+PASS: Nitro applies source preload privately to generalized suspension forces
+PASS: zero gravity settles toward the droop stop  travel=-0.04417 m
+PASS: zero-gravity wheel centers remain on the unmodified road plane  center error=0.000000001 m
+PASS: zero-gravity preloaded wheels start clear and avoid a launch impulse
+PASS: double gravity remains inside compliant bump travel  travel=0.03611 m
+PASS: half spring scale retains constant source preload  travel=0.00000 m
+PASS: initialized state contains body, engine, and fuel float64 fields
+PASS: source ride datum is zero suspension compression at nominal gravity
+PASS: engine starts at idle with full fuel and four tire contacts
+PASS: mechanical total energy includes the spinning Nitro flywheel  added=11.10330495 J, expected=11.10330495 J
+PASS: idle remains steady without unintended restart or propulsion  u=-0.00001870 m/s, RPM delta=0.00000000
+PASS: 240 Hz sustained throttle moves the truck and spends fuel  u=2.114 m/s, RPM=10205, fuel=0.099830 kg
+PASS: Nitro effect telemetry reports accepted throttle, bounded fuel flow, and signed slip  throttle=1.000, flow=0.0002027 kg/s, slip=0.8041
+PASS: four-wheel braking reduces speed after the sustained run
+PASS: raw reverse input cannot drive the forward-only Nitro transmission backward or forward  u=-0.00001870 m/s, RPM delta=0.00000000
+PASS: complete Nitro state replays bit-for-bit from the same control tape
+PASS: powertrain converges under 120/240 Hz step refinement  Δu=0.0000 m/s, ΔRPM=0.0
+PASS: powertrain converges under 240/480 Hz step refinement  Δu=0.0000 m/s, ΔRPM=0.0
+PASS: near-empty fuel caps combustion work to available chemical energy
+PASS: effect telemetry throttle and fuel flow reflect the near-empty accepted limit  throttle=0.00000556, flow=0.000000000240 kg/s
+PASS: fuel depletion reaches zero without negative mass
+PASS: stalled engine does not auto-restart while fuel remains
+PASS: full throttle cannot restart a stopped engine or consume fuel  rpm=0.0, fuel delta=0.000000000 kg, flow=0.000000000 kg/s
+PASS: empty tank telemetry reports no combustion and zero fuel fraction
+PASS: engine-leading clutch transfers forward torque without net energy  T=0.005916 Nm, Pnet=-1.3262634 W, slip 10.000→-0.000000 rad/s
+PASS: wheel overrun back-drives engine with dissipative negative torque  T=-0.012611 Nm, Pnet=-3.4757744 W, slip -10.000→-6.200000 rad/s
+PASS: overrun telemetry reports negative normalized slip and back-drive torque  slip=-0.0769, torque=-0.23394 Nm, wheel=-2.45348 Nm
+Nitro dynamics: 30 checks, 0 failed

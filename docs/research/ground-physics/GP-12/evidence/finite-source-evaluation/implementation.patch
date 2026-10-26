@@ -1,0 +1,580 @@
+--- a/app/physics/aircraft_ground_electric.gd
++++ b/app/physics/aircraft_ground_electric.gd
+@@ -1,11 +1,12 @@
+-## Fixed-voltage aircraft composition for the common wheel/shaft law.
++## Electric aircraft composition for the common wheel/shaft law.
+ ## Reuses aerodynamic, propeller, motor and wash laws; owns no second integrator.
+-## State is the existing [transported wash..., shaft RPM, wheel rim m/s...].
++## State is the existing [wash..., shaft RPM, optional finite battery..., rims].
+ extends RefCounted
+ 
+ const Stage := preload("res://physics/aircraft_ground_stage.gd")
+ const Traction := preload("res://physics/aircraft_ground_traction.gd")
+ const Source := preload("res://physics/aircraft_ground_source.gd")
++const Battery := preload("res://physics/aircraft_ground_battery.gd")
+ const Step := preload("res://physics/aircraft_ground_step.gd")
+ const Impulse := preload("res://physics/aircraft_ground_impulse.gd")
+ const Dynamics := preload("res://physics/dynamics.gd")
+@@ -14,12 +15,23 @@
+ const RB := preload("res://physics/rigid_body.gd")
+ const M := preload("res://physics/math3d.gd")
+ const LAW := "fixed-voltage-fixed-hub-aircraft-ground-stage-v1"
++const DYNAMIC_LAW := "finite-battery-fixed-hub-aircraft-ground-stage-v1"
+ 
+ 
+ ## This first composition has constant aircraft properties and fixed wheel axes.
+ ## A launch owner must still qualify complete-path admission and error control.
+ ## No retract, fuel/battery event, hull collision or failure mode is hidden here.
+ static func prepare(profile: Dictionary, model: Dictionary, materials: Array) -> Dictionary:
++	return _prepare(profile, model, materials, false)
++
++
++## Evaluation foundation only. The common contact policy must explicitly own
++## source-boundary localization before these samples can be integrated/launched.
++static func prepare_dynamic(profile: Dictionary, model: Dictionary, materials: Array) -> Dictionary:
++	return _prepare(profile, model, materials, true)
++
++
++static func _prepare(profile: Dictionary, model: Dictionary, materials: Array, dynamic: bool) -> Dictionary:
+ 	var ground := Stage.prepare(profile, model)
+ 	if not ground.ok: return _failure("ground binding refused", ground)
+ 	if ground.steering_state_size != 0 or not model.get("propulsion") is Dictionary \
+@@ -27,8 +39,11 @@
+ 		or not model.landing_gear.get("retraction", {}).is_empty():
+ 		return _failure("fixed axes, fixed gear and constant mass are required")
+ 	var zero := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+-	var source := Source.electric_fixed_voltage(model.propulsion, 0.0, 0.0, false, zero)
+-	if not source.ok: return _failure("closed fixed-voltage source refused", source)
++	if dynamic:
++		if not Propulsion.has_dynamic_battery(model.propulsion): return _failure("finite electric battery required")
++	else:
++		var source := Source.electric_fixed_voltage(model.propulsion, 0.0, 0.0, false, zero)
++		if not source.ok: return _failure("closed fixed-voltage source refused", source)
+ 	if not Traction._number(model.get("mass_kg")) or model.mass_kg <= 0.0:
+ 		return _failure("invalid constant aircraft mass")
+ 	var traction := Traction.prepare(ground, model, materials)
+@@ -36,19 +51,21 @@
+ 	var motion := Stage.motion(ground, PackedFloat64Array(), 0.0)
+ 	if not motion.ok: return _failure("fixed contact motion refused", motion)
+ 	var wash_count: int = model.propulsion.slipstream.pieces.size() if Wash.enabled(model.propulsion) else 0
++	var battery_size := Battery.block_size(model.propulsion) if dynamic else 0
+ 	var indices := PackedInt64Array([RB.SIZE + wash_count])
+ 	var conversion := PackedFloat64Array([TAU / 60.0])
+ 	for i in ground.radii_m.size():
+-		indices.append(RB.SIZE + wash_count + 1 + i)
++		indices.append(RB.SIZE + wash_count + 1 + battery_size + i)
+ 		conversion.append(1.0 / ground.radii_m[i])
+ 	var properties := {ok = true, mass_kg = float(model.mass_kg), inertia = model.inertia.duplicate(),
+ 		inverse = RB.inertia_inverse(model.inertia), cg_body_m = M.v3(0.0, 0.0, 0.0)}
+-	return {ok = true, law = LAW, launch_available = false, model = model.duplicate(true),
++	var law := DYNAMIC_LAW if dynamic else LAW
++	return {ok = true, law = law, launch_available = false, model = model.duplicate(true),
+ 		ground = ground, traction = traction, motion = motion.rows, properties = properties,
+-		wash_count = wash_count, rotor_index = wash_count, wheel_index = wash_count + 1,
+-		continuous_size = wash_count + 1 + ground.radii_m.size(),
++		wash_count = wash_count, rotor_index = wash_count, wheel_index = wash_count + 1 + battery_size,
++		continuous_size = wash_count + 1 + battery_size + ground.radii_m.size(),
+ 		rotor_state_indices = indices, sigma_per_state = conversion,
+-		identity = (LAW + ground.identity + traction.identity + var_to_bytes(model).hex_encode()).sha256_text()}
++		identity = (law + ground.identity + traction.identity + var_to_bytes(model).hex_encode()).sha256_text()}
+ 
+ 
+ ## Air is the existing stage-local Air/WindFlow result for this exact body/time.
+@@ -60,6 +77,30 @@
+ 		time_s: float, air: Dictionary, density: float, deflections: Dictionary, duty: float,
+ 		enabled: bool, provider: Dictionary, gravity: float, brakes: PackedFloat64Array,
+ 		downwash_cl := NAN, ground_up := NAN, trial_extension := false) -> Dictionary:
++	if typeof(prepared.get("law")) != TYPE_STRING or prepared.law != LAW:
++		return _failure("fixed-voltage prepared binding required")
++	return _evaluate(prepared, body, values, time_s, air, density, deflections, duty, enabled,
++		provider, gravity, brakes, downwash_cl, ground_up, trial_extension, NAN, NAN, false)
++
++
++## Ambient/cooling are stage-local environment inputs, not reset/trim defaults.
++## State retains the session order [wash..., relative shaft RPM, battery..., rims].
++static func evaluate_dynamic(prepared: Dictionary, body: PackedFloat64Array, values: PackedFloat64Array,
++		time_s: float, air: Dictionary, density: float, deflections: Dictionary, duty: float,
++		enabled: bool, provider: Dictionary, gravity: float, brakes: PackedFloat64Array,
++		ambient_k: float, cooling_speed_mps: float, downwash_cl := NAN, ground_up := NAN,
++		trial_extension := false, connected_left_limit := false) -> Dictionary:
++	if typeof(prepared.get("law")) != TYPE_STRING or prepared.law != DYNAMIC_LAW:
++		return _failure("finite-battery prepared binding required")
++	return _evaluate(prepared, body, values, time_s, air, density, deflections, duty, enabled,
++		provider, gravity, brakes, downwash_cl, ground_up, trial_extension, ambient_k, cooling_speed_mps, connected_left_limit)
++
++
++static func _evaluate(prepared: Dictionary, body: PackedFloat64Array, values: PackedFloat64Array,
++		time_s: float, air: Dictionary, density: float, deflections: Dictionary, duty: float,
++		enabled: bool, provider: Dictionary, gravity: float, brakes: PackedFloat64Array,
++		downwash_cl: float, ground_up: float, trial_extension: bool, ambient_k: float,
++		cooling_speed_mps: float, connected_left_limit: bool) -> Dictionary:
+ 	if not _prepared(prepared) or not Stage._finite_shape(body, RB.SIZE) \
+ 		or not Stage._finite_shape(values, int(prepared.continuous_size)) \
+ 		or not is_finite(time_s) or time_s < 0.0 or not is_finite(density) or density <= 0.0 \
+@@ -88,7 +129,10 @@
+ 	var tq := Propulsion.thrust_torque(local_air.velocity_body, map_rpm, prop, density)
+ 	if not Stage._finite_shape(tq, 3): return _failure("existing propeller map refused")
+ 	var prop_loads := Propulsion.loads_from_thrust_torque(local_air.velocity_body, map_rpm, prop, density, tq[0], tq[1])
+-	var source := Source.electric_fixed_voltage(prop, rpm, duty, enabled, prop_loads, trial_extension)
++	var dynamic: bool = prepared.law == DYNAMIC_LAW
++	var source := Source.electric_dynamic(prop, rpm, duty, enabled, prop_loads,
++		values.slice(prepared.rotor_index + 1, prepared.wheel_index), ambient_k, cooling_speed_mps,
++		connected_left_limit, trial_extension) if dynamic else Source.electric_fixed_voltage(prop, rpm, duty, enabled, prop_loads, trial_extension)
+ 	if not source.ok: return _failure("existing source map refused", source)
+ 	var external := Dynamics.loads_from_air(body, prepared.model, deflections, map_rpm, density, air,
+ 		downwash_cl, values.slice(0, prepared.wash_count), ground_up, prop_loads, tq.slice(0, 2))
+@@ -112,6 +156,7 @@
+ 	var rates := Wash.stage_derivative(body, air, map_rpm, prop, density, values.slice(0, prepared.wash_count)) \
+ 		if prepared.wash_count > 0 else PackedFloat64Array()
+ 	rates.append(result.shaft_rpm_rate)
++	if dynamic: rates.append_array(source.battery_rates)
+ 	rates.append_array(result.wheel_rim_rates)
+ 	if not Stage._finite_shape(rates, prepared.continuous_size): return _failure("continuous aircraft derivative refused")
+ 	# Total external wrench works at O. The shaft's local couple additionally
+@@ -131,29 +176,32 @@
+ 		ids.append(contact.contact_id)
+ 		normal.append(contact.normal_load_n)
+ 	var sample := {ok = true, format = Step.SAMPLE_FORMAT, fixed_hubs = true, static_ground = true,
+-		source_policy = "none", mass_kg = prepared.properties.mass_kg, cg_body_m = prepared.properties.cg_body_m.duplicate(),
++		source_policy = "finite_battery" if dynamic else "none", mass_kg = prepared.properties.mass_kg, cg_body_m = prepared.properties.cg_body_m.duplicate(),
+ 		rotor_stage = result.rotor.stage, rotor_state_indices = prepared.rotor_state_indices.duplicate(),
+ 		sigma_per_state = prepared.sigma_per_state.duplicate(), nonnegative_rotors = PackedInt64Array([0]),
+ 		jacobian = rows.jacobian, slip_bias = rows.bias, limit_rates = rows.limit_rates, groups = rows.groups,
+ 		contact_ids = ids, normal_load_n = normal, potential_j = potential,
+ 		normal_dissipation_w = result.ground.dissipation_w, external_power_w = external_power,
+ 		capture = {rotor_index = 0, impulse_row = shaft_index}}
+-	return {ok = true, law = LAW, identity = prepared.identity, loads = result.loads,
++	return {ok = true, law = prepared.law, identity = prepared.identity, loads = result.loads,
+ 		derivative = rates, body_derivative = result.body_derivative, rotor_momentum = PackedFloat64Array(),
+ 		sample = sample, ground = result.ground, rotor = result.rotor, source = source, rows = rows,
+ 		external_loads_o = external, propulsion_loads_o = prop_loads,
+-		trial_extension_only = rpm < 0.0}
++		trial_extension_only = source.trial_extension_only}
+ 
+ 
+ static func _prepared(value: Dictionary) -> bool:
+-	return value.get("ok", false) and value.get("law") == LAW \
++	if typeof(value.get("law")) != TYPE_STRING: return false
++	var battery_size := Battery.block_size(value.model.propulsion) if value.law == DYNAMIC_LAW \
++		and value.get("model") is Dictionary and value.model.get("propulsion") is Dictionary else 0
++	return typeof(value.get("ok")) == TYPE_BOOL and value.ok and value.law in [LAW, DYNAMIC_LAW] \
+ 		and value.get("model") is Dictionary and value.get("properties") is Dictionary \
+ 		and value.get("ground") is Dictionary and Stage._prepared_shape(value.ground) \
+ 		and value.get("traction") is Dictionary and Traction._prepared(value.traction) \
+ 		and value.get("motion") is Array and typeof(value.get("continuous_size")) == TYPE_INT \
+ 		and typeof(value.get("wash_count")) == TYPE_INT and value.wash_count >= 0 \
+-		and value.get("rotor_index") == value.wash_count and value.get("wheel_index") == value.wash_count + 1 \
+-		and value.continuous_size == value.wash_count + 1 + value.ground.radii_m.size()
++		and value.get("rotor_index") == value.wash_count and value.get("wheel_index") == value.wash_count + 1 + battery_size \
++		and value.continuous_size == value.wash_count + 1 + battery_size + value.ground.radii_m.size()
+ 
+ 
+ static func _failure(reason: String, context: Dictionary = {}) -> Dictionary:
+--- a/app/physics/aircraft_ground_source.gd
++++ b/app/physics/aircraft_ground_source.gd
+@@ -3,8 +3,10 @@
+ extends RefCounted
+ 
+ const Propulsion := preload("res://physics/propulsion.gd")
++const Battery := preload("res://physics/aircraft_ground_battery.gd")
+ const M := preload("res://physics/math3d.gd")
+ const LAW := "fixed-voltage-electric-common-rotor-torque-split-v1"
++const DYNAMIC_LAW := "finite-battery-electric-common-rotor-torque-split-v1"
+ 
+ 
+ ## propeller_loads_o is the complete existing propeller wrench at THIS stage,
+@@ -37,6 +39,40 @@
+ 	var map_rpm := maxf(0.0, rpm)
+ 	var point := Propulsion.electric_source_state(map_rpm, duty, prop, enabled)
+ 	if not point.get("ok", false): return _failure("existing electric source rejected this stage: " + str(point.get("message", "invalid")))
++	return _split(prop, rpm, propeller_loads_o, point)
++
++
++## Uses the SAME existing pack algebra and the SAME torque split as fixed bus.
++## Battery state/event ownership is external; this adapter never clamps charge,
++## integrates RPM or consumes the old net shaft_torque_nm (which includes loss).
++static func electric_dynamic(prop: Dictionary, rpm: float, duty: float, enabled: bool,
++		propeller_loads_o: PackedFloat64Array, block: PackedFloat64Array,
++		ambient_k: float, cooling_speed_mps: float, connected_left_limit := false,
++		trial_extension := false) -> Dictionary:
++	if not Propulsion.has_dynamic_battery(prop) or not Propulsion.has_rotor_dynamics(prop) \
++		or typeof(prop.get("rotor_inertia")) not in [TYPE_FLOAT, TYPE_INT] \
++		or not is_finite(float(prop.rotor_inertia)) or prop.rotor_inertia <= 0.0 \
++		or not _shape(propeller_loads_o, 6) or not _shape(prop.get("offset"), 3):
++		return _failure("finite dynamic source and finite reference-datum wrench required")
++	var point := Battery.evaluate(prop, rpm, duty, enabled, block, ambient_k, cooling_speed_mps,
++		connected_left_limit, trial_extension)
++	if not point.ok: return _failure("existing finite source rejected this stage: " + str(point.get("reason", "invalid")))
++	var result := _split(prop, rpm, propeller_loads_o, point)
++	if result.ok:
++		result.law = DYNAMIC_LAW
++		result.source_kind = "electric_" + str(prop.battery.kind)
++		result.battery_rates = point.rates.duplicate()
++		result.battery_point = point
++		result.trial_extension_only = point.trial_extension_only
++	return result
++
++
++static func _split(prop: Dictionary, rpm: float, propeller_loads_o: PackedFloat64Array,
++		point: Dictionary) -> Dictionary:
++	var axis := Propulsion.axis(prop)
++	if not _shape(axis, 3) or absf(M.dot(axis, axis) - 1.0) > 1e-9:
++		return _failure("invalid installed shaft axis")
++	var map_rpm := maxf(0.0, rpm)
+ 	# Arithmetic matches ElectricMotor's SI conversion, without its isolated rest
+ 	# friction clamp. Explicit static capacity remains available with drive off.
+ 	var kt: float = 60.0 / TAU / float(prop.motor.kv_rpm_per_volt)
+--- /dev/null
++++ b/app/physics/aircraft_ground_battery.gd
+@@ -0,0 +1,104 @@
++## Finite electric source state adapter. No integrator, shaft clamp or projection.
++## The existing pack laws own charge/terminal-energy/loss rates. Sampled ESC
++## decisions occur once AFTER an accepted outer tick, never at RK/root pieces.
++extends RefCounted
++
++const Propulsion := preload("res://physics/propulsion.gd")
++const Pack := preload("res://physics/battery/pack_ecm.gd")
++const Supervisor := preload("res://physics/battery/esc_supervisor.gd")
++const LAW := "finite-battery-existing-pack-state-adapter-v1"
++
++
++static func block_size(prop: Dictionary) -> int:
++	if not Propulsion.has_dynamic_battery(prop): return 0
++	return Pack.block_size(prop.battery) if Propulsion.has_pack_ecm(prop) else 3
++
++
++static func initial_charge_c(prop: Dictionary) -> float:
++	if not Propulsion.has_dynamic_battery(prop): return NAN
++	return Pack.weak_initial_charge_c(prop.battery) if Propulsion.has_pack_ecm(prop) \
++		else 3600.0 * float(prop.battery.capacity_ah) * float(prop.battery.initial_soc)
++
++
++## prop is the normalized, admitted AircraftData installation; no raw authoring
++## conversion or alternate pack parameter defaults are introduced here.
++static func initial_block(prop: Dictionary, ambient_k: float) -> Dictionary:
++	if not Propulsion.has_dynamic_battery(prop) or not is_finite(ambient_k) or ambient_k <= 0.0:
++		return _failure("finite battery and finite positive ambient temperature required")
++	if Propulsion.has_pack_ecm(prop):
++		if Supervisor.validate(prop.esc.get("low_voltage_cutoff")) != "":
++			return _failure("invalid existing ESC supervisor profile")
++		return Pack.initial_block(prop.battery, prop.motor, prop.esc.low_voltage_cutoff, ambient_k)
++	var block := PackedFloat64Array([initial_charge_c(prop), 0.0, 0.0])
++	if not valid(prop, block): return _failure("invalid initial finite source block")
++	return {ok = true, block = block}
++
++
++static func valid(prop: Dictionary, block: PackedFloat64Array, trial := false) -> bool:
++	var size := block_size(prop)
++	if size < 3 or block.size() != size: return false
++	for value: float in block:
++		if not is_finite(value): return false
++	var q0 := initial_charge_c(prop)
++	if not is_finite(q0) or q0 < 0.0 or block[0] > q0 or (not trial and block[0] < 0.0) \
++		or block[1] < 0.0 or block[2] < 0.0: return false
++	if Propulsion.has_pack_ecm(prop):
++		var b: Dictionary = prop.battery
++		var phase: float = block[Pack.phase_index(b)]
++		var cells: float = block[Pack.cells_index(b)]
++		var limit: float = block[Pack.limit_index(b)]
++		if block[Pack.temperature_index(b)] <= 0.0 or limit < 0.0 or limit > 1.0 \
++			or phase != floorf(phase) or phase < float(Supervisor.PHASE_NORMAL) or phase > float(Supervisor.PHASE_HARD_CUT) \
++			or cells != floorf(cells) or cells < 1.0 or cells > Supervisor.MAX_CELLS \
++			or block[Pack.timer_index(b)] < 0.0: return false
++	return true
++
++
++## Connected left limit is an EXPLICIT algebraic trial mode. A negative charge
++## or shaft RPM can never become an accepted state. Q=0 ordinary mode disconnects
++## motor AND pack auxiliaries; RC/thermal/filter states retain existing dynamics.
++static func evaluate(prop: Dictionary, rpm: float, duty: float, enabled: bool,
++		block: PackedFloat64Array, ambient_k: float, cooling_speed_mps: float,
++		connected_left_limit := false, trial_extension := false) -> Dictionary:
++	if not valid(prop, block, trial_extension) or not is_finite(rpm) \
++		or (rpm < 0.0 and not trial_extension) or not is_finite(duty) or duty < 0.0 or duty > 1.0 \
++		or not is_finite(ambient_k) or ambient_k <= 0.0 or not is_finite(cooling_speed_mps) or cooling_speed_mps < 0.0 \
++		or (connected_left_limit and not trial_extension) or (block[0] < 0.0 and not connected_left_limit):
++		return _failure("invalid finite source state or unowned trial continuation")
++	var map_rpm := maxf(0.0, rpm)
++	var point: Dictionary
++	if Propulsion.has_pack_ecm(prop):
++		point = Propulsion.electric_pack_state(map_rpm, duty, prop, enabled, block,
++			ambient_k, cooling_speed_mps, connected_left_limit)
++	else:
++		var soc := maxf(0.0, block[0] / (3600.0 * float(prop.battery.capacity_ah)))
++		point = Propulsion.electric_source_state(map_rpm, duty, prop, enabled, soc, connected_left_limit)
++		if point.get("ok", false):
++			point.rates = PackedFloat64Array([-point.pack_current_a, point.pack_terminal_power_w, point.pack_loss_w])
++	if not point.get("ok", false): return _failure("existing finite pack map refused", point)
++	point.trial_extension_only = rpm < 0.0 or block[0] < 0.0 or connected_left_limit
++	return point
++
++
++## Returns a COPY. Caller invokes exactly once for the entire accepted outer dt.
++## Cell detection remains the connection-time value. No continuous field changes.
++static func supervise_endpoint(prop: Dictionary, block: PackedFloat64Array, duty: float,
++		outer_dt_s: float) -> Dictionary:
++	if not valid(prop, block) or not is_finite(duty) or duty < 0.0 or duty > 1.0 \
++		or not is_finite(outer_dt_s) or outer_dt_s <= 0.0 or outer_dt_s > 1.0:
++		return _failure("invalid accepted outer endpoint")
++	var out := block.duplicate()
++	if Propulsion.has_pack_ecm(prop):
++		var b: Dictionary = prop.battery
++		var profile: Dictionary = prop.esc.get("low_voltage_cutoff", {})
++		if Supervisor.validate(profile) != "": return _failure("invalid existing ESC supervisor profile")
++		var decision := Supervisor.step(profile, out[Pack.limit_index(b)], int(out[Pack.phase_index(b)]),
++			out[Pack.timer_index(b)], int(out[Pack.cells_index(b)]), out[Pack.sense_index(b)], duty, outer_dt_s)
++		out[Pack.limit_index(b)] = decision[0]
++		out[Pack.phase_index(b)] = decision[1]
++		out[Pack.timer_index(b)] = decision[2]
++	return {ok = true, block = out}
++
++
++static func _failure(reason: String, context: Dictionary = {}) -> Dictionary:
++	return {ok = false, law = LAW, reason = reason, context = context}
+--- /dev/null
++++ b/app/tests/test_aircraft_ground_battery.gd
+@@ -0,0 +1,244 @@
++## Synthetic composition tests; existing pack authoring is used as software data,
++## never as calibrated wheel hardware or a finite-source launch qualification.
++extends "res://tests/test_aircraft_ground_electric.gd"
++const Candidate := preload("res://physics/aircraft_ground_electric.gd")
++const CandidateSource := preload("res://physics/aircraft_ground_source.gd")
++const Battery := preload("res://physics/aircraft_ground_battery.gd")
++const Pack := preload("res://physics/battery/pack_ecm.gd")
++const Supervisor := preload("res://physics/battery/esc_supervisor.gd")
++# Complete fixed-law output identities captured BEFORE shared-assembly changes.
++# SHA256 of Godot Variant byte serialization encoded as hex; pinned engine law.
++const FIXED_PREPARED_HEX_SHA256 := "55c9bc8e3d999080afa8ddd30bfd26a82e3bf37abd02504ca7fec7f0d2b78b76"
++const FIXED_RESULTS_HEX_SHA256 := [
++	"ea0e39db53693ad30e4da1a36960e3b351f7d7a4e22d0fa756edc86637c266ab",
++	"93b792e6ec421bc88ab0ab55cade79eb5338b7c3cd10e1b80fbcd57325e1ddd6",
++	"988e1e14508a1b11cdbb8767b078b05ce4702a228a1b16d27294f72ace2eaccc"]
++var maximum_motor_port_residual_w := 0.0
++var maximum_pack_port_residual_w := 0.0
++var maximum_stage_mechanical_residual_w := 0.0
++
++
++func _initialize() -> void:
++	_fixture()
++	_electric_fixture()
++	if not failed:
++		_fixed_parity()
++		_selector_refusals()
++		for path: String in ["res://data/aircraft/synthetic_stik_electric_4s_battery.json", "res://data/aircraft/battery/skywalker_x8_6s_pack.json"]:
++			var loaded := Data.load_file(path)
++			check("existing finite pack configuration loads", loaded.ok, str(loaded.get("errors", [])))
++			if not loaded.ok: continue
++			var installation := model.duplicate(true)
++			installation.propulsion.battery = loaded.model.propulsion.battery.duplicate(true)
++			installation.propulsion.esc = loaded.model.propulsion.esc.duplicate(true)
++			_pack_parity(installation.propulsion)
++			_finite_composition(installation)
++			_boundaries(installation.propulsion)
++			if Prop.has_pack_ecm(installation.propulsion): _outer_supervisor(installation.propulsion)
++	print("FINITE_BATTERY_PARITY ", JSON.stringify({maximum_motor_port_residual_w = maximum_motor_port_residual_w,
++		maximum_pack_port_residual_w = maximum_pack_port_residual_w, maximum_stage_mechanical_residual_w = maximum_stage_mechanical_residual_w}))
++	print("Aircraft ground finite battery: %d checks, %d failed" % [checks, failed])
++	quit(1 if failed else 0)
++
++
++func _fixed_parity() -> void:
++	var replacement := Candidate.prepare(profile, model, materials)
++	check("fixed-voltage preparation remains byte identical", var_to_bytes(replacement) == var_to_bytes(electric)
++		and var_to_bytes(replacement).hex_encode().sha256_text() == FIXED_PREPARED_HEX_SHA256)
++	for index: int in 3:
++		var rpm: float = [0.0, 3000.0, 8000.0][index]
++		var body := _body(-2.0)
++		var values := _values(rpm)
++		var air := Air.compute(body, M.v3(1.0, -2.0, 0.3), 1.18)
++		var a := Electric.evaluate(electric, body, values, 0.0, air, 1.18, defs, .4, true, provider, 9.80665,
++			PackedFloat64Array([0.0, 0.0, 0.0]), NAN, 0.0)
++		var b := Candidate.evaluate(replacement, body, values, 0.0, air, 1.18, defs, .4, true, provider, 9.80665,
++			PackedFloat64Array([0.0, 0.0, 0.0]), NAN, 0.0)
++		check("fixed-voltage complete evaluation remains byte identical", a.ok and b.ok and var_to_bytes(a) == var_to_bytes(b)
++			and var_to_bytes(b).hex_encode().sha256_text() == FIXED_RESULTS_HEX_SHA256[index])
++
++
++func _selector_refusals() -> void:
++	var body := _body(-2.0)
++	var values := _values()
++	var air := Air.compute(body, M.v3(1.0, -2.0, .3), 1.18)
++	for selector: Variant in [null, [], {}, true, false, 3, 0.0, NAN, PackedFloat64Array([1.0]), "unknown"]:
++		var malformed := electric.duplicate(true)
++		malformed.law = selector
++		check("malformed prepared law type/selector refuses without engine diagnostics", not Candidate._prepared(malformed)
++			and not Candidate.evaluate(malformed, body, values, 0.0, air, 1.18, defs, .4, true,
++				provider, 9.80665, PackedFloat64Array([0.0, 0.0, 0.0])).ok
++			and not Candidate.evaluate_dynamic(malformed, body, values, 0.0, air, 1.18, defs, .4, true,
++				provider, 9.80665, PackedFloat64Array([0.0, 0.0, 0.0]), 291.0, 2.7).ok)
++
++
++func _raw_point(prop: Dictionary, rpm: float, duty: float, enabled: bool, block: PackedFloat64Array,
++		available := false) -> Dictionary:
++	if Prop.has_pack_ecm(prop): return Prop.electric_pack_state(rpm, duty, prop, enabled, block, 291.0, 2.7, available)
++	return Prop.electric_source_state(rpm, duty, prop, enabled,
++		maxf(0.0, block[0] / (3600.0 * prop.battery.capacity_ah)), available)
++
++
++func _pack_parity(prop: Dictionary) -> void:
++	var made := Battery.initial_block(prop, 291.0)
++	check("existing normalized finite battery initializes", made.ok)
++	if not made.ok: return
++	var block: PackedFloat64Array = made.block
++	check("battery block has exact existing size and initial charge", block.size() == Battery.block_size(prop)
++		and block[0] == Battery.initial_charge_c(prop))
++	if Prop.has_pack_ecm(prop):
++		var old := Pack.initial_block(prop.battery, prop.motor, prop.esc.low_voltage_cutoff, 291.0)
++		check("pack initial block is byte identical to existing owner", var_to_bytes(old.block) == var_to_bytes(block))
++		block[Pack.RC] = .015
++		block[Pack.RC + prop.battery.branches] = .025
++	for rpm: float in [0.0, 3000.0, 20000.0]:
++		for duty: float in [0.0, .4, 1.0]:
++			for enabled: bool in [false, true]:
++				var before := var_to_bytes([prop, block])
++				var raw := _raw_point(prop, rpm, duty, enabled, block)
++				var adapted := Battery.evaluate(prop, rpm, duty, enabled, block, 291.0, 2.7)
++				check("existing finite source map succeeds", raw.ok and adapted.ok)
++				if not raw.ok or not adapted.ok: continue
++				var same := true
++				for key: Variant in raw:
++					if var_to_bytes(raw[key]) != var_to_bytes(adapted[key]): same = false
++				check("ALL existing source map fields retained byte exactly", same)
++				var expected_rates: PackedFloat64Array = raw.rates if raw.has("rates") else PackedFloat64Array([-raw.pack_current_a, raw.pack_terminal_power_w, raw.pack_loss_w])
++				check("charge/energy/loss and RC/thermal/filter rates retained byte exactly", var_to_bytes(expected_rates) == var_to_bytes(adapted.rates))
++				var wrench := Prop.loads(M.v3(7.0, -1.0, 2.0), rpm, prop, 1.18)
++				var split := CandidateSource.electric_dynamic(prop, rpm, duty, enabled, wrench, block, 291.0, 2.7)
++				check("source uses current alone and full QP bearing capacity", split.ok
++					and split.internal_drive_torque_nm == 60.0 / TAU / prop.motor.kv_rpm_per_volt * raw.motor_current_a
++					and split.shaft_friction_capacity_nm == 60.0 / TAU / prop.motor.kv_rpm_per_volt * prop.motor.no_load_current_a)
++				if split.ok:
++					check("finite torque adapter has an explicit distinct law", split.law == CandidateSource.DYNAMIC_LAW)
++					maximum_motor_port_residual_w = maxf(maximum_motor_port_residual_w, absf(split.electrical_balance_residual_w))
++					check("electrical motor port residual independent of mechanical bearing ledger", absf(split.electrical_balance_residual_w) < 1e-9)
++					var motor_port: Dictionary = raw.source if raw.has("source") else raw
++					maximum_pack_port_residual_w = maxf(maximum_pack_port_residual_w, absf(raw.pack_terminal_power_w
++						- motor_port.bus_power_w - raw.bus_voltage_v * raw.auxiliary_current_a))
++					check("pack terminal port includes motor plus auxiliary exactly once", absf(raw.pack_terminal_power_w
++						- motor_port.bus_power_w - raw.bus_voltage_v * raw.auxiliary_current_a) < 1e-9)
++				check("pack adapter/torque split cannot mutate source or state", before == var_to_bytes([prop, block]))
++
++
++func _dynamic_values(bound: Dictionary, prop: Dictionary, rpm: float) -> PackedFloat64Array:
++	var values := PackedFloat64Array()
++	values.resize(bound.continuous_size)
++	values[bound.rotor_index] = rpm
++	var block: PackedFloat64Array = Battery.initial_block(prop, 291.0).block
++	for i in block.size(): values[bound.rotor_index + 1 + i] = block[i]
++	for i in bound.ground.radii_m.size(): values[bound.wheel_index + i] = .2 * (i + 1)
++	return values
++
++
++func _finite_composition(installation: Dictionary) -> void:
++	var bound := Candidate.prepare_dynamic(profile, installation, materials)
++	check("common finite battery stage prepares without launch claim", bound.ok and not bound.get("launch_available", true), str(bound.get("reason", "")))
++	if not bound.ok: return
++	check("existing wash/RPM/battery/wheel order retained", bound.rotor_index == bound.wash_count
++		and bound.wheel_index == bound.wash_count + 1 + Battery.block_size(installation.propulsion))
++	for down: float in [-2.0, -.19]:
++		var body := RB.make_state(M.v3(0.0, 0.0, down), M.v3(5.0, .2, .1), M.q_from_euler(.01, 0.0, .05), M.v3(.3, -.1, .2))
++		# Simulation RK stages are nonunit; geometry uses a local normalized q.
++		for i in 4: body[RB.ATT + i] *= 1.00002
++		var values := _dynamic_values(bound, installation.propulsion, 3000.0)
++		var air := Air.compute(body, M.v3(1.0, -2.0, .3), 1.18)
++		var before := var_to_bytes([bound, body, values, air, provider])
++		var result := Candidate.evaluate_dynamic(bound, body, values, 0.0, air, 1.18, defs, .4, true, provider, 9.80665,
++			PackedFloat64Array([0.0, 0.0, 0.0]), 291.0, 2.7, NAN, 0.0)
++		check("finite loaded/airborne nonunit RK stage evaluates", result.ok, str(result.get("reason", "")))
++		if not result.ok: continue
++		check("entire aircraft stage is read-only", before == var_to_bytes([bound, body, values, air, provider]))
++		var expected_rates := _raw_point(installation.propulsion, 3000.0, .4, true,
++			values.slice(bound.rotor_index + 1, bound.wheel_index))
++		var rates: PackedFloat64Array = expected_rates.rates if expected_rates.has("rates") else PackedFloat64Array([-expected_rates.pack_current_a, expected_rates.pack_terminal_power_w, expected_rates.pack_loss_w])
++		check("battery derivatives occupy exactly preexisting slots", var_to_bytes(result.derivative.slice(bound.rotor_index + 1, bound.wheel_index)) == var_to_bytes(rates))
++		var local := Prop.stage_air_velocity(body, air, installation.propulsion)
++		var old_prop := Prop.loads(local.velocity_body, 3000.0, installation.propulsion, 1.18)
++		var tq := Prop.thrust_torque(local.velocity_body, 3000.0, installation.propulsion, 1.18)
++		var loads := Dynamics.loads_from_air(body, installation, defs, 3000.0, 1.18, air, NAN,
++			values.slice(0, bound.wash_count), 0.0, old_prop, tq.slice(0, 2))
++		check("one shared aero/prop/wash assembly retains external wrench", _near(loads, result.external_loads_o, 1e-12))
++		var stage: Dictionary = result.rotor.stage
++		var angular_rate: PackedFloat64Array = result.rotor.angular_acceleration.duplicate()
++		angular_rate.append_array(result.rotor.spin_acceleration)
++		var power: float = bound.properties.mass_kg * M.dot(body.slice(RB.VEL, RB.VEL + 3), result.body_derivative.slice(RB.VEL, RB.VEL + 3))
++		for i in stage.velocity.size():
++			for j in stage.velocity.size(): power += stage.matrix[i * stage.velocity.size() + j] * stage.velocity[j] * angular_rate[i]
++		var potential_rate: float = result.ground.potential_rate_w - bound.properties.mass_kg * 9.80665 * result.body_derivative[RB.POS + 2]
++		maximum_stage_mechanical_residual_w = maxf(maximum_stage_mechanical_residual_w, absf(power + potential_rate
++			+ result.ground.dissipation_w - result.sample.external_power_w))
++		check("independent common kinetic gradient closes source/normal/gravity power", absf(power + potential_rate
++			+ result.ground.dissipation_w - result.sample.external_power_w) < 1e-8)
++		check("bearing row remains exclusively common QP, independent of pack state", result.rows.labels[-1].kind == "internal_shaft_friction"
++			and result.rows.limit_rates[-1] == result.source.shaft_friction_capacity_nm)
++		var state := body.duplicate()
++		state.append_array(values)
++		var sample := func(_s: PackedFloat64Array, _t: float) -> Dictionary: return result.sample
++		check("old source-free policy explicitly refuses finite source pending locator", not Step._sample(sample, state, 0.0).ok)
++		check("fixed public API cannot consume finite binding", not Candidate.evaluate(bound, body, values, 0.0, air, 1.18,
++			defs, .4, true, provider, 9.80665, PackedFloat64Array([0.0, 0.0, 0.0])).ok)
++
++
++func _boundaries(prop: Dictionary) -> void:
++	var block: PackedFloat64Array = Battery.initial_block(prop, 291.0).block
++	block[0] = 0.0
++	var off := Battery.evaluate(prop, 3000.0, 1.0, true, block, 291.0, 2.7)
++	check("ordinary zero charge disconnects all electrical load", off.ok and off.pack_current_a == 0.0
++		and off.rates[0] == 0.0 and off.rates[1] == 0.0)
++	var stopped := CandidateSource.electric_dynamic(prop, 0.0, 1.0, true,
++		PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), block, 291.0, 2.7)
++	check("exhausted stationary shaft retains full common static-bearing capacity", stopped.ok
++		and stopped.internal_drive_torque_nm == 0.0
++		and stopped.shaft_friction_capacity_nm == 60.0 / TAU / prop.motor.kv_rpm_per_volt * prop.motor.no_load_current_a)
++	var left := Battery.evaluate(prop, 3000.0, 1.0, true, block, 291.0, 2.7, true, true)
++	check("connected zero left limit requires explicit trial authorization", left.ok and left.pack_current_a > 0.0 and left.trial_extension_only)
++	check("connected left limit cannot masquerade as accepted", not Battery.evaluate(prop, 3000.0, 1.0, true, block, 291.0, 2.7, true).ok)
++	block[0] = -1e-12
++	check("negative charge ordinary/implicit trial refuses", not Battery.valid(prop, block)
++		and not Battery.evaluate(prop, 3000.0, 1.0, true, block, 291.0, 2.7, false, true).ok)
++	var trial := Battery.evaluate(prop, -.01, 1.0, true, block, 291.0, 2.7, true, true)
++	check("negative charge/RPM trial is explicit and evaluates zero-RPM left map", trial.ok and trial.trial_extension_only)
++	check("trial endpoint cannot be supervised/committed", not Battery.supervise_endpoint(prop, block, .4, 1.0 / 240.0).ok)
++	for kind: String in ["shape", "nonfinite", "energy", "charge", "phase", "cells"]:
++		var bad: PackedFloat64Array = Battery.initial_block(prop, 291.0).block
++		match kind:
++			"shape": bad.append(0.0)
++			"nonfinite": bad[0] = NAN
++			"energy": bad[1] = -1.0
++			"charge": bad[0] *= 1.1
++			"phase":
++				if Prop.has_pack_ecm(prop): bad[Pack.phase_index(prop.battery)] = .5
++				else: continue
++			"cells":
++				if Prop.has_pack_ecm(prop): bad[Pack.cells_index(prop.battery)] = 25.0
++				else: continue
++		check("malformed finite state refuses: " + kind, not Battery.evaluate(prop, 3000.0, .4, true, bad, 291.0, 2.7).ok)
++
++
++func _outer_supervisor(prop: Dictionary) -> void:
++	var fixture := prop.duplicate(true)
++	fixture.esc.low_voltage_cutoff.debounce_s = 0.0
++	var b: Dictionary = fixture.battery
++	var block: PackedFloat64Array = Battery.initial_block(fixture, 291.0).block
++	block[Pack.sense_index(b)] = 0.0
++	var before := var_to_bytes([fixture, block])
++	var direct := Supervisor.step(fixture.esc.low_voltage_cutoff, block[Pack.limit_index(b)], int(block[Pack.phase_index(b)]),
++		block[Pack.timer_index(b)], int(block[Pack.cells_index(b)]), block[Pack.sense_index(b)], .7, 1.0 / 240.0)
++	var result := Battery.supervise_endpoint(fixture, block, .7, 1.0 / 240.0)
++	check("once per outer tick agrees exactly with existing ESC decision", result.ok
++		and result.block[Pack.limit_index(b)] == direct[0] and result.block[Pack.phase_index(b)] == direct[1]
++		and result.block[Pack.timer_index(b)] == direct[2])
++	var unchanged := true
++	for i in block.size():
++		if i not in [Pack.limit_index(b), Pack.phase_index(b), Pack.timer_index(b)] and result.block[i] != block[i]: unchanged = false
++	check("supervisor changes only three sampled slots, no RC/thermal/energy/cells", unchanged)
++	check("supervisor is read-only and returns no aliases", before == var_to_bytes([fixture, block]))
++	var half := Battery.supervise_endpoint(fixture, block, .7, 1.0 / 480.0)
++	var twice := Battery.supervise_endpoint(fixture, half.block, .7, 1.0 / 480.0)
++	check("discriminating case rejects mistaken per-subpiece sampling parity", var_to_bytes(twice.block) != var_to_bytes(result.block))
++	var stage := Battery.evaluate(fixture, 3000.0, .7, true, block, 291.0, 2.7)
++	check("all four sampled ESC/cell derivative slots remain zero", stage.ok
++		and stage.rates[Pack.limit_index(b)] == 0.0 and stage.rates[Pack.phase_index(b)] == 0.0
++		and stage.rates[Pack.timer_index(b)] == 0.0 and stage.rates[Pack.cells_index(b)] == 0.0)

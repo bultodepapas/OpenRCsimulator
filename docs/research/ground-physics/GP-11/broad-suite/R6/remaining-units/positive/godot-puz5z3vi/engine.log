@@ -1,0 +1,55 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   radio fixture profile is valid
+ok   strict JETI identity is recognized
+ok   device picker uses a recognizable JETI family name
+ok   JETI tooltip and details preserve the full raw backend name
+ok   recognized radio explicitly offers the JETI Mode 2 preset
+ok   JETI Mode 2 sets roll 0, inverted pitch 1, absolute throttle 2 and yaw 3
+ok   JETI preset preserves calibrated endpoints and explicit action clears
+ok   JETI preset preserves switch AUX, identity and profile ID
+ok   JETI preset selection edits only the draft
+ok   JETI preset draft passes profile validation
+ok   JETI Mode 2 help states the explicit mapping and hardware caution
+ok   new recognized radio starts with the JETI Mode 2 preset
+ok   new JETI profile includes explicit safe recovery actions
+ok   clean action button writes the safe map into the draft
+ok   safe draft keeps Backspace and Escape recovery
+ok   safe draft clears inherited button actions explicitly
+ok   Cancel discards the clean radio action draft
+ok   one explicit Save persists the clean radio action map
+ok   corroborated JETI joystick keeps its kind and exposes clean actions
+ok   JETI joystick clean actions preserve identity and calibration in the draft
+ok   JETI joystick safe action draft saves without migrating the profile
+ok   ordinary gamepad does not expose radio action cleanup
+ok   ordinary gamepad remains unchanged by the guarded cleanup action
+ok   extra-channel editor offers two-position maintained switches
+ok   new switch group uses distinct numeric indices and validates
+ok   switch group stores the optional physical name
+ok   switch capture ignores a button from another device
+ok   switch capture ignores releases and does not wait for other maintained switches
+ok   switch capture accepts the selected device's deliberate button transition
+ok   captured release is consumed after the capture ends
+ok   capturing an existing member atomically swaps two-position detents
+ok   direct member edit can restore a valid switched pair
+ok   extra-channel editor supports a three-position group
+ok   three-position group keeps physical Up/Middle/Down order
+ok   direct assignment of a used member swaps three-position detents
+ok   three-position member swap remains reversible
+ok   live preview shows named physical detent, numeric button and inverted request
+ok   named radio button renders its physical detent without a gamepad glyph
+ok   unknown radio button keeps a numeric label and no gamepad glyph
+ok   partial JETI identity retains numeric radio labeling without a pad glyph
+ok   two-position switch prompt names both detents and numeric buttons without a glyph
+ok   three-position switch prompt names ordered detents and numeric buttons
+ok   invalid switch prompt uses a readable glyph-free fallback
+ok   setup action row uses named radio position and hides the pad glyph
+ok   setup leaves unknown radio action numeric
+ok   second AUX group can be configured without collision
+ok   overlapping switch member keeps the prior valid group
+ok   locale change retranslates configured switch detent labels
+ok   locale change retranslates the live named switch preview
+ok   switch prompts reuse Spanish detent and button labels
+ok   invalid switch fallback is Spanish and glyph-free
+ok   valid captured and named detent groups can be saved
+PASS JETI setup: all checks

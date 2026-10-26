@@ -1,0 +1,55 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok normalized inventory builds
+ok all 1,680 source trees make trunk/crown proxies
+ok each parked aircraft placement has collision proxies
+ok flood and stake fixtures receive proxies
+ok open shelter has 18 posts plus roof
+ok Avanti display cradle has explicit support boxes
+ok nearby query uses local broadphase
+ok collision inventory identity changes with object geometry
+ok proxy IDs are in stable order
+ok synthetic world build succeeds
+ok thin pole hit despite both endpoints being clear
+ok scenery event remains compatible with crash snapshot
+ok thin-pole time of impact is inside the tick
+ok contact normal and effective-mass energy are finite
+ok contact-state pose is at the interpolated hit
+ok high-normal-speed lamp response is object-specific
+ok nearby path that clears the pole stays clear
+ok synthetic world build succeeds
+ok synthetic field tree exposes its species-specific flexible crown
+ok tree crown is a low-severity entering response
+ok foliage response applies a bounded dissipative impulse
+ok tree trunk uses terminal hard response
+ok trunk incident energy is a finite severity estimate
+ok synthetic world build succeeds
+ok low-speed lamp contact survives as a frangible impulse
+ok same lamp at higher normal speed becomes terminal
+ok high total speed with low grazing normal speed stays nonterminal
+ok grazing impulse removes normal energy without creating kinetic energy
+ok synthetic world build succeeds
+ok low-speed contact with parked aircraft has a distinct nonterminal response
+ok synthetic world build succeeds
+ok open shelter does not collide as a solid air envelope
+ok open shelter post is independently collidable
+ok open shelter roof is independently collidable
+ok synthetic world build succeeds
+ok building box creates terminal contact
+ok car box creates terminal contact
+ok parked aircraft jensen-das-ugly-stik-60 is collidable
+ok parked aircraft gp-extra-300s-60 is collidable
+ok parked aircraft p51d-mustang-120 is collidable
+ok parked aircraft sebart-avanti-s-a200-p100rx is collidable
+ok synthetic world build succeeds
+ok subdivided attitude sweep catches arc missed by endpoint chord
+ok rotating sweep reports a sub-tick fraction
+ok synthetic world build succeeds
+ok simultaneous objects tie-break by stable ID
+ok same input returns bit-stable time of impact
+ok unexpanded chord misses the curved-path witness
+ok 2-degree sagitta padding conservatively catches the rotational arc
+ok large-rotation central nlerp step exceeds the average angular step
+ok average-angle padding misses a witness on the large-rotation arc
+ok actual per-segment nlerp padding catches the large-rotation arc
+landscape collision: 52 checks, 0 failures

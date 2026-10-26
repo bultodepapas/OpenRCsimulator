@@ -1,0 +1,14 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok P-51 loads with the P51-26 slipstream []
+ok loader rejects a sidewash gain above the published 1 ["slipstream.propeller_sidewash: 1.5 outside [0.0, 1.0] 1"]
+ok loader rejects it with axial transport ["/propulsion/propeller/slipstream/transport_speed_floor: requires edge_fraction", "/propulsion/propeller/slipstream/propeller_sidewash: requires the legacy slipstream (no edge_fraction or transport_speed_floor)"]
+ok allocation-free tail law equals Aero._tail_surface_from_flow (relative < 1e-12) 0.0
+ok no swirl, no sidewash: segmented forces equal the legacy centroid (relative < 1e-9) 0.0
+info slipstream yaw per sideslip against 64 subdivisions: segmented 0.0105, legacy centroid 1.1970 (relative)
+ok powered slipstream yaw per sideslip within 1.5 % of the dense integral and converging, 18-45 m/s 0.01052219257983, converging true
+ok Ribner sidewash vanishes without crossflow 0.0
+ok Ribner's g(a) and h(a) stay within 1.0-1.21 for a = 0-50 
+ok Ribner sidewash stays below the crossflow scale at static thrust (|Δv| < 1.5 V) 0.03710290561237
+ok full-power zero-flow limit is unique from every direction (|Δ| < 1e-6 N, N·m) 0.00000004714876
+P51-26 slipstream: 10 checks, 0 failed

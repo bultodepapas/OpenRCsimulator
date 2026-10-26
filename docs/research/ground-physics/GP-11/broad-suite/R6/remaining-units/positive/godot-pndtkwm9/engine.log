@@ -1,0 +1,37 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+PASS: default vehicle data loads
+PASS: vehicle format is separately versioned
+PASS: identity binds the file bytes
+PASS: geometry conversion yields FRD corner order
+PASS: corner station signs match FRD
+PASS: kernel model has full explicit inertia
+PASS: kernel model includes slip and torque fade
+PASS: practice course loads for the vehicle kernel
+PASS: estimated MT8 model constructs a supported flat-start state
+PASS: initial kernel state is finite and supported
+PASS: identity settings experiment succeeds
+PASS: zero ballast preserves mass and CG
+PASS: experiment identity includes base and settings
+PASS: ballast experiment succeeds
+PASS: ballast updates sprung mass and weighted CG
+PASS: ballast shifts hull probes relative to the new CG
+PASS: ballast updates inertia with parallel-axis terms
+PASS: experiment does not mutate base
+PASS: zero gravity is an intentional experiment setting
+PASS: out-of-range experiment rejected atomically
+PASS: vehicle fixture parses as JSON
+PASS: unknown vehicle fields reject the whole model
+PASS: wrong physical units reject the whole model
+PASS: legacy descriptor defaults to equal axle braking
+PASS: legacy normalization does not mutate authored quantities
+PASS: valid axle brake fraction accepted: 0.0
+PASS: valid axle brake fraction accepted: 0.5
+PASS: valid axle brake fraction accepted: 0.85
+PASS: valid axle brake fraction accepted: 1.0
+PASS: invalid axle brake fraction rejected: -0.01
+PASS: invalid axle brake fraction rejected: 1.01
+PASS: invalid axle brake fraction rejected: nan
+PASS: invalid axle brake fraction rejected: inf
+PASS: invalid axle brake fraction rejected: true
+PASS: invalid axle brake fraction rejected: 0.85

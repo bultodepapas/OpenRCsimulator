@@ -1,0 +1,12 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+PASS: current generated model loads
+PASS: both full-throttle runs complete with finite coupled states
+PASS: new drive more than doubles sustained flat-ground speed | old 3.937 m/s, new 11.891 m/s
+PASS: new drive reaches 3 m/s sooner under the same grip | old 0.4583 s, new 0.4000 s
+PASS: straight acceleration remains upright without hull strikes | upright 0.987554, hull ticks 0
+PASS: full braking stops the faster vehicle without reversing or rolling over | time 1.617 s, distance 9.603 m, residual 0.0963 m/s, upright 0.99809
+PASS: 240/480 Hz hard braking agrees in stopping distance and attitude
+PASS: 240/480 Hz high-power runs converge in distance and speed | distance delta 0.0000068 m, speed delta 0.0000000 m/s
+PASS: active/reference derivatives agree at increased wheel speeds | max delta 0.0000000000
+RCV powertrain: 9/9 checks passed

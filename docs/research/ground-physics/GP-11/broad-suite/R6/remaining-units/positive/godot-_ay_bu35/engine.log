@@ -1,0 +1,30 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   gear flex node exists and runs after GroundGearMotion 
+ok   main legs carry three blend shapes each; the nose column adds its bow 
+ok   nose spring has a positive working travel below its free length (0.0430 m) 
+ok   compression 0.000 m: right axle sleeve follows the wheel (0.0, 0.0, 0.0)
+ok   compression 0.000 m: leg clamp stays on the fuselage (0.0, 0.0, 0.0)
+ok   compression 0.000 m: mid-leg follows the cantilever shape 0.00000 vs 0.00000
+ok   compression 0.000 m: nose wire slides into its spring by 0.0000 m (+0.0000 m mount excess) 
+ok   compression 0.000 m: nose axle stub ends at the wheel (slide + bend) (0.0, 0.0, 0.0)
+ok   compression 0.018 m: right axle sleeve follows the wheel (0.0, 0.018, 0.0)
+ok   compression 0.018 m: leg clamp stays on the fuselage (0.0, 0.0, 0.0)
+ok   compression 0.018 m: mid-leg follows the cantilever shape 0.00494 vs 0.00562
+ok   compression 0.018 m: nose wire slides into its spring by 0.0180 m (+0.0000 m mount excess) 
+ok   compression 0.018 m: nose axle stub ends at the wheel (slide + bend) (0.0, 0.018, 0.0)
+ok   compression 0.080 m: right axle sleeve follows the wheel (0.0, 0.08, 0.0)
+ok   compression 0.080 m: leg clamp stays on the fuselage (0.0, 0.0, 0.0)
+ok   compression 0.080 m: mid-leg follows the cantilever shape 0.02194 vs 0.02500
+ok   compression 0.080 m: nose wire slides into its spring by 0.0430 m (+0.0303 m mount excess) 
+ok   compression 0.080 m: nose axle stub ends at the wheel (slide + bend) (0.0, 0.08, 0.0)
+ok   left and right legs bend independently (0.0, 0.0, 0.0) (0.0, 0.05, 0.0)
+ok   an attitude-dependent contact direction maps onto the leg (0.004801, 0.038812, -0.008403)
+ok   steered nose: wire and axle stub follow the wheel in the steering frame (0.0, 0.03, 0.01)
+ok   nose 0.020 m: leg bow 0.0000 m matches the column shortening (0.0000) 
+ok   nose 0.020 m: axle stays on the wheel while bowing (0.0, 0.02, 0.0)
+ok   nose 0.080 m: leg bow 0.0150 m matches the column shortening (0.0150) 
+ok   nose 0.080 m: axle stays on the wheel while bowing (0.0, 0.08, 0.0)
+ok   breaking compression: spring solid, bow capped at 15 mm (0.0150), excess drives the wire into the fuselage 
+ok   released gear returns to the built legs 
+US-V10 gear flex: 27 checks, 0 failed

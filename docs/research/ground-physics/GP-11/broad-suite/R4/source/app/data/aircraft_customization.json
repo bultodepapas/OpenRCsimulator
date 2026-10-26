@@ -1,0 +1,2155 @@
+{
+  "format": "openrc-aircraft-customization-registry",
+  "version": 1,
+  "families": [
+    {
+      "format": "openrc-aircraft-customization-bindings",
+      "version": 3,
+      "source_proof_version": 3,
+      "visual_family": "f4u-corsair-250",
+      "model_manifest_sha256": "4a64652f22a2d2fe5a613c6aba0e79307fb02e2e53033a1e93366a49ab9bb753",
+      "paint_slots": [
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "F4UCorsair/fuselage_core",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/cowl",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/canopy_frame",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_tail_left_1/gear_door_tail_mesh_left_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_tail_left_2/gear_door_tail_mesh_left_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_tail_right_1/gear_door_tail_mesh_right_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_tail_right_2/gear_door_tail_mesh_right_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "F4UCorsair/stabilizer_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/fin_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/elevator_hinge/elevator",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/rudder_hinge/rudder",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "F4UCorsair/wing_center_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/wing_left_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/wing_right_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_left_1_hinge/flap_left_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_left_2_hinge/flap_left_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_left_3_hinge/flap_left_3",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_right_1_hinge/flap_right_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_right_2_hinge/flap_right_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_right_3_hinge/flap_right_3",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_front_left/gear_door_front_mesh_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_front_right/gear_door_front_mesh_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_inner_left/gear_door_inner_mesh_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_inner_right/gear_door_inner_mesh_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_outer_left/gear_door_outer_mesh_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_outer_right/gear_door_outer_mesh_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing_tip",
+          "label": "Wing tips",
+          "targets": [
+            {
+              "node_path": "F4UCorsair/wing_left_fixed",
+              "surface": 3,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/wing_right_fixed",
+              "surface": 2,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
+      ],
+      "marking_slots": [
+        {
+          "id": "registration",
+          "label": "Registration",
+          "max_chars": 12,
+          "targets": [
+            {
+              "node_path": "F4UCorsair/fuselage_core",
+              "position_m": [
+                -0.1029,
+                0.08,
+                1.05
+              ],
+              "direction": [
+                -1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.16,
+              "height_m": 0.04
+            },
+            {
+              "node_path": "F4UCorsair/fuselage_core",
+              "position_m": [
+                0.1029,
+                0.08,
+                1.05
+              ],
+              "direction": [
+                1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.16,
+              "height_m": 0.04
+            }
+          ]
+        }
+      ],
+      "smoke_slots": [
+        {
+          "id": "show_exhaust",
+          "label": "Exhaust smoke pump",
+          "kind": "show",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.008,
+          "emissions_preset": "gasoline_two_stroke",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        },
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0.0,
+            0.0742,
+            1.794
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -1.388,
+            0.0,
+            0.2574
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            1.388,
+            0.0,
+            0.2574
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "source_exhaust",
+          "label": "Engine exhaust",
+          "kind": "source",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.008,
+          "emissions_preset": "gasoline_two_stroke",
+          "activation_policy": "source_running",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        }
+      ],
+      "presentation_engine_version": "4.8.0",
+      "presentation_sources": [
+        {
+          "path": "res://audio/mechanical_profile.gd",
+          "sha256": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb"
+        },
+        {
+          "path": "res://render/aircraft_customization.gd",
+          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+        },
+        {
+          "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
+          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+        },
+        {
+          "path": "res://render/lighting/lighting_patterns.gd",
+          "sha256": "c142706c39e005515b724b6fb94098bb08a2f6edba0b2e00ad5c13c99cce99a6"
+        },
+        {
+          "path": "res://render/lighting/lighting_profile.gd",
+          "sha256": "a6c3e19e8d4545fce2462717d9bce62cdf8a73f05bebf0c455355b4bf50edfe4"
+        },
+        {
+          "path": "res://render/lighting/lighting_vfx.gd",
+          "sha256": "34ffe7d6b331bb233194e6632d08d7b895f6e6e9b38ee791ebbfae070c4a7482"
+        },
+        {
+          "path": "res://render/lighting/rgb_lamp.gdshader",
+          "sha256": "68c536e8499b14d1f3b64ef638f48bfe597b9433bbe6c2501551ca4c560abf28"
+        },
+        {
+          "path": "res://render/lighting/rgb_strip.gdshader",
+          "sha256": "7f576e812ee41576e733d01f6191cc5286821dcf58c28d60b557becee43cc02a"
+        },
+        {
+          "path": "res://render/presentation_sources.gd",
+          "sha256": "a746ccb0e60c1baf2cfcee60f4516c6efaa0ccd7af8f4eb60e7977d58732cdfb"
+        },
+        {
+          "path": "res://render/smoke/exhaust.gd",
+          "sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+        },
+        {
+          "path": "res://render/smoke/process.gdshader",
+          "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+        },
+        {
+          "path": "res://render/smoke/profile_process.gdshader",
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke.gd",
+          "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke_schedule.gd",
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
+        },
+        {
+          "path": "res://render/world/aircraft_light_state.gd",
+          "sha256": "fb36c123dc7fce796fe7d35fe92f3fb5536f560783283cc102e063d01eac47ec"
+        },
+        {
+          "path": "res://render/world/aircraft_lights.gd",
+          "sha256": "885cf1e45f784253e1001176331eb54aa794fe8b53563f96f6056e551a31d07e"
+        },
+        {
+          "path": "res://render/world/engine_srgb.gdshaderinc",
+          "sha256": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799"
+        },
+        {
+          "path": "res://render/world/exposure.gd",
+          "sha256": "c25487774ecec2d0957eef4825f43884594b3bfc365fbeefdc4ad6c80a518e19"
+        },
+        {
+          "path": "res://render/world/led_strip.gdshader",
+          "sha256": "d91e18eb224b8636897be40c83f3c2af781964f2d0ff031fca2bb3c2c73430dc"
+        },
+        {
+          "path": "res://render/world/light_sprite.gdshader",
+          "sha256": "3071b64ba8b5a0cb4e041c914227751056f82ec77a745d40cc221242a76467d0"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+        }
+      ],
+      "slots_sha256": "a4b1de37cb3b036d3f50bbc865421284bda7870cb3e703fdc7d01d840e56a413"
+    },
+    {
+      "format": "openrc-aircraft-customization-bindings",
+      "version": 3,
+      "source_proof_version": 3,
+      "visual_family": "gp-extra-300s-60",
+      "model_manifest_sha256": "f8280cd02c96759a389438e632c05cb9c1a8b6e4f03d74dbdcc505e50d66f7a4",
+      "paint_slots": [
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "fuselage",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "tail_frame/stab",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "tail_frame/elevator_hinge/elevator_left",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "tail_frame/elevator_hinge/elevator_right",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "fin_frame/fin",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "fin_frame/rudder_hinge/rudder",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "wing_left/wing_left_root",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_left/wing_left_ahead_of_aileron",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_right/wing_right_root",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_right/wing_right_ahead_of_aileron",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_left/aileron_frame_left/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_right/aileron_frame_right/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            }
+          ]
+        },
+        {
+          "id": "wing_tip",
+          "label": "Wing tips",
+          "targets": [
+            {
+              "node_path": "wing_left/wing_left_tip",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_right/wing_right_tip",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            }
+          ]
+        }
+      ],
+      "marking_slots": [
+        {
+          "id": "registration",
+          "label": "Registration",
+          "max_chars": 12,
+          "targets": [
+            {
+              "node_path": "fuselage",
+              "position_m": [
+                -0.0776,
+                0,
+                -0.18
+              ],
+              "direction": [
+                -1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.2,
+              "height_m": 0.04
+            },
+            {
+              "node_path": "fuselage",
+              "position_m": [
+                0.0776,
+                0,
+                -0.18
+              ],
+              "direction": [
+                1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.2,
+              "height_m": 0.04
+            }
+          ]
+        }
+      ],
+      "smoke_slots": [
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0,
+            -0.000801,
+            0.9512
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -0.8218,
+            -0.050766,
+            -0.069465
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            0.8218,
+            -0.050766,
+            -0.069465
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        }
+      ],
+      "presentation_engine_version": "4.8.0",
+      "presentation_sources": [
+        {
+          "path": "res://audio/mechanical_profile.gd",
+          "sha256": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb"
+        },
+        {
+          "path": "res://render/aircraft_customization.gd",
+          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+        },
+        {
+          "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
+          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+        },
+        {
+          "path": "res://render/lighting/lighting_patterns.gd",
+          "sha256": "c142706c39e005515b724b6fb94098bb08a2f6edba0b2e00ad5c13c99cce99a6"
+        },
+        {
+          "path": "res://render/lighting/lighting_profile.gd",
+          "sha256": "a6c3e19e8d4545fce2462717d9bce62cdf8a73f05bebf0c455355b4bf50edfe4"
+        },
+        {
+          "path": "res://render/lighting/lighting_vfx.gd",
+          "sha256": "34ffe7d6b331bb233194e6632d08d7b895f6e6e9b38ee791ebbfae070c4a7482"
+        },
+        {
+          "path": "res://render/lighting/rgb_lamp.gdshader",
+          "sha256": "68c536e8499b14d1f3b64ef638f48bfe597b9433bbe6c2501551ca4c560abf28"
+        },
+        {
+          "path": "res://render/lighting/rgb_strip.gdshader",
+          "sha256": "7f576e812ee41576e733d01f6191cc5286821dcf58c28d60b557becee43cc02a"
+        },
+        {
+          "path": "res://render/presentation_sources.gd",
+          "sha256": "a746ccb0e60c1baf2cfcee60f4516c6efaa0ccd7af8f4eb60e7977d58732cdfb"
+        },
+        {
+          "path": "res://render/smoke/exhaust.gd",
+          "sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+        },
+        {
+          "path": "res://render/smoke/process.gdshader",
+          "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+        },
+        {
+          "path": "res://render/smoke/profile_process.gdshader",
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke.gd",
+          "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke_schedule.gd",
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
+        },
+        {
+          "path": "res://render/world/aircraft_light_state.gd",
+          "sha256": "fb36c123dc7fce796fe7d35fe92f3fb5536f560783283cc102e063d01eac47ec"
+        },
+        {
+          "path": "res://render/world/aircraft_lights.gd",
+          "sha256": "885cf1e45f784253e1001176331eb54aa794fe8b53563f96f6056e551a31d07e"
+        },
+        {
+          "path": "res://render/world/engine_srgb.gdshaderinc",
+          "sha256": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799"
+        },
+        {
+          "path": "res://render/world/exposure.gd",
+          "sha256": "c25487774ecec2d0957eef4825f43884594b3bfc365fbeefdc4ad6c80a518e19"
+        },
+        {
+          "path": "res://render/world/led_strip.gdshader",
+          "sha256": "d91e18eb224b8636897be40c83f3c2af781964f2d0ff031fca2bb3c2c73430dc"
+        },
+        {
+          "path": "res://render/world/light_sprite.gdshader",
+          "sha256": "3071b64ba8b5a0cb4e041c914227751056f82ec77a745d40cc221242a76467d0"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+        }
+      ],
+      "slots_sha256": "ca686454bb6a03aa7629afc7996c00f4d3b3837bb85a3cd48252055e3b3ea679"
+    },
+    {
+      "format": "openrc-aircraft-customization-bindings",
+      "version": 3,
+      "source_proof_version": 3,
+      "visual_family": "jensen-das-ugly-stik-60",
+      "model_manifest_sha256": "79dad6e96cd12374c322aac2399708022dd1507e223ebcff40240ae467ef14de",
+      "paint_slots": [
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "fuselage",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "stab",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "elevator_hinge/elevator",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "fin",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "rudder_hinge/rudder",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "stab",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "fin",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "rudder_hinge/rudder",
+              "surface": 1,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "wing_frame_left/wing_left_0",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_0",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_0",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_1",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_2",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_0",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_1",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_2",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/aileron_left_hinge/aileron_left",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/aileron_right_hinge/aileron_right",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/fixed_te_left_0_0",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/fixed_te_left_0_0",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/fixed_te_right_0_0",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/fixed_te_right_0_0",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/aileron_left_servo_hatch/aileron_left_hatch_plate",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/aileron_right_servo_hatch/aileron_right_hatch_plate",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing_tip",
+          "label": "Wing tips",
+          "targets": [
+            {
+              "node_path": "wing_frame_left/wing_left_3",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_3",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_3",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_3",
+              "surface": 1,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
+      ],
+      "marking_slots": [
+        {
+          "id": "registration",
+          "label": "Registration",
+          "max_chars": 12,
+          "targets": [
+            {
+              "node_path": "fuselage",
+              "position_m": [
+                -0.053389,
+                -0.005,
+                0.1
+              ],
+              "direction": [
+                -1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.18,
+              "height_m": 0.04
+            },
+            {
+              "node_path": "fuselage",
+              "position_m": [
+                0.053389,
+                -0.005,
+                0.1
+              ],
+              "direction": [
+                1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.18,
+              "height_m": 0.04
+            }
+          ]
+        }
+      ],
+      "smoke_slots": [
+        {
+          "id": "show_exhaust",
+          "label": "Exhaust smoke pump",
+          "kind": "show",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.0029,
+          "emissions_preset": "glow_installation",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        },
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.05215,
+            0.907698
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -0.771051,
+            0.089021,
+            0.1898
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            0.771051,
+            0.089021,
+            0.1898
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "source_exhaust",
+          "label": "Engine exhaust",
+          "kind": "source",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.0029,
+          "emissions_preset": "glow_installation",
+          "activation_policy": "source_running",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        }
+      ],
+      "presentation_engine_version": "4.8.0",
+      "presentation_sources": [
+        {
+          "path": "res://audio/mechanical_profile.gd",
+          "sha256": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb"
+        },
+        {
+          "path": "res://render/aircraft_customization.gd",
+          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+        },
+        {
+          "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
+          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+        },
+        {
+          "path": "res://render/lighting/lighting_patterns.gd",
+          "sha256": "c142706c39e005515b724b6fb94098bb08a2f6edba0b2e00ad5c13c99cce99a6"
+        },
+        {
+          "path": "res://render/lighting/lighting_profile.gd",
+          "sha256": "a6c3e19e8d4545fce2462717d9bce62cdf8a73f05bebf0c455355b4bf50edfe4"
+        },
+        {
+          "path": "res://render/lighting/lighting_vfx.gd",
+          "sha256": "34ffe7d6b331bb233194e6632d08d7b895f6e6e9b38ee791ebbfae070c4a7482"
+        },
+        {
+          "path": "res://render/lighting/rgb_lamp.gdshader",
+          "sha256": "68c536e8499b14d1f3b64ef638f48bfe597b9433bbe6c2501551ca4c560abf28"
+        },
+        {
+          "path": "res://render/lighting/rgb_strip.gdshader",
+          "sha256": "7f576e812ee41576e733d01f6191cc5286821dcf58c28d60b557becee43cc02a"
+        },
+        {
+          "path": "res://render/presentation_sources.gd",
+          "sha256": "a746ccb0e60c1baf2cfcee60f4516c6efaa0ccd7af8f4eb60e7977d58732cdfb"
+        },
+        {
+          "path": "res://render/smoke/exhaust.gd",
+          "sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+        },
+        {
+          "path": "res://render/smoke/process.gdshader",
+          "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+        },
+        {
+          "path": "res://render/smoke/profile_process.gdshader",
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke.gd",
+          "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke_schedule.gd",
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
+        },
+        {
+          "path": "res://render/world/aircraft_light_state.gd",
+          "sha256": "fb36c123dc7fce796fe7d35fe92f3fb5536f560783283cc102e063d01eac47ec"
+        },
+        {
+          "path": "res://render/world/aircraft_lights.gd",
+          "sha256": "885cf1e45f784253e1001176331eb54aa794fe8b53563f96f6056e551a31d07e"
+        },
+        {
+          "path": "res://render/world/engine_srgb.gdshaderinc",
+          "sha256": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799"
+        },
+        {
+          "path": "res://render/world/exposure.gd",
+          "sha256": "c25487774ecec2d0957eef4825f43884594b3bfc365fbeefdc4ad6c80a518e19"
+        },
+        {
+          "path": "res://render/world/led_strip.gdshader",
+          "sha256": "d91e18eb224b8636897be40c83f3c2af781964f2d0ff031fca2bb3c2c73430dc"
+        },
+        {
+          "path": "res://render/world/light_sprite.gdshader",
+          "sha256": "3071b64ba8b5a0cb4e041c914227751056f82ec77a745d40cc221242a76467d0"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+        }
+      ],
+      "slots_sha256": "4fe93ee708d37bbcf597d7a273efb69772630cabe9518b1ad1af7ee40db2e707"
+    },
+    {
+      "format": "openrc-aircraft-customization-bindings",
+      "version": 3,
+      "source_proof_version": 3,
+      "visual_family": "p51d-mustang-120",
+      "model_manifest_sha256": "6dd631d2e69d358f05b2639def51db22ccb5c8d81365b81d4a57b588ea561354",
+      "paint_slots": [
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "fuselage",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "fuselage",
+              "surface": 1,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "tail_frame/stab",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "tail_frame/elevator_hinge/elevator_left",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "tail_frame/elevator_hinge/elevator_right",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "fin_frame/fin",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "fin_frame/rudder_hinge/rudder",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "wing/wing_frame_left/wing_left_root",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_left/wing_left_ahead_of_flap",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_left/wing_left_between",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_left/wing_left_ahead_of_aileron",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_root",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_ahead_of_flap",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_between",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_ahead_of_aileron",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_left/flap_frame_left/flap_left_hinge/flap_left",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/flap_frame_right/flap_right_hinge/flap_right",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_left/aileron_frame_left/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/aileron_frame_right/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            }
+          ]
+        },
+        {
+          "id": "wing_tip",
+          "label": "Wing tips",
+          "targets": [
+            {
+              "node_path": "wing/wing_frame_left/wing_left_tip",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing/wing_frame_left/wing_left_ahead_of_aileron",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing/wing_frame_left/aileron_frame_left/aileron_left_hinge/aileron_left",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_tip",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_ahead_of_aileron",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing/wing_frame_right/aileron_frame_right/aileron_right_hinge/aileron_right",
+              "surface": 1,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
+      ],
+      "marking_slots": [],
+      "smoke_slots": [
+        {
+          "id": "show_exhaust",
+          "label": "Exhaust smoke pump",
+          "kind": "show",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.008,
+          "emissions_preset": "gasoline_two_stroke",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        },
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.0075,
+            1.7993
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -1.42,
+            -0.049042,
+            0.241639
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            1.42,
+            -0.049042,
+            0.241639
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "source_exhaust",
+          "label": "Engine exhaust",
+          "kind": "source",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.008,
+          "emissions_preset": "gasoline_two_stroke",
+          "activation_policy": "source_running",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        }
+      ],
+      "presentation_engine_version": "4.8.0",
+      "presentation_sources": [
+        {
+          "path": "res://audio/mechanical_profile.gd",
+          "sha256": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb"
+        },
+        {
+          "path": "res://render/aircraft_customization.gd",
+          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+        },
+        {
+          "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
+          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+        },
+        {
+          "path": "res://render/lighting/lighting_patterns.gd",
+          "sha256": "c142706c39e005515b724b6fb94098bb08a2f6edba0b2e00ad5c13c99cce99a6"
+        },
+        {
+          "path": "res://render/lighting/lighting_profile.gd",
+          "sha256": "a6c3e19e8d4545fce2462717d9bce62cdf8a73f05bebf0c455355b4bf50edfe4"
+        },
+        {
+          "path": "res://render/lighting/lighting_vfx.gd",
+          "sha256": "34ffe7d6b331bb233194e6632d08d7b895f6e6e9b38ee791ebbfae070c4a7482"
+        },
+        {
+          "path": "res://render/lighting/rgb_lamp.gdshader",
+          "sha256": "68c536e8499b14d1f3b64ef638f48bfe597b9433bbe6c2501551ca4c560abf28"
+        },
+        {
+          "path": "res://render/lighting/rgb_strip.gdshader",
+          "sha256": "7f576e812ee41576e733d01f6191cc5286821dcf58c28d60b557becee43cc02a"
+        },
+        {
+          "path": "res://render/presentation_sources.gd",
+          "sha256": "a746ccb0e60c1baf2cfcee60f4516c6efaa0ccd7af8f4eb60e7977d58732cdfb"
+        },
+        {
+          "path": "res://render/smoke/exhaust.gd",
+          "sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+        },
+        {
+          "path": "res://render/smoke/process.gdshader",
+          "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+        },
+        {
+          "path": "res://render/smoke/profile_process.gdshader",
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke.gd",
+          "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke_schedule.gd",
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
+        },
+        {
+          "path": "res://render/world/aircraft_light_state.gd",
+          "sha256": "fb36c123dc7fce796fe7d35fe92f3fb5536f560783283cc102e063d01eac47ec"
+        },
+        {
+          "path": "res://render/world/aircraft_lights.gd",
+          "sha256": "885cf1e45f784253e1001176331eb54aa794fe8b53563f96f6056e551a31d07e"
+        },
+        {
+          "path": "res://render/world/engine_srgb.gdshaderinc",
+          "sha256": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799"
+        },
+        {
+          "path": "res://render/world/exposure.gd",
+          "sha256": "c25487774ecec2d0957eef4825f43884594b3bfc365fbeefdc4ad6c80a518e19"
+        },
+        {
+          "path": "res://render/world/led_strip.gdshader",
+          "sha256": "d91e18eb224b8636897be40c83f3c2af781964f2d0ff031fca2bb3c2c73430dc"
+        },
+        {
+          "path": "res://render/world/light_sprite.gdshader",
+          "sha256": "3071b64ba8b5a0cb4e041c914227751056f82ec77a745d40cc221242a76467d0"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+        }
+      ],
+      "slots_sha256": "011d4ec790215336f8c430bb4099f07198b716fbe106a378786fcae8216759c2"
+    },
+    {
+      "format": "openrc-aircraft-customization-bindings",
+      "version": 3,
+      "source_proof_version": 3,
+      "visual_family": "sebart-avanti-s-a200-p100rx",
+      "model_manifest_sha256": "4f49947c2c5d588f8f98895e0d72bf51ca7f4eee8cb79478f981defcb5e7393f",
+      "paint_slots": [
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "VentageJet/fuselage_core",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "VentageJet/horizontal_tail_fixed",
+              "surface": 3,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/elevator_left_hinge/elevator_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/elevator_right_hinge/elevator_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/vertical_tail_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/rudder_hinge/rudder",
+              "surface": 2,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "VentageJet/wing_left_fixed",
+              "surface": 3,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/wing_right_fixed",
+              "surface": 4,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
+      ],
+      "marking_slots": [],
+      "smoke_slots": [
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.576286,
+            1.288538
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_tailpipe",
+          "label": "Tailpipe",
+          "kind": "show",
+          "pair": "",
+          "role": "tailpipe",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.07992,
+            1.28196
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.025,
+          "emissions_preset": "turbine_show",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "source_kind": "turbine"
+        },
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -1.0082,
+            0.057876,
+            0.562732
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            1.0082,
+            0.059237,
+            0.614195
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        }
+      ],
+      "presentation_engine_version": "4.8.0",
+      "presentation_sources": [
+        {
+          "path": "res://audio/mechanical_profile.gd",
+          "sha256": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb"
+        },
+        {
+          "path": "res://render/aircraft_customization.gd",
+          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+        },
+        {
+          "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
+          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+        },
+        {
+          "path": "res://render/lighting/lighting_patterns.gd",
+          "sha256": "c142706c39e005515b724b6fb94098bb08a2f6edba0b2e00ad5c13c99cce99a6"
+        },
+        {
+          "path": "res://render/lighting/lighting_profile.gd",
+          "sha256": "a6c3e19e8d4545fce2462717d9bce62cdf8a73f05bebf0c455355b4bf50edfe4"
+        },
+        {
+          "path": "res://render/lighting/lighting_vfx.gd",
+          "sha256": "34ffe7d6b331bb233194e6632d08d7b895f6e6e9b38ee791ebbfae070c4a7482"
+        },
+        {
+          "path": "res://render/lighting/rgb_lamp.gdshader",
+          "sha256": "68c536e8499b14d1f3b64ef638f48bfe597b9433bbe6c2501551ca4c560abf28"
+        },
+        {
+          "path": "res://render/lighting/rgb_strip.gdshader",
+          "sha256": "7f576e812ee41576e733d01f6191cc5286821dcf58c28d60b557becee43cc02a"
+        },
+        {
+          "path": "res://render/presentation_sources.gd",
+          "sha256": "a746ccb0e60c1baf2cfcee60f4516c6efaa0ccd7af8f4eb60e7977d58732cdfb"
+        },
+        {
+          "path": "res://render/smoke/exhaust.gd",
+          "sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+        },
+        {
+          "path": "res://render/smoke/process.gdshader",
+          "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+        },
+        {
+          "path": "res://render/smoke/profile_process.gdshader",
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke.gd",
+          "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke_schedule.gd",
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
+        },
+        {
+          "path": "res://render/world/aircraft_light_state.gd",
+          "sha256": "fb36c123dc7fce796fe7d35fe92f3fb5536f560783283cc102e063d01eac47ec"
+        },
+        {
+          "path": "res://render/world/aircraft_lights.gd",
+          "sha256": "885cf1e45f784253e1001176331eb54aa794fe8b53563f96f6056e551a31d07e"
+        },
+        {
+          "path": "res://render/world/engine_srgb.gdshaderinc",
+          "sha256": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799"
+        },
+        {
+          "path": "res://render/world/exposure.gd",
+          "sha256": "c25487774ecec2d0957eef4825f43884594b3bfc365fbeefdc4ad6c80a518e19"
+        },
+        {
+          "path": "res://render/world/led_strip.gdshader",
+          "sha256": "d91e18eb224b8636897be40c83f3c2af781964f2d0ff031fca2bb3c2c73430dc"
+        },
+        {
+          "path": "res://render/world/light_sprite.gdshader",
+          "sha256": "3071b64ba8b5a0cb4e041c914227751056f82ec77a745d40cc221242a76467d0"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+        }
+      ],
+      "slots_sha256": "25c178decc1cb1d79872fc08f6f31d2c4a2cfbdcdc5d9a76f94d01c653e11a1a"
+    },
+    {
+      "format": "openrc-aircraft-customization-bindings",
+      "version": 3,
+      "source_proof_version": 3,
+      "visual_family": "turbo-lumber-evolution",
+      "model_manifest_sha256": "0b99af3f2134489b2a2e05558b2c56c9e54108958a585ebea5534400b616f19c",
+      "paint_slots": [
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "TurboTimberEvolution/fuselage_core",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/cowl",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "TurboTimberEvolution/stabilizer_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/elevator_hinge/elevator",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/fin_fixed",
+              "surface": 2,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/rudder_hinge/rudder",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "TurboTimberEvolution/wing_left_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/wing_right_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/flap_left_hinge/flap_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/flap_right_hinge/flap_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing_tip",
+          "label": "Wing tips",
+          "targets": [
+            {
+              "node_path": "TurboTimberEvolution/wing_left_fixed",
+              "surface": 4,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/wing_right_fixed",
+              "surface": 4,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
+      ],
+      "marking_slots": [
+        {
+          "id": "registration",
+          "label": "Registration",
+          "max_chars": 12,
+          "targets": [
+            {
+              "node_path": "TurboTimberEvolution/fuselage_core",
+              "position_m": [
+                -0.06077,
+                0,
+                0.17
+              ],
+              "direction": [
+                -1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.12,
+              "height_m": 0.03
+            },
+            {
+              "node_path": "TurboTimberEvolution/fuselage_core",
+              "position_m": [
+                0.06119,
+                0,
+                0.17
+              ],
+              "direction": [
+                1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.12,
+              "height_m": 0.03
+            }
+          ]
+        }
+      ],
+      "smoke_slots": [
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.002,
+            0.842
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -0.782752,
+            0.077909,
+            0.186293
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            0.782752,
+            0.077909,
+            0.186293
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        }
+      ],
+      "presentation_engine_version": "4.8.0",
+      "presentation_sources": [
+        {
+          "path": "res://audio/mechanical_profile.gd",
+          "sha256": "ebc29285b019ede829f781f7ae4569031ebecfe7c35aadf9ca7225d1c122ffbb"
+        },
+        {
+          "path": "res://render/aircraft_customization.gd",
+          "sha256": "f47add6fd0561fca751fe31e666a7040f4fab26fdcc777c7dea4d6aadc1dc6f5"
+        },
+        {
+          "path": "res://render/lighting/aircraft_lighting_rig_3d.gd",
+          "sha256": "d44c6bf3c6818915ba9b11007d8ab984323814f6ea394481997637f0fa5c7696"
+        },
+        {
+          "path": "res://render/lighting/lighting_patterns.gd",
+          "sha256": "c142706c39e005515b724b6fb94098bb08a2f6edba0b2e00ad5c13c99cce99a6"
+        },
+        {
+          "path": "res://render/lighting/lighting_profile.gd",
+          "sha256": "a6c3e19e8d4545fce2462717d9bce62cdf8a73f05bebf0c455355b4bf50edfe4"
+        },
+        {
+          "path": "res://render/lighting/lighting_vfx.gd",
+          "sha256": "34ffe7d6b331bb233194e6632d08d7b895f6e6e9b38ee791ebbfae070c4a7482"
+        },
+        {
+          "path": "res://render/lighting/rgb_lamp.gdshader",
+          "sha256": "68c536e8499b14d1f3b64ef638f48bfe597b9433bbe6c2501551ca4c560abf28"
+        },
+        {
+          "path": "res://render/lighting/rgb_strip.gdshader",
+          "sha256": "7f576e812ee41576e733d01f6191cc5286821dcf58c28d60b557becee43cc02a"
+        },
+        {
+          "path": "res://render/presentation_sources.gd",
+          "sha256": "a746ccb0e60c1baf2cfcee60f4516c6efaa0ccd7af8f4eb60e7977d58732cdfb"
+        },
+        {
+          "path": "res://render/smoke/exhaust.gd",
+          "sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+        },
+        {
+          "path": "res://render/smoke/process.gdshader",
+          "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+        },
+        {
+          "path": "res://render/smoke/profile_process.gdshader",
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke.gd",
+          "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke_schedule.gd",
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
+        },
+        {
+          "path": "res://render/world/aircraft_light_state.gd",
+          "sha256": "fb36c123dc7fce796fe7d35fe92f3fb5536f560783283cc102e063d01eac47ec"
+        },
+        {
+          "path": "res://render/world/aircraft_lights.gd",
+          "sha256": "885cf1e45f784253e1001176331eb54aa794fe8b53563f96f6056e551a31d07e"
+        },
+        {
+          "path": "res://render/world/engine_srgb.gdshaderinc",
+          "sha256": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799"
+        },
+        {
+          "path": "res://render/world/exposure.gd",
+          "sha256": "c25487774ecec2d0957eef4825f43884594b3bfc365fbeefdc4ad6c80a518e19"
+        },
+        {
+          "path": "res://render/world/led_strip.gdshader",
+          "sha256": "d91e18eb224b8636897be40c83f3c2af781964f2d0ff031fca2bb3c2c73430dc"
+        },
+        {
+          "path": "res://render/world/light_sprite.gdshader",
+          "sha256": "3071b64ba8b5a0cb4e041c914227751056f82ec77a745d40cc221242a76467d0"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "8abf3dad37fc524f63032a2bff73bc4c1aa66c6096b7c9fd360626fa54a4c57b"
+        }
+      ],
+      "slots_sha256": "ed1196bf940d0c3f0cf606a1691132da33270ea00549ff48d68affd671cb95db"
+    }
+  ]
+}

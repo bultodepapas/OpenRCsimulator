@@ -1,0 +1,33 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   no card until a release is known
+ok   card shown, in English
+ok   Fly keeps the focus
+ok   hangs from the top-right corner, outside the column: nothing on Home moved
+ok   contrast: notice text on its card 9.34:1 >= 4.5
+ok   contrast: Download 13.00:1 >= 4.5
+ok   contrast: Hide 13.00:1 >= 4.5
+ok   Spanish
+ok   Enter on Download asks for the release page
+ok   Right reaches Hide
+ok   Enter on Hide hides the card and names the version
+ok   Hide gives the keyboard back to Fly
+ok   a newer release shows the same card again
+ok   development run: no checker, no request
+ok   checker added under the interactive route
+ok   the fake API's rc7 shows over Home
+ok   Fly keeps the focus while the notice appears
+ok   Download opens the release page through app_root
+ok   a browser that cannot open is reported on Home
+ok   withdrawn: card hidden and forgotten
+ok   announced again: card back
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Fly started the flight
+ok   after End flight the new Home shows the notice again
+ok   Fly has the focus on the rebuilt Home
+ok   Hide: card gone, version remembered in the cache
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   after hiding, the rebuilt Home has no card
+ok   preference saved
+ok   [updates] check=false: no checker, no request, no card
+all UI update notice checks passed

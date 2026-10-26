@@ -1,0 +1,26 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   the flight world carries the sun optics
+ok   processed after Main, so it sees this frame's World.update
+ok   afterimage layer under every interface layer
+ok   simulation time advanced
+ok   the pilot view is an eye
+ok   a second on the sun bleaches the eye
+ok   the veil is drawn
+ok   an eye view starts the skyline
+ok   a sun behind the clubhouse is hidden
+ok   a sun above it is clear
+ok   lens views keep the constant prior
+ok   the patch remains after looking away
+ok   a held clock holds the patch
+ok   chase is a lens
+ok   the eye recovers while the chase view shows
+ok   back in the pilot view the eye is an eye again
+ok   a restart rests the eye
+ok   a cap shades a high sun from a low gaze
+ok   a cap does not help looking at the sun
+ok   sunglasses slow the bleaching
+ok   strength 0: no veil
+ok   strength 0: no bleaching
+SUN flight: 22 checks, 0 failed

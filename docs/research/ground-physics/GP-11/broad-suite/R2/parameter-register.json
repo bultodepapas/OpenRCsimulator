@@ -1,0 +1,123 @@
+{
+  "format": "openrc-parameter-register-review v1",
+  "utc": "2026-10-26T11:39:55.120492+00:00",
+  "main_sources": [
+    {
+      "path": "research/aircraft-standardization/parameter_register.py",
+      "sha256": "43918f28e7325144674edc394fa215162f074c49b03be722be22a39b19751036",
+      "bytes": 14777
+    },
+    {
+      "path": "docs/research/aircraft-standardization/AS-01/parameters.md",
+      "sha256": "70519d489e12cb9dc3ecc39d4931139577bbc6dc30b875f1410faeac48ab0bbd",
+      "bytes": 44480
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\parameter_register.py"
+      ],
+      "exit_code": 0,
+      "stdout": "docs\\research\\aircraft-standardization\\AS-01\\parameters.md\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\parameter_register.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "parameter register is current\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite\\research\\aircraft-standardization\\parameter_register.py"
+      ],
+      "exit_code": 0,
+      "stdout": "docs\\research\\aircraft-standardization\\AS-01\\parameters.md\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\gp11-full-suite\\research\\aircraft-standardization\\parameter_register.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "parameter register is current\n",
+      "stderr": ""
+    }
+  ],
+  "reviewed_quantity_paths": [
+    "ground.normal_profiles[].parameters.compression_damping",
+    "ground.normal_profiles[].parameters.damping_onset",
+    "ground.normal_profiles[].parameters.rebound_damping",
+    "ground.normal_profiles[].parameters.stiffness",
+    "ground.normal_profiles[].parameters.stop_damping",
+    "ground.normal_profiles[].parameters.stop_exponent",
+    "ground.normal_profiles[].parameters.stop_scale",
+    "ground.normal_profiles[].parameters.stop_stiffness",
+    "ground.normal_profiles[].parameters.stroke",
+    "ground.rotor_partition.rotors[].transverse_inertia",
+    "ground.steering_profiles[].parameters.angle_limit",
+    "ground.steering_profiles[].parameters.lag_time",
+    "ground.steering_profiles[].parameters.max_acceleration",
+    "ground.steering_profiles[].parameters.max_rate",
+    "ground.steering_profiles[].parameters.signed_full_scale_angle",
+    "ground.supports[].axle_le",
+    "ground.supports[].hub_le",
+    "ground.supports[].steering_axis_le"
+  ],
+  "unknown_quantity_rejected": [
+    "ground.normal_profiles[].parameters.unreviewed_new_quantity",
+    "ground.supports[].unreviewed_new_quantity",
+    "ground.steering_profiles[].parameters.unreviewed_new_quantity"
+  ],
+  "main_rows": 235,
+  "isolated_rows": 228,
+  "main_only_rows": [
+    "`aero.surfaces.tailless.elevon_chord_fraction`",
+    "`aero.surfaces.tailless.elevon_coverage`",
+    "`aero.surfaces.tailless.station_x`",
+    "`controls.max_throw.elevon`",
+    "`crash_tolerance.crash_depth`",
+    "`crash_tolerance.presentation_durability`",
+    "`crash_tolerance.terminal_specific_energy`"
+  ],
+  "different_shared_rows": [
+    "`aero.coefficients.Cndr`",
+    "`aero.surfaces.vertical.control_effectiveness`"
+  ],
+  "isolated_doc_regenerated_from_frozen_schema": true,
+  "runtime_source_rows_unchanged_from_R1": 151,
+  "main_existing_rows_preserved": {
+    "head_rows": 217,
+    "generated_rows": 235,
+    "changed_existing_rows": [],
+    "added_rows": [
+      "`ground.normal_profiles[].parameters.compression_damping`",
+      "`ground.normal_profiles[].parameters.damping_onset`",
+      "`ground.normal_profiles[].parameters.rebound_damping`",
+      "`ground.normal_profiles[].parameters.stiffness`",
+      "`ground.normal_profiles[].parameters.stop_damping`",
+      "`ground.normal_profiles[].parameters.stop_exponent`",
+      "`ground.normal_profiles[].parameters.stop_scale`",
+      "`ground.normal_profiles[].parameters.stop_stiffness`",
+      "`ground.normal_profiles[].parameters.stroke`",
+      "`ground.rotor_partition.rotors[].transverse_inertia`",
+      "`ground.steering_profiles[].parameters.angle_limit`",
+      "`ground.steering_profiles[].parameters.lag_time`",
+      "`ground.steering_profiles[].parameters.max_acceleration`",
+      "`ground.steering_profiles[].parameters.max_rate`",
+      "`ground.steering_profiles[].parameters.signed_full_scale_angle`",
+      "`ground.supports[].axle_le`",
+      "`ground.supports[].hub_le`",
+      "`ground.supports[].steering_axis_le`"
+    ]
+  }
+}

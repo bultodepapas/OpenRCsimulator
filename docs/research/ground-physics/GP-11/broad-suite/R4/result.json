@@ -1,0 +1,21 @@
+{
+  "format": "openrc-frozen-composite-suite v1",
+  "status": "failed",
+  "complete": true,
+  "scope": "sealed R2 all1374script parse + R4 original offline/units/integration harness with only HERE adjustment and parse-loop omission; prior151GP11 runtime+R1wrappers+register+7derivedimport-pin metadata outputs; laterGP12/Electric/Step excluded",
+  "source_before": "source-before.json",
+  "app_source_before": "app-source-after-generation.json",
+  "pin_propagation": "pin-propagation.json",
+  "harness": "harness-no-repeat-parse.sh",
+  "log": "full-suite.log",
+  "one_command_app_test_pass": false,
+  "session_id": 97761,
+  "started_utc": "2026-10-26T12:25:42.406678+00:00",
+  "exit_code": 1,
+  "stop": "AUD12 default_bus_layout.tres freshness check compares checkoutCRLF to nativeLF serialization; settings identical afterUID/EOL normalization",
+  "failure_report": "positive/godot-veyj9gmo/report.json",
+  "attribution": "audio-layout-attribution.json",
+  "source_unchanged": true,
+  "app_source_dependency_paths_verified": 4034,
+  "source_paths_verified": 160
+}

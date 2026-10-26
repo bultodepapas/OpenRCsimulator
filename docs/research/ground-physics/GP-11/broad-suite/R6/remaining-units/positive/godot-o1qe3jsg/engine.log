@@ -1,0 +1,49 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+ok   level, full tank: the carburetor 1 cm above the surface sees −ρg·0.01 (-84.0 Pa) 
+ok   level, half tank: the surface drops to the centre, −ρg·0.03 
+ok   vertical up-line, full tank: fuel lifted over 0.12 − 0.05 m (-588 Pa) 
+ok   vertical up-line, 10 %% tank: lifted over 0.12 + 0.04 m 
+ok   vertical dive pushes fuel to the carburetor (+1429 Pa) 
+ok   no apparent gravity, no head 
+ok   idle admission gives the idle drive 
+ok   full admission at rated rpm gives the full-throttle drive 
+ok   the drive never exceeds its full-throttle value 
+ok   needled condition: k = 1 
+ok   k = sqrt((p + Δp)/(p + Δp_needled)) = 0.9564 
+ok   a head beyond the drive starves the carburetor (k = 0) 
+ok   flooding is bounded at 2.0 
+ok   the same up-line head leans the idle far more than full throttle (k 0.804 vs 0.956) 
+ok   zero-g live stage remains referenced to standard 1 g needle calibration { &"ok": true, &"factor": 1.00707802727187, &"head_pa": 0.0, &"needled_head_pa": -84.0429905, &"drive_pa": 6000.0, &"g_eff": [0.0, 0.0, 0.0], &"fill_fraction": 1.0, &"usable_fuel_kg": 1.0, &"pickup_margin_m": 0.0, &"pickup_surface_defined": false, &"pickup_wet": true, &"alpha_body_rad_s2": [0.0, 0.0, 0.0], &"omega_body_rad_s": [0.0, 0.0, 0.0] } expected factor=1.00707802727187
+ok   scalar closure candidate matches full zero-g feed evaluation bit-for-bit candidate=1.00707802727187 full=1.00707802727187
+ok   scalar closure candidate preserves the submerged pickup result exactly candidate=1.38012327357894 full=1.38012327357894
+ok   scalar closure candidate preserves a dry authored pickup result exactly candidate=0.0 full=0.0
+ok   a stationary point under positive yaw acceleration sees the opposite tangential apparent gravity [0.0, -1.0, 0.0]
+ok   a stationary point one metre from a 2 rad/s spin axis sees 4 m/s² outward apparent gravity [4.0, 0.0, 0.0]
+ok   apparent-gravity calculation refuses zero live mass 
+ok   smooth weak-coupling fixed point resolves to its analytic root factor=0.9375 residual=0.0
+ok   normal feed closure uses a bounded small number of source evaluations 4
+ok   discontinuous no-root fixture fails rather than accepting a narrow bracket evaluations=35 residual=1.0
+ok   nonfinite endpoint evaluation fails closed 
+paired feed-stage work: no-feed path=1 lifecycle evaluation; weak closure=4; bounded adversarial closure=35
+ok   the 55AX Stik loads with its fuel_feed block []
+ok   premix density comes from the profile's own blend (856.9 kg/m³) 
+ok   the carburetor lies ahead of the tank in body axes 
+ok   the block is optional 
+ok   a carburetor the idle drive cannot feed in level flight is refused 
+ok   a full-throttle drive below the idle drive is refused 
+ok   unknown fuel_feed fields are refused 
+ok   an unsourced pressure is refused 
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   trimmed level flight: the fuel feels 1 g straight down the body z axis [-0.28501610395243, -0.00006601455046, 9.80264098770151] 
+ok   trimmed level flight with a full tank runs needled (k 0.9945) 
+ok   actual feed-enabled stage solves its factor residual within the declared bound { &"factor": 0.99447476920511, &"residual": 0.0, &"evaluations": 4, &"iterations": 1 }
+ok   actual weak-coupling stage uses fewer than eight factor samples { &"factor": 0.99447476920511, &"residual": 0.0, &"evaluations": 4, &"iterations": 1 }
+ok   full throttle from 12 m/s throws the fuel aft (5.6 m/s²) 
+ok   and leans the engine (k 0.928, mixture 0.975 vs 1.144 trimmed) 
+ok   a low tank leans it further (k 0.789 vs 0.928) 
+ok   a dive that drag is slowing throws the fuel forward and richens (k 1.379, g aft -8.1 m/s²) 
+NITRO-05 fuel feed: 41 checks, 0 failed

@@ -1,0 +1,7 @@
+23 invocations: 22 passed, 1 failed or invalid.
+
+res://tests/test_aircraft_liveries.gd [process_exit]
+Inspect the child exit status and final engine output.
+process_exit=1; complete=True; errors=0; warnings=0
+
+Evidence: godot-hq3nzkd_/report.json and engine.log

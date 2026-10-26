@@ -1,0 +1,954 @@
+== import resource dependencies
+== LU-30: downloaded power-line extracts stay current
+Cable profile matches the source extraction; all 128 faces point outward
+Verified app\data\scenery\power_insulator.json: 244 vertices, 372 triangles (from 1488), 47 source components, 8 retained shells
+Source bounds [[0.935499966, 1.104499936], [8.520000458, 8.760000229], [0.111938365, 0.280938357]]; output dimensions 0.3 × 1.1 × 0.3 m
+== PT1h-R1: real-engine diagnostic failure matrix
+.
+----------------------------------------------------------------------
+Ran 1 test in 3.690s
+
+OK
+...
+----------------------------------------------------------------------
+Ran 3 tests in 36.113s
+
+OK
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 5.888s
+
+OK
+== HELI-03a/04: independent mean-inflow reference stays current
+.................
+----------------------------------------------------------------------
+Ran 17 tests in 0.117s
+
+OK
+oracle check: OK (oracle.json)
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-04 inflow: 4153 checks, 0 failed
+== HELI-04-R1/05: transient flow and main-rotor references stay current
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 54.986s
+
+OK
+................
+----------------------------------------------------------------------
+Ran 16 tests in 0.154s
+
+OK
+dynamic oracle check: OK (dynamic_oracle.json)
+oracle check: OK (main_rotor_oracle.json)
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-04-R1 dynamic inflow: 240 checks, 0 failed
+DYNAMIC_QUALIFICATION=[{"fixture":"hover_target_step","known_seam_refined_peak_error_mps":0.00000199654892085732,"raw_peak_error_mps":0.00552203634030835},{"fixture":"C_increasing","known_seam_refined_peak_error_mps":0.000000136527718908042,"raw_peak_error_mps":0.000194617379269957},{"fixture":"C_decreasing","known_seam_refined_peak_error_mps":0.00000015784688667253,"raw_peak_error_mps":0.000200262391818917},{"fixture":"M_increasing","known_seam_refined_peak_error_mps":0.000108233512220224,"raw_peak_error_mps":0.00979315979599704},{"fixture":"M_decreasing","known_seam_refined_peak_error_mps":0.000376269988705324,"raw_peak_error_mps":0.0115563480526628},{"fixture":"feedback_flow_ramp","known_seam_refined_peak_error_mps":0.000000217608251418255,"raw_peak_error_mps":0.000000217608251418255}]
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-05 main rotor: 768 checks, 0 failed
+== HELI-06a: linearized tail-rotor reference stays current
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.140s
+
+OK
+tail rotor oracle is current
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-06a tail rotor: 917 checks, 0 failed
+== HELI-06b/c: passive airframe and joint aerodynamic stage
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.140s
+
+OK
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-06b airframe: 1799 checks, 0 failed
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+HELI-06c aerodynamic stage: 49 checks, 0 failed
+== HELI-16: generated experimental rotorcraft quantities stay current
+checked C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\app\data\aircraft\xcell_60_research.json
+checked C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\app\data\aircraft\hx700_electric_3d_experimental.json
+checked C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\app\data\schema\openrc-rotorcraft-v2.schema.json
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.004s
+
+OK
+== HELI-36a: advanced laboratory candidate identity and admission
+checked C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\app\data\aircraft\hx700_electric_3d_experimental.json
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
+== HELI-25c: articulated inspection source, bindings and copy identity
+{
+  "source_unchanged": true,
+  "bindings": 108,
+  "linkages": 9,
+  "max_source_basis_error": 3.324650580942279e-06,
+  "max_source_position_error_m": 2.741410369822006e-07,
+  "max_rod_error_m": 3.26312243892346e-08,
+  "glb_sha256": "f5f7de25a586b65b0f77ab17497665cc5f47cc409de6c531cadf490676159e47",
+  "profile_sha256": "0fc621542b5ed523f903518fdbb3508c4c98672de59f0cdeea089eeb6c469d23"
+}
+HX-700 mechanical equations match source
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.173s
+
+OK
+== AS-01/02: versioned aircraft contract and migration stay current
+Schema is current: C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\app\data\schema\openrc-aircraft-v2.schema.json
+parameter register is current
+app/data/aircraft/jensen_ugly_stik_60.json: jensen-das-ugly-stik-60 v2, glow_prop, prescribed_fuel
+app/data/aircraft/gp_extra_300s_60.json: gp-extra-300s-60 v2, glow_prop, finite_glow_fuel
+app/data/aircraft/p51d_mustang_120.json: p51d-mustang-120 v2, glow_prop, finite_liquid_fuel
+app/data/aircraft/sebart_avanti_s_a200.json: sebart-avanti-s-a200-p100rx v2, turbine, finite_liquid_fuel
+app/data/aircraft/synthetic_stik_electric_4s.json: synthetic_stik_electric_4s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_6s.json: synthetic_stik_electric_6s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_4s_battery.json: synthetic_stik_electric_4s_battery v2, electric_prop, ocv_resistance
+app/data/aircraft/synthetic_stik_electric_6s_battery.json: synthetic_stik_electric_6s_battery v2, electric_prop, ocv_resistance
+test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity (__main__.AircraftMigration.test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity) ... ok
+test_check_requires_v2_source_instead_of_upgrading_v1_in_memory (__main__.AircraftMigration.test_check_requires_v2_source_instead_of_upgrading_v1_in_memory) ... ok
+test_current_extra_finite_glow_v2_is_idempotent (__main__.AircraftMigration.test_current_extra_finite_glow_v2_is_idempotent) ... ok
+test_current_finite_gasoline_v2_is_idempotent_with_historical_v1_gear_policy (__main__.AircraftMigration.test_current_finite_gasoline_v2_is_idempotent_with_historical_v1_gear_policy) ... ok
+test_current_finite_turbine_v2_is_idempotent_with_historical_v1_gear_policy (__main__.AircraftMigration.test_current_finite_turbine_v2_is_idempotent_with_historical_v1_gear_policy) ... ok
+test_empty_tank_projection_uses_full_inventory_cg_for_v1 (__main__.AircraftMigration.test_empty_tank_projection_uses_full_inventory_cg_for_v1) ... ok
+test_finite_current_routes_keep_explicit_historical_v1_projection (__main__.AircraftMigration.test_finite_current_routes_keep_explicit_historical_v1_projection) ... ok
+test_legacy_omissions_become_only_the_reviewed_explicit_defaults (__main__.AircraftMigration.test_legacy_omissions_become_only_the_reviewed_explicit_defaults) ... ok
+test_legacy_projection_preserves_malformed_plan_cg (__main__.AircraftMigration.test_legacy_projection_preserves_malformed_plan_cg) ... ok
+test_legacy_projection_removes_v2_physical_identity_metadata (__main__.AircraftMigration.test_legacy_projection_removes_v2_physical_identity_metadata) ... ok
+test_unknown_id_format_and_legacy_conflicts_fail_closed (__main__.AircraftMigration.test_unknown_id_format_and_legacy_conflicts_fail_closed) ... ok
+test_v2_conflicts_are_rejected_without_mutation (__main__.AircraftMigration.test_v2_conflicts_are_rejected_without_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.416s
+
+OK
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.025s
+
+OK
+== AS-07/09: shared aircraft modules and generated model bindings
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.614s
+
+OK
+model manifests current (6 visual families)
+.................
+----------------------------------------------------------------------
+Ran 17 tests in 23.404s
+
+OK
+== CR-29: sourced economics catalog and aircraft coverage stay current
+CR-28: offers, integer cents, baseline coverage, fleet IDs, examples and generated freshness OK
+runtime economics sidecar is current (10 aircraft routes)
+..................................................................
+----------------------------------------------------------------------
+Ran 66 tests in 0.453s
+
+OK
+{"after_offers": 1, "before_offers": 1, "change_counts": {}, "changed_offers": 0, "unchanged_offers": 1}
+== AE-01: generated Workshop descriptors and exact-byte checkout bindings
+9 Workshop descriptors are current.
+........
+----------------------------------------------------------------------
+Ran 8 tests in 2.671s
+
+OK
+== AE-24: generated presentation bindings and source pins stay current
+customization bindings current (6 visual families)
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.083s
+
+OK
+customization bindings current (6 visual families)
+== AUD-12: generated Master safety-limiter bus layout stays current
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+bus layout current: res://default_bus_layout.tres
+== BAT-05/06: generated battery data and the independent pack_ecm reference stay current
+references/battery-energy not present: input hash check skipped (fit_results consistency only)
+check: OK
+...................
+----------------------------------------------------------------------
+Ran 19 tests in 2.897s
+
+OK
+== NITRO-02: distinct 2T/4T profiles and finite-fuel installations stay current
+Glow profile generator: current (6 files)
+Glow installations current
+Glow installation schema current; 6 bundled installations and bound profiles validated
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 0.039s
+
+OK
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 1.630s
+
+OK
+...........
+----------------------------------------------------------------------
+Ran 11 tests in 2.099s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.007s
+
+OK
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+OK
+....
+----------------------------------------------------------------------
+Ran 4 tests in 31.814s
+
+OK
+...
+----------------------------------------------------------------------
+Ran 3 tests in 38.436s
+
+OK
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.703s
+
+OK
+test_cli_generates_operator_record_and_separate_masked_cards (__main__.PilotReviewTests.test_cli_generates_operator_record_and_separate_masked_cards) ... ok
+test_condition_order_is_counterbalanced_inside_each_family (__main__.PilotReviewTests.test_condition_order_is_counterbalanced_inside_each_family) ... ok
+test_exact_profiles_props_and_source_hashes_are_recorded (__main__.PilotReviewTests.test_exact_profiles_props_and_source_hashes_are_recorded) ... ok
+test_not_performed_template_cannot_contain_fabricated_ratings (__main__.PilotReviewTests.test_not_performed_template_cannot_contain_fabricated_ratings) ... ok
+test_pilot_cards_do_not_leak_profile_or_audio_condition (__main__.PilotReviewTests.test_pilot_cards_do_not_leak_profile_or_audio_condition) ... ok
+test_schedule_has_exact_family_maneuver_condition_and_repeat_coverage (__main__.PilotReviewTests.test_schedule_has_exact_family_maneuver_condition_and_repeat_coverage) ... ok
+test_seed_range_is_checked (__main__.PilotReviewTests.test_seed_range_is_checked) ... ok
+test_seeded_schedule_is_stable_and_different_seeds_change_order (__main__.PilotReviewTests.test_seeded_schedule_is_stable_and_different_seeds_change_order) ... ok
+test_template_is_not_performed_and_validator_rejects_false_completion (__main__.PilotReviewTests.test_template_is_not_performed_and_validator_rejects_false_completion) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.085s
+
+OK
+Wrote 48 randomized trials; status remains not_performed: C:\Users\bulto\AppData\Local\Temp\tmplmox6nb1\operator.json
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.200s
+
+OK
+| Aircraft data file | Catalog IDs | Energy | Plan state | Declared / empty / full mass kg | Range | SM declared / empty / full % MAC | Neutral point | Flags |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| battery/turbo_lumber_evolution_4s_pack.json | turbo-lumber-evolution | pack_ecm | declared | 2.190 / n/a / n/a | not_declared | 26.0 / n/a / n/a | 0.1147 m | cg_range_not_declared |
+| f4u_corsair_250.json | f4u-corsair-250 | finite_liquid_fuel | empty | 21.500 / 21.126 / 21.874 | not_declared | n/a / n/a / n/a | missing | missing_neutral_point, cg_range_not_declared |
+| gp_extra_300s_60.json | gp-extra-300s-60 | finite_glow_fuel | empty | 3.820 / 3.515 / 3.820 | within | 16.3 / 12.5 / 16.3 | 0.1470 m | n/a |
+| jensen_ugly_stik_60.json | jensen-das-ugly-stik-60 | prescribed_fuel | empty | 2.879 / 2.729 / 3.029 | not_declared | 7.6 / 3.8 / 11.0 | 0.1326 m | cg_range_not_declared |
+| p51d_mustang_120.json | p51d-mustang-120 | finite_liquid_fuel | empty | 21.500 / 21.126 / 21.874 | not_declared | 8.3 / 7.2 / 9.4 | 0.2144 m | cg_range_not_declared |
+| sebart_avanti_s_a200.json | sebart-avanti-s-a200-p100rx | finite_liquid_fuel | empty | 11.439 / 10.142 / 12.735 | not_declared | 11.2 / 8.5 / 13.3 | 0.2709 m | cg_range_not_declared |
+| stik_glow_55ax_2t.json | stik-glow-55ax-2t | finite_glow_fuel | empty | 2.766 / 2.467 / 2.766 | not_declared | 11.7 / 3.8 / 11.7 | 0.1326 m | cg_range_not_declared |
+| stik_glow_55ax_2t_apc_13x6.json | n/a | finite_glow_fuel | empty | 2.777 / 2.477 / 2.777 | not_declared | 11.7 / 3.8 / 11.7 | 0.1326 m | cg_range_not_declared |
+| stik_glow_61fx_2t.json | stik-glow-61fx-2t | finite_glow_fuel | empty | 3.029 / 2.729 / 3.029 | not_declared | 11.0 / 3.8 / 11.0 | 0.1326 m | cg_range_not_declared |
+| stik_glow_fs64v_4t.json | stik-glow-fs64v-4t | finite_glow_fuel | empty | 2.626 / 2.437 / 2.626 | not_declared | 9.0 / 3.8 / 9.0 | 0.1326 m | cg_range_not_declared |
+| stik_glow_fs64v_4t_apc_13x6.json | n/a | finite_glow_fuel | empty | 2.610 / 2.421 / 2.610 | not_declared | 9.1 / 3.8 / 9.1 | 0.1326 m | cg_range_not_declared |
+| synthetic_stik_electric_4s.json | n/a | fixed_voltage | declared | 2.885 / n/a / n/a | not_declared | n/a / n/a / n/a | missing | missing_neutral_point, cg_range_not_declared |
+| synthetic_stik_electric_4s_battery.json | n/a | ocv_resistance | declared | 2.885 / n/a / n/a | not_declared | n/a / n/a / n/a | missing | missing_neutral_point, cg_range_not_declared |
+| synthetic_stik_electric_6s.json | n/a | fixed_voltage | declared | 2.885 / n/a / n/a | not_declared | n/a / n/a / n/a | missing | missing_neutral_point, cg_range_not_declared |
+| synthetic_stik_electric_6s_battery.json | n/a | ocv_resistance | declared | 2.885 / n/a / n/a | not_declared | n/a / n/a / n/a | missing | missing_neutral_point, cg_range_not_declared |
+| turbo_lumber_evolution.json | turbo-lumber-evolution | fixed_voltage | declared | 2.190 / n/a / n/a | not_declared | 26.0 / n/a / n/a | 0.1147 m | cg_range_not_declared |
+
+Catalog airplane files: 10/10 covered; non-catalog data variants: 6.
+mass/balance: 16 airplane configurations, catalog files 10/10 covered, 6 data variants; every registered static margin positive
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.013s
+
+OK
+== P51-16: separated hardware inventory and physical inertia stay consistent
+P51-15 inventory oracle PASS: mass 21.499999 kg, CG [+0.172085, -0.070776] m, Jxx 3.831650 / Jyy 6.836389 / Jzz 9.937026 kg·m² (ΔJxx/ΔJzz +0.449604)
+== D11g: Stik rate derivatives and provenance match the current local law
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+15 m/s level trim: α 4.196°; law section-plane-source-weighted-wake-velocity-v2
+| α° | Cmq about CG | CLq | Cnr about CG |
+| 0 | -7.8828 | 2.4658 | -0.13681 |
+| 2 | -7.8959 | 2.4103 | -0.13546 |
+| 4 | -7.9251 | 2.3618 | -0.13377 |
+| 6 | -7.9701 | 2.3207 | -0.13173 |
+about CG at trim: Cmq -7.92882, CLq 2.35743, Cnr -0.13358
+about ARP at trim: Cmq -8.08210, CLq 2.35743, Cnr -0.13604
+4 significant digits to store: Cmq -8.082, CLq 2.357, Cnr -0.136
+This is a model consistency derivation, not physical validation.
+data check: current
+== AV-15: independent geometry, inventory and fixed-build sensitivity checks
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.194s
+
+OK
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.794s
+
+OK
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.030s
+
+OK
+== L6b offline tree placement matches committed positions
+{
+  "seed_near": 620101,
+  "seed_far": 620102,
+  "recipe": "groves-v2",
+  "near_count": 480,
+  "far_count": 1200,
+  "near_positions_sha256": "437c20ac42374e57da4a805205288f57b3ac9d8c0fed9ca196b6c8c53ecaf9eb",
+  "far_positions_sha256": "02f0cf1423520de7d1ff080b46d38baa6dc08f754f52d893178f91dfa38f5ccb",
+  "positions_sha256": "18801c31358ab5329a51867985b20c22cddb493be069d1d74adfb7955748d2df",
+  "bounds_m": {
+    "north_min_m": -1318.75,
+    "north_max_m": 1194.75,
+    "east_min_m": -1277.5,
+    "east_max_m": 1176.25
+  },
+  "far_bounds_m": {
+    "north_min_m": -1318.75,
+    "north_max_m": 1194.75,
+    "east_min_m": -1277.5,
+    "east_max_m": 1176.25
+  },
+  "patch_counts": [
+    55,
+    64,
+    72,
+    82,
+    88,
+    92,
+    96,
+    102,
+    110,
+    124,
+    142,
+    173
+  ],
+  "patches": [
+    {
+      "sector": 0,
+      "north_m": 1113.25,
+      "east_m": 64.0,
+      "count": 55,
+      "start_index": 0,
+      "end_index": 55,
+      "semi_major_m": 68.0,
+      "semi_minor_m": 43.0,
+      "orientation_deg": 158.661,
+      "orientation_rad": 2.769162935477273,
+      "outline_phase_rad": 1.6998095672515223,
+      "notch_angle_rad": 0.6430919950615092,
+      "notch_width_rad": 0.49546648302948176,
+      "outer_radius_m": 81.6,
+      "notch_angle_deg": 36.846,
+      "notch_width_deg": 28.388,
+      "notch_depth": 0.2728,
+      "outline_notch_depth": 0.27275932156482774,
+      "bounds_m": {
+        "north_min_m": 1053.25,
+        "north_max_m": 1164.0,
+        "east_min_m": 12.5,
+        "east_max_m": 102.75
+      }
+    },
+    {
+      "sector": 1,
+      "north_m": 476.5,
+      "east_m": 1123.25,
+      "count": 64,
+      "start_index": 55,
+      "end_index": 119,
+      "semi_major_m": 72.0,
+      "semi_minor_m": 50.0,
+      "orientation_deg": 143.69,
+      "orientation_rad": 2.5078633429141353,
+      "outline_phase_rad": 4.606712419754341,
+      "notch_angle_rad": 2.876047082597123,
+      "notch_width_rad": 0.5406625292357728,
+      "outer_radius_m": 86.4,
+      "notch_angle_deg": 164.785,
+      "notch_width_deg": 30.978,
+      "notch_depth": 0.1772,
+      "outline_notch_depth": 0.17719104028969407,
+      "bounds_m": {
+        "north_min_m": 425.0,
+        "north_max_m": 542.25,
+        "east_min_m": 1069.5,
+        "east_max_m": 1176.25
+      }
+    },
+    {
+      "sector": 2,
+      "north_m": -293.5,
+      "east_m": 827.0,
+      "count": 72,
+      "start_index": 119,
+      "end_index": 191,
+      "semi_major_m": 78.0,
+      "semi_minor_m": 48.0,
+      "orientation_deg": 35.329,
+      "orientation_rad": 0.6166064313486351,
+      "outline_phase_rad": 5.369769621827494,
+      "notch_angle_rad": 1.1745910598053584,
+      "notch_width_rad": 0.33397344101545007,
+      "outer_radius_m": 93.6,
+      "notch_angle_deg": 67.299,
+      "notch_width_deg": 19.135,
+      "notch_depth": 0.1706,
+      "outline_notch_depth": 0.17055520623230383,
+      "bounds_m": {
+        "north_min_m": -360.0,
+        "north_max_m": -228.75,
+        "east_min_m": 774.0,
+        "east_max_m": 886.75
+      }
+    },
+    {
+      "sector": 3,
+      "north_m": -1007.75,
+      "east_m": 408.0,
+      "count": 82,
+      "start_index": 191,
+      "end_index": 273,
+      "semi_major_m": 82.0,
+      "semi_minor_m": 56.0,
+      "orientation_deg": 78.608,
+      "orientation_rad": 1.3719679207548656,
+      "outline_phase_rad": 3.526611809639561,
+      "notch_angle_rad": 0.29286017910188206,
+      "notch_width_rad": 0.5611237656504857,
+      "outer_radius_m": 98.4,
+      "notch_angle_deg": 16.78,
+      "notch_width_deg": 32.15,
+      "notch_depth": 0.181,
+      "outline_notch_depth": 0.18100045597954414,
+      "bounds_m": {
+        "north_min_m": -1062.0,
+        "north_max_m": -953.0,
+        "east_min_m": 320.75,
+        "east_max_m": 486.75
+      }
+    },
+    {
+      "sector": 4,
+      "north_m": -1229.25,
+      "east_m": -305.25,
+      "count": 88,
+      "start_index": 273,
+      "end_index": 361,
+      "semi_major_m": 88.0,
+      "semi_minor_m": 60.0,
+      "orientation_deg": 165.807,
+      "orientation_rad": 2.893870057105623,
+      "outline_phase_rad": 0.08985298661010187,
+      "notch_angle_rad": 2.8942053777446843,
+      "notch_width_rad": 0.5647103067648622,
+      "outer_radius_m": 105.6,
+      "notch_angle_deg": 165.826,
+      "notch_width_deg": 32.356,
+      "notch_depth": 0.1355,
+      "outline_notch_depth": 0.13553836502015776,
+      "bounds_m": {
+        "north_min_m": -1326.5,
+        "north_max_m": -1154.75,
+        "east_min_m": -364.75,
+        "east_max_m": -241.25
+      }
+    },
+    {
+      "sector": 5,
+      "north_m": -521.25,
+      "east_m": -1202.5,
+      "count": 92,
+      "start_index": 361,
+      "end_index": 453,
+      "semi_major_m": 92.0,
+      "semi_minor_m": 58.0,
+      "orientation_deg": 29.801,
+      "orientation_rad": 0.5201336364420679,
+      "outline_phase_rad": 3.9483122298228914,
+      "notch_angle_rad": 1.75536749002183,
+      "notch_width_rad": 0.6266364869806286,
+      "outer_radius_m": 110.4,
+      "notch_angle_deg": 100.575,
+      "notch_width_deg": 35.904,
+      "notch_depth": 0.2779,
+      "outline_notch_depth": 0.2779463044289172,
+      "bounds_m": {
+        "north_min_m": -607.75,
+        "north_max_m": -428.0,
+        "east_min_m": -1266.0,
+        "east_max_m": -1129.75
+      }
+    },
+    {
+      "sector": 6,
+      "north_m": 751.0,
+      "east_m": -826.5,
+      "count": 96,
+      "start_index": 453,
+      "end_index": 549,
+      "semi_major_m": 96.0,
+      "semi_minor_m": 65.0,
+      "orientation_deg": 141.042,
+      "orientation_rad": 2.46163971606964,
+      "outline_phase_rad": 0.8611204557778075,
+      "notch_angle_rad": 0.4990428683378414,
+      "notch_width_rad": 0.3831754862280889,
+      "outer_radius_m": 115.2,
+      "notch_angle_deg": 28.593,
+      "notch_width_deg": 21.954,
+      "notch_depth": 0.2443,
+      "outline_notch_depth": 0.24425020507828193,
+      "bounds_m": {
+        "north_min_m": 667.0,
+        "north_max_m": 827.0,
+        "east_min_m": -906.25,
+        "east_max_m": -755.25
+      }
+    },
+    {
+      "sector": 7,
+      "north_m": 962.5,
+      "east_m": -214.0,
+      "count": 102,
+      "start_index": 549,
+      "end_index": 651,
+      "semi_major_m": 103.0,
+      "semi_minor_m": 62.0,
+      "orientation_deg": 26.199,
+      "orientation_rad": 0.45725194398921387,
+      "outline_phase_rad": 5.79035370470641,
+      "notch_angle_rad": 2.776823915188918,
+      "notch_width_rad": 0.5128738401525845,
+      "outer_radius_m": 123.6,
+      "notch_angle_deg": 159.1,
+      "notch_width_deg": 29.386,
+      "notch_depth": 0.1663,
+      "outline_notch_depth": 0.1662627346062395,
+      "bounds_m": {
+        "north_min_m": 871.5,
+        "north_max_m": 1046.5,
+        "east_min_m": -276.5,
+        "east_max_m": -143.5
+      }
+    },
+    {
+      "sector": 1,
+      "north_m": 712.75,
+      "east_m": 764.75,
+      "count": 110,
+      "start_index": 651,
+      "end_index": 761,
+      "semi_major_m": 108.0,
+      "semi_minor_m": 72.0,
+      "orientation_deg": 158.73,
+      "orientation_rad": 2.770359130122823,
+      "outline_phase_rad": 4.142975802886453,
+      "notch_angle_rad": 2.7176028949618987,
+      "notch_width_rad": 0.4983355980703416,
+      "outer_radius_m": 129.6,
+      "notch_angle_deg": 155.707,
+      "notch_width_deg": 28.553,
+      "notch_depth": 0.1684,
+      "outline_notch_depth": 0.1684335567618757,
+      "bounds_m": {
+        "north_min_m": 620.5,
+        "north_max_m": 826.0,
+        "east_min_m": 693.75,
+        "east_max_m": 828.75
+      }
+    },
+    {
+      "sector": 5,
+      "north_m": -341.75,
+      "east_m": -741.25,
+      "count": 124,
+      "start_index": 761,
+      "end_index": 885,
+      "semi_major_m": 120.0,
+      "semi_minor_m": 74.0,
+      "orientation_deg": 167.531,
+      "orientation_rad": 2.923973653004712,
+      "outline_phase_rad": 5.680163945560691,
+      "notch_angle_rad": 1.503472731137739,
+      "notch_width_rad": 0.4830008521834059,
+      "outer_radius_m": 144.0,
+      "notch_angle_deg": 86.143,
+      "notch_width_deg": 27.674,
+      "notch_depth": 0.1341,
+      "outline_notch_depth": 0.13414525741689362,
+      "bounds_m": {
+        "north_min_m": -452.75,
+        "north_max_m": -222.5,
+        "east_min_m": -806.75,
+        "east_max_m": -653.25
+      }
+    },
+    {
+      "sector": 5,
+      "north_m": -791.25,
+      "east_m": -990.75,
+      "count": 142,
+      "start_index": 885,
+      "end_index": 1027,
+      "semi_major_m": 135.0,
+      "semi_minor_m": 81.0,
+      "orientation_deg": 24.271,
+      "orientation_rad": 0.42361302841154236,
+      "outline_phase_rad": 2.040093655049446,
+      "notch_angle_rad": 6.025164865315226,
+      "notch_width_rad": 0.5197364298224101,
+      "outer_radius_m": 162.0,
+      "notch_angle_deg": 345.217,
+      "notch_width_deg": 29.779,
+      "notch_depth": 0.1619,
+      "outline_notch_depth": 0.16194790186279384,
+      "bounds_m": {
+        "north_min_m": -899.25,
+        "north_max_m": -669.25,
+        "east_min_m": -1094.0,
+        "east_max_m": -910.0
+      }
+    },
+    {
+      "sector": 7,
+      "north_m": 1065.25,
+      "east_m": -580.0,
+      "count": 173,
+      "start_index": 1027,
+      "end_index": 1200,
+      "semi_major_m": 155.0,
+      "semi_minor_m": 92.0,
+      "orientation_deg": 174.669,
+      "orientation_rad": 3.0485450882728764,
+      "outline_phase_rad": 0.9006792191791162,
+      "notch_angle_rad": 0.8772091941132723,
+      "notch_width_rad": 0.5497042492050058,
+      "outer_radius_m": 186.0,
+      "notch_angle_deg": 50.26,
+      "notch_width_deg": 31.496,
+      "notch_depth": 0.2097,
+      "outline_notch_depth": 0.20974203361359645,
+      "bounds_m": {
+        "north_min_m": 902.75,
+        "north_max_m": 1205.25,
+        "east_min_m": -668.75,
+        "east_max_m": -486.0
+      }
+    }
+  ],
+  "near_groups": [
+    {
+      "kind": "skyline-anchor",
+      "count": 44
+    },
+    {
+      "kind": "wood",
+      "count": 46,
+      "north_m": 372.0,
+      "east_m": -84.25,
+      "semi_major_m": 73.77,
+      "semi_minor_m": 31.76,
+      "dominant_species": 1,
+      "dominant_share": 0.783
+    },
+    {
+      "kind": "wood",
+      "count": 32,
+      "north_m": 502.75,
+      "east_m": 74.75,
+      "semi_major_m": 56.29,
+      "semi_minor_m": 28.95,
+      "dominant_species": 1,
+      "dominant_share": 0.938
+    },
+    {
+      "kind": "wood",
+      "count": 43,
+      "north_m": -224.0,
+      "east_m": 470.5,
+      "semi_major_m": 64.77,
+      "semi_minor_m": 33.81,
+      "dominant_species": 1,
+      "dominant_share": 0.86
+    },
+    {
+      "kind": "wood",
+      "count": 28,
+      "north_m": -392.25,
+      "east_m": 352.25,
+      "semi_major_m": 55.35,
+      "semi_minor_m": 25.76,
+      "dominant_species": 1,
+      "dominant_share": 0.929
+    },
+    {
+      "kind": "wood",
+      "count": 52,
+      "north_m": -396.0,
+      "east_m": 178.5,
+      "semi_major_m": 65.88,
+      "semi_minor_m": 40.2,
+      "dominant_species": 1,
+      "dominant_share": 0.923
+    },
+    {
+      "kind": "wood",
+      "count": 24,
+      "north_m": -385.25,
+      "east_m": -51.75,
+      "semi_major_m": 45.7,
+      "semi_minor_m": 26.75,
+      "dominant_species": 2,
+      "dominant_share": 0.792
+    },
+    {
+      "kind": "wood",
+      "count": 57,
+      "north_m": -218.75,
+      "east_m": -394.0,
+      "semi_major_m": 66.56,
+      "semi_minor_m": 43.61,
+      "dominant_species": 0,
+      "dominant_share": 0.789
+    },
+    {
+      "kind": "wood",
+      "count": 39,
+      "north_m": 205.75,
+      "east_m": -466.25,
+      "semi_major_m": 62.78,
+      "semi_minor_m": 31.64,
+      "dominant_species": 0,
+      "dominant_share": 0.846
+    },
+    {
+      "kind": "wood",
+      "count": 35,
+      "north_m": 356.25,
+      "east_m": -329.75,
+      "semi_major_m": 54.1,
+      "semi_minor_m": 32.95,
+      "dominant_species": 2,
+      "dominant_share": 0.857
+    },
+    {
+      "kind": "hedgerow",
+      "count": 14
+    },
+    {
+      "kind": "hedgerow",
+      "count": 14
+    },
+    {
+      "kind": "hedgerow",
+      "count": 14
+    },
+    {
+      "kind": "hedgerow",
+      "count": 14
+    },
+    {
+      "kind": "solitary",
+      "count": 24
+    }
+  ],
+  "far_groups": [
+    {
+      "kind": "skyline-anchor",
+      "count": 61
+    },
+    {
+      "kind": "wood",
+      "count": 52,
+      "north_m": 1113.25,
+      "east_m": 64.0,
+      "semi_major_m": 75.89,
+      "semi_minor_m": 47.99,
+      "dominant_species": 0,
+      "dominant_share": 0.827
+    },
+    {
+      "kind": "wood",
+      "count": 61,
+      "north_m": 476.5,
+      "east_m": 1123.25,
+      "semi_major_m": 103.53,
+      "semi_minor_m": 71.89,
+      "dominant_species": 2,
+      "dominant_share": 0.934
+    },
+    {
+      "kind": "wood",
+      "count": 68,
+      "north_m": -293.5,
+      "east_m": 827.0,
+      "semi_major_m": 87.97,
+      "semi_minor_m": 54.13,
+      "dominant_species": 1,
+      "dominant_share": 0.838
+    },
+    {
+      "kind": "wood",
+      "count": 78,
+      "north_m": -1007.75,
+      "east_m": 408.0,
+      "semi_major_m": 89.43,
+      "semi_minor_m": 61.08,
+      "dominant_species": 2,
+      "dominant_share": 0.91
+    },
+    {
+      "kind": "wood",
+      "count": 84,
+      "north_m": -1229.25,
+      "east_m": -305.25,
+      "semi_major_m": 92.88,
+      "semi_minor_m": 63.33,
+      "dominant_species": 0,
+      "dominant_share": 0.75
+    },
+    {
+      "kind": "wood",
+      "count": 87,
+      "north_m": -521.25,
+      "east_m": -1202.5,
+      "semi_major_m": 98.31,
+      "semi_minor_m": 61.97,
+      "dominant_species": 1,
+      "dominant_share": 0.862
+    },
+    {
+      "kind": "wood",
+      "count": 91,
+      "north_m": 751.0,
+      "east_m": -826.5,
+      "semi_major_m": 97.01,
+      "semi_minor_m": 65.69,
+      "dominant_species": 2,
+      "dominant_share": 0.857
+    },
+    {
+      "kind": "wood",
+      "count": 97,
+      "north_m": 962.5,
+      "east_m": -214.0,
+      "semi_major_m": 106.23,
+      "semi_minor_m": 63.94,
+      "dominant_species": 2,
+      "dominant_share": 0.804
+    },
+    {
+      "kind": "wood",
+      "count": 104,
+      "north_m": 712.75,
+      "east_m": 764.75,
+      "semi_major_m": 104.52,
+      "semi_minor_m": 69.68,
+      "dominant_species": 1,
+      "dominant_share": 0.865
+    },
+    {
+      "kind": "wood",
+      "count": 118,
+      "north_m": -341.75,
+      "east_m": -741.25,
+      "semi_major_m": 115.76,
+      "semi_minor_m": 71.38,
+      "dominant_species": 0,
+      "dominant_share": 0.831
+    },
+    {
+      "kind": "wood",
+      "count": 135,
+      "north_m": -791.25,
+      "east_m": -990.75,
+      "semi_major_m": 125.52,
+      "semi_minor_m": 75.31,
+      "dominant_species": 0,
+      "dominant_share": 0.807
+    },
+    {
+      "kind": "wood",
+      "count": 164,
+      "north_m": 1065.25,
+      "east_m": -580.0,
+      "semi_major_m": 139.1,
+      "semi_minor_m": 82.56,
+      "dominant_species": 0,
+      "dominant_share": 0.768
+    }
+  ]
+}
+.................
+----------------------------------------------------------------------
+Ran 17 tests in 35.024s
+
+OK
+== AFC-02-R3: companion re-bind tool and its qualification record stay consistent
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.034s
+
+OK
+== L7-R1 woodland-edge recipe and full-envelope exclusions stay current
+Woodland-edge placements verified: 4 patches, 472 source triangles
+test_contract_and_source_derived_triangle_budget (__main__.WoodlandEdgePlacementTests.test_contract_and_source_derived_triangle_budget) ... ok
+test_full_layout_envelopes_and_existing_masks_are_clear (__main__.WoodlandEdgePlacementTests.test_full_layout_envelopes_and_existing_masks_are_clear) ... ok
+test_generated_document_is_deterministic_and_current (__main__.WoodlandEdgePlacementTests.test_generated_document_is_deterministic_and_current) ... ok
+test_maple_clearance_uses_the_mature_placement_height (__main__.WoodlandEdgePlacementTests.test_maple_clearance_uses_the_mature_placement_height) ... ok
+test_short_grass_impostor_manifest_is_bound_to_catalog_source (__main__.WoodlandEdgePlacementTests.test_short_grass_impostor_manifest_is_bound_to_catalog_source) ... ok
+test_source_hashes_cover_reproducible_inputs_without_mutation (__main__.WoodlandEdgePlacementTests.test_source_hashes_cover_reproducible_inputs_without_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.969s
+
+OK
+== No tracked file above 50 MiB without a recorded reason, none above GitHub's 100 MiB limit
+large tracked files: 4 recorded above 50 MiB, none above the 100 MiB limit
+== LU-34-R1 scene budget report counts every instance of instanced LOD meshes
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.001s
+
+OK
+== SC-HUM-07 field-people outfits, shipped variants and manifests agree; scenery layout matches its generator
+...F...
+======================================================================
+FAIL: test_runtime_manifest_matches_people_files (__main__.Manifests.test_runtime_manifest_matches_people_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\tmp\gp11-full-suite\tools\scenery\population\test_outfits.py", line 100, in test_runtime_manifest_matches_people_files
+    self.assertEqual(recorded, current, "RUNTIME_MANIFEST.json people entries are stale")
+AssertionError: {'peo[141 chars]t': '029627db24aff0941fdbae4418bbbd3124a839ccf[2780 chars]ee3'} != {'peo[141 chars]t': 'ac9a7e945d3355971afcc1467cb1d817225c069b9[2780 chars]4d8'}
+Diff is 4628 characters long. Set self.maxDiff to None to see it. : RUNTIME_MANIFEST.json people entries are stale
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.092s
+
+FAILED (failures=1)

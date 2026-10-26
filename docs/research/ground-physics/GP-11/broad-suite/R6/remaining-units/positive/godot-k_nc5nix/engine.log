@@ -1,0 +1,21 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   glow session is flyable 
+ok   full tank: live sample is the validated wet build at the datum 
+ok   half tank: live sample equals the shared kernel at the remaining fuel 
+ok   burning the tank ahead of the CG moves the live CG aft (body x < 0) and lightens the airplane cg [-0.01036797840567, 0.0, 0.00018774066828]
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   prescribed fuel reports its constant build with no remaining-fuel claim 
+ok   the load factor scales with 1/live mass (same force, lighter airplane reads more g) 0.985726 vs 1.095251
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/fuel06-4463562.orfl
+ok   log starts on a glow flight 
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/gp11-full-suite/app/../tmp/fuel06-4463562.orfl (240 ticks)
+ok   log stops 
+ok   log reads back 
+ok   the header declares the four-value mass block 
+ok   CSV columns carry mass and CG offset 
+ok   logged mass never increases while the engine burns, and it does burn 3.0286231383898 -> 3.0281202286433 kg
+ok   the last logged sample is the session's live sample 
+FUEL-06 live mass: 13 checks, 0 failed

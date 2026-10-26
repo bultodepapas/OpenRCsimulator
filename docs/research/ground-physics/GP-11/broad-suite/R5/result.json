@@ -1,0 +1,20 @@
+{
+  "format": "openrc-frozen-composite-suite v1",
+  "status": "failed",
+  "complete": true,
+  "scope": "Sealed R2 parse of 1,374 scripts plus the original offline, unit and integration harness with its parse loop omitted; frozen GP11 runtime, R1 math wrappers, register fix, seven derived import pins, and one canonical resource EOL normalization. Later GP12/Electric/Step work is excluded.",
+  "source_before": "source-before.json",
+  "app_source_before": "app-source-after-normalization.json",
+  "normalization": "eol-normalization.json",
+  "harness": "harness-no-repeat-parse.sh",
+  "log": "full-suite.log",
+  "one_command_app_test_pass": false,
+  "session_id": 12854,
+  "started_utc": "2026-10-26T12:33:00.661852+00:00",
+  "exit_code": 1,
+  "stop": "SC-HUM-07 test_outfits.py runtime manifest records stale after native import added defaults and EOL conversion; before units",
+  "source_unchanged": true,
+  "app_source_dependency_paths_verified": 4034,
+  "source_paths_verified": 161,
+  "attribution": "population-attribution.json"
+}

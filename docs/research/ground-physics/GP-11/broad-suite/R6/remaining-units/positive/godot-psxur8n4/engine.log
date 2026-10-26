@@ -1,0 +1,324 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL headless cycle 0 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 1 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 2 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 3 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 4 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 5 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 6 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 7 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 8 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 9 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 10 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 11 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 12 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 13 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 14 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 15 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 16 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 17 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 18 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 19 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 20 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 21 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 22 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 23 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 24 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 25 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 26 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 27 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 28 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 29 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 30 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 31 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 32 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 33 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 34 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 35 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 36 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 37 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 38 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 39 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 40 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 41 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 42 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 43 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 44 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 45 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 46 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 47 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 48 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL headless cycle 49 enables one companion  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+   GDScript backtrace (most recent call first):
+       [0] _cycle_manager (res://tests/test_companions_lifecycle.gd:88)
+       [1] _run (res://tests/test_companions_lifecycle.gd:291)
+FAIL 50 headless lifecycle cycles restore the baseline child and node counts  children=51/1 nodes=53/3
+FAIL headless lifecycle object count stays bounded after warmup  baseline=1931 warm=1935 max=1982
+FAIL visual cycle 0 configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL visual cycle 1 configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL visual cycle 2 configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL visual cycle 3 configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL visual cycle 4 configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL visual cycle 5 configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL visual cycle 6 configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL visual cycle 7 configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL visual cycle 8 configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL visual cycle 9 configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL 10 visual/audio cycles return to the player-only node count  baseline=3 visual_end=53
+FAIL isolation fleet configures  { "ok": false, "errors": ["aircraft_data.sha256: current aircraft data does not match this profile", "aircraft_identity.sha256: accepted session data does not match this profile"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+SCRIPT ERROR: Invalid access of index '0' on a base object of type: 'Array[Node]'.
+   at: _run_isolation_gate (res://tests/test_companions_lifecycle.gd:219)
+   GDScript backtrace (most recent call first):
+       [0] _run_isolation_gate (res://tests/test_companions_lifecycle.gd:219)
+       [1] _run (res://tests/test_companions_lifecycle.gd:323)
+FAIL player teardown leaves no companion or flight nodes  
+companions lifecycle: 74 checks, 65 failed; 50 headless cycles, 10 visual/audio cycles
