@@ -116,6 +116,7 @@ func record_presented_frame(frame_index: int, preroll_frames: int) -> void:
 			"shown": true, "mode": magnifier.mode,
 			"viewport_size": [magnifier.camera.get_viewport().size.x, magnifier.camera.get_viewport().size.y],
 			"msaa_3d": magnifier.camera.get_viewport().msaa_3d,
+			"hdr_2d": magnifier.camera.get_viewport().use_hdr_2d,
 			"camera_position_m": _v3(magnifier.camera.global_position),
 			"camera_fov_deg": magnifier.camera.fov,
 		}

@@ -1,0 +1,25 @@
+# UI-15-JETI-04: remapping a lower row must not navigate back to the section top.
+# Use the isolated draft and actual keyboard event route; leave storage untouched.
+eval expr="controllers.set_process(false)"
+open screen=controls
+eval expr="screens.top()._set_draft_profile(screens.top().ControllerProfile.defaults('radio','jeti_mode2'))"
+eval expr="screens.top().select_section('buttons')"
+wait frames=4
+eval expr="screens.top().find_child('Remap_camera_zoom_out',true,false).grab_focus()"
+wait frames=4
+assert expr="screens.top().find_child('ControllerSetupScroll',true,false).scroll_vertical > 0" message="lower action is scrolled into view"
+press text=Remap_camera_zoom_out
+wait frames=4
+assert expr="screens.top().find_child('ControllerSetupScroll',true,false).scroll_vertical > 0 and screens.top().find_child('ControllerSetupScroll',true,false).get_global_rect().grow(1).encloses(screens.top().find_child('Remap_camera_zoom_out',true,false).get_global_rect())" message="starting capture keeps the lower row visible"
+key name=F7
+wait frames=4
+assert expr="not screens.top()._is_capture_active() and screens.top().current_profile().actions.camera_zoom_out.type == 'key'" message="key assignment completes"
+assert expr="screens.top().find_child('ControllerSetupScroll',true,false).scroll_vertical > 0 and screens.top().find_child('ControllerSetupScroll',true,false).get_global_rect().grow(1).encloses(screens.top().find_child('Remap_camera_zoom_out',true,false).get_global_rect()) and screens.top().find_child('Remap_camera_zoom_out',true,false).has_focus()" message="assigned row stays visible and focused"
+press text=Remap_camera_zoom_out
+key name=Escape
+wait frames=4
+assert expr="not screens.top()._is_capture_active() and screens.top().find_child('ControllerSetupScroll',true,false).scroll_vertical > 0 and screens.top().find_child('ControllerSetupScroll',true,false).get_global_rect().grow(1).encloses(screens.top().find_child('Remap_camera_zoom_out',true,false).get_global_rect())" message="cancelled capture keeps the lower row visible"
+press text=Cancel
+eval expr="controllers.set_process(true)"
+eval expr="controllers.refresh()"
+assert expr="screens.is_top('home')" message="Cancel returns to Home"

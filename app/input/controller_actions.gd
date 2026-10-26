@@ -599,7 +599,9 @@ static func _aux_invalid_paths(aux_id: String, binding: Variant, profile: Dictio
 					if typeof(button_ids[i]) != TYPE_INT or int(button_ids[i]) < 0 or int(button_ids[i]) >= SmokeAux.MAX_BUTTONS:
 						_append_path(paths, root + ".buttons")
 					for j in range(i + 1, button_ids.size()):
-						if button_ids[i] == button_ids[j]:
+						# Malformed members are already reported above. Comparing unlike
+						# Variant types can itself throw while constructing the diagnostic.
+						if typeof(button_ids[i]) == TYPE_INT and typeof(button_ids[j]) == TYPE_INT and button_ids[i] == button_ids[j]:
 							_append_path(paths, root + ".buttons")
 		_:
 			_append_path(paths, root)

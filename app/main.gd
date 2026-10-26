@@ -71,6 +71,7 @@ const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
 const Hud := preload("res://render/hud.gd")
 const FrameSamples := preload("res://render/frame_samples.gd")
+const ViewportColor := preload("res://render/viewport_color.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const Air := preload("res://physics/air_data.gd")
 const M := preload("res://physics/math3d.gd")
@@ -2930,7 +2931,8 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	for _frame: int in _capture_settle_frames:
 		await RenderingServer.frame_post_draw
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out).get_base_dir())
-	var err := get_viewport().get_texture().get_image().save_png(out)
+	var capture_image := ViewportColor.display_image(get_viewport().get_texture().get_image(), get_viewport().use_hdr_2d)
+	var err := capture_image.save_png(out)
 	# Render counters of the captured frame (L0): deterministic for a fixed view, so landscape budgets are testable.
 	var manifest_err := _write_manifest(out, err)
 	var sun_px := _camera.unproject_position(_camera.global_position + Atmosphere.disc_direction(_lighting) * 1000.0)

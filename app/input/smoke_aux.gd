@@ -229,6 +229,8 @@ static func valid_binding(value: Variant, reserved_axes: Array = []) -> bool:
 			for i in button_ids.size():
 				if typeof(button_ids[i]) != TYPE_INT or int(button_ids[i]) < 0 or int(button_ids[i]) >= MAX_BUTTONS:
 					return false
+			# Validate every member before comparing pairs of Variant values.
+			for i in button_ids.size():
 				for j in range(i + 1, button_ids.size()):
 					if button_ids[i] == button_ids[j]:
 						return false

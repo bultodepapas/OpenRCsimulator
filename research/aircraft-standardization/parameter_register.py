@@ -74,6 +74,26 @@ def consumer(path: str) -> str:
     if path in ground_consumers:
         return ground_consumers[path]
 
+    intended_hull_consumers = {
+        "intended_hull_support.rest_pose.roll":
+            "AircraftData.validate_and_derive → IntendedHullSupport.prepare/evaluate → FlightSession.hull_support_observation: "
+            "authored terrain-relative rest roll for accepted hull-contact pose observation; no force or structural capacity",
+        "intended_hull_support.rest_pose.pitch":
+            "AircraftData.validate_and_derive → IntendedHullSupport.prepare/evaluate → FlightSession.hull_support_observation: "
+            "authored terrain-relative rest pitch for accepted hull-contact pose observation; no force or structural capacity",
+        "intended_hull_support.control_envelope.roll_tolerance":
+            "IntendedHullSupport._compile/evaluate → FlightSession.hull_support_observation: "
+            "explicit observed roll-error bound for pose/intended/stop-support facts; no contact-force, damage or dwell law",
+        "intended_hull_support.control_envelope.pitch_tolerance":
+            "IntendedHullSupport._compile/evaluate → FlightSession.hull_support_observation: "
+            "explicit observed pitch-error bound for pose/intended/stop-support facts; no contact-force, damage or dwell law",
+        "intended_hull_support.control_envelope.max_angular_speed":
+            "IntendedHullSupport._compile/evaluate → FlightSession.hull_support_observation: "
+            "body-rate norm bound for the controlled observation only; separate from role/stop coverage, no torque limiter or structural capacity",
+    }
+    if path in intended_hull_consumers:
+        return intended_hull_consumers[path]
+
     if path.startswith("controls.keyboard."):
         return "AircraftData._controls → Commands.keyboard_pitch; keyboard normal-profile virtual stick only, before expo/rates; no aerodynamic or servo change"
     if path.startswith("controls.gamepad."):
