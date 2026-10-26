@@ -7415,3 +7415,45 @@ msgstr "Recorrido del timón"
 
 msgid "Automatic draft recovery is unavailable for this older build. Save a copy to keep your changes."
 msgstr "La recuperación automática no está disponible para esta variante antigua. Guarda una copia para conservar tus cambios."
+
+msgid "Calibration stays in the draft until you Save controller settings."
+msgstr "La calibración permanece en el borrador hasta que guardes los ajustes del mando."
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Calibration cancelled because the application lost focus. The draft is unchanged."
+msgstr "Calibración cancelada porque la aplicación perdió el foco. El borrador no ha cambiado."
+
+msgid "The radio disconnected or changed. Calibration was cancelled; the draft is unchanged."
+msgstr "La emisora se desconectó o cambió. Se canceló la calibración; el borrador no ha cambiado."
+
+msgid "Calibration was interrupted. Start again; the draft is unchanged."
+msgstr "La calibración se interrumpió. Vuelve a empezar; el borrador no ha cambiado."
+
+msgid "The radio returned an invalid axis reading. Calibration was cancelled; the draft is unchanged."
+msgstr "La emisora devolvió una lectura de eje no válida. Se canceló la calibración; el borrador no ha cambiado."
+
+msgid "Calibration cancelled. The draft is unchanged."
+msgstr "Calibración cancelada. El borrador no ha cambiado."
+
+msgid "Calibration complete"
+msgstr "Calibración completa"
+
+msgid "Use these ranges, then Save controller settings. Lower the throttle before flying."
+msgstr "Usa estos rangos y guarda los ajustes del mando. Baja el acelerador antes de volar."
+
+msgid "Use calibration"
+msgstr "Usar calibración"
+
+msgid "Finish or cancel remapping before calibrating."
+msgstr "Termina o cancela la reasignación antes de calibrar."
+
+msgid "The radio connection changed. Calibrate again before saving these settings."
+msgstr "La conexión de la emisora cambió. Vuelve a calibrar antes de guardar estos ajustes."
+
+msgid "Invalid calibration. The draft is unchanged."
+msgstr "Calibración no válida. El borrador no ha cambiado."
+
+msgid "Calibration is in the draft. Save controller settings to apply it; Cancel discards it."
+msgstr "La calibración está en el borrador. Guarda los ajustes del mando para aplicarla; Cancelar la descarta."

@@ -3,7 +3,6 @@ extends VBoxContainer
 
 const Profile := preload("res://render/lighting/lighting_profile.gd")
 const Sequence := preload("res://workshop/lighting_sequence.gd")
-const UiTheme := preload("res://ui/ui_theme.gd")
 
 signal profile_changed(lighting: Dictionary)
 signal pending_changed(pending: bool)
@@ -215,6 +214,7 @@ func _build_ui() -> void:
 	actions.add_child(_cancel_button)
 	_apply_button = Button.new()
 	_apply_button.name = "ApplyLightingCue"
+	_apply_button.theme_type_variation = "CompactPrimaryButton"
 	_apply_button.text = tr("Apply cue")
 	_apply_button.pressed.connect(_apply_cue)
 	actions.add_child(_apply_button)
@@ -449,6 +449,7 @@ func _on_effect_toggled(_pressed: bool, _anchor_id: String) -> void:
 func _add_palette_color() -> void:
 	if _syncing or _color_fields.size() >= PALETTE_LIMIT or _has_invalid_palette_text():
 		return
+	var restore_focus := _add_color.has_focus()
 	var colors: Array[String] = []
 	for field: LineEdit in _color_fields:
 		colors.append(field.text)
@@ -458,6 +459,8 @@ func _add_palette_color() -> void:
 	_sync_view(state)
 	_last_errors.clear()
 	_recompute_pending()
+	if restore_focus:
+		_color_fields.back().grab_focus()
 
 
 func _remove_palette_color(index: int) -> void:
@@ -468,12 +471,16 @@ func _remove_palette_color(index: int) -> void:
 		colors.append(field.text)
 	if index < 0 or index >= colors.size():
 		return
+	var focused := get_viewport().gui_get_focus_owner()
+	var restore_focus := focused != null and _palette_list.is_ancestor_of(focused)
 	colors.remove_at(index)
 	var state := get_editor_state()
 	state.color_text = colors
 	_sync_view(state)
 	_last_errors.clear()
 	_recompute_pending()
+	if restore_focus:
+		_color_fields[mini(index, _color_fields.size() - 1)].grab_focus()
 
 
 func _add_cue() -> void:
@@ -649,7 +656,6 @@ func _add_palette_row(index: int, color_text: String) -> void:
 	hex.text = color_text.substr(0, MAX_COLOR_TEXT_CHARS)
 	hex.custom_minimum_size.x = 100
 	hex.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hex.add_theme_font_size_override("font_size", UiTheme._font_size(13))
 	hex.text_changed.connect(func(value: String) -> void: _on_color_text_changed(value, index))
 	hex.text_submitted.connect(func(_value: String) -> void: hex.release_focus())
 	row.add_child(hex)

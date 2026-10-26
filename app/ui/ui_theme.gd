@@ -237,6 +237,10 @@ static func _controls(theme: Theme) -> void:
 		theme.set_stylebox("panel", type, _box(PANEL, 12))
 		theme.set_color("font_color", type, TEXT)
 		theme.set_font_size("font_size", type, _font_size(SIZE.body))
+	var popup_panel := _box(PANEL, 12)
+	popup_panel.set_border_width_all(1)
+	popup_panel.border_color = EDGE
+	theme.set_stylebox("panel", "PopupPanel", popup_panel)
 	theme.set_stylebox("hover", "PopupMenu", _box(BUTTON.hover, 8))
 	theme.set_color("font_hover_color", "PopupMenu", TEXT)
 	theme.set_color("font_disabled_color", "PopupMenu", DISABLED_TEXT)

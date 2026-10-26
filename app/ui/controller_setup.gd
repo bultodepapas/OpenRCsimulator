@@ -181,7 +181,9 @@ func apply_calibration_draft(calibration: Dictionary, device_id: int, generation
 		_set_status(tr("Invalid calibration. The draft is unchanged."), true)
 		return false
 	for channel: String in CHANNELS:
-		_draft_profile[channel] = calibrated[channel].duplicate(true)
+		var updated_channel: Dictionary = _draft_profile.get(channel, {}).duplicate(true)
+		updated_channel.merge(calibrated[channel], true)
+		_draft_profile[channel] = updated_channel
 	# The wizard retains valid AUX and reports bindings consumed by newly assigned flight axes.
 	_draft_profile["aux"] = calibrated.get("aux", {}).duplicate(true)
 	_calibration_origins[_draft_context_key] = {"id": device_id, "generation": generation}
@@ -1546,6 +1548,7 @@ func _apply_jeti_mode2_preset() -> void:
 
 
 func _duplicate_profile() -> void:
+	var calibration_origin: Dictionary = _calibration_origins.get(_draft_context_key, {}).duplicate(true)
 	var duplicate := _draft_profile.duplicate(true)
 	var id_source := ControllerProfile.defaults(str(duplicate.get("kind", "gamepad")), str(duplicate.get("preset", "mode2")))
 	if id_source.is_empty():
@@ -1553,6 +1556,8 @@ func _duplicate_profile() -> void:
 	duplicate["profile_id"] = id_source.get("profile_id", "")
 	duplicate["name"] = "%s copy" % str(duplicate.get("name", "Controller profile"))
 	_set_draft_profile(duplicate)
+	if not calibration_origin.is_empty():
+		_calibration_origins[_draft_context_key] = calibration_origin
 	_set_status(tr("Profile duplicated. Save it to add a separate profile."), false)
 
 
