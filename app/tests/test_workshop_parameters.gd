@@ -14,7 +14,8 @@ func _initialize() -> void:
 	_check("definition envelope is versioned", plain.get("format", "") == Parameters.DEFINITIONS_FORMAT
 		and plain.get("version", 0) == Parameters.DEFINITIONS_VERSION)
 	var expected_keys := ["scale", "mass_policy", "weight_multiplier", "power_multiplier",
-		"control_multiplier", "tank_capacity_multiplier"]
+		"control_multiplier", "control_multiplier_aileron", "control_multiplier_elevator",
+		"control_multiplier_rudder", "tank_capacity_multiplier"]
 	var by_key: Dictionary = _by_key(plain.get("parameters", []))
 	_check("every accepted physical parameter has one shared definition", by_key.keys().size() == expected_keys.size()
 		and by_key.keys().all(func(key: Variant) -> bool: return key in expected_keys))
@@ -27,6 +28,11 @@ func _initialize() -> void:
 				by_key[key].get("available", false) == null)
 			_check("definition default matches the physical recipe default for %s" % key,
 				Parameters.validate({}).values.get(key) == by_key[key].get("default"))
+			if bool(by_key[key].get("inherited", false)):
+				_check("surface override metadata identifies its inherited global key for %s" % key,
+					by_key[key].get("group", "") == "control_surfaces"
+					and by_key[key].get("inherit_key", "") == "control_multiplier"
+					and not Parameters.validate({}).values.has(key))
 			if by_key[key].get("kind", "") == "number":
 				var low: float = float(by_key[key].minimum)
 				var high: float = float(by_key[key].maximum)
@@ -62,7 +68,8 @@ func _initialize() -> void:
 				var capability: String = str(mapped[item_key].capability)
 				_check("availability for %s follows compiler capability" % item_key,
 					mapped[item_key].available == capabilities.get(capability, false))
-			for capability_key: String in ["scale", "weight", "power", "controls", "tank_capacity"]:
+			for capability_key: String in ["scale", "weight", "power", "controls", "control_aileron",
+				"control_elevator", "control_rudder", "tank_capacity"]:
 				_check("capability fixture has boolean %s" % capability_key,
 					typeof(capabilities.get(capability_key, null)) == TYPE_BOOL)
 		var unsupported: Dictionary = _by_key(Parameters.definitions(Compiler.capabilities(glow)).parameters)

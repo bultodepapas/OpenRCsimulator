@@ -84,7 +84,8 @@ func _test_no_op(base: Dictionary, label: String) -> void:
 	_check("%s summary exposes stable UI metrics" % label,
 		result.summary.has_all(["base_aircraft_id", "effective_model_id", "name", "scale", "mass_policy",
 			"weight_multiplier", "tank_capacity_multiplier", "mass_ratio", "mass_kg", "wing_area_m2", "wing_span_m",
-			"wing_loading_kg_m2", "power_multiplier", "control_multiplier", "capabilities", "compiler_version"]))
+			"wing_loading_kg_m2", "power_multiplier", "control_multiplier", "control_multiplier_aileron",
+			"control_multiplier_elevator", "control_multiplier_rudder", "capabilities", "compiler_version"]))
 
 
 func _test_scale_policies(base: Dictionary) -> void:
@@ -193,11 +194,14 @@ func _test_power_and_controls(base: Dictionary) -> void:
 			and is_equal_approx(powered.data.model.controls.throw_deg.elevator, base_data.model.controls.throw_deg.elevator * 1.25)
 			and is_equal_approx(powered.data.model.controls.throw_deg.rudder, base_data.model.controls.throw_deg.rudder * 1.25))
 		_check("control rate timing stays unchanged", powered.data.model.controls.servo_rate == base_data.model.controls.servo_rate)
+		_check("legacy global control recipe retains its compiler identity",
+			powered.summary.compiler_version == Compiler.COMPILER_VERSION)
 		_check("power proposal leaves rating evidence and nondimensional prop tables intact",
 			powered.raw.propulsion.engine.peak_power == base.propulsion.engine.peak_power
 			and powered.raw.propulsion.engine.peak_power_rpm == base.propulsion.engine.peak_power_rpm
 			and powered.raw.propulsion.propeller.ct_table == base.propulsion.propeller.ct_table
 			and powered.raw.propulsion.propeller.cp_table == base.propulsion.propeller.cp_table)
+	_test_surface_control_overrides(base, base_data)
 	var weighted: Dictionary = Compiler.compile(base, {"scale": 1.25, "weight_multiplier": 1.5})
 	_check("uniform weight multiplier composes with constant-wing-loading scale", weighted.ok, str(weighted.errors))
 	if weighted.ok:
@@ -212,6 +216,63 @@ func _test_power_and_controls(base: Dictionary) -> void:
 		_tank_follows_airframe(base_data.model, weighted.data.model, 1.25, "weighted 125%")
 	var clipped: Dictionary = Compiler.compile(base, {"scale": preload("res://workshop/parameters.gd").MAX_SCALE + 0.01})
 	_check("scale above the V1 bound is rejected", not clipped.ok and not clipped.errors.is_empty())
+
+
+func _test_surface_control_overrides(base: Dictionary, base_data: Dictionary) -> void:
+	for surface: String in ["aileron", "elevator", "rudder"]:
+		var key := "control_multiplier_" + surface
+		var compiled: Dictionary = Compiler.compile(base, {key: 1.25})
+		_check("%s-only control override compiles" % surface, compiled.ok, str(compiled.errors))
+		if not compiled.ok:
+			continue
+		for other_surface: String in ["aileron", "elevator", "rudder"]:
+			var expected_factor: float = 1.25 if other_surface == surface else 1.0
+			_check("%s override changes only %s throw" % [surface, other_surface],
+				is_equal_approx(compiled.data.model.controls.throw_deg[other_surface],
+					base_data.model.controls.throw_deg[other_surface] * expected_factor))
+			_check("%s override summary reports the effective factor" % other_surface,
+				is_equal_approx(float(compiled.summary.get("control_multiplier_" + other_surface, -1.0)), expected_factor))
+		_check("surface override selects the new compiler identity",
+			compiled.summary.compiler_version == Compiler.SURFACE_CONTROLS_COMPILER_VERSION)
+	var inherited: Dictionary = Compiler.compile(base, {
+		"control_multiplier": 1.1,
+		"control_multiplier_elevator": 1.35,
+	})
+	_check("missing per-surface overrides inherit the global multiplier", inherited.ok, str(inherited.errors))
+	if inherited.ok:
+		_check("global multiplier remains the aileron and rudder fallback",
+			is_equal_approx(inherited.data.model.controls.throw_deg.aileron,
+				base_data.model.controls.throw_deg.aileron * 1.1)
+			and is_equal_approx(inherited.data.model.controls.throw_deg.rudder,
+				base_data.model.controls.throw_deg.rudder * 1.1))
+		_check("explicit elevator multiplier overrides only the inherited value",
+			is_equal_approx(inherited.data.model.controls.throw_deg.elevator,
+				base_data.model.controls.throw_deg.elevator * 1.35)
+			and is_equal_approx(float(inherited.summary.control_multiplier_elevator), 1.35))
+		_check("summary reports effective inherited multipliers",
+			is_equal_approx(float(inherited.summary.control_multiplier_aileron), 1.1)
+			and is_equal_approx(float(inherited.summary.control_multiplier_rudder), 1.1))
+	_check("legacy global-only recipe keeps the original compiler version",
+		Compiler.version_for_recipe({"control_multiplier": 1.1}) == Compiler.COMPILER_VERSION)
+	var legacy_uniform: Dictionary = Compiler.compile(base, {"control_multiplier": 1.25})
+	var explicit_uniform: Dictionary = Compiler.compile(base, {
+		"control_multiplier_aileron": 1.25,
+		"control_multiplier_elevator": 1.25,
+		"control_multiplier_rudder": 1.25,
+	})
+	_check("legacy global control transform retains the previous compiled raw payload",
+		legacy_uniform.ok and explicit_uniform.ok and legacy_uniform.raw == explicit_uniform.raw,
+		"legacy=%s explicit=%s" % [legacy_uniform.errors, explicit_uniform.errors])
+	_check("surface-control compiler identity composes ahead of legacy transform identities",
+		Compiler.version_for_recipe({"scale": 0.1, "control_multiplier_aileron": 1.1})
+			== Compiler.SURFACE_CONTROLS_COMPILER_VERSION)
+	var x8: Dictionary = _read("res://data/aircraft/skywalker_x8.json")
+	if not x8.is_empty():
+		var x8_capabilities: Dictionary = Compiler.capabilities(x8)
+		if not bool(x8_capabilities.get("control_rudder", false)):
+			var unsupported: Dictionary = Compiler.compile(x8, {"control_multiplier_rudder": 1.1})
+			_check("undeclared rudder override is refused by per-surface capability",
+				not unsupported.ok and str(unsupported.errors).contains("control_multiplier_rudder"), str(unsupported.errors))
 
 
 func _test_finite_glow_transform_refusal(base: Dictionary) -> void:

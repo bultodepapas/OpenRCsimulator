@@ -43,6 +43,16 @@ func _test_static_report(base: Dictionary) -> void:
 			report.get("compiled_build_summary", {}).get("mass_kg", 0.0) > 0.0
 			and (not report.get("available", false) or report.get("metrics", {}).has("static_thrust_n"))
 			and report.get("compiler_version", "") == Compiler.COMPILER_VERSION)
+		var legacy_recipe: Dictionary = report.get("recipe", {})
+		_check("legacy bounded report keeps all optional surface overrides absent",
+			not legacy_recipe.has("control_multiplier_aileron")
+			and not legacy_recipe.has("control_multiplier_elevator")
+			and not legacy_recipe.has("control_multiplier_rudder"))
+		var effective_controls: Dictionary = report.get("compiled_build_summary", {})
+		_check("legacy bounded report still exposes effective inherited surface multipliers",
+			is_equal_approx(float(effective_controls.get("control_multiplier_aileron", -1.0)), 1.0)
+			and is_equal_approx(float(effective_controls.get("control_multiplier_elevator", -1.0)), 1.0)
+			and is_equal_approx(float(effective_controls.get("control_multiplier_rudder", -1.0)), 1.0))
 	var rejected: Dictionary = Experiments.static_report(base, {"scale": preload("res://workshop/parameters.gd").MAX_SCALE + 0.01})
 	_check("static report rejects recipes beyond physical bounds", not rejected.get("ok", false)
 		and str(rejected.get("errors", [])).contains("scale"))
@@ -66,6 +76,41 @@ func _test_sweeps(base: Dictionary) -> void:
 		_check("static sweep candidates are clearly identified as estimates",
 			first.candidates.all(func(item: Variant) -> bool:
 				return item is Dictionary and item.get("static_report", {}).get("scope", "") == "bounded_static_estimate"))
+	var surface_grid: Dictionary = {"format": Experiments.SWEEP_FORMAT, "version": 1, "mode": "grid",
+		"recipe": {}, "axes": [{"key": "control_multiplier_aileron", "values": [1.0, 1.2]}]}
+	var checked_surface_grid: Dictionary = Experiments.validate_sweep(surface_grid)
+	_check("bounded grid accepts the optional aileron override axis", checked_surface_grid.get("ok", false),
+		str(checked_surface_grid.get("errors", [])))
+	if checked_surface_grid.get("ok", false):
+		var inherited_recipe: Dictionary = checked_surface_grid.spec.get("recipe", {})
+		_check("sweep recipe normalization preserves absence of optional surface overrides",
+			not inherited_recipe.has("control_multiplier_aileron")
+			and not inherited_recipe.has("control_multiplier_elevator")
+			and not inherited_recipe.has("control_multiplier_rudder"))
+	var surface_sweep: Dictionary = Experiments.sweep(base, surface_grid)
+	_check("bounded aileron grid compiles both requested candidates",
+		surface_sweep.get("ok", false) and surface_sweep.get("candidate_count", 0) == 2
+		and surface_sweep.get("candidates", []).all(func(item: Variant) -> bool:
+			return item is Dictionary and item.get("ok", false)),
+		str(surface_sweep.get("errors", [])))
+	if surface_sweep.get("ok", false):
+		for candidate_value: Variant in surface_sweep.candidates:
+			if not candidate_value is Dictionary or not candidate_value.get("ok", false):
+				continue
+			var candidate: Dictionary = candidate_value
+			var candidate_recipe: Dictionary = candidate.get("recipe", {})
+			var candidate_summary: Dictionary = candidate.get("static_report", {}).get("compiled_build_summary", {})
+			var aileron_multiplier: float = float(candidate_recipe.get("control_multiplier_aileron", -1.0))
+			_check("surface candidate carries only its explicit aileron override",
+				aileron_multiplier in [1.0, 1.2]
+				and not candidate_recipe.has("control_multiplier_elevator")
+				and not candidate_recipe.has("control_multiplier_rudder"))
+			_check("surface candidate summary reports effective aileron and inherited axes",
+				is_equal_approx(float(candidate_summary.get("control_multiplier_aileron", -1.0)), aileron_multiplier)
+				and is_equal_approx(float(candidate_summary.get("control_multiplier_elevator", -1.0)), 1.0)
+				and is_equal_approx(float(candidate_summary.get("control_multiplier_rudder", -1.0)), 1.0)
+				and candidate.get("static_report", {}).get("compiler_version", "")
+					== Compiler.SURFACE_CONTROLS_COMPILER_VERSION)
 	var discovery: Dictionary = {"format": Experiments.SWEEP_FORMAT, "version": 1, "mode": "seeded_discovery",
 		"seed": 12345, "candidate_count": 8, "recipe": {}, "axes": [
 			{"key": "scale", "minimum": 0.6, "maximum": 1.5},

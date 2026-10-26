@@ -146,6 +146,125 @@ func _run() -> void:
 		str(workshop.get("_summary_label").text))
 	workshop.set_recipe({"tank_capacity_multiplier": 1.0}, false)
 	await _ui.settle()
+	var advanced_toggle := _find(workshop, "AdvancedControlThrows") as CheckButton
+	var advanced_box := _find(workshop, "AdvancedControlsBox") as VBoxContainer
+	var surface_keys: Array[String] = [
+		"control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder",
+	]
+	var surface_sliders: Dictionary = workshop.get("_factor_sliders")
+	var surface_sliders_present := true
+	for surface_key: String in surface_keys:
+		if not surface_sliders.has(surface_key) or surface_sliders[surface_key] == null:
+			surface_sliders_present = false
+	_check("advanced surface sliders exist and start collapsed",
+		advanced_toggle != null and advanced_box != null and surface_sliders_present
+		and advanced_box.visible == false and not advanced_toggle.button_pressed)
+	if advanced_toggle != null and advanced_box != null and surface_sliders_present:
+		advanced_toggle.button_pressed = true
+		await _ui.settle()
+		_check("advanced surface controls expand on demand", advanced_box.visible)
+		workshop.set_recipe({"control_multiplier": 1.2}, false)
+		var inherited_recipe: Dictionary = workshop.get_recipe()
+		var inherited_sliders_match := true
+		for surface_key: String in surface_keys:
+			var surface_slider: HSlider = surface_sliders[surface_key]
+			inherited_sliders_match = inherited_sliders_match \
+				and not inherited_recipe.has(surface_key) \
+				and is_equal_approx(surface_slider.value, 1.2)
+		_check("legacy recipe without surface keys displays the effective global value",
+			inherited_sliders_match)
+
+		var aileron_slider: HSlider = surface_sliders.control_multiplier_aileron
+		var control_slider: HSlider = workshop.get("_factor_sliders").control_multiplier
+		aileron_slider.value = 1.3
+		await _ui.settle()
+		var surface_recipe: Dictionary = workshop.get_recipe()
+		var compiled_surface: Dictionary = workshop.get_compiled()
+		var compiled_model: Dictionary = compiled_surface.get("data", {}).get("model", {})
+		var compiled_throws: Dictionary = compiled_model.get("controls", {}).get("throw_deg", {})
+		var base_throws: Dictionary = workshop.get("_base_model").get("controls", {}).get("throw_deg", {})
+		_check("one surface override stays optional and compiles independently",
+			surface_recipe.has("control_multiplier_aileron")
+			and not surface_recipe.has("control_multiplier_elevator")
+			and not surface_recipe.has("control_multiplier_rudder")
+			and is_equal_approx(float(aileron_slider.value), 1.3)
+			and compiled_surface.get("ok", false)
+			and is_equal_approx(float(compiled_throws.get("aileron", 0.0)),
+				float(base_throws.get("aileron", 0.0)) * 1.3))
+		var compiled_aileron_text := "%.1f" % float(compiled_throws.get("aileron", 0.0))
+		_check("technical summary reports compiled surface throw in degrees",
+			str(workshop.get("_summary_label").text).contains("Aileron throw")
+			and str(workshop.get("_summary_label").text).contains(compiled_aileron_text)
+			and str(workshop.get("_summary_label").text).contains("°"))
+		advanced_toggle.button_pressed = false
+		await _ui.settle()
+		var collapsed_edit: Dictionary = workshop.get_recipe()
+		collapsed_edit.power_multiplier = 1.1
+		workshop.set_recipe(collapsed_edit, false)
+		await _ui.settle()
+		_check("advanced disclosure stays usable with an active override",
+			not advanced_box.visible and advanced_toggle.visible
+			and workshop.get_recipe().has("control_multiplier_aileron"))
+		advanced_toggle.button_pressed = true
+		control_slider.value = 1.1
+		await _ui.settle()
+		var master_recipe: Dictionary = workshop.get_recipe()
+		var master_sliders_match := true
+		for surface_key: String in surface_keys:
+			master_sliders_match = master_sliders_match \
+				and not master_recipe.has(surface_key) \
+				and is_equal_approx(float(surface_sliders[surface_key].value), 1.1)
+		_check("master control edit clears overrides and synchronizes inherited sliders",
+			not master_recipe.has("control_multiplier_aileron") and master_sliders_match)
+		(_find(workshop, "UndoRecipe") as Button).pressed.emit()
+		await _ui.settle()
+		_check("Undo restores the individual override after a master edit",
+			workshop.get_recipe().has("control_multiplier_aileron")
+			and is_equal_approx(float(aileron_slider.value), 1.3))
+		(_find(workshop, "RedoRecipe") as Button).pressed.emit()
+		await _ui.settle()
+		_check("Redo restores master inheritance without stored overrides",
+			not workshop.get_recipe().has("control_multiplier_aileron")
+			and is_equal_approx(float(aileron_slider.value), 1.1))
+
+		workshop.set_recipe({
+			"control_multiplier": 1.2,
+			"control_multiplier_aileron": 1.35,
+		}, false)
+		var reset_source: Dictionary = workshop.get_recipe()
+		(_find(workshop, "ResetRecipe") as Button).pressed.emit()
+		await _ui.settle()
+		_check("Reset removes optional overrides and restores inherited defaults",
+			workshop.get_recipe() == Compiler.defaults()
+			and not workshop.get_recipe().has("control_multiplier_aileron")
+			and is_equal_approx(float(surface_sliders.control_multiplier_aileron.value), 1.0))
+		(_find(workshop, "UndoRecipe") as Button).pressed.emit()
+		await _ui.settle()
+		_check("Undo restores the exact pre-reset surface override", workshop.get_recipe() == reset_source
+			and is_equal_approx(float(surface_sliders.control_multiplier_aileron.value), 1.35))
+		workshop.call("_apply_preset", "mini")
+		var preset_recipe: Dictionary = workshop.get_recipe()
+		var preset_inheritance_ok := true
+		for surface_key: String in surface_keys:
+			var surface_slider: HSlider = surface_sliders[surface_key]
+			preset_inheritance_ok = preset_inheritance_ok \
+				and not preset_recipe.has(surface_key) \
+				and is_equal_approx(surface_slider.value, 0.9)
+		_check("presets leave surface overrides absent and inherit their global travel",
+			is_equal_approx(float(preset_recipe.get("control_multiplier", 0.0)), 0.9)
+			and preset_inheritance_ok)
+		workshop.set_recipe(Compiler.defaults(), false)
+		workshop.call("_clear_history")
+		var default_surface_values := true
+		for surface_key: String in surface_keys:
+			var surface_slider: HSlider = surface_sliders[surface_key]
+			default_surface_values = default_surface_values \
+				and not workshop.get_recipe().has(surface_key) \
+				and is_equal_approx(surface_slider.value, 1.0)
+		_check("Reset clears surface overrides and restores inherited defaults",
+			workshop.get_recipe() == Compiler.defaults()
+			and default_surface_values)
+
 	workshop.set_recipe({"scale": 1.33, "weight_multiplier": 0.731}, false)
 	_check("intermediate recipe values are never silently rounded", is_equal_approx(workshop.get_recipe().scale, 1.33)
 		and is_equal_approx(workshop.get_recipe().weight_multiplier, 0.731))
@@ -190,6 +309,12 @@ func _run() -> void:
 	_check("Compare cannot reset flight setup", workshop.get_recipe() == compared_recipe
 		and not (_find(workshop, "ResetRecipe") as Button).is_visible_in_tree())
 	_check("Compare reports control travel changes", _comparison_text(workshop).contains("Control travel multiplier"))
+	workshop.set_recipe({"control_multiplier": 1.2, "control_multiplier_aileron": 1.3}, false)
+	_check("Compare reports explicit and inherited surface travel without null defaults",
+		_comparison_text(workshop).contains("Aileron travel multiplier")
+		and _comparison_text(workshop).contains("Elevator travel multiplier")
+		and _comparison_text(workshop).contains("1.30×")
+		and _comparison_text(workshop).contains("1.20×"))
 	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
 	var presentation: Dictionary = Presentation.defaults(workshop.get("_presentation_bindings"))
 	presentation.lighting.selection = "disabled"
@@ -401,12 +526,44 @@ func _run() -> void:
 		_check("copy leaves the source history untouched",
 			Store.load_variant(metadata_recipe.id, store_root).variant.revision == 2)
 
+	# Loading a pre-surface recipe keeps its keys absent while showing effective values.
+	var legacy_root := store_root + "_legacy"
+	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
+	var legacy_recipe: Dictionary = Compiler.defaults()
+	legacy_recipe.control_multiplier = 1.27
+	var legacy_source: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(Catalog.DEFAULT_ID).data)
+	var legacy_saved: Dictionary = Store.save_variant(
+		"Legacy control recipe", Catalog.DEFAULT_ID, legacy_source, legacy_recipe, "", legacy_root,
+		workshop.get("_workshop_descriptor"), workshop.get("_variant_dependencies"), -1,
+		workshop.get("_presentation")
+	)
+	_check("legacy recipe fixture saves without surface overrides", legacy_saved.get("ok", false)
+		and not legacy_saved.get("variant", {}).get("recipe", {}).has("control_multiplier_aileron"))
+	if legacy_saved.get("ok", false):
+		workshop.variants_root = legacy_root
+		workshop.call("_load_variant_snapshot", str(legacy_saved.variant.id))
+		await _ui.settle()
+		var loaded_legacy: Dictionary = workshop.get_recipe()
+		var legacy_sliders_match := true
+		for surface_key: String in surface_keys:
+			var surface_slider: HSlider = surface_sliders[surface_key]
+			legacy_sliders_match = legacy_sliders_match \
+				and not loaded_legacy.has(surface_key) \
+				and is_equal_approx(surface_slider.value, 1.27)
+		_check("loading a legacy saved recipe shows its inherited surface values", legacy_sliders_match)
+	workshop.variants_root = store_root
+	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
+	await _ui.settle()
+
 	await _guarded_journey(workshop, store_root)
 	workshop.queue_free()
 	await _ui.settle()
 	var absolute_root := ProjectSettings.globalize_path(store_root)
 	if DirAccess.dir_exists_absolute(absolute_root):
 		_remove_fixture(absolute_root, absolute_root)
+	var absolute_legacy_root := ProjectSettings.globalize_path(legacy_root)
+	if DirAccess.dir_exists_absolute(absolute_legacy_root):
+		_remove_fixture(absolute_legacy_root, absolute_legacy_root)
 	TranslationServer.set_locale("en")
 	print("Workshop UI: %d failed" % _failures)
 	quit(1 if _failures else 0)

@@ -2,6 +2,7 @@ extends SceneTree
 const Workshop := preload("res://ui/workshop.gd")
 const DraftStore := preload("res://workshop/draft_store.gd")
 const Store := preload("res://workshop/store.gd")
+const Compiler := preload("res://workshop/compiler.gd")
 var failures := 0
 var checks := 0
 var scratch := ""
@@ -10,10 +11,10 @@ func check(label: String, passed: bool) -> void:
 	checks += 1
 	print(("ok   " if passed else "FAIL ") + label)
 	if not passed: failures += 1
-func make_editor() -> Node:
+func make_editor(library_path: String = "", recovery_path: String = "") -> Node:
 	var editor := Workshop.new()
-	editor.variants_root = scratch + "/library"
-	editor.recovery_root = scratch + "/recovery"
+	editor.variants_root = library_path if not library_path.is_empty() else scratch + "/library"
+	editor.recovery_root = recovery_path if not recovery_path.is_empty() else scratch + "/recovery"
 	editor.recovery_enabled = true
 	root.add_child(editor)
 	return editor
@@ -138,6 +139,7 @@ func run() -> void:
 	restore_reviewer.free()
 	await settle()
 	await test_clean_recovery()
+	await test_legacy_surface_override_recovery()
 	_remove_tree(ProjectSettings.globalize_path(scratch))
 	print("Workshop recovery UI: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
@@ -208,6 +210,96 @@ func test_clean_recovery() -> void:
 		editor.call("_discard_pending_recovery")
 	editor.free()
 	await settle()
+
+func test_legacy_surface_override_recovery() -> void:
+	var library_path := scratch + "/legacy_surface/library"
+	var recovery_path := scratch + "/legacy_surface/recovery"
+	var source_editor := make_editor(library_path, recovery_path)
+	await settle()
+	source_editor.set_recipe({"control_multiplier": 1.05})
+	source_editor.set_variant_name("Legacy surface recovery")
+	source_editor.save_named_variant()
+	var saved_id := str(source_editor.get("_saved_variant_id"))
+	var original_result: Dictionary = Store.load_variant(saved_id, library_path) if not saved_id.is_empty() else {}
+	var original: Dictionary = original_result.get("variant", {})
+	var original_pin := str(original.get("compiler_version", ""))
+	var original_recipe: Dictionary = original.get("recipe", {}).duplicate(true)
+	check("surface recovery starts from a real legacy-pinned library build",
+		original_result.get("ok", false) and original_pin == Compiler.COMPILER_VERSION
+		and not original_recipe.has("control_multiplier_aileron"))
+	if not original_result.get("ok", false):
+		source_editor.free()
+		await settle()
+		return
+
+	var valid_baseline: Dictionary = source_editor.get("_baseline").duplicate(true)
+	var stale_baseline: Dictionary = valid_baseline.duplicate(true)
+	stale_baseline.compiler = "openrc-aircraft-workshop-v1-obsolete"
+	source_editor.set("_baseline", stale_baseline)
+	var candidate_recipe: Dictionary = original_recipe.duplicate(true)
+	candidate_recipe["control_multiplier_aileron"] = 1.25
+	source_editor.set_recipe(candidate_recipe)
+	var pending_text := "unfinished elevator value"
+	var elevator_input: LineEdit = source_editor.get("_factor_inputs").control_multiplier_elevator
+	elevator_input.text = pending_text
+	elevator_input.text_changed.emit(pending_text)
+	check("recovery refuses an edited candidate from a truly stale baseline compiler pin",
+		not source_editor.call("_autosave_draft") and not DraftStore.load_snapshot(recovery_path).exists)
+	source_editor.set("_baseline", valid_baseline)
+	check("valid legacy baseline allows recovery with the candidate compiler",
+		source_editor.call("_autosave_draft"))
+	var recovered := DraftStore.load_snapshot(recovery_path)
+	check("legacy surface candidate recovery is compatible and uses its current compiler",
+		recovered.get("ok", false) and recovered.get("compatible", false)
+		and recovered.payload.compiler_version == Compiler.version_for_recipe(candidate_recipe)
+		and recovered.payload.recipe == candidate_recipe
+		and recovered.editor.numeric_buffers.get("control_multiplier_elevator", "") == pending_text)
+	check("autosave preserves the loaded library pin and ancestry",
+		source_editor.get("_saved_compiler_version") == original_pin
+		and source_editor.get("_saved_variant_id") == saved_id
+		and source_editor.get("_saved_variant_revision") == original.revision)
+	var saved_after_autosave: Dictionary = Store.load_variant(saved_id, library_path)
+	check("autosave leaves the original legacy revision unchanged",
+		saved_after_autosave.get("ok", false)
+		and saved_after_autosave.variant.revision == original.revision
+		and saved_after_autosave.variant.compiler_version == original_pin
+		and saved_after_autosave.variant.recipe == original_recipe)
+
+	source_editor.free()
+	await settle()
+	var fresh_editor := make_editor(library_path, recovery_path)
+	await settle()
+	var recovery_text: Label = fresh_editor.get("_recovery_text")
+	var aileron_label := str(fresh_editor.call("_parameter_label", "control_multiplier_aileron"))
+	var elevator_label := str(fresh_editor.call("_parameter_label", "control_multiplier_elevator"))
+	check("recovery review names accepted and pending surface controls",
+		not aileron_label.is_empty() and aileron_label != "Setting"
+		and not elevator_label.is_empty() and elevator_label != "Setting"
+		and recovery_text.text.contains(aileron_label) and recovery_text.text.contains(elevator_label))
+	fresh_editor.call("_request_recovery_restore")
+	await settle()
+	var restored_recipe: Dictionary = fresh_editor.get_recipe()
+	check("fresh editor restores the candidate as a detached build with the new pin",
+		restored_recipe == candidate_recipe
+		and fresh_editor.get("_saved_compiler_version") == Compiler.version_for_recipe(candidate_recipe)
+		and str(fresh_editor.get("_saved_variant_id")).is_empty()
+		and int(fresh_editor.get("_saved_variant_revision")) == 0
+		and fresh_editor.has_unsaved_changes())
+	check("fresh editor restores invalid surface input without applying it physically",
+		fresh_editor.get("_factor_inputs").control_multiplier_elevator.text == pending_text
+		and not restored_recipe.has("control_multiplier_elevator")
+		and not fresh_editor.call("_edit_valid"))
+	var saved_after_restore: Dictionary = Store.load_variant(saved_id, library_path)
+	check("detached restore still leaves the original legacy revision unchanged",
+		saved_after_restore.get("ok", false)
+		and saved_after_restore.variant.revision == original.revision
+		and saved_after_restore.variant.compiler_version == original_pin
+		and saved_after_restore.variant.recipe == original_recipe)
+	if is_instance_valid(fresh_editor.get("_recovery_timer")):
+		fresh_editor.get("_recovery_timer").stop()
+	fresh_editor.free()
+	await settle()
+	DraftStore.discard_snapshot(recovery_path)
 
 func _remove_tree(path: String) -> void:
 	var directory := DirAccess.open(path)
