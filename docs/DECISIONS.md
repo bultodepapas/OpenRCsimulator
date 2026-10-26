@@ -1077,6 +1077,10 @@ Reserve explicit intrinsic rotor tensors from the existing locked aircraft inert
 
 Transport a bounded detached integration receipt from the model's step policy to its endpoint owner. The kernel validates transport and atomic publication; the vehicle owns the receipt's physical meaning. Do not infer an entire-tick peak from an endpoint, use discarded RK trials as impacts or mix a peak load with potential energy at another state. Released support potential, persistent component state and a nonterminal failure event must commit together. [Reproduced within-tick overload and transaction contract](research/ground-physics/GP-16/README.md).
 
+### 2026-10-26 — Apply aircraft film emission in linear light (FW-RGB-07)
+
+Keep each supported opaque material as an owned clone and attach a bounded additive emission pass. Decode paint and pattern colors before exposure compensation, then use the shared renderer encoding helper; StandardMaterial's Compatibility energy/color order loses the intended night signal. Retain the existing energy caps and detach the extra pass in NAV/OFF/zero states. Accept up to one additional pass per active surface and view (six on the Stik, contract maximum twelve), with explicit counters and no performance qualification implied. [Native exposure comparison and limits](research/night-flight-lighting/implementation.md#fw-rgb-07-flight-exposure-correction-2026-10-26).
+
 ### 2026-10-26 — Integrate independent surface travel while retaining the flight baseline (AE-01-R1)
 
 Preserve PR #1’s ancestry and research, and integrate optional per-surface Workshop travel with global inheritance and normalized persistence. Defer its aerodynamic laws, stock tuning and replacement goldens: local forces, wake and ground-effect paths disagree, and the submitted reference flights do not reproduce the submitted runtime. Keep the existing solver and authoring pipelines unchanged. Revisit physical activation only with one explicit candidate, exact baseline replay and independent aircraft evidence. [Disposition and requirements](research/flight-mechanics-stall-hover-knife-edge-2026-10-18.md#integration-disposition-2026-10-26).

@@ -21,7 +21,10 @@ func _initialize() -> void:
 func _run() -> void:
 	var flight := Session.new()
 	flight.input_enabled = false
-	flight.setup()
+	var aircraft_path := "res://data/aircraft/jensen_ugly_stik_60.json"
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--aircraft="): aircraft_path = argument.trim_prefix("--aircraft=")
+	flight.setup(aircraft_path)
 	var weather := Config.spatial_defaults()
 	weather.spatial_wind.profile.reference_speed_mps = 1.5
 	weather.spatial_wind.profile.reference_from_deg = 90.0

@@ -22,6 +22,7 @@ const WingPolar := preload("res://physics/wing_polar.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const GroundProfile := preload("res://physics/aircraft_ground_profile.gd")
+const IntendedHullSupport := preload("res://physics/intended_hull_support.gd")
 const GlowInstallation := preload("res://physics/glow/installation.gd")
 const BatteryData := preload("res://physics/battery/battery_data.gd")
 const EscSupervisor := preload("res://physics/battery/esc_supervisor.gd")
@@ -280,6 +281,11 @@ static func _validate_with_domain(raw: Dictionary, domain: Dictionary) -> Dictio
 			result.model.controls.surface_ids = identities.surface_ids.duplicate(true)
 			for i in identities.support_ids.size():
 				result.model.landing_gear.contacts[i].id = identities.support_ids[i]
+		if raw.has("intended_hull_support"):
+			var intended := IntendedHullSupport.prepare(raw.intended_hull_support, result.model)
+			if not intended.ok:
+				return {ok = false, errors = intended.errors, warnings = result.warnings, model = {}}
+			result.model.intended_hull_support = intended
 		if raw.has("ground"):
 			var ground := GroundProfile.resolve(raw.ground, result.model)
 			if not ground.ok:
@@ -393,6 +399,9 @@ static func legacy_v1_input(raw: Dictionary) -> Dictionary:
 	out.erase("convention_id")
 	out.erase("flaps")
 	out.erase("crash_tolerance") # X8-08: v2-only, parsed after the shared numerical parse
+	# Intent authoring is v2-only observation metadata. The historical numerical
+	# adapter must neither pass it through nor infer an intended belly from labels.
+	out.erase("intended_hull_support")
 	# Identity metadata belongs to v2; the shared historical numerical parser
 	# keeps its closed propulsion shape and receives only its original inputs.
 	out.erase("physical_identity_version")

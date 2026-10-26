@@ -485,7 +485,7 @@ func air_data(s: PackedFloat64Array, time_s: float = NAN) -> Dictionary:
 	var at: float = sim.time() if is_nan(time_s) else time_s
 	if _weather.is_spatial() and not _weather_pending_reset:
 		var sampled := WindFlow.stage_air(s, aircraft.model, environment, at, air_density(s),
-			Aero.SPATIAL_CONTINUATION_LAW)
+			Aero.SPATIAL_CONTINUATION_LAW, false)
 		if sampled.ok:
 			return sampled.air
 		# Consumers already reject nonfinite flow; never substitute calm/datum flow on failure.
@@ -498,7 +498,7 @@ func _initial_air_sampler(model: Dictionary) -> Callable:
 	if not _weather.is_spatial():
 		return Callable()
 	return func(state: PackedFloat64Array, rho: float) -> Dictionary:
-		return WindFlow.stage_air(state, model, environment, 0.0, rho, Aero.SPATIAL_CONTINUATION_LAW)
+		return WindFlow.stage_air(state, model, environment, 0.0, rho, Aero.SPATIAL_CONTINUATION_LAW, false)
 
 
 func _spatial_weather_receipt(field: WeatherField) -> Dictionary:
@@ -2991,7 +2991,7 @@ func _hand_launch_rpm(state: PackedFloat64Array) -> float:
 	var rho: float = air_density(state)
 	if _weather.is_spatial():
 		var stage := WindFlow.stage_air(state, aircraft.model, environment, 0.0, rho,
-			Aero.SPATIAL_CONTINUATION_LAW)
+			Aero.SPATIAL_CONTINUATION_LAW, false)
 		if not stage.ok:
 			return NAN
 		var inflow := Propulsion.stage_air_velocity(state, stage.air, prop)
@@ -5032,7 +5032,7 @@ func _restore_checkpoint_impl(candidate: Dictionary) -> bool:
 				return false
 			var at: float = float(tick_value if key == "state" else maxi(0, tick_value - 1)) * dt_value
 			var sampled := WindFlow.stage_air(body, aircraft.model, candidate_environment, at,
-				restored_weather.air_density(body[RB.POS + 2]), Aero.SPATIAL_CONTINUATION_LAW)
+				restored_weather.air_density(body[RB.POS + 2]), Aero.SPATIAL_CONTINUATION_LAW, false)
 			if not sampled.ok:
 				return false
 	if restored_weather.has_vertical_atmosphere():

@@ -219,6 +219,41 @@ def add_ground_profile(schema: dict):
     })
 
 
+def add_intended_hull_support(schema: dict):
+    """Optional observation intent over existing hull geometry, never a force law."""
+    def obj(properties):
+        return {"type": "object", "required": list(properties), "properties": properties}
+    def quantity(unit, low, high):
+        return {"$ref": "#/$defs/evidence", "properties": {
+            "unit": {"const": unit}, "value": {"type": "number", "minimum": low, "maximum": high},
+            "source": {"maxLength": 2048}}}
+    identifier = {"type": "string", "maxLength": 80, "pattern": r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"}
+    group = {"type": "array", "minItems": 1, "maxItems": 16, "uniqueItems": True, "items": identifier}
+    module = obj({
+        "format": {"const": "openrc-intended-hull-support v1"},
+        "role": {"enum": ["belly", "skid"]},
+        "evidence": obj({"kind": {"enum": ["manual", "measured", "borrowed", "estimated", "derived"]},
+                         "source": {"type": "string", "minLength": 1, "maxLength": 2048, "pattern": r"[^\u0001-\u0020]"}}),
+        "contact_law": {"const": "soft_hull_spring_friction_v2"},
+        "allowed_contact_ids": {"type": "array", "minItems": 1, "maxItems": 64, "uniqueItems": True, "items": identifier},
+        "stop_groups": {"type": "array", "minItems": 1, "maxItems": 16, "uniqueItems": True, "items": group},
+        "rest_pose": obj({key: quantity("rad", -math.pi / 4, math.pi / 4) for key in ("roll", "pitch")}),
+        "control_envelope": obj({"roll_tolerance": quantity("rad", 1e-6, math.pi / 4),
+                                 "pitch_tolerance": quantity("rad", 1e-6, math.pi / 4),
+                                 "max_angular_speed": quantity("rad/s", 1e-6, 100)}),
+    })
+    schema["properties"]["intended_hull_support"] = module
+    schema.setdefault("allOf", []).extend([
+        {"if": {"required": ["intended_hull_support"]}, "then": {
+            "required": ["physical_identity_version", "crash_hull_ids"],
+            "properties": {"capabilities": {"required": ["landing_support"], "properties": {
+                "landing_support": {"const": "authored_hull_v1"}, "gear": {"const": "locked_up"}}}},
+            "not": {"anyOf": [{"required": ["landing_gear"]}, {"required": ["ground"]}]}}},
+        {"if": {"properties": {"capabilities": {"required": ["landing_support"]}}},
+         "then": {"required": ["intended_hull_support"]}},
+    ])
+
+
 def add_v2_overlay(schema: dict, spec: dict):
     schema["title"] = "OpenRC aircraft data v2"
     schema["description"] = "Strict structural and per-field validation for openrc-aircraft v2. Coupled physical validation remains in AircraftData and AircraftContract."
@@ -605,6 +640,7 @@ def add_v2_overlay(schema: dict, spec: dict):
         inertia_value["items"]["exclusiveMinimum"] = 0.0
 
     add_ground_profile(schema)
+    add_intended_hull_support(schema)
     prune_null_anyof(schema)
     # Remove reference-only CLadot from the active map, but retain its exact v1
     # unit/range/evidence contract at aero.reference_coefficients.CLadot.

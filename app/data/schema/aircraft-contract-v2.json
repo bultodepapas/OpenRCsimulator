@@ -41,10 +41,14 @@
     ],
     "airframe_layout": [
       "tailless"
+    ],
+    "landing_support": [
+      "authored_hull_v1"
     ]
   },
   "optional_capabilities": [
-    "airframe_layout"
+    "airframe_layout",
+    "landing_support"
   ],
   "object_rules": [
     {
@@ -88,7 +92,8 @@
         "crash_hull_ids",
         "fuel_system",
         "ground",
-        "crash_tolerance"
+        "crash_tolerance",
+        "intended_hull_support"
       ]
     },
     {
@@ -119,7 +124,8 @@
         "energy",
         "damage",
         "flaps",
-        "airframe_layout"
+        "airframe_layout",
+        "landing_support"
       ]
     },
     {
@@ -1452,6 +1458,64 @@
         "crash_depth",
         "presentation_durability"
       ]
+    },
+    {
+      "path": "/intended_hull_support",
+      "required": [
+        "format",
+        "role",
+        "evidence",
+        "contact_law",
+        "allowed_contact_ids",
+        "stop_groups",
+        "rest_pose",
+        "control_envelope"
+      ],
+      "allowed": [
+        "format",
+        "role",
+        "evidence",
+        "contact_law",
+        "allowed_contact_ids",
+        "stop_groups",
+        "rest_pose",
+        "control_envelope"
+      ]
+    },
+    {
+      "path": "/intended_hull_support/evidence",
+      "required": [
+        "kind",
+        "source"
+      ],
+      "allowed": [
+        "kind",
+        "source"
+      ]
+    },
+    {
+      "path": "/intended_hull_support/rest_pose",
+      "required": [
+        "roll",
+        "pitch"
+      ],
+      "allowed": [
+        "roll",
+        "pitch"
+      ]
+    },
+    {
+      "path": "/intended_hull_support/control_envelope",
+      "required": [
+        "roll_tolerance",
+        "pitch_tolerance",
+        "max_angular_speed"
+      ],
+      "allowed": [
+        "roll_tolerance",
+        "pitch_tolerance",
+        "max_angular_speed"
+      ]
     }
   ],
   "quantity_paths": [
@@ -1532,7 +1596,9 @@
     "/ground/steering_profiles/*/parameters/max_rate",
     "/ground/steering_profiles/*/parameters/max_acceleration",
     "/ground/supports/*/steering_axis_le",
-    "/crash_tolerance/*"
+    "/crash_tolerance/*",
+    "/intended_hull_support/rest_pose/*",
+    "/intended_hull_support/control_envelope/*"
   ],
   "array_rules": [
     {
@@ -1577,6 +1643,18 @@
     },
     {
       "path": "/ground/steering_profiles",
+      "min_items": 1
+    },
+    {
+      "path": "/intended_hull_support/allowed_contact_ids",
+      "min_items": 1
+    },
+    {
+      "path": "/intended_hull_support/stop_groups",
+      "min_items": 1
+    },
+    {
+      "path": "/intended_hull_support/stop_groups/*",
       "min_items": 1
     }
   ],
@@ -1747,6 +1825,18 @@
     },
     {
       "path": "/ground/supports/*/steering_profile_id",
+      "nonempty": true
+    },
+    {
+      "path": "/intended_hull_support/allowed_contact_ids/*",
+      "nonempty": true
+    },
+    {
+      "path": "/intended_hull_support/stop_groups/*/*",
+      "nonempty": true
+    },
+    {
+      "path": "/intended_hull_support/evidence/source",
       "nonempty": true
     }
   ],
@@ -1950,6 +2040,23 @@
         "legacy_wheels_v1",
         "coupled_thin_ring_compliance_v1"
       ]
+    },
+    {
+      "path": "/intended_hull_support/role",
+      "values": [
+        "belly",
+        "skid"
+      ]
+    },
+    {
+      "path": "/intended_hull_support/evidence/kind",
+      "values": [
+        "manual",
+        "measured",
+        "borrowed",
+        "estimated",
+        "derived"
+      ]
     }
   ],
   "literal_paths": [
@@ -2008,6 +2115,14 @@
     {
       "path": "/ground/steering_profiles/*/parameters/format",
       "value": "openrc-prescribed-angle-actuator v1"
+    },
+    {
+      "path": "/intended_hull_support/format",
+      "value": "openrc-intended-hull-support v1"
+    },
+    {
+      "path": "/intended_hull_support/contact_law",
+      "value": "soft_hull_spring_friction_v2"
     }
   ]
 }

@@ -1,0 +1,204 @@
+{
+  "schema": "openrc-gp12-numerical-rest-draft-v1",
+  "captured_utc": "2026-10-26T12:53:25.776800+00:00",
+  "source_commit": "7282d395cfbb41bf9ebbfdfb16c0bc0fcd5c6446",
+  "production_modified_by_this_task": false,
+  "promotion_status": "review_only",
+  "scope": "distinct opt-in verified assembly epsilon-optimality; context-absent strict",
+  "new_checks": 51,
+  "strict_regression_checks": 659,
+  "legacy_impulse_checks": 314,
+  "total_checked_assertions": 1024,
+  "sealed_prior_cohort_unchanged": true,
+  "sym16": {
+    "assembly_objective_resolution_j": 5.98078702310756e-17,
+    "true_objective_gap_upper_j": 1.6235698676675174e-20,
+    "original_dual_gap_j": 1.6235698644378183e-20,
+    "strict_kkt_passed": false,
+    "impulse_zero": true,
+    "loss_j": 0.0
+  },
+  "identities": {
+    "app/physics/ground_traction.gd": {
+      "sha256": "485342c1b85e979e9c4abd763e1fef61959e9745354667eef99a76ee3e6d0045",
+      "bytes": 24748
+    },
+    "app/physics/aircraft_ground_impulse.gd": {
+      "sha256": "0592e0097e38d9e348bf03018ac1ce60d5079041877d0db24e2377e583aa3a9e",
+      "bytes": 23741
+    },
+    "app/physics/rotor_coupling.gd": {
+      "sha256": "e58d107a420c446fc3f2d483b01e444f08cff4e3bd12a8401b3aa8ae83d6e21b",
+      "bytes": 27336
+    },
+    "app/physics/generalized_coordinates.gd": {
+      "sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8",
+      "bytes": 9692
+    },
+    "app/physics/math3d.gd": {
+      "sha256": "4191cb83f18fd6548d22175cb1b68869659102ece6b2fa273b05fb2d9866f2cb",
+      "bytes": 5514
+    },
+    "tmp\\gp12-rest-fix\\traction.gd": {
+      "sha256": "609a77c37ce01ea514b8adcbfa106e4afa242ddf49b48c2a660db1526442d249",
+      "bytes": 25322
+    },
+    "tmp\\gp12-rest-fix\\assembly_roundoff.gd": {
+      "sha256": "924861029a164263a9c5326054dbc37883232b755d06c6bfd5f39d85ecfd16ec",
+      "bytes": 18438
+    },
+    "tmp\\gp12-rest-fix\\impulse.gd": {
+      "sha256": "fdaa4567fa3236eefbd151ac433d25380db40322954cbe953cde64f9d1aae516",
+      "bytes": 25922
+    },
+    "tmp\\gp12-rest-fix\\test.gd": {
+      "sha256": "e6f7446d585daeaed4b32731aa481f03951870c312d801e3afd9e287c115347b",
+      "bytes": 12158
+    },
+    "tmp\\gp12-rest-fix\\strict_test.gd": {
+      "sha256": "9d6488d1dc512a2d2627ac96327795a796be95c96f4dd522e92606c7ea2ce0dc",
+      "bytes": 23543
+    },
+    "tmp\\gp12-rest-fix\\impulse_test.gd": {
+      "sha256": "dcfacdb8a47c4aa6f9a4b3b1764fbd7c943f064a379546fd6881d0c7de706d49",
+      "bytes": 26103
+    },
+    "tmp\\gp12-rest-fix\\proof.bin": {
+      "sha256": "ad16aeac988d462ed221060b10f81563e67d290a36cd536569f01b6d96ba2ff9",
+      "bytes": 1412
+    },
+    "tmp\\gp12-rest-fix\\proof.json": {
+      "sha256": "07f0b20a55be21985a233381da80c195c127f66092cc2974b447b57d2dd7e82f",
+      "bytes": 2969
+    },
+    "tmp\\gp12-rest-fix\\arithmetic_probe.gd": {
+      "sha256": "4b1ad165a9b36b0bf74946bfd86b29c50422aef0b95ca70fc928c4218423a94e",
+      "bytes": 451
+    },
+    "tmp/gp-composition-repro/resting-failed-qp-symmetric-16.bin": {
+      "sha256": "f059b5c95141b40dec67a345de643ed2dd1a879b3fd2e5a1095513076c5d155e",
+      "bytes": 4272
+    },
+    ".tools/Godot_v4.8-beta1_win64_console.exe": {
+      "sha256": "90a914f1815b31fec4959be7867b2b491a61a02b1e3cb1e251653c58b7ff855f",
+      "bytes": 205160
+    }
+  },
+  "checked_receipts": [
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-19_zoxdt/report.json",
+      "ok": false,
+      "complete": true,
+      "sha256": "806cc133dd2a415f0991030fa8886756cccc85c61f487f9b1700f318d6c325e4"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-fs8ttsto/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "4395890eb920f822326c9370d666d2d01e0605e39c59b5887b8c0159736be2c7"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-h_oanq75/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "9d28f3eeae5023c8872c4fbfa6efb19f1e943b4be60388b186ad3941d822d094"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-hss8snt2/report.json",
+      "ok": false,
+      "complete": true,
+      "sha256": "9c8b70d7047e07135d4aed5d45b604a1d219dac872dc2af416fc8775fd6684db"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-ii4zjjka/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "c8a83e5481995100aea7e8996be8af6cd04924c506351d111a716f9c2e935360"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-interval-bbikx5if/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "a17a11933c67ce5bfc13032d03948b6ad2270b965689099d4aeb514b350c6866"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-outward-final-a_a86z4w/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "c8f3581f525306820fa757a88c607bafcf56feec50d8e654dd157ac03ee04e05"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-outward-final-gk0xm722/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "167f6ff4aaa8f66ebfa3129df34ef4439351798182c3ee63ec30111096d18888"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-outward-final-ldksxmfd/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "efc1c01c6af70f83f2685e982fd9c09a80a0e4b125573ed4d2ede1cabcda49d8"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-outward-final-rlvnnlk7/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "97550a20f5ab2a4020cbd9a6e89534f44ee8cf1d3664cfa6248a306daa1c7b70"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-spd-5nspcppp/report.json",
+      "ok": false,
+      "complete": true,
+      "sha256": "d8a637b87fc55df483629f12fe4e9fcbcef5fa50f89cc861a5bc0c6173e45200"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-spd-yw6g3jax/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "b371de1865189515657544f54926d19d7d2908499ab4f2e77a7e6ce09098f472"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/assembly-resolution-y7bs1qnn/report.json",
+      "ok": false,
+      "complete": true,
+      "sha256": "df1b31ed1cf26a8eaad4b839a90759ebbc0f0013c072b07aeded366428b1a43f"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/binary64-environment-aqt13c8a/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "c05e8dfddf6d69931313b4edf9b10ddb5591a5a3b66d6a8e65fd7ae28b82c953"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/impulse-final-legacy-fqkb5v91/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "22ba3954d08d8894dadca4fd4949264ba5621b91cfa7496aab1d6cfa5f75d76c"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/impulse-final-legacy-mmh0jelt/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "2c4aa0507b689ff9f5f78f0ff87cbcc65ac3a435a6b93d460b21a38a9172dbc3"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/impulse-legacy-regression-9es33zk0/report.json",
+      "ok": false,
+      "complete": true,
+      "sha256": "a905733a67051283d7c2c465a5c8849aae0bca163a656941cb52397df224421f"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/impulse-legacy-regression-rtm_7lin/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "913a2777c939d5972befbf55da959a0026d104717af03407680cd0450276ec82"
+    },
+    {
+      "path": "tmp/gp12-rest-fix/checks/strict-qp-regression-bj11xyn2/report.json",
+      "ok": true,
+      "complete": true,
+      "sha256": "c9ad839e8adc2cbf34681f31626a8894c7fedb36d26babb8281514a003529c0b"
+    }
+  ],
+  "remaining_review": "owner review of outward-bound arithmetic/SPD proof/status propagation; no promotion authorized"
+}

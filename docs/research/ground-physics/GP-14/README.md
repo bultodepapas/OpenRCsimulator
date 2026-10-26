@@ -52,7 +52,7 @@ These receipts are unit evidence for that candidate run, not complete applicatio
 
 ## Remaining scope
 
-The full ten-event vocabulary and shared subscriber bus, nonpersistent semantic observers for technical routes, comprehensive per-accident archive, complete v2 identity/evidence envelope, mechanical/damage causality, general taxi-incident grouping and physically calibrated damage remain deferred. This slice does not qualify the full GP-14 gate, physical realism, audibility, hardware performance or rendered presentation.
+The original GP-14a slice did not include the shared subscriber bus; GP-14b below adds its endpoint-observation contract and eight producers. Physical component-damage/gear-failure producers, nonpersistent semantic observers for technical routes, comprehensive per-accident archive, full physical observation identity/evidence envelope, mechanical/damage causality, general taxi-incident grouping and physically calibrated damage remain open. Neither slice qualifies physical realism, audibility, hardware performance or rendered presentation.
 
 ## Integrated receipts
 
@@ -61,3 +61,24 @@ The final main-tree [integrated collection](../GP-08/evidence/integration/README
 The service now updates terminal escalation by deep-copying and replacing the crash record, preserving the immutable snapshot already handed to the background writer. The [live persistence fixture](../../../../app/tests/test_ground_accident_session.gd) checks that a pre-escalation writer snapshot remains unchanged and that the saved record retains one M7, its original cause, the terminal update and rules version. Persisted accident IDs use the service's activity UUID namespace rather than session-local generation counters; accepted physical receipts continue to use their session tick/generation identity. The final lifecycle checks also preserve the accepted aircraft configuration hash after reload.
 
 The [55-check pure suite](../GP-08/evidence/integration/test_ground_accidents/engine.log) adds atomic rejection of fractional/string snapshot versions and inconsistent v2 serial, M7/incident-latch and terminal-group state. Valid JSON snapshots and historical v1 coverage remain supported. The earlier [candidate numerical replays](../GP-08/evidence/candidate/README.md) have a separate captured source identity: final main detector/service changes are covered by these integrated checks, not by attributing the earlier replay proof to later source. This selected headless collection is not a full suite, physical validation, performance measurement or rendered acceptance.
+
+## Shared semantic events (GP-14b)
+
+2026-10-26. [flight_event.gd](../../../../app/statistics/flight_event.gd) defines `openrc-ground-flight-event` v1 with a closed vocabulary, generation/tick/sequence identity, flight/contact-episode/accident IDs, explicit coverage, unknown severity/cause and continuation independent of crash classification. The **existing** detector supplies eight event types; there is no second takeoff/landing state machine. `COMPONENT_DAMAGE` and `GEAR_FAILURE` are reserved names, not implemented physical emitters.
+
+| Producer | Behavior |
+| --- | --- |
+| `TAKEOFF` | Existing confirmation rule, requiring actually observed prior support. Retains first unsupported tick and confirmation tick. Air starts and missing prior support earn no semantic takeoff. Existing statistical rules/counters are unchanged. |
+| `TOUCHDOWN` | First actual supported endpoint of an active flight's unresolved contact episode. Intended-support flags alone cannot invent contact. Spawn/reset priming emits none. |
+| `BOUNCE` | Actual unsupported samples followed by recontact before episode rearm. One event per completed hop, sharing the episode ID; records the sum of observed unsupported sample durations. This is endpoint evidence, not a located crossing or continuous hop-height measurement. |
+| `LANDING_SUCCESS`, `TOUCH_AND_GO` | Existing clean support/stop/rearm decisions produce one success and, when applicable, its touch-and-go subtype. No new success threshold or force toggle. |
+| `GEAR_UP_CONTACT`, `CRASH` | First accepted accident group. Persistent scraping/recontacts do not duplicate it. Terminal escalation is `CRASH` revision 1 for the same accident; M7 still increments only once per generation. |
+| `GROUND_STOP` | Existing supported-rest decision, including damaged hull rest. It does not imply landing success or termination. General independent taxi-stop classification remains open. |
+
+The service exposes `flight_events_accepted(events)` after ingesting the whole detector batch. The signal's nested arrays/dictionaries are frozen so one listener cannot corrupt another's evidence. Mutable consumer copies and compact persisted detail are detached. Flight detail retains the existing 128-event bound and now checks the store's 64 KiB metadata limit before adding longer semantic entries; overflow increments the omitted-detail count while the complete accepted subscriber batch still emits. This bounded detail is **not** a comprehensive per-accident archive, especially for pre-flight ground accidents.
+
+Snapshot v3 records event sequence, observed support, active hop timing and flight identity. V1/v2 snapshots preserve their accident coverage while seeding unknown support-edge history without fabricated bounces. Invalid durations, tick ordering and inconsistent support flags reject atomically. A valid terminal recontact preserves its factual bounce before closure; duplicate, invalid or discontinuous terminal guards can retain the outcome but cannot manufacture a newly accepted support edge. Coverage distinguishes these cases.
+
+The current packet is deliberately limited to the accepted endpoint support law. It contains no fabricated contact/component/material IDs, pre-impact speed, substep time, structural severity or pilot-intent cause. Missing aircraft/configuration/field identity remains empty until supplied by the owner. The service supplies aircraft and accepted activity/configuration identity where available. A richer physical observation producer must extend/version this contract before claiming the full masterplan envelope.
+
+The [retained GP-14b evidence](evidence/shared-events/README.md) includes the new 88-check event suite and real-session checks. The actual 900-tick Avanti belly slide emits one gear-up event and one nonterminal semantic crash, continues moving, and stays byte-exact against the unobserved reference body and complete kernel checkpoint. Rejected physical intervals publish no shared event. These checks establish observer behavior and noninterference, not new advanced contact, structural damage or calibrated bounce physics.

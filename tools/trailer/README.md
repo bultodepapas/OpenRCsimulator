@@ -52,6 +52,9 @@ The prepared runtime uses source junctions; those hashes do not make a shared ch
 These are offline moving-image checks,
 not real-time GPU benchmarks or pilot acceptance. Respect the renderer's distance/quality limits:
 the inset does not independently increase the primary camera's VFX birth or spill grants.
+Lighting shots reject pauses, faults, crashes or a stalled tick counter, retaining an incomplete
+manifest with the reason. This includes the simulator's normal pause on focus loss; a rendered
+movie with repeated frozen frames is not a completed moving-flight take.
 
 The capture now disposes its director and production scene before exit. Two process-frame waits
 allow teardown; the checked Movie Maker run presents one additional cleanup frame. Retain measured

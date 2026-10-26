@@ -35,7 +35,7 @@ class CustomizationGeneratorTests(unittest.TestCase):
         v3 = generator.PRESENTATION_SOURCE_PATHS_V3
         self.assertEqual(len(legacy), 7)
         self.assertEqual(len(v2), 10)
-        self.assertEqual(len(v3), 26)
+        self.assertEqual(len(v3), 27)
         self.assertEqual(tuple(sorted(v3)), v3)
         self.assertTrue(set(legacy).issubset(v2))
         self.assertTrue(set(v2).issubset(v3))

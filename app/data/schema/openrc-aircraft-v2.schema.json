@@ -2466,6 +2466,12 @@
           "enum": [
             "tailless"
           ]
+        },
+        "landing_support": {
+          "type": "string",
+          "enum": [
+            "authored_hull_v1"
+          ]
         }
       },
       "additionalProperties": false
@@ -3436,6 +3442,188 @@
           "additionalProperties": false
         }
       ]
+    },
+    "intended_hull_support": {
+      "type": "object",
+      "required": [
+        "format",
+        "role",
+        "evidence",
+        "contact_law",
+        "allowed_contact_ids",
+        "stop_groups",
+        "rest_pose",
+        "control_envelope"
+      ],
+      "properties": {
+        "format": {
+          "const": "openrc-intended-hull-support v1"
+        },
+        "role": {
+          "enum": [
+            "belly",
+            "skid"
+          ]
+        },
+        "evidence": {
+          "type": "object",
+          "required": [
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "[^\\u0001-\\u0020]"
+            }
+          },
+          "additionalProperties": false
+        },
+        "contact_law": {
+          "const": "soft_hull_spring_friction_v2"
+        },
+        "allowed_contact_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 80,
+            "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+          }
+        },
+        "stop_groups": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 16,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "maxLength": 80,
+              "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            }
+          }
+        },
+        "rest_pose": {
+          "type": "object",
+          "required": [
+            "roll",
+            "pitch"
+          ],
+          "properties": {
+            "roll": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rad"
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": -0.7853981633974483,
+                  "maximum": 0.7853981633974483
+                },
+                "source": {
+                  "maxLength": 2048
+                }
+              }
+            },
+            "pitch": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rad"
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": -0.7853981633974483,
+                  "maximum": 0.7853981633974483
+                },
+                "source": {
+                  "maxLength": 2048
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "control_envelope": {
+          "type": "object",
+          "required": [
+            "roll_tolerance",
+            "pitch_tolerance",
+            "max_angular_speed"
+          ],
+          "properties": {
+            "roll_tolerance": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rad"
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": 1e-06,
+                  "maximum": 0.7853981633974483
+                },
+                "source": {
+                  "maxLength": 2048
+                }
+              }
+            },
+            "pitch_tolerance": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rad"
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": 1e-06,
+                  "maximum": 0.7853981633974483
+                },
+                "source": {
+                  "maxLength": 2048
+                }
+              }
+            },
+            "max_angular_speed": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rad/s"
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": 1e-06,
+                  "maximum": 100
+                },
+                "source": {
+                  "maxLength": 2048
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     },
     "physical_identity_version": {
       "type": "integer",
@@ -6471,6 +6659,64 @@
       "then": {
         "required": [
           "physical_identity_version"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "intended_hull_support"
+        ]
+      },
+      "then": {
+        "required": [
+          "physical_identity_version",
+          "crash_hull_ids"
+        ],
+        "properties": {
+          "capabilities": {
+            "required": [
+              "landing_support"
+            ],
+            "properties": {
+              "landing_support": {
+                "const": "authored_hull_v1"
+              },
+              "gear": {
+                "const": "locked_up"
+              }
+            }
+          }
+        },
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "landing_gear"
+              ]
+            },
+            {
+              "required": [
+                "ground"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "capabilities": {
+            "required": [
+              "landing_support"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "intended_hull_support"
         ]
       }
     },
