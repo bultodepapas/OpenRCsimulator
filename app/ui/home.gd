@@ -1561,8 +1561,7 @@ func _on_update_hidden(tag: String) -> void:
 
 ## The interface language in use, as a Preferences.LANGUAGES code ("en" when the locale is not one of ours).
 static func current_language() -> String:
-	var code := TranslationServer.get_locale().get_slice("_", 0)
-	return code if Preferences.LANGUAGES.has(code) else "en"
+	return Preferences.Languages.supported_locale(TranslationServer.get_locale())
 
 
 static func next_language(code: String) -> String:

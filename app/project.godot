@@ -31,6 +31,8 @@ smoke_pump={
 
 ; Preserve the existing explicit keyboard-focus behavior across the engine upgrade.
 common/auto_focus_strategy=0
+; Keep the engine Latin face and bundle Chinese glyphs for offline use on every platform.
+theme/custom_font="res://assets/fonts/interface_font.tres"
 
 [input_devices]
 

@@ -27,7 +27,7 @@ signal feedback_requested(cue: StringName)
 signal graphics_restart_requested(profile: String)
 
 const DISPLAY_TEST_SECONDS := 15
-const LANGUAGE_CODES: Array[String] = ["en", "es"]
+const Languages := preload("res://i18n/languages.gd")
 const SCALE_CHOICES: Array[int] = [100, 125, 150, 175, 200]
 
 var display_preferences: DisplayPreferences
@@ -95,7 +95,7 @@ func _init(store: DisplayPreferences = null, initial_language: String = "en") ->
 	display_preferences = store if store != null else DisplayPreferences.new()
 	_saved = display_preferences.config.duplicate(true)
 	_draft = _saved.duplicate(true)
-	_language = initial_language if initial_language in LANGUAGE_CODES else "en"
+	_language = initial_language if Languages.NAMES.has(initial_language) else "en"
 	_build()
 
 
@@ -362,10 +362,9 @@ func _build() -> void:
 
 	_language_picker = OptionButton.new()
 	_language_picker.name = "Language"
-	_language_picker.add_item("English")
-	_language_picker.set_item_metadata(0, "en")
-	_language_picker.add_item("Español")
-	_language_picker.set_item_metadata(1, "es")
+	for code: String in Languages.NAMES:
+		_language_picker.add_item(Languages.NAMES[code])
+		_language_picker.set_item_metadata(_language_picker.item_count - 1, code)
 	_language_picker.item_selected.connect(_language_selected)
 	_add_row(interface_page, "Language", _language_picker)
 	interface_page.add_child(_label("Language is saved immediately.", "SecondaryLabel", true))
