@@ -24,6 +24,7 @@ class LocalePublicationTests(unittest.TestCase):
         for lang, page in self.pages.items():
             with self.subTest(lang=lang):
                 self.assertEqual(page.html["lang"], lang)
+                self.assertEqual(page.html["dir"], LOCALES[lang].get("dir", "ltr"))
                 self.assertEqual(page.select_one('link[rel="canonical"]')["href"], routes[lang])
                 self.assertEqual(page.select_one('meta[property="og:url"]')["content"], routes[lang])
                 self.assertEqual({t["hreflang"]: t["href"] for t in page.select('link[hreflang]')},
@@ -38,6 +39,9 @@ class LocalePublicationTests(unittest.TestCase):
                     self.assertEqual(page.select_one(selector)["content"], schema["description"])
                 self.assertEqual({a['hreflang'] for a in page.select('.language-options a[href]')}, set(LOCALES))
                 self.assertEqual(page.select_one('.language-options [aria-current=page]')['hreflang'], lang)
+                self.assertTrue(all(a.get('dir') == 'auto' for a in page.select('[data-locale]')))
+                self.assertEqual(page.select_one('#spin-angle').get('dir'), 'ltr')
+                self.assertEqual(page.select_one('#aircraft-power').get('dir'), 'ltr')
                 runtime = json.loads(page.select_one('#locale-data').string)
                 self.assertEqual(set(runtime['aircraft']), {'jet', 'stik', 'extra', 'mustang', 'timber', 'heli'})
                 self.assertTrue(all(runtime['ui'].values()))
