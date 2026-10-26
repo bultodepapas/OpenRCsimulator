@@ -70,7 +70,7 @@ func _run() -> void:
 		and clone_a.emission_enabled and is_equal_approx(clone_a.emission_energy_multiplier, 0.15))
 	helper.advance(0.1, {"exposure": 100.0, "throttle": 0.0}, "all", 1.0)
 	_check("high exposure lowers emission to the exposure cap",
-		is_equal_approx(clone_a.emission_energy_multiplier, 0.004))
+		is_equal_approx(clone_a.emission_energy_multiplier, 0.012))
 	LightingPolicy.reduced_flashes = true
 	helper.advance(0.0, {"exposure": 1.0, "throttle": 1.0}, "all", 1.0)
 	var reduced_color := clone_a.emission
