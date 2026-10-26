@@ -198,9 +198,23 @@ static func _validate_relations(root: Dictionary, spec: Dictionary, issues: Pack
 		_issue(issues, "/capabilities/energy", "turbines require prescribed_fuel or a supported finite-liquid consumer")
 
 	_validate_gear_relations(root, gear_kind, issues)
+	_validate_intended_hull_support_relations(root, issues)
 
 	_validate_inertia_reference(root, issues)
 	_validate_slipstream_relations(propulsion, issues)
+
+
+static func _validate_intended_hull_support_relations(root: Dictionary, issues: PackedStringArray) -> void:
+	var has_module := root.has("intended_hull_support")
+	var has_capability: bool = root.capabilities.has("landing_support")
+	if has_module != has_capability:
+		_issue(issues, "/intended_hull_support", "module and capabilities.landing_support must be declared together")
+	if not has_module:
+		return
+	if root.capabilities.get("gear") != "locked_up" or root.has("landing_gear") or root.has("ground"):
+		_issue(issues, "/intended_hull_support", "initial intended hull support requires gearless locked_up with no wheel ground module")
+	if not root.has("physical_identity_version") or not root.has("crash_hull_ids"):
+		_issue(issues, "/intended_hull_support", "complete authored physical hull identity is required")
 
 static func _validate_gear_relations(root: Dictionary, gear_kind: String, issues: PackedStringArray) -> void:
 	var has_gear := root.has("landing_gear")

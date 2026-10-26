@@ -16,7 +16,9 @@ const STAGE_AIR_LAW := "m5-w05c-r2-point-air-v1"
 ## Extra wash stations use their actual aerodynamic force arms, not the neutral coverage geometry.
 class StagePointSampler:
 	extends RefCounted
-	var body := PackedFloat64Array()
+	var position_ned := PackedFloat64Array()
+	var q_body_to_ned := PackedFloat64Array()
+	var q_ned_to_body := PackedFloat64Array()
 	var reference_wind := PackedFloat64Array()
 	var environment: Object
 	var time_s := 0.0
@@ -24,8 +26,7 @@ class StagePointSampler:
 	func delta_at(arm: PackedFloat64Array) -> PackedFloat64Array:
 		if not _finite3(arm) or not is_instance_valid(environment):
 			return PackedFloat64Array([NAN, NAN, NAN])
-		var q := body.slice(RB.ATT, RB.ATT + 4)
-		var position := M.add(body.slice(RB.POS, RB.POS + 3), M.q_rotate(q, arm))
+		var position := M.add(position_ned, M.q_rotate(q_body_to_ned, arm))
 		if not _finite3(position):
 			return PackedFloat64Array([NAN, NAN, NAN])
 		var wind: Variant = environment.call("wind_world", position, time_s)
@@ -33,7 +34,7 @@ class StagePointSampler:
 			return PackedFloat64Array([NAN, NAN, NAN])
 		if wind[0] == reference_wind[0] and wind[1] == reference_wind[1] and wind[2] == reference_wind[2]:
 			return PackedFloat64Array([0.0, 0.0, 0.0])
-		var delta := M.q_rotate(M.q_conj(q), M.sub(reference_wind, wind))
+		var delta := M.q_rotate(q_ned_to_body, M.sub(reference_wind, wind))
 		return delta if _finite3(delta) else PackedFloat64Array([NAN, NAN, NAN])
 
 	static func _finite3(value: Variant) -> bool:
@@ -48,13 +49,14 @@ class StagePointSampler:
 ## Stage-local Air contract, not a checkpoint. Always selects physical point inflow,
 ## including in uniform air; do not toggle the law when the instantaneous gradient happens to be zero.
 ## No caller may reuse this result for another body stage, density, model or time.
+## Production consumers may omit the diagnostic flow bundle; all samples and validation still run.
 static func stage_air(s: PackedFloat64Array, model: Dictionary, environment: Object, time_s: float,
-		rho := Air.RHO_SEA_LEVEL, aero_law: String = "") -> Dictionary:
+		rho := Air.RHO_SEA_LEVEL, aero_law: String = "", include_flow := true) -> Dictionary:
 	if aero_law not in ["", Aero.SPATIAL_CONTINUATION_LAW]:
 		return {ok = false, errors = PackedStringArray(["unsupported spatial aerodynamic law"]), air = {}}
 	if not is_finite(rho) or rho <= 0.0:
 		return {ok = false, errors = PackedStringArray(["invalid stage density"]), air = {}}
-	var flow := sample(s, model, environment, time_s)
+	var flow := _sample(s, model, environment, time_s, include_flow)
 	if not flow.ok:
 		return {ok = false, errors = flow.errors, air = {}}
 	if flow.propulsion_index < 0:
@@ -63,7 +65,10 @@ static func stage_air(s: PackedFloat64Array, model: Dictionary, environment: Obj
 	if not is_finite(air.V) or not is_finite(air.qbar):
 		return {ok = false, errors = PackedStringArray(["nonfinite stage air data"]), air = {}}
 	var point_sampler := StagePointSampler.new()
-	point_sampler.body = s.duplicate()
+	# Detached pose for this stage only. Do not normalize an intermediate RK quaternion.
+	point_sampler.position_ned = s.slice(RB.POS, RB.POS + 3)
+	point_sampler.q_body_to_ned = s.slice(RB.ATT, RB.ATT + 4)
+	point_sampler.q_ned_to_body = M.q_conj(point_sampler.q_body_to_ned)
 	point_sampler.reference_wind = flow.reference_wind_ned.duplicate()
 	point_sampler.environment = environment
 	point_sampler.time_s = time_s
@@ -79,10 +84,13 @@ static func stage_air(s: PackedFloat64Array, model: Dictionary, environment: Obj
 	air.ambient_delta_body_at = point_sampler.delta_at
 	if flow.propulsion_index >= 0:
 		var start: int = 3 * flow.propulsion_index
-		air.propulsion_air_body = flow.relative_body.slice(start, start + 3)
+		air.propulsion_air_body = flow.relative_body.slice(start, start + 3) if include_flow else flow.propulsion_air_body
 		# Preserve the wake closure's datum-flow convention; rotation belongs only to powered-device inflow.
 		air.wake_source_delta_body = flow.delta_body.slice(start, start + 3)
-	return {ok = true, errors = PackedStringArray(), air = air, flow = flow}
+	var result := {ok = true, errors = PackedStringArray(), air = air}
+	if include_flow:
+		result.flow = flow
+	return result
 
 
 ## Receipt check for the load entrypoint. A stage context is ephemeral, never a checkpoint or cross-stage cache.
@@ -255,6 +263,11 @@ static func geometry(model: Variant) -> Dictionary:
 ## Sample the same position/time wind law at O and every station, returning diagnostic local relative flows.
 ## relative_body includes datum air-relative velocity, one omega×r term, and the spatial wind delta.
 static func sample(s: Variant, model: Variant, environment: Variant, time_s: float) -> Dictionary:
+	return _sample(s, model, environment, time_s, true)
+
+
+## One sampling/validation law for diagnostic and lean receipts. Only retained output differs.
+static func _sample(s: Variant, model: Variant, environment: Variant, time_s: float, include_flow: bool) -> Dictionary:
 	var station_geometry: Dictionary = geometry(model)
 	if not station_geometry.ok:
 		return _sample_failure(station_geometry.errors, station_geometry, time_s)
@@ -289,6 +302,7 @@ static func sample(s: Variant, model: Variant, environment: Variant, time_s: flo
 	var positions_ned := PackedFloat64Array()
 	var wind_ned := PackedFloat64Array()
 	var relative_body := PackedFloat64Array()
+	var propulsion_air_body := PackedFloat64Array()
 	var delta_body := PackedFloat64Array()
 	var omega: PackedFloat64Array = state.slice(RB.RATE, RB.RATE + 3)
 	var uniform := true
@@ -296,9 +310,10 @@ static func sample(s: Variant, model: Variant, environment: Variant, time_s: flo
 		if i == int(station_geometry.wing_count) and int(station_geometry.horizontal_index) < 0:
 			# Reserved ABI slot, not a physical surface. Do not create a weather probe,
 			# angular-flow contribution or extra domain/refusal point for an absent tail.
-			positions_ned.append_array(position_ned)
-			wind_ned.append_array(reference_wind)
-			relative_body.append_array(reference_air_body)
+			if include_flow:
+				positions_ned.append_array(position_ned)
+				wind_ned.append_array(reference_wind)
+				relative_body.append_array(reference_air_body)
 			delta_body.append_array(PackedFloat64Array([0.0, 0.0, 0.0]))
 			continue
 		var arm := offsets.slice(i * 3, i * 3 + 3)
@@ -331,11 +346,18 @@ static func sample(s: Variant, model: Variant, environment: Variant, time_s: flo
 		if not _finite3(delta) or not _finite3(local_air):
 			errors.append("station %d relative flow is nonfinite" % i)
 			return _sample_failure(errors, station_geometry, time_s)
-		positions_ned.append_array(station_position)
-		wind_ned.append_array(station_wind)
-		relative_body.append_array(local_air)
+		if include_flow:
+			positions_ned.append_array(station_position)
+			wind_ned.append_array(station_wind)
+			relative_body.append_array(local_air)
+		elif i == int(station_geometry.propulsion_index):
+			propulsion_air_body = local_air
 		delta_body.append_array(delta)
 
+	if not include_flow:
+		return {ok = true, reference_wind_ned = reference_wind, delta_body = delta_body,
+			wing_count = int(station_geometry.wing_count), propulsion_index = int(station_geometry.propulsion_index),
+			propulsion_air_body = propulsion_air_body}
 	return {
 		"ok": true,
 		"errors": PackedStringArray(),

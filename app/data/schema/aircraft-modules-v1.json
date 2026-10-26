@@ -212,6 +212,33 @@
           }
         ]
       }
+    },
+    "landing_support": {
+      "authored_hull_v1": {
+        "module": "aircraft.ground.intended_hull.v1",
+        "presence_relations": [
+          {
+            "path": "intended_hull_support",
+            "present": true
+          },
+          {
+            "path": "physical_identity_version",
+            "present": true
+          },
+          {
+            "path": "crash_hull_ids",
+            "present": true
+          },
+          {
+            "path": "landing_gear",
+            "present": false
+          },
+          {
+            "path": "ground",
+            "present": false
+          }
+        ]
+      }
     }
   },
   "capability_keys": [
@@ -223,7 +250,8 @@
     "flaps"
   ],
   "optional_capability_keys": [
-    "airframe_layout"
+    "airframe_layout",
+    "landing_support"
   ],
   "propulsion": {
     "glow_prop": {
@@ -632,6 +660,59 @@
               "retractable_taildragger"
             ]
           }
+        }
+      }
+    },
+    {
+      "path": "intended_hull_support",
+      "format": "openrc-intended-hull-support v1",
+      "selector": "role",
+      "choices": {
+        "belly": {
+          "module": "aircraft.ground.intended_hull.belly.v1",
+          "required_paths": [
+            "capabilities.landing_support",
+            "physical_identity_version",
+            "crash_hull_ids"
+          ],
+          "allowed_capabilities": {
+            "gear": [
+              "locked_up"
+            ],
+            "landing_support": [
+              "authored_hull_v1"
+            ]
+          },
+          "compiler_transforms": {
+            "scale": false,
+            "weight": false,
+            "power": false,
+            "controls": false
+          },
+          "compiler_transform_reason": "authored hull intent requires source-aware role/pose/geometry rebinding"
+        },
+        "skid": {
+          "module": "aircraft.ground.intended_hull.skid.v1",
+          "required_paths": [
+            "capabilities.landing_support",
+            "physical_identity_version",
+            "crash_hull_ids"
+          ],
+          "allowed_capabilities": {
+            "gear": [
+              "locked_up"
+            ],
+            "landing_support": [
+              "authored_hull_v1"
+            ]
+          },
+          "compiler_transforms": {
+            "scale": false,
+            "weight": false,
+            "power": false,
+            "controls": false
+          },
+          "compiler_transform_reason": "authored hull intent requires source-aware role/pose/geometry rebinding"
         }
       }
     }
