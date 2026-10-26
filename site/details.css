@@ -93,3 +93,5 @@ html[dir=rtl] .model-inspector model-viewer { direction:ltr; }
   html[dir=rtl] .inspector-details { left:22px; right:22px; }
   html[dir=rtl] .inspector-details button { border-right:0; text-align:center; }
 }
+html[dir=rtl] #aircraft-name,html[dir=rtl] #inspector-title { text-align:right; }
+html[dir=rtl] .product-credit>span:last-child { margin-left:0; margin-right:auto; }
