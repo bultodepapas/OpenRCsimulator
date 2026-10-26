@@ -32,6 +32,18 @@ const WAVES := [
 const TAU := 6.2831853071795864769
 
 
+## Outward NED unit normal for a height field expressed positive UP. Lake bed
+## derivatives are positive DOWN and must be negated at their provider boundary.
+## Empty means invalid geometry; callers must not replace it with flat support.
+static func normal_from_up_slopes(slope_north: float, slope_east: float) -> PackedFloat64Array:
+	if not is_finite(slope_north) or not is_finite(slope_east):
+		return PackedFloat64Array()
+	var length := M.sqrt_(1.0 + slope_north * slope_north + slope_east * slope_east)
+	if not is_finite(length):
+		return PackedFloat64Array()
+	return PackedFloat64Array([-slope_north / length, -slope_east / length, -1.0 / length])
+
+
 ## Returns [height_up_m, dh/dnorth, dh/deast]. An empty table is the explicit flat fixture;
 ## malformed inputs fail closed with NANs so a broken surface table cannot silently fly flat.
 static func sample(north: float, east: float, surfaces: PackedFloat64Array, lake: Dictionary = {}) -> PackedFloat64Array:
@@ -48,6 +60,27 @@ static func sample_validated(north: float, east: float, surfaces: PackedFloat64A
 	if not is_finite(north) or not is_finite(east):
 		return PackedFloat64Array([NAN, NAN, NAN])
 	var base: PackedFloat64Array = _sample_microrelief_validated(north, east, surfaces)
+	return _compose_lake(base, north, east, lake)
+
+
+## GP-10: explicit relief amplitudes, one per unchanged stride-6 row. This is a
+## separate prepared geometry law; changing rolling friction cannot change height.
+## Existing sessions retain sample/sample_validated until their whole contact and
+## render contract migrates. Public entry validates both channels and the lake.
+static func sample_profiled(north: float, east: float, surfaces: PackedFloat64Array,
+		relief_m: PackedFloat64Array, lake: Dictionary = {}) -> PackedFloat64Array:
+	if not is_finite(north) or not is_finite(east) or not is_valid_surface_table(surfaces) \
+			or relief_m.size() != surfaces.size() / SURFACE_STRIDE \
+			or (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)):
+		return PackedFloat64Array([NAN, NAN, NAN])
+	for amplitude: float in relief_m:
+		if not is_finite(amplitude) or amplitude < 0.0 or amplitude > RELIEF_ROUGH_M:
+			return PackedFloat64Array([NAN, NAN, NAN])
+	return _compose_lake(_sample_microrelief_validated(north, east, surfaces, relief_m), north, east, lake)
+
+
+static func _compose_lake(base: PackedFloat64Array, north: float, east: float,
+		lake: Dictionary) -> PackedFloat64Array:
 	if lake.is_empty():
 		return base
 	# `lake` is immutable normalized output from LakeLoader. Keep this hot path validation-free; the
@@ -75,12 +108,12 @@ static func sample_validated(north: float, east: float, surfaces: PackedFloat64A
 
 ## Original GP-01 sampler. Keep its operation order intact so the no-lake path remains bit-identical.
 static func _sample_microrelief_validated(north: float, east: float,
-		surfaces: PackedFloat64Array) -> PackedFloat64Array:
+		surfaces: PackedFloat64Array, relief_m := PackedFloat64Array()) -> PackedFloat64Array:
 	if surfaces.is_empty():
 		return PackedFloat64Array([0.0, 0.0, 0.0])
 	var rows: int = surfaces.size() / SURFACE_STRIDE
 	var last: int = (rows - 1) * SURFACE_STRIDE
-	var amplitude: float = amplitude_for_rolling_factor(surfaces[last + 5])
+	var amplitude: float = amplitude_for_rolling_factor(surfaces[last + 5]) if relief_m.is_empty() else relief_m[rows - 1]
 	var amplitude_north := 0.0
 	var amplitude_east := 0.0
 	# The packed table is highest-precedence first; compose catchall toward runway.
@@ -136,7 +169,7 @@ static func _sample_microrelief_validated(north: float, east: float,
 			- north_low * north_high_slope) * mask_east
 		var mask_gradient_east: float = (east_low_slope * east_high
 			- east_low * east_high_slope) * mask_north
-		var target: float = amplitude_for_rolling_factor(surfaces[i + 5])
+		var target: float = amplitude_for_rolling_factor(surfaces[i + 5]) if relief_m.is_empty() else relief_m[row]
 		var difference: float = target - amplitude
 		amplitude_north = amplitude_north * (1.0 - mask) + difference * mask_gradient_north
 		amplitude_east = amplitude_east * (1.0 - mask) + difference * mask_gradient_east
