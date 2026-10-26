@@ -1,0 +1,9 @@
+Godot Engine v4.8.beta1.official.4d10419ca - https://godotengine.org
+
+GP11 elastic mass=2.0 rate=120 error_J=0.00001405368335 peak_m=0.0445780259042
+GP11 elastic mass=2.0 rate=240 error_J=0.00000288927759 peak_m=0.04471753097909
+GP11 elastic mass=2.0 rate=480 error_J=0.00000269639864 peak_m=0.04471753097906
+GP11 elastic mass=4.0 rate=120 error_J=0.00001074566379 peak_m=0.06324217062793
+GP11 elastic mass=4.0 rate=240 error_J=0.00001025379078 peak_m=0.06324217062815
+GP11 elastic mass=4.0 rate=480 error_J=0.00000024805007 peak_m=0.06324217062814
+88 normal-compliance checks, 0 failed

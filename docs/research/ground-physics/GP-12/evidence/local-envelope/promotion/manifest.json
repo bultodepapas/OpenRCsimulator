@@ -1,0 +1,37 @@
+{
+  "format": "openrc-local-normal-envelope-promotion v1",
+  "status": "root-review-and-promotion-only; agent-did-not-promote",
+  "baseline": {
+    "path": "app/physics/normal_compliance.gd",
+    "sha256": "f25ab43bb9ffe6f120fe4480fc5173a7ccf1b2cb4d0cba7c93d7f0574da8708b"
+  },
+  "operations": [
+    {
+      "target": "app/physics/normal_compliance.gd",
+      "action": "apply ONLY standalone bounds_interval insertion",
+      "patch": "tmp/gp11-local-envelope/normal-interval.patch",
+      "patch_sha256": "f55dd7f3c3056bd0bc860d4a87bd7d602f0b4ad805866152441291ec95e78bdb",
+      "result_sha256_if_no_other_hunks": "9f05b8cb1395c54539b281ac120770c2353caef384a6fca2a857b144e7ec0beb"
+    },
+    {
+      "target": "app/tests/test_normal_compliance_interval.gd",
+      "action": "create new from exact res:// payload",
+      "payload": "tmp/gp11-local-envelope/promotion/app/tests/test_normal_compliance_interval.gd",
+      "sha256": "da81cc01a3b1e937030a013a198400a84d215c7328863ec2b1539bb67811cc51"
+    }
+  ],
+  "never_overwrite_whole_normal_module": true,
+  "nonoverlap": "gp08 owns unclipped_load_n return fields; merge separate insertion hunk, never replace whole module",
+  "fixture_contract": "36 full baseline old-function hashes captured before promotion; future intentional evaluate return-schema extension will require explicit fixture/version reconciliation",
+  "fixtures": {
+    "path": "tmp/gp11-local-envelope/legacy-function-hashes.json",
+    "sha256": "3b27c1c923b90d7ad09f6691307df5e40fc92fff721ff769a599457a71382b7c"
+  },
+  "passing_review_core": {
+    "label": "final-payload-core",
+    "checks": 465,
+    "warnings_as_errors": true
+  },
+  "root_checks": "tmp/gp11-local-envelope/root-run-commands.ps1",
+  "scope": "conditional combined local compression/load/kappa envelope; no full-tape rerun or performance qualification"
+}

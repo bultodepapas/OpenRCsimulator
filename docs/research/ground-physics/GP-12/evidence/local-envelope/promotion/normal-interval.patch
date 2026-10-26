@@ -1,0 +1,47 @@
+--- a/app/physics/normal_compliance.gd
++++ b/app/physics/normal_compliance.gd
+@@ -114,6 +114,44 @@
+ 		continuous_onset = p.damping_onset > 0.0 or c0 == 0.0}
+ 
+ 
++## Conservative scalar force Lipschitz bounds over the CLOSED compression
++## interval [x_min,x_max], |xdot|<=v_max. Existing elastic/damping upper bounds
++## are retained; a damping-ramp slope is omitted only when the ENTIRE interval
++## is past that ramp. max(0,trial) preserves these bounds where onset is
++## continuous. Zero-onset damping is smooth locally only with x_min>0 (or no
++## base damping); touching x=0 still requires event-aware integration.
++## The caller owns proof that its entire motion remains in this interval,
++## geometric stiffness and common multibody mobility. This is no new force law.
++static func bounds_interval(prepared: Dictionary, minimum_compression_m: float,
++		maximum_compression_m: float, maximum_speed_mps: float) -> Dictionary:
++	if typeof(prepared.get("ok")) != TYPE_BOOL or not prepared.ok \
++		or typeof(prepared.get("law")) != TYPE_STRING or prepared.law != LAW \
++		or not prepared.get("values") is Dictionary \
++		or not is_finite(minimum_compression_m) or minimum_compression_m < 0.0 \
++		or not is_finite(maximum_compression_m) or maximum_compression_m < minimum_compression_m \
++		or not is_finite(maximum_speed_mps) or maximum_speed_mps < 0.0:
++		return _failure("invalid normal-compliance interval envelope")
++	var p: Dictionary = prepared.values
++	var y: float = maxf(0.0, maximum_compression_m - p.stroke) / p.stop_scale
++	var tangent: float = p.stiffness
++	if maximum_compression_m > p.stroke:
++		tangent += p.stop_exponent * p.stop_stiffness * M.pow_(y, p.stop_exponent - 1.0)
++	var c0: float = maxf(p.compression_damping, p.rebound_damping)
++	var dc := 0.0
++	if p.damping_onset > 0.0 and minimum_compression_m < p.damping_onset:
++		dc = 2.0 * c0 / p.damping_onset
++	var minimum_excess: float = maxf(0.0, minimum_compression_m - p.stroke)
++	if maximum_compression_m > p.stroke and minimum_excess < p.stop_scale:
++		dc += 2.0 * p.stop_damping / p.stop_scale
++	var damping: float = c0 + p.stop_damping if maximum_compression_m > p.stroke else c0
++	var position_bound: float = tangent + dc * maximum_speed_mps
++	if not is_finite(position_bound) or not is_finite(damping):
++		return _failure("normal-compliance interval envelope overflow")
++	return {ok = true, elastic_tangent_bound_npm = tangent,
++		position_derivative_bound_npm = position_bound, rate_derivative_bound_nsm = damping,
++		continuous_onset = p.damping_onset > 0.0 or c0 == 0.0 or minimum_compression_m > 0.0}
++
++
+ ## Integration admission for ONE isolated scalar mode, not a whole-aircraft bound.
+ ## The rate/frequency targets are accuracy margins for RK4, not physical tuning.
+ ## Reject an unaffordable envelope; never lower the supplied stiffness or damping.
