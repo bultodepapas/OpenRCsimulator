@@ -190,8 +190,7 @@ func _run() -> void:
 		await _capture_crash_report()
 	else:
 		await _capture_frames(int(round(_seconds * _fps)), 0)
-	if _failure.is_empty():
-		_write_manifest(true)
+	_write_manifest(_failure.is_empty())
 	# Let production exit hooks dispose lighting, audio and scene-owned resources.
 	# The director must stop first because its process callback reads the live scene.
 	if is_instance_valid(_director):
@@ -220,6 +219,7 @@ func _capture_crash_report() -> void:
 
 
 func _capture_frames(count: int, preroll: int) -> void:
+	var previous_lighting_tick := -1
 	for index: int in range(count):
 		if _shot == "crash" and index == 60:
 			# Let the viewer see the actual impact and wreck for one second before revealing the native report.
@@ -246,6 +246,15 @@ func _capture_frames(count: int, preroll: int) -> void:
 			_director.resume_after_report_restart()
 		await process_frame
 		await RenderingServer.frame_post_draw
+		if _shot in ["lighting-pass", "lighting-pilot"]:
+			var sim: Node = _main.session.sim
+			if sim.paused or not sim.fault_reason.is_empty() or not _main.session.crash.is_empty() \
+					or (previous_lighting_tick >= 0 and sim.tick <= previous_lighting_tick):
+				_failure = "Lighting capture interrupted: tick=%d paused=%s fault=%s holds=%s" % [
+					sim.tick, sim.paused, sim.fault_reason, str(_main.session.holds)]
+				push_error(_failure)
+				return
+			previous_lighting_tick = sim.tick
 		_director.record_presented_frame(index, preroll)
 		_frame_count += 1
 		if not _save_images:
@@ -304,6 +313,9 @@ func _write_manifest(ok: bool) -> void:
 		fixed_fps_argument_required = 60,
 		physics_ticks_per_second = Engine.physics_ticks_per_second,
 		physical_flight = session != null and session.physics_enabled and session.is_flyable(),
+		simulation_paused = session.sim.paused if session != null else false,
+		simulation_fault = session.sim.fault_reason if session != null else "",
+		session_holds = session.holds.duplicate(true) if session != null else {},
 		start_choice = str(session.start_choice) if session != null else "",
 		soft_hull_contacts = bool(session.soft_hull_contacts) if session != null else false,
 		sky_config = _main.sky_config.duplicate(true) if _main != null else {},
