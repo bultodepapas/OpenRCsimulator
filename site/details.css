@@ -28,3 +28,23 @@ html[data-theme=night]{color-scheme:dark}html[data-theme=night] body{background:
 .faq-list p { font-size:14px; line-height:1.8; max-width:65ch; }
 .faq-list a { text-decoration:underline; text-underline-offset:3px; }
 @media(max-width:700px) { .faq-list { grid-template-columns:1fr; gap:28px; } }
+
+/* Native links remain usable with scripting disabled in every locale. */
+.language-menu { position:relative; flex:none; font-size:11px; }
+.language-menu summary { cursor:pointer; list-style:none; padding:14px 2px; white-space:nowrap; }
+.language-menu summary::-webkit-details-marker { display:none; }
+.language-menu summary:focus-visible { outline:3px solid #879e47; outline-offset:4px; }
+.header .language-options { position:absolute; right:0; top:100%; display:flex; flex-direction:column; gap:0; min-width:170px; padding:8px; background:var(--ink); color:var(--paper); border:1px solid #596366; box-shadow:0 12px 30px #0005; z-index:20; }
+.header .language-options a { display:block; padding:11px 16px; font-size:13px; }
+.header .language-options a[aria-current=page] { color:var(--lime); text-decoration:underline; text-underline-offset:4px; }
+html:lang(zh-Hans) body { font-family:DM,"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",sans-serif; }
+html:lang(ru) body { font-family:DM,Arial,"Noto Sans",sans-serif; }
+html:lang(zh-Hans) h2,html:lang(ru) h2 { letter-spacing:-.02em; }
+@media(max-width:1100px) { .header>nav { display:none; } }
+@media(max-width:700px) {
+  .header-actions { gap:8px; }
+  .nav-download { gap:6px; font-size:10px; }
+  .hero-copy .hero-actions { flex-wrap:wrap; row-gap:8px; }
+  .hero-copy h2 { overflow-wrap:anywhere; }
+  .faq-list h3,.section-heading h2,.development h2 { overflow-wrap:anywhere; }
+}

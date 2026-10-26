@@ -49,18 +49,19 @@
     }
   }
   </script>
-  <link rel="icon" href="favicon.svg?v=web09-seo-20261026" type="image/svg+xml">
+  <link rel="icon" href="favicon.svg?v=web10-locales-20261026" type="image/svg+xml">
   <link rel="preload" href="assets/barlow-condensed-600-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/dm-sans-variable-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=web09-seo-20261026">
-  <link rel="stylesheet" href="details.css?v=web09-seo-20261026">
-  <link rel="stylesheet" href="cinema.css?v=web09-seo-20261026">
-  <script src="content.js?v=web09-seo-20261026" defer></script>
-  <script src="details.js?v=web09-seo-20261026" defer></script>
-  <script src="viewer.js?v=web09-seo-20261026" defer></script>
-  <script src="main.js?v=web09-seo-20261026" defer></script>
-  <script src="cinema.js?v=web09-seo-20261026" defer></script>
-  <script src="inspector.js?v=web09-seo-20261026" defer></script>
+  <link rel="stylesheet" href="style.css?v=web10-locales-20261026">
+  <link rel="stylesheet" href="details.css?v=web10-locales-20261026">
+  <link rel="stylesheet" href="cinema.css?v=web10-locales-20261026">
+  <script id="locale-data" type="application/json">{}</script>
+  <script src="content.js?v=web10-locales-20261026" defer></script>
+  <script src="details.js?v=web10-locales-20261026" defer></script>
+  <script src="viewer.js?v=web10-locales-20261026" defer></script>
+  <script src="main.js?v=web10-locales-20261026" defer></script>
+  <script src="cinema.js?v=web10-locales-20261026" defer></script>
+  <script src="inspector.js?v=web10-locales-20261026" defer></script>
 </head>
 <body>
   <div class="reading-progress" aria-hidden="true"></div>
@@ -73,11 +74,11 @@
       <a href="#project" data-i18n="navProject">El proyecto</a>
       <a href="#partners" data-i18n="navPartners">Aliados</a>
     </nav>
-    <div class="header-actions"><button class="theme-toggle" type="button" aria-label="Activar modo noche" hidden><span aria-hidden="true">☾</span></button><a class="language" href="en.html" lang="en" hreflang="en" aria-label="Switch to English">EN</a><a class="nav-download" href="#download"><span data-i18n="download">Descargar</span> <span aria-hidden="true">↗</span></a></div>
+    <div class="header-actions"><button class="theme-toggle" type="button" aria-label="Activar modo noche" hidden><span aria-hidden="true">☾</span></button><details class="language-menu"><summary>ES</summary><nav class="language-options"></nav></details><a class="nav-download" href="#download"><span data-i18n="download">Descargar</span> <span aria-hidden="true">↗</span></a></div>
   </header>
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-top"><span class="eyebrow" data-i18n="heroEyebrow">AEROMODELISMO · CÓDIGO ABIERTO</span><span class="alpha"><i></i> EARLY ALPHA / 0.1.8</span></div>
+      <div class="hero-top"><span class="eyebrow" data-i18n="heroEyebrow">AEROMODELISMO · CÓDIGO ABIERTO</span><span class="alpha"><i></i> <span data-ui="earlyAlpha">ALFA TEMPRANA</span> / 0.1.8</span></div>
       <h1 id="hero-title"><img src="assets/branding/openrc-logo.svg" alt="OpenRC Simulator — ALPHA" width="1505" height="327" fetchpriority="high"></h1>
       <div class="hero-aircraft"><div class="hero-film"><img src="assets/cinema/jet-hero.webp" alt="Ventage Jet naranja y violeta, render del modelo del simulador" data-alt="heroAlt" width="1600" height="1000" fetchpriority="high"><video id="hero-video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-src="assets/cinema/jet-hero.mp4"></video></div></div>
       <div class="hero-scene-caption"><span class="aircraft-note">01 / VENTAGE JET<br><span data-i18n="renderNote">MODELO DEL SIMULADOR · VISTA DE ESTUDIO</span></span><button id="film-toggle" type="button" hidden><span class="film-icon" aria-hidden="true">Ⅱ</span><span class="film-label" data-i18n="filmPause">Pausar escena</span></button></div>
@@ -152,7 +153,7 @@
     <section id="project" class="project section-pad">
       <div class="project-lead reveal"><p class="eyebrow" data-i18n="projectKicker">04 / BAJO EL CAPÓ</p><h2 data-i18n="projectHeading">La física importa.<br>La evidencia también.</h2><p data-i18n="projectIntro">Construimos un simulador de aeromodelismo paso a paso. Con código que puedes leer, vuelos que puedes repetir y preguntas que aún estamos resolviendo.</p><a class="text-link" href="https://github.com/bultodepapas/OpenRCsimulator"><span data-i18n="source">Explora el código</span><span aria-hidden="true">↗</span></a></div>
       <div class="project-details"><p class="eyebrow source-kicker" data-i18n="sourceKicker">IMPLEMENTADO EN EL CÓDIGO ACTUAL</p><article><span class="detail-number">240<span>Hz</span></span><div><h3 data-i18n="physicsHeading">Un motor de vuelo propio.</h3><p data-i18n="physicsCopy">Seis grados de libertad y cálculo en float64. Cargas aerodinámicas locales, dinámica de servos y propulsión según cada avión.</p></div></article><article><span class="detail-number detail-word">USB</span><div><h3 data-i18n="radioHeading">Tus mandos, en el circuito.</h3><p data-i18n="radioCopy">Emisora USB, gamepad o teclado. Calibración guardada, armado de motor y respuesta segura al desconectar.</p></div></article><article><span class="detail-number detail-word">↺</span><div><h3 data-i18n="replayHeading">Volar. Registrar. Comparar.</h3><p data-i18n="replayCopy">Registros de vuelo, reproducción exacta y exportación CSV para estudiar el comportamiento con las mismas entradas.</p></div></article></div>
-      <aside class="honesty"><span class="eyebrow">EARLY ALPHA</span><p data-i18n="honesty">El software se comprueba. El realismo se demuestra. La validación física independiente y la evaluación de pilotos siguen abiertas.</p><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/ROADMAP.md" class="text-link"><span data-i18n="roadmap">Ver lo que sigue</span> ↗</a></aside>
+      <aside class="honesty"><span class="eyebrow" data-ui="earlyAlpha">ALFA TEMPRANA</span><p data-i18n="honesty">El software se comprueba. El realismo se demuestra. La validación física independiente y la evaluación de pilotos siguen abiertas.</p><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/ROADMAP.md" class="text-link"><span data-i18n="roadmap">Ver lo que sigue</span> ↗</a></aside>
       <div class="systems">
         <div class="systems-title"><p class="eyebrow" data-i18n="systemsKicker">ANATOMÍA DE LA SIMULACIÓN</p><h3 data-i18n="systemsHeading">Del movimiento del stick<br>a la respuesta del avión.</h3><p data-i18n="systemsIntro">Explora los sistemas que ya existen en el código. Cada área enlaza a su documentación y a sus límites actuales.</p><div class="signal-path" aria-hidden="true"><span>INPUT</span><b>→</b><span>240 Hz</span><b>→</b><span>FLIGHT</span></div></div>
         <div class="systems-list">

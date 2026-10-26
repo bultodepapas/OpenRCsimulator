@@ -3,10 +3,9 @@ let theme = 'day';
 try {theme = localStorage.getItem('openrc-theme') === 'night' ? 'night' : 'day';} catch {}
 function applyTheme() {
   document.documentElement.dataset.theme = theme;
-  const english = document.documentElement.lang === 'en';
   const night = theme === 'night';
   themeButton.firstElementChild.textContent = night ? '☀' : '☾';
-  themeButton.setAttribute('aria-label', english ? (night ? 'Switch to day theme' : 'Switch to night theme') : (night ? 'Activar modo día' : 'Activar modo noche'));
+  themeButton.setAttribute('aria-label', night ? siteText.themeDay : siteText.themeNight);
   document.querySelectorAll('img[src*="brands/"]:not(.partner-logo img):not(.allies-logos img)').forEach(img => {
     const source = img.getAttribute('src');
     const next = source.replace(night ? 'Black' : 'White', night ? 'White' : 'Black');

@@ -6,21 +6,21 @@ import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
 
-from build_locales import BASE, SITE, build
+from build_locales import BASE, SITE, LOCALES, build, locale_url
 
 
 class LocalePublicationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.pages = {lang: BeautifulSoup((SITE / name).read_text(encoding="utf-8"), "html.parser")
-                     for lang, name in [("es", "index.html"), ("en", "en.html")]}
+                     for lang, name in [(lang, config["file"]) for lang, config in LOCALES.items()]}
 
     def test_generated_pages_are_current(self):
         for name, content in build().items():
             self.assertEqual((SITE / name).read_text(encoding="utf-8"), content, name)
 
     def test_locales_have_reciprocal_routes_and_consistent_metadata(self):
-        routes = {"es": BASE, "en": BASE + "en.html"}
+        routes = {lang: locale_url(lang) for lang in LOCALES}
         for lang, page in self.pages.items():
             with self.subTest(lang=lang):
                 self.assertEqual(page.html["lang"], lang)
@@ -36,7 +36,11 @@ class LocalePublicationTests(unittest.TestCase):
                     self.assertEqual(page.select_one(selector)["content"], page.title.string)
                 for selector in ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]']:
                     self.assertEqual(page.select_one(selector)["content"], schema["description"])
-                self.assertTrue(page.select_one('a.language[href][hreflang]'))
+                self.assertEqual({a['hreflang'] for a in page.select('.language-options a[href]')}, set(LOCALES))
+                self.assertEqual(page.select_one('.language-options [aria-current=page]')['hreflang'], lang)
+                runtime = json.loads(page.select_one('#locale-data').string)
+                self.assertEqual(set(runtime['aircraft']), {'jet', 'stik', 'extra', 'mustang', 'timber', 'heli'})
+                self.assertTrue(all(runtime['ui'].values()))
                 self.assertEqual(len(page.select('h1')), 1)
         root = ET.parse(SITE / "sitemap.xml").getroot()
         self.assertEqual({tag.text for tag in root.findall('{*}url/{*}loc')}, set(routes.values()))
@@ -52,7 +56,8 @@ class LocalePublicationTests(unittest.TestCase):
                 self.assertEqual(len(page.select('.faq-list article')), 5)
                 self.assertFalse(page.select('.faq details, .faq [hidden]'))
         self.assertTrue(downloads[0])
-        self.assertEqual(*downloads)
+        for links in downloads[1:]:
+            self.assertEqual(downloads[0], links)
 
     def test_assets_and_internal_links_resolve_in_project_subdirectory(self):
         for lang, page in self.pages.items():

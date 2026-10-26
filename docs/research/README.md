@@ -15,6 +15,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 | Need | Authoritative collection |
 | --- | --- |
+| Read the first-public-release Reddit discussion and preliminary feedback themes | [Reddit launch feedback, 2026-10-26](reddit-launch-feedback-2026-10-26/README.md), including the full retrieved comment transcript and coverage limits |
 | Identify the exact aircraft and distinguish geometry from flight evidence | [Aircraft reference index](aircraft-reference-index.md) |
 | Search published studies, datasets and acquisition limits | [RC validation source library](flight-dynamics/rc-validation-library-2026-10-18/README.md#topics) |
 | Filter literature as a table or import bibliography records | Library [CSV](flight-dynamics/rc-validation-library-2026-10-18/catalog.csv) and [BibTeX](flight-dynamics/rc-validation-library-2026-10-18/catalog.bib); both derive from topic `sources.json` manifests |

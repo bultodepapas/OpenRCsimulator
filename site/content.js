@@ -118,3 +118,7 @@ const englishAttributes = {
   'Detalles del jet': 'Jet details', 'Vistas de cámara': 'Camera views',
   'Acercar': 'Zoom in', 'Alejar': 'Zoom out'
 };
+
+// A complete, page-specific dictionary is embedded at build time; no locale fetch.
+const localeCopy = typeof document === "undefined" ? null : JSON.parse(document.querySelector("#locale-data").textContent);
+const siteText = localeCopy?.ui;
