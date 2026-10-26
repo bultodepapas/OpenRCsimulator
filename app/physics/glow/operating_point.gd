@@ -8,23 +8,41 @@ const Carb := preload("res://physics/glow/carburetor.gd")
 ## Steady source at a transmitter throttle: the barrel at its settled opening, the charge per cycle from the
 ## carburettor's flow restriction at this speed (NITRO-06).
 static func source(prop: Dictionary, rpm: float, throttle: float, dry_density: float) -> Dictionary:
+	return _source(prop, rpm, throttle, dry_density, null)
+
+static func _source(prop: Dictionary, rpm: float, throttle: float, dry_density: float,
+		prepared: Source.PreparedEvaluator) -> Dictionary:
 	var install: Dictionary = prop.glow
 	var opening: float = Carb.opening(throttle, float(install.throttle_idle_offset), float(install.throttle_travel_exponent))
 	var admission: float = Carb.admission(opening, rpm, Source.breathing(install.profile, rpm),
 		float(install.profile.parameters.displacement_m3), float(install.profile.identity.cycle_revolutions),
 		float(install.throttle_capacity_m3_s))
+	if prepared != null:
+		return Source.evaluate_prepared(prepared, rpm, admission,
+			install.profile.operation.nominal_mixture, dry_density)
 	return Source.evaluate(install.profile, rpm, admission,
 		install.profile.operation.nominal_mixture, dry_density)
 
 static func residual(prop: Dictionary, rpm: float, throttle: float, u: float, rho: float, dry_density: float) -> float:
-	var engine: Dictionary = source(prop,rpm,throttle,dry_density)
-	var load: Dictionary = Prop.evaluate(rpm,u,rho,prop.glow.propeller)
+	return _residual(prop,rpm,throttle,u,rho,dry_density,null,null)
+
+static func _residual(prop: Dictionary, rpm: float, throttle: float, u: float, rho: float, dry_density: float,
+		engine_evaluator: Source.PreparedEvaluator, propeller_evaluator: Prop.PreparedEvaluator) -> float:
+	var engine: Dictionary = _source(prop,rpm,throttle,dry_density,engine_evaluator)
+	var load: Dictionary = Prop.evaluate_prepared(propeller_evaluator,rpm,u,rho) if propeller_evaluator != null else Prop.evaluate(rpm,u,rho,prop.glow.propeller)
 	return engine.shaft_torque_nm-load.torque_nm if engine.ok and load.ok else NAN
 
 static func solve(prop: Dictionary, throttle: float, u: float, rho: float, dry_density: float) -> Dictionary:
 	for v in [throttle,u,rho,dry_density]:
 		if not is_finite(v): return {ok=false, roots=PackedFloat64Array()}
 	if throttle<0.0 or throttle>1.0 or rho<=0.0 or dry_density<=0.0: return {ok=false, roots=PackedFloat64Array()}
+	# Keep preparation local to this solve: no stale snapshot after a profile/installation change,
+	# and no mutable cache shared by asynchronous launch jobs. Modified research profiles whose
+	# provenance no longer matches retain the fully guarded source path.
+	var prepared_source: Dictionary = Source.prepare_evaluator(prop.glow.profile)
+	var prepared_propeller: Dictionary = Prop.prepare_evaluator(prop.glow.propeller)
+	var engine_evaluator: Source.PreparedEvaluator = prepared_source.get("evaluator")
+	var propeller_evaluator: Prop.PreparedEvaluator = prepared_propeller.get("evaluator")
 	var maximum: float = prop.glow.profile.operation.max_rpm
 	var minimum: float = prop.glow.settings.stall_rpm
 	var roots := PackedFloat64Array()
@@ -37,22 +55,25 @@ static func solve(prop: Dictionary, throttle: float, u: float, rho: float, dry_d
 			if table[i]>minimum and table[i]<maximum: nodes.append(table[i])
 	nodes.sort()
 	var lo: float = minimum
-	var flo: float = residual(prop,lo,throttle,u,rho,dry_density)
+	var flo: float = _residual(prop,lo,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator)
 	for hi: float in nodes:
 		if hi<=lo: continue
-		var fhi: float = residual(prop,hi,throttle,u,rho,dry_density)
+		var fhi: float = _residual(prop,hi,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator)
 		if not is_finite(flo) or not is_finite(fhi): return {ok=false, roots=roots}
 		if flo>0.0 and fhi<=0.0:
 			var left: float=lo
 			var right: float=hi
 			for _iteration in 64:
 				var mid: float=(left+right)*0.5
-				var fm: float=residual(prop,mid,throttle,u,rho,dry_density)
+				# The remaining bisections would repeat this same sample and leave both endpoints
+				# unchanged once their midpoint rounds to an endpoint. Keep the final root expression.
+				if mid == left or mid == right: break
+				var fm: float=_residual(prop,mid,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator)
 				if not is_finite(fm): return {ok=false,roots=roots}
 				if fm>0.0: left=mid
 				else: right=mid
 			var root: float=(left+right)*0.5
-			if absf(residual(prop,root,throttle,u,rho,dry_density))>1e-10: return {ok=false,roots=roots}
+			if absf(_residual(prop,root,throttle,u,rho,dry_density,engine_evaluator,propeller_evaluator))>1e-10: return {ok=false,roots=roots}
 			roots.append(root)
 		lo=hi
 		flo=fhi

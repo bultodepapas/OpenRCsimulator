@@ -1,5 +1,29 @@
 # Glow tick cost: measured breakdown and pending optimizations (NITRO-04)
 
+## Cruise-trim benchmark (2026-10-26)
+
+`trim_probe.gd` measures six uncached 50%-throttle cruise solves, independently of
+rendering and the launch cache. It stores complete serialized results and elapsed
+times. Run the same probe against an unchanged baseline app snapshot and the
+candidate; keep the host otherwise idle and alternate at least three pairs.
+
+```sh
+python3 tools/godot/run_checked.py --timeout 90 -- "$(app/get-godot.sh)" --headless \
+  --path <baseline-app> --script "$PWD/research/glow-engines/perf/trim_probe.gd" \
+  -- --out="$PWD/tmp/trim-before.json"
+python3 tools/godot/run_checked.py --timeout 90 -- "$(app/get-godot.sh)" --headless \
+  --path app --script "$PWD/research/glow-engines/perf/trim_probe.gd" \
+  -- --out="$PWD/tmp/trim-after.json" --reference="$PWD/tmp/trim-before.json" --max-ratio=0.75
+```
+
+The optional ratio gate fails if any case takes more than 75% of its baseline time;
+all comparisons require byte-identical results and successful trims. This is a local
+performance regression probe, not a hardware-independent unit-test deadline.
+The reference runs with the original operating-point solver; do not rebase the
+baseline to the optimized code. [Accepted evidence](../../../docs/research/glow-engines/NITRO-02/README.md#cruise-trim-preparation-nitro-04-2026-10-26).
+
+## Historical tick measurements
+
 2026-10-14. Software measurements on the shared development VM (llvmpipe host, 240 Hz, 120 warm-up + 600 measured ticks, `FlightSession` + `sim.step()`). The host is noisy: unchanged legacy code varied by ±10–14 % between rounds, and up to 630–1000 µs p50 in a later session.
 
 ## Cost before NITRO-05
